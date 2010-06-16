@@ -32,6 +32,8 @@
 
 #include "tinysip_config.h"
 
+#include "tinymedia/tmedia_qos.h"
+
 #include "tsk_object.h"
 #include "tsk_list.h"
 #include "tsk_params.h"
@@ -104,7 +106,7 @@ tsip_msession_param_type_t;
 
 #define TSIP_MSESSION_SET_100rel()								mstype_set_100rel
 #define TSIP_MSESSION_UNSET_100rel()							mstype_unset_100rel
-#define TSIP_MSESSION_SET_QOS()									mstype_set_qos
+#define TSIP_MSESSION_SET_QOS(TYPE_ENUM, STRENGTH_ENUM)			mstype_set_qos, (tmedia_qos_stype_t)TYPE_ENUM, (tmedia_qos_strength_t)STRENGTH_ENUM
 #define TSIP_MSESSION_UNSET_QOS()								mstype_unset_qos
 #define TSIP_MSESSION_SET_TIMERS(TIMEOUT_UINT, REFRESHER_STR)	mstype_set_timers, (unsigned)TIMEOUT_UINT, (const char*)REFRESHER_STR
 #define TSIP_MSESSION_UNSET_TIMERS()							mstype_unset_timers
@@ -145,7 +147,8 @@ typedef struct tsip_ssession_s
 		} timers;
 		/* QoS */
 		struct{
-			unsigned toto:1;
+			tmedia_qos_stype_t type;
+			tmedia_qos_strength_t strength;
 		} qos;
 
 		/* Features */

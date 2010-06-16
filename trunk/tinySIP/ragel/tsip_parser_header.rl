@@ -584,17 +584,15 @@
 	# /*== Refer-To: ==*/
 	action parse_header_Refer_To
 	{
-		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		tsip_header_Refer_To_t *header = tsip_header_Refer_To_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Refer_To NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Referred-By: ==*/
 	action parse_header_Referred_By
 	{
-		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		tsip_header_Referred_By_t *header = tsip_header_Referred_By_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Referred_By NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Reject-Contact: ==*/

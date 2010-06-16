@@ -50,7 +50,7 @@ static tsk_bool_t _fsm_cond_is_resp2INVITEorUPDATE(tsip_dialog_invite_t* self, t
 }
 
 /* ======================== external functions ======================== */
-extern int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE);
+extern int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bool_t force_sdp);
 extern int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message);
 extern int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
 
@@ -112,7 +112,7 @@ int x0100_Connected_2_Holding_X_oHold(va_list *app)
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
 	/* send the request */
-	ret = send_INVITE(self);
+	ret = send_INVITE(self, tsk_false);
 
 	return ret;
 }
@@ -174,7 +174,7 @@ int x0102_Connected_2_Resuming_X_oResume(va_list *app)
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
 	/* send the request */
-	ret = send_INVITE(self);
+	ret = send_INVITE(self, tsk_false);
 
 	return ret;
 }

@@ -98,6 +98,12 @@ ragel.exe $OPTIONS -o ./src/headers/tsip_header_RAck.c ./ragel/tsip_parser_heade
 # ==Record-Route
 ragel.exe $OPTIONS -o ./src/headers/tsip_header_Record_Route.c ./ragel/tsip_parser_header_Record_Route.rl
 
+# ==Refer-To
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Refer_To.c ./ragel/tsip_parser_header_Refer_To.rl
+
+# ==Referred-By
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Referred_By.c ./ragel/tsip_parser_header_Referred_By.rl
+
 # ==Require
 ragel.exe $OPTIONS -o ./src/headers/tsip_header_Require.c ./ragel/tsip_parser_header_Require.rl
 

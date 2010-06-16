@@ -374,14 +374,14 @@ int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 			return ret;
 		}
 		if(tsk_striequals(m->media, "audio") || tsk_striequals(m->media, "video")){
-			/* add rtpmap attribute */
+			/* add rtpmap attributes */
 			if((rtpmap = tmedia_codec_get_rtpmap(codec))){
 				tsdp_header_M_add_headers(m,
-				TSDP_HEADER_A_VA_ARGS("rtpmap", rtpmap),
+					TSDP_HEADER_A_VA_ARGS("rtpmap", rtpmap),
 				tsk_null);
 				TSK_FREE(rtpmap);
 			}
-			/* add fmtp attribute */
+			/* add fmtp attributes */
 			if((fmtp = tmedia_codec_get_fmtp(codec))){
 				char* temp = tsk_null;
 				tsk_sprintf(&temp, "%s %s",  codec->neg_format?  codec->neg_format : codec->format, fmtp);

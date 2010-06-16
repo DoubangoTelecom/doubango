@@ -298,6 +298,23 @@ int execute(const cmd_t* cmd)
 				ret = stack_dump();
 				break;
 			}
+		case cmd_ect:
+		{
+			const opt_t* opt;
+			TSK_DEBUG_INFO("command=ect");
+			if((opt = opt_get_by_type(cmd->opts, opt_sid)) && !tsk_strnullORempty(opt->value)){
+				TSK_DEBUG_ERROR("++hold command need --sid option");
+				ret = -1;
+				break;
+			}
+			if((opt = opt_get_by_type(cmd->opts, opt_to)) && !tsk_strnullORempty(opt->value)){
+				TSK_DEBUG_ERROR("++hold command need --to option");
+				ret = -1;
+				break;
+			}
+			invite_handle_cmd(cmd->type, cmd->opts);
+			break;
+		}
 		case cmd_exit:
 			{
 				TSK_DEBUG_INFO("command=exit");

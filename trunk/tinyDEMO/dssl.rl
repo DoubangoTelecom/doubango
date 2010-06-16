@@ -229,6 +229,7 @@ replace:
 	("config-session"i | "css"i) %{ cmd->type = cmd_config_session; } |
 	("config-stack"i | "cst"i) %{ cmd->type = cmd_config_stack; } |
 	("dump"i | "d"i) %{ cmd->type = cmd_dump; } |
+	("ect"i) %{ cmd->type = cmd_ect; } |
 	("exit"i | "e"i | "quit"i | "q"i) %{ cmd->type = cmd_exit; } |
 	("file"i | "f"i) %{ cmd->type = cmd_file; } |
 	("hangup"i | "hu"i) %{ cmd->type = cmd_hangup; } |

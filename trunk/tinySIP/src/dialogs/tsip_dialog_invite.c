@@ -35,8 +35,11 @@
 
 #include "tinysip/transports/tsip_transport_layer.h"
 
+#include "tinysip/headers/tsip_header_Allow.h"
+#include "tinysip/headers/tsip_header_Dummy.h"
 #include "tinysip/headers/tsip_header_Min_SE.h"
 #include "tinysip/headers/tsip_header_RAck.h"
+#include "tinysip/headers/tsip_header_Require.h"
 #include "tinysip/headers/tsip_header_RSeq.h"
 #include "tinysip/headers/tsip_header_Session_Expires.h"
 #include "tinysip/headers/tsip_header_Supported.h"
@@ -53,7 +56,7 @@
 3GPP TS 24.607 : Originating Identification Presentation
 3GPP TS 24.608 : Terminating Identification Presentation
 3GPP TS 24.607 : Originating Identification Restriction
-3GPP TS 24.608 : Terminating Identification Restriction 
+3GPP TS 24.608 : Terminating Identification Restriction
 
 3GPP TS 24.604 : Communication Diversion Unconditional
 3GPP TS 24.604 : Communication Diversion on not Logged
@@ -71,7 +74,7 @@
 */
 
 /* ======================== internal functions ======================== */
-int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE);
+int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bool_t force_sdp);
 int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx);
 int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
 int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase);
@@ -81,6 +84,8 @@ int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self);
 
 /* ======================== external functions ======================== */
 extern int tsip_dialog_invite_stimers_cancel(tsip_dialog_invite_t* self);
+extern int tsip_dialog_invite_qos_timer_cancel(tsip_dialog_invite_t* self);
+extern int tsip_dialog_invite_qos_timer_schedule(tsip_dialog_invite_t* self);
 extern int tsip_dialog_invite_stimers_schedule(tsip_dialog_invite_t* self, uint64_t timeout);
 extern int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_message_t* message);
 
@@ -138,6 +143,8 @@ static tsk_bool_t _fsm_cond_is_resp2PRACK(tsip_dialog_invite_t* self, tsip_messa
 extern int tsip_dialog_invite_hold_init(tsip_dialog_invite_t *self);
 /* RFC 4028: Session Timers */
 extern int tsip_dialog_invite_stimers_init(tsip_dialog_invite_t *self);
+/* RFC 3312: Integration of Resource Management and Session Initiation Protocol (SIP) */
+extern int tsip_dialog_invite_qos_init(tsip_dialog_invite_t *self);
 
 int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dialog_event_type_t type, const tsip_message_t *msg)
 {
@@ -221,6 +228,9 @@ int tsip_dialog_invite_timer_callback(const tsip_dialog_invite_t* self, tsk_time
 		if(timer_id == self->stimers.timer.id){
 			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_timerRefresh, tsk_null, tsk_null);
 		}
+		else if(timer_id == self->qos.timer.id){
+			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_timerRSVP, tsk_null, tsk_null);
+		}
 		else if(timer_id == self->timershutdown.id){
 			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_shutdown_timedout, tsk_null, tsk_null);
 		}
@@ -241,6 +251,8 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 	tsip_dialog_invite_hold_init(self);
 	/* RFC 4028: Session Timers */
 	tsip_dialog_invite_stimers_init(self);
+	/* RFC 3312: Integration of Resource Management and Session Initiation Protocol (SIP) */
+	tsip_dialog_invite_qos_init(self);
 	
 	/* Initialize the state machine (all other cases) */
 	tsk_fsm_set(TSIP_DIALOG_GET_FSM(self),
@@ -464,7 +476,7 @@ int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app)
 		return ret;
 	}
 	
-	return send_INVITEorUPDATE(self, TSIP_RESPONSE_IS_TO_INVITE(response));
+	return send_INVITEorUPDATE(self, TSIP_RESPONSE_IS_TO_INVITE(response), tsk_false);
 }
 
 /*	Any --> (i2xx INVITE or UPDATE) --> Any */
@@ -610,6 +622,11 @@ int x0000_Any_2_Any_X_i1xx(va_list *app)
 		}
 	}
 
+	/* QoS Reservation */
+	if(tsip_message_required(r1xx, "precondition") && !tmedia_session_mgr_canresume(self->msession_mgr)){
+		tsip_dialog_invite_qos_timer_schedule(self);
+	}
+
 	return ret;
 }
 
@@ -636,7 +653,7 @@ int x9999_Any_2_Any_X_Error(va_list *app)
 
 
 // send INVITE/UPDATE request
-int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE)
+int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bool_t force_sdp)
 {
 	int ret = -1;
 	tsip_request_t *request = tsk_null;
@@ -654,7 +671,7 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE)
 		}
 		
 		/* add our payload if current action does not have one */
-		if((self->msession_mgr && self->msession_mgr->state_changed) || (TSIP_DIALOG(self)->state == tsip_initial)){
+		if((force_sdp || is_INVITE) || ((self->msession_mgr && self->msession_mgr->state_changed) || (TSIP_DIALOG(self)->state == tsip_initial))){
 			if(!TSIP_DIALOG(self)->curr_action || !TSIP_DIALOG(self)->curr_action->payload){
 				const tsdp_message_t* sdp_lo;
 				char* sdp;
@@ -687,6 +704,29 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE)
 					tsk_null
 				);
 		}
+
+		/* QoS */
+		if(self->qos.type != tmedia_qos_stype_none){
+			if(self->qos.strength == tmedia_qos_strength_mandatory){
+				tsip_message_add_headers(request,
+					TSIP_HEADER_REQUIRE_VA_ARGS("precondition"),
+					tsk_null
+				);
+			}
+			else{
+				tsip_message_add_headers(request,
+					TSIP_HEADER_SUPPORTED_VA_ARGS("precondition"),
+					tsk_null
+				);
+			}
+		}
+		
+		/* Always added headers */
+		// Explicit Communication Transfer (3GPP TS 24.629)
+		tsip_message_add_headers(request,
+					TSIP_HEADER_SUPPORTED_VA_ARGS("norefersub,replaces"),
+					tsk_null
+				);
 
 		/* send the request */
 		ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
@@ -944,6 +984,11 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 						tsk_null
 					);
 			}
+			/* Add Allow header */
+			tsip_message_add_headers(response,
+						TSIP_HEADER_DUMMY_VA_ARGS("Allow", TSIP_HEADER_ALLOW_DEFAULT),
+						tsk_null
+					);
 		}
 
 		ret = tsip_dialog_response_send(TSIP_DIALOG(self), response);
@@ -1017,6 +1062,7 @@ static tsk_object_t* tsip_dialog_invite_dtor(tsk_object_t * _self)
 	if(self){
 		/* Cancel all timers */
 		tsip_dialog_invite_stimers_cancel(self);
+		tsip_dialog_invite_qos_timer_cancel(self);
 		TSIP_DIALOG_TIMER_CANCEL(shutdown);
 
 		/* DeInitialize base class */

@@ -36,14 +36,13 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-
 extern tsip_request_type_t tsip_request_get_type(const char* method);
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 70 "./ragel/tsip_parser_header_CSeq.rl" */
+/* #line 68 "./ragel/tsip_parser_header_CSeq.rl" */
 
 
 
@@ -72,7 +71,7 @@ tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, tsk_size_t size)
 	const char *tag_start;
 
 	
-/* #line 77 "./src/headers/tsip_header_CSeq.c" */
+/* #line 75 "./src/headers/tsip_header_CSeq.c" */
 static const char _tsip_machine_parser_header_CSeq_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3
@@ -148,16 +147,16 @@ static const int tsip_machine_parser_header_CSeq_error = 0;
 static const int tsip_machine_parser_header_CSeq_en_main = 1;
 
 
-/* #line 98 "./ragel/tsip_parser_header_CSeq.rl" */
+/* #line 96 "./ragel/tsip_parser_header_CSeq.rl" */
 	
-/* #line 155 "./src/headers/tsip_header_CSeq.c" */
+/* #line 153 "./src/headers/tsip_header_CSeq.c" */
 	{
 	cs = tsip_machine_parser_header_CSeq_start;
 	}
 
-/* #line 99 "./ragel/tsip_parser_header_CSeq.rl" */
+/* #line 97 "./ragel/tsip_parser_header_CSeq.rl" */
 	
-/* #line 162 "./src/headers/tsip_header_CSeq.c" */
+/* #line 160 "./src/headers/tsip_header_CSeq.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -232,29 +231,29 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 50 "./ragel/tsip_parser_header_CSeq.rl" */
+/* #line 48 "./ragel/tsip_parser_header_CSeq.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 54 "./ragel/tsip_parser_header_CSeq.rl" */
+/* #line 52 "./ragel/tsip_parser_header_CSeq.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_cseq->method);
 	}
 	break;
 	case 2:
-/* #line 58 "./ragel/tsip_parser_header_CSeq.rl" */
+/* #line 56 "./ragel/tsip_parser_header_CSeq.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_cseq->seq);
 	}
 	break;
 	case 3:
-/* #line 62 "./ragel/tsip_parser_header_CSeq.rl" */
+/* #line 60 "./ragel/tsip_parser_header_CSeq.rl" */
 	{
 	}
 	break;
-/* #line 259 "./src/headers/tsip_header_CSeq.c" */
+/* #line 257 "./src/headers/tsip_header_CSeq.c" */
 		}
 	}
 
@@ -267,12 +266,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 100 "./ragel/tsip_parser_header_CSeq.rl" */
+/* #line 98 "./ragel/tsip_parser_header_CSeq.rl" */
 	
 	if( cs < 
-/* #line 275 "./src/headers/tsip_header_CSeq.c" */
+/* #line 273 "./src/headers/tsip_header_CSeq.c" */
 17
-/* #line 101 "./ragel/tsip_parser_header_CSeq.rl" */
+/* #line 99 "./ragel/tsip_parser_header_CSeq.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'CSeq' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_cseq);

@@ -44,6 +44,7 @@ typedef enum _fsm_action_e
 	_fsm_action_oCANCEL = tsip_atype_cancel,
 	_fsm_action_oHold = tsip_atype_hold,
 	_fsm_action_oResume = tsip_atype_resume,
+	_fdm_action_oREFER = tsip_atype_ect,
 	_fsm_action_oBYE = tsip_atype_hangup,
 	_fsm_action_oShutdown = tsip_atype_shutdown,
 
@@ -58,8 +59,10 @@ typedef enum _fsm_action_e
 	_fsm_action_iOPTIONS,
 	_fsm_action_oOPTIONS,
 	_fsm_action_iBYE,
+	_fsm_action_iREFER,
 
 	_fsm_action_timerRefresh,
+	_fsm_action_timerRSVP,
 
 	_fsm_action_i1xx,
 	_fsm_action_i2xx,
@@ -80,16 +83,23 @@ typedef enum _fsm_state_e
 	_fsm_state_Outgoing,
 	_fsm_state_Incoming,
 	_fsm_state_Trying,
+
 	_fsm_state_Holding,
 	_fsm_state_Resuming,
+
+	_fsm_state_oECTing,
+	_fsm_state_oECTed,
+	_fsm_state_iECTing,
+	_fsm_state_iECTed,
+
 	_fsm_state_Connected,
 	_fsm_state_Terminated
 }
 _fsm_state_t;
 
 
-#define send_INVITE(self) send_INVITEorUPDATE(self, tsk_true)
-#define send_UPDATE(self) send_INVITEorUPDATE(self, tsk_false)
+#define send_INVITE(self, force_sdp) send_INVITEorUPDATE(self, tsk_true, force_sdp)
+#define send_UPDATE(self, force_sdp) send_INVITEorUPDATE(self, tsk_false, force_sdp)
 
 
 #endif /* TINYSIP_DIALOG_INVITE_COMMON_H */

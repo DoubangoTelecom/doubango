@@ -31,6 +31,7 @@
 #define _TSIP_HEADER_P_PREFERRED_IDENTITY_H_
 
 #include "tinysip_config.h"
+
 #include "tinysip/tsip_uri.h"
 #include "tinysip/headers/tsip_header.h"
 

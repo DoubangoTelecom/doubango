@@ -29,6 +29,7 @@
 */
 #include "tinysip/tsip_action.h"
 
+#include "tsk_memory.h"
 #include "tsk_debug.h"
 
 /* Local functions */
@@ -216,6 +217,8 @@ static tsk_object_t* tsip_action_dtor(tsk_object_t * self)
 	if(action){
 		TSK_OBJECT_SAFE_FREE(action->headers);
 		TSK_OBJECT_SAFE_FREE(action->payload);
+
+		TSK_FREE(action->ect.to);
 	}
 
 	return self;
