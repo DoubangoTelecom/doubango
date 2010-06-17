@@ -239,7 +239,7 @@ tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type
 	switch(type){
 		case tsip_dialog_INVITE:
 			{
-				if((dialog = (tsip_dialog_t*)tsip_dialog_invite_create(ss))){
+				if((dialog = (tsip_dialog_t*)tsip_dialog_invite_create(ss, tsk_null))){
 					ret = tsk_object_ref(dialog);
 					tsk_list_push_back_data(self->dialogs, (void**)&dialog);
 				}
@@ -371,7 +371,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 				case tsip_INVITE:
 					{	/* incoming INVITE */
 						if((ss = tsip_ssession_create_2(self->stack, message))){
-							newdialog = (tsip_dialog_t*)tsip_dialog_invite_create(ss);
+							newdialog = (tsip_dialog_t*)tsip_dialog_invite_create(ss, message->Call_ID ? message->Call_ID->value : tsk_null);
 						}
 						break;
 					}

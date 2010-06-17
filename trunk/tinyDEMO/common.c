@@ -501,8 +501,8 @@ int session_handle_event(const tsip_event_t *_event)
 
 	/* Find associated session */
 	if(!(session = session_get_by_sid(ctx->sessions, tsip_ssession_get_id(_event->ss)))){
-		TSK_DEBUG_WARN("Failed to match session event.");
-		return -1;
+		/* Silentky ignore */
+		return 0;
 	}
 	switch(_event->code)
 	{

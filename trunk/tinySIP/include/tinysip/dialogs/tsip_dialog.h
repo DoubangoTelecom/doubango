@@ -158,6 +158,7 @@ int tsip_dialog_apply_action(tsip_message_t* message, const tsip_action_t* actio
 
 int64_t tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* response);
 int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response);
+int tsip_dialog_update_2(tsip_dialog_t *self, const tsip_request_t* invite);
 int tsip_dialog_getCKIK(tsip_dialog_t *self, AKA_CK_T *ck, AKA_IK_T *ik);
 
 int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* call_id, tsip_ssession_t* ss, tsk_fsm_state_id curr, tsk_fsm_state_id term);
