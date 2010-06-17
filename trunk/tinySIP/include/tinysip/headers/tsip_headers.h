@@ -58,6 +58,7 @@
 #include "tinysip/headers/tsip_header_Proxy_Require.h"
 #include "tinysip/headers/tsip_header_RAck.h"
 #include "tinysip/headers/tsip_header_Record_Route.h"
+#include "tinysip/headers/tsip_header_Refer_Sub.h"
 #include "tinysip/headers/tsip_header_Refer_To.h"
 #include "tinysip/headers/tsip_header_Referred_By.h"
 #include "tinysip/headers/tsip_header_Require.h"

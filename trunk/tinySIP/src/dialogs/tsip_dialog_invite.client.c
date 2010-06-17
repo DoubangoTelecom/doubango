@@ -41,10 +41,56 @@
 
 #include "tsk_debug.h"
 
+/* ======================== external functions ======================== */
 extern int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bool_t force_sdp);
 extern int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
 extern int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message);
 extern int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_message_t* message);
+
+extern int x0000_Any_2_Any_X_i1xx(va_list *app);
+
+/* ======================== transitions ======================== */
+extern int c0000_Started_2_Outgoing_X_oINVITE(va_list *app);
+extern int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app);
+extern int c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app);
+extern int c0000_Outgoing_2_Terminated_X_oCANCEL(va_list *app);
+
+/* ======================== conds ======================== */
+static tsk_bool_t _fsm_cond_is_resp2INVITE(tsip_dialog_invite_t* self, tsip_message_t* message)
+{
+	return TSIP_RESPONSE_IS_TO_INVITE(message);
+}
+
+/* Init FSM */
+int tsip_dialog_invite_client_init(tsip_dialog_invite_t *self)
+{
+	return tsk_fsm_set(TSIP_DIALOG_GET_FSM(self),
+		
+			/*=======================
+			* === Started === 
+			*/
+			// Started -> (send INVITE) -> Outgoing
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_oINVITE, _fsm_state_Outgoing, c0000_Started_2_Outgoing_X_oINVITE, "c0000_Started_2_Outgoing_X_oINVITE"),
+			
+			/*=======================
+			* === Outgoing === 
+			*/
+			// Outgoing -> (i2xx INVITE) -> Connected
+			TSK_FSM_ADD(_fsm_state_Outgoing, _fsm_action_i2xx, _fsm_cond_is_resp2INVITE, _fsm_state_Connected, c0000_Outgoing_2_Connected_X_i2xxINVITE, "c0000_Outgoing_2_Connected_X_i2xxINVITE"),
+			// Outgoing -> (i1xx) -> Outgoing
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Outgoing, _fsm_action_oCANCEL, _fsm_state_Terminated, x0000_Any_2_Any_X_i1xx, "c0000_Outgoing_2_Outgoing_X_i1xx"),
+			// Outgoing -> (300-699 INVITE) -> Terminated
+			TSK_FSM_ADD(_fsm_state_Outgoing, _fsm_action_i300_to_i699, _fsm_cond_is_resp2INVITE, _fsm_state_Terminated, c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE, "c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE"),
+			// Outgoing -> (send CANCEL) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Outgoing, _fsm_action_oCANCEL, _fsm_state_Terminated, c0000_Outgoing_2_Terminated_X_oCANCEL, "c0000_Outgoing_2_Terminated_X_oCANCEL"),		
+
+
+			TSK_FSM_ADD_NULL());
+}
+
+//--------------------------------------------------------
+//				== STATE MACHINE BEGIN ==
+//--------------------------------------------------------
 
 /* Started -> (oINVITE) -> Outgoing
 */
@@ -112,7 +158,7 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 
 /* Outgoing -> (i2xx INVITE) -> Connected
 */
-int c0001_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
+int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 {
 	int ret;
 
@@ -154,7 +200,7 @@ int c0001_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 
 /* Outgoing -> (i300-i699 INVITE) -> Terminated
 */
-int c0002_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app)
+int c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
@@ -168,8 +214,12 @@ int c0002_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app)
 
 /* Outgoing -> (oCANCEL ) -> Terminated
 */
-int c0003_Outgoing_2_Terminated_X_oCANCEL(va_list *app)
+int c0000_Outgoing_2_Terminated_X_oCANCEL(va_list *app)
 {
 	/* alert the user */
 	return 0;
 }
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//				== STATE MACHINE END ==
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++

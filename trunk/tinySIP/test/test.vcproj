@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)include&quot;;..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)include&quot;;..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinyMEDIA\include;..\..\tinySDP\include"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

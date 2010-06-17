@@ -48,7 +48,7 @@ int message_handle_event(const tsip_event_t *_event)
 			goto bail;
 		}
 		else{
-			/* it's a "server-side-session" */
+			/* it's a "server-side-session" (incoming MESSAGE) */
 			session_t* _session;
 			if((_session = session_server_create(st_message, _event->ss)) && (session = _session)){
 				tsk_list_push_back_data(ctx->sessions, (void**)&_session);

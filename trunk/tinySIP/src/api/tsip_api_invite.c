@@ -80,7 +80,9 @@ int tsip_action_INVITE(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...
 		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, ss))){
 			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_INVITE, ss);
 		}
-		ret = tsip_dialog_fsm_act(dialog, action->type, tsk_null, action);
+		if(!(ret = tsip_dialog_fsm_act(dialog, action->type, tsk_null, action))){
+			TSIP_SSESSION(_ss)->media.type = type; // Update Session Media Type
+		}
 		
 		tsk_object_unref(dialog);
 		TSK_OBJECT_SAFE_FREE(action);

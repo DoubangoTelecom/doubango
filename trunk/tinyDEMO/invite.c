@@ -29,18 +29,50 @@ int invite_handle_event(const tsip_event_t *_event)
 	const tsip_invite_event_t* inv_event = TSIP_INVITE_EVENT(_event);
 	const session_t* session;
 	tsip_ssession_id_t sid;
+	int ret = 0;
 
 	/* Find associated session */
 	sid = tsip_ssession_get_id(_event->ss);
 	if(!(session = session_get_by_sid(ctx->sessions, sid))){
-		TSK_DEBUG_WARN("Failed to match session event.");
-		return -1;
+		if(inv_event->type == tsip_i_newcall){
+			/* It's a new incoming call */
+			if(!tsip_ssession_have_ownership(_event->ss)){
+				session_t* _session;
+				if((_session = session_server_create(st_invite, _event->ss)) && (session = _session)){
+					tsk_list_push_back_data(ctx->sessions, (void**)&_session);
+				}
+				else{
+					TSK_DEBUG_ERROR("Failed to create \"sever-side-session\".");
+					ret = -3;
+					goto bail;
+				}
+			}
+		}
+		else{
+			/* it's or own session and we fail to match it ==> should never happen */
+			TSK_DEBUG_ERROR("Failed to match session event.");
+			ret = -2;
+			goto bail;
+		}
+	}
+
+	if(!session || !session->handle){
+		/* guard ==> should never happen */
+		TSK_DEBUG_ERROR("Null session.");
+		goto bail;
 	}
 
 	switch(inv_event->type){
 		// ============================
 		//	Sip Events
 		//
+		case tsip_i_newcall:
+			{	/* New call */
+				tmedia_type_t media_type = tsip_ssession_get_mediatype(session);
+				tsip_action_ACCEPT(session->handle,
+					TSIP_ACTION_SET_NULL());
+				break;
+			}
 		case tsip_i_request:
 			TSK_DEBUG_INFO("invite_handle_event(tsip_i_request)");
 			break;
@@ -95,7 +127,8 @@ int invite_handle_event(const tsip_event_t *_event)
 			break;
 	}
 
-	return 0;
+bail:
+	return ret;
 }
 
 tsip_ssession_id_t invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)

@@ -412,6 +412,17 @@ const void* tsip_ssession_get_userdata(const tsip_ssession_handle_t *self)
 	}
 }
 
+tmedia_type_t tsip_ssession_get_mediatype(const tsip_ssession_handle_t *self)
+{
+	if(self){
+		return ((const tsip_ssession_t*)self)->media.type;
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tmedia_none;
+	}
+}
+
 const tsip_stack_handle_t* tsip_ssession_get_stack(const tsip_ssession_handle_t *self)
 {
 	if(self){
@@ -480,6 +491,7 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		// default expires value
 		ss->expires = TSIP_SSESSION_EXPIRES_DEFAULT;
 		// default media values
+		ss->media.type = tmedia_none;
 		ss->media.qos.type = tmedia_qos_stype_none;
 		ss->media.qos.strength = tmedia_qos_strength_none;
 
