@@ -70,12 +70,12 @@
 #	--pay hello world
 
 #send INVITE
-++a --to sip:bob@$$(domain) --header Supported=100rel,precondition,timer >>(inv_audio_sid)
-++sleep --sec -1
-++ho --sid $$(inv_audio_sid)
-++sleep --sec -1
-++res --sid $$(inv_audio_sid)
-
+#++a --to sip:bob@$$(domain) >>(inv_audio_sid)
+#++sleep --sec -1
+#++ho --sid $$(inv_audio_sid)
+#++sleep --sec -1
+#++res --sid $$(inv_audio_sid)
+#++ect --sid $$(inv_audio_sid) --to sip:alice@$$(domain)
 
 # Press ENTER
 ++sleep --sec -1

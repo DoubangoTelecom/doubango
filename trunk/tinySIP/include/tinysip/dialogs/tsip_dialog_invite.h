@@ -50,7 +50,8 @@ typedef struct tsip_dialog_invite
 	
 	tsip_timer_t timershutdown;
 	
-	tsip_request_t* last_invite;
+	tsip_request_t* last_iInvite;
+	tsip_request_t* last_oInvite;
 	tmedia_session_mgr_t* msession_mgr; /**< Media session Manager. */
 	
 	/* Session Timers */

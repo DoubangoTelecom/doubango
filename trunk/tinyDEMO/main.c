@@ -302,13 +302,13 @@ int execute(const cmd_t* cmd)
 		{
 			const opt_t* opt;
 			TSK_DEBUG_INFO("command=ect");
-			if((opt = opt_get_by_type(cmd->opts, opt_sid)) && !tsk_strnullORempty(opt->value)){
-				TSK_DEBUG_ERROR("++hold command need --sid option");
+			if(!(opt = opt_get_by_type(cmd->opts, opt_sid)) && tsk_strnullORempty(opt->value)){
+				TSK_DEBUG_ERROR("++ect command need --sid option");
 				ret = -1;
 				break;
 			}
-			if((opt = opt_get_by_type(cmd->opts, opt_to)) && !tsk_strnullORempty(opt->value)){
-				TSK_DEBUG_ERROR("++hold command need --to option");
+			if(!(opt = opt_get_by_type(cmd->opts, opt_to)) && tsk_strnullORempty(opt->value)){
+				TSK_DEBUG_ERROR("++ect command need --to option");
 				ret = -1;
 				break;
 			}
@@ -330,7 +330,7 @@ int execute(const cmd_t* cmd)
 			{
 				const opt_t* opt;
 				TSK_DEBUG_INFO("command=hangup");
-				if((opt = opt_get_by_type(cmd->opts, opt_sid)) && !tsk_strnullORempty(opt->value)){ /* --sid option */
+				if(!(opt = opt_get_by_type(cmd->opts, opt_sid)) || tsk_strnullORempty(opt->value)){ /* --sid option */
 					ret = session_hangup(tsk_atoll(opt->value));
 				}
 				else{
@@ -349,7 +349,7 @@ int execute(const cmd_t* cmd)
 			{
 				const opt_t* opt;
 				TSK_DEBUG_INFO("command=hold");
-				if((opt = opt_get_by_type(cmd->opts, opt_sid)) && !tsk_strnullORempty(opt->value)){ /* --sid option */
+				if(!(opt = opt_get_by_type(cmd->opts, opt_sid)) || tsk_strnullORempty(opt->value)){ /* --sid option */
 					invite_handle_cmd(cmd->type, cmd->opts);
 				}
 				else{
@@ -407,7 +407,7 @@ int execute(const cmd_t* cmd)
 			{
 				const opt_t* opt;
 				TSK_DEBUG_INFO("command=resume");
-				if((opt = opt_get_by_type(cmd->opts, opt_sid)) && !tsk_strnullORempty(opt->value)){ /* --sid option */
+				if(!(opt = opt_get_by_type(cmd->opts, opt_sid)) || tsk_strnullORempty(opt->value)){ /* --sid option */
 					invite_handle_cmd(cmd->type, cmd->opts);
 				}
 				else{

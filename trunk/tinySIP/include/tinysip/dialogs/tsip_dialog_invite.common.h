@@ -40,6 +40,8 @@
 /* ======================== actions ======================== */
 typedef enum _fsm_action_e
 {
+	_fsm_action_accept = tsip_atype_accept,
+	_fsm_action_reject = tsip_atype_reject,
 	_fsm_action_oINVITE = tsip_atype_invite,
 	_fsm_action_oCANCEL = tsip_atype_cancel,
 	_fsm_action_oHold = tsip_atype_hold,
@@ -83,6 +85,8 @@ typedef enum _fsm_state_e
 	_fsm_state_Outgoing,
 	_fsm_state_Incoming,
 	_fsm_state_Trying,
+	_fsm_state_Ringing,
+	_fsm_state_InProgress,
 
 	_fsm_state_Holding,
 	_fsm_state_Resuming,

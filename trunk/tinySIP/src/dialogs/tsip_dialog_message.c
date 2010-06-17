@@ -350,7 +350,7 @@ int tsip_dialog_message_Receiving_2_Terminated_X_accept(va_list *app)
 		/* tsip_dialog_set_curr_action(TSIP_DIALOG(self), action); */
 
 		/* send 200 OK */
-		if((response = tsip_dialog_response_new(TSIP_DIALOG(self), 200, "MESSAGE OK", self->last_iMessage))){
+		if((response = tsip_dialog_response_new(TSIP_DIALOG(self), 200, "OK", self->last_iMessage))){
 			tsip_dialog_apply_action(response, action); /* apply action params to "this" response */
 			if((ret = tsip_dialog_response_send(TSIP_DIALOG(self), response))){
 				TSK_DEBUG_ERROR("Failed to send SIP response.");
@@ -391,7 +391,7 @@ int tsip_dialog_message_Receiving_2_Terminated_X_reject(va_list *app)
 		/* tsip_dialog_set_curr_action(TSIP_DIALOG(self), action); */
 
 		/* send 486 Rejected */
-		if((response = tsip_dialog_response_new(TSIP_DIALOG(self), 486, "MESSAGE Rejected", self->last_iMessage))){
+		if((response = tsip_dialog_response_new(TSIP_DIALOG(self), 486, "Rejected", self->last_iMessage))){
 			tsip_dialog_apply_action(response, action); /* apply action params to "this" response */
 			if((ret = tsip_dialog_response_send(TSIP_DIALOG(self), response))){
 				TSK_DEBUG_ERROR("Failed to send SIP response.");

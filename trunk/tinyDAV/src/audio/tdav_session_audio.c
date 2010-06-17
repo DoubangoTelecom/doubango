@@ -330,6 +330,18 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 
 	/* from codecs to sdp */
 	if(changed){
+		tmedia_codecs_L_t* neg_codecs = tsk_null;
+		
+		/* filter codecs */
+		if(self->M.ro && (neg_codecs = tmedia_session_match_codec(self, self->M.ro))){
+			/* update negociated codecs */
+			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
+			self->neg_codecs = neg_codecs;
+		}
+		else{
+			return tsk_null;
+		}
+
 		/* from codecs to sdp */
 		tmedia_codec_to_sdp(self->neg_codecs ? self->neg_codecs : self->codecs, self->M.lo);
 		/* 3GPP TS 24.229 - 6.1.1 General
@@ -359,8 +371,8 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 
 int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
-	tmedia_codecs_L_t* neg_codecs;
 	tdav_session_audio_t* audio;
+	tmedia_codecs_L_t* neg_codecs;
 
 	TSK_DEBUG_INFO("tdav_session_audio_set_ro");
 
@@ -371,28 +383,33 @@ int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 
 	audio = (tdav_session_audio_t*)self;
 
-	if((neg_codecs = tmedia_session_match_codec(self, m))){
-		/* update negociated codecs */
-		TSK_OBJECT_SAFE_FREE(self->neg_codecs);
-		self->neg_codecs = neg_codecs;
-		/* filter codecs */
-		// tmedia_codec_removeAll_exceptThese(self->codecs, self->neg_codecs);
-		/* update remote offer */
-		TSK_OBJECT_SAFE_FREE(self->M.ro);
-		self->M.ro = tsk_object_ref((void*)m);
-		
-		/* get connection associated to this media line
-		* If the connnection is global, then the manager will call tmedia_session_audio_set() */
-		if(m->C && m->C->addr){
-			tsk_strupdate(&audio->remote_ip, m->C->addr);
-			audio->useIPv6 = tsk_striequals(m->C->addrtype, "IP6");
-		}
-		/* set remote port */
-		audio->remote_port = m->port;
-		return 0;
-	}
+	/* update remote offer */
+	TSK_OBJECT_SAFE_FREE(self->M.ro);
+	self->M.ro = tsk_object_ref((void*)m);
 
-	return -1;
+	if(self->M.lo){
+		if((neg_codecs = tmedia_session_match_codec(self, m))){
+			/* update negociated codecs */
+			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
+			self->neg_codecs = neg_codecs;
+			
+			/* get connection associated to this media line
+			* If the connnection is global, then the manager will call tmedia_session_audio_set() */
+			if(m->C && m->C->addr){
+				tsk_strupdate(&audio->remote_ip, m->C->addr);
+				audio->useIPv6 = tsk_striequals(m->C->addrtype, "IP6");
+			}
+			/* set remote port */
+			audio->remote_port = m->port;
+			return 0;
+		}
+		else{
+			return -1;
+		}
+	}
+	
+
+	return 0;
 }
 
 

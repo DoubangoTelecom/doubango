@@ -45,6 +45,9 @@ typedef enum tsip_invite_event_type_e
 	// ============================
 	//	Sip Events
 	//
+	tsip_i_newcall,
+	
+	//! in-dialog requests/reponses
 	tsip_i_request,
 	tsip_ao_request,
 	

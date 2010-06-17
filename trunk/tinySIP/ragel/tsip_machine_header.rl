@@ -74,7 +74,7 @@
 	RAck = "RAck"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_RAck; 
 	Reason = "Reason"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Reason; 
 	Record_Route = "Record-Route"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Record_Route; 
-	Refer_Sub = "Refer_Sub"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Refer_Sub; 
+	Refer_Sub = "Refer-Sub"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Refer_Sub; 
 	Refer_To = ("Refer-To"i | "r") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Refer_To; 
 	Referred_By = ("Referred-By"i | "b") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Referred_By; 
 	Reject_Contact = ("Reject-Contact"i | "j") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Reject_Contact; 

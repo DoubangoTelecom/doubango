@@ -32,6 +32,7 @@
 
 #include "tinysip_config.h"
 
+#include "tinymedia/tmedia_common.h"
 #include "tinymedia/tmedia_qos.h"
 
 #include "tsk_object.h"
@@ -140,6 +141,7 @@ typedef struct tsip_ssession_s
 	// Media
 	//=======
 	struct{
+		tmedia_type_t type;
 		/* Session timers */
 		struct{
 			char* refresher;
@@ -169,6 +171,7 @@ TINYSIP_API int tsip_ssession_take_ownership(tsip_ssession_handle_t *self);
 TINYSIP_API tsk_bool_t tsip_ssession_have_ownership(const tsip_ssession_handle_t *self);
 TINYSIP_API int tsip_ssession_respond(const tsip_ssession_handle_t *self, short status, const char* phrase, const void* payload, tsk_size_t size, const struct tsip_message_s* request, ...);
 TINYSIP_API const void* tsip_ssession_get_userdata(const tsip_ssession_handle_t *self);
+TINYSIP_API tmedia_type_t tsip_ssession_get_mediatype(const tsip_ssession_handle_t *self);
 TINYSIP_API const tsip_stack_handle_t* tsip_ssession_get_stack(const tsip_ssession_handle_t *self);
 
 int tsip_ssession_handle(const tsip_ssession_t *self, const struct tsip_action_s* action);

@@ -576,9 +576,8 @@
 	# /*== Refer-Sub: ==*/
 	action parse_header_Refer_Sub 
 	{
-		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		tsip_header_Refer_Sub_t *header = tsip_header_Refer_Sub_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Refer_Sub NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Refer-To: ==*/

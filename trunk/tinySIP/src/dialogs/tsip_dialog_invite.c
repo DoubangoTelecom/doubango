@@ -90,28 +90,19 @@ extern int tsip_dialog_invite_stimers_schedule(tsip_dialog_invite_t* self, uint6
 extern int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_message_t* message);
 
 /* ======================== transitions ======================== */
-extern int c0000_Started_2_Outgoing_X_oINVITE(va_list *app);
-extern int c0001_Outgoing_2_Connected_X_i2xxINVITE(va_list *app);
-extern int c0002_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app);
-extern int c0003_Outgoing_2_Terminated_X_oCANCEL(va_list *app);
-
-extern int s0000_Started_2_Incoming_X_iINVITE(va_list *app);
-extern int s0000_Incoming_2_Connected_X_o2xx(va_list *app); // 2xx INVITE
-extern int s0000_Incoming_2_Terminated_X_oCANCEL(va_list *app);
-
 static int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app);
 
-static int x0000_Any_2_Any_X_i1xx(va_list *app);
-static int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app);
-static int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app);
+int x0000_Any_2_Any_X_i1xx(va_list *app);
+int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app);
+int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app);
 
-static int x0000_Any_2_Any_X_iOPTIONS(va_list *app);
-static int x0000_Any_2_Trying_X_oBYE(va_list *app); /* If not Connected => Cancel will be called instead. See tsip_dialog_hangup() */
-static int x0000_Any_2_Terminated_X_iBYE(va_list *app);
-static int x0000_Any_2_Trying_X_shutdown(va_list *app);
+int x0000_Any_2_Any_X_iOPTIONS(va_list *app);
+int x0000_Any_2_Trying_X_oBYE(va_list *app); /* If not Connected => Cancel will be called instead. See tsip_dialog_hangup() */
+int x0000_Any_2_Terminated_X_iBYE(va_list *app);
+int x0000_Any_2_Trying_X_shutdown(va_list *app);
 
-static int x9998_Any_2_Any_X_transportError(va_list *app);
-static int x9999_Any_2_Any_X_Error(va_list *app);
+int x9998_Any_2_Any_X_transportError(va_list *app);
+int x9999_Any_2_Any_X_Error(va_list *app);
 
 /* ======================== conds ======================== */
 static tsk_bool_t _fsm_cond_is_resp2INVITE(tsip_dialog_invite_t* self, tsip_message_t* message)
@@ -137,8 +128,10 @@ static tsk_bool_t _fsm_cond_is_resp2PRACK(tsip_dialog_invite_t* self, tsip_messa
 /* ======================== states ======================== */
 /* #include "tinysip/dialogs/tsip_dialog_invite.common.h" */
 
-
-
+/* Client-Side dialog */
+extern int tsip_dialog_invite_client_init(tsip_dialog_invite_t *self);
+/* Server-Side dialog */
+extern int tsip_dialog_invite_server_init(tsip_dialog_invite_t *self);
 /* 3GPP TS 24.610: Communication Hold  */
 extern int tsip_dialog_invite_hold_init(tsip_dialog_invite_t *self);
 /* RFC 4028: Session Timers */
@@ -247,6 +240,10 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 {
 	/* special cases (fsm) should be tried first */
 	
+	/* Client-Side dialog */
+	 tsip_dialog_invite_client_init(self);
+	/* Server-Side dialog */
+	tsip_dialog_invite_server_init(self);
 	/* 3GPP TS 24.610: Communication Hold  */
 	tsip_dialog_invite_hold_init(self);
 	/* RFC 4028: Session Timers */
@@ -260,22 +257,8 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		/*=======================
 		* === Started === 
 		*/
-		// Started -> (send INVITE) -> Outgoing
-		TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_oINVITE, _fsm_state_Outgoing, c0000_Started_2_Outgoing_X_oINVITE, "c0000_Started_2_Outgoing_X_oINVITE"),
-		// Started -> (receive INVITE) -> Incoming
-		TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_iINVITE, _fsm_state_Incoming, s0000_Started_2_Incoming_X_iINVITE, "s0000_Satrted_2_Incoming_X_iINVITE"),
 		// Started -> (Any) -> Started
 		TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Started, "tsip_dialog_invite_Started_2_Started_X_any"),
-
-		/*=======================
-		* === Outgoing (Client) === 
-		*/
-		// Outgoing -> (i2xx INVITE) -> Connected
-		TSK_FSM_ADD(_fsm_state_Outgoing, _fsm_action_i2xx, _fsm_cond_is_resp2INVITE, _fsm_state_Connected, c0001_Outgoing_2_Connected_X_i2xxINVITE, "c0001_Outgoing_2_Connected_X_i2xxINVITE"),
-		// Outgoing -> (300-699 INVITE) -> Termined
-		TSK_FSM_ADD(_fsm_state_Outgoing, _fsm_action_i300_to_i699, _fsm_cond_is_resp2INVITE, _fsm_state_Terminated, c0002_Outgoing_2_Terminated_X_i300_to_i699INVITE, "c0002_Outgoing_2_Terminated_X_i300_to_i699INVITE"),
-		// Outgoing -> (send CANCEL) -> Terminated
-		TSK_FSM_ADD_ALWAYS(_fsm_state_Outgoing, _fsm_action_oCANCEL, _fsm_state_Terminated, c0003_Outgoing_2_Terminated_X_oCANCEL, "c0003_Outgoing_2_Terminated_X_oCANCEL"),
 
 		/*=======================
 		* === Connected === 
@@ -320,7 +303,7 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		// Any -> (i401/407  UPDATE) -> Any
 		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i401_i407, _fsm_cond_is_resp2UPDATE, tsk_fsm_state_any, x0000_Any_2_Any_X_i401_407_INVITEorUPDATE, "x0000_Any_2_Any_X_i401_407_UPDATE"),
 		// Any -> (i2xx PRACK) -> Any
-		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2PRACK, tsk_fsm_state_any, tsk_null, "x0000_Any_2_Any_X_i2xxPRACK"),
+		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2PRACK, tsk_fsm_state_any, tsk_null, "x0000_Any_2_Any_X_i2xxPRACK"), // FIXME: remove, now we have server
 		// Any -> (transport error) -> Terminated
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, x9998_Any_2_Any_X_transportError, "x9998_Any_2_Any_X_transportError"),
 		// Any -> (transport error) -> Terminated
@@ -397,9 +380,8 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 	}
 	
 	/* start session manager */
-	if(!self->msession_mgr->started && (ret = tmedia_session_mgr_start(self->msession_mgr))){
-		TSK_DEBUG_ERROR("Failed to start session manager");
-		goto bail;
+	if(!self->msession_mgr->started && (self->msession_mgr->sdp.lo && self->msession_mgr->sdp.ro)){
+		ret = tmedia_session_mgr_start(self->msession_mgr);
 	}
 	
 bail:
@@ -723,17 +705,17 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bo
 		
 		/* Always added headers */
 		// Explicit Communication Transfer (3GPP TS 24.629)
-		tsip_message_add_headers(request,
+		/*tsip_message_add_headers(request,
 					TSIP_HEADER_SUPPORTED_VA_ARGS("norefersub,replaces"),
 					tsk_null
-				);
+				);*/
 
 		/* send the request */
 		ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
 		if(ret == 0){
 			/* update last INVITE */
-			TSK_OBJECT_SAFE_FREE(self->last_invite);
-			self->last_invite = request;
+			TSK_OBJECT_SAFE_FREE(self->last_oInvite);
+			self->last_oInvite = request;
 		}
 		else{
 			TSK_OBJECT_SAFE_FREE(request);
@@ -842,17 +824,17 @@ int send_CANCEL(tsip_dialog_invite_t *self)
 		of CANCEL.  This allows it to be identified and processed as a
 		transaction in its own right (See Section 17)
 	*/
-	if(self->last_invite){
+	if(self->last_oInvite){
 		/* to avoid concurrent access, take a reference to the request */
-		tsip_request_t* last_invite = tsk_object_ref(self->last_invite);
+		tsip_request_t* last_oInvite = tsk_object_ref(self->last_oInvite);
 		tsip_request_t* cancel;
 		if((cancel = tsip_dialog_request_new(TSIP_DIALOG(self), "CANCEL"))){
 			/* Request-URI, Call-ID, To and From will be added by the dialog layer */
 			/* the numeric part of CSeq */
-			cancel->CSeq->seq = last_invite->CSeq->seq;
+			cancel->CSeq->seq = last_oInvite->CSeq->seq;
 			/* Via */
 			TSK_OBJECT_SAFE_FREE(cancel->firstVia); /* firstVia is already Null ...but who know? */
-			cancel->firstVia = tsk_object_ref(last_invite->firstVia); /* transport layer won't update the Via header */
+			cancel->firstVia = tsk_object_ref(last_oInvite->firstVia); /* transport layer won't update the Via header */
 
 			ret = tsip_dialog_request_send(TSIP_DIALOG(self), cancel);
 			TSK_OBJECT_SAFE_FREE(cancel);
@@ -862,7 +844,7 @@ int send_CANCEL(tsip_dialog_invite_t *self)
 			ret = -2;
 		}
 
-		tsk_object_unref(last_invite);
+		TSK_OBJECT_SAFE_FREE(last_oInvite);
 		return ret;
 	}
 	else{
@@ -984,6 +966,22 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 						tsk_null
 					);
 			}
+			if(code == 422){
+				tsip_message_add_headers(response,
+						TSIP_HEADER_DUMMY_VA_ARGS("Reason", "SIP; cause=422; text=\"Session Interval Too Small\""),
+						tsk_null
+					);
+			}
+			
+			if(TSIP_REQUEST_IS_INVITE(request) && (code == 200) && ((self->msession_mgr && !self->msession_mgr->sdp.lo))){
+				const tsdp_message_t* sdp_lo;
+				char* sdp;
+				if((sdp_lo = tmedia_session_mgr_get_lo(self->msession_mgr)) && (sdp = tsdp_message_tostring(sdp_lo))){
+					tsip_message_add_content(response, "application/sdp", sdp, tsk_strlen(sdp));
+					TSK_FREE(sdp);
+				}
+			}
+
 			/* Add Allow header */
 			tsip_message_add_headers(response,
 						TSIP_HEADER_DUMMY_VA_ARGS("Allow", TSIP_HEADER_ALLOW_DEFAULT),
@@ -1070,7 +1068,8 @@ static tsk_object_t* tsip_dialog_invite_dtor(tsk_object_t * _self)
 		
 		/* DeInitialize self */
 		TSK_OBJECT_SAFE_FREE(self->msession_mgr);
-		TSK_OBJECT_SAFE_FREE(self->last_invite);
+		TSK_OBJECT_SAFE_FREE(self->last_oInvite);
+		TSK_OBJECT_SAFE_FREE(self->last_iInvite);
 		TSK_FREE(self->stimers.refresher);
 		//...
 

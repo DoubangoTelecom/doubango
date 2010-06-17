@@ -92,6 +92,8 @@
 	"Refer-To: <sips:a8342043f@atlanta.example.com?Replaces=12345601%40atlanta.example.com%3Bfrom-tag%3D314159%3Bto-tag%3D1234567>\r\n" \
 	"Refer-To: sip:conf44@example.com;isfocus\r\n" \
 	"Referred-By: <sip:referrer@referrer.example>;cid=\"20398823.2UWQFN309shb3@referrer.example\"\r\n" \
+	"Refer-Sub: false;test=45;op\r\n" \
+	"Refer-Sub: true;p\r\n" \
 	"RSeq: 17422\r\n" \
 	"RAck: 776656 1 INVITE\r\n" \
 	"Min-SE: 90;test;y=0\r\n" \

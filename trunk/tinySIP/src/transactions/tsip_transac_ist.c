@@ -395,7 +395,17 @@ int tsip_transac_ist_Proceeding_2_Proceeding_X_INVITE(va_list *app)
 */
 int tsip_transac_ist_Proceeding_2_Proceeding_X_1xx(va_list *app)
 {
-	return 0;
+	tsip_transac_ist_t *self = va_arg(*app, tsip_transac_ist_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	int ret;
+
+	/* Send to the transport layer */
+	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
+
+	/* Update last response */
+	TRANSAC_IST_SET_LAST_RESPONSE(self, response);
+
+	return ret;
 }
 
 /*	Proceeding --> (send 300-699) --> Completed
