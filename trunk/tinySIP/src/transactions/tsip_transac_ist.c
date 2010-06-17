@@ -413,6 +413,9 @@ int tsip_transac_ist_Proceeding_2_Proceeding_X_1xx(va_list *app)
 int tsip_transac_ist_Proceeding_2_Completed_X_300_to_699(va_list *app)
 {
 	tsip_transac_ist_t *self = va_arg(*app, tsip_transac_ist_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	int ret;
+
 	/*	RFC 3264 17.2.1 INVITE Server Transaction
 		While in the "Proceeding" state, if the TU passes a response with
 		status code from 300 to 699 to the server transaction, the response
@@ -424,13 +427,19 @@ int tsip_transac_ist_Proceeding_2_Completed_X_300_to_699(va_list *app)
 		TRANSAC_IST_TIMER_SCHEDULE(G);
 	}
 
+	/* Send to the transport layer */
+	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
+
+	/* Update last response */
+	TRANSAC_IST_SET_LAST_RESPONSE(self, response);
+
 	/* RFC 3261 - 17.2.1 INVITE Server Transaction
 		When the "Completed" state is entered, timer H MUST be set to fire in
 		64*T1 seconds for all transports.
 	*/
 	TRANSAC_IST_TIMER_SCHEDULE(H);
 
-	return 0;
+	return ret;
 }
 
 /*	Proceeding --> (send 2xx) --> Accepted

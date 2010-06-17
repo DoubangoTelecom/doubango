@@ -175,6 +175,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	switch(request->line.request.request_type){
 		case tsip_MESSAGE:
 		case tsip_PUBLISH:
+		case tsip_BYE:
 			{
 				if(request->line.request.request_type == tsip_PUBLISH) {
 					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_EXPIRES_VA_ARGS(TSK_TIME_MS_2_S(self->expires)));
@@ -419,9 +420,14 @@ tsip_response_t *tsip_dialog_response_new(const tsip_dialog_t *self, short statu
 	if((response = tsip_response_new(status, phrase, request))){
 		/* Is there a To tag?  */
 		if(response->To && !response->To->tag){
-			tsk_istr_t tag;
-			tsk_strrandom(&tag);
-			response->To->tag = tsk_strdup(tag);
+			//if(self->tag_local){
+				response->To->tag = tsk_strdup(self->tag_local);
+			//}
+			/*else{
+				tsk_istr_t tag;
+				tsk_strrandom(&tag);
+				response->To->tag = tsk_strdup(tag);
+			}*/
 		}
 		/* SigComp */
 		if(self->ss->sigcomp_id){
@@ -547,7 +553,7 @@ int64_t tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* res
 	*/
 compute:
 	expires = TSK_TIME_MS_2_S(expires);
-	newdelay = (expires > 1200) ? (expires-600) : (expires/2);
+	newdelay = (expires > 1200) ? (expires - 600) : (expires/2);
 
 	return TSK_TIME_S_2_MS(newdelay);
 }
@@ -658,6 +664,50 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 			return 0;
 		}
 	}
+	return 0;
+}
+
+int tsip_dialog_update_2(tsip_dialog_t *self, const tsip_request_t* invite)
+{
+	if(!self || !invite){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	/* Remote target */
+	if(invite->Contact && invite->Contact->uri){
+		TSK_OBJECT_SAFE_FREE(self->uri_remote_target);
+		self->uri_remote_target = tsip_uri_clone(invite->Contact->uri, tsk_true, tsk_false);
+	}
+
+	/* cseq + tags + remote-uri */
+	tsk_strupdate(&self->tag_remote, invite->From?invite->From->tag:"doubango");
+	/* self->cseq_value = invite->CSeq ? invite->CSeq->seq : self->cseq_value; */
+	if(invite->From && invite->From->uri){
+		TSK_OBJECT_SAFE_FREE(self->uri_remote);
+		self->uri_remote = tsk_object_ref(invite->From->uri);
+	}
+
+	/* Route sets */
+	{
+		tsk_size_t index;
+		const tsip_header_Record_Route_t *recordRoute;
+		tsip_uri_t* uri;
+
+		TSK_OBJECT_SAFE_FREE(self->routes);
+
+		for(index = 0; (recordRoute = (const tsip_header_Record_Route_t *)tsip_message_get_headerAt(invite, tsip_htype_Record_Route, index)); index++){
+			if(!self->routes){
+				self->routes = tsk_list_create();
+			}
+			if((uri = tsk_object_ref((void*)recordRoute->uri))){
+				tsk_list_push_front_data(self->routes, (void**)&uri); /* Copy non-reversed. */
+			}
+		}
+	}
+
+	self->state = tsip_established;
+
 	return 0;
 }
 
@@ -905,6 +955,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 		self->expires = TSIP_SSESSION_EXPIRES_DEFAULT;
 		
 		if(call_id){
+			/* "server-side" session */
 			tsk_strupdate(&self->callid, call_id);
 		}
 		else{
@@ -935,7 +986,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 			self->expires = ss->expires;
 
 			/* From */
-			self->uri_local = tsk_object_ref(ss->from);
+			self->uri_local = tsk_object_ref(call_id/* "server-side" */ ? ss->to : ss->from);
 			
 			/* To */
 			if(ss->to){

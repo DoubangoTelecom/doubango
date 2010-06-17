@@ -392,21 +392,22 @@ int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 			/* update negociated codecs */
 			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
 			self->neg_codecs = neg_codecs;
-			
-			/* get connection associated to this media line
-			* If the connnection is global, then the manager will call tmedia_session_audio_set() */
-			if(m->C && m->C->addr){
-				tsk_strupdate(&audio->remote_ip, m->C->addr);
-				audio->useIPv6 = tsk_striequals(m->C->addrtype, "IP6");
-			}
-			/* set remote port */
-			audio->remote_port = m->port;
+
 			return 0;
 		}
 		else{
 			return -1;
 		}
 	}
+
+	/* get connection associated to this media line
+	* If the connnection is global, then the manager will call tmedia_session_audio_set() */
+	if(m->C && m->C->addr){
+		tsk_strupdate(&audio->remote_ip, m->C->addr);
+		audio->useIPv6 = tsk_striequals(m->C->addrtype, "IP6");
+	}
+	/* set remote port */
+	audio->remote_port = m->port;
 	
 
 	return 0;

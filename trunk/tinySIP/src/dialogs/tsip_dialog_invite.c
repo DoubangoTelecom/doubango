@@ -77,7 +77,7 @@
 int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bool_t force_sdp);
 int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx);
 int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
-int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase);
+int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase, tsk_bool_t force_sdp);
 int send_BYE(tsip_dialog_invite_t *self);
 int send_CANCEL(tsip_dialog_invite_t *self);
 int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self);
@@ -231,9 +231,9 @@ int tsip_dialog_invite_timer_callback(const tsip_dialog_invite_t* self, tsk_time
 	return ret;
 }
 
-tsip_dialog_invite_t* tsip_dialog_invite_create(const tsip_ssession_handle_t* ss)
+tsip_dialog_invite_t* tsip_dialog_invite_create(const tsip_ssession_handle_t* ss, const char* call_id)
 {
-	return tsk_object_new(tsip_dialog_invite_def_t,  ss);
+	return tsk_object_new(tsip_dialog_invite_def_t,  ss, call_id);
 }
 
 int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
@@ -415,7 +415,7 @@ int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app)
 	}
 
 	/* Send 200 OK */
-	ret = send_RESPONSE(self, rINVITEorUPDATE, 200, "OK");
+	ret = send_RESPONSE(self, rINVITEorUPDATE, 200, "OK", tsk_false);
 
 	/* alert the user */
 	
@@ -437,7 +437,7 @@ int x0000_Any_2_Any_X_iOPTIONS(va_list *app)
 	/* Alert user */
 
 	/* Send 2xx */
-	send_RESPONSE(self, rOPTIONS, 200, "OK");
+	send_RESPONSE(self, rOPTIONS, 200, "OK", tsk_false);
 
 	return 0;
 }
@@ -509,7 +509,7 @@ int x0000_Any_2_Terminated_X_iBYE(va_list *app)
 	const tsip_request_t *rBYE = va_arg(*app, const tsip_request_t *);
 
 	/* send 200 OK */
-	return send_RESPONSE(self, rBYE, 200, "OK");
+	return send_RESPONSE(self, rBYE, 200, "OK", tsk_false);
 }
 
 int x0000_Any_2_Trying_X_shutdown(va_list *app)
@@ -555,7 +555,7 @@ int x0000_Any_2_Any_X_iUPDATE(va_list *app)
 	int ret;
 	
 	/* Send 200 OK */
-	ret = send_RESPONSE(self, rUPDATE, 200, "OK");
+	ret = send_RESPONSE(self, rUPDATE, 200, "OK", tsk_false);
 
 	/* alert the user */
 
@@ -946,7 +946,7 @@ bail:
 	return ret;
 }
 
-int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase)
+int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase, tsk_bool_t force_sdp)
 {
 	tsip_response_t *response;
 	int ret = -1;
@@ -973,7 +973,7 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 					);
 			}
 			
-			if(TSIP_REQUEST_IS_INVITE(request) && (code == 200) && ((self->msession_mgr && !self->msession_mgr->sdp.lo))){
+			if(self->msession_mgr && force_sdp){
 				const tsdp_message_t* sdp_lo;
 				char* sdp;
 				if((sdp_lo = tmedia_session_mgr_get_lo(self->msession_mgr)) && (sdp = tsdp_message_tostring(sdp_lo))){
@@ -1040,9 +1040,10 @@ static tsk_object_t* tsip_dialog_invite_ctor(tsk_object_t * self, va_list * app)
 	tsip_dialog_invite_t *dialog = self;
 	if(dialog){
 		tsip_ssession_handle_t *ss = va_arg(*app, tsip_ssession_handle_t *);
+		const char* call_id = va_arg(*app, const char *);
 
 		/* Initialize base class */
-		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_INVITE, tsk_null, ss, _fsm_state_Started, _fsm_state_Terminated);
+		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_INVITE, call_id, ss, _fsm_state_Started, _fsm_state_Terminated);
 
 		/* FSM */
 		TSIP_DIALOG_GET_FSM(dialog)->debug = DEBUG_STATE_MACHINE;

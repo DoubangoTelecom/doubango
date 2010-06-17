@@ -40,10 +40,10 @@
 
 #include "tsk_debug.h"
 
-static const char* supported_options[] = { "100rel", "precondition", "timer" };
+static const char* supported_options[] = { "100rel", "precondition8", "timer" };
 
 /* ======================== external functions ======================== */
-extern int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase);
+extern int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase, tsk_bool_t force_sdp);
 extern int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message);
 
 /* ======================== internal functions ======================== */
@@ -100,10 +100,23 @@ static tsk_bool_t _fsm_cond_bad_extension(tsip_dialog_invite_t* self, tsip_messa
 
 static tsk_bool_t _fsm_cond_bad_content(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
-	if(tsip_dialog_invite_process_ro(self, message)){
-		send_RESPONSE(self, message, 488, "Not Acceptable");
+	int ret;
+	const tsdp_message_t* sdp_lo;
+
+	/* Check remote offer */
+	if((ret = tsip_dialog_invite_process_ro(self, message))){
+		send_RESPONSE(self, message, 488, "Not Acceptable", tsk_false);
 		return tsk_true;
 	}
+	/* generate local offer and check it's validity */
+	if((sdp_lo = tmedia_session_mgr_get_lo(self->msession_mgr))){
+		/* check that we have at least one codec */
+	}
+	else{
+		send_RESPONSE(self, message, 488, "Not Acceptable", tsk_false);
+		return tsk_true;
+	}
+
 	return tsk_false;
 }
 
@@ -114,7 +127,7 @@ static tsk_bool_t _fsm_cond_toosmall(tsip_dialog_invite_t* self, tsip_message_t*
 		if((Session_Expires = (const tsip_header_Session_Expires_t*)tsip_message_get_header(message, tsip_htype_Session_Expires))){
 			if(Session_Expires->delta_seconds < TSIP_SESSION_EXPIRES_MIN_VALUE){
 				self->stimers.minse = TSIP_SESSION_EXPIRES_MIN_VALUE;
-				send_RESPONSE(self, message, 422, "Session Interval Too Small");
+				send_RESPONSE(self, message, 422, "Session Interval Too Small", tsk_false);
 				return tsk_true;
 			}
 			else{
@@ -239,8 +252,11 @@ int s0000_Started_2_Ringing_X_iINVITE(va_list *app)
 	TSK_OBJECT_SAFE_FREE(self->last_iInvite);
 	self->last_iInvite = tsk_object_ref(request);
 
+	/* Update state */
+	tsip_dialog_update_2(TSIP_DIALOG(self), request);
+
 	/* Send Ringing */
-	send_RESPONSE(self, request, 180, "Ringing");
+	send_RESPONSE(self, request, 180, "Ringing", tsk_false);
 
 	/* Set media type */
 	if(self->msession_mgr){
@@ -315,15 +331,15 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 	action = va_arg(*app, const tsip_action_t *);
 
 	/* Update current action */
-	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
-
-	/* send 2xx OK (shall be done before trying to start the media manager) */
-	ret = send_RESPONSE(self, self->last_iInvite, 200, "OK");
+	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);	
 
 	/* start session manager */
 	if(self->msession_mgr && !self->msession_mgr->started){
 		ret = tmedia_session_mgr_start(self->msession_mgr);
 	}
+
+	/* send 2xx OK */
+	ret = send_RESPONSE(self, self->last_iInvite, 200, "OK", tsk_true);
 
 	/* RFC 4825 - 9. UAS Behavior
 

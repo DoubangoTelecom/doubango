@@ -71,7 +71,7 @@ typedef struct tsip_dialog_invite
 }
 tsip_dialog_invite_t;
 
-tsip_dialog_invite_t* tsip_dialog_invite_create(const tsip_ssession_handle_t* ss);
+tsip_dialog_invite_t* tsip_dialog_invite_create(const tsip_ssession_handle_t* ss, const char* call_id);
 
 int tsip_dialog_invite_start(tsip_dialog_invite_t *self);
 
