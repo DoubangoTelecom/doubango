@@ -63,6 +63,7 @@ typedef enum _fsm_action_e
 	_fsm_action_iBYE,
 	_fsm_action_iREFER,
 
+	_fsm_action_timer100rel,
 	_fsm_action_timerRefresh,
 	_fsm_action_timerRSVP,
 

@@ -459,6 +459,9 @@ int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* respon
 			}
 		}
 	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+	}
 	return ret;
 }
 

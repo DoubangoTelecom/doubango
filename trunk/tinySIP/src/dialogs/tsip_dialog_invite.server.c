@@ -35,16 +35,22 @@
 
 #include "tinysip/headers/tsip_header_Dummy.h"
 #include "tinysip/headers/tsip_header_Min_SE.h"
+#include "tinysip/headers/tsip_header_RAck.h"
 #include "tinysip/headers/tsip_header_Require.h"
 #include "tinysip/headers/tsip_header_Session_Expires.h"
 
 #include "tsk_debug.h"
 
-static const char* supported_options[] = { "100rel", "precondition8", "timer" };
+static const char* supported_options[] = { "100rel", "precondition", "timer" };
 
 /* ======================== external functions ======================== */
 extern int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase, tsk_bool_t force_sdp);
 extern int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message);
+extern int tsip_dialog_invite_stimers_schedule(tsip_dialog_invite_t* self, uint64_t timeout);
+extern tsk_bool_t  tsip_dialog_invite_stimers_isRefresher(tsip_dialog_invite_t* self);
+extern int send_ERROR(tsip_dialog_invite_t* self, const tsip_request_t* request, short code, const char* phrase, const char* reason);
+
+extern int tsip_dialog_invite_timer_callback(const tsip_dialog_invite_t* self, tsk_timer_id_t timer_id);
 
 /* ======================== internal functions ======================== */
 int send_UNSUPPORTED(tsip_dialog_invite_t* self, const tsip_request_t* request, const char* option);
@@ -63,6 +69,7 @@ int s0000_Ringing_2_Ringing_X_iPRACK(va_list *app); // Alert user
 int s0000_Ringing_2_Connected_X_Accept(va_list *app); 
 int s0000_Ringing_2_Terminated_X_Reject(va_list *app);
 int s0000_Ringing_2_Terminated_X_iCANCEL(va_list *app);
+int s0000_Any_2_Any_X_timer100rel(va_list *app);
 
 /* ======================== conds ======================== */
 static tsk_bool_t _fsm_cond_bad_extension(tsip_dialog_invite_t* self, tsip_message_t* message)
@@ -72,7 +79,7 @@ static tsk_bool_t _fsm_cond_bad_extension(tsip_dialog_invite_t* self, tsip_messa
 	tsk_size_t i, j;
 
 	/* Check if we support all extensions */
-	for(i = 0; (requireHdr = (const tsip_header_Require_t*)tsip_message_get_header(message, tsip_htype_Require)); i++){
+	for(i = 0; (requireHdr = (const tsip_header_Require_t*)tsip_message_get_headerAt(message, tsip_htype_Require, i)); i++){
 		tsk_bool_t bad_extension = tsk_false;
 		const tsk_string_t* option = tsk_null;
 		tsk_list_foreach(item, requireHdr->options){
@@ -105,7 +112,7 @@ static tsk_bool_t _fsm_cond_bad_content(tsip_dialog_invite_t* self, tsip_message
 
 	/* Check remote offer */
 	if((ret = tsip_dialog_invite_process_ro(self, message))){
-		send_RESPONSE(self, message, 488, "Not Acceptable", tsk_false);
+		ret = send_ERROR(self, self->last_iInvite, 488, "Not Acceptable", "SIP; cause=488; text=\"Bad content\"");
 		return tsk_true;
 	}
 	/* generate local offer and check it's validity */
@@ -113,7 +120,7 @@ static tsk_bool_t _fsm_cond_bad_content(tsip_dialog_invite_t* self, tsip_message
 		/* check that we have at least one codec */
 	}
 	else{
-		send_RESPONSE(self, message, 488, "Not Acceptable", tsk_false);
+		ret = send_ERROR(self, self->last_iInvite, 488, "Not Acceptable", "SIP; cause=488; text=\"Bad content\"");
 		return tsk_true;
 	}
 
@@ -142,7 +149,6 @@ static tsk_bool_t _fsm_cond_toosmall(tsip_dialog_invite_t* self, tsip_message_t*
 	}
 	return tsk_false;
 }
-
 static tsk_bool_t _fsm_cond_supports_100rel(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
 	if(tsip_message_supported(message, "100rel") || tsip_message_required(message, "100rel")){
@@ -150,7 +156,22 @@ static tsk_bool_t _fsm_cond_supports_100rel(tsip_dialog_invite_t* self, tsip_mes
 	}
 	return tsk_false;
 }
+static tsk_bool_t _fsm_cond_prack_match(tsip_dialog_invite_t* self, tsip_message_t* message)
+{
+	const tsip_header_RAck_t* RAck;
 
+	if(!self->last_o1xxrel){
+		return tsk_false;
+	}
+
+	if((RAck = (const tsip_header_RAck_t*)tsip_message_get_header(message, tsip_htype_RAck))){
+		return (RAck->seq == self->rseq) &&
+			(tsk_striequals(RAck->method, self->last_o1xxrel->CSeq->method)) &&
+			(RAck->cseq == self->last_o1xxrel->CSeq->seq);
+	}
+	
+	return tsk_false;
+}
 static tsk_bool_t _fsm_cond_supports_preconditions(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
 	// supports or require
@@ -187,7 +208,7 @@ int tsip_dialog_invite_server_init(tsip_dialog_invite_t *self)
 		// InProgress ->(iPRACK with QoS) -> InProgress
 		TSK_FSM_ADD(_fsm_state_InProgress, _fsm_action_iPRACK, _fsm_cond_supports_preconditions, _fsm_state_InProgress, s0000_InProgress_2_InProgress_X_iPRACK, "s0000_InProgress_2_InProgress_X_iPRACK"),
 		// InProgress ->(iPRACK without QoS) -> Ringing
-		TSK_FSM_ADD_ALWAYS(_fsm_state_InProgress, _fsm_action_iPRACK, _fsm_state_Ringing, s0000_InProgress_2_Ringing_X_iPRACK, "s0000_InProgress_2_Ringing_X_iPRACK"),
+		TSK_FSM_ADD(_fsm_state_InProgress, _fsm_action_iPRACK, _fsm_cond_prack_match, _fsm_state_Ringing, s0000_InProgress_2_Ringing_X_iPRACK, "s0000_InProgress_2_Ringing_X_iPRACK"),
 		// InProgress ->(iUPDATE but cannot resume) -> InProgress
 		TSK_FSM_ADD(_fsm_state_InProgress, _fsm_action_iUPDATE, _fsm_cond_cannotresume, _fsm_state_InProgress, s0000_InProgress_2_InProgress_X_iUPDATE, "s0000_InProgress_2_InProgress_X_iUPDATE"),
 		// InProgress ->(iUPDATE can resume) -> Ringing
@@ -200,13 +221,21 @@ int tsip_dialog_invite_server_init(tsip_dialog_invite_t *self)
 		* === Ringing === 
 		*/
 		// Ringing -> (iPRACK) -> Ringing
-		TSK_FSM_ADD_ALWAYS(_fsm_state_Ringing, _fsm_action_iUPDATE, _fsm_state_Ringing, s0000_Ringing_2_Ringing_X_iPRACK, "s0000_Ringing_2_Ringing_X_iPRACK"),
+		TSK_FSM_ADD(_fsm_state_Ringing, _fsm_action_iPRACK, _fsm_cond_prack_match, _fsm_state_Ringing, s0000_Ringing_2_Ringing_X_iPRACK, "s0000_Ringing_2_Ringing_X_iPRACK"),
 		// Ringing -> (oAccept) -> Connected
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Ringing, _fsm_action_accept, _fsm_state_Connected, s0000_Ringing_2_Connected_X_Accept, "s0000_Ringing_2_Connected_X_Accept"),
 		// Ringing -> (oReject) -> Terminated
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Ringing, _fsm_action_reject, _fsm_state_Terminated, s0000_Ringing_2_Terminated_X_Reject, "s0000_Ringing_2_Terminated_X_Reject"),
 		// Ringing ->(iCANCEL) -> Terminated
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Ringing, _fsm_action_iCANCEL, _fsm_state_Terminated, s0000_Ringing_2_Terminated_X_iCANCEL, "s0000_Ringing_2_Terminated_X_iCANCEL"),
+
+
+		/*=======================
+		* === ANY === 
+		*/
+		// Any ->(timer100rel) -> Any
+		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_timer100rel, tsk_fsm_state_any, s0000_Any_2_Any_X_timer100rel, "s0000_Any_2_Any_X_timer100rel"),
+		
 
 		TSK_FSM_ADD_NULL());
 }
@@ -271,13 +300,35 @@ int s0000_Started_2_Ringing_X_iINVITE(va_list *app)
 	return 0;
 }
 
-/* Started -> (100rel or QoS, ther later need the first) -> InProgress */
+/* Started -> (100rel or QoS, the later need the first) -> InProgress */
 int s0000_Started_2_InProgress_X_iINVITE(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	tsip_request_t *request = va_arg(*app, tsip_request_t *);
 
 	/* We are not the client */
 	self->is_client = tsk_false;
+
+	/* update last INVITE */
+	TSK_OBJECT_SAFE_FREE(self->last_iInvite);
+	self->last_iInvite = tsk_object_ref(request);
+
+	/* Update state */
+	tsip_dialog_update_2(TSIP_DIALOG(self), request);
+
+	/* Send In Progress 
+		RFC 3262 - 3 UAS Behavior
+		
+		The provisional response to be sent reliably is constructed by the
+		UAS core according to the procedures of Section 8.2.6 of RFC 3261.
+		In addition, it MUST contain a Require header field containing the
+		option tag 100rel, and MUST include an RSeq header field.  The value
+		of the header field for the first reliable provisional response in a
+		transaction MUST be between 1 and 2**31 - 1.
+	*/
+	self->rseq = (rand() ^ rand()) % (0x00000001 << 31);
+	self->require._100rel = tsk_true;
+	send_RESPONSE(self, request, 183, "Session in Progress", tsk_true);
 
 	return 0;
 }
@@ -285,13 +336,55 @@ int s0000_Started_2_InProgress_X_iINVITE(va_list *app)
 /* InProgress ->(iPRACK with QoS) -> InProgress */
 int s0000_InProgress_2_InProgress_X_iPRACK(va_list *app)
 {
+
+	/* Cancel 100rel timer */
+	
+
 	return 0;
 }
 
 /* InProgress ->(iPRACK without QoS) -> Ringing */
 int s0000_InProgress_2_Ringing_X_iPRACK(va_list *app)
 {
-	return 0;
+	int ret;
+
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	tsip_request_t *request = va_arg(*app, tsip_request_t *);
+
+	/* In all cases: Send 2xx PRACK */
+	ret = send_RESPONSE(self, request, 200, "OK", tsk_false);
+
+	/*
+		1. Alice sends an initial INVITE without offer
+		2. Bob's answer is sent in the first reliable provisional response, in this case it's a 1xx INVITE response
+		3. Alice's answer is sent in the PRACK response
+	*/
+	if(!self->msession_mgr->sdp.ro){
+		if(TSIP_MESSAGE_HAS_CONTENT(request)){
+			if((ret = tsip_dialog_invite_process_ro(self, request))){
+				/* Send Error and break the FSM */
+				ret = send_ERROR(self, self->last_iInvite, 488, "Not Acceptable", "SIP; cause=488; text=\"Bad content\"");
+				return -4;
+			}
+		}
+		else{
+			/* 488 INVITE */
+			ret = send_ERROR(self, self->last_iInvite, 488, "Not Acceptable", "SIP; cause=488; text=\"Offer expected in the PRACK\"");
+			return -3;
+		}
+	}
+
+	/* Cancel 100rel timer */
+	TSIP_DIALOG_TIMER_CANCEL(100rel);
+
+	/* Send Ringing */
+	send_RESPONSE(self, self->last_iInvite, 180, "Ringing", tsk_false);
+
+	/* Alert the user (session) */
+	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_newcall, 
+			tsip_event_code_dialog_request_incoming, "Incoming Request.", request);
+
+	return ret;
 }
 
 /* InProgress ->(iUPDATE but cannot resume) -> InProgress */
@@ -315,7 +408,23 @@ int s0000_Inprogress_2_Terminated_X_iCANCEL(va_list *app)
 /* Ringing -> (iPRACK) -> Ringing */
 int s0000_Ringing_2_Ringing_X_iPRACK(va_list *app)
 {
-	return 0;
+	int ret;
+
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	tsip_request_t *request = va_arg(*app, tsip_request_t *);
+
+	if(!self->last_iInvite){
+		/* silently ignore */
+		return 0;
+	}
+
+	/* Cancel 100rel timer */
+	TSIP_DIALOG_TIMER_CANCEL(100rel);
+
+	/* Send 2xx PRACK */
+	ret = send_RESPONSE(self, request, 200, "OK", tsk_false);
+
+	return ret;
 }
 
 /* Ringing -> (oAccept) -> Connected */
@@ -333,6 +442,9 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 	/* Update current action */
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);	
 
+	/* Determine whether the remote party support UPDATE */
+	self->support_update = tsip_message_allowed(self->last_iInvite, "UPDATE");
+
 	/* start session manager */
 	if(self->msession_mgr && !self->msession_mgr->started){
 		ret = tmedia_session_mgr_start(self->msession_mgr);
@@ -341,15 +453,19 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 	/* send 2xx OK */
 	ret = send_RESPONSE(self, self->last_iInvite, 200, "OK", tsk_true);
 
-	/* RFC 4825 - 9. UAS Behavior
-
-		UAC supports?  refresher parameter  refresher parameter
-					   in request           in response
-   -------------------------------------------------------
-		 Y                none             uas or uac
-		 Y                uac                  uac
-		 Y                uas                  uas
-	*/
+	/* Session Timers */
+	if(self->stimers.timer.timeout){
+		if(tsip_dialog_invite_stimers_isRefresher(self)){
+			/* RFC 4028 - 9. UAS Behavior
+				It is RECOMMENDED that this refresh be sent oncehalf the session interval has elapsed. 
+				Additional procedures for this refresh are described in Section 10.
+			*/
+			tsip_dialog_invite_stimers_schedule(self, (self->stimers.timer.timeout*1000)/2);
+		}
+		else{
+			tsip_dialog_invite_stimers_schedule(self, (self->stimers.timer.timeout*1000));
+		}
+	}
 
 	return ret;
 }
@@ -366,6 +482,35 @@ int s0000_Ringing_2_Terminated_X_iCANCEL(va_list *app)
 	return 0;
 }
 
+/* Any ->(timer 100rel) -> Any */
+int s0000_Any_2_Any_X_timer100rel(va_list *app)
+{
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+
+	int ret;
+
+	if(!self->last_o1xxrel){
+		/* silently ignore */
+		return 0;
+	}
+
+	/* resync timer */
+	if((self->timer100rel.timeout *= 2) >= (64 * tsip_timers_getA())){
+		TSK_DEBUG_ERROR("Sending reliable 1xx failed");
+		return -2;
+	}
+
+	/* resend reliable 1xx */
+	if((ret = tsip_dialog_response_send(TSIP_DIALOG(self), self->last_o1xxrel))){
+		return ret;
+	}
+	else{
+		/* schedule timer */
+		TSIP_DIALOG_INVITE_TIMER_SCHEDULE(100rel);
+	}
+
+	return ret;
+}
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //				== STATE MACHINE END ==
@@ -393,3 +538,5 @@ int send_UNSUPPORTED(tsip_dialog_invite_t* self, const tsip_request_t* request, 
 	}
 	return 0;
 }
+
+

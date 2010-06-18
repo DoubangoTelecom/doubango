@@ -49,7 +49,9 @@ typedef struct tsip_dialog_invite
 	uint32_t rseq;
 	
 	tsip_timer_t timershutdown;
-	
+	tsip_timer_t timer100rel;
+
+	tsip_response_t* last_o1xxrel;
 	tsip_request_t* last_iInvite;
 	tsip_request_t* last_oInvite;
 	tmedia_session_mgr_t* msession_mgr; /**< Media session Manager. */
@@ -66,8 +68,18 @@ typedef struct tsip_dialog_invite
 		enum tmedia_qos_stype_e type;
 		enum tmedia_qos_strength_e strength;
 	} qos;
-	/* 100rel */
-	unsigned enable_100rel:1;
+
+	struct{
+		unsigned _100rel:1;
+		unsigned precondition:1;
+		unsigned timer:1;
+	} supported;
+
+	struct{
+		unsigned _100rel:1;
+		unsigned precondition:1;
+		unsigned timer:1;
+	} require;
 }
 tsip_dialog_invite_t;
 

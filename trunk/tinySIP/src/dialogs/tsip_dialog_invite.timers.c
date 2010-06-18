@@ -264,6 +264,7 @@ int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_mes
 					if(tsk_strnullORempty(self->stimers.refresher)){
 						tsk_strupdate(&self->stimers.refresher, hdr_SessionExpires->refresher_uas ? "uas" : "uac");
 					}
+					self->supported.timer = (self->stimers.timer.timeout != 0);
 				}
 			}
 			else{
@@ -283,6 +284,7 @@ int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_mes
 				without a Session-Expires header field.
 			*/
 			self->stimers.timer.timeout = 0; /* turned-off */
+			self->supported.timer = tsk_false;
 		}
 	}
 	

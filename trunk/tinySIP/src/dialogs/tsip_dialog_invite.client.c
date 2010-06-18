@@ -133,6 +133,7 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 	if(TSIP_DIALOG_GET_SS(self)->media.timers.timeout){
 		self->stimers.timer.timeout = TSIP_DIALOG_GET_SS(self)->media.timers.timeout;
 		tsk_strupdate(&self->stimers.refresher, TSIP_DIALOG_GET_SS(self)->media.timers.refresher);
+		self->supported.timer = tsk_true;
 	}
 	
 	/* QoS
@@ -143,9 +144,11 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 	self->qos.type = TSIP_DIALOG_GET_SS(self)->media.qos.type;
 	self->qos.strength = TSIP_DIALOG_GET_SS(self)->media.qos.strength;
 	tmedia_session_mgr_set_qos(self->msession_mgr, self->qos.type, self->qos.strength);
+	self->supported.precondition = (self->qos.strength == tmedia_qos_strength_optional);
+	self->require.precondition = (self->qos.strength == tmedia_qos_strength_mandatory);
 
 	/* 100rel */
-	self->enable_100rel = TSIP_DIALOG_GET_SS(self)->media.enable_100rel;
+	self->supported._100rel = TSIP_DIALOG_GET_SS(self)->media.enable_100rel;
 
 	/* send the request */
 	ret = send_INVITE(self, tsk_false);
@@ -180,8 +183,7 @@ int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 		ret = send_ACK(self, r2xxINVITE);
 	}
 	
-	/* Determine whether the remote party support UPDATE 
-	* FIXME: do the same in server side */
+	/* Determine whether the remote party support UPDATE */
 	self->support_update = tsip_message_allowed(r2xxINVITE, "UPDATE");
 
 	/* Session Timers */

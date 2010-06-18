@@ -169,7 +169,7 @@ typedef struct tsip_header_s
 }
 tsip_header_t;
 
-#define TSIP_DECLARE_HEADER tsip_header_t header
+#define TSIP_DECLARE_HEADER tsip_header_t __header__
 typedef tsk_list_t tsip_headers_L_t; /**< List of @ref tsip_header_t elements. */
 /*
 ================================*/
