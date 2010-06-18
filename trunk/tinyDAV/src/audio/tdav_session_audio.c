@@ -332,15 +332,25 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 	if(changed){
 		tmedia_codecs_L_t* neg_codecs = tsk_null;
 		
-		/* filter codecs */
-		if(self->M.ro && (neg_codecs = tmedia_session_match_codec(self, self->M.ro))){
+		if(self->M.ro){
 			/* update negociated codecs */
-			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
-			self->neg_codecs = neg_codecs;
+			if((neg_codecs = tmedia_session_match_codec(self, self->M.ro))){
+				TSK_OBJECT_SAFE_FREE(self->neg_codecs);
+				self->neg_codecs = neg_codecs;
+			}
 		}
 
 		/* from codecs to sdp */
 		tmedia_codec_to_sdp(self->neg_codecs ? self->neg_codecs : self->codecs, self->M.lo);
+		/* Hold/Resume */
+		if(self->M.ro){
+			if(tsdp_header_M_is_held(self->M.ro, tsk_false)){
+				tsdp_header_M_hold(self->M.lo, tsk_false);
+			}
+			else{
+				tsdp_header_M_resume(self->M.lo, tsk_false);
+			}
+		}
 		/* 3GPP TS 24.229 - 6.1.1 General
 			The UE shall include the MIME subtype "telephone-event" in the "m=" media descriptor in the SDP for audio media
 			flows that support both audio codec and DTMF payloads in RTP packets as described in RFC 4733 [23].

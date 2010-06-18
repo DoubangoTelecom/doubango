@@ -336,7 +336,7 @@ int tsdp_message_hold(tsdp_message_t* self, const char* media)
 	// 3GPP TS 34.610-900 - 4.5.2.1	Actions at the invoking UE
 	if((item = tsk_list_find_item_by_pred(self->headers, __pred_find_media_by_name, media))){
 		M = TSDP_HEADER_M(item->data);
-		tsdp_header_M_hold(M);
+		tsdp_header_M_hold(M, tsk_true);
 	}
 
 	return 0;
@@ -354,7 +354,7 @@ int tsdp_message_resume(tsdp_message_t* self, const char* media)
 	// 3GPP TS 34.610-900 - 4.5.2.1	Actions at the invoking UE
 	if((item = tsk_list_find_item_by_pred(self->headers, __pred_find_media_by_name, media))){
 		M = TSDP_HEADER_M(item->data);
-		tsdp_header_M_resume(M);
+		tsdp_header_M_resume(M, tsk_true);
 	}
 
 	return 0;

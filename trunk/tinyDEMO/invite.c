@@ -71,6 +71,8 @@ int invite_handle_event(const tsip_event_t *_event)
 				tmedia_type_t media_type = tsip_ssession_get_mediatype(session);
 				tsip_action_ACCEPT(session->handle,
 					TSIP_ACTION_SET_NULL());
+				/*tsip_action_REJECT(session->handle,
+					TSIP_ACTION_SET_NULL());*/
 				break;
 			}
 		case tsip_i_request:
@@ -94,14 +96,6 @@ int invite_handle_event(const tsip_event_t *_event)
 		// ============================
 		//	Media Events
 		//
-		
-		/* Media State */
-		case tsip_m_connected:
-			TSK_DEBUG_INFO("invite_handle_event(tsip_m_connected)");
-			break;
-		case tsip_m_terminated:
-			TSK_DEBUG_INFO("invite_handle_event(tsip_m_terminated)");
-			break;
 
 		/* 3GPP TS 24.610: Communication Hold  */
 		case tsip_m_local_hold_ok:

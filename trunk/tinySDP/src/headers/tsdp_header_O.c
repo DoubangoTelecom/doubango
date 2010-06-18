@@ -47,7 +47,7 @@
 
 
 
-tsdp_header_O_t* tsdp_header_O_create(const char* username, uint32_t sess_version, uint32_t sess_id, const char* nettype, const char* addrtype, const char* addr)
+tsdp_header_O_t* tsdp_header_O_create(const char* username, uint32_t sess_id, uint32_t sess_version, const char* nettype, const char* addrtype, const char* addr)
 {
 	return tsk_object_new(TSDP_HEADER_O_VA_ARGS(username, sess_id, sess_version, nettype, addrtype, addr));
 }
@@ -71,8 +71,8 @@ int tsdp_header_O_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 		// o=alice 2890844526 2890844526 IN IP4 host.atlanta.example.com
 		return tsk_buffer_append_2(output, "%s %u %u %s %s %s",
 			O->username,
-			O->sess_version,
 			O->sess_id,
+			O->sess_version,
 			O->nettype,
 			O->addrtype,
 			O->addr
@@ -365,8 +365,8 @@ static tsk_object_t* tsdp_header_O_ctor(tsk_object_t *self, va_list * app)
 		TSDP_HEADER(O)->rank = TSDP_HTYPE_O_RANK;
 		
 		O->username = tsk_strdup(va_arg(*app, const char*));
-		O->sess_version = va_arg(*app, uint32_t);
 		O->sess_id = va_arg(*app, uint32_t);
+		O->sess_version = va_arg(*app, uint32_t);
 		O->nettype = tsk_strdup(va_arg(*app, const char*));
 		O->addrtype = tsk_strdup(va_arg(*app, const char*));
 		O->addr = tsk_strdup(va_arg(*app, const char*));

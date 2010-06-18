@@ -66,7 +66,7 @@ int s0000_InProgress_2_InProgress_X_iUPDATE(va_list *app); // QoS cannot resume
 int s0000_InProgress_2_Ringing_X_iUPDATE(va_list *app); // QoS can resume (do not alert user, wait for PRACK)
 int s0000_Inprogress_2_Terminated_X_iCANCEL(va_list *app);
 int s0000_Ringing_2_Ringing_X_iPRACK(va_list *app); // Alert user
-int s0000_Ringing_2_Connected_X_Accept(va_list *app); 
+int s0000_Ringing_2_Connected_X_Accept(va_list *app);
 int s0000_Ringing_2_Terminated_X_Reject(va_list *app);
 int s0000_Ringing_2_Terminated_X_iCANCEL(va_list *app);
 int s0000_Any_2_Any_X_timer100rel(va_list *app);
@@ -165,21 +165,34 @@ static tsk_bool_t _fsm_cond_prack_match(tsip_dialog_invite_t* self, tsip_message
 	}
 
 	if((RAck = (const tsip_header_RAck_t*)tsip_message_get_header(message, tsip_htype_RAck))){
-		return (RAck->seq == self->rseq) &&
+		if((RAck->seq == self->rseq) &&
 			(tsk_striequals(RAck->method, self->last_o1xxrel->CSeq->method)) &&
-			(RAck->cseq == self->last_o1xxrel->CSeq->seq);
+			(RAck->cseq == self->last_o1xxrel->CSeq->seq)){
+				self->rseq++;
+				return tsk_true;
+		}
+		else{
+			TSK_DEBUG_WARN("Failed to match PRACK request");
+		}
 	}
 	
 	return tsk_false;
 }
-static tsk_bool_t _fsm_cond_supports_preconditions(tsip_dialog_invite_t* self, tsip_message_t* message)
+static tsk_bool_t _fsm_cond_supports_preconditions(tsip_dialog_invite_t* self, tsip_message_t* rPRACK)
 {
-	// supports or require
+	if(tsip_message_supported(self->last_iInvite, "precondition") || tsip_message_required(self->last_iInvite, "precondition")){
+		return tsk_true;
+	}
 	return tsk_false;
 }
-static tsk_bool_t _fsm_cond_cannotresume(tsip_dialog_invite_t* self, tsip_message_t* message)
+static tsk_bool_t _fsm_cond_cannotresume(tsip_dialog_invite_t* self, tsip_message_t* rUPDATE)
 {
-	return tsk_false;
+	if(!tsip_dialog_invite_process_ro(self, rUPDATE)){
+		return !tmedia_session_mgr_canresume(self->msession_mgr);
+	}
+	else{
+		return tsk_false;
+	}
 }
 
 /* Init FSM */
@@ -228,7 +241,6 @@ int tsip_dialog_invite_server_init(tsip_dialog_invite_t *self)
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Ringing, _fsm_action_reject, _fsm_state_Terminated, s0000_Ringing_2_Terminated_X_Reject, "s0000_Ringing_2_Terminated_X_Reject"),
 		// Ringing ->(iCANCEL) -> Terminated
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Ringing, _fsm_action_iCANCEL, _fsm_state_Terminated, s0000_Ringing_2_Terminated_X_iCANCEL, "s0000_Ringing_2_Terminated_X_iCANCEL"),
-
 
 		/*=======================
 		* === ANY === 
@@ -328,6 +340,7 @@ int s0000_Started_2_InProgress_X_iINVITE(va_list *app)
 	*/
 	self->rseq = (rand() ^ rand()) % (0x00000001 << 31);
 	self->require._100rel = tsk_true;
+	self->require.precondition = (tsip_message_supported(self->last_iInvite, "precondition") || tsip_message_required(self->last_iInvite, "precondition"));
 	send_RESPONSE(self, request, 183, "Session in Progress", tsk_true);
 
 	return 0;
@@ -336,20 +349,13 @@ int s0000_Started_2_InProgress_X_iINVITE(va_list *app)
 /* InProgress ->(iPRACK with QoS) -> InProgress */
 int s0000_InProgress_2_InProgress_X_iPRACK(va_list *app)
 {
-
-	/* Cancel 100rel timer */
-	
-
-	return 0;
-}
-
-/* InProgress ->(iPRACK without QoS) -> Ringing */
-int s0000_InProgress_2_Ringing_X_iPRACK(va_list *app)
-{
 	int ret;
 
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	tsip_request_t *request = va_arg(*app, tsip_request_t *);
+
+	/* Cancel 100rel timer */
+	TSIP_DIALOG_TIMER_CANCEL(100rel);
 
 	/* In all cases: Send 2xx PRACK */
 	ret = send_RESPONSE(self, request, 200, "OK", tsk_false);
@@ -374,8 +380,42 @@ int s0000_InProgress_2_Ringing_X_iPRACK(va_list *app)
 		}
 	}
 
+	return ret;
+}
+
+/* InProgress ->(iPRACK without QoS) -> Ringing */
+int s0000_InProgress_2_Ringing_X_iPRACK(va_list *app)
+{
+	int ret;
+
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	tsip_request_t *request = va_arg(*app, tsip_request_t *);
+
 	/* Cancel 100rel timer */
 	TSIP_DIALOG_TIMER_CANCEL(100rel);
+
+	/* In all cases: Send 2xx PRACK */
+	ret = send_RESPONSE(self, request, 200, "OK", tsk_false);
+
+	/*
+		1. Alice sends an initial INVITE without offer
+		2. Bob's answer is sent in the first reliable provisional response, in this case it's a 1xx INVITE response
+		3. Alice's answer is sent in the PRACK response
+	*/
+	if(!self->msession_mgr->sdp.ro){
+		if(TSIP_MESSAGE_HAS_CONTENT(request)){
+			if((ret = tsip_dialog_invite_process_ro(self, request))){
+				/* Send Error and break the FSM */
+				ret = send_ERROR(self, self->last_iInvite, 488, "Not Acceptable", "SIP; cause=488; text=\"Bad content\"");
+				return -4;
+			}
+		}
+		else{
+			/* 488 INVITE */
+			ret = send_ERROR(self, self->last_iInvite, 488, "Not Acceptable", "SIP; cause=488; text=\"Offer expected in the PRACK\"");
+			return -3;
+		}
+	}
 
 	/* Send Ringing */
 	send_RESPONSE(self, self->last_iInvite, 180, "Ringing", tsk_false);
@@ -390,18 +430,60 @@ int s0000_InProgress_2_Ringing_X_iPRACK(va_list *app)
 /* InProgress ->(iUPDATE but cannot resume) -> InProgress */
 int s0000_InProgress_2_InProgress_X_iUPDATE(va_list *app)
 {
-	return 0;
+	int ret;
+
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	tsip_request_t *request = va_arg(*app, tsip_request_t *);
+
+	if((ret = tsip_dialog_invite_process_ro(self, request))){
+		/* Send Error and break the FSM */
+		ret = send_ERROR(self, request, 488, "Not Acceptable", "SIP; cause=488; text=\"Bad content\"");
+		return -4;
+	}
+	else{
+		ret = send_RESPONSE(self, request, 200, "OK", tsk_false);
+	}
+
+	return ret;
 }
 
 /* InProgress ->(iUPDATE can resume) -> Ringing */
 int s0000_InProgress_2_Ringing_X_iUPDATE(va_list *app)
 {
-	return 0;
+	int ret;
+
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	tsip_request_t *request = va_arg(*app, tsip_request_t *);
+
+	if((ret = tsip_dialog_invite_process_ro(self, request))){
+		/* Send Error and break the FSM */
+		ret = send_ERROR(self, request, 488, "Not Acceptable", "SIP; cause=488; text=\"Bad content\"");
+		return -4;
+	}
+	
+	/* Send 200 UPDATE */
+	ret = send_RESPONSE(self, request, 200, "OK", tsk_false);
+
+	/* Send Ringing */
+	ret = send_RESPONSE(self, self->last_iInvite, 180, "Ringing", tsk_false);
+
+	/* alert the user */
+	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_newcall, 
+			tsip_event_code_dialog_request_incoming, "Incoming Request.", request);
+
+	return ret;
 }
 
 /* InProgress ->(iCANCEL) -> Terminated */
 int s0000_Inprogress_2_Terminated_X_iCANCEL(va_list *app)
 {
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	tsip_request_t *request = va_arg(*app, tsip_request_t *);
+
+	/* alert the user */
+	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_request, 
+			tsip_event_code_dialog_request_incoming, "Incoming Request.", request);
+
 	return 0;
 }
 
@@ -423,6 +505,10 @@ int s0000_Ringing_2_Ringing_X_iPRACK(va_list *app)
 
 	/* Send 2xx PRACK */
 	ret = send_RESPONSE(self, request, 200, "OK", tsk_false);
+
+	/* alert the user */
+	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_request, 
+			tsip_event_code_dialog_request_incoming, "Incoming Request.", request);
 
 	return ret;
 }
@@ -450,6 +536,9 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 		ret = tmedia_session_mgr_start(self->msession_mgr);
 	}
 
+	/* Cancel 100rel timer */
+	TSIP_DIALOG_TIMER_CANCEL(100rel);
+
 	/* send 2xx OK */
 	ret = send_RESPONSE(self, self->last_iInvite, 200, "OK", tsk_true);
 
@@ -467,19 +556,60 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 		}
 	}
 
+	/* Alert the user (dialog) */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connected, "Dialog connected");
+
 	return ret;
 }
 
 /* Ringing -> (oReject) -> Terminated */
 int s0000_Ringing_2_Terminated_X_Reject(va_list *app)
 {
-	return 0;
+	int ret;
+
+	tsip_dialog_invite_t *self;
+	const tsip_action_t* action;
+
+	self = va_arg(*app, tsip_dialog_invite_t *);
+	va_arg(*app, const tsip_message_t *);
+	action = va_arg(*app, const tsip_action_t *);
+
+	/* Update current action */
+	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);	
+
+	/* Cancel 100rel timer */
+	TSIP_DIALOG_TIMER_CANCEL(100rel);
+
+	/* Send Reject */
+	ret = send_ERROR(self, self->last_iInvite, 486, "Busy Here", "SIP; cause=486; text=\"Busy Here\"");
+
+	return ret;
 }
 
 /* Ringing ->(iCANCEL) -> Terminated */
 int s0000_Ringing_2_Terminated_X_iCANCEL(va_list *app)
 {
-	return 0;
+	int ret;
+
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	tsip_request_t *request = va_arg(*app, tsip_request_t *);
+
+	if(!self->last_iInvite){
+		/* silently ignore */
+		return 0;
+	}
+
+	/* Send Request Cancelled */
+	ret = send_ERROR(self, self->last_iInvite, 487, "Request Canselled", "SIP; cause=487; text=\"Request Canselled\"");
+
+	/* Send 2xx for the CANCEL */
+	ret = send_RESPONSE(self, request, 200, "OK", tsk_false);
+
+	/* alert the user */
+	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_request, 
+			tsip_event_code_dialog_request_incoming, "Incoming Request.", request);
+
+	return ret;
 }
 
 /* Any ->(timer 100rel) -> Any */
