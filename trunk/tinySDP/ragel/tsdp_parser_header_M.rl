@@ -433,7 +433,7 @@ char* tsdp_header_M_get_fmtp(const tsdp_header_M_t* self, const char* fmt)
 }
 
 /* as per 3GPP TS 34.610 */
-int tsdp_header_M_hold(tsdp_header_M_t* self)
+int tsdp_header_M_hold(tsdp_header_M_t* self, tsk_bool_t local)
 {
 	const tsdp_header_A_t* a;
 	if(!self){
@@ -441,19 +441,19 @@ int tsdp_header_M_hold(tsdp_header_M_t* self)
 		return -1;
 	}
 
-	if((a = tsdp_header_M_findA(self, "recvonly"))){
+	if((a = tsdp_header_M_findA(self, local ? "recvonly" : "sendonly"))){
 		// an "inactive" SDP attribute if the stream was previously set to "recvonly" media stream
-		tsk_strupdate(&(TSDP_HEADER_A(a)->field), "inactive");
+		tsk_strupdate(&(TSDP_HEADER_A(a)->field), local ? "inactive" : "recvonly");
 	}
 	else if((a = tsdp_header_M_findA(self, "sendrecv"))){
 		// a "sendonly" SDP attribute if the stream was previously set to "sendrecv" media stream
-		tsk_strupdate(&(TSDP_HEADER_A(a)->field), "sendonly");
+		tsk_strupdate(&(TSDP_HEADER_A(a)->field), local ? "sendonly" : "recvonly");
 	}
 	else{
 		// default value is sendrecv. hold on default --> sendonly
-		if(!(a = tsdp_header_M_findA(self, "sendonly")) && !(a = tsdp_header_M_findA(self, "inactive"))){
+		if(!(a = tsdp_header_M_findA(self, local ? "sendonly" : "recvonly")) && !(a = tsdp_header_M_findA(self, "inactive"))){
 			tsdp_header_A_t* newA;
-			if((newA = tsdp_header_A_create("sendonly", tsk_null))){
+			if((newA = tsdp_header_A_create(local ? "sendonly" : "recvonly", tsk_null))){
 				tsdp_header_M_add(self, TSDP_HEADER_CONST(newA));
 				TSK_OBJECT_SAFE_FREE(newA);
 			}
@@ -475,15 +475,15 @@ tsk_bool_t tsdp_header_M_is_held(const tsdp_header_M_t* self, tsk_bool_t local)
 	}
 
 	if(local){
-		return tsdp_header_M_findA(self, "sendonly") ? tsk_true : tsk_false;
+		return tsdp_header_M_findA(self, "recvonly") ? tsk_true : tsk_false;
 	}
 	else{
-		return tsdp_header_M_findA(self, "recvonly") ? tsk_true : tsk_false;
+		return tsdp_header_M_findA(self, "sendonly") ? tsk_true : tsk_false;
 	}
 }
 
 /* as per 3GPP TS 34.610 */
-int tsdp_header_M_resume(tsdp_header_M_t* self)
+int tsdp_header_M_resume(tsdp_header_M_t* self, tsk_bool_t local)
 {
 	const tsdp_header_A_t* a;
 	if(!self){
@@ -493,9 +493,9 @@ int tsdp_header_M_resume(tsdp_header_M_t* self)
 
 	if((a = tsdp_header_M_findA(self, "inactive"))){
 		// a "recvonly" SDP attribute if the stream was previously an inactive media stream
-		tsk_strupdate(&(TSDP_HEADER_A(a)->field), "recvonly");
+		tsk_strupdate(&(TSDP_HEADER_A(a)->field), local ? "recvonly" : "sendonly");
 	}
-	else if((a = tsdp_header_M_findA(self, "sendonly"))){
+	else if((a = tsdp_header_M_findA(self, local ? "sendonly" : "recvonly"))){
 		// a "sendrecv" SDP attribute if the stream was previously a sendonly media stream, or the attribute may be omitted, since sendrecv is the default
 		tsk_strupdate(&(TSDP_HEADER_A(a)->field), "sendrecv");
 	}

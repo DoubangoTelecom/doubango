@@ -104,8 +104,7 @@ int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip
 	return 0;
 }
 
-/* update the entire message (AoR, IPSec headers, SigComp, ....) */
-int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
+int tsip_transport_msg_update_aor(const tsip_transport_t* self, tsip_message_t *msg)
 {
 	tnet_ip_t ip;
 	tnet_port_t port;
@@ -120,7 +119,7 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 	if(tsip_transport_get_ip_n_port(self, &ip, &port)){
 		return -1;
 	}
-	
+
 	/* === Host and port === */
 	if(msg->Contact && msg->Contact->uri){
 		tsk_strupdate(&(msg->Contact->uri->scheme), self->scheme);
@@ -138,6 +137,19 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 		}
 		msg->Contact->uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(self->type) ? host_ipv6 : host_ipv4; /* for serializer ...who know? */
 		tsk_params_add_param(&msg->Contact->uri->params, "transport", self->protocol);
+	}
+
+	return 0;
+}
+
+/* update the entire message (IPSec headers, SigComp, ....) */
+int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
+{
+	int ret = 0;
+
+	/* already updtated (e.g. retrans)? */
+	if(!msg->update){
+		return 0;
 	}
 
 	/* === IPSec headers (Security-Client, Security-Verify, Sec-Agree ...) === */
@@ -198,9 +210,14 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 		* CANCEL will have the same Via and Contact headers as the request it cancel */
 		if(TSIP_MESSAGE_IS_REQUEST(msg) && (!TSIP_REQUEST_IS_ACK(msg) || (TSIP_REQUEST_IS_ACK(msg) && !msg->firstVia)) && !TSIP_REQUEST_IS_CANCEL(msg)){
 			tsip_transport_addvia(self, branch, msg); /* should be done before tsip_transport_msg_update() which could use the Via header */
-			tsip_transport_msg_update(self, msg);
+			tsip_transport_msg_update_aor(self, msg); /* AoR */
+			tsip_transport_msg_update(self, msg); /* IPSec, SigComp, ... */
 		}
 		else if(TSIP_MESSAGE_IS_RESPONSE(msg)){
+			/* AoR for responses which have a contact header (e.g. 183/200 INVITE) */
+			if(msg->Contact){
+				tsip_transport_msg_update_aor(self, msg);
+			}
 			/*	RFC 3581 - 4.  Server Behavior
 				When a server compliant to this specification (which can be a proxy
 				or UAS) receives a request, it examines the topmost Via header field

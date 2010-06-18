@@ -78,6 +78,7 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bo
 int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx);
 int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
 int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase, tsk_bool_t force_sdp);
+int send_ERROR(tsip_dialog_invite_t* self, const tsip_request_t* request, short code, const char* phrase, const char* reason);
 int send_BYE(tsip_dialog_invite_t *self);
 int send_CANCEL(tsip_dialog_invite_t *self);
 int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self);
@@ -88,14 +89,17 @@ extern int tsip_dialog_invite_qos_timer_cancel(tsip_dialog_invite_t* self);
 extern int tsip_dialog_invite_qos_timer_schedule(tsip_dialog_invite_t* self);
 extern int tsip_dialog_invite_stimers_schedule(tsip_dialog_invite_t* self, uint64_t timeout);
 extern int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_message_t* message);
+extern int tsip_dialog_invite_hold_handle(tsip_dialog_invite_t* self, const tsip_request_t* rINVITEorUPDATE);
 
 /* ======================== transitions ======================== */
+static int x0000_Connected_2_Connected_X_iACK(va_list *app);
 static int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app);
 
 int x0000_Any_2_Any_X_i1xx(va_list *app);
 int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app);
 int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app);
 
+int x0000_Any_2_Any_X_iPACK(va_list *app);
 int x0000_Any_2_Any_X_iOPTIONS(va_list *app);
 int x0000_Any_2_Trying_X_oBYE(va_list *app); /* If not Connected => Cancel will be called instead. See tsip_dialog_hangup() */
 int x0000_Any_2_Terminated_X_iBYE(va_list *app);
@@ -182,6 +186,9 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 					else if(TSIP_REQUEST_IS_OPTIONS(msg)){ // OPTIONS
 						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iOPTIONS, msg, tsk_null);
 					}
+					else if(TSIP_REQUEST_IS_BYE(msg)){ // BYE
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iBYE, msg, tsk_null);
+					}
 				}
 			}
 			break;
@@ -266,6 +273,8 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		/*=======================
 		* === Connected === 
 		*/
+		// Connected -> (iACK) -> Connected
+		TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_iACK, _fsm_state_Connected, x0000_Connected_2_Connected_X_iACK, "x0000_Connected_2_Connected_X_iACK"),
 		// Connected -> (iINVITE) -> Connected
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_iINVITE, _fsm_state_Connected, x0000_Connected_2_Connected_X_iINVITEorUPDATE, "x0000_Connected_2_Connected_X_iINVITE"),
 		// Connected -> (iUPDATE) -> Connected
@@ -295,6 +304,8 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_i1xx, tsk_fsm_state_any, x0000_Any_2_Any_X_i1xx, "x0000_Any_2_Any_X_i1xx"),
 		// Any -> (i401/407)
 		//
+		// Any -> (iPRACK) -> Any
+		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_iPRACK, tsk_fsm_state_any, x0000_Any_2_Any_X_iPACK, "x0000_Any_2_Any_X_iPACK"),
 		// Any -> (iOPTIONS) -> Any
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_iOPTIONS, tsk_fsm_state_any, x0000_Any_2_Any_X_iOPTIONS, "x0000_Any_2_Any_X_iOPTIONS"),
 		// Any -> (i2xx INVITE) -> Any
@@ -398,7 +409,22 @@ bail:
 //				== STATE MACHINE BEGIN ==
 //--------------------------------------------------------
 
+/* Connected -> (iACK) -> Connected */
+int x0000_Connected_2_Connected_X_iACK(va_list *app)
+{
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	const tsip_request_t *rACK = va_arg(*app, const tsip_request_t *);
 
+	// Nothing to do (in future will be used to ensure the session)
+
+	/* alert the user */
+	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_request, 
+			tsip_event_code_dialog_request_incoming, "Incoming Request.", rACK);
+
+	return 0;
+}
+
+/* Connected -> (iINVITE or iUPDATE) -> Connected */
 int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
@@ -411,31 +437,54 @@ int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app)
 		/* Send error */
 		return ret;
 	}
+	
+	/* Send 200 OK */
+	ret = send_RESPONSE(self, rINVITEorUPDATE, 200, "OK", 
+		(self->msession_mgr && (self->msession_mgr->ro_changed || self->msession_mgr->state_changed)));
 
 	/* session timers */
 	if(self->stimers.timer.timeout){
 		tsip_dialog_invite_stimers_handle(self, rINVITEorUPDATE);
 	}
 
-	/* Send 200 OK */
-	ret = send_RESPONSE(self, rINVITEorUPDATE, 200, "OK", tsk_false);
+	/* hold/resume */
+	tsip_dialog_invite_hold_handle(self, rINVITEorUPDATE);
 
 	/* alert the user */
+	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_request, 
+			tsip_event_code_dialog_request_incoming, "Incoming Request.", rINVITEorUPDATE);
 	
 
 	return ret;
 }
 
+/* Any -> (iPRACK) -> Any */
+int x0000_Any_2_Any_X_iPACK(va_list *app)
+{
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	const tsip_request_t *rPRACK = va_arg(*app, const tsip_request_t *);
 
+	const tsip_header_RAck_t* RAck;
+	
+	if((RAck = (const tsip_header_RAck_t*)tsip_message_get_header(rPRACK, tsip_htype_RAck))){
+		if((RAck->seq == self->rseq) &&
+			(tsk_striequals(RAck->method, self->last_o1xxrel->CSeq->method)) &&
+			(RAck->cseq == self->last_o1xxrel->CSeq->seq)){
+			
+			self->rseq++;
+			return send_RESPONSE(self, rPRACK, 200, "OK", tsk_false);
+		}
+	}
+	
+	/* Send 488 */
+	return send_ERROR(self, self->last_iInvite, 488, "Not Acceptable", "SIP; cause=488; text=\"Failed to match PRACK request\"");
+}
+
+/* Any -> (iOPTIONS) -> Any */
 int x0000_Any_2_Any_X_iOPTIONS(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	const tsip_request_t *rOPTIONS = va_arg(*app, const tsip_request_t *);
-
-	if(!rOPTIONS){
-		/* Do not signal error */
-		return 0;
-	}
 
 	/* Alert user */
 
@@ -464,7 +513,7 @@ int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app)
 	return send_INVITEorUPDATE(self, TSIP_RESPONSE_IS_TO_INVITE(response), tsk_false);
 }
 
-/*	Any --> (i2xx INVITE or UPDATE) --> Any */
+/*	Any --> (i2xx INVITE or i2xx UPDATE) --> Any */
 int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
@@ -515,6 +564,7 @@ int x0000_Any_2_Terminated_X_iBYE(va_list *app)
 	return send_RESPONSE(self, rBYE, 200, "OK", tsk_false);
 }
 
+/* Any -> Shutdown -> Terminated */
 int x0000_Any_2_Trying_X_shutdown(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
@@ -535,36 +585,8 @@ int x0000_Any_2_Trying_X_shutdown(va_list *app)
 	return 0;
 }
 
-int x0000_Any_2_Trying_X_oREINVITE(va_list *app)
-{
-	return 0;
-}
 
-int x0000_Any_2_Trying_X_oUPDATE(va_list *app)
-{
-	return 0;
-}
-
-int x0000_Any_2_Any_X_iREINVITE(va_list *app)
-{
-	return 0;
-}
-
-int x0000_Any_2_Any_X_iUPDATE(va_list *app)
-{
-	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
-	const tsip_request_t *rUPDATE = va_arg(*app, const tsip_request_t *);
-
-	int ret;
-	
-	/* Send 200 OK */
-	ret = send_RESPONSE(self, rUPDATE, 200, "OK", tsk_false);
-
-	/* alert the user */
-
-	return ret;
-}
-
+/* Any -> (i1xx) -> Any */
 int x0000_Any_2_Any_X_i1xx(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
@@ -613,12 +635,6 @@ int x0000_Any_2_Any_X_i1xx(va_list *app)
 	}
 
 	return ret;
-}
-
-int x0000_Any_2_Any_X_i2xx(va_list *app)
-{
-	/* FIXME: if 2xxINVITE, then send ACK */
-	return 0;
 }
 
 int x9998_Any_2_Any_X_transportError(va_list *app)
@@ -745,6 +761,7 @@ bail:
 	return ret;
 }
 
+// Send PRACK
 int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx)
 {
 	// "Require: 100rel\r\n" should be checked by the caller of this function
@@ -805,6 +822,7 @@ bail:
 	return ret;
 }
 
+// Send CANCEL
 int send_CANCEL(tsip_dialog_invite_t *self)
 {
 	int ret = -1;
@@ -875,6 +893,7 @@ bail:
 	return ret;
 }
 
+// Send BYE
 int send_BYE(tsip_dialog_invite_t *self)
 {
 	int ret = -1;
@@ -908,6 +927,7 @@ bail:
 	return ret;
 }
 
+// Send ACK
 int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE)
 {
 	int ret = -1;
@@ -965,6 +985,7 @@ bail:
 	return ret;
 }
 
+// Send any response
 int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase, tsk_bool_t force_sdp)
 {
 	tsip_response_t *response;
@@ -975,6 +996,7 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 			/* Session timers (for 2xx to INVITE or UPDATE) */
 			if(self->stimers.timer.timeout){
 				tsip_message_add_headers(response,
+						TSIP_HEADER_SUPPORTED_VA_ARGS("timer"),
 						TSIP_HEADER_SESSION_EXPIRES_VA_ARGS(self->stimers.timer.timeout, tsk_striequals(self->stimers.refresher, "uas")),
 						tsk_null
 					);
@@ -1011,6 +1033,16 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 					TSIP_DIALOG_INVITE_TIMER_SCHEDULE(100rel);
 				}
 			}
+
+			/* Precondition */
+			if(code == 180 || code == 183){
+				if(self->require.precondition){
+					tsip_message_add_headers(response,
+						TSIP_HEADER_REQUIRE_VA_ARGS("precondition"),
+						tsk_null
+					);
+				}
+			}
 			
 
 			/* SDP content */
@@ -1036,6 +1068,7 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 	return ret;
 }
 
+// Send error response
 int send_ERROR(tsip_dialog_invite_t* self, const tsip_request_t* request, short code, const char* phrase, const char* reason)
 {
 	tsip_response_t *response;
@@ -1046,7 +1079,6 @@ int send_ERROR(tsip_dialog_invite_t* self, const tsip_request_t* request, short 
 	}
 
 	if((response = tsip_dialog_response_new(TSIP_DIALOG(self), code, phrase, request))){
-		// Add UnSupported header
 		tsip_message_add_headers(response,
 			TSIP_HEADER_DUMMY_VA_ARGS("Reason", reason),
 			tsk_null
@@ -1058,6 +1090,7 @@ int send_ERROR(tsip_dialog_invite_t* self, const tsip_request_t* request, short 
 	return 0;
 }
 
+// FSM callback to signal that the dialog is in the terminated state
 int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self)
 {
 	TSK_DEBUG_INFO("=== INVITE Dialog terminated ===");

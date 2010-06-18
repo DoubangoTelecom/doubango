@@ -68,6 +68,11 @@ typedef struct tsip_dialog_invite
 		enum tmedia_qos_stype_e type;
 		enum tmedia_qos_strength_e strength;
 	} qos;
+	/* Hold/Resume */
+	struct{
+		unsigned remote:1;
+		unsigned local:1;
+	} hold;
 
 	struct{
 		unsigned _100rel:1;

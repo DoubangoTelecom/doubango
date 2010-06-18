@@ -59,10 +59,6 @@ typedef enum tsip_invite_event_type_e
 	// ============================
 	//	Media Events
 	//
-	
-	/* Media State */
-	tsip_m_connected,
-	tsip_m_terminated,
 
 	/* 3GPP TS 24.610: Communication Hold */
 	tsip_m_local_hold_ok,

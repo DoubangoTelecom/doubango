@@ -142,10 +142,12 @@ int x0101_Holding_2_Connected_X_ixxx(va_list *app)
 	if(TSIP_RESPONSE_IS_2XX(response)){
 		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_m_local_hold_ok, 
 			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+		self->hold.local = tsk_true;
 	}
 	else{
 		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_m_local_hold_nok, 
 			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+		self->hold.local = tsk_false;
 	}
 	
 	return ret;
@@ -204,15 +206,37 @@ int x0103_Resuming_2_Connected_X_ixxx(va_list *app)
 	if(TSIP_RESPONSE_IS_2XX(response)){
 		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_m_local_resume_ok, 
 			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+		self->hold.local = tsk_false;
 	}
 	else{
 		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_m_local_resume_nok, 
 			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+		self->hold.local = tsk_true;
 	}
 	
 	return ret;
 }
 
+/* handle requests/responses (MUST be called after set_ro()) */
+int tsip_dialog_invite_hold_handle(tsip_dialog_invite_t* self, const tsip_request_t* rINVITEorUPDATE)
+{
+	tsk_bool_t remote_hold;
+
+	if(!self || !rINVITEorUPDATE || !self->msession_mgr){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	remote_hold = tmedia_session_mgr_is_held(self->msession_mgr, self->msession_mgr->type, tsk_false);
+
+	if(remote_hold != self->hold.remote){
+		self->hold.remote = remote_hold;
+		TSIP_DIALOG_INVITE_SIGNAL(self, self->hold.remote ? tsip_m_remote_hold : tsip_m_remote_resume, 
+			tsip_event_code_dialog_request_incoming, "Hold/Resume state changed", rINVITEorUPDATE);
+	}
+
+	return 0;
+}
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //				== STATE MACHINE END ==

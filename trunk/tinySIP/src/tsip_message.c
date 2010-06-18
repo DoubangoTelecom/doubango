@@ -565,8 +565,7 @@ static tsk_object_t* tsip_message_ctor(tsk_object_t *self, va_list * app)
 				if(message->firstVia){
 					tsk_size_t index = 1;
 					const tsip_header_t * via;
-					while((via = tsip_message_get_headerAt(request, tsip_htype_Via, index++)))
-					{
+					while((via = tsip_message_get_headerAt(request, tsip_htype_Via, index++))){
 						tsip_message_add_header(message, via);
 					}
 				}
@@ -574,8 +573,7 @@ static tsk_object_t* tsip_message_ctor(tsk_object_t *self, va_list * app)
 				{
 					tsk_size_t index = 0;
 					const tsip_header_t *record_route;
-					while((record_route = tsip_message_get_headerAt(request, tsip_htype_Record_Route, index++)))
-					{
+					while((record_route = tsip_message_get_headerAt(request, tsip_htype_Record_Route, index++))){
 						tsip_message_add_header(message, record_route);
 					}
 				}

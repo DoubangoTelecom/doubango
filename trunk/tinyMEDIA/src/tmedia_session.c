@@ -704,8 +704,8 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 			continue;
 		}
 		
-		/* Add QoS lines to our local media (to it before calling tmedia_session_get_lo()) */
-		if(self->offerer && !TMEDIA_SESSION(ms)->qos){
+		/* Add QoS lines to our local media */
+		if((self->qos.type != tmedia_qos_stype_none) && !TMEDIA_SESSION(ms)->qos){
 			TMEDIA_SESSION(ms)->qos = tmedia_qos_tline_create(self->qos.type, self->qos.strength);
 		}
 		
@@ -790,7 +790,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 				found = tsk_true;
 			}
 			/* set QoS type (only if we are not the offerer) */
-			if(!self->offerer && (qos_type == tmedia_qos_stype_none) && (self->qos.strength == tmedia_qos_strength_mandatory)){
+			if(!self->offerer && (qos_type == tmedia_qos_stype_none) /*&& (self->qos.strength == tmedia_qos_strength_mandatory)*/){
 				tmedia_qos_tline_t* tline = tmedia_qos_tline_from_sdp(M);
 				if(tline){
 					qos_type = tline->type;
@@ -843,7 +843,7 @@ int tmedia_session_mgr_hold(tmedia_session_mgr_t* self, tmedia_type_t type)
 	tsk_list_foreach(item, self->sessions){
 		tmedia_session_t* session = TMEDIA_SESSION(item->data);
 		if(((session->type & type) == session->type) && session->M.lo){
-			if(!tsdp_header_M_hold(session->M.lo)){
+			if(!tsdp_header_M_hold(session->M.lo, tsk_true)){
 				self->state_changed = tsk_true;
 			}
 		}
@@ -908,7 +908,7 @@ int tmedia_session_mgr_resume(tmedia_session_mgr_t* self, tmedia_type_t type)
 	tsk_list_foreach(item, self->sessions){
 		tmedia_session_t* session = TMEDIA_SESSION(item->data);
 		if(((session->type & type) == session->type) && session->M.lo){
-			if(!tsdp_header_M_resume(session->M.lo)){
+			if(!tsdp_header_M_resume(session->M.lo, tsk_true)){
 				self->state_changed = tsk_true;
 			}
 		}
@@ -1096,7 +1096,7 @@ int _tmedia_session_mgr_apply_params(tmedia_session_mgr_t* self)
 			if(!(session = it2->data) || !session->plugin){
 				continue;
 			}
-			if((session->type & param->media_type) == session->type){
+			if((session->type & param->media_type) == session->type && session->plugin->set){
 				session->plugin->set(session, param);
 			}
 		}
@@ -1119,6 +1119,9 @@ static tsk_object_t* tmedia_session_mgr_ctor(tsk_object_t * self, va_list * app)
 
 		mgr->sdp.lo_ver = TSDP_HEADER_O_SESS_VERSION_DEFAULT;
 		mgr->sdp.ro_ver = -1;
+
+		mgr->qos.type = tmedia_qos_stype_none;
+		mgr->qos.strength = tmedia_qos_strength_optional;
 	}
 	return self;
 }
