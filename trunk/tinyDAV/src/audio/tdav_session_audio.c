@@ -338,9 +338,6 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
 			self->neg_codecs = neg_codecs;
 		}
-		else{
-			return tsk_null;
-		}
 
 		/* from codecs to sdp */
 		tmedia_codec_to_sdp(self->neg_codecs ? self->neg_codecs : self->codecs, self->M.lo);
@@ -392,8 +389,6 @@ int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 			/* update negociated codecs */
 			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
 			self->neg_codecs = neg_codecs;
-
-			return 0;
 		}
 		else{
 			return -1;

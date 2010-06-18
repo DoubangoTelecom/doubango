@@ -221,6 +221,9 @@ int tsip_dialog_invite_timer_callback(const tsip_dialog_invite_t* self, tsk_time
 		if(timer_id == self->stimers.timer.id){
 			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_timerRefresh, tsk_null, tsk_null);
 		}
+		else if(timer_id == self->timer100rel.id){
+			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_timer100rel, tsk_null, tsk_null);
+		}
 		else if(timer_id == self->qos.timer.id){
 			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_timerRSVP, tsk_null, tsk_null);
 		}
@@ -315,8 +318,8 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK_F(tsip_dialog_invite_event_callback);
 
 	/* Timers */
-	//self->timerrefresh.id = TSK_INVALID_TIMER_ID;
-	//self->timerrefresh.timeout = ;
+	self->timer100rel.id = TSK_INVALID_TIMER_ID;
+	self->stimers.timer.id = TSK_INVALID_TIMER_ID;
 	self->timershutdown.id = TSK_INVALID_TIMER_ID;
 	self->timershutdown.timeout = TSIP_DIALOG_SHUTDOWN_TIMEOUT;
 
@@ -666,12 +669,23 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bo
 
 		/* Session timers */
 		if(self->stimers.timer.timeout){
-			tsip_message_add_headers(request,
-					TSIP_HEADER_SESSION_EXPIRES_VA_ARGS(self->stimers.timer.timeout, tsk_striequals(self->stimers.refresher, "uas")),
-					TSIP_HEADER_SUPPORTED_VA_ARGS("timer"),
-					tsk_null
-				);
+			if(self->require.timer){
+				tsip_message_add_headers(request,
+						TSIP_HEADER_SESSION_EXPIRES_VA_ARGS(self->stimers.timer.timeout, tsk_striequals(self->stimers.refresher, "uas")),
+						TSIP_HEADER_REQUIRE_VA_ARGS("timer"),
+						tsk_null
+					);
+			}
+			else if(self->supported.timer){
+				tsip_message_add_headers(request,
+						TSIP_HEADER_SESSION_EXPIRES_VA_ARGS(self->stimers.timer.timeout, tsk_striequals(self->stimers.refresher, "uas")),
+						TSIP_HEADER_SUPPORTED_VA_ARGS("timer"),
+						tsk_null
+					);
+			}
+			
 		}
+
 		if(self->stimers.minse){
 			tsip_message_add_headers(request,
 					TSIP_HEADER_MIN_SE_VA_ARGS(self->stimers.minse),
@@ -680,7 +694,13 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bo
 		}
 		
 		/* 100rel */
-		if(self->enable_100rel){
+		if(self->require._100rel){
+			tsip_message_add_headers(request,
+					TSIP_HEADER_REQUIRE_VA_ARGS("100rel"),
+					tsk_null
+				);
+		}
+		else if(self->supported._100rel){
 			tsip_message_add_headers(request,
 					TSIP_HEADER_SUPPORTED_VA_ARGS("100rel"),
 					tsk_null
@@ -688,20 +708,19 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bo
 		}
 
 		/* QoS */
-		if(self->qos.type != tmedia_qos_stype_none){
-			if(self->qos.strength == tmedia_qos_strength_mandatory){
-				tsip_message_add_headers(request,
-					TSIP_HEADER_REQUIRE_VA_ARGS("precondition"),
-					tsk_null
-				);
-			}
-			else{
-				tsip_message_add_headers(request,
-					TSIP_HEADER_SUPPORTED_VA_ARGS("precondition"),
-					tsk_null
-				);
-			}
+		if(self->require.precondition){
+			tsip_message_add_headers(request,
+				TSIP_HEADER_REQUIRE_VA_ARGS("precondition"),
+				tsk_null
+			);
 		}
+		else if(self->supported.precondition){
+			tsip_message_add_headers(request,
+				TSIP_HEADER_SUPPORTED_VA_ARGS("precondition"),
+				tsk_null
+			);
+		}
+		
 		
 		/* Always added headers */
 		// Explicit Communication Transfer (3GPP TS 24.629)
@@ -973,6 +992,28 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 					);
 			}
 			
+			/* 180 Ringing */
+			/* 183 Session in Progress */
+			if(code == 180 || code == 183){
+				if(self->require._100rel){
+					tsip_message_add_headers(response,
+						TSIP_HEADER_REQUIRE_VA_ARGS("100rel"),
+						TSIP_HEADER_RSEQ_VA_ARGS(self->rseq),
+						tsk_null
+					);
+					TSK_OBJECT_SAFE_FREE(self->last_o1xxrel);
+					self->last_o1xxrel = tsk_object_ref(response);
+					
+					/* No-Initial reliable 1xx will use tsip_dialog_response_send() instead of this function
+					* ==> can reseset timeout value and make initial schedule */
+					TSIP_DIALOG_TIMER_CANCEL(100rel);
+					self->timer100rel.timeout = tsip_timers_getA();
+					TSIP_DIALOG_INVITE_TIMER_SCHEDULE(100rel);
+				}
+			}
+			
+
+			/* SDP content */
 			if(self->msession_mgr && force_sdp){
 				const tsdp_message_t* sdp_lo;
 				char* sdp;
@@ -993,6 +1034,28 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 		TSK_OBJECT_SAFE_FREE(response);
 	}
 	return ret;
+}
+
+int send_ERROR(tsip_dialog_invite_t* self, const tsip_request_t* request, short code, const char* phrase, const char* reason)
+{
+	tsip_response_t *response;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if((response = tsip_dialog_response_new(TSIP_DIALOG(self), code, phrase, request))){
+		// Add UnSupported header
+		tsip_message_add_headers(response,
+			TSIP_HEADER_DUMMY_VA_ARGS("Reason", reason),
+			tsk_null
+			);
+
+		tsip_dialog_response_send(TSIP_DIALOG(self), response);
+		TSK_OBJECT_SAFE_FREE(response);
+	}
+	return 0;
 }
 
 int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self)
@@ -1063,6 +1126,7 @@ static tsk_object_t* tsip_dialog_invite_dtor(tsk_object_t * _self)
 		tsip_dialog_invite_stimers_cancel(self);
 		tsip_dialog_invite_qos_timer_cancel(self);
 		TSIP_DIALOG_TIMER_CANCEL(shutdown);
+		TSIP_DIALOG_TIMER_CANCEL(100rel);
 
 		/* DeInitialize base class */
 		tsip_dialog_deinit(TSIP_DIALOG(self));
@@ -1071,6 +1135,7 @@ static tsk_object_t* tsip_dialog_invite_dtor(tsk_object_t * _self)
 		TSK_OBJECT_SAFE_FREE(self->msession_mgr);
 		TSK_OBJECT_SAFE_FREE(self->last_oInvite);
 		TSK_OBJECT_SAFE_FREE(self->last_iInvite);
+		TSK_OBJECT_SAFE_FREE(self->last_o1xxrel);
 		TSK_FREE(self->stimers.refresher);
 		//...
 
