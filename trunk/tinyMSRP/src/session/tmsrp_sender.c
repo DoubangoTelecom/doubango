@@ -36,13 +36,20 @@
 #include "tsk_debug.h"
 
 
-void *run(void* self);
+static void *run(void* self);
+
+
+tmsrp_sender_t* tmsrp_sender_create(tmsrp_config_t* config, tnet_fd_t fd)
+{
+	return tsk_object_new(tmsrp_sender_def_t, config, fd);
+}
 
 int tmsrp_sender_start(tmsrp_sender_t* self)
 {
 	int ret = -1;
 	
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		goto bail;
 	}
 	
@@ -60,10 +67,11 @@ int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* pdata, tsk_size_t s
 	tmsrp_data_out_t* data_out;
 
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if((data_out = TMSRP_DATA_OUT_CREATE(pdata, size))){
+	if((data_out = tmsrp_data_out_create(pdata, size))){
 		TSK_RUNNABLE_ENQUEUE_OBJECT(self, data_out);
 		return 0;
 	}
@@ -75,10 +83,11 @@ int tsmrp_sender_send_file(tmsrp_sender_t* self, const char* filepath)
 	tmsrp_data_out_t* data_out;
 
 	if(!self || !filepath){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if((data_out = TMSRP_DATA_OUT_FILE_CREATE(filepath))){
+	if((data_out = tmsrp_data_out_file_create(filepath))){
 		if(TMSRP_DATA(data_out)->isOK){
 			TSK_RUNNABLE_ENQUEUE_OBJECT(self, data_out);
 			return 0;
@@ -96,6 +105,7 @@ int tmsrp_sender_stop(tmsrp_sender_t* self)
 	int ret = -1;
 
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		goto bail;
 	}
 
@@ -142,7 +152,7 @@ void *run(void* self)
 			// compute new transaction id
 			tsk_strrandom(&tid);
 			// create SEND request
-			SEND = TMSRP_REQUEST_CREATE(tid, "SEND");
+			SEND = tmsrp_request_create(tid, "SEND");
 			// T-Path and From-Path (because of otherURIs)
 			SEND->To = tsk_object_ref(sender->config->To_Path);
 			SEND->From = tsk_object_ref(sender->config->From_Path);
@@ -189,7 +199,7 @@ void *run(void* self)
 //=================================================================================================
 //	MSRP sender object definition
 //
-static void* tmsrp_sender_create(void * self, va_list *app)
+static void* tmsrp_sender_ctor(tsk_object_t * self, va_list *app)
 {
 	tmsrp_sender_t *sender = self;
 	if(sender){
@@ -201,7 +211,7 @@ static void* tmsrp_sender_create(void * self, va_list *app)
 	return self;
 }
 
-static void* tmsrp_sender_destroy(void * self)
+static void* tmsrp_sender_dtor(tsk_object_t * self)
 { 
 	tmsrp_sender_t *sender = self;
 	if(sender){
@@ -218,8 +228,8 @@ static void* tmsrp_sender_destroy(void * self)
 static const tsk_object_def_t tmsrp_sender_def_s = 
 {
 	sizeof(tmsrp_sender_t),
-	tmsrp_sender_create, 
-	tmsrp_sender_destroy,
+	tmsrp_sender_ctor,
+	tmsrp_sender_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tmsrp_sender_def_t = &tmsrp_sender_def_s;

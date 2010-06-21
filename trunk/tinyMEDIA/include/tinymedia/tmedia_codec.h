@@ -120,6 +120,8 @@ typedef struct tmedia_codec_s
 
 	//! the type of the codec
 	tmedia_type_t type;
+	//! whether the codec is opened
+	tsk_bool_t opened;
 	//! whether the pay. type is dyn. or not
 	tsk_bool_t dyn;
 	//! the name of the codec. e.g. "G.711U" or "G.711A" etc used in the sdp
@@ -166,6 +168,10 @@ typedef struct tmedia_codec_plugin_def_s
 		/* ...to be continued */
 	} video;
 	
+	//! open the codec
+	int (*open) (tmedia_codec_t*);
+	//! close the codec
+	int (*close) (tmedia_codec_t*);
 	//! encode data
 	tsk_size_t (*encode) (tmedia_codec_t*, const void* in_data, tsk_size_t in_size, void** out_data);
 	//! decode data
@@ -186,6 +192,8 @@ typedef tsk_list_t tmedia_codecs_L_t;
 #define TMEDIA_DECLARE_CODEC tmedia_codec_t __codec__
 
 TINYMEDIA_API int tmedia_codec_init(tmedia_codec_t* self, tmedia_type_t type, const char* name, const char* desc, const char* format);
+TINYMEDIA_API int tmedia_codec_open(tmedia_codec_t* self);
+TINYMEDIA_API int tmedia_codec_close(tmedia_codec_t* self);
 TINYMEDIA_API int tmedia_codec_cmp(const tsk_object_t* codec1, const tsk_object_t* codec2);
 TINYMEDIA_API int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin);
 TINYMEDIA_API int tmedia_codec_plugin_unregister(const tmedia_codec_plugin_def_t* plugin);

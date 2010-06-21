@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyDAV\include;..\..\tinyMEDIA\include;..\..\tinyRTP\include;..\..\tinySDP\include;..\..\tinySAK\src;..\..\tinyNET\src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -228,6 +228,10 @@
 				<Filter
 					Name="h263"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\codecs\h263\tdav_codec_h263.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="h264"
@@ -248,6 +252,14 @@
 				<Filter
 					Name="silk"
 					>
+				</Filter>
+				<Filter
+					Name="msrp"
+					>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\codecs\msrp\tdav_codec_msrp.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -313,18 +325,46 @@
 			<Filter
 				Name="video"
 				>
+				<File
+					RelativePath="..\..\tinyDAV\include\tinydav\video\tdav_session_video.h"
+					>
+				</File>
 				<Filter
 					Name="android"
 					>
 				</Filter>
 				<Filter
-					Name="directsound"
+					Name="directshow"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\video\directshow\tdav_consumer_dshow.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\video\directshow\tdav_producer_dshow.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="v4linux"
 					>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="msrp"
+				>
+				<File
+					RelativePath="..\..\tinyDAV\include\tinydav\msrp\tdav_consumer_msrp.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyDAV\include\tinydav\msrp\tdav_producer_msrp.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyDAV\include\tinydav\msrp\tdav_session_msrp.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -372,6 +412,10 @@
 				<Filter
 					Name="h263"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\src\codecs\h263\tdav_codec_h263.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="h264"
@@ -392,6 +436,14 @@
 				<Filter
 					Name="theora"
 					>
+				</Filter>
+				<Filter
+					Name="msrp"
+					>
+					<File
+						RelativePath="..\..\tinyDAV\src\codecs\msrp\tdav_codec_msrp.c"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -457,6 +509,10 @@
 			<Filter
 				Name="video"
 				>
+				<File
+					RelativePath="..\..\tinyDAV\src\video\tdav_session_video.c"
+					>
+				</File>
 				<Filter
 					Name="android"
 					>
@@ -464,11 +520,35 @@
 				<Filter
 					Name="directshow"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\src\video\directshow\tdav_consumer_dshow.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\tinyDAV\src\video\directshow\tdav_producer_dshow.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="v4linux"
 					>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="msrp"
+				>
+				<File
+					RelativePath="..\..\tinyDAV\src\msrp\dav_session_msrp.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyDAV\src\msrp\tdav_consumer_msrp.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyDAV\src\msrp\tdav_producer_msrp.c"
+					>
+				</File>
 			</Filter>
 		</Filter>
 	</Files>

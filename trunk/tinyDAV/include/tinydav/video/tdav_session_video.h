@@ -20,44 +20,49 @@
 *
 */
 
-/**@file tmsrp_media.h
- * @brief MSRP Session config.
+/**@file tdav_session_video.h
+ * @brief Video Session plugin.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMSRP_CONFIG_H
-#define TINYMSRP_CONFIG_H
+#ifndef TINYDAV_SESSION_VIDEO_H
+#define TINYDAV_SESSION_VIDEO_H
 
-#include "tinymsrp_config.h"
+#include "tinydav_config.h"
 
-#include "tinymsrp/headers/tmsrp_header_From-Path.h"
-#include "tinymsrp/headers/tmsrp_header_To-Path.h"
+#include "tinymedia/tmedia_session.h"
 
-#include "tsk_object.h"
+TDAV_BEGIN_DECLS
 
-TMSRP_BEGIN_DECLS
+// Forward declaration
+struct trtp_manager_s;
+struct tdav_consumer_video_s;
 
-#define TMSRP_MAX_CHUNK_SIZE				2048
-
-typedef struct tmsrp_config_s
+typedef struct tdav_session_video_s
 {
-	TSK_DECLARE_OBJECT;
+	TMEDIA_DECLARE_SESSION_VIDEO;
 
-	tmsrp_header_To_Path_t* To_Path;
-	tmsrp_header_From_Path_t* From_Path;
+	tsk_bool_t useIPv6;
 
-	tsk_bool_t Failure_Report;
-	tsk_bool_t Success_Report;
-	tsk_bool_t OMA_Final_Report;
+	char* local_ip;
+
+	char* remote_ip;
+	uint16_t remote_port;
+	
+	tsk_bool_t rtcp_enabled;
+
+	struct trtp_manager_s* rtp_manager;
+
+	struct tmedia_consumer_s* consumer;
+	struct tmedia_producer_s* producer;
 }
-tmsrp_config_t;
+tdav_session_video_t;
 
-tmsrp_config_t* tmsrp_config_create();
 
-TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_config_def_t;
+TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_video_plugin_def_t;
 
-TMSRP_END_DECLS
+TDAV_END_DECLS
 
-#endif /* TINYMSRP_CONFIG_H */
+#endif /* TINYDAV_SESSION_VIDEO_H */

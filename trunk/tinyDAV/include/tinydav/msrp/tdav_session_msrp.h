@@ -20,44 +20,47 @@
 *
 */
 
-/**@file tmsrp_media.h
- * @brief MSRP Session config.
+/**@file tdav_session_msrp.h
+ * @brief The Message Session Relay Protocol (MSRP) session.
+ * Used for both Message (RFC 4975) and file transfer (RFC 5547).
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMSRP_CONFIG_H
-#define TINYMSRP_CONFIG_H
 
-#include "tinymsrp_config.h"
+#ifndef TINYDAV_SESSION_MSRP_H
+#define TINYDAV_SESSION_MSRP_H
 
-#include "tinymsrp/headers/tmsrp_header_From-Path.h"
-#include "tinymsrp/headers/tmsrp_header_To-Path.h"
+#include "tinydav_config.h"
 
-#include "tsk_object.h"
+#include "tinymedia/tmedia_session.h"
 
-TMSRP_BEGIN_DECLS
+TDAV_BEGIN_DECLS
 
-#define TMSRP_MAX_CHUNK_SIZE				2048
+// Forward declaration
+struct trtp_manager_s;
+struct tdav_consumer_msrp_s;
 
-typedef struct tmsrp_config_s
+typedef struct tdav_session_msrp_s
 {
-	TSK_DECLARE_OBJECT;
+	TMEDIA_DECLARE_SESSION_MSRP;
 
-	tmsrp_header_To_Path_t* To_Path;
-	tmsrp_header_From_Path_t* From_Path;
+	tsk_bool_t useIPv6;
 
-	tsk_bool_t Failure_Report;
-	tsk_bool_t Success_Report;
-	tsk_bool_t OMA_Final_Report;
+	char* local_ip;
+
+	char* remote_ip;
+	uint16_t remote_port;
+
+	struct tmedia_consumer_s* consumer;
+	struct tmedia_producer_s* producer;
 }
-tmsrp_config_t;
+tdav_session_msrp_t;
 
-tmsrp_config_t* tmsrp_config_create();
 
-TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_config_def_t;
+TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_msrp_plugin_def_t;
 
-TMSRP_END_DECLS
+TDAV_END_DECLS
 
-#endif /* TINYMSRP_CONFIG_H */
+#endif /* TINYDAV_SESSION_MSRP_H */

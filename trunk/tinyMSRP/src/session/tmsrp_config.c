@@ -32,7 +32,10 @@
 #include "tsk_memory.h"
 
 
-
+tmsrp_config_t* tmsrp_config_create()
+{
+	return tsk_object_new(tmsrp_config_def_t);
+}
 
 
 
@@ -48,7 +51,7 @@
 //=================================================================================================
 //	MSRP Session config object definition
 //
-static void* tmsrp_config_create(void * self, va_list * app)
+static void* tmsrp_config_ctor(tsk_object_t * self, va_list * app)
 {
 	tmsrp_config_t *config = self;
 	if(config){
@@ -57,7 +60,7 @@ static void* tmsrp_config_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_config_destroy(void * self)
+static void* tmsrp_config_dtor(tsk_object_t * self)
 { 
 	tmsrp_config_t *config = self;
 	if(config){
@@ -71,8 +74,8 @@ static void* tmsrp_config_destroy(void * self)
 static const tsk_object_def_t tmsrp_config_def_s = 
 {
 	sizeof(tmsrp_config_t),
-	tmsrp_config_create, 
-	tmsrp_config_destroy,
+	tmsrp_config_ctor,
+	tmsrp_config_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tmsrp_config_def_t = &tmsrp_config_def_s;

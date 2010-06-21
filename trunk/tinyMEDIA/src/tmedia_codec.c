@@ -82,6 +82,75 @@ int tmedia_codec_init(tmedia_codec_t* self, tmedia_type_t type, const char* name
 }
 
 /**@ingroup tmedia_codec_group
+* Prepares a codec by opening it.
+* @param self The codec to open.
+* @retval Zero if succeed and non-zero error code otherwise.
+* @sa @ref tmedia_codec_close()
+*/
+int tmedia_codec_open(tmedia_codec_t* self)
+{
+	if(!self || !self->plugin){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	if(self->opened){
+		TSK_DEBUG_WARN("Codec already opened");
+		return 0;
+	}
+
+	if(self->plugin->open){
+		int ret;
+		if((ret = self->plugin->open(self))){
+			TSK_DEBUG_ERROR("Failed to open [%s] codec", self->plugin->desc);
+			return ret;
+		}
+		else{
+			self->opened = tsk_true;
+			return 0;
+		}
+	}
+	else{
+		self->opened = tsk_true;
+		return 0;
+	}
+}
+
+/**@ingroup tmedia_codec_group
+* UnPrepares a codec by closing it.
+* @param self The codec to close.
+* @retval Zero if succeed and non-zero error code otherwise.
+* @sa @ref tmedia_codec_open()
+*/
+int tmedia_codec_close(tmedia_codec_t* self)
+{
+	if(!self || !self->plugin){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	if(!self->opened){
+		TSK_DEBUG_WARN("Codec not opened");
+		return 0;
+	}
+
+	if(self->plugin->close){
+		int ret;
+
+		if((ret = self->plugin->close(self))){
+			TSK_DEBUG_ERROR("Failed to close [%s] codec", self->plugin->desc);
+			return ret;
+		}
+		else{
+			self->opened = tsk_false;
+			return 0;
+		}
+	}
+	else{
+		self->opened = tsk_false;
+		return 0;
+	}
+}
+
+/**@ingroup tmedia_codec_group
 * Generic function to compare two codecs.
 * @param codec1 The first codec to compare.
 * @param codec2 The second codec to compare.
@@ -430,6 +499,10 @@ int tmedia_codec_deinit(tmedia_codec_t* self)
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
+	}
+
+	if(self->opened){
+		tmedia_codec_close(self);
 	}
 
 	TSK_FREE(self->name);

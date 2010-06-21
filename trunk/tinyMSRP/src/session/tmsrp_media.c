@@ -146,7 +146,7 @@ int	tmsrp_media_start(tmedia_t* self)
 	
 	// create and start the receiver
 	if(!msrp->receiver){
-		if((msrp->receiver = TMSRP_RECEIVER_CREATE(msrp->config, msrp->connectedFD))){
+		if((msrp->receiver = tmsrp_receiver_create(msrp->config, msrp->connectedFD))){
 			tnet_transport_set_callback(msrp->transport, TNET_TRANSPORT_CB_F(tmsrp_transport_layer_stream_cb), msrp->receiver);
 			if((ret = tmsrp_receiver_start(msrp->receiver))){
 				goto bail;
@@ -156,7 +156,7 @@ int	tmsrp_media_start(tmedia_t* self)
 
 	// create and start the sender
 	if(!msrp->sender){
-		if((msrp->sender = TMSRP_SENDER_CREATE(msrp->config, msrp->connectedFD))){
+		if((msrp->sender = tmsrp_sender_create(msrp->config, msrp->connectedFD))){
 			if((ret = tmsrp_sender_start(msrp->sender))){
 				goto bail;
 			}
@@ -489,7 +489,7 @@ tmsrp_send_data(tmsrp_media_t* self, const void* data, tsk_size_t size, const ch
 //========================================================
 //	Dummy media object definition
 //
-static void* tmsrp_media_create(tsk_object_t *self, va_list * app)
+static void* tmsrp_media_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_media_t *msrp = self;
 	if(msrp)
@@ -504,7 +504,7 @@ static void* tmsrp_media_create(tsk_object_t *self, va_list * app)
 		// init base
 		tmedia_init(TMEDIA(msrp), name);
 
-		msrp->config = TMSRP_CONFIG_CREATE();
+		msrp->config = tmsrp_config_create();
 		msrp->setup = setup_actpass; // draft-denis-simple-msrp-comedia-02 - 4.1.1. Sending the offer
 		TMEDIA(msrp)->protocol = tsk_strdup("TCP/MSRP");
 
@@ -525,7 +525,7 @@ static void* tmsrp_media_create(tsk_object_t *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_media_destroy(tsk_object_t *self)
+static void* tmsrp_media_dtor(tsk_object_t *self)
 {
 	tmsrp_media_t *msrp = self;
 	if(msrp){
@@ -561,8 +561,8 @@ static void* tmsrp_media_destroy(tsk_object_t *self)
 static const tsk_object_def_t tmsrp_media_def_s = 
 {
 	sizeof(tmsrp_media_t),
-	tmsrp_media_create,
-	tmsrp_media_destroy,
+	tmsrp_media_ctor,
+	tmsrp_media_dtor,
 	tsk_null
 };
 

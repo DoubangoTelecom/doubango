@@ -20,44 +20,32 @@
 *
 */
 
-/**@file tmsrp_media.h
- * @brief MSRP Session config.
+/**@file tdav_consumer_msrp.h
+ * @brief The Message Session Relay Protocol (MSRP) consumer.
+ * Used for both Message (RFC 4975) and file transfer (RFC 5547).
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMSRP_CONFIG_H
-#define TINYMSRP_CONFIG_H
+#ifndef TINYDAV_CONSUMER_MSRP_H
+#define TINYDAV_CONSUMER_MSRP_H
 
-#include "tinymsrp_config.h"
+#include "tinydav_config.h"
 
-#include "tinymsrp/headers/tmsrp_header_From-Path.h"
-#include "tinymsrp/headers/tmsrp_header_To-Path.h"
+TDAV_BEGIN_DECLS
 
-#include "tsk_object.h"
 
-TMSRP_BEGIN_DECLS
+#define TDAV_CONSUMER_MSRP(self)		((tdav_consumer_msrp_t*)(self))
 
-#define TMSRP_MAX_CHUNK_SIZE				2048
 
-typedef struct tmsrp_config_s
+typedef struct tdav_consumer_msrp_s
 {
-	TSK_DECLARE_OBJECT;
-
-	tmsrp_header_To_Path_t* To_Path;
-	tmsrp_header_From_Path_t* From_Path;
-
-	tsk_bool_t Failure_Report;
-	tsk_bool_t Success_Report;
-	tsk_bool_t OMA_Final_Report;
+	TMEDIA_DECLARE_CONSUMER;
 }
-tmsrp_config_t;
+tdav_consumer_msrp_t;
 
-tmsrp_config_t* tmsrp_config_create();
 
-TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_config_def_t;
+TDAV_END_DECLS
 
-TMSRP_END_DECLS
-
-#endif /* TINYMSRP_CONFIG_H */
+#endif /* TINYDAV_CONSUMER_MSRP_H */

@@ -32,6 +32,8 @@
 
 #include "tinymsrp_config.h"
 
+#include "tinymsrp/session/tmsrp_media.h"
+
 #include "tnet_socket.h"
 
 #include "tsk_object.h"
@@ -39,12 +41,6 @@
 TMSRP_BEGIN_DECLS
 
 #define TMSRP_SESSION_VA_ARGS(setup, host, useIPv6, useTLS)	tmsrp_session_def_t, (tmsrp_session_setup_t)setup, (const char*)host, (tsk_bool_t)useIPv6, (tsk_bool_t)useTLS
-#define TMSRP_SESSION_CREATE(setup, host, useIPv6, useTLS)	tsk_object_new(TMSRP_SESSION_VA_ARGS(setup, host, useIPv6, useTLS))
-#define TMSRP_SESSION_ACTIVE_CREATE(host, useIPv6, useTLS)	TMSRP_SESSION_CREATE(setup_active, host, useIPv6, useTLS)
-#define TMSRP_SESSION_PASSIVE_CREATE(host, useIPv6, useTLS)	TMSRP_SESSION_CREATE(setup_passive, host, useIPv6, useTLS)
-#define TMSRP_SESSION_ACTPASS_CREATE(host, useIPv6, useTLS)	TMSRP_SESSION_CREATE(setup_actpass, host, useIPv6, useTLS)
-#define TMSRP_SESSION_HOLDCONN_CREATE(host, useIPv6, useTLS)	TMSRP_SESSION_CREATE(setup_holdconn, host, useIPv6, useTLS)
-#define TMSRP_SESSION_CREATE_NULL()		TMSRP_SESSION_CREATE(setup_actpass, TNET_SOCKET_HOST_ANY, tsk_false, tsk_false)
 
 #define TMSRP_SESSION(self)	((tmsrp_session_t*)(self))
 
