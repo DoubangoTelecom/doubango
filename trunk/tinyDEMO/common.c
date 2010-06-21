@@ -523,6 +523,7 @@ int session_handle_event(const tsip_event_t *_event)
 	case tsip_event_code_dialog_terminated:
 		{	/* we no longer need the session 
 			* -> remove and destroy the session */
+			TSK_DEBUG_INFO("Dialog Terminated --> %s", _event->phrase);
 			tsk_list_remove_item_by_data(ctx->sessions, session);
 			break;
 		}
