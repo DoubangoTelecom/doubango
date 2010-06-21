@@ -31,9 +31,13 @@
 // Sessions
 #include "tinymedia/tmedia_session_ghost.h"
 #include "tinydav/audio/tdav_session_audio.h"
+#include "tinydav/video/tdav_session_video.h"
 
 // Codecs
+#include "tinydav/codecs/msrp/tdav_codec_msrp.h"
 #include "tinydav/codecs/g711/tdav_codec_g711.h"
+#include "tinydav/codecs/h263/tdav_codec_h263.h"
+
 
 // Consumers
 #include "tinydav/audio/waveapi/tdav_consumer_waveapi.h"
@@ -62,14 +66,20 @@ int tdav_init()
 	/* === Register sessions === */
 	tmedia_session_plugin_register(tmedia_session_ghost_plugin_def_t);
 	tmedia_session_plugin_register(tdav_session_audio_plugin_def_t);
+	tmedia_session_plugin_register(tdav_session_video_plugin_def_t);
 
 	/* === Register codecs === */
 #if 0
 	avcodec_register_all();
 #endif
-
+	
+	tmedia_codec_plugin_register(tdav_codec_msrp_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h263_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h263p_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h263pp_plugin_def_t);
+	
 
 	/* === Register consumers === */
 #if HAVE_DSOUND_H
@@ -111,12 +121,17 @@ int tdav_init()
 int tdav_deinit()
 {
 	/* === UnRegister sessions === */
-	tmedia_session_plugin_register(tmedia_session_ghost_plugin_def_t);
+	tmedia_session_plugin_unregister(tmedia_session_ghost_plugin_def_t);
 	tmedia_session_plugin_unregister(tdav_session_audio_plugin_def_t);
+	tmedia_session_plugin_unregister(tdav_session_video_plugin_def_t);
 
 	/* === UnRegister codecs === */
+	tmedia_codec_plugin_unregister(tdav_codec_msrp_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_g711u_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_h263_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_h263p_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_h263pp_plugin_def_t);
 
 	/* === unRegister consumers === */
 #if HAVE_DSOUND_H

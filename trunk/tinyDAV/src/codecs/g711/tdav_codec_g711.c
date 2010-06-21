@@ -151,6 +151,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_g711u_plugin_def_s =
 	/* video */
 	{0},
 
+	tsk_null, // open
+	tsk_null, // close
 	tdav_codec_g711u_fmtp_encode,
 	tdav_codec_g711u_fmtp_decode,
 	tdav_codec_g711u_fmtp_match,
@@ -293,6 +295,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_g711a_plugin_def_s =
 	/* video */
 	{0},
 
+	tsk_null, // open
+	tsk_null, // close
 	tdav_codec_g711a_fmtp_encode,
 	tdav_codec_g711a_fmtp_decode,
 	tdav_codec_g711a_fmtp_match,

@@ -271,8 +271,9 @@ int execute(const cmd_t* cmd)
 
 	switch(cmd->type){
 		case cmd_audio:
+		case cmd_audiovideo:
 			{
-				TSK_DEBUG_INFO("command=audio");
+				TSK_DEBUG_INFO("command=audio/video");
 				if((sid = invite_handle_cmd(cmd->type, cmd->opts)) != TSIP_SSESSION_INVALID_ID){
 					if(cmd->sidparam){
 						tsk_itoa(sid, &istr);

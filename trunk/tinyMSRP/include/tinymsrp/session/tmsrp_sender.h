@@ -41,8 +41,6 @@
 
 TMSRP_BEGIN_DECLS
 
-#define TMSRP_SENDER_CREATE(config, fd)	tsk_object_new(tmsrp_sender_def_t, (tmsrp_config_t*)config, (tnet_fd_t) fd)
-
 typedef struct tmsrp_sender_s
 {
 	TSK_DECLARE_RUNNABLE;
@@ -52,6 +50,8 @@ typedef struct tmsrp_sender_s
 	tnet_fd_t fd;
 }
 tmsrp_sender_t;
+
+tmsrp_sender_t* tmsrp_sender_create(tmsrp_config_t* config, tnet_fd_t fd);
 
 int tmsrp_sender_start(tmsrp_sender_t* self);
 int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* data, tsk_size_t size, const char* ctype);

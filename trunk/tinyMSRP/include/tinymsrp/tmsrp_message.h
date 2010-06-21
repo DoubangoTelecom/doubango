@@ -53,20 +53,6 @@ TMSRP_BEGIN_DECLS
 #define TMSRP_MESSAGE_AS_REQUEST(self)	((tmsrp_request_t*)(self))
 
 
-/**@def TMSRP_MESSAGE_CREATE
-* Creates new msrp messgae. Could be either a request or a response.
-* You must call @ref TSK_OBJECT_SAFE_FREE to free the message.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TMSRP_MESSAGE_CREATE(type, tid, method, status, comment)\
-	tsk_object_new(tmsrp_message_def_t, (tmsrp_message_type_t)type, (const char*)tid, (const char*)method, (short)status, (const char*)comment)
-#define TMSRP_REQUEST_CREATE(tid, method)\
-	TMSRP_MESSAGE_CREATE(tmsrp_request, tid, method, 0, tsk_null)
-#define TMSRP_RESPONSE_CREATE(tid, status, comment)\
-	TMSRP_MESSAGE_CREATE(tmsrp_response, tid, tsk_null, status, comment)
-#define TMSRP_MESSAGE_CREATE_NULL()\
-	TMSRP_MESSAGE_CREATE(tmsrp_unknown, tsk_null, tsk_null, 0, tsk_null)
-
 #define TMSRP_RESPONSE_CODE(self)			 (TMSRP_MESSAGE_IS_RESPONSE((self)) ? (self)->status_code : 0)
 #define TMSRP_RESPONSE_PHRASE(self)			 ((self)->reason_phrase)
 
@@ -156,6 +142,12 @@ tmsrp_message_t;
 
 typedef tmsrp_message_t tmsrp_request_t; /**< MSRP request message. */
 typedef tmsrp_message_t tmsrp_response_t; /**< MSRP response message. */
+
+
+TINYMSRP_API tmsrp_message_t* tmsrp_message_create(tmsrp_message_type_t type, const char* tid, const char* method, short status, const char* comment);
+TINYMSRP_API tmsrp_message_t* tmsrp_request_create(const char* tid, const char* method);
+TINYMSRP_API tmsrp_message_t* tmsrp_response_create(const char* tid, short status, const char* comment);
+TINYMSRP_API tmsrp_message_t* tmsrp_message_create_null();
 
 TINYMSRP_API int tmsrp_message_add_header(tmsrp_message_t *self, const tmsrp_header_t *hdr);
 TINYMSRP_API int tmsrp_message_add_headers(tmsrp_message_t *self, ...);

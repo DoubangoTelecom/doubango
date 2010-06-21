@@ -40,6 +40,28 @@
 #include <stdio.h> /* fopen, fclose ... */
 
 #define TMSRP_DATA_IN_MAX_BUFFER 0xFFFF
+
+tmsrp_data_in_t* tmsrp_data_in_create()
+{
+	return tsk_object_new(tmsrp_data_in_def_t);
+}
+
+tmsrp_data_out_t* _tmsrp_data_out_create(const void* pdata, tsk_size_t size, tsk_bool_t isfilepath)
+{
+	return tsk_object_new(tmsrp_data_out_def_t, pdata, size, isfilepath);
+}
+
+tmsrp_data_out_t* tmsrp_data_out_create(const void* pdata, tsk_size_t size)
+{ 
+	return _tmsrp_data_out_create(pdata, size, tsk_false);
+}
+
+tmsrp_data_out_t* tmsrp_data_out_file_create(const char* filepath)
+{
+	return _tmsrp_data_out_create(filepath, tsk_strlen(filepath), tsk_true);
+}
+
+
 /* =========================== Common ============================= */
 
 //int tmsrp_data_init(tmsrp_data_t* self, tsk_bool_t outgoing, const void* pdata, tsk_size_t size, tsk_bool_t isfilepath, const char* ctype)
@@ -103,6 +125,7 @@ int tmsrp_data_in_put(tmsrp_data_in_t* self, const void* pdata, tsk_size_t size)
 {
 	int ret = -1;
 	if(!self || !self->buffer || !pdata || !size){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return ret;
 	}
 
@@ -187,7 +210,7 @@ tsk_buffer_t* tmsrp_data_out_get(tmsrp_data_out_t* self)
 //=================================================================================================
 //	MSRP incoming data object definition
 //
-static void* tmsrp_data_in_create(void * self, va_list * app)
+static void* tmsrp_data_in_ctor(tsk_object_t * self, va_list * app)
 {
 	tmsrp_data_in_t *data_in = self;
 	if(data_in){
@@ -196,7 +219,7 @@ static void* tmsrp_data_in_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_data_in_destroy(void * self)
+static void* tmsrp_data_in_dtor(tsk_object_t * self)
 { 
 	tmsrp_data_in_t *data_in = self;
 	if(data_in){
@@ -212,8 +235,8 @@ static void* tmsrp_data_in_destroy(void * self)
 static const tsk_object_def_t tmsrp_data_in_def_s = 
 {
 	sizeof(tmsrp_data_in_t),
-	tmsrp_data_in_create, 
-	tmsrp_data_in_destroy,
+	tmsrp_data_in_ctor,
+	tmsrp_data_in_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tmsrp_data_in_def_t = &tmsrp_data_in_def_s;
@@ -221,7 +244,7 @@ const tsk_object_def_t *tmsrp_data_in_def_t = &tmsrp_data_in_def_s;
 //=================================================================================================
 //	MSRP outgoing data object definition
 //
-static void* tmsrp_data_out_create(void * self, va_list * app)
+static void* tmsrp_data_out_ctor(tsk_object_t * self, va_list * app)
 {
 	tmsrp_data_out_t *data_out = self;
 	if(data_out){
@@ -269,7 +292,7 @@ static void* tmsrp_data_out_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_data_out_destroy(void * self)
+static void* tmsrp_data_out_dtor(tsk_object_t * self)
 { 
 	tmsrp_data_out_t *data_out = self;
 	if(data_out){
@@ -289,8 +312,8 @@ static void* tmsrp_data_out_destroy(void * self)
 static const tsk_object_def_t tmsrp_data_out_def_s = 
 {
 	sizeof(tmsrp_data_out_t),
-	tmsrp_data_out_create, 
-	tmsrp_data_out_destroy,
+	tmsrp_data_out_ctor,
+	tmsrp_data_out_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tmsrp_data_out_def_t = &tmsrp_data_out_def_s;

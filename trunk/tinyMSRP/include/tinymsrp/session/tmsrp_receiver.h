@@ -40,8 +40,6 @@
 
 TMSRP_BEGIN_DECLS
 
-#define TMSRP_RECEIVER_CREATE(config, fd)	tsk_object_new(tmsrp_receiver_def_t, (tmsrp_config_t*)config, (tnet_fd_t) fd)
-
 int tmsrp_transport_layer_stream_cb(const tnet_transport_event_t* e);
 
 typedef struct tmsrp_receiver_s
@@ -54,6 +52,7 @@ typedef struct tmsrp_receiver_s
 }
 tmsrp_receiver_t;
 
+tmsrp_receiver_t* tmsrp_receiver_create(tmsrp_config_t* config, tnet_fd_t fd);
 int tmsrp_receiver_start(tmsrp_receiver_t* self);
 int tmsrp_receiver_stop(tmsrp_receiver_t* self);
 

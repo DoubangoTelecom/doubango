@@ -37,6 +37,13 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
+
+tmsrp_receiver_t* tmsrp_receiver_create(tmsrp_config_t* config, tnet_fd_t fd)
+{
+	return tsk_object_new(tmsrp_receiver_def_t, config, fd);
+}
+
+
 int tmsrp_receiver_start(tmsrp_receiver_t* self)
 {
 	return 0;
@@ -77,7 +84,7 @@ int tmsrp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			char* str;
 
 			// send 200 OK
-			if((r2xx = tmsrp_create_response(message, 200, "I got it"))){
+			if((r2xx = tmsrp_create_response(message, 200, "OK"))){
 				if((str = tmsrp_message_tostring(r2xx))){
 					tnet_sockfd_send(receiver->fd, str, strlen(str), 0);
 					TSK_FREE(str);
@@ -86,7 +93,7 @@ int tmsrp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			}
 			// send REPORT
 			if(tmsrp_isReportRequired(message, tsk_false)){
-				if((REPORT = tmsrp_create_report(message, 200, "I got it"))){
+				if((REPORT = tmsrp_create_report(message, 200, "OK"))){
 					if((str = tmsrp_message_tostring(REPORT))){
 						tnet_sockfd_send(receiver->fd, str, strlen(str), 0);
 						TSK_FREE(str);
@@ -109,19 +116,19 @@ int tmsrp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 //=================================================================================================
 //	MSRP receiver object definition
 //
-static void* tmsrp_receiver_create(void * self, va_list *app)
+static void* tmsrp_receiver_ctor(tsk_object_t * self, va_list *app)
 {
 	tmsrp_receiver_t *receiver = self;
 	if(receiver){
 		receiver->config = tsk_object_ref(va_arg(*app, tmsrp_config_t*));
 		receiver->fd = va_arg(*app, tnet_fd_t);	
 
-		receiver->data_in = TMSRP_DATA_IN_CREATE();
+		receiver->data_in = tmsrp_data_in_create();
 	}
 	return self;
 }
 
-static void* tmsrp_receiver_destroy(void * self)
+static void* tmsrp_receiver_dtor(tsk_object_t * self)
 { 
 	tmsrp_receiver_t *receiver = self;
 	if(receiver){
@@ -138,8 +145,8 @@ static void* tmsrp_receiver_destroy(void * self)
 static const tsk_object_def_t tmsrp_receiver_def_s = 
 {
 	sizeof(tmsrp_receiver_t),
-	tmsrp_receiver_create, 
-	tmsrp_receiver_destroy,
+	tmsrp_receiver_ctor,
+	tmsrp_receiver_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tmsrp_receiver_def_t = &tmsrp_receiver_def_s;

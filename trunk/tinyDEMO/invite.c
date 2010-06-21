@@ -139,9 +139,10 @@ tsip_ssession_id_t invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 
 	switch(cmd){
 		case cmd_audio:
-			{	/* Make Audio call */
+		case cmd_audiovideo:
+			{	/* Make Audio/Video call */
 				tsip_action_handle_t* action_config = action_get_config(opts);
-				tsip_action_INVITE(session->handle, tmedia_audio,
+				tsip_action_INVITE(session->handle, (cmd == cmd_audio) ? tmedia_audio : (tmedia_audio|tmedia_video),
 					TSIP_ACTION_SET_CONFIG(action_config),
 					/* Any other TSIP_ACTION_SET_*() macros */
 					TSIP_ACTION_SET_NULL());

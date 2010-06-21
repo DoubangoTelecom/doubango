@@ -32,6 +32,7 @@
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
+#include "tsk_debug.h"
 
 /*== Predicate function to find tmsrp_header_t object by type. */
 static int pred_find_header_by_type(const tsk_list_item_t *item, const void *tmsrp_htype)
@@ -54,6 +55,27 @@ static int pred_find_header_by_name(const tsk_list_item_t *item, const void *nam
 		return tsk_stricmp(tmsrp_header_get_nameex(header), (const char*)name);
 	}
 	return -1;
+}
+
+
+tmsrp_message_t* tmsrp_message_create(tmsrp_message_type_t type, const char* tid, const char* method, short status, const char* comment)
+{
+	return tsk_object_new(tmsrp_message_def_t, type, tid, method, status, comment);
+}
+
+tmsrp_message_t* tmsrp_request_create(const char* tid, const char* method)
+{
+	return tmsrp_message_create(tmsrp_request, tid, method, 0, tsk_null);
+}
+
+tmsrp_message_t* tmsrp_response_create(const char* tid, short status, const char* comment)
+{
+	return tmsrp_message_create(tmsrp_response, tid, tsk_null, status, comment);
+}
+
+tmsrp_message_t* tmsrp_message_create_null()
+{
+	return tmsrp_message_create(tmsrp_unknown, tsk_null, tsk_null, 0, tsk_null);
 }
 
 
@@ -102,6 +124,7 @@ int tmsrp_message_add_headers(tmsrp_message_t *self, ...)
 	va_list ap;
 
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -187,8 +210,7 @@ const tmsrp_header_t *tmsrp_message_get_headerAt(const tmsrp_message_t *self, tm
 			break;
 		}
 
-		tsk_list_foreach(item, self->headers)
-		{
+		tsk_list_foreach(item, self->headers){
 			if(!pred_find_header_by_type(item, &type)){
 				if(pos++ >= index){
 					hdr = item->data;
@@ -365,7 +387,7 @@ char* tmsrp_message_tostring(const tmsrp_message_t *self)
 //=================================================================================================
 //	MSRP object definition
 //
-static void* tmsrp_message_create(tsk_object_t * self, va_list * app)
+static void* tmsrp_message_ctor(tsk_object_t * self, va_list * app)
 {
 	tmsrp_message_t *message = self;
 	if(message){
@@ -390,7 +412,7 @@ static void* tmsrp_message_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_message_destroy(tsk_object_t * self)
+static void* tmsrp_message_dtor(tsk_object_t * self)
 { 
 	tmsrp_message_t *message = self;
 	if(message){
@@ -437,8 +459,8 @@ static int tmsrp_message_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tmsrp_message_def_s = 
 {
 	sizeof(tmsrp_message_t),
-	tmsrp_message_create, 
-	tmsrp_message_destroy,
+	tmsrp_message_ctor,
+	tmsrp_message_dtor,
 	tmsrp_message_cmp, 
 };
 const tsk_object_def_t *tmsrp_message_def_t = &tmsrp_message_def_s;

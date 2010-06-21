@@ -93,6 +93,9 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcmu_plugin_def_s =
 
 	/* video */
 	{0},
+
+	tsk_null, // open
+	tsk_null, // close
 	tmedia_codec_dpcmu_fmtp_encode,
 	tmedia_codec_dpcmu_fmtp_decode,
 	tmedia_codec_dpcmu_fmtp_match,
@@ -164,6 +167,8 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcma_plugin_def_s =
 	/* video */
 	{0},
 
+	tsk_null, // open
+	tsk_null, // close
 	tmedia_codec_dpcma_fmtp_encode,
 	tmedia_codec_dpcma_fmtp_decode,
 	tmedia_codec_dpcma_fmtp_match,
@@ -254,6 +259,8 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dh263_plugin_def_s =
 	/* video */
 	{176, 144},
 
+	tsk_null, // open
+	tsk_null, // close
 	tmedia_codec_dh263_fmtp_encode,
 	tmedia_codec_dh263_fmtp_decode,
 	tmedia_codec_dh263_fmtp_match,
@@ -345,6 +352,8 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dh264_plugin_def_s =
 	/* video */
 	{176, 144},
 
+	tsk_null, // open
+	tsk_null, // close
 	tmedia_codec_dh264_fmtp_encode,
 	tmedia_codec_dh264_fmtp_decode,
 	tmedia_codec_dh264_fmtp_match,

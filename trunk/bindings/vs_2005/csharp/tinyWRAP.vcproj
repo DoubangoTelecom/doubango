@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\_common;..\..\.;..\..\..\thirdparties\win32\include;..\..\..\tinySAK\src;..\..\..\tinyNET\src;..\..\..\tinyHTTP\include;..\..\..\tinySIP\include"
+				AdditionalIncludeDirectories="..\..\_common;..\..\.;..\..\..\thirdparties\win32\include;..\..\..\tinySAK\src;..\..\..\tinyNET\src;..\..\..\tinyHTTP\include;..\..\..\tinySIP\include;..\..\..\tinyMEDIA\include;..\..\..\tinySDP\include;..\..\..\tinyDAV\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYWRAP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyDAV.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -183,6 +183,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\_common\ProxyConsumer.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\..\_common\ProxyProducer.cxx"
+				>
+			</File>
+			<File
 				RelativePath="..\..\_common\SafeObject.cxx"
 				>
 			</File>
@@ -233,6 +241,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\_common\ProxyConsumer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\_common\ProxyProducer.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\_common\SafeObject.h"
 				>
 			</File>
@@ -258,6 +274,10 @@
 			</File>
 			<File
 				RelativePath="..\..\_common\SipUri.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\_common\tinyWRAP_config.h"
 				>
 			</File>
 			<File

@@ -3423,7 +3423,7 @@ tmsrp_message_t* tmsrp_message_parse_2(const void *input, tsk_size_t size, tsk_s
 		goto bail;
 	}
 
-	if(!(msrp_msg = TMSRP_MESSAGE_CREATE_NULL())){
+	if(!(msrp_msg = tmsrp_message_create_null())){
 		goto bail;
 	}
 

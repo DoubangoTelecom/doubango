@@ -57,7 +57,7 @@ tmsrp_request_t* tmsrp_create_bodiless(const tmsrp_uri_t* To, const tmsrp_uri_t*
 	tsk_strrandom(&tid);
 	tsk_strrandom(&mid);
 
-	if(!(BODILESS = TMSRP_REQUEST_CREATE(tid, "SEND"))){
+	if(!(BODILESS = tmsrp_request_create(tid, "SEND"))){
 		goto bail;
 	}
 	// To-Path
@@ -82,7 +82,7 @@ tmsrp_response_t* tmsrp_create_response(const tmsrp_request_t* request, short st
 		goto bail;
 	}
 	/* MSRP response will have the same tid ==> nothing to do */
-	if(!(response = TMSRP_RESPONSE_CREATE(request->tid, status, comment))){
+	if(!(response = tmsrp_response_create(request->tid, status, comment))){
 		goto bail;
 	}
 	/* reverse To-Path and From-Path */
@@ -120,7 +120,7 @@ tmsrp_request_t* tmsrp_create_report(const tmsrp_request_t* SEND, short status, 
 	tsk_strrandom(&tid);
 
 	/* MSRP response will have the same tid ==> nothing to do */
-	if(!(REPORT = TMSRP_REQUEST_CREATE(tid, "REPORT"))){
+	if(!(REPORT = tmsrp_request_create(tid, "REPORT"))){
 		goto bail;
 	}
 	

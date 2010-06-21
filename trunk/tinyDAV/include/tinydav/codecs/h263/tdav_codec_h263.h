@@ -20,44 +20,47 @@
 *
 */
 
-/**@file tmsrp_media.h
- * @brief MSRP Session config.
+/**@file tdav_codec_h263.h
+ * @brief H.263-1996 and H.263-1998 codec plugins.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMSRP_CONFIG_H
-#define TINYMSRP_CONFIG_H
+#ifndef TINYDAV_CODEC_H263_H
+#define TINYDAV_CODEC_H263_H
 
-#include "tinymsrp_config.h"
+#include "tinydav_config.h"
 
-#include "tinymsrp/headers/tmsrp_header_From-Path.h"
-#include "tinymsrp/headers/tmsrp_header_To-Path.h"
+#include "tinymedia/tmedia_codec.h"
 
-#include "tsk_object.h"
+TDAV_BEGIN_DECLS
 
-TMSRP_BEGIN_DECLS
-
-#define TMSRP_MAX_CHUNK_SIZE				2048
-
-typedef struct tmsrp_config_s
+/** H.263-1996 codec */
+typedef struct tdav_codec_h263_s
 {
-	TSK_DECLARE_OBJECT;
-
-	tmsrp_header_To_Path_t* To_Path;
-	tmsrp_header_From_Path_t* From_Path;
-
-	tsk_bool_t Failure_Report;
-	tsk_bool_t Success_Report;
-	tsk_bool_t OMA_Final_Report;
+	TMEDIA_DECLARE_CODEC_VIDEO;
 }
-tmsrp_config_t;
+tdav_codec_h263_t;
 
-tmsrp_config_t* tmsrp_config_create();
+/** H.263-1998 codec */
+typedef struct tdav_codec_h263p_s
+{
+	TMEDIA_DECLARE_CODEC_VIDEO;
+}
+tdav_codec_h263p_t;
 
-TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_config_def_t;
+/** H.263-2000 codec */
+typedef struct tdav_codec_h263pp_s
+{
+	TMEDIA_DECLARE_CODEC_VIDEO;
+}
+tdav_codec_h263pp_t;
 
-TMSRP_END_DECLS
+TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h263_plugin_def_t;
+TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h263p_plugin_def_t;
+TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h263pp_plugin_def_t;
 
-#endif /* TINYMSRP_CONFIG_H */
+TDAV_END_DECLS
+
+#endif /* TINYDAV_CODEC_H263_H */

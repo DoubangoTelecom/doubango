@@ -6,7 +6,7 @@
 %%pwd mamadou
 %%proxy_ip 192.168.16.104 # IP address or FQDN
 %%proxy_port 5060
-%%proxy_trans tcp # udp, tcp, tls or sctp
+%%proxy_trans udp # udp, tcp, tls or sctp
 %%expires 100 # expires used by all dialogs
 %%sleep-sec 1.0 # number of seconds to wait before sending next sip message
 
@@ -68,7 +68,7 @@
 #	--pay hello world
 
 #send INVITE
-++a --to sip:bob@$$(domain) \
+++av --to sip:bob@$$(domain) \
 		--header Action-Header=Myheader-value @@action \
 		>>(inv_audio_sid)
 ++sleep --sec -1
