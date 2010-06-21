@@ -302,8 +302,13 @@ int tsip_transac_nict_start(tsip_transac_nict_t *self, const tsip_request_t* req
 {
 	int ret = -1;
 	if(self && request && !TSIP_TRANSAC(self)->running){
-		/* Add branch to the new client transaction. */
-		if((TSIP_TRANSAC(self)->branch = tsk_strdup(TSIP_TRANSAC_MAGIC_COOKIE))){
+		/* Add branch to the new client transaction
+		* IMPORTANT: CANCEL will have the same Via and Contact headers as the request it cancel
+		*/
+		if(TSIP_REQUEST_IS_CANCEL(request)){
+			TSIP_TRANSAC(self)->branch = tsk_strdup(request->firstVia ? request->firstVia->branch : "doubango");
+		}
+		else if((TSIP_TRANSAC(self)->branch = tsk_strdup(TSIP_TRANSAC_MAGIC_COOKIE))){
 			tsk_istr_t branch;
 			tsk_strrandom(&branch);
 			tsk_strcat(&(TSIP_TRANSAC(self)->branch), branch);

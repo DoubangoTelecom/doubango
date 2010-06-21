@@ -122,6 +122,7 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 	tsk_list_item_t *item;
 	va_list ap;
 	tsk_bool_t found = tsk_false;
+	tsk_bool_t terminates = tsk_false; /* thread-safeness -> DO NOT REMOVE THIS VARIABLE */
 	int ret_exec = 0; /* success */
 	
 	if(!self){
@@ -161,15 +162,14 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 			
 			if(entry->exec){
 				if((ret_exec = entry->exec(&ap))){
-
 					TSK_DEBUG_INFO("State machine: Exec function failed. Moving to terminal state.");
-					self->current = self->term;
 				}
 			}
 			else{ /* Nothing to execute */
 				ret_exec = 0;
 			}
-
+			
+			terminates = (ret_exec || (self->current == self->term));
 			found = tsk_true;
 			break;
 		}
@@ -180,7 +180,8 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 	tsk_safeobj_unlock(self);
 
 	/* Only call the callback function after unlock. */
-	if(self->current == self->term){
+	if(terminates){
+		self->current = self->term;
 		if(self->callback_term){
 			self->callback_term(self->callback_data);
 		}

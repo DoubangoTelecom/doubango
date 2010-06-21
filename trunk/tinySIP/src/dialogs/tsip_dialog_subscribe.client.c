@@ -681,7 +681,8 @@ int tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self)
 	TSK_DEBUG_INFO("=== SUBSCRIBE Dialog terminated ===");
 
 	/* Alert the user */
-	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, "Dialog terminated");
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, 
+		TSIP_DIALOG(self)->lasterror ? TSIP_DIALOG(self)->lasterror : "Dialog terminated");
 
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

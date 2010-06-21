@@ -590,7 +590,7 @@ int tsip_transac_ict_Proceeding_2_Completed_X_300_to_699(va_list *app)
 	}
 
 	/* Pass the response to the dialog. */
-	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
+	ret = TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
 
 	return ret;
 }

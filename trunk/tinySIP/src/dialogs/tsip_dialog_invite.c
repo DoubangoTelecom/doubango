@@ -560,6 +560,9 @@ int x0000_Any_2_Terminated_X_iBYE(va_list *app)
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	const tsip_request_t *rBYE = va_arg(*app, const tsip_request_t *);
 
+	/* set last error (or info) */
+	tsip_dialog_set_lasterror(TSIP_DIALOG(self), "Call Terminated");
+
 	/* send 200 OK */
 	return send_RESPONSE(self, rBYE, 200, "OK", tsk_false);
 }
@@ -639,6 +642,11 @@ int x0000_Any_2_Any_X_i1xx(va_list *app)
 
 int x9998_Any_2_Any_X_transportError(va_list *app)
 {
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+
+	/* set last error (or info) */
+	tsip_dialog_set_lasterror(TSIP_DIALOG(self), "Transport error");
+
 	return 0;
 }
 
@@ -1101,7 +1109,8 @@ int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self)
 	}
 
 	/* alert the user */
-	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, "Dialog terminated");
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, 
+		TSIP_DIALOG(self)->lasterror ? TSIP_DIALOG(self)->lasterror : "Dialog terminated");
 
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

@@ -136,7 +136,7 @@ again:
 	return 0;
 }
 
-tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self, const tsip_message_t* message)
+tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self, const tsip_response_t* response)
 {
    /*
    RFC 3261 - 17.1.3 Matching Responses to Client Transactions
@@ -164,7 +164,7 @@ tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self,
 
 	/*	Check first Via/CSeq validity.
 	*/
-	if(!message->firstVia || !message->CSeq){
+	if(!response->firstVia || !response->CSeq){
 		return tsk_null;
 	}
 
@@ -172,8 +172,8 @@ tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self,
 
 	tsk_list_foreach(item, self->transactions){
 		transac = item->data;
-		if( tsk_strequals(transac->branch, message->firstVia->branch) 
-			&& tsk_strequals(transac->cseq_method, message->CSeq->method)
+		if( tsk_strequals(transac->branch, response->firstVia->branch) 
+			&& tsk_strequals(transac->cseq_method, response->CSeq->method)
 			)
 		{
 			ret = tsk_object_ref(transac);
@@ -186,7 +186,7 @@ tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self,
 	return ret;
 }
 
-tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self, const tsip_message_t* message)
+tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self, const tsip_request_t* request)
 {
 	/*
 	   RFC 3261 - 17.2.3 Matching Requests to Server Transactions
@@ -220,7 +220,7 @@ tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self,
 
 	/*	Check first Via/CSeq validity.
 	*/
-	if(!message->firstVia || !message->CSeq){
+	if(!request->firstVia || !request->CSeq){
 		return tsk_null;
 	}
 
@@ -230,15 +230,15 @@ tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self,
 	tsk_list_foreach(item, self->transactions)
 	{
 		transac = item->data;
-		if(tsk_strequals(transac->branch, message->firstVia->branch) 
+		if(tsk_strequals(transac->branch, request->firstVia->branch) 
 			&& (1 == 1) /* FIXME: compare host:ip */
 			)
 		{
-			if(tsk_strequals(transac->cseq_method, message->CSeq->method)){
+			if(tsk_strequals(transac->cseq_method, request->CSeq->method)){
 				ret = tsk_object_ref(transac);
 				break;
 			}
-			else if(TSIP_RESPONSE_IS_TO_ACK(message) || TSIP_RESPONSE_IS_TO_CANCEL(message)){
+			else if(TSIP_REQUEST_IS_ACK(request) || TSIP_REQUEST_IS_CANCEL(request)){
 				ret = tsk_object_ref(transac);
 				break;
 			}

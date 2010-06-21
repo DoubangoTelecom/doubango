@@ -422,6 +422,10 @@ int tsip_dialog_options_OnTerminated(tsip_dialog_options_t *self)
 {
 	TSK_DEBUG_INFO("=== OPTIONS Dialog terminated ===");
 
+	/* alert user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, 
+		TSIP_DIALOG(self)->lasterror ? TSIP_DIALOG(self)->lasterror : "Dialog terminated");
+
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));
 }

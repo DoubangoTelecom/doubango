@@ -120,6 +120,8 @@ typedef struct tsip_dialog_s
 	
 	tsk_bool_t initialized;
 	tsk_bool_t running;
+
+	char* lasterror;
 	
 	char* tag_local;
 	tsip_uri_t* uri_local;
@@ -155,7 +157,6 @@ tsip_response_t *tsip_dialog_response_new(const tsip_dialog_t *self, short statu
 int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* response);
 int tsip_dialog_apply_action(tsip_message_t* message, const tsip_action_t* action);
 
-
 int64_t tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* response);
 int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response);
 int tsip_dialog_update_2(tsip_dialog_t *self, const tsip_request_t* invite);
@@ -164,6 +165,8 @@ int tsip_dialog_getCKIK(tsip_dialog_t *self, AKA_CK_T *ck, AKA_IK_T *ik);
 int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* call_id, tsip_ssession_t* ss, tsk_fsm_state_id curr, tsk_fsm_state_id term);
 int tsip_dialog_fsm_act(tsip_dialog_t* self, tsk_fsm_action_id , const tsip_message_t* , const tsip_action_handle_t*);
 int tsip_dialog_set_curr_action(tsip_dialog_t* self, const tsip_action_t* action);
+int tsip_dialog_set_lasterror(tsip_dialog_t* self, const char* error);
+const char* tsip_dialog_get_lasterror(const tsip_dialog_t* self);
 int tsip_dialog_hangup(tsip_dialog_t *self, const tsip_action_t* action);
 int tsip_dialog_shutdown(tsip_dialog_t *self, const tsip_action_t* action);
 int tsip_dialog_remove(const tsip_dialog_t* self);

@@ -384,7 +384,7 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 	if(self && TSIP_DIALOG_GET_STACK(self)){	
 		const tsip_transac_layer_t *layer = TSIP_DIALOG_GET_STACK(self)->layer_transac;
 		if(layer){
-			/*	Create new transaction. The new transaction will be added to the dialog layer. 
+			/*	Create new transaction. The new transaction will be added to the transaction layer. 
 				The transaction has all information to create the right transaction type (NICT or ICT).
 				As this is an outgoing request ==> It shall be a client transaction (NICT or ICT).
 				For server transactions creation see @ref tsip_dialog_response_send.
@@ -1022,7 +1022,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 int tsip_dialog_fsm_act(tsip_dialog_t* self, tsk_fsm_action_id action_id, const tsip_message_t* message, const tsip_action_handle_t* action)
 {
 	if(!self || !self->fsm){
-		TSK_DEBUG_WARN("Invalid parameter.");
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return -1;
 	}
 	return tsk_fsm_act(self->fsm, action_id, self, message, self, message, action);
@@ -1031,7 +1031,7 @@ int tsip_dialog_fsm_act(tsip_dialog_t* self, tsk_fsm_action_id action_id, const 
 int tsip_dialog_set_curr_action(tsip_dialog_t* self, const tsip_action_t* action)
 {
 	if(!self){
-		TSK_DEBUG_WARN("Invalid parameter.");
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return -1;
 	}
 	TSK_OBJECT_SAFE_FREE(self->curr_action);
@@ -1039,6 +1039,27 @@ int tsip_dialog_set_curr_action(tsip_dialog_t* self, const tsip_action_t* action
 		self->curr_action = tsk_object_ref((void*)action);
 	}
 	return 0;
+}
+
+int tsip_dialog_set_lasterror(tsip_dialog_t* self, const char* error)
+{
+	if(!self || tsk_strnullORempty(error)){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		return -1;
+	}
+
+	tsk_strupdate(&self->lasterror, error);
+	return 0;
+}
+
+const char* tsip_dialog_get_lasterror(const tsip_dialog_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		return tsk_null;
+	}
+
+	return self->lasterror;
 }
 
 int tsip_dialog_hangup(tsip_dialog_t *self, const tsip_action_t* action)
@@ -1105,6 +1126,8 @@ int tsip_dialog_deinit(tsip_dialog_t *self)
 
 		TSK_FREE(self->cseq_method);
 		TSK_FREE(self->callid);
+
+		TSK_FREE(self->lasterror);
 
 		TSK_OBJECT_SAFE_FREE(self->routes);
 		TSK_OBJECT_SAFE_FREE(self->challenges);
