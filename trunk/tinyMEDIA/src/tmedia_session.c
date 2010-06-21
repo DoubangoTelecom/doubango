@@ -456,8 +456,6 @@ tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* 
 	mgr->type = type;
 	mgr->addr = tsk_strdup(addr);
 	mgr->ipv6 = ipv6;
-	mgr->qos.type = tmedia_qos_stype_segmented;
-	mgr->qos.strength = tmedia_qos_strength_none;
 
 	/* load sessions (will allow us to generate lo) */
 	if(offerer){

@@ -44,21 +44,28 @@
 /* ======================== external functions ======================== */
 extern int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bool_t force_sdp);
 extern int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
+extern int send_CANCEL(tsip_dialog_invite_t *self);
 extern int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message);
 extern int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_message_t* message);
 
 extern int x0000_Any_2_Any_X_i1xx(va_list *app);
 
 /* ======================== transitions ======================== */
-extern int c0000_Started_2_Outgoing_X_oINVITE(va_list *app);
-extern int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app);
-extern int c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app);
-extern int c0000_Outgoing_2_Terminated_X_oCANCEL(va_list *app);
+int c0000_Started_2_Outgoing_X_oINVITE(va_list *app);
+int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app);
+int c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app);
+int c0000_Outgoing_2_Cancelling_X_oCANCEL(va_list *app);
+int c0000_Cancelling_2_Terminated_X_i300_to_699(va_list *app); /* 487 INVITE (To have more chances, any 300-699) */
 
 /* ======================== conds ======================== */
 static tsk_bool_t _fsm_cond_is_resp2INVITE(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
 	return TSIP_RESPONSE_IS_TO_INVITE(message);
+}
+
+static tsk_bool_t _fsm_cond_is_resp2CANCEL(tsip_dialog_invite_t* self, tsip_message_t* message)
+{
+	return TSIP_RESPONSE_IS_TO_CANCEL(message);
 }
 
 /* Init FSM */
@@ -77,12 +84,16 @@ int tsip_dialog_invite_client_init(tsip_dialog_invite_t *self)
 			*/
 			// Outgoing -> (i2xx INVITE) -> Connected
 			TSK_FSM_ADD(_fsm_state_Outgoing, _fsm_action_i2xx, _fsm_cond_is_resp2INVITE, _fsm_state_Connected, c0000_Outgoing_2_Connected_X_i2xxINVITE, "c0000_Outgoing_2_Connected_X_i2xxINVITE"),
-			// Outgoing -> (i1xx) -> Outgoing
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Outgoing, _fsm_action_oCANCEL, _fsm_state_Terminated, x0000_Any_2_Any_X_i1xx, "c0000_Outgoing_2_Outgoing_X_i1xx"),
+			// Outgoing -> (oCANCEL) -> Cancelling
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Outgoing, _fsm_action_oCANCEL, _fsm_state_Cancelling, c0000_Outgoing_2_Cancelling_X_oCANCEL, "c0000_Outgoing_2_Cancelling_X_oCANCEL"),
+			// Cancelling -> (any response to cancel CANCEL) -> Cancelling
+			TSK_FSM_ADD(_fsm_state_Cancelling, _fsm_action_i300_to_i699, _fsm_cond_is_resp2CANCEL, _fsm_state_Cancelling, tsk_null, "c0000_Cancelling_2_Cancelling_X_i300_to_699"),
+			TSK_FSM_ADD(_fsm_state_Cancelling, _fsm_action_i2xx, _fsm_cond_is_resp2CANCEL, _fsm_state_Cancelling, tsk_null, "c0000_Cancelling_2_Cancelling_X_i2xx"),			
+			// Cancelling -> (i300-699 INVITE) -> Terminated
+			TSK_FSM_ADD(_fsm_state_Cancelling, _fsm_action_i300_to_i699, _fsm_cond_is_resp2INVITE, _fsm_state_Terminated, c0000_Cancelling_2_Terminated_X_i300_to_699, "c0000_Cancelling_2_Terminated_X_i300_to_699"),
 			// Outgoing -> (300-699 INVITE) -> Terminated
 			TSK_FSM_ADD(_fsm_state_Outgoing, _fsm_action_i300_to_i699, _fsm_cond_is_resp2INVITE, _fsm_state_Terminated, c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE, "c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE"),
-			// Outgoing -> (send CANCEL) -> Terminated
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Outgoing, _fsm_action_oCANCEL, _fsm_state_Terminated, c0000_Outgoing_2_Terminated_X_oCANCEL, "c0000_Outgoing_2_Terminated_X_oCANCEL"),		
+
 
 
 			TSK_FSM_ADD_NULL());
@@ -207,6 +218,9 @@ int c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app)
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
+	/* set last error (or info) */
+	tsip_dialog_set_lasterror(TSIP_DIALOG(self), TSIP_RESPONSE_PHRASE(response));
+
 	/* alert the user */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_request, 
 		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
@@ -214,11 +228,21 @@ int c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app)
 	return 0;
 }
 
-/* Outgoing -> (oCANCEL ) -> Terminated
+/* Outgoing -> (oCANCEL ) -> Cancelling
 */
-int c0000_Outgoing_2_Terminated_X_oCANCEL(va_list *app)
+int c0000_Outgoing_2_Cancelling_X_oCANCEL(va_list *app)
 {
-	/* alert the user */
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	return send_CANCEL(self);
+}
+
+int c0000_Cancelling_2_Terminated_X_i300_to_699(va_list *app)
+{
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+
+	/* set last error (or info) */
+	tsip_dialog_set_lasterror(TSIP_DIALOG(self), "Request cancelled");
+
 	return 0;
 }
 

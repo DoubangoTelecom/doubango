@@ -583,6 +583,9 @@ int s0000_Ringing_2_Terminated_X_Reject(va_list *app)
 	/* Send Reject */
 	ret = send_ERROR(self, self->last_iInvite, 486, "Busy Here", "SIP; cause=486; text=\"Busy Here\"");
 
+	/* set last error (or info) */
+	tsip_dialog_set_lasterror(TSIP_DIALOG(self), "Call Terminated");
+
 	return ret;
 }
 
@@ -600,10 +603,13 @@ int s0000_Ringing_2_Terminated_X_iCANCEL(va_list *app)
 	}
 
 	/* Send Request Cancelled */
-	ret = send_ERROR(self, self->last_iInvite, 487, "Request Canselled", "SIP; cause=487; text=\"Request Canselled\"");
+	ret = send_ERROR(self, self->last_iInvite, 487, "Request Cancelled", "SIP; cause=487; text=\"Request Cancelled\"");
 
 	/* Send 2xx for the CANCEL */
 	ret = send_RESPONSE(self, request, 200, "OK", tsk_false);
+
+	/* set last error (or info) */
+	tsip_dialog_set_lasterror(TSIP_DIALOG(self), "Call Cancelled");
 
 	/* alert the user */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_request, 
