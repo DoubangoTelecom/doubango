@@ -16,10 +16,25 @@ OBJS += src/audio/tdav_consumer_audio.o \
 	src/audio/tdav_jitterbuffer.o \
 	src/audio/tdav_producer_audio.o \
     src/audio/tdav_session_audio.o
+    
+     ### video
+OBJS += src/video/tdav_session_video.o
+	
+    ### msrp
+OBJS += src/msrp/tdav_consumer_msrp.o \
+	src/msrp/tdav_producer_msrp.o \
+	src/msrp/tdav_session_msrp.o
+   
 	
 	### codecs (G.711)
 OBJS += src/codecs/g711/g711.o \
 	src/codecs/g711/tdav_codec_g711.o
+	
+	### codecs (H.263)
+OBJS += src/codecs/h263/tdav_codec_h263.o
+	
+		### codecs (MSRP)
+OBJS += src/codecs/msrp/tdav_codec_msrp.o
 	
 
 $(APP): $(OBJS)

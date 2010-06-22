@@ -62,8 +62,8 @@ public class ProxyAudioConsumer : IDisposable {
     return ret;
   }
 
-  public void setActivate() {
-    tinyWRAPPINVOKE.ProxyAudioConsumer_setActivate(swigCPtr);
+  public void setActivate(bool enabled) {
+    tinyWRAPPINVOKE.ProxyAudioConsumer_setActivate(swigCPtr, enabled);
   }
 
   public uint pull(byte[] output, uint size) {

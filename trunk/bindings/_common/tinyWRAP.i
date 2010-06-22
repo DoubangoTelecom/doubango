@@ -15,7 +15,8 @@
 %newobject getSipHeaderValue;
 %newobject getSipHeaderParamValue;
 // don't seem to work
-%newobject takeSessionOwnership;
+%newobject MessagingEvent::takeSessionOwnership;
+%newobject CallEvent::takeSessionOwnership;
 
 
 /* Sip Stack */

@@ -55,6 +55,21 @@ public class CallSession : SipSession {
     return ret;
   }
 
+  public bool Accept() {
+    bool ret = tinyWRAPPINVOKE.CallSession_Accept(swigCPtr);
+    return ret;
+  }
+
+  public bool Hold() {
+    bool ret = tinyWRAPPINVOKE.CallSession_Hold(swigCPtr);
+    return ret;
+  }
+
+  public bool Resume() {
+    bool ret = tinyWRAPPINVOKE.CallSession_Resume(swigCPtr);
+    return ret;
+  }
+
   public bool Hangup() {
     bool ret = tinyWRAPPINVOKE.CallSession_Hangup(swigCPtr);
     return ret;

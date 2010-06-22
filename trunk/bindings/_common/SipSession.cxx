@@ -209,7 +209,51 @@ bool CallSession::Hangup()
 		TSIP_ACTION_SET_NULL());
 	return (ret == 0);
 }
+#if ANDROID
+static void *__droid_accept(void *param)
+{	
+	tsip_action_ACCEPT((tsip_ssession_handle_t *)param,
+		TSIP_ACTION_SET_NULL());
 
+	return tsk_null;
+}
+
+bool CallSession::Accept()
+{
+	void* tid[1] = {0};
+	tsip_ssession_handle_t *handle;
+	int ret;
+	
+	handle = tsk_object_ref(this->handle);
+	ret = tsk_thread_create(tid, __droid_accept, this->handle);
+	tsk_thread_join(tid);
+	tsk_object_unref(handle);
+
+	return (ret == 0);
+}
+#else
+bool CallSession::Accept()
+{
+	int ret = tsip_action_ACCEPT(this->handle,
+		TSIP_ACTION_SET_NULL());
+	return (ret == 0);
+}
+#endif
+
+
+bool CallSession::Hold()
+{
+	int ret = tsip_action_HOLD(this->handle, tmedia_all,
+		TSIP_ACTION_SET_NULL());
+	return (ret == 0);
+}
+
+bool CallSession::Resume()
+{
+	int ret = tsip_action_RESUME(this->handle, tmedia_all,
+		TSIP_ACTION_SET_NULL());
+	return (ret == 0);
+}
 
 
 

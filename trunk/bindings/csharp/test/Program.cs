@@ -8,10 +8,10 @@ namespace test
 {
     class Program
     {
-        const String REALM = "ericsson.com";
+        const String REALM = "micromethod.com";
         const String USER = "mamadou";
-        const String PROXY_CSCF_IP = "192.168.0.13";
-        const uint PROXY_CSCF_PORT = 5081;
+        const String PROXY_CSCF_IP = "192.168.0.17";
+        const uint PROXY_CSCF_PORT = 5060;
         const String PASSWORD = "";
 
         /*
@@ -35,14 +35,12 @@ namespace test
 
             /* Create Audio consumer */
             audioConsumer = new MyProxyAudioConsumer();
-            audioConsumer.setActivate();
-
             /* Create Audio producer */
             audioProducer = new MyProxyAudioProducer();
-            audioProducer.setActivate();
+            
 
             /* Create and configure the IMS/LTE stack */
-            sipStack = new SipStack(sipCallback, String.Format("sip:{0}", REALM), String.Format("{0}@{1}", USER, REALM), String.Format("sip:{0}@{1}", USER, REALM));
+            sipStack = new SipStack(sipCallback, String.Format("sip:{0}", REALM), /*String.Format("{0}@{1}", USER, REALM)*/USER, String.Format("sip:{0}@{1}", USER, REALM));
             sipStack.setDebugCallback(sipDebugCallback);
             sipStack.addHeader("Allow", "INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER");
             sipStack.addHeader("Privacy", "header; id");
@@ -54,14 +52,20 @@ namespace test
             ProxyAudioProducer.registerPlugin();
 
             /* Sets Proxy-CSCF */
-            success = sipStack.setProxyCSCF(PROXY_CSCF_IP, PROXY_CSCF_PORT, "tcp", "ipv4");
+            success = sipStack.setProxyCSCF(PROXY_CSCF_IP, PROXY_CSCF_PORT, "udp", "ipv4");
             /* Starts the stack */
             success = sipStack.start();
 
             /* Set Password */
-            //stack.setPassword(PASSWORD);
+            sipStack.setPassword(PASSWORD);
+
+            /* Early IMS */
+            sipStack.setEarlyIMS(true);
 
             //sipStack.setAoR("127.0.0.1", 1234);
+
+            audioConsumer.setActivate(true);
+            audioProducer.setActivate(true);
 
             /* Send REGISTER */
             regSession = new RegistrationSession(sipStack);
@@ -72,15 +76,20 @@ namespace test
             regSession.Register();
 
             Console.ReadLine();
+            
+
 
             callSession = new CallSession(sipStack);
-            callSession.Call(String.Format("sip:bob@{0}", REALM));
+            callSession.CallAudioVideo(String.Format("sip:bob@{0}", REALM));
 
             tcb = new TimerCallback(OnTimer);
             timer = new Timer(tcb, new AutoResetEvent(false), 0, 20);
 
             Console.ReadLine();
-
+            callSession.Hold();
+            Console.ReadLine();
+            callSession.Resume();
+            Console.ReadLine();
             callSession.Hangup();
 
 
@@ -219,21 +228,6 @@ namespace test
         {
         }
 
-        private static bool isSipCode(short code)
-        {
-            return (code <=699 && code >=100);
-        }
-
-        private static bool is2xxCode(short code)
-        {
-            return (code <= 299 && code >= 200);
-        }
-
-        private static bool is1xxCode(short code)
-        {
-            return (code <= 199 && code >= 100);
-        }
-
         public override int OnRegistrationEvent(RegistrationEvent e)
         {
             short code = e.getCode();
@@ -259,6 +253,62 @@ namespace test
             return 0;
         }
 
+        public override int OnCallEvent(CallEvent e)
+        {
+            tsip_invite_event_type_t type = e.getType();
+            CallSession session = e.getSession();
+            SipMessage message = e.getSipMessage();
+
+            switch(type){
+                case tsip_invite_event_type_t.tsip_i_newcall:
+                    if (session != null)
+                    {
+                        Console.WriteLine("ERRRRRRRRRRRORRRR");
+                        return 0;
+                    }
+                    else if ((session = e.takeSessionOwnership()) != null)
+                    {
+                        session.Accept();
+                    }
+                    break;
+                case tsip_invite_event_type_t.tsip_i_request:
+                    break;
+                case tsip_invite_event_type_t.tsip_ao_request:
+                    break;
+                case tsip_invite_event_type_t.tsip_o_ect_ok:
+                    break;
+                case tsip_invite_event_type_t.tsip_o_ect_nok:
+                    break;
+                case tsip_invite_event_type_t.tsip_i_ect:
+                    break;
+                case tsip_invite_event_type_t.tsip_m_local_hold_ok:
+                    Console.WriteLine("Local Hold OK");
+                    break;
+                case tsip_invite_event_type_t.tsip_m_local_hold_nok:
+                    Console.WriteLine("Local Hold NOK");
+                    break;
+                case tsip_invite_event_type_t.tsip_m_local_resume_ok:
+                    Console.WriteLine("Local Resume OK");
+                    break;
+                case tsip_invite_event_type_t.tsip_m_local_resume_nok:
+                    Console.WriteLine("Local Resume NOK");
+                    break;
+                case tsip_invite_event_type_t.tsip_m_remote_hold:
+                    Console.WriteLine("Remote Hold");
+                    break;
+                case tsip_invite_event_type_t.tsip_m_remote_resume:
+                    Console.WriteLine("Remote Resume");
+                    break;
+            }
+              
+            
+
+            
+
+
+
+            return 0;
+        }
 
         public override int OnOptionsEvent(OptionsEvent e)
         {

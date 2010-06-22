@@ -69,8 +69,8 @@ public class ProxyAudioConsumer {
     return (getClass() == ProxyAudioConsumer.class) ? tinyWRAPJNI.ProxyAudioConsumer_stop(swigCPtr, this) : tinyWRAPJNI.ProxyAudioConsumer_stopSwigExplicitProxyAudioConsumer(swigCPtr, this);
   }
 
-  public void setActivate() {
-    tinyWRAPJNI.ProxyAudioConsumer_setActivate(swigCPtr, this);
+  public void setActivate(boolean enabled) {
+    tinyWRAPJNI.ProxyAudioConsumer_setActivate(swigCPtr, this, enabled);
   }
 
   public long pull(java.nio.ByteBuffer output, long size) {

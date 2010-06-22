@@ -36,12 +36,12 @@
 //
 //	H.263-1996 object definition
 //
-tsk_size_t tdav_codec_h263_open(tmedia_codec_t* self)
+int tdav_codec_h263_open(tmedia_codec_t* self)
 {
 	return 0;
 }
 
-tsk_size_t tdav_codec_h263_close(tmedia_codec_t* self)
+int tdav_codec_h263_close(tmedia_codec_t* self)
 {
 	return 0;
 }
@@ -160,12 +160,12 @@ const tmedia_codec_plugin_def_t *tdav_codec_h263_plugin_def_t = &tdav_codec_h263
 //	H.263-1998 object definition
 //
 
-tsk_size_t tdav_codec_h263p_open(tmedia_codec_t* self)
+int tdav_codec_h263p_open(tmedia_codec_t* self)
 {
 	return 0;
 }
 
-tsk_size_t tdav_codec_h263p_close(tmedia_codec_t* self)
+int tdav_codec_h263p_close(tmedia_codec_t* self)
 {
 	return 0;
 }
@@ -275,12 +275,12 @@ const tmedia_codec_plugin_def_t *tdav_codec_h263p_plugin_def_t = &tdav_codec_h26
 //	H.263-2000 object definition
 //
 
-tsk_size_t tdav_codec_h263pp_open(tmedia_codec_t* self)
+int tdav_codec_h263pp_open(tmedia_codec_t* self)
 {
 	return 0;
 }
 
-tsk_size_t tdav_codec_h263pp_close(tmedia_codec_t* self)
+int tdav_codec_h263pp_close(tmedia_codec_t* self)
 {
 	return 0;
 }

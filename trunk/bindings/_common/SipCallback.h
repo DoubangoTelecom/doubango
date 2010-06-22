@@ -25,6 +25,7 @@
 class DialogEvent;
 class StackEvent;
 
+class CallEvent;
 class MessagingEvent;
 class OptionsEvent;
 class PublicationEvent;
@@ -39,6 +40,7 @@ public:
 	virtual int OnDialogEvent(const DialogEvent* e) { return -1; }
 	virtual int OnStackEvent(const StackEvent* e) { return -1; }
 
+	virtual int OnCallEvent(const CallEvent* e) { return -1; }
 	virtual int OnMessagingEvent(const MessagingEvent* e) { return -1; }
 	virtual int OnOptionsEvent(const OptionsEvent* e) { return -1; }
 	virtual int OnPublicationEvent(const PublicationEvent* e) { return -1; }

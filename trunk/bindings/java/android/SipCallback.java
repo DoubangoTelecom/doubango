@@ -61,6 +61,10 @@ public class SipCallback {
     return (getClass() == SipCallback.class) ? tinyWRAPJNI.SipCallback_OnStackEvent(swigCPtr, this, StackEvent.getCPtr(e), e) : tinyWRAPJNI.SipCallback_OnStackEventSwigExplicitSipCallback(swigCPtr, this, StackEvent.getCPtr(e), e);
   }
 
+  public int OnCallEvent(CallEvent e) {
+    return (getClass() == SipCallback.class) ? tinyWRAPJNI.SipCallback_OnCallEvent(swigCPtr, this, CallEvent.getCPtr(e), e) : tinyWRAPJNI.SipCallback_OnCallEventSwigExplicitSipCallback(swigCPtr, this, CallEvent.getCPtr(e), e);
+  }
+
   public int OnMessagingEvent(MessagingEvent e) {
     return (getClass() == SipCallback.class) ? tinyWRAPJNI.SipCallback_OnMessagingEvent(swigCPtr, this, MessagingEvent.getCPtr(e), e) : tinyWRAPJNI.SipCallback_OnMessagingEventSwigExplicitSipCallback(swigCPtr, this, MessagingEvent.getCPtr(e), e);
   }

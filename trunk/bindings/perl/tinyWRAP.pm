@@ -267,6 +267,40 @@ sub ACQUIRE {
 }
 
 
+############# Class : tinyWRAP::CallEvent ##############
+
+package tinyWRAP::CallEvent;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP::SipEvent tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_CallEvent($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getType = *tinyWRAPc::CallEvent_getType;
+*getSession = *tinyWRAPc::CallEvent_getSession;
+*takeSessionOwnership = *tinyWRAPc::CallEvent_takeSessionOwnership;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
 ############# Class : tinyWRAP::MessagingEvent ##############
 
 package tinyWRAP::MessagingEvent;
@@ -507,6 +541,9 @@ sub DESTROY {
 *CallAudio = *tinyWRAPc::CallSession_CallAudio;
 *CallAudioVideo = *tinyWRAPc::CallSession_CallAudioVideo;
 *CallVideo = *tinyWRAPc::CallSession_CallVideo;
+*Accept = *tinyWRAPc::CallSession_Accept;
+*Hold = *tinyWRAPc::CallSession_Hold;
+*Resume = *tinyWRAPc::CallSession_Resume;
 *Hangup = *tinyWRAPc::CallSession_Hangup;
 sub DISOWN {
     my $self = shift;
@@ -830,6 +867,7 @@ sub DESTROY {
 
 *OnDialogEvent = *tinyWRAPc::SipCallback_OnDialogEvent;
 *OnStackEvent = *tinyWRAPc::SipCallback_OnStackEvent;
+*OnCallEvent = *tinyWRAPc::SipCallback_OnCallEvent;
 *OnMessagingEvent = *tinyWRAPc::SipCallback_OnMessagingEvent;
 *OnOptionsEvent = *tinyWRAPc::SipCallback_OnOptionsEvent;
 *OnPublicationEvent = *tinyWRAPc::SipCallback_OnPublicationEvent;
@@ -983,4 +1021,16 @@ package tinyWRAP;
 *tsip_ao_message = *tinyWRAPc::tsip_ao_message;
 *tsip_i_options = *tinyWRAPc::tsip_i_options;
 *tsip_ao_options = *tinyWRAPc::tsip_ao_options;
+*tsip_i_newcall = *tinyWRAPc::tsip_i_newcall;
+*tsip_i_request = *tinyWRAPc::tsip_i_request;
+*tsip_ao_request = *tinyWRAPc::tsip_ao_request;
+*tsip_o_ect_ok = *tinyWRAPc::tsip_o_ect_ok;
+*tsip_o_ect_nok = *tinyWRAPc::tsip_o_ect_nok;
+*tsip_i_ect = *tinyWRAPc::tsip_i_ect;
+*tsip_m_local_hold_ok = *tinyWRAPc::tsip_m_local_hold_ok;
+*tsip_m_local_hold_nok = *tinyWRAPc::tsip_m_local_hold_nok;
+*tsip_m_local_resume_ok = *tinyWRAPc::tsip_m_local_resume_ok;
+*tsip_m_local_resume_nok = *tinyWRAPc::tsip_m_local_resume_nok;
+*tsip_m_remote_hold = *tinyWRAPc::tsip_m_remote_hold;
+*tsip_m_remote_resume = *tinyWRAPc::tsip_m_remote_resume;
 1;

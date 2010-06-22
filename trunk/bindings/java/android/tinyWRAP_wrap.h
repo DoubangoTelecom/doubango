@@ -55,6 +55,7 @@ public:
     virtual ~SwigDirector_SipCallback();
     virtual int OnDialogEvent(DialogEvent const *e);
     virtual int OnStackEvent(StackEvent const *e);
+    virtual int OnCallEvent(CallEvent const *e);
     virtual int OnMessagingEvent(MessagingEvent const *e);
     virtual int OnOptionsEvent(OptionsEvent const *e);
     virtual int OnPublicationEvent(PublicationEvent const *e);
@@ -62,10 +63,10 @@ public:
     virtual int OnSubscriptionEvent(SubscriptionEvent const *e);
 public:
     bool swig_overrides(int n) {
-      return (n < 7 ? swig_override[n] : false);
+      return (n < 8 ? swig_override[n] : false);
     }
 protected:
-    bool swig_override[7];
+    bool swig_override[8];
 };
 
 

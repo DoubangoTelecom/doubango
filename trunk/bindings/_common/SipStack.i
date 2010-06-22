@@ -122,3 +122,35 @@ typedef enum tsip_options_event_type_e
 	tsip_ao_options,
 }
 tsip_options_event_type_t;
+
+
+/* ====== From "tinySIP\include\tinysip\tsip_api_invite.h"  ====== */
+typedef enum tsip_invite_event_type_e
+{
+	// ============================
+	//	Sip Events
+	//
+	tsip_i_newcall,
+	
+	//! in-dialog requests/reponses
+	tsip_i_request,
+	tsip_ao_request,
+	
+	/* Explicit Call Transfer (ECT) */
+	tsip_o_ect_ok,
+	tsip_o_ect_nok,
+	tsip_i_ect,
+	
+	// ============================
+	//	Media Events
+	//
+
+	/* 3GPP TS 24.610: Communication Hold */
+	tsip_m_local_hold_ok,
+	tsip_m_local_hold_nok,
+	tsip_m_local_resume_ok,
+	tsip_m_local_resume_nok,
+	tsip_m_remote_hold,
+	tsip_m_remote_resume,
+}
+tsip_invite_event_type_t;

@@ -118,6 +118,7 @@ public:
     virtual ~SwigDirector_SipCallback();
     virtual int OnDialogEvent(DialogEvent const *e);
     virtual int OnStackEvent(StackEvent const *e);
+    virtual int OnCallEvent(CallEvent const *e);
     virtual int OnMessagingEvent(MessagingEvent const *e);
     virtual int OnOptionsEvent(OptionsEvent const *e);
     virtual int OnPublicationEvent(PublicationEvent const *e);
@@ -156,7 +157,7 @@ private:
       return method;
     }
 private:
-    mutable swig::SwigVar_PyObject vtable[7];
+    mutable swig::SwigVar_PyObject vtable[8];
 #endif
 
 };

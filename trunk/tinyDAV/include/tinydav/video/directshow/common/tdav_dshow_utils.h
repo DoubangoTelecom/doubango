@@ -20,47 +20,23 @@
 *
 */
 
-/**@file ProxyConsumer.h
- * @brief Audio/Video proxy consumers.
+/**@file tdav_dshow_utils.h
+ * @brief DiretShow Utilities functions.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYWRAP_CONSUMER_PROXY_H
-#define TINYWRAP_CONSUMER_PROXY_H
+#ifndef TINYDAV_DSHOW_UTILS_H
+#define TINYDAV_DSHOW_UTILS_H
 
-#include "tinyWRAP_config.h"
+#include "tinydav_config.h"
 
-class ProxyAudioConsumer
-{
-public:
-	ProxyAudioConsumer();
-	virtual ~ProxyAudioConsumer();
-
-	/* Callback functions */
-	virtual int prepare(int ptime, int rate, int channels) { return 0; }
-	virtual int start() { return 0; }
-	virtual int pause() { return 0; }
-	virtual int stop() { return 0; }
-
-	void setActivate(bool enabled);
-	unsigned pull(void* output, unsigned size);
-
-public:
-	static bool registerPlugin();
-
-#if !defined(SWIG)
-	void takeConsumer(struct twrap_consumer_proxy_audio_s*);
-	void releaseConsumer(struct twrap_consumer_proxy_audio_s*);
-	static ProxyAudioConsumer* instance;
-#endif
-
-private:
-	struct twrap_consumer_proxy_audio_s* consumer;
-};
+TDAV_BEGIN_DECLS
 
 
 
+TDAV_END_DECLS
 
-#endif /* TINYWRAP_CONSUMER_PROXY_H */
+
+#endif /* TINYDAV_DSHOW_UTILS_H */

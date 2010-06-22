@@ -165,6 +165,23 @@ class StackEvent(SipEvent):
 StackEvent_swigregister = _tinyWRAP.StackEvent_swigregister
 StackEvent_swigregister(StackEvent)
 
+class CallEvent(SipEvent):
+    __swig_setmethods__ = {}
+    for _s in [SipEvent]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, CallEvent, name, value)
+    __swig_getmethods__ = {}
+    for _s in [SipEvent]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, CallEvent, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_CallEvent
+    __del__ = lambda self : None;
+    def getType(self): return _tinyWRAP.CallEvent_getType(self)
+    def getSession(self): return _tinyWRAP.CallEvent_getSession(self)
+    def takeSessionOwnership(self): return _tinyWRAP.CallEvent_takeSessionOwnership(self)
+CallEvent_swigregister = _tinyWRAP.CallEvent_swigregister
+CallEvent_swigregister(CallEvent)
+
 class MessagingEvent(SipEvent):
     __swig_setmethods__ = {}
     for _s in [SipEvent]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
@@ -288,6 +305,9 @@ class CallSession(SipSession):
     def CallAudio(self, *args): return _tinyWRAP.CallSession_CallAudio(self, *args)
     def CallAudioVideo(self, *args): return _tinyWRAP.CallSession_CallAudioVideo(self, *args)
     def CallVideo(self, *args): return _tinyWRAP.CallSession_CallVideo(self, *args)
+    def Accept(self): return _tinyWRAP.CallSession_Accept(self)
+    def Hold(self): return _tinyWRAP.CallSession_Hold(self)
+    def Resume(self): return _tinyWRAP.CallSession_Resume(self)
     def Hangup(self): return _tinyWRAP.CallSession_Hangup(self)
 CallSession_swigregister = _tinyWRAP.CallSession_swigregister
 CallSession_swigregister(CallSession)
@@ -407,7 +427,7 @@ class ProxyAudioConsumer(_object):
     def start(self): return _tinyWRAP.ProxyAudioConsumer_start(self)
     def pause(self): return _tinyWRAP.ProxyAudioConsumer_pause(self)
     def stop(self): return _tinyWRAP.ProxyAudioConsumer_stop(self)
-    def setActivate(self): return _tinyWRAP.ProxyAudioConsumer_setActivate(self)
+    def setActivate(self, *args): return _tinyWRAP.ProxyAudioConsumer_setActivate(self, *args)
     def pull(self, *args): return _tinyWRAP.ProxyAudioConsumer_pull(self, *args)
     __swig_getmethods__["registerPlugin"] = lambda x: _tinyWRAP.ProxyAudioConsumer_registerPlugin
     if _newclass:registerPlugin = staticmethod(_tinyWRAP.ProxyAudioConsumer_registerPlugin)
@@ -442,7 +462,7 @@ class ProxyAudioProducer(_object):
     def start(self): return _tinyWRAP.ProxyAudioProducer_start(self)
     def pause(self): return _tinyWRAP.ProxyAudioProducer_pause(self)
     def stop(self): return _tinyWRAP.ProxyAudioProducer_stop(self)
-    def setActivate(self): return _tinyWRAP.ProxyAudioProducer_setActivate(self)
+    def setActivate(self, *args): return _tinyWRAP.ProxyAudioProducer_setActivate(self, *args)
     def push(self, *args): return _tinyWRAP.ProxyAudioProducer_push(self, *args)
     __swig_getmethods__["registerPlugin"] = lambda x: _tinyWRAP.ProxyAudioProducer_registerPlugin
     if _newclass:registerPlugin = staticmethod(_tinyWRAP.ProxyAudioProducer_registerPlugin)
@@ -475,6 +495,7 @@ class SipCallback(_object):
     __del__ = lambda self : None;
     def OnDialogEvent(self, *args): return _tinyWRAP.SipCallback_OnDialogEvent(self, *args)
     def OnStackEvent(self, *args): return _tinyWRAP.SipCallback_OnStackEvent(self, *args)
+    def OnCallEvent(self, *args): return _tinyWRAP.SipCallback_OnCallEvent(self, *args)
     def OnMessagingEvent(self, *args): return _tinyWRAP.SipCallback_OnMessagingEvent(self, *args)
     def OnOptionsEvent(self, *args): return _tinyWRAP.SipCallback_OnOptionsEvent(self, *args)
     def OnPublicationEvent(self, *args): return _tinyWRAP.SipCallback_OnPublicationEvent(self, *args)
@@ -576,5 +597,17 @@ tsip_i_message = _tinyWRAP.tsip_i_message
 tsip_ao_message = _tinyWRAP.tsip_ao_message
 tsip_i_options = _tinyWRAP.tsip_i_options
 tsip_ao_options = _tinyWRAP.tsip_ao_options
+tsip_i_newcall = _tinyWRAP.tsip_i_newcall
+tsip_i_request = _tinyWRAP.tsip_i_request
+tsip_ao_request = _tinyWRAP.tsip_ao_request
+tsip_o_ect_ok = _tinyWRAP.tsip_o_ect_ok
+tsip_o_ect_nok = _tinyWRAP.tsip_o_ect_nok
+tsip_i_ect = _tinyWRAP.tsip_i_ect
+tsip_m_local_hold_ok = _tinyWRAP.tsip_m_local_hold_ok
+tsip_m_local_hold_nok = _tinyWRAP.tsip_m_local_hold_nok
+tsip_m_local_resume_ok = _tinyWRAP.tsip_m_local_resume_ok
+tsip_m_local_resume_nok = _tinyWRAP.tsip_m_local_resume_nok
+tsip_m_remote_hold = _tinyWRAP.tsip_m_remote_hold
+tsip_m_remote_resume = _tinyWRAP.tsip_m_remote_resume
 
 
