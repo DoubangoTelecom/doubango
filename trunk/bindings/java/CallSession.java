@@ -49,6 +49,18 @@ public class CallSession extends SipSession {
     return tinyWRAPJNI.CallSession_CallVideo(swigCPtr, this, remoteUri);
   }
 
+  public boolean Accept() {
+    return tinyWRAPJNI.CallSession_Accept(swigCPtr, this);
+  }
+
+  public boolean Hold() {
+    return tinyWRAPJNI.CallSession_Hold(swigCPtr, this);
+  }
+
+  public boolean Resume() {
+    return tinyWRAPJNI.CallSession_Resume(swigCPtr, this);
+  }
+
   public boolean Hangup() {
     return tinyWRAPJNI.CallSession_Hangup(swigCPtr, this);
   }

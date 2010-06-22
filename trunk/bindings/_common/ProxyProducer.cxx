@@ -169,9 +169,14 @@ ProxyAudioProducer::~ProxyAudioProducer()
 	}
 }
 
-void ProxyAudioProducer::setActivate()
+void ProxyAudioProducer::setActivate(bool enabled)
 {
-	ProxyAudioProducer::instance = this;
+	if(enabled){
+		ProxyAudioProducer::instance = this;
+	}
+	else{
+		ProxyAudioProducer::instance = tsk_null;
+	}
 }
 
 int ProxyAudioProducer::push(const void* buffer, unsigned size)

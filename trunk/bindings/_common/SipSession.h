@@ -77,6 +77,9 @@ public: /* Public functions */
 	bool CallAudio(const char* remoteUri);
 	bool CallAudioVideo(const char* remoteUri);
 	bool CallVideo(const char* remoteUri);
+	bool Accept();
+	bool Hold();
+	bool Resume();
 	bool Hangup();
 };
 

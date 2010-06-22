@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CallEvent.cs">
+      <Link>CallEvent.cs</Link>
+    </Compile>
     <Compile Include="..\CallSession.cs">
       <Link>CallSession.cs</Link>
     </Compile>
@@ -119,6 +122,9 @@
     </Compile>
     <Compile Include="..\tsip_event_type_t.cs">
       <Link>tsip_event_type_t.cs</Link>
+    </Compile>
+    <Compile Include="..\tsip_invite_event_type_t.cs">
+      <Link>tsip_invite_event_type_t.cs</Link>
     </Compile>
     <Compile Include="..\tsip_message_event_type_t.cs">
       <Link>tsip_message_event_type_t.cs</Link>

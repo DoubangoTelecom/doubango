@@ -44,7 +44,7 @@ public:
 	virtual int pause() { return 0; }
 	virtual int stop() { return 0; }
 
-	void setActivate();
+	void setActivate(bool enabled);
 	int push(const void* buffer, unsigned size);
 
 public:

@@ -25,6 +25,7 @@
 #include "tinysip.h"
 
 class SipSession;
+class CallSession;
 class MessagingSession;
 class OptionsSession;
 class PublicationSession;
@@ -78,6 +79,24 @@ public:
 
 public: /* Public API functions */
 };
+
+
+
+/* ======================== CallEvent ========================*/
+class CallEvent: public SipEvent
+{
+public:
+#if !defined(SWIG)
+	CallEvent(const tsip_event_t *sipevent);
+#endif
+	virtual ~CallEvent();
+
+public: /* Public API functions */
+	tsip_invite_event_type_t getType() const;
+	const CallSession* getSession() const;
+	CallSession* takeSessionOwnership() const;
+};
+
 
 
 /* ======================== MessagingEvent ========================*/

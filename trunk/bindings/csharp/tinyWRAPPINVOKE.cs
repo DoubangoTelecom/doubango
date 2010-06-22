@@ -259,6 +259,18 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_StackEvent")]
   public static extern void delete_StackEvent(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_CallEvent")]
+  public static extern void delete_CallEvent(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallEvent_getType")]
+  public static extern int CallEvent_getType(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallEvent_getSession")]
+  public static extern IntPtr CallEvent_getSession(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallEvent_takeSessionOwnership")]
+  public static extern IntPtr CallEvent_takeSessionOwnership(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_MessagingEvent")]
   public static extern void delete_MessagingEvent(HandleRef jarg1);
 
@@ -361,6 +373,15 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_CallVideo")]
   public static extern bool CallSession_CallVideo(HandleRef jarg1, string jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_Accept")]
+  public static extern bool CallSession_Accept(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_Hold")]
+  public static extern bool CallSession_Hold(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_Resume")]
+  public static extern bool CallSession_Resume(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_Hangup")]
   public static extern bool CallSession_Hangup(HandleRef jarg1);
 
@@ -455,7 +476,7 @@ class tinyWRAPPINVOKE {
   public static extern int ProxyAudioConsumer_stopSwigExplicitProxyAudioConsumer(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_setActivate")]
-  public static extern void ProxyAudioConsumer_setActivate(HandleRef jarg1);
+  public static extern void ProxyAudioConsumer_setActivate(HandleRef jarg1, bool jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_pull")]
   public static extern uint ProxyAudioConsumer_pull(HandleRef jarg1, byte[] jarg2, uint jarg3);
@@ -497,7 +518,7 @@ class tinyWRAPPINVOKE {
   public static extern int ProxyAudioProducer_stopSwigExplicitProxyAudioProducer(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_setActivate")]
-  public static extern void ProxyAudioProducer_setActivate(HandleRef jarg1);
+  public static extern void ProxyAudioProducer_setActivate(HandleRef jarg1, bool jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_push")]
   public static extern int ProxyAudioProducer_push(HandleRef jarg1, byte[] jarg2, uint jarg3);
@@ -525,6 +546,12 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipCallback_OnStackEventSwigExplicitSipCallback")]
   public static extern int SipCallback_OnStackEventSwigExplicitSipCallback(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipCallback_OnCallEvent")]
+  public static extern int SipCallback_OnCallEvent(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipCallback_OnCallEventSwigExplicitSipCallback")]
+  public static extern int SipCallback_OnCallEventSwigExplicitSipCallback(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipCallback_OnMessagingEvent")]
   public static extern int SipCallback_OnMessagingEvent(HandleRef jarg1, HandleRef jarg2);
@@ -557,7 +584,7 @@ class tinyWRAPPINVOKE {
   public static extern int SipCallback_OnSubscriptionEventSwigExplicitSipCallback(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipCallback_director_connect")]
-  public static extern void SipCallback_director_connect(HandleRef jarg1, SipCallback.SwigDelegateSipCallback_0 delegate0, SipCallback.SwigDelegateSipCallback_1 delegate1, SipCallback.SwigDelegateSipCallback_2 delegate2, SipCallback.SwigDelegateSipCallback_3 delegate3, SipCallback.SwigDelegateSipCallback_4 delegate4, SipCallback.SwigDelegateSipCallback_5 delegate5, SipCallback.SwigDelegateSipCallback_6 delegate6);
+  public static extern void SipCallback_director_connect(HandleRef jarg1, SipCallback.SwigDelegateSipCallback_0 delegate0, SipCallback.SwigDelegateSipCallback_1 delegate1, SipCallback.SwigDelegateSipCallback_2 delegate2, SipCallback.SwigDelegateSipCallback_3 delegate3, SipCallback.SwigDelegateSipCallback_4 delegate4, SipCallback.SwigDelegateSipCallback_5 delegate5, SipCallback.SwigDelegateSipCallback_6 delegate6, SipCallback.SwigDelegateSipCallback_7 delegate7);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_SafeObject")]
   public static extern IntPtr new_SafeObject();
@@ -672,6 +699,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_StackEventUpcast")]
   public static extern IntPtr StackEventUpcast(IntPtr objectRef);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallEventUpcast")]
+  public static extern IntPtr CallEventUpcast(IntPtr objectRef);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingEventUpcast")]
   public static extern IntPtr MessagingEventUpcast(IntPtr objectRef);

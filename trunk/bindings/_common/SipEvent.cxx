@@ -86,6 +86,50 @@ StackEvent::StackEvent(const tsip_event_t *_sipevent)
 StackEvent::~StackEvent(){ }
 
 
+/* ======================== CallEvent ========================*/
+CallEvent::CallEvent(const tsip_event_t *_sipevent)
+:SipEvent(_sipevent)
+{
+}
+
+CallEvent::~CallEvent()
+{
+}
+
+tsip_invite_event_type_t CallEvent::getType() const
+{
+	return TSIP_INVITE_EVENT(this->sipevent)->type;
+}
+
+const CallSession* CallEvent::getSession() const
+{
+	return dyn_cast<const CallSession*>(this->getBaseSession());
+}
+
+CallSession* CallEvent::takeSessionOwnership() const
+{
+	if(!this->sipevent || !this->sipevent->ss){
+		return tsk_null;
+	}
+
+	if(tsip_ssession_have_ownership(this->sipevent->ss)){
+		// already have ownership
+		return tsk_null;
+	}
+	else{
+		const tsip_stack_handle_t* stack_handle = tsip_ssession_get_stack(sipevent->ss);
+		const void* userdata;
+		if(stack_handle && (userdata = tsip_stack_get_userdata(stack_handle))){
+			SipStack* stack = dyn_cast<SipStack*>((SipStack*)userdata);
+			if(stack){
+				// FIXME: Memory Leak ?
+				/* The constructor will call take_ownerhip() */
+				return new CallSession(stack, this->sipevent->ss);
+			}
+		}
+		return tsk_null;
+	}
+}
 
 /* ======================== MessagingEvent ========================*/
 MessagingEvent::MessagingEvent(const tsip_event_t *_sipevent)

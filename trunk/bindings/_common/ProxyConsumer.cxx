@@ -187,9 +187,14 @@ ProxyAudioConsumer::~ProxyAudioConsumer()
 	}
 }
 
-void ProxyAudioConsumer::setActivate()
+void ProxyAudioConsumer::setActivate(bool enabled)
 {
-	ProxyAudioConsumer::instance = this;
+	if(enabled){
+		ProxyAudioConsumer::instance = this;
+	}
+	else{
+		ProxyAudioConsumer::instance = tsk_null;
+	}
 }
 
 unsigned ProxyAudioConsumer::pull(void* output, unsigned size)
