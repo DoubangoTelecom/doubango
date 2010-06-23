@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(PSDK_DIR)include&quot;;&quot;$(DXSDK_DIR)include&quot;;..\thirdparties\win32\include;include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinySDP\include;..\tinyNET\src;..\tinySAK\src"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;HAVE_DSOUND_H=1;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT=0x0501;TINYDAV_EXPORTS"
+				AdditionalIncludeDirectories="&quot;$(PSDK_DIR)include&quot;;&quot;$(DXSDK_DIR)include&quot;;..\thirdparties\win32\include;include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinySDP\include;..\tinyNET\src;..\tinyDSHOW\include;..\tinySAK\src"
+				PreprocessorDefinitions="HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_FFMPEG=1;DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT=0x0501;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib"
+				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib ..\thirdparties\win32\lib\libgcc.a ..\thirdparties\win32\lib\libmingwex.a ..\thirdparties\win32\lib\ffmpeg\libavutil.a ..\thirdparties\win32\lib\ffmpeg\libavcodec.a"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -335,26 +335,6 @@
 				<Filter
 					Name="directshow"
 					>
-					<File
-						RelativePath=".\include\tinydav\video\directshow\tdav_consumer_dshow.h"
-						>
-					</File>
-					<File
-						RelativePath=".\include\tinydav\video\directshow\tdav_producer_dshow.h"
-						>
-					</File>
-					<Filter
-						Name="common"
-						>
-						<File
-							RelativePath=".\include\tinydav\video\directshow\common\tdav_dshow_filters.h"
-							>
-						</File>
-						<File
-							RelativePath=".\include\tinydav\video\directshow\common\tdav_dshow_utils.h"
-							>
-						</File>
-					</Filter>
 				</Filter>
 				<Filter
 					Name="v4linux"
@@ -531,26 +511,6 @@
 				<Filter
 					Name="directshow"
 					>
-					<File
-						RelativePath=".\src\video\directshow\tdav_consumer_dshow.c"
-						>
-					</File>
-					<File
-						RelativePath=".\src\video\directshow\tdav_producer_dshow.c"
-						>
-					</File>
-					<Filter
-						Name="common"
-						>
-						<File
-							RelativePath=".\src\video\directshow\common\tdav_dshow_filters.c"
-							>
-						</File>
-						<File
-							RelativePath=".\src\video\directshow\common\tdav_dshow_utils.c"
-							>
-						</File>
-					</Filter>
 				</Filter>
 				<Filter
 					Name="v4linux"

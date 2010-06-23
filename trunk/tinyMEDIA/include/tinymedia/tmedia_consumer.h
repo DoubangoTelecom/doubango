@@ -43,14 +43,20 @@ TMEDIA_BEGIN_DECLS
 /** cast any pointer to @ref tmedia_consumer_t* object */
 #define TMEDIA_CONSUMER(self)		((tmedia_consumer_t*)(self))
 
+/**  Default Video chroma */
+#define TMEDIA_CONSUMER_CHROMA_DEFAULT tmedia_yuv420p
+
 /** Base object for all Consumers */
 typedef struct tmedia_consumer_s
 {
 	TSK_DECLARE_OBJECT;
-
-	//! the type of the consumer
+	
 	tmedia_type_t type;
 	const char* desc;
+
+	struct{
+		tmedia_chroma_t chroma;
+	} video;
 
 	const struct tmedia_consumer_plugin_def_s* plugin;
 }

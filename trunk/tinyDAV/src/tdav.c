@@ -39,6 +39,7 @@
 #include "tinydav/codecs/h263/tdav_codec_h263.h"
 
 
+
 // Consumers
 #include "tinydav/audio/waveapi/tdav_consumer_waveapi.h"
 #include "tinydav/audio/directsound/tdav_consumer_dsound.h"
@@ -47,19 +48,18 @@
 // Producers
 #include "tinydav/audio/waveapi/tdav_producer_waveapi.h"
 #include "tinydav/audio/directsound/tdav_producer_dsound.h"
+#if HAVE_TINYDSHOW // DirectShow
+#	include "tinydshow/plugin/DSProducer.h"
+#endif
 
-#if 0
-#include <libavcodec/avcodec.h>
-#include <libswscale/swscale.h>
+#if HAVE_FFMPEG
+#	include <libavcodec/avcodec.h>
 #endif
 
 int tdav_init()
 {
-#if 0
-	AVCodecContext * context_encode;
-	AVCodec* codec;
-
 	/* === Initialize ffmpeg === */
+#if HAVE_FFMPEG
 	avcodec_init();
 #endif
 
@@ -69,16 +69,18 @@ int tdav_init()
 	tmedia_session_plugin_register(tdav_session_video_plugin_def_t);
 
 	/* === Register codecs === */
-#if 0
+#if HAVE_FFMPEG
 	avcodec_register_all();
 #endif
 	
 	tmedia_codec_plugin_register(tdav_codec_msrp_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
+#if HAVE_FFMPEG
 	tmedia_codec_plugin_register(tdav_codec_h263_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h263p_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h263pp_plugin_def_t);
+#endif
 	
 
 	/* === Register consumers === */
@@ -97,23 +99,14 @@ int tdav_init()
 #endif
 
 	/* === Register producers === */
-#if HAVE_DSOUND_H
+#if HAVE_DSOUND_H // DirectSound
 	tmedia_producer_plugin_register(tdav_producer_dsound_plugin_def_t);
-#elif HAVE_WAVE_API
+#elif HAVE_WAVE_API // WaveAPI
 	tmedia_producer_plugin_register(tdav_producer_waveapi_plugin_def_t);
 #endif
-
-	//if((context_encode = avcodec_alloc_context())){
-	//	printf("avcodec_alloc_context()");
-	//}
-
-	//if((codec = avcodec_find_encoder(CODEC_ID_H263))){
-	//	printf("avcodec_find_encoder(H.263)");
-	//}
-
-	//if((codec = avcodec_find_encoder(CODEC_ID_H264))){
-	//	printf("avcodec_find_encoder(H.264)");
-	//}
+#if HAVE_TINYDSHOW // DirectShow
+	tmedia_producer_plugin_register(tdshow_producer_plugin_def_t);
+#endif
 
 	return 0;
 }
@@ -129,9 +122,11 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_msrp_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_g711u_plugin_def_t);
+#if HAVE_FFMPEG
 	tmedia_codec_plugin_unregister(tdav_codec_h263_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h263p_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h263pp_plugin_def_t);
+#endif
 
 	/* === unRegister consumers === */
 #if HAVE_DSOUND_H
@@ -141,10 +136,13 @@ int tdav_deinit()
 #endif
 
 	/* === UnRegister producers === */
-#if HAVE_DSOUND_H
+#if HAVE_DSOUND_H // DirectSound
 	tmedia_producer_plugin_unregister(tdav_producer_dsound_plugin_def_t);
-#elif HAVE_WAVE_API
+#elif HAVE_WAVE_API // WaveAPI
 	tmedia_producer_plugin_unregister(tdav_producer_waveapi_plugin_def_t);
+#endif
+#if HAVE_TINYDSHOW // DirectShow
+	tmedia_producer_plugin_register(tdshow_producer_plugin_def_t);
 #endif
 
 #if HAVE_COREAUDIO

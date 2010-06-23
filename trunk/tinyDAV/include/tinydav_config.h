@@ -54,9 +54,11 @@
 #	define TDAV_END_DECLS
 #endif
 
-/* Disable some well-known warnings
-*/
 #ifdef _MSC_VER
+#if HAVE_FFMPEG // FFMPeg warnings (treated as errors)
+#	pragma warning (disable:4244) 
+#endif
+#	define inline __inline
 #	define _CRT_SECURE_NO_WARNINGS
 #endif
 
