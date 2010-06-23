@@ -19,54 +19,36 @@
 * along with DOUBANGO.
 *
 */
-
-/**@file tdav_session_video.h
- * @brief Video Session plugin.
+/**@file tdav_runnable_video.h
+ * @brief Video runnable used by codecs.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYDAV_SESSION_VIDEO_H
-#define TINYDAV_SESSION_VIDEO_H
+#ifndef TINYDAV_RUNNABLE_VIDEO_H
+#define TINYDAV_RUNNABLE_VIDEO_H
 
 #include "tinydav_config.h"
 
-#include "tinydav/video/tdav_converter_video.h"
-
-#include "tinymedia/tmedia_session.h"
+#include "tsk_runnable.h"
 
 TDAV_BEGIN_DECLS
 
-// Forward declaration
-struct trtp_manager_s;
-struct tdav_consumer_video_s;
-struct tdav_converter_video_s;
-
-typedef struct tdav_session_video_s
+typedef struct tdav_runnable_video_s
 {
-	TMEDIA_DECLARE_SESSION_VIDEO;
+	TSK_DECLARE_RUNNABLE;
 
-	tsk_bool_t useIPv6;
-
-	char* local_ip;
-
-	char* remote_ip;
-	uint16_t remote_port;
-	
-	tsk_bool_t rtcp_enabled;
-
-	struct trtp_manager_s* rtp_manager;
-
-	struct tmedia_consumer_s* consumer;
-	struct tmedia_producer_s* producer;
-	struct tdav_converter_video_s* converter;
+	const void* userdata;
 }
-tdav_session_video_t;
+tdav_runnable_video_t;
 
+tdav_runnable_video_t* tdav_runnable_video_create(tsk_runnable_func_run run_f, const void* userdata);
+int tdav_runnable_video_start(tdav_runnable_video_t* self);
+int tdav_runnable_video_stop(tdav_runnable_video_t* self);
 
-TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_video_plugin_def_t;
+TINYDAV_GEXTERN const tsk_object_def_t *tdav_runnable_video_def_t;
 
 TDAV_END_DECLS
 
-#endif /* TINYDAV_SESSION_VIDEO_H */
+#endif /* TINYDAV_RUNNABLE_VIDEO_H */

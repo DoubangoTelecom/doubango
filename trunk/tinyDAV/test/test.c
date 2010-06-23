@@ -26,7 +26,7 @@
 
 #include "test_sessions.h"
 
-#define LOOP						1
+#define LOOP						0
 
 #define RUN_TEST_ALL				0
 #define RUN_TEST_SESSIONS			1

@@ -29,6 +29,8 @@
  */
 #include "tinydav/video/tdav_session_video.h"
 
+#include "tinydav/video/tdav_converter_video.h"
+
 #include "tinymedia/tmedia_consumer.h"
 #include "tinymedia/tmedia_producer.h"
 
@@ -72,19 +74,33 @@ static int tdav_session_video_rtp_cb(const void* callback_data, const struct trt
 	return 0;
 }
 
+// Codec callback (From codec to the network)
+static int tdav_session_video_codec_cb(const void* callback_data, const void* buffer, tsk_size_t size, uint32_t duration, tsk_bool_t marker)
+{
+	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
+
+	if(session->rtp_manager){
+		return trtp_manager_send_rtp(session->rtp_manager, buffer, size, duration, marker);
+	}
+
+	return 0;
+}
+
 // Producer callback (From the producer to the network)
 static int tdav_session_video_producer_cb(const void* callback_data, const void* buffer, tsk_size_t size)
 {
-	tdav_session_video_t* video = (tdav_session_video_t*)callback_data;
+	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
+	void* yuv420p = tsk_null;
+	tsk_size_t yuv420p_size = 0;
 
-	if(video->rtp_manager){
+	if(session->rtp_manager){
 		/* encode */
 		void* out_data = tsk_null;
 		tsk_size_t out_size = 0;
 		tmedia_codec_t* codec = tsk_null;
 		
 		// Use first codec to encode data
-		if((codec = tsk_object_ref(TSK_LIST_FIRST_DATA(TMEDIA_SESSION(video)->neg_codecs)))){
+		if((codec = tsk_object_ref(TSK_LIST_FIRST_DATA(TMEDIA_SESSION(session)->neg_codecs)))){
 			if(!codec->plugin || !codec->plugin->encode){
 				TSK_OBJECT_SAFE_FREE(codec);
 				TSK_DEBUG_ERROR("Invalid codec");
@@ -101,10 +117,37 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 			return -4;
 		}
 
+		// Video codecs only accept YUV420P buffers ==> do conversion if needed
+		if((session->producer->video.chroma != tmedia_yuv420p)){
+			// Create video converter if not already done
+			if(!session->converter){
+				if(!(session->converter = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height))){
+					TSK_DEBUG_ERROR("Failed to create video converter");
+					return -5;
+				}
+			}
+			// convert data to yuv420p
+			yuv420p_size = tdav_converter_video_2YUV420(session->converter, buffer, &yuv420p);
+			if(!yuv420p_size || !yuv420p){
+				TSK_DEBUG_ERROR("Failed to convert RGB buffer to YUV42P");
+				TSK_FREE(yuv420p);
+				return -6;
+			}
+		}
+
 		// Encode data
-		out_size = codec->plugin->encode(codec, buffer, size, &out_data);
+		if(yuv420p && yuv420p_size){
+			/* producer doesn't support yuv42p */
+			out_size = codec->plugin->encode(codec, yuv420p, yuv420p_size, &out_data);
+			TSK_FREE(yuv420p);
+		}
+		else{
+			/* producer support yuv42p */
+			out_size = codec->plugin->encode(codec, buffer, size, &out_data);
+		}
+
 		if(out_size){
-			trtp_manager_send_rtp(video->rtp_manager, out_data, out_size, 160/*FIXME*/, tsk_false);
+			trtp_manager_send_rtp(session->rtp_manager, out_data, out_size, 160/*FIXME*/, tsk_false);
 		}
 		TSK_FREE(out_data);
 		TSK_OBJECT_SAFE_FREE(codec);
@@ -326,6 +369,10 @@ const tsdp_header_M_t* tdav_session_video_get_lo(tmedia_session_t* self)
 			if((neg_codecs = tmedia_session_match_codec(self, self->M.ro))){
 				TSK_OBJECT_SAFE_FREE(self->neg_codecs);
 				self->neg_codecs = neg_codecs;
+				// set codec callback
+				if(!TSK_LIST_IS_EMPTY(self->neg_codecs)){
+					tmedia_codec_video_set_callback((tmedia_codec_video_t*)TSK_LIST_FIRST_DATA(self->neg_codecs), tdav_session_video_codec_cb, self);
+				}
 			}
 		}
 
@@ -378,6 +425,10 @@ int tdav_session_video_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 			/* update negociated codecs */
 			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
 			self->neg_codecs = neg_codecs;
+			// set codec callback
+			if(!TSK_LIST_IS_EMPTY(self->neg_codecs)){
+				tmedia_codec_video_set_callback((tmedia_codec_video_t*)TSK_LIST_FIRST_DATA(self->neg_codecs), tdav_session_video_codec_cb, self);
+			}
 		}
 		else{
 			return -1;
@@ -434,6 +485,7 @@ static tsk_object_t* tdav_session_video_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(session->rtp_manager);
 		TSK_OBJECT_SAFE_FREE(session->consumer);
 		TSK_OBJECT_SAFE_FREE(session->producer);
+		TSK_OBJECT_SAFE_FREE(session->converter);
 		TSK_FREE(session->remote_ip);
 		TSK_FREE(session->local_ip);
 	}

@@ -113,6 +113,9 @@ TMEDIA_BEGIN_DECLS
 /** cast any pointer to @ref tmedia_codec_t* object */
 #define TMEDIA_CODEC(self)		((tmedia_codec_t*)(self))
 
+/** callback for video codecs */
+typedef int (*tmedia_codec_video_rtpcb_f)(const void* callback_data, const void* buffer, tsk_size_t size, uint32_t duration, tsk_bool_t marker);
+
 /** Base object for all Codecs */
 typedef struct tmedia_codec_s
 {
@@ -240,6 +243,9 @@ typedef struct tmedia_codec_video_s
 	unsigned width;
 	unsigned height;
 	unsigned fps;
+
+	tmedia_codec_video_rtpcb_f callback;
+	const void* callback_data;
 }
 tmedia_codec_video_t;
 
@@ -258,6 +264,7 @@ tmedia_codec_video_t;
 #define TMEDIA_DECLARE_CODEC_VIDEO tmedia_codec_video_t __video__
 #define TMEDIA_CODEC_VIDEO(self)		((tmedia_codec_video_t*)(self))
 #define tmedia_codec_video_init(self, name, desc, format) tmedia_codec_init(TMEDIA_CODEC(self), tmedia_video, name, desc, format)
+TINYMEDIA_API int tmedia_codec_video_set_callback(tmedia_codec_video_t *self, tmedia_codec_video_rtpcb_f callback, const void* callback_data);
 #define tmedia_codec_video_deinit(self) tmedia_codec_deinit(TMEDIA_CODEC(self))
 
 /** MSRP codec */

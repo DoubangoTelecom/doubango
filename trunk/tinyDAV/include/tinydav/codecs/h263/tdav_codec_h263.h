@@ -22,6 +22,7 @@
 
 /**@file tdav_codec_h263.h
  * @brief H.263-1996 and H.263-1998 codec plugins.
+ * RTP payloader follows RFC 4629 for H263+ and RFC 2190 for H263.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
@@ -35,6 +36,8 @@
 #if HAVE_FFMPEG
 
 #include "tinymedia/tmedia_codec.h"
+
+#include "tinydav/video/tdav_runnable_video.h"
 
 #include <libavcodec/avcodec.h>
 
@@ -57,10 +60,14 @@ typedef struct tdav_codec_h263_s
 
 	tdav_codec_h263_type_t type;
 
+	tdav_runnable_video_t* runnable;
+
 	// Encoder
 	struct{
 		AVCodec* codec;
 		AVCodecContext* context;
+		AVFrame* picture;
+		void* buffer;
 	} encoder;
 	
 	// decoder
