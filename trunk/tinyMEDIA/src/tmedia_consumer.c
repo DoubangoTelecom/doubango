@@ -50,6 +50,9 @@ int tmedia_consumer_init(tmedia_consumer_t* self)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+
+	self->video.chroma = TMEDIA_CONSUMER_CHROMA_DEFAULT;
+
 	return 0;
 }
 

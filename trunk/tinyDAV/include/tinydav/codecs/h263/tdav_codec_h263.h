@@ -32,28 +32,61 @@
 
 #include "tinydav_config.h"
 
+#if HAVE_FFMPEG
+
 #include "tinymedia/tmedia_codec.h"
 
+#include <libavcodec/avcodec.h>
+
 TDAV_BEGIN_DECLS
+
+#define TDAV_CODEC_H263(self) ((tdav_codec_h263_t*)(self))
+
+typedef enum tdav_codec_h263_type_e
+{
+	tdav_codec_h263_1996,
+	tdav_codec_h263_1998,
+	tdav_codec_h263_2000,
+}
+tdav_codec_h263_type_t;
 
 /** H.263-1996 codec */
 typedef struct tdav_codec_h263_s
 {
 	TMEDIA_DECLARE_CODEC_VIDEO;
+
+	tdav_codec_h263_type_t type;
+
+	// Encoder
+	struct{
+		AVCodec* codec;
+		AVCodecContext* context;
+	} encoder;
+	
+	// decoder
+	struct{
+		AVCodec* codec;
+		AVCodecContext* context;
+	} decoder;
 }
 tdav_codec_h263_t;
+
+#define TDAV_DECLARE_CODEC_H263 tdav_codec_h263_t __codec_h263__
+
+int tdav_codec_h263_init(tdav_codec_h263_t* self, tdav_codec_h263_type_t type, enum CodecID encoder, enum CodecID decoder);
+int tdav_codec_h263_deinit(tdav_codec_h263_t* self);
 
 /** H.263-1998 codec */
 typedef struct tdav_codec_h263p_s
 {
-	TMEDIA_DECLARE_CODEC_VIDEO;
+	TDAV_DECLARE_CODEC_H263;
 }
 tdav_codec_h263p_t;
 
 /** H.263-2000 codec */
 typedef struct tdav_codec_h263pp_s
 {
-	TMEDIA_DECLARE_CODEC_VIDEO;
+	TDAV_DECLARE_CODEC_H263;
 }
 tdav_codec_h263pp_t;
 
@@ -62,5 +95,8 @@ TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h263p_plugin_def_t;
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h263pp_plugin_def_t;
 
 TDAV_END_DECLS
+
+
+#endif /* HAVE_FFMPEG */
 
 #endif /* TINYDAV_CODEC_H263_H */

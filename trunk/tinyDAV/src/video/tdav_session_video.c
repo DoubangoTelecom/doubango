@@ -90,10 +90,15 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 				TSK_DEBUG_ERROR("Invalid codec");
 				return -2;
 			}
+			// open the codec if not already done
+			if(!TMEDIA_CODEC(codec)->opened && tmedia_codec_open(codec)){
+				TSK_DEBUG_ERROR("Failed to open [%s] codec", codec->plugin->desc);
+				return -3;
+			}
 		}
 		else{
 			TSK_DEBUG_ERROR("Failed to find a valid codec");
-			return -3;
+			return -4;
 		}
 
 		// Encode data

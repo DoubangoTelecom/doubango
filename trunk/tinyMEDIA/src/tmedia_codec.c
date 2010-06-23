@@ -266,6 +266,9 @@ tmedia_codec_t* tmedia_codec_create(const char* format)
 						{ /* Video codec */
 							tmedia_codec_video_t* video = TMEDIA_CODEC_VIDEO(codec);
 							tmedia_codec_video_init(TMEDIA_CODEC(video), plugin->name, plugin->desc, plugin->format);
+							video->width = plugin->video.width;
+							video->height = plugin->video.height;
+							video->fps = plugin->video.fps;
 							break;
 						}
 					case tmedia_msrp:

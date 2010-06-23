@@ -45,14 +45,20 @@ TMEDIA_BEGIN_DECLS
 
 typedef int (*tmedia_producer_cb_f)(const void* callback_data, const void* buffer, tsk_size_t size);
 
+/**  Default Video chroma */
+#define TMEDIA_PRODUCER_CHROMA_DEFAULT tmedia_yuv420p
+
 /** Base object for all Producers */
 typedef struct tmedia_producer_s
 {
 	TSK_DECLARE_OBJECT;
-
-	//! the type of the producer
+	
 	tmedia_type_t type;
 	const char* desc;
+
+	struct{
+		tmedia_chroma_t chroma;
+	} video;
 
 	const struct tmedia_producer_plugin_def_s* plugin;
 

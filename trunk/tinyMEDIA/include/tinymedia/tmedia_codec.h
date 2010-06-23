@@ -165,6 +165,7 @@ typedef struct tmedia_codec_plugin_def_s
 	struct{
 		unsigned width;
 		unsigned height;
+		unsigned fps;
 		/* ...to be continued */
 	} video;
 	
@@ -235,6 +236,10 @@ tmedia_codec_audio_t;
 typedef struct tmedia_codec_video_s
 {
 	TMEDIA_DECLARE_CODEC;
+
+	unsigned width;
+	unsigned height;
+	unsigned fps;
 }
 tmedia_codec_video_t;
 

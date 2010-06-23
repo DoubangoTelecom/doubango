@@ -23,10 +23,6 @@
 #ifndef TINYMEDIA_CONFIG_H
 #define TINYMEDIA_CONFIG_H
 
-#if HAVE_CONFIG_H
-	#include "config.h"
-#endif
-
 #ifdef __SYMBIAN32__
 #undef _WIN32 /* Because of WINSCW */
 #endif
