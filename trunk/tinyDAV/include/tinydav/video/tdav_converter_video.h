@@ -19,54 +19,52 @@
 * along with DOUBANGO.
 *
 */
-
-/**@file tdav_session_video.h
- * @brief Video Session plugin.
+/**@file tdav_converter_video.h
+ * @brief Video converter.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYDAV_SESSION_VIDEO_H
-#define TINYDAV_SESSION_VIDEO_H
+#ifndef TINYDAV_CONVERTER_VIDEO_H
+#define TINYDAV_CONVERTER_VIDEO_H
 
 #include "tinydav_config.h"
 
-#include "tinydav/video/tdav_converter_video.h"
+#if HAVE_FFMPEG
 
-#include "tinymedia/tmedia_session.h"
+#include <libswscale/swscale.h>
+#include <libavcodec/avcodec.h>
+
+#include "tsk_object.h"
 
 TDAV_BEGIN_DECLS
 
-// Forward declaration
-struct trtp_manager_s;
-struct tdav_consumer_video_s;
-struct tdav_converter_video_s;
-
-typedef struct tdav_session_video_s
+typedef struct tdav_converter_video_s
 {
-	TMEDIA_DECLARE_SESSION_VIDEO;
+	TSK_DECLARE_OBJECT;
 
-	tsk_bool_t useIPv6;
+	struct SwsContext *ctx2YUV;
+	struct SwsContext *ctx2RGB;
 
-	char* local_ip;
+	AVFrame* rgb24Frame;
+	AVFrame* yuv420Frame;
 
-	char* remote_ip;
-	uint16_t remote_port;
-	
-	tsk_bool_t rtcp_enabled;
-
-	struct trtp_manager_s* rtp_manager;
-
-	struct tmedia_consumer_s* consumer;
-	struct tmedia_producer_s* producer;
-	struct tdav_converter_video_s* converter;
+	tsk_size_t width;
+	tsk_size_t height;
 }
-tdav_session_video_t;
+tdav_converter_video_t;
 
+tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t height);
 
-TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_video_plugin_def_t;
+tsk_size_t tdav_converter_video_2YUV420(tdav_converter_video_t* self, const void* rgb24, void** yuv420);
+tsk_size_t tdav_converter_video_2RGB24(tdav_converter_video_t* self, const void* yuv420, void** rgb24);
+
+TINYDAV_GEXTERN const tsk_object_def_t *tdav_converter_video_def_t;
 
 TDAV_END_DECLS
 
-#endif /* TINYDAV_SESSION_VIDEO_H */
+
+#endif /* #if HAVE_FFMPEG */
+
+#endif /* TINYDAV_CONVERTER_VIDEO_H */

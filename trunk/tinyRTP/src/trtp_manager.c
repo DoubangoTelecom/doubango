@@ -291,9 +291,11 @@ int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t siz
 	}
 	
 	/* create packet with header */
-	if(!(packet = trtp_rtp_packet_create(self->rtp.ssrc, self->rtp.seq_num++, 
-		(self->rtp.timestamp += duration), self->rtp.payload_type, marker))){
+	if(!(packet = trtp_rtp_packet_create(self->rtp.ssrc, self->rtp.seq_num++, self->rtp.timestamp, self->rtp.payload_type, marker))){
 		return -3;
+	}
+	if(marker){
+		self->rtp.timestamp += duration;
 	}
 
 	/* set data */

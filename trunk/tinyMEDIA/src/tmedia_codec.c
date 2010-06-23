@@ -516,3 +516,15 @@ int tmedia_codec_deinit(tmedia_codec_t* self)
 	return 0;
 }
 
+int tmedia_codec_video_set_callback(tmedia_codec_video_t *self, tmedia_codec_video_rtpcb_f callback, const void* callback_data)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	self->callback = callback;
+	self->callback_data = callback_data;
+
+	return 0;
+}

@@ -40,8 +40,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyDAV\include;..\..\tinyMEDIA\include;..\..\tinyRTP\include;..\..\tinySDP\include;..\..\tinySAK\src;..\..\tinyNET\src"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyDAV\include;..\..\tinyMEDIA\include;..\..\tinyRTP\include;..\..\tinySDP\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyDSHOW\include"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;HAVE_FFMPEG=1;HAVE_TINYDSHOW=1;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib"
+				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib &quot;..\..\thirdparties\win32\lib\libgcc.a&quot; &quot;..\..\thirdparties\win32\lib\libmingwex.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libavcodec-lgpl.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libavformat-lgpl.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libavutil-lgpl.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libtheora.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libogg.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libvorbis.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libvorbisenc.a&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -326,6 +326,14 @@
 				Name="video"
 				>
 				<File
+					RelativePath="..\..\tinyDAV\include\tinydav\video\tdav_converter_video.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyDAV\include\tinydav\video\tdav_runnable_video.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinyDAV\include\tinydav\video\tdav_session_video.h"
 					>
 				</File>
@@ -336,14 +344,6 @@
 				<Filter
 					Name="directshow"
 					>
-					<File
-						RelativePath="..\..\tinyDAV\include\tinydav\video\directshow\tdav_consumer_dshow.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\tinyDAV\include\tinydav\video\directshow\tdav_producer_dshow.h"
-						>
-					</File>
 				</Filter>
 				<Filter
 					Name="v4linux"
@@ -510,6 +510,14 @@
 				Name="video"
 				>
 				<File
+					RelativePath="..\..\tinyDAV\src\video\tdav_converter_video.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyDAV\src\video\tdav_runnable_video.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinyDAV\src\video\tdav_session_video.c"
 					>
 				</File>
@@ -520,14 +528,6 @@
 				<Filter
 					Name="directshow"
 					>
-					<File
-						RelativePath="..\..\tinyDAV\src\video\directshow\tdav_consumer_dshow.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\tinyDAV\src\video\directshow\tdav_producer_dshow.c"
-						>
-					</File>
 				</Filter>
 				<Filter
 					Name="v4linux"
@@ -538,15 +538,15 @@
 				Name="msrp"
 				>
 				<File
-					RelativePath="..\..\tinyDAV\src\msrp\dav_session_msrp.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\tinyDAV\src\msrp\tdav_consumer_msrp.c"
 					>
 				</File>
 				<File
 					RelativePath="..\..\tinyDAV\src\msrp\tdav_producer_msrp.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyDAV\src\msrp\tdav_session_msrp.c"
 					>
 				</File>
 			</Filter>
