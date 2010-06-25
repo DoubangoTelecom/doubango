@@ -255,12 +255,12 @@ HRESULT createSourceFilter(std::string *devicePath, IBaseFilter **sourceFilter)
 
 	// Ask for a device enumerator
 	hr = deviceEnum->CreateClassEnumerator(CLSID_VideoInputDeviceCategory, &enumerator, INCLUDE_CATEGORY_FLAG);
-	if (FAILED(hr)){
+	if(FAILED(hr)){
 		goto bail;
 	}
 
 	// hr = S_FALSE and enumerator is NULL if there is no device to enumerate
-	if (!enumerator){
+	if(!enumerator){
 		goto bail;
 	}
 

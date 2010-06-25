@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib ..\thirdparties\win32\lib\libgcc.a ..\thirdparties\win32\lib\libmingwex.a ..\thirdparties\win32\lib\ffmpeg\libavutil.a ..\thirdparties\win32\lib\ffmpeg\libavcodec.a"
+				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib ..\thirdparties\win32\lib\libgcc.a ..\thirdparties\win32\lib\libmingwex.a &quot;..\thirdparties\win32\lib\ffmpeg\libavcodec.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavutil.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libswscale.a&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -325,6 +325,14 @@
 				Name="video"
 				>
 				<File
+					RelativePath=".\include\tinydav\video\tdav_converter_video.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinydav\video\tdav_runnable_video.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tinydav\video\tdav_session_video.h"
 					>
 				</File>
@@ -500,6 +508,14 @@
 			<Filter
 				Name="video"
 				>
+				<File
+					RelativePath=".\src\video\tdav_converter_video.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\video\tdav_runnable_video.c"
+					>
+				</File>
 				<File
 					RelativePath=".\src\video\tdav_session_video.c"
 					>

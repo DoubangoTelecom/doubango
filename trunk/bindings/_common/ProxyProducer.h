@@ -32,6 +32,8 @@
 
 #include "tinyWRAP_config.h"
 
+#include "tinymedia/tmedia_common.h"
+
 class ProxyAudioProducer
 {
 public:
@@ -58,6 +60,36 @@ public:
 
 private:
 	struct twrap_producer_proxy_audio_s* producer;
+};
+
+class ProxyVideoProducer
+{
+public:
+	ProxyVideoProducer(tmedia_chroma_t chroma);
+	virtual ~ProxyVideoProducer();
+
+	/* Callback functions */
+	virtual int prepare(int width, int height, int fps) { return 0; }
+	virtual int start() { return 0; }
+	virtual int pause() { return 0; }
+	virtual int stop() { return 0; }
+
+	void setActivate(bool enabled);
+	int push(const void* buffer, unsigned size);
+
+public:
+	static bool registerPlugin();
+
+#if !defined(SWIG)
+	tmedia_chroma_t getChroma();
+	void takeProducer(struct twrap_producer_proxy_video_s*);
+	void releaseProducer(struct twrap_producer_proxy_video_s*);
+	static ProxyVideoProducer* instance;
+#endif
+
+private:
+	struct twrap_producer_proxy_video_s* producer;
+	tmedia_chroma_t chroma;
 };
 
 #endif /* TINYWRAP_PRODUCER_PROXY_H */

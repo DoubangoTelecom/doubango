@@ -1,6 +1,6 @@
 APP := lib$(PROJECT).$(EXT)
 
-FFMPEG_CFLAGS := -I../thirdparties/android/include
+FFMPEG_CFLAGS := -I../thirdparties/android/include -DHAVE_FFMPEG=1
 FFMPEG_LDFLAGS := -L../thirdparties/android/lib -lavutil -lswscale -lavcodec -lgcc
 
 CFLAGS := $(CFLAGS_LIB) $(FFMPEG_CFLAGS) -I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I../tinyRTP/include -I../tinyMEDIA/include -I./include
@@ -18,7 +18,9 @@ OBJS += src/audio/tdav_consumer_audio.o \
     src/audio/tdav_session_audio.o
     
      ### video
-OBJS += src/video/tdav_session_video.o
+OBJS += src/video/tdav_converter_video.o \
+	src/video/tdav_runnable_video.o \
+	src/video/tdav_session_video.o
 	
     ### msrp
 OBJS += src/msrp/tdav_consumer_msrp.o \

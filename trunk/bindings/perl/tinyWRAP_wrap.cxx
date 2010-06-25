@@ -1505,30 +1505,32 @@ SWIG_Perl_SetModule(swig_module_info *module) {
 #define SWIGTYPE_p_OptionsSession swig_types[7]
 #define SWIGTYPE_p_ProxyAudioConsumer swig_types[8]
 #define SWIGTYPE_p_ProxyAudioProducer swig_types[9]
-#define SWIGTYPE_p_PublicationEvent swig_types[10]
-#define SWIGTYPE_p_PublicationSession swig_types[11]
-#define SWIGTYPE_p_RegistrationEvent swig_types[12]
-#define SWIGTYPE_p_RegistrationSession swig_types[13]
-#define SWIGTYPE_p_SafeObject swig_types[14]
-#define SWIGTYPE_p_SipCallback swig_types[15]
-#define SWIGTYPE_p_SipEvent swig_types[16]
-#define SWIGTYPE_p_SipMessage swig_types[17]
-#define SWIGTYPE_p_SipSession swig_types[18]
-#define SWIGTYPE_p_SipStack swig_types[19]
-#define SWIGTYPE_p_SipUri swig_types[20]
-#define SWIGTYPE_p_StackEvent swig_types[21]
-#define SWIGTYPE_p_SubscriptionEvent swig_types[22]
-#define SWIGTYPE_p_SubscriptionSession swig_types[23]
-#define SWIGTYPE_p_char swig_types[24]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[25]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[26]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[27]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[28]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[29]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[30]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[31]
-static swig_type_info *swig_types[33];
-static swig_module_info swig_module = {swig_types, 32, 0, 0, 0, 0};
+#define SWIGTYPE_p_ProxyVideoProducer swig_types[10]
+#define SWIGTYPE_p_PublicationEvent swig_types[11]
+#define SWIGTYPE_p_PublicationSession swig_types[12]
+#define SWIGTYPE_p_RegistrationEvent swig_types[13]
+#define SWIGTYPE_p_RegistrationSession swig_types[14]
+#define SWIGTYPE_p_SafeObject swig_types[15]
+#define SWIGTYPE_p_SipCallback swig_types[16]
+#define SWIGTYPE_p_SipEvent swig_types[17]
+#define SWIGTYPE_p_SipMessage swig_types[18]
+#define SWIGTYPE_p_SipSession swig_types[19]
+#define SWIGTYPE_p_SipStack swig_types[20]
+#define SWIGTYPE_p_SipUri swig_types[21]
+#define SWIGTYPE_p_StackEvent swig_types[22]
+#define SWIGTYPE_p_SubscriptionEvent swig_types[23]
+#define SWIGTYPE_p_SubscriptionSession swig_types[24]
+#define SWIGTYPE_p_char swig_types[25]
+#define SWIGTYPE_p_tmedia_chroma_e swig_types[26]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[27]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[28]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[29]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[30]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[31]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[32]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[33]
+static swig_type_info *swig_types[35];
+static swig_module_info swig_module = {swig_types, 34, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -5596,6 +5598,304 @@ XS(_wrap_ProxyAudioProducer_registerPlugin) {
 }
 
 
+XS(_wrap_new_ProxyVideoProducer) {
+  {
+    tmedia_chroma_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    ProxyVideoProducer *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: new_ProxyVideoProducer(chroma);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_ProxyVideoProducer" "', argument " "1"" of type '" "tmedia_chroma_t""'");
+    } 
+    arg1 = static_cast< tmedia_chroma_t >(val1);
+    result = (ProxyVideoProducer *)new ProxyVideoProducer(arg1);
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyVideoProducer, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_delete_ProxyVideoProducer) {
+  {
+    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: delete_ProxyVideoProducer(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyVideoProducer" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+    delete arg1;
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducer_prepare) {
+  {
+    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+    int arg2 ;
+    int arg3 ;
+    int arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int val3 ;
+    int ecode3 = 0 ;
+    int val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: ProxyVideoProducer_prepare(self,width,height,fps);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_prepare" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoProducer_prepare" "', argument " "2"" of type '" "int""'");
+    } 
+    arg2 = static_cast< int >(val2);
+    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoProducer_prepare" "', argument " "3"" of type '" "int""'");
+    } 
+    arg3 = static_cast< int >(val3);
+    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyVideoProducer_prepare" "', argument " "4"" of type '" "int""'");
+    } 
+    arg4 = static_cast< int >(val4);
+    result = (int)(arg1)->prepare(arg2,arg3,arg4);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducer_start) {
+  {
+    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoProducer_start(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_start" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+    result = (int)(arg1)->start();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducer_pause) {
+  {
+    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoProducer_pause(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_pause" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+    result = (int)(arg1)->pause();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducer_stop) {
+  {
+    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoProducer_stop(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_stop" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+    result = (int)(arg1)->stop();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducer_setActivate) {
+  {
+    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+    bool arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    bool val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: ProxyVideoProducer_setActivate(self,enabled);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_setActivate" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+    ecode2 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoProducer_setActivate" "', argument " "2"" of type '" "bool""'");
+    } 
+    arg2 = static_cast< bool >(val2);
+    (arg1)->setActivate(arg2);
+    ST(argvi) = sv_newmortal();
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducer_push) {
+  {
+    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+    void *arg2 = (void *) 0 ;
+    unsigned int arg3 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    unsigned int val3 ;
+    int ecode3 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 3) || (items > 3)) {
+      SWIG_croak("Usage: ProxyVideoProducer_push(self,buffer,size);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_push" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+    res2 = SWIG_ConvertPtr(ST(1),SWIG_as_voidptrptr(&arg2), 0, 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyVideoProducer_push" "', argument " "2"" of type '" "void const *""'"); 
+    }
+    ecode3 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoProducer_push" "', argument " "3"" of type '" "unsigned int""'");
+    } 
+    arg3 = static_cast< unsigned int >(val3);
+    result = (int)(arg1)->push((void const *)arg2,arg3);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducer_registerPlugin) {
+  {
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: ProxyVideoProducer_registerPlugin();");
+    }
+    result = (bool)ProxyVideoProducer::registerPlugin();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_new_SipCallback) {
   {
     int argvi = 0;
@@ -6778,27 +7078,6 @@ XS(_wrap_SipStack_stop) {
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
-static void *_p_CallSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipSession *)  ((CallSession *) x));
-}
-static void *_p_MessagingSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipSession *)  ((MessagingSession *) x));
-}
-static void *_p_OptionsSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipSession *)  ((OptionsSession *) x));
-}
-static void *_p_PublicationSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipSession *)  ((PublicationSession *) x));
-}
-static void *_p_RegistrationSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipSession *)  ((RegistrationSession *) x));
-}
-static void *_p_SubscriptionSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipSession *)  ((SubscriptionSession *) x));
-}
-static void *_p_SipStackTo_p_SafeObject(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SafeObject *)  ((SipStack *) x));
-}
 static void *_p_CallEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SipEvent *)  ((CallEvent *) x));
 }
@@ -6823,6 +7102,27 @@ static void *_p_StackEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory))
 static void *_p_MessagingEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SipEvent *)  ((MessagingEvent *) x));
 }
+static void *_p_CallSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipSession *)  ((CallSession *) x));
+}
+static void *_p_MessagingSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipSession *)  ((MessagingSession *) x));
+}
+static void *_p_OptionsSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipSession *)  ((OptionsSession *) x));
+}
+static void *_p_PublicationSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipSession *)  ((PublicationSession *) x));
+}
+static void *_p_RegistrationSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipSession *)  ((RegistrationSession *) x));
+}
+static void *_p_SubscriptionSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipSession *)  ((SubscriptionSession *) x));
+}
+static void *_p_SipStackTo_p_SafeObject(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SafeObject *)  ((SipStack *) x));
+}
 static swig_type_info _swigt__p_CallEvent = {"_p_CallEvent", "CallEvent *", 0, 0, (void*)"tinyWRAP::CallEvent", 0};
 static swig_type_info _swigt__p_CallSession = {"_p_CallSession", "CallSession *", 0, 0, (void*)"tinyWRAP::CallSession", 0};
 static swig_type_info _swigt__p_DDebugCallback = {"_p_DDebugCallback", "DDebugCallback *", 0, 0, (void*)"tinyWRAP::DDebugCallback", 0};
@@ -6833,6 +7133,7 @@ static swig_type_info _swigt__p_OptionsEvent = {"_p_OptionsEvent", "OptionsEvent
 static swig_type_info _swigt__p_OptionsSession = {"_p_OptionsSession", "OptionsSession *", 0, 0, (void*)"tinyWRAP::OptionsSession", 0};
 static swig_type_info _swigt__p_ProxyAudioConsumer = {"_p_ProxyAudioConsumer", "ProxyAudioConsumer *", 0, 0, (void*)"tinyWRAP::ProxyAudioConsumer", 0};
 static swig_type_info _swigt__p_ProxyAudioProducer = {"_p_ProxyAudioProducer", "ProxyAudioProducer *", 0, 0, (void*)"tinyWRAP::ProxyAudioProducer", 0};
+static swig_type_info _swigt__p_ProxyVideoProducer = {"_p_ProxyVideoProducer", "ProxyVideoProducer *", 0, 0, (void*)"tinyWRAP::ProxyVideoProducer", 0};
 static swig_type_info _swigt__p_PublicationEvent = {"_p_PublicationEvent", "PublicationEvent *", 0, 0, (void*)"tinyWRAP::PublicationEvent", 0};
 static swig_type_info _swigt__p_PublicationSession = {"_p_PublicationSession", "PublicationSession *", 0, 0, (void*)"tinyWRAP::PublicationSession", 0};
 static swig_type_info _swigt__p_RegistrationEvent = {"_p_RegistrationEvent", "RegistrationEvent *", 0, 0, (void*)"tinyWRAP::RegistrationEvent", 0};
@@ -6848,6 +7149,7 @@ static swig_type_info _swigt__p_StackEvent = {"_p_StackEvent", "StackEvent *", 0
 static swig_type_info _swigt__p_SubscriptionEvent = {"_p_SubscriptionEvent", "SubscriptionEvent *", 0, 0, (void*)"tinyWRAP::SubscriptionEvent", 0};
 static swig_type_info _swigt__p_SubscriptionSession = {"_p_SubscriptionSession", "SubscriptionSession *", 0, 0, (void*)"tinyWRAP::SubscriptionSession", 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_tmedia_chroma_e = {"_p_tmedia_chroma_e", "tmedia_chroma_t *|enum tmedia_chroma_e *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_event_type_e = {"_p_tsip_event_type_e", "enum tsip_event_type_e *|tsip_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_invite_event_type_e = {"_p_tsip_invite_event_type_e", "enum tsip_invite_event_type_e *|tsip_invite_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_message_event_type_e = {"_p_tsip_message_event_type_e", "enum tsip_message_event_type_e *|tsip_message_event_type_t *", 0, 0, (void*)0, 0};
@@ -6867,6 +7169,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_OptionsSession,
   &_swigt__p_ProxyAudioConsumer,
   &_swigt__p_ProxyAudioProducer,
+  &_swigt__p_ProxyVideoProducer,
   &_swigt__p_PublicationEvent,
   &_swigt__p_PublicationSession,
   &_swigt__p_RegistrationEvent,
@@ -6882,6 +7185,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_SubscriptionEvent,
   &_swigt__p_SubscriptionSession,
   &_swigt__p_char,
+  &_swigt__p_tmedia_chroma_e,
   &_swigt__p_tsip_event_type_e,
   &_swigt__p_tsip_invite_event_type_e,
   &_swigt__p_tsip_message_event_type_e,
@@ -6901,6 +7205,7 @@ static swig_cast_info _swigc__p_OptionsEvent[] = {  {&_swigt__p_OptionsEvent, 0,
 static swig_cast_info _swigc__p_OptionsSession[] = {  {&_swigt__p_OptionsSession, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ProxyAudioConsumer[] = {  {&_swigt__p_ProxyAudioConsumer, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ProxyAudioProducer[] = {  {&_swigt__p_ProxyAudioProducer, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyVideoProducer[] = {  {&_swigt__p_ProxyVideoProducer, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationEvent[] = {  {&_swigt__p_PublicationEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationSession[] = {  {&_swigt__p_PublicationSession, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_RegistrationEvent[] = {  {&_swigt__p_RegistrationEvent, 0, 0, 0},{0, 0, 0, 0}};
@@ -6916,6 +7221,7 @@ static swig_cast_info _swigc__p_StackEvent[] = {  {&_swigt__p_StackEvent, 0, 0, 
 static swig_cast_info _swigc__p_SubscriptionEvent[] = {  {&_swigt__p_SubscriptionEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SubscriptionSession[] = {  {&_swigt__p_SubscriptionSession, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_tmedia_chroma_e[] = {  {&_swigt__p_tmedia_chroma_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_event_type_e[] = {  {&_swigt__p_tsip_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_invite_event_type_e[] = {  {&_swigt__p_tsip_invite_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_message_event_type_e[] = {  {&_swigt__p_tsip_message_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
@@ -6935,6 +7241,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_OptionsSession,
   _swigc__p_ProxyAudioConsumer,
   _swigc__p_ProxyAudioProducer,
+  _swigc__p_ProxyVideoProducer,
   _swigc__p_PublicationEvent,
   _swigc__p_PublicationSession,
   _swigc__p_RegistrationEvent,
@@ -6950,6 +7257,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_SubscriptionEvent,
   _swigc__p_SubscriptionSession,
   _swigc__p_char,
+  _swigc__p_tmedia_chroma_e,
   _swigc__p_tsip_event_type_e,
   _swigc__p_tsip_invite_event_type_e,
   _swigc__p_tsip_message_event_type_e,
@@ -7073,6 +7381,15 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::ProxyAudioProducer_setActivate", _wrap_ProxyAudioProducer_setActivate},
 {"tinyWRAPc::ProxyAudioProducer_push", _wrap_ProxyAudioProducer_push},
 {"tinyWRAPc::ProxyAudioProducer_registerPlugin", _wrap_ProxyAudioProducer_registerPlugin},
+{"tinyWRAPc::new_ProxyVideoProducer", _wrap_new_ProxyVideoProducer},
+{"tinyWRAPc::delete_ProxyVideoProducer", _wrap_delete_ProxyVideoProducer},
+{"tinyWRAPc::ProxyVideoProducer_prepare", _wrap_ProxyVideoProducer_prepare},
+{"tinyWRAPc::ProxyVideoProducer_start", _wrap_ProxyVideoProducer_start},
+{"tinyWRAPc::ProxyVideoProducer_pause", _wrap_ProxyVideoProducer_pause},
+{"tinyWRAPc::ProxyVideoProducer_stop", _wrap_ProxyVideoProducer_stop},
+{"tinyWRAPc::ProxyVideoProducer_setActivate", _wrap_ProxyVideoProducer_setActivate},
+{"tinyWRAPc::ProxyVideoProducer_push", _wrap_ProxyVideoProducer_push},
+{"tinyWRAPc::ProxyVideoProducer_registerPlugin", _wrap_ProxyVideoProducer_registerPlugin},
 {"tinyWRAPc::new_SipCallback", _wrap_new_SipCallback},
 {"tinyWRAPc::delete_SipCallback", _wrap_delete_SipCallback},
 {"tinyWRAPc::SipCallback_OnDialogEvent", _wrap_SipCallback_OnDialogEvent},
@@ -7420,6 +7737,7 @@ XS(SWIG_init) {
   SWIG_TypeClientData(SWIGTYPE_p_SubscriptionSession, (void*) "tinyWRAP::SubscriptionSession");
   SWIG_TypeClientData(SWIGTYPE_p_ProxyAudioConsumer, (void*) "tinyWRAP::ProxyAudioConsumer");
   SWIG_TypeClientData(SWIGTYPE_p_ProxyAudioProducer, (void*) "tinyWRAP::ProxyAudioProducer");
+  SWIG_TypeClientData(SWIGTYPE_p_ProxyVideoProducer, (void*) "tinyWRAP::ProxyVideoProducer");
   SWIG_TypeClientData(SWIGTYPE_p_SipCallback, (void*) "tinyWRAP::SipCallback");
   SWIG_TypeClientData(SWIGTYPE_p_SafeObject, (void*) "tinyWRAP::SafeObject");
   SWIG_TypeClientData(SWIGTYPE_p_SipStack, (void*) "tinyWRAP::SipStack");
@@ -7676,6 +7994,21 @@ XS(SWIG_init) {
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_m_remote_resume", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_m_remote_resume)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_rgb24", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_rgb24)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_nv21", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_nv21)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_yuv420p", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_yuv420p)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   ST(0) = &PL_sv_yes;
