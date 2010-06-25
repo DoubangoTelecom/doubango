@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib &quot;..\..\thirdparties\win32\lib\libgcc.a&quot; &quot;..\..\thirdparties\win32\lib\libmingwex.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libavcodec-lgpl.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libavformat-lgpl.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libavutil-lgpl.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libtheora.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libogg.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libvorbis.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libvorbisenc.a&quot;"
+				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib &quot;..\..\thirdparties\win32\lib\libgcc.a&quot; &quot;..\..\thirdparties\win32\lib\libmingwex.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libavcodec-lgpl.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libavutil-lgpl.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libtheora.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libogg.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libvorbis.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libvorbisenc.a&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"

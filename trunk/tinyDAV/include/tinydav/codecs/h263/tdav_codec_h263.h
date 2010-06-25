@@ -61,6 +61,10 @@ typedef struct tdav_codec_h263_s
 	tdav_codec_h263_type_t type;
 
 	tdav_runnable_video_t* runnable;
+	struct{
+		uint8_t* ptr;
+		tsk_size_t size;
+	} rtp;
 
 	// Encoder
 	struct{

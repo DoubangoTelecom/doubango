@@ -34,6 +34,8 @@
 
 #include "tinydav/video/tdav_converter_video.h"
 
+#include "tnet_endianness.h"
+
 #include "tsk_time.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
@@ -46,42 +48,6 @@ static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *da
 static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *data, tsk_size_t size, tsk_bool_t marker);
 
 /* ============ Common To all H263 codecs ================= */
-
-//int tdav_codec_h263_encap(tdav_codec_h263_t* self, tsk_buffer_t** buffer)
-//{
-//	/* 4 is sizeof(uint32_t) */
-//	const uint8_t* pdata;
-//	tsk_size_t size;
-//	uint32_t i, last_index = 0, last_psc_gbsc_index = 0;
-//
-//	if(!buffer || !*buffer || ((*buffer)->size < 4)){
-//		TSK_DEBUG_ERROR("Invalid parameter");
-//		return -1;
-//	}
-//
-//	pdata = (*buffer)->data;
-//	size = (*buffer)->size;
-//
-//	for(i = 4; i<(size - 4); i++){
-//		if((*((uint32_t*)(pdata + i)) & 0xffff8000) == 0x00008000){  /* PSC or (GBSC) found */
-//		
-//			if((i - last_index) >= RTP_PAYLOAD_SIZE){
-//				list_psc_gbsc.push_back(last_psc_gbsc_index?last_psc_gbsc_index:i);
-//				last_index = i;
-//			}
-//			last_psc_gbsc_index = i;
-//		}
-//	}
-//	if(last_index < size - 3/*PSC/GBSC size*/){
-//		list_psc_gbsc.push_back(size);
-//	}
-//
-//	TSK_RUNNABLE_ENQUEUE_OBJECT(self->runnable, *buffer);
-//
-//	//*buffer = tsk_null;
-//
-//	return 0;
-//}
 
 int tdav_codec_h263_init(tdav_codec_h263_t* self, tdav_codec_h263_type_t type, enum CodecID encoder, enum CodecID decoder)
 {
@@ -116,8 +82,11 @@ int tdav_codec_h263_deinit(tdav_codec_h263_t* self)
 	self->decoder.codec = tsk_null;
 
 	// FFMpeg resources are destroyed by close()
-
+	
 	TSK_OBJECT_SAFE_FREE(self->runnable);
+	
+	TSK_FREE(self->rtp.ptr);
+	self->rtp.size = 0;
 
 	return 0;
 }
@@ -440,17 +409,17 @@ const tmedia_codec_plugin_def_t *tdav_codec_h263_plugin_def_t = &tdav_codec_h263
 
 int tdav_codec_h263p_open(tmedia_codec_t* self)
 {
-	return 0;
+	return tdav_codec_h263_open(self);
 }
 
 int tdav_codec_h263p_close(tmedia_codec_t* self)
 {
-	return 0;
+	return tdav_codec_h263_close(self);
 }
 
 tsk_size_t tdav_codec_h263p_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
 {
-	return 0;
+	return tdav_codec_h263_encode(self, in_data, in_size, out_data);
 }
 
 tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
@@ -557,17 +526,17 @@ const tmedia_codec_plugin_def_t *tdav_codec_h263p_plugin_def_t = &tdav_codec_h26
 
 int tdav_codec_h263pp_open(tmedia_codec_t* self)
 {
-	return 0;
+	return tdav_codec_h263_open(self);
 }
 
 int tdav_codec_h263pp_close(tmedia_codec_t* self)
 {
-	return 0;
+	return tdav_codec_h263_close(self);
 }
 
 tsk_size_t tdav_codec_h263pp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
 {
-	return 0;
+	return tdav_codec_h263_encode(self, in_data, in_size, out_data);
 }
 
 tsk_size_t tdav_codec_h263pp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
@@ -682,11 +651,7 @@ static void *run(void* self)
 		}
 
 		for(i = 4; i<(size - 4); i++){
-//#if ANDROID
 			if(pdata[i] == 0x00 && pdata[i+1] == 0x00 && pdata[i+2]>=0x80){  /* PSC or (GBSC) found */
-//#else
-//			if((*((uint32_t*)(pdata + i)) & 0xffff8000) == 0x00008000){  /* PSC or (GBSC) found */
-//#endif
 				if((i - last_index) >= RTP_PAYLOAD_SIZE){
 					switch(h263->type){
 						case tdav_codec_h263_1996:
@@ -729,15 +694,16 @@ last:
 
 static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *data, tsk_size_t size, tsk_bool_t marker)
 {
-	uint8_t* rtp; // FIXXXXXXXXXME: use one global buffer
+	uint8_t* pdata = (uint8_t*)data;
 
-	if(!(rtp = tsk_calloc((size + MODE_A_SIZE), sizeof(uint8_t)))){
-		TSK_DEBUG_ERROR("Failed to allocate new buffer");
-		return;
+	if(self->rtp.size < (size + MODE_A_SIZE)){
+		if(!(self->rtp.ptr = tsk_realloc(self->rtp.ptr, (size + MODE_A_SIZE)))){
+			TSK_DEBUG_ERROR("Failed to allocate new buffer");
+			return;
+		}
+		self->rtp.size = (size + MODE_A_SIZE);
 	}
-	else{
-		memcpy((rtp + MODE_A_SIZE), data, size);
-	}
+	memcpy((self->rtp.ptr + MODE_A_SIZE), data, size);
 
 	/* http://eu.sabotage.org/www/ITU/H/H0263e.pdf section 5.1
 	* 5.1.1 Picture Start Code (PSC) (22 bits) - PSC is a word of 22 bits. Its value is 0000 0000 0000 0000 1 00000.
@@ -747,7 +713,7 @@ static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *da
 	* 5.1.3 Type Information (PTYPE) (Variable Length)
 	*	– Bit 1: Always "1", in order to avoid start code emulation.
 	*	– Bit 2: Always "0", for distinction with Recommendation H.261.
-
+	
 	*	– Bit 3: Split screen indicator, "0" off, "1" on.
 	*	– Bit 4: Document camera indicator, "0" off, "1" on.
 	*	– Bit 5: Full Picture Freeze Release, "0" off, "1" on.
@@ -761,7 +727,7 @@ static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *da
 		– Bit 12: Optional Advanced Prediction mode (see Annex F), "0" off, "1" on.
 		– Bit 13: Optional PB-frames mode (see Annex G), "0" normal I- or P-picture, "1" PB-frame.
 	*/
-	if((*((uint32_t*)data) & 0xffff8000) == 0x00008000){ /* PSC */
+	if(pdata[0] == 0x00 && pdata[1] == 0x00 && (pdata[2] & 0xfc)==0x80){ /* PSC */
 		/* RFC 2190 -5.1 Mode A
 			0                   1                   2                   3
 			0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -777,35 +743,145 @@ static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *da
 		Picture coding type, bit 9 in PTYPE defined by H.263[4], "0" is
 		intra-coded, "1" is inter-coded.
 		*/
-		uint8_t format;
-		const uint8_t* ptr = (((const uint8_t*)data) + 4); // Bits 3-10 of PTYPE
-
-		//for(i=0;i<10;i++){
-		//	printf("%2x ", ((const uint8_t*)data)[i]);
-		//}
-
-		// Format = 4,5,6
-		format = ((*ptr) & 0x38)>>3;
-		//int i=0;
-		//i++;
+		
+		// PDATA[4] ======> Bits 3-10 of PTYPE
+		uint32_t rtp_hdr = 0;
+		uint8_t format, pict_type;
+		
+		// Source Format = 4,5,6
+		format = (pdata[4] & 0x3C)>>2;
+		// Picture Coding Type = 7
+		pict_type = (pdata[4] & 0x02)>>1;
+		// RTP mode A header
+		((uint8_t*)&rtp_hdr)[1] = (format <<5) | (pict_type << 4);
+		//rtp_hdr = tnet_htonl(rtp_hdr);
+		memcpy(self->rtp.ptr, &rtp_hdr, sizeof(rtp_hdr));
 	}
-
-	//*(rtp + 1)=0x50;
 
 	// Send data over the network
 	if(TMEDIA_CODEC_VIDEO(self)->callback){
-		TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, rtp, (size + MODE_A_SIZE), (3003* (30/TMEDIA_CODEC_VIDEO(self)->fps)), marker);
+		TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, self->rtp.ptr, (size + MODE_A_SIZE), (3003* (30/TMEDIA_CODEC_VIDEO(self)->fps)), marker);
 	}
-
-	TSK_FREE(rtp);
 }
 
 static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *data, tsk_size_t size, tsk_bool_t marker)
 {
-// Send data over the network
-		//if(TMEDIA_CODEC_VIDEO(h263)->callback){
-		//	TMEDIA_CODEC_VIDEO(h263)->callback(TMEDIA_CODEC_VIDEO(h263)->callback_data, buffer->data, buffer->size, 160, marker);
-		//}
+	uint8_t* pdata = (uint8_t*)data;
+	uint16_t rtp_hdr = 0;
+	tsk_bool_t eos = tsk_false;
+
+	const void* _ptr = tsk_null;
+	tsk_size_t _size = 0;
+
+	/* RFC 4629 - 5.1. General H.263+ Payload Header
+		The H.263+ payload header is structured as follows:
+         0                   1
+         0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        |   RR    |P|V|   PLEN    |PEBIT|
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	*/
+
+	/* http://eu.sabotage.org/www/ITU/H/H0263e.pdf
+	*
+	* 5.1.1 Picture Start Code (PSC) (22 bits)
+	*	->PSC is a word of 22 bits. Its value is 0000 0000 0000 0000 1 00000.
+	* 5.1.27 End Of Sequence (EOS) (22 bits)
+	*	->A codeword of 22 bits. Its value is 0000 0000 0000 0000 1 11111
+	* 5.2.2 Group of Block Start Code (GBSC) (17 bits)
+	*	->A word of 17 bits. Its value is 0000 0000 0000 0000 1
+	* C.4.1 End Of Sub-Bitstream code (EOSBS) (23 bits)
+	*	->The EOSBS code is a codeword of 23 bits. Its value is 0000 0000 0000 0000 1 11110 0
+	*
+	*
+	* 5.2.3 Group Number (GN) (5 bits)
+	*	-> last 5 bits
+	*/
+	if(pdata[0] == 0x00 && pdata[1] == 0x00 && (pdata[2] & 0x80)){ /* PSC or EOS or GBSC */
+		uint8_t GN = ((pdata[2]>>2) & 0x1F);
+		TSK_DEBUG_INFO("GN=%u", pdata[2]);
+	
+		/*	RFC 4629 - 6.1.1. Packets that begin with a Picture Start Code
+			A packet that begins at the location of a Picture, GOB, slice, EOS,
+			or EOSBS start code shall omit the first two (all zero) bytes from
+			the H.263+ bitstream and signify their presence by setting P=1 in the
+			payload header.
+		*/
+
+		if(GN == 0x00){ /* PSC 00000 */
+			/* Use the two first bytes as RTP header */
+			pdata[0] |= 0x04; // P=1
+
+			/*
+			 0                   1                   2                   3
+			0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+			+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+			|   RR    |1|V|0|0|0|0|0|0|0|0|0| bitstream data without the    :
+			+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+			: first two 0 bytes of the PSC
+			+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+			*/
+
+			TSK_DEBUG_INFO("H263 - PSC");
+		}
+		else if(GN == 0x1F){ /* EOS 11111 */
+			/* Use the two first bytes as RTP header */
+			pdata[0] |= 0x04; // P=1
+			eos = tsk_true;
+			/* RFC 4629 - 6.1.3. Packets that begin with an EOS or EOSBS Code 
+				0                   1                   2
+				0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3
+				+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+				|   RR    |1|V|0|0|0|0|0|0|0|0|0|1|1|1|1|1|1|0|0|
+				+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+			*/
+			TSK_DEBUG_INFO("H263 - EOS");
+		}
+		else /*if((GN >> 4) == 0x01)*/{ /* GBSC  10000 */
+			/* Use the two first bytes as RTP header */
+			pdata[0] |= 0x04; // P=1
+			
+			/* RFC 4629 - 6.1.2. Packets that begin with GBSC or SSC
+		0                   1                   2                   3
+		0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		|   RR    |1|V|0 0 1 0 0 1|PEBIT|1 0 0 0 0 0| picture header    :
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		: starting with TR, PTYPE ...                                   |
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		| ...                                           | bitstream     :
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		: data starting with GBSC/SSC without its first two 0 bytes
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+			*/
+			TSK_DEBUG_INFO("H263 - GBSC");
+		}
+		//else if(EOSBS) -> Not Supported
+	}
+
+	if(eos){
+		if(self->rtp.size < (size + 2/* H263+ Header size */)){
+			if(!(self->rtp.ptr = tsk_realloc(self->rtp.ptr, (size + 2)))){
+				TSK_DEBUG_ERROR("Failed to allocate new buffer");
+				return;
+			}
+			self->rtp.size = (size + 2);
+		}
+		/* RFC 4629 - 6. Packetization Schemes */
+		memcpy(self->rtp.ptr, &rtp_hdr/* zeros-> is it corretc? */, 2);
+		memcpy((self->rtp.ptr + 2), pdata, size);
+		_ptr = self->rtp.ptr;
+		_size = (size + 2);
+	}
+	else{
+		_ptr = pdata;
+		_size = size;
+	}	
+
+	// Send data over the network
+	if(TMEDIA_CODEC_VIDEO(self)->callback){
+		TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, _ptr, _size, (3003* (30/TMEDIA_CODEC_VIDEO(self)->fps)), marker);
+	}
 }
 
 
