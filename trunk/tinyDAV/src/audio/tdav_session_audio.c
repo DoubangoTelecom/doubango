@@ -449,14 +449,18 @@ static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 { 
 	tdav_session_audio_t *session = self;
 	if(session){
-		/* deinit base */
-		tmedia_session_deinit(self);
-		/* deinit self */
-		TSK_OBJECT_SAFE_FREE(session->rtp_manager);
+		
+		// Do it in this order (deinit self first)
+
+		/* deinit self (rtp manager should be destroyed after the producer) */
 		TSK_OBJECT_SAFE_FREE(session->consumer);
 		TSK_OBJECT_SAFE_FREE(session->producer);
+		TSK_OBJECT_SAFE_FREE(session->rtp_manager);
 		TSK_FREE(session->remote_ip);
 		TSK_FREE(session->local_ip);
+
+		/* deinit base */
+		tmedia_session_deinit(self);
 	}
 
 	return self;

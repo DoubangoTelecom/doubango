@@ -32,11 +32,13 @@
 
 #if HAVE_FFMPEG
 
+#include "tinydav/video/tdav_converter_video.h"
+
 #include "tsk_time.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-#define RTP_PAYLOAD_SIZE	900
+#define RTP_PAYLOAD_SIZE	500
 #define MODE_A_SIZE			4 /* RFC 2190 section 5.1 */
 
 static void *run(void* self);
@@ -154,17 +156,20 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 	//	Encoder
 	//
 	h263->encoder.context = avcodec_alloc_context();
+	avcodec_get_context_defaults(h263->encoder.context);
+	
 	h263->encoder.context->pix_fmt		= PIX_FMT_YUV420P;
 	h263->encoder.context->time_base.num  = 1;
 	h263->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(h263)->fps;
 	h263->encoder.context->width = TMEDIA_CODEC_VIDEO(h263)->width;
 	h263->encoder.context->height = TMEDIA_CODEC_VIDEO(h263)->height;
-	h263->encoder.context->max_b_frames = 0;
+	//h263->encoder.context->max_b_frames = 0;
 
 	h263->encoder.context->thread_count = 1;
-	h263->encoder.context->rtp_payload_size = 0;
+	h263->encoder.context->rtp_payload_size = RTP_PAYLOAD_SIZE;
 	h263->encoder.context->opaque = tsk_null;
-	h263->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h263)->fps*1; /* each 2 second */
+	h263->encoder.context->bit_rate = (float) (120000) * 0.8;
+	h263->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h263)->fps*5; /* each 5 seconds */
 	
 	// Picture (YUV 420)
 	if(!(h263->encoder.picture = avcodec_alloc_frame())){
@@ -268,7 +273,7 @@ int tdav_codec_h263_close(tmedia_codec_t* self)
 	return 0;
 }
 
-tsk_size_t tdav_codec_h263_fmtp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
 {
 	int ret;
 	int size;
@@ -292,9 +297,11 @@ tsk_size_t tdav_codec_h263_fmtp_encode(tmedia_codec_t* self, const void* in_data
 		TSK_DEBUG_ERROR("Invalid size");
 		return 0;
 	}
+	/* Flip */
+	tdav_converter_video_flip(h263->encoder.picture, h263->encoder.context->height);
 
 	// Encode data
-	h263->encoder.picture->pts = tsk_time_now();
+	h263->encoder.picture->pts = AV_NOPTS_VALUE;
 	ret = avcodec_encode_video(h263->encoder.context, h263->encoder.buffer, size, h263->encoder.picture);
 	if(ret < 0){
 		ret = 0;
@@ -309,7 +316,7 @@ tsk_size_t tdav_codec_h263_fmtp_encode(tmedia_codec_t* self, const void* in_data
 		}
 	}
 	
-	if(ret > RTP_PAYLOAD_SIZE){
+	if(ret/* > RTP_PAYLOAD_SIZE*/){
 		tsk_buffer_t* buffer = tsk_buffer_create_null();
 		tsk_buffer_takeownership(buffer, out_data, (tsk_size_t)ret);
 		TSK_RUNNABLE_ENQUEUE_OBJECT(h263->runnable, buffer);
@@ -319,7 +326,7 @@ tsk_size_t tdav_codec_h263_fmtp_encode(tmedia_codec_t* self, const void* in_data
 	return (tsk_size_t)ret;
 }
 
-tsk_size_t tdav_codec_h263_fmtp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
 {
 	return 0;
 }
@@ -395,8 +402,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_h263_plugin_def_s =
 
 	tdav_codec_h263_open,
 	tdav_codec_h263_close,
-	tdav_codec_h263_fmtp_encode,
-	tdav_codec_h263_fmtp_decode,
+	tdav_codec_h263_encode,
+	tdav_codec_h263_decode,
 	tdav_codec_h263_fmtp_match,
 	tdav_codec_h263_fmtp_get,
 	tdav_codec_h263_fmtp_set
@@ -441,12 +448,12 @@ int tdav_codec_h263p_close(tmedia_codec_t* self)
 	return 0;
 }
 
-tsk_size_t tdav_codec_h263p_fmtp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_h263p_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
 {
 	return 0;
 }
 
-tsk_size_t tdav_codec_h263p_fmtp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
 {
 	return 0;
 }
@@ -521,8 +528,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_h263p_plugin_def_s =
 
 	tdav_codec_h263p_open,
 	tdav_codec_h263p_close,
-	tdav_codec_h263p_fmtp_encode,
-	tdav_codec_h263p_fmtp_decode,
+	tdav_codec_h263p_encode,
+	tdav_codec_h263p_decode,
 	tdav_codec_h263p_fmtp_match,
 	tdav_codec_h263p_fmtp_get,
 	tdav_codec_h263p_fmtp_set
@@ -558,12 +565,12 @@ int tdav_codec_h263pp_close(tmedia_codec_t* self)
 	return 0;
 }
 
-tsk_size_t tdav_codec_h263pp_fmtp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_h263pp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
 {
 	return 0;
 }
 
-tsk_size_t tdav_codec_h263pp_fmtp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_h263pp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
 {
 	return 0;
 }
@@ -638,8 +645,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_h263pp_plugin_def_s =
 
 	tdav_codec_h263pp_open,
 	tdav_codec_h263pp_close,
-	tdav_codec_h263pp_fmtp_encode,
-	tdav_codec_h263pp_fmtp_decode,
+	tdav_codec_h263pp_encode,
+	tdav_codec_h263pp_decode,
 	tdav_codec_h263pp_fmtp_match,
 	tdav_codec_h263pp_fmtp_get,
 	tdav_codec_h263pp_fmtp_set
@@ -670,12 +677,20 @@ static void *run(void* self)
 		size = ((const tsk_buffer_t*)curr->data)->size;
 		last_index = 0, last_psc_gbsc_index = 0;
 
+		if(size < RTP_PAYLOAD_SIZE){
+			goto last;
+		}
+
 		for(i = 4; i<(size - 4); i++){
-			if((*((uint32_t*)(pdata + i)) & 0xffff8000) == 0x00008000){  /* PSC or (GBSC) found */
+//#if ANDROID
+			if(pdata[i] == 0x00 && pdata[i+1] == 0x00 && pdata[i+2]>=0x80){  /* PSC or (GBSC) found */
+//#else
+//			if((*((uint32_t*)(pdata + i)) & 0xffff8000) == 0x00008000){  /* PSC or (GBSC) found */
+//#endif
 				if((i - last_index) >= RTP_PAYLOAD_SIZE){
 					switch(h263->type){
 						case tdav_codec_h263_1996:
-							tdav_codec_h263_rtp_callback((tdav_codec_h263_t*) h263, pdata + (last_psc_gbsc_index ? last_psc_gbsc_index : i),
+							tdav_codec_h263_rtp_callback((tdav_codec_h263_t*) h263, pdata+last_index/*pdata + (last_psc_gbsc_index ? last_psc_gbsc_index : i)*/,
 								(i - last_index), (last_index == size));
 							break;
 						default:
@@ -688,6 +703,7 @@ static void *run(void* self)
 				last_psc_gbsc_index = i;
 			}
 		}
+last:
 		if(last_index < size - 3/*PSC/GBSC size*/){
 			switch(h263->type){
 				case tdav_codec_h263_1996:
@@ -713,17 +729,82 @@ static void *run(void* self)
 
 static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *data, tsk_size_t size, tsk_bool_t marker)
 {
-	// Send data over the network
-		//if(TMEDIA_CODEC_VIDEO(h263)->callback){
-		//	TMEDIA_CODEC_VIDEO(h263)->callback(TMEDIA_CODEC_VIDEO(h263)->callback_data, buffer->data, buffer->size, 160, tsk_false);
+	uint8_t* rtp; // FIXXXXXXXXXME: use one global buffer
+
+	if(!(rtp = tsk_calloc((size + MODE_A_SIZE), sizeof(uint8_t)))){
+		TSK_DEBUG_ERROR("Failed to allocate new buffer");
+		return;
+	}
+	else{
+		memcpy((rtp + MODE_A_SIZE), data, size);
+	}
+
+	/* http://eu.sabotage.org/www/ITU/H/H0263e.pdf section 5.1
+	* 5.1.1 Picture Start Code (PSC) (22 bits) - PSC is a word of 22 bits. Its value is 0000 0000 0000 0000 1 00000.
+	*
+	* 5.1.1 Picture Start Code (PSC) (22 bits)
+	* 5.1.2 Temporal Reference (TR) (8 bits)
+	* 5.1.3 Type Information (PTYPE) (Variable Length)
+	*	– Bit 1: Always "1", in order to avoid start code emulation.
+	*	– Bit 2: Always "0", for distinction with Recommendation H.261.
+
+	*	– Bit 3: Split screen indicator, "0" off, "1" on.
+	*	– Bit 4: Document camera indicator, "0" off, "1" on.
+	*	– Bit 5: Full Picture Freeze Release, "0" off, "1" on.
+	*	– Bits 6-8: Source Format, "000" forbidden, "001" sub-QCIF, "010" QCIF, "011" CIF,
+		"100" 4CIF, "101" 16CIF, "110" reserved, "111" extended PTYPE.
+		If bits 6-8 are not equal to "111", which indicates an extended PTYPE (PLUSPTYPE), the following
+		five bits are also present in PTYPE:
+		– Bit 9: Picture Coding Type, "0" INTRA (I-picture), "1" INTER (P-picture).
+		– Bit 10: Optional Unrestricted Motion Vector mode (see Annex D), "0" off, "1" on.
+		– Bit 11: Optional Syntax-based Arithmetic Coding mode (see Annex E), "0" off, "1" on.
+		– Bit 12: Optional Advanced Prediction mode (see Annex F), "0" off, "1" on.
+		– Bit 13: Optional PB-frames mode (see Annex G), "0" normal I- or P-picture, "1" PB-frame.
+	*/
+	if((*((uint32_t*)data) & 0xffff8000) == 0x00008000){ /* PSC */
+		/* RFC 2190 -5.1 Mode A
+			0                   1                   2                   3
+			0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+			+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+			|F|P|SBIT |EBIT | SRC |I|U|S|A|R      |DBQ| TRB |    TR         |
+			+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		
+		SRC : 3 bits
+		Source format, bit 6,7 and 8 in PTYPE defined by H.263 [4], specifies
+		the resolution of the current picture.
+		
+		I:  1 bit.
+		Picture coding type, bit 9 in PTYPE defined by H.263[4], "0" is
+		intra-coded, "1" is inter-coded.
+		*/
+		uint8_t format;
+		const uint8_t* ptr = (((const uint8_t*)data) + 4); // Bits 3-10 of PTYPE
+
+		//for(i=0;i<10;i++){
+		//	printf("%2x ", ((const uint8_t*)data)[i]);
 		//}
+
+		// Format = 4,5,6
+		format = ((*ptr) & 0x38)>>3;
+		//int i=0;
+		//i++;
+	}
+
+	//*(rtp + 1)=0x50;
+
+	// Send data over the network
+	if(TMEDIA_CODEC_VIDEO(self)->callback){
+		TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, rtp, (size + MODE_A_SIZE), (3003* (30/TMEDIA_CODEC_VIDEO(self)->fps)), marker);
+	}
+
+	TSK_FREE(rtp);
 }
 
 static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *data, tsk_size_t size, tsk_bool_t marker)
 {
 // Send data over the network
 		//if(TMEDIA_CODEC_VIDEO(h263)->callback){
-		//	TMEDIA_CODEC_VIDEO(h263)->callback(TMEDIA_CODEC_VIDEO(h263)->callback_data, buffer->data, buffer->size, 160, tsk_false);
+		//	TMEDIA_CODEC_VIDEO(h263)->callback(TMEDIA_CODEC_VIDEO(h263)->callback_data, buffer->data, buffer->size, 160, marker);
 		//}
 }
 

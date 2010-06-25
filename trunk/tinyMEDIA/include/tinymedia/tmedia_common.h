@@ -54,6 +54,7 @@ tmedia_type_t;
 typedef enum tmedia_chroma_e
 {
 	tmedia_rgb24,
+	tmedia_nv21, // Yuv420 SP (used on android)
 	tmedia_yuv420p, // Default
 }
 tmedia_chroma_t;

@@ -841,6 +841,50 @@ sub ACQUIRE {
 }
 
 
+############# Class : tinyWRAP::ProxyVideoProducer ##############
+
+package tinyWRAP::ProxyVideoProducer;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_ProxyVideoProducer(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_ProxyVideoProducer($self);
+        delete $OWNER{$self};
+    }
+}
+
+*prepare = *tinyWRAPc::ProxyVideoProducer_prepare;
+*start = *tinyWRAPc::ProxyVideoProducer_start;
+*pause = *tinyWRAPc::ProxyVideoProducer_pause;
+*stop = *tinyWRAPc::ProxyVideoProducer_stop;
+*setActivate = *tinyWRAPc::ProxyVideoProducer_setActivate;
+*push = *tinyWRAPc::ProxyVideoProducer_push;
+*registerPlugin = *tinyWRAPc::ProxyVideoProducer_registerPlugin;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
 ############# Class : tinyWRAP::SipCallback ##############
 
 package tinyWRAP::SipCallback;
@@ -1033,4 +1077,7 @@ package tinyWRAP;
 *tsip_m_local_resume_nok = *tinyWRAPc::tsip_m_local_resume_nok;
 *tsip_m_remote_hold = *tinyWRAPc::tsip_m_remote_hold;
 *tsip_m_remote_resume = *tinyWRAPc::tsip_m_remote_resume;
+*tmedia_rgb24 = *tinyWRAPc::tmedia_rgb24;
+*tmedia_nv21 = *tinyWRAPc::tmedia_nv21;
+*tmedia_yuv420p = *tinyWRAPc::tmedia_yuv420p;
 1;

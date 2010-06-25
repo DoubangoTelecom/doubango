@@ -17,6 +17,7 @@
 %feature("director") SipCallback;
 %feature("director") ProxyAudioConsumer;
 %feature("director") ProxyAudioProducer;
+%feature("director") ProxyVideoProducer;
 
 
 %nodefaultctor;
@@ -154,3 +155,14 @@ typedef enum tsip_invite_event_type_e
 	tsip_m_remote_resume,
 }
 tsip_invite_event_type_t;
+
+
+
+/* ====== From "tinymedia/tmedia_common.h"  ====== */
+typedef enum tmedia_chroma_e
+{
+	tmedia_rgb24,
+	tmedia_nv21, // Yuv420 SP (used on android)
+	tmedia_yuv420p, // Default
+}
+tmedia_chroma_t;

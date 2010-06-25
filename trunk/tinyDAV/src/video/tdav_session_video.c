@@ -121,13 +121,13 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 		if((session->producer->video.chroma != tmedia_yuv420p)){
 			// Create video converter if not already done
 			if(!session->converter){
-				if(!(session->converter = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height))){
+				if(!(session->converter = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, session->producer->video.chroma))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
 					return -5;
 				}
 			}
 			// convert data to yuv420p
-			yuv420p_size = tdav_converter_video_2YUV420(session->converter, buffer, &yuv420p);
+			yuv420p_size = tdav_converter_video_2Yuv420(session->converter, buffer, &yuv420p);
 			if(!yuv420p_size || !yuv420p){
 				TSK_DEBUG_ERROR("Failed to convert RGB buffer to YUV42P");
 				TSK_FREE(yuv420p);
@@ -479,15 +479,19 @@ static tsk_object_t* tdav_session_video_dtor(tsk_object_t * self)
 { 
 	tdav_session_video_t *session = self;
 	if(session){
-		/* deinit base */
-		tmedia_session_deinit(self);
-		/* deinit self */
-		TSK_OBJECT_SAFE_FREE(session->rtp_manager);
+
+		// Do it in this order (deinit self first)
+		
+		/* deinit self (rtp manager should be destroyed after the producer) */
 		TSK_OBJECT_SAFE_FREE(session->consumer);
 		TSK_OBJECT_SAFE_FREE(session->producer);
 		TSK_OBJECT_SAFE_FREE(session->converter);
+		TSK_OBJECT_SAFE_FREE(session->rtp_manager);
 		TSK_FREE(session->remote_ip);
 		TSK_FREE(session->local_ip);
+
+		/* deinit base */
+		tmedia_session_deinit(self);
 	}
 
 	return self;

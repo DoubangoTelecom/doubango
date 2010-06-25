@@ -33,6 +33,8 @@
 
 #if HAVE_FFMPEG
 
+#include "tinymedia/tmedia_common.h"
+
 #include <libswscale/swscale.h>
 #include <libavcodec/avcodec.h>
 
@@ -45,9 +47,11 @@ typedef struct tdav_converter_video_s
 	TSK_DECLARE_OBJECT;
 
 	struct SwsContext *ctx2YUV;
-	struct SwsContext *ctx2RGB;
+	struct SwsContext *ctx2Chroma;
 
-	AVFrame* rgb24Frame;
+	enum PixelFormat pixfmt;
+
+	AVFrame* chromaFrame;
 	AVFrame* yuv420Frame;
 
 	tsk_size_t width;
@@ -55,10 +59,19 @@ typedef struct tdav_converter_video_s
 }
 tdav_converter_video_t;
 
-tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t height);
+tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t height, tmedia_chroma_t chroma);
 
-tsk_size_t tdav_converter_video_2YUV420(tdav_converter_video_t* self, const void* rgb24, void** yuv420);
-tsk_size_t tdav_converter_video_2RGB24(tdav_converter_video_t* self, const void* yuv420, void** rgb24);
+tsk_size_t tdav_converter_video_2Yuv420(tdav_converter_video_t* self, const void* buffer, void** yuv420);
+tsk_size_t tdav_converter_video_2Chroma(tdav_converter_video_t* self, const void* yuv420, void** buffer);
+
+#define tdav_converter_video_flip(frame, height) \
+    frame->data[0] += frame->linesize[0] * (height -1);\
+    frame->data[1] += frame->linesize[1] * ((height -1)/2);\
+    frame->data[2] += frame->linesize[2] * ((height -1)/2);\
+    \
+    frame->linesize[0] *= -1;\
+    frame->linesize[1] *= -1;\
+    frame->linesize[2] *= -1;
 
 TINYDAV_GEXTERN const tsk_object_def_t *tdav_converter_video_def_t;
 

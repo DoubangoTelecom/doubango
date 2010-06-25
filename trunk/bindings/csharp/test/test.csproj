@@ -75,6 +75,9 @@
     <Compile Include="..\ProxyAudioProducer.cs">
       <Link>ProxyAudioProducer.cs</Link>
     </Compile>
+    <Compile Include="..\ProxyVideoProducer.cs">
+      <Link>ProxyVideoProducer.cs</Link>
+    </Compile>
     <Compile Include="..\PublicationEvent.cs">
       <Link>PublicationEvent.cs</Link>
     </Compile>
@@ -119,6 +122,9 @@
     </Compile>
     <Compile Include="..\tinyWRAPPINVOKE.cs">
       <Link>tinyWRAPPINVOKE.cs</Link>
+    </Compile>
+    <Compile Include="..\tmedia_chroma_t.cs">
+      <Link>tmedia_chroma_t.cs</Link>
     </Compile>
     <Compile Include="..\tsip_event_type_t.cs">
       <Link>tsip_event_type_t.cs</Link>

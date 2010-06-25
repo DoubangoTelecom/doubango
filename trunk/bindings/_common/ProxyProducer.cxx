@@ -34,6 +34,9 @@
 
 #include "tinydav/audio/tdav_producer_audio.h"
 
+
+
+/* ============ Audio Media Producer Interface ================= */
 typedef struct twrap_producer_proxy_audio_s
 {
 	TDAV_DECLARE_PRODUCER_AUDIO;
@@ -42,9 +45,6 @@ typedef struct twrap_producer_proxy_audio_s
 }
 twrap_producer_proxy_audio_t;
 
-
-
-/* ============ Media Producer Interface ================= */
 int twrap_producer_proxy_audio_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
 {
 	if(ProxyAudioProducer::instance && codec){
@@ -148,11 +148,12 @@ static const tmedia_producer_plugin_def_t twrap_producer_proxy_audio_plugin_def_
 	twrap_producer_proxy_audio_pause,
 	twrap_producer_proxy_audio_stop
 };
-//extern "C" {
+
 TINYWRAP_GEXTERN const tmedia_producer_plugin_def_t *twrap_producer_proxy_audio_plugin_def_t = &twrap_producer_proxy_audio_plugin_def_s;
-//}
 
 
+
+/* ============ ProxyAudioProducer Class ================= */
 ProxyAudioProducer* ProxyAudioProducer::instance = tsk_null;
 
 ProxyAudioProducer::ProxyAudioProducer()
@@ -209,3 +210,203 @@ bool ProxyAudioProducer::registerPlugin()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============ Video Media Producer Interface ================= */
+typedef struct twrap_producer_proxy_video_s
+{
+	TMEDIA_DECLARE_PRODUCER;
+
+	tsk_bool_t started;
+}
+twrap_producer_proxy_video_t;
+
+int twrap_producer_proxy_video_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
+{
+	if(ProxyVideoProducer::instance && codec){
+		self->video.chroma = ProxyVideoProducer::instance->getChroma();
+		ProxyVideoProducer::instance->takeProducer((twrap_producer_proxy_video_t*)self);
+		ProxyVideoProducer::instance->prepare(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, TMEDIA_CODEC_VIDEO(codec)->fps);
+	}
+	return 0;
+}
+
+int twrap_producer_proxy_video_start(tmedia_producer_t* self)
+{
+	twrap_producer_proxy_video_t* producer = (twrap_producer_proxy_video_t*)self;
+
+	if(ProxyVideoProducer::instance){
+		ProxyVideoProducer::instance->start();
+	}
+
+	producer->started = tsk_true;
+
+	return 0;
+}
+
+int twrap_producer_proxy_video_pause(tmedia_producer_t* self)
+{
+	if(ProxyVideoProducer::instance){
+		ProxyVideoProducer::instance->pause();
+	}
+
+	return 0;
+}
+
+int twrap_producer_proxy_video_stop(tmedia_producer_t* self)
+{
+	twrap_producer_proxy_video_t* producer = (twrap_producer_proxy_video_t*)self;
+
+	if(ProxyVideoProducer::instance){
+		ProxyVideoProducer::instance->stop();
+		ProxyVideoProducer::instance->releaseProducer((twrap_producer_proxy_video_t*)self);
+	}
+
+	producer->started = tsk_false;
+
+	return 0;
+}
+
+
+//
+//	Video producer object definition
+//
+/* constructor */
+static tsk_object_t* twrap_producer_proxy_video_ctor(tsk_object_t * self, va_list * app)
+{
+	twrap_producer_proxy_video_t *producer = (twrap_producer_proxy_video_t *)self;
+	if(producer){
+		/* init base */
+		tmedia_producer_init(TMEDIA_PRODUCER(producer));
+		/* init self */
+
+		/* do not call takeProducer() */
+	}
+	return self;
+}
+/* destructor */
+static tsk_object_t* twrap_producer_proxy_video_dtor(tsk_object_t * self)
+{ 
+	twrap_producer_proxy_video_t *producer = (twrap_producer_proxy_video_t *)self;
+	if(producer){
+
+		/* stop */
+		if(producer->started){
+			twrap_producer_proxy_video_stop(TMEDIA_PRODUCER(producer));
+		}
+
+		/* deinit base */
+		tmedia_producer_deinit(TMEDIA_PRODUCER(producer));
+		/* deinit self */
+
+		/* do not call releaseProducer() */
+	}
+
+	return self;
+}
+/* object definition */
+static const tsk_object_def_t twrap_producer_proxy_video_def_s = 
+{
+	sizeof(twrap_producer_proxy_video_t),
+	twrap_producer_proxy_video_ctor, 
+	twrap_producer_proxy_video_dtor,
+	tsk_null, 
+};
+/* plugin definition*/
+static const tmedia_producer_plugin_def_t twrap_producer_proxy_video_plugin_def_s = 
+{
+	&twrap_producer_proxy_video_def_s,
+	
+	tmedia_video,
+	"Video Proxy Producer",
+	
+	twrap_producer_proxy_video_prepare,
+	twrap_producer_proxy_video_start,
+	twrap_producer_proxy_video_pause,
+	twrap_producer_proxy_video_stop
+};
+
+TINYWRAP_GEXTERN const tmedia_producer_plugin_def_t *twrap_producer_proxy_video_plugin_def_t = &twrap_producer_proxy_video_plugin_def_s;
+
+
+
+/* ============ ProxyVideoProducer Class ================= */
+ProxyVideoProducer* ProxyVideoProducer::instance = tsk_null;
+
+ProxyVideoProducer::ProxyVideoProducer(tmedia_chroma_t _chroma)
+:producer(tsk_null), chroma(_chroma)
+{
+}
+
+ProxyVideoProducer::~ProxyVideoProducer()
+{
+	this->releaseProducer(this->producer);
+
+	if(ProxyVideoProducer::instance == this){
+		ProxyVideoProducer::instance = tsk_null;
+	}
+}
+
+void ProxyVideoProducer::setActivate(bool enabled)
+{
+	if(enabled){
+		ProxyVideoProducer::instance = this;
+	}
+	else{
+		ProxyVideoProducer::instance = tsk_null;
+	}
+}
+
+int ProxyVideoProducer::push(const void* buffer, unsigned size)
+{
+	if(this->producer && TMEDIA_PRODUCER(this->producer)->callback){
+		return TMEDIA_PRODUCER(this->producer)->callback(TMEDIA_PRODUCER(this->producer)->callback_data, buffer, size);
+	}
+	return 0;
+}
+
+tmedia_chroma_t ProxyVideoProducer::getChroma()
+{
+	return this->chroma;
+}
+
+void ProxyVideoProducer::takeProducer(twrap_producer_proxy_video_t* _producer)
+{
+	if(!this->producer){
+		this->producer = (twrap_producer_proxy_video_t*)tsk_object_ref(_producer);
+	}
+}
+
+void ProxyVideoProducer::releaseProducer(twrap_producer_proxy_video_t* _producer)
+{
+	TSK_OBJECT_SAFE_FREE(this->producer);
+}
+
+bool ProxyVideoProducer::registerPlugin()
+{
+	/* HACK: Unregister all other video plugins */
+	tmedia_producer_plugin_unregister_by_type(tmedia_video);
+	/* Register our proxy plugin */
+	return (tmedia_producer_plugin_register(twrap_producer_proxy_video_plugin_def_t) == 0);
+}

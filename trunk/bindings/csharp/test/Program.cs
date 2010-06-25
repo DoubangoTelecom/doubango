@@ -33,10 +33,11 @@ namespace test
             sipCallback = new MySipCallback();
             //sipDebugCallback = new MySipDebugCallback();
 
-            /* Create Audio consumer */
+            /* Create consumers */
             audioConsumer = new MyProxyAudioConsumer();
-            /* Create Audio producer */
+            /* Create producers */
             audioProducer = new MyProxyAudioProducer();
+            videoProducer = new MyProxyVideoProducer(tmedia_chroma_t.tmedia_nv21);
             
 
             /* Create and configure the IMS/LTE stack */
@@ -50,6 +51,7 @@ namespace test
             /* Do it after stack creation */
             ProxyAudioConsumer.registerPlugin();
             ProxyAudioProducer.registerPlugin();
+            ProxyVideoProducer.registerPlugin();
 
             /* Sets Proxy-CSCF */
             success = sipStack.setProxyCSCF(PROXY_CSCF_IP, PROXY_CSCF_PORT, "udp", "ipv4");
@@ -66,6 +68,7 @@ namespace test
 
             audioConsumer.setActivate(true);
             audioProducer.setActivate(true);
+            videoProducer.setActivate(true);
 
             /* Send REGISTER */
             regSession = new RegistrationSession(sipStack);
@@ -127,12 +130,15 @@ namespace test
 
         public static void OnTimer(Object stateInfo)
         {
-            byte[] bytes = new byte[320];
-            uint ret = audioConsumer.pull(bytes, (uint)bytes.Length);
+            byte[] bytesAudio = new byte[320];
+            uint ret = audioConsumer.pull(bytesAudio, (uint)bytesAudio.Length);
             //Console.WriteLine("pull="+ret);
 
-            int ret2 = audioProducer.push(bytes, (uint)bytes.Length);
+            int ret2 = audioProducer.push(bytesAudio, (uint)bytesAudio.Length);
             //Console.WriteLine("push=" + ret);
+
+            byte[] bytesVideo = new byte[38016];
+            int ret3 = videoProducer.push(bytesVideo, (uint)bytesVideo.Length);
         }
 
         static Timer timer;
@@ -145,6 +151,7 @@ namespace test
         static MySipDebugCallback sipDebugCallback;
         static MyProxyAudioConsumer audioConsumer;
         static MyProxyAudioProducer audioProducer;
+        static MyProxyVideoProducer videoProducer;
     }
 
 
@@ -203,6 +210,34 @@ namespace test
         public override int prepare(int ptime, int rate, int channels)
         {
             return base.prepare(ptime, rate, channels);
+        }
+
+        public override int start()
+        {
+            return base.start();
+        }
+
+        public override int pause()
+        {
+            return base.pause();
+        }
+
+        public override int stop()
+        {
+            return base.stop();
+        }
+    }
+
+    public class MyProxyVideoProducer : ProxyVideoProducer
+    {
+        public MyProxyVideoProducer(tmedia_chroma_t chroma)
+            : base(chroma)
+        {
+        }
+
+        public override int prepare(int width, int height, int fps)
+        {
+            return base.prepare(width, height, fps);
         }
 
         public override int start()

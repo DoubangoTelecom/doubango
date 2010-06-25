@@ -4,7 +4,8 @@ CFLAGS := $(CFLAGS_LIB) -fno-rtti -fno-exceptions -I../../_common -I../../. -I..
 	-I../../../tinySDP/include -I../../../tinyMEDIA/include -I../../../tinyDAV/include -I../../../tinySIP/include
 	
 # Because of the static build, you need all librarires
-LDFLAGS := $(LDFLAGS_LIB) -lstdc++ -llog -ltinySAK -ltinyHTTP -ltinyIPSec -ltinySIGCOMP -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA -ltinyDAV -ltinySIP -lm
+FFMPEG_LDFLAGS := -L../../../thirdparties/android/lib -lavutil -lswscale -lavcodec -lgcc
+LDFLAGS := $(LDFLAGS_LIB) $(FFMPEG_LDFLAGS) -lstdc++ -llog -ltinySAK -ltinyHTTP -ltinyIPSec -ltinySIGCOMP -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA -ltinyDAV -ltinySIP -lm
 
 
 

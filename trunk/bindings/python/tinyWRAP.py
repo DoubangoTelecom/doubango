@@ -477,6 +477,41 @@ def ProxyAudioProducer_registerPlugin():
   return _tinyWRAP.ProxyAudioProducer_registerPlugin()
 ProxyAudioProducer_registerPlugin = _tinyWRAP.ProxyAudioProducer_registerPlugin
 
+class ProxyVideoProducer(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, ProxyVideoProducer, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, ProxyVideoProducer, name)
+    __repr__ = _swig_repr
+    def __init__(self, *args): 
+        if self.__class__ == ProxyVideoProducer:
+            _self = None
+        else:
+            _self = self
+        this = _tinyWRAP.new_ProxyVideoProducer(_self, *args)
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_ProxyVideoProducer
+    __del__ = lambda self : None;
+    def prepare(self, *args): return _tinyWRAP.ProxyVideoProducer_prepare(self, *args)
+    def start(self): return _tinyWRAP.ProxyVideoProducer_start(self)
+    def pause(self): return _tinyWRAP.ProxyVideoProducer_pause(self)
+    def stop(self): return _tinyWRAP.ProxyVideoProducer_stop(self)
+    def setActivate(self, *args): return _tinyWRAP.ProxyVideoProducer_setActivate(self, *args)
+    def push(self, *args): return _tinyWRAP.ProxyVideoProducer_push(self, *args)
+    __swig_getmethods__["registerPlugin"] = lambda x: _tinyWRAP.ProxyVideoProducer_registerPlugin
+    if _newclass:registerPlugin = staticmethod(_tinyWRAP.ProxyVideoProducer_registerPlugin)
+    def __disown__(self):
+        self.this.disown()
+        _tinyWRAP.disown_ProxyVideoProducer(self)
+        return weakref_proxy(self)
+ProxyVideoProducer_swigregister = _tinyWRAP.ProxyVideoProducer_swigregister
+ProxyVideoProducer_swigregister(ProxyVideoProducer)
+
+def ProxyVideoProducer_registerPlugin():
+  return _tinyWRAP.ProxyVideoProducer_registerPlugin()
+ProxyVideoProducer_registerPlugin = _tinyWRAP.ProxyVideoProducer_registerPlugin
+
 class SipCallback(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, SipCallback, name, value)
@@ -609,5 +644,8 @@ tsip_m_local_resume_ok = _tinyWRAP.tsip_m_local_resume_ok
 tsip_m_local_resume_nok = _tinyWRAP.tsip_m_local_resume_nok
 tsip_m_remote_hold = _tinyWRAP.tsip_m_remote_hold
 tsip_m_remote_resume = _tinyWRAP.tsip_m_remote_resume
+tmedia_rgb24 = _tinyWRAP.tmedia_rgb24
+tmedia_nv21 = _tinyWRAP.tmedia_nv21
+tmedia_yuv420p = _tinyWRAP.tmedia_yuv420p
 
 
