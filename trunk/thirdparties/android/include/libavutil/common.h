@@ -123,6 +123,17 @@ static inline av_const uint8_t av_clip_uint8(int a)
 }
 
 /**
+ * Clips a signed integer value into the -128,127 range.
+ * @param a value to clip
+ * @return clipped value
+ */
+static inline av_const int8_t av_clip_int8(int a)
+{
+    if ((a+0x80) & ~0xFF) return (a>>31) ^ 0x7F;
+    else                  return a;
+}
+
+/**
  * Clips a signed integer value into the 0-65535 range.
  * @param a value to clip
  * @return clipped value
@@ -178,8 +189,8 @@ static inline av_const int av_ceil_log2(int x)
     return av_log2((x - 1) << 1);
 }
 
-#define MKTAG(a,b,c,d) (a | (b << 8) | (c << 16) | (d << 24))
-#define MKBETAG(a,b,c,d) (d | (c << 8) | (b << 16) | (a << 24))
+#define MKTAG(a,b,c,d) ((a) | ((b) << 8) | ((c) << 16) | ((d) << 24))
+#define MKBETAG(a,b,c,d) ((d) | ((c) << 8) | ((b) << 16) | ((a) << 24))
 
 /*!
  * \def GET_UTF8(val, GET_BYTE, ERROR)
