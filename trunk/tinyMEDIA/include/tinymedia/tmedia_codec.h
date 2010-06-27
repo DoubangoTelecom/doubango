@@ -179,7 +179,7 @@ typedef struct tmedia_codec_plugin_def_s
 	//! encode data
 	tsk_size_t (*encode) (tmedia_codec_t*, const void* in_data, tsk_size_t in_size, void** out_data);
 	//! decode data
-	tsk_size_t (*decode) (tmedia_codec_t*, const void* in_data, tsk_size_t in_size, void** out_data);
+	tsk_size_t (*decode) (tmedia_codec_t*, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr);
 	//! whether the codec can handle the fmtp
 	tsk_bool_t (* fmtp_match) (const tmedia_codec_t*, const char* );
 	//! gets fmtp value. e.g. "mode-set=0,2,5,7; mode-change-period=2; mode-change-neighbor=1"
@@ -209,6 +209,7 @@ TINYMEDIA_API int tmedia_codec_set_remote_fmtp(tmedia_codec_t* self, const char*
 TINYMEDIA_API int tmedia_codec_removeAll_exceptThese(tmedia_codecs_L_t* codecs, const tmedia_codecs_L_t * codecs2keep);
 TINYMEDIA_API int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m);
 TINYMEDIA_API tmedia_codec_t* tmedia_codec_find_by_format(tmedia_codecs_L_t* codecs, const char* format);
+TINYMEDIA_API int tmedia_codec_parse_fmtp(const char* fmtp, unsigned* maxbr, unsigned* fps, unsigned *width, unsigned *height);
 TINYMEDIA_API int tmedia_codec_deinit(tmedia_codec_t* self);
 
 /** Audio codec */
@@ -243,6 +244,7 @@ typedef struct tmedia_codec_video_s
 	unsigned width;
 	unsigned height;
 	unsigned fps;
+	unsigned maxbr;
 
 	tmedia_codec_video_rtpcb_f callback;
 	const void* callback_data;

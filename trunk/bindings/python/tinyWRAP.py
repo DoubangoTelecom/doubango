@@ -442,6 +442,55 @@ def ProxyAudioConsumer_registerPlugin():
   return _tinyWRAP.ProxyAudioConsumer_registerPlugin()
 ProxyAudioConsumer_registerPlugin = _tinyWRAP.ProxyAudioConsumer_registerPlugin
 
+class ProxyVideoConsumer(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, ProxyVideoConsumer, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, ProxyVideoConsumer, name)
+    __repr__ = _swig_repr
+    def __init__(self, *args): 
+        if self.__class__ == ProxyVideoConsumer:
+            _self = None
+        else:
+            _self = self
+        this = _tinyWRAP.new_ProxyVideoConsumer(_self, *args)
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_ProxyVideoConsumer
+    __del__ = lambda self : None;
+    def prepare(self, *args): return _tinyWRAP.ProxyVideoConsumer_prepare(self, *args)
+    def consume(self, *args): return _tinyWRAP.ProxyVideoConsumer_consume(self, *args)
+    def start(self): return _tinyWRAP.ProxyVideoConsumer_start(self)
+    def pause(self): return _tinyWRAP.ProxyVideoConsumer_pause(self)
+    def stop(self): return _tinyWRAP.ProxyVideoConsumer_stop(self)
+    def setActivate(self, *args): return _tinyWRAP.ProxyVideoConsumer_setActivate(self, *args)
+    __swig_getmethods__["registerPlugin"] = lambda x: _tinyWRAP.ProxyVideoConsumer_registerPlugin
+    if _newclass:registerPlugin = staticmethod(_tinyWRAP.ProxyVideoConsumer_registerPlugin)
+    def __disown__(self):
+        self.this.disown()
+        _tinyWRAP.disown_ProxyVideoConsumer(self)
+        return weakref_proxy(self)
+ProxyVideoConsumer_swigregister = _tinyWRAP.ProxyVideoConsumer_swigregister
+ProxyVideoConsumer_swigregister(ProxyVideoConsumer)
+
+def ProxyVideoConsumer_registerPlugin():
+  return _tinyWRAP.ProxyVideoConsumer_registerPlugin()
+ProxyVideoConsumer_registerPlugin = _tinyWRAP.ProxyVideoConsumer_registerPlugin
+
+class ProxyVideoFrame(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, ProxyVideoFrame, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, ProxyVideoFrame, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_ProxyVideoFrame
+    __del__ = lambda self : None;
+    def getSize(self): return _tinyWRAP.ProxyVideoFrame_getSize(self)
+    def getContent(self, *args): return _tinyWRAP.ProxyVideoFrame_getContent(self, *args)
+ProxyVideoFrame_swigregister = _tinyWRAP.ProxyVideoFrame_swigregister
+ProxyVideoFrame_swigregister(ProxyVideoFrame)
+
 class ProxyAudioProducer(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, ProxyAudioProducer, name, value)
@@ -645,6 +694,8 @@ tsip_m_local_resume_nok = _tinyWRAP.tsip_m_local_resume_nok
 tsip_m_remote_hold = _tinyWRAP.tsip_m_remote_hold
 tsip_m_remote_resume = _tinyWRAP.tsip_m_remote_resume
 tmedia_rgb24 = _tinyWRAP.tmedia_rgb24
+tmedia_rgb565le = _tinyWRAP.tmedia_rgb565le
+tmedia_rgb565be = _tinyWRAP.tmedia_rgb565be
 tmedia_nv21 = _tinyWRAP.tmedia_nv21
 tmedia_yuv420p = _tinyWRAP.tmedia_yuv420p
 

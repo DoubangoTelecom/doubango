@@ -189,6 +189,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\tinydshow\DSDisplay.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\tinydshow\DSDisplayGraph.h"
 				>
 			</File>
@@ -240,6 +244,10 @@
 				Name="plugin"
 				>
 				<File
+					RelativePath=".\include\tinydshow\plugin\DSConsumer.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tinydshow\plugin\DSProducer.h"
 					>
 				</File>
@@ -258,6 +266,10 @@
 			</File>
 			<File
 				RelativePath=".\src\DSCaptureUtils.cxx"
+				>
+			</File>
+			<File
+				RelativePath=".\src\DSDisplay.cxx"
 				>
 			</File>
 			<File
@@ -311,6 +323,10 @@
 			<Filter
 				Name="plugin"
 				>
+				<File
+					RelativePath=".\src\plugin\DSConsumer.cxx"
+					>
+				</File>
 				<File
 					RelativePath=".\src\plugin\DSProducer.cxx"
 					>

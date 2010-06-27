@@ -76,6 +76,9 @@ int tdshow_producer_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec
 	producer->grabber->setCaptureDevice("Null");
 
 	/* Set Capture parameters */
+	producer->fps = TMEDIA_CODEC_VIDEO(codec)->fps;
+	producer->width = TMEDIA_CODEC_VIDEO(codec)->width;
+	producer->height = TMEDIA_CODEC_VIDEO(codec)->height;
 	SIZE_TO_VIDEOFORMAT(producer->width, producer->height, format);
 	producer->grabber->setCaptureParameters(format, producer->fps);
 

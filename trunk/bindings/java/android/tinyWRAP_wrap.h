@@ -29,6 +29,25 @@ protected:
     bool swig_override[4];
 };
 
+class SwigDirector_ProxyVideoConsumer : public ProxyVideoConsumer, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_ProxyVideoConsumer(JNIEnv *jenv, tmedia_chroma_t chroma);
+    virtual ~SwigDirector_ProxyVideoConsumer();
+    virtual int prepare(int width, int height, int fps);
+    virtual int consume(ProxyVideoFrame const *frame);
+    virtual int start();
+    virtual int pause();
+    virtual int stop();
+public:
+    bool swig_overrides(int n) {
+      return (n < 5 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[5];
+};
+
 class SwigDirector_ProxyAudioProducer : public ProxyAudioProducer, public Swig::Director {
 
 public:

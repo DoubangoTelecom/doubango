@@ -45,7 +45,7 @@ class DSBufferWriter
 #endif
 {
 public:
-	virtual void setBuffer (void* pBuffer) = 0;
+	virtual void setBuffer (void* pBuffer, int size) = 0;
 	virtual HRESULT setImageFormat(UINT width, UINT height/*, GUID subType, UINT fps*/) = 0;
 };
 

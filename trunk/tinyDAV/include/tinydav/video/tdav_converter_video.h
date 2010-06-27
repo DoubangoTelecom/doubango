@@ -45,24 +45,24 @@ TDAV_BEGIN_DECLS
 typedef struct tdav_converter_video_s
 {
 	TSK_DECLARE_OBJECT;
-
-	struct SwsContext *ctx2YUV;
-	struct SwsContext *ctx2Chroma;
+	
+	struct SwsContext *context;
 
 	enum PixelFormat pixfmt;
 
-	AVFrame* chromaFrame;
-	AVFrame* yuv420Frame;
+	AVFrame* srcFrame;
+	AVFrame* dstFrame;
 
 	tsk_size_t width;
 	tsk_size_t height;
+
+	tsk_bool_t toYUV420;
 }
 tdav_converter_video_t;
 
-tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t height, tmedia_chroma_t chroma);
+tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t height, tmedia_chroma_t chroma, tsk_bool_t toYUV420);
 
-tsk_size_t tdav_converter_video_2Yuv420(tdav_converter_video_t* self, const void* buffer, void** yuv420);
-tsk_size_t tdav_converter_video_2Chroma(tdav_converter_video_t* self, const void* yuv420, void** buffer);
+tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void* buffer, void** output);
 
 #define tdav_converter_video_flip(frame, height) \
     frame->data[0] += frame->linesize[0] * (height -1);\

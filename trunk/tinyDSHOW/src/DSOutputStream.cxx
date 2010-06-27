@@ -44,6 +44,7 @@ DSOutputStream::DSOutputStream(HRESULT *phr, DSOutputFilter *pParent, LPCWSTR pP
 //#endif
 
 	this->buffer = NULL;
+	this->buffer_size = NULL;
 
 	this->frameNumber = 0;
 	this->frameLength = (10000000)/DEFAULT_FPS;
@@ -62,6 +63,7 @@ DSOutputStream::DSOutputStream(HRESULT *phr, DSOutputFilter *pParent, LPCWSTR pP
 
 DSOutputStream::~DSOutputStream()
 {
+	SAFE_DELETE_PTR(this->buffer);
 	// TODO : Is there anything to free ???
 }
 
@@ -73,8 +75,7 @@ void DSOutputStream::setFps(int fps_)
 
 void DSOutputStream::showOverlay(int value)
 {
-	if (value == 0)
-	{
+	if (value == 0){
 		this->overlay = false;
 	}
 	this->overlay = (value > 0);
@@ -157,8 +158,7 @@ HRESULT DSOutputStream::DecideBufferSize(IMemAllocator *pMemAlloc, ALLOCATOR_PRO
 	// memory that we requested, so we must check we got whatever we wanted.
 	ALLOCATOR_PROPERTIES Actual;
 	hr = pMemAlloc->SetProperties(pProperties,&Actual);
-	if(FAILED(hr))
-	{
+	if(FAILED(hr)){
 		return hr;
 	}
 

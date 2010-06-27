@@ -31,7 +31,7 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t height, tmedia_chroma_t chroma)
+tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t height, tmedia_chroma_t chroma, tsk_bool_t toYUV420)
 {
 	tdav_converter_video_t* converter;
 	enum PixelFormat pixfmt;
@@ -39,6 +39,12 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t
 	switch(chroma){
 		case tmedia_rgb24:
 			pixfmt = PIX_FMT_RGB24;
+			break;
+		case tmedia_rgb565le:
+			pixfmt = PIX_FMT_RGB565LE;
+			break;
+		case tmedia_rgb565be:
+			pixfmt = PIX_FMT_RGB565BE;
 			break;
 		case tmedia_nv21:
 			pixfmt = PIX_FMT_NV21;
@@ -54,6 +60,7 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t
 	}
 
 	// Set values
+	converter->toYUV420 = toYUV420;
 	converter->pixfmt = pixfmt;
 	converter->width = width;
 	converter->height = height;
@@ -61,80 +68,75 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t
 	return converter;
 }
 
-tsk_size_t tdav_converter_video_2Yuv420(tdav_converter_video_t* self, const void* buffer, void** yuv420)
+tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void* buffer, void** output)
 {
 	int ret;
 	int size;
+	enum PixelFormat srcFormat, dstFormat;
 
-
-	if(!self || !buffer || !yuv420){
+	if(!self || !buffer || !output){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
+	
+	/* Formats */
+	srcFormat = self->toYUV420 ? self->pixfmt : PIX_FMT_YUV420P;
+	dstFormat = self->toYUV420 ? PIX_FMT_YUV420P : self->pixfmt;
 
 	/* Context */
-	if(!self->ctx2YUV){
-		self->ctx2YUV = sws_getContext(
-			self->width, self->height, (self->pixfmt == PIX_FMT_RGB24) ? PIX_FMT_BGR24 : self->pixfmt,
-			self->width, self->height, PIX_FMT_YUV420P,
-			SWS_FAST_BILINEAR, NULL, NULL, NULL);
+	if(!self->context){
+		self->context = sws_getContext(
+			self->width, self->height, (srcFormat == PIX_FMT_RGB24) ? PIX_FMT_BGR24 : srcFormat,
+			self->width, self->height, dstFormat,
+			SWS_BICUBIC, NULL, NULL, NULL);
 
-		if(!self->ctx2YUV){
-			TSK_DEBUG_ERROR("Failed to create YUV420P context");
+		if(!self->context){
+			TSK_DEBUG_ERROR("Failed to create context");
 			return 0;
 		}
 	}
 
 	/* Pictures */
-	if(!self->chromaFrame){
-		if(!(self->chromaFrame = avcodec_alloc_frame())){
-			TSK_DEBUG_ERROR("Failed to create RGB24 picture");
+	if(!self->srcFrame){
+		if(!(self->srcFrame = avcodec_alloc_frame())){
+			TSK_DEBUG_ERROR("Failed to create picture");
 			return 0;
 		}
 	}
-	if(!self->yuv420Frame){
-		if(!(self->yuv420Frame = avcodec_alloc_frame())){
-			TSK_DEBUG_ERROR("Failed to create YUV420 picture");
+	if(!self->dstFrame){
+		if(!(self->dstFrame = avcodec_alloc_frame())){
+			TSK_DEBUG_ERROR("Failed to create picture");
 			return 0;
 		}
 	}
 	
 	/* remove old output buffer */
-	if(*yuv420){
-		TSK_FREE(*yuv420);
+	if(*output){
+		TSK_FREE(*output);
 	}
-	size = avpicture_get_size(PIX_FMT_YUV420P, self->width, self->height);
-	if(!(*yuv420 = tsk_calloc(size, sizeof(uint8_t)))){
-		TSK_DEBUG_ERROR("Failed to allocate YUV420 buffer");
+	size = avpicture_get_size(dstFormat, self->width, self->height);
+	if(!(*output = tsk_calloc(size, sizeof(uint8_t)))){
+		TSK_DEBUG_ERROR("Failed to allocate buffer");
 		return 0;
 	}
 
-	/* Wrap the buffer */
-	ret = avpicture_fill((AVPicture *)self->chromaFrame, (uint8_t*)buffer, self->pixfmt, self->width, self->height);
-	/* Wrap YUV420 buffer */
-	ret = avpicture_fill((AVPicture *)self->yuv420Frame, (uint8_t*)*yuv420, PIX_FMT_YUV420P, self->width, self->height);
+	/* Wrap the source buffer */
+	ret = avpicture_fill((AVPicture *)self->srcFrame, (uint8_t*)buffer, srcFormat, self->width, self->height);
+	/* Wrap the destination buffer */
+	ret = avpicture_fill((AVPicture *)self->dstFrame, (uint8_t*)*output, dstFormat, self->width, self->height);
 
 	/* performs conversion */
-	ret = sws_scale(self->ctx2YUV, self->chromaFrame->data, self->chromaFrame->linesize, 0, self->height,
-		self->yuv420Frame->data, self->yuv420Frame->linesize);
+	ret = sws_scale(self->context, self->srcFrame->data, self->srcFrame->linesize, 0, self->height,
+		self->dstFrame->data, self->dstFrame->linesize);
 	if(ret < 0){
 		// delete the allocated buffer
-		TSK_FREE(*yuv420);
+		TSK_FREE(*output);
 		return 0;
 	}
 
 	return size;
 }
 
-tsk_size_t tdav_converter_video_2Chroma(tdav_converter_video_t* self, const void* yuv420, void** buffer)
-{
-	if(!self || !buffer || !yuv420){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return 0;
-	}
-
-	return 0;
-}
 
 //=================================================================================================
 //	Video Converter object definition
@@ -152,17 +154,14 @@ static tsk_object_t* tdav_converter_video_dtor(tsk_object_t * self)
 { 
 	tdav_converter_video_t *converter = self;
 	if(converter){
-		if(converter->ctx2Chroma){
-			sws_freeContext(converter->ctx2Chroma);
+		if(converter->context){
+			sws_freeContext(converter->context);
 		}
-		if(converter->ctx2YUV){
-			sws_freeContext(converter->ctx2YUV);
+		if(converter->srcFrame){
+			av_free(converter->srcFrame);
 		}
-		if(converter->chromaFrame){
-			av_free(converter->chromaFrame);
-		}
-		if(converter->yuv420Frame){
-			av_free(converter->yuv420Frame);
+		if(converter->dstFrame){
+			av_free(converter->dstFrame);
 		}
 	}
 

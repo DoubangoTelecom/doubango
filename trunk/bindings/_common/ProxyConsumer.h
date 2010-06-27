@@ -32,6 +32,8 @@
 
 #include "tinyWRAP_config.h"
 
+#include "tinymedia/tmedia_common.h"
+
 class ProxyAudioConsumer
 {
 public:
@@ -60,7 +62,53 @@ private:
 	struct twrap_consumer_proxy_audio_s* consumer;
 };
 
+class ProxyVideoFrame;
 
+class ProxyVideoConsumer
+{
+public:
+	ProxyVideoConsumer(tmedia_chroma_t chroma);
+	virtual ~ProxyVideoConsumer();
+
+	/* Callback functions */
+	virtual int prepare(int width, int height, int fps) { return 0; }
+	virtual int consume(const ProxyVideoFrame* frame) { return 0; }
+	virtual int start() { return 0; }
+	virtual int pause() { return 0; }
+	virtual int stop() { return 0; }
+
+	void setActivate(bool enabled);
+
+public:
+	static bool registerPlugin();
+
+#if !defined(SWIG)
+	tmedia_chroma_t getChroma();
+	void takeConsumer(struct twrap_consumer_proxy_video_s*);
+	void releaseConsumer(struct twrap_consumer_proxy_video_s*);
+	static ProxyVideoConsumer* instance;
+#endif
+
+private:
+	struct twrap_consumer_proxy_video_s* consumer;
+	tmedia_chroma_t chroma;
+};
+
+class ProxyVideoFrame
+{
+public:
+#if !defined(SWIG)
+	ProxyVideoFrame(void** buffer, unsigned size);
+#endif
+	virtual ~ProxyVideoFrame();
+
+	unsigned getSize();
+	unsigned getContent(void* output, unsigned maxsize);
+
+private:
+	void* buffer;
+	unsigned size;
+};
 
 
 #endif /* TINYWRAP_CONSUMER_PROXY_H */

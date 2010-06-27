@@ -493,6 +493,74 @@ tmedia_codec_t* tmedia_codec_find_by_format(tmedia_codecs_L_t* codecs, const cha
 }
 
 /**@ingroup tmedia_codec_group
+*/
+int tmedia_codec_parse_fmtp(const char* fmtp, unsigned* maxbr, unsigned* fps, unsigned *width, unsigned *height)
+{
+	char *copy, *pch;
+	tsk_bool_t found = tsk_false;
+	
+	if(tsk_strnullORempty(fmtp)){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	copy = tsk_strdup(fmtp);
+	pch = strtok(copy, "; /");
+
+	while(pch){
+		unsigned div = 0;
+		
+		if(sscanf(pch, "QCIF=%u", &div) == 1 && div){
+			*fps = 30/div;
+			*width = 176;
+			*height = 144;
+			found = tsk_true;
+		}
+		else if(sscanf(pch, "CIF=%u", &div) == 1 && div){
+			*fps = 30/div;
+			*width = 352;
+			*height = 288;
+			found = tsk_true;
+		}
+		else if(sscanf(pch, "SQCIF=%u", &div) == 1 && div){
+			*fps = 30/div;
+			*width = 128;
+			*height = 96;
+			found = tsk_true;
+		}
+		else if(sscanf(pch, "QVGA=%u", &div) == 1 && div){
+			*fps = 30/div;
+			*width = 320;
+			*height = 240;
+			found = tsk_true;
+		}
+		// to be continued
+
+		if(found){
+			found = tsk_false;
+			pch = strtok(tsk_null, "; ");
+			while(pch){
+				if(sscanf(pch, "MaxBR=%u", maxbr) == 1){
+					found = tsk_true;
+					break;
+				}
+				pch = strtok(tsk_null, "; /");
+			}
+		}
+		
+		if(found){
+			break;
+		}
+
+		pch = strtok(tsk_null, "; /");
+	}
+
+	TSK_FREE(copy);
+
+	return found ? 0 : -2;
+}
+
+/**@ingroup tmedia_codec_group
 * DeInitialize a Codec.
 * @param self The codec to deinitialize. Could be any type of codec (e.g. @ref tmedia_codec_audio_t or @ref tmedia_codec_video_t).
 * @retval Zero if succeed and non-zero error code otherwise.

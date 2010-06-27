@@ -78,6 +78,12 @@ typedef struct tdav_codec_h263_s
 	struct{
 		AVCodec* codec;
 		AVCodecContext* context;
+		AVFrame* picture;
+
+		void* accumulator;
+		uint8_t ebit;
+		tsk_size_t accumulator_pos;
+		uint16_t last_seq;
 	} decoder;
 }
 tdav_codec_h263_t;

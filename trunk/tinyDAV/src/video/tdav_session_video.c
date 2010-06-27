@@ -43,14 +43,15 @@
 // RTP/RTCP callback (From the network to the consumer)
 static int tdav_session_video_rtp_cb(const void* callback_data, const struct trtp_rtp_packet_s* packet)
 {
-	tdav_session_video_t* video = (tdav_session_video_t*)callback_data;
+	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
+	int ret;
 
-	if(!video || !packet){
+	if(!session || !packet){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if(video->consumer){
+	if(session->consumer){
 		void* out_data = tsk_null;
 		tsk_size_t out_size = 0;
 		tmedia_codec_t* codec;
@@ -58,20 +59,63 @@ static int tdav_session_video_rtp_cb(const void* callback_data, const struct trt
 
 		// Find the codec to use to decode the RTP payload
 		tsk_itoa(packet->header->payload_type, &format);
-		if(!(codec = tmedia_codec_find_by_format(TMEDIA_SESSION(video)->neg_codecs, format)) || !codec->plugin || !codec->plugin->decode){
+		if(!(codec = tmedia_codec_find_by_format(TMEDIA_SESSION(session)->neg_codecs, format)) || !codec->plugin || !codec->plugin->decode){
 			TSK_DEBUG_ERROR("%s is not a valid payload for this session", format);
-			TSK_OBJECT_SAFE_FREE(codec);
-			return -2;
+			ret = -2;
+			goto bail;
+		}
+		// Open codec if not already done
+		if(!TMEDIA_CODEC(codec)->opened && tmedia_codec_open(codec)){
+			TSK_DEBUG_ERROR("Failed to open [%s] codec", codec->plugin->desc);
+			ret = -3;
+			goto bail;
 		}
 		// Decode data
-		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &out_data);
-		if(out_size){
-			tmedia_consumer_consume(video->consumer, &out_data, out_size, packet->header);
+		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &out_data, packet->header);
+		// check
+		if(!out_size || !out_data){
+			goto bail;
 		}
+
+		// Convert decoded data to the consumer chroma
+		if((session->consumer->video.chroma != tmedia_yuv420p)){
+			void* _output_ptr = tsk_null;
+			tsk_size_t _output_size = 0;
+			
+			// Create video converter if not already done
+			if(!session->conv.fromYUV420){
+				if(!(session->conv.fromYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, session->consumer->video.chroma, tsk_false))){
+					TSK_DEBUG_ERROR("Failed to create video converter");
+					ret = -3;
+					goto bail;
+				}
+			}
+			// convert data to the consumer's chroma
+			_output_size = tdav_converter_video_convert(session->conv.fromYUV420, out_data, &_output_ptr);
+			if(!_output_size || !_output_ptr){
+				TSK_DEBUG_ERROR("Failed to convert YUV420 buffer to consumer's chroma");
+				TSK_FREE(_output_ptr);
+				ret = -4;
+				goto bail;
+			}
+
+			// all is ok ==> replace out_data and out_size
+			TSK_FREE(out_data);
+			out_data = _output_ptr, _output_ptr = tsk_null;
+			out_size = _output_size;
+		}
+
+		// Send data to the consumer
+		if(out_size){
+			tmedia_consumer_consume(session->consumer, &out_data, out_size, packet->header);
+			ret = 0;
+		}
+
+bail:
 		TSK_FREE(out_data);
 		TSK_OBJECT_SAFE_FREE(codec);
 	}
-	return 0;
+	return ret;
 }
 
 // Codec callback (From codec to the network)
@@ -92,6 +136,7 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
 	void* yuv420p = tsk_null;
 	tsk_size_t yuv420p_size = 0;
+	int ret = 0;
 
 	if(session->rtp_manager){
 		/* encode */
@@ -109,6 +154,7 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 			// open the codec if not already done
 			if(!TMEDIA_CODEC(codec)->opened && tmedia_codec_open(codec)){
 				TSK_DEBUG_ERROR("Failed to open [%s] codec", codec->plugin->desc);
+				TSK_OBJECT_SAFE_FREE(codec);
 				return -3;
 			}
 		}
@@ -120,18 +166,20 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 		// Video codecs only accept YUV420P buffers ==> do conversion if needed
 		if((session->producer->video.chroma != tmedia_yuv420p)){
 			// Create video converter if not already done
-			if(!session->converter){
-				if(!(session->converter = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, session->producer->video.chroma))){
+			if(!session->conv.toYUV420){
+				if(!(session->conv.toYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, session->producer->video.chroma, tsk_true))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
-					return -5;
+					ret = -5;
+					goto bail;
 				}
 			}
 			// convert data to yuv420p
-			yuv420p_size = tdav_converter_video_2Yuv420(session->converter, buffer, &yuv420p);
+			yuv420p_size = tdav_converter_video_convert(session->conv.toYUV420, buffer, &yuv420p);
 			if(!yuv420p_size || !yuv420p){
 				TSK_DEBUG_ERROR("Failed to convert RGB buffer to YUV42P");
 				TSK_FREE(yuv420p);
-				return -6;
+				ret = -6;
+				goto bail;
 			}
 		}
 
@@ -149,11 +197,12 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 		if(out_size){
 			trtp_manager_send_rtp(session->rtp_manager, out_data, out_size, 160/*FIXME*/, tsk_false);
 		}
+bail:
 		TSK_FREE(out_data);
 		TSK_OBJECT_SAFE_FREE(codec);
 	}
 
-	return 0;
+	return ret;
 }
 
 
@@ -485,7 +534,8 @@ static tsk_object_t* tdav_session_video_dtor(tsk_object_t * self)
 		/* deinit self (rtp manager should be destroyed after the producer) */
 		TSK_OBJECT_SAFE_FREE(session->consumer);
 		TSK_OBJECT_SAFE_FREE(session->producer);
-		TSK_OBJECT_SAFE_FREE(session->converter);
+		TSK_OBJECT_SAFE_FREE(session->conv.toYUV420);
+		TSK_OBJECT_SAFE_FREE(session->conv.fromYUV420);
 		TSK_OBJECT_SAFE_FREE(session->rtp_manager);
 		TSK_FREE(session->remote_ip);
 		TSK_FREE(session->local_ip);

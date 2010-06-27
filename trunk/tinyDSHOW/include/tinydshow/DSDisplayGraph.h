@@ -46,6 +46,7 @@ public:
 	void setDisplayFps(int fps_);
 
 	bool getImageFormat(UINT &width, UINT &height);
+	bool setImageFormat(UINT width, UINT height);
 
 	HRESULT connect();
 	HRESULT disconnect();
@@ -68,7 +69,7 @@ public:
 	IVMRWindowlessControl9	*getWindowlessControl()	{ return this->windowlessControl; };
 #endif
 
-	void handleFrame(VideoFrame *frame);
+	void handleFrame(const void* data, int w, int h);
 
 private:
 	HRESULT createDisplayGraph();

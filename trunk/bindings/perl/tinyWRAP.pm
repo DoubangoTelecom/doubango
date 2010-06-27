@@ -797,6 +797,83 @@ sub ACQUIRE {
 }
 
 
+############# Class : tinyWRAP::ProxyVideoConsumer ##############
+
+package tinyWRAP::ProxyVideoConsumer;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_ProxyVideoConsumer(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_ProxyVideoConsumer($self);
+        delete $OWNER{$self};
+    }
+}
+
+*prepare = *tinyWRAPc::ProxyVideoConsumer_prepare;
+*consume = *tinyWRAPc::ProxyVideoConsumer_consume;
+*start = *tinyWRAPc::ProxyVideoConsumer_start;
+*pause = *tinyWRAPc::ProxyVideoConsumer_pause;
+*stop = *tinyWRAPc::ProxyVideoConsumer_stop;
+*setActivate = *tinyWRAPc::ProxyVideoConsumer_setActivate;
+*registerPlugin = *tinyWRAPc::ProxyVideoConsumer_registerPlugin;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::ProxyVideoFrame ##############
+
+package tinyWRAP::ProxyVideoFrame;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_ProxyVideoFrame($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getSize = *tinyWRAPc::ProxyVideoFrame_getSize;
+*getContent = *tinyWRAPc::ProxyVideoFrame_getContent;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
 ############# Class : tinyWRAP::ProxyAudioProducer ##############
 
 package tinyWRAP::ProxyAudioProducer;
@@ -1078,6 +1155,8 @@ package tinyWRAP;
 *tsip_m_remote_hold = *tinyWRAPc::tsip_m_remote_hold;
 *tsip_m_remote_resume = *tinyWRAPc::tsip_m_remote_resume;
 *tmedia_rgb24 = *tinyWRAPc::tmedia_rgb24;
+*tmedia_rgb565le = *tinyWRAPc::tmedia_rgb565le;
+*tmedia_rgb565be = *tinyWRAPc::tmedia_rgb565be;
 *tmedia_nv21 = *tinyWRAPc::tmedia_nv21;
 *tmedia_yuv420p = *tinyWRAPc::tmedia_yuv420p;
 1;
