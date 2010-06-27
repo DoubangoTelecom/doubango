@@ -75,6 +75,12 @@
     <Compile Include="..\ProxyAudioProducer.cs">
       <Link>ProxyAudioProducer.cs</Link>
     </Compile>
+    <Compile Include="..\ProxyVideoConsumer.cs">
+      <Link>ProxyVideoConsumer.cs</Link>
+    </Compile>
+    <Compile Include="..\ProxyVideoFrame.cs">
+      <Link>ProxyVideoFrame.cs</Link>
+    </Compile>
     <Compile Include="..\ProxyVideoProducer.cs">
       <Link>ProxyVideoProducer.cs</Link>
     </Compile>

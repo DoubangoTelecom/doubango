@@ -111,6 +111,25 @@ class tinyWRAPJNI {
   public final static native boolean ProxyAudioConsumer_registerPlugin();
   public final static native void ProxyAudioConsumer_director_connect(ProxyAudioConsumer obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void ProxyAudioConsumer_change_ownership(ProxyAudioConsumer obj, long cptr, boolean take_or_release);
+  public final static native long new_ProxyVideoConsumer(int jarg1);
+  public final static native void delete_ProxyVideoConsumer(long jarg1);
+  public final static native int ProxyVideoConsumer_prepare(long jarg1, ProxyVideoConsumer jarg1_, int jarg2, int jarg3, int jarg4);
+  public final static native int ProxyVideoConsumer_prepareSwigExplicitProxyVideoConsumer(long jarg1, ProxyVideoConsumer jarg1_, int jarg2, int jarg3, int jarg4);
+  public final static native int ProxyVideoConsumer_consume(long jarg1, ProxyVideoConsumer jarg1_, long jarg2, ProxyVideoFrame jarg2_);
+  public final static native int ProxyVideoConsumer_consumeSwigExplicitProxyVideoConsumer(long jarg1, ProxyVideoConsumer jarg1_, long jarg2, ProxyVideoFrame jarg2_);
+  public final static native int ProxyVideoConsumer_start(long jarg1, ProxyVideoConsumer jarg1_);
+  public final static native int ProxyVideoConsumer_startSwigExplicitProxyVideoConsumer(long jarg1, ProxyVideoConsumer jarg1_);
+  public final static native int ProxyVideoConsumer_pause(long jarg1, ProxyVideoConsumer jarg1_);
+  public final static native int ProxyVideoConsumer_pauseSwigExplicitProxyVideoConsumer(long jarg1, ProxyVideoConsumer jarg1_);
+  public final static native int ProxyVideoConsumer_stop(long jarg1, ProxyVideoConsumer jarg1_);
+  public final static native int ProxyVideoConsumer_stopSwigExplicitProxyVideoConsumer(long jarg1, ProxyVideoConsumer jarg1_);
+  public final static native void ProxyVideoConsumer_setActivate(long jarg1, ProxyVideoConsumer jarg1_, boolean jarg2);
+  public final static native boolean ProxyVideoConsumer_registerPlugin();
+  public final static native void ProxyVideoConsumer_director_connect(ProxyVideoConsumer obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void ProxyVideoConsumer_change_ownership(ProxyVideoConsumer obj, long cptr, boolean take_or_release);
+  public final static native void delete_ProxyVideoFrame(long jarg1);
+  public final static native long ProxyVideoFrame_getSize(long jarg1, ProxyVideoFrame jarg1_);
+  public final static native long ProxyVideoFrame_getContent(long jarg1, ProxyVideoFrame jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native long new_ProxyAudioProducer();
   public final static native void delete_ProxyAudioProducer(long jarg1);
   public final static native int ProxyAudioProducer_prepare(long jarg1, ProxyAudioProducer jarg1_, int jarg2, int jarg3, int jarg4);
@@ -209,6 +228,21 @@ class tinyWRAPJNI {
     return self.pause();
   }
   public static int SwigDirector_ProxyAudioConsumer_stop(ProxyAudioConsumer self) {
+    return self.stop();
+  }
+  public static int SwigDirector_ProxyVideoConsumer_prepare(ProxyVideoConsumer self, int width, int height, int fps) {
+    return self.prepare(width, height, fps);
+  }
+  public static int SwigDirector_ProxyVideoConsumer_consume(ProxyVideoConsumer self, long frame) {
+    return self.consume((frame == 0) ? null : new ProxyVideoFrame(frame, false));
+  }
+  public static int SwigDirector_ProxyVideoConsumer_start(ProxyVideoConsumer self) {
+    return self.start();
+  }
+  public static int SwigDirector_ProxyVideoConsumer_pause(ProxyVideoConsumer self) {
+    return self.pause();
+  }
+  public static int SwigDirector_ProxyVideoConsumer_stop(ProxyVideoConsumer self) {
     return self.stop();
   }
   public static int SwigDirector_ProxyAudioProducer_prepare(ProxyAudioProducer self, int ptime, int rate, int channels) {

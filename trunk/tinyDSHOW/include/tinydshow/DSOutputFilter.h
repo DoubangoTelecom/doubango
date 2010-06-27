@@ -53,7 +53,7 @@ public:
 	//static CUnknown * WINAPI CreateInstance(LPUNKNOWN pUnk, HRESULT *phr);
 	DECLARE_IUNKNOWN;
 	
-	virtual void setBuffer(void *pointer);
+	virtual void setBuffer(void *pointer, int size);
 	virtual inline HRESULT setImageFormat(UINT width, UINT height);
 	virtual bool getImageFormat(UINT &width, UINT &height);
 

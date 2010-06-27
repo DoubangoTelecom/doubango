@@ -60,7 +60,10 @@ typedef struct tdav_session_video_s
 
 	struct tmedia_consumer_s* consumer;
 	struct tmedia_producer_s* producer;
-	struct tdav_converter_video_s* converter;
+	struct {
+		struct tdav_converter_video_s* toYUV420;
+		struct tdav_converter_video_s* fromYUV420;
+	} conv;
 }
 tdav_session_video_t;
 

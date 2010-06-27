@@ -44,6 +44,9 @@
 #include "tinydav/audio/waveapi/tdav_consumer_waveapi.h"
 #include "tinydav/audio/directsound/tdav_consumer_dsound.h"
 #include "tinydav/audio/coreaudio/tdav_consumer_coreaudio.h"
+#if HAVE_TINYDSHOW // DirectShow
+#	include "tinydshow/plugin/DSConsumer.h"
+#endif
 
 // Producers
 #include "tinydav/audio/waveapi/tdav_producer_waveapi.h"
@@ -88,6 +91,9 @@ int tdav_init()
 	tmedia_consumer_plugin_register(tdav_consumer_dsound_plugin_def_t);
 #elif HAVE_WAVE_API
 	tmedia_consumer_plugin_register(tdav_consumer_waveapi_plugin_def_t);
+#endif
+#if HAVE_TINYDSHOW // DirectShow
+	tmedia_consumer_plugin_register(tdshow_consumer_plugin_def_t);
 #endif
 
 #if HAVE_COREAUDIO
@@ -134,6 +140,9 @@ int tdav_deinit()
 #elif HAVE_WAVE_API
 	tmedia_consumer_plugin_unregister(tdav_consumer_waveapi_plugin_def_t);
 #endif
+#if HAVE_TINYDSHOW // DirectShow
+	tmedia_consumer_plugin_unregister(tdshow_consumer_plugin_def_t);
+#endif
 
 	/* === UnRegister producers === */
 #if HAVE_DSOUND_H // DirectSound
@@ -142,7 +151,7 @@ int tdav_deinit()
 	tmedia_producer_plugin_unregister(tdav_producer_waveapi_plugin_def_t);
 #endif
 #if HAVE_TINYDSHOW // DirectShow
-	tmedia_producer_plugin_register(tdshow_producer_plugin_def_t);
+	tmedia_producer_plugin_unregister(tdshow_producer_plugin_def_t);
 #endif
 
 #if HAVE_COREAUDIO

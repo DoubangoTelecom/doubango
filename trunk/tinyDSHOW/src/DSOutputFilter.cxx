@@ -23,6 +23,7 @@
 #include <tinydshow/DSOutputStream.h>
 #include <tinydshow/DSUtils.h>
 
+#include "tsk_memory.h"
 
 DSOutputFilter::DSOutputFilter(LPUNKNOWN pUnk, HRESULT *phr) 
 : CSource(_T("TDSHOW_OUTPUT"), pUnk, CLSID_TdshowOutputFilter)
@@ -38,9 +39,15 @@ DSOutputFilter::~DSOutputFilter()
 	//SAFE_RELEASE(this->outputStream);
 }
 
-void DSOutputFilter::setBuffer(void *pointer)
+void DSOutputFilter::setBuffer(void *pointer, int size)
 {
-	this->outputStream->buffer = pointer;
+	if(pointer && size){
+		if(!this->outputStream->buffer_size != size){
+			this->outputStream->buffer_size = size;
+			this->outputStream->buffer = tsk_realloc(this->outputStream->buffer, size);
+		}
+		memcpy(this->outputStream->buffer, pointer, size);
+	}
 }
 
 void DSOutputFilter::getMediaType(AM_MEDIA_TYPE* &pmt)
@@ -63,8 +70,7 @@ HRESULT DSOutputFilter::setImageFormat(UINT width, UINT height)
 
 bool DSOutputFilter::getImageFormat(UINT &width, UINT &height)
 {
-	if(this->outputStream)
-	{
+	if(this->outputStream){
 		return this->outputStream->getImageFormat(width, height);
 	}
 	return false;

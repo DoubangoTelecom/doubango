@@ -403,7 +403,7 @@ namespace Swig {
 
 namespace Swig {
   static jclass jclass_tinyWRAPJNI = NULL;
-  static jmethodID director_methids[20];
+  static jmethodID director_methids[25];
 }
 
 #include "DDebug.h"
@@ -576,6 +576,180 @@ void SwigDirector_ProxyAudioConsumer::swig_connect_director(JNIEnv *jenv, jobjec
 }
 
 
+SwigDirector_ProxyVideoConsumer::SwigDirector_ProxyVideoConsumer(JNIEnv *jenv, tmedia_chroma_t chroma) : ProxyVideoConsumer(chroma), Swig::Director(jenv) {
+}
+
+SwigDirector_ProxyVideoConsumer::~SwigDirector_ProxyVideoConsumer() {
+  swig_disconnect_director_self("swigDirectorDisconnect");
+}
+
+
+int SwigDirector_ProxyVideoConsumer::prepare(int width, int height, int fps) {
+  int c_result = SwigValueInit< int >() ;
+  jint jresult = 0 ;
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  jint jwidth  ;
+  jint jheight  ;
+  jint jfps  ;
+  
+  if (!swig_override[0]) {
+    return ProxyVideoConsumer::prepare(width,height,fps);
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    jwidth = (jint) width;
+    jheight = (jint) height;
+    jfps = (jint) fps;
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[4], swigjobj, jwidth, jheight, jfps);
+    if (jenv->ExceptionOccurred()) return c_result;
+    c_result = (int)jresult; 
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+  return c_result;
+}
+
+int SwigDirector_ProxyVideoConsumer::consume(ProxyVideoFrame const *frame) {
+  int c_result = SwigValueInit< int >() ;
+  jint jresult = 0 ;
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  jlong jframe = 0 ;
+  
+  if (!swig_override[1]) {
+    return ProxyVideoConsumer::consume(frame);
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    *((ProxyVideoFrame **)&jframe) = (ProxyVideoFrame *) frame; 
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[5], swigjobj, jframe);
+    if (jenv->ExceptionOccurred()) return c_result;
+    c_result = (int)jresult; 
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+  return c_result;
+}
+
+int SwigDirector_ProxyVideoConsumer::start() {
+  int c_result = SwigValueInit< int >() ;
+  jint jresult = 0 ;
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  
+  if (!swig_override[2]) {
+    return ProxyVideoConsumer::start();
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[6], swigjobj);
+    if (jenv->ExceptionOccurred()) return c_result;
+    c_result = (int)jresult; 
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+  return c_result;
+}
+
+int SwigDirector_ProxyVideoConsumer::pause() {
+  int c_result = SwigValueInit< int >() ;
+  jint jresult = 0 ;
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  
+  if (!swig_override[3]) {
+    return ProxyVideoConsumer::pause();
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[7], swigjobj);
+    if (jenv->ExceptionOccurred()) return c_result;
+    c_result = (int)jresult; 
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+  return c_result;
+}
+
+int SwigDirector_ProxyVideoConsumer::stop() {
+  int c_result = SwigValueInit< int >() ;
+  jint jresult = 0 ;
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  
+  if (!swig_override[4]) {
+    return ProxyVideoConsumer::stop();
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[8], swigjobj);
+    if (jenv->ExceptionOccurred()) return c_result;
+    c_result = (int)jresult; 
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+  return c_result;
+}
+
+void SwigDirector_ProxyVideoConsumer::swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global) {
+  static struct {
+    const char *mname;
+    const char *mdesc;
+    jmethodID base_methid;
+  } methods[] = {
+    {
+      "prepare", "(III)I", NULL 
+    },
+    {
+      "consume", "(Lorg/doubango/tinyWRAP/ProxyVideoFrame;)I", NULL 
+    },
+    {
+      "start", "()I", NULL 
+    },
+    {
+      "pause", "()I", NULL 
+    },
+    {
+      "stop", "()I", NULL 
+    }
+  };
+  
+  static jclass baseclass = 0 ;
+  
+  if (swig_set_self(jenv, jself, swig_mem_own, weak_global)) {
+    if (!baseclass) {
+      baseclass = jenv->FindClass("org/doubango/tinyWRAP/ProxyVideoConsumer");
+      if (!baseclass) return;
+      baseclass = (jclass) jenv->NewGlobalRef(baseclass);
+    }
+    bool derived = (jenv->IsSameObject(baseclass, jcls) ? false : true);
+    for (int i = 0; i < 5; ++i) {
+      if (!methods[i].base_methid) {
+        methods[i].base_methid = jenv->GetMethodID(baseclass, methods[i].mname, methods[i].mdesc);
+        if (!methods[i].base_methid) return;
+      }
+      swig_override[i] = false;
+      if (derived) {
+        jmethodID methid = jenv->GetMethodID(jcls, methods[i].mname, methods[i].mdesc);
+        swig_override[i] = (methid != methods[i].base_methid);
+        jenv->ExceptionClear();
+      }
+    }
+  }
+}
+
+
 SwigDirector_ProxyAudioProducer::SwigDirector_ProxyAudioProducer(JNIEnv *jenv) : ProxyAudioProducer(), Swig::Director(jenv) {
 }
 
@@ -602,7 +776,7 @@ int SwigDirector_ProxyAudioProducer::prepare(int ptime, int rate, int channels) 
     jptime = (jint) ptime;
     jrate = (jint) rate;
     jchannels = (jint) channels;
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[4], swigjobj, jptime, jrate, jchannels);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[9], swigjobj, jptime, jrate, jchannels);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -624,7 +798,7 @@ int SwigDirector_ProxyAudioProducer::start() {
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[5], swigjobj);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[10], swigjobj);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -646,7 +820,7 @@ int SwigDirector_ProxyAudioProducer::pause() {
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[6], swigjobj);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[11], swigjobj);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -668,7 +842,7 @@ int SwigDirector_ProxyAudioProducer::stop() {
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[7], swigjobj);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[12], swigjobj);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -749,7 +923,7 @@ int SwigDirector_ProxyVideoProducer::prepare(int width, int height, int fps) {
     jwidth = (jint) width;
     jheight = (jint) height;
     jfps = (jint) fps;
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[8], swigjobj, jwidth, jheight, jfps);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[13], swigjobj, jwidth, jheight, jfps);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -771,7 +945,7 @@ int SwigDirector_ProxyVideoProducer::start() {
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[9], swigjobj);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[14], swigjobj);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -793,7 +967,7 @@ int SwigDirector_ProxyVideoProducer::pause() {
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[10], swigjobj);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[15], swigjobj);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -815,7 +989,7 @@ int SwigDirector_ProxyVideoProducer::stop() {
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[11], swigjobj);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[16], swigjobj);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -892,7 +1066,7 @@ int SwigDirector_SipCallback::OnDialogEvent(DialogEvent const *e) {
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((DialogEvent **)&je) = (DialogEvent *) e; 
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[12], swigjobj, je);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[17], swigjobj, je);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -916,7 +1090,7 @@ int SwigDirector_SipCallback::OnStackEvent(StackEvent const *e) {
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((StackEvent **)&je) = (StackEvent *) e; 
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[13], swigjobj, je);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[18], swigjobj, je);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -940,7 +1114,7 @@ int SwigDirector_SipCallback::OnCallEvent(CallEvent const *e) {
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((CallEvent **)&je) = (CallEvent *) e; 
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[14], swigjobj, je);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[19], swigjobj, je);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -964,7 +1138,7 @@ int SwigDirector_SipCallback::OnMessagingEvent(MessagingEvent const *e) {
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((MessagingEvent **)&je) = (MessagingEvent *) e; 
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[15], swigjobj, je);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[20], swigjobj, je);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -988,7 +1162,7 @@ int SwigDirector_SipCallback::OnOptionsEvent(OptionsEvent const *e) {
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((OptionsEvent **)&je) = (OptionsEvent *) e; 
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[16], swigjobj, je);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[21], swigjobj, je);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -1012,7 +1186,7 @@ int SwigDirector_SipCallback::OnPublicationEvent(PublicationEvent const *e) {
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((PublicationEvent **)&je) = (PublicationEvent *) e; 
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[17], swigjobj, je);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[22], swigjobj, je);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -1036,7 +1210,7 @@ int SwigDirector_SipCallback::OnRegistrationEvent(RegistrationEvent const *e) {
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((RegistrationEvent **)&je) = (RegistrationEvent *) e; 
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[18], swigjobj, je);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[23], swigjobj, je);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -1060,7 +1234,7 @@ int SwigDirector_SipCallback::OnSubscriptionEvent(SubscriptionEvent const *e) {
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((SubscriptionEvent **)&je) = (SubscriptionEvent *) e; 
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[19], swigjobj, je);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[24], swigjobj, je);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -2748,6 +2922,289 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyAudioConsume
 }
 
 
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1ProxyVideoConsumer(JNIEnv *jenv, jclass jcls, jint jarg1) {
+  jlong jresult = 0 ;
+  tmedia_chroma_t arg1 ;
+  ProxyVideoConsumer *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (tmedia_chroma_t)jarg1; 
+  result = (ProxyVideoConsumer *)new SwigDirector_ProxyVideoConsumer(jenv,arg1);
+  *(ProxyVideoConsumer **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1ProxyVideoConsumer(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(ProxyVideoConsumer **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1prepare(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3, jint jarg4) {
+  jint jresult = 0 ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  int arg4 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoConsumer **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  result = (int)(arg1)->prepare(arg2,arg3,arg4);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1prepareSwigExplicitProxyVideoConsumer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3, jint jarg4) {
+  jint jresult = 0 ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  int arg4 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoConsumer **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  result = (int)(arg1)->ProxyVideoConsumer::prepare(arg2,arg3,arg4);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1consume(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoFrame *arg2 = (ProxyVideoFrame *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(ProxyVideoConsumer **)&jarg1; 
+  arg2 = *(ProxyVideoFrame **)&jarg2; 
+  result = (int)(arg1)->consume((ProxyVideoFrame const *)arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1consumeSwigExplicitProxyVideoConsumer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoFrame *arg2 = (ProxyVideoFrame *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(ProxyVideoConsumer **)&jarg1; 
+  arg2 = *(ProxyVideoFrame **)&jarg2; 
+  result = (int)(arg1)->ProxyVideoConsumer::consume((ProxyVideoFrame const *)arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1start(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoConsumer **)&jarg1; 
+  result = (int)(arg1)->start();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1startSwigExplicitProxyVideoConsumer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoConsumer **)&jarg1; 
+  result = (int)(arg1)->ProxyVideoConsumer::start();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1pause(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoConsumer **)&jarg1; 
+  result = (int)(arg1)->pause();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1pauseSwigExplicitProxyVideoConsumer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoConsumer **)&jarg1; 
+  result = (int)(arg1)->ProxyVideoConsumer::pause();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1stop(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoConsumer **)&jarg1; 
+  result = (int)(arg1)->stop();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1stopSwigExplicitProxyVideoConsumer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoConsumer **)&jarg1; 
+  result = (int)(arg1)->ProxyVideoConsumer::stop();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1setActivate(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  bool arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoConsumer **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  (arg1)->setActivate(arg2);
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1registerPlugin(JNIEnv *jenv, jclass jcls) {
+  jboolean jresult = 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (bool)ProxyVideoConsumer::registerPlugin();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1director_1connect(JNIEnv *jenv, jclass jcls, jobject jself, jlong objarg, jboolean jswig_mem_own, jboolean jweak_global) {
+  ProxyVideoConsumer *obj = *((ProxyVideoConsumer **)&objarg);
+  (void)jcls;
+  SwigDirector_ProxyVideoConsumer *director = static_cast<SwigDirector_ProxyVideoConsumer *>(obj);
+  if (director) {
+    director->swig_connect_director(jenv, jself, jenv->GetObjectClass(jself), (jswig_mem_own == JNI_TRUE), (jweak_global == JNI_TRUE));
+  }
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1change_1ownership(JNIEnv *jenv, jclass jcls, jobject jself, jlong objarg, jboolean jtake_or_release) {
+  ProxyVideoConsumer *obj = *((ProxyVideoConsumer **)&objarg);
+  SwigDirector_ProxyVideoConsumer *director = static_cast<SwigDirector_ProxyVideoConsumer *>(obj);
+  (void)jcls;
+  if (director) {
+    director->swig_java_change_ownership(jenv, jself, jtake_or_release ? true : false);
+  }
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1ProxyVideoFrame(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  ProxyVideoFrame *arg1 = (ProxyVideoFrame *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(ProxyVideoFrame **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoFrame_1getSize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  ProxyVideoFrame *arg1 = (ProxyVideoFrame *) 0 ;
+  unsigned int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoFrame **)&jarg1; 
+  result = (unsigned int)(arg1)->getSize();
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoFrame_1getContent(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbyteArray jarg2, jlong jarg3) {
+  jlong jresult = 0 ;
+  ProxyVideoFrame *arg1 = (ProxyVideoFrame *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  unsigned int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoFrame **)&jarg1; 
+  
+  arg2 = jenv->GetDirectBufferAddress(jarg2); 
+  
+  arg3 = (unsigned int)jarg3; 
+  result = (unsigned int)(arg1)->getContent(arg2,arg3);
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1ProxyAudioProducer(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   ProxyAudioProducer *result = 0 ;
@@ -4086,7 +4543,7 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_swig_1module_1ini
   static struct {
     const char *method;
     const char *signature;
-  } methods[20] = {
+  } methods[25] = {
     {
       "SwigDirector_ProxyAudioConsumer_prepare", "(Lorg/doubango/tinyWRAP/ProxyAudioConsumer;III)I" 
     },
@@ -4098,6 +4555,21 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_swig_1module_1ini
     },
     {
       "SwigDirector_ProxyAudioConsumer_stop", "(Lorg/doubango/tinyWRAP/ProxyAudioConsumer;)I" 
+    },
+    {
+      "SwigDirector_ProxyVideoConsumer_prepare", "(Lorg/doubango/tinyWRAP/ProxyVideoConsumer;III)I" 
+    },
+    {
+      "SwigDirector_ProxyVideoConsumer_consume", "(Lorg/doubango/tinyWRAP/ProxyVideoConsumer;J)I" 
+    },
+    {
+      "SwigDirector_ProxyVideoConsumer_start", "(Lorg/doubango/tinyWRAP/ProxyVideoConsumer;)I" 
+    },
+    {
+      "SwigDirector_ProxyVideoConsumer_pause", "(Lorg/doubango/tinyWRAP/ProxyVideoConsumer;)I" 
+    },
+    {
+      "SwigDirector_ProxyVideoConsumer_stop", "(Lorg/doubango/tinyWRAP/ProxyVideoConsumer;)I" 
     },
     {
       "SwigDirector_ProxyAudioProducer_prepare", "(Lorg/doubango/tinyWRAP/ProxyAudioProducer;III)I" 

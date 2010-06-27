@@ -35,9 +35,10 @@ namespace test
 
             /* Create consumers */
             audioConsumer = new MyProxyAudioConsumer();
+            videoConsumer = new MyProxyVideoConsumer(tmedia_chroma_t.tmedia_rgb565le);
             /* Create producers */
             audioProducer = new MyProxyAudioProducer();
-            videoProducer = new MyProxyVideoProducer(tmedia_chroma_t.tmedia_nv21);
+            videoProducer = new MyProxyVideoProducer(tmedia_chroma_t.tmedia_rgb24);
             
 
             /* Create and configure the IMS/LTE stack */
@@ -52,6 +53,7 @@ namespace test
             ProxyAudioConsumer.registerPlugin();
             ProxyAudioProducer.registerPlugin();
             ProxyVideoProducer.registerPlugin();
+            ProxyVideoConsumer.registerPlugin();
 
             /* Sets Proxy-CSCF */
             success = sipStack.setProxyCSCF(PROXY_CSCF_IP, PROXY_CSCF_PORT, "udp", "ipv4");
@@ -69,6 +71,7 @@ namespace test
             audioConsumer.setActivate(true);
             audioProducer.setActivate(true);
             videoProducer.setActivate(true);
+            videoConsumer.setActivate(true);
 
             /* Send REGISTER */
             regSession = new RegistrationSession(sipStack);
@@ -137,7 +140,7 @@ namespace test
             int ret2 = audioProducer.push(bytesAudio, (uint)bytesAudio.Length);
             //Console.WriteLine("push=" + ret);
 
-            byte[] bytesVideo = new byte[38016];
+            byte[] bytesVideo = new byte[176*144*3];
             int ret3 = videoProducer.push(bytesVideo, (uint)bytesVideo.Length);
         }
 
@@ -152,6 +155,7 @@ namespace test
         static MyProxyAudioConsumer audioConsumer;
         static MyProxyAudioProducer audioProducer;
         static MyProxyVideoProducer videoProducer;
+        static MyProxyVideoConsumer videoConsumer;
     }
 
 
@@ -243,6 +247,42 @@ namespace test
         public override int start()
         {
             return base.start();
+        }
+
+        public override int pause()
+        {
+            return base.pause();
+        }
+
+        public override int stop()
+        {
+            return base.stop();
+        }
+    }
+
+    public class MyProxyVideoConsumer : ProxyVideoConsumer
+    {
+        public MyProxyVideoConsumer(tmedia_chroma_t chroma)
+            : base(chroma)
+        {
+        }
+
+        public override int prepare(int width, int height, int fps)
+        {
+            return base.prepare(width, height, fps);
+        }
+
+        public override int start()
+        {
+            return base.start();
+        }
+
+        public override int consume(ProxyVideoFrame frame)
+        {
+            uint size = frame.getSize(); // for test
+            byte[] bytes = new byte[1200];
+            uint ret = frame.getContent(bytes, (uint)bytes.Length);
+            return base.consume(frame);
         }
 
         public override int pause()

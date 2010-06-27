@@ -15,6 +15,7 @@ sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect
 sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/ProxyAudioConsumer.java
 sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/ProxyAudioProducer.java
 sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/ProxyVideoProducer.java
+sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/ProxyVideoConsumer.java
 
 
 ##### Python

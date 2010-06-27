@@ -55,7 +55,7 @@ TDAV_BEGIN_DECLS
 // configuration constants
 /* Number of historical timestamps to use in calculating jitter and jitterbuffer size */ 
 #if defined(_WIN32_WCE) || ANDROID
-#	define JB_HISTORY_SIZE 300
+#	define JB_HISTORY_SIZE 150
 #else
 #	define JB_HISTORY_SIZE 500
 #endif

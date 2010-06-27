@@ -43,6 +43,7 @@ public:
 
 public:
 	void			*buffer;
+	int				buffer_size;
 	LONGLONG		frameNumber;
 
 protected: // Overrides

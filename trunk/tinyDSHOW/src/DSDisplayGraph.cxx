@@ -27,6 +27,8 @@
 #include <tinydshow/DSUtils.h>
 #include <tinydshow/DSOutputFilter.h>
 
+#include "tsk_debug.h"
+
 #include <iostream>
 
 using namespace std;
@@ -102,6 +104,14 @@ bool DSDisplayGraph::getImageFormat(UINT &width, UINT &height)
 	return false;
 }
 
+bool DSDisplayGraph::setImageFormat(UINT width, UINT height)
+{
+	if(this->sourceFilter){
+		return (this->sourceFilter->setImageFormat(width, height) == S_OK);
+	}
+	return false;
+}
+
 HRESULT DSDisplayGraph::connect()
 {
 	HRESULT hr;
@@ -126,10 +136,11 @@ HRESULT DSDisplayGraph::start()
 {
 	HRESULT hr;
 	this->running = true;
-	this->sourceFilter->reset();
+	this->sourceFilter->reset();	
+
 	hr = this->mediaController->Run();
 	if (!SUCCEEDED(hr)){
-		cerr << "DSDisplayGraph::mediaController->Run() has failed with " << hr << endl;
+		TSK_DEBUG_ERROR("DSDisplayGraph::mediaController->Run() has failed with %ld", hr);
 	}
 	return hr;
 }
@@ -140,14 +151,14 @@ HRESULT DSDisplayGraph::stop()
 
 	hr = this->mediaController->Pause();
 	if (hr == S_FALSE){
-		cerr << "DSDisplayGraph::mediaController->Pause() has failed with " << hr << ". Waiting for transition." << endl;
+		TSK_DEBUG_ERROR("DSDisplayGraph::mediaController->Pause() has failed with %ld. Waiting for transition.", hr);
 		FILTER_STATE pfs;
 		hr = this->mediaController->GetState(2500, (OAFilterState*) &pfs);
 	}
 
 	hr = this->mediaController->Stop();
 	if (!SUCCEEDED(hr)){
-		cerr << "DSDisplayGraph::mediaController->Stop() has failed with " << hr << endl;
+		TSK_DEBUG_ERROR("DSDisplayGraph::mediaController->Stop() has failed with %ld", hr);
 	}
 
 	this->running = false;
@@ -160,16 +171,21 @@ bool DSDisplayGraph::isRunning()
 	return this->running;
 }
 
-void DSDisplayGraph::handleFrame(VideoFrame *frame)
+void DSDisplayGraph::handleFrame(const void* data, int w, int h)
 {
 	HRESULT hr;
 	
-	if(!frame){
-		this->sourceFilter->setBuffer(NULL);
+	if(!this->sourceFilter){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return;
+	}
+
+	if(!data || !this->running){
+		this->sourceFilter->setBuffer(NULL, (w*h*3));
 		return;
 	}
 	
-	hr = this->sourceFilter->setImageFormat(frame->getWidth(), frame->getHeight());
+	hr = this->sourceFilter->setImageFormat(w, h);
 	if (hr == S_OK){
 		this->stop();
 
@@ -179,7 +195,7 @@ void DSDisplayGraph::handleFrame(VideoFrame *frame)
 		this->start();
 	}
 
-	this->sourceFilter->setBuffer(frame->getData());
+	this->sourceFilter->setBuffer((void*)data, (w*h*3));
 }
 
 HRESULT DSDisplayGraph::createDisplayGraph()
@@ -215,11 +231,11 @@ HRESULT DSDisplayGraph::createDisplayGraph()
 #endif
 
 
-	// Add sample grabber to the graph
+	// Add dource filter to the graph
 	hr = this->graphBuilder->AddFilter(this->sourceFilter, FILTER_OUTPUT);
 	if(FAILED(hr)) return hr;
 
-	// Add sample grabber to the graph
+	// Add the color space convertor to the graph
 	hr = this->graphBuilder->AddFilter(this->colorspaceConverterFilter, FILTER_COLORSPACE_CONVERTOR);
 	if(FAILED(hr)) return hr;
 
@@ -235,6 +251,7 @@ HRESULT DSDisplayGraph::createDisplayGraph()
 	// Find media event
 	hr = QUERY(this->graphBuilder, IID_IMediaEventEx, this->mediaEvent);
 	if(FAILED(hr)) return hr;
+	// hr = this->mediaEvent->SetNotifyFlags(AM_MEDIAEVENT_NONOTIFY);
 
 
 #if defined(VMR)

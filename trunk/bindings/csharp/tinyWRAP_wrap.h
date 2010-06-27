@@ -35,6 +35,33 @@ private:
     void swig_init_callbacks();
 };
 
+class SwigDirector_ProxyVideoConsumer : public ProxyVideoConsumer, public Swig::Director {
+
+public:
+    SwigDirector_ProxyVideoConsumer(tmedia_chroma_t chroma);
+    virtual ~SwigDirector_ProxyVideoConsumer();
+    virtual int prepare(int width, int height, int fps);
+    virtual int consume(ProxyVideoFrame const *frame);
+    virtual int start();
+    virtual int pause();
+    virtual int stop();
+
+    typedef int (SWIGSTDCALL* SWIG_Callback0_t)(int, int, int);
+    typedef int (SWIGSTDCALL* SWIG_Callback1_t)(void *);
+    typedef int (SWIGSTDCALL* SWIG_Callback2_t)();
+    typedef int (SWIGSTDCALL* SWIG_Callback3_t)();
+    typedef int (SWIGSTDCALL* SWIG_Callback4_t)();
+    void swig_connect_director(SWIG_Callback0_t callbackprepare, SWIG_Callback1_t callbackconsume, SWIG_Callback2_t callbackstart, SWIG_Callback3_t callbackpause, SWIG_Callback4_t callbackstop);
+
+private:
+    SWIG_Callback0_t swig_callbackprepare;
+    SWIG_Callback1_t swig_callbackconsume;
+    SWIG_Callback2_t swig_callbackstart;
+    SWIG_Callback3_t swig_callbackpause;
+    SWIG_Callback4_t swig_callbackstop;
+    void swig_init_callbacks();
+};
+
 class SwigDirector_ProxyAudioProducer : public ProxyAudioProducer, public Swig::Director {
 
 public:

@@ -63,6 +63,55 @@ private:
 };
 
 
+class SwigDirector_ProxyVideoConsumer : public ProxyVideoConsumer, public Swig::Director {
+
+public:
+    SwigDirector_ProxyVideoConsumer(PyObject *self, tmedia_chroma_t chroma);
+    virtual ~SwigDirector_ProxyVideoConsumer();
+    virtual int prepare(int width, int height, int fps);
+    virtual int consume(ProxyVideoFrame const *frame);
+    virtual int start();
+    virtual int pause();
+    virtual int stop();
+
+
+/* Internal Director utilities */
+public:
+    bool swig_get_inner(const char* name) const {
+      std::map<std::string, bool>::const_iterator iv = inner.find(name);
+      return (iv != inner.end() ? iv->second : false);
+    }
+
+    void swig_set_inner(const char* name, bool val) const
+    { inner[name] = val;}
+
+private:
+    mutable std::map<std::string, bool> inner;
+
+
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+/* VTable implementation */
+    PyObject *swig_get_method(size_t method_index, const char *method_name) const {
+      PyObject *method = vtable[method_index];
+      if (!method) {
+        swig::SwigVar_PyObject name = SWIG_Python_str_FromChar(method_name);
+        method = PyObject_GetAttr(swig_get_self(), name);
+        if (method == NULL) {
+          std::string msg = "Method in class ProxyVideoConsumer doesn't exist, undefined ";
+          msg += method_name;
+          Swig::DirectorMethodException::raise(msg.c_str());
+        }
+        vtable[method_index] = method;
+      };
+      return method;
+    }
+private:
+    mutable swig::SwigVar_PyObject vtable[5];
+#endif
+
+};
+
+
 class SwigDirector_ProxyAudioProducer : public ProxyAudioProducer, public Swig::Director {
 
 public:

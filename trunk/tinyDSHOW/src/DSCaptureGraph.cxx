@@ -288,7 +288,7 @@ HRESULT DSCaptureGraph::start()
 		MessageBox(NULL, _T("Starting DirectShow Graph Failed"), _T("Failure"), MB_OK);
 		//assert(1==15);
 #endif
-		cerr << "DSCaptureGraph::mediaController->Run() has failed with " << hr << endl;
+		TSK_DEBUG_ERROR("DSCaptureGraph::mediaController->Run() has failed with %ld", hr);
 	}
 	this->running = true;
 	return hr;
@@ -300,14 +300,14 @@ HRESULT DSCaptureGraph::stop()
 	hr = this->mediaController->Pause();
 	if (hr == S_FALSE)
 	{
-		cerr << "DSCaptureGraph::mediaController->Pause() has failed with " << hr << ". Waiting for transition." << endl;
+		TSK_DEBUG_ERROR("DSCaptureGraph::mediaController->Pause() has failed with %ld. Waiting for transition.", hr);
 		FILTER_STATE pfs;
 		hr = this->mediaController->GetState(2500, (OAFilterState*) &pfs);
 	}
 	hr = this->mediaController->Stop();
 	if (!SUCCEEDED(hr))
 	{
-		cerr << "DSCaptureGraph::mediaController->Stop() has failed with " << hr << endl;
+		TSK_DEBUG_ERROR("DSCaptureGraph::mediaController->Stop() has failed with %ld", hr);
 	}
 	this->running = false;
 	return hr;

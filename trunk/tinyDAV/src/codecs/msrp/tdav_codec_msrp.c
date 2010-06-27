@@ -43,7 +43,7 @@ tsk_size_t tdav_codec_msrp_fmtp_encode(tmedia_codec_t* self, const void* in_data
 	return 0;
 }
 
-tsk_size_t tdav_codec_msrp_fmtp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_msrp_fmtp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
 {
 	return 0;
 }

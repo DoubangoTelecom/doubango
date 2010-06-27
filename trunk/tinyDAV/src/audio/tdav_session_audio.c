@@ -61,8 +61,14 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 			TSK_OBJECT_SAFE_FREE(codec);
 			return -2;
 		}
+		// Open codec if not already done
+		if(!TMEDIA_CODEC(codec)->opened && tmedia_codec_open(codec)){
+			TSK_OBJECT_SAFE_FREE(codec);
+			TSK_DEBUG_ERROR("Failed to open [%s] codec", codec->plugin->desc);
+			return -3;
+		}
 		// Decode data
-		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &out_data);
+		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &out_data, packet->header);
 		if(out_size){
 			tmedia_consumer_consume(audio->consumer, &out_data, out_size, packet->header);
 		}
@@ -96,6 +102,12 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 			return -3;
 		}
 
+		// Open codec if not already done
+		if(!TMEDIA_CODEC(codec)->opened && tmedia_codec_open(codec)){
+			TSK_DEBUG_ERROR("Failed to open [%s] codec", codec->plugin->desc);
+			TSK_OBJECT_SAFE_FREE(codec);
+			return -4;
+		}
 		// Encode data
 		out_size = codec->plugin->encode(codec, buffer, size, &out_data);
 		if(out_size){

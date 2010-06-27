@@ -47,11 +47,12 @@
 	"a=rtpmap:97 iLBC/8000\r\n" \
 	"a=rtpmap:98 AMR-WB/16000\r\n" \
     "a=fmtp:98 octet-align=1\r\n" \
-	"m=video 51372 RTP/AVP 111 31 32 98\r\n" \
+	"m=video 51372 RTP/AVP 34 111 31 32 98\r\n" \
 	"i=Video line\r\n" \
 	"b=A-YZ:92\r\n" \
 	"b=B-YZ:256\r\n" \
 	"a=rtpmap:34 H263/90000\r\n" \
+	"a=fmtp:34 CIF=1 QCIF=1 MaxBR=4520\r\n" \
 	"a=rtpmap:111 H263-1998/90000\r\n" \
 	"a=rtpmap:31 H261/90000\r\n" \
 	"a=rtpmap:32 MPV/90000\r\n" \
@@ -72,7 +73,7 @@ void test_sessions_client()
 	const tsdp_message_t* sdp_lo;
 	tsdp_message_t* sdp_ro;
 	char* temp;
-	tmedia_type_t type = tmedia_all;
+	tmedia_type_t type = tmedia_video;
 
 	mgr = tmedia_session_mgr_create(type,
 		"0.0.0.0", tsk_false, tsk_true/* offerer */);
@@ -147,7 +148,7 @@ void test_sessions_server()
 }
 
 void test_sessions()
-{
+{	
 	test_sessions_client();
 	//test_sessions_server();
 }
