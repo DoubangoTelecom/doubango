@@ -404,6 +404,21 @@ int tmedia_session_deinit(tmedia_session_t* self)
 	return 0;
 }
 
+/**@ingroup tmedia_session_group
+* Send DTMF event
+* @param self the audio session to use to send a DTMF event
+* @param event the DTMF event to send (should be between 0-15)
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
+int tmedia_session_audio_send_dtmf(tmedia_session_audio_t* self, uint8_t event)
+{
+	if(!self || !TMEDIA_SESSION(self)->plugin || !TMEDIA_SESSION(self)->plugin->audio.send_dtmf){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return TMEDIA_SESSION(self)->plugin->audio.send_dtmf(TMEDIA_SESSION(self), event);
+}
+
 /* internal function used to prepare a session */
 int _tmedia_session_load_codecs(tmedia_session_t* self)
 {
@@ -1032,6 +1047,30 @@ tsk_bool_t tmedia_session_mgr_canresume(tmedia_session_mgr_t* self)
 		}
 	}
 	return tsk_true;
+}
+
+int tmedia_session_mgr_send_dtmf(tmedia_session_mgr_t* self, uint8_t event)
+{
+	tmedia_session_audio_t* session;
+	tmedia_type_t audio_type = tmedia_audio;
+	int ret = -3;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	session = (tmedia_session_audio_t*)tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_type, &audio_type);
+	if(session){
+		session = tsk_object_ref(session);
+		ret = tmedia_session_audio_send_dtmf(TMEDIA_SESSION_AUDIO(session), event);
+		TSK_OBJECT_SAFE_FREE(session);
+	}
+	else{
+		TSK_DEBUG_ERROR("No audio session associated to this manager");
+	}
+
+	return ret;
 }
 
 /** internal function used to load sessions */

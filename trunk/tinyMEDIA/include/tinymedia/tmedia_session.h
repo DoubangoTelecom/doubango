@@ -42,7 +42,9 @@
 
 TMEDIA_BEGIN_DECLS
 
-#define TMEDIA_SESSION(self)	((tmedia_session_t*)(self))
+#define TMEDIA_SESSION(self)		((tmedia_session_t*)(self))
+#define TMEDIA_SESSION_AUDIO(self)	((tmedia_session_audio_t*)(self))
+#define TMEDIA_SESSION_VIDEO(self)	((tmedia_session_video_t*)(self))
 
 /**Max number of plugins (session types) we can create */
 #define TMED_SESSION_MAX_PLUGINS			0x0F
@@ -93,6 +95,10 @@ typedef struct tmedia_session_plugin_def_s
 	int (* pause) (tmedia_session_t* );
 	int (* stop) (tmedia_session_t* );
 
+	struct{ /* Special case */
+		int (* send_dtmf) (tmedia_session_t*, uint8_t );
+	} audio;
+
 	const tsdp_header_M_t* (* get_local_offer) (tmedia_session_t* );
 	/* return zero if can handle the ro and non-zero otherwise */
 	int (* set_remote_offer) (tmedia_session_t* , const tsdp_header_M_t* );
@@ -117,6 +123,7 @@ typedef struct tmedia_session_audio_s
 }
 tmedia_session_audio_t;
 #define tmedia_session_audio_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmed_sess_type_audio)
+TINYMEDIA_API int tmedia_session_audio_send_dtmf(tmedia_session_audio_t* self, uint8_t event);
 #define tmedia_session_audio_deinit(self) tmedia_session_deinit(TMEDIA_SESSION(self))
 #define tmedia_session_audio_create() tmedia_session_create(tmed_sess_type_audio)
 #define TMEDIA_DECLARE_SESSION_AUDIO tmedia_session_t __session_audio__
@@ -343,6 +350,7 @@ TINYMEDIA_API int tmedia_session_mgr_add_media(tmedia_session_mgr_t* self, tmedi
 TINYMEDIA_API int tmedia_session_mgr_remove_media(tmedia_session_mgr_t* self, tmedia_type_t type);
 TINYMEDIA_API int tmedia_session_mgr_set_qos(tmedia_session_mgr_t* self, tmedia_qos_stype_t qos_type, tmedia_qos_strength_t qos_strength);
 TINYMEDIA_API tsk_bool_t tmedia_session_mgr_canresume(tmedia_session_mgr_t* self);
+TINYMEDIA_API int tmedia_session_mgr_send_dtmf(tmedia_session_mgr_t* self, uint8_t event);
 
 TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_session_mgr_def_t;
 

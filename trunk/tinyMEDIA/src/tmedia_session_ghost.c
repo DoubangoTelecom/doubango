@@ -138,6 +138,9 @@ static const tmedia_session_plugin_def_t tmedia_session_ghost_plugin_def_s =
 	tmedia_session_ghost_stop,
 	tmedia_session_ghost_pause,
 
+	/* Audio part */
+	{ tsk_null },
+
 	tmedia_session_ghost_get_lo,
 	tmedia_session_ghost_set_ro
 };

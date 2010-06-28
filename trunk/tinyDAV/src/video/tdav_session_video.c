@@ -568,6 +568,8 @@ static const tmedia_session_plugin_def_t tdav_session_video_plugin_def_s =
 	tdav_session_video_pause,
 	tdav_session_video_stop,
 	
+	/* Audio part */
+	{ tsk_null },
 
 	tdav_session_video_get_lo,
 	tdav_session_video_set_ro

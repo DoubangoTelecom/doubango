@@ -79,6 +79,11 @@ int tmedia_session_daudio_stop(tmedia_session_t* self)
 	return 0;
 }
 
+int tmedia_session_daudio_send_dtmf(tmedia_session_t* self, uint8_t event)
+{
+	return 0;
+}
+
 int tmedia_session_daudio_pause(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_daudio_pause");
@@ -378,6 +383,8 @@ static const tmedia_session_plugin_def_t tmedia_session_daudio_plugin_def_s =
 	tmedia_session_daudio_pause,
 	tmedia_session_daudio_stop,
 	
+	/* Audio part */
+	{ tsk_null },
 
 	tmedia_session_daudio_get_lo,
 	tmedia_session_daudio_set_ro
@@ -431,7 +438,9 @@ static const tmedia_session_plugin_def_t tmedia_session_dvideo_plugin_def_s =
 	tmedia_session_dvideo_start,
 	tmedia_session_dvideo_pause,
 	tmedia_session_dvideo_stop,
-	
+
+	/* Audio part */
+	{ tsk_null },
 
 	tmedia_session_dvideo_get_lo,
 	tmedia_session_dvideo_set_ro
@@ -487,6 +496,8 @@ static const tmedia_session_plugin_def_t tmedia_session_dmsrp_plugin_def_s =
 	tmedia_session_dmsrp_pause,
 	tmedia_session_dmsrp_stop,
 	
+	/* Audio part */
+	{ tsk_null },
 
 	tmedia_session_dmsrp_get_lo,
 	tmedia_session_dmsrp_set_ro
