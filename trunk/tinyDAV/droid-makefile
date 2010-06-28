@@ -32,6 +32,9 @@ OBJS += src/msrp/tdav_consumer_msrp.o \
 OBJS += src/codecs/g711/g711.o \
 	src/codecs/g711/tdav_codec_g711.o
 	
+	### codecs (DTMF)
+OBJS += src/codecs/dtmf/tdav_codec_dtmf.o
+
 	### codecs (H.263)
 OBJS += src/codecs/h263/tdav_codec_h263.o
 	

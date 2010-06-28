@@ -113,11 +113,11 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data, const tsk_
 			tv.tv_usec += 1000000;
 			tv.tv_sec -= 1;
 		}
-		self->jb.ref_timestamp = (long)tsk_time_get_ms(&tv);
+		self->jb.ref_timestamp = tsk_time_get_ms(&tv);
 	}
-
+	
 	tsk_safeobj_lock(self);
-	jb_put(self->jb.jbuffer, *data, JB_TYPE_VOICE, self->ptime, (rtp_hdr->timestamp/(self->rate/1000)), (long)(tsk_time_now()-self->jb.ref_timestamp), self->jb.jcodec);
+	jb_put(self->jb.jbuffer, *data, JB_TYPE_VOICE, self->ptime, (rtp_hdr->timestamp/(self->rate/1000)), (long) (tsk_time_now()-self->jb.ref_timestamp), self->jb.jcodec);
 	*data = tsk_null;
 	tsk_safeobj_unlock(self);
 
@@ -133,10 +133,10 @@ void* tdav_consumer_audio_get(tdav_consumer_audio_t* self)
 	if(!self || !self->jb.jbuffer){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
-	}
+	}	
 
 	tsk_safeobj_lock(self);
-	jret = jb_get(self->jb.jbuffer, (void**)&data, (long)tsk_time_now(), self->ptime);
+	jret = jb_get(self->jb.jbuffer, (void**)&data, (long) (tsk_time_now()-self->jb.ref_timestamp), self->ptime);
 	tsk_safeobj_unlock(self);
 
 	switch(jret){
