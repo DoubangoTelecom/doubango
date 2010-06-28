@@ -34,6 +34,7 @@
 #include "tinydav/video/tdav_session_video.h"
 
 // Codecs
+#include "tinydav/codecs/dtmf/tdav_codec_dtmf.h"
 #include "tinydav/codecs/msrp/tdav_codec_msrp.h"
 #include "tinydav/codecs/g711/tdav_codec_g711.h"
 #include "tinydav/codecs/h263/tdav_codec_h263.h"
@@ -77,6 +78,7 @@ int tdav_init()
 	avcodec_register_all();
 #endif
 	
+	tmedia_codec_plugin_register(tdav_codec_dtmf_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_msrp_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
@@ -126,6 +128,7 @@ int tdav_deinit()
 	tmedia_session_plugin_unregister(tdav_session_video_plugin_def_t);
 
 	/* === UnRegister codecs === */
+	tmedia_codec_plugin_unregister(tdav_codec_dtmf_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_msrp_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_g711u_plugin_def_t);

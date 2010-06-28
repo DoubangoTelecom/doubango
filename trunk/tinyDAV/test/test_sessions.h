@@ -73,7 +73,7 @@ void test_sessions_client()
 	const tsdp_message_t* sdp_lo;
 	tsdp_message_t* sdp_ro;
 	char* temp;
-	tmedia_type_t type = tmedia_video;
+	tmedia_type_t type = tmedia_audio;
 
 	mgr = tmedia_session_mgr_create(type,
 		"0.0.0.0", tsk_false, tsk_true/* offerer */);
@@ -93,6 +93,9 @@ void test_sessions_client()
 
 	/* start() */
 	tmedia_session_mgr_start(mgr);
+
+	/* for fun, send DTMF */
+	tmedia_session_mgr_send_dtmf(mgr, 1);
 
 	getchar();
 

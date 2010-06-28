@@ -20,62 +20,30 @@
 *
 */
 
-/**@file tdav_session_audio.h
- * @brief Audio Session plugin.
+/**@file tdav_codec_dtmf.h
+ * @brief DTMF (RFC 4733) codec plugins.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYDAV_SESSION_AUDIO_H
-#define TINYDAV_SESSION_AUDIO_H
+#ifndef TINYDAV_CODEC_DTMF_H
+#define TINYDAV_CODEC_DTMF_H
 
 #include "tinydav_config.h"
 
-#include "tinymedia/tmedia_session.h"
+#include "tinymedia/tmedia_codec.h"
 
 TDAV_BEGIN_DECLS
 
-// Forward declaration
-struct trtp_manager_s;
-struct tdav_consumer_audio_s;
-
-typedef struct tdav_session_audio_s
+typedef struct tdav_codec_dtmf_s
 {
-	TMEDIA_DECLARE_SESSION_AUDIO;
-
-	tsk_bool_t useIPv6;
-
-	struct {
-		unsigned created;
-		unsigned started:1;
-	} timer;
-
-	char* local_ip;
-	//uint16_t local_port;
-
-	char* remote_ip;
-	uint16_t remote_port;
-	
-	tsk_bool_t rtcp_enabled;
-
-	struct trtp_manager_s* rtp_manager;
-
-	struct tmedia_consumer_s* consumer;
-	struct tmedia_producer_s* producer;
+	TMEDIA_DECLARE_CODEC_AUDIO;
 }
-tdav_session_audio_t;
+tdav_codec_dtmf_t;
 
-typedef struct tdav_session_audio_dtmfe_s
-{
-	TSK_DECLARE_OBJECT;
-
-	int id;
-}
-tdav_session_audio_dtmfe_t;
-
-TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_audio_plugin_def_t;
+TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_dtmf_plugin_def_t;
 
 TDAV_END_DECLS
 
-#endif /* TINYDAV_SESSION_AUDIO_H */
+#endif /* TINYDAV_CODEC_DTMF_H  */

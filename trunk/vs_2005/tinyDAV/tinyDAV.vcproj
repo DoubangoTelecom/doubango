@@ -261,6 +261,14 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="dtmf"
+					>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\codecs\dtmf\tdav_codec_dtmf.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="audio"
@@ -446,6 +454,14 @@
 					>
 					<File
 						RelativePath="..\..\tinyDAV\src\codecs\msrp\tdav_codec_msrp.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="dtmf"
+					>
+					<File
+						RelativePath="..\..\tinyDAV\src\codecs\dtmf\tdav_codec_dtmf.c"
 						>
 					</File>
 				</Filter>

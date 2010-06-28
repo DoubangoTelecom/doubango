@@ -35,6 +35,7 @@
 #include "tinyrtp/trtp_manager.h"
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
 
+#include "tsk_timer.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -256,6 +257,52 @@ int tdav_session_audio_stop(tmedia_session_t* self)
 	return 0;
 }
 
+int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
+{
+	tdav_session_audio_t* audio;
+	tmedia_codec_t* codec;
+	int ret, rate = 8000, ptime = 20;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	audio = (tdav_session_audio_t*)self;
+
+	// Find the DTMF codec to use to use the RTP payload
+	if((codec = tmedia_codec_find_by_format(TMEDIA_SESSION(audio)->codecs, TMEDIA_CODEC_FORMAT_DTMF))){
+		rate = (int)codec->plugin->rate;
+		TSK_OBJECT_SAFE_FREE(codec);
+	}
+
+	/* do we have an RTP manager? */
+	if(!audio->rtp_manager){
+		TSK_DEBUG_ERROR("No RTP manager associated to this session");
+		return -2;
+	}
+
+	/* Create global reference to the timer manager */
+	if(!audio->timer.created){
+		if((ret = tsk_timer_mgr_global_ref())){
+			TSK_DEBUG_ERROR("Failed to create Global Timer Manager");
+			return ret;
+		}
+		audio->timer.created = tsk_true;
+	}
+
+	/* Start the timer manager */
+	if(!audio->timer.started){
+		if((ret = tsk_timer_mgr_global_start())){
+			TSK_DEBUG_ERROR("Failed to start Global Timer Manager");
+			return ret;
+		}
+		audio->timer.started = tsk_true;
+	}
+
+	return 0;
+}
+
 int tdav_session_audio_pause(tmedia_session_t* self)
 {
 	tdav_session_audio_t* audio;
@@ -363,17 +410,17 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 				tsdp_header_M_resume(self->M.lo, tsk_false);
 			}
 		}
-		/* 3GPP TS 24.229 - 6.1.1 General
-			The UE shall include the MIME subtype "telephone-event" in the "m=" media descriptor in the SDP for audio media
-			flows that support both audio codec and DTMF payloads in RTP packets as described in RFC 4733 [23].
-		*/
-		tsdp_header_M_add_fmt(self->M.lo, TMEDIA_CODEC_FORMAT_DTMF);
-		tsdp_header_M_add_headers(self->M.lo,
-					TSDP_HEADER_A_VA_ARGS("fmtp", TMEDIA_CODEC_FORMAT_DTMF" 0-15"),
-				tsk_null);
-		tsdp_header_M_add_headers(self->M.lo,
-					TSDP_HEADER_A_VA_ARGS("rtpmap", TMEDIA_CODEC_FORMAT_DTMF" telephone-event/8000"),
-				tsk_null);
+		///* 3GPP TS 24.229 - 6.1.1 General
+		//	The UE shall include the MIME subtype "telephone-event" in the "m=" media descriptor in the SDP for audio media
+		//	flows that support both audio codec and DTMF payloads in RTP packets as described in RFC 4733 [23].
+		//*/
+		//tsdp_header_M_add_fmt(self->M.lo, TMEDIA_CODEC_FORMAT_DTMF);
+		//tsdp_header_M_add_headers(self->M.lo,
+		//			TSDP_HEADER_A_VA_ARGS("fmtp", TMEDIA_CODEC_FORMAT_DTMF" 0-15"),
+		//		tsk_null);
+		//tsdp_header_M_add_headers(self->M.lo,
+		//			TSDP_HEADER_A_VA_ARGS("rtpmap", TMEDIA_CODEC_FORMAT_DTMF" telephone-event/8000"),
+		//		tsk_null);
 		/* QoS */
 		if(self->qos){
 			tmedia_qos_tline_t* ro_tline;
@@ -464,6 +511,14 @@ static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 		
 		// Do it in this order (deinit self first)
 
+		/* Timer manager */
+		if(session->timer.started){
+			tsk_timer_mgr_global_stop();
+		}
+		if(session->timer.created){
+			tsk_timer_mgr_global_unref();
+		}
+
 		/* deinit self (rtp manager should be destroyed after the producer) */
 		TSK_OBJECT_SAFE_FREE(session->consumer);
 		TSK_OBJECT_SAFE_FREE(session->producer);
@@ -498,7 +553,11 @@ static const tmedia_session_plugin_def_t tdav_session_audio_plugin_def_s =
 	tdav_session_audio_start,
 	tdav_session_audio_pause,
 	tdav_session_audio_stop,
-	
+
+	/* Audio part */
+	{
+		tdav_session_audio_send_dtmf
+	},
 
 	tdav_session_audio_get_lo,
 	tdav_session_audio_set_ro
