@@ -39,6 +39,22 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+static int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id);
+static struct tdav_session_audio_dtmfe_s* _tdav_session_audio_dtmfe_create(const tdav_session_audio_t* session, uint8_t event, uint16_t duration, uint32_t seq, uint32_t timestamp, uint8_t format, tsk_bool_t M, tsk_bool_t E);
+
+/* DTMF event object */
+typedef struct tdav_session_audio_dtmfe_s
+{
+	TSK_DECLARE_OBJECT;
+	
+	tsk_timer_id_t timer_id;
+	trtp_rtp_packet_t* packet;
+
+	const tdav_session_audio_t* session;
+}
+tdav_session_audio_dtmfe_t;
+extern const tsk_object_def_t *tdav_session_audio_dtmfe_def_t;
+
 // RTP/RTCP callback (From the network to the consumer)
 static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trtp_rtp_packet_s* packet)
 {
@@ -262,6 +278,11 @@ int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 	tdav_session_audio_t* audio;
 	tmedia_codec_t* codec;
 	int ret, rate = 8000, ptime = 20;
+	uint16_t duration;
+	tdav_session_audio_dtmfe_t *dtmfe, *copy;
+	static uint32_t timestamp = 0x3200;
+	static uint32_t seq_num =  0;
+	int format = 101;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -273,6 +294,7 @@ int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 	// Find the DTMF codec to use to use the RTP payload
 	if((codec = tmedia_codec_find_by_format(TMEDIA_SESSION(audio)->codecs, TMEDIA_CODEC_FORMAT_DTMF))){
 		rate = (int)codec->plugin->rate;
+		format = atoi(codec->format); // Negociated Format (101 was the default value)
 		TSK_OBJECT_SAFE_FREE(codec);
 	}
 
@@ -280,6 +302,11 @@ int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 	if(!audio->rtp_manager){
 		TSK_DEBUG_ERROR("No RTP manager associated to this session");
 		return -2;
+	}
+
+	/* Create Events list */
+	if(!audio->dtmf_events){
+		audio->dtmf_events = tsk_list_create();
 	}
 
 	/* Create global reference to the timer manager */
@@ -299,6 +326,76 @@ int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 		}
 		audio->timer.started = tsk_true;
 	}
+
+
+	/*	RFC 4733 - 5.  Examples
+	
+	+-------+-----------+------+--------+------+--------+--------+------+
+   |  Time | Event     |   M  |  Time- |  Seq |  Event |  Dura- |   E  |
+   |  (ms) |           |  bit |  stamp |   No |  Code  |   tion |  bit |
+   +-------+-----------+------+--------+------+--------+--------+------+
+   |     0 | "9"       |      |        |      |        |        |      |
+   |       | starts    |      |        |      |        |        |      |
+   |    50 | RTP       |  "1" |      0 |    1 |    9   |    400 |  "0" |
+   |       | packet 1  |      |        |      |        |        |      |
+   |       | sent      |      |        |      |        |        |      |
+   |   100 | RTP       |  "0" |      0 |    2 |    9   |    800 |  "0" |
+   |       | packet 2  |      |        |      |        |        |      |
+   |       | sent      |      |        |      |        |        |      |
+   |   150 | RTP       |  "0" |      0 |    3 |    9   |   1200 |  "0" |
+   |       | packet 3  |      |        |      |        |        |      |
+   |       | sent      |      |        |      |        |        |      |
+   |   200 | RTP       |  "0" |      0 |    4 |    9   |   1600 |  "0" |
+   |       | packet 4  |      |        |      |        |        |      |
+   |       | sent      |      |        |      |        |        |      |
+   |   200 | "9" ends  |      |        |      |        |        |      |
+   |   250 | RTP       |  "0" |      0 |    5 |    9   |   1600 |  "1" |
+   |       | packet 4  |      |        |      |        |        |      |
+   |       | first     |      |        |      |        |        |      |
+   |       | retrans-  |      |        |      |        |        |      |
+   |       | mission   |      |        |      |        |        |      |
+   |   300 | RTP       |  "0" |      0 |    6 |    9   |   1600 |  "1" |
+   |       | packet 4  |      |        |      |        |        |      |
+   |       | second    |      |        |      |        |        |      |
+   |       | retrans-  |      |        |      |        |        |      |
+   |       | mission   |      |        |      |        |        |      |
+   =====================================================================
+   |   880 | First "1" |      |        |      |        |        |      |
+   |       | starts    |      |        |      |        |        |      |
+   |   930 | RTP       |  "1" |   7040 |    7 |    1   |    400 |  "0" |
+   |       | packet 5  |      |        |      |        |        |      |
+   |       | sent      |      |        |      |        |        |      |
+	*/
+	
+	// ref()(thread safeness)
+	audio = tsk_object_ref(audio);
+	
+	duration = (rate * ptime)/1000;
+	/* Not mandatory but elegant */
+	timestamp += duration;
+
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*1, ++seq_num, timestamp, (uint8_t)format, tsk_true, tsk_false);
+	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
+	tsk_timer_mgr_global_schedule(ptime*0, _tdav_session_audio_dtmfe_timercb, copy);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*2, ++seq_num, timestamp, (uint8_t)format, tsk_false, tsk_false);
+	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
+	tsk_timer_mgr_global_schedule(ptime*1, _tdav_session_audio_dtmfe_timercb, copy);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*3, ++seq_num, timestamp, (uint8_t)format, tsk_false, tsk_false);
+	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
+	tsk_timer_mgr_global_schedule(ptime*2, _tdav_session_audio_dtmfe_timercb, copy);
+
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
+	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
+	tsk_timer_mgr_global_schedule(ptime*3, _tdav_session_audio_dtmfe_timercb, copy);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
+	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
+	tsk_timer_mgr_global_schedule(ptime*4, _tdav_session_audio_dtmfe_timercb, copy);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
+	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
+	tsk_timer_mgr_global_schedule(ptime*5, _tdav_session_audio_dtmfe_timercb, copy);
+
+	// unref()(thread safeness)
+	audio = tsk_object_unref(audio);
 
 	return 0;
 }
@@ -477,9 +574,68 @@ int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 	return 0;
 }
 
+/* Internal function used to create new DTMF event */
+tdav_session_audio_dtmfe_t* _tdav_session_audio_dtmfe_create(const tdav_session_audio_t* session, uint8_t event, uint16_t duration, uint32_t seq, uint32_t timestamp, uint8_t format, tsk_bool_t M, tsk_bool_t E)
+{
+	tdav_session_audio_dtmfe_t* dtmfe;
+	static uint8_t volume = 10;
+	static uint32_t ssrc = 0x5234A8;
+	
+	uint8_t pay[4] = {0};
 
+	/* RFC 4733 - 2.3.  Payload Format
+		0                   1                   2                   3
+		0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+	   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	   |     event     |E|R| volume    |          duration             |
+	   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	*/
 
+	if(!(dtmfe = tsk_object_new(tdav_session_audio_dtmfe_def_t))){
+		TSK_DEBUG_ERROR("Failed to create new DTMF event");
+		return tsk_null;
+	}
+	dtmfe->session = session;
 
+	if(!(dtmfe->packet = trtp_rtp_packet_create(ssrc, seq, timestamp, format, M))){
+		TSK_DEBUG_ERROR("Failed to create DTMF RTP packet");
+		TSK_OBJECT_SAFE_FREE(dtmfe);
+		return tsk_null;
+	}
+	
+	pay[0] = event;
+	pay[1] |= ((E << 7) | (volume & 0x3F));
+	pay[2] = (duration >> 8);
+	pay[3] = (duration & 0xFF);
+
+	/* set data */
+	if((dtmfe->packet->payload.data = tsk_calloc(sizeof(pay), sizeof(uint8_t)))){
+		memcpy(dtmfe->packet->payload.data, pay, sizeof(pay));
+		dtmfe->packet->payload.size = sizeof(pay);
+	}
+
+	return dtmfe;
+}
+
+int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id)
+{
+	tdav_session_audio_dtmfe_t* dtmfe = (tdav_session_audio_dtmfe_t*)arg;
+	int ret;
+
+	if(!dtmfe || !dtmfe->session){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	/* Send the data */
+	TSK_DEBUG_INFO("Sending DTMF event");
+	ret = trtp_manager_send_rtp_2(dtmfe->session->rtp_manager, dtmfe->packet);
+
+	/* Remove and delete the event from the queue */
+	tsk_list_remove_item_by_data(dtmfe->session->dtmf_events, dtmfe);
+
+	return ret;
+}
 
 //=================================================================================================
 //	Session Audio Plugin object definition
@@ -513,11 +669,20 @@ static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 
 		/* Timer manager */
 		if(session->timer.started){
+			if(session->dtmf_events){
+				/* Cancel all events */
+				tsk_list_item_t* item;
+				tsk_list_foreach(item, session->dtmf_events){
+					tsk_timer_mgr_global_cancel(((tdav_session_audio_dtmfe_t*)item->data)->timer_id);
+				}
+			}
 			tsk_timer_mgr_global_stop();
 		}
 		if(session->timer.created){
 			tsk_timer_mgr_global_unref();
 		}
+		/* CleanUp the DTMF events */
+		TSK_OBJECT_SAFE_FREE(session->dtmf_events);
 
 		/* deinit self (rtp manager should be destroyed after the producer) */
 		TSK_OBJECT_SAFE_FREE(session->consumer);
@@ -563,3 +728,44 @@ static const tmedia_session_plugin_def_t tdav_session_audio_plugin_def_s =
 	tdav_session_audio_set_ro
 };
 const tmedia_session_plugin_def_t *tdav_session_audio_plugin_def_t = &tdav_session_audio_plugin_def_s;
+
+
+
+//=================================================================================================
+//	DTMF event object definition
+//
+static tsk_object_t* tdav_session_audio_dtmfe_ctor(tsk_object_t * self, va_list * app)
+{
+	tdav_session_audio_dtmfe_t *event = self;
+	if(event){
+		event->timer_id = TSK_INVALID_TIMER_ID;
+	}
+	return self;
+}
+
+static tsk_object_t* tdav_session_audio_dtmfe_dtor(tsk_object_t * self)
+{ 
+	tdav_session_audio_dtmfe_t *event = self;
+	if(event){
+		TSK_OBJECT_SAFE_FREE(event->packet);
+	}
+
+	return self;
+}
+
+static int tdav_session_audio_dtmfe_cmp(const tsk_object_t *_e1, const tsk_object_t *_e2)
+{
+	const tdav_session_audio_dtmfe_t *e1 = _e1;
+	const tdav_session_audio_dtmfe_t *e2 = _e2;
+
+	return (e1 - e2);
+}
+
+static const tsk_object_def_t tdav_session_audio_dtmfe_def_s = 
+{
+	sizeof(tdav_session_audio_dtmfe_t),
+	tdav_session_audio_dtmfe_ctor, 
+	tdav_session_audio_dtmfe_dtor,
+	tdav_session_audio_dtmfe_cmp, 
+};
+const tsk_object_def_t *tdav_session_audio_dtmfe_def_t = &tdav_session_audio_dtmfe_def_s;

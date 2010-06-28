@@ -36,6 +36,7 @@ typedef enum cmd_type_e
 	cmd_audiovideo, /* ++audiovideo | ++av*/
 	cmd_config_session, /* ++config-session | ++css */
 	cmd_config_stack, /* ++config-stack | ++cst*/
+	cmd_dtmf, /*++dtmf*/
 	cmd_dump, /*++dump | ++d*/
 	cmd_ect, /*++ect*/
 	cmd_exit,	/*++exit | ++e | ++quit | ++q*/
@@ -70,6 +71,7 @@ typedef enum opt_type_e
 	opt_dname,			/* --dname bob */
 	opt_dns_naptr,		/* --dns-naptr */
 	opt_from,			/* --from sip:alice@open-ims.test */
+	opt_event,			/* --event 2 */
 	opt_expires,		/* --expires|--xp 30 */
 	opt_header,			/* --header Supported=norefersub */
 	opt_impi,			/* --impi bob@open-ims.test */

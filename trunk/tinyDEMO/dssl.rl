@@ -228,6 +228,7 @@ replace:
 	("audiovideo"i | "av"i) %{ cmd->type = cmd_audiovideo; } |
 	("config-session"i | "css"i) %{ cmd->type = cmd_config_session; } |
 	("config-stack"i | "cst"i) %{ cmd->type = cmd_config_stack; } |
+	("dtmf"i) %{ cmd->type = cmd_dtmf; } |
 	("dump"i | "d"i) %{ cmd->type = cmd_dump; } |
 	("ect"i) %{ cmd->type = cmd_ect; } |
 	("exit"i | "e"i | "quit"i | "q"i) %{ cmd->type = cmd_exit; } |
@@ -257,6 +258,7 @@ replace:
 	"dhcpv6"i % { opt->type = opt_dhcpv6; } |
 	"dname"i % { opt->type = opt_amf; } |
 	"dns-naptr"i % { opt->type = opt_dname; } |
+	"event"i % { opt->type = opt_event; } |
 	("expires"i | "xp"i) % { opt->type = opt_expires; } |
 	"from"i % { opt->type = opt_from; } |
 	"header"i % { opt->type = opt_header; } |

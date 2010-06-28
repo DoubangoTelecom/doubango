@@ -42,6 +42,7 @@ typedef enum _fsm_action_e
 {
 	_fsm_action_accept = tsip_atype_accept,
 	_fsm_action_reject = tsip_atype_hangup,
+	_fsm_action_dtmf_send = tsip_atype_dtmf_send,
 	_fsm_action_oINVITE = tsip_atype_invite,
 	_fsm_action_oCANCEL = tsip_atype_cancel,
 	_fsm_action_oHold = tsip_atype_hold,

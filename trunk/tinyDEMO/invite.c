@@ -150,18 +150,30 @@ tsip_ssession_id_t invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 				break;
 			}
 
+		case cmd_dtmf:
+			{
+				const opt_t* opt = opt_get_by_type(opts, opt_event); // existance already checked
+				tsip_action_handle_t* action_config = action_get_config(opts);
+				tsip_action_DTMF(session->handle, atoi(opt->value), 
+					TSIP_ACTION_SET_CONFIG(action_config),
+					/* Any other TSIP_ACTION_SET_*() macros */
+					TSIP_ACTION_SET_NULL());
+				TSK_OBJECT_SAFE_FREE(action_config);
+				break;
+			}
 
 		case cmd_ect:
-		{	/* Explict Call Transfer */
-			const opt_t* opt = opt_get_by_type(opts, opt_to); // existance already checked
-			tsip_action_handle_t* action_config = action_get_config(opts);
-			tsip_action_ECT(session->handle, opt? opt->value : "sip:anonymous@example.com", 
-				TSIP_ACTION_SET_CONFIG(action_config),
-				/* Any other TSIP_ACTION_SET_*() macros */
-				TSIP_ACTION_SET_NULL());
-			TSK_OBJECT_SAFE_FREE(action_config);
-			break;
-		}
+			{	/* Explict Call Transfer */
+				const opt_t* opt = opt_get_by_type(opts, opt_to); // existance already checked
+				tsip_action_handle_t* action_config = action_get_config(opts);
+				tsip_action_ECT(session->handle, opt? opt->value : "sip:anonymous@example.com", 
+					TSIP_ACTION_SET_CONFIG(action_config),
+					/* Any other TSIP_ACTION_SET_*() macros */
+					TSIP_ACTION_SET_NULL());
+				TSK_OBJECT_SAFE_FREE(action_config);
+				break;
+			}
+
 		case cmd_hold:
 			{	/* Put the session on hold state */
 				tsip_action_handle_t* action_config = action_get_config(opts);

@@ -326,6 +326,30 @@ bail:
 	return ret;
 }
 
+int trtp_manager_send_rtp_2(trtp_manager_t* self, const struct trtp_rtp_packet_s* packet)
+{
+	tsk_buffer_t* buffer;
+	int ret;
+
+	if(!self || !packet){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	/* serialize and send over the network */
+	if((buffer = trtp_rtp_packet_serialize(packet))){
+		if(/* number of bytes sent */tnet_sockfd_sendto(self->transport->master->fd, (const struct sockaddr *)&self->rtp.remote_addr, buffer->data, buffer->size)){
+			ret = 0;
+		}
+		TSK_OBJECT_SAFE_FREE(buffer);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to serialize RTP packet");
+		ret = -5;
+	}
+	return ret;
+}
+
 /** Stops the RTP/RTCP manager */
 int trtp_manager_stop(trtp_manager_t* self)
 {
