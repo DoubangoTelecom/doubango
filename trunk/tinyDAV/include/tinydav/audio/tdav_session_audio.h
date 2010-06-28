@@ -53,6 +53,8 @@ typedef struct tdav_session_audio_s
 		unsigned started:1;
 	} timer;
 
+	tmedia_codec_t* encoder;
+
 	char* local_ip;
 	//uint16_t local_port;
 
