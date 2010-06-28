@@ -78,14 +78,14 @@ int x0300_Any_2_Any_X_timerRSVP(va_list *app)
 /* cancel the timer */
 int tsip_dialog_invite_qos_timer_cancel(tsip_dialog_invite_t* self)
 {
-	return tsk_timer_manager_cancel(TSIP_DIALOG_GET_STACK(self)->timer_mgr, self->qos.timer.id);
+	return tsk_timer_mgr_global_cancel(self->qos.timer.id);
 }
 
 /* schedule the timer */
 int tsip_dialog_invite_qos_timer_schedule(tsip_dialog_invite_t* self)
 {
 	/*	To emulate bandwidth reservation (Because RSVP protocol is not supported) */
-	self->qos.timer.id = tsk_timer_manager_schedule(TSIP_DIALOG_GET_STACK(self)->timer_mgr, TSIP_DIALOG_INVITE_QOS_RES_TIMEOUT, TSK_TIMER_CALLBACK_F(tsip_dialog_invite_timer_callback), self);
+	self->qos.timer.id = tsk_timer_mgr_global_schedule(TSIP_DIALOG_INVITE_QOS_RES_TIMEOUT, TSK_TIMER_CALLBACK_F(tsip_dialog_invite_timer_callback), self);
 
 	return 0;
 }

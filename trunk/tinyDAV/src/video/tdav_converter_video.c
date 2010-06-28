@@ -33,6 +33,7 @@
 
 tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t height, tmedia_chroma_t chroma, tsk_bool_t toYUV420)
 {
+#if HAVE_FFMPEG
 	tdav_converter_video_t* converter;
 	enum PixelFormat pixfmt;
 
@@ -66,10 +67,14 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t
 	converter->height = height;
 
 	return converter;
+#else
+	return tsk_null;
+#endif
 }
 
 tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void* buffer, void** output)
 {
+#if HAVE_FFMPEG
 	int ret;
 	int size;
 	enum PixelFormat srcFormat, dstFormat;
@@ -135,6 +140,9 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 	}
 
 	return size;
+#else
+	return 0;
+#endif
 }
 
 
@@ -154,6 +162,7 @@ static tsk_object_t* tdav_converter_video_dtor(tsk_object_t * self)
 { 
 	tdav_converter_video_t *converter = self;
 	if(converter){
+#if HAVE_FFMPEG
 		if(converter->context){
 			sws_freeContext(converter->context);
 		}
@@ -163,6 +172,7 @@ static tsk_object_t* tdav_converter_video_dtor(tsk_object_t * self)
 		if(converter->dstFrame){
 			av_free(converter->dstFrame);
 		}
+#endif
 	}
 
 	return self;

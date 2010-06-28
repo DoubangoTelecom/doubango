@@ -481,6 +481,7 @@ typedef struct tsip_stack_s
 {
 	TSK_DECLARE_RUNNABLE;
 	
+	tsk_bool_t timer_mgr_started;
 	tsk_bool_t started;
 	tsip_stack_callback_f callback;
 
@@ -571,7 +572,7 @@ typedef struct tsip_stack_s
 	/* QoS */
 
 	/* Internals. */
-	tsk_timer_manager_handle_t* timer_mgr;
+	//tsk_timer_manager_handle_t* timer_mgr;
 	tsip_timers_t timers;
 	tsip_ssessions_L_t *ssessions;
 	tsk_params_L_t *headers;
