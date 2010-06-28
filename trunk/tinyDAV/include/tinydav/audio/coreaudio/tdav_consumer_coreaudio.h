@@ -39,7 +39,7 @@
 
 TDAV_BEGIN_DECLS
 
-#define kNumberBuffers 3
+#define CoreAudioPlayBuffers 3
 
 typedef struct tdav_consumer_coreaudio_s
 {
@@ -49,13 +49,13 @@ typedef struct tdav_consumer_coreaudio_s
     
     AudioStreamBasicDescription description;
     AudioQueueRef queue;
-    AudioQueueBufferRef buffers[kNumberBuffers];
+    AudioQueueBufferRef buffers[CoreAudioPlayBuffers];
     
     tsk_size_t buffer_size;
 }
 tdav_consumer_coreaudio_t;
 
-TINYDAV_GEXTERN const tmedia_consumer_plugin_def_t *tmedia_consumer_coreaudio_plugin_def_t;
+TINYDAV_GEXTERN const tmedia_consumer_plugin_def_t *tdav_consumer_coreaudio_plugin_def_t;
 
 TDAV_END_DECLS
 

@@ -29,11 +29,11 @@
  */
 #include "tinydav/audio/coreaudio/tdav_consumer_coreaudio.h"
 
+#if HAVE_COREAUDIO
+
 #include "tsk_thread.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
-
-#if HAVE_COREAUDIO
 
 static void __handle_output_buffer(void *userdata, AudioQueueRef queue, AudioQueueBufferRef buffer) {
     OSStatus ret;
@@ -45,12 +45,15 @@ static void __handle_output_buffer(void *userdata, AudioQueueRef queue, AudioQue
     }
     
 	if((data = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(consumer)))){
+        // If we can get audio to play, then copy in the buffer
 		memcpy(buffer->mAudioData, data, consumer->buffer_size);
 		TSK_FREE(data);
 	} else{
+        // Put silence if there is no audio to play
         memset(buffer->mAudioData, 0, consumer->buffer_size);
 	}
     
+    // Re-enqueue the buffer
     ret = AudioQueueEnqueueBuffer(consumer->queue, buffer, 0, NULL);
 }
 
@@ -94,7 +97,7 @@ int tdav_consumer_coreaudio_prepare(tmedia_consumer_t* self, const tmedia_codec_
                               0,
                               &(consumer->queue));
     
-    for(i = 0; i < kNumberBuffers; i++) {
+    for(i = 0; i < CoreAudioPlayBuffers; i++) {
         // Create the buffer for the queue
         ret = AudioQueueAllocateBuffer(consumer->queue, consumer->buffer_size, &(consumer->buffers[i]));
         if (ret) {
@@ -136,7 +139,7 @@ int tdav_consumer_coreaudio_start(tmedia_consumer_t* self)
 	return ret;
 }
 
-int tdav_consumer_coreaudio_consume(tmedia_consumer_t* self, void** buffer, tsk_size_t size)
+int tdav_consumer_coreaudio_consume(tmedia_consumer_t* self, void** buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
 {
 	tdav_consumer_coreaudio_t* consumer = (tdav_consumer_coreaudio_t*)self;
 
@@ -144,8 +147,8 @@ int tdav_consumer_coreaudio_consume(tmedia_consumer_t* self, void** buffer, tsk_
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	/* buffer is already decoded */
-	return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(consumer), buffer);
+	// buffer is already decoded
+	return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(consumer), buffer, proto_hdr);
 }
 
 int tdav_consumer_coreaudio_pause(tmedia_consumer_t* self)
@@ -223,7 +226,7 @@ static const tsk_object_def_t tdav_consumer_coreaudio_def_s =
 };
 
 /* plugin definition*/
-static const tmedia_consumer_plugin_def_t tmedia_consumer_coreaudio_plugin_def_s = 
+static const tmedia_consumer_plugin_def_t tdav_consumer_coreaudio_plugin_def_s = 
 {
 	&tdav_consumer_coreaudio_def_s,
 	
@@ -237,6 +240,6 @@ static const tmedia_consumer_plugin_def_t tmedia_consumer_coreaudio_plugin_def_s
 	tdav_consumer_coreaudio_stop
 };
 
-const tmedia_consumer_plugin_def_t *tmedia_consumer_coreaudio_plugin_def_t = &tmedia_consumer_coreaudio_plugin_def_s;
+const tmedia_consumer_plugin_def_t *tdav_consumer_coreaudio_plugin_def_t = &tdav_consumer_coreaudio_plugin_def_s;
 
 #endif /* HAVE_COREAUDIO */

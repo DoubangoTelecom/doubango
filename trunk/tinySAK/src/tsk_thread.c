@@ -57,10 +57,10 @@ void tsk_thread_sleep(uint64_t ms)
 
 /**@ingroup tsk_thread_group
 * Creates a new thread.
-* @param tid Pthread handle id to the created thread.
-* @param start The function to be run as the new threads start routine 
-* @param arg An address for the argument for the threads start routine 
-* @retval If successful, returns zero. Otherwise, an error number is returned to indicate the error. 
+* @param tid Handle id of the newly created thread. The returned handle should be destroyed using @ref tsk_thread_join()
+* @param start The function to be run as the new thread's start routine 
+* @param arg An address for the argument for the thread's start routine 
+* @retval If successful, returns zero. Otherwise, an error number is returned to indicate the error
 */
 int tsk_thread_create(void** tid, void *(*start) (void *), void *arg)
 {
