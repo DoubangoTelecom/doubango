@@ -40,7 +40,7 @@
 	"w=my dummy header\r\n" \
 	"m=audio 49170 RTP/AVP 8 0 97 98\r\n" \
 	"i=Audio line\r\n" \
-	"c=IN IP4 192.168.0.13\r\n" \
+	"c=IN IP4 192.168.0.15\r\n" \
 	"k=base64:ZWFzdXJlLgdddddddddddddddddddddd==\r\n" \
 	"a=rtpmap:8 PCMA/8000\r\n" \
 	"a=rtpmap:0 PCMU/8000\r\n" \
@@ -94,8 +94,12 @@ void test_sessions_client()
 	/* start() */
 	tmedia_session_mgr_start(mgr);
 
+	//getchar();
+
 	/* for fun, send DTMF */
-	tmedia_session_mgr_send_dtmf(mgr, 1);
+	//tmedia_session_mgr_send_dtmf(mgr, 1);
+	//tmedia_session_mgr_send_dtmf(mgr, 10);
+	//tmedia_session_mgr_send_dtmf(mgr, 11);
 
 	getchar();
 

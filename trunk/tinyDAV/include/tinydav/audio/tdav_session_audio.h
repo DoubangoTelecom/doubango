@@ -40,6 +40,8 @@ TDAV_BEGIN_DECLS
 struct trtp_manager_s;
 struct tdav_consumer_audio_s;
 
+typedef tsk_list_t tdav_session_audio_dtmfe_L_t;
+
 typedef struct tdav_session_audio_s
 {
 	TMEDIA_DECLARE_SESSION_AUDIO;
@@ -63,16 +65,10 @@ typedef struct tdav_session_audio_s
 
 	struct tmedia_consumer_s* consumer;
 	struct tmedia_producer_s* producer;
+
+	tdav_session_audio_dtmfe_L_t* dtmf_events;
 }
 tdav_session_audio_t;
-
-typedef struct tdav_session_audio_dtmfe_s
-{
-	TSK_DECLARE_OBJECT;
-
-	int id;
-}
-tdav_session_audio_dtmfe_t;
 
 TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_audio_plugin_def_t;
 

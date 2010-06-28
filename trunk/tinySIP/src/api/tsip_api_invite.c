@@ -191,6 +191,39 @@ int tsip_action_ECT(const tsip_ssession_handle_t *ss, const char* toUri, ...)
 	return ret;
 }
 
+int tsip_action_DTMF(const tsip_ssession_handle_t *ss, int event, ...)
+{
+	int ret = -1;
+	tsip_action_t* action;
+	const tsip_ssession_t* _ss;
+	va_list ap;
+
+	/* Checks for validity */
+	if(!(_ss = ss) || !_ss->stack || (event <0 || event>15)){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		return ret;
+	}
+	
+	/* Checks if the stack has been started */
+	if(!TSK_RUNNABLE(_ss->stack)->started){
+		TSK_DEBUG_ERROR("Stack not started.");
+		return -2;
+	}
+
+	va_start(ap, event);
+	/* execute action */
+	if((action = _tsip_action_create(tsip_atype_dtmf_send, &ap))){
+		/* Event */
+		action->dtmf.event = event;
+		/* Perform action */
+		ret = tsip_ssession_handle(_ss, action);
+		TSK_OBJECT_SAFE_FREE(action);
+	}
+	va_end(ap);
+
+	return ret;
+}
+
 int tsip_action_BYE(const tsip_ssession_handle_t *ss, ...)
 {
 	int ret = -1;

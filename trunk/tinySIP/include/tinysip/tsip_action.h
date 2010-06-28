@@ -49,6 +49,7 @@ typedef enum tsip_action_type_e
 {
 	//! Used as configuration action
 	tsip_atype_config,
+	tsip_atype_dtmf_send,
 
 	/* === REGISTER == */
 	tsip_atype_register, /**< Sends SIP REGISTER request */
@@ -121,6 +122,11 @@ typedef struct tsip_action_s
 	struct{
 		tmedia_type_t type;
 	} media;
+
+	struct{
+		int volume; // useless (manager will always use "10")
+		int event;
+	} dtmf;
 
 	struct{
 		char* to;

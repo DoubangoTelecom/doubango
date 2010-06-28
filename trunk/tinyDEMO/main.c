@@ -293,6 +293,21 @@ int execute(const cmd_t* cmd)
 				ret = stack_config(cmd->opts);
 				break;
 			}
+		case cmd_dtmf:
+			{
+				const opt_t* opt;
+				TSK_DEBUG_INFO("command=dtmf");
+				if(!(opt = opt_get_by_type(cmd->opts, opt_sid)) || tsk_strnullORempty(opt->value)){ /* --sid option */
+					TSK_DEBUG_ERROR("++dtmf command need --sid option");
+					break;
+				}
+				if(!(opt = opt_get_by_type(cmd->opts, opt_event)) || tsk_strnullORempty(opt->value)){ /* --event option */
+					TSK_DEBUG_ERROR("++dtmf command need --event option");
+					break;
+				}
+				invite_handle_cmd(cmd->type, cmd->opts);
+				break;
+			}
 		case cmd_dump:
 			{
 				TSK_DEBUG_INFO("command=dump");
