@@ -320,6 +320,10 @@
 						RelativePath="..\..\tinyDAV\include\tinydav\audio\coreaudio\tdav_consumer_coreaudio.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\audio\coreaudio\tdav_producer_coreaudio.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -502,6 +506,10 @@
 					>
 					<File
 						RelativePath="..\..\tinyDAV\src\audio\coreaudio\tdav_consumer_coreaudio.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\tinyDAV\src\audio\coreaudio\tdav_producer_coreaudio.c"
 						>
 					</File>
 				</Filter>
