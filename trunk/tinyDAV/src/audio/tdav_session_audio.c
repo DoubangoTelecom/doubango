@@ -132,7 +132,7 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 		// Encode data
 		out_size = audio->encoder->plugin->encode(audio->encoder, buffer, size, &out_data);
 		if(out_size){
-			trtp_manager_send_rtp(audio->rtp_manager, out_data, out_size, 160/*FIXME*/, tsk_false);
+			trtp_manager_send_rtp(audio->rtp_manager, out_data, out_size, (20*audio->encoder->plugin->rate)/1000/*FIXME*/, tsk_false);
 		}
 		TSK_FREE(out_data);
 	}

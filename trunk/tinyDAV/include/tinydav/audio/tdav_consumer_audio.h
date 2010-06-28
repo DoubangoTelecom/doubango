@@ -54,7 +54,7 @@ typedef struct tdav_consumer_audio_s
 	struct{
 		jitterbuffer *jbuffer;
 		uint8_t jcodec;
-		long ref_timestamp;
+		uint64_t ref_timestamp;
 	} jb;
 
 	TSK_DECLARE_SAFEOBJ;
