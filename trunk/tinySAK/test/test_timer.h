@@ -49,7 +49,32 @@ static int test_timer_callback(const void* arg, tsk_timer_id_t timer_id)
 	return 0;
 }
 
-void test_timer()
+void test_global_timer()
+{
+	size_t i;
+	tsk_timer_mgr_global_ref();
+
+	// for test: start it two times
+	tsk_timer_mgr_global_start();
+	tsk_timer_mgr_global_start();
+
+	for(i=0; i<sizeof(timers)/sizeof(test_timer_t); ++i){
+		timers[i].id = tsk_timer_mgr_global_schedule(timers[i].timeout, test_timer_callback, timers[i].arg);
+	}
+
+	tsk_timer_mgr_global_cancel(timers[6].id);
+	tsk_timer_mgr_global_cancel(timers[2].id);
+
+	tsk_thread_sleep(4000);
+
+	// for test: stop it only one time
+	tsk_timer_mgr_global_stop();
+	tsk_timer_mgr_global_stop();
+
+	tsk_timer_mgr_global_unref();
+}
+
+void test_single_timer()
 {
 	size_t i;
 	tsk_timer_manager_handle_t *handle = tsk_timer_manager_create();
@@ -68,6 +93,12 @@ void test_timer()
 
 	/* Stops and frees the timer manager */
 	TSK_OBJECT_SAFE_FREE(handle);
+}
+
+void test_timer()
+{
+	//test_single_timer();
+	test_global_timer();
 }
 
 #endif /* _TEST_TIMER_H_ */

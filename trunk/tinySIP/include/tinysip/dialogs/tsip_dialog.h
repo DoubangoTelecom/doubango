@@ -55,11 +55,11 @@ TSIP_BEGIN_DECLS
 #define TSIP_DIALOG_GET_STACK(self)											TSIP_STACK(TSIP_DIALOG_GET_SS((self))->stack)
 
 #define TSIP_DIALOG_TIMER_CANCEL(TX) \
-	tsk_timer_manager_cancel(TSIP_DIALOG_GET_STACK(self)->timer_mgr, self->timer##TX.id)
+	tsk_timer_mgr_global_cancel(self->timer##TX.id)
 
 // TX MUST be in seconds
 #define TSIP_DIALOG_TIMER_SCHEDULE(name, TX)								\
-	self->timer##TX.id = tsk_timer_manager_schedule(TSIP_DIALOG_GET_STACK(self)->timer_mgr, self->timer##TX.timeout, TSK_TIMER_CALLBACK_F(tsip_dialog_##name##_timer_callback), self)	
+	self->timer##TX.id = tsk_timer_mgr_global_schedule(self->timer##TX.timeout, TSK_TIMER_CALLBACK_F(tsip_dialog_##name##_timer_callback), self)	
 
 #define TSIP_DIALOG_SIGNAL(self, code, phrase)	\
 	tsip_event_signal(tsip_event_dialog, TSIP_DIALOG(self)->ss, code, phrase)

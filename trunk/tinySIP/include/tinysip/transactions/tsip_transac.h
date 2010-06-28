@@ -57,10 +57,10 @@ TSIP_BEGIN_DECLS
 #define TSIP_TRANSAC_SYNC_END(self)				tsk_safeobj_unlock(TSIP_TRANSAC(self))
 
 #define TRANSAC_TIMER_SCHEDULE(name, TX) \
-	self->timer##TX.id = tsk_timer_manager_schedule(TSIP_TRANSAC_GET_TIMER_MGR(self), self->timer##TX.timeout, TSK_TIMER_CALLBACK_F(tsip_transac_##name##_timer_callback), self)
+	self->timer##TX.id = tsk_timer_mgr_global_schedule(self->timer##TX.timeout, TSK_TIMER_CALLBACK_F(tsip_transac_##name##_timer_callback), self)
 
 #define TRANSAC_TIMER_CANCEL(TX) \
-	tsk_timer_manager_cancel(TSIP_TRANSAC_GET_TIMER_MGR(self), self->timer##TX.id)
+	tsk_timer_mgr_global_cancel(self->timer##TX.id)
 
 typedef enum tsip_transac_event_type_e
 {

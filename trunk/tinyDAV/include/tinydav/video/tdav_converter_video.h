@@ -31,12 +31,13 @@
 
 #include "tinydav_config.h"
 
-#if HAVE_FFMPEG
 
 #include "tinymedia/tmedia_common.h"
 
+#if HAVE_FFMPEG
 #include <libswscale/swscale.h>
 #include <libavcodec/avcodec.h>
+#endif
 
 #include "tsk_object.h"
 
@@ -46,12 +47,14 @@ typedef struct tdav_converter_video_s
 {
 	TSK_DECLARE_OBJECT;
 	
+#if HAVE_FFMPEG
 	struct SwsContext *context;
 
 	enum PixelFormat pixfmt;
 
 	AVFrame* srcFrame;
 	AVFrame* dstFrame;
+#endif
 
 	tsk_size_t width;
 	tsk_size_t height;
@@ -77,7 +80,5 @@ TINYDAV_GEXTERN const tsk_object_def_t *tdav_converter_video_def_t;
 
 TDAV_END_DECLS
 
-
-#endif /* #if HAVE_FFMPEG */
 
 #endif /* TINYDAV_CONVERTER_VIDEO_H */

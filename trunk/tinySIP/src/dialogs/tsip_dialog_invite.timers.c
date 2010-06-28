@@ -185,7 +185,7 @@ tsk_bool_t  tsip_dialog_invite_stimers_isRefresher(tsip_dialog_invite_t* self)
 /* cancel the timer */
 int tsip_dialog_invite_stimers_cancel(tsip_dialog_invite_t* self)
 {
-	return tsk_timer_manager_cancel(TSIP_DIALOG_GET_STACK(self)->timer_mgr, self->stimers.timer.id);
+	return tsk_timer_mgr_global_cancel(self->stimers.timer.id);
 }
 
 /* schedule the timer */
@@ -194,7 +194,7 @@ int tsip_dialog_invite_stimers_schedule(tsip_dialog_invite_t* self, uint64_t tim
 	/*	Used in SIP requests ==> do not change the value
 		self->stimers.timer.timeout = timeout; 
 	*/
-	self->stimers.timer.id = tsk_timer_manager_schedule(TSIP_DIALOG_GET_STACK(self)->timer_mgr, timeout, TSK_TIMER_CALLBACK_F(tsip_dialog_invite_timer_callback), self);
+	self->stimers.timer.id = tsk_timer_mgr_global_schedule(timeout, TSK_TIMER_CALLBACK_F(tsip_dialog_invite_timer_callback), self);
 
 	return 0;
 }
