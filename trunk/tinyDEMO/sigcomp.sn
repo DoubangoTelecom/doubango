@@ -9,8 +9,8 @@
 %%pwd bob
 %%proxy_ip 192.168.16.227 # IP address or FQDN
 %%proxy_port 4060
-%%proxy_trans udp # udp, tcp, tls or sctp
-%%expires 100 # expires used by all dialogs
+%%proxy_trans tcp # udp, tcp, tls or sctp
+%%expires 30 # expires used by all dialogs
 %%sleep-sec 1.0 # number of seconds to wait before sending next sip message
 
 %%reg-sid
@@ -45,7 +45,7 @@
 
 # SUBSCRIBE to reg event package (silent hangup)
 #++sub --to sip:$$(user)@$$(domain) --xp $$(expires) --silent --header Event=reg --header Accept=application/reginfo+xml \
-#	--sigcomp-id urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a474 \
+#	--sigcomp-id urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a473 \
 #	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-reg-sid)
 
 # Press ENTER

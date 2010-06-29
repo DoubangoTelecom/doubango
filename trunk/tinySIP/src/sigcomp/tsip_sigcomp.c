@@ -217,6 +217,25 @@ int tsip_sigcomp_handler_remove_compartment(tsip_sigcomp_handle_t* self, const c
 	return 0;
 }
 
+// FIXME
+const char* tsip_sigcomp_handler_fixme_getcompid(const tsip_sigcomp_handle_t* self)
+{
+	const tsip_sigcomp_t* sigcomp = self;
+	const char* comp_id = tsk_null;
+
+	if(!sigcomp){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	tsk_safeobj_lock(sigcomp);
+	if(!TSK_LIST_IS_EMPTY(sigcomp->compartments)){
+		comp_id = ((tsip_sigcomp_compartment_t*)TSK_LIST_FIRST_DATA(sigcomp->compartments))->id;
+	}
+	tsk_safeobj_unlock(sigcomp);
+	return comp_id;
+}
+
 /** Close all SigComp compartments
 * @param self The SigComp handler
 */
@@ -359,7 +378,7 @@ tsk_size_t tsip_sigcomp_handler_uncompress(tsip_sigcomp_handle_t* self, const ch
 * @param comp_id The compartment id to use after successful decompression
 * @param nack_data Pointer to the NACL message. We be filled only if @a is_nack is equal to @a tsk_true
 * @param is_nack Used to signal whether the uncompressed (result) message is a NACK or a Sip Message.
-* @retval Size of the uncompressed data plus size of all previously uncompressed chuncks except NACKs, if the uncompressed message isn't a NACK.
+* @retval Size of the uncompressed data plus size of all previously uncompressed chuncks except NACKs.
 * If the uncompressed message is a NACK, then the returned size will be equal to the length of the NACK
 * to send to the remote party.
 */
@@ -406,10 +425,6 @@ tsk_size_t tsip_sigcomp_handler_uncompress_next(tsip_sigcomp_handle_t* self, con
 			else{
 				TSK_DEBUG_INFO("We got a NACK from the remote party");
 			}
-		}
-		else{
-			/* Should never happen */
-			TSK_DEBUG_ERROR("SigComp decompression failed");
 		}
 	}
 

@@ -22,7 +22,7 @@
 #ifndef _TEST_SMSRPDU_H
 #define _TEST_SMSRPDU_H
 
-void test_i_rpdata(const void* data, size_t size, tsk_bool_t MobOrig)
+void test_i_rpdata(const void* data, tsk_size_t size, tsk_bool_t MobOrig)
 {
 	tsms_rpdu_message_t* rp_message = tsk_null;
 	tsms_tpdu_message_t* tpdu = tsk_null;

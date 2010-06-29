@@ -22,7 +22,6 @@
 #ifndef _TEST_SMSPACKING_H
 #define _TEST_SMSPACKING_H
 
-
 typedef struct test_message_7bit_s{
 	const char* ascii;
 	const char* _7bit;
@@ -46,7 +45,7 @@ test_message_7bit_t test_messages_7bit[] =
 
 void test_7bit()
 {
-	size_t i;
+	tsk_size_t i;
 	tsk_buffer_t* buffer;
 	char* temp;
 
@@ -68,7 +67,7 @@ void test_7bit()
 
 	/* From 7bit */
 	for(i=0; i<sizeof(test_messages_7bit)/sizeof(test_message_7bit_t); i++){
-		if((temp = tsms_pack_from_7bit(test_messages_7bit[i]._7bit, strlen(test_messages_7bit[i]._7bit)))){
+		if((temp = tsms_pack_from_7bit(test_messages_7bit[i]._7bit, (tsk_size_t)tsk_strlen(test_messages_7bit[i]._7bit)))){
 			if(!tsk_striequals(temp, test_messages_7bit[i].ascii)){
 				TSK_DEBUG_ERROR("tsms_pack_from_7bit(\"%s\") Failed.\n", test_messages_7bit[i].ascii);
 			}
@@ -79,7 +78,7 @@ void test_7bit()
 
 void test_8bit()
 {
-	size_t i;
+	tsk_size_t i;
 	tsk_buffer_t* buffer;
 	char* temp;
 	
@@ -95,7 +94,7 @@ void test_8bit()
 
 	/* From 8bit */
 	for(i=0; i<sizeof(test_messages_7bit)/sizeof(test_message_7bit_t); i++){
-		if((temp = tsms_pack_from_8bit(test_messages_7bit[i].ascii, strlen(test_messages_7bit[i].ascii)))){
+		if((temp = tsms_pack_from_8bit(test_messages_7bit[i].ascii, (tsk_size_t)tsk_strlen(test_messages_7bit[i].ascii)))){
 			if(!tsk_strequals(temp, test_messages_7bit[i].ascii)){
 				TSK_DEBUG_INFO("tsms_pack_from_8bit(%s) Failed", test_messages_7bit[i].ascii);
 			}
@@ -106,7 +105,7 @@ void test_8bit()
 
 void test_ucs2()
 {
-	size_t i;
+	tsk_size_t i;
 	tsk_buffer_t* buffer;
 	char* temp;
 	
@@ -122,7 +121,7 @@ void test_ucs2()
 
 	/* From ucs2 */
 	for(i=0; i<sizeof(test_messages_7bit)/sizeof(test_message_7bit_t); i++){
-		if((temp = tsms_pack_from_ucs2(test_messages_7bit[i].ascii, strlen(test_messages_7bit[i].ascii)))){
+		if((temp = tsms_pack_from_ucs2(test_messages_7bit[i].ascii, (tsk_size_t)tsk_strlen(test_messages_7bit[i].ascii)))){
 			if(!tsk_strequals(temp, test_messages_7bit[i].ascii)){
 				TSK_DEBUG_INFO("tsms_pack_from_ucs2(%s) Failed", test_messages_7bit[i].ascii);
 			}

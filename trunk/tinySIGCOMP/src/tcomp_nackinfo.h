@@ -75,6 +75,8 @@ typedef struct tcomp_nackinfo_s
 }
 tcomp_nackinfo_t;
 
+tcomp_nackinfo_t* tcomp_nackinfo_create();
+
 TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_nackinfo_def_t;
 
 TCOMP_END_DECLS
