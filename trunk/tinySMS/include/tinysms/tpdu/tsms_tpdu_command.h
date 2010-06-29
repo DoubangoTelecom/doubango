@@ -129,4 +129,6 @@ TINYSMS_API tsms_tpdu_command_t* tsms_tpdu_command_create(uint8_t mr, const tsms
 
 TINYSMS_GEXTERN const tsk_object_def_t *tsms_tpdu_command_def_t;
 
+TSMS_END_DECLS
+
 #endif /* TINYSMS_TSMS_TPDU_COMMAND_H */

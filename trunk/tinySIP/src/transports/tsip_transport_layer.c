@@ -112,9 +112,50 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 		tsk_buffer_cleanup(transport->buff_stream);
 	}
 
-	/* Append new content. */
-	tsk_buffer_append(transport->buff_stream, e->data, e->size);
-	
+	/* === SigComp === */
+	if(TSIP_IS_SIGCOMP_DATA(e->data)){
+		char SigCompBuffer[TSIP_SIGCOMP_MAX_BUFF_SIZE];
+		//====== FIXME: This implmentation will always use the first SigComp-Id for decompression =====
+		tsk_bool_t is_nack;
+		const char* comp_id;
+		void* nack_data = tsk_null;
+		tsk_size_t data_size, next_size;
+
+		// First Pass
+		comp_id = tsip_sigcomp_handler_fixme_getcompid(transport->stack->sigcomp.handle);
+		data_size = tsip_sigcomp_handler_uncompressTCP(transport->stack->sigcomp.handle, comp_id, e->data, e->size, SigCompBuffer, sizeof(SigCompBuffer), &is_nack);
+		
+		if(data_size){
+			if(is_nack){
+				tnet_transport_send(transport->net_transport, transport->connectedFD, SigCompBuffer, data_size);
+			}
+			else{
+				// append result
+				tsk_buffer_append(transport->buff_stream, SigCompBuffer, data_size);
+			}
+		}
+		else{ /* Partial message? */
+			TSK_DEBUG_ERROR("SigComp decompression has failed");
+			return 0;
+		}
+		// Query for all other chuncks
+		while((next_size = tsip_sigcomp_handler_uncompress_next(transport->stack->sigcomp.handle, comp_id, &nack_data, &is_nack)) || nack_data){
+			if(is_nack){
+				tnet_transport_send(transport->net_transport, transport->connectedFD, nack_data, next_size);
+				TSK_FREE(nack_data);
+			}
+			else{
+				// append result
+				tsk_buffer_append(transport->buff_stream, SigCompBuffer, (next_size - data_size));
+				data_size = next_size;
+			}
+		}
+	}
+	else{
+		/* Append new content. */
+		tsk_buffer_append(transport->buff_stream, e->data, e->size);
+	}
+
 	/* Check if we have all SIP headers. */
 parse_buffer:
 	if((endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(transport->buff_stream),TSK_BUFFER_SIZE(transport->buff_stream), "\r\n\r\n"/*2CRLF*/)) < 0){
@@ -193,8 +234,12 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 
 	/* === SigComp === */
 	if(TSIP_IS_SIGCOMP_DATA(e->data)){
+		//====== FIXME: This implmentation will always use the first SigComp-Id for decompression =====
 		tsk_bool_t is_nack;
-		data_size = tsip_sigcomp_handler_uncompressUDP(transport->stack->sigcomp.handle, "urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a473", e->data, e->size, SigCompBuffer, sizeof(SigCompBuffer), &is_nack);
+		const char* comp_id;
+
+		comp_id = tsip_sigcomp_handler_fixme_getcompid(transport->stack->sigcomp.handle);
+		data_size = tsip_sigcomp_handler_uncompressUDP(transport->stack->sigcomp.handle, comp_id, e->data, e->size, SigCompBuffer, sizeof(SigCompBuffer), &is_nack);
 		data_ptr = SigCompBuffer;
 		if(data_size){
 			if(is_nack){

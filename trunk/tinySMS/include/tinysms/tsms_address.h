@@ -122,4 +122,6 @@ tsms_address_t* tsms_address_smsc_create(const tsms_address_string_t digits);
 
 TINYSMS_GEXTERN const tsk_object_def_t *tsms_address_def_t;
 
+TSMS_END_DECLS
+
 #endif /* TSMS_BEGIN_DECLS */

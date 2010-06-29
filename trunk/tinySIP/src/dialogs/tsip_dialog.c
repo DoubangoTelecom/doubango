@@ -664,10 +664,8 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 			}
 			else{
 				if(!isRegister){
-
+					tsk_strupdate(&self->tag_remote, tag);
 				}
-
-				tsk_strupdate(&self->tag_remote, tag);
 				self->cseq_value = response->CSeq ? response->CSeq->seq : self->cseq_value;
 			}
 

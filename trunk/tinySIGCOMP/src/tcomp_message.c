@@ -219,6 +219,10 @@ void initNack(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 		return;
 	}
 
+	if(!message->nack_info){
+		message->nack_info = tcomp_nackinfo_create();
+	}
+
 	message->nack_info->reasonCode = *dummy_ptr++;
 	message->nack_info->opcode = *dummy_ptr++;
 	message->nack_info->pc = TSK_BINARY_GET_2BYTES(dummy_ptr); dummy_ptr+=2;
@@ -337,6 +341,7 @@ static tsk_object_t* tcomp_message_dtor(tsk_object_t *self)
 		TSK_OBJECT_SAFE_FREE(message->remaining_sigcomp_buffer);
 		TSK_OBJECT_SAFE_FREE(message->uploaded_UDVM_buffer);
 		TSK_OBJECT_SAFE_FREE(message->ret_feedback_buffer);
+		TSK_OBJECT_SAFE_FREE(message->nack_info);
 	}
 	else{
 		TSK_DEBUG_WARN("NULL SigComp message.");
