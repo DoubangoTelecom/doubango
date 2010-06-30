@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib ..\thirdparties\win32\lib\libgcc.a ..\thirdparties\win32\lib\libmingwex.a &quot;..\thirdparties\win32\lib\ffmpeg\libavcodec.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavutil.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libswscale.a&quot;"
+				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib ..\thirdparties\win32\lib\libgcc.a ..\thirdparties\win32\lib\libmingwex.a &quot;..\thirdparties\win32\lib\ffmpeg\libavcodec.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavutil.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libswscale.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libx264.a&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -223,6 +223,10 @@
 				<Filter
 					Name="h261"
 					>
+					<File
+						RelativePath=".\include\tinydav\codecs\h261\tdav_codec_h261.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="h263"
@@ -235,6 +239,10 @@
 				<Filter
 					Name="h264"
 					>
+					<File
+						RelativePath=".\include\tinydav\codecs\h264\tdav_codec_h264.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="ilbc"
@@ -415,6 +423,10 @@
 				<Filter
 					Name="h261"
 					>
+					<File
+						RelativePath=".\src\codecs\h261\tdav_codec_h261.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="h263"
@@ -427,6 +439,10 @@
 				<Filter
 					Name="h264"
 					>
+					<File
+						RelativePath=".\src\codecs\h264\tdav_codec_h264.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="ilbc"
