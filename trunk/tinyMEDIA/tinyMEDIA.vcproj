@@ -207,6 +207,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\tinymedia\tmedia_denoise.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\tinymedia\tmedia_params.h"
 				>
 			</File>
@@ -228,6 +232,10 @@
 			</File>
 			<File
 				RelativePath=".\include\tinymedia\tmedia_session_ghost.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinymedia\tmedia_vad.h"
 				>
 			</File>
 		</Filter>
@@ -257,6 +265,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tmedia_denoise.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tmedia_params.c"
 				>
 			</File>
@@ -278,6 +290,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tmedia_session_ghost.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tmedia_vad.c"
 				>
 			</File>
 		</Filter>

@@ -145,7 +145,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_g711u_plugin_def_s =
 	8000, // rate
 	
 	{ /* audio */
-		1 // channels
+		1, // channels
+		20 // ptime
 	},
 
 	/* video */
@@ -182,7 +183,7 @@ tsk_size_t tdav_codec_g711a_encode(tmedia_codec_t* self, const void* in_data, ts
 	}
 
 	/* allocate new buffer */
-	if(!(*out_data = tsk_calloc(in_size/2, sizeof(uint8_t)))){
+	if(!(*out_data = tsk_calloc(in_size/2, 1))){
 		TSK_DEBUG_ERROR("Failed to allocate new buffer");
 		return 0;
 	}
@@ -289,7 +290,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_g711a_plugin_def_s =
 	8000, // rate
 	
 	{ /* audio */
-		1 // channels
+		1, // channels
+		20, // ptime
 	},
 
 	/* video */

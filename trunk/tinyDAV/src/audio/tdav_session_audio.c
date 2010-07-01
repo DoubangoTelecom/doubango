@@ -29,6 +29,7 @@
  */
 #include "tinydav/audio/tdav_session_audio.h"
 
+#include "tinymedia/tmedia_denoise.h"
 #include "tinymedia/tmedia_consumer.h"
 #include "tinymedia/tmedia_producer.h"
 
@@ -87,6 +88,10 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 		// Decode data
 		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &out_data, packet->header);
 		if(out_size){
+			// Denoise (VAD, AGC, Noise suppression, ...)
+			if(audio->denoise && TMEDIA_DENOISE(audio->denoise)->opened){
+				tmedia_denoise_echo_playback(TMEDIA_DENOISE(audio->denoise), out_data);
+			}
 			tmedia_consumer_consume(audio->consumer, &out_data, out_size, packet->header);
 		}
 		TSK_FREE(out_data);
@@ -98,6 +103,8 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 // Producer callback (From the producer to the network)
 static int tdav_session_audio_producer_cb(const void* callback_data, const void* buffer, tsk_size_t size)
 {
+	int ret;
+
 	tdav_session_audio_t* audio = (tdav_session_audio_t*)callback_data;
 
 	if(audio->rtp_manager){
@@ -105,6 +112,8 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 		void* out_data = tsk_null;
 		tsk_size_t out_size = 0;
 		
+		ret = 0;
+
 		//
 		// Find Encoder (call one time)
 		//
@@ -115,6 +124,10 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 					!tsk_striequals(TMEDIA_CODEC(item->data)->format, TMEDIA_CODEC_FORMAT_DTMF)){
 						audio->encoder = tsk_object_ref(item->data);
 						trtp_manager_set_payload_type(audio->rtp_manager, audio->encoder->neg_format ? atoi(audio->encoder->neg_format) : atoi(audio->encoder->format));
+						/* Denoise */
+						if(audio->denoise && !audio->denoise->opened){
+							ret = tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_FRAME_SIZE(audio->encoder), TMEDIA_CODEC_RATE(audio->encoder), tsk_true, 8000.0f, tsk_true, tsk_true);
+						}
 						break;
 				}
 			}
@@ -129,15 +142,31 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 			TSK_DEBUG_ERROR("Failed to open [%s] codec", audio->encoder->plugin->desc);
 			return -4;
 		}
+		// Denoise (VAD, AGC, Noise suppression, ...)
+		if(audio->denoise){
+			tsk_bool_t silence_or_noise = tsk_false;
+			ret = tmedia_denoise_process(TMEDIA_DENOISE(audio->denoise), (void*)buffer, &silence_or_noise);
+			if(silence_or_noise && (ret == 0)){
+				TSK_DEBUG_INFO("Silence or Noise buffer");
+				return 0;
+			}
+		}
+
 		// Encode data
-		out_size = audio->encoder->plugin->encode(audio->encoder, buffer, size, &out_data);
-		if(out_size){
-			trtp_manager_send_rtp(audio->rtp_manager, out_data, out_size, (20*audio->encoder->plugin->rate)/1000/*FIXME*/, tsk_false);
+		if((audio->encoder = tsk_object_ref(audio->encoder))){ /* Thread safeness (SIP reINVITE or UPDATE could update the encoder) */
+			out_size = audio->encoder->plugin->encode(audio->encoder, buffer, size, &out_data);
+			if(out_size){
+				ret = trtp_manager_send_rtp(audio->rtp_manager, out_data, out_size, (20*audio->encoder->plugin->rate)/1000/*FIXME*/, tsk_false);
+			}
+			tsk_object_unref(audio->encoder);
+		}
+		else{
+			TSK_DEBUG_WARN("No encoder");
 		}
 		TSK_FREE(out_data);
 	}
 
-	return 0;
+	return ret;
 }
 
 
@@ -229,6 +258,10 @@ int tdav_session_audio_start(tmedia_session_t* self)
 		if(audio->producer){
 			tmedia_producer_prepare(audio->producer, codec);
 			tmedia_producer_start(audio->producer);
+		}
+		/* Denoise (AEC, Noise Suppression, AGC) */
+		if(audio->denoise && audio->encoder){
+			tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_FRAME_SIZE(audio->encoder), TMEDIA_CODEC_RATE(audio->encoder), tsk_true, 8000.0f, tsk_true, tsk_true);
 		}
 
 		/* for test */
@@ -652,14 +685,17 @@ static tsk_object_t* tdav_session_audio_ctor(tsk_object_t * self, va_list * app)
 	if(session){
 		/* init base: called by tmedia_session_create() */
 		/* init self */
-		if(!(session->consumer = tmedia_consumer_create(tdav_session_audio_plugin_def_t->type))){
+		if(!(session->consumer = tmedia_consumer_create(tmedia_audio))){
 			TSK_DEBUG_ERROR("Failed to create Audio consumer");
 		}
-		if((session->producer = tmedia_producer_create(tdav_session_audio_plugin_def_t->type))){
+		if((session->producer = tmedia_producer_create(tmedia_audio))){
 			tmedia_producer_set_callback(session->producer, tdav_session_audio_producer_cb, self);
 		}
 		else{
 			TSK_DEBUG_ERROR("Failed to create Audio producer");
+		}
+		if(!(session->denoise = tmedia_denoise_create())){
+			TSK_DEBUG_WARN("No Audio denoiser found");
 		}
 	}
 	return self;
@@ -696,6 +732,7 @@ static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 		TSK_FREE(session->remote_ip);
 		TSK_FREE(session->local_ip);
 		TSK_OBJECT_SAFE_FREE(session->encoder);
+		TSK_OBJECT_SAFE_FREE(session->denoise);
 
 		/* deinit base */
 		tmedia_session_deinit(self);

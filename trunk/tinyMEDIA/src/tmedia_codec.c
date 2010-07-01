@@ -537,11 +537,11 @@ int tmedia_codec_parse_fmtp(const char* fmtp, unsigned* maxbr, unsigned* fps, un
 		// to be continued
 
 		if(found){
-			found = tsk_false;
+			//found = tsk_false;
 			pch = strtok(tsk_null, "; ");
 			while(pch){
 				if(sscanf(pch, "MaxBR=%u", maxbr) == 1){
-					found = tsk_true;
+					//found = tsk_true;
 					break;
 				}
 				pch = strtok(tsk_null, "; /");

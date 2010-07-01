@@ -1,10 +1,16 @@
 APP := lib$(PROJECT).$(EXT)
 
-FFMPEG_CFLAGS := -I../thirdparties/android/include -DHAVE_FFMPEG=1
-FFMPEG_LDFLAGS := -L../thirdparties/android/lib -lavutil -lswscale -lavcodec -lx264 -lgcc
+THIRDPARTIES_INC := ../thirdparties/android/include
+THIRDPARTIES_LIB := ../thirdparties/android/lib
 
-CFLAGS := $(CFLAGS_LIB) $(FFMPEG_CFLAGS) -I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I../tinyRTP/include -I../tinyMEDIA/include -I./include
-LDFLAGS := $(LDFLAGS_LIB) -lm $(FFMPEG_LDFLAGS) -ltinySAK -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA
+FFMPEG_CFLAGS :=  -DHAVE_FFMPEG=1
+FFMPEG_LDFLAGS := -lavutil -lswscale -lavcodec -lx264
+
+SPEEX_CFLAGS := -DHAVE_SPEEX_DSP
+SPEEX_LDFLAGS := -lspeexdsp
+
+CFLAGS := $(CFLAGS_LIB) -I$(THIRDPARTIES_INC) $(FFMPEG_CFLAGS) $(SPEEX_CFLAGS) -I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I../tinyRTP/include -I../tinyMEDIA/include -I./include
+LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) $(FFMPEG_LDFLAGS) $(SPEEX_LDFLAGS) -ltinySAK -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA -lm -lgcc
 
 all: $(APP)
 
@@ -15,7 +21,8 @@ OBJS = \
 OBJS += src/audio/tdav_consumer_audio.o \
 	src/audio/tdav_jitterbuffer.o \
 	src/audio/tdav_producer_audio.o \
-    src/audio/tdav_session_audio.o
+    src/audio/tdav_session_audio.o \
+    src/audio/tdav_speex_denoise.o
     
      ### video
 OBJS += src/video/tdav_converter_video.o \
@@ -26,7 +33,7 @@ OBJS += src/video/tdav_converter_video.o \
 OBJS += src/msrp/tdav_consumer_msrp.o \
 	src/msrp/tdav_producer_msrp.o \
 	src/msrp/tdav_session_msrp.o
-   
+
 	
 	### codecs (G.711)
 OBJS += src/codecs/g711/g711.o \
@@ -44,7 +51,7 @@ OBJS += src/codecs/h263/tdav_codec_h263.o
 	### codecs (H.264)
 OBJS += src/codecs/h264/tdav_codec_h264.o
 	
-		### codecs (MSRP)
+	### codecs (MSRP)
 OBJS += src/codecs/msrp/tdav_codec_msrp.o
 	
 

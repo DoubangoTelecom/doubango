@@ -2,7 +2,7 @@
 ##	Root configuration file shared by all android projects.
 ######
 
-export ANDROID_NDK_ROOT=/cygdrive/c/android-ndk-r3
+export ANDROID_NDK_ROOT=/cygdrive/c/android-ndk-r4
 export ANDROID_SDK_ROOT=/cygdrive/c/android-sdk
 export ANDROID_PLATFORM=android-3
 export ANDROID_HOST=windows

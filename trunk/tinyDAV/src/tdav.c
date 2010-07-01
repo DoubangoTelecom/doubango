@@ -39,8 +39,6 @@
 #include "tinydav/codecs/g711/tdav_codec_g711.h"
 #include "tinydav/codecs/h263/tdav_codec_h263.h"
 
-
-
 // Consumers
 #include "tinydav/audio/waveapi/tdav_consumer_waveapi.h"
 #include "tinydav/audio/directsound/tdav_consumer_dsound.h"
@@ -55,6 +53,11 @@
 #include "tinydav/audio/coreaudio/tdav_producer_coreaudio.h"
 #if HAVE_TINYDSHOW // DirectShow
 #	include "tinydshow/plugin/DSProducer.h"
+#endif
+
+// Audio Denoise (AGC, Noise Suppression, VAD and AEC)
+#if HAVE_SPEEX_DSP
+#include "tinydav/audio/tdav_speex_denoise.h"
 #endif
 
 #if HAVE_FFMPEG
@@ -117,6 +120,11 @@ int tdav_init()
 	tmedia_producer_plugin_register(tdshow_producer_plugin_def_t);
 #endif
 
+	/* === Register Audio Denoise (AGC, VAD, Noise Suppression and AEC) === */
+#if HAVE_SPEEX_DSP
+	tmedia_denoise_plugin_register(tdav_speex_denoise_plugin_def_t);
+#endif
+
 	return 0;
 }
 
@@ -166,6 +174,11 @@ int tdav_deinit()
 
 #if HAVE_OSS_H
 	tmedia_consumer_plugin_unregister(tmedia_consumer_oss_plugin_def_t);
+#endif
+
+	/* === UnRegister Audio Denoise (AGC, VAD, Noise Suppression and AEC) === */
+#if HAVE_SPEEX_DSP
+	tmedia_denoise_plugin_unregister(tdav_speex_denoise_plugin_def_t);
 #endif
 
 	return 0;
