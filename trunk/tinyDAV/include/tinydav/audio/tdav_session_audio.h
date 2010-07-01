@@ -67,6 +67,7 @@ typedef struct tdav_session_audio_s
 
 	struct tmedia_consumer_s* consumer;
 	struct tmedia_producer_s* producer;
+	struct tmedia_denoise_s* denoise;
 
 	tdav_session_audio_dtmfe_L_t* dtmf_events;
 }

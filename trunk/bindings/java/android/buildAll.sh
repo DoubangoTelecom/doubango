@@ -1,8 +1,6 @@
 #!/bin/bash
 # Build tinyWRAP for Google Android Systems
 
-export CFLAGS="-O3 $CFLAGS"
-
 for project in tinySAK tinyNET tinyIPSec tinySMS tinyHTTP tinySIGCOMP tinySDP tinyRTP tinyMEDIA tinyDAV tinySIP
 do
 	echo -e building "$project....\n"
