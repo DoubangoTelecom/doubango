@@ -38,14 +38,14 @@
     "r=7d 1h 0 25h\r\n" \
 	"r=604800 3600 0 90000\r\n" \
 	"w=my dummy header\r\n" \
-	"m=audio 49170 RTP/AVP 3 8 0 97 98\r\n" \
+	"m=audio 49170 RTP/AVP 96 3 8 0 98\r\n" \
 	"i=Audio line\r\n" \
 	"c=IN IP4 192.168.0.15\r\n" \
 	"k=base64:ZWFzdXJlLgdddddddddddddddddddddd==\r\n" \
+	"a=rtpmap:96 iLBC/8000\r\n" \
 	"a=rtpmap:3 GSM/8000\r\n" \
 	"a=rtpmap:8 PCMA/8000\r\n" \
 	"a=rtpmap:0 PCMU/8000\r\n" \
-	"a=rtpmap:97 iLBC/8000\r\n" \
 	"a=rtpmap:98 AMR-WB/16000\r\n" \
     "a=fmtp:98 octet-align=1\r\n" \
 	"m=video 51372 RTP/AVP 34 111 31 32 98\r\n" \
