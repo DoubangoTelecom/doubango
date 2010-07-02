@@ -48,6 +48,10 @@
 #define TDAV_RATE_DEFAULT				8000
 #define TDAV_PTIME_DEFAULT				20
 
+#define TDAV_10MS						10
+#define TDAV_10MS_FRAME_SIZE(self)		(((self)->rate * TDAV_10MS)/1000)
+#define TDAV_PTIME_FRAME_SIZE(self)		(((self)->rate * (self)->ptime)/1000)
+
 /** Initialize audio consumer */
 int tdav_consumer_audio_init(tdav_consumer_audio_t* self)
 {
@@ -93,15 +97,19 @@ int tdav_consumer_audio_cmp(const tsk_object_t* consumer1, const tsk_object_t* c
 	return (TDAV_CONSUMER_AUDIO(consumer1) - TDAV_CONSUMER_AUDIO(consumer2));
 }
 
-/* put data into the jitter buffer */
-int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data, const tsk_object_t* proto_hdr)
+/* put data (bytes not shorts) into the jitter buffer (consumers always have ptime of 20ms) */
+int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data, tsk_size_t size, const tsk_object_t* proto_hdr)
 {
 	const trtp_rtp_header_t* rtp_hdr = (const trtp_rtp_header_t*)proto_hdr;
+	int i, _10ms_size_shorts, _10ms_size_bytes;
+	long now, ts;
+	short* _10ms_buf; // 10ms frame
 
 	if(!self || !data || !*data || !self->jb.jbuffer || !rtp_hdr){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+
 	/* synchronize the reference timestamp */
 	if(!self->jb.ref_timestamp){
 		struct timeval tv;
@@ -109,7 +117,7 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data, const tsk_
 		tsk_gettimeofday(&tv, tsk_null);
 		tv.tv_sec -= (ts / self->rate);
 		tv.tv_usec -= (ts % self->rate) * 125;
-		if((tv.tv_usec -= (tv.tv_usec % (self->ptime * 10000))) <0){
+		if((tv.tv_usec -= (tv.tv_usec % (TDAV_10MS * 10000))) <0){
 			tv.tv_usec += 1000000;
 			tv.tv_sec -= 1;
 		}
@@ -117,40 +125,88 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data, const tsk_
 	}
 	
 	tsk_safeobj_lock(self);
-	jb_put(self->jb.jbuffer, *data, JB_TYPE_VOICE, self->ptime, (rtp_hdr->timestamp/(self->rate/1000)), (long) (tsk_time_now()-self->jb.ref_timestamp), self->jb.jcodec);
-	*data = tsk_null;
+	// split as several 10ms frames
+	now = (long) (tsk_time_now()-self->jb.ref_timestamp);
+	ts = (long)(rtp_hdr->timestamp/(self->rate/1000));
+	_10ms_size_shorts = TDAV_10MS_FRAME_SIZE(self);
+	_10ms_size_bytes = _10ms_size_shorts * sizeof(short);
+	for(i=0; i<(int)(size/_10ms_size_bytes);i++){
+		if((_10ms_buf = tsk_calloc(_10ms_size_shorts, sizeof(short)))){
+			memcpy(_10ms_buf, &((uint8_t*)*data)[i*_10ms_size_bytes], _10ms_size_bytes);
+			jb_put(self->jb.jbuffer, _10ms_buf, JB_TYPE_VOICE, TDAV_10MS, ts, now, self->jb.jcodec);
+			_10ms_buf = tsk_null;
+		}
+		ts += TDAV_10MS;
+	}
 	tsk_safeobj_unlock(self);
 
 	return 0;
 }
 
-/* get data drom the jitter buffer */
+/* get data drom the jitter buffer (consumers should always have ptime of 20ms) */
 void* tdav_consumer_audio_get(tdav_consumer_audio_t* self)
 {
 	void* data = tsk_null;
 	int jret;
 
-	if(!self || !self->jb.jbuffer){
+	int i, _10ms_count, _10ms_size_bytes, _10ms_size_shorts, data_size = 0;
+	long now;
+	short* _10ms_buf = tsk_null;
+
+	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
-	}	
+	}
+	
+	_10ms_size_shorts = TDAV_10MS_FRAME_SIZE(self);
+	_10ms_size_bytes = (_10ms_size_shorts * sizeof(short));
+	_10ms_count = (TDAV_PTIME_FRAME_SIZE(self)/_10ms_size_shorts);
+	now = (long) (tsk_time_now()-self->jb.ref_timestamp);
 
 	tsk_safeobj_lock(self);
-	jret = jb_get(self->jb.jbuffer, (void**)&data, (long) (tsk_time_now()-self->jb.ref_timestamp), self->ptime);
-	tsk_safeobj_unlock(self);
+	for(i=0; i<_10ms_count; i++){
 
-	switch(jret){
-		case JB_OK:
-			break;
-		case JB_INTERP:
-				jb_reset_all(self->jb.jbuffer);
-			break;
-		case JB_EMPTY:
-		case JB_NOFRAME:
-		case JB_NOJB:
-		default:
-			break;
+		jret = jb_get(self->jb.jbuffer, (void**)&_10ms_buf, now, TDAV_10MS);
+		
+
+		switch(jret){
+			case JB_OK:
+			case JB_INTERP:
+			case JB_EMPTY:
+			case JB_NOFRAME:
+			case JB_NOJB:
+					if(data){
+						if((data = tsk_realloc(data, (data_size + _10ms_size_bytes)))){
+							if(_10ms_buf && (jret == JB_OK)){
+								/* copy data */
+								memcpy(&((uint8_t*)data)[data_size], _10ms_buf, _10ms_size_bytes);
+							}
+							else{
+								/* copy silence */
+								memset(&((uint8_t*)data)[data_size], 0, _10ms_size_bytes);
+							}
+							data_size += _10ms_size_bytes;
+						}
+						else{ /* realloc failed */
+							data_size = 0;
+						}
+
+						if(jret == JB_INTERP){
+							jb_reset_all(self->jb.jbuffer);
+						}
+					}
+					else{
+						data = _10ms_buf, _10ms_buf = tsk_null;
+						data_size = _10ms_size_bytes;
+					}
+					break;
+			
+			default:
+				break;
+		}
+		TSK_FREE(_10ms_buf);
 	}
+	tsk_safeobj_unlock(self);
 
 	return data;
 }

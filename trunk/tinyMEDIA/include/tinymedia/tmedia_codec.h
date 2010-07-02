@@ -113,8 +113,9 @@ TMEDIA_BEGIN_DECLS
 /** cast any pointer to @ref tmedia_codec_t* object */
 #define TMEDIA_CODEC(self)		((tmedia_codec_t*)(self))
 
-#define TMEDIA_CODEC_FRAME_SIZE(self) ((TMEDIA_CODEC((self))->plugin->audio.ptime * TMEDIA_CODEC((self))->plugin->rate)/1000)
+#define TMEDIA_CODEC_PCM_FRAME_SIZE(self) ((TMEDIA_CODEC((self))->plugin->audio.ptime * TMEDIA_CODEC((self))->plugin->rate)/1000)
 #define TMEDIA_CODEC_RATE(self)			(TMEDIA_CODEC((self))->plugin->rate)
+//#define TMEDIA_CODEC_FRAMES_COUNT(buff_size)	(((buff_size))/TMEDIA_CODEC_FRAME_SIZE(self))
 
 /** callback for video codecs */
 typedef int (*tmedia_codec_video_rtpcb_f)(const void* callback_data, const void* buffer, tsk_size_t size, uint32_t duration, tsk_bool_t marker);

@@ -30,7 +30,7 @@
 #include "tinydav/audio/tdav_producer_audio.h"
 
 #define TDAV_BITS_PER_SAMPLE_DEFAULT	16
-#define TDAV_CHANNELS_DEFAULT			2
+#define TDAV_CHANNELS_DEFAULT			1
 #define TDAV_RATE_DEFAULT				8000
 #define TDAV_PTIME_DEFAULT				20
 

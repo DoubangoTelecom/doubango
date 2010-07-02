@@ -124,7 +124,7 @@ static int tdav_session_video_codec_cb(const void* callback_data, const void* bu
 	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
 
 	if(session->rtp_manager){
-		return trtp_manager_send_rtp(session->rtp_manager, buffer, size, duration, marker);
+		return trtp_manager_send_rtp(session->rtp_manager, buffer, size, duration, marker, marker);
 	}
 
 	return 0;
@@ -195,7 +195,8 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 		}
 
 		if(out_size){
-			trtp_manager_send_rtp(session->rtp_manager, out_data, out_size, 160/*FIXME*/, tsk_false);
+			/* Never called, see tdav_session_video_codec_cb() */
+			trtp_manager_send_rtp(session->rtp_manager, out_data, out_size, 6006, tsk_true, tsk_true);
 		}
 bail:
 		TSK_FREE(out_data);

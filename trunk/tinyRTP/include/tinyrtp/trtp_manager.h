@@ -88,7 +88,7 @@ TINYRTP_API int trtp_manager_set_rtp_remote(trtp_manager_t* self, const char* re
 TINYRTP_API int trtp_manager_set_rtp_remote(trtp_manager_t* self, const char* remote_ip, tnet_port_t remote_port);
 TINYRTP_API int trtp_manager_set_rtcp_remote(trtp_manager_t* self, const char* remote_ip, tnet_port_t remote_port);
 TINYRTP_API int trtp_manager_start(trtp_manager_t* self);
-TINYRTP_API int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t size, uint32_t duration, tsk_bool_t marker);
+TINYRTP_API int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t size, uint32_t duration, tsk_bool_t marker, tsk_bool_t last_packet);
 TINYRTP_API int trtp_manager_send_rtp_2(trtp_manager_t* self, const struct trtp_rtp_packet_s* packet);
 TINYRTP_API int trtp_manager_stop(trtp_manager_t* self);
 

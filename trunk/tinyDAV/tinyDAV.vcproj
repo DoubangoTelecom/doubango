@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(PSDK_DIR)include&quot;;&quot;$(DXSDK_DIR)include&quot;;..\thirdparties\win32\include;include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinySDP\include;..\tinyNET\src;..\tinyDSHOW\include;..\tinySAK\src"
-				PreprocessorDefinitions="HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_FFMPEG=1;HAVE_SPEEX_DSP=1;DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT=0x0501;TINYDAV_EXPORTS"
+				PreprocessorDefinitions="HAVE_LIBGSM=1;HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_FFMPEG=1;HAVE_SPEEX_DSP=1;DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT=0x0501;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib &quot;..\thirdparties\win32\lib\speex\libspeexdsp.a&quot; ..\thirdparties\win32\lib\libgcc.a ..\thirdparties\win32\lib\libmingwex.a &quot;..\thirdparties\win32\lib\ffmpeg\libavcodec.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavutil.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libswscale.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libx264.a&quot;"
+				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib &quot;..\thirdparties\win32\lib\gsm\libgsm.a&quot; &quot;..\thirdparties\win32\lib\speex\libspeexdsp.a&quot; ..\thirdparties\win32\lib\libgcc.a ..\thirdparties\win32\lib\libmingwex.a &quot;..\thirdparties\win32\lib\ffmpeg\libavcodec.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavutil.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libswscale.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libx264.a&quot;"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
@@ -220,6 +220,10 @@
 				<Filter
 					Name="gsm"
 					>
+					<File
+						RelativePath=".\include\tinydav\codecs\gsm\tdav_codec_gsm.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="h261"
@@ -424,6 +428,10 @@
 				<Filter
 					Name="gsm"
 					>
+					<File
+						RelativePath=".\src\codecs\gsm\tdav_codec_gsm.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="h261"
@@ -542,6 +550,10 @@
 					>
 					<File
 						RelativePath=".\src\audio\coreaudio\tdav_consumer_coreaudio.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\audio\coreaudio\tdav_producer_coreaudio.c"
 						>
 					</File>
 				</Filter>

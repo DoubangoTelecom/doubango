@@ -253,7 +253,7 @@ int tdav_consumer_dsound_consume(tmedia_consumer_t* self, void** buffer, tsk_siz
 		return -1;
 	}
 	/* buffer is already decoded */
-	return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(dsound), buffer, proto_hdr);
+	return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(dsound), buffer, size, proto_hdr);
 }
 
 int tdav_consumer_dsound_pause(tmedia_consumer_t* self)
