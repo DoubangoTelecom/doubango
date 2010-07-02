@@ -120,7 +120,7 @@ tsk_size_t tdav_codec_gsm_decode(tmedia_codec_t* self, const void* in_data, tsk_
 	}
 
 	/* allocate new buffer */
-	if(!(*out_data = tsk_calloc(out_size, sizeof(short)))){
+	if(!(*out_data = tsk_calloc(out_size, 1))){
 		TSK_DEBUG_ERROR("Failed to allocate new buffer");
 		return 0;
 	}
