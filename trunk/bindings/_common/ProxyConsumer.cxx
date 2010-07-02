@@ -77,7 +77,7 @@ int twrap_consumer_proxy_audio_consume(tmedia_consumer_t* self, void** buffer, t
 	}
 	
 	if(ProxyAudioConsumer::instance){
-		return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(consumer), buffer, proto_hdr);
+		return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(consumer), buffer, size, proto_hdr);
 	}
 	else{
 		return 0;

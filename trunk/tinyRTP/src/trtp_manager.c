@@ -277,8 +277,9 @@ int trtp_manager_start(trtp_manager_t* self)
 	return 0;
 }
 
-/* Encapsulate raw data into RTP packet and send it over the network */
-int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t size, uint32_t duration, tsk_bool_t marker)
+/* Encapsulate raw data into RTP packet and send it over the network 
+* Very IMPORTANT: For voice packets, the marker bits indicates the beginning of a talkspurt */
+int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t size, uint32_t duration, tsk_bool_t marker, tsk_bool_t last_packet)
 {
 	trtp_rtp_packet_t* packet;
 	tsk_buffer_t* buffer;
@@ -298,7 +299,7 @@ int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t siz
 	if(!(packet = trtp_rtp_packet_create(self->rtp.ssrc, self->rtp.seq_num++, self->rtp.timestamp, self->rtp.payload_type, marker))){
 		return -3;
 	}
-	if(marker){
+	if(last_packet){
 		self->rtp.timestamp += duration;
 	}
 

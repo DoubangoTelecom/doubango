@@ -217,7 +217,7 @@ tsk_size_t tdav_codec_g711a_decode(tmedia_codec_t* self, const void* in_data, ts
 		TSK_FREE(*out_data);
 	}
 	/* allocate new buffer */
-	if(!(*out_data = tsk_calloc(in_size, sizeof(short)))){
+	if(!(*out_data = tsk_calloc(in_size, 2))){
 		TSK_DEBUG_ERROR("Failed to allocate new buffer");
 		return 0;
 	}

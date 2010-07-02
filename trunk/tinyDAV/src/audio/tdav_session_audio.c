@@ -126,7 +126,7 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 						trtp_manager_set_payload_type(audio->rtp_manager, audio->encoder->neg_format ? atoi(audio->encoder->neg_format) : atoi(audio->encoder->format));
 						/* Denoise */
 						if(audio->denoise && !audio->denoise->opened){
-							ret = tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_FRAME_SIZE(audio->encoder), TMEDIA_CODEC_RATE(audio->encoder), tsk_true, 8000.0f, tsk_true, tsk_true);
+							ret = tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder), TMEDIA_CODEC_RATE(audio->encoder), tsk_true, 8000.0f, tsk_true, tsk_true);
 						}
 						break;
 				}
@@ -156,7 +156,7 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 		if((audio->encoder = tsk_object_ref(audio->encoder))){ /* Thread safeness (SIP reINVITE or UPDATE could update the encoder) */
 			out_size = audio->encoder->plugin->encode(audio->encoder, buffer, size, &out_data);
 			if(out_size){
-				ret = trtp_manager_send_rtp(audio->rtp_manager, out_data, out_size, (20*audio->encoder->plugin->rate)/1000/*FIXME*/, tsk_false);
+				ret = trtp_manager_send_rtp(audio->rtp_manager, out_data, out_size, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder), tsk_false/*Marker*/, tsk_true/*lastPacket*/);
 			}
 			tsk_object_unref(audio->encoder);
 		}
@@ -261,7 +261,7 @@ int tdav_session_audio_start(tmedia_session_t* self)
 		}
 		/* Denoise (AEC, Noise Suppression, AGC) */
 		if(audio->denoise && audio->encoder){
-			tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_FRAME_SIZE(audio->encoder), TMEDIA_CODEC_RATE(audio->encoder), tsk_true, 8000.0f, tsk_true, tsk_true);
+			tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder), TMEDIA_CODEC_RATE(audio->encoder), tsk_true, 8000.0f, tsk_true, tsk_true);
 		}
 
 		/* for test */
