@@ -36,7 +36,7 @@
 
 #define TDAV_ILBC_MODE			20
 
-/* ============ GSM Plugin interface ================= */
+/* ============ iLBC Plugin interface ================= */
 
 #define tdav_codec_ilbc_fmtp_set tsk_null
 
@@ -188,7 +188,7 @@ tsk_bool_t tdav_codec_ilbc_fmtp_match(const tmedia_codec_t* codec, const char* f
 
 
 //
-//	G.711u Plugin definition
+//	iLBC Plugin definition
 //
 
 /* constructor */

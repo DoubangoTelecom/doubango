@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(PSDK_DIR)include&quot;;&quot;$(DXSDK_DIR)include&quot;;..\thirdparties\win32\include;include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinySDP\include;..\tinyNET\src;..\tinyDSHOW\include;..\tinySAK\src"
-				PreprocessorDefinitions="HAVE_ILBC=1;HAVE_LIBGSM=1;HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_FFMPEG=1;HAVE_SPEEX_DSP=1;DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT=0x0501;TINYDAV_EXPORTS"
+				PreprocessorDefinitions="HAVE_OPENCORE_AMR=1;HAVE_ILBC=1;HAVE_LIBGSM=1;HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_FFMPEG=1;HAVE_SPEEX_DSP=1;DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT=0x0501;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -200,6 +200,10 @@
 				<Filter
 					Name="amr"
 					>
+					<File
+						RelativePath=".\include\tinydav\codecs\amr\tdav_codec_amr.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="g711"
@@ -412,6 +416,10 @@
 				<Filter
 					Name="amr"
 					>
+					<File
+						RelativePath=".\src\codecs\amr\tdav_codec_amr.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="g711"
