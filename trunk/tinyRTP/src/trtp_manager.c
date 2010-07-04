@@ -123,7 +123,7 @@ int trtp_manager_prepare(trtp_manager_t* self)
 	/* Creates local rtp and rtcp sockets */
 	while(retry_count--){
 		/* random number in the range 1024 to 65535 */
-#if 0
+#if 1
 		tnet_port_t local_port = 6060;
 #else
 		tnet_port_t local_port = ((rand() % 64510) + 1025);

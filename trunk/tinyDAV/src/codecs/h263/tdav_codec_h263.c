@@ -431,12 +431,14 @@ tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk
 	h263->decoder.last_seq = rtp_hdr->seq_num;
 
 	if((int)(h263->decoder.accumulator_pos + pay_size) <= xsize){
-		if((h263->decoder.ebit + sbit) == 8){ /* Perfect on Byte to clean up */
-			uint8_t mask = (1 << h263->decoder.ebit) - 1;
-			((uint8_t*)h263->decoder.accumulator)[h263->decoder.accumulator_pos - 1] &= ~mask;
-			((uint8_t*)h263->decoder.accumulator)[h263->decoder.accumulator_pos - 1] |= (*pay_ptr & mask);
+		if((h263->decoder.ebit + sbit) == 8){ /* Perfect one Byte to clean up */
+			if(h263->decoder.accumulator_pos){
+				((uint8_t*)h263->decoder.accumulator)[h263->decoder.accumulator_pos-1] = (((uint8_t*)h263->decoder.accumulator)[h263->decoder.accumulator_pos-1] & (0xFF << h263->decoder.ebit)) |
+					(*pay_ptr << sbit);
+			}
 			pay_ptr++, pay_size--;
 		}
+		h263->decoder.ebit = ebit;
 
 		memcpy(&((uint8_t*)h263->decoder.accumulator)[h263->decoder.accumulator_pos], pay_ptr, pay_size);
 		h263->decoder.accumulator_pos += pay_size;
@@ -890,7 +892,7 @@ last:
 
 	TSK_DEBUG_INFO("H263 thread === STOP");
 
-	return 0;
+	return tsk_null;
 }
 
 static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *data, tsk_size_t size, tsk_bool_t marker)

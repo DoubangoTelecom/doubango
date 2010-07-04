@@ -137,7 +137,7 @@ tsk_bool_t tdav_codec_gsm_fmtp_match(const tmedia_codec_t* codec, const char* fm
 
 
 //
-//	G.711u Plugin definition
+//	GSM Plugin definition
 //
 
 /* constructor */
