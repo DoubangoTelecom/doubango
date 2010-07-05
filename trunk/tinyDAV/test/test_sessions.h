@@ -48,7 +48,7 @@
 	"a=rtpmap:0 PCMU/8000\r\n" \
 	"a=rtpmap:98 AMR-WB/16000\r\n" \
     "a=fmtp:98 octet-align=1\r\n" \
-	"m=video 51372 RTP/AVP 34 111 31 32 98\r\n" \
+	"m=video 51372 RTP/AVP 31 111 34 32 98\r\n" \
 	"i=Video line\r\n" \
 	"b=A-YZ:92\r\n" \
 	"b=B-YZ:256\r\n" \

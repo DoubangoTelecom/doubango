@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyDAV\include;..\..\tinyMEDIA\include;..\..\tinyRTP\include;..\..\tinySDP\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyDSHOW\include"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;HAVE_FFMPEG=1;HAVE_TINYDSHOW=1;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;HAVE_OPENCORE_AMR=1;HAVE_LIBGSM=0;HAVE_ILBC=0;HAVE_FFMPEG=1;HAVE_TINYDSHOW=1;FLIP_DECODED_PICT=1;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib &quot;..\..\thirdparties\win32\lib\libgcc.a&quot; &quot;..\..\thirdparties\win32\lib\libmingwex.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libavcodec.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libavutil.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libswscale.a&quot;"
+				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib &quot;..\..\thirdparties\win32\lib\libgcc.a&quot; &quot;..\..\thirdparties\win32\lib\libmingwex.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libavcodec.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libavutil.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libswscale.a&quot; &quot;..\..\thirdparties\win32\lib\ffmpeg\libx264.a&quot; &quot;..\..\thirdparties\win32\lib\ilbc\libiLBC.a&quot; &quot;..\..\thirdparties\win32\lib\opencore\libopencore-amrnb.a&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -200,6 +200,10 @@
 				<Filter
 					Name="amr"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\codecs\amr\tdav_codec_amr.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="g711"
@@ -220,10 +224,18 @@
 				<Filter
 					Name="gsm"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\codecs\gsm\tdav_codec_gsm.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="h261"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\codecs\h261\tdav_codec_h261.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="h263"
@@ -236,10 +248,18 @@
 				<Filter
 					Name="h264"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\codecs\h264\tdav_codec_h264.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="ilbc"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\codecs\ilbc\tdav_codec_ilbc.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="theora"
@@ -396,6 +416,10 @@
 				<Filter
 					Name="amr"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\src\codecs\amr\tdav_codec_amr.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="g711"
@@ -416,10 +440,18 @@
 				<Filter
 					Name="gsm"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\src\codecs\gsm\tdav_codec_gsm.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="h261"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\src\codecs\h261\tdav_codec_h261.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="h263"
@@ -432,10 +464,18 @@
 				<Filter
 					Name="h264"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\src\codecs\h264\tdav_codec_h264.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="ilbc"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\src\codecs\ilbc\tdav_codec_ilbc.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="silk"
