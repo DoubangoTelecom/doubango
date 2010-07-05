@@ -468,7 +468,7 @@ tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk
 		else{
 			retsize = xsize;
 			/* flip */
-#if !ANDROID
+#if FLIP_DECODED_PICT
 			tdav_converter_video_flip(h263->decoder.picture, h263->decoder.context->height);
 #endif
 			/* copy picture into a linear buffer */
@@ -826,7 +826,7 @@ const tmedia_codec_plugin_def_t *tdav_codec_h263pp_plugin_def_t = &tdav_codec_h2
 
 static void *run(void* self)
 {
-	uint32_t i, last_index, last_psc_gbsc_index;
+	uint32_t i, last_index;
 	tsk_list_item_t *curr;
 
 	const uint8_t* pdata;
@@ -843,7 +843,7 @@ static void *run(void* self)
 		/* 4 is sizeof(uint32_t) */
 		pdata = ((const tsk_buffer_t*)curr->data)->data;
 		size = ((const tsk_buffer_t*)curr->data)->size;
-		last_index = 0, last_psc_gbsc_index = 0;
+		last_index = 0;
 		frag = tsk_false;
 
 		if(size < RTP_PAYLOAD_SIZE){
@@ -855,19 +855,17 @@ static void *run(void* self)
 				if((i - last_index) >= RTP_PAYLOAD_SIZE){
 					switch(h263->type){
 						case tdav_codec_h263_1996:
-							tdav_codec_h263_rtp_callback((tdav_codec_h263_t*) h263, pdata+last_index/*pdata + (last_psc_gbsc_index ? last_psc_gbsc_index : i)*/,
+							tdav_codec_h263_rtp_callback((tdav_codec_h263_t*) h263, pdata+last_index,
 								(i - last_index), (last_index == size));
 							break;
 						default:
-							TSK_DEBUG_INFO("[%d-%d/%d]", last_index, i, size);
-							tdav_codec_h263p_rtp_callback((tdav_codec_h263_t*) h263, pdata + last_index/*(last_psc_gbsc_index ? last_psc_gbsc_index : i)*/,
+							tdav_codec_h263p_rtp_callback((tdav_codec_h263_t*) h263, pdata + last_index,
 								(i - last_index), frag, (last_index == size));
 							frag = tsk_true;
 							break;
 					}
 					last_index = i;
 				}
-				last_psc_gbsc_index = i;
 			}
 		}
 last:

@@ -221,6 +221,9 @@ int tdav_codec_h261_close(tmedia_codec_t* self)
 
 tsk_size_t tdav_codec_h261_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
 {
+	int ret;
+	int size;
+
 	tdav_codec_h261_t* h261 = (tdav_codec_h261_t*)self;
 
 	if(!self || !in_data || !in_size || !out_data){
@@ -228,7 +231,46 @@ tsk_size_t tdav_codec_h261_encode(tmedia_codec_t* self, const void* in_data, tsk
 		return 0;
 	}
 	
-	return 0;
+	// delete old buffer
+	if(*out_data){
+		TSK_FREE(*out_data);
+	}
+
+	// wrap yuv420 buffer
+	size = avpicture_fill((AVPicture *)h261->encoder.picture, (uint8_t*)in_data, PIX_FMT_YUV420P, h261->encoder.context->width, h261->encoder.context->height);
+	if(size != in_size){
+		/* guard */
+		TSK_DEBUG_ERROR("Invalid size");
+		return 0;
+	}
+	/* Flip */
+	tdav_converter_video_flip(h261->encoder.picture, h261->encoder.context->height);
+
+	// Encode data
+	h261->encoder.picture->pts = AV_NOPTS_VALUE;
+	h261->encoder.picture->pict_type = FF_I_TYPE;
+	ret = avcodec_encode_video(h261->encoder.context, h261->encoder.buffer, size, h261->encoder.picture);
+	if(ret <= 0){
+		ret = 0;
+	}
+	else{
+		if((*out_data = tsk_calloc(ret, sizeof(uint8_t)))){
+			memcpy(*out_data, h261->encoder.buffer, ret);
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to allocate output buffer");
+			ret = 0;
+		}
+	}
+	
+	if(ret/* > RTP_PAYLOAD_SIZE*/){
+		tsk_buffer_t* buffer = tsk_buffer_create_null();
+		tsk_buffer_takeownership(buffer, out_data, (tsk_size_t)ret);
+		TSK_RUNNABLE_ENQUEUE_OBJECT(h261->runnable, buffer);
+		ret = 0;
+	}
+
+	return (tsk_size_t)ret;
 }
 
 tsk_size_t tdav_codec_h261_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
@@ -450,16 +492,42 @@ const tmedia_codec_plugin_def_t *tdav_codec_h261_plugin_def_t = &tdav_codec_h261
 
 static void *run(void* self)
 {
+	uint32_t i, last_index;
 	tsk_list_item_t *curr;
+
+	const uint8_t* pdata;
+	tsk_size_t size;
 
 	const tdav_codec_h261_t* h261 = ((tdav_runnable_video_t*)self)->userdata;
 
 	TSK_DEBUG_INFO("H261 thread === START");
 
 	TSK_RUNNABLE_RUN_BEGIN(self);
-	
+
 	if((curr = TSK_RUNNABLE_POP_FIRST(self))){
-		
+		/* 4 is sizeof(uint32_t) */
+		pdata = ((const tsk_buffer_t*)curr->data)->data;
+		size = ((const tsk_buffer_t*)curr->data)->size;
+		last_index = 0;
+
+		if(size < RTP_PAYLOAD_SIZE){
+			goto last;
+		}
+
+		for(i = 4; i<(size - 4); i++){
+			if(pdata[i] == 0x00 && pdata[i+1] == 0x00 && pdata[i+2]>=0x80){  /* PSC or (GBSC) found */
+				if((i - last_index) >= RTP_PAYLOAD_SIZE){
+					tdav_codec_h261_rtp_callback((tdav_codec_h261_t*)h261, pdata+last_index,
+						(i - last_index), (last_index == size));						
+				}
+				last_index = i;
+			}
+		}
+last:
+		if(last_index < size - 3/*PSC/GBSC size*/){
+			tdav_codec_h261_rtp_callback((tdav_codec_h261_t*)h261, pdata + last_index,
+				(size - last_index), tsk_true);
+		}
 
 		tsk_object_unref(curr);
 	}
