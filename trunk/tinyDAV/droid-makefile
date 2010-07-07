@@ -6,11 +6,25 @@ THIRDPARTIES_LIB := ../thirdparties/android/lib
 FFMPEG_CFLAGS :=  -DHAVE_FFMPEG=1
 FFMPEG_LDFLAGS := -lavutil -lswscale -lavcodec -lx264
 
-SPEEX_CFLAGS := -DHAVE_SPEEX_DSP
+SPEEX_CFLAGS := -DHAVE_SPEEX_DSP=0
 SPEEX_LDFLAGS := -lspeexdsp
 
-CFLAGS := $(CFLAGS_LIB) -I$(THIRDPARTIES_INC) $(FFMPEG_CFLAGS) $(SPEEX_CFLAGS) -I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I../tinyRTP/include -I../tinyMEDIA/include -I./include
-LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) $(FFMPEG_LDFLAGS) $(SPEEX_LDFLAGS) -ltinySAK -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA -lm -lgcc
+OPENCORE_ARM_CFLAGS := -DHAVE_OPENCORE_AMR=1
+OPENCORE_ARM_LDFLAGS := -lopencore-amrnb
+
+ILBC_CFLAGS := -DHAVE_ILBC=1
+ILBC_LDFLAGS := -liLBC
+
+LIBGSM_CFLAGS := -DHAVE_LIBGSM=1
+LIBGSM_LDFLAGS := -lgsm
+
+CFLAGS := $(CFLAGS_LIB) -I$(THIRDPARTIES_INC) $(ILBC_CFLAGS) $(LIBGSM_CFLAGS) \
+	$(FFMPEG_CFLAGS) $(SPEEX_CFLAGS) $(OPENCORE_ARM_CFLAGS) \
+	-I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I../tinyRTP/include -I../tinyMEDIA/include -I./include
+	
+LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB)\
+	 $(FFMPEG_LDFLAGS) $(SPEEX_LDFLAGS) $(OPENCORE_ARM_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) \
+	 -ltinySAK -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA -lm -lgcc
 
 all: $(APP)
 
@@ -35,10 +49,19 @@ OBJS += src/msrp/tdav_consumer_msrp.o \
 	src/msrp/tdav_session_msrp.o
 
 	
+	### codecs (AMR)
+OBJS += src/codecs/amr/tdav_codec_amr.o
+
 	### codecs (G.711)
 OBJS += src/codecs/g711/g711.o \
 	src/codecs/g711/tdav_codec_g711.o
 	
+	### codecs (GSM)
+OBJS += src/codecs/gsm/tdav_codec_gsm.o
+	
+	### codecs (iLBC)
+OBJS += src/codecs/ilbc/tdav_codec_ilbc.o
+
 	### codecs (DTMF)
 OBJS += src/codecs/dtmf/tdav_codec_dtmf.o
 

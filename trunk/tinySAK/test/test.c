@@ -46,7 +46,7 @@
 #define RUN_TEST_OBJECT				0
 #define RUN_TEST_PARAMS				0
 #define RUN_TEST_OPTIONS			0
-#define RUN_TEST_TIMER				1
+#define RUN_TEST_TIMER				0
 #define RUN_TEST_RUNNABLE			0
 #define RUN_TEST_BUFFER				0
 #define RUN_TEST_MD5				0
@@ -142,9 +142,7 @@ int _tmain(int argc, _TCHAR* argv[])
 int main()
 #endif
 {
-#if LOOP
-	while(1)
-#endif
+	do
 	{
 		/* Print copyright information */
 		printf("Doubango Project\nCopyright (C) 2009 Mamadou Diop \n\n");
@@ -243,6 +241,7 @@ int main()
 		test_buffer();
 #endif
 
+
 #if RUN_TEST_MD5 || RUN_TEST_ALL
 		/* test md5 and hmac_md5 */
 		test_md5();
@@ -271,6 +270,7 @@ int main()
 #endif
 
 	}
+	while(LOOP);
 
 	getchar();
 

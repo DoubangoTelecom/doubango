@@ -269,7 +269,12 @@ int tdav_session_audio_start(tmedia_session_t* self)
 		return ret;
 	}
 	else{
-		TSK_DEBUG_ERROR("Invalid RTP/RTCP manager or neg_codecs");
+		if(!audio->rtp_manager){
+			TSK_DEBUG_ERROR("Invalid RTP/RTCP manager");
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to Negociate codecs");
+		}
 		return -2;
 	}
 	
@@ -595,6 +600,7 @@ int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 			TSK_OBJECT_SAFE_FREE(audio->encoder);
 		}
 		else{
+			TSK_DEBUG_ERROR("None Match");
 			return -1;
 		}
 	}

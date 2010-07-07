@@ -140,7 +140,7 @@ tsk_size_t tdav_codec_ilbc_decode(tmedia_codec_t* self, const void* in_data, tsk
 	}
 
 	for(i = 0; i<blocks; i++){
-		iLBC_decode(decblock, (&(uint8_t*)in_data)[i*block_size], &ilbc->decoder, 1/* Normal */);
+		iLBC_decode(decblock, &((uint8_t*)in_data)[i*block_size], &ilbc->decoder, 1/* Normal */);
 
        /* convert to short */
        for(k=0; k<ilbc->decoder.blockl; k++){

@@ -1133,7 +1133,7 @@ int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self)
 
 	/* alert the user */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, 
-		TSIP_DIALOG(self)->lasterror ? TSIP_DIALOG(self)->lasterror : "Dialog terminated");
+		TSIP_DIALOG(self)->lasterror ? TSIP_DIALOG(self)->lasterror : "Call Terminated");
 
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

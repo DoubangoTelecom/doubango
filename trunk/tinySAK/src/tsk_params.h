@@ -73,6 +73,7 @@ TINYSAK_API int tsk_params_get_param_value_as_int(const tsk_params_L_t *self, co
 
 TINYSAK_API int tsk_params_param_tostring(const tsk_param_t *param, tsk_buffer_t* output);
 TINYSAK_API int tsk_params_tostring(const tsk_params_L_t *self, const char separator, tsk_buffer_t* output);
+TINYSAK_API tsk_params_L_t* tsk_params_fromstring(const char* string, const char separator, tsk_bool_t trim);
 
 TINYSAK_GEXTERN const tsk_object_def_t *tsk_param_def_t;
 

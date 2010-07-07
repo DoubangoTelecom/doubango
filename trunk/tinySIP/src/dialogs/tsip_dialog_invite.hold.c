@@ -89,7 +89,7 @@ int tsip_dialog_invite_hold_init(tsip_dialog_invite_t *self)
 //				== STATE MACHINE BEGIN ==
 //--------------------------------------------------------
 
-// Connected -> (send HOLD) -> Connected
+// Connected -> (send HOLD) -> Holding
 int x0100_Connected_2_Holding_X_oHold(va_list *app)
 {
 	int ret;

@@ -386,8 +386,8 @@ void tsk_strtrim_left(char **str)
 void tsk_strtrim_right(char **str)
 {
 	if(str && *str){
-		tsk_size_t size = tsk_strlen(*str);
-		if(size){
+		tsk_size_t size;
+		if((size = tsk_strlen(*str))){
 			while(isspace(*((*str)+size-1))) size--;
 			*(*str + size) = '\0';
 		}
