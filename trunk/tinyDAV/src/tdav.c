@@ -90,7 +90,8 @@ int tdav_init()
 	tmedia_codec_plugin_register(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
 #if HAVE_OPENCORE_AMR
-	tmedia_codec_plugin_register(tdav_codec_amrnb_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_amrnb_oa_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_amrnb_be_plugin_def_t);
 #endif
 #if HAVE_LIBGSM
 	tmedia_codec_plugin_register(tdav_codec_gsm_plugin_def_t);
@@ -100,9 +101,9 @@ int tdav_init()
 #endif
 #if HAVE_FFMPEG
 	tmedia_codec_plugin_register(tdav_codec_h261_plugin_def_t);
-	//tmedia_codec_plugin_register(tdav_codec_h263_plugin_def_t);
-	//tmedia_codec_plugin_register(tdav_codec_h263p_plugin_def_t);
-	//tmedia_codec_plugin_register(tdav_codec_h263pp_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h263_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h263p_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h263pp_plugin_def_t);
 #endif
 	
 
@@ -155,7 +156,8 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_g711u_plugin_def_t);
 #if HAVE_OPENCORE_AMR
-	tmedia_codec_plugin_unregister(tdav_codec_amrnb_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_amrnb_oa_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_amrnb_be_plugin_def_t);
 #endif
 #if HAVE_LIBGSM
 	tmedia_codec_plugin_unregister(tdav_codec_gsm_plugin_def_t);

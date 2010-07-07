@@ -161,7 +161,7 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 */
 int tsk_buffer_append(tsk_buffer_t* self, const void* data, tsk_size_t size)
 {
-	if(self && size){
+	if(self && data && size){
 		tsk_size_t oldsize = self->size;
 		tsk_size_t newsize = oldsize + size;
 		
@@ -177,6 +177,9 @@ int tsk_buffer_append(tsk_buffer_t* self, const void* data, tsk_size_t size)
 			self->size = newsize;
 			return 0;
 		}
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
 	}
 	return -1;
 }

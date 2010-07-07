@@ -251,12 +251,10 @@ int tsk_params_tostring(const tsk_params_L_t *self, const char separator, tsk_bu
 {
 	int ret = -1;
 
-	if(self)
-	{
+	if(self){
 		tsk_list_item_t *item;
 		ret = 0; // for empty lists
-		tsk_list_foreach(item, self)
-		{
+		tsk_list_foreach(item, self){
 			tsk_param_t* param = item->data;
 			//tsk_params_param_tostring(param, output);
 			if(TSK_LIST_IS_FIRST(self, item)){
@@ -276,6 +274,46 @@ bail:
 	return ret;
 }
 
+/**@ingroup tsk_params_group
+*/
+tsk_params_L_t* tsk_params_fromstring(const char* string, const char separator, tsk_bool_t trim)
+{
+	tsk_params_L_t* params = tsk_null;
+	tsk_param_t* param;
+
+	int i = 0, index;
+	tsk_size_t size = tsk_strlen(string);
+
+#define PUSH_PARAM() \
+	if(!params){ \
+		params = tsk_list_create(); \
+	} \
+	if(trim){ \
+		if(param->name){ \
+			tsk_strtrim(&param->name); \
+		} \
+		if(param->value){ \
+			tsk_strtrim(&param->value); \
+		} \
+	} \
+	tsk_list_push_back_data(params, (void**)&param);
+
+	while((index = tsk_strindexOf((string + i), (size - i), &separator)) != -1){
+		if((param = tsk_params_parse_param((string + i), index))){
+			PUSH_PARAM();
+		}
+		i += (index + 1);
+	}
+
+	// last one
+	if(i<(int)size){
+		if((param = tsk_params_parse_param((string + i), (size - i)))){
+			PUSH_PARAM();
+		}
+	}
+	
+	return params;
+}
 
 
 

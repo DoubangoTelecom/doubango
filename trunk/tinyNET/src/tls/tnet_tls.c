@@ -102,6 +102,7 @@ int tnet_tls_socket_isok(const tnet_tls_socket_handle_t* self)
 int tnet_tls_socket_connect(tnet_tls_socket_handle_t* self)
 {
 #if !TNET_HAVE_OPENSSL_H
+	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
 	int ret = -1;
@@ -152,6 +153,7 @@ int tnet_tls_socket_connect(tnet_tls_socket_handle_t* self)
 int tnet_tls_socket_write(tnet_tls_socket_handle_t* self, const void* data, tsk_size_t size)
 {
 #if !TNET_HAVE_OPENSSL_H
+	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
 	int ret = -1;
@@ -228,6 +230,7 @@ ssl_write:
 int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void** data, tsk_size_t *size, int *isEncrypted)
 {
 #if !TNET_HAVE_OPENSSL_H
+	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
 	int ret = -1;
@@ -318,6 +321,7 @@ bail:
 int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 {
 #if !TNET_HAVE_OPENSSL_H
+	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
 	int ret = -1;

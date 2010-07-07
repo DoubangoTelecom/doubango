@@ -310,7 +310,8 @@ tmedia_codecs_L_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
-	
+
+
 	/* foreach format */
 	tsk_list_foreach(it1, M->FMTs){
 		fmt = it1->data;

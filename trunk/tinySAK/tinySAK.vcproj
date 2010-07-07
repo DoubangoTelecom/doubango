@@ -641,6 +641,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_bitbuffer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_buffer.h"
 				>
 			</File>
@@ -772,6 +776,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_binaryutils.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_bitbuffer.c"
 				>
 			</File>
 			<File

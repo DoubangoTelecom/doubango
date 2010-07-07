@@ -22,7 +22,6 @@
 #ifndef _TEST_BUFFER_H_
 #define _TEST_BUFFER_H_
 
-/* url encoding/decoding */
 void test_buffer()
 {
 	tsk_buffer_t *buffer = tsk_buffer_create_null(); 
