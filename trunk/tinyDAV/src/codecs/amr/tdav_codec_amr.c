@@ -164,19 +164,17 @@ tsk_bool_t tdav_codec_amrnb_fmtp_match(const tmedia_codec_t* codec, const char* 
 	if(amr){
 		/* Match mode */
 		if(tdav_codec_amr_get_mode(fmtp) != amr->mode){
-			TSK_DEBUG_ERROR("Failed to match [%s]", fmtp);
+			TSK_DEBUG_INFO("Failed to match [%s]", fmtp);
 			return tsk_false;
 		}
 		/* check parameters validity */
 		if(tdav_codec_amr_parse_fmtp(amr, fmtp)){
-			TSK_DEBUG_ERROR("Failed to match [%s]", fmtp);
+			TSK_DEBUG_INFO("Failed to match [%s]", fmtp);
 			return tsk_false;
 		}
 
-		TSK_DEBUG_ERROR("Matched [%s]", fmtp);
 		return tsk_true;
 	}
-	TSK_DEBUG_ERROR("Failed to match [%s]", fmtp);
 	return tsk_false;
 }
 

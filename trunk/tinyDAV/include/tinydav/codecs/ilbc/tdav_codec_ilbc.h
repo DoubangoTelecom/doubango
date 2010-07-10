@@ -42,7 +42,7 @@
 
 TDAV_BEGIN_DECLS
 
-/** GSM codec */
+/** iLBC codec */
 typedef struct tdav_codec_ilbc_s
 {
 	TMEDIA_DECLARE_CODEC_AUDIO;

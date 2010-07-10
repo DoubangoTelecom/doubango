@@ -1,0 +1,14 @@
+# theoraenc installed pkg-config file
+
+prefix=/home/inexbee/Bureau/theorarm/android
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: theora
+Description: Theora video codec (encoder)
+Version: 1.1.1+svn
+Requires: theoradec, ogg >= 1.1
+Conflicts:
+Libs: -L${libdir} -ltheoraenc
+Cflags: -I${includedir}

@@ -276,7 +276,7 @@ bail:
 
 /**@ingroup tsk_params_group
 */
-tsk_params_L_t* tsk_params_fromstring(const char* string, const char separator, tsk_bool_t trim)
+tsk_params_L_t* tsk_params_fromstring(const char* string, char separator, tsk_bool_t trim)
 {
 	tsk_params_L_t* params = tsk_null;
 	tsk_param_t* param;
