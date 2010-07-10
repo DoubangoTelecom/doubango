@@ -38,7 +38,7 @@
     "r=7d 1h 0 25h\r\n" \
 	"r=604800 3600 0 90000\r\n" \
 	"w=my dummy header\r\n" \
-	"m=audio 49170 RTP/AVP 103 102 96 3 8 0\r\n" \
+	"m=audio 49170 RTP/AVP 97 103 102 96 3 8 0\r\n" \
 	"i=Audio line\r\n" \
 	"c=IN IP4 192.168.0.15\r\n" \
 	"k=base64:ZWFzdXJlLgdddddddddddddddddddddd==\r\n" \
@@ -48,19 +48,21 @@
 	"a=rtpmap:0 PCMU/8000\r\n" \
 	"a=rtpmap:103 AMR/8000\r\n" \
 	"a=rtpmap:102 AMR/8000\r\n" \
+	"a=rtpmap:97 SPEEX/8000\r\n" \
 	"a=fmtp:102 octet-align=0; mode-set=0,1,2,3,4,5,6,7; mode-change-period=1; mode-change-capability=2; mode-change-neighbor=0\r\n" \
     "a=fmtp:103 octet-align=1; mode-set=0,1,2,3,4,5,6,7; mode-change-period=1; mode-change-capability=2; mode-change-neighbor=0\r\n" \
-	"m=video 51372 RTP/AVP 31 111 34 32 98\r\n" \
+	"m=video 51372 RTP/AVP 126 111 98 31 34 32\r\n" \
 	"i=Video line\r\n" \
 	"b=A-YZ:92\r\n" \
 	"b=B-YZ:256\r\n" \
+	"a=rtpmap:126 theora/90000\r\n" \
 	"a=rtpmap:34 H263/90000\r\n" \
 	"a=fmtp:34 QCIF=1 MaxBR=4520\r\n" \
 	"a=rtpmap:111 H263-1998/90000\r\n" \
 	"a=rtpmap:31 H261/90000\r\n" \
 	"a=rtpmap:32 MPV/90000\r\n" \
 	"a=rtpmap:98 H264/90000\r\n" \
-    "a=fmtp:98 profile-level-id=42A01E\r\n" \
+    "a=fmtp:98 profile-level-id=42e00a; packetization-mode=1; max-br=452; max-mbps=11880\r\n" \
 	"a=recvonly\r\n" \
 	"m=toto 51372 RTP/AVP 31 32\r\n" \
 	"i=Video line\r\n" \
@@ -76,7 +78,7 @@ void test_sessions_client()
 	const tsdp_message_t* sdp_lo;
 	tsdp_message_t* sdp_ro;
 	char* temp;
-	tmedia_type_t type = tmedia_audio /*| tmedia_video*/;
+	tmedia_type_t type = tmedia_video /*| tmedia_video*/;
 
 	mgr = tmedia_session_mgr_create(type,
 		"0.0.0.0", tsk_false, tsk_true/* offerer */);
@@ -125,7 +127,7 @@ void test_sessions_server()
 	/* get ro (INVITE) */
 	if((sdp_ro = tsdp_message_parse(SDP_RO, tsk_strlen(SDP_RO)))){
 		//type = tmedia_type_from_sdp(sdp_ro);
-		type = tmedia_audio;
+		type = tmedia_video;
 		mgr = tmedia_session_mgr_create(type,
 			"0.0.0.0", tsk_false, tsk_false/* answerer */);
 		tmedia_session_mgr_set_ro(mgr, sdp_ro);
@@ -161,11 +163,8 @@ void test_sessions_server()
 
 void test_sessions()
 {	
-	//test_sessions_client();
-	test_sessions_server();
-
-
-
+	test_sessions_client();
+	//test_sessions_server();
 }
 
 

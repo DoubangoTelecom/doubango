@@ -361,8 +361,7 @@ tsk_size_t tdav_codec_h261_decode(tmedia_codec_t* self, const void* in_data, tsk
 		}
 		else{
 			retsize = xsize;
-			/* flip */
-#if !ANDROID
+#if FLIP_DECODED_PICT
 			tdav_converter_video_flip(h261->decoder.picture, h261->decoder.context->height);
 #endif
 			/* copy picture into a linear buffer */
@@ -383,7 +382,7 @@ tsk_bool_t tdav_codec_h261_fmtp_match(const tmedia_codec_t* codec, const char* f
 	tmedia_codec_video_t* h261 = (tmedia_codec_video_t*)codec;
 
 	if(!(ret = tmedia_codec_parse_fmtp(fmtp, &maxbr, &fps, &width, &height))){
-		h261->maxbr = maxbr;
+		h261->max_br = maxbr * 1000;
 		h261->fps = fps;
 		h261->width = width;
 		h261->height = height;

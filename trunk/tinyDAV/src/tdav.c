@@ -40,8 +40,11 @@
 #include "tinydav/codecs/g711/tdav_codec_g711.h"
 #include "tinydav/codecs/gsm/tdav_codec_gsm.h"
 #include "tinydav/codecs/ilbc/tdav_codec_ilbc.h"
+#include "tinydav/codecs/speex/tdav_codec_speex.h"
 #include "tinydav/codecs/h261/tdav_codec_h261.h"
 #include "tinydav/codecs/h263/tdav_codec_h263.h"
+#include "tinydav/codecs/h264/tdav_codec_h264.h"
+#include "tinydav/codecs/theora/tdav_codec_theora.h"
 
 // Consumers
 #include "tinydav/audio/waveapi/tdav_consumer_waveapi.h"
@@ -99,11 +102,18 @@ int tdav_init()
 #if HAVE_ILBC
 	tmedia_codec_plugin_register(tdav_codec_ilbc_plugin_def_t);
 #endif
+#if HAVE_LIB_SPEEX
+	tmedia_codec_plugin_register(tdav_codec_speex_nb_plugin_def_t);
+#endif
 #if HAVE_FFMPEG
 	tmedia_codec_plugin_register(tdav_codec_h261_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h263_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h263p_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h263pp_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h264_bp10_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h264_bp20_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h264_bp30_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_theora_plugin_def_t);	
 #endif
 	
 
@@ -165,11 +175,18 @@ int tdav_deinit()
 #if HAVE_ILBC
 	tmedia_codec_plugin_unregister(tdav_codec_ilbc_plugin_def_t);
 #endif
+#if HAVE_LIB_SPEEX
+	tmedia_codec_plugin_unregister(tdav_codec_speex_nb_plugin_def_t);
+#endif
 #if HAVE_FFMPEG
 	tmedia_codec_plugin_unregister(tdav_codec_h261_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h263_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h263p_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h263pp_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_h264_bp10_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_h264_bp20_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_h264_bp30_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_theora_plugin_def_t);	
 #endif
 
 	/* === unRegister consumers === */

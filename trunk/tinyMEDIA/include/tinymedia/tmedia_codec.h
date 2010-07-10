@@ -76,33 +76,35 @@ TMEDIA_BEGIN_DECLS
 
 #define TMEDIA_CODEC_FORMAT_ILBC						"96"
 
-#define TMEDIA_CODEC_FORMAT_SPEEX						"97"
-#define TMEDIA_CODEC_FORMAT_SPEEX_WIDEBAND				"98"
-#define TMEDIA_CODEC_FORMAT_SPEEX_ULTRAWIDEBAND			"99"
+#define TMEDIA_CODEC_FORMAT_SPEEX_NB					"97"
+#define TMEDIA_CODEC_FORMAT_SPEEX_WB					"98"
+#define TMEDIA_CODEC_FORMAT_SPEEX_UWB					"99"
 
 #define TMEDIA_CODEC_FORMAT_DTMF						"101"
 
-#define TMEDIA_CODEC_FORMAT_AMR_NB_BE					"102"
-#define TMEDIA_CODEC_FORMAT_AMR_NB_OA					"103"
-#define TMEDIA_CODEC_FORMAT_AMR_WB_BE					"104"
-#define TMEDIA_CODEC_FORMAT_AMR_WB_OA					"105"
+#define TMEDIA_CODEC_FORMAT_H263_2000					"102"
+#define TMEDIA_CODEC_FORMAT_H263_1998					"103" // for stupid clients, should be equal to "103"
+#define TMEDIA_CODEC_FORMAT_H264_BP10					"104"
+#define TMEDIA_CODEC_FORMAT_H264_BP20					"105"
+#define TMEDIA_CODEC_FORMAT_H264_BP30					"106"
 
-#define TMEDIA_CODEC_FORMAT_AMR_WBP_BE					"106"
-#define TMEDIA_CODEC_FORMAT_AMR_WBP_OA					"107"
-#define TMEDIA_CODEC_FORMAT_AAC							"108"
-#define TMEDIA_CODEC_FORMAT_AACPLUS						"109"
 
-#define TMEDIA_CODEC_FORMAT_H263_1998					"111"
-#define TMEDIA_CODEC_FORMAT_H263_2000					"112"
-#define TMEDIA_CODEC_FORMAT_H264_BP10					"113"
-#define TMEDIA_CODEC_FORMAT_H264_BP20					"114"
-#define TMEDIA_CODEC_FORMAT_H264_BP30					"115"
+#define TMEDIA_CODEC_FORMAT_AMR_WBP_BE					"107"
+#define TMEDIA_CODEC_FORMAT_AMR_WBP_OA					"108"
+#define TMEDIA_CODEC_FORMAT_AAC							"109"
+#define TMEDIA_CODEC_FORMAT_AACPLUS						"110"
+
+#define TMEDIA_CODEC_FORMAT_AMR_NB_BE					"111"
+#define TMEDIA_CODEC_FORMAT_AMR_NB_OA					"112"
+#define TMEDIA_CODEC_FORMAT_AMR_WB_BE					"113"
+#define TMEDIA_CODEC_FORMAT_AMR_WB_OA					"114"
 
 #define TMEDIA_CODEC_FORMAT_RAW							"121"
-#define TMEDIA_CODEC_FORMAT_THEORA						"122"
-#define TMEDIA_CODEC_FORMAT_FFV1						"123"
-#define TMEDIA_CODEC_FORMAT_FFVHUFF						"124"
-#define TMEDIA_CODEC_FORMAT_HUFFYUV						"125"
+#define TMEDIA_CODEC_FORMAT_FFV1						"122"
+#define TMEDIA_CODEC_FORMAT_FFVHUFF						"123"
+#define TMEDIA_CODEC_FORMAT_HUFFYUV						"124"
+//--> ONE MORE
+#define TMEDIA_CODEC_FORMAT_THEORA						"126"
 
 
 #define TMEDIA_CODEC_FORMAT_MSRP						"*"
@@ -249,7 +251,8 @@ typedef struct tmedia_codec_video_s
 	unsigned width;
 	unsigned height;
 	unsigned fps;
-	unsigned maxbr;
+	unsigned max_br;
+	unsigned max_mbps;
 
 	tmedia_codec_video_rtpcb_f callback;
 	const void* callback_data;

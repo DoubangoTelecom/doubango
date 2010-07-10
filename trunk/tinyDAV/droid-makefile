@@ -4,10 +4,10 @@ THIRDPARTIES_INC := ../thirdparties/android/include
 THIRDPARTIES_LIB := ../thirdparties/android/lib
 
 FFMPEG_CFLAGS :=  -DHAVE_FFMPEG=1
-FFMPEG_LDFLAGS := -lavutil -lswscale -lavcodec -lx264
+FFMPEG_LDFLAGS := -lavutil -lswscale -lavcodec -lx264 -ltheora -logg
 
-SPEEX_CFLAGS := -DHAVE_SPEEX_DSP=0
-SPEEX_LDFLAGS := -lspeexdsp
+SPEEX_CFLAGS := -DHAVE_SPEEX_DSP=0 -DHAVE_LIB_SPEEX=1
+SPEEX_LDFLAGS := -lspeexdsp -lspeex
 
 OPENCORE_ARM_CFLAGS := -DHAVE_OPENCORE_AMR=1
 OPENCORE_ARM_LDFLAGS := -lopencore-amrnb
@@ -62,6 +62,9 @@ OBJS += src/codecs/gsm/tdav_codec_gsm.o
 	### codecs (iLBC)
 OBJS += src/codecs/ilbc/tdav_codec_ilbc.o
 
+	### codecs (Speex)
+OBJS += src/codecs/speex/tdav_codec_speex.o
+
 	### codecs (DTMF)
 OBJS += src/codecs/dtmf/tdav_codec_dtmf.o
 
@@ -72,7 +75,11 @@ OBJS += src/codecs/h261/tdav_codec_h261.o
 OBJS += src/codecs/h263/tdav_codec_h263.o
 
 	### codecs (H.264)
-OBJS += src/codecs/h264/tdav_codec_h264.o
+OBJS += src/codecs/h264/tdav_codec_h264.o \
+		src/codecs/h264/tdav_codec_h264_rtp.o
+		
+	### codecs (Theora)
+OBJS += src/codecs/theora/tdav_codec_theora.o
 	
 	### codecs (MSRP)
 OBJS += src/codecs/msrp/tdav_codec_msrp.o

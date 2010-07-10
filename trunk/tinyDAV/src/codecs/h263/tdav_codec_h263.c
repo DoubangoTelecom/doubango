@@ -44,6 +44,7 @@
 
 #define RTP_PAYLOAD_SIZE	700
 
+#define H263P_HEADER_SIZE		2
 #define H263_HEADER_MODE_A_SIZE 4
 #define H263_HEADER_MODE_B_SIZE 8
 #define H263_HEADER_MODE_C_SIZE 12
@@ -56,24 +57,27 @@ static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *d
 
 int tdav_codec_h263_init(tdav_codec_h263_t* self, tdav_codec_h263_type_t type, enum CodecID encoder, enum CodecID decoder)
 {
+	int ret = 0;
+	
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	
-	
 	self->type = type;
 
 	if(!(self->encoder.codec = avcodec_find_encoder(encoder))){
 		TSK_DEBUG_ERROR("Failed to find [%d]encoder", encoder);
+		ret = -2;
 	}
 
 	if(!(self->decoder.codec = avcodec_find_decoder(decoder))){
 		TSK_DEBUG_ERROR("Failed to find [%d] decoder", decoder);
+		ret = -3;
 	}
 
-	/* allocations must be done by open() */
-	return 0;
+	/* allocations MUST be done by open() */
+	return ret;
 }
 
 int tdav_codec_h263_deinit(tdav_codec_h263_t* self)
@@ -140,7 +144,7 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 
 	h263->encoder.context->mb_qmin = h263->encoder.context->qmin = 4;
 	h263->encoder.context->mb_qmax = h263->encoder.context->qmax = 31;
-	h263->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
+	//h263->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
 
 	h263->encoder.context->thread_count = 1;
 	h263->encoder.context->rtp_payload_size = RTP_PAYLOAD_SIZE;
@@ -311,8 +315,8 @@ tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_data, tsk
 	tdav_converter_video_flip(h263->encoder.picture, h263->encoder.context->height);
 
 	// Encode data
-	h263->encoder.picture->pts = AV_NOPTS_VALUE;
-	h263->encoder.picture->pict_type = FF_I_TYPE;
+	//h263->encoder.picture->pts = AV_NOPTS_VALUE;
+	//h263->encoder.picture->pict_type = FF_I_TYPE;
 	ret = avcodec_encode_video(h263->encoder.context, h263->encoder.buffer, size, h263->encoder.picture);
 	if(ret <= 0){
 		ret = 0;
@@ -489,7 +493,7 @@ tsk_bool_t tdav_codec_h263_fmtp_match(const tmedia_codec_t* codec, const char* f
 	tmedia_codec_video_t* h263 = (tmedia_codec_video_t*)codec;
 
 	if(!(ret = tmedia_codec_parse_fmtp(fmtp, &maxbr, &fps, &width, &height))){
-		h263->maxbr = maxbr;
+		h263->max_br = maxbr * 1000;
 		h263->fps = fps;
 		h263->width = width;
 		h263->height = height;
@@ -622,7 +626,134 @@ tsk_size_t tdav_codec_h263p_encode(tmedia_codec_t* self, const void* in_data, ts
 
 tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
 {
-	return 0;
+	uint8_t P, V, PLEN, PEBIT;
+	uint8_t* pdata = (uint8_t*)in_data;
+	const uint8_t* pay_ptr;
+	tsk_size_t pay_size;
+	int hdr_size = H263P_HEADER_SIZE;
+	tsk_size_t xsize, retsize = 0;
+	int got_picture_ptr;
+	int ret;
+
+	tdav_codec_h263_t* h263 = (tdav_codec_h263_t*)self;
+	const trtp_rtp_header_t* rtp_hdr = proto_hdr;
+
+	if(!self || !in_data || !in_size || ((int)in_size <= hdr_size) || !out_data || !h263->decoder.context){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+
+	// delete old buffer
+	if(*out_data){
+		TSK_FREE(*out_data);
+	}
+
+/*
+	5.1.  General H.263+ Payload Header
+
+         0                   1
+         0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        |   RR    |P|V|   PLEN    |PEBIT|
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+	P = (pdata[0] & 0x04)>>2;
+	V = (pdata[0] & 0x02)>>1;
+	PLEN = (((pdata[0] & 0x01)<<5) | pdata[1]>>3);
+	PEBIT = pdata[1] & 0x07;
+	
+	if(V){
+		/* 
+			Indicates the presence of an 8-bit field containing information
+			for Video Redundancy Coding (VRC), which follows immediately after
+			the initial 16 bits of the payload header, if present.  For syntax
+			and semantics of that 8-bit VRC field, see Section 5.2.
+		*/
+	}
+	if(PLEN){
+			/*
+				Length, in bytes, of the extra picture header.  If no extra
+				picture header is attached, PLEN is 0.  If PLEN>0, the extra
+				picture header is attached immediately following the rest of the
+				payload header.  Note that the length reflects the omission of the
+				first two bytes of the picture start code (PSC).  See Section 6.1.
+			*/
+		hdr_size += PLEN;
+		if(PEBIT){
+			/*	
+				Indicates the number of bits that shall be ignored in the last
+				byte of the picture header.  If PLEN is not zero, the ignored bits
+				shall be the least significant bits of the byte.  If PLEN is zero,
+				then PEBIT shall also be zero.
+			*/
+			TSK_DEBUG_WARN("PEBIT ignored");
+		}
+	}
+	if(P){ /* MUST be done after PLEN and PEBIT */
+			/*	
+				Indicates the picture start or a picture segment (GOB/Slice) start
+				or a video sequence end (EOS or EOSBS).  Two bytes of zero bits
+				then have to be prefixed to the payload of such a packet to
+				compose a complete picture/GOB/slice/EOS/EOSBS start code.  This
+				bit allows the omission of the two first bytes of the start codes,
+				thus improving the compression ratio.
+			*/
+		hdr_size -= 2;
+		pdata[hdr_size] = 0x00, pdata[hdr_size + 1] = 0x00;
+	}
+
+	pay_ptr = (pdata + hdr_size);
+	pay_size = (in_size - hdr_size);
+	xsize = avpicture_get_size(h263->decoder.context->pix_fmt, h263->decoder.context->width, h263->decoder.context->height);
+
+	/* Packet lost? */
+	if(h263->decoder.last_seq != (rtp_hdr->seq_num - 1) && h263->decoder.last_seq){
+		TSK_DEBUG_INFO("Packet lost");
+	}
+	h263->decoder.last_seq = rtp_hdr->seq_num;
+
+	if((int)(h263->decoder.accumulator_pos + pay_size) <= xsize){
+		/* PEBIT is ignored */
+		memcpy(&((uint8_t*)h263->decoder.accumulator)[h263->decoder.accumulator_pos], pay_ptr, pay_size);
+		h263->decoder.accumulator_pos += pay_size;
+	}
+	else{
+		TSK_DEBUG_WARN("Buffer overflow");
+		h263->decoder.accumulator_pos = 0;
+		return 0;
+	}
+	
+	if(rtp_hdr->marker){
+		/* allocate destination buffer */
+		if(!(*out_data = tsk_calloc(xsize, sizeof(uint8_t)))){
+			TSK_DEBUG_ERROR("Failed to allocate new buffer");
+			h263->decoder.accumulator_pos = 0;
+			return 0;
+		}		
+
+		/* wrap the output buffer (picture's internal buffer will be allocated by FFMpeg)*/
+		//avpicture_fill((AVPicture *)h263->decoder.picture, *out_data, PIX_FMT_YUV420P, h263->decoder.context->width, h263->decoder.context->height);
+		/* decode the vodeo frame (accumulator already padded -FF_INPUT_BUFFER_PADDING_SIZE)*/
+		ret = avcodec_decode_video(h263->decoder.context, h263->decoder.picture, &got_picture_ptr, h263->decoder.accumulator, h263->decoder.accumulator_pos);		
+
+		if(ret <0 || !got_picture_ptr){
+			TSK_DEBUG_WARN("Failed to decode the buffer");
+		}
+		else{
+			retsize = xsize;
+			/* flip */
+#if FLIP_DECODED_PICT
+			tdav_converter_video_flip(h263->decoder.picture, h263->decoder.context->height);
+#endif
+			/* copy picture into a linear buffer */
+			avpicture_layout((AVPicture *)h263->decoder.picture, h263->decoder.context->pix_fmt, h263->decoder.context->width, h263->decoder.context->height,
+				*out_data, retsize);
+		}
+		/* in all cases: reset accumulator */
+		h263->decoder.accumulator_pos = 0;		
+	}
+
+	return retsize;
 }
 
 tsk_bool_t tdav_codec_h263p_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
@@ -634,7 +765,7 @@ tsk_bool_t tdav_codec_h263p_fmtp_match(const tmedia_codec_t* codec, const char* 
 
 char* tdav_codec_h263p_fmtp_get(const tmedia_codec_t* self)
 {
-	return tsk_strdup("CIF=2/MaxBR=3840;QCIF=2/MaxBR=1920");
+	return tsk_strdup("CIF=2;QCIF=2");
 }
 
 int tdav_codec_h263p_fmtp_set(tmedia_codec_t* self, const char* fmtp)
@@ -739,7 +870,7 @@ tsk_size_t tdav_codec_h263pp_encode(tmedia_codec_t* self, const void* in_data, t
 
 tsk_size_t tdav_codec_h263pp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
 {
-	return 0;
+	return tdav_codec_h263p_decode(self, in_data, in_size, out_data, proto_hdr);
 }
 
 tsk_bool_t tdav_codec_h263pp_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
@@ -852,7 +983,7 @@ static void *run(void* self)
 
 		for(i = 4; i<(size - 4); i++){
 			if(pdata[i] == 0x00 && pdata[i+1] == 0x00 && pdata[i+2]>=0x80){  /* PSC or (GBSC) found */
-				if((i - last_index) >= RTP_PAYLOAD_SIZE){
+				if((i - last_index) >= RTP_PAYLOAD_SIZE || tsk_true/* FIXME */){
 					switch(h263->type){
 						case tdav_codec_h263_1996:
 							tdav_codec_h263_rtp_callback((tdav_codec_h263_t*) h263, pdata+last_index,
@@ -869,7 +1000,7 @@ static void *run(void* self)
 			}
 		}
 last:
-		if(last_index < size - 3/*PSC/GBSC size*/){
+		if(last_index < size){
 			switch(h263->type){
 				case tdav_codec_h263_1996:
 					tdav_codec_h263_rtp_callback((tdav_codec_h263_t*) h263, pdata + last_index,
@@ -878,7 +1009,6 @@ last:
 				default:
 					tdav_codec_h263p_rtp_callback((tdav_codec_h263_t*) h263, pdata + last_index,
 						(size - last_index), frag, tsk_true);
-					TSK_DEBUG_INFO("[%d-%d/%d]", last_index, size, size);
 					break;
 			}
 		}
@@ -969,7 +1099,7 @@ static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *da
 static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *data, tsk_size_t size, tsk_bool_t frag, tsk_bool_t marker)
 {
 	uint8_t* pdata = (uint8_t*)data;
-	uint16_t rtp_hdr = 0;
+	uint8_t rtp_hdr[2] = {0x00, 0x00};
 	tsk_bool_t eos = tsk_false;
 
 	const void* _ptr = tsk_null;
@@ -1060,6 +1190,7 @@ static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *d
 		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 			*/
 			//TSK_DEBUG_INFO("H263 - GBSC");
+			found_gob = tsk_false;
 		}
 		//else if(EOSBS) -> Not Supported
 	}
@@ -1069,7 +1200,7 @@ static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *d
 		i++;
 	}
 
-	if(/*eos*/!found_gob && frag && 0){
+	if(/*eos*/!found_gob && frag){
 		if(self->rtp.size < (size + 2/* H263+ Header size */)){
 			if(!(self->rtp.ptr = tsk_realloc(self->rtp.ptr, (size + 2)))){
 				TSK_DEBUG_ERROR("Failed to allocate new buffer");
@@ -1078,19 +1209,22 @@ static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *d
 			self->rtp.size = (size + 2);
 		}
 		/* RFC 4629 - 6. Packetization Schemes */
-		((uint8_t*)&rtp_hdr)[0] |= 0x00;
-		memcpy(self->rtp.ptr, &rtp_hdr/* zeros-> is it corretc? */, 2);
-		memcpy((self->rtp.ptr + 2), pdata, size);
-		_ptr = self->rtp.ptr;
-		_size = (size + 2);
-	}
-	else{
-		pdata[0] |= 0x04;
+		//rtp_hdr[0] |= 0x00;
+		//memcpy(self->rtp.ptr, rtp_hdr/* zeros-> is it corretc? */, 2);
+		//memcpy((self->rtp.ptr + 2), pdata, size);
+		//_ptr = self->rtp.ptr;
+		//_size = (size + 2);
+
+		pdata[0] |= pdata[2] > 0x80 ? 0x04 : 0x04;
 		_ptr = pdata;
 		_size = size;
-	}	
-
-	//frag = marker ? tsk_false : tsk_true;
+	}
+	else{
+		pdata[0] |= pdata[2] > 0x80 ? 0x04 : 0x04;
+		_ptr = pdata;
+		_size = size;
+	}
+	
 
 	// Send data over the network
 	if(TMEDIA_CODEC_VIDEO(self)->callback){
