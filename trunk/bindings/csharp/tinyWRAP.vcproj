@@ -218,7 +218,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\_common\XcapStack.cxx"
+				RelativePath="..\_common\Xcap.cxx"
 				>
 			</File>
 		</Filter>
@@ -280,7 +280,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\_common\XcapStack.h"
+				RelativePath="..\_common\Xcap.h"
 				>
 			</File>
 		</Filter>
@@ -298,6 +298,10 @@
 				</File>
 				<File
 					RelativePath="..\_common\tinyWRAP.i"
+					>
+				</File>
+				<File
+					RelativePath="..\_common\XcapStack.i"
 					>
 				</File>
 			</Filter>
@@ -322,10 +326,6 @@
 				</File>
 				<File
 					RelativePath="..\ruby\ruby.i"
-					>
-				</File>
-				<File
-					RelativePath="..\_common\XcapStack.i"
 					>
 				</File>
 			</Filter>

@@ -43,9 +43,7 @@ int test_stack_callback(const thttp_event_t *httpevent)
 					}
 				}
 				else{
-					if(THTTP_MESSAGE_IS_RESPONSE(httpevent->message)){
-						TSK_DEBUG_INFO("=== code ==> %u", THTTP_RESPONSE_CODE(httpevent->message));
-					}
+					
 				}
 				break;
 			}
@@ -103,7 +101,7 @@ void test_stack()
 		TXCAP_STACK_SET_NULL()); /* mandatory */
 
 	//== get xcap-caps document
-	/*ret = txcap_action_fetch_document(stack,
+	ret = txcap_action_fetch_document(stack,
 		// action-level options
 		TXCAP_ACTION_SET_OPTION(TXCAP_ACTION_OPTION_TIMEOUT, "6000"),
 		// action-level headers
@@ -116,7 +114,7 @@ void test_stack()
 		);
 	
 	getchar();
-
+/*
 	//== get resource-lists document
 	ret = txcap_action_fetch_document(stack,
 		// action-level options
@@ -299,7 +297,7 @@ void test_stack()
 		TXCAP_ACTION_SET_NULL()
 		);
 	getchar();
-*/
+
 
 
 
@@ -314,7 +312,7 @@ void test_stack()
 		// ends parameters
 		TXCAP_ACTION_SET_NULL()
 		);
-	
+	*/
 bail:
 	getchar();
 	

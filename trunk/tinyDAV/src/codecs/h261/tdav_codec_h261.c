@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
+* Copyright (C) 2009-2010 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -181,7 +181,7 @@ int tdav_codec_h261_close(tmedia_codec_t* self)
 	// Runnable
 	//
 	if((ret = tdav_runnable_video_stop(h261->runnable))){
-		TSK_DEBUG_ERROR("Failed to stop runnable (H263 codec)");
+		TSK_DEBUG_ERROR("Failed to stop runnable (H261 codec)");
 		// ... do not exit, continue
 	}
 
@@ -214,6 +214,7 @@ int tdav_codec_h261_close(tmedia_codec_t* self)
 	}
 	if(h261->decoder.accumulator){
 		TSK_FREE(h261->decoder.accumulator);
+		h261->decoder.accumulator_pos = 0;
 	}
 
 	return 0;

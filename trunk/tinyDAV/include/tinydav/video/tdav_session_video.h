@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
+* Copyright (C) 2009-2010 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -36,6 +36,8 @@
 
 #include "tinymedia/tmedia_session.h"
 
+#include "tsk_safeobj.h"
+
 TDAV_BEGIN_DECLS
 
 // Forward declaration
@@ -64,6 +66,8 @@ typedef struct tdav_session_video_s
 		struct tdav_converter_video_s* toYUV420;
 		struct tdav_converter_video_s* fromYUV420;
 	} conv;
+
+	TSK_DECLARE_SAFEOBJ;
 }
 tdav_session_video_t;
 

@@ -32,7 +32,7 @@
 
 #define XUI "sip:mamadou@micromethod.com"
 #define PASSWORD "mysecret"
-#define XCAP_ROOT "http://192.168.16.104:8080/services"
+#define XCAP_ROOT "http://192.168.0.10:8080/services"
 
 
 #if RUN_TEST_SELECTOR || RUN_TEST_ALL

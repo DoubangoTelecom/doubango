@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
+* Copyright (C) 2009-2010 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -33,6 +33,8 @@
 #include "tinydav_config.h"
 
 #include "tinymedia/tmedia_session.h"
+
+#include "tsk_safeobj.h"
 
 TDAV_BEGIN_DECLS
 
@@ -70,6 +72,8 @@ typedef struct tdav_session_audio_s
 	struct tmedia_denoise_s* denoise;
 
 	tdav_session_audio_dtmfe_L_t* dtmf_events;
+
+	TSK_DECLARE_SAFEOBJ;
 }
 tdav_session_audio_t;
 

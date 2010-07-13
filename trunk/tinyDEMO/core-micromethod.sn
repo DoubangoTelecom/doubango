@@ -4,7 +4,7 @@
 %%domain micromethod.com
 %%user mamadou
 %%pwd mamadou
-%%proxy_ip 192.168.16.104 # IP address or FQDN
+%%proxy_ip 192.168.0.10 # IP address or FQDN
 %%proxy_port 5060
 %%proxy_trans udp # udp, tcp, tls or sctp
 %%expires 30 # expires used by all dialogs
@@ -68,7 +68,7 @@
 #	--pay hello world
 
 #send INVITE
-++a --to sip:bob@$$(domain) \
+++av --to sip:bob@$$(domain) \
 		--header Action-Header=Myheader-value @@action \
 		>>(inv_audio_sid)
 #++sleep --sec -1

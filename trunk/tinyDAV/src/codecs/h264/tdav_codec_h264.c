@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
+* Copyright (C) 2009-2010 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -53,6 +53,7 @@ tdav_codec_h264_profile_t tdav_codec_h264_get_profile(const char* fmtp);
 
 #define tdav_codec_h264_fmtp_set tsk_null /* FIXME: should be removed from all plugins (useless) */
 
+
 int tdav_codec_h264_open(tmedia_codec_t* self)
 {
 	int ret;
@@ -64,15 +65,17 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-
+	
 	/* the caller (base class) already checked that the codec is not opened */
 
 	//
 	//	Runnable
 	//
-	h264->runnable = tdav_runnable_video_create(run, h264);
-	if((ret = tdav_runnable_video_start(h264->runnable))){
-		TSK_DEBUG_ERROR("Failed to create runnable (H264 codec)");
+	if(!h264->runnable){
+		h264->runnable = tdav_runnable_video_create(run, h264);
+	}
+	if(!h264->runnable || (ret = tdav_runnable_video_start(h264->runnable))){
+		TSK_DEBUG_ERROR("Failed to start runnable (H264 codec)");
 		return ret;
 	}
 
@@ -88,21 +91,33 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context->width = TMEDIA_CODEC_VIDEO(h264)->width;
 	h264->encoder.context->height = TMEDIA_CODEC_VIDEO(h264)->height;
 
+	h264->encoder.context->keyint_min = 1;
+	h264->encoder.context->b_frame_strategy = 1;
+	h264->encoder.context->coder_type = FF_CODER_TYPE_VLC;
+	h264->encoder.context->crf = 23;
+	h264->encoder.context->refs = 3;
+	h264->encoder.context->me_method = 7;
+	h264->encoder.context->me_subpel_quality = 4;
+
 	h264->encoder.context->me_range = 16;
 	h264->encoder.context->max_qdiff = 4;
-	/*h264->encoder.context->mb_qmin =*/ h264->encoder.context->qmin = 10;
-	/*h264->encoder.context->mb_qmax =*/ h264->encoder.context->qmax = 51;
-	//h264->encoder.context->qcompress = 0.6f;
-	//h264->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
-	//h264->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
-	h264->encoder.context->max_b_frames = 0;
+	h264->encoder.context->mb_qmin = h264->encoder.context->qmin = 10;
+	h264->encoder.context->mb_qmax = h264->encoder.context->qmax = 51;
+	h264->encoder.context->qcompress = 0.6f;
+	h264->encoder.context->mb_decision = FF_MB_DECISION_BITS;
+	h264->encoder.context->flags2 |= CODEC_FLAG2_FASTPSKIP;
+	h264->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
+	h264->encoder.context->max_b_frames = 3;
+	//h264->encoder.context->b_frame_strategy = 1;
+	//h264->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
+	h264->encoder.context->chromaoffset = 0;
 
-	//h264->encoder.context->thread_count = 0;
-	h264->encoder.context->rtp_payload_size = 0;
-	//h264->encoder.context->opaque = tsk_null;
-	h264->encoder.context->bit_rate = (float) (TMEDIA_CODEC_VIDEO(h264)->max_br) * 0.80f;
-	h264->encoder.context->bit_rate_tolerance = (int) (TMEDIA_CODEC_VIDEO(h264)->max_br * 0.20f);
-	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->fps*1; /* each 1 seconds */
+	h264->encoder.context->thread_count = 5;
+	h264->encoder.context->rtp_payload_size = /*H264_RTP_PAYLOAD_SIZE*/0;
+	h264->encoder.context->opaque = tsk_null;
+	h264->encoder.context->bit_rate = (float) (/*TMEDIA_CODEC_VIDEO(h264)->max_br*/64000) * 0.80f;
+	h264->encoder.context->bit_rate_tolerance = (int) (/*TMEDIA_CODEC_VIDEO(h264)->max_br*/64000 * 0.20f);
+	h264->encoder.context->gop_size = 3;/*TMEDIA_CODEC_VIDEO(h264)->fps*1;*/ /* each 1 seconds */
 
 	// Picture (YUV 420)
 	if(!(h264->encoder.picture = avcodec_alloc_frame())){
@@ -115,6 +130,7 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	//	return ret;
 	//}
 	
+
 	size = avpicture_get_size(PIX_FMT_YUV420P, h264->encoder.context->width, h264->encoder.context->height);
 	if(!(h264->encoder.buffer = tsk_calloc(size, sizeof(uint8_t)))){
 		TSK_DEBUG_ERROR("Failed to allocate encoder buffer");
@@ -208,6 +224,7 @@ int tdav_codec_h264_close(tmedia_codec_t* self)
 	}
 	if(h264->decoder.accumulator){
 		TSK_FREE(h264->decoder.accumulator);
+		h264->decoder.accumulator_pos = 0;
 	}
 
 	return 0;
@@ -215,7 +232,7 @@ int tdav_codec_h264_close(tmedia_codec_t* self)
 #include "tsk_time.h"
 tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
 {
-	int ret;
+	int ret = 0;
 	int size;
 
 	tdav_codec_h264_t* h264 = (tdav_codec_h264_t*)self;
@@ -241,9 +258,16 @@ tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk
 	tdav_converter_video_flip(h264->encoder.picture, h264->encoder.context->height);
 
 	// Encode data
-	h264->encoder.picture->pts = tsk_time_epoch();//AV_NOPTS_VALUE;
-	h264->encoder.picture->pict_type = FF_I_TYPE;
+	h264->encoder.picture->pts = tsk_time_epoch();
+	h264->encoder.picture->pict_type = 0;
+
+	//h264->encoder.picture->pts = AV_NOPTS_VALUE;
+	
+	//h264->encoder.picture->pts = tsk_time_epoch();//AV_NOPTS_VALUE;
+	//h264->encoder.picture->pict_type = FF_I_TYPE;
 	ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);
+	
+	
 	if(ret <= 0){
 		ret = 0;
 	}
@@ -255,14 +279,15 @@ tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk
 			TSK_DEBUG_ERROR("Failed to allocate output buffer");
 			ret = 0;
 		}
-	}
-	
-	if(ret/* > RTP_PAYLOAD_SIZE*/){
+	}	
+
+	if(ret){
 		tsk_buffer_t* buffer = tsk_buffer_create_null();
 		tsk_buffer_takeownership(buffer, out_data, (tsk_size_t)ret);
 		TSK_RUNNABLE_ENQUEUE_OBJECT(h264->runnable, buffer);
 		ret = 0;
 	}
+	
 
 	return (tsk_size_t)ret;
 }
@@ -328,39 +353,35 @@ tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_data, tsk
 	}
 
 	if(rtp_hdr->marker){
-		//AVPacket packet;
-		/* allocate destination buffer */
-		if(!(*out_data = tsk_calloc(xsize, sizeof(uint8_t)))){
-			TSK_DEBUG_ERROR("Failed to allocate new buffer");
-			h264->decoder.accumulator_pos = 0;
-			return 0;
-		}		
-
-		/* wrap the output buffer (picture's internal buffer will be allocated by FFMpeg)*/
-		//avpicture_fill((AVPicture *)h264->decoder.picture, *out_data, PIX_FMT_YUV420P, h264->decoder.context->width, h264->decoder.context->height);
-		/* decode the vodeo frame (accumulator already padded -FF_INPUT_BUFFER_PADDING_SIZE)*/
-		/*av_init_packet(&packet);
-		packet.size = h264->decoder.accumulator_pos;
-		packet.data = h264->decoder.accumulator;
-		ret = avcodec_decode_video2(h264->decoder.context, h264->decoder.picture, &got_picture_ptr, &packet);*/
-		ret = avcodec_decode_video(h264->decoder.context, h264->decoder.picture, &got_picture_ptr, h264->decoder.accumulator, h264->decoder.accumulator_pos);
+		AVPacket packet;
 		
 
-		if(ret <0 || !got_picture_ptr){
-			TSK_DEBUG_WARN("Failed to decode the buffer");
+		/* wrap the output buffer (picture's internal buffer will be allocated by FFMpeg)*/
+		//avpicture_fill((AVPicture *)h264->decoder.picture, toto, PIX_FMT_YUV420P, h264->decoder.context->width, h264->decoder.context->height);
+		/* decode the vodeo frame (accumulator already padded -FF_INPUT_BUFFER_PADDING_SIZE)*/
+		av_init_packet(&packet);
+		packet.size = h264->decoder.accumulator_pos;
+		packet.data = h264->decoder.accumulator;
+		ret = avcodec_decode_video2(h264->decoder.context, h264->decoder.picture, &got_picture_ptr, &packet);
+		//ret = avcodec_decode_video(h264->decoder.context, h264->decoder.picture, &got_picture_ptr, h264->decoder.accumulator, h264->decoder.accumulator_pos);		
+
+		if(ret <0){
+			TSK_DEBUG_ERROR("=============Failed to decode the buffer");
+			//h264->decoder.accumulator_pos = 0;
 		}
-		else{
-			retsize = xsize;
-			/* flip */
+		else if(got_picture_ptr){
 #if FLIP_DECODED_PICT
 			tdav_converter_video_flip(h264->decoder.picture, h264->decoder.context->height);
 #endif
-			/* copy picture into a linear buffer */
-			avpicture_layout((AVPicture *)h264->decoder.picture, h264->decoder.context->pix_fmt, h264->decoder.context->width, h264->decoder.context->height,
-				*out_data, retsize);
+			/* fill out */
+			if((*out_data = tsk_calloc(xsize, sizeof(uint8_t)))){
+				retsize = xsize;
+				avpicture_layout((AVPicture *)h264->decoder.picture, h264->decoder.context->pix_fmt, h264->decoder.context->width, h264->decoder.context->height,
+					*out_data, retsize);
+			}
+			//h264->decoder.accumulator_pos = 0;
 		}
-		/* in all cases: reset accumulator */
-		h264->decoder.accumulator_pos = 0;		
+		h264->decoder.accumulator_pos = 0;
 	}
 
 	return retsize;
@@ -373,14 +394,18 @@ tsk_bool_t tdav_codec_h264_fmtp_match(const tmedia_codec_t* codec, const char* f
 	int val_int;
 	const char* val_str;
 	tsk_bool_t ret = tsk_true;
+	tdav_codec_h264_profile_t profile;
 
 	if(!h264){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_false;
 	}
 
-	/* Check whether the profile match */
-	if(tdav_codec_h264_get_profile(fmtp) != h264->profile){
+	TSK_DEBUG_INFO("TRying to match [%s]", fmtp);
+
+	/* Check whether the profile match (If the profile is missing, then we consider that it's ok) */
+	if(((profile = tdav_codec_h264_get_profile(fmtp)) != tdav_codec_h264_bp99) && (profile != h264->profile)){
+		TSK_DEBUG_INFO("Profile not matching");
 		return tsk_false;
 	}
 
@@ -405,6 +430,7 @@ tsk_bool_t tdav_codec_h264_fmtp_match(const tmedia_codec_t* codec, const char* f
 				h264->pack_mode = (packetization_mode_t)val_int;
 			}
 			else{
+				TSK_DEBUG_INFO("packetization-mode not matching");
 				ret = tsk_false;
 				goto bail;
 			}
@@ -833,10 +859,10 @@ void *run(void* self)
 		goto last;
 #endif
 
-#define START_CODE_PREFIX		16777216 /* 0x10000000 */
+//#define START_CODE_PREFIX		16777216 /* 0x10000000 */
 		for(i = size_of_scp; i<(size - size_of_scp); i++){
-			if( *( ((uint32_t*) &pdata[i])-0 ) == START_CODE_PREFIX ){
-			//if(pdata[i] == H264_START_CODE_PREFIX[0] && pdata[i+1] == H264_START_CODE_PREFIX[1] && pdata[i+2] == H264_START_CODE_PREFIX[2] && pdata[i+3] == H264_START_CODE_PREFIX[3]){  /* Found Start Code Prefix */
+			//if( *( ((uint32_t*) &pdata[i])-0 ) == START_CODE_PREFIX ){
+			if(pdata[i] == H264_START_CODE_PREFIX[0] && pdata[i+1] == H264_START_CODE_PREFIX[1] && pdata[i+2] == H264_START_CODE_PREFIX[2] && pdata[i+3] == H264_START_CODE_PREFIX[3]){  /* Found Start Code Prefix */
 				prev_scp = last_scp;
 				if((i - last_scp) >= H264_RTP_PAYLOAD_SIZE || 1){
 					tdav_codec_h264_rtp_callback((tdav_codec_h264_t*) h264, pdata + prev_scp,

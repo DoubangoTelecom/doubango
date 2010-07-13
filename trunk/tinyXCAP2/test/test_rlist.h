@@ -26,7 +26,7 @@
 
 /* http://www.gsmworld.com/documents/rcs/rcs2_june09/R2_090831_RCS_Release_2_Technical_Realisation_v1_0.pdf subclause 11.2*/
 	const char* rlist_str0 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"/*//xmnls:xd=\"urn:oma:xml:xdm:xcap-directory\"*/
-							"<resource-lists xmlns=\"urn:ietf:params:xml:ns:resource-lists\" xmnls:xd=\"urn:oma:xml:xdm:xcap-directory\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance3\">"
+							"<resource-lists xmlns=\"urn:ietf:params:xml:ns:resource-lists\" xmlns:xd=\"urn:oma:xml:xdm:xcap-directory\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance3\">"
 							"<!-- The list oma_buddylist contains references to any individual list used according to OMA IG for presence subscriptions. -->"
 							"<list name=\"oma_buddylist\">"
 							"<external anchor=\"http://xcap.example.org/resource-lists/users/sip:RCSUser@example.org/index/~~/resource-lists/list%5B@name=%22rcs%22%5D\"/>"
