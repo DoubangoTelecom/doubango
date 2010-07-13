@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
+* Copyright (C) 2009-2010 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -139,7 +139,7 @@ bail:
 
 
 ///*
-//* Copyright (C) 2009 Mamadou Diop.
+//* Copyright (C) 2009-2010 Mamadou Diop.
 //*
 //* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 //*	

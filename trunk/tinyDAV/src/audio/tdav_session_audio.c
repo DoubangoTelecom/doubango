@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
+* Copyright (C) 2009-2010 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -80,10 +80,16 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 			return -2;
 		}
 		// Open codec if not already done
-		if(!TMEDIA_CODEC(codec)->opened && tmedia_codec_open(codec)){
-			TSK_OBJECT_SAFE_FREE(codec);
-			TSK_DEBUG_ERROR("Failed to open [%s] codec", codec->plugin->desc);
-			return -3;
+		if(!TMEDIA_CODEC(codec)->opened){
+			int ret;
+			tsk_safeobj_lock(audio);
+			if((ret = tmedia_codec_open(codec))){
+				tsk_safeobj_unlock(audio);
+				TSK_OBJECT_SAFE_FREE(codec);
+				TSK_DEBUG_ERROR("Failed to open [%s] codec", codec->plugin->desc);
+				return ret;
+			}
+			tsk_safeobj_unlock(audio);
 		}
 		// Decode data
 		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &out_data, packet->header);
@@ -138,9 +144,14 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 		}
 
 		// Open codec if not already done
-		if(!audio->encoder->opened && tmedia_codec_open(audio->encoder)){
-			TSK_DEBUG_ERROR("Failed to open [%s] codec", audio->encoder->plugin->desc);
-			return -4;
+		if(!audio->encoder->opened){
+			tsk_safeobj_lock(audio);
+			if((ret = tmedia_codec_open(audio->encoder))){
+				tsk_safeobj_unlock(audio);
+				TSK_DEBUG_ERROR("Failed to open [%s] codec", audio->encoder->plugin->desc);
+				return -4;
+			}
+			tsk_safeobj_unlock(audio);
 		}
 		// Denoise (VAD, AGC, Noise suppression, ...)
 		if(audio->denoise){
@@ -691,6 +702,7 @@ static tsk_object_t* tdav_session_audio_ctor(tsk_object_t * self, va_list * app)
 	if(session){
 		/* init base: called by tmedia_session_create() */
 		/* init self */
+		tsk_safeobj_init(session);
 		if(!(session->consumer = tmedia_consumer_create(tmedia_audio))){
 			TSK_DEBUG_ERROR("Failed to create Audio consumer");
 		}
@@ -739,6 +751,8 @@ static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 		TSK_FREE(session->local_ip);
 		TSK_OBJECT_SAFE_FREE(session->encoder);
 		TSK_OBJECT_SAFE_FREE(session->denoise);
+
+		tsk_safeobj_deinit(session);
 
 		/* deinit base */
 		tmedia_session_deinit(self);

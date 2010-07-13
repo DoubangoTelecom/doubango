@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
+* Copyright (C) 2009-2010 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -152,7 +152,7 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 	h263->encoder.context->bit_rate = (float) (500000) * 0.80f;
 	h263->encoder.context->bit_rate_tolerance = (int) (500000 * 0.20f);
 	h263->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h263)->fps*4; /* each 4 seconds */
-	//h263->encoder.b
+	
 
 	// Picture (YUV 420)
 	if(!(h263->encoder.picture = avcodec_alloc_frame())){
@@ -282,6 +282,7 @@ int tdav_codec_h263_close(tmedia_codec_t* self)
 	}
 	if(h263->decoder.accumulator){
 		TSK_FREE(h263->decoder.accumulator);
+		h263->decoder.accumulator_pos = 0;
 	}
 
 	return 0;
@@ -1134,7 +1135,7 @@ static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *d
 	if(pdata[0] == 0x00 && pdata[1] == 0x00 && pdata[2] >= 0x80){ /* PSC or EOS or GBSC */
 		uint8_t GN = ((pdata[2]>>2) & 0x1F);
 		found_gob = tsk_true;
-		TSK_DEBUG_INFO("GN=%u", pdata[2]);
+		//TSK_DEBUG_INFO("GN=%u", pdata[2]);
 	
 		/*	RFC 4629 - 6.1.1. Packets that begin with a Picture Start Code
 			A packet that begins at the location of a Picture, GOB, slice, EOS,

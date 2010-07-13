@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
+* Copyright (C) 2009-2010 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -62,6 +62,9 @@ typedef struct tdav_codec_theora_s
 		AVCodecContext* context;
 		AVFrame* picture;
 		void* buffer;
+
+		uint64_t conf_last;
+		int conf_count;
 	} encoder;
 	
 	// decoder

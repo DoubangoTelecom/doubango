@@ -1,7 +1,7 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
+* Copyright (C) 2009-2010 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -19,15 +19,18 @@
 * along with DOUBANGO.
 *
 */
-#ifndef TINYWRAP_XCAPSTACK_H
-#define TINYWRAP_XCAPSTACK_H
+#include "XcapStack.h"
 
-class XcapStack
+
+XcapStack::XcapStack()
 {
-public:
-	XcapStack();
-	virtual ~XcapStack();
-};
+	
+}
+
+XcapStack::~XcapStack()
+{
+
+}
 
 
-#endif /* TINYWRAP_XCAPSTACK_H */
+

@@ -1,7 +1,8 @@
 #!/bin/bash
 # Build tinyWRAP for Google Android Systems
 
-for project in tinySAK tinyNET tinyIPSec tinySMS tinyHTTP tinySIGCOMP tinySDP tinyRTP tinyMEDIA tinyDAV tinySIP
+#for project in tinySAK tinyNET tinyIPSec tinySMS tinyHTTP tinySIGCOMP tinySDP tinyRTP tinyMEDIA tinyDAV tinySIP
+for project in tinyMEDIA tinyDAV
 do
 	echo -e building "$project....\n"
 	make PROJECT=$project clean

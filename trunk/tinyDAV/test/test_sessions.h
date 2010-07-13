@@ -30,7 +30,7 @@
 	"u=http://www.example.com/seminars/sdp.pdf\r\n" \
 	"e=j.doe@example.com (Jane Doe)\r\n" \
 	"p=+1 617 555-6011\r\n" \
-	"c=IN IP4 192.168.0.16\r\n" \
+	"c=IN IP4 192.168.0.12\r\n" \
 	"b=X-YZ:128\r\n" \
 	"z=2882844526 -1h 2898848070 0\r\n" \
 	"k=base64:ZWFzdXJlLg==\r\n" \
@@ -40,7 +40,7 @@
 	"w=my dummy header\r\n" \
 	"m=audio 49170 RTP/AVP 97 103 102 96 3 8 0\r\n" \
 	"i=Audio line\r\n" \
-	"c=IN IP4 192.168.0.15\r\n" \
+	"c=IN IP4 192.168.0.12\r\n" \
 	"k=base64:ZWFzdXJlLgdddddddddddddddddddddd==\r\n" \
 	"a=rtpmap:96 iLBC/8000\r\n" \
 	"a=rtpmap:3 GSM/8000\r\n" \
@@ -51,7 +51,7 @@
 	"a=rtpmap:97 SPEEX/8000\r\n" \
 	"a=fmtp:102 octet-align=0; mode-set=0,1,2,3,4,5,6,7; mode-change-period=1; mode-change-capability=2; mode-change-neighbor=0\r\n" \
     "a=fmtp:103 octet-align=1; mode-set=0,1,2,3,4,5,6,7; mode-change-period=1; mode-change-capability=2; mode-change-neighbor=0\r\n" \
-	"m=video 51372 RTP/AVP 126 111 98 31 34 32\r\n" \
+	"m=video 6060 RTP/AVP 98 34 126 111 31 32\r\n" \
 	"i=Video line\r\n" \
 	"b=A-YZ:92\r\n" \
 	"b=B-YZ:256\r\n" \
