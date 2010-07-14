@@ -62,4 +62,18 @@
   }
 %}
 
+%typemap(javacode) XcapMessage %{
+  public byte[] getXcapContent() {
+    final int clen = (int)this.getXcapContentLength();
+    if(clen>0){
+		final java.nio.ByteBuffer buffer = java.nio.ByteBuffer.allocateDirect(clen);
+        final int read = (int)this.getXcapContent(buffer, clen);
+        final byte[] bytes = new byte[read];
+        buffer.get(bytes, 0, read);
+        return bytes;
+    }
+    return null;
+  }
+%}
+
 %include ../_common/tinyWRAP.i

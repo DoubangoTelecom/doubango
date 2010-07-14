@@ -34,8 +34,8 @@ unsigned SipStack::count = 0;
 
 
 /* === ANSI-C functions (local use) === */
-int stack_callback(const tsip_event_t *sipevent);
-int session_handle_event(const tsip_event_t *sipevent);
+static int stack_callback(const tsip_event_t *sipevent);
+static int session_handle_event(const tsip_event_t *sipevent);
 
 /* === default values === */
 #ifndef DEFAULT_LOCAL_IP

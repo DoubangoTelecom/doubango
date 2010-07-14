@@ -19,15 +19,119 @@
 * along with DOUBANGO.
 *
 */
-#ifndef TINYWRAP_XCAPSTACK_H
-#define TINYWRAP_XCAPSTACK_H
+#ifndef TINYWRAP_XCAP_H
+#define TINYWRAP_XCAP_H
+
+#include "tinyxcap.h"
+
+class XcapStack;
+
+typedef tsk_list_t twrap_xcap_steps_L_t;
+
+class XcapSelector
+{
+public:
+	XcapSelector(XcapStack* stack);
+	virtual ~XcapSelector();
+
+public: /* API functions */
+	XcapSelector* setAUID(const char* auid);
+	XcapSelector* setName(const char* qname);
+	XcapSelector* setAttribute(const char* qname, const char* att_qname, const char* att_value);
+	XcapSelector* setPos(const char* qname, unsigned pos);
+	XcapSelector* setPosAttribute(const char* qname, unsigned pos, const char* att_qname, const char* att_value);
+	XcapSelector* setNamespace(const char* prefix, const char* value);
+	
+	char* getString();// %newobject
+	void reset();
+
+private:
+	txcap_stack_handle_t* stack_handle;
+	char* auid;
+	twrap_xcap_steps_L_t* steps;
+};
+
+class XcapMessage
+{
+public:
+	XcapMessage();
+#if !defined(SWIG)
+	XcapMessage(const thttp_message_t *httpmessage);
+#endif
+	virtual ~XcapMessage();
+	
+	short getCode() const;
+	const char* getPhrase() const;
+
+	char* getXcapHeaderValue(const char* name, unsigned index = 0);
+	char* getXcapHeaderParamValue(const char* name, const char* param, unsigned index = 0);
+	unsigned getXcapContentLength();
+	unsigned getXcapContent(void* output, unsigned maxsize);
+
+private:
+	const thttp_message_t *httpmessage;
+};
+
+class XcapEvent
+{
+public:
+#if !defined(SWIG)
+	XcapEvent(const thttp_event_t *httpevent);
+#endif
+	virtual ~XcapEvent();	
+	thttp_event_type_t getType();
+	const XcapMessage* getXcapMessage() const;
+
+private:
+	const thttp_event_t *httpevent;
+	const XcapMessage* httpmessage;
+};
+
+class XcapCallback
+{
+public:
+	XcapCallback();
+	virtual ~XcapCallback();
+
+	virtual int onEvent(const XcapEvent* e)const { return -1; }
+};
 
 class XcapStack
 {
 public:
-	XcapStack();
+	XcapStack(XcapCallback* callback, const char* xui, const char* password, const char* xcap_root);
 	virtual ~XcapStack();
+
+public: /* API functions */
+	bool start();
+	bool setCredentials(const char* xui, const char* password);
+	bool setXcapRoot(const char* xcap_root);
+	bool setLocalIP(const char* ip);
+	bool setLocalPort(unsigned port);
+	bool addHeader(const char* name, const char* value);
+	bool removeHeader(const char* name);
+	bool setTimeout(unsigned timeout);
+
+	bool getDocument(const char* url);
+
+	bool stop();
+
+public: /* Public helper function */
+#if !defined(SWIG)
+	txcap_stack_handle_t* getHandle(){
+		return this->handle;
+	}
+	XcapCallback* getCallback()const{
+		return this->callback;
+	}
+#endif
+
+private:
+	txcap_stack_handle_t* handle;
+	XcapCallback* callback;
+
+	static unsigned count;
 };
 
 
-#endif /* TINYWRAP_XCAPSTACK_H */
+#endif /* TINYWRAP_XCAP_H */

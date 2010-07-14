@@ -1,6 +1,6 @@
 APP := lib$(PROJECT).$(EXT)
 
-CFLAGS := $(CFLAGS_LIB) -fno-rtti -fno-exceptions -I../../_common -I../../. -I../../../tinySAK/src -I../../../tinyNET/src -I../../../tinyHTTP/include \
+CFLAGS := $(CFLAGS_LIB) -fno-rtti -fno-exceptions -I../../_common -I../../. -I../../../tinySAK/src -I../../../tinyNET/src -I../../../tinyHTTP/include -I../../../tinyXCAP/include \
 	-I../../../tinySDP/include -I../../../tinyMEDIA/include -I../../../tinyDAV/include -I../../../tinySIP/include
 	
 # Because of the static build, you need all librarires
@@ -13,7 +13,7 @@ ILBC_LDFLAGS := -liLBC
 LIBGSM_LDFLAGS := -lgsm
 
 LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) $(FFMPEG_LDFLAGS) $(SPEEX_LDFLAGS) $(OPENCORE_ARM_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS)\
-	-ltinySAK -ltinyHTTP -ltinyIPSec -ltinySIGCOMP -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA -ltinyDAV -ltinySIP \
+	-ltinySAK -ltinyHTTP -ltinyXCAP -ltinyIPSec -ltinySIGCOMP -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA -ltinyDAV -ltinySIP \
 	-lm -lstdc++ -llog -lgcc
 
 
@@ -30,7 +30,8 @@ OBJS = tinyWRAP_wrap.o\
 	../../_common/SipMessage.o \
 	../../_common/SipSession.o \
 	../../_common/SipStack.o \
-	../../_common/SipUri.o
+	../../_common/SipUri.o \
+	../../_common/Xcap.o
 
 
 $(APP): $(OBJS)

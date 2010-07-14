@@ -739,6 +739,11 @@ int __txcap_stack_set(txcap_stack_t* self, va_list *app)
 					txcap_stack_option_t ID_ENUM = va_arg(*app, txcap_stack_option_t);
 					const char* VALUE_STR = va_arg(*app, const char*);
 					switch(ID_ENUM){
+						case TXCAP_STACK_OPTION_ROOT:
+							{
+								tsk_strupdate(&self->xcap_root, VALUE_STR);
+								break;
+							}
 						/* PASSWORD and XUI are not used as options in the HTTP/HTTPS stack */
 						case TXCAP_STACK_OPTION_PASSWORD:
 							{
@@ -778,7 +783,12 @@ int __txcap_stack_set(txcap_stack_t* self, va_list *app)
 				{	/* (const char*)NAME_STR, (const char*)VALUE_STR */
 					const char* NAME_STR = va_arg(*app, const char*);
 					const char* VALUE_STR = va_arg(*app, const char*);
-					tsk_params_add_param(&((thttp_session_t*)self->http_session)->headers, NAME_STR, VALUE_STR);
+					if(NAME_STR == (const char*)-1){
+						tsk_params_remove_param(((thttp_session_t*)self->http_session)->headers, NAME_STR);
+					}
+					else{
+						tsk_params_add_param(&((thttp_session_t*)self->http_session)->headers, NAME_STR, VALUE_STR);
+					}
 					break;
 				}
 			

@@ -146,5 +146,20 @@ private:
     void swig_init_callbacks();
 };
 
+class SwigDirector_XcapCallback : public XcapCallback, public Swig::Director {
+
+public:
+    SwigDirector_XcapCallback();
+    virtual ~SwigDirector_XcapCallback();
+    virtual int onEvent(XcapEvent const *e) const;
+
+    typedef int (SWIGSTDCALL* SWIG_Callback0_t)(void *);
+    void swig_connect_director(SWIG_Callback0_t callbackonEvent);
+
+private:
+    SWIG_Callback0_t swig_callbackonEvent;
+    void swig_init_callbacks();
+};
+
 
 #endif

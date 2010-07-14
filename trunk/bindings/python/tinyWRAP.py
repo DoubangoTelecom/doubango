@@ -698,5 +698,116 @@ tmedia_rgb565le = _tinyWRAP.tmedia_rgb565le
 tmedia_rgb565be = _tinyWRAP.tmedia_rgb565be
 tmedia_nv21 = _tinyWRAP.tmedia_nv21
 tmedia_yuv420p = _tinyWRAP.tmedia_yuv420p
+class XcapSelector(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, XcapSelector, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, XcapSelector, name)
+    __repr__ = _swig_repr
+    def __init__(self, *args): 
+        this = _tinyWRAP.new_XcapSelector(*args)
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_XcapSelector
+    __del__ = lambda self : None;
+    def setAUID(self, *args): return _tinyWRAP.XcapSelector_setAUID(self, *args)
+    def setName(self, *args): return _tinyWRAP.XcapSelector_setName(self, *args)
+    def setAttribute(self, *args): return _tinyWRAP.XcapSelector_setAttribute(self, *args)
+    def setPos(self, *args): return _tinyWRAP.XcapSelector_setPos(self, *args)
+    def setPosAttribute(self, *args): return _tinyWRAP.XcapSelector_setPosAttribute(self, *args)
+    def setNamespace(self, *args): return _tinyWRAP.XcapSelector_setNamespace(self, *args)
+    def getString(self): return _tinyWRAP.XcapSelector_getString(self)
+    def reset(self): return _tinyWRAP.XcapSelector_reset(self)
+XcapSelector_swigregister = _tinyWRAP.XcapSelector_swigregister
+XcapSelector_swigregister(XcapSelector)
+
+class XcapMessage(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, XcapMessage, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, XcapMessage, name)
+    __repr__ = _swig_repr
+    def __init__(self): 
+        this = _tinyWRAP.new_XcapMessage()
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_XcapMessage
+    __del__ = lambda self : None;
+    def getCode(self): return _tinyWRAP.XcapMessage_getCode(self)
+    def getPhrase(self): return _tinyWRAP.XcapMessage_getPhrase(self)
+    def getXcapHeaderValue(self, *args): return _tinyWRAP.XcapMessage_getXcapHeaderValue(self, *args)
+    def getXcapHeaderParamValue(self, *args): return _tinyWRAP.XcapMessage_getXcapHeaderParamValue(self, *args)
+    def getXcapContentLength(self): return _tinyWRAP.XcapMessage_getXcapContentLength(self)
+    def getXcapContent(self, *args): return _tinyWRAP.XcapMessage_getXcapContent(self, *args)
+XcapMessage_swigregister = _tinyWRAP.XcapMessage_swigregister
+XcapMessage_swigregister(XcapMessage)
+
+class XcapEvent(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, XcapEvent, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, XcapEvent, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_XcapEvent
+    __del__ = lambda self : None;
+    def getType(self): return _tinyWRAP.XcapEvent_getType(self)
+    def getXcapMessage(self): return _tinyWRAP.XcapEvent_getXcapMessage(self)
+XcapEvent_swigregister = _tinyWRAP.XcapEvent_swigregister
+XcapEvent_swigregister(XcapEvent)
+
+class XcapCallback(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, XcapCallback, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, XcapCallback, name)
+    __repr__ = _swig_repr
+    def __init__(self): 
+        if self.__class__ == XcapCallback:
+            _self = None
+        else:
+            _self = self
+        this = _tinyWRAP.new_XcapCallback(_self, )
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_XcapCallback
+    __del__ = lambda self : None;
+    def onEvent(self, *args): return _tinyWRAP.XcapCallback_onEvent(self, *args)
+    def __disown__(self):
+        self.this.disown()
+        _tinyWRAP.disown_XcapCallback(self)
+        return weakref_proxy(self)
+XcapCallback_swigregister = _tinyWRAP.XcapCallback_swigregister
+XcapCallback_swigregister(XcapCallback)
+
+class XcapStack(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, XcapStack, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, XcapStack, name)
+    __repr__ = _swig_repr
+    def __init__(self, *args): 
+        this = _tinyWRAP.new_XcapStack(*args)
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_XcapStack
+    __del__ = lambda self : None;
+    def start(self): return _tinyWRAP.XcapStack_start(self)
+    def setCredentials(self, *args): return _tinyWRAP.XcapStack_setCredentials(self, *args)
+    def setXcapRoot(self, *args): return _tinyWRAP.XcapStack_setXcapRoot(self, *args)
+    def setLocalIP(self, *args): return _tinyWRAP.XcapStack_setLocalIP(self, *args)
+    def setLocalPort(self, *args): return _tinyWRAP.XcapStack_setLocalPort(self, *args)
+    def addHeader(self, *args): return _tinyWRAP.XcapStack_addHeader(self, *args)
+    def removeHeader(self, *args): return _tinyWRAP.XcapStack_removeHeader(self, *args)
+    def setTimeout(self, *args): return _tinyWRAP.XcapStack_setTimeout(self, *args)
+    def getDocument(self, *args): return _tinyWRAP.XcapStack_getDocument(self, *args)
+    def stop(self): return _tinyWRAP.XcapStack_stop(self)
+XcapStack_swigregister = _tinyWRAP.XcapStack_swigregister
+XcapStack_swigregister(XcapStack)
+
+thttp_event_message = _tinyWRAP.thttp_event_message
+thttp_event_auth_failed = _tinyWRAP.thttp_event_auth_failed
+thttp_event_closed = _tinyWRAP.thttp_event_closed
+thttp_event_transport_error = _tinyWRAP.thttp_event_transport_error
 
 

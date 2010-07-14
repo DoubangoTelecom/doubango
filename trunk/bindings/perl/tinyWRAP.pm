@@ -1099,6 +1099,212 @@ sub ACQUIRE {
 }
 
 
+############# Class : tinyWRAP::XcapSelector ##############
+
+package tinyWRAP::XcapSelector;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_XcapSelector(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_XcapSelector($self);
+        delete $OWNER{$self};
+    }
+}
+
+*setAUID = *tinyWRAPc::XcapSelector_setAUID;
+*setName = *tinyWRAPc::XcapSelector_setName;
+*setAttribute = *tinyWRAPc::XcapSelector_setAttribute;
+*setPos = *tinyWRAPc::XcapSelector_setPos;
+*setPosAttribute = *tinyWRAPc::XcapSelector_setPosAttribute;
+*setNamespace = *tinyWRAPc::XcapSelector_setNamespace;
+*getString = *tinyWRAPc::XcapSelector_getString;
+*reset = *tinyWRAPc::XcapSelector_reset;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::XcapMessage ##############
+
+package tinyWRAP::XcapMessage;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_XcapMessage(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_XcapMessage($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getCode = *tinyWRAPc::XcapMessage_getCode;
+*getPhrase = *tinyWRAPc::XcapMessage_getPhrase;
+*getXcapHeaderValue = *tinyWRAPc::XcapMessage_getXcapHeaderValue;
+*getXcapHeaderParamValue = *tinyWRAPc::XcapMessage_getXcapHeaderParamValue;
+*getXcapContentLength = *tinyWRAPc::XcapMessage_getXcapContentLength;
+*getXcapContent = *tinyWRAPc::XcapMessage_getXcapContent;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::XcapEvent ##############
+
+package tinyWRAP::XcapEvent;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_XcapEvent($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getType = *tinyWRAPc::XcapEvent_getType;
+*getXcapMessage = *tinyWRAPc::XcapEvent_getXcapMessage;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::XcapCallback ##############
+
+package tinyWRAP::XcapCallback;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_XcapCallback(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_XcapCallback($self);
+        delete $OWNER{$self};
+    }
+}
+
+*onEvent = *tinyWRAPc::XcapCallback_onEvent;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::XcapStack ##############
+
+package tinyWRAP::XcapStack;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_XcapStack(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_XcapStack($self);
+        delete $OWNER{$self};
+    }
+}
+
+*start = *tinyWRAPc::XcapStack_start;
+*setCredentials = *tinyWRAPc::XcapStack_setCredentials;
+*setXcapRoot = *tinyWRAPc::XcapStack_setXcapRoot;
+*setLocalIP = *tinyWRAPc::XcapStack_setLocalIP;
+*setLocalPort = *tinyWRAPc::XcapStack_setLocalPort;
+*addHeader = *tinyWRAPc::XcapStack_addHeader;
+*removeHeader = *tinyWRAPc::XcapStack_removeHeader;
+*setTimeout = *tinyWRAPc::XcapStack_setTimeout;
+*getDocument = *tinyWRAPc::XcapStack_getDocument;
+*stop = *tinyWRAPc::XcapStack_stop;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
 # ------- VARIABLE STUBS --------
 
 package tinyWRAP;
@@ -1159,4 +1365,8 @@ package tinyWRAP;
 *tmedia_rgb565be = *tinyWRAPc::tmedia_rgb565be;
 *tmedia_nv21 = *tinyWRAPc::tmedia_nv21;
 *tmedia_yuv420p = *tinyWRAPc::tmedia_yuv420p;
+*thttp_event_message = *tinyWRAPc::thttp_event_message;
+*thttp_event_auth_failed = *tinyWRAPc::thttp_event_auth_failed;
+*thttp_event_closed = *tinyWRAPc::thttp_event_closed;
+*thttp_event_transport_error = *tinyWRAPc::thttp_event_transport_error;
 1;
