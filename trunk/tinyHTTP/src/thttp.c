@@ -583,7 +583,7 @@ int thttp_stack_stop(thttp_stack_handle_t *self)
 		return -1;
 	}
 
-	if(stack->started){
+	if(!stack->started){
 		TSK_DEBUG_WARN("Stack already stopped");
 		return -2;
 	}

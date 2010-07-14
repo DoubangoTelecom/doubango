@@ -347,6 +347,9 @@ namespace Swig {
 #include "SipStack.h"
 
 
+#include "Xcap.h"
+
+
 
 /* ---------------------------------------------------
  * C++ director class methods
@@ -844,6 +847,38 @@ void SwigDirector_SipCallback::swig_init_callbacks() {
   swig_callbackOnPublicationEvent = 0;
   swig_callbackOnRegistrationEvent = 0;
   swig_callbackOnSubscriptionEvent = 0;
+}
+
+SwigDirector_XcapCallback::SwigDirector_XcapCallback() : XcapCallback(), Swig::Director() {
+  swig_init_callbacks();
+}
+
+SwigDirector_XcapCallback::~SwigDirector_XcapCallback() {
+  
+}
+
+
+int SwigDirector_XcapCallback::onEvent(XcapEvent const *e) const {
+  int c_result = SwigValueInit< int >() ;
+  int jresult = 0 ;
+  void * je = 0 ;
+  
+  if (!swig_callbackonEvent) {
+    return XcapCallback::onEvent(e);
+  } else {
+    je = (void *) e; 
+    jresult = (int) swig_callbackonEvent(je);
+    c_result = (int)jresult; 
+  }
+  return c_result;
+}
+
+void SwigDirector_XcapCallback::swig_connect_director(SWIG_Callback0_t callbackonEvent) {
+  swig_callbackonEvent = callbackonEvent;
+}
+
+void SwigDirector_XcapCallback::swig_init_callbacks() {
+  swig_callbackonEvent = 0;
 }
 
 
@@ -3301,6 +3336,536 @@ SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_failed_to_stop_get() {
   int result;
   
   result = (int) 953;
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_XcapSelector(void * jarg1) {
+  void * jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  XcapSelector *result = 0 ;
+  
+  arg1 = (XcapStack *)jarg1; 
+  result = (XcapSelector *)new XcapSelector(arg1);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_XcapSelector(void * jarg1) {
+  XcapSelector *arg1 = (XcapSelector *) 0 ;
+  
+  arg1 = (XcapSelector *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_XcapSelector_setAUID(void * jarg1, char * jarg2) {
+  void * jresult ;
+  XcapSelector *arg1 = (XcapSelector *) 0 ;
+  char *arg2 = (char *) 0 ;
+  XcapSelector *result = 0 ;
+  
+  arg1 = (XcapSelector *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (XcapSelector *)(arg1)->setAUID((char const *)arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_XcapSelector_setName(void * jarg1, char * jarg2) {
+  void * jresult ;
+  XcapSelector *arg1 = (XcapSelector *) 0 ;
+  char *arg2 = (char *) 0 ;
+  XcapSelector *result = 0 ;
+  
+  arg1 = (XcapSelector *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (XcapSelector *)(arg1)->setName((char const *)arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_XcapSelector_setAttribute(void * jarg1, char * jarg2, char * jarg3, char * jarg4) {
+  void * jresult ;
+  XcapSelector *arg1 = (XcapSelector *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  XcapSelector *result = 0 ;
+  
+  arg1 = (XcapSelector *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (char *)jarg4; 
+  result = (XcapSelector *)(arg1)->setAttribute((char const *)arg2,(char const *)arg3,(char const *)arg4);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_XcapSelector_setPos(void * jarg1, char * jarg2, unsigned int jarg3) {
+  void * jresult ;
+  XcapSelector *arg1 = (XcapSelector *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned int arg3 ;
+  XcapSelector *result = 0 ;
+  
+  arg1 = (XcapSelector *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  result = (XcapSelector *)(arg1)->setPos((char const *)arg2,arg3);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_XcapSelector_setPosAttribute(void * jarg1, char * jarg2, unsigned int jarg3, char * jarg4, char * jarg5) {
+  void * jresult ;
+  XcapSelector *arg1 = (XcapSelector *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned int arg3 ;
+  char *arg4 = (char *) 0 ;
+  char *arg5 = (char *) 0 ;
+  XcapSelector *result = 0 ;
+  
+  arg1 = (XcapSelector *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  arg4 = (char *)jarg4; 
+  arg5 = (char *)jarg5; 
+  result = (XcapSelector *)(arg1)->setPosAttribute((char const *)arg2,arg3,(char const *)arg4,(char const *)arg5);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_XcapSelector_setNamespace(void * jarg1, char * jarg2, char * jarg3) {
+  void * jresult ;
+  XcapSelector *arg1 = (XcapSelector *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  XcapSelector *result = 0 ;
+  
+  arg1 = (XcapSelector *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (XcapSelector *)(arg1)->setNamespace((char const *)arg2,(char const *)arg3);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_XcapSelector_getString(void * jarg1) {
+  char * jresult ;
+  XcapSelector *arg1 = (XcapSelector *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (XcapSelector *)jarg1; 
+  result = (char *)(arg1)->getString();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_XcapSelector_reset(void * jarg1) {
+  XcapSelector *arg1 = (XcapSelector *) 0 ;
+  
+  arg1 = (XcapSelector *)jarg1; 
+  (arg1)->reset();
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_XcapMessage() {
+  void * jresult ;
+  XcapMessage *result = 0 ;
+  
+  result = (XcapMessage *)new XcapMessage();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_XcapMessage(void * jarg1) {
+  XcapMessage *arg1 = (XcapMessage *) 0 ;
+  
+  arg1 = (XcapMessage *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT short SWIGSTDCALL CSharp_XcapMessage_getCode(void * jarg1) {
+  short jresult ;
+  XcapMessage *arg1 = (XcapMessage *) 0 ;
+  short result;
+  
+  arg1 = (XcapMessage *)jarg1; 
+  result = (short)((XcapMessage const *)arg1)->getCode();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_XcapMessage_getPhrase(void * jarg1) {
+  char * jresult ;
+  XcapMessage *arg1 = (XcapMessage *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (XcapMessage *)jarg1; 
+  result = (char *)((XcapMessage const *)arg1)->getPhrase();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_XcapMessage_getXcapHeaderValue__SWIG_0(void * jarg1, char * jarg2, unsigned int jarg3) {
+  char * jresult ;
+  XcapMessage *arg1 = (XcapMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned int arg3 ;
+  char *result = 0 ;
+  
+  arg1 = (XcapMessage *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  result = (char *)(arg1)->getXcapHeaderValue((char const *)arg2,arg3);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_XcapMessage_getXcapHeaderValue__SWIG_1(void * jarg1, char * jarg2) {
+  char * jresult ;
+  XcapMessage *arg1 = (XcapMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (XcapMessage *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (char *)(arg1)->getXcapHeaderValue((char const *)arg2);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_XcapMessage_getXcapHeaderParamValue__SWIG_0(void * jarg1, char * jarg2, char * jarg3, unsigned int jarg4) {
+  char * jresult ;
+  XcapMessage *arg1 = (XcapMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  unsigned int arg4 ;
+  char *result = 0 ;
+  
+  arg1 = (XcapMessage *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (unsigned int)jarg4; 
+  result = (char *)(arg1)->getXcapHeaderParamValue((char const *)arg2,(char const *)arg3,arg4);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_XcapMessage_getXcapHeaderParamValue__SWIG_1(void * jarg1, char * jarg2, char * jarg3) {
+  char * jresult ;
+  XcapMessage *arg1 = (XcapMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (XcapMessage *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (char *)(arg1)->getXcapHeaderParamValue((char const *)arg2,(char const *)arg3);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapMessage_getXcapContentLength(void * jarg1) {
+  unsigned int jresult ;
+  XcapMessage *arg1 = (XcapMessage *) 0 ;
+  unsigned int result;
+  
+  arg1 = (XcapMessage *)jarg1; 
+  result = (unsigned int)(arg1)->getXcapContentLength();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapMessage_getXcapContent(void * jarg1, void * jarg2, unsigned int jarg3) {
+  unsigned int jresult ;
+  XcapMessage *arg1 = (XcapMessage *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  unsigned int result;
+  
+  arg1 = (XcapMessage *)jarg1; 
+  arg2 = jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  result = (unsigned int)(arg1)->getXcapContent(arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_XcapEvent(void * jarg1) {
+  XcapEvent *arg1 = (XcapEvent *) 0 ;
+  
+  arg1 = (XcapEvent *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_XcapEvent_getType(void * jarg1) {
+  int jresult ;
+  XcapEvent *arg1 = (XcapEvent *) 0 ;
+  thttp_event_type_t result;
+  
+  arg1 = (XcapEvent *)jarg1; 
+  result = (thttp_event_type_t)(arg1)->getType();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_XcapEvent_getXcapMessage(void * jarg1) {
+  void * jresult ;
+  XcapEvent *arg1 = (XcapEvent *) 0 ;
+  XcapMessage *result = 0 ;
+  
+  arg1 = (XcapEvent *)jarg1; 
+  result = (XcapMessage *)((XcapEvent const *)arg1)->getXcapMessage();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_XcapCallback() {
+  void * jresult ;
+  XcapCallback *result = 0 ;
+  
+  result = (XcapCallback *)new SwigDirector_XcapCallback();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_XcapCallback(void * jarg1) {
+  XcapCallback *arg1 = (XcapCallback *) 0 ;
+  
+  arg1 = (XcapCallback *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_XcapCallback_onEvent(void * jarg1, void * jarg2) {
+  int jresult ;
+  XcapCallback *arg1 = (XcapCallback *) 0 ;
+  XcapEvent *arg2 = (XcapEvent *) 0 ;
+  int result;
+  
+  arg1 = (XcapCallback *)jarg1; 
+  arg2 = (XcapEvent *)jarg2; 
+  result = (int)((XcapCallback const *)arg1)->onEvent((XcapEvent const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_XcapCallback_onEventSwigExplicitXcapCallback(void * jarg1, void * jarg2) {
+  int jresult ;
+  XcapCallback *arg1 = (XcapCallback *) 0 ;
+  XcapEvent *arg2 = (XcapEvent *) 0 ;
+  int result;
+  
+  arg1 = (XcapCallback *)jarg1; 
+  arg2 = (XcapEvent *)jarg2; 
+  result = (int)((XcapCallback const *)arg1)->XcapCallback::onEvent((XcapEvent const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_XcapCallback_director_connect(void *objarg, SwigDirector_XcapCallback::SWIG_Callback0_t callback0) {
+  XcapCallback *obj = (XcapCallback *)objarg;
+  SwigDirector_XcapCallback *director = dynamic_cast<SwigDirector_XcapCallback *>(obj);
+  if (director) {
+    director->swig_connect_director(callback0);
+  }
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_XcapStack(void * jarg1, char * jarg2, char * jarg3, char * jarg4) {
+  void * jresult ;
+  XcapCallback *arg1 = (XcapCallback *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  XcapStack *result = 0 ;
+  
+  arg1 = (XcapCallback *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (char *)jarg4; 
+  result = (XcapStack *)new XcapStack(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_XcapStack(void * jarg1) {
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  
+  arg1 = (XcapStack *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_start(void * jarg1) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  result = (bool)(arg1)->start();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_setCredentials(void * jarg1, char * jarg2, char * jarg3) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (bool)(arg1)->setCredentials((char const *)arg2,(char const *)arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_setXcapRoot(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->setXcapRoot((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_setLocalIP(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->setLocalIP((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_setLocalPort(void * jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  unsigned int arg2 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (unsigned int)jarg2; 
+  result = (bool)(arg1)->setLocalPort(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_addHeader(void * jarg1, char * jarg2, char * jarg3) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (bool)(arg1)->addHeader((char const *)arg2,(char const *)arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_removeHeader(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->removeHeader((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_setTimeout(void * jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  unsigned int arg2 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (unsigned int)jarg2; 
+  result = (bool)(arg1)->setTimeout(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_getDocument(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->getDocument((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_stop(void * jarg1) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  result = (bool)(arg1)->stop();
   jresult = result; 
   return jresult;
 }

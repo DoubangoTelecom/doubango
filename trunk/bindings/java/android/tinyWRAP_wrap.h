@@ -106,5 +106,20 @@ protected:
     bool swig_override[8];
 };
 
+class SwigDirector_XcapCallback : public XcapCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_XcapCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_XcapCallback();
+    virtual int onEvent(XcapEvent const *e) const;
+public:
+    bool swig_overrides(int n) {
+      return (n < 1 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[1];
+};
+
 
 #endif

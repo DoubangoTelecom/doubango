@@ -46,6 +46,8 @@ typedef enum txcap_stack_option_e
 	//! time to live
 	TXCAP_STACK_OPTION_TTL,
 	
+	//! xcap-root
+	TXCAP_STACK_OPTION_ROOT,
 	//! user's password
 	TXCAP_STACK_OPTION_PASSWORD,
 	//! xcap user indentifier (e.g. sip:bob@example.com)
@@ -100,6 +102,19 @@ int ret = txcap_stack_set(stack,
 * @sa @ref TXCAP_STACK_OPTION_PASSWORD
 */
 /**@ingroup txcap_stack_group
+* @def TXCAP_STACK_SET_ROOT
+* Sets or updates the xcap-root Url.
+* @param XCAP_ROOT_STR A valid Http Url(<i>const char*</i>).
+*
+* @code
+int ret = txcap_stack_set(stack,
+        TXCAP_STACK_SET_ROOT("http://192.168.0.10:8080/services"),	
+        TXCAP_STACK_SET_NULL());
+* @endcode
+*
+* @sa @ref TXCAP_STACK_OPTION_ROOT
+*/
+/**@ingroup txcap_stack_group
 * @def TXCAP_STACK_SET_XUI
 * Sets or updates the user's identifier.
 * @param XUI_STR The new identifier (<i>const char*</i>).For systems that support SIP applications, it is
@@ -112,6 +127,12 @@ int ret = txcap_stack_set(stack,
 * @endcode
 *
 * @sa @ref TXCAP_STACK_OPTION_PASSWORD
+*/
+/**@ingroup txcap_stack_group
+* @def TXCAP_STACK_SET_LOCAL_IP
+*/
+/**@ingroup txcap_stack_group
+* @def TXCAP_STACK_SET_LOCAL_PORT
 */
 /**@ingroup txcap_stack_group
 * @def TXCAP_STACK_SET_HEADER
@@ -127,7 +148,20 @@ int ret = txcap_stack_set(stack,
         TXCAP_STACK_SET_NULL());
 * @endcode
 *
-* @sa @ref TXCAP_ACTION_SET_HEADER()
+* @sa @ref TXCAP_ACTION_SET_HEADER(), @ref TXCAP_STACK_UNSET_HEADER()
+*/
+/**@ingroup txcap_stack_group
+* @def TXCAP_STACK_UNSET_HEADER
+* Removes a stack-level HTTP header.
+* @param NAME_STR The name of the header.
+*
+* @code
+int ret = txcap_stack_set(stack,
+        TXCAP_STACK_UNSET_HEADER("User-Agent"),
+        TXCAP_STACK_SET_NULL());
+* @endcode
+*
+* @sa @ref TXCAP_ACTION_UNSET_HEADER(), @ref TXCAP_ACTION_SET_HEADER()
 */
 /**@ingroup txcap_stack_group
 * @def TXCAP_STACK_SET_CONTEXT
@@ -165,11 +199,17 @@ int ret = txcap_stack_set(stack,
 */
 
 #define TXCAP_STACK_SET_OPTION(ID_ENUM, VALUE_STR)											xcapp_option,  (txcap_stack_option_t)ID_ENUM, (const char*)VALUE_STR
+#define TXCAP_STACK_SET_TIMEOUT(TIMEOUT_STR)												TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_TIMEOUT, TIMEOUT_STR)
+#define TXCAP_STACK_SET_ROOT(XCAP_ROOT_STR)													TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_ROOT, XCAP_ROOT_STR)
 #define TXCAP_STACK_SET_PASSWORD(PASSWORD_STR)												TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_PASSWORD, PASSWORD_STR)
 #define TXCAP_STACK_SET_XUI(XUI_STR)														TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_XUI, XUI_STR)
+#define TXCAP_STACK_SET_LOCAL_IP(IP_STR)													TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_LOCAL_IP, IP_STR)
+#define TXCAP_STACK_SET_LOCAL_PORT(PORT_STR)												TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_LOCAL_PORT, PORT_STR)
 #define TXCAP_STACK_SET_HEADER(NAME_STR, VALUE_STR)											xcapp_header, (const char*)NAME_STR, (const char*)VALUE_STR
+#define TXCAP_STACK_UNSET_HEADER(NAME_STR)													TXCAP_STACK_SET_HEADER(NAME_STR, (const char*)-1)
 #define TXCAP_STACK_SET_USERDATA(CTX_PTR)													xcapp_userdata, (const void*)CTX_PTR
 #define TXCAP_STACK_SET_AUID(ID_STR, MIME_TYPE_STR, NS_STR, DOC_NAME_STR, IS_GLOBAL_BOOL)	xcapp_auid, (const char*)ID_STR, (const char*)MIME_TYPE_STR, (const char*)NS_STR, (const char*)DOC_NAME_STR, (tsk_bool_t)IS_GLOBAL_BOOL
+
 #define TXCAP_STACK_SET_NULL()																xcapp_null
 
 

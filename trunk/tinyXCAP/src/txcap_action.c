@@ -85,7 +85,12 @@ int txcap_action_perform(txcap_stack_handle_t* stack, txcap_action_type_t type, 
 				{	/* (const char*)NAME_STR, (const char*)VALUE_STR */
 					const char* NAME_STR = va_arg(ap, const char *);
 					const char* VALUE_STR = va_arg(ap, const char *);
-					tsk_params_add_param(&headers, NAME_STR, VALUE_STR);
+					if(VALUE_STR == (const char*)-1){
+						tsk_params_remove_param(headers, NAME_STR);
+					}
+					else{
+						tsk_params_add_param(&headers, NAME_STR, VALUE_STR);
+					}
 					break;
 				}
 			case txcap_apt_payload:

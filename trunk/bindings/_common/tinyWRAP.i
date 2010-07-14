@@ -12,15 +12,21 @@
 
 %feature("director") DDebugCallback;
 
+
+/* ========== Sip Stack ========== */
 %newobject getSipHeaderValue;
 %newobject getSipHeaderParamValue;
-// don't seem to work
+
 %newobject MessagingEvent::takeSessionOwnership;
 %newobject CallEvent::takeSessionOwnership;
 
-
-/* Sip Stack */
 %include SipStack.i
 
-/* Xcap Stack */
-%include XcapStack.i
+
+/* ========== Xcap Stack ========== */
+%newobject XcapSelector::getString;
+
+%newobject getXcapHeaderValue;
+%newobject getXcapHeaderParamValue;
+
+%include Xcap.i

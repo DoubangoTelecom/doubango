@@ -202,6 +202,47 @@ class tinyWRAPJNI {
   public final static native boolean SipStack_setAoR(long jarg1, SipStack jarg1_, String jarg2, int jarg3);
   public final static native boolean SipStack_isValid(long jarg1, SipStack jarg1_);
   public final static native boolean SipStack_stop(long jarg1, SipStack jarg1_);
+  public final static native long new_XcapSelector(long jarg1, XcapStack jarg1_);
+  public final static native void delete_XcapSelector(long jarg1);
+  public final static native long XcapSelector_setAUID(long jarg1, XcapSelector jarg1_, String jarg2);
+  public final static native long XcapSelector_setName(long jarg1, XcapSelector jarg1_, String jarg2);
+  public final static native long XcapSelector_setAttribute(long jarg1, XcapSelector jarg1_, String jarg2, String jarg3, String jarg4);
+  public final static native long XcapSelector_setPos(long jarg1, XcapSelector jarg1_, String jarg2, long jarg3);
+  public final static native long XcapSelector_setPosAttribute(long jarg1, XcapSelector jarg1_, String jarg2, long jarg3, String jarg4, String jarg5);
+  public final static native long XcapSelector_setNamespace(long jarg1, XcapSelector jarg1_, String jarg2, String jarg3);
+  public final static native String XcapSelector_getString(long jarg1, XcapSelector jarg1_);
+  public final static native void XcapSelector_reset(long jarg1, XcapSelector jarg1_);
+  public final static native long new_XcapMessage();
+  public final static native void delete_XcapMessage(long jarg1);
+  public final static native short XcapMessage_getCode(long jarg1, XcapMessage jarg1_);
+  public final static native String XcapMessage_getPhrase(long jarg1, XcapMessage jarg1_);
+  public final static native String XcapMessage_getXcapHeaderValue__SWIG_0(long jarg1, XcapMessage jarg1_, String jarg2, long jarg3);
+  public final static native String XcapMessage_getXcapHeaderValue__SWIG_1(long jarg1, XcapMessage jarg1_, String jarg2);
+  public final static native String XcapMessage_getXcapHeaderParamValue__SWIG_0(long jarg1, XcapMessage jarg1_, String jarg2, String jarg3, long jarg4);
+  public final static native String XcapMessage_getXcapHeaderParamValue__SWIG_1(long jarg1, XcapMessage jarg1_, String jarg2, String jarg3);
+  public final static native long XcapMessage_getXcapContentLength(long jarg1, XcapMessage jarg1_);
+  public final static native long XcapMessage_getXcapContent(long jarg1, XcapMessage jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native void delete_XcapEvent(long jarg1);
+  public final static native int XcapEvent_getType(long jarg1, XcapEvent jarg1_);
+  public final static native long XcapEvent_getXcapMessage(long jarg1, XcapEvent jarg1_);
+  public final static native long new_XcapCallback();
+  public final static native void delete_XcapCallback(long jarg1);
+  public final static native int XcapCallback_onEvent(long jarg1, XcapCallback jarg1_, long jarg2, XcapEvent jarg2_);
+  public final static native int XcapCallback_onEventSwigExplicitXcapCallback(long jarg1, XcapCallback jarg1_, long jarg2, XcapEvent jarg2_);
+  public final static native void XcapCallback_director_connect(XcapCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void XcapCallback_change_ownership(XcapCallback obj, long cptr, boolean take_or_release);
+  public final static native long new_XcapStack(long jarg1, XcapCallback jarg1_, String jarg2, String jarg3, String jarg4);
+  public final static native void delete_XcapStack(long jarg1);
+  public final static native boolean XcapStack_start(long jarg1, XcapStack jarg1_);
+  public final static native boolean XcapStack_setCredentials(long jarg1, XcapStack jarg1_, String jarg2, String jarg3);
+  public final static native boolean XcapStack_setXcapRoot(long jarg1, XcapStack jarg1_, String jarg2);
+  public final static native boolean XcapStack_setLocalIP(long jarg1, XcapStack jarg1_, String jarg2);
+  public final static native boolean XcapStack_setLocalPort(long jarg1, XcapStack jarg1_, long jarg2);
+  public final static native boolean XcapStack_addHeader(long jarg1, XcapStack jarg1_, String jarg2, String jarg3);
+  public final static native boolean XcapStack_removeHeader(long jarg1, XcapStack jarg1_, String jarg2);
+  public final static native boolean XcapStack_setTimeout(long jarg1, XcapStack jarg1_, long jarg2);
+  public final static native boolean XcapStack_getDocument(long jarg1, XcapStack jarg1_, String jarg2);
+  public final static native boolean XcapStack_stop(long jarg1, XcapStack jarg1_);
   public final static native long SWIGDialogEventUpcast(long jarg1);
   public final static native long SWIGStackEventUpcast(long jarg1);
   public final static native long SWIGCallEventUpcast(long jarg1);
@@ -292,6 +333,9 @@ class tinyWRAPJNI {
   }
   public static int SwigDirector_SipCallback_OnSubscriptionEvent(SipCallback self, long e) {
     return self.OnSubscriptionEvent((e == 0) ? null : new SubscriptionEvent(e, false));
+  }
+  public static int SwigDirector_XcapCallback_onEvent(XcapCallback self, long e) {
+    return self.onEvent((e == 0) ? null : new XcapEvent(e, false));
   }
 
   private final static native void swig_module_init();

@@ -790,6 +790,126 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_stack_failed_to_stop_get")]
   public static extern int tsip_event_code_stack_failed_to_stop_get();
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_XcapSelector")]
+  public static extern IntPtr new_XcapSelector(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_XcapSelector")]
+  public static extern void delete_XcapSelector(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapSelector_setAUID")]
+  public static extern IntPtr XcapSelector_setAUID(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapSelector_setName")]
+  public static extern IntPtr XcapSelector_setName(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapSelector_setAttribute")]
+  public static extern IntPtr XcapSelector_setAttribute(HandleRef jarg1, string jarg2, string jarg3, string jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapSelector_setPos")]
+  public static extern IntPtr XcapSelector_setPos(HandleRef jarg1, string jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapSelector_setPosAttribute")]
+  public static extern IntPtr XcapSelector_setPosAttribute(HandleRef jarg1, string jarg2, uint jarg3, string jarg4, string jarg5);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapSelector_setNamespace")]
+  public static extern IntPtr XcapSelector_setNamespace(HandleRef jarg1, string jarg2, string jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapSelector_getString")]
+  public static extern string XcapSelector_getString(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapSelector_reset")]
+  public static extern void XcapSelector_reset(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_XcapMessage")]
+  public static extern IntPtr new_XcapMessage();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_XcapMessage")]
+  public static extern void delete_XcapMessage(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapMessage_getCode")]
+  public static extern short XcapMessage_getCode(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapMessage_getPhrase")]
+  public static extern string XcapMessage_getPhrase(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapMessage_getXcapHeaderValue__SWIG_0")]
+  public static extern string XcapMessage_getXcapHeaderValue__SWIG_0(HandleRef jarg1, string jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapMessage_getXcapHeaderValue__SWIG_1")]
+  public static extern string XcapMessage_getXcapHeaderValue__SWIG_1(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapMessage_getXcapHeaderParamValue__SWIG_0")]
+  public static extern string XcapMessage_getXcapHeaderParamValue__SWIG_0(HandleRef jarg1, string jarg2, string jarg3, uint jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapMessage_getXcapHeaderParamValue__SWIG_1")]
+  public static extern string XcapMessage_getXcapHeaderParamValue__SWIG_1(HandleRef jarg1, string jarg2, string jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapMessage_getXcapContentLength")]
+  public static extern uint XcapMessage_getXcapContentLength(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapMessage_getXcapContent")]
+  public static extern uint XcapMessage_getXcapContent(HandleRef jarg1, byte[] jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_XcapEvent")]
+  public static extern void delete_XcapEvent(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapEvent_getType")]
+  public static extern int XcapEvent_getType(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapEvent_getXcapMessage")]
+  public static extern IntPtr XcapEvent_getXcapMessage(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_XcapCallback")]
+  public static extern IntPtr new_XcapCallback();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_XcapCallback")]
+  public static extern void delete_XcapCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapCallback_onEvent")]
+  public static extern int XcapCallback_onEvent(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapCallback_onEventSwigExplicitXcapCallback")]
+  public static extern int XcapCallback_onEventSwigExplicitXcapCallback(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapCallback_director_connect")]
+  public static extern void XcapCallback_director_connect(HandleRef jarg1, XcapCallback.SwigDelegateXcapCallback_0 delegate0);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_XcapStack")]
+  public static extern IntPtr new_XcapStack(HandleRef jarg1, string jarg2, string jarg3, string jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_XcapStack")]
+  public static extern void delete_XcapStack(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_start")]
+  public static extern bool XcapStack_start(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_setCredentials")]
+  public static extern bool XcapStack_setCredentials(HandleRef jarg1, string jarg2, string jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_setXcapRoot")]
+  public static extern bool XcapStack_setXcapRoot(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_setLocalIP")]
+  public static extern bool XcapStack_setLocalIP(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_setLocalPort")]
+  public static extern bool XcapStack_setLocalPort(HandleRef jarg1, uint jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_addHeader")]
+  public static extern bool XcapStack_addHeader(HandleRef jarg1, string jarg2, string jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_removeHeader")]
+  public static extern bool XcapStack_removeHeader(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_setTimeout")]
+  public static extern bool XcapStack_setTimeout(HandleRef jarg1, uint jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_getDocument")]
+  public static extern bool XcapStack_getDocument(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_stop")]
+  public static extern bool XcapStack_stop(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_DialogEventUpcast")]
   public static extern IntPtr DialogEventUpcast(IntPtr objectRef);
 
