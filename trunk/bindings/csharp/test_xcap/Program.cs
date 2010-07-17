@@ -32,10 +32,10 @@ namespace test_xcap
             //    setAttribute("entry", "uri", String.Format("sip:{0}@{1}", USER, REALM)).
             //    setName("display-name");
 
-            xcapSelector.setAUID("xcap-caps");
-            xcapStack.getDocument(xcapSelector.getString());
-            xcapSelector.reset();
-            Console.ReadLine();
+            //xcapSelector.setAUID("xcap-caps");
+           // xcapStack.getDocument(xcapSelector.getString());
+           // xcapSelector.reset();
+           // Console.ReadLine();
 
             xcapSelector.setAUID("resource-lists");
             xcapStack.getDocument(xcapSelector.getString());
@@ -43,6 +43,15 @@ namespace test_xcap
             Console.ReadLine();
 
             xcapStack.stop();
+
+            Console.ReadLine();
+            
+            xcapStack.start();
+
+            xcapSelector.setAUID("xcap-caps");
+            xcapStack.getDocument(xcapSelector.getString());
+            xcapSelector.reset();
+            Console.ReadLine();
 
             Console.ReadLine();
         }

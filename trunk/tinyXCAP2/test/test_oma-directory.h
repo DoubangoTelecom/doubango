@@ -28,7 +28,7 @@
 const char* omadir_str0 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 							"<xcap-directory xmlns=\"urn:oma:xml:xdm:xcap-directory\" >"
 							"<folder auid=\"resource-lists\">"
-							"<entry uri=\"http://xcap.example.com/resource-lists/users/sip:joebloggs@example.com/index\" etag=\"pqr999\"/>"
+							"<entry uri=\"http://xcap.example.com/resource-lists/users/sip:joebloggs@example.com/index\" etag=\"pqr999\" last-modified=\"1279068803188\" size=\"2738\"/>"
 							"</folder>"
 							"<folder auid=\"groups\">"
 							"<entry "

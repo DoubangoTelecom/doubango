@@ -120,4 +120,12 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public static void setCodecs(tdav_codec_id_t codecs) {
+    tinyWRAPPINVOKE.SipStack_setCodecs((int)codecs);
+  }
+
+  public static void setCodecs_2(int codecs) {
+    tinyWRAPPINVOKE.SipStack_setCodecs_2(codecs);
+  }
+
 }

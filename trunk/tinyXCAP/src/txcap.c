@@ -921,7 +921,12 @@ int txcap_stack_start(txcap_stack_handle_t* self)
 		goto bail;
 	}
 
-	ret = thttp_stack_start(stack->http_stack);
+	if(!(ret = thttp_stack_start(stack->http_stack))){
+		//if(!stack->http_session){
+		//	stack->http_session = thttp_session_create(stack->http_stack ,
+		//		THTTP_SESSION_SET_NULL());
+		//}
+	}
 
 bail:
 	return ret;
@@ -982,7 +987,9 @@ int txcap_stack_stop(txcap_stack_handle_t* self)
 		goto bail;
 	}
 	else{
-		ret = thttp_stack_stop(stack->http_stack);
+		if(!(ret = thttp_stack_stop(stack->http_stack))){
+			//TSK_OBJECT_SAFE_FREE(stack->http_session);
+		}
 	}
 
 bail:
@@ -1012,11 +1019,11 @@ static tsk_object_t* _txcap_stack_create(tsk_object_t * self, va_list * app)
 		stack->password = tsk_strdup( va_arg(*app, const char*) );
 		stack->xcap_root = tsk_strdup( va_arg(*app, const char*) );
 		
-		/* HTTP/HTTPS resources */
+		/* HTTP/HTTPS stack and session */
 		stack->http_stack = thttp_stack_create(callback,
 			THTTP_STACK_SET_NULL());
 		stack->http_session = thttp_session_create(stack->http_stack ,
-			THTTP_SESSION_SET_NULL());
+				THTTP_SESSION_SET_NULL());
 		
 		/* Options */
 		stack->options = tsk_list_create();

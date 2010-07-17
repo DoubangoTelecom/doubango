@@ -37,16 +37,16 @@ public class MessagingSession extends SipSession {
     this(tinyWRAPJNI.new_MessagingSession(SipStack.getCPtr(Stack), Stack), true);
   }
 
-  public boolean Send(java.nio.ByteBuffer payload, long len) {
-    return tinyWRAPJNI.MessagingSession_Send(swigCPtr, this, payload, len);
+  public boolean send(java.nio.ByteBuffer payload, long len) {
+    return tinyWRAPJNI.MessagingSession_send(swigCPtr, this, payload, len);
   }
 
-  public boolean Accept() {
-    return tinyWRAPJNI.MessagingSession_Accept(swigCPtr, this);
+  public boolean accept() {
+    return tinyWRAPJNI.MessagingSession_accept(swigCPtr, this);
   }
 
-  public boolean Reject() {
-    return tinyWRAPJNI.MessagingSession_Reject(swigCPtr, this);
+  public boolean reject() {
+    return tinyWRAPJNI.MessagingSession_reject(swigCPtr, this);
   }
 
 }

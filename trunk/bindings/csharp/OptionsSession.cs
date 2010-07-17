@@ -40,8 +40,8 @@ public class OptionsSession : SipSession {
   public OptionsSession(SipStack Stack) : this(tinyWRAPPINVOKE.new_OptionsSession(SipStack.getCPtr(Stack)), true) {
   }
 
-  public bool Send() {
-    bool ret = tinyWRAPPINVOKE.OptionsSession_Send(swigCPtr);
+  public bool send() {
+    bool ret = tinyWRAPPINVOKE.OptionsSession_send(swigCPtr);
     return ret;
   }
 

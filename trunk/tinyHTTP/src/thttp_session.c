@@ -212,6 +212,20 @@ const void* thttp_session_get_userdata(const thttp_session_handle_t *self)
 	return tsk_null;
 }
 
+int thttp_session_closefd(thttp_session_handle_t *_self)
+{
+	int ret = 0;
+	thttp_session_t* self = _self;
+
+	if(self->fd != TNET_INVALID_FD){
+		if((ret = tnet_transport_remove_socket(self->stack->transport, &self->fd))){
+			ret = tnet_sockfd_close(&self->fd);
+		}
+	}
+	
+	return ret;
+}
+
 /** Updates authentications headers.
 */
 int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_t* response, tsk_bool_t answered)
@@ -400,6 +414,7 @@ int thttp_session_signal_error(thttp_session_t *self)
 {
 	return thttp_session_signal(self, thttp_atype_error);
 }
+
 
 /** Retrieves a session by fd */
 thttp_session_t* thttp_session_get_by_fd(thttp_sessions_L_t* sessions, tnet_fd_t fd)

@@ -21,8 +21,6 @@
 */
 #include "SipStack.h"
 
-#include "tinydav/tdav.h"
-
 #include "SipSession.h"
 #include "SipEvent.h"
 
@@ -205,6 +203,16 @@ bool SipStack::stop()
 {
 	int ret = tsip_stack_stop(this->handle);
 	return (ret == 0);
+}
+
+void SipStack::setCodecs(tdav_codec_id_t codecs)
+{
+	tdav_set_codecs(codecs);
+}
+
+void SipStack::setCodecs_2(int codecs) // For stupid languages
+{
+	tdav_set_codecs((tdav_codec_id_t)codecs);
 }
 
 tsip_stack_handle_t* SipStack::getHandle()const

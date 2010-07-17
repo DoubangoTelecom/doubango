@@ -37,32 +37,44 @@ public class CallSession extends SipSession {
     this(tinyWRAPJNI.new_CallSession(SipStack.getCPtr(Stack), Stack), true);
   }
 
-  public boolean CallAudio(String remoteUri) {
-    return tinyWRAPJNI.CallSession_CallAudio(swigCPtr, this, remoteUri);
+  public boolean callAudio(String remoteUri) {
+    return tinyWRAPJNI.CallSession_callAudio(swigCPtr, this, remoteUri);
   }
 
-  public boolean CallAudioVideo(String remoteUri) {
-    return tinyWRAPJNI.CallSession_CallAudioVideo(swigCPtr, this, remoteUri);
+  public boolean callAudioVideo(String remoteUri) {
+    return tinyWRAPJNI.CallSession_callAudioVideo(swigCPtr, this, remoteUri);
   }
 
-  public boolean CallVideo(String remoteUri) {
-    return tinyWRAPJNI.CallSession_CallVideo(swigCPtr, this, remoteUri);
+  public boolean callVideo(String remoteUri) {
+    return tinyWRAPJNI.CallSession_callVideo(swigCPtr, this, remoteUri);
   }
 
-  public boolean Accept() {
-    return tinyWRAPJNI.CallSession_Accept(swigCPtr, this);
+  public boolean setSessionTimer(long timeout, String refresher) {
+    return tinyWRAPJNI.CallSession_setSessionTimer(swigCPtr, this, timeout, refresher);
   }
 
-  public boolean Hold() {
-    return tinyWRAPJNI.CallSession_Hold(swigCPtr, this);
+  public boolean set100rel(boolean enabled) {
+    return tinyWRAPJNI.CallSession_set100rel(swigCPtr, this, enabled);
   }
 
-  public boolean Resume() {
-    return tinyWRAPJNI.CallSession_Resume(swigCPtr, this);
+  public boolean setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength) {
+    return tinyWRAPJNI.CallSession_setQoS(swigCPtr, this, type.swigValue(), strength.swigValue());
   }
 
-  public boolean Hangup() {
-    return tinyWRAPJNI.CallSession_Hangup(swigCPtr, this);
+  public boolean accept() {
+    return tinyWRAPJNI.CallSession_accept(swigCPtr, this);
+  }
+
+  public boolean hold() {
+    return tinyWRAPJNI.CallSession_hold(swigCPtr, this);
+  }
+
+  public boolean resume() {
+    return tinyWRAPJNI.CallSession_resume(swigCPtr, this);
+  }
+
+  public boolean hangup() {
+    return tinyWRAPJNI.CallSession_hangup(swigCPtr, this);
   }
 
 }

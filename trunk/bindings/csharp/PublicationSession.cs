@@ -40,13 +40,13 @@ public class PublicationSession : SipSession {
   public PublicationSession(SipStack Stack) : this(tinyWRAPPINVOKE.new_PublicationSession(SipStack.getCPtr(Stack)), true) {
   }
 
-  public bool Publish(byte[] payload, uint len) {
-    bool ret = tinyWRAPPINVOKE.PublicationSession_Publish(swigCPtr, payload, len);
+  public bool publish(byte[] payload, uint len) {
+    bool ret = tinyWRAPPINVOKE.PublicationSession_publish(swigCPtr, payload, len);
     return ret;
   }
 
-  public bool UnPublish() {
-    bool ret = tinyWRAPPINVOKE.PublicationSession_UnPublish(swigCPtr);
+  public bool unPublish() {
+    bool ret = tinyWRAPPINVOKE.PublicationSession_unPublish(swigCPtr);
     return ret;
   }
 

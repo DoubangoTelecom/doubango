@@ -503,12 +503,20 @@ int thttp_stack_start(thttp_stack_handle_t *self)
 	int ret = -1;
 	thttp_stack_t *stack = self;
 
-	if(!stack || stack->transport){
+	if(!stack){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return ret;
 	}
 
-	stack->transport = tnet_transport_create(stack->local_ip, stack->local_port, tnet_socket_type_tcp_ipv46, "HTTP/HTTPS transport");
-	tnet_transport_set_callback(stack->transport, TNET_TRANSPORT_CB_F(thttp_transport_layer_stream_cb), self);
+	if(stack->started){
+		TSK_DEBUG_WARN("Stack already started");
+		return ret;
+	}
+
+	if(!stack->transport){
+		stack->transport = tnet_transport_create(stack->local_ip, stack->local_port, tnet_socket_type_tcp_ipv46, "HTTP/HTTPS transport");
+		tnet_transport_set_callback(stack->transport, TNET_TRANSPORT_CB_F(thttp_transport_layer_stream_cb), self);
+	}
 
 	if(!(ret = tnet_transport_start(stack->transport))){
 		// Sets TLS certificates
@@ -519,6 +527,10 @@ int thttp_stack_start(thttp_stack_handle_t *self)
 		}
 		stack->started = tsk_true;
 	}
+	else{
+		TSK_OBJECT_SAFE_FREE(stack->transport);
+	}
+
 	return ret;
 }
 
@@ -588,13 +600,25 @@ int thttp_stack_stop(thttp_stack_handle_t *self)
 		return -2;
 	}
 
-	if(!(ret = tnet_transport_shutdown(stack->transport))){
+	// FIXME: stop = destroy transport
+	if(1){
+		tsk_list_item_t* item;
+		tsk_list_foreach(item, stack->sessions){
+			thttp_session_closefd((thttp_session_handle_t*)item->data);
+		}
+		
+		TSK_OBJECT_SAFE_FREE(stack->transport);
 		stack->started = tsk_false;
 	}
 	else{
-		TSK_DEBUG_ERROR("Failed to stop the stack");
+		if(!(ret = tnet_transport_shutdown(stack->transport))){
+			stack->started = tsk_false;
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to stop the stack");
+		}
 	}
-	return ret;
+	return 0;
 }
 
 /** Alerts the user.

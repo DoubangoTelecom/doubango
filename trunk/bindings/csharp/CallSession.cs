@@ -40,38 +40,53 @@ public class CallSession : SipSession {
   public CallSession(SipStack Stack) : this(tinyWRAPPINVOKE.new_CallSession(SipStack.getCPtr(Stack)), true) {
   }
 
-  public bool CallAudio(string remoteUri) {
-    bool ret = tinyWRAPPINVOKE.CallSession_CallAudio(swigCPtr, remoteUri);
+  public bool callAudio(string remoteUri) {
+    bool ret = tinyWRAPPINVOKE.CallSession_callAudio(swigCPtr, remoteUri);
     return ret;
   }
 
-  public bool CallAudioVideo(string remoteUri) {
-    bool ret = tinyWRAPPINVOKE.CallSession_CallAudioVideo(swigCPtr, remoteUri);
+  public bool callAudioVideo(string remoteUri) {
+    bool ret = tinyWRAPPINVOKE.CallSession_callAudioVideo(swigCPtr, remoteUri);
     return ret;
   }
 
-  public bool CallVideo(string remoteUri) {
-    bool ret = tinyWRAPPINVOKE.CallSession_CallVideo(swigCPtr, remoteUri);
+  public bool callVideo(string remoteUri) {
+    bool ret = tinyWRAPPINVOKE.CallSession_callVideo(swigCPtr, remoteUri);
     return ret;
   }
 
-  public bool Accept() {
-    bool ret = tinyWRAPPINVOKE.CallSession_Accept(swigCPtr);
+  public bool setSessionTimer(uint timeout, string refresher) {
+    bool ret = tinyWRAPPINVOKE.CallSession_setSessionTimer(swigCPtr, timeout, refresher);
     return ret;
   }
 
-  public bool Hold() {
-    bool ret = tinyWRAPPINVOKE.CallSession_Hold(swigCPtr);
+  public bool set100rel(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.CallSession_set100rel(swigCPtr, enabled);
     return ret;
   }
 
-  public bool Resume() {
-    bool ret = tinyWRAPPINVOKE.CallSession_Resume(swigCPtr);
+  public bool setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength) {
+    bool ret = tinyWRAPPINVOKE.CallSession_setQoS(swigCPtr, (int)type, (int)strength);
     return ret;
   }
 
-  public bool Hangup() {
-    bool ret = tinyWRAPPINVOKE.CallSession_Hangup(swigCPtr);
+  public bool accept() {
+    bool ret = tinyWRAPPINVOKE.CallSession_accept(swigCPtr);
+    return ret;
+  }
+
+  public bool hold() {
+    bool ret = tinyWRAPPINVOKE.CallSession_hold(swigCPtr);
+    return ret;
+  }
+
+  public bool resume() {
+    bool ret = tinyWRAPPINVOKE.CallSession_resume(swigCPtr);
+    return ret;
+  }
+
+  public bool hangup() {
+    bool ret = tinyWRAPPINVOKE.CallSession_hangup(swigCPtr);
     return ret;
   }
 

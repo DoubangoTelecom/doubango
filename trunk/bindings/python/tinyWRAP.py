@@ -302,13 +302,16 @@ class CallSession(SipSession):
         except: self.this = this
     __swig_destroy__ = _tinyWRAP.delete_CallSession
     __del__ = lambda self : None;
-    def CallAudio(self, *args): return _tinyWRAP.CallSession_CallAudio(self, *args)
-    def CallAudioVideo(self, *args): return _tinyWRAP.CallSession_CallAudioVideo(self, *args)
-    def CallVideo(self, *args): return _tinyWRAP.CallSession_CallVideo(self, *args)
-    def Accept(self): return _tinyWRAP.CallSession_Accept(self)
-    def Hold(self): return _tinyWRAP.CallSession_Hold(self)
-    def Resume(self): return _tinyWRAP.CallSession_Resume(self)
-    def Hangup(self): return _tinyWRAP.CallSession_Hangup(self)
+    def callAudio(self, *args): return _tinyWRAP.CallSession_callAudio(self, *args)
+    def callAudioVideo(self, *args): return _tinyWRAP.CallSession_callAudioVideo(self, *args)
+    def callVideo(self, *args): return _tinyWRAP.CallSession_callVideo(self, *args)
+    def setSessionTimer(self, *args): return _tinyWRAP.CallSession_setSessionTimer(self, *args)
+    def set100rel(self, *args): return _tinyWRAP.CallSession_set100rel(self, *args)
+    def setQoS(self, *args): return _tinyWRAP.CallSession_setQoS(self, *args)
+    def accept(self): return _tinyWRAP.CallSession_accept(self)
+    def hold(self): return _tinyWRAP.CallSession_hold(self)
+    def resume(self): return _tinyWRAP.CallSession_resume(self)
+    def hangup(self): return _tinyWRAP.CallSession_hangup(self)
 CallSession_swigregister = _tinyWRAP.CallSession_swigregister
 CallSession_swigregister(CallSession)
 
@@ -326,9 +329,9 @@ class MessagingSession(SipSession):
         except: self.this = this
     __swig_destroy__ = _tinyWRAP.delete_MessagingSession
     __del__ = lambda self : None;
-    def Send(self, *args): return _tinyWRAP.MessagingSession_Send(self, *args)
-    def Accept(self): return _tinyWRAP.MessagingSession_Accept(self)
-    def Reject(self): return _tinyWRAP.MessagingSession_Reject(self)
+    def send(self, *args): return _tinyWRAP.MessagingSession_send(self, *args)
+    def accept(self): return _tinyWRAP.MessagingSession_accept(self)
+    def reject(self): return _tinyWRAP.MessagingSession_reject(self)
 MessagingSession_swigregister = _tinyWRAP.MessagingSession_swigregister
 MessagingSession_swigregister(MessagingSession)
 
@@ -346,7 +349,7 @@ class OptionsSession(SipSession):
         except: self.this = this
     __swig_destroy__ = _tinyWRAP.delete_OptionsSession
     __del__ = lambda self : None;
-    def Send(self): return _tinyWRAP.OptionsSession_Send(self)
+    def send(self): return _tinyWRAP.OptionsSession_send(self)
 OptionsSession_swigregister = _tinyWRAP.OptionsSession_swigregister
 OptionsSession_swigregister(OptionsSession)
 
@@ -364,8 +367,8 @@ class PublicationSession(SipSession):
         except: self.this = this
     __swig_destroy__ = _tinyWRAP.delete_PublicationSession
     __del__ = lambda self : None;
-    def Publish(self, *args): return _tinyWRAP.PublicationSession_Publish(self, *args)
-    def UnPublish(self): return _tinyWRAP.PublicationSession_UnPublish(self)
+    def publish(self, *args): return _tinyWRAP.PublicationSession_publish(self, *args)
+    def unPublish(self): return _tinyWRAP.PublicationSession_unPublish(self)
 PublicationSession_swigregister = _tinyWRAP.PublicationSession_swigregister
 PublicationSession_swigregister(PublicationSession)
 
@@ -383,8 +386,8 @@ class RegistrationSession(SipSession):
         except: self.this = this
     __swig_destroy__ = _tinyWRAP.delete_RegistrationSession
     __del__ = lambda self : None;
-    def Register(self): return _tinyWRAP.RegistrationSession_Register(self)
-    def UnRegister(self): return _tinyWRAP.RegistrationSession_UnRegister(self)
+    def register_(self): return _tinyWRAP.RegistrationSession_register_(self)
+    def unRegister(self): return _tinyWRAP.RegistrationSession_unRegister(self)
 RegistrationSession_swigregister = _tinyWRAP.RegistrationSession_swigregister
 RegistrationSession_swigregister(RegistrationSession)
 
@@ -402,8 +405,8 @@ class SubscriptionSession(SipSession):
         except: self.this = this
     __swig_destroy__ = _tinyWRAP.delete_SubscriptionSession
     __del__ = lambda self : None;
-    def Subscribe(self): return _tinyWRAP.SubscriptionSession_Subscribe(self)
-    def UnSubscribe(self): return _tinyWRAP.SubscriptionSession_UnSubscribe(self)
+    def subscribe(self): return _tinyWRAP.SubscriptionSession_subscribe(self)
+    def unSubscribe(self): return _tinyWRAP.SubscriptionSession_unSubscribe(self)
 SubscriptionSession_swigregister = _tinyWRAP.SubscriptionSession_swigregister
 SubscriptionSession_swigregister(SubscriptionSession)
 
@@ -639,8 +642,20 @@ class SipStack(SafeObject):
     def setAoR(self, *args): return _tinyWRAP.SipStack_setAoR(self, *args)
     def isValid(self): return _tinyWRAP.SipStack_isValid(self)
     def stop(self): return _tinyWRAP.SipStack_stop(self)
+    __swig_getmethods__["setCodecs"] = lambda x: _tinyWRAP.SipStack_setCodecs
+    if _newclass:setCodecs = staticmethod(_tinyWRAP.SipStack_setCodecs)
+    __swig_getmethods__["setCodecs_2"] = lambda x: _tinyWRAP.SipStack_setCodecs_2
+    if _newclass:setCodecs_2 = staticmethod(_tinyWRAP.SipStack_setCodecs_2)
 SipStack_swigregister = _tinyWRAP.SipStack_swigregister
 SipStack_swigregister(SipStack)
+
+def SipStack_setCodecs(*args):
+  return _tinyWRAP.SipStack_setCodecs(*args)
+SipStack_setCodecs = _tinyWRAP.SipStack_setCodecs
+
+def SipStack_setCodecs_2(*args):
+  return _tinyWRAP.SipStack_setCodecs_2(*args)
+SipStack_setCodecs_2 = _tinyWRAP.SipStack_setCodecs_2
 
 tsip_event_invite = _tinyWRAP.tsip_event_invite
 tsip_event_message = _tinyWRAP.tsip_event_message
@@ -698,6 +713,33 @@ tmedia_rgb565le = _tinyWRAP.tmedia_rgb565le
 tmedia_rgb565be = _tinyWRAP.tmedia_rgb565be
 tmedia_nv21 = _tinyWRAP.tmedia_nv21
 tmedia_yuv420p = _tinyWRAP.tmedia_yuv420p
+tmedia_qos_stype_none = _tinyWRAP.tmedia_qos_stype_none
+tmedia_qos_stype_segmented = _tinyWRAP.tmedia_qos_stype_segmented
+tmedia_qos_stype_e2e = _tinyWRAP.tmedia_qos_stype_e2e
+tmedia_qos_strength_none = _tinyWRAP.tmedia_qos_strength_none
+tmedia_qos_strength_failure = _tinyWRAP.tmedia_qos_strength_failure
+tmedia_qos_strength_unknown = _tinyWRAP.tmedia_qos_strength_unknown
+tmedia_qos_strength_optional = _tinyWRAP.tmedia_qos_strength_optional
+tmedia_qos_strength_mandatory = _tinyWRAP.tmedia_qos_strength_mandatory
+tdav_codec_id_amr_nb_oa = _tinyWRAP.tdav_codec_id_amr_nb_oa
+tdav_codec_id_amr_nb_be = _tinyWRAP.tdav_codec_id_amr_nb_be
+tdav_codec_id_amr_wb_oa = _tinyWRAP.tdav_codec_id_amr_wb_oa
+tdav_codec_id_amr_wb_be = _tinyWRAP.tdav_codec_id_amr_wb_be
+tdav_codec_id_gsm = _tinyWRAP.tdav_codec_id_gsm
+tdav_codec_id_pcma = _tinyWRAP.tdav_codec_id_pcma
+tdav_codec_id_pcmu = _tinyWRAP.tdav_codec_id_pcmu
+tdav_codec_id_ilbc = _tinyWRAP.tdav_codec_id_ilbc
+tdav_codec_id_speex_nb = _tinyWRAP.tdav_codec_id_speex_nb
+tdav_codec_id_speex_wb = _tinyWRAP.tdav_codec_id_speex_wb
+tdav_codec_id_speex_uwb = _tinyWRAP.tdav_codec_id_speex_uwb
+tdav_codec_id_h261 = _tinyWRAP.tdav_codec_id_h261
+tdav_codec_id_h263 = _tinyWRAP.tdav_codec_id_h263
+tdav_codec_id_h263p = _tinyWRAP.tdav_codec_id_h263p
+tdav_codec_id_h263pp = _tinyWRAP.tdav_codec_id_h263pp
+tdav_codec_id_h264_bp10 = _tinyWRAP.tdav_codec_id_h264_bp10
+tdav_codec_id_h264_bp20 = _tinyWRAP.tdav_codec_id_h264_bp20
+tdav_codec_id_h264_bp30 = _tinyWRAP.tdav_codec_id_h264_bp30
+tdav_codec_id_theora = _tinyWRAP.tdav_codec_id_theora
 class XcapSelector(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, XcapSelector, name, value)

@@ -170,40 +170,77 @@ CallSession::~CallSession()
 {
 }
 
-bool CallSession::CallAudio(const char* remoteUri)
+bool CallSession::callAudio(const char* remoteUri)
 {
 	tsip_ssession_set(this->handle,
 		TSIP_SSESSION_SET_TO(remoteUri),
 		TSIP_SSESSION_SET_NULL());
 
-	int ret = tsip_action_INVITE(this->handle, tmedia_audio,
-		TSIP_ACTION_SET_NULL());
-	return (ret == 0);
+	return (tsip_action_INVITE(this->handle, tmedia_audio,
+		TSIP_ACTION_SET_NULL()) == 0);
 }
 
-bool CallSession::CallAudioVideo(const char* remoteUri)
+bool CallSession::callAudioVideo(const char* remoteUri)
 {
 	tsip_ssession_set(this->handle,
 		TSIP_SSESSION_SET_TO(remoteUri),
 		TSIP_SSESSION_SET_NULL());
 
-	int ret = tsip_action_INVITE(this->handle, (tmedia_type_t)(tmedia_audio | tmedia_video),
-		TSIP_ACTION_SET_NULL());
-	return (ret == 0);
+	return (tsip_action_INVITE(this->handle, (tmedia_type_t)(tmedia_audio | tmedia_video),
+		TSIP_ACTION_SET_NULL()) == 0);
 }
 
-bool CallSession::CallVideo(const char* remoteUri)
+bool CallSession::callVideo(const char* remoteUri)
 {
 	tsip_ssession_set(this->handle,
 		TSIP_SSESSION_SET_TO(remoteUri),
 		TSIP_SSESSION_SET_NULL());
 
-	int ret = tsip_action_INVITE(this->handle, tmedia_video,
-		TSIP_ACTION_SET_NULL());
-	return (ret == 0);
+	return (tsip_action_INVITE(this->handle, tmedia_video,
+		TSIP_ACTION_SET_NULL()) == 0);
 }
 
-bool CallSession::Hangup()
+bool CallSession::setSessionTimer(unsigned timeout, const char* refresher)
+{
+	return (tsip_ssession_set(this->handle,
+			TSIP_SSESSION_SET_MEDIA(
+				TSIP_MSESSION_SET_TIMERS(timeout, refresher),
+				TSIP_MSESSION_SET_NULL()
+			),
+			TSIP_SSESSION_SET_NULL()) == 0);
+}
+
+bool CallSession::set100rel(bool enabled)
+{
+	if(enabled){
+		return (tsip_ssession_set(this->handle,
+			TSIP_SSESSION_SET_MEDIA(
+				TSIP_MSESSION_SET_100rel(),
+				TSIP_MSESSION_SET_NULL()
+			),
+			TSIP_SSESSION_SET_NULL()) == 0);
+	}
+	else{
+		return (tsip_ssession_set(this->handle,
+			TSIP_SSESSION_SET_MEDIA(
+				TSIP_MSESSION_UNSET_100rel(),
+				TSIP_MSESSION_SET_NULL()
+			),
+			TSIP_SSESSION_SET_NULL()) == 0);
+	}
+}
+
+bool CallSession::setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength)
+{
+	return (tsip_ssession_set(this->handle,
+			TSIP_SSESSION_SET_MEDIA(
+				TSIP_MSESSION_SET_QOS(type, strength),
+				TSIP_MSESSION_SET_NULL()
+			),
+			TSIP_SSESSION_SET_NULL()) == 0);
+}
+
+bool CallSession::hangup()
 {
 	int ret = tsip_action_BYE(this->handle,
 		TSIP_ACTION_SET_NULL());
@@ -218,7 +255,7 @@ static void *__droid_accept(void *param)
 	return tsk_null;
 }
 
-bool CallSession::Accept()
+bool CallSession::accept()
 {
 	void* tid[1] = {0};
 	tsip_ssession_handle_t *handle;
@@ -232,23 +269,22 @@ bool CallSession::Accept()
 	return (ret == 0);
 }
 #else
-bool CallSession::Accept()
+bool CallSession::accept()
 {
-	int ret = tsip_action_ACCEPT(this->handle,
-		TSIP_ACTION_SET_NULL());
-	return (ret == 0);
+	return (tsip_action_ACCEPT(this->handle,
+		TSIP_ACTION_SET_NULL()) == 0);
 }
 #endif
 
 
-bool CallSession::Hold()
+bool CallSession::hold()
 {
 	int ret = tsip_action_HOLD(this->handle, tmedia_all,
 		TSIP_ACTION_SET_NULL());
 	return (ret == 0);
 }
 
-bool CallSession::Resume()
+bool CallSession::resume()
 {
 	int ret = tsip_action_RESUME(this->handle, tmedia_all,
 		TSIP_ACTION_SET_NULL());
@@ -273,7 +309,7 @@ MessagingSession::~MessagingSession()
 {
 }
 
-bool MessagingSession::Send(const void* payload, unsigned len)
+bool MessagingSession::send(const void* payload, unsigned len)
 {
 	TSK_DEBUG_INFO("MessagingSession::Send()");
 	int ret;
@@ -289,18 +325,16 @@ bool MessagingSession::Send(const void* payload, unsigned len)
 	return (ret == 0);
 }
 
-bool MessagingSession::Accept()
+bool MessagingSession::accept()
 {
-	int ret = tsip_action_ACCEPT(this->handle,
-		TSIP_ACTION_SET_NULL());
-	return (ret == 0);
+	return (tsip_action_ACCEPT(this->handle,
+		TSIP_ACTION_SET_NULL()) == 0);
 }
 
-bool MessagingSession::Reject()
+bool MessagingSession::reject()
 {
-	int ret = tsip_action_REJECT(this->handle,
-		TSIP_ACTION_SET_NULL());
-	return (ret == 0);
+	return (tsip_action_REJECT(this->handle,
+		TSIP_ACTION_SET_NULL()) == 0);
 }
 
 
@@ -314,13 +348,10 @@ OptionsSession::~OptionsSession()
 {
 }
 
-bool OptionsSession::Send()
-{
-	TSK_DEBUG_INFO("OptionsSession::Send()");
-	
-	int ret = tsip_action_OPTIONS(this->handle,
-		TSIP_ACTION_SET_NULL());
-	return (ret == 0);
+bool OptionsSession::send()
+{	
+	return (tsip_action_OPTIONS(this->handle,
+		TSIP_ACTION_SET_NULL()) == 0);
 }
 
 
@@ -337,9 +368,8 @@ PublicationSession::~PublicationSession()
 {
 }
 
-bool PublicationSession::Publish(const void* payload, unsigned len)
+bool PublicationSession::publish(const void* payload, unsigned len)
 {
-	TSK_DEBUG_INFO("PublicationSession::Publish()");
 	int ret;
 	if(payload && len){
 		ret = tsip_action_PUBLISH(this->handle,
@@ -353,12 +383,10 @@ bool PublicationSession::Publish(const void* payload, unsigned len)
 	return (ret == 0);
 }
 
-bool PublicationSession::UnPublish()
+bool PublicationSession::unPublish()
 {
-	TSK_DEBUG_INFO("PublicationSession::UnPublish()");
-	int ret = tsip_action_UNPUBLISH(this->handle,
-		TSIP_ACTION_SET_NULL());
-	return (ret == 0);
+	return (tsip_action_UNPUBLISH(this->handle,
+		TSIP_ACTION_SET_NULL()) == 0);
 }
 
 
@@ -373,19 +401,16 @@ RegistrationSession::~RegistrationSession()
 {
 }
 
-bool RegistrationSession::Register()
+bool RegistrationSession::register_()
 {
-	TSK_DEBUG_INFO("Android---RegistrationSession::Register()");
-	int ret = tsip_action_REGISTER(this->handle,
-		TSIP_ACTION_SET_NULL());
-	return (ret == 0);
+	return (tsip_action_REGISTER(this->handle,
+		TSIP_ACTION_SET_NULL()) == 0);
 }
 
-bool RegistrationSession::UnRegister()
+bool RegistrationSession::unRegister()
 {
-	int ret = tsip_action_UNREGISTER(this->handle,
-		TSIP_ACTION_SET_NULL());
-	return (ret == 0);
+	return (tsip_action_UNREGISTER(this->handle,
+		TSIP_ACTION_SET_NULL()) == 0);
 }
 
 
@@ -400,16 +425,14 @@ SubscriptionSession::~SubscriptionSession()
 {
 }
 
-bool SubscriptionSession::Subscribe()
+bool SubscriptionSession::subscribe()
 {
-	int ret = tsip_action_SUBSCRIBE(this->handle,
-		TSIP_ACTION_SET_NULL());
-	return (ret == 0);
+	return (tsip_action_SUBSCRIBE(this->handle,
+		TSIP_ACTION_SET_NULL()) == 0);
 }
 
-bool SubscriptionSession::UnSubscribe()
+bool SubscriptionSession::unSubscribe()
 {
-	int ret = tsip_action_UNSUBSCRIBE(this->handle,
-		TSIP_ACTION_SET_NULL());
-	return (ret == 0);
+	return (tsip_action_UNSUBSCRIBE(this->handle,
+		TSIP_ACTION_SET_NULL()) == 0);
 }

@@ -10,7 +10,7 @@ namespace test
     {
         const String REALM = "micromethod.com";
         const String USER = "mamadou";
-        const String PROXY_CSCF_IP = "192.168.0.17";
+        const String PROXY_CSCF_IP = "192.168.0.10";
         const uint PROXY_CSCF_PORT = 5060;
         const String PASSWORD = "";
 
@@ -79,24 +79,25 @@ namespace test
             regSession.addCaps("+g.3gpp.smsip");
             regSession.addCaps("language", "\"en,fr\"");
             regSession.setExpires(35);
-            regSession.Register();
+            regSession.register_();
 
             Console.ReadLine();
-            
-
 
             callSession = new CallSession(sipStack);
-            callSession.CallAudioVideo(String.Format("sip:bob@{0}", REALM));
+            callSession.set100rel(true);
+            callSession.setSessionTimer(90, "uas");
+            callSession.setQoS(tmedia_qos_stype_t.tmedia_qos_stype_segmented, tmedia_qos_strength_t.tmedia_qos_strength_mandatory);
+            callSession.callAudioVideo(String.Format("sip:bob@{0}", REALM));
 
             tcb = new TimerCallback(OnTimer);
             timer = new Timer(tcb, new AutoResetEvent(false), 0, 20);
 
             Console.ReadLine();
-            callSession.Hold();
+            callSession.hold();
             Console.ReadLine();
-            callSession.Resume();
+            callSession.resume();
             Console.ReadLine();
-            callSession.Hangup();
+            callSession.hangup();
 
 
             ////Thread.Sleep(2000);
@@ -140,8 +141,8 @@ namespace test
             int ret2 = audioProducer.push(bytesAudio, (uint)bytesAudio.Length);
             //Console.WriteLine("push=" + ret);
 
-            byte[] bytesVideo = new byte[176*144*3];
-            int ret3 = videoProducer.push(bytesVideo, (uint)bytesVideo.Length);
+            //byte[] bytesVideo = new byte[176*144*3];
+            //int ret3 = videoProducer.push(bytesVideo, (uint)bytesVideo.Length);
         }
 
         static Timer timer;
@@ -343,7 +344,7 @@ namespace test
                     }
                     else if ((session = e.takeSessionOwnership()) != null)
                     {
-                        session.Accept();
+                        session.accept();
                     }
                     break;
                 case tsip_invite_event_type_t.tsip_i_request:
@@ -444,11 +445,11 @@ namespace test
                     if (content != null)
                     {
                         Console.WriteLine("Message Content ==> {0}", Encoding.UTF8.GetString(content));
-                        session.Accept();
+                        session.accept();
                     }
                     else
                     {
-                        session.Reject();
+                        session.reject();
                     }
                     break;
                 case tsip_message_event_type_t.tsip_ao_message:

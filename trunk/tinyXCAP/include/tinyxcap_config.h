@@ -23,10 +23,6 @@
 #ifndef TINYXCAP_CONFIG_H
 #define TINYXCAP_CONFIG_H
 
-#if HAVE_CONFIG_H
-	#include "config.h"
-#endif
-
 #ifdef __SYMBIAN32__
 #undef _WIN32 /* Because of WINSCW */
 #endif
@@ -73,6 +69,10 @@
 #include <stdint.h>
 #ifdef __SYMBIAN32__
 #include <stdlib.h>
+#endif
+
+#if HAVE_CONFIG_H
+	#include "config.h"
 #endif
 
 #endif // TINYXCAP_CONFIG_H

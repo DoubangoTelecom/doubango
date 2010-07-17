@@ -37,8 +37,8 @@ public class OptionsSession extends SipSession {
     this(tinyWRAPJNI.new_OptionsSession(SipStack.getCPtr(Stack), Stack), true);
   }
 
-  public boolean Send() {
-    return tinyWRAPJNI.OptionsSession_Send(swigCPtr, this);
+  public boolean send() {
+    return tinyWRAPJNI.OptionsSession_send(swigCPtr, this);
   }
 
 }
