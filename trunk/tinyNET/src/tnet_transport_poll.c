@@ -447,6 +447,32 @@ bail:
 	return ret;
 }
 
+int tnet_transport_unprepare(tnet_transport_t *transport)
+{
+	int ret = -1;
+	transport_context_t *context;
+	
+	if(!transport || !transport->context){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		return -1;
+	}
+	else{
+		context = transport->context;
+	}
+
+	if(!transport->prepared){
+		TSK_DEBUG_ERROR("Transport not prepared.");
+		return -2;
+	}
+
+	transport->prepared = tsk_false;
+	
+	while(context->count){
+		removeSocket(0, context); // safe
+	}
+
+	return 0;
+}
 
 /*=== Main thread */
 void *tnet_transport_mainthread(void *param)

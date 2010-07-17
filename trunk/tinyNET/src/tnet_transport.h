@@ -99,7 +99,7 @@ typedef struct tnet_transport_s
 	char* local_ip;
 	tnet_socket_t *master;
 
-	void *context;
+	tsk_object_t *context;
 	tsk_bool_t prepared;
 
 	//unsigned connected:1;
@@ -120,7 +120,7 @@ typedef struct tnet_transport_s
 }
 tnet_transport_t;
 
-void* tnet_transport_context_create();
+tsk_object_t* tnet_transport_context_create();
 TINYNET_API tnet_transport_t* tnet_transport_create(const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description);
 tnet_transport_event_t* tnet_transport_event_create(tnet_transport_event_type_t type, const void* callback_data, tnet_fd_t fd);
 

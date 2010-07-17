@@ -42,6 +42,7 @@
 #include <string.h> /* memcpy, ...(<#void * #>, <#const void * #>, <#tsk_size_t #>) */
 
 extern int tnet_transport_prepare(tnet_transport_t *transport);
+extern int tnet_transport_unprepare(tnet_transport_t *transport);
 extern void *tnet_transport_mainthread(void *param);
 extern int tnet_transport_stop(tnet_transport_t *transport);
 
@@ -258,13 +259,16 @@ int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_tran
 int tnet_transport_shutdown(tnet_transport_handle_t* handle)
 {
 	if(handle){
-		return tnet_transport_stop(handle);
+		int ret;
+		if(!(ret = tnet_transport_stop(handle))){
+			ret = tnet_transport_unprepare(handle);
+		}
+		return ret;
 	}
 	else{
 		TSK_DEBUG_ERROR("NULL transport object.");
+		return -1;
 	}
-
-	return -1;
 }
 
 
