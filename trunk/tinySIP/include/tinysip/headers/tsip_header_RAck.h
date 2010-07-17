@@ -35,7 +35,7 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_HEADER_RACK_VA_ARGS(seq, cseq, method)		tsip_header_RAck_def_t, (int32_t)seq, (int32_t)cseq, (const char*)method
+#define TSIP_HEADER_RACK_VA_ARGS(seq, cseq, method)		tsip_header_RAck_def_t, (uint32_t)seq, (uint32_t)cseq, (const char*)method
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
@@ -55,7 +55,7 @@ typedef struct tsip_header_RAck_s
 tsip_header_RAck_t;
 
 
-TINYSIP_API tsip_header_RAck_t* tsip_header_RAck_create(int32_t seq, int32_t cseq, const char* method);
+TINYSIP_API tsip_header_RAck_t* tsip_header_RAck_create(uint32_t seq, uint32_t cseq, const char* method);
 TINYSIP_API tsip_header_RAck_t* tsip_header_RAck_create_null();
 
 TINYSIP_API tsip_header_RAck_t *tsip_header_RAck_parse(const char *data, tsk_size_t size);
