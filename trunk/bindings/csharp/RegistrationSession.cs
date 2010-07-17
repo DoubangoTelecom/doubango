@@ -40,13 +40,13 @@ public class RegistrationSession : SipSession {
   public RegistrationSession(SipStack Stack) : this(tinyWRAPPINVOKE.new_RegistrationSession(SipStack.getCPtr(Stack)), true) {
   }
 
-  public bool Register() {
-    bool ret = tinyWRAPPINVOKE.RegistrationSession_Register(swigCPtr);
+  public bool register_() {
+    bool ret = tinyWRAPPINVOKE.RegistrationSession_register_(swigCPtr);
     return ret;
   }
 
-  public bool UnRegister() {
-    bool ret = tinyWRAPPINVOKE.RegistrationSession_UnRegister(swigCPtr);
+  public bool unRegister() {
+    bool ret = tinyWRAPPINVOKE.RegistrationSession_unRegister(swigCPtr);
     return ret;
   }
 

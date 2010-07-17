@@ -153,6 +153,53 @@ int tdav_init()
 	return 0;
 }
 
+typedef struct tdav_codec_decl_s{
+	tdav_codec_id_t id;
+	const tmedia_codec_plugin_def_t** plugin;
+} tdav_codec_decl_t;
+
+void tdav_set_codecs(tdav_codec_id_t codecs)
+{
+	int i;
+	static const tdav_codec_decl_t __codecs[] = {
+#if HAVE_OPENCORE_AMR
+		{ tdav_codec_id_amr_nb_oa, &tdav_codec_amrnb_oa_plugin_def_t },
+		{ tdav_codec_id_amr_nb_be, &tdav_codec_amrnb_be_plugin_def_t },
+#endif
+#if HAVE_LIBGSM
+		{ tdav_codec_id_gsm, &tdav_codec_gsm_plugin_def_t },
+#endif
+		{ tdav_codec_id_pcma, &tdav_codec_g711a_plugin_def_t },
+		{ tdav_codec_id_pcmu, &tdav_codec_g711u_plugin_def_t },
+#if HAVE_ILBC
+		{ tdav_codec_id_ilbc, &tdav_codec_ilbc_plugin_def_t },
+#endif
+#if HAVE_LIB_SPEEX
+		{ tdav_codec_id_speex_nb, &tdav_codec_speex_nb_plugin_def_t },
+#endif
+
+#if HAVE_FFMPEG
+		{ tdav_codec_id_h261, &tdav_codec_h261_plugin_def_t },
+		{ tdav_codec_id_h263, &tdav_codec_h263_plugin_def_t },
+		{ tdav_codec_id_h263p, &tdav_codec_h263p_plugin_def_t },
+		{ tdav_codec_id_h263pp, &tdav_codec_h263pp_plugin_def_t },
+		{ tdav_codec_id_h264_bp10, &tdav_codec_h264_bp10_plugin_def_t },
+		{ tdav_codec_id_h264_bp20, &tdav_codec_h264_bp20_plugin_def_t },
+		{ tdav_codec_id_h264_bp30, &tdav_codec_h264_bp30_plugin_def_t },
+		{ tdav_codec_id_theora, &tdav_codec_theora_plugin_def_t }
+#endif
+	};
+
+	for(i=0; i<sizeof(__codecs)/sizeof(tdav_codec_decl_t); i++){
+		if((codecs & __codecs[i].id)){
+			tmedia_codec_plugin_register(*__codecs[i].plugin);
+		}
+		else{
+			tmedia_codec_plugin_unregister(*__codecs[i].plugin);
+		}
+	}
+}
+
 int tdav_deinit()
 {
 	/* === UnRegister sessions === */

@@ -101,4 +101,12 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_stop(swigCPtr, this);
   }
 
+  public static void setCodecs(tdav_codec_id_t codecs) {
+    tinyWRAPJNI.SipStack_setCodecs(codecs.swigValue());
+  }
+
+  public static void setCodecs_2(int codecs) {
+    tinyWRAPJNI.SipStack_setCodecs_2(codecs);
+  }
+
 }

@@ -538,13 +538,16 @@ sub DESTROY {
     }
 }
 
-*CallAudio = *tinyWRAPc::CallSession_CallAudio;
-*CallAudioVideo = *tinyWRAPc::CallSession_CallAudioVideo;
-*CallVideo = *tinyWRAPc::CallSession_CallVideo;
-*Accept = *tinyWRAPc::CallSession_Accept;
-*Hold = *tinyWRAPc::CallSession_Hold;
-*Resume = *tinyWRAPc::CallSession_Resume;
-*Hangup = *tinyWRAPc::CallSession_Hangup;
+*callAudio = *tinyWRAPc::CallSession_callAudio;
+*callAudioVideo = *tinyWRAPc::CallSession_callAudioVideo;
+*callVideo = *tinyWRAPc::CallSession_callVideo;
+*setSessionTimer = *tinyWRAPc::CallSession_setSessionTimer;
+*set100rel = *tinyWRAPc::CallSession_set100rel;
+*setQoS = *tinyWRAPc::CallSession_setQoS;
+*accept = *tinyWRAPc::CallSession_accept;
+*hold = *tinyWRAPc::CallSession_hold;
+*resume = *tinyWRAPc::CallSession_resume;
+*hangup = *tinyWRAPc::CallSession_hangup;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -582,9 +585,9 @@ sub DESTROY {
     }
 }
 
-*Send = *tinyWRAPc::MessagingSession_Send;
-*Accept = *tinyWRAPc::MessagingSession_Accept;
-*Reject = *tinyWRAPc::MessagingSession_Reject;
+*send = *tinyWRAPc::MessagingSession_send;
+*accept = *tinyWRAPc::MessagingSession_accept;
+*reject = *tinyWRAPc::MessagingSession_reject;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -622,7 +625,7 @@ sub DESTROY {
     }
 }
 
-*Send = *tinyWRAPc::OptionsSession_Send;
+*send = *tinyWRAPc::OptionsSession_send;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -660,8 +663,8 @@ sub DESTROY {
     }
 }
 
-*Publish = *tinyWRAPc::PublicationSession_Publish;
-*UnPublish = *tinyWRAPc::PublicationSession_UnPublish;
+*publish = *tinyWRAPc::PublicationSession_publish;
+*unPublish = *tinyWRAPc::PublicationSession_unPublish;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -699,8 +702,8 @@ sub DESTROY {
     }
 }
 
-*Register = *tinyWRAPc::RegistrationSession_Register;
-*UnRegister = *tinyWRAPc::RegistrationSession_UnRegister;
+*register_ = *tinyWRAPc::RegistrationSession_register_;
+*unRegister = *tinyWRAPc::RegistrationSession_unRegister;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -738,8 +741,8 @@ sub DESTROY {
     }
 }
 
-*Subscribe = *tinyWRAPc::SubscriptionSession_Subscribe;
-*UnSubscribe = *tinyWRAPc::SubscriptionSession_UnSubscribe;
+*subscribe = *tinyWRAPc::SubscriptionSession_subscribe;
+*unSubscribe = *tinyWRAPc::SubscriptionSession_unSubscribe;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1086,6 +1089,8 @@ sub DESTROY {
 *setAoR = *tinyWRAPc::SipStack_setAoR;
 *isValid = *tinyWRAPc::SipStack_isValid;
 *stop = *tinyWRAPc::SipStack_stop;
+*setCodecs = *tinyWRAPc::SipStack_setCodecs;
+*setCodecs_2 = *tinyWRAPc::SipStack_setCodecs_2;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1365,6 +1370,33 @@ package tinyWRAP;
 *tmedia_rgb565be = *tinyWRAPc::tmedia_rgb565be;
 *tmedia_nv21 = *tinyWRAPc::tmedia_nv21;
 *tmedia_yuv420p = *tinyWRAPc::tmedia_yuv420p;
+*tmedia_qos_stype_none = *tinyWRAPc::tmedia_qos_stype_none;
+*tmedia_qos_stype_segmented = *tinyWRAPc::tmedia_qos_stype_segmented;
+*tmedia_qos_stype_e2e = *tinyWRAPc::tmedia_qos_stype_e2e;
+*tmedia_qos_strength_none = *tinyWRAPc::tmedia_qos_strength_none;
+*tmedia_qos_strength_failure = *tinyWRAPc::tmedia_qos_strength_failure;
+*tmedia_qos_strength_unknown = *tinyWRAPc::tmedia_qos_strength_unknown;
+*tmedia_qos_strength_optional = *tinyWRAPc::tmedia_qos_strength_optional;
+*tmedia_qos_strength_mandatory = *tinyWRAPc::tmedia_qos_strength_mandatory;
+*tdav_codec_id_amr_nb_oa = *tinyWRAPc::tdav_codec_id_amr_nb_oa;
+*tdav_codec_id_amr_nb_be = *tinyWRAPc::tdav_codec_id_amr_nb_be;
+*tdav_codec_id_amr_wb_oa = *tinyWRAPc::tdav_codec_id_amr_wb_oa;
+*tdav_codec_id_amr_wb_be = *tinyWRAPc::tdav_codec_id_amr_wb_be;
+*tdav_codec_id_gsm = *tinyWRAPc::tdav_codec_id_gsm;
+*tdav_codec_id_pcma = *tinyWRAPc::tdav_codec_id_pcma;
+*tdav_codec_id_pcmu = *tinyWRAPc::tdav_codec_id_pcmu;
+*tdav_codec_id_ilbc = *tinyWRAPc::tdav_codec_id_ilbc;
+*tdav_codec_id_speex_nb = *tinyWRAPc::tdav_codec_id_speex_nb;
+*tdav_codec_id_speex_wb = *tinyWRAPc::tdav_codec_id_speex_wb;
+*tdav_codec_id_speex_uwb = *tinyWRAPc::tdav_codec_id_speex_uwb;
+*tdav_codec_id_h261 = *tinyWRAPc::tdav_codec_id_h261;
+*tdav_codec_id_h263 = *tinyWRAPc::tdav_codec_id_h263;
+*tdav_codec_id_h263p = *tinyWRAPc::tdav_codec_id_h263p;
+*tdav_codec_id_h263pp = *tinyWRAPc::tdav_codec_id_h263pp;
+*tdav_codec_id_h264_bp10 = *tinyWRAPc::tdav_codec_id_h264_bp10;
+*tdav_codec_id_h264_bp20 = *tinyWRAPc::tdav_codec_id_h264_bp20;
+*tdav_codec_id_h264_bp30 = *tinyWRAPc::tdav_codec_id_h264_bp30;
+*tdav_codec_id_theora = *tinyWRAPc::tdav_codec_id_theora;
 *thttp_event_message = *tinyWRAPc::thttp_event_message;
 *thttp_event_auth_failed = *tinyWRAPc::thttp_event_auth_failed;
 *thttp_event_closed = *tinyWRAPc::thttp_event_closed;

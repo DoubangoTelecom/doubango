@@ -25,6 +25,7 @@
 #include "SipCallback.h"
 #include "SafeObject.h"
 
+#include "tinydav/tdav.h"
 #include "tinysip.h"
 
 class DDebugCallback;
@@ -53,6 +54,9 @@ public: /* API functions */
 
 	bool isValid();
 	bool stop();
+
+	static void setCodecs(tdav_codec_id_t codecs);
+	static void setCodecs_2(int codecs); // For stupid languages
 
 public: /* Public helper function */
 #if !defined(SWIG)

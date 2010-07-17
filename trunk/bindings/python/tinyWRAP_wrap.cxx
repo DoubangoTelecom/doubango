@@ -3154,18 +3154,21 @@ namespace Swig {
 #define SWIGTYPE_p_XcapSelector swig_types[30]
 #define SWIGTYPE_p_XcapStack swig_types[31]
 #define SWIGTYPE_p_char swig_types[32]
-#define SWIGTYPE_p_thttp_event_type_e swig_types[33]
-#define SWIGTYPE_p_tmedia_chroma_e swig_types[34]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[35]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[36]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[37]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[38]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[39]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[40]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[41]
-#define SWIGTYPE_p_tsk_list_t swig_types[42]
-static swig_type_info *swig_types[44];
-static swig_module_info swig_module = {swig_types, 43, 0, 0, 0, 0};
+#define SWIGTYPE_p_tdav_codec_id_e swig_types[33]
+#define SWIGTYPE_p_thttp_event_type_e swig_types[34]
+#define SWIGTYPE_p_tmedia_chroma_e swig_types[35]
+#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[36]
+#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[37]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[38]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[39]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[40]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[41]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[42]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[43]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[44]
+#define SWIGTYPE_p_tsk_list_t swig_types[45]
+static swig_type_info *swig_types[47];
+static swig_module_info swig_module = {swig_types, 46, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -6378,7 +6381,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_CallSession_CallAudio(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_CallSession_callAudio(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   CallSession *arg1 = (CallSession *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -6391,18 +6394,18 @@ SWIGINTERN PyObject *_wrap_CallSession_CallAudio(PyObject *SWIGUNUSEDPARM(self),
   PyObject * obj1 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:CallSession_CallAudio",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:CallSession_callAudio",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_CallAudio" "', argument " "1"" of type '" "CallSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_callAudio" "', argument " "1"" of type '" "CallSession *""'"); 
   }
   arg1 = reinterpret_cast< CallSession * >(argp1);
   res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CallSession_CallAudio" "', argument " "2"" of type '" "char const *""'");
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CallSession_callAudio" "', argument " "2"" of type '" "char const *""'");
   }
   arg2 = reinterpret_cast< char * >(buf2);
-  result = (bool)(arg1)->CallAudio((char const *)arg2);
+  result = (bool)(arg1)->callAudio((char const *)arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return resultobj;
@@ -6412,7 +6415,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_CallSession_CallAudioVideo(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_CallSession_callAudioVideo(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   CallSession *arg1 = (CallSession *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -6425,18 +6428,18 @@ SWIGINTERN PyObject *_wrap_CallSession_CallAudioVideo(PyObject *SWIGUNUSEDPARM(s
   PyObject * obj1 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:CallSession_CallAudioVideo",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:CallSession_callAudioVideo",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_CallAudioVideo" "', argument " "1"" of type '" "CallSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_callAudioVideo" "', argument " "1"" of type '" "CallSession *""'"); 
   }
   arg1 = reinterpret_cast< CallSession * >(argp1);
   res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CallSession_CallAudioVideo" "', argument " "2"" of type '" "char const *""'");
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CallSession_callAudioVideo" "', argument " "2"" of type '" "char const *""'");
   }
   arg2 = reinterpret_cast< char * >(buf2);
-  result = (bool)(arg1)->CallAudioVideo((char const *)arg2);
+  result = (bool)(arg1)->callAudioVideo((char const *)arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return resultobj;
@@ -6446,7 +6449,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_CallSession_CallVideo(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_CallSession_callVideo(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   CallSession *arg1 = (CallSession *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -6459,18 +6462,18 @@ SWIGINTERN PyObject *_wrap_CallSession_CallVideo(PyObject *SWIGUNUSEDPARM(self),
   PyObject * obj1 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:CallSession_CallVideo",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:CallSession_callVideo",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_CallVideo" "', argument " "1"" of type '" "CallSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_callVideo" "', argument " "1"" of type '" "CallSession *""'"); 
   }
   arg1 = reinterpret_cast< CallSession * >(argp1);
   res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CallSession_CallVideo" "', argument " "2"" of type '" "char const *""'");
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CallSession_callVideo" "', argument " "2"" of type '" "char const *""'");
   }
   arg2 = reinterpret_cast< char * >(buf2);
-  result = (bool)(arg1)->CallVideo((char const *)arg2);
+  result = (bool)(arg1)->callVideo((char const *)arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return resultobj;
@@ -6480,21 +6483,73 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_CallSession_Accept(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_CallSession_setSessionTimer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   CallSession *arg1 = (CallSession *) 0 ;
+  unsigned int arg2 ;
+  char *arg3 = (char *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
   PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:CallSession_Accept",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:CallSession_setSessionTimer",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_Accept" "', argument " "1"" of type '" "CallSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_setSessionTimer" "', argument " "1"" of type '" "CallSession *""'"); 
   }
   arg1 = reinterpret_cast< CallSession * >(argp1);
-  result = (bool)(arg1)->Accept();
+  ecode2 = SWIG_AsVal_unsigned_SS_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CallSession_setSessionTimer" "', argument " "2"" of type '" "unsigned int""'");
+  } 
+  arg2 = static_cast< unsigned int >(val2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "CallSession_setSessionTimer" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  result = (bool)(arg1)->setSessionTimer(arg2,(char const *)arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return resultobj;
+fail:
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_set100rel(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:CallSession_set100rel",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_set100rel" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  ecode2 = SWIG_AsVal_bool(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CallSession_set100rel" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = static_cast< bool >(val2);
+  result = (bool)(arg1)->set100rel(arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -6502,21 +6557,39 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_CallSession_Hold(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_CallSession_setQoS(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   CallSession *arg1 = (CallSession *) 0 ;
+  tmedia_qos_stype_t arg2 ;
+  tmedia_qos_strength_t arg3 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
   PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:CallSession_Hold",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:CallSession_setQoS",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_Hold" "', argument " "1"" of type '" "CallSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_setQoS" "', argument " "1"" of type '" "CallSession *""'"); 
   }
   arg1 = reinterpret_cast< CallSession * >(argp1);
-  result = (bool)(arg1)->Hold();
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CallSession_setQoS" "', argument " "2"" of type '" "tmedia_qos_stype_t""'");
+  } 
+  arg2 = static_cast< tmedia_qos_stype_t >(val2);
+  ecode3 = SWIG_AsVal_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "CallSession_setQoS" "', argument " "3"" of type '" "tmedia_qos_strength_t""'");
+  } 
+  arg3 = static_cast< tmedia_qos_strength_t >(val3);
+  result = (bool)(arg1)->setQoS(arg2,arg3);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -6524,7 +6597,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_CallSession_Resume(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_CallSession_accept(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   CallSession *arg1 = (CallSession *) 0 ;
   void *argp1 = 0 ;
@@ -6532,13 +6605,13 @@ SWIGINTERN PyObject *_wrap_CallSession_Resume(PyObject *SWIGUNUSEDPARM(self), Py
   PyObject * obj0 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:CallSession_Resume",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:CallSession_accept",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_Resume" "', argument " "1"" of type '" "CallSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_accept" "', argument " "1"" of type '" "CallSession *""'"); 
   }
   arg1 = reinterpret_cast< CallSession * >(argp1);
-  result = (bool)(arg1)->Resume();
+  result = (bool)(arg1)->accept();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -6546,7 +6619,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_CallSession_Hangup(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_CallSession_hold(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   CallSession *arg1 = (CallSession *) 0 ;
   void *argp1 = 0 ;
@@ -6554,13 +6627,57 @@ SWIGINTERN PyObject *_wrap_CallSession_Hangup(PyObject *SWIGUNUSEDPARM(self), Py
   PyObject * obj0 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:CallSession_Hangup",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:CallSession_hold",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_Hangup" "', argument " "1"" of type '" "CallSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_hold" "', argument " "1"" of type '" "CallSession *""'"); 
   }
   arg1 = reinterpret_cast< CallSession * >(argp1);
-  result = (bool)(arg1)->Hangup();
+  result = (bool)(arg1)->hold();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_resume(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CallSession_resume",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_resume" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  result = (bool)(arg1)->resume();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_hangup(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CallSession_hangup",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_hangup" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  result = (bool)(arg1)->hangup();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -6618,7 +6735,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MessagingSession_Send(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MessagingSession_send(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MessagingSession *arg1 = (MessagingSession *) 0 ;
   void *arg2 = (void *) 0 ;
@@ -6633,22 +6750,22 @@ SWIGINTERN PyObject *_wrap_MessagingSession_Send(PyObject *SWIGUNUSEDPARM(self),
   PyObject * obj2 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:MessagingSession_Send",&obj0,&obj1,&obj2)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:MessagingSession_send",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MessagingSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MessagingSession_Send" "', argument " "1"" of type '" "MessagingSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MessagingSession_send" "', argument " "1"" of type '" "MessagingSession *""'"); 
   }
   arg1 = reinterpret_cast< MessagingSession * >(argp1);
   res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MessagingSession_Send" "', argument " "2"" of type '" "void const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MessagingSession_send" "', argument " "2"" of type '" "void const *""'"); 
   }
   ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MessagingSession_Send" "', argument " "3"" of type '" "unsigned int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MessagingSession_send" "', argument " "3"" of type '" "unsigned int""'");
   } 
   arg3 = static_cast< unsigned int >(val3);
-  result = (bool)(arg1)->Send((void const *)arg2,arg3);
+  result = (bool)(arg1)->send((void const *)arg2,arg3);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -6656,7 +6773,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MessagingSession_Accept(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MessagingSession_accept(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MessagingSession *arg1 = (MessagingSession *) 0 ;
   void *argp1 = 0 ;
@@ -6664,13 +6781,13 @@ SWIGINTERN PyObject *_wrap_MessagingSession_Accept(PyObject *SWIGUNUSEDPARM(self
   PyObject * obj0 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:MessagingSession_Accept",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:MessagingSession_accept",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MessagingSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MessagingSession_Accept" "', argument " "1"" of type '" "MessagingSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MessagingSession_accept" "', argument " "1"" of type '" "MessagingSession *""'"); 
   }
   arg1 = reinterpret_cast< MessagingSession * >(argp1);
-  result = (bool)(arg1)->Accept();
+  result = (bool)(arg1)->accept();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -6678,7 +6795,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MessagingSession_Reject(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MessagingSession_reject(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MessagingSession *arg1 = (MessagingSession *) 0 ;
   void *argp1 = 0 ;
@@ -6686,13 +6803,13 @@ SWIGINTERN PyObject *_wrap_MessagingSession_Reject(PyObject *SWIGUNUSEDPARM(self
   PyObject * obj0 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:MessagingSession_Reject",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:MessagingSession_reject",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MessagingSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MessagingSession_Reject" "', argument " "1"" of type '" "MessagingSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MessagingSession_reject" "', argument " "1"" of type '" "MessagingSession *""'"); 
   }
   arg1 = reinterpret_cast< MessagingSession * >(argp1);
-  result = (bool)(arg1)->Reject();
+  result = (bool)(arg1)->reject();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -6750,7 +6867,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_OptionsSession_Send(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_OptionsSession_send(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   OptionsSession *arg1 = (OptionsSession *) 0 ;
   void *argp1 = 0 ;
@@ -6758,13 +6875,13 @@ SWIGINTERN PyObject *_wrap_OptionsSession_Send(PyObject *SWIGUNUSEDPARM(self), P
   PyObject * obj0 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:OptionsSession_Send",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:OptionsSession_send",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_OptionsSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "OptionsSession_Send" "', argument " "1"" of type '" "OptionsSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "OptionsSession_send" "', argument " "1"" of type '" "OptionsSession *""'"); 
   }
   arg1 = reinterpret_cast< OptionsSession * >(argp1);
-  result = (bool)(arg1)->Send();
+  result = (bool)(arg1)->send();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -6822,7 +6939,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PublicationSession_Publish(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PublicationSession_publish(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PublicationSession *arg1 = (PublicationSession *) 0 ;
   void *arg2 = (void *) 0 ;
@@ -6837,22 +6954,22 @@ SWIGINTERN PyObject *_wrap_PublicationSession_Publish(PyObject *SWIGUNUSEDPARM(s
   PyObject * obj2 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:PublicationSession_Publish",&obj0,&obj1,&obj2)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:PublicationSession_publish",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_PublicationSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PublicationSession_Publish" "', argument " "1"" of type '" "PublicationSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PublicationSession_publish" "', argument " "1"" of type '" "PublicationSession *""'"); 
   }
   arg1 = reinterpret_cast< PublicationSession * >(argp1);
   res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PublicationSession_Publish" "', argument " "2"" of type '" "void const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PublicationSession_publish" "', argument " "2"" of type '" "void const *""'"); 
   }
   ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "PublicationSession_Publish" "', argument " "3"" of type '" "unsigned int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "PublicationSession_publish" "', argument " "3"" of type '" "unsigned int""'");
   } 
   arg3 = static_cast< unsigned int >(val3);
-  result = (bool)(arg1)->Publish((void const *)arg2,arg3);
+  result = (bool)(arg1)->publish((void const *)arg2,arg3);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -6860,7 +6977,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PublicationSession_UnPublish(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PublicationSession_unPublish(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PublicationSession *arg1 = (PublicationSession *) 0 ;
   void *argp1 = 0 ;
@@ -6868,13 +6985,13 @@ SWIGINTERN PyObject *_wrap_PublicationSession_UnPublish(PyObject *SWIGUNUSEDPARM
   PyObject * obj0 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:PublicationSession_UnPublish",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:PublicationSession_unPublish",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_PublicationSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PublicationSession_UnPublish" "', argument " "1"" of type '" "PublicationSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PublicationSession_unPublish" "', argument " "1"" of type '" "PublicationSession *""'"); 
   }
   arg1 = reinterpret_cast< PublicationSession * >(argp1);
-  result = (bool)(arg1)->UnPublish();
+  result = (bool)(arg1)->unPublish();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -6932,7 +7049,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_RegistrationSession_Register(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_RegistrationSession_register_(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   RegistrationSession *arg1 = (RegistrationSession *) 0 ;
   void *argp1 = 0 ;
@@ -6940,13 +7057,13 @@ SWIGINTERN PyObject *_wrap_RegistrationSession_Register(PyObject *SWIGUNUSEDPARM
   PyObject * obj0 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:RegistrationSession_Register",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:RegistrationSession_register_",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RegistrationSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegistrationSession_Register" "', argument " "1"" of type '" "RegistrationSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegistrationSession_register_" "', argument " "1"" of type '" "RegistrationSession *""'"); 
   }
   arg1 = reinterpret_cast< RegistrationSession * >(argp1);
-  result = (bool)(arg1)->Register();
+  result = (bool)(arg1)->register_();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -6954,7 +7071,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_RegistrationSession_UnRegister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_RegistrationSession_unRegister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   RegistrationSession *arg1 = (RegistrationSession *) 0 ;
   void *argp1 = 0 ;
@@ -6962,13 +7079,13 @@ SWIGINTERN PyObject *_wrap_RegistrationSession_UnRegister(PyObject *SWIGUNUSEDPA
   PyObject * obj0 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:RegistrationSession_UnRegister",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:RegistrationSession_unRegister",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RegistrationSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegistrationSession_UnRegister" "', argument " "1"" of type '" "RegistrationSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegistrationSession_unRegister" "', argument " "1"" of type '" "RegistrationSession *""'"); 
   }
   arg1 = reinterpret_cast< RegistrationSession * >(argp1);
-  result = (bool)(arg1)->UnRegister();
+  result = (bool)(arg1)->unRegister();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -7026,7 +7143,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SubscriptionSession_Subscribe(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_SubscriptionSession_subscribe(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SubscriptionSession *arg1 = (SubscriptionSession *) 0 ;
   void *argp1 = 0 ;
@@ -7034,13 +7151,13 @@ SWIGINTERN PyObject *_wrap_SubscriptionSession_Subscribe(PyObject *SWIGUNUSEDPAR
   PyObject * obj0 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:SubscriptionSession_Subscribe",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:SubscriptionSession_subscribe",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SubscriptionSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SubscriptionSession_Subscribe" "', argument " "1"" of type '" "SubscriptionSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SubscriptionSession_subscribe" "', argument " "1"" of type '" "SubscriptionSession *""'"); 
   }
   arg1 = reinterpret_cast< SubscriptionSession * >(argp1);
-  result = (bool)(arg1)->Subscribe();
+  result = (bool)(arg1)->subscribe();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -7048,7 +7165,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SubscriptionSession_UnSubscribe(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_SubscriptionSession_unSubscribe(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SubscriptionSession *arg1 = (SubscriptionSession *) 0 ;
   void *argp1 = 0 ;
@@ -7056,13 +7173,13 @@ SWIGINTERN PyObject *_wrap_SubscriptionSession_UnSubscribe(PyObject *SWIGUNUSEDP
   PyObject * obj0 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:SubscriptionSession_UnSubscribe",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:SubscriptionSession_unSubscribe",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SubscriptionSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SubscriptionSession_UnSubscribe" "', argument " "1"" of type '" "SubscriptionSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SubscriptionSession_unSubscribe" "', argument " "1"" of type '" "SubscriptionSession *""'"); 
   }
   arg1 = reinterpret_cast< SubscriptionSession * >(argp1);
-  result = (bool)(arg1)->UnSubscribe();
+  result = (bool)(arg1)->unSubscribe();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -9600,6 +9717,48 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SipStack_setCodecs(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  tdav_codec_id_t arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipStack_setCodecs",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "SipStack_setCodecs" "', argument " "1"" of type '" "tdav_codec_id_t""'");
+  } 
+  arg1 = static_cast< tdav_codec_id_t >(val1);
+  SipStack::setCodecs(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setCodecs_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipStack_setCodecs_2",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "SipStack_setCodecs_2" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  SipStack::setCodecs_2(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *SipStack_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -11103,38 +11262,41 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipSession_swigregister", SipSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_CallSession", _wrap_new_CallSession, METH_VARARGS, NULL},
 	 { (char *)"delete_CallSession", _wrap_delete_CallSession, METH_VARARGS, NULL},
-	 { (char *)"CallSession_CallAudio", _wrap_CallSession_CallAudio, METH_VARARGS, NULL},
-	 { (char *)"CallSession_CallAudioVideo", _wrap_CallSession_CallAudioVideo, METH_VARARGS, NULL},
-	 { (char *)"CallSession_CallVideo", _wrap_CallSession_CallVideo, METH_VARARGS, NULL},
-	 { (char *)"CallSession_Accept", _wrap_CallSession_Accept, METH_VARARGS, NULL},
-	 { (char *)"CallSession_Hold", _wrap_CallSession_Hold, METH_VARARGS, NULL},
-	 { (char *)"CallSession_Resume", _wrap_CallSession_Resume, METH_VARARGS, NULL},
-	 { (char *)"CallSession_Hangup", _wrap_CallSession_Hangup, METH_VARARGS, NULL},
+	 { (char *)"CallSession_callAudio", _wrap_CallSession_callAudio, METH_VARARGS, NULL},
+	 { (char *)"CallSession_callAudioVideo", _wrap_CallSession_callAudioVideo, METH_VARARGS, NULL},
+	 { (char *)"CallSession_callVideo", _wrap_CallSession_callVideo, METH_VARARGS, NULL},
+	 { (char *)"CallSession_setSessionTimer", _wrap_CallSession_setSessionTimer, METH_VARARGS, NULL},
+	 { (char *)"CallSession_set100rel", _wrap_CallSession_set100rel, METH_VARARGS, NULL},
+	 { (char *)"CallSession_setQoS", _wrap_CallSession_setQoS, METH_VARARGS, NULL},
+	 { (char *)"CallSession_accept", _wrap_CallSession_accept, METH_VARARGS, NULL},
+	 { (char *)"CallSession_hold", _wrap_CallSession_hold, METH_VARARGS, NULL},
+	 { (char *)"CallSession_resume", _wrap_CallSession_resume, METH_VARARGS, NULL},
+	 { (char *)"CallSession_hangup", _wrap_CallSession_hangup, METH_VARARGS, NULL},
 	 { (char *)"CallSession_swigregister", CallSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_MessagingSession", _wrap_new_MessagingSession, METH_VARARGS, NULL},
 	 { (char *)"delete_MessagingSession", _wrap_delete_MessagingSession, METH_VARARGS, NULL},
-	 { (char *)"MessagingSession_Send", _wrap_MessagingSession_Send, METH_VARARGS, NULL},
-	 { (char *)"MessagingSession_Accept", _wrap_MessagingSession_Accept, METH_VARARGS, NULL},
-	 { (char *)"MessagingSession_Reject", _wrap_MessagingSession_Reject, METH_VARARGS, NULL},
+	 { (char *)"MessagingSession_send", _wrap_MessagingSession_send, METH_VARARGS, NULL},
+	 { (char *)"MessagingSession_accept", _wrap_MessagingSession_accept, METH_VARARGS, NULL},
+	 { (char *)"MessagingSession_reject", _wrap_MessagingSession_reject, METH_VARARGS, NULL},
 	 { (char *)"MessagingSession_swigregister", MessagingSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_OptionsSession", _wrap_new_OptionsSession, METH_VARARGS, NULL},
 	 { (char *)"delete_OptionsSession", _wrap_delete_OptionsSession, METH_VARARGS, NULL},
-	 { (char *)"OptionsSession_Send", _wrap_OptionsSession_Send, METH_VARARGS, NULL},
+	 { (char *)"OptionsSession_send", _wrap_OptionsSession_send, METH_VARARGS, NULL},
 	 { (char *)"OptionsSession_swigregister", OptionsSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_PublicationSession", _wrap_new_PublicationSession, METH_VARARGS, NULL},
 	 { (char *)"delete_PublicationSession", _wrap_delete_PublicationSession, METH_VARARGS, NULL},
-	 { (char *)"PublicationSession_Publish", _wrap_PublicationSession_Publish, METH_VARARGS, NULL},
-	 { (char *)"PublicationSession_UnPublish", _wrap_PublicationSession_UnPublish, METH_VARARGS, NULL},
+	 { (char *)"PublicationSession_publish", _wrap_PublicationSession_publish, METH_VARARGS, NULL},
+	 { (char *)"PublicationSession_unPublish", _wrap_PublicationSession_unPublish, METH_VARARGS, NULL},
 	 { (char *)"PublicationSession_swigregister", PublicationSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_RegistrationSession", _wrap_new_RegistrationSession, METH_VARARGS, NULL},
 	 { (char *)"delete_RegistrationSession", _wrap_delete_RegistrationSession, METH_VARARGS, NULL},
-	 { (char *)"RegistrationSession_Register", _wrap_RegistrationSession_Register, METH_VARARGS, NULL},
-	 { (char *)"RegistrationSession_UnRegister", _wrap_RegistrationSession_UnRegister, METH_VARARGS, NULL},
+	 { (char *)"RegistrationSession_register_", _wrap_RegistrationSession_register_, METH_VARARGS, NULL},
+	 { (char *)"RegistrationSession_unRegister", _wrap_RegistrationSession_unRegister, METH_VARARGS, NULL},
 	 { (char *)"RegistrationSession_swigregister", RegistrationSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_SubscriptionSession", _wrap_new_SubscriptionSession, METH_VARARGS, NULL},
 	 { (char *)"delete_SubscriptionSession", _wrap_delete_SubscriptionSession, METH_VARARGS, NULL},
-	 { (char *)"SubscriptionSession_Subscribe", _wrap_SubscriptionSession_Subscribe, METH_VARARGS, NULL},
-	 { (char *)"SubscriptionSession_UnSubscribe", _wrap_SubscriptionSession_UnSubscribe, METH_VARARGS, NULL},
+	 { (char *)"SubscriptionSession_subscribe", _wrap_SubscriptionSession_subscribe, METH_VARARGS, NULL},
+	 { (char *)"SubscriptionSession_unSubscribe", _wrap_SubscriptionSession_unSubscribe, METH_VARARGS, NULL},
 	 { (char *)"SubscriptionSession_swigregister", SubscriptionSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_ProxyAudioConsumer", _wrap_new_ProxyAudioConsumer, METH_VARARGS, NULL},
 	 { (char *)"delete_ProxyAudioConsumer", _wrap_delete_ProxyAudioConsumer, METH_VARARGS, NULL},
@@ -11219,6 +11381,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipStack_setAoR", _wrap_SipStack_setAoR, METH_VARARGS, NULL},
 	 { (char *)"SipStack_isValid", _wrap_SipStack_isValid, METH_VARARGS, NULL},
 	 { (char *)"SipStack_stop", _wrap_SipStack_stop, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setCodecs", _wrap_SipStack_setCodecs, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setCodecs_2", _wrap_SipStack_setCodecs_2, METH_VARARGS, NULL},
 	 { (char *)"SipStack_swigregister", SipStack_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_XcapSelector", _wrap_new_XcapSelector, METH_VARARGS, NULL},
 	 { (char *)"delete_XcapSelector", _wrap_delete_XcapSelector, METH_VARARGS, NULL},
@@ -11346,8 +11510,11 @@ static swig_type_info _swigt__p_XcapMessage = {"_p_XcapMessage", "XcapMessage *"
 static swig_type_info _swigt__p_XcapSelector = {"_p_XcapSelector", "XcapSelector *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_XcapStack = {"_p_XcapStack", "XcapStack *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_tdav_codec_id_e = {"_p_tdav_codec_id_e", "enum tdav_codec_id_e *|tdav_codec_id_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_thttp_event_type_e = {"_p_thttp_event_type_e", "enum thttp_event_type_e *|thttp_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_chroma_e = {"_p_tmedia_chroma_e", "tmedia_chroma_t *|enum tmedia_chroma_e *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_tmedia_qos_strength_e = {"_p_tmedia_qos_strength_e", "tmedia_qos_strength_t *|enum tmedia_qos_strength_e *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_tmedia_qos_stype_e = {"_p_tmedia_qos_stype_e", "enum tmedia_qos_stype_e *|tmedia_qos_stype_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_event_type_e = {"_p_tsip_event_type_e", "enum tsip_event_type_e *|tsip_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_invite_event_type_e = {"_p_tsip_invite_event_type_e", "enum tsip_invite_event_type_e *|tsip_invite_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_message_event_type_e = {"_p_tsip_message_event_type_e", "enum tsip_message_event_type_e *|tsip_message_event_type_t *", 0, 0, (void*)0, 0};
@@ -11391,8 +11558,11 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_XcapSelector,
   &_swigt__p_XcapStack,
   &_swigt__p_char,
+  &_swigt__p_tdav_codec_id_e,
   &_swigt__p_thttp_event_type_e,
   &_swigt__p_tmedia_chroma_e,
+  &_swigt__p_tmedia_qos_strength_e,
+  &_swigt__p_tmedia_qos_stype_e,
   &_swigt__p_tsip_event_type_e,
   &_swigt__p_tsip_invite_event_type_e,
   &_swigt__p_tsip_message_event_type_e,
@@ -11436,8 +11606,11 @@ static swig_cast_info _swigc__p_XcapMessage[] = {  {&_swigt__p_XcapMessage, 0, 0
 static swig_cast_info _swigc__p_XcapSelector[] = {  {&_swigt__p_XcapSelector, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_XcapStack[] = {  {&_swigt__p_XcapStack, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_tdav_codec_id_e[] = {  {&_swigt__p_tdav_codec_id_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_thttp_event_type_e[] = {  {&_swigt__p_thttp_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_chroma_e[] = {  {&_swigt__p_tmedia_chroma_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_tmedia_qos_strength_e[] = {  {&_swigt__p_tmedia_qos_strength_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_tmedia_qos_stype_e[] = {  {&_swigt__p_tmedia_qos_stype_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_event_type_e[] = {  {&_swigt__p_tsip_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_invite_event_type_e[] = {  {&_swigt__p_tsip_invite_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_message_event_type_e[] = {  {&_swigt__p_tsip_message_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
@@ -11481,8 +11654,11 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_XcapSelector,
   _swigc__p_XcapStack,
   _swigc__p_char,
+  _swigc__p_tdav_codec_id_e,
   _swigc__p_thttp_event_type_e,
   _swigc__p_tmedia_chroma_e,
+  _swigc__p_tmedia_qos_strength_e,
+  _swigc__p_tmedia_qos_stype_e,
   _swigc__p_tsip_event_type_e,
   _swigc__p_tsip_invite_event_type_e,
   _swigc__p_tsip_message_event_type_e,
@@ -12136,6 +12312,33 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tmedia_rgb565be",SWIG_From_int(static_cast< int >(tmedia_rgb565be)));
   SWIG_Python_SetConstant(d, "tmedia_nv21",SWIG_From_int(static_cast< int >(tmedia_nv21)));
   SWIG_Python_SetConstant(d, "tmedia_yuv420p",SWIG_From_int(static_cast< int >(tmedia_yuv420p)));
+  SWIG_Python_SetConstant(d, "tmedia_qos_stype_none",SWIG_From_int(static_cast< int >(tmedia_qos_stype_none)));
+  SWIG_Python_SetConstant(d, "tmedia_qos_stype_segmented",SWIG_From_int(static_cast< int >(tmedia_qos_stype_segmented)));
+  SWIG_Python_SetConstant(d, "tmedia_qos_stype_e2e",SWIG_From_int(static_cast< int >(tmedia_qos_stype_e2e)));
+  SWIG_Python_SetConstant(d, "tmedia_qos_strength_none",SWIG_From_int(static_cast< int >(tmedia_qos_strength_none)));
+  SWIG_Python_SetConstant(d, "tmedia_qos_strength_failure",SWIG_From_int(static_cast< int >(tmedia_qos_strength_failure)));
+  SWIG_Python_SetConstant(d, "tmedia_qos_strength_unknown",SWIG_From_int(static_cast< int >(tmedia_qos_strength_unknown)));
+  SWIG_Python_SetConstant(d, "tmedia_qos_strength_optional",SWIG_From_int(static_cast< int >(tmedia_qos_strength_optional)));
+  SWIG_Python_SetConstant(d, "tmedia_qos_strength_mandatory",SWIG_From_int(static_cast< int >(tmedia_qos_strength_mandatory)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_amr_nb_oa",SWIG_From_int(static_cast< int >(tdav_codec_id_amr_nb_oa)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_amr_nb_be",SWIG_From_int(static_cast< int >(tdav_codec_id_amr_nb_be)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_amr_wb_oa",SWIG_From_int(static_cast< int >(tdav_codec_id_amr_wb_oa)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_amr_wb_be",SWIG_From_int(static_cast< int >(tdav_codec_id_amr_wb_be)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_gsm",SWIG_From_int(static_cast< int >(tdav_codec_id_gsm)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_pcma",SWIG_From_int(static_cast< int >(tdav_codec_id_pcma)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_pcmu",SWIG_From_int(static_cast< int >(tdav_codec_id_pcmu)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_ilbc",SWIG_From_int(static_cast< int >(tdav_codec_id_ilbc)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_speex_nb",SWIG_From_int(static_cast< int >(tdav_codec_id_speex_nb)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_speex_wb",SWIG_From_int(static_cast< int >(tdav_codec_id_speex_wb)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_speex_uwb",SWIG_From_int(static_cast< int >(tdav_codec_id_speex_uwb)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_h261",SWIG_From_int(static_cast< int >(tdav_codec_id_h261)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_h263",SWIG_From_int(static_cast< int >(tdav_codec_id_h263)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_h263p",SWIG_From_int(static_cast< int >(tdav_codec_id_h263p)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_h263pp",SWIG_From_int(static_cast< int >(tdav_codec_id_h263pp)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_h264_bp10",SWIG_From_int(static_cast< int >(tdav_codec_id_h264_bp10)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_h264_bp20",SWIG_From_int(static_cast< int >(tdav_codec_id_h264_bp20)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_h264_bp30",SWIG_From_int(static_cast< int >(tdav_codec_id_h264_bp30)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_theora",SWIG_From_int(static_cast< int >(tdav_codec_id_theora)));
   SWIG_Python_SetConstant(d, "thttp_event_message",SWIG_From_int(static_cast< int >(thttp_event_message)));
   SWIG_Python_SetConstant(d, "thttp_event_auth_failed",SWIG_From_int(static_cast< int >(thttp_event_auth_failed)));
   SWIG_Python_SetConstant(d, "thttp_event_closed",SWIG_From_int(static_cast< int >(thttp_event_closed)));

@@ -40,18 +40,18 @@ public class MessagingSession : SipSession {
   public MessagingSession(SipStack Stack) : this(tinyWRAPPINVOKE.new_MessagingSession(SipStack.getCPtr(Stack)), true) {
   }
 
-  public bool Send(byte[] payload, uint len) {
-    bool ret = tinyWRAPPINVOKE.MessagingSession_Send(swigCPtr, payload, len);
+  public bool send(byte[] payload, uint len) {
+    bool ret = tinyWRAPPINVOKE.MessagingSession_send(swigCPtr, payload, len);
     return ret;
   }
 
-  public bool Accept() {
-    bool ret = tinyWRAPPINVOKE.MessagingSession_Accept(swigCPtr);
+  public bool accept() {
+    bool ret = tinyWRAPPINVOKE.MessagingSession_accept(swigCPtr);
     return ret;
   }
 
-  public bool Reject() {
-    bool ret = tinyWRAPPINVOKE.MessagingSession_Reject(swigCPtr);
+  public bool reject() {
+    bool ret = tinyWRAPPINVOKE.MessagingSession_reject(swigCPtr);
     return ret;
   }
 

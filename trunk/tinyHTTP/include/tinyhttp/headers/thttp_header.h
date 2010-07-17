@@ -93,6 +93,7 @@ TINYHTTP_API const char *thttp_header_get_nameex(const thttp_header_t *self);
 TINYHTTP_API char thttp_header_get_param_separator(const thttp_header_t *self);
 TINYHTTP_API int thttp_header_serialize(const thttp_header_t *self, tsk_buffer_t *output);
 TINYHTTP_API char* thttp_header_tostring(const thttp_header_t *self);
+TINYHTTP_API char* thttp_header_value_tostring(const thttp_header_t *self);
 
 THTTP_END_DECLS
 

@@ -364,26 +364,35 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_CallSession")]
   public static extern void delete_CallSession(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_CallAudio")]
-  public static extern bool CallSession_CallAudio(HandleRef jarg1, string jarg2);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_callAudio")]
+  public static extern bool CallSession_callAudio(HandleRef jarg1, string jarg2);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_CallAudioVideo")]
-  public static extern bool CallSession_CallAudioVideo(HandleRef jarg1, string jarg2);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_callAudioVideo")]
+  public static extern bool CallSession_callAudioVideo(HandleRef jarg1, string jarg2);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_CallVideo")]
-  public static extern bool CallSession_CallVideo(HandleRef jarg1, string jarg2);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_callVideo")]
+  public static extern bool CallSession_callVideo(HandleRef jarg1, string jarg2);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_Accept")]
-  public static extern bool CallSession_Accept(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setSessionTimer")]
+  public static extern bool CallSession_setSessionTimer(HandleRef jarg1, uint jarg2, string jarg3);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_Hold")]
-  public static extern bool CallSession_Hold(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_set100rel")]
+  public static extern bool CallSession_set100rel(HandleRef jarg1, bool jarg2);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_Resume")]
-  public static extern bool CallSession_Resume(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setQoS")]
+  public static extern bool CallSession_setQoS(HandleRef jarg1, int jarg2, int jarg3);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_Hangup")]
-  public static extern bool CallSession_Hangup(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_accept")]
+  public static extern bool CallSession_accept(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_hold")]
+  public static extern bool CallSession_hold(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_resume")]
+  public static extern bool CallSession_resume(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_hangup")]
+  public static extern bool CallSession_hangup(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_MessagingSession")]
   public static extern IntPtr new_MessagingSession(HandleRef jarg1);
@@ -391,14 +400,14 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_MessagingSession")]
   public static extern void delete_MessagingSession(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_Send")]
-  public static extern bool MessagingSession_Send(HandleRef jarg1, byte[] jarg2, uint jarg3);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_send")]
+  public static extern bool MessagingSession_send(HandleRef jarg1, byte[] jarg2, uint jarg3);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_Accept")]
-  public static extern bool MessagingSession_Accept(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_accept")]
+  public static extern bool MessagingSession_accept(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_Reject")]
-  public static extern bool MessagingSession_Reject(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_reject")]
+  public static extern bool MessagingSession_reject(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_OptionsSession")]
   public static extern IntPtr new_OptionsSession(HandleRef jarg1);
@@ -406,8 +415,8 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_OptionsSession")]
   public static extern void delete_OptionsSession(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_OptionsSession_Send")]
-  public static extern bool OptionsSession_Send(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_OptionsSession_send")]
+  public static extern bool OptionsSession_send(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_PublicationSession")]
   public static extern IntPtr new_PublicationSession(HandleRef jarg1);
@@ -415,11 +424,11 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_PublicationSession")]
   public static extern void delete_PublicationSession(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_PublicationSession_Publish")]
-  public static extern bool PublicationSession_Publish(HandleRef jarg1, byte[] jarg2, uint jarg3);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_PublicationSession_publish")]
+  public static extern bool PublicationSession_publish(HandleRef jarg1, byte[] jarg2, uint jarg3);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_PublicationSession_UnPublish")]
-  public static extern bool PublicationSession_UnPublish(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_PublicationSession_unPublish")]
+  public static extern bool PublicationSession_unPublish(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_RegistrationSession")]
   public static extern IntPtr new_RegistrationSession(HandleRef jarg1);
@@ -427,11 +436,11 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_RegistrationSession")]
   public static extern void delete_RegistrationSession(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_Register")]
-  public static extern bool RegistrationSession_Register(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_register_")]
+  public static extern bool RegistrationSession_register_(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_UnRegister")]
-  public static extern bool RegistrationSession_UnRegister(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_unRegister")]
+  public static extern bool RegistrationSession_unRegister(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_SubscriptionSession")]
   public static extern IntPtr new_SubscriptionSession(HandleRef jarg1);
@@ -439,11 +448,11 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_SubscriptionSession")]
   public static extern void delete_SubscriptionSession(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_SubscriptionSession_Subscribe")]
-  public static extern bool SubscriptionSession_Subscribe(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SubscriptionSession_subscribe")]
+  public static extern bool SubscriptionSession_subscribe(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_SubscriptionSession_UnSubscribe")]
-  public static extern bool SubscriptionSession_UnSubscribe(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SubscriptionSession_unSubscribe")]
+  public static extern bool SubscriptionSession_unSubscribe(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_ProxyAudioConsumer")]
   public static extern IntPtr new_ProxyAudioConsumer();
@@ -747,6 +756,12 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_stop")]
   public static extern bool SipStack_stop(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setCodecs")]
+  public static extern void SipStack_setCodecs(int jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setCodecs_2")]
+  public static extern void SipStack_setCodecs_2(int jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_transport_error_get")]
   public static extern int tsip_event_code_dialog_transport_error_get();

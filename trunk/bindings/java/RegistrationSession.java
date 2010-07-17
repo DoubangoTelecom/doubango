@@ -37,12 +37,12 @@ public class RegistrationSession extends SipSession {
     this(tinyWRAPJNI.new_RegistrationSession(SipStack.getCPtr(Stack), Stack), true);
   }
 
-  public boolean Register() {
-    return tinyWRAPJNI.RegistrationSession_Register(swigCPtr, this);
+  public boolean register_() {
+    return tinyWRAPJNI.RegistrationSession_register_(swigCPtr, this);
   }
 
-  public boolean UnRegister() {
-    return tinyWRAPJNI.RegistrationSession_UnRegister(swigCPtr, this);
+  public boolean unRegister() {
+    return tinyWRAPJNI.RegistrationSession_unRegister(swigCPtr, this);
   }
 
 }

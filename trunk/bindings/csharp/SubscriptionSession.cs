@@ -40,13 +40,13 @@ public class SubscriptionSession : SipSession {
   public SubscriptionSession(SipStack Stack) : this(tinyWRAPPINVOKE.new_SubscriptionSession(SipStack.getCPtr(Stack)), true) {
   }
 
-  public bool Subscribe() {
-    bool ret = tinyWRAPPINVOKE.SubscriptionSession_Subscribe(swigCPtr);
+  public bool subscribe() {
+    bool ret = tinyWRAPPINVOKE.SubscriptionSession_subscribe(swigCPtr);
     return ret;
   }
 
-  public bool UnSubscribe() {
-    bool ret = tinyWRAPPINVOKE.SubscriptionSession_UnSubscribe(swigCPtr);
+  public bool unSubscribe() {
+    bool ret = tinyWRAPPINVOKE.SubscriptionSession_unSubscribe(swigCPtr);
     return ret;
   }
 

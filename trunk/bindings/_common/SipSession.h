@@ -23,6 +23,7 @@
 #define TINYWRAP_SIPSESSION_H
 
 #include "tinysip.h"
+#include "tinymedia/tmedia_qos.h"
 
 class SipStack;
 
@@ -74,13 +75,16 @@ public: /* ctor() and dtor() */
 	virtual ~CallSession();
 
 public: /* Public functions */
-	bool CallAudio(const char* remoteUri);
-	bool CallAudioVideo(const char* remoteUri);
-	bool CallVideo(const char* remoteUri);
-	bool Accept();
-	bool Hold();
-	bool Resume();
-	bool Hangup();
+	bool callAudio(const char* remoteUri);
+	bool callAudioVideo(const char* remoteUri);
+	bool callVideo(const char* remoteUri);
+	bool setSessionTimer(unsigned timeout, const char* refresher);
+	bool set100rel(bool enabled);
+	bool setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength);
+	bool accept();
+	bool hold();
+	bool resume();
+	bool hangup();
 };
 
 /* ======================== MessagingSession ========================*/
@@ -94,9 +98,9 @@ public: /* ctor() and dtor() */
 	virtual ~MessagingSession();
 
 public: /* Public functions */
-	bool Send(const void* payload, unsigned len);
-	bool Accept();
-	bool Reject();
+	bool send(const void* payload, unsigned len);
+	bool accept();
+	bool reject();
 };
 
 /* ======================== OptionsSession ========================*/
@@ -107,7 +111,7 @@ public: /* ctor() and dtor() */
 	virtual ~OptionsSession();
 
 public: /* Public functions */
-	bool Send();
+	bool send();
 	/* bool Accept(); */
 	/* bool Reject(); */
 };
@@ -122,8 +126,8 @@ public: /* ctor() and dtor() */
 	virtual ~PublicationSession();
 
 public: /* Public functions */
-	bool Publish(const void* payload, unsigned len);
-	bool UnPublish();
+	bool publish(const void* payload, unsigned len);
+	bool unPublish();
 };
 
 
@@ -135,8 +139,8 @@ public: /* ctor() and dtor() */
 	virtual ~RegistrationSession();
 
 public: /* Public functions */
-	bool Register();
-	bool UnRegister();
+	bool register_();
+	bool unRegister();
 };
 
 
@@ -148,8 +152,8 @@ public: /* ctor() and dtor() */
 	virtual ~SubscriptionSession();
 
 public: /* Public functions */
-	bool Subscribe();
-	bool UnSubscribe();
+	bool subscribe();
+	bool unSubscribe();
 };
 
 #endif /* TINYWRAP_SIPSESSION_H */

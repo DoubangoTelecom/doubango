@@ -123,6 +123,12 @@
     <Compile Include="..\SubscriptionSession.cs">
       <Link>SubscriptionSession.cs</Link>
     </Compile>
+    <Compile Include="..\tdav_codec_id_t.cs">
+      <Link>tdav_codec_id_t.cs</Link>
+    </Compile>
+    <Compile Include="..\thttp_event_type_t.cs">
+      <Link>thttp_event_type_t.cs</Link>
+    </Compile>
     <Compile Include="..\tinyWRAP.cs">
       <Link>tinyWRAP.cs</Link>
     </Compile>
@@ -131,6 +137,12 @@
     </Compile>
     <Compile Include="..\tmedia_chroma_t.cs">
       <Link>tmedia_chroma_t.cs</Link>
+    </Compile>
+    <Compile Include="..\tmedia_qos_strength_t.cs">
+      <Link>tmedia_qos_strength_t.cs</Link>
+    </Compile>
+    <Compile Include="..\tmedia_qos_stype_t.cs">
+      <Link>tmedia_qos_stype_t.cs</Link>
     </Compile>
     <Compile Include="..\tsip_event_type_t.cs">
       <Link>tsip_event_type_t.cs</Link>
@@ -152,6 +164,21 @@
     </Compile>
     <Compile Include="..\tsip_subscribe_event_type_t.cs">
       <Link>tsip_subscribe_event_type_t.cs</Link>
+    </Compile>
+    <Compile Include="..\XcapCallback.cs">
+      <Link>XcapCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\XcapEvent.cs">
+      <Link>XcapEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\XcapMessage.cs">
+      <Link>XcapMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\XcapSelector.cs">
+      <Link>XcapSelector.cs</Link>
+    </Compile>
+    <Compile Include="..\XcapStack.cs">
+      <Link>XcapStack.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

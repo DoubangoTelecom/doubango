@@ -2360,7 +2360,7 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1CallSessi
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1CallAudio(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1callAudio(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
   jboolean jresult = 0 ;
   CallSession *arg1 = (CallSession *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -2375,14 +2375,14 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  result = (bool)(arg1)->CallAudio((char const *)arg2);
+  result = (bool)(arg1)->callAudio((char const *)arg2);
   jresult = (jboolean)result; 
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
   return jresult;
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1CallAudioVideo(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1callAudioVideo(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
   jboolean jresult = 0 ;
   CallSession *arg1 = (CallSession *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -2397,14 +2397,14 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  result = (bool)(arg1)->CallAudioVideo((char const *)arg2);
+  result = (bool)(arg1)->callAudioVideo((char const *)arg2);
   jresult = (jboolean)result; 
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
   return jresult;
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1CallVideo(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1callVideo(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
   jboolean jresult = 0 ;
   CallSession *arg1 = (CallSession *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -2419,44 +2419,74 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  result = (bool)(arg1)->CallVideo((char const *)arg2);
+  result = (bool)(arg1)->callVideo((char const *)arg2);
   jresult = (jboolean)result; 
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
   return jresult;
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1Accept(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1setSessionTimer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jstring jarg3) {
   jboolean jresult = 0 ;
   CallSession *arg1 = (CallSession *) 0 ;
+  unsigned int arg2 ;
+  char *arg3 = (char *) 0 ;
   bool result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(CallSession **)&jarg1; 
-  result = (bool)(arg1)->Accept();
+  arg2 = (unsigned int)jarg2; 
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  result = (bool)(arg1)->setSessionTimer(arg2,(char const *)arg3);
+  jresult = (jboolean)result; 
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1set100rel(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  jboolean jresult = 0 ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  bool arg2 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(CallSession **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  result = (bool)(arg1)->set100rel(arg2);
   jresult = (jboolean)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1Hold(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1setQoS(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
   jboolean jresult = 0 ;
   CallSession *arg1 = (CallSession *) 0 ;
+  tmedia_qos_stype_t arg2 ;
+  tmedia_qos_strength_t arg3 ;
   bool result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(CallSession **)&jarg1; 
-  result = (bool)(arg1)->Hold();
+  arg2 = (tmedia_qos_stype_t)jarg2; 
+  arg3 = (tmedia_qos_strength_t)jarg3; 
+  result = (bool)(arg1)->setQoS(arg2,arg3);
   jresult = (jboolean)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1Resume(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1accept(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jboolean jresult = 0 ;
   CallSession *arg1 = (CallSession *) 0 ;
   bool result;
@@ -2465,13 +2495,13 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1
   (void)jcls;
   (void)jarg1_;
   arg1 = *(CallSession **)&jarg1; 
-  result = (bool)(arg1)->Resume();
+  result = (bool)(arg1)->accept();
   jresult = (jboolean)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1Hangup(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1hold(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jboolean jresult = 0 ;
   CallSession *arg1 = (CallSession *) 0 ;
   bool result;
@@ -2480,7 +2510,37 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1
   (void)jcls;
   (void)jarg1_;
   arg1 = *(CallSession **)&jarg1; 
-  result = (bool)(arg1)->Hangup();
+  result = (bool)(arg1)->hold();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1resume(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(CallSession **)&jarg1; 
+  result = (bool)(arg1)->resume();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1hangup(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(CallSession **)&jarg1; 
+  result = (bool)(arg1)->hangup();
   jresult = (jboolean)result; 
   return jresult;
 }
@@ -2511,7 +2571,7 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1Messaging
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingSession_1Send(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbyteArray jarg2, jlong jarg3) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingSession_1send(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbyteArray jarg2, jlong jarg3) {
   jboolean jresult = 0 ;
   MessagingSession *arg1 = (MessagingSession *) 0 ;
   void *arg2 = (void *) 0 ;
@@ -2526,13 +2586,13 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingSess
   arg2 = jenv->GetDirectBufferAddress(jarg2); 
   
   arg3 = (unsigned int)jarg3; 
-  result = (bool)(arg1)->Send((void const *)arg2,arg3);
+  result = (bool)(arg1)->send((void const *)arg2,arg3);
   jresult = (jboolean)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingSession_1Accept(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingSession_1accept(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jboolean jresult = 0 ;
   MessagingSession *arg1 = (MessagingSession *) 0 ;
   bool result;
@@ -2541,13 +2601,13 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingSess
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MessagingSession **)&jarg1; 
-  result = (bool)(arg1)->Accept();
+  result = (bool)(arg1)->accept();
   jresult = (jboolean)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingSession_1Reject(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingSession_1reject(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jboolean jresult = 0 ;
   MessagingSession *arg1 = (MessagingSession *) 0 ;
   bool result;
@@ -2556,7 +2616,7 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingSess
   (void)jcls;
   (void)jarg1_;
   arg1 = *(MessagingSession **)&jarg1; 
-  result = (bool)(arg1)->Reject();
+  result = (bool)(arg1)->reject();
   jresult = (jboolean)result; 
   return jresult;
 }
@@ -2587,7 +2647,7 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1OptionsSe
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_OptionsSession_1Send(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_OptionsSession_1send(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jboolean jresult = 0 ;
   OptionsSession *arg1 = (OptionsSession *) 0 ;
   bool result;
@@ -2596,7 +2656,7 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_OptionsSessio
   (void)jcls;
   (void)jarg1_;
   arg1 = *(OptionsSession **)&jarg1; 
-  result = (bool)(arg1)->Send();
+  result = (bool)(arg1)->send();
   jresult = (jboolean)result; 
   return jresult;
 }
@@ -2627,7 +2687,7 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1Publicati
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_PublicationSession_1Publish(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbyteArray jarg2, jlong jarg3) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_PublicationSession_1publish(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbyteArray jarg2, jlong jarg3) {
   jboolean jresult = 0 ;
   PublicationSession *arg1 = (PublicationSession *) 0 ;
   void *arg2 = (void *) 0 ;
@@ -2642,13 +2702,13 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_PublicationSe
   arg2 = jenv->GetDirectBufferAddress(jarg2); 
   
   arg3 = (unsigned int)jarg3; 
-  result = (bool)(arg1)->Publish((void const *)arg2,arg3);
+  result = (bool)(arg1)->publish((void const *)arg2,arg3);
   jresult = (jboolean)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_PublicationSession_1UnPublish(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_PublicationSession_1unPublish(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jboolean jresult = 0 ;
   PublicationSession *arg1 = (PublicationSession *) 0 ;
   bool result;
@@ -2657,7 +2717,7 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_PublicationSe
   (void)jcls;
   (void)jarg1_;
   arg1 = *(PublicationSession **)&jarg1; 
-  result = (bool)(arg1)->UnPublish();
+  result = (bool)(arg1)->unPublish();
   jresult = (jboolean)result; 
   return jresult;
 }
@@ -2688,7 +2748,7 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1Registrat
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationSession_1Register(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationSession_1register_1(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jboolean jresult = 0 ;
   RegistrationSession *arg1 = (RegistrationSession *) 0 ;
   bool result;
@@ -2697,13 +2757,13 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationS
   (void)jcls;
   (void)jarg1_;
   arg1 = *(RegistrationSession **)&jarg1; 
-  result = (bool)(arg1)->Register();
+  result = (bool)(arg1)->register_();
   jresult = (jboolean)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationSession_1UnRegister(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationSession_1unRegister(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jboolean jresult = 0 ;
   RegistrationSession *arg1 = (RegistrationSession *) 0 ;
   bool result;
@@ -2712,7 +2772,7 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationS
   (void)jcls;
   (void)jarg1_;
   arg1 = *(RegistrationSession **)&jarg1; 
-  result = (bool)(arg1)->UnRegister();
+  result = (bool)(arg1)->unRegister();
   jresult = (jboolean)result; 
   return jresult;
 }
@@ -2743,7 +2803,7 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1Subscript
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SubscriptionSession_1Subscribe(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SubscriptionSession_1subscribe(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jboolean jresult = 0 ;
   SubscriptionSession *arg1 = (SubscriptionSession *) 0 ;
   bool result;
@@ -2752,13 +2812,13 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SubscriptionS
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SubscriptionSession **)&jarg1; 
-  result = (bool)(arg1)->Subscribe();
+  result = (bool)(arg1)->subscribe();
   jresult = (jboolean)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SubscriptionSession_1UnSubscribe(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SubscriptionSession_1unSubscribe(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jboolean jresult = 0 ;
   SubscriptionSession *arg1 = (SubscriptionSession *) 0 ;
   bool result;
@@ -2767,7 +2827,7 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SubscriptionS
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SubscriptionSession **)&jarg1; 
-  result = (bool)(arg1)->UnSubscribe();
+  result = (bool)(arg1)->unSubscribe();
   jresult = (jboolean)result; 
   return jresult;
 }
@@ -4485,6 +4545,26 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1sto
   result = (bool)(arg1)->stop();
   jresult = (jboolean)result; 
   return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1setCodecs(JNIEnv *jenv, jclass jcls, jint jarg1) {
+  tdav_codec_id_t arg1 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (tdav_codec_id_t)jarg1; 
+  SipStack::setCodecs(arg1);
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1setCodecs_12(JNIEnv *jenv, jclass jcls, jint jarg1) {
+  int arg1 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int)jarg1; 
+  SipStack::setCodecs_2(arg1);
 }
 
 

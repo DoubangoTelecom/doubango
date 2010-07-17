@@ -290,7 +290,7 @@ char* XcapMessage::getXcapHeaderValue(const char* name, unsigned index /*= 0*/)
 {
 	const thttp_header_t* header;
 	if((header = thttp_message_get_headerByName(this->httpmessage, name))){
-		return thttp_header_tostring(header);
+		return thttp_header_value_tostring(header);
 	}
 	return tsk_null;
 }

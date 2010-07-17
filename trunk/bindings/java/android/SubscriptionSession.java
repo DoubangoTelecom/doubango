@@ -37,12 +37,12 @@ public class SubscriptionSession extends SipSession {
     this(tinyWRAPJNI.new_SubscriptionSession(SipStack.getCPtr(Stack), Stack), true);
   }
 
-  public boolean Subscribe() {
-    return tinyWRAPJNI.SubscriptionSession_Subscribe(swigCPtr, this);
+  public boolean subscribe() {
+    return tinyWRAPJNI.SubscriptionSession_subscribe(swigCPtr, this);
   }
 
-  public boolean UnSubscribe() {
-    return tinyWRAPJNI.SubscriptionSession_UnSubscribe(swigCPtr, this);
+  public boolean unSubscribe() {
+    return tinyWRAPJNI.SubscriptionSession_unSubscribe(swigCPtr, this);
   }
 
 }

@@ -107,8 +107,7 @@ int thttp_header_serialize(const thttp_header_t *self, tsk_buffer_t *output)
 		}
 
 		/* Parameters */
-		tsk_list_foreach(item, self->params)
-		{
+		tsk_list_foreach(item, self->params){
 			tsk_param_t* param = item->data;
 			separator = thttp_header_get_param_separator(self);
 			if(ret = tsk_buffer_append_2(output, param->value?"%c%s=%s":"%c%s", separator, param->name, param->value)){
@@ -130,6 +129,21 @@ char* thttp_header_tostring(const thttp_header_t *self)
 	char* ret = tsk_null;
 
 	if(!thttp_header_serialize(self, output)){
+		ret = tsk_strndup(output->data, output->size);
+	}
+
+	TSK_OBJECT_SAFE_FREE(output);
+	return ret;
+}
+
+/**@ingroup thttp_header_group
+*/
+char* thttp_header_value_tostring(const thttp_header_t *self)
+{
+	tsk_buffer_t *output = tsk_buffer_create_null();
+	char* ret = tsk_null;
+
+	if(!self->tostring(self, output)){
 		ret = tsk_strndup(output->data, output->size);
 	}
 
