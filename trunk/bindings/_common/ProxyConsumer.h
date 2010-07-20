@@ -78,6 +78,7 @@ public:
 	virtual int stop() { return 0; }
 
 	void setActivate(bool enabled);
+	bool setDisplaySize(int width, int height);
 
 public:
 	static bool registerPlugin();
@@ -98,7 +99,7 @@ class ProxyVideoFrame
 {
 public:
 #if !defined(SWIG)
-	ProxyVideoFrame(void** buffer, unsigned size);
+	ProxyVideoFrame(const void* buffer, unsigned size);
 #endif
 	virtual ~ProxyVideoFrame();
 
@@ -106,7 +107,7 @@ public:
 	unsigned getContent(void* output, unsigned maxsize);
 
 private:
-	void* buffer;
+	const void* buffer;
 	unsigned size;
 };
 

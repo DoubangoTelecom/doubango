@@ -93,6 +93,14 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_setAoR(swigCPtr, this, ip, port);
   }
 
+  public String dnsENUM(String service, String e164num, String domain) {
+    return tinyWRAPJNI.SipStack_dnsENUM(swigCPtr, this, service, e164num, domain);
+  }
+
+  public String dnsNaptrSrv(String domain, String service, short[] OUTPUT) {
+    return tinyWRAPJNI.SipStack_dnsNaptrSrv(swigCPtr, this, domain, service, OUTPUT);
+  }
+
   public boolean isValid() {
     return tinyWRAPJNI.SipStack_isValid(swigCPtr, this);
   }

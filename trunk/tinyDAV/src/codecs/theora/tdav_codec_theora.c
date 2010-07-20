@@ -63,9 +63,10 @@ typedef enum theora_datatype_e{
 }
 theora_datatype_t;
 
-static void *run(void* self);
 static int tdav_codec_theora_send(tdav_codec_theora_t* self, const uint8_t* data, tsk_size_t size, theora_datatype_t tdt);
 static void tdav_codec_theora_rtp_callback(tdav_codec_theora_t *self, const void *data, tsk_size_t size, tsk_bool_t marker);
+
+static void tdav_codec_theora_encap(tdav_codec_theora_t* theora, const uint8_t* pdata, tsk_size_t size);
 
 /* ============ Theora Plugin interface functions ================= */
 
@@ -84,15 +85,6 @@ int tdav_codec_theora_open(tmedia_codec_t* self)
 	}
 
 	/* the caller (base class) already checked that the codec is not opened */
-
-	//
-	//	Runnable
-	//
-	theora->runnable = tdav_runnable_video_create(run, theora);
-	if((ret = tdav_runnable_video_start(theora->runnable))){
-		TSK_DEBUG_ERROR("Failed to create runnable (H263 codec)");
-		return ret;
-	}
 
 	//
 	//	Encoder
@@ -182,8 +174,6 @@ int tdav_codec_theora_open(tmedia_codec_t* self)
 
 int tdav_codec_theora_close(tmedia_codec_t* self)
 {
-	int ret;
-
 	tdav_codec_theora_t* theora = (tdav_codec_theora_t*)self;
 
 	if(!theora){
@@ -192,14 +182,6 @@ int tdav_codec_theora_close(tmedia_codec_t* self)
 	}
 
 	/* the caller (base class) already checked that the codec is opened */
-
-	//
-	// Runnable
-	//
-	if((ret = tdav_runnable_video_stop(theora->runnable))){
-		TSK_DEBUG_ERROR("Failed to stop runnable (Theora codec)");
-		// ... do not exit, continue
-	}
 
 	//
 	//	Encoder
@@ -240,7 +222,7 @@ int tdav_codec_theora_close(tmedia_codec_t* self)
 }
 
 //#include "tsk_time.h"
-tsk_size_t tdav_codec_theora_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_theora_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	int ret;
 	int size;
@@ -250,11 +232,6 @@ tsk_size_t tdav_codec_theora_encode(tmedia_codec_t* self, const void* in_data, t
 	if(!self || !in_data || !in_size || !out_data){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
-	}
-
-	// delete old buffer
-	if(*out_data){
-		TSK_FREE(*out_data);
 	}
 
 	// wrap yuv420 buffer
@@ -271,31 +248,14 @@ tsk_size_t tdav_codec_theora_encode(tmedia_codec_t* self, const void* in_data, t
 	theora->encoder.picture->pts = AV_NOPTS_VALUE;
 	//theora->encoder.picture->pict_type = FF_I_TYPE;
 	ret = avcodec_encode_video(theora->encoder.context, theora->encoder.buffer, size, theora->encoder.picture);
-	if(ret <= 0){
-		TSK_DEBUG_ERROR("Encode Failed");
-		ret = 0;
-	}
-	else{
-		if((*out_data = tsk_calloc(ret, sizeof(uint8_t)))){
-			memcpy(*out_data, theora->encoder.buffer, ret);
-		}
-		else{
-			TSK_DEBUG_ERROR("Failed to allocate output buffer");
-			ret = 0;
-		}
-	}
-	
-	if(ret/* > RTP_PAYLOAD_SIZE*/){
-		tsk_buffer_t* buffer = tsk_buffer_create_null();
-		tsk_buffer_takeownership(buffer, out_data, (tsk_size_t)ret);
-		TSK_RUNNABLE_ENQUEUE_OBJECT(theora->runnable, buffer);
-		ret = 0;
+	if(ret > 0){
+		tdav_codec_theora_encap(theora, theora->encoder.buffer, (tsk_size_t)ret);
 	}
 
-	return (tsk_size_t)ret;
+	return 0;
 }
 
-tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
+tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	const uint8_t* pdata = in_data;
 	int pkts;
@@ -312,11 +272,6 @@ tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, t
 	if(!self || !in_data || (in_size<(THEORA_PAYLOAD_HEADER_SIZE + THEORA_PAYLOAD_LENGTH_SIZE)) || !out_data || !theora->decoder.context){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
-	}
-
-	// delete old buffer
-	if(*out_data){
-		TSK_FREE(*out_data);
 	}
 
 	/* Packet lost? */
@@ -384,14 +339,19 @@ tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, t
 							tdav_converter_video_flip(theora->decoder.picture, theora->decoder.context->height);
 #endif
 							/* allocate buffer */
-							if((*out_data = tsk_calloc(xsize, sizeof(uint8_t)))){
-								/* copy picture into a linear buffer */
-								avpicture_layout((AVPicture *)theora->decoder.picture, theora->decoder.context->pix_fmt, theora->decoder.context->width, theora->decoder.context->height,
-									*out_data, retsize);
+							if(*out_max_size <xsize){
+								if((*out_data = tsk_realloc(*out_data, xsize))){
+									*out_max_size = xsize;
+								}
+								else{
+									TSK_DEBUG_ERROR("Failed to allocate new buffer");
+									*out_max_size = 0;
+									return 0;
+								}
 							}
-							else{
-								TSK_DEBUG_ERROR("Failed to allocate new buffer");
-							}
+							/* copy picture into a linear buffer */
+							avpicture_layout((AVPicture *)theora->decoder.picture, theora->decoder.context->pix_fmt, theora->decoder.context->width, theora->decoder.context->height,
+								*out_data, retsize);
 						}
 						/* in all cases: reset accumulator */
 						theora->decoder.accumulator_pos = 0;
@@ -418,7 +378,7 @@ tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, t
 					is type 0x80, the comment header is type 0x81, and the setup header is type
 					0x82.
 					*/
-					TSK_DEBUG_INFO("Theora_Packed_Configuration_payload");
+					/*TSK_DEBUG_INFO("Theora_Packed_Configuration_payload");*/
 
 					if(!theora->decoder.opened /*|| (conf_ident changed)*/){
 						if(!theora->decoder.conf_pkt){
@@ -481,10 +441,10 @@ tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, t
 					break;
 				}
 			case Legacy_Theora_Comment_payload:
-				TSK_DEBUG_INFO("Legacy_Theora_Comment_payload");
+				/*TSK_DEBUG_INFO("Legacy_Theora_Comment_payload");*/
 				break;
 			case Reserved:
-				TSK_DEBUG_INFO("Reserved");
+				/*TSK_DEBUG_INFO("Reserved");*/
 				break;
 		}
 	}
@@ -570,74 +530,46 @@ const tmedia_codec_plugin_def_t *tdav_codec_theora_plugin_def_t = &tdav_codec_th
 
 
 
-
-
-
-static void *run(void* self)
+static void tdav_codec_theora_encap(tdav_codec_theora_t* theora, const uint8_t* pdata, tsk_size_t size)
 {
-	tsk_list_item_t *curr;
-
-	const uint8_t* pdata;
-	tsk_size_t size;
-
-	tdav_codec_theora_t* theora = (tdav_codec_theora_t*)((tdav_runnable_video_t*)self)->userdata;
-
-	TSK_DEBUG_INFO("Theora thread === START");
-
-	TSK_RUNNABLE_RUN_BEGIN(self);
-	
-	if((curr = TSK_RUNNABLE_POP_FIRST(self))){
-		
-		pdata = ((const tsk_buffer_t*)curr->data)->data;
-		size = ((const tsk_buffer_t*)curr->data)->size;
-		
-		if((theora->encoder.conf_count < THEORA_CONF_SEND_COUNT) && theora->encoder.context && theora->encoder.context->extradata){
-			if((theora->encoder.conf_last + (250 *theora->encoder.conf_count)) < tsk_time_epoch()){
-				int hdr_size, i, exd_size = theora->encoder.context->extradata_size, conf_pkt_size = 0;
-				uint8_t *conf_pkt_ptr = tsk_null, *exd_ptr = theora->encoder.context->extradata;
-				for(i=0; i<3 && exd_size; i++){
-					hdr_size = exd_ptr[0], hdr_size<<=8, hdr_size |= exd_ptr[1];
-					exd_ptr += 2;
-					exd_size -= 2;
-					if(hdr_size > exd_size){
-						TSK_DEBUG_ERROR("Invalid extradata");
-						TSK_FREE(conf_pkt_ptr);
-						conf_pkt_size = 0;
-					}
-
-					if(exd_ptr[0] == 0x80 || exd_ptr[0] == 0x82){ /* Ignore 'comment' which is equal to '0x81' */
-						if((conf_pkt_ptr = tsk_realloc(conf_pkt_ptr, (conf_pkt_size + hdr_size)))){
-							memcpy((conf_pkt_ptr + conf_pkt_size), exd_ptr, hdr_size);
-							conf_pkt_size += hdr_size;
-						}
-					}
-					exd_size -= hdr_size;
-					exd_ptr += hdr_size;
-				}
-
-				/* Send the conf pack */
-				if(conf_pkt_ptr && conf_pkt_size){
-					TSK_DEBUG_INFO("Sending Configuration Packet");
-					tdav_codec_theora_send(theora, conf_pkt_ptr, conf_pkt_size, Theora_Packed_Configuration_payload);
+	if((theora->encoder.conf_count < THEORA_CONF_SEND_COUNT) && theora->encoder.context && theora->encoder.context->extradata){
+		if((theora->encoder.conf_last + (250 *theora->encoder.conf_count)) < tsk_time_epoch()){
+			int hdr_size, i, exd_size = theora->encoder.context->extradata_size, conf_pkt_size = 0;
+			uint8_t *conf_pkt_ptr = tsk_null, *exd_ptr = theora->encoder.context->extradata;
+			for(i=0; i<3 && exd_size; i++){
+				hdr_size = exd_ptr[0], hdr_size<<=8, hdr_size |= exd_ptr[1];
+				exd_ptr += 2;
+				exd_size -= 2;
+				if(hdr_size > exd_size){
+					TSK_DEBUG_ERROR("Invalid extradata");
 					TSK_FREE(conf_pkt_ptr);
+					conf_pkt_size = 0;
 				}
 
-				theora->encoder.conf_last = tsk_time_epoch();
-				theora->encoder.conf_count++;
+				if(exd_ptr[0] == 0x80 || exd_ptr[0] == 0x82){ /* Ignore 'comment' which is equal to '0x81' */
+					if((conf_pkt_ptr = tsk_realloc(conf_pkt_ptr, (conf_pkt_size + hdr_size)))){
+						memcpy((conf_pkt_ptr + conf_pkt_size), exd_ptr, hdr_size);
+						conf_pkt_size += hdr_size;
+					}
+				}
+				exd_size -= hdr_size;
+				exd_ptr += hdr_size;
 			}
+
+			/* Send the conf pack */
+			if(conf_pkt_ptr && conf_pkt_size){
+				/*TSK_DEBUG_INFO("Sending Configuration Packet");*/
+				tdav_codec_theora_send(theora, conf_pkt_ptr, conf_pkt_size, Theora_Packed_Configuration_payload);
+				TSK_FREE(conf_pkt_ptr);
+			}
+
+			theora->encoder.conf_last = tsk_time_epoch();
+			theora->encoder.conf_count++;
 		}
-
-		/* Send Theora Raw data */
-		tdav_codec_theora_send(theora, pdata, size, Raw_Theora_payload);
-
-		tsk_object_unref(curr);
 	}
-	
-	TSK_RUNNABLE_RUN_END(self);
 
-	TSK_DEBUG_INFO("Theora thread === STOP");
-
-	return tsk_null;
+	/* Send Theora Raw data */
+	tdav_codec_theora_send(theora, pdata, size, Raw_Theora_payload);
 }
 
 int tdav_codec_theora_send(tdav_codec_theora_t* self, const uint8_t* data, tsk_size_t size, theora_datatype_t tdt)

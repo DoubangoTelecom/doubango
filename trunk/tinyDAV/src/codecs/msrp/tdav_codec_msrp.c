@@ -38,12 +38,12 @@
 #define tdav_codec_msrp_fmtp_get tsk_null
 #define tdav_codec_msrp_fmtp_set tsk_null
 
-tsk_size_t tdav_codec_msrp_fmtp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_msrp_fmtp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	return 0;
 }
 
-tsk_size_t tdav_codec_msrp_fmtp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
+tsk_size_t tdav_codec_msrp_fmtp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	return 0;
 }

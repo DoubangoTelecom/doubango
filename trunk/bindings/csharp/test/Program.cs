@@ -83,19 +83,31 @@ namespace test
 
             Console.ReadLine();
 
+            //String sipUri = sipStack.dnsENUM("E2U+SIP", "+1-800-555-5555", "e164.org");
+           // short port = 0;
+            //String ipAddress = sipStack.dnsNaptrSrv("sip2sip.info", "SIP+D2U", out port);
+
             callSession = new CallSession(sipStack);
             callSession.set100rel(true);
             callSession.setSessionTimer(90, "uas");
-            callSession.setQoS(tmedia_qos_stype_t.tmedia_qos_stype_segmented, tmedia_qos_strength_t.tmedia_qos_strength_mandatory);
-            callSession.callAudioVideo(String.Format("sip:bob@{0}", REALM));
+            callSession.setQoS(tmedia_qos_stype_t.tmedia_qos_stype_segmented, tmedia_qos_strength_t.tmedia_qos_strength_optional);
+            callSession.callAudio(String.Format("sip:bob@{0}", REALM));
 
             tcb = new TimerCallback(OnTimer);
             timer = new Timer(tcb, new AutoResetEvent(false), 0, 20);
 
             Console.ReadLine();
-            callSession.hold();
+            callSession.sendDTMF(1);
             Console.ReadLine();
-            callSession.resume();
+            callSession.sendDTMF(2);
+            Console.ReadLine();
+            callSession.sendDTMF(11);
+            Console.ReadLine();
+
+            //Console.ReadLine();
+            //callSession.hold();
+            //Console.ReadLine();
+            //callSession.resume();
             Console.ReadLine();
             callSession.hangup();
 
@@ -134,11 +146,11 @@ namespace test
 
         public static void OnTimer(Object stateInfo)
         {
-            byte[] bytesAudio = new byte[320];
-            uint ret = audioConsumer.pull(bytesAudio, (uint)bytesAudio.Length);
+            //byte[] bytesAudio = new byte[320];
+            //uint ret = audioConsumer.pull(bytesAudio, (uint)bytesAudio.Length);
             //Console.WriteLine("pull="+ret);
 
-            int ret2 = audioProducer.push(bytesAudio, (uint)bytesAudio.Length);
+            //int ret2 = audioProducer.push(bytesAudio, (uint)bytesAudio.Length);
             //Console.WriteLine("push=" + ret);
 
             //byte[] bytesVideo = new byte[176*144*3];
@@ -156,7 +168,7 @@ namespace test
         static MyProxyAudioConsumer audioConsumer;
         static MyProxyAudioProducer audioProducer;
         static MyProxyVideoProducer videoProducer;
-        static MyProxyVideoConsumer videoConsumer;
+        public static MyProxyVideoConsumer videoConsumer;
     }
 
 
@@ -275,6 +287,7 @@ namespace test
 
         public override int start()
         {
+            Program.videoConsumer.setDisplaySize(352, 288);
             return base.start();
         }
 
@@ -283,7 +296,8 @@ namespace test
             uint size = frame.getSize(); // for test
             byte[] bytes = new byte[1200];
             uint ret = frame.getContent(bytes, (uint)bytes.Length);
-            return base.consume(frame);
+            Program.videoConsumer.setDisplaySize(176, 144);
+            return 0;
         }
 
         public override int pause()

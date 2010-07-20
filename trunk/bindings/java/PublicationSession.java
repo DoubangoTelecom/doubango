@@ -36,7 +36,7 @@ public class PublicationSession extends SipSession {
   public boolean Publish(byte[] bytes) {
     if(bytes != null){
 		final java.nio.ByteBuffer byteBuffer = this.getByteBuffer(bytes);
-        return this.Publish(byteBuffer, bytes.length);
+        return this.publish(byteBuffer, bytes.length);
     }
     return false;
   }

@@ -60,9 +60,28 @@ typedef struct tdav_session_video_s
 
 	struct trtp_manager_s* rtp_manager;
 
+	struct{
+		void* buffer;
+		tsk_size_t buffer_size;
+
+		void* conv_buffer;
+		tsk_size_t conv_buffer_size;
+	} encoder;
+
+	struct{
+		void* buffer;
+		tsk_size_t buffer_size;
+
+		void* conv_buffer;
+		tsk_size_t conv_buffer_size;
+	} decoder;
+
 	struct tmedia_consumer_s* consumer;
 	struct tmedia_producer_s* producer;
 	struct {
+		tsk_size_t consumerWidth;
+		tsk_size_t consumerHeight;
+
 		struct tdav_converter_video_s* toYUV420;
 		struct tdav_converter_video_s* fromYUV420;
 	} conv;

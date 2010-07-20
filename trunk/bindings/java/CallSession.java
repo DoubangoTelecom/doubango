@@ -73,6 +73,10 @@ public class CallSession extends SipSession {
     return tinyWRAPJNI.CallSession_resume(swigCPtr, this);
   }
 
+  public boolean sendDTMF(int number) {
+    return tinyWRAPJNI.CallSession_sendDTMF(swigCPtr, this, number);
+  }
+
   public boolean hangup() {
     return tinyWRAPJNI.CallSession_hangup(swigCPtr, this);
   }

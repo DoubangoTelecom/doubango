@@ -60,10 +60,9 @@ int tdav_codec_ilbc_close(tmedia_codec_t* self)
 	return 0;
 }
 
-tsk_size_t tdav_codec_ilbc_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_ilbc_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {	
 	tdav_codec_ilbc_t* ilbc = (tdav_codec_ilbc_t*)self;
-	float block[BLOCKL_MAX];
 	int k;
 	
 	if(!self || !in_data || !in_size || !out_data){
@@ -71,32 +70,31 @@ tsk_size_t tdav_codec_ilbc_encode(tmedia_codec_t* self, const void* in_data, tsk
 		return 0;
 	}
 	
-	/* free old buffer */
-	if(*out_data){
-		TSK_FREE(*out_data);
-	}
-	
    /* convert signal to float */
 	for(k=0; k<ilbc->encoder.blockl; k++){
-       block[k] = (float)((short*)in_data)[k];
+       ilbc->encblock[k] = (float)((short*)in_data)[k];
 	}
 	
-	/* allocate new buffer */
-	if(!(*out_data = tsk_calloc(ilbc->encoder.no_of_bytes, 1))){
-		TSK_DEBUG_ERROR("Failed to allocate new buffer");
-		return 0;
+	/* allocate new buffer if needed */
+	if((int)*out_max_size <ilbc->encoder.no_of_bytes){
+		if(!(*out_data = tsk_realloc(*out_data, ilbc->encoder.no_of_bytes))){
+			TSK_DEBUG_ERROR("Failed to allocate new buffer");
+			*out_max_size = 0;
+			return 0;
+		}
+		*out_max_size = ilbc->encoder.no_of_bytes;
 	}
 	
 	/* do the actual encoding */
-    iLBC_encode(*out_data, block, &ilbc->encoder);
+    iLBC_encode(*out_data, ilbc->encblock, &ilbc->encoder);
 	
 	return ilbc->encoder.no_of_bytes;
 }
 
-tsk_size_t tdav_codec_ilbc_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
+tsk_size_t tdav_codec_ilbc_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	int blocks, i, k, block_size;
-	float decblock[BLOCKL_MAX], dtmp;
+	float dtmp;
 	tsk_size_t out_size;
 	tdav_codec_ilbc_t* ilbc = (tdav_codec_ilbc_t*)self;
 
@@ -128,28 +126,29 @@ tsk_size_t tdav_codec_ilbc_decode(tmedia_codec_t* self, const void* in_data, tsk
 		return 0;
 	}
 
-	/* free old buffer */
-	if(*out_data){
-		TSK_FREE(*out_data);
-	}
-
-	/* allocate new buffer */
-	if(!(*out_data = tsk_calloc(out_size, 1))){
-		TSK_DEBUG_ERROR("Failed to allocate new buffer");
-		return 0;
+	/* allocate new buffer if needed */
+	if(*out_max_size<out_size){
+		if(!(*out_data = tsk_realloc(*out_data, out_size))){
+			TSK_DEBUG_ERROR("Failed to allocate new buffer");
+			*out_max_size = 0;
+			return 0;
+		}
+		*out_max_size = out_size;
 	}
 
 	for(i = 0; i<blocks; i++){
-		iLBC_decode(decblock, &((uint8_t*)in_data)[i*block_size], &ilbc->decoder, 1/* Normal */);
+		iLBC_decode(ilbc->decblock, &((uint8_t*)in_data)[i*block_size], &ilbc->decoder, 1/* Normal */);
 
        /* convert to short */
        for(k=0; k<ilbc->decoder.blockl; k++){
-           dtmp=decblock[k];
+           dtmp=ilbc->decblock[k];
 
-           if (dtmp<MIN_SAMPLE)
-               dtmp=MIN_SAMPLE;
-           else if (dtmp>MAX_SAMPLE)
-               dtmp=MAX_SAMPLE;
+		   if(dtmp<MIN_SAMPLE){
+               dtmp = MIN_SAMPLE;
+		   }
+		   else if(dtmp>MAX_SAMPLE){
+               dtmp = MAX_SAMPLE;
+		   }
 		  
 		   ((short*)*out_data)[(i*block_size) + k] = ((short) dtmp);
        }

@@ -78,6 +78,7 @@ class tinyWRAPJNI {
   public final static native boolean CallSession_accept(long jarg1, CallSession jarg1_);
   public final static native boolean CallSession_hold(long jarg1, CallSession jarg1_);
   public final static native boolean CallSession_resume(long jarg1, CallSession jarg1_);
+  public final static native boolean CallSession_sendDTMF(long jarg1, CallSession jarg1_, int jarg2);
   public final static native boolean CallSession_hangup(long jarg1, CallSession jarg1_);
   public final static native long new_MessagingSession(long jarg1, SipStack jarg1_);
   public final static native void delete_MessagingSession(long jarg1);
@@ -127,6 +128,7 @@ class tinyWRAPJNI {
   public final static native int ProxyVideoConsumer_stop(long jarg1, ProxyVideoConsumer jarg1_);
   public final static native int ProxyVideoConsumer_stopSwigExplicitProxyVideoConsumer(long jarg1, ProxyVideoConsumer jarg1_);
   public final static native void ProxyVideoConsumer_setActivate(long jarg1, ProxyVideoConsumer jarg1_, boolean jarg2);
+  public final static native boolean ProxyVideoConsumer_setDisplaySize(long jarg1, ProxyVideoConsumer jarg1_, int jarg2, int jarg3);
   public final static native boolean ProxyVideoConsumer_registerPlugin();
   public final static native void ProxyVideoConsumer_director_connect(ProxyVideoConsumer obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void ProxyVideoConsumer_change_ownership(ProxyVideoConsumer obj, long cptr, boolean take_or_release);
@@ -203,6 +205,8 @@ class tinyWRAPJNI {
   public final static native boolean SipStack_removeHeader(long jarg1, SipStack jarg1_, String jarg2);
   public final static native boolean SipStack_addDnsServer(long jarg1, SipStack jarg1_, String jarg2);
   public final static native boolean SipStack_setAoR(long jarg1, SipStack jarg1_, String jarg2, int jarg3);
+  public final static native String SipStack_dnsENUM(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4);
+  public final static native String SipStack_dnsNaptrSrv(long jarg1, SipStack jarg1_, String jarg2, String jarg3, short[] jarg4);
   public final static native boolean SipStack_isValid(long jarg1, SipStack jarg1_);
   public final static native boolean SipStack_stop(long jarg1, SipStack jarg1_);
   public final static native void SipStack_setCodecs(int jarg1);

@@ -56,6 +56,9 @@ typedef struct tmedia_consumer_s
 
 	struct{
 		tmedia_chroma_t chroma;
+		int fps;
+		tsk_size_t width;
+		tsk_size_t height;
 	} video;
 
 	const struct tmedia_consumer_plugin_def_s* plugin;

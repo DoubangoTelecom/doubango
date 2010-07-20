@@ -46,6 +46,7 @@ typedef struct trtp_rtp_packet_s
 
 	struct{
 		void* data;
+		const void* data_const;
 		tsk_size_t size;
 	} payload;
 	

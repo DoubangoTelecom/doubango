@@ -123,7 +123,7 @@ int trtp_manager_prepare(trtp_manager_t* self)
 	/* Creates local rtp and rtcp sockets */
 	while(retry_count--){
 		/* random number in the range 1024 to 65535 */
-#if 0
+#if 1
 		tnet_port_t local_port = 6060;
 #else
 		tnet_port_t local_port = ((rand() % 64510) + 1025);
@@ -304,10 +304,15 @@ int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t siz
 	}
 
 	/* set data */
+#if 0
 	if((packet->payload.data = tsk_calloc(size, sizeof(uint8_t)))){
 		memcpy(packet->payload.data, data, size);
 		packet->payload.size = size;
 	}
+#else
+	packet->payload.data_const = data;
+	packet->payload.size = size;
+#endif
 
 	/* serialize and send over the network */
 	if((buffer = trtp_rtp_packet_serialize(packet))){

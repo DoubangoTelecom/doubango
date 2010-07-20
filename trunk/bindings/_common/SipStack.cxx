@@ -194,6 +194,45 @@ bool SipStack::setAoR(const char* ip, int port)
 	return (ret == 0);
 }
 
+char* SipStack::dnsENUM(const char* service, const char* e164num, const char* domain)
+{
+	tnet_dns_ctx_t* dnsctx = tsip_stack_get_dnsctx(this->handle);
+	char* uri = tsk_null;
+
+	if(dnsctx){
+		if(!(uri = tnet_dns_enum_2(dnsctx, service, e164num, domain))){
+			TSK_DEBUG_ERROR("ENUM(%s) failed", e164num);
+		}
+		tsk_object_unref(dnsctx);
+		return uri;
+	}
+	else{
+		TSK_DEBUG_ERROR("No DNS Context could be found");
+		return tsk_null;
+	}
+}
+
+char* SipStack::dnsNaptrSrv(const char* domain, const char* service, short *OUTPUT)
+{
+	tnet_dns_ctx_t* dnsctx = tsip_stack_get_dnsctx(this->handle);
+	char* ip = tsk_null;
+	tnet_port_t port;
+	*OUTPUT = 0;
+	
+
+	if(dnsctx){
+		if(!tnet_dns_query_naptr_srv(dnsctx, "sip2sip.info", "SIP+D2U", &ip, &port)){
+			*OUTPUT = port;
+		}
+		tsk_object_unref(dnsctx);
+		return ip;
+	}
+	else{
+		TSK_DEBUG_ERROR("No DNS Context could be found");
+		return tsk_null;
+	}
+}
+
 bool SipStack::isValid()
 {
 	return (this->handle != tsk_null);

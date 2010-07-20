@@ -87,7 +87,7 @@ int tdav_codec_speex_close(tmedia_codec_t* self)
 	return 0;
 }
 
-tsk_size_t tdav_codec_speex_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_speex_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {	
 	tdav_codec_speex_t* speex = (tdav_codec_speex_t*)self;
 	tsk_size_t outsize = 0;
@@ -97,22 +97,25 @@ tsk_size_t tdav_codec_speex_encode(tmedia_codec_t* self, const void* in_data, ts
 		return 0;
 	}
 	
-	/* free old buffer */
-	if(*out_data){
-		TSK_FREE(*out_data);
-	}
-	
 	speex_bits_reset(&speex->encoder.bits);
 	speex_encode_int(speex->encoder.state, (spx_int16_t*)in_data, &speex->encoder.bits);
 
-	if((*out_data = tsk_calloc(speex->encoder.size, 1))){
-		outsize = speex_bits_write(&speex->encoder.bits, *out_data, speex->encoder.size);
+	if(*out_max_size <speex->encoder.size){
+		if((*out_data = tsk_realloc(*out_data, speex->encoder.size))){
+			*out_max_size = speex->encoder.size;
+		}
+		else{
+			*out_max_size = 0;
+			return 0;
+		}
 	}
+	
+	outsize = speex_bits_write(&speex->encoder.bits, *out_data, speex->encoder.size);
 
    return outsize;
 }
 
-tsk_size_t tdav_codec_speex_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
+tsk_size_t tdav_codec_speex_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	int ret;
 	tsk_size_t out_size = 0;
@@ -121,10 +124,6 @@ tsk_size_t tdav_codec_speex_decode(tmedia_codec_t* self, const void* in_data, ts
 	if(!self || !in_data || !in_size || !out_data){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
-	}
-	
-	if(*out_data){
-		TSK_FREE(*out_data);
 	}
 
 	/* initializes the bit-stream */
@@ -136,11 +135,20 @@ tsk_size_t tdav_codec_speex_decode(tmedia_codec_t* self, const void* in_data, ts
 			TSK_DEBUG_ERROR("Failed to decode the buffer. retcode=%d", ret);
 			break;
 		}
-		/* copy output buffer */
-		if((*out_data = tsk_realloc(*out_data, out_size + (speex->decoder.size)))){
-			memcpy(&((uint8_t*)*out_data)[out_size], speex->decoder.buffer, speex->decoder.size);
-			out_size += speex->decoder.size;
+
+		if(*out_max_size <(out_size + speex->decoder.size)){
+			if((*out_data = tsk_realloc(*out_data, (out_size + speex->decoder.size)))){
+				*out_max_size = (out_size + speex->decoder.size);
+			}
+			else{
+				*out_max_size = 0;
+				return 0;
+			}
 		}
+
+		/* copy output buffer */
+		memcpy(&((uint8_t*)*out_data)[out_size], speex->decoder.buffer, speex->decoder.size);
+		out_size += speex->decoder.size;
 	}
 	while(speex_bits_remaining(&speex->decoder.bits) >= 5);
 	

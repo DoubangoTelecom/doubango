@@ -55,7 +55,16 @@ typedef struct tdav_session_audio_s
 		unsigned started:1;
 	} timer;
 
-	tmedia_codec_t* encoder;
+	struct {
+		tmedia_codec_t* codec;
+		void* buffer;
+		tsk_size_t buffer_size;
+	} encoder;
+
+	struct {
+		void* buffer;
+		tsk_size_t buffer_size;
+	} decoder;
 
 	char* local_ip;
 	//uint16_t local_port;

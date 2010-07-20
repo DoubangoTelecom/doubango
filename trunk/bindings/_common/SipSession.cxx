@@ -279,19 +279,21 @@ bool CallSession::accept()
 
 bool CallSession::hold()
 {
-	int ret = tsip_action_HOLD(this->handle, tmedia_all,
-		TSIP_ACTION_SET_NULL());
-	return (ret == 0);
+	return (tsip_action_HOLD(this->handle, tmedia_all,
+		TSIP_ACTION_SET_NULL()) ==0 );
 }
 
 bool CallSession::resume()
 {
-	int ret = tsip_action_RESUME(this->handle, tmedia_all,
-		TSIP_ACTION_SET_NULL());
-	return (ret == 0);
+	return (tsip_action_RESUME(this->handle, tmedia_all,
+		TSIP_ACTION_SET_NULL()) == 0);
 }
 
-
+bool CallSession::sendDTMF(int number)
+{
+	return (tsip_action_DTMF(this->handle, number,
+		TSIP_ACTION_SET_NULL()) == 0);
+}
 
 
 /* ======================== MessagingSession ========================*/

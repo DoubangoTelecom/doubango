@@ -67,7 +67,6 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 	}
 
 	if(audio->consumer){
-		void* out_data = tsk_null;
 		tsk_size_t out_size = 0;
 		tmedia_codec_t* codec;
 		tsk_istr_t format;
@@ -92,15 +91,18 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 			tsk_safeobj_unlock(audio);
 		}
 		// Decode data
-		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &out_data, packet->header);
+		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &audio->decoder.buffer, &audio->decoder.buffer_size, packet->header);
 		if(out_size){
 			// Denoise (VAD, AGC, Noise suppression, ...)
 			if(audio->denoise && TMEDIA_DENOISE(audio->denoise)->opened){
-				tmedia_denoise_echo_playback(TMEDIA_DENOISE(audio->denoise), out_data);
+				tmedia_denoise_echo_playback(TMEDIA_DENOISE(audio->denoise), audio->decoder.buffer);
 			}
-			tmedia_consumer_consume(audio->consumer, &out_data, out_size, packet->header);
+			tmedia_consumer_consume(audio->consumer, &audio->decoder.buffer, out_size, packet->header);
+			if(!audio->decoder.buffer){
+				/* taken by the consumer */
+				audio->decoder.buffer_size = 0;
+			}
 		}
-		TSK_FREE(out_data);
 		TSK_OBJECT_SAFE_FREE(codec);
 	}
 	return 0;
@@ -115,7 +117,6 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 
 	if(audio->rtp_manager){
 		/* encode */
-		void* out_data = tsk_null;
 		tsk_size_t out_size = 0;
 		
 		ret = 0;
@@ -123,32 +124,32 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 		//
 		// Find Encoder (call one time)
 		//
-		if(!audio->encoder){
+		if(!audio->encoder.codec){
 			tsk_list_item_t* item;
 			tsk_list_foreach(item, TMEDIA_SESSION(audio)->neg_codecs){
 				if(!tsk_striequals(TMEDIA_CODEC(item->data)->neg_format, TMEDIA_CODEC_FORMAT_DTMF) && 
 					!tsk_striequals(TMEDIA_CODEC(item->data)->format, TMEDIA_CODEC_FORMAT_DTMF)){
-						audio->encoder = tsk_object_ref(item->data);
-						trtp_manager_set_payload_type(audio->rtp_manager, audio->encoder->neg_format ? atoi(audio->encoder->neg_format) : atoi(audio->encoder->format));
+						audio->encoder.codec = tsk_object_ref(item->data);
+						trtp_manager_set_payload_type(audio->rtp_manager, audio->encoder.codec->neg_format ? atoi(audio->encoder.codec->neg_format) : atoi(audio->encoder.codec->format));
 						/* Denoise */
 						if(audio->denoise && !audio->denoise->opened){
-							ret = tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder), TMEDIA_CODEC_RATE(audio->encoder), tsk_true, 8000.0f, tsk_true, tsk_true);
+							ret = tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), TMEDIA_CODEC_RATE(audio->encoder.codec), tsk_true, 8000.0f, tsk_true, tsk_true);
 						}
 						break;
 				}
 			}
 		}		
-		if(!audio->encoder){
+		if(!audio->encoder.codec){
 			TSK_DEBUG_ERROR("Failed to find a valid codec");
 			return -3;
 		}
 
 		// Open codec if not already done
-		if(!audio->encoder->opened){
+		if(!audio->encoder.codec->opened){
 			tsk_safeobj_lock(audio);
-			if((ret = tmedia_codec_open(audio->encoder))){
+			if((ret = tmedia_codec_open(audio->encoder.codec))){
 				tsk_safeobj_unlock(audio);
-				TSK_DEBUG_ERROR("Failed to open [%s] codec", audio->encoder->plugin->desc);
+				TSK_DEBUG_ERROR("Failed to open [%s] codec", audio->encoder.codec->plugin->desc);
 				return -4;
 			}
 			tsk_safeobj_unlock(audio);
@@ -158,23 +159,22 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 			tsk_bool_t silence_or_noise = tsk_false;
 			ret = tmedia_denoise_process(TMEDIA_DENOISE(audio->denoise), (void*)buffer, &silence_or_noise);
 			if(silence_or_noise && (ret == 0)){
-				TSK_DEBUG_INFO("Silence or Noise buffer");
+				//TSK_DEBUG_INFO("Silence or Noise buffer");
 				return 0;
 			}
 		}
 
 		// Encode data
-		if((audio->encoder = tsk_object_ref(audio->encoder))){ /* Thread safeness (SIP reINVITE or UPDATE could update the encoder) */
-			out_size = audio->encoder->plugin->encode(audio->encoder, buffer, size, &out_data);
+		if((audio->encoder.codec = tsk_object_ref(audio->encoder.codec))){ /* Thread safeness (SIP reINVITE or UPDATE could update the encoder) */
+			out_size = audio->encoder.codec->plugin->encode(audio->encoder.codec, buffer, size, &audio->encoder.buffer, &audio->encoder.buffer_size);
 			if(out_size){
-				ret = trtp_manager_send_rtp(audio->rtp_manager, out_data, out_size, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder), tsk_false/*Marker*/, tsk_true/*lastPacket*/);
+				ret = trtp_manager_send_rtp(audio->rtp_manager, audio->encoder.buffer, out_size, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), tsk_false/*Marker*/, tsk_true/*lastPacket*/);
 			}
-			tsk_object_unref(audio->encoder);
+			tsk_object_unref(audio->encoder.codec);
 		}
 		else{
 			TSK_DEBUG_WARN("No encoder");
 		}
-		TSK_FREE(out_data);
 	}
 
 	return ret;
@@ -271,8 +271,8 @@ int tdav_session_audio_start(tmedia_session_t* self)
 			tmedia_producer_start(audio->producer);
 		}
 		/* Denoise (AEC, Noise Suppression, AGC) */
-		if(audio->denoise && audio->encoder){
-			tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder), TMEDIA_CODEC_RATE(audio->encoder), tsk_true, 8000.0f, tsk_true, tsk_true);
+		if(audio->denoise && audio->encoder.codec){
+			tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), TMEDIA_CODEC_RATE(audio->encoder.codec), tsk_true, 8000.0f, tsk_true, tsk_true);
 		}
 
 		/* for test */
@@ -545,7 +545,7 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 			if((neg_codecs = tmedia_session_match_codec(self, self->M.ro))){
 				TSK_OBJECT_SAFE_FREE(self->neg_codecs);
 				self->neg_codecs = neg_codecs;
-				TSK_OBJECT_SAFE_FREE(audio->encoder);
+				TSK_OBJECT_SAFE_FREE(audio->encoder.codec);
 			}
 		}
 
@@ -608,7 +608,7 @@ int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 			/* update negociated codecs */
 			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
 			self->neg_codecs = neg_codecs;
-			TSK_OBJECT_SAFE_FREE(audio->encoder);
+			TSK_OBJECT_SAFE_FREE(audio->encoder.codec);
 		}
 		else{
 			TSK_DEBUG_ERROR("None Match");
@@ -749,8 +749,11 @@ static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(session->rtp_manager);
 		TSK_FREE(session->remote_ip);
 		TSK_FREE(session->local_ip);
-		TSK_OBJECT_SAFE_FREE(session->encoder);
 		TSK_OBJECT_SAFE_FREE(session->denoise);
+
+		TSK_OBJECT_SAFE_FREE(session->encoder.codec);
+		TSK_FREE(session->encoder.buffer);
+		TSK_FREE(session->decoder.buffer);
 
 		tsk_safeobj_deinit(session);
 

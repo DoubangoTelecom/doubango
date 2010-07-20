@@ -37,8 +37,6 @@
 
 #include "tinymedia/tmedia_codec.h"
 
-#include "tinydav/video/tdav_runnable_video.h"
-
 #include "tsk_buffer.h"
 
 #include <libavcodec/avcodec.h>
@@ -48,8 +46,6 @@ TDAV_BEGIN_DECLS
 typedef struct tdav_codec_theora_s
 {
 	TMEDIA_DECLARE_CODEC_VIDEO;
-
-	tdav_runnable_video_t* runnable;
 
 	struct{
 		uint8_t* ptr;

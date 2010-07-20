@@ -215,11 +215,11 @@ void test_resolvconf()
 
 void test_dns()
 {
-	test_dns_naptr_srv();
-	test_dns_srv();
-	test_dns_query();
+	//test_dns_naptr_srv();
+	//test_dns_srv();
+	//test_dns_query();
 	test_enum();
-	test_regex();
+	//test_regex();
 	//test_resolvconf();
 }
 

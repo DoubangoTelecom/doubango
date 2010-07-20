@@ -68,7 +68,7 @@ tsk_buffer_t* trtp_rtp_packet_serialize(const trtp_rtp_packet_t *self)
 			tsk_buffer_append(buffer, self->extension.data, self->extension.size);
 		}
 		/* append payload */
-		tsk_buffer_append(buffer, self->payload.data, self->payload.size);
+		tsk_buffer_append(buffer, self->payload.data_const ? self->payload.data_const : self->payload.data, self->payload.size);
 	}
 
 	return buffer;
@@ -176,6 +176,7 @@ static tsk_object_t* trtp_rtp_packet_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(packet->header);
 		TSK_FREE(packet->payload.data);
 		TSK_FREE(packet->extension.data);
+		packet->payload.data_const = tsk_null;
 	}
 
 	return self;

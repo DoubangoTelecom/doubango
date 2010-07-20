@@ -1,5 +1,6 @@
 /* File : tinyWRAP.i */
 %module(directors="1") tinyWRAP
+%include "typemaps.i"
 
 %{
 #include "DDebug.h"
@@ -16,6 +17,8 @@
 /* ========== Sip Stack ========== */
 %newobject getSipHeaderValue;
 %newobject getSipHeaderParamValue;
+%newobject SipStack::dnsENUM;
+%newobject SipStack::dnsNaptrSrv;
 
 %newobject MessagingEvent::takeSessionOwnership;
 %newobject CallEvent::takeSessionOwnership;

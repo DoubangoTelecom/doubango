@@ -37,6 +37,7 @@
 #include "tinydav/codecs/dtmf/tdav_codec_dtmf.h"
 #include "tinydav/codecs/msrp/tdav_codec_msrp.h"
 #include "tinydav/codecs/amr/tdav_codec_amr.h"
+#include "tinydav/codecs/bv/tdav_codec_bv16.h"
 #include "tinydav/codecs/g711/tdav_codec_g711.h"
 #include "tinydav/codecs/gsm/tdav_codec_gsm.h"
 #include "tinydav/codecs/ilbc/tdav_codec_ilbc.h"
@@ -95,6 +96,9 @@ int tdav_init()
 #if HAVE_OPENCORE_AMR
 	tmedia_codec_plugin_register(tdav_codec_amrnb_oa_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_amrnb_be_plugin_def_t);
+#endif
+#if HAVE_BV16
+	tmedia_codec_plugin_register(tdav_codec_bv16_plugin_def_t);
 #endif
 #if HAVE_LIBGSM
 	tmedia_codec_plugin_register(tdav_codec_gsm_plugin_def_t);
@@ -166,6 +170,9 @@ void tdav_set_codecs(tdav_codec_id_t codecs)
 		{ tdav_codec_id_amr_nb_oa, &tdav_codec_amrnb_oa_plugin_def_t },
 		{ tdav_codec_id_amr_nb_be, &tdav_codec_amrnb_be_plugin_def_t },
 #endif
+#if HAVE_BV16
+		{ tdav_codec_id_bv16, &tdav_codec_bv16_plugin_def_t },
+#endif
 #if HAVE_LIBGSM
 		{ tdav_codec_id_gsm, &tdav_codec_gsm_plugin_def_t },
 #endif
@@ -215,6 +222,9 @@ int tdav_deinit()
 #if HAVE_OPENCORE_AMR
 	tmedia_codec_plugin_unregister(tdav_codec_amrnb_oa_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_amrnb_be_plugin_def_t);
+#endif
+#if HAVE_BV16
+	tmedia_codec_plugin_unregister(tdav_codec_bv16_plugin_def_t);
 #endif
 #if HAVE_LIBGSM
 	tmedia_codec_plugin_unregister(tdav_codec_gsm_plugin_def_t);

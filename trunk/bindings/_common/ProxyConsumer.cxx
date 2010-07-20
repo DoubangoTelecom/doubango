@@ -299,15 +299,18 @@ int twrap_consumer_proxy_video_start(tmedia_consumer_t* self)
 int twrap_consumer_proxy_video_consume(tmedia_consumer_t* self, void** buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
 {
 	twrap_consumer_proxy_video_t* consumer = (twrap_consumer_proxy_video_t*)self;
-
+	
 	if(!consumer || !buffer || !*buffer || !size){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	
 	if(ProxyVideoConsumer::instance){
-		ProxyVideoFrame frame(buffer, size);
-		return ProxyVideoConsumer::instance->consume(&frame);
+		int ret;
+		ProxyVideoFrame* frame = new ProxyVideoFrame(*buffer, size);
+		ret = ProxyVideoConsumer::instance->consume(frame);
+		delete frame;
+		return ret;
 	}
 	else{
 		return 0;
@@ -428,6 +431,17 @@ void ProxyVideoConsumer::setActivate(bool enabled)
 	}
 }
 
+bool ProxyVideoConsumer::setDisplaySize(int width, int height)
+{
+	if((this->consumer = (twrap_consumer_proxy_video_t*)tsk_object_ref(this->consumer))){
+		TMEDIA_CONSUMER(this->consumer)->video.width = width;
+		TMEDIA_CONSUMER(this->consumer)->video.height = height;
+		this->consumer = (twrap_consumer_proxy_video_t*)tsk_object_unref(this->consumer);
+		return true;
+	}
+	return false;
+}
+
 tmedia_chroma_t ProxyVideoConsumer::getChroma()
 {
 	return this->chroma;
@@ -455,16 +469,14 @@ bool ProxyVideoConsumer::registerPlugin()
 
 
 
-ProxyVideoFrame::ProxyVideoFrame(void** _buffer, unsigned size)
+ProxyVideoFrame::ProxyVideoFrame(const void* _buffer, unsigned size)
 {
-	this->buffer = *_buffer;
+	this->buffer = _buffer;
 	this->size = size;
-	*_buffer = tsk_null; // take ownership
 }
 
 ProxyVideoFrame::~ProxyVideoFrame()
 {
-	TSK_FREE(this->buffer);
 }
 
 unsigned ProxyVideoFrame::getSize()
