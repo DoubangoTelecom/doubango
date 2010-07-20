@@ -71,6 +71,11 @@ public class ProxyVideoConsumer : IDisposable {
     tinyWRAPPINVOKE.ProxyVideoConsumer_setActivate(swigCPtr, enabled);
   }
 
+  public bool setDisplaySize(int width, int height) {
+    bool ret = tinyWRAPPINVOKE.ProxyVideoConsumer_setDisplaySize(swigCPtr, width, height);
+    return ret;
+  }
+
   public static bool registerPlugin() {
     bool ret = tinyWRAPPINVOKE.ProxyVideoConsumer_registerPlugin();
     return ret;

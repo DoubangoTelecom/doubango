@@ -44,7 +44,7 @@
 static int tdav_session_video_rtp_cb(const void* callback_data, const struct trtp_rtp_packet_s* packet)
 {
 	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
-	int ret;
+	int ret = 0;
 
 	if(!session || !packet){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -52,10 +52,9 @@ static int tdav_session_video_rtp_cb(const void* callback_data, const struct trt
 	}
 
 	if(session->consumer){
-		void* out_data = tsk_null;
-		tsk_size_t out_size = 0;
 		tmedia_codec_t* codec;
 		tsk_istr_t format;
+		tsk_size_t out_size = 0;
 
 		// Find the codec to use to decode the RTP payload
 		tsk_itoa(packet->header->payload_type, &format);
@@ -75,48 +74,53 @@ static int tdav_session_video_rtp_cb(const void* callback_data, const struct trt
 			tsk_safeobj_unlock(session);
 		}
 		// Decode data
-		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &out_data, packet->header);
+		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &session->decoder.buffer, &session->decoder.buffer_size, packet->header);
 		// check
-		if(!out_size || !out_data){
+		if(!out_size || !session->decoder.buffer){
 			goto bail;
 		}
 
 		// Convert decoded data to the consumer chroma
-		if((session->consumer->video.chroma != tmedia_yuv420p)){
-			void* _output_ptr = tsk_null;
-			tsk_size_t _output_size = 0;
-			
+#define SIZE_CHANGED (session->conv.consumerWidth != session->consumer->video.width) || (session->conv.consumerHeight != session->consumer->video.height)
+		if((session->consumer->video.chroma != tmedia_yuv420p) || SIZE_CHANGED){
+			tsk_size_t _output_size;
 			// Create video converter if not already done
-			if(!session->conv.fromYUV420){
-				if(!(session->conv.fromYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, session->consumer->video.chroma, tsk_false))){
+			if(!session->conv.fromYUV420 || SIZE_CHANGED){
+				TSK_DEBUG_INFO("Creating new Video Converter");
+				TSK_OBJECT_SAFE_FREE(session->conv.fromYUV420);
+				session->conv.consumerWidth = session->consumer->video.width;
+				session->conv.consumerHeight = session->consumer->video.height;
+				if(!(session->conv.fromYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, session->conv.consumerWidth, session->conv.consumerHeight,
+					session->consumer->video.chroma, tsk_false))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
 					ret = -3;
 					goto bail;
 				}
 			}
 			// convert data to the consumer's chroma
-			_output_size = tdav_converter_video_convert(session->conv.fromYUV420, out_data, &_output_ptr);
-			if(!_output_size || !_output_ptr){
+			_output_size = tdav_converter_video_convert(session->conv.fromYUV420, session->decoder.buffer, &session->decoder.conv_buffer, &session->decoder.conv_buffer_size);
+			if(!_output_size || !session->decoder.conv_buffer){
 				TSK_DEBUG_ERROR("Failed to convert YUV420 buffer to consumer's chroma");
-				TSK_FREE(_output_ptr);
 				ret = -4;
 				goto bail;
 			}
 
-			// all is ok ==> replace out_data and out_size
-			TSK_FREE(out_data);
-			out_data = _output_ptr, _output_ptr = tsk_null;
-			out_size = _output_size;
+			tmedia_consumer_consume(session->consumer, &session->decoder.conv_buffer, _output_size, packet->header);
+			if(!session->decoder.conv_buffer){
+				/* taken  by the consumer */
+				session->decoder.conv_buffer_size = 0;
+			}
+			
 		}
-
-		// Send data to the consumer
-		if(out_size){
-			tmedia_consumer_consume(session->consumer, &out_data, out_size, packet->header);
-			ret = 0;
+		else{
+			tmedia_consumer_consume(session->consumer, &session->decoder.buffer, out_size, packet->header);
+			if(!session->decoder.buffer){
+				/* taken  by the consumer */
+				session->decoder.buffer_size = 0;
+			}
 		}
 
 bail:
-		TSK_FREE(out_data);
 		TSK_OBJECT_SAFE_FREE(codec);
 	}
 	return ret;
@@ -138,13 +142,11 @@ static int tdav_session_video_codec_cb(const void* callback_data, const void* bu
 static int tdav_session_video_producer_cb(const void* callback_data, const void* buffer, tsk_size_t size)
 {
 	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
-	void* yuv420p = tsk_null;
 	tsk_size_t yuv420p_size = 0;
 	int ret = 0;
 
 	if(session->rtp_manager){
 		/* encode */
-		void* out_data = tsk_null;
 		tsk_size_t out_size = 0;
 		tmedia_codec_t* codec = tsk_null;
 		
@@ -176,39 +178,37 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 		if((session->producer->video.chroma != tmedia_yuv420p)){
 			// Create video converter if not already done
 			if(!session->conv.toYUV420){
-				if(!(session->conv.toYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, session->producer->video.chroma, tsk_true))){
+				if(!(session->conv.toYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, 0, 0,
+					session->producer->video.chroma, tsk_true))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
 					ret = -5;
 					goto bail;
 				}
 			}
 			// convert data to yuv420p
-			yuv420p_size = tdav_converter_video_convert(session->conv.toYUV420, buffer, &yuv420p);
-			if(!yuv420p_size || !yuv420p){
-				TSK_DEBUG_ERROR("Failed to convert RGB buffer to YUV42P");
-				TSK_FREE(yuv420p);
+			yuv420p_size = tdav_converter_video_convert(session->conv.toYUV420, buffer, &session->encoder.conv_buffer, &session->encoder.conv_buffer_size);
+			if(!yuv420p_size || !session->encoder.conv_buffer){
+				TSK_DEBUG_ERROR("Failed to convert XXX buffer to YUV42P");
 				ret = -6;
 				goto bail;
 			}
 		}
 
 		// Encode data
-		if(yuv420p && yuv420p_size){
+		if(session->encoder.conv_buffer && yuv420p_size){
 			/* producer doesn't support yuv42p */
-			out_size = codec->plugin->encode(codec, yuv420p, yuv420p_size, &out_data);
-			TSK_FREE(yuv420p);
+			out_size = codec->plugin->encode(codec, session->encoder.conv_buffer, yuv420p_size, &session->encoder.buffer, &session->encoder.buffer_size);
 		}
 		else{
-			/* producer support yuv42p */
-			out_size = codec->plugin->encode(codec, buffer, size, &out_data);
+			/* producer supports yuv42p */
+			out_size = codec->plugin->encode(codec, buffer, size,  &session->encoder.buffer, &session->encoder.buffer_size);
 		}
 
 		if(out_size){
 			/* Never called, see tdav_session_video_codec_cb() */
-			trtp_manager_send_rtp(session->rtp_manager, out_data, out_size, 6006, tsk_true, tsk_true);
+			trtp_manager_send_rtp(session->rtp_manager, session->encoder.buffer, out_size, 6006, tsk_true, tsk_true);
 		}
 bail:
-		TSK_FREE(out_data);
 		TSK_OBJECT_SAFE_FREE(codec);
 	}
 
@@ -550,6 +550,11 @@ static tsk_object_t* tdav_session_video_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(session->rtp_manager);
 		TSK_FREE(session->remote_ip);
 		TSK_FREE(session->local_ip);
+
+		TSK_FREE(session->encoder.buffer);
+		TSK_FREE(session->encoder.conv_buffer);
+		TSK_FREE(session->decoder.buffer);
+		TSK_FREE(session->decoder.conv_buffer);
 
 		tsk_safeobj_deinit(session);
 

@@ -56,6 +56,8 @@ int main(int argc, char** argv)
 	int i, index;
 	const char* start = tsk_null, *end = tsk_null;
 
+	int a = 32 | 1 | 2;
+
 	/* Copyright */
 	printf("Doubango Project (tinyDEMO)\nCopyright (C) 2009 - 2010 Mamadou Diop \n\n");
 

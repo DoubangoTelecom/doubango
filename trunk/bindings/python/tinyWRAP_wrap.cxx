@@ -3154,21 +3154,22 @@ namespace Swig {
 #define SWIGTYPE_p_XcapSelector swig_types[30]
 #define SWIGTYPE_p_XcapStack swig_types[31]
 #define SWIGTYPE_p_char swig_types[32]
-#define SWIGTYPE_p_tdav_codec_id_e swig_types[33]
-#define SWIGTYPE_p_thttp_event_type_e swig_types[34]
-#define SWIGTYPE_p_tmedia_chroma_e swig_types[35]
-#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[36]
-#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[37]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[38]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[39]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[40]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[41]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[42]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[43]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[44]
-#define SWIGTYPE_p_tsk_list_t swig_types[45]
-static swig_type_info *swig_types[47];
-static swig_module_info swig_module = {swig_types, 46, 0, 0, 0, 0};
+#define SWIGTYPE_p_short swig_types[33]
+#define SWIGTYPE_p_tdav_codec_id_e swig_types[34]
+#define SWIGTYPE_p_thttp_event_type_e swig_types[35]
+#define SWIGTYPE_p_tmedia_chroma_e swig_types[36]
+#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[37]
+#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[38]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[39]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[40]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[41]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[42]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[43]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[44]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[45]
+#define SWIGTYPE_p_tsk_list_t swig_types[46]
+static swig_type_info *swig_types[48];
+static swig_module_info swig_module = {swig_types, 47, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -6663,6 +6664,37 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_CallSession_sendDTMF(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:CallSession_sendDTMF",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_sendDTMF" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CallSession_sendDTMF" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  result = (bool)(arg1)->sendDTMF(arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_CallSession_hangup(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   CallSession *arg1 = (CallSession *) 0 ;
@@ -7795,6 +7827,46 @@ SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_setActivate(PyObject *SWIGUNUSEDPA
   arg2 = static_cast< bool >(val2);
   (arg1)->setActivate(arg2);
   resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_setDisplaySize(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:ProxyVideoConsumer_setDisplaySize",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_setDisplaySize" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoConsumer_setDisplaySize" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  ecode3 = SWIG_AsVal_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoConsumer_setDisplaySize" "', argument " "3"" of type '" "int""'");
+  } 
+  arg3 = static_cast< int >(val3);
+  result = (bool)(arg1)->setDisplaySize(arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
   return NULL;
@@ -9673,6 +9745,122 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SipStack_dnsENUM(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  int res4 ;
+  char *buf4 = 0 ;
+  int alloc4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:SipStack_dnsENUM",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_dnsENUM" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_dnsENUM" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_dnsENUM" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  res4 = SWIG_AsCharPtrAndSize(obj3, &buf4, NULL, &alloc4);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SipStack_dnsENUM" "', argument " "4"" of type '" "char const *""'");
+  }
+  arg4 = reinterpret_cast< char * >(buf4);
+  result = (char *)(arg1)->dnsENUM((char const *)arg2,(char const *)arg3,(char const *)arg4);
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  delete[] result;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_dnsNaptrSrv(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  short *arg4 = (short *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  short temp4 ;
+  int res4 = SWIG_TMPOBJ ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  char *result = 0 ;
+  
+  arg4 = &temp4;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:SipStack_dnsNaptrSrv",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_dnsNaptrSrv" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_dnsNaptrSrv" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_dnsNaptrSrv" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  result = (char *)(arg1)->dnsNaptrSrv((char const *)arg2,(char const *)arg3,arg4);
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  if (SWIG_IsTmpObj(res4)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_short((*arg4)));
+  } else {
+    int new_flags = SWIG_IsNewObj(res4) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg4), SWIGTYPE_p_short, new_flags));
+  }
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  delete[] result;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_SipStack_isValid(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -11271,6 +11459,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"CallSession_accept", _wrap_CallSession_accept, METH_VARARGS, NULL},
 	 { (char *)"CallSession_hold", _wrap_CallSession_hold, METH_VARARGS, NULL},
 	 { (char *)"CallSession_resume", _wrap_CallSession_resume, METH_VARARGS, NULL},
+	 { (char *)"CallSession_sendDTMF", _wrap_CallSession_sendDTMF, METH_VARARGS, NULL},
 	 { (char *)"CallSession_hangup", _wrap_CallSession_hangup, METH_VARARGS, NULL},
 	 { (char *)"CallSession_swigregister", CallSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_MessagingSession", _wrap_new_MessagingSession, METH_VARARGS, NULL},
@@ -11317,6 +11506,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"ProxyVideoConsumer_pause", _wrap_ProxyVideoConsumer_pause, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_stop", _wrap_ProxyVideoConsumer_stop, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_setActivate", _wrap_ProxyVideoConsumer_setActivate, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoConsumer_setDisplaySize", _wrap_ProxyVideoConsumer_setDisplaySize, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_registerPlugin", _wrap_ProxyVideoConsumer_registerPlugin, METH_VARARGS, NULL},
 	 { (char *)"disown_ProxyVideoConsumer", _wrap_disown_ProxyVideoConsumer, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_swigregister", ProxyVideoConsumer_swigregister, METH_VARARGS, NULL},
@@ -11379,6 +11569,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipStack_removeHeader", _wrap_SipStack_removeHeader, METH_VARARGS, NULL},
 	 { (char *)"SipStack_addDnsServer", _wrap_SipStack_addDnsServer, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setAoR", _wrap_SipStack_setAoR, METH_VARARGS, NULL},
+	 { (char *)"SipStack_dnsENUM", _wrap_SipStack_dnsENUM, METH_VARARGS, NULL},
+	 { (char *)"SipStack_dnsNaptrSrv", _wrap_SipStack_dnsNaptrSrv, METH_VARARGS, NULL},
 	 { (char *)"SipStack_isValid", _wrap_SipStack_isValid, METH_VARARGS, NULL},
 	 { (char *)"SipStack_stop", _wrap_SipStack_stop, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setCodecs", _wrap_SipStack_setCodecs, METH_VARARGS, NULL},
@@ -11510,6 +11702,7 @@ static swig_type_info _swigt__p_XcapMessage = {"_p_XcapMessage", "XcapMessage *"
 static swig_type_info _swigt__p_XcapSelector = {"_p_XcapSelector", "XcapSelector *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_XcapStack = {"_p_XcapStack", "XcapStack *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_short = {"_p_short", "short *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tdav_codec_id_e = {"_p_tdav_codec_id_e", "enum tdav_codec_id_e *|tdav_codec_id_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_thttp_event_type_e = {"_p_thttp_event_type_e", "enum thttp_event_type_e *|thttp_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_chroma_e = {"_p_tmedia_chroma_e", "tmedia_chroma_t *|enum tmedia_chroma_e *", 0, 0, (void*)0, 0};
@@ -11558,6 +11751,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_XcapSelector,
   &_swigt__p_XcapStack,
   &_swigt__p_char,
+  &_swigt__p_short,
   &_swigt__p_tdav_codec_id_e,
   &_swigt__p_thttp_event_type_e,
   &_swigt__p_tmedia_chroma_e,
@@ -11606,6 +11800,7 @@ static swig_cast_info _swigc__p_XcapMessage[] = {  {&_swigt__p_XcapMessage, 0, 0
 static swig_cast_info _swigc__p_XcapSelector[] = {  {&_swigt__p_XcapSelector, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_XcapStack[] = {  {&_swigt__p_XcapStack, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_short[] = {  {&_swigt__p_short, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tdav_codec_id_e[] = {  {&_swigt__p_tdav_codec_id_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_thttp_event_type_e[] = {  {&_swigt__p_thttp_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_chroma_e[] = {  {&_swigt__p_tmedia_chroma_e, 0, 0, 0},{0, 0, 0, 0}};
@@ -11654,6 +11849,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_XcapSelector,
   _swigc__p_XcapStack,
   _swigc__p_char,
+  _swigc__p_short,
   _swigc__p_tdav_codec_id_e,
   _swigc__p_thttp_event_type_e,
   _swigc__p_tmedia_chroma_e,

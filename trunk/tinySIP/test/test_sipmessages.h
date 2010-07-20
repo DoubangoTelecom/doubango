@@ -140,6 +140,7 @@ void test_parser()
 	uint32_t clength;
 
 	tsk_ragel_state_init(&state, SIP_MSG_2_TEST, tsk_strlen(SIP_MSG_2_TEST));
+
 	tsip_message_parse(&state, &message, tsk_true);
 
 	enabled = tsip_message_allowed(message, "REFER");
@@ -160,6 +161,7 @@ void test_parser()
 	/* Add new headers */
 	TSIP_MESSAGE_ADD_HEADER(message, TSIP_HEADER_DUMMY_VA_ARGS("MyHeader1", "Value1; test=123;m"));
 	TSIP_MESSAGE_ADD_HEADER(message, TSIP_HEADER_DUMMY_VA_ARGS("MyHeader2", "Value2"));
+	TSIP_MESSAGE_ADD_HEADER(message, TSIP_HEADER_RACK_VA_ARGS(1200, 120, "INVITE"));
 	
 	tsip_message_tostring(message, buffer);
 	TSK_DEBUG_INFO("Buffer=\n%s", TSK_BUFFER_TO_STRING(buffer));

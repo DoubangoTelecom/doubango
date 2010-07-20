@@ -110,6 +110,16 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public string dnsENUM(string service, string e164num, string domain) {
+    string ret = tinyWRAPPINVOKE.SipStack_dnsENUM(swigCPtr, service, e164num, domain);
+    return ret;
+  }
+
+  public string dnsNaptrSrv(string domain, string service, out short OUTPUT) {
+    string ret = tinyWRAPPINVOKE.SipStack_dnsNaptrSrv(swigCPtr, domain, service, out OUTPUT);
+    return ret;
+  }
+
   public bool isValid() {
     bool ret = tinyWRAPPINVOKE.SipStack_isValid(swigCPtr);
     return ret;

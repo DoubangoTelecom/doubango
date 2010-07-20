@@ -1724,6 +1724,20 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_resume(void * jarg1) {
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_sendDTMF(void * jarg1, int jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  int arg2 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (int)jarg2; 
+  result = (bool)(arg1)->sendDTMF(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_hangup(void * jarg1) {
   unsigned int jresult ;
   CallSession *arg1 = (CallSession *) 0 ;
@@ -2298,6 +2312,22 @@ SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoConsumer_setActivate(void * jarg1, 
   arg1 = (ProxyVideoConsumer *)jarg1; 
   arg2 = jarg2 ? true : false; 
   (arg1)->setActivate(arg2);
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoConsumer_setDisplaySize(void * jarg1, int jarg2, int jarg3) {
+  unsigned int jresult ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  bool result;
+  
+  arg1 = (ProxyVideoConsumer *)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  result = (bool)(arg1)->setDisplaySize(arg2,arg3);
+  jresult = result; 
+  return jresult;
 }
 
 
@@ -3219,6 +3249,44 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setAoR(void * jarg1, char * 
   arg3 = (int)jarg3; 
   result = (bool)(arg1)->setAoR((char const *)arg2,arg3);
   jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_dnsENUM(void * jarg1, char * jarg2, char * jarg3, char * jarg4) {
+  char * jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (char *)jarg4; 
+  result = (char *)(arg1)->dnsENUM((char const *)arg2,(char const *)arg3,(char const *)arg4);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_dnsNaptrSrv(void * jarg1, char * jarg2, char * jarg3, short * jarg4) {
+  char * jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  short *arg4 = (short *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (short *)jarg4; 
+  result = (char *)(arg1)->dnsNaptrSrv((char const *)arg2,(char const *)arg3,arg4);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
   return jresult;
 }
 

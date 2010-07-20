@@ -1528,21 +1528,22 @@ SWIG_Perl_SetModule(swig_module_info *module) {
 #define SWIGTYPE_p_XcapSelector swig_types[30]
 #define SWIGTYPE_p_XcapStack swig_types[31]
 #define SWIGTYPE_p_char swig_types[32]
-#define SWIGTYPE_p_tdav_codec_id_e swig_types[33]
-#define SWIGTYPE_p_thttp_event_type_e swig_types[34]
-#define SWIGTYPE_p_tmedia_chroma_e swig_types[35]
-#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[36]
-#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[37]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[38]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[39]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[40]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[41]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[42]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[43]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[44]
-#define SWIGTYPE_p_tsk_list_t swig_types[45]
-static swig_type_info *swig_types[47];
-static swig_module_info swig_module = {swig_types, 46, 0, 0, 0, 0};
+#define SWIGTYPE_p_short swig_types[33]
+#define SWIGTYPE_p_tdav_codec_id_e swig_types[34]
+#define SWIGTYPE_p_thttp_event_type_e swig_types[35]
+#define SWIGTYPE_p_tmedia_chroma_e swig_types[36]
+#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[37]
+#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[38]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[39]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[40]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[41]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[42]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[43]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[44]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[45]
+#define SWIGTYPE_p_tsk_list_t swig_types[46]
+static swig_type_info *swig_types[48];
+static swig_module_info swig_module = {swig_types, 47, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -4553,6 +4554,44 @@ XS(_wrap_CallSession_resume) {
 }
 
 
+XS(_wrap_CallSession_sendDTMF) {
+  {
+    CallSession *arg1 = (CallSession *) 0 ;
+    int arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: CallSession_sendDTMF(self,number);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_sendDTMF" "', argument " "1"" of type '" "CallSession *""'"); 
+    }
+    arg1 = reinterpret_cast< CallSession * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CallSession_sendDTMF" "', argument " "2"" of type '" "int""'");
+    } 
+    arg2 = static_cast< int >(val2);
+    result = (bool)(arg1)->sendDTMF(arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_CallSession_hangup) {
   {
     CallSession *arg1 = (CallSession *) 0 ;
@@ -5725,6 +5764,54 @@ XS(_wrap_ProxyVideoConsumer_setActivate) {
     
     XSRETURN(argvi);
   fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoConsumer_setDisplaySize) {
+  {
+    ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+    int arg2 ;
+    int arg3 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int val3 ;
+    int ecode3 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 3) || (items > 3)) {
+      SWIG_croak("Usage: ProxyVideoConsumer_setDisplaySize(self,width,height);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_setDisplaySize" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoConsumer_setDisplaySize" "', argument " "2"" of type '" "int""'");
+    } 
+    arg2 = static_cast< int >(val2);
+    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoConsumer_setDisplaySize" "', argument " "3"" of type '" "int""'");
+    } 
+    arg3 = static_cast< int >(val3);
+    result = (bool)(arg1)->setDisplaySize(arg2,arg3);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
     
     
     SWIG_croak_null();
@@ -7560,6 +7647,131 @@ XS(_wrap_SipStack_setAoR) {
 }
 
 
+XS(_wrap_SipStack_dnsENUM) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    char *arg3 = (char *) 0 ;
+    char *arg4 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    int res4 ;
+    char *buf4 = 0 ;
+    int alloc4 = 0 ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: SipStack_dnsENUM(self,service,e164num,domain);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_dnsENUM" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_dnsENUM" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_dnsENUM" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = reinterpret_cast< char * >(buf3);
+    res4 = SWIG_AsCharPtrAndSize(ST(3), &buf4, NULL, &alloc4);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SipStack_dnsENUM" "', argument " "4"" of type '" "char const *""'");
+    }
+    arg4 = reinterpret_cast< char * >(buf4);
+    result = (char *)(arg1)->dnsENUM((char const *)arg2,(char const *)arg3,(char const *)arg4);
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+    delete[] result;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipStack_dnsNaptrSrv) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    char *arg3 = (char *) 0 ;
+    short *arg4 = (short *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    short temp4 ;
+    int res4 = SWIG_TMPOBJ ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    arg4 = &temp4;
+    if ((items < 3) || (items > 3)) {
+      SWIG_croak("Usage: SipStack_dnsNaptrSrv(self,domain,service);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_dnsNaptrSrv" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_dnsNaptrSrv" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_dnsNaptrSrv" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = reinterpret_cast< char * >(buf3);
+    result = (char *)(arg1)->dnsNaptrSrv((char const *)arg2,(char const *)arg3,arg4);
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    if (SWIG_IsTmpObj(res4)) {
+      if (argvi >= items) EXTEND(sp,1);  ST(argvi) = SWIG_From_short  SWIG_PERL_CALL_ARGS_1((*arg4)); argvi++  ;
+    } else {
+      int new_flags = SWIG_IsNewObj(res4) ? (SWIG_POINTER_OWN | 0) : 0;
+      if (argvi >= items) EXTEND(sp,1);  ST(argvi) = SWIG_NewPointerObj((void*)(arg4), SWIGTYPE_p_short, new_flags); argvi++  ;
+    }
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    
+    delete[] result;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_SipStack_isValid) {
   {
     SipStack *arg1 = (SipStack *) 0 ;
@@ -9382,6 +9594,7 @@ static swig_type_info _swigt__p_XcapMessage = {"_p_XcapMessage", "XcapMessage *"
 static swig_type_info _swigt__p_XcapSelector = {"_p_XcapSelector", "XcapSelector *", 0, 0, (void*)"tinyWRAP::XcapSelector", 0};
 static swig_type_info _swigt__p_XcapStack = {"_p_XcapStack", "XcapStack *", 0, 0, (void*)"tinyWRAP::XcapStack", 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_short = {"_p_short", "short *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tdav_codec_id_e = {"_p_tdav_codec_id_e", "enum tdav_codec_id_e *|tdav_codec_id_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_thttp_event_type_e = {"_p_thttp_event_type_e", "enum thttp_event_type_e *|thttp_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_chroma_e = {"_p_tmedia_chroma_e", "tmedia_chroma_t *|enum tmedia_chroma_e *", 0, 0, (void*)0, 0};
@@ -9430,6 +9643,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_XcapSelector,
   &_swigt__p_XcapStack,
   &_swigt__p_char,
+  &_swigt__p_short,
   &_swigt__p_tdav_codec_id_e,
   &_swigt__p_thttp_event_type_e,
   &_swigt__p_tmedia_chroma_e,
@@ -9478,6 +9692,7 @@ static swig_cast_info _swigc__p_XcapMessage[] = {  {&_swigt__p_XcapMessage, 0, 0
 static swig_cast_info _swigc__p_XcapSelector[] = {  {&_swigt__p_XcapSelector, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_XcapStack[] = {  {&_swigt__p_XcapStack, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_short[] = {  {&_swigt__p_short, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tdav_codec_id_e[] = {  {&_swigt__p_tdav_codec_id_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_thttp_event_type_e[] = {  {&_swigt__p_thttp_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_chroma_e[] = {  {&_swigt__p_tmedia_chroma_e, 0, 0, 0},{0, 0, 0, 0}};
@@ -9526,6 +9741,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_XcapSelector,
   _swigc__p_XcapStack,
   _swigc__p_char,
+  _swigc__p_short,
   _swigc__p_tdav_codec_id_e,
   _swigc__p_thttp_event_type_e,
   _swigc__p_tmedia_chroma_e,
@@ -9619,6 +9835,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::CallSession_accept", _wrap_CallSession_accept},
 {"tinyWRAPc::CallSession_hold", _wrap_CallSession_hold},
 {"tinyWRAPc::CallSession_resume", _wrap_CallSession_resume},
+{"tinyWRAPc::CallSession_sendDTMF", _wrap_CallSession_sendDTMF},
 {"tinyWRAPc::CallSession_hangup", _wrap_CallSession_hangup},
 {"tinyWRAPc::new_MessagingSession", _wrap_new_MessagingSession},
 {"tinyWRAPc::delete_MessagingSession", _wrap_delete_MessagingSession},
@@ -9657,6 +9874,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::ProxyVideoConsumer_pause", _wrap_ProxyVideoConsumer_pause},
 {"tinyWRAPc::ProxyVideoConsumer_stop", _wrap_ProxyVideoConsumer_stop},
 {"tinyWRAPc::ProxyVideoConsumer_setActivate", _wrap_ProxyVideoConsumer_setActivate},
+{"tinyWRAPc::ProxyVideoConsumer_setDisplaySize", _wrap_ProxyVideoConsumer_setDisplaySize},
 {"tinyWRAPc::ProxyVideoConsumer_registerPlugin", _wrap_ProxyVideoConsumer_registerPlugin},
 {"tinyWRAPc::delete_ProxyVideoFrame", _wrap_delete_ProxyVideoFrame},
 {"tinyWRAPc::ProxyVideoFrame_getSize", _wrap_ProxyVideoFrame_getSize},
@@ -9709,6 +9927,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SipStack_removeHeader", _wrap_SipStack_removeHeader},
 {"tinyWRAPc::SipStack_addDnsServer", _wrap_SipStack_addDnsServer},
 {"tinyWRAPc::SipStack_setAoR", _wrap_SipStack_setAoR},
+{"tinyWRAPc::SipStack_dnsENUM", _wrap_SipStack_dnsENUM},
+{"tinyWRAPc::SipStack_dnsNaptrSrv", _wrap_SipStack_dnsNaptrSrv},
 {"tinyWRAPc::SipStack_isValid", _wrap_SipStack_isValid},
 {"tinyWRAPc::SipStack_stop", _wrap_SipStack_stop},
 {"tinyWRAPc::SipStack_setCodecs", _wrap_SipStack_setCodecs},

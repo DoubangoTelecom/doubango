@@ -77,6 +77,10 @@ public class ProxyVideoConsumer {
     tinyWRAPJNI.ProxyVideoConsumer_setActivate(swigCPtr, this, enabled);
   }
 
+  public boolean setDisplaySize(int width, int height) {
+    return tinyWRAPJNI.ProxyVideoConsumer_setDisplaySize(swigCPtr, this, width, height);
+  }
+
   public static boolean registerPlugin() {
     return tinyWRAPJNI.ProxyVideoConsumer_registerPlugin();
   }

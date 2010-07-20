@@ -311,6 +311,7 @@ class CallSession(SipSession):
     def accept(self): return _tinyWRAP.CallSession_accept(self)
     def hold(self): return _tinyWRAP.CallSession_hold(self)
     def resume(self): return _tinyWRAP.CallSession_resume(self)
+    def sendDTMF(self, *args): return _tinyWRAP.CallSession_sendDTMF(self, *args)
     def hangup(self): return _tinyWRAP.CallSession_hangup(self)
 CallSession_swigregister = _tinyWRAP.CallSession_swigregister
 CallSession_swigregister(CallSession)
@@ -467,6 +468,7 @@ class ProxyVideoConsumer(_object):
     def pause(self): return _tinyWRAP.ProxyVideoConsumer_pause(self)
     def stop(self): return _tinyWRAP.ProxyVideoConsumer_stop(self)
     def setActivate(self, *args): return _tinyWRAP.ProxyVideoConsumer_setActivate(self, *args)
+    def setDisplaySize(self, *args): return _tinyWRAP.ProxyVideoConsumer_setDisplaySize(self, *args)
     __swig_getmethods__["registerPlugin"] = lambda x: _tinyWRAP.ProxyVideoConsumer_registerPlugin
     if _newclass:registerPlugin = staticmethod(_tinyWRAP.ProxyVideoConsumer_registerPlugin)
     def __disown__(self):
@@ -640,6 +642,8 @@ class SipStack(SafeObject):
     def removeHeader(self, *args): return _tinyWRAP.SipStack_removeHeader(self, *args)
     def addDnsServer(self, *args): return _tinyWRAP.SipStack_addDnsServer(self, *args)
     def setAoR(self, *args): return _tinyWRAP.SipStack_setAoR(self, *args)
+    def dnsENUM(self, *args): return _tinyWRAP.SipStack_dnsENUM(self, *args)
+    def dnsNaptrSrv(self, *args): return _tinyWRAP.SipStack_dnsNaptrSrv(self, *args)
     def isValid(self): return _tinyWRAP.SipStack_isValid(self)
     def stop(self): return _tinyWRAP.SipStack_stop(self)
     __swig_getmethods__["setCodecs"] = lambda x: _tinyWRAP.SipStack_setCodecs

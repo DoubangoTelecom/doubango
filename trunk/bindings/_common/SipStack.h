@@ -52,9 +52,12 @@ public: /* API functions */
 	bool addDnsServer(const char* ip);
 	bool setAoR(const char* ip, int port);
 
+	char* dnsENUM(const char* service, const char* e164num, const char* domain);
+	char* dnsNaptrSrv(const char* domain, const char* service, short *OUTPUT);
+
 	bool isValid();
 	bool stop();
-
+	
 	static void setCodecs(tdav_codec_id_t codecs);
 	static void setCodecs_2(int codecs); // For stupid languages
 

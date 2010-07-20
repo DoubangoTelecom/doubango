@@ -85,6 +85,11 @@ public class CallSession : SipSession {
     return ret;
   }
 
+  public bool sendDTMF(int number) {
+    bool ret = tinyWRAPPINVOKE.CallSession_sendDTMF(swigCPtr, number);
+    return ret;
+  }
+
   public bool hangup() {
     bool ret = tinyWRAPPINVOKE.CallSession_hangup(swigCPtr);
     return ret;

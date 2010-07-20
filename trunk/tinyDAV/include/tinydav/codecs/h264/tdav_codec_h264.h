@@ -37,8 +37,6 @@
 
 #include "tinymedia/tmedia_codec.h"
 
-#include "tinydav/video/tdav_runnable_video.h"
-
 #include <libavcodec/avcodec.h>
 
 TDAV_BEGIN_DECLS
@@ -66,8 +64,6 @@ typedef struct tdav_codec_h264_s
 	TMEDIA_DECLARE_CODEC_VIDEO;
 
 	tdav_codec_h264_profile_t profile;
-
-	tdav_runnable_video_t* runnable;
 
 	packetization_mode_t pack_mode;
 

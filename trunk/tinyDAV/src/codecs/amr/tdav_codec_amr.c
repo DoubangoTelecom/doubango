@@ -50,10 +50,10 @@ int tdav_codec_amr_init(tdav_codec_amr_t* self, tdav_codec_amr_type_t type, tdav
 int tdav_codec_amr_deinit(tdav_codec_amr_t* self);
 tdav_codec_amr_mode_t tdav_codec_amr_get_mode(const char* fmtp);
 int tdav_codec_amr_parse_fmtp(tdav_codec_amr_t* self, const char* fmtp);
-tsk_size_t tdav_codec_amr_oa_decode(tdav_codec_amr_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr);
-tsk_size_t tdav_codec_amr_be_decode(tdav_codec_amr_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr);
-tsk_size_t tdav_codec_amr_be_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data);
-tsk_size_t tdav_codec_amr_oa_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data);
+tsk_size_t tdav_codec_amr_oa_decode(tdav_codec_amr_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr);
+tsk_size_t tdav_codec_amr_be_decode(tdav_codec_amr_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr);
+tsk_size_t tdav_codec_amr_be_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size);
+tsk_size_t tdav_codec_amr_oa_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size);
 uint8_t tdav_codec_amr_bitbuffer_read(const void* bits, tsk_size_t size, tsk_size_t start, tsk_size_t count);
 
 /* ============ AMR-NB Plugin interface ================= 
@@ -115,29 +115,29 @@ int tdav_codec_amrnb_close(tmedia_codec_t* self)
 	return 0;
 }
 
-tsk_size_t tdav_codec_amrnb_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_amrnb_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {	
 	tdav_codec_amr_t* amr = (tdav_codec_amr_t*)self;
 	
 	switch(amr->mode){
 		case tdav_codec_amr_mode_be:
-			return tdav_codec_amr_be_encode(amr, in_data, in_size, out_data);
+			return tdav_codec_amr_be_encode(amr, in_data, in_size, out_data, out_max_size);
 		default:
-			return tdav_codec_amr_oa_encode(amr, in_data, in_size, out_data); 
+			return tdav_codec_amr_oa_encode(amr, in_data, in_size, out_data, out_max_size); 
 	}
 	
 	return 0;
 }
 
-tsk_size_t tdav_codec_amrnb_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
+tsk_size_t tdav_codec_amrnb_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	tdav_codec_amr_t* amr = (tdav_codec_amr_t*)self;
 
 	switch(amr->mode){
 		case tdav_codec_amr_mode_be:
-			return tdav_codec_amr_be_decode(amr, in_data, in_size, out_data, proto_hdr);
+			return tdav_codec_amr_be_decode(amr, in_data, in_size, out_data, out_max_size, proto_hdr);
 		default:
-			return tdav_codec_amr_oa_decode(amr, in_data, in_size, out_data, proto_hdr); 
+			return tdav_codec_amr_oa_decode(amr, in_data, in_size, out_data, out_max_size, proto_hdr); 
 	}
 }
 
@@ -476,7 +476,7 @@ bail:
 */
 
 
-tsk_size_t tdav_codec_amr_be_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_amr_be_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {	
 	tsk_size_t out_size = 0, i;
 	int ret_size;
@@ -495,13 +495,18 @@ tsk_size_t tdav_codec_amr_be_encode(tdav_codec_amr_t* amr, const void* in_data, 
 		goto bail;
 	}
 	
-	out_size = ret_size;
+	
 	/* allocate output buffer */
-	if(!(*out_data = tsk_calloc(out_size, 1))){
-		TSK_DEBUG_ERROR("Failed to allocate new buffer");
-		out_size = 0;
-		goto bail;
+	if((int)*out_max_size <ret_size){
+		if(!(*out_data = tsk_realloc(*out_data, ret_size))){
+			*out_max_size = 0;
+			TSK_DEBUG_ERROR("Failed to allocate new buffer");
+			goto bail;
+		}
+		*out_max_size = ret_size;
 	}
+
+	out_size = ret_size;
 
 	/* CMR (4bits) */
 	((uint8_t*)*out_data)[0] = (CMR<<4);
@@ -514,14 +519,14 @@ tsk_size_t tdav_codec_amr_be_encode(tdav_codec_amr_t* amr, const void* in_data, 
 
 	for(i=1; i<out_size-1; i++){
 		((uint8_t*)*out_data)[i] |= outbuf[i]>>2;/* 6bits */
-		((uint8_t*)*out_data)[i+1] |= outbuf[i]<<6;/* 2bits */
+		((uint8_t*)*out_data)[i+1] = outbuf[i]<<6;/* 2bits */
 	}
 
 bail:
 	return out_size;
 }
 
-tsk_size_t tdav_codec_amr_be_decode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
+tsk_size_t tdav_codec_amr_be_decode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	tsk_size_t out_size = 0, pcm_frame_size = 0, index = 0;
 	const uint8_t* pdata = (const uint8_t*)in_data;
@@ -591,11 +596,16 @@ tsk_size_t tdav_codec_amr_be_decode(tdav_codec_amr_t* amr, const void* in_data, 
 			}
 			
 			/* allocate/reallocate speech data */
-			if(!(*out_data = tsk_realloc(*out_data, (out_size + pcm_frame_size)))){
-				TSK_DEBUG_ERROR("Failed to allocate new buffer");
-				TSK_FREE(speech_data);
-				goto bail;
+			if(*out_max_size <(out_size + pcm_frame_size)){
+				if(!(*out_data = tsk_realloc(*out_data, (out_size + pcm_frame_size)))){
+					TSK_DEBUG_ERROR("Failed to allocate new buffer");
+					*out_max_size = 0;
+					TSK_FREE(speech_data);
+					goto bail;
+				}
+				*out_max_size = out_size + pcm_frame_size;
 			}
+
 			/* decode speech data */
 			Decoder_Interface_Decode(amr->decoder, speech_data, &((short*)*out_data)[out_size/sizeof(short)], 0);
 			out_size += pcm_frame_size, pdata+= size;
@@ -608,7 +618,7 @@ bail:
 	return out_size;
 }
 
-tsk_size_t tdav_codec_amr_oa_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_amr_oa_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {	
 	tsk_size_t out_size = 0;
 	int ret_size;
@@ -628,10 +638,13 @@ tsk_size_t tdav_codec_amr_oa_encode(tdav_codec_amr_t* amr, const void* in_data, 
 	
 	out_size = ret_size + 1 /* CMR without interleaving */;
 	/* allocate output buffer */
-	if(!(*out_data = tsk_calloc(out_size, 1))){
-		TSK_DEBUG_ERROR("Failed to allocate new buffer");
-		out_size = 0;
-		goto bail;
+	if(*out_max_size <out_size){
+		if(!(*out_data = tsk_realloc(*out_data, out_size))){
+			TSK_DEBUG_ERROR("Failed to allocate new buffer");
+			*out_max_size = out_size = 0;
+			goto bail;
+		}
+		*out_max_size = out_size;
 	}
 
 	/* CMR */
@@ -643,7 +656,7 @@ bail:
 	return out_size;
 }
 
-tsk_size_t tdav_codec_amr_oa_decode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
+tsk_size_t tdav_codec_amr_oa_decode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	tsk_size_t out_size = 0, pcm_frame_size = 0;
 	const uint8_t* pdata = (const uint8_t*)in_data;
@@ -740,10 +753,14 @@ tsk_size_t tdav_codec_amr_oa_decode(tdav_codec_amr_t* amr, const void* in_data, 
 			/* copy speech data */
 			memcpy((speech_data + 1), pdata, size);
 			/* allocate/reallocate speech data */
-			if(!(*out_data = tsk_realloc(*out_data, (out_size + pcm_frame_size)))){
-				TSK_DEBUG_ERROR("Failed to allocate new buffer");
-				TSK_FREE(speech_data);
-				goto bail;
+			if(*out_max_size <(out_size + pcm_frame_size)){
+				if(!(*out_data = tsk_realloc(*out_data, (out_size + pcm_frame_size)))){
+					TSK_DEBUG_ERROR("Failed to allocate new buffer");
+					*out_max_size = 0;
+					TSK_FREE(speech_data);
+					goto bail;
+				}
+				*out_max_size = (out_size + pcm_frame_size);
 			}
 			/* decode speech data */
 			Decoder_Interface_Decode(amr->decoder, speech_data, &((short*)*out_data)[out_size/sizeof(short)], 0);

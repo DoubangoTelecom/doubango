@@ -814,8 +814,6 @@ int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx)
 	}
 
 
-
-
 	/*	RFC 3262 - 4 UAC Behavior
 	The UAC MUST maintain a sequence number that indicates the most recently
 	received in-order reliable provisional response for the initial request.

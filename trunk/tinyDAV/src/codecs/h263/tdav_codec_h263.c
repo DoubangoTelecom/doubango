@@ -42,16 +42,17 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-#define RTP_PAYLOAD_SIZE	700
+#define RTP_PAYLOAD_SIZE	750
 
 #define H263P_HEADER_SIZE		2
 #define H263_HEADER_MODE_A_SIZE 4
 #define H263_HEADER_MODE_B_SIZE 8
 #define H263_HEADER_MODE_C_SIZE 12
 
-static void *run(void* self);
 static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *data, tsk_size_t size, tsk_bool_t marker);
 static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *data, tsk_size_t size, tsk_bool_t frag, tsk_bool_t marker);
+
+static void tdav_codec_h263_encap(const tdav_codec_h263_t* h263, const uint8_t* pdata, tsk_size_t size);
 
 /* ============ Common To all H263 codecs ================= */
 
@@ -92,7 +93,7 @@ int tdav_codec_h263_deinit(tdav_codec_h263_t* self)
 
 	// FFMpeg resources are destroyed by close()
 	
-	TSK_OBJECT_SAFE_FREE(self->runnable);
+	
 	
 	TSK_FREE(self->rtp.ptr);
 	self->rtp.size = 0;
@@ -122,15 +123,6 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 	/* the caller (base class) already checked that the codec is not opened */
 
 	//
-	//	Runnable
-	//
-	h263->runnable = tdav_runnable_video_create(run, h263);
-	if((ret = tdav_runnable_video_start(h263->runnable))){
-		TSK_DEBUG_ERROR("Failed to create runnable (H263 codec)");
-		return ret;
-	}
-
-	//
 	//	Encoder
 	//
 	h263->encoder.context = avcodec_alloc_context();
@@ -142,16 +134,20 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 	h263->encoder.context->width = TMEDIA_CODEC_VIDEO(h263)->width;
 	h263->encoder.context->height = TMEDIA_CODEC_VIDEO(h263)->height;
 
-	h263->encoder.context->mb_qmin = h263->encoder.context->qmin = 4;
-	h263->encoder.context->mb_qmax = h263->encoder.context->qmax = 31;
-	//h263->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
+	/*h263->encoder.context->mb_qmin =*/ h263->encoder.context->qmin = 4;
+	/*h263->encoder.context->mb_qmax =*/ h263->encoder.context->qmax = 31;
+	h263->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
+	h263->encoder.context->me_method = ME_EPZS;
+	h263->encoder.context->flags |=  CODEC_FLAG_INPUT_PRESERVED | CODEC_FLAG_PASS1;
+	
 
 	h263->encoder.context->thread_count = 1;
 	h263->encoder.context->rtp_payload_size = RTP_PAYLOAD_SIZE;
 	h263->encoder.context->opaque = tsk_null;
-	h263->encoder.context->bit_rate = (float) (500000) * 0.80f;
-	h263->encoder.context->bit_rate_tolerance = (int) (500000 * 0.20f);
-	h263->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h263)->fps*4; /* each 4 seconds */
+	h263->encoder.context->bit_rate = (float) (92000) * 0.80f;
+	h263->encoder.context->bit_rate_tolerance = (int) (92000 * 0.20f);
+	h263->encoder.context->rc_min_rate = 0;
+	h263->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h263)->fps*3; /* each 3 seconds */
 	
 
 	// Picture (YUV 420)
@@ -237,8 +233,6 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 
 int tdav_codec_h263_close(tmedia_codec_t* self)
 {
-	int ret;
-
 	tdav_codec_h263_t* h263 = (tdav_codec_h263_t*)self;
 
 	if(!h263){
@@ -247,14 +241,6 @@ int tdav_codec_h263_close(tmedia_codec_t* self)
 	}
 
 	/* the caller (base class) already checked that the codec is opened */
-
-	//
-	// Runnable
-	//
-	if((ret = tdav_runnable_video_stop(h263->runnable))){
-		TSK_DEBUG_ERROR("Failed to stop runnable (H263 codec)");
-		// ... do not exit, continue
-	}
 
 	//
 	//	Encoder
@@ -288,7 +274,9 @@ int tdav_codec_h263_close(tmedia_codec_t* self)
 	return 0;
 }
 
-tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+#include "tsk_time.h"
+
+tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	int ret;
 	int size;
@@ -298,11 +286,6 @@ tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_data, tsk
 	if(!self || !in_data || !in_size || !out_data){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
-	}
-	
-	// delete old buffer
-	if(*out_data){
-		TSK_FREE(*out_data);
 	}
 
 	// wrap yuv420 buffer
@@ -316,33 +299,19 @@ tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_data, tsk
 	tdav_converter_video_flip(h263->encoder.picture, h263->encoder.context->height);
 
 	// Encode data
+	//h263->encoder.picture->pts = tsk_time_epoch();
+	
 	//h263->encoder.picture->pts = AV_NOPTS_VALUE;
 	//h263->encoder.picture->pict_type = FF_I_TYPE;
 	ret = avcodec_encode_video(h263->encoder.context, h263->encoder.buffer, size, h263->encoder.picture);
-	if(ret <= 0){
-		ret = 0;
-	}
-	else{
-		if((*out_data = tsk_calloc(ret, sizeof(uint8_t)))){
-			memcpy(*out_data, h263->encoder.buffer, ret);
-		}
-		else{
-			TSK_DEBUG_ERROR("Failed to allocate output buffer");
-			ret = 0;
-		}
-	}
-	
-	if(ret/* > RTP_PAYLOAD_SIZE*/){
-		tsk_buffer_t* buffer = tsk_buffer_create_null();
-		tsk_buffer_takeownership(buffer, out_data, (tsk_size_t)ret);
-		TSK_RUNNABLE_ENQUEUE_OBJECT(h263->runnable, buffer);
-		ret = 0;
+	if(ret > 0){
+		tdav_codec_h263_encap(h263, h263->encoder.buffer, (tsk_size_t)ret);
 	}
 
-	return (tsk_size_t)ret;
+	return 0;
 }
 
-tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
+tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	uint8_t F, P, sbit, ebit;
 	const uint8_t* pdata = in_data;
@@ -359,11 +328,6 @@ tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk
 	if(!self || !in_data || !in_size || !out_data || !h263->decoder.context){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
-	}
-
-	// delete old buffer
-	if(*out_data){
-		TSK_FREE(*out_data);
 	}
 
 	/* get F and P bits, used to determine the header Mode (A, B or C)
@@ -455,17 +419,22 @@ tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk
 	}
 	
 	if(rtp_hdr->marker){
+		AVPacket packet;
 		/* allocate destination buffer */
-		if(!(*out_data = tsk_calloc(xsize, sizeof(uint8_t)))){
-			TSK_DEBUG_ERROR("Failed to allocate new buffer");
-			h263->decoder.accumulator_pos = 0;
-			return 0;
+		if(*out_max_size <xsize){
+			if(!(*out_data = tsk_realloc(*out_data, xsize))){
+				TSK_DEBUG_ERROR("Failed to allocate new buffer");
+				h263->decoder.accumulator_pos = 0;
+				*out_max_size = 0;
+				return 0;
+			}
+			*out_max_size = xsize;
 		}		
 
-		/* wrap the output buffer (picture's internal buffer will be allocated by FFMpeg)*/
-		//avpicture_fill((AVPicture *)h263->decoder.picture, *out_data, PIX_FMT_YUV420P, h263->decoder.context->width, h263->decoder.context->height);
-		/* decode the vodeo frame (accumulator already padded -FF_INPUT_BUFFER_PADDING_SIZE)*/
-		ret = avcodec_decode_video(h263->decoder.context, h263->decoder.picture, &got_picture_ptr, h263->decoder.accumulator, h263->decoder.accumulator_pos);		
+		av_init_packet(&packet);
+		packet.size = h263->decoder.accumulator_pos;
+		packet.data = h263->decoder.accumulator;
+		ret = avcodec_decode_video2(h263->decoder.context, h263->decoder.picture, &got_picture_ptr, &packet);
 
 		if(ret <0 || !got_picture_ptr){
 			TSK_DEBUG_WARN("Failed to decode the buffer");
@@ -620,12 +589,12 @@ int tdav_codec_h263p_close(tmedia_codec_t* self)
 	return tdav_codec_h263_close(self);
 }
 
-tsk_size_t tdav_codec_h263p_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_h263p_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
-	return tdav_codec_h263_encode(self, in_data, in_size, out_data);
+	return tdav_codec_h263_encode(self, in_data, in_size, out_data, out_max_size);
 }
 
-tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
+tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	uint8_t P, V, PLEN, PEBIT;
 	uint8_t* pdata = (uint8_t*)in_data;
@@ -642,11 +611,6 @@ tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_data, ts
 	if(!self || !in_data || !in_size || ((int)in_size <= hdr_size) || !out_data || !h263->decoder.context){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
-	}
-
-	// delete old buffer
-	if(*out_data){
-		TSK_FREE(*out_data);
 	}
 
 /*
@@ -725,17 +689,23 @@ tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_data, ts
 	}
 	
 	if(rtp_hdr->marker){
+		AVPacket packet;
 		/* allocate destination buffer */
-		if(!(*out_data = tsk_calloc(xsize, sizeof(uint8_t)))){
-			TSK_DEBUG_ERROR("Failed to allocate new buffer");
-			h263->decoder.accumulator_pos = 0;
-			return 0;
-		}		
+		if(*out_max_size < xsize){
+			if(!(*out_data = tsk_realloc(*out_data, xsize))){
+				TSK_DEBUG_ERROR("Failed to allocate new buffer");
+				*out_max_size = 0;
+				h263->decoder.accumulator_pos = 0;
+				return 0;
+			}
+			*out_max_size = xsize;
+		}	
 
-		/* wrap the output buffer (picture's internal buffer will be allocated by FFMpeg)*/
-		//avpicture_fill((AVPicture *)h263->decoder.picture, *out_data, PIX_FMT_YUV420P, h263->decoder.context->width, h263->decoder.context->height);
-		/* decode the vodeo frame (accumulator already padded -FF_INPUT_BUFFER_PADDING_SIZE)*/
-		ret = avcodec_decode_video(h263->decoder.context, h263->decoder.picture, &got_picture_ptr, h263->decoder.accumulator, h263->decoder.accumulator_pos);		
+		/* decode the picture */
+		av_init_packet(&packet);
+		packet.size = h263->decoder.accumulator_pos;
+		packet.data = h263->decoder.accumulator;
+		ret = avcodec_decode_video2(h263->decoder.context, h263->decoder.picture, &got_picture_ptr, &packet);		
 
 		if(ret <0 || !got_picture_ptr){
 			TSK_DEBUG_WARN("Failed to decode the buffer");
@@ -864,14 +834,14 @@ int tdav_codec_h263pp_close(tmedia_codec_t* self)
 	return tdav_codec_h263_close(self);
 }
 
-tsk_size_t tdav_codec_h263pp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_h263pp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
-	return tdav_codec_h263_encode(self, in_data, in_size, out_data);
+	return tdav_codec_h263_encode(self, in_data, in_size, out_data, out_max_size);
 }
 
-tsk_size_t tdav_codec_h263pp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
+tsk_size_t tdav_codec_h263pp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
-	return tdav_codec_h263p_decode(self, in_data, in_size, out_data, proto_hdr);
+	return tdav_codec_h263p_decode(self, in_data, in_size, out_data, out_max_size, proto_hdr);
 }
 
 tsk_bool_t tdav_codec_h263pp_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
@@ -956,73 +926,48 @@ const tmedia_codec_plugin_def_t *tdav_codec_h263pp_plugin_def_t = &tdav_codec_h2
 
 /* ============ Callbacks ================= */
 
-static void *run(void* self)
+static void tdav_codec_h263_encap(const tdav_codec_h263_t* h263, const uint8_t* pdata, tsk_size_t size)
 {
-	uint32_t i, last_index;
-	tsk_list_item_t *curr;
+	tsk_bool_t frag = tsk_false;
+	uint32_t i, last_index = 0;
 
-	const uint8_t* pdata;
-	tsk_size_t size;
-	tsk_bool_t frag;
-
-	const tdav_codec_h263_t* h263 = ((tdav_runnable_video_t*)self)->userdata;
-
-	TSK_DEBUG_INFO("H263 thread === START");
-
-	TSK_RUNNABLE_RUN_BEGIN(self);
-	
-	if((curr = TSK_RUNNABLE_POP_FIRST(self))){
-		/* 4 is sizeof(uint32_t) */
-		pdata = ((const tsk_buffer_t*)curr->data)->data;
-		size = ((const tsk_buffer_t*)curr->data)->size;
-		last_index = 0;
-		frag = tsk_false;
-
-		if(size < RTP_PAYLOAD_SIZE){
-			goto last;
-		}
-
-		for(i = 4; i<(size - 4); i++){
-			if(pdata[i] == 0x00 && pdata[i+1] == 0x00 && pdata[i+2]>=0x80){  /* PSC or (GBSC) found */
-				if((i - last_index) >= RTP_PAYLOAD_SIZE || tsk_true/* FIXME */){
-					switch(h263->type){
-						case tdav_codec_h263_1996:
-							tdav_codec_h263_rtp_callback((tdav_codec_h263_t*) h263, pdata+last_index,
-								(i - last_index), (last_index == size));
-							break;
-						default:
-							tdav_codec_h263p_rtp_callback((tdav_codec_h263_t*) h263, pdata + last_index,
-								(i - last_index), frag, (last_index == size));
-							frag = tsk_true;
-							break;
-					}
-					last_index = i;
-				}
-			}
-		}
-last:
-		if(last_index < size){
-			switch(h263->type){
-				case tdav_codec_h263_1996:
-					tdav_codec_h263_rtp_callback((tdav_codec_h263_t*) h263, pdata + last_index,
-						(size - last_index), tsk_true);
-					break;
-				default:
-					tdav_codec_h263p_rtp_callback((tdav_codec_h263_t*) h263, pdata + last_index,
-						(size - last_index), frag, tsk_true);
-					break;
-			}
-		}
-
-		tsk_object_unref(curr);
+	if(size < RTP_PAYLOAD_SIZE){
+		goto last;
 	}
-	
-	TSK_RUNNABLE_RUN_END(self);
 
-	TSK_DEBUG_INFO("H263 thread === STOP");
-
-	return tsk_null;
+	for(i = 4; i<(size - 4); i++){
+		if(pdata[i] == 0x00 && pdata[i+1] == 0x00 && pdata[i+2]>=0x80){  /* PSC or (GBSC) found */
+			if((i - last_index) >= RTP_PAYLOAD_SIZE || tsk_true/* FIXME */){
+				switch(h263->type){
+					case tdav_codec_h263_1996:
+						tdav_codec_h263_rtp_callback((tdav_codec_h263_t*) h263, pdata+last_index,
+							(i - last_index), (last_index == size));
+						break;
+					default:
+						tdav_codec_h263p_rtp_callback((tdav_codec_h263_t*) h263, pdata + last_index,
+							(i - last_index), frag, (last_index == size));
+						frag = tsk_true;
+						break;
+				}
+				last_index = i;
+			}
+		}
+	}
+last:
+	if(last_index < size){
+		switch(h263->type){
+			case tdav_codec_h263_1996:
+				tdav_codec_h263_rtp_callback((tdav_codec_h263_t*) h263, pdata + last_index,
+					(size - last_index), tsk_true);
+				break;
+			default:
+				tdav_codec_h263p_rtp_callback((tdav_codec_h263_t*) h263, pdata + last_index,
+					(size - last_index), frag, tsk_true);
+				break;
+		}
+	}
 }
+
 
 static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *data, tsk_size_t size, tsk_bool_t marker)
 {
@@ -1100,13 +1045,13 @@ static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *da
 static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *data, tsk_size_t size, tsk_bool_t frag, tsk_bool_t marker)
 {
 	uint8_t* pdata = (uint8_t*)data;
-	uint8_t rtp_hdr[2] = {0x00, 0x00};
-	tsk_bool_t eos = tsk_false;
+	//uint8_t rtp_hdr[2] = {0x00, 0x00};
+	//tsk_bool_t eos = tsk_false;
 
 	const void* _ptr = tsk_null;
 	tsk_size_t _size = 0;
 	//static tsk_bool_t frag = tsk_false;
-	tsk_bool_t found_gob = tsk_false;
+	//tsk_bool_t found_gob = tsk_false;
 
 	/* RFC 4629 - 5.1. General H.263+ Payload Header
 		The H.263+ payload header is structured as follows:
@@ -1132,99 +1077,104 @@ static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *d
 	* 5.2.3 Group Number (GN) (5 bits)
 	*	-> last 5 bits
 	*/
-	if(pdata[0] == 0x00 && pdata[1] == 0x00 && pdata[2] >= 0x80){ /* PSC or EOS or GBSC */
-		uint8_t GN = ((pdata[2]>>2) & 0x1F);
-		found_gob = tsk_true;
-		//TSK_DEBUG_INFO("GN=%u", pdata[2]);
-	
-		/*	RFC 4629 - 6.1.1. Packets that begin with a Picture Start Code
-			A packet that begins at the location of a Picture, GOB, slice, EOS,
-			or EOSBS start code shall omit the first two (all zero) bytes from
-			the H.263+ bitstream and signify their presence by setting P=1 in the
-			payload header.
-		*/
+	//if(pdata[0] == 0x00 && pdata[1] == 0x00 && pdata[2] >= 0x80){ /* PSC or EOS or GBSC */
+	//	uint8_t GN = ((pdata[2]>>2) & 0x1F);
+	//	found_gob = tsk_true;
+	//	//TSK_DEBUG_INFO("GN=%u", pdata[2]);
+	//
+	//	/*	RFC 4629 - 6.1.1. Packets that begin with a Picture Start Code
+	//		A packet that begins at the location of a Picture, GOB, slice, EOS,
+	//		or EOSBS start code shall omit the first two (all zero) bytes from
+	//		the H.263+ bitstream and signify their presence by setting P=1 in the
+	//		payload header.
+	//	*/
 
-		if(GN == 0x00){ /* PSC 00000 */
-			/* Use the two first bytes as RTP header */
-			//pdata[0] |= 0x04; // P=1
+	//	if(GN == 0x00){ /* PSC 00000 */
+	//		/* Use the two first bytes as RTP header */
+	//		//pdata[0] |= 0x04; // P=1
 
-			/*
-			 0                   1                   2                   3
-			0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-			+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-			|   RR    |1|V|0|0|0|0|0|0|0|0|0| bitstream data without the    :
-			+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-			: first two 0 bytes of the PSC
-			+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-			*/
+	//		/*
+	//		 0                   1                   2                   3
+	//		0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+	//		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	//		|   RR    |1|V|0|0|0|0|0|0|0|0|0| bitstream data without the    :
+	//		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	//		: first two 0 bytes of the PSC
+	//		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	//		*/
 
-			//TSK_DEBUG_INFO("H263 - PSC");
-		}
-		else if(GN == 0x1F){ /* EOS 11111 */
-			/* Use the two first bytes as RTP header */
-			//pdata[0] |= 0x04; // P=1
-			eos = tsk_true;
-			/* RFC 4629 - 6.1.3. Packets that begin with an EOS or EOSBS Code 
-				0                   1                   2
-				0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3
-				+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-				|   RR    |1|V|0|0|0|0|0|0|0|0|0|1|1|1|1|1|1|0|0|
-				+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-			*/
-			//TSK_DEBUG_INFO("H263 - EOS");
-		}
-		else /*if((GN >> 4) == 0x01)*/{ /* GBSC  10000 */
-			/* Use the two first bytes as RTP header */
-			//pdata[0] |= 0x04; // P=1
-			
-			/* RFC 4629 - 6.1.2. Packets that begin with GBSC or SSC
-		0                   1                   2                   3
-		0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-		|   RR    |1|V|0 0 1 0 0 1|PEBIT|1 0 0 0 0 0| picture header    :
-		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-		: starting with TR, PTYPE ...                                   |
-		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-		| ...                                           | bitstream     :
-		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-		: data starting with GBSC/SSC without its first two 0 bytes
-		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-			*/
-			//TSK_DEBUG_INFO("H263 - GBSC");
-			found_gob = tsk_false;
-		}
-		//else if(EOSBS) -> Not Supported
-	}
-	else{
-		/* 6.2. Encapsulating Follow-on Packet (P=0) */
-		int i = 0;
-		i++;
-	}
+	//		//TSK_DEBUG_INFO("H263 - PSC");
+	//	}
+	//	else if(GN == 0x1F){ /* EOS 11111 */
+	//		/* Use the two first bytes as RTP header */
+	//		//pdata[0] |= 0x04; // P=1
+	//		eos = tsk_true;
+	//		/* RFC 4629 - 6.1.3. Packets that begin with an EOS or EOSBS Code 
+	//			0                   1                   2
+	//			0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3
+	//			+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	//			|   RR    |1|V|0|0|0|0|0|0|0|0|0|1|1|1|1|1|1|0|0|
+	//			+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	//		*/
+	//		//TSK_DEBUG_INFO("H263 - EOS");
+	//	}
+	//	else /*if((GN >> 4) == 0x01)*/{ /* GBSC  10000 */
+	//		/* Use the two first bytes as RTP header */
+	//		//pdata[0] |= 0x04; // P=1
+	//		
+	//		/* RFC 4629 - 6.1.2. Packets that begin with GBSC or SSC
+	//	0                   1                   2                   3
+	//	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+	//	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	//	|   RR    |1|V|0 0 1 0 0 1|PEBIT|1 0 0 0 0 0| picture header    :
+	//	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	//	: starting with TR, PTYPE ...                                   |
+	//	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	//	| ...                                           | bitstream     :
+	//	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	//	: data starting with GBSC/SSC without its first two 0 bytes
+	//	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	//		*/
+	//		//TSK_DEBUG_INFO("H263 - GBSC");
+	//		found_gob = tsk_false;
+	//	}
+	//	//else if(EOSBS) -> Not Supported
+	//}
+	//else{
+	//	/* 6.2. Encapsulating Follow-on Packet (P=0) */
+	//	int i = 0;
+	//	i++;
+	//}
 
-	if(/*eos*/!found_gob && frag){
-		if(self->rtp.size < (size + 2/* H263+ Header size */)){
-			if(!(self->rtp.ptr = tsk_realloc(self->rtp.ptr, (size + 2)))){
-				TSK_DEBUG_ERROR("Failed to allocate new buffer");
-				return;
-			}
-			self->rtp.size = (size + 2);
-		}
-		/* RFC 4629 - 6. Packetization Schemes */
-		//rtp_hdr[0] |= 0x00;
-		//memcpy(self->rtp.ptr, rtp_hdr/* zeros-> is it corretc? */, 2);
-		//memcpy((self->rtp.ptr + 2), pdata, size);
-		//_ptr = self->rtp.ptr;
-		//_size = (size + 2);
+	//if(/*eos*/!found_gob && frag){
+	//	if(self->rtp.size < (size + 2/* H263+ Header size */)){
+	//		if(!(self->rtp.ptr = tsk_realloc(self->rtp.ptr, (size + 2)))){
+	//			TSK_DEBUG_ERROR("Failed to allocate new buffer");
+	//			return;
+	//		}
+	//		self->rtp.size = (size + 2);
+	//	}
+	//	/* RFC 4629 - 6. Packetization Schemes */
+	//	//rtp_hdr[0] |= 0x00;
+	//	//memcpy(self->rtp.ptr, rtp_hdr/* zeros-> is it corretc? */, 2);
+	//	//memcpy((self->rtp.ptr + 2), pdata, size);
+	//	//_ptr = self->rtp.ptr;
+	//	//_size = (size + 2);
 
-		pdata[0] |= pdata[2] > 0x80 ? 0x04 : 0x04;
-		_ptr = pdata;
-		_size = size;
-	}
-	else{
-		pdata[0] |= pdata[2] > 0x80 ? 0x04 : 0x04;
-		_ptr = pdata;
-		_size = size;
-	}
+	//	pdata[0] |= pdata[2] > 0x80 ? 0x04 : 0x04;
+	//	_ptr = pdata;
+	//	_size = size;
+	//}
+	//else{
+	//	pdata[0] |= pdata[2] > 0x80 ? 0x04 : 0x04;
+	//	_ptr = pdata;
+	//	_size = size;
+	//}
+
+// FIXME
+	pdata[0] |= pdata[2] > 0x80 ? 0x04 : 0x04;
+	_ptr = pdata;
+	_size = size;
 	
 
 	// Send data over the network

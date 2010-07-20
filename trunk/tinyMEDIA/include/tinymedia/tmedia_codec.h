@@ -99,6 +99,9 @@ TMEDIA_BEGIN_DECLS
 #define TMEDIA_CODEC_FORMAT_AMR_WB_BE					"113"
 #define TMEDIA_CODEC_FORMAT_AMR_WB_OA					"114"
 
+//#define TMEDIA_CODEC_FORMAT_BV16						"115" //FIXME
+#define TMEDIA_CODEC_FORMAT_BV16						"106"
+
 #define TMEDIA_CODEC_FORMAT_RAW							"121"
 #define TMEDIA_CODEC_FORMAT_FFV1						"122"
 #define TMEDIA_CODEC_FORMAT_FFVHUFF						"123"
@@ -184,9 +187,9 @@ typedef struct tmedia_codec_plugin_def_s
 	//! close the codec
 	int (*close) (tmedia_codec_t*);
 	//! encode data
-	tsk_size_t (*encode) (tmedia_codec_t*, const void* in_data, tsk_size_t in_size, void** out_data);
+	tsk_size_t (*encode) (tmedia_codec_t*, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size);
 	//! decode data
-	tsk_size_t (*decode) (tmedia_codec_t*, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr);
+	tsk_size_t (*decode) (tmedia_codec_t*, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr);
 	//! whether the codec can handle the fmtp
 	tsk_bool_t (* fmtp_match) (const tmedia_codec_t*, const char* );
 	//! gets fmtp value. e.g. "mode-set=0,2,5,7; mode-change-period=2; mode-change-neighbor=1"

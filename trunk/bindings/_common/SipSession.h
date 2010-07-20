@@ -84,6 +84,7 @@ public: /* Public functions */
 	bool accept();
 	bool hold();
 	bool resume();
+	bool sendDTMF(int number);
 	bool hangup();
 };
 

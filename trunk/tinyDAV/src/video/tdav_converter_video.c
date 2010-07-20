@@ -31,7 +31,7 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t height, tmedia_chroma_t chroma, tsk_bool_t toYUV420)
+tdav_converter_video_t* tdav_converter_video_create(tsk_size_t srcWidth, tsk_size_t srcHeight, tsk_size_t dstWidth, tsk_size_t dstHeight, tmedia_chroma_t chroma, tsk_bool_t toYUV420)
 {
 #if HAVE_FFMPEG
 	tdav_converter_video_t* converter;
@@ -63,8 +63,10 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t
 	// Set values
 	converter->toYUV420 = toYUV420;
 	converter->pixfmt = pixfmt;
-	converter->width = width;
-	converter->height = height;
+	converter->srcWidth = srcWidth;
+	converter->srcHeight = srcHeight;
+	converter->dstWidth = dstWidth ? dstWidth : srcWidth;
+	converter->dstHeight = dstHeight ? dstHeight : srcHeight;
 
 	return converter;
 #else
@@ -72,7 +74,7 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t
 #endif
 }
 
-tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void* buffer, void** output)
+tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void* buffer, void** output, tsk_size_t* output_max_size)
 {
 #if HAVE_FFMPEG
 	int ret;
@@ -91,9 +93,9 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 	/* Context */
 	if(!self->context){
 		self->context = sws_getContext(
-			self->width, self->height, (srcFormat == PIX_FMT_RGB24) ? PIX_FMT_BGR24 : srcFormat,
-			self->width, self->height, dstFormat,
-			SWS_BICUBIC, NULL, NULL, NULL);
+			self->srcWidth, self->srcHeight, (srcFormat == PIX_FMT_RGB24) ? PIX_FMT_BGR24 : srcFormat,
+			self->dstWidth, self->dstHeight, dstFormat,
+			SWS_FAST_BILINEAR/*SWS_BICUBIC*/, NULL, NULL, NULL);
 
 		if(!self->context){
 			TSK_DEBUG_ERROR("Failed to create context");
@@ -115,23 +117,23 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 		}
 	}
 	
-	/* remove old output buffer */
-	if(*output){
-		TSK_FREE(*output);
-	}
-	size = avpicture_get_size(dstFormat, self->width, self->height);
-	if(!(*output = tsk_calloc(size, sizeof(uint8_t)))){
-		TSK_DEBUG_ERROR("Failed to allocate buffer");
-		return 0;
+	size = avpicture_get_size(dstFormat, self->dstWidth, self->dstHeight);
+	if((int)*output_max_size <size){
+		if(!(*output = tsk_realloc(*output, size))){
+			*output_max_size = 0;
+			TSK_DEBUG_ERROR("Failed to allocate buffer");
+			return 0;
+		}
+		*output_max_size = size;
 	}
 
 	/* Wrap the source buffer */
-	ret = avpicture_fill((AVPicture *)self->srcFrame, (uint8_t*)buffer, srcFormat, self->width, self->height);
+	ret = avpicture_fill((AVPicture *)self->srcFrame, (uint8_t*)buffer, srcFormat, self->srcWidth, self->srcHeight);
 	/* Wrap the destination buffer */
-	ret = avpicture_fill((AVPicture *)self->dstFrame, (uint8_t*)*output, dstFormat, self->width, self->height);
+	ret = avpicture_fill((AVPicture *)self->dstFrame, (uint8_t*)*output, dstFormat, self->dstWidth, self->dstHeight);
 
 	/* performs conversion */
-	ret = sws_scale(self->context, self->srcFrame->data, self->srcFrame->linesize, 0, self->height,
+	ret = sws_scale(self->context, self->srcFrame->data, self->srcFrame->linesize, 0, self->srcHeight,
 		self->dstFrame->data, self->dstFrame->linesize);
 	if(ret < 0){
 		// delete the allocated buffer

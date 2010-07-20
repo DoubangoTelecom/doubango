@@ -18,12 +18,15 @@ ILBC_LDFLAGS := -liLBC
 LIBGSM_CFLAGS := -DHAVE_LIBGSM=1
 LIBGSM_LDFLAGS := -lgsm
 
+BV16_CFLAGS := -DHAVE_BV16=1 -I$(THIRDPARTIES_INC)/BroadVoice16/bv16 -I$(THIRDPARTIES_INC)/BroadVoice16/bvcommon
+BV16_LDFLAGS := -lbv16
+
 CFLAGS := $(CFLAGS_LIB) -I$(THIRDPARTIES_INC) $(ILBC_CFLAGS) $(LIBGSM_CFLAGS) \
-	$(FFMPEG_CFLAGS) $(SPEEX_CFLAGS) $(OPENCORE_ARM_CFLAGS) \
+	$(FFMPEG_CFLAGS) $(SPEEX_CFLAGS) $(OPENCORE_ARM_CFLAGS) $(BV16_CFLAGS) \
 	-I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I../tinyRTP/include -I../tinyMEDIA/include -I./include
 	
 LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB)\
-	 $(FFMPEG_LDFLAGS) $(SPEEX_LDFLAGS) $(OPENCORE_ARM_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) \
+	 $(FFMPEG_LDFLAGS) $(SPEEX_LDFLAGS) $(OPENCORE_ARM_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) $(BV16_LDFLAGS)\
 	 -ltinySAK -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA -lm -lgcc
 
 all: $(APP)
@@ -58,6 +61,10 @@ OBJS += src/codecs/g711/g711.o \
 	
 	### codecs (GSM)
 OBJS += src/codecs/gsm/tdav_codec_gsm.o
+	
+	### codecs (BV16)
+OBJS += src/codecs/bv/tdav_codec_bv16.o \
+	src/codecs/bv/tdav_codec_bv32.o
 	
 	### codecs (iLBC)
 OBJS += src/codecs/ilbc/tdav_codec_ilbc.o

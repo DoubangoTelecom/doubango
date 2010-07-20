@@ -56,16 +56,19 @@ typedef struct tdav_converter_video_s
 	AVFrame* dstFrame;
 #endif
 
-	tsk_size_t width;
-	tsk_size_t height;
+	tsk_size_t srcWidth;
+	tsk_size_t srcHeight;
+
+	tsk_size_t dstWidth;
+	tsk_size_t dstHeight;
 
 	tsk_bool_t toYUV420;
 }
 tdav_converter_video_t;
 
-tdav_converter_video_t* tdav_converter_video_create(tsk_size_t width, tsk_size_t height, tmedia_chroma_t chroma, tsk_bool_t toYUV420);
+tdav_converter_video_t* tdav_converter_video_create(tsk_size_t srcWidth, tsk_size_t srcHeight, tsk_size_t dstWidth, tsk_size_t dstHeight, tmedia_chroma_t chroma, tsk_bool_t toYUV420);
 
-tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void* buffer, void** output);
+tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void* buffer, void** output, tsk_size_t* output_max_size);
 
 #define tdav_converter_video_flip(frame, height) \
     frame->data[0] += frame->linesize[0] * (height -1);\

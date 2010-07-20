@@ -34,10 +34,6 @@ typedef struct tdshow_consumer_s
 	TMEDIA_DECLARE_CONSUMER;
 	
 	DSDisplay* display;
-
-	int fps;
-	int width;
-	int height;
 	
 	tsk_bool_t started;
 }
@@ -62,13 +58,13 @@ int tdshow_consumer_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec
 		return -2;
 	}
 	
-	consumer->fps = TMEDIA_CODEC_VIDEO(codec)->fps;
-	consumer->width = TMEDIA_CODEC_VIDEO(codec)->width;
-	consumer->height = TMEDIA_CODEC_VIDEO(codec)->height;
+	TMEDIA_CONSUMER(consumer)->video.fps = TMEDIA_CODEC_VIDEO(codec)->fps;
+	TMEDIA_CONSUMER(consumer)->video.width = TMEDIA_CODEC_VIDEO(codec)->width;
+	TMEDIA_CONSUMER(consumer)->video.height = TMEDIA_CODEC_VIDEO(codec)->height;
 
 	//consumer->display->attach(GetForegroundWindow());
-	consumer->display->setFps(consumer->fps);
-	consumer->display->setSize(consumer->width, consumer->height);
+	consumer->display->setFps(TMEDIA_CONSUMER(consumer)->video.fps);
+	consumer->display->setSize(TMEDIA_CONSUMER(consumer)->video.width, TMEDIA_CONSUMER(consumer)->video.height);
 
 	return 0;
 }
@@ -171,9 +167,9 @@ static tsk_object_t* tdshow_consumer_ctor(tsk_object_t * self, va_list * app)
 		tmedia_consumer_init(TMEDIA_CONSUMER(consumer));
 		TMEDIA_CONSUMER(consumer)->video.chroma = tmedia_rgb24;
 		/* init self */
-		consumer->fps = 15;
-		consumer->width = 176;
-		consumer->height = 144;
+		TMEDIA_CONSUMER(consumer)->video.fps = 15;
+		TMEDIA_CONSUMER(consumer)->video.width = 176;
+		TMEDIA_CONSUMER(consumer)->video.height = 144;
 		consumer->display = new DSDisplay(&hr);
 		if(FAILED(hr)){
 			TSK_DEBUG_ERROR("Failed to created DirectShow Display");

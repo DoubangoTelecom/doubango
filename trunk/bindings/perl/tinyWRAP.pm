@@ -547,6 +547,7 @@ sub DESTROY {
 *accept = *tinyWRAPc::CallSession_accept;
 *hold = *tinyWRAPc::CallSession_hold;
 *resume = *tinyWRAPc::CallSession_resume;
+*sendDTMF = *tinyWRAPc::CallSession_sendDTMF;
 *hangup = *tinyWRAPc::CallSession_hangup;
 sub DISOWN {
     my $self = shift;
@@ -830,6 +831,7 @@ sub DESTROY {
 *pause = *tinyWRAPc::ProxyVideoConsumer_pause;
 *stop = *tinyWRAPc::ProxyVideoConsumer_stop;
 *setActivate = *tinyWRAPc::ProxyVideoConsumer_setActivate;
+*setDisplaySize = *tinyWRAPc::ProxyVideoConsumer_setDisplaySize;
 *registerPlugin = *tinyWRAPc::ProxyVideoConsumer_registerPlugin;
 sub DISOWN {
     my $self = shift;
@@ -1087,6 +1089,8 @@ sub DESTROY {
 *removeHeader = *tinyWRAPc::SipStack_removeHeader;
 *addDnsServer = *tinyWRAPc::SipStack_addDnsServer;
 *setAoR = *tinyWRAPc::SipStack_setAoR;
+*dnsENUM = *tinyWRAPc::SipStack_dnsENUM;
+*dnsNaptrSrv = *tinyWRAPc::SipStack_dnsNaptrSrv;
 *isValid = *tinyWRAPc::SipStack_isValid;
 *stop = *tinyWRAPc::SipStack_stop;
 *setCodecs = *tinyWRAPc::SipStack_setCodecs;

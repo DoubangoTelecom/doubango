@@ -391,6 +391,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_resume")]
   public static extern bool CallSession_resume(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_sendDTMF")]
+  public static extern bool CallSession_sendDTMF(HandleRef jarg1, int jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_hangup")]
   public static extern bool CallSession_hangup(HandleRef jarg1);
 
@@ -534,6 +537,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_setActivate")]
   public static extern void ProxyVideoConsumer_setActivate(HandleRef jarg1, bool jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_setDisplaySize")]
+  public static extern bool ProxyVideoConsumer_setDisplaySize(HandleRef jarg1, int jarg2, int jarg3);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_registerPlugin")]
   public static extern bool ProxyVideoConsumer_registerPlugin();
@@ -750,6 +756,12 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setAoR")]
   public static extern bool SipStack_setAoR(HandleRef jarg1, string jarg2, int jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_dnsENUM")]
+  public static extern string SipStack_dnsENUM(HandleRef jarg1, string jarg2, string jarg3, string jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_dnsNaptrSrv")]
+  public static extern string SipStack_dnsNaptrSrv(HandleRef jarg1, string jarg2, string jarg3, out short jarg4);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_isValid")]
   public static extern bool SipStack_isValid(HandleRef jarg1);

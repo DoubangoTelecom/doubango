@@ -39,7 +39,7 @@
 #define tdav_codec_g711u_fmtp_get tsk_null
 #define tdav_codec_g711u_fmtp_set tsk_null
 
-tsk_size_t tdav_codec_g711u_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_g711u_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	tsk_size_t i;
 	
@@ -48,15 +48,13 @@ tsk_size_t tdav_codec_g711u_encode(tmedia_codec_t* self, const void* in_data, ts
 		return 0;
 	}
 	
-	/* free old buffer */
-	if(*out_data){
-		TSK_FREE(*out_data);
-	}
-	
-	/* allocate new buffer */
-	if(!(*out_data = tsk_calloc(in_size/2, sizeof(uint8_t)))){
-		TSK_DEBUG_ERROR("Failed to allocate new buffer");
-		return 0;
+	if(*out_max_size <in_size/2){
+		if(!(*out_data = tsk_realloc(*out_data, in_size/2))){
+			TSK_DEBUG_ERROR("Failed to allocate new buffer");
+			*out_max_size = 0;
+			return 0;
+		}
+		*out_max_size = in_size/2;
 	}
 	
 	for(i = 0; i<(in_size/2); i++){
@@ -66,7 +64,7 @@ tsk_size_t tdav_codec_g711u_encode(tmedia_codec_t* self, const void* in_data, ts
 	return (in_size/2);
 }
 
-tsk_size_t tdav_codec_g711u_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
+tsk_size_t tdav_codec_g711u_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	tsk_size_t i;
 
@@ -75,16 +73,16 @@ tsk_size_t tdav_codec_g711u_decode(tmedia_codec_t* self, const void* in_data, ts
 		return 0;
 	}
 
-	/* free old buffer */
-	if(*out_data){
-		TSK_FREE(*out_data);
-	}
 	/* allocate new buffer */
-	if(!(*out_data = tsk_calloc(in_size, sizeof(short)))){
-		TSK_DEBUG_ERROR("Failed to allocate new buffer");
-		return 0;
+	if(*out_max_size<(in_size*2)){
+		if(!(*out_data = tsk_calloc(in_size, sizeof(short)))){
+			TSK_DEBUG_ERROR("Failed to allocate new buffer");
+			*out_max_size = 0;
+			return 0;
+		}
+		*out_max_size = in_size*2;
 	}
-	
+
 	for(i = 0; i<in_size; i++){
 		((short*)*out_data)[i] = ulaw2linear(((uint8_t*)in_data)[i]);
 	}
@@ -168,7 +166,7 @@ const tmedia_codec_plugin_def_t *tdav_codec_g711u_plugin_def_t = &tdav_codec_g71
 #define tdav_codec_g711a_fmtp_get tsk_null
 #define tdav_codec_g711a_fmtp_set tsk_null
 
-tsk_size_t tdav_codec_g711a_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_g711a_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	tsk_size_t i;
 
@@ -177,15 +175,13 @@ tsk_size_t tdav_codec_g711a_encode(tmedia_codec_t* self, const void* in_data, ts
 		return 0;
 	}
 
-	/* free old buffer */
-	if(*out_data){
-		TSK_FREE(*out_data);
-	}
-
-	/* allocate new buffer */
-	if(!(*out_data = tsk_calloc(in_size/2, 1))){
-		TSK_DEBUG_ERROR("Failed to allocate new buffer");
-		return 0;
+	if(*out_max_size <in_size/2){
+		if(!(*out_data = tsk_realloc(*out_data, in_size/2))){
+			TSK_DEBUG_ERROR("Failed to allocate new buffer");
+			*out_max_size = 0;
+			return 0;
+		}
+		*out_max_size = in_size/2;
 	}
 
 	for(i = 0; i<(in_size/2); i++){
@@ -199,7 +195,7 @@ tsk_size_t tdav_codec_g711a_encode(tmedia_codec_t* self, const void* in_data, ts
 FILE* file = tsk_null;
 int count = 0;
 #endif
-tsk_size_t tdav_codec_g711a_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
+tsk_size_t tdav_codec_g711a_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	tsk_size_t i;
 
@@ -212,14 +208,14 @@ tsk_size_t tdav_codec_g711a_decode(tmedia_codec_t* self, const void* in_data, ts
 		file = fopen("./g711a.pcm", "wb");
 	}
 #endif
-	/* free old buffer */
-	if(*out_data){
-		TSK_FREE(*out_data);
-	}
 	/* allocate new buffer */
-	if(!(*out_data = tsk_calloc(in_size, 2))){
-		TSK_DEBUG_ERROR("Failed to allocate new buffer");
-		return 0;
+	if(*out_max_size<(in_size*2)){
+		if(!(*out_data = tsk_realloc(*out_data, in_size*2))){
+			TSK_DEBUG_ERROR("Failed to allocate new buffer");
+			*out_max_size = 0;
+			return 0;
+		}
+		*out_max_size = in_size*2;
 	}
 	
 	for(i = 0; i<in_size; i++){

@@ -49,6 +49,9 @@ typedef struct tdav_codec_ilbc_s
 
 	iLBC_Enc_Inst_t encoder;
 	iLBC_Dec_Inst_t decoder;
+
+	float encblock[BLOCKL_MAX];
+	float decblock[BLOCKL_MAX];
 }
 tdav_codec_ilbc_t;
 

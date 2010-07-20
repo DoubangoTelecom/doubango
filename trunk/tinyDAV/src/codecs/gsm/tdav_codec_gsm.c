@@ -73,7 +73,7 @@ int tdav_codec_gsm_close(tmedia_codec_t* self)
 	return 0;
 }
 
-tsk_size_t tdav_codec_gsm_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+tsk_size_t tdav_codec_gsm_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {	
 	tsk_size_t out_size;
 	tdav_codec_gsm_t* gsm = (tdav_codec_gsm_t*)self;
@@ -83,17 +83,16 @@ tsk_size_t tdav_codec_gsm_encode(tmedia_codec_t* self, const void* in_data, tsk_
 		return 0;
 	}
 
-	/* free old buffer */
-	if(*out_data){
-		TSK_FREE(*out_data);
-	}
-
 	out_size = ((in_size / (TMEDIA_CODEC_PCM_FRAME_SIZE(self) * sizeof(short))) * TDAV_GSM_FRAME_SIZE);
 
-	/* allocate new buffer */
-	if(!(*out_data = tsk_calloc(out_size, 1))){
-		TSK_DEBUG_ERROR("Failed to allocate new buffer");
-		return 0;
+	/* allocate new buffer if needed */
+	if(*out_max_size <out_size){
+		if(!(*out_data = tsk_realloc(*out_data, out_size))){
+			TSK_DEBUG_ERROR("Failed to allocate new buffer");
+			*out_max_size = 0;
+			return 0;
+		}
+		*out_max_size = out_size;
 	}
 
 	gsm_encode(gsm->encoder, (gsm_signal*)in_data, (gsm_byte*)*out_data);
@@ -101,7 +100,7 @@ tsk_size_t tdav_codec_gsm_encode(tmedia_codec_t* self, const void* in_data, tsk_
 	return out_size;
 }
 
-tsk_size_t tdav_codec_gsm_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, const tsk_object_t* proto_hdr)
+tsk_size_t tdav_codec_gsm_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	tsk_size_t out_size;
 	int ret;
@@ -114,15 +113,14 @@ tsk_size_t tdav_codec_gsm_decode(tmedia_codec_t* self, const void* in_data, tsk_
 	
 	out_size = (in_size / TDAV_GSM_FRAME_SIZE) * (TMEDIA_CODEC_PCM_FRAME_SIZE(self) * sizeof(short));
 
-	/* free old buffer */
-	if(*out_data){
-		TSK_FREE(*out_data);
-	}
-
-	/* allocate new buffer */
-	if(!(*out_data = tsk_calloc(out_size, 1))){
-		TSK_DEBUG_ERROR("Failed to allocate new buffer");
-		return 0;
+	/* allocate new buffer if needed */
+	if(*out_max_size <out_size){
+		if(!(*out_data = tsk_realloc(*out_data, out_size))){
+			TSK_DEBUG_ERROR("Failed to allocate new buffer");
+			*out_max_size = 0;
+			return 0;
+		}
+		*out_max_size = out_size;
 	}
 
 	ret = gsm_decode(gsm->decoder, (gsm_byte*)in_data, (gsm_signal*)*out_data);
