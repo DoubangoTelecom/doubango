@@ -644,6 +644,9 @@ int tsip_dialog_register_Any_2_Terminated_X_Error(va_list *app)
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
+	/* set last error (or info) */
+	tsip_dialog_set_lasterror(TSIP_DIALOG(self), TSIP_RESPONSE_PHRASE(response));
+
 	/* Alert the user. */
 	if(response){
 		TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 

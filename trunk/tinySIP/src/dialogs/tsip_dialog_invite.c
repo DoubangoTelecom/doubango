@@ -387,6 +387,9 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 			type = tmedia_type_from_sdp(sdp_ro);
 		}
 		self->msession_mgr = tmedia_session_mgr_create(type, TSIP_DIALOG_GET_STACK(self)->network.local_ip, tsk_false, (sdp_ro == tsk_null));
+		if(TSIP_DIALOG_GET_STACK(self)->natt.ctx){
+			tmedia_session_mgr_set_natt_ctx(self->msession_mgr, TSIP_DIALOG_GET_STACK(self)->natt.ctx, TSIP_DIALOG_GET_STACK(self)->network.aor.ip);
+		}
 	}
 	
 	if(sdp_ro){
@@ -399,6 +402,10 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 	/* start session manager */
 	if(!self->msession_mgr->started && (self->msession_mgr->sdp.lo && self->msession_mgr->sdp.ro)){
 		ret = tmedia_session_mgr_start(self->msession_mgr);
+		if(ret == 0 && TSIP_DIALOG(self)->state == tsip_early){
+			TSIP_DIALOG_INVITE_SIGNAL(self, tsip_m_early_media, 
+				TSIP_RESPONSE_CODE(message), TSIP_RESPONSE_PHRASE(message), message);
+		}
 	}
 	
 bail:

@@ -280,6 +280,10 @@ replace:
 	"sigcomp-id"i % { opt->type = opt_sigcomp_id; } |
 	"silent"i % { opt->type = opt_silent; } |
 	"smsc"i % { opt->type = opt_smsc; } |
+	"stun-ip"i % { opt->type = opt_stun_ip; } |
+	"stun-pwd"i % { opt->type = opt_stun_pwd; } |
+	"stun-port"i % { opt->type = opt_stun_port; } |
+	"stun-usr"i % { opt->type = opt_stun_usr; } |
 	"to"i % { opt->type = opt_to; }
 	)** >10 |
 	(any*) >tag >0 %option_error;

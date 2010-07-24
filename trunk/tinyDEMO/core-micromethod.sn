@@ -2,11 +2,11 @@
 
 # user's parameters (like ANSI-C #define)
 %%domain micromethod.com
-%%user bob
-%%pwd bob
+%%user mamdou
+%%pwd mamadou
 %%proxy_ip 192.168.0.10 # IP address or FQDN
 %%proxy_port 5060
-%%proxy_trans udp # udp, tcp, tls or sctp
+%%proxy_trans tcp # udp, tcp, tls or sctp
 %%expires 30 # expires used by all dialogs
 %%sleep-sec 1.0 # number of seconds to wait before sending next sip message
 
@@ -19,6 +19,7 @@
 # Configure the stack
 # Realm, IMPI and IMPU are mandatory
 ++cst --realm $$(domain) --impi $$(user)@$$(domain) --impu sip:$$(user)@$$(domain) --pwd $$(pwd) \
+	--stun-ip numb.viagenie.ca --stun-port 3478 --stun-usr $$(user)@$$(domain) --stun-pwd $$(pwd) \
 	--pcscf-ip $$(proxy_ip) --pcscf-port $$(proxy_port) --pcscf-trans $$(proxy_trans) \
 	--header Privacy=none --header Allow=INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER \
 	--header P-Access-Network-Info=ADSL;utran-cell-id-3gpp=00000000 \
@@ -26,7 +27,6 @@
 	
 # Run the engine
 ++r
-
 
 # OPTIONS to hack AOR
 #++opt
@@ -41,8 +41,8 @@
 ++sleep --sec $$(sleep-sec)
 
 # SUBSCRIBE to reg event package (silent hangup)
-#++sub --to sip:$$(user)@$$(domain) --xp $$(expires) --silent --header Event=reg --header Accept=application/reginfo+xml \
-#	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-reg-sid)
+++sub --to sip:$$(user)@$$(domain) --xp $$(expires) --silent --header Event=reg --header Accept=application/reginfo+xml \
+	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-reg-sid)
 
 #SUBSCRIBE to presence event package (alice)
 #++sub --to sip:alice@$$(domain) --xp $$(expires) --header Event=presence --header Supported=eventlist\
@@ -68,9 +68,10 @@
 #	--pay hello world
 
 #send INVITE
-#++a --to sip:bob@$$(domain) \
-#		--header Action-Header=Myheader-value @@action \
-#		>>(inv_audio_sid)
+++av --to sip:bob@$$(domain) \
+		--header Action-Header=Myheader-value @@action \
+		>>(inv_audio_sid)
+
 #++sleep --sec -1
 #++ho --sid $$(inv_audio_sid)
 #++sleep --sec -1

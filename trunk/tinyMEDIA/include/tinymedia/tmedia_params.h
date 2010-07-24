@@ -57,15 +57,14 @@ tmedia_param_plugin_type_t;
 
 typedef enum tmedia_param_value_type_e
 {
-	// It's very important to distinguish pvoid (opaque) to pchar (can be duplicated)
 	tmedia_pvt_int32,
-	tmedia_pvt_pvoid, /* SHOULD be removed ==> many problems */
+	tmedia_pvt_pobject,
 	tmedia_pvt_pchar,
 	tmedia_pvt_int64,
 }
 tmedia_param_value_type_t;
 
-#define TMEDIA_PARAM_VALUE_TYPE_IS_PTR(self) ((self) == tmedia_pvt_pvoid || (self) == tmedia_pvt_pchar)
+#define TMEDIA_PARAM_VALUE_TYPE_IS_PTR(self) ((self) == tmedia_pvt_pobject || (self) == tmedia_pvt_pchar)
 
 typedef struct tmedia_param_s
 {

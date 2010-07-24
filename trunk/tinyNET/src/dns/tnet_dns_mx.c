@@ -68,7 +68,7 @@ static tsk_object_t* tnet_dns_mx_ctor(tsk_object_t * self, va_list * app)
 		if(rdlength){
 			// ==> DESERIALIZATION
 			/* PREFERENCE */
-			mx->preference = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset)));
+			mx->preference = tnet_ntohs_2(((uint8_t*)data) + offset);
 			offset += 2;
 			/* EXCHANGE */
 			tnet_dns_rr_qname_deserialize(data, &(mx->exchange), &offset);

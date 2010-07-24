@@ -19,6 +19,7 @@
 %newobject getSipHeaderParamValue;
 %newobject SipStack::dnsENUM;
 %newobject SipStack::dnsNaptrSrv;
+%newobject SipStack::dnsSrv;
 
 %newobject MessagingEvent::takeSessionOwnership;
 %newobject CallEvent::takeSessionOwnership;
@@ -33,3 +34,9 @@
 %newobject getXcapHeaderParamValue;
 
 %include Xcap.i
+
+
+/* ========== SMS ========== */
+%newobject SMSEncoder::encodeSubmit;
+
+%include SMS.i

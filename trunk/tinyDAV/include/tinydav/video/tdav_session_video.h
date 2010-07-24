@@ -56,6 +56,9 @@ typedef struct tdav_session_video_s
 	char* remote_ip;
 	uint16_t remote_port;
 	
+	/* NAT Traversal context */
+	tnet_nat_context_handle_t* natt_ctx;
+
 	tsk_bool_t rtcp_enabled;
 
 	struct trtp_manager_s* rtp_manager;

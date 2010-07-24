@@ -216,11 +216,11 @@ tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, tsk_size_t
 
 	/* === HEADER ===*/
 	/* ID */
-	message->Header.ID = tnet_ntohs(*((uint16_t*)dataPtr));
+	message->Header.ID = tnet_ntohs_2(dataPtr);
 	dataPtr += 2;
 	/* |QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   | */
 	{
-		uint16_t flags = tnet_ntohs(*((uint16_t*)dataPtr));
+		uint16_t flags = tnet_ntohs_2(dataPtr);
 
 		message->Header.QR = (flags >> 15);
 		message->Header.OPCODE = ((flags >> 11) & 0x000F);
@@ -234,16 +234,16 @@ tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, tsk_size_t
 		dataPtr += 2;
 	}
 	/* QDCOUNT */
-	message->Header.QDCOUNT = tnet_ntohs(*((uint16_t*)dataPtr));
+	message->Header.QDCOUNT = tnet_ntohs_2(dataPtr);
 	dataPtr += 2;
 	/* ANCOUNT */
-	message->Header.ANCOUNT = tnet_ntohs(*((uint16_t*)dataPtr));
+	message->Header.ANCOUNT = tnet_ntohs_2(dataPtr);
 	dataPtr += 2;
 	/* NSCOUNT */
-	message->Header.NSCOUNT = tnet_ntohs(*((uint16_t*)dataPtr));
+	message->Header.NSCOUNT = tnet_ntohs_2(dataPtr);
 	dataPtr += 2;
 	/* ARCOUNT */
-	message->Header.ARCOUNT = tnet_ntohs(*((uint16_t*)dataPtr));
+	message->Header.ARCOUNT = tnet_ntohs_2(dataPtr);
 	dataPtr += 2;
 
 	/* === Queries ===*/

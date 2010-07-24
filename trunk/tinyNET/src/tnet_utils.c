@@ -720,7 +720,9 @@ int tnet_getaddrinfo(const char *node, const char *service, const struct addrinf
 **/
 void tnet_freeaddrinfo(struct addrinfo *ai)
 {
-	freeaddrinfo(ai);
+	if(ai){
+		freeaddrinfo(ai);
+	}
 }
 
 /**@ingroup tnet_utils_group

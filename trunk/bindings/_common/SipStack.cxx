@@ -81,8 +81,7 @@ SipStack::~SipStack()
 
 bool SipStack::start()
 {
-	int ret = tsip_stack_start(this->handle);
-	return (ret == 0);
+	return (tsip_stack_start(this->handle) == 0);
 }
 
 bool SipStack::setDebugCallback(DDebugCallback* callback)
@@ -109,89 +108,110 @@ bool SipStack::setRealm(const char* realm_uri)
 
 bool SipStack::setIMPI(const char* impi)
 {
-	int ret = tsip_stack_set(this->handle,
+	return (tsip_stack_set(this->handle,
 		TSIP_STACK_SET_IMPI(impi),
-		TSIP_STACK_SET_NULL());
-	return (ret == 0);
+		TSIP_STACK_SET_NULL()) == 0);
 }
 
 bool SipStack::setIMPU(const char* impu_uri)
 {
-	int ret = tsip_stack_set(this->handle,
+	return (tsip_stack_set(this->handle,
 		TSIP_STACK_SET_IMPU(impu_uri),
-		TSIP_STACK_SET_NULL());
-	return (ret == 0);
+		TSIP_STACK_SET_NULL()) == 0);
 }
 
 bool SipStack::setPassword(const char* password)
 {
-	int ret = tsip_stack_set(this->handle,
+	return (tsip_stack_set(this->handle,
 		TSIP_STACK_SET_PASSWORD(password),
-		TSIP_STACK_SET_NULL());
-	return (ret == 0);
+		TSIP_STACK_SET_NULL()) == 0);
 }
 
-bool SipStack::setProxyCSCF(const char* fqdn, unsigned port, const char* transport, const char* ipversion)
+bool SipStack::setAMF(const char* amf)
 {
-	int ret = tsip_stack_set(this->handle,
-			TSIP_STACK_SET_PROXY_CSCF(fqdn, port, transport, ipversion),
-			TSIP_STACK_SET_NULL());
-	return (ret == 0);
+	uint16_t _amf = (uint16_t)tsk_atox(amf);
+	return (tsip_stack_set(this->handle,
+			TSIP_STACK_SET_IMS_AKA_AMF(_amf),
+			TSIP_STACK_SET_NULL()) == 0);
+}
+
+bool SipStack::setOperatorId(const char* opid)
+{
+	return (tsip_stack_set(this->handle,
+			TSIP_STACK_SET_IMS_AKA_OPERATOR_ID(opid),
+			TSIP_STACK_SET_NULL()) == 0); 
+}
+
+bool SipStack::setProxyCSCF(const char* fqdn, unsigned short port, const char* transport, const char* ipversion)
+{
+	unsigned _port = port;//promote
+	return (tsip_stack_set(this->handle,
+			TSIP_STACK_SET_PROXY_CSCF(fqdn, _port, transport, ipversion),
+			TSIP_STACK_SET_NULL()) == 0);
 }
 
 bool SipStack::setLocalIP(const char* ip)
 {
-	int ret = tsip_stack_set(this->handle,
+	return (tsip_stack_set(this->handle,
 		TSIP_STACK_SET_LOCAL_IP(ip),
-		TSIP_STACK_SET_NULL());
-	return (ret == 0);
+		TSIP_STACK_SET_NULL()) == 0);
 }
 
-bool SipStack::setLocalPort(unsigned port)
+bool SipStack::setLocalPort(unsigned short port)
 {
-	int ret = tsip_stack_set(this->handle,
-		TSIP_STACK_SET_LOCAL_PORT(port),
-		TSIP_STACK_SET_NULL());
-	return (ret == 0);
+	unsigned _port = port;//promote
+	return (tsip_stack_set(this->handle,
+		TSIP_STACK_SET_LOCAL_PORT(_port),
+		TSIP_STACK_SET_NULL()) == 0);
 }
 
 bool SipStack::setEarlyIMS(bool enabled){
-	int ret = tsip_stack_set(this->handle,
+	return (tsip_stack_set(this->handle,
 		TSIP_STACK_SET_EARLY_IMS(enabled? tsk_true : tsk_false),
-		TSIP_STACK_SET_NULL());
-	return (ret == 0);
+		TSIP_STACK_SET_NULL()) == 0);
 }
 
 bool SipStack::addHeader(const char* name, const char* value)
 {
-	int ret = tsip_stack_set(this->handle,
+	return (tsip_stack_set(this->handle,
 		TSIP_STACK_SET_HEADER(name, value),
-		TSIP_STACK_SET_NULL());
-	return (ret == 0);
+		TSIP_STACK_SET_NULL()) == 0);
 }
 
 bool SipStack::removeHeader(const char* name)
 {
-	int ret = tsip_stack_set(this->handle,
+	return (tsip_stack_set(this->handle,
 		TSIP_STACK_UNSET_HEADER(name),
-		TSIP_STACK_SET_NULL());
-	return (ret == 0);
+		TSIP_STACK_SET_NULL()) == 0);
 }
 
 bool SipStack::addDnsServer(const char* ip)
 {
-	int ret = tsip_stack_set(this->handle,
+	return (tsip_stack_set(this->handle,
 		TSIP_STACK_SET_DNS_SERVER(ip),
-		TSIP_STACK_SET_NULL());
-	return (ret == 0);
+		TSIP_STACK_SET_NULL()) == 0);
 }
 
 bool SipStack::setAoR(const char* ip, int port)
 {
-	int ret = tsip_stack_set(this->handle,
+	return (tsip_stack_set(this->handle,
 		TSIP_STACK_SET_AOR(ip, port),
-		TSIP_STACK_SET_NULL());
-	return (ret == 0);
+		TSIP_STACK_SET_NULL()) == 0);
+}
+
+bool SipStack::setSTUNServer(const char* ip, unsigned short port)
+{
+	unsigned _port = port;//promote
+	return (tsip_stack_set(this->handle,
+		TSIP_STACK_SET_STUN_SERVER(ip, _port),
+		TSIP_STACK_SET_NULL()) == 0);
+}
+
+bool SipStack::setSTUNCred(const char* login, const char* password)
+{
+	return (tsip_stack_set(this->handle,
+		TSIP_STACK_SET_STUN_CRED(login, password),
+		TSIP_STACK_SET_NULL()) == 0);
 }
 
 char* SipStack::dnsENUM(const char* service, const char* e164num, const char* domain)
@@ -212,7 +232,7 @@ char* SipStack::dnsENUM(const char* service, const char* e164num, const char* do
 	}
 }
 
-char* SipStack::dnsNaptrSrv(const char* domain, const char* service, short *OUTPUT)
+char* SipStack::dnsNaptrSrv(const char* domain, const char* service, unsigned short *OUTPUT)
 {
 	tnet_dns_ctx_t* dnsctx = tsip_stack_get_dnsctx(this->handle);
 	char* ip = tsk_null;
@@ -222,6 +242,26 @@ char* SipStack::dnsNaptrSrv(const char* domain, const char* service, short *OUTP
 
 	if(dnsctx){
 		if(!tnet_dns_query_naptr_srv(dnsctx, "sip2sip.info", "SIP+D2U", &ip, &port)){
+			*OUTPUT = port;
+		}
+		tsk_object_unref(dnsctx);
+		return ip;
+	}
+	else{
+		TSK_DEBUG_ERROR("No DNS Context could be found");
+		return tsk_null;
+	}
+}
+
+char* SipStack::dnsSrv(const char* service, unsigned short* OUTPUT)
+{
+	tnet_dns_ctx_t* dnsctx = tsip_stack_get_dnsctx(this->handle);
+	char* ip = tsk_null;
+	tnet_port_t port = 0;
+	*OUTPUT = 0;
+
+	if(dnsctx){
+		if(!tnet_dns_query_srv(dnsctx, service, &ip, &port)){
 			*OUTPUT = port;
 		}
 		tsk_object_unref(dnsctx);

@@ -43,6 +43,7 @@ typedef struct transport_socket_s
 	tnet_fd_t fd;
 	unsigned owner:1;
 	unsigned connected:1;
+	unsigned paused:1;
 	
 	tnet_socket_type_t type;
 	tnet_tls_socket_handle_t* tlshandle;
@@ -160,6 +161,26 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	return -1;
 }
 
+int tnet_transport_pause_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tsk_bool_t pause)
+{
+	tnet_transport_t *transport = (tnet_transport_t*)handle;
+	transport_context_t *context;
+	transport_socket_t* socket;
+
+	if(!transport || !(context = (transport_context_t*)transport->context)){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if((socket = getSocket(context, fd))){
+		socket->paused = pause;
+	}
+	else{
+		TSK_DEBUG_WARN("Socket does not exist in this context");
+	}
+	return 0;
+}
+
 /* Remove socket
 */
 int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t* fd)
@@ -170,14 +191,9 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 	tsk_size_t i;
 	tsk_bool_t found = tsk_false;
 
-	if(!transport){
-		TSK_DEBUG_ERROR("Invalid server handle.");
-		return ret;
-	}
-
-	if(!(context = (transport_context_t*)transport->context)){
-		TSK_DEBUG_ERROR("Invalid context.");
-		return -2;
+	if(!transport || !(context = (transport_context_t*)transport->context)){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
 	}
 
 	for(i=0; i<context->count; i++){
@@ -362,8 +378,7 @@ static int removeSocket(int index, transport_context_t *context)
 
 	tsk_safeobj_lock(context);
 
-	if(index < (int)context->count)
-	{
+	if(index < (int)context->count){
 
 		/* Close the socket if we are the owner. */
 		if(context->sockets[index]->owner){
@@ -474,8 +489,7 @@ int tnet_transport_unprepare(tnet_transport_t *transport)
 	}
 
 	if(!transport->prepared){
-		TSK_DEBUG_ERROR("Transport not prepared.");
-		return -2;
+		return 0;
 	}
 
 	transport->prepared = tsk_false;
@@ -503,7 +517,7 @@ void *tnet_transport_mainthread(void *param)
 
 	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 	
-	while(TSK_RUNNABLE(transport)->running)
+	while(TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started)
 	{
 		/* Wait for multiple events */
 		if((evt = WSAWaitForMultipleEvents(context->count, context->events, FALSE, WSA_INFINITE, FALSE)) == WSA_WAIT_FAILED){
@@ -511,7 +525,7 @@ void *tnet_transport_mainthread(void *param)
 			goto bail;
 		}
 
-		if(!TSK_RUNNABLE(transport)->running){
+		if(!TSK_RUNNABLE(transport)->running && !TSK_RUNNABLE(transport)->started){
 			goto bail;
 		}
 	
@@ -594,6 +608,12 @@ void *tnet_transport_mainthread(void *param)
 
 			/* TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_READ", transport->description); */
 
+			/* check whether the socket is paused or not */
+			if(active_socket->paused){
+				TSK_DEBUG_INFO("Socket is paused");
+				break;
+			}
+			
 			if(networkEvents.iErrorCode[FD_READ_BIT]){
 				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
 				TNET_PRINT_LAST_ERROR("READ FAILED.");

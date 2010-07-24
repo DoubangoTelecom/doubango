@@ -60,6 +60,8 @@ typedef enum tsip_invite_event_type_e
 	//	Media Events
 	//
 
+	tsip_m_early_media,
+
 	/* 3GPP TS 24.610: Communication Hold */
 	tsip_m_local_hold_ok,
 	tsip_m_local_hold_nok,

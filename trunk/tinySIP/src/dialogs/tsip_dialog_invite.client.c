@@ -118,7 +118,10 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 	/* This is the first FSM transaction when you try to make an audio/video/msrp call */
 	if(!self->msession_mgr){		
 		self->msession_mgr = tmedia_session_mgr_create(action ? action->media.type : tmedia_all,
-		TSIP_DIALOG_GET_STACK(self)->network.local_ip, tsk_false, tsk_true);
+			TSIP_DIALOG_GET_STACK(self)->network.local_ip, tsk_false, tsk_true);
+		if(TSIP_DIALOG_GET_STACK(self)->natt.ctx){
+			tmedia_session_mgr_set_natt_ctx(self->msession_mgr, TSIP_DIALOG_GET_STACK(self)->natt.ctx, TSIP_DIALOG_GET_STACK(self)->network.aor.ip);
+		}
 	}
 
 	/* We are the client */

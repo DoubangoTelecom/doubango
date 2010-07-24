@@ -350,6 +350,9 @@ namespace Swig {
 #include "Xcap.h"
 
 
+#include "SMSEncoder.h"
+
+
 
 /* ---------------------------------------------------
  * C++ director class methods
@@ -1000,6 +1003,92 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipUri_isValid__SWIG_1(void * jarg1) 
   arg1 = (SipUri *)jarg1; 
   result = (bool)(arg1)->isValid();
   jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipUri_getScheme(void * jarg1) {
+  char * jresult ;
+  SipUri *arg1 = (SipUri *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SipUri *)jarg1; 
+  result = (char *)(arg1)->getScheme();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipUri_getHost(void * jarg1) {
+  char * jresult ;
+  SipUri *arg1 = (SipUri *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SipUri *)jarg1; 
+  result = (char *)(arg1)->getHost();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned short SWIGSTDCALL CSharp_SipUri_getPort(void * jarg1) {
+  unsigned short jresult ;
+  SipUri *arg1 = (SipUri *) 0 ;
+  unsigned short result;
+  
+  arg1 = (SipUri *)jarg1; 
+  result = (unsigned short)(arg1)->getPort();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipUri_getUserName(void * jarg1) {
+  char * jresult ;
+  SipUri *arg1 = (SipUri *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SipUri *)jarg1; 
+  result = (char *)(arg1)->getUserName();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipUri_getPassword(void * jarg1) {
+  char * jresult ;
+  SipUri *arg1 = (SipUri *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SipUri *)jarg1; 
+  result = (char *)(arg1)->getPassword();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipUri_getDisplayName(void * jarg1) {
+  char * jresult ;
+  SipUri *arg1 = (SipUri *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SipUri *)jarg1; 
+  result = (char *)(arg1)->getDisplayName();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipUri_getParamValue(void * jarg1, char * jarg2) {
+  char * jresult ;
+  SipUri *arg1 = (SipUri *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SipUri *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (char *)(arg1)->getParamValue((char const *)arg2);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
   return jresult;
 }
 
@@ -3131,18 +3220,46 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setPassword(void * jarg1, ch
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setProxyCSCF(void * jarg1, char * jarg2, unsigned int jarg3, char * jarg4, char * jarg5) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setAMF(void * jarg1, char * jarg2) {
   unsigned int jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
   char *arg2 = (char *) 0 ;
-  unsigned int arg3 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->setAMF((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setOperatorId(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->setOperatorId((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setProxyCSCF(void * jarg1, char * jarg2, unsigned short jarg3, char * jarg4, char * jarg5) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned short arg3 ;
   char *arg4 = (char *) 0 ;
   char *arg5 = (char *) 0 ;
   bool result;
   
   arg1 = (SipStack *)jarg1; 
   arg2 = (char *)jarg2; 
-  arg3 = (unsigned int)jarg3; 
+  arg3 = (unsigned short)jarg3; 
   arg4 = (char *)jarg4; 
   arg5 = (char *)jarg5; 
   result = (bool)(arg1)->setProxyCSCF((char const *)arg2,arg3,(char const *)arg4,(char const *)arg5);
@@ -3165,14 +3282,14 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setLocalIP(void * jarg1, cha
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setLocalPort(void * jarg1, unsigned int jarg2) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setLocalPort(void * jarg1, unsigned short jarg2) {
   unsigned int jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
-  unsigned int arg2 ;
+  unsigned short arg2 ;
   bool result;
   
   arg1 = (SipStack *)jarg1; 
-  arg2 = (unsigned int)jarg2; 
+  arg2 = (unsigned short)jarg2; 
   result = (bool)(arg1)->setLocalPort(arg2);
   jresult = result; 
   return jresult;
@@ -3253,6 +3370,38 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setAoR(void * jarg1, char * 
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setSTUNServer(void * jarg1, char * jarg2, unsigned short jarg3) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned short arg3 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (unsigned short)jarg3; 
+  result = (bool)(arg1)->setSTUNServer((char const *)arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setSTUNCred(void * jarg1, char * jarg2, char * jarg3) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (bool)(arg1)->setSTUNCred((char const *)arg2,(char const *)arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_dnsENUM(void * jarg1, char * jarg2, char * jarg3, char * jarg4) {
   char * jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -3272,19 +3421,36 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_dnsENUM(void * jarg1, char * jarg2
 }
 
 
-SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_dnsNaptrSrv(void * jarg1, char * jarg2, char * jarg3, short * jarg4) {
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_dnsNaptrSrv(void * jarg1, char * jarg2, char * jarg3, unsigned short * jarg4) {
   char * jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
   char *arg2 = (char *) 0 ;
   char *arg3 = (char *) 0 ;
-  short *arg4 = (short *) 0 ;
+  unsigned short *arg4 = (unsigned short *) 0 ;
   char *result = 0 ;
   
   arg1 = (SipStack *)jarg1; 
   arg2 = (char *)jarg2; 
   arg3 = (char *)jarg3; 
-  arg4 = (short *)jarg4; 
+  arg4 = (unsigned short *)jarg4; 
   result = (char *)(arg1)->dnsNaptrSrv((char const *)arg2,(char const *)arg3,arg4);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_dnsSrv(void * jarg1, char * jarg2, unsigned short * jarg3) {
+  char * jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned short *arg3 = (unsigned short *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (unsigned short *)jarg3; 
+  result = (char *)(arg1)->dnsSrv((char const *)arg2,arg3);
   jresult = SWIG_csharp_string_callback((const char *)result); 
   delete [] result;
   return jresult;
@@ -3998,6 +4164,90 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_stop(void * jarg1) {
   result = (bool)(arg1)->stop();
   jresult = result; 
   return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_RPData() {
+  void * jresult ;
+  RPData *result = 0 ;
+  
+  result = (RPData *)new RPData();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_RPData(void * jarg1) {
+  RPData *arg1 = (RPData *) 0 ;
+  
+  arg1 = (RPData *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_RPData_getType(void * jarg1) {
+  int jresult ;
+  RPData *arg1 = (RPData *) 0 ;
+  twrap_rpdata_type_t result;
+  
+  arg1 = (RPData *)jarg1; 
+  result = (twrap_rpdata_type_t)(arg1)->getType();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RPData_getPayloadLength(void * jarg1) {
+  unsigned int jresult ;
+  RPData *arg1 = (RPData *) 0 ;
+  unsigned int result;
+  
+  arg1 = (RPData *)jarg1; 
+  result = (unsigned int)(arg1)->getPayloadLength();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RPData_getPayload(void * jarg1, void * jarg2, unsigned int jarg3) {
+  unsigned int jresult ;
+  RPData *arg1 = (RPData *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  unsigned int result;
+  
+  arg1 = (RPData *)jarg1; 
+  arg2 = jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  result = (unsigned int)(arg1)->getPayload(arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SMSEncoder_encodeSubmit(int jarg1, char * jarg2, char * jarg3, char * jarg4) {
+  void * jresult ;
+  int arg1 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  RPData *result = 0 ;
+  
+  arg1 = (int)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (char *)jarg4; 
+  result = (RPData *)SMSEncoder::encodeSubmit(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_SMSEncoder(void * jarg1) {
+  SMSEncoder *arg1 = (SMSEncoder *) 0 ;
+  
+  arg1 = (SMSEncoder *)jarg1; 
+  delete arg1;
 }
 
 

@@ -73,7 +73,7 @@ static tsk_object_t* tnet_dns_a_ctor(tsk_object_t * self, va_list * app)
 		if(rddata && rdlength && (rdlength == 4/* 32bits */)){
 			// ==> DESERIALIZATION
 			/* ADDRESS */
-			uint32_t address = tnet_ntohl(*((uint32_t*)rddata));
+			uint32_t address = tnet_htonl_2(rddata);
 			tsk_sprintf(&(a->address), "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
 		}
 		else{

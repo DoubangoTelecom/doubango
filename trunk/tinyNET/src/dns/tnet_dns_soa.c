@@ -70,19 +70,19 @@ static tsk_object_t* tnet_dns_soa_ctor(tsk_object_t * self, va_list * app)
 			/* RNAME */
 			tnet_dns_rr_qname_deserialize(data, &(soa->rname), &offset);
 			/* SERIAL */
-			soa->serial = tnet_ntohl(*((uint32_t*)(((uint8_t*)data) + offset))),
+			soa->serial = tnet_htonl_2(((uint8_t*)data) + offset),
 			offset += 2;
 			/* REFRESH */
-			soa->refresh = tnet_ntohl(*((uint32_t*)(((uint8_t*)data) + offset))),
+			soa->refresh = tnet_htonl_2(((uint8_t*)data) + offset),
 			offset += 2;
 			/* RETRY */
-			soa->retry = tnet_ntohl(*((uint32_t*)(((uint8_t*)data) + offset))),
+			soa->retry = tnet_htonl_2(((uint8_t*)data) + offset),
 			offset += 2;
 			/* EXPIRE */
-			soa->expire = tnet_ntohl(*((uint32_t*)(((uint8_t*)data) + offset))),
+			soa->expire = tnet_htonl_2(((uint8_t*)data) + offset),
 			offset += 2;
 			/* MINIMUM */
-			soa->minimum = tnet_ntohl(*((uint32_t*)(((uint8_t*)data) + offset))),
+			soa->minimum = tnet_htonl_2(((uint8_t*)data) + offset),
 			offset += 2;
 		}
 	}

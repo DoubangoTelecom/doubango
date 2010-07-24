@@ -56,6 +56,7 @@ typedef struct tsip_transport_s
 	const tsip_stack_t *stack;
 
 	tnet_socket_type_t type;
+	struct sockaddr_storage pcscf_addr;
 	tnet_fd_t connectedFD;
 	tnet_transport_handle_t *net_transport;
 
@@ -76,6 +77,7 @@ int tsip_transport_deinit(tsip_transport_t* self);
 
 int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const char* pbk, const char* pvk);
 tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort);
+tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const void* data, tsk_size_t size);
 tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
 
 #define tsip_transport_start(transport)													(transport ? tnet_transport_start(transport->net_transport) : -1)
@@ -84,10 +86,10 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
 #define tsip_transport_isconnected(transport)											(transport ? tnet_transport_isconnected(transport->net_transport, transport->connectedFD) : 0)
 #define tsip_transport_get_description(transport)										(transport ? tnet_transport_get_description(transport->net_transport) : 0)
 #define tsip_transport_get_ip_n_port(transport, ip, port)								(transport ? tnet_transport_get_ip_n_port(transport->net_transport, transport->connectedFD, ip, port) : -1)
+#define tsip_transport_get_public_ip_n_port(transport, ip, port)						(transport ? tnet_transport_get_public_ip_n_port(transport->net_transport, transport->connectedFD, ip, port) : -1)
 
 #define tsip_transport_connectto(transport, host, port, type)							(transport ? (transport->connectedFD=tnet_transport_connectto(transport->net_transport, host, port, type)) : TNET_INVALID_FD)
 #define tsip_transport_connectto_2(transport, host, port)								(transport ? (transport->connectedFD=tnet_transport_connectto_2(transport->net_transport, host, port)) : TNET_INVALID_FD)
-#define tsip_transport_sendto(transport, to, buf, size)									(transport ? tnet_transport_sendto(transport->net_transport, transport->connectedFD, to, buf, size) : 0)
 
 #define tsip_transport_set_callback(transport, callback, callback_data)					(transport ? tnet_transport_set_callback(transport->net_transport, callback, callback_data) : -1)
 

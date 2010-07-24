@@ -11,7 +11,7 @@ namespace test
         const String REALM = "micromethod.com";
         const String USER = "mamadou";
         const String PROXY_CSCF_IP = "192.168.0.10";
-        const uint PROXY_CSCF_PORT = 5060;
+        const ushort PROXY_CSCF_PORT = 5060;
         const String PASSWORD = "";
 
         /*
@@ -57,6 +57,9 @@ namespace test
 
             /* Sets Proxy-CSCF */
             success = sipStack.setProxyCSCF(PROXY_CSCF_IP, PROXY_CSCF_PORT, "udp", "ipv4");
+            // STUN
+            sipStack.setSTUNServer("numb.viagenie.ca", 3478);
+            sipStack.setSTUNCred("login", "password");
             /* Starts the stack */
             success = sipStack.start();
 
@@ -65,13 +68,17 @@ namespace test
 
             /* Early IMS */
             sipStack.setEarlyIMS(true);
+            /* AMF and Operator Id */
+            sipStack.setAMF("0x00FF");
+            sipStack.setOperatorId("0xFF0000000000000000000000000000FF");
 
-            //sipStack.setAoR("127.0.0.1", 1234);
+            //sipStack.setAoR("127.0.0.1", 1234);            
 
             audioConsumer.setActivate(true);
             audioProducer.setActivate(true);
             videoProducer.setActivate(true);
             videoConsumer.setActivate(true);
+
 
             /* Send REGISTER */
             regSession = new RegistrationSession(sipStack);
@@ -83,9 +90,11 @@ namespace test
 
             Console.ReadLine();
 
-            //String sipUri = sipStack.dnsENUM("E2U+SIP", "+1-800-555-5555", "e164.org");
-           // short port = 0;
+
+            String sipUri = sipStack.dnsENUM("E2U+SIP", "+1-800-555-5555", "e164.org");
+            //ushort port = 0;
             //String ipAddress = sipStack.dnsNaptrSrv("sip2sip.info", "SIP+D2U", out port);
+            //String ipAddress = sipStack.dnsSrv("_sip._udp.sip2sip.info", out port);
 
             callSession = new CallSession(sipStack);
             callSession.set100rel(true);
@@ -113,6 +122,28 @@ namespace test
 
 
             ////Thread.Sleep(2000);
+
+            /*RPData rpdata = SMSEncoder.encodeSubmit(25, "+33160188661", "+33660188661", "salut");
+            if (rpdata != null)
+            {
+                uint pay_len = rpdata.getPayloadLength();
+                if (pay_len > 0)
+                {
+                    byte[] pay = new byte[pay_len];
+                    rpdata.getPayload(pay, (uint)pay.Length);
+
+                    MessagingSession m = new MessagingSession(sipStack);
+                    m.setToUri(String.Format("sip:+33160188661@{0}", REALM));
+                    m.addHeader("Content-Type", "application/vnd.3gpp.sms");
+                    m.addHeader("Transfer-Encoding", "binary");
+                    m.send(pay, (uint)pay.Length);
+
+                    m.Dispose();
+                }
+                rpdata.Dispose();
+            }
+
+            Console.ReadLine();*/
 
             ///* Send SUBSCRIBE(reg) */
             //subSession = new SubscriptionSession(sipStack);

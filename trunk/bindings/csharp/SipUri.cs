@@ -51,4 +51,39 @@ public class SipUri : IDisposable {
     return ret;
   }
 
+  public string getScheme() {
+    string ret = tinyWRAPPINVOKE.SipUri_getScheme(swigCPtr);
+    return ret;
+  }
+
+  public string getHost() {
+    string ret = tinyWRAPPINVOKE.SipUri_getHost(swigCPtr);
+    return ret;
+  }
+
+  public ushort getPort() {
+    ushort ret = tinyWRAPPINVOKE.SipUri_getPort(swigCPtr);
+    return ret;
+  }
+
+  public string getUserName() {
+    string ret = tinyWRAPPINVOKE.SipUri_getUserName(swigCPtr);
+    return ret;
+  }
+
+  public string getPassword() {
+    string ret = tinyWRAPPINVOKE.SipUri_getPassword(swigCPtr);
+    return ret;
+  }
+
+  public string getDisplayName() {
+    string ret = tinyWRAPPINVOKE.SipUri_getDisplayName(swigCPtr);
+    return ret;
+  }
+
+  public string getParamValue(string pname) {
+    string ret = tinyWRAPPINVOKE.SipUri_getParamValue(swigCPtr, pname);
+    return ret;
+  }
+
 }

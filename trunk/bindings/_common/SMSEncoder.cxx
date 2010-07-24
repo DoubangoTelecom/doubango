@@ -21,35 +21,110 @@
 */
 #include "SMSEncoder.h"
 
-#include "tinysip.h" /* SIP/IMS */
-#include "tinysms.h" /* Binary SMS API*/
+// Short description: http://betelco.blogspot.com/2009/10/sms-over-3gpp-ims-network.html
 
-tsk_bool_t is_valid_telnum(const tsip_uri_t* uri);
 
-SMSData* SMSEncoder::encode(const char *smsc, const char *destination, const char *asscii)
+RPData::RPData(twrap_rpdata_type_t _type, tsms_rpdu_data_t* _rp_data)
 {
-	SMSData* encodedData = tsk_null;
-	
-	
+	this->rp_data = (tsms_rpdu_data_t*)tsk_object_ref(_rp_data);
+	this->type = _type;
+	this->tmpBuffer = tsk_null;
+}
 
+RPData::RPData() : 
+	rp_data(tsk_null), 
+	type(twrap_rpdata_type_sms_none),
+	tmpBuffer(tsk_null)
+{
+}
 
-	return encodedData;
+twrap_rpdata_type_t RPData::getType()
+{
+	return this->type;
+}
+
+unsigned RPData::getPayloadLength()
+{
+	if(!this->tmpBuffer){
+		if((this->tmpBuffer = tsk_buffer_create_null())){
+			tsms_rpdu_data_serialize(this->rp_data, this->tmpBuffer);
+		}
+	}
+	return this->tmpBuffer ? this->tmpBuffer->size : 0;
+}
+
+unsigned RPData::getPayload(void* output, unsigned maxsize)
+{
+	unsigned retsize = 0;
+
+	if(!this->tmpBuffer){
+		if((this->tmpBuffer = tsk_buffer_create_null())){
+			tsms_rpdu_data_serialize(this->rp_data, this->tmpBuffer);
+		}
+	}
+	
+	if(output && maxsize && this->tmpBuffer && this->tmpBuffer->data){
+		retsize = (this->tmpBuffer->size > maxsize) ? maxsize : this->tmpBuffer->size;
+		memcpy(output, this->tmpBuffer->data, retsize);
+	}
+	return retsize;
+}
+
+RPData::~RPData()
+{
+	TSK_OBJECT_SAFE_FREE(this->rp_data);
+	TSK_OBJECT_SAFE_FREE(this->tmpBuffer);
 }
 
 
-tsk_bool_t is_valid_telnum(const tsip_uri_t* uri)
+// More information about RP-DATA: http://www.doubango.org/API/tinySMS/group__tsms__rpdu__group.html#tsms_rpdu_group_DATA
+RPData* SMSEncoder::encodeSubmit(int mr, const char *smsc, const char *destination, const char *ascii)
 {
-	tsk_size_t i;
-	tsk_size_t len;
+	int ret;
+	tsk_buffer_t* buffer = tsk_null;
+	tsms_tpdu_submit_t* sms_submit = tsk_null;
+	tsms_rpdu_data_t* rp_data = tsk_null;
 
-	if(!uri || tsk_strnullORempty(uri->user_name)){
-		return tsk_false;
+	RPData* encodedData = tsk_null;
+	
+	if(!smsc || ! destination || !ascii){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
 	}
 
-	for(i = 0, len = tsk_strlen(uri->user_name); i<len; i++){
-		if(uri->user_name[i] != '+' && !isdigit(uri->user_name[i])){
-			return tsk_false;
-		}
+	if(mr<0 || mr>0xFF){
+		TSK_DEBUG_WARN("Invalid Message Reference");
+		mr &= 0xFF;
 	}
-	return tsk_true;
+
+	// create SMS-SUBMIT message
+	if(!(sms_submit = tsms_tpdu_submit_create(mr, (const uint8_t*)smsc, (const uint8_t*)destination))){
+		TSK_DEBUG_ERROR("Failed to create the TPDU SMS-SUBMIT message");
+		goto bail;
+	}
+	// Set content for SMS-SUBMIT
+	if((buffer = tsms_pack_to_7bit(ascii))){
+		ret = tsms_tpdu_submit_set_userdata(sms_submit, buffer, tsms_alpha_7bit);
+		TSK_OBJECT_SAFE_FREE(buffer);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to encode the TPDU SMS-SUBMIT message");
+		goto bail;
+	}
+
+	// create RP-DATA(SMS-SUBMIT)
+	if((rp_data = tsms_rpdu_data_create_mo(mr, (const uint8_t*)smsc, TSMS_TPDU_MESSAGE(sms_submit)))){
+		encodedData = new RPData(twrap_rpdata_type_sms_submit, rp_data);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to create the RP-DATA(SMS-SUBMIT) message");
+		goto bail;
+	}
+	
+bail:
+	TSK_OBJECT_SAFE_FREE(buffer);
+	TSK_OBJECT_SAFE_FREE(sms_submit);
+	TSK_OBJECT_SAFE_FREE(rp_data);
+
+	return encodedData;
 }

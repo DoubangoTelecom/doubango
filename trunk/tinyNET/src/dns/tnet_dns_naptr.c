@@ -71,10 +71,10 @@ static tsk_object_t* tnet_dns_naptr_ctor(tsk_object_t * self, va_list * app)
 		if(rdlength){
 			// ==> DESERIALIZATION
 			/* ORDER */
-			naptr->order = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset)));
+			naptr->order = tnet_ntohs_2(((uint8_t*)data) + offset);
 			offset += 2;
 			/* PREFERENCE */
-			naptr->preference = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset)));
+			naptr->preference = tnet_ntohs_2(((uint8_t*)data) + offset);
 			offset += 2;
 			/* FLAGS */
 			tnet_dns_rr_charstring_deserialize(data, &(naptr->flags), &offset);

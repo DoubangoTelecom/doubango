@@ -48,6 +48,13 @@ unsigned short tnet_htons(unsigned short x)
 	}
 }
 
+/* Memory alignment hack */
+unsigned short tnet_htons_2(const void* px)
+{
+	unsigned short y = TSK_TO_UINT16((const uint8_t*)px);
+	return tnet_htons(y);
+}
+
 /** Converts a 32-bit value from host to TCP/IP network byte order (big-endian).
 * @param x The 32-bit (in host byte order) value to convert.
 * @retval @a x in TCP/IP network byte order.
@@ -63,6 +70,13 @@ unsigned long tnet_htonl(unsigned long x)
 						(((uint32_t)(x) & 0x0000ff00) << 8)		| \
 						(((uint32_t)(x) & 0x000000ff) << 24));
 	}
+}
+
+/* Memory alignment hack */
+unsigned long tnet_htonl_2(const void* px)
+{
+	unsigned long y = TSK_TO_UINT32((const uint8_t*)px);
+	return tnet_htonl(y);
 }
 
 /** Indicates whether we are on a Big Endian host or not.<br>

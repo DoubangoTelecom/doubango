@@ -164,17 +164,17 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 		tv.tv_sec += rto/1000;
 		tv.tv_usec += (rto% 1000) * 1000;
 		
-		ret = tnet_sockfd_sendto(localFD, server, buffer->data, buffer->size);
-		
 		FD_ZERO(&set);
 		FD_SET(localFD, &set);
+
+		ret = tnet_sockfd_sendto(localFD, server, buffer->data, buffer->size);
 
 		if((ret = select(localFD+1, &set, NULL, NULL, &tv))<0){
 			goto bail;
 		}
 		else if(ret == 0){
 		/* timeout */
-
+			TSK_DEBUG_INFO("STUN request timedout at %d", i);
 			rto *= 2;
 			continue;
 		}
@@ -184,11 +184,18 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 			tsk_size_t len = 0;
 			void* data = 0;
 
+			TSK_DEBUG_INFO("STUN request got response");
+
 			/* Check how how many bytes are pending */
 			if((ret = tnet_ioctlt(localFD, FIONREAD, &len))<0){
 				goto bail;
 			}
 			
+			if(len==0){
+				TSK_DEBUG_INFO("tnet_ioctlt() returent zero bytes");
+				continue;
+			}
+
 			/* Receive pending data */
 			data = tsk_calloc(len, sizeof(uint8_t));
 			if((ret = tnet_sockfd_recvfrom(localFD, data, len, 0, server))<0){

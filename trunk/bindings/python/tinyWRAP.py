@@ -99,6 +99,13 @@ class SipUri(_object):
     __swig_destroy__ = _tinyWRAP.delete_SipUri
     __del__ = lambda self : None;
     def isValid(self, *args): return _tinyWRAP.SipUri_isValid(self, *args)
+    def getScheme(self): return _tinyWRAP.SipUri_getScheme(self)
+    def getHost(self): return _tinyWRAP.SipUri_getHost(self)
+    def getPort(self): return _tinyWRAP.SipUri_getPort(self)
+    def getUserName(self): return _tinyWRAP.SipUri_getUserName(self)
+    def getPassword(self): return _tinyWRAP.SipUri_getPassword(self)
+    def getDisplayName(self): return _tinyWRAP.SipUri_getDisplayName(self)
+    def getParamValue(self, *args): return _tinyWRAP.SipUri_getParamValue(self, *args)
 SipUri_swigregister = _tinyWRAP.SipUri_swigregister
 SipUri_swigregister(SipUri)
 
@@ -634,6 +641,8 @@ class SipStack(SafeObject):
     def setIMPI(self, *args): return _tinyWRAP.SipStack_setIMPI(self, *args)
     def setIMPU(self, *args): return _tinyWRAP.SipStack_setIMPU(self, *args)
     def setPassword(self, *args): return _tinyWRAP.SipStack_setPassword(self, *args)
+    def setAMF(self, *args): return _tinyWRAP.SipStack_setAMF(self, *args)
+    def setOperatorId(self, *args): return _tinyWRAP.SipStack_setOperatorId(self, *args)
     def setProxyCSCF(self, *args): return _tinyWRAP.SipStack_setProxyCSCF(self, *args)
     def setLocalIP(self, *args): return _tinyWRAP.SipStack_setLocalIP(self, *args)
     def setLocalPort(self, *args): return _tinyWRAP.SipStack_setLocalPort(self, *args)
@@ -642,8 +651,11 @@ class SipStack(SafeObject):
     def removeHeader(self, *args): return _tinyWRAP.SipStack_removeHeader(self, *args)
     def addDnsServer(self, *args): return _tinyWRAP.SipStack_addDnsServer(self, *args)
     def setAoR(self, *args): return _tinyWRAP.SipStack_setAoR(self, *args)
+    def setSTUNServer(self, *args): return _tinyWRAP.SipStack_setSTUNServer(self, *args)
+    def setSTUNCred(self, *args): return _tinyWRAP.SipStack_setSTUNCred(self, *args)
     def dnsENUM(self, *args): return _tinyWRAP.SipStack_dnsENUM(self, *args)
     def dnsNaptrSrv(self, *args): return _tinyWRAP.SipStack_dnsNaptrSrv(self, *args)
+    def dnsSrv(self, *args): return _tinyWRAP.SipStack_dnsSrv(self, *args)
     def isValid(self): return _tinyWRAP.SipStack_isValid(self)
     def stop(self): return _tinyWRAP.SipStack_stop(self)
     __swig_getmethods__["setCodecs"] = lambda x: _tinyWRAP.SipStack_setCodecs
@@ -706,6 +718,7 @@ tsip_ao_request = _tinyWRAP.tsip_ao_request
 tsip_o_ect_ok = _tinyWRAP.tsip_o_ect_ok
 tsip_o_ect_nok = _tinyWRAP.tsip_o_ect_nok
 tsip_i_ect = _tinyWRAP.tsip_i_ect
+tsip_m_early_media = _tinyWRAP.tsip_m_early_media
 tsip_m_local_hold_ok = _tinyWRAP.tsip_m_local_hold_ok
 tsip_m_local_hold_nok = _tinyWRAP.tsip_m_local_hold_nok
 tsip_m_local_resume_ok = _tinyWRAP.tsip_m_local_resume_ok
@@ -736,6 +749,9 @@ tdav_codec_id_ilbc = _tinyWRAP.tdav_codec_id_ilbc
 tdav_codec_id_speex_nb = _tinyWRAP.tdav_codec_id_speex_nb
 tdav_codec_id_speex_wb = _tinyWRAP.tdav_codec_id_speex_wb
 tdav_codec_id_speex_uwb = _tinyWRAP.tdav_codec_id_speex_uwb
+tdav_codec_id_bv16 = _tinyWRAP.tdav_codec_id_bv16
+tdav_codec_id_bv32 = _tinyWRAP.tdav_codec_id_bv32
+tdav_codec_id_evrc = _tinyWRAP.tdav_codec_id_evrc
 tdav_codec_id_h261 = _tinyWRAP.tdav_codec_id_h261
 tdav_codec_id_h263 = _tinyWRAP.tdav_codec_id_h263
 tdav_codec_id_h263p = _tinyWRAP.tdav_codec_id_h263p
@@ -855,5 +871,46 @@ thttp_event_message = _tinyWRAP.thttp_event_message
 thttp_event_auth_failed = _tinyWRAP.thttp_event_auth_failed
 thttp_event_closed = _tinyWRAP.thttp_event_closed
 thttp_event_transport_error = _tinyWRAP.thttp_event_transport_error
+twrap_rpdata_type_sms_none = _tinyWRAP.twrap_rpdata_type_sms_none
+twrap_rpdata_type_sms_submit = _tinyWRAP.twrap_rpdata_type_sms_submit
+twrap_rpdata_type_sms_deliver = _tinyWRAP.twrap_rpdata_type_sms_deliver
+twrap_rpdata_type_sms_status_report = _tinyWRAP.twrap_rpdata_type_sms_status_report
+twrap_rpdata_type_sms_command = _tinyWRAP.twrap_rpdata_type_sms_command
+class RPData(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, RPData, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, RPData, name)
+    __repr__ = _swig_repr
+    def __init__(self): 
+        this = _tinyWRAP.new_RPData()
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_RPData
+    __del__ = lambda self : None;
+    def getType(self): return _tinyWRAP.RPData_getType(self)
+    def getPayloadLength(self): return _tinyWRAP.RPData_getPayloadLength(self)
+    def getPayload(self, *args): return _tinyWRAP.RPData_getPayload(self, *args)
+RPData_swigregister = _tinyWRAP.RPData_swigregister
+RPData_swigregister(RPData)
+
+class SMSEncoder(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, SMSEncoder, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, SMSEncoder, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_getmethods__["encodeSubmit"] = lambda x: _tinyWRAP.SMSEncoder_encodeSubmit
+    if _newclass:encodeSubmit = staticmethod(_tinyWRAP.SMSEncoder_encodeSubmit)
+    __swig_destroy__ = _tinyWRAP.delete_SMSEncoder
+    __del__ = lambda self : None;
+SMSEncoder_swigregister = _tinyWRAP.SMSEncoder_swigregister
+SMSEncoder_swigregister(SMSEncoder)
+
+def SMSEncoder_encodeSubmit(*args):
+  return _tinyWRAP.SMSEncoder_encodeSubmit(*args)
+SMSEncoder_encodeSubmit = _tinyWRAP.SMSEncoder_encodeSubmit
+
 
 

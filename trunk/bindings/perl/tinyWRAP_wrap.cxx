@@ -1510,40 +1510,43 @@ SWIG_Perl_SetModule(swig_module_info *module) {
 #define SWIGTYPE_p_ProxyVideoProducer swig_types[12]
 #define SWIGTYPE_p_PublicationEvent swig_types[13]
 #define SWIGTYPE_p_PublicationSession swig_types[14]
-#define SWIGTYPE_p_RegistrationEvent swig_types[15]
-#define SWIGTYPE_p_RegistrationSession swig_types[16]
-#define SWIGTYPE_p_SafeObject swig_types[17]
-#define SWIGTYPE_p_SipCallback swig_types[18]
-#define SWIGTYPE_p_SipEvent swig_types[19]
-#define SWIGTYPE_p_SipMessage swig_types[20]
-#define SWIGTYPE_p_SipSession swig_types[21]
-#define SWIGTYPE_p_SipStack swig_types[22]
-#define SWIGTYPE_p_SipUri swig_types[23]
-#define SWIGTYPE_p_StackEvent swig_types[24]
-#define SWIGTYPE_p_SubscriptionEvent swig_types[25]
-#define SWIGTYPE_p_SubscriptionSession swig_types[26]
-#define SWIGTYPE_p_XcapCallback swig_types[27]
-#define SWIGTYPE_p_XcapEvent swig_types[28]
-#define SWIGTYPE_p_XcapMessage swig_types[29]
-#define SWIGTYPE_p_XcapSelector swig_types[30]
-#define SWIGTYPE_p_XcapStack swig_types[31]
-#define SWIGTYPE_p_char swig_types[32]
-#define SWIGTYPE_p_short swig_types[33]
-#define SWIGTYPE_p_tdav_codec_id_e swig_types[34]
-#define SWIGTYPE_p_thttp_event_type_e swig_types[35]
-#define SWIGTYPE_p_tmedia_chroma_e swig_types[36]
-#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[37]
-#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[38]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[39]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[40]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[41]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[42]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[43]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[44]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[45]
-#define SWIGTYPE_p_tsk_list_t swig_types[46]
-static swig_type_info *swig_types[48];
-static swig_module_info swig_module = {swig_types, 47, 0, 0, 0, 0};
+#define SWIGTYPE_p_RPData swig_types[15]
+#define SWIGTYPE_p_RegistrationEvent swig_types[16]
+#define SWIGTYPE_p_RegistrationSession swig_types[17]
+#define SWIGTYPE_p_SMSEncoder swig_types[18]
+#define SWIGTYPE_p_SafeObject swig_types[19]
+#define SWIGTYPE_p_SipCallback swig_types[20]
+#define SWIGTYPE_p_SipEvent swig_types[21]
+#define SWIGTYPE_p_SipMessage swig_types[22]
+#define SWIGTYPE_p_SipSession swig_types[23]
+#define SWIGTYPE_p_SipStack swig_types[24]
+#define SWIGTYPE_p_SipUri swig_types[25]
+#define SWIGTYPE_p_StackEvent swig_types[26]
+#define SWIGTYPE_p_SubscriptionEvent swig_types[27]
+#define SWIGTYPE_p_SubscriptionSession swig_types[28]
+#define SWIGTYPE_p_XcapCallback swig_types[29]
+#define SWIGTYPE_p_XcapEvent swig_types[30]
+#define SWIGTYPE_p_XcapMessage swig_types[31]
+#define SWIGTYPE_p_XcapSelector swig_types[32]
+#define SWIGTYPE_p_XcapStack swig_types[33]
+#define SWIGTYPE_p_char swig_types[34]
+#define SWIGTYPE_p_tdav_codec_id_e swig_types[35]
+#define SWIGTYPE_p_thttp_event_type_e swig_types[36]
+#define SWIGTYPE_p_tmedia_chroma_e swig_types[37]
+#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[38]
+#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[39]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[40]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[41]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[42]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[43]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[44]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[45]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[46]
+#define SWIGTYPE_p_tsk_list_t swig_types[47]
+#define SWIGTYPE_p_twrap_rpdata_type_e swig_types[48]
+#define SWIGTYPE_p_unsigned_short swig_types[49]
+static swig_type_info *swig_types[51];
+static swig_module_info swig_module = {swig_types, 50, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -1680,14 +1683,24 @@ SWIG_From_bool  SWIG_PERL_DECL_ARGS_1(bool value)
 }
 
 
-#include <limits.h>
-#if !defined(SWIG_NO_LLONG_MAX)
-# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
-#   define LLONG_MAX __LONG_LONG_MAX__
-#   define LLONG_MIN (-LLONG_MAX - 1LL)
-#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
-# endif
-#endif
+SWIGINTERNINLINE SV *
+SWIG_FromCharPtrAndSize(const char* carray, size_t size)
+{
+  SV *obj = sv_newmortal();
+  if (carray) {
+    sv_setpvn(obj, carray, size);
+  } else {
+    sv_setsv(obj, &PL_sv_undef);
+  }
+  return obj;
+}
+
+
+SWIGINTERNINLINE SV * 
+SWIG_FromCharPtr(const char *cptr)
+{ 
+  return SWIG_FromCharPtrAndSize(cptr, (cptr ? strlen(cptr) : 0));
+}
 
 
 SWIGINTERN int
@@ -1717,6 +1730,32 @@ SWIG_AsVal_double SWIG_PERL_DECL_ARGS_2(SV *obj, double *val)
   }
   return SWIG_TypeError;
 }
+
+
+SWIGINTERNINLINE SV *
+SWIG_From_unsigned_SS_long  SWIG_PERL_DECL_ARGS_1(unsigned long value)
+{    
+  SV *obj = sv_newmortal();
+  sv_setuv(obj, (UV) value);
+  return obj;
+}
+
+
+SWIGINTERNINLINE SV *
+SWIG_From_unsigned_SS_short  SWIG_PERL_DECL_ARGS_1(unsigned short value)
+{    
+  return SWIG_From_unsigned_SS_long  SWIG_PERL_CALL_ARGS_1(value);
+}
+
+
+#include <limits.h>
+#if !defined(SWIG_NO_LLONG_MAX)
+# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
+#   define LLONG_MAX __LONG_LONG_MAX__
+#   define LLONG_MIN (-LLONG_MAX - 1LL)
+#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
+# endif
+#endif
 
 
 #include <float.h>
@@ -1817,35 +1856,6 @@ SWIG_AsVal_unsigned_SS_int SWIG_PERL_DECL_ARGS_2(SV * obj, unsigned int *val)
 
 
 SWIGINTERNINLINE SV *
-SWIG_FromCharPtrAndSize(const char* carray, size_t size)
-{
-  SV *obj = sv_newmortal();
-  if (carray) {
-    sv_setpvn(obj, carray, size);
-  } else {
-    sv_setsv(obj, &PL_sv_undef);
-  }
-  return obj;
-}
-
-
-SWIGINTERNINLINE SV * 
-SWIG_FromCharPtr(const char *cptr)
-{ 
-  return SWIG_FromCharPtrAndSize(cptr, (cptr ? strlen(cptr) : 0));
-}
-
-
-SWIGINTERNINLINE SV *
-SWIG_From_unsigned_SS_long  SWIG_PERL_DECL_ARGS_1(unsigned long value)
-{    
-  SV *obj = sv_newmortal();
-  sv_setuv(obj, (UV) value);
-  return obj;
-}
-
-
-SWIGINTERNINLINE SV *
 SWIG_From_unsigned_SS_int  SWIG_PERL_DECL_ARGS_1(unsigned int value)
 {    
   return SWIG_From_unsigned_SS_long  SWIG_PERL_CALL_ARGS_1(value);
@@ -1929,7 +1939,26 @@ SWIG_AsVal_int SWIG_PERL_DECL_ARGS_2(SV * obj, int *val)
 }
 
 
+SWIGINTERN int
+SWIG_AsVal_unsigned_SS_short SWIG_PERL_DECL_ARGS_2(SV * obj, unsigned short *val)
+{
+  unsigned long v;
+  int res = SWIG_AsVal_unsigned_SS_long SWIG_PERL_CALL_ARGS_2(obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v > USHRT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< unsigned short >(v);
+    }
+  }  
+  return res;
+}
+
+
 #include "Xcap.h"
+
+
+#include "SMSEncoder.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -2332,6 +2361,213 @@ XS(_wrap_SipUri_isValid) {
   
   croak("No matching function for overloaded 'SipUri_isValid'");
   XSRETURN(0);
+}
+
+
+XS(_wrap_SipUri_getScheme) {
+  {
+    SipUri *arg1 = (SipUri *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: SipUri_getScheme(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipUri, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipUri_getScheme" "', argument " "1"" of type '" "SipUri *""'"); 
+    }
+    arg1 = reinterpret_cast< SipUri * >(argp1);
+    result = (char *)(arg1)->getScheme();
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipUri_getHost) {
+  {
+    SipUri *arg1 = (SipUri *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: SipUri_getHost(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipUri, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipUri_getHost" "', argument " "1"" of type '" "SipUri *""'"); 
+    }
+    arg1 = reinterpret_cast< SipUri * >(argp1);
+    result = (char *)(arg1)->getHost();
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipUri_getPort) {
+  {
+    SipUri *arg1 = (SipUri *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    unsigned short result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: SipUri_getPort(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipUri, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipUri_getPort" "', argument " "1"" of type '" "SipUri *""'"); 
+    }
+    arg1 = reinterpret_cast< SipUri * >(argp1);
+    result = (unsigned short)(arg1)->getPort();
+    ST(argvi) = SWIG_From_unsigned_SS_short  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned short >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipUri_getUserName) {
+  {
+    SipUri *arg1 = (SipUri *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: SipUri_getUserName(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipUri, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipUri_getUserName" "', argument " "1"" of type '" "SipUri *""'"); 
+    }
+    arg1 = reinterpret_cast< SipUri * >(argp1);
+    result = (char *)(arg1)->getUserName();
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipUri_getPassword) {
+  {
+    SipUri *arg1 = (SipUri *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: SipUri_getPassword(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipUri, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipUri_getPassword" "', argument " "1"" of type '" "SipUri *""'"); 
+    }
+    arg1 = reinterpret_cast< SipUri * >(argp1);
+    result = (char *)(arg1)->getPassword();
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipUri_getDisplayName) {
+  {
+    SipUri *arg1 = (SipUri *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: SipUri_getDisplayName(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipUri, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipUri_getDisplayName" "', argument " "1"" of type '" "SipUri *""'"); 
+    }
+    arg1 = reinterpret_cast< SipUri * >(argp1);
+    result = (char *)(arg1)->getDisplayName();
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipUri_getParamValue) {
+  {
+    SipUri *arg1 = (SipUri *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: SipUri_getParamValue(self,pname);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipUri, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipUri_getParamValue" "', argument " "1"" of type '" "SipUri *""'"); 
+    }
+    arg1 = reinterpret_cast< SipUri * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipUri_getParamValue" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (char *)(arg1)->getParamValue((char const *)arg2);
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
 }
 
 
@@ -7284,11 +7520,89 @@ XS(_wrap_SipStack_setPassword) {
 }
 
 
+XS(_wrap_SipStack_setAMF) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: SipStack_setAMF(self,amf);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setAMF" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setAMF" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (bool)(arg1)->setAMF((char const *)arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipStack_setOperatorId) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: SipStack_setOperatorId(self,opid);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setOperatorId" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setOperatorId" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (bool)(arg1)->setOperatorId((char const *)arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_SipStack_setProxyCSCF) {
   {
     SipStack *arg1 = (SipStack *) 0 ;
     char *arg2 = (char *) 0 ;
-    unsigned int arg3 ;
+    unsigned short arg3 ;
     char *arg4 = (char *) 0 ;
     char *arg5 = (char *) 0 ;
     void *argp1 = 0 ;
@@ -7296,7 +7610,7 @@ XS(_wrap_SipStack_setProxyCSCF) {
     int res2 ;
     char *buf2 = 0 ;
     int alloc2 = 0 ;
-    unsigned int val3 ;
+    unsigned short val3 ;
     int ecode3 = 0 ;
     int res4 ;
     char *buf4 = 0 ;
@@ -7321,11 +7635,11 @@ XS(_wrap_SipStack_setProxyCSCF) {
       SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setProxyCSCF" "', argument " "2"" of type '" "char const *""'");
     }
     arg2 = reinterpret_cast< char * >(buf2);
-    ecode3 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    ecode3 = SWIG_AsVal_unsigned_SS_short SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
     if (!SWIG_IsOK(ecode3)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "SipStack_setProxyCSCF" "', argument " "3"" of type '" "unsigned int""'");
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "SipStack_setProxyCSCF" "', argument " "3"" of type '" "unsigned short""'");
     } 
-    arg3 = static_cast< unsigned int >(val3);
+    arg3 = static_cast< unsigned short >(val3);
     res4 = SWIG_AsCharPtrAndSize(ST(3), &buf4, NULL, &alloc4);
     if (!SWIG_IsOK(res4)) {
       SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SipStack_setProxyCSCF" "', argument " "4"" of type '" "char const *""'");
@@ -7397,10 +7711,10 @@ XS(_wrap_SipStack_setLocalIP) {
 XS(_wrap_SipStack_setLocalPort) {
   {
     SipStack *arg1 = (SipStack *) 0 ;
-    unsigned int arg2 ;
+    unsigned short arg2 ;
     void *argp1 = 0 ;
     int res1 = 0 ;
-    unsigned int val2 ;
+    unsigned short val2 ;
     int ecode2 = 0 ;
     int argvi = 0;
     bool result;
@@ -7414,11 +7728,11 @@ XS(_wrap_SipStack_setLocalPort) {
       SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setLocalPort" "', argument " "1"" of type '" "SipStack *""'"); 
     }
     arg1 = reinterpret_cast< SipStack * >(argp1);
-    ecode2 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    ecode2 = SWIG_AsVal_unsigned_SS_short SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
     if (!SWIG_IsOK(ecode2)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SipStack_setLocalPort" "', argument " "2"" of type '" "unsigned int""'");
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SipStack_setLocalPort" "', argument " "2"" of type '" "unsigned short""'");
     } 
-    arg2 = static_cast< unsigned int >(val2);
+    arg2 = static_cast< unsigned short >(val2);
     result = (bool)(arg1)->setLocalPort(arg2);
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     
@@ -7647,6 +7961,105 @@ XS(_wrap_SipStack_setAoR) {
 }
 
 
+XS(_wrap_SipStack_setSTUNServer) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    unsigned short arg3 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    unsigned short val3 ;
+    int ecode3 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 3) || (items > 3)) {
+      SWIG_croak("Usage: SipStack_setSTUNServer(self,ip,port);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setSTUNServer" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setSTUNServer" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    ecode3 = SWIG_AsVal_unsigned_SS_short SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "SipStack_setSTUNServer" "', argument " "3"" of type '" "unsigned short""'");
+    } 
+    arg3 = static_cast< unsigned short >(val3);
+    result = (bool)(arg1)->setSTUNServer((char const *)arg2,arg3);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipStack_setSTUNCred) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    char *arg3 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 3) || (items > 3)) {
+      SWIG_croak("Usage: SipStack_setSTUNCred(self,login,password);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setSTUNCred" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setSTUNCred" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_setSTUNCred" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = reinterpret_cast< char * >(buf3);
+    result = (bool)(arg1)->setSTUNCred((char const *)arg2,(char const *)arg3);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_SipStack_dnsENUM) {
   {
     SipStack *arg1 = (SipStack *) 0 ;
@@ -7714,7 +8127,7 @@ XS(_wrap_SipStack_dnsNaptrSrv) {
     SipStack *arg1 = (SipStack *) 0 ;
     char *arg2 = (char *) 0 ;
     char *arg3 = (char *) 0 ;
-    short *arg4 = (short *) 0 ;
+    unsigned short *arg4 = (unsigned short *) 0 ;
     void *argp1 = 0 ;
     int res1 = 0 ;
     int res2 ;
@@ -7723,7 +8136,7 @@ XS(_wrap_SipStack_dnsNaptrSrv) {
     int res3 ;
     char *buf3 = 0 ;
     int alloc3 = 0 ;
-    short temp4 ;
+    unsigned short temp4 ;
     int res4 = SWIG_TMPOBJ ;
     int argvi = 0;
     char *result = 0 ;
@@ -7751,10 +8164,10 @@ XS(_wrap_SipStack_dnsNaptrSrv) {
     result = (char *)(arg1)->dnsNaptrSrv((char const *)arg2,(char const *)arg3,arg4);
     ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
     if (SWIG_IsTmpObj(res4)) {
-      if (argvi >= items) EXTEND(sp,1);  ST(argvi) = SWIG_From_short  SWIG_PERL_CALL_ARGS_1((*arg4)); argvi++  ;
+      if (argvi >= items) EXTEND(sp,1);  ST(argvi) = SWIG_From_unsigned_SS_short  SWIG_PERL_CALL_ARGS_1((*arg4)); argvi++  ;
     } else {
       int new_flags = SWIG_IsNewObj(res4) ? (SWIG_POINTER_OWN | 0) : 0;
-      if (argvi >= items) EXTEND(sp,1);  ST(argvi) = SWIG_NewPointerObj((void*)(arg4), SWIGTYPE_p_short, new_flags); argvi++  ;
+      if (argvi >= items) EXTEND(sp,1);  ST(argvi) = SWIG_NewPointerObj((void*)(arg4), SWIGTYPE_p_unsigned_short, new_flags); argvi++  ;
     }
     
     if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
@@ -7766,6 +8179,58 @@ XS(_wrap_SipStack_dnsNaptrSrv) {
     
     if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
     if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipStack_dnsSrv) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    unsigned short *arg3 = (unsigned short *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    unsigned short temp3 ;
+    int res3 = SWIG_TMPOBJ ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    arg3 = &temp3;
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: SipStack_dnsSrv(self,service);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_dnsSrv" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_dnsSrv" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (char *)(arg1)->dnsSrv((char const *)arg2,arg3);
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    if (SWIG_IsTmpObj(res3)) {
+      if (argvi >= items) EXTEND(sp,1);  ST(argvi) = SWIG_From_unsigned_SS_short  SWIG_PERL_CALL_ARGS_1((*arg3)); argvi++  ;
+    } else {
+      int new_flags = SWIG_IsNewObj(res3) ? (SWIG_POINTER_OWN | 0) : 0;
+      if (argvi >= items) EXTEND(sp,1);  ST(argvi) = SWIG_NewPointerObj((void*)(arg3), SWIGTYPE_p_unsigned_short, new_flags); argvi++  ;
+    }
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    
+    delete[] result;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
     
     SWIG_croak_null();
   }
@@ -9513,6 +9978,241 @@ XS(_wrap_XcapStack_stop) {
 }
 
 
+XS(_wrap_new_RPData) {
+  {
+    int argvi = 0;
+    RPData *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: new_RPData();");
+    }
+    result = (RPData *)new RPData();
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RPData, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_delete_RPData) {
+  {
+    RPData *arg1 = (RPData *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: delete_RPData(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_RPData, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_RPData" "', argument " "1"" of type '" "RPData *""'"); 
+    }
+    arg1 = reinterpret_cast< RPData * >(argp1);
+    delete arg1;
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_RPData_getType) {
+  {
+    RPData *arg1 = (RPData *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    twrap_rpdata_type_t result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: RPData_getType(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_RPData, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RPData_getType" "', argument " "1"" of type '" "RPData *""'"); 
+    }
+    arg1 = reinterpret_cast< RPData * >(argp1);
+    result = (twrap_rpdata_type_t)(arg1)->getType();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_RPData_getPayloadLength) {
+  {
+    RPData *arg1 = (RPData *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    unsigned int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: RPData_getPayloadLength(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_RPData, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RPData_getPayloadLength" "', argument " "1"" of type '" "RPData *""'"); 
+    }
+    arg1 = reinterpret_cast< RPData * >(argp1);
+    result = (unsigned int)(arg1)->getPayloadLength();
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_RPData_getPayload) {
+  {
+    RPData *arg1 = (RPData *) 0 ;
+    void *arg2 = (void *) 0 ;
+    unsigned int arg3 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    unsigned int val3 ;
+    int ecode3 = 0 ;
+    int argvi = 0;
+    unsigned int result;
+    dXSARGS;
+    
+    if ((items < 3) || (items > 3)) {
+      SWIG_croak("Usage: RPData_getPayload(self,output,maxsize);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_RPData, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RPData_getPayload" "', argument " "1"" of type '" "RPData *""'"); 
+    }
+    arg1 = reinterpret_cast< RPData * >(argp1);
+    res2 = SWIG_ConvertPtr(ST(1),SWIG_as_voidptrptr(&arg2), 0, 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RPData_getPayload" "', argument " "2"" of type '" "void *""'"); 
+    }
+    ecode3 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "RPData_getPayload" "', argument " "3"" of type '" "unsigned int""'");
+    } 
+    arg3 = static_cast< unsigned int >(val3);
+    result = (unsigned int)(arg1)->getPayload(arg2,arg3);
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SMSEncoder_encodeSubmit) {
+  {
+    int arg1 ;
+    char *arg2 = (char *) 0 ;
+    char *arg3 = (char *) 0 ;
+    char *arg4 = (char *) 0 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    int res4 ;
+    char *buf4 = 0 ;
+    int alloc4 = 0 ;
+    int argvi = 0;
+    RPData *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: SMSEncoder_encodeSubmit(mr,smsc,destination,ascii);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "SMSEncoder_encodeSubmit" "', argument " "1"" of type '" "int""'");
+    } 
+    arg1 = static_cast< int >(val1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SMSEncoder_encodeSubmit" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SMSEncoder_encodeSubmit" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = reinterpret_cast< char * >(buf3);
+    res4 = SWIG_AsCharPtrAndSize(ST(3), &buf4, NULL, &alloc4);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SMSEncoder_encodeSubmit" "', argument " "4"" of type '" "char const *""'");
+    }
+    arg4 = reinterpret_cast< char * >(buf4);
+    result = (RPData *)SMSEncoder::encodeSubmit(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RPData, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_delete_SMSEncoder) {
+  {
+    SMSEncoder *arg1 = (SMSEncoder *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: delete_SMSEncoder(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SMSEncoder, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_SMSEncoder" "', argument " "1"" of type '" "SMSEncoder *""'"); 
+    }
+    arg1 = reinterpret_cast< SMSEncoder * >(argp1);
+    delete arg1;
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
@@ -9576,8 +10276,10 @@ static swig_type_info _swigt__p_ProxyVideoFrame = {"_p_ProxyVideoFrame", "ProxyV
 static swig_type_info _swigt__p_ProxyVideoProducer = {"_p_ProxyVideoProducer", "ProxyVideoProducer *", 0, 0, (void*)"tinyWRAP::ProxyVideoProducer", 0};
 static swig_type_info _swigt__p_PublicationEvent = {"_p_PublicationEvent", "PublicationEvent *", 0, 0, (void*)"tinyWRAP::PublicationEvent", 0};
 static swig_type_info _swigt__p_PublicationSession = {"_p_PublicationSession", "PublicationSession *", 0, 0, (void*)"tinyWRAP::PublicationSession", 0};
+static swig_type_info _swigt__p_RPData = {"_p_RPData", "RPData *", 0, 0, (void*)"tinyWRAP::RPData", 0};
 static swig_type_info _swigt__p_RegistrationEvent = {"_p_RegistrationEvent", "RegistrationEvent *", 0, 0, (void*)"tinyWRAP::RegistrationEvent", 0};
 static swig_type_info _swigt__p_RegistrationSession = {"_p_RegistrationSession", "RegistrationSession *", 0, 0, (void*)"tinyWRAP::RegistrationSession", 0};
+static swig_type_info _swigt__p_SMSEncoder = {"_p_SMSEncoder", "SMSEncoder *", 0, 0, (void*)"tinyWRAP::SMSEncoder", 0};
 static swig_type_info _swigt__p_SafeObject = {"_p_SafeObject", "SafeObject *", 0, 0, (void*)"tinyWRAP::SafeObject", 0};
 static swig_type_info _swigt__p_SipCallback = {"_p_SipCallback", "SipCallback *", 0, 0, (void*)"tinyWRAP::SipCallback", 0};
 static swig_type_info _swigt__p_SipEvent = {"_p_SipEvent", "SipEvent *", 0, 0, (void*)"tinyWRAP::SipEvent", 0};
@@ -9594,7 +10296,6 @@ static swig_type_info _swigt__p_XcapMessage = {"_p_XcapMessage", "XcapMessage *"
 static swig_type_info _swigt__p_XcapSelector = {"_p_XcapSelector", "XcapSelector *", 0, 0, (void*)"tinyWRAP::XcapSelector", 0};
 static swig_type_info _swigt__p_XcapStack = {"_p_XcapStack", "XcapStack *", 0, 0, (void*)"tinyWRAP::XcapStack", 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_short = {"_p_short", "short *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tdav_codec_id_e = {"_p_tdav_codec_id_e", "enum tdav_codec_id_e *|tdav_codec_id_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_thttp_event_type_e = {"_p_thttp_event_type_e", "enum thttp_event_type_e *|thttp_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_chroma_e = {"_p_tmedia_chroma_e", "tmedia_chroma_t *|enum tmedia_chroma_e *", 0, 0, (void*)0, 0};
@@ -9608,6 +10309,8 @@ static swig_type_info _swigt__p_tsip_publish_event_type_e = {"_p_tsip_publish_ev
 static swig_type_info _swigt__p_tsip_register_event_type_e = {"_p_tsip_register_event_type_e", "enum tsip_register_event_type_e *|tsip_register_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_subscribe_event_type_e = {"_p_tsip_subscribe_event_type_e", "enum tsip_subscribe_event_type_e *|tsip_subscribe_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsk_list_t = {"_p_tsk_list_t", "twrap_xcap_steps_L_t *|tsk_list_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_twrap_rpdata_type_e = {"_p_twrap_rpdata_type_e", "enum twrap_rpdata_type_e *|twrap_rpdata_type_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_unsigned_short = {"_p_unsigned_short", "unsigned short *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_CallEvent,
@@ -9625,8 +10328,10 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_ProxyVideoProducer,
   &_swigt__p_PublicationEvent,
   &_swigt__p_PublicationSession,
+  &_swigt__p_RPData,
   &_swigt__p_RegistrationEvent,
   &_swigt__p_RegistrationSession,
+  &_swigt__p_SMSEncoder,
   &_swigt__p_SafeObject,
   &_swigt__p_SipCallback,
   &_swigt__p_SipEvent,
@@ -9643,7 +10348,6 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_XcapSelector,
   &_swigt__p_XcapStack,
   &_swigt__p_char,
-  &_swigt__p_short,
   &_swigt__p_tdav_codec_id_e,
   &_swigt__p_thttp_event_type_e,
   &_swigt__p_tmedia_chroma_e,
@@ -9657,6 +10361,8 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_tsip_register_event_type_e,
   &_swigt__p_tsip_subscribe_event_type_e,
   &_swigt__p_tsk_list_t,
+  &_swigt__p_twrap_rpdata_type_e,
+  &_swigt__p_unsigned_short,
 };
 
 static swig_cast_info _swigc__p_CallEvent[] = {  {&_swigt__p_CallEvent, 0, 0, 0},{0, 0, 0, 0}};
@@ -9674,8 +10380,10 @@ static swig_cast_info _swigc__p_ProxyVideoFrame[] = {  {&_swigt__p_ProxyVideoFra
 static swig_cast_info _swigc__p_ProxyVideoProducer[] = {  {&_swigt__p_ProxyVideoProducer, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationEvent[] = {  {&_swigt__p_PublicationEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationSession[] = {  {&_swigt__p_PublicationSession, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_RPData[] = {  {&_swigt__p_RPData, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_RegistrationEvent[] = {  {&_swigt__p_RegistrationEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_RegistrationSession[] = {  {&_swigt__p_RegistrationSession, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_SMSEncoder[] = {  {&_swigt__p_SMSEncoder, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SafeObject[] = {  {&_swigt__p_SipStack, _p_SipStackTo_p_SafeObject, 0, 0},  {&_swigt__p_SafeObject, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipCallback[] = {  {&_swigt__p_SipCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipEvent[] = {  {&_swigt__p_SipEvent, 0, 0, 0},  {&_swigt__p_CallEvent, _p_CallEventTo_p_SipEvent, 0, 0},  {&_swigt__p_OptionsEvent, _p_OptionsEventTo_p_SipEvent, 0, 0},  {&_swigt__p_DialogEvent, _p_DialogEventTo_p_SipEvent, 0, 0},  {&_swigt__p_PublicationEvent, _p_PublicationEventTo_p_SipEvent, 0, 0},  {&_swigt__p_RegistrationEvent, _p_RegistrationEventTo_p_SipEvent, 0, 0},  {&_swigt__p_SubscriptionEvent, _p_SubscriptionEventTo_p_SipEvent, 0, 0},  {&_swigt__p_StackEvent, _p_StackEventTo_p_SipEvent, 0, 0},  {&_swigt__p_MessagingEvent, _p_MessagingEventTo_p_SipEvent, 0, 0},{0, 0, 0, 0}};
@@ -9692,7 +10400,6 @@ static swig_cast_info _swigc__p_XcapMessage[] = {  {&_swigt__p_XcapMessage, 0, 0
 static swig_cast_info _swigc__p_XcapSelector[] = {  {&_swigt__p_XcapSelector, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_XcapStack[] = {  {&_swigt__p_XcapStack, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_short[] = {  {&_swigt__p_short, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tdav_codec_id_e[] = {  {&_swigt__p_tdav_codec_id_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_thttp_event_type_e[] = {  {&_swigt__p_thttp_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_chroma_e[] = {  {&_swigt__p_tmedia_chroma_e, 0, 0, 0},{0, 0, 0, 0}};
@@ -9706,6 +10413,8 @@ static swig_cast_info _swigc__p_tsip_publish_event_type_e[] = {  {&_swigt__p_tsi
 static swig_cast_info _swigc__p_tsip_register_event_type_e[] = {  {&_swigt__p_tsip_register_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_subscribe_event_type_e[] = {  {&_swigt__p_tsip_subscribe_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsk_list_t[] = {  {&_swigt__p_tsk_list_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_twrap_rpdata_type_e[] = {  {&_swigt__p_twrap_rpdata_type_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_unsigned_short[] = {  {&_swigt__p_unsigned_short, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_CallEvent,
@@ -9723,8 +10432,10 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_ProxyVideoProducer,
   _swigc__p_PublicationEvent,
   _swigc__p_PublicationSession,
+  _swigc__p_RPData,
   _swigc__p_RegistrationEvent,
   _swigc__p_RegistrationSession,
+  _swigc__p_SMSEncoder,
   _swigc__p_SafeObject,
   _swigc__p_SipCallback,
   _swigc__p_SipEvent,
@@ -9741,7 +10452,6 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_XcapSelector,
   _swigc__p_XcapStack,
   _swigc__p_char,
-  _swigc__p_short,
   _swigc__p_tdav_codec_id_e,
   _swigc__p_thttp_event_type_e,
   _swigc__p_tmedia_chroma_e,
@@ -9755,6 +10465,8 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_tsip_register_event_type_e,
   _swigc__p_tsip_subscribe_event_type_e,
   _swigc__p_tsk_list_t,
+  _swigc__p_twrap_rpdata_type_e,
+  _swigc__p_unsigned_short,
 };
 
 
@@ -9779,6 +10491,13 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::new_SipUri", _wrap_new_SipUri},
 {"tinyWRAPc::delete_SipUri", _wrap_delete_SipUri},
 {"tinyWRAPc::SipUri_isValid", _wrap_SipUri_isValid},
+{"tinyWRAPc::SipUri_getScheme", _wrap_SipUri_getScheme},
+{"tinyWRAPc::SipUri_getHost", _wrap_SipUri_getHost},
+{"tinyWRAPc::SipUri_getPort", _wrap_SipUri_getPort},
+{"tinyWRAPc::SipUri_getUserName", _wrap_SipUri_getUserName},
+{"tinyWRAPc::SipUri_getPassword", _wrap_SipUri_getPassword},
+{"tinyWRAPc::SipUri_getDisplayName", _wrap_SipUri_getDisplayName},
+{"tinyWRAPc::SipUri_getParamValue", _wrap_SipUri_getParamValue},
 {"tinyWRAPc::new_SipMessage", _wrap_new_SipMessage},
 {"tinyWRAPc::delete_SipMessage", _wrap_delete_SipMessage},
 {"tinyWRAPc::SipMessage_getSipHeaderValue", _wrap_SipMessage_getSipHeaderValue},
@@ -9919,6 +10638,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SipStack_setIMPI", _wrap_SipStack_setIMPI},
 {"tinyWRAPc::SipStack_setIMPU", _wrap_SipStack_setIMPU},
 {"tinyWRAPc::SipStack_setPassword", _wrap_SipStack_setPassword},
+{"tinyWRAPc::SipStack_setAMF", _wrap_SipStack_setAMF},
+{"tinyWRAPc::SipStack_setOperatorId", _wrap_SipStack_setOperatorId},
 {"tinyWRAPc::SipStack_setProxyCSCF", _wrap_SipStack_setProxyCSCF},
 {"tinyWRAPc::SipStack_setLocalIP", _wrap_SipStack_setLocalIP},
 {"tinyWRAPc::SipStack_setLocalPort", _wrap_SipStack_setLocalPort},
@@ -9927,8 +10648,11 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SipStack_removeHeader", _wrap_SipStack_removeHeader},
 {"tinyWRAPc::SipStack_addDnsServer", _wrap_SipStack_addDnsServer},
 {"tinyWRAPc::SipStack_setAoR", _wrap_SipStack_setAoR},
+{"tinyWRAPc::SipStack_setSTUNServer", _wrap_SipStack_setSTUNServer},
+{"tinyWRAPc::SipStack_setSTUNCred", _wrap_SipStack_setSTUNCred},
 {"tinyWRAPc::SipStack_dnsENUM", _wrap_SipStack_dnsENUM},
 {"tinyWRAPc::SipStack_dnsNaptrSrv", _wrap_SipStack_dnsNaptrSrv},
+{"tinyWRAPc::SipStack_dnsSrv", _wrap_SipStack_dnsSrv},
 {"tinyWRAPc::SipStack_isValid", _wrap_SipStack_isValid},
 {"tinyWRAPc::SipStack_stop", _wrap_SipStack_stop},
 {"tinyWRAPc::SipStack_setCodecs", _wrap_SipStack_setCodecs},
@@ -9969,6 +10693,13 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::XcapStack_setTimeout", _wrap_XcapStack_setTimeout},
 {"tinyWRAPc::XcapStack_getDocument", _wrap_XcapStack_getDocument},
 {"tinyWRAPc::XcapStack_stop", _wrap_XcapStack_stop},
+{"tinyWRAPc::new_RPData", _wrap_new_RPData},
+{"tinyWRAPc::delete_RPData", _wrap_delete_RPData},
+{"tinyWRAPc::RPData_getType", _wrap_RPData_getType},
+{"tinyWRAPc::RPData_getPayloadLength", _wrap_RPData_getPayloadLength},
+{"tinyWRAPc::RPData_getPayload", _wrap_RPData_getPayload},
+{"tinyWRAPc::SMSEncoder_encodeSubmit", _wrap_SMSEncoder_encodeSubmit},
+{"tinyWRAPc::delete_SMSEncoder", _wrap_delete_SMSEncoder},
 {0,0}
 };
 /* -----------------------------------------------------------------------------
@@ -10516,6 +11247,11 @@ XS(SWIG_init) {
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tsip_m_early_media", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_m_early_media)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_m_local_hold_ok", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_m_local_hold_ok)));
     SvREADONLY_on(sv);
@@ -10666,6 +11402,21 @@ XS(SWIG_init) {
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tdav_codec_id_bv16", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tdav_codec_id_bv16)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tdav_codec_id_bv32", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tdav_codec_id_bv32)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tdav_codec_id_evrc", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tdav_codec_id_evrc)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tdav_codec_id_h261", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tdav_codec_id_h261)));
     SvREADONLY_on(sv);
@@ -10730,6 +11481,33 @@ XS(SWIG_init) {
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(thttp_event_transport_error)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "twrap_rpdata_type_sms_none", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(twrap_rpdata_type_sms_none)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "twrap_rpdata_type_sms_submit", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(twrap_rpdata_type_sms_submit)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "twrap_rpdata_type_sms_deliver", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(twrap_rpdata_type_sms_deliver)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "twrap_rpdata_type_sms_status_report", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(twrap_rpdata_type_sms_status_report)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "twrap_rpdata_type_sms_command", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(twrap_rpdata_type_sms_command)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  SWIG_TypeClientData(SWIGTYPE_p_RPData, (void*) "tinyWRAP::RPData");
+  SWIG_TypeClientData(SWIGTYPE_p_SMSEncoder, (void*) "tinyWRAP::SMSEncoder");
   ST(0) = &PL_sv_yes;
   XSRETURN(1);
 }

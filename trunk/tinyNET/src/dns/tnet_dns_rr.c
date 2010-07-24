@@ -260,16 +260,16 @@ tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, tsk_size_t size, tsk_si
 	tnet_dns_rr_qname_deserialize(dataStart, &qname, offset);
 	dataPtr = (dataStart + *offset);
 	/* == Parse QTYPE == */
-	qtype = (tnet_dns_qtype_t)tnet_ntohs(*((uint16_t*)dataPtr));
+	qtype = (tnet_dns_qtype_t)tnet_ntohs_2(dataPtr);
 	dataPtr += 2, *offset += 2;
 	/* == Parse QCLASS == */
-	qclass = (tnet_dns_qclass_t)tnet_ntohs(*((uint16_t*)dataPtr));
+	qclass = (tnet_dns_qclass_t)tnet_ntohs_2(dataPtr);
 	dataPtr += 2, *offset += 2;
 	/* == Parse TTL == */
-	ttl = tnet_ntohl(*((uint32_t*)dataPtr));
+	ttl = tnet_htonl_2(dataPtr);
 	dataPtr += 4, *offset += 4;
 	/* == Parse RDLENGTH == */
-	rdlength = tnet_ntohs(*((uint16_t*)dataPtr));
+	rdlength = tnet_ntohs_2(dataPtr);
 	dataPtr += 2, *offset += 2;
 
 	switch(qtype){

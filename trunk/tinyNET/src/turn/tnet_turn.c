@@ -427,12 +427,14 @@ tnet_turn_channel_binding_id_t tnet_turn_channel_bind(const tnet_nat_context_t* 
 		if(channel_binding){
 			if(((struct sockaddr*)peer)->sa_family == AF_INET){
 				struct sockaddr_in *sin = ((struct sockaddr_in*)peer);
+				uint32_t _sin_addr;
 
 				channel_binding->xpeer = tnet_turn_attribute_xpeer_addr_create_null();
 				channel_binding->xpeer->family = stun_ipv4;
 				channel_binding->xpeer->xport = ((sin->sin_port) ^ tnet_htons(0x2112));
 				
-				*((uint32_t*)channel_binding->xpeer->xaddress) = ((*((uint32_t*)&sin->sin_addr)) ^tnet_htonl(TNET_STUN_MAGIC_COOKIE));
+				_sin_addr = tnet_htonl_2(&sin->sin_addr) ^tnet_htonl(TNET_STUN_MAGIC_COOKIE);
+				memcpy(channel_binding->xpeer->xaddress, &_sin_addr, sizeof(_sin_addr));
 			}
 			else if(((struct sockaddr*)peer)->sa_family == AF_INET6){
 				TSK_DEBUG_ERROR("IPv6 not supported.");

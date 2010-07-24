@@ -48,3 +48,46 @@ bool SipUri::isValid()
 {
 	return (this->uri != tsk_null);
 }
+
+const char* SipUri::getScheme()
+{
+	if(this->uri){
+		return this->uri->scheme;
+	}
+	return tsk_null;
+}
+
+const char* SipUri::getHost()
+{
+	return this->uri ? this->uri->host : tsk_null;
+}
+
+unsigned short SipUri::getPort()
+{
+	return this->uri ? this->uri->port : 0;
+}
+
+const char* SipUri::getUserName()
+{
+	return this->uri ? this->uri->user_name : tsk_null;
+}
+
+const char* SipUri::getPassword()
+{
+	return this->uri ? this->uri->password : tsk_null;
+}
+
+const char* SipUri::getDisplayName()
+{
+	return this->uri ? this->uri->display_name : tsk_null;
+}
+
+const char* SipUri::getParamValue(const char* pname)
+{
+	if(this->uri && this->uri->params){
+		const char* pvalue = tsk_params_get_param_value(this->uri->params,  pname);
+		return pvalue;
+	}
+	return tsk_null;
+}
+

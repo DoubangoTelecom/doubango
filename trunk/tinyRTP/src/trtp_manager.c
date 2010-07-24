@@ -123,7 +123,7 @@ int trtp_manager_prepare(trtp_manager_t* self)
 	/* Creates local rtp and rtcp sockets */
 	while(retry_count--){
 		/* random number in the range 1024 to 65535 */
-#if 1
+#if 0
 		tnet_port_t local_port = 6060;
 #else
 		tnet_port_t local_port = ((rand() % 64510) + 1025);
@@ -138,6 +138,8 @@ int trtp_manager_prepare(trtp_manager_t* self)
 		if((self->transport = tnet_transport_create(self->local_ip, local_port, socket_type, "RTP/RTCP Manager"))){
 			/* set callback function */
 			tnet_transport_set_callback(self->transport, trtp_transport_layer_cb, self);
+			tsk_strupdate(&self->rtp.public_ip, self->transport->master->ip);
+			self->rtp.public_port = local_port;
 		}
 		else {
 			TSK_DEBUG_ERROR("Failed to create RTP/RTCP Transport");
@@ -150,6 +152,10 @@ int trtp_manager_prepare(trtp_manager_t* self)
 				TSK_DEBUG_WARN("Failed to bind to %d", local_port+1);
 				TSK_OBJECT_SAFE_FREE(self->transport);
 				continue;
+			}
+			else{
+				tsk_strupdate(&self->rtcp.public_ip, self->rtcp.local_socket->ip);
+				self->rtcp.public_port = local_port + 1;
 			}
 		}
 	
@@ -168,6 +174,34 @@ tsk_bool_t trtp_manager_is_prepared(trtp_manager_t* self)
 		return tsk_false;
 	}
 	return self->transport == tsk_null ? tsk_false : tsk_true;
+}
+
+/** Sets NAT Traversal context */
+int trtp_manager_set_natt_ctx(trtp_manager_t* self, tnet_nat_context_handle_t* natt_ctx)
+{
+	int ret;
+
+	if(!self || !self->transport){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	if(!(ret = tnet_transport_set_natt_ctx(self->transport, natt_ctx))){
+		tnet_ip_t public_ip = {0};
+		tnet_port_t public_port = 0;
+		/* get RTP public IP and Port */
+		if(!tnet_transport_get_public_ip_n_port(self->transport, self->transport->master->fd, &public_ip, &public_port)){
+			tsk_strupdate(&self->rtp.public_ip, public_ip);
+			self->rtp.public_port = public_port;
+		}
+		/* get RTCP public IP and Port */
+		memset(public_ip, 0, sizeof(public_ip));
+		public_port = 0;
+		if(self->rtcp.local_socket && !tnet_transport_get_public_ip_n_port(self->transport, self->rtcp.local_socket->fd, &public_ip, &public_port)){
+			tsk_strupdate(&self->rtcp.public_ip, public_ip);
+			self->rtcp.public_port = public_port;
+		}
+	}
+	return ret;
 }
 
 /** Sets RTP callback */
@@ -414,9 +448,11 @@ static tsk_object_t* trtp_manager_dtor(tsk_object_t * self)
 
 		/* rtp */
 		TSK_FREE(manager->rtp.remote_ip);
+		TSK_FREE(manager->rtp.public_ip);
 
 		/* rtcp */
 		TSK_FREE(manager->rtcp.remote_ip);
+		TSK_FREE(manager->rtcp.public_ip);
 		TSK_OBJECT_SAFE_FREE(manager->rtcp.local_socket);
 
 		TSK_FREE(manager->local_ip);

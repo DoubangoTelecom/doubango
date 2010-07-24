@@ -122,7 +122,7 @@ tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_
 	/*	draft-ietf-behave-turn-16 - 14.1.  CHANNEL-NUMBER */
 	case stun_channel_number:
 		{
-			uint32_t number = tnet_ntohl(*((uint32_t*)dataPtr));
+			uint32_t number = tnet_htonl_2(dataPtr);
 			attribute = (tnet_stun_attribute_t *)tnet_turn_attribute_channelnum_create(number);
 			break;
 		}
@@ -130,7 +130,7 @@ tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_
 	/*	draft-ietf-behave-turn-16 - 14.2.  LIFETIME */
 	case stun_lifetime:
 		{
-			uint32_t lifetime = tnet_ntohl(*((uint32_t*)dataPtr));
+			uint32_t lifetime = tnet_htonl_2(dataPtr);
 			attribute = (tnet_stun_attribute_t *)tnet_turn_attribute_lifetime_create(lifetime);
 			break;
 		}
@@ -472,7 +472,7 @@ static tsk_object_t* tnet_turn_attribute_xrelayed_addr_ctor(tsk_object_t * self,
 			
 			attribute->family = (tnet_stun_addr_family_t)(*(payloadPtr++));
 
-			attribute->xport = tnet_ntohs(*((uint16_t*)payloadPtr));
+			attribute->xport = tnet_ntohs_2(payloadPtr);
 			attribute->xport ^= 0x2112;
 			payloadPtr+=2;
 
@@ -483,7 +483,7 @@ static tsk_object_t* tnet_turn_attribute_xrelayed_addr_ctor(tsk_object_t * self,
 					uint32_t addr;
 
 					for(i=0; i<addr_size; i+=4){
-						addr = tnet_ntohl(*((uint32_t*)payloadPtr));
+						addr = tnet_htonl_2(payloadPtr);
 						addr ^= TNET_STUN_MAGIC_COOKIE;
 						memcpy(&attribute->xaddress[i], &addr, 4);
 						payloadPtr+=4;

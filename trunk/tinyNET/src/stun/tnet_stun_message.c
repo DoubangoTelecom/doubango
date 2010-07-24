@@ -241,12 +241,12 @@ tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, tsk_size
 
 	/* Message Type 
 	*/
-	message->type = (tnet_stun_message_type_t)tnet_ntohs(*((uint16_t*)dataPtr));
+	message->type = (tnet_stun_message_type_t)tnet_ntohs_2(dataPtr);
 	dataPtr += 2;
 
 	/* Message Length 
 	*/
-	message->length = tnet_ntohs(*((uint16_t*)dataPtr));
+	message->length = tnet_ntohs_2(dataPtr);
 	dataPtr += 2;
 
 	/* Check message validity

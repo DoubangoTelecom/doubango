@@ -44,6 +44,7 @@ int tdav_codec_speex_deinit(tdav_codec_speex_t* self);
 
 int tdav_codec_speex_open(tmedia_codec_t* self)
 {
+	static int quality = 6;
 	tdav_codec_speex_t* speex = (tdav_codec_speex_t*)self;
 	tsk_size_t size = 0;
 	
@@ -60,6 +61,7 @@ int tdav_codec_speex_open(tmedia_codec_t* self)
 				return -3;
 			}
 
+			speex_encoder_ctl(speex->encoder.state, SPEEX_SET_QUALITY, &quality);
 			speex_encoder_ctl(speex->encoder.state, SPEEX_GET_FRAME_SIZE, &speex->encoder.size);
 			if(!speex->encoder.size){
 				speex->encoder.size = 20;

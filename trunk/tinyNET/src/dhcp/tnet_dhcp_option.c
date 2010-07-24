@@ -290,7 +290,7 @@ static tsk_object_t* tnet_dhcp_option_dns_ctor(tsk_object_t * self, va_list * ap
 				|  6  |  n  |  a1 |  a2 |  a3 |  a4 |  a1 |  a2 |  ...
 				+-----+-----+-----+-----+-----+-----+-----+-----+--
 				*/
-				address = tnet_ntohl(*((uint32_t*)payloadPtr));
+				address = tnet_htonl_2(payloadPtr);
 				tsk_sprintf(&ip4, "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
 				
 				addrstring = tsk_string_create(ip4);

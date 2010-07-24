@@ -210,8 +210,8 @@ bail:
 void test_nat()
 {
 	test_nat_stun();
-	test_nat_turn();
-	tsk_thread_sleep(1000);
+	//test_nat_turn();
+	//tsk_thread_sleep(1000);
 }
 
 

@@ -116,6 +116,13 @@ sub DESTROY {
 }
 
 *isValid = *tinyWRAPc::SipUri_isValid;
+*getScheme = *tinyWRAPc::SipUri_getScheme;
+*getHost = *tinyWRAPc::SipUri_getHost;
+*getPort = *tinyWRAPc::SipUri_getPort;
+*getUserName = *tinyWRAPc::SipUri_getUserName;
+*getPassword = *tinyWRAPc::SipUri_getPassword;
+*getDisplayName = *tinyWRAPc::SipUri_getDisplayName;
+*getParamValue = *tinyWRAPc::SipUri_getParamValue;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1081,6 +1088,8 @@ sub DESTROY {
 *setIMPI = *tinyWRAPc::SipStack_setIMPI;
 *setIMPU = *tinyWRAPc::SipStack_setIMPU;
 *setPassword = *tinyWRAPc::SipStack_setPassword;
+*setAMF = *tinyWRAPc::SipStack_setAMF;
+*setOperatorId = *tinyWRAPc::SipStack_setOperatorId;
 *setProxyCSCF = *tinyWRAPc::SipStack_setProxyCSCF;
 *setLocalIP = *tinyWRAPc::SipStack_setLocalIP;
 *setLocalPort = *tinyWRAPc::SipStack_setLocalPort;
@@ -1089,8 +1098,11 @@ sub DESTROY {
 *removeHeader = *tinyWRAPc::SipStack_removeHeader;
 *addDnsServer = *tinyWRAPc::SipStack_addDnsServer;
 *setAoR = *tinyWRAPc::SipStack_setAoR;
+*setSTUNServer = *tinyWRAPc::SipStack_setSTUNServer;
+*setSTUNCred = *tinyWRAPc::SipStack_setSTUNCred;
 *dnsENUM = *tinyWRAPc::SipStack_dnsENUM;
 *dnsNaptrSrv = *tinyWRAPc::SipStack_dnsNaptrSrv;
+*dnsSrv = *tinyWRAPc::SipStack_dnsSrv;
 *isValid = *tinyWRAPc::SipStack_isValid;
 *stop = *tinyWRAPc::SipStack_stop;
 *setCodecs = *tinyWRAPc::SipStack_setCodecs;
@@ -1314,6 +1326,78 @@ sub ACQUIRE {
 }
 
 
+############# Class : tinyWRAP::RPData ##############
+
+package tinyWRAP::RPData;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_RPData(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_RPData($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getType = *tinyWRAPc::RPData_getType;
+*getPayloadLength = *tinyWRAPc::RPData_getPayloadLength;
+*getPayload = *tinyWRAPc::RPData_getPayload;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::SMSEncoder ##############
+
+package tinyWRAP::SMSEncoder;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+*encodeSubmit = *tinyWRAPc::SMSEncoder_encodeSubmit;
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_SMSEncoder($self);
+        delete $OWNER{$self};
+    }
+}
+
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
 # ------- VARIABLE STUBS --------
 
 package tinyWRAP;
@@ -1363,6 +1447,7 @@ package tinyWRAP;
 *tsip_o_ect_ok = *tinyWRAPc::tsip_o_ect_ok;
 *tsip_o_ect_nok = *tinyWRAPc::tsip_o_ect_nok;
 *tsip_i_ect = *tinyWRAPc::tsip_i_ect;
+*tsip_m_early_media = *tinyWRAPc::tsip_m_early_media;
 *tsip_m_local_hold_ok = *tinyWRAPc::tsip_m_local_hold_ok;
 *tsip_m_local_hold_nok = *tinyWRAPc::tsip_m_local_hold_nok;
 *tsip_m_local_resume_ok = *tinyWRAPc::tsip_m_local_resume_ok;
@@ -1393,6 +1478,9 @@ package tinyWRAP;
 *tdav_codec_id_speex_nb = *tinyWRAPc::tdav_codec_id_speex_nb;
 *tdav_codec_id_speex_wb = *tinyWRAPc::tdav_codec_id_speex_wb;
 *tdav_codec_id_speex_uwb = *tinyWRAPc::tdav_codec_id_speex_uwb;
+*tdav_codec_id_bv16 = *tinyWRAPc::tdav_codec_id_bv16;
+*tdav_codec_id_bv32 = *tinyWRAPc::tdav_codec_id_bv32;
+*tdav_codec_id_evrc = *tinyWRAPc::tdav_codec_id_evrc;
 *tdav_codec_id_h261 = *tinyWRAPc::tdav_codec_id_h261;
 *tdav_codec_id_h263 = *tinyWRAPc::tdav_codec_id_h263;
 *tdav_codec_id_h263p = *tinyWRAPc::tdav_codec_id_h263p;
@@ -1405,4 +1493,9 @@ package tinyWRAP;
 *thttp_event_auth_failed = *tinyWRAPc::thttp_event_auth_failed;
 *thttp_event_closed = *tinyWRAPc::thttp_event_closed;
 *thttp_event_transport_error = *tinyWRAPc::thttp_event_transport_error;
+*twrap_rpdata_type_sms_none = *tinyWRAPc::twrap_rpdata_type_sms_none;
+*twrap_rpdata_type_sms_submit = *tinyWRAPc::twrap_rpdata_type_sms_submit;
+*twrap_rpdata_type_sms_deliver = *tinyWRAPc::twrap_rpdata_type_sms_deliver;
+*twrap_rpdata_type_sms_status_report = *tinyWRAPc::twrap_rpdata_type_sms_status_report;
+*twrap_rpdata_type_sms_command = *tinyWRAPc::twrap_rpdata_type_sms_command;
 1;
