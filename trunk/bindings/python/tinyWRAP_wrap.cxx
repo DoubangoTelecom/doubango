@@ -3136,40 +3136,43 @@ namespace Swig {
 #define SWIGTYPE_p_ProxyVideoProducer swig_types[12]
 #define SWIGTYPE_p_PublicationEvent swig_types[13]
 #define SWIGTYPE_p_PublicationSession swig_types[14]
-#define SWIGTYPE_p_RegistrationEvent swig_types[15]
-#define SWIGTYPE_p_RegistrationSession swig_types[16]
-#define SWIGTYPE_p_SafeObject swig_types[17]
-#define SWIGTYPE_p_SipCallback swig_types[18]
-#define SWIGTYPE_p_SipEvent swig_types[19]
-#define SWIGTYPE_p_SipMessage swig_types[20]
-#define SWIGTYPE_p_SipSession swig_types[21]
-#define SWIGTYPE_p_SipStack swig_types[22]
-#define SWIGTYPE_p_SipUri swig_types[23]
-#define SWIGTYPE_p_StackEvent swig_types[24]
-#define SWIGTYPE_p_SubscriptionEvent swig_types[25]
-#define SWIGTYPE_p_SubscriptionSession swig_types[26]
-#define SWIGTYPE_p_XcapCallback swig_types[27]
-#define SWIGTYPE_p_XcapEvent swig_types[28]
-#define SWIGTYPE_p_XcapMessage swig_types[29]
-#define SWIGTYPE_p_XcapSelector swig_types[30]
-#define SWIGTYPE_p_XcapStack swig_types[31]
-#define SWIGTYPE_p_char swig_types[32]
-#define SWIGTYPE_p_short swig_types[33]
-#define SWIGTYPE_p_tdav_codec_id_e swig_types[34]
-#define SWIGTYPE_p_thttp_event_type_e swig_types[35]
-#define SWIGTYPE_p_tmedia_chroma_e swig_types[36]
-#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[37]
-#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[38]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[39]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[40]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[41]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[42]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[43]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[44]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[45]
-#define SWIGTYPE_p_tsk_list_t swig_types[46]
-static swig_type_info *swig_types[48];
-static swig_module_info swig_module = {swig_types, 47, 0, 0, 0, 0};
+#define SWIGTYPE_p_RPData swig_types[15]
+#define SWIGTYPE_p_RegistrationEvent swig_types[16]
+#define SWIGTYPE_p_RegistrationSession swig_types[17]
+#define SWIGTYPE_p_SMSEncoder swig_types[18]
+#define SWIGTYPE_p_SafeObject swig_types[19]
+#define SWIGTYPE_p_SipCallback swig_types[20]
+#define SWIGTYPE_p_SipEvent swig_types[21]
+#define SWIGTYPE_p_SipMessage swig_types[22]
+#define SWIGTYPE_p_SipSession swig_types[23]
+#define SWIGTYPE_p_SipStack swig_types[24]
+#define SWIGTYPE_p_SipUri swig_types[25]
+#define SWIGTYPE_p_StackEvent swig_types[26]
+#define SWIGTYPE_p_SubscriptionEvent swig_types[27]
+#define SWIGTYPE_p_SubscriptionSession swig_types[28]
+#define SWIGTYPE_p_XcapCallback swig_types[29]
+#define SWIGTYPE_p_XcapEvent swig_types[30]
+#define SWIGTYPE_p_XcapMessage swig_types[31]
+#define SWIGTYPE_p_XcapSelector swig_types[32]
+#define SWIGTYPE_p_XcapStack swig_types[33]
+#define SWIGTYPE_p_char swig_types[34]
+#define SWIGTYPE_p_tdav_codec_id_e swig_types[35]
+#define SWIGTYPE_p_thttp_event_type_e swig_types[36]
+#define SWIGTYPE_p_tmedia_chroma_e swig_types[37]
+#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[38]
+#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[39]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[40]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[41]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[42]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[43]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[44]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[45]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[46]
+#define SWIGTYPE_p_tsk_list_t swig_types[47]
+#define SWIGTYPE_p_twrap_rpdata_type_e swig_types[48]
+#define SWIGTYPE_p_unsigned_short swig_types[49]
+static swig_type_info *swig_types[51];
+static swig_module_info swig_module = {swig_types, 50, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3377,6 +3380,49 @@ SWIGINTERNINLINE PyObject*
 }
 
 
+SWIGINTERNINLINE PyObject *
+SWIG_FromCharPtrAndSize(const char* carray, size_t size)
+{
+  if (carray) {
+    if (size > INT_MAX) {
+      swig_type_info* pchar_descriptor = SWIG_pchar_descriptor();
+      return pchar_descriptor ? 
+	SWIG_NewPointerObj(const_cast< char * >(carray), pchar_descriptor, 0) : SWIG_Py_Void();
+    } else {
+#if PY_VERSION_HEX >= 0x03000000
+      return PyUnicode_FromStringAndSize(carray, static_cast< int >(size));
+#else
+      return PyString_FromStringAndSize(carray, static_cast< int >(size));
+#endif
+    }
+  } else {
+    return SWIG_Py_Void();
+  }
+}
+
+
+SWIGINTERNINLINE PyObject * 
+SWIG_FromCharPtr(const char *cptr)
+{ 
+  return SWIG_FromCharPtrAndSize(cptr, (cptr ? strlen(cptr) : 0));
+}
+
+
+SWIGINTERNINLINE PyObject* 
+SWIG_From_unsigned_SS_long  (unsigned long value)
+{
+  return (value > LONG_MAX) ?
+    PyLong_FromUnsignedLong(value) : PyInt_FromLong(static_cast< long >(value)); 
+}
+
+
+SWIGINTERNINLINE PyObject *
+SWIG_From_unsigned_SS_short  (unsigned short value)
+{    
+  return SWIG_From_unsigned_SS_long  (value);
+}
+
+
 #include <limits.h>
 #if !defined(SWIG_NO_LLONG_MAX)
 # if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
@@ -3528,42 +3574,6 @@ SWIG_AsVal_unsigned_SS_int (PyObject * obj, unsigned int *val)
 
 
 SWIGINTERNINLINE PyObject *
-SWIG_FromCharPtrAndSize(const char* carray, size_t size)
-{
-  if (carray) {
-    if (size > INT_MAX) {
-      swig_type_info* pchar_descriptor = SWIG_pchar_descriptor();
-      return pchar_descriptor ? 
-	SWIG_NewPointerObj(const_cast< char * >(carray), pchar_descriptor, 0) : SWIG_Py_Void();
-    } else {
-#if PY_VERSION_HEX >= 0x03000000
-      return PyUnicode_FromStringAndSize(carray, static_cast< int >(size));
-#else
-      return PyString_FromStringAndSize(carray, static_cast< int >(size));
-#endif
-    }
-  } else {
-    return SWIG_Py_Void();
-  }
-}
-
-
-SWIGINTERNINLINE PyObject * 
-SWIG_FromCharPtr(const char *cptr)
-{ 
-  return SWIG_FromCharPtrAndSize(cptr, (cptr ? strlen(cptr) : 0));
-}
-
-
-SWIGINTERNINLINE PyObject* 
-SWIG_From_unsigned_SS_long  (unsigned long value)
-{
-  return (value > LONG_MAX) ?
-    PyLong_FromUnsignedLong(value) : PyInt_FromLong(static_cast< long >(value)); 
-}
-
-
-SWIGINTERNINLINE PyObject *
 SWIG_From_unsigned_SS_int  (unsigned int value)
 {    
   return SWIG_From_unsigned_SS_long  (value);
@@ -3643,7 +3653,26 @@ SWIG_AsVal_int (PyObject * obj, int *val)
 }
 
 
+SWIGINTERN int
+SWIG_AsVal_unsigned_SS_short (PyObject * obj, unsigned short *val)
+{
+  unsigned long v;
+  int res = SWIG_AsVal_unsigned_SS_long (obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v > USHRT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< unsigned short >(v);
+    }
+  }  
+  return res;
+}
+
+
 #include "Xcap.h"
+
+
+#include "SMSEncoder.h"
 
 
 
@@ -4817,6 +4846,172 @@ fail:
     "  Possible C/C++ prototypes are:\n"
     "    isValid(char const *)\n"
     "    isValid(SipUri *)\n");
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipUri_getScheme(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipUri *arg1 = (SipUri *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipUri_getScheme",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipUri, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipUri_getScheme" "', argument " "1"" of type '" "SipUri *""'"); 
+  }
+  arg1 = reinterpret_cast< SipUri * >(argp1);
+  result = (char *)(arg1)->getScheme();
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipUri_getHost(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipUri *arg1 = (SipUri *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipUri_getHost",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipUri, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipUri_getHost" "', argument " "1"" of type '" "SipUri *""'"); 
+  }
+  arg1 = reinterpret_cast< SipUri * >(argp1);
+  result = (char *)(arg1)->getHost();
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipUri_getPort(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipUri *arg1 = (SipUri *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  unsigned short result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipUri_getPort",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipUri, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipUri_getPort" "', argument " "1"" of type '" "SipUri *""'"); 
+  }
+  arg1 = reinterpret_cast< SipUri * >(argp1);
+  result = (unsigned short)(arg1)->getPort();
+  resultobj = SWIG_From_unsigned_SS_short(static_cast< unsigned short >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipUri_getUserName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipUri *arg1 = (SipUri *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipUri_getUserName",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipUri, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipUri_getUserName" "', argument " "1"" of type '" "SipUri *""'"); 
+  }
+  arg1 = reinterpret_cast< SipUri * >(argp1);
+  result = (char *)(arg1)->getUserName();
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipUri_getPassword(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipUri *arg1 = (SipUri *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipUri_getPassword",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipUri, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipUri_getPassword" "', argument " "1"" of type '" "SipUri *""'"); 
+  }
+  arg1 = reinterpret_cast< SipUri * >(argp1);
+  result = (char *)(arg1)->getPassword();
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipUri_getDisplayName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipUri *arg1 = (SipUri *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipUri_getDisplayName",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipUri, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipUri_getDisplayName" "', argument " "1"" of type '" "SipUri *""'"); 
+  }
+  arg1 = reinterpret_cast< SipUri * >(argp1);
+  result = (char *)(arg1)->getDisplayName();
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipUri_getParamValue(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipUri *arg1 = (SipUri *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipUri_getParamValue",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipUri, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipUri_getParamValue" "', argument " "1"" of type '" "SipUri *""'"); 
+  }
+  arg1 = reinterpret_cast< SipUri * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipUri_getParamValue" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  result = (char *)(arg1)->getParamValue((char const *)arg2);
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return NULL;
 }
 
@@ -9425,11 +9620,79 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SipStack_setAMF(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipStack_setAMF",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setAMF" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setAMF" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  result = (bool)(arg1)->setAMF((char const *)arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setOperatorId(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipStack_setOperatorId",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setOperatorId" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setOperatorId" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  result = (bool)(arg1)->setOperatorId((char const *)arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_SipStack_setProxyCSCF(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
   char *arg2 = (char *) 0 ;
-  unsigned int arg3 ;
+  unsigned short arg3 ;
   char *arg4 = (char *) 0 ;
   char *arg5 = (char *) 0 ;
   void *argp1 = 0 ;
@@ -9437,7 +9700,7 @@ SWIGINTERN PyObject *_wrap_SipStack_setProxyCSCF(PyObject *SWIGUNUSEDPARM(self),
   int res2 ;
   char *buf2 = 0 ;
   int alloc2 = 0 ;
-  unsigned int val3 ;
+  unsigned short val3 ;
   int ecode3 = 0 ;
   int res4 ;
   char *buf4 = 0 ;
@@ -9463,11 +9726,11 @@ SWIGINTERN PyObject *_wrap_SipStack_setProxyCSCF(PyObject *SWIGUNUSEDPARM(self),
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setProxyCSCF" "', argument " "2"" of type '" "char const *""'");
   }
   arg2 = reinterpret_cast< char * >(buf2);
-  ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
+  ecode3 = SWIG_AsVal_unsigned_SS_short(obj2, &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "SipStack_setProxyCSCF" "', argument " "3"" of type '" "unsigned int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "SipStack_setProxyCSCF" "', argument " "3"" of type '" "unsigned short""'");
   } 
-  arg3 = static_cast< unsigned int >(val3);
+  arg3 = static_cast< unsigned short >(val3);
   res4 = SWIG_AsCharPtrAndSize(obj3, &buf4, NULL, &alloc4);
   if (!SWIG_IsOK(res4)) {
     SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SipStack_setProxyCSCF" "', argument " "4"" of type '" "char const *""'");
@@ -9529,10 +9792,10 @@ fail:
 SWIGINTERN PyObject *_wrap_SipStack_setLocalPort(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
-  unsigned int arg2 ;
+  unsigned short arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  unsigned int val2 ;
+  unsigned short val2 ;
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
@@ -9544,11 +9807,11 @@ SWIGINTERN PyObject *_wrap_SipStack_setLocalPort(PyObject *SWIGUNUSEDPARM(self),
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setLocalPort" "', argument " "1"" of type '" "SipStack *""'"); 
   }
   arg1 = reinterpret_cast< SipStack * >(argp1);
-  ecode2 = SWIG_AsVal_unsigned_SS_int(obj1, &val2);
+  ecode2 = SWIG_AsVal_unsigned_SS_short(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SipStack_setLocalPort" "', argument " "2"" of type '" "unsigned int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SipStack_setLocalPort" "', argument " "2"" of type '" "unsigned short""'");
   } 
-  arg2 = static_cast< unsigned int >(val2);
+  arg2 = static_cast< unsigned short >(val2);
   result = (bool)(arg1)->setLocalPort(arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
@@ -9745,6 +10008,95 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SipStack_setSTUNServer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned short arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  unsigned short val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:SipStack_setSTUNServer",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setSTUNServer" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setSTUNServer" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  ecode3 = SWIG_AsVal_unsigned_SS_short(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "SipStack_setSTUNServer" "', argument " "3"" of type '" "unsigned short""'");
+  } 
+  arg3 = static_cast< unsigned short >(val3);
+  result = (bool)(arg1)->setSTUNServer((char const *)arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setSTUNCred(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:SipStack_setSTUNCred",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setSTUNCred" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setSTUNCred" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_setSTUNCred" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  result = (bool)(arg1)->setSTUNCred((char const *)arg2,(char const *)arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_SipStack_dnsENUM(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -9809,7 +10161,7 @@ SWIGINTERN PyObject *_wrap_SipStack_dnsNaptrSrv(PyObject *SWIGUNUSEDPARM(self), 
   SipStack *arg1 = (SipStack *) 0 ;
   char *arg2 = (char *) 0 ;
   char *arg3 = (char *) 0 ;
-  short *arg4 = (short *) 0 ;
+  unsigned short *arg4 = (unsigned short *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int res2 ;
@@ -9818,7 +10170,7 @@ SWIGINTERN PyObject *_wrap_SipStack_dnsNaptrSrv(PyObject *SWIGUNUSEDPARM(self), 
   int res3 ;
   char *buf3 = 0 ;
   int alloc3 = 0 ;
-  short temp4 ;
+  unsigned short temp4 ;
   int res4 = SWIG_TMPOBJ ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
@@ -9845,10 +10197,10 @@ SWIGINTERN PyObject *_wrap_SipStack_dnsNaptrSrv(PyObject *SWIGUNUSEDPARM(self), 
   result = (char *)(arg1)->dnsNaptrSrv((char const *)arg2,(char const *)arg3,arg4);
   resultobj = SWIG_FromCharPtr((const char *)result);
   if (SWIG_IsTmpObj(res4)) {
-    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_short((*arg4)));
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_unsigned_SS_short((*arg4)));
   } else {
     int new_flags = SWIG_IsNewObj(res4) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
-    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg4), SWIGTYPE_p_short, new_flags));
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg4), SWIGTYPE_p_unsigned_short, new_flags));
   }
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
@@ -9857,6 +10209,51 @@ SWIGINTERN PyObject *_wrap_SipStack_dnsNaptrSrv(PyObject *SWIGUNUSEDPARM(self), 
 fail:
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_dnsSrv(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned short *arg3 = (unsigned short *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  unsigned short temp3 ;
+  int res3 = SWIG_TMPOBJ ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  char *result = 0 ;
+  
+  arg3 = &temp3;
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipStack_dnsSrv",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_dnsSrv" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_dnsSrv" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  result = (char *)(arg1)->dnsSrv((char const *)arg2,arg3);
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  if (SWIG_IsTmpObj(res3)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_unsigned_SS_short((*arg3)));
+  } else {
+    int new_flags = SWIG_IsNewObj(res3) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg3), SWIGTYPE_p_unsigned_short, new_flags));
+  }
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  delete[] result;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return NULL;
 }
 
@@ -11379,6 +11776,215 @@ SWIGINTERN PyObject *XcapStack_swigregister(PyObject *SWIGUNUSEDPARM(self), PyOb
   return SWIG_Py_Void();
 }
 
+SWIGINTERN PyObject *_wrap_new_RPData(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RPData *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_RPData")) SWIG_fail;
+  result = (RPData *)new RPData();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RPData, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_RPData(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RPData *arg1 = (RPData *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_RPData",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RPData, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_RPData" "', argument " "1"" of type '" "RPData *""'"); 
+  }
+  arg1 = reinterpret_cast< RPData * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_RPData_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RPData *arg1 = (RPData *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  twrap_rpdata_type_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:RPData_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RPData, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RPData_getType" "', argument " "1"" of type '" "RPData *""'"); 
+  }
+  arg1 = reinterpret_cast< RPData * >(argp1);
+  result = (twrap_rpdata_type_t)(arg1)->getType();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_RPData_getPayloadLength(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RPData *arg1 = (RPData *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  unsigned int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:RPData_getPayloadLength",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RPData, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RPData_getPayloadLength" "', argument " "1"" of type '" "RPData *""'"); 
+  }
+  arg1 = reinterpret_cast< RPData * >(argp1);
+  result = (unsigned int)(arg1)->getPayloadLength();
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_RPData_getPayload(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RPData *arg1 = (RPData *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  unsigned int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:RPData_getPayload",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RPData, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RPData_getPayload" "', argument " "1"" of type '" "RPData *""'"); 
+  }
+  arg1 = reinterpret_cast< RPData * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RPData_getPayload" "', argument " "2"" of type '" "void *""'"); 
+  }
+  ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "RPData_getPayload" "', argument " "3"" of type '" "unsigned int""'");
+  } 
+  arg3 = static_cast< unsigned int >(val3);
+  result = (unsigned int)(arg1)->getPayload(arg2,arg3);
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *RPData_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_RPData, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_SMSEncoder_encodeSubmit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  int res4 ;
+  char *buf4 = 0 ;
+  int alloc4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  RPData *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:SMSEncoder_encodeSubmit",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "SMSEncoder_encodeSubmit" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SMSEncoder_encodeSubmit" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SMSEncoder_encodeSubmit" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  res4 = SWIG_AsCharPtrAndSize(obj3, &buf4, NULL, &alloc4);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SMSEncoder_encodeSubmit" "', argument " "4"" of type '" "char const *""'");
+  }
+  arg4 = reinterpret_cast< char * >(buf4);
+  result = (RPData *)SMSEncoder::encodeSubmit(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RPData, SWIG_POINTER_OWN |  0 );
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_SMSEncoder(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SMSEncoder *arg1 = (SMSEncoder *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_SMSEncoder",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SMSEncoder, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_SMSEncoder" "', argument " "1"" of type '" "SMSEncoder *""'"); 
+  }
+  arg1 = reinterpret_cast< SMSEncoder * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *SMSEncoder_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_SMSEncoder, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { (char *)"new_DDebugCallback", _wrap_new_DDebugCallback, METH_VARARGS, NULL},
@@ -11391,6 +11997,13 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"new_SipUri", _wrap_new_SipUri, METH_VARARGS, NULL},
 	 { (char *)"delete_SipUri", _wrap_delete_SipUri, METH_VARARGS, NULL},
 	 { (char *)"SipUri_isValid", _wrap_SipUri_isValid, METH_VARARGS, NULL},
+	 { (char *)"SipUri_getScheme", _wrap_SipUri_getScheme, METH_VARARGS, NULL},
+	 { (char *)"SipUri_getHost", _wrap_SipUri_getHost, METH_VARARGS, NULL},
+	 { (char *)"SipUri_getPort", _wrap_SipUri_getPort, METH_VARARGS, NULL},
+	 { (char *)"SipUri_getUserName", _wrap_SipUri_getUserName, METH_VARARGS, NULL},
+	 { (char *)"SipUri_getPassword", _wrap_SipUri_getPassword, METH_VARARGS, NULL},
+	 { (char *)"SipUri_getDisplayName", _wrap_SipUri_getDisplayName, METH_VARARGS, NULL},
+	 { (char *)"SipUri_getParamValue", _wrap_SipUri_getParamValue, METH_VARARGS, NULL},
 	 { (char *)"SipUri_swigregister", SipUri_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_SipMessage", _wrap_new_SipMessage, METH_VARARGS, NULL},
 	 { (char *)"delete_SipMessage", _wrap_delete_SipMessage, METH_VARARGS, NULL},
@@ -11561,6 +12174,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipStack_setIMPI", _wrap_SipStack_setIMPI, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setIMPU", _wrap_SipStack_setIMPU, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setPassword", _wrap_SipStack_setPassword, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setAMF", _wrap_SipStack_setAMF, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setOperatorId", _wrap_SipStack_setOperatorId, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setProxyCSCF", _wrap_SipStack_setProxyCSCF, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setLocalIP", _wrap_SipStack_setLocalIP, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setLocalPort", _wrap_SipStack_setLocalPort, METH_VARARGS, NULL},
@@ -11569,8 +12184,11 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipStack_removeHeader", _wrap_SipStack_removeHeader, METH_VARARGS, NULL},
 	 { (char *)"SipStack_addDnsServer", _wrap_SipStack_addDnsServer, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setAoR", _wrap_SipStack_setAoR, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setSTUNServer", _wrap_SipStack_setSTUNServer, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setSTUNCred", _wrap_SipStack_setSTUNCred, METH_VARARGS, NULL},
 	 { (char *)"SipStack_dnsENUM", _wrap_SipStack_dnsENUM, METH_VARARGS, NULL},
 	 { (char *)"SipStack_dnsNaptrSrv", _wrap_SipStack_dnsNaptrSrv, METH_VARARGS, NULL},
+	 { (char *)"SipStack_dnsSrv", _wrap_SipStack_dnsSrv, METH_VARARGS, NULL},
 	 { (char *)"SipStack_isValid", _wrap_SipStack_isValid, METH_VARARGS, NULL},
 	 { (char *)"SipStack_stop", _wrap_SipStack_stop, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setCodecs", _wrap_SipStack_setCodecs, METH_VARARGS, NULL},
@@ -11618,6 +12236,15 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"XcapStack_getDocument", _wrap_XcapStack_getDocument, METH_VARARGS, NULL},
 	 { (char *)"XcapStack_stop", _wrap_XcapStack_stop, METH_VARARGS, NULL},
 	 { (char *)"XcapStack_swigregister", XcapStack_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_RPData", _wrap_new_RPData, METH_VARARGS, NULL},
+	 { (char *)"delete_RPData", _wrap_delete_RPData, METH_VARARGS, NULL},
+	 { (char *)"RPData_getType", _wrap_RPData_getType, METH_VARARGS, NULL},
+	 { (char *)"RPData_getPayloadLength", _wrap_RPData_getPayloadLength, METH_VARARGS, NULL},
+	 { (char *)"RPData_getPayload", _wrap_RPData_getPayload, METH_VARARGS, NULL},
+	 { (char *)"RPData_swigregister", RPData_swigregister, METH_VARARGS, NULL},
+	 { (char *)"SMSEncoder_encodeSubmit", _wrap_SMSEncoder_encodeSubmit, METH_VARARGS, NULL},
+	 { (char *)"delete_SMSEncoder", _wrap_delete_SMSEncoder, METH_VARARGS, NULL},
+	 { (char *)"SMSEncoder_swigregister", SMSEncoder_swigregister, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
@@ -11684,8 +12311,10 @@ static swig_type_info _swigt__p_ProxyVideoFrame = {"_p_ProxyVideoFrame", "ProxyV
 static swig_type_info _swigt__p_ProxyVideoProducer = {"_p_ProxyVideoProducer", "ProxyVideoProducer *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_PublicationEvent = {"_p_PublicationEvent", "PublicationEvent *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_PublicationSession = {"_p_PublicationSession", "PublicationSession *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_RPData = {"_p_RPData", "RPData *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_RegistrationEvent = {"_p_RegistrationEvent", "RegistrationEvent *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_RegistrationSession = {"_p_RegistrationSession", "RegistrationSession *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_SMSEncoder = {"_p_SMSEncoder", "SMSEncoder *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SafeObject = {"_p_SafeObject", "SafeObject *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SipCallback = {"_p_SipCallback", "SipCallback *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SipEvent = {"_p_SipEvent", "SipEvent *", 0, 0, (void*)0, 0};
@@ -11702,7 +12331,6 @@ static swig_type_info _swigt__p_XcapMessage = {"_p_XcapMessage", "XcapMessage *"
 static swig_type_info _swigt__p_XcapSelector = {"_p_XcapSelector", "XcapSelector *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_XcapStack = {"_p_XcapStack", "XcapStack *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_short = {"_p_short", "short *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tdav_codec_id_e = {"_p_tdav_codec_id_e", "enum tdav_codec_id_e *|tdav_codec_id_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_thttp_event_type_e = {"_p_thttp_event_type_e", "enum thttp_event_type_e *|thttp_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_chroma_e = {"_p_tmedia_chroma_e", "tmedia_chroma_t *|enum tmedia_chroma_e *", 0, 0, (void*)0, 0};
@@ -11716,6 +12344,8 @@ static swig_type_info _swigt__p_tsip_publish_event_type_e = {"_p_tsip_publish_ev
 static swig_type_info _swigt__p_tsip_register_event_type_e = {"_p_tsip_register_event_type_e", "enum tsip_register_event_type_e *|tsip_register_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_subscribe_event_type_e = {"_p_tsip_subscribe_event_type_e", "enum tsip_subscribe_event_type_e *|tsip_subscribe_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsk_list_t = {"_p_tsk_list_t", "twrap_xcap_steps_L_t *|tsk_list_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_twrap_rpdata_type_e = {"_p_twrap_rpdata_type_e", "enum twrap_rpdata_type_e *|twrap_rpdata_type_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_unsigned_short = {"_p_unsigned_short", "unsigned short *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_CallEvent,
@@ -11733,8 +12363,10 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_ProxyVideoProducer,
   &_swigt__p_PublicationEvent,
   &_swigt__p_PublicationSession,
+  &_swigt__p_RPData,
   &_swigt__p_RegistrationEvent,
   &_swigt__p_RegistrationSession,
+  &_swigt__p_SMSEncoder,
   &_swigt__p_SafeObject,
   &_swigt__p_SipCallback,
   &_swigt__p_SipEvent,
@@ -11751,7 +12383,6 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_XcapSelector,
   &_swigt__p_XcapStack,
   &_swigt__p_char,
-  &_swigt__p_short,
   &_swigt__p_tdav_codec_id_e,
   &_swigt__p_thttp_event_type_e,
   &_swigt__p_tmedia_chroma_e,
@@ -11765,6 +12396,8 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_tsip_register_event_type_e,
   &_swigt__p_tsip_subscribe_event_type_e,
   &_swigt__p_tsk_list_t,
+  &_swigt__p_twrap_rpdata_type_e,
+  &_swigt__p_unsigned_short,
 };
 
 static swig_cast_info _swigc__p_CallEvent[] = {  {&_swigt__p_CallEvent, 0, 0, 0},{0, 0, 0, 0}};
@@ -11782,8 +12415,10 @@ static swig_cast_info _swigc__p_ProxyVideoFrame[] = {  {&_swigt__p_ProxyVideoFra
 static swig_cast_info _swigc__p_ProxyVideoProducer[] = {  {&_swigt__p_ProxyVideoProducer, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationEvent[] = {  {&_swigt__p_PublicationEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationSession[] = {  {&_swigt__p_PublicationSession, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_RPData[] = {  {&_swigt__p_RPData, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_RegistrationEvent[] = {  {&_swigt__p_RegistrationEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_RegistrationSession[] = {  {&_swigt__p_RegistrationSession, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_SMSEncoder[] = {  {&_swigt__p_SMSEncoder, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SafeObject[] = {  {&_swigt__p_SipStack, _p_SipStackTo_p_SafeObject, 0, 0},  {&_swigt__p_SafeObject, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipCallback[] = {  {&_swigt__p_SipCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipEvent[] = {  {&_swigt__p_SipEvent, 0, 0, 0},  {&_swigt__p_CallEvent, _p_CallEventTo_p_SipEvent, 0, 0},  {&_swigt__p_OptionsEvent, _p_OptionsEventTo_p_SipEvent, 0, 0},  {&_swigt__p_DialogEvent, _p_DialogEventTo_p_SipEvent, 0, 0},  {&_swigt__p_PublicationEvent, _p_PublicationEventTo_p_SipEvent, 0, 0},  {&_swigt__p_RegistrationEvent, _p_RegistrationEventTo_p_SipEvent, 0, 0},  {&_swigt__p_SubscriptionEvent, _p_SubscriptionEventTo_p_SipEvent, 0, 0},  {&_swigt__p_StackEvent, _p_StackEventTo_p_SipEvent, 0, 0},  {&_swigt__p_MessagingEvent, _p_MessagingEventTo_p_SipEvent, 0, 0},{0, 0, 0, 0}};
@@ -11800,7 +12435,6 @@ static swig_cast_info _swigc__p_XcapMessage[] = {  {&_swigt__p_XcapMessage, 0, 0
 static swig_cast_info _swigc__p_XcapSelector[] = {  {&_swigt__p_XcapSelector, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_XcapStack[] = {  {&_swigt__p_XcapStack, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_short[] = {  {&_swigt__p_short, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tdav_codec_id_e[] = {  {&_swigt__p_tdav_codec_id_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_thttp_event_type_e[] = {  {&_swigt__p_thttp_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_chroma_e[] = {  {&_swigt__p_tmedia_chroma_e, 0, 0, 0},{0, 0, 0, 0}};
@@ -11814,6 +12448,8 @@ static swig_cast_info _swigc__p_tsip_publish_event_type_e[] = {  {&_swigt__p_tsi
 static swig_cast_info _swigc__p_tsip_register_event_type_e[] = {  {&_swigt__p_tsip_register_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_subscribe_event_type_e[] = {  {&_swigt__p_tsip_subscribe_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsk_list_t[] = {  {&_swigt__p_tsk_list_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_twrap_rpdata_type_e[] = {  {&_swigt__p_twrap_rpdata_type_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_unsigned_short[] = {  {&_swigt__p_unsigned_short, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_CallEvent,
@@ -11831,8 +12467,10 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_ProxyVideoProducer,
   _swigc__p_PublicationEvent,
   _swigc__p_PublicationSession,
+  _swigc__p_RPData,
   _swigc__p_RegistrationEvent,
   _swigc__p_RegistrationSession,
+  _swigc__p_SMSEncoder,
   _swigc__p_SafeObject,
   _swigc__p_SipCallback,
   _swigc__p_SipEvent,
@@ -11849,7 +12487,6 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_XcapSelector,
   _swigc__p_XcapStack,
   _swigc__p_char,
-  _swigc__p_short,
   _swigc__p_tdav_codec_id_e,
   _swigc__p_thttp_event_type_e,
   _swigc__p_tmedia_chroma_e,
@@ -11863,6 +12500,8 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_tsip_register_event_type_e,
   _swigc__p_tsip_subscribe_event_type_e,
   _swigc__p_tsk_list_t,
+  _swigc__p_twrap_rpdata_type_e,
+  _swigc__p_unsigned_short,
 };
 
 
@@ -12497,6 +13136,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tsip_o_ect_ok",SWIG_From_int(static_cast< int >(tsip_o_ect_ok)));
   SWIG_Python_SetConstant(d, "tsip_o_ect_nok",SWIG_From_int(static_cast< int >(tsip_o_ect_nok)));
   SWIG_Python_SetConstant(d, "tsip_i_ect",SWIG_From_int(static_cast< int >(tsip_i_ect)));
+  SWIG_Python_SetConstant(d, "tsip_m_early_media",SWIG_From_int(static_cast< int >(tsip_m_early_media)));
   SWIG_Python_SetConstant(d, "tsip_m_local_hold_ok",SWIG_From_int(static_cast< int >(tsip_m_local_hold_ok)));
   SWIG_Python_SetConstant(d, "tsip_m_local_hold_nok",SWIG_From_int(static_cast< int >(tsip_m_local_hold_nok)));
   SWIG_Python_SetConstant(d, "tsip_m_local_resume_ok",SWIG_From_int(static_cast< int >(tsip_m_local_resume_ok)));
@@ -12527,6 +13167,9 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tdav_codec_id_speex_nb",SWIG_From_int(static_cast< int >(tdav_codec_id_speex_nb)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_speex_wb",SWIG_From_int(static_cast< int >(tdav_codec_id_speex_wb)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_speex_uwb",SWIG_From_int(static_cast< int >(tdav_codec_id_speex_uwb)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_bv16",SWIG_From_int(static_cast< int >(tdav_codec_id_bv16)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_bv32",SWIG_From_int(static_cast< int >(tdav_codec_id_bv32)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_evrc",SWIG_From_int(static_cast< int >(tdav_codec_id_evrc)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h261",SWIG_From_int(static_cast< int >(tdav_codec_id_h261)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h263",SWIG_From_int(static_cast< int >(tdav_codec_id_h263)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h263p",SWIG_From_int(static_cast< int >(tdav_codec_id_h263p)));
@@ -12539,6 +13182,11 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "thttp_event_auth_failed",SWIG_From_int(static_cast< int >(thttp_event_auth_failed)));
   SWIG_Python_SetConstant(d, "thttp_event_closed",SWIG_From_int(static_cast< int >(thttp_event_closed)));
   SWIG_Python_SetConstant(d, "thttp_event_transport_error",SWIG_From_int(static_cast< int >(thttp_event_transport_error)));
+  SWIG_Python_SetConstant(d, "twrap_rpdata_type_sms_none",SWIG_From_int(static_cast< int >(twrap_rpdata_type_sms_none)));
+  SWIG_Python_SetConstant(d, "twrap_rpdata_type_sms_submit",SWIG_From_int(static_cast< int >(twrap_rpdata_type_sms_submit)));
+  SWIG_Python_SetConstant(d, "twrap_rpdata_type_sms_deliver",SWIG_From_int(static_cast< int >(twrap_rpdata_type_sms_deliver)));
+  SWIG_Python_SetConstant(d, "twrap_rpdata_type_sms_status_report",SWIG_From_int(static_cast< int >(twrap_rpdata_type_sms_status_report)));
+  SWIG_Python_SetConstant(d, "twrap_rpdata_type_sms_command",SWIG_From_int(static_cast< int >(twrap_rpdata_type_sms_command)));
 #if PY_VERSION_HEX >= 0x03000000
   return m;
 #else

@@ -96,6 +96,11 @@ int invite_handle_event(const tsip_event_t *_event)
 		// ============================
 		//	Media Events
 		//
+		
+		/* Early Media started */
+		case tsip_m_early_media:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_m_early_media)");
+			break;
 
 		/* 3GPP TS 24.610: Communication Hold  */
 		case tsip_m_local_hold_ok:

@@ -303,13 +303,18 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 							len -= 2;
 						}
 						/* reset old value */
-						for(i=0; i<sizeof(operator_id_t); i++){
-							self->security.operator_id[i] = 0x00;
-						}
+						memset(self->security.operator_id, 0, sizeof(self->security.operator_id));
+						
 						/* set new value */
 						if(len){ /* perhaps there were only 2 chars*/
-							for(i = 0, j = 0; (i<sizeof(operator_id_t) && i<len); i+=2, j++){
-								sscanf(&hexstr[i], "%2x", &self->security.operator_id[j]); /*do not use tsk_atox(str), because str should end with '\0'.*/
+							for(i = 0, j = 0; (i<(sizeof(operator_id_t) * 2) && i<len); i+=2, j++){
+#if 0	/* Could cause SIGBUS error (if memory misaligned) */
+								sscanf(&hexstr[i], "%2x", &self->security.operator_id[j]);
+#else
+								static unsigned _1bytes; /* do not use neither int8_t nor uint8_t */
+								sscanf(&hexstr[i], "%2x", &_1bytes);
+								self->security.operator_id[j] = (_1bytes & 0xFF);
+#endif
 							}
 						}
 					}
@@ -349,6 +354,26 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 					break;
 				}
 			
+
+			/* === Nat Traversal === */
+			case tsip_pname_stun_server:
+				{	/* (const char*)IP_STR, (unsigned)PORT_UINT */
+					const char* IP_STR = va_arg(*app, const char*);
+					unsigned PORT_UINT = va_arg(*app, unsigned);
+					/* do not check, Null==> disable STUN */
+					tsk_strupdate(&self->natt.stun.ip, IP_STR);
+					self->natt.stun.port = PORT_UINT;		
+					break;
+				}
+			case tsip_pname_stun_cred:
+				{	/* (const char*)USR_STR, (const char*)PASSORD_STR */
+					const char* USR_STR = va_arg(*app, const char*);
+					const char* PASSORD_STR = va_arg(*app, const char*);
+					tsk_strupdate(&self->natt.stun.login, USR_STR);
+					tsk_strupdate(&self->natt.stun.pwd, PASSORD_STR);
+					break;
+				}
+
 			/* === User Data === */
 			case tsip_pname_userdata:
 				{	/* (const void*)DATA_PTR */
@@ -482,6 +507,7 @@ bail:
 	return stack;
 }
 
+
 /**@ingroup tsip_stack_group
 * Starts a 3GPP IMS/LTE stack. This function MUST be called before you start calling any SIP function (@a tsip_*).
 * @param self The 3GPP IMS/LTE stack to start. This handle should be created using @ref tsip_stack_create().
@@ -491,6 +517,7 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 {
 	int ret = -1;
 	tsip_stack_t *stack = self;
+	const char* stack_error_desc = "Failed to start the stack";
 
 	if(!stack){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -573,19 +600,35 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 	/* === Runnable === */
 	TSK_RUNNABLE(stack)->run = run;
 	if((ret = tsk_runnable_start(TSK_RUNNABLE(stack), tsip_event_def_t))){
-		TSK_DEBUG_ERROR("Failed to start timer manager");
+		stack_error_desc = "Failed to start timer manager";
+		TSK_DEBUG_ERROR("%s", stack_error_desc);
 		goto bail;
 	}
 	
+	/* === Nat Traversal === */
+	// delete previous context
+	TSK_OBJECT_SAFE_FREE(stack->natt.ctx);
+	if(stack->natt.stun.ip){
+		if(stack->natt.stun.port == 0){
+			/* FIXME: for now only UDP(IPv4/IPv6) is supported */
+			stack->natt.stun.port = TNET_STUN_TCP_UDP_DEFAULT_PORT;
+		}
+		stack->natt.ctx = tnet_nat_context_create(TNET_SOCKET_TYPE_IS_IPV6(stack->network.proxy_cscf_type)? tnet_socket_type_udp_ipv6: tnet_socket_type_udp_ipv4, 
+			stack->natt.stun.login, stack->natt.stun.pwd);
+		tnet_nat_set_server(stack->natt.ctx, stack->natt.stun.ip, stack->natt.stun.port);
+	}
+
 	/* === Transport Layer === */
 	/* Adds the default transport to the transport Layer */
 	if((ret = tsip_transport_layer_add(stack->layer_transport, stack->network.local_ip, stack->network.local_port, stack->network.proxy_cscf_type, "SIP transport"))){
-		TSK_DEBUG_ERROR("Failed to add new transport");
+		stack_error_desc = "Failed to add new transport";
+		TSK_DEBUG_ERROR("%s", stack_error_desc);
 		goto bail;
 	}
 	/* Starts the transport Layer */
 	if((ret = tsip_transport_layer_start(stack->layer_transport))){
-		TSK_DEBUG_ERROR("Failed to start sip transport");
+		stack_error_desc = "Failed to start sip transport";
+		TSK_DEBUG_ERROR("%s", stack_error_desc);
 		goto bail;
 	}
 	else if(!stack->network.local_ip){
@@ -601,7 +644,8 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 			}
 		}
 	}
-	
+
+
 	/* ===	ALL IS OK === */
 	if(stack->layer_transac){ /* For transaction layer */
 		stack->layer_transac->reliable = TNET_SOCKET_TYPE_IS_STREAM(stack->network.proxy_cscf_type);
@@ -618,10 +662,10 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 	
 
 bail:
-	TSIP_STACK_SIGNAL(self, tsip_event_code_stack_failed_to_start, "Stack failed to start");
+	TSIP_STACK_SIGNAL(self, tsip_event_code_stack_failed_to_start, stack_error_desc);
 	/* stop all running instances */
 	if(stack->timer_mgr_started){
-		if(!(ret = tsk_timer_mgr_global_stop())){
+		if((ret = tsk_timer_mgr_global_stop()) == 0){
 			stack->timer_mgr_started = tsk_false;
 		}
 	}
@@ -944,6 +988,12 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 
 		/* DNS */
 		TSK_OBJECT_SAFE_FREE(stack->dns_ctx);
+
+		/* NAT Traversal context */
+		TSK_FREE(stack->natt.stun.ip);
+		TSK_FREE(stack->natt.stun.login);
+		TSK_FREE(stack->natt.stun.pwd);
+		TSK_OBJECT_SAFE_FREE(stack->natt.ctx);
 
 		/* DHCP */
 

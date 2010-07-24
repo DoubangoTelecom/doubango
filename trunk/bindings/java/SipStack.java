@@ -61,7 +61,15 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_setPassword(swigCPtr, this, password);
   }
 
-  public boolean setProxyCSCF(String fqdn, long port, String transport, String ipversion) {
+  public boolean setAMF(String amf) {
+    return tinyWRAPJNI.SipStack_setAMF(swigCPtr, this, amf);
+  }
+
+  public boolean setOperatorId(String opid) {
+    return tinyWRAPJNI.SipStack_setOperatorId(swigCPtr, this, opid);
+  }
+
+  public boolean setProxyCSCF(String fqdn, int port, String transport, String ipversion) {
     return tinyWRAPJNI.SipStack_setProxyCSCF(swigCPtr, this, fqdn, port, transport, ipversion);
   }
 
@@ -69,7 +77,7 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_setLocalIP(swigCPtr, this, ip);
   }
 
-  public boolean setLocalPort(long port) {
+  public boolean setLocalPort(int port) {
     return tinyWRAPJNI.SipStack_setLocalPort(swigCPtr, this, port);
   }
 
@@ -93,12 +101,24 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_setAoR(swigCPtr, this, ip, port);
   }
 
+  public boolean setSTUNServer(String ip, int port) {
+    return tinyWRAPJNI.SipStack_setSTUNServer(swigCPtr, this, ip, port);
+  }
+
+  public boolean setSTUNCred(String login, String password) {
+    return tinyWRAPJNI.SipStack_setSTUNCred(swigCPtr, this, login, password);
+  }
+
   public String dnsENUM(String service, String e164num, String domain) {
     return tinyWRAPJNI.SipStack_dnsENUM(swigCPtr, this, service, e164num, domain);
   }
 
-  public String dnsNaptrSrv(String domain, String service, short[] OUTPUT) {
+  public String dnsNaptrSrv(String domain, String service, int[] OUTPUT) {
     return tinyWRAPJNI.SipStack_dnsNaptrSrv(swigCPtr, this, domain, service, OUTPUT);
+  }
+
+  public String dnsSrv(String service, int[] OUTPUT) {
+    return tinyWRAPJNI.SipStack_dnsSrv(swigCPtr, this, service, OUTPUT);
   }
 
   public boolean isValid() {

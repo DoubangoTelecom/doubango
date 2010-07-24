@@ -109,7 +109,7 @@ const char* tnet_transport_get_description(const tnet_transport_handle_t *handle
 	}
 	else{
 		TSK_DEBUG_ERROR("NULL transport object.");
-		return 0;
+		return tsk_null;
 	}
 }
 
@@ -128,18 +128,85 @@ int tnet_transport_get_ip_n_port_2(const tnet_transport_handle_t *handle, tnet_i
 {
 	const tnet_transport_t *transport = handle;
 	if(transport){
-		// do not check the master, let the apllication die if "null"
+		// do not check the master, let the application die if "null"
 		if(ip){
 			memcpy(*ip, transport->master->ip, sizeof(transport->master->ip));
 		}
 		if(port){
 			*port = transport->master->port;
 		}
+		return 0;
 	}
 	else{
 		TSK_DEBUG_ERROR("NULL transport object.");
+		return -1;
 	}
-	return -1;
+}
+
+int tnet_transport_set_natt_ctx(tnet_transport_handle_t *handle, tnet_nat_context_handle_t* natt_ctx)
+{
+	tnet_transport_t *transport = handle;
+
+	if(transport && natt_ctx){
+		TSK_OBJECT_SAFE_FREE(transport->natt_ctx); // delete old
+		transport->natt_ctx = tsk_object_ref(natt_ctx);
+		return 0;
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+}
+
+int tnet_transport_get_public_ip_n_port(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
+{
+	tsk_bool_t stun_ok = tsk_false;
+	tnet_nat_context_handle_t* natt_ctx;
+	const tnet_transport_t *transport = handle;
+	if(!transport){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if(TNET_SOCKET_TYPE_IS_DGRAM(transport->type) && (natt_ctx = tsk_object_ref(transport->natt_ctx))){
+		tnet_stun_binding_id_t bind_id = TNET_STUN_INVALID_BINDING_ID;
+		// if the socket is already monitored by the transport we should pause beacuse both the transport and
+		// NAT binder will try to read from it
+		tsk_bool_t pause_socket = (TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started);
+
+		// FIXME: change when ICE will be fully implemented
+		TSK_DEBUG_INFO("Getting public address");
+		// Pause the soket
+		if(pause_socket){
+			tnet_transport_pause_socket(transport, fd, tsk_true);
+		}
+		// Performs STUN binding
+		bind_id = tnet_nat_stun_bind(transport->natt_ctx, fd);
+		// Resume the socket
+		if(pause_socket){
+			tnet_transport_pause_socket(transport, fd, tsk_false);
+		}
+		
+		if(TNET_STUN_IS_VALID_BINDING_ID(bind_id)){
+			char* public_ip = tsk_null;
+			if(tnet_nat_stun_get_reflexive_address(transport->natt_ctx, bind_id, &public_ip, port) == 0){
+				if(ip && public_ip){
+					tsk_size_t ip_len = tsk_strlen(public_ip);
+					memcpy(ip, public_ip, ip_len> sizeof(*ip)?sizeof(*ip):ip_len);
+				}
+				stun_ok = tsk_true;
+			}
+			TSK_FREE(public_ip);
+			tnet_nat_stun_unbind(transport->natt_ctx, bind_id);
+		}
+		tsk_object_unref(natt_ctx);
+	}
+
+	if(!stun_ok){
+		return tnet_transport_get_ip_n_port(handle, fd, ip, port);
+	}
+	
+	return 0;
 }
 
 tnet_socket_type_t tnet_transport_get_type(const tnet_transport_handle_t *handle)
@@ -152,6 +219,18 @@ tnet_socket_type_t tnet_transport_get_type(const tnet_transport_handle_t *handle
 		TSK_DEBUG_ERROR("NULL transport object.");
 	}
 	return tnet_socket_type_invalid;
+}
+
+tnet_fd_t tnet_transport_get_master_fd(const tnet_transport_handle_t *handle)
+{
+	if(handle){
+		const tnet_transport_t *transport = handle;
+		return transport->master->fd;
+	}
+	else{
+		TSK_DEBUG_ERROR("NULL transport object.");
+	}
+	return TNET_INVALID_FD;
 }
 
 /**
@@ -282,7 +361,7 @@ static void *run(void* self)
 	tsk_list_item_t *curr;
 	tnet_transport_t *transport = self;
 	
-	TSK_RUNNABLE(transport)->running = tsk_true; // VERY IMPORTANT --> needed by the main thread
+	TSK_DEBUG_INFO("Transport::run() - enter");
 
 	/* create main thread */
 	if((ret = tsk_thread_create(transport->mainThreadId, tnet_transport_mainthread, transport))){ /* More important than "tsk_runnable_start" ==> start it first. */
@@ -293,8 +372,7 @@ static void *run(void* self)
 	
 	TSK_RUNNABLE_RUN_BEGIN(transport);
 	
-	if((curr = TSK_RUNNABLE_POP_FIRST(transport)))
-	{
+	if((curr = TSK_RUNNABLE_POP_FIRST(transport))){
 		const tnet_transport_event_t *e = (const tnet_transport_event_t*)curr->data;
 		
 		if(transport->callback){
@@ -304,6 +382,8 @@ static void *run(void* self)
 	}
 	
 	TSK_RUNNABLE_RUN_END(transport);
+
+	TSK_DEBUG_INFO("Transport::run() - exit");
 
 	return tsk_null;
 }
@@ -355,6 +435,7 @@ static tsk_object_t* tnet_transport_dtor(tsk_object_t * self)
 		tnet_transport_shutdown(transport);
 		TSK_OBJECT_SAFE_FREE(transport->master);
 		TSK_OBJECT_SAFE_FREE(transport->context);
+		TSK_OBJECT_SAFE_FREE(transport->natt_ctx);
 		TSK_FREE(transport->description);
 		TSK_FREE(transport->local_ip);
 

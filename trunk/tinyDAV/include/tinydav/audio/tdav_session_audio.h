@@ -69,6 +69,9 @@ typedef struct tdav_session_audio_s
 	char* local_ip;
 	//uint16_t local_port;
 
+	/* NAT Traversal context */
+	tnet_nat_context_handle_t* natt_ctx;
+
 	char* remote_ip;
 	uint16_t remote_port;
 	

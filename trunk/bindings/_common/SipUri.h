@@ -32,7 +32,15 @@ public:
 
 public:
 	static bool isValid(const char*);
+
 	bool isValid();
+	const char* getScheme();
+	const char* getHost();
+	unsigned short getPort();
+	const char* getUserName();
+	const char* getPassword();
+	const char* getDisplayName();
+	const char* getParamValue(const char* pname);
 
 private:
 	tsip_uri_t* uri;

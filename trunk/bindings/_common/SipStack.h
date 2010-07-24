@@ -43,17 +43,23 @@ public: /* API functions */
 	bool setIMPI(const char* impi);
 	bool setIMPU(const char* impu_uri);
 	bool setPassword(const char* password);
-	bool setProxyCSCF(const char* fqdn, unsigned port, const char* transport, const char* ipversion);
+	bool setAMF(const char* amf);
+	bool setOperatorId(const char* opid);
+	bool setProxyCSCF(const char* fqdn, unsigned short port, const char* transport, const char* ipversion);
 	bool setLocalIP(const char* ip);
-	bool setLocalPort(unsigned port);
+	bool setLocalPort(unsigned short port);
 	bool setEarlyIMS(bool enabled);
 	bool addHeader(const char* name, const char* value);
 	bool removeHeader(const char* name);
 	bool addDnsServer(const char* ip);
 	bool setAoR(const char* ip, int port);
-
+	
+	bool setSTUNServer(const char* ip, unsigned short port);
+	bool setSTUNCred(const char* login, const char* password);
+	
 	char* dnsENUM(const char* service, const char* e164num, const char* domain);
-	char* dnsNaptrSrv(const char* domain, const char* service, short *OUTPUT);
+	char* dnsNaptrSrv(const char* domain, const char* service, unsigned short *OUTPUT);
+	char* dnsSrv(const char* service, unsigned short* OUTPUT);
 
 	bool isValid();
 	bool stop();

@@ -90,7 +90,7 @@ tnet_dhcp6_duid_t* tnet_dhcp6_duid_deserialize(const void* data, tsk_size_t size
 		goto bail;
 	}
 
-	type = (tnet_dhcp6_duid_type_t) tnet_ntohs(*((uint16_t*)dataPtr));
+	type = (tnet_dhcp6_duid_type_t) tnet_ntohs_2(dataPtr);
 	dataPtr += 2;
 
 bail:

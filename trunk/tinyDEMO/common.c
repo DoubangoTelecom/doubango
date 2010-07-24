@@ -28,6 +28,7 @@
 #include "register.h"
 #include "subscribe.h"
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -62,7 +63,9 @@ int stack_callback(const tsip_event_t *_event)
 		return -1;
 	}
 
+#if 0
 	tsk_safeobj_lock(ctx);
+#endif
 
 	switch(_event->type){
 		case tsip_event_register:
@@ -128,8 +131,9 @@ int stack_callback(const tsip_event_t *_event)
 				break;
 			}
 	}
-
+#if 0
 	tsk_safeobj_unlock(ctx);
+#endif
 
 	return ret;
 }
@@ -235,6 +239,7 @@ int stack_config(const opts_L_t* opts)
 	int ret = 0;
 	tsk_param_t* param;
 	tsk_bool_t pcscf_changed = tsk_false;
+	tsk_bool_t stun_done = tsk_false;
 
 	if(!opts){
 		return -1;
@@ -364,6 +369,45 @@ int stack_config(const opts_L_t* opts)
 					break;
 				}
 
+			case opt_stun_ip:
+			case opt_stun_pwd:
+			case opt_stun_port:
+			case opt_stun_usr:
+				{	
+					if(!stun_done){
+						const opt_t* _opt;
+						const char* ip = tsk_null, *usr = tsk_null, *pwd = tsk_null;
+						unsigned port = 0;
+						
+						if((_opt = opt_get_by_type(opts, opt_stun_ip))){
+							ip = _opt->value;
+						}
+						if((_opt = opt_get_by_type(opts, opt_stun_port))){
+							port = atoi(_opt->value);
+						}
+						if((_opt = opt_get_by_type(opts, opt_stun_usr))){
+							usr = _opt->value;
+						}
+						if((_opt = opt_get_by_type(opts, opt_stun_pwd))){
+							pwd = _opt->value;
+						}
+						
+						if(ip && port){
+							tsip_stack_set(ctx->stack,
+								TSIP_STACK_SET_STUN_SERVER(ip, port),
+								TSIP_STACK_SET_NULL());
+						}
+						if(usr){
+							tsip_stack_set(ctx->stack,
+								TSIP_STACK_SET_STUN_CRED(usr, pwd),
+								TSIP_STACK_SET_NULL());
+						}
+
+						stun_done = tsk_true;
+					}
+					break;
+				}
+
 		}/* switch */
 
 	} /* foreach */
@@ -423,9 +467,9 @@ session_t* session_create(session_type_t type, tsip_ssession_handle_t* handle)
 						// 100rel
 						TSIP_MSESSION_SET_100rel(),
 						// Session timers
-						TSIP_MSESSION_SET_TIMERS(90, "uac"),
+						TSIP_MSESSION_SET_TIMERS(3600, "uac"),
 						// QoS
-						TSIP_MSESSION_SET_QOS(tmedia_qos_stype_segmented, tmedia_qos_strength_optional),
+						TSIP_MSESSION_SET_QOS(tmedia_qos_stype_none, tmedia_qos_strength_none),
 
 						// close media params
 						TSIP_MSESSION_SET_NULL()

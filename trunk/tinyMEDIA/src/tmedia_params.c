@@ -55,19 +55,20 @@ tmedia_param_t* tmedia_param_create(tmedia_param_access_type_t access_type,
 		switch(value_type){
 			case tmedia_pvt_int32:
 				if(param->value = tsk_calloc(1, sizeof(int32_t))){
-					*((int32_t*)param->value) = *((int32_t*)value);
+					memcpy(param->value, value, sizeof(int32_t));
+					//*((int32_t*)param->value) = *((int32_t*)value);
 				}
 				break;
-			case tmedia_pvt_pvoid:
-				/* FIXME */
-				param->value = value;
+			case tmedia_pvt_pobject:
+				param->value = tsk_object_ref(value);
 				break;
 			case tmedia_pvt_pchar:
 				param->value = tsk_strdup(value);
 				break;
 			case tmedia_pvt_int64:
 				if(param->value = tsk_calloc(1, sizeof(int64_t))){
-					*((int64_t*)param->value) = *((int64_t*)value);
+					memcpy(param->value, value, sizeof(int64_t));
+					//*((int64_t*)param->value) = *((int64_t*)value);
 				}
 				break;
 		}
@@ -123,10 +124,9 @@ static tsk_object_t* tmedia_param_dtor(tsk_object_t* self)
 	tmedia_param_t *param = self;
 	if(param){
 		TSK_FREE(param->key);
-		switch(param->access_type){
-			case tmedia_pvt_pvoid:
-				/* FIXME */
-				param->value = tsk_null;
+		switch(param->value_type){
+			case tmedia_pvt_pobject:
+				TSK_OBJECT_SAFE_FREE(param->value);
 				break;
 			case tmedia_pvt_pchar:
 			case tmedia_pvt_int64:

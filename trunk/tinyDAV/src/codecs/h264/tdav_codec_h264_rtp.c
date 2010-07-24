@@ -281,10 +281,6 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_s *self, const void *da
 {
 	uint8_t* pdata = (uint8_t*)data;	
 
-
-	//#define START_CODE_PREFIX		16777216 /* 0x10000000 */
-		
-	//while(size && *( ((uint32_t*) &pdata[0])-0 ) == START_CODE_PREFIX ){
 	while(pdata[0] == H264_START_CODE_PREFIX[0] && pdata[1] == H264_START_CODE_PREFIX[1] && pdata[2] == H264_START_CODE_PREFIX[2] && pdata[3] == H264_START_CODE_PREFIX[3]){
 		pdata += 4;
 		size -= 4;

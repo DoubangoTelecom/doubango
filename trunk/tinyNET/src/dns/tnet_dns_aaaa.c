@@ -75,8 +75,8 @@ static tsk_object_t* tnet_dns_aaaa_ctor(tsk_object_t * self, va_list * app)
 			// ==> DESERIALIZATION
 			/* ADDRESS */
 			tsk_sprintf(&(aaaa->address), "%x:%x:%x:%x:%x:%x:%x:%x",
-				tnet_ntohs(*((uint16_t*)&rddata[0])), tnet_ntohs(*((uint16_t*)&rddata[2])), tnet_ntohs(*((uint16_t*)&rddata[4])), tnet_ntohs(*((uint16_t*)&rddata[6])),
-				tnet_ntohs(*((uint16_t*)&rddata[8])), tnet_ntohs(*((uint16_t*)&rddata[10])), tnet_ntohs(*((uint16_t*)&rddata[12])), tnet_ntohs(*((uint16_t*)&rddata[14])));
+				tnet_ntohs_2(&rddata[0]), tnet_ntohs_2(&rddata[2]), tnet_ntohs_2(&rddata[4]), tnet_ntohs_2(&rddata[6]),
+				tnet_ntohs_2(&rddata[8]), tnet_ntohs_2(&rddata[10]), tnet_ntohs_2(&rddata[12]), tnet_ntohs_2(&rddata[14]));
 		}
 		else{
 			TSK_DEBUG_ERROR("Invalid IPv6 address.");

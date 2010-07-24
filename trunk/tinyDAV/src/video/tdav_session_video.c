@@ -246,6 +246,12 @@ int tmedia_session_video_set(tmedia_session_t* self, const tmedia_param_t* param
 			video->useIPv6 = tsk_striequals(param->value, "ipv6");
 		}
 	}
+	else if(param->value_type == tmedia_pvt_pobject){
+		if(tsk_striequals(param->key, "natt-ctx")){
+			TSK_OBJECT_SAFE_FREE(video->natt_ctx);
+			video->natt_ctx = tsk_object_ref(param->value);
+		}
+	}
 
 	return ret;
 }
@@ -265,6 +271,9 @@ int tdav_session_video_prepare(tmedia_session_t* self)
 			
 			ret = trtp_manager_set_rtp_callback(video->rtp_manager, tdav_session_video_rtp_cb, video);
 			ret = trtp_manager_prepare(video->rtp_manager);
+			if(video->natt_ctx){
+				ret = trtp_manager_set_natt_ctx(video->rtp_manager, video->natt_ctx);
+			}
 		}
 	}
 
@@ -410,8 +419,13 @@ const tsdp_header_M_t* tdav_session_video_get_lo(tmedia_session_t* self)
 	changed = (self->ro_changed || !self->M.lo);
 
 	if(!self->M.lo){
-		if((self->M.lo = tsdp_header_M_create(self->plugin->media, video->rtp_manager->transport->master->port, "RTP/AVP"))){
-			/* Add common attributes */
+		if((self->M.lo = tsdp_header_M_create(self->plugin->media, video->rtp_manager->rtp.public_port, "RTP/AVP"))){
+			/* If NATT is active, do not rely on the global IP address Connection line */
+			if(video->natt_ctx){
+				tsdp_header_M_add_headers(self->M.lo,
+					TSDP_HEADER_C_VA_ARGS("IN", video->useIPv6 ? "IP6" : "IP4", video->rtp_manager->rtp.public_ip),
+					tsk_null);
+			}
 		}
 		else{
 			TSK_DEBUG_ERROR("Failed to create lo");
@@ -555,6 +569,9 @@ static tsk_object_t* tdav_session_video_dtor(tsk_object_t * self)
 		TSK_FREE(session->encoder.conv_buffer);
 		TSK_FREE(session->decoder.buffer);
 		TSK_FREE(session->decoder.conv_buffer);
+
+		/* NAT Traversal context */
+		TSK_OBJECT_SAFE_FREE(session->natt_ctx);
 
 		tsk_safeobj_deinit(session);
 

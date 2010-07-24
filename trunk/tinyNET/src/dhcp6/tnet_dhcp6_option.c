@@ -89,10 +89,10 @@ tnet_dhcp6_option_t* tnet_dhcp6_option_deserialize(const void* data, tsk_size_t 
 		goto bail;
 	}
 
-	code = (tnet_dhcp6_option_code_t) tnet_ntohs(*((uint16_t*)dataPtr));
+	code = (tnet_dhcp6_option_code_t) tnet_ntohs_2(dataPtr);
 	dataPtr += 2;
 
-	len = tnet_ntohs(*((uint16_t*)dataPtr));
+	len = tnet_ntohs_2(dataPtr);
 	dataPtr += 2;
 
 	switch(code){

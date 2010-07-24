@@ -49,24 +49,40 @@
 
 /* RFC 4298 - 3.1.  BroadVoice16 Bit Stream Definition */
 #define TDAV_BV16_FRAME_SIZE			10
+#define FRSZ_IN_U8						(FRSZ*2)	
 
 /* ============ BV16 Plugin interface ================= */
 
 #define tdav_codec_bv16_fmtp_get tsk_null
 #define tdav_codec_bv16_fmtp_set tsk_null
 
+static int sizestate = sizeof(struct BV16_Encoder_State);
+static int sizebitstream = sizeof(struct BV16_Bit_Stream);
+
 int tdav_codec_bv16_open(tmedia_codec_t* self)
 {
 	tdav_codec_bv16_t* bv16 = (tdav_codec_bv16_t*)self;
 
 	if(!bv16->encoder.state){
-		bv16->encoder.state = allocWord16(0, sizeof(struct BV16_Encoder_State)/2-1);
+		bv16->encoder.state = allocWord16(0, sizestate/2-1);
 		Reset_BV16_Encoder((struct BV16_Encoder_State*)bv16->encoder.state);
+	}
+	if(!bv16->encoder.bs){
+		bv16->encoder.bs = allocWord16(0, sizebitstream/2-1);
+	}
+	if(!bv16->encoder.x){
+		bv16->encoder.x = allocWord16(0, FRSZ-1);
 	}
 
 	if(!bv16->decoder.state){
-		bv16->decoder.state = allocWord16(0, sizeof(struct BV16_Decoder_State)/2-1);
+		bv16->decoder.state = allocWord16(0, sizestate/2-1);
 		Reset_BV16_Decoder((struct BV16_Decoder_State*)bv16->decoder.state);
+	}
+	if(!bv16->decoder.bs){
+		bv16->decoder.bs = allocWord16(0, sizebitstream/2-1);
+	}
+	if(!bv16->decoder.x){
+		bv16->decoder.x = allocWord16(0, FRSZ-1);
 	}
 
 	return 0;
@@ -76,6 +92,33 @@ int tdav_codec_bv16_close(tmedia_codec_t* self)
 {
 	tdav_codec_bv16_t* bv16 = (tdav_codec_bv16_t*)self;
 	
+	if(bv16->encoder.state){
+		 deallocWord16(bv16->encoder.state, 0, sizestate/2-1);
+		 bv16->encoder.state = tsk_null;
+	}
+	if(bv16->encoder.bs){
+		deallocWord16(bv16->encoder.bs, 0, sizebitstream/2-1);
+		bv16->encoder.bs = tsk_null;
+	}
+	if(bv16->encoder.x){
+		deallocWord16(bv16->encoder.x, 0, FRSZ-1);
+		bv16->encoder.x = tsk_null;
+	}
+
+	if(bv16->decoder.state){
+		 deallocWord16(bv16->decoder.state, 0, sizestate/2-1);
+		 bv16->decoder.state = tsk_null;
+	}
+	if(bv16->encoder.bs){
+		deallocWord16(bv16->decoder.bs, 0, sizebitstream/2-1);
+		bv16->decoder.bs = tsk_null;
+	}
+	if(bv16->decoder.x){
+		deallocWord16(bv16->decoder.x, 0, FRSZ-1);
+		bv16->decoder.x = tsk_null;
+	}
+	
+     
 
 	return 0;
 }
@@ -95,16 +138,36 @@ tsk_size_t tdav_codec_bv16_encode(tmedia_codec_t* self, const void* in_data, tsk
 
 tsk_size_t tdav_codec_bv16_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
-	//tsk_size_t out_size;
-	//int ret;
+	tsk_size_t out_size = 0;
+	int i;
 	tdav_codec_bv16_t* bv16 = (tdav_codec_bv16_t*)self;
+	uint8_t mama[600];
 
 	if(!self || !in_data || !in_size || !out_data || (in_size % TDAV_BV16_FRAME_SIZE)){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 	
-	return 0;
+	for(i=0; i<(int)in_size; i+=TDAV_BV16_FRAME_SIZE){
+		BV16_BitUnPack(mama, (struct BV16_Bit_Stream*)bv16->decoder.bs);
+		//BV16_BitUnPack(&((UWord8 *)in_data)[i], (struct BV16_Bit_Stream*)bv16->decoder.bs);
+		BV16_Decode((struct BV16_Bit_Stream*)bv16->decoder.bs, (struct BV16_Decoder_State*)bv16->decoder.state, bv16->decoder.x);
+
+		
+		if(*out_max_size<(out_size + FRSZ_IN_U8)){
+			if(!(*out_data = tsk_realloc(*out_data, (out_size + FRSZ_IN_U8)))){
+				TSK_DEBUG_ERROR("Failed to allocate new buffer");
+				*out_max_size = 0;
+				return 0;
+			}
+			*out_max_size = (out_size + FRSZ_IN_U8);
+		}
+		memcpy(&((uint8_t*)* out_data)[out_size], bv16->decoder.x, FRSZ_IN_U8);
+		out_size += FRSZ_IN_U8;
+	}
+	
+
+	return out_size;
 }
 
 tsk_bool_t tdav_codec_bv16_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)

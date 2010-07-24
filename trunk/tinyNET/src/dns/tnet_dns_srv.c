@@ -68,13 +68,13 @@ static tsk_object_t* tnet_dns_srv_ctor(tsk_object_t * self, va_list * app)
 		if(rdlength){
 			// ==> DESERIALIZATION
 			/* Priority */
-			srv->priority = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset))),
+			srv->priority = tnet_ntohs_2(((uint8_t*)data) + offset),
 			offset += 2;
 			/* Weight */
-			srv->weight = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset))),
+			srv->weight = tnet_ntohs_2(((uint8_t*)data) + offset),
 			offset += 2;
 			/* Port */
-			srv->port = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset))),
+			srv->port = tnet_ntohs_2(((uint8_t*)data) + offset),
 			offset += 2;
 			/* Target */
 			tnet_dns_rr_qname_deserialize(data, &(srv->target), &offset);

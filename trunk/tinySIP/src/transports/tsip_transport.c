@@ -104,10 +104,8 @@ int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip
 	return 0;
 }
 
-int tsip_transport_msg_update_aor(const tsip_transport_t* self, tsip_message_t *msg)
+int tsip_transport_msg_update_aor(tsip_transport_t* self, tsip_message_t *msg)
 {
-	tnet_ip_t ip;
-	tnet_port_t port;
 	int ret = 0;
 
 	/* already updtated (e.g. retrans)? */
@@ -116,25 +114,25 @@ int tsip_transport_msg_update_aor(const tsip_transport_t* self, tsip_message_t *
 	}
 	
 	/* retrieves the transport ip address and port */
-	if(tsip_transport_get_ip_n_port(self, &ip, &port)){
-		return -1;
+	if(!self->stack->network.aor.ip && !self->stack->network.aor.port){
+		tnet_ip_t ip = {0};
+		tnet_port_t port = 0;
+		if((ret = tsip_transport_get_public_ip_n_port(self, &ip, &port))){
+			TSK_DEBUG_ERROR("Failed to get public IP");
+			return ret;
+		}
+		else{
+			((tsip_stack_t*)self->stack)->network.aor.ip = tsk_strdup(ip);
+			((tsip_stack_t*)self->stack)->network.aor.port = port;
+		}
 	}
 
 	/* === Host and port === */
 	if(msg->Contact && msg->Contact->uri){
 		tsk_strupdate(&(msg->Contact->uri->scheme), self->scheme);
-		if(!tsk_strnullORempty(self->stack->network.aor.ip)){ /* user supplied his own IP address? */
-			tsk_strupdate(&(msg->Contact->uri->host), self->stack->network.aor.ip);
-		}
-		else{ /* the ip address from the transport */
-			tsk_strupdate(&(msg->Contact->uri->host), ip);
-		}
-		if(self->stack->network.aor.port){ /* user supplied his own port? */
-			msg->Contact->uri->port = self->stack->network.aor.port;
-		}
-		else{ /* use port from the transport */
-			msg->Contact->uri->port = port;
-		}
+		tsk_strupdate(&(msg->Contact->uri->host), self->stack->network.aor.ip);
+		msg->Contact->uri->port = self->stack->network.aor.port;
+		
 		msg->Contact->uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(self->type) ? host_ipv6 : host_ipv4; /* for serializer ...who know? */
 		tsk_params_add_param(&msg->Contact->uri->params, "transport", self->protocol);
 	}
@@ -196,6 +194,19 @@ int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const ch
 	return 0;
 }
 
+tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const void* data, tsk_size_t size)
+{
+	tsk_size_t ret = 0;
+	if(TNET_SOCKET_TYPE_IS_DGRAM(self->type)){
+		ret = tnet_transport_sendto(self->net_transport, self->connectedFD, (const struct sockaddr *)&self->pcscf_addr, data, size);
+	}
+	else{
+		ret = tnet_transport_send(self->net_transport, self->connectedFD, data, size);
+	}
+    
+	return ret;
+}
+
 /* sends a request 
 * all callers of this function should provide a sigcomp-id
 */
@@ -210,13 +221,13 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 		* CANCEL will have the same Via and Contact headers as the request it cancel */
 		if(TSIP_MESSAGE_IS_REQUEST(msg) && (!TSIP_REQUEST_IS_ACK(msg) || (TSIP_REQUEST_IS_ACK(msg) && !msg->firstVia)) && !TSIP_REQUEST_IS_CANCEL(msg)){
 			tsip_transport_addvia(self, branch, msg); /* should be done before tsip_transport_msg_update() which could use the Via header */
-			tsip_transport_msg_update_aor(self, msg); /* AoR */
+			tsip_transport_msg_update_aor((tsip_transport_t*)self, msg); /* AoR */
 			tsip_transport_msg_update(self, msg); /* IPSec, SigComp, ... */
 		}
 		else if(TSIP_MESSAGE_IS_RESPONSE(msg)){
 			/* AoR for responses which have a contact header (e.g. 183/200 INVITE) */
 			if(msg->Contact){
-				tsip_transport_msg_update_aor(self, msg);
+				tsip_transport_msg_update_aor((tsip_transport_t*)self, msg);
 			}
 			/*	RFC 3581 - 4.  Server Behavior
 				When a server compliant to this specification (which can be a proxy
@@ -281,6 +292,7 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 				}
 			}
 			else{
+				ret = tsip_transport_send_raw(self, buffer->data, buffer->size);
 				/*if(destIP && destPort)
 				{
 					struct sockaddr_storage to;
@@ -294,10 +306,10 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 					}
 				}
 				else*/
-				{
-					if((ret = tnet_transport_send(self->net_transport, self->connectedFD, buffer->data, buffer->size))){
-					}
-				}
+				//{
+				//	if((ret = tsip_transport_send_raw(self, buffer->data, buffer->size))){
+				//	}
+				//}
 			}
 
 //bail:
@@ -312,20 +324,20 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, tsk_bool_t lr)
 {
 	if(self){
-		tnet_ip_t ip;
-		tnet_port_t port;
+		//tnet_ip_t ip;
+		//tnet_port_t port;
 		tsip_uri_t* uri = tsk_null;
 		
-		if(!tnet_get_ip_n_port(self->connectedFD, &ip, &port)){
+		//if(!tnet_get_ip_n_port(self->connectedFD, &ip, &port)){
 			char* uristring = tsk_null;
 			int ipv6 = TNET_SOCKET_TYPE_IS_IPV6(self->type);
 
 			tsk_sprintf(&uristring, "%s:%s%s%s:%d;%s;transport=%s",
 				self->scheme,
 				ipv6 ? "[" : "",
-				ip,
+				((tsip_stack_t*)self->stack)->network.aor.ip,
 				ipv6 ? "]" : "",
-				port,
+				((tsip_stack_t*)self->stack)->network.aor.port,
 				lr ? "lr" : "",
 				self->protocol);
 			if(uristring){
@@ -334,7 +346,7 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, tsk_bool_t lr)
 				}
 				TSK_FREE(uristring);
 			}
-		}
+		//}
 		return uri;
 	}
 	return tsk_null;

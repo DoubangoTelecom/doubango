@@ -45,4 +45,32 @@ public class SipUri {
     return tinyWRAPJNI.SipUri_isValid__SWIG_1(swigCPtr, this);
   }
 
+  public String getScheme() {
+    return tinyWRAPJNI.SipUri_getScheme(swigCPtr, this);
+  }
+
+  public String getHost() {
+    return tinyWRAPJNI.SipUri_getHost(swigCPtr, this);
+  }
+
+  public int getPort() {
+    return tinyWRAPJNI.SipUri_getPort(swigCPtr, this);
+  }
+
+  public String getUserName() {
+    return tinyWRAPJNI.SipUri_getUserName(swigCPtr, this);
+  }
+
+  public String getPassword() {
+    return tinyWRAPJNI.SipUri_getPassword(swigCPtr, this);
+  }
+
+  public String getDisplayName() {
+    return tinyWRAPJNI.SipUri_getDisplayName(swigCPtr, this);
+  }
+
+  public String getParamValue(String pname) {
+    return tinyWRAPJNI.SipUri_getParamValue(swigCPtr, this, pname);
+  }
+
 }

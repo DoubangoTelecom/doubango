@@ -92,6 +92,10 @@ typedef enum opt_type_e
 	opt_sigcomp_id,		/* --sigcomp-id urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a473 */
 	opt_silent,			/* --silent */
 	opt_smsc,			/* --smsc +3315245856 */
+	opt_stun_ip,		/* --stun-ip numb.viagenie.ca */
+	opt_stun_pwd,		/* --stun-pwd mysecret */
+	opt_stun_port,		/* --stun-port 3478 */
+	opt_stun_usr,		/* --stun-usr bob@open-ims.test */
 	opt_to,				/* --to sip:alice@open-ims.test */
 }
 opt_type_t;

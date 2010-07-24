@@ -854,7 +854,6 @@ last:
 //
 ////#define START_CODE_PREFIX		16777216 /* 0x10000000 */
 //		for(i = size_of_scp; i<(size - size_of_scp); i++){
-//			//if( *( ((uint32_t*) &pdata[i])-0 ) == START_CODE_PREFIX ){
 //			if(pdata[i] == H264_START_CODE_PREFIX[0] && pdata[i+1] == H264_START_CODE_PREFIX[1] && pdata[i+2] == H264_START_CODE_PREFIX[2] && pdata[i+3] == H264_START_CODE_PREFIX[3]){  /* Found Start Code Prefix */
 //				prev_scp = last_scp;
 //				if((i - last_scp) >= H264_RTP_PAYLOAD_SIZE || 1){

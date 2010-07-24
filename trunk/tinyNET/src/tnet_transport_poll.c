@@ -47,6 +47,7 @@ typedef struct transport_socket_s
 	tnet_fd_t fd;
 	tsk_bool_t owner;
 	tsk_bool_t connected;
+	tsk_bool_t paused;
 
 	tnet_socket_type_t type;
 	tnet_tls_socket_handle_t* tlshandle;
@@ -103,7 +104,7 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	// signal
 	if(context->pipeW){
 		if((ret = write(context->pipeW, &c, 1)) > 0){
-			TSK_DEBUG_INFO("Socket added.");
+			TSK_DEBUG_INFO("Socket added (external call) %d", fd);
 			return 0;
 		}
 		else{
@@ -116,8 +117,27 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	}
 }
 
-/* Remove socket
- */
+int tnet_transport_pause_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tsk_bool_t pause)
+{
+	tnet_transport_t *transport = (tnet_transport_t*)handle;
+	transport_context_t *context;
+	transport_socket_t* socket;
+
+	if(!transport || !(context = (transport_context_t*)transport->context)){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if((socket = getSocket(context, fd))){
+		socket->paused = pause;
+	}
+	else{
+		TSK_DEBUG_WARN("Socket does not exist in this context");
+	}
+	return 0;
+}
+
+/* Remove socket */
 int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t *fd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
@@ -126,6 +146,8 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 	tsk_size_t i;
 	tsk_bool_t found = tsk_false;
 	
+	TSK_DEBUG_INFO("Removing socket %d", *fd);
+
 	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
 		return ret;
@@ -226,6 +248,7 @@ int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t 
 	
 	return (getSocket((transport_context_t*)transport->context, fd) != 0);
 }
+
 const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transport_handle_t *handle, tnet_fd_t fd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
@@ -280,7 +303,7 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 		tsk_safeobj_lock(context);
 		
 		context->ufds[context->count].fd = fd;
-		context->ufds[context->count].events = context->events;
+		context->ufds[context->count].events = (fd == context->pipeR) ? TNET_POLLIN : context->events;
 		context->ufds[context->count].revents = 0;
 		context->sockets[context->count] = sock;
 		
@@ -288,7 +311,7 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 		
 		tsk_safeobj_unlock(context);
 		
-		TSK_DEBUG_INFO("Socket added");
+		TSK_DEBUG_INFO("Socket added %d", fd);
 		
 		return 0;
 	}
@@ -362,7 +385,7 @@ int tnet_transport_stop(tnet_transport_t *transport)
 	}
 	
 	context = transport->context;
-	
+
 	if((ret = tsk_runnable_stop(TSK_RUNNABLE(transport)))){
 		return ret;
 	}
@@ -371,7 +394,9 @@ int tnet_transport_stop(tnet_transport_t *transport)
 		static char c = '\0';
 		
 		// signal
+		tsk_safeobj_lock(context); // =>MUST
 		write(context->pipeW, &c, 1);
+		tsk_safeobj_unlock(context);
 	}
 	
 	if(transport->mainThreadId[0]){
@@ -405,11 +430,11 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	/* set events */
 	context->events = TNET_POLLIN | TNET_POLLNVAL | TNET_POLLERR;
 	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
-		context->events |= TNET_POLLPRI 
-#if !defined(ANDROID)
-			| TNET_POLLHUP
-#endif
-			;
+//		context->events |= TNET_POLLPRI 
+//#if !defined(ANDROID)
+//			| TNET_POLLHUP /* FIXME: always present */
+//#endif
+//			;
 	}
 	
 	/* Start listening */
@@ -431,11 +456,13 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	context->pipeW = pipes[1];
 	
 	/* add R side */
+	TSK_DEBUG_INFO("pipeR fd=%d", context->pipeR);
 	if((ret = addSocket(context->pipeR, transport->master->type, transport, tsk_true, tsk_false))){
 		goto bail;
 	}
 	
 	/* Add the master socket to the context. */
+	TSK_DEBUG_INFO("master fd=%d", transport->master->fd);
 	if((ret = addSocket(transport->master->fd, transport->master->type, transport, tsk_true, tsk_false))){
 		TSK_DEBUG_ERROR("Failed to add master socket");
 		goto bail;
@@ -461,8 +488,7 @@ int tnet_transport_unprepare(tnet_transport_t *transport)
 	}
 
 	if(!transport->prepared){
-		TSK_DEBUG_ERROR("Transport not prepared.");
-		return -2;
+		return 0;
 	}
 
 	transport->prepared = tsk_false;
@@ -492,14 +518,13 @@ void *tnet_transport_mainthread(void *param)
 	
 	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 
-	while(TSK_RUNNABLE(transport)->running)
-	{
+	while(TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started){
 		if((ret = tnet_poll(context->ufds, context->count, -1)) < 0){
 			TNET_PRINT_LAST_ERROR("poll have failed.");
 			goto bail;
 		}
 
-		if(!TSK_RUNNABLE(transport)->running){
+		if(!TSK_RUNNABLE(transport)->running && !TSK_RUNNABLE(transport)->started){
 			goto bail;
 		}
 		
@@ -509,7 +534,19 @@ void *tnet_transport_mainthread(void *param)
 		/* == == */
 		for(i=0; i<context->count; i++)
 		{
-			if(!context->ufds[i].revents || context->ufds[i].fd == context->pipeR){
+			if(!context->ufds[i].revents){
+				continue;
+			}
+
+			if(context->ufds[i].fd == context->pipeR){
+				if(context->ufds[i].revents & TNET_POLLIN){
+					static char __buffer[64];
+					if(read(context->pipeR, __buffer, sizeof(__buffer))<0){
+						TNET_PRINT_LAST_ERROR("Failed to read from the Pipe");
+					}
+				}
+				TSK_DEBUG_INFO("PipeR event %d", context->ufds[i].revents);
+				context->ufds[i].revents = 0;
 				continue;
 			}
 
@@ -520,11 +557,22 @@ void *tnet_transport_mainthread(void *param)
 			if(context->ufds[i].revents & TNET_POLLIN)
 			{
 				tsk_size_t len = 0;
-				void* buffer = 0;
+				void* buffer = tsk_null;
 				tnet_transport_event_t* e;
 				
 				/* TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description); */
+
+				//
+				// FIXME: check if accept() is needed or not
+				//
+
 				
+				/* check whether the socket is paused or not */
+				if(active_socket->paused){
+					TSK_DEBUG_INFO("Socket is paused");
+					break;
+				}
+
 				/* Retrieve the amount of pending data.
 				 * IMPORTANT: If you are using Symbian please update your SDK to the latest build (August 2009) to have 'FIONREAD'.
 				 * This apply whatever you are using the 3rd or 5th edition.

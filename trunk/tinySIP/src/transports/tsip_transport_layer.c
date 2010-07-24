@@ -127,7 +127,7 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 		
 		if(data_size){
 			if(is_nack){
-				tnet_transport_send(transport->net_transport, transport->connectedFD, SigCompBuffer, data_size);
+				tsip_transport_send_raw(transport, SigCompBuffer, data_size);
 			}
 			else{
 				// append result
@@ -141,7 +141,7 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 		// Query for all other chuncks
 		while((next_size = tsip_sigcomp_handler_uncompress_next(transport->stack->sigcomp.handle, comp_id, &nack_data, &is_nack)) || nack_data){
 			if(is_nack){
-				tnet_transport_send(transport->net_transport, transport->connectedFD, nack_data, next_size);
+				tsip_transport_send_raw(transport, nack_data, next_size);
 				TSK_FREE(nack_data);
 			}
 			else{
@@ -243,7 +243,7 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 		data_ptr = SigCompBuffer;
 		if(data_size){
 			if(is_nack){
-				tnet_transport_send(transport->net_transport, transport->connectedFD, data_ptr, data_size);
+				tsip_transport_send_raw(transport, data_ptr, data_size);
 				return 0;
 			}
 		}
@@ -422,6 +422,10 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 			if(TNET_SOCKET_TYPE_IS_TLS(type) || self->stack->security.enable_secagree_tls){
 				tsip_transport_set_tlscerts(transport, self->stack->security.tls.ca, self->stack->security.tls.pbk, self->stack->security.tls.pvk);
 			}
+			/* Nat Traversal context */
+			if(self->stack->natt.ctx){
+				tnet_transport_set_natt_ctx(transport->net_transport, self->stack->natt.ctx);
+			}
 			tsk_list_push_back_data(self->transports, (void**)&transport);
 			return 0;
 		}
@@ -575,13 +579,24 @@ int tsip_transport_layer_start(tsip_transport_layer_t* self)
 				transport = item->data;
 
 				tsip_transport_set_callback(transport, TNET_SOCKET_TYPE_IS_DGRAM(transport->type) ? TNET_TRANSPORT_CB_F(tsip_transport_layer_dgram_cb) : TNET_TRANSPORT_CB_F(tsip_transport_layer_stream_cb), transport);
-				if((fd = tsip_transport_connectto_2(transport, self->stack->network.proxy_cscf, self->stack->network.proxy_cscf_port)) == TNET_INVALID_FD){
-					return -3;
-				}
-				if((ret = tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT))){
-					TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
-					tnet_transport_remove_socket(transport->net_transport, &fd);
+				if((ret = tnet_sockaddr_init(self->stack->network.proxy_cscf, self->stack->network.proxy_cscf_port, transport->type, &transport->pcscf_addr))){
+					TSK_DEBUG_ERROR("[%s:%u] is invalid address", self->stack->network.proxy_cscf, self->stack->network.proxy_cscf_port);
 					return ret;
+				}
+
+				if(TNET_SOCKET_TYPE_IS_STREAM(transport->type)){
+					if((fd = tsip_transport_connectto_2(transport, self->stack->network.proxy_cscf, self->stack->network.proxy_cscf_port)) == TNET_INVALID_FD){
+						TSK_DEBUG_ERROR("Failed to connect the SIP transport");
+						return ret;
+					}
+					if((ret = tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT))){
+						TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
+						tnet_transport_remove_socket(transport->net_transport, &fd);
+						return ret;
+					}
+				}
+				else{
+					transport->connectedFD = tnet_transport_get_master_fd(transport->net_transport);
 				}
 			}
 
@@ -598,7 +613,8 @@ int tsip_transport_layer_start(tsip_transport_layer_t* self)
 int tsip_transport_layer_shutdown(tsip_transport_layer_t* self)
 {
 	if(self){
-		if(self->running){
+		if(!TSK_LIST_IS_EMPTY(self->transports)){
+		//if(self->running){
 			/*int ret = 0;*/
 			tsk_list_item_t *item;
 			while((item = tsk_list_pop_first_item(self->transports))){

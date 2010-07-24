@@ -70,7 +70,17 @@ public class SipStack : SafeObject {
     return ret;
   }
 
-  public bool setProxyCSCF(string fqdn, uint port, string transport, string ipversion) {
+  public bool setAMF(string amf) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setAMF(swigCPtr, amf);
+    return ret;
+  }
+
+  public bool setOperatorId(string opid) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setOperatorId(swigCPtr, opid);
+    return ret;
+  }
+
+  public bool setProxyCSCF(string fqdn, ushort port, string transport, string ipversion) {
     bool ret = tinyWRAPPINVOKE.SipStack_setProxyCSCF(swigCPtr, fqdn, port, transport, ipversion);
     return ret;
   }
@@ -80,7 +90,7 @@ public class SipStack : SafeObject {
     return ret;
   }
 
-  public bool setLocalPort(uint port) {
+  public bool setLocalPort(ushort port) {
     bool ret = tinyWRAPPINVOKE.SipStack_setLocalPort(swigCPtr, port);
     return ret;
   }
@@ -110,13 +120,28 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public bool setSTUNServer(string ip, ushort port) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setSTUNServer(swigCPtr, ip, port);
+    return ret;
+  }
+
+  public bool setSTUNCred(string login, string password) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setSTUNCred(swigCPtr, login, password);
+    return ret;
+  }
+
   public string dnsENUM(string service, string e164num, string domain) {
     string ret = tinyWRAPPINVOKE.SipStack_dnsENUM(swigCPtr, service, e164num, domain);
     return ret;
   }
 
-  public string dnsNaptrSrv(string domain, string service, out short OUTPUT) {
+  public string dnsNaptrSrv(string domain, string service, out ushort OUTPUT) {
     string ret = tinyWRAPPINVOKE.SipStack_dnsNaptrSrv(swigCPtr, domain, service, out OUTPUT);
+    return ret;
+  }
+
+  public string dnsSrv(string service, out ushort OUTPUT) {
+    string ret = tinyWRAPPINVOKE.SipStack_dnsSrv(swigCPtr, service, out OUTPUT);
     return ret;
   }
 

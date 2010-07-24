@@ -31,7 +31,7 @@
 
 #include "tinyrtp_config.h"
 
-#include "tnet_transport.h"
+#include "tinynet.h"
 
 TRTP_BEGIN_DECLS
 
@@ -57,6 +57,9 @@ typedef struct trtp_manager_s
 		tnet_port_t remote_port;
 		struct sockaddr_storage remote_addr;
 
+		char* public_ip;
+		tnet_port_t public_port;
+
 		const void* callback_data;
 		trtp_manager_rtp_cb_f callback;
 	} rtp;
@@ -66,6 +69,9 @@ typedef struct trtp_manager_s
 		tnet_port_t remote_port;
 		struct sockaddr_storage remote_addr;
 		tnet_socket_t* local_socket;
+
+		char* public_ip;
+		tnet_port_t public_port;
 
 		const void* callback_data;
 		trtp_manager_rtcp_cb_f callback;
@@ -82,6 +88,7 @@ trtp_manager_t;
 TINYRTP_API trtp_manager_t* trtp_manager_create(tsk_bool_t enable_rtcp, const char* local_ip, tsk_bool_t ipv6);
 TINYRTP_API int trtp_manager_prepare(trtp_manager_t*self);
 TINYRTP_API tsk_bool_t trtp_manager_is_prepared(trtp_manager_t* self);
+TINYRTP_API int trtp_manager_set_natt_ctx(trtp_manager_t* self, tnet_nat_context_handle_t* natt_ctx);
 TINYRTP_API int trtp_manager_set_rtp_callback(trtp_manager_t* self, trtp_manager_rtp_cb_f callback, const void* callback_data);
 TINYRTP_API int trtp_manager_set_payload_type(trtp_manager_t* self, uint8_t payload_type);
 TINYRTP_API int trtp_manager_set_rtp_remote(trtp_manager_t* self, const char* remote_ip, tnet_port_t remote_port);

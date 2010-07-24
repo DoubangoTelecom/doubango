@@ -539,6 +539,7 @@ void tsk_str_from_hex(const uint8_t *hex, tsk_size_t size, char* str)
 **/
 void tsk_str_to_hex(const char *str, tsk_size_t size, uint8_t* hex)
 {
+	// to avoid SIGBUS error when memory is misaligned do not use sscanf("%2x")
 	TSK_DEBUG_FATAL("Not implemented.");
 }
 

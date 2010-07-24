@@ -40,8 +40,7 @@
 
 #include "tinysip/sigcomp/tsip_sigcomp.h"
 
-#include "tnet_socket.h"
-#include "dns/tnet_dns.h"
+#include "tinynet.h"
 
 #include "tsk_runnable.h"
 
@@ -97,9 +96,12 @@ typedef enum tsip_stack_param_type_e
 	/* === Dummy Headers === */
 	tsip_pname_header,
 
-	/* === User Data === */
-	tsip_pname_userdata
+	/* Nat Traversal */
+	tsip_pname_stun_server,
+	tsip_pname_stun_cred,
 
+	/* === User Data === */
+	tsip_pname_userdata,
 }
 tsip_stack_param_type_t;
 
@@ -449,7 +451,7 @@ int ret = tsip_stack_set(stack,
 * @param NAME_STR The name of the header to remove.
 * @code
 * int ret = tsip_stack_set(stack, 
-*              TSIP_STACK_UNSET_HEADER("User-Agent""),
+*              TSIP_STACK_UNSET_HEADER("User-Agent"),
 *              TSIP_STACK_UNSET_HEADER("Allow"),
 *              TSIP_STACK_UNSET_HEADER("My_Header"),
 *              TSIP_STACK_SET_NULL());
@@ -459,6 +461,36 @@ int ret = tsip_stack_set(stack,
 */
 #define TSIP_STACK_SET_HEADER(NAME_STR, VALUE_STR)		tsip_pname_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define TSIP_STACK_UNSET_HEADER(NAME_STR)				TSIP_STACK_SET_HEADER(NAME_STR, ((const char*)-1))
+
+/* === NAT Traversal === */
+/**@ingroup tsip_stack_group
+* @def TSIP_STACK_SET_STUN_SERVER
+* Sets the IP address and port of the STUN2 server. Also used for TURN.
+* @param IP_STR The IPv4/IPv6 address for FQDN of the STUN2/TURN address.
+* @param PORT_UINT The server port (default is 3478 for both TCP and UDP, and 5349 for TLS)
+* @code
+* int ret = tsip_stack_set(stack, 
+*              TSIP_STACK_SET_STUN_SERVER("numb.viagenie.ca", 3478),
+*              TSIP_STACK_SET_NULL());
+* @endcode
+*
+* @sa @ref TSIP_STACK_SET_STUN_CRED()
+*/
+/**@ingroup tsip_stack_group
+* @def TSIP_STACK_SET_STUN_CRED
+* Sets STUN/TURN credentials.
+* @param USR_STR The login.
+* @param PASSORD_STR The password
+* @code
+* int ret = tsip_stack_set(stack, 
+*              TSIP_STACK_SET_STUN_CRED("bob@open-ims.test", "mysecret"),
+*              TSIP_STACK_SET_NULL());
+* @endcode
+*
+* @sa @ref TSIP_STACK_SET_STUN_SERVER()
+*/
+#define TSIP_STACK_SET_STUN_SERVER(IP_STR, PORT_UINT)	tsip_pname_stun_server, (const char*)IP_STR, (unsigned)PORT_UINT
+#define TSIP_STACK_SET_STUN_CRED(USR_STR, PASSORD_STR)	tsip_pname_stun_cred, (const char*)USR_STR, (const char*)PASSORD_STR
 
 /* === User Data === */
 /**@ingroup tsip_stack_group
@@ -473,6 +505,7 @@ int ret = tsip_stack_set(stack,
 * @endcode
 */
 #define TSIP_STACK_SET_USERDATA(DATA_PTR)		tsip_pname_userdata, (const void*)DATA_PTR
+
 
 
 
@@ -565,9 +598,21 @@ typedef struct tsip_stack_s
 	/* DNS context */
 	tnet_dns_ctx_t *dns_ctx;
 
-	/* DHCP context */
+	/* NAT Traversal context */
+	struct {
+		// STUN
+		struct{
+			char* ip;
+			tnet_port_t port;
+			char* login;
+			char* pwd;
+		} stun;
+		// TURN
+		// ICE
+		tnet_nat_context_handle_t* ctx;
+	} natt;
 
-	
+	/* DHCP context */	
 
 	/* QoS */
 

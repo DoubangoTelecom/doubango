@@ -486,6 +486,24 @@ tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* 
 }
 
 /**@ingroup tmedia_session_group
+*/
+int tmedia_session_mgr_set_natt_ctx(tmedia_session_mgr_t* self, tnet_nat_context_handle_t* natt_ctx, const char* public_addr)
+{
+	if(!self || !natt_ctx){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	TSK_OBJECT_SAFE_FREE(self->natt_ctx);
+	self->natt_ctx = tsk_object_ref(natt_ctx);
+	tsk_strupdate(&self->public_addr, public_addr);
+
+	tmedia_session_mgr_set(self,
+		TMEDIA_SESSION_SET_POBJECT(self->type, "natt-ctx", self->natt_ctx),
+		TMEDIA_SESSION_SET_NULL());
+	return 0;
+}
+
+/**@ingroup tmedia_session_group
 * Starts the session manager by starting all underlying sessions.
 * You should set both remote and local offers before calling this function.
 * @param self The session manager to start.
@@ -695,10 +713,10 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 	if(self->sdp.lo){
 		return self->sdp.lo;
 	}
-	else if((self->sdp.lo = tsdp_message_create_empty(self->addr, self->ipv6, self->sdp.lo_ver++))){
+	else if((self->sdp.lo = tsdp_message_create_empty(self->public_addr ? self->public_addr : self->addr, self->ipv6, self->sdp.lo_ver++))){
 		/* Set connection "c=" */
 		tsdp_message_add_headers(self->sdp.lo,
-			TSDP_HEADER_C_VA_ARGS("IN", self->ipv6 ? "IP6" : "IP4", self->addr),
+			TSDP_HEADER_C_VA_ARGS("IN", self->ipv6 ? "IP6" : "IP4", self->public_addr ? self->public_addr : self->addr),
 			tsk_null);
 	}else{
 		self->sdp.lo_ver--;
@@ -1090,11 +1108,11 @@ int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 				}
 			}
 		}
-		/* set ldefault values */
+		/* set default values */
 		tmedia_session_mgr_set(self,
-			TMEDIA_SESSION_SET_STR(self->type, "local-ip", self->addr),
-			TMEDIA_SESSION_SET_STR(self->type, "local-ipver", self->ipv6 ? "ipv6" : "ipv4"),
-			TMEDIA_SESSION_SET_NULL());
+				TMEDIA_SESSION_SET_STR(self->type, "local-ip", self->addr),
+				TMEDIA_SESSION_SET_STR(self->type, "local-ipver", self->ipv6 ? "ipv6" : "ipv4"),
+				TMEDIA_SESSION_SET_NULL());		
 
 		/* load params */
 		_tmedia_session_mgr_apply_params(self);
@@ -1174,6 +1192,9 @@ static tsk_object_t* tmedia_session_mgr_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(mgr->sdp.ro);
 		
 		TSK_OBJECT_SAFE_FREE(mgr->params);
+
+		TSK_OBJECT_SAFE_FREE(mgr->natt_ctx);
+		TSK_FREE(mgr->public_addr);
 
 		TSK_FREE(mgr->addr);
 	}

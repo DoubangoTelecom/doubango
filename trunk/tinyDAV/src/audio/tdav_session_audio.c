@@ -211,6 +211,12 @@ int tmedia_session_audio_set(tmedia_session_t* self, const tmedia_param_t* param
 			audio->useIPv6 = tsk_striequals(param->value, "ipv6");
 		}
 	}
+	else if(param->value_type == tmedia_pvt_pobject){
+		if(tsk_striequals(param->key, "natt-ctx")){
+			TSK_OBJECT_SAFE_FREE(audio->natt_ctx);
+			audio->natt_ctx = tsk_object_ref(param->value);
+		}
+	}
 
 	return ret;
 }
@@ -230,6 +236,9 @@ int tdav_session_audio_prepare(tmedia_session_t* self)
 			
 			ret = trtp_manager_set_rtp_callback(audio->rtp_manager, tdav_session_audio_rtp_cb, audio);
 			ret = trtp_manager_prepare(audio->rtp_manager);
+			if(audio->natt_ctx){
+				ret = trtp_manager_set_natt_ctx(audio->rtp_manager, audio->natt_ctx);
+			}
 		}
 	}
 
@@ -511,7 +520,13 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 	changed = (self->ro_changed || !self->M.lo);
 
 	if(!self->M.lo){
-		if((self->M.lo = tsdp_header_M_create(self->plugin->media, audio->rtp_manager->transport->master->port, "RTP/AVP"))){
+		if((self->M.lo = tsdp_header_M_create(self->plugin->media, audio->rtp_manager->rtp.public_port, "RTP/AVP"))){
+			/* If NATT is active, do not rely on the global IP address Connection line */
+			if(audio->natt_ctx){
+				tsdp_header_M_add_headers(self->M.lo,
+					TSDP_HEADER_C_VA_ARGS("IN", audio->useIPv6 ? "IP6" : "IP4", audio->rtp_manager->rtp.public_ip),
+					tsk_null);
+			}
 			/* 3GPP TS 24.229 - 6.1.1 General
 				In order to support accurate bandwidth calculations, the UE may include the "a=ptime" attribute for all "audio" media
 				lines as described in RFC 4566 [39]. If a UE receives an "audio" media line with "a=ptime" specified, the UE should
@@ -754,6 +769,9 @@ static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(session->encoder.codec);
 		TSK_FREE(session->encoder.buffer);
 		TSK_FREE(session->decoder.buffer);
+
+		/* NAT Traversal context */
+		TSK_OBJECT_SAFE_FREE(session->natt_ctx);
 
 		tsk_safeobj_deinit(session);
 

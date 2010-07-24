@@ -211,25 +211,25 @@ tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s 
 	/*== htype (1) */
 	message->hops = *(dataPtr++);
 	/*== xid (4) */
-	message->xid= tnet_ntohl(*((uint32_t*)dataPtr));
+	message->xid= tnet_htonl_2(dataPtr);
 	dataPtr += 4;
 	/*== secs (2) */
-	message->secs = tnet_ntohs(*((uint16_t*)dataPtr));
+	message->secs = tnet_ntohs_2(dataPtr);
 	dataPtr += 2;
 	/*== flags (2) */
-	message->flags = tnet_ntohs(*((uint16_t*)dataPtr));
+	message->flags = tnet_ntohs_2(dataPtr);
 	dataPtr += 2;
 	/*== ciaddr  (4) */
-	message->ciaddr= tnet_ntohl(*((uint32_t*)dataPtr));
+	message->ciaddr= tnet_htonl_2(dataPtr);
 	dataPtr += 4;
 	/*== yiaddr  (4) */
-	message->yiaddr= tnet_ntohl(*((uint32_t*)dataPtr));
+	message->yiaddr= tnet_htonl_2(dataPtr);
 	dataPtr += 4;
 	/*== siaddr  (4) */
-	message->siaddr= tnet_ntohl(*((uint32_t*)dataPtr));
+	message->siaddr= tnet_htonl_2(dataPtr);
 	dataPtr += 4;
 	/*== giaddr  (4) */
-	message->giaddr= tnet_ntohl(*((uint32_t*)dataPtr));
+	message->giaddr= tnet_htonl_2(dataPtr);
 	dataPtr += 4;
 	/*== chaddr  (16[max]) */
 	memcpy(message->chaddr, dataPtr, message->hlen>16 ? 16 : message->hlen);
@@ -241,7 +241,7 @@ tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s 
 	memcpy(message->file, dataPtr, 128);
 	dataPtr += 128;
 	/*== Magic Cookie (4) */
-	if(tnet_ntohl(*((uint32_t*)dataPtr)) != TNET_DHCP_MAGIC_COOKIE){
+	if(tnet_htonl_2(dataPtr) != TNET_DHCP_MAGIC_COOKIE){
 		TSK_DEBUG_ERROR("Invalid DHCP magic cookie.");
 		// Do not exit ==> continue parsing.
 	}

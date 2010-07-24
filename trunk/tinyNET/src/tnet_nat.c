@@ -115,7 +115,7 @@ int __pred_find_turn_channel_binding(const tsk_list_item_t* item, const void* id
 /**
  * Formats binary IP address as string.
  *
- * @param	in_ip			The binary IP address to format. 
+ * @param	in_ip			The binary IP address to format (in Host byte order). 
  * @param	family			The address family. 
  * @param [in,out]	out_ip	The output string 
  *
@@ -123,15 +123,26 @@ int __pred_find_turn_channel_binding(const tsk_list_item_t* item, const void* id
 **/
 int tnet_stun_address_tostring(const uint8_t in_ip[16], tnet_stun_addr_family_t family, char** out_ip)
 {
-	if(family == stun_ipv6){
+	/*if(family == stun_ipv6){
 		tsk_sprintf(out_ip, "%x:%x:%x:%x:%x:%x:%x:%x",
-				tnet_ntohs(*((uint16_t*)&in_ip[0])), tnet_ntohs(*((uint16_t*)&in_ip[2])), tnet_ntohs(*((uint16_t*)&in_ip[4])), tnet_ntohs(*((uint16_t*)&in_ip[6])),
-				tnet_ntohs(*((uint16_t*)&in_ip[8])), tnet_ntohs(*((uint16_t*)&in_ip[10])), tnet_ntohs(*((uint16_t*)&in_ip[12])), tnet_ntohs(*((uint16_t*)&in_ip[14])));
+				tnet_ntohs_2(&in_ip[0]), tnet_ntohs_2(&in_ip[2]), tnet_ntohs_2(&in_ip[4]), tnet_ntohs_2(&in_ip[6]),
+				tnet_ntohs_2(&in_ip[8]), tnet_ntohs_2(&in_ip[10]), tnet_ntohs_2(&in_ip[12]), tnet_ntohs_2(&in_ip[14]));
 	}
 	else if(family == stun_ipv4){
-		uint32_t address = *((uint32_t*)in_ip);
-		address = /*tnet_ntohl*/(address);
 		tsk_sprintf(out_ip, "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
+		
+		return 0;
+	}
+	else{
+		TSK_DEBUG_ERROR("Unsupported address family: %u.", family);
+	}*/
+	if(family == stun_ipv6){
+		tsk_sprintf(out_ip, "%x:%x:%x:%x:%x:%x:%x:%x",
+				TSK_TO_UINT16(&in_ip[0]), TSK_TO_UINT16(&in_ip[2]), TSK_TO_UINT16(&in_ip[4]), TSK_TO_UINT16(&in_ip[6]),
+				TSK_TO_UINT16(&in_ip[8]), TSK_TO_UINT16(&in_ip[10]), TSK_TO_UINT16(&in_ip[12]), TSK_TO_UINT16(&in_ip[14]));
+	}
+	else if(family == stun_ipv4){
+		tsk_sprintf(out_ip, "%u.%u.%u.%u", in_ip[0], in_ip[1], in_ip[2], in_ip[3]);
 		
 		return 0;
 	}
@@ -228,15 +239,25 @@ int tnet_nat_stun_get_reflexive_address(const tnet_nat_context_handle_t* self, t
 			tnet_stun_binding_t *binding = item->data;
 			/*STUN2: XOR-MAPPED-ADDRESS */
 			if(binding->xmaddr){
-				int ret = tnet_stun_address_tostring(binding->xmaddr->xaddress, binding->xmaddr->family, ipaddress);
-				*port = /*tnet_ntohs*/(binding->xmaddr->xport);
+				int ret = 0;
+				if(ipaddress){
+					ret = tnet_stun_address_tostring(binding->xmaddr->xaddress, binding->xmaddr->family, ipaddress);
+				}
+				if(port){
+					*port = /*tnet_ntohs*/(binding->xmaddr->xport);
+				}
 				return ret;
 			}
 
 			/*STUN1: MAPPED-ADDRESS*/
 			if(binding->maddr){
-				int ret = tnet_stun_address_tostring(binding->maddr->address, binding->maddr->family, ipaddress);
-				*port = /*tnet_ntohs*/(binding->maddr->port);
+				int ret = 0;
+				if(ipaddress){
+					ret = tnet_stun_address_tostring(binding->maddr->address, binding->maddr->family, ipaddress);
+				}
+				if(port){
+					*port = /*tnet_ntohs*/(binding->maddr->port);
+				}
 				return ret;
 			}
 		}

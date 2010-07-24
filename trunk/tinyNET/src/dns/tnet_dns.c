@@ -669,7 +669,7 @@ int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname
 
 	TSK_OBJECT_SAFE_FREE(response);
 
-	return (hostname && !tsk_strempty(*hostname)) ? 0 : -2;
+	return (hostname && !tsk_strnullORempty(*hostname)) ? 0 : -2;
 }
 
 /**@ingroup tnet_dns_group

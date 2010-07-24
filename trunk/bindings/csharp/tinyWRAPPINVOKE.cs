@@ -214,6 +214,27 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipUri_isValid__SWIG_1")]
   public static extern bool SipUri_isValid__SWIG_1(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipUri_getScheme")]
+  public static extern string SipUri_getScheme(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipUri_getHost")]
+  public static extern string SipUri_getHost(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipUri_getPort")]
+  public static extern ushort SipUri_getPort(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipUri_getUserName")]
+  public static extern string SipUri_getUserName(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipUri_getPassword")]
+  public static extern string SipUri_getPassword(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipUri_getDisplayName")]
+  public static extern string SipUri_getDisplayName(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipUri_getParamValue")]
+  public static extern string SipUri_getParamValue(HandleRef jarg1, string jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_SipMessage")]
   public static extern IntPtr new_SipMessage();
 
@@ -733,14 +754,20 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setPassword")]
   public static extern bool SipStack_setPassword(HandleRef jarg1, string jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setAMF")]
+  public static extern bool SipStack_setAMF(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setOperatorId")]
+  public static extern bool SipStack_setOperatorId(HandleRef jarg1, string jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setProxyCSCF")]
-  public static extern bool SipStack_setProxyCSCF(HandleRef jarg1, string jarg2, uint jarg3, string jarg4, string jarg5);
+  public static extern bool SipStack_setProxyCSCF(HandleRef jarg1, string jarg2, ushort jarg3, string jarg4, string jarg5);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setLocalIP")]
   public static extern bool SipStack_setLocalIP(HandleRef jarg1, string jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setLocalPort")]
-  public static extern bool SipStack_setLocalPort(HandleRef jarg1, uint jarg2);
+  public static extern bool SipStack_setLocalPort(HandleRef jarg1, ushort jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setEarlyIMS")]
   public static extern bool SipStack_setEarlyIMS(HandleRef jarg1, bool jarg2);
@@ -757,11 +784,20 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setAoR")]
   public static extern bool SipStack_setAoR(HandleRef jarg1, string jarg2, int jarg3);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSTUNServer")]
+  public static extern bool SipStack_setSTUNServer(HandleRef jarg1, string jarg2, ushort jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSTUNCred")]
+  public static extern bool SipStack_setSTUNCred(HandleRef jarg1, string jarg2, string jarg3);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_dnsENUM")]
   public static extern string SipStack_dnsENUM(HandleRef jarg1, string jarg2, string jarg3, string jarg4);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_dnsNaptrSrv")]
-  public static extern string SipStack_dnsNaptrSrv(HandleRef jarg1, string jarg2, string jarg3, out short jarg4);
+  public static extern string SipStack_dnsNaptrSrv(HandleRef jarg1, string jarg2, string jarg3, out ushort jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_dnsSrv")]
+  public static extern string SipStack_dnsSrv(HandleRef jarg1, string jarg2, out ushort jarg3);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_isValid")]
   public static extern bool SipStack_isValid(HandleRef jarg1);
@@ -936,6 +972,27 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_stop")]
   public static extern bool XcapStack_stop(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_RPData")]
+  public static extern IntPtr new_RPData();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_RPData")]
+  public static extern void delete_RPData(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RPData_getType")]
+  public static extern int RPData_getType(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RPData_getPayloadLength")]
+  public static extern uint RPData_getPayloadLength(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RPData_getPayload")]
+  public static extern uint RPData_getPayload(HandleRef jarg1, byte[] jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SMSEncoder_encodeSubmit")]
+  public static extern IntPtr SMSEncoder_encodeSubmit(int jarg1, string jarg2, string jarg3, string jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_SMSEncoder")]
+  public static extern void delete_SMSEncoder(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_DialogEventUpcast")]
   public static extern IntPtr DialogEventUpcast(IntPtr objectRef);

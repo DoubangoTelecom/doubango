@@ -47,11 +47,13 @@ typedef struct tdav_codec_bv16_s
 	struct {
 		void *state;
 		void *bs;
+		void *x;
 	} encoder;
 
 	struct {
 		void *state;
 		void *bs;
+		void *x;
 	} decoder;
 }
 tdav_codec_bv16_t;
