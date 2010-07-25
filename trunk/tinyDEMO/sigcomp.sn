@@ -4,10 +4,10 @@
 # However, for performance reasons, in your application you should use only one Compartment for all sessions.
 
 # user's parameters (like ANSI-C #define)
-%%domain sigcomp.org
-%%user bob
-%%pwd bob
-%%proxy_ip 192.168.16.227 # IP address or FQDN
+%%domain ericsson.com
+%%user mamadou
+%%pwd mamadou
+%%proxy_ip 192.168.0.16 # IP address or FQDN
 %%proxy_port 4060
 %%proxy_trans tcp # udp, tcp, tls or sctp
 %%expires 30 # expires used by all dialogs

@@ -49,6 +49,8 @@ public:
 	bool setFromUri(const char* fromUri);
 	bool setToUri(const char* toUri);
 	bool setSilentHangup(bool silent);
+	bool addSigCompCompartment(const char* compId);
+	bool removeSigCompCompartment();
 	unsigned getId();
 
 #if !defined(SWIG)

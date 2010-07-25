@@ -507,6 +507,8 @@ sub DESTROY {
 *setFromUri = *tinyWRAPc::SipSession_setFromUri;
 *setToUri = *tinyWRAPc::SipSession_setToUri;
 *setSilentHangup = *tinyWRAPc::SipSession_setSilentHangup;
+*addSigCompCompartment = *tinyWRAPc::SipSession_addSigCompCompartment;
+*removeSigCompCompartment = *tinyWRAPc::SipSession_removeSigCompCompartment;
 *getId = *tinyWRAPc::SipSession_getId;
 sub DISOWN {
     my $self = shift;
@@ -1097,7 +1099,11 @@ sub DESTROY {
 *addHeader = *tinyWRAPc::SipStack_addHeader;
 *removeHeader = *tinyWRAPc::SipStack_removeHeader;
 *addDnsServer = *tinyWRAPc::SipStack_addDnsServer;
+*setDnsDiscovery = *tinyWRAPc::SipStack_setDnsDiscovery;
 *setAoR = *tinyWRAPc::SipStack_setAoR;
+*setSigCompParams = *tinyWRAPc::SipStack_setSigCompParams;
+*addSigCompCompartment = *tinyWRAPc::SipStack_addSigCompCompartment;
+*removeSigCompCompartment = *tinyWRAPc::SipStack_removeSigCompCompartment;
 *setSTUNServer = *tinyWRAPc::SipStack_setSTUNServer;
 *setSTUNCred = *tinyWRAPc::SipStack_setSTUNCred;
 *dnsENUM = *tinyWRAPc::SipStack_dnsENUM;

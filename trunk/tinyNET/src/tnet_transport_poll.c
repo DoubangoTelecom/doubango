@@ -570,7 +570,7 @@ void *tnet_transport_mainthread(void *param)
 				/* check whether the socket is paused or not */
 				if(active_socket->paused){
 					TSK_DEBUG_INFO("Socket is paused");
-					break;
+					goto TNET_POLLIN_DONE;
 				}
 
 				/* Retrieve the amount of pending data.
@@ -630,6 +630,8 @@ void *tnet_transport_mainthread(void *param)
 				e->size = len;
 				
 				TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(transport), e);
+
+TNET_POLLIN_DONE:;
 			}
 
 

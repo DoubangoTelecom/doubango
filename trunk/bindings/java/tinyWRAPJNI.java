@@ -73,6 +73,8 @@ class tinyWRAPJNI {
   public final static native boolean SipSession_setFromUri(long jarg1, SipSession jarg1_, String jarg2);
   public final static native boolean SipSession_setToUri(long jarg1, SipSession jarg1_, String jarg2);
   public final static native boolean SipSession_setSilentHangup(long jarg1, SipSession jarg1_, boolean jarg2);
+  public final static native boolean SipSession_addSigCompCompartment(long jarg1, SipSession jarg1_, String jarg2);
+  public final static native boolean SipSession_removeSigCompCompartment(long jarg1, SipSession jarg1_);
   public final static native long SipSession_getId(long jarg1, SipSession jarg1_);
   public final static native long new_CallSession(long jarg1, SipStack jarg1_);
   public final static native void delete_CallSession(long jarg1);
@@ -213,7 +215,11 @@ class tinyWRAPJNI {
   public final static native boolean SipStack_addHeader(long jarg1, SipStack jarg1_, String jarg2, String jarg3);
   public final static native boolean SipStack_removeHeader(long jarg1, SipStack jarg1_, String jarg2);
   public final static native boolean SipStack_addDnsServer(long jarg1, SipStack jarg1_, String jarg2);
+  public final static native boolean SipStack_setDnsDiscovery(long jarg1, SipStack jarg1_, boolean jarg2);
   public final static native boolean SipStack_setAoR(long jarg1, SipStack jarg1_, String jarg2, int jarg3);
+  public final static native boolean SipStack_setSigCompParams(long jarg1, SipStack jarg1_, long jarg2, long jarg3, long jarg4, boolean jarg5);
+  public final static native boolean SipStack_addSigCompCompartment(long jarg1, SipStack jarg1_, String jarg2);
+  public final static native boolean SipStack_removeSigCompCompartment(long jarg1, SipStack jarg1_, String jarg2);
   public final static native boolean SipStack_setSTUNServer(long jarg1, SipStack jarg1_, String jarg2, int jarg3);
   public final static native boolean SipStack_setSTUNCred(long jarg1, SipStack jarg1_, String jarg2, String jarg3);
   public final static native String SipStack_dnsENUM(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4);

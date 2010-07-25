@@ -87,6 +87,7 @@ tsip_ssession_param_type_t;
 #define TSIP_SSESSION_SET_EXPIRES(VALUE_UINT)						sstype_expires, (unsigned)VALUE_UINT
 #define TSIP_SSESSION_SET_SILENT_HANGUP(ENABLED_BOOL)				sstype_silent_hangup, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_SSESSION_SET_SIGCOMP_COMPARTMENT(COMPARTMENT_ID_STR)	sstype_sigcomp_id, (const char*)COMPARTMENT_ID_STR
+#define TSIP_SSESSION_UNSET_SIGCOMP_COMPARTMENT()					TSIP_SSESSION_SET_SIGCOMP_COMPARTMENT((const char*)-1)
 #define TSIP_SSESSION_SET_MEDIA(...)								sstype_media, ##__VA_ARGS__
 #define TSIP_SSESSION_SET_NULL()									sstype_null
 

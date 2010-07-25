@@ -68,10 +68,9 @@ void SipSession::init(SipStack* _stack, tsip_ssession_handle_t* _handle/*=tsk_nu
 
 bool SipSession::addHeader(const char* name, const char* value)
 {
-	int ret = tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(this->handle,
 		TSIP_SSESSION_SET_HEADER(name, value),
-		TSIP_SSESSION_SET_NULL());
-	return (ret == 0);
+		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::haveOwnership()
@@ -81,66 +80,72 @@ bool SipSession::haveOwnership()
 
 bool SipSession::removeHeader(const char* name)
 {
-	int ret = tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(this->handle,
 		TSIP_SSESSION_UNSET_HEADER(name),
-		TSIP_SSESSION_SET_NULL());
-	return (ret == 0);
+		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::addCaps(const char* name, const char* value)
 {
-	int ret = tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(this->handle,
 		TSIP_SSESSION_SET_CAPS(name, value),
-		TSIP_SSESSION_SET_NULL());
-	return (ret == 0);
+		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::addCaps(const char* name)
 {
-	int ret = tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(this->handle,
 		TSIP_SSESSION_SET_CAPS(name, tsk_null),
-		TSIP_SSESSION_SET_NULL());
-	return (ret == 0);
+		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::removeCaps(const char* name)
 {
-	int ret = tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(this->handle,
 		TSIP_SSESSION_UNSET_CAPS(name),
-		TSIP_SSESSION_SET_NULL());
-	return (ret == 0);
+		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::setExpires(unsigned expires)
 {
-	int ret = tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(this->handle,
 		TSIP_SSESSION_SET_EXPIRES(expires),
-		TSIP_SSESSION_SET_NULL());
-	return (ret == 0);
+		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::setFromUri(const char* fromUri)
 {
-	int ret = tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(this->handle,
 		TSIP_SSESSION_SET_FROM(fromUri),
-		TSIP_SSESSION_SET_NULL());
-	return (ret == 0);
+		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::setToUri(const char* toUri)
 {
-	int ret = tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(this->handle,
 		TSIP_SSESSION_SET_TO(toUri),
-		TSIP_SSESSION_SET_NULL());
-	return (ret == 0);
+		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::setSilentHangup(bool silent)
 {
-	int ret = tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(this->handle,
 		TSIP_SSESSION_SET_SILENT_HANGUP(silent ? tsk_true : tsk_false),
-		TSIP_SSESSION_SET_NULL());
-	return (ret == 0);
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
+bool SipSession::addSigCompCompartment(const char* compId)
+{
+	return (tsip_ssession_set(this->handle,
+		TSIP_SSESSION_SET_SIGCOMP_COMPARTMENT(compId),
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
+bool SipSession::removeSigCompCompartment()
+{
+	return (tsip_ssession_set(this->handle,
+		TSIP_SSESSION_UNSET_SIGCOMP_COMPARTMENT(),
+		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 unsigned SipSession::getId()

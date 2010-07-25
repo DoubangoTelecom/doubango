@@ -320,6 +320,10 @@
 				RelativePath=".\sigcomp.sn"
 				>
 			</File>
+			<File
+				RelativePath=".\sip2sip.info.sn"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

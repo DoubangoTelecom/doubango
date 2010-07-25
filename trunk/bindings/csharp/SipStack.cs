@@ -115,8 +115,28 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public bool setDnsDiscovery(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setDnsDiscovery(swigCPtr, enabled);
+    return ret;
+  }
+
   public bool setAoR(string ip, int port) {
     bool ret = tinyWRAPPINVOKE.SipStack_setAoR(swigCPtr, ip, port);
+    return ret;
+  }
+
+  public bool setSigCompParams(uint dms, uint sms, uint cpb, bool enablePresDict) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setSigCompParams(swigCPtr, dms, sms, cpb, enablePresDict);
+    return ret;
+  }
+
+  public bool addSigCompCompartment(string compId) {
+    bool ret = tinyWRAPPINVOKE.SipStack_addSigCompCompartment(swigCPtr, compId);
+    return ret;
+  }
+
+  public bool removeSigCompCompartment(string compId) {
+    bool ret = tinyWRAPPINVOKE.SipStack_removeSigCompCompartment(swigCPtr, compId);
     return ret;
   }
 

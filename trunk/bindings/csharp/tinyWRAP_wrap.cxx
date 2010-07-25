@@ -1657,6 +1657,32 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipSession_setSilentHangup(void * jar
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipSession_addSigCompCompartment(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  SipSession *arg1 = (SipSession *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (SipSession *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->addSigCompCompartment((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipSession_removeSigCompCompartment(void * jarg1) {
+  unsigned int jresult ;
+  SipSession *arg1 = (SipSession *) 0 ;
+  bool result;
+  
+  arg1 = (SipSession *)jarg1; 
+  result = (bool)(arg1)->removeSigCompCompartment();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipSession_getId(void * jarg1) {
   unsigned int jresult ;
   SipSession *arg1 = (SipSession *) 0 ;
@@ -3354,6 +3380,20 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_addDnsServer(void * jarg1, c
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setDnsDiscovery(void * jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  bool arg2 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  result = (bool)(arg1)->setDnsDiscovery(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setAoR(void * jarg1, char * jarg2, int jarg3) {
   unsigned int jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -3365,6 +3405,54 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setAoR(void * jarg1, char * 
   arg2 = (char *)jarg2; 
   arg3 = (int)jarg3; 
   result = (bool)(arg1)->setAoR((char const *)arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setSigCompParams(void * jarg1, unsigned int jarg2, unsigned int jarg3, unsigned int jarg4, unsigned int jarg5) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  unsigned int arg2 ;
+  unsigned int arg3 ;
+  unsigned int arg4 ;
+  bool arg5 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (unsigned int)jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  arg4 = (unsigned int)jarg4; 
+  arg5 = jarg5 ? true : false; 
+  result = (bool)(arg1)->setSigCompParams(arg2,arg3,arg4,arg5);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_addSigCompCompartment(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->addSigCompCompartment((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_removeSigCompCompartment(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->removeSigCompCompartment((char const *)arg2);
   jresult = result; 
   return jresult;
 }

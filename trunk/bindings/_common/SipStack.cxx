@@ -192,10 +192,40 @@ bool SipStack::addDnsServer(const char* ip)
 		TSIP_STACK_SET_NULL()) == 0);
 }
 
+bool SipStack::setDnsDiscovery(bool enabled)
+{
+	tsk_bool_t _enabled = enabled;// 32bit/64bit workaround
+	return (tsip_stack_set(this->handle,
+		TSIP_STACK_SET_DISCOVERY_NAPTR(_enabled),
+		TSIP_STACK_SET_NULL()) == 0);
+}
+
 bool SipStack::setAoR(const char* ip, int port)
 {
 	return (tsip_stack_set(this->handle,
 		TSIP_STACK_SET_AOR(ip, port),
+		TSIP_STACK_SET_NULL()) == 0);
+}
+
+bool SipStack::setSigCompParams(unsigned dms, unsigned sms, unsigned cpb, bool enablePresDict)
+{
+	tsk_bool_t _enablePresDict= enablePresDict;// 32bit/64bit workaround
+	return (tsip_stack_set(this->handle,
+		TSIP_STACK_SET_SIGCOMP(dms, sms, cpb, _enablePresDict),
+		TSIP_STACK_SET_NULL()) == 0);
+}
+
+bool SipStack::addSigCompCompartment(const char* compId)
+{
+	return (tsip_stack_set(this->handle,
+		TSIP_STACK_SET_SIGCOMP_NEW_COMPARTMENT(compId),
+		TSIP_STACK_SET_NULL()) == 0);
+}
+
+bool SipStack::removeSigCompCompartment(const char* compId)
+{
+	return (tsip_stack_set(this->handle,
+		TSIP_STACK_UNSET_SIGCOMP_COMPARTMENT(compId),
 		TSIP_STACK_SET_NULL()) == 0);
 }
 

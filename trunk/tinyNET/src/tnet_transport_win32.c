@@ -606,12 +606,12 @@ void *tnet_transport_mainthread(void *param)
 			DWORD readCount = 0;
 			WSABUF wsaBuffer;
 
-			/* TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_READ", transport->description); */
+			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_READ", transport->description);
 
 			/* check whether the socket is paused or not */
 			if(active_socket->paused){
 				TSK_DEBUG_INFO("Socket is paused");
-				break;
+				goto FD_READ_DONE;
 			}
 			
 			if(networkEvents.iErrorCode[FD_READ_BIT]){
@@ -681,6 +681,7 @@ void *tnet_transport_mainthread(void *param)
 
 				TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(transport), e);
 			}
+FD_READ_DONE:;
 		}
 		
 		
