@@ -52,7 +52,12 @@ public: /* API functions */
 	bool addHeader(const char* name, const char* value);
 	bool removeHeader(const char* name);
 	bool addDnsServer(const char* ip);
+	bool setDnsDiscovery(bool enabled);
 	bool setAoR(const char* ip, int port);
+
+	bool setSigCompParams(unsigned dms, unsigned sms, unsigned cpb, bool enablePresDict);
+	bool addSigCompCompartment(const char* compId);
+	bool removeSigCompCompartment(const char* compId);
 	
 	bool setSTUNServer(const char* ip, unsigned short port);
 	bool setSTUNCred(const char* login, const char* password);

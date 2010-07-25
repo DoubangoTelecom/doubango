@@ -86,6 +86,14 @@ public class SipSession {
     return tinyWRAPJNI.SipSession_setSilentHangup(swigCPtr, this, silent);
   }
 
+  public boolean addSigCompCompartment(String compId) {
+    return tinyWRAPJNI.SipSession_addSigCompCompartment(swigCPtr, this, compId);
+  }
+
+  public boolean removeSigCompCompartment() {
+    return tinyWRAPJNI.SipSession_removeSigCompCompartment(swigCPtr, this);
+  }
+
   public long getId() {
     return tinyWRAPJNI.SipSession_getId(swigCPtr, this);
   }

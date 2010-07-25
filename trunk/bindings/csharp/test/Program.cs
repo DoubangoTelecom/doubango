@@ -8,11 +8,11 @@ namespace test
 {
     class Program
     {
-        const String REALM = "micromethod.com";
+        const String REALM = "ericsson.com";
         const String USER = "mamadou";
-        const String PROXY_CSCF_IP = "192.168.0.10";
-        const ushort PROXY_CSCF_PORT = 5060;
-        const String PASSWORD = "";
+        const String PROXY_CSCF_IP = "192.168.0.16";
+        const ushort PROXY_CSCF_PORT = 4060;
+        const String PASSWORD = "mamadou";
 
         /*
         const String REALM = "sip2sip.info";
@@ -56,10 +56,12 @@ namespace test
             ProxyVideoConsumer.registerPlugin();
 
             /* Sets Proxy-CSCF */
-            success = sipStack.setProxyCSCF(PROXY_CSCF_IP, PROXY_CSCF_PORT, "udp", "ipv4");
+            success = sipStack.setProxyCSCF(PROXY_CSCF_IP, PROXY_CSCF_PORT, "tcp", "ipv4");
             // STUN
             sipStack.setSTUNServer("numb.viagenie.ca", 3478);
             sipStack.setSTUNCred("login", "password");
+            // DNS Discovery
+            sipStack.setDnsDiscovery(true);
             /* Starts the stack */
             success = sipStack.start();
 
@@ -71,6 +73,9 @@ namespace test
             /* AMF and Operator Id */
             sipStack.setAMF("0x00FF");
             sipStack.setOperatorId("0xFF0000000000000000000000000000FF");
+
+            // SigComp 
+            //sipStack.addSigCompCompartment("urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a876");
 
             //sipStack.setAoR("127.0.0.1", 1234);            
 
@@ -86,9 +91,22 @@ namespace test
             regSession.addCaps("+g.3gpp.smsip");
             regSession.addCaps("language", "\"en,fr\"");
             regSession.setExpires(35);
+            //regSession.addSigCompCompartment("urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a876");
             regSession.register_();
 
             Console.ReadLine();
+
+            for (int i = 0; i < 10; i++)
+            {
+                success = sipStack.stop();
+                success = sipStack.start();
+                regSession.register_();
+                Console.ReadLine();
+            }
+
+
+
+
 
 
             String sipUri = sipStack.dnsENUM("E2U+SIP", "+1-800-555-5555", "e164.org");

@@ -1057,12 +1057,12 @@ int main()
 	tcomp_result_setCompartmentId(result2, COMPARTMENT_ID2, strlen(COMPARTMENT_ID2));
 
 	/* Set DMS and SMS */
-	tcomp_manager_setDecompression_Memory_Size(manager1, 8192);
-	tcomp_manager_setDecompression_Memory_Size(manager2, 8192);
+	tcomp_manager_setDecompression_Memory_Size(manager1, 32768);
+	tcomp_manager_setDecompression_Memory_Size(manager2, 32768);
 	tcomp_manager_setCycles_Per_Bit(manager1, 64);
 	tcomp_manager_setCycles_Per_Bit(manager2, 64);
-	tcomp_manager_setState_Memory_Size(manager1, 8192);
-	tcomp_manager_setState_Memory_Size(manager2, 8192);
+	tcomp_manager_setState_Memory_Size(manager1, 32768);
+	tcomp_manager_setState_Memory_Size(manager2, 32768);
 	
 
 	for(i = 0; i< (8*LOOP_COUNT); i++)

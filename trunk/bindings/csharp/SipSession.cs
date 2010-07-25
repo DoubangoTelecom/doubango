@@ -91,6 +91,16 @@ public class SipSession : IDisposable {
     return ret;
   }
 
+  public bool addSigCompCompartment(string compId) {
+    bool ret = tinyWRAPPINVOKE.SipSession_addSigCompCompartment(swigCPtr, compId);
+    return ret;
+  }
+
+  public bool removeSigCompCompartment() {
+    bool ret = tinyWRAPPINVOKE.SipSession_removeSigCompCompartment(swigCPtr);
+    return ret;
+  }
+
   public uint getId() {
     uint ret = tinyWRAPPINVOKE.SipSession_getId(swigCPtr);
     return ret;

@@ -206,7 +206,13 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 				}
 			case sstype_sigcomp_id:
 				{ /* (const char*)COMPARTMENT_ID_STR */
-					tsk_strupdate(&self->sigcomp_id, va_arg(*app, const char*));
+					const char* COMPARTMENT_ID_STR = va_arg(*app, const char*);
+					if(COMPARTMENT_ID_STR == (const char*)-1){
+						TSK_FREE(self->sigcomp_id);
+					}
+					else{
+						tsk_strupdate(&self->sigcomp_id, COMPARTMENT_ID_STR);
+					}
 					break;
 				}
 			case sstype_media:

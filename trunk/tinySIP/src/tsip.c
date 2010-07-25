@@ -809,6 +809,10 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 			tsip_sigcomp_close_all(stack->sigcomp.handle);
 		}
 
+		/* reset AoR */
+		TSK_FREE(stack->network.aor.ip);
+		stack->network.aor.port = 0;
+
 		if(!one_failed){
 			stack->started = tsk_false;
 		}

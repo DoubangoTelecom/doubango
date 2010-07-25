@@ -97,8 +97,24 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_addDnsServer(swigCPtr, this, ip);
   }
 
+  public boolean setDnsDiscovery(boolean enabled) {
+    return tinyWRAPJNI.SipStack_setDnsDiscovery(swigCPtr, this, enabled);
+  }
+
   public boolean setAoR(String ip, int port) {
     return tinyWRAPJNI.SipStack_setAoR(swigCPtr, this, ip, port);
+  }
+
+  public boolean setSigCompParams(long dms, long sms, long cpb, boolean enablePresDict) {
+    return tinyWRAPJNI.SipStack_setSigCompParams(swigCPtr, this, dms, sms, cpb, enablePresDict);
+  }
+
+  public boolean addSigCompCompartment(String compId) {
+    return tinyWRAPJNI.SipStack_addSigCompCompartment(swigCPtr, this, compId);
+  }
+
+  public boolean removeSigCompCompartment(String compId) {
+    return tinyWRAPJNI.SipStack_removeSigCompCompartment(swigCPtr, this, compId);
   }
 
   public boolean setSTUNServer(String ip, int port) {

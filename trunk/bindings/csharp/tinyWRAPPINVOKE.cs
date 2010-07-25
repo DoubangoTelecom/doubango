@@ -376,6 +376,12 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipSession_setSilentHangup")]
   public static extern bool SipSession_setSilentHangup(HandleRef jarg1, bool jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipSession_addSigCompCompartment")]
+  public static extern bool SipSession_addSigCompCompartment(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipSession_removeSigCompCompartment")]
+  public static extern bool SipSession_removeSigCompCompartment(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipSession_getId")]
   public static extern uint SipSession_getId(HandleRef jarg1);
 
@@ -781,8 +787,20 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_addDnsServer")]
   public static extern bool SipStack_addDnsServer(HandleRef jarg1, string jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setDnsDiscovery")]
+  public static extern bool SipStack_setDnsDiscovery(HandleRef jarg1, bool jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setAoR")]
   public static extern bool SipStack_setAoR(HandleRef jarg1, string jarg2, int jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSigCompParams")]
+  public static extern bool SipStack_setSigCompParams(HandleRef jarg1, uint jarg2, uint jarg3, uint jarg4, bool jarg5);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_addSigCompCompartment")]
+  public static extern bool SipStack_addSigCompCompartment(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_removeSigCompCompartment")]
+  public static extern bool SipStack_removeSigCompCompartment(HandleRef jarg1, string jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSTUNServer")]
   public static extern bool SipStack_setSTUNServer(HandleRef jarg1, string jarg2, ushort jarg3);
