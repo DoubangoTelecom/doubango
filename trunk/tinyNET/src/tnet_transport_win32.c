@@ -606,7 +606,7 @@ void *tnet_transport_mainthread(void *param)
 			DWORD readCount = 0;
 			WSABUF wsaBuffer;
 
-			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_READ", transport->description);
+			/* TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_READ", transport->description); */
 
 			/* check whether the socket is paused or not */
 			if(active_socket->paused){

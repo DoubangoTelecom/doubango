@@ -84,7 +84,7 @@ typedef enum tsip_action_type_e
 	//! Accept incoming call (INVITE) or message (SIP MESSAGE)
 	tsip_atype_accept,
 	//! Reject incoming call (INVITE) or message (SIP MESSAGE)
-	tsip_atype_reject,
+#define tsip_atype_reject tsip_atype_hangup
 	//! Cancel an outgoing request
 	tsip_atype_cancel,
 	//! Hangup any SIP dialog (BYE, unREGISTER, unSUBSCRIBE ...). If the dialog is in early state, then it will be canceled.

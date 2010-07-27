@@ -807,17 +807,20 @@ tsk_bool_t tmedia_qos_tline_segmented_canresume(const tmedia_qos_tline_segmented
 		return tsk_true;
 	}
 
-	/* only "mandatory" strength should force the application to continue nego. */
+	/* == Strength is mandatory == */
 	if(self->local_recv.strength == tmedia_qos_strength_mandatory && !self->local_recv.current){
 		return tsk_false;
 	}
-	else if(self->local_send.strength == tmedia_qos_strength_mandatory && !self->local_send.current){
+	
+	if(self->local_send.strength == tmedia_qos_strength_mandatory && !self->local_send.current){
 		return tsk_false;
 	}
-	else if(self->remote_recv.strength == tmedia_qos_strength_mandatory && !self->remote_recv.current){
+
+	if(self->remote_recv.strength == tmedia_qos_strength_mandatory && !self->remote_recv.current){
 		return tsk_false;
 	}
-	else if(self->remote_send.strength == tmedia_qos_strength_mandatory && !self->remote_send.current){
+
+	if(self->remote_send.strength == tmedia_qos_strength_mandatory && !self->remote_send.current){
 		return tsk_false;
 	}
 

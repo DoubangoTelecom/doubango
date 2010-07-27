@@ -95,4 +95,9 @@ public class CallSession : SipSession {
     return ret;
   }
 
+  public bool reject() {
+    bool ret = tinyWRAPPINVOKE.CallSession_reject(swigCPtr);
+    return ret;
+  }
+
 }

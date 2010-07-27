@@ -382,11 +382,10 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 
 	/* Create session Manager if not already done */
 	if(!self->msession_mgr){
-		tmedia_type_t type = TSIP_DIALOG(self)->curr_action ? TSIP_DIALOG(self)->curr_action->media.type : tmedia_all;
 		if(sdp_ro){
-			type = tmedia_type_from_sdp(sdp_ro);
+			TSIP_DIALOG_GET_SS(self)->media.type = tmedia_type_from_sdp(sdp_ro);
 		}
-		self->msession_mgr = tmedia_session_mgr_create(type, TSIP_DIALOG_GET_STACK(self)->network.local_ip, tsk_false, (sdp_ro == tsk_null));
+		self->msession_mgr = tmedia_session_mgr_create(TSIP_DIALOG_GET_SS(self)->media.type, TSIP_DIALOG_GET_STACK(self)->network.local_ip, tsk_false, (sdp_ro == tsk_null));
 		if(TSIP_DIALOG_GET_STACK(self)->natt.ctx){
 			tmedia_session_mgr_set_natt_ctx(self->msession_mgr, TSIP_DIALOG_GET_STACK(self)->natt.ctx, TSIP_DIALOG_GET_STACK(self)->network.aor.ip);
 		}
@@ -501,7 +500,7 @@ int x0000_Any_2_Any_X_iPACK(va_list *app)
 			(tsk_striequals(RAck->method, self->last_o1xxrel->CSeq->method)) &&
 			(RAck->cseq == self->last_o1xxrel->CSeq->seq)){
 			
-			self->rseq++;
+			++self->rseq;
 			return send_RESPONSE(self, rPRACK, 200, "OK", tsk_false);
 		}
 	}
@@ -663,9 +662,13 @@ int x0000_Any_2_Any_X_i1xx(va_list *app)
 	}
 
 	/* QoS Reservation */
-	if(tsip_message_required(r1xx, "precondition") && !tmedia_session_mgr_canresume(self->msession_mgr)){
+	if((self->qos.timer.id == TSK_INVALID_TIMER_ID) && tsip_message_required(r1xx, "precondition") && !tmedia_session_mgr_canresume(self->msession_mgr)){
 		tsip_dialog_invite_qos_timer_schedule(self);
 	}
+
+	/* alert the user */
+	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_request,
+		TSIP_RESPONSE_CODE(r1xx), TSIP_RESPONSE_PHRASE(r1xx), r1xx);
 
 	return ret;
 }
@@ -850,6 +853,7 @@ int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx)
 		acknowledged.  The method name in the RAck header is case sensitive.
 	*/
 	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_RACK_VA_ARGS(self->rseq, r1xx->CSeq->seq, r1xx->CSeq->method));
+	//TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS("Test", "value"));
 
 	ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
 	
@@ -1122,6 +1126,9 @@ int send_ERROR(tsip_dialog_invite_t* self, const tsip_request_t* request, short 
 
 		tsip_dialog_response_send(TSIP_DIALOG(self), response);
 		TSK_OBJECT_SAFE_FREE(response);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to create new message");
 	}
 	return 0;
 }

@@ -506,6 +506,15 @@ int tdav_session_video_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 		else{
 			return -1;
 		}
+
+		/* QoS */
+		if(self->qos){
+			tmedia_qos_tline_t* ro_tline;
+			if(self->M.ro && (ro_tline = tmedia_qos_tline_from_sdp(self->M.ro))){
+				tmedia_qos_tline_set_ro(self->qos, ro_tline);
+				TSK_OBJECT_SAFE_FREE(ro_tline);
+			}
+		}
 	}
 
 	/* get connection associated to this media line

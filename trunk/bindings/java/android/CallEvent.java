@@ -37,6 +37,10 @@ public class CallEvent extends SipEvent {
     return tsip_invite_event_type_t.swigToEnum(tinyWRAPJNI.CallEvent_getType(swigCPtr, this));
   }
 
+  public twrap_media_type_t getMediaType() {
+    return twrap_media_type_t.swigToEnum(tinyWRAPJNI.CallEvent_getMediaType(swigCPtr, this));
+  }
+
   public CallSession getSession() {
     long cPtr = tinyWRAPJNI.CallEvent_getSession(swigCPtr, this);
     return (cPtr == 0) ? null : new CallSession(cPtr, false);

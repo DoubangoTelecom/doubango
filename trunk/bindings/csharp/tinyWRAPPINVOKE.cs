@@ -286,6 +286,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallEvent_getType")]
   public static extern int CallEvent_getType(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallEvent_getMediaType")]
+  public static extern int CallEvent_getMediaType(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallEvent_getSession")]
   public static extern IntPtr CallEvent_getSession(HandleRef jarg1);
 
@@ -423,6 +426,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_hangup")]
   public static extern bool CallSession_hangup(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_reject")]
+  public static extern bool CallSession_reject(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_MessagingSession")]
   public static extern IntPtr new_MessagingSession(HandleRef jarg1);

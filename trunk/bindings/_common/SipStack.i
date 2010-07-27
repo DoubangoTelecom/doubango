@@ -194,7 +194,6 @@ typedef enum tmedia_qos_strength_e
 }
 tmedia_qos_strength_t;
 
-
 /* ====== From "tinydav/tdav.h"  ====== */
 typedef enum tdav_codec_id_e
 {

@@ -75,7 +75,7 @@ typedef void * (*tsk_runnable_func_run)(void* self);
 {																					\
 	if((self) && TSK_RUNNABLE(self)->initialized){												\
 		tsk_object_t *object = tsk_object_new(TSK_RUNNABLE(self)->objdef, ##__VA_ARGS__);		\
-		tsk_list_push_back_data(TSK_RUNNABLE(self)->objects, &object);							\
+		tsk_list_push_back_data(TSK_RUNNABLE(self)->objects, (void**)&object);							\
 		tsk_semaphore_increment(TSK_RUNNABLE(self)->semaphore);									\
 	}																				\
 	else{																			\

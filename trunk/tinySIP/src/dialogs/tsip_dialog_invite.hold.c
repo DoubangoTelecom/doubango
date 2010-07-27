@@ -112,9 +112,11 @@ int x0100_Connected_2_Holding_X_oHold(va_list *app)
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
 	/* send the request */
-	ret = send_INVITE(self, tsk_false);
+	if((ret = send_INVITE(self, tsk_false))){
+		// FIXME: signal error without breaking the state machine
+	}
 
-	return ret;
+	return 0;
 }
 
 // Holding -> (ixxx) -> Connected
@@ -176,9 +178,11 @@ int x0102_Connected_2_Resuming_X_oResume(va_list *app)
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
 	/* send the request */
-	ret = send_INVITE(self, tsk_false);
+	if((ret = send_INVITE(self, tsk_false))){
+		// FIXME: signal error without breaking the state machine
+	}
 
-	return ret;
+	return 0;
 }
 
 // Resuming -> (ixxx) -> Connected
