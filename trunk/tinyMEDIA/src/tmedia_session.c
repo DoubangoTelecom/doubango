@@ -1068,6 +1068,28 @@ tsk_bool_t tmedia_session_mgr_canresume(tmedia_session_mgr_t* self)
 	return tsk_true;
 }
 
+
+/**@ingroup tmedia_session_group
+* Checks whether the manager holds at least one valid session (media port <> 0)
+*/
+tsk_bool_t tmedia_session_mgr_has_active_session(tmedia_session_mgr_t* self)
+{
+	const tsk_list_item_t* item;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_false;
+	}
+
+	tsk_list_foreach(item, self->sessions){
+		tmedia_session_t* session = TMEDIA_SESSION(item->data);
+		if(session && session->M.lo && session->M.lo->port){
+			return tsk_true;
+		}
+	}
+	return tsk_false;
+}
+
 int tmedia_session_mgr_send_dtmf(tmedia_session_mgr_t* self, uint8_t event)
 {
 	tmedia_session_audio_t* session;

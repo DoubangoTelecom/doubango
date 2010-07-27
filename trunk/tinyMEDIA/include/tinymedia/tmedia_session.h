@@ -358,6 +358,7 @@ TINYMEDIA_API int tmedia_session_mgr_add_media(tmedia_session_mgr_t* self, tmedi
 TINYMEDIA_API int tmedia_session_mgr_remove_media(tmedia_session_mgr_t* self, tmedia_type_t type);
 TINYMEDIA_API int tmedia_session_mgr_set_qos(tmedia_session_mgr_t* self, tmedia_qos_stype_t qos_type, tmedia_qos_strength_t qos_strength);
 TINYMEDIA_API tsk_bool_t tmedia_session_mgr_canresume(tmedia_session_mgr_t* self);
+TINYMEDIA_API tsk_bool_t tmedia_session_mgr_has_active_session(tmedia_session_mgr_t* self);
 TINYMEDIA_API int tmedia_session_mgr_send_dtmf(tmedia_session_mgr_t* self, uint8_t event);
 
 TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_session_mgr_def_t;

@@ -296,7 +296,12 @@ int tdav_session_video_start(tmedia_session_t* self)
 
 	video = (tdav_session_video_t*)self;
 
-	if(video->rtp_manager && !TSK_LIST_IS_EMPTY(self->neg_codecs)){
+	if(TSK_LIST_IS_EMPTY(self->neg_codecs)){
+		TSK_DEBUG_ERROR("No codec matched");
+		return -2;
+	}
+
+	if(video->rtp_manager){
 		int ret;
 		const tmedia_codec_t* codec = (const tmedia_codec_t*)TSK_LIST_FIRST_DATA(self->neg_codecs);
 		/* RTP/RTCP manager: use latest information. */
@@ -321,10 +326,8 @@ int tdav_session_video_start(tmedia_session_t* self)
 	}
 	else{
 		TSK_DEBUG_ERROR("Invalid RTP/RTCP manager or neg_codecs");
-		return -2;
+		return -3;
 	}
-	
-	return 0;
 }
 
 int tdav_session_video_stop(tmedia_session_t* self)
@@ -353,9 +356,6 @@ int tdav_session_video_stop(tmedia_session_t* self)
 	if(video->producer){
 		tmedia_producer_stop(video->producer);
 	}
-
-	/* very important */
-	//video->local_port = 0;
 
 	return 0;
 }
@@ -438,19 +438,29 @@ const tsdp_header_M_t* tdav_session_video_get_lo(tmedia_session_t* self)
 		tmedia_codecs_L_t* neg_codecs = tsk_null;
 		
 		if(self->M.ro){
+			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
 			/* update negociated codecs */
 			if((neg_codecs = tmedia_session_match_codec(self, self->M.ro))){
-				TSK_OBJECT_SAFE_FREE(self->neg_codecs);
 				self->neg_codecs = neg_codecs;
-				// set codec callback
+				// set video codec callback
 				if(!TSK_LIST_IS_EMPTY(self->neg_codecs)){
 					tmedia_codec_video_set_callback((tmedia_codec_video_t*)TSK_LIST_FIRST_DATA(self->neg_codecs), tdav_session_video_codec_cb, self);
 				}
 			}
+			/* from codecs to sdp */
+			if(self->neg_codecs){
+				tmedia_codec_to_sdp(self->neg_codecs, self->M.lo);
+			}
+			else{
+				self->M.lo->port = 0; /* Keep the RTP transport and reuse it when we receive a reINVITE or UPDATE request */
+				goto DONE;
+			}
 		}
-
-		/* from codecs to sdp */
-		tmedia_codec_to_sdp(self->neg_codecs ? self->neg_codecs : self->codecs, self->M.lo);
+		else{
+			/* from codecs to sdp */
+			tmedia_codec_to_sdp(self->codecs, self->M.lo);
+		}
+		
 		/* Hold/Resume */
 		if(self->M.ro){
 			if(tsdp_header_M_is_held(self->M.ro, tsk_false)){
@@ -470,6 +480,7 @@ const tsdp_header_M_t* tdav_session_video_get_lo(tmedia_session_t* self)
 			}
 			tmedia_qos_tline_to_sdp(self->qos, self->M.lo);
 		}
+DONE:;
 	}
 
 	return self->M.lo;

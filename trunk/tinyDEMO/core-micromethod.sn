@@ -68,9 +68,9 @@
 #	--pay hello world
 
 #send INVITE
-#++av --to sip:mamadou@$$(domain) \
-#		--header Action-Header=Myheader-value @@action \
-#		>>(inv_audio_sid)
+++av --to sip:mamadou@$$(domain) \
+		--header Action-Header=Myheader-value @@action \
+		>>(inv_audio_sid)
 
 #++sleep --sec -1
 #++ho --sid $$(inv_audio_sid)

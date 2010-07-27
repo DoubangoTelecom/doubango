@@ -192,7 +192,7 @@ static const char _tsdp_machine_parser_header_M_actions[] = {
 
 static const char _tsdp_machine_parser_header_M_key_offsets[] = {
 	0, 0, 1, 3, 18, 33, 35, 39, 
-	53, 67, 81, 82, 96, 98, 101, 117
+	53, 54, 68, 82, 84, 87, 102, 102
 };
 
 static const char _tsdp_machine_parser_header_M_trans_keys[] = {
@@ -202,30 +202,30 @@ static const char _tsdp_machine_parser_header_M_trans_keys[] = {
 	43, 45, 46, 48, 57, 65, 90, 95, 
 	122, 48, 57, 32, 47, 48, 57, 33, 
 	37, 39, 126, 42, 43, 45, 46, 48, 
-	57, 65, 90, 95, 122, 32, 33, 37, 
-	39, 47, 126, 42, 43, 45, 57, 65, 
-	90, 95, 122, 33, 37, 39, 126, 42, 
-	43, 45, 46, 48, 57, 65, 90, 95, 
-	122, 10, 33, 37, 39, 126, 42, 43, 
-	45, 46, 48, 57, 65, 90, 95, 122, 
-	48, 57, 32, 48, 57, 13, 32, 33, 
-	37, 39, 126, 42, 43, 45, 46, 48, 
-	57, 65, 90, 95, 122, 0
+	57, 65, 90, 95, 122, 10, 33, 37, 
+	39, 126, 42, 43, 45, 46, 48, 57, 
+	65, 90, 95, 122, 33, 37, 39, 126, 
+	42, 43, 45, 46, 48, 57, 65, 90, 
+	95, 122, 48, 57, 32, 48, 57, 13, 
+	32, 33, 37, 39, 47, 126, 42, 43, 
+	45, 57, 65, 90, 95, 122, 13, 32, 
+	33, 37, 39, 126, 42, 43, 45, 46, 
+	48, 57, 65, 90, 95, 122, 0
 };
 
 static const char _tsdp_machine_parser_header_M_single_lengths[] = {
 	0, 1, 2, 5, 5, 0, 2, 4, 
-	6, 4, 1, 4, 0, 1, 6, 0
+	1, 4, 4, 0, 1, 7, 0, 6
 };
 
 static const char _tsdp_machine_parser_header_M_range_lengths[] = {
 	0, 0, 0, 5, 5, 1, 1, 5, 
-	4, 5, 0, 5, 1, 1, 5, 0
+	0, 5, 5, 1, 1, 4, 0, 5
 };
 
 static const char _tsdp_machine_parser_header_M_index_offsets[] = {
 	0, 0, 2, 5, 16, 27, 29, 33, 
-	43, 54, 64, 66, 76, 78, 81, 93
+	43, 45, 55, 65, 67, 70, 82, 83
 };
 
 static const char _tsdp_machine_parser_header_M_indicies[] = {
@@ -234,34 +234,34 @@ static const char _tsdp_machine_parser_header_M_indicies[] = {
 	4, 5, 5, 5, 5, 5, 5, 5, 
 	5, 5, 1, 6, 1, 7, 8, 9, 
 	1, 10, 10, 10, 10, 10, 10, 10, 
-	10, 10, 1, 11, 12, 12, 12, 13, 
-	12, 12, 12, 12, 12, 1, 14, 14, 
-	14, 14, 14, 14, 14, 14, 14, 1, 
-	15, 1, 12, 12, 12, 12, 12, 12, 
-	12, 12, 12, 1, 16, 1, 7, 17, 
-	1, 18, 19, 20, 20, 20, 20, 20, 
-	20, 20, 20, 20, 1, 1, 0
+	10, 10, 1, 11, 1, 12, 12, 12, 
+	12, 12, 12, 12, 12, 12, 1, 13, 
+	13, 13, 13, 13, 13, 13, 13, 13, 
+	1, 14, 1, 7, 15, 1, 16, 17, 
+	13, 13, 13, 18, 13, 13, 13, 13, 
+	13, 1, 1, 19, 20, 21, 21, 21, 
+	21, 21, 21, 21, 21, 21, 1, 0
 };
 
 static const char _tsdp_machine_parser_header_M_trans_targs[] = {
 	2, 0, 3, 4, 5, 4, 6, 7, 
-	12, 6, 8, 9, 8, 11, 14, 15, 
-	13, 13, 10, 9, 14
+	11, 6, 13, 14, 15, 13, 12, 12, 
+	8, 9, 10, 8, 9, 15
 };
 
 static const char _tsdp_machine_parser_header_M_trans_actions[] = {
 	0, 0, 0, 1, 3, 0, 1, 5, 
-	5, 0, 1, 7, 0, 0, 1, 0, 
-	1, 0, 9, 9, 0
+	5, 0, 1, 0, 1, 0, 1, 0, 
+	7, 7, 0, 9, 9, 0
 };
 
 static const char _tsdp_machine_parser_header_M_eof_actions[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 9, 0
+	0, 0, 0, 0, 0, 7, 0, 9
 };
 
 static const int tsdp_machine_parser_header_M_start = 1;
-static const int tsdp_machine_parser_header_M_first_final = 14;
+static const int tsdp_machine_parser_header_M_first_final = 13;
 static const int tsdp_machine_parser_header_M_error = 0;
 
 static const int tsdp_machine_parser_header_M_en_main = 1;
@@ -396,13 +396,19 @@ _again:
 	unsigned int __nacts = (unsigned int) *__acts++;
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
+	case 3:
+/* #line 64 "./ragel/tsdp_parser_header_M.rl" */
+	{
+		TSK_PARSER_SET_STRING(hdr_M->proto);
+	}
+	break;
 	case 4:
 /* #line 68 "./ragel/tsdp_parser_header_M.rl" */
 	{
 		TSK_PARSER_ADD_STRING(hdr_M->FMTs);
 	}
 	break;
-/* #line 406 "./src/headers/tsdp_header_M.c" */
+/* #line 412 "./src/headers/tsdp_header_M.c" */
 		}
 	}
 	}
@@ -413,8 +419,8 @@ _again:
 /* #line 226 "./ragel/tsdp_parser_header_M.rl" */
 	
 	if( cs < 
-/* #line 417 "./src/headers/tsdp_header_M.c" */
-14
+/* #line 423 "./src/headers/tsdp_header_M.c" */
+13
 /* #line 227 "./ragel/tsdp_parser_header_M.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"m=\" header.");

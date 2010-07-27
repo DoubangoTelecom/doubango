@@ -361,7 +361,7 @@ int tsip_transac_ist_Started_2_Proceeding_X_INVITE(va_list *app)
 		tsip_response_t* response;
 		if((response = tsip_response_new(100, "Trying (sent from the Transaction Layer)", request))){
 			ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
-			TRANSAC_IST_SET_LAST_RESPONSE(self, response); /* Update last response */
+			TRANSAC_IST_SET_LAST_RESPONSE(self, response); // Update last response
 			TSK_OBJECT_SAFE_FREE(response);
 		}
 	}

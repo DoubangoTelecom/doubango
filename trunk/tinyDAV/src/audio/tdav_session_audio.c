@@ -29,6 +29,8 @@
  */
 #include "tinydav/audio/tdav_session_audio.h"
 
+#include "tinydav/codecs/dtmf/tdav_codec_dtmf.h"
+
 #include "tinymedia/tmedia_denoise.h"
 #include "tinymedia/tmedia_consumer.h"
 #include "tinymedia/tmedia_producer.h"
@@ -39,6 +41,8 @@
 #include "tsk_timer.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
+
+#define IS_DTMF_CODEC(codec) (TMEDIA_CODEC(codec)->plugin == tdav_codec_dtmf_plugin_def_t)
 
 static int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id);
 static struct tdav_session_audio_dtmfe_s* _tdav_session_audio_dtmfe_create(const tdav_session_audio_t* session, uint8_t event, uint16_t duration, uint32_t seq, uint32_t timestamp, uint8_t format, tsk_bool_t M, tsk_bool_t E);
@@ -261,7 +265,12 @@ int tdav_session_audio_start(tmedia_session_t* self)
 
 	audio = (tdav_session_audio_t*)self;
 
-	if(audio->rtp_manager && !TSK_LIST_IS_EMPTY(self->neg_codecs)){
+	if(TSK_LIST_IS_EMPTY(self->neg_codecs) || ((self->neg_codecs->tail == self->neg_codecs->head) && IS_DTMF_CODEC(TSK_LIST_FIRST_DATA(self->neg_codecs)))){
+		TSK_DEBUG_ERROR("No codec matched");
+		return -2;
+	}
+
+	if(audio->rtp_manager){
 		int ret;
 		const tmedia_codec_t* codec = (const tmedia_codec_t*)TSK_LIST_FIRST_DATA(self->neg_codecs);
 		/* RTP/RTCP manager: use latest information. */
@@ -289,13 +298,8 @@ int tdav_session_audio_start(tmedia_session_t* self)
 		return ret;
 	}
 	else{
-		if(!audio->rtp_manager){
-			TSK_DEBUG_ERROR("Invalid RTP/RTCP manager");
-		}
-		else{
-			TSK_DEBUG_ERROR("Failed to Negociate codecs");
-		}
-		return -2;
+		TSK_DEBUG_ERROR("Invalid RTP/RTCP manager");
+		return -3;
 	}
 	
 	return 0;
@@ -327,9 +331,6 @@ int tdav_session_audio_stop(tmedia_session_t* self)
 	if(audio->producer){
 		tmedia_producer_stop(audio->producer);
 	}
-
-	/* very important */
-	//audio->local_port = 0;
 
 	return 0;
 }
@@ -556,16 +557,26 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 		tmedia_codecs_L_t* neg_codecs = tsk_null;
 		
 		if(self->M.ro){
+			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
 			/* update negociated codecs */
 			if((neg_codecs = tmedia_session_match_codec(self, self->M.ro))){
-				TSK_OBJECT_SAFE_FREE(self->neg_codecs);
 				self->neg_codecs = neg_codecs;
 				TSK_OBJECT_SAFE_FREE(audio->encoder.codec);
 			}
+			/* from codecs to sdp */
+			if(TSK_LIST_IS_EMPTY(self->neg_codecs) || ((self->neg_codecs->tail == self->neg_codecs->head) && IS_DTMF_CODEC(TSK_LIST_FIRST_DATA(self->neg_codecs)))){
+				self->M.lo->port = 0; /* Keep the RTP transport and reuse it when we receive a reINVITE or UPDATE request */
+				goto DONE;
+			}
+			else{
+				tmedia_codec_to_sdp(self->neg_codecs, self->M.lo);
+			}
+		}
+		else{
+			/* from codecs to sdp */
+			tmedia_codec_to_sdp(self->codecs, self->M.lo);
 		}
 
-		/* from codecs to sdp */
-		tmedia_codec_to_sdp(self->neg_codecs ? self->neg_codecs : self->codecs, self->M.lo);
 		/* Hold/Resume */
 		if(self->M.ro){
 			if(tsdp_header_M_is_held(self->M.ro, tsk_false)){
@@ -595,6 +606,7 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 			}
 			tmedia_qos_tline_to_sdp(self->qos, self->M.lo);
 		}
+DONE:;
 	}
 
 	return self->M.lo;
