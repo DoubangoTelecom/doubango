@@ -34,6 +34,15 @@ class SubscriptionSession;
 
 class SipMessage;
 
+typedef enum twrap_media_type_e
+{
+	twrap_media_none,
+	twrap_media_audio,
+	twrap_media_video,
+	twrap_media_audiovideo
+}
+twrap_media_type_t;
+
 
 /* ======================== SipEvent ========================*/
 class SipEvent
@@ -93,6 +102,7 @@ public:
 
 public: /* Public API functions */
 	tsip_invite_event_type_t getType() const;
+	twrap_media_type_t getMediaType();
 	const CallSession* getSession() const;
 	CallSession* takeSessionOwnership() const;
 };

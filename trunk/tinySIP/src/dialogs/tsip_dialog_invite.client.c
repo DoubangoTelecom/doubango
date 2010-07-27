@@ -130,6 +130,9 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 	/* Update current action */
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
+	/* Get Media type from the action */
+	TSIP_DIALOG_GET_SS(self)->media.type = action->media.type;
+
 	/*  RFC 4028 - 7.1. Generating an Initial Session Refresh Request
 
 		A UAC MAY include a Session-Expires header field in an initial

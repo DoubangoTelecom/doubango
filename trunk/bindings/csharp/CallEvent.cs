@@ -42,6 +42,11 @@ public class CallEvent : SipEvent {
     return ret;
   }
 
+  public twrap_media_type_t getMediaType() {
+    twrap_media_type_t ret = (twrap_media_type_t)tinyWRAPPINVOKE.CallEvent_getMediaType(swigCPtr);
+    return ret;
+  }
+
   public CallSession getSession() {
     IntPtr cPtr = tinyWRAPPINVOKE.CallEvent_getSession(swigCPtr);
     CallSession ret = (cPtr == IntPtr.Zero) ? null : new CallSession(cPtr, false);

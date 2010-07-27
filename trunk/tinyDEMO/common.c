@@ -469,7 +469,7 @@ session_t* session_create(session_type_t type, tsip_ssession_handle_t* handle)
 						// Session timers
 						TSIP_MSESSION_SET_TIMERS(3600, "uac"),
 						// QoS
-						TSIP_MSESSION_SET_QOS(tmedia_qos_stype_none, tmedia_qos_strength_none),
+						TSIP_MSESSION_SET_QOS(tmedia_qos_stype_segmented, tmedia_qos_strength_optional),
 
 						// close media params
 						TSIP_MSESSION_SET_NULL()

@@ -245,12 +245,66 @@ bool CallSession::setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength
 			TSIP_SSESSION_SET_NULL()) == 0);
 }
 
+#if ANDROID
+static void *__droid_hangup(void *param)
+{	
+	tsip_action_BYE((tsip_ssession_handle_t *)param,
+		TSIP_ACTION_SET_NULL());
+
+	return tsk_null;
+}
+
 bool CallSession::hangup()
 {
-	int ret = tsip_action_BYE(this->handle,
-		TSIP_ACTION_SET_NULL());
+	void* tid[1] = {0};
+	tsip_ssession_handle_t *handle;
+	int ret;
+	
+	handle = tsk_object_ref(this->handle);
+	ret = tsk_thread_create(tid, __droid_hangup, this->handle);
+	tsk_thread_join(tid);
+	tsk_object_unref(handle);
+
 	return (ret == 0);
 }
+#else
+bool CallSession::hangup()
+{
+	return (tsip_action_BYE(this->handle,
+		TSIP_ACTION_SET_NULL()) == 0);
+}
+#endif
+
+#if ANDROID
+static void *__droid_reject(void *param)
+{	
+	tsip_action_REJECT((tsip_ssession_handle_t *)param,
+		TSIP_ACTION_SET_NULL());
+
+	return tsk_null;
+}
+
+bool CallSession::reject()
+{
+	void* tid[1] = {0};
+	tsip_ssession_handle_t *handle;
+	int ret;
+	
+	handle = tsk_object_ref(this->handle);
+	ret = tsk_thread_create(tid, __droid_reject, this->handle);
+	tsk_thread_join(tid);
+	tsk_object_unref(handle);
+
+	return (ret == 0);
+}
+#else
+bool CallSession::reject()
+{
+	return (tsip_action_REJECT(this->handle,
+		TSIP_ACTION_SET_NULL()) == 0);
+}
+#endif
+
 #if ANDROID
 static void *__droid_accept(void *param)
 {	

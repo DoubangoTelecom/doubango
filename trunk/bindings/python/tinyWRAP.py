@@ -128,6 +128,10 @@ class SipMessage(_object):
 SipMessage_swigregister = _tinyWRAP.SipMessage_swigregister
 SipMessage_swigregister(SipMessage)
 
+twrap_media_none = _tinyWRAP.twrap_media_none
+twrap_media_audio = _tinyWRAP.twrap_media_audio
+twrap_media_video = _tinyWRAP.twrap_media_video
+twrap_media_audiovideo = _tinyWRAP.twrap_media_audiovideo
 class SipEvent(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, SipEvent, name, value)
@@ -184,6 +188,7 @@ class CallEvent(SipEvent):
     __swig_destroy__ = _tinyWRAP.delete_CallEvent
     __del__ = lambda self : None;
     def getType(self): return _tinyWRAP.CallEvent_getType(self)
+    def getMediaType(self): return _tinyWRAP.CallEvent_getMediaType(self)
     def getSession(self): return _tinyWRAP.CallEvent_getSession(self)
     def takeSessionOwnership(self): return _tinyWRAP.CallEvent_takeSessionOwnership(self)
 CallEvent_swigregister = _tinyWRAP.CallEvent_swigregister
@@ -322,6 +327,7 @@ class CallSession(SipSession):
     def resume(self): return _tinyWRAP.CallSession_resume(self)
     def sendDTMF(self, *args): return _tinyWRAP.CallSession_sendDTMF(self, *args)
     def hangup(self): return _tinyWRAP.CallSession_hangup(self)
+    def reject(self): return _tinyWRAP.CallSession_reject(self)
 CallSession_swigregister = _tinyWRAP.CallSession_swigregister
 CallSession_swigregister(CallSession)
 

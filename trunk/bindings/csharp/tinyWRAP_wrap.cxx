@@ -1299,6 +1299,18 @@ SWIGEXPORT int SWIGSTDCALL CSharp_CallEvent_getType(void * jarg1) {
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_CallEvent_getMediaType(void * jarg1) {
+  int jresult ;
+  CallEvent *arg1 = (CallEvent *) 0 ;
+  twrap_media_type_t result;
+  
+  arg1 = (CallEvent *)jarg1; 
+  result = (twrap_media_type_t)(arg1)->getMediaType();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_CallEvent_getSession(void * jarg1) {
   void * jresult ;
   CallEvent *arg1 = (CallEvent *) 0 ;
@@ -1860,6 +1872,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_hangup(void * jarg1) {
   
   arg1 = (CallSession *)jarg1; 
   result = (bool)(arg1)->hangup();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_reject(void * jarg1) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  result = (bool)(arg1)->reject();
   jresult = result; 
   return jresult;
 }

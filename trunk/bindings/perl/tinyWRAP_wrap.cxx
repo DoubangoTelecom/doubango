@@ -1543,10 +1543,11 @@ SWIG_Perl_SetModule(swig_module_info *module) {
 #define SWIGTYPE_p_tsip_register_event_type_e swig_types[45]
 #define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[46]
 #define SWIGTYPE_p_tsk_list_t swig_types[47]
-#define SWIGTYPE_p_twrap_rpdata_type_e swig_types[48]
-#define SWIGTYPE_p_unsigned_short swig_types[49]
-static swig_type_info *swig_types[51];
-static swig_module_info swig_module = {swig_types, 50, 0, 0, 0, 0};
+#define SWIGTYPE_p_twrap_media_type_e swig_types[48]
+#define SWIGTYPE_p_twrap_rpdata_type_e swig_types[49]
+#define SWIGTYPE_p_unsigned_short swig_types[50]
+static swig_type_info *swig_types[52];
+static swig_module_info swig_module = {swig_types, 51, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3332,6 +3333,34 @@ XS(_wrap_CallEvent_getType) {
 }
 
 
+XS(_wrap_CallEvent_getMediaType) {
+  {
+    CallEvent *arg1 = (CallEvent *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    twrap_media_type_t result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: CallEvent_getMediaType(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_CallEvent, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallEvent_getMediaType" "', argument " "1"" of type '" "CallEvent *""'"); 
+    }
+    arg1 = reinterpret_cast< CallEvent * >(argp1);
+    result = (twrap_media_type_t)(arg1)->getMediaType();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_CallEvent_getSession) {
   {
     CallEvent *arg1 = (CallEvent *) 0 ;
@@ -4913,6 +4942,34 @@ XS(_wrap_CallSession_hangup) {
     }
     arg1 = reinterpret_cast< CallSession * >(argp1);
     result = (bool)(arg1)->hangup();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_CallSession_reject) {
+  {
+    CallSession *arg1 = (CallSession *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: CallSession_reject(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_reject" "', argument " "1"" of type '" "CallSession *""'"); 
+    }
+    arg1 = reinterpret_cast< CallSession * >(argp1);
+    result = (bool)(arg1)->reject();
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     
     XSRETURN(argvi);
@@ -10560,6 +10617,7 @@ static swig_type_info _swigt__p_tsip_publish_event_type_e = {"_p_tsip_publish_ev
 static swig_type_info _swigt__p_tsip_register_event_type_e = {"_p_tsip_register_event_type_e", "enum tsip_register_event_type_e *|tsip_register_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_subscribe_event_type_e = {"_p_tsip_subscribe_event_type_e", "enum tsip_subscribe_event_type_e *|tsip_subscribe_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsk_list_t = {"_p_tsk_list_t", "twrap_xcap_steps_L_t *|tsk_list_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_twrap_media_type_e = {"_p_twrap_media_type_e", "enum twrap_media_type_e *|twrap_media_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_twrap_rpdata_type_e = {"_p_twrap_rpdata_type_e", "enum twrap_rpdata_type_e *|twrap_rpdata_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_unsigned_short = {"_p_unsigned_short", "unsigned short *", 0, 0, (void*)0, 0};
 
@@ -10612,6 +10670,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_tsip_register_event_type_e,
   &_swigt__p_tsip_subscribe_event_type_e,
   &_swigt__p_tsk_list_t,
+  &_swigt__p_twrap_media_type_e,
   &_swigt__p_twrap_rpdata_type_e,
   &_swigt__p_unsigned_short,
 };
@@ -10664,6 +10723,7 @@ static swig_cast_info _swigc__p_tsip_publish_event_type_e[] = {  {&_swigt__p_tsi
 static swig_cast_info _swigc__p_tsip_register_event_type_e[] = {  {&_swigt__p_tsip_register_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_subscribe_event_type_e[] = {  {&_swigt__p_tsip_subscribe_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsk_list_t[] = {  {&_swigt__p_tsk_list_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_twrap_media_type_e[] = {  {&_swigt__p_twrap_media_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_twrap_rpdata_type_e[] = {  {&_swigt__p_twrap_rpdata_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_unsigned_short[] = {  {&_swigt__p_unsigned_short, 0, 0, 0},{0, 0, 0, 0}};
 
@@ -10716,6 +10776,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_tsip_register_event_type_e,
   _swigc__p_tsip_subscribe_event_type_e,
   _swigc__p_tsk_list_t,
+  _swigc__p_twrap_media_type_e,
   _swigc__p_twrap_rpdata_type_e,
   _swigc__p_unsigned_short,
 };
@@ -10764,6 +10825,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::delete_StackEvent", _wrap_delete_StackEvent},
 {"tinyWRAPc::delete_CallEvent", _wrap_delete_CallEvent},
 {"tinyWRAPc::CallEvent_getType", _wrap_CallEvent_getType},
+{"tinyWRAPc::CallEvent_getMediaType", _wrap_CallEvent_getMediaType},
 {"tinyWRAPc::CallEvent_getSession", _wrap_CallEvent_getSession},
 {"tinyWRAPc::CallEvent_takeSessionOwnership", _wrap_CallEvent_takeSessionOwnership},
 {"tinyWRAPc::delete_MessagingEvent", _wrap_delete_MessagingEvent},
@@ -10809,6 +10871,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::CallSession_resume", _wrap_CallSession_resume},
 {"tinyWRAPc::CallSession_sendDTMF", _wrap_CallSession_sendDTMF},
 {"tinyWRAPc::CallSession_hangup", _wrap_CallSession_hangup},
+{"tinyWRAPc::CallSession_reject", _wrap_CallSession_reject},
 {"tinyWRAPc::new_MessagingSession", _wrap_new_MessagingSession},
 {"tinyWRAPc::delete_MessagingSession", _wrap_delete_MessagingSession},
 {"tinyWRAPc::MessagingSession_send", _wrap_MessagingSession_send},
@@ -11254,6 +11317,26 @@ XS(SWIG_init) {
   SWIG_TypeClientData(SWIGTYPE_p_DDebugCallback, (void*) "tinyWRAP::DDebugCallback");
   SWIG_TypeClientData(SWIGTYPE_p_SipUri, (void*) "tinyWRAP::SipUri");
   SWIG_TypeClientData(SWIGTYPE_p_SipMessage, (void*) "tinyWRAP::SipMessage");
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "twrap_media_none", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(twrap_media_none)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "twrap_media_audio", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(twrap_media_audio)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "twrap_media_video", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(twrap_media_video)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "twrap_media_audiovideo", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(twrap_media_audiovideo)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
   SWIG_TypeClientData(SWIGTYPE_p_SipEvent, (void*) "tinyWRAP::SipEvent");
   SWIG_TypeClientData(SWIGTYPE_p_DialogEvent, (void*) "tinyWRAP::DialogEvent");
   SWIG_TypeClientData(SWIGTYPE_p_StackEvent, (void*) "tinyWRAP::StackEvent");

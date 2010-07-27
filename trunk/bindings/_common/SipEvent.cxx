@@ -101,6 +101,21 @@ tsip_invite_event_type_t CallEvent::getType() const
 	return TSIP_INVITE_EVENT(this->sipevent)->type;
 }
 
+twrap_media_type_t CallEvent::getMediaType()
+{
+	if(this->sipevent && this->sipevent->ss){
+		switch(tsip_ssession_get_mediatype(this->sipevent->ss)){
+			case tmedia_audio:
+				return twrap_media_audio;
+			case tmedia_video:
+				return twrap_media_video;
+			case tmedia_audiovideo:
+				return twrap_media_audiovideo;
+		}
+	}
+	return twrap_media_none;
+}
+
 const CallSession* CallEvent::getSession() const
 {
 	return dyn_cast<const CallSession*>(this->getBaseSession());
@@ -122,7 +137,6 @@ CallSession* CallEvent::takeSessionOwnership() const
 		if(stack_handle && (userdata = tsip_stack_get_userdata(stack_handle))){
 			SipStack* stack = dyn_cast<SipStack*>((SipStack*)userdata);
 			if(stack){
-				// FIXME: Memory Leak ?
 				/* The constructor will call take_ownerhip() */
 				return new CallSession(stack, this->sipevent->ss);
 			}

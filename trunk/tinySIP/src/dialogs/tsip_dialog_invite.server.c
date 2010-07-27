@@ -178,9 +178,10 @@ static tsk_bool_t _fsm_cond_prack_match(tsip_dialog_invite_t* self, tsip_message
 	
 	return tsk_false;
 }
-static tsk_bool_t _fsm_cond_supports_preconditions(tsip_dialog_invite_t* self, tsip_message_t* rPRACK)
+static tsk_bool_t _fsm_cond_negociates_preconditions(tsip_dialog_invite_t* self, tsip_message_t* rPRACK)
 {
-	if(tsip_message_supported(self->last_iInvite, "precondition") || tsip_message_required(self->last_iInvite, "precondition")){
+	//tsip_message_supported(self->last_iInvite, "precondition") || tsip_message_required(self->last_iInvite, "precondition")
+	if(tsip_message_required(self->last_iInvite, "precondition") || (self->msession_mgr && self->msession_mgr->qos.type == tmedia_qos_strength_mandatory)){
 		return tsk_true;
 	}
 	return tsk_false;
@@ -219,7 +220,7 @@ int tsip_dialog_invite_server_init(tsip_dialog_invite_t *self)
 		* === InProgress === 
 		*/
 		// InProgress ->(iPRACK with QoS) -> InProgress
-		TSK_FSM_ADD(_fsm_state_InProgress, _fsm_action_iPRACK, _fsm_cond_supports_preconditions, _fsm_state_InProgress, s0000_InProgress_2_InProgress_X_iPRACK, "s0000_InProgress_2_InProgress_X_iPRACK"),
+		TSK_FSM_ADD(_fsm_state_InProgress, _fsm_action_iPRACK, _fsm_cond_negociates_preconditions, _fsm_state_InProgress, s0000_InProgress_2_InProgress_X_iPRACK, "s0000_InProgress_2_InProgress_X_iPRACK"),
 		// InProgress ->(iPRACK without QoS) -> Ringing
 		TSK_FSM_ADD(_fsm_state_InProgress, _fsm_action_iPRACK, _fsm_cond_prack_match, _fsm_state_Ringing, s0000_InProgress_2_Ringing_X_iPRACK, "s0000_InProgress_2_Ringing_X_iPRACK"),
 		// InProgress ->(iUPDATE but cannot resume) -> InProgress
@@ -299,15 +300,9 @@ int s0000_Started_2_Ringing_X_iINVITE(va_list *app)
 	/* Send Ringing */
 	send_RESPONSE(self, request, 180, "Ringing", tsk_false);
 
-	/* Set media type */
-	if(self->msession_mgr){
-		TSIP_DIALOG_GET_SS(self)->media.type = self->msession_mgr->type;
-	}
-	
-
 	/* Alert the user (session) */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_newcall, 
-			tsip_event_code_dialog_request_incoming, "Incoming Request.", request);
+			tsip_event_code_dialog_request_incoming, "Incoming Call", request);
 
 	return 0;
 }
@@ -358,7 +353,9 @@ int s0000_InProgress_2_InProgress_X_iPRACK(va_list *app)
 	TSIP_DIALOG_TIMER_CANCEL(100rel);
 
 	/* In all cases: Send 2xx PRACK */
-	ret = send_RESPONSE(self, request, 200, "OK", tsk_false);
+	if(!(ret = send_RESPONSE(self, request, 200, "OK", tsk_false))){
+		++self->rseq;
+	}
 
 	/*
 		1. Alice sends an initial INVITE without offer
@@ -395,7 +392,9 @@ int s0000_InProgress_2_Ringing_X_iPRACK(va_list *app)
 	TSIP_DIALOG_TIMER_CANCEL(100rel);
 
 	/* In all cases: Send 2xx PRACK */
-	ret = send_RESPONSE(self, request, 200, "OK", tsk_false);
+	if(!(ret = send_RESPONSE(self, request, 200, "OK", tsk_false))){
+		++self->rseq;
+	}
 
 	/*
 		1. Alice sends an initial INVITE without offer
@@ -418,11 +417,11 @@ int s0000_InProgress_2_Ringing_X_iPRACK(va_list *app)
 	}
 
 	/* Send Ringing */
-	send_RESPONSE(self, self->last_iInvite, 180, "Ringing", tsk_false);
+	ret = send_RESPONSE(self, self->last_iInvite, 180, "Ringing", tsk_false);
 
 	/* Alert the user (session) */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_newcall, 
-			tsip_event_code_dialog_request_incoming, "Incoming Request.", request);
+			tsip_event_code_dialog_request_incoming, "Incoming Call", request);
 
 	return ret;
 }
@@ -469,7 +468,7 @@ int s0000_InProgress_2_Ringing_X_iUPDATE(va_list *app)
 
 	/* alert the user */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_newcall, 
-			tsip_event_code_dialog_request_incoming, "Incoming Request.", request);
+			tsip_event_code_dialog_request_incoming, "Incoming Call", request);
 
 	return ret;
 }
@@ -581,7 +580,7 @@ int s0000_Ringing_2_Terminated_X_Reject(va_list *app)
 	TSIP_DIALOG_TIMER_CANCEL(100rel);
 
 	/* Send Reject */
-	ret = send_ERROR(self, self->last_iInvite, 486, "Busy Here", "SIP; cause=486; text=\"Busy Here\"");
+	ret = send_ERROR(self, self->last_iInvite, 603, "Decline", "SIP; cause=603; text=\"Call declined\"");
 
 	/* set last error (or info) */
 	tsip_dialog_set_lasterror(TSIP_DIALOG(self), "Call Terminated");

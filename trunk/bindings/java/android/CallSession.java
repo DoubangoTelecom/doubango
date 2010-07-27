@@ -81,4 +81,8 @@ public class CallSession extends SipSession {
     return tinyWRAPJNI.CallSession_hangup(swigCPtr, this);
   }
 
+  public boolean reject() {
+    return tinyWRAPJNI.CallSession_reject(swigCPtr, this);
+  }
+
 }

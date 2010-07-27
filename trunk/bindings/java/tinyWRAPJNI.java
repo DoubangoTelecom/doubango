@@ -43,6 +43,7 @@ class tinyWRAPJNI {
   public final static native void delete_StackEvent(long jarg1);
   public final static native void delete_CallEvent(long jarg1);
   public final static native int CallEvent_getType(long jarg1, CallEvent jarg1_);
+  public final static native int CallEvent_getMediaType(long jarg1, CallEvent jarg1_);
   public final static native long CallEvent_getSession(long jarg1, CallEvent jarg1_);
   public final static native long CallEvent_takeSessionOwnership(long jarg1, CallEvent jarg1_);
   public final static native void delete_MessagingEvent(long jarg1);
@@ -89,6 +90,7 @@ class tinyWRAPJNI {
   public final static native boolean CallSession_resume(long jarg1, CallSession jarg1_);
   public final static native boolean CallSession_sendDTMF(long jarg1, CallSession jarg1_, int jarg2);
   public final static native boolean CallSession_hangup(long jarg1, CallSession jarg1_);
+  public final static native boolean CallSession_reject(long jarg1, CallSession jarg1_);
   public final static native long new_MessagingSession(long jarg1, SipStack jarg1_);
   public final static native void delete_MessagingSession(long jarg1);
   public final static native boolean MessagingSession_send(long jarg1, MessagingSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3);

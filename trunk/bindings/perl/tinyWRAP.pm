@@ -293,6 +293,7 @@ sub DESTROY {
 }
 
 *getType = *tinyWRAPc::CallEvent_getType;
+*getMediaType = *tinyWRAPc::CallEvent_getMediaType;
 *getSession = *tinyWRAPc::CallEvent_getSession;
 *takeSessionOwnership = *tinyWRAPc::CallEvent_takeSessionOwnership;
 sub DISOWN {
@@ -558,6 +559,7 @@ sub DESTROY {
 *resume = *tinyWRAPc::CallSession_resume;
 *sendDTMF = *tinyWRAPc::CallSession_sendDTMF;
 *hangup = *tinyWRAPc::CallSession_hangup;
+*reject = *tinyWRAPc::CallSession_reject;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1408,6 +1410,10 @@ sub ACQUIRE {
 
 package tinyWRAP;
 
+*twrap_media_none = *tinyWRAPc::twrap_media_none;
+*twrap_media_audio = *tinyWRAPc::twrap_media_audio;
+*twrap_media_video = *tinyWRAPc::twrap_media_video;
+*twrap_media_audiovideo = *tinyWRAPc::twrap_media_audiovideo;
 *tsip_event_invite = *tinyWRAPc::tsip_event_invite;
 *tsip_event_message = *tinyWRAPc::tsip_event_message;
 *tsip_event_options = *tinyWRAPc::tsip_event_options;

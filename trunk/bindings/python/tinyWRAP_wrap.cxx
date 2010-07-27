@@ -3169,10 +3169,11 @@ namespace Swig {
 #define SWIGTYPE_p_tsip_register_event_type_e swig_types[45]
 #define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[46]
 #define SWIGTYPE_p_tsk_list_t swig_types[47]
-#define SWIGTYPE_p_twrap_rpdata_type_e swig_types[48]
-#define SWIGTYPE_p_unsigned_short swig_types[49]
-static swig_type_info *swig_types[51];
-static swig_module_info swig_module = {swig_types, 50, 0, 0, 0, 0};
+#define SWIGTYPE_p_twrap_media_type_e swig_types[48]
+#define SWIGTYPE_p_twrap_rpdata_type_e swig_types[49]
+#define SWIGTYPE_p_unsigned_short swig_types[50]
+static swig_type_info *swig_types[52];
+static swig_module_info swig_module = {swig_types, 51, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -5633,6 +5634,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_CallEvent_getMediaType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallEvent *arg1 = (CallEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  twrap_media_type_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CallEvent_getMediaType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallEvent_getMediaType" "', argument " "1"" of type '" "CallEvent *""'"); 
+  }
+  arg1 = reinterpret_cast< CallEvent * >(argp1);
+  result = (twrap_media_type_t)(arg1)->getMediaType();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_CallEvent_getSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   CallEvent *arg1 = (CallEvent *) 0 ;
@@ -6961,6 +6984,28 @@ SWIGINTERN PyObject *_wrap_CallSession_hangup(PyObject *SWIGUNUSEDPARM(self), Py
   }
   arg1 = reinterpret_cast< CallSession * >(argp1);
   result = (bool)(arg1)->hangup();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_reject(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CallSession_reject",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_reject" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  result = (bool)(arg1)->reject();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -12237,6 +12282,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"StackEvent_swigregister", StackEvent_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_CallEvent", _wrap_delete_CallEvent, METH_VARARGS, NULL},
 	 { (char *)"CallEvent_getType", _wrap_CallEvent_getType, METH_VARARGS, NULL},
+	 { (char *)"CallEvent_getMediaType", _wrap_CallEvent_getMediaType, METH_VARARGS, NULL},
 	 { (char *)"CallEvent_getSession", _wrap_CallEvent_getSession, METH_VARARGS, NULL},
 	 { (char *)"CallEvent_takeSessionOwnership", _wrap_CallEvent_takeSessionOwnership, METH_VARARGS, NULL},
 	 { (char *)"CallEvent_swigregister", CallEvent_swigregister, METH_VARARGS, NULL},
@@ -12289,6 +12335,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"CallSession_resume", _wrap_CallSession_resume, METH_VARARGS, NULL},
 	 { (char *)"CallSession_sendDTMF", _wrap_CallSession_sendDTMF, METH_VARARGS, NULL},
 	 { (char *)"CallSession_hangup", _wrap_CallSession_hangup, METH_VARARGS, NULL},
+	 { (char *)"CallSession_reject", _wrap_CallSession_reject, METH_VARARGS, NULL},
 	 { (char *)"CallSession_swigregister", CallSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_MessagingSession", _wrap_new_MessagingSession, METH_VARARGS, NULL},
 	 { (char *)"delete_MessagingSession", _wrap_delete_MessagingSession, METH_VARARGS, NULL},
@@ -12563,6 +12610,7 @@ static swig_type_info _swigt__p_tsip_publish_event_type_e = {"_p_tsip_publish_ev
 static swig_type_info _swigt__p_tsip_register_event_type_e = {"_p_tsip_register_event_type_e", "enum tsip_register_event_type_e *|tsip_register_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_subscribe_event_type_e = {"_p_tsip_subscribe_event_type_e", "enum tsip_subscribe_event_type_e *|tsip_subscribe_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsk_list_t = {"_p_tsk_list_t", "twrap_xcap_steps_L_t *|tsk_list_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_twrap_media_type_e = {"_p_twrap_media_type_e", "enum twrap_media_type_e *|twrap_media_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_twrap_rpdata_type_e = {"_p_twrap_rpdata_type_e", "enum twrap_rpdata_type_e *|twrap_rpdata_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_unsigned_short = {"_p_unsigned_short", "unsigned short *", 0, 0, (void*)0, 0};
 
@@ -12615,6 +12663,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_tsip_register_event_type_e,
   &_swigt__p_tsip_subscribe_event_type_e,
   &_swigt__p_tsk_list_t,
+  &_swigt__p_twrap_media_type_e,
   &_swigt__p_twrap_rpdata_type_e,
   &_swigt__p_unsigned_short,
 };
@@ -12667,6 +12716,7 @@ static swig_cast_info _swigc__p_tsip_publish_event_type_e[] = {  {&_swigt__p_tsi
 static swig_cast_info _swigc__p_tsip_register_event_type_e[] = {  {&_swigt__p_tsip_register_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_subscribe_event_type_e[] = {  {&_swigt__p_tsip_subscribe_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsk_list_t[] = {  {&_swigt__p_tsk_list_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_twrap_media_type_e[] = {  {&_swigt__p_twrap_media_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_twrap_rpdata_type_e[] = {  {&_swigt__p_twrap_rpdata_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_unsigned_short[] = {  {&_swigt__p_unsigned_short, 0, 0, 0},{0, 0, 0, 0}};
 
@@ -12719,6 +12769,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_tsip_register_event_type_e,
   _swigc__p_tsip_subscribe_event_type_e,
   _swigc__p_tsk_list_t,
+  _swigc__p_twrap_media_type_e,
   _swigc__p_twrap_rpdata_type_e,
   _swigc__p_unsigned_short,
 };
@@ -13310,6 +13361,10 @@ SWIG_init(void) {
   SWIG_InstallConstants(d,swig_const_table);
   
   
+  SWIG_Python_SetConstant(d, "twrap_media_none",SWIG_From_int(static_cast< int >(twrap_media_none)));
+  SWIG_Python_SetConstant(d, "twrap_media_audio",SWIG_From_int(static_cast< int >(twrap_media_audio)));
+  SWIG_Python_SetConstant(d, "twrap_media_video",SWIG_From_int(static_cast< int >(twrap_media_video)));
+  SWIG_Python_SetConstant(d, "twrap_media_audiovideo",SWIG_From_int(static_cast< int >(twrap_media_audiovideo)));
   SWIG_Python_SetConstant(d, "tsip_event_invite",SWIG_From_int(static_cast< int >(tsip_event_invite)));
   SWIG_Python_SetConstant(d, "tsip_event_message",SWIG_From_int(static_cast< int >(tsip_event_message)));
   SWIG_Python_SetConstant(d, "tsip_event_options",SWIG_From_int(static_cast< int >(tsip_event_options)));

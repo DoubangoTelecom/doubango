@@ -88,6 +88,7 @@ public: /* Public functions */
 	bool resume();
 	bool sendDTMF(int number);
 	bool hangup();
+	bool reject();
 };
 
 /* ======================== MessagingSession ========================*/
