@@ -107,7 +107,7 @@ int tdav_producer_dsound_prepare(tmedia_producer_t* self, const tmedia_codec_t* 
 
 	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)self;
 
-	if(!dsound){
+	if(!dsound || !codec){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}

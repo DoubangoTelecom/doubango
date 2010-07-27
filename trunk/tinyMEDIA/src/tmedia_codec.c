@@ -433,7 +433,7 @@ int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 	char *fmtp, *rtpmap;
 	int ret;
 
-	if(!codecs || !m){
+	if(!m){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}

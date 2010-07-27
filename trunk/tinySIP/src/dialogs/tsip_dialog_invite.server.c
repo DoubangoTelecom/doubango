@@ -112,15 +112,19 @@ static tsk_bool_t _fsm_cond_bad_content(tsip_dialog_invite_t* self, tsip_message
 
 	/* Check remote offer */
 	if((ret = tsip_dialog_invite_process_ro(self, message))){
-		ret = send_ERROR(self, self->last_iInvite, 488, "Not Acceptable", "SIP; cause=488; text=\"Bad content\"");
+		ret = send_ERROR(self, message, 488, "Not Acceptable", "SIP; cause=488; text=\"Bad content\"");
 		return tsk_true;
 	}
 	/* generate local offer and check it's validity */
-	if((sdp_lo = tmedia_session_mgr_get_lo(self->msession_mgr))){
-		/* check that we have at least one codec */
+	if(self->msession_mgr && (sdp_lo = tmedia_session_mgr_get_lo(self->msession_mgr))){
+		/* check that we have at least one valid session */
+		if(!tmedia_session_mgr_has_active_session(self->msession_mgr)){
+			ret = send_ERROR(self, message, 488, "Not Acceptable", "SIP; cause=488; text=\"No common codecs\"");
+			return tsk_true;
+		}
 	}
 	else{
-		ret = send_ERROR(self, self->last_iInvite, 488, "Not Acceptable", "SIP; cause=488; text=\"Bad content\"");
+		ret = send_ERROR(self, message, 488, "Not Acceptable", "SIP; cause=488; text=\"Bad content\"");
 		return tsk_true;
 	}
 

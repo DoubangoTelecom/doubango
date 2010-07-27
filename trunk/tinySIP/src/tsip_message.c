@@ -338,6 +338,7 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 	if(self->firstVia){
 		tsip_header_serialize(TSIP_HEADER(self->firstVia), output);
 	}
+	
 	/* From */
 	if(self->From){
 		tsip_header_serialize(TSIP_HEADER(self->From), output);
@@ -375,8 +376,7 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 	{
 		tsk_list_item_t *item;
 		tsk_list_foreach(item, self->headers){
-			tsip_header_t *hdr = item->data;
-			tsip_header_serialize(hdr, output);
+			tsip_header_serialize(TSIP_HEADER(item->data), output);
 		}
 	}
 

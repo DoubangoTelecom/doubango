@@ -48,7 +48,7 @@ tmedia_type_t tmedia_type_from_sdp(const tsdp_message_t* sdp)
 	}
 
 	while((M = (const tsdp_header_M_t*)tsdp_message_get_headerAt(sdp, tsdp_htype_M, index++))){
-		if((plugin = tmedia_session_plugin_find_by_media(M->media))){
+		if(M->port && (plugin = tmedia_session_plugin_find_by_media(M->media))){
 			type |= plugin->type;
 		}
 	}

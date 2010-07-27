@@ -117,7 +117,7 @@ int tdav_init()
 	tmedia_codec_plugin_register(tdav_codec_h264_bp10_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h264_bp20_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h264_bp30_plugin_def_t);
-	tmedia_codec_plugin_register(tdav_codec_theora_plugin_def_t);	
+	tmedia_codec_plugin_register(tdav_codec_theora_plugin_def_t);
 #endif
 	
 
