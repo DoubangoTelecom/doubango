@@ -10,20 +10,20 @@
 using System;
 using System.Runtime.InteropServices;
 
-public class RPData : IDisposable {
+public class SMSData : IDisposable {
   private HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal RPData(IntPtr cPtr, bool cMemoryOwn) {
+  internal SMSData(IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new HandleRef(this, cPtr);
   }
 
-  internal static HandleRef getCPtr(RPData obj) {
+  internal static HandleRef getCPtr(SMSData obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~RPData() {
+  ~SMSData() {
     Dispose();
   }
 
@@ -31,28 +31,43 @@ public class RPData : IDisposable {
     lock(this) {
       if(swigCPtr.Handle != IntPtr.Zero && swigCMemOwn) {
         swigCMemOwn = false;
-        tinyWRAPPINVOKE.delete_RPData(swigCPtr);
+        tinyWRAPPINVOKE.delete_SMSData(swigCPtr);
       }
       swigCPtr = new HandleRef(null, IntPtr.Zero);
       GC.SuppressFinalize(this);
     }
   }
 
-  public RPData() : this(tinyWRAPPINVOKE.new_RPData(), true) {
+  public SMSData() : this(tinyWRAPPINVOKE.new_SMSData(), true) {
   }
 
-  public twrap_rpdata_type_t getType() {
-    twrap_rpdata_type_t ret = (twrap_rpdata_type_t)tinyWRAPPINVOKE.RPData_getType(swigCPtr);
+  public twrap_sms_type_t getType() {
+    twrap_sms_type_t ret = (twrap_sms_type_t)tinyWRAPPINVOKE.SMSData_getType(swigCPtr);
+    return ret;
+  }
+
+  public int getMR() {
+    int ret = tinyWRAPPINVOKE.SMSData_getMR(swigCPtr);
     return ret;
   }
 
   public uint getPayloadLength() {
-    uint ret = tinyWRAPPINVOKE.RPData_getPayloadLength(swigCPtr);
+    uint ret = tinyWRAPPINVOKE.SMSData_getPayloadLength(swigCPtr);
     return ret;
   }
 
   public uint getPayload(byte[] output, uint maxsize) {
-    uint ret = tinyWRAPPINVOKE.RPData_getPayload(swigCPtr, output, maxsize);
+    uint ret = tinyWRAPPINVOKE.SMSData_getPayload(swigCPtr, output, maxsize);
+    return ret;
+  }
+
+  public string getOA() {
+    string ret = tinyWRAPPINVOKE.SMSData_getOA(swigCPtr);
+    return ret;
+  }
+
+  public string getDA() {
+    string ret = tinyWRAPPINVOKE.SMSData_getDA(swigCPtr);
     return ret;
   }
 

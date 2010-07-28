@@ -3136,44 +3136,46 @@ namespace Swig {
 #define SWIGTYPE_p_ProxyVideoProducer swig_types[12]
 #define SWIGTYPE_p_PublicationEvent swig_types[13]
 #define SWIGTYPE_p_PublicationSession swig_types[14]
-#define SWIGTYPE_p_RPData swig_types[15]
+#define SWIGTYPE_p_RPMessage swig_types[15]
 #define SWIGTYPE_p_RegistrationEvent swig_types[16]
 #define SWIGTYPE_p_RegistrationSession swig_types[17]
-#define SWIGTYPE_p_SMSEncoder swig_types[18]
-#define SWIGTYPE_p_SafeObject swig_types[19]
-#define SWIGTYPE_p_SipCallback swig_types[20]
-#define SWIGTYPE_p_SipEvent swig_types[21]
-#define SWIGTYPE_p_SipMessage swig_types[22]
-#define SWIGTYPE_p_SipSession swig_types[23]
-#define SWIGTYPE_p_SipStack swig_types[24]
-#define SWIGTYPE_p_SipUri swig_types[25]
-#define SWIGTYPE_p_StackEvent swig_types[26]
-#define SWIGTYPE_p_SubscriptionEvent swig_types[27]
-#define SWIGTYPE_p_SubscriptionSession swig_types[28]
-#define SWIGTYPE_p_XcapCallback swig_types[29]
-#define SWIGTYPE_p_XcapEvent swig_types[30]
-#define SWIGTYPE_p_XcapMessage swig_types[31]
-#define SWIGTYPE_p_XcapSelector swig_types[32]
-#define SWIGTYPE_p_XcapStack swig_types[33]
-#define SWIGTYPE_p_char swig_types[34]
-#define SWIGTYPE_p_tdav_codec_id_e swig_types[35]
-#define SWIGTYPE_p_thttp_event_type_e swig_types[36]
-#define SWIGTYPE_p_tmedia_chroma_e swig_types[37]
-#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[38]
-#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[39]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[40]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[41]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[42]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[43]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[44]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[45]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[46]
-#define SWIGTYPE_p_tsk_list_t swig_types[47]
-#define SWIGTYPE_p_twrap_media_type_e swig_types[48]
-#define SWIGTYPE_p_twrap_rpdata_type_e swig_types[49]
-#define SWIGTYPE_p_unsigned_short swig_types[50]
-static swig_type_info *swig_types[52];
-static swig_module_info swig_module = {swig_types, 51, 0, 0, 0, 0};
+#define SWIGTYPE_p_SMSData swig_types[18]
+#define SWIGTYPE_p_SMSEncoder swig_types[19]
+#define SWIGTYPE_p_SafeObject swig_types[20]
+#define SWIGTYPE_p_SipCallback swig_types[21]
+#define SWIGTYPE_p_SipEvent swig_types[22]
+#define SWIGTYPE_p_SipMessage swig_types[23]
+#define SWIGTYPE_p_SipSession swig_types[24]
+#define SWIGTYPE_p_SipStack swig_types[25]
+#define SWIGTYPE_p_SipUri swig_types[26]
+#define SWIGTYPE_p_StackEvent swig_types[27]
+#define SWIGTYPE_p_SubscriptionEvent swig_types[28]
+#define SWIGTYPE_p_SubscriptionSession swig_types[29]
+#define SWIGTYPE_p_XcapCallback swig_types[30]
+#define SWIGTYPE_p_XcapEvent swig_types[31]
+#define SWIGTYPE_p_XcapMessage swig_types[32]
+#define SWIGTYPE_p_XcapSelector swig_types[33]
+#define SWIGTYPE_p_XcapStack swig_types[34]
+#define SWIGTYPE_p_char swig_types[35]
+#define SWIGTYPE_p_tdav_codec_id_e swig_types[36]
+#define SWIGTYPE_p_thttp_event_type_e swig_types[37]
+#define SWIGTYPE_p_tmedia_chroma_e swig_types[38]
+#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[39]
+#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[40]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[41]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[42]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[43]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[44]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[45]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[46]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[47]
+#define SWIGTYPE_p_tsk_list_t swig_types[48]
+#define SWIGTYPE_p_twrap_media_type_e swig_types[49]
+#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[50]
+#define SWIGTYPE_p_twrap_sms_type_e swig_types[51]
+#define SWIGTYPE_p_unsigned_short swig_types[52]
+static swig_type_info *swig_types[54];
+static swig_module_info swig_module = {swig_types, 53, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -12034,32 +12036,32 @@ SWIGINTERN PyObject *XcapStack_swigregister(PyObject *SWIGUNUSEDPARM(self), PyOb
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_RPData(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_RPMessage(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  RPData *result = 0 ;
+  RPMessage *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)":new_RPData")) SWIG_fail;
-  result = (RPData *)new RPData();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RPData, SWIG_POINTER_NEW |  0 );
+  if (!PyArg_ParseTuple(args,(char *)":new_RPMessage")) SWIG_fail;
+  result = (RPMessage *)new RPMessage();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RPMessage, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_RPData(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_RPMessage(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  RPData *arg1 = (RPData *) 0 ;
+  RPMessage *arg1 = (RPMessage *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_RPData",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RPData, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_RPMessage",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RPMessage, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_RPData" "', argument " "1"" of type '" "RPData *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_RPMessage" "', argument " "1"" of type '" "RPMessage *""'"); 
   }
-  arg1 = reinterpret_cast< RPData * >(argp1);
+  arg1 = reinterpret_cast< RPMessage * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -12068,21 +12070,21 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_RPData_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_RPMessage_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  RPData *arg1 = (RPData *) 0 ;
+  RPMessage *arg1 = (RPMessage *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  twrap_rpdata_type_t result;
+  twrap_rpmessage_type_t result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:RPData_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RPData, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:RPMessage_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RPMessage, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RPData_getType" "', argument " "1"" of type '" "RPData *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RPMessage_getType" "', argument " "1"" of type '" "RPMessage *""'"); 
   }
-  arg1 = reinterpret_cast< RPData * >(argp1);
-  result = (twrap_rpdata_type_t)(arg1)->getType();
+  arg1 = reinterpret_cast< RPMessage * >(argp1);
+  result = (twrap_rpmessage_type_t)(arg1)->getType();
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -12090,20 +12092,20 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_RPData_getPayloadLength(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_RPMessage_getPayloadLength(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  RPData *arg1 = (RPData *) 0 ;
+  RPMessage *arg1 = (RPMessage *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   unsigned int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:RPData_getPayloadLength",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RPData, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:RPMessage_getPayloadLength",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RPMessage, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RPData_getPayloadLength" "', argument " "1"" of type '" "RPData *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RPMessage_getPayloadLength" "', argument " "1"" of type '" "RPMessage *""'"); 
   }
-  arg1 = reinterpret_cast< RPData * >(argp1);
+  arg1 = reinterpret_cast< RPMessage * >(argp1);
   result = (unsigned int)(arg1)->getPayloadLength();
   resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return resultobj;
@@ -12112,9 +12114,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_RPData_getPayload(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_RPMessage_getPayload(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  RPData *arg1 = (RPData *) 0 ;
+  RPMessage *arg1 = (RPMessage *) 0 ;
   void *arg2 = (void *) 0 ;
   unsigned int arg3 ;
   void *argp1 = 0 ;
@@ -12127,19 +12129,19 @@ SWIGINTERN PyObject *_wrap_RPData_getPayload(PyObject *SWIGUNUSEDPARM(self), PyO
   PyObject * obj2 = 0 ;
   unsigned int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:RPData_getPayload",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RPData, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"OOO:RPMessage_getPayload",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RPMessage, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RPData_getPayload" "', argument " "1"" of type '" "RPData *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RPMessage_getPayload" "', argument " "1"" of type '" "RPMessage *""'"); 
   }
-  arg1 = reinterpret_cast< RPData * >(argp1);
+  arg1 = reinterpret_cast< RPMessage * >(argp1);
   res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RPData_getPayload" "', argument " "2"" of type '" "void *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RPMessage_getPayload" "', argument " "2"" of type '" "void *""'"); 
   }
   ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "RPData_getPayload" "', argument " "3"" of type '" "unsigned int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "RPMessage_getPayload" "', argument " "3"" of type '" "unsigned int""'");
   } 
   arg3 = static_cast< unsigned int >(val3);
   result = (unsigned int)(arg1)->getPayload(arg2,arg3);
@@ -12150,10 +12152,199 @@ fail:
 }
 
 
-SWIGINTERN PyObject *RPData_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *RPMessage_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_RPData, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_RPMessage, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_new_SMSData(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SMSData *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_SMSData")) SWIG_fail;
+  result = (SMSData *)new SMSData();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SMSData, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_SMSData(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SMSData *arg1 = (SMSData *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_SMSData",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SMSData, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_SMSData" "', argument " "1"" of type '" "SMSData *""'"); 
+  }
+  arg1 = reinterpret_cast< SMSData * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SMSData_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SMSData *arg1 = (SMSData *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  twrap_sms_type_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SMSData_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SMSData, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SMSData_getType" "', argument " "1"" of type '" "SMSData *""'"); 
+  }
+  arg1 = reinterpret_cast< SMSData * >(argp1);
+  result = (twrap_sms_type_t)(arg1)->getType();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SMSData_getMR(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SMSData *arg1 = (SMSData *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SMSData_getMR",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SMSData, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SMSData_getMR" "', argument " "1"" of type '" "SMSData *""'"); 
+  }
+  arg1 = reinterpret_cast< SMSData * >(argp1);
+  result = (int)(arg1)->getMR();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SMSData_getPayloadLength(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SMSData *arg1 = (SMSData *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  unsigned int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SMSData_getPayloadLength",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SMSData, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SMSData_getPayloadLength" "', argument " "1"" of type '" "SMSData *""'"); 
+  }
+  arg1 = reinterpret_cast< SMSData * >(argp1);
+  result = (unsigned int)(arg1)->getPayloadLength();
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SMSData_getPayload(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SMSData *arg1 = (SMSData *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  unsigned int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:SMSData_getPayload",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SMSData, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SMSData_getPayload" "', argument " "1"" of type '" "SMSData *""'"); 
+  }
+  arg1 = reinterpret_cast< SMSData * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SMSData_getPayload" "', argument " "2"" of type '" "void *""'"); 
+  }
+  ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "SMSData_getPayload" "', argument " "3"" of type '" "unsigned int""'");
+  } 
+  arg3 = static_cast< unsigned int >(val3);
+  result = (unsigned int)(arg1)->getPayload(arg2,arg3);
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SMSData_getOA(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SMSData *arg1 = (SMSData *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SMSData_getOA",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SMSData, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SMSData_getOA" "', argument " "1"" of type '" "SMSData *""'"); 
+  }
+  arg1 = reinterpret_cast< SMSData * >(argp1);
+  result = (char *)(arg1)->getOA();
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SMSData_getDA(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SMSData *arg1 = (SMSData *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SMSData_getDA",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SMSData, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SMSData_getDA" "', argument " "1"" of type '" "SMSData *""'"); 
+  }
+  arg1 = reinterpret_cast< SMSData * >(argp1);
+  result = (char *)(arg1)->getDA();
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *SMSData_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_SMSData, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -12178,7 +12369,7 @@ SWIGINTERN PyObject *_wrap_SMSEncoder_encodeSubmit(PyObject *SWIGUNUSEDPARM(self
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
   PyObject * obj3 = 0 ;
-  RPData *result = 0 ;
+  RPMessage *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"OOOO:SMSEncoder_encodeSubmit",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
   ecode1 = SWIG_AsVal_int(obj0, &val1);
@@ -12201,8 +12392,8 @@ SWIGINTERN PyObject *_wrap_SMSEncoder_encodeSubmit(PyObject *SWIGUNUSEDPARM(self
     SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SMSEncoder_encodeSubmit" "', argument " "4"" of type '" "char const *""'");
   }
   arg4 = reinterpret_cast< char * >(buf4);
-  result = (RPData *)SMSEncoder::encodeSubmit(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RPData, SWIG_POINTER_OWN |  0 );
+  result = (RPMessage *)SMSEncoder::encodeSubmit(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RPMessage, SWIG_POINTER_OWN |  0 );
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
   if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
@@ -12211,6 +12402,212 @@ fail:
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
   if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SMSEncoder_encodeDeliver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  int res4 ;
+  char *buf4 = 0 ;
+  int alloc4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  RPMessage *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:SMSEncoder_encodeDeliver",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "SMSEncoder_encodeDeliver" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SMSEncoder_encodeDeliver" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SMSEncoder_encodeDeliver" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  res4 = SWIG_AsCharPtrAndSize(obj3, &buf4, NULL, &alloc4);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SMSEncoder_encodeDeliver" "', argument " "4"" of type '" "char const *""'");
+  }
+  arg4 = reinterpret_cast< char * >(buf4);
+  result = (RPMessage *)SMSEncoder::encodeDeliver(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RPMessage, SWIG_POINTER_OWN |  0 );
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SMSEncoder_encodeACK(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  bool arg4 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  bool val4 ;
+  int ecode4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  RPMessage *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:SMSEncoder_encodeACK",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "SMSEncoder_encodeACK" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SMSEncoder_encodeACK" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SMSEncoder_encodeACK" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  ecode4 = SWIG_AsVal_bool(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "SMSEncoder_encodeACK" "', argument " "4"" of type '" "bool""'");
+  } 
+  arg4 = static_cast< bool >(val4);
+  result = (RPMessage *)SMSEncoder::encodeACK(arg1,(char const *)arg2,(char const *)arg3,arg4);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RPMessage, SWIG_POINTER_OWN |  0 );
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SMSEncoder_encodeError(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  bool arg4 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  bool val4 ;
+  int ecode4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  RPMessage *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:SMSEncoder_encodeError",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "SMSEncoder_encodeError" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SMSEncoder_encodeError" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SMSEncoder_encodeError" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  ecode4 = SWIG_AsVal_bool(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "SMSEncoder_encodeError" "', argument " "4"" of type '" "bool""'");
+  } 
+  arg4 = static_cast< bool >(val4);
+  result = (RPMessage *)SMSEncoder::encodeError(arg1,(char const *)arg2,(char const *)arg3,arg4);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RPMessage, SWIG_POINTER_OWN |  0 );
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SMSEncoder_decode(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  void *arg1 = (void *) 0 ;
+  unsigned int arg2 ;
+  bool arg3 ;
+  int res1 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  bool val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  SMSData *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:SMSEncoder_decode",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0,SWIG_as_voidptrptr(&arg1), 0, 0);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SMSEncoder_decode" "', argument " "1"" of type '" "void const *""'"); 
+  }
+  ecode2 = SWIG_AsVal_unsigned_SS_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SMSEncoder_decode" "', argument " "2"" of type '" "unsigned int""'");
+  } 
+  arg2 = static_cast< unsigned int >(val2);
+  ecode3 = SWIG_AsVal_bool(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "SMSEncoder_decode" "', argument " "3"" of type '" "bool""'");
+  } 
+  arg3 = static_cast< bool >(val3);
+  result = (SMSData *)SMSEncoder::decode((void const *)arg1,arg2,arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SMSData, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
   return NULL;
 }
 
@@ -12502,13 +12899,26 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"XcapStack_getDocument", _wrap_XcapStack_getDocument, METH_VARARGS, NULL},
 	 { (char *)"XcapStack_stop", _wrap_XcapStack_stop, METH_VARARGS, NULL},
 	 { (char *)"XcapStack_swigregister", XcapStack_swigregister, METH_VARARGS, NULL},
-	 { (char *)"new_RPData", _wrap_new_RPData, METH_VARARGS, NULL},
-	 { (char *)"delete_RPData", _wrap_delete_RPData, METH_VARARGS, NULL},
-	 { (char *)"RPData_getType", _wrap_RPData_getType, METH_VARARGS, NULL},
-	 { (char *)"RPData_getPayloadLength", _wrap_RPData_getPayloadLength, METH_VARARGS, NULL},
-	 { (char *)"RPData_getPayload", _wrap_RPData_getPayload, METH_VARARGS, NULL},
-	 { (char *)"RPData_swigregister", RPData_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_RPMessage", _wrap_new_RPMessage, METH_VARARGS, NULL},
+	 { (char *)"delete_RPMessage", _wrap_delete_RPMessage, METH_VARARGS, NULL},
+	 { (char *)"RPMessage_getType", _wrap_RPMessage_getType, METH_VARARGS, NULL},
+	 { (char *)"RPMessage_getPayloadLength", _wrap_RPMessage_getPayloadLength, METH_VARARGS, NULL},
+	 { (char *)"RPMessage_getPayload", _wrap_RPMessage_getPayload, METH_VARARGS, NULL},
+	 { (char *)"RPMessage_swigregister", RPMessage_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_SMSData", _wrap_new_SMSData, METH_VARARGS, NULL},
+	 { (char *)"delete_SMSData", _wrap_delete_SMSData, METH_VARARGS, NULL},
+	 { (char *)"SMSData_getType", _wrap_SMSData_getType, METH_VARARGS, NULL},
+	 { (char *)"SMSData_getMR", _wrap_SMSData_getMR, METH_VARARGS, NULL},
+	 { (char *)"SMSData_getPayloadLength", _wrap_SMSData_getPayloadLength, METH_VARARGS, NULL},
+	 { (char *)"SMSData_getPayload", _wrap_SMSData_getPayload, METH_VARARGS, NULL},
+	 { (char *)"SMSData_getOA", _wrap_SMSData_getOA, METH_VARARGS, NULL},
+	 { (char *)"SMSData_getDA", _wrap_SMSData_getDA, METH_VARARGS, NULL},
+	 { (char *)"SMSData_swigregister", SMSData_swigregister, METH_VARARGS, NULL},
 	 { (char *)"SMSEncoder_encodeSubmit", _wrap_SMSEncoder_encodeSubmit, METH_VARARGS, NULL},
+	 { (char *)"SMSEncoder_encodeDeliver", _wrap_SMSEncoder_encodeDeliver, METH_VARARGS, NULL},
+	 { (char *)"SMSEncoder_encodeACK", _wrap_SMSEncoder_encodeACK, METH_VARARGS, NULL},
+	 { (char *)"SMSEncoder_encodeError", _wrap_SMSEncoder_encodeError, METH_VARARGS, NULL},
+	 { (char *)"SMSEncoder_decode", _wrap_SMSEncoder_decode, METH_VARARGS, NULL},
 	 { (char *)"delete_SMSEncoder", _wrap_delete_SMSEncoder, METH_VARARGS, NULL},
 	 { (char *)"SMSEncoder_swigregister", SMSEncoder_swigregister, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
@@ -12577,9 +12987,10 @@ static swig_type_info _swigt__p_ProxyVideoFrame = {"_p_ProxyVideoFrame", "ProxyV
 static swig_type_info _swigt__p_ProxyVideoProducer = {"_p_ProxyVideoProducer", "ProxyVideoProducer *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_PublicationEvent = {"_p_PublicationEvent", "PublicationEvent *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_PublicationSession = {"_p_PublicationSession", "PublicationSession *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_RPData = {"_p_RPData", "RPData *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_RPMessage = {"_p_RPMessage", "RPMessage *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_RegistrationEvent = {"_p_RegistrationEvent", "RegistrationEvent *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_RegistrationSession = {"_p_RegistrationSession", "RegistrationSession *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_SMSData = {"_p_SMSData", "SMSData *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SMSEncoder = {"_p_SMSEncoder", "SMSEncoder *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SafeObject = {"_p_SafeObject", "SafeObject *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SipCallback = {"_p_SipCallback", "SipCallback *", 0, 0, (void*)0, 0};
@@ -12611,7 +13022,8 @@ static swig_type_info _swigt__p_tsip_register_event_type_e = {"_p_tsip_register_
 static swig_type_info _swigt__p_tsip_subscribe_event_type_e = {"_p_tsip_subscribe_event_type_e", "enum tsip_subscribe_event_type_e *|tsip_subscribe_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsk_list_t = {"_p_tsk_list_t", "twrap_xcap_steps_L_t *|tsk_list_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_twrap_media_type_e = {"_p_twrap_media_type_e", "enum twrap_media_type_e *|twrap_media_type_t *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_twrap_rpdata_type_e = {"_p_twrap_rpdata_type_e", "enum twrap_rpdata_type_e *|twrap_rpdata_type_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_twrap_rpmessage_type_e = {"_p_twrap_rpmessage_type_e", "enum twrap_rpmessage_type_e *|twrap_rpmessage_type_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_twrap_sms_type_e = {"_p_twrap_sms_type_e", "enum twrap_sms_type_e *|twrap_sms_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_unsigned_short = {"_p_unsigned_short", "unsigned short *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
@@ -12630,9 +13042,10 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_ProxyVideoProducer,
   &_swigt__p_PublicationEvent,
   &_swigt__p_PublicationSession,
-  &_swigt__p_RPData,
+  &_swigt__p_RPMessage,
   &_swigt__p_RegistrationEvent,
   &_swigt__p_RegistrationSession,
+  &_swigt__p_SMSData,
   &_swigt__p_SMSEncoder,
   &_swigt__p_SafeObject,
   &_swigt__p_SipCallback,
@@ -12664,7 +13077,8 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_tsip_subscribe_event_type_e,
   &_swigt__p_tsk_list_t,
   &_swigt__p_twrap_media_type_e,
-  &_swigt__p_twrap_rpdata_type_e,
+  &_swigt__p_twrap_rpmessage_type_e,
+  &_swigt__p_twrap_sms_type_e,
   &_swigt__p_unsigned_short,
 };
 
@@ -12683,9 +13097,10 @@ static swig_cast_info _swigc__p_ProxyVideoFrame[] = {  {&_swigt__p_ProxyVideoFra
 static swig_cast_info _swigc__p_ProxyVideoProducer[] = {  {&_swigt__p_ProxyVideoProducer, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationEvent[] = {  {&_swigt__p_PublicationEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationSession[] = {  {&_swigt__p_PublicationSession, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_RPData[] = {  {&_swigt__p_RPData, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_RPMessage[] = {  {&_swigt__p_RPMessage, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_RegistrationEvent[] = {  {&_swigt__p_RegistrationEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_RegistrationSession[] = {  {&_swigt__p_RegistrationSession, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_SMSData[] = {  {&_swigt__p_SMSData, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SMSEncoder[] = {  {&_swigt__p_SMSEncoder, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SafeObject[] = {  {&_swigt__p_SipStack, _p_SipStackTo_p_SafeObject, 0, 0},  {&_swigt__p_SafeObject, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipCallback[] = {  {&_swigt__p_SipCallback, 0, 0, 0},{0, 0, 0, 0}};
@@ -12717,7 +13132,8 @@ static swig_cast_info _swigc__p_tsip_register_event_type_e[] = {  {&_swigt__p_ts
 static swig_cast_info _swigc__p_tsip_subscribe_event_type_e[] = {  {&_swigt__p_tsip_subscribe_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsk_list_t[] = {  {&_swigt__p_tsk_list_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_twrap_media_type_e[] = {  {&_swigt__p_twrap_media_type_e, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_twrap_rpdata_type_e[] = {  {&_swigt__p_twrap_rpdata_type_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_twrap_rpmessage_type_e[] = {  {&_swigt__p_twrap_rpmessage_type_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_twrap_sms_type_e[] = {  {&_swigt__p_twrap_sms_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_unsigned_short[] = {  {&_swigt__p_unsigned_short, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
@@ -12736,9 +13152,10 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_ProxyVideoProducer,
   _swigc__p_PublicationEvent,
   _swigc__p_PublicationSession,
-  _swigc__p_RPData,
+  _swigc__p_RPMessage,
   _swigc__p_RegistrationEvent,
   _swigc__p_RegistrationSession,
+  _swigc__p_SMSData,
   _swigc__p_SMSEncoder,
   _swigc__p_SafeObject,
   _swigc__p_SipCallback,
@@ -12770,7 +13187,8 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_tsip_subscribe_event_type_e,
   _swigc__p_tsk_list_t,
   _swigc__p_twrap_media_type_e,
-  _swigc__p_twrap_rpdata_type_e,
+  _swigc__p_twrap_rpmessage_type_e,
+  _swigc__p_twrap_sms_type_e,
   _swigc__p_unsigned_short,
 };
 
@@ -13456,11 +13874,16 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "thttp_event_auth_failed",SWIG_From_int(static_cast< int >(thttp_event_auth_failed)));
   SWIG_Python_SetConstant(d, "thttp_event_closed",SWIG_From_int(static_cast< int >(thttp_event_closed)));
   SWIG_Python_SetConstant(d, "thttp_event_transport_error",SWIG_From_int(static_cast< int >(thttp_event_transport_error)));
-  SWIG_Python_SetConstant(d, "twrap_rpdata_type_sms_none",SWIG_From_int(static_cast< int >(twrap_rpdata_type_sms_none)));
-  SWIG_Python_SetConstant(d, "twrap_rpdata_type_sms_submit",SWIG_From_int(static_cast< int >(twrap_rpdata_type_sms_submit)));
-  SWIG_Python_SetConstant(d, "twrap_rpdata_type_sms_deliver",SWIG_From_int(static_cast< int >(twrap_rpdata_type_sms_deliver)));
-  SWIG_Python_SetConstant(d, "twrap_rpdata_type_sms_status_report",SWIG_From_int(static_cast< int >(twrap_rpdata_type_sms_status_report)));
-  SWIG_Python_SetConstant(d, "twrap_rpdata_type_sms_command",SWIG_From_int(static_cast< int >(twrap_rpdata_type_sms_command)));
+  SWIG_Python_SetConstant(d, "twrap_rpmessage_type_sms_none",SWIG_From_int(static_cast< int >(twrap_rpmessage_type_sms_none)));
+  SWIG_Python_SetConstant(d, "twrap_rpmessage_type_sms_submit",SWIG_From_int(static_cast< int >(twrap_rpmessage_type_sms_submit)));
+  SWIG_Python_SetConstant(d, "twrap_rpmessage_type_sms_deliver",SWIG_From_int(static_cast< int >(twrap_rpmessage_type_sms_deliver)));
+  SWIG_Python_SetConstant(d, "twrap_rpmessage_type_sms_ack",SWIG_From_int(static_cast< int >(twrap_rpmessage_type_sms_ack)));
+  SWIG_Python_SetConstant(d, "twrap_rpmessage_type_sms_error",SWIG_From_int(static_cast< int >(twrap_rpmessage_type_sms_error)));
+  SWIG_Python_SetConstant(d, "twrap_sms_type_none",SWIG_From_int(static_cast< int >(twrap_sms_type_none)));
+  SWIG_Python_SetConstant(d, "twrap_sms_type_rpdata",SWIG_From_int(static_cast< int >(twrap_sms_type_rpdata)));
+  SWIG_Python_SetConstant(d, "twrap_sms_type_smma",SWIG_From_int(static_cast< int >(twrap_sms_type_smma)));
+  SWIG_Python_SetConstant(d, "twrap_sms_type_ack",SWIG_From_int(static_cast< int >(twrap_sms_type_ack)));
+  SWIG_Python_SetConstant(d, "twrap_sms_type_error",SWIG_From_int(static_cast< int >(twrap_sms_type_error)));
 #if PY_VERSION_HEX >= 0x03000000
   return m;
 #else

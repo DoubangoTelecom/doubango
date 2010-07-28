@@ -122,6 +122,9 @@ char* SipMessage::getSipHeaderValue(const char* name, unsigned index /* = 0*/)
 			case tsip_htype_To:
 				return tsip_uri_tostring(((const tsip_header_To_t*)header)->uri, tsk_false, tsk_false);
 				break;
+			case tsip_htype_P_Asserted_Identity:
+				return tsip_uri_tostring(((const tsip_header_P_Asserted_Identity_t*)header)->uri, tsk_false, tsk_false);
+				break;
 
 			default:
 				return tsip_header_value_tostring(header);

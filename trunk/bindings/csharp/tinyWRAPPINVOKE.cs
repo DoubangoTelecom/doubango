@@ -997,23 +997,59 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_stop")]
   public static extern bool XcapStack_stop(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_new_RPData")]
-  public static extern IntPtr new_RPData();
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_RPMessage")]
+  public static extern IntPtr new_RPMessage();
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_RPData")]
-  public static extern void delete_RPData(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_RPMessage")]
+  public static extern void delete_RPMessage(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_RPData_getType")]
-  public static extern int RPData_getType(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RPMessage_getType")]
+  public static extern int RPMessage_getType(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_RPData_getPayloadLength")]
-  public static extern uint RPData_getPayloadLength(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RPMessage_getPayloadLength")]
+  public static extern uint RPMessage_getPayloadLength(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_RPData_getPayload")]
-  public static extern uint RPData_getPayload(HandleRef jarg1, byte[] jarg2, uint jarg3);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RPMessage_getPayload")]
+  public static extern uint RPMessage_getPayload(HandleRef jarg1, byte[] jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_SMSData")]
+  public static extern IntPtr new_SMSData();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_SMSData")]
+  public static extern void delete_SMSData(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SMSData_getType")]
+  public static extern int SMSData_getType(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SMSData_getMR")]
+  public static extern int SMSData_getMR(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SMSData_getPayloadLength")]
+  public static extern uint SMSData_getPayloadLength(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SMSData_getPayload")]
+  public static extern uint SMSData_getPayload(HandleRef jarg1, byte[] jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SMSData_getOA")]
+  public static extern string SMSData_getOA(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SMSData_getDA")]
+  public static extern string SMSData_getDA(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SMSEncoder_encodeSubmit")]
   public static extern IntPtr SMSEncoder_encodeSubmit(int jarg1, string jarg2, string jarg3, string jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SMSEncoder_encodeDeliver")]
+  public static extern IntPtr SMSEncoder_encodeDeliver(int jarg1, string jarg2, string jarg3, string jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SMSEncoder_encodeACK")]
+  public static extern IntPtr SMSEncoder_encodeACK(int jarg1, string jarg2, string jarg3, bool jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SMSEncoder_encodeError")]
+  public static extern IntPtr SMSEncoder_encodeError(int jarg1, string jarg2, string jarg3, bool jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SMSEncoder_decode")]
+  public static extern IntPtr SMSEncoder_decode(byte[] jarg1, uint jarg2, bool jarg3);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_SMSEncoder")]
   public static extern void delete_SMSEncoder(HandleRef jarg1);

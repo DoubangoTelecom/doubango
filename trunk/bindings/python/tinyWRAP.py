@@ -883,28 +883,54 @@ thttp_event_message = _tinyWRAP.thttp_event_message
 thttp_event_auth_failed = _tinyWRAP.thttp_event_auth_failed
 thttp_event_closed = _tinyWRAP.thttp_event_closed
 thttp_event_transport_error = _tinyWRAP.thttp_event_transport_error
-twrap_rpdata_type_sms_none = _tinyWRAP.twrap_rpdata_type_sms_none
-twrap_rpdata_type_sms_submit = _tinyWRAP.twrap_rpdata_type_sms_submit
-twrap_rpdata_type_sms_deliver = _tinyWRAP.twrap_rpdata_type_sms_deliver
-twrap_rpdata_type_sms_status_report = _tinyWRAP.twrap_rpdata_type_sms_status_report
-twrap_rpdata_type_sms_command = _tinyWRAP.twrap_rpdata_type_sms_command
-class RPData(_object):
+twrap_rpmessage_type_sms_none = _tinyWRAP.twrap_rpmessage_type_sms_none
+twrap_rpmessage_type_sms_submit = _tinyWRAP.twrap_rpmessage_type_sms_submit
+twrap_rpmessage_type_sms_deliver = _tinyWRAP.twrap_rpmessage_type_sms_deliver
+twrap_rpmessage_type_sms_ack = _tinyWRAP.twrap_rpmessage_type_sms_ack
+twrap_rpmessage_type_sms_error = _tinyWRAP.twrap_rpmessage_type_sms_error
+twrap_sms_type_none = _tinyWRAP.twrap_sms_type_none
+twrap_sms_type_rpdata = _tinyWRAP.twrap_sms_type_rpdata
+twrap_sms_type_smma = _tinyWRAP.twrap_sms_type_smma
+twrap_sms_type_ack = _tinyWRAP.twrap_sms_type_ack
+twrap_sms_type_error = _tinyWRAP.twrap_sms_type_error
+class RPMessage(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, RPData, name, value)
+    __setattr__ = lambda self, name, value: _swig_setattr(self, RPMessage, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, RPData, name)
+    __getattr__ = lambda self, name: _swig_getattr(self, RPMessage, name)
     __repr__ = _swig_repr
     def __init__(self): 
-        this = _tinyWRAP.new_RPData()
+        this = _tinyWRAP.new_RPMessage()
         try: self.this.append(this)
         except: self.this = this
-    __swig_destroy__ = _tinyWRAP.delete_RPData
+    __swig_destroy__ = _tinyWRAP.delete_RPMessage
     __del__ = lambda self : None;
-    def getType(self): return _tinyWRAP.RPData_getType(self)
-    def getPayloadLength(self): return _tinyWRAP.RPData_getPayloadLength(self)
-    def getPayload(self, *args): return _tinyWRAP.RPData_getPayload(self, *args)
-RPData_swigregister = _tinyWRAP.RPData_swigregister
-RPData_swigregister(RPData)
+    def getType(self): return _tinyWRAP.RPMessage_getType(self)
+    def getPayloadLength(self): return _tinyWRAP.RPMessage_getPayloadLength(self)
+    def getPayload(self, *args): return _tinyWRAP.RPMessage_getPayload(self, *args)
+RPMessage_swigregister = _tinyWRAP.RPMessage_swigregister
+RPMessage_swigregister(RPMessage)
+
+class SMSData(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, SMSData, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, SMSData, name)
+    __repr__ = _swig_repr
+    def __init__(self): 
+        this = _tinyWRAP.new_SMSData()
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_SMSData
+    __del__ = lambda self : None;
+    def getType(self): return _tinyWRAP.SMSData_getType(self)
+    def getMR(self): return _tinyWRAP.SMSData_getMR(self)
+    def getPayloadLength(self): return _tinyWRAP.SMSData_getPayloadLength(self)
+    def getPayload(self, *args): return _tinyWRAP.SMSData_getPayload(self, *args)
+    def getOA(self): return _tinyWRAP.SMSData_getOA(self)
+    def getDA(self): return _tinyWRAP.SMSData_getDA(self)
+SMSData_swigregister = _tinyWRAP.SMSData_swigregister
+SMSData_swigregister(SMSData)
 
 class SMSEncoder(_object):
     __swig_setmethods__ = {}
@@ -915,6 +941,14 @@ class SMSEncoder(_object):
     __repr__ = _swig_repr
     __swig_getmethods__["encodeSubmit"] = lambda x: _tinyWRAP.SMSEncoder_encodeSubmit
     if _newclass:encodeSubmit = staticmethod(_tinyWRAP.SMSEncoder_encodeSubmit)
+    __swig_getmethods__["encodeDeliver"] = lambda x: _tinyWRAP.SMSEncoder_encodeDeliver
+    if _newclass:encodeDeliver = staticmethod(_tinyWRAP.SMSEncoder_encodeDeliver)
+    __swig_getmethods__["encodeACK"] = lambda x: _tinyWRAP.SMSEncoder_encodeACK
+    if _newclass:encodeACK = staticmethod(_tinyWRAP.SMSEncoder_encodeACK)
+    __swig_getmethods__["encodeError"] = lambda x: _tinyWRAP.SMSEncoder_encodeError
+    if _newclass:encodeError = staticmethod(_tinyWRAP.SMSEncoder_encodeError)
+    __swig_getmethods__["decode"] = lambda x: _tinyWRAP.SMSEncoder_decode
+    if _newclass:decode = staticmethod(_tinyWRAP.SMSEncoder_decode)
     __swig_destroy__ = _tinyWRAP.delete_SMSEncoder
     __del__ = lambda self : None;
 SMSEncoder_swigregister = _tinyWRAP.SMSEncoder_swigregister
@@ -923,6 +957,22 @@ SMSEncoder_swigregister(SMSEncoder)
 def SMSEncoder_encodeSubmit(*args):
   return _tinyWRAP.SMSEncoder_encodeSubmit(*args)
 SMSEncoder_encodeSubmit = _tinyWRAP.SMSEncoder_encodeSubmit
+
+def SMSEncoder_encodeDeliver(*args):
+  return _tinyWRAP.SMSEncoder_encodeDeliver(*args)
+SMSEncoder_encodeDeliver = _tinyWRAP.SMSEncoder_encodeDeliver
+
+def SMSEncoder_encodeACK(*args):
+  return _tinyWRAP.SMSEncoder_encodeACK(*args)
+SMSEncoder_encodeACK = _tinyWRAP.SMSEncoder_encodeACK
+
+def SMSEncoder_encodeError(*args):
+  return _tinyWRAP.SMSEncoder_encodeError(*args)
+SMSEncoder_encodeError = _tinyWRAP.SMSEncoder_encodeError
+
+def SMSEncoder_decode(*args):
+  return _tinyWRAP.SMSEncoder_decode(*args)
+SMSEncoder_decode = _tinyWRAP.SMSEncoder_decode
 
 
 

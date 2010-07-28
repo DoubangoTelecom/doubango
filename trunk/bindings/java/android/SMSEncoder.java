@@ -33,9 +33,29 @@ public class SMSEncoder {
     swigCPtr = 0;
   }
 
-  public static RPData encodeSubmit(int mr, String smsc, String destination, String ascii) {
+  public static RPMessage encodeSubmit(int mr, String smsc, String destination, String ascii) {
     long cPtr = tinyWRAPJNI.SMSEncoder_encodeSubmit(mr, smsc, destination, ascii);
-    return (cPtr == 0) ? null : new RPData(cPtr, true);
+    return (cPtr == 0) ? null : new RPMessage(cPtr, true);
+  }
+
+  public static RPMessage encodeDeliver(int mr, String smsc, String originator, String ascii) {
+    long cPtr = tinyWRAPJNI.SMSEncoder_encodeDeliver(mr, smsc, originator, ascii);
+    return (cPtr == 0) ? null : new RPMessage(cPtr, true);
+  }
+
+  public static RPMessage encodeACK(int mr, String smsc, String destination, boolean forSUBMIT) {
+    long cPtr = tinyWRAPJNI.SMSEncoder_encodeACK(mr, smsc, destination, forSUBMIT);
+    return (cPtr == 0) ? null : new RPMessage(cPtr, true);
+  }
+
+  public static RPMessage encodeError(int mr, String smsc, String destination, boolean forSUBMIT) {
+    long cPtr = tinyWRAPJNI.SMSEncoder_encodeError(mr, smsc, destination, forSUBMIT);
+    return (cPtr == 0) ? null : new RPMessage(cPtr, true);
+  }
+
+  public static SMSData decode(java.nio.ByteBuffer data, long size, boolean MobOrig) {
+    long cPtr = tinyWRAPJNI.SMSEncoder_decode(data, size, MobOrig);
+    return (cPtr == 0) ? null : new SMSData(cPtr, true);
   }
 
 }

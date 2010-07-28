@@ -8,16 +8,16 @@
 
 package org.doubango.tinyWRAP;
 
-public class RPData {
+public class SMSData {
   private long swigCPtr;
   protected boolean swigCMemOwn;
 
-  protected RPData(long cPtr, boolean cMemoryOwn) {
+  protected SMSData(long cPtr, boolean cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = cPtr;
   }
 
-  protected static long getCPtr(RPData obj) {
+  protected static long getCPtr(SMSData obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
@@ -28,25 +28,37 @@ public class RPData {
   public synchronized void delete() {
     if(swigCPtr != 0 && swigCMemOwn) {
       swigCMemOwn = false;
-      tinyWRAPJNI.delete_RPData(swigCPtr);
+      tinyWRAPJNI.delete_SMSData(swigCPtr);
     }
     swigCPtr = 0;
   }
 
-  public RPData() {
-    this(tinyWRAPJNI.new_RPData(), true);
+  public SMSData() {
+    this(tinyWRAPJNI.new_SMSData(), true);
   }
 
-  public twrap_rpdata_type_t getType() {
-    return twrap_rpdata_type_t.swigToEnum(tinyWRAPJNI.RPData_getType(swigCPtr, this));
+  public twrap_sms_type_t getType() {
+    return twrap_sms_type_t.swigToEnum(tinyWRAPJNI.SMSData_getType(swigCPtr, this));
+  }
+
+  public int getMR() {
+    return tinyWRAPJNI.SMSData_getMR(swigCPtr, this);
   }
 
   public long getPayloadLength() {
-    return tinyWRAPJNI.RPData_getPayloadLength(swigCPtr, this);
+    return tinyWRAPJNI.SMSData_getPayloadLength(swigCPtr, this);
   }
 
   public long getPayload(java.nio.ByteBuffer output, long maxsize) {
-    return tinyWRAPJNI.RPData_getPayload(swigCPtr, this, output, maxsize);
+    return tinyWRAPJNI.SMSData_getPayload(swigCPtr, this, output, maxsize);
+  }
+
+  public String getOA() {
+    return tinyWRAPJNI.SMSData_getOA(swigCPtr, this);
+  }
+
+  public String getDA() {
+    return tinyWRAPJNI.SMSData_getDA(swigCPtr, this);
   }
 
 }
