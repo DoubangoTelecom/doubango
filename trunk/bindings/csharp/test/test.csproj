@@ -96,8 +96,8 @@
     <Compile Include="..\RegistrationSession.cs">
       <Link>RegistrationSession.cs</Link>
     </Compile>
-    <Compile Include="..\RPData.cs">
-      <Link>RPData.cs</Link>
+    <Compile Include="..\RPMessage.cs">
+      <Link>RPMessage.cs</Link>
     </Compile>
     <Compile Include="..\SafeObject.cs">
       <Link>SafeObject.cs</Link>
@@ -119,6 +119,9 @@
     </Compile>
     <Compile Include="..\SipUri.cs">
       <Link>SipUri.cs</Link>
+    </Compile>
+    <Compile Include="..\SMSData.cs">
+      <Link>SMSData.cs</Link>
     </Compile>
     <Compile Include="..\SMSEncoder.cs">
       <Link>SMSEncoder.cs</Link>
@@ -174,8 +177,14 @@
     <Compile Include="..\tsip_subscribe_event_type_t.cs">
       <Link>tsip_subscribe_event_type_t.cs</Link>
     </Compile>
-    <Compile Include="..\twrap_rpdata_type_t.cs">
-      <Link>twrap_rpdata_type_t.cs</Link>
+    <Compile Include="..\twrap_media_type_t.cs">
+      <Link>twrap_media_type_t.cs</Link>
+    </Compile>
+    <Compile Include="..\twrap_rpmessage_type_t.cs">
+      <Link>twrap_rpmessage_type_t.cs</Link>
+    </Compile>
+    <Compile Include="..\twrap_sms_type_t.cs">
+      <Link>twrap_sms_type_t.cs</Link>
     </Compile>
     <Compile Include="..\XcapCallback.cs">
       <Link>XcapCallback.cs</Link>

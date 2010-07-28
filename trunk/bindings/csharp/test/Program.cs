@@ -8,11 +8,12 @@ namespace test
 {
     class Program
     {
-        const String REALM = "ericsson.com";
-        const String USER = "mamadou";
-        const String PROXY_CSCF_IP = "192.168.0.16";
-        const ushort PROXY_CSCF_PORT = 4060;
-        const String PASSWORD = "mamadou";
+        public const String REALM = "open-ims.test";
+        public const String USER = "122";
+        public const String PROXY_CSCF_IP = "192.168.0.10";
+        public const ushort PROXY_CSCF_PORT = 5060;
+        public const String PASSWORD = "mamadou";
+        public const String SMSC = "123";
 
         /*
         const String REALM = "sip2sip.info";
@@ -25,9 +26,6 @@ namespace test
         static void Main(string[] args)
         {
             Boolean success;
-
-            String s = "mamadou";
-            byte[] b = Encoding.UTF8.GetBytes(s);
 
             /* Create callbacks */
             sipCallback = new MySipCallback();
@@ -58,10 +56,10 @@ namespace test
             /* Sets Proxy-CSCF */
             success = sipStack.setProxyCSCF(PROXY_CSCF_IP, PROXY_CSCF_PORT, "tcp", "ipv4");
             // STUN
-            sipStack.setSTUNServer("numb.viagenie.ca", 3478);
-            sipStack.setSTUNCred("login", "password");
+            //sipStack.setSTUNServer("numb.viagenie.ca", 3478);
+            //sipStack.setSTUNCred("login", "password");
             // DNS Discovery
-            sipStack.setDnsDiscovery(true);
+            //sipStack.setDnsDiscovery(true);
             /* Starts the stack */
             success = sipStack.start();
 
@@ -90,21 +88,35 @@ namespace test
             regSession.addCaps("+g.oma.sip-im");
             regSession.addCaps("+g.3gpp.smsip");
             regSession.addCaps("language", "\"en,fr\"");
-            regSession.setExpires(35);
+            regSession.setExpires(350);
             //regSession.addSigCompCompartment("urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a876");
             regSession.register_();
 
             Console.ReadLine();
 
-            for (int i = 0; i < 10; i++)
+            RPMessage rpMessage = SMSEncoder.encodeDeliver(25, SMSC, "123456789", "salut comment tu vas?\n hdjdhfjfhfjhr, ");
+            if (rpMessage != null)
             {
-                success = sipStack.stop();
-                success = sipStack.start();
-                regSession.register_();
-                Console.ReadLine();
+                uint pay_len = rpMessage.getPayloadLength();
+                if (pay_len > 0)
+                {
+                    byte[] pay = new byte[pay_len];
+                    rpMessage.getPayload(pay, (uint)pay.Length);
+
+                    MessagingSession m = new MessagingSession(sipStack);
+                    m.setToUri(String.Format("sip:{0}@{1}", SMSC, REALM));
+                    m.addHeader("Content-Type", "application/vnd.3gpp.sms");
+                    m.addHeader("Transfer-Encoding", "binary");
+                    m.addHeader("P-Asserted-Identity", String.Format("sip:{0}@{1}", SMSC, REALM));
+                    
+                    m.send(pay, (uint)pay.Length);
+
+                    m.Dispose();
+                }
+                rpMessage.Dispose();
             }
 
-
+            Console.ReadLine();
 
 
 
@@ -212,7 +224,7 @@ namespace test
         static RegistrationSession regSession;
         static SubscriptionSession subSession;
         static MySipCallback sipCallback;
-        static SipStack sipStack;
+        public static SipStack sipStack;
         static MySipDebugCallback sipDebugCallback;
         static MyProxyAudioConsumer audioConsumer;
         static MyProxyAudioProducer audioProducer;
@@ -492,13 +504,12 @@ namespace test
             if (session == null && message != null)
             { /* "Server-side-session" e.g. Initial MESSAGE/INVITE sent by the remote party */
                 session = e.takeSessionOwnership();
-                Console.WriteLine("From:{0} == To:{1}", message.getSipHeaderValue("f"), message.getSipHeaderValue("t"));
             }
 
-            if (message != null)
+            //Console.WriteLine("From:{0} == To:{1}", message.getSipHeaderValue("f"), message.getSipHeaderValue("t"));
+            if (message == null)
             {
-                Console.WriteLine("call-id={0}", message.getSipHeaderValue("call-id"));
-                //byte[] bytes = message.getContent();
+                return 0;
             }
 
             switch (type)
@@ -509,6 +520,76 @@ namespace test
                     {
                         Console.WriteLine("Message Content ==> {0}", Encoding.UTF8.GetString(content));
                         session.accept();
+
+                        String contentType = message.getSipHeaderValue("c");
+                        if (contentType != null && contentType.Equals("application/vnd.3gpp.sms", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            SMSData smsData = SMSEncoder.decode(content, (uint)content.Length, false);
+                            if (smsData != null)
+                            {
+                                twrap_sms_type_t smsType = smsData.getType();
+                                if (smsType == twrap_sms_type_t.twrap_sms_type_rpdata)
+                                {
+                                    uint payLength = smsData.getPayloadLength();
+                                    String P_Asserted_Identity = message.getSipHeaderValue("P-Asserted-Identity");
+                                    if (payLength > 0)
+                                    {
+                                        /* Send RP-ACK */
+                                        String destination = smsData.getOA();
+                                        RPMessage rpACK = SMSEncoder.encodeACK(smsData.getMR(), Program.SMSC, destination == null ? "123456789" : destination, false);
+                                        if (rpACK != null)
+                                        {
+                                            uint pay_len = rpACK.getPayloadLength();
+                                            if (pay_len > 0)
+                                            {
+                                                byte[] pay = new byte[pay_len];
+                                                rpACK.getPayload(pay, (uint)pay.Length);
+
+                                                MessagingSession m = new MessagingSession(Program.sipStack);
+                                                m.setToUri(String.Format("sip:{0}@{1}", Program.SMSC, Program.REALM));
+                                                m.addHeader("Content-Type", "application/vnd.3gpp.sms");
+                                                m.addHeader("Transfer-Encoding", "binary");
+                                                m.send(pay, (uint)pay.Length);
+
+                                                m.Dispose();
+                                            }
+                                            rpACK.Dispose();
+                                        }
+
+                                        /* Print payload */
+                                        byte[] payload = new byte[payLength];
+                                        smsData.getPayload(payload, (uint)payload.Length);
+                                        Console.WriteLine("SMS content ={0} and OA={1}", Encoding.UTF8.GetString(payload), smsData.getOA());
+                                    }
+                                    else
+                                    {
+                                        /* Send RP-ERROR */
+                                        /* payload is mandatory in RP-DATA messages */
+                                        /* Send RP-ACK */
+                                        String destination = smsData.getOA();
+                                        RPMessage rpError = SMSEncoder.encodeError(smsData.getMR(), Program.SMSC, destination == null ? "123456789" : destination, false);
+                                        if (rpError != null)
+                                        {
+                                            uint pay_len = rpError.getPayloadLength();
+                                            if (pay_len > 0)
+                                            {
+                                                byte[] pay = new byte[pay_len];
+                                                rpError.getPayload(pay, (uint)pay.Length);
+
+                                                MessagingSession m = new MessagingSession(Program.sipStack);
+                                                m.setToUri(String.Format("sip:{0}@{1}", Program.SMSC, Program.REALM));
+                                                m.addHeader("Content-Type", "application/vnd.3gpp.sms");
+                                                m.addHeader("Transfer-Encoding", "binary");
+                                                m.send(pay, (uint)pay.Length);
+
+                                                m.Dispose();
+                                            }
+                                            rpError.Dispose();
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     else
                     {

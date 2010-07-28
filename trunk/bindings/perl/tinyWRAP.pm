@@ -1334,16 +1334,16 @@ sub ACQUIRE {
 }
 
 
-############# Class : tinyWRAP::RPData ##############
+############# Class : tinyWRAP::RPMessage ##############
 
-package tinyWRAP::RPData;
+package tinyWRAP::RPMessage;
 use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
 @ISA = qw( tinyWRAP );
 %OWNER = ();
 %ITERATORS = ();
 sub new {
     my $pkg = shift;
-    my $self = tinyWRAPc::new_RPData(@_);
+    my $self = tinyWRAPc::new_RPMessage(@_);
     bless $self, $pkg if defined($self);
 }
 
@@ -1353,14 +1353,57 @@ sub DESTROY {
     return unless defined $self;
     delete $ITERATORS{$self};
     if (exists $OWNER{$self}) {
-        tinyWRAPc::delete_RPData($self);
+        tinyWRAPc::delete_RPMessage($self);
         delete $OWNER{$self};
     }
 }
 
-*getType = *tinyWRAPc::RPData_getType;
-*getPayloadLength = *tinyWRAPc::RPData_getPayloadLength;
-*getPayload = *tinyWRAPc::RPData_getPayload;
+*getType = *tinyWRAPc::RPMessage_getType;
+*getPayloadLength = *tinyWRAPc::RPMessage_getPayloadLength;
+*getPayload = *tinyWRAPc::RPMessage_getPayload;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::SMSData ##############
+
+package tinyWRAP::SMSData;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_SMSData(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_SMSData($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getType = *tinyWRAPc::SMSData_getType;
+*getMR = *tinyWRAPc::SMSData_getMR;
+*getPayloadLength = *tinyWRAPc::SMSData_getPayloadLength;
+*getPayload = *tinyWRAPc::SMSData_getPayload;
+*getOA = *tinyWRAPc::SMSData_getOA;
+*getDA = *tinyWRAPc::SMSData_getDA;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1382,6 +1425,10 @@ use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
 %OWNER = ();
 %ITERATORS = ();
 *encodeSubmit = *tinyWRAPc::SMSEncoder_encodeSubmit;
+*encodeDeliver = *tinyWRAPc::SMSEncoder_encodeDeliver;
+*encodeACK = *tinyWRAPc::SMSEncoder_encodeACK;
+*encodeError = *tinyWRAPc::SMSEncoder_encodeError;
+*decode = *tinyWRAPc::SMSEncoder_decode;
 sub DESTROY {
     return unless $_[0]->isa('HASH');
     my $self = tied(%{$_[0]});
@@ -1505,9 +1552,14 @@ package tinyWRAP;
 *thttp_event_auth_failed = *tinyWRAPc::thttp_event_auth_failed;
 *thttp_event_closed = *tinyWRAPc::thttp_event_closed;
 *thttp_event_transport_error = *tinyWRAPc::thttp_event_transport_error;
-*twrap_rpdata_type_sms_none = *tinyWRAPc::twrap_rpdata_type_sms_none;
-*twrap_rpdata_type_sms_submit = *tinyWRAPc::twrap_rpdata_type_sms_submit;
-*twrap_rpdata_type_sms_deliver = *tinyWRAPc::twrap_rpdata_type_sms_deliver;
-*twrap_rpdata_type_sms_status_report = *tinyWRAPc::twrap_rpdata_type_sms_status_report;
-*twrap_rpdata_type_sms_command = *tinyWRAPc::twrap_rpdata_type_sms_command;
+*twrap_rpmessage_type_sms_none = *tinyWRAPc::twrap_rpmessage_type_sms_none;
+*twrap_rpmessage_type_sms_submit = *tinyWRAPc::twrap_rpmessage_type_sms_submit;
+*twrap_rpmessage_type_sms_deliver = *tinyWRAPc::twrap_rpmessage_type_sms_deliver;
+*twrap_rpmessage_type_sms_ack = *tinyWRAPc::twrap_rpmessage_type_sms_ack;
+*twrap_rpmessage_type_sms_error = *tinyWRAPc::twrap_rpmessage_type_sms_error;
+*twrap_sms_type_none = *tinyWRAPc::twrap_sms_type_none;
+*twrap_sms_type_rpdata = *tinyWRAPc::twrap_sms_type_rpdata;
+*twrap_sms_type_smma = *tinyWRAPc::twrap_sms_type_smma;
+*twrap_sms_type_ack = *tinyWRAPc::twrap_sms_type_ack;
+*twrap_sms_type_error = *tinyWRAPc::twrap_sms_type_error;
 1;

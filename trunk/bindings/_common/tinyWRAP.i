@@ -38,5 +38,9 @@
 
 /* ========== SMS ========== */
 %newobject SMSEncoder::encodeSubmit;
+%newobject SMSEncoder::encodeDeliver;
+%newobject SMSEncoder::encodeACK;
+%newobject SMSEncoder::encodeError;
+%newobject SMSEncoder::decode;
 
 %include SMS.i

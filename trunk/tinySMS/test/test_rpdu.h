@@ -144,7 +144,7 @@ void test_o_rpdata_deliver()
 	const char* originator = "+3361234567";
 	const char* content = "hello world!";
 	
-	// create SMS-SUBMIT message
+	// create SMS-DELIVER message
 	sms_deliver = tsms_tpdu_deliver_create(smsc, originator);
 	// Set content for SMS-DELIVER
 	if((buffer = tsms_pack_to_7bit(content))){
@@ -260,10 +260,10 @@ void test_o_rpdata_error()
 void test_rpdu()
 {
 	test_o_rpdata_submit();
-	test_o_rpdata_deliver();
-	test_o_rpdata_smma();
-	test_o_rpdata_ack();
-	test_o_rpdata_error();
+	//test_o_rpdata_deliver();
+	//test_o_rpdata_smma();
+	//test_o_rpdata_ack();
+	//test_o_rpdata_error();
 }
 
 #endif /* _TEST_SMSRPDU_H */

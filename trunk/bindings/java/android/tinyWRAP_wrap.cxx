@@ -5888,61 +5888,61 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_XcapStack_1st
 }
 
 
-SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1RPData(JNIEnv *jenv, jclass jcls) {
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1RPMessage(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
-  RPData *result = 0 ;
+  RPMessage *result = 0 ;
   
   (void)jenv;
   (void)jcls;
-  result = (RPData *)new RPData();
-  *(RPData **)&jresult = result; 
+  result = (RPMessage *)new RPMessage();
+  *(RPMessage **)&jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1RPData(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  RPData *arg1 = (RPData *) 0 ;
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1RPMessage(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  RPMessage *arg1 = (RPMessage *) 0 ;
   
   (void)jenv;
   (void)jcls;
-  arg1 = *(RPData **)&jarg1; 
+  arg1 = *(RPMessage **)&jarg1; 
   delete arg1;
 }
 
 
-SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RPData_1getType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RPMessage_1getType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jint jresult = 0 ;
-  RPData *arg1 = (RPData *) 0 ;
-  twrap_rpdata_type_t result;
+  RPMessage *arg1 = (RPMessage *) 0 ;
+  twrap_rpmessage_type_t result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  arg1 = *(RPData **)&jarg1; 
-  result = (twrap_rpdata_type_t)(arg1)->getType();
+  arg1 = *(RPMessage **)&jarg1; 
+  result = (twrap_rpmessage_type_t)(arg1)->getType();
   jresult = (jint)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RPData_1getPayloadLength(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RPMessage_1getPayloadLength(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
-  RPData *arg1 = (RPData *) 0 ;
+  RPMessage *arg1 = (RPMessage *) 0 ;
   unsigned int result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  arg1 = *(RPData **)&jarg1; 
+  arg1 = *(RPMessage **)&jarg1; 
   result = (unsigned int)(arg1)->getPayloadLength();
   jresult = (jlong)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RPData_1getPayload(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbyteArray jarg2, jlong jarg3) {
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RPMessage_1getPayload(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbyteArray jarg2, jlong jarg3) {
   jlong jresult = 0 ;
-  RPData *arg1 = (RPData *) 0 ;
+  RPMessage *arg1 = (RPMessage *) 0 ;
   void *arg2 = (void *) 0 ;
   unsigned int arg3 ;
   unsigned int result;
@@ -5950,7 +5950,7 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RPData_1getPaylo
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  arg1 = *(RPData **)&jarg1; 
+  arg1 = *(RPMessage **)&jarg1; 
   
   arg2 = jenv->GetDirectBufferAddress(jarg2); 
   
@@ -5961,13 +5961,131 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RPData_1getPaylo
 }
 
 
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1SMSData(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  SMSData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (SMSData *)new SMSData();
+  *(SMSData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1SMSData(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  SMSData *arg1 = (SMSData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(SMSData **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SMSData_1getType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  SMSData *arg1 = (SMSData *) 0 ;
+  twrap_sms_type_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SMSData **)&jarg1; 
+  result = (twrap_sms_type_t)(arg1)->getType();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SMSData_1getMR(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  SMSData *arg1 = (SMSData *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SMSData **)&jarg1; 
+  result = (int)(arg1)->getMR();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SMSData_1getPayloadLength(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  SMSData *arg1 = (SMSData *) 0 ;
+  unsigned int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SMSData **)&jarg1; 
+  result = (unsigned int)(arg1)->getPayloadLength();
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SMSData_1getPayload(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbyteArray jarg2, jlong jarg3) {
+  jlong jresult = 0 ;
+  SMSData *arg1 = (SMSData *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  unsigned int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SMSData **)&jarg1; 
+  
+  arg2 = jenv->GetDirectBufferAddress(jarg2); 
+  
+  arg3 = (unsigned int)jarg3; 
+  result = (unsigned int)(arg1)->getPayload(arg2,arg3);
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SMSData_1getOA(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  SMSData *arg1 = (SMSData *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SMSData **)&jarg1; 
+  result = (char *)(arg1)->getOA();
+  if(result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SMSData_1getDA(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  SMSData *arg1 = (SMSData *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SMSData **)&jarg1; 
+  result = (char *)(arg1)->getDA();
+  if(result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SMSEncoder_1encodeSubmit(JNIEnv *jenv, jclass jcls, jint jarg1, jstring jarg2, jstring jarg3, jstring jarg4) {
   jlong jresult = 0 ;
   int arg1 ;
   char *arg2 = (char *) 0 ;
   char *arg3 = (char *) 0 ;
   char *arg4 = (char *) 0 ;
-  RPData *result = 0 ;
+  RPMessage *result = 0 ;
   
   (void)jenv;
   (void)jcls;
@@ -5987,11 +6105,126 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SMSEncoder_1enco
     arg4 = (char *)jenv->GetStringUTFChars(jarg4, 0);
     if (!arg4) return 0;
   }
-  result = (RPData *)SMSEncoder::encodeSubmit(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
-  *(RPData **)&jresult = result; 
+  result = (RPMessage *)SMSEncoder::encodeSubmit(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
+  *(RPMessage **)&jresult = result; 
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
   if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
   if (arg4) jenv->ReleaseStringUTFChars(jarg4, (const char *)arg4);
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SMSEncoder_1encodeDeliver(JNIEnv *jenv, jclass jcls, jint jarg1, jstring jarg2, jstring jarg3, jstring jarg4) {
+  jlong jresult = 0 ;
+  int arg1 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  RPMessage *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int)jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  arg4 = 0;
+  if (jarg4) {
+    arg4 = (char *)jenv->GetStringUTFChars(jarg4, 0);
+    if (!arg4) return 0;
+  }
+  result = (RPMessage *)SMSEncoder::encodeDeliver(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
+  *(RPMessage **)&jresult = result; 
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
+  if (arg4) jenv->ReleaseStringUTFChars(jarg4, (const char *)arg4);
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SMSEncoder_1encodeACK(JNIEnv *jenv, jclass jcls, jint jarg1, jstring jarg2, jstring jarg3, jboolean jarg4) {
+  jlong jresult = 0 ;
+  int arg1 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  bool arg4 ;
+  RPMessage *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int)jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  arg4 = jarg4 ? true : false; 
+  result = (RPMessage *)SMSEncoder::encodeACK(arg1,(char const *)arg2,(char const *)arg3,arg4);
+  *(RPMessage **)&jresult = result; 
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SMSEncoder_1encodeError(JNIEnv *jenv, jclass jcls, jint jarg1, jstring jarg2, jstring jarg3, jboolean jarg4) {
+  jlong jresult = 0 ;
+  int arg1 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  bool arg4 ;
+  RPMessage *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int)jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  arg4 = jarg4 ? true : false; 
+  result = (RPMessage *)SMSEncoder::encodeError(arg1,(char const *)arg2,(char const *)arg3,arg4);
+  *(RPMessage **)&jresult = result; 
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SMSEncoder_1decode(JNIEnv *jenv, jclass jcls, jbyteArray jarg1, jlong jarg2, jboolean jarg3) {
+  jlong jresult = 0 ;
+  void *arg1 = (void *) 0 ;
+  unsigned int arg2 ;
+  bool arg3 ;
+  SMSData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  
+  arg1 = jenv->GetDirectBufferAddress(jarg1); 
+  
+  arg2 = (unsigned int)jarg2; 
+  arg3 = jarg3 ? true : false; 
+  result = (SMSData *)SMSEncoder::decode((void const *)arg1,arg2,arg3);
+  *(SMSData **)&jresult = result; 
   return jresult;
 }
 

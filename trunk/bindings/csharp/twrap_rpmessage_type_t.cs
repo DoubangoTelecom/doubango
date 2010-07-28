@@ -7,10 +7,10 @@
  * ----------------------------------------------------------------------------- */
 
 
-public enum twrap_rpdata_type_t {
-  twrap_rpdata_type_sms_none,
-  twrap_rpdata_type_sms_submit,
-  twrap_rpdata_type_sms_deliver,
-  twrap_rpdata_type_sms_status_report,
-  twrap_rpdata_type_sms_command
+public enum twrap_rpmessage_type_t {
+  twrap_rpmessage_type_sms_none,
+  twrap_rpmessage_type_sms_submit,
+  twrap_rpmessage_type_sms_deliver,
+  twrap_rpmessage_type_sms_ack,
+  twrap_rpmessage_type_sms_error
 }

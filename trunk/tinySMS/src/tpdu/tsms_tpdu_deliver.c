@@ -234,7 +234,7 @@ static tsk_object_t* tsms_tpdu_deliver_ctor(tsk_object_t * self, va_list * app)
 			deliver->smsc = tsms_address_smsc_create((const uint8_t*)smsc);
 		}
 		if(orig){
-			deliver->oa = tsms_address_da_create((const uint8_t*)orig);
+			deliver->oa = tsms_address_oa_create((const uint8_t*)orig);
 		}
 	}
 	return self;

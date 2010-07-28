@@ -38,9 +38,33 @@ public class SMSEncoder : IDisposable {
     }
   }
 
-  public static RPData encodeSubmit(int mr, string smsc, string destination, string ascii) {
+  public static RPMessage encodeSubmit(int mr, string smsc, string destination, string ascii) {
     IntPtr cPtr = tinyWRAPPINVOKE.SMSEncoder_encodeSubmit(mr, smsc, destination, ascii);
-    RPData ret = (cPtr == IntPtr.Zero) ? null : new RPData(cPtr, true);
+    RPMessage ret = (cPtr == IntPtr.Zero) ? null : new RPMessage(cPtr, true);
+    return ret;
+  }
+
+  public static RPMessage encodeDeliver(int mr, string smsc, string originator, string ascii) {
+    IntPtr cPtr = tinyWRAPPINVOKE.SMSEncoder_encodeDeliver(mr, smsc, originator, ascii);
+    RPMessage ret = (cPtr == IntPtr.Zero) ? null : new RPMessage(cPtr, true);
+    return ret;
+  }
+
+  public static RPMessage encodeACK(int mr, string smsc, string destination, bool forSUBMIT) {
+    IntPtr cPtr = tinyWRAPPINVOKE.SMSEncoder_encodeACK(mr, smsc, destination, forSUBMIT);
+    RPMessage ret = (cPtr == IntPtr.Zero) ? null : new RPMessage(cPtr, true);
+    return ret;
+  }
+
+  public static RPMessage encodeError(int mr, string smsc, string destination, bool forSUBMIT) {
+    IntPtr cPtr = tinyWRAPPINVOKE.SMSEncoder_encodeError(mr, smsc, destination, forSUBMIT);
+    RPMessage ret = (cPtr == IntPtr.Zero) ? null : new RPMessage(cPtr, true);
+    return ret;
+  }
+
+  public static SMSData decode(byte[] data, uint size, bool MobOrig) {
+    IntPtr cPtr = tinyWRAPPINVOKE.SMSEncoder_decode(data, size, MobOrig);
+    SMSData ret = (cPtr == IntPtr.Zero) ? null : new SMSData(cPtr, true);
     return ret;
   }
 

@@ -4279,60 +4279,154 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_stop(void * jarg1) {
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_new_RPData() {
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_RPMessage() {
   void * jresult ;
-  RPData *result = 0 ;
+  RPMessage *result = 0 ;
   
-  result = (RPData *)new RPData();
+  result = (RPMessage *)new RPMessage();
   jresult = (void *)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_delete_RPData(void * jarg1) {
-  RPData *arg1 = (RPData *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_RPMessage(void * jarg1) {
+  RPMessage *arg1 = (RPMessage *) 0 ;
   
-  arg1 = (RPData *)jarg1; 
+  arg1 = (RPMessage *)jarg1; 
   delete arg1;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_RPData_getType(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_RPMessage_getType(void * jarg1) {
   int jresult ;
-  RPData *arg1 = (RPData *) 0 ;
-  twrap_rpdata_type_t result;
+  RPMessage *arg1 = (RPMessage *) 0 ;
+  twrap_rpmessage_type_t result;
   
-  arg1 = (RPData *)jarg1; 
-  result = (twrap_rpdata_type_t)(arg1)->getType();
+  arg1 = (RPMessage *)jarg1; 
+  result = (twrap_rpmessage_type_t)(arg1)->getType();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RPData_getPayloadLength(void * jarg1) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RPMessage_getPayloadLength(void * jarg1) {
   unsigned int jresult ;
-  RPData *arg1 = (RPData *) 0 ;
+  RPMessage *arg1 = (RPMessage *) 0 ;
   unsigned int result;
   
-  arg1 = (RPData *)jarg1; 
+  arg1 = (RPMessage *)jarg1; 
   result = (unsigned int)(arg1)->getPayloadLength();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RPData_getPayload(void * jarg1, void * jarg2, unsigned int jarg3) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RPMessage_getPayload(void * jarg1, void * jarg2, unsigned int jarg3) {
   unsigned int jresult ;
-  RPData *arg1 = (RPData *) 0 ;
+  RPMessage *arg1 = (RPMessage *) 0 ;
   void *arg2 = (void *) 0 ;
   unsigned int arg3 ;
   unsigned int result;
   
-  arg1 = (RPData *)jarg1; 
+  arg1 = (RPMessage *)jarg1; 
   arg2 = jarg2; 
   arg3 = (unsigned int)jarg3; 
   result = (unsigned int)(arg1)->getPayload(arg2,arg3);
   jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_SMSData() {
+  void * jresult ;
+  SMSData *result = 0 ;
+  
+  result = (SMSData *)new SMSData();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_SMSData(void * jarg1) {
+  SMSData *arg1 = (SMSData *) 0 ;
+  
+  arg1 = (SMSData *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_SMSData_getType(void * jarg1) {
+  int jresult ;
+  SMSData *arg1 = (SMSData *) 0 ;
+  twrap_sms_type_t result;
+  
+  arg1 = (SMSData *)jarg1; 
+  result = (twrap_sms_type_t)(arg1)->getType();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_SMSData_getMR(void * jarg1) {
+  int jresult ;
+  SMSData *arg1 = (SMSData *) 0 ;
+  int result;
+  
+  arg1 = (SMSData *)jarg1; 
+  result = (int)(arg1)->getMR();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SMSData_getPayloadLength(void * jarg1) {
+  unsigned int jresult ;
+  SMSData *arg1 = (SMSData *) 0 ;
+  unsigned int result;
+  
+  arg1 = (SMSData *)jarg1; 
+  result = (unsigned int)(arg1)->getPayloadLength();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SMSData_getPayload(void * jarg1, void * jarg2, unsigned int jarg3) {
+  unsigned int jresult ;
+  SMSData *arg1 = (SMSData *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  unsigned int result;
+  
+  arg1 = (SMSData *)jarg1; 
+  arg2 = jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  result = (unsigned int)(arg1)->getPayload(arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SMSData_getOA(void * jarg1) {
+  char * jresult ;
+  SMSData *arg1 = (SMSData *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SMSData *)jarg1; 
+  result = (char *)(arg1)->getOA();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SMSData_getDA(void * jarg1) {
+  char * jresult ;
+  SMSData *arg1 = (SMSData *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SMSData *)jarg1; 
+  result = (char *)(arg1)->getDA();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
   return jresult;
 }
 
@@ -4343,13 +4437,83 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_SMSEncoder_encodeSubmit(int jarg1, char * j
   char *arg2 = (char *) 0 ;
   char *arg3 = (char *) 0 ;
   char *arg4 = (char *) 0 ;
-  RPData *result = 0 ;
+  RPMessage *result = 0 ;
   
   arg1 = (int)jarg1; 
   arg2 = (char *)jarg2; 
   arg3 = (char *)jarg3; 
   arg4 = (char *)jarg4; 
-  result = (RPData *)SMSEncoder::encodeSubmit(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
+  result = (RPMessage *)SMSEncoder::encodeSubmit(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SMSEncoder_encodeDeliver(int jarg1, char * jarg2, char * jarg3, char * jarg4) {
+  void * jresult ;
+  int arg1 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  RPMessage *result = 0 ;
+  
+  arg1 = (int)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (char *)jarg4; 
+  result = (RPMessage *)SMSEncoder::encodeDeliver(arg1,(char const *)arg2,(char const *)arg3,(char const *)arg4);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SMSEncoder_encodeACK(int jarg1, char * jarg2, char * jarg3, unsigned int jarg4) {
+  void * jresult ;
+  int arg1 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  bool arg4 ;
+  RPMessage *result = 0 ;
+  
+  arg1 = (int)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = jarg4 ? true : false; 
+  result = (RPMessage *)SMSEncoder::encodeACK(arg1,(char const *)arg2,(char const *)arg3,arg4);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SMSEncoder_encodeError(int jarg1, char * jarg2, char * jarg3, unsigned int jarg4) {
+  void * jresult ;
+  int arg1 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  bool arg4 ;
+  RPMessage *result = 0 ;
+  
+  arg1 = (int)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = jarg4 ? true : false; 
+  result = (RPMessage *)SMSEncoder::encodeError(arg1,(char const *)arg2,(char const *)arg3,arg4);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SMSEncoder_decode(void * jarg1, unsigned int jarg2, unsigned int jarg3) {
+  void * jresult ;
+  void *arg1 = (void *) 0 ;
+  unsigned int arg2 ;
+  bool arg3 ;
+  SMSData *result = 0 ;
+  
+  arg1 = jarg1; 
+  arg2 = (unsigned int)jarg2; 
+  arg3 = jarg3 ? true : false; 
+  result = (SMSData *)SMSEncoder::decode((void const *)arg1,arg2,arg3);
   jresult = (void *)result; 
   return jresult;
 }
