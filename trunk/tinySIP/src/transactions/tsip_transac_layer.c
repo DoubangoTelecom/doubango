@@ -186,7 +186,7 @@ tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self,
 	return ret;
 }
 
-tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self, const tsip_request_t* request)
+tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self, const tsip_message_t* message)
 {
 	/*
 	   RFC 3261 - 17.2.3 Matching Requests to Server Transactions
@@ -218,27 +218,24 @@ tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self,
 	tsk_list_item_t *item;
 	//const char* sent_by;
 
-	/*	Check first Via/CSeq validity.
-	*/
-	if(!request->firstVia || !request->CSeq){
+	/*	Check first Via/CSeq validity */
+	if(!message->firstVia || !message->CSeq){
 		return tsk_null;
 	}
 
 	tsk_safeobj_lock(self);
 
-
-	tsk_list_foreach(item, self->transactions)
-	{
+	tsk_list_foreach(item, self->transactions){
 		transac = item->data;
-		if(tsk_strequals(transac->branch, request->firstVia->branch) 
+		if(tsk_strequals(transac->branch, message->firstVia->branch) 
 			&& (1 == 1) /* FIXME: compare host:ip */
 			)
 		{
-			if(tsk_strequals(transac->cseq_method, request->CSeq->method)){
+			if(tsk_strequals(transac->cseq_method, message->CSeq->method)){
 				ret = tsk_object_ref(transac);
 				break;
 			}
-			else if(TSIP_REQUEST_IS_ACK(request) || TSIP_REQUEST_IS_CANCEL(request)){
+			else if(TSIP_REQUEST_IS_ACK(message) || TSIP_REQUEST_IS_CANCEL(message) || TSIP_RESPONSE_IS_TO_CANCEL(message)){
 				ret = tsk_object_ref(transac);
 				break;
 			}

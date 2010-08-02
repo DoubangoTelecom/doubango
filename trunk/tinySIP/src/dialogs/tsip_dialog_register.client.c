@@ -601,7 +601,7 @@ int tsip_dialog_register_Any_2_Trying_X_hangup(va_list *app)
 	/* Set  current action */
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
-		/* Alert the user */
+	/* Alert the user */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminating, "Terminating dialog");
 
 	self->unregistering = tsk_true;

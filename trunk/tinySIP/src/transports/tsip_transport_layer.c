@@ -59,7 +59,7 @@ int tsip_transport_layer_handle_incoming_msg(const tsip_transport_t *transport, 
 		const tsip_transac_layer_t *layer_transac = transport->stack->layer_transac;
 		const tsip_dialog_layer_t *layer_dialog = transport->stack->layer_dialog;
 
-		if((ret=tsip_transac_layer_handle_incoming_msg(layer_transac, message))){
+		if((ret = tsip_transac_layer_handle_incoming_msg(layer_transac, message))){
 			/* NO MATCHING TRANSACTION FOUND ==> LOOK INTO DIALOG LAYER */
 			ret = tsip_dialog_layer_handle_incoming_msg(layer_dialog, message);
 		}

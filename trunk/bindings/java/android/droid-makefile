@@ -6,7 +6,7 @@ CFLAGS := $(CFLAGS_LIB) -fno-rtti -fno-exceptions -I../../_common -I../../. -I..
 # Because of the static build, you need all librarires
 THIRDPARTIES_LIB := ../../../thirdparties/android/lib
 
-FFMPEG_LDFLAGS := -lavutil -lswscale -lavcodec -lx264 -ltheora -logg
+FFMPEG_LDFLAGS := -lavutil -lswscale -lavcore -lavcodec -lx264 -ltheora -logg
 SPEEX_LDFLAGS := -lspeexdsp -lspeex
 OPENCORE_ARM_LDFLAGS := -lopencore-amrnb
 ILBC_LDFLAGS := -liLBC

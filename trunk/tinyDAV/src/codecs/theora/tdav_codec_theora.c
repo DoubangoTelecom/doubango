@@ -111,7 +111,7 @@ int tdav_codec_theora_open(tmedia_codec_t* self)
 	theora->encoder.context->opaque = tsk_null;
 	theora->encoder.context->bit_rate = (float) (64000) * 0.80f;
 	theora->encoder.context->bit_rate_tolerance = (int) (64000 * 0.20f);
-	theora->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(theora)->fps*5; // each 4 seconds
+	theora->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(theora)->fps*3; // each 3 seconds
 
 	// Picture (YUV 420)
 	if(!(theora->encoder.picture = avcodec_alloc_frame())){
@@ -221,7 +221,7 @@ int tdav_codec_theora_close(tmedia_codec_t* self)
 	return 0;
 }
 
-//#include "tsk_time.h"
+#include "tsk_time.h"
 tsk_size_t tdav_codec_theora_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	int ret;
@@ -245,7 +245,8 @@ tsk_size_t tdav_codec_theora_encode(tmedia_codec_t* self, const void* in_data, t
 	tdav_converter_video_flip(theora->encoder.picture, theora->encoder.context->height);
 	
 	// Encode data
-	theora->encoder.picture->pts = AV_NOPTS_VALUE;
+	theora->encoder.picture->pts = tsk_time_epoch();
+	//theora->encoder.picture->pts = AV_NOPTS_VALUE;
 	//theora->encoder.picture->pict_type = FF_I_TYPE;
 	ret = avcodec_encode_video(theora->encoder.context, theora->encoder.buffer, size, theora->encoder.picture);
 	if(ret > 0){
