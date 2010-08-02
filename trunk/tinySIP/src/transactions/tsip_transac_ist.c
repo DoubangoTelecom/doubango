@@ -84,7 +84,7 @@
 
 #include "tsk_debug.h"
 
-#define DEBUG_STATE_MACHINE						0
+#define DEBUG_STATE_MACHINE						1
 
 #define TRANSAC_IST_TIMER_SCHEDULE(TX)			TRANSAC_TIMER_SCHEDULE(ist, TX)
 #define TRANSAC_IST_SET_LAST_RESPONSE(self, response) \
@@ -116,6 +116,10 @@ int tsip_transac_ist_Any_2_Terminated_X_Error(va_list *app);
 int tsip_transac_ist_Any_2_Terminated_X_cancel(va_list *app); /* doubango-specific */
 
 /* ======================== conds ======================== */
+static tsk_bool_t _fsm_cond_is_resp2INVITE(tsip_transac_ist_t* self, tsip_message_t* message)
+{
+	return TSIP_RESPONSE_IS_TO_INVITE(message);
+}
 
 /* ======================== actions ======================== */
 typedef enum _fsm_action_e
@@ -248,11 +252,11 @@ int tsip_transac_ist_init(tsip_transac_ist_t *self)
 			// Proceeding -> (recv INVITE) -> Proceeding
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Proceeding, _fsm_action_recv_INVITE, _fsm_state_Proceeding, tsip_transac_ist_Proceeding_2_Proceeding_X_INVITE, "tsip_transac_ist_Proceeding_2_Proceeding_X_INVITE"),
 			// Proceeding -> (send 1xx) -> Proceeding
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Proceeding, _fsm_action_send_1xx, _fsm_state_Proceeding, tsip_transac_ist_Proceeding_2_Proceeding_X_1xx, "tsip_transac_ist_Proceeding_2_Proceeding_X_1xx"),
+			TSK_FSM_ADD(_fsm_state_Proceeding, _fsm_action_send_1xx, _fsm_cond_is_resp2INVITE, _fsm_state_Proceeding, tsip_transac_ist_Proceeding_2_Proceeding_X_1xx, "tsip_transac_ist_Proceeding_2_Proceeding_X_1xx"),
 			// Proceeding -> (send 300to699) -> Completed
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Proceeding, _fsm_action_send_300_to_699, _fsm_state_Completed, tsip_transac_ist_Proceeding_2_Completed_X_300_to_699, "tsip_transac_ist_Proceeding_2_Completed_X_300_to_699"),
+			TSK_FSM_ADD(_fsm_state_Proceeding, _fsm_action_send_300_to_699, _fsm_cond_is_resp2INVITE, _fsm_state_Completed, tsip_transac_ist_Proceeding_2_Completed_X_300_to_699, "tsip_transac_ist_Proceeding_2_Completed_X_300_to_699"),
 			// Proceeding -> (send 2xx) -> Accepted
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Proceeding, _fsm_action_send_2xx, _fsm_state_Accepted, tsip_transac_ist_Proceeding_2_Accepted_X_2xx, "tsip_transac_ist_Proceeding_2_Accepted_X_2xx"),
+			TSK_FSM_ADD(_fsm_state_Proceeding, _fsm_action_send_2xx, _fsm_cond_is_resp2INVITE, _fsm_state_Accepted, tsip_transac_ist_Proceeding_2_Accepted_X_2xx, "tsip_transac_ist_Proceeding_2_Accepted_X_2xx"),
 
 			/*=======================
 			* === Completed === 
@@ -272,7 +276,7 @@ int tsip_transac_ist_init(tsip_transac_ist_t *self)
 			// Accepted -> (recv INVITE) -> Accepted
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Accepted, _fsm_action_recv_INVITE, _fsm_state_Accepted, tsip_transac_ist_Accepted_2_Accepted_INVITE, "tsip_transac_ist_Accepted_2_Accepted_INVITE"),
 			// Accepted -> (send 2xx) -> Accepted
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Accepted, _fsm_action_send_2xx, _fsm_state_Accepted, tsip_transac_ist_Accepted_2_Accepted_2xx, "tsip_transac_ist_Accepted_2_Accepted_2xx"),
+			TSK_FSM_ADD(_fsm_state_Accepted, _fsm_action_send_2xx, _fsm_cond_is_resp2INVITE, _fsm_state_Accepted, tsip_transac_ist_Accepted_2_Accepted_2xx, "tsip_transac_ist_Accepted_2_Accepted_2xx"),
 			// Accepted -> (timerL) -> Terminated
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Accepted, _fsm_action_timerL, _fsm_state_Terminated, tsip_transac_ist_Accepted_2_Terminated_timerL, "tsip_transac_ist_Accepted_2_Terminated_timerL"),
 

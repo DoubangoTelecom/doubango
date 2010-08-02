@@ -87,7 +87,7 @@ int tsip_dialog_invite_client_init(tsip_dialog_invite_t *self)
 			// Outgoing -> (oCANCEL) -> Cancelling
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Outgoing, _fsm_action_oCANCEL, _fsm_state_Cancelling, c0000_Outgoing_2_Cancelling_X_oCANCEL, "c0000_Outgoing_2_Cancelling_X_oCANCEL"),
 			// Cancelling -> (any response to cancel CANCEL) -> Cancelling
-			TSK_FSM_ADD(_fsm_state_Cancelling, _fsm_action_i300_to_i699, _fsm_cond_is_resp2CANCEL, _fsm_state_Cancelling, tsk_null, "c0000_Cancelling_2_Cancelling_X_i300_to_699"),
+			TSK_FSM_ADD(_fsm_state_Cancelling, _fsm_action_i300_to_i699, _fsm_cond_is_resp2CANCEL, _fsm_state_Terminated, tsk_null, "c0000_Cancelling_2_Terminated_X_i300_to_699"),
 			TSK_FSM_ADD(_fsm_state_Cancelling, _fsm_action_i2xx, _fsm_cond_is_resp2CANCEL, _fsm_state_Cancelling, tsk_null, "c0000_Cancelling_2_Cancelling_X_i2xx"),			
 			// Cancelling -> (i300-699 INVITE) -> Terminated
 			TSK_FSM_ADD(_fsm_state_Cancelling, _fsm_action_i300_to_i699, _fsm_cond_is_resp2INVITE, _fsm_state_Terminated, c0000_Cancelling_2_Terminated_X_i300_to_699, "c0000_Cancelling_2_Terminated_X_i300_to_699"),
@@ -239,6 +239,10 @@ int c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app)
 int c0000_Outgoing_2_Cancelling_X_oCANCEL(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+
+	/* Alert the user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminating, "Terminating dialog");
+
 	return send_CANCEL(self);
 }
 

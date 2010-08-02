@@ -33,6 +33,8 @@
 
 #include "tinysip/dialogs/tsip_dialog_invite.common.h"
 
+#include "tinysip/transports/tsip_transport_layer.h"
+
 #include "tinysip/headers/tsip_header_Dummy.h"
 #include "tinysip/headers/tsip_header_Min_SE.h"
 #include "tinysip/headers/tsip_header_RAck.h"
@@ -480,14 +482,29 @@ int s0000_InProgress_2_Ringing_X_iUPDATE(va_list *app)
 /* InProgress ->(iCANCEL) -> Terminated */
 int s0000_Inprogress_2_Terminated_X_iCANCEL(va_list *app)
 {
+	tsip_response_t* response;
+	int ret = -1;
+
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	tsip_request_t *request = va_arg(*app, tsip_request_t *);
+
+	/* Send 2xx for the CANCEL (Direct to Transport layer beacause CANCEL is a special case) */
+	if((response = tsip_dialog_response_new(TSIP_DIALOG(self), 200, "OK", request))){
+		ret = tsip_transport_layer_send(TSIP_DIALOG_GET_STACK(self)->layer_transport, tsk_null, response);
+		TSK_OBJECT_SAFE_FREE(response);
+	}
+
+	/* Send Request Cancelled */
+	ret = send_ERROR(self, self->last_iInvite, 487, "Request Cancelled", "SIP; cause=487; text=\"Request Cancelled\"");
+
+	/* set last error (or info) */
+	tsip_dialog_set_lasterror(TSIP_DIALOG(self), "Call Cancelled");
 
 	/* alert the user */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_request, 
 			tsip_event_code_dialog_request_incoming, "Incoming Request.", request);
 
-	return 0;
+	return ret;
 }
 
 /* Ringing -> (iPRACK) -> Ringing */
@@ -596,6 +613,7 @@ int s0000_Ringing_2_Terminated_X_Reject(va_list *app)
 int s0000_Ringing_2_Terminated_X_iCANCEL(va_list *app)
 {
 	int ret;
+	tsip_response_t* response;
 
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	tsip_request_t *request = va_arg(*app, tsip_request_t *);
@@ -605,11 +623,14 @@ int s0000_Ringing_2_Terminated_X_iCANCEL(va_list *app)
 		return 0;
 	}
 
+	/* Send 2xx for the CANCEL (Direct to Transport layer beacause CANCEL is a special case) */
+	if((response = tsip_dialog_response_new(TSIP_DIALOG(self), 200, "OK", request))){
+		ret = tsip_transport_layer_send(TSIP_DIALOG_GET_STACK(self)->layer_transport, tsk_null, response);
+		TSK_OBJECT_SAFE_FREE(response);
+	}
+
 	/* Send Request Cancelled */
 	ret = send_ERROR(self, self->last_iInvite, 487, "Request Cancelled", "SIP; cause=487; text=\"Request Cancelled\"");
-
-	/* Send 2xx for the CANCEL */
-	ret = send_RESPONSE(self, request, 200, "OK", tsk_false);
 
 	/* set last error (or info) */
 	tsip_dialog_set_lasterror(TSIP_DIALOG(self), "Call Cancelled");

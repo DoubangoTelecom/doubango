@@ -197,8 +197,11 @@ int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const ch
 tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const void* data, tsk_size_t size)
 {
 	tsk_size_t ret = 0;
+
 	if(TNET_SOCKET_TYPE_IS_DGRAM(self->type)){
-		ret = tnet_transport_sendto(self->net_transport, self->connectedFD, (const struct sockaddr *)&self->pcscf_addr, data, size);
+		if(!(ret = tnet_transport_sendto(self->net_transport, self->connectedFD, (const struct sockaddr *)&self->pcscf_addr, data, size))){
+			TSK_DEBUG_WARN("Send() returns zero");
+		}
 	}
 	else{
 		ret = tnet_transport_send(self->net_transport, self->connectedFD, data, size);

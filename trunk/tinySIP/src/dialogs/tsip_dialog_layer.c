@@ -92,7 +92,7 @@ tsip_dialog_t* tsip_dialog_layer_find_by_ss(tsip_dialog_layer_t *self, const tsi
 	return tsk_object_ref(ret);
 }
 
-tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const char* callid, const char* to_tag, const char* from_tag, tsk_bool_t *cid_matched)
+tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const char* callid, const char* to_tag, const char* from_tag, tsk_bool_t is_cancel,tsk_bool_t *cid_matched)
 {
 	tsip_dialog_t *ret = tsk_null;
 	tsip_dialog_t *dialog;
@@ -106,7 +106,8 @@ tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const cha
 		dialog = item->data;
 		if(tsk_strequals(dialog->callid, callid)){
 			*cid_matched = tsk_true;
-			if(tsk_strequals(dialog->tag_local, from_tag) && tsk_strequals(dialog->tag_remote, to_tag)){
+			/* CANCEL Request will have the same local tag than the INVITE request -> do not compare tags */
+			if((is_cancel || tsk_strequals(dialog->tag_local, from_tag)) && tsk_strequals(dialog->tag_remote, to_tag)){
 				ret = tsk_object_ref(dialog);
 				break;
 			}
@@ -347,12 +348,19 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	//tsk_safeobj_lock(self);
 	dialog = tsip_dialog_layer_find(self, message->Call_ID->value, 
 		TSIP_MESSAGE_IS_RESPONSE(message) ? message->To->tag : message->From->tag, 
-		TSIP_MESSAGE_IS_RESPONSE(message) ? message->From->tag : message->To->tag, &cid_matched);
+		TSIP_MESSAGE_IS_RESPONSE(message) ? message->From->tag : message->To->tag, TSIP_REQUEST_IS_CANCEL(message), &cid_matched);
 	//tsk_safeobj_unlock(self);
 	
 	if(dialog){
-		transac = tsip_transac_layer_new(layer_transac, tsk_false, message, TSIP_DIALOG(dialog));
-		tsk_object_unref(dialog);
+		if(TSIP_REQUEST_IS_CANCEL(message)){
+			ret = dialog->callback(dialog, tsip_dialog_i_msg, message);
+			tsk_object_unref(dialog);
+			goto bail;
+		}
+		else{
+			transac = tsip_transac_layer_new(layer_transac, tsk_false, message, TSIP_DIALOG(dialog));
+			tsk_object_unref(dialog);
+		}
 	}
 	else{		
 		if(TSIP_MESSAGE_IS_REQUEST(message)){
@@ -399,10 +407,9 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	}
 	else if(TSIP_MESSAGE_IS_REQUEST(message)){ /* No transaction match for the SIP request */
 		const tsip_transport_layer_t *layer;
-		tsip_response_t* response;
+		tsip_response_t* response = tsk_null;
 
-		if((layer = self->stack->layer_transport))
-		{	
+		if((layer = self->stack->layer_transport)){	
 			if(cid_matched){ /* We are receiving our own message. */
 				response = tsip_response_new(482, "Loop Detected (Check your iFCs)", message);
 				if(response && !response->To->tag){/* Early dialog? */

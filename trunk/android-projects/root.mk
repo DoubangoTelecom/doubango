@@ -44,7 +44,7 @@ export CFLAGS_COMMON=$(CFLAGS) $(DEBUG_FLAGS) -I$(ANDROID_NDK_ROOT)/build/platfo
 
 export CFLAGS_LIB= $(CFLAGS_COMMON) \
 -mthumb \
--O3 \
+-Os \
 -fomit-frame-pointer \
 -fno-strict-aliasing \
 -finline-limit=64

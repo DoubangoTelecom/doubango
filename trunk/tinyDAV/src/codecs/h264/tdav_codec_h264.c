@@ -81,23 +81,28 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context->width = TMEDIA_CODEC_VIDEO(h264)->width;
 	h264->encoder.context->height = TMEDIA_CODEC_VIDEO(h264)->height;
 
-	h264->encoder.context->keyint_min = 2;
+	h264->encoder.context->keyint_min = TMEDIA_CODEC_VIDEO(h264)->fps;
 	h264->encoder.context->b_frame_strategy = 1;
 	h264->encoder.context->coder_type = FF_CODER_TYPE_VLC;
 	h264->encoder.context->crf = 23;
+#if ANDROID // FIXME
+	h264->encoder.context->refs = 1;
+#else
 	h264->encoder.context->refs = 3;
-	h264->encoder.context->me_method = 7;
-	h264->encoder.context->me_subpel_quality = 4;
+#endif
+	
+	//h264->encoder.context->me_method = 7;
+	//h264->encoder.context->me_subpel_quality = 4;
 
 	h264->encoder.context->me_range = 16;
 	h264->encoder.context->max_qdiff = 4;
 	h264->encoder.context->mb_qmin = h264->encoder.context->qmin = 10;
-	h264->encoder.context->mb_qmax = h264->encoder.context->qmax = 51;
+	h264->encoder.context->mb_qmax = h264->encoder.context->qmax = 31;
 	h264->encoder.context->qcompress = 0.6f;
 	h264->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
 	h264->encoder.context->flags2 |= CODEC_FLAG2_FASTPSKIP;
 	h264->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
-	h264->encoder.context->max_b_frames = 4;
+	h264->encoder.context->max_b_frames = 0;
 	//h264->encoder.context->b_frame_strategy = 1;
 	h264->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
 	h264->encoder.context->chromaoffset = 0;
@@ -105,9 +110,9 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context->thread_count = 1;
 	h264->encoder.context->rtp_payload_size = H264_RTP_PAYLOAD_SIZE;
 	h264->encoder.context->opaque = tsk_null;
-	h264->encoder.context->bit_rate = (float) (/*TMEDIA_CODEC_VIDEO(h264)->max_br*/92000) * 0.80f;
-	h264->encoder.context->bit_rate_tolerance = (int) (/*TMEDIA_CODEC_VIDEO(h264)->max_br*/92000 * 0.20f);
-	h264->encoder.context->gop_size = 2;/*TMEDIA_CODEC_VIDEO(h264)->fps*1;*/ /* each 1 seconds */
+	h264->encoder.context->bit_rate = (float) (/*TMEDIA_CODEC_VIDEO(h264)->max_br*/64000) * 0.80f;
+	h264->encoder.context->bit_rate_tolerance = (int) (/*TMEDIA_CODEC_VIDEO(h264)->max_br*/64000 * 0.20f);
+	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->fps*1; /* each 1 seconds */
 
 	// Picture (YUV 420)
 	if(!(h264->encoder.picture = avcodec_alloc_frame())){
@@ -238,10 +243,10 @@ tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk
 	tdav_converter_video_flip(h264->encoder.picture, h264->encoder.context->height);
 
 	// Encode data
-	//h264->encoder.picture->pts = tsk_time_epoch();
+	h264->encoder.picture->pts = tsk_time_epoch();
 	//h264->encoder.picture->pict_type = 0;
 
-	h264->encoder.picture->pts = AV_NOPTS_VALUE;
+	//h264->encoder.picture->pts = AV_NOPTS_VALUE;
 	
 	//h264->encoder.picture->pts = tsk_time_epoch();//AV_NOPTS_VALUE;
 	//h264->encoder.picture->pict_type = FF_I_TYPE;
@@ -820,61 +825,3 @@ last:
 				(size - last_scp), tsk_true);
 	}
 }
-//
-//void *run(void* self)
-//{
-//	uint32_t i, last_scp, prev_scp;
-//	tsk_list_item_t *curr;
-//
-//	const uint8_t* pdata;
-//	tsk_size_t size;
-//	tsk_bool_t frag;
-//
-//	const tdav_codec_h264_t* h264 = ((tdav_runnable_video_t*)self)->userdata;
-//	static uint32_t size_of_scp = sizeof(H264_START_CODE_PREFIX); /* we know it's equal to 4 ..but */
-//
-//	TSK_DEBUG_INFO("H264 thread === START");
-//
-//	TSK_RUNNABLE_RUN_BEGIN(self);
-//	
-//	if((curr = TSK_RUNNABLE_POP_FIRST(self))){
-//		/* 4 is sizeof(uint32_t) */
-//		pdata = ((const tsk_buffer_t*)curr->data)->data;
-//		size = ((const tsk_buffer_t*)curr->data)->size;
-//		last_scp = 0, prev_scp = 0;
-//		frag = tsk_false;
-//
-//#if 1
-//		if(size < H264_RTP_PAYLOAD_SIZE){
-//			goto last;
-//		}
-//#else
-//		goto last;
-//#endif
-//
-////#define START_CODE_PREFIX		16777216 /* 0x10000000 */
-//		for(i = size_of_scp; i<(size - size_of_scp); i++){
-//			if(pdata[i] == H264_START_CODE_PREFIX[0] && pdata[i+1] == H264_START_CODE_PREFIX[1] && pdata[i+2] == H264_START_CODE_PREFIX[2] && pdata[i+3] == H264_START_CODE_PREFIX[3]){  /* Found Start Code Prefix */
-//				prev_scp = last_scp;
-//				if((i - last_scp) >= H264_RTP_PAYLOAD_SIZE || 1){
-//					tdav_codec_h264_rtp_callback((tdav_codec_h264_t*) h264, pdata + prev_scp,
-//						(i - prev_scp), (prev_scp == size));
-//				}
-//				last_scp = i;
-//			}
-//		}
-//last:
-//		if(last_scp < size){
-//				tdav_codec_h264_rtp_callback((tdav_codec_h264_t*) h264, pdata + last_scp,
-//					(size - last_scp), tsk_true);
-//		}
-//
-//		tsk_object_unref(curr);
-//	}
-//	
-//	TSK_RUNNABLE_RUN_END(self);
-//
-//	TSK_DEBUG_INFO("H264 thread === STOP");
-//
-//	return tsk_null;
-//}

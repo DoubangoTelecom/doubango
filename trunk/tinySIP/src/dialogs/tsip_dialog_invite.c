@@ -37,6 +37,7 @@
 
 #include "tinysip/headers/tsip_header_Allow.h"
 #include "tinysip/headers/tsip_header_Dummy.h"
+#include "tinysip/headers/tsip_header_Max_Forwards.h"
 #include "tinysip/headers/tsip_header_Min_SE.h"
 #include "tinysip/headers/tsip_header_RAck.h"
 #include "tinysip/headers/tsip_header_Require.h"
@@ -189,6 +190,9 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 					}
 					else if(TSIP_REQUEST_IS_BYE(msg)){ // BYE
 						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iBYE, msg, tsk_null);
+					}
+					else if(TSIP_REQUEST_IS_CANCEL(msg)){ // CANCEL
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iCANCEL, msg, tsk_null);
 					}
 				}
 			}
@@ -579,6 +583,9 @@ int x0000_Any_2_Trying_X_oBYE(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 
+	/* Alert the user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminating, "Terminating dialog");
+
 	/* send BYE */
 	return send_BYE(self);
 }
@@ -905,13 +912,40 @@ int send_CANCEL(tsip_dialog_invite_t *self)
 		/* to avoid concurrent access, take a reference to the request */
 		tsip_request_t* last_oInvite = tsk_object_ref(self->last_oInvite);
 		tsip_request_t* cancel;
-		if((cancel = tsip_dialog_request_new(TSIP_DIALOG(self), "CANCEL"))){
-			/* Request-URI, Call-ID, To and From will be added by the dialog layer */
-			/* the numeric part of CSeq */
-			cancel->CSeq->seq = last_oInvite->CSeq->seq;
-			/* Via */
-			TSK_OBJECT_SAFE_FREE(cancel->firstVia); /* firstVia is already Null ...but who know? */
-			cancel->firstVia = tsk_object_ref(last_oInvite->firstVia); /* transport layer won't update the Via header */
+
+		if((cancel = tsip_request_create("CANCEL", last_oInvite->line.request.uri))){
+			const tsk_list_item_t* item;
+			const tsip_header_t* header;
+
+			tsip_message_add_headers(cancel,
+				TSIP_HEADER_CSEQ_VA_ARGS(last_oInvite->CSeq->seq, "CANCEL"),
+				TSIP_HEADER_MAX_FORWARDS_VA_ARGS(TSIP_HEADER_MAX_FORWARDS_DEFAULT),
+				TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(0),
+				tsk_null);
+
+			cancel->Call_ID = tsk_object_ref(last_oInvite->Call_ID);
+			cancel->To = tsk_object_ref(last_oInvite->To);
+			cancel->From = tsk_object_ref(last_oInvite->From);
+			cancel->firstVia = tsk_object_ref(last_oInvite->firstVia);
+
+			// Copy Authorizations, Routes and Proxy-Auth
+			tsk_list_foreach(item, last_oInvite->headers){
+				if(!(header = TSIP_HEADER(item->data))){
+					continue;
+				}
+
+				switch(header->type){
+					case tsip_htype_Route:
+					case tsip_htype_Proxy_Authorization:
+					case tsip_htype_Authorization:
+						header = tsk_object_ref((void*)header);
+						if(!cancel->headers){
+							cancel->headers = tsk_list_create();
+						}
+						tsk_list_push_back_data(cancel->headers, (void**)&header);
+						break;
+				}
+			}
 
 			ret = tsip_dialog_request_send(TSIP_DIALOG(self), cancel);
 			TSK_OBJECT_SAFE_FREE(cancel);

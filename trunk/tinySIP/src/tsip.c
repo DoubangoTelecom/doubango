@@ -582,6 +582,7 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 	}
 	else{
 		TSK_DEBUG_ERROR("Proxy-CSCF IP address is Null.");
+		ret = -1983;
 		goto bail;
 	}
 	
@@ -665,7 +666,7 @@ bail:
 	TSIP_STACK_SIGNAL(self, tsip_event_code_stack_failed_to_start, stack_error_desc);
 	/* stop all running instances */
 	if(stack->timer_mgr_started){
-		if((ret = tsk_timer_mgr_global_stop()) == 0){
+		if(tsk_timer_mgr_global_stop() == 0){
 			stack->timer_mgr_started = tsk_false;
 		}
 	}

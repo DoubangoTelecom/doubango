@@ -68,9 +68,9 @@ int invite_handle_event(const tsip_event_t *_event)
 		//
 		case tsip_i_newcall:
 			{	/* New call */
-				tmedia_type_t media_type = tsip_ssession_get_mediatype(session);
+				/*tmedia_type_t media_type = tsip_ssession_get_mediatype(session);
 				tsip_action_ACCEPT(session->handle,
-					TSIP_ACTION_SET_NULL());
+					TSIP_ACTION_SET_NULL());*/
 				/*tsip_action_REJECT(session->handle,
 					TSIP_ACTION_SET_NULL());*/
 				break;
