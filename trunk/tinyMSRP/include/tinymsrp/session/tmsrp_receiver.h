@@ -52,9 +52,9 @@ typedef struct tmsrp_receiver_s
 }
 tmsrp_receiver_t;
 
-tmsrp_receiver_t* tmsrp_receiver_create(tmsrp_config_t* config, tnet_fd_t fd);
-int tmsrp_receiver_start(tmsrp_receiver_t* self);
-int tmsrp_receiver_stop(tmsrp_receiver_t* self);
+TINYMSRP_API tmsrp_receiver_t* tmsrp_receiver_create(tmsrp_config_t* config, tnet_fd_t fd);
+TINYMSRP_API int tmsrp_receiver_start(tmsrp_receiver_t* self);
+TINYMSRP_API int tmsrp_receiver_stop(tmsrp_receiver_t* self);
 
 const tsk_object_def_t *tmsrp_receiver_def_t;
 
