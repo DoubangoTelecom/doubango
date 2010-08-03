@@ -53,10 +53,10 @@ tmsrp_sender_t;
 
 tmsrp_sender_t* tmsrp_sender_create(tmsrp_config_t* config, tnet_fd_t fd);
 
-int tmsrp_sender_start(tmsrp_sender_t* self);
-int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* data, tsk_size_t size, const char* ctype);
-int tsmrp_sender_send_file(tmsrp_sender_t* self, const char* filepath);
-int tmsrp_sender_stop(tmsrp_sender_t* self);
+TINYMSRP_API int tmsrp_sender_start(tmsrp_sender_t* self);
+TINYMSRP_API int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* data, tsk_size_t size, const char* ctype);
+TINYMSRP_API int tsmrp_sender_send_file(tmsrp_sender_t* self, const char* filepath);
+TINYMSRP_API int tmsrp_sender_stop(tmsrp_sender_t* self);
 
 const tsk_object_def_t *tmsrp_sender_def_t;
 

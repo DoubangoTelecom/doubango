@@ -54,7 +54,7 @@ typedef struct tmsrp_config_s
 }
 tmsrp_config_t;
 
-tmsrp_config_t* tmsrp_config_create();
+TINYMSRP_API tmsrp_config_t* tmsrp_config_create();
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_config_def_t;
 
