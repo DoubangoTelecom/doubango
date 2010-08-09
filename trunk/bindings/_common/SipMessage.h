@@ -29,7 +29,7 @@ class SipMessage
 public:
 	SipMessage();
 #if !defined(SWIG)
-	SipMessage(const tsip_message_t *sipmessage);
+	SipMessage(tsip_message_t *sipmessage);
 #endif
 	virtual ~SipMessage();
 	
@@ -43,7 +43,7 @@ private:
 	const tsip_header_t* getSipHeader(const char* name, unsigned index = 0);
 
 private:
-	const tsip_message_t *sipmessage;
+	tsip_message_t *sipmessage;
 };
 
 #endif /* TINYWRAP_SIPMESSAGE_H */

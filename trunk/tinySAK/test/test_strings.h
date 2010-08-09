@@ -25,8 +25,17 @@
 /* test string manipulation */
 void test_strings()
 {
-	char* str = 0;
+	char* str = tsk_null;
+	int index;
 
+	/* IndexOf */
+	index = tsk_strindexOf("C:\\test.zip", 5, "\\");
+	index = tsk_strindexOf("C:\\test.zip", tsk_strlen("C:\\test.zip"), "abc");
+	index = tsk_strLastIndexOf("C:\\my dirctory\\test.zip", tsk_strlen("C:\\my dirctory\test.zip"), "\\");
+	index = tsk_strLastIndexOf("C:\\my dirctory\\test.zip", tsk_strlen("C:\\my dirctory\test.zip"), ".");
+
+	/* LastIndexOf */
+	
 	/* concatenation */
 	tsk_strcat(&str, "   first      ");
 	printf("test_strings/// strcat=%s\n", str);

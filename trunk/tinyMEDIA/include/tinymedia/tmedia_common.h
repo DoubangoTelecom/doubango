@@ -44,15 +44,43 @@ typedef enum tmedia_type_e
 
 	tmedia_audio = (0x01 << 1),
 	tmedia_video = (0x01 << 2),
-	tmedia_msrp = (0x01 << 3),
-	tmedia_t38 = (0x01 << 4),
+	tmedia_chat = (0x01 << 3),
+	tmedia_file = (0x01 << 4),
+	tmedia_t38 = (0x01 << 5),
 
+	tmedia_msrp = (tmedia_chat | tmedia_file),
 	tmedia_audiovideo = (tmedia_audio | tmedia_video),
 
 	tmedia_all = (tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38)
 }
 tmedia_type_t;
 
+typedef enum tmedia_video_size_type_e
+{
+	tmedia_vst_none,
+	tmedia_vst_sqcif,
+	tmedia_vst_qcif,
+	tmedia_vst_qvga,
+	tmedia_vst_cif,
+	tmedia_vst_vga,
+	tmedia_vst_4cif,
+	tmedia_vst_svga,
+	tmedia_vst_xga,
+	tmedia_vst_sxga,
+	tmedia_vst_16cif,
+}
+tmedia_video_size_type_t;
+
+typedef struct tmedia_video_size_s
+{
+	tmedia_video_size_type_t type;
+	tsk_size_t width;
+	tsk_size_t height;
+}
+tmedia_video_size_t;
+
+
+// used by tinyWRAP
 typedef enum tmedia_chroma_e
 {
 	tmedia_rgb24,
@@ -63,8 +91,18 @@ typedef enum tmedia_chroma_e
 }
 tmedia_chroma_t;
 
+// used by tinyWRAP
+typedef enum tmedia_bandwidth_level_e
+{
+	tmedia_bl_low,
+	tmedia_bl_medium,
+	tmedia_bl_hight
+}
+tmedia_bandwidth_level_t;
+
 TINYMEDIA_API tmedia_type_t tmedia_type_from_sdp(const tsdp_message_t* sdp);
-int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t* channels);
+TINYMEDIA_API int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t* channels);
+TINYMEDIA_API const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_size_t size);
 
 TMEDIA_END_DECLS
 

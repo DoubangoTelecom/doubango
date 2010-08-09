@@ -20,50 +20,42 @@
 *
 */
 
-/**@file tmsrp_session.h
- * @brief MSRP Session to send/receive chuncks.
+/**@file tmsrp_event.h
+ * @brief MSRP/MSRPS Event.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMSRP_SESSION_H
-#define TINYMSRP_SESSION_H
+#ifndef TINYMSRP_EVENT_H
+#define TINYMSRP_EVENT_H
 
 #include "tinymsrp_config.h"
 
-#include "tinymsrp/session/tmsrp_media.h"
+#include "tinymsrp/tmsrp_message.h"
 
-#include "tnet_socket.h"
-
-#include "tsk_object.h"
+#include "tsk_params.h"
+#include "tsk_buffer.h"
 
 TMSRP_BEGIN_DECLS
 
-#define TMSRP_SESSION_VA_ARGS(setup, host, useIPv6, useTLS)	tmsrp_session_def_t, (tmsrp_session_setup_t)setup, (const char*)host, (tsk_bool_t)useIPv6, (tsk_bool_t)useTLS
-
-#define TMSRP_SESSION(self)	((tmsrp_session_t*)(self))
-
-typedef struct tmsrp_session_s
+typedef struct tmsrp_event_s
 {
 	TSK_DECLARE_OBJECT;
 
-	tsk_bool_t isFile;
-	//tmsrp_session_setup_t setup;
+	const void* callback_data;
+	unsigned outgoing:1;
 
-	tnet_fd_t connectedFD; // FullDuplex Socket
-	tnet_socket_t* localSocket;
+	tmsrp_message_t* message;
 }
-tmsrp_session_t;
+tmsrp_event_t;
 
-int tmsrp_session_start(tmsrp_session_t* self);
-int tmsrp_session_stop(tmsrp_session_t* self);
+typedef int (*tmsrp_event_cb_f)(tmsrp_event_t* _event);
 
-//int tmsrp_send_file(tmsrp_session_t* self, const char* path);
-//int tmsrp_send_text(tmsrp_session_t* self, const char* text, const char* ctype);
+tmsrp_event_t* tmsrp_event_create(const void* callback_data, tsk_bool_t outgoing, tmsrp_message_t* message);
 
-const tsk_object_def_t *tmsrp_session_def_t;
+TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_event_def_t;
 
 TMSRP_END_DECLS
 
-#endif /* TINYMSRP_SESSION_H */
+#endif /* TINYMSRP_EVENT_H */

@@ -32,6 +32,7 @@
 #include "tinymedia/tmedia_session_ghost.h"
 #include "tinydav/audio/tdav_session_audio.h"
 #include "tinydav/video/tdav_session_video.h"
+#include "tinydav/msrp/tdav_session_msrp.h"
 
 // Codecs
 #include "tinydav/codecs/dtmf/tdav_codec_dtmf.h"
@@ -83,6 +84,7 @@ int tdav_init()
 	tmedia_session_plugin_register(tmedia_session_ghost_plugin_def_t);
 	tmedia_session_plugin_register(tdav_session_audio_plugin_def_t);
 	tmedia_session_plugin_register(tdav_session_video_plugin_def_t);
+	tmedia_session_plugin_register(tdav_session_msrp_plugin_def_t);	
 
 	/* === Register codecs === */
 #if HAVE_FFMPEG
@@ -213,6 +215,7 @@ int tdav_deinit()
 	tmedia_session_plugin_unregister(tmedia_session_ghost_plugin_def_t);
 	tmedia_session_plugin_unregister(tdav_session_audio_plugin_def_t);
 	tmedia_session_plugin_unregister(tdav_session_video_plugin_def_t);
+	tmedia_session_plugin_unregister(tdav_session_msrp_plugin_def_t);
 
 	/* === UnRegister codecs === */
 	tmedia_codec_plugin_unregister(tdav_codec_dtmf_plugin_def_t);

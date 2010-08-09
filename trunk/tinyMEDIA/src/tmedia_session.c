@@ -98,6 +98,7 @@ int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type)
 		/* set values */
 		self->type = type;
 		self->initialized = tsk_true;
+		self->bl = tmedia_bl_low;
 		/* load associated codecs */
 		ret = _tmedia_session_load_codecs(self);
 	}
@@ -573,42 +574,22 @@ int tmedia_session_mgr_set(tmedia_session_mgr_t* self, ...)
 */
 int tmedia_session_mgr_set_2(tmedia_session_mgr_t* self, va_list *app)
 {
-	tmedia_session_param_type_t curr;
+	tmedia_params_L_t* params;
 
 	if(!self || !app){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	while((curr = va_arg(*app, tmedia_session_param_type_t)) != tmedia_sptype_null){
-		switch(curr){
-			case tmedia_sptype_set:
-				{	/* (tmedia_type_t)MEDIA_TYPE_ENUM, (tmedia_param_plugin_type_t)PLUGIN_TYPE_ENUM, (tmedia_param_value_type_t)VALUE_TYPE_ENUM \
-						(const char*)KEY_STR, (void*)&VALUE */
-					/* IMPORTANT: do not pass va_arg() directly into the function */
-					tmedia_type_t media_type = va_arg(*app, tmedia_type_t);
-					tmedia_param_plugin_type_t plugin_type = va_arg(*app, tmedia_param_plugin_type_t);
-					tmedia_param_value_type_t value_type = va_arg(*app, tmedia_param_value_type_t);
-					const char* key = va_arg(*app, const char*);
-					void* value = va_arg(*app, void*);
-					tmedia_params_add_param(&self->params, tmedia_pat_set, 
-						media_type, plugin_type, value_type, key, value);
-					break;
-				}
-			//case tmedia_sptype_get:
-			//	{	/* (tmedia_type_t)MEDIA_TYPE_ENUM, (tmedia_param_plugin_type_t)PLUGIN_TYPE_ENUM, (tmedia_param_value_type_t)VALUE_TYPE_ENUM \
-			//			(const char*)KEY_STR, (void**)&VALUE_PTR */
-			//		tmedia_params_add_param(&self->params, tmedia_pat_get, 
-			//			...do not pass va_arg() );
-			//		break;
-			//	}
-			default:
-			{	/* va_list will be unsafe => exit */
-				TSK_DEBUG_ERROR("%d NOT a valid pname", curr);
-				return -2;
-			}
-		}/* switch */
-	}/* while */
+	if((params = tmedia_params_create_2(app))){
+		if(!self->params){
+			self->params = tsk_object_ref(params);
+		}
+		else{
+			tsk_list_pushback_list(self->params, params);
+		}
+		TSK_OBJECT_SAFE_FREE(params);
+	}
 
 	/* load params if we already have sessions */
 	if(!TSK_LIST_IS_EMPTY(self->sessions)){
@@ -1114,6 +1095,54 @@ int tmedia_session_mgr_send_dtmf(tmedia_session_mgr_t* self, uint8_t event)
 	return ret;
 }
 
+int tmedia_session_mgr_send_file(tmedia_session_mgr_t* self, const char* path, ...)
+{
+	tmedia_session_msrp_t* session;
+	tmedia_type_t msrp_type = tmedia_msrp;
+	int ret = -3;
+
+	if(!self || !path){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	session = (tmedia_session_msrp_t*)tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_type, &msrp_type);
+	if(session && session->send_file){
+		va_list ap;
+		va_start(ap, path);
+		session = tsk_object_ref(session);
+		ret = session->send_file(TMEDIA_SESSION_MSRP(session), path, &ap);
+		TSK_OBJECT_SAFE_FREE(session);
+		va_end(ap);
+	}
+	else{
+		TSK_DEBUG_ERROR("No MSRP session associated to this manager or session does not support file transfer");
+	}
+
+	return ret;
+}
+
+int tmedia_session_mgr_set_msrp_cb(tmedia_session_mgr_t* self, const void* callback_data, tmedia_session_msrp_cb_f func)
+{
+	tmedia_session_msrp_t* session;
+	tmedia_type_t msrp_type = tmedia_msrp;
+	
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	if((session = (tmedia_session_msrp_t*)tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_type, &msrp_type))){
+		session->callback.data = callback_data;
+		session->callback.func = func;
+		return 0;
+	}
+	else{
+		TSK_DEBUG_ERROR("No MSRP session associated to this manager or session does not support file transfer");
+		return -2;
+	}
+}
+
 /** internal function used to load sessions */
 int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 {
@@ -1134,6 +1163,7 @@ int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 		tmedia_session_mgr_set(self,
 				TMEDIA_SESSION_SET_STR(self->type, "local-ip", self->addr),
 				TMEDIA_SESSION_SET_STR(self->type, "local-ipver", self->ipv6 ? "ipv6" : "ipv4"),
+				TMEDIA_SESSION_SET_INT32(self->type, "bandwidth-level", self->bl),
 				TMEDIA_SESSION_SET_NULL());		
 
 		/* load params */
@@ -1200,6 +1230,7 @@ static tsk_object_t* tmedia_session_mgr_ctor(tsk_object_t * self, va_list * app)
 
 		mgr->qos.type = tmedia_qos_stype_none;
 		mgr->qos.strength = tmedia_qos_strength_optional;
+		mgr->bl = tmedia_bl_low;
 	}
 	return self;
 }

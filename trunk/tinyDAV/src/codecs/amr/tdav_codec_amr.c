@@ -401,7 +401,7 @@ int tdav_codec_amr_parse_fmtp(tdav_codec_amr_t* self, const char* fmtp)
 	tdav_codec_amr_mode_t mode = self->mode;
 	tsk_params_L_t* params = tsk_null;
 
-	if((params = tsk_params_fromstring(fmtp, ';', tsk_true))){
+	if((params = tsk_params_fromstring(fmtp, ";", tsk_true))){
 		/* Do not check "octet-align" => already done by the caller of this function */
 		
 		/* === mode-set ===*/

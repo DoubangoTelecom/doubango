@@ -76,6 +76,7 @@ int tdav_codec_theora_open(tmedia_codec_t* self)
 {
 	int ret;
 	int size;
+	float bitRate = 64000.f;
 	
 	tdav_codec_theora_t* theora = (tdav_codec_theora_t*)self;
 
@@ -106,12 +107,23 @@ int tdav_codec_theora_open(tmedia_codec_t* self)
 	//theora->encoder.context->mb_qmax = theora->encoder.context->qmax = 4;
 	theora->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
 
+	switch(self->bl){
+		case tmedia_bl_low:
+		default:
+			bitRate = 64000.f;
+			break;
+		case tmedia_bl_medium:
+		case tmedia_bl_hight:
+			bitRate = 128000.f;
+			break;
+	}
+
 	theora->encoder.context->thread_count = 1;
 	theora->encoder.context->rtp_payload_size = THEORA_RTP_PAYLOAD_SIZE;
 	theora->encoder.context->opaque = tsk_null;
-	theora->encoder.context->bit_rate = (float) (64000) * 0.80f;
-	theora->encoder.context->bit_rate_tolerance = (int) (64000 * 0.20f);
-	theora->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(theora)->fps*3; // each 3 seconds
+	theora->encoder.context->bit_rate = (int) (bitRate * 0.80f);
+	theora->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
+	theora->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(theora)->fps*2; // each 2 seconds
 
 	// Picture (YUV 420)
 	if(!(theora->encoder.picture = avcodec_alloc_frame())){
@@ -458,12 +470,54 @@ tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, t
 
 tsk_bool_t tdav_codec_theora_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
 {
-	return tsk_true;
+	tsk_bool_t ret = tsk_true; // accept decoding any size
+	tsk_params_L_t* params = tsk_null;
+	tmedia_codec_video_t* theora = (tmedia_codec_video_t*)codec;
+
+	if((params = tsk_params_fromstring(fmtp, ";", tsk_true))){
+		int width = tsk_params_get_param_value_as_int(params, "width");
+		int height = tsk_params_get_param_value_as_int(params, "height");		
+		
+		// Set Encoding size
+		switch(codec->bl){
+			case tmedia_bl_low:
+			default:
+				if(width<=176 && height<=144){
+					theora->width = width, theora->height = height;
+				}
+				else{
+					theora->width = 176, theora->height = 144;
+				}
+				break;
+
+			case tmedia_bl_medium:
+			case tmedia_bl_hight:
+				if(width<=352 && height<=288){
+					theora->width = width, theora->height = height;
+				}
+				else{
+					theora->width = 352, theora->height = 288;
+				}
+				break;
+		}
+	}
+	TSK_OBJECT_SAFE_FREE(params);
+
+	return ret;
 }
 
 char* tdav_codec_theora_fmtp_get(const tmedia_codec_t* self)
 {
-	return tsk_strdup("sampling=YCbCr-4:2:0; width=176; height=144");
+	switch(self->bl){
+		case tmedia_bl_low:
+		default:
+			return tsk_strdup("sampling=YCbCr-4:2:0; width=176; height=144");
+			break;
+		case tmedia_bl_medium:
+		case tmedia_bl_hight:
+			return tsk_strdup("sampling=YCbCr-4:2:0; width=352; height=288");
+			break;
+	}
 }
 
 

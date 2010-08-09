@@ -30,5 +30,16 @@
 #	define __JNIENV void
 #endif
 
+typedef enum twrap_media_type_e
+{
+	twrap_media_none,
+	twrap_media_audio,
+	twrap_media_video,
+	twrap_media_chat,
+	twrap_media_file,
+	twrap_media_audiovideo
+}
+twrap_media_type_t;
+
 #endif /* TINYWRAP_COMMON_H */
 

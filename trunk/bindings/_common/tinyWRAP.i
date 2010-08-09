@@ -8,6 +8,7 @@
 
 %nodefaultctor;
 %include "DDebug.h"
+%include "Common.h"
 %clearnodefaultctor;
 
 
@@ -44,3 +45,7 @@
 %newobject SMSEncoder::decode;
 
 %include SMS.i
+
+
+/* ========== MSRP ========== */
+%include Msrp.i

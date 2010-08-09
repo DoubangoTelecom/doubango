@@ -70,7 +70,7 @@ typedef struct transport_context_s
 }
 transport_context_t;
 
-static const transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd);
+static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd);
 static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client);
 static int removeSocket(int index, transport_context_t *context);
 
@@ -267,7 +267,7 @@ const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transpor
 
 
 /*== Get socket ==*/
-static const transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
+static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
 {
 	tsk_size_t i;
 	transport_socket_t* ret = 0;
@@ -525,6 +525,7 @@ void *tnet_transport_mainthread(void *param)
 		}
 
 		if(!TSK_RUNNABLE(transport)->running && !TSK_RUNNABLE(transport)->started){
+			TSK_DEBUG_INFO("Stopping [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 			goto bail;
 		}
 		
@@ -539,13 +540,17 @@ void *tnet_transport_mainthread(void *param)
 			}
 
 			if(context->ufds[i].fd == context->pipeR){
+				TSK_DEBUG_INFO("PipeR event %d", context->ufds[i].revents);
 				if(context->ufds[i].revents & TNET_POLLIN){
 					static char __buffer[64];
 					if(read(context->pipeR, __buffer, sizeof(__buffer))<0){
 						TNET_PRINT_LAST_ERROR("Failed to read from the Pipe");
 					}
 				}
-				TSK_DEBUG_INFO("PipeR event %d", context->ufds[i].revents);
+				else if(context->ufds[i].revents & TNET_POLLHUP){
+					TNET_PRINT_LAST_ERROR("Pipe Error");
+					goto bail;
+				}
 				context->ufds[i].revents = 0;
 				continue;
 			}
@@ -579,8 +584,18 @@ void *tnet_transport_mainthread(void *param)
 				 * Download link: http://wiki.forum.nokia.com/index.php/Open_C/C%2B%2B_Release_History
 				 */
 				if(tnet_ioctlt(active_socket->fd, FIONREAD, &len) < 0){
-					TNET_PRINT_LAST_ERROR("IOCTLT FAILED.");
-					continue;
+					/* It's probably an incoming connection --> try to accept() it */
+					tnet_fd_t fd;
+					if((fd = accept(active_socket->fd, tsk_null, 0)) != TNET_INVALID_SOCKET){
+						TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_ACCEPT", transport->description);
+						addSocket(fd, transport->master->type, transport, tsk_true, tsk_false);
+						TSK_RUNNABLE_ENQUEUE(transport, event_accepted, transport->callback_data, fd);
+					}
+					else{
+						TNET_PRINT_LAST_ERROR("IOCTLT FAILED.");
+						tnet_transport_remove_socket(transport, &active_socket->fd);
+						continue;
+					}
 				}
 				
 				if(!len){
@@ -690,7 +705,7 @@ done:
 bail:
 	
 	
-	TSK_DEBUG_INFO("Stopped [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
+	TSK_DEBUG_INFO("Stopped [%s] server with IP {%s} on port {%d}", transport->description, transport->master->ip, transport->master->port);
 	return 0;
 }
 

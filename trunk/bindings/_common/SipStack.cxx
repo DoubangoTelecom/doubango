@@ -324,21 +324,6 @@ void SipStack::setCodecs_2(int codecs) // For stupid languages
 	tdav_set_codecs((tdav_codec_id_t)codecs);
 }
 
-tsip_stack_handle_t* SipStack::getHandle()const
-{
-	return this->handle;
-}
-
-SipCallback* SipStack::getCallback()const
-{
-	return this->callback;
-}
-
-DDebugCallback* SipStack::getDebugCallback() const
-{
-	return this->debugCallback;
-}
-
 int stack_callback(const tsip_event_t *sipevent)
 {
 	int ret = 0;

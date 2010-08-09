@@ -145,9 +145,6 @@ tmsrp_uri_t *tmsrp_uri_clone(const tmsrp_uri_t *uri)
 //========================================================
 //	MSRP/MSRPS/TEL URI object definition
 //
-
-/**@ingroup tmsrp_uri_group
-*/
 static tsk_object_t* tmsrp_uri_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_uri_t *uri = self;
@@ -170,8 +167,6 @@ static tsk_object_t* tmsrp_uri_ctor(tsk_object_t *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tmsrp_uri_group
-*/
 static tsk_object_t* tmsrp_uri_dtor(tsk_object_t *self)
 {
 	tmsrp_uri_t *uri = self;
@@ -193,16 +188,11 @@ static tsk_object_t* tmsrp_uri_dtor(tsk_object_t *self)
 	return self;
 }
 
-static int tmsrp_uri_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
-
 static const tsk_object_def_t tmsrp_uri_def_s = 
 {
 	sizeof(tmsrp_uri_t),
 	tmsrp_uri_ctor,
 	tmsrp_uri_dtor,
-	tmsrp_uri_cmp
+	tsk_null
 };
 const tsk_object_def_t *tmsrp_uri_def_t = &tmsrp_uri_def_s;

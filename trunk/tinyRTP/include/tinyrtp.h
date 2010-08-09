@@ -27,8 +27,8 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMEDIA_TINYRTP_H
-#define TINYMEDIA_TINYRTP_H
+#ifndef TINYRTP_TINYRTP_H
+#define TINYRTP_TINYRTP_H
 
 /* === tinyNET (tinyNET/src) === */
 #include "tnet.h"
@@ -40,4 +40,4 @@
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
 #include "tinyrtp/trtp_manager.h"
 
-#endif /* TINYMEDIA_TINYRTP_H */
+#endif /* TINYRTP_TINYRTP_H */

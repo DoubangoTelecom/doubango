@@ -29,6 +29,7 @@ namespace test
 
             /* Create callbacks */
             sipCallback = new MySipCallback();
+            msrpCallback = new MyMsrpCallback();
             //sipDebugCallback = new MySipDebugCallback();
 
             /* Create consumers */
@@ -52,9 +53,10 @@ namespace test
             ProxyAudioProducer.registerPlugin();
             ProxyVideoProducer.registerPlugin();
             ProxyVideoConsumer.registerPlugin();
-
+            
+            
             /* Sets Proxy-CSCF */
-            success = sipStack.setProxyCSCF(PROXY_CSCF_IP, PROXY_CSCF_PORT, "tcp", "ipv4");
+            success = sipStack.setProxyCSCF(PROXY_CSCF_IP, PROXY_CSCF_PORT, "udp", "ipv4");
             // STUN
             //sipStack.setSTUNServer("numb.viagenie.ca", 3478);
             //sipStack.setSTUNCred("login", "password");
@@ -94,6 +96,19 @@ namespace test
 
             Console.ReadLine();
 
+            /*ActionConfig actionConfig = new ActionConfig();
+            actionConfig
+                .setMediaString(twrap_media_type_t.twrap_media_file, "file-path", "C:\\avatar.png")
+                .setMediaString(twrap_media_type_t.twrap_media_file, "accept-types", "application/octet-stream")
+                .setMediaString(twrap_media_type_t.twrap_media_file, "file-disposition", "attachment")
+                .setMediaString(twrap_media_type_t.twrap_media_file, "file-icon", "cid:test@doubango.org");
+            MsrpSession msrpSession = new MsrpSession(sipStack, msrpCallback);
+            msrpSession.callMsrp(String.Format("sip:bob@{0}", REALM), actionConfig);
+            actionConfig.Dispose();*/
+            
+
+            Console.ReadLine();
+
             RPMessage rpMessage = SMSEncoder.encodeDeliver(25, SMSC, "123456789", "salut comment tu vas?\n hdjdhfjfhfjhr, ");
             if (rpMessage != null)
             {
@@ -106,9 +121,9 @@ namespace test
                     MessagingSession m = new MessagingSession(sipStack);
                     m.setToUri(String.Format("sip:{0}@{1}", SMSC, REALM));
                     m.addHeader("Content-Type", "application/vnd.3gpp.sms");
-                    m.addHeader("Transfer-Encoding", "binary");
-                    m.addHeader("P-Asserted-Identity", String.Format("sip:{0}@{1}", SMSC, REALM));
-                    
+                    m.addHeader("Content-Transfer-Encoding", "binary");
+                    m.addHeader("P-Asserted-Identity", String.Format("sip:{0}@{1}", USER, REALM));
+
                     m.send(pay, (uint)pay.Length);
 
                     m.Dispose();
@@ -121,34 +136,37 @@ namespace test
 
 
 
-            String sipUri = sipStack.dnsENUM("E2U+SIP", "+1-800-555-5555", "e164.org");
+            //String sipUri = sipStack.dnsENUM("E2U+SIP", "+1-800-555-5555", "e164.org");
             //ushort port = 0;
             //String ipAddress = sipStack.dnsNaptrSrv("sip2sip.info", "SIP+D2U", out port);
             //String ipAddress = sipStack.dnsSrv("_sip._udp.sip2sip.info", out port);
 
+            /*ActionConfig actionConfig = new ActionConfig();
+            actionConfig.setMediaInt(twrap_media_type_t.twrap_media_audiovideo, "bandwidth-level", (int)tmedia_bandwidth_level_t.tmedia_bl_medium);
             callSession = new CallSession(sipStack);
             callSession.set100rel(true);
             callSession.setSessionTimer(90, "uas");
             callSession.setQoS(tmedia_qos_stype_t.tmedia_qos_stype_segmented, tmedia_qos_strength_t.tmedia_qos_strength_optional);
-            callSession.callAudio(String.Format("sip:bob@{0}", REALM));
+            callSession.callVideo(String.Format("sip:bob@{0}", REALM), actionConfig);
+            actionConfig.Dispose();*/
 
-            tcb = new TimerCallback(OnTimer);
-            timer = new Timer(tcb, new AutoResetEvent(false), 0, 20);
-
-            Console.ReadLine();
-            callSession.sendDTMF(1);
-            Console.ReadLine();
-            callSession.sendDTMF(2);
-            Console.ReadLine();
-            callSession.sendDTMF(11);
-            Console.ReadLine();
+            //tcb = new TimerCallback(OnTimer);
+            //timer = new Timer(tcb, new AutoResetEvent(false), 0, 20);
 
             //Console.ReadLine();
-            //callSession.hold();
+            //callSession.sendDTMF(1);
             //Console.ReadLine();
-            //callSession.resume();
-            Console.ReadLine();
-            callSession.hangup();
+            //callSession.sendDTMF(2);
+            //Console.ReadLine();
+            //callSession.sendDTMF(11);
+            //Console.ReadLine();
+
+            ////Console.ReadLine();
+            ////callSession.hold();
+            ////Console.ReadLine();
+            ////callSession.resume();
+            //Console.ReadLine();
+            //callSession.hangup();
 
 
             ////Thread.Sleep(2000);
@@ -223,6 +241,7 @@ namespace test
         static CallSession callSession;
         static RegistrationSession regSession;
         static SubscriptionSession subSession;
+        static MyMsrpCallback msrpCallback;
         static MySipCallback sipCallback;
         public static SipStack sipStack;
         static MySipDebugCallback sipDebugCallback;
@@ -372,6 +391,15 @@ namespace test
         }
     }
 
+    public class MyMsrpCallback : MsrpCallback
+    {
+        public override int OnEvent(MsrpEvent e)
+        {
+            Console.WriteLine("Msrp Event");
+            return 0;
+        }
+    }
+
     public class MySipCallback : SipCallback
     {
         public MySipCallback()
@@ -419,7 +447,10 @@ namespace test
                     }
                     else if ((session = e.takeSessionOwnership()) != null)
                     {
-                        session.accept();
+                        ActionConfig actionConfig = new ActionConfig();
+                        actionConfig.setMediaInt(twrap_media_type_t.twrap_media_audiovideo, "bandwidth-level", (int)tmedia_bandwidth_level_t.tmedia_bl_low);
+                        session.reject(actionConfig);
+                        actionConfig.Dispose();
                     }
                     break;
                 case tsip_invite_event_type_t.tsip_i_request:
@@ -548,7 +579,7 @@ namespace test
                                                 MessagingSession m = new MessagingSession(Program.sipStack);
                                                 m.setToUri(String.Format("sip:{0}@{1}", Program.SMSC, Program.REALM));
                                                 m.addHeader("Content-Type", "application/vnd.3gpp.sms");
-                                                m.addHeader("Transfer-Encoding", "binary");
+                                                m.addHeader("Content-Transfer-Encoding", "binary");
                                                 m.send(pay, (uint)pay.Length);
 
                                                 m.Dispose();
@@ -579,7 +610,7 @@ namespace test
                                                 MessagingSession m = new MessagingSession(Program.sipStack);
                                                 m.setToUri(String.Format("sip:{0}@{1}", Program.SMSC, Program.REALM));
                                                 m.addHeader("Content-Type", "application/vnd.3gpp.sms");
-                                                m.addHeader("Transfer-Encoding", "binary");
+                                                m.addHeader("Content-Transfer-Encoding", "binary");
                                                 m.send(pay, (uint)pay.Length);
 
                                                 m.Dispose();

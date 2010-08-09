@@ -117,4 +117,47 @@ int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t*
 	//}
 }
 
+static const tmedia_video_size_t tmedia_video_sizes[] = 
+{
+	{tmedia_vst_none , 176, 144},
 
+	{tmedia_vst_sqcif, 128, 96},
+	{tmedia_vst_qcif, 176, 144},
+	{tmedia_vst_qvga, 320, 240},
+	{tmedia_vst_cif, 352, 288},
+	{tmedia_vst_vga, 640, 480},
+	{tmedia_vst_4cif, 704, 576},
+	{tmedia_vst_svga, 800, 600},
+	{tmedia_vst_xga, 1024, 768},
+	{tmedia_vst_sxga, 1280, 1024},
+	{tmedia_vst_16cif, 1408, 1152}
+};
+
+const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_size_t size)
+{
+	float factor = 3.f;
+	tsk_size_t i;
+	switch(chroma)
+	{
+		case tmedia_rgb24:
+			factor = 3.f;
+			break;
+		case tmedia_rgb565le:
+		case tmedia_rgb565be:
+			factor = 2.f;
+			break;
+			
+		case tmedia_nv21:
+		case tmedia_yuv420p:
+			factor = 1.5f;
+			break;
+	}
+
+	for(i = 1; i< sizeof(tmedia_video_sizes)/sizeof(tmedia_video_size_t); i++){
+		if((((float)(tmedia_video_sizes[i].width * tmedia_video_sizes[i].height)) * factor) == size){
+			return &tmedia_video_sizes[i];
+		}
+	}
+
+	return &tmedia_video_sizes[0];;
+}

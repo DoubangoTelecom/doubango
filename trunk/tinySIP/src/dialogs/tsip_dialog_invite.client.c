@@ -132,6 +132,10 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 
 	/* Get Media type from the action */
 	TSIP_DIALOG_GET_SS(self)->media.type = action->media.type;
+	/* Appy media params received from the user */
+	if(!TSK_LIST_IS_EMPTY(action->media.params)){
+		tmedia_session_mgr_set_3(self->msession_mgr, action->media.params);
+	}
 
 	/*  RFC 4028 - 7.1. Generating an Initial Session Refresh Request
 
@@ -184,6 +188,7 @@ int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	const tsip_response_t *r2xxINVITE = va_arg(*app, const tsip_response_t *);
+	const tsip_action_t* action = va_arg(*app, const tsip_action_t *);
 
 	/* Update the dialog state */
 	if((ret = tsip_dialog_update(TSIP_DIALOG(self), r2xxINVITE))){
@@ -213,6 +218,13 @@ int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 		TSIP_RESPONSE_CODE(r2xxINVITE), TSIP_RESPONSE_PHRASE(r2xxINVITE), r2xxINVITE);
 	/* Alert the user (dialog) */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connected, "Dialog connected");
+
+	/* MSRP File Transfer */
+	/*if(TSIP_DIALOG(self)->curr_action && ((TSIP_DIALOG(self)->curr_action->media.type & tmedia_msrp) == tmedia_msrp)){
+		// FIXME
+		tmedia_session_mgr_send_file(self->msession_mgr, "C:\\avatar.png", 
+			TMEDIA_SESSION_SET_NULL());
+	}*/
 	
 	return ret;
 }

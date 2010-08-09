@@ -37,15 +37,40 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
+static void _tmsrp_receiver_alert_user(tmsrp_receiver_t* self, tsk_bool_t outgoing, tmsrp_message_t* message)
+{
+	if(self->callback.func){
+		tmsrp_event_t* _event = tmsrp_event_create(self->callback.data, outgoing, message);
+		self->callback.func(_event);
+		TSK_OBJECT_SAFE_FREE(_event);
+	}
+}
 
 tmsrp_receiver_t* tmsrp_receiver_create(tmsrp_config_t* config, tnet_fd_t fd)
 {
 	return tsk_object_new(tmsrp_receiver_def_t, config, fd);
 }
 
-
-int tmsrp_receiver_start(tmsrp_receiver_t* self)
+int tmsrp_receiver_set_fd(tmsrp_receiver_t* self, tnet_fd_t fd)
 {
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->fd = fd;
+	return 0;
+}
+
+int tmsrp_receiver_start(tmsrp_receiver_t* self, const void* callback_data, tmsrp_event_cb_f func)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	self->callback.data = callback_data;
+	self->callback.func = func;
+
 	return 0;
 }
 
@@ -54,54 +79,64 @@ int tmsrp_receiver_stop(tmsrp_receiver_t* self)
 	return 0;
 }
 
-int tmsrp_transport_layer_stream_cb(const tnet_transport_event_t* e)
+int tmsrp_receiver_recv(tmsrp_receiver_t* self, const void* data, tsk_size_t size)
 {
-	const tmsrp_receiver_t *receiver = e->callback_data;
 	tmsrp_message_t* message;
 
-	switch(e->type){
-		case event_data: {
-				break;
-			}
-		case event_closed:
-		case event_connected:
-		default:{
-				return 0;
-			}
+	if(!self || !data || !size){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
 	}
-
+	
 	// put the data
-	tmsrp_data_in_put(receiver->data_in, e->data, e->size);
+	tmsrp_data_in_put(self->data_in, data, size);
 	// get msrp messages
-	while((message = tmsrp_data_in_get(receiver->data_in))){
-				
+	while((message = tmsrp_data_in_get(self->data_in))){
+		
+		/* alert that we have received a message (Request or Response) */
+		_tmsrp_receiver_alert_user(self, tsk_false, message);
+		
 		//
-		//	SEND
+		//	REQUEST
 		//
-		if(TMSRP_REQUEST_IS_SEND(message)){
-			tmsrp_response_t* r2xx;
-			tmsrp_request_t* REPORT;
-			char* str;
+		if(TMSRP_MESSAGE_IS_REQUEST(message)){
+			/* ============= SEND =============== */
+			if(TMSRP_REQUEST_IS_SEND(message)){
+				tmsrp_response_t* r2xx;
+				tmsrp_request_t* REPORT;				
 
-			// send 200 OK
-			if((r2xx = tmsrp_create_response(message, 200, "OK"))){
-				if((str = tmsrp_message_tostring(r2xx))){
-					tnet_sockfd_send(receiver->fd, str, strlen(str), 0);
-					TSK_FREE(str);
-				}
-				TSK_OBJECT_SAFE_FREE(r2xx);
-			}
-			// send REPORT
-			if(tmsrp_isReportRequired(message, tsk_false)){
-				if((REPORT = tmsrp_create_report(message, 200, "OK"))){
-					if((str = tmsrp_message_tostring(REPORT))){
-						tnet_sockfd_send(receiver->fd, str, strlen(str), 0);
-						TSK_FREE(str);
+				// send 200 OK
+				if((r2xx = tmsrp_create_response(message, 200, "OK"))){
+					if(tmsrp_message_serialize(r2xx, self->buffer) == 0 && self->buffer->data){
+						tnet_sockfd_send(self->fd, self->buffer->data, self->buffer->size, 0);
 					}
-					TSK_OBJECT_SAFE_FREE(REPORT);
+					
+					tsk_buffer_cleanup(self->buffer);
+					TSK_OBJECT_SAFE_FREE(r2xx);
+				}
+				// send REPORT
+				if(tmsrp_isReportRequired(message, tsk_false)){
+					if((REPORT = tmsrp_create_report(message, 200, "OK"))){
+						if(tmsrp_message_serialize(REPORT, self->buffer) == 0 && self->buffer->data){
+							tnet_sockfd_send(self->fd, self->buffer->data, self->buffer->size, 0);
+						}
+						tsk_buffer_cleanup(self->buffer);
+						TSK_OBJECT_SAFE_FREE(REPORT);
+					}
 				}
 			}
+			/* ============= REPORT =============== */
+			/* ============= AUTH =============== */
+			/* ============= METHOD =============== */
 		}
+		//
+		//	RESPONSE
+		//
+		else{
+			//short code = TMSRP_RESPONSE_CODE(message);
+			//TSK_DEBUG_INFO("code=%u, tid=%s, phrase=%s", code, message->tid, TMSRP_RESPONSE_PHRASE(message));
+		}		
+		
 
 		// alert user layer
 
@@ -110,7 +145,6 @@ int tmsrp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 
 	return 0;
 }
-
 
 
 //=================================================================================================
@@ -124,6 +158,7 @@ static void* tmsrp_receiver_ctor(tsk_object_t * self, va_list *app)
 		receiver->fd = va_arg(*app, tnet_fd_t);	
 
 		receiver->data_in = tmsrp_data_in_create();
+		receiver->buffer = tsk_buffer_create_null();
 	}
 	return self;
 }
@@ -137,6 +172,7 @@ static void* tmsrp_receiver_dtor(tsk_object_t * self)
 
 		TSK_OBJECT_SAFE_FREE(receiver->config);
 		TSK_OBJECT_SAFE_FREE(receiver->data_in);
+		TSK_OBJECT_SAFE_FREE(receiver->buffer);
 		// the FD is owned by the transport ...do not close it
 	}
 	return self;

@@ -187,7 +187,7 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 
 /* ============ Plugin interface ================= */
 
-int tmedia_session_audio_set(tmedia_session_t* self, const tmedia_param_t* param)
+int tdav_session_audio_set(tmedia_session_t* self, const tmedia_param_t* param)
 {
 	int ret = 0;
 	tdav_session_audio_t* audio;
@@ -197,7 +197,7 @@ int tmedia_session_audio_set(tmedia_session_t* self, const tmedia_param_t* param
 		return -1;
 	}
 
-	TSK_DEBUG_INFO("tmedia_session_audio_set");
+	TSK_DEBUG_INFO("tdav_session_audio_set");
 
 	audio = (tdav_session_audio_t*)self;
 
@@ -652,7 +652,7 @@ int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 	}
 
 	/* get connection associated to this media line
-	* If the connnection is global, then the manager will call tmedia_session_audio_set() */
+	* If the connnection is global, then the manager will call tdav_session_audio_set() */
 	if(m->C && m->C->addr){
 		tsk_strupdate(&audio->remote_ip, m->C->addr);
 		audio->useIPv6 = tsk_striequals(m->C->addrtype, "IP6");
@@ -817,7 +817,7 @@ static const tmedia_session_plugin_def_t tdav_session_audio_plugin_def_s =
 	tmedia_audio,
 	"audio",
 	
-	tmedia_session_audio_set,
+	tdav_session_audio_set,
 	tdav_session_audio_prepare,
 	tdav_session_audio_start,
 	tdav_session_audio_pause,

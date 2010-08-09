@@ -551,6 +551,10 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 	/* Determine whether the remote party support UPDATE */
 	self->support_update = tsip_message_allowed(self->last_iInvite, "UPDATE");
 
+	/* Appy media params received from the user */
+	if(!TSK_LIST_IS_EMPTY(action->media.params)){
+		tmedia_session_mgr_set_3(self->msession_mgr, action->media.params);
+	}
 	/* start session manager */
 	if(self->msession_mgr && !self->msession_mgr->started){
 		ret = tmedia_session_mgr_start(self->msession_mgr);

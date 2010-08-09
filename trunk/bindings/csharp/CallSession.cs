@@ -40,18 +40,33 @@ public class CallSession : SipSession {
   public CallSession(SipStack Stack) : this(tinyWRAPPINVOKE.new_CallSession(SipStack.getCPtr(Stack)), true) {
   }
 
+  public bool callAudio(string remoteUri, ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.CallSession_callAudio__SWIG_0(swigCPtr, remoteUri, ActionConfig.getCPtr(config));
+    return ret;
+  }
+
   public bool callAudio(string remoteUri) {
-    bool ret = tinyWRAPPINVOKE.CallSession_callAudio(swigCPtr, remoteUri);
+    bool ret = tinyWRAPPINVOKE.CallSession_callAudio__SWIG_1(swigCPtr, remoteUri);
+    return ret;
+  }
+
+  public bool callAudioVideo(string remoteUri, ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.CallSession_callAudioVideo__SWIG_0(swigCPtr, remoteUri, ActionConfig.getCPtr(config));
     return ret;
   }
 
   public bool callAudioVideo(string remoteUri) {
-    bool ret = tinyWRAPPINVOKE.CallSession_callAudioVideo(swigCPtr, remoteUri);
+    bool ret = tinyWRAPPINVOKE.CallSession_callAudioVideo__SWIG_1(swigCPtr, remoteUri);
+    return ret;
+  }
+
+  public bool callVideo(string remoteUri, ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.CallSession_callVideo__SWIG_0(swigCPtr, remoteUri, ActionConfig.getCPtr(config));
     return ret;
   }
 
   public bool callVideo(string remoteUri) {
-    bool ret = tinyWRAPPINVOKE.CallSession_callVideo(swigCPtr, remoteUri);
+    bool ret = tinyWRAPPINVOKE.CallSession_callVideo__SWIG_1(swigCPtr, remoteUri);
     return ret;
   }
 
@@ -70,18 +85,33 @@ public class CallSession : SipSession {
     return ret;
   }
 
+  public bool accept(ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.CallSession_accept__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
+    return ret;
+  }
+
   public bool accept() {
-    bool ret = tinyWRAPPINVOKE.CallSession_accept(swigCPtr);
+    bool ret = tinyWRAPPINVOKE.CallSession_accept__SWIG_1(swigCPtr);
+    return ret;
+  }
+
+  public bool hold(ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.CallSession_hold__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
     return ret;
   }
 
   public bool hold() {
-    bool ret = tinyWRAPPINVOKE.CallSession_hold(swigCPtr);
+    bool ret = tinyWRAPPINVOKE.CallSession_hold__SWIG_1(swigCPtr);
+    return ret;
+  }
+
+  public bool resume(ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.CallSession_resume__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
     return ret;
   }
 
   public bool resume() {
-    bool ret = tinyWRAPPINVOKE.CallSession_resume(swigCPtr);
+    bool ret = tinyWRAPPINVOKE.CallSession_resume__SWIG_1(swigCPtr);
     return ret;
   }
 
@@ -90,13 +120,23 @@ public class CallSession : SipSession {
     return ret;
   }
 
+  public bool hangup(ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.CallSession_hangup__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
+    return ret;
+  }
+
   public bool hangup() {
-    bool ret = tinyWRAPPINVOKE.CallSession_hangup(swigCPtr);
+    bool ret = tinyWRAPPINVOKE.CallSession_hangup__SWIG_1(swigCPtr);
+    return ret;
+  }
+
+  public bool reject(ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.CallSession_reject__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
     return ret;
   }
 
   public bool reject() {
-    bool ret = tinyWRAPPINVOKE.CallSession_reject(swigCPtr);
+    bool ret = tinyWRAPPINVOKE.CallSession_reject__SWIG_1(swigCPtr);
     return ret;
   }
 

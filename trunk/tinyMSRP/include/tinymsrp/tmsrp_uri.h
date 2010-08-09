@@ -32,7 +32,6 @@
 
 #include "tinymsrp_config.h"
 
-#include "tsk_object.h"
 #include "tsk_params.h"
 #include "tsk_buffer.h"
 

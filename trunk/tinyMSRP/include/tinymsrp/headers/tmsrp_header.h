@@ -37,10 +37,10 @@
 
 TMSRP_BEGIN_DECLS
 
+struct tmsrp_header_s;
+
 #define TMSRP_HEADER(self)					((tmsrp_header_t*)(self))
 #define TMSRP_HEADER_VALUE_TOSTRING_F(self)	((tmsrp_header_value_tostring_f)(self))
-
-typedef struct tmsrp_header_s;
 
 typedef int (*tmsrp_header_value_tostring_f)(const struct tmsrp_header_s* header, tsk_buffer_t* output);
 
@@ -80,7 +80,7 @@ typedef struct tmsrp_header_s
 }
 tmsrp_header_t;
 
-#define TMSRP_DECLARE_HEADER tmsrp_header_t header
+#define TMSRP_DECLARE_HEADER tmsrp_header_t __header__
 typedef tsk_list_t tmsrp_headers_L_t; /**< List of @ref tmsrp_header_t elements. */
 /*
 ================================*/

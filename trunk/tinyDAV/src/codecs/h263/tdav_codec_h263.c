@@ -112,6 +112,7 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 {
 	int ret;
 	int size;
+	float bitRate = 64000.f;
 
 	tdav_codec_h263_t* h263 = (tdav_codec_h263_t*)self;
 
@@ -140,12 +141,22 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 	h263->encoder.context->me_method = ME_EPZS;
 	h263->encoder.context->flags |=  CODEC_FLAG_INPUT_PRESERVED | CODEC_FLAG_PASS1;
 	
+	switch(self->bl){
+		case tmedia_bl_low:
+		default:
+			bitRate = 64000.f;
+			break;
+		case tmedia_bl_medium:
+		case tmedia_bl_hight:
+			bitRate = 128000.f;
+			break;
+	}
 
 	h263->encoder.context->thread_count = 1;
 	h263->encoder.context->rtp_payload_size = RTP_PAYLOAD_SIZE;
 	h263->encoder.context->opaque = tsk_null;
-	h263->encoder.context->bit_rate = (float) (92000) * 0.80f;
-	h263->encoder.context->bit_rate_tolerance = (int) (92000 * 0.20f);
+	h263->encoder.context->bit_rate = (int)(bitRate * 0.80f);
+	h263->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
 	h263->encoder.context->rc_min_rate = 0;
 	h263->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h263)->fps*3; /* each 3 seconds */
 	
@@ -458,30 +469,58 @@ tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk
 
 tsk_bool_t tdav_codec_h263_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
 {	
-	int ret;
-	unsigned maxbr, fps, width, height;
+	tsk_bool_t ret = tsk_false;
 	tmedia_codec_video_t* h263 = (tmedia_codec_video_t*)codec;
+	tsk_params_L_t* params = tsk_null;
 
-	if(!(ret = tmedia_codec_parse_fmtp(fmtp, &maxbr, &fps, &width, &height))){
-		h263->max_br = maxbr * 1000;
-		h263->fps = fps;
-		h263->width = width;
-		h263->height = height;
-		return tsk_true;
+	if((params = tsk_params_fromstring(fmtp, ";", tsk_true))){
+		switch(codec->bl){
+			case tmedia_bl_low:
+			default:
+				if(tsk_params_have_param(params, "QCIF")){
+					h263->width = 176, h263->height = 144;
+					ret = tsk_true;
+				}
+				else if(tsk_params_have_param(params, "SQCIF")){
+					h263->width = 128, h263->height = 96;
+					ret = tsk_true;
+				}
+				break;
+
+			case tmedia_bl_medium:
+			case tmedia_bl_hight:
+				if(tsk_params_have_param(params, "CIF")){
+					h263->width = 352, h263->height = 288;
+					ret = tsk_true;
+				}
+				else if(tsk_params_have_param(params, "QCIF")){
+					h263->width = 176, h263->height = 144;
+					ret = tsk_true;
+				}
+				else if(tsk_params_have_param(params, "SQCIF")){
+					h263->width = 128, h263->height = 96;
+					ret = tsk_true;
+				}
+				break;
+		}
 	}
-	else{
-		TSK_DEBUG_WARN("Failed to match fmtp [%s]", fmtp);
-		return tsk_false;
-	}
+	TSK_OBJECT_SAFE_FREE(params);
+
+	return ret;
 }
 
 char* tdav_codec_h263_fmtp_get(const tmedia_codec_t* self)
 {
-#if 0
-	return tsk_strdup("CIF=2/MaxBR=3840;QCIF=2/MaxBR=1920");
-#else
-	return tsk_strdup("QCIF=2");
-#endif
+	switch(self->bl){
+		case tmedia_bl_low:
+		default:
+			return tsk_strdup("QCIF=2;SQCIF=2");
+			break;
+		case tmedia_bl_medium:
+		case tmedia_bl_hight:
+			return tsk_strdup("CIF=2;QCIF=2;SQCIF=2");
+			break;
+	}
 }
 
 int tdav_codec_h263_fmtp_set(tmedia_codec_t* self, const char* fmtp)
@@ -727,16 +766,14 @@ tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_data, ts
 	return retsize;
 }
 
-tsk_bool_t tdav_codec_h263p_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+tsk_bool_t tdav_codec_h263p_fmtp_match(const tmedia_codec_t* self, const char* fmtp)
 {	
-	/* check whether we can match this fmtp with our local
-	* check size, maxbr, fps ...*/
-	return tsk_true;
+	return tdav_codec_h263_fmtp_match(self, fmtp);
 }
 
 char* tdav_codec_h263p_fmtp_get(const tmedia_codec_t* self)
 {
-	return tsk_strdup("CIF=2;QCIF=2");
+	return tdav_codec_h263_fmtp_get(self);
 }
 
 int tdav_codec_h263p_fmtp_set(tmedia_codec_t* self, const char* fmtp)
@@ -844,16 +881,14 @@ tsk_size_t tdav_codec_h263pp_decode(tmedia_codec_t* self, const void* in_data, t
 	return tdav_codec_h263p_decode(self, in_data, in_size, out_data, out_max_size, proto_hdr);
 }
 
-tsk_bool_t tdav_codec_h263pp_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+tsk_bool_t tdav_codec_h263pp_fmtp_match(const tmedia_codec_t* self, const char* fmtp)
 {	
-	/* check whether we can match this fmtp with our local
-	* check size, maxbr, fps ...*/
-	return tsk_true;
+	return tdav_codec_h263_fmtp_match(self, fmtp);
 }
 
 char* tdav_codec_h263pp_fmtp_get(const tmedia_codec_t* self)
 {
-	return tsk_strdup("CIF=2/MaxBR=3840;QCIF=2/MaxBR=1920");
+	return tdav_codec_h263_fmtp_get(self);
 }
 
 int tdav_codec_h263pp_fmtp_set(tmedia_codec_t* self, const char* fmtp)

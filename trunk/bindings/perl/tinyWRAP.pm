@@ -91,6 +91,46 @@ sub ACQUIRE {
 }
 
 
+############# Class : tinyWRAP::ActionConfig ##############
+
+package tinyWRAP::ActionConfig;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_ActionConfig(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_ActionConfig($self);
+        delete $OWNER{$self};
+    }
+}
+
+*addHeader = *tinyWRAPc::ActionConfig_addHeader;
+*setMediaString = *tinyWRAPc::ActionConfig_setMediaString;
+*setMediaInt = *tinyWRAPc::ActionConfig_setMediaInt;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
 ############# Class : tinyWRAP::SipUri ##############
 
 package tinyWRAP::SipUri;
@@ -560,6 +600,50 @@ sub DESTROY {
 *sendDTMF = *tinyWRAPc::CallSession_sendDTMF;
 *hangup = *tinyWRAPc::CallSession_hangup;
 *reject = *tinyWRAPc::CallSession_reject;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::MsrpSession ##############
+
+package tinyWRAP::MsrpSession;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP::SipSession tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_MsrpSession(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_MsrpSession($self);
+        delete $OWNER{$self};
+    }
+}
+
+*setCallback = *tinyWRAPc::MsrpSession_setCallback;
+*callMsrp = *tinyWRAPc::MsrpSession_callMsrp;
+*sendLMessage = *tinyWRAPc::MsrpSession_sendLMessage;
+*sendFile = *tinyWRAPc::MsrpSession_sendFile;
+*accept = *tinyWRAPc::MsrpSession_accept;
+*hangup = *tinyWRAPc::MsrpSession_hangup;
+*reject = *tinyWRAPc::MsrpSession_reject;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1453,6 +1537,114 @@ sub ACQUIRE {
 }
 
 
+############# Class : tinyWRAP::MsrpMessage ##############
+
+package tinyWRAP::MsrpMessage;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_MsrpMessage(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_MsrpMessage($self);
+        delete $OWNER{$self};
+    }
+}
+
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::MsrpEvent ##############
+
+package tinyWRAP::MsrpEvent;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_MsrpEvent($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getSipSessionId = *tinyWRAPc::MsrpEvent_getSipSessionId;
+*getMessage = *tinyWRAPc::MsrpEvent_getMessage;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::MsrpCallback ##############
+
+package tinyWRAP::MsrpCallback;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_MsrpCallback(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_MsrpCallback($self);
+        delete $OWNER{$self};
+    }
+}
+
+*OnEvent = *tinyWRAPc::MsrpCallback_OnEvent;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
 # ------- VARIABLE STUBS --------
 
 package tinyWRAP;
@@ -1460,6 +1652,8 @@ package tinyWRAP;
 *twrap_media_none = *tinyWRAPc::twrap_media_none;
 *twrap_media_audio = *tinyWRAPc::twrap_media_audio;
 *twrap_media_video = *tinyWRAPc::twrap_media_video;
+*twrap_media_chat = *tinyWRAPc::twrap_media_chat;
+*twrap_media_file = *tinyWRAPc::twrap_media_file;
 *twrap_media_audiovideo = *tinyWRAPc::twrap_media_audiovideo;
 *tsip_event_invite = *tinyWRAPc::tsip_event_invite;
 *tsip_event_message = *tinyWRAPc::tsip_event_message;
@@ -1526,6 +1720,9 @@ package tinyWRAP;
 *tmedia_qos_strength_unknown = *tinyWRAPc::tmedia_qos_strength_unknown;
 *tmedia_qos_strength_optional = *tinyWRAPc::tmedia_qos_strength_optional;
 *tmedia_qos_strength_mandatory = *tinyWRAPc::tmedia_qos_strength_mandatory;
+*tmedia_bl_low = *tinyWRAPc::tmedia_bl_low;
+*tmedia_bl_medium = *tinyWRAPc::tmedia_bl_medium;
+*tmedia_bl_hight = *tinyWRAPc::tmedia_bl_hight;
 *tdav_codec_id_amr_nb_oa = *tinyWRAPc::tdav_codec_id_amr_nb_oa;
 *tdav_codec_id_amr_nb_be = *tinyWRAPc::tdav_codec_id_amr_nb_be;
 *tdav_codec_id_amr_wb_oa = *tinyWRAPc::tdav_codec_id_amr_wb_oa;

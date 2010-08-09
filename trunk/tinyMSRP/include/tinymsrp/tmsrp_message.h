@@ -53,11 +53,10 @@ TMSRP_BEGIN_DECLS
 #define TMSRP_MESSAGE_AS_REQUEST(self)	((tmsrp_request_t*)(self))
 
 
-#define TMSRP_RESPONSE_CODE(self)			 (TMSRP_MESSAGE_IS_RESPONSE((self)) ? (self)->status_code : 0)
-#define TMSRP_RESPONSE_PHRASE(self)			 ((self)->reason_phrase)
+#define TMSRP_RESPONSE_CODE(self)			 (TMSRP_MESSAGE_IS_RESPONSE((self)) ? (self)->line.response.status : 0)
+#define TMSRP_RESPONSE_PHRASE(self)			 (TMSRP_MESSAGE_IS_RESPONSE((self)) ? (self)->line.response.comment : tsk_null)
 
-#define TMSRP_REQUEST_METHOD(self)			 ((self)->method)
-#define TMSRP_REQUEST_URI(self)				 ((self)->uri)
+#define TMSRP_REQUEST_METHOD(self)			 (TMSRP_MESSAGE_IS_REQUEST((self)) ? (self)->line.request.method : tsk_null)
 #define TMSRP_REQUEST_IS_SEND(self)			 (TMSRP_MESSAGE_IS_REQUEST(self) && (self)->line.request.type == tmsrp_SEND)
 #define TMSRP_REQUEST_IS_REPORT(self)		 (TMSRP_MESSAGE_IS_REQUEST(self) && (self)->line.request.type == tmsrp_REPORT)
 #define TMSRP_REQUEST_IS_AUTH(self)			 (TMSRP_MESSAGE_IS_REQUEST(self) && (self)->line.request.type == tmsrp_AUTH)
@@ -152,7 +151,7 @@ TINYMSRP_API tmsrp_message_t* tmsrp_message_create_null();
 TINYMSRP_API int tmsrp_message_add_header(tmsrp_message_t *self, const tmsrp_header_t *hdr);
 TINYMSRP_API int tmsrp_message_add_headers(tmsrp_message_t *self, ...);
 
-#if !defined(_MSC_VER) || defined(__GNUC__)
+#if 0
 static void TMSRP_MESSAGE_ADD_HEADER(tmsrp_message_t *self, ...)
 	{
 		va_list ap;
@@ -170,7 +169,7 @@ static void TMSRP_MESSAGE_ADD_HEADER(tmsrp_message_t *self, ...)
 #else
 #define TMSRP_MESSAGE_ADD_HEADER(self, objdef, ...)						\
 	{																	\
-		tmsrp_header_t *header = tsk_object_new(objdef, __VA_ARGS__);	\
+		tmsrp_header_t *header = (tmsrp_header_t *)tsk_object_new(objdef, ##__VA_ARGS__);	\
 		tmsrp_message_add_header(self, header);							\
 		tsk_object_unref(header);										\
 	}

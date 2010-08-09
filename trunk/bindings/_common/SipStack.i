@@ -1,5 +1,6 @@
 
 %{
+#include "ActionConfig.h"
 #include "SipUri.h"
 #include "SipMessage.h"
 #include "SipEvent.h"
@@ -22,6 +23,7 @@
 
 
 %nodefaultctor;
+%include "ActionConfig.h"
 %include "SipUri.h"
 %include "SipMessage.h"
 %include "SipEvent.h"
@@ -193,6 +195,16 @@ typedef enum tmedia_qos_strength_e
 	tmedia_qos_strength_mandatory
 }
 tmedia_qos_strength_t;
+
+/* ====== From "tinymedia/tmedia_common.h"  ====== */
+typedef enum tmedia_bandwidth_level_e
+{
+	tmedia_bl_low,
+	tmedia_bl_medium,
+	tmedia_bl_hight
+}
+tmedia_bandwidth_level_t;
+
 
 /* ====== From "tinydav/tdav.h"  ====== */
 typedef enum tdav_codec_id_e

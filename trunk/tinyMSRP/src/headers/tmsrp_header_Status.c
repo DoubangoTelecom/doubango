@@ -46,9 +46,9 @@
 
 
 
-tmsrp_header_Status_t* tmsrp_header_Status_create(short namespace, short code, const char* reason)
+tmsrp_header_Status_t* tmsrp_header_Status_create(short _namespace, short code, const char* reason)
 {
-	return tsk_object_new(TMSRP_HEADER_STATUS_VA_ARGS(namespace, code, reason));
+	return tsk_object_new(TMSRP_HEADER_STATUS_VA_ARGS(_namespace, code, reason));
 }
 
 tmsrp_header_Status_t* tmsrp_header_Status_create_null()
@@ -64,7 +64,7 @@ int tmsrp_header_Status_tostring(const tmsrp_header_t* header, tsk_buffer_t* out
 				
 		// Status: 000 200 OK
 		return tsk_buffer_append_2(output, "%.3hi %.3hi%s%s", 
-			Status->namespace, 
+			Status->_namespace, 
 			Status->code,
 			Status->reason ? " " : "",
 			Status->reason ? Status->reason : ""
@@ -251,7 +251,7 @@ _match:
 	case 1:
 /* #line 51 "./ragel/tmsrp_parser_header_Status.rl" */
 	{
-		TSK_PARSER_SET_INT(hdr_Status->namespace);
+		TSK_PARSER_SET_INT(hdr_Status->_namespace);
 	}
 	break;
 	case 2:
@@ -339,10 +339,10 @@ static tsk_object_t* tmsrp_header_Status_ctor(tsk_object_t *self, va_list * app)
 		TMSRP_HEADER(Status)->type = tmsrp_htype_Status;
 		TMSRP_HEADER(Status)->tostring = tmsrp_header_Status_tostring;
 #if defined(__GNUC__)
-		Status->namespace = (short)va_arg(*app, int);
+		Status->_namespace = (short)va_arg(*app, int);
 		Status->code = (short)va_arg(*app, int);
 #else
-		Status->namespace = va_arg(*app, short);
+		Status->_namespace = va_arg(*app, short);
 		Status->code = va_arg(*app, short);
 #endif
 		Status->reason = tsk_strdup( va_arg(*app, const char*) );

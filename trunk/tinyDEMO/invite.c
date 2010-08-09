@@ -21,8 +21,13 @@
 */
 #include "invite.h"
 
+#include "tinymsrp.h"
+
+
 extern ctx_t* ctx;
 extern const session_t* session_handle_cmd(cmd_type_t , const opts_L_t*);
+
+static int invite_msrp_cb(const tmsrp_event_t* _event);
 
 int invite_handle_event(const tsip_event_t *_event)
 {
@@ -155,6 +160,39 @@ tsip_ssession_id_t invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 				break;
 			}
 
+		case cmd_file:
+			{	/* Send file using MSRP protocol */
+				tsip_action_handle_t* action_config = action_get_config(opts);
+				const opt_t* opt = opt_get_by_type(opts, opt_path); // existance already checked
+				/* Set Callback function */
+				tsip_ssession_set(session->handle,
+					TSIP_SSESSION_SET_MEDIA(
+						TSIP_MSESSION_SET_MSRP_CB(invite_msrp_cb),
+						TSIP_MSESSION_SET_NULL()
+					),
+					TSIP_SSESSION_SET_NULL());
+
+				/* Send INVITE */
+				tsip_action_INVITE(session->handle, tmedia_msrp,
+					TSIP_ACTION_SET_CONFIG(action_config),
+					
+					TSIP_ACTION_SET_MEDIA(
+						TMEDIA_SESSION_MSRP_SET_STR("file-path", opt->value),
+						TMEDIA_SESSION_MSRP_SET_STR("accept-types", "application/octet-stream"),
+						//TMEDIA_SESSION_MSRP_SET_STR("accept-wrapped-types", "application/octet-stream"),
+						//TMEDIA_SESSION_MSRP_SET_STR("file-selector", "name:\"test.sn\" type:application/octet-stream size:3740 hash:sha-1:27:D0:AE:39:48:77:37:1D:FD:39:7E:2D:78:2F:BC:7B:94:48:29:81"),
+						//TMEDIA_SESSION_MSRP_SET_STR("file-disposition", "attachment"),
+						//TMEDIA_SESSION_MSRP_SET_STR("file-date", "creation:2010-02-13T17:50:31.763Z"),
+						//TMEDIA_SESSION_MSRP_SET_STR("file-icon", "cid:test@doubango.org"),
+
+						TMEDIA_SESSION_SET_NULL()
+					),
+					
+					TSIP_ACTION_SET_NULL());
+				TSK_OBJECT_SAFE_FREE(action_config);
+				break;
+			}
+
 		case cmd_dtmf:
 			{
 				const opt_t* opt = opt_get_by_type(opts, opt_event); // existance already checked
@@ -206,4 +244,37 @@ tsip_ssession_id_t invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 
 bail:
 	return id;
+}
+
+
+int invite_msrp_cb(const tmsrp_event_t* _event)
+{
+	const session_t* session = _event->callback_data;
+
+	if(_event->message){
+		if(_event->message->end_line.cflag == '$'){
+			TSK_DEBUG_INFO("Last Chunck");
+		}
+		switch(_event->message->type){
+			case tmsrp_request:
+				{	/* MSRP Request */
+					
+					
+					break;
+				}
+			case tmsrp_response:
+				{	/* MSRP Response */
+					if(_event->message->ByteRange){
+						TSK_DEBUG_INFO("MSRP Response code=%hi %lld-%lld/%lld", TMSRP_RESPONSE_CODE(_event->message),
+							_event->message->ByteRange->start, _event->message->ByteRange->end, _event->message->ByteRange->total);
+					}
+					break;
+				}
+			default:
+				TSK_DEBUG_ERROR("Invalid MSRP message");
+				break;
+		}
+	}
+
+	return 0;
 }

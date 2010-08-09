@@ -23,6 +23,7 @@
 #define TINYWRAP_SIPEVENT_H
 
 #include "tinysip.h"
+#include "Common.h"
 
 class SipSession;
 class CallSession;
@@ -33,15 +34,6 @@ class RegistrationSession;
 class SubscriptionSession;
 
 class SipMessage;
-
-typedef enum twrap_media_type_e
-{
-	twrap_media_none,
-	twrap_media_audio,
-	twrap_media_video,
-	twrap_media_audiovideo
-}
-twrap_media_type_t;
 
 
 /* ======================== SipEvent ========================*/
@@ -61,7 +53,7 @@ public:
 
 protected:
 	const tsip_event_t *sipevent;
-	const SipMessage* sipmessage;
+	SipMessage* sipmessage;
 };
 
 

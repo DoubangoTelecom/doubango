@@ -23,12 +23,12 @@ BV16_LDFLAGS := -lbv16
 
 CFLAGS := $(CFLAGS_LIB) -I$(THIRDPARTIES_INC) $(ILBC_CFLAGS) $(LIBGSM_CFLAGS) \
 	$(FFMPEG_CFLAGS) $(SPEEX_CFLAGS) $(OPENCORE_ARM_CFLAGS) $(BV16_CFLAGS) \
-	-I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I../tinyRTP/include -I../tinyMEDIA/include -I./include \
-	-DJB_HISTORY_SIZE=250
+	-I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I../tinyRTP/include -I../tinyMEDIA/include -I../tinyMSRP/include -I./include \
+	-DJB_HISTORY_SIZE=500
 	
 LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB)\
 	 $(FFMPEG_LDFLAGS) $(SPEEX_LDFLAGS) $(OPENCORE_ARM_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) $(BV16_LDFLAGS)\
-	 -ltinySAK -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA -lm -lgcc
+	 -ltinySAK -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA -ltinyMSRP -lm -lgcc
 
 all: $(APP)
 

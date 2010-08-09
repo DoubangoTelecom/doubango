@@ -56,10 +56,6 @@
 /**@defgroup tsk_string_group String utillity functions.
 */
 
-#if !defined(va_copy)
-#	define va_copy(D, S)       ((D) = (S))
-#endif
-
 static char HEX[] = "0123456789abcdef";
 
 /**@ingroup tsk_string_group
@@ -223,6 +219,31 @@ int tsk_strindexOf(const char * str, tsk_size_t size, const char * substring)
 }
 
 /**@ingroup tsk_string_group
+*/
+int tsk_strLastIndexOf(const char * str, tsk_size_t size, const char * substring)
+{
+	if(str && substring){
+		tsk_size_t sub_size = tsk_strlen(substring);
+		const char* last_sub_start = tsk_null;
+		const char* sub_start = strstr(str, substring);
+		const char* end = (str + size);
+		while(sub_start && (sub_start < end)){
+			last_sub_start = sub_start;
+			if((sub_start + sub_size)<end){
+				sub_start = strstr((sub_start + sub_size), substring);
+			}
+			else{
+				break;
+			}
+		}
+		if(last_sub_start){
+			return (last_sub_start - str); 
+		}
+	}
+	return -1;
+}
+
+/**@ingroup tsk_string_group
 * Appends a copy of the source string to the destination string. The terminating null character in destination is overwritten by the first character of source, 
 * and a new null-character is appended at the end of the new string formed by the concatenation of both in destination. If the destination is NULL then new 
 * memory will allocated and filled with source value.
@@ -315,7 +336,7 @@ int tsk_sprintf_2(char** str, const char* format, va_list* ap)
 	}
 	
 	/* needed for 64bit platforms where vsnprintf will change the va_list */
-    va_copy(ap2, *ap);
+    tsk_va_copy(ap2, *ap);
     
 	/* compute destination len for windows mobile
 	*/

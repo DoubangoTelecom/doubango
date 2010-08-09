@@ -142,6 +142,12 @@ int _tsip_action_set(tsip_action_handle_t* self, va_list* app)
 								TSK_OBJECT_SAFE_FREE(action->payload);
 								action->payload = tsk_buffer_create(handle->payload->data, handle->payload->size);
 							}
+							if(!TSK_LIST_IS_EMPTY(handle->media.params)){ /* Copy media params */
+								if(!action->media.params){
+									action->media.params = tmedia_params_create();
+								}
+								tsk_list_pushback_list(action->media.params, handle->media.params);
+							}
 						}
 						else if(handle){ /* Only invalid type should cause error */
 							TSK_DEBUG_ERROR("Invalid action configuration handle.");
@@ -156,6 +162,21 @@ int _tsip_action_set(tsip_action_handle_t* self, va_list* app)
 						if(payload && size){
 							TSK_OBJECT_SAFE_FREE(action->payload);
 							action->payload = tsk_buffer_create(payload, size);
+						}
+						break;
+					}
+
+				case aptype_media:
+					{	/* ... */
+						tmedia_params_L_t* params;
+						if((params = tmedia_params_create_2(app))){
+							if(action->media.params){
+								tsk_list_pushback_list(action->media.params, params);
+							}
+							else{
+								action->media.params = tsk_object_ref(params);
+							}
+							TSK_OBJECT_SAFE_FREE(params);
 						}
 						break;
 					}
@@ -217,6 +238,8 @@ static tsk_object_t* tsip_action_dtor(tsk_object_t * self)
 	if(action){
 		TSK_OBJECT_SAFE_FREE(action->headers);
 		TSK_OBJECT_SAFE_FREE(action->payload);
+
+		TSK_OBJECT_SAFE_FREE(action->media.params);
 
 		TSK_FREE(action->ect.to);
 	}

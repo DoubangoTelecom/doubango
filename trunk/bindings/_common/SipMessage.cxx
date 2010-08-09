@@ -26,14 +26,14 @@ SipMessage::SipMessage()
 { 
 }
 
-SipMessage::SipMessage(const tsip_message_t *_sipmessage)
+SipMessage::SipMessage(tsip_message_t *_sipmessage)
 {
-	this->sipmessage = _sipmessage;
+	this->sipmessage = (tsip_message_t *)tsk_object_ref(_sipmessage);
 }
 
 SipMessage::~SipMessage()
 {
-
+	TSK_OBJECT_SAFE_FREE(this->sipmessage);
 }
 
 const tsip_header_t* SipMessage::getSipHeader(const char* name, unsigned index /* =0 */)

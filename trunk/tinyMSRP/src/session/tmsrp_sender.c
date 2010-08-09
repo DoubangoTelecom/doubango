@@ -44,6 +44,16 @@ tmsrp_sender_t* tmsrp_sender_create(tmsrp_config_t* config, tnet_fd_t fd)
 	return tsk_object_new(tmsrp_sender_def_t, config, fd);
 }
 
+int tmsrp_sender_set_fd(tmsrp_sender_t* self, tnet_fd_t fd)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->fd = fd;
+	return 0;
+}
+
 int tmsrp_sender_start(tmsrp_sender_t* self)
 {
 	int ret = -1;
@@ -125,8 +135,7 @@ void *run(void* self)
 	tsk_list_item_t *curr;
 	tmsrp_sender_t *sender = self;
 	tmsrp_data_out_t *data_out;
-	tsk_buffer_t* chunck;
-	char* str;
+	tsk_buffer_t* chunck, *message = tsk_buffer_create_null();
 	tsk_size_t start = 1;
 	tsk_size_t end;
 	tsk_size_t total;
@@ -137,8 +146,7 @@ void *run(void* self)
 
 	TSK_RUNNABLE_RUN_BEGIN(sender);
 
-	if((curr = TSK_RUNNABLE_POP_FIRST(sender)))
-	{
+	if((curr = TSK_RUNNABLE_POP_FIRST(sender))){
 		if(!(data_out = (tmsrp_data_out_t*)curr->data)){
 			continue;
 		}
@@ -167,14 +175,16 @@ void *run(void* self)
 				tsk_null);
 			// add data
 			tmsrp_message_add_content(SEND, TMSRP_DATA(data_out)->ctype, chunck->data, chunck->size);
+			// set continuation flag
+			SEND->end_line.cflag = (end == total) ? '$' : '+';
 			// serialize and send
-			if((str = tmsrp_message_tostring(SEND))){
-				if(tnet_sockfd_send(sender->fd, str, strlen(str), 0) == 0){
+			if(!(tmsrp_message_serialize(SEND, message))){
+				if(tnet_sockfd_send(sender->fd, message->data, message->size, 0) == 0){
 					error = tsk_true;
 					// abort
 				}
-				TSK_FREE(str);
 			}
+			tsk_buffer_cleanup(message);
 			
 			// set start
 			start = (end + 1);
@@ -188,6 +198,8 @@ void *run(void* self)
 	}
 
 	TSK_RUNNABLE_RUN_END(self);
+
+	TSK_OBJECT_SAFE_FREE(message);
 
 	TSK_DEBUG_INFO("MSRP SENDER::run -- STOP");
 

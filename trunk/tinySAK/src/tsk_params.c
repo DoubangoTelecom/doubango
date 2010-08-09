@@ -79,7 +79,7 @@ tsk_param_t *tsk_params_parse_param(const char* line, tsk_size_t size)
 
 		if(param && equal && equal<end){
 			if((param->name = tsk_calloc((equal-start)+1, sizeof(const char)))){
-			memcpy(param->name, start, (equal-start));
+				memcpy(param->name, start, (equal-start));
 			}
 
 			if((param->value = tsk_calloc((end-equal-1)+1, sizeof(const char)))){
@@ -276,7 +276,7 @@ bail:
 
 /**@ingroup tsk_params_group
 */
-tsk_params_L_t* tsk_params_fromstring(const char* string, char separator, tsk_bool_t trim)
+tsk_params_L_t* tsk_params_fromstring(const char* string, const char* separator, tsk_bool_t trim)
 {
 	tsk_params_L_t* params = tsk_null;
 	tsk_param_t* param;
@@ -298,7 +298,7 @@ tsk_params_L_t* tsk_params_fromstring(const char* string, char separator, tsk_bo
 	} \
 	tsk_list_push_back_data(params, (void**)&param);
 
-	while((index = tsk_strindexOf((string + i), (size - i), &separator)) != -1){
+	while((index = tsk_strindexOf((string + i), (size - i), separator)) != -1){
 		if((param = tsk_params_parse_param((string + i), index))){
 			PUSH_PARAM();
 		}

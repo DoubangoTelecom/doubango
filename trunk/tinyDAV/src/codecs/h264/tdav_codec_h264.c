@@ -58,6 +58,7 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 {
 	int ret;
 	int size;
+	float bitRate = 64000.f;
 
 	tdav_codec_h264_t* h264 = (tdav_codec_h264_t*)self;
 
@@ -81,38 +82,47 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context->width = TMEDIA_CODEC_VIDEO(h264)->width;
 	h264->encoder.context->height = TMEDIA_CODEC_VIDEO(h264)->height;
 
-	h264->encoder.context->keyint_min = TMEDIA_CODEC_VIDEO(h264)->fps;
+	//h264->encoder.context->keyint_min = TMEDIA_CODEC_VIDEO(h264)->fps;
 	h264->encoder.context->b_frame_strategy = 1;
 	h264->encoder.context->coder_type = FF_CODER_TYPE_VLC;
-	h264->encoder.context->crf = 23;
-#if ANDROID // FIXME
-	h264->encoder.context->refs = 1;
-#else
-	h264->encoder.context->refs = 3;
-#endif
+	//h264->encoder.context->crf = 23; ==> DO NOT UNCOMMENT
+	//h264->encoder.context->refs = 2;
 	
-	//h264->encoder.context->me_method = 7;
-	//h264->encoder.context->me_subpel_quality = 4;
+	h264->encoder.context->me_method = 7;
+	h264->encoder.context->me_subpel_quality = 4;
 
 	h264->encoder.context->me_range = 16;
 	h264->encoder.context->max_qdiff = 4;
 	h264->encoder.context->mb_qmin = h264->encoder.context->qmin = 10;
-	h264->encoder.context->mb_qmax = h264->encoder.context->qmax = 31;
+	h264->encoder.context->mb_qmax = h264->encoder.context->qmax = 41;
 	h264->encoder.context->qcompress = 0.6f;
 	h264->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
 	h264->encoder.context->flags2 |= CODEC_FLAG2_FASTPSKIP;
 	h264->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
 	h264->encoder.context->max_b_frames = 0;
-	//h264->encoder.context->b_frame_strategy = 1;
+	h264->encoder.context->b_frame_strategy = 1;
 	h264->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
 	h264->encoder.context->chromaoffset = 0;
+
+	switch(h264->profile){
+		case tdav_codec_h264_bp10:
+		default:
+			bitRate = 92000.f;
+			break;
+		case tdav_codec_h264_bp20:
+			bitRate = 491400.f;
+			break;
+		case tdav_codec_h264_bp30:
+			bitRate = 2725300.f;
+			break;
+	}
 
 	h264->encoder.context->thread_count = 1;
 	h264->encoder.context->rtp_payload_size = H264_RTP_PAYLOAD_SIZE;
 	h264->encoder.context->opaque = tsk_null;
-	h264->encoder.context->bit_rate = (float) (/*TMEDIA_CODEC_VIDEO(h264)->max_br*/64000) * 0.80f;
-	h264->encoder.context->bit_rate_tolerance = (int) (/*TMEDIA_CODEC_VIDEO(h264)->max_br*/64000 * 0.20f);
-	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->fps*1; /* each 1 seconds */
+	h264->encoder.context->bit_rate = (int) (bitRate * 0.80f);
+	h264->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
+	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->fps*1; /* FIXME */ 
 
 	// Picture (YUV 420)
 	if(!(h264->encoder.picture = avcodec_alloc_frame())){
@@ -120,10 +130,6 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 		return -2;
 	}
 	avcodec_get_frame_defaults(h264->encoder.picture);
-	//if((ret = avpicture_alloc((AVPicture*)h264->encoder.picture, PIX_FMT_YUV420P, h264->encoder.context->width, h264->encoder.context->height))){
-	//	TSK_DEBUG_ERROR("Failed to allocate encoder picture");
-	//	return ret;
-	//}
 	
 
 	size = avpicture_get_size(PIX_FMT_YUV420P, h264->encoder.context->width, h264->encoder.context->height);
@@ -369,7 +375,7 @@ tsk_bool_t tdav_codec_h264_fmtp_match(const tmedia_codec_t* codec, const char* f
 		return tsk_false;
 	}
 
-	TSK_DEBUG_INFO("TRying to match [%s]", fmtp);
+	TSK_DEBUG_INFO("Trying to match [%s]", fmtp);
 
 	/* Check whether the profile match (If the profile is missing, then we consider that it's ok) */
 	if(((profile = tdav_codec_h264_get_profile(fmtp)) != tdav_codec_h264_bp99) && (profile != h264->profile)){
@@ -378,7 +384,7 @@ tsk_bool_t tdav_codec_h264_fmtp_match(const tmedia_codec_t* codec, const char* f
 	}
 
 	/* e.g. profile-level-id=42e00a; packetization-mode=1; max-br=452; max-mbps=11880 */
-	if((params = tsk_params_fromstring(fmtp, ';', tsk_true))){
+	if((params = tsk_params_fromstring(fmtp, ";", tsk_true))){
 		
 		/* === max-br ===*/
 		if((val_int = tsk_params_get_param_value_as_int(params, "max-br")) != -1){
@@ -751,6 +757,7 @@ tdav_codec_h264_profile_t tdav_codec_h264_get_profile(const char* fmtp)
 		if((end = tsk_strindexOf((fmtp+start), (size-start), ";")) == -1){
 			end = size;
 		}
+		
 		if((param = tsk_params_parse_param((fmtp+start), (end-start)))){
 			profile_idc_t p_idc;
 			level_idc_t l_idc;

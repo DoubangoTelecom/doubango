@@ -74,9 +74,15 @@ public: /* API functions */
 
 public: /* Public helper function */
 #if !defined(SWIG)
-	tsip_stack_handle_t* getHandle()const;
-	SipCallback* getCallback()const;
-	DDebugCallback* getDebugCallback() const;
+	inline tsip_stack_handle_t* getHandle()const{
+		return this->handle;
+	}
+	inline SipCallback* getCallback()const{
+		return this->callback;
+	}
+	inline DDebugCallback* getDebugCallback() const{
+		return this->debugCallback;
+	}
 #endif
 
 private:
