@@ -341,7 +341,18 @@ int execute(const cmd_t* cmd)
 			}
 		case cmd_file:
 			{
+				const opt_t* opt;
 				TSK_DEBUG_INFO("command=file");
+				if(!(opt = opt_get_by_type(cmd->opts, opt_path)) || tsk_strnullORempty(opt->value)){
+					TSK_DEBUG_ERROR("++file command need --path option");
+					break;
+				}
+				if((sid = invite_handle_cmd(cmd->type, cmd->opts)) != TSIP_SSESSION_INVALID_ID){
+					if(cmd->sidparam){
+						tsk_itoa(sid, &istr);
+						update_param(cmd->sidparam, istr);
+					}
+				}
 				break;
 			}
 		case cmd_hangup:

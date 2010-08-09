@@ -82,7 +82,7 @@ tsms_tpdu_message_t* _tsms_tpdu_report_deserialize_2(const void* data, tsk_size_
 		//tsk_buffer_append(output, &self->fcs, 1); /*0x00-0xFF ==> 1o*/
 	}
 	
-	/* 3GPP TS 23.040 ==> xxxx TP-Parameter-Indicator (TP-PI) 
+	/* 3GPP TS 23.040 ==> 9.2.3.27 TP-Parameter-Indicator (TP-PI) 
 	* 1o */
 	self->pi = *pdata;
 	if((++pdata) >= pend){
@@ -165,8 +165,13 @@ int _tsms_tpdu_report_serialize(const tsms_tpdu_report_t* self, tsk_buffer_t* ou
 		tsk_buffer_append(output, &self->fcs, 1); /*0x00-0xFF ==> 1o*/
 	}
 	
-	/* 3GPP TS 23.040 ==> xxxx TP-Parameter-Indicator (TP-PI) */
-	tsk_buffer_append(output, &self->pi, 1); /* 1o*/
+	/* 3GPP TS 23.040 ==> 9.2.3.27 TP-Parameter-Indicator (TP-PI)
+		bit 7			bit 6		bit 5		bit 4		bit 3		bit 2	bit 1	bit 0
+		Extension bit	Reserved	Reserved	Reserved	Reserved	TP UDL	TP DCS	TP PID
+		As we are the serializer, we know which field should be added or not ==> append our own TP-PI field
+	*/
+	_1byte = self->pi | 0x07 /* Bits 2,1 and 0 to '1' */;
+	tsk_buffer_append(output, &_1byte, 1); /* 1o*/
 	
 	if(TSMS_TPDU_MESSAGE(self)->mti == tsms_tpdu_mti_submit_report_mt){
 		/* 3GPP TS 23.040 ==> TP-Service-Centre-Time-Stamp (TP-SCTS) */

@@ -82,9 +82,9 @@ typedef struct tsip_invite_event_e
 		unsigned toto:1;
 	} av;
 
-	struct{
-		unsigned titi:1;
-	} msrp;
+	/*struct{
+		char* dir;
+	} msrp;*/
 }
 tsip_invite_event_t;
 

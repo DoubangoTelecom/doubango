@@ -37,6 +37,7 @@
 #include "tsk_params.h"
 
 #include "tinymedia/tmedia_common.h"
+#include "tinymedia/tmedia_params.h"
 
 TSIP_BEGIN_DECLS
 
@@ -102,12 +103,14 @@ typedef enum tsip_action_param_type_e
 	aptype_header,
 	aptype_config,
 	aptype_payload,
+	aptype_media,
 }
 tsip_action_param_type_t;
 
 #define TSIP_ACTION_SET_HEADER(NAME_STR, VALUE_STR)			aptype_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define TSIP_ACTION_SET_PAYLOAD(PAY_PTR, PAY_SIZE)			aptype_payload, (const void*)PAY_PTR, (tsk_size_t)PAY_SIZE
 #define TSIP_ACTION_SET_CONFIG(ACTION_CONFIG_HANDLE)		aptype_config, (const tsip_action_handle_t*)ACTION_CONFIG_HANDLE
+#define TSIP_ACTION_SET_MEDIA(...)							aptype_media, ##__VA_ARGS__
 #define TSIP_ACTION_SET_NULL()								aptype_null
 
 /* private action object. public api should use tsip_action_handle_t. */
@@ -121,6 +124,7 @@ typedef struct tsip_action_s
 
 	struct{
 		tmedia_type_t type;
+		tmedia_params_L_t *params;
 	} media;
 
 	struct{

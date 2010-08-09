@@ -404,6 +404,11 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 	
 	/* start session manager */
 	if(!self->msession_mgr->started && (self->msession_mgr->sdp.lo && self->msession_mgr->sdp.ro)){
+		/* Set MSRP Callback */
+		if((self->msession_mgr->type & tmedia_msrp) == tmedia_msrp){
+			tmedia_session_mgr_set_msrp_cb(self->msession_mgr, TSIP_DIALOG_GET_SS(self)->userdata, TSIP_DIALOG_GET_SS(self)->media.msrp.callback);
+		}
+		/* starts */
 		ret = tmedia_session_mgr_start(self->msession_mgr);
 		if(ret == 0 && TSIP_DIALOG(self)->state == tsip_early){
 			TSIP_DIALOG_INVITE_SIGNAL(self, tsip_m_early_media, 

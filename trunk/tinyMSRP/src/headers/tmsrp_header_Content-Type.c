@@ -58,10 +58,10 @@ tmsrp_header_Content_Type_t* tmsrp_header_Content_Type_create_null()
 	return tmsrp_header_Content_Type_create(tsk_null);
 }
 
-int tmsrp_header_Content_Type_tostring(const void* header, tsk_buffer_t* output)
+int tmsrp_header_Content_Type_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tmsrp_header_Content_Type_t *Content_Type = header;
+		const tmsrp_header_Content_Type_t *Content_Type = (const tmsrp_header_Content_Type_t *)header;
 		const tsk_list_item_t *item;
 
 		if(Content_Type->value){

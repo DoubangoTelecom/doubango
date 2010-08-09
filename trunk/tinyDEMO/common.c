@@ -461,7 +461,7 @@ session_t* session_create(session_type_t type, tsip_ssession_handle_t* handle)
 		case st_invite:
 			{	/* Enable all features (QoS, Session timers, SigComp, ...) */
 				tsip_ssession_set(session->handle,
-					
+					TSIP_SSESSION_SET_USERDATA(session),
 					/*=== MEDIA */
 					TSIP_SSESSION_SET_MEDIA(
 						// 100rel

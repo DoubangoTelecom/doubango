@@ -564,12 +564,13 @@ void *tnet_transport_mainthread(void *param)
 			/* Accept the connection */
 			if((fd = WSAAccept(active_socket->fd, NULL, NULL, AcceptCondFunc, (DWORD_PTR)context)) != INVALID_SOCKET){
 				/* Add the new fd to the server context */
-				addSocket(fd, transport->master->type, transport, 1, 0);
+				addSocket(fd, transport->master->type, transport, tsk_true, tsk_false);
 				if(WSAEventSelect(fd, context->events[context->count - 1], FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR){
 					removeSocket((context->count - 1), context);
 					TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
 					goto done;
 				}
+				TSK_RUNNABLE_ENQUEUE(transport, event_accepted, transport->callback_data, fd);
 			}
 			else{
 				TNET_PRINT_LAST_ERROR("ACCEPT FAILED.");

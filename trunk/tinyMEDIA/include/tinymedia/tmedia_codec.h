@@ -141,6 +141,8 @@ typedef struct tmedia_codec_s
 	char* desc;
 	//! the format. e.g. "0" for PCMU or "8" for PCMA or "*" for MSRP.
 	char* format;
+	//! bandwidth level
+	tmedia_bandwidth_level_t bl;
 	//! the negociated format (only useful for codecs with dyn. payload type)
 	char* neg_format;
 	//! plugin used to create the codec

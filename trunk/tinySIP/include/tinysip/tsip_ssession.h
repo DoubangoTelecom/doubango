@@ -33,7 +33,7 @@
 #include "tinysip_config.h"
 
 #include "tinymedia/tmedia_common.h"
-#include "tinymedia/tmedia_qos.h"
+#include "tinymedia/tmedia_session.h"
 
 #include "tsk_object.h"
 #include "tsk_list.h"
@@ -103,6 +103,8 @@ typedef enum tsip_msession_param_type_e
 
 	mstype_set_timers,
 	mstype_unset_timers,
+
+	mstype_set_msrp_cb
 }
 tsip_msession_param_type_t;
 
@@ -112,6 +114,7 @@ tsip_msession_param_type_t;
 #define TSIP_MSESSION_UNSET_QOS()								mstype_unset_qos
 #define TSIP_MSESSION_SET_TIMERS(TIMEOUT_UINT, REFRESHER_STR)	mstype_set_timers, (unsigned)TIMEOUT_UINT, (const char*)REFRESHER_STR
 #define TSIP_MSESSION_UNSET_TIMERS()							mstype_unset_timers
+#define TSIP_MSESSION_SET_MSRP_CB(TMEDIA_SESSION_MSRP_CB_F)		mstype_set_msrp_cb, (tmedia_session_msrp_cb_f)TMEDIA_SESSION_MSRP_CB_F
 
 #define TSIP_MSESSION_SET_NULL()			mstype_null
 
@@ -153,6 +156,10 @@ typedef struct tsip_ssession_s
 			tmedia_qos_stype_t type;
 			tmedia_qos_strength_t strength;
 		} qos;
+		/* MSRP */
+		struct{
+			tmedia_session_msrp_cb_f callback;
+		} msrp;
 
 		/* Features */
 		unsigned enable_100rel:1;

@@ -86,6 +86,30 @@ class DDebugCallback(_object):
 DDebugCallback_swigregister = _tinyWRAP.DDebugCallback_swigregister
 DDebugCallback_swigregister(DDebugCallback)
 
+twrap_media_none = _tinyWRAP.twrap_media_none
+twrap_media_audio = _tinyWRAP.twrap_media_audio
+twrap_media_video = _tinyWRAP.twrap_media_video
+twrap_media_chat = _tinyWRAP.twrap_media_chat
+twrap_media_file = _tinyWRAP.twrap_media_file
+twrap_media_audiovideo = _tinyWRAP.twrap_media_audiovideo
+class ActionConfig(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, ActionConfig, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, ActionConfig, name)
+    __repr__ = _swig_repr
+    def __init__(self): 
+        this = _tinyWRAP.new_ActionConfig()
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_ActionConfig
+    __del__ = lambda self : None;
+    def addHeader(self, *args): return _tinyWRAP.ActionConfig_addHeader(self, *args)
+    def setMediaString(self, *args): return _tinyWRAP.ActionConfig_setMediaString(self, *args)
+    def setMediaInt(self, *args): return _tinyWRAP.ActionConfig_setMediaInt(self, *args)
+ActionConfig_swigregister = _tinyWRAP.ActionConfig_swigregister
+ActionConfig_swigregister(ActionConfig)
+
 class SipUri(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, SipUri, name, value)
@@ -128,10 +152,6 @@ class SipMessage(_object):
 SipMessage_swigregister = _tinyWRAP.SipMessage_swigregister
 SipMessage_swigregister(SipMessage)
 
-twrap_media_none = _tinyWRAP.twrap_media_none
-twrap_media_audio = _tinyWRAP.twrap_media_audio
-twrap_media_video = _tinyWRAP.twrap_media_video
-twrap_media_audiovideo = _tinyWRAP.twrap_media_audiovideo
 class SipEvent(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, SipEvent, name, value)
@@ -322,14 +342,38 @@ class CallSession(SipSession):
     def setSessionTimer(self, *args): return _tinyWRAP.CallSession_setSessionTimer(self, *args)
     def set100rel(self, *args): return _tinyWRAP.CallSession_set100rel(self, *args)
     def setQoS(self, *args): return _tinyWRAP.CallSession_setQoS(self, *args)
-    def accept(self): return _tinyWRAP.CallSession_accept(self)
-    def hold(self): return _tinyWRAP.CallSession_hold(self)
-    def resume(self): return _tinyWRAP.CallSession_resume(self)
+    def accept(self, *args): return _tinyWRAP.CallSession_accept(self, *args)
+    def hold(self, *args): return _tinyWRAP.CallSession_hold(self, *args)
+    def resume(self, *args): return _tinyWRAP.CallSession_resume(self, *args)
     def sendDTMF(self, *args): return _tinyWRAP.CallSession_sendDTMF(self, *args)
-    def hangup(self): return _tinyWRAP.CallSession_hangup(self)
-    def reject(self): return _tinyWRAP.CallSession_reject(self)
+    def hangup(self, *args): return _tinyWRAP.CallSession_hangup(self, *args)
+    def reject(self, *args): return _tinyWRAP.CallSession_reject(self, *args)
 CallSession_swigregister = _tinyWRAP.CallSession_swigregister
 CallSession_swigregister(CallSession)
+
+class MsrpSession(SipSession):
+    __swig_setmethods__ = {}
+    for _s in [SipSession]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, MsrpSession, name, value)
+    __swig_getmethods__ = {}
+    for _s in [SipSession]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, MsrpSession, name)
+    __repr__ = _swig_repr
+    def __init__(self, *args): 
+        this = _tinyWRAP.new_MsrpSession(*args)
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_MsrpSession
+    __del__ = lambda self : None;
+    def setCallback(self, *args): return _tinyWRAP.MsrpSession_setCallback(self, *args)
+    def callMsrp(self, *args): return _tinyWRAP.MsrpSession_callMsrp(self, *args)
+    def sendLMessage(self, *args): return _tinyWRAP.MsrpSession_sendLMessage(self, *args)
+    def sendFile(self, *args): return _tinyWRAP.MsrpSession_sendFile(self, *args)
+    def accept(self, *args): return _tinyWRAP.MsrpSession_accept(self, *args)
+    def hangup(self, *args): return _tinyWRAP.MsrpSession_hangup(self, *args)
+    def reject(self, *args): return _tinyWRAP.MsrpSession_reject(self, *args)
+MsrpSession_swigregister = _tinyWRAP.MsrpSession_swigregister
+MsrpSession_swigregister(MsrpSession)
 
 class MessagingSession(SipSession):
     __swig_setmethods__ = {}
@@ -750,6 +794,9 @@ tmedia_qos_strength_failure = _tinyWRAP.tmedia_qos_strength_failure
 tmedia_qos_strength_unknown = _tinyWRAP.tmedia_qos_strength_unknown
 tmedia_qos_strength_optional = _tinyWRAP.tmedia_qos_strength_optional
 tmedia_qos_strength_mandatory = _tinyWRAP.tmedia_qos_strength_mandatory
+tmedia_bl_low = _tinyWRAP.tmedia_bl_low
+tmedia_bl_medium = _tinyWRAP.tmedia_bl_medium
+tmedia_bl_hight = _tinyWRAP.tmedia_bl_hight
 tdav_codec_id_amr_nb_oa = _tinyWRAP.tdav_codec_id_amr_nb_oa
 tdav_codec_id_amr_nb_be = _tinyWRAP.tdav_codec_id_amr_nb_be
 tdav_codec_id_amr_wb_oa = _tinyWRAP.tdav_codec_id_amr_wb_oa
@@ -973,6 +1020,59 @@ SMSEncoder_encodeError = _tinyWRAP.SMSEncoder_encodeError
 def SMSEncoder_decode(*args):
   return _tinyWRAP.SMSEncoder_decode(*args)
 SMSEncoder_decode = _tinyWRAP.SMSEncoder_decode
+
+class MsrpMessage(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, MsrpMessage, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, MsrpMessage, name)
+    __repr__ = _swig_repr
+    def __init__(self): 
+        this = _tinyWRAP.new_MsrpMessage()
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_MsrpMessage
+    __del__ = lambda self : None;
+MsrpMessage_swigregister = _tinyWRAP.MsrpMessage_swigregister
+MsrpMessage_swigregister(MsrpMessage)
+
+class MsrpEvent(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, MsrpEvent, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, MsrpEvent, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_MsrpEvent
+    __del__ = lambda self : None;
+    def getSipSessionId(self): return _tinyWRAP.MsrpEvent_getSipSessionId(self)
+    def getMessage(self): return _tinyWRAP.MsrpEvent_getMessage(self)
+MsrpEvent_swigregister = _tinyWRAP.MsrpEvent_swigregister
+MsrpEvent_swigregister(MsrpEvent)
+
+class MsrpCallback(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, MsrpCallback, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, MsrpCallback, name)
+    __repr__ = _swig_repr
+    def __init__(self): 
+        if self.__class__ == MsrpCallback:
+            _self = None
+        else:
+            _self = self
+        this = _tinyWRAP.new_MsrpCallback(_self, )
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_MsrpCallback
+    __del__ = lambda self : None;
+    def OnEvent(self, *args): return _tinyWRAP.MsrpCallback_OnEvent(self, *args)
+    def __disown__(self):
+        self.this.disown()
+        _tinyWRAP.disown_MsrpCallback(self)
+        return weakref_proxy(self)
+MsrpCallback_swigregister = _tinyWRAP.MsrpCallback_swigregister
+MsrpCallback_swigregister(MsrpCallback)
 
 
 

@@ -34,13 +34,24 @@
 
 #include "tinydav_config.h"
 
+#include "tinymsrp/session/tmsrp_sender.h"
+#include "tinymsrp/session/tmsrp_receiver.h"
+#include "tmsrp.h"
+
+#include "tnet_transport.h"
+
 #include "tinymedia/tmedia_session.h"
 
 TDAV_BEGIN_DECLS
 
-// Forward declaration
-struct trtp_manager_s;
-struct tdav_consumer_msrp_s;
+typedef enum tdav_msrp_setup_e
+{
+	msrp_setup_active,
+	msrp_setup_passive,
+	msrp_setup_actpass,
+	msrp_setup_holdconn
+}
+tdav_msrp_setup_t;
 
 typedef struct tdav_session_msrp_s
 {
@@ -48,16 +59,38 @@ typedef struct tdav_session_msrp_s
 
 	tsk_bool_t useIPv6;
 
+	tnet_transport_t *transport;
+	tmsrp_config_t* config;
+	tdav_msrp_setup_t setup;
+	tnet_fd_t connectedFD; // FullDuplex Socket
+	tmsrp_sender_t* sender;
+	tmsrp_receiver_t* receiver;
+
 	char* local_ip;
+	//uint16_t local_port;
+
+	/* NAT Traversal context */
+	tnet_nat_context_handle_t* natt_ctx;
 
 	char* remote_ip;
 	uint16_t remote_port;
 
-	struct tmedia_consumer_s* consumer;
-	struct tmedia_producer_s* producer;
+	char* accept_types;
+	char* accept_w_types;
+
+	struct {
+		char* path;
+		char* selector;
+		char* disposition;
+		char* date;
+		char* icon;
+		char* transfer_id;
+		unsigned sent:1;
+	} file;
+
+	unsigned fresh_conn:1;
 }
 tdav_session_msrp_t;
-
 
 TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_msrp_plugin_def_t;
 

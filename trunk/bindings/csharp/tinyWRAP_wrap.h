@@ -161,5 +161,20 @@ private:
     void swig_init_callbacks();
 };
 
+class SwigDirector_MsrpCallback : public MsrpCallback, public Swig::Director {
+
+public:
+    SwigDirector_MsrpCallback();
+    virtual ~SwigDirector_MsrpCallback();
+    virtual int OnEvent(MsrpEvent const *e);
+
+    typedef int (SWIGSTDCALL* SWIG_Callback0_t)(void *);
+    void swig_connect_director(SWIG_Callback0_t callbackOnEvent);
+
+private:
+    SWIG_Callback0_t swig_callbackOnEvent;
+    void swig_init_callbacks();
+};
+
 
 #endif

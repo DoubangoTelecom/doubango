@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\ActionConfig.cs">
+      <Link>ActionConfig.cs</Link>
+    </Compile>
     <Compile Include="..\CallEvent.cs">
       <Link>CallEvent.cs</Link>
     </Compile>
@@ -62,6 +65,18 @@
     </Compile>
     <Compile Include="..\MessagingSession.cs">
       <Link>MessagingSession.cs</Link>
+    </Compile>
+    <Compile Include="..\MsrpCallback.cs">
+      <Link>MsrpCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\MsrpEvent.cs">
+      <Link>MsrpEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\MsrpMessage.cs">
+      <Link>MsrpMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\MsrpSession.cs">
+      <Link>MsrpSession.cs</Link>
     </Compile>
     <Compile Include="..\OptionsEvent.cs">
       <Link>OptionsEvent.cs</Link>
@@ -146,6 +161,9 @@
     </Compile>
     <Compile Include="..\tinyWRAPPINVOKE.cs">
       <Link>tinyWRAPPINVOKE.cs</Link>
+    </Compile>
+    <Compile Include="..\tmedia_bandwidth_level_t.cs">
+      <Link>tmedia_bandwidth_level_t.cs</Link>
     </Compile>
     <Compile Include="..\tmedia_chroma_t.cs">
       <Link>tmedia_chroma_t.cs</Link>

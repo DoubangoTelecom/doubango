@@ -24,9 +24,10 @@
 
 #include "tinysip.h"
 #include "tinymedia/tmedia_qos.h"
+#include "ActionConfig.h"
 
 class SipStack;
-
+class MsrpCallback;
 
 /* ======================== SipSession ========================*/
 class SipSession
@@ -77,19 +78,51 @@ public: /* ctor() and dtor() */
 	virtual ~CallSession();
 
 public: /* Public functions */
-	bool callAudio(const char* remoteUri);
-	bool callAudioVideo(const char* remoteUri);
-	bool callVideo(const char* remoteUri);
+	bool callAudio(const char* remoteUri, ActionConfig* config=tsk_null);
+	bool callAudioVideo(const char* remoteUri, ActionConfig* config=tsk_null);
+	bool callVideo(const char* remoteUri, ActionConfig* config=tsk_null);
 	bool setSessionTimer(unsigned timeout, const char* refresher);
 	bool set100rel(bool enabled);
 	bool setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength);
-	bool accept();
-	bool hold();
-	bool resume();
+	bool accept(ActionConfig* config=tsk_null);
+	bool hold(ActionConfig* config=tsk_null);
+	bool resume(ActionConfig* config=tsk_null);
 	bool sendDTMF(int number);
-	bool hangup();
-	bool reject();
+	bool hangup(ActionConfig* config=tsk_null);
+	bool reject(ActionConfig* config=tsk_null);
 };
+
+/* ======================== MsrpSession ========================*/
+class MsrpSession : public SipSession
+{
+public: /* ctor() and dtor() */
+	MsrpSession(SipStack* Stack, MsrpCallback* callback);
+#if !defined(SWIG)
+	MsrpSession(SipStack* Stack, tsip_ssession_handle_t* handle);
+#endif
+	virtual ~MsrpSession();
+
+public: /* Public functions */
+	bool setCallback(MsrpCallback* callback);
+	bool callMsrp(const char* remoteUri, ActionConfig* config);
+	bool sendLMessage(ActionConfig* config);
+	bool sendFile(ActionConfig* config);
+	bool accept(ActionConfig* config);
+	bool hangup(ActionConfig* config);
+	bool reject(ActionConfig* config);
+
+	public: /* Public helper function */
+#if !defined(SWIG)
+		inline MsrpCallback* getCallback()const{
+			return this->callback;
+		}
+#endif
+
+private:
+	MsrpCallback* callback;
+};
+
+
 
 /* ======================== MessagingSession ========================*/
 class MessagingSession : public SipSession

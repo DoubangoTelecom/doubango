@@ -81,16 +81,18 @@ static int tdav_session_video_rtp_cb(const void* callback_data, const struct trt
 		}
 
 		// Convert decoded data to the consumer chroma
-#define SIZE_CHANGED (session->conv.consumerWidth != session->consumer->video.width) || (session->conv.consumerHeight != session->consumer->video.height)
+#define SIZE_CHANGED (session->conv.consumerWidth != session->consumer->video.width) || (session->conv.consumerHeight != session->consumer->video.height) \
+		|| (session->conv.xsize != out_size)
 		if((session->consumer->video.chroma != tmedia_yuv420p) || SIZE_CHANGED){
 			tsk_size_t _output_size;
 			// Create video converter if not already done
 			if(!session->conv.fromYUV420 || SIZE_CHANGED){
-				TSK_DEBUG_INFO("Creating new Video Converter");
+				const tmedia_video_size_t* video_size = tmedia_get_video_size(tmedia_yuv420p, out_size);
 				TSK_OBJECT_SAFE_FREE(session->conv.fromYUV420);
 				session->conv.consumerWidth = session->consumer->video.width;
 				session->conv.consumerHeight = session->consumer->video.height;
-				if(!(session->conv.fromYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, session->conv.consumerWidth, session->conv.consumerHeight,
+				session->conv.xsize = ((float)(video_size->width * video_size->height)) * 1.5f;
+				if(!(session->conv.fromYUV420 = tdav_converter_video_create(video_size->width, video_size->height, session->conv.consumerWidth, session->conv.consumerHeight,
 					session->consumer->video.chroma, tsk_false))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
 					ret = -3;
@@ -130,7 +132,7 @@ bail:
 static int tdav_session_video_codec_cb(const void* callback_data, const void* buffer, tsk_size_t size, uint32_t duration, tsk_bool_t marker)
 {
 	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
-
+	
 	if(session->rtp_manager){
 		return trtp_manager_send_rtp(session->rtp_manager, buffer, size, duration, marker, marker);
 	}
@@ -144,7 +146,7 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
 	tsk_size_t yuv420p_size = 0;
 	int ret = 0;
-
+	
 	if(session->rtp_manager){
 		/* encode */
 		tsk_size_t out_size = 0;
@@ -244,6 +246,17 @@ int tmedia_session_video_set(tmedia_session_t* self, const tmedia_param_t* param
 		}
 		else if(tsk_striequals(param->key, "local-ipver")){
 			video->useIPv6 = tsk_striequals(param->value, "ipv6");
+		}
+	}
+	else if(param->value_type == tmedia_pvt_int32){
+		if(tsk_striequals(param->key, "bandwidth-level")){
+			tsk_list_item_t* item;
+			self->bl = (tmedia_bandwidth_level_t) TSK_TO_UINT32((uint8_t*)param->value);
+			self->codecs = tsk_object_ref(self->codecs);
+			tsk_list_foreach(item, self->codecs){
+				((tmedia_codec_t*)item->data)->bl = self->bl;
+			}
+			tsk_object_unref(self->codecs);
 		}
 	}
 	else if(param->value_type == tmedia_pvt_pobject){

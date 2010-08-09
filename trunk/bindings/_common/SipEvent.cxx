@@ -25,8 +25,6 @@
 
 #include "SipStack.h"
 
-#include "Common.h"
-
 /* ======================== SipEvent ========================*/
 SipEvent::SipEvent(const tsip_event_t *_sipevent)
 {

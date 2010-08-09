@@ -32,7 +32,7 @@
 #include "tsk_memory.h"
 
 
-tmsrp_config_t* tmsrp_config_create()
+TINYMSRP_API tmsrp_config_t* tmsrp_config_create()
 {
 	return tsk_object_new(tmsrp_config_def_t);
 }

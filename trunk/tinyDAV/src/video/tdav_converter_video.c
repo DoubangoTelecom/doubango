@@ -37,6 +37,8 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t srcWidth, tsk_siz
 	tdav_converter_video_t* converter;
 	enum PixelFormat pixfmt;
 
+	TSK_DEBUG_INFO("Creating new Video Converter src=(%dx%d) dst=(%dx%d)", srcWidth, srcHeight, dstWidth, dstHeight);
+
 	switch(chroma){
 		case tmedia_rgb24:
 			pixfmt = PIX_FMT_RGB24;

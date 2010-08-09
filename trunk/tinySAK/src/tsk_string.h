@@ -56,6 +56,7 @@ TINYSAK_API char* tsk_strdup(const char *s1);
 TINYSAK_API char* tsk_strndup(const char *s1, tsk_size_t n);
 TINYSAK_API tsk_bool_t tsk_strcontains(const char * str, tsk_size_t size, const char * substring);
 TINYSAK_API int tsk_strindexOf(const char * str, tsk_size_t size, const char * substring);
+TINYSAK_API int tsk_strLastIndexOf(const char * str, tsk_size_t size, const char * substring);
 TINYSAK_API void tsk_strcat(char** destination, const char* source);
 TINYSAK_API void tsk_strcat_2(char** destination, const char* format, ...);
 TINYSAK_API void tsk_strncat(char** destination, const char* source, tsk_size_t n);

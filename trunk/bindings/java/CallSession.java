@@ -37,16 +37,28 @@ public class CallSession extends SipSession {
     this(tinyWRAPJNI.new_CallSession(SipStack.getCPtr(Stack), Stack), true);
   }
 
+  public boolean callAudio(String remoteUri, ActionConfig config) {
+    return tinyWRAPJNI.CallSession_callAudio__SWIG_0(swigCPtr, this, remoteUri, ActionConfig.getCPtr(config), config);
+  }
+
   public boolean callAudio(String remoteUri) {
-    return tinyWRAPJNI.CallSession_callAudio(swigCPtr, this, remoteUri);
+    return tinyWRAPJNI.CallSession_callAudio__SWIG_1(swigCPtr, this, remoteUri);
+  }
+
+  public boolean callAudioVideo(String remoteUri, ActionConfig config) {
+    return tinyWRAPJNI.CallSession_callAudioVideo__SWIG_0(swigCPtr, this, remoteUri, ActionConfig.getCPtr(config), config);
   }
 
   public boolean callAudioVideo(String remoteUri) {
-    return tinyWRAPJNI.CallSession_callAudioVideo(swigCPtr, this, remoteUri);
+    return tinyWRAPJNI.CallSession_callAudioVideo__SWIG_1(swigCPtr, this, remoteUri);
+  }
+
+  public boolean callVideo(String remoteUri, ActionConfig config) {
+    return tinyWRAPJNI.CallSession_callVideo__SWIG_0(swigCPtr, this, remoteUri, ActionConfig.getCPtr(config), config);
   }
 
   public boolean callVideo(String remoteUri) {
-    return tinyWRAPJNI.CallSession_callVideo(swigCPtr, this, remoteUri);
+    return tinyWRAPJNI.CallSession_callVideo__SWIG_1(swigCPtr, this, remoteUri);
   }
 
   public boolean setSessionTimer(long timeout, String refresher) {
@@ -61,28 +73,48 @@ public class CallSession extends SipSession {
     return tinyWRAPJNI.CallSession_setQoS(swigCPtr, this, type.swigValue(), strength.swigValue());
   }
 
+  public boolean accept(ActionConfig config) {
+    return tinyWRAPJNI.CallSession_accept__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
+  }
+
   public boolean accept() {
-    return tinyWRAPJNI.CallSession_accept(swigCPtr, this);
+    return tinyWRAPJNI.CallSession_accept__SWIG_1(swigCPtr, this);
+  }
+
+  public boolean hold(ActionConfig config) {
+    return tinyWRAPJNI.CallSession_hold__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
   }
 
   public boolean hold() {
-    return tinyWRAPJNI.CallSession_hold(swigCPtr, this);
+    return tinyWRAPJNI.CallSession_hold__SWIG_1(swigCPtr, this);
+  }
+
+  public boolean resume(ActionConfig config) {
+    return tinyWRAPJNI.CallSession_resume__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
   }
 
   public boolean resume() {
-    return tinyWRAPJNI.CallSession_resume(swigCPtr, this);
+    return tinyWRAPJNI.CallSession_resume__SWIG_1(swigCPtr, this);
   }
 
   public boolean sendDTMF(int number) {
     return tinyWRAPJNI.CallSession_sendDTMF(swigCPtr, this, number);
   }
 
+  public boolean hangup(ActionConfig config) {
+    return tinyWRAPJNI.CallSession_hangup__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
+  }
+
   public boolean hangup() {
-    return tinyWRAPJNI.CallSession_hangup(swigCPtr, this);
+    return tinyWRAPJNI.CallSession_hangup__SWIG_1(swigCPtr, this);
+  }
+
+  public boolean reject(ActionConfig config) {
+    return tinyWRAPJNI.CallSession_reject__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
   }
 
   public boolean reject() {
-    return tinyWRAPJNI.CallSession_reject(swigCPtr, this);
+    return tinyWRAPJNI.CallSession_reject__SWIG_1(swigCPtr, this);
   }
 
 }

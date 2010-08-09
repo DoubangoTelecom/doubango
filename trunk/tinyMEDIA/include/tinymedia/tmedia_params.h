@@ -88,14 +88,16 @@ typedef tsk_list_t tmedia_params_L_t; /**< List of @ref tsk_param_t elements. */
 
 #define tmedia_params_create() tsk_list_create()
 
-tmedia_param_t* tmedia_param_create(tmedia_param_access_type_t access_type, 
+TINYMEDIA_API tmedia_param_t* tmedia_param_create(tmedia_param_access_type_t access_type, 
 									tmedia_type_t media_type, 
 									tmedia_param_plugin_type_t plugin_type, 
 									tmedia_param_value_type_t value_type,
 									const char* key,
 									void* value);
 
-int tmedia_params_add_param(tmedia_params_L_t **self, 
+TINYMEDIA_API tmedia_params_L_t* tmedia_params_create_2(va_list *app);
+
+TINYMEDIA_API int tmedia_params_add_param(tmedia_params_L_t **self, 
 							tmedia_param_access_type_t access_type, 
 							tmedia_type_t media_type, 
 							tmedia_param_plugin_type_t plugin_type, 

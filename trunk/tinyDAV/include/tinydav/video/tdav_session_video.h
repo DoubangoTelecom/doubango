@@ -85,6 +85,8 @@ typedef struct tdav_session_video_s
 		tsk_size_t consumerWidth;
 		tsk_size_t consumerHeight;
 
+		tsk_size_t xsize;
+
 		struct tdav_converter_video_s* toYUV420;
 		struct tdav_converter_video_s* fromYUV420;
 	} conv;

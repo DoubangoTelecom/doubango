@@ -494,21 +494,17 @@ static tsk_object_t* tnet_stun_attribute_mapped_addr_ctor(tsk_object_t * self, v
 			attribute->port = tnet_ntohs_2(payloadPtr);
 			payloadPtr+=2;
 
-			if(attribute->family == stun_ipv4){
-				uint32_t addr = tnet_htonl_2(payloadPtr);
-				memcpy(attribute->address, &addr, 4);
-				payloadPtr+=4;
-			}
-
 			{	/*=== Compute IP address */
 				tsk_size_t addr_size = (attribute->family == stun_ipv6) ? 16 : (attribute->family == stun_ipv4 ? 4 : 0);
 				if(addr_size){	
 					tsk_size_t i;
-					uint32_t addr;
 
 					for(i=0; i<addr_size; i+=4){
-						addr = tnet_htonl_2(payloadPtr);
-						memcpy(&attribute->address[i], &addr, 4);
+						// ntohl() not needed : byte per byte to avoid endianness problem
+						attribute->address[i] = payloadPtr[0],
+							attribute->address[i+1] = payloadPtr[1],
+							attribute->address[i+2] = payloadPtr[2],
+							attribute->address[i+3] = payloadPtr[3];
 						payloadPtr+=4;
 					}
 				}

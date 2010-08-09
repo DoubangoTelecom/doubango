@@ -47,6 +47,7 @@ TMEDIA_BEGIN_DECLS
 #define TMEDIA_SESSION(self)		((tmedia_session_t*)(self))
 #define TMEDIA_SESSION_AUDIO(self)	((tmedia_session_audio_t*)(self))
 #define TMEDIA_SESSION_VIDEO(self)	((tmedia_session_video_t*)(self))
+#define TMEDIA_SESSION_MSRP(self)	((tmedia_session_msrp_t*)(self))
 
 /**Max number of plugins (session types) we can create */
 #define TMED_SESSION_MAX_PLUGINS			0x0F
@@ -69,6 +70,8 @@ typedef struct tmedia_session_s
 	tsk_bool_t prepared;
 	//! QoS
 	tmedia_qos_tline_t* qos;
+	//! bandwidth level
+	tmedia_bandwidth_level_t bl;
 
 	struct{
 		tsdp_header_M_t* lo;
@@ -128,7 +131,7 @@ tmedia_session_audio_t;
 TINYMEDIA_API int tmedia_session_audio_send_dtmf(tmedia_session_audio_t* self, uint8_t event);
 #define tmedia_session_audio_deinit(self) tmedia_session_deinit(TMEDIA_SESSION(self))
 #define tmedia_session_audio_create() tmedia_session_create(tmed_sess_type_audio)
-#define TMEDIA_DECLARE_SESSION_AUDIO tmedia_session_t __session_audio__
+#define TMEDIA_DECLARE_SESSION_AUDIO tmedia_session_audio_t __session_audio__
 
 /** Video Session */
 typedef struct tmedia_session_video_s
@@ -139,21 +142,30 @@ tmedia_session_video_t;
 #define tmedia_session_video_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmed_sess_type_video)
 #define tmedia_session_video_deinit(self) tmedia_session_deinit(TMEDIA_SESSION(self))
 #define tmedia_session_video_create() tmedia_session_create(tmed_sess_type_video)
-#define TMEDIA_DECLARE_SESSION_VIDEO tmedia_session_t __session_video__
+#define TMEDIA_DECLARE_SESSION_VIDEO tmedia_session_video_t __session_video__
 
 /** Msrp Session */
+struct tmedia_session_msrp_s;
+struct tmsrp_event_s;
+// use "struct tmsrp_event_s" instead of "tmsrp_event_t" to avoid linking aginst tinyMSRP
+typedef int (*tmedia_session_msrp_cb_f)(const struct tmsrp_event_s* event);
 typedef struct tmedia_session_msrp_s
 {
 	TMEDIA_DECLARE_SESSION;
 
-	int (* send_file) (struct tmedia_session_msrp_s*, const char* path, ...);
-	int (* send_message) (struct tmedia_session_msrp_s*, const void* data, tsk_size_t size, ...);
+	struct {
+		tmedia_session_msrp_cb_f func;
+		const void* data;
+	} callback;
+	
+	int (* send_file) (struct tmedia_session_msrp_s*, const char* path, va_list *app);
+	int (* send_message) (struct tmedia_session_msrp_s*, const void* data, tsk_size_t size, va_list *app);
 }
 tmedia_session_msrp_t;
 #define tmedia_session_msrp_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmed_sess_type_msrp)
 #define tmedia_session_msrp_deinit(self) tmedia_session_deinit(TMEDIA_SESSION(self))
 #define tmedia_session_msrp_create() tmedia_session_create(tmed_sess_type_msrp)
-#define TMEDIA_DECLARE_SESSION_MSRP tmedia_session_t __session_msrp__
+#define TMEDIA_DECLARE_SESSION_MSRP tmedia_session_msrp_t __session_msrp__
 
 /** Session manager */
 typedef struct tmedia_session_mgr_s
@@ -187,6 +199,9 @@ typedef struct tmedia_session_mgr_s
 		tmedia_qos_stype_t type;
 		tmedia_qos_strength_t strength;
 	} qos;
+	
+	//! bandwidth level
+	tmedia_bandwidth_level_t bl;
 
 	/* NAT Traversal context */
 	tnet_nat_context_handle_t* natt_ctx;
@@ -360,6 +375,9 @@ TINYMEDIA_API int tmedia_session_mgr_set_qos(tmedia_session_mgr_t* self, tmedia_
 TINYMEDIA_API tsk_bool_t tmedia_session_mgr_canresume(tmedia_session_mgr_t* self);
 TINYMEDIA_API tsk_bool_t tmedia_session_mgr_has_active_session(tmedia_session_mgr_t* self);
 TINYMEDIA_API int tmedia_session_mgr_send_dtmf(tmedia_session_mgr_t* self, uint8_t event);
+TINYMEDIA_API int tmedia_session_mgr_send_file(tmedia_session_mgr_t* self, const char* path, ...);
+TINYMEDIA_API int tmedia_session_mgr_set_msrp_cb(tmedia_session_mgr_t* self, const void* callback_data, tmedia_session_msrp_cb_f func);
+
 
 TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_session_mgr_def_t;
 

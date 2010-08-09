@@ -252,8 +252,13 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 									/* unset values */
 									self->media.timers.timeout = 0;
 									TSK_FREE(self->media.timers.refresher);
+									break;
 								}
-								break;
+							case mstype_set_msrp_cb:
+								{	/* (tmedia_session_msrp_cb_f)TMEDIA_SESSION_MSRP_CB_F */
+									self->media.msrp.callback = va_arg(*app, tmedia_session_msrp_cb_f);
+									break;
+								}
 							default:{
 								/* va_list will be unsafe => exit */
 								TSK_DEBUG_ERROR("%d NOT a valid MEDIA pname", mscurr);

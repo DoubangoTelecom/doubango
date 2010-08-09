@@ -61,7 +61,7 @@ int tdav_codec_h264_parse_profile(const char* profile_level_id, profile_idc_t *p
 	uint32_t value;
 
 	if(tsk_strlen(profile_level_id) != 6){
-		TSK_DEBUG_ERROR("[%s] is an invalid profile-level-id");
+		TSK_DEBUG_ERROR("I say [%s] is an invalid profile-level-id", profile_level_id);
 		return -1;
 	}
 

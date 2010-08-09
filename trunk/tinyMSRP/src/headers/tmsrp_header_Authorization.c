@@ -44,11 +44,11 @@ tmsrp_header_Authorization_t* tmsrp_header_Authorization_create()
 	return tsk_object_new(tmsrp_header_Authorization_def_t);
 }
 
-int tmsrp_header_Authorization_tostring(const void* header, tsk_buffer_t* output)
+int tmsrp_header_Authorization_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
 	if(header)
 	{
-		const tmsrp_header_Authorization_t *Authorization = header;
+		const tmsrp_header_Authorization_t *Authorization = (const tmsrp_header_Authorization_t *)header;
 		if(Authorization && Authorization->scheme)
 		{
 			return tsk_buffer_append_2(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 

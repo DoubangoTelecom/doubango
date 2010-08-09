@@ -29,6 +29,8 @@
  */
 #include "tinymedia/tmedia_params.h"
 
+#include "tinymedia/tmedia_session.h"
+
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
@@ -77,6 +79,44 @@ tmedia_param_t* tmedia_param_create(tmedia_param_access_type_t access_type,
 		TSK_DEBUG_ERROR("Failed to create media parameter");
 	}
 	return param;
+}
+
+tmedia_params_L_t* tmedia_params_create_2(va_list *app)
+{
+	tmedia_session_param_type_t curr;
+	tmedia_params_L_t* params;
+
+	if(!app){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	params = tmedia_params_create();
+
+	while((curr = va_arg(*app, tmedia_session_param_type_t)) != tmedia_sptype_null){
+		switch(curr){
+			case tmedia_sptype_set:
+				{	/* (tmedia_type_t)MEDIA_TYPE_ENUM, (tmedia_param_plugin_type_t)PLUGIN_TYPE_ENUM, (tmedia_param_value_type_t)VALUE_TYPE_ENUM \
+						(const char*)KEY_STR, (void*)&VALUE */
+					/* IMPORTANT: do not pass va_arg() directly into the function */
+					tmedia_type_t media_type = va_arg(*app, tmedia_type_t);
+					tmedia_param_plugin_type_t plugin_type = va_arg(*app, tmedia_param_plugin_type_t);
+					tmedia_param_value_type_t value_type = va_arg(*app, tmedia_param_value_type_t);
+					const char* key = va_arg(*app, const char*);
+					void* value = va_arg(*app, void*);
+					tmedia_params_add_param(&params, tmedia_pat_set, 
+						media_type, plugin_type, value_type, key, value);
+					break;
+				}
+			default:
+				{	/* va_list will be unsafe => exit */
+					TSK_DEBUG_ERROR("%d NOT a valid pname", curr);
+					break;
+				}
+		}/* switch */
+	}/* while */
+
+	return params;
 }
 
 int tmedia_params_add_param(tmedia_params_L_t **self, 

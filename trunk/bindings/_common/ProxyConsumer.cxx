@@ -276,7 +276,12 @@ twrap_consumer_proxy_video_t;
 int twrap_consumer_proxy_video_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
 	if(ProxyVideoConsumer::instance && codec){
+		/* default values */
 		self->video.chroma = ProxyVideoConsumer::instance->getChroma();
+		self->video.fps = TMEDIA_CODEC_VIDEO(codec)->fps;
+		self->video.width = TMEDIA_CODEC_VIDEO(codec)->width;
+		self->video.height = TMEDIA_CODEC_VIDEO(codec)->height;
+
 		ProxyVideoConsumer::instance->takeConsumer((twrap_consumer_proxy_video_t*)self);
 		ProxyVideoConsumer::instance->prepare(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, TMEDIA_CODEC_VIDEO(codec)->fps);
 	}

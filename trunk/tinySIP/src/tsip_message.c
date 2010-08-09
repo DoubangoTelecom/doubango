@@ -595,15 +595,12 @@ static tsk_object_t* tsip_message_ctor(tsk_object_t *self, va_list * app)
 static tsk_object_t* tsip_message_dtor(tsk_object_t *self)
 {
 	tsip_message_t *message = self;
-	if(message)
-	{
-		if(TSIP_MESSAGE_IS_REQUEST(message))
-		{
+	if(message){
+		if(TSIP_MESSAGE_IS_REQUEST(message)){
 			TSK_FREE(message->line.request.method);
 			TSK_OBJECT_SAFE_FREE(message->line.request.uri);
 		}
-		else if(TSIP_MESSAGE_IS_RESPONSE(message))
-		{
+		else if(TSIP_MESSAGE_IS_RESPONSE(message)){
 			TSK_FREE(message->line.response.reason_phrase);
 		}
 

@@ -255,6 +255,7 @@ tmedia_codec_t* tmedia_codec_create(const char* format)
 				/* initialize the newly created codec */
 				codec->dyn = plugin->dyn;
 				codec->plugin = plugin;
+				codec->bl = tmedia_bl_medium;
 				switch(plugin->type){
 					case tmedia_audio:
 						{	/* Audio codec */
