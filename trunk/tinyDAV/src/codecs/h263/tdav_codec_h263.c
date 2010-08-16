@@ -138,8 +138,8 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 	/*h263->encoder.context->mb_qmin =*/ h263->encoder.context->qmin = 4;
 	/*h263->encoder.context->mb_qmax =*/ h263->encoder.context->qmax = 31;
 	h263->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
-	h263->encoder.context->me_method = ME_EPZS;
-	h263->encoder.context->flags |=  CODEC_FLAG_INPUT_PRESERVED | CODEC_FLAG_PASS1;
+	//h263->encoder.context->me_method = ME_EPZS;
+	//h263->encoder.context->flags |=  CODEC_FLAG_INPUT_PRESERVED | CODEC_FLAG_PASS1;
 	
 	switch(self->bl){
 		case tmedia_bl_low:
