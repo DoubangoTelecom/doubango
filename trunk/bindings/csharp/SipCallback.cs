@@ -52,8 +52,8 @@ public class SipCallback : IDisposable {
     return ret;
   }
 
-  public virtual int OnCallEvent(CallEvent e) {
-    int ret = ((this.GetType() == typeof(SipCallback)) ? tinyWRAPPINVOKE.SipCallback_OnCallEvent(swigCPtr, CallEvent.getCPtr(e)) : tinyWRAPPINVOKE.SipCallback_OnCallEventSwigExplicitSipCallback(swigCPtr, CallEvent.getCPtr(e)));
+  public virtual int OnInviteEvent(InviteEvent e) {
+    int ret = ((this.GetType() == typeof(SipCallback)) ? tinyWRAPPINVOKE.SipCallback_OnInviteEvent(swigCPtr, InviteEvent.getCPtr(e)) : tinyWRAPPINVOKE.SipCallback_OnInviteEventSwigExplicitSipCallback(swigCPtr, InviteEvent.getCPtr(e)));
     return ret;
   }
 
@@ -87,8 +87,8 @@ public class SipCallback : IDisposable {
       swigDelegate0 = new SwigDelegateSipCallback_0(SwigDirectorOnDialogEvent);
     if (SwigDerivedClassHasMethod("OnStackEvent", swigMethodTypes1))
       swigDelegate1 = new SwigDelegateSipCallback_1(SwigDirectorOnStackEvent);
-    if (SwigDerivedClassHasMethod("OnCallEvent", swigMethodTypes2))
-      swigDelegate2 = new SwigDelegateSipCallback_2(SwigDirectorOnCallEvent);
+    if (SwigDerivedClassHasMethod("OnInviteEvent", swigMethodTypes2))
+      swigDelegate2 = new SwigDelegateSipCallback_2(SwigDirectorOnInviteEvent);
     if (SwigDerivedClassHasMethod("OnMessagingEvent", swigMethodTypes3))
       swigDelegate3 = new SwigDelegateSipCallback_3(SwigDirectorOnMessagingEvent);
     if (SwigDerivedClassHasMethod("OnOptionsEvent", swigMethodTypes4))
@@ -116,8 +116,8 @@ public class SipCallback : IDisposable {
     return OnStackEvent((e == IntPtr.Zero) ? null : new StackEvent(e, false));
   }
 
-  private int SwigDirectorOnCallEvent(IntPtr e) {
-    return OnCallEvent((e == IntPtr.Zero) ? null : new CallEvent(e, false));
+  private int SwigDirectorOnInviteEvent(IntPtr e) {
+    return OnInviteEvent((e == IntPtr.Zero) ? null : new InviteEvent(e, false));
   }
 
   private int SwigDirectorOnMessagingEvent(IntPtr e) {
@@ -160,7 +160,7 @@ public class SipCallback : IDisposable {
 
   private static Type[] swigMethodTypes0 = new Type[] { typeof(DialogEvent) };
   private static Type[] swigMethodTypes1 = new Type[] { typeof(StackEvent) };
-  private static Type[] swigMethodTypes2 = new Type[] { typeof(CallEvent) };
+  private static Type[] swigMethodTypes2 = new Type[] { typeof(InviteEvent) };
   private static Type[] swigMethodTypes3 = new Type[] { typeof(MessagingEvent) };
   private static Type[] swigMethodTypes4 = new Type[] { typeof(OptionsEvent) };
   private static Type[] swigMethodTypes5 = new Type[] { typeof(PublicationEvent) };

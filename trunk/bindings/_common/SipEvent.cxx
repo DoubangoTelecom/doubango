@@ -84,63 +84,80 @@ StackEvent::StackEvent(const tsip_event_t *_sipevent)
 StackEvent::~StackEvent(){ }
 
 
-/* ======================== CallEvent ========================*/
-CallEvent::CallEvent(const tsip_event_t *_sipevent)
+/* ======================== InviteEvent ========================*/
+InviteEvent::InviteEvent(const tsip_event_t *_sipevent)
 :SipEvent(_sipevent)
 {
 }
 
-CallEvent::~CallEvent()
+InviteEvent::~InviteEvent()
 {
 }
 
-tsip_invite_event_type_t CallEvent::getType() const
+SipStack* InviteEvent::getStack()const
+{
+	const tsip_stack_handle_t* stack_handle = tsip_ssession_get_stack(sipevent->ss);
+	const void* userdata;
+	if(stack_handle && (userdata = tsip_stack_get_userdata(stack_handle))){
+		return dyn_cast<SipStack*>((SipStack*)userdata);
+	}
+	return tsk_null;
+}
+
+tsip_invite_event_type_t InviteEvent::getType() const
 {
 	return TSIP_INVITE_EVENT(this->sipevent)->type;
 }
 
-twrap_media_type_t CallEvent::getMediaType()
+twrap_media_type_t InviteEvent::getMediaType()
 {
+	// Ignore Mixed session (both audio/video and MSRP) as specified by GSMA RCS.
 	if(this->sipevent && this->sipevent->ss){
-		switch(tsip_ssession_get_mediatype(this->sipevent->ss)){
-			case tmedia_audio:
-				return twrap_media_audio;
-			case tmedia_video:
-				return twrap_media_video;
-			case tmedia_audiovideo:
-				return twrap_media_audiovideo;
+		tmedia_type_t type = tsip_ssession_get_mediatype(this->sipevent->ss);
+		if(type & tmedia_msrp){
+			return twrap_media_msrp;
+		}
+		else{
+			switch(type){
+				case tmedia_audio:
+					return twrap_media_audio;
+				case tmedia_video:
+					return twrap_media_video;
+				case tmedia_audiovideo:
+					return twrap_media_audiovideo;
+			}
 		}
 	}
 	return twrap_media_none;
 }
 
-const CallSession* CallEvent::getSession() const
+const InviteSession* InviteEvent::getSession() const
 {
-	return dyn_cast<const CallSession*>(this->getBaseSession());
+	return dyn_cast<const InviteSession*>(this->getBaseSession());
 }
 
-CallSession* CallEvent::takeSessionOwnership() const
+CallSession* InviteEvent::takeCallSessionOwnership() const
 {
-	if(!this->sipevent || !this->sipevent->ss){
-		return tsk_null;
-	}
-
-	if(tsip_ssession_have_ownership(this->sipevent->ss)){
-		// already have ownership
-		return tsk_null;
-	}
-	else{
-		const tsip_stack_handle_t* stack_handle = tsip_ssession_get_stack(sipevent->ss);
-		const void* userdata;
-		if(stack_handle && (userdata = tsip_stack_get_userdata(stack_handle))){
-			SipStack* stack = dyn_cast<SipStack*>((SipStack*)userdata);
-			if(stack){
-				/* The constructor will call take_ownerhip() */
-				return new CallSession(stack, this->sipevent->ss);
-			}
+	if(this->sipevent && this->sipevent->ss && !tsip_ssession_have_ownership(this->sipevent->ss)){
+		SipStack* stack = this->getStack();
+		if(stack){
+			/* The constructor will call take_ownerhip() */
+			return new CallSession(stack, this->sipevent->ss);
 		}
-		return tsk_null;
 	}
+	return tsk_null;
+}
+
+MsrpSession* InviteEvent::takeMsrpSessionOwnership() const
+{
+	if(this->sipevent && this->sipevent->ss && !tsip_ssession_have_ownership(this->sipevent->ss)){
+		SipStack* stack = this->getStack();
+		if(stack){
+			/* The constructor will call take_ownerhip() */
+			return new MsrpSession(stack, this->sipevent->ss);
+		}
+	}
+	return tsk_null;
 }
 
 /* ======================== MessagingEvent ========================*/

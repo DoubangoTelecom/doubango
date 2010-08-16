@@ -24,6 +24,22 @@
 
 #include "tinysip.h"
 
+class SdpMessage
+{
+public:
+	SdpMessage();
+#if !defined(SWIG)
+	SdpMessage(tsdp_message_t *sdpmessage);
+#endif
+	virtual ~SdpMessage();
+
+	char* getSdpHeaderValue(const char* media, char name, unsigned index = 0);
+	char* getSdpHeaderAValue(const char* media, const char* attributeName);
+
+private:
+	tsdp_message_t *sdpmessage;
+};
+
 class SipMessage
 {
 public:
@@ -33,17 +49,18 @@ public:
 #endif
 	virtual ~SipMessage();
 	
-	//%newobject getHeaderValueAt;
 	char* getSipHeaderValue(const char* name, unsigned index = 0);
 	char* getSipHeaderParamValue(const char* name, const char* param, unsigned index = 0);
 	unsigned getSipContentLength();
 	unsigned getSipContent(void* output, unsigned maxsize);
+	const SdpMessage* getSdpMessage();
 
 private:
 	const tsip_header_t* getSipHeader(const char* name, unsigned index = 0);
 
 private:
 	tsip_message_t *sipmessage;
+	SdpMessage *sdpmessage;
 };
 
 #endif /* TINYWRAP_SIPMESSAGE_H */

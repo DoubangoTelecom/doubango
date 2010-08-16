@@ -117,7 +117,7 @@ public:
     virtual ~SwigDirector_SipCallback();
     virtual int OnDialogEvent(DialogEvent const *e);
     virtual int OnStackEvent(StackEvent const *e);
-    virtual int OnCallEvent(CallEvent const *e);
+    virtual int OnInviteEvent(InviteEvent const *e);
     virtual int OnMessagingEvent(MessagingEvent const *e);
     virtual int OnOptionsEvent(OptionsEvent const *e);
     virtual int OnPublicationEvent(PublicationEvent const *e);
@@ -132,12 +132,12 @@ public:
     typedef int (SWIGSTDCALL* SWIG_Callback5_t)(void *);
     typedef int (SWIGSTDCALL* SWIG_Callback6_t)(void *);
     typedef int (SWIGSTDCALL* SWIG_Callback7_t)(void *);
-    void swig_connect_director(SWIG_Callback0_t callbackOnDialogEvent, SWIG_Callback1_t callbackOnStackEvent, SWIG_Callback2_t callbackOnCallEvent, SWIG_Callback3_t callbackOnMessagingEvent, SWIG_Callback4_t callbackOnOptionsEvent, SWIG_Callback5_t callbackOnPublicationEvent, SWIG_Callback6_t callbackOnRegistrationEvent, SWIG_Callback7_t callbackOnSubscriptionEvent);
+    void swig_connect_director(SWIG_Callback0_t callbackOnDialogEvent, SWIG_Callback1_t callbackOnStackEvent, SWIG_Callback2_t callbackOnInviteEvent, SWIG_Callback3_t callbackOnMessagingEvent, SWIG_Callback4_t callbackOnOptionsEvent, SWIG_Callback5_t callbackOnPublicationEvent, SWIG_Callback6_t callbackOnRegistrationEvent, SWIG_Callback7_t callbackOnSubscriptionEvent);
 
 private:
     SWIG_Callback0_t swig_callbackOnDialogEvent;
     SWIG_Callback1_t swig_callbackOnStackEvent;
-    SWIG_Callback2_t swig_callbackOnCallEvent;
+    SWIG_Callback2_t swig_callbackOnInviteEvent;
     SWIG_Callback3_t swig_callbackOnMessagingEvent;
     SWIG_Callback4_t swig_callbackOnOptionsEvent;
     SWIG_Callback5_t swig_callbackOnPublicationEvent;

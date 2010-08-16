@@ -21,12 +21,82 @@
 */
 #include "SipMessage.h"
 
+
+SdpMessage::SdpMessage()
+:sdpmessage(tsk_null)
+{
+}
+
+SdpMessage::SdpMessage(tsdp_message_t *_sdpmessage)
+{
+	this->sdpmessage = (tsdp_message_t *)tsk_object_ref(_sdpmessage);
+}
+
+SdpMessage::~SdpMessage()
+{
+	TSK_OBJECT_SAFE_FREE(this->sdpmessage);
+}
+
+char* SdpMessage::getSdpHeaderValue(const char* media, char name, unsigned index /*= 0*/)
+{
+	const tsdp_header_M_t* M;
+
+	if((M = (const tsdp_header_M_t*)tsdp_message_get_header(this->sdpmessage, tsdp_htype_M))){
+		tsdp_header_type_t type = tsdp_htype_Dummy;
+		const tsdp_header_t* header;
+		switch(name){
+			case 'a': type = tsdp_htype_A; break;
+			case 'b': type = tsdp_htype_B; break;
+			case 'c': type = tsdp_htype_C; break;
+			case 'e': type = tsdp_htype_E; break;
+			case 'i': type = tsdp_htype_I; break;
+			case 'k': type = tsdp_htype_K; break;
+			case 'm': type = tsdp_htype_M; break;
+			case 'o': type = tsdp_htype_O; break;
+
+
+			case 'p': type = tsdp_htype_P; break;
+			case 'r': type = tsdp_htype_R; break;
+			case 's': type = tsdp_htype_S; break;
+			case 't': type = tsdp_htype_T; break;
+			case 'u': type = tsdp_htype_U; break;
+			case 'v': type = tsdp_htype_V; break;
+			case 'z': type = tsdp_htype_Z; break;
+		}
+
+		if((header = tsdp_message_get_headerAt(this->sdpmessage, type, index))){
+			return tsdp_header_tostring(header);
+		}
+	}
+		
+	return tsk_null;
+}
+
+char* SdpMessage::getSdpHeaderAValue(const char* media, const char* attributeName)
+{
+	const tsdp_header_M_t* M;
+	tsk_size_t i;
+
+	for(i = 0; (M = (const tsdp_header_M_t*)tsdp_message_get_headerAt(this->sdpmessage, tsdp_htype_M, i)); i++){
+		if(tsk_striequals(M->media, media)){
+			const tsdp_header_A_t* A;
+			if((A = tsdp_header_M_findA(M, attributeName))){
+				return tsk_strdup(A->value);
+			}
+		}
+	}
+	
+	return tsk_null;
+}
+
+
 SipMessage::SipMessage()
-:sipmessage(tsk_null)
+:sipmessage(tsk_null), sdpmessage(tsk_null)
 { 
 }
 
 SipMessage::SipMessage(tsip_message_t *_sipmessage)
+: sdpmessage(tsk_null)
 {
 	this->sipmessage = (tsip_message_t *)tsk_object_ref(_sipmessage);
 }
@@ -34,6 +104,9 @@ SipMessage::SipMessage(tsip_message_t *_sipmessage)
 SipMessage::~SipMessage()
 {
 	TSK_OBJECT_SAFE_FREE(this->sipmessage);
+	if(this->sdpmessage){
+		delete this->sdpmessage;
+	}
 }
 
 const tsip_header_t* SipMessage::getSipHeader(const char* name, unsigned index /* =0 */)
@@ -169,4 +242,17 @@ unsigned SipMessage::getSipContent(void* output, unsigned maxsize)
 		memcpy(output, this->sipmessage->Content->data, retsize);
 	}
 	return retsize;
+}
+
+const SdpMessage* SipMessage::getSdpMessage()
+{
+	if(!this->sdpmessage && TSIP_MESSAGE_HAS_CONTENT(this->sipmessage)){
+		tsdp_message_t* sdp = tsdp_message_parse(this->sipmessage->Content->data, this->sipmessage->Content->size);
+		if(sdp){
+			this->sdpmessage = new SdpMessage(sdp);
+			TSK_OBJECT_SAFE_FREE(sdp);
+		}
+	}
+	
+	return this->sdpmessage;
 }

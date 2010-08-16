@@ -77,9 +77,10 @@ typedef struct tdav_session_msrp_s
 
 	char* accept_types;
 	char* accept_w_types;
+	uint64_t chunck_duration;
 
 	struct {
-		char* path;
+		char* path; //full-path
 		char* selector;
 		char* disposition;
 		char* date;
@@ -89,6 +90,8 @@ typedef struct tdav_session_msrp_s
 	} file;
 
 	unsigned fresh_conn:1;
+	unsigned offerer:1;
+	unsigned send_bodiless:1;
 }
 tdav_session_msrp_t;
 

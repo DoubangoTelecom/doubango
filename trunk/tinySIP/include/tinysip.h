@@ -39,6 +39,9 @@
 /* === tinyMEDIA === */
 #include "tinymedia.h"
 
+/* === tinySDP === */
+#include "tinysdp.h"
+
 /* === tinySIP === */
 #include "tsip.h"
 

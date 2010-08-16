@@ -30,9 +30,10 @@
  */
 #include "tinydav/msrp/tdav_session_msrp.h"
 
-#define TDAV_MSRP_CONNECT_TIMEOUT	1500
+#define TDAV_MSRP_CONNECT_TIMEOUT	2000
 
 static void send_pending_file(tdav_session_msrp_t *session);
+static void send_bodiless(tdav_session_msrp_t *msrp);
 
 /*
 	* http://tools.ietf.org/html/draft-ietf-simple-msrp-acm-09
@@ -43,7 +44,7 @@ static void send_pending_file(tdav_session_msrp_t *session);
 int tdav_msrp_event_proxy_cb(tmsrp_event_t* _event/*!Not the owner of the object*/)
 {
 	tdav_session_msrp_t* msrp;
-	int ret;	
+	int ret = 0;	
 
 	if(!_event || !_event->callback_data){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -63,9 +64,17 @@ int tdav_msrp_event_proxy_cb(tmsrp_event_t* _event/*!Not the owner of the object
 int tdav_transport_layer_stream_cb(const tnet_transport_event_t* e)
 {
 	const tdav_session_msrp_t *session = e->callback_data;
-	tsk_buffer_t* buffer = tsk_buffer_create_null();
 	tmsrp_receiver_t* receiver;
 	int ret = -1;
+
+#define TMSRP_ALERT_USER(type) \
+	{ \
+		tdav_session_msrp_t *msrp = tsk_object_ref((void*)session); \
+		tmsrp_event_t* _event = tmsrp_event_create(msrp, tsk_false, type, tsk_null); \
+		tdav_msrp_event_proxy_cb(_event); \
+		TSK_OBJECT_SAFE_FREE(_event); \
+		tsk_object_unref(msrp); \
+	}
 
 	switch(e->type){
 		case event_data: {
@@ -73,26 +82,52 @@ int tdav_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			}
 		case event_accepted:
 			if(!session->connectedFD){
-				/* We are passive */
 				tdav_session_msrp_t *msrp = tsk_object_ref((void*)session);
+				/* We are passive ==> update connection info */
 				msrp->connectedFD = e->fd;
 				tmsrp_sender_set_fd(msrp->sender, msrp->connectedFD);
 				tmsrp_receiver_set_fd(msrp->receiver, msrp->connectedFD);
 				msrp->fresh_conn = tsk_true;
+				/* Send Bodiless request */
+				if(msrp->send_bodiless){
+					send_bodiless(msrp);
+					msrp->send_bodiless = tsk_false;
+				}
+				/* Alert user */
+				TMSRP_ALERT_USER(tmsrp_event_type_connected);
+
 				tsk_object_unref(msrp);
 			}
-			return 0;
+			break;
 		case event_closed:
+			if(e->fd == session->connectedFD){
+				TSK_DEBUG_INFO("MSRP Socket closed");
+				TMSRP_ALERT_USER(tmsrp_event_type_disconnected);
+			}
 			return 0;
+
 		case event_connected:
-			((tdav_session_msrp_t *)session)->fresh_conn = tsk_true;
-			return 0;
+			{
+				tdav_session_msrp_t *msrp = tsk_object_ref((void*)session);
+				if(e->fd == msrp->connectedFD){
+					msrp->fresh_conn = tsk_true;
+					/* Send Bodiless request */
+					if(msrp->send_bodiless){
+						send_bodiless(msrp);
+						msrp->send_bodiless = tsk_false;
+					}
+					/* Alert user */
+					TMSRP_ALERT_USER(tmsrp_event_type_connected);
+				}
+				tsk_object_unref(msrp);
+			}
+			break;
 		default:{
 				return 0;
 			}
 	}
 
-	if((receiver = tsk_object_ref((void*)session->receiver))){
+	if(e->data && (receiver = tsk_object_ref((void*)session->receiver))){
 		ret = tmsrp_receiver_recv(receiver, e->data, e->size);
 		tsk_object_unref(receiver);
 	}
@@ -100,7 +135,9 @@ int tdav_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	if(session->fresh_conn){
 		tdav_session_msrp_t *msrp = tsk_object_ref((void*)session);
 		/* send pending file - and data?*/
-		send_pending_file(msrp);
+		if(session->offerer){
+			send_pending_file(msrp);
+		}
 		msrp->fresh_conn = tsk_false;
 		tsk_object_unref(msrp);
 	}
@@ -108,10 +145,27 @@ int tdav_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	return ret;
 }
 
-static void send_pending_file(tdav_session_msrp_t *session){
-	if(session && session->file.path && !session->file.sent){
-		session->file.sent = tsk_true;
-		tsmrp_sender_send_file(session->sender, session->file.path);
+static void send_pending_file(tdav_session_msrp_t *msrp){
+	if(msrp && msrp->file.path && !msrp->file.sent){
+		msrp->file.sent = tsk_true;
+		tsmrp_sender_send_file(msrp->sender, msrp->file.path);
+	}
+}
+
+static void send_bodiless(tdav_session_msrp_t *msrp){
+	tmsrp_request_t* BODILESS;
+	if(msrp->config->To_Path && msrp->config->From_Path){
+		if((BODILESS = tmsrp_create_bodiless(msrp->config->To_Path->uri, msrp->config->From_Path->uri))){
+			char* str;
+			if((str = tmsrp_message_tostring(BODILESS))){
+				if(!tnet_sockfd_send(msrp->connectedFD, str, tsk_strlen(str), 0)){
+					TSK_DEBUG_WARN("Failed to send bodiless request.");
+				}
+				TSK_FREE(str);
+			}
+
+			TSK_OBJECT_SAFE_FREE(BODILESS);
+		}
 	}
 }
 
@@ -180,7 +234,23 @@ static int populate_lo(tdav_session_msrp_t* self, tsk_bool_t initial)
 				tsk_null);
 		}
 
-		/* File Transfer */
+		/*=== File Transfer ===*/
+		/* Compute default 'file-selector' */
+		if(!self->file.selector && !TMEDIA_SESSION(self)->M.ro){
+			int index = tsk_strLastIndexOf(self->file.path, tsk_strlen(self->file.path), "\\");
+			if(index == -1){
+				index = tsk_strLastIndexOf(self->file.path, tsk_strlen(self->file.path), "/");
+			}
+			index++;
+			tsk_sprintf(&self->file.selector, "name:\"%s\" type:application/octet-stream", (self->file.path + index));
+		}
+		/* Compute default 'file-transfer-id' */
+		if(!self->file.transfer_id && !TMEDIA_SESSION(self)->M.ro){
+			tsk_istr_t rand_string;
+			tsk_strrandom(&rand_string);
+			self->file.transfer_id = tsk_strdup(rand_string);
+		}
+
 		if(self->file.selector){
 			/* a=file-selector:name:"test.pcap" type:application/octet-stream size:11376 hash:sha-1:8D:55:24:2B:F4:F9:9B:A2:54:A3:5B:91:00:15:9E:A3:D4:48:D7:DF */
 			tsdp_header_M_add_headers(TMEDIA_SESSION(self)->M.lo,
@@ -190,7 +260,7 @@ static int populate_lo(tdav_session_msrp_t* self, tsk_bool_t initial)
 		if(self->file.transfer_id){
 			/* a=file-transfer-id:vscxggbwkfnqduxwfnfozvsrtkjprepg */
 			tsdp_header_M_add_headers(TMEDIA_SESSION(self)->M.lo,
-				TSDP_HEADER_A_VA_ARGS("file-transfer-id", self->file.disposition),
+				TSDP_HEADER_A_VA_ARGS("file-transfer-id", self->file.transfer_id),
 				tsk_null);
 		}
 		if(self->file.disposition){
@@ -260,15 +330,6 @@ int tdav_session_msrp_set(tmedia_session_t* self, const tmedia_param_t* param)
 		/* File Transfer */
 		else if(tsk_striequals(param->key, "file-path") && !tsk_strnullORempty((const char*)param->value)){
 			tsk_strupdate(&msrp->file.path, param->value);
-			/* Compute default 'file-selector', will be updated when the user provides his own selector */
-			if(!msrp->file.selector){
-				int index = tsk_strLastIndexOf(msrp->file.path, tsk_strlen(msrp->file.path), "\\");
-				if(index == -1){
-					index = tsk_strLastIndexOf(msrp->file.path, tsk_strlen(msrp->file.path), "/");
-				}
-				index++;
-				tsk_sprintf(&msrp->file.selector, "name:\"%s\" type:application/octet-stream", (msrp->file.path + index));
-			}
 		}
 		else if(tsk_striequals(param->key, "file-selector")){
 			tsk_strupdate(&msrp->file.selector, param->value);
@@ -282,11 +343,22 @@ int tdav_session_msrp_set(tmedia_session_t* self, const tmedia_param_t* param)
 		else if(tsk_striequals(param->key, "file-icon")){
 			tsk_strupdate(&msrp->file.icon, param->value);
 		}
+		else if(tsk_striequals(param->key, "file-transfer-id")){
+			tsk_strupdate(&msrp->file.transfer_id, param->value);
+		}
 	}
 	else if(param->value_type == tmedia_pvt_pobject){
 		if(tsk_striequals(param->key, "natt-ctx")){
 			TSK_OBJECT_SAFE_FREE(msrp->natt_ctx);
 			msrp->natt_ctx = tsk_object_ref(param->value);
+		}
+	}
+	else if(param->value_type == tmedia_pvt_int64 || param->value_type == tmedia_pvt_int32){
+		if(tsk_striequals(param->key, "chunck-duration")){
+			msrp->chunck_duration = TSK_TO_UINT32((uint8_t*)param->value);
+			if(msrp->sender){
+				msrp->sender->chunck_duration = msrp->chunck_duration;
+			}
 		}
 	}
 
@@ -338,7 +410,6 @@ int tdav_session_msrp_prepare(tmedia_session_t* self)
 int tdav_session_msrp_start(tmedia_session_t* self)
 {
 	tdav_session_msrp_t* msrp;
-	tsk_bool_t send_bodiless = tsk_false;
 	int ret;
 
 	TSK_DEBUG_INFO("tdav_session_msrp_start");
@@ -362,26 +433,28 @@ int tdav_session_msrp_start(tmedia_session_t* self)
 				//
 				//	ACTIVE
 				//
+				TSK_DEBUG_INFO("connectto(%s:%d)", msrp->remote_ip, msrp->remote_port);
 				if((msrp->connectedFD = tnet_transport_connectto_2(msrp->transport, msrp->remote_ip, msrp->remote_port)) == TNET_INVALID_FD){
 					TSK_DEBUG_ERROR("Failed to connect to the remote party");
 					ret = -2;
 					goto bail;
 				}
-				else{						
-						if((ret = tnet_sockfd_waitUntilWritable(msrp->connectedFD, TDAV_MSRP_CONNECT_TIMEOUT))){
-							TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TDAV_MSRP_CONNECT_TIMEOUT);
-							goto bail;
-						}
-						/*	draft-denis-simple-msrp-comedia-02 - 4.2.3. Setting up the connection
-							Once the TCP session is established, and if the answerer was the
-							active connection endpoint, it MUST send an MSRP request.  In
-							particular, if it has no pending data to send, it MUST send an empty
-							MSRP SEND request.  That is necessary for the other endpoint to
-							authenticate this TCP session.
+				else{
+					//TSK_DEBUG_INFO("Msrp connected FD=%d", msrp->connectedFD);
+					//if((ret = tnet_sockfd_waitUntilWritable(msrp->connectedFD, TDAV_MSRP_CONNECT_TIMEOUT)) && msrp->offerer){
+					//	TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected to (%s:%d).", TDAV_MSRP_CONNECT_TIMEOUT, msrp->remote_ip, msrp->remote_port);
+					//	goto bail;
+					//}
+					/*	draft-denis-simple-msrp-comedia-02 - 4.2.3. Setting up the connection
+						Once the TCP session is established, and if the answerer was the
+						active connection endpoint, it MUST send an MSRP request.  In
+						particular, if it has no pending data to send, it MUST send an empty
+						MSRP SEND request.  That is necessary for the other endpoint to
+						authenticate this TCP session.
 
-							...RFC 4975 - 7.1
-						*/
-						send_bodiless = tsk_true;
+						...RFC 4975 - 7.1
+					*/
+					msrp->send_bodiless = tsk_true;
 				}
 				break;
 			}
@@ -408,26 +481,10 @@ int tdav_session_msrp_start(tmedia_session_t* self)
 	// create and start the sender
 	if(!msrp->sender){
 		if((msrp->sender = tmsrp_sender_create(msrp->config, msrp->connectedFD))){
+			msrp->sender->chunck_duration = msrp->chunck_duration;
 			if((ret = tmsrp_sender_start(msrp->sender))){
 				TSK_DEBUG_ERROR("Failed to start the MSRP sender");
 				goto bail;
-			}
-			else if(send_bodiless){
-				// ... send bodiless message
-				tmsrp_request_t* BODILESS;
-				if(msrp->config->To_Path && msrp->config->From_Path){
-					if((BODILESS = tmsrp_create_bodiless(msrp->config->To_Path->uri, msrp->config->From_Path->uri))){
-						char* str;
-						if((str = tmsrp_message_tostring(BODILESS))){
-							if(!tnet_sockfd_send(msrp->connectedFD, str, strlen(str), 0)){
-								TSK_DEBUG_WARN("Failed to send bodiless request.");
-							}
-							TSK_FREE(str);
-						}
-
-						TSK_OBJECT_SAFE_FREE(BODILESS);
-					}
-				}
 			}
 		}
 	}
@@ -555,10 +612,10 @@ const tsdp_header_M_t* tdav_session_msrp_get_lo(tmedia_session_t* self)
 			if((A = tsdp_header_M_findA(self->M.ro, "setup"))){
 				tdav_msrp_setup_t setup = setup_from_string(A->value);
 				switch(setup){
-						case msrp_setup_actpass:
 						case msrp_setup_passive:
 							msrp->setup = msrp_setup_active;
 							break;
+						case msrp_setup_actpass:
 						case msrp_setup_active:
 							msrp->setup = msrp_setup_passive;
 							break;
@@ -568,12 +625,14 @@ const tsdp_header_M_t* tdav_session_msrp_get_lo(tmedia_session_t* self)
 						tsk_null
 					);
 			}
+			msrp->offerer = tsk_false;
 		}
-		else{ /* We are probably about to send INVITE */
+		else{ /* We are probably about to send initial INVITE */
 			tsdp_header_M_add_headers(self->M.lo,
 					TSDP_HEADER_A_VA_ARGS("connection", "new"),
 					tsk_null
 				);
+			msrp->offerer = tsk_true;
 		}		
 
 		/* Other SDP fields */
@@ -660,7 +719,7 @@ int tdav_session_msrp_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 	/* set remote port */
 	msrp->remote_port = m->port;
 
-	return -1;
+	return 0;
 }
 
 /* ============ Public functions ================= */

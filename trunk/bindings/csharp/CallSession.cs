@@ -10,7 +10,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-public class CallSession : SipSession {
+public class CallSession : InviteSession {
   private HandleRef swigCPtr;
 
   internal CallSession(IntPtr cPtr, bool cMemoryOwn) : base(tinyWRAPPINVOKE.CallSessionUpcast(cPtr), cMemoryOwn) {
@@ -85,16 +85,6 @@ public class CallSession : SipSession {
     return ret;
   }
 
-  public bool accept(ActionConfig config) {
-    bool ret = tinyWRAPPINVOKE.CallSession_accept__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
-    return ret;
-  }
-
-  public bool accept() {
-    bool ret = tinyWRAPPINVOKE.CallSession_accept__SWIG_1(swigCPtr);
-    return ret;
-  }
-
   public bool hold(ActionConfig config) {
     bool ret = tinyWRAPPINVOKE.CallSession_hold__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
     return ret;
@@ -117,26 +107,6 @@ public class CallSession : SipSession {
 
   public bool sendDTMF(int number) {
     bool ret = tinyWRAPPINVOKE.CallSession_sendDTMF(swigCPtr, number);
-    return ret;
-  }
-
-  public bool hangup(ActionConfig config) {
-    bool ret = tinyWRAPPINVOKE.CallSession_hangup__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
-    return ret;
-  }
-
-  public bool hangup() {
-    bool ret = tinyWRAPPINVOKE.CallSession_hangup__SWIG_1(swigCPtr);
-    return ret;
-  }
-
-  public bool reject(ActionConfig config) {
-    bool ret = tinyWRAPPINVOKE.CallSession_reject__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
-    return ret;
-  }
-
-  public bool reject() {
-    bool ret = tinyWRAPPINVOKE.CallSession_reject__SWIG_1(swigCPtr);
     return ret;
   }
 

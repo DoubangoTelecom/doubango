@@ -31,6 +31,8 @@
 
 #include "tinymsrp/headers/tmsrp_header_Dummy.h"
 
+#include "tsk_string.h"
+
 /** Gets the name of the MSRP header with a type equal to @a type. 
  * @param	type	The @a type of the header for which to retrieve the name. 
  *
@@ -74,7 +76,7 @@ const char* tmsrp_header_get_nameex(const tmsrp_header_t *self)
 }
 
 
-int tmsrp_header_tostring(const tmsrp_header_t *self, tsk_buffer_t *output)
+int tmsrp_header_serialize(const tmsrp_header_t *self, tsk_buffer_t *output)
 {
 	int ret = -1;
 	if(!self || !output){
@@ -92,5 +94,19 @@ int tmsrp_header_tostring(const tmsrp_header_t *self, tsk_buffer_t *output)
 	/* CRLF*/
 	ret = tsk_buffer_append(output, "\r\n", 2);
 
+	return ret;
+}
+
+char* tmsrp_header_tostring(const tmsrp_header_t *self)
+{
+	char* ret = tsk_null;
+	tsk_buffer_t* buffer;
+	if(self && self->tostring){
+		if((buffer = tsk_buffer_create_null())){
+			self->tostring(self, buffer);
+			ret = tsk_strndup(buffer->data, buffer->size);
+			TSK_OBJECT_SAFE_FREE(buffer);
+		}
+	}
 	return ret;
 }

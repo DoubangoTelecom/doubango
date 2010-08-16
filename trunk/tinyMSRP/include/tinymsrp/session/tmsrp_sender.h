@@ -48,6 +48,7 @@ typedef struct tmsrp_sender_s
 	tmsrp_datas_L_t* outgoingList;
 	tmsrp_config_t* config;
 	tnet_fd_t fd;
+	uint64_t chunck_duration;
 }
 tmsrp_sender_t;
 

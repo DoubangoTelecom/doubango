@@ -31,12 +31,13 @@
 
 #include "tsk_debug.h"
 
-tmsrp_event_t* tmsrp_event_create(const void* callback_data, tsk_bool_t outgoing, tmsrp_message_t* message)
+tmsrp_event_t* tmsrp_event_create(const void* callback_data, tsk_bool_t outgoing, tmsrp_event_type_t type, tmsrp_message_t* message)
 {
 	tmsrp_event_t* _event;
 	if((_event = tsk_object_new(tmsrp_event_def_t))){
 		_event->callback_data = callback_data;
 		_event->outgoing = outgoing;
+		_event->type = type;
 		_event->message = tsk_object_ref(message);
 	}
 	else{

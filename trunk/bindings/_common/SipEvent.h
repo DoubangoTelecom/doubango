@@ -25,8 +25,12 @@
 #include "tinysip.h"
 #include "Common.h"
 
+class SipStack;
+
 class SipSession;
+class InviteSession;
 class CallSession;
+class MsrpSession;
 class MessagingSession;
 class OptionsSession;
 class PublicationSession;
@@ -83,20 +87,24 @@ public: /* Public API functions */
 
 
 
-/* ======================== CallEvent ========================*/
-class CallEvent: public SipEvent
+/* ======================== InviteEvent ========================*/
+class InviteEvent: public SipEvent
 {
 public:
 #if !defined(SWIG)
-	CallEvent(const tsip_event_t *sipevent);
+	InviteEvent(const tsip_event_t *sipevent);
 #endif
-	virtual ~CallEvent();
+	virtual ~InviteEvent();
 
 public: /* Public API functions */
 	tsip_invite_event_type_t getType() const;
 	twrap_media_type_t getMediaType();
-	const CallSession* getSession() const;
-	CallSession* takeSessionOwnership() const;
+	const InviteSession* getSession() const;
+	CallSession* takeCallSessionOwnership() const;
+	MsrpSession* takeMsrpSessionOwnership() const;
+
+private:
+	SipStack* getStack()const;
 };
 
 

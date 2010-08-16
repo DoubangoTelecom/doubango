@@ -40,7 +40,7 @@
 static void _tmsrp_receiver_alert_user(tmsrp_receiver_t* self, tsk_bool_t outgoing, tmsrp_message_t* message)
 {
 	if(self->callback.func){
-		tmsrp_event_t* _event = tmsrp_event_create(self->callback.data, outgoing, message);
+		tmsrp_event_t* _event = tmsrp_event_create(self->callback.data, outgoing, tmsrp_event_type_message, message);
 		self->callback.func(_event);
 		TSK_OBJECT_SAFE_FREE(_event);
 	}

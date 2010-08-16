@@ -331,6 +331,9 @@ namespace Swig {
 
 
 
+#include <stdint.h>		// Use the C99 official header
+
+
 #include "DDebug.h"
 
 
@@ -744,16 +747,16 @@ int SwigDirector_SipCallback::OnStackEvent(StackEvent const *e) {
   return c_result;
 }
 
-int SwigDirector_SipCallback::OnCallEvent(CallEvent const *e) {
+int SwigDirector_SipCallback::OnInviteEvent(InviteEvent const *e) {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   void * je = 0 ;
   
-  if (!swig_callbackOnCallEvent) {
-    return SipCallback::OnCallEvent(e);
+  if (!swig_callbackOnInviteEvent) {
+    return SipCallback::OnInviteEvent(e);
   } else {
     je = (void *) e; 
-    jresult = (int) swig_callbackOnCallEvent(je);
+    jresult = (int) swig_callbackOnInviteEvent(je);
     c_result = (int)jresult; 
   }
   return c_result;
@@ -834,10 +837,10 @@ int SwigDirector_SipCallback::OnSubscriptionEvent(SubscriptionEvent const *e) {
   return c_result;
 }
 
-void SwigDirector_SipCallback::swig_connect_director(SWIG_Callback0_t callbackOnDialogEvent, SWIG_Callback1_t callbackOnStackEvent, SWIG_Callback2_t callbackOnCallEvent, SWIG_Callback3_t callbackOnMessagingEvent, SWIG_Callback4_t callbackOnOptionsEvent, SWIG_Callback5_t callbackOnPublicationEvent, SWIG_Callback6_t callbackOnRegistrationEvent, SWIG_Callback7_t callbackOnSubscriptionEvent) {
+void SwigDirector_SipCallback::swig_connect_director(SWIG_Callback0_t callbackOnDialogEvent, SWIG_Callback1_t callbackOnStackEvent, SWIG_Callback2_t callbackOnInviteEvent, SWIG_Callback3_t callbackOnMessagingEvent, SWIG_Callback4_t callbackOnOptionsEvent, SWIG_Callback5_t callbackOnPublicationEvent, SWIG_Callback6_t callbackOnRegistrationEvent, SWIG_Callback7_t callbackOnSubscriptionEvent) {
   swig_callbackOnDialogEvent = callbackOnDialogEvent;
   swig_callbackOnStackEvent = callbackOnStackEvent;
-  swig_callbackOnCallEvent = callbackOnCallEvent;
+  swig_callbackOnInviteEvent = callbackOnInviteEvent;
   swig_callbackOnMessagingEvent = callbackOnMessagingEvent;
   swig_callbackOnOptionsEvent = callbackOnOptionsEvent;
   swig_callbackOnPublicationEvent = callbackOnPublicationEvent;
@@ -848,7 +851,7 @@ void SwigDirector_SipCallback::swig_connect_director(SWIG_Callback0_t callbackOn
 void SwigDirector_SipCallback::swig_init_callbacks() {
   swig_callbackOnDialogEvent = 0;
   swig_callbackOnStackEvent = 0;
-  swig_callbackOnCallEvent = 0;
+  swig_callbackOnInviteEvent = 0;
   swig_callbackOnMessagingEvent = 0;
   swig_callbackOnOptionsEvent = 0;
   swig_callbackOnPublicationEvent = 0;
@@ -1199,6 +1202,77 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_SipUri_getParamValue(void * jarg1, char * j
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_SdpMessage() {
+  void * jresult ;
+  SdpMessage *result = 0 ;
+  
+  result = (SdpMessage *)new SdpMessage();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_SdpMessage(void * jarg1) {
+  SdpMessage *arg1 = (SdpMessage *) 0 ;
+  
+  arg1 = (SdpMessage *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SdpMessage_getSdpHeaderValue__SWIG_0(void * jarg1, char * jarg2, char jarg3, unsigned int jarg4) {
+  char * jresult ;
+  SdpMessage *arg1 = (SdpMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char arg3 ;
+  unsigned int arg4 ;
+  char *result = 0 ;
+  
+  arg1 = (SdpMessage *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char)jarg3; 
+  arg4 = (unsigned int)jarg4; 
+  result = (char *)(arg1)->getSdpHeaderValue((char const *)arg2,arg3,arg4);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SdpMessage_getSdpHeaderValue__SWIG_1(void * jarg1, char * jarg2, char jarg3) {
+  char * jresult ;
+  SdpMessage *arg1 = (SdpMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char arg3 ;
+  char *result = 0 ;
+  
+  arg1 = (SdpMessage *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char)jarg3; 
+  result = (char *)(arg1)->getSdpHeaderValue((char const *)arg2,arg3);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SdpMessage_getSdpHeaderAValue(void * jarg1, char * jarg2, char * jarg3) {
+  char * jresult ;
+  SdpMessage *arg1 = (SdpMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SdpMessage *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (char *)(arg1)->getSdpHeaderAValue((char const *)arg2,(char const *)arg3);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_SipMessage() {
   void * jresult ;
   SipMessage *result = 0 ;
@@ -1313,6 +1387,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipMessage_getSipContent(void * jarg1
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_SipMessage_getSdpMessage(void * jarg1) {
+  void * jresult ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  SdpMessage *result = 0 ;
+  
+  arg1 = (SipMessage *)jarg1; 
+  result = (SdpMessage *)(arg1)->getSdpMessage();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_SipEvent(void * jarg1) {
   SipEvent *arg1 = (SipEvent *) 0 ;
   
@@ -1385,57 +1471,69 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_StackEvent(void * jarg1) {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_delete_CallEvent(void * jarg1) {
-  CallEvent *arg1 = (CallEvent *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_InviteEvent(void * jarg1) {
+  InviteEvent *arg1 = (InviteEvent *) 0 ;
   
-  arg1 = (CallEvent *)jarg1; 
+  arg1 = (InviteEvent *)jarg1; 
   delete arg1;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_CallEvent_getType(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_InviteEvent_getType(void * jarg1) {
   int jresult ;
-  CallEvent *arg1 = (CallEvent *) 0 ;
+  InviteEvent *arg1 = (InviteEvent *) 0 ;
   tsip_invite_event_type_t result;
   
-  arg1 = (CallEvent *)jarg1; 
-  result = (tsip_invite_event_type_t)((CallEvent const *)arg1)->getType();
+  arg1 = (InviteEvent *)jarg1; 
+  result = (tsip_invite_event_type_t)((InviteEvent const *)arg1)->getType();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_CallEvent_getMediaType(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_InviteEvent_getMediaType(void * jarg1) {
   int jresult ;
-  CallEvent *arg1 = (CallEvent *) 0 ;
+  InviteEvent *arg1 = (InviteEvent *) 0 ;
   twrap_media_type_t result;
   
-  arg1 = (CallEvent *)jarg1; 
+  arg1 = (InviteEvent *)jarg1; 
   result = (twrap_media_type_t)(arg1)->getMediaType();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_CallEvent_getSession(void * jarg1) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_InviteEvent_getSession(void * jarg1) {
   void * jresult ;
-  CallEvent *arg1 = (CallEvent *) 0 ;
-  CallSession *result = 0 ;
+  InviteEvent *arg1 = (InviteEvent *) 0 ;
+  InviteSession *result = 0 ;
   
-  arg1 = (CallEvent *)jarg1; 
-  result = (CallSession *)((CallEvent const *)arg1)->getSession();
+  arg1 = (InviteEvent *)jarg1; 
+  result = (InviteSession *)((InviteEvent const *)arg1)->getSession();
   jresult = (void *)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_CallEvent_takeSessionOwnership(void * jarg1) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_InviteEvent_takeCallSessionOwnership(void * jarg1) {
   void * jresult ;
-  CallEvent *arg1 = (CallEvent *) 0 ;
+  InviteEvent *arg1 = (InviteEvent *) 0 ;
   CallSession *result = 0 ;
   
-  arg1 = (CallEvent *)jarg1; 
-  result = (CallSession *)((CallEvent const *)arg1)->takeSessionOwnership();
+  arg1 = (InviteEvent *)jarg1; 
+  result = (CallSession *)((InviteEvent const *)arg1)->takeCallSessionOwnership();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_InviteEvent_takeMsrpSessionOwnership(void * jarg1) {
+  void * jresult ;
+  InviteEvent *arg1 = (InviteEvent *) 0 ;
+  MsrpSession *result = 0 ;
+  
+  arg1 = (InviteEvent *)jarg1; 
+  result = (MsrpSession *)((InviteEvent const *)arg1)->takeMsrpSessionOwnership();
   jresult = (void *)result; 
   return jresult;
 }
@@ -1813,6 +1911,104 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipSession_getId(void * jarg1) {
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_InviteSession(void * jarg1) {
+  void * jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  InviteSession *result = 0 ;
+  
+  arg1 = (SipStack *)jarg1; 
+  result = (InviteSession *)new InviteSession(arg1);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_InviteSession(void * jarg1) {
+  InviteSession *arg1 = (InviteSession *) 0 ;
+  
+  arg1 = (InviteSession *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_InviteSession_accept__SWIG_0(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  InviteSession *arg1 = (InviteSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (InviteSession *)jarg1; 
+  arg2 = (ActionConfig *)jarg2; 
+  result = (bool)(arg1)->accept(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_InviteSession_accept__SWIG_1(void * jarg1) {
+  unsigned int jresult ;
+  InviteSession *arg1 = (InviteSession *) 0 ;
+  bool result;
+  
+  arg1 = (InviteSession *)jarg1; 
+  result = (bool)(arg1)->accept();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_InviteSession_hangup__SWIG_0(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  InviteSession *arg1 = (InviteSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (InviteSession *)jarg1; 
+  arg2 = (ActionConfig *)jarg2; 
+  result = (bool)(arg1)->hangup(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_InviteSession_hangup__SWIG_1(void * jarg1) {
+  unsigned int jresult ;
+  InviteSession *arg1 = (InviteSession *) 0 ;
+  bool result;
+  
+  arg1 = (InviteSession *)jarg1; 
+  result = (bool)(arg1)->hangup();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_InviteSession_reject__SWIG_0(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  InviteSession *arg1 = (InviteSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (InviteSession *)jarg1; 
+  arg2 = (ActionConfig *)jarg2; 
+  result = (bool)(arg1)->reject(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_InviteSession_reject__SWIG_1(void * jarg1) {
+  unsigned int jresult ;
+  InviteSession *arg1 = (InviteSession *) 0 ;
+  bool result;
+  
+  arg1 = (InviteSession *)jarg1; 
+  result = (bool)(arg1)->reject();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_CallSession(void * jarg1) {
   void * jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -1969,32 +2165,6 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setQoS(void * jarg1, int 
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_accept__SWIG_0(void * jarg1, void * jarg2) {
-  unsigned int jresult ;
-  CallSession *arg1 = (CallSession *) 0 ;
-  ActionConfig *arg2 = (ActionConfig *) 0 ;
-  bool result;
-  
-  arg1 = (CallSession *)jarg1; 
-  arg2 = (ActionConfig *)jarg2; 
-  result = (bool)(arg1)->accept(arg2);
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_accept__SWIG_1(void * jarg1) {
-  unsigned int jresult ;
-  CallSession *arg1 = (CallSession *) 0 ;
-  bool result;
-  
-  arg1 = (CallSession *)jarg1; 
-  result = (bool)(arg1)->accept();
-  jresult = result; 
-  return jresult;
-}
-
-
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_hold__SWIG_0(void * jarg1, void * jarg2) {
   unsigned int jresult ;
   CallSession *arg1 = (CallSession *) 0 ;
@@ -2061,58 +2231,6 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_sendDTMF(void * jarg1, in
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_hangup__SWIG_0(void * jarg1, void * jarg2) {
-  unsigned int jresult ;
-  CallSession *arg1 = (CallSession *) 0 ;
-  ActionConfig *arg2 = (ActionConfig *) 0 ;
-  bool result;
-  
-  arg1 = (CallSession *)jarg1; 
-  arg2 = (ActionConfig *)jarg2; 
-  result = (bool)(arg1)->hangup(arg2);
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_hangup__SWIG_1(void * jarg1) {
-  unsigned int jresult ;
-  CallSession *arg1 = (CallSession *) 0 ;
-  bool result;
-  
-  arg1 = (CallSession *)jarg1; 
-  result = (bool)(arg1)->hangup();
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_reject__SWIG_0(void * jarg1, void * jarg2) {
-  unsigned int jresult ;
-  CallSession *arg1 = (CallSession *) 0 ;
-  ActionConfig *arg2 = (ActionConfig *) 0 ;
-  bool result;
-  
-  arg1 = (CallSession *)jarg1; 
-  arg2 = (ActionConfig *)jarg2; 
-  result = (bool)(arg1)->reject(arg2);
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_reject__SWIG_1(void * jarg1) {
-  unsigned int jresult ;
-  CallSession *arg1 = (CallSession *) 0 ;
-  bool result;
-  
-  arg1 = (CallSession *)jarg1; 
-  result = (bool)(arg1)->reject();
-  jresult = result; 
-  return jresult;
-}
-
-
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_MsrpSession(void * jarg1, void * jarg2) {
   void * jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -2149,7 +2267,7 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_setCallback(void * jarg1,
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_callMsrp(void * jarg1, char * jarg2, void * jarg3) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_callMsrp__SWIG_0(void * jarg1, char * jarg2, void * jarg3) {
   unsigned int jresult ;
   MsrpSession *arg1 = (MsrpSession *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -2165,7 +2283,21 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_callMsrp(void * jarg1, ch
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_sendLMessage(void * jarg1, void * jarg2) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_callMsrp__SWIG_1(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  MsrpSession *arg1 = (MsrpSession *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (MsrpSession *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->callMsrp((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_sendLMessage__SWIG_0(void * jarg1, void * jarg2) {
   unsigned int jresult ;
   MsrpSession *arg1 = (MsrpSession *) 0 ;
   ActionConfig *arg2 = (ActionConfig *) 0 ;
@@ -2179,7 +2311,19 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_sendLMessage(void * jarg1
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_sendFile(void * jarg1, void * jarg2) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_sendLMessage__SWIG_1(void * jarg1) {
+  unsigned int jresult ;
+  MsrpSession *arg1 = (MsrpSession *) 0 ;
+  bool result;
+  
+  arg1 = (MsrpSession *)jarg1; 
+  result = (bool)(arg1)->sendLMessage();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_sendFile__SWIG_0(void * jarg1, void * jarg2) {
   unsigned int jresult ;
   MsrpSession *arg1 = (MsrpSession *) 0 ;
   ActionConfig *arg2 = (ActionConfig *) 0 ;
@@ -2193,43 +2337,13 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_sendFile(void * jarg1, vo
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_accept(void * jarg1, void * jarg2) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_sendFile__SWIG_1(void * jarg1) {
   unsigned int jresult ;
   MsrpSession *arg1 = (MsrpSession *) 0 ;
-  ActionConfig *arg2 = (ActionConfig *) 0 ;
   bool result;
   
   arg1 = (MsrpSession *)jarg1; 
-  arg2 = (ActionConfig *)jarg2; 
-  result = (bool)(arg1)->accept(arg2);
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_hangup(void * jarg1, void * jarg2) {
-  unsigned int jresult ;
-  MsrpSession *arg1 = (MsrpSession *) 0 ;
-  ActionConfig *arg2 = (ActionConfig *) 0 ;
-  bool result;
-  
-  arg1 = (MsrpSession *)jarg1; 
-  arg2 = (ActionConfig *)jarg2; 
-  result = (bool)(arg1)->hangup(arg2);
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_reject(void * jarg1, void * jarg2) {
-  unsigned int jresult ;
-  MsrpSession *arg1 = (MsrpSession *) 0 ;
-  ActionConfig *arg2 = (ActionConfig *) 0 ;
-  bool result;
-  
-  arg1 = (MsrpSession *)jarg1; 
-  arg2 = (ActionConfig *)jarg2; 
-  result = (bool)(arg1)->reject(arg2);
+  result = (bool)(arg1)->sendFile();
   jresult = result; 
   return jresult;
 }
@@ -3289,29 +3403,29 @@ SWIGEXPORT int SWIGSTDCALL CSharp_SipCallback_OnStackEventSwigExplicitSipCallbac
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_SipCallback_OnCallEvent(void * jarg1, void * jarg2) {
+SWIGEXPORT int SWIGSTDCALL CSharp_SipCallback_OnInviteEvent(void * jarg1, void * jarg2) {
   int jresult ;
   SipCallback *arg1 = (SipCallback *) 0 ;
-  CallEvent *arg2 = (CallEvent *) 0 ;
+  InviteEvent *arg2 = (InviteEvent *) 0 ;
   int result;
   
   arg1 = (SipCallback *)jarg1; 
-  arg2 = (CallEvent *)jarg2; 
-  result = (int)(arg1)->OnCallEvent((CallEvent const *)arg2);
+  arg2 = (InviteEvent *)jarg2; 
+  result = (int)(arg1)->OnInviteEvent((InviteEvent const *)arg2);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_SipCallback_OnCallEventSwigExplicitSipCallback(void * jarg1, void * jarg2) {
+SWIGEXPORT int SWIGSTDCALL CSharp_SipCallback_OnInviteEventSwigExplicitSipCallback(void * jarg1, void * jarg2) {
   int jresult ;
   SipCallback *arg1 = (SipCallback *) 0 ;
-  CallEvent *arg2 = (CallEvent *) 0 ;
+  InviteEvent *arg2 = (InviteEvent *) 0 ;
   int result;
   
   arg1 = (SipCallback *)jarg1; 
-  arg2 = (CallEvent *)jarg2; 
-  result = (int)(arg1)->SipCallback::OnCallEvent((CallEvent const *)arg2);
+  arg2 = (InviteEvent *)jarg2; 
+  result = (int)(arg1)->SipCallback::OnInviteEvent((InviteEvent const *)arg2);
   jresult = result; 
   return jresult;
 }
@@ -4891,6 +5005,140 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_MsrpMessage(void * jarg1) {
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpMessage_isRequest(void * jarg1) {
+  unsigned int jresult ;
+  MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+  bool result;
+  
+  arg1 = (MsrpMessage *)jarg1; 
+  result = (bool)(arg1)->isRequest();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT short SWIGSTDCALL CSharp_MsrpMessage_getCode(void * jarg1) {
+  short jresult ;
+  MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+  short result;
+  
+  arg1 = (MsrpMessage *)jarg1; 
+  result = (short)(arg1)->getCode();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_MsrpMessage_getPhrase(void * jarg1) {
+  char * jresult ;
+  MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (MsrpMessage *)jarg1; 
+  result = (char *)(arg1)->getPhrase();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_MsrpMessage_getRequestType(void * jarg1) {
+  int jresult ;
+  MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+  tmsrp_request_type_t result;
+  
+  arg1 = (MsrpMessage *)jarg1; 
+  result = (tmsrp_request_type_t)(arg1)->getRequestType();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_MsrpMessage_getByteRange(void * jarg1, long long * jarg2, long long * jarg3, long long * jarg4) {
+  MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+  int64_t *arg2 = (int64_t *) 0 ;
+  int64_t *arg3 = (int64_t *) 0 ;
+  int64_t *arg4 = (int64_t *) 0 ;
+  
+  arg1 = (MsrpMessage *)jarg1; 
+  arg2 = (int64_t *)jarg2; 
+  arg3 = (int64_t *)jarg3; 
+  arg4 = (int64_t *)jarg4; 
+  (arg1)->getByteRange(arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpMessage_isLastChunck(void * jarg1) {
+  unsigned int jresult ;
+  MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+  bool result;
+  
+  arg1 = (MsrpMessage *)jarg1; 
+  result = (bool)(arg1)->isLastChunck();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_MsrpMessage_getMsrpHeaderValue(void * jarg1, char * jarg2) {
+  char * jresult ;
+  MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (MsrpMessage *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (char *)(arg1)->getMsrpHeaderValue((char const *)arg2);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_MsrpMessage_getMsrpHeaderParamValue(void * jarg1, char * jarg2, char * jarg3) {
+  char * jresult ;
+  MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (MsrpMessage *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (char *)(arg1)->getMsrpHeaderParamValue((char const *)arg2,(char const *)arg3);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpMessage_getMsrpContentLength(void * jarg1) {
+  unsigned int jresult ;
+  MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+  unsigned int result;
+  
+  arg1 = (MsrpMessage *)jarg1; 
+  result = (unsigned int)(arg1)->getMsrpContentLength();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpMessage_getMsrpContent(void * jarg1, void * jarg2, unsigned int jarg3) {
+  unsigned int jresult ;
+  MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  unsigned int result;
+  
+  arg1 = (MsrpMessage *)jarg1; 
+  arg2 = jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  result = (unsigned int)(arg1)->getMsrpContent(arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_MsrpEvent(void * jarg1) {
   MsrpEvent *arg1 = (MsrpEvent *) 0 ;
   
@@ -4899,14 +5147,26 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_MsrpEvent(void * jarg1) {
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpEvent_getSipSessionId(void * jarg1) {
-  unsigned int jresult ;
+SWIGEXPORT int SWIGSTDCALL CSharp_MsrpEvent_getType(void * jarg1) {
+  int jresult ;
   MsrpEvent *arg1 = (MsrpEvent *) 0 ;
-  unsigned int result;
+  tmsrp_event_type_t result;
   
   arg1 = (MsrpEvent *)jarg1; 
-  result = (unsigned int)(arg1)->getSipSessionId();
+  result = (tmsrp_event_type_t)(arg1)->getType();
   jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_MsrpEvent_getSipSession(void * jarg1) {
+  void * jresult ;
+  MsrpEvent *arg1 = (MsrpEvent *) 0 ;
+  MsrpSession *result = 0 ;
+  
+  arg1 = (MsrpEvent *)jarg1; 
+  result = (MsrpSession *)(arg1)->getSipSession();
+  jresult = (void *)result; 
   return jresult;
 }
 
@@ -4986,7 +5246,7 @@ SWIGEXPORT SipEvent * SWIGSTDCALL CSharp_StackEventUpcast(StackEvent *objectRef)
     return (SipEvent *)objectRef;
 }
 
-SWIGEXPORT SipEvent * SWIGSTDCALL CSharp_CallEventUpcast(CallEvent *objectRef) {
+SWIGEXPORT SipEvent * SWIGSTDCALL CSharp_InviteEventUpcast(InviteEvent *objectRef) {
     return (SipEvent *)objectRef;
 }
 
@@ -5010,12 +5270,16 @@ SWIGEXPORT SipEvent * SWIGSTDCALL CSharp_SubscriptionEventUpcast(SubscriptionEve
     return (SipEvent *)objectRef;
 }
 
-SWIGEXPORT SipSession * SWIGSTDCALL CSharp_CallSessionUpcast(CallSession *objectRef) {
+SWIGEXPORT SipSession * SWIGSTDCALL CSharp_InviteSessionUpcast(InviteSession *objectRef) {
     return (SipSession *)objectRef;
 }
 
-SWIGEXPORT SipSession * SWIGSTDCALL CSharp_MsrpSessionUpcast(MsrpSession *objectRef) {
-    return (SipSession *)objectRef;
+SWIGEXPORT InviteSession * SWIGSTDCALL CSharp_CallSessionUpcast(CallSession *objectRef) {
+    return (InviteSession *)objectRef;
+}
+
+SWIGEXPORT InviteSession * SWIGSTDCALL CSharp_MsrpSessionUpcast(MsrpSession *objectRef) {
+    return (InviteSession *)objectRef;
 }
 
 SWIGEXPORT SipSession * SWIGSTDCALL CSharp_MessagingSessionUpcast(MessagingSession *objectRef) {

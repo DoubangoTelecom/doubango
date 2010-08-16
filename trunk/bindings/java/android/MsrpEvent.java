@@ -33,8 +33,13 @@ public class MsrpEvent {
     swigCPtr = 0;
   }
 
-  public long getSipSessionId() {
-    return tinyWRAPJNI.MsrpEvent_getSipSessionId(swigCPtr, this);
+  public tmsrp_event_type_t getType() {
+    return tmsrp_event_type_t.swigToEnum(tinyWRAPJNI.MsrpEvent_getType(swigCPtr, this));
+  }
+
+  public MsrpSession getSipSession() {
+    long cPtr = tinyWRAPJNI.MsrpEvent_getSipSession(swigCPtr, this);
+    return (cPtr == 0) ? null : new MsrpSession(cPtr, false);
   }
 
   public MsrpMessage getMessage() {

@@ -73,4 +73,9 @@ public class SipMessage {
     return tinyWRAPJNI.SipMessage_getSipContent(swigCPtr, this, output, maxsize);
   }
 
+  public SdpMessage getSdpMessage() {
+    long cPtr = tinyWRAPJNI.SipMessage_getSdpMessage(swigCPtr, this);
+    return (cPtr == 0) ? null : new SdpMessage(cPtr, false);
+  }
+
 }

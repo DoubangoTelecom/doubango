@@ -96,42 +96,46 @@ namespace test
 
             Console.ReadLine();
 
-            /*ActionConfig actionConfig = new ActionConfig();
-            actionConfig
-                .setMediaString(twrap_media_type_t.twrap_media_file, "file-path", "C:\\avatar.png")
-                .setMediaString(twrap_media_type_t.twrap_media_file, "accept-types", "application/octet-stream")
-                .setMediaString(twrap_media_type_t.twrap_media_file, "file-disposition", "attachment")
-                .setMediaString(twrap_media_type_t.twrap_media_file, "file-icon", "cid:test@doubango.org");
+           
+           ActionConfig actionConfig = new ActionConfig();
+           actionConfig
+               .setMediaString(twrap_media_type_t.twrap_media_msrp, "file-path", "C:\\Users\\root\\Desktop\\Debian.iso")
+               //.setMediaString(twrap_media_type_t.twrap_media_msrp, "file-path", "C:\\avatar.png")
+               .setMediaString(twrap_media_type_t.twrap_media_msrp, "accept-types", "application/octet-stream")
+               .setMediaString(twrap_media_type_t.twrap_media_msrp, "file-disposition", "attachment")
+               .setMediaString(twrap_media_type_t.twrap_media_msrp, "file-icon", "cid:test@doubango.org")
+               .setMediaInt(twrap_media_type_t.twrap_media_msrp, "chunck-duration", 500);
             MsrpSession msrpSession = new MsrpSession(sipStack, msrpCallback);
-            msrpSession.callMsrp(String.Format("sip:bob@{0}", REALM), actionConfig);
-            actionConfig.Dispose();*/
-            
+            msrpSession.callMsrp(String.Format("sip:johndoe@{0}", REALM), actionConfig);
+            actionConfig.Dispose();
 
             Console.ReadLine();
-
-            RPMessage rpMessage = SMSEncoder.encodeDeliver(25, SMSC, "123456789", "salut comment tu vas?\n hdjdhfjfhfjhr, ");
-            if (rpMessage != null)
-            {
-                uint pay_len = rpMessage.getPayloadLength();
-                if (pay_len > 0)
-                {
-                    byte[] pay = new byte[pay_len];
-                    rpMessage.getPayload(pay, (uint)pay.Length);
-
-                    MessagingSession m = new MessagingSession(sipStack);
-                    m.setToUri(String.Format("sip:{0}@{1}", SMSC, REALM));
-                    m.addHeader("Content-Type", "application/vnd.3gpp.sms");
-                    m.addHeader("Content-Transfer-Encoding", "binary");
-                    m.addHeader("P-Asserted-Identity", String.Format("sip:{0}@{1}", USER, REALM));
-
-                    m.send(pay, (uint)pay.Length);
-
-                    m.Dispose();
-                }
-                rpMessage.Dispose();
-            }
-
+            msrpSession.hangup();
             Console.ReadLine();
+
+            //RPMessage rpMessage = SMSEncoder.encodeDeliver(25, SMSC, "123456789", "salut comment tu vas?\n hdjdhfjfhfjhr, ");
+            //if (rpMessage != null)
+            //{
+            //    uint pay_len = rpMessage.getPayloadLength();
+            //    if (pay_len > 0)
+            //    {
+            //        byte[] pay = new byte[pay_len];
+            //        rpMessage.getPayload(pay, (uint)pay.Length);
+
+            //        MessagingSession m = new MessagingSession(sipStack);
+            //        m.setToUri(String.Format("sip:{0}@{1}", SMSC, REALM));
+            //        m.addHeader("Content-Type", "application/vnd.3gpp.sms");
+            //        m.addHeader("Content-Transfer-Encoding", "binary");
+            //        m.addHeader("P-Asserted-Identity", String.Format("sip:{0}@{1}", USER, REALM));
+
+            //        m.send(pay, (uint)pay.Length);
+
+            //        m.Dispose();
+            //    }
+            //    rpMessage.Dispose();
+            //}
+
+            //Console.ReadLine();
 
 
 
@@ -241,7 +245,7 @@ namespace test
         static CallSession callSession;
         static RegistrationSession regSession;
         static SubscriptionSession subSession;
-        static MyMsrpCallback msrpCallback;
+        public static MyMsrpCallback msrpCallback;
         static MySipCallback sipCallback;
         public static SipStack sipStack;
         static MySipDebugCallback sipDebugCallback;
@@ -395,7 +399,33 @@ namespace test
     {
         public override int OnEvent(MsrpEvent e)
         {
-            Console.WriteLine("Msrp Event");
+            MsrpSession session = e.getSipSession();
+            MsrpMessage message = e.getMessage();
+            if (session != null && message != null)
+            {
+                uint id = session.getId();
+                //Console.WriteLine("Msrp Event {0} {1}", id, message.getMsrpHeaderValue("Byte-Range"));
+
+                long start, end, total;
+                //message.getByteRange(out start, out end, out total);
+                //Console.WriteLine("Byte-Range {0}-{1}/{2}", start, end, total);
+
+                //if (message.isRequest())
+               // {
+                //    uint size = message.getMsrpContentLength();
+               //     byte[] bytes = new byte[(int)size];
+               //     message.getMsrpContent(bytes, (uint)bytes.Length);
+               // }
+
+
+                if (!message.isRequest() && message.getCode() == 200)
+                {
+                    if (message.isLastChunck())
+                    {
+                        session.hangup();
+                    }
+                }
+            }
             return 0;
         }
     }
@@ -432,26 +462,55 @@ namespace test
             return 0;
         }
 
-        public override int OnCallEvent(CallEvent e)
+        public override int OnInviteEvent(InviteEvent e)
         {
             tsip_invite_event_type_t type = e.getType();
-            CallSession session = e.getSession();
+            InviteSession session = e.getSession();
             SipMessage message = e.getSipMessage();
 
             switch(type){
                 case tsip_invite_event_type_t.tsip_i_newcall:
-                    if (session != null)
-                    {
+                    SdpMessage sdp = message.getSdpMessage();
+
+                    if (session != null){
                         Console.WriteLine("ERRRRRRRRRRRORRRR");
                         return 0;
                     }
-                    else if ((session = e.takeSessionOwnership()) != null)
-                    {
-                        ActionConfig actionConfig = new ActionConfig();
-                        actionConfig.setMediaInt(twrap_media_type_t.twrap_media_audiovideo, "bandwidth-level", (int)tmedia_bandwidth_level_t.tmedia_bl_low);
-                        session.reject(actionConfig);
-                        actionConfig.Dispose();
+                    else{
+                        switch(e.getMediaType()){
+                            case twrap_media_type_t.twrap_media_audio:
+                            case twrap_media_type_t.twrap_media_video:
+                            case twrap_media_type_t.twrap_media_audiovideo:
+                                session = e.takeCallSessionOwnership();
+                                break;
+                            case twrap_media_type_t.twrap_media_msrp:
+                                if ((session = e.takeMsrpSessionOwnership()) != null){
+                                    (session as MsrpSession).setCallback(Program.msrpCallback);
+                                }
+                                break;
+                        }
+                        if(session != null){
+                            ActionConfig actionConfig = new ActionConfig();
+                            session.accept(actionConfig);
+                            actionConfig.Dispose();
+                        }
                     }
+
+                    /*else if ((session = e.takeSessionOwnership()) != null)
+                    {
+                        SdpMessage sdp = message.getSdpMessage();
+                        if (sdp != null)
+                        {
+                            String fileSelector = sdp.getSdpHeaderAValue("message", "file-selector");
+                            Console.WriteLine("file-selector={0}", fileSelector);
+                        }
+
+                        ActionConfig actionConfig = new ActionConfig();
+                        //actionConfig.setMediaInt(twrap_media_type_t.twrap_media_audiovideo, "bandwidth-level", (int)tmedia_bandwidth_level_t.tmedia_bl_low);
+                        actionConfig.setMediaString(twrap_media_type_t.twrap_media_file, "file-path", "C:\\tmp\\myfile");
+                        session.accept(actionConfig);
+                        actionConfig.Dispose();
+                    }*/
                     break;
                 case tsip_invite_event_type_t.tsip_i_request:
                     break;
@@ -575,6 +634,8 @@ namespace test
                                             {
                                                 byte[] pay = new byte[pay_len];
                                                 rpACK.getPayload(pay, (uint)pay.Length);
+
+                                                //byte[] pay = Encoding.UTF8.GetBytes("\x03\x01\x41\x09\x01\x00\x01\x80\x01\x32\x42\x00\x69");
 
                                                 MessagingSession m = new MessagingSession(Program.sipStack);
                                                 m.setToUri(String.Format("sip:{0}@{1}", Program.SMSC, Program.REALM));

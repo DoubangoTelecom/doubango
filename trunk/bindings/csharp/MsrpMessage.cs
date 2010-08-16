@@ -41,4 +41,53 @@ public class MsrpMessage : IDisposable {
   public MsrpMessage() : this(tinyWRAPPINVOKE.new_MsrpMessage(), true) {
   }
 
+  public bool isRequest() {
+    bool ret = tinyWRAPPINVOKE.MsrpMessage_isRequest(swigCPtr);
+    return ret;
+  }
+
+  public short getCode() {
+    short ret = tinyWRAPPINVOKE.MsrpMessage_getCode(swigCPtr);
+    return ret;
+  }
+
+  public string getPhrase() {
+    string ret = tinyWRAPPINVOKE.MsrpMessage_getPhrase(swigCPtr);
+    return ret;
+  }
+
+  public tmsrp_request_type_t getRequestType() {
+    tmsrp_request_type_t ret = (tmsrp_request_type_t)tinyWRAPPINVOKE.MsrpMessage_getRequestType(swigCPtr);
+    return ret;
+  }
+
+  public void getByteRange(out long arg0, out long arg1, out long arg2) {
+    tinyWRAPPINVOKE.MsrpMessage_getByteRange(swigCPtr, out arg0, out arg1, out arg2);
+  }
+
+  public bool isLastChunck() {
+    bool ret = tinyWRAPPINVOKE.MsrpMessage_isLastChunck(swigCPtr);
+    return ret;
+  }
+
+  public string getMsrpHeaderValue(string name) {
+    string ret = tinyWRAPPINVOKE.MsrpMessage_getMsrpHeaderValue(swigCPtr, name);
+    return ret;
+  }
+
+  public string getMsrpHeaderParamValue(string name, string param) {
+    string ret = tinyWRAPPINVOKE.MsrpMessage_getMsrpHeaderParamValue(swigCPtr, name, param);
+    return ret;
+  }
+
+  public uint getMsrpContentLength() {
+    uint ret = tinyWRAPPINVOKE.MsrpMessage_getMsrpContentLength(swigCPtr);
+    return ret;
+  }
+
+  public uint getMsrpContent(byte[] output, uint maxsize) {
+    uint ret = tinyWRAPPINVOKE.MsrpMessage_getMsrpContent(swigCPtr, output, maxsize);
+    return ret;
+  }
+
 }

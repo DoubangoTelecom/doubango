@@ -337,7 +337,7 @@ SMSData* SMSEncoder::decode(const void* data, unsigned size, bool MobOrig)
 			 {
 				tsms_rpdu_ack_t* rp_ack = TSMS_RPDU_ACK(rp_message);
 				// ...do whatever you want
-				if((tpdu = tsms_tpdu_message_deserialize(rp_ack->udata->data, rp_ack->udata->size, MobOrig))){
+				if(rp_ack->udata && (tpdu = tsms_tpdu_message_deserialize(rp_ack->udata->data, rp_ack->udata->size, MobOrig))){
 					// ...do whatever you want
 				}
 				decodedData = new SMSData(twrap_sms_type_ack, rp_message->mr, tsk_null, 0);
@@ -348,7 +348,7 @@ SMSData* SMSEncoder::decode(const void* data, unsigned size, bool MobOrig)
 			 {
 				tsms_rpdu_error_t* rp_error = TSMS_RPDU_ERROR(rp_message);
 				// ...do whatever you want
-				if((tpdu = tsms_tpdu_message_deserialize(rp_error->udata->data, rp_error->udata->size, MobOrig))){
+				if(rp_error->udata && (tpdu = tsms_tpdu_message_deserialize(rp_error->udata->data, rp_error->udata->size, MobOrig))){
 					// ...do whatever you want
 				}
 				decodedData = new SMSData(twrap_sms_type_error, rp_message->mr, tsk_null, 0);

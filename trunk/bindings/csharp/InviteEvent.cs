@@ -10,18 +10,18 @@
 using System;
 using System.Runtime.InteropServices;
 
-public class CallEvent : SipEvent {
+public class InviteEvent : SipEvent {
   private HandleRef swigCPtr;
 
-  internal CallEvent(IntPtr cPtr, bool cMemoryOwn) : base(tinyWRAPPINVOKE.CallEventUpcast(cPtr), cMemoryOwn) {
+  internal InviteEvent(IntPtr cPtr, bool cMemoryOwn) : base(tinyWRAPPINVOKE.InviteEventUpcast(cPtr), cMemoryOwn) {
     swigCPtr = new HandleRef(this, cPtr);
   }
 
-  internal static HandleRef getCPtr(CallEvent obj) {
+  internal static HandleRef getCPtr(InviteEvent obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~CallEvent() {
+  ~InviteEvent() {
     Dispose();
   }
 
@@ -29,7 +29,7 @@ public class CallEvent : SipEvent {
     lock(this) {
       if(swigCPtr.Handle != IntPtr.Zero && swigCMemOwn) {
         swigCMemOwn = false;
-        tinyWRAPPINVOKE.delete_CallEvent(swigCPtr);
+        tinyWRAPPINVOKE.delete_InviteEvent(swigCPtr);
       }
       swigCPtr = new HandleRef(null, IntPtr.Zero);
       GC.SuppressFinalize(this);
@@ -38,24 +38,30 @@ public class CallEvent : SipEvent {
   }
 
   public tsip_invite_event_type_t getType() {
-    tsip_invite_event_type_t ret = (tsip_invite_event_type_t)tinyWRAPPINVOKE.CallEvent_getType(swigCPtr);
+    tsip_invite_event_type_t ret = (tsip_invite_event_type_t)tinyWRAPPINVOKE.InviteEvent_getType(swigCPtr);
     return ret;
   }
 
   public twrap_media_type_t getMediaType() {
-    twrap_media_type_t ret = (twrap_media_type_t)tinyWRAPPINVOKE.CallEvent_getMediaType(swigCPtr);
+    twrap_media_type_t ret = (twrap_media_type_t)tinyWRAPPINVOKE.InviteEvent_getMediaType(swigCPtr);
     return ret;
   }
 
-  public CallSession getSession() {
-    IntPtr cPtr = tinyWRAPPINVOKE.CallEvent_getSession(swigCPtr);
-    CallSession ret = (cPtr == IntPtr.Zero) ? null : new CallSession(cPtr, false);
+  public InviteSession getSession() {
+    IntPtr cPtr = tinyWRAPPINVOKE.InviteEvent_getSession(swigCPtr);
+    InviteSession ret = (cPtr == IntPtr.Zero) ? null : new InviteSession(cPtr, false);
     return ret;
   }
 
-  public CallSession takeSessionOwnership() {
-    IntPtr cPtr = tinyWRAPPINVOKE.CallEvent_takeSessionOwnership(swigCPtr);
+  public CallSession takeCallSessionOwnership() {
+    IntPtr cPtr = tinyWRAPPINVOKE.InviteEvent_takeCallSessionOwnership(swigCPtr);
     CallSession ret = (cPtr == IntPtr.Zero) ? null : new CallSession(cPtr, true);
+    return ret;
+  }
+
+  public MsrpSession takeMsrpSessionOwnership() {
+    IntPtr cPtr = tinyWRAPPINVOKE.InviteEvent_takeMsrpSessionOwnership(swigCPtr);
+    MsrpSession ret = (cPtr == IntPtr.Zero) ? null : new MsrpSession(cPtr, true);
     return ret;
   }
 
