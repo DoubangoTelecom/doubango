@@ -39,6 +39,15 @@
 
 TMSRP_BEGIN_DECLS
 
+typedef enum tmsrp_event_type_e
+{
+	tmsrp_event_type_none,
+	tmsrp_event_type_connected,
+	tmsrp_event_type_disconnected,
+	tmsrp_event_type_message,
+}
+tmsrp_event_type_t;
+
 typedef struct tmsrp_event_s
 {
 	TSK_DECLARE_OBJECT;
@@ -46,13 +55,15 @@ typedef struct tmsrp_event_s
 	const void* callback_data;
 	unsigned outgoing:1;
 
+
+	tmsrp_event_type_t type;
 	tmsrp_message_t* message;
 }
 tmsrp_event_t;
 
 typedef int (*tmsrp_event_cb_f)(tmsrp_event_t* _event);
 
-tmsrp_event_t* tmsrp_event_create(const void* callback_data, tsk_bool_t outgoing, tmsrp_message_t* message);
+TINYMSRP_API tmsrp_event_t* tmsrp_event_create(const void* callback_data, tsk_bool_t outgoing, tmsrp_event_type_t type, tmsrp_message_t* message);
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_event_def_t;
 

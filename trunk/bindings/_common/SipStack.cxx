@@ -368,8 +368,8 @@ int stack_callback(const tsip_event_t *sipevent)
 		case tsip_event_invite:
 			{	/* INVITE */
 				if(Stack->getCallback()){
-					e = new CallEvent(sipevent);
-					Stack->getCallback()->OnCallEvent((const CallEvent*)e);
+					e = new InviteEvent(sipevent);
+					Stack->getCallback()->OnInviteEvent((const InviteEvent*)e);
 				}
 				break;
 			}

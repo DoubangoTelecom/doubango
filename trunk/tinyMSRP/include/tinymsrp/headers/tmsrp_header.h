@@ -87,7 +87,8 @@ typedef tsk_list_t tmsrp_headers_L_t; /**< List of @ref tmsrp_header_t elements.
 
 TINYMSRP_API const char* tmsrp_header_get_name(tmsrp_header_type_t type);
 TINYMSRP_API const char* tmsrp_header_get_nameex(const tmsrp_header_t *self);
-TINYMSRP_API int tmsrp_header_tostring(const tmsrp_header_t *self, tsk_buffer_t *output);
+TINYMSRP_API int tmsrp_header_serialize(const tmsrp_header_t *self, tsk_buffer_t *output);
+TINYMSRP_API char* tmsrp_header_tostring(const tmsrp_header_t *self);
 
 TMSRP_END_DECLS
 

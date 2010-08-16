@@ -39,7 +39,7 @@
 
 #include <stdio.h> /* fopen, fclose ... */
 
-#define TMSRP_DATA_IN_MAX_BUFFER 0xFFFF
+#define TMSRP_DATA_IN_MAX_BUFFER 0xFFFFFF
 
 tmsrp_data_in_t* tmsrp_data_in_create()
 {
@@ -124,12 +124,14 @@ tmsrp_data_out_t* tmsrp_data_out_file_create(const char* filepath)
 int tmsrp_data_in_put(tmsrp_data_in_t* self, const void* pdata, tsk_size_t size)
 {
 	int ret = -1;
+	
 	if(!self || !self->buffer || !pdata || !size){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return ret;
 	}
 
 	if((ret = tsk_buffer_append(self->buffer, pdata, size))){
+		TSK_DEBUG_ERROR("Failed to append data");
 		tsk_buffer_cleanup(self->buffer);
 		return ret;
 	}
@@ -140,6 +142,7 @@ int tmsrp_data_in_put(tmsrp_data_in_t* self, const void* pdata, tsk_size_t size)
 			return -3;
 		}
 	}
+
 	return ret;
 }
 
@@ -284,7 +287,7 @@ static void* tmsrp_data_out_ctor(tsk_object_t * self, va_list * app)
 		}
 		
 		// content type
-		TMSRP_DATA(data_out)->ctype = tsk_strdup("text/plain");
+		TMSRP_DATA(data_out)->ctype = tsk_strdup("application/octet-stream");
 		// random id
 		tsk_strrandom(&id);
 		TMSRP_DATA(data_out)->id = tsk_strdup(id);

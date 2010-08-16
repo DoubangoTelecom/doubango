@@ -66,9 +66,25 @@ protected:
 	const SipStack* stack;
 };
 
+/* ======================== InviteSession ========================*/
+class InviteSession : public SipSession
+{
+public: /* ctor() and dtor() */
+	InviteSession(SipStack* Stack);
+#if !defined(SWIG)
+	InviteSession(SipStack* Stack, tsip_ssession_handle_t* handle);
+#endif
+	virtual ~InviteSession();
+
+public: /* Public functions */
+	bool accept(ActionConfig* config=tsk_null);
+	bool hangup(ActionConfig* config=tsk_null);
+	bool reject(ActionConfig* config=tsk_null);
+};
+
 
 /* ======================== CallSession ========================*/
-class CallSession : public SipSession
+class CallSession : public InviteSession
 {
 public: /* ctor() and dtor() */
 	CallSession(SipStack* Stack);
@@ -84,16 +100,13 @@ public: /* Public functions */
 	bool setSessionTimer(unsigned timeout, const char* refresher);
 	bool set100rel(bool enabled);
 	bool setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength);
-	bool accept(ActionConfig* config=tsk_null);
 	bool hold(ActionConfig* config=tsk_null);
 	bool resume(ActionConfig* config=tsk_null);
 	bool sendDTMF(int number);
-	bool hangup(ActionConfig* config=tsk_null);
-	bool reject(ActionConfig* config=tsk_null);
 };
 
 /* ======================== MsrpSession ========================*/
-class MsrpSession : public SipSession
+class MsrpSession : public InviteSession
 {
 public: /* ctor() and dtor() */
 	MsrpSession(SipStack* Stack, MsrpCallback* callback);
@@ -104,12 +117,9 @@ public: /* ctor() and dtor() */
 
 public: /* Public functions */
 	bool setCallback(MsrpCallback* callback);
-	bool callMsrp(const char* remoteUri, ActionConfig* config);
-	bool sendLMessage(ActionConfig* config);
-	bool sendFile(ActionConfig* config);
-	bool accept(ActionConfig* config);
-	bool hangup(ActionConfig* config);
-	bool reject(ActionConfig* config);
+	bool callMsrp(const char* remoteUri, ActionConfig* config=tsk_null);
+	bool sendLMessage(ActionConfig* config=tsk_null);
+	bool sendFile(ActionConfig* config=tsk_null);
 
 	public: /* Public helper function */
 #if !defined(SWIG)

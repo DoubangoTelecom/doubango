@@ -11,7 +11,6 @@ public enum twrap_media_type_t {
   twrap_media_none,
   twrap_media_audio,
   twrap_media_video,
-  twrap_media_chat,
-  twrap_media_file,
-  twrap_media_audiovideo
+  twrap_media_audiovideo,
+  twrap_media_msrp
 }

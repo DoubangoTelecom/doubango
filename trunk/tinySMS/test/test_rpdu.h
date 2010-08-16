@@ -53,7 +53,7 @@ void test_i_rpdata(const void* data, tsk_size_t size, tsk_bool_t MobOrig)
 			 {
 				tsms_rpdu_ack_t* rp_ack = TSMS_RPDU_ACK(rp_message);
 				// ...do whatever you want
-				if((tpdu = tsms_tpdu_message_deserialize(rp_ack->udata->data, rp_ack->udata->size, MobOrig))){
+				if(rp_ack->udata && (tpdu = tsms_tpdu_message_deserialize(rp_ack->udata->data, rp_ack->udata->size, MobOrig))){
 					// ...do whatever you want
 				}
 				TSK_DEBUG_INFO("RP-ACK");
@@ -64,7 +64,7 @@ void test_i_rpdata(const void* data, tsk_size_t size, tsk_bool_t MobOrig)
 			 {
 				tsms_rpdu_error_t* rp_error = TSMS_RPDU_ERROR(rp_message);
 				// ...do whatever you want
-				if((tpdu = tsms_tpdu_message_deserialize(rp_error->udata->data, rp_error->udata->size, MobOrig))){
+				if(rp_error->udata && (tpdu = tsms_tpdu_message_deserialize(rp_error->udata->data, rp_error->udata->size, MobOrig))){
 					// ...do whatever you want
 				}
 				TSK_DEBUG_INFO("RP-ERROR");
@@ -264,6 +264,9 @@ void test_rpdu()
 	//test_o_rpdata_smma();
 	//test_o_rpdata_ack();
 	//test_o_rpdata_error();
+
+	//const char* data = "\x03\x01\x41\x09\x01\x00\x01\x80\x01\x32\x42\x00\x69";
+	//test_i_rpdata(data, 13, tsk_false);
 }
 
 #endif /* _TEST_SMSRPDU_H */

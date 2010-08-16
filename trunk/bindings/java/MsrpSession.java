@@ -8,7 +8,7 @@
 
 package org.doubango.tinyWRAP;
 
-public class MsrpSession extends SipSession {
+public class MsrpSession extends InviteSession {
   private long swigCPtr;
 
   protected MsrpSession(long cPtr, boolean cMemoryOwn) {
@@ -42,27 +42,27 @@ public class MsrpSession extends SipSession {
   }
 
   public boolean callMsrp(String remoteUri, ActionConfig config) {
-    return tinyWRAPJNI.MsrpSession_callMsrp(swigCPtr, this, remoteUri, ActionConfig.getCPtr(config), config);
+    return tinyWRAPJNI.MsrpSession_callMsrp__SWIG_0(swigCPtr, this, remoteUri, ActionConfig.getCPtr(config), config);
+  }
+
+  public boolean callMsrp(String remoteUri) {
+    return tinyWRAPJNI.MsrpSession_callMsrp__SWIG_1(swigCPtr, this, remoteUri);
   }
 
   public boolean sendLMessage(ActionConfig config) {
-    return tinyWRAPJNI.MsrpSession_sendLMessage(swigCPtr, this, ActionConfig.getCPtr(config), config);
+    return tinyWRAPJNI.MsrpSession_sendLMessage__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
+  }
+
+  public boolean sendLMessage() {
+    return tinyWRAPJNI.MsrpSession_sendLMessage__SWIG_1(swigCPtr, this);
   }
 
   public boolean sendFile(ActionConfig config) {
-    return tinyWRAPJNI.MsrpSession_sendFile(swigCPtr, this, ActionConfig.getCPtr(config), config);
+    return tinyWRAPJNI.MsrpSession_sendFile__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
   }
 
-  public boolean accept(ActionConfig config) {
-    return tinyWRAPJNI.MsrpSession_accept(swigCPtr, this, ActionConfig.getCPtr(config), config);
-  }
-
-  public boolean hangup(ActionConfig config) {
-    return tinyWRAPJNI.MsrpSession_hangup(swigCPtr, this, ActionConfig.getCPtr(config), config);
-  }
-
-  public boolean reject(ActionConfig config) {
-    return tinyWRAPJNI.MsrpSession_reject(swigCPtr, this, ActionConfig.getCPtr(config), config);
+  public boolean sendFile() {
+    return tinyWRAPJNI.MsrpSession_sendFile__SWIG_1(swigCPtr, this);
   }
 
 }

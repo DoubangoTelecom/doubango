@@ -31,8 +31,10 @@
 
 #include "tnet_utils.h"
 
+#include "tsk_thread.h"
 #include "tsk_memory.h"
 #include "tsk_string.h"
+#include "tsk_time.h"
 #include "tsk_debug.h"
 
 
@@ -140,6 +142,7 @@ void *run(void* self)
 	tsk_size_t end;
 	tsk_size_t total;
 	tsk_istr_t tid;
+	int64_t __now = (int64_t)tsk_time_epoch();
 	tsk_bool_t error = tsk_false;
 
 	TSK_DEBUG_INFO("MSRP SENDER::run -- START");
@@ -153,12 +156,12 @@ void *run(void* self)
 		
 		total = data_out->size;
 		
-		while(!error && (chunck = tmsrp_data_out_get(data_out))){
+		while(TSK_RUNNABLE(self)->running && !error && (chunck = tmsrp_data_out_get(data_out))){
 			tmsrp_request_t* SEND;
 			// set end
 			end = (start + chunck->size) - 1;
 			// compute new transaction id
-			tsk_strrandom(&tid);
+			tsk_itoa(++__now, &tid);
 			// create SEND request
 			SEND = tmsrp_request_create(tid, "SEND");
 			// T-Path and From-Path (because of otherURIs)
@@ -191,6 +194,11 @@ void *run(void* self)
 			// cleanup
 			TSK_OBJECT_SAFE_FREE(chunck);
 			TSK_OBJECT_SAFE_FREE(SEND);
+
+			/* wait */
+			if(sender->chunck_duration){
+				tsk_thread_sleep(sender->chunck_duration);
+			}
 		}
 		
 

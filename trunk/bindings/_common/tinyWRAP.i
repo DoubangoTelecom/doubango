@@ -1,6 +1,7 @@
 /* File : tinyWRAP.i */
 %module(directors="1") tinyWRAP
 %include "typemaps.i"
+%include <stdint.i>
 
 %{
 #include "DDebug.h"
@@ -15,15 +16,18 @@
 %feature("director") DDebugCallback;
 
 
-/* ========== Sip Stack ========== */
+/* ========== Sip/Sdp Stack ========== */
 %newobject getSipHeaderValue;
+%newobject getSdpHeaderValue;
+%newobject getSdpHeaderAValue;
 %newobject getSipHeaderParamValue;
 %newobject SipStack::dnsENUM;
 %newobject SipStack::dnsNaptrSrv;
 %newobject SipStack::dnsSrv;
 
 %newobject MessagingEvent::takeSessionOwnership;
-%newobject CallEvent::takeSessionOwnership;
+%newobject InviteEvent::takeCallSessionOwnership;
+%newobject InviteEvent::takeMsrpSessionOwnership;
 
 %include SipStack.i
 
@@ -48,4 +52,7 @@
 
 
 /* ========== MSRP ========== */
+%newobject getMsrpHeaderValue;
+%newobject getMsrpHeaderParamValue;
+
 %include Msrp.i

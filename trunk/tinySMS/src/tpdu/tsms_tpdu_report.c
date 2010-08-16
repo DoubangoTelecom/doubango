@@ -45,12 +45,12 @@ tsms_tpdu_message_t* _tsms_tpdu_report_deserialize_2(const void* data, tsk_size_
 	/* You don't need to test data and test, this is an internal function called by tsms_tpdu_message_deserialize() */
 	tsms_tpdu_report_t* self = tsms_tpdu_report_create(tsk_null, tsk_false, error);
 	tsk_bool_t failed = tsk_false;
-	tsk_size_t any_len;
+//	tsk_size_t any_len;
 	const uint8_t* pdata = data;
 	const uint8_t* pend = pdata + size;
 
 	/* SMSC address */
-#if TSMS_TPDU_APPEND_SMSC
+#if TSMS_TPDU_APPEND_SMSC && 0
 	if(!(self->smsc = tsms_address_deserialize(data, size, tsms_addr_smsc, &any_len)) || !any_len){
 		TSK_DEBUG_ERROR("SMS-DELIVER == Failed to parse SMSC address");
 		failed = tsk_true;
@@ -83,47 +83,56 @@ tsms_tpdu_message_t* _tsms_tpdu_report_deserialize_2(const void* data, tsk_size_
 	}
 	
 	/* 3GPP TS 23.040 ==> 9.2.3.27 TP-Parameter-Indicator (TP-PI) 
-	* 1o */
+	* 1o 
+	bit 7			bit 6		bit 5		bit 4		bit 3		bit 2	bit 1	bit 0
+	Extension bit	Reserved	Reserved	Reserved	Reserved	TP UDL	TP DCS	TP PID
+	*/
 	self->pi = *pdata;
 	if((++pdata) >= pend){
 		TSMS_ERROR_TOO_SHORT();
 	}
-	
+
 	if(TSMS_TPDU_MESSAGE(self)->mti == tsms_tpdu_mti_submit_report_mt){
 		/* 3GPP TS 23.040 ==> TP-Service-Centre-Time-Stamp (TP-SCTS) 
 		* 7o */
-		if((pend - pdata)<=7){
+		if((pend - pdata)<7){
 			TSMS_ERROR_TOO_SHORT();
 		}
 		memcpy(self->scts, pdata, 7);
 		pdata += 7;	
 	}
 	
-	/* 3GPP TS 23.040 ==> 9.2.3.9 TP-Protocol-Identifier (TP-PID) 
-	* 1o */
-	TSMS_TPDU_MESSAGE(self)->pid = *pdata;
-	if((++pdata) >= pend){
-		TSMS_ERROR_TOO_SHORT();
+	if(self->pi & 0x01){ /* bit 0 */
+		/* 3GPP TS 23.040 ==> 9.2.3.9 TP-Protocol-Identifier (TP-PID) 
+		* 1o */
+		TSMS_TPDU_MESSAGE(self)->pid = *pdata;
+		if((++pdata) >= pend){
+			TSMS_ERROR_TOO_SHORT();
+		}
 	}
 	
-	/* 3GPP TS 23.040 ==> 9.2.3.10 TP-Data-Coding-Scheme (TP-DCS) 
-	* 1o */
-	TSMS_TPDU_MESSAGE(self)->dcs = *pdata;
-	if((++pdata) >= pend){
-		TSMS_ERROR_TOO_SHORT();
+	if(self->pi & 0x02){ /* bit 1 */
+		/* 3GPP TS 23.040 ==> 9.2.3.10 TP-Data-Coding-Scheme (TP-DCS) 
+		* 1o */
+		TSMS_TPDU_MESSAGE(self)->dcs = *pdata;
+		if((++pdata) >= pend){
+			TSMS_ERROR_TOO_SHORT();
+		}
 	}
 	
-	/* 3GPP TS 23.040 ==> 9.2.3.16 TP-User-Data-Length (TP-UDL) 
-	* 1o */
-	TSMS_TPDU_MESSAGE(self)->udl = *pdata;
-	pdata++;
+	if(self->pi & 0x04){ /* bit 2 */
+		/* 3GPP TS 23.040 ==> 9.2.3.16 TP-User-Data-Length (TP-UDL) 
+		* 1o */
+		TSMS_TPDU_MESSAGE(self)->udl = *pdata;
+		pdata++;
 
-	/* 3GPP TS 23.040 ==> 9.2.3.24 TP-User Data (TP-UD) */
-	if((pend-pdata) > 0){
-		TSMS_TPDU_MESSAGE(self)->ud = tsk_buffer_create(pdata, (pend-pdata));
-	}
+		/* 3GPP TS 23.040 ==> 9.2.3.24 TP-User Data (TP-UD) */
+		if((pend-pdata) > 0){
+			TSMS_TPDU_MESSAGE(self)->ud = tsk_buffer_create(pdata, (pend-pdata));
+		}
+	}	
 
-	bail:
+bail:
 	if(failed){
 		TSK_OBJECT_SAFE_FREE(self);
 	}

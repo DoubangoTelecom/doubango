@@ -10,7 +10,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-public class MsrpSession : SipSession {
+public class MsrpSession : InviteSession {
   private HandleRef swigCPtr;
 
   internal MsrpSession(IntPtr cPtr, bool cMemoryOwn) : base(tinyWRAPPINVOKE.MsrpSessionUpcast(cPtr), cMemoryOwn) {
@@ -46,32 +46,32 @@ public class MsrpSession : SipSession {
   }
 
   public bool callMsrp(string remoteUri, ActionConfig config) {
-    bool ret = tinyWRAPPINVOKE.MsrpSession_callMsrp(swigCPtr, remoteUri, ActionConfig.getCPtr(config));
+    bool ret = tinyWRAPPINVOKE.MsrpSession_callMsrp__SWIG_0(swigCPtr, remoteUri, ActionConfig.getCPtr(config));
+    return ret;
+  }
+
+  public bool callMsrp(string remoteUri) {
+    bool ret = tinyWRAPPINVOKE.MsrpSession_callMsrp__SWIG_1(swigCPtr, remoteUri);
     return ret;
   }
 
   public bool sendLMessage(ActionConfig config) {
-    bool ret = tinyWRAPPINVOKE.MsrpSession_sendLMessage(swigCPtr, ActionConfig.getCPtr(config));
+    bool ret = tinyWRAPPINVOKE.MsrpSession_sendLMessage__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
+    return ret;
+  }
+
+  public bool sendLMessage() {
+    bool ret = tinyWRAPPINVOKE.MsrpSession_sendLMessage__SWIG_1(swigCPtr);
     return ret;
   }
 
   public bool sendFile(ActionConfig config) {
-    bool ret = tinyWRAPPINVOKE.MsrpSession_sendFile(swigCPtr, ActionConfig.getCPtr(config));
+    bool ret = tinyWRAPPINVOKE.MsrpSession_sendFile__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
     return ret;
   }
 
-  public bool accept(ActionConfig config) {
-    bool ret = tinyWRAPPINVOKE.MsrpSession_accept(swigCPtr, ActionConfig.getCPtr(config));
-    return ret;
-  }
-
-  public bool hangup(ActionConfig config) {
-    bool ret = tinyWRAPPINVOKE.MsrpSession_hangup(swigCPtr, ActionConfig.getCPtr(config));
-    return ret;
-  }
-
-  public bool reject(ActionConfig config) {
-    bool ret = tinyWRAPPINVOKE.MsrpSession_reject(swigCPtr, ActionConfig.getCPtr(config));
+  public bool sendFile() {
+    bool ret = tinyWRAPPINVOKE.MsrpSession_sendFile__SWIG_1(swigCPtr);
     return ret;
   }
 

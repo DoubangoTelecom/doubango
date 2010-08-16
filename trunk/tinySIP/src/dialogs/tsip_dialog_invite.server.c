@@ -557,6 +557,10 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 	}
 	/* start session manager */
 	if(self->msession_mgr && !self->msession_mgr->started){
+		/* Set MSRP Callback */
+		if((self->msession_mgr->type & tmedia_msrp) == tmedia_msrp){
+			tmedia_session_mgr_set_msrp_cb(self->msession_mgr, TSIP_DIALOG_GET_SS(self)->userdata, TSIP_DIALOG_GET_SS(self)->media.msrp.callback);
+		}
 		ret = tmedia_session_mgr_start(self->msession_mgr);
 	}
 

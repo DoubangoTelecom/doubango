@@ -37,4 +37,44 @@ public class MsrpMessage {
     this(tinyWRAPJNI.new_MsrpMessage(), true);
   }
 
+  public boolean isRequest() {
+    return tinyWRAPJNI.MsrpMessage_isRequest(swigCPtr, this);
+  }
+
+  public short getCode() {
+    return tinyWRAPJNI.MsrpMessage_getCode(swigCPtr, this);
+  }
+
+  public String getPhrase() {
+    return tinyWRAPJNI.MsrpMessage_getPhrase(swigCPtr, this);
+  }
+
+  public tmsrp_request_type_t getRequestType() {
+    return tmsrp_request_type_t.swigToEnum(tinyWRAPJNI.MsrpMessage_getRequestType(swigCPtr, this));
+  }
+
+  public void getByteRange(long[] arg0, long[] arg1, long[] arg2) {
+    tinyWRAPJNI.MsrpMessage_getByteRange(swigCPtr, this, arg0, arg1, arg2);
+  }
+
+  public boolean isLastChunck() {
+    return tinyWRAPJNI.MsrpMessage_isLastChunck(swigCPtr, this);
+  }
+
+  public String getMsrpHeaderValue(String name) {
+    return tinyWRAPJNI.MsrpMessage_getMsrpHeaderValue(swigCPtr, this, name);
+  }
+
+  public String getMsrpHeaderParamValue(String name, String param) {
+    return tinyWRAPJNI.MsrpMessage_getMsrpHeaderParamValue(swigCPtr, this, name, param);
+  }
+
+  public long getMsrpContentLength() {
+    return tinyWRAPJNI.MsrpMessage_getMsrpContentLength(swigCPtr, this);
+  }
+
+  public long getMsrpContent(java.nio.ByteBuffer output, long maxsize) {
+    return tinyWRAPJNI.MsrpMessage_getMsrpContent(swigCPtr, this, output, maxsize);
+  }
+
 }

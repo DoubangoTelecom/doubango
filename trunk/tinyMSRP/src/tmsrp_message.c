@@ -37,8 +37,7 @@
 /*== Predicate function to find tmsrp_header_t object by type. */
 static int pred_find_header_by_type(const tsk_list_item_t *item, const void *tmsrp_htype)
 {
-	if(item && item->data)
-	{
+	if(item && item->data){
 		tmsrp_header_t *header = item->data;
 		tmsrp_header_type_t htype = *((tmsrp_header_type_t*)tmsrp_htype);
 		return (header->type - htype);
@@ -49,8 +48,7 @@ static int pred_find_header_by_type(const tsk_list_item_t *item, const void *tms
 /*== Predicate function to find tmsrp_header_t object by name. */
 static int pred_find_header_by_name(const tsk_list_item_t *item, const void *name)
 {
-	if(item && item->data && name)
-	{
+	if(item && item->data && name){
 		tmsrp_header_t *header = item->data;
 		return tsk_stricmp(tmsrp_header_get_nameex(header), (const char*)name);
 	}
@@ -229,11 +227,11 @@ const tmsrp_header_t *tmsrp_message_get_header(const tmsrp_message_t *self, tmsr
 	return tmsrp_message_get_headerAt(self, type, 0);
 }
 
-const tmsrp_header_t *tmsrp_message_get_headerByName(const tmsrp_message_t *self, char name)
+const tmsrp_header_t *tmsrp_message_get_headerByName(const tmsrp_message_t *self, const char* name)
 {
 	if(self && self->headers){
 		const tsk_list_item_t* item;
-		if((item = tsk_list_find_item_by_pred(self->headers, pred_find_header_by_name, &name))){
+		if((item = tsk_list_find_item_by_pred(self->headers, pred_find_header_by_name, name))){
 			return item->data;
 		}
 	}
@@ -281,31 +279,31 @@ int tmsrp_message_serialize(const tmsrp_message_t *self, tsk_buffer_t *output)
 	
 	/* To-Path */
 	if(self->To){
-		tmsrp_header_tostring(TMSRP_HEADER(self->To), output);
+		tmsrp_header_serialize(TMSRP_HEADER(self->To), output);
 	}
 	/* From-Path */	
 	if(self->From){
-		tmsrp_header_tostring(TMSRP_HEADER(self->From), output);
+		tmsrp_header_serialize(TMSRP_HEADER(self->From), output);
 	}
 	/* Message-Id */
 	if(self->MessageID){
-		tmsrp_header_tostring(TMSRP_HEADER(self->MessageID), output);
+		tmsrp_header_serialize(TMSRP_HEADER(self->MessageID), output);
 	}
 	/* Byte-Range */
 	if(self->ByteRange){
-		tmsrp_header_tostring(TMSRP_HEADER(self->ByteRange), output);
+		tmsrp_header_serialize(TMSRP_HEADER(self->ByteRange), output);
 	}
 	/* Failure-Report */
 	if(self->FailureReport){
-		tmsrp_header_tostring(TMSRP_HEADER(self->FailureReport), output);
+		tmsrp_header_serialize(TMSRP_HEADER(self->FailureReport), output);
 	}
 	/* Success-Report */
 	if(self->SuccessReport){
-		tmsrp_header_tostring(TMSRP_HEADER(self->SuccessReport), output);
+		tmsrp_header_serialize(TMSRP_HEADER(self->SuccessReport), output);
 	}
 	/* Status */
 	if(self->Status){
-		tmsrp_header_tostring(TMSRP_HEADER(self->Status), output);
+		tmsrp_header_serialize(TMSRP_HEADER(self->Status), output);
 	}
 		
 	/* All other headers (Other-Mime-headers)
@@ -315,7 +313,7 @@ int tmsrp_message_serialize(const tmsrp_message_t *self, tsk_buffer_t *output)
 		tsk_list_item_t *item;
 		tsk_list_foreach(item, self->headers){
 			tmsrp_header_t *hdr = item->data;
-			tmsrp_header_tostring(hdr, output);
+			tmsrp_header_serialize(hdr, output);
 		}
 	}
 	
@@ -329,7 +327,7 @@ int tmsrp_message_serialize(const tmsrp_message_t *self, tsk_buffer_t *output)
 	if(TMSRP_MESSAGE_HAS_CONTENT(self)){
 		/* Content-Type */
 		if(self->ContentType){
-			tmsrp_header_tostring(TMSRP_HEADER(self->ContentType), output);
+			tmsrp_header_serialize(TMSRP_HEADER(self->ContentType), output);
 		}
 		tsk_buffer_append(output, "\r\n", 2);
 		tsk_buffer_append(output, TSK_BUFFER_TO_STRING(self->Content), TSK_BUFFER_SIZE(self->Content));

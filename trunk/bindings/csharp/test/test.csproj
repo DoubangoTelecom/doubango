@@ -48,9 +48,6 @@
     <Compile Include="..\ActionConfig.cs">
       <Link>ActionConfig.cs</Link>
     </Compile>
-    <Compile Include="..\CallEvent.cs">
-      <Link>CallEvent.cs</Link>
-    </Compile>
     <Compile Include="..\CallSession.cs">
       <Link>CallSession.cs</Link>
     </Compile>
@@ -59,6 +56,12 @@
     </Compile>
     <Compile Include="..\DialogEvent.cs">
       <Link>DialogEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\InviteEvent.cs">
+      <Link>InviteEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\InviteSession.cs">
+      <Link>InviteSession.cs</Link>
     </Compile>
     <Compile Include="..\MessagingEvent.cs">
       <Link>MessagingEvent.cs</Link>
@@ -117,6 +120,9 @@
     <Compile Include="..\SafeObject.cs">
       <Link>SafeObject.cs</Link>
     </Compile>
+    <Compile Include="..\SdpMessage.cs">
+      <Link>SdpMessage.cs</Link>
+    </Compile>
     <Compile Include="..\SipCallback.cs">
       <Link>SipCallback.cs</Link>
     </Compile>
@@ -173,6 +179,12 @@
     </Compile>
     <Compile Include="..\tmedia_qos_stype_t.cs">
       <Link>tmedia_qos_stype_t.cs</Link>
+    </Compile>
+    <Compile Include="..\tmsrp_event_type_t.cs">
+      <Link>tmsrp_event_type_t.cs</Link>
+    </Compile>
+    <Compile Include="..\tmsrp_request_type_t.cs">
+      <Link>tmsrp_request_type_t.cs</Link>
     </Compile>
     <Compile Include="..\tsip_event_type_t.cs">
       <Link>tsip_event_type_t.cs</Link>

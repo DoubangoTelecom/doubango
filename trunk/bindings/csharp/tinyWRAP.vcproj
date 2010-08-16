@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyDAV.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinyXCAP.lib $(OutDir)\tinySMS.lib $(OutDir)\tinyMSRP.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyDAV.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinyXCAP.lib $(OutDir)\tinySMS.lib $(OutDir)\tinyMSRP.lib $(OutDir)\tinySDP.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"

@@ -430,11 +430,11 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	/* set events */
 	context->events = TNET_POLLIN | TNET_POLLNVAL | TNET_POLLERR;
 	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
-//		context->events |= TNET_POLLPRI 
+		context->events |= TNET_POLLOUT // emulate WinSock2 FD_CONNECT event
 //#if !defined(ANDROID)
 //			| TNET_POLLHUP /* FIXME: always present */
 //#endif
-//			;
+			;
 	}
 	
 	/* Start listening */
@@ -565,7 +565,7 @@ void *tnet_transport_mainthread(void *param)
 				void* buffer = tsk_null;
 				tnet_transport_event_t* e;
 				
-				/* TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description); */
+				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description);
 
 				//
 				// FIXME: check if accept() is needed or not
@@ -587,7 +587,7 @@ void *tnet_transport_mainthread(void *param)
 					/* It's probably an incoming connection --> try to accept() it */
 					tnet_fd_t fd;
 					if((fd = accept(active_socket->fd, tsk_null, 0)) != TNET_INVALID_SOCKET){
-						TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_ACCEPT", transport->description);
+						TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_ACCEPT(fd=%d)", transport->description, fd);
 						addSocket(fd, transport->master->type, transport, tsk_true, tsk_false);
 						TSK_RUNNABLE_ENQUEUE(transport, event_accepted, transport->callback_data, fd);
 					}
@@ -599,7 +599,7 @@ void *tnet_transport_mainthread(void *param)
 				}
 				
 				if(!len){
-					TSK_DEBUG_WARN("IOCTLT returned zero.");
+					TSK_DEBUG_WARN("IOCTLT returned zero for fd=%d", active_socket->fd);
 #if defined(ANDROID) || 1 /* FIXME: On Android/MAC OS X this mean that the socket has been closed?  */
 					TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, active_socket->fd);
 					removeSocket(i, context);
@@ -651,21 +651,23 @@ TNET_POLLIN_DONE:;
 
 
 			/*================== TNET_POLLOUT ==================*/
-			if(context->ufds[i].revents & TNET_POLLOUT)
-			{
+			if(context->ufds[i].revents & TNET_POLLOUT){
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLOUT", transport->description);
+				if(!active_socket->connected){
+					active_socket->connected = tsk_true;
+					TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, active_socket->fd);
+				}
+				context->ufds[i].events &= ~TNET_POLLOUT;
 			}
 
 
 			/*================== TNET_POLLPRI ==================*/
-			if(context->ufds[i].revents & TNET_POLLPRI)
-			{
+			if(context->ufds[i].revents & TNET_POLLPRI){
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLPRI", transport->description);
 			}
 			
 			/*================== TNET_POLLHUP ==================*/
-			if(context->ufds[i].revents & (TNET_POLLHUP))
-			{
+			if(context->ufds[i].revents & (TNET_POLLHUP)){
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLHUP", transport->description);
 #if defined(ANDROID)
 				/* FIXME */
@@ -676,8 +678,7 @@ TNET_POLLIN_DONE:;
 			}
 
 			/*================== TNET_POLLERR ==================*/
-			if(context->ufds[i].revents & (TNET_POLLERR))
-			{
+			if(context->ufds[i].revents & (TNET_POLLERR)){
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLERR", transport->description);
 
 				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
@@ -685,8 +686,7 @@ TNET_POLLIN_DONE:;
 			}
 			
 			/*================== TNET_POLLNVAL ==================*/
-			if(context->ufds[i].revents & (TNET_POLLNVAL))
-			{
+			if(context->ufds[i].revents & (TNET_POLLNVAL)){
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLNVAL", transport->description);
 				
 				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);

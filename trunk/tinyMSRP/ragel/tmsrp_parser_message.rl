@@ -193,7 +193,7 @@
 		into_endline = tsk_true;
 	}
 	action endtid_match{
-		( into_endline || (((pe-p) >7/*seven hyphens*/) && (msrp_msg->tid) && tsk_strniequals(msrp_msg->tid, (p+7), strlen(msrp_msg->tid))) )
+		( into_endline || (((pe-p) >7/*seven hyphens*/) && (msrp_msg->tid) && tsk_strniequals(msrp_msg->tid, (p+7), tsk_strlen(msrp_msg->tid))) )
 	}
 
 

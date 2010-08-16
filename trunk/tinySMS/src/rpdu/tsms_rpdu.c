@@ -333,7 +333,9 @@ tsms_rpdu_message_t* _tsms_rpdu_rpack_deserialize(const void* data, tsk_size_t s
 
 	/* 3GPP TS 24.011 ==> 8.2.5.3 RP-User data element */
 	if((pend-pdata) > 1){
-		tsk_size_t length = *pdata++; // length-indicator
+		tsk_size_t length;
+		/*uint8_t iei =*/ *pdata++; // IEI MUST be equal to 0x41
+		length = *pdata++; // length-indicator
 		if((length != (pend-pdata))){
 			TSK_DEBUG_WARN("Invalid length-indicator.");
 		}
@@ -359,6 +361,8 @@ int _tsms_rpdu_rpack_serialize(const tsms_rpdu_message_t* _self, tsk_buffer_t* o
 
 	/* 3GPP TS 24.011 ==> 8.2.5.3 RP-User data element */
 	if(self->udata){
+		static uint8_t iei = 0x41;
+		tsk_buffer_append(output, &iei, 1); // IEI
 		tsk_buffer_append(output, &self->udata->size, 1); // length-indicator
 		tsk_buffer_append(output, self->udata->data, self->udata->size);
 	}
@@ -474,8 +478,10 @@ tsms_rpdu_message_t* _tsms_rpdu_rperror_deserialize(const void* data, tsk_size_t
 	}
 	
 	/* 3GPP TS 24.011 ==> 8.2.5.3 RP-User data element */
-	if((pend-pdata) > 1){
-		tsk_size_t length = *pdata++; // length-indicator
+	if((pend-pdata) > 2){
+		tsk_size_t length;
+		/*uint8_t iei =*/ *pdata++; // IEI MUST be equal to 0x41
+		length = *pdata++; // length-indicator
 		if((length != (pend-pdata))){
 			TSK_DEBUG_WARN("Invalid length-indicator.");
 		}
@@ -510,6 +516,8 @@ int _tsms_rpdu_rperror_serialize(const tsms_rpdu_message_t* _self, tsk_buffer_t*
 
 	/* 3GPP TS 24.011 ==> 8.2.5.3 RP-User data element */
 	if(self->udata){
+		static uint8_t iei = 0x41;
+		tsk_buffer_append(output, &iei, 1); // IEI
 		tsk_buffer_append(output, &self->udata->size, 1); // length-indicator
 		tsk_buffer_append(output, self->udata->data, self->udata->size);
 	}

@@ -38,8 +38,14 @@ public class MsrpEvent : IDisposable {
     }
   }
 
-  public uint getSipSessionId() {
-    uint ret = tinyWRAPPINVOKE.MsrpEvent_getSipSessionId(swigCPtr);
+  public tmsrp_event_type_t getType() {
+    tmsrp_event_type_t ret = (tmsrp_event_type_t)tinyWRAPPINVOKE.MsrpEvent_getType(swigCPtr);
+    return ret;
+  }
+
+  public MsrpSession getSipSession() {
+    IntPtr cPtr = tinyWRAPPINVOKE.MsrpEvent_getSipSession(swigCPtr);
+    MsrpSession ret = (cPtr == IntPtr.Zero) ? null : new MsrpSession(cPtr, false);
     return ret;
   }
 

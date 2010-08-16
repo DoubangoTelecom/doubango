@@ -8,7 +8,7 @@
 
 package org.doubango.tinyWRAP;
 
-public class CallSession extends SipSession {
+public class CallSession extends InviteSession {
   private long swigCPtr;
 
   protected CallSession(long cPtr, boolean cMemoryOwn) {
@@ -73,14 +73,6 @@ public class CallSession extends SipSession {
     return tinyWRAPJNI.CallSession_setQoS(swigCPtr, this, type.swigValue(), strength.swigValue());
   }
 
-  public boolean accept(ActionConfig config) {
-    return tinyWRAPJNI.CallSession_accept__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
-  }
-
-  public boolean accept() {
-    return tinyWRAPJNI.CallSession_accept__SWIG_1(swigCPtr, this);
-  }
-
   public boolean hold(ActionConfig config) {
     return tinyWRAPJNI.CallSession_hold__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
   }
@@ -99,22 +91,6 @@ public class CallSession extends SipSession {
 
   public boolean sendDTMF(int number) {
     return tinyWRAPJNI.CallSession_sendDTMF(swigCPtr, this, number);
-  }
-
-  public boolean hangup(ActionConfig config) {
-    return tinyWRAPJNI.CallSession_hangup__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
-  }
-
-  public boolean hangup() {
-    return tinyWRAPJNI.CallSession_hangup__SWIG_1(swigCPtr, this);
-  }
-
-  public boolean reject(ActionConfig config) {
-    return tinyWRAPJNI.CallSession_reject__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
-  }
-
-  public boolean reject() {
-    return tinyWRAPJNI.CallSession_reject__SWIG_1(swigCPtr, this);
   }
 
 }
