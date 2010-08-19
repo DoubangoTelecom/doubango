@@ -271,7 +271,7 @@ char* SipStack::dnsNaptrSrv(const char* domain, const char* service, unsigned sh
 	
 
 	if(dnsctx){
-		if(!tnet_dns_query_naptr_srv(dnsctx, "sip2sip.info", "SIP+D2U", &ip, &port)){
+		if(!tnet_dns_query_naptr_srv(dnsctx, domain, service, &ip, &port)){
 			*OUTPUT = port;
 		}
 		tsk_object_unref(dnsctx);
