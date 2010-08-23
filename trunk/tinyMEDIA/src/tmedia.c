@@ -29,6 +29,8 @@
  */
 #include "tinymedia/tmedia.h"
 
+#if 0
+
 #include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
@@ -283,4 +285,6 @@ static const tsk_object_def_t tmedia_def_s =
 };
 
 const void *tmedia_def_t = &tmedia_def_s;
+
+#endif /* if 0 => FIXME: Remove this file */
 

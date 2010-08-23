@@ -372,7 +372,6 @@
 		4D685DBE11C2853000F689D8 /* libtinyRTP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D586F1A11BCD28E00D2798E /* libtinyRTP.a */; };
 		4D685DBF11C2853300F689D8 /* libtinyMEDIA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D20A55E1196E9F4009D9066 /* libtinyMEDIA.a */; };
 		4D685DC011C2853700F689D8 /* libtinyDAV.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D586F1311BCD28500D2798E /* libtinyDAV.a */; };
-		4D73C06011CA21DB00AE9830 /* tnet_transport_cfsocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 4D73C05F11CA21DB00AE9830 /* tnet_transport_cfsocket.c */; };
 		4D75710B1198451000F3080E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D7571071198451000F3080E /* AppDelegate.m */; };
 		4D75710D1198451000F3080E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D7571091198451000F3080E /* main.m */; };
 		4D75710E1198451000F3080E /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D75710A1198451000F3080E /* MainWindow.xib */; };
@@ -853,6 +852,7 @@
 		4DE627791191968C00110B2D /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DE627751191968C00110B2D /* MainWindow.xib */; };
 		4DE6277E119196A700110B2D /* libtinyNET.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE62309119172F700110B2D /* libtinyNET.a */; };
 		4DE6277F119196A700110B2D /* libtinySAK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE621641191720500110B2D /* libtinySAK.a */; };
+		EC1225B111F138820093D7E0 /* tmedia_denoise.c in Sources */ = {isa = PBXBuildFile; fileRef = EC1225B011F138820093D7E0 /* tmedia_denoise.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2012,6 +2012,7 @@
 		4DE627961191970000110B2D /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = test.c; path = ../../tinyNET/test/test.c; sourceTree = SOURCE_ROOT; };
 		4DE628911191B42A00110B2D /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../../tinyNET/config.h; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		EC1225B011F138820093D7E0 /* tmedia_denoise.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tmedia_denoise.c; path = ../../tinyMEDIA/src/tmedia_denoise.c; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2184,6 +2185,7 @@
 		0867D691FE84028FC02AAC07 /* iPhoneOS */ = {
 			isa = PBXGroup;
 			children = (
+				EC1225B011F138820093D7E0 /* tmedia_denoise.c */,
 				4DE6248F1191748600110B2D /* Libraries */,
 				4DE624901191749000110B2D /* Tests */,
 				0867D69AFE84028FC02AAC07 /* Frameworks */,
@@ -5524,6 +5526,7 @@
 				4DCD5FB311C9055000C000E2 /* tmedia_session_ghost.c in Sources */,
 				4DCD5FB411C9055000C000E2 /* tmedia_session.c in Sources */,
 				4DCD5FB511C9055000C000E2 /* tmedia.c in Sources */,
+				EC1225B111F138820093D7E0 /* tmedia_denoise.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5722,7 +5725,6 @@
 				4DE624761191734100110B2D /* tnet_turn.c in Sources */,
 				4DE624781191734100110B2D /* tnet_turn_attribute.c in Sources */,
 				4DE6247A1191734100110B2D /* tnet_turn_message.c in Sources */,
-				4D73C06011CA21DB00AE9830 /* tnet_transport_cfsocket.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6595,15 +6597,8 @@
 					"$(TINY_3RDPARTIES_INCLUDE)",
 				);
 				LIBRARY_SEARCH_PATHS = "$(TINY_3RDPARTIES_LIB)";
-				OTHER_CFLAGS = (
-					"-DHAVE_CONFIG_H",
-					"-DDEBUG_LEVEL=DEBUG_LEVEL_INFO",
-				);
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lcrypto",
-					"-lssl",
-				);
+				OTHER_CFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
+				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
 				PRODUCT_NAME = tinyNET;
 			};

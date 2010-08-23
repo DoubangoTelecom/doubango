@@ -571,98 +571,98 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF0D6CB118CC01D001A3D6F /* tinySAK */;
+			remoteGlobalIDString = ECF0D6CB118CC01D001A3D6F;
 			remoteInfo = tinySAK;
 		};
 		ECF0DF5C118CC241001A3D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF0D6CB118CC01D001A3D6F /* tinySAK */;
+			remoteGlobalIDString = ECF0D6CB118CC01D001A3D6F;
 			remoteInfo = tinySAK;
 		};
 		ECF0E048118CC52B001A3D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF0D6CB118CC01D001A3D6F /* tinySAK */;
+			remoteGlobalIDString = ECF0D6CB118CC01D001A3D6F;
 			remoteInfo = tinySAK;
 		};
 		ECF0E04A118CC52B001A3D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF0D6D2118CC02E001A3D6F /* tinyNET */;
+			remoteGlobalIDString = ECF0D6D2118CC02E001A3D6F;
 			remoteInfo = tinyNET;
 		};
 		ECF0E057118CC59B001A3D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF0D6CB118CC01D001A3D6F /* tinySAK */;
+			remoteGlobalIDString = ECF0D6CB118CC01D001A3D6F;
 			remoteInfo = tinySAK;
 		};
 		ECF0E10A118CC68F001A3D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF0D6CB118CC01D001A3D6F /* tinySAK */;
+			remoteGlobalIDString = ECF0D6CB118CC01D001A3D6F;
 			remoteInfo = tinySAK;
 		};
 		ECF0E3CD118CCBE0001A3D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF0D6CB118CC01D001A3D6F /* tinySAK */;
+			remoteGlobalIDString = ECF0D6CB118CC01D001A3D6F;
 			remoteInfo = tinySAK;
 		};
 		ECF0E3CF118CCBE0001A3D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF0D6D2118CC02E001A3D6F /* tinyNET */;
+			remoteGlobalIDString = ECF0D6D2118CC02E001A3D6F;
 			remoteInfo = tinyNET;
 		};
 		ECF0E3D1118CCBE0001A3D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF0D6D9118CC042001A3D6F /* tinyHTTP */;
+			remoteGlobalIDString = ECF0D6D9118CC042001A3D6F;
 			remoteInfo = tinyHTTP;
 		};
 		ECF0E3D3118CCBE0001A3D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF0E053118CC592001A3D6F /* tinyIPSec */;
+			remoteGlobalIDString = ECF0E053118CC592001A3D6F;
 			remoteInfo = tinyIPSec;
 		};
 		ECF0E402118CCCB5001A3D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF0D6CB118CC01D001A3D6F /* tinySAK */;
+			remoteGlobalIDString = ECF0D6CB118CC01D001A3D6F;
 			remoteInfo = tinySAK;
 		};
 		ECF0E404118CCCB5001A3D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF0D6EE118CC06F001A3D6F /* tinySIP */;
+			remoteGlobalIDString = ECF0D6EE118CC06F001A3D6F;
 			remoteInfo = tinySIP;
 		};
 		ECF0E406118CCCB5001A3D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF0DF58118CC238001A3D6F /* tinySMS */;
+			remoteGlobalIDString = ECF0DF58118CC238001A3D6F;
 			remoteInfo = tinySMS;
 		};
 		ECF0E40D118CCCFF001A3D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF0D6D2118CC02E001A3D6F /* tinyNET */;
+			remoteGlobalIDString = ECF0D6D2118CC02E001A3D6F;
 			remoteInfo = tinyNET;
 		};
 /* End PBXContainerItemProxy section */

@@ -88,7 +88,7 @@ TINYSIP_API void tsip_timers_setT2(uint32_t t2);
 TINYSIP_API void tsip_timers_setT4(uint32_t t4);
 TINYSIP_API void tsip_timers_setA(uint32_t a);
 TINYSIP_API void tsip_timers_setB(uint32_t b);
-TINYSIP_API void tsip_timers_setc(uint32_t c);
+TINYSIP_API void tsip_timers_setC(uint32_t c);
 TINYSIP_API void tsip_timers_setD(uint32_t d);
 TINYSIP_API void tsip_timers_setE(uint32_t e);
 TINYSIP_API void tsip_timers_setF(uint32_t f);

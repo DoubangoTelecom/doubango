@@ -33,6 +33,8 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#include <string.h> /* memcpy() */
+
 /** Create new RTP packet */
 trtp_rtp_packet_t* trtp_rtp_packet_create_null()
 {

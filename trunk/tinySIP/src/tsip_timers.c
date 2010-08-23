@@ -141,7 +141,7 @@ void tsip_timers_setB(uint32_t b){
 	B = b;
 }
 
-void tsip_timers_setc(uint32_t c){
+void tsip_timers_setC(uint32_t c){
 	C = c;
 }
 

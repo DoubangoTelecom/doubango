@@ -31,6 +31,8 @@
 
 #include "tinydav/codecs/h264/tdav_codec_h264.h"
 
+#if HAVE_FFMPEG
+
 #include "tinymedia/tmedia_codec.h"
 
 #include "tsk_string.h"
@@ -336,3 +338,5 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_s *self, const void *da
 		}
 	}
 }
+
+#endif /* HAVE_FFMPEG */

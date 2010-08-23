@@ -30,6 +30,8 @@
  */
 #include "tinydav/codecs/h264/tdav_codec_h264.h"
 
+#if HAVE_FFMPEG
+
 #include "tinydav/codecs/h264/tdav_codec_h264_rtp.h"
 #include "tinydav/video/tdav_converter_video.h"
 
@@ -832,3 +834,5 @@ last:
 				(size - last_scp), tsk_true);
 	}
 }
+
+#endif /* HAVE_FFMPEG */

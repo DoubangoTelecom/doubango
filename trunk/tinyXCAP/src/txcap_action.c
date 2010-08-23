@@ -35,11 +35,6 @@
 /**@defgroup txcap_action_group XDMC (Sending Requests)
 */
 
-#define	TXCAP_MIME_TYPE_ELEMENT			"application/xcap-el+xml" /**< as per rfc 4825 subclause 15.2.1 */
-#define	TXCAP_MIME_TYPE_ATTRIBUTE		"application/xcap-att+xml" /**< as per rfc 4825 subclause 15.2.2 */
-#define	TXCAP_MIME_TYPE_NS				"application/xcap-ns+xml" /**< as per rfc 4825 subclause 15.2.3 */
-#define	TXCAP_MIME_TYPE_ERROR			"application/xcap-error+xml" /**< as per rfc 4825 subclause 15.2.4 */
-
 extern char* __txcap_selector_get_url(const txcap_stack_handle_t* stack, const char* auid_id, va_list* app);
 
 
