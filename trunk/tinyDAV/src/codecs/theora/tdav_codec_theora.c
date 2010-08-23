@@ -30,6 +30,8 @@
  */
 #include "tinydav/codecs/theora/tdav_codec_theora.h"
 
+#if HAVE_FFMPEG
+
 #include "tinydav/video/tdav_converter_video.h"
 
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
@@ -692,3 +694,5 @@ int tdav_codec_theora_send(tdav_codec_theora_t* self, const uint8_t* data, tsk_s
 
 	return 0;
 }
+
+#endif /* HAVE_FFMPEG */

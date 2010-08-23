@@ -37,6 +37,11 @@
 
 TXCAP_BEGIN_DECLS
 
+#define	TXCAP_MIME_TYPE_ELEMENT			"application/xcap-el+xml" /**< as per rfc 4825 subclause 15.2.1 */
+#define	TXCAP_MIME_TYPE_ATTRIBUTE		"application/xcap-att+xml" /**< as per rfc 4825 subclause 15.2.2 */
+#define	TXCAP_MIME_TYPE_NS				"application/xcap-ns+xml" /**< as per rfc 4825 subclause 15.2.3 */
+#define	TXCAP_MIME_TYPE_ERROR			"application/xcap-error+xml" /**< as per rfc 4825 subclause 15.2.4 */
+
 /** List of all supported types.
 */
 typedef enum txcap_action_type_e

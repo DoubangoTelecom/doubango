@@ -246,7 +246,7 @@ int txcap_auid_register(txcap_auids_L_t* auids, const char* id, const char* mime
 */
 txcap_auid_t* txcap_auid_get_by_id(txcap_auids_L_t* auids, const char* id)
 {
-	const txcap_auid_t* ret = tsk_null;
+	//const txcap_auid_t* ret = tsk_null;
 	const tsk_list_item_t* item;
 	
 	if(!auids){

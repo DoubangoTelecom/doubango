@@ -476,7 +476,7 @@ bail:
 
 int tnet_transport_unprepare(tnet_transport_t *transport)
 {
-	int ret = -1;
+	//int ret = -1;
 	transport_context_t *context;
 	
 	if(!transport || !transport->context){

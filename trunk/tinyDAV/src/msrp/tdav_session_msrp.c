@@ -208,7 +208,7 @@ static const char* setup_to_string(tdav_msrp_setup_t setup)
 
 static int populate_lo(tdav_session_msrp_t* self, tsk_bool_t initial)
 {
-	char* tmp = tsk_null;
+	//char* tmp = tsk_null;
 	if(!self || !TMEDIA_SESSION(self)->M.lo){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
