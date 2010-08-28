@@ -164,7 +164,8 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 			ret = tmedia_denoise_process(TMEDIA_DENOISE(audio->denoise), (void*)buffer, &silence_or_noise);
 			if(silence_or_noise && (ret == 0)){
 				//TSK_DEBUG_INFO("Silence or Noise buffer");
-				return 0;
+				//FIXME:
+				//return 0;
 			}
 		}
 

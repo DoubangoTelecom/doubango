@@ -21,6 +21,9 @@ LIBGSM_LDFLAGS := -lgsm
 BV16_CFLAGS := -DHAVE_BV16=0 -I$(THIRDPARTIES_INC)/BroadVoice16/bv16 -I$(THIRDPARTIES_INC)/BroadVoice16/bvcommon
 BV16_LDFLAGS := -lbv16
 
+G729_CFLAGS := -DHAVE_G729=0 -DG729_HACK=0
+#G729_LDFLAGS := -lg729a
+
 CFLAGS := $(CFLAGS_LIB) -I$(THIRDPARTIES_INC) $(ILBC_CFLAGS) $(LIBGSM_CFLAGS) \
 	$(FFMPEG_CFLAGS) $(SPEEX_CFLAGS) $(OPENCORE_ARM_CFLAGS) $(BV16_CFLAGS) \
 	-I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I../tinyRTP/include -I../tinyMEDIA/include -I../tinyMSRP/include -I./include \
@@ -59,6 +62,10 @@ OBJS += src/codecs/amr/tdav_codec_amr.o
 	### codecs (G.711)
 OBJS += src/codecs/g711/g711.o \
 	src/codecs/g711/tdav_codec_g711.o
+	
+	### codecs (G.729)
+OBJS += src/codecs/g729/g729.o \
+	src/codecs/g729/tdav_codec_g729.o
 	
 	### codecs (GSM)
 OBJS += src/codecs/gsm/tdav_codec_gsm.o

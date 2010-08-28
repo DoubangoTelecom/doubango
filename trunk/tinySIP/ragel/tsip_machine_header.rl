@@ -104,7 +104,7 @@
 	User_Agent = "User-Agent"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_User_Agent; 
 	Via = ("Via"i | "v") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Via; 
 	Warning = "Warning"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Warning; 
-	WWW_Authenticate = "WWW-Authenticate"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_WWW_Authenticate; 
+	WWW_Authenticate = "WWW-Authenticate"i SP* HCOLON SP*<: any* :>(CRLF when prev_not_comma)  @parse_header_WWW_Authenticate; 
 	P_Access_Network_Info = "P-Access-Network-Info"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_P_Access_Network_Info; 
 	P_Answer_State = "P-Answer-State"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_P_Answer_State; 
 	P_Asserted_Identity = "P-Asserted-Identity"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_P_Asserted_Identity; 

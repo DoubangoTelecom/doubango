@@ -39,6 +39,11 @@ static void tsip_message_parser_execute(tsk_ragel_state_t *state, tsip_message_t
 static void tsip_message_parser_init(tsk_ragel_state_t *state);
 static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *message, tsk_bool_t extract_content);
 
+// Check if we have ",CRLF" ==> See WWW-Authenticate header
+// As :>CRLF is preceded by any+ ==> p will be at least (start + 1)
+// p point to CR
+#define prev_not_comma(p) !(p && p[-1] == ',')
+
 /***********************************
 *	Ragel state machine.
 */

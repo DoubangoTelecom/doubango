@@ -54,6 +54,11 @@
 	}
 
 
+// Check if we have ",CRLF" ==> See WWW-Authenticate header
+// As :>CRLF is preceded by any+ ==> p will be at least (start + 1)
+// p point to CR
+#define prev_not_comma(p) !(p && p[-1] == ',')
+
 /***********************************
 *	Ragel state machine.
 */
@@ -826,6 +831,9 @@
 		ADD_HEADER(header);
 	}
 
+	action prev_not_comma{
+		prev_not_comma(p)
+	}
 
 	# Includes
 	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";

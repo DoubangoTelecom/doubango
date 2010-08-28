@@ -37,6 +37,10 @@
 
 #include <string.h>
 
+// Check if we have ",CRLF" ==> See WWW-Authenticate header
+// As :>CRLF is preceded by any+ ==> p will be at least (start + 1)
+// p point to CR
+#define prev_not_comma(p) !(p && p[-1] == ',')
 
 /***********************************
 *	Ragel state machine.
@@ -104,6 +108,10 @@
 		TSK_PARSER_ADD_PARAM(THTTP_HEADER_PARAMS(hdr_WWW_Authenticate));
 	}
 
+	action prev_not_comma{
+		prev_not_comma(p)
+	}
+
 	action eob{
 	}
 
@@ -120,11 +128,11 @@
 	qop_options = "qop"i EQUAL LDQUOT <: (any*)>tag %parse_qop :> RDQUOT;
 	
 	digest_cln = (realm | domain | nonce | opaque | stale | algorithm | qop_options)@1 | auth_param@0;
-	challenge = ( ("Digest"i%is_digest | "Basic"i%is_basic) LWS digest_cln ( COMMA <:digest_cln )* ) | other_challenge;
+	challenge = ( ("Digest"i%is_digest | "Basic"i%is_basic) LWS digest_cln ( (COMMA | CRLF) <:digest_cln )* ) | other_challenge;
 	WWW_Authenticate = ("WWW-Authenticate"i>is_auth | "Proxy-Authenticate"i>is_proxy) HCOLON challenge;
 
 	# Entry point
-	main := WWW_Authenticate :>CRLF @eob;
+	main := WWW_Authenticate CRLF @eob;
 
 }%%
 
