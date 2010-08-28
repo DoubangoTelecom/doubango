@@ -42,6 +42,7 @@
 #include "tinydav/codecs/g711/tdav_codec_g711.h"
 #include "tinydav/codecs/gsm/tdav_codec_gsm.h"
 #include "tinydav/codecs/ilbc/tdav_codec_ilbc.h"
+#include "tinydav/codecs/g729/tdav_codec_g729.h"
 #include "tinydav/codecs/speex/tdav_codec_speex.h"
 #include "tinydav/codecs/h261/tdav_codec_h261.h"
 #include "tinydav/codecs/h263/tdav_codec_h263.h"
@@ -110,6 +111,9 @@ int tdav_init()
 #endif
 #if HAVE_LIB_SPEEX
 	tmedia_codec_plugin_register(tdav_codec_speex_nb_plugin_def_t);
+#endif
+#if HAVE_G729
+	tmedia_codec_plugin_register(tdav_codec_g729a_plugin_def_t);
 #endif
 #if HAVE_FFMPEG
 	tmedia_codec_plugin_register(tdav_codec_h261_plugin_def_t);
@@ -186,6 +190,9 @@ void tdav_set_codecs(tdav_codec_id_t codecs)
 #if HAVE_LIB_SPEEX
 		{ tdav_codec_id_speex_nb, &tdav_codec_speex_nb_plugin_def_t },
 #endif
+#if HAVE_G729
+		{ tdav_codec_id_g729a, &tdav_codec_g729a_plugin_def_t },
+#endif
 
 #if HAVE_FFMPEG
 		{ tdav_codec_id_h261, &tdav_codec_h261_plugin_def_t },
@@ -237,6 +244,9 @@ int tdav_deinit()
 #endif
 #if HAVE_LIB_SPEEX
 	tmedia_codec_plugin_unregister(tdav_codec_speex_nb_plugin_def_t);
+#endif
+#if HAVE_G729
+	tmedia_codec_plugin_unregister(tdav_codec_g729a_plugin_def_t);
 #endif
 #if HAVE_FFMPEG
 	tmedia_codec_plugin_unregister(tdav_codec_h261_plugin_def_t);

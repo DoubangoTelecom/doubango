@@ -73,7 +73,7 @@
 }%%
 
 
-tsip_header_RAck_t* tsip_header_RAck_create(int32_t seq, int32_t cseq, const char* method)
+tsip_header_RAck_t* tsip_header_RAck_create(uint32_t seq, uint32_t cseq, const char* method)
 {
 	return tsk_object_new(TSIP_HEADER_RACK_VA_ARGS(seq, cseq, method));
 }

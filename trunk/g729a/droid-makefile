@@ -1,0 +1,60 @@
+APP := lib$(PROJECT).$(EXT)
+
+CFLAGS := $(CFLAGS_LIB) -D__unix__
+LDFLAGS := $(LDFLAGS_LIB) -lgcc
+
+all: $(APP)
+
+OBJS = ACELP_CA.O\
+	BASIC_OP.O\
+	BITS.O\
+	COD_LD8A.O\
+	COR_FUNC.O\
+	DEC_GAIN.O\
+	DEC_LAG3.O\
+	DEC_LD8A.O\
+	DE_ACELP.O\
+	DSPFUNC.O\
+	FILTER.O\
+	GAINPRED.O\
+	LPC.O\
+	LPCFUNC.O\
+	LSPDEC.O\
+	LSPGETQ.O\
+	OPER_32B.O\
+	PITCH_A.O\
+	POSTFILT.O\
+	POST_PRO.O\
+	PRED_LT3.O\
+	PRE_PROC.O\
+	P_PARITY.O\
+	QUA_GAIN.O\
+	QUA_LSP.O\
+	TAB_LD8A.O\
+	TAMING.O\
+	UTIL.O
+
+	
+$(APP): $(OBJS)
+ifeq ($(EXT), a)
+	$(AR) rcs $@ $^
+else
+	$(CC) $(LDFLAGS) -o $@ $^
+endif
+
+%.O: %.C
+	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+install: $(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb remount
+	$(ANDROID_SDK_ROOT)/tools/adb push $(APP) $(LIB_DIR)/$(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb shell chmod 777 $(LIB_DIR)/$(APP)
+
+shell:
+	$(ANDROID_SDK_ROOT)/tools/adb shell
+
+run:
+	$(ANDROID_SDK_ROOT)/tools/adb shell $(LIB_DIR)/$(APP)
+	
+clean:
+	@rm -f $(OBJS) $(APP)

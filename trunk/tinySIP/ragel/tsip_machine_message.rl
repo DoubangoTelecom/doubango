@@ -33,7 +33,11 @@
 	message_body = any*;
 	SIP_Version = ("SIP"i "/" DIGIT+ "." DIGIT+) >tag %parse_sipversion;
 	
-	message_header = any+ >tag :>CRLF %parse_header;
+	action prev_not_comma{
+		prev_not_comma(p)
+	}
+
+	message_header = any+>tag :>(CRLF when prev_not_comma) %parse_header;
 
 	# SIP RESPONSE
 	Reason_Phrase = (( reserved | unreserved | escaped | UTF8_NONASCII | UTF8_CONT | SP | HTAB )*)>tag %parse_reason_phrase;
