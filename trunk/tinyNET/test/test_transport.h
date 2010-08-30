@@ -59,7 +59,7 @@ static int tnet_tcp_cb(const tnet_transport_event_t* e)
 	switch(e->type){
 		case event_data:
 			{
-				TSK_DEBUG_INFO("--- TCP ---\n%s\n", e->data);
+				TSK_DEBUG_INFO("--- TCP ---\n%s\n", (const char*)e->data);
 				break;
 			}
 		case event_closed:
@@ -77,7 +77,7 @@ static int tnet_udp_cb(const tnet_transport_event_t* e)
 	switch(e->type){
 		case event_data:
 			{
-				TSK_DEBUG_INFO("--- UDP ---\n%s\n", e->data);
+				TSK_DEBUG_INFO("--- UDP ---\n%s\n", (const char*)e->data);
 				break;
 			}
 		case event_closed:

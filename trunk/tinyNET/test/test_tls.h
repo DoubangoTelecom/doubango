@@ -42,7 +42,7 @@ static int tnet_tls_cb(const tnet_transport_event_t* e)
 	switch(e->type){
 		case event_data:
 			{
-				TSK_DEBUG_INFO("--- TLS ---\n%s\n", e->data);
+				TSK_DEBUG_INFO("--- TLS ---\n%s\n", (const char*)e->data);
 				break;
 			}
 		case event_closed:
