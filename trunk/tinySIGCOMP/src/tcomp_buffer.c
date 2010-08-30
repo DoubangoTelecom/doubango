@@ -74,6 +74,7 @@ tsk_bool_t tcomp_buffer_equals(const tcomp_buffer_handle_t* handle1, const tcomp
 	return tsk_false;
 }
 
+
 /**Checks if the first internal buffer starts with the second handle internal buffer.
 * @param handle1 First handle
 * @param handle2 Second handle
