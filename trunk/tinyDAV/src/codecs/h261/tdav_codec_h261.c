@@ -49,8 +49,6 @@ static void *run(void* self);
 static void tdav_codec_h261_rtp_callback(tdav_codec_h261_t *self, const void *data, tsk_size_t size, tsk_bool_t marker);
 static void tdav_codec_h261_encap(const tdav_codec_h261_t* h261, const uint8_t* pdata, tsk_size_t size);
 
-
-
 /* ============ H.261 Plugin interface ================= */
 
 //
