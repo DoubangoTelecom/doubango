@@ -1164,28 +1164,28 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 4DE62308119172F700110B2D /* tinyNET */;
+			remoteGlobalIDString = 4DE62308119172F700110B2D;
 			remoteInfo = tinyNET;
 		};
 		ECF0994A122C751700A736B1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 4DE621631191720500110B2D /* tinySAK */;
+			remoteGlobalIDString = 4DE621631191720500110B2D;
 			remoteInfo = tinySAK;
 		};
 		ECF09956122C756200A736B1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 4DE621631191720500110B2D /* tinySAK */;
+			remoteGlobalIDString = 4DE621631191720500110B2D;
 			remoteInfo = tinySAK;
 		};
 		ECF0995C122C758300A736B1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 4D586F1911BCD28E00D2798E /* tinyRTP */;
+			remoteGlobalIDString = 4D586F1911BCD28E00D2798E;
 			remoteInfo = tinyRTP;
 		};
 /* End PBXContainerItemProxy section */
@@ -6120,7 +6120,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphonesimulator4.0;
 				TINY_3RDPARTIES_INCLUDE = "$(DOUBANGO_HOME)/thirdparties/iphone/include";
 				TINY_3RDPARTIES_LIB = "$(DOUBANGO_HOME)/thirdparties/iphone/lib";
 				TINY_DAV_INCLUDE = "$(DOUBANGO_HOME)/tinyDAV/include";
@@ -6485,6 +6485,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				"FFMPEG_LIB[arch=*]" = "$(TINY_3RDPARTIES_LIB)/i386";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				HEADER_SEARCH_PATHS = (
@@ -6495,10 +6496,13 @@
 					"$(TINY_RTP_INCLUDE)",
 					"$(TINY_MSRP_INCLUDE)",
 					"$(TINY_HTTP_INCLUDE)",
+					"$(TINY_3RDPARTIES_INCLUDE)",
 				);
+				LIBRARY_SEARCH_PATHS = "$(FFMPEG_LIB)";
 				OTHER_CFLAGS = (
 					"-DDEBUG_LEVEL=DEBUG_LEVEL_INFO",
 					"-DHAVE_COREAUDIO",
+					"-DHAVE_FFMPEG=1",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = tinyDAV;
@@ -6565,6 +6569,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_IDENTITY = "Don't Code Sign";
 				COPY_PHASE_STRIP = NO;
+				FFMPEG_LIB = "";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -6578,6 +6583,9 @@
 				);
 				INFOPLIST_FILE = tinyDAVTest/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "$(FFMPEG_LIB)";
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = "$(TINY_3RDPARTIES_LIB)/arm";
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = "$(TINY_3RDPARTIES_LIB)/i386";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -6587,6 +6595,11 @@
 					AudioToolbox,
 					"-framework",
 					AVFoundation,
+					"-lavutil",
+					"-lavcore",
+					"-lswscale",
+					"-lavcodec",
+					"-lx264",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = tinyDAVTest;

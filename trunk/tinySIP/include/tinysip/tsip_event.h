@@ -39,7 +39,7 @@ TSIP_BEGIN_DECLS
 #define TSIP_EVENT(self)		((tsip_event_t*)(self))
 
 typedef enum tsip_event_type_e
-{
+{	
 	tsip_event_invite,
 	tsip_event_message,
 	tsip_event_options,
