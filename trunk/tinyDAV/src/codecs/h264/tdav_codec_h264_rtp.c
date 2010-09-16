@@ -283,10 +283,13 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_s *self, const void *da
 {
 	uint8_t* pdata = (uint8_t*)data;	
 
-	while(pdata[0] == H264_START_CODE_PREFIX[0] && pdata[1] == H264_START_CODE_PREFIX[1] && pdata[2] == H264_START_CODE_PREFIX[2] && pdata[3] == H264_START_CODE_PREFIX[3]){
-		pdata += 4;
-		size -= 4;
-		
+	if(size>4 && pdata[0] == H264_START_CODE_PREFIX[0] && pdata[1] == H264_START_CODE_PREFIX[1]){
+		if(pdata[2] == H264_START_CODE_PREFIX[3]){
+			pdata += 3, size -= 3;
+		}
+		else if(pdata[2] == H264_START_CODE_PREFIX[2] && pdata[3] == H264_START_CODE_PREFIX[3]){
+			pdata += 4, size -= 4;
+		}
 	}
 	
 	//TSK_DEBUG_INFO("==> SCP %2x %2x %2x %2x", pdata[0], pdata[1], pdata[2], pdata[3]);

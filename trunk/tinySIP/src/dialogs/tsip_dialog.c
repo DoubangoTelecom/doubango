@@ -114,7 +114,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	into the Request-URI.  The UAC MUST NOT add a Route header field to
 	the request.
 	*/
-	if(!self->routes || TSK_LIST_IS_EMPTY(self->routes)){
+	if(!self->record_routes || TSK_LIST_IS_EMPTY(self->record_routes)){
 		request_uri = tsk_object_ref((void*)self->uri_remote_target);
 	}
 
@@ -141,13 +141,13 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	<sip:proxy1>,<sip:proxy2>,<sip:proxy3;lr>,<sip:proxy4>
 	*/
 	else{
-		tsip_uri_t *first_route = self->routes->head->data;
+		const tsip_uri_t *first_route = ((tsip_header_Record_Route_t*)TSK_LIST_FIRST_DATA(self->record_routes))->uri;
 		if(tsk_params_have_param(first_route->params, "lr")){
 			request_uri = tsk_object_ref(self->uri_remote_target);
 			copy_routes_start = 0; /* Copy all */
 		}
 		else{
-			request_uri = tsk_object_ref(first_route);
+			request_uri = tsk_object_ref((void*)first_route);
 			copy_routes_start = 1; /* Copy starting at index 1. */
 		}
 	}
@@ -303,16 +303,28 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	{	// According to the above link ==> Initial/Re/De registration do not have routes.
 		if(copy_routes_start != -1)
 		{	/* The dialog already have routes ==> copy them. */
-			if(self->state == tsip_early || self->state == tsip_established)
-			{
+			if(self->state == tsip_early || self->state == tsip_established){
 				int32_t index = -1;
-				tsk_list_foreach(item, self->routes)
-				{
-					const tsip_uri_t* uri = item->data;
+				tsk_list_foreach(item, self->record_routes){
+					tsip_header_Record_Route_t *record_Route = ((tsip_header_Record_Route_t*)item->data);
+					const tsip_uri_t* uri = record_Route->uri;
+					tsip_header_Route_t *route = tsk_null;
 					if(++index < copy_routes_start || !uri){
 						continue;
 					}
-					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_ROUTE_VA_ARGS(uri));
+
+					if((route = tsip_header_Route_create(uri))){
+						// copy parameters: see http://code.google.com/p/imsdroid/issues/detail?id=52
+						if(!TSK_LIST_IS_EMPTY(TSIP_HEADER_PARAMS(record_Route))){
+							if(!TSIP_HEADER_PARAMS(route)){
+								TSIP_HEADER_PARAMS(route) = tsk_list_create();
+							}
+							tsk_list_pushback_list(TSIP_HEADER_PARAMS(route), TSIP_HEADER_PARAMS(record_Route));
+						}
+						
+						tsip_message_add_header(request, TSIP_HEADER(route));
+						TSK_OBJECT_SAFE_FREE(route);
+					}					
 				}
 			}
 		}
@@ -642,16 +654,16 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 			{
 				tsk_size_t index;
 				const tsip_header_Record_Route_t *recordRoute;
-				tsip_uri_t* uri;
+				tsip_header_Record_Route_t *route;
 
-				TSK_OBJECT_SAFE_FREE(self->routes);
+				TSK_OBJECT_SAFE_FREE(self->record_routes);
 
 				for(index = 0; (recordRoute = (const tsip_header_Record_Route_t *)tsip_message_get_headerAt(response, tsip_htype_Record_Route, index)); index++){
-					if(!self->routes){
-						self->routes = tsk_list_create();
+					if(!self->record_routes){
+						self->record_routes = tsk_list_create();
 					}
-					if((uri = tsk_object_ref((void*)recordRoute->uri))){
-						tsk_list_push_front_data(self->routes, (void**)&uri); /* Copy reversed. */
+					if((route = tsk_object_ref((void*)recordRoute))){
+						tsk_list_push_front_data(self->record_routes, (void**)&route); /* Copy reversed. */
 					}
 				}
 			}
@@ -700,16 +712,16 @@ int tsip_dialog_update_2(tsip_dialog_t *self, const tsip_request_t* invite)
 	{
 		tsk_size_t index;
 		const tsip_header_Record_Route_t *recordRoute;
-		tsip_uri_t* uri;
+		tsip_header_Record_Route_t* route;
 
-		TSK_OBJECT_SAFE_FREE(self->routes);
+		TSK_OBJECT_SAFE_FREE(self->record_routes);
 
 		for(index = 0; (recordRoute = (const tsip_header_Record_Route_t *)tsip_message_get_headerAt(invite, tsip_htype_Record_Route, index)); index++){
-			if(!self->routes){
-				self->routes = tsk_list_create();
+			if(!self->record_routes){
+				self->record_routes = tsk_list_create();
 			}
-			if((uri = tsk_object_ref((void*)recordRoute->uri))){
-				tsk_list_push_front_data(self->routes, (void**)&uri); /* Copy non-reversed. */
+			if((route = tsk_object_ref((void*)recordRoute))){
+				tsk_list_push_front_data(self->record_routes, (void**)&route); /* Copy non-reversed. */
 			}
 		}
 	}
@@ -952,8 +964,8 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 
 		self->state = tsip_initial;
 		self->type = type;
-		if(!self->routes){
-			self->routes = tsk_list_create();
+		if(!self->record_routes){
+			self->record_routes = tsk_list_create();
 		}
 		if(!self->challenges){
 			self->challenges = tsk_list_create();
@@ -1126,7 +1138,7 @@ int tsip_dialog_deinit(tsip_dialog_t *self)
 
 		TSK_FREE(self->lasterror);
 
-		TSK_OBJECT_SAFE_FREE(self->routes);
+		TSK_OBJECT_SAFE_FREE(self->record_routes);
 		TSK_OBJECT_SAFE_FREE(self->challenges);
 		
 		TSK_OBJECT_SAFE_FREE(self->fsm);

@@ -521,7 +521,9 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
 	int ret = -1;
 	struct sockaddr_storage destAddr;
 
-	//long dwBestIfIndex = -1;
+#if TNET_UNDER_WINDOWS
+	long dwBestIfIndex = -1;
+#endif
 
 	if(!destination || !source){
 		TSK_DEBUG_ERROR("Invalid parameter");

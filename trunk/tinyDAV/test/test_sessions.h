@@ -32,7 +32,7 @@
 	"u=http://www.example.com/seminars/sdp.pdf\r\n" \
 	"e=j.doe@example.com (Jane Doe)\r\n" \
 	"p=+1 617 555-6011\r\n" \
-	"c=IN IP4 192.168.0.12\r\n" \
+	"c=IN IP4 192.168.0.14\r\n" \
 	"b=X-YZ:128\r\n" \
 	"z=2882844526 -1h 2898848070 0\r\n" \
 	"k=base64:ZWFzdXJlLg==\r\n" \
@@ -75,7 +75,7 @@
 	"a=rtpmap:32 MPV/90000\r\n" \
 	"a=recvonly\r\n" \
 	"m=message 2000 TCP/MSRP *\r\n" \
-	"c=IN IP4 192.168.0.12\r\n" \
+	"c=IN IP4 192.168.0.14\r\n" \
 	"a=path:msrp://192.168.0.12:2000/fdxfircvscx;tcp\r\n" \
 	"a=accept-types:message/CPIM\r\n" \
 	"a=setup:passive\r\n" \
@@ -90,16 +90,16 @@ void test_sessions_client()
 	const tsdp_message_t* sdp_lo;
 	tsdp_message_t* sdp_ro;
 	char* temp;
-	tmedia_type_t type = tmedia_msrp /*| tmedia_audio*//*| tmedia_video tmedia_msrp*/;
+	tmedia_type_t type = tmedia_video/*tmedia_msrp | tmedia_audio*//*| tmedia_video tmedia_msrp*/;
 
 	mgr = tmedia_session_mgr_create(type,
 		"0.0.0.0", tsk_false, tsk_true/* offerer */);
 
 	/* set MSRP callback */
-	tmedia_session_mgr_set_msrp_cb(mgr, tsk_null, test_session_msrp_cb);
+	//tmedia_session_mgr_set_msrp_cb(mgr, tsk_null, test_session_msrp_cb);
 
 	/* MSRP File Transfer */
-	tmedia_session_mgr_set(mgr,
+	/*tmedia_session_mgr_set(mgr,
 		TMEDIA_SESSION_MSRP_SET_STR("file-path", "C:\\avatar.png"),
 		TMEDIA_SESSION_MSRP_SET_STR("accept-types", "message/CPIM application/octet-stream"),
 		TMEDIA_SESSION_MSRP_SET_STR("accept-wrapped-types", "application/octet-stream"),
@@ -109,7 +109,7 @@ void test_sessions_client()
 		TMEDIA_SESSION_MSRP_SET_STR("file-date", "creation:2010-02-13T17:50:31.763Z"),
 		TMEDIA_SESSION_MSRP_SET_STR("file-icon", "cid:test@doubango.org"),
 
-		TMEDIA_SESSION_SET_NULL());
+		TMEDIA_SESSION_SET_NULL());*/
 
 
 	/* get lo */

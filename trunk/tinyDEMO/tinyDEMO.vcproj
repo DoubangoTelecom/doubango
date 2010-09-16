@@ -281,6 +281,10 @@
 			Name="scenarios(*.scn)"
 			>
 			<File
+				RelativePath=".\asterisk.sn"
+				>
+			</File>
+			<File
 				RelativePath=".\core-alcatel.sn"
 				>
 			</File>

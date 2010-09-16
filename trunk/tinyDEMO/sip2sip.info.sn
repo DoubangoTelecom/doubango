@@ -43,7 +43,7 @@
 # Press ENTER
 ++sleep --sec -1
 
-#++a --to sip:2233392625@$$(domain) \
+#++av --to sip:2233392625@$$(domain) \
 #		--header Action-Header=Myheader-value @@action \
 #		>>(inv_audio_sid)
 

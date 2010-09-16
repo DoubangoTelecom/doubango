@@ -78,6 +78,7 @@ typedef struct tdav_codec_h264_s
 		AVCodecContext* context;
 		AVFrame* picture;
 		void* buffer;
+		int frame_count;
 	} encoder;
 	
 	// decoder
