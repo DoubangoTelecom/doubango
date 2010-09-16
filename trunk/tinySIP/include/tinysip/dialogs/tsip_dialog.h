@@ -41,6 +41,8 @@
 #include "tinysip/authentication/tsip_challenge.h"
 #include "tinysip/tsip_action.h"
 
+#include "tinysip/headers/tsip_header_Record_Route.h"
+
 #include "tsk_safeobj.h"
 #include "tsk_list.h"
 #include "tsk_string.h"
@@ -137,7 +139,7 @@ typedef struct tsip_dialog_s
 	
 	char* callid;
 	
-	tsip_uris_L_t *routes;
+	tsip_header_Record_Routes_L_t *record_routes;
 	
 	tsip_challenges_L_t *challenges;
 

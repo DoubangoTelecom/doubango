@@ -224,7 +224,9 @@ tsk_size_t tdav_codec_h261_encode(tmedia_codec_t* self, const void* in_data, tsk
 		return 0;
 	}
 	/* Flip */
+#if FLIP_ENCODED_PICT
 	tdav_converter_video_flip(h261->encoder.picture, h261->encoder.context->height);
+#endif
 
 	// Encode data
 	h261->encoder.picture->pts = AV_NOPTS_VALUE;

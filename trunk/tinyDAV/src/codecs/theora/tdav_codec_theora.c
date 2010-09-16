@@ -256,7 +256,9 @@ tsk_size_t tdav_codec_theora_encode(tmedia_codec_t* self, const void* in_data, t
 		return 0;
 	}
 	/* Flip */
+#if FLIP_ENCODED_PICT
 	tdav_converter_video_flip(theora->encoder.picture, theora->encoder.context->height);
+#endif
 	
 	// Encode data
 	theora->encoder.picture->pts = tsk_time_epoch();

@@ -116,14 +116,14 @@ int tdav_init()
 	tmedia_codec_plugin_register(tdav_codec_g729a_plugin_def_t);
 #endif
 #if HAVE_FFMPEG
-	tmedia_codec_plugin_register(tdav_codec_h261_plugin_def_t);
-	tmedia_codec_plugin_register(tdav_codec_h263_plugin_def_t);
-	tmedia_codec_plugin_register(tdav_codec_h263p_plugin_def_t);
-	tmedia_codec_plugin_register(tdav_codec_h263pp_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h264_bp10_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h264_bp20_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h264_bp30_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h263p_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h263pp_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_theora_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h263_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h261_plugin_def_t);
 #endif
 	
 
@@ -195,14 +195,15 @@ void tdav_set_codecs(tdav_codec_id_t codecs)
 #endif
 
 #if HAVE_FFMPEG
-		{ tdav_codec_id_h261, &tdav_codec_h261_plugin_def_t },
-		{ tdav_codec_id_h263, &tdav_codec_h263_plugin_def_t },
-		{ tdav_codec_id_h263p, &tdav_codec_h263p_plugin_def_t },
-		{ tdav_codec_id_h263pp, &tdav_codec_h263pp_plugin_def_t },
+		
 		{ tdav_codec_id_h264_bp10, &tdav_codec_h264_bp10_plugin_def_t },
 		{ tdav_codec_id_h264_bp20, &tdav_codec_h264_bp20_plugin_def_t },
 		{ tdav_codec_id_h264_bp30, &tdav_codec_h264_bp30_plugin_def_t },
-		{ tdav_codec_id_theora, &tdav_codec_theora_plugin_def_t }
+		{ tdav_codec_id_h263p, &tdav_codec_h263p_plugin_def_t },
+		{ tdav_codec_id_h263pp, &tdav_codec_h263pp_plugin_def_t },
+		{ tdav_codec_id_theora, &tdav_codec_theora_plugin_def_t },
+		{ tdav_codec_id_h263, &tdav_codec_h263_plugin_def_t },
+		{ tdav_codec_id_h261, &tdav_codec_h261_plugin_def_t },
 #endif
 	};
 
@@ -257,6 +258,7 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_h264_bp20_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h264_bp30_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_theora_plugin_def_t);	
+
 #endif
 
 	/* === unRegister consumers === */

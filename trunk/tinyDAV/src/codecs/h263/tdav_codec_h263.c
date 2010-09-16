@@ -307,7 +307,9 @@ tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_data, tsk
 		return 0;
 	}
 	/* Flip */
+#if FLIP_ENCODED_PICT
 	tdav_converter_video_flip(h263->encoder.picture, h263->encoder.context->height);
+#endif
 
 	// Encode data
 	//h263->encoder.picture->pts = tsk_time_epoch();

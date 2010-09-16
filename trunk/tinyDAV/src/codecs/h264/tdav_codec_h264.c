@@ -55,7 +55,6 @@ static void tdav_codec_h264_encap(const tdav_codec_h264_t* h264, const uint8_t* 
 
 #define tdav_codec_h264_fmtp_set tsk_null /* FIXME: should be removed from all plugins (useless) */
 
-
 int tdav_codec_h264_open(tmedia_codec_t* self)
 {
 	int ret;
@@ -84,32 +83,33 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context->width = TMEDIA_CODEC_VIDEO(h264)->width;
 	h264->encoder.context->height = TMEDIA_CODEC_VIDEO(h264)->height;
 
-	//h264->encoder.context->keyint_min = TMEDIA_CODEC_VIDEO(h264)->fps;
-	h264->encoder.context->b_frame_strategy = 1;
-	h264->encoder.context->coder_type = FF_CODER_TYPE_VLC;
-	//h264->encoder.context->crf = 23; ==> DO NOT UNCOMMENT
-	//h264->encoder.context->refs = 2;
-	
-	h264->encoder.context->me_method = 7;
-	h264->encoder.context->me_subpel_quality = 4;
+	h264->encoder.context->rc_lookahead = 0;
+
+	h264->encoder.context->refs = 1;
+    h264->encoder.context->scenechange_threshold = 0;
+    h264->encoder.context->me_subpel_quality = 0;
+    h264->encoder.context->partitions = X264_PART_I8X8 | X264_PART_I8X8;
+    h264->encoder.context->me_method = ME_EPZS;
+    h264->encoder.context->trellis = 0;
 
 	h264->encoder.context->me_range = 16;
 	h264->encoder.context->max_qdiff = 4;
-	h264->encoder.context->mb_qmin = h264->encoder.context->qmin = 10;
-	h264->encoder.context->mb_qmax = h264->encoder.context->qmax = 41;
+	/*h264->encoder.context->mb_qmin =*/ h264->encoder.context->qmin = 10;
+	/*h264->encoder.context->mb_qmax =*/ h264->encoder.context->qmax = 31;
 	h264->encoder.context->qcompress = 0.6f;
-	h264->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
-	h264->encoder.context->flags2 |= CODEC_FLAG2_FASTPSKIP;
-	h264->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
-	h264->encoder.context->max_b_frames = 0;
-	h264->encoder.context->b_frame_strategy = 1;
-	h264->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
-	h264->encoder.context->chromaoffset = 0;
+	//h264->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
+	//h264->encoder.context->flags2 |= CODEC_FLAG2_FASTPSKIP;
+	//h264->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
+	h264->encoder.context->flags |= CODEC_FLAG_GLOBAL_HEADER;
+	//h264->encoder.context->max_b_frames = 0;
+	//h264->encoder.context->b_frame_strategy = 1;
+	//h264->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
+	//h264->encoder.context->chromaoffset = 0;
 
 	switch(h264->profile){
 		case tdav_codec_h264_bp10:
 		default:
-			bitRate = 92000.f;
+			bitRate = 128000.f; // Base Profile 1.2
 			break;
 		case tdav_codec_h264_bp20:
 			bitRate = 491400.f;
@@ -124,7 +124,8 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context->opaque = tsk_null;
 	h264->encoder.context->bit_rate = (int) (bitRate * 0.80f);
 	h264->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
-	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->fps*1; /* FIXME */ 
+	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->fps*2; // Each 2 seconds
+	
 
 	// Picture (YUV 420)
 	if(!(h264->encoder.picture = avcodec_alloc_frame())){
@@ -222,7 +223,9 @@ int tdav_codec_h264_close(tmedia_codec_t* self)
 
 	return 0;
 }
-#include "tsk_time.h"
+
+
+//#include "tsk_time.h"
 tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	int ret = 0;
@@ -248,19 +251,29 @@ tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk
 		return 0;
 	}
 	/* Flip */
+#if FLIP_ENCODED_PICT
 	tdav_converter_video_flip(h264->encoder.picture, h264->encoder.context->height);
+#endif
 
 	// Encode data
-	h264->encoder.picture->pts = tsk_time_epoch();
+	//h264->encoder.picture->pts = tsk_time_epoch();
+	h264->encoder.picture->pts = AV_NOPTS_VALUE;
 	//h264->encoder.picture->pict_type = 0;
-
-	//h264->encoder.picture->pts = AV_NOPTS_VALUE;
 	
-	//h264->encoder.picture->pts = tsk_time_epoch();//AV_NOPTS_VALUE;
-	//h264->encoder.picture->pict_type = FF_I_TYPE;
-	ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);		
+	ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);	
+
 	if(ret >0){
-		tdav_codec_h264_encap(h264, h264->encoder.buffer, (tsk_size_t)ret);
+		if((h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->fps*5) 
+			&& ((h264->encoder.frame_count++%TMEDIA_CODEC_VIDEO(h264)->fps)==0)){
+			
+			// You must patch FFmpeg to switch from X264_TYPE_AUTO to X264_TYPE_IDR
+			h264->encoder.picture->pict_type = FF_I_TYPE;
+			tdav_codec_h264_encap(h264, h264->encoder.context->extradata, (tsk_size_t)h264->encoder.context->extradata_size);
+		}
+		else{
+			h264->encoder.picture->pict_type = 0;
+			tdav_codec_h264_encap(h264, h264->encoder.buffer, (tsk_size_t)ret);
+		}
 	}	
 
 	return 0;
@@ -808,8 +821,12 @@ static void tdav_codec_h264_encap(const tdav_codec_h264_t* h264, const uint8_t* 
 	uint32_t i, last_scp, prev_scp;
 	static uint32_t size_of_scp = sizeof(H264_START_CODE_PREFIX); /* we know it's equal to 4 ..but */
 
-	last_scp = 0, prev_scp = 0;
+	if(!pdata || !size){
+		return;
+	}
 
+	last_scp = 0, prev_scp = 0;
+/*
 #if 1
 	if(size < H264_RTP_PAYLOAD_SIZE){
 		goto last;
@@ -817,7 +834,7 @@ static void tdav_codec_h264_encap(const tdav_codec_h264_t* h264, const uint8_t* 
 #else
 	goto last;
 #endif
-
+*/
 	for(i = size_of_scp; i<(size - size_of_scp); i++){
 		if(pdata[i] == H264_START_CODE_PREFIX[0] && pdata[i+1] == H264_START_CODE_PREFIX[1] && pdata[i+2] == H264_START_CODE_PREFIX[2] && pdata[i+3] == H264_START_CODE_PREFIX[3]){  /* Found Start Code Prefix */
 			prev_scp = last_scp;
@@ -828,7 +845,7 @@ static void tdav_codec_h264_encap(const tdav_codec_h264_t* h264, const uint8_t* 
 			last_scp = i;
 		}
 	}
-last:
+//last:
 	if(last_scp < size){
 			tdav_codec_h264_rtp_callback((tdav_codec_h264_t*) h264, pdata + last_scp,
 				(size - last_scp), tsk_true);
