@@ -97,7 +97,7 @@ void tsk_free(void** ptr)
 {
 	if(ptr && *ptr){
 		free(*ptr);
-		*ptr = 0;
+		*ptr = tsk_null;
 	}
 }
 

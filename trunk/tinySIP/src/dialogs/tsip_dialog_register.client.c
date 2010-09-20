@@ -483,6 +483,9 @@ int tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(va_list *app)
 		TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register,
 			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 		
+		/* set last error (or info) */
+		tsip_dialog_set_lasterror(TSIP_DIALOG(self), "Authentication failed");
+		
 		return ret;
 	}
 

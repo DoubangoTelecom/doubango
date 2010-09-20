@@ -68,6 +68,9 @@ typedef enum tmedia_video_size_type_e
 	tmedia_vst_xga,
 	tmedia_vst_sxga,
 	tmedia_vst_16cif,
+	
+	tmedia_vst_ios_low,
+	tmedia_vst_ios_high
 }
 tmedia_video_size_type_t;
 
@@ -83,10 +86,13 @@ tmedia_video_size_t;
 // used by tinyWRAP
 typedef enum tmedia_chroma_e
 {
-	tmedia_rgb24,
-	tmedia_rgb565le,	// (used by android consumer)
+	tmedia_rgb24,	    // used by windows consumer (DirectShow)
+	tmedia_rgb32,       // used by iOS4 consumer (iPhone and iPod touch)
+	tmedia_rgb565le,	// (used by both android and wince consumers)
 	tmedia_rgb565be,
 	tmedia_nv21, // Yuv420 SP (used by android producer)
+	tmedia_yuv422p,
+	tmedia_uyvy422, // used by iOS4 producer (iPhone and iPod Touch)
 	tmedia_yuv420p, // Default
 }
 tmedia_chroma_t;

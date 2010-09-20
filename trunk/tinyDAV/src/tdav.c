@@ -154,6 +154,10 @@ int tdav_init()
 #if HAVE_TINYDSHOW // DirectShow
 	tmedia_producer_plugin_register(tdshow_producer_plugin_def_t);
 #endif
+	
+#if HAVE_COREAUDIO
+	tmedia_producer_plugin_register(tdav_producer_coreaudio_plugin_def_t);
+#endif
 
 	/* === Register Audio Denoise (AGC, VAD, Noise Suppression and AEC) === */
 #if HAVE_SPEEX_DSP

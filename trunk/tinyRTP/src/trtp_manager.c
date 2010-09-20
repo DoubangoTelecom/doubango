@@ -325,7 +325,7 @@ int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t siz
 	}
 
 	if(!self->started){
-		TSK_DEBUG_ERROR("RTP/RTCP manager should be started before trying to send data");
+		//--TSK_DEBUG_ERROR("RTP/RTCP manager should be started before trying to send data");
 		return -2;
 	}
 	

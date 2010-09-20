@@ -293,7 +293,12 @@ tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, t
 
 	/* Packet lost? */
 	if(theora->decoder.last_seq != (rtp_hdr->seq_num - 1) && theora->decoder.last_seq){
-		TSK_DEBUG_INFO("Packet lost");
+		if(theora->decoder.last_seq == rtp_hdr->seq_num){
+			// Could happen on some stupid emulators
+			//TSK_DEBUG_INFO("Packet duplicated, seq_num=%d", rtp_hdr->seq_num);
+			return 0;
+		}
+		TSK_DEBUG_INFO("Packet lost, seq_num=%d", rtp_hdr->seq_num);
 	}
 	theora->decoder.last_seq = rtp_hdr->seq_num;
 
@@ -641,7 +646,7 @@ int tdav_codec_theora_send(tdav_codec_theora_t* self, const uint8_t* data, tsk_s
 		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	*/
 	uint8_t pay_hdr[THEORA_PAYLOAD_HEADER_SIZE/*4*/ + THEORA_PAYLOAD_LENGTH_SIZE/*2*/] = {0x01, 0x19, 0x83, 0x00, 0x00, 0x00};
-	uint8_t* pay_ptr = tsk_null;
+	//uint8_t* pay_ptr = tsk_null;
 	tsk_size_t pay_size;
 	tsk_bool_t frag, first = tsk_true;
 		

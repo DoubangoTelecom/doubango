@@ -298,7 +298,12 @@ tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_data, tsk
 
 	/* Packet lost? */
 	if(h264->decoder.last_seq != (rtp_hdr->seq_num - 1) && h264->decoder.last_seq){
-		TSK_DEBUG_INFO("Packet lost");
+		if(h264->decoder.last_seq == rtp_hdr->seq_num){
+			// Could happen on some stupid emulators
+			//TSK_DEBUG_INFO("Packet duplicated, seq_num=%d", rtp_hdr->seq_num);
+			return 0;
+		}
+		TSK_DEBUG_INFO("Packet lost, seq_num=%d", rtp_hdr->seq_num);
 	}
 	h264->decoder.last_seq = rtp_hdr->seq_num;
 

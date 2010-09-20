@@ -43,6 +43,9 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t srcWidth, tsk_siz
 		case tmedia_rgb24:
 			pixfmt = PIX_FMT_RGB24;
 			break;
+		case tmedia_rgb32:
+			pixfmt = PIX_FMT_RGB32;
+			break;
 		case tmedia_rgb565le:
 			pixfmt = PIX_FMT_RGB565LE;
 			break;
@@ -51,6 +54,12 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t srcWidth, tsk_siz
 			break;
 		case tmedia_nv21:
 			pixfmt = PIX_FMT_NV21;
+			break;
+		case tmedia_yuv422p:
+			pixfmt = PIX_FMT_YUV422P;
+			break;
+		case tmedia_uyvy422:
+			pixfmt = PIX_FMT_UYVY422;
 			break;
 		default:
 			TSK_DEBUG_ERROR("Invalid chroma");
@@ -95,7 +104,7 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 	/* Context */
 	if(!self->context){
 		self->context = sws_getContext(
-			self->srcWidth, self->srcHeight, (srcFormat == PIX_FMT_RGB24) ? PIX_FMT_BGR24 : srcFormat,
+			self->srcWidth, self->srcHeight, (srcFormat == PIX_FMT_RGB24) ? PIX_FMT_BGR24 : ((srcFormat == PIX_FMT_RGB32) ? PIX_FMT_BGR32 : srcFormat),
 			self->dstWidth, self->dstHeight, dstFormat,
 			SWS_FAST_BILINEAR/*SWS_BICUBIC*/, NULL, NULL, NULL);
 
