@@ -130,7 +130,10 @@ static const tmedia_video_size_t tmedia_video_sizes[] =
 	{tmedia_vst_svga, 800, 600},
 	{tmedia_vst_xga, 1024, 768},
 	{tmedia_vst_sxga, 1280, 1024},
-	{tmedia_vst_16cif, 1408, 1152}
+	{tmedia_vst_16cif, 1408, 1152},
+	
+	{tmedia_vst_ios_low, 200, 152},
+	{tmedia_vst_ios_high, 400, 300},
 };
 
 const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_size_t size)
@@ -146,10 +149,18 @@ const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_siz
 		case tmedia_rgb565be:
 			factor = 2.f;
 			break;
-			
+		
+		case tmedia_rgb32:
+			factor = 3.f;
+			break;
+		
 		case tmedia_nv21:
 		case tmedia_yuv420p:
 			factor = 1.5f;
+			break;
+			
+		case tmedia_yuv422p:
+			factor = 2.f;
 			break;
 	}
 

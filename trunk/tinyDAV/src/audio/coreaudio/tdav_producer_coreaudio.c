@@ -1,11 +1,16 @@
 /**@file tdav_producer_coreaudio.c
  * @brief Audio Producer for MacOSX and iOS platforms.
  *
- * @author Laurent Etiemble <laurent.etiemble(at)gmail.com>
+ * @authors 
+ *	- Laurent Etiemble <laurent.etiemble(at)gmail.com>
+ *	- Mamadou Diop <diopmamadou(at)doubango(dot)org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 letiemble
  */
 #include "tinydav/audio/coreaudio/tdav_producer_coreaudio.h"
+
+
+// http://developer.apple.com/library/mac/#documentation/MusicAudio/Reference/AudioQueueReference/Reference/reference.html
 
 #if HAVE_COREAUDIO
 

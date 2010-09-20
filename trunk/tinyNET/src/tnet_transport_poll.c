@@ -395,7 +395,9 @@ int tnet_transport_stop(tnet_transport_t *transport)
 		
 		// signal
 		tsk_safeobj_lock(context); // =>MUST
-		write(context->pipeW, &c, 1);
+		if(tnet_transport_have_socket(transport, context->pipeR)){ // to avoid SIGPIPE=> check that there is at least one reader
+			write(context->pipeW, &c, 1);
+		}
 		tsk_safeobj_unlock(context);
 	}
 	
@@ -565,7 +567,7 @@ void *tnet_transport_mainthread(void *param)
 				void* buffer = tsk_null;
 				tnet_transport_event_t* e;
 				
-				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description);
+				//TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description);
 
 				//
 				// FIXME: check if accept() is needed or not
@@ -703,7 +705,6 @@ done:
 	} /* while */
 
 bail:
-	
 	
 	TSK_DEBUG_INFO("Stopped [%s] server with IP {%s} on port {%d}", transport->description, transport->master->ip, transport->master->port);
 	return 0;
