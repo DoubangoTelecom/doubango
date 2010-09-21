@@ -203,13 +203,19 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 
 				if(request->line.request.request_type == tsip_OPTIONS || 
 					request->line.request.request_type == tsip_PUBLISH || 
-					request->line.request.request_type == tsip_REGISTER ||
-					request->line.request.request_type == tsip_SUBSCRIBE){
-					/* with expires */
+					request->line.request.request_type == tsip_REGISTER){
+					/**** with expires */
 					tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d\r\n", "sip", from_uri->user_name, "127.0.0.1", 5060, TSK_TIME_MS_2_S(self->expires));
 				}
 				else{
-					/* without expires */
+					/**** without expires */
+					if(request->line.request.request_type == tsip_SUBSCRIBE){
+						/* RFC 3265 - 3.1.1. Subscription Duration
+							An "expires" parameter on the "Contact" header has no semantics for SUBSCRIBE and is explicitly 
+							not equivalent to an "Expires" header in a SUBSCRIBE request or response.
+						*/
+						TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_EXPIRES_VA_ARGS(TSK_TIME_MS_2_S(self->expires)));
+					}
 					tsk_sprintf(&contact, "m: <%s:%s@%s:%d>\r\n", "sip", from_uri->user_name, "127.0.0.1", 5060);
 				}
 				hdr_contacts = tsip_header_Contact_parse(contact, tsk_strlen(contact));
