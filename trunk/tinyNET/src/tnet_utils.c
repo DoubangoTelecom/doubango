@@ -177,17 +177,15 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 #elif HAVE_IFADDRS /*=== Using getifaddrs ===*/
 
 	// see http://www.kernel.org/doc/man-pages/online/pages/man3/getifaddrs.3.html
-	struct ifaddrs *ifaddr = 0, *ifa = 0;
+	struct ifaddrs *ifaddr = tsk_null, *ifa = tsk_null;
 
 	/* Get interfaces */
-	if(getifaddrs(&ifaddr) == -1)
-	{
+	if(getifaddrs(&ifaddr) == -1){
 		TSK_DEBUG_ERROR("getifaddrs failed and errno= [%d]", tnet_geterrno());
 		goto bail;
 	}
 	
-	for(ifa = ifaddr; ifa; ifa = ifa->ifa_next)
-	{
+	for(ifa = ifaddr; ifa; ifa = ifa->ifa_next){
         if(ifa->ifa_flags & IFF_LOOPBACK) {
             continue;
         }

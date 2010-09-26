@@ -80,18 +80,18 @@ static int tdav_session_video_rtp_cb(const void* callback_data, const struct trt
 			goto bail;
 		}
 
-		// Convert decoded data to the consumer chroma
-#define SIZE_CHANGED (session->conv.consumerWidth != session->consumer->video.width) || (session->conv.consumerHeight != session->consumer->video.height) \
-		|| (session->conv.xsize != out_size)
-		if((session->consumer->video.chroma != tmedia_yuv420p) || SIZE_CHANGED){
+		// Convert decoded data to the consumer chroma and size
+#define CONSUMER_SIZE_CHANGED (session->conv.consumerWidth != session->consumer->video.width) || (session->conv.consumerHeight != session->consumer->video.height) \
+		|| (session->conv.xConsumerSize != out_size)
+		if((session->consumer->video.chroma != tmedia_yuv420p) || CONSUMER_SIZE_CHANGED){
 			tsk_size_t _output_size;
 			// Create video converter if not already done
-			if(!session->conv.fromYUV420 || SIZE_CHANGED){
+			if(!session->conv.fromYUV420 || CONSUMER_SIZE_CHANGED){
 				const tmedia_video_size_t* video_size = tmedia_get_video_size(tmedia_yuv420p, out_size);
 				TSK_OBJECT_SAFE_FREE(session->conv.fromYUV420);
 				session->conv.consumerWidth = session->consumer->video.width;
 				session->conv.consumerHeight = session->consumer->video.height;
-				session->conv.xsize = ((float)(video_size->width * video_size->height)) * 1.5f;
+				session->conv.xConsumerSize = ((float)(video_size->width * video_size->height)) * 1.5f/*YUV420P*/;
 				if(!(session->conv.fromYUV420 = tdav_converter_video_create(video_size->width, video_size->height, session->conv.consumerWidth, session->conv.consumerHeight,
 					session->consumer->video.chroma, tsk_false))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
@@ -176,11 +176,19 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 			return -4;
 		}
 
-		// Video codecs only accept YUV420P buffers ==> do conversion if needed
-		if((session->producer->video.chroma != tmedia_yuv420p)){
-			// Create video converter if not already done
-			if(!session->conv.toYUV420){
-				if(!(session->conv.toYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, 0, 0,
+	
+#define PRODUCER_SIZE_CHANGED (session->conv.producerWidth != session->producer->video.width) || (session->conv.producerHeight != session->producer->video.height) \
+|| (session->conv.xProducerSize != size)
+		// Video codecs only accept YUV420P buffers ==> do conversion if needed or producer doesn't have the right size
+		if((session->producer->video.chroma != tmedia_yuv420p) || PRODUCER_SIZE_CHANGED){
+			// Create video converter if not already done or producer size has changed
+			if(!session->conv.toYUV420 || PRODUCER_SIZE_CHANGED){
+				TSK_OBJECT_SAFE_FREE(session->conv.toYUV420);
+				session->conv.producerWidth = session->producer->video.width;
+				session->conv.producerHeight = session->producer->video.height;
+				session->conv.xProducerSize = size;
+				
+				if(!(session->conv.toYUV420 = tdav_converter_video_create(session->producer->video.width, session->producer->video.height, TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height,
 					session->producer->video.chroma, tsk_true))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
 					ret = -5;

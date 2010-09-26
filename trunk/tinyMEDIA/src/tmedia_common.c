@@ -133,7 +133,7 @@ static const tmedia_video_size_t tmedia_video_sizes[] =
 	{tmedia_vst_16cif, 1408, 1152},
 	
 	{tmedia_vst_ios_low, 200, 152},
-	{tmedia_vst_ios_high, 400, 300},
+	{tmedia_vst_ios_high, 400, 304},
 };
 
 const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_size_t size)
