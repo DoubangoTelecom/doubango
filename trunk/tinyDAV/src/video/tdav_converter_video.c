@@ -74,8 +74,8 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t srcWidth, tsk_siz
 	// Set values
 	converter->toYUV420 = toYUV420;
 	converter->pixfmt = pixfmt;
-	converter->srcWidth = srcWidth;
-	converter->srcHeight = srcHeight;
+	converter->srcWidth = srcWidth ? srcWidth : dstWidth;
+	converter->srcHeight = srcHeight ? srcHeight : dstHeight;
 	converter->dstWidth = dstWidth ? dstWidth : srcWidth;
 	converter->dstHeight = dstHeight ? dstHeight : srcHeight;
 
