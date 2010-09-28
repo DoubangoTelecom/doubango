@@ -187,7 +187,7 @@ copy:
 
 	/* Connect Sockets: port_uc to port_ps*/
 	if((ret = tnet_sockaddr_init((const char*)self->asso_temporary->ctx->addr_remote, self->asso_temporary->ctx->port_ps, TSIP_TRANSPORT(self)->type, &to))){
-		TSK_DEBUG_ERROR("Invalid HOST/PORT [%s/%u].", self->asso_temporary->ctx->addr_remote, self->asso_temporary->ctx->port_ps);
+		TSK_DEBUG_ERROR("Invalid HOST/PORT [%s/%u].", (const char*)self->asso_temporary->ctx->addr_remote, self->asso_temporary->ctx->port_ps);
 		goto bail;
 	}
 	if((ret = tnet_sockfd_connectto(self->asso_temporary->socket_uc->fd, &to))){
