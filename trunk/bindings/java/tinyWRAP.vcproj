@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(JDK_HOME)\include&quot;;&quot;$(JDK_HOME)\include\win32&quot;;..\_common;..\.;..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinySIP\include"
+				AdditionalIncludeDirectories="&quot;$(JDK_HOME)\include&quot;;&quot;$(JDK_HOME)\include\win32&quot;;..\_common;..\.;..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinySIP\include;..\..\tinyDAV\include;..\..\tinySDP\include;..\..\tinyMEDIA\include;..\..\tinyXCAP\include;..\..\tinySMS\include;..\..\tinyMSRP\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYWRAP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyDAV.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinyXCAP.lib $(OutDir)\tinySMS.lib $(OutDir)\tinyMSRP.lib $(OutDir)\tinySDP.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -117,6 +117,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="&quot;$(JDK_HOME)\include&quot;;&quot;$(JDK_HOME)\include\win32&quot;;..\_common;..\.;..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinySIP\include;..\..\tinyDAV\include;..\..\tinySDP\include;..\..\tinyMEDIA\include;..\..\tinyXCAP\include;..\..\tinySMS\include;..\..\tinyMSRP\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYWRAP_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -135,6 +136,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyDAV.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinyXCAP.lib $(OutDir)\tinySMS.lib $(OutDir)\tinyMSRP.lib $(OutDir)\tinySDP.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -174,23 +176,23 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\_common\MessagingEvent.cxx"
+				RelativePath="..\_common\ActionConfig.cxx"
 				>
 			</File>
 			<File
-				RelativePath="..\_common\PublicationEvent.cxx"
+				RelativePath="..\_common\DDebug.cxx"
 				>
 			</File>
 			<File
-				RelativePath="..\_common\PublicationSession.cxx"
+				RelativePath="..\_common\Msrp.cxx"
 				>
 			</File>
 			<File
-				RelativePath="..\_common\RegistrationEvent.cxx"
+				RelativePath="..\_common\ProxyConsumer.cxx"
 				>
 			</File>
 			<File
-				RelativePath="..\_common\RegistrationSession.cxx"
+				RelativePath="..\_common\ProxyProducer.cxx"
 				>
 			</File>
 			<File
@@ -199,10 +201,6 @@
 			</File>
 			<File
 				RelativePath="..\_common\SipCallback.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\SipDebug.cxx"
 				>
 			</File>
 			<File
@@ -226,11 +224,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\_common\SubscriptionEvent.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\SubscriptionSession.cxx"
+				RelativePath="..\_common\SMSEncoder.cxx"
 				>
 			</File>
 			<File
@@ -238,7 +232,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\_common\XcapStack.cxx"
+				RelativePath="..\_common\Xcap.cxx"
 				>
 			</File>
 		</Filter>
@@ -248,27 +242,27 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\_common\ActionConfig.h"
+				>
+			</File>
+			<File
 				RelativePath="..\_common\Common.h"
 				>
 			</File>
 			<File
-				RelativePath="..\_common\MessagingEvent.h"
+				RelativePath="..\_common\DDebug.h"
 				>
 			</File>
 			<File
-				RelativePath="..\_common\PublicationEvent.h"
+				RelativePath="..\_common\Msrp.h"
 				>
 			</File>
 			<File
-				RelativePath="..\_common\PublicationSession.h"
+				RelativePath="..\_common\ProxyConsumer.h"
 				>
 			</File>
 			<File
-				RelativePath="..\_common\RegistrationEvent.h"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\RegistrationSession.h"
+				RelativePath="..\_common\ProxyProducer.h"
 				>
 			</File>
 			<File
@@ -277,10 +271,6 @@
 			</File>
 			<File
 				RelativePath="..\_common\SipCallback.h"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\SipDebug.h"
 				>
 			</File>
 			<File
@@ -304,11 +294,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\_common\SubscriptionEvent.h"
+				RelativePath="..\_common\SMSEncoder.h"
 				>
 			</File>
 			<File
-				RelativePath="..\_common\SubscriptionSession.h"
+				RelativePath="..\_common\tinyWRAP_config.h"
 				>
 			</File>
 			<File
@@ -316,7 +306,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\_common\XcapStack.h"
+				RelativePath="..\_common\Xcap.h"
 				>
 			</File>
 		</Filter>

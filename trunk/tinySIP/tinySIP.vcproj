@@ -201,7 +201,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\thirdparties\win32\include;..\tinySIP\include;..\tinySAK\src;..\tinyNET\src;..\tinyHTTP\include;..\tinyIPSec\src;..\tinySDP\include;..\tinyMEDIA\include"
+				AdditionalIncludeDirectories="..\thirdparties\win32\include;..\tinySIP\include;..\tinySAK\src;..\tinyNET\src;..\tinyHTTP\include;..\tinySIGCOMP\src;..\tinyIPSec\src;..\tinySDP\include;..\tinyMEDIA\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYSIP_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -222,7 +222,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyIPSec.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyIPSec.lib $(OutDir)\tinySigComp.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"

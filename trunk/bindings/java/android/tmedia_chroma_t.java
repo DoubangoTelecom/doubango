@@ -10,9 +10,12 @@ package org.doubango.tinyWRAP;
 
 public enum tmedia_chroma_t {
   tmedia_rgb24,
+  tmedia_rgb32,
   tmedia_rgb565le,
   tmedia_rgb565be,
   tmedia_nv21,
+  tmedia_yuv422p,
+  tmedia_uyvy422,
   tmedia_yuv420p;
 
   public final int swigValue() {

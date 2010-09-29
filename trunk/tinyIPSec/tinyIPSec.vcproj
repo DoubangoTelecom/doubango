@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;..\thirdparties\win32\include&quot;;&quot;..\tinySAK\src&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYIPSEC_EXPORTS"
+				PreprocessorDefinitions="WIN32;_WIN32_WINNT=0x0501;_DEBUG;_WINDOWS;_USRDLL;TINYIPSEC_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"

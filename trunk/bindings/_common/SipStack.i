@@ -164,12 +164,16 @@ tsip_invite_event_type_t;
 
 
 /* ====== From "tinymedia/tmedia_common.h"  ====== */
+// used by tinyWRAP
 typedef enum tmedia_chroma_e
 {
-	tmedia_rgb24,
-	tmedia_rgb565le,	// (used by android consumer)
+	tmedia_rgb24,	    // used by windows consumer (DirectShow)
+	tmedia_rgb32,       // used by iOS4 consumer (iPhone and iPod touch)
+	tmedia_rgb565le,	// (used by both android and wince consumers)
 	tmedia_rgb565be,
 	tmedia_nv21, // Yuv420 SP (used by android producer)
+	tmedia_yuv422p,
+	tmedia_uyvy422, // used by iOS4 producer (iPhone and iPod Touch)
 	tmedia_yuv420p, // Default
 }
 tmedia_chroma_t;

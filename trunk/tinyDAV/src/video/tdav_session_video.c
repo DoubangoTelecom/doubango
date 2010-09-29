@@ -91,7 +91,7 @@ static int tdav_session_video_rtp_cb(const void* callback_data, const struct trt
 				TSK_OBJECT_SAFE_FREE(session->conv.fromYUV420);
 				session->conv.consumerWidth = session->consumer->video.width;
 				session->conv.consumerHeight = session->consumer->video.height;
-				session->conv.xConsumerSize = ((float)(video_size->width * video_size->height)) * 1.5f/*YUV420P*/;
+				session->conv.xConsumerSize = (tsk_size_t)(((float)(video_size->width * video_size->height)) * 1.5f/*YUV420P*/);
 				if(!(session->conv.fromYUV420 = tdav_converter_video_create(video_size->width, video_size->height, session->conv.consumerWidth, session->conv.consumerHeight,
 					session->consumer->video.chroma, tsk_false))){
 					TSK_DEBUG_ERROR("Failed to create video converter");

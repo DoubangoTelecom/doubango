@@ -16234,9 +16234,12 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tsip_m_remote_hold",SWIG_From_int(static_cast< int >(tsip_m_remote_hold)));
   SWIG_Python_SetConstant(d, "tsip_m_remote_resume",SWIG_From_int(static_cast< int >(tsip_m_remote_resume)));
   SWIG_Python_SetConstant(d, "tmedia_rgb24",SWIG_From_int(static_cast< int >(tmedia_rgb24)));
+  SWIG_Python_SetConstant(d, "tmedia_rgb32",SWIG_From_int(static_cast< int >(tmedia_rgb32)));
   SWIG_Python_SetConstant(d, "tmedia_rgb565le",SWIG_From_int(static_cast< int >(tmedia_rgb565le)));
   SWIG_Python_SetConstant(d, "tmedia_rgb565be",SWIG_From_int(static_cast< int >(tmedia_rgb565be)));
   SWIG_Python_SetConstant(d, "tmedia_nv21",SWIG_From_int(static_cast< int >(tmedia_nv21)));
+  SWIG_Python_SetConstant(d, "tmedia_yuv422p",SWIG_From_int(static_cast< int >(tmedia_yuv422p)));
+  SWIG_Python_SetConstant(d, "tmedia_uyvy422",SWIG_From_int(static_cast< int >(tmedia_uyvy422)));
   SWIG_Python_SetConstant(d, "tmedia_yuv420p",SWIG_From_int(static_cast< int >(tmedia_yuv420p)));
   SWIG_Python_SetConstant(d, "tmedia_qos_stype_none",SWIG_From_int(static_cast< int >(tmedia_qos_stype_none)));
   SWIG_Python_SetConstant(d, "tmedia_qos_stype_segmented",SWIG_From_int(static_cast< int >(tmedia_qos_stype_segmented)));
@@ -16263,6 +16266,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tdav_codec_id_bv16",SWIG_From_int(static_cast< int >(tdav_codec_id_bv16)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_bv32",SWIG_From_int(static_cast< int >(tdav_codec_id_bv32)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_evrc",SWIG_From_int(static_cast< int >(tdav_codec_id_evrc)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_g729a",SWIG_From_int(static_cast< int >(tdav_codec_id_g729a)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h261",SWIG_From_int(static_cast< int >(tdav_codec_id_h261)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h263",SWIG_From_int(static_cast< int >(tdav_codec_id_h263)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h263p",SWIG_From_int(static_cast< int >(tdav_codec_id_h263p)));
