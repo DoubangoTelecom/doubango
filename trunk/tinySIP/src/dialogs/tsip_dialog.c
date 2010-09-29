@@ -605,7 +605,6 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 	if(self && TSIP_MESSAGE_IS_RESPONSE(response) && response->To){
 		short code = TSIP_RESPONSE_CODE(response);
 		const char *tag = response->To->tag;
-		tsk_bool_t isRegister = TSIP_RESPONSE_IS_TO_REGISTER(response);
 
 		/* 
 		*	1xx (!100) or 2xx 
@@ -620,7 +619,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 			/* 3GPP IMS - Each authentication vector is used only once.
 			*	==> Re-registration/De-registration ==> Allow 401/407 challenge.
 			*/
-			acceptNewVector = (isRegister && self->state == tsip_established);
+			acceptNewVector = (TSIP_RESPONSE_IS_TO_REGISTER(response) && self->state == tsip_established);
 			return tsip_dialog_update_challenges(self, response, acceptNewVector);
 		}
 		else if(100 < code && code < 300)
@@ -650,7 +649,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 					FIXME: Because PRACK/UPDATE sent before the session is established MUST have
 					the rigth target URI to be delivered to the UAS ==> Do not not check that we are connected
 				*/
-				if(!isRegister && response->Contact && response->Contact->uri){
+				if(!TSIP_RESPONSE_IS_TO_REGISTER(response) && response->Contact && response->Contact->uri){
 					TSK_OBJECT_SAFE_FREE(self->uri_remote_target);
 					self->uri_remote_target = tsip_uri_clone(response->Contact->uri, tsk_true, tsk_false);
 				}
@@ -680,7 +679,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 				return 0;
 			}
 			else{
-				if(!isRegister){
+				if(!TSIP_RESPONSE_IS_TO_REGISTER(response) && !TSIP_RESPONSE_IS_TO_PUBLISH(response)){ /* REGISTER and PUBLISH don't establish dialog */
 					tsk_strupdate(&self->tag_remote, tag);
 				}
 				self->cseq_value = response->CSeq ? response->CSeq->seq : self->cseq_value;

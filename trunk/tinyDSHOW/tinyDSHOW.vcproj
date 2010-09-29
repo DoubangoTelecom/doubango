@@ -118,6 +118,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="..\thirdparties\win32\include;&quot;$(PSDK_DIR)include&quot;;&quot;$(DXSDK_DIR)include&quot;;..\thirdparties\win32\include\directshow;include;..\tinySAK\src;..\tinyMEDIA\include;..\tinySDP\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYDSHOW_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -136,6 +137,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="..\thirdparties\win32\lib\directshow\strmbase.lib dmoguids.lib strmiids.lib uuid.lib Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyMEDIA.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
