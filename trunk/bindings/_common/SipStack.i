@@ -171,9 +171,10 @@ typedef enum tmedia_chroma_e
 	tmedia_rgb32,       // used by iOS4 consumer (iPhone and iPod touch)
 	tmedia_rgb565le,	// (used by both android and wince consumers)
 	tmedia_rgb565be,
+	tmedia_nv12, // used by iOS4 producer (iPhone and iPod Touch 3GS and 4)
 	tmedia_nv21, // Yuv420 SP (used by android producer)
 	tmedia_yuv422p,
-	tmedia_uyvy422, // used by iOS4 producer (iPhone and iPod Touch)
+	tmedia_uyvy422, // used by iOS4 producer (iPhone and iPod Touch 3G)
 	tmedia_yuv420p, // Default
 }
 tmedia_chroma_t;

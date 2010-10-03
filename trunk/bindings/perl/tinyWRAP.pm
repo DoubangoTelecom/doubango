@@ -1796,6 +1796,7 @@ package tinyWRAP;
 *tmedia_rgb32 = *tinyWRAPc::tmedia_rgb32;
 *tmedia_rgb565le = *tinyWRAPc::tmedia_rgb565le;
 *tmedia_rgb565be = *tinyWRAPc::tmedia_rgb565be;
+*tmedia_nv12 = *tinyWRAPc::tmedia_nv12;
 *tmedia_nv21 = *tinyWRAPc::tmedia_nv21;
 *tmedia_yuv422p = *tinyWRAPc::tmedia_yuv422p;
 *tmedia_uyvy422 = *tinyWRAPc::tmedia_uyvy422;

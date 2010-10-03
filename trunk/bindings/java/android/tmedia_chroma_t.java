@@ -13,6 +13,7 @@ public enum tmedia_chroma_t {
   tmedia_rgb32,
   tmedia_rgb565le,
   tmedia_rgb565be,
+  tmedia_nv12,
   tmedia_nv21,
   tmedia_yuv422p,
   tmedia_uyvy422,
