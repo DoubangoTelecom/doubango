@@ -55,6 +55,9 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t srcWidth, tsk_siz
 		case tmedia_nv21:
 			pixfmt = PIX_FMT_NV21;
 			break;
+		case tmedia_nv12:
+			pixfmt = PIX_FMT_NV12;
+			break;
 		case tmedia_yuv422p:
 			pixfmt = PIX_FMT_YUV422P;
 			break;

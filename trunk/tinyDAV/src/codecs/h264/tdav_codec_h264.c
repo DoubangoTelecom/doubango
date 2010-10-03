@@ -85,26 +85,25 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 
 	h264->encoder.context->rc_lookahead = 0;
 
-	h264->encoder.context->refs = 1;
+	h264->encoder.context->refs = 2;
     h264->encoder.context->scenechange_threshold = 0;
     h264->encoder.context->me_subpel_quality = 0;
-    h264->encoder.context->partitions = X264_PART_I8X8 | X264_PART_I8X8;
+    h264->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
     h264->encoder.context->me_method = ME_EPZS;
     h264->encoder.context->trellis = 0;
 
 	h264->encoder.context->me_range = 16;
 	h264->encoder.context->max_qdiff = 4;
 	/*h264->encoder.context->mb_qmin =*/ h264->encoder.context->qmin = 10;
-	/*h264->encoder.context->mb_qmax =*/ h264->encoder.context->qmax = 31;
+	/*h264->encoder.context->mb_qmax =*/ h264->encoder.context->qmax = 51;
 	h264->encoder.context->qcompress = 0.6f;
-	//h264->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
-	//h264->encoder.context->flags2 |= CODEC_FLAG2_FASTPSKIP;
-	//h264->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
+	h264->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
+	h264->encoder.context->flags2 |= CODEC_FLAG2_FASTPSKIP;
+	h264->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
 	h264->encoder.context->flags |= CODEC_FLAG_GLOBAL_HEADER;
-	//h264->encoder.context->max_b_frames = 0;
-	//h264->encoder.context->b_frame_strategy = 1;
-	//h264->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
-	//h264->encoder.context->chromaoffset = 0;
+	h264->encoder.context->max_b_frames = 0;
+	h264->encoder.context->b_frame_strategy = 1;
+	h264->encoder.context->chromaoffset = 0;
 
 	switch(h264->profile){
 		case tdav_codec_h264_bp10:
