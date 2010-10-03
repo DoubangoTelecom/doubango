@@ -16237,6 +16237,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tmedia_rgb32",SWIG_From_int(static_cast< int >(tmedia_rgb32)));
   SWIG_Python_SetConstant(d, "tmedia_rgb565le",SWIG_From_int(static_cast< int >(tmedia_rgb565le)));
   SWIG_Python_SetConstant(d, "tmedia_rgb565be",SWIG_From_int(static_cast< int >(tmedia_rgb565be)));
+  SWIG_Python_SetConstant(d, "tmedia_nv12",SWIG_From_int(static_cast< int >(tmedia_nv12)));
   SWIG_Python_SetConstant(d, "tmedia_nv21",SWIG_From_int(static_cast< int >(tmedia_nv21)));
   SWIG_Python_SetConstant(d, "tmedia_yuv422p",SWIG_From_int(static_cast< int >(tmedia_yuv422p)));
   SWIG_Python_SetConstant(d, "tmedia_uyvy422",SWIG_From_int(static_cast< int >(tmedia_uyvy422)));

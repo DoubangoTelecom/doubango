@@ -817,6 +817,7 @@ tmedia_rgb24 = _tinyWRAP.tmedia_rgb24
 tmedia_rgb32 = _tinyWRAP.tmedia_rgb32
 tmedia_rgb565le = _tinyWRAP.tmedia_rgb565le
 tmedia_rgb565be = _tinyWRAP.tmedia_rgb565be
+tmedia_nv12 = _tinyWRAP.tmedia_nv12
 tmedia_nv21 = _tinyWRAP.tmedia_nv21
 tmedia_yuv422p = _tinyWRAP.tmedia_yuv422p
 tmedia_uyvy422 = _tinyWRAP.tmedia_uyvy422
