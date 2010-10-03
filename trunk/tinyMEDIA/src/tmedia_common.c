@@ -155,6 +155,7 @@ const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_siz
 			break;
 		
 		case tmedia_nv21:
+		case tmedia_nv12:
 		case tmedia_yuv420p:
 			factor = 1.5f;
 			break;

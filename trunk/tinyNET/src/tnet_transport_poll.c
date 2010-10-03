@@ -39,6 +39,10 @@
 
 #include "tnet_poll.h"
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
+#   import <CFNetwork/CFNetwork.h>
+#endif
+
 #define TNET_MAX_FDS		64
 
 /*== Socket description ==*/
@@ -51,6 +55,11 @@ typedef struct transport_socket_s
 
 	tnet_socket_type_t type;
 	tnet_tls_socket_handle_t* tlshandle;
+	
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
+	CFReadStreamRef cfReadStream;
+    CFWriteStreamRef cfWriteStream;
+#endif
 }
 transport_socket_t;
 
@@ -309,6 +318,54 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 		
 		context->count++;
 		
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
+		if(context->pipeR != sock->fd){
+			if(TNET_SOCKET_TYPE_IS_DGRAM(sock->type)){
+				CFSocketRef cfSocket;
+				
+				cfSocket = CFSocketCreateWithNative(kCFAllocatorDefault, 
+														sock->fd,
+														kCFSocketReadCallBack, 
+														tsk_null, 
+														tsk_null);
+				
+				// Don't close the socket if the CFSocket is invalidated
+				CFOptionFlags flags = CFSocketGetSocketFlags(cfSocket);
+				flags = flags & ~kCFSocketCloseOnInvalidate;
+				CFSocketSetSocketFlags(cfSocket, flags);
+				
+				if (CFSocketIsValid(cfSocket)) {
+					CFSocketInvalidate(cfSocket);
+				}
+				CFRelease(cfSocket);
+			}
+			else if(TNET_SOCKET_TYPE_IS_STREAM(sock->type)){
+				CFStreamCreatePairWithSocket(kCFAllocatorDefault, (CFSocketNativeHandle)sock->fd, &sock->cfReadStream, &sock->cfWriteStream);
+				
+				CFReadStreamSetProperty(sock->cfReadStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanFalse);
+				CFWriteStreamSetProperty(sock->cfWriteStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanFalse);
+				
+				if(!CFReadStreamSetProperty(sock->cfReadStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP)){
+					//TNET_PRINT_LAST_ERROR("CFReadStreamSetProperty(cfReadStream, kCFStreamNetworkServiceTypeVoIP) failed");
+				}
+				if(!CFWriteStreamSetProperty(sock->cfWriteStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP)){
+					//TNET_PRINT_LAST_ERROR("CFReadStreamSetProperty(cfWriteStream, kCFStreamNetworkServiceTypeVoIP) failed");
+				}
+			}
+		
+			if(sock->cfReadStream){
+				if(!CFReadStreamOpen(sock->cfReadStream)){
+					//TNET_PRINT_LAST_ERROR("CFReadStreamOpen(cfWriteStream) failed");
+				}
+			}
+			if(sock->cfWriteStream){
+				if(!CFWriteStreamOpen(sock->cfWriteStream)){
+					//TNET_PRINT_LAST_ERROR("CFWriteStreamOpen(cfWriteStream) failed");
+				}
+			}
+		}
+#endif
+		
 		tsk_safeobj_unlock(context);
 		
 		TSK_DEBUG_INFO("Socket added %d", fd);
@@ -345,6 +402,17 @@ int removeSocket(int index, transport_context_t *context)
 
 	if(index < (int)context->count){
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
+		// Even if we are not the owner as CFSocket is only supported at low level
+		if(context->sockets[index]->cfReadStream){
+			CFReadStreamClose(context->sockets[index]->cfReadStream);
+			CFRelease(context->sockets[index]->cfReadStream);
+		}
+		if(context->sockets[index]->cfWriteStream){
+			CFWriteStreamClose(context->sockets[index]->cfWriteStream);
+			CFRelease(context->sockets[index]->cfWriteStream);
+		}
+#endif
 		/* Close the socket if we are the owner. */
 		if(context->sockets[index]->owner){
 			tnet_sockfd_close(&(context->sockets[index]->fd));
@@ -361,7 +429,7 @@ int removeSocket(int index, transport_context_t *context)
 			context->ufds[i] = context->ufds[i+1];
 		}
 		
-		context->sockets[context->count-1] = 0;
+		context->sockets[context->count-1] = tsk_null;
 		context->ufds[context->count-1].fd = 0;
 		context->ufds[context->count-1].events = 0;
 		context->ufds[context->count-1].revents = 0;
@@ -567,7 +635,7 @@ void *tnet_transport_mainthread(void *param)
 				void* buffer = tsk_null;
 				tnet_transport_event_t* e;
 				
-				//TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description);
+				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description);
 
 				//
 				// FIXME: check if accept() is needed or not

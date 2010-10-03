@@ -35,6 +35,8 @@ TDAV_BEGIN_DECLS
 
 typedef enum tdav_codec_id_e
 {
+	tdav_codec_id_none = 0x00000000,
+	
 	tdav_codec_id_amr_nb_oa = 0x00000001<<0,
 	tdav_codec_id_amr_nb_be = 0x00000001<<1,
 	tdav_codec_id_amr_wb_oa = 0x00000001<<2,
