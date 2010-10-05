@@ -398,7 +398,7 @@ int tdav_codec_amr_parse_fmtp(tdav_codec_amr_t* self, const char* fmtp)
 	int ret = 0;
 	int val_int;
 	const char* val_str;
-	tdav_codec_amr_mode_t mode = self->mode;
+	//--tdav_codec_amr_mode_t mode = self->mode;
 	tsk_params_L_t* params = tsk_null;
 
 	if((params = tsk_params_fromstring(fmtp, ";", tsk_true))){
@@ -530,7 +530,7 @@ tsk_size_t tdav_codec_amr_be_decode(tdav_codec_amr_t* amr, const void* in_data, 
 {
 	tsk_size_t out_size = 0, pcm_frame_size = 0, index = 0;
 	const uint8_t* pdata = (const uint8_t*)in_data;
-	const uint8_t* pend = (pdata + in_size);
+	//--const uint8_t* pend = (pdata + in_size);
 	uint8_t CMR;
 	int toc_entries = 0, i, k; // ToC entries count
 
@@ -571,7 +571,7 @@ tsk_size_t tdav_codec_amr_be_decode(tdav_codec_amr_t* amr, const void* in_data, 
 	for(i = 0; (i<toc_entries && (in_size < (in_size*8))) ; i++){
 		int size = -1;
 		uint8_t* speech_data = tsk_null;
-		int speech_data_size = 0;
+		//--int speech_data_size = 0;
 		uint8_t ToC = tdav_codec_amr_bitbuffer_read(in_data, (in_size*8), 4/*CMR*/ + (i*6), 6);
 		
 		switch(TDAV_CODEC_AMR(amr)->type){
@@ -730,7 +730,7 @@ tsk_size_t tdav_codec_amr_oa_decode(tdav_codec_amr_t* amr, const void* in_data, 
 	for(i = 0; (i<toc_entries && (pdata < pend)) ; i++){
 		int size = -1;
 		uint8_t* speech_data = tsk_null;
-		int speech_data_size = 0;
+		//--int speech_data_size = 0;
 		uint8_t ToC = ((const uint8_t*)in_data)[1/*CMR...*/ + i];
 		switch(TDAV_CODEC_AMR(amr)->type){
 			case tdav_codec_amr_type_nb:
