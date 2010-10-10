@@ -77,6 +77,10 @@ int tdav_consumer_coreaudio_prepare(tmedia_consumer_t* self, const tmedia_codec_
 	TDAV_CONSUMER_AUDIO(consumer)->rate = codec->plugin->rate;
 	/* codec should have ptime */
 
+	// Set audio category
+	UInt32 category = kAudioSessionCategory_PlayAndRecord; 
+	AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(category), &category);
+	
     // Create the audio stream description
     AudioStreamBasicDescription *description = &(consumer->description);
     description->mSampleRate = TDAV_CONSUMER_AUDIO(consumer)->rate;
@@ -118,7 +122,7 @@ int tdav_consumer_coreaudio_prepare(tmedia_consumer_t* self, const tmedia_codec_
             break;
         }
     }
-    
+	
 	return ret;
 }
 
@@ -209,7 +213,19 @@ static tsk_object_t* tdav_consumer_coreaudio_dtor(tsk_object_t * self)
 { 
 	tdav_consumer_coreaudio_t *consumer = self;
 	if(consumer){
+		// Stop the consumer if not done
+		if(consumer->started){
+			tdav_consumer_coreaudio_stop(self);
+		}
+		
+		// Free all buffers and dispose the queue
         if (consumer->queue) {
+			tsk_size_t i;
+			
+			for(i=0; i<CoreAudioPlayBuffers; i++){
+				AudioQueueFreeBuffer(consumer->queue, consumer->buffers[i]);
+			}
+			
             AudioQueueDispose(consumer->queue, true);
         }
         
