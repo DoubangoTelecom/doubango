@@ -285,6 +285,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	*/
 	if(!TSIP_REQUEST_IS_ACK(request) && !TSIP_REQUEST_IS_CANCEL(request)){
 		request->CSeq->seq = ++(TSIP_DIALOG(self)->cseq_value);
+		TSK_DEBUG_INFO("CSeq=%d", TSIP_DIALOG(self)->cseq_value);
 	}
 
 	/* Route generation 
@@ -682,7 +683,9 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 				if(!TSIP_RESPONSE_IS_TO_REGISTER(response) && !TSIP_RESPONSE_IS_TO_PUBLISH(response)){ /* REGISTER and PUBLISH don't establish dialog */
 					tsk_strupdate(&self->tag_remote, tag);
 				}
+#if 0			// PRACK and BYE will have same CSeq value ==> Let CSeq value to be incremented by "tsip_dialog_request_new()"
 				self->cseq_value = response->CSeq ? response->CSeq->seq : self->cseq_value;
+#endif
 			}
 
 			self->state = state;
