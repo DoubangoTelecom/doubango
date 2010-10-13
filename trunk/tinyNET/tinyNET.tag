@@ -10,6 +10,7 @@
     <path>C:/Projects/Doubango/tinyNET/src/dhcp/</path>
     <filename>tnet__dhcp_8c</filename>
     <includes id="tnet__dhcp_8h" name="tnet_dhcp.h" local="yes" imported="no">tnet_dhcp.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_dhcp_ctx_t *</type>
       <name>tnet_dhcp_ctx_create</name>
@@ -64,7 +65,7 @@
     <name>tnet_dhcp.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dhcp/</path>
     <filename>tnet__dhcp_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dhcp__message_8h" name="tnet_dhcp_message.h" local="yes" imported="no">tnet_dhcp_message.h</includes>
     <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">tnet_utils.h</includes>
     <class kind="struct">tnet_dhcp_params_s</class>
@@ -209,6 +210,7 @@
     <filename>tnet__dhcp__message_8c</filename>
     <includes id="tnet__dhcp__message_8h" name="tnet_dhcp_message.h" local="yes" imported="no">tnet_dhcp_message.h</includes>
     <includes id="tnet__dhcp_8h" name="tnet_dhcp.h" local="yes" imported="no">tnet_dhcp.h</includes>
+    <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">../tnet_utils.h</includes>
     <member kind="function">
       <type>tnet_dhcp_message_t *</type>
       <name>tnet_dhcp_message_create</name>
@@ -241,8 +243,8 @@
       <type>tnet_dhcp_message_t *</type>
       <name>tnet_dhcp_message_deserialize</name>
       <anchorfile>tnet__dhcp__message_8c.html</anchorfile>
-      <anchor>aa7390e698c3ac83ff856a8ea0c9391e1</anchor>
-      <arglist>(const struct tnet_dhcp_ctx_s *ctx, const uint8_t *data, size_t size)</arglist>
+      <anchor>aacd32aa714f4873545d046d96da49a2e</anchor>
+      <arglist>(const struct tnet_dhcp_ctx_s *ctx, const uint8_t *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>const tnet_dhcp_option_t *</type>
@@ -270,7 +272,7 @@
     <name>tnet_dhcp_message.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dhcp/</path>
     <filename>tnet__dhcp__message_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dhcp__option_8h" name="tnet_dhcp_option.h" local="yes" imported="no">tnet_dhcp_option.h</includes>
     <includes id="tnet__hardwares_8h" name="tnet_hardwares.h" local="yes" imported="no">tnet_hardwares.h</includes>
     <class kind="struct">tnet_dhcp_message_s</class>
@@ -427,8 +429,8 @@
       <type>tnet_dhcp_message_t *</type>
       <name>tnet_dhcp_message_deserialize</name>
       <anchorfile>tnet__dhcp__message_8h.html</anchorfile>
-      <anchor>aa7390e698c3ac83ff856a8ea0c9391e1</anchor>
-      <arglist>(const struct tnet_dhcp_ctx_s *ctx, const uint8_t *data, size_t size)</arglist>
+      <anchor>aacd32aa714f4873545d046d96da49a2e</anchor>
+      <arglist>(const struct tnet_dhcp_ctx_s *ctx, const uint8_t *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>const tnet_dhcp_option_t *</type>
@@ -497,8 +499,8 @@
       <type>tnet_dhcp_option_dns_t *</type>
       <name>tnet_dhcp_option_dns_create</name>
       <anchorfile>tnet__dhcp__option_8c.html</anchorfile>
-      <anchor>a588692cc671f4c48a2f97b07e0666c91</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>adda6aa01b12a617cee461a1406e4675d</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -518,8 +520,8 @@
       <type>tnet_dhcp_option_t *</type>
       <name>tnet_dhcp_option_deserialize</name>
       <anchorfile>tnet__dhcp__option_8c.html</anchorfile>
-      <anchor>a25431c4ee6814e7971ef86fbe445d7ea</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a4f9f1042f27b33be6150ce5a7eea09f8</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -568,7 +570,7 @@
     <name>tnet_dhcp_option.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dhcp/</path>
     <filename>tnet__dhcp__option_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <class kind="struct">tnet_dhcp_option_s</class>
     <class kind="struct">tnet_dhcp_option_paramslist_s</class>
     <class kind="struct">tnet_dhcp_option_dns_s</class>
@@ -1509,8 +1511,8 @@
       <type>tnet_dhcp_option_t *</type>
       <name>tnet_dhcp_option_deserialize</name>
       <anchorfile>tnet__dhcp__option_8h.html</anchorfile>
-      <anchor>a25431c4ee6814e7971ef86fbe445d7ea</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a4f9f1042f27b33be6150ce5a7eea09f8</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1551,8 +1553,8 @@
       <type>TINYNET_API tnet_dhcp_option_dns_t *</type>
       <name>tnet_dhcp_option_dns_create</name>
       <anchorfile>tnet__dhcp__option_8h.html</anchorfile>
-      <anchor>a0392126c14bacb0776f431fb71c79143</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>a1b1f05e525002a7604ae09b3a93c4392</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -1593,8 +1595,8 @@
       <type>tnet_dhcp_option_sip_t *</type>
       <name>tnet_dhcp_option_sip_create</name>
       <anchorfile>tnet__dhcp__option__sip_8c.html</anchorfile>
-      <anchor>a7d3faca8af084f51698f9b458af87eb0</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ae86d8d7fc2165ad48e3b0045d9a46741</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -1608,7 +1610,7 @@
     <name>tnet_dhcp_option_sip.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dhcp/</path>
     <filename>tnet__dhcp__option__sip_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dhcp__option_8h" name="tnet_dhcp_option.h" local="yes" imported="no">tnet_dhcp_option.h</includes>
     <class kind="struct">tnet_dhcp_option_sip_s</class>
     <member kind="typedef">
@@ -1622,8 +1624,8 @@
       <type>TINYNET_API tnet_dhcp_option_sip_t *</type>
       <name>tnet_dhcp_option_sip_create</name>
       <anchorfile>tnet__dhcp__option__sip_8h.html</anchorfile>
-      <anchor>add74d5b5fabbc24ff5d3138d38d317e9</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>a987bc86af29c0bf1f00f6af77c6a9794</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -1671,7 +1673,7 @@
     <name>tnet_dhcp6.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dhcp6/</path>
     <filename>tnet__dhcp6_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dhcp6__message_8h" name="tnet_dhcp6_message.h" local="yes" imported="no">tnet_dhcp6_message.h</includes>
     <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">tnet_utils.h</includes>
     <class kind="struct">tnet_dhcp6_ctx_s</class>
@@ -1944,22 +1946,22 @@
       <type>tnet_dhcp6_duid_llt_t *</type>
       <name>tnet_dhcp6_duid_llt_create</name>
       <anchorfile>tnet__dhcp6__duid_8c.html</anchorfile>
-      <anchor>a6d6c07fa1bc6be06621c014c9eaf10d7</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ad669e57db28c397394675192c5491045</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_dhcp6_duid_en_t *</type>
       <name>tnet_dhcp6_duid_en_create</name>
       <anchorfile>tnet__dhcp6__duid_8c.html</anchorfile>
-      <anchor>ad9ca91c55026cf10a68a99ce0e2b5354</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>a9676e3d562b936c4527404cc2f7efff9</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_dhcp6_duid_ll_t *</type>
       <name>tnet_dhcp6_duid_ll_create</name>
       <anchorfile>tnet__dhcp6__duid_8c.html</anchorfile>
-      <anchor>ae9164fdb88b9232a4f0986910a8a14ee</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ab0782d8fce2411236be32df83653c626</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1979,8 +1981,8 @@
       <type>tnet_dhcp6_duid_t *</type>
       <name>tnet_dhcp6_duid_deserialize</name>
       <anchorfile>tnet__dhcp6__duid_8c.html</anchorfile>
-      <anchor>acb60e5282e105b91e61334ef4dae68e3</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a3199da6b9c0b69f3624797ca453b34a8</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2015,7 +2017,7 @@
     <name>tnet_dhcp6_duid.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dhcp6/</path>
     <filename>tnet__dhcp6__duid_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__hardwares_8h" name="tnet_hardwares.h" local="yes" imported="no">tnet_hardwares.h</includes>
     <class kind="struct">tnet_dhcp6_duid_s</class>
     <class kind="struct">tnet_dhcp6_duid_llt_s</class>
@@ -2140,8 +2142,8 @@
       <type>tnet_dhcp6_duid_t *</type>
       <name>tnet_dhcp6_duid_deserialize</name>
       <anchorfile>tnet__dhcp6__duid_8h.html</anchorfile>
-      <anchor>acb60e5282e105b91e61334ef4dae68e3</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a3199da6b9c0b69f3624797ca453b34a8</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2154,22 +2156,22 @@
       <type>TINYNET_API tnet_dhcp6_duid_llt_t *</type>
       <name>tnet_dhcp6_duid_llt_create</name>
       <anchorfile>tnet__dhcp6__duid_8h.html</anchorfile>
-      <anchor>a1817e8420cb18888d2a46ac7ea051d20</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>af6415090eae08032278ca9bbc9cb05a6</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API tnet_dhcp6_duid_en_t *</type>
       <name>tnet_dhcp6_duid_en_create</name>
       <anchorfile>tnet__dhcp6__duid_8h.html</anchorfile>
-      <anchor>a1c86da99bd2717478b5f1e525546f4ba</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>a6ffd8bf8ee46ce8ffc113d0ace87aaf1</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API tnet_dhcp6_duid_ll_t *</type>
       <name>tnet_dhcp6_duid_ll_create</name>
       <anchorfile>tnet__dhcp6__duid_8h.html</anchorfile>
-      <anchor>a557fcd286241164da4fe0c0798eb55f2</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ae87a2c797c94c599aa338d7e9968a218</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -2224,8 +2226,8 @@
       <type>tnet_dhcp6_message_t *</type>
       <name>tnet_dhcp6_message_deserialize</name>
       <anchorfile>tnet__dhcp6__message_8c.html</anchorfile>
-      <anchor>a996c1183b38434d3e103c483c324ef37</anchor>
-      <arglist>(const tnet_dhcp6_ctx_t *ctx, const uint8_t *data, size_t size)</arglist>
+      <anchor>a49db33d334a348c07b63a482690ac5ec</anchor>
+      <arglist>(const tnet_dhcp6_ctx_t *ctx, const uint8_t *data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -2239,7 +2241,7 @@
     <name>tnet_dhcp6_message.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dhcp6/</path>
     <filename>tnet__dhcp6__message_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dhcp6__option_8h" name="tnet_dhcp6_option.h" local="yes" imported="no">tnet_dhcp6_option.h</includes>
     <class kind="struct">tnet_dhcp6_message_s</class>
     <member kind="typedef">
@@ -2372,8 +2374,8 @@
       <type>tnet_dhcp6_message_t *</type>
       <name>tnet_dhcp6_message_deserialize</name>
       <anchorfile>tnet__dhcp6__message_8h.html</anchorfile>
-      <anchor>ae9da9784349716af5a09391a752504c8</anchor>
-      <arglist>(const struct tnet_dhcp6_ctx_s *ctx, const uint8_t *data, size_t size)</arglist>
+      <anchor>a4ce79b2c9ad5e947922a0dc8bf1a4b86</anchor>
+      <arglist>(const struct tnet_dhcp6_ctx_s *ctx, const uint8_t *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API tnet_dhcp6_message_t *</type>
@@ -2406,36 +2408,36 @@
       <type>tnet_dhcp6_option_t *</type>
       <name>tnet_dhcp6_option_create</name>
       <anchorfile>tnet__dhcp6__option_8c.html</anchorfile>
-      <anchor>a45ee46a5d7eea4e3b39f58f06d6b5ee7</anchor>
-      <arglist>(tnet_dhcp6_option_code_t code, const void *payload, size_t payload_size)</arglist>
+      <anchor>a85748a874ec0bffb44e93bc8736b5d3e</anchor>
+      <arglist>(tnet_dhcp6_option_code_t code, const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_dhcp6_option_identifier_t *</type>
       <name>tnet_dhcp6_option_indentifer_create</name>
       <anchorfile>tnet__dhcp6__option_8c.html</anchorfile>
-      <anchor>af01b9a722b7ea5353a4b9340d2e5ef7a</anchor>
-      <arglist>(tnet_dhcp6_option_code_t code, const void *payload, size_t payload_size)</arglist>
+      <anchor>a40b898765178c4cd270f8e434a60e99c</anchor>
+      <arglist>(tnet_dhcp6_option_code_t code, const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_dhcp6_option_identifier_t *</type>
       <name>tnet_dhcp6_option_clientid_create</name>
       <anchorfile>tnet__dhcp6__option_8c.html</anchorfile>
-      <anchor>a375d16842e583ec55096182ec91eea16</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>a9580a04b7683486bed424ddabde6363a</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_dhcp6_option_identifier_t *</type>
       <name>tnet_dhcp6_option_serverid_create</name>
       <anchorfile>tnet__dhcp6__option_8c.html</anchorfile>
-      <anchor>a7e6a1b836ce95cce841c775937e96bc8</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ac09403b11d38fa71d5e43e8764b8b3d0</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_dhcp6_option_orequest_t *</type>
       <name>tnet_dhcp6_option_orequest_create</name>
       <anchorfile>tnet__dhcp6__option_8c.html</anchorfile>
-      <anchor>a6dc3f7695609abbb8d0bdf2f1b8a5060</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>aee59d1f340f3dcb41b5f2d26d3d4205f</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_dhcp6_option_orequest_t *</type>
@@ -2448,8 +2450,8 @@
       <type>tnet_dhcp6_option_vendorclass_t *</type>
       <name>tnet_dhcp6_option_vendorclass_create</name>
       <anchorfile>tnet__dhcp6__option_8c.html</anchorfile>
-      <anchor>aa27446550196d4ffb3d8541e1205cf45</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>a5531acf377107cd2aa88ffd3870ba380</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_dhcp6_option_vendorclass_t *</type>
@@ -2462,8 +2464,8 @@
       <type>tnet_dhcp6_option_t *</type>
       <name>tnet_dhcp6_option_deserialize</name>
       <anchorfile>tnet__dhcp6__option_8c.html</anchorfile>
-      <anchor>abbbc1b6a2aa6f2e6f3ee0622ab5724f7</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a6deadd8ce3e250a9c2d0d5f9d2aa1417</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2519,7 +2521,7 @@
     <name>tnet_dhcp6_option.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dhcp6/</path>
     <filename>tnet__dhcp6__option_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dhcp6__duid_8h" name="tnet_dhcp6_duid.h" local="yes" imported="no">tnet_dhcp6_duid.h</includes>
     <class kind="struct">tnet_dhcp6_option_data_s</class>
     <class kind="struct">tnet_dhcp6_option_s</class>
@@ -2783,8 +2785,8 @@
       <type>tnet_dhcp6_option_t *</type>
       <name>tnet_dhcp6_option_deserialize</name>
       <anchorfile>tnet__dhcp6__option_8h.html</anchorfile>
-      <anchor>abbbc1b6a2aa6f2e6f3ee0622ab5724f7</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a6deadd8ce3e250a9c2d0d5f9d2aa1417</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2811,36 +2813,36 @@
       <type>TINYNET_API tnet_dhcp6_option_t *</type>
       <name>tnet_dhcp6_option_create</name>
       <anchorfile>tnet__dhcp6__option_8h.html</anchorfile>
-      <anchor>a8f4da5cdbb840d9541b949a3fb2d28dc</anchor>
-      <arglist>(tnet_dhcp6_option_code_t code, const void *payload, size_t payload_size)</arglist>
+      <anchor>a9123e1057d08e16a258f31a7b946141d</anchor>
+      <arglist>(tnet_dhcp6_option_code_t code, const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API tnet_dhcp6_option_identifier_t *</type>
       <name>tnet_dhcp6_option_indentifer_create</name>
       <anchorfile>tnet__dhcp6__option_8h.html</anchorfile>
-      <anchor>a2494c1dbfbef2fe23432bc66a412fec0</anchor>
-      <arglist>(tnet_dhcp6_option_code_t code, const void *payload, size_t payload_size)</arglist>
+      <anchor>adfef6b59485ca292c871e7099990a983</anchor>
+      <arglist>(tnet_dhcp6_option_code_t code, const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API tnet_dhcp6_option_identifier_t *</type>
       <name>tnet_dhcp6_option_clientid_create</name>
       <anchorfile>tnet__dhcp6__option_8h.html</anchorfile>
-      <anchor>aaa0c1f44a96c742691d992e811b6be7e</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>a41729803caa5cfed4cc32b628d12cea3</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API tnet_dhcp6_option_identifier_t *</type>
       <name>tnet_dhcp6_option_serverid_create</name>
       <anchorfile>tnet__dhcp6__option_8h.html</anchorfile>
-      <anchor>a418f5b0490fbd98fcb307c3b66417eba</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>a32baebeda950dddbcb7b097fa802610b</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API tnet_dhcp6_option_orequest_t *</type>
       <name>tnet_dhcp6_option_orequest_create</name>
       <anchorfile>tnet__dhcp6__option_8h.html</anchorfile>
-      <anchor>ae6a123c1094c3dc1d1718d67e32ddf45</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>aa01c6f0e1dab917ad548e6b9ca24c5a3</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API tnet_dhcp6_option_orequest_t *</type>
@@ -2853,8 +2855,8 @@
       <type>TINYNET_API tnet_dhcp6_option_vendorclass_t *</type>
       <name>tnet_dhcp6_option_vendorclass_create</name>
       <anchorfile>tnet__dhcp6__option_8h.html</anchorfile>
-      <anchor>a0559b96329fed11f7b407a91e3d043dd</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>abc11e9ad6fde65adb466965e97519a49</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API tnet_dhcp6_option_vendorclass_t *</type>
@@ -3006,7 +3008,7 @@
     <name>tnet_dns.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__message_8h" name="tnet_dns_message.h" local="yes" imported="no">tnet_dns_message.h</includes>
     <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">tnet_utils.h</includes>
     <class kind="struct">tnet_dns_cache_entry_s</class>
@@ -3147,8 +3149,8 @@
       <type>tnet_dns_a_t *</type>
       <name>tnet_dns_a_create</name>
       <anchorfile>tnet__dns__a_8c.html</anchorfile>
-      <anchor>a37ceb9b20f7313a94ca2fd3643b9a532</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a9defb7c8612dda2afe5c22a9d8af2cc2</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -3162,7 +3164,7 @@
     <name>tnet_dns_a.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__a_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
     <class kind="struct">tnet_dns_a_s</class>
     <member kind="typedef">
@@ -3176,8 +3178,8 @@
       <type>TINYNET_API tnet_dns_a_t *</type>
       <name>tnet_dns_a_create</name>
       <anchorfile>tnet__dns__a_8h.html</anchorfile>
-      <anchor>a250881bd952fc9dc28f961a2444418af</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a127c4a7530752dd17159d6cce2ec933d</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -3196,8 +3198,8 @@
       <type>tnet_dns_aaaa_t *</type>
       <name>tnet_dns_aaaa_create</name>
       <anchorfile>tnet__dns__aaaa_8c.html</anchorfile>
-      <anchor>aa5a6fb9994b5c627ea0d56dd887bbcf0</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a9af77e5771ba53c408d586b064292f57</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -3211,7 +3213,7 @@
     <name>tnet_dns_aaaa.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__aaaa_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
     <class kind="struct">tnet_dns_aaaa_s</class>
     <member kind="typedef">
@@ -3225,8 +3227,8 @@
       <type>tnet_dns_aaaa_t *</type>
       <name>tnet_dns_aaaa_create</name>
       <anchorfile>tnet__dns__aaaa_8h.html</anchorfile>
-      <anchor>aa5a6fb9994b5c627ea0d56dd887bbcf0</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a9af77e5771ba53c408d586b064292f57</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -3245,8 +3247,8 @@
       <type>tnet_dns_cname_t *</type>
       <name>tnet_dns_cname_create</name>
       <anchorfile>tnet__dns__cname_8c.html</anchorfile>
-      <anchor>a0bdd0868dc3452a81dc42790506f030e</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a5dcf5f68f15132d89bafa3a061a62626</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -3260,7 +3262,7 @@
     <name>tnet_dns_cname.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__cname_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
     <class kind="struct">tnet_dns_cname_s</class>
     <member kind="typedef">
@@ -3274,8 +3276,8 @@
       <type>tnet_dns_cname_t *</type>
       <name>tnet_dns_cname_create</name>
       <anchorfile>tnet__dns__cname_8h.html</anchorfile>
-      <anchor>a0bdd0868dc3452a81dc42790506f030e</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a5dcf5f68f15132d89bafa3a061a62626</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -3329,8 +3331,8 @@
       <type>tnet_dns_message_t *</type>
       <name>tnet_dns_message_deserialize</name>
       <anchorfile>group__tnet__dns__group.html</anchorfile>
-      <anchor>gafa89e3c424f9166920af3801ca0ce0e1</anchor>
-      <arglist>(const uint8_t *data, size_t size)</arglist>
+      <anchor>ga72d0a558aa990326e3724bd06260ac65</anchor>
+      <arglist>(const uint8_t *data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -3344,7 +3346,7 @@
     <name>tnet_dns_message.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__message_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
     <class kind="struct">tnet_dns_message_s</class>
     <member kind="define">
@@ -3494,8 +3496,8 @@
       <type>tnet_dns_message_t *</type>
       <name>tnet_dns_message_deserialize</name>
       <anchorfile>group__tnet__dns__group.html</anchorfile>
-      <anchor>gafa89e3c424f9166920af3801ca0ce0e1</anchor>
-      <arglist>(const uint8_t *data, size_t size)</arglist>
+      <anchor>ga72d0a558aa990326e3724bd06260ac65</anchor>
+      <arglist>(const uint8_t *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_dns_message_t *</type>
@@ -3542,8 +3544,8 @@
       <type>tnet_dns_mx_t *</type>
       <name>tnet_dns_mx_create</name>
       <anchorfile>tnet__dns__mx_8c.html</anchorfile>
-      <anchor>ab7c3ba4e45b4e42195f1cd4e25c7fda6</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a016b5719ecb6b707228b4350281ecee2</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -3557,7 +3559,7 @@
     <name>tnet_dns_mx.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__mx_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
     <class kind="struct">tnet_dns_mx_s</class>
     <member kind="typedef">
@@ -3571,8 +3573,8 @@
       <type>tnet_dns_mx_t *</type>
       <name>tnet_dns_mx_create</name>
       <anchorfile>tnet__dns__mx_8h.html</anchorfile>
-      <anchor>ab7c3ba4e45b4e42195f1cd4e25c7fda6</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a016b5719ecb6b707228b4350281ecee2</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -3592,8 +3594,8 @@
       <type>tnet_dns_naptr_t *</type>
       <name>tnet_dns_naptr_create</name>
       <anchorfile>tnet__dns__naptr_8c.html</anchorfile>
-      <anchor>aa7826bc79a48bedbb443d215cd61af3d</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a8903290f814d88d1b685e3401591e8c3</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -3607,7 +3609,7 @@
     <name>tnet_dns_naptr.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__naptr_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
     <class kind="struct">tnet_dns_naptr_s</class>
     <member kind="typedef">
@@ -3621,8 +3623,8 @@
       <type>TINYNET_API tnet_dns_naptr_t *</type>
       <name>tnet_dns_naptr_create</name>
       <anchorfile>tnet__dns__naptr_8h.html</anchorfile>
-      <anchor>acd132bbf2c325283f594520ac8dc1e28</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>aa59f7ef27b64bf1340e75bfa3b8ded0d</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -3642,8 +3644,8 @@
       <type>tnet_dns_ns_t *</type>
       <name>tnet_dns_ns_create</name>
       <anchorfile>tnet__dns__ns_8c.html</anchorfile>
-      <anchor>a515bb7ef701c0efd9acd301979d4395c</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a1f6a6ec6af069ac55d709f6313ea0f89</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -3657,7 +3659,7 @@
     <name>tnet_dns_ns.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__ns_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
     <class kind="struct">tnet_dns_ns_s</class>
     <member kind="typedef">
@@ -3671,8 +3673,8 @@
       <type>TINYNET_API tnet_dns_ns_t *</type>
       <name>tnet_dns_ns_create</name>
       <anchorfile>tnet__dns__ns_8h.html</anchorfile>
-      <anchor>ac51884c974993a529c02db68257fcc02</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a32c62e90da38fed47351cd1ecdfe7323</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -3691,8 +3693,8 @@
       <type>tnet_dns_opt_t *</type>
       <name>tnet_dns_opt_create</name>
       <anchorfile>tnet__dns__opt_8c.html</anchorfile>
-      <anchor>aaefd1b4c4d87e156e646783c31f9ccb2</anchor>
-      <arglist>(size_t payload_size)</arglist>
+      <anchor>a42d82b4cfecece6f35d08124861cd624</anchor>
+      <arglist>(tsk_size_t payload_size)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -3706,7 +3708,7 @@
     <name>tnet_dns_opt.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__opt_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
     <class kind="struct">tnet_dns_opt_s</class>
     <member kind="typedef">
@@ -3720,8 +3722,8 @@
       <type>tnet_dns_opt_t *</type>
       <name>tnet_dns_opt_create</name>
       <anchorfile>tnet__dns__opt_8h.html</anchorfile>
-      <anchor>aaefd1b4c4d87e156e646783c31f9ccb2</anchor>
-      <arglist>(size_t payload_size)</arglist>
+      <anchor>a42d82b4cfecece6f35d08124861cd624</anchor>
+      <arglist>(tsk_size_t payload_size)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -3740,8 +3742,8 @@
       <type>tnet_dns_ptr_t *</type>
       <name>tnet_dns_ptr_create</name>
       <anchorfile>tnet__dns__ptr_8c.html</anchorfile>
-      <anchor>ac5cf814133836e894aee1287e1aec9bb</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a0781972d80ae72b2836b931106dc922b</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -3755,7 +3757,7 @@
     <name>tnet_dns_ptr.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__ptr_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
     <class kind="struct">tnet_dns_ptr_s</class>
     <member kind="typedef">
@@ -3769,8 +3771,8 @@
       <type>tnet_dns_ptr_t *</type>
       <name>tnet_dns_ptr_create</name>
       <anchorfile>tnet__dns__ptr_8h.html</anchorfile>
-      <anchor>ac5cf814133836e894aee1287e1aec9bb</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a0781972d80ae72b2836b931106dc922b</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -3797,7 +3799,7 @@
     <name>tnet_dns_regexp.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__regexp_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <member kind="function">
       <type>TNET_BEGIN_DECLS TINYNET_API char *</type>
       <name>tnet_dns_regex_parse</name>
@@ -3812,6 +3814,7 @@
     <filename>tnet__dns__resolvconf_8c</filename>
     <includes id="tnet__dns__resolvconf_8h" name="tnet_dns_resolvconf.h" local="yes" imported="no">tnet_dns_resolvconf.h</includes>
     <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">tnet_utils.h</includes>
+    <includes id="tnet__dns_8h" name="tnet_dns.h" local="yes" imported="no">dns/tnet_dns.h</includes>
     <member kind="function">
       <type>tnet_addresses_L_t *</type>
       <name>tnet_dns_resolvconf_parse</name>
@@ -3824,7 +3827,7 @@
     <name>tnet_dns_resolvconf.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__resolvconf_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
     <member kind="function">
       <type>TNET_BEGIN_DECLS TINYNET_API tnet_addresses_L_t *</type>
@@ -3875,15 +3878,15 @@
       <type>int</type>
       <name>tnet_dns_rr_charstring_deserialize</name>
       <anchorfile>tnet__dns__rr_8c.html</anchorfile>
-      <anchor>a7f57205aa8c1b142f6ec44a3e2258470</anchor>
-      <arglist>(const void *data, char **charstring, size_t *offset)</arglist>
+      <anchor>a120e1c355fecace1874329b58d700d4d</anchor>
+      <arglist>(const void *data, char **charstring, tsk_size_t *offset)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tnet_dns_rr_qname_deserialize</name>
       <anchorfile>tnet__dns__rr_8c.html</anchorfile>
-      <anchor>a537e847c860e35a2254358e3d6c1df89</anchor>
-      <arglist>(const void *data, char **name, size_t *offset)</arglist>
+      <anchor>a1ade7e249886b86b6fb68dd6ee807d60</anchor>
+      <arglist>(const void *data, char **name, tsk_size_t *offset)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -3896,8 +3899,8 @@
       <type>tnet_dns_rr_t *</type>
       <name>tnet_dns_rr_deserialize</name>
       <anchorfile>tnet__dns__rr_8c.html</anchorfile>
-      <anchor>a21b6bb3cb9514c49e49a1e056d8383c1</anchor>
-      <arglist>(const void *data, size_t size, size_t *offset)</arglist>
+      <anchor>a6132fbb1895bc96764e773a0cbe8137f</anchor>
+      <arglist>(const void *data, tsk_size_t size, tsk_size_t *offset)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -3918,7 +3921,7 @@
     <name>tnet_dns_rr.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__rr_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <class kind="struct">tnet_dns_rr_s</class>
     <member kind="define">
       <type>#define</type>
@@ -4160,15 +4163,15 @@
       <type>int</type>
       <name>tnet_dns_rr_charstring_deserialize</name>
       <anchorfile>tnet__dns__rr_8h.html</anchorfile>
-      <anchor>a12438b4c89949a76a0f5e8008b58cf54</anchor>
-      <arglist>(const void *data, char **name, size_t *offset)</arglist>
+      <anchor>a6ec4f0742d53673299905dbcf2285af0</anchor>
+      <arglist>(const void *data, char **name, tsk_size_t *offset)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tnet_dns_rr_qname_deserialize</name>
       <anchorfile>tnet__dns__rr_8h.html</anchorfile>
-      <anchor>a537e847c860e35a2254358e3d6c1df89</anchor>
-      <arglist>(const void *data, char **name, size_t *offset)</arglist>
+      <anchor>a1ade7e249886b86b6fb68dd6ee807d60</anchor>
+      <arglist>(const void *data, char **name, tsk_size_t *offset)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -4181,8 +4184,8 @@
       <type>tnet_dns_rr_t *</type>
       <name>tnet_dns_rr_deserialize</name>
       <anchorfile>tnet__dns__rr_8h.html</anchorfile>
-      <anchor>a21b6bb3cb9514c49e49a1e056d8383c1</anchor>
-      <arglist>(const void *data, size_t size, size_t *offset)</arglist>
+      <anchor>a6132fbb1895bc96764e773a0cbe8137f</anchor>
+      <arglist>(const void *data, tsk_size_t size, tsk_size_t *offset)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -4208,8 +4211,8 @@
       <type>tnet_dns_soa_t *</type>
       <name>tnet_dns_soa_create</name>
       <anchorfile>tnet__dns__soa_8c.html</anchorfile>
-      <anchor>acac92e3393c7729ca2691bf40179b79c</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a554c9fb10b89674333c4358d9b22971f</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -4223,7 +4226,7 @@
     <name>tnet_dns_soa.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__soa_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
     <class kind="struct">tnet_dns_soa_s</class>
     <member kind="typedef">
@@ -4237,8 +4240,8 @@
       <type>tnet_dns_soa_t *</type>
       <name>tnet_dns_soa_create</name>
       <anchorfile>tnet__dns__soa_8h.html</anchorfile>
-      <anchor>acac92e3393c7729ca2691bf40179b79c</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a554c9fb10b89674333c4358d9b22971f</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -4257,8 +4260,8 @@
       <type>tnet_dns_srv_t *</type>
       <name>tnet_dns_srv_create</name>
       <anchorfile>tnet__dns__srv_8c.html</anchorfile>
-      <anchor>a4d65ad65ea3477882b2423e64e8fbb46</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a0989e7656444afa8eccb494162c1a840</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -4272,7 +4275,7 @@
     <name>tnet_dns_srv.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__srv_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
     <class kind="struct">tnet_dns_srv_s</class>
     <member kind="typedef">
@@ -4286,8 +4289,8 @@
       <type>tnet_dns_srv_t *</type>
       <name>tnet_dns_srv_create</name>
       <anchorfile>tnet__dns__srv_8h.html</anchorfile>
-      <anchor>a4d65ad65ea3477882b2423e64e8fbb46</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>a0989e7656444afa8eccb494162c1a840</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -4306,8 +4309,8 @@
       <type>tnet_dns_txt_t *</type>
       <name>tnet_dns_txt_create</name>
       <anchorfile>tnet__dns__txt_8c.html</anchorfile>
-      <anchor>a9faca5fed20ae9331bf0f985e2c66e1e</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>aae4a21dd9f1ea22c7f2f171dc63d501b</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -4321,7 +4324,7 @@
     <name>tnet_dns_txt.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__txt_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
     <class kind="struct">tnet_dns_txt_s</class>
     <member kind="typedef">
@@ -4335,8 +4338,8 @@
       <type>tnet_dns_txt_t *</type>
       <name>tnet_dns_txt_create</name>
       <anchorfile>tnet__dns__txt_8h.html</anchorfile>
-      <anchor>a9faca5fed20ae9331bf0f985e2c66e1e</anchor>
-      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, size_t offset)</arglist>
+      <anchor>aae4a21dd9f1ea22c7f2f171dc63d501b</anchor>
+      <arglist>(const char *name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void *data, tsk_size_t offset)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -4362,6 +4365,7 @@
     <path>C:/Projects/Doubango/tinyNET/src/stun/</path>
     <filename>tnet__stun_8c</filename>
     <includes id="tnet__stun_8h" name="tnet_stun.h" local="yes" imported="no">tnet_stun.h</includes>
+    <includes id="tnet__nat_8h" name="tnet_nat.h" local="yes" imported="no">../tnet_nat.h</includes>
     <member kind="function">
       <type>tnet_stun_binding_t *</type>
       <name>tnet_stun_binding_create</name>
@@ -4423,7 +4427,7 @@
     <name>tnet_stun.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/stun/</path>
     <filename>tnet__stun_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__stun__message_8h" name="tnet_stun_message.h" local="yes" imported="no">stun/tnet_stun_message.h</includes>
     <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
     <includes id="tnet__socket_8h" name="tnet_socket.h" local="yes" imported="no">tnet_socket.h</includes>
@@ -4533,6 +4537,7 @@
     <filename>tnet__stun__attribute_8c</filename>
     <includes id="tnet__stun__attribute_8h" name="tnet_stun_attribute.h" local="yes" imported="no">tnet_stun_attribute.h</includes>
     <includes id="tnet__stun_8h" name="tnet_stun.h" local="yes" imported="no">tnet_stun.h</includes>
+    <includes id="tnet__turn__attribute_8h" name="tnet_turn_attribute.h" local="yes" imported="no">../turn/tnet_turn_attribute.h</includes>
     <member kind="function">
       <type>tnet_stun_attribute_t *</type>
       <name>tnet_stun_attribute_create</name>
@@ -4544,29 +4549,29 @@
       <type>tnet_stun_attribute_mapped_addr_t *</type>
       <name>tnet_stun_attribute_mapped_address_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga6cf53103c692d7b02da86164a65bd8f0</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga28ffe32f830bbe0f5b32a207538eb8b6</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_xmapped_addr_t *</type>
       <name>tnet_stun_attribute_xmapped_address_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga16278ef3ae3186e95adac00063cd1e49</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>gacd4af1df8c9e298a23d34df27e5dcc45</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_username_t *</type>
       <name>tnet_stun_attribute_username_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga4045551455d15bc6f6abf3fff7d59268</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>gab92c8f62b2d188c9ac1528aa03da4b7e</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_integrity_t *</type>
       <name>tnet_stun_attribute_integrity_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga5ccd7836202a055067a039f6b4f8f11d</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga3c5f79313850ea8643132b093e11ef6a</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_fingerprint_t *</type>
@@ -4579,50 +4584,50 @@
       <type>tnet_stun_attribute_errorcode_t *</type>
       <name>tnet_stun_attribute_errorcode_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gaafabd3bac20dc50bd674a9a4ec71cd28</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>gaa51e8bc565195298fb3de24070f5614a</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_realm_t *</type>
       <name>tnet_stun_attribute_realm_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gaec127695012323658d62984aec5ec021</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga2d7ab50986b3af03951358ec4c2cfa8b</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_nonce_t *</type>
       <name>tnet_stun_attribute_nonce_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gada675247334805b8e9b1bc636ba42bc1</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga0cf404a4977b95a47c252f8101b099ce</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_unknowns_t *</type>
       <name>tnet_stun_attribute_unknowns_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga63d9a7646195eb2e0b6a21165684ea88</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga8a497b2b11b1a776ec37170ee14b6ac2</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_software_t *</type>
       <name>tnet_stun_attribute_software_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga755b426760f55d1617e6cf63ea14feba</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga719d8c3ac6588124533f03f70877e437</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_altserver_t *</type>
       <name>tnet_stun_attribute_altserver_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gaf580db0cefe8906f56ef316bd44b07f4</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga586636541b8ebb9ea46d4df39a448121</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_t *</type>
       <name>tnet_stun_attribute_deserialize</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga683b283cd4545a7ea20a0ef3094da995</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>ga642d9b382cea0cbbf0590b8b60be54c6</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -4727,7 +4732,7 @@
     <name>tnet_stun_attribute.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/stun/</path>
     <filename>tnet__stun__attribute_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
     <class kind="struct">tnet_stun_attribute_s</class>
     <class kind="struct">tnet_stun_attribute_mapped_addr_s</class>
@@ -5062,8 +5067,8 @@
       <type>tnet_stun_attribute_t *</type>
       <name>tnet_stun_attribute_deserialize</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga683b283cd4545a7ea20a0ef3094da995</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>ga642d9b382cea0cbbf0590b8b60be54c6</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -5090,29 +5095,29 @@
       <type>tnet_stun_attribute_mapped_addr_t *</type>
       <name>tnet_stun_attribute_mapped_address_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga6cf53103c692d7b02da86164a65bd8f0</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga28ffe32f830bbe0f5b32a207538eb8b6</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_xmapped_addr_t *</type>
       <name>tnet_stun_attribute_xmapped_address_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga16278ef3ae3186e95adac00063cd1e49</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>gacd4af1df8c9e298a23d34df27e5dcc45</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_username_t *</type>
       <name>tnet_stun_attribute_username_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga4045551455d15bc6f6abf3fff7d59268</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>gab92c8f62b2d188c9ac1528aa03da4b7e</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_integrity_t *</type>
       <name>tnet_stun_attribute_integrity_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga5ccd7836202a055067a039f6b4f8f11d</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga3c5f79313850ea8643132b093e11ef6a</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_fingerprint_t *</type>
@@ -5125,43 +5130,43 @@
       <type>tnet_stun_attribute_errorcode_t *</type>
       <name>tnet_stun_attribute_errorcode_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gaafabd3bac20dc50bd674a9a4ec71cd28</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>gaa51e8bc565195298fb3de24070f5614a</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_realm_t *</type>
       <name>tnet_stun_attribute_realm_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gaec127695012323658d62984aec5ec021</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga2d7ab50986b3af03951358ec4c2cfa8b</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_nonce_t *</type>
       <name>tnet_stun_attribute_nonce_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gada675247334805b8e9b1bc636ba42bc1</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga0cf404a4977b95a47c252f8101b099ce</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_unknowns_t *</type>
       <name>tnet_stun_attribute_unknowns_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga63d9a7646195eb2e0b6a21165684ea88</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga8a497b2b11b1a776ec37170ee14b6ac2</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_software_t *</type>
       <name>tnet_stun_attribute_software_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga755b426760f55d1617e6cf63ea14feba</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga719d8c3ac6588124533f03f70877e437</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_altserver_t *</type>
       <name>tnet_stun_attribute_altserver_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gaf580db0cefe8906f56ef316bd44b07f4</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga586636541b8ebb9ea46d4df39a448121</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -5286,8 +5291,8 @@
       <type>tnet_stun_message_t *</type>
       <name>tnet_stun_message_deserialize</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gac8ba6705e393c7d0171f478e44938e12</anchor>
-      <arglist>(const uint8_t *data, size_t size)</arglist>
+      <anchor>ga0f5f3b814bb84f3cb62802b1d9af275e</anchor>
+      <arglist>(const uint8_t *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -5343,7 +5348,7 @@
     <name>tnet_stun_message.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/stun/</path>
     <filename>tnet__stun__message_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__stun__attribute_8h" name="tnet_stun_attribute.h" local="yes" imported="no">stun/tnet_stun_attribute.h</includes>
     <class kind="struct">tnet_stun_message_s</class>
     <member kind="define">
@@ -5692,8 +5697,8 @@
       <type>tnet_stun_message_t *</type>
       <name>tnet_stun_message_deserialize</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gac8ba6705e393c7d0171f478e44938e12</anchor>
-      <arglist>(const uint8_t *data, size_t size)</arglist>
+      <anchor>ga0f5f3b814bb84f3cb62802b1d9af275e</anchor>
+      <arglist>(const uint8_t *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -5778,97 +5783,111 @@
     <includes id="tnet__dhcp6__option_8h" name="tnet_dhcp6_option.h" local="yes" imported="no">dhcp6/tnet_dhcp6_option.h</includes>
   </compound>
   <compound kind="file">
-    <name>tinyNET_config.h</name>
+    <name>tinynet_config.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/</path>
-    <filename>tiny_n_e_t__config_8h</filename>
+    <filename>tinynet__config_8h</filename>
     <member kind="define">
       <type>#define</type>
       <name>TINYNET_API</name>
-      <anchorfile>tiny_n_e_t__config_8h.html</anchorfile>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
       <anchor>aae93e76d17d1ca6ff95aad28b3abf658</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TINYNET_GEXTERN</name>
-      <anchorfile>tiny_n_e_t__config_8h.html</anchorfile>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
       <anchor>a81d479293190a58ef229b695fb4a8ab0</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TNET_BEGIN_DECLS</name>
-      <anchorfile>tiny_n_e_t__config_8h.html</anchorfile>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
       <anchor>a75bf1f5d1f1371c87bf2f5d9d61f458b</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TNET_END_DECLS</name>
-      <anchorfile>tiny_n_e_t__config_8h.html</anchorfile>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
       <anchor>a48c3cca1fa120fe82738d64e85c34351</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>TNET_INLINE</name>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
+      <anchor>a6e01306b61ca63a7ff08571c01bcd5e2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>TNET_HAVE_POLL</name>
-      <anchorfile>tiny_n_e_t__config_8h.html</anchorfile>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
       <anchor>a874ab0cf7c6c9b54f2f2358e572a8b13</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TNET_USE_POLL</name>
-      <anchorfile>tiny_n_e_t__config_8h.html</anchorfile>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
       <anchor>a02b04ca7920cac27006f37fe6ce2b2b1</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TNET_HAVE_OPENSSL_H</name>
-      <anchorfile>tiny_n_e_t__config_8h.html</anchorfile>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
       <anchor>a3c43576dad07d045cd4c4c446f9c7d58</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>HAVE_IFADDRS</name>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
+      <anchor>a8118f3716bf12d7ac91e1955a6d44815</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HAVE_DNS_H</name>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
+      <anchor>af7c63ec812cd1f5b370213ed28f4d7c8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>TNET_HAVE_SS_LEN</name>
-      <anchorfile>tiny_n_e_t__config_8h.html</anchorfile>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
       <anchor>adb994877ac2c9fa8365b76bbe1c51df3</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TNET_HAVE_SA_LEN</name>
-      <anchorfile>tiny_n_e_t__config_8h.html</anchorfile>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
       <anchor>ab912d02239aca3e7c941d670786cef33</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>HAVE_IFADDRS</name>
-      <anchorfile>tiny_n_e_t__config_8h.html</anchorfile>
-      <anchor>a8118f3716bf12d7ac91e1955a6d44815</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
       <name>TNET_SOFTWARE</name>
-      <anchorfile>tiny_n_e_t__config_8h.html</anchorfile>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
       <anchor>ae2d04c0df9b8a96c09fde862ec6e4304</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TNET_IANA_PEN</name>
-      <anchorfile>tiny_n_e_t__config_8h.html</anchorfile>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
       <anchor>a612c5d1310d848ba03078217088c3d26</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TNET_RESOLV_CONF_PATH</name>
-      <anchorfile>tiny_n_e_t__config_8h.html</anchorfile>
+      <anchorfile>tinynet__config_8h.html</anchorfile>
       <anchor>ab55f5a2cc9ce6e6b281afa7f869956f5</anchor>
       <arglist></arglist>
     </member>
@@ -5947,15 +5966,15 @@
       <type>int</type>
       <name>tnet_tls_socket_write</name>
       <anchorfile>tnet__tls_8c.html</anchorfile>
-      <anchor>a4623fc9c8132ad5b63d78428cbd0d6f4</anchor>
-      <arglist>(tnet_tls_socket_handle_t *self, const void *data, size_t size)</arglist>
+      <anchor>a43612982a13f6f14301034c5ce1b7cb7</anchor>
+      <arglist>(tnet_tls_socket_handle_t *self, const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tnet_tls_socket_recv</name>
       <anchorfile>tnet__tls_8c.html</anchorfile>
-      <anchor>af2b27bf4fdf08dd6ca57777599c466f6</anchor>
-      <arglist>(tnet_tls_socket_handle_t *self, void **data, size_t *size, int *isEncrypted)</arglist>
+      <anchor>ab488d9a8df546856d7becf958b9d0118</anchor>
+      <arglist>(tnet_tls_socket_handle_t *self, void **data, tsk_size_t *size, int *isEncrypted)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -5976,7 +5995,7 @@
     <name>tnet_tls.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/tls/</path>
     <filename>tnet__tls_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
     <member kind="define">
       <type>#define</type>
@@ -6003,15 +6022,15 @@
       <type>int</type>
       <name>tnet_tls_socket_write</name>
       <anchorfile>tnet__tls_8h.html</anchorfile>
-      <anchor>a4623fc9c8132ad5b63d78428cbd0d6f4</anchor>
-      <arglist>(tnet_tls_socket_handle_t *self, const void *data, size_t size)</arglist>
+      <anchor>a43612982a13f6f14301034c5ce1b7cb7</anchor>
+      <arglist>(tnet_tls_socket_handle_t *self, const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tnet_tls_socket_recv</name>
       <anchorfile>tnet__tls_8h.html</anchorfile>
-      <anchor>af2b27bf4fdf08dd6ca57777599c466f6</anchor>
-      <arglist>(tnet_tls_socket_handle_t *self, void **data, size_t *size, int *isEncrypted)</arglist>
+      <anchor>ab488d9a8df546856d7becf958b9d0118</anchor>
+      <arglist>(tnet_tls_socket_handle_t *self, void **data, tsk_size_t *size, int *isEncrypted)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API tnet_tls_socket_handle_t *</type>
@@ -6059,7 +6078,7 @@
       <type>int</type>
       <name>tnet_startup</name>
       <anchorfile>tnet_8c.html</anchorfile>
-      <anchor>affba6c2710347476f615b0135777c640</anchor>
+      <anchor>ae58106beb601241b29d944fe40c8f300</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
@@ -6081,7 +6100,7 @@
     <name>tnet.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/</path>
     <filename>tnet_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <member kind="function">
       <type>TNET_BEGIN_DECLS TINYNET_API int</type>
       <name>tnet_startup</name>
@@ -6107,7 +6126,7 @@
     <name>tnet_auth.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/</path>
     <filename>tnet__auth_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
   </compound>
   <compound kind="file">
     <name>tnet_endianness.c</name>
@@ -6123,11 +6142,32 @@
       <arglist>(unsigned short x)</arglist>
     </member>
     <member kind="function">
+      <type>unsigned short</type>
+      <name>tnet_htons_2</name>
+      <anchorfile>tnet__endianness_8c.html</anchorfile>
+      <anchor>a275f5dd051fd16045c4e893c32bac06c</anchor>
+      <arglist>(const void *px)</arglist>
+    </member>
+    <member kind="function">
       <type>unsigned long</type>
       <name>tnet_htonl</name>
       <anchorfile>tnet__endianness_8c.html</anchorfile>
       <anchor>a9c62f72b9d9f37546da167712dd3d706</anchor>
       <arglist>(unsigned long x)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned long</type>
+      <name>tnet_htonl_2</name>
+      <anchorfile>tnet__endianness_8c.html</anchorfile>
+      <anchor>a8f8cd820e624e51cce6a5c4f801a6f46</anchor>
+      <arglist>(const void *px)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_is_BE</name>
+      <anchorfile>tnet__endianness_8c.html</anchorfile>
+      <anchor>a8e88a1ef1bc84108223787779f504a41</anchor>
+      <arglist>()</arglist>
     </member>
     <member kind="variable">
       <type>tsk_bool_t</type>
@@ -6141,7 +6181,7 @@
     <name>tnet_endianness.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/</path>
     <filename>tnet__endianness_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>tnet_ntohs</name>
@@ -6151,31 +6191,66 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>tnet_ntohs_2</name>
+      <anchorfile>tnet__endianness_8h.html</anchorfile>
+      <anchor>a75320a16b5817e68c17bb33f4e10c811</anchor>
+      <arglist>(px)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>tnet_ntohl</name>
       <anchorfile>tnet__endianness_8h.html</anchorfile>
       <anchor>a3421e42a8d227dfd846bccb37f0dc490</anchor>
       <arglist>(x)</arglist>
     </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tnet_ntohl_2</name>
+      <anchorfile>tnet__endianness_8h.html</anchorfile>
+      <anchor>ae1122c736d013aa5cd562e6b9f2a2096</anchor>
+      <arglist>(px)</arglist>
+    </member>
     <member kind="function">
-      <type>TNET_BEGIN_DECLS unsigned short</type>
+      <type>TNET_BEGIN_DECLS TINYNET_API TNET_INLINE unsigned short</type>
       <name>tnet_htons</name>
       <anchorfile>tnet__endianness_8h.html</anchorfile>
-      <anchor>ae8369194677e0b8f8d29ff4a1a0efd7c</anchor>
+      <anchor>a9128b3b5b1eb078b0ae063c279cf6614</anchor>
       <arglist>(unsigned short x)</arglist>
     </member>
     <member kind="function">
-      <type>unsigned long</type>
+      <type>TINYNET_API TNET_INLINE unsigned short</type>
+      <name>tnet_htons_2</name>
+      <anchorfile>tnet__endianness_8h.html</anchorfile>
+      <anchor>a76d99c559f54d176c76e1d0b7cec11d1</anchor>
+      <arglist>(const void *px)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API TNET_INLINE unsigned long</type>
       <name>tnet_htonl</name>
       <anchorfile>tnet__endianness_8h.html</anchorfile>
-      <anchor>a9c62f72b9d9f37546da167712dd3d706</anchor>
+      <anchor>ae3b9343ade3115c02db59eaacf9c07a3</anchor>
       <arglist>(unsigned long x)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API TNET_INLINE unsigned long</type>
+      <name>tnet_htonl_2</name>
+      <anchorfile>tnet__endianness_8h.html</anchorfile>
+      <anchor>aaa4d43dde222ab2d0b7191b071073f2c</anchor>
+      <arglist>(const void *px)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API TNET_INLINE tsk_bool_t</type>
+      <name>tnet_is_BE</name>
+      <anchorfile>tnet__endianness_8h.html</anchorfile>
+      <anchor>a1c7a87c0f35e81028d0f636b398e43d9</anchor>
+      <arglist>()</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tnet_hardwares.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/</path>
     <filename>tnet__hardwares_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <member kind="typedef">
       <type>TNET_BEGIN_DECLS enum tnet_hardware_type_e</type>
       <name>tnet_hardware_type_t</name>
@@ -6408,8 +6483,8 @@
       <type>int</type>
       <name>tnet_nat_turn_channel_send</name>
       <anchorfile>group__tnet__nat__group.html</anchorfile>
-      <anchor>gaa25353ab0e863521191b18e20e2414a3</anchor>
-      <arglist>(const tnet_nat_context_handle_t *self, tnet_turn_channel_binding_id_t id, const void *data, size_t size, int indication)</arglist>
+      <anchor>ga69719fb972fa3ccf667dd3999c221e8c</anchor>
+      <arglist>(const tnet_nat_context_handle_t *self, tnet_turn_channel_binding_id_t id, const void *data, tsk_size_t size, int indication)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -6430,7 +6505,7 @@
     <name>tnet_nat.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/</path>
     <filename>tnet__nat_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__stun_8h" name="tnet_stun.h" local="yes" imported="no">stun/tnet_stun.h</includes>
     <includes id="tnet__turn_8h" name="tnet_turn.h" local="yes" imported="no">turn/tnet_turn.h</includes>
     <includes id="tnet__proto_8h" name="tnet_proto.h" local="yes" imported="no">tnet_proto.h</includes>
@@ -6566,8 +6641,8 @@
       <type>TINYNET_API int</type>
       <name>tnet_nat_turn_channel_send</name>
       <anchorfile>group__tnet__nat__group.html</anchorfile>
-      <anchor>gaa25353ab0e863521191b18e20e2414a3</anchor>
-      <arglist>(const tnet_nat_context_handle_t *self, tnet_turn_channel_binding_id_t id, const void *data, size_t size, int indication)</arglist>
+      <anchor>ga69719fb972fa3ccf667dd3999c221e8c</anchor>
+      <arglist>(const tnet_nat_context_handle_t *self, tnet_turn_channel_binding_id_t id, const void *data, tsk_size_t size, int indication)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
@@ -6608,7 +6683,7 @@
     <name>tnet_poll.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/</path>
     <filename>tnet__poll_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
     <class kind="struct">tnet_pollfd_s</class>
     <member kind="define">
@@ -6679,7 +6754,7 @@
     <name>tnet_proto.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/</path>
     <filename>tnet__proto_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <member kind="typedef">
       <type>enum tnet_proto_e</type>
       <name>tnet_proto_t</name>
@@ -7604,7 +7679,7 @@
     <name>tnet_socket.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/</path>
     <filename>tnet__socket_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
     <includes id="tnet__tls_8h" name="tnet_tls.h" local="yes" imported="no">tls/tnet_tls.h</includes>
     <class kind="struct">tnet_socket_s</class>
@@ -7935,6 +8010,13 @@
       <arglist>(tnet_transport_t *transport)</arglist>
     </member>
     <member kind="function">
+      <type>int</type>
+      <name>tnet_transport_unprepare</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>a9763a05c45da16d31e3c99a79fdf1761</anchor>
+      <arglist>(tnet_transport_t *transport)</arglist>
+    </member>
+    <member kind="function">
       <type>void *</type>
       <name>tnet_transport_mainthread</name>
       <anchorfile>tnet__transport_8c.html</anchorfile>
@@ -7947,13 +8029,6 @@
       <anchorfile>tnet__transport_8c.html</anchorfile>
       <anchor>a4dc920abb12866b5154692fa31885d99</anchor>
       <arglist>(tnet_transport_t *transport)</arglist>
-    </member>
-    <member kind="function">
-      <type>void *</type>
-      <name>run</name>
-      <anchorfile>tnet__transport_8c.html</anchorfile>
-      <anchor>aaff097263c3a920812609355ce3e9451</anchor>
-      <arglist>(void *self)</arglist>
     </member>
     <member kind="function">
       <type>tnet_transport_t *</type>
@@ -8005,10 +8080,31 @@
       <arglist>(const tnet_transport_handle_t *handle, tnet_ip_t *ip, tnet_port_t *port)</arglist>
     </member>
     <member kind="function">
+      <type>int</type>
+      <name>tnet_transport_set_natt_ctx</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>a5e2f170d3cdb1d161a7be4225b9d2c2e</anchor>
+      <arglist>(tnet_transport_handle_t *handle, tnet_nat_context_handle_t *natt_ctx)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_transport_get_public_ip_n_port</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>adaa653753ccbf3a5c9bfb0ea26cfb985</anchor>
+      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)</arglist>
+    </member>
+    <member kind="function">
       <type>tnet_socket_type_t</type>
       <name>tnet_transport_get_type</name>
       <anchorfile>tnet__transport_8c.html</anchorfile>
       <anchor>ab5732e5c7845d6cb39cdda33bc347dd3</anchor>
+      <arglist>(const tnet_transport_handle_t *handle)</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_fd_t</type>
+      <name>tnet_transport_get_master_fd</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>aa745da0b969e4f7fe05884929b331fb8</anchor>
       <arglist>(const tnet_transport_handle_t *handle)</arglist>
     </member>
     <member kind="function">
@@ -8051,9 +8147,10 @@
     <name>tnet_transport.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/</path>
     <filename>tnet__transport_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__socket_8h" name="tnet_socket.h" local="yes" imported="no">tnet_socket.h</includes>
     <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">tnet_utils.h</includes>
+    <includes id="tnet__nat_8h" name="tnet_nat.h" local="yes" imported="no">tnet_nat.h</includes>
     <class kind="struct">tnet_transport_event_s</class>
     <class kind="struct">tnet_transport_s</class>
     <member kind="define">
@@ -8149,6 +8246,12 @@
       <anchor>abbf94f6cbb0048f5f737fb0fb850ab5ba56ba0a0c0f79ca66025f8a32c28a9b44</anchor>
       <arglist></arglist>
     </member>
+    <member kind="enumvalue">
+      <name>event_accepted</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>abbf94f6cbb0048f5f737fb0fb850ab5bad931ba02a9181775756c4e40d9e540bc</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="function">
       <type>TINYNET_API int</type>
       <name>tnet_transport_start</name>
@@ -8186,6 +8289,20 @@
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
+      <name>tnet_transport_set_natt_ctx</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>a220be41b652653fbe3a0724f0091ea29</anchor>
+      <arglist>(tnet_transport_handle_t *handle, tnet_nat_context_handle_t *natt_ctx)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_transport_get_public_ip_n_port</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>a1c466c2c9934b0a1291c11a9e0dd423a</anchor>
+      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
       <name>tnet_transport_isconnected</name>
       <anchorfile>tnet__transport_8h.html</anchorfile>
       <anchor>a38e55eab24973fbb9a44062e51d1df75</anchor>
@@ -8209,8 +8326,15 @@
       <type>TINYNET_API int</type>
       <name>tnet_transport_add_socket</name>
       <anchorfile>tnet__transport_8h.html</anchorfile>
-      <anchor>add5479407a4371e156211d8268b960f4</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, int take_ownership, int isClient)</arglist>
+      <anchor>a63ed1107c44c1301c0bb8b76e1a4f0f0</anchor>
+      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_transport_pause_socket</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>a5d8f7a60ac7d836e8167195a62fa1151</anchor>
+      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd, tsk_bool_t pause)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
@@ -8227,18 +8351,18 @@
       <arglist>(const tnet_transport_handle_t *handle, const char *host, tnet_port_t port, tnet_socket_type_t type)</arglist>
     </member>
     <member kind="function">
-      <type>TINYNET_API size_t</type>
+      <type>TINYNET_API tsk_size_t</type>
       <name>tnet_transport_send</name>
       <anchorfile>tnet__transport_8h.html</anchorfile>
-      <anchor>a92fbae6b1e385fdafcd2a4975193c4d2</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t from, const void *buf, size_t size)</arglist>
+      <anchor>aa50503da55477a13caffc15d75e0dbf3</anchor>
+      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t from, const void *buf, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
-      <type>TINYNET_API size_t</type>
+      <type>TINYNET_API tsk_size_t</type>
       <name>tnet_transport_sendto</name>
       <anchorfile>tnet__transport_8h.html</anchorfile>
-      <anchor>a80d8ea0b9cd67d5f0a776163b6cad7e0</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void *buf, size_t size)</arglist>
+      <anchor>aa4a559c780cb647d80d3345e0598930a</anchor>
+      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void *buf, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
@@ -8255,6 +8379,13 @@
       <arglist>(const tnet_transport_handle_t *handle)</arglist>
     </member>
     <member kind="function">
+      <type>TINYNET_API tnet_fd_t</type>
+      <name>tnet_transport_get_master_fd</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>a93691e2da74102b4814817aa997b3b67</anchor>
+      <arglist>(const tnet_transport_handle_t *handle)</arglist>
+    </member>
+    <member kind="function">
       <type>TINYNET_API int</type>
       <name>tnet_transport_shutdown</name>
       <anchorfile>tnet__transport_8h.html</anchorfile>
@@ -8262,10 +8393,10 @@
       <arglist>(tnet_transport_handle_t *handle)</arglist>
     </member>
     <member kind="function">
-      <type>void *</type>
+      <type>tsk_object_t *</type>
       <name>tnet_transport_context_create</name>
       <anchorfile>tnet__transport_8h.html</anchorfile>
-      <anchor>af40659e3fb5b3f051cf897661b7dbe48</anchor>
+      <anchor>a158a59ec9e717cbbab586e299e4cd866</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
@@ -8342,24 +8473,31 @@
     </member>
     <member kind="function">
       <type>int</type>
+      <name>tnet_transport_pause_socket</name>
+      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
+      <anchor>abee7c4939d6d6a491a7e858bebb062f3</anchor>
+      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd, tsk_bool_t pause)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
       <name>tnet_transport_remove_socket</name>
       <anchorfile>tnet__transport__poll_8c.html</anchorfile>
       <anchor>a24be6b8d861a0393ee2ac260fb51b097</anchor>
       <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t *fd)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tnet_transport_send</name>
       <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>a75efee5d9e72ffb5e39ddf071d5f8267</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t from, const void *buf, size_t size)</arglist>
+      <anchor>a43742bc0a130d55441289926632bf36b</anchor>
+      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t from, const void *buf, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tnet_transport_sendto</name>
       <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>afaf874d710f135378270184a0c27a03d</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void *buf, size_t size)</arglist>
+      <anchor>a1e30780dd04f1c416c54a108ae4d798b</anchor>
+      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void *buf, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -8387,6 +8525,13 @@
       <name>tnet_transport_prepare</name>
       <anchorfile>tnet__transport__poll_8c.html</anchorfile>
       <anchor>aafdc2431c02385e300c520ca985ed55b</anchor>
+      <arglist>(tnet_transport_t *transport)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_transport_unprepare</name>
+      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
+      <anchor>a9763a05c45da16d31e3c99a79fdf1761</anchor>
       <arglist>(tnet_transport_t *transport)</arglist>
     </member>
     <member kind="function">
@@ -8421,7 +8566,7 @@
     <name>tnet_types.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/</path>
     <filename>tnet__types_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TNET_INVALID_SOCKET</name>
@@ -8554,8 +8699,8 @@
       <type>tnet_interface_t *</type>
       <name>tnet_interface_create</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gaa0b751358825856ccd9e53d6b4c8c90a</anchor>
-      <arglist>(const char *description, const void *mac_address, size_t mac_address_length)</arglist>
+      <anchor>ga519d8f6f2415bdf328e364f61bb47a39</anchor>
+      <arglist>(const char *description, const void *mac_address, tsk_size_t mac_address_length)</arglist>
     </member>
     <member kind="function">
       <type>tnet_address_t *</type>
@@ -8631,8 +8776,8 @@
       <type>tnet_family_t</type>
       <name>tnet_get_family</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga28d79afb5ea024ac1c1f93e0d52d0e4e</anchor>
-      <arglist>(const char *host)</arglist>
+      <anchor>ga00003bf6a8749b31d4b60b09cf5337a3</anchor>
+      <arglist>(const char *host, tnet_port_t port)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -8729,35 +8874,35 @@
       <type>int</type>
       <name>tnet_sockfd_sendto</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gacc7215d1d8124b0dee334d21ce15863d</anchor>
-      <arglist>(tnet_fd_t fd, const struct sockaddr *to, const void *buf, size_t size)</arglist>
+      <anchor>ga92fcf0392c9a93e2e578578479d4f35e</anchor>
+      <arglist>(tnet_fd_t fd, const struct sockaddr *to, const void *buf, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tnet_sockfd_recvfrom</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gad78e6917663e2ed58a8f8d13c64af320</anchor>
-      <arglist>(tnet_fd_t fd, void *buf, size_t size, int flags, struct sockaddr *from)</arglist>
+      <anchor>gabbf0cddd16af300a66d0859ed79b3cda</anchor>
+      <arglist>(tnet_fd_t fd, void *buf, tsk_size_t size, int flags, struct sockaddr *from)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tnet_sockfd_send</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gac59a5801cfa33653e3f733273a6f2a09</anchor>
-      <arglist>(tnet_fd_t fd, const void *buf, size_t size, int flags)</arglist>
+      <anchor>ga93356b04edf02a163bfaa421676f1efc</anchor>
+      <arglist>(tnet_fd_t fd, const void *buf, tsk_size_t size, int flags)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tnet_sockfd_recv</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga92ff4ec32249362b4089120ca6be1b8f</anchor>
-      <arglist>(tnet_fd_t fd, void *buf, size_t size, int flags)</arglist>
+      <anchor>gaba9d8246797b995ecfb81f42f1bd1b96</anchor>
+      <arglist>(tnet_fd_t fd, void *buf, tsk_size_t size, int flags)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
-      <name>tnet_sockfd_connetto</name>
+      <name>tnet_sockfd_connectto</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga2f3ccdf87403fd4ac1877f36f68173c0</anchor>
+      <anchor>gafe03cf813e644a3d2cd2de8666d7f9c8</anchor>
       <arglist>(tnet_fd_t fd, const struct sockaddr_storage *to)</arglist>
     </member>
     <member kind="function">
@@ -8800,7 +8945,7 @@
     <name>tnet_utils.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/</path>
     <filename>tnet__utils_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__socket_8h" name="tnet_socket.h" local="yes" imported="no">tnet_socket.h</includes>
     <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
     <class kind="struct">tnet_interface_s</class>
@@ -8977,8 +9122,8 @@
       <type>#define</type>
       <name>TNET_PRINT_LAST_ERROR</name>
       <anchorfile>tnet__utils_8h.html</anchorfile>
-      <anchor>ac969a5cbccf51505d3db014fec6300fc</anchor>
-      <arglist>(msg)</arglist>
+      <anchor>ad84b1312befef0c09d4fa9a37e5bbe60</anchor>
+      <arglist>(FMT,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -9068,8 +9213,8 @@
       <type>TINYNET_API tnet_family_t</type>
       <name>tnet_get_family</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga28d79afb5ea024ac1c1f93e0d52d0e4e</anchor>
-      <arglist>(const char *host)</arglist>
+      <anchor>ga00003bf6a8749b31d4b60b09cf5337a3</anchor>
+      <arglist>(const char *host, tnet_port_t port)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
@@ -9166,35 +9311,35 @@
       <type>TINYNET_API int</type>
       <name>tnet_sockfd_sendto</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gacc7215d1d8124b0dee334d21ce15863d</anchor>
-      <arglist>(tnet_fd_t fd, const struct sockaddr *to, const void *buf, size_t size)</arglist>
+      <anchor>ga92fcf0392c9a93e2e578578479d4f35e</anchor>
+      <arglist>(tnet_fd_t fd, const struct sockaddr *to, const void *buf, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
       <name>tnet_sockfd_recvfrom</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gad78e6917663e2ed58a8f8d13c64af320</anchor>
-      <arglist>(tnet_fd_t fd, void *buf, size_t size, int flags, struct sockaddr *from)</arglist>
+      <anchor>gabbf0cddd16af300a66d0859ed79b3cda</anchor>
+      <arglist>(tnet_fd_t fd, void *buf, tsk_size_t size, int flags, struct sockaddr *from)</arglist>
     </member>
     <member kind="function">
-      <type>TINYNET_API size_t</type>
+      <type>TINYNET_API tsk_size_t</type>
       <name>tnet_sockfd_send</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gac59a5801cfa33653e3f733273a6f2a09</anchor>
-      <arglist>(tnet_fd_t fd, const void *buf, size_t size, int flags)</arglist>
+      <anchor>ga93356b04edf02a163bfaa421676f1efc</anchor>
+      <arglist>(tnet_fd_t fd, const void *buf, tsk_size_t size, int flags)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
       <name>tnet_sockfd_recv</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga92ff4ec32249362b4089120ca6be1b8f</anchor>
-      <arglist>(tnet_fd_t fd, void *buf, size_t size, int flags)</arglist>
+      <anchor>gaba9d8246797b995ecfb81f42f1bd1b96</anchor>
+      <arglist>(tnet_fd_t fd, void *buf, tsk_size_t size, int flags)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
-      <name>tnet_sockfd_connetto</name>
+      <name>tnet_sockfd_connectto</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga2f3ccdf87403fd4ac1877f36f68173c0</anchor>
+      <anchor>gafe03cf813e644a3d2cd2de8666d7f9c8</anchor>
       <arglist>(tnet_fd_t fd, const struct sockaddr_storage *to)</arglist>
     </member>
     <member kind="function">
@@ -9222,8 +9367,8 @@
       <type>tnet_interface_t *</type>
       <name>tnet_interface_create</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gaa0b751358825856ccd9e53d6b4c8c90a</anchor>
-      <arglist>(const char *description, const void *mac_address, size_t mac_address_length)</arglist>
+      <anchor>ga519d8f6f2415bdf328e364f61bb47a39</anchor>
+      <arglist>(const char *description, const void *mac_address, tsk_size_t mac_address_length)</arglist>
     </member>
     <member kind="function">
       <type>tnet_address_t *</type>
@@ -9383,8 +9528,8 @@
       <type>int</type>
       <name>tnet_turn_channel_senddata</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>ga5309a059f180c2d89289af76b5f0f59b</anchor>
-      <arglist>(const struct tnet_nat_context_s *nat_context, const tnet_turn_channel_binding_t *channel_bind, const void *data, size_t size, int indication)</arglist>
+      <anchor>ga8623d3c7fec8d357ad29f76633643109</anchor>
+      <arglist>(const struct tnet_nat_context_s *nat_context, const tnet_turn_channel_binding_t *channel_bind, const void *data, tsk_size_t size, int indication)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -9419,7 +9564,7 @@
     <name>tnet_turn.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/turn/</path>
     <filename>tnet__turn_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__turn__attribute_8h" name="tnet_turn_attribute.h" local="yes" imported="no">turn/tnet_turn_attribute.h</includes>
     <includes id="tnet__proto_8h" name="tnet_proto.h" local="yes" imported="no">tnet_proto.h</includes>
     <includes id="tnet__socket_8h" name="tnet_socket.h" local="yes" imported="no">tnet_socket.h</includes>
@@ -9564,8 +9709,8 @@
       <type>int</type>
       <name>tnet_turn_channel_senddata</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>ga5309a059f180c2d89289af76b5f0f59b</anchor>
-      <arglist>(const struct tnet_nat_context_s *nat_context, const tnet_turn_channel_binding_t *channel_bind, const void *data, size_t size, int indication)</arglist>
+      <anchor>ga8623d3c7fec8d357ad29f76633643109</anchor>
+      <arglist>(const struct tnet_nat_context_s *nat_context, const tnet_turn_channel_binding_t *channel_bind, const void *data, tsk_size_t size, int indication)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -9619,8 +9764,8 @@
       <type>tnet_turn_attribute_xpeer_addr_t *</type>
       <name>tnet_turn_attribute_xpeer_addr_create</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>ga478c201ffed0d1996a69e5f61fe7594d</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>gaf66bebd5bd8319c454a450dc092973c5</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_turn_attribute_xpeer_addr_t *</type>
@@ -9633,15 +9778,15 @@
       <type>tnet_turn_attribute_data_t *</type>
       <name>tnet_turn_attribute_data_create</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>ga88a7eba2eb81f7e9aeb2869d3ee3ef89</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga6e749efbc0e6c2d181b7b5572dd4a84a</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_turn_attribute_xrelayed_addr_t *</type>
       <name>tnet_turn_attribute_xrelayed_addr_create</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>gabb260b4bbf14098a05f0b4449d0e5fc6</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga27dd53bb4f5afd8fbe1b3c6450764d68</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_turn_attribute_even_port_t *</type>
@@ -9668,15 +9813,15 @@
       <type>tnet_turn_attribute_restoken_t *</type>
       <name>tnet_turn_attribute_restoken_create</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>gadfeb27be93479cb6281da9495b4370e6</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga498409f84c06d567eeeeb913b01117c8</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_t *</type>
       <name>tnet_turn_attribute_deserialize</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>gae6f1acfe8b768ec4afa1e450b4a23dd8</anchor>
-      <arglist>(tnet_stun_attribute_type_t type, uint16_t length, const void *payload, size_t payload_size)</arglist>
+      <anchor>gae0fac81dd69579c064501d497cd03ea8</anchor>
+      <arglist>(tnet_stun_attribute_type_t type, uint16_t length, const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -9753,7 +9898,7 @@
     <name>tnet_turn_attribute.h</name>
     <path>C:/Projects/Doubango/tinyNET/src/turn/</path>
     <filename>tnet__turn__attribute_8h</filename>
-    <includes id="tiny_n_e_t__config_8h" name="tinyNET_config.h" local="yes" imported="no">tinyNET_config.h</includes>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__proto_8h" name="tnet_proto.h" local="yes" imported="no">tnet_proto.h</includes>
     <includes id="tnet__stun__attribute_8h" name="tnet_stun_attribute.h" local="yes" imported="no">stun/tnet_stun_attribute.h</includes>
     <class kind="struct">tnet_turn_attribute_channelnum_s</class>
@@ -9832,8 +9977,8 @@
       <type>tnet_stun_attribute_t *</type>
       <name>tnet_turn_attribute_deserialize</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>gae6f1acfe8b768ec4afa1e450b4a23dd8</anchor>
-      <arglist>(tnet_stun_attribute_type_t type, uint16_t length, const void *payload, size_t payload_size)</arglist>
+      <anchor>gae0fac81dd69579c064501d497cd03ea8</anchor>
+      <arglist>(tnet_stun_attribute_type_t type, uint16_t length, const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -9860,8 +10005,8 @@
       <type>tnet_turn_attribute_xpeer_addr_t *</type>
       <name>tnet_turn_attribute_xpeer_addr_create</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>ga478c201ffed0d1996a69e5f61fe7594d</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>gaf66bebd5bd8319c454a450dc092973c5</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_turn_attribute_xpeer_addr_t *</type>
@@ -9874,15 +10019,15 @@
       <type>tnet_turn_attribute_data_t *</type>
       <name>tnet_turn_attribute_data_create</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>ga88a7eba2eb81f7e9aeb2869d3ee3ef89</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga6e749efbc0e6c2d181b7b5572dd4a84a</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_turn_attribute_xrelayed_addr_t *</type>
       <name>tnet_turn_attribute_xrelayed_addr_create</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>gabb260b4bbf14098a05f0b4449d0e5fc6</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga27dd53bb4f5afd8fbe1b3c6450764d68</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_turn_attribute_even_port_t *</type>
@@ -9909,8 +10054,8 @@
       <type>tnet_turn_attribute_restoken_t *</type>
       <name>tnet_turn_attribute_restoken_create</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>gadfeb27be93479cb6281da9495b4370e6</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga498409f84c06d567eeeeb913b01117c8</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="variable">
       <type>TNET_BEGIN_DECLS typedef tnet_stun_attribute_t</type>
@@ -10337,8 +10482,8 @@
       <type>tnet_dns_message_t *</type>
       <name>tnet_dns_message_deserialize</name>
       <anchorfile>group__tnet__dns__group.html</anchorfile>
-      <anchor>gafa89e3c424f9166920af3801ca0ce0e1</anchor>
-      <arglist>(const uint8_t *data, size_t size)</arglist>
+      <anchor>ga72d0a558aa990326e3724bd06260ac65</anchor>
+      <arglist>(const uint8_t *data, tsk_size_t size)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -11064,29 +11209,29 @@
       <type>tnet_stun_attribute_mapped_addr_t *</type>
       <name>tnet_stun_attribute_mapped_address_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga6cf53103c692d7b02da86164a65bd8f0</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga28ffe32f830bbe0f5b32a207538eb8b6</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_xmapped_addr_t *</type>
       <name>tnet_stun_attribute_xmapped_address_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga16278ef3ae3186e95adac00063cd1e49</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>gacd4af1df8c9e298a23d34df27e5dcc45</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_username_t *</type>
       <name>tnet_stun_attribute_username_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga4045551455d15bc6f6abf3fff7d59268</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>gab92c8f62b2d188c9ac1528aa03da4b7e</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_integrity_t *</type>
       <name>tnet_stun_attribute_integrity_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga5ccd7836202a055067a039f6b4f8f11d</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga3c5f79313850ea8643132b093e11ef6a</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_fingerprint_t *</type>
@@ -11099,50 +11244,50 @@
       <type>tnet_stun_attribute_errorcode_t *</type>
       <name>tnet_stun_attribute_errorcode_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gaafabd3bac20dc50bd674a9a4ec71cd28</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>gaa51e8bc565195298fb3de24070f5614a</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_realm_t *</type>
       <name>tnet_stun_attribute_realm_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gaec127695012323658d62984aec5ec021</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga2d7ab50986b3af03951358ec4c2cfa8b</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_nonce_t *</type>
       <name>tnet_stun_attribute_nonce_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gada675247334805b8e9b1bc636ba42bc1</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga0cf404a4977b95a47c252f8101b099ce</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_unknowns_t *</type>
       <name>tnet_stun_attribute_unknowns_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga63d9a7646195eb2e0b6a21165684ea88</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga8a497b2b11b1a776ec37170ee14b6ac2</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_software_t *</type>
       <name>tnet_stun_attribute_software_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga755b426760f55d1617e6cf63ea14feba</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga719d8c3ac6588124533f03f70877e437</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_altserver_t *</type>
       <name>tnet_stun_attribute_altserver_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gaf580db0cefe8906f56ef316bd44b07f4</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga586636541b8ebb9ea46d4df39a448121</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_t *</type>
       <name>tnet_stun_attribute_deserialize</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga683b283cd4545a7ea20a0ef3094da995</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>ga642d9b382cea0cbbf0590b8b60be54c6</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -11183,8 +11328,8 @@
       <type>tnet_stun_message_t *</type>
       <name>tnet_stun_message_deserialize</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gac8ba6705e393c7d0171f478e44938e12</anchor>
-      <arglist>(const uint8_t *data, size_t size)</arglist>
+      <anchor>ga0f5f3b814bb84f3cb62802b1d9af275e</anchor>
+      <arglist>(const uint8_t *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -11364,8 +11509,8 @@
       <type>int</type>
       <name>tnet_nat_turn_channel_send</name>
       <anchorfile>group__tnet__nat__group.html</anchorfile>
-      <anchor>gaa25353ab0e863521191b18e20e2414a3</anchor>
-      <arglist>(const tnet_nat_context_handle_t *self, tnet_turn_channel_binding_id_t id, const void *data, size_t size, int indication)</arglist>
+      <anchor>ga69719fb972fa3ccf667dd3999c221e8c</anchor>
+      <arglist>(const tnet_nat_context_handle_t *self, tnet_turn_channel_binding_id_t id, const void *data, tsk_size_t size, int indication)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -11416,8 +11561,8 @@
       <type>tnet_interface_t *</type>
       <name>tnet_interface_create</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gaa0b751358825856ccd9e53d6b4c8c90a</anchor>
-      <arglist>(const char *description, const void *mac_address, size_t mac_address_length)</arglist>
+      <anchor>ga519d8f6f2415bdf328e364f61bb47a39</anchor>
+      <arglist>(const char *description, const void *mac_address, tsk_size_t mac_address_length)</arglist>
     </member>
     <member kind="function">
       <type>tnet_address_t *</type>
@@ -11493,8 +11638,8 @@
       <type>tnet_family_t</type>
       <name>tnet_get_family</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga28d79afb5ea024ac1c1f93e0d52d0e4e</anchor>
-      <arglist>(const char *host)</arglist>
+      <anchor>ga00003bf6a8749b31d4b60b09cf5337a3</anchor>
+      <arglist>(const char *host, tnet_port_t port)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -11584,35 +11729,35 @@
       <type>int</type>
       <name>tnet_sockfd_sendto</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gacc7215d1d8124b0dee334d21ce15863d</anchor>
-      <arglist>(tnet_fd_t fd, const struct sockaddr *to, const void *buf, size_t size)</arglist>
+      <anchor>ga92fcf0392c9a93e2e578578479d4f35e</anchor>
+      <arglist>(tnet_fd_t fd, const struct sockaddr *to, const void *buf, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tnet_sockfd_recvfrom</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gad78e6917663e2ed58a8f8d13c64af320</anchor>
-      <arglist>(tnet_fd_t fd, void *buf, size_t size, int flags, struct sockaddr *from)</arglist>
+      <anchor>gabbf0cddd16af300a66d0859ed79b3cda</anchor>
+      <arglist>(tnet_fd_t fd, void *buf, tsk_size_t size, int flags, struct sockaddr *from)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tnet_sockfd_send</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gac59a5801cfa33653e3f733273a6f2a09</anchor>
-      <arglist>(tnet_fd_t fd, const void *buf, size_t size, int flags)</arglist>
+      <anchor>ga93356b04edf02a163bfaa421676f1efc</anchor>
+      <arglist>(tnet_fd_t fd, const void *buf, tsk_size_t size, int flags)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tnet_sockfd_recv</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga92ff4ec32249362b4089120ca6be1b8f</anchor>
-      <arglist>(tnet_fd_t fd, void *buf, size_t size, int flags)</arglist>
+      <anchor>gaba9d8246797b995ecfb81f42f1bd1b96</anchor>
+      <arglist>(tnet_fd_t fd, void *buf, tsk_size_t size, int flags)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
-      <name>tnet_sockfd_connetto</name>
+      <name>tnet_sockfd_connectto</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga2f3ccdf87403fd4ac1877f36f68173c0</anchor>
+      <anchor>gafe03cf813e644a3d2cd2de8666d7f9c8</anchor>
       <arglist>(tnet_fd_t fd, const struct sockaddr_storage *to)</arglist>
     </member>
     <member kind="function">
@@ -11882,8 +12027,8 @@
       <type>int</type>
       <name>tnet_turn_channel_senddata</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>ga5309a059f180c2d89289af76b5f0f59b</anchor>
-      <arglist>(const struct tnet_nat_context_s *nat_context, const tnet_turn_channel_binding_t *channel_bind, const void *data, size_t size, int indication)</arglist>
+      <anchor>ga8623d3c7fec8d357ad29f76633643109</anchor>
+      <arglist>(const struct tnet_nat_context_s *nat_context, const tnet_turn_channel_binding_t *channel_bind, const void *data, tsk_size_t size, int indication)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -11910,22 +12055,22 @@
       <type>tnet_turn_attribute_xpeer_addr_t *</type>
       <name>tnet_turn_attribute_xpeer_addr_create</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>ga478c201ffed0d1996a69e5f61fe7594d</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>gaf66bebd5bd8319c454a450dc092973c5</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_turn_attribute_data_t *</type>
       <name>tnet_turn_attribute_data_create</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>ga88a7eba2eb81f7e9aeb2869d3ee3ef89</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga6e749efbc0e6c2d181b7b5572dd4a84a</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_turn_attribute_xrelayed_addr_t *</type>
       <name>tnet_turn_attribute_xrelayed_addr_create</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>gabb260b4bbf14098a05f0b4449d0e5fc6</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga27dd53bb4f5afd8fbe1b3c6450764d68</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_turn_attribute_even_port_t *</type>
@@ -11952,15 +12097,15 @@
       <type>tnet_turn_attribute_restoken_t *</type>
       <name>tnet_turn_attribute_restoken_create</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>gadfeb27be93479cb6281da9495b4370e6</anchor>
-      <arglist>(const void *payload, size_t payload_size)</arglist>
+      <anchor>ga498409f84c06d567eeeeb913b01117c8</anchor>
+      <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_t *</type>
       <name>tnet_turn_attribute_deserialize</name>
       <anchorfile>group__tnet__turn__group.html</anchorfile>
-      <anchor>gae6f1acfe8b768ec4afa1e450b4a23dd8</anchor>
-      <arglist>(tnet_stun_attribute_type_t type, uint16_t length, const void *payload, size_t payload_size)</arglist>
+      <anchor>gae0fac81dd69579c064501d497cd03ea8</anchor>
+      <arglist>(tnet_stun_attribute_type_t type, uint16_t length, const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -13293,10 +13438,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>mac_address_length</name>
       <anchorfile>structtnet__interface__s.html</anchorfile>
-      <anchor>ad59aba3ff659f98f1f8ac0dfd8c714c5</anchor>
+      <anchor>a9d62b42964509e35907e16d57ab116a5</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -14055,10 +14200,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>size</name>
       <anchorfile>structtnet__transport__event__s.html</anchorfile>
-      <anchor>a854352f53b148adc24983a58a1866d66</anchor>
+      <anchor>a2af13611e30c0884ab2e1837c4da8282</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -14101,6 +14246,13 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
+      <type>tnet_nat_context_handle_t *</type>
+      <name>natt_ctx</name>
+      <anchorfile>structtnet__transport__s.html</anchorfile>
+      <anchor>a4e40b6b4f2c827184bbfca2abafb683b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
       <type>tnet_socket_t *</type>
       <name>master</name>
       <anchorfile>structtnet__transport__s.html</anchorfile>
@@ -14108,10 +14260,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>void *</type>
+      <type>tsk_object_t *</type>
       <name>context</name>
       <anchorfile>structtnet__transport__s.html</anchorfile>
-      <anchor>ae376f130b17d169ee51be68077a89ed0</anchor>
+      <anchor>a59bd43e8ef51cf37b1a9f3fc448a061e</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -14612,10 +14764,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>count</name>
       <anchorfile>structtransport__context__s.html</anchorfile>
-      <anchor>a76d971a3c552bc58ba9f0d5fceae9806</anchor>
+      <anchor>a8c61335783a0ae87ef83b2d6f66b8da2</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -14683,6 +14835,13 @@
       <name>connected</name>
       <anchorfile>structtransport__socket__s.html</anchorfile>
       <anchor>a3fe755c96cb04252e2da49e1c6355dc4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>paused</name>
+      <anchorfile>structtransport__socket__s.html</anchorfile>
+      <anchor>a480d0b63a1a89d000626afe5691982e9</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">

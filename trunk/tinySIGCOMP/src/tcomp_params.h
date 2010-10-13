@@ -34,11 +34,13 @@
 #include "tcomp_types.h"
 #include "tsk_object.h"
 
-TCOMP_BEGIN_DECLS
-
 /**@typedef tcomp_params_t
 * SIGCOMP parameters as per rfc 3320 subclause 3.3.
 */
+
+TCOMP_BEGIN_DECLS
+
+
 typedef struct tcomp_params_s
 {
 	TSK_DECLARE_OBJECT;

@@ -48,7 +48,6 @@
 
 
 /** @mainpage TinyHTTP API Overview
-*
 * <h1>15 HTTP/HTTPS</h1>
 * <p>
 * The HTTP/HTTPS stack is a basic thread-safe client API and is used in conjunction with the XCAP protocol. 
@@ -66,28 +65,54 @@
 * 
 * <h2>15.1	Initialization</h2>
 * <p>
-* As the HTTP/HTTPS stack depends on the network library (tinyNET), you MUST call tnet_startup() before using any HTTP/Network function (thttp_*). tnet_cleanup() is used to terminate use of network functions.
+* As the HTTP/HTTPS stack depends on the network library (tinyNET), you MUST call @ref tnet_startup() before using any HTTP/Network function (thttp_*). 
+* @ref tnet_cleanup() is used to terminate use of network functions.
 * </p>
+*
+*
+* <h2> Create and start the stack</h2>
 * <p>
-* The example below demonstrates how to create and start a HTTP/HTTPS stack. The callback function shows the most common events.
+* Before starting to used the stack you must create and instance of @ref thttp_stack_handle_t and start the stack.
+* The example below demonstrates how to create and start a HTTP/HTTPS stack.
+* </p>
+*
 * @code
 int ret;
 
+// Callback function used for test
 int test_stack_callback(const thttp_event_t *httpevent)
 {
+	thttp_session_id_t id = thttp_session_get_id(httpevent->session);
 	switch(httpevent->type){
 		case thttp_event_message: // New HTTP message
 			{
-				break;
-			}
-		case thttp_event_auth_failed: // Authentication failed
-			{
+				TSK_DEBUG_INFO("sid=%llu", id);
+				if(THTTP_MESSAGE_IS_RESPONSE(httpevent->message)){
+					const thttp_header_ETag_t* etag;
+					TSK_DEBUG_INFO("=== %d ==> %s", THTTP_RESPONSE_CODE(httpevent->message), THTTP_MESSAGE_CONTENT(httpevent->message));
+					// You can use 
+					if((etag = (const thttp_header_ETag_t*)thttp_message_get_header(httpevent->message, thttp_htype_ETag))){
+						TSK_DEBUG_INFO("Etag=%s", etag->value);
+					}
+				}
 				break;
 			}
 
+		case thttp_event_auth_failed:
+			{
+				TSK_DEBUG_INFO("auth failed sid=%llu", id);
+				break;
+			}
 
 		case thttp_event_closed: // HTTP connection closed (informational)
 			{
+				TSK_DEBUG_INFO("closed sid=%llu", id);
+				break;
+			}
+
+		case thttp_event_transport_error: // HTTP connection closed (informational)
+			{
+				TSK_DEBUG_INFO("Transport sid=%llu", id);
 				break;
 			}
 	}
@@ -95,11 +120,14 @@ int test_stack_callback(const thttp_event_t *httpevent)
 	return 0;
 }
 
+// Creates the HTTP/HTTPS stacks
 thttp_stack_handle_t* stack = thttp_stack_create(test_stack_callback,
 	// TLS certificates (not mandatory) to show how parameters are passed to the stack
 	THTTP_STACK_SET_TLS_CERTS("C:\\tls\\ca.pki-crt.pem", "C:\\tls\\pub-crt.pem", "C:\\tls\\pub-key.pem"),
-	THTTP_STACK_SET_NULL());// MUST always be present
+	THTTP_STACK_SET_NULL() // MUST always be present
+	);
 
+// Starts the HTTP stack
 if((ret = thttp_stack_start(stack))){
 	TSK_DEBUG_ERROR("Failed to start the HTTP/HTTPS stack.");
 	goto bail;

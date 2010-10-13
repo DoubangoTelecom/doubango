@@ -313,6 +313,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\open-ims.test.sn"
+				>
+			</File>
+			<File
 				RelativePath=".\publish.sn"
 				>
 			</File>

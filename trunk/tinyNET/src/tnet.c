@@ -59,6 +59,7 @@ static tsk_bool_t __tnet_started = tsk_false;
 tsk_bool_t tnet_isBigEndian = tsk_false;
 
 /**
+ * @fn tnet_startup
  * This is probably the most important function. You MUST call this function to initialize the network stack before calling any <b>tnet_*</b> function. 
  *			You MUST call @ref tnet_cleanup to cleanup the network stack.
  *

@@ -201,8 +201,8 @@ thttp_session_id_t thttp_session_get_id(const thttp_session_handle_t *self)
 /**@ingroup thttp_session_group
 * Gets the user context (user/application data).
 * @param self A pointer to the session from which to get the context.
-* @retval A pointer to the context. Previously defined by using @ref THTTP_SESSION_SET_CONTEXT() macro.
-* @sa @ref THTTP_SESSION_SET_CONTEXT
+* @retval A pointer to the context. Previously defined by using @ref THTTP_SESSION_SET_USERDATA() macro.
+* @sa @ref THTTP_SESSION_SET_USERDATA()
 */
 const void* thttp_session_get_userdata(const thttp_session_handle_t *self)
 {
