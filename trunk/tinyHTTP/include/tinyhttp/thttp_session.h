@@ -59,7 +59,7 @@ typedef uint64_t thttp_session_id_t;
 typedef enum thttp_session_option_e
 {
 	THTTP_SESSION_OPTION_TIMEOUT,
-
+	// To be continued...
 }
 thttp_session_option_t;
 
@@ -137,7 +137,7 @@ thttp_session_set(session,
 * @def THTTP_SESSION_SET_USERDATA
 * Sets user data (context). Will be return to the application layer each time the callback function is called.
 * This is a helper macro for @ref thttp_session_create and @ref thttp_session_set.
-* @param CTX_PTR A pointer to the data(const void*).
+* @param USERDATA_PTR A pointer to the data(const void*).
 *
 * @code
 // session = thttp_session_create(stack,

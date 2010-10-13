@@ -108,6 +108,12 @@ TINYNET_API int tnet_get_peerip_n_port(tnet_fd_t localFD, tnet_ip_t *ip, tnet_po
 #define tnet_get_peerip(localFD, ip) tnet_get_peerip_n_port(localFD, ip, 0)
 #define tnet_get_peerport(localFD, port) tnet_get_peerip_n_port(localFD, 0, port)
 
+#if TNET_HAVE_SA_LEN
+#	define tnet_get_sockaddr_size(psockaddr)	(psockaddr)->sa_len
+#else
+#	define tnet_get_sockaddr_size(psockaddr)	((psockaddr)->sa_family == AF_INET6 ? sizeof(struct sockaddr_in6): ((psockaddr)->sa_family == AF_INET ? sizeof(struct sockaddr_in) : sizeof(*(psockaddr))))
+#endif
+
 TINYNET_API int tnet_getnameinfo(const struct sockaddr *sa, socklen_t salen, char* node, socklen_t nodelen, char* service, socklen_t servicelen, int flags);
 TINYNET_API int tnet_gethostname(tnet_host_t* result);
 

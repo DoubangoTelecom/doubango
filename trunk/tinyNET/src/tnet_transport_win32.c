@@ -292,8 +292,8 @@ tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_
 	
 	wsaBuffer.buf = (CHAR*)buf;
 	wsaBuffer.len = size;
-	
-    if((ret = WSASendTo(from, &wsaBuffer, 1, &numberOfBytesSent, 0, to, sizeof(*to), 0, 0)) == SOCKET_ERROR){
+
+	if((ret = WSASendTo(from, &wsaBuffer, 1, &numberOfBytesSent, 0, to, tnet_get_sockaddr_size(to), 0, 0)) == SOCKET_ERROR){
 		if((ret = WSAGetLastError()) == WSA_IO_PENDING){
 			TSK_DEBUG_INFO("WSA_IO_PENDING error for WSASendTo SSESSION");
 			ret = 0;

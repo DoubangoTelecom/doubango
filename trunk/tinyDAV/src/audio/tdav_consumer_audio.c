@@ -122,6 +122,24 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data, tsk_size_t
 			tv.tv_sec -= 1;
 		}
 		self->jb.ref_timestamp = tsk_time_get_ms(&tv);
+
+		switch(rtp_hdr->payload_type){
+			// FIXME: TMEDIA_CODEC_FORMAT_* are "char*" just define int values to avoid char comparison
+			case 8: /*TMEDIA_CODEC_FORMAT_G711a*/
+			case 0: /* TMEDIA_CODEC_FORMAT_G711u */
+				self->jb.jcodec = JB_CODEC_G711x;
+				break;
+			case 18: /* TMEDIA_CODEC_FORMAT_G729 */
+				self->jb.jcodec = JB_CODEC_G729A;
+				break;
+			case 3: /* TMEDIA_CODEC_FORMAT_GSM */
+				self->jb.jcodec = JB_CODEC_GSM_EFR;
+				break;
+
+			default:
+				self->jb.jcodec = JB_CODEC_OTHER;
+				break;
+		}
 	}
 	
 	tsk_safeobj_lock(self);

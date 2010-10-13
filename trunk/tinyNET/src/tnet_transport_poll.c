@@ -237,7 +237,7 @@ tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_
 		goto bail;
 	}
 	
-    if((numberOfBytesSent = sendto(from, buf, size, 0, to, sizeof(*to))) <= 0){
+    if((numberOfBytesSent = sendto(from, buf, size, 0, to, tnet_get_sockaddr_size(to))) <= 0){
 		TNET_PRINT_LAST_ERROR("sendto have failed.");
 		goto bail;
 	}

@@ -60,7 +60,7 @@ TCOMP_BEGIN_DECLS
 +---+---+---+---+---+---+---+---+
 */
 /**NACK info as per rfc 4077 subclause 3.1.
-* You MUST use @ref TCOMP_NACKINFO_CREATE to create new nackinfo object.
+* You MUST use @ref tcomp_nackinfo_create() to create new nackinfo object.
 */
 typedef struct tcomp_nackinfo_s
 {

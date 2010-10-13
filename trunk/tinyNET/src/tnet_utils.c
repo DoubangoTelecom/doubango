@@ -1242,13 +1242,7 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 	}
 
 	while(sent < size){
-#if TNET_HAVE_SA_LEN
-		ret = sendto(fd, (buf+sent), (size-sent), 0, to, to->sa_len);
-#else
-		//return sendto(fd, (buf+sent), (size-sent), 0, to, sizeof(*to));
-		ret = sendto(fd, (((const uint8_t*)buf)+sent), (size-sent), 0, to, 
-			to->sa_family == AF_INET6 ? sizeof(struct sockaddr_in6): (to->sa_family == AF_INET ? sizeof(struct sockaddr_in) : sizeof(*to))); //FIXME: why sizeof(*to) don't work for IPv6 on XP?
-#endif
+		ret = sendto(fd, (((const uint8_t*)buf)+sent), (size-sent), 0, to, tnet_get_sockaddr_size(to));
 		if(ret <= 0){
 			goto bail;
 		}

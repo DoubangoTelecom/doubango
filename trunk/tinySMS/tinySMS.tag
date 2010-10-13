@@ -9,12 +9,20 @@
     <name>tinysms.h</name>
     <path>C:/Projects/Doubango/tinySMS/include/</path>
     <filename>tinysms_8h</filename>
+    <includes id="tsms__packing_8h" name="tsms_packing.h" local="yes" imported="no">tinysms/tsms_packing.h</includes>
+    <includes id="tsms__rpdu_8h" name="tsms_rpdu.h" local="yes" imported="no">tinysms/rpdu/tsms_rpdu.h</includes>
+    <includes id="tsms__tpdu__submit_8h" name="tsms_tpdu_submit.h" local="yes" imported="no">tinysms/tpdu/tsms_tpdu_submit.h</includes>
+    <includes id="tsms__tpdu__deliver_8h" name="tsms_tpdu_deliver.h" local="yes" imported="no">tinysms/tpdu/tsms_tpdu_deliver.h</includes>
+    <includes id="tsms__tpdu__report_8h" name="tsms_tpdu_report.h" local="yes" imported="no">tinysms/tpdu/tsms_tpdu_report.h</includes>
+    <includes id="tsms__tpdu__command_8h" name="tsms_tpdu_command.h" local="yes" imported="no">tinysms/tpdu/tsms_tpdu_command.h</includes>
+    <includes id="tsms__tpdu__status__report_8h" name="tsms_tpdu_status_report.h" local="yes" imported="no">tinysms/tpdu/tsms_tpdu_status_report.h</includes>
   </compound>
   <compound kind="file">
     <name>tsms_rpdu.h</name>
     <path>C:/Projects/Doubango/tinySMS/include/tinysms/rpdu/</path>
     <filename>tsms__rpdu_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
+    <includes id="tsms__common_8h" name="tsms_common.h" local="yes" imported="no">tinysms/tsms_common.h</includes>
     <class kind="struct">tsms_rpdu_data_s</class>
     <class kind="struct">tsms_rpdu_smma_s</class>
     <class kind="struct">tsms_rpdu_ack_s</class>
@@ -207,6 +215,7 @@
     <path>C:/Projects/Doubango/tinySMS/include/tinysms/tpdu/</path>
     <filename>tsms__tpdu__command_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
+    <includes id="tsms__common_8h" name="tsms_common.h" local="yes" imported="no">tinysms/tsms_common.h</includes>
     <class kind="struct">tsms_tpdu_command_s</class>
     <member kind="define">
       <type>#define</type>
@@ -307,6 +316,7 @@
     <path>C:/Projects/Doubango/tinySMS/include/tinysms/tpdu/</path>
     <filename>tsms__tpdu__deliver_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
+    <includes id="tsms__common_8h" name="tsms_common.h" local="yes" imported="no">tinysms/tsms_common.h</includes>
     <class kind="struct">tsms_tpdu_deliver_s</class>
     <member kind="define">
       <type>#define</type>
@@ -370,6 +380,7 @@
     <path>C:/Projects/Doubango/tinySMS/include/tinysms/tpdu/</path>
     <filename>tsms__tpdu__report_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
+    <includes id="tsms__common_8h" name="tsms_common.h" local="yes" imported="no">tinysms/tsms_common.h</includes>
     <class kind="struct">tsms_tpdu_report_s</class>
     <member kind="define">
       <type>#define</type>
@@ -447,6 +458,7 @@
     <path>C:/Projects/Doubango/tinySMS/include/tinysms/tpdu/</path>
     <filename>tsms__tpdu__status__report_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
+    <includes id="tsms__common_8h" name="tsms_common.h" local="yes" imported="no">tinysms/tsms_common.h</includes>
     <class kind="struct">tsms_tpdu_status_report_s</class>
     <member kind="define">
       <type>#define</type>
@@ -673,6 +685,7 @@
     <path>C:/Projects/Doubango/tinySMS/include/tinysms/tpdu/</path>
     <filename>tsms__tpdu__submit_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
+    <includes id="tsms__common_8h" name="tsms_common.h" local="yes" imported="no">tinysms/tsms_common.h</includes>
     <class kind="struct">tsms_tpdu_submit_s</class>
     <member kind="define">
       <type>#define</type>
@@ -914,8 +927,8 @@
       <type>tsms_address_t *</type>
       <name>tsms_address_deserialize</name>
       <anchorfile>tsms__address_8h.html</anchorfile>
-      <anchor>a7122f853adafd06405d4e85ad752f466</anchor>
-      <arglist>(const void *data, size_t size, tsms_address_type_t xtype, size_t *length)</arglist>
+      <anchor>abc662334a34e4064a7a6bad52a364905</anchor>
+      <arglist>(const void *data, tsk_size_t size, tsms_address_type_t xtype, tsk_size_t *length)</arglist>
     </member>
     <member kind="function">
       <type>tsms_address_t *</type>
@@ -965,6 +978,7 @@
     <path>C:/Projects/Doubango/tinySMS/include/tinysms/</path>
     <filename>tsms__common_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
+    <includes id="tsms__address_8h" name="tsms_address.h" local="yes" imported="no">tinysms/tsms_address.h</includes>
     <class kind="struct">tsms_tpdu_message_s</class>
     <class kind="struct">tsms_rpdu_message_s</class>
     <member kind="define">
@@ -1330,8 +1344,8 @@
       <type>TINYSMS_API tsms_tpdu_message_t *</type>
       <name>tsms_tpdu_message_deserialize</name>
       <anchorfile>group__tsms__tpdu__group.html</anchorfile>
-      <anchor>ga84ca381e3e2007de9cbbf9d048d7ce3e</anchor>
-      <arglist>(const void *data, size_t size, tsk_bool_t MobOrig)</arglist>
+      <anchor>gad59f30e9edb66eb3d26eafd51dbd09fc</anchor>
+      <arglist>(const void *data, tsk_size_t size, tsk_bool_t MobOrig)</arglist>
     </member>
     <member kind="function">
       <type>TINYSMS_API char *</type>
@@ -1379,8 +1393,8 @@
       <type>TINYSMS_API tsms_rpdu_message_t *</type>
       <name>tsms_rpdu_message_deserialize</name>
       <anchorfile>group__tsms__rpdu__group.html</anchorfile>
-      <anchor>ga4751a242c8c9da256ec211eb6abf46dc</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>gaddfae888c86bfcbab67b60ddcc963cf0</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYSMS_API char *</type>
@@ -1433,22 +1447,22 @@
       <type>TINYSMS_API char *</type>
       <name>tsms_pack_from_7bit</name>
       <anchorfile>group__tsms__packing__group.html</anchorfile>
-      <anchor>gafe40207085233c237e7490d8215a65d8</anchor>
-      <arglist>(const void *gsm7bit, size_t size)</arglist>
+      <anchor>ga05ce76a51583893258f7ccc38f54fc42</anchor>
+      <arglist>(const void *gsm7bit, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYSMS_API char *</type>
       <name>tsms_pack_from_ucs2</name>
       <anchorfile>group__tsms__packing__group.html</anchorfile>
-      <anchor>ga3aff499fc7e3386ca3c3923d6a553248</anchor>
-      <arglist>(const void *ucs2, size_t size)</arglist>
+      <anchor>ga7d3f412de3f53083056fd7fab2e7aa6b</anchor>
+      <arglist>(const void *ucs2, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYSMS_API char *</type>
       <name>tsms_pack_from_8bit</name>
       <anchorfile>group__tsms__packing__group.html</anchorfile>
-      <anchor>ga955b09601e99ac354b1f891ddeb2538f</anchor>
-      <arglist>(const void *gsm8bit, size_t size)</arglist>
+      <anchor>ga56acefc52098c1a66db2bc7e5250eff2</anchor>
+      <arglist>(const void *gsm8bit, tsk_size_t size)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -1488,6 +1502,7 @@
     <name>tsms_rpdu.c</name>
     <path>C:/Projects/Doubango/tinySMS/src/rpdu/</path>
     <filename>tsms__rpdu_8c</filename>
+    <includes id="tsms__rpdu_8h" name="tsms_rpdu.h" local="yes" imported="no">tinysms/rpdu/tsms_rpdu.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TSMS_ERROR_TOO_SHORT</name>
@@ -1499,8 +1514,8 @@
       <type>tsms_rpdu_message_t *</type>
       <name>_tsms_rpdu_rpdata_deserialize</name>
       <anchorfile>tsms__rpdu_8c.html</anchorfile>
-      <anchor>a2c70e97226be5bceea05595dd3270a9d</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>adb99738343fb13e155c842b5453fb1e7</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1520,8 +1535,8 @@
       <type>tsms_rpdu_message_t *</type>
       <name>_tsms_rpdu_rpsmma_deserialize</name>
       <anchorfile>tsms__rpdu_8c.html</anchorfile>
-      <anchor>ad240d9aff90a7288173fcc1eb04bf0df</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a42545971352879d43a73cbb8cceaf978</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1541,8 +1556,8 @@
       <type>tsms_rpdu_message_t *</type>
       <name>_tsms_rpdu_rpack_deserialize</name>
       <anchorfile>tsms__rpdu_8c.html</anchorfile>
-      <anchor>ae8ff8d270a35a2ff61e320683b919e24</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>aa8180fc4f5ba93fb71ba377e5fe1afb3</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1562,8 +1577,8 @@
       <type>tsms_rpdu_message_t *</type>
       <name>_tsms_rpdu_rperror_deserialize</name>
       <anchorfile>tsms__rpdu_8c.html</anchorfile>
-      <anchor>a1e88cf474960b824e4d810cd42732bea</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a7cd5468dc0cd7a1131b83c739936f786</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1612,6 +1627,7 @@
     <name>tsms_tpdu_command.c</name>
     <path>C:/Projects/Doubango/tinySMS/src/tpdu/</path>
     <filename>tsms__tpdu__command_8c</filename>
+    <includes id="tsms__tpdu__command_8h" name="tsms_tpdu_command.h" local="yes" imported="no">tinysms/tpdu/tsms_tpdu_command.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TSMS_ERROR_TOO_SHORT</name>
@@ -1623,8 +1639,8 @@
       <type>tsms_tpdu_message_t *</type>
       <name>_tsms_tpdu_command_deserialize</name>
       <anchorfile>tsms__tpdu__command_8c.html</anchorfile>
-      <anchor>a9633646b5d4892062037717036058ad1</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a2a4ef83ce35bd81e61f3bd5db9be92fd</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1652,6 +1668,7 @@
     <name>tsms_tpdu_deliver.c</name>
     <path>C:/Projects/Doubango/tinySMS/src/tpdu/</path>
     <filename>tsms__tpdu__deliver_8c</filename>
+    <includes id="tsms__tpdu__deliver_8h" name="tsms_tpdu_deliver.h" local="yes" imported="no">tinysms/tpdu/tsms_tpdu_deliver.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TSMS_ERROR_TOO_SHORT</name>
@@ -1663,8 +1680,8 @@
       <type>tsms_tpdu_message_t *</type>
       <name>_tsms_tpdu_deliver_deserialize</name>
       <anchorfile>tsms__tpdu__deliver_8c.html</anchorfile>
-      <anchor>ae0c713af6def8092ad9112f26946a7bd</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a15b7e7b03ef295e7489577754eda678e</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1692,6 +1709,7 @@
     <name>tsms_tpdu_report.c</name>
     <path>C:/Projects/Doubango/tinySMS/src/tpdu/</path>
     <filename>tsms__tpdu__report_8c</filename>
+    <includes id="tsms__tpdu__report_8h" name="tsms_tpdu_report.h" local="yes" imported="no">tinysms/tpdu/tsms_tpdu_report.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TSMS_ERROR_TOO_SHORT</name>
@@ -1703,15 +1721,15 @@
       <type>tsms_tpdu_message_t *</type>
       <name>_tsms_tpdu_report_deserialize_2</name>
       <anchorfile>tsms__tpdu__report_8c.html</anchorfile>
-      <anchor>af5c888b8e82f08ef3138a798f6755532</anchor>
-      <arglist>(const void *data, size_t size, tsk_bool_t error)</arglist>
+      <anchor>af5e6a8f6a19983a7cfd85be48c266780</anchor>
+      <arglist>(const void *data, tsk_size_t size, tsk_bool_t error)</arglist>
     </member>
     <member kind="function">
       <type>tsms_tpdu_message_t *</type>
       <name>_tsms_tpdu_report_deserialize</name>
       <anchorfile>tsms__tpdu__report_8c.html</anchorfile>
-      <anchor>a5a64b8efe3e4f06a0ebe7538c23f7ac4</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>abebbb58c898c033aacc70f921da5fb15</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1746,6 +1764,7 @@
     <name>tsms_tpdu_status_report.c</name>
     <path>C:/Projects/Doubango/tinySMS/src/tpdu/</path>
     <filename>tsms__tpdu__status__report_8c</filename>
+    <includes id="tsms__tpdu__status__report_8h" name="tsms_tpdu_status_report.h" local="yes" imported="no">tinysms/tpdu/tsms_tpdu_status_report.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TSMS_ERROR_TOO_SHORT</name>
@@ -1757,8 +1776,8 @@
       <type>tsms_tpdu_message_t *</type>
       <name>_tsms_tpdu_status_report_deserialize</name>
       <anchorfile>tsms__tpdu__status__report_8c.html</anchorfile>
-      <anchor>ae78336a0f1e34009b03de38a8d1cc8e7</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a5449be5149020e659b9961651324044a</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1786,6 +1805,7 @@
     <name>tsms_tpdu_submit.c</name>
     <path>C:/Projects/Doubango/tinySMS/src/tpdu/</path>
     <filename>tsms__tpdu__submit_8c</filename>
+    <includes id="tsms__tpdu__submit_8h" name="tsms_tpdu_submit.h" local="yes" imported="no">tinysms/tpdu/tsms_tpdu_submit.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TSMS_ERROR_TOO_SHORT</name>
@@ -1797,8 +1817,8 @@
       <type>tsms_tpdu_message_t *</type>
       <name>_tsms_tpdu_submit_deserialize</name>
       <anchorfile>tsms__tpdu__submit_8c.html</anchorfile>
-      <anchor>a9d78187a9a35dc45355db1daa8d5c303</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>ab2380303ce3c61ead34acbebc552f0db</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1826,17 +1846,19 @@
     <name>tsms.c</name>
     <path>C:/Projects/Doubango/tinySMS/src/</path>
     <filename>tsms_8c</filename>
+    <includes id="tsms_8h" name="tsms.h" local="yes" imported="no">tinysms/tsms.h</includes>
   </compound>
   <compound kind="file">
     <name>tsms_address.c</name>
     <path>C:/Projects/Doubango/tinySMS/src/</path>
     <filename>tsms__address_8c</filename>
+    <includes id="tsms__address_8h" name="tsms_address.h" local="yes" imported="no">tinysms/tsms_address.h</includes>
     <member kind="function">
       <type>char *</type>
       <name>tsms_address_swap</name>
       <anchorfile>tsms__address_8c.html</anchorfile>
-      <anchor>acfbe7bc61ad4dcc325f82f7d5a74a06e</anchor>
-      <arglist>(const char *in, size_t in_len)</arglist>
+      <anchor>adc866491ab290e7acc65bec7a8e827cd</anchor>
+      <arglist>(const char *in, tsk_size_t in_len)</arglist>
     </member>
     <member kind="function">
       <type>tsms_address_t *</type>
@@ -1877,8 +1899,8 @@
       <type>tsms_address_t *</type>
       <name>tsms_address_deserialize</name>
       <anchorfile>tsms__address_8c.html</anchorfile>
-      <anchor>a7122f853adafd06405d4e85ad752f466</anchor>
-      <arglist>(const void *data, size_t size, tsms_address_type_t xtype, size_t *length)</arglist>
+      <anchor>abc662334a34e4064a7a6bad52a364905</anchor>
+      <arglist>(const void *data, tsk_size_t size, tsms_address_type_t xtype, tsk_size_t *length)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -1892,40 +1914,42 @@
     <name>tsms_common.c</name>
     <path>C:/Projects/Doubango/tinySMS/src/</path>
     <filename>tsms__common_8c</filename>
+    <includes id="tsms__common_8h" name="tsms_common.h" local="yes" imported="no">tinysms/tsms_common.h</includes>
+    <includes id="tsms__packing_8h" name="tsms_packing.h" local="yes" imported="no">tinysms/tsms_packing.h</includes>
     <member kind="function">
       <type>tsms_tpdu_message_t *</type>
       <name>_tsms_tpdu_submit_deserialize</name>
       <anchorfile>tsms__common_8c.html</anchorfile>
-      <anchor>a9d78187a9a35dc45355db1daa8d5c303</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>ab2380303ce3c61ead34acbebc552f0db</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsms_tpdu_message_t *</type>
       <name>_tsms_tpdu_deliver_deserialize</name>
       <anchorfile>tsms__common_8c.html</anchorfile>
-      <anchor>ae0c713af6def8092ad9112f26946a7bd</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a15b7e7b03ef295e7489577754eda678e</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsms_tpdu_message_t *</type>
       <name>_tsms_tpdu_command_deserialize</name>
       <anchorfile>tsms__common_8c.html</anchorfile>
-      <anchor>a9633646b5d4892062037717036058ad1</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a2a4ef83ce35bd81e61f3bd5db9be92fd</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsms_tpdu_message_t *</type>
       <name>_tsms_tpdu_report_deserialize</name>
       <anchorfile>tsms__common_8c.html</anchorfile>
-      <anchor>a5a64b8efe3e4f06a0ebe7538c23f7ac4</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>abebbb58c898c033aacc70f921da5fb15</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsms_tpdu_message_t *</type>
       <name>_tsms_tpdu_status_report_deserialize</name>
       <anchorfile>tsms__common_8c.html</anchorfile>
-      <anchor>ae78336a0f1e34009b03de38a8d1cc8e7</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a5449be5149020e659b9961651324044a</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1980,8 +2004,8 @@
       <type>tsms_tpdu_message_t *</type>
       <name>tsms_tpdu_message_deserialize</name>
       <anchorfile>group__tsms__tpdu__group.html</anchorfile>
-      <anchor>ga84ca381e3e2007de9cbbf9d048d7ce3e</anchor>
-      <arglist>(const void *data, size_t size, tsk_bool_t MobOrig)</arglist>
+      <anchor>gad59f30e9edb66eb3d26eafd51dbd09fc</anchor>
+      <arglist>(const void *data, tsk_size_t size, tsk_bool_t MobOrig)</arglist>
     </member>
     <member kind="function">
       <type>char *</type>
@@ -2050,29 +2074,29 @@
       <type>tsms_rpdu_message_t *</type>
       <name>_tsms_rpdu_rpdata_deserialize</name>
       <anchorfile>tsms__common_8c.html</anchorfile>
-      <anchor>a2c70e97226be5bceea05595dd3270a9d</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>adb99738343fb13e155c842b5453fb1e7</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsms_rpdu_message_t *</type>
       <name>_tsms_rpdu_rpsmma_deserialize</name>
       <anchorfile>tsms__common_8c.html</anchorfile>
-      <anchor>ad240d9aff90a7288173fcc1eb04bf0df</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a42545971352879d43a73cbb8cceaf978</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsms_rpdu_message_t *</type>
       <name>_tsms_rpdu_rpack_deserialize</name>
       <anchorfile>tsms__common_8c.html</anchorfile>
-      <anchor>ae8ff8d270a35a2ff61e320683b919e24</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>aa8180fc4f5ba93fb71ba377e5fe1afb3</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsms_rpdu_message_t *</type>
       <name>_tsms_rpdu_rperror_deserialize</name>
       <anchorfile>tsms__common_8c.html</anchorfile>
-      <anchor>a1e88cf474960b824e4d810cd42732bea</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>a7cd5468dc0cd7a1131b83c739936f786</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2085,8 +2109,8 @@
       <type>tsms_rpdu_message_t *</type>
       <name>tsms_rpdu_message_deserialize</name>
       <anchorfile>group__tsms__rpdu__group.html</anchorfile>
-      <anchor>ga4751a242c8c9da256ec211eb6abf46dc</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>gaddfae888c86bfcbab67b60ddcc963cf0</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>char *</type>
@@ -2100,6 +2124,8 @@
     <name>tsms_packing.c</name>
     <path>C:/Projects/Doubango/tinySMS/src/</path>
     <filename>tsms__packing_8c</filename>
+    <includes id="tsms__packing_8h" name="tsms_packing.h" local="yes" imported="no">tinysms/tsms_packing.h</includes>
+    <includes id="tsms__etsi__gsm__03__38_8h" name="tsms_etsi_gsm_03_38.h" local="yes" imported="no">tinysms/tsms_etsi_gsm_03_38.h</includes>
     <member kind="function">
       <type>tsk_buffer_t *</type>
       <name>tsms_pack_to_7bit</name>
@@ -2125,22 +2151,22 @@
       <type>char *</type>
       <name>tsms_pack_from_7bit</name>
       <anchorfile>group__tsms__packing__group.html</anchorfile>
-      <anchor>gafe40207085233c237e7490d8215a65d8</anchor>
-      <arglist>(const void *gsm7bit, size_t size)</arglist>
+      <anchor>ga05ce76a51583893258f7ccc38f54fc42</anchor>
+      <arglist>(const void *gsm7bit, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>char *</type>
       <name>tsms_pack_from_ucs2</name>
       <anchorfile>group__tsms__packing__group.html</anchorfile>
-      <anchor>ga3aff499fc7e3386ca3c3923d6a553248</anchor>
-      <arglist>(const void *ucs2, size_t size)</arglist>
+      <anchor>ga7d3f412de3f53083056fd7fab2e7aa6b</anchor>
+      <arglist>(const void *ucs2, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>char *</type>
       <name>tsms_pack_from_8bit</name>
       <anchorfile>group__tsms__packing__group.html</anchorfile>
-      <anchor>ga955b09601e99ac354b1f891ddeb2538f</anchor>
-      <arglist>(const void *gsm8bit, size_t size)</arglist>
+      <anchor>ga56acefc52098c1a66db2bc7e5250eff2</anchor>
+      <arglist>(const void *gsm8bit, tsk_size_t size)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -2319,8 +2345,8 @@
       <type>tsms_tpdu_message_t *</type>
       <name>tsms_tpdu_message_deserialize</name>
       <anchorfile>group__tsms__tpdu__group.html</anchorfile>
-      <anchor>ga84ca381e3e2007de9cbbf9d048d7ce3e</anchor>
-      <arglist>(const void *data, size_t size, tsk_bool_t MobOrig)</arglist>
+      <anchor>gad59f30e9edb66eb3d26eafd51dbd09fc</anchor>
+      <arglist>(const void *data, tsk_size_t size, tsk_bool_t MobOrig)</arglist>
     </member>
     <member kind="function">
       <type>char *</type>
@@ -2468,8 +2494,8 @@
       <type>tsms_rpdu_message_t *</type>
       <name>tsms_rpdu_message_deserialize</name>
       <anchorfile>group__tsms__rpdu__group.html</anchorfile>
-      <anchor>ga4751a242c8c9da256ec211eb6abf46dc</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>gaddfae888c86bfcbab67b60ddcc963cf0</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>char *</type>
@@ -2512,22 +2538,22 @@
       <type>char *</type>
       <name>tsms_pack_from_7bit</name>
       <anchorfile>group__tsms__packing__group.html</anchorfile>
-      <anchor>gafe40207085233c237e7490d8215a65d8</anchor>
-      <arglist>(const void *gsm7bit, size_t size)</arglist>
+      <anchor>ga05ce76a51583893258f7ccc38f54fc42</anchor>
+      <arglist>(const void *gsm7bit, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>char *</type>
       <name>tsms_pack_from_ucs2</name>
       <anchorfile>group__tsms__packing__group.html</anchorfile>
-      <anchor>ga3aff499fc7e3386ca3c3923d6a553248</anchor>
-      <arglist>(const void *ucs2, size_t size)</arglist>
+      <anchor>ga7d3f412de3f53083056fd7fab2e7aa6b</anchor>
+      <arglist>(const void *ucs2, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>char *</type>
       <name>tsms_pack_from_8bit</name>
       <anchorfile>group__tsms__packing__group.html</anchorfile>
-      <anchor>ga955b09601e99ac354b1f891ddeb2538f</anchor>
-      <arglist>(const void *gsm8bit, size_t size)</arglist>
+      <anchor>ga56acefc52098c1a66db2bc7e5250eff2</anchor>
+      <arglist>(const void *gsm8bit, tsk_size_t size)</arglist>
     </member>
   </compound>
   <compound kind="struct">

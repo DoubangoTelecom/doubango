@@ -389,7 +389,8 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 		if(sdp_ro){
 			TSIP_DIALOG_GET_SS(self)->media.type = tmedia_type_from_sdp(sdp_ro);
 		}
-		self->msession_mgr = tmedia_session_mgr_create(TSIP_DIALOG_GET_SS(self)->media.type, TSIP_DIALOG_GET_STACK(self)->network.local_ip, tsk_false, (sdp_ro == tsk_null));
+		self->msession_mgr = tmedia_session_mgr_create(TSIP_DIALOG_GET_SS(self)->media.type, TSIP_DIALOG_GET_STACK(self)->network.local_ip, 
+			TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type), (sdp_ro == tsk_null));
 		if(TSIP_DIALOG_GET_STACK(self)->natt.ctx){
 			tmedia_session_mgr_set_natt_ctx(self->msession_mgr, TSIP_DIALOG_GET_STACK(self)->natt.ctx, TSIP_DIALOG_GET_STACK(self)->network.aor.ip);
 		}

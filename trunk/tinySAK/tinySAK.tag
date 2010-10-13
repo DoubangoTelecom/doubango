@@ -6,42 +6,49 @@
     <filename>index</filename>
   </compound>
   <compound kind="file">
-    <name>tinySAK_config.h</name>
+    <name>tinysak_config.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
-    <filename>tiny_s_a_k__config_8h</filename>
+    <filename>tinysak__config_8h</filename>
     <includes id="tsk__common_8h" name="tsk_common.h" local="yes" imported="no">tsk_common.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TINYSAK_API</name>
-      <anchorfile>tiny_s_a_k__config_8h.html</anchorfile>
+      <anchorfile>tinysak__config_8h.html</anchorfile>
       <anchor>a93681e32eaf27aa97043e5d448a1b252</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TINYSAK_GEXTERN</name>
-      <anchorfile>tiny_s_a_k__config_8h.html</anchorfile>
+      <anchorfile>tinysak__config_8h.html</anchorfile>
       <anchor>aba27eabe25f2151a8b68a8dde1ab75c9</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TSK_BEGIN_DECLS</name>
-      <anchorfile>tiny_s_a_k__config_8h.html</anchorfile>
+      <anchorfile>tinysak__config_8h.html</anchorfile>
       <anchor>a61fec07ba4497f9657df0cf0ab9cdbd9</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TSK_END_DECLS</name>
-      <anchorfile>tiny_s_a_k__config_8h.html</anchorfile>
+      <anchorfile>tinysak__config_8h.html</anchorfile>
       <anchor>a872c16ec77fe0589da74f115b518a7dd</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>TSK_INLINE</name>
+      <anchorfile>tinysak__config_8h.html</anchorfile>
+      <anchor>a474b4d749c75a2541046d8d768baf9f8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>HAVE_GETTIMEOFDAY</name>
-      <anchorfile>tiny_s_a_k__config_8h.html</anchorfile>
+      <anchorfile>tinysak__config_8h.html</anchorfile>
       <anchor>a32e7ff1da5763e68f44097cb23826415</anchor>
       <arglist></arglist>
     </member>
@@ -57,7 +64,7 @@
     <name>tsk.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
     <includes id="tsk__string_8h" name="tsk_string.h" local="yes" imported="no">tsk_string.h</includes>
     <includes id="tsk__buffer_8h" name="tsk_buffer.h" local="yes" imported="no">tsk_buffer.h</includes>
@@ -112,25 +119,25 @@
       <arglist></arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tsk_base64_encode</name>
       <anchorfile>group__tsk__base64__group.html</anchorfile>
-      <anchor>gab9b8f592761f9fd03e5675791afab163</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, char **output)</arglist>
+      <anchor>gaa38edf458cb1977768855c2eb5ac68e6</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, char **output)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tsk_base64_decode</name>
       <anchorfile>group__tsk__base64__group.html</anchorfile>
-      <anchor>ga1ca9e3934b9daedfe5aebd7eab72f849</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, char **output)</arglist>
+      <anchor>ga1921043aba8ed60cbe1089220ecc8dd0</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, char **output)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tsk_base64.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__base64_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TSK_BASE64_ENCODE_LEN</name>
@@ -146,18 +153,18 @@
       <arglist>(IN_LEN)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSAK_API size_t</type>
+      <type>TINYSAK_API tsk_size_t</type>
       <name>tsk_base64_encode</name>
       <anchorfile>group__tsk__base64__group.html</anchorfile>
-      <anchor>gab9b8f592761f9fd03e5675791afab163</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, char **output)</arglist>
+      <anchor>gaa38edf458cb1977768855c2eb5ac68e6</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, char **output)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSAK_API size_t</type>
+      <type>TINYSAK_API tsk_size_t</type>
       <name>tsk_base64_decode</name>
       <anchorfile>group__tsk__base64__group.html</anchorfile>
-      <anchor>ga1ca9e3934b9daedfe5aebd7eab72f849</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, char **output)</arglist>
+      <anchor>ga1921043aba8ed60cbe1089220ecc8dd0</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, char **output)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -170,7 +177,7 @@
     <name>tsk_binaryutils.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__binaryutils_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TSK_BINARY_REVERSE_2BYTE</name>
@@ -218,8 +225,8 @@
       <type>tsk_buffer_t *</type>
       <name>tsk_buffer_create</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>ga48265afed7e33bf3fc7fc1999597feea</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>ga30c932d68d69c4d981a2a9550171061f</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsk_buffer_t *</type>
@@ -239,29 +246,29 @@
       <type>int</type>
       <name>tsk_buffer_append</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>ga7793bc6a3b852b4c0b19d5201731ce40</anchor>
-      <arglist>(tsk_buffer_t *self, const void *data, size_t size)</arglist>
+      <anchor>gac7a49242ed646e895e0c8cf084b6377c</anchor>
+      <arglist>(tsk_buffer_t *self, const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_buffer_realloc</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>gad70298b98e703385e538a10ea6f1fc2f</anchor>
-      <arglist>(tsk_buffer_t *self, size_t size)</arglist>
+      <anchor>ga5f14a6fa7f4fa006a7a7ac184320acef</anchor>
+      <arglist>(tsk_buffer_t *self, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_buffer_remove</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>ga2fb1a0d5b4f16a7c619a35eeac0eb83b</anchor>
-      <arglist>(tsk_buffer_t *self, size_t position, size_t size)</arglist>
+      <anchor>gaf9a140a6139445c9d6bbbec01221884f</anchor>
+      <arglist>(tsk_buffer_t *self, tsk_size_t position, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_buffer_insert</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>ga1654722ac7e4bac4eb59e9fa181ec7b5</anchor>
-      <arglist>(tsk_buffer_t *self, size_t position, const void *data, size_t size)</arglist>
+      <anchor>gaafb6764ac2eca7d572d5daff83551f00</anchor>
+      <arglist>(tsk_buffer_t *self, tsk_size_t position, const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -269,6 +276,13 @@
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
       <anchor>ga8a31cbf88b943d87b6858e9c6472459d</anchor>
       <arglist>(tsk_buffer_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_buffer_takeownership</name>
+      <anchorfile>group__tsk__buffer__group.html</anchorfile>
+      <anchor>ga0c66b3c564a79f4d5ba7a2c0bf199464</anchor>
+      <arglist>(tsk_buffer_t *self, void **data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -282,7 +296,7 @@
     <name>tsk_buffer.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__buffer_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
     <class kind="struct">tsk_buffer_s</class>
     <member kind="define">
@@ -338,8 +352,8 @@
       <type>TINYSAK_API tsk_buffer_t *</type>
       <name>tsk_buffer_create</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>ga48265afed7e33bf3fc7fc1999597feea</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>ga30c932d68d69c4d981a2a9550171061f</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API tsk_buffer_t *</type>
@@ -359,29 +373,29 @@
       <type>TINYSAK_API int</type>
       <name>tsk_buffer_append</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>ga7793bc6a3b852b4c0b19d5201731ce40</anchor>
-      <arglist>(tsk_buffer_t *self, const void *data, size_t size)</arglist>
+      <anchor>gac7a49242ed646e895e0c8cf084b6377c</anchor>
+      <arglist>(tsk_buffer_t *self, const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
       <name>tsk_buffer_realloc</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>gad70298b98e703385e538a10ea6f1fc2f</anchor>
-      <arglist>(tsk_buffer_t *self, size_t size)</arglist>
+      <anchor>ga5f14a6fa7f4fa006a7a7ac184320acef</anchor>
+      <arglist>(tsk_buffer_t *self, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
       <name>tsk_buffer_remove</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>ga2fb1a0d5b4f16a7c619a35eeac0eb83b</anchor>
-      <arglist>(tsk_buffer_t *self, size_t position, size_t size)</arglist>
+      <anchor>gaf9a140a6139445c9d6bbbec01221884f</anchor>
+      <arglist>(tsk_buffer_t *self, tsk_size_t position, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
       <name>tsk_buffer_insert</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>ga1654722ac7e4bac4eb59e9fa181ec7b5</anchor>
-      <arglist>(tsk_buffer_t *self, size_t position, const void *data, size_t size)</arglist>
+      <anchor>gaafb6764ac2eca7d572d5daff83551f00</anchor>
+      <arglist>(tsk_buffer_t *self, tsk_size_t position, const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
@@ -389,6 +403,13 @@
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
       <anchor>ga8a31cbf88b943d87b6858e9c6472459d</anchor>
       <arglist>(tsk_buffer_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_buffer_takeownership</name>
+      <anchorfile>group__tsk__buffer__group.html</anchorfile>
+      <anchor>ga0c66b3c564a79f4d5ba7a2c0bf199464</anchor>
+      <arglist>(tsk_buffer_t *self, void **data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
@@ -446,6 +467,27 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>TSK_TO_UINT32</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>a5855220a2bb70105e4d5d9c7221a8ea4</anchor>
+      <arglist>(u8_ptr)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_TO_UINT16</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>aa1c120ec94a6f02584758fd4de966a84</anchor>
+      <arglist>(u8_ptr)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_va_copy</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>a8ca2c911f024cbebc3c4fce91e2f70f4</anchor>
+      <arglist>(D, S)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>tsk_null</name>
       <anchorfile>tsk__common_8h.html</anchorfile>
       <anchor>a1ac412f55bd0cc0e2a8100cea25cee95</anchor>
@@ -470,37 +512,6 @@
       <name>tsk_size_t</name>
       <anchorfile>tsk__common_8h.html</anchorfile>
       <anchor>aa5603826497451951bace4f20f62bba2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>enum tsk_error_e</type>
-      <name>tsk_error_t</name>
-      <anchorfile>tsk__common_8h.html</anchorfile>
-      <anchor>afb1e2c60d543149e276c619672f5797a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <name>tsk_error_e</name>
-      <anchorfile>tsk__common_8h.html</anchorfile>
-      <anchor>a02a70907f4c65d6d3be7c07606f4179e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>tsk_e_success</name>
-      <anchorfile>tsk__common_8h.html</anchorfile>
-      <anchor>a02a70907f4c65d6d3be7c07606f4179eaffef8129068eef5070648ede88790c9c</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>tsk_e_unitialized</name>
-      <anchorfile>tsk__common_8h.html</anchorfile>
-      <anchor>a02a70907f4c65d6d3be7c07606f4179ea2884c8aa5cb0e8d05eab4d339cb71b15</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>tsk_e_globalfailure</name>
-      <anchorfile>tsk__common_8h.html</anchorfile>
-      <anchor>a02a70907f4c65d6d3be7c07606f4179ea2b38d13a91eebc803e0ce1121500debb</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -588,7 +599,7 @@
     <name>tsk_condwait.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__condwait_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__mutex_8h" name="tsk_mutex.h" local="yes" imported="no">tsk_mutex.h</includes>
     <member kind="function">
       <type>TINYSAK_API tsk_condwait_handle_t *</type>
@@ -645,12 +656,117 @@
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__debug_8c</filename>
     <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
+    <member kind="function">
+      <type>void</type>
+      <name>tsk_debug_set_arg_data</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>ae72cfdebdb56e2a7b8083fca53907982</anchor>
+      <arglist>(const void *arg_data)</arglist>
+    </member>
+    <member kind="function">
+      <type>const void *</type>
+      <name>tsk_debug_get_arg_data</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>af830dfa1bc42ca0bae29974fb21ec9d7</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tsk_debug_set_info_cb</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>a3bc2c8eb37a87eacc2aea0478b20fa06</anchor>
+      <arglist>(tsk_debug_f cb)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_debug_f</type>
+      <name>tsk_debug_get_info_cb</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>afcb21dd599ca81b30e2a1d18d43740d0</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tsk_debug_set_warn_cb</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>ab59085cfc5ce170d1fc82f3e4a7f5d94</anchor>
+      <arglist>(tsk_debug_f cb)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_debug_f</type>
+      <name>tsk_debug_get_warn_cb</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>a30cce1816fc6af384da5557648d8e281</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tsk_debug_set_error_cb</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>a8f785bbd68b21b2f99b1a811b7f6eb96</anchor>
+      <arglist>(tsk_debug_f cb)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_debug_f</type>
+      <name>tsk_debug_get_error_cb</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>a9773a07d4ad8979a4a875c3274d4b1bd</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tsk_debug_set_fatal_cb</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>aec0e2e62f4376943a788a4aee8e454e9</anchor>
+      <arglist>(tsk_debug_f cb)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_debug_f</type>
+      <name>tsk_debug_get_fatal_cb</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>ac3a7a77f74d2f61ce021f96be8e259ec</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="variable">
+      <type>const void *</type>
+      <name>tsk_debug_arg_data</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>affba4054dd05905e5359b7ea6bb46a47</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_debug_f</type>
+      <name>tsk_debug_info_cb</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>a1347f2f56083f289ad44d429a573fb73</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_debug_f</type>
+      <name>tsk_debug_warn_cb</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>acaa4f0a0d028ef9f3cb47729e9c14544</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_debug_f</type>
+      <name>tsk_debug_error_cb</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>a6fc91cae0fd94107336b4264d2919230</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_debug_f</type>
+      <name>tsk_debug_fatal_cb</name>
+      <anchorfile>tsk__debug_8c.html</anchorfile>
+      <anchor>abd90179616e4ff286f77e0a5511362bc</anchor>
+      <arglist></arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>tsk_debug.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__debug_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>DEBUG_LEVEL</name>
@@ -714,12 +830,89 @@
       <anchor>a5a5352523fd58911b823bdf2b87e789d</anchor>
       <arglist>(FMT,...)</arglist>
     </member>
+    <member kind="typedef">
+      <type>int(*</type>
+      <name>tsk_debug_f</name>
+      <anchorfile>tsk__debug_8h.html</anchorfile>
+      <anchor>a672fd4419741fb5780cd29cb0a8315f9</anchor>
+      <arglist>)(const void *arg, const char *fmt,...)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API void</type>
+      <name>tsk_debug_set_arg_data</name>
+      <anchorfile>tsk__debug_8h.html</anchorfile>
+      <anchor>aff671f9d0c6bf7c9836a305fbf3a711b</anchor>
+      <arglist>(const void *)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API const void *</type>
+      <name>tsk_debug_get_arg_data</name>
+      <anchorfile>tsk__debug_8h.html</anchorfile>
+      <anchor>aaa7532cfe3446913873be0de4dac2938</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API void</type>
+      <name>tsk_debug_set_info_cb</name>
+      <anchorfile>tsk__debug_8h.html</anchorfile>
+      <anchor>a2bbbddaf14461aacca6c7aa3b72ff656</anchor>
+      <arglist>(tsk_debug_f)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_debug_f</type>
+      <name>tsk_debug_get_info_cb</name>
+      <anchorfile>tsk__debug_8h.html</anchorfile>
+      <anchor>a4662fe8c04eee4dc59bd9ab04c1d340d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API void</type>
+      <name>tsk_debug_set_warn_cb</name>
+      <anchorfile>tsk__debug_8h.html</anchorfile>
+      <anchor>ada9e57310804de59f529e1c0b5268eb7</anchor>
+      <arglist>(tsk_debug_f)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_debug_f</type>
+      <name>tsk_debug_get_warn_cb</name>
+      <anchorfile>tsk__debug_8h.html</anchorfile>
+      <anchor>a632383662ba814c39d1ba937d09dba15</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API void</type>
+      <name>tsk_debug_set_error_cb</name>
+      <anchorfile>tsk__debug_8h.html</anchorfile>
+      <anchor>ae124cbf313fe01ba77eb6765a2bef99c</anchor>
+      <arglist>(tsk_debug_f)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_debug_f</type>
+      <name>tsk_debug_get_error_cb</name>
+      <anchorfile>tsk__debug_8h.html</anchorfile>
+      <anchor>a344550bf3c10dc73168ee713f3336da3</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API void</type>
+      <name>tsk_debug_set_fatal_cb</name>
+      <anchorfile>tsk__debug_8h.html</anchorfile>
+      <anchor>aa41544c4019c3b06daa8b6be5d1ce1df</anchor>
+      <arglist>(tsk_debug_f)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_debug_f</type>
+      <name>tsk_debug_get_fatal_cb</name>
+      <anchorfile>tsk__debug_8h.html</anchorfile>
+      <anchor>a93160943d9c0ec1780875a76b33c4520</anchor>
+      <arglist>()</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>tsk_errno.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__errno_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
   </compound>
   <compound kind="file">
     <name>tsk_fsm.c</name>
@@ -803,7 +996,7 @@
     <name>tsk_fsm.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__fsm_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
     <includes id="tsk__safeobj_8h" name="tsk_safeobj.h" local="yes" imported="no">tsk_safeobj.h</includes>
     <class kind="struct">tsk_fsm_entry_s</class>
@@ -866,9 +1059,9 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>TSK_FSM_ADD_NOTING</name>
+      <name>TSK_FSM_ADD_NOTHING</name>
       <anchorfile>group__tsk__fsm__group.html</anchorfile>
-      <anchor>ga7b9d64ccf1142dc5f1d0f92864c1ef6e</anchor>
+      <anchor>ga65dad33c43f7a4ff8fbe60ced18b73cb</anchor>
       <arglist>(from, action, cond, desc)</arglist>
     </member>
     <member kind="define">
@@ -1055,72 +1248,72 @@
       <type>int</type>
       <name>tsk_hmac_xxxcompute</name>
       <anchorfile>tsk__hmac_8c.html</anchorfile>
-      <anchor>aff59b5d1ea4960299ff454f20e5b95fa</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, const char *key, size_t key_size, tsk_hash_type_t type, uint8_t *digest)</arglist>
+      <anchor>ad841da0165c4d2af4397629cacdb119e</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, const char *key, tsk_size_t key_size, tsk_hash_type_t type, uint8_t *digest)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>hmac_md5_compute</name>
       <anchorfile>group__tsk__hmac__group.html</anchorfile>
-      <anchor>gac8a462471982a8e2bb8a5800ad1c7044</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, const char *key, size_t key_size, tsk_md5string_t *result)</arglist>
+      <anchor>gaa4085ee3be5e9d58c675fbf81333121b</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, const char *key, tsk_size_t key_size, tsk_md5string_t *result)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>hmac_md5digest_compute</name>
       <anchorfile>group__tsk__hmac__group.html</anchorfile>
-      <anchor>ga8549f9b83c7ec0fe1514fa8e8bc5c938</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, const char *key, size_t key_size, tsk_md5digest_t result)</arglist>
+      <anchor>ga1a70aab02cdd93eb7e75c26ed79db846</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, const char *key, tsk_size_t key_size, tsk_md5digest_t result)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>hmac_sha1_compute</name>
       <anchorfile>group__tsk__hmac__group.html</anchorfile>
-      <anchor>ga399cd4ae0205a11b3e696f54e05f19b5</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, const char *key, size_t key_size, tsk_sha1string_t *result)</arglist>
+      <anchor>gadbbbed195249a97ef96509932ba4c1ea</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, const char *key, tsk_size_t key_size, tsk_sha1string_t *result)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>hmac_sha1digest_compute</name>
       <anchorfile>group__tsk__hmac__group.html</anchorfile>
-      <anchor>ga2d4469dcc0117426d51708c2f8b17ec9</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, const char *key, size_t key_size, tsk_sha1digest_t result)</arglist>
+      <anchor>ga3a4fcff9ca7e9ec85d3d3fca50b16de0</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, const char *key, tsk_size_t key_size, tsk_sha1digest_t result)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tsk_hmac.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__hmac_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__sha1_8h" name="tsk_sha1.h" local="yes" imported="no">tsk_sha1.h</includes>
     <includes id="tsk__md5_8h" name="tsk_md5.h" local="yes" imported="no">tsk_md5.h</includes>
     <member kind="function">
       <type>TSK_BEGIN_DECLS TINYSAK_API int</type>
       <name>hmac_md5_compute</name>
       <anchorfile>group__tsk__hmac__group.html</anchorfile>
-      <anchor>gac8a462471982a8e2bb8a5800ad1c7044</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, const char *key, size_t key_size, tsk_md5string_t *result)</arglist>
+      <anchor>gaa4085ee3be5e9d58c675fbf81333121b</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, const char *key, tsk_size_t key_size, tsk_md5string_t *result)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
       <name>hmac_md5digest_compute</name>
       <anchorfile>group__tsk__hmac__group.html</anchorfile>
-      <anchor>ga8549f9b83c7ec0fe1514fa8e8bc5c938</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, const char *key, size_t key_size, tsk_md5digest_t result)</arglist>
+      <anchor>ga1a70aab02cdd93eb7e75c26ed79db846</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, const char *key, tsk_size_t key_size, tsk_md5digest_t result)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
       <name>hmac_sha1_compute</name>
       <anchorfile>group__tsk__hmac__group.html</anchorfile>
-      <anchor>ga399cd4ae0205a11b3e696f54e05f19b5</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, const char *key, size_t key_size, tsk_sha1string_t *result)</arglist>
+      <anchor>gadbbbed195249a97ef96509932ba4c1ea</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, const char *key, tsk_size_t key_size, tsk_sha1string_t *result)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
       <name>hmac_sha1digest_compute</name>
       <anchorfile>group__tsk__hmac__group.html</anchorfile>
-      <anchor>ga2d4469dcc0117426d51708c2f8b17ec9</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, const char *key, size_t key_size, tsk_sha1digest_t result)</arglist>
+      <anchor>ga3a4fcff9ca7e9ec85d3d3fca50b16de0</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, const char *key, tsk_size_t key_size, tsk_sha1digest_t result)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -1143,6 +1336,20 @@
       <anchorfile>group__tsk__list__group.html</anchorfile>
       <anchor>ga66702bf5657b609fd6b4e5df5e780ca4</anchor>
       <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_list_lock</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga50ea10b14ed681d3d479b323b33f6c28</anchor>
+      <arglist>(tsk_list_t *list)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_list_unlock</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga31b7bea171002ae04936016725a87b06</anchor>
+      <arglist>(tsk_list_t *list)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -1243,10 +1450,17 @@
       <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>const tsk_object_t *</type>
+      <name>tsk_list_find_object_by_pred</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gacedbefcbe8600f1ae107560b1e97aa29</anchor>
+      <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_size_t</type>
       <name>tsk_list_count</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga6d19926a469fd9e3de24a6d316899bd7</anchor>
+      <anchor>ga4f3cf383327dc893a85685f826c44a04</anchor>
       <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="variable">
@@ -1268,7 +1482,8 @@
     <name>tsk_list.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__list_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
+    <includes id="tsk__mutex_8h" name="tsk_mutex.h" local="yes" imported="no">tsk_mutex.h</includes>
     <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
     <class kind="struct">tsk_list_item_s</class>
     <class kind="struct">tsk_list_s</class>
@@ -1292,6 +1507,13 @@
       <anchorfile>tsk__list_8h.html</anchorfile>
       <anchor>a857dafa2338b17558205c41b683b3123</anchor>
       <arglist>(self, item)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_LIST_FIRST_DATA</name>
+      <anchorfile>tsk__list_8h.html</anchorfile>
+      <anchor>a1385601514ae885521f7a5d790b9c4e0</anchor>
+      <arglist>(self)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -1406,6 +1628,20 @@
       <arglist>()</arglist>
     </member>
     <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_list_lock</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga50ea10b14ed681d3d479b323b33f6c28</anchor>
+      <arglist>(tsk_list_t *list)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_list_unlock</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga31b7bea171002ae04936016725a87b06</anchor>
+      <arglist>(tsk_list_t *list)</arglist>
+    </member>
+    <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_list_remove_item</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
@@ -1504,10 +1740,17 @@
       <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSAK_API size_t</type>
+      <type>TINYSAK_API const tsk_object_t *</type>
+      <name>tsk_list_find_object_by_pred</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gacedbefcbe8600f1ae107560b1e97aa29</anchor>
+      <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_size_t</type>
       <name>tsk_list_count</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga6d19926a469fd9e3de24a6d316899bd7</anchor>
+      <anchor>ga4f3cf383327dc893a85685f826c44a04</anchor>
       <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="variable">
@@ -1584,8 +1827,8 @@
       <type>void</type>
       <name>tsk_md5update</name>
       <anchorfile>group__tsk__md5__group.html</anchorfile>
-      <anchor>ga3c2b147d93314228d8e6674907d1fc17</anchor>
-      <arglist>(tsk_md5context_t *ctx, uint8_t const *buf, size_t len)</arglist>
+      <anchor>gae36ae9627c1eb5760415ab6e8d6f8566</anchor>
+      <arglist>(tsk_md5context_t *ctx, uint8_t const *buf, tsk_size_t len)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -1605,15 +1848,15 @@
       <type>int</type>
       <name>tsk_md5compute</name>
       <anchorfile>group__tsk__md5__group.html</anchorfile>
-      <anchor>ga4eb0c6a046173bfcfc4081f43e7635fa</anchor>
-      <arglist>(const char *input, size_t size, tsk_md5string_t *result)</arglist>
+      <anchor>ga7c088380455e3aba0413be8e312fff06</anchor>
+      <arglist>(const char *input, tsk_size_t size, tsk_md5string_t *result)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tsk_md5.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__md5_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <class kind="struct">tsk_md5context_s</class>
     <member kind="define">
       <type>#define</type>
@@ -1682,8 +1925,8 @@
       <type>TINYSAK_API void</type>
       <name>tsk_md5update</name>
       <anchorfile>group__tsk__md5__group.html</anchorfile>
-      <anchor>ga3c2b147d93314228d8e6674907d1fc17</anchor>
-      <arglist>(tsk_md5context_t *context, uint8_t const *buf, size_t len)</arglist>
+      <anchor>gae36ae9627c1eb5760415ab6e8d6f8566</anchor>
+      <arglist>(tsk_md5context_t *context, uint8_t const *buf, tsk_size_t len)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
@@ -1703,8 +1946,8 @@
       <type>TINYSAK_API int</type>
       <name>tsk_md5compute</name>
       <anchorfile>group__tsk__md5__group.html</anchorfile>
-      <anchor>ga4eb0c6a046173bfcfc4081f43e7635fa</anchor>
-      <arglist>(const char *input, size_t size, tsk_md5string_t *result)</arglist>
+      <anchor>ga7c088380455e3aba0413be8e312fff06</anchor>
+      <arglist>(const char *input, tsk_size_t size, tsk_md5string_t *result)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -1717,15 +1960,15 @@
       <type>void *</type>
       <name>tsk_malloc</name>
       <anchorfile>group__tsk__memory__group.html</anchorfile>
-      <anchor>gaa757b4221f3e302bf71bea5e6fb4a5f8</anchor>
-      <arglist>(size_t size)</arglist>
+      <anchor>gadf67b3acd9d721b603821aa9a0c8fb56</anchor>
+      <arglist>(tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void *</type>
       <name>tsk_realloc</name>
       <anchorfile>group__tsk__memory__group.html</anchorfile>
-      <anchor>gaa640cfcf6753598b62da8e6ce3632180</anchor>
-      <arglist>(void *ptr, size_t size)</arglist>
+      <anchor>gaac69627d2bbf3aeef0e0aafb6371bf82</anchor>
+      <arglist>(void *ptr, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -1738,15 +1981,15 @@
       <type>void *</type>
       <name>tsk_calloc</name>
       <anchorfile>group__tsk__memory__group.html</anchorfile>
-      <anchor>gac20b636d4376be871aee9f8ab7d0cca8</anchor>
-      <arglist>(size_t num, size_t size)</arglist>
+      <anchor>gaf4d8432e44e4c13cd1f82243e0b156b3</anchor>
+      <arglist>(tsk_size_t num, tsk_size_t size)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tsk_memory.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__memory_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TSK_SAFE_FREE</name>
@@ -1765,15 +2008,15 @@
       <type>TINYSAK_API void *</type>
       <name>tsk_malloc</name>
       <anchorfile>group__tsk__memory__group.html</anchorfile>
-      <anchor>gaa757b4221f3e302bf71bea5e6fb4a5f8</anchor>
-      <arglist>(size_t size)</arglist>
+      <anchor>gadf67b3acd9d721b603821aa9a0c8fb56</anchor>
+      <arglist>(tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void *</type>
       <name>tsk_realloc</name>
       <anchorfile>group__tsk__memory__group.html</anchorfile>
-      <anchor>gaa640cfcf6753598b62da8e6ce3632180</anchor>
-      <arglist>(void *ptr, size_t size)</arglist>
+      <anchor>gaac69627d2bbf3aeef0e0aafb6371bf82</anchor>
+      <arglist>(void *ptr, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
@@ -1786,8 +2029,8 @@
       <type>TINYSAK_API void *</type>
       <name>tsk_calloc</name>
       <anchorfile>group__tsk__memory__group.html</anchorfile>
-      <anchor>gac20b636d4376be871aee9f8ab7d0cca8</anchor>
-      <arglist>(size_t num, size_t size)</arglist>
+      <anchor>gaf4d8432e44e4c13cd1f82243e0b156b3</anchor>
+      <arglist>(tsk_size_t num, tsk_size_t size)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -1851,7 +2094,7 @@
     <name>tsk_mutex.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__mutex_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="function">
       <type>TINYSAK_API tsk_mutex_handle_t *</type>
       <name>tsk_mutex_create</name>
@@ -1933,10 +2176,10 @@
       <arglist>(const tsk_object_def_t *objdef, va_list *ap)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tsk_object_sizeof</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>gad7c100b741ce980a63ccdc262f49ffa0</anchor>
+      <anchor>ga65133674abc90858ffbc13c40ec33745</anchor>
       <arglist>(const tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
@@ -1972,7 +2215,7 @@
     <name>tsk_object.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__object_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <class kind="struct">tsk_object_def_s</class>
     <member kind="define">
       <type>#define</type>
@@ -2017,10 +2260,10 @@
       <arglist>(const tsk_object_def_t *objdef, va_list *ap)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSAK_API size_t</type>
+      <type>TINYSAK_API tsk_size_t</type>
       <name>tsk_object_sizeof</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>gad7c100b741ce980a63ccdc262f49ffa0</anchor>
+      <anchor>ga65133674abc90858ffbc13c40ec33745</anchor>
       <arglist>(const tsk_object_t *)</arglist>
     </member>
     <member kind="function">
@@ -2142,7 +2385,7 @@
     <name>tsk_options.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__options_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
     <includes id="tsk__buffer_8h" name="tsk_buffer.h" local="yes" imported="no">tsk_buffer.h</includes>
@@ -2254,6 +2497,14 @@
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
     <includes id="tsk__string_8h" name="tsk_string.h" local="yes" imported="no">tsk_string.h</includes>
     <includes id="tsk__common_8h" name="tsk_common.h" local="yes" imported="no">tsk_common.h</includes>
+    <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>PUSH_PARAM</name>
+      <anchorfile>tsk__params_8c.html</anchorfile>
+      <anchor>aa7ff6012ff4d41b1c267bb7c0fa73ba8</anchor>
+      <arglist>()</arglist>
+    </member>
     <member kind="function">
       <type>tsk_param_t *</type>
       <name>tsk_param_create</name>
@@ -2272,8 +2523,8 @@
       <type>tsk_param_t *</type>
       <name>tsk_params_parse_param</name>
       <anchorfile>group__tsk__params__group.html</anchorfile>
-      <anchor>ga0e7be40587e3e3d10ad877889a9673ef</anchor>
-      <arglist>(const char *line, size_t size)</arglist>
+      <anchor>gaa8a439408d71b4337898c37ea3d71592</anchor>
+      <arglist>(const char *line, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
@@ -2338,6 +2589,13 @@
       <anchor>ga724a941858f72384e0163be39c550595</anchor>
       <arglist>(const tsk_params_L_t *self, const char separator, tsk_buffer_t *output)</arglist>
     </member>
+    <member kind="function">
+      <type>tsk_params_L_t *</type>
+      <name>tsk_params_fromstring</name>
+      <anchorfile>group__tsk__params__group.html</anchorfile>
+      <anchor>ga90890f00599201b2bd599f3e4d406746</anchor>
+      <arglist>(const char *string, const char *separator, tsk_bool_t trim)</arglist>
+    </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
       <name>tsk_param_def_t</name>
@@ -2350,7 +2608,7 @@
     <name>tsk_params.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__params_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
     <includes id="tsk__buffer_8h" name="tsk_buffer.h" local="yes" imported="no">tsk_buffer.h</includes>
@@ -2401,8 +2659,8 @@
       <type>TINYSAK_API tsk_param_t *</type>
       <name>tsk_params_parse_param</name>
       <anchorfile>group__tsk__params__group.html</anchorfile>
-      <anchor>ga0e7be40587e3e3d10ad877889a9673ef</anchor>
-      <arglist>(const char *line, size_t size)</arglist>
+      <anchor>gaa8a439408d71b4337898c37ea3d71592</anchor>
+      <arglist>(const char *line, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API tsk_bool_t</type>
@@ -2467,6 +2725,13 @@
       <anchor>ga724a941858f72384e0163be39c550595</anchor>
       <arglist>(const tsk_params_L_t *self, const char separator, tsk_buffer_t *output)</arglist>
     </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_params_L_t *</type>
+      <name>tsk_params_fromstring</name>
+      <anchorfile>group__tsk__params__group.html</anchorfile>
+      <anchor>ga90890f00599201b2bd599f3e4d406746</anchor>
+      <arglist>(const char *string, const char *separator, tsk_bool_t trim)</arglist>
+    </member>
     <member kind="variable">
       <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
       <name>tsk_param_def_t</name>
@@ -2492,7 +2757,7 @@
     <name>tsk_ppfcs16.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__ppfcs16_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TSK_PPPINITFCS16</name>
@@ -2532,7 +2797,7 @@
     <name>tsk_ppfcs32.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__ppfcs32_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TSK_PPPINITFCS32</name>
@@ -2564,15 +2829,15 @@
       <type>void</type>
       <name>tsk_ragel_state_init</name>
       <anchorfile>group__tsk__ragel__state__group.html</anchorfile>
-      <anchor>ga7904c6da39083d60f11078c60ec745e5</anchor>
-      <arglist>(tsk_ragel_state_t *state, const char *data, size_t size)</arglist>
+      <anchor>ga5501b9417f264a8ec197008f084220fb</anchor>
+      <arglist>(tsk_ragel_state_t *state, const char *data, tsk_size_t size)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tsk_ragel_state.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__ragel__state_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinysak_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__params_8h" name="tsk_params.h" local="yes" imported="no">tsk_params.h</includes>
     <class kind="struct">tsk_ragel_state_s</class>
     <member kind="define">
@@ -2677,8 +2942,8 @@
       <type>TINYSAK_API void</type>
       <name>tsk_ragel_state_init</name>
       <anchorfile>group__tsk__ragel__state__group.html</anchorfile>
-      <anchor>ga7904c6da39083d60f11078c60ec745e5</anchor>
-      <arglist>(tsk_ragel_state_t *state, const char *data, size_t size)</arglist>
+      <anchor>ga5501b9417f264a8ec197008f084220fb</anchor>
+      <arglist>(tsk_ragel_state_t *state, const char *data, tsk_size_t size)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -2689,6 +2954,13 @@
     <includes id="tsk__thread_8h" name="tsk_thread.h" local="yes" imported="no">tsk_thread.h</includes>
     <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
     <member kind="function">
+      <type>tsk_runnable_t *</type>
+      <name>tsk_runnable_create</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>ga5794a5eaeb3523f697cb7c390a81bc0c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
       <type>int</type>
       <name>tsk_runnable_start</name>
       <anchorfile>group__tsk__runnable__group.html</anchorfile>
@@ -2697,17 +2969,31 @@
     </member>
     <member kind="function">
       <type>int</type>
+      <name>tsk_runnable_set_important</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>ga90e0d8e4a0de86dc183c9124716afd57</anchor>
+      <arglist>(tsk_runnable_t *self, tsk_bool_t important)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
       <name>tsk_runnable_stop</name>
       <anchorfile>group__tsk__runnable__group.html</anchorfile>
       <anchor>ga5b9173b4e6b22204f55f97645acd71e6</anchor>
       <arglist>(tsk_runnable_t *self)</arglist>
+    </member>
+    <member kind="variable">
+      <type>const tsk_object_def_t *</type>
+      <name>tsk_runnable_def_t</name>
+      <anchorfile>tsk__runnable_8c.html</anchorfile>
+      <anchor>a5b8aa3dde5e24e838a6d0769178203db</anchor>
+      <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tsk_runnable.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__runnable_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
     <includes id="tsk__semaphore_8h" name="tsk_semaphore.h" local="yes" imported="no">tsk_semaphore.h</includes>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
@@ -2769,11 +3055,25 @@
       <arglist></arglist>
     </member>
     <member kind="function">
+      <type>TINYSAK_API tsk_runnable_t *</type>
+      <name>tsk_runnable_create</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>ga5794a5eaeb3523f697cb7c390a81bc0c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
       <type>TINYSAK_API int</type>
       <name>tsk_runnable_start</name>
       <anchorfile>group__tsk__runnable__group.html</anchorfile>
       <anchor>ga42877c534be2c2898f3fb82529daa5c4</anchor>
       <arglist>(tsk_runnable_t *self, const tsk_object_def_t *objdef)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_runnable_set_important</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>ga90e0d8e4a0de86dc183c9124716afd57</anchor>
+      <arglist>(tsk_runnable_t *self, tsk_bool_t important)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
@@ -2796,6 +3096,13 @@
       <anchor>ga09f91d68dcb46db4ec35fabf4763aca9</anchor>
       <arglist>)(void *self)</arglist>
     </member>
+    <member kind="variable">
+      <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
+      <name>tsk_runnable_def_t</name>
+      <anchorfile>tsk__runnable_8h.html</anchorfile>
+      <anchor>a608cb429b0ca65036efc03bc3d6766a5</anchor>
+      <arglist></arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>tsk_safeobj.c</name>
@@ -2807,7 +3114,7 @@
     <name>tsk_safeobj.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__safeobj_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__mutex_8h" name="tsk_mutex.h" local="yes" imported="no">tsk_mutex.h</includes>
     <member kind="define">
       <type>#define</type>
@@ -2921,7 +3228,7 @@
     <name>tsk_semaphore.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__semaphore_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="function">
       <type>TINYSAK_API tsk_semaphore_handle_t *</type>
       <name>tsk_semaphore_create</name>
@@ -3017,15 +3324,15 @@
       <type>tsk_sha1_errcode_t</type>
       <name>tsk_sha1compute</name>
       <anchorfile>group__tsk__sha1__group.html</anchorfile>
-      <anchor>ga69520799f4ed48b7cedfab4798ffec0e</anchor>
-      <arglist>(const char *input, size_t size, tsk_sha1string_t *result)</arglist>
+      <anchor>ga28e5fc9335018d092f374abd63f5eb21</anchor>
+      <arglist>(const char *input, tsk_size_t size, tsk_sha1string_t *result)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tsk_sha1.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__sha1_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <class kind="struct">tsk_sha1context_s</class>
     <member kind="define">
       <type>#define</type>
@@ -3145,8 +3452,8 @@
       <type>TINYSAK_API tsk_sha1_errcode_t</type>
       <name>tsk_sha1compute</name>
       <anchorfile>group__tsk__sha1__group.html</anchorfile>
-      <anchor>ga69520799f4ed48b7cedfab4798ffec0e</anchor>
-      <arglist>(const char *input, size_t size, tsk_sha1string_t *result)</arglist>
+      <anchor>ga28e5fc9335018d092f374abd63f5eb21</anchor>
+      <arglist>(const char *input, tsk_size_t size, tsk_sha1string_t *result)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -3204,8 +3511,8 @@
       <type>int</type>
       <name>tsk_strnicmp</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gaf329e986b6fa3d5f78e6ce36490b224d</anchor>
-      <arglist>(const char *str1, const char *str2, size_t n)</arglist>
+      <anchor>gacecd370153236fcc0c8d15612f14d87f</anchor>
+      <arglist>(const char *str1, const char *str2, tsk_size_t n)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -3218,8 +3525,8 @@
       <type>int</type>
       <name>tsk_strncmp</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga09f7b0eeed78040f6322c7f900383143</anchor>
-      <arglist>(const char *str1, const char *str2, size_t n)</arglist>
+      <anchor>gacd9d33ff7ec1f6c0605c98c6f7259610</anchor>
+      <arglist>(const char *str1, const char *str2, tsk_size_t n)</arglist>
     </member>
     <member kind="function">
       <type>char *</type>
@@ -3232,22 +3539,29 @@
       <type>char *</type>
       <name>tsk_strndup</name>
       <anchorfile>tsk__string_8c.html</anchorfile>
-      <anchor>a92ceafb3bf81f7f8635483f841bc18ed</anchor>
-      <arglist>(const char *s1, size_t n)</arglist>
+      <anchor>a6e1b60e4ec3e630af6e5db198d57cf02</anchor>
+      <arglist>(const char *s1, tsk_size_t n)</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
       <name>tsk_strcontains</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gaa5e78bdce0147d0fb62b3c55bb8a7b9f</anchor>
-      <arglist>(const char *str, size_t size, const char *substring)</arglist>
+      <anchor>ga76413189f0bb8ad77c45d790c0c9c27a</anchor>
+      <arglist>(const char *str, tsk_size_t size, const char *substring)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_strindexOf</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gaf4295e6d7a1f3981b4b6e0e36c17f688</anchor>
-      <arglist>(const char *str, size_t size, const char *substring)</arglist>
+      <anchor>ga1137a35a92d8c373caec60bdebf62013</anchor>
+      <arglist>(const char *str, tsk_size_t size, const char *substring)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_strLastIndexOf</name>
+      <anchorfile>group__tsk__string__group.html</anchorfile>
+      <anchor>gafd2d8ae98f3829567bb06ca2dd8da628</anchor>
+      <arglist>(const char *str, tsk_size_t size, const char *substring)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -3267,8 +3581,8 @@
       <type>void</type>
       <name>tsk_strncat</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga295bb7121b770fc6020da157db055579</anchor>
-      <arglist>(char **destination, const char *source, size_t n)</arglist>
+      <anchor>ga9818047196872f81e3478ef297c9ba88</anchor>
+      <arglist>(char **destination, const char *source, tsk_size_t n)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -3372,15 +3686,15 @@
       <type>void</type>
       <name>tsk_str_from_hex</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gaea45d2db58809787630c5a50755728d2</anchor>
-      <arglist>(const uint8_t *hex, size_t size, char *str)</arglist>
+      <anchor>gaf36af7e0b8741535145d271d6bdc8edd</anchor>
+      <arglist>(const uint8_t *hex, tsk_size_t size, char *str)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_str_to_hex</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga3120178ad69e15b31784af1601dba7d8</anchor>
-      <arglist>(const char *str, size_t size, uint8_t *hex)</arglist>
+      <anchor>ga4181f7cbd67e3a6465e3e1ca69f10175</anchor>
+      <arglist>(const char *str, tsk_size_t size, uint8_t *hex)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -3394,7 +3708,7 @@
     <name>tsk_string.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__string_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
     <class kind="struct">tsk_string_s</class>
@@ -3507,8 +3821,8 @@
       <type>TINYSAK_API int</type>
       <name>tsk_strnicmp</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gaf329e986b6fa3d5f78e6ce36490b224d</anchor>
-      <arglist>(const char *str1, const char *str2, size_t n)</arglist>
+      <anchor>gacecd370153236fcc0c8d15612f14d87f</anchor>
+      <arglist>(const char *str1, const char *str2, tsk_size_t n)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
@@ -3521,8 +3835,8 @@
       <type>TINYSAK_API int</type>
       <name>tsk_strncmp</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga09f7b0eeed78040f6322c7f900383143</anchor>
-      <arglist>(const char *str1, const char *str2, size_t n)</arglist>
+      <anchor>gacd9d33ff7ec1f6c0605c98c6f7259610</anchor>
+      <arglist>(const char *str1, const char *str2, tsk_size_t n)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API char *</type>
@@ -3535,22 +3849,29 @@
       <type>TINYSAK_API char *</type>
       <name>tsk_strndup</name>
       <anchorfile>tsk__string_8h.html</anchorfile>
-      <anchor>a71a35f7f6ff1feb59459b6f07de451c7</anchor>
-      <arglist>(const char *s1, size_t n)</arglist>
+      <anchor>a169a7df6054da0cad00465e198814cee</anchor>
+      <arglist>(const char *s1, tsk_size_t n)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API tsk_bool_t</type>
       <name>tsk_strcontains</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gaa5e78bdce0147d0fb62b3c55bb8a7b9f</anchor>
-      <arglist>(const char *str, size_t size, const char *substring)</arglist>
+      <anchor>ga76413189f0bb8ad77c45d790c0c9c27a</anchor>
+      <arglist>(const char *str, tsk_size_t size, const char *substring)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
       <name>tsk_strindexOf</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gaf4295e6d7a1f3981b4b6e0e36c17f688</anchor>
-      <arglist>(const char *str, size_t size, const char *substring)</arglist>
+      <anchor>ga1137a35a92d8c373caec60bdebf62013</anchor>
+      <arglist>(const char *str, tsk_size_t size, const char *substring)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_strLastIndexOf</name>
+      <anchorfile>group__tsk__string__group.html</anchorfile>
+      <anchor>gafd2d8ae98f3829567bb06ca2dd8da628</anchor>
+      <arglist>(const char *str, tsk_size_t size, const char *substring)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
@@ -3570,8 +3891,8 @@
       <type>TINYSAK_API void</type>
       <name>tsk_strncat</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga295bb7121b770fc6020da157db055579</anchor>
-      <arglist>(char **destination, const char *source, size_t n)</arglist>
+      <anchor>ga9818047196872f81e3478ef297c9ba88</anchor>
+      <arglist>(char **destination, const char *source, tsk_size_t n)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
@@ -3675,15 +3996,15 @@
       <type>TINYSAK_API void</type>
       <name>tsk_str_from_hex</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gaea45d2db58809787630c5a50755728d2</anchor>
-      <arglist>(const uint8_t *hex, size_t size, char *str)</arglist>
+      <anchor>gaf36af7e0b8741535145d271d6bdc8edd</anchor>
+      <arglist>(const uint8_t *hex, tsk_size_t size, char *str)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_str_to_hex</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga3120178ad69e15b31784af1601dba7d8</anchor>
-      <arglist>(const char *str, size_t size, uint8_t *hex)</arglist>
+      <anchor>ga4181f7cbd67e3a6465e3e1ca69f10175</anchor>
+      <arglist>(const char *str, tsk_size_t size, uint8_t *hex)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API tsk_string_t *</type>
@@ -3705,6 +4026,7 @@
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__thread_8c</filename>
     <includes id="tsk__thread_8h" name="tsk_thread.h" local="yes" imported="no">tsk_thread.h</includes>
+    <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
     <member kind="function">
       <type>void</type>
@@ -3732,7 +4054,7 @@
     <name>tsk_thread.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__thread_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="function">
       <type>TSK_BEGIN_DECLS TINYSAK_API void</type>
       <name>tsk_thread_sleep</name>
@@ -3760,12 +4082,20 @@
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__time_8c</filename>
     <includes id="tsk__time_8h" name="tsk_time.h" local="yes" imported="no">tsk_time.h</includes>
+    <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
     <member kind="function">
       <type>int</type>
       <name>tsk_gettimeofday</name>
       <anchorfile>group__tsk__time__group.html</anchorfile>
       <anchor>gabad685347be967dcf7fb41ebfb13d634</anchor>
       <arglist>(struct timeval *tv, struct timezone *tz)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint64_t</type>
+      <name>tsk_time_get_ms</name>
+      <anchorfile>group__tsk__time__group.html</anchorfile>
+      <anchor>ga8a16acf41302b031e38e9e175bc2b671</anchor>
+      <arglist>(struct timeval *tv)</arglist>
     </member>
     <member kind="function">
       <type>uint64_t</type>
@@ -3779,7 +4109,7 @@
     <name>tsk_time.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__time_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TSK_TIME_S_2_MS</name>
@@ -3807,6 +4137,13 @@
       <anchorfile>group__tsk__time__group.html</anchorfile>
       <anchor>gabad685347be967dcf7fb41ebfb13d634</anchor>
       <arglist>(struct timeval *tv, struct timezone *tz)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API uint64_t</type>
+      <name>tsk_time_get_ms</name>
+      <anchorfile>group__tsk__time__group.html</anchorfile>
+      <anchor>ga8a16acf41302b031e38e9e175bc2b671</anchor>
+      <arglist>(struct timeval *tv)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API uint64_t</type>
@@ -3921,6 +4258,48 @@
       <anchor>gade6889f0963fac562b57ec4cd36fd093</anchor>
       <arglist>(tsk_timer_manager_handle_t *self, tsk_timer_id_t id)</arglist>
     </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_timer_mgr_global_ref</name>
+      <anchorfile>tsk__timer_8c.html</anchorfile>
+      <anchor>afab075683cf03324938969788b6b4a0b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_timer_mgr_global_start</name>
+      <anchorfile>tsk__timer_8c.html</anchorfile>
+      <anchor>aa6a570bef69890876d825f9d40bfc825</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_timer_id_t</type>
+      <name>tsk_timer_mgr_global_schedule</name>
+      <anchorfile>tsk__timer_8c.html</anchorfile>
+      <anchor>a69121793b8ac28084ea367c2824961ae</anchor>
+      <arglist>(uint64_t timeout, tsk_timer_callback_f callback, const void *arg)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_timer_mgr_global_cancel</name>
+      <anchorfile>tsk__timer_8c.html</anchorfile>
+      <anchor>ad80cc6a5e8a6ec5a1433d5683ac1fb01</anchor>
+      <arglist>(tsk_timer_id_t id)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_timer_mgr_global_stop</name>
+      <anchorfile>tsk__timer_8c.html</anchorfile>
+      <anchor>a915d081df2cf81bb69ec93467879367e</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_timer_mgr_global_unref</name>
+      <anchorfile>tsk__timer_8c.html</anchorfile>
+      <anchor>aecb0eaa1dfe7ce572773933ab3f91839</anchor>
+      <arglist>()</arglist>
+    </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
       <name>tsk_timer_manager_def_t</name>
@@ -3940,7 +4319,7 @@
     <name>tsk_timer.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__timer_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
     <member kind="define">
       <type>#define</type>
@@ -4019,6 +4398,48 @@
       <anchor>gade6889f0963fac562b57ec4cd36fd093</anchor>
       <arglist>(tsk_timer_manager_handle_t *self, tsk_timer_id_t id)</arglist>
     </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_timer_mgr_global_ref</name>
+      <anchorfile>tsk__timer_8h.html</anchorfile>
+      <anchor>a9a379fe924d040ea94dcdd7716818ca1</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_timer_mgr_global_start</name>
+      <anchorfile>tsk__timer_8h.html</anchorfile>
+      <anchor>a7ca4dfcc097d94be29496744fa667812</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_timer_id_t</type>
+      <name>tsk_timer_mgr_global_schedule</name>
+      <anchorfile>tsk__timer_8h.html</anchorfile>
+      <anchor>aa97901ae2435faf1d03d5026c9b49af7</anchor>
+      <arglist>(uint64_t timeout, tsk_timer_callback_f callback, const void *arg)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_timer_mgr_global_cancel</name>
+      <anchorfile>tsk__timer_8h.html</anchorfile>
+      <anchor>a5fe3df2135a0c46289158fabc27c8503</anchor>
+      <arglist>(tsk_timer_id_t id)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_timer_mgr_global_stop</name>
+      <anchorfile>tsk__timer_8h.html</anchorfile>
+      <anchor>ab62c55220239856b788bd039594dee13</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_timer_mgr_global_unref</name>
+      <anchorfile>tsk__timer_8h.html</anchorfile>
+      <anchor>aa0d5d02672bf8c5bb4266686d5a91c17</anchor>
+      <arglist>()</arglist>
+    </member>
     <member kind="variable">
       <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
       <name>tsk_timer_def_t</name>
@@ -4060,7 +4481,7 @@
     <name>tsk_url.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__url_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="function">
       <type>TSK_BEGIN_DECLS TINYSAK_API char *</type>
       <name>tsk_url_encode</name>
@@ -4096,7 +4517,7 @@
     <name>tsk_uuid.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__uuid_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TSK_UUID_DIGEST_SIZE</name>
@@ -4137,12 +4558,13 @@
     <name>tsk_xml.c</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__xml_8c</filename>
+    <includes id="tsk__xml_8h" name="tsk_xml.h" local="yes" imported="no">tsk_xml.h</includes>
   </compound>
   <compound kind="file">
     <name>tsk_xml.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__xml_8h</filename>
-    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
   </compound>
   <compound kind="group">
@@ -4164,18 +4586,18 @@
       <arglist>(IN_LEN)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tsk_base64_encode</name>
       <anchorfile>group__tsk__base64__group.html</anchorfile>
-      <anchor>gab9b8f592761f9fd03e5675791afab163</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, char **output)</arglist>
+      <anchor>gaa38edf458cb1977768855c2eb5ac68e6</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, char **output)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tsk_base64_decode</name>
       <anchorfile>group__tsk__base64__group.html</anchorfile>
-      <anchor>ga1ca9e3934b9daedfe5aebd7eab72f849</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, char **output)</arglist>
+      <anchor>ga1921043aba8ed60cbe1089220ecc8dd0</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, char **output)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -4276,8 +4698,8 @@
       <type>tsk_buffer_t *</type>
       <name>tsk_buffer_create</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>ga48265afed7e33bf3fc7fc1999597feea</anchor>
-      <arglist>(const void *data, size_t size)</arglist>
+      <anchor>ga30c932d68d69c4d981a2a9550171061f</anchor>
+      <arglist>(const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsk_buffer_t *</type>
@@ -4297,29 +4719,29 @@
       <type>int</type>
       <name>tsk_buffer_append</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>ga7793bc6a3b852b4c0b19d5201731ce40</anchor>
-      <arglist>(tsk_buffer_t *self, const void *data, size_t size)</arglist>
+      <anchor>gac7a49242ed646e895e0c8cf084b6377c</anchor>
+      <arglist>(tsk_buffer_t *self, const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_buffer_realloc</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>gad70298b98e703385e538a10ea6f1fc2f</anchor>
-      <arglist>(tsk_buffer_t *self, size_t size)</arglist>
+      <anchor>ga5f14a6fa7f4fa006a7a7ac184320acef</anchor>
+      <arglist>(tsk_buffer_t *self, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_buffer_remove</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>ga2fb1a0d5b4f16a7c619a35eeac0eb83b</anchor>
-      <arglist>(tsk_buffer_t *self, size_t position, size_t size)</arglist>
+      <anchor>gaf9a140a6139445c9d6bbbec01221884f</anchor>
+      <arglist>(tsk_buffer_t *self, tsk_size_t position, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_buffer_insert</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
-      <anchor>ga1654722ac7e4bac4eb59e9fa181ec7b5</anchor>
-      <arglist>(tsk_buffer_t *self, size_t position, const void *data, size_t size)</arglist>
+      <anchor>gaafb6764ac2eca7d572d5daff83551f00</anchor>
+      <arglist>(tsk_buffer_t *self, tsk_size_t position, const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -4327,6 +4749,13 @@
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
       <anchor>ga8a31cbf88b943d87b6858e9c6472459d</anchor>
       <arglist>(tsk_buffer_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_buffer_takeownership</name>
+      <anchorfile>group__tsk__buffer__group.html</anchorfile>
+      <anchor>ga0c66b3c564a79f4d5ba7a2c0bf199464</anchor>
+      <arglist>(tsk_buffer_t *self, void **data, tsk_size_t size)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -4481,9 +4910,9 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>TSK_FSM_ADD_NOTING</name>
+      <name>TSK_FSM_ADD_NOTHING</name>
       <anchorfile>group__tsk__fsm__group.html</anchorfile>
-      <anchor>ga7b9d64ccf1142dc5f1d0f92864c1ef6e</anchor>
+      <anchor>ga65dad33c43f7a4ff8fbe60ced18b73cb</anchor>
       <arglist>(from, action, cond, desc)</arglist>
     </member>
     <member kind="define">
@@ -4597,29 +5026,29 @@
       <type>int</type>
       <name>hmac_md5_compute</name>
       <anchorfile>group__tsk__hmac__group.html</anchorfile>
-      <anchor>gac8a462471982a8e2bb8a5800ad1c7044</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, const char *key, size_t key_size, tsk_md5string_t *result)</arglist>
+      <anchor>gaa4085ee3be5e9d58c675fbf81333121b</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, const char *key, tsk_size_t key_size, tsk_md5string_t *result)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>hmac_md5digest_compute</name>
       <anchorfile>group__tsk__hmac__group.html</anchorfile>
-      <anchor>ga8549f9b83c7ec0fe1514fa8e8bc5c938</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, const char *key, size_t key_size, tsk_md5digest_t result)</arglist>
+      <anchor>ga1a70aab02cdd93eb7e75c26ed79db846</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, const char *key, tsk_size_t key_size, tsk_md5digest_t result)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>hmac_sha1_compute</name>
       <anchorfile>group__tsk__hmac__group.html</anchorfile>
-      <anchor>ga399cd4ae0205a11b3e696f54e05f19b5</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, const char *key, size_t key_size, tsk_sha1string_t *result)</arglist>
+      <anchor>gadbbbed195249a97ef96509932ba4c1ea</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, const char *key, tsk_size_t key_size, tsk_sha1string_t *result)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>hmac_sha1digest_compute</name>
       <anchorfile>group__tsk__hmac__group.html</anchorfile>
-      <anchor>ga2d4469dcc0117426d51708c2f8b17ec9</anchor>
-      <arglist>(const uint8_t *input, size_t input_size, const char *key, size_t key_size, tsk_sha1digest_t result)</arglist>
+      <anchor>ga3a4fcff9ca7e9ec85d3d3fca50b16de0</anchor>
+      <arglist>(const uint8_t *input, tsk_size_t input_size, const char *key, tsk_size_t key_size, tsk_sha1digest_t result)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -4676,6 +5105,20 @@
       <anchorfile>group__tsk__list__group.html</anchorfile>
       <anchor>ga66702bf5657b609fd6b4e5df5e780ca4</anchor>
       <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_list_lock</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga50ea10b14ed681d3d479b323b33f6c28</anchor>
+      <arglist>(tsk_list_t *list)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_list_unlock</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga31b7bea171002ae04936016725a87b06</anchor>
+      <arglist>(tsk_list_t *list)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -4776,10 +5219,17 @@
       <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>const tsk_object_t *</type>
+      <name>tsk_list_find_object_by_pred</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gacedbefcbe8600f1ae107560b1e97aa29</anchor>
+      <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_size_t</type>
       <name>tsk_list_count</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga6d19926a469fd9e3de24a6d316899bd7</anchor>
+      <anchor>ga4f3cf383327dc893a85685f826c44a04</anchor>
       <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
   </compound>
@@ -4826,8 +5276,8 @@
       <type>void</type>
       <name>tsk_md5update</name>
       <anchorfile>group__tsk__md5__group.html</anchorfile>
-      <anchor>ga3c2b147d93314228d8e6674907d1fc17</anchor>
-      <arglist>(tsk_md5context_t *ctx, uint8_t const *buf, size_t len)</arglist>
+      <anchor>gae36ae9627c1eb5760415ab6e8d6f8566</anchor>
+      <arglist>(tsk_md5context_t *ctx, uint8_t const *buf, tsk_size_t len)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -4847,8 +5297,8 @@
       <type>int</type>
       <name>tsk_md5compute</name>
       <anchorfile>group__tsk__md5__group.html</anchorfile>
-      <anchor>ga4eb0c6a046173bfcfc4081f43e7635fa</anchor>
-      <arglist>(const char *input, size_t size, tsk_md5string_t *result)</arglist>
+      <anchor>ga7c088380455e3aba0413be8e312fff06</anchor>
+      <arglist>(const char *input, tsk_size_t size, tsk_md5string_t *result)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -4873,15 +5323,15 @@
       <type>void *</type>
       <name>tsk_malloc</name>
       <anchorfile>group__tsk__memory__group.html</anchorfile>
-      <anchor>gaa757b4221f3e302bf71bea5e6fb4a5f8</anchor>
-      <arglist>(size_t size)</arglist>
+      <anchor>gadf67b3acd9d721b603821aa9a0c8fb56</anchor>
+      <arglist>(tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void *</type>
       <name>tsk_realloc</name>
       <anchorfile>group__tsk__memory__group.html</anchorfile>
-      <anchor>gaa640cfcf6753598b62da8e6ce3632180</anchor>
-      <arglist>(void *ptr, size_t size)</arglist>
+      <anchor>gaac69627d2bbf3aeef0e0aafb6371bf82</anchor>
+      <arglist>(void *ptr, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -4894,8 +5344,8 @@
       <type>void *</type>
       <name>tsk_calloc</name>
       <anchorfile>group__tsk__memory__group.html</anchorfile>
-      <anchor>gac20b636d4376be871aee9f8ab7d0cca8</anchor>
-      <arglist>(size_t num, size_t size)</arglist>
+      <anchor>gaf4d8432e44e4c13cd1f82243e0b156b3</anchor>
+      <arglist>(tsk_size_t num, tsk_size_t size)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -4986,10 +5436,10 @@
       <arglist>(const tsk_object_def_t *objdef, va_list *ap)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tsk_object_sizeof</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>gad7c100b741ce980a63ccdc262f49ffa0</anchor>
+      <anchor>ga65133674abc90858ffbc13c40ec33745</anchor>
       <arglist>(const tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
@@ -5127,8 +5577,8 @@
       <type>tsk_param_t *</type>
       <name>tsk_params_parse_param</name>
       <anchorfile>group__tsk__params__group.html</anchorfile>
-      <anchor>ga0e7be40587e3e3d10ad877889a9673ef</anchor>
-      <arglist>(const char *line, size_t size)</arglist>
+      <anchor>gaa8a439408d71b4337898c37ea3d71592</anchor>
+      <arglist>(const char *line, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
@@ -5185,6 +5635,13 @@
       <anchorfile>group__tsk__params__group.html</anchorfile>
       <anchor>ga724a941858f72384e0163be39c550595</anchor>
       <arglist>(const tsk_params_L_t *self, const char separator, tsk_buffer_t *output)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_params_L_t *</type>
+      <name>tsk_params_fromstring</name>
+      <anchorfile>group__tsk__params__group.html</anchorfile>
+      <anchor>ga90890f00599201b2bd599f3e4d406746</anchor>
+      <arglist>(const char *string, const char *separator, tsk_bool_t trim)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -5311,8 +5768,8 @@
       <type>void</type>
       <name>tsk_ragel_state_init</name>
       <anchorfile>group__tsk__ragel__state__group.html</anchorfile>
-      <anchor>ga7904c6da39083d60f11078c60ec745e5</anchor>
-      <arglist>(tsk_ragel_state_t *state, const char *data, size_t size)</arglist>
+      <anchor>ga5501b9417f264a8ec197008f084220fb</anchor>
+      <arglist>(tsk_ragel_state_t *state, const char *data, tsk_size_t size)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -5377,11 +5834,25 @@
       <arglist></arglist>
     </member>
     <member kind="function">
+      <type>tsk_runnable_t *</type>
+      <name>tsk_runnable_create</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>ga5794a5eaeb3523f697cb7c390a81bc0c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
       <type>int</type>
       <name>tsk_runnable_start</name>
       <anchorfile>group__tsk__runnable__group.html</anchorfile>
       <anchor>ga42877c534be2c2898f3fb82529daa5c4</anchor>
       <arglist>(tsk_runnable_t *self, const tsk_object_def_t *objdef)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_runnable_set_important</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>ga90e0d8e4a0de86dc183c9124716afd57</anchor>
+      <arglist>(tsk_runnable_t *self, tsk_bool_t important)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -5601,8 +6072,8 @@
       <type>tsk_sha1_errcode_t</type>
       <name>tsk_sha1compute</name>
       <anchorfile>group__tsk__sha1__group.html</anchorfile>
-      <anchor>ga69520799f4ed48b7cedfab4798ffec0e</anchor>
-      <arglist>(const char *input, size_t size, tsk_sha1string_t *result)</arglist>
+      <anchor>ga28e5fc9335018d092f374abd63f5eb21</anchor>
+      <arglist>(const char *input, tsk_size_t size, tsk_sha1string_t *result)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -5698,8 +6169,8 @@
       <type>int</type>
       <name>tsk_strnicmp</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gaf329e986b6fa3d5f78e6ce36490b224d</anchor>
-      <arglist>(const char *str1, const char *str2, size_t n)</arglist>
+      <anchor>gacecd370153236fcc0c8d15612f14d87f</anchor>
+      <arglist>(const char *str1, const char *str2, tsk_size_t n)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -5712,8 +6183,8 @@
       <type>int</type>
       <name>tsk_strncmp</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga09f7b0eeed78040f6322c7f900383143</anchor>
-      <arglist>(const char *str1, const char *str2, size_t n)</arglist>
+      <anchor>gacd9d33ff7ec1f6c0605c98c6f7259610</anchor>
+      <arglist>(const char *str1, const char *str2, tsk_size_t n)</arglist>
     </member>
     <member kind="function">
       <type>char *</type>
@@ -5726,15 +6197,22 @@
       <type>tsk_bool_t</type>
       <name>tsk_strcontains</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gaa5e78bdce0147d0fb62b3c55bb8a7b9f</anchor>
-      <arglist>(const char *str, size_t size, const char *substring)</arglist>
+      <anchor>ga76413189f0bb8ad77c45d790c0c9c27a</anchor>
+      <arglist>(const char *str, tsk_size_t size, const char *substring)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_strindexOf</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gaf4295e6d7a1f3981b4b6e0e36c17f688</anchor>
-      <arglist>(const char *str, size_t size, const char *substring)</arglist>
+      <anchor>ga1137a35a92d8c373caec60bdebf62013</anchor>
+      <arglist>(const char *str, tsk_size_t size, const char *substring)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_strLastIndexOf</name>
+      <anchorfile>group__tsk__string__group.html</anchorfile>
+      <anchor>gafd2d8ae98f3829567bb06ca2dd8da628</anchor>
+      <arglist>(const char *str, tsk_size_t size, const char *substring)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -5754,8 +6232,8 @@
       <type>void</type>
       <name>tsk_strncat</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga295bb7121b770fc6020da157db055579</anchor>
-      <arglist>(char **destination, const char *source, size_t n)</arglist>
+      <anchor>ga9818047196872f81e3478ef297c9ba88</anchor>
+      <arglist>(char **destination, const char *source, tsk_size_t n)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -5859,15 +6337,15 @@
       <type>void</type>
       <name>tsk_str_from_hex</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gaea45d2db58809787630c5a50755728d2</anchor>
-      <arglist>(const uint8_t *hex, size_t size, char *str)</arglist>
+      <anchor>gaf36af7e0b8741535145d271d6bdc8edd</anchor>
+      <arglist>(const uint8_t *hex, tsk_size_t size, char *str)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_str_to_hex</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga3120178ad69e15b31784af1601dba7d8</anchor>
-      <arglist>(const char *str, size_t size, uint8_t *hex)</arglist>
+      <anchor>ga4181f7cbd67e3a6465e3e1ca69f10175</anchor>
+      <arglist>(const char *str, tsk_size_t size, uint8_t *hex)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -5920,6 +6398,13 @@
       <anchorfile>group__tsk__time__group.html</anchorfile>
       <anchor>gabad685347be967dcf7fb41ebfb13d634</anchor>
       <arglist>(struct timeval *tv, struct timezone *tz)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint64_t</type>
+      <name>tsk_time_get_ms</name>
+      <anchorfile>group__tsk__time__group.html</anchorfile>
+      <anchor>ga8a16acf41302b031e38e9e175bc2b671</anchor>
+      <arglist>(struct timeval *tv)</arglist>
     </member>
     <member kind="function">
       <type>uint64_t</type>
@@ -6039,10 +6524,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>size</name>
       <anchorfile>structtsk__buffer__s.html</anchorfile>
-      <anchor>a854352f53b148adc24983a58a1866d66</anchor>
+      <anchor>a2af13611e30c0884ab2e1837c4da8282</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -6226,6 +6711,13 @@
       <anchor>a960af17e3d10446534d32462474e9f35</anchor>
       <arglist></arglist>
     </member>
+    <member kind="variable">
+      <type>tsk_mutex_handle_t *</type>
+      <name>mutex</name>
+      <anchorfile>structtsk__list__s.html</anchorfile>
+      <anchor>a75804a8f2578b8cb7ae4a31363046a51</anchor>
+      <arglist></arglist>
+    </member>
   </compound>
   <compound kind="struct">
     <name>tsk_md5context_s</name>
@@ -6256,10 +6748,10 @@
     <name>tsk_object_def_s</name>
     <filename>structtsk__object__def__s.html</filename>
     <member kind="variable">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>size</name>
       <anchorfile>structtsk__object__def__s.html</anchorfile>
-      <anchor>a854352f53b148adc24983a58a1866d66</anchor>
+      <anchor>a2af13611e30c0884ab2e1837c4da8282</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -6469,6 +6961,13 @@
       <name>initialized</name>
       <anchorfile>structtsk__runnable__s.html</anchorfile>
       <anchor>adfdbb2f146565c87384f0090dba7a73e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>important</name>
+      <anchorfile>structtsk__runnable__s.html</anchorfile>
+      <anchor>abbf5761944a79a6439e4aa8da5770d1d</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">

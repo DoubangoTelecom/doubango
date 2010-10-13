@@ -471,13 +471,6 @@
     <class kind="struct">internal_state</class>
     <member kind="define">
       <type>#define</type>
-      <name>GZIP</name>
-      <anchorfile>deflate_8h.html</anchorfile>
-      <anchor>a9564352992f7a4001386d1c8e2977571</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
       <name>LENGTH_CODES</name>
       <anchorfile>deflate_8h.html</anchorfile>
       <anchor>a8dd3b78c666b6592944b2acf1706e611</anchor>
@@ -776,6 +769,20 @@
       <arglist></arglist>
     </member>
     <member kind="function">
+      <type>tcomp_buffer_handle_t *</type>
+      <name>tcomp_buffer_create</name>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>ade874ca0fc008d19c557492cd92aa33d</anchor>
+      <arglist>(const void *data, tsk_size_t len)</arglist>
+    </member>
+    <member kind="function">
+      <type>tcomp_buffer_handle_t *</type>
+      <name>tcomp_buffer_create_null</name>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>aa5cfdc24ecf030dd0ffb5f07289de0e5</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_buffer_equals</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
@@ -793,50 +800,50 @@
       <type>const uint8_t *</type>
       <name>tcomp_buffer_getReadOnlyBufferAtPos</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>a07e8b7d6077e9b5fa595cd645f55350f</anchor>
-      <arglist>(const tcomp_buffer_handle_t *handle, size_t position)</arglist>
+      <anchor>a9fba8be7ab9dc38279c3b14254d325f1</anchor>
+      <arglist>(const tcomp_buffer_handle_t *handle, tsk_size_t position)</arglist>
     </member>
     <member kind="function">
       <type>uint8_t *</type>
       <name>tcomp_buffer_getBufferAtPos</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>a7fa5783b07830935e3e9dfab2b0d88d4</anchor>
-      <arglist>(const tcomp_buffer_handle_t *handle, size_t position)</arglist>
+      <anchor>a1757d7fa138bae185bd36fa6ce56b8eb</anchor>
+      <arglist>(const tcomp_buffer_handle_t *handle, tsk_size_t position)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tcomp_buffer_getSize</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>a8a0feee2496555b59b2a56053f666c33</anchor>
+      <anchor>a959ada505a0d1b73a3b020cb8bbe01d6</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tcomp_buffer_getRemainingBits</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>a8d4e064d6d2bc4ac16e4282b2cdc5e1c</anchor>
+      <anchor>ae869eb4293f721e25f47c1be0a037713</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>uint8_t *</type>
       <name>tcomp_buffer_readBytes</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>a304f31d779262d58175b06b7035f2971</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t length)</arglist>
+      <anchor>ac047c83dc6a29bdf1e7e9c60b4c0d280</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, tsk_size_t length)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_buffer_readLsbToMsb</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>a2441e395531499627ab17dc2ff957598</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t length)</arglist>
+      <anchor>a0b432914f2af2cf3d1d04b32989536c8</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, tsk_size_t length)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_buffer_readMsbToLsb</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>add61bb3234115bcb8214016da0d10f80</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t length)</arglist>
+      <anchor>aaad8d6dcaf4c6ffa957b038bca55a5a5</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, tsk_size_t length)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -856,29 +863,29 @@
       <type>void</type>
       <name>tcomp_buffer_allocBuff</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>a310392d2a48ac26f8116b5946b7ff020</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t size)</arglist>
+      <anchor>a1e73d9b8ed8fda1f167d4d951e1e8f26</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_referenceBuff</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>ae4e7f643560dff38397e3d0b4e19333d</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, uint8_t *externalBuff, size_t size)</arglist>
+      <anchor>abad7889e4712317b5e8bfa3fbd8c3a29</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, uint8_t *externalBuff, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_buffer_appendBuff</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>a7f3f88262f0c3aac732ca26599ffcca6</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, const void *data, size_t size)</arglist>
+      <anchor>a019e73ec35a3d0a5cb0d3dadf8f62df6</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_buffer_removeBuff</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>a31bc5d148db8887d81ca8672fc3f65d7</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t pos, size_t size)</arglist>
+      <anchor>a35a7ef87468f1df6edf45476b01c2a09</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, tsk_size_t pos, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -888,17 +895,17 @@
       <arglist>(tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
-      <type>size_t *</type>
+      <type>tsk_size_t *</type>
       <name>tcomp_buffer_getIndexBytes</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>a305d4f691c8e30a0273f71ada63b0518</anchor>
+      <anchor>a91b80cc3c954d9aa5296683dbd66993e</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
-      <type>size_t *</type>
+      <type>tsk_size_t *</type>
       <name>tcomp_buffer_getIndexBits</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>add4e1e7c72885bcdeadbd61645151b01</anchor>
+      <anchor>a0c7e69c96f0d8ef6512c04a4e7ca376b</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
@@ -912,15 +919,15 @@
       <type>uint64_t</type>
       <name>tcomp_buffer_createHash</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>ad2f920de44f214da94847311401c5669</anchor>
-      <arglist>(const void *data, size_t len)</arglist>
+      <anchor>a9a02469eaa630285bb3482abceadb8ec</anchor>
+      <arglist>(const void *data, tsk_size_t len)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_nprint</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>ae7081ba73675881e1f25757ac5b53203</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t size)</arglist>
+      <anchor>ae530f6d538bfcdbc73dd49d5bff31135</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -958,20 +965,6 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>_TCOMP_BUFFER_CREATE</name>
-      <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>a136ddc72ae5cb2ccddf36ce726b5a277</anchor>
-      <arglist>(data, len)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_BUFFER_CREATE</name>
-      <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>aea4f163777b093b4ef28a2b3256ed712</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
       <name>tcomp_buffer_getReadOnlyBuffer</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
       <anchor>aa5e27561b89a1c2692891f1a6ffd8f1e</anchor>
@@ -999,6 +992,20 @@
       <arglist></arglist>
     </member>
     <member kind="function">
+      <type>tcomp_buffer_handle_t *</type>
+      <name>tcomp_buffer_create</name>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>ade874ca0fc008d19c557492cd92aa33d</anchor>
+      <arglist>(const void *data, tsk_size_t len)</arglist>
+    </member>
+    <member kind="function">
+      <type>tcomp_buffer_handle_t *</type>
+      <name>tcomp_buffer_create_null</name>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>aa5cfdc24ecf030dd0ffb5f07289de0e5</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_buffer_equals</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
@@ -1016,50 +1023,50 @@
       <type>const uint8_t *</type>
       <name>tcomp_buffer_getReadOnlyBufferAtPos</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>a07e8b7d6077e9b5fa595cd645f55350f</anchor>
-      <arglist>(const tcomp_buffer_handle_t *handle, size_t position)</arglist>
+      <anchor>a9fba8be7ab9dc38279c3b14254d325f1</anchor>
+      <arglist>(const tcomp_buffer_handle_t *handle, tsk_size_t position)</arglist>
     </member>
     <member kind="function">
       <type>TINYSIGCOMP_API uint8_t *</type>
       <name>tcomp_buffer_getBufferAtPos</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>a2ce783d03dcaaf64d78010b6ce5dde28</anchor>
-      <arglist>(const tcomp_buffer_handle_t *handle, size_t position)</arglist>
+      <anchor>ac35fd2027e83860b72cf70126d5c5365</anchor>
+      <arglist>(const tcomp_buffer_handle_t *handle, tsk_size_t position)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSIGCOMP_API size_t</type>
+      <type>TINYSIGCOMP_API tsk_size_t</type>
       <name>tcomp_buffer_getSize</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>a48a0221f12c4f1d2343ed8f6e6ae0986</anchor>
+      <anchor>a808b0666fcc1e51130d596face2e6c4a</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tcomp_buffer_getRemainingBits</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>a8d4e064d6d2bc4ac16e4282b2cdc5e1c</anchor>
+      <anchor>ae869eb4293f721e25f47c1be0a037713</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>uint8_t *</type>
       <name>tcomp_buffer_readBytes</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>a03955252557e152af356f2485b205014</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t size)</arglist>
+      <anchor>a46837a573c6da78391d789121d735c1e</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_buffer_readLsbToMsb</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>a2441e395531499627ab17dc2ff957598</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t length)</arglist>
+      <anchor>a0b432914f2af2cf3d1d04b32989536c8</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, tsk_size_t length)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_buffer_readMsbToLsb</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>add61bb3234115bcb8214016da0d10f80</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t length)</arglist>
+      <anchor>aaad8d6dcaf4c6ffa957b038bca55a5a5</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, tsk_size_t length)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -1079,29 +1086,29 @@
       <type>void</type>
       <name>tcomp_buffer_allocBuff</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>a310392d2a48ac26f8116b5946b7ff020</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t size)</arglist>
+      <anchor>a1e73d9b8ed8fda1f167d4d951e1e8f26</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_referenceBuff</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>ae4e7f643560dff38397e3d0b4e19333d</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, uint8_t *externalBuff, size_t size)</arglist>
+      <anchor>abad7889e4712317b5e8bfa3fbd8c3a29</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, uint8_t *externalBuff, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_buffer_appendBuff</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>a7f3f88262f0c3aac732ca26599ffcca6</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, const void *data, size_t size)</arglist>
+      <anchor>a019e73ec35a3d0a5cb0d3dadf8f62df6</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, const void *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_buffer_removeBuff</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>a31bc5d148db8887d81ca8672fc3f65d7</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t pos, size_t size)</arglist>
+      <anchor>a35a7ef87468f1df6edf45476b01c2a09</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, tsk_size_t pos, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -1111,17 +1118,17 @@
       <arglist>(tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
-      <type>size_t *</type>
+      <type>tsk_size_t *</type>
       <name>tcomp_buffer_getIndexBytes</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>a305d4f691c8e30a0273f71ada63b0518</anchor>
+      <anchor>a91b80cc3c954d9aa5296683dbd66993e</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
-      <type>size_t *</type>
+      <type>tsk_size_t *</type>
       <name>tcomp_buffer_getIndexBits</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>add4e1e7c72885bcdeadbd61645151b01</anchor>
+      <anchor>a0c7e69c96f0d8ef6512c04a4e7ca376b</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
@@ -1135,15 +1142,15 @@
       <type>uint64_t</type>
       <name>tcomp_buffer_createHash</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>ad2f920de44f214da94847311401c5669</anchor>
-      <arglist>(const void *data, size_t len)</arglist>
+      <anchor>a9a02469eaa630285bb3482abceadb8ec</anchor>
+      <arglist>(const void *data, tsk_size_t len)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_nprint</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>ae7081ba73675881e1f25757ac5b53203</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t size)</arglist>
+      <anchor>ae530f6d538bfcdbc73dd49d5bff31135</anchor>
+      <arglist>(tcomp_buffer_handle_t *handle, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -1166,6 +1173,13 @@
     <filename>tcomp__compartment_8c</filename>
     <includes id="tcomp__compartment_8h" name="tcomp_compartment.h" local="yes" imported="no">tcomp_compartment.h</includes>
     <member kind="function">
+      <type>tcomp_compartment_t *</type>
+      <name>tcomp_compartment_create</name>
+      <anchorfile>tcomp__compartment_8c.html</anchorfile>
+      <anchor>a6b54e7390394503148bea84d5e9cd52e</anchor>
+      <arglist>(uint64_t id, uint16_t sigCompParameters)</arglist>
+    </member>
+    <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_setRemoteParams</name>
       <anchorfile>tcomp__compartment_8c.html</anchorfile>
@@ -1243,10 +1257,10 @@
       <arglist>(tcomp_compartment_t *compartment, const uint8_t nackId[TSK_SHA1_DIGEST_SIZE])</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_compartment_hasNack</name>
       <anchorfile>tcomp__compartment_8c.html</anchorfile>
-      <anchor>aad3df7869f23abef0ddf7707d8b86a9a</anchor>
+      <anchor>a17e4a4d6725f159e090c5b0a861146ae</anchor>
       <arglist>(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *nackId)</arglist>
     </member>
     <member kind="variable">
@@ -1267,19 +1281,19 @@
     <includes id="tcomp__compressordata_8h" name="tcomp_compressordata.h" local="yes" imported="no">tcomp_compressordata.h</includes>
     <includes id="tcomp__result_8h" name="tcomp_result.h" local="yes" imported="no">tcomp_result.h</includes>
     <class kind="struct">tcomp_compartment_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_COMPARTMENT_CREATE</name>
-      <anchorfile>tcomp__compartment_8h.html</anchorfile>
-      <anchor>a38758d76fed616820ed073ab4e7fc66c</anchor>
-      <arglist>(id, sigCompParameters)</arglist>
-    </member>
     <member kind="typedef">
-      <type>struct tcomp_compartment_s</type>
+      <type>TCOMP_BEGIN_DECLS struct tcomp_compartment_s</type>
       <name>tcomp_compartment_t</name>
       <anchorfile>tcomp__compartment_8h.html</anchorfile>
-      <anchor>ad858ec567344e04e853ca0abcce17030</anchor>
+      <anchor>a8f70456ed6f078247d22edbbcfe41adb</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>tcomp_compartment_t *</type>
+      <name>tcomp_compartment_create</name>
+      <anchorfile>tcomp__compartment_8h.html</anchorfile>
+      <anchor>a6b54e7390394503148bea84d5e9cd52e</anchor>
+      <arglist>(uint64_t id, uint16_t sigCompParameters)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -1359,10 +1373,10 @@
       <arglist>(tcomp_compartment_t *compartment, const uint8_t nackId[TSK_SHA1_DIGEST_SIZE])</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_compartment_hasNack</name>
       <anchorfile>tcomp__compartment_8h.html</anchorfile>
-      <anchor>aad3df7869f23abef0ddf7707d8b86a9a</anchor>
+      <anchor>a17e4a4d6725f159e090c5b0a861146ae</anchor>
       <arglist>(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *nackId)</arglist>
     </member>
     <member kind="variable">
@@ -1390,8 +1404,8 @@
       <type>tsk_bool_t(*</type>
       <name>tcomp_compressor_compress_f</name>
       <anchorfile>tcomp__compressor_8h.html</anchorfile>
-      <anchor>a8be6ccfa086a58ddbdc08dc1a48bd40e</anchor>
-      <arglist>)(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)</arglist>
+      <anchor>a89e8cf822600cb829f045cc6da482710</anchor>
+      <arglist>)(tcomp_compartment_t *lpCompartment, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t *output_size, tsk_bool_t stream)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -1418,8 +1432,8 @@
       <type>tsk_bool_t</type>
       <name>tcomp_compressor_deflate_compress</name>
       <anchorfile>tcomp__compressor__deflate_8c.html</anchorfile>
-      <anchor>a97fae051ba0ce81b4dff2d95c577c618</anchor>
-      <arglist>(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)</arglist>
+      <anchor>adefbb1a9f55fc924b6dda8ebc75292f0</anchor>
+      <arglist>(tcomp_compartment_t *lpCompartment, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t *output_size, tsk_bool_t stream)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -1432,8 +1446,8 @@
       <type>TCOMP_BEGIN_DECLS tsk_bool_t</type>
       <name>tcomp_compressor_deflate_compress</name>
       <anchorfile>tcomp__compressor__deflate_8h.html</anchorfile>
-      <anchor>a5f308cf552b18ea5c7544db32b5a15a8</anchor>
-      <arglist>(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)</arglist>
+      <anchor>a40af6c9124355c4ff307be664c331b62</anchor>
+      <arglist>(tcomp_compartment_t *lpCompartment, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t *output_size, tsk_bool_t stream)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -1467,8 +1481,8 @@
       <type>tsk_bool_t</type>
       <name>tcomp_compressor_dummy_compress</name>
       <anchorfile>tcomp__compressor__dummy_8c.html</anchorfile>
-      <anchor>a85dd3df880d1368dd4c967e2a101a606</anchor>
-      <arglist>(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)</arglist>
+      <anchor>aaf174210ca73b13b364f0c72a2b35f32</anchor>
+      <arglist>(tcomp_compartment_t *lpCompartment, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t *output_size, tsk_bool_t stream)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -1481,8 +1495,8 @@
       <type>TCOMP_BEGIN_DECLS tsk_bool_t</type>
       <name>tcomp_compressor_dummy_compress</name>
       <anchorfile>tcomp__compressor__dummy_8h.html</anchorfile>
-      <anchor>aebd3fa8c4017c5ed7e96e3ace875c1d8</anchor>
-      <arglist>(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)</arglist>
+      <anchor>afe355c7530573a73b869c5378e116a36</anchor>
+      <arglist>(tcomp_compartment_t *lpCompartment, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t *output_size, tsk_bool_t stream)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -1540,11 +1554,18 @@
       <arglist></arglist>
     </member>
     <member kind="function">
+      <type>tcomp_compressordisp_t *</type>
+      <name>tcomp_compressordisp_create</name>
+      <anchorfile>tcomp__compressordisp_8c.html</anchorfile>
+      <anchor>a65a06e5aa5ac1f93484be2543c5fd655</anchor>
+      <arglist>(const tcomp_statehandler_t *statehandler)</arglist>
+    </member>
+    <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_compressordisp_compress</name>
       <anchorfile>tcomp__compressordisp_8c.html</anchorfile>
-      <anchor>a57ef7dfa31d31548047d5a06fe36f12b</anchor>
-      <arglist>(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)</arglist>
+      <anchor>aec43191d86a10978161c029f18e5f981</anchor>
+      <arglist>(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t *output_size, tsk_bool_t stream)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1586,13 +1607,6 @@
       <anchor>a8d2e7bb50fd6bbdc19ed27a1e846fca5</anchor>
       <arglist></arglist>
     </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_COMPRESSORDISP_CREATE</name>
-      <anchorfile>tcomp__compressordisp_8h.html</anchorfile>
-      <anchor>a0b0488d2687f3d46779b8752e4f16e52</anchor>
-      <arglist>(statehandler)</arglist>
-    </member>
     <member kind="typedef">
       <type>struct tcomp_compressordisp_s</type>
       <name>tcomp_compressordisp_t</name>
@@ -1601,11 +1615,18 @@
       <arglist></arglist>
     </member>
     <member kind="function">
+      <type>tcomp_compressordisp_t *</type>
+      <name>tcomp_compressordisp_create</name>
+      <anchorfile>tcomp__compressordisp_8h.html</anchorfile>
+      <anchor>a65a06e5aa5ac1f93484be2543c5fd655</anchor>
+      <arglist>(const tcomp_statehandler_t *statehandler)</arglist>
+    </member>
+    <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_compressordisp_compress</name>
       <anchorfile>tcomp__compressordisp_8h.html</anchorfile>
-      <anchor>a57ef7dfa31d31548047d5a06fe36f12b</anchor>
-      <arglist>(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)</arglist>
+      <anchor>aec43191d86a10978161c029f18e5f981</anchor>
+      <arglist>(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t *output_size, tsk_bool_t stream)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1651,11 +1672,25 @@
       <arglist>(dispatcher)</arglist>
     </member>
     <member kind="function">
+      <type>tcomp_stream_buffer_t *</type>
+      <name>tcomp_stream_buffer_create</name>
+      <anchorfile>tcomp__decompressordisp_8c.html</anchorfile>
+      <anchor>a998e223ef468fc09a9f8613c5d5d0854</anchor>
+      <arglist>(uint64_t id)</arglist>
+    </member>
+    <member kind="function">
+      <type>tcomp_decompressordisp_t *</type>
+      <name>tcomp_decompressordisp_create</name>
+      <anchorfile>tcomp__decompressordisp_8c.html</anchorfile>
+      <anchor>a22004ec43206b3803b3f6d978b058f0a</anchor>
+      <arglist>(const tcomp_statehandler_t *statehandler)</arglist>
+    </member>
+    <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_decompress</name>
       <anchorfile>tcomp__decompressordisp_8c.html</anchorfile>
-      <anchor>afa50dfb7271cc04bbd504a0f4061041b</anchor>
-      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, size_t input_size, tcomp_result_t *lpResult)</arglist>
+      <anchor>a74fb7a3ff671e4576c0fb818b7760dc0</anchor>
+      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, tsk_size_t input_size, tcomp_result_t *lpResult)</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
@@ -1668,22 +1703,22 @@
       <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_internalDecompress</name>
       <anchorfile>tcomp__decompressordisp_8c.html</anchorfile>
-      <anchor>aaad653bbe5622331d335da1661f0616d</anchor>
-      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, const size_t input_size, tcomp_result_t **lpResult)</arglist>
+      <anchor>a7194a6ba35ad1935b76fce25db19ec28</anchor>
+      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, const tsk_size_t input_size, tcomp_result_t **lpResult)</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_appendStream</name>
       <anchorfile>tcomp__decompressordisp_8c.html</anchorfile>
-      <anchor>a36dcb5e96ecee7ee2b2af93a45defcc4</anchor>
-      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, size_t input_size, uint64_t streamId)</arglist>
+      <anchor>a91fd6f2e49b3cbe6fb2a574c20448d79</anchor>
+      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, tsk_size_t input_size, uint64_t streamId)</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_getNextStreamMsg</name>
       <anchorfile>tcomp__decompressordisp_8c.html</anchorfile>
-      <anchor>a75908b7846e40f78ada577d7ee9f5be5</anchor>
-      <arglist>(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, size_t *size)</arglist>
+      <anchor>a1d16a0b0eb86e5538cd37aaf8214aa04</anchor>
+      <arglist>(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, tsk_size_t *size)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -1711,25 +1746,11 @@
     <includes id="tcomp__result_8h" name="tcomp_result.h" local="yes" imported="no">tcomp_result.h</includes>
     <class kind="struct">tcomp_stream_buffer_s</class>
     <class kind="struct">tcomp_decompressordisp_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_STREAM_BUFFER_CREATE</name>
-      <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
-      <anchor>a4f0dcf664947f7d343d2b622e0dd6b62</anchor>
-      <arglist>(id)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_DECOMPRESSORDISP_CREATE</name>
-      <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
-      <anchor>a3c533b4145e37f020e010ccf00c34a25</anchor>
-      <arglist>(statehandler)</arglist>
-    </member>
     <member kind="typedef">
-      <type>struct tcomp_stream_buffer_s</type>
+      <type>TCOMP_BEGIN_DECLS struct tcomp_stream_buffer_s</type>
       <name>tcomp_stream_buffer_t</name>
       <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
-      <anchor>a5fb25ac0189b221a4e65155a7b705539</anchor>
+      <anchor>a657b520236f10cc7eb86124b11f0a768</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -1740,11 +1761,18 @@
       <arglist></arglist>
     </member>
     <member kind="function">
+      <type>tcomp_decompressordisp_t *</type>
+      <name>tcomp_decompressordisp_create</name>
+      <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
+      <anchor>a22004ec43206b3803b3f6d978b058f0a</anchor>
+      <arglist>(const tcomp_statehandler_t *statehandler)</arglist>
+    </member>
+    <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_decompress</name>
       <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
-      <anchor>afa50dfb7271cc04bbd504a0f4061041b</anchor>
-      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, size_t input_size, tcomp_result_t *lpResult)</arglist>
+      <anchor>a74fb7a3ff671e4576c0fb818b7760dc0</anchor>
+      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, tsk_size_t input_size, tcomp_result_t *lpResult)</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
@@ -1757,22 +1785,22 @@
       <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_internalDecompress</name>
       <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
-      <anchor>aaad653bbe5622331d335da1661f0616d</anchor>
-      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, const size_t input_size, tcomp_result_t **lpResult)</arglist>
+      <anchor>a7194a6ba35ad1935b76fce25db19ec28</anchor>
+      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, const tsk_size_t input_size, tcomp_result_t **lpResult)</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_appendStream</name>
       <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
-      <anchor>a36dcb5e96ecee7ee2b2af93a45defcc4</anchor>
-      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, size_t input_size, uint64_t streamId)</arglist>
+      <anchor>a91fd6f2e49b3cbe6fb2a574c20448d79</anchor>
+      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, tsk_size_t input_size, uint64_t streamId)</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_getNextStreamMsg</name>
       <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
-      <anchor>a75908b7846e40f78ada577d7ee9f5be5</anchor>
-      <arglist>(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, size_t *size)</arglist>
+      <anchor>a1d16a0b0eb86e5538cd37aaf8214aa04</anchor>
+      <arglist>(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, tsk_size_t *size)</arglist>
     </member>
     <member kind="variable">
       <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
@@ -1795,6 +1823,20 @@
     <filename>tcomp__deflatedata_8c</filename>
     <includes id="tcomp__deflatedata_8h" name="tcomp_deflatedata.h" local="yes" imported="no">tcomp_deflatedata.h</includes>
     <member kind="function">
+      <type>tcomp_deflatedata_t *</type>
+      <name>tcomp_deflatedata_create_2</name>
+      <anchorfile>tcomp__deflatedata_8c.html</anchorfile>
+      <anchor>acc107c5868ee319ab31775516a7b1008</anchor>
+      <arglist>(tsk_bool_t isStream, int z_level, int z_windowBits)</arglist>
+    </member>
+    <member kind="function">
+      <type>tcomp_deflatedata_t *</type>
+      <name>tcomp_deflatedata_create</name>
+      <anchorfile>tcomp__deflatedata_8c.html</anchorfile>
+      <anchor>a613938dc503712a88a29682f1b3332d3</anchor>
+      <arglist>(tsk_bool_t isStream)</arglist>
+    </member>
+    <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_deflatedata_isStateful</name>
       <anchorfile>tcomp__deflatedata_8c.html</anchorfile>
@@ -1802,10 +1844,10 @@
       <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_deflatedata_def_t</name>
       <anchorfile>tcomp__deflatedata_8c.html</anchorfile>
-      <anchor>a13f2ec3e19d39617e327cbacc17e8acd</anchor>
+      <anchor>ae43e14c938ca02c0945e781d71943e6c</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -1979,8 +2021,8 @@
       <type>void</type>
       <name>tcomp_deflatedata_updateGhost</name>
       <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
-      <anchor>a2745238a5c4c72d653724ff7808cf52c</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata, const uint8_t *input_ptr, size_t input_size)</arglist>
+      <anchor>a0c7dceae6a0f82652892d7d5c53da363</anchor>
+      <arglist>(tcomp_deflatedata_t *deflatedata, const uint8_t *input_ptr, tsk_size_t input_size)</arglist>
     </member>
     <member kind="function">
       <type>uint32_t *</type>
@@ -2008,20 +2050,6 @@
     <includes id="zlib_8h" name="zlib.h" local="yes" imported="no">zlib.h</includes>
     <class kind="struct">tcomp_deflateStream_s</class>
     <class kind="struct">tcomp_deflatedata_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>_TCOMP_DEFLATEDATA_CREATE</name>
-      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
-      <anchor>a742310b7a82373880b47730d08e901d0</anchor>
-      <arglist>(isStream, z_level, z_windowBits)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_DEFLATEDATA_CREATE</name>
-      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
-      <anchor>a49d4da0914f8584f70aafc508464e5e9</anchor>
-      <arglist>(isStream)</arglist>
-    </member>
     <member kind="define">
       <type>#define</type>
       <name>USE_DICTS_FOR_COMPRESSION</name>
@@ -2142,6 +2170,13 @@
       <arglist>(tcomp_deflateStream_t *stream, tcomp_deflateStream_t *source)</arglist>
     </member>
     <member kind="function">
+      <type>tcomp_deflatedata_t *</type>
+      <name>tcomp_deflatedata_create</name>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a613938dc503712a88a29682f1b3332d3</anchor>
+      <arglist>(tsk_bool_t isStream)</arglist>
+    </member>
+    <member kind="function">
       <type>void</type>
       <name>tcomp_deflatedata_freeGhostState</name>
       <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
@@ -2166,8 +2201,8 @@
       <type>void</type>
       <name>tcomp_deflatedata_updateGhost</name>
       <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
-      <anchor>a2745238a5c4c72d653724ff7808cf52c</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata, const uint8_t *input_ptr, size_t input_size)</arglist>
+      <anchor>a0c7dceae6a0f82652892d7d5c53da363</anchor>
+      <arglist>(tcomp_deflatedata_t *deflatedata, const uint8_t *input_ptr, tsk_size_t input_size)</arglist>
     </member>
     <member kind="function">
       <type>uint32_t *</type>
@@ -2187,8 +2222,8 @@
       <type>tsk_bool_t</type>
       <name>tcomp_deflatedata_zCompress</name>
       <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
-      <anchor>a66b626e4f1d7f36fbc96ce106716241d</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata, const void *in, size_t inLen, void *out, size_t *outLen, tsk_bool_t *stateChanged)</arglist>
+      <anchor>a38a642737f96d3f6bb81eb8025136d25</anchor>
+      <arglist>(tcomp_deflatedata_t *deflatedata, const void *in, tsk_size_t inLen, void *out, tsk_size_t *outLen, tsk_bool_t *stateChanged)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2226,10 +2261,10 @@
       <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_deflatedata_def_t</name>
       <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
-      <anchor>a1720ddbe5ed9765f856c68dfcc6f33cf</anchor>
+      <anchor>a99d44b87f2fddf3a15186dd64b7da860</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -2277,8 +2312,8 @@
       <type>tsk_bool_t</type>
       <name>tcomp_deflatedata_zCompress</name>
       <anchorfile>tcomp__deflatedata_8zlib_8c.html</anchorfile>
-      <anchor>a66b626e4f1d7f36fbc96ce106716241d</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata, const void *in, size_t inLen, void *out, size_t *outLen, tsk_bool_t *stateChanged)</arglist>
+      <anchor>a38a642737f96d3f6bb81eb8025136d25</anchor>
+      <arglist>(tcomp_deflatedata_t *deflatedata, const void *in, tsk_size_t inLen, void *out, tsk_size_t *outLen, tsk_bool_t *stateChanged)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2709,24 +2744,31 @@
       <arglist></arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tcomp_manager_handle_t *</type>
+      <name>tcomp_manager_create</name>
+      <anchorfile>tcomp__manager_8c.html</anchorfile>
+      <anchor>a0a40ece41efdc3a5a8594a1b62cea56a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_size_t</type>
       <name>tcomp_manager_compress</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>ga746d5ad4427ad02ac14db38c52223b45</anchor>
-      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize, const void *input_ptr, size_t input_size, void *output_ptr, size_t output_size, tsk_bool_t stream)</arglist>
+      <anchor>ga5760b64e23e067e209a18a8480688493</anchor>
+      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, tsk_size_t compartmentIdSize, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t output_size, tsk_bool_t stream)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tcomp_manager_decompress</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>ga532b50d276faaf3d6c258460d7f6e248</anchor>
-      <arglist>(tcomp_manager_handle_t *handle, const void *input_ptr, size_t input_size, tcomp_result_t *lpResult)</arglist>
+      <anchor>ga821375d468c0baa3581a6d19ecb76c2f</anchor>
+      <arglist>(tcomp_manager_handle_t *handle, const void *input_ptr, tsk_size_t input_size, tcomp_result_t *lpResult)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tcomp_manager_getNextStreamMessage</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>gad3733beefc652b04fdbf51a595c683ad</anchor>
+      <anchor>gac075422d0661cad2559083e6a700b78f</anchor>
       <arglist>(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult)</arglist>
     </member>
     <member kind="function">
@@ -2740,8 +2782,8 @@
       <type>void</type>
       <name>tcomp_manager_closeCompartment</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>ga1787d604c0955b93cb575b16cd4b914b</anchor>
-      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize)</arglist>
+      <anchor>gad7a281742f5bde5ce1f7a25071f38944</anchor>
+      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, tsk_size_t compartmentIdSize)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2800,10 +2842,10 @@
       <arglist>(tcomp_manager_handle_t *handle)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_manager_def_t</name>
       <anchorfile>tcomp__manager_8c.html</anchorfile>
-      <anchor>ad88962a08dfafca9e0a939db397cf262</anchor>
+      <anchor>ae27284b8b16fc1ba5ee706bedf9ad7c6</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -2814,13 +2856,6 @@
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__result_8h" name="tcomp_result.h" local="yes" imported="no">tcomp_result.h</includes>
     <includes id="tcomp__compressor_8h" name="tcomp_compressor.h" local="yes" imported="no">tcomp_compressor.h</includes>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_MANAGER_CREATE</name>
-      <anchorfile>tcomp__manager_8h.html</anchorfile>
-      <anchor>acfa8dba96e664e47d017cd7963198831</anchor>
-      <arglist>()</arglist>
-    </member>
     <member kind="define">
       <type>#define</type>
       <name>tcomp_manager_compressUDP</name>
@@ -2843,24 +2878,31 @@
       <arglist></arglist>
     </member>
     <member kind="function">
-      <type>TINYSIGCOMP_API size_t</type>
+      <type>TINYSIGCOMP_API tcomp_manager_handle_t *</type>
+      <name>tcomp_manager_create</name>
+      <anchorfile>tcomp__manager_8h.html</anchorfile>
+      <anchor>a86df1206e8a33b741a2aca708449ad53</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSIGCOMP_API tsk_size_t</type>
       <name>tcomp_manager_compress</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>ga746d5ad4427ad02ac14db38c52223b45</anchor>
-      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize, const void *input_ptr, size_t input_size, void *output_ptr, size_t output_size, tsk_bool_t stream)</arglist>
+      <anchor>ga5760b64e23e067e209a18a8480688493</anchor>
+      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, tsk_size_t compartmentIdSize, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t output_size, tsk_bool_t stream)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSIGCOMP_API size_t</type>
+      <type>TINYSIGCOMP_API tsk_size_t</type>
       <name>tcomp_manager_decompress</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>ga532b50d276faaf3d6c258460d7f6e248</anchor>
-      <arglist>(tcomp_manager_handle_t *handle, const void *input_ptr, size_t input_size, tcomp_result_t *lpResult)</arglist>
+      <anchor>ga821375d468c0baa3581a6d19ecb76c2f</anchor>
+      <arglist>(tcomp_manager_handle_t *handle, const void *input_ptr, tsk_size_t input_size, tcomp_result_t *lpResult)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSIGCOMP_API size_t</type>
+      <type>TINYSIGCOMP_API tsk_size_t</type>
       <name>tcomp_manager_getNextStreamMessage</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>gad3733beefc652b04fdbf51a595c683ad</anchor>
+      <anchor>gac075422d0661cad2559083e6a700b78f</anchor>
       <arglist>(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult)</arglist>
     </member>
     <member kind="function">
@@ -2874,8 +2916,8 @@
       <type>TINYSIGCOMP_API void</type>
       <name>tcomp_manager_closeCompartment</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>ga1787d604c0955b93cb575b16cd4b914b</anchor>
-      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize)</arglist>
+      <anchor>gad7a281742f5bde5ce1f7a25071f38944</anchor>
+      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, tsk_size_t compartmentIdSize)</arglist>
     </member>
     <member kind="function">
       <type>TINYSIGCOMP_API int</type>
@@ -2941,10 +2983,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_manager_def_t</name>
       <anchorfile>tcomp__manager_8h.html</anchorfile>
-      <anchor>a9d235432aca9e9efe0363730d1975edc</anchor>
+      <anchor>a8560164a3e44ab1834bd769b469b99af</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -2994,6 +3036,13 @@
       <anchorfile>tcomp__message_8c.html</anchorfile>
       <anchor>a00a05d029bd609d85057149244d367de</anchor>
       <arglist>(length)</arglist>
+    </member>
+    <member kind="function">
+      <type>tcomp_message_t *</type>
+      <name>tcomp_message_create</name>
+      <anchorfile>tcomp__message_8c.html</anchorfile>
+      <anchor>af26d2b9d3125210beed8323fce43953b</anchor>
+      <arglist>(const void *input_ptr, tsk_size_t input_size, tsk_bool_t stream)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -3046,19 +3095,19 @@
     <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
     <includes id="tcomp__nackinfo_8h" name="tcomp_nackinfo.h" local="yes" imported="no">tcomp_nackinfo.h</includes>
     <class kind="struct">tcomp_message_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_MESSAGE_CREATE</name>
-      <anchorfile>tcomp__message_8h.html</anchorfile>
-      <anchor>ae9f7c05f5bc9a279fee48889247e4317</anchor>
-      <arglist>(input_ptr, input_size, stream)</arglist>
-    </member>
     <member kind="typedef">
-      <type>struct tcomp_message_s</type>
+      <type>TCOMP_BEGIN_DECLS struct tcomp_message_s</type>
       <name>tcomp_message_t</name>
       <anchorfile>tcomp__message_8h.html</anchorfile>
-      <anchor>aabf15e2fe85aace63f7c42512c0e6397</anchor>
+      <anchor>a5b830f1437c6fa70288a90f2b45f7603</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>tcomp_message_t *</type>
+      <name>tcomp_message_create</name>
+      <anchorfile>tcomp__message_8h.html</anchorfile>
+      <anchor>af26d2b9d3125210beed8323fce43953b</anchor>
+      <arglist>(const void *input_ptr, tsk_size_t input_size, tsk_bool_t stream)</arglist>
     </member>
     <member kind="variable">
       <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
@@ -3253,6 +3302,13 @@
     <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__nackinfo_8c</filename>
     <includes id="tcomp__nackinfo_8h" name="tcomp_nackinfo.h" local="yes" imported="no">tcomp_nackinfo.h</includes>
+    <member kind="function">
+      <type>tcomp_nackinfo_t *</type>
+      <name>tcomp_nackinfo_create</name>
+      <anchorfile>tcomp__nackinfo_8c.html</anchorfile>
+      <anchor>a15aeba0ea0ff51dfbcdf3425161980de</anchor>
+      <arglist>()</arglist>
+    </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
       <name>tcomp_nackinfo_def_t</name>
@@ -3268,19 +3324,19 @@
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
     <class kind="struct">tcomp_nackinfo_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_NACKINFO_CREATE</name>
-      <anchorfile>tcomp__nackinfo_8h.html</anchorfile>
-      <anchor>a00f9ae4609d003d2316d24c3f10e6cd8</anchor>
-      <arglist>()</arglist>
-    </member>
     <member kind="typedef">
-      <type>struct tcomp_nackinfo_s</type>
+      <type>TCOMP_BEGIN_DECLS struct tcomp_nackinfo_s</type>
       <name>tcomp_nackinfo_t</name>
       <anchorfile>tcomp__nackinfo_8h.html</anchorfile>
-      <anchor>ab1756a7b53f79219dd6ca8991c914b5f</anchor>
+      <anchor>a5e4c47adb9df673b58c56dfe100d421f</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>tcomp_nackinfo_t *</type>
+      <name>tcomp_nackinfo_create</name>
+      <anchorfile>tcomp__nackinfo_8h.html</anchorfile>
+      <anchor>a15aeba0ea0ff51dfbcdf3425161980de</anchor>
+      <arglist>()</arglist>
     </member>
     <member kind="variable">
       <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
@@ -3328,6 +3384,13 @@
     <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__params_8c</filename>
     <includes id="tcomp__params_8h" name="tcomp_params.h" local="yes" imported="no">tcomp_params.h</includes>
+    <member kind="function">
+      <type>tcomp_params_t *</type>
+      <name>tcomp_params_create</name>
+      <anchorfile>tcomp__params_8c.html</anchorfile>
+      <anchor>aff79a390a86e82736c90ec7ddc8ef7c9</anchor>
+      <arglist>()</arglist>
+    </member>
     <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_params_hasCpbDmsSms</name>
@@ -3413,19 +3476,19 @@
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__types_8h" name="tcomp_types.h" local="yes" imported="no">tcomp_types.h</includes>
     <class kind="struct">tcomp_params_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_PARAMS_CREATE</name>
-      <anchorfile>tcomp__params_8h.html</anchorfile>
-      <anchor>adfada3643228d4414eb171ec205a5013</anchor>
-      <arglist>()</arglist>
-    </member>
     <member kind="typedef">
-      <type>struct tcomp_params_s</type>
+      <type>TCOMP_BEGIN_DECLS struct tcomp_params_s</type>
       <name>tcomp_params_t</name>
       <anchorfile>tcomp__params_8h.html</anchorfile>
       <anchor>a52cddb2c0e03536034bb1b5ac879bf9b</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>tcomp_params_t *</type>
+      <name>tcomp_params_create</name>
+      <anchorfile>tcomp__params_8h.html</anchorfile>
+      <anchor>aff79a390a86e82736c90ec7ddc8ef7c9</anchor>
+      <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
@@ -3512,6 +3575,13 @@
     <includes id="tcomp__reqfeed_8h" name="tcomp_reqfeed.h" local="yes" imported="no">tcomp_reqfeed.h</includes>
     <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
     <member kind="function">
+      <type>tcomp_reqfeed_t *</type>
+      <name>tcomp_reqfeed_create</name>
+      <anchorfile>tcomp__reqfeed_8c.html</anchorfile>
+      <anchor>aa42a159dddace38dd8ac5f3c1ee62653</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
       <type>void</type>
       <name>tcomp_reqfeed_reset</name>
       <anchorfile>tcomp__reqfeed_8c.html</anchorfile>
@@ -3519,10 +3589,10 @@
       <arglist>(tcomp_reqfeed_t *feedback)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_reqfeed_def_t</name>
       <anchorfile>tcomp__reqfeed_8c.html</anchorfile>
-      <anchor>aa275c5e0901500829d4b41cb99b045cc</anchor>
+      <anchor>aab91e963c2a0c9364106a93d616d574c</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -3533,19 +3603,19 @@
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
     <class kind="struct">tcomp_reqfeed_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_REQFEED_CREATE</name>
-      <anchorfile>tcomp__reqfeed_8h.html</anchorfile>
-      <anchor>ab4d7de179ec9078031317f808725b040</anchor>
-      <arglist>()</arglist>
-    </member>
     <member kind="typedef">
-      <type>struct tcomp_reqfeed_s</type>
+      <type>TCOMP_BEGIN_DECLS struct tcomp_reqfeed_s</type>
       <name>tcomp_reqfeed_t</name>
       <anchorfile>tcomp__reqfeed_8h.html</anchorfile>
-      <anchor>a3d8986faa1a00594724d3355d50b3934</anchor>
+      <anchor>ad58d4c79312b5df8e65938b5797a9d8a</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>tcomp_reqfeed_t *</type>
+      <name>tcomp_reqfeed_create</name>
+      <anchorfile>tcomp__reqfeed_8h.html</anchorfile>
+      <anchor>aa42a159dddace38dd8ac5f3c1ee62653</anchor>
+      <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -3555,10 +3625,10 @@
       <arglist>(tcomp_reqfeed_t *)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_reqfeed_def_t</name>
       <anchorfile>tcomp__reqfeed_8h.html</anchorfile>
-      <anchor>ad37d7b876d6997406f2ccbed4addea97</anchor>
+      <anchor>ae1b641281723464ea33c07c917cd0352</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -3568,25 +3638,39 @@
     <filename>tcomp__result_8c</filename>
     <includes id="tcomp__result_8h" name="tcomp_result.h" local="yes" imported="no">tcomp_result.h</includes>
     <member kind="function">
+      <type>tcomp_result_t *</type>
+      <name>tcomp_result_create</name>
+      <anchorfile>tcomp__result_8c.html</anchorfile>
+      <anchor>a75b4f33c065c8a33bff2884a603f30b2</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>tcomp_tempstate_to_free_t *</type>
+      <name>tcomp_tempstate_to_free_create</name>
+      <anchorfile>tcomp__result_8c.html</anchorfile>
+      <anchor>a0595a1b80463b9ba61c9b4c756ff8cfc</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
       <type>void</type>
       <name>_tcomp_result_reset</name>
       <anchorfile>tcomp__result_8c.html</anchorfile>
-      <anchor>a8a62f531a26334f397679729b754f1aa</anchor>
-      <arglist>(tcomp_result_t *result, int isDestructor, int isResetOutput)</arglist>
+      <anchor>ae25b615864914c068829dedac9768661</anchor>
+      <arglist>(tcomp_result_t *result, tsk_bool_t isDestructor, tsk_bool_t isResetOutput)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_result_setOutputBuffer</name>
       <anchorfile>tcomp__result_8c.html</anchorfile>
-      <anchor>aad4fe4d9bb9126276e9ad3c18d976bc4</anchor>
-      <arglist>(tcomp_result_t *result, void *output_ptr, size_t output_size, tsk_bool_t isStream, uint64_t streamId)</arglist>
+      <anchor>a4cd1aeca4164979683ae0b316da7c59f</anchor>
+      <arglist>(tcomp_result_t *result, void *output_ptr, tsk_size_t output_size, tsk_bool_t isStream, uint64_t streamId)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_result_setCompartmentId</name>
       <anchorfile>tcomp__result_8c.html</anchorfile>
-      <anchor>a78b6a4d37819c20dd646fbb813503b0a</anchor>
-      <arglist>(tcomp_result_t *result, const void *id, size_t len)</arglist>
+      <anchor>abd157db3d43502310150ac5ba8cbafd1</anchor>
+      <arglist>(tcomp_result_t *result, const void *id, tsk_size_t len)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -3651,20 +3735,6 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>TCOMP_RESULT_CREATE</name>
-      <anchorfile>tcomp__result_8h.html</anchorfile>
-      <anchor>abf96c3c3eecaf2a152074e700f063824</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_TEMPSTATE_TO_FREE_CREATE</name>
-      <anchorfile>tcomp__result_8h.html</anchorfile>
-      <anchor>aee42f2ed2b97ce916a62400717bf9deb</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
       <name>tcomp_result_reset</name>
       <anchorfile>tcomp__result_8h.html</anchorfile>
       <anchor>a059ee5d3c8e030734fba4cd2ff80d9e5</anchor>
@@ -3706,6 +3776,20 @@
       <arglist></arglist>
     </member>
     <member kind="function">
+      <type>TINYSIGCOMP_API tcomp_result_t *</type>
+      <name>tcomp_result_create</name>
+      <anchorfile>tcomp__result_8h.html</anchorfile>
+      <anchor>a70e8b8c9e34d7320be8a0d927d65037d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>tcomp_tempstate_to_free_t *</type>
+      <name>tcomp_tempstate_to_free_create</name>
+      <anchorfile>tcomp__result_8h.html</anchorfile>
+      <anchor>a0595a1b80463b9ba61c9b4c756ff8cfc</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
       <type>void</type>
       <name>_tcomp_result_reset</name>
       <anchorfile>tcomp__result_8h.html</anchorfile>
@@ -3716,15 +3800,15 @@
       <type>TINYSIGCOMP_API void</type>
       <name>tcomp_result_setOutputBuffer</name>
       <anchorfile>tcomp__result_8h.html</anchorfile>
-      <anchor>a627c8dd94cc0257446dac131be5e71c4</anchor>
-      <arglist>(tcomp_result_t *result, void *output_ptr, size_t output_size, tsk_bool_t isStream, uint64_t streamId)</arglist>
+      <anchor>ac78b2a60778579be64188d753f34cd8f</anchor>
+      <arglist>(tcomp_result_t *result, void *output_ptr, tsk_size_t output_size, tsk_bool_t isStream, uint64_t streamId)</arglist>
     </member>
     <member kind="function">
       <type>TINYSIGCOMP_API void</type>
       <name>tcomp_result_setCompartmentId</name>
       <anchorfile>tcomp__result_8h.html</anchorfile>
-      <anchor>a9093f636e53760c5f2a45108af87a3da</anchor>
-      <arglist>(tcomp_result_t *result, const void *id, size_t len)</arglist>
+      <anchor>a830d13abdb0fd5c862aae953c365471b</anchor>
+      <arglist>(tcomp_result_t *result, const void *id, tsk_size_t len)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -3916,6 +4000,13 @@
     <filename>tcomp__state_8c</filename>
     <includes id="tcomp__state_8h" name="tcomp_state.h" local="yes" imported="no">tcomp_state.h</includes>
     <member kind="function">
+      <type>tcomp_state_t *</type>
+      <name>tcomp_state_create</name>
+      <anchorfile>tcomp__state_8c.html</anchorfile>
+      <anchor>ab1d9b808b98cc614722e1b9f05c11aba</anchor>
+      <arglist>(uint16_t length, uint16_t address, uint16_t instruction, uint16_t minimum_access_length, uint16_t retention_priority)</arglist>
+    </member>
+    <member kind="function">
       <type>int</type>
       <name>tcomp_state_equals</name>
       <anchorfile>tcomp__state_8c.html</anchorfile>
@@ -3944,13 +4035,6 @@
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
     <class kind="struct">tcomp_state_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_STATE_CREATE</name>
-      <anchorfile>tcomp__state_8h.html</anchorfile>
-      <anchor>a8e15c4eae142c593304dbbd6fd05c666</anchor>
-      <arglist>(length, address, instruction, minimum_access_length, retention_priority)</arglist>
-    </member>
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_PARTIAL_ID_LEN_CODE</name>
@@ -3987,6 +4071,13 @@
       <arglist></arglist>
     </member>
     <member kind="function">
+      <type>tcomp_state_t *</type>
+      <name>tcomp_state_create</name>
+      <anchorfile>tcomp__state_8h.html</anchorfile>
+      <anchor>ab1d9b808b98cc614722e1b9f05c11aba</anchor>
+      <arglist>(uint16_t length, uint16_t address, uint16_t instruction, uint16_t minimum_access_length, uint16_t retention_priority)</arglist>
+    </member>
+    <member kind="function">
       <type>int</type>
       <name>tcomp_state_equals</name>
       <anchorfile>tcomp__state_8h.html</anchorfile>
@@ -4017,6 +4108,13 @@
     <includes id="tcomp__nack__codes_8h" name="tcomp_nack_codes.h" local="yes" imported="no">tcomp_nack_codes.h</includes>
     <includes id="tcomp__dicts_8h" name="tcomp_dicts.h" local="yes" imported="no">tcomp_dicts.h</includes>
     <includes id="tcomp__udvm_8h" name="tcomp_udvm.h" local="yes" imported="no">tcomp_udvm.h</includes>
+    <member kind="function">
+      <type>tcomp_statehandler_t *</type>
+      <name>tcomp_statehandler_create</name>
+      <anchorfile>tcomp__statehandler_8c.html</anchorfile>
+      <anchor>aba10fe6bff0862b9f3064901cfe10a46</anchor>
+      <arglist>()</arglist>
+    </member>
     <member kind="function">
       <type>tcomp_compartment_t *</type>
       <name>tcomp_statehandler_getCompartment</name>
@@ -4094,19 +4192,19 @@
     <includes id="tcomp__compartment_8h" name="tcomp_compartment.h" local="yes" imported="no">tcomp_compartment.h</includes>
     <includes id="tcomp__state_8h" name="tcomp_state.h" local="yes" imported="no">tcomp_state.h</includes>
     <class kind="struct">tcomp_statehandler_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_STATEHANDLER_CREATE</name>
-      <anchorfile>tcomp__statehandler_8h.html</anchorfile>
-      <anchor>adb4d99130d0b2d0f0324fc423687d2b0</anchor>
-      <arglist>()</arglist>
-    </member>
     <member kind="typedef">
-      <type>struct tcomp_statehandler_s</type>
+      <type>TCOMP_BEGIN_DECLS struct tcomp_statehandler_s</type>
       <name>tcomp_statehandler_t</name>
       <anchorfile>tcomp__statehandler_8h.html</anchorfile>
-      <anchor>a4c542d4d892ee493c2453f5a78882261</anchor>
+      <anchor>acbeadf12b871d633340f8db0d4bab6b9</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>tcomp_statehandler_t *</type>
+      <name>tcomp_statehandler_create</name>
+      <anchorfile>tcomp__statehandler_8h.html</anchorfile>
+      <anchor>aba10fe6bff0862b9f3064901cfe10a46</anchor>
+      <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>tcomp_compartment_t *</type>
@@ -4228,22 +4326,22 @@
       <type>int</type>
       <name>tcomp_udvm_bytecopy_self</name>
       <anchorfile>tcomp__udvm_8bytecopy_8c.html</anchorfile>
-      <anchor>a9575d4a5586a4021237a7c4cfdc45ab9</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t source, uint16_t size_tocopy)</arglist>
+      <anchor>a7105b1d9f78119c8f98335bc9fab46e5</anchor>
+      <arglist>(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t source, uint16_t tsk_size_tocopy)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_udvm_bytecopy_to</name>
       <anchorfile>tcomp__udvm_8bytecopy_8c.html</anchorfile>
-      <anchor>a1128b6b051866ef8d05f30e400a0bc78</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t destination, const uint8_t *source, uint16_t size_tocopy)</arglist>
+      <anchor>a6d635123e7327e51fc053467668f89da</anchor>
+      <arglist>(tcomp_udvm_t *udvm, uint16_t destination, const uint8_t *source, uint16_t tsk_size_tocopy)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_udvm_bytecopy_from</name>
       <anchorfile>tcomp__udvm_8bytecopy_8c.html</anchorfile>
-      <anchor>a0280a192caa144d9b06c00e3e5a1ce2c</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint8_t *destination, uint16_t source, uint16_t size_tocopy)</arglist>
+      <anchor>aa4424706a97d3b07ce20c447d6b7512a</anchor>
+      <arglist>(tcomp_udvm_t *udvm, uint8_t *destination, uint16_t source, uint16_t tsk_size_tocopy)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -4257,6 +4355,13 @@
       <anchorfile>tcomp__udvm_8c.html</anchorfile>
       <anchor>a4b56d9e243e2bf97293429a64d250454</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>tcomp_udvm_t *</type>
+      <name>tcomp_udvm_create</name>
+      <anchorfile>tcomp__udvm_8c.html</anchorfile>
+      <anchor>a16df46fa6fa56dc28b12c3c3d2c7f4bd</anchor>
+      <arglist>(tcomp_message_t *_sigCompMessage, tcomp_statehandler_t *stateHandler, tcomp_result_t *lpResult)</arglist>
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
@@ -4285,13 +4390,6 @@
     <includes id="tcomp__statehandler_8h" name="tcomp_statehandler.h" local="yes" imported="no">tcomp_statehandler.h</includes>
     <includes id="tcomp__instructions_8h" name="tcomp_instructions.h" local="yes" imported="no">tcomp_instructions.h</includes>
     <class kind="struct">tcomp_udvm_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_UDVM_CREATE</name>
-      <anchorfile>tcomp__udvm_8h.html</anchorfile>
-      <anchor>af818c09a61c2193ee9fc5082ef527381</anchor>
-      <arglist>(_sigCompMessage, stateHandler, lpResult)</arglist>
-    </member>
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_UDVM_SET_2BYTES_VAL</name>
@@ -4377,6 +4475,13 @@
       <arglist></arglist>
     </member>
     <member kind="function">
+      <type>tcomp_udvm_t *</type>
+      <name>tcomp_udvm_create</name>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a16df46fa6fa56dc28b12c3c3d2c7f4bd</anchor>
+      <arglist>(tcomp_message_t *_sigCompMessage, tcomp_statehandler_t *stateHandler, tcomp_result_t *lpResult)</arglist>
+    </member>
+    <member kind="function">
       <type>tsk_bool_t</type>
       <name>tcomp_udvm_decompress</name>
       <anchorfile>tcomp__udvm_8h.html</anchorfile>
@@ -4415,22 +4520,22 @@
       <type>int</type>
       <name>tcomp_udvm_bytecopy_self</name>
       <anchorfile>tcomp__udvm_8h.html</anchorfile>
-      <anchor>a9575d4a5586a4021237a7c4cfdc45ab9</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t source, uint16_t size_tocopy)</arglist>
+      <anchor>a7105b1d9f78119c8f98335bc9fab46e5</anchor>
+      <arglist>(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t source, uint16_t tsk_size_tocopy)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_udvm_bytecopy_to</name>
       <anchorfile>tcomp__udvm_8h.html</anchorfile>
-      <anchor>a1128b6b051866ef8d05f30e400a0bc78</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t destination, const uint8_t *source, uint16_t size_tocopy)</arglist>
+      <anchor>a6d635123e7327e51fc053467668f89da</anchor>
+      <arglist>(tcomp_udvm_t *udvm, uint16_t destination, const uint8_t *source, uint16_t tsk_size_tocopy)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_udvm_bytecopy_from</name>
       <anchorfile>tcomp__udvm_8h.html</anchorfile>
-      <anchor>a0280a192caa144d9b06c00e3e5a1ce2c</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint8_t *destination, uint16_t source, uint16_t size_tocopy)</arglist>
+      <anchor>aa4424706a97d3b07ce20c447d6b7512a</anchor>
+      <arglist>(tcomp_udvm_t *udvm, uint8_t *destination, uint16_t source, uint16_t tsk_size_tocopy)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -5700,6 +5805,27 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>ZEXPORT</name>
+      <anchorfile>zconf_8h.html</anchorfile>
+      <anchor>a181415878f03b95a7094309d824a14b6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ZEXPORTVA</name>
+      <anchorfile>zconf_8h.html</anchorfile>
+      <anchor>af38d1853df635eee27f1a02f96457b22</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FAR</name>
+      <anchorfile>zconf_8h.html</anchorfile>
+      <anchor>aef060b3456fdcc093a7210a762d5f2ed</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>SEEK_SET</name>
       <anchorfile>zconf_8h.html</anchorfile>
       <anchor>a0d112bae8fd35be772185b6ec6bcbe64</anchor>
@@ -6744,24 +6870,24 @@
     <title>SigComp manager.</title>
     <filename>group__tcomp__manager__group.html</filename>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tcomp_manager_compress</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>ga746d5ad4427ad02ac14db38c52223b45</anchor>
-      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize, const void *input_ptr, size_t input_size, void *output_ptr, size_t output_size, tsk_bool_t stream)</arglist>
+      <anchor>ga5760b64e23e067e209a18a8480688493</anchor>
+      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, tsk_size_t compartmentIdSize, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t output_size, tsk_bool_t stream)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tcomp_manager_decompress</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>ga532b50d276faaf3d6c258460d7f6e248</anchor>
-      <arglist>(tcomp_manager_handle_t *handle, const void *input_ptr, size_t input_size, tcomp_result_t *lpResult)</arglist>
+      <anchor>ga821375d468c0baa3581a6d19ecb76c2f</anchor>
+      <arglist>(tcomp_manager_handle_t *handle, const void *input_ptr, tsk_size_t input_size, tcomp_result_t *lpResult)</arglist>
     </member>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>tcomp_manager_getNextStreamMessage</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>gad3733beefc652b04fdbf51a595c683ad</anchor>
+      <anchor>gac075422d0661cad2559083e6a700b78f</anchor>
       <arglist>(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult)</arglist>
     </member>
     <member kind="function">
@@ -6775,8 +6901,8 @@
       <type>void</type>
       <name>tcomp_manager_closeCompartment</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>ga1787d604c0955b93cb575b16cd4b914b</anchor>
-      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize)</arglist>
+      <anchor>gad7a281742f5bde5ce1f7a25071f38944</anchor>
+      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, tsk_size_t compartmentIdSize)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -7507,10 +7633,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>size</name>
       <anchorfile>structtcomp__buffer__s.html</anchorfile>
-      <anchor>a854352f53b148adc24983a58a1866d66</anchor>
+      <anchor>a2af13611e30c0884ab2e1837c4da8282</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -7521,17 +7647,17 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>index_bytes</name>
       <anchorfile>structtcomp__buffer__s.html</anchorfile>
-      <anchor>a54612a399a271d8b987e2853c1cfcb84</anchor>
+      <anchor>a8a0be01bb7eaa5a3c3497f232be8e1e5</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>index_bits</name>
       <anchorfile>structtcomp__buffer__s.html</anchorfile>
-      <anchor>adbe4efe3b4b36dafad54c89809d882d8</anchor>
+      <anchor>a6c3818beae16f622b3f4bb524cdb6d85</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -7892,17 +8018,17 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>totalSize</name>
       <anchorfile>structtcomp__message__s.html</anchorfile>
-      <anchor>aae4c52e1189ca9f1ca3e93f50c165bb8</anchor>
+      <anchor>ae723ec2f11cfe6af9b45ec15f2b30309</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>header_size</name>
       <anchorfile>structtcomp__message__s.html</anchorfile>
-      <anchor>a64f1d0c53909f30b0aac882348cd32f2</anchor>
+      <anchor>ae3015daaf39bc764154ea56e217b271f</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">

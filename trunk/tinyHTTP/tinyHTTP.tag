@@ -9,9 +9,9 @@
     <name>thttp.h</name>
     <path>C:/Projects/Doubango/tinyHTTP/include/</path>
     <filename>thttp_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__event_8h" name="thttp_event.h" local="yes" imported="no">tinyHTTP/thttp_event.h</includes>
-    <includes id="thttp__session_8h" name="thttp_session.h" local="yes" imported="no">tinyHTTP/thttp_session.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__event_8h" name="thttp_event.h" local="yes" imported="no">tinyhttp/thttp_event.h</includes>
+    <includes id="thttp__session_8h" name="thttp_session.h" local="yes" imported="no">tinyhttp/thttp_session.h</includes>
     <class kind="struct">thttp_stack_s</class>
     <member kind="define">
       <type>#define</type>
@@ -41,6 +41,13 @@
       <anchor>a2b1708f4a57a4f0f7ce44bf4fae6ebab</anchor>
       <arglist>(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)</arglist>
     </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>THTTP_STACK_SET_USERDATA</name>
+      <anchorfile>thttp_8h.html</anchorfile>
+      <anchor>a6c61714a8e4f5962412e21022b726aa3</anchor>
+      <arglist>(USERDATA_PTR)</arglist>
+    </member>
     <member kind="typedef">
       <type>THTTP_BEGIN_DECLS enum thttp_stack_param_type_e</type>
       <name>thttp_stack_param_type_t</name>
@@ -62,9 +69,9 @@
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>pname_null</name>
+      <name>thttp_pname_null</name>
       <anchorfile>thttp_8h.html</anchorfile>
-      <anchor>a777ab1dae7d35ae8e00c9440b3fda5d3afec85ef7ef4ff7d2eb64d832b8b52b8c</anchor>
+      <anchor>a777ab1dae7d35ae8e00c9440b3fda5d3a1d7408231cf27316c82c3ca6665bb560</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
@@ -89,6 +96,13 @@
       <arglist>(thttp_stack_handle_t *self,...)</arglist>
     </member>
     <member kind="function">
+      <type>TINYHTTP_API const void *</type>
+      <name>thttp_stack_get_userdata</name>
+      <anchorfile>group__thttp__stack__group.html</anchorfile>
+      <anchor>gacf4a84954ca6c196f357cba4731e3ae3</anchor>
+      <arglist>(thttp_stack_handle_t *self)</arglist>
+    </member>
+    <member kind="function">
       <type>TINYHTTP_API int</type>
       <name>thttp_stack_stop</name>
       <anchorfile>group__thttp__stack__group.html</anchorfile>
@@ -108,16 +122,18 @@
     <path>C:/Projects/Doubango/tinyHTTP/include/</path>
     <filename>tinyhttp_8h</filename>
     <includes id="thttp_8h" name="thttp.h" local="yes" imported="no">thttp.h</includes>
-    <includes id="thttp__action_8h" name="thttp_action.h" local="yes" imported="no">tinyHTTP/thttp_action.h</includes>
-    <includes id="thttp__parser__message_8h" name="thttp_parser_message.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_message.h</includes>
-    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_url.h</includes>
-    <includes id="thttp__parser__header_8h" name="thttp_parser_header.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_header.h</includes>
+    <includes id="thttp__action_8h" name="thttp_action.h" local="yes" imported="no">tinyhttp/thttp_action.h</includes>
+    <includes id="thttp__parser__message_8h" name="thttp_parser_message.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_message.h</includes>
+    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_url.h</includes>
+    <includes id="thttp__parser__header_8h" name="thttp_parser_header.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_header.h</includes>
+    <includes id="thttp__header___dummy_8h" name="thttp_header_Dummy.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Dummy.h</includes>
+    <includes id="thttp__header___e_tag_8h" name="thttp_header_ETag.h" local="yes" imported="no">tinyhttp/headers/thttp_header_ETag.h</includes>
   </compound>
   <compound kind="file">
     <name>thttp_auth.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/auth/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/auth/</path>
     <filename>thttp__auth_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>THTTP_NCOUNT_2_STRING</name>
@@ -126,10 +142,10 @@
       <arglist>(nc_int32, nc_string)</arglist>
     </member>
     <member kind="function">
-      <type>TINYHTTP_API size_t</type>
+      <type>TINYHTTP_API tsk_size_t</type>
       <name>thttp_auth_basic_response</name>
       <anchorfile>group__thttp__auth__group.html</anchorfile>
-      <anchor>gadfa6a0694f03e784633d71050ba9b4bc</anchor>
+      <anchor>gaf720869992f752dc684f3dc63f228be6</anchor>
       <arglist>(const char *userid, const char *password, char **response)</arglist>
     </member>
     <member kind="function">
@@ -170,12 +186,12 @@
   </compound>
   <compound kind="file">
     <name>thttp_challenge.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/auth/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/auth/</path>
     <filename>thttp__challenge_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyHTTP/thttp_message.h</includes>
-    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyHTTP/headers/thttp_header.h</includes>
-    <includes id="thttp__auth_8h" name="thttp_auth.h" local="yes" imported="no">tinyHTTP/auth/thttp_auth.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyhttp/thttp_message.h</includes>
+    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyhttp/headers/thttp_header.h</includes>
+    <includes id="thttp__auth_8h" name="thttp_auth.h" local="yes" imported="no">tinyhttp/auth/thttp_auth.h</includes>
     <class kind="struct">thttp_challenge_s</class>
     <member kind="typedef">
       <type>THTTP_BEGIN_DECLS struct thttp_challenge_s</type>
@@ -222,9 +238,9 @@
   </compound>
   <compound kind="file">
     <name>thttp_header.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/headers/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/headers/</path>
     <filename>thttp__header_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
     <class kind="struct">thttp_header_s</class>
     <member kind="define">
       <type>#define</type>
@@ -377,13 +393,20 @@
       <anchor>ga2ba34e8e33da57b8af99350c85768099</anchor>
       <arglist>(const thttp_header_t *self)</arglist>
     </member>
+    <member kind="function">
+      <type>TINYHTTP_API char *</type>
+      <name>thttp_header_value_tostring</name>
+      <anchorfile>group__thttp__header__group.html</anchorfile>
+      <anchor>ga770293aff5d59b867680f5c099eee323</anchor>
+      <arglist>(const thttp_header_t *self)</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>thttp_header_Authorization.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/headers/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/headers/</path>
     <filename>thttp__header___authorization_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyHTTP/headers/thttp_header.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyhttp/headers/thttp_header.h</includes>
     <class kind="struct">thttp_header_Authorization_s</class>
     <member kind="typedef">
       <type>THTTP_BEGIN_DECLS struct thttp_header_Authorization_s</type>
@@ -403,15 +426,15 @@
       <type>TINYHTTP_API thttp_header_Authorization_t *</type>
       <name>thttp_header_Authorization_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>gad5e89efe1d502e620290e6020e4a7e71</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>gaf62fc4d2fedd30ee7dc84856859e8a4f</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYHTTP_API thttp_header_Proxy_Authorization_t *</type>
       <name>thttp_header_Proxy_Authorization_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga4960098e830a3761beef30455b401567</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga2d423bf012c44446fbadc8f2e9e9c753</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>thttp_header_Authorization_t *</type>
@@ -430,10 +453,10 @@
   </compound>
   <compound kind="file">
     <name>thttp_header_Content_Length.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/headers/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/headers/</path>
     <filename>thttp__header___content___length_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyHTTP/headers/thttp_header.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyhttp/headers/thttp_header.h</includes>
     <class kind="struct">thttp_header_Content_Length_s</class>
     <member kind="define">
       <type>#define</type>
@@ -453,8 +476,8 @@
       <type>thttp_header_Content_Length_t *</type>
       <name>thttp_header_Content_Length_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga807b76d36337cda877ef535741313ee7</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga4c9a74cd97da944385e046590fa0c4c1</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>TINYHTTP_GEXTERN const tsk_object_def_t *</type>
@@ -466,10 +489,10 @@
   </compound>
   <compound kind="file">
     <name>thttp_header_Content_Type.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/headers/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/headers/</path>
     <filename>thttp__header___content___type_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyHTTP/headers/thttp_header.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyhttp/headers/thttp_header.h</includes>
     <class kind="struct">thttp_header_Content_Type_s</class>
     <member kind="define">
       <type>#define</type>
@@ -489,8 +512,8 @@
       <type>thttp_header_Content_Type_t *</type>
       <name>thttp_header_Content_Type_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga6ca7fbeec2616eb602b122c24878f0de</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga88c3c565650876a99c75c7503333cced</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>TINYHTTP_GEXTERN const tsk_object_def_t *</type>
@@ -502,10 +525,10 @@
   </compound>
   <compound kind="file">
     <name>thttp_header_Dummy.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/headers/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/headers/</path>
     <filename>thttp__header___dummy_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyHTTP/headers/thttp_header.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyhttp/headers/thttp_header.h</includes>
     <class kind="struct">thttp_header_Dummy_s</class>
     <member kind="define">
       <type>#define</type>
@@ -525,8 +548,8 @@
       <type>thttp_header_Dummy_t *</type>
       <name>thttp_header_Dummy_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga66de413d435bb6a93ae9d7a2647f62bc</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>gaa51ce8cbaeba9ffaf24847f4ff6c6c63</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>TINYHTTP_GEXTERN const tsk_object_def_t *</type>
@@ -538,10 +561,10 @@
   </compound>
   <compound kind="file">
     <name>thttp_header_ETag.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/headers/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/headers/</path>
     <filename>thttp__header___e_tag_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyHTTP/headers/thttp_header.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyhttp/headers/thttp_header.h</includes>
     <class kind="struct">thttp_header_ETag_s</class>
     <member kind="define">
       <type>#define</type>
@@ -561,8 +584,8 @@
       <type>thttp_header_ETag_t *</type>
       <name>thttp_header_ETag_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>gad6a7c07e29d9e121fb3ed6908865476a</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga8f80a83c38b4b3c23ef9adca526c2067</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>thttp_header_ETag_t *</type>
@@ -588,10 +611,10 @@
   </compound>
   <compound kind="file">
     <name>thttp_header_Transfer_Encoding.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/headers/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/headers/</path>
     <filename>thttp__header___transfer___encoding_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyHTTP/headers/thttp_header.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyhttp/headers/thttp_header.h</includes>
     <class kind="struct">thttp_header_Transfer_Encoding_s</class>
     <member kind="define">
       <type>#define</type>
@@ -611,8 +634,8 @@
       <type>thttp_header_Transfer_Encoding_t *</type>
       <name>thttp_header_Transfer_Encoding_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga3c59176f6b363090c3f89e5238cb3901</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga16eb00aaf3ca02295c0c7dcd1f7c808d</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>thttp_header_Transfer_Encoding_t *</type>
@@ -638,10 +661,10 @@
   </compound>
   <compound kind="file">
     <name>thttp_header_WWW_Authenticate.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/headers/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/headers/</path>
     <filename>thttp__header___w_w_w___authenticate_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyHTTP/headers/thttp_header.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyhttp/headers/thttp_header.h</includes>
     <class kind="struct">thttp_header_WWW_Authenticate_s</class>
     <member kind="typedef">
       <type>THTTP_BEGIN_DECLS struct thttp_header_WWW_Authenticate_s</type>
@@ -661,15 +684,15 @@
       <type>TINYHTTP_API thttp_header_WWW_Authenticate_t *</type>
       <name>thttp_header_WWW_Authenticate_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga7fcc90d08f71bd8ba0f3112685f700ef</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga6ea6cdaa0f153de0f53b25d02a99778c</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYHTTP_API thttp_header_Proxy_Authenticate_t *</type>
       <name>thttp_header_Proxy_Authenticate_parse</name>
       <anchorfile>thttp__header___w_w_w___authenticate_8h.html</anchorfile>
-      <anchor>aa5d8eec08b087a238846acca46547138</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>a6f4e9203753aa6bd36d40a677946569a</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>TINYHTTP_GEXTERN const tsk_object_def_t *</type>
@@ -681,10 +704,10 @@
   </compound>
   <compound kind="file">
     <name>thttp_parser_header.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/parsers/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/parsers/</path>
     <filename>thttp__parser__header_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyHTTP/thttp_message.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyhttp/thttp_message.h</includes>
     <member kind="function">
       <type>THTTP_BEGIN_DECLS int</type>
       <name>thttp_header_parse</name>
@@ -695,10 +718,10 @@
   </compound>
   <compound kind="file">
     <name>thttp_parser_message.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/parsers/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/parsers/</path>
     <filename>thttp__parser__message_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyHTTP/thttp_message.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyhttp/thttp_message.h</includes>
     <member kind="function">
       <type>THTTP_BEGIN_DECLS TINYHTTP_API int</type>
       <name>thttp_message_parse</name>
@@ -709,24 +732,24 @@
   </compound>
   <compound kind="file">
     <name>thttp_parser_url.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/parsers/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/parsers/</path>
     <filename>thttp__parser__url_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__url_8h" name="thttp_url.h" local="yes" imported="no">tinyHTTP/thttp_url.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__url_8h" name="thttp_url.h" local="yes" imported="no">tinyhttp/thttp_url.h</includes>
     <member kind="function">
       <type>THTTP_BEGIN_DECLS TINYHTTP_API thttp_url_t *</type>
       <name>thttp_url_parse</name>
       <anchorfile>group__thttp__url__group.html</anchorfile>
-      <anchor>ga1acfdcf4d31969aa3de457b88f8178bb</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga2204b5747836c64bea185be649ce1470</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>thttp_action.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/</path>
     <filename>thttp__action_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__session_8h" name="thttp_session.h" local="yes" imported="no">tinyHTTP/thttp_session.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__session_8h" name="thttp_session.h" local="yes" imported="no">tinyhttp/thttp_session.h</includes>
     <class kind="struct">thttp_action_s</class>
     <member kind="define">
       <type>#define</type>
@@ -894,33 +917,39 @@
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>atype_o_request</name>
+      <name>thttp_atype_o_request</name>
       <anchorfile>thttp__action_8h.html</anchorfile>
-      <anchor>ad6ebb36157ee09773621e943b01ee20daf3f23267ec2a12b307a29f9a0d0fb544</anchor>
+      <anchor>ad6ebb36157ee09773621e943b01ee20da94dd5a15405a3e9670fd7ec4c9feffe3</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>atype_i_message</name>
+      <name>thttp_atype_i_message</name>
       <anchorfile>thttp__action_8h.html</anchorfile>
-      <anchor>ad6ebb36157ee09773621e943b01ee20da7cf697fc661c8b807cc8fc0b927de421</anchor>
+      <anchor>ad6ebb36157ee09773621e943b01ee20da1526a13b8d09f2c59bd1c800305b6527</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>atype_closed</name>
+      <name>thttp_thttp_atype_closed</name>
       <anchorfile>thttp__action_8h.html</anchorfile>
-      <anchor>ad6ebb36157ee09773621e943b01ee20dacb126ea1e1e44403232d112d438da525</anchor>
+      <anchor>ad6ebb36157ee09773621e943b01ee20dacce4bfb9974aab252afda32c64eb2889</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>atype_close</name>
+      <name>thttp_atype_error</name>
       <anchorfile>thttp__action_8h.html</anchorfile>
-      <anchor>ad6ebb36157ee09773621e943b01ee20da873c5c5effe793507d5bb5b6b4b6d8c1</anchor>
+      <anchor>ad6ebb36157ee09773621e943b01ee20da3cded72460652754f0f3ddd0780f4266</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>atype_cancel</name>
+      <name>thttp_atype_close</name>
       <anchorfile>thttp__action_8h.html</anchorfile>
-      <anchor>ad6ebb36157ee09773621e943b01ee20dae772b55f0b34f85dd2560c246662ee35</anchor>
+      <anchor>ad6ebb36157ee09773621e943b01ee20da683a2f2397f380fc974edf986b26b9f9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>thttp_atype_cancel</name>
+      <anchorfile>thttp__action_8h.html</anchorfile>
+      <anchor>ad6ebb36157ee09773621e943b01ee20dadeeceaaa38136910d50512d0a514fb40</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumeration">
@@ -930,27 +959,27 @@
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>aptype_null</name>
+      <name>thttp_aptype_null</name>
       <anchorfile>thttp__action_8h.html</anchorfile>
-      <anchor>ad990d5d648fad6d0d72b341c47d69db1ad8ec5ab4f2456de7eaa99067c2707c82</anchor>
+      <anchor>ad990d5d648fad6d0d72b341c47d69db1a5fe2b29cb022f67565f6ed610356e56d</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>aptype_option</name>
+      <name>thttp_aptype_option</name>
       <anchorfile>thttp__action_8h.html</anchorfile>
-      <anchor>ad990d5d648fad6d0d72b341c47d69db1aa407d88a84c1c7bf54c8890cea11122d</anchor>
+      <anchor>ad990d5d648fad6d0d72b341c47d69db1a588f77a0488f3e9389a47636118fd251</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>aptype_header</name>
+      <name>thttp_aptype_header</name>
       <anchorfile>thttp__action_8h.html</anchorfile>
-      <anchor>ad990d5d648fad6d0d72b341c47d69db1a7f8b18f0736766348a32e337822df9cf</anchor>
+      <anchor>ad990d5d648fad6d0d72b341c47d69db1aee6021949ec5b5736b201a0b9c0a2546</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>aptype_payload</name>
+      <name>thttp_aptype_payload</name>
       <anchorfile>thttp__action_8h.html</anchorfile>
-      <anchor>ad990d5d648fad6d0d72b341c47d69db1afcdcae741d822fe889582ad0d5446c66</anchor>
+      <anchor>ad990d5d648fad6d0d72b341c47d69db1af479bb13b57cebbc5e59da1c5af89c5e</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
@@ -984,9 +1013,9 @@
   </compound>
   <compound kind="file">
     <name>thttp_dialog.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/</path>
     <filename>thttp__dialog_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
     <class kind="struct">thttp_dialog_s</class>
     <member kind="typedef">
       <type>uint64_t</type>
@@ -1040,10 +1069,10 @@
   </compound>
   <compound kind="file">
     <name>thttp_event.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/</path>
     <filename>thttp__event_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__session_8h" name="thttp_session.h" local="yes" imported="no">tinyHTTP/thttp_session.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__session_8h" name="thttp_session.h" local="yes" imported="no">tinyhttp/thttp_session.h</includes>
     <class kind="struct">thttp_event_s</class>
     <member kind="define">
       <type>#define</type>
@@ -1097,6 +1126,12 @@
       <anchor>a51c721cc0f4d910ee95ddeace0837bf0a5b7b35a75468449e47b64012c3b6c7da</anchor>
       <arglist></arglist>
     </member>
+    <member kind="enumvalue">
+      <name>thttp_event_transport_error</name>
+      <anchorfile>thttp__event_8h.html</anchorfile>
+      <anchor>a51c721cc0f4d910ee95ddeace0837bf0aa4d012a82186a348afe99d67ff3bf731</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="function">
       <type>thttp_event_t *</type>
       <name>thttp_event_create</name>
@@ -1114,12 +1149,12 @@
   </compound>
   <compound kind="file">
     <name>thttp_message.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/</path>
     <filename>thttp__message_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__url_8h" name="thttp_url.h" local="yes" imported="no">tinyHTTP/thttp_url.h</includes>
-    <includes id="thttp__header___content___length_8h" name="thttp_header_Content_Length.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Content_Length.h</includes>
-    <includes id="thttp__header___content___type_8h" name="thttp_header_Content_Type.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Content_Type.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__url_8h" name="thttp_url.h" local="yes" imported="no">tinyhttp/thttp_url.h</includes>
+    <includes id="thttp__header___content___length_8h" name="thttp_header_Content_Length.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Content_Length.h</includes>
+    <includes id="thttp__header___content___type_8h" name="thttp_header_Content_Type.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Content_Type.h</includes>
     <class kind="struct">thttp_message_s</class>
     <member kind="define">
       <type>#define</type>
@@ -1296,6 +1331,13 @@
       <anchor>a6af504e12b000e93068c604a91b4a46c</anchor>
       <arglist>(self)</arglist>
     </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>THTTP_MESSAGE_ADD_HEADER</name>
+      <anchorfile>thttp__message_8h.html</anchorfile>
+      <anchor>ad4e69079adee1808caa415e9fdd4b6dd</anchor>
+      <arglist>(self, objdef,...)</arglist>
+    </member>
     <member kind="typedef">
       <type>enum thttp_message_type_e</type>
       <name>thttp_message_type_t</name>
@@ -1366,22 +1408,22 @@
       <type>TINYHTTP_API int</type>
       <name>thttp_message_add_content</name>
       <anchorfile>group__thttp__message__group.html</anchorfile>
-      <anchor>ga90d831ed5c6d29560ded8e688ac60242</anchor>
-      <arglist>(thttp_message_t *self, const char *content_type, const void *content, size_t size)</arglist>
+      <anchor>ga0fbe5b273002fc7b0bfaa4ce306508af</anchor>
+      <arglist>(thttp_message_t *self, const char *content_type, const void *content, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYHTTP_API int</type>
       <name>thttp_message_append_content</name>
       <anchorfile>group__thttp__message__group.html</anchorfile>
-      <anchor>ga3b5a87db25bc5e2056d406b64154e348</anchor>
-      <arglist>(thttp_message_t *self, const void *content, size_t size)</arglist>
+      <anchor>gada8275938d66a7f7c77a18b40dae685e</anchor>
+      <arglist>(thttp_message_t *self, const void *content, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>TINYHTTP_API const thttp_header_t *</type>
       <name>thttp_message_get_headerAt</name>
       <anchorfile>group__thttp__message__group.html</anchorfile>
-      <anchor>ga20e220c628a76f4e0f1fc6ab61146a79</anchor>
-      <arglist>(const thttp_message_t *self, thttp_header_type_t type, size_t index)</arglist>
+      <anchor>gacc210783cfa8c4f937430dd1f2508611</anchor>
+      <arglist>(const thttp_message_t *self, thttp_header_type_t type, tsk_size_t index)</arglist>
     </member>
     <member kind="function">
       <type>TINYHTTP_API const thttp_header_t *</type>
@@ -1449,12 +1491,12 @@
   </compound>
   <compound kind="file">
     <name>thttp_session.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/</path>
     <filename>thttp__session_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
-    <includes id="thttp__challenge_8h" name="thttp_challenge.h" local="yes" imported="no">tinyHTTP/auth/thttp_challenge.h</includes>
-    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyHTTP/thttp_message.h</includes>
-    <includes id="thttp__dialog_8h" name="thttp_dialog.h" local="yes" imported="no">tinyHTTP/thttp_dialog.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
+    <includes id="thttp__challenge_8h" name="thttp_challenge.h" local="yes" imported="no">tinyhttp/auth/thttp_challenge.h</includes>
+    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyhttp/thttp_message.h</includes>
+    <includes id="thttp__dialog_8h" name="thttp_dialog.h" local="yes" imported="no">tinyhttp/thttp_dialog.h</includes>
     <class kind="struct">thttp_session_s</class>
     <member kind="define">
       <type>#define</type>
@@ -1500,10 +1542,10 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>THTTP_SESSION_SET_CONTEXT</name>
+      <name>THTTP_SESSION_SET_USERDATA</name>
       <anchorfile>group__thttp__session__group.html</anchorfile>
-      <anchor>gaf2679041e2407689fee1652be0344562</anchor>
-      <arglist>(CTX_PTR)</arglist>
+      <anchor>ga6252a61755fc2f58722844795ee98938</anchor>
+      <arglist>(USERDATA_PTR)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -1604,9 +1646,9 @@
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>httpp_context</name>
+      <name>httpp_userdata</name>
       <anchorfile>thttp__session_8h.html</anchorfile>
-      <anchor>ac60e1a2d905c79691f843b2ff333c7e3a87de464561eca305e9ff6f56aae05408</anchor>
+      <anchor>ac60e1a2d905c79691f843b2ff333c7e3a067b4c74eaac026c6a463d4bb0994efc</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
@@ -1632,10 +1674,17 @@
     </member>
     <member kind="function">
       <type>TINYHTTP_API const void *</type>
-      <name>thttp_session_get_context</name>
+      <name>thttp_session_get_userdata</name>
       <anchorfile>group__thttp__session__group.html</anchorfile>
-      <anchor>gac0dea705f85abc30777ab93b72e13b73</anchor>
+      <anchor>ga0f457e2b4f3d1cc43074230a174cca81</anchor>
       <arglist>(const thttp_session_handle_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYHTTP_API int</type>
+      <name>thttp_session_closefd</name>
+      <anchorfile>thttp__session_8h.html</anchorfile>
+      <anchor>a996c48c3c855e394db760a92133644aa</anchor>
+      <arglist>(thttp_session_handle_t *self)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1649,6 +1698,13 @@
       <name>thttp_session_signal_closed</name>
       <anchorfile>thttp__session_8h.html</anchorfile>
       <anchor>a00500a6442e130d6f1a0ac29084cfa6e</anchor>
+      <arglist>(thttp_session_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>thttp_session_signal_error</name>
+      <anchorfile>thttp__session_8h.html</anchorfile>
+      <anchor>a8d99c10a76adba8db5ae8a3f5a04ef0c</anchor>
       <arglist>(thttp_session_t *self)</arglist>
     </member>
     <member kind="function">
@@ -1668,9 +1724,9 @@
   </compound>
   <compound kind="file">
     <name>thttp_url.h</name>
-    <path>C:/Projects/Doubango/tinyHTTP/include/tinyHTTP/</path>
+    <path>C:/Projects/Doubango/tinyHTTP/include/tinyhttp/</path>
     <filename>thttp__url_8h</filename>
-    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyhttp_config.h</includes>
     <class kind="struct">thttp_url_s</class>
     <member kind="define">
       <type>#define</type>
@@ -1707,21 +1763,21 @@
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>url_unknown</name>
+      <name>thttp_url_unknown</name>
       <anchorfile>thttp__url_8h.html</anchorfile>
-      <anchor>af22b11b0c965c8c7c48f518abc48461ea860db519538ca16cfddd3d4039741981</anchor>
+      <anchor>af22b11b0c965c8c7c48f518abc48461eac6966438fbdde9d5b4002bbdc272e0e4</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>url_http</name>
+      <name>thttp_url_http</name>
       <anchorfile>thttp__url_8h.html</anchorfile>
-      <anchor>af22b11b0c965c8c7c48f518abc48461eae5bf535ff6d5dce6312c822f365d01e6</anchor>
+      <anchor>af22b11b0c965c8c7c48f518abc48461eae00ad6d35614bde9178c62d99d7371b9</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>url_https</name>
+      <name>thttp_url_https</name>
       <anchorfile>thttp__url_8h.html</anchorfile>
-      <anchor>af22b11b0c965c8c7c48f518abc48461ea3ed9eccd22b120211d3945b939037f3b</anchor>
+      <anchor>af22b11b0c965c8c7c48f518abc48461ea7eb154f55d294931bc37ea828a61086c</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumeration">
@@ -1731,27 +1787,27 @@
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>host_unknown</name>
+      <name>thttp_host_unknown</name>
       <anchorfile>thttp__url_8h.html</anchorfile>
-      <anchor>a011593e62d5f5598b1b3a4cf772cbef4a0ec695da13f5d307d5b8da719272ca00</anchor>
+      <anchor>a011593e62d5f5598b1b3a4cf772cbef4a7fe650cff2182f4d64de44fb24af16d0</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>host_hostname</name>
+      <name>thttp_host_hostname</name>
       <anchorfile>thttp__url_8h.html</anchorfile>
-      <anchor>a011593e62d5f5598b1b3a4cf772cbef4aa8da4749085d0830ac53fea576daa008</anchor>
+      <anchor>a011593e62d5f5598b1b3a4cf772cbef4ad30b915ca257e90c8684fab6b7d26902</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>host_ipv4</name>
+      <name>thttp_host_ipv4</name>
       <anchorfile>thttp__url_8h.html</anchorfile>
-      <anchor>a011593e62d5f5598b1b3a4cf772cbef4ab1693c6219389fcce9e28a5678c17286</anchor>
+      <anchor>a011593e62d5f5598b1b3a4cf772cbef4a1af01821ee02ff7cf2b5aba5d789c5a9</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>host_ipv6</name>
+      <name>thttp_host_ipv6</name>
       <anchorfile>thttp__url_8h.html</anchorfile>
-      <anchor>a011593e62d5f5598b1b3a4cf772cbef4a3b1450982e5c3aab93f8895ee3ec477e</anchor>
+      <anchor>a011593e62d5f5598b1b3a4cf772cbef4abe089701023a2324b0000de5311bd0a3</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
@@ -1834,12 +1890,12 @@
     <name>thttp_auth.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/auth/</path>
     <filename>thttp__auth_8c</filename>
-    <includes id="thttp__auth_8h" name="thttp_auth.h" local="yes" imported="no">tinyHTTP/auth/thttp_auth.h</includes>
+    <includes id="thttp__auth_8h" name="thttp_auth.h" local="yes" imported="no">tinyhttp/auth/thttp_auth.h</includes>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>thttp_auth_basic_response</name>
       <anchorfile>group__thttp__auth__group.html</anchorfile>
-      <anchor>gadfa6a0694f03e784633d71050ba9b4bc</anchor>
+      <anchor>gaf720869992f752dc684f3dc63f228be6</anchor>
       <arglist>(const char *userid, const char *password, char **response)</arglist>
     </member>
     <member kind="function">
@@ -1875,9 +1931,9 @@
     <name>thttp_challenge.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/auth/</path>
     <filename>thttp__challenge_8c</filename>
-    <includes id="thttp__challenge_8h" name="thttp_challenge.h" local="yes" imported="no">tinyHTTP/auth/thttp_challenge.h</includes>
+    <includes id="thttp__challenge_8h" name="thttp_challenge.h" local="yes" imported="no">tinyhttp/auth/thttp_challenge.h</includes>
     <includes id="thttp_8h" name="thttp.h" local="yes" imported="no">thttp.h</includes>
-    <includes id="thttp__header___authorization_8h" name="thttp_header_Authorization.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Authorization.h</includes>
+    <includes id="thttp__header___authorization_8h" name="thttp_header_Authorization.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Authorization.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>THTTP_CHALLENGE_IS_DIGEST</name>
@@ -1960,8 +2016,8 @@
     <name>thttp_header.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/headers/</path>
     <filename>thttp__header_8c</filename>
-    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyHTTP/headers/thttp_header.h</includes>
-    <includes id="thttp__header___dummy_8h" name="thttp_header_Dummy.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Dummy.h</includes>
+    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyhttp/headers/thttp_header.h</includes>
+    <includes id="thttp__header___dummy_8h" name="thttp_header_Dummy.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Dummy.h</includes>
     <member kind="function">
       <type>const char *</type>
       <name>thttp_header_get_name</name>
@@ -1997,13 +2053,20 @@
       <anchor>ga2ba34e8e33da57b8af99350c85768099</anchor>
       <arglist>(const thttp_header_t *self)</arglist>
     </member>
+    <member kind="function">
+      <type>char *</type>
+      <name>thttp_header_value_tostring</name>
+      <anchorfile>group__thttp__header__group.html</anchorfile>
+      <anchor>ga770293aff5d59b867680f5c099eee323</anchor>
+      <arglist>(const thttp_header_t *self)</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>thttp_header_Authorization.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/headers/</path>
     <filename>thttp__header___authorization_8c</filename>
-    <includes id="thttp__header___authorization_8h" name="thttp_header_Authorization.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Authorization.h</includes>
-    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_url.h</includes>
+    <includes id="thttp__header___authorization_8h" name="thttp_header_Authorization.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Authorization.h</includes>
+    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_url.h</includes>
     <member kind="function">
       <type>thttp_header_Authorization_t *</type>
       <name>thttp_header_authorization_create</name>
@@ -2022,15 +2085,15 @@
       <type>thttp_header_Authorization_t *</type>
       <name>thttp_header_Authorization_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>gad5e89efe1d502e620290e6020e4a7e71</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>gaf62fc4d2fedd30ee7dc84856859e8a4f</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>thttp_header_Proxy_Authorization_t *</type>
       <name>thttp_header_Proxy_Authorization_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga4960098e830a3761beef30455b401567</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga2d423bf012c44446fbadc8f2e9e9c753</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -2044,7 +2107,7 @@
     <name>thttp_header_Content_Length.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/headers/</path>
     <filename>thttp__header___content___length_8c</filename>
-    <includes id="thttp__header___content___length_8h" name="thttp_header_Content_Length.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Content_Length.h</includes>
+    <includes id="thttp__header___content___length_8h" name="thttp_header_Content_Length.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Content_Length.h</includes>
     <member kind="function">
       <type>thttp_header_Content_Length_t *</type>
       <name>thttp_header_content_length_create</name>
@@ -2063,8 +2126,8 @@
       <type>thttp_header_Content_Length_t *</type>
       <name>thttp_header_Content_Length_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga807b76d36337cda877ef535741313ee7</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga4c9a74cd97da944385e046590fa0c4c1</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -2078,7 +2141,7 @@
     <name>thttp_header_Content_Type.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/headers/</path>
     <filename>thttp__header___content___type_8c</filename>
-    <includes id="thttp__header___content___type_8h" name="thttp_header_Content_Type.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Content_Type.h</includes>
+    <includes id="thttp__header___content___type_8h" name="thttp_header_Content_Type.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Content_Type.h</includes>
     <member kind="function">
       <type>thttp_header_Content_Type_t *</type>
       <name>thttp_header_content_type_create</name>
@@ -2104,8 +2167,8 @@
       <type>thttp_header_Content_Type_t *</type>
       <name>thttp_header_Content_Type_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga6ca7fbeec2616eb602b122c24878f0de</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga88c3c565650876a99c75c7503333cced</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -2119,6 +2182,8 @@
     <name>thttp_header_Dummy.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/headers/</path>
     <filename>thttp__header___dummy_8c</filename>
+    <includes id="thttp__header___dummy_8h" name="thttp_header_Dummy.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Dummy.h</includes>
+    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_url.h</includes>
     <member kind="function">
       <type>thttp_header_Dummy_t *</type>
       <name>thttp_header_dummy_create</name>
@@ -2144,8 +2209,8 @@
       <type>thttp_header_Dummy_t *</type>
       <name>thttp_header_Dummy_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga66de413d435bb6a93ae9d7a2647f62bc</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>gaa51ce8cbaeba9ffaf24847f4ff6c6c63</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -2159,6 +2224,8 @@
     <name>thttp_header_ETag.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/headers/</path>
     <filename>thttp__header___e_tag_8c</filename>
+    <includes id="thttp__header___e_tag_8h" name="thttp_header_ETag.h" local="yes" imported="no">tinyhttp/headers/thttp_header_ETag.h</includes>
+    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_url.h</includes>
     <member kind="function">
       <type>thttp_header_ETag_t *</type>
       <name>thttp_header_etag_create</name>
@@ -2184,8 +2251,8 @@
       <type>thttp_header_ETag_t *</type>
       <name>thttp_header_ETag_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>gad6a7c07e29d9e121fb3ed6908865476a</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga8f80a83c38b4b3c23ef9adca526c2067</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -2199,7 +2266,7 @@
     <name>thttp_header_Transfer_Encoding.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/headers/</path>
     <filename>thttp__header___transfer___encoding_8c</filename>
-    <includes id="thttp__header___transfer___encoding_8h" name="thttp_header_Transfer_Encoding.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Transfer_Encoding.h</includes>
+    <includes id="thttp__header___transfer___encoding_8h" name="thttp_header_Transfer_Encoding.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Transfer_Encoding.h</includes>
     <member kind="function">
       <type>thttp_header_Transfer_Encoding_t *</type>
       <name>thttp_header_transfer_encoding_create</name>
@@ -2225,8 +2292,8 @@
       <type>thttp_header_Transfer_Encoding_t *</type>
       <name>thttp_header_Transfer_Encoding_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga3c59176f6b363090c3f89e5238cb3901</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga16eb00aaf3ca02295c0c7dcd1f7c808d</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -2240,8 +2307,15 @@
     <name>thttp_header_WWW_Authenticate.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/headers/</path>
     <filename>thttp__header___w_w_w___authenticate_8c</filename>
-    <includes id="thttp__header___w_w_w___authenticate_8h" name="thttp_header_WWW_Authenticate.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_WWW_Authenticate.h</includes>
-    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_url.h</includes>
+    <includes id="thttp__header___w_w_w___authenticate_8h" name="thttp_header_WWW_Authenticate.h" local="yes" imported="no">tinyhttp/headers/thttp_header_WWW_Authenticate.h</includes>
+    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_url.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>prev_not_comma</name>
+      <anchorfile>thttp__header___w_w_w___authenticate_8c.html</anchorfile>
+      <anchor>a0271fd9cc6bda8b3fde50745215bee42</anchor>
+      <arglist>(p)</arglist>
+    </member>
     <member kind="function">
       <type>thttp_header_WWW_Authenticate_t *</type>
       <name>thttp_header_www_authenticate_create</name>
@@ -2260,15 +2334,15 @@
       <type>thttp_header_WWW_Authenticate_t *</type>
       <name>thttp_header_WWW_Authenticate_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga7fcc90d08f71bd8ba0f3112685f700ef</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga6ea6cdaa0f153de0f53b25d02a99778c</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>thttp_header_Proxy_Authenticate_t *</type>
       <name>thttp_header_Proxy_Authenticate_parse</name>
       <anchorfile>thttp__header___w_w_w___authenticate_8c.html</anchorfile>
-      <anchor>a90595188281ada25e8c07fd3ee9af5f2</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>a617438484d983519ec1531e0f1912fce</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -2282,12 +2356,12 @@
     <name>thttp_parser_header.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/parsers/</path>
     <filename>thttp__parser__header_8c</filename>
-    <includes id="thttp__parser__header_8h" name="thttp_parser_header.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_header.h</includes>
-    <includes id="thttp__header___authorization_8h" name="thttp_header_Authorization.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Authorization.h</includes>
-    <includes id="thttp__header___dummy_8h" name="thttp_header_Dummy.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Dummy.h</includes>
-    <includes id="thttp__header___e_tag_8h" name="thttp_header_ETag.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_ETag.h</includes>
-    <includes id="thttp__header___transfer___encoding_8h" name="thttp_header_Transfer_Encoding.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Transfer_Encoding.h</includes>
-    <includes id="thttp__header___w_w_w___authenticate_8h" name="thttp_header_WWW_Authenticate.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_WWW_Authenticate.h</includes>
+    <includes id="thttp__parser__header_8h" name="thttp_parser_header.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_header.h</includes>
+    <includes id="thttp__header___authorization_8h" name="thttp_header_Authorization.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Authorization.h</includes>
+    <includes id="thttp__header___dummy_8h" name="thttp_header_Dummy.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Dummy.h</includes>
+    <includes id="thttp__header___e_tag_8h" name="thttp_header_ETag.h" local="yes" imported="no">tinyhttp/headers/thttp_header_ETag.h</includes>
+    <includes id="thttp__header___transfer___encoding_8h" name="thttp_header_Transfer_Encoding.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Transfer_Encoding.h</includes>
+    <includes id="thttp__header___w_w_w___authenticate_8h" name="thttp_header_WWW_Authenticate.h" local="yes" imported="no">tinyhttp/headers/thttp_header_WWW_Authenticate.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>ADD_HEADERS</name>
@@ -2314,9 +2388,9 @@
     <name>thttp_parser_message.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/parsers/</path>
     <filename>thttp__parser__message_8c</filename>
-    <includes id="thttp__parser__message_8h" name="thttp_parser_message.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_message.h</includes>
-    <includes id="thttp__parser__header_8h" name="thttp_parser_header.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_header.h</includes>
-    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_url.h</includes>
+    <includes id="thttp__parser__message_8h" name="thttp_parser_message.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_message.h</includes>
+    <includes id="thttp__parser__header_8h" name="thttp_parser_header.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_header.h</includes>
+    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_url.h</includes>
     <member kind="function">
       <type>int</type>
       <name>thttp_message_parse</name>
@@ -2329,13 +2403,13 @@
     <name>thttp_parser_url.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/parsers/</path>
     <filename>thttp__parser__url_8c</filename>
-    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_url.h</includes>
+    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_url.h</includes>
     <member kind="function">
       <type>thttp_url_t *</type>
       <name>thttp_url_parse</name>
       <anchorfile>group__thttp__url__group.html</anchorfile>
-      <anchor>ga1acfdcf4d31969aa3de457b88f8178bb</anchor>
-      <arglist>(const char *urlstring, size_t length)</arglist>
+      <anchor>ga2204b5747836c64bea185be649ce1470</anchor>
+      <arglist>(const char *urlstring, tsk_size_t length)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -2343,12 +2417,19 @@
     <path>C:/Projects/Doubango/tinyHTTP/src/</path>
     <filename>thttp_8c</filename>
     <includes id="thttp_8h" name="thttp.h" local="yes" imported="no">thttp.h</includes>
-    <includes id="thttp__action_8h" name="thttp_action.h" local="yes" imported="no">tinyHTTP/thttp_action.h</includes>
-    <includes id="thttp__event_8h" name="thttp_event.h" local="yes" imported="no">tinyHTTP/thttp_event.h</includes>
-    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyHTTP/thttp_message.h</includes>
-    <includes id="thttp__parser__message_8h" name="thttp_parser_message.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_message.h</includes>
-    <includes id="thttp__header___transfer___encoding_8h" name="thttp_header_Transfer_Encoding.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Transfer_Encoding.h</includes>
-    <includes id="thttp__dialog_8h" name="thttp_dialog.h" local="yes" imported="no">tinyHTTP/thttp_dialog.h</includes>
+    <includes id="thttp__action_8h" name="thttp_action.h" local="yes" imported="no">tinyhttp/thttp_action.h</includes>
+    <includes id="thttp__event_8h" name="thttp_event.h" local="yes" imported="no">tinyhttp/thttp_event.h</includes>
+    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyhttp/thttp_message.h</includes>
+    <includes id="thttp__parser__message_8h" name="thttp_parser_message.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_message.h</includes>
+    <includes id="thttp__header___transfer___encoding_8h" name="thttp_header_Transfer_Encoding.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Transfer_Encoding.h</includes>
+    <includes id="thttp__dialog_8h" name="thttp_dialog.h" local="yes" imported="no">tinyhttp/thttp_dialog.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>THTTP_MIN_STREAM_CHUNCK_SIZE</name>
+      <anchorfile>thttp_8c.html</anchorfile>
+      <anchor>a4fe6c3e978f2b8dd596315d8c714675f</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="function">
       <type>int</type>
       <name>__thttp_stack_set</name>
@@ -2378,6 +2459,13 @@
       <arglist>(thttp_stack_handle_t *self,...)</arglist>
     </member>
     <member kind="function">
+      <type>const void *</type>
+      <name>thttp_stack_get_userdata</name>
+      <anchorfile>group__thttp__stack__group.html</anchorfile>
+      <anchor>gacf4a84954ca6c196f357cba4731e3ae3</anchor>
+      <arglist>(thttp_stack_handle_t *self)</arglist>
+    </member>
+    <member kind="function">
       <type>int</type>
       <name>thttp_stack_stop</name>
       <anchorfile>group__thttp__stack__group.html</anchorfile>
@@ -2403,7 +2491,7 @@
     <name>thttp_action.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/</path>
     <filename>thttp__action_8c</filename>
-    <includes id="thttp__action_8h" name="thttp_action.h" local="yes" imported="no">tinyHTTP/thttp_action.h</includes>
+    <includes id="thttp__action_8h" name="thttp_action.h" local="yes" imported="no">tinyhttp/thttp_action.h</includes>
     <includes id="thttp_8h" name="thttp.h" local="yes" imported="no">thttp.h</includes>
     <member kind="function">
       <type>thttp_action_t *</type>
@@ -2431,13 +2519,13 @@
     <name>thttp_dialog.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/</path>
     <filename>thttp__dialog_8c</filename>
-    <includes id="thttp__dialog_8h" name="thttp_dialog.h" local="yes" imported="no">tinyHTTP/thttp_dialog.h</includes>
+    <includes id="thttp__dialog_8h" name="thttp_dialog.h" local="yes" imported="no">tinyhttp/thttp_dialog.h</includes>
     <includes id="thttp_8h" name="thttp.h" local="yes" imported="no">thttp.h</includes>
-    <includes id="thttp__action_8h" name="thttp_action.h" local="yes" imported="no">tinyHTTP/thttp_action.h</includes>
-    <includes id="thttp__session_8h" name="thttp_session.h" local="yes" imported="no">tinyHTTP/thttp_session.h</includes>
-    <includes id="thttp__url_8h" name="thttp_url.h" local="yes" imported="no">tinyHTTP/thttp_url.h</includes>
-    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_url.h</includes>
-    <includes id="thttp__header___dummy_8h" name="thttp_header_Dummy.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Dummy.h</includes>
+    <includes id="thttp__action_8h" name="thttp_action.h" local="yes" imported="no">tinyhttp/thttp_action.h</includes>
+    <includes id="thttp__session_8h" name="thttp_session.h" local="yes" imported="no">tinyhttp/thttp_session.h</includes>
+    <includes id="thttp__url_8h" name="thttp_url.h" local="yes" imported="no">tinyhttp/thttp_url.h</includes>
+    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_url.h</includes>
+    <includes id="thttp__header___dummy_8h" name="thttp_header_Dummy.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Dummy.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>DEBUG_STATE_MACHINE</name>
@@ -2451,6 +2539,13 @@
       <anchorfile>thttp__dialog_8c.html</anchorfile>
       <anchor>a7a8940a5d53df638ec52288b75989fc4</anchor>
       <arglist>(message)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>THTTP_DIALOG_TRANSPORT_ERROR_CODE</name>
+      <anchorfile>thttp__dialog_8c.html</anchorfile>
+      <anchor>aa32e20ee3bff57d5338833ef141907ac</anchor>
+      <arglist></arglist>
     </member>
     <member kind="typedef">
       <type>enum _fsm_action_e</type>
@@ -2494,12 +2589,6 @@
       <name>_fsm_action_closed</name>
       <anchorfile>thttp__dialog_8c.html</anchorfile>
       <anchor>ad032147dfda9028e630a09a1c3bec61dae0791cf072837e4754246ba7d8de9ece</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>_fsm_action_transporterror</name>
-      <anchorfile>thttp__dialog_8c.html</anchorfile>
-      <anchor>ad032147dfda9028e630a09a1c3bec61da01e7c4e50e5f47a052c92d5e28e5d82a</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
@@ -2656,8 +2745,8 @@
     <name>thttp_event.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/</path>
     <filename>thttp__event_8c</filename>
-    <includes id="thttp__event_8h" name="thttp_event.h" local="yes" imported="no">tinyHTTP/thttp_event.h</includes>
-    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyHTTP/thttp_message.h</includes>
+    <includes id="thttp__event_8h" name="thttp_event.h" local="yes" imported="no">tinyhttp/thttp_event.h</includes>
+    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyhttp/thttp_message.h</includes>
     <member kind="function">
       <type>thttp_event_t *</type>
       <name>thttp_event_create</name>
@@ -2677,7 +2766,7 @@
     <name>thttp_message.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/</path>
     <filename>thttp__message_8c</filename>
-    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyHTTP/thttp_message.h</includes>
+    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyhttp/thttp_message.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>ADD_HEADER</name>
@@ -2724,22 +2813,22 @@
       <type>int</type>
       <name>thttp_message_add_content</name>
       <anchorfile>group__thttp__message__group.html</anchorfile>
-      <anchor>ga90d831ed5c6d29560ded8e688ac60242</anchor>
-      <arglist>(thttp_message_t *self, const char *content_type, const void *content, size_t size)</arglist>
+      <anchor>ga0fbe5b273002fc7b0bfaa4ce306508af</anchor>
+      <arglist>(thttp_message_t *self, const char *content_type, const void *content, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>thttp_message_append_content</name>
       <anchorfile>group__thttp__message__group.html</anchorfile>
-      <anchor>ga3b5a87db25bc5e2056d406b64154e348</anchor>
-      <arglist>(thttp_message_t *self, const void *content, size_t size)</arglist>
+      <anchor>gada8275938d66a7f7c77a18b40dae685e</anchor>
+      <arglist>(thttp_message_t *self, const void *content, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>const thttp_header_t *</type>
       <name>thttp_message_get_headerAt</name>
       <anchorfile>group__thttp__message__group.html</anchorfile>
-      <anchor>ga20e220c628a76f4e0f1fc6ab61146a79</anchor>
-      <arglist>(const thttp_message_t *self, thttp_header_type_t type, size_t index)</arglist>
+      <anchor>gacc210783cfa8c4f937430dd1f2508611</anchor>
+      <arglist>(const thttp_message_t *self, thttp_header_type_t type, tsk_size_t index)</arglist>
     </member>
     <member kind="function">
       <type>const thttp_header_t *</type>
@@ -2795,11 +2884,18 @@
     <name>thttp_session.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/</path>
     <filename>thttp__session_8c</filename>
-    <includes id="thttp__session_8h" name="thttp_session.h" local="yes" imported="no">tinyHTTP/thttp_session.h</includes>
+    <includes id="thttp__session_8h" name="thttp_session.h" local="yes" imported="no">tinyhttp/thttp_session.h</includes>
     <includes id="thttp_8h" name="thttp.h" local="yes" imported="no">thttp.h</includes>
-    <includes id="thttp__action_8h" name="thttp_action.h" local="yes" imported="no">tinyHTTP/thttp_action.h</includes>
-    <includes id="thttp__header___dummy_8h" name="thttp_header_Dummy.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Dummy.h</includes>
-    <includes id="thttp__header___w_w_w___authenticate_8h" name="thttp_header_WWW_Authenticate.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_WWW_Authenticate.h</includes>
+    <includes id="thttp__action_8h" name="thttp_action.h" local="yes" imported="no">tinyhttp/thttp_action.h</includes>
+    <includes id="thttp__header___dummy_8h" name="thttp_header_Dummy.h" local="yes" imported="no">tinyhttp/headers/thttp_header_Dummy.h</includes>
+    <includes id="thttp__header___w_w_w___authenticate_8h" name="thttp_header_WWW_Authenticate.h" local="yes" imported="no">tinyhttp/headers/thttp_header_WWW_Authenticate.h</includes>
+    <member kind="function">
+      <type>int</type>
+      <name>thttp_session_signal</name>
+      <anchorfile>thttp__session_8c.html</anchorfile>
+      <anchor>aca34bca93da39b305f8a1afc0bc91904</anchor>
+      <arglist>(thttp_session_t *self, thttp_action_type_t atype)</arglist>
+    </member>
     <member kind="function">
       <type>int</type>
       <name>__thttp_session_set</name>
@@ -2830,10 +2926,17 @@
     </member>
     <member kind="function">
       <type>const void *</type>
-      <name>thttp_session_get_context</name>
+      <name>thttp_session_get_userdata</name>
       <anchorfile>group__thttp__session__group.html</anchorfile>
-      <anchor>gac0dea705f85abc30777ab93b72e13b73</anchor>
+      <anchor>ga0f457e2b4f3d1cc43074230a174cca81</anchor>
       <arglist>(const thttp_session_handle_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>thttp_session_closefd</name>
+      <anchorfile>thttp__session_8c.html</anchorfile>
+      <anchor>ab301eb511cb7e193cdae2d25dd007ca5</anchor>
+      <arglist>(thttp_session_handle_t *_self)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2847,6 +2950,13 @@
       <name>thttp_session_signal_closed</name>
       <anchorfile>thttp__session_8c.html</anchorfile>
       <anchor>a00500a6442e130d6f1a0ac29084cfa6e</anchor>
+      <arglist>(thttp_session_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>thttp_session_signal_error</name>
+      <anchorfile>thttp__session_8c.html</anchorfile>
+      <anchor>a8d99c10a76adba8db5ae8a3f5a04ef0c</anchor>
       <arglist>(thttp_session_t *self)</arglist>
     </member>
     <member kind="function">
@@ -2868,8 +2978,8 @@
     <name>thttp_url.c</name>
     <path>C:/Projects/Doubango/tinyHTTP/src/</path>
     <filename>thttp__url_8c</filename>
-    <includes id="thttp__url_8h" name="thttp_url.h" local="yes" imported="no">tinyHTTP/thttp_url.h</includes>
-    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_url.h</includes>
+    <includes id="thttp__url_8h" name="thttp_url.h" local="yes" imported="no">tinyhttp/thttp_url.h</includes>
+    <includes id="thttp__parser__url_8h" name="thttp_parser_url.h" local="yes" imported="no">tinyhttp/parsers/thttp_parser_url.h</includes>
     <member kind="function">
       <type>thttp_url_t *</type>
       <name>thttp_url_create</name>
@@ -2918,10 +3028,10 @@
     <title>HTTP basic/digest authentication (RFC 2617)</title>
     <filename>group__thttp__auth__group.html</filename>
     <member kind="function">
-      <type>size_t</type>
+      <type>tsk_size_t</type>
       <name>thttp_auth_basic_response</name>
       <anchorfile>group__thttp__auth__group.html</anchorfile>
-      <anchor>gadfa6a0694f03e784633d71050ba9b4bc</anchor>
+      <anchor>gaf720869992f752dc684f3dc63f228be6</anchor>
       <arglist>(const char *userid, const char *password, char **response)</arglist>
     </member>
     <member kind="function">
@@ -2972,60 +3082,67 @@
       <arglist>(const thttp_header_t *self)</arglist>
     </member>
     <member kind="function">
+      <type>char *</type>
+      <name>thttp_header_value_tostring</name>
+      <anchorfile>group__thttp__header__group.html</anchorfile>
+      <anchor>ga770293aff5d59b867680f5c099eee323</anchor>
+      <arglist>(const thttp_header_t *self)</arglist>
+    </member>
+    <member kind="function">
       <type>thttp_header_Authorization_t *</type>
       <name>thttp_header_Authorization_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>gad5e89efe1d502e620290e6020e4a7e71</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>gaf62fc4d2fedd30ee7dc84856859e8a4f</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>thttp_header_Proxy_Authorization_t *</type>
       <name>thttp_header_Proxy_Authorization_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga4960098e830a3761beef30455b401567</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga2d423bf012c44446fbadc8f2e9e9c753</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>thttp_header_Content_Length_t *</type>
       <name>thttp_header_Content_Length_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga807b76d36337cda877ef535741313ee7</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga4c9a74cd97da944385e046590fa0c4c1</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>thttp_header_Content_Type_t *</type>
       <name>thttp_header_Content_Type_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga6ca7fbeec2616eb602b122c24878f0de</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga88c3c565650876a99c75c7503333cced</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>thttp_header_Dummy_t *</type>
       <name>thttp_header_Dummy_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga66de413d435bb6a93ae9d7a2647f62bc</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>gaa51ce8cbaeba9ffaf24847f4ff6c6c63</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>thttp_header_ETag_t *</type>
       <name>thttp_header_ETag_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>gad6a7c07e29d9e121fb3ed6908865476a</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga8f80a83c38b4b3c23ef9adca526c2067</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>thttp_header_Transfer_Encoding_t *</type>
       <name>thttp_header_Transfer_Encoding_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga3c59176f6b363090c3f89e5238cb3901</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga16eb00aaf3ca02295c0c7dcd1f7c808d</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>thttp_header_WWW_Authenticate_t *</type>
       <name>thttp_header_WWW_Authenticate_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
-      <anchor>ga7fcc90d08f71bd8ba0f3112685f700ef</anchor>
-      <arglist>(const char *data, size_t size)</arglist>
+      <anchor>ga6ea6cdaa0f153de0f53b25d02a99778c</anchor>
+      <arglist>(const char *data, tsk_size_t size)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -3052,6 +3169,13 @@
       <anchorfile>group__thttp__stack__group.html</anchorfile>
       <anchor>ga6f67d03e0f023335b97788002fb247a2</anchor>
       <arglist>(thttp_stack_handle_t *self,...)</arglist>
+    </member>
+    <member kind="function">
+      <type>const void *</type>
+      <name>thttp_stack_get_userdata</name>
+      <anchorfile>group__thttp__stack__group.html</anchorfile>
+      <anchor>gacf4a84954ca6c196f357cba4731e3ae3</anchor>
+      <arglist>(thttp_stack_handle_t *self)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -3319,22 +3443,22 @@
       <type>int</type>
       <name>thttp_message_add_content</name>
       <anchorfile>group__thttp__message__group.html</anchorfile>
-      <anchor>ga90d831ed5c6d29560ded8e688ac60242</anchor>
-      <arglist>(thttp_message_t *self, const char *content_type, const void *content, size_t size)</arglist>
+      <anchor>ga0fbe5b273002fc7b0bfaa4ce306508af</anchor>
+      <arglist>(thttp_message_t *self, const char *content_type, const void *content, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>thttp_message_append_content</name>
       <anchorfile>group__thttp__message__group.html</anchorfile>
-      <anchor>ga3b5a87db25bc5e2056d406b64154e348</anchor>
-      <arglist>(thttp_message_t *self, const void *content, size_t size)</arglist>
+      <anchor>gada8275938d66a7f7c77a18b40dae685e</anchor>
+      <arglist>(thttp_message_t *self, const void *content, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
       <type>const thttp_header_t *</type>
       <name>thttp_message_get_headerAt</name>
       <anchorfile>group__thttp__message__group.html</anchorfile>
-      <anchor>ga20e220c628a76f4e0f1fc6ab61146a79</anchor>
-      <arglist>(const thttp_message_t *self, thttp_header_type_t type, size_t index)</arglist>
+      <anchor>gacc210783cfa8c4f937430dd1f2508611</anchor>
+      <arglist>(const thttp_message_t *self, thttp_header_type_t type, tsk_size_t index)</arglist>
     </member>
     <member kind="function">
       <type>const thttp_header_t *</type>
@@ -3413,10 +3537,10 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>THTTP_SESSION_SET_CONTEXT</name>
+      <name>THTTP_SESSION_SET_USERDATA</name>
       <anchorfile>group__thttp__session__group.html</anchorfile>
-      <anchor>gaf2679041e2407689fee1652be0344562</anchor>
-      <arglist>(CTX_PTR)</arglist>
+      <anchor>ga6252a61755fc2f58722844795ee98938</anchor>
+      <arglist>(USERDATA_PTR)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -3448,9 +3572,9 @@
     </member>
     <member kind="function">
       <type>const void *</type>
-      <name>thttp_session_get_context</name>
+      <name>thttp_session_get_userdata</name>
       <anchorfile>group__thttp__session__group.html</anchorfile>
-      <anchor>gac0dea705f85abc30777ab93b72e13b73</anchor>
+      <anchor>ga0f457e2b4f3d1cc43074230a174cca81</anchor>
       <arglist>(const thttp_session_handle_t *self)</arglist>
     </member>
   </compound>
@@ -3462,8 +3586,8 @@
       <type>thttp_url_t *</type>
       <name>thttp_url_parse</name>
       <anchorfile>group__thttp__url__group.html</anchorfile>
-      <anchor>ga1acfdcf4d31969aa3de457b88f8178bb</anchor>
-      <arglist>(const char *urlstring, size_t length)</arglist>
+      <anchor>ga2204b5747836c64bea185be649ce1470</anchor>
+      <arglist>(const char *urlstring, tsk_size_t length)</arglist>
     </member>
     <member kind="function">
       <type>thttp_url_t *</type>
@@ -4044,50 +4168,50 @@
     </member>
     <member kind="variable">
       <type>union thttp_message_s::@1</type>
-      <name>@2</name>
+      <name>line</name>
       <anchorfile>structthttp__message__s.html</anchorfile>
-      <anchor>aa7780bb31c48349f3d5da0939adbbdb3</anchor>
+      <anchor>a0cc007d506cba250d7b1ff9265a3df15</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>struct thttp_message_s::@1::@3</type>
-      <name>@4</name>
+      <type>struct thttp_message_s::@1::@2</type>
+      <name>request</name>
       <anchorfile>unionthttp__message__s_1_1@1.html</anchorfile>
-      <anchor>a6af1d0ff22985d416901cfc816968038</anchor>
+      <anchor>a4809242002ade00dae60a933658bb6ee</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
       <type>char *</type>
       <name>method</name>
-      <anchorfile>structthttp__message__s_1_1@1_1_1@3.html</anchorfile>
+      <anchorfile>structthttp__message__s_1_1@1_1_1@2.html</anchorfile>
       <anchor>aca2544ecce27ac7a7e973d466c3a8fd4</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
       <type>thttp_url_t *</type>
       <name>url</name>
-      <anchorfile>structthttp__message__s_1_1@1_1_1@3.html</anchorfile>
+      <anchorfile>structthttp__message__s_1_1@1_1_1@2.html</anchorfile>
       <anchor>af654eb7c68f01c8b20b7212663995f7f</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>struct thttp_message_s::@1::@5</type>
-      <name>@6</name>
+      <type>struct thttp_message_s::@1::@3</type>
+      <name>response</name>
       <anchorfile>unionthttp__message__s_1_1@1.html</anchorfile>
-      <anchor>ada547d99c9f40bffc355e2550e7b46fb</anchor>
+      <anchor>a6f0a95c62e035f77fd6594a32c7656bf</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
       <type>short</type>
       <name>status_code</name>
-      <anchorfile>structthttp__message__s_1_1@1_1_1@5.html</anchorfile>
+      <anchorfile>structthttp__message__s_1_1@1_1_1@3.html</anchorfile>
       <anchor>a88f8987abe9732d27f636e6d35f5637e</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
       <type>char *</type>
       <name>reason_phrase</name>
-      <anchorfile>structthttp__message__s_1_1@1_1_1@5.html</anchorfile>
+      <anchorfile>structthttp__message__s_1_1@1_1_1@3.html</anchorfile>
       <anchor>a18bf51f0b416cc27103a7a47db3442de</anchor>
       <arglist></arglist>
     </member>
@@ -4146,9 +4270,9 @@
     </member>
     <member kind="variable">
       <type>const void *</type>
-      <name>context</name>
+      <name>userdata</name>
       <anchorfile>structthttp__session__s.html</anchorfile>
-      <anchor>a3f18b45f62968a5b7281db2feefd275c</anchor>
+      <anchor>a2aa76a7bfd06a16154eccdd30d6f6393</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -4187,23 +4311,23 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>struct thttp_session_s::@7</type>
+      <type>struct thttp_session_s::@4</type>
       <name>cred</name>
       <anchorfile>structthttp__session__s.html</anchorfile>
-      <anchor>a8763771ad3d776241b012e4ab57d7ae1</anchor>
+      <anchor>ae617255706678a02d7aaf7198c3c1787</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
       <type>char *</type>
       <name>usename</name>
-      <anchorfile>structthttp__session__s_1_1@7.html</anchorfile>
+      <anchorfile>structthttp__session__s_1_1@4.html</anchorfile>
       <anchor>ac5a5d5f31fad8ad1a4a7d1fa2186c598</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
       <type>char *</type>
       <name>password</name>
-      <anchorfile>structthttp__session__s_1_1@7.html</anchorfile>
+      <anchorfile>structthttp__session__s_1_1@4.html</anchorfile>
       <anchor>a59460a3ff2c12443d1022e5cc0fba85c</anchor>
       <arglist></arglist>
     </member>
@@ -4223,6 +4347,13 @@
       <name>TSK_DECLARE_OBJECT</name>
       <anchorfile>structthttp__stack__s.html</anchorfile>
       <anchor>a6cb2c811d40d14ceb34bd3b2e7dc5e6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>started</name>
+      <anchorfile>structthttp__stack__s.html</anchorfile>
+      <anchor>a3e87319b1ebccbd0529514c298ec4fe2</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -4286,6 +4417,13 @@
       <name>sessions</name>
       <anchorfile>structthttp__stack__s.html</anchorfile>
       <anchor>a17cea6f5781e9952e1aab5f69e9cd00f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>const void *</type>
+      <name>userdata</name>
+      <anchorfile>structthttp__stack__s.html</anchorfile>
+      <anchor>a2aa76a7bfd06a16154eccdd30d6f6393</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">

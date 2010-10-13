@@ -433,7 +433,7 @@ const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const 
 * @param predicate the predicate against which to test each item
 * @param data data passed to the predicate function for comparaison
 * @retval the item which match the criteria and NULL otherwise
-* @sa @ref tsk_list_find_data_by_pred
+* @sa @ref tsk_list_find_item_by_data
 */
 const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
 {

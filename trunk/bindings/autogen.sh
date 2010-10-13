@@ -2,6 +2,11 @@
 echo "--->CSharp...<---"
 swig -c++ -csharp -outdir csharp -o csharp/tinyWRAP_wrap.cxx csharp/csharp.i
 
+##### Objective-C
+#echo "--->Objective-C...<---"
+#swig -c++ -objc -outdir objc -o -objc/tinyWRAP_wrap.cxx -objc/-objc.i
+
+
 ##### Java
 echo "--->Java...<---"
 swig -c++ -java -package org.doubango.tinyWRAP -outdir java -o java/tinyWRAP_wrap.cxx java/java.i

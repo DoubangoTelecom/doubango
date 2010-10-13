@@ -60,4 +60,4 @@ TDAV_END_DECLS
 
 #endif /* TINYDAV_CODEC_G729_H */
 
-#endif HAVE_G729
+#endif
