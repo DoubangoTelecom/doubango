@@ -828,14 +828,6 @@ int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx)
 		goto bail;
 	}
 
-	/* RFC 3262 - 4 UAC Behavior
-	Assuming the response is to be transmitted reliably, the UAC MUST
-	create a new request with method PRACK.
-	*/
-	if(!(request = tsip_dialog_request_new(TSIP_DIALOG(self), "PRACK"))){
-		goto bail;
-	}
-
 
 	/*	RFC 3262 - 4 UAC Behavior
 	The UAC MUST maintain a sequence number that indicates the most recently
@@ -857,6 +849,14 @@ int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx)
 			goto bail;
 		}
 		self->rseq = RSeq->seq;
+	}
+
+	/* RFC 3262 - 4 UAC Behavior
+	Assuming the response is to be transmitted reliably, the UAC MUST
+	create a new request with method PRACK.
+	*/
+	if(!(request = tsip_dialog_request_new(TSIP_DIALOG(self), "PRACK"))){
+		goto bail;
 	}
 
 	/* RFC 3262 - 7.2 RAck
