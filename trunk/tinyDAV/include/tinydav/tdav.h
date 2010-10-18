@@ -31,6 +31,8 @@
 
 #include "tinydav_config.h"
 
+#include "tsk_common.h" /* tsk_bool_t */
+
 TDAV_BEGIN_DECLS
 
 typedef enum tdav_codec_id_e
@@ -51,7 +53,7 @@ typedef enum tdav_codec_id_e
 	tdav_codec_id_bv16 = 0x00000001<<11,
 	tdav_codec_id_bv32 = 0x00000001<<12,
 	tdav_codec_id_evrc = 0x00000001<<13,
-	tdav_codec_id_g729a = 0x00000001<<14,
+	tdav_codec_id_g729ab = 0x00000001<<14,
 	
 	/* room for new Audio codecs */
 	
@@ -69,6 +71,7 @@ tdav_codec_id_t;
 
 TINYDAV_API int tdav_init();
 TINYDAV_API void tdav_set_codecs(tdav_codec_id_t codecs);
+TINYDAV_API tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec);
 TINYDAV_API int tdav_deinit();
 
 TDAV_END_DECLS

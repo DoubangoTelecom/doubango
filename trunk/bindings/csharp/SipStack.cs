@@ -183,4 +183,9 @@ public class SipStack : SafeObject {
     tinyWRAPPINVOKE.SipStack_setCodecs_2(codecs);
   }
 
+  public static bool isCodecSupported(tdav_codec_id_t codec) {
+    bool ret = tinyWRAPPINVOKE.SipStack_isCodecSupported((int)codec);
+    return ret;
+  }
+
 }

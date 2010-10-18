@@ -113,7 +113,7 @@ int tdav_init()
 	tmedia_codec_plugin_register(tdav_codec_speex_nb_plugin_def_t);
 #endif
 #if HAVE_G729
-	tmedia_codec_plugin_register(tdav_codec_g729a_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_g729ab_plugin_def_t);
 #endif
 #if HAVE_FFMPEG
 	tmedia_codec_plugin_register(tdav_codec_h264_bp10_plugin_def_t);
@@ -195,7 +195,7 @@ void tdav_set_codecs(tdav_codec_id_t codecs)
 		{ tdav_codec_id_speex_nb, &tdav_codec_speex_nb_plugin_def_t },
 #endif
 #if HAVE_G729
-		{ tdav_codec_id_g729a, &tdav_codec_g729a_plugin_def_t },
+		{ tdav_codec_id_g729ab, &tdav_codec_g729ab_plugin_def_t },
 #endif
 
 #if HAVE_FFMPEG
@@ -218,6 +218,55 @@ void tdav_set_codecs(tdav_codec_id_t codecs)
 		else{
 			tmedia_codec_plugin_unregister(*__codecs[i].plugin);
 		}
+	}
+}
+
+tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
+{
+	switch(codec){
+
+		case tdav_codec_id_amr_nb_oa:
+		case tdav_codec_id_amr_nb_be:
+			return HAVE_OPENCORE_AMR;
+		
+		case tdav_codec_id_gsm:
+			return HAVE_LIBGSM;
+
+		case tdav_codec_id_pcma:
+		case tdav_codec_id_pcmu:
+			return tsk_true;
+
+		case tdav_codec_id_ilbc:
+			return HAVE_ILBC;
+
+		case tdav_codec_id_speex_nb:
+			return HAVE_LIB_SPEEX;		
+		
+		case tdav_codec_id_bv16:
+			return HAVE_BV16;
+		
+		case tdav_codec_id_g729ab:
+			return HAVE_G729;
+		
+		
+		case tdav_codec_id_h261:
+		case tdav_codec_id_h263:
+		case tdav_codec_id_h263p:
+		case tdav_codec_id_h263pp:
+		case tdav_codec_id_h264_bp10:
+		case tdav_codec_id_h264_bp20:
+		case tdav_codec_id_h264_bp30:
+		case tdav_codec_id_theora:
+			return HAVE_FFMPEG;
+
+		case tdav_codec_id_amr_wb_oa:
+		case tdav_codec_id_amr_wb_be:
+		case tdav_codec_id_speex_wb:
+		case tdav_codec_id_speex_uwb:
+		case tdav_codec_id_bv32:
+		case tdav_codec_id_evrc:
+		default:
+			return tsk_false;
 	}
 }
 
@@ -251,7 +300,7 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_speex_nb_plugin_def_t);
 #endif
 #if HAVE_G729
-	tmedia_codec_plugin_unregister(tdav_codec_g729a_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_g729ab_plugin_def_t);
 #endif
 #if HAVE_FFMPEG
 	tmedia_codec_plugin_unregister(tdav_codec_h261_plugin_def_t);

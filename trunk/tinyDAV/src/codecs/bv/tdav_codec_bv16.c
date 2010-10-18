@@ -31,6 +31,10 @@
 
 #if HAVE_BV16
 
+#if defined(_MSC_VER)
+#	pragma comment(lib, "..\thirdparties\win32\lib\BroadVoice16\libbv16.a")
+#endif
+
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 

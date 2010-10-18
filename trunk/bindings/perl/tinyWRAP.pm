@@ -1274,6 +1274,7 @@ sub DESTROY {
 *stop = *tinyWRAPc::SipStack_stop;
 *setCodecs = *tinyWRAPc::SipStack_setCodecs;
 *setCodecs_2 = *tinyWRAPc::SipStack_setCodecs_2;
+*isCodecSupported = *tinyWRAPc::SipStack_isCodecSupported;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1826,7 +1827,7 @@ package tinyWRAP;
 *tdav_codec_id_bv16 = *tinyWRAPc::tdav_codec_id_bv16;
 *tdav_codec_id_bv32 = *tinyWRAPc::tdav_codec_id_bv32;
 *tdav_codec_id_evrc = *tinyWRAPc::tdav_codec_id_evrc;
-*tdav_codec_id_g729a = *tinyWRAPc::tdav_codec_id_g729a;
+*tdav_codec_id_g729ab = *tinyWRAPc::tdav_codec_id_g729ab;
 *tdav_codec_id_h261 = *tinyWRAPc::tdav_codec_id_h261;
 *tdav_codec_id_h263 = *tinyWRAPc::tdav_codec_id_h263;
 *tdav_codec_id_h263p = *tinyWRAPc::tdav_codec_id_h263p;

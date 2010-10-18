@@ -20,10 +20,13 @@
 #++sn --path ./core-starent.sn
 
 # sip2sip.info
-++sn --path ./sip2sip.info.sn
+#++sn --path ./sip2sip.info.sn
 
 # asterisk
 #++sn --path ./asterisk.sn
 
 # SigComp
 #++sn --path ./sigcomp.sn
+
+# open-ims.test
+++sn --path ./open-ims.test.sn

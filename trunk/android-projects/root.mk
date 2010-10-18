@@ -43,11 +43,11 @@ export CFLAGS_COMMON=$(CFLAGS) $(DEBUG_FLAGS) -I$(ANDROID_NDK_ROOT)/build/platfo
 -DANDROID
 
 export CFLAGS_LIB= $(CFLAGS_COMMON) \
--mthumb \
 -Os \
 -fomit-frame-pointer \
 -fno-strict-aliasing \
 -finline-limit=64
+#-mthumb \
 
 
 export LDFLAGS_COMMON=$(LDFLAGS) -Wl,-rpath=/system/lib,-rpath-link=$(ANDROID_NDK_ROOT)/build/platforms/$(ANDROID_PLATFORM)/arch-arm/usr/lib,-rpath-link=$(OUTPUT_DIR),-dynamic-linker=/system/bin/linker,-T,$(ANDROID_NDK_ROOT)/build/prebuilt/$(ANDROID_HOST)/arm-eabi-$(ANDROID_GCC_VER)/arm-eabi/lib/ldscripts/armelf.xsc -L$(ANDROID_NDK_ROOT)/build/platforms/$(ANDROID_PLATFORM)/arch-arm/usr/lib

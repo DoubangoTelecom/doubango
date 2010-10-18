@@ -928,6 +928,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setCodecs_2")]
   public static extern void SipStack_setCodecs_2(int jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_isCodecSupported")]
+  public static extern bool SipStack_isCodecSupported(int jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_transport_error_get")]
   public static extern int tsip_event_code_dialog_transport_error_get();
 

@@ -153,4 +153,8 @@ public class SipStack extends SafeObject {
     tinyWRAPJNI.SipStack_setCodecs_2(codecs);
   }
 
+  public static boolean isCodecSupported(tdav_codec_id_t codec) {
+    return tinyWRAPJNI.SipStack_isCodecSupported(codec.swigValue());
+  }
+
 }
