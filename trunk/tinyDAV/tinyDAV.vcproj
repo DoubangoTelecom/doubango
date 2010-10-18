@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(PSDK_DIR)include&quot;;&quot;$(DXSDK_DIR)include&quot;;..\thirdparties\win32\include;include;..\tinyMSRP\include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinySDP\include;..\tinyNET\src;..\tinyDSHOW\include;..\tinySAK\src;..\thirdparties\win32\include\BroadVoice16\bvcommon;..\thirdparties\win32\include\BroadVoice16\bv16"
-				PreprocessorDefinitions="HAVE_G729=1;HAVE_BV16=0;HAVE_OPENCORE_AMR=0;HAVE_ILBC=1;HAVE_LIBGSM=1;HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_FFMPEG=1;HAVE_SPEEX_DSP=1;HAVE_LIB_SPEEX=1;FLIP_DECODED_PICT=1;G192BITSTREAM=0;DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT=0x0501;TINYDAV_EXPORTS"
+				PreprocessorDefinitions="HAVE_G729=0;HAVE_BV16=0;HAVE_OPENCORE_AMR=0;HAVE_ILBC=1;HAVE_LIBGSM=1;HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_FFMPEG=1;HAVE_SPEEX_DSP=1;HAVE_LIB_SPEEX=1;FLIP_DECODED_PICT=1;G192BITSTREAM=0;DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT=0x0501;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
