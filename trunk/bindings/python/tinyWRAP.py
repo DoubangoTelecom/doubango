@@ -750,6 +750,8 @@ class SipStack(SafeObject):
     if _newclass:setCodecs = staticmethod(_tinyWRAP.SipStack_setCodecs)
     __swig_getmethods__["setCodecs_2"] = lambda x: _tinyWRAP.SipStack_setCodecs_2
     if _newclass:setCodecs_2 = staticmethod(_tinyWRAP.SipStack_setCodecs_2)
+    __swig_getmethods__["isCodecSupported"] = lambda x: _tinyWRAP.SipStack_isCodecSupported
+    if _newclass:isCodecSupported = staticmethod(_tinyWRAP.SipStack_isCodecSupported)
 SipStack_swigregister = _tinyWRAP.SipStack_swigregister
 SipStack_swigregister(SipStack)
 
@@ -760,6 +762,10 @@ SipStack_setCodecs = _tinyWRAP.SipStack_setCodecs
 def SipStack_setCodecs_2(*args):
   return _tinyWRAP.SipStack_setCodecs_2(*args)
 SipStack_setCodecs_2 = _tinyWRAP.SipStack_setCodecs_2
+
+def SipStack_isCodecSupported(*args):
+  return _tinyWRAP.SipStack_isCodecSupported(*args)
+SipStack_isCodecSupported = _tinyWRAP.SipStack_isCodecSupported
 
 tsip_event_invite = _tinyWRAP.tsip_event_invite
 tsip_event_message = _tinyWRAP.tsip_event_message
@@ -847,7 +853,7 @@ tdav_codec_id_speex_uwb = _tinyWRAP.tdav_codec_id_speex_uwb
 tdav_codec_id_bv16 = _tinyWRAP.tdav_codec_id_bv16
 tdav_codec_id_bv32 = _tinyWRAP.tdav_codec_id_bv32
 tdav_codec_id_evrc = _tinyWRAP.tdav_codec_id_evrc
-tdav_codec_id_g729a = _tinyWRAP.tdav_codec_id_g729a
+tdav_codec_id_g729ab = _tinyWRAP.tdav_codec_id_g729ab
 tdav_codec_id_h261 = _tinyWRAP.tdav_codec_id_h261
 tdav_codec_id_h263 = _tinyWRAP.tdav_codec_id_h263
 tdav_codec_id_h263p = _tinyWRAP.tdav_codec_id_h263p

@@ -10891,6 +10891,34 @@ XS(_wrap_SipStack_setCodecs_2) {
 }
 
 
+XS(_wrap_SipStack_isCodecSupported) {
+  {
+    tdav_codec_id_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: SipStack_isCodecSupported(codec);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "SipStack_isCodecSupported" "', argument " "1"" of type '" "tdav_codec_id_t""'");
+    } 
+    arg1 = static_cast< tdav_codec_id_t >(val1);
+    result = (bool)SipStack::isCodecSupported(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_new_XcapSelector) {
   {
     XcapStack *arg1 = (XcapStack *) 0 ;
@@ -14385,6 +14413,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SipStack_stop", _wrap_SipStack_stop},
 {"tinyWRAPc::SipStack_setCodecs", _wrap_SipStack_setCodecs},
 {"tinyWRAPc::SipStack_setCodecs_2", _wrap_SipStack_setCodecs_2},
+{"tinyWRAPc::SipStack_isCodecSupported", _wrap_SipStack_isCodecSupported},
 {"tinyWRAPc::new_XcapSelector", _wrap_new_XcapSelector},
 {"tinyWRAPc::delete_XcapSelector", _wrap_delete_XcapSelector},
 {"tinyWRAPc::XcapSelector_setAUID", _wrap_XcapSelector_setAUID},
@@ -15240,8 +15269,8 @@ XS(SWIG_init) {
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
-    SV *sv = get_sv((char*) SWIG_prefix "tdav_codec_id_g729a", TRUE | 0x2 | GV_ADDMULTI);
-    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tdav_codec_id_g729a)));
+    SV *sv = get_sv((char*) SWIG_prefix "tdav_codec_id_g729ab", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tdav_codec_id_g729ab)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {

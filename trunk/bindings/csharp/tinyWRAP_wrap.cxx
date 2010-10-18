@@ -4069,6 +4069,18 @@ SWIGEXPORT void SWIGSTDCALL CSharp_SipStack_setCodecs_2(int jarg1) {
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_isCodecSupported(int jarg1) {
+  unsigned int jresult ;
+  tdav_codec_id_t arg1 ;
+  bool result;
+  
+  arg1 = (tdav_codec_id_t)jarg1; 
+  result = (bool)SipStack::isCodecSupported(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_transport_error_get() {
   int jresult ;
   int result;

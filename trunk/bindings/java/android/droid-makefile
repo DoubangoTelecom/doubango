@@ -9,10 +9,21 @@ THIRDPARTIES_LIB := ../../../thirdparties/android/lib
 FFMPEG_LDFLAGS := -lavutil -lswscale -lavcore -lavcodec -lx264 -ltheora -logg
 SPEEX_LDFLAGS := -lspeexdsp -lspeex
 OPENCORE_ARM_LDFLAGS := -lopencore-amrnb
+BV16_LDFLAGS := -lbv16
 ILBC_LDFLAGS := -liLBC
 LIBGSM_LDFLAGS := -lgsm
 
-LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) $(FFMPEG_LDFLAGS) $(SPEEX_LDFLAGS) $(OPENCORE_ARM_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS)\
+ifeq ($(G729), yes)
+	G729_LDFLAGS := -lg729b
+	
+	# Reset all other ITU CODECS
+	OPENCORE_ARM_LDFLAGS :=
+	BV16_LDFLAGS :=
+else
+	G729_LDFLAGS :=
+endif
+
+LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) $(FFMPEG_LDFLAGS) $(SPEEX_LDFLAGS) $(OPENCORE_ARM_LDFLAGS) $(BV16_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) $(G729_LDFLAGS)\
 	-Wl,-Bdynamic -lm -lstdc++ -lgcc -llog \
 	-Wl,-Bstatic -ltinySAK -ltinyHTTP -ltinyXCAP -ltinyIPSec -ltinySIGCOMP -ltinySMS -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA -ltinyMSRP -ltinyDAV -ltinySIP
 

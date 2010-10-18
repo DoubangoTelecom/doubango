@@ -71,6 +71,7 @@ public: /* API functions */
 	
 	static void setCodecs(tdav_codec_id_t codecs);
 	static void setCodecs_2(int codecs); // For stupid languages
+	static bool isCodecSupported(tdav_codec_id_t codec);
 
 public: /* Public helper function */
 #if !defined(SWIG)

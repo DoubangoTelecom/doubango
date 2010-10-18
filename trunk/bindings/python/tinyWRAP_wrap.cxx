@@ -12319,6 +12319,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SipStack_isCodecSupported(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  tdav_codec_id_t arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipStack_isCodecSupported",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "SipStack_isCodecSupported" "', argument " "1"" of type '" "tdav_codec_id_t""'");
+  } 
+  arg1 = static_cast< tdav_codec_id_t >(val1);
+  result = (bool)SipStack::isCodecSupported(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *SipStack_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -15150,6 +15172,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipStack_stop", _wrap_SipStack_stop, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setCodecs", _wrap_SipStack_setCodecs, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setCodecs_2", _wrap_SipStack_setCodecs_2, METH_VARARGS, NULL},
+	 { (char *)"SipStack_isCodecSupported", _wrap_SipStack_isCodecSupported, METH_VARARGS, NULL},
 	 { (char *)"SipStack_swigregister", SipStack_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_XcapSelector", _wrap_new_XcapSelector, METH_VARARGS, NULL},
 	 { (char *)"delete_XcapSelector", _wrap_delete_XcapSelector, METH_VARARGS, NULL},
@@ -16267,7 +16290,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tdav_codec_id_bv16",SWIG_From_int(static_cast< int >(tdav_codec_id_bv16)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_bv32",SWIG_From_int(static_cast< int >(tdav_codec_id_bv32)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_evrc",SWIG_From_int(static_cast< int >(tdav_codec_id_evrc)));
-  SWIG_Python_SetConstant(d, "tdav_codec_id_g729a",SWIG_From_int(static_cast< int >(tdav_codec_id_g729a)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_g729ab",SWIG_From_int(static_cast< int >(tdav_codec_id_g729ab)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h261",SWIG_From_int(static_cast< int >(tdav_codec_id_h261)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h263",SWIG_From_int(static_cast< int >(tdav_codec_id_h263)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h263p",SWIG_From_int(static_cast< int >(tdav_codec_id_h263p)));

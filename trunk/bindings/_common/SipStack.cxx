@@ -324,6 +324,11 @@ void SipStack::setCodecs_2(int codecs) // For stupid languages
 	tdav_set_codecs((tdav_codec_id_t)codecs);
 }
 
+bool SipStack::isCodecSupported(tdav_codec_id_t codec)
+{
+	return tdav_codec_is_supported(codec) ? true : false;
+}
+
 int stack_callback(const tsip_event_t *sipevent)
 {
 	int ret = 0;

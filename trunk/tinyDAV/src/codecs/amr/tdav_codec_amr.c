@@ -37,6 +37,10 @@
 
 #if HAVE_OPENCORE_AMR
 
+#if defined(_MSC_VER)
+#	pragma comment(lib, "..\thirdparties\win32\lib\opencore\libopencore-amrnb.a")
+#endif
+
 #define NO_DATA 15
 #define DEFAULT_ENC_MODE ((enum Mode)MR122) /* Higher, could be changed by remote party by using CMR */
 
