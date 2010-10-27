@@ -227,26 +227,50 @@ tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
 
 		case tdav_codec_id_amr_nb_oa:
 		case tdav_codec_id_amr_nb_be:
-			return HAVE_OPENCORE_AMR;
+#if HAVE_OPENCORE_AMR
+			return tsk_true;
+#else
+			return tsk_false;
+#endif
 		
 		case tdav_codec_id_gsm:
-			return HAVE_LIBGSM;
+#if HAVE_LIBGSM
+			return tsk_true;
+#else
+			return tsk_false;
+#endif
 
 		case tdav_codec_id_pcma:
 		case tdav_codec_id_pcmu:
 			return tsk_true;
 
 		case tdav_codec_id_ilbc:
-			return HAVE_ILBC;
+#if HAVE_ILBC
+			return tsk_true;
+#else
+			return tsk_false;
+#endif
 
 		case tdav_codec_id_speex_nb:
-			return HAVE_LIB_SPEEX;		
+#if HAVE_LIB_SPEEX
+			return tsk_true;
+#else
+			return tsk_false;
+#endif
 		
 		case tdav_codec_id_bv16:
-			return HAVE_BV16;
+#if HAVE_BV16
+			return tsk_true;
+#else
+			return tsk_false;
+#endif
 		
 		case tdav_codec_id_g729ab:
-			return HAVE_G729;
+#if HAVE_G729
+			return tsk_true;
+#else
+			return tsk_false;
+#endif
 		
 		
 		case tdav_codec_id_h261:
@@ -257,7 +281,11 @@ tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
 		case tdav_codec_id_h264_bp20:
 		case tdav_codec_id_h264_bp30:
 		case tdav_codec_id_theora:
-			return HAVE_FFMPEG;
+#if HAVE_FFMPEG
+			return tsk_true;
+#else
+			return tsk_false;
+#endif
 
 		case tdav_codec_id_amr_wb_oa:
 		case tdav_codec_id_amr_wb_be:
