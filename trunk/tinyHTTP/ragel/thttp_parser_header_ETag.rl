@@ -56,15 +56,16 @@
 
 	action parse_entity_tag{
 		TSK_PARSER_SET_STRING(hdr_ETag->value);
+		tsk_strunquote(&hdr_ETag->value);
 	}
 
 	action eob{
 	}
 	
-	weak = "W/"i;
-	opaque_tag = quoted_string;
-	entity_tag = opaque_tag;
-	ETag = "ETag"i HCOLON entity_tag>tag %parse_entity_tag;
+	weak = "W/"i %is_weak;
+	opaque_tag = quoted_string>tag %parse_entity_tag;
+	entity_tag = weak? <: opaque_tag;
+	ETag = "ETag"i HCOLON entity_tag;
 
 	# Entry point
 	main := ETag :>CRLF @eob;
@@ -87,7 +88,9 @@ int thttp_header_ETag_tostring(const thttp_header_t* header, tsk_buffer_t* outpu
 	if(header){
 		const thttp_header_ETag_t *ETag = (const thttp_header_ETag_t*)header;
 		if(ETag->value){
-			return tsk_buffer_append(output, ETag->value, tsk_strlen(ETag->value));
+			return tsk_buffer_append_2(output, "%s\"%s\"",
+				ETag->isWeak ? "W/" : "",
+				ETag->value);
 		}
 		return 0;
 	}
