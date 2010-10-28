@@ -238,15 +238,16 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 	const char *pe = state->pe;
 	const char *eof = state->eof;
 
-	if(extract_content && message)
-	{
+	if(extract_content && message){
 		uint32_t clen = THTTP_MESSAGE_CONTENT_LENGTH(message);
-		if((p+clen) <pe && !message->Content){
-			message->Content = tsk_buffer_create((p+1), clen);
-			p = (p+clen);
-		}
-		else{
-			p = (pe-1);
+		if(clen){
+			if((p + clen)<pe && !message->Content){
+				message->Content = tsk_buffer_create((p+1), clen);
+				p = (p + clen);
+			}
+			else{
+				p = (pe - 1);
+			}
 		}
 	}
 	//%%write eof;
