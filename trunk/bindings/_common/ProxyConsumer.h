@@ -48,6 +48,7 @@ public:
 
 	void setActivate(bool enabled);
 	unsigned pull(void* output, unsigned size);
+	bool reset();
 
 public:
 	static bool registerPlugin();

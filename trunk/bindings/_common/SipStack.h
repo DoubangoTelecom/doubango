@@ -66,6 +66,8 @@ public: /* API functions */
 	char* dnsNaptrSrv(const char* domain, const char* service, unsigned short *OUTPUT);
 	char* dnsSrv(const char* service, unsigned short* OUTPUT);
 
+	char* getPreferredIdentity();
+
 	bool isValid();
 	bool stop();
 	

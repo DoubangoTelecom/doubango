@@ -338,6 +338,18 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		else
 		{	/* No routes associated to this dialog. */
 			if(self->state == tsip_initial || self->state == tsip_early){
+				/*	GPP TS 24.229 section 5.1.2A [Generic procedures applicable to all methods excluding the REGISTER method]:
+					The UE shall build a proper preloaded Route header field value for all new dialogs and standalone transactions. The UE
+					shall build a list of Route header field values made out of the following, in this order:
+					a) the P-CSCF URI containing the IP address or the FQDN learnt through the P-CSCF discovery procedures; and
+					b) the P-CSCF port based on the security mechanism in use:
+						- if IMS AKA or SIP digest with TLS is in use as a security mechanism, the protected server port learnt during
+						the registration procedure;
+						- if SIP digest without TLS, NASS-IMS bundled authentciation or GPRS-IMS-Bundled authentication is in
+						use as a security mechanism, the unprotected server port used during the registration procedure;
+					c) and the values received in the Service-Route header field saved from the 200 (OK) response to the last
+					registration or re-registration of the public user identity with associated contact address.
+				*/
 #if _DEBUG && defined(SDS_HACK)/* FIXME: remove this */
 				/* Ericsson SDS hack (INVITE with Proxy-CSCF as First route fail) */
 #else

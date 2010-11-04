@@ -3886,6 +3886,21 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyAudioConsum
 }
 
 
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyAudioConsumer_1reset(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyAudioConsumer **)&jarg1; 
+  result = (bool)(arg1)->reset();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyAudioConsumer_1registerPlugin(JNIEnv *jenv, jclass jcls) {
   jboolean jresult = 0 ;
   bool result;
@@ -5704,6 +5719,22 @@ SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1dnsS
   }
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
   
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1getPreferredIdentity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipStack **)&jarg1; 
+  result = (char *)(arg1)->getPreferredIdentity();
+  if(result) jresult = jenv->NewStringUTF((const char *)result);
   delete [] result;
   return jresult;
 }

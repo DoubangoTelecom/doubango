@@ -638,6 +638,7 @@ TINYSIP_API int tsip_stack_start(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
 TINYSIP_API const void* tsip_stack_get_userdata(const tsip_stack_handle_t *self);
 TINYSIP_API tnet_dns_ctx_t* tsip_stack_get_dnsctx(tsip_stack_handle_t *self);
+TINYSIP_API tsip_uri_t* tsip_stack_get_preferred_id(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);
 
 #define TSIP_STACK_EVENT_RAISE(stack, status_code, reason_phrase, incoming, type) \

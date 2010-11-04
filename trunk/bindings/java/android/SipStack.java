@@ -137,6 +137,10 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_dnsSrv(swigCPtr, this, service, OUTPUT);
   }
 
+  public String getPreferredIdentity() {
+    return tinyWRAPJNI.SipStack_getPreferredIdentity(swigCPtr, this);
+  }
+
   public boolean isValid() {
     return tinyWRAPJNI.SipStack_isValid(swigCPtr, this);
   }

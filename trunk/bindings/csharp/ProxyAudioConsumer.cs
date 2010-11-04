@@ -71,6 +71,11 @@ public class ProxyAudioConsumer : IDisposable {
     return ret;
   }
 
+  public bool reset() {
+    bool ret = tinyWRAPPINVOKE.ProxyAudioConsumer_reset(swigCPtr);
+    return ret;
+  }
+
   public static bool registerPlugin() {
     bool ret = tinyWRAPPINVOKE.ProxyAudioConsumer_registerPlugin();
     return ret;

@@ -111,6 +111,7 @@ static tsk_bool_t _fsm_cond_bad_content(tsip_dialog_invite_t* self, tsip_message
 {
 	int ret;
 	const tsdp_message_t* sdp_lo;
+	tsk_bool_t bodiless_INVITE = (TSIP_DIALOG(self)->state == tsip_initial && !TSIP_MESSAGE_HAS_CONTENT(message)); // Initial Bodiless INVITE
 
 	/* Check remote offer */
 	if((ret = tsip_dialog_invite_process_ro(self, message))){
@@ -119,8 +120,8 @@ static tsk_bool_t _fsm_cond_bad_content(tsip_dialog_invite_t* self, tsip_message
 	}
 	/* generate local offer and check it's validity */
 	if(self->msession_mgr && (sdp_lo = tmedia_session_mgr_get_lo(self->msession_mgr))){
-		/* check that we have at least one valid session */
-		if(!tmedia_session_mgr_has_active_session(self->msession_mgr)){
+		/* check that we have at least one valid session (Only if no bodiless initial INVITE) */
+		if(!bodiless_INVITE && !tmedia_session_mgr_has_active_session(self->msession_mgr)){
 			ret = send_ERROR(self, message, 488, "Not Acceptable", "SIP; cause=488; text=\"No common codecs\"");
 			return tsk_true;
 		}
@@ -407,7 +408,7 @@ int s0000_InProgress_2_Ringing_X_iPRACK(va_list *app)
 		2. Bob's answer is sent in the first reliable provisional response, in this case it's a 1xx INVITE response
 		3. Alice's answer is sent in the PRACK response
 	*/
-	if(!self->msession_mgr->sdp.ro){
+	if(self->msession_mgr && !self->msession_mgr->sdp.ro){
 		if(TSIP_MESSAGE_HAS_CONTENT(request)){
 			if((ret = tsip_dialog_invite_process_ro(self, request))){
 				/* Send Error and break the FSM */
@@ -556,7 +557,7 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 		tmedia_session_mgr_set_3(self->msession_mgr, action->media.params);
 	}
 	/* start session manager */
-	if(self->msession_mgr && !self->msession_mgr->started){
+	if(self->msession_mgr && !self->msession_mgr->started && (self->msession_mgr->sdp.lo && self->msession_mgr->sdp.ro)){
 		/* Set MSRP Callback */
 		if((self->msession_mgr->type & tmedia_msrp) == tmedia_msrp){
 			tmedia_session_mgr_set_msrp_cb(self->msession_mgr, TSIP_DIALOG_GET_SS(self)->userdata, TSIP_DIALOG_GET_SS(self)->media.msrp.callback);

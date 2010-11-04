@@ -101,7 +101,7 @@ int x0000_Any_2_Any_X_i1xx(va_list *app);
 int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app);
 int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app);
 
-int x0000_Any_2_Any_X_iPACK(va_list *app);
+int x0000_Any_2_Any_X_iPRACK(va_list *app);
 int x0000_Any_2_Any_X_iOPTIONS(va_list *app);
 int x0000_Any_2_Trying_X_oBYE(va_list *app); /* If not Connected => Cancel will be called instead. See tsip_dialog_hangup() */
 int x0000_Any_2_Terminated_X_iBYE(va_list *app);
@@ -312,7 +312,7 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		// Any -> (i401/407)
 		//
 		// Any -> (iPRACK) -> Any
-		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_iPRACK, tsk_fsm_state_any, x0000_Any_2_Any_X_iPACK, "x0000_Any_2_Any_X_iPACK"),
+		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_iPRACK, tsk_fsm_state_any, x0000_Any_2_Any_X_iPRACK, "x0000_Any_2_Any_X_iPRACK"),
 		// Any -> (iOPTIONS) -> Any
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_iOPTIONS, tsk_fsm_state_any, x0000_Any_2_Any_X_iOPTIONS, "x0000_Any_2_Any_X_iOPTIONS"),
 		// Any -> (i2xx INVITE) -> Any
@@ -380,8 +380,12 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 		}
 	}
 	else{
-		/* Ignore it */
-		return 0;
+		if(TSIP_DIALOG(self)->state == tsip_initial && TSIP_REQUEST_IS_INVITE(message)){ /* Bodiless initial INVITE */
+			TSIP_DIALOG_GET_SS(self)->media.type = tmedia_audio; // Default media for initial INVITE to send with the first reliable answer
+		}
+		else{
+			return 0;
+		}
 	}
 
 	/* Create session Manager if not already done */
@@ -453,8 +457,15 @@ int x0000_Connected_2_Connected_X_iACK(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	const tsip_request_t *rACK = va_arg(*app, const tsip_request_t *);
+	int ret;
 
 	// Nothing to do (in future will be used to ensure the session)
+	
+	/* Process remote offer */
+	if((ret = tsip_dialog_invite_process_ro(self, rACK))){
+		/* Send error */
+		return ret;
+	}
 
 	/* alert the user */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_request, 
@@ -498,7 +509,7 @@ int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app)
 }
 
 /* Any -> (iPRACK) -> Any */
-int x0000_Any_2_Any_X_iPACK(va_list *app)
+int x0000_Any_2_Any_X_iPRACK(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	const tsip_request_t *rPRACK = va_arg(*app, const tsip_request_t *);
@@ -712,6 +723,13 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bo
 {
 	int ret = -1;
 	tsip_request_t *request = tsk_null;
+	tsk_bool_t bodiless = tsk_false;
+
+#if BODILESS_INVITE
+	if(TSIP_DIALOG(self)->state == tsip_initial){
+		bodiless = tsk_true;
+	}
+#endif
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -725,14 +743,16 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bo
 			tsip_dialog_apply_action(request, TSIP_DIALOG(self)->curr_action);
 		}
 		
-		/* add our payload if current action does not have one */
-		if((force_sdp || is_INVITE) || ((self->msession_mgr && self->msession_mgr->state_changed) || (TSIP_DIALOG(self)->state == tsip_initial))){
-			if(!TSIP_DIALOG(self)->curr_action || !TSIP_DIALOG(self)->curr_action->payload){
-				const tsdp_message_t* sdp_lo;
-				char* sdp;
-				if((sdp_lo = tmedia_session_mgr_get_lo(self->msession_mgr)) && (sdp = tsdp_message_tostring(sdp_lo))){
-					tsip_message_add_content(request, "application/sdp", sdp, tsk_strlen(sdp));
-					TSK_FREE(sdp);
+		if(!bodiless){
+			/* add our payload if current action does not have one */
+			if((force_sdp || is_INVITE) || ((self->msession_mgr && self->msession_mgr->state_changed) || (TSIP_DIALOG(self)->state == tsip_initial))){
+				if(!TSIP_DIALOG(self)->curr_action || !TSIP_DIALOG(self)->curr_action->payload){
+					const tsdp_message_t* sdp_lo;
+					char* sdp;
+					if((sdp_lo = tmedia_session_mgr_get_lo(self->msession_mgr)) && (sdp = tsdp_message_tostring(sdp_lo))){
+						tsip_message_add_content(request, "application/sdp", sdp, tsk_strlen(sdp));
+						TSK_FREE(sdp);
+					}
 				}
 			}
 		}
@@ -868,6 +888,21 @@ int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx)
 	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_RACK_VA_ARGS(self->rseq, r1xx->CSeq->seq, r1xx->CSeq->method));
 	//TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS("Test", "value"));
 
+	/*	Initial INVITE was a bodiless request and 100rel is supported (I'm Alice)
+		1. Alice sends an initial INVITE without offer
+		2. Bob's answer is sent in the first reliable provisional response, in this case it's a 1xx INVITE response
+		3. Alice's answer is sent in the PRACK response
+	*/
+	if(self->is_client && (self->last_oInvite && !TSIP_MESSAGE_HAS_CONTENT(self->last_oInvite))){
+		const tsdp_message_t* sdp_lo;
+		char* sdp;
+		if((sdp_lo = tmedia_session_mgr_get_lo(self->msession_mgr)) && (sdp = tsdp_message_tostring(sdp_lo))){
+			tsip_message_add_content(request, "application/sdp", sdp, tsk_strlen(sdp));
+			TSK_FREE(sdp);
+		}
+	}
+
+	// Send request
 	ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
 	
 bail:
@@ -1019,6 +1054,29 @@ int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE)
 	}	
 
 	if((request = tsip_dialog_request_new(TSIP_DIALOG(self), "ACK"))){
+
+		/* The initial INVITE sent by us was a bodiless request and we don't support 100rel (We are Alice)
+		   1. Alice sends initial INVITE without offer
+		   2. Bob's offer is sent in the 2xx INVITE response
+		   3. Alice's answer is sent in the ACK request
+		*/
+		if(self->is_client && (self->last_oInvite && !TSIP_MESSAGE_HAS_CONTENT(self->last_oInvite))){
+			const tsdp_message_t* sdp_lo;
+			char* sdp;
+			if((sdp_lo = tmedia_session_mgr_get_lo(self->msession_mgr)) && (sdp = tsdp_message_tostring(sdp_lo))){
+				tsip_message_add_content(request, "application/sdp", sdp, tsk_strlen(sdp));
+				TSK_FREE(sdp);
+			}
+
+			// Start media session if not done
+			if(!self->msession_mgr->started && (self->msession_mgr->sdp.lo && self->msession_mgr->sdp.ro)){
+				/* Set MSRP Callback */
+				if((self->msession_mgr->type & tmedia_msrp) == tmedia_msrp){
+					tmedia_session_mgr_set_msrp_cb(self->msession_mgr, TSIP_DIALOG_GET_SS(self)->userdata, TSIP_DIALOG_GET_SS(self)->media.msrp.callback);
+				}
+				ret = tmedia_session_mgr_start(self->msession_mgr);
+			}
+		}
 
 		/*	RFC 3261 - 13.2.2.4 2xx Responses
 		   The UAC core MUST generate an ACK request for each 2xx received from

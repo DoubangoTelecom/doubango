@@ -165,6 +165,11 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public string getPreferredIdentity() {
+    string ret = tinyWRAPPINVOKE.SipStack_getPreferredIdentity(swigCPtr);
+    return ret;
+  }
+
   public bool isValid() {
     bool ret = tinyWRAPPINVOKE.SipStack_isValid(swigCPtr);
     return ret;
