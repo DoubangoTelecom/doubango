@@ -957,6 +957,7 @@ sub DESTROY {
 *stop = *tinyWRAPc::ProxyAudioConsumer_stop;
 *setActivate = *tinyWRAPc::ProxyAudioConsumer_setActivate;
 *pull = *tinyWRAPc::ProxyAudioConsumer_pull;
+*reset = *tinyWRAPc::ProxyAudioConsumer_reset;
 *registerPlugin = *tinyWRAPc::ProxyAudioConsumer_registerPlugin;
 sub DISOWN {
     my $self = shift;
@@ -1270,6 +1271,7 @@ sub DESTROY {
 *dnsENUM = *tinyWRAPc::SipStack_dnsENUM;
 *dnsNaptrSrv = *tinyWRAPc::SipStack_dnsNaptrSrv;
 *dnsSrv = *tinyWRAPc::SipStack_dnsSrv;
+*getPreferredIdentity = *tinyWRAPc::SipStack_getPreferredIdentity;
 *isValid = *tinyWRAPc::SipStack_isValid;
 *stop = *tinyWRAPc::SipStack_stop;
 *setCodecs = *tinyWRAPc::SipStack_setCodecs;

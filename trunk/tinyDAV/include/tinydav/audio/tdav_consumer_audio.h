@@ -70,6 +70,7 @@ TINYDAV_API int tdav_consumer_audio_cmp(const tsk_object_t* consumer1, const tsk
 #define tdav_consumer_audio_stop(self) tmedia_consumer_stop(TDAV_CONSUMER_AUDIO(self))
 TINYDAV_API int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data, tsk_size_t size, const tsk_object_t* proto_hdr);
 TINYDAV_API void* tdav_consumer_audio_get(tdav_consumer_audio_t* self);
+TINYDAV_API int tdav_consumer_audio_reset(tdav_consumer_audio_t* self);
 TINYDAV_API int tdav_consumer_audio_deinit(tdav_consumer_audio_t* self);
 
 #define TDAV_DECLARE_CONSUMER_AUDIO tdav_consumer_audio_t __consumer_audio__

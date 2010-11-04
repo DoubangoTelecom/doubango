@@ -741,6 +741,19 @@ tnet_dns_ctx_t* tsip_stack_get_dnsctx(tsip_stack_handle_t *self)
 }
 
 /**@ingroup tsip_stack_group
+*/
+tsip_uri_t* tsip_stack_get_preferred_id(tsip_stack_handle_t *self)
+{
+	if(self){
+		return (tsip_uri_t*)tsk_object_ref(((tsip_stack_t *)self)->identity.preferred);
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+}
+
+/**@ingroup tsip_stack_group
 * Stops the stack.
 * @param self The 3GPP IMS/LTE stack to stop. This handle should be created using @ref tsip_stack_create() and started using tsip_stack_start().
 * This function is also called by the garbage collector when the stack is destroyed but you should call it yourself before destroying the stack.<br>

@@ -9513,6 +9513,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_reset(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioConsumer_reset",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_reset" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
+  result = (bool)(arg1)->reset();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_registerPlugin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   bool result;
@@ -12229,6 +12251,29 @@ SWIGINTERN PyObject *_wrap_SipStack_dnsSrv(PyObject *SWIGUNUSEDPARM(self), PyObj
   return resultobj;
 fail:
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_getPreferredIdentity(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipStack_getPreferredIdentity",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_getPreferredIdentity" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  result = (char *)(arg1)->getPreferredIdentity();
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  delete[] result;
+  return resultobj;
+fail:
   return NULL;
 }
 
@@ -15083,6 +15128,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"ProxyAudioConsumer_stop", _wrap_ProxyAudioConsumer_stop, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_setActivate", _wrap_ProxyAudioConsumer_setActivate, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_pull", _wrap_ProxyAudioConsumer_pull, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioConsumer_reset", _wrap_ProxyAudioConsumer_reset, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_registerPlugin", _wrap_ProxyAudioConsumer_registerPlugin, METH_VARARGS, NULL},
 	 { (char *)"disown_ProxyAudioConsumer", _wrap_disown_ProxyAudioConsumer, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_swigregister", ProxyAudioConsumer_swigregister, METH_VARARGS, NULL},
@@ -15168,6 +15214,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipStack_dnsENUM", _wrap_SipStack_dnsENUM, METH_VARARGS, NULL},
 	 { (char *)"SipStack_dnsNaptrSrv", _wrap_SipStack_dnsNaptrSrv, METH_VARARGS, NULL},
 	 { (char *)"SipStack_dnsSrv", _wrap_SipStack_dnsSrv, METH_VARARGS, NULL},
+	 { (char *)"SipStack_getPreferredIdentity", _wrap_SipStack_getPreferredIdentity, METH_VARARGS, NULL},
 	 { (char *)"SipStack_isValid", _wrap_SipStack_isValid, METH_VARARGS, NULL},
 	 { (char *)"SipStack_stop", _wrap_SipStack_stop, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setCodecs", _wrap_SipStack_setCodecs, METH_VARARGS, NULL},

@@ -77,6 +77,10 @@ public class ProxyAudioConsumer {
     return tinyWRAPJNI.ProxyAudioConsumer_pull(swigCPtr, this, output, size);
   }
 
+  public boolean reset() {
+    return tinyWRAPJNI.ProxyAudioConsumer_reset(swigCPtr, this);
+  }
+
   public static boolean registerPlugin() {
     return tinyWRAPJNI.ProxyAudioConsumer_registerPlugin();
   }

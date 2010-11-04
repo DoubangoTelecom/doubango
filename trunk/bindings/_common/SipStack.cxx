@@ -303,6 +303,17 @@ char* SipStack::dnsSrv(const char* service, unsigned short* OUTPUT)
 	}
 }
 
+char* SipStack::getPreferredIdentity()
+{
+	tsip_uri_t* ppid = tsip_stack_get_preferred_id(this->handle);
+	char* str_ppid = tsk_null;
+	if(ppid){
+		str_ppid = tsip_uri_tostring(ppid, tsk_false, tsk_false);
+		TSK_OBJECT_SAFE_FREE(ppid);
+	}
+	return str_ppid;
+}
+
 bool SipStack::isValid()
 {
 	return (this->handle != tsk_null);

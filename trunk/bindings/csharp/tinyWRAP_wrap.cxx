@@ -2729,6 +2729,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyAudioConsumer_pull(void * jarg1,
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyAudioConsumer_reset(void * jarg1) {
+  unsigned int jresult ;
+  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  bool result;
+  
+  arg1 = (ProxyAudioConsumer *)jarg1; 
+  result = (bool)(arg1)->reset();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyAudioConsumer_registerPlugin() {
   unsigned int jresult ;
   bool result;
@@ -4023,6 +4035,19 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_dnsSrv(void * jarg1, char * jarg2,
   arg2 = (char *)jarg2; 
   arg3 = (unsigned short *)jarg3; 
   result = (char *)(arg1)->dnsSrv((char const *)arg2,arg3);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_getPreferredIdentity(void * jarg1) {
+  char * jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SipStack *)jarg1; 
+  result = (char *)(arg1)->getPreferredIdentity();
   jresult = SWIG_csharp_string_callback((const char *)result); 
   delete [] result;
   return jresult;

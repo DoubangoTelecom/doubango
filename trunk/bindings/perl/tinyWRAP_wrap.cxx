@@ -8077,6 +8077,34 @@ XS(_wrap_ProxyAudioConsumer_pull) {
 }
 
 
+XS(_wrap_ProxyAudioConsumer_reset) {
+  {
+    ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyAudioConsumer_reset(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_reset" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
+    result = (bool)(arg1)->reset();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_ProxyAudioConsumer_registerPlugin) {
   {
     int argvi = 0;
@@ -10775,6 +10803,35 @@ XS(_wrap_SipStack_dnsSrv) {
   fail:
     
     if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipStack_getPreferredIdentity) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: SipStack_getPreferredIdentity(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_getPreferredIdentity" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    result = (char *)(arg1)->getPreferredIdentity();
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    
+    delete[] result;
+    XSRETURN(argvi);
+  fail:
     
     SWIG_croak_null();
   }
@@ -14336,6 +14393,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::ProxyAudioConsumer_stop", _wrap_ProxyAudioConsumer_stop},
 {"tinyWRAPc::ProxyAudioConsumer_setActivate", _wrap_ProxyAudioConsumer_setActivate},
 {"tinyWRAPc::ProxyAudioConsumer_pull", _wrap_ProxyAudioConsumer_pull},
+{"tinyWRAPc::ProxyAudioConsumer_reset", _wrap_ProxyAudioConsumer_reset},
 {"tinyWRAPc::ProxyAudioConsumer_registerPlugin", _wrap_ProxyAudioConsumer_registerPlugin},
 {"tinyWRAPc::new_ProxyVideoConsumer", _wrap_new_ProxyVideoConsumer},
 {"tinyWRAPc::delete_ProxyVideoConsumer", _wrap_delete_ProxyVideoConsumer},
@@ -14409,6 +14467,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SipStack_dnsENUM", _wrap_SipStack_dnsENUM},
 {"tinyWRAPc::SipStack_dnsNaptrSrv", _wrap_SipStack_dnsNaptrSrv},
 {"tinyWRAPc::SipStack_dnsSrv", _wrap_SipStack_dnsSrv},
+{"tinyWRAPc::SipStack_getPreferredIdentity", _wrap_SipStack_getPreferredIdentity},
 {"tinyWRAPc::SipStack_isValid", _wrap_SipStack_isValid},
 {"tinyWRAPc::SipStack_stop", _wrap_SipStack_stop},
 {"tinyWRAPc::SipStack_setCodecs", _wrap_SipStack_setCodecs},

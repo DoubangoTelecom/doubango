@@ -619,6 +619,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_pull")]
   public static extern uint ProxyAudioConsumer_pull(HandleRef jarg1, byte[] jarg2, uint jarg3);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_reset")]
+  public static extern bool ProxyAudioConsumer_reset(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_registerPlugin")]
   public static extern bool ProxyAudioConsumer_registerPlugin();
 
@@ -915,6 +918,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_dnsSrv")]
   public static extern string SipStack_dnsSrv(HandleRef jarg1, string jarg2, out ushort jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_getPreferredIdentity")]
+  public static extern string SipStack_getPreferredIdentity(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_isValid")]
   public static extern bool SipStack_isValid(HandleRef jarg1);

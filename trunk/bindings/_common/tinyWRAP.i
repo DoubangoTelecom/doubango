@@ -24,6 +24,7 @@
 %newobject SipStack::dnsENUM;
 %newobject SipStack::dnsNaptrSrv;
 %newobject SipStack::dnsSrv;
+%newobject SipStack::getPreferredIdentity;
 
 %newobject MessagingEvent::takeSessionOwnership;
 %newobject InviteEvent::takeCallSessionOwnership;

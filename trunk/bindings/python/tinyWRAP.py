@@ -524,6 +524,7 @@ class ProxyAudioConsumer(_object):
     def stop(self): return _tinyWRAP.ProxyAudioConsumer_stop(self)
     def setActivate(self, *args): return _tinyWRAP.ProxyAudioConsumer_setActivate(self, *args)
     def pull(self, *args): return _tinyWRAP.ProxyAudioConsumer_pull(self, *args)
+    def reset(self): return _tinyWRAP.ProxyAudioConsumer_reset(self)
     __swig_getmethods__["registerPlugin"] = lambda x: _tinyWRAP.ProxyAudioConsumer_registerPlugin
     if _newclass:registerPlugin = staticmethod(_tinyWRAP.ProxyAudioConsumer_registerPlugin)
     def __disown__(self):
@@ -744,6 +745,7 @@ class SipStack(SafeObject):
     def dnsENUM(self, *args): return _tinyWRAP.SipStack_dnsENUM(self, *args)
     def dnsNaptrSrv(self, *args): return _tinyWRAP.SipStack_dnsNaptrSrv(self, *args)
     def dnsSrv(self, *args): return _tinyWRAP.SipStack_dnsSrv(self, *args)
+    def getPreferredIdentity(self): return _tinyWRAP.SipStack_getPreferredIdentity(self)
     def isValid(self): return _tinyWRAP.SipStack_isValid(self)
     def stop(self): return _tinyWRAP.SipStack_stop(self)
     __swig_getmethods__["setCodecs"] = lambda x: _tinyWRAP.SipStack_setCodecs

@@ -154,6 +154,7 @@ class tinyWRAPJNI {
   public final static native int ProxyAudioConsumer_stopSwigExplicitProxyAudioConsumer(long jarg1, ProxyAudioConsumer jarg1_);
   public final static native void ProxyAudioConsumer_setActivate(long jarg1, ProxyAudioConsumer jarg1_, boolean jarg2);
   public final static native long ProxyAudioConsumer_pull(long jarg1, ProxyAudioConsumer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native boolean ProxyAudioConsumer_reset(long jarg1, ProxyAudioConsumer jarg1_);
   public final static native boolean ProxyAudioConsumer_registerPlugin();
   public final static native void ProxyAudioConsumer_director_connect(ProxyAudioConsumer obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void ProxyAudioConsumer_change_ownership(ProxyAudioConsumer obj, long cptr, boolean take_or_release);
@@ -258,6 +259,7 @@ class tinyWRAPJNI {
   public final static native String SipStack_dnsENUM(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4);
   public final static native String SipStack_dnsNaptrSrv(long jarg1, SipStack jarg1_, String jarg2, String jarg3, int[] jarg4);
   public final static native String SipStack_dnsSrv(long jarg1, SipStack jarg1_, String jarg2, int[] jarg3);
+  public final static native String SipStack_getPreferredIdentity(long jarg1, SipStack jarg1_);
   public final static native boolean SipStack_isValid(long jarg1, SipStack jarg1_);
   public final static native boolean SipStack_stop(long jarg1, SipStack jarg1_);
   public final static native void SipStack_setCodecs(int jarg1);

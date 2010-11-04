@@ -211,6 +211,14 @@ unsigned ProxyAudioConsumer::pull(void* output, unsigned size)
 	return 0;
 }
 
+bool ProxyAudioConsumer::reset()
+{
+	if(this->consumer){
+		return (tdav_consumer_audio_reset(TDAV_CONSUMER_AUDIO(this->consumer)) == 0);
+	}
+	return false;
+}
+
 void ProxyAudioConsumer::takeConsumer(twrap_consumer_proxy_audio_t* _consumer)
 {
 	if(!this->consumer){

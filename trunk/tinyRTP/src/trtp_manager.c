@@ -306,6 +306,20 @@ int trtp_manager_start(trtp_manager_t* self)
 		/* do not exit */
 	}
 
+
+#if 0
+			{
+				int flags;
+				if((flags = fcntl(self->transport->master->fd, F_GETFL, 0)) < 0) { 
+					TNET_PRINT_LAST_ERROR("fcntl(F_GETFL) have failed.");
+				}
+				else{
+					if(fcntl(self->transport->master->fd, F_SETFL, flags | O_DIRECT) < 0){ 
+						TNET_PRINT_LAST_ERROR("fcntl(O_DIRECT) have failed.");
+					}
+				}
+			}
+#endif
 	self->started = tsk_true;
 
 	return 0;
