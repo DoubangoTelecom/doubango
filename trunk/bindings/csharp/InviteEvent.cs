@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -64,5 +65,7 @@ public class InviteEvent : SipEvent {
     MsrpSession ret = (cPtr == IntPtr.Zero) ? null : new MsrpSession(cPtr, true);
     return ret;
   }
+
+}
 
 }

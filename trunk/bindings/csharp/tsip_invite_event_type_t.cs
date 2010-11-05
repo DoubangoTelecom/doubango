@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 public enum tsip_invite_event_type_t {
   tsip_i_newcall,
@@ -21,4 +22,6 @@ public enum tsip_invite_event_type_t {
   tsip_m_local_resume_nok,
   tsip_m_remote_hold,
   tsip_m_remote_resume
+}
+
 }

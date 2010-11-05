@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -85,5 +86,7 @@ public class SipUri : IDisposable {
     string ret = tinyWRAPPINVOKE.SipUri_getParamValue(swigCPtr, pname);
     return ret;
   }
+
+}
 
 }

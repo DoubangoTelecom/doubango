@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -166,4 +167,6 @@ public class SipCallback : IDisposable {
   private static Type[] swigMethodTypes5 = new Type[] { typeof(PublicationEvent) };
   private static Type[] swigMethodTypes6 = new Type[] { typeof(RegistrationEvent) };
   private static Type[] swigMethodTypes7 = new Type[] { typeof(SubscriptionEvent) };
+}
+
 }

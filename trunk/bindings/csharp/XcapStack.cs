@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -90,5 +91,7 @@ public class XcapStack : IDisposable {
     bool ret = tinyWRAPPINVOKE.XcapStack_stop(swigCPtr);
     return ret;
   }
+
+}
 
 }

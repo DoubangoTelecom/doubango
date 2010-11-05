@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -49,5 +50,7 @@ public class RegistrationSession : SipSession {
     bool ret = tinyWRAPPINVOKE.RegistrationSession_unRegister(swigCPtr);
     return ret;
   }
+
+}
 
 }

@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -54,5 +55,7 @@ public class MsrpEvent : IDisposable {
     MsrpMessage ret = (cPtr == IntPtr.Zero) ? null : new MsrpMessage(cPtr, false);
     return ret;
   }
+
+}
 
 }

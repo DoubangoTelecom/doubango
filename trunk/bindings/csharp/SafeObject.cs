@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -50,5 +51,7 @@ public class SafeObject : IDisposable {
     int ret = tinyWRAPPINVOKE.SafeObject_UnLock(swigCPtr);
     return ret;
   }
+
+}
 
 }

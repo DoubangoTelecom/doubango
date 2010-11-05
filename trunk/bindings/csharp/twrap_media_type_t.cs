@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 public enum twrap_media_type_t {
   twrap_media_none,
@@ -13,4 +14,6 @@ public enum twrap_media_type_t {
   twrap_media_video,
   twrap_media_audiovideo,
   twrap_media_msrp
+}
+
 }

@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -55,5 +56,7 @@ public class SdpMessage : IDisposable {
     string ret = tinyWRAPPINVOKE.SdpMessage_getSdpHeaderAValue(swigCPtr, media, attributeName);
     return ret;
   }
+
+}
 
 }

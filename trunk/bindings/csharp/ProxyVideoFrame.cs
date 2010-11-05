@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -47,5 +48,7 @@ public class ProxyVideoFrame : IDisposable {
     uint ret = tinyWRAPPINVOKE.ProxyVideoFrame_getContent(swigCPtr, output, maxsize);
     return ret;
   }
+
+}
 
 }

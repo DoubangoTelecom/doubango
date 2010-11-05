@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -67,5 +68,7 @@ public class SMSEncoder : IDisposable {
     SMSData ret = (cPtr == IntPtr.Zero) ? null : new SMSData(cPtr, true);
     return ret;
   }
+
+}
 
 }

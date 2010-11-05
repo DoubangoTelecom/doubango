@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 public enum twrap_sms_type_t {
   twrap_sms_type_none,
@@ -13,4 +14,6 @@ public enum twrap_sms_type_t {
   twrap_sms_type_smma,
   twrap_sms_type_ack,
   twrap_sms_type_error
+}
+
 }

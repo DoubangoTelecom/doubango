@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -109,5 +110,7 @@ public class CallSession : InviteSession {
     bool ret = tinyWRAPPINVOKE.CallSession_sendDTMF(swigCPtr, number);
     return ret;
   }
+
+}
 
 }

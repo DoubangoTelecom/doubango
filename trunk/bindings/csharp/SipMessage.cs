@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -86,5 +87,7 @@ public class SipMessage : IDisposable {
     SdpMessage ret = (cPtr == IntPtr.Zero) ? null : new SdpMessage(cPtr, false);
     return ret;
   }
+
+}
 
 }
