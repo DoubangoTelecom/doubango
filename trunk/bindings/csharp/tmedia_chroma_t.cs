@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 public enum tmedia_chroma_t {
   tmedia_rgb24,
@@ -17,4 +18,6 @@ public enum tmedia_chroma_t {
   tmedia_yuv422p,
   tmedia_uyvy422,
   tmedia_yuv420p
+}
+
 }

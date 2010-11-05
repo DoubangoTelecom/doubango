@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 public enum tsip_event_type_t {
   tsip_event_invite,
@@ -15,4 +16,6 @@ public enum tsip_event_type_t {
   tsip_event_register,
   tsip_event_subscribe,
   tsip_event_dialog
+}
+
 }

@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 public enum tmedia_qos_strength_t {
   tmedia_qos_strength_none,
@@ -13,4 +14,6 @@ public enum tmedia_qos_strength_t {
   tmedia_qos_strength_unknown,
   tmedia_qos_strength_optional,
   tmedia_qos_strength_mandatory
+}
+
 }

@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -89,5 +90,7 @@ public class MsrpMessage : IDisposable {
     uint ret = tinyWRAPPINVOKE.MsrpMessage_getMsrpContent(swigCPtr, output, maxsize);
     return ret;
   }
+
+}
 
 }

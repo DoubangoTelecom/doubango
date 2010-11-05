@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -60,5 +61,7 @@ public class DDebugCallback : IDisposable {
     int ret = tinyWRAPPINVOKE.DDebugCallback_OnDebugFatal(swigCPtr, message);
     return ret;
   }
+
+}
 
 }

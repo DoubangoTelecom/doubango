@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 public enum tdav_codec_id_t {
   tdav_codec_id_amr_nb_oa = 0x00000001 << 0,
@@ -31,4 +32,6 @@ public enum tdav_codec_id_t {
   tdav_codec_id_h264_bp20 = 0x00010000 << 5,
   tdav_codec_id_h264_bp30 = 0x00010000 << 6,
   tdav_codec_id_theora = 0x00010000 << 7
+}
+
 }

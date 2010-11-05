@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -138,4 +139,6 @@ public class ProxyVideoConsumer : IDisposable {
   private static Type[] swigMethodTypes2 = new Type[] {  };
   private static Type[] swigMethodTypes3 = new Type[] {  };
   private static Type[] swigMethodTypes4 = new Type[] {  };
+}
+
 }

@@ -6,10 +6,13 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 public enum tmsrp_request_type_t {
   tmsrp_NONE = 0,
   tmsrp_SEND,
   tmsrp_REPORT,
   tmsrp_AUTH
+}
+
 }

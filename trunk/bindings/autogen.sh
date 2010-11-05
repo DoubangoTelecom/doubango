@@ -1,6 +1,6 @@
 ##### CSharp
 echo "--->CSharp...<---"
-swig -c++ -csharp -outdir csharp -o csharp/tinyWRAP_wrap.cxx csharp/csharp.i
+swig -c++ -csharp -namespace org.doubango.tinyWRAP -outdir csharp -o csharp/tinyWRAP_wrap.cxx csharp/csharp.i
 
 ##### Objective-C
 #echo "--->Objective-C...<---"

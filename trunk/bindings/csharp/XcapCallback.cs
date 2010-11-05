@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -68,4 +69,6 @@ public class XcapCallback : IDisposable {
   private SwigDelegateXcapCallback_0 swigDelegate0;
 
   private static Type[] swigMethodTypes0 = new Type[] { typeof(XcapEvent) };
+}
+
 }

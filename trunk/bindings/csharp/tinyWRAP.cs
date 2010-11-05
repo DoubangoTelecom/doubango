@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -25,4 +26,6 @@ public class tinyWRAP {
   public static readonly int tsip_event_code_stack_stopped = tinyWRAPPINVOKE.tsip_event_code_stack_stopped_get();
   public static readonly int tsip_event_code_stack_failed_to_start = tinyWRAPPINVOKE.tsip_event_code_stack_failed_to_start_get();
   public static readonly int tsip_event_code_stack_failed_to_stop = tinyWRAPPINVOKE.tsip_event_code_stack_failed_to_stop_get();
+}
+
 }

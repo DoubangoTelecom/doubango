@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -192,5 +193,7 @@ public class SipStack : SafeObject {
     bool ret = tinyWRAPPINVOKE.SipStack_isCodecSupported((int)codec);
     return ret;
   }
+
+}
 
 }

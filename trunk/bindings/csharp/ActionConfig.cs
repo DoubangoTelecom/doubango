@@ -6,6 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
+namespace org.doubango.tinyWRAP {
 
 using System;
 using System.Runtime.InteropServices;
@@ -57,5 +58,7 @@ public class ActionConfig : IDisposable {
     ActionConfig ret = (cPtr == IntPtr.Zero) ? null : new ActionConfig(cPtr, false);
     return ret;
   }
+
+}
 
 }
