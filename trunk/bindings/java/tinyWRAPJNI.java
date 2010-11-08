@@ -203,6 +203,8 @@ class tinyWRAPJNI {
   public final static native int ProxyVideoProducer_pauseSwigExplicitProxyVideoProducer(long jarg1, ProxyVideoProducer jarg1_);
   public final static native int ProxyVideoProducer_stop(long jarg1, ProxyVideoProducer jarg1_);
   public final static native int ProxyVideoProducer_stopSwigExplicitProxyVideoProducer(long jarg1, ProxyVideoProducer jarg1_);
+  public final static native int ProxyVideoProducer_getRotation(long jarg1, ProxyVideoProducer jarg1_);
+  public final static native void ProxyVideoProducer_setRotation(long jarg1, ProxyVideoProducer jarg1_, int jarg2);
   public final static native void ProxyVideoProducer_setActivate(long jarg1, ProxyVideoProducer jarg1_, boolean jarg2);
   public final static native int ProxyVideoProducer_push(long jarg1, ProxyVideoProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native boolean ProxyVideoProducer_registerPlugin();

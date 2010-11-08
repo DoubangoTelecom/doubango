@@ -3296,6 +3296,28 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_stopSwigExplicitProxyVideoP
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_getRotation(void * jarg1) {
+  int jresult ;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  int result;
+  
+  arg1 = (ProxyVideoProducer *)jarg1; 
+  result = (int)(arg1)->getRotation();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoProducer_setRotation(void * jarg1, int jarg2) {
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  int arg2 ;
+  
+  arg1 = (ProxyVideoProducer *)jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->setRotation(arg2);
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoProducer_setActivate(void * jarg1, unsigned int jarg2) {
   ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
   bool arg2 ;

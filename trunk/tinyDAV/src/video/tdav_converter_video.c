@@ -146,7 +146,11 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 	/* Wrap the destination buffer */
 	ret = avpicture_fill((AVPicture *)self->dstFrame, (uint8_t*)*output, dstFormat, self->dstWidth, self->dstHeight);
 
-	/* performs conversion */
+	/* === performs conversion === */
+	if(self->rotation){
+		// Implement rotation here!
+	}
+	// chroma conversion
 	ret = sws_scale(self->context, self->srcFrame->data, self->srcFrame->linesize, 0, self->srcHeight,
 		self->dstFrame->data, self->dstFrame->linesize);
 	if(ret < 0){

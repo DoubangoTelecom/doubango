@@ -69,6 +69,14 @@ public class ProxyVideoProducer {
     return (getClass() == ProxyVideoProducer.class) ? tinyWRAPJNI.ProxyVideoProducer_stop(swigCPtr, this) : tinyWRAPJNI.ProxyVideoProducer_stopSwigExplicitProxyVideoProducer(swigCPtr, this);
   }
 
+  public int getRotation() {
+    return tinyWRAPJNI.ProxyVideoProducer_getRotation(swigCPtr, this);
+  }
+
+  public void setRotation(int rot) {
+    tinyWRAPJNI.ProxyVideoProducer_setRotation(swigCPtr, this, rot);
+  }
+
   public void setActivate(boolean enabled) {
     tinyWRAPJNI.ProxyVideoProducer_setActivate(swigCPtr, this, enabled);
   }

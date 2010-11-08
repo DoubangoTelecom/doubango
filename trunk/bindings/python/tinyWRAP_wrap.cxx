@@ -10575,6 +10575,58 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ProxyVideoProducer_getRotation(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoProducer_getRotation",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_getRotation" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+  result = (int)(arg1)->getRotation();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyVideoProducer_setRotation(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyVideoProducer_setRotation",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_setRotation" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoProducer_setRotation" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  (arg1)->setRotation(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_ProxyVideoProducer_setActivate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
@@ -15165,6 +15217,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"ProxyVideoProducer_start", _wrap_ProxyVideoProducer_start, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_pause", _wrap_ProxyVideoProducer_pause, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_stop", _wrap_ProxyVideoProducer_stop, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoProducer_getRotation", _wrap_ProxyVideoProducer_getRotation, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoProducer_setRotation", _wrap_ProxyVideoProducer_setRotation, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_setActivate", _wrap_ProxyVideoProducer_setActivate, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_push", _wrap_ProxyVideoProducer_push, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_registerPlugin", _wrap_ProxyVideoProducer_registerPlugin, METH_VARARGS, NULL},

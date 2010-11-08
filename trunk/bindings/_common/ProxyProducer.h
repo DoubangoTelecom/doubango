@@ -74,6 +74,8 @@ public:
 	virtual int pause() { return 0; }
 	virtual int stop() { return 0; }
 
+	int getRotation();
+	void setRotation(int rot);
 	void setActivate(bool enabled);
 	int push(const void* buffer, unsigned size);
 
@@ -90,6 +92,7 @@ public:
 private:
 	struct twrap_producer_proxy_video_s* producer;
 	tmedia_chroma_t chroma;
+	int rotation;
 };
 
 #endif /* TINYWRAP_PRODUCER_PROXY_H */
