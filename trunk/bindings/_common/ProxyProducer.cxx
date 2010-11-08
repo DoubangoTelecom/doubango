@@ -40,7 +40,7 @@
 typedef struct twrap_producer_proxy_audio_s
 {
 	TDAV_DECLARE_PRODUCER_AUDIO;
-
+	
 	tsk_bool_t started;
 }
 twrap_producer_proxy_audio_t;
@@ -238,6 +238,7 @@ typedef struct twrap_producer_proxy_video_s
 {
 	TMEDIA_DECLARE_PRODUCER;
 
+	int rotation;
 	tsk_bool_t started;
 }
 twrap_producer_proxy_video_t;
@@ -246,6 +247,7 @@ int twrap_producer_proxy_video_prepare(tmedia_producer_t* self, const tmedia_cod
 {
 	if(ProxyVideoProducer::instance && codec){
 		self->video.chroma = ProxyVideoProducer::instance->getChroma();
+		self->video.rotation = ProxyVideoProducer::instance->getRotation();
 		ProxyVideoProducer::instance->takeProducer((twrap_producer_proxy_video_t*)self);
 		ProxyVideoProducer::instance->prepare(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, TMEDIA_CODEC_VIDEO(codec)->fps);
 	}
@@ -355,7 +357,7 @@ TINYWRAP_GEXTERN const tmedia_producer_plugin_def_t *twrap_producer_proxy_video_
 ProxyVideoProducer* ProxyVideoProducer::instance = tsk_null;
 
 ProxyVideoProducer::ProxyVideoProducer(tmedia_chroma_t _chroma)
-:producer(tsk_null), chroma(_chroma)
+:producer(tsk_null), chroma(_chroma), rotation(0)
 {
 }
 
@@ -375,6 +377,19 @@ void ProxyVideoProducer::setActivate(bool enabled)
 	}
 	else{
 		ProxyVideoProducer::instance = tsk_null;
+	}
+}
+
+int ProxyVideoProducer::getRotation()
+{
+	return this->rotation;
+}
+
+void ProxyVideoProducer::setRotation(int rot)
+{
+	this->rotation = rot;
+	if(this->producer){
+		TMEDIA_PRODUCER(this->producer)->video.rotation = this->rotation;
 	}
 }
 

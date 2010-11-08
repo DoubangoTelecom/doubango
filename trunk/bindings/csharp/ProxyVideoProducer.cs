@@ -63,6 +63,15 @@ public class ProxyVideoProducer : IDisposable {
     return ret;
   }
 
+  public int getRotation() {
+    int ret = tinyWRAPPINVOKE.ProxyVideoProducer_getRotation(swigCPtr);
+    return ret;
+  }
+
+  public void setRotation(int rot) {
+    tinyWRAPPINVOKE.ProxyVideoProducer_setRotation(swigCPtr, rot);
+  }
+
   public void setActivate(bool enabled) {
     tinyWRAPPINVOKE.ProxyVideoProducer_setActivate(swigCPtr, enabled);
   }

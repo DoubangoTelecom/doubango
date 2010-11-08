@@ -9047,6 +9047,71 @@ XS(_wrap_ProxyVideoProducer_stop) {
 }
 
 
+XS(_wrap_ProxyVideoProducer_getRotation) {
+  {
+    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoProducer_getRotation(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_getRotation" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+    result = (int)(arg1)->getRotation();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducer_setRotation) {
+  {
+    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+    int arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: ProxyVideoProducer_setRotation(self,rot);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_setRotation" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoProducer_setRotation" "', argument " "2"" of type '" "int""'");
+    } 
+    arg2 = static_cast< int >(val2);
+    (arg1)->setRotation(arg2);
+    ST(argvi) = sv_newmortal();
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_ProxyVideoProducer_setActivate) {
   {
     ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
@@ -14423,6 +14488,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::ProxyVideoProducer_start", _wrap_ProxyVideoProducer_start},
 {"tinyWRAPc::ProxyVideoProducer_pause", _wrap_ProxyVideoProducer_pause},
 {"tinyWRAPc::ProxyVideoProducer_stop", _wrap_ProxyVideoProducer_stop},
+{"tinyWRAPc::ProxyVideoProducer_getRotation", _wrap_ProxyVideoProducer_getRotation},
+{"tinyWRAPc::ProxyVideoProducer_setRotation", _wrap_ProxyVideoProducer_setRotation},
 {"tinyWRAPc::ProxyVideoProducer_setActivate", _wrap_ProxyVideoProducer_setActivate},
 {"tinyWRAPc::ProxyVideoProducer_push", _wrap_ProxyVideoProducer_push},
 {"tinyWRAPc::ProxyVideoProducer_registerPlugin", _wrap_ProxyVideoProducer_registerPlugin},

@@ -1122,6 +1122,8 @@ sub DESTROY {
 *start = *tinyWRAPc::ProxyVideoProducer_start;
 *pause = *tinyWRAPc::ProxyVideoProducer_pause;
 *stop = *tinyWRAPc::ProxyVideoProducer_stop;
+*getRotation = *tinyWRAPc::ProxyVideoProducer_getRotation;
+*setRotation = *tinyWRAPc::ProxyVideoProducer_setRotation;
 *setActivate = *tinyWRAPc::ProxyVideoProducer_setActivate;
 *push = *tinyWRAPc::ProxyVideoProducer_push;
 *registerPlugin = *tinyWRAPc::ProxyVideoProducer_registerPlugin;

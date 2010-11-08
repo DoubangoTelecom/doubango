@@ -643,6 +643,8 @@ class ProxyVideoProducer(_object):
     def start(self): return _tinyWRAP.ProxyVideoProducer_start(self)
     def pause(self): return _tinyWRAP.ProxyVideoProducer_pause(self)
     def stop(self): return _tinyWRAP.ProxyVideoProducer_stop(self)
+    def getRotation(self): return _tinyWRAP.ProxyVideoProducer_getRotation(self)
+    def setRotation(self, *args): return _tinyWRAP.ProxyVideoProducer_setRotation(self, *args)
     def setActivate(self, *args): return _tinyWRAP.ProxyVideoProducer_setActivate(self, *args)
     def push(self, *args): return _tinyWRAP.ProxyVideoProducer_push(self, *args)
     __swig_getmethods__["registerPlugin"] = lambda x: _tinyWRAP.ProxyVideoProducer_registerPlugin

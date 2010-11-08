@@ -195,6 +195,8 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 					goto bail;
 				}
 			}
+			// update one-shot parameters
+			tdav_converter_video_init(session->conv.toYUV420, session->producer->video.rotation);
 			// convert data to yuv420p
 			yuv420p_size = tdav_converter_video_convert(session->conv.toYUV420, buffer, &session->encoder.conv_buffer, &session->encoder.conv_buffer_size);
 			if(!yuv420p_size || !session->encoder.conv_buffer){
