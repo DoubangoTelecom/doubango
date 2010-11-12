@@ -33,24 +33,40 @@ public class DDebugCallback {
     swigCPtr = 0;
   }
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    tinyWRAPJNI.DDebugCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    tinyWRAPJNI.DDebugCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public DDebugCallback() {
     this(tinyWRAPJNI.new_DDebugCallback(), true);
+    tinyWRAPJNI.DDebugCallback_director_connect(this, swigCPtr, swigCMemOwn, false);
   }
 
   public int OnDebugInfo(String message) {
-    return tinyWRAPJNI.DDebugCallback_OnDebugInfo(swigCPtr, this, message);
+    return (getClass() == DDebugCallback.class) ? tinyWRAPJNI.DDebugCallback_OnDebugInfo(swigCPtr, this, message) : tinyWRAPJNI.DDebugCallback_OnDebugInfoSwigExplicitDDebugCallback(swigCPtr, this, message);
   }
 
   public int OnDebugWarn(String message) {
-    return tinyWRAPJNI.DDebugCallback_OnDebugWarn(swigCPtr, this, message);
+    return (getClass() == DDebugCallback.class) ? tinyWRAPJNI.DDebugCallback_OnDebugWarn(swigCPtr, this, message) : tinyWRAPJNI.DDebugCallback_OnDebugWarnSwigExplicitDDebugCallback(swigCPtr, this, message);
   }
 
   public int OnDebugError(String message) {
-    return tinyWRAPJNI.DDebugCallback_OnDebugError(swigCPtr, this, message);
+    return (getClass() == DDebugCallback.class) ? tinyWRAPJNI.DDebugCallback_OnDebugError(swigCPtr, this, message) : tinyWRAPJNI.DDebugCallback_OnDebugErrorSwigExplicitDDebugCallback(swigCPtr, this, message);
   }
 
   public int OnDebugFatal(String message) {
-    return tinyWRAPJNI.DDebugCallback_OnDebugFatal(swigCPtr, this, message);
+    return (getClass() == DDebugCallback.class) ? tinyWRAPJNI.DDebugCallback_OnDebugFatal(swigCPtr, this, message) : tinyWRAPJNI.DDebugCallback_OnDebugFatalSwigExplicitDDebugCallback(swigCPtr, this, message);
   }
 
 }

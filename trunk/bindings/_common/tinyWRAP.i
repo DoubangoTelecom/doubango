@@ -7,13 +7,15 @@
 #include "DDebug.h"
 %}
 
+%feature("director") DDebugCallback;
+
 %nodefaultctor;
 %include "DDebug.h"
 %include "Common.h"
 %clearnodefaultctor;
 
 
-%feature("director") DDebugCallback;
+
 
 
 /* ========== Sip/Sdp Stack ========== */

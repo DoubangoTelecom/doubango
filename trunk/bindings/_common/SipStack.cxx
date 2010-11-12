@@ -86,16 +86,24 @@ bool SipStack::start()
 
 bool SipStack::setDebugCallback(DDebugCallback* callback)
 {
-	if((this->debugCallback = callback)){
+	if(this && callback){
+		this->debugCallback = callback;
 		tsk_debug_set_arg_data(this);
 		tsk_debug_set_info_cb(DDebugCallback::debug_info_cb);
 		tsk_debug_set_warn_cb(DDebugCallback::debug_warn_cb);
 		tsk_debug_set_error_cb(DDebugCallback::debug_error_cb);
 		tsk_debug_set_fatal_cb(DDebugCallback::debug_fatal_cb);
-		return true;
+	}
+	else if(this){
+		this->debugCallback = tsk_null;
+		tsk_debug_set_arg_data(tsk_null);
+		tsk_debug_set_info_cb(tsk_null);
+		tsk_debug_set_warn_cb(tsk_null);
+		tsk_debug_set_error_cb(tsk_null);
+		tsk_debug_set_fatal_cb(tsk_null);
 	}
 
-	return false;
+	return true;
 }
 
 bool SipStack::setRealm(const char* realm_uri)

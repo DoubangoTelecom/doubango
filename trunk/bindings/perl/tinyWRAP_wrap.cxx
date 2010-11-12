@@ -12644,6 +12644,372 @@ XS(_wrap_XcapStack_getDocument) {
 }
 
 
+XS(_wrap_XcapStack_getElement) {
+  {
+    XcapStack *arg1 = (XcapStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: XcapStack_getElement(self,url);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_XcapStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "XcapStack_getElement" "', argument " "1"" of type '" "XcapStack *""'"); 
+    }
+    arg1 = reinterpret_cast< XcapStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "XcapStack_getElement" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (bool)(arg1)->getElement((char const *)arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_XcapStack_getAttribute) {
+  {
+    XcapStack *arg1 = (XcapStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: XcapStack_getAttribute(self,url);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_XcapStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "XcapStack_getAttribute" "', argument " "1"" of type '" "XcapStack *""'"); 
+    }
+    arg1 = reinterpret_cast< XcapStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "XcapStack_getAttribute" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (bool)(arg1)->getAttribute((char const *)arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_XcapStack_deleteDocument) {
+  {
+    XcapStack *arg1 = (XcapStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: XcapStack_deleteDocument(self,url);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_XcapStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "XcapStack_deleteDocument" "', argument " "1"" of type '" "XcapStack *""'"); 
+    }
+    arg1 = reinterpret_cast< XcapStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "XcapStack_deleteDocument" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (bool)(arg1)->deleteDocument((char const *)arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_XcapStack_deleteElement) {
+  {
+    XcapStack *arg1 = (XcapStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: XcapStack_deleteElement(self,url);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_XcapStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "XcapStack_deleteElement" "', argument " "1"" of type '" "XcapStack *""'"); 
+    }
+    arg1 = reinterpret_cast< XcapStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "XcapStack_deleteElement" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (bool)(arg1)->deleteElement((char const *)arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_XcapStack_deleteAttribute) {
+  {
+    XcapStack *arg1 = (XcapStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: XcapStack_deleteAttribute(self,url);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_XcapStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "XcapStack_deleteAttribute" "', argument " "1"" of type '" "XcapStack *""'"); 
+    }
+    arg1 = reinterpret_cast< XcapStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "XcapStack_deleteAttribute" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (bool)(arg1)->deleteAttribute((char const *)arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_XcapStack_putDocument) {
+  {
+    XcapStack *arg1 = (XcapStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *arg3 = (void *) 0 ;
+    unsigned int arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int res3 ;
+    unsigned int val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: XcapStack_putDocument(self,url,payload,len);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_XcapStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "XcapStack_putDocument" "', argument " "1"" of type '" "XcapStack *""'"); 
+    }
+    arg1 = reinterpret_cast< XcapStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "XcapStack_putDocument" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    res3 = SWIG_ConvertPtr(ST(2),SWIG_as_voidptrptr(&arg3), 0, 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "XcapStack_putDocument" "', argument " "3"" of type '" "void const *""'"); 
+    }
+    ecode4 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "XcapStack_putDocument" "', argument " "4"" of type '" "unsigned int""'");
+    } 
+    arg4 = static_cast< unsigned int >(val4);
+    result = (bool)(arg1)->putDocument((char const *)arg2,(void const *)arg3,arg4);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_XcapStack_putElement) {
+  {
+    XcapStack *arg1 = (XcapStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *arg3 = (void *) 0 ;
+    unsigned int arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int res3 ;
+    unsigned int val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: XcapStack_putElement(self,url,payload,len);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_XcapStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "XcapStack_putElement" "', argument " "1"" of type '" "XcapStack *""'"); 
+    }
+    arg1 = reinterpret_cast< XcapStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "XcapStack_putElement" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    res3 = SWIG_ConvertPtr(ST(2),SWIG_as_voidptrptr(&arg3), 0, 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "XcapStack_putElement" "', argument " "3"" of type '" "void const *""'"); 
+    }
+    ecode4 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "XcapStack_putElement" "', argument " "4"" of type '" "unsigned int""'");
+    } 
+    arg4 = static_cast< unsigned int >(val4);
+    result = (bool)(arg1)->putElement((char const *)arg2,(void const *)arg3,arg4);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_XcapStack_putAttribute) {
+  {
+    XcapStack *arg1 = (XcapStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *arg3 = (void *) 0 ;
+    unsigned int arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int res3 ;
+    unsigned int val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: XcapStack_putAttribute(self,url,payload,len);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_XcapStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "XcapStack_putAttribute" "', argument " "1"" of type '" "XcapStack *""'"); 
+    }
+    arg1 = reinterpret_cast< XcapStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "XcapStack_putAttribute" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    res3 = SWIG_ConvertPtr(ST(2),SWIG_as_voidptrptr(&arg3), 0, 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "XcapStack_putAttribute" "', argument " "3"" of type '" "void const *""'"); 
+    }
+    ecode4 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "XcapStack_putAttribute" "', argument " "4"" of type '" "unsigned int""'");
+    } 
+    arg4 = static_cast< unsigned int >(val4);
+    result = (bool)(arg1)->putAttribute((char const *)arg2,(void const *)arg3,arg4);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_XcapStack_stop) {
   {
     XcapStack *arg1 = (XcapStack *) 0 ;
@@ -14575,6 +14941,14 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::XcapStack_removeHeader", _wrap_XcapStack_removeHeader},
 {"tinyWRAPc::XcapStack_setTimeout", _wrap_XcapStack_setTimeout},
 {"tinyWRAPc::XcapStack_getDocument", _wrap_XcapStack_getDocument},
+{"tinyWRAPc::XcapStack_getElement", _wrap_XcapStack_getElement},
+{"tinyWRAPc::XcapStack_getAttribute", _wrap_XcapStack_getAttribute},
+{"tinyWRAPc::XcapStack_deleteDocument", _wrap_XcapStack_deleteDocument},
+{"tinyWRAPc::XcapStack_deleteElement", _wrap_XcapStack_deleteElement},
+{"tinyWRAPc::XcapStack_deleteAttribute", _wrap_XcapStack_deleteAttribute},
+{"tinyWRAPc::XcapStack_putDocument", _wrap_XcapStack_putDocument},
+{"tinyWRAPc::XcapStack_putElement", _wrap_XcapStack_putElement},
+{"tinyWRAPc::XcapStack_putAttribute", _wrap_XcapStack_putAttribute},
 {"tinyWRAPc::XcapStack_stop", _wrap_XcapStack_stop},
 {"tinyWRAPc::new_RPMessage", _wrap_new_RPMessage},
 {"tinyWRAPc::delete_RPMessage", _wrap_delete_RPMessage},

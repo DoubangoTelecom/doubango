@@ -54,6 +54,13 @@ typedef struct tdav_converter_video_s
 
 	AVFrame* srcFrame;
 	AVFrame* dstFrame;
+
+	struct {
+		struct SwsContext *context;
+		AVFrame* frame;
+		uint8_t* buffer;
+	} rot;
+
 #endif
 
 	tsk_size_t srcWidth;

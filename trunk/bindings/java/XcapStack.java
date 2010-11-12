@@ -73,6 +73,38 @@ public class XcapStack {
     return tinyWRAPJNI.XcapStack_getDocument(swigCPtr, this, url);
   }
 
+  public boolean getElement(String url) {
+    return tinyWRAPJNI.XcapStack_getElement(swigCPtr, this, url);
+  }
+
+  public boolean getAttribute(String url) {
+    return tinyWRAPJNI.XcapStack_getAttribute(swigCPtr, this, url);
+  }
+
+  public boolean deleteDocument(String url) {
+    return tinyWRAPJNI.XcapStack_deleteDocument(swigCPtr, this, url);
+  }
+
+  public boolean deleteElement(String url) {
+    return tinyWRAPJNI.XcapStack_deleteElement(swigCPtr, this, url);
+  }
+
+  public boolean deleteAttribute(String url) {
+    return tinyWRAPJNI.XcapStack_deleteAttribute(swigCPtr, this, url);
+  }
+
+  public boolean putDocument(String url, java.nio.ByteBuffer payload, long len) {
+    return tinyWRAPJNI.XcapStack_putDocument(swigCPtr, this, url, payload, len);
+  }
+
+  public boolean putElement(String url, java.nio.ByteBuffer payload, long len) {
+    return tinyWRAPJNI.XcapStack_putElement(swigCPtr, this, url, payload, len);
+  }
+
+  public boolean putAttribute(String url, java.nio.ByteBuffer payload, long len) {
+    return tinyWRAPJNI.XcapStack_putAttribute(swigCPtr, this, url, payload, len);
+  }
+
   public boolean stop() {
     return tinyWRAPJNI.XcapStack_stop(swigCPtr, this);
   }

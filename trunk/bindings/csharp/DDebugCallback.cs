@@ -40,28 +40,77 @@ public class DDebugCallback : IDisposable {
   }
 
   public DDebugCallback() : this(tinyWRAPPINVOKE.new_DDebugCallback(), true) {
+    SwigDirectorConnect();
   }
 
   public virtual int OnDebugInfo(string message) {
-    int ret = tinyWRAPPINVOKE.DDebugCallback_OnDebugInfo(swigCPtr, message);
+    int ret = ((this.GetType() == typeof(DDebugCallback)) ? tinyWRAPPINVOKE.DDebugCallback_OnDebugInfo(swigCPtr, message) : tinyWRAPPINVOKE.DDebugCallback_OnDebugInfoSwigExplicitDDebugCallback(swigCPtr, message));
     return ret;
   }
 
   public virtual int OnDebugWarn(string message) {
-    int ret = tinyWRAPPINVOKE.DDebugCallback_OnDebugWarn(swigCPtr, message);
+    int ret = ((this.GetType() == typeof(DDebugCallback)) ? tinyWRAPPINVOKE.DDebugCallback_OnDebugWarn(swigCPtr, message) : tinyWRAPPINVOKE.DDebugCallback_OnDebugWarnSwigExplicitDDebugCallback(swigCPtr, message));
     return ret;
   }
 
   public virtual int OnDebugError(string message) {
-    int ret = tinyWRAPPINVOKE.DDebugCallback_OnDebugError(swigCPtr, message);
+    int ret = ((this.GetType() == typeof(DDebugCallback)) ? tinyWRAPPINVOKE.DDebugCallback_OnDebugError(swigCPtr, message) : tinyWRAPPINVOKE.DDebugCallback_OnDebugErrorSwigExplicitDDebugCallback(swigCPtr, message));
     return ret;
   }
 
   public virtual int OnDebugFatal(string message) {
-    int ret = tinyWRAPPINVOKE.DDebugCallback_OnDebugFatal(swigCPtr, message);
+    int ret = ((this.GetType() == typeof(DDebugCallback)) ? tinyWRAPPINVOKE.DDebugCallback_OnDebugFatal(swigCPtr, message) : tinyWRAPPINVOKE.DDebugCallback_OnDebugFatalSwigExplicitDDebugCallback(swigCPtr, message));
     return ret;
   }
 
+  private void SwigDirectorConnect() {
+    if (SwigDerivedClassHasMethod("OnDebugInfo", swigMethodTypes0))
+      swigDelegate0 = new SwigDelegateDDebugCallback_0(SwigDirectorOnDebugInfo);
+    if (SwigDerivedClassHasMethod("OnDebugWarn", swigMethodTypes1))
+      swigDelegate1 = new SwigDelegateDDebugCallback_1(SwigDirectorOnDebugWarn);
+    if (SwigDerivedClassHasMethod("OnDebugError", swigMethodTypes2))
+      swigDelegate2 = new SwigDelegateDDebugCallback_2(SwigDirectorOnDebugError);
+    if (SwigDerivedClassHasMethod("OnDebugFatal", swigMethodTypes3))
+      swigDelegate3 = new SwigDelegateDDebugCallback_3(SwigDirectorOnDebugFatal);
+    tinyWRAPPINVOKE.DDebugCallback_director_connect(swigCPtr, swigDelegate0, swigDelegate1, swigDelegate2, swigDelegate3);
+  }
+
+  private bool SwigDerivedClassHasMethod(string methodName, Type[] methodTypes) {
+    System.Reflection.MethodInfo methodInfo = this.GetType().GetMethod(methodName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance, null, methodTypes, null);
+    bool hasDerivedMethod = methodInfo.DeclaringType.IsSubclassOf(typeof(DDebugCallback));
+    return hasDerivedMethod;
+  }
+
+  private int SwigDirectorOnDebugInfo(string message) {
+    return OnDebugInfo(message);
+  }
+
+  private int SwigDirectorOnDebugWarn(string message) {
+    return OnDebugWarn(message);
+  }
+
+  private int SwigDirectorOnDebugError(string message) {
+    return OnDebugError(message);
+  }
+
+  private int SwigDirectorOnDebugFatal(string message) {
+    return OnDebugFatal(message);
+  }
+
+  public delegate int SwigDelegateDDebugCallback_0(string message);
+  public delegate int SwigDelegateDDebugCallback_1(string message);
+  public delegate int SwigDelegateDDebugCallback_2(string message);
+  public delegate int SwigDelegateDDebugCallback_3(string message);
+
+  private SwigDelegateDDebugCallback_0 swigDelegate0;
+  private SwigDelegateDDebugCallback_1 swigDelegate1;
+  private SwigDelegateDDebugCallback_2 swigDelegate2;
+  private SwigDelegateDDebugCallback_3 swigDelegate3;
+
+  private static Type[] swigMethodTypes0 = new Type[] { typeof(string) };
+  private static Type[] swigMethodTypes1 = new Type[] { typeof(string) };
+  private static Type[] swigMethodTypes2 = new Type[] { typeof(string) };
+  private static Type[] swigMethodTypes3 = new Type[] { typeof(string) };
 }
 
 }

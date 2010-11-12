@@ -113,6 +113,16 @@ public: /* API functions */
 	bool setTimeout(unsigned timeout);
 
 	bool getDocument(const char* url);
+	bool getElement(const char* url);
+	bool getAttribute(const char* url);
+
+	bool deleteDocument(const char* url);
+	bool deleteElement(const char* url);
+	bool deleteAttribute(const char* url);
+
+	bool putDocument(const char* url, const void* payload, unsigned len);
+	bool putElement(const char* url, const void* payload, unsigned len);
+	bool putAttribute(const char* url, const void* payload, unsigned len);
 
 	bool stop();
 
