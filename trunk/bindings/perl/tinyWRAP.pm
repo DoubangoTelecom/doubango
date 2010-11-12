@@ -1484,6 +1484,14 @@ sub DESTROY {
 *removeHeader = *tinyWRAPc::XcapStack_removeHeader;
 *setTimeout = *tinyWRAPc::XcapStack_setTimeout;
 *getDocument = *tinyWRAPc::XcapStack_getDocument;
+*getElement = *tinyWRAPc::XcapStack_getElement;
+*getAttribute = *tinyWRAPc::XcapStack_getAttribute;
+*deleteDocument = *tinyWRAPc::XcapStack_deleteDocument;
+*deleteElement = *tinyWRAPc::XcapStack_deleteElement;
+*deleteAttribute = *tinyWRAPc::XcapStack_deleteAttribute;
+*putDocument = *tinyWRAPc::XcapStack_putDocument;
+*putElement = *tinyWRAPc::XcapStack_putElement;
+*putAttribute = *tinyWRAPc::XcapStack_putAttribute;
 *stop = *tinyWRAPc::XcapStack_stop;
 sub DISOWN {
     my $self = shift;

@@ -11,6 +11,24 @@
 #ifndef SWIG_tinyWRAP_WRAP_H_
 #define SWIG_tinyWRAP_WRAP_H_
 
+class SwigDirector_DDebugCallback : public DDebugCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_DDebugCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_DDebugCallback();
+    virtual int OnDebugInfo(char const *message);
+    virtual int OnDebugWarn(char const *message);
+    virtual int OnDebugError(char const *message);
+    virtual int OnDebugFatal(char const *message);
+public:
+    bool swig_overrides(int n) {
+      return (n < 4 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[4];
+};
+
 class SwigDirector_ProxyAudioConsumer : public ProxyAudioConsumer, public Swig::Director {
 
 public:

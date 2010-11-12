@@ -11,6 +11,30 @@
 #ifndef SWIG_tinyWRAP_WRAP_H_
 #define SWIG_tinyWRAP_WRAP_H_
 
+class SwigDirector_DDebugCallback : public DDebugCallback, public Swig::Director {
+
+public:
+    SwigDirector_DDebugCallback();
+    virtual ~SwigDirector_DDebugCallback();
+    virtual int OnDebugInfo(char const *message);
+    virtual int OnDebugWarn(char const *message);
+    virtual int OnDebugError(char const *message);
+    virtual int OnDebugFatal(char const *message);
+
+    typedef int (SWIGSTDCALL* SWIG_Callback0_t)(char *);
+    typedef int (SWIGSTDCALL* SWIG_Callback1_t)(char *);
+    typedef int (SWIGSTDCALL* SWIG_Callback2_t)(char *);
+    typedef int (SWIGSTDCALL* SWIG_Callback3_t)(char *);
+    void swig_connect_director(SWIG_Callback0_t callbackOnDebugInfo, SWIG_Callback1_t callbackOnDebugWarn, SWIG_Callback2_t callbackOnDebugError, SWIG_Callback3_t callbackOnDebugFatal);
+
+private:
+    SWIG_Callback0_t swig_callbackOnDebugInfo;
+    SWIG_Callback1_t swig_callbackOnDebugWarn;
+    SWIG_Callback2_t swig_callbackOnDebugError;
+    SWIG_Callback3_t swig_callbackOnDebugFatal;
+    void swig_init_callbacks();
+};
+
 class SwigDirector_ProxyAudioConsumer : public ProxyAudioConsumer, public Swig::Director {
 
 public:

@@ -461,6 +461,67 @@ bool XcapStack::getDocument(const char* url)
 			TXCAP_ACTION_SET_NULL()) == 0;
 }
 
+bool XcapStack::getElement(const char* url)
+{
+	return txcap_action_fetch_element(this->handle,
+			TXCAP_ACTION_SET_REQUEST_URI(url),
+			TXCAP_ACTION_SET_NULL()) == 0;
+}
+
+bool XcapStack::getAttribute(const char* url)
+{
+	return txcap_action_fetch_attribute(this->handle,
+			TXCAP_ACTION_SET_REQUEST_URI(url),
+			TXCAP_ACTION_SET_NULL()) == 0;
+}
+
+bool XcapStack::deleteDocument(const char* url)
+{
+	return txcap_action_delete_document(this->handle,
+			TXCAP_ACTION_SET_REQUEST_URI(url),
+			TXCAP_ACTION_SET_NULL()) == 0;
+}
+
+bool XcapStack::deleteElement(const char* url)
+{
+	return txcap_action_delete_element(this->handle,
+			TXCAP_ACTION_SET_REQUEST_URI(url),
+			TXCAP_ACTION_SET_NULL()) == 0;
+}
+
+bool XcapStack::deleteAttribute(const char* url)
+{
+	return txcap_action_delete_attribute(this->handle,
+			TXCAP_ACTION_SET_REQUEST_URI(url),
+			TXCAP_ACTION_SET_NULL()) == 0;
+}
+
+
+bool XcapStack::putDocument(const char* url, const void* payload, unsigned len)
+{
+	return txcap_action_create_document(this->handle,
+			TXCAP_ACTION_SET_REQUEST_URI(url),
+			TXCAP_ACTION_SET_PAYLOAD(payload, len),
+			TXCAP_ACTION_SET_NULL()) == 0;
+}
+
+bool XcapStack::putElement(const char* url, const void* payload, unsigned len)
+{
+	return txcap_action_create_element(this->handle,
+			TXCAP_ACTION_SET_REQUEST_URI(url),
+			TXCAP_ACTION_SET_PAYLOAD(payload, len),
+			TXCAP_ACTION_SET_NULL()) == 0;
+}
+
+bool XcapStack::putAttribute(const char* url, const void* payload, unsigned len)
+{
+	return txcap_action_create_attribute(this->handle,
+			TXCAP_ACTION_SET_REQUEST_URI(url),
+			TXCAP_ACTION_SET_PAYLOAD(payload, len),
+			TXCAP_ACTION_SET_NULL()) == 0;
+}
+
+
 bool XcapStack::stop()
 {
 	return (txcap_stack_stop(this->handle) == 0);

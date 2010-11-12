@@ -12,9 +12,15 @@ class tinyWRAPJNI {
   public final static native long new_DDebugCallback();
   public final static native void delete_DDebugCallback(long jarg1);
   public final static native int DDebugCallback_OnDebugInfo(long jarg1, DDebugCallback jarg1_, String jarg2);
+  public final static native int DDebugCallback_OnDebugInfoSwigExplicitDDebugCallback(long jarg1, DDebugCallback jarg1_, String jarg2);
   public final static native int DDebugCallback_OnDebugWarn(long jarg1, DDebugCallback jarg1_, String jarg2);
+  public final static native int DDebugCallback_OnDebugWarnSwigExplicitDDebugCallback(long jarg1, DDebugCallback jarg1_, String jarg2);
   public final static native int DDebugCallback_OnDebugError(long jarg1, DDebugCallback jarg1_, String jarg2);
+  public final static native int DDebugCallback_OnDebugErrorSwigExplicitDDebugCallback(long jarg1, DDebugCallback jarg1_, String jarg2);
   public final static native int DDebugCallback_OnDebugFatal(long jarg1, DDebugCallback jarg1_, String jarg2);
+  public final static native int DDebugCallback_OnDebugFatalSwigExplicitDDebugCallback(long jarg1, DDebugCallback jarg1_, String jarg2);
+  public final static native void DDebugCallback_director_connect(DDebugCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void DDebugCallback_change_ownership(DDebugCallback obj, long cptr, boolean take_or_release);
   public final static native long new_ActionConfig();
   public final static native void delete_ActionConfig(long jarg1);
   public final static native boolean ActionConfig_addHeader(long jarg1, ActionConfig jarg1_, String jarg2, String jarg3);
@@ -307,6 +313,14 @@ class tinyWRAPJNI {
   public final static native boolean XcapStack_removeHeader(long jarg1, XcapStack jarg1_, String jarg2);
   public final static native boolean XcapStack_setTimeout(long jarg1, XcapStack jarg1_, long jarg2);
   public final static native boolean XcapStack_getDocument(long jarg1, XcapStack jarg1_, String jarg2);
+  public final static native boolean XcapStack_getElement(long jarg1, XcapStack jarg1_, String jarg2);
+  public final static native boolean XcapStack_getAttribute(long jarg1, XcapStack jarg1_, String jarg2);
+  public final static native boolean XcapStack_deleteDocument(long jarg1, XcapStack jarg1_, String jarg2);
+  public final static native boolean XcapStack_deleteElement(long jarg1, XcapStack jarg1_, String jarg2);
+  public final static native boolean XcapStack_deleteAttribute(long jarg1, XcapStack jarg1_, String jarg2);
+  public final static native boolean XcapStack_putDocument(long jarg1, XcapStack jarg1_, String jarg2, java.nio.ByteBuffer jarg3, long jarg4);
+  public final static native boolean XcapStack_putElement(long jarg1, XcapStack jarg1_, String jarg2, java.nio.ByteBuffer jarg3, long jarg4);
+  public final static native boolean XcapStack_putAttribute(long jarg1, XcapStack jarg1_, String jarg2, java.nio.ByteBuffer jarg3, long jarg4);
   public final static native boolean XcapStack_stop(long jarg1, XcapStack jarg1_);
   public final static native long new_RPMessage();
   public final static native void delete_RPMessage(long jarg1);
@@ -367,6 +381,18 @@ class tinyWRAPJNI {
   public final static native long SWIGSubscriptionSessionUpcast(long jarg1);
   public final static native long SWIGSipStackUpcast(long jarg1);
 
+  public static int SwigDirector_DDebugCallback_OnDebugInfo(DDebugCallback self, String message) {
+    return self.OnDebugInfo(message);
+  }
+  public static int SwigDirector_DDebugCallback_OnDebugWarn(DDebugCallback self, String message) {
+    return self.OnDebugWarn(message);
+  }
+  public static int SwigDirector_DDebugCallback_OnDebugError(DDebugCallback self, String message) {
+    return self.OnDebugError(message);
+  }
+  public static int SwigDirector_DDebugCallback_OnDebugFatal(DDebugCallback self, String message) {
+    return self.OnDebugFatal(message);
+  }
   public static int SwigDirector_ProxyAudioConsumer_prepare(ProxyAudioConsumer self, int ptime, int rate, int channels) {
     return self.prepare(ptime, rate, channels);
   }

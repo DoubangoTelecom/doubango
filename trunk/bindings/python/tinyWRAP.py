@@ -74,7 +74,11 @@ class DDebugCallback(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, DDebugCallback, name)
     __repr__ = _swig_repr
     def __init__(self): 
-        this = _tinyWRAP.new_DDebugCallback()
+        if self.__class__ == DDebugCallback:
+            _self = None
+        else:
+            _self = self
+        this = _tinyWRAP.new_DDebugCallback(_self, )
         try: self.this.append(this)
         except: self.this = this
     __swig_destroy__ = _tinyWRAP.delete_DDebugCallback
@@ -83,6 +87,10 @@ class DDebugCallback(_object):
     def OnDebugWarn(self, *args): return _tinyWRAP.DDebugCallback_OnDebugWarn(self, *args)
     def OnDebugError(self, *args): return _tinyWRAP.DDebugCallback_OnDebugError(self, *args)
     def OnDebugFatal(self, *args): return _tinyWRAP.DDebugCallback_OnDebugFatal(self, *args)
+    def __disown__(self):
+        self.this.disown()
+        _tinyWRAP.disown_DDebugCallback(self)
+        return weakref_proxy(self)
 DDebugCallback_swigregister = _tinyWRAP.DDebugCallback_swigregister
 DDebugCallback_swigregister(DDebugCallback)
 
@@ -969,6 +977,14 @@ class XcapStack(_object):
     def removeHeader(self, *args): return _tinyWRAP.XcapStack_removeHeader(self, *args)
     def setTimeout(self, *args): return _tinyWRAP.XcapStack_setTimeout(self, *args)
     def getDocument(self, *args): return _tinyWRAP.XcapStack_getDocument(self, *args)
+    def getElement(self, *args): return _tinyWRAP.XcapStack_getElement(self, *args)
+    def getAttribute(self, *args): return _tinyWRAP.XcapStack_getAttribute(self, *args)
+    def deleteDocument(self, *args): return _tinyWRAP.XcapStack_deleteDocument(self, *args)
+    def deleteElement(self, *args): return _tinyWRAP.XcapStack_deleteElement(self, *args)
+    def deleteAttribute(self, *args): return _tinyWRAP.XcapStack_deleteAttribute(self, *args)
+    def putDocument(self, *args): return _tinyWRAP.XcapStack_putDocument(self, *args)
+    def putElement(self, *args): return _tinyWRAP.XcapStack_putElement(self, *args)
+    def putAttribute(self, *args): return _tinyWRAP.XcapStack_putAttribute(self, *args)
     def stop(self): return _tinyWRAP.XcapStack_stop(self)
 XcapStack_swigregister = _tinyWRAP.XcapStack_swigregister
 XcapStack_swigregister(XcapStack)

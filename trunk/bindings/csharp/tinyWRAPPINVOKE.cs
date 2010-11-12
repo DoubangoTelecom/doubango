@@ -194,14 +194,29 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_DDebugCallback_OnDebugInfo")]
   public static extern int DDebugCallback_OnDebugInfo(HandleRef jarg1, string jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_DDebugCallback_OnDebugInfoSwigExplicitDDebugCallback")]
+  public static extern int DDebugCallback_OnDebugInfoSwigExplicitDDebugCallback(HandleRef jarg1, string jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_DDebugCallback_OnDebugWarn")]
   public static extern int DDebugCallback_OnDebugWarn(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_DDebugCallback_OnDebugWarnSwigExplicitDDebugCallback")]
+  public static extern int DDebugCallback_OnDebugWarnSwigExplicitDDebugCallback(HandleRef jarg1, string jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_DDebugCallback_OnDebugError")]
   public static extern int DDebugCallback_OnDebugError(HandleRef jarg1, string jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_DDebugCallback_OnDebugErrorSwigExplicitDDebugCallback")]
+  public static extern int DDebugCallback_OnDebugErrorSwigExplicitDDebugCallback(HandleRef jarg1, string jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_DDebugCallback_OnDebugFatal")]
   public static extern int DDebugCallback_OnDebugFatal(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_DDebugCallback_OnDebugFatalSwigExplicitDDebugCallback")]
+  public static extern int DDebugCallback_OnDebugFatalSwigExplicitDDebugCallback(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_DDebugCallback_director_connect")]
+  public static extern void DDebugCallback_director_connect(HandleRef jarg1, DDebugCallback.SwigDelegateDDebugCallback_0 delegate0, DDebugCallback.SwigDelegateDDebugCallback_1 delegate1, DDebugCallback.SwigDelegateDDebugCallback_2 delegate2, DDebugCallback.SwigDelegateDDebugCallback_3 delegate3);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_ActionConfig")]
   public static extern IntPtr new_ActionConfig();
@@ -1102,6 +1117,30 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_getDocument")]
   public static extern bool XcapStack_getDocument(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_getElement")]
+  public static extern bool XcapStack_getElement(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_getAttribute")]
+  public static extern bool XcapStack_getAttribute(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_deleteDocument")]
+  public static extern bool XcapStack_deleteDocument(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_deleteElement")]
+  public static extern bool XcapStack_deleteElement(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_deleteAttribute")]
+  public static extern bool XcapStack_deleteAttribute(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_putDocument")]
+  public static extern bool XcapStack_putDocument(HandleRef jarg1, string jarg2, byte[] jarg3, uint jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_putElement")]
+  public static extern bool XcapStack_putElement(HandleRef jarg1, string jarg2, byte[] jarg3, uint jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_putAttribute")]
+  public static extern bool XcapStack_putAttribute(HandleRef jarg1, string jarg2, byte[] jarg3, uint jarg4);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_stop")]
   public static extern bool XcapStack_stop(HandleRef jarg1);

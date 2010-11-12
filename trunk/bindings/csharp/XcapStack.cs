@@ -87,6 +87,46 @@ public class XcapStack : IDisposable {
     return ret;
   }
 
+  public bool getElement(string url) {
+    bool ret = tinyWRAPPINVOKE.XcapStack_getElement(swigCPtr, url);
+    return ret;
+  }
+
+  public bool getAttribute(string url) {
+    bool ret = tinyWRAPPINVOKE.XcapStack_getAttribute(swigCPtr, url);
+    return ret;
+  }
+
+  public bool deleteDocument(string url) {
+    bool ret = tinyWRAPPINVOKE.XcapStack_deleteDocument(swigCPtr, url);
+    return ret;
+  }
+
+  public bool deleteElement(string url) {
+    bool ret = tinyWRAPPINVOKE.XcapStack_deleteElement(swigCPtr, url);
+    return ret;
+  }
+
+  public bool deleteAttribute(string url) {
+    bool ret = tinyWRAPPINVOKE.XcapStack_deleteAttribute(swigCPtr, url);
+    return ret;
+  }
+
+  public bool putDocument(string url, byte[] payload, uint len) {
+    bool ret = tinyWRAPPINVOKE.XcapStack_putDocument(swigCPtr, url, payload, len);
+    return ret;
+  }
+
+  public bool putElement(string url, byte[] payload, uint len) {
+    bool ret = tinyWRAPPINVOKE.XcapStack_putElement(swigCPtr, url, payload, len);
+    return ret;
+  }
+
+  public bool putAttribute(string url, byte[] payload, uint len) {
+    bool ret = tinyWRAPPINVOKE.XcapStack_putAttribute(swigCPtr, url, payload, len);
+    return ret;
+  }
+
   public bool stop() {
     bool ret = tinyWRAPPINVOKE.XcapStack_stop(swigCPtr);
     return ret;

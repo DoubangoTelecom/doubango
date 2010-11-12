@@ -367,6 +367,89 @@ namespace Swig {
 
 #include "tinyWRAP_wrap.h"
 
+SwigDirector_DDebugCallback::SwigDirector_DDebugCallback() : DDebugCallback(), Swig::Director() {
+  swig_init_callbacks();
+}
+
+SwigDirector_DDebugCallback::~SwigDirector_DDebugCallback() {
+  
+}
+
+
+int SwigDirector_DDebugCallback::OnDebugInfo(char const *message) {
+  int c_result = SwigValueInit< int >() ;
+  int jresult = 0 ;
+  char * jmessage = 0 ;
+  
+  if (!swig_callbackOnDebugInfo) {
+    return DDebugCallback::OnDebugInfo(message);
+  } else {
+    jmessage = SWIG_csharp_string_callback((const char *)message); 
+    jresult = (int) swig_callbackOnDebugInfo(jmessage);
+    c_result = (int)jresult; 
+  }
+  return c_result;
+}
+
+int SwigDirector_DDebugCallback::OnDebugWarn(char const *message) {
+  int c_result = SwigValueInit< int >() ;
+  int jresult = 0 ;
+  char * jmessage = 0 ;
+  
+  if (!swig_callbackOnDebugWarn) {
+    return DDebugCallback::OnDebugWarn(message);
+  } else {
+    jmessage = SWIG_csharp_string_callback((const char *)message); 
+    jresult = (int) swig_callbackOnDebugWarn(jmessage);
+    c_result = (int)jresult; 
+  }
+  return c_result;
+}
+
+int SwigDirector_DDebugCallback::OnDebugError(char const *message) {
+  int c_result = SwigValueInit< int >() ;
+  int jresult = 0 ;
+  char * jmessage = 0 ;
+  
+  if (!swig_callbackOnDebugError) {
+    return DDebugCallback::OnDebugError(message);
+  } else {
+    jmessage = SWIG_csharp_string_callback((const char *)message); 
+    jresult = (int) swig_callbackOnDebugError(jmessage);
+    c_result = (int)jresult; 
+  }
+  return c_result;
+}
+
+int SwigDirector_DDebugCallback::OnDebugFatal(char const *message) {
+  int c_result = SwigValueInit< int >() ;
+  int jresult = 0 ;
+  char * jmessage = 0 ;
+  
+  if (!swig_callbackOnDebugFatal) {
+    return DDebugCallback::OnDebugFatal(message);
+  } else {
+    jmessage = SWIG_csharp_string_callback((const char *)message); 
+    jresult = (int) swig_callbackOnDebugFatal(jmessage);
+    c_result = (int)jresult; 
+  }
+  return c_result;
+}
+
+void SwigDirector_DDebugCallback::swig_connect_director(SWIG_Callback0_t callbackOnDebugInfo, SWIG_Callback1_t callbackOnDebugWarn, SWIG_Callback2_t callbackOnDebugError, SWIG_Callback3_t callbackOnDebugFatal) {
+  swig_callbackOnDebugInfo = callbackOnDebugInfo;
+  swig_callbackOnDebugWarn = callbackOnDebugWarn;
+  swig_callbackOnDebugError = callbackOnDebugError;
+  swig_callbackOnDebugFatal = callbackOnDebugFatal;
+}
+
+void SwigDirector_DDebugCallback::swig_init_callbacks() {
+  swig_callbackOnDebugInfo = 0;
+  swig_callbackOnDebugWarn = 0;
+  swig_callbackOnDebugError = 0;
+  swig_callbackOnDebugFatal = 0;
+}
+
 SwigDirector_ProxyAudioConsumer::SwigDirector_ProxyAudioConsumer() : ProxyAudioConsumer(), Swig::Director() {
   swig_init_callbacks();
 }
@@ -932,7 +1015,7 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_new_DDebugCallback() {
   void * jresult ;
   DDebugCallback *result = 0 ;
   
-  result = (DDebugCallback *)new DDebugCallback();
+  result = (DDebugCallback *)new SwigDirector_DDebugCallback();
   jresult = (void *)result; 
   return jresult;
 }
@@ -960,6 +1043,20 @@ SWIGEXPORT int SWIGSTDCALL CSharp_DDebugCallback_OnDebugInfo(void * jarg1, char 
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_DDebugCallback_OnDebugInfoSwigExplicitDDebugCallback(void * jarg1, char * jarg2) {
+  int jresult ;
+  DDebugCallback *arg1 = (DDebugCallback *) 0 ;
+  char *arg2 = (char *) 0 ;
+  int result;
+  
+  arg1 = (DDebugCallback *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (int)(arg1)->DDebugCallback::OnDebugInfo((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_DDebugCallback_OnDebugWarn(void * jarg1, char * jarg2) {
   int jresult ;
   DDebugCallback *arg1 = (DDebugCallback *) 0 ;
@@ -969,6 +1066,20 @@ SWIGEXPORT int SWIGSTDCALL CSharp_DDebugCallback_OnDebugWarn(void * jarg1, char 
   arg1 = (DDebugCallback *)jarg1; 
   arg2 = (char *)jarg2; 
   result = (int)(arg1)->OnDebugWarn((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_DDebugCallback_OnDebugWarnSwigExplicitDDebugCallback(void * jarg1, char * jarg2) {
+  int jresult ;
+  DDebugCallback *arg1 = (DDebugCallback *) 0 ;
+  char *arg2 = (char *) 0 ;
+  int result;
+  
+  arg1 = (DDebugCallback *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (int)(arg1)->DDebugCallback::OnDebugWarn((char const *)arg2);
   jresult = result; 
   return jresult;
 }
@@ -988,6 +1099,20 @@ SWIGEXPORT int SWIGSTDCALL CSharp_DDebugCallback_OnDebugError(void * jarg1, char
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_DDebugCallback_OnDebugErrorSwigExplicitDDebugCallback(void * jarg1, char * jarg2) {
+  int jresult ;
+  DDebugCallback *arg1 = (DDebugCallback *) 0 ;
+  char *arg2 = (char *) 0 ;
+  int result;
+  
+  arg1 = (DDebugCallback *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (int)(arg1)->DDebugCallback::OnDebugError((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_DDebugCallback_OnDebugFatal(void * jarg1, char * jarg2) {
   int jresult ;
   DDebugCallback *arg1 = (DDebugCallback *) 0 ;
@@ -999,6 +1124,29 @@ SWIGEXPORT int SWIGSTDCALL CSharp_DDebugCallback_OnDebugFatal(void * jarg1, char
   result = (int)(arg1)->OnDebugFatal((char const *)arg2);
   jresult = result; 
   return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_DDebugCallback_OnDebugFatalSwigExplicitDDebugCallback(void * jarg1, char * jarg2) {
+  int jresult ;
+  DDebugCallback *arg1 = (DDebugCallback *) 0 ;
+  char *arg2 = (char *) 0 ;
+  int result;
+  
+  arg1 = (DDebugCallback *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (int)(arg1)->DDebugCallback::OnDebugFatal((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_DDebugCallback_director_connect(void *objarg, SwigDirector_DDebugCallback::SWIG_Callback0_t callback0, SwigDirector_DDebugCallback::SWIG_Callback1_t callback1, SwigDirector_DDebugCallback::SWIG_Callback2_t callback2, SwigDirector_DDebugCallback::SWIG_Callback3_t callback3) {
+  DDebugCallback *obj = (DDebugCallback *)objarg;
+  SwigDirector_DDebugCallback *director = dynamic_cast<SwigDirector_DDebugCallback *>(obj);
+  if (director) {
+    director->swig_connect_director(callback0, callback1, callback2, callback3);
+  }
 }
 
 
@@ -4781,6 +4929,130 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_getDocument(void * jarg1, c
   arg1 = (XcapStack *)jarg1; 
   arg2 = (char *)jarg2; 
   result = (bool)(arg1)->getDocument((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_getElement(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->getElement((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_getAttribute(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->getAttribute((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_deleteDocument(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->deleteDocument((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_deleteElement(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->deleteElement((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_deleteAttribute(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->deleteAttribute((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_putDocument(void * jarg1, char * jarg2, void * jarg3, unsigned int jarg4) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *arg3 = (void *) 0 ;
+  unsigned int arg4 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = jarg3; 
+  arg4 = (unsigned int)jarg4; 
+  result = (bool)(arg1)->putDocument((char const *)arg2,(void const *)arg3,arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_putElement(void * jarg1, char * jarg2, void * jarg3, unsigned int jarg4) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *arg3 = (void *) 0 ;
+  unsigned int arg4 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = jarg3; 
+  arg4 = (unsigned int)jarg4; 
+  result = (bool)(arg1)->putElement((char const *)arg2,(void const *)arg3,arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_putAttribute(void * jarg1, char * jarg2, void * jarg3, unsigned int jarg4) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *arg3 = (void *) 0 ;
+  unsigned int arg4 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = jarg3; 
+  arg4 = (unsigned int)jarg4; 
+  result = (bool)(arg1)->putAttribute((char const *)arg2,(void const *)arg3,arg4);
   jresult = result; 
   return jresult;
 }

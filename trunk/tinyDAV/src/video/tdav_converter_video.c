@@ -20,16 +20,31 @@
 *
 */
 /**@file tdav_converter_video.c
- * @brief Video converter.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
- * @date Created: Sat Nov 8 16:54:58 2009 mdiop
- */
+* @brief Video converter.
+*
+* @author Mamadou Diop <diopmamadou(at)doubango.org>
+* @author Alex Vishnev (Added support for rotation)
+*
+* @date Created: Sat Nov 8 16:54:58 2009 mdiop
+*/
 #include "tinydav/video/tdav_converter_video.h"
 
 #include "tsk_memory.h"
 #include "tsk_debug.h"
+
+// use macro for performance reasons keep (called (15x3) times per seconds)
+#define rotate90(srcw, srch, srcdata, dstdata) \
+{ \
+	register int i,j; \
+	register int newx = 0; \
+	for (i = 0; i < (int)srcw; i ++ ){ \
+		for( j = srch-1; j >=0; j -- ){ \
+			dstdata[newx++] = srcdata[j * srcw + i]; \
+		} \
+	} \
+}
+
+
 
 tdav_converter_video_t* tdav_converter_video_create(tsk_size_t srcWidth, tsk_size_t srcHeight, tsk_size_t dstWidth, tsk_size_t dstHeight, tmedia_chroma_t chroma, tsk_bool_t toYUV420)
 {
@@ -91,31 +106,18 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t srcWidth, tsk_siz
 tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void* buffer, void** output, tsk_size_t* output_max_size)
 {
 #if HAVE_FFMPEG
-	int ret;
-	int size;
+	int ret, size;
 	enum PixelFormat srcFormat, dstFormat;
 
 	if(!self || !buffer || !output){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
-	
+
 	/* Formats */
 	srcFormat = self->toYUV420 ? self->pixfmt : PIX_FMT_YUV420P;
 	dstFormat = self->toYUV420 ? PIX_FMT_YUV420P : self->pixfmt;
 
-	/* Context */
-	if(!self->context){
-		self->context = sws_getContext(
-			self->srcWidth, self->srcHeight, (srcFormat == PIX_FMT_RGB24) ? PIX_FMT_BGR24 : ((srcFormat == PIX_FMT_RGB32) ? PIX_FMT_BGR32 : srcFormat),
-			self->dstWidth, self->dstHeight, dstFormat,
-			SWS_FAST_BILINEAR/*SWS_BICUBIC*/, NULL, NULL, NULL);
-
-		if(!self->context){
-			TSK_DEBUG_ERROR("Failed to create context");
-			return 0;
-		}
-	}
 
 	/* Pictures */
 	if(!self->srcFrame){
@@ -130,7 +132,7 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 			return 0;
 		}
 	}
-	
+
 	size = avpicture_get_size(dstFormat, self->dstWidth, self->dstHeight);
 	if((int)*output_max_size <size){
 		if(!(*output = tsk_realloc(*output, size))){
@@ -147,16 +149,73 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 	ret = avpicture_fill((AVPicture *)self->dstFrame, (uint8_t*)*output, dstFormat, self->dstWidth, self->dstHeight);
 
 	/* === performs conversion === */
-	if(self->rotation){
-		// Implement rotation here!
+	/* Context */
+	if(!self->context){
+		self->context = sws_getContext(
+			self->srcWidth, self->srcHeight, (srcFormat == PIX_FMT_RGB24) ? PIX_FMT_BGR24 : ((srcFormat == PIX_FMT_RGB32) ? PIX_FMT_BGR32 : srcFormat),
+			self->dstWidth, self->dstHeight, dstFormat,
+			SWS_FAST_BILINEAR/*SWS_BICUBIC*/, NULL, NULL, NULL);
+
+		if(!self->context){
+			TSK_DEBUG_ERROR("Failed to create context");
+			return 0;
+		}
 	}
 	// chroma conversion
-	ret = sws_scale(self->context, self->srcFrame->data, self->srcFrame->linesize, 0, self->srcHeight,
+	ret = sws_scale(self->context, (const uint8_t* const*)self->srcFrame->data, self->srcFrame->linesize, 0, self->srcHeight,
 		self->dstFrame->data, self->dstFrame->linesize);
 	if(ret < 0){
-		// delete the allocated buffer
 		TSK_FREE(*output);
 		return 0;
+	}
+
+	// Rotation
+	if(self->rotation && (PIX_FMT_YUV420P == dstFormat) && self->rotation==90/*FIXME: For now only 90° rotation is supported */){
+		// because we rotated 90 width = original height, height = original width
+		int w = self->dstHeight;
+		int h = self->dstWidth;
+
+		// allocation rotation frame if not already done
+		if(!(self->rot.frame) && !(self->rot.frame = avcodec_alloc_frame())){
+			TSK_DEBUG_ERROR("failed to allocate rotation frame");
+			TSK_FREE(*output);
+			return(0);
+		}
+
+		// allocate rotation temporary buffer
+		if(!self->rot.buffer){
+			int buff_size = avpicture_get_size(dstFormat, w, h);
+			if (!(self->rot.buffer = (uint8_t *)av_malloc(buff_size))){
+				TSK_DEBUG_ERROR("failed to allocate new buffer for the frame");
+				TSK_FREE(*output);
+				return(0);
+			}
+		}
+		
+		//wrap
+		avpicture_fill((AVPicture *)self->rot.frame, self->rot.buffer, dstFormat, w, h);
+		// rotate
+		rotate90(self->dstWidth, self->dstHeight, self->dstFrame->data[0], self->rot.frame->data[0]);
+		rotate90(self->dstWidth/2, self->dstHeight/2, self->dstFrame->data[1], self->rot.frame->data[1]);
+		rotate90(self->dstWidth/2, self->dstHeight/2, self->dstFrame->data[2], self->rot.frame->data[2]);
+		
+		/* Context */
+		if(!self->rot.context){
+			if(!(self->rot.context = sws_getContext(w, h, dstFormat, h, w, dstFormat, SWS_FAST_BILINEAR, NULL, NULL, NULL))){
+				TSK_DEBUG_ERROR("Failed to create context");
+				TSK_FREE(*output);
+				return 0;
+			}
+		}
+		
+		// Copy frame
+		if((ret = sws_scale(self->rot.context, (const uint8_t* const*)self->rot.frame->data, self->rot.frame->linesize, 
+			0, h, self->dstFrame->data, self->dstFrame->linesize)) <0)
+		{
+			TSK_DEBUG_ERROR("Failed to copy frame");
+			TSK_FREE(*output);
+			return 0;
+		}
 	}
 
 	return size;
@@ -166,6 +225,7 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 }
 
 
+
 //=================================================================================================
 //	Video Converter object definition
 //
@@ -173,7 +233,7 @@ static tsk_object_t* tdav_converter_video_ctor(tsk_object_t * self, va_list * ap
 {
 	tdav_converter_video_t *converter = self;
 	if(converter){
-		
+
 	}
 	return self;
 }
@@ -191,6 +251,17 @@ static tsk_object_t* tdav_converter_video_dtor(tsk_object_t * self)
 		}
 		if(converter->dstFrame){
 			av_free(converter->dstFrame);
+		}
+
+		// Rotation
+		if(converter->rot.context){
+			sws_freeContext(converter->rot.context);
+		}
+		if(converter->rot.frame){
+			av_free(converter->rot.frame);
+		}
+		if(converter->rot.buffer){
+			TSK_FREE(converter->rot.buffer);
 		}
 #endif
 	}
