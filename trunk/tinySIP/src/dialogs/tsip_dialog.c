@@ -285,7 +285,6 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	*/
 	if(!TSIP_REQUEST_IS_ACK(request) && !TSIP_REQUEST_IS_CANCEL(request)){
 		request->CSeq->seq = ++(TSIP_DIALOG(self)->cseq_value);
-		TSK_DEBUG_INFO("CSeq=%d", TSIP_DIALOG(self)->cseq_value);
 	}
 
 	/* Route generation 

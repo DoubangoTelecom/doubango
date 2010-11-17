@@ -295,11 +295,13 @@ tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_data, tsk
 		return 0;
 	}
 
+	//TSK_DEBUG_INFO("SeqNo=%hu", rtp_hdr->seq_num);
+
 	/* Packet lost? */
 	if(h264->decoder.last_seq != (rtp_hdr->seq_num - 1) && h264->decoder.last_seq){
 		if(h264->decoder.last_seq == rtp_hdr->seq_num){
 			// Could happen on some stupid emulators
-			//TSK_DEBUG_INFO("Packet duplicated, seq_num=%d", rtp_hdr->seq_num);
+			TSK_DEBUG_INFO("Packet duplicated, seq_num=%d", rtp_hdr->seq_num);
 			return 0;
 		}
 		TSK_DEBUG_INFO("Packet lost, seq_num=%d", rtp_hdr->seq_num);
@@ -331,7 +333,7 @@ tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_data, tsk
 	if((int)(h264->decoder.accumulator_pos + pay_size) <= xsize){
 		if(append_scp){
 			memcpy(&((uint8_t*)h264->decoder.accumulator)[h264->decoder.accumulator_pos], H264_START_CODE_PREFIX, sizeof(H264_START_CODE_PREFIX));
-			h264->decoder.accumulator_pos +=sizeof(H264_START_CODE_PREFIX);
+			h264->decoder.accumulator_pos += sizeof(H264_START_CODE_PREFIX);
 		}
 
 		memcpy(&((uint8_t*)h264->decoder.accumulator)[h264->decoder.accumulator_pos], pay_ptr, pay_size);

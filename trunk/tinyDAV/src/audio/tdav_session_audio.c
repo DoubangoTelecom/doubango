@@ -42,10 +42,12 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-#define IS_DTMF_CODEC(codec) (TMEDIA_CODEC(codec)->plugin == tdav_codec_dtmf_plugin_def_t)
+#define IS_DTMF_CODEC(codec) (TMEDIA_CODEC((codec))->plugin == tdav_codec_dtmf_plugin_def_t)
 
 static int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id);
 static struct tdav_session_audio_dtmfe_s* _tdav_session_audio_dtmfe_create(const tdav_session_audio_t* session, uint8_t event, uint16_t duration, uint32_t seq, uint32_t timestamp, uint8_t format, tsk_bool_t M, tsk_bool_t E);
+static tsk_bool_t _tdav_has_at_least_one_codec(const tdav_session_audio_t* session);
+
 
 /* DTMF event object */
 typedef struct tdav_session_audio_dtmfe_s
@@ -266,7 +268,7 @@ int tdav_session_audio_start(tmedia_session_t* self)
 
 	audio = (tdav_session_audio_t*)self;
 
-	if(TSK_LIST_IS_EMPTY(self->neg_codecs) || ((self->neg_codecs->tail == self->neg_codecs->head) && IS_DTMF_CODEC(TSK_LIST_FIRST_DATA(self->neg_codecs)))){
+	if(!_tdav_has_at_least_one_codec(audio)){
 		TSK_DEBUG_ERROR("No codec matched");
 		return -2;
 	}
@@ -664,6 +666,19 @@ int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 
 	return 0;
 }
+
+/* Internal function used to check that there is a least one valid codec in the negociated list */
+tsk_bool_t _tdav_has_at_least_one_codec(const tdav_session_audio_t* session)
+{
+	const tsk_list_item_t* item;
+	tsk_list_foreach(item, TMEDIA_SESSION(session)->neg_codecs){
+		if(!IS_DTMF_CODEC(item->data)){
+			return tsk_true;
+		}
+	}
+	return tsk_false;
+}
+
 
 /* Internal function used to create new DTMF event */
 tdav_session_audio_dtmfe_t* _tdav_session_audio_dtmfe_create(const tdav_session_audio_t* session, uint8_t event, uint16_t duration, uint32_t seq, uint32_t timestamp, uint8_t format, tsk_bool_t M, tsk_bool_t E)
