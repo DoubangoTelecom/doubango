@@ -285,6 +285,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\blinkmind.sn"
+				>
+			</File>
+			<File
 				RelativePath=".\core-alcatel.sn"
 				>
 			</File>
