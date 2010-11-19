@@ -68,6 +68,7 @@ typedef enum tmedia_video_size_type_e
 	tmedia_vst_xga,
 	tmedia_vst_sxga,
 	tmedia_vst_16cif,
+	tmedia_vst_hdtv,
 	
 	tmedia_vst_ios_low,
 	tmedia_vst_ios_high

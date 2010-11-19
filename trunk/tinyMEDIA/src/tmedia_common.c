@@ -131,6 +131,7 @@ static const tmedia_video_size_t tmedia_video_sizes[] =
 	{tmedia_vst_xga, 1024, 768},
 	{tmedia_vst_sxga, 1280, 1024},
 	{tmedia_vst_16cif, 1408, 1152},
+	{tmedia_vst_hdtv, 1280, 720},
 	
 	{tmedia_vst_ios_low, 200, 152},
 	{tmedia_vst_ios_high, 400, 304},
