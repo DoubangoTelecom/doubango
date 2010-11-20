@@ -91,13 +91,13 @@ void test_stack()
 	// http://ipv6.google.com/
 	//op = THTTP_OPERATION_CREATE(stack,
 	//	THTTP_OPERATION_SET_PARAM("method", "GET"),
-	//	THTTP_OPERATION_SET_PARAM("URL", "http://siptest.colibria.com:8080/services/resource-lists/users/sip:mercuro1@colibria.com/index"),
+	//	THTTP_OPERATION_SET_PARAM("URL", "http://siptest.doubango.org:8080/services/resource-lists/users/sip:mercuro1@doubango.org/index"),
 	//	
 	//	THTTP_OPERATION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
 	//	THTTP_OPERATION_SET_HEADER("Pragma", "No-Cache"),
 	//	THTTP_OPERATION_SET_HEADER("Connection", "Keep-Alive"),
 	//	THTTP_OPERATION_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
-	//	THTTP_OPERATION_SET_HEADER("X-3GPP-Intended-Identity", "sip:mercuro1@colibria.com"),
+	//	THTTP_OPERATION_SET_HEADER("X-3GPP-Intended-Identity", "sip:mercuro1@doubango.org"),
 	//	
 	//	THTTP_OPERATION_SET_NULL());
 	//thttp_operation_perform(op);
@@ -115,19 +115,19 @@ void test_stack()
 		
 		THTTP_SESSION_SET_NULL()); /* MUST always be present */
 
-	ret = thttp_action_GET(session, "http://siptest.colibria.com:8080/services/resource-lists/users/sip:mercuro1@colibria.com/index",
-		THTTP_ACTION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
-		
-		tsk_null);
+	//ret = thttp_action_GET(session, "http://siptest.doubango.org:8080/services/resource-lists/users/sip:mercuro1@doubango.org/index",
+	//	THTTP_ACTION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
+	//	
+	//	tsk_null);
 
-	getchar();
+	//getchar();
 
-	thttp_action_GET(session, "http://siptest.colibria.com:8080/services/resource-lists/users/sip:mercuro1@colibria.com/index",
-		THTTP_ACTION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
-		
-		tsk_null);
+	//thttp_action_GET(session, "http://siptest.doubango.org:8080/services/resource-lists/users/sip:mercuro1@doubango.org/index",
+	//	THTTP_ACTION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
+	//	
+	//	tsk_null);
 
-	getchar();
+	//getchar();
 
 
 	thttp_action_GET(session, "http://ipv6.google.com",
@@ -158,7 +158,7 @@ void test_stack()
 	//	THTTP_ACTION_SET_NULL());	
 
 	/* Gets resource-lists document */
-	thttp_action_GET(session, "http://siptest.colibria.com:8080/services/resource-lists/users/sip:mercuro1@colibria.com/index",
+	thttp_action_GET(session, "http://siptest.doubango.org:8080/services/resource-lists/users/sip:mercuro1@doubango.org/index",
 		THTTP_ACTION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
 		
 		tsk_null);
@@ -170,14 +170,14 @@ void test_stack()
 	//getchar();
 
 	/* Gets xcap-caps document */
-	thttp_action_GET(session, "http://siptest.colibria.com:8080/services/xcap-caps/global/index",
+	thttp_action_GET(session, "http://siptest.doubango.org:8080/services/xcap-caps/global/index",
 		THTTP_ACTION_SET_HEADER("Content-Type", "application/xcap-caps+xml"),
 		
 		tsk_null);
 
 	getchar();
 
-	thttp_action_GET(session, "http://siptest.colibria.com:8080/services/resource-lists/users/sip:mercuro1@colibria.com/properties-resource-list.xml",
+	thttp_action_GET(session, "http://siptest.doubango.org:8080/services/resource-lists/users/sip:mercuro1@doubango.org/properties-resource-list.xml",
 		THTTP_ACTION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
 		
 		tsk_null);

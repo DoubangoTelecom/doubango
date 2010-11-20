@@ -45,7 +45,8 @@
 #define DEBUG_STATE_MACHINE 1
 #define THTTP_MESSAGE_DESCRIPTION(message) \
 		THTTP_MESSAGE_IS_RESPONSE(message) ? THTTP_RESPONSE_PHRASE(message) : THTTP_REQUEST_METHOD(message)
-#define THTTP_DIALOG_TRANSPORT_ERROR_CODE -0xFF
+
+#define THTTP_DIALOG_TRANSPORT_ERROR_CODE	-0xFF
 
 /* ======================== internal functions ======================== */
 int thttp_dialog_send_request(thttp_dialog_t *self);
@@ -60,6 +61,7 @@ int thttp_dialog_Started_2_Transfering_X_request(va_list *app);
 int thttp_dialog_Transfering_2_Transfering_X_401_407(va_list *app);
 int thttp_dialog_Transfering_2_Transfering_X_1xx(va_list *app);
 int thttp_dialog_Transfering_2_Terminated_X_message(va_list *app); /* Any other HTTP message except 401/407 */
+int thttp_dialog_Any_2_Terminated_X_timedout(va_list *app);
 int thttp_dialog_Any_2_Terminated_X_closed(va_list *app);
 int thttp_dialog_Any_2_Terminated_X_Error(va_list *app);
 
@@ -80,6 +82,7 @@ typedef enum _fsm_action_e
 	_fsm_action_message = thttp_atype_i_message,
 	_fsm_action_closed = thttp_thttp_atype_closed,
 	_fsm_action_error = thttp_atype_error, // Transport error and not HTTP message error (e.g. 409)
+	_fsm_action_timedout = thttp_atype_timedout,
 	
 	/* _fsm_action_any_other = 0xFF */
 }
@@ -181,7 +184,7 @@ int thttp_dialog_Transfering_2_Terminated_X_message(va_list *app)
 	thttp_event_t* e = tsk_null;
 	int ret = -2;
 	
-	/* Alert the user. */
+	// alert the user
 	if((e = thttp_event_create(thttp_event_message, self->session, THTTP_MESSAGE_DESCRIPTION(message), message))){
 		ret = thttp_stack_alert(self->session->stack, e);
 		TSK_OBJECT_SAFE_FREE(e);
@@ -198,7 +201,7 @@ int thttp_dialog_Any_2_Terminated_X_closed(va_list *app)
 	thttp_event_t* e;
 	//self->fd = TNET_INVALID_FD; // to avoid close(fd) in the destructor
 
-	/* Alert the user */
+	// alert the user
 	if((e = thttp_event_create(thttp_event_closed, self->session, "Connection closed", tsk_null))){
 		ret = thttp_stack_alert(self->session->stack, e);
 		TSK_OBJECT_SAFE_FREE(e);
@@ -214,7 +217,7 @@ int thttp_dialog_Any_2_Terminated_X_Error(va_list *app)
 	thttp_dialog_t *self = va_arg(*app, thttp_dialog_t *);
 	thttp_event_t* e;
 
-	/* Alert the user */
+	// alert the user
 	if((e = thttp_event_create(thttp_event_transport_error, self->session, "Transport error", tsk_null))){
 		ret = thttp_stack_alert(self->session->stack, e);
 		TSK_OBJECT_SAFE_FREE(e);
@@ -252,8 +255,8 @@ thttp_dialog_t* thttp_dialog_new(thttp_session_t* session)
 	return ret;
 }
 
-/** Returns the oldest dialog.
-*/
+// Returns the oldest dialog.
+// you must free the returned object
 thttp_dialog_t* thttp_dialog_get_oldest(thttp_dialogs_L_t* dialogs)
 {
 	thttp_dialog_t* ret = tsk_null;
@@ -270,8 +273,7 @@ thttp_dialog_t* thttp_dialog_get_oldest(thttp_dialogs_L_t* dialogs)
 	return ret;
 }
 
-/** Sends a request.
-*/
+// sends a request.
 int thttp_dialog_send_request(thttp_dialog_t *self)
 {
 	int ret = -1;
@@ -280,12 +282,14 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 	tsk_buffer_t* output = tsk_null;
 	thttp_url_t* url;
 	tnet_socket_type_t type;
+	int timeout = TNET_CONNECT_TIMEOUT, _timeout = -1;
 
 	if(!self || !self->session || !self->action){
 		return -1;
 	}
 
 	if(!self->action->method || !self->action->url){
+		TSK_DEBUG_ERROR("Invlaid parameter");
 		return -2;
 	}
 
@@ -299,15 +303,25 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 		goto bail;
 	}		
 
-	/* ==Add headers associated to the session== */
+	/* ==Add headers, options, ... associated to the SESSION== */
 	tsk_list_foreach(item, self->session->headers){
 		THTTP_MESSAGE_ADD_HEADER(request, THTTP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value));
 	}
+	if(self->session->options){
+		if((_timeout = tsk_options_get_option_value_as_int(self->session->options, THTTP_ACTION_OPTION_TIMEOUT)) > 0){
+			timeout = _timeout; //could be updated by the action
+		}
+	}
 
-	/* ==Add headers and content associated to the action== */
+	/* ==Add headers, options, and content associated to the ACTION== */
 	if(self->action){
 		if(self->action->payload){
 			thttp_message_add_content(request, tsk_null, self->action->payload->data, self->action->payload->size);
+		}
+		if(self->action->options){
+			if((_timeout = tsk_options_get_option_value_as_int(self->action->options, THTTP_ACTION_OPTION_TIMEOUT)) > 0){
+				timeout = _timeout;
+			}
 		}
 		tsk_list_foreach(item, self->action->headers){
 			THTTP_MESSAGE_ADD_HEADER(request, THTTP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value));
@@ -353,9 +367,9 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 			ret = -3;
 			goto bail;
 		}
-		/* Wait for the socket for writability */
-		if((ret = tnet_sockfd_waitUntilWritable(self->session->fd, TNET_CONNECT_TIMEOUT))){
-			TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
+		
+		if((ret = tnet_sockfd_waitUntilWritable(self->session->fd, timeout))){
+			TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", timeout);
 			if(tnet_transport_remove_socket(self->session->stack->transport, &self->session->fd)){
 				tnet_sockfd_close(&self->session->fd);
 			}

@@ -346,8 +346,7 @@ parse_buffer:
 	*	==> Parse the HTTP message without the content.
 	*/
 	tsk_ragel_state_init(&state, TSK_BUFFER_DATA(dialog->buf), endOfheaders + 4/*2CRLF*/);
-	if(!(ret = thttp_message_parse(&state, &message, tsk_false/* do not extract the content */)))
-	{
+	if(!(ret = thttp_message_parse(&state, &message, tsk_false/* do not extract the content */))){
 		const thttp_header_Transfer_Encoding_t* transfer_Encoding;
 
 		/* chunked? */
@@ -370,6 +369,8 @@ parse_buffer:
 				}
 
 				if(chunk_size == 0 && ((start + 2) <= end) && *start == '\r' && *(start+ 1) == '\n'){
+					int parsed_len = (start - TSK_BUFFER_TO_U8(dialog->buf)) + 2/*CRLF*/;
+					tsk_buffer_remove(dialog->buf, 0, parsed_len);
 					have_all_content = tsk_true;
 					break;
 				}
