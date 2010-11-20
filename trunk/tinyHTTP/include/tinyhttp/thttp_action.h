@@ -69,6 +69,7 @@ typedef enum thttp_action_type_e
 	thttp_atype_error,
 	thttp_atype_close,
 	thttp_atype_cancel,
+	thttp_atype_timedout,
 
 }
 thttp_action_type_t;

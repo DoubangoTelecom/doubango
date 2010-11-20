@@ -73,6 +73,7 @@ int thttp_action_perform(thttp_session_handle_t *session, const char* urlstring,
 	int ret = -1;	
 
 	if(!sess || !sess->stack || !urlstring || !method){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return ret;
 	}
 	
