@@ -369,7 +369,7 @@ parse_buffer:
 				}
 
 				if(chunk_size == 0 && ((start + 2) <= end) && *start == '\r' && *(start+ 1) == '\n'){
-					int parsed_len = (start - TSK_BUFFER_TO_U8(dialog->buf)) + 2/*CRLF*/;
+					int parsed_len = (start - (const char*)(TSK_BUFFER_TO_U8(dialog->buf))) + 2/*CRLF*/;
 					tsk_buffer_remove(dialog->buf, 0, parsed_len);
 					have_all_content = tsk_true;
 					break;
