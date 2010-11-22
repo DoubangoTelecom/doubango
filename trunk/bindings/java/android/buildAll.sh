@@ -4,7 +4,7 @@
 for project in tinySAK tinyNET tinyHTTP tinyXCAP tinyIPSec tinySMS tinySIGCOMP tinySDP tinyRTP tinyMSRP tinyMEDIA tinyDAV tinySIP
 #for project in tinyDAV
 do
-	echo -e building "$project....\n"
+	echo -e building "$project with parameters=$@\n"
 	make PROJECT=$project clean
 	make PROJECT=$project BT=static $@ all
 done
