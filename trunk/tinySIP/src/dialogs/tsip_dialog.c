@@ -337,7 +337,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		else
 		{	/* No routes associated to this dialog. */
 			if(self->state == tsip_initial || self->state == tsip_early){
-				/*	3GPP TS 24.229 section 5.1.2A [Generic procedures applicable to all methods excluding the REGISTER method]:
+				/*	GPP TS 24.229 section 5.1.2A [Generic procedures applicable to all methods excluding the REGISTER method]:
 					The UE shall build a proper preloaded Route header field value for all new dialogs and standalone transactions. The UE
 					shall build a list of Route header field values made out of the following, in this order:
 					a) the P-CSCF URI containing the IP address or the FQDN learnt through the P-CSCF discovery procedures; and
@@ -349,14 +349,16 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 					c) and the values received in the Service-Route header field saved from the 200 (OK) response to the last
 					registration or re-registration of the public user identity with associated contact address.
 				*/
-				if(!TSIP_DIALOG_GET_STACK(self)->security.earlyIMS){ // Follow 3GPP TS 24.229 only on IMS terminals (Not based on any spec)
-					tsip_uri_t *uri = tsip_stack_get_pcscf_uri(TSIP_DIALOG_GET_STACK(self), tsk_true);
-					// Proxy-CSCF as first route
-					if(uri){
-						TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_ROUTE_VA_ARGS(uri));
-						TSK_OBJECT_SAFE_FREE(uri);
-					}
+#if _DEBUG && defined(SDS_HACK)/* FIXME: remove this */
+				/* Ericsson SDS hack (INVITE with Proxy-CSCF as First route fail) */
+#else
+				tsip_uri_t *uri = tsip_stack_get_pcscf_uri(TSIP_DIALOG_GET_STACK(self), tsk_true);
+				// Proxy-CSCF as first route
+				if(uri){
+					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_ROUTE_VA_ARGS(uri));
+					TSK_OBJECT_SAFE_FREE(uri);
 				}
+#endif
 				// Service routes
 				tsk_list_foreach(item, TSIP_DIALOG_GET_STACK(self)->service_routes){
 					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_ROUTE_VA_ARGS(item->data));
