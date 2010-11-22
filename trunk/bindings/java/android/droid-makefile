@@ -15,7 +15,7 @@ ILBC_LDFLAGS := -liLBC
 LIBGSM_LDFLAGS := -lgsm
 
 ifeq ($(G729), yes)
-	G729_LDFLAGS := -lg729b
+	G729_LDFLAGS := -lg729b_$(MARCH)
 	
 	# Reset all other ITU CODECS
 	OPENCORE_ARM_LDFLAGS :=
