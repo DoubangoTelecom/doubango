@@ -54,8 +54,8 @@ export CFLAGS_LIB= $(CFLAGS_COMMON) \
 -fomit-frame-pointer \
 -fno-strict-aliasing \
 -finline-limit=64 \
--DANDROID \
--mthumb
+-DANDROID
+#-mthumb
 
 export LDFLAGS_COMMON=$(LDFLAGS) -Wl,-rpath=/system/lib,-rpath-link=$(ANDROID_NDK_ROOT)/build/platforms/$(ANDROID_PLATFORM)/arch-arm/usr/lib,-rpath-link=$(OUTPUT_DIR),-dynamic-linker=/system/bin/linker,-T,$(ANDROID_NDK_ROOT)/build/prebuilt/$(ANDROID_HOST)/arm-eabi-$(ANDROID_GCC_VER)/arm-eabi/lib/ldscripts/armelf.xsc -L$(ANDROID_NDK_ROOT)/build/platforms/$(ANDROID_PLATFORM)/arch-arm/usr/lib
 export LDFLAGS_COMMON+=-nostdlib -lc -L$(OUTPUT_DIR)
