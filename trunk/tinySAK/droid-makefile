@@ -1,4 +1,4 @@
-APP := lib$(PROJECT).$(EXT)
+APP := lib$(PROJECT)_$(MARCH).$(EXT)
 
 CFLAGS := $(CFLAGS_LIB)
 LDFLAGS := $(LDFLAGS_LIB)

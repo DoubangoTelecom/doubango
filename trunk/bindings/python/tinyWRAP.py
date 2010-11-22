@@ -832,6 +832,7 @@ tsip_m_local_resume_nok = _tinyWRAP.tsip_m_local_resume_nok
 tsip_m_remote_hold = _tinyWRAP.tsip_m_remote_hold
 tsip_m_remote_resume = _tinyWRAP.tsip_m_remote_resume
 tmedia_rgb24 = _tinyWRAP.tmedia_rgb24
+tmedia_bgr24 = _tinyWRAP.tmedia_bgr24
 tmedia_rgb32 = _tinyWRAP.tmedia_rgb32
 tmedia_rgb565le = _tinyWRAP.tmedia_rgb565le
 tmedia_rgb565be = _tinyWRAP.tmedia_rgb565be

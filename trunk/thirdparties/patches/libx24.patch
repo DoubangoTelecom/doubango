@@ -1,0 +1,43 @@
+Index: libx264.c
+===================================================================
+--- libx264.c	(revision 24652)
++++ libx264.c	(working copy)
+@@ -100,7 +100,14 @@
+         }
+ 
+         x4->pic.i_pts  = frame->pts;
+-        x4->pic.i_type = X264_TYPE_AUTO;
++
++		// by MDI
++		if(frame->pict_type == FF_I_TYPE){
++			x4->pic.i_type = X264_TYPE_IDR;
++		}
++		else{
++			x4->pic.i_type = X264_TYPE_AUTO;
++		}
+     }
+ 
+     do {
+@@ -153,7 +160,8 @@
+     X264Context *x4 = avctx->priv_data;
+ 
+     x4->sei_size = 0;
+-    x264_param_default(&x4->params);
++    x264_param_default_preset(&x4->params, "veryfast", "zerolatency"); // By MDI
++	//x264_param_default(&x4->params);
+ 
+     x4->params.pf_log               = X264_log;
+     x4->params.p_log_private        = avctx;
+@@ -164,6 +172,12 @@
+     x4->params.rc.i_vbv_buffer_size = avctx->rc_buffer_size / 1000;
+     x4->params.rc.i_vbv_max_bitrate = avctx->rc_max_rate    / 1000;
+     x4->params.rc.b_stat_write      = avctx->flags & CODEC_FLAG_PASS1;
++
++	// --by MDI begin
++	//x4->params.i_slice_max_size     = 1350;
++    //x4->params.rc.i_lookahead       = 0; 
++	// --by MDI end
++
+     if (avctx->flags & CODEC_FLAG_PASS2) {
+         x4->params.rc.b_stat_read = 1;
+     } else {

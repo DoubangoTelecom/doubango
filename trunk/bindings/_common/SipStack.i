@@ -167,7 +167,8 @@ tsip_invite_event_type_t;
 // used by tinyWRAP
 typedef enum tmedia_chroma_e
 {
-	tmedia_rgb24,	    // used by windows consumer (DirectShow)
+	tmedia_rgb24,		// will be stored as bgr24 on x86 (little endians) machines; e.g. WindowsPhone7
+	tmedia_bgr24,		// used by windows consumer (DirectShow) - 
 	tmedia_rgb32,       // used by iOS4 consumer (iPhone and iPod touch)
 	tmedia_rgb565le,	// (used by both android and wince consumers)
 	tmedia_rgb565be,

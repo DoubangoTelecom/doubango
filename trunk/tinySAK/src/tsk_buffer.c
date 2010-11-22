@@ -220,8 +220,7 @@ int tsk_buffer_realloc(tsk_buffer_t* self, tsk_size_t size)
 */
 int tsk_buffer_remove(tsk_buffer_t* self, tsk_size_t position, tsk_size_t size)
 {
-	if(self && self->data)
-	{
+	if(self && self->data && size){
 		if((position == 0) && ((position + size) >= self->size)){ /* Very common case. */
 			return tsk_buffer_cleanup(self);
 		}

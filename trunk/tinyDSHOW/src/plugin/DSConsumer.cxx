@@ -165,12 +165,13 @@ static tsk_object_t* tdshow_consumer_ctor(tsk_object_t * self, va_list * app)
 
 		/* init base */
 		tmedia_consumer_init(TMEDIA_CONSUMER(consumer));
-		TMEDIA_CONSUMER(consumer)->video.chroma = tmedia_rgb24;
+		TMEDIA_CONSUMER(consumer)->video.chroma = tmedia_bgr24; // RGB24 on x86 (little endians) stored as BGR24
+
 		/* init self */
 		TMEDIA_CONSUMER(consumer)->video.fps = 15;
-		TMEDIA_CONSUMER(consumer)->video.width = 176;
-		TMEDIA_CONSUMER(consumer)->video.height = 144;
-		consumer->display = new DSDisplay(&hr);
+		TMEDIA_CONSUMER(consumer)->video.width = 352;
+		TMEDIA_CONSUMER(consumer)->video.height = 288;
+		consumer->display = new DSDisplay(&hr); // MUST be done here to be sure that we are in the UI thread
 		if(FAILED(hr)){
 			TSK_DEBUG_ERROR("Failed to created DirectShow Display");
 			SAFE_DELETE_PTR(consumer->display);

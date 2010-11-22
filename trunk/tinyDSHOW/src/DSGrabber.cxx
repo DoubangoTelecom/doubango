@@ -38,13 +38,13 @@ DSGrabber::DSGrabber(HRESULT *hr)
 #endif
 	if (FAILED(*hr)) return;
 
-	// Init the bitmap info header
+	// Init the bitmap info header with default values
 	memset(&(this->bitmapInfo), 0, sizeof(BITMAPINFOHEADER));
 	this->bitmapInfo.biSize = sizeof(BITMAPINFOHEADER);
-	this->bitmapInfo.biWidth = 176; // TODO
-	this->bitmapInfo.biHeight = 144; // TODO
+	this->bitmapInfo.biWidth = 352;
+	this->bitmapInfo.biHeight = 288;
 	this->bitmapInfo.biPlanes = 1;
-	this->bitmapInfo.biBitCount = 24; // TODO
+	this->bitmapInfo.biBitCount = 24; 
 	this->bitmapInfo.biCompression = 0;
 	this->bitmapInfo.biXPelsPerMeter = 0;
 	this->bitmapInfo.biYPelsPerMeter = 0;

@@ -16903,6 +16903,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tsip_m_remote_hold",SWIG_From_int(static_cast< int >(tsip_m_remote_hold)));
   SWIG_Python_SetConstant(d, "tsip_m_remote_resume",SWIG_From_int(static_cast< int >(tsip_m_remote_resume)));
   SWIG_Python_SetConstant(d, "tmedia_rgb24",SWIG_From_int(static_cast< int >(tmedia_rgb24)));
+  SWIG_Python_SetConstant(d, "tmedia_bgr24",SWIG_From_int(static_cast< int >(tmedia_bgr24)));
   SWIG_Python_SetConstant(d, "tmedia_rgb32",SWIG_From_int(static_cast< int >(tmedia_rgb32)));
   SWIG_Python_SetConstant(d, "tmedia_rgb565le",SWIG_From_int(static_cast< int >(tmedia_rgb565le)));
   SWIG_Python_SetConstant(d, "tmedia_rgb565be",SWIG_From_int(static_cast< int >(tmedia_rgb565be)));

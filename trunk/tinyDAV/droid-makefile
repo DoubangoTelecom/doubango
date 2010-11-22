@@ -1,7 +1,8 @@
-APP := lib$(PROJECT).$(EXT)
+APP := lib$(PROJECT)_$(MARCH).$(EXT)
 
 THIRDPARTIES_INC := ../thirdparties/android/include
 THIRDPARTIES_LIB := ../thirdparties/android/lib
+THIRDPARTIES_MARCH_LIB := ../thirdparties/android/lib/$(MARCH)
 
 FFMPEG_CFLAGS :=  -DHAVE_FFMPEG=1
 FFMPEG_LDFLAGS := -lavutil -lswscale -lavcore -lavcodec -lx264 -ltheora -logg
@@ -40,9 +41,9 @@ CFLAGS := $(CFLAGS_LIB) -I$(THIRDPARTIES_INC) $(ILBC_CFLAGS) $(LIBGSM_CFLAGS) \
 	-I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I../tinyRTP/include -I../tinyMEDIA/include -I../tinyMSRP/include -I./include \
 	-DJB_HISTORY_SIZE=500
 	
-LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB)\
+LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) -L$(THIRDPARTIES_MARCH_LIB) \
 	 $(FFMPEG_LDFLAGS) $(SPEEX_LDFLAGS) $(OPENCORE_ARM_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) $(BV16_LDFLAGS) $(G729_LDFLAGS)\
-	 -ltinySAK -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA -ltinyMSRP -lm -lgcc
+	 -ltinySAK_$(MARCH) -ltinyNET_$(MARCH) -ltinySDP_$(MARCH) -ltinyRTP_$(MARCH) -ltinyMEDIA_$(MARCH) -ltinyMSRP_$(MARCH) -lm -lgcc
 
 all: $(APP)
 
