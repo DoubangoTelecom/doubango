@@ -59,6 +59,7 @@ typedef uint64_t thttp_session_id_t;
 typedef enum thttp_session_option_e
 {
 	THTTP_SESSION_OPTION_TIMEOUT,
+	THTTP_SESSION_OPTION_TTL,
 	// To be continued...
 }
 thttp_session_option_t;

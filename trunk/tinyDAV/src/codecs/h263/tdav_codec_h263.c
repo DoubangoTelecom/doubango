@@ -285,8 +285,6 @@ int tdav_codec_h263_close(tmedia_codec_t* self)
 	return 0;
 }
 
-#include "tsk_time.h"
-
 tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	int ret;
@@ -311,11 +309,6 @@ tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_data, tsk
 	tdav_converter_video_flip(h263->encoder.picture, h263->encoder.context->height);
 #endif
 
-	// Encode data
-	//h263->encoder.picture->pts = tsk_time_epoch();
-	
-	//h263->encoder.picture->pts = AV_NOPTS_VALUE;
-	//h263->encoder.picture->pict_type = FF_I_TYPE;
 	ret = avcodec_encode_video(h263->encoder.context, h263->encoder.buffer, size, h263->encoder.picture);
 	if(ret > 0){
 		tdav_codec_h263_encap(h263, h263->encoder.buffer, (tsk_size_t)ret);

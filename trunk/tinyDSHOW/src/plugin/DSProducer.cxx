@@ -168,11 +168,11 @@ static tsk_object_t* tdshow_producer_ctor(tsk_object_t * self, va_list * app)
 
 		/* init base */
 		tmedia_producer_init(TMEDIA_PRODUCER(producer));
-		TMEDIA_PRODUCER(producer)->video.chroma = tmedia_rgb24;
-		/* init self */
+		TMEDIA_PRODUCER(producer)->video.chroma = tmedia_bgr24; // RGB24 on x86 (little endians) stored as BGR24
+		/* init self with default values*/
 		producer->fps = 15;
-		producer->width = 176;
-		producer->height = 144;
+		producer->width = 352;
+		producer->height = 288;
 		producer->grabber = new DSGrabber(&hr);
 		if(FAILED(hr)){
 			TSK_DEBUG_ERROR("Failed to created DirectShow Grabber");

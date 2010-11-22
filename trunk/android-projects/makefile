@@ -7,7 +7,7 @@ include ./root.mk
 
 ifeq ($(PROJECT), tinyWRAP) ##### tinyWRAP
 all:
-	(cd ../bindings/java/android; $(MAKE) -f droid-makefile all; cp -f lib$(PROJECT).$(EXT) $(OUTPUT_DIR))
+	(cd ../bindings/java/android; $(MAKE) -f droid-makefile all; cp -f lib$(PROJECT)_$(MARCH).$(EXT) $(OUTPUT_DIR))
 clean:
 	(cd ../bindings/java/android; $(MAKE) -f droid-makefile clean)
 
@@ -23,7 +23,7 @@ clean:
 
 else ##### All other libraries (tiny*)
 all:
-	(cd ../$(PROJECT) ; $(MAKE) -f droid-makefile all; cp -f lib$(PROJECT).$(EXT) $(OUTPUT_DIR))
+	(cd ../$(PROJECT) ; $(MAKE) -f droid-makefile all; cp -f lib$(PROJECT)_$(MARCH).$(EXT) $(OUTPUT_DIR))
 test:
 	(cd ../$(PROJECT)/test; $(MAKE) -f droid-makefile all; cp -f test $(OUTPUT_DIR))
 install:

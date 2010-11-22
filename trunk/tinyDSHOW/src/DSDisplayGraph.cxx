@@ -106,30 +106,62 @@ bool DSDisplayGraph::getImageFormat(UINT &width, UINT &height)
 
 bool DSDisplayGraph::setImageFormat(UINT width, UINT height)
 {
+	bool ret = true;
 	if(this->sourceFilter){
-		return (this->sourceFilter->setImageFormat(width, height) == S_OK);
+		UINT w=width, h = height;
+		if(this->sourceFilter->getImageFormat(w, h)){
+			if(w!= width || h!=height){ // Image format has changed
+				bool reconnect = this->connected; // IMPORTANT: Must reconnect all elements
+				HRESULT hr;
+				if(reconnect){
+					if((hr = this->disconnect()) != S_OK){
+						return false;
+					}
+				}
+				ret = (this->sourceFilter->setImageFormat(width, height) == S_OK);
+				if(reconnect){
+					if((hr = this->connect())){
+						return false;
+					}
+				}
+			}
+		}
 	}
-	return false;
+	return ret;
 }
 
 HRESULT DSDisplayGraph::connect()
 {
 	HRESULT hr;
 
-	hr = ConnectFilters(this->graphBuilder, this->sourceFilter, this->colorspaceConverterFilter);
-	hr = ConnectFilters(this->graphBuilder, this->colorspaceConverterFilter, this->videoRendererFilter);
+	if((hr = ConnectFilters(this->graphBuilder, this->sourceFilter, this->colorspaceConverterFilter)) != S_OK){
+		TSK_DEBUG_ERROR("Failed to connect sourcefilter with the colorspace");
+		return hr;
+	}
+	if((hr = ConnectFilters(this->graphBuilder, this->colorspaceConverterFilter, this->videoRendererFilter)) != S_OK){
+		TSK_DEBUG_ERROR("Failed to connect colorspace with the videorenderer");
+		return hr;
+	}
 
-	return hr;
+	this->connected = true;
+	return S_OK;
 }
 
 HRESULT DSDisplayGraph::disconnect()
 {
 	HRESULT hr;
 
-	hr = DisconnectFilters(this->graphBuilder, this->sourceFilter, this->colorspaceConverterFilter);
-	hr = DisconnectFilters(this->graphBuilder, this->colorspaceConverterFilter, this->videoRendererFilter);
+	if((hr = DisconnectFilters(this->graphBuilder, this->sourceFilter, this->colorspaceConverterFilter)) != S_OK){
+		TSK_DEBUG_ERROR("Failed to disconnect sourcefilter with the colorspace");
+		return hr;
+	}
+	if((hr = DisconnectFilters(this->graphBuilder, this->colorspaceConverterFilter, this->videoRendererFilter)) != S_OK){
+		TSK_DEBUG_ERROR("Failed to connect colorspace with the videorenderer");
+		return hr;
+	}
 
-	return hr;
+	this->connected = false;
+	return S_OK;
 }
 
 HRESULT DSDisplayGraph::start()

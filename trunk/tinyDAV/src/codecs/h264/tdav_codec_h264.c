@@ -77,6 +77,10 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context = avcodec_alloc_context();
 	avcodec_get_context_defaults(h264->encoder.context);
 
+#if TDAV_UNDER_WINDOWS
+	h264->encoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
+#endif
+
 	h264->encoder.context->pix_fmt		= PIX_FMT_YUV420P;
 	h264->encoder.context->time_base.num  = 1;
 	h264->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(h264)->fps;
@@ -85,7 +89,7 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 
 	h264->encoder.context->rc_lookahead = 0;
 
-	h264->encoder.context->refs = 2;
+	//h264->encoder.context->refs = 2;
     h264->encoder.context->scenechange_threshold = 0;
     h264->encoder.context->me_subpel_quality = 0;
     h264->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
@@ -157,6 +161,9 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->decoder.context->width = TMEDIA_CODEC_VIDEO(h264)->width;
 	h264->decoder.context->height = TMEDIA_CODEC_VIDEO(h264)->height;
 	
+#if TDAV_UNDER_WINDOWS
+	h264->decoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
+#endif
 
 	// Picture (YUV 420)
 	if(!(h264->decoder.picture = avcodec_alloc_frame())){
@@ -224,7 +231,6 @@ int tdav_codec_h264_close(tmedia_codec_t* self)
 }
 
 
-//#include "tsk_time.h"
 tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	int ret = 0;
@@ -236,10 +242,10 @@ tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
-	
-	// delete old buffer
-	if(*out_data){
-		TSK_FREE(*out_data);
+
+	if(!self->opened){
+		TSK_DEBUG_ERROR("Codec not opened");
+		return 0;
 	}
 
 	// wrap yuv420 buffer
@@ -255,10 +261,7 @@ tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk
 #endif
 
 	// Encode data
-	//h264->encoder.picture->pts = tsk_time_epoch();
 	h264->encoder.picture->pts = AV_NOPTS_VALUE;
-	//h264->encoder.picture->pict_type = 0;
-	
 	ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);	
 
 	if(ret >0){
@@ -824,7 +827,8 @@ tdav_codec_h264_profile_t tdav_codec_h264_get_profile(const char* fmtp)
 
 static void tdav_codec_h264_encap(const tdav_codec_h264_t* h264, const uint8_t* pdata, tsk_size_t size)
 {
-	uint32_t i, last_scp, prev_scp;
+	register uint32_t i;
+	uint32_t last_scp, prev_scp;
 	static uint32_t size_of_scp = sizeof(H264_START_CODE_PREFIX); /* we know it's equal to 4 ..but */
 
 	if(!pdata || !size){

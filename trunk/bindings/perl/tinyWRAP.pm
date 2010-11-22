@@ -1806,6 +1806,7 @@ package tinyWRAP;
 *tsip_m_remote_hold = *tinyWRAPc::tsip_m_remote_hold;
 *tsip_m_remote_resume = *tinyWRAPc::tsip_m_remote_resume;
 *tmedia_rgb24 = *tinyWRAPc::tmedia_rgb24;
+*tmedia_bgr24 = *tinyWRAPc::tmedia_bgr24;
 *tmedia_rgb32 = *tinyWRAPc::tmedia_rgb32;
 *tmedia_rgb565le = *tinyWRAPc::tmedia_rgb565le;
 *tmedia_rgb565be = *tinyWRAPc::tmedia_rgb565be;

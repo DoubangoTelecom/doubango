@@ -146,12 +146,12 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
 	tsk_size_t yuv420p_size = 0;
 	int ret = 0;
-	
-	if(session->rtp_manager){
+
+	if(session && session->rtp_manager){
 		/* encode */
 		tsk_size_t out_size = 0;
 		tmedia_codec_t* codec = tsk_null;
-		
+
 		// Use first codec to encode data
 		if((codec = tsk_object_ref(TSK_LIST_FIRST_DATA(TMEDIA_SESSION(session)->neg_codecs)))){
 			if(!codec->plugin || !codec->plugin->encode){
@@ -222,6 +222,10 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 		}
 bail:
 		TSK_OBJECT_SAFE_FREE(codec);
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		ret = -1;
 	}
 
 	return ret;

@@ -58,6 +58,9 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t srcWidth, tsk_siz
 		case tmedia_rgb24:
 			pixfmt = PIX_FMT_RGB24;
 			break;
+		case tmedia_bgr24:
+			pixfmt = PIX_FMT_BGR24;
+			break;
 		case tmedia_rgb32:
 			pixfmt = PIX_FMT_RGB32;
 			break;
@@ -152,9 +155,9 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 	/* Context */
 	if(!self->context){
 		self->context = sws_getContext(
-			self->srcWidth, self->srcHeight, (srcFormat == PIX_FMT_RGB24) ? PIX_FMT_BGR24 : ((srcFormat == PIX_FMT_RGB32) ? PIX_FMT_BGR32 : srcFormat),
+			self->srcWidth, self->srcHeight, srcFormat,
 			self->dstWidth, self->dstHeight, dstFormat,
-			SWS_FAST_BILINEAR/*SWS_BICUBIC*/, NULL, NULL, NULL);
+			SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
 		if(!self->context){
 			TSK_DEBUG_ERROR("Failed to create context");
@@ -216,7 +219,7 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 			TSK_FREE(*output);
 			return 0;
 		}
-	}
+	}//end of rotation
 
 	return size;
 #else

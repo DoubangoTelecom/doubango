@@ -99,6 +99,7 @@ private:
 	IVMRWindowlessControl9			*windowlessControl;
 #endif
 
+	bool connected;
 	bool running;
 	int fps;
 };

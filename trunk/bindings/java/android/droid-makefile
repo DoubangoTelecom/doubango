@@ -1,10 +1,11 @@
-APP := lib$(PROJECT).$(EXT)
+APP := lib$(PROJECT)_$(MARCH).$(EXT)
 
 CFLAGS := $(CFLAGS_LIB) -fno-rtti -fno-exceptions -I../../_common -I../../. -I../../../tinySAK/src -I../../../tinyNET/src -I../../../tinyHTTP/include -I../../../tinyXCAP/include \
 	-I../../../tinySMS/include -I../../../tinySDP/include -I../../../tinyMEDIA/include -I../../../tinyMSRP/include -I../../../tinyDAV/include -I../../../tinySIP/include
 	
 # Because of the static build, you need all librarires
 THIRDPARTIES_LIB := ../../../thirdparties/android/lib
+THIRDPARTIES_MARCH_LIB := ../../../thirdparties/android/lib/$(MARCH)
 
 FFMPEG_LDFLAGS := -lavutil -lswscale -lavcore -lavcodec -lx264 -ltheora -logg
 SPEEX_LDFLAGS := -lspeexdsp -lspeex
@@ -23,9 +24,9 @@ else
 	G729_LDFLAGS :=
 endif
 
-LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) $(FFMPEG_LDFLAGS) $(SPEEX_LDFLAGS) $(OPENCORE_ARM_LDFLAGS) $(BV16_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) $(G729_LDFLAGS)\
+LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) -L$(THIRDPARTIES_MARCH_LIB) $(FFMPEG_LDFLAGS) $(SPEEX_LDFLAGS) $(OPENCORE_ARM_LDFLAGS) $(BV16_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) $(G729_LDFLAGS)\
 	-Wl,-Bdynamic -lm -lstdc++ -lgcc -llog \
-	-Wl,-Bstatic -ltinySAK -ltinyHTTP -ltinyXCAP -ltinyIPSec -ltinySIGCOMP -ltinySMS -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA -ltinyMSRP -ltinyDAV -ltinySIP
+	-Wl,-Bstatic -ltinySAK_$(MARCH) -ltinyHTTP_$(MARCH) -ltinyXCAP_$(MARCH) -ltinyIPSec_$(MARCH) -ltinySIGCOMP_$(MARCH) -ltinySMS_$(MARCH) -ltinyNET_$(MARCH) -ltinySDP_$(MARCH) -ltinyRTP_$(MARCH) -ltinyMEDIA_$(MARCH) -ltinyMSRP_$(MARCH) -ltinyDAV_$(MARCH) -ltinySIP_$(MARCH)
 
 
 all: $(APP)

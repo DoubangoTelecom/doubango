@@ -10,6 +10,7 @@ package org.doubango.tinyWRAP;
 
 public enum tmedia_chroma_t {
   tmedia_rgb24,
+  tmedia_bgr24,
   tmedia_rgb32,
   tmedia_rgb565le,
   tmedia_rgb565be,

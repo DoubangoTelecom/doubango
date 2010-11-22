@@ -1,7 +1,7 @@
-APP := lib$(PROJECT).$(EXT)
+APP := lib$(PROJECT)_$(MARCH).$(EXT)
 
 CFLAGS := $(CFLAGS_LIB) -I../tinySAK/src -I./src
-LDFLAGS := -ltinySAK $(LDFLAGS_LIB)
+LDFLAGS := -ltinySAK_$(MARCH) $(LDFLAGS_LIB)
 
 all: $(APP)
 

@@ -1,7 +1,7 @@
-APP := lib$(PROJECT).$(EXT)
+APP := lib$(PROJECT)_$(MARCH).$(EXT)
 
 CFLAGS := $(CFLAGS_LIB) -I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I./include
-LDFLAGS := $(LDFLAGS_LIB) -ltinySAK -ltinyNET -ltinySDP -lm
+LDFLAGS := $(LDFLAGS_LIB) -ltinySAK_$(MARCH) -ltinyNET_$(MARCH) -ltinySDP_$(MARCH) -lm
 
 all: $(APP)
 

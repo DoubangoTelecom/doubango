@@ -771,8 +771,19 @@ int __txcap_stack_set(txcap_stack_t* self, va_list *app)
 								break;
 							}
 						default:
-							{
-								tsk_options_add_option(&((thttp_session_t*)self->http_session)->options, ID_ENUM, VALUE_STR);
+							{ /* HTTP Options: MUST be changed to valid HTTP option enum */
+								switch(ID_ENUM){
+									case TXCAP_STACK_OPTION_TIMEOUT:
+										tsk_options_add_option(&((thttp_session_t*)self->http_session)->options, THTTP_SESSION_OPTION_TIMEOUT, VALUE_STR);
+										break;
+									case TXCAP_STACK_OPTION_TTL:
+										tsk_options_add_option(&((thttp_session_t*)self->http_session)->options, THTTP_SESSION_OPTION_TTL, VALUE_STR);
+										break;
+									default:
+										TSK_DEBUG_WARN("%d is an invalid XCAP option", ID_ENUM);
+										break;
+								}
+								
 								break;
 							}
 					}

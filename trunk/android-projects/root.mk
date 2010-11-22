@@ -25,8 +25,6 @@ export CC=arm-eabi-gcc-$(ANDROID_GCC_VER)
 export CPP=arm-eabi-g++
 
 export CFLAGS_COMMON=$(CFLAGS) $(DEBUG_FLAGS) -I$(ANDROID_NDK_ROOT)/build/platforms/$(ANDROID_PLATFORM)/arch-arm/usr/include \
--march=armv5te \
--mtune=xscale \
 -msoft-float \
 -fpic \
 -mthumb-interwork \
@@ -40,15 +38,24 @@ export CFLAGS_COMMON=$(CFLAGS) $(DEBUG_FLAGS) -I$(ANDROID_NDK_ROOT)/build/platfo
 -MMD \
 -MP \
 -fno-short-enums \
--DANDROID
+-DANDROID 
+
+ifeq ($(NEON), yes)
+export MARCH=armv7-a
+export CFLAGS_COMMON+=-march=$(MARCH) -mtune=cortex-a8 -mfpu=neon -DHAVE_NEON=1 \
+-D__ARM_ARCH_7__ -Wno-psabi -mfloat-abi=softfp
+else
+export MARCH=armv5te
+export CFLAGS_COMMON+=-march=$(MARCH) -mtune=xscale
+endif
 
 export CFLAGS_LIB= $(CFLAGS_COMMON) \
 -Os \
 -fomit-frame-pointer \
 -fno-strict-aliasing \
--finline-limit=64
-#-mthumb \
-
+-finline-limit=64 \
+-DANDROID \
+-mthumb
 
 export LDFLAGS_COMMON=$(LDFLAGS) -Wl,-rpath=/system/lib,-rpath-link=$(ANDROID_NDK_ROOT)/build/platforms/$(ANDROID_PLATFORM)/arch-arm/usr/lib,-rpath-link=$(OUTPUT_DIR),-dynamic-linker=/system/bin/linker,-T,$(ANDROID_NDK_ROOT)/build/prebuilt/$(ANDROID_HOST)/arm-eabi-$(ANDROID_GCC_VER)/arm-eabi/lib/ldscripts/armelf.xsc -L$(ANDROID_NDK_ROOT)/build/platforms/$(ANDROID_PLATFORM)/arch-arm/usr/lib
 export LDFLAGS_COMMON+=-nostdlib -lc -L$(OUTPUT_DIR)
