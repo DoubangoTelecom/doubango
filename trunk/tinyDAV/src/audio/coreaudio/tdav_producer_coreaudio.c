@@ -36,6 +36,8 @@ void __handle_input_buffer (void *userdata, AudioQueueRef queue, AudioQueueBuffe
 }
 
 /* ============ Media Producer Interface ================= */
+#define tdav_producer_coreaudio_set tsk_null
+
 int tdav_producer_coreaudio_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
 {
     OSStatus ret;
@@ -216,6 +218,7 @@ static const tmedia_producer_plugin_def_t tdav_producer_coreaudio_plugin_def_s =
 	tmedia_audio,
 	"Apple CoreAudio producer",
 	
+	tdav_producer_coreaudio_set,
 	tdav_producer_coreaudio_prepare,
 	tdav_producer_coreaudio_start,
 	tdav_producer_coreaudio_pause,

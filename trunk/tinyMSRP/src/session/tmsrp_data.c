@@ -260,13 +260,13 @@ static void* tmsrp_data_out_ctor(tsk_object_t * self, va_list * app)
 			if((data_out->file = fopen((const char*)pdata, "rb"))){
 				int ret;
 				if((ret = fseek(data_out->file, 0L, SEEK_END))){
-					TSK_DEBUG_ERROR("fseek for file:[%s] failed with error code %d.", pdata, ret);
+					TSK_DEBUG_ERROR("fseek for file:[%s] failed with error code %d.", (const char*)pdata, ret);
 					TMSRP_DATA(data_out)->isOK = tsk_false;
 				}
 				else{
 					data_out->size = ftell(data_out->file);
 					if((ret = fseek(data_out->file, 0L, SEEK_SET))){
-						TSK_DEBUG_ERROR("fseek for file:[%s] failed with error code %d.", pdata, ret);
+						TSK_DEBUG_ERROR("fseek for file:[%s] failed with error code %d.", (const char*)pdata, ret);
 						TMSRP_DATA(data_out)->isOK = tsk_false;
 					}
 					else{
@@ -275,7 +275,7 @@ static void* tmsrp_data_out_ctor(tsk_object_t * self, va_list * app)
 				}
 			}
 			else{
-				TSK_DEBUG_ERROR("Failed to open(rb) this file:[%s]", pdata);
+				TSK_DEBUG_ERROR("Failed to open(rb) this file:[%s]", (const char*)pdata);
 				TMSRP_DATA(data_out)->isOK = tsk_false;
 			}
 		}

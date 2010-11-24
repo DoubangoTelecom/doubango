@@ -62,6 +62,8 @@ static void __handle_output_buffer(void *userdata, AudioQueueRef queue, AudioQue
 }
 
 /* ============ Media Consumer Interface ================= */
+#define tdav_consumer_coreaudio_set tsk_null
+
 int tdav_consumer_coreaudio_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
     OSStatus ret;
@@ -253,6 +255,7 @@ static const tmedia_consumer_plugin_def_t tdav_consumer_coreaudio_plugin_def_s =
 	tmedia_audio,
 	"Apple CoreAudio consumer",
 	
+	tdav_consumer_coreaudio_set,
 	tdav_consumer_coreaudio_prepare,
 	tdav_consumer_coreaudio_start,
 	tdav_consumer_coreaudio_consume,
