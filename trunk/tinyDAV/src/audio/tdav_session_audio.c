@@ -204,24 +204,32 @@ int tdav_session_audio_set(tmedia_session_t* self, const tmedia_param_t* param)
 
 	audio = (tdav_session_audio_t*)self;
 
-	if(param->value_type == tmedia_pvt_pchar){
-		if(tsk_striequals(param->key, "remote-ip")){
-			/* only if no ip associated to the "m=" line */
-			if(param->value && !audio->remote_ip){
-				audio->remote_ip = tsk_strdup(param->value);
+	if(param->plugin_type == tmedia_ppt_consumer){
+		TSK_DEBUG_WARN("Not implemented");
+	}
+	else if(param->plugin_type == tmedia_ppt_producer){
+		TSK_DEBUG_WARN("Not implemented");
+	}
+	else{
+		if(param->value_type == tmedia_pvt_pchar){
+			if(tsk_striequals(param->key, "remote-ip")){
+				/* only if no ip associated to the "m=" line */
+				if(param->value && !audio->remote_ip){
+					audio->remote_ip = tsk_strdup(param->value);
+				}
+			}
+			else if(tsk_striequals(param->key, "local-ip")){
+				tsk_strupdate(&audio->local_ip, param->value);
+			}
+			else if(tsk_striequals(param->key, "local-ipver")){
+				audio->useIPv6 = tsk_striequals(param->value, "ipv6");
 			}
 		}
-		else if(tsk_striequals(param->key, "local-ip")){
-			tsk_strupdate(&audio->local_ip, param->value);
-		}
-		else if(tsk_striequals(param->key, "local-ipver")){
-			audio->useIPv6 = tsk_striequals(param->value, "ipv6");
-		}
-	}
-	else if(param->value_type == tmedia_pvt_pobject){
-		if(tsk_striequals(param->key, "natt-ctx")){
-			TSK_OBJECT_SAFE_FREE(audio->natt_ctx);
-			audio->natt_ctx = tsk_object_ref(param->value);
+		else if(param->value_type == tmedia_pvt_pobject){
+			if(tsk_striequals(param->key, "natt-ctx")){
+				TSK_OBJECT_SAFE_FREE(audio->natt_ctx);
+				audio->natt_ctx = tsk_object_ref(param->value);
+			}
 		}
 	}
 

@@ -57,6 +57,8 @@
 
 // --------------------------------------------------------------------------------
 
+bool IsMainThread();
+
 IPin *GetPin(IBaseFilter *pFilter, PIN_DIRECTION dir);
 
 HRESULT ConnectFilters(IGraphBuilder *graphBuilder, IBaseFilter *source, IBaseFilter *destination, AM_MEDIA_TYPE *mediaType = NULL);

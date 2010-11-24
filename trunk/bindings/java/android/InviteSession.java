@@ -61,4 +61,9 @@ public class InviteSession extends SipSession {
     return tinyWRAPJNI.InviteSession_reject__SWIG_1(swigCPtr, this);
   }
 
+  public MediaSessionMgr getMediaMgr() {
+    long cPtr = tinyWRAPJNI.InviteSession_getMediaMgr(swigCPtr, this);
+    return (cPtr == 0) ? null : new MediaSessionMgr(cPtr, false);
+  }
+
 }

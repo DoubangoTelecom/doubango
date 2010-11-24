@@ -70,7 +70,7 @@ tsip_dialog_layer_t* tsip_dialog_layer_create(tsip_stack_t* stack)
 	return tsk_object_new(tsip_dialog_layer_def_t, stack);
 }
 
-// MUST tsk_object_unref(ret)
+// it's up to the caller to release the returned object
 tsip_dialog_t* tsip_dialog_layer_find_by_ss(tsip_dialog_layer_t *self, const tsip_ssession_handle_t *ss)
 {
 	tsip_dialog_t *ret = 0;
@@ -92,6 +92,7 @@ tsip_dialog_t* tsip_dialog_layer_find_by_ss(tsip_dialog_layer_t *self, const tsi
 	return tsk_object_ref(ret);
 }
 
+// it's up to the caller to release the returned object
 tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const char* callid, const char* to_tag, const char* from_tag, tsk_bool_t is_cancel,tsk_bool_t *cid_matched)
 {
 	tsip_dialog_t *ret = tsk_null;

@@ -26,6 +26,12 @@ class tinyWRAPJNI {
   public final static native boolean ActionConfig_addHeader(long jarg1, ActionConfig jarg1_, String jarg2, String jarg3);
   public final static native long ActionConfig_setMediaString(long jarg1, ActionConfig jarg1_, int jarg2, String jarg3, String jarg4);
   public final static native long ActionConfig_setMediaInt(long jarg1, ActionConfig jarg1_, int jarg2, String jarg3, int jarg4);
+  public final static native void delete_MediaSessionMgr(long jarg1);
+  public final static native boolean MediaSessionMgr_sessionSetInt32(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, int jarg4);
+  public final static native boolean MediaSessionMgr_consumerSetInt32(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, int jarg4);
+  public final static native boolean MediaSessionMgr_consumerSetInt64(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, long jarg4);
+  public final static native boolean MediaSessionMgr_producerSetInt32(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, int jarg4);
+  public final static native boolean MediaSessionMgr_producerSetInt64(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, long jarg4);
   public final static native long new_SipUri(String jarg1);
   public final static native void delete_SipUri(long jarg1);
   public final static native boolean SipUri_isValid__SWIG_0(String jarg1);
@@ -103,6 +109,7 @@ class tinyWRAPJNI {
   public final static native boolean InviteSession_hangup__SWIG_1(long jarg1, InviteSession jarg1_);
   public final static native boolean InviteSession_reject__SWIG_0(long jarg1, InviteSession jarg1_, long jarg2, ActionConfig jarg2_);
   public final static native boolean InviteSession_reject__SWIG_1(long jarg1, InviteSession jarg1_);
+  public final static native long InviteSession_getMediaMgr(long jarg1, InviteSession jarg1_);
   public final static native long new_CallSession(long jarg1, SipStack jarg1_);
   public final static native void delete_CallSession(long jarg1);
   public final static native boolean CallSession_callAudio__SWIG_0(long jarg1, CallSession jarg1_, String jarg2, long jarg3, ActionConfig jarg3_);

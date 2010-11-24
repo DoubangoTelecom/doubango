@@ -37,6 +37,8 @@
 
 #define TDAV_WAVEAPI_PRODUCER_ERROR_BUFF_COUNT	0xFF
 
+#define tdav_producer_waveapi_set	tsk_null
+
 static void print_last_error(MMRESULT mmrError, const char* func)
 {
 	static char buffer_err[TDAV_WAVEAPI_PRODUCER_ERROR_BUFF_COUNT];
@@ -380,6 +382,7 @@ static const tmedia_producer_plugin_def_t tdav_producer_waveapi_plugin_def_s =
 	tmedia_audio,
 	"Microsoft WaveAPI producer",
 	
+	tdav_producer_waveapi_set,
 	tdav_producer_waveapi_prepare,
 	tdav_producer_waveapi_start,
 	tdav_producer_waveapi_pause,

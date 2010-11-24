@@ -33,6 +33,7 @@
 #include "tinymedia_config.h"
 
 #include "tinymedia/tmedia_codec.h"
+#include "tinymedia/tmedia_params.h"
 #include "tmedia_common.h"
 
 TMEDIA_BEGIN_DECLS
@@ -82,6 +83,7 @@ typedef struct tmedia_producer_plugin_def_s
 	//! full description (usefull for debugging)
 	const char* desc;
 
+	int (*set) (tmedia_producer_t* , const tmedia_param_t*);
 	int (* prepare) (tmedia_producer_t* , const tmedia_codec_t*);
 	int (* start) (tmedia_producer_t* );
 	int (* pause) (tmedia_producer_t* );
@@ -94,6 +96,7 @@ tmedia_producer_plugin_def_t;
 TINYMEDIA_API tmedia_producer_t* tmedia_producer_create(tmedia_type_t type);
 TINYMEDIA_API int tmedia_producer_init(tmedia_producer_t* self);
 TINYMEDIA_API int tmedia_producer_set_callback(tmedia_producer_t *self, tmedia_producer_cb_f callback, const void* callback_data);
+TINYMEDIA_API int tmedia_producer_set(tmedia_producer_t* self, const tmedia_param_t* param);
 TINYMEDIA_API int tmedia_producer_prepare(tmedia_producer_t *self, const tmedia_codec_t* codec);
 TINYMEDIA_API int tmedia_producer_start(tmedia_producer_t *self);
 TINYMEDIA_API int tmedia_producer_pause(tmedia_producer_t *self);

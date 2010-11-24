@@ -28,6 +28,7 @@
 
 class SipStack;
 class MsrpCallback;
+class MediaSessionMgr;
 
 /* ======================== SipSession ========================*/
 class SipSession
@@ -80,6 +81,10 @@ public: /* Public functions */
 	bool accept(ActionConfig* config=tsk_null);
 	bool hangup(ActionConfig* config=tsk_null);
 	bool reject(ActionConfig* config=tsk_null);
+	const MediaSessionMgr* getMediaMgr();
+
+private:
+	MediaSessionMgr* mediaMgr;
 };
 
 

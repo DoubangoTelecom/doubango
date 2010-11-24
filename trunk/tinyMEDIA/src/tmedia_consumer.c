@@ -57,6 +57,18 @@ int tmedia_consumer_init(tmedia_consumer_t* self)
 }
 
 /**@ingroup tmedia_consumer_group
+* @retval Zero if succeed and non-zero error code otherwise
+*/
+int tmedia_consumer_set(tmedia_consumer_t *self, const tmedia_param_t* param)
+{
+	if(!self || !self->plugin || !self->plugin->set || !param){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return self->plugin->set(self, param);
+}
+
+/**@ingroup tmedia_consumer_group
 * Alert the consumer to be prepared to start.
 * @param self the consumer to prepare
 * @param codec Negociated codec

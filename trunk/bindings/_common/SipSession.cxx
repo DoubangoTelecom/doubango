@@ -21,6 +21,7 @@
 */
 #include "SipSession.h"
 #include "SipStack.h"
+#include "MediaSessionMgr.h"
 
 #include "Msrp.h"
 
@@ -172,21 +173,24 @@ const SipStack* SipSession::getStack()const
 }
 
 
-/* ======================== CallSession ========================*/
+/* ======================== InviteSession ========================*/
 
 InviteSession::InviteSession(SipStack* Stack)
-: SipSession(Stack)
+: SipSession(Stack), mediaMgr(tsk_null)
 {
 }
 
 InviteSession::InviteSession(SipStack* Stack, tsip_ssession_handle_t* handle)
-: SipSession(Stack, handle)
+: SipSession(Stack, handle), mediaMgr(tsk_null)
 {
 
 }
 
 InviteSession::~InviteSession()
 {
+	if(this->mediaMgr){
+		delete this->mediaMgr, this->mediaMgr = tsk_null;
+	}
 }
 
 #if ANDROID
@@ -307,7 +311,27 @@ bool InviteSession::accept(ActionConfig* config/*=tsk_null*/)
 }
 #endif
 
+#include "tinysip/dialogs/tsip_dialog_layer.h"
+#include "tinysip/dialogs/tsip_dialog_invite.h"
 
+const MediaSessionMgr* InviteSession::getMediaMgr()
+{
+	if(!this->mediaMgr && this->handle){
+		tsip_dialog_t* dialog;
+		const tsip_ssession_t* ss = TSIP_SSESSION(this->handle);
+
+		if((dialog = tsip_dialog_layer_find_by_ss(ss->stack->layer_dialog, this->handle))){
+			if(TSIP_DIALOG_INVITE(dialog)->msession_mgr){
+				this->mediaMgr = new MediaSessionMgr(TSIP_DIALOG_INVITE(dialog)->msession_mgr);
+			}
+			else{
+				TSK_DEBUG_WARN("No media session associated to this session");
+			}
+			tsk_object_unref(dialog);
+		}
+	}
+	return this->mediaMgr;
+}
 
 
 /* ======================== CallSession ========================*/

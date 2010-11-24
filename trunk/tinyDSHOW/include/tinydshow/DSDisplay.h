@@ -34,6 +34,7 @@ public:
 	DSDisplay(HRESULT *hr);
 	virtual ~DSDisplay();
 
+	virtual void attach(INT64 parent);
 	virtual void attach(void *parent);
 	virtual void detach(void *parent);
 	virtual void detach();
@@ -53,7 +54,7 @@ public:
 
 	virtual void setFps(int fps_);
 
-	virtual void handleVideoFrame(const void* data);
+	virtual void handleVideoFrame(const void* data, int w, int h);
 
 	LRESULT handleEvents(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 

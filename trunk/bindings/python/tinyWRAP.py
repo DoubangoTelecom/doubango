@@ -117,6 +117,23 @@ class ActionConfig(_object):
 ActionConfig_swigregister = _tinyWRAP.ActionConfig_swigregister
 ActionConfig_swigregister(ActionConfig)
 
+class MediaSessionMgr(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, MediaSessionMgr, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, MediaSessionMgr, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_MediaSessionMgr
+    __del__ = lambda self : None;
+    def sessionSetInt32(self, *args): return _tinyWRAP.MediaSessionMgr_sessionSetInt32(self, *args)
+    def consumerSetInt32(self, *args): return _tinyWRAP.MediaSessionMgr_consumerSetInt32(self, *args)
+    def consumerSetInt64(self, *args): return _tinyWRAP.MediaSessionMgr_consumerSetInt64(self, *args)
+    def producerSetInt32(self, *args): return _tinyWRAP.MediaSessionMgr_producerSetInt32(self, *args)
+    def producerSetInt64(self, *args): return _tinyWRAP.MediaSessionMgr_producerSetInt64(self, *args)
+MediaSessionMgr_swigregister = _tinyWRAP.MediaSessionMgr_swigregister
+MediaSessionMgr_swigregister(MediaSessionMgr)
+
 class SipUri(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, SipUri, name, value)
@@ -365,6 +382,7 @@ class InviteSession(SipSession):
     def accept(self, *args): return _tinyWRAP.InviteSession_accept(self, *args)
     def hangup(self, *args): return _tinyWRAP.InviteSession_hangup(self, *args)
     def reject(self, *args): return _tinyWRAP.InviteSession_reject(self, *args)
+    def getMediaMgr(self): return _tinyWRAP.InviteSession_getMediaMgr(self)
 InviteSession_swigregister = _tinyWRAP.InviteSession_swigregister
 InviteSession_swigregister(InviteSession)
 

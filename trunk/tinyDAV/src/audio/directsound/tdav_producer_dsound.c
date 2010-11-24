@@ -44,6 +44,8 @@
 
 #include <initguid.h>
 
+#define tdav_producer_dsound_set tsk_null
+
 static void *__playback_thread(void *param)
 {
 	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)param; 
@@ -306,6 +308,7 @@ static const tmedia_producer_plugin_def_t tdav_producer_dsound_plugin_def_s =
 	tmedia_audio,
 	"Microsoft DirectSound producer",
 	
+	tdav_producer_dsound_set,
 	tdav_producer_dsound_prepare,
 	tdav_producer_dsound_start,
 	tdav_producer_dsound_pause,

@@ -230,7 +230,6 @@ int tdav_codec_h264_close(tmedia_codec_t* self)
 	return 0;
 }
 
-
 tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	int ret = 0;

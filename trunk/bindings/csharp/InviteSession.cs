@@ -71,6 +71,12 @@ public class InviteSession : SipSession {
     return ret;
   }
 
+  public MediaSessionMgr getMediaMgr() {
+    IntPtr cPtr = tinyWRAPPINVOKE.InviteSession_getMediaMgr(swigCPtr);
+    MediaSessionMgr ret = (cPtr == IntPtr.Zero) ? null : new MediaSessionMgr(cPtr, false);
+    return ret;
+  }
+
 }
 
 }

@@ -1189,6 +1189,8 @@ int _tmedia_session_mgr_apply_params(tmedia_session_mgr_t* self)
 		return 0;
 	}
 	
+	tsk_list_lock(self->params);
+
 	tsk_list_foreach(it1, self->params){
 		if(!(param = it1->data)){
 			continue;
@@ -1212,6 +1214,8 @@ int _tmedia_session_mgr_apply_params(tmedia_session_mgr_t* self)
 
 	/* Clean up params */
 	tsk_list_clear_items(self->params);
+
+	tsk_list_unlock(self->params);
 	
 	return 0;
 }

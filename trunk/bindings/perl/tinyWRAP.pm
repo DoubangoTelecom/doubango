@@ -131,6 +131,42 @@ sub ACQUIRE {
 }
 
 
+############# Class : tinyWRAP::MediaSessionMgr ##############
+
+package tinyWRAP::MediaSessionMgr;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_MediaSessionMgr($self);
+        delete $OWNER{$self};
+    }
+}
+
+*sessionSetInt32 = *tinyWRAPc::MediaSessionMgr_sessionSetInt32;
+*consumerSetInt32 = *tinyWRAPc::MediaSessionMgr_consumerSetInt32;
+*consumerSetInt64 = *tinyWRAPc::MediaSessionMgr_consumerSetInt64;
+*producerSetInt32 = *tinyWRAPc::MediaSessionMgr_producerSetInt32;
+*producerSetInt64 = *tinyWRAPc::MediaSessionMgr_producerSetInt64;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
 ############# Class : tinyWRAP::SipUri ##############
 
 package tinyWRAP::SipUri;
@@ -632,6 +668,7 @@ sub DESTROY {
 *accept = *tinyWRAPc::InviteSession_accept;
 *hangup = *tinyWRAPc::InviteSession_hangup;
 *reject = *tinyWRAPc::InviteSession_reject;
+*getMediaMgr = *tinyWRAPc::InviteSession_getMediaMgr;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
