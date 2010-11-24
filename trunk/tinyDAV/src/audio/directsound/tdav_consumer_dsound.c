@@ -44,6 +44,8 @@
 
 #include <initguid.h>
 
+#define tdav_consumer_dsound_set tsk_null
+
 static void *__playback_thread(void *param)
 {
 	tdav_consumer_dsound_t* dsound = (tdav_consumer_dsound_t*)param; 
@@ -361,6 +363,7 @@ static const tmedia_consumer_plugin_def_t tdav_consumer_dsound_plugin_def_s =
 	tmedia_audio,
 	"Microsoft DirectSound consumer",
 	
+	tdav_consumer_dsound_set,
 	tdav_consumer_dsound_prepare,
 	tdav_consumer_dsound_start,
 	tdav_consumer_dsound_consume,

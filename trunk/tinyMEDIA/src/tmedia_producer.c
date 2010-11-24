@@ -78,6 +78,18 @@ int tmedia_producer_set_callback(tmedia_producer_t *self, tmedia_producer_cb_f c
 }
 
 /**@ingroup tmedia_producer_group
+* @retval Zero if succeed and non-zero error code otherwise
+*/
+int tmedia_producer_set(tmedia_producer_t* self, const tmedia_param_t* param)
+{
+	if(!self || !self->plugin || !self->plugin->set || !param){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return self->plugin->set(self, param);
+}
+
+/**@ingroup tmedia_producer_group
 * Alert the producer to be prepared to start.
 * @param self the producer to prepare
 * @param codec The codec to use to prepare the producer
@@ -85,7 +97,7 @@ int tmedia_producer_set_callback(tmedia_producer_t *self, tmedia_producer_cb_f c
 */
 int tmedia_producer_prepare(tmedia_producer_t *self, const tmedia_codec_t* codec)
 {
-	if(!self || !self->plugin || !self->plugin->prepare){
+	if(!self || !self->plugin || !self->plugin->prepare || !codec){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}

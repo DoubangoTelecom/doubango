@@ -22,6 +22,7 @@
 #include "tinydshow/plugin/DSProducer.h"
 
 #include <tinydshow/DSGrabber.h>
+#include <tinydshow/DSDisplay.h>
 #include <tinydshow/DSUtils.h>
 
 #include "tsk_debug.h"
@@ -34,6 +35,8 @@ typedef struct tdshow_producer_s
 	TMEDIA_DECLARE_PRODUCER;
 	
 	DSGrabber* grabber;
+	INT64 previewHwnd;
+
 	int fps;
 	int width;
 	int height;
@@ -56,10 +59,31 @@ static int tdshow_plugin_cb(const void* callback_data, const void* buffer, tsk_s
 
 
 /* ============ Media Producer Interface ================= */
+int tdshow_producer_set(tmedia_producer_t *self, const tmedia_param_t* param)
+{
+	int ret = 0;
+
+	if(!self || !param){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if(param->value_type == tmedia_pvt_int64){
+		if(tsk_striequals(param->key, "local-hwnd")){
+			if(DSPRODUCER(self)->grabber && DSPRODUCER(self)->grabber->preview){
+				DSPRODUCER(self)->grabber->preview->attach((INT64)*((int64_t*)param->value));
+			}
+			else{
+				DSPRODUCER(self)->previewHwnd = (INT64)*((int64_t*)param->value);
+			}
+		}
+	}
+
+	return ret;
+}
+
 int tdshow_producer_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
 {
-	VIDEOFORMAT format;
-
 	tdshow_producer_t* producer = (tdshow_producer_t*)self;
 
 	if(!producer || !codec && codec->plugin){
@@ -67,20 +91,9 @@ int tdshow_producer_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec
 		return -1;
 	}
 	
-	if(!producer->grabber){
-		TSK_DEBUG_ERROR("Invalid internal grabber");
-		return -2;
-	}
-	
-	/* Set Source device */
-	producer->grabber->setCaptureDevice("Null");
-
-	/* Set Capture parameters */
 	producer->fps = TMEDIA_CODEC_VIDEO(codec)->fps;
 	producer->width = TMEDIA_CODEC_VIDEO(codec)->width;
 	producer->height = TMEDIA_CODEC_VIDEO(codec)->height;
-	SIZE_TO_VIDEOFORMAT(producer->width, producer->height, format);
-	producer->grabber->setCaptureParameters(format, producer->fps);
 
 	return 0;
 }
@@ -88,15 +101,12 @@ int tdshow_producer_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec
 int tdshow_producer_start(tmedia_producer_t* self)
 {
 	tdshow_producer_t* producer = (tdshow_producer_t*)self;
-
+	VIDEOFORMAT format;
+	HRESULT hr;
+		
 	if(!producer){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
-	}
-
-	if(!producer->grabber){
-		TSK_DEBUG_ERROR("Invalid internal grabber");
-		return -2;
 	}
 
 	if(producer->started){
@@ -104,6 +114,37 @@ int tdshow_producer_start(tmedia_producer_t* self)
 		return 0;
 	}
 
+	if(!producer->grabber){ /* Last chance to greate the graber */
+		if(!IsMainThread()){
+			TSK_DEBUG_WARN("Creating DirectShow objects outside the MainThread");
+		}
+		producer->grabber = new DSGrabber(&hr);
+		if(FAILED(hr)){
+			TSK_DEBUG_ERROR("Failed to created DirectShow Grabber");
+			SAFE_DELETE_PTR(producer->grabber);
+			return -2;
+		}
+	}
+
+	//set Source device
+	producer->grabber->setCaptureDevice("Null");
+
+	// set parameters
+	SIZE_TO_VIDEOFORMAT(producer->width, producer->height, format);
+	producer->grabber->setCaptureParameters(format, producer->fps);
+
+	// set callback function
+	producer->grabber->setCallback(tdshow_plugin_cb, producer);
+
+	// attach preview
+	if(producer->grabber->preview){
+		if(producer->previewHwnd){
+			producer->grabber->preview->attach(producer->previewHwnd);
+		}
+		producer->grabber->preview->setSize(producer->width, producer->height);
+	}
+	
+	// start grabber
 	producer->grabber->start();
 	producer->started = tsk_true;
 
@@ -149,6 +190,7 @@ int tdshow_producer_stop(tmedia_producer_t* self)
 	}
 
 	producer->grabber->stop();
+	producer->started = tsk_false;
 
 	return 0;
 }
@@ -171,15 +213,15 @@ static tsk_object_t* tdshow_producer_ctor(tsk_object_t * self, va_list * app)
 		TMEDIA_PRODUCER(producer)->video.chroma = tmedia_bgr24; // RGB24 on x86 (little endians) stored as BGR24
 		/* init self with default values*/
 		producer->fps = 15;
-		producer->width = 352;
-		producer->height = 288;
-		producer->grabber = new DSGrabber(&hr);
-		if(FAILED(hr)){
-			TSK_DEBUG_ERROR("Failed to created DirectShow Grabber");
-			SAFE_DELETE_PTR(producer->grabber);
-		}
-		else{
-			producer->grabber->setCallback(tdshow_plugin_cb, producer);
+		producer->width = 176;
+		producer->height = 144;
+
+		if(IsMainThread()){
+			producer->grabber = new DSGrabber(&hr);
+			if(FAILED(hr)){
+				TSK_DEBUG_ERROR("Failed to created DirectShow Grabber");
+				SAFE_DELETE_PTR(producer->grabber);
+			}
 		}
 	}
 	return self;
@@ -225,6 +267,7 @@ static const tmedia_producer_plugin_def_t tdshow_producer_plugin_def_s =
 	tmedia_video,
 	"Microsoft DirectShow producer",
 	
+	tdshow_producer_set,
 	tdshow_producer_prepare,
 	tdshow_producer_start,
 	tdshow_producer_pause,

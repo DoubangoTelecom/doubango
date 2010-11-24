@@ -31,6 +31,8 @@
 
 #include "tsk_mutex.h"
 
+class DSDisplay;
+
 #ifdef _WIN32_WCE
 #	include <tinydshow/wce/InxbISampleGrabberCB.h>
 #endif
@@ -65,9 +67,7 @@ public:
 	virtual ULONG STDMETHODCALLTYPE AddRef();
 	virtual ULONG STDMETHODCALLTYPE Release();
 
-#ifdef TEST_DSHOW
-	VideoFrameConsumer *consumer;
-#endif
+	DSDisplay *preview;
 
 private:
 	int					width;

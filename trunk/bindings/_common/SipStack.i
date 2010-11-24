@@ -1,6 +1,7 @@
 
 %{
 #include "ActionConfig.h"
+#include "MediaSessionMgr.h"
 #include "SipUri.h"
 #include "SipMessage.h"
 #include "SipEvent.h"
@@ -24,6 +25,7 @@
 
 %nodefaultctor;
 %include "ActionConfig.h"
+%include "MediaSessionMgr.h"
 %include "SipUri.h"
 %include "SipMessage.h"
 %include "SipEvent.h"

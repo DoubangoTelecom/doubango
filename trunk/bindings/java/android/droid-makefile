@@ -34,6 +34,7 @@ all: $(APP)
 OBJS = tinyWRAP_wrap.o\
 	../../_common/ActionConfig.o \
 	../../_common/DDebug.o \
+	../../_common/MediaSessionMgr.o \
 	../../_common/Msrp.o \
 	../../_common/ProxyConsumer.o \
 	../../_common/ProxyProducer.o \

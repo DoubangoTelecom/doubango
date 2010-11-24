@@ -233,6 +233,24 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ActionConfig_setMediaInt")]
   public static extern IntPtr ActionConfig_setMediaInt(HandleRef jarg1, int jarg2, string jarg3, int jarg4);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_MediaSessionMgr")]
+  public static extern void delete_MediaSessionMgr(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_sessionSetInt32")]
+  public static extern bool MediaSessionMgr_sessionSetInt32(HandleRef jarg1, int jarg2, string jarg3, int jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_consumerSetInt32")]
+  public static extern bool MediaSessionMgr_consumerSetInt32(HandleRef jarg1, int jarg2, string jarg3, int jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_consumerSetInt64")]
+  public static extern bool MediaSessionMgr_consumerSetInt64(HandleRef jarg1, int jarg2, string jarg3, long jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_producerSetInt32")]
+  public static extern bool MediaSessionMgr_producerSetInt32(HandleRef jarg1, int jarg2, string jarg3, int jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_producerSetInt64")]
+  public static extern bool MediaSessionMgr_producerSetInt64(HandleRef jarg1, int jarg2, string jarg3, long jarg4);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_SipUri")]
   public static extern IntPtr new_SipUri(string jarg1);
 
@@ -463,6 +481,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_InviteSession_reject__SWIG_1")]
   public static extern bool InviteSession_reject__SWIG_1(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_InviteSession_getMediaMgr")]
+  public static extern IntPtr InviteSession_getMediaMgr(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_CallSession")]
   public static extern IntPtr new_CallSession(HandleRef jarg1);

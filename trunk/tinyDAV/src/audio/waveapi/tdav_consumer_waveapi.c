@@ -37,6 +37,8 @@
 
 #define TDAV_WAVEAPI_CONSUMER_ERROR_BUFF_COUNT	0xFF
 
+#define tdav_consumer_waveapi_set	tsk_null
+
 static void print_last_error(MMRESULT mmrError, const char* func)
 {
 	static char buffer_err[TDAV_WAVEAPI_CONSUMER_ERROR_BUFF_COUNT];
@@ -392,6 +394,7 @@ static const tmedia_consumer_plugin_def_t tdav_consumer_waveapi_plugin_def_s =
 	tmedia_audio,
 	"Microsoft WaveAPI consumer",
 	
+	tdav_consumer_waveapi_set,
 	tdav_consumer_waveapi_prepare,
 	tdav_consumer_waveapi_start,
 	tdav_consumer_waveapi_consume,

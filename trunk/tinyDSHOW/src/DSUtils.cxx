@@ -24,6 +24,20 @@
 #include <atlbase.h>
 #include <atlstr.h>
 
+bool IsMainThread()
+{
+	HWND hWnd = GetActiveWindow();
+	if(!hWnd) hWnd = GetForegroundWindow();
+	if(!hWnd) hWnd = GetConsoleWindow();
+	
+	if(hWnd){
+		DWORD mainTid = GetWindowThreadProcessId(hWnd, NULL);
+		DWORD currentTid = GetCurrentThreadId();
+		return (mainTid == currentTid);
+	}
+	return false;
+}
+
 IPin *GetPin(IBaseFilter *filter, PIN_DIRECTION direction)
 {
 	IEnumPins	*enumPins = NULL;

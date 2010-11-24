@@ -27,13 +27,14 @@
 #include "tsk_debug.h"
 
 
-#define DSCONSUMER(self)		((tdshow_consumer_t*)(self))
+#define DSCONSUMER(self)			((tdshow_consumer_t*)(self))
 
 typedef struct tdshow_consumer_s
 {
 	TMEDIA_DECLARE_CONSUMER;
 	
 	DSDisplay* display;
+	INT64 window;
 	
 	tsk_bool_t started;
 }
@@ -42,10 +43,38 @@ tdshow_consumer_t;
 
 
 /* ============ Media Producer Interface ================= */
+int tdshow_consumer_set(tmedia_consumer_t *self, const tmedia_param_t* param)
+{
+	int ret = 0;
+
+	if(!self || !param){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if(param->value_type == tmedia_pvt_int64){
+		if(tsk_striequals(param->key, "remote-hwnd")){
+			INT64 hWnd = (INT64)*((int64_t*)param->value);
+			if(DSCONSUMER(self)->display){
+				//if(hWnd){
+					DSCONSUMER(self)->display->attach(hWnd);
+				//}
+				//else{
+				//	DSCONSUMER(self)->display->detach();
+				//}
+			}
+			else{
+				DSCONSUMER(self)->window = hWnd;
+			}
+		}
+	}
+
+	return ret;
+}
+
+
 int tdshow_consumer_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
-	//VIDEOFORMAT format;
-
 	tdshow_consumer_t* consumer = (tdshow_consumer_t*)self;
 
 	if(!consumer || !codec && codec->plugin){
@@ -53,18 +82,9 @@ int tdshow_consumer_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec
 		return -1;
 	}
 	
-	if(!consumer->display){
-		TSK_DEBUG_ERROR("Invalid internal display");
-		return -2;
-	}
-	
 	TMEDIA_CONSUMER(consumer)->video.fps = TMEDIA_CODEC_VIDEO(codec)->fps;
 	TMEDIA_CONSUMER(consumer)->video.width = TMEDIA_CODEC_VIDEO(codec)->width;
 	TMEDIA_CONSUMER(consumer)->video.height = TMEDIA_CODEC_VIDEO(codec)->height;
-
-	//consumer->display->attach(GetForegroundWindow());
-	consumer->display->setFps(TMEDIA_CONSUMER(consumer)->video.fps);
-	consumer->display->setSize(TMEDIA_CONSUMER(consumer)->video.width, TMEDIA_CONSUMER(consumer)->video.height);
 
 	return 0;
 }
@@ -72,15 +92,11 @@ int tdshow_consumer_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec
 int tdshow_consumer_start(tmedia_consumer_t* self)
 {
 	tdshow_consumer_t* consumer = (tdshow_consumer_t*)self;
+	HRESULT hr;
 
 	if(!consumer){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
-	}
-
-	if(!consumer->display){
-		TSK_DEBUG_ERROR("Invalid internal display");
-		return -2;
 	}
 
 	if(consumer->started){
@@ -88,6 +104,26 @@ int tdshow_consumer_start(tmedia_consumer_t* self)
 		return 0;
 	}
 
+	if(!consumer->display){ /* Last chance to create the display */
+		if(!IsMainThread()){
+			TSK_DEBUG_WARN("Creating DirectShow objects outside the MainThread");
+		}
+		// create display
+		consumer->display = new DSDisplay(&hr);
+		if(FAILED(hr)){
+			TSK_DEBUG_ERROR("Failed to created DirectShow Display");
+			SAFE_DELETE_PTR(consumer->display);
+			return -2;
+		}
+	}
+	// Set parameters
+	consumer->display->setFps(TMEDIA_CONSUMER(consumer)->video.fps);
+	consumer->display->setSize(TMEDIA_CONSUMER(consumer)->video.width, TMEDIA_CONSUMER(consumer)->video.height);
+	if(consumer->window){
+		consumer->display->attach(consumer->window);
+	}
+	
+	// Start display
 	consumer->display->start();
 	consumer->started = tsk_true;
 
@@ -98,7 +134,7 @@ int tdshow_consumer_consume(tmedia_consumer_t* self, void** buffer, tsk_size_t s
 {
 	tdshow_consumer_t* consumer = (tdshow_consumer_t*)self;
 	if(consumer && consumer->display && buffer){
-		consumer->display->handleVideoFrame(*buffer);
+		consumer->display->handleVideoFrame(*buffer, TMEDIA_CONSUMER(consumer)->video.width, TMEDIA_CONSUMER(consumer)->video.height);
 		return 0;
 	}
 	else{
@@ -146,6 +182,7 @@ int tdshow_consumer_stop(tmedia_consumer_t* self)
 	}
 
 	consumer->display->stop();
+	consumer->started = tsk_false;
 
 	return 0;
 }
@@ -171,10 +208,13 @@ static tsk_object_t* tdshow_consumer_ctor(tsk_object_t * self, va_list * app)
 		TMEDIA_CONSUMER(consumer)->video.fps = 15;
 		TMEDIA_CONSUMER(consumer)->video.width = 352;
 		TMEDIA_CONSUMER(consumer)->video.height = 288;
-		consumer->display = new DSDisplay(&hr); // MUST be done here to be sure that we are in the UI thread
-		if(FAILED(hr)){
-			TSK_DEBUG_ERROR("Failed to created DirectShow Display");
-			SAFE_DELETE_PTR(consumer->display);
+
+		if(IsMainThread()){
+			consumer->display = new DSDisplay(&hr);
+			if(FAILED(hr)){
+				TSK_DEBUG_ERROR("Failed to created DirectShow Display");
+				SAFE_DELETE_PTR(consumer->display);
+			}
 		}
 	}
 	return self;
@@ -215,6 +255,7 @@ static const tmedia_consumer_plugin_def_t tdshow_consumer_plugin_def_s =
 	tmedia_video,
 	"Microsoft DirectShow consumer",
 	
+	tdshow_consumer_set,
 	tdshow_consumer_prepare,
 	tdshow_consumer_start,
 	tdshow_consumer_consume,

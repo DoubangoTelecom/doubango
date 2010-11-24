@@ -20,29 +20,38 @@
 *
 */
 #include <tinydshow/DSGrabber.h>
+#include <tinydshow/DSDisplay.h>
 #include <tinydshow/DSUtils.h>
 #include <tinydshow/DSCaptureUtils.h>
 #include <tinydshow/Resizer.h>
 
 #include <tinydshow/DSUtils.h>
 
+#include "tsk_debug.h"
+
 using namespace std;
 
 DSGrabber::DSGrabber(HRESULT *hr)
-: mutex_buffer(NULL)
+: mutex_buffer(NULL), preview(NULL)
 {
 #ifdef _WIN32_WCE
 	this->graph = new DSCaptureGraph(this, hr);
 #else
 	this->graph = new DSCaptureGraph(this, hr);
+	if(!FAILED(*hr)){
+		this->preview = new DSDisplay(hr);
+	}
 #endif
-	if (FAILED(*hr)) return;
+	if (FAILED(*hr)){
+		TSK_DEBUG_ERROR("Failed to create Grabber");
+		return;
+	}
 
 	// Init the bitmap info header with default values
 	memset(&(this->bitmapInfo), 0, sizeof(BITMAPINFOHEADER));
 	this->bitmapInfo.biSize = sizeof(BITMAPINFOHEADER);
-	this->bitmapInfo.biWidth = 352;
-	this->bitmapInfo.biHeight = 288;
+	this->bitmapInfo.biWidth = 176;
+	this->bitmapInfo.biHeight = 144;
 	this->bitmapInfo.biPlanes = 1;
 	this->bitmapInfo.biBitCount = 24; 
 	this->bitmapInfo.biCompression = 0;
@@ -54,13 +63,12 @@ DSGrabber::DSGrabber(HRESULT *hr)
 	this->plugin_cb = NULL;
 	this->buffer = NULL;
 	this->mutex_buffer = tsk_mutex_create();
-	//this->currentFrame = new VideoFrame();
 }
 
 DSGrabber::~DSGrabber()
 {
 	SAFE_DELETE_PTR ( this->graph );
-	//SAFE_DELETE_PTR ( this->currentFrame  );
+	SAFE_DELETE_PTR ( this->preview );
 	SAFE_DELETE_ARRAY ( this->buffer  );
 	tsk_mutex_destroy(&this->mutex_buffer);
 }
@@ -81,6 +89,7 @@ void DSGrabber::start()
 	if (!this->graph->isRunning()){
 		first_buffer = true;
 
+		this->preview->start();
 		this->graph->connect();
 		this->graph->start();
 	}
@@ -88,6 +97,7 @@ void DSGrabber::start()
 void DSGrabber::stop()
 {
 	if (this->graph->isRunning()){
+		this->preview->stop();
 		this->graph->stop();
 		this->graph->disconnect();
 	}
@@ -130,6 +140,9 @@ bool DSGrabber::setCaptureParameters(int format, int f)
 
 	// Setup source filter in the graph
 	HRESULT hr = this->graph->setParameters(fmt, this->fps);
+	// Set preview parameters
+	this->preview->setFps(this->fps);
+	this->preview->setSize(this->width, this->height);
 
 	tsk_mutex_unlock(this->mutex_buffer);
 
@@ -194,19 +207,15 @@ HRESULT DSGrabber::BufferCB(double SampleTime, BYTE *pBuffer, long BufferLen)
 				this->height);
 		}
 
+		// for the network
 		if(this->plugin_cb){
 			this->plugin_cb(this->plugin_cb_data, this->buffer, (this->width*this->height*3));
 		}
 
-		//this->currentFrame->setWidth(this->width);
-		//this->currentFrame->setHeight(this->height);
-		//this->currentFrame->setBitsPerPixel(24);
-		//this->currentFrame->setData( (void *) this->buffer);
-
-		//this->notifyConsumers(this->currentFrame);
-#ifdef TEST_DSHOW
-		//this->consumer->handleVideoFrame(this, this->currentFrame);
-#endif
+		// for the preview
+		if(this->preview){
+			this->preview->handleVideoFrame(this->buffer, this->width, this->height);
+		}
 	}
 
 	// Free the format

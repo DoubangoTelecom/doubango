@@ -34,6 +34,9 @@
 
 #include "tinydav/audio/tdav_consumer_audio.h"
 
+#define twrap_consumer_proxy_audio_set tsk_null
+#define twrap_consumer_proxy_video_set tsk_null
+
 /* ============ Audio Consumer Interface ================= */
 
 typedef struct twrap_consumer_proxy_audio_s
@@ -160,6 +163,7 @@ static const tmedia_consumer_plugin_def_t twrap_consumer_proxy_audio_plugin_def_
 	tmedia_audio,
 	"Audio Proxy Consumer",
 	
+	twrap_consumer_proxy_audio_set,
 	twrap_consumer_proxy_audio_prepare,
 	twrap_consumer_proxy_audio_start,
 	twrap_consumer_proxy_audio_consume,
@@ -406,6 +410,7 @@ static const tmedia_consumer_plugin_def_t twrap_consumer_proxy_video_plugin_def_
 	tmedia_video,
 	"Video Proxy Consumer",
 	
+	twrap_consumer_proxy_video_set,
 	twrap_consumer_proxy_video_prepare,
 	twrap_consumer_proxy_video_start,
 	twrap_consumer_proxy_video_consume,

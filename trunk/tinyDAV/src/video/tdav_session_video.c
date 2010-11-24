@@ -248,35 +248,51 @@ int tmedia_session_video_set(tmedia_session_t* self, const tmedia_param_t* param
 
 	video = (tdav_session_video_t*)self;
 
-	if(param->value_type == tmedia_pvt_pchar){
-		if(tsk_striequals(param->key, "remote-ip")){
-			/* only if no ip associated to the "m=" line */
-			if(param->value && !video->remote_ip){
-				video->remote_ip = tsk_strdup(param->value);
+	if(param->plugin_type == tmedia_ppt_consumer){
+		if(!video->consumer){
+			TSK_DEBUG_ERROR("No consumer associated to this session");
+			return -1;
+		}
+		ret = tmedia_consumer_set(video->consumer, param);
+	}
+	else if(param->plugin_type == tmedia_ppt_producer){
+		if(!video->producer){
+			TSK_DEBUG_ERROR("No producer associated to this session");
+			return -1;
+		}
+		ret = tmedia_producer_set(video->producer, param);
+	}
+	else{
+		if(param->value_type == tmedia_pvt_pchar){
+			if(tsk_striequals(param->key, "remote-ip")){
+				/* only if no ip associated to the "m=" line */
+				if(param->value && !video->remote_ip){
+					video->remote_ip = tsk_strdup(param->value);
+				}
+			}
+			else if(tsk_striequals(param->key, "local-ip")){
+				tsk_strupdate(&video->local_ip, param->value);
+			}
+			else if(tsk_striequals(param->key, "local-ipver")){
+				video->useIPv6 = tsk_striequals(param->value, "ipv6");
 			}
 		}
-		else if(tsk_striequals(param->key, "local-ip")){
-			tsk_strupdate(&video->local_ip, param->value);
-		}
-		else if(tsk_striequals(param->key, "local-ipver")){
-			video->useIPv6 = tsk_striequals(param->value, "ipv6");
-		}
-	}
-	else if(param->value_type == tmedia_pvt_int32){
-		if(tsk_striequals(param->key, "bandwidth-level")){
-			tsk_list_item_t* item;
-			self->bl = (tmedia_bandwidth_level_t) TSK_TO_UINT32((uint8_t*)param->value);
-			self->codecs = tsk_object_ref(self->codecs);
-			tsk_list_foreach(item, self->codecs){
-				((tmedia_codec_t*)item->data)->bl = self->bl;
+		else if(param->value_type == tmedia_pvt_int32){
+			if(tsk_striequals(param->key, "bandwidth-level")){
+				tsk_list_item_t* item;
+				self->bl = (tmedia_bandwidth_level_t) TSK_TO_UINT32((uint8_t*)param->value);
+				self->codecs = tsk_object_ref(self->codecs);
+				tsk_list_foreach(item, self->codecs){
+					((tmedia_codec_t*)item->data)->bl = self->bl;
+				}
+				tsk_object_unref(self->codecs);
 			}
-			tsk_object_unref(self->codecs);
 		}
-	}
-	else if(param->value_type == tmedia_pvt_pobject){
-		if(tsk_striequals(param->key, "natt-ctx")){
-			TSK_OBJECT_SAFE_FREE(video->natt_ctx);
-			video->natt_ctx = tsk_object_ref(param->value);
+		else if(param->value_type == tmedia_pvt_pobject){
+			if(tsk_striequals(param->key, "natt-ctx")){
+				TSK_OBJECT_SAFE_FREE(video->natt_ctx);
+				video->natt_ctx = tsk_object_ref(param->value);
+			}
 		}
 	}
 

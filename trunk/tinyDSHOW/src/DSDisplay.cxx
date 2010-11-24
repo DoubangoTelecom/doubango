@@ -87,6 +87,9 @@ DSDisplay::DSDisplay(HRESULT *hr)
 	this->parentWindowProc = NULL;
 	this->hooked = FALSE;
 	this->fullscreen = FALSE;
+	this->width = 176;
+	this->height = 144;
+	this->fps = 15;
 
 	this->graph = new DSDisplayGraph(hr);
 	if (FAILED(*hr)) return;
@@ -95,9 +98,8 @@ DSDisplay::DSDisplay(HRESULT *hr)
 #else
 	this->overlay = NULL;
 #endif
-
-	// For testing purpose
-	this->graph->getVideoWindow()->put_Visible(OATRUE);
+	
+	this->graph->getVideoWindow()->put_Visible(OAFALSE);
 }
 
 DSDisplay::~DSDisplay()
@@ -125,6 +127,11 @@ void DSDisplay::stop()
 		this->graph->stop();
 		this->unhook();
 	}
+}
+
+void DSDisplay::attach(INT64 parent)
+{
+	this->attach((void*)parent);
 }
 
 void DSDisplay::attach(void *parent)
@@ -281,12 +288,13 @@ void DSDisplay::setFps(int fps_)
 }
 
 
-void DSDisplay::handleVideoFrame(const void* data)
+// w and h are the size of the buffer not the display
+void DSDisplay::handleVideoFrame(const void* data, int w, int h)
 {
 	if (this->graph->isRunning()){
 		// The graph will take care of changing the source filter if needed
 		// in case of dimension change or anything else...
-		this->graph->handleFrame(data, this->width, this->height);
+		this->graph->handleFrame(data, w, h);
 #if USE_OVERLAY
 		this->overlay->update();
 #endif

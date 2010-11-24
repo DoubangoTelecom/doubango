@@ -21,7 +21,7 @@
 
 #include "ActionConfig.h"
 
-static tmedia_type_t _get_media_type(twrap_media_type_t type){
+tmedia_type_t _get_media_type(twrap_media_type_t type){
 	int media_type = tmedia_none; // Use int because | operator not defined for enumerators
 	switch(type){
 		case twrap_media_msrp:

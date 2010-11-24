@@ -34,6 +34,8 @@
 
 #include "tinydav/audio/tdav_producer_audio.h"
 
+#define twrap_producer_proxy_audio_set tsk_null
+#define twrap_producer_proxy_video_set tsk_null
 
 
 /* ============ Audio Media Producer Interface ================= */
@@ -143,6 +145,7 @@ static const tmedia_producer_plugin_def_t twrap_producer_proxy_audio_plugin_def_
 	tmedia_audio,
 	"Audio Proxy Producer",
 	
+	twrap_producer_proxy_audio_set,
 	twrap_producer_proxy_audio_prepare,
 	twrap_producer_proxy_audio_start,
 	twrap_producer_proxy_audio_pause,
@@ -343,6 +346,7 @@ static const tmedia_producer_plugin_def_t twrap_producer_proxy_video_plugin_def_
 	tmedia_video,
 	"Video Proxy Producer",
 	
+	twrap_producer_proxy_video_set,
 	twrap_producer_proxy_video_prepare,
 	twrap_producer_proxy_video_start,
 	twrap_producer_proxy_video_pause,

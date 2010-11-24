@@ -338,6 +338,7 @@ namespace Swig {
 
 
 #include "ActionConfig.h"
+#include "MediaSessionMgr.h"
 #include "SipUri.h"
 #include "SipMessage.h"
 #include "SipEvent.h"
@@ -1216,6 +1217,104 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_ActionConfig_setMediaInt(void * jarg1, int 
   arg4 = (int)jarg4; 
   result = (ActionConfig *)(arg1)->setMediaInt(arg2,(char const *)arg3,arg4);
   jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_MediaSessionMgr(void * jarg1) {
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  
+  arg1 = (MediaSessionMgr *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_sessionSetInt32(void * jarg1, int jarg2, char * jarg3, int jarg4) {
+  unsigned int jresult ;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  char *arg3 = (char *) 0 ;
+  int32_t arg4 ;
+  bool result;
+  
+  arg1 = (MediaSessionMgr *)jarg1; 
+  arg2 = (twrap_media_type_t)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (int32_t)jarg4; 
+  result = (bool)(arg1)->sessionSetInt32(arg2,(char const *)arg3,arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_consumerSetInt32(void * jarg1, int jarg2, char * jarg3, int jarg4) {
+  unsigned int jresult ;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  char *arg3 = (char *) 0 ;
+  int32_t arg4 ;
+  bool result;
+  
+  arg1 = (MediaSessionMgr *)jarg1; 
+  arg2 = (twrap_media_type_t)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (int32_t)jarg4; 
+  result = (bool)(arg1)->consumerSetInt32(arg2,(char const *)arg3,arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_consumerSetInt64(void * jarg1, int jarg2, char * jarg3, long long jarg4) {
+  unsigned int jresult ;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  char *arg3 = (char *) 0 ;
+  int64_t arg4 ;
+  bool result;
+  
+  arg1 = (MediaSessionMgr *)jarg1; 
+  arg2 = (twrap_media_type_t)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (int64_t)jarg4; 
+  result = (bool)(arg1)->consumerSetInt64(arg2,(char const *)arg3,arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_producerSetInt32(void * jarg1, int jarg2, char * jarg3, int jarg4) {
+  unsigned int jresult ;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  char *arg3 = (char *) 0 ;
+  int32_t arg4 ;
+  bool result;
+  
+  arg1 = (MediaSessionMgr *)jarg1; 
+  arg2 = (twrap_media_type_t)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (int32_t)jarg4; 
+  result = (bool)(arg1)->producerSetInt32(arg2,(char const *)arg3,arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_producerSetInt64(void * jarg1, int jarg2, char * jarg3, long long jarg4) {
+  unsigned int jresult ;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  char *arg3 = (char *) 0 ;
+  int64_t arg4 ;
+  bool result;
+  
+  arg1 = (MediaSessionMgr *)jarg1; 
+  arg2 = (twrap_media_type_t)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (int64_t)jarg4; 
+  result = (bool)(arg1)->producerSetInt64(arg2,(char const *)arg3,arg4);
+  jresult = result; 
   return jresult;
 }
 
@@ -2153,6 +2252,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_InviteSession_reject__SWIG_1(void * j
   arg1 = (InviteSession *)jarg1; 
   result = (bool)(arg1)->reject();
   jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_InviteSession_getMediaMgr(void * jarg1) {
+  void * jresult ;
+  InviteSession *arg1 = (InviteSession *) 0 ;
+  MediaSessionMgr *result = 0 ;
+  
+  arg1 = (InviteSession *)jarg1; 
+  result = (MediaSessionMgr *)(arg1)->getMediaMgr();
+  jresult = (void *)result; 
   return jresult;
 }
 

@@ -1501,72 +1501,73 @@ SWIG_Perl_SetModule(swig_module_info *module) {
 #define SWIGTYPE_p_DialogEvent swig_types[3]
 #define SWIGTYPE_p_InviteEvent swig_types[4]
 #define SWIGTYPE_p_InviteSession swig_types[5]
-#define SWIGTYPE_p_MessagingEvent swig_types[6]
-#define SWIGTYPE_p_MessagingSession swig_types[7]
-#define SWIGTYPE_p_MsrpCallback swig_types[8]
-#define SWIGTYPE_p_MsrpEvent swig_types[9]
-#define SWIGTYPE_p_MsrpMessage swig_types[10]
-#define SWIGTYPE_p_MsrpSession swig_types[11]
-#define SWIGTYPE_p_OptionsEvent swig_types[12]
-#define SWIGTYPE_p_OptionsSession swig_types[13]
-#define SWIGTYPE_p_ProxyAudioConsumer swig_types[14]
-#define SWIGTYPE_p_ProxyAudioProducer swig_types[15]
-#define SWIGTYPE_p_ProxyVideoConsumer swig_types[16]
-#define SWIGTYPE_p_ProxyVideoFrame swig_types[17]
-#define SWIGTYPE_p_ProxyVideoProducer swig_types[18]
-#define SWIGTYPE_p_PublicationEvent swig_types[19]
-#define SWIGTYPE_p_PublicationSession swig_types[20]
-#define SWIGTYPE_p_RPMessage swig_types[21]
-#define SWIGTYPE_p_RegistrationEvent swig_types[22]
-#define SWIGTYPE_p_RegistrationSession swig_types[23]
-#define SWIGTYPE_p_SMSData swig_types[24]
-#define SWIGTYPE_p_SMSEncoder swig_types[25]
-#define SWIGTYPE_p_SafeObject swig_types[26]
-#define SWIGTYPE_p_SdpMessage swig_types[27]
-#define SWIGTYPE_p_SipCallback swig_types[28]
-#define SWIGTYPE_p_SipEvent swig_types[29]
-#define SWIGTYPE_p_SipMessage swig_types[30]
-#define SWIGTYPE_p_SipSession swig_types[31]
-#define SWIGTYPE_p_SipStack swig_types[32]
-#define SWIGTYPE_p_SipUri swig_types[33]
-#define SWIGTYPE_p_StackEvent swig_types[34]
-#define SWIGTYPE_p_SubscriptionEvent swig_types[35]
-#define SWIGTYPE_p_SubscriptionSession swig_types[36]
-#define SWIGTYPE_p_XcapCallback swig_types[37]
-#define SWIGTYPE_p_XcapEvent swig_types[38]
-#define SWIGTYPE_p_XcapMessage swig_types[39]
-#define SWIGTYPE_p_XcapSelector swig_types[40]
-#define SWIGTYPE_p_XcapStack swig_types[41]
-#define SWIGTYPE_p_char swig_types[42]
-#define SWIGTYPE_p_int swig_types[43]
-#define SWIGTYPE_p_long_long swig_types[44]
-#define SWIGTYPE_p_short swig_types[45]
-#define SWIGTYPE_p_signed_char swig_types[46]
-#define SWIGTYPE_p_tdav_codec_id_e swig_types[47]
-#define SWIGTYPE_p_thttp_event_type_e swig_types[48]
-#define SWIGTYPE_p_tmedia_bandwidth_level_e swig_types[49]
-#define SWIGTYPE_p_tmedia_chroma_e swig_types[50]
-#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[51]
-#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[52]
-#define SWIGTYPE_p_tmsrp_event_type_e swig_types[53]
-#define SWIGTYPE_p_tmsrp_request_type_e swig_types[54]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[55]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[56]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[57]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[58]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[59]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[60]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[61]
-#define SWIGTYPE_p_tsk_list_t swig_types[62]
-#define SWIGTYPE_p_twrap_media_type_e swig_types[63]
-#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[64]
-#define SWIGTYPE_p_twrap_sms_type_e swig_types[65]
-#define SWIGTYPE_p_unsigned_char swig_types[66]
-#define SWIGTYPE_p_unsigned_int swig_types[67]
-#define SWIGTYPE_p_unsigned_long_long swig_types[68]
-#define SWIGTYPE_p_unsigned_short swig_types[69]
-static swig_type_info *swig_types[71];
-static swig_module_info swig_module = {swig_types, 70, 0, 0, 0, 0};
+#define SWIGTYPE_p_MediaSessionMgr swig_types[6]
+#define SWIGTYPE_p_MessagingEvent swig_types[7]
+#define SWIGTYPE_p_MessagingSession swig_types[8]
+#define SWIGTYPE_p_MsrpCallback swig_types[9]
+#define SWIGTYPE_p_MsrpEvent swig_types[10]
+#define SWIGTYPE_p_MsrpMessage swig_types[11]
+#define SWIGTYPE_p_MsrpSession swig_types[12]
+#define SWIGTYPE_p_OptionsEvent swig_types[13]
+#define SWIGTYPE_p_OptionsSession swig_types[14]
+#define SWIGTYPE_p_ProxyAudioConsumer swig_types[15]
+#define SWIGTYPE_p_ProxyAudioProducer swig_types[16]
+#define SWIGTYPE_p_ProxyVideoConsumer swig_types[17]
+#define SWIGTYPE_p_ProxyVideoFrame swig_types[18]
+#define SWIGTYPE_p_ProxyVideoProducer swig_types[19]
+#define SWIGTYPE_p_PublicationEvent swig_types[20]
+#define SWIGTYPE_p_PublicationSession swig_types[21]
+#define SWIGTYPE_p_RPMessage swig_types[22]
+#define SWIGTYPE_p_RegistrationEvent swig_types[23]
+#define SWIGTYPE_p_RegistrationSession swig_types[24]
+#define SWIGTYPE_p_SMSData swig_types[25]
+#define SWIGTYPE_p_SMSEncoder swig_types[26]
+#define SWIGTYPE_p_SafeObject swig_types[27]
+#define SWIGTYPE_p_SdpMessage swig_types[28]
+#define SWIGTYPE_p_SipCallback swig_types[29]
+#define SWIGTYPE_p_SipEvent swig_types[30]
+#define SWIGTYPE_p_SipMessage swig_types[31]
+#define SWIGTYPE_p_SipSession swig_types[32]
+#define SWIGTYPE_p_SipStack swig_types[33]
+#define SWIGTYPE_p_SipUri swig_types[34]
+#define SWIGTYPE_p_StackEvent swig_types[35]
+#define SWIGTYPE_p_SubscriptionEvent swig_types[36]
+#define SWIGTYPE_p_SubscriptionSession swig_types[37]
+#define SWIGTYPE_p_XcapCallback swig_types[38]
+#define SWIGTYPE_p_XcapEvent swig_types[39]
+#define SWIGTYPE_p_XcapMessage swig_types[40]
+#define SWIGTYPE_p_XcapSelector swig_types[41]
+#define SWIGTYPE_p_XcapStack swig_types[42]
+#define SWIGTYPE_p_char swig_types[43]
+#define SWIGTYPE_p_int swig_types[44]
+#define SWIGTYPE_p_long_long swig_types[45]
+#define SWIGTYPE_p_short swig_types[46]
+#define SWIGTYPE_p_signed_char swig_types[47]
+#define SWIGTYPE_p_tdav_codec_id_e swig_types[48]
+#define SWIGTYPE_p_thttp_event_type_e swig_types[49]
+#define SWIGTYPE_p_tmedia_bandwidth_level_e swig_types[50]
+#define SWIGTYPE_p_tmedia_chroma_e swig_types[51]
+#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[52]
+#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[53]
+#define SWIGTYPE_p_tmsrp_event_type_e swig_types[54]
+#define SWIGTYPE_p_tmsrp_request_type_e swig_types[55]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[56]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[57]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[58]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[59]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[60]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[61]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[62]
+#define SWIGTYPE_p_tsk_list_t swig_types[63]
+#define SWIGTYPE_p_twrap_media_type_e swig_types[64]
+#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[65]
+#define SWIGTYPE_p_twrap_sms_type_e swig_types[66]
+#define SWIGTYPE_p_unsigned_char swig_types[67]
+#define SWIGTYPE_p_unsigned_int swig_types[68]
+#define SWIGTYPE_p_unsigned_long_long swig_types[69]
+#define SWIGTYPE_p_unsigned_short swig_types[70]
+static swig_type_info *swig_types[72];
+static swig_module_info swig_module = {swig_types, 71, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -1681,6 +1682,7 @@ SWIG_From_int  SWIG_PERL_DECL_ARGS_1(int value)
 
 
 #include "ActionConfig.h"
+#include "MediaSessionMgr.h"
 #include "SipUri.h"
 #include "SipMessage.h"
 #include "SipEvent.h"
@@ -1832,6 +1834,57 @@ SWIG_AsVal_int SWIG_PERL_DECL_ARGS_2(SV * obj, int *val)
     }
   }  
   return res;
+}
+
+
+#include <stdlib.h>
+#ifdef _MSC_VER
+# ifndef strtoull
+#  define strtoull _strtoui64
+# endif
+# ifndef strtoll
+#  define strtoll _strtoi64
+# endif
+#endif
+
+
+
+SWIGINTERN int
+SWIG_AsVal_long_SS_long SWIG_PERL_DECL_ARGS_2(SV *obj, long long *val)
+{
+  if (SvIOK(obj)) {
+    if (val) *val = SvIV(obj);
+    return SWIG_OK;
+  } else {
+    int dispatch = 0;
+    const char *nptr = SvPV_nolen(obj);
+    if (nptr) {
+      char *endptr;
+      long long v;
+      errno = 0;
+      v = strtoll(nptr, &endptr,0);
+      if (errno == ERANGE) {
+	errno = 0;
+	return SWIG_OverflowError;
+      } else {
+	if (*endptr == '\0') {
+	  if (val) *val = v;
+	  return SWIG_Str2NumCast(SWIG_OK);
+	}
+      }
+    }
+    if (!dispatch) {
+      const double mant_max = 1LL << DBL_MANT_DIG;
+      const double mant_min = -mant_max;
+      double d;
+      int res = SWIG_AddCast(SWIG_AsVal_double SWIG_PERL_CALL_ARGS_2(obj,&d));
+      if (SWIG_IsOK(res) && SWIG_CanCastAsInteger(&d, mant_min, mant_max)) {
+	if (val) *val = (long long)(d);
+	return res;
+      }
+    }
+  }
+  return SWIG_TypeError; 
 }
 
 
@@ -2482,6 +2535,328 @@ XS(_wrap_ActionConfig_setMediaInt) {
     arg4 = static_cast< int >(val4);
     result = (ActionConfig *)(arg1)->setMediaInt(arg2,(char const *)arg3,arg4);
     ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ActionConfig, 0 | SWIG_SHADOW); argvi++ ;
+    
+    
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_delete_MediaSessionMgr) {
+  {
+    MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: delete_MediaSessionMgr(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MediaSessionMgr, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_MediaSessionMgr" "', argument " "1"" of type '" "MediaSessionMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+    delete arg1;
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_sessionSetInt32) {
+  {
+    MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+    twrap_media_type_t arg2 ;
+    char *arg3 = (char *) 0 ;
+    int32_t arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    int val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: MediaSessionMgr_sessionSetInt32(self,media,key,value);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MediaSessionMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_sessionSetInt32" "', argument " "1"" of type '" "MediaSessionMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_sessionSetInt32" "', argument " "2"" of type '" "twrap_media_type_t""'");
+    } 
+    arg2 = static_cast< twrap_media_type_t >(val2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MediaSessionMgr_sessionSetInt32" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = reinterpret_cast< char * >(buf3);
+    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "MediaSessionMgr_sessionSetInt32" "', argument " "4"" of type '" "int32_t""'");
+    } 
+    arg4 = static_cast< int32_t >(val4);
+    result = (bool)(arg1)->sessionSetInt32(arg2,(char const *)arg3,arg4);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_consumerSetInt32) {
+  {
+    MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+    twrap_media_type_t arg2 ;
+    char *arg3 = (char *) 0 ;
+    int32_t arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    int val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: MediaSessionMgr_consumerSetInt32(self,media,key,value);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MediaSessionMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_consumerSetInt32" "', argument " "1"" of type '" "MediaSessionMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_consumerSetInt32" "', argument " "2"" of type '" "twrap_media_type_t""'");
+    } 
+    arg2 = static_cast< twrap_media_type_t >(val2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MediaSessionMgr_consumerSetInt32" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = reinterpret_cast< char * >(buf3);
+    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "MediaSessionMgr_consumerSetInt32" "', argument " "4"" of type '" "int32_t""'");
+    } 
+    arg4 = static_cast< int32_t >(val4);
+    result = (bool)(arg1)->consumerSetInt32(arg2,(char const *)arg3,arg4);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_consumerSetInt64) {
+  {
+    MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+    twrap_media_type_t arg2 ;
+    char *arg3 = (char *) 0 ;
+    int64_t arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    long long val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: MediaSessionMgr_consumerSetInt64(self,media,key,value);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MediaSessionMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_consumerSetInt64" "', argument " "1"" of type '" "MediaSessionMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_consumerSetInt64" "', argument " "2"" of type '" "twrap_media_type_t""'");
+    } 
+    arg2 = static_cast< twrap_media_type_t >(val2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MediaSessionMgr_consumerSetInt64" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = reinterpret_cast< char * >(buf3);
+    ecode4 = SWIG_AsVal_long_SS_long SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "MediaSessionMgr_consumerSetInt64" "', argument " "4"" of type '" "int64_t""'");
+    } 
+    arg4 = static_cast< int64_t >(val4);
+    result = (bool)(arg1)->consumerSetInt64(arg2,(char const *)arg3,arg4);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_producerSetInt32) {
+  {
+    MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+    twrap_media_type_t arg2 ;
+    char *arg3 = (char *) 0 ;
+    int32_t arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    int val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: MediaSessionMgr_producerSetInt32(self,media,key,value);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MediaSessionMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_producerSetInt32" "', argument " "1"" of type '" "MediaSessionMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_producerSetInt32" "', argument " "2"" of type '" "twrap_media_type_t""'");
+    } 
+    arg2 = static_cast< twrap_media_type_t >(val2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MediaSessionMgr_producerSetInt32" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = reinterpret_cast< char * >(buf3);
+    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "MediaSessionMgr_producerSetInt32" "', argument " "4"" of type '" "int32_t""'");
+    } 
+    arg4 = static_cast< int32_t >(val4);
+    result = (bool)(arg1)->producerSetInt32(arg2,(char const *)arg3,arg4);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_producerSetInt64) {
+  {
+    MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+    twrap_media_type_t arg2 ;
+    char *arg3 = (char *) 0 ;
+    int64_t arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    long long val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: MediaSessionMgr_producerSetInt64(self,media,key,value);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MediaSessionMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_producerSetInt64" "', argument " "1"" of type '" "MediaSessionMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_producerSetInt64" "', argument " "2"" of type '" "twrap_media_type_t""'");
+    } 
+    arg2 = static_cast< twrap_media_type_t >(val2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MediaSessionMgr_producerSetInt64" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = reinterpret_cast< char * >(buf3);
+    ecode4 = SWIG_AsVal_long_SS_long SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "MediaSessionMgr_producerSetInt64" "', argument " "4"" of type '" "int64_t""'");
+    } 
+    arg4 = static_cast< int64_t >(val4);
+    result = (bool)(arg1)->producerSetInt64(arg2,(char const *)arg3,arg4);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     
     
     if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
@@ -5634,6 +6009,34 @@ XS(_wrap_InviteSession_reject) {
   
   croak("No matching function for overloaded 'InviteSession_reject'");
   XSRETURN(0);
+}
+
+
+XS(_wrap_InviteSession_getMediaMgr) {
+  {
+    InviteSession *arg1 = (InviteSession *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    MediaSessionMgr *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: InviteSession_getMediaMgr(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_InviteSession, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "InviteSession_getMediaMgr" "', argument " "1"" of type '" "InviteSession *""'"); 
+    }
+    arg1 = reinterpret_cast< InviteSession * >(argp1);
+    result = (MediaSessionMgr *)(arg1)->getMediaMgr();
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MediaSessionMgr, 0 | SWIG_SHADOW); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
 }
 
 
@@ -14404,6 +14807,7 @@ static swig_type_info _swigt__p_DDebugCallback = {"_p_DDebugCallback", "DDebugCa
 static swig_type_info _swigt__p_DialogEvent = {"_p_DialogEvent", "DialogEvent *", 0, 0, (void*)"tinyWRAP::DialogEvent", 0};
 static swig_type_info _swigt__p_InviteEvent = {"_p_InviteEvent", "InviteEvent *", 0, 0, (void*)"tinyWRAP::InviteEvent", 0};
 static swig_type_info _swigt__p_InviteSession = {"_p_InviteSession", "InviteSession *", 0, 0, (void*)"tinyWRAP::InviteSession", 0};
+static swig_type_info _swigt__p_MediaSessionMgr = {"_p_MediaSessionMgr", "MediaSessionMgr *", 0, 0, (void*)"tinyWRAP::MediaSessionMgr", 0};
 static swig_type_info _swigt__p_MessagingEvent = {"_p_MessagingEvent", "MessagingEvent *", 0, 0, (void*)"tinyWRAP::MessagingEvent", 0};
 static swig_type_info _swigt__p_MessagingSession = {"_p_MessagingSession", "MessagingSession *", 0, 0, (void*)"tinyWRAP::MessagingSession", 0};
 static swig_type_info _swigt__p_MsrpCallback = {"_p_MsrpCallback", "MsrpCallback *", 0, 0, (void*)"tinyWRAP::MsrpCallback", 0};
@@ -14476,6 +14880,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_DialogEvent,
   &_swigt__p_InviteEvent,
   &_swigt__p_InviteSession,
+  &_swigt__p_MediaSessionMgr,
   &_swigt__p_MessagingEvent,
   &_swigt__p_MessagingSession,
   &_swigt__p_MsrpCallback,
@@ -14548,6 +14953,7 @@ static swig_cast_info _swigc__p_DDebugCallback[] = {  {&_swigt__p_DDebugCallback
 static swig_cast_info _swigc__p_DialogEvent[] = {  {&_swigt__p_DialogEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_InviteEvent[] = {  {&_swigt__p_InviteEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_InviteSession[] = {  {&_swigt__p_InviteSession, 0, 0, 0},  {&_swigt__p_CallSession, _p_CallSessionTo_p_InviteSession, 0, 0},  {&_swigt__p_MsrpSession, _p_MsrpSessionTo_p_InviteSession, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_MediaSessionMgr[] = {  {&_swigt__p_MediaSessionMgr, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MessagingEvent[] = {  {&_swigt__p_MessagingEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MessagingSession[] = {  {&_swigt__p_MessagingSession, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MsrpCallback[] = {  {&_swigt__p_MsrpCallback, 0, 0, 0},{0, 0, 0, 0}};
@@ -14620,6 +15026,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_DialogEvent,
   _swigc__p_InviteEvent,
   _swigc__p_InviteSession,
+  _swigc__p_MediaSessionMgr,
   _swigc__p_MessagingEvent,
   _swigc__p_MessagingSession,
   _swigc__p_MsrpCallback,
@@ -14710,6 +15117,12 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::ActionConfig_addHeader", _wrap_ActionConfig_addHeader},
 {"tinyWRAPc::ActionConfig_setMediaString", _wrap_ActionConfig_setMediaString},
 {"tinyWRAPc::ActionConfig_setMediaInt", _wrap_ActionConfig_setMediaInt},
+{"tinyWRAPc::delete_MediaSessionMgr", _wrap_delete_MediaSessionMgr},
+{"tinyWRAPc::MediaSessionMgr_sessionSetInt32", _wrap_MediaSessionMgr_sessionSetInt32},
+{"tinyWRAPc::MediaSessionMgr_consumerSetInt32", _wrap_MediaSessionMgr_consumerSetInt32},
+{"tinyWRAPc::MediaSessionMgr_consumerSetInt64", _wrap_MediaSessionMgr_consumerSetInt64},
+{"tinyWRAPc::MediaSessionMgr_producerSetInt32", _wrap_MediaSessionMgr_producerSetInt32},
+{"tinyWRAPc::MediaSessionMgr_producerSetInt64", _wrap_MediaSessionMgr_producerSetInt64},
 {"tinyWRAPc::new_SipUri", _wrap_new_SipUri},
 {"tinyWRAPc::delete_SipUri", _wrap_delete_SipUri},
 {"tinyWRAPc::SipUri_isValid", _wrap_SipUri_isValid},
@@ -14779,6 +15192,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::InviteSession_accept", _wrap_InviteSession_accept},
 {"tinyWRAPc::InviteSession_hangup", _wrap_InviteSession_hangup},
 {"tinyWRAPc::InviteSession_reject", _wrap_InviteSession_reject},
+{"tinyWRAPc::InviteSession_getMediaMgr", _wrap_InviteSession_getMediaMgr},
 {"tinyWRAPc::new_CallSession", _wrap_new_CallSession},
 {"tinyWRAPc::delete_CallSession", _wrap_delete_CallSession},
 {"tinyWRAPc::CallSession_callAudio", _wrap_CallSession_callAudio},
@@ -15309,6 +15723,7 @@ XS(SWIG_init) {
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   SWIG_TypeClientData(SWIGTYPE_p_ActionConfig, (void*) "tinyWRAP::ActionConfig");
+  SWIG_TypeClientData(SWIGTYPE_p_MediaSessionMgr, (void*) "tinyWRAP::MediaSessionMgr");
   SWIG_TypeClientData(SWIGTYPE_p_SipUri, (void*) "tinyWRAP::SipUri");
   SWIG_TypeClientData(SWIGTYPE_p_SdpMessage, (void*) "tinyWRAP::SdpMessage");
   SWIG_TypeClientData(SWIGTYPE_p_SipMessage, (void*) "tinyWRAP::SipMessage");
