@@ -38,7 +38,7 @@
 #if HAVE_OPENCORE_AMR
 
 #if defined(_MSC_VER)
-#	pragma comment(lib, "..\thirdparties\win32\lib\opencore\libopencore-amrnb.a")
+#	pragma comment(lib, "..\\thirdparties\\win32\\lib\\opencore\\libopencore-amrnb.a")
 #endif
 
 #define NO_DATA 15
