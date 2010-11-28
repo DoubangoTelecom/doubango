@@ -127,7 +127,7 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context->opaque = tsk_null;
 	h264->encoder.context->bit_rate = (int) (bitRate * 0.80f);
 	h264->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
-	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->fps*2; // Each 2 seconds
+	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->fps*3; // Each 3 seconds
 	
 
 	// Picture (YUV 420)
@@ -264,7 +264,7 @@ tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk
 	ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);	
 
 	if(ret >0){
-		if((h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->fps*5) 
+		if((h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->fps*3) 
 			&& ((h264->encoder.frame_count++%TMEDIA_CODEC_VIDEO(h264)->fps)==0)){
 			
 			// You must patch FFmpeg to switch from X264_TYPE_AUTO to X264_TYPE_IDR

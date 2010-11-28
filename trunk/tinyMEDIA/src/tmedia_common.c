@@ -145,6 +145,7 @@ const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_siz
 	switch(chroma)
 	{
 		case tmedia_rgb24:
+		case tmedia_bgr24:
 			factor = 3.f;
 			break;
 		case tmedia_rgb565le:
