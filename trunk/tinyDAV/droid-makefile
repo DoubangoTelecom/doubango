@@ -110,6 +110,9 @@ OBJS += src/codecs/h264/tdav_codec_h264.o \
 		
 	### codecs (Theora)
 OBJS += src/codecs/theora/tdav_codec_theora.o
+
+	### codecs (MP4V-ES)
+OBJS += src/codecs/mp4ves/tdav_codec_mp4ves.o
 	
 	### codecs (MSRP)
 OBJS += src/codecs/msrp/tdav_codec_msrp.o
