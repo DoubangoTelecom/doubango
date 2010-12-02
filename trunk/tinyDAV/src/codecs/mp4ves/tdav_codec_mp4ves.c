@@ -168,7 +168,7 @@ int tdav_codec_mp4ves_open(tmedia_codec_t* self)
 	mp4v->encoder.context->bit_rate = (int) (bitRate * 0.80f);
 	mp4v->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
 	mp4v->encoder.context->profile = mp4v->profile>>4;
-	mp4v->encoder.context->level = mp4v->profile & 0x00FF;
+	mp4v->encoder.context->level = mp4v->profile & 0x0F;
 	mp4v->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(mp4v)->fps*2; // each 2 seconds
 	mp4v->encoder.context->max_b_frames = 0;
 	mp4v->encoder.context->b_frame_strategy = 1;
