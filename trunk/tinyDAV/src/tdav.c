@@ -154,7 +154,7 @@ int tdav_init()
 	tmedia_producer_plugin_register(tdav_producer_waveapi_plugin_def_t);
 #endif
 #if HAVE_TINYDSHOW // DirectShow
-	//tmedia_producer_plugin_register(tdshow_producer_plugin_def_t);
+	tmedia_producer_plugin_register(tdshow_producer_plugin_def_t);
 #endif
 	
 #if HAVE_COREAUDIO
