@@ -124,8 +124,10 @@ int tdshow_consumer_start(tmedia_consumer_t* self)
 	}
 	
 	// Start display
+	TSK_DEBUG_INFO("Before starting DirectShow consumer");
 	consumer->display->start();
 	consumer->started = tsk_true;
+	TSK_DEBUG_INFO("After starting DirectShow consumer");
 
 	return 0;
 }
@@ -181,8 +183,10 @@ int tdshow_consumer_stop(tmedia_consumer_t* self)
 		return -2;
 	}
 
+	TSK_DEBUG_INFO("Before stopping DirectShow consumer");
 	consumer->display->stop();
 	consumer->started = tsk_false;
+	TSK_DEBUG_INFO("After stopping DirectShow consumer");
 
 	return 0;
 }

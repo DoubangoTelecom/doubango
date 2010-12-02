@@ -200,8 +200,6 @@ int tdav_session_audio_set(tmedia_session_t* self, const tmedia_param_t* param)
 		return -1;
 	}
 
-	TSK_DEBUG_INFO("tdav_session_audio_set");
-
 	audio = (tdav_session_audio_t*)self;
 
 	if(param->plugin_type == tmedia_ppt_consumer){
@@ -241,8 +239,6 @@ int tdav_session_audio_prepare(tmedia_session_t* self)
 	tdav_session_audio_t* audio;
 	int ret = 0;
 
-	TSK_DEBUG_INFO("tdav_session_audio_prepare");
-
 	audio = (tdav_session_audio_t*)self;
 
 	/* set local port */
@@ -266,8 +262,6 @@ int tdav_session_audio_prepare(tmedia_session_t* self)
 int tdav_session_audio_start(tmedia_session_t* self)
 {
 	tdav_session_audio_t* audio;
-
-	TSK_DEBUG_INFO("tdav_session_audio_start");
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -319,8 +313,6 @@ int tdav_session_audio_start(tmedia_session_t* self)
 int tdav_session_audio_stop(tmedia_session_t* self)
 {
 	tdav_session_audio_t* audio;
-
-	TSK_DEBUG_INFO("tdav_session_audio_stop");
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -477,8 +469,6 @@ int tdav_session_audio_pause(tmedia_session_t* self)
 {
 	tdav_session_audio_t* audio;
 
-	TSK_DEBUG_INFO("tdav_session_audio_pause");
-
 	audio = (tdav_session_audio_t*)self;
 
 	if(!self){
@@ -502,8 +492,6 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 {
 	tdav_session_audio_t* audio;
 	tsk_bool_t changed = tsk_false;
-
-	TSK_DEBUG_INFO("tdav_session_audio_get_lo");
 
 	if(!self || !self->plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -627,8 +615,6 @@ int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
 	tdav_session_audio_t* audio;
 	tmedia_codecs_L_t* neg_codecs;
-
-	TSK_DEBUG_INFO("tdav_session_audio_set_ro");
 
 	if(!self || !m){
 		TSK_DEBUG_ERROR("Invalid parameter");

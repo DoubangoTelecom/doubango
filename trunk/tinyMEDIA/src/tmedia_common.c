@@ -77,12 +77,17 @@ int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t*
 		*name = tsk_strndup(rtpmap, index);
 		len -= (index + 1), pos = (index + 1);
 		/* rate */
-		if(len>0 && (index = tsk_strindexOf((rtpmap + pos), len, "/")) != -1){
-			*rate = atoi(&rtpmap[pos]);
-			len -= (index + 1), pos += (index + 1);
-			/* channels */
-			if(len>0){
-				*channels = atoi(&rtpmap[pos]);
+		if(len>0){
+			if((index = tsk_strindexOf((rtpmap + pos), len, "/")) != -1){
+				*rate = atoi(&rtpmap[pos]);
+				len -= (index + 1), pos += (index + 1);
+				/* channels */
+				if(len>0){
+					*channels = atoi(&rtpmap[pos]);
+				}
+			}
+			else{
+				*rate = atoi(&rtpmap[pos]);
 			}
 		}
 	}

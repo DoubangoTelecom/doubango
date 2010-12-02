@@ -870,6 +870,7 @@ tmedia_qos_strength_mandatory = _tinyWRAP.tmedia_qos_strength_mandatory
 tmedia_bl_low = _tinyWRAP.tmedia_bl_low
 tmedia_bl_medium = _tinyWRAP.tmedia_bl_medium
 tmedia_bl_hight = _tinyWRAP.tmedia_bl_hight
+tdav_codec_id_none = _tinyWRAP.tdav_codec_id_none
 tdav_codec_id_amr_nb_oa = _tinyWRAP.tdav_codec_id_amr_nb_oa
 tdav_codec_id_amr_nb_be = _tinyWRAP.tdav_codec_id_amr_nb_be
 tdav_codec_id_amr_wb_oa = _tinyWRAP.tdav_codec_id_amr_wb_oa
@@ -893,6 +894,7 @@ tdav_codec_id_h264_bp10 = _tinyWRAP.tdav_codec_id_h264_bp10
 tdav_codec_id_h264_bp20 = _tinyWRAP.tdav_codec_id_h264_bp20
 tdav_codec_id_h264_bp30 = _tinyWRAP.tdav_codec_id_h264_bp30
 tdav_codec_id_theora = _tinyWRAP.tdav_codec_id_theora
+tdav_codec_id_mp4ves_es = _tinyWRAP.tdav_codec_id_mp4ves_es
 class XcapSelector(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, XcapSelector, name, value)

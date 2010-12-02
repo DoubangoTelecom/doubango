@@ -217,6 +217,8 @@ tmedia_bandwidth_level_t;
 /* ====== From "tinydav/tdav.h"  ====== */
 typedef enum tdav_codec_id_e
 {
+	tdav_codec_id_none = 0x00000000,
+	
 	tdav_codec_id_amr_nb_oa = 0x00000001<<0,
 	tdav_codec_id_amr_nb_be = 0x00000001<<1,
 	tdav_codec_id_amr_wb_oa = 0x00000001<<2,
@@ -243,6 +245,7 @@ typedef enum tdav_codec_id_e
 	tdav_codec_id_h264_bp20 = 0x00010000<<5,
 	tdav_codec_id_h264_bp30 = 0x00010000<<6,
 	tdav_codec_id_theora = 0x00010000<<7,
+	tdav_codec_id_mp4ves_es = 0x00010000<<8,
 
 }
 tdav_codec_id_t;

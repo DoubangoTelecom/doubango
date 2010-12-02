@@ -17284,6 +17284,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tmedia_bl_low",SWIG_From_int(static_cast< int >(tmedia_bl_low)));
   SWIG_Python_SetConstant(d, "tmedia_bl_medium",SWIG_From_int(static_cast< int >(tmedia_bl_medium)));
   SWIG_Python_SetConstant(d, "tmedia_bl_hight",SWIG_From_int(static_cast< int >(tmedia_bl_hight)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_none",SWIG_From_int(static_cast< int >(tdav_codec_id_none)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_amr_nb_oa",SWIG_From_int(static_cast< int >(tdav_codec_id_amr_nb_oa)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_amr_nb_be",SWIG_From_int(static_cast< int >(tdav_codec_id_amr_nb_be)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_amr_wb_oa",SWIG_From_int(static_cast< int >(tdav_codec_id_amr_wb_oa)));
@@ -17307,6 +17308,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tdav_codec_id_h264_bp20",SWIG_From_int(static_cast< int >(tdav_codec_id_h264_bp20)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h264_bp30",SWIG_From_int(static_cast< int >(tdav_codec_id_h264_bp30)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_theora",SWIG_From_int(static_cast< int >(tdav_codec_id_theora)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_mp4ves_es",SWIG_From_int(static_cast< int >(tdav_codec_id_mp4ves_es)));
   SWIG_Python_SetConstant(d, "thttp_event_message",SWIG_From_int(static_cast< int >(thttp_event_message)));
   SWIG_Python_SetConstant(d, "thttp_event_auth_failed",SWIG_From_int(static_cast< int >(thttp_event_auth_failed)));
   SWIG_Python_SetConstant(d, "thttp_event_closed",SWIG_From_int(static_cast< int >(thttp_event_closed)));
