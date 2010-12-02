@@ -145,8 +145,10 @@ int tdshow_producer_start(tmedia_producer_t* self)
 	}
 	
 	// start grabber
+	TSK_DEBUG_INFO("Before starting DirectShow producer");
 	producer->grabber->start();
 	producer->started = tsk_true;
+	TSK_DEBUG_INFO("After starting DirectShow producer");
 
 	return 0;
 }

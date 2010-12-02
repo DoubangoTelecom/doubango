@@ -47,7 +47,7 @@ typedef int tsk_boolean_t;
 #define TSK_MAX(a,b)            (((a) > (b)) ? (a) : (b))
 #define TSK_ABS(a)				(((a)< 0) ? -(a) : (a))
 
-// used to avoid making *((uint32_t*)ptr) which don't respect memory alignment on
+// used to avoid doing *((uint32_t*)ptr) which don't respect memory alignment on
 // some embedded platforms
 #define TSK_TO_UINT32(u8_ptr) (((uint32_t)(u8_ptr)[0]) | ((uint32_t)(u8_ptr)[1])<<8 | ((uint32_t)(u8_ptr)[2])<<16 | ((uint32_t)(u8_ptr)[3])<<24)
 #define TSK_TO_UINT16(u8_ptr) (((uint16_t)(u8_ptr)[0]) | ((uint16_t)(u8_ptr)[1])<<8)

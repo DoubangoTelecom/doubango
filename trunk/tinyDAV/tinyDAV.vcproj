@@ -323,6 +323,14 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="mp4ves"
+					>
+					<File
+						RelativePath=".\include\tinydav\codecs\mp4ves\tdav_codec_mp4ves.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="audio"
@@ -568,6 +576,14 @@
 					>
 					<File
 						RelativePath=".\src\codecs\g729\tdav_codec_g729.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="mp4ves"
+					>
+					<File
+						RelativePath=".\src\codecs\mp4ves\tdav_codec_mp4ves.c"
 						>
 					</File>
 				</Filter>

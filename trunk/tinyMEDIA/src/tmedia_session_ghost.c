@@ -36,13 +36,11 @@
 
 int tmedia_session_ghost_prepare(tmedia_session_t* self)
 {
-	TSK_DEBUG_INFO("tmedia_session_ghost_prepare");
 	return 0;
 }
 
 int tmedia_session_ghost_start(tmedia_session_t* self)
 {
-	TSK_DEBUG_INFO("tmedia_session_ghost_start");
 	return 0;
 }
 
@@ -54,15 +52,12 @@ int tmedia_session_ghost_stop(tmedia_session_t* self)
 
 int tmedia_session_ghost_pause(tmedia_session_t* self)
 {
-	TSK_DEBUG_INFO("tmedia_session_ghost_pause");
 	return 0;
 }
 
 const tsdp_header_M_t* tmedia_session_ghost_get_lo(tmedia_session_t* self)
 {
 	tmedia_session_ghost_t* ghost;
-
-	TSK_DEBUG_INFO("tmedia_session_ghost_get_lo");
 
 	ghost = (tmedia_session_ghost_t*)self;
 
@@ -79,7 +74,6 @@ const tsdp_header_M_t* tmedia_session_ghost_get_lo(tmedia_session_t* self)
 
 int tmedia_session_ghost_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
-	TSK_DEBUG_INFO("tmedia_session_ghost_set_ro");
 	return 0;
 }
 

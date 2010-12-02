@@ -151,6 +151,7 @@ int tdav_codec_theora_open(tmedia_codec_t* self)
 	//
 	if(!(theora->decoder.codec = avcodec_find_decoder(CODEC_ID_THEORA))){
 		TSK_DEBUG_ERROR("Failed to find Theora decoder");
+		return -2;
 	}
 	theora->decoder.context = avcodec_alloc_context();
 	avcodec_get_context_defaults(theora->decoder.context);
@@ -235,7 +236,7 @@ int tdav_codec_theora_close(tmedia_codec_t* self)
 	return 0;
 }
 
-#include "tsk_time.h"
+//#include "tsk_time.h"
 tsk_size_t tdav_codec_theora_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	int ret;
@@ -261,8 +262,8 @@ tsk_size_t tdav_codec_theora_encode(tmedia_codec_t* self, const void* in_data, t
 #endif
 	
 	// Encode data
-	theora->encoder.picture->pts = tsk_time_epoch();
-	//theora->encoder.picture->pts = AV_NOPTS_VALUE;
+	//theora->encoder.picture->pts = tsk_time_epoch();
+	theora->encoder.picture->pts = AV_NOPTS_VALUE;
 	//theora->encoder.picture->pict_type = FF_I_TYPE;
 	ret = avcodec_encode_video(theora->encoder.context, theora->encoder.buffer, size, theora->encoder.picture);
 	if(ret > 0){
@@ -551,7 +552,8 @@ static tsk_object_t* tdav_codec_theora_dtor(tsk_object_t * self)
 		tmedia_codec_video_deinit(self);
 		/* deinit self */
 		TSK_OBJECT_SAFE_FREE(theora->decoder.conf_pkt);
-		
+		TSK_FREE(theora->rtp.ptr);
+		theora->rtp.size = 0;
 	}
 
 	return self;

@@ -48,6 +48,7 @@
 #include "tinydav/codecs/h263/tdav_codec_h263.h"
 #include "tinydav/codecs/h264/tdav_codec_h264.h"
 #include "tinydav/codecs/theora/tdav_codec_theora.h"
+#include "tinydav/codecs/mp4ves/tdav_codec_mp4ves.h"
 
 // Consumers
 #include "tinydav/audio/waveapi/tdav_consumer_waveapi.h"
@@ -116,6 +117,7 @@ int tdav_init()
 	tmedia_codec_plugin_register(tdav_codec_g729ab_plugin_def_t);
 #endif
 #if HAVE_FFMPEG
+	tmedia_codec_plugin_register(tdav_codec_mp4ves_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h264_bp10_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h264_bp20_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h264_bp30_plugin_def_t);
@@ -152,7 +154,7 @@ int tdav_init()
 	tmedia_producer_plugin_register(tdav_producer_waveapi_plugin_def_t);
 #endif
 #if HAVE_TINYDSHOW // DirectShow
-	tmedia_producer_plugin_register(tdshow_producer_plugin_def_t);
+	//tmedia_producer_plugin_register(tdshow_producer_plugin_def_t);
 #endif
 	
 #if HAVE_COREAUDIO
@@ -200,6 +202,7 @@ void tdav_set_codecs(tdav_codec_id_t codecs)
 
 #if HAVE_FFMPEG
 		
+		{ tdav_codec_id_mp4ves_es, &tdav_codec_mp4ves_plugin_def_t },
 		{ tdav_codec_id_h264_bp10, &tdav_codec_h264_bp10_plugin_def_t },
 		{ tdav_codec_id_h264_bp20, &tdav_codec_h264_bp20_plugin_def_t },
 		{ tdav_codec_id_h264_bp30, &tdav_codec_h264_bp30_plugin_def_t },
@@ -281,6 +284,7 @@ tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
 		case tdav_codec_id_h264_bp20:
 		case tdav_codec_id_h264_bp30:
 		case tdav_codec_id_theora:
+		case tdav_codec_id_mp4ves_es:
 #if HAVE_FFMPEG
 			return tsk_true;
 #else
@@ -331,6 +335,7 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_g729ab_plugin_def_t);
 #endif
 #if HAVE_FFMPEG
+	tmedia_codec_plugin_unregister(tdav_codec_mp4ves_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h261_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h263_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h263p_plugin_def_t);
@@ -338,7 +343,7 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_h264_bp10_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h264_bp20_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h264_bp30_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_theora_plugin_def_t);	
+	tmedia_codec_plugin_unregister(tdav_codec_theora_plugin_def_t);
 
 #endif
 
