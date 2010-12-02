@@ -309,6 +309,7 @@ tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_data, tsk
 	tdav_converter_video_flip(h263->encoder.picture, h263->encoder.context->height);
 #endif
 
+	h263->encoder.picture->pts = AV_NOPTS_VALUE;
 	ret = avcodec_encode_video(h263->encoder.context, h263->encoder.buffer, size, h263->encoder.picture);
 	if(ret > 0){
 		tdav_codec_h263_encap(h263, h263->encoder.buffer, (tsk_size_t)ret);
@@ -336,7 +337,8 @@ tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk
 		return 0;
 	}
 
-	/* get F and P bits, used to determine the header Mode (A, B or C)
+	/*	RFC 2190
+		get F and P bits, used to determine the header Mode (A, B or C)
 		F: 1 bit 
 		The flag bit indicates the mode of the payload header. F=0, mode A;
 		F=1, mode B or mode C depending on P bit defined below.
@@ -351,7 +353,7 @@ tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk
 	/* SBIT and EBIT */
 	sbit = (*pdata >> 3) & 0x0F;
 	ebit = (*pdata & 0x07);
-
+	
 	if(F == 0){
 		/*	MODE A
 			0                   1                   2                   3
@@ -362,7 +364,7 @@ tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk
 		*/
 		hdr_size = H263_HEADER_MODE_A_SIZE;
 	}
-	else if(P = 0){
+	else if(P == 0){ // F=1 and P=0
 		/* MODE B
 			 0                   1                   2                   3
 			0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -374,7 +376,7 @@ tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk
 		*/
 		hdr_size = H263_HEADER_MODE_B_SIZE;
 	}
-	else{
+	else{ // F=1 and P=1
 		/* MODE C 
 			 0                   1                   2                   3
 			0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -409,12 +411,12 @@ tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk
 		TSK_DEBUG_INFO("Packet lost, seq_num=%d", rtp_hdr->seq_num);
 	}
 	h263->decoder.last_seq = rtp_hdr->seq_num;
-
+	
 	if((int)(h263->decoder.accumulator_pos + pay_size) <= xsize){
 		if((h263->decoder.ebit + sbit) == 8){ /* Perfect one Byte to clean up */
 			if(h263->decoder.accumulator_pos){
 				((uint8_t*)h263->decoder.accumulator)[h263->decoder.accumulator_pos-1] = (((uint8_t*)h263->decoder.accumulator)[h263->decoder.accumulator_pos-1] & (0xFF << h263->decoder.ebit)) |
-					(*pay_ptr << sbit);
+					(*pay_ptr & (0xFF >> sbit));
 			}
 			pay_ptr++, pay_size--;
 		}
@@ -969,7 +971,7 @@ const tmedia_codec_plugin_def_t *tdav_codec_h263pp_plugin_def_t = &tdav_codec_h2
 static void tdav_codec_h263_encap(const tdav_codec_h263_t* h263, const uint8_t* pdata, tsk_size_t size)
 {
 	tsk_bool_t frag = tsk_false;
-	uint32_t i, last_index = 0;
+	register uint32_t i, last_index = 0;
 
 	if(size < RTP_PAYLOAD_SIZE){
 		goto last;
