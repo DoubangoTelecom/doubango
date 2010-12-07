@@ -159,7 +159,7 @@ const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_siz
 			break;
 		
 		case tmedia_rgb32:
-			factor = 3.f;
+			factor = 4.f;
 			break;
 		
 		case tmedia_nv21:
@@ -169,6 +169,7 @@ const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_siz
 			break;
 			
 		case tmedia_yuv422p:
+		case tmedia_uyvy422:
 			factor = 2.f;
 			break;
 	}
