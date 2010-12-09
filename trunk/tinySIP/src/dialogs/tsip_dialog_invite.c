@@ -94,8 +94,10 @@ extern int tsip_dialog_invite_hold_handle(tsip_dialog_invite_t* self, const tsip
 
 /* ======================== transitions ======================== */
 static int x0000_Connected_2_Connected_X_oDTMF(va_list *app);
+static int x0000_Connected_2_Connected_X_oLMessage(va_list *app);
 static int x0000_Connected_2_Connected_X_iACK(va_list *app);
 static int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app);
+
 
 int x0000_Any_2_Any_X_i1xx(va_list *app);
 int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app);
@@ -280,6 +282,8 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		*/
 		// Connected -> (Send DTMF) -> Connected
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_dtmf_send, _fsm_state_Connected, x0000_Connected_2_Connected_X_oDTMF, "x0000_Connected_2_Connected_X_oDTMF"),
+		// Connected -> (Send MSRP message) -> Connected
+		TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_msrp_send_msg, _fsm_state_Connected, x0000_Connected_2_Connected_X_oLMessage, "x0000_Connected_2_Connected_X_oLMessage"),
 		// Connected -> (iACK) -> Connected
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_iACK, _fsm_state_Connected, x0000_Connected_2_Connected_X_iACK, "x0000_Connected_2_Connected_X_iACK"),
 		// Connected -> (iINVITE) -> Connected
@@ -450,6 +454,27 @@ int x0000_Connected_2_Connected_X_oDTMF(va_list *app)
 	}
 
 	return 0; /* always */
+}
+
+int x0000_Connected_2_Connected_X_oLMessage(va_list *app)
+{
+	int ret;
+	tsip_dialog_invite_t *self;
+	const tsip_action_t* action;
+
+	self = va_arg(*app, tsip_dialog_invite_t *);
+	va_arg(*app, const tsip_message_t *);
+	action = va_arg(*app, const tsip_action_t *);
+
+	if(action && action->payload){
+		ret = tmedia_session_mgr_send_message(self->msession_mgr, action->payload->data, action->payload->size, 
+			TMEDIA_SESSION_SET_NULL());
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid action");
+	}
+	
+	return 0;
 }
 
 /* Connected -> (iACK) -> Connected */

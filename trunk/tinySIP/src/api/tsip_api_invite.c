@@ -158,6 +158,20 @@ int tsip_action_RESUME(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...
 	return ret;
 }
 
+int tsip_action_LARGE_MESSAGE(const tsip_ssession_handle_t *ss, ...)
+{
+	int ret = -1;
+	va_list ap;
+	
+	va_start(ap, ss);
+	if((ret = _tsip_action_ANY(ss, tsip_atype_lmessage, &ap))){
+		TSK_DEBUG_ERROR("Failed to send MSRP message");
+	}
+	va_end(ap);
+	
+	return ret;
+}
+
 int tsip_action_ECT(const tsip_ssession_handle_t *ss, const char* toUri, ...)
 {
 	int ret = -1;

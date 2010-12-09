@@ -32,7 +32,7 @@
 	"u=http://www.example.com/seminars/sdp.pdf\r\n" \
 	"e=j.doe@example.com (Jane Doe)\r\n" \
 	"p=+1 617 555-6011\r\n" \
-	"c=IN IP4 78.251.30.168\r\n" \
+	"c=IN IP4 192.168.0.13\r\n" \
 	"b=X-YZ:128\r\n" \
 	"z=2882844526 -1h 2898848070 0\r\n" \
 	"k=base64:ZWFzdXJlLg==\r\n" \
@@ -42,7 +42,7 @@
 	"w=my dummy header\r\n" \
 	"m=audio 6061 RTP/AVP 18 0 115 97 96 3 102 103 8\r\n" \
 	"i=Audio line\r\n" \
-	"c=IN IP4 78.251.30.168\r\n" \
+	"c=IN IP4 192.168.0.13\r\n" \
 	"k=base64:ZWFzdXJlLgdddddddddddddddddddddd==\r\n" \
 	"a=rtpmap:96 iLBC/8000\r\n" \
 	"a=rtpmap:3 GSM/8000\r\n" \
@@ -95,7 +95,7 @@ void test_sessions_client()
 	tmedia_type_t type = tmedia_video/*tmedia_msrp | tmedia_audio*//*| tmedia_video tmedia_msrp*/;
 
 	mgr = tmedia_session_mgr_create(type,
-		"78.251.30.168", tsk_false, tsk_true/* offerer */);
+		"192.168.0.13", tsk_false, tsk_true/* offerer */);
 
 	/* set MSRP callback */
 	//tmedia_session_mgr_set_msrp_cb(mgr, tsk_null, test_session_msrp_cb);
@@ -163,7 +163,7 @@ void test_sessions_server()
 		//type = tmedia_type_from_sdp(sdp_ro);
 		type = tmedia_video;
 		mgr = tmedia_session_mgr_create(type,
-			"78.251.30.168", tsk_false, tsk_false/* answerer */);
+			"192.168.0.13", tsk_false, tsk_false/* answerer */);
 		tmedia_session_mgr_set_ro(mgr, sdp_ro);
 		TSK_OBJECT_SAFE_FREE(sdp_ro);
 	}

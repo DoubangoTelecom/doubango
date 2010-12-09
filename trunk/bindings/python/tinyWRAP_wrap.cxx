@@ -9103,30 +9103,46 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MsrpSession_sendLMessage__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MsrpSession_sendMessage__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MsrpSession *arg1 = (MsrpSession *) 0 ;
-  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  ActionConfig *arg4 = (ActionConfig *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
+  int res2 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:MsrpSession_sendLMessage",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:MsrpSession_sendMessage",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MsrpSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MsrpSession_sendLMessage" "', argument " "1"" of type '" "MsrpSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MsrpSession_sendMessage" "', argument " "1"" of type '" "MsrpSession *""'"); 
   }
   arg1 = reinterpret_cast< MsrpSession * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_ActionConfig, 0 |  0 );
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MsrpSession_sendLMessage" "', argument " "2"" of type '" "ActionConfig *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MsrpSession_sendMessage" "', argument " "2"" of type '" "void const *""'"); 
   }
-  arg2 = reinterpret_cast< ActionConfig * >(argp2);
-  result = (bool)(arg1)->sendLMessage(arg2);
+  ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MsrpSession_sendMessage" "', argument " "3"" of type '" "unsigned int""'");
+  } 
+  arg3 = static_cast< unsigned int >(val3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_ActionConfig, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "MsrpSession_sendMessage" "', argument " "4"" of type '" "ActionConfig *""'"); 
+  }
+  arg4 = reinterpret_cast< ActionConfig * >(argp4);
+  result = (bool)(arg1)->sendMessage((void const *)arg2,arg3,arg4);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -9134,21 +9150,37 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MsrpSession_sendLMessage__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MsrpSession_sendMessage__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MsrpSession *arg1 = (MsrpSession *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  int res2 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
   PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:MsrpSession_sendLMessage",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:MsrpSession_sendMessage",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MsrpSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MsrpSession_sendLMessage" "', argument " "1"" of type '" "MsrpSession *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MsrpSession_sendMessage" "', argument " "1"" of type '" "MsrpSession *""'"); 
   }
   arg1 = reinterpret_cast< MsrpSession * >(argp1);
-  result = (bool)(arg1)->sendLMessage();
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MsrpSession_sendMessage" "', argument " "2"" of type '" "void const *""'"); 
+  }
+  ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MsrpSession_sendMessage" "', argument " "3"" of type '" "unsigned int""'");
+  } 
+  arg3 = static_cast< unsigned int >(val3);
+  result = (bool)(arg1)->sendMessage((void const *)arg2,arg3);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -9156,45 +9188,67 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MsrpSession_sendLMessage(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_MsrpSession_sendMessage(PyObject *self, PyObject *args) {
   int argc;
-  PyObject *argv[3];
+  PyObject *argv[5];
   int ii;
   
   if (!PyTuple_Check(args)) SWIG_fail;
   argc = (int)PyObject_Length(args);
-  for (ii = 0; (ii < argc) && (ii < 2); ii++) {
+  for (ii = 0; (ii < argc) && (ii < 4); ii++) {
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
-  if (argc == 1) {
+  if (argc == 3) {
     int _v;
     void *vptr = 0;
     int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MsrpSession, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_MsrpSession_sendLMessage__SWIG_1(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MsrpSession, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_ActionConfig, 0);
+      void *ptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &ptr, 0, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_MsrpSession_sendLMessage__SWIG_0(self, args);
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_MsrpSession_sendMessage__SWIG_1(self, args);
+        }
+      }
+    }
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MsrpSession, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *ptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &ptr, 0, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          void *vptr = 0;
+          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_ActionConfig, 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            return _wrap_MsrpSession_sendMessage__SWIG_0(self, args);
+          }
+        }
       }
     }
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'MsrpSession_sendLMessage'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'MsrpSession_sendMessage'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    sendLMessage(MsrpSession *,ActionConfig *)\n"
-    "    sendLMessage(MsrpSession *)\n");
+    "    sendMessage(MsrpSession *,void const *,unsigned int,ActionConfig *)\n"
+    "    sendMessage(MsrpSession *,void const *,unsigned int)\n");
   return NULL;
 }
 
@@ -16038,7 +16092,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_MsrpSession", _wrap_delete_MsrpSession, METH_VARARGS, NULL},
 	 { (char *)"MsrpSession_setCallback", _wrap_MsrpSession_setCallback, METH_VARARGS, NULL},
 	 { (char *)"MsrpSession_callMsrp", _wrap_MsrpSession_callMsrp, METH_VARARGS, NULL},
-	 { (char *)"MsrpSession_sendLMessage", _wrap_MsrpSession_sendLMessage, METH_VARARGS, NULL},
+	 { (char *)"MsrpSession_sendMessage", _wrap_MsrpSession_sendMessage, METH_VARARGS, NULL},
 	 { (char *)"MsrpSession_sendFile", _wrap_MsrpSession_sendFile, METH_VARARGS, NULL},
 	 { (char *)"MsrpSession_swigregister", MsrpSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_MessagingSession", _wrap_new_MessagingSession, METH_VARARGS, NULL},

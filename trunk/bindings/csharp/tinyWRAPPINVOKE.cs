@@ -548,11 +548,11 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MsrpSession_callMsrp__SWIG_1")]
   public static extern bool MsrpSession_callMsrp__SWIG_1(HandleRef jarg1, string jarg2);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_MsrpSession_sendLMessage__SWIG_0")]
-  public static extern bool MsrpSession_sendLMessage__SWIG_0(HandleRef jarg1, HandleRef jarg2);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MsrpSession_sendMessage__SWIG_0")]
+  public static extern bool MsrpSession_sendMessage__SWIG_0(HandleRef jarg1, byte[] jarg2, uint jarg3, HandleRef jarg4);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_MsrpSession_sendLMessage__SWIG_1")]
-  public static extern bool MsrpSession_sendLMessage__SWIG_1(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MsrpSession_sendMessage__SWIG_1")]
+  public static extern bool MsrpSession_sendMessage__SWIG_1(HandleRef jarg1, byte[] jarg2, uint jarg3);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MsrpSession_sendFile__SWIG_0")]
   public static extern bool MsrpSession_sendFile__SWIG_0(HandleRef jarg1, HandleRef jarg2);

@@ -7345,37 +7345,55 @@ XS(_wrap_MsrpSession_callMsrp) {
 }
 
 
-XS(_wrap_MsrpSession_sendLMessage__SWIG_0) {
+XS(_wrap_MsrpSession_sendMessage__SWIG_0) {
   {
     MsrpSession *arg1 = (MsrpSession *) 0 ;
-    ActionConfig *arg2 = (ActionConfig *) 0 ;
+    void *arg2 = (void *) 0 ;
+    unsigned int arg3 ;
+    ActionConfig *arg4 = (ActionConfig *) 0 ;
     void *argp1 = 0 ;
     int res1 = 0 ;
-    void *argp2 = 0 ;
-    int res2 = 0 ;
+    int res2 ;
+    unsigned int val3 ;
+    int ecode3 = 0 ;
+    void *argp4 = 0 ;
+    int res4 = 0 ;
     int argvi = 0;
     bool result;
     dXSARGS;
     
-    if ((items < 2) || (items > 2)) {
-      SWIG_croak("Usage: MsrpSession_sendLMessage(self,config);");
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: MsrpSession_sendMessage(self,payload,len,config);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MsrpSession, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MsrpSession_sendLMessage" "', argument " "1"" of type '" "MsrpSession *""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MsrpSession_sendMessage" "', argument " "1"" of type '" "MsrpSession *""'"); 
     }
     arg1 = reinterpret_cast< MsrpSession * >(argp1);
-    res2 = SWIG_ConvertPtr(ST(1), &argp2,SWIGTYPE_p_ActionConfig, 0 |  0 );
+    res2 = SWIG_ConvertPtr(ST(1),SWIG_as_voidptrptr(&arg2), 0, 0);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MsrpSession_sendLMessage" "', argument " "2"" of type '" "ActionConfig *""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MsrpSession_sendMessage" "', argument " "2"" of type '" "void const *""'"); 
     }
-    arg2 = reinterpret_cast< ActionConfig * >(argp2);
-    result = (bool)(arg1)->sendLMessage(arg2);
+    ecode3 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MsrpSession_sendMessage" "', argument " "3"" of type '" "unsigned int""'");
+    } 
+    arg3 = static_cast< unsigned int >(val3);
+    res4 = SWIG_ConvertPtr(ST(3), &argp4,SWIGTYPE_p_ActionConfig, 0 |  0 );
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "MsrpSession_sendMessage" "', argument " "4"" of type '" "ActionConfig *""'"); 
+    }
+    arg4 = reinterpret_cast< ActionConfig * >(argp4);
+    result = (bool)(arg1)->sendMessage((void const *)arg2,arg3,arg4);
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
     
     
     XSRETURN(argvi);
   fail:
+    
+    
     
     
     SWIG_croak_null();
@@ -7383,41 +7401,59 @@ XS(_wrap_MsrpSession_sendLMessage__SWIG_0) {
 }
 
 
-XS(_wrap_MsrpSession_sendLMessage__SWIG_1) {
+XS(_wrap_MsrpSession_sendMessage__SWIG_1) {
   {
     MsrpSession *arg1 = (MsrpSession *) 0 ;
+    void *arg2 = (void *) 0 ;
+    unsigned int arg3 ;
     void *argp1 = 0 ;
     int res1 = 0 ;
+    int res2 ;
+    unsigned int val3 ;
+    int ecode3 = 0 ;
     int argvi = 0;
     bool result;
     dXSARGS;
     
-    if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: MsrpSession_sendLMessage(self);");
+    if ((items < 3) || (items > 3)) {
+      SWIG_croak("Usage: MsrpSession_sendMessage(self,payload,len);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MsrpSession, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MsrpSession_sendLMessage" "', argument " "1"" of type '" "MsrpSession *""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MsrpSession_sendMessage" "', argument " "1"" of type '" "MsrpSession *""'"); 
     }
     arg1 = reinterpret_cast< MsrpSession * >(argp1);
-    result = (bool)(arg1)->sendLMessage();
+    res2 = SWIG_ConvertPtr(ST(1),SWIG_as_voidptrptr(&arg2), 0, 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MsrpSession_sendMessage" "', argument " "2"" of type '" "void const *""'"); 
+    }
+    ecode3 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MsrpSession_sendMessage" "', argument " "3"" of type '" "unsigned int""'");
+    } 
+    arg3 = static_cast< unsigned int >(val3);
+    result = (bool)(arg1)->sendMessage((void const *)arg2,arg3);
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
     
     XSRETURN(argvi);
   fail:
+    
+    
     
     SWIG_croak_null();
   }
 }
 
 
-XS(_wrap_MsrpSession_sendLMessage) {
+XS(_wrap_MsrpSession_sendMessage) {
   dXSARGS;
   
   {
     unsigned long _index = 0;
     SWIG_TypeRank _rank = 0; 
-    if (items == 1) {
+    if (items == 3) {
       SWIG_TypeRank _ranki = 0;
       SWIG_TypeRank _rankm = 0;
       SWIG_TypeRank _pi = 1;
@@ -7431,6 +7467,25 @@ XS(_wrap_MsrpSession_sendLMessage) {
       _ranki += _v*_pi;
       _rankm += _pi;
       _pi *= SWIG_MAXCASTRANK;
+      {
+        void *ptr = 0;
+        int res = SWIG_ConvertPtr(ST(1), &ptr, 0, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_1;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(2), NULL);
+          _v = SWIG_CheckState(res);
+        }
+      }
+      if (!_v) goto check_1;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
       if (!_index || (_ranki < _rank)) {
         _rank = _ranki; _index = 1;
         if (_rank == _rankm) goto dispatch;
@@ -7438,7 +7493,7 @@ XS(_wrap_MsrpSession_sendLMessage) {
     }
   check_1:
     
-    if (items == 2) {
+    if (items == 4) {
       SWIG_TypeRank _ranki = 0;
       SWIG_TypeRank _rankm = 0;
       SWIG_TypeRank _pi = 1;
@@ -7453,8 +7508,27 @@ XS(_wrap_MsrpSession_sendLMessage) {
       _rankm += _pi;
       _pi *= SWIG_MAXCASTRANK;
       {
+        void *ptr = 0;
+        int res = SWIG_ConvertPtr(ST(1), &ptr, 0, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(2), NULL);
+          _v = SWIG_CheckState(res);
+        }
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
         void *vptr = 0;
-        int res = SWIG_ConvertPtr(ST(1), &vptr, SWIGTYPE_p_ActionConfig, 0);
+        int res = SWIG_ConvertPtr(ST(3), &vptr, SWIGTYPE_p_ActionConfig, 0);
         _v = SWIG_CheckState(res);
       }
       if (!_v) goto check_2;
@@ -7471,13 +7545,13 @@ XS(_wrap_MsrpSession_sendLMessage) {
   dispatch:
     switch(_index) {
     case 1:
-      ++PL_markstack_ptr; SWIG_CALLXS(_wrap_MsrpSession_sendLMessage__SWIG_1); return;
+      ++PL_markstack_ptr; SWIG_CALLXS(_wrap_MsrpSession_sendMessage__SWIG_1); return;
     case 2:
-      ++PL_markstack_ptr; SWIG_CALLXS(_wrap_MsrpSession_sendLMessage__SWIG_0); return;
+      ++PL_markstack_ptr; SWIG_CALLXS(_wrap_MsrpSession_sendMessage__SWIG_0); return;
     }
   }
   
-  croak("No matching function for overloaded 'MsrpSession_sendLMessage'");
+  croak("No matching function for overloaded 'MsrpSession_sendMessage'");
   XSRETURN(0);
 }
 
@@ -15208,7 +15282,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::delete_MsrpSession", _wrap_delete_MsrpSession},
 {"tinyWRAPc::MsrpSession_setCallback", _wrap_MsrpSession_setCallback},
 {"tinyWRAPc::MsrpSession_callMsrp", _wrap_MsrpSession_callMsrp},
-{"tinyWRAPc::MsrpSession_sendLMessage", _wrap_MsrpSession_sendLMessage},
+{"tinyWRAPc::MsrpSession_sendMessage", _wrap_MsrpSession_sendMessage},
 {"tinyWRAPc::MsrpSession_sendFile", _wrap_MsrpSession_sendFile},
 {"tinyWRAPc::new_MessagingSession", _wrap_new_MessagingSession},
 {"tinyWRAPc::delete_MessagingSession", _wrap_delete_MessagingSession},

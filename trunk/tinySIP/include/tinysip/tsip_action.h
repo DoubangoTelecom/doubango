@@ -78,6 +78,7 @@ typedef enum tsip_action_type_e
 	tsip_atype_hold, /**< Puts the session on hold state */
 	tsip_atype_resume, /**< Resumes a previously held session */
 	tsip_atype_ect, /**< Transfer the call */
+	tsip_atype_lmessage, /**< Large message (MSRP). The session must be connected */
 #define tsip_atype_bye tsip_atype_hangup
 
 

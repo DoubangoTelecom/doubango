@@ -192,16 +192,15 @@ static tdav_msrp_setup_t setup_from_string(const char* setup)
 
 static const char* setup_to_string(tdav_msrp_setup_t setup)
 {
-	switch(setup)
-	{
-	case msrp_setup_active:
-		return "active";
-	case msrp_setup_passive:
-		return "passive";
-	case msrp_setup_actpass:
-		return "actpass";
-	case msrp_setup_holdconn:
-		return "holdconn";
+	switch(setup){
+		case msrp_setup_active:
+			return "active";
+		case msrp_setup_passive:
+			return "passive";
+		case msrp_setup_actpass:
+			return "actpass";
+		case msrp_setup_holdconn:
+			return "holdconn";
 	}
 	return "active";
 }
@@ -235,20 +234,31 @@ static int populate_lo(tdav_session_msrp_t* self, tsk_bool_t initial)
 		}
 
 		/*=== File Transfer ===*/
-		/* Compute default 'file-selector' */
-		if(!self->file.selector && !TMEDIA_SESSION(self)->M.ro){
-			int index = tsk_strLastIndexOf(self->file.path, tsk_strlen(self->file.path), "\\");
-			if(index == -1){
-				index = tsk_strLastIndexOf(self->file.path, tsk_strlen(self->file.path), "/");
+		if(self->file.path){
+			/* Compute default 'file-selector' */
+			if(!self->file.selector && !TMEDIA_SESSION(self)->M.ro){
+				int index = tsk_strLastIndexOf(self->file.path, tsk_strlen(self->file.path), "\\");
+				if(index == -1){
+					index = tsk_strLastIndexOf(self->file.path, tsk_strlen(self->file.path), "/");
+				}
+				index++;
+				tsk_sprintf(&self->file.selector, "name:\"%s\" type:application/octet-stream", (self->file.path + index));
 			}
-			index++;
-			tsk_sprintf(&self->file.selector, "name:\"%s\" type:application/octet-stream", (self->file.path + index));
+			/* Compute default 'file-transfer-id' */
+			if(!self->file.transfer_id && !TMEDIA_SESSION(self)->M.ro){
+				tsk_istr_t rand_string;
+				tsk_strrandom(&rand_string);
+				self->file.transfer_id = tsk_strdup(rand_string);
+			}
+			
+			tsdp_header_M_add_headers(TMEDIA_SESSION(self)->M.lo,
+				TSDP_HEADER_A_VA_ARGS("sendonly", tsk_null),
+				tsk_null);
 		}
-		/* Compute default 'file-transfer-id' */
-		if(!self->file.transfer_id && !TMEDIA_SESSION(self)->M.ro){
-			tsk_istr_t rand_string;
-			tsk_strrandom(&rand_string);
-			self->file.transfer_id = tsk_strdup(rand_string);
+		else{
+			tsdp_header_M_add_headers(TMEDIA_SESSION(self)->M.lo,
+				TSDP_HEADER_A_VA_ARGS("sendrecv", tsk_null),
+				tsk_null);
 		}
 
 		if(self->file.selector){
@@ -764,7 +774,17 @@ int tdav_session_msrp_send_file(tmedia_session_msrp_t* self, const char* path, v
 
 int tdav_session_msrp_send_message(tmedia_session_msrp_t* self, const void* data, tsk_size_t size, va_list *app)
 {
-	return -1;
+	tdav_session_msrp_t* msrp;
+	int ret;
+
+	if(!data || !size || !(msrp = (tdav_session_msrp_t*)self) || !msrp->sender){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	ret = tsmrp_sender_send_data(msrp->sender, data, size, "text/plain");
+
+	return ret;
 }
 
 

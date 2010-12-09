@@ -754,7 +754,7 @@ sub DESTROY {
 
 *setCallback = *tinyWRAPc::MsrpSession_setCallback;
 *callMsrp = *tinyWRAPc::MsrpSession_callMsrp;
-*sendLMessage = *tinyWRAPc::MsrpSession_sendLMessage;
+*sendMessage = *tinyWRAPc::MsrpSession_sendMessage;
 *sendFile = *tinyWRAPc::MsrpSession_sendFile;
 sub DISOWN {
     my $self = shift;

@@ -138,7 +138,7 @@ void *run(void* self)
 	tmsrp_sender_t *sender = self;
 	tmsrp_data_out_t *data_out;
 	tsk_buffer_t* chunck, *message = tsk_buffer_create_null();
-	tsk_size_t start = 1;
+	tsk_size_t start;
 	tsk_size_t end;
 	tsk_size_t total;
 	tsk_istr_t tid;
@@ -154,6 +154,7 @@ void *run(void* self)
 			continue;
 		}
 		
+		start = 1;
 		total = data_out->size;
 		
 		while(TSK_RUNNABLE(self)->running && !error && (chunck = tmsrp_data_out_get(data_out))){
