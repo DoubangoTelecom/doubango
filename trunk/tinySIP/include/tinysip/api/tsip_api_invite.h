@@ -93,6 +93,7 @@ int tsip_invite_event_signal(tsip_invite_event_type_t type, tsip_ssession_handle
 TINYSIP_API int tsip_action_INVITE(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...);
 TINYSIP_API int tsip_action_HOLD(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...);
 TINYSIP_API int tsip_action_RESUME(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...);
+TINYSIP_API int tsip_action_LARGE_MESSAGE(const tsip_ssession_handle_t *ss, ...);
 TINYSIP_API int tsip_action_ECT(const tsip_ssession_handle_t *ss, const char* toUri, ...);
 TINYSIP_API int tsip_action_SOS(const tsip_ssession_handle_t *ss, ...);
 TINYSIP_API int tsip_action_DTMF(const tsip_ssession_handle_t *ss, int event, ...);

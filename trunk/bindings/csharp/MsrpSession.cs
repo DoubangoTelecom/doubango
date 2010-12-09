@@ -56,13 +56,13 @@ public class MsrpSession : InviteSession {
     return ret;
   }
 
-  public bool sendLMessage(ActionConfig config) {
-    bool ret = tinyWRAPPINVOKE.MsrpSession_sendLMessage__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
+  public bool sendMessage(byte[] payload, uint len, ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.MsrpSession_sendMessage__SWIG_0(swigCPtr, payload, len, ActionConfig.getCPtr(config));
     return ret;
   }
 
-  public bool sendLMessage() {
-    bool ret = tinyWRAPPINVOKE.MsrpSession_sendLMessage__SWIG_1(swigCPtr);
+  public bool sendMessage(byte[] payload, uint len) {
+    bool ret = tinyWRAPPINVOKE.MsrpSession_sendMessage__SWIG_1(swigCPtr, payload, len);
     return ret;
   }
 

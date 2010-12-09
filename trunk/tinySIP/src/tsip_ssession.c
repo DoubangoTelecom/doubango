@@ -434,6 +434,27 @@ tmedia_type_t tsip_ssession_get_mediatype(const tsip_ssession_handle_t *self)
 	}
 }
 
+#include "tinysip/dialogs/tsip_dialog_invite.h"
+tmedia_session_mgr_t* tsip_session_get_mediamgr(const tsip_ssession_handle_t *self)
+{
+	tmedia_session_mgr_t* mgr = tsk_null;
+
+	if(self){
+		const tsip_ssession_t *ss = self;
+		tsip_dialog_t* dialog;
+
+		if((dialog = tsip_dialog_layer_find_by_ss(ss->stack->layer_dialog, self))){
+			mgr = tsk_object_ref(TSIP_DIALOG_INVITE(dialog)->msession_mgr);
+			tsk_object_unref(dialog);
+		}
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+	}
+
+	return mgr;
+}
+
 const tsip_stack_handle_t* tsip_ssession_get_stack(const tsip_ssession_handle_t *self)
 {
 	if(self){

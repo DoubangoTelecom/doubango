@@ -1122,6 +1122,33 @@ int tmedia_session_mgr_send_file(tmedia_session_mgr_t* self, const char* path, .
 	return ret;
 }
 
+int tmedia_session_mgr_send_message(tmedia_session_mgr_t* self, const void* data, tsk_size_t size, ...)
+{
+	tmedia_session_msrp_t* session;
+	tmedia_type_t msrp_type = tmedia_msrp;
+	int ret = -3;
+
+	if(!self || !size || !data){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	session = (tmedia_session_msrp_t*)tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_type, &msrp_type);
+	if(session && session->send_message){
+		va_list ap;
+		va_start(ap, size);
+		session = tsk_object_ref(session);
+		ret = session->send_message(TMEDIA_SESSION_MSRP(session), data, size, &ap);
+		TSK_OBJECT_SAFE_FREE(session);
+		va_end(ap);
+	}
+	else{
+		TSK_DEBUG_ERROR("No MSRP session associated to this manager or session does not support file transfer");
+	}
+
+	return ret;
+}
+
 int tmedia_session_mgr_set_msrp_cb(tmedia_session_mgr_t* self, const void* callback_data, tmedia_session_msrp_cb_f func)
 {
 	tmedia_session_msrp_t* session;

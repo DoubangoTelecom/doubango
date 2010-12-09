@@ -123,7 +123,7 @@ public: /* ctor() and dtor() */
 public: /* Public functions */
 	bool setCallback(MsrpCallback* callback);
 	bool callMsrp(const char* remoteUri, ActionConfig* config=tsk_null);
-	bool sendLMessage(ActionConfig* config=tsk_null);
+	bool sendMessage(const void* payload, unsigned len, ActionConfig* config=tsk_null);
 	bool sendFile(ActionConfig* config=tsk_null);
 
 	public: /* Public helper function */

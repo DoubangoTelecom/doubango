@@ -131,8 +131,8 @@ class tinyWRAPJNI {
   public final static native boolean MsrpSession_setCallback(long jarg1, MsrpSession jarg1_, long jarg2, MsrpCallback jarg2_);
   public final static native boolean MsrpSession_callMsrp__SWIG_0(long jarg1, MsrpSession jarg1_, String jarg2, long jarg3, ActionConfig jarg3_);
   public final static native boolean MsrpSession_callMsrp__SWIG_1(long jarg1, MsrpSession jarg1_, String jarg2);
-  public final static native boolean MsrpSession_sendLMessage__SWIG_0(long jarg1, MsrpSession jarg1_, long jarg2, ActionConfig jarg2_);
-  public final static native boolean MsrpSession_sendLMessage__SWIG_1(long jarg1, MsrpSession jarg1_);
+  public final static native boolean MsrpSession_sendMessage__SWIG_0(long jarg1, MsrpSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3, long jarg4, ActionConfig jarg4_);
+  public final static native boolean MsrpSession_sendMessage__SWIG_1(long jarg1, MsrpSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native boolean MsrpSession_sendFile__SWIG_0(long jarg1, MsrpSession jarg1_, long jarg2, ActionConfig jarg2_);
   public final static native boolean MsrpSession_sendFile__SWIG_1(long jarg1, MsrpSession jarg1_);
   public final static native long new_MessagingSession(long jarg1, SipStack jarg1_);

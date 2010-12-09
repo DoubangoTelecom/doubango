@@ -49,12 +49,12 @@ public class MsrpSession extends InviteSession {
     return tinyWRAPJNI.MsrpSession_callMsrp__SWIG_1(swigCPtr, this, remoteUri);
   }
 
-  public boolean sendLMessage(ActionConfig config) {
-    return tinyWRAPJNI.MsrpSession_sendLMessage__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
+  public boolean sendMessage(java.nio.ByteBuffer payload, long len, ActionConfig config) {
+    return tinyWRAPJNI.MsrpSession_sendMessage__SWIG_0(swigCPtr, this, payload, len, ActionConfig.getCPtr(config), config);
   }
 
-  public boolean sendLMessage() {
-    return tinyWRAPJNI.MsrpSession_sendLMessage__SWIG_1(swigCPtr, this);
+  public boolean sendMessage(java.nio.ByteBuffer payload, long len) {
+    return tinyWRAPJNI.MsrpSession_sendMessage__SWIG_1(swigCPtr, this, payload, len);
   }
 
   public boolean sendFile(ActionConfig config) {

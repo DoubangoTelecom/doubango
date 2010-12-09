@@ -428,7 +428,7 @@ class MsrpSession(InviteSession):
     __del__ = lambda self : None;
     def setCallback(self, *args): return _tinyWRAP.MsrpSession_setCallback(self, *args)
     def callMsrp(self, *args): return _tinyWRAP.MsrpSession_callMsrp(self, *args)
-    def sendLMessage(self, *args): return _tinyWRAP.MsrpSession_sendLMessage(self, *args)
+    def sendMessage(self, *args): return _tinyWRAP.MsrpSession_sendMessage(self, *args)
     def sendFile(self, *args): return _tinyWRAP.MsrpSession_sendFile(self, *args)
 MsrpSession_swigregister = _tinyWRAP.MsrpSession_swigregister
 MsrpSession_swigregister(MsrpSession)

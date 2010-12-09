@@ -2556,27 +2556,35 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_callMsrp__SWIG_1(void * j
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_sendLMessage__SWIG_0(void * jarg1, void * jarg2) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_sendMessage__SWIG_0(void * jarg1, void * jarg2, unsigned int jarg3, void * jarg4) {
   unsigned int jresult ;
   MsrpSession *arg1 = (MsrpSession *) 0 ;
-  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  ActionConfig *arg4 = (ActionConfig *) 0 ;
   bool result;
   
   arg1 = (MsrpSession *)jarg1; 
-  arg2 = (ActionConfig *)jarg2; 
-  result = (bool)(arg1)->sendLMessage(arg2);
+  arg2 = jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  arg4 = (ActionConfig *)jarg4; 
+  result = (bool)(arg1)->sendMessage((void const *)arg2,arg3,arg4);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_sendLMessage__SWIG_1(void * jarg1) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpSession_sendMessage__SWIG_1(void * jarg1, void * jarg2, unsigned int jarg3) {
   unsigned int jresult ;
   MsrpSession *arg1 = (MsrpSession *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
   bool result;
   
   arg1 = (MsrpSession *)jarg1; 
-  result = (bool)(arg1)->sendLMessage();
+  arg2 = jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  result = (bool)(arg1)->sendMessage((void const *)arg2,arg3);
   jresult = result; 
   return jresult;
 }

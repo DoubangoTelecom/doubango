@@ -311,23 +311,16 @@ bool InviteSession::accept(ActionConfig* config/*=tsk_null*/)
 }
 #endif
 
-#include "tinysip/dialogs/tsip_dialog_layer.h"
-#include "tinysip/dialogs/tsip_dialog_invite.h"
-
 const MediaSessionMgr* InviteSession::getMediaMgr()
 {
 	if(!this->mediaMgr && this->handle){
-		tsip_dialog_t* dialog;
-		const tsip_ssession_t* ss = TSIP_SSESSION(this->handle);
-
-		if((dialog = tsip_dialog_layer_find_by_ss(ss->stack->layer_dialog, this->handle))){
-			if(TSIP_DIALOG_INVITE(dialog)->msession_mgr){
-				this->mediaMgr = new MediaSessionMgr(TSIP_DIALOG_INVITE(dialog)->msession_mgr);
-			}
-			else{
-				TSK_DEBUG_WARN("No media session associated to this session");
-			}
-			tsk_object_unref(dialog);
+		tmedia_session_mgr_t* mgr = tsip_session_get_mediamgr(this->handle);
+		if(mgr){
+			this->mediaMgr = new MediaSessionMgr(mgr);
+			tsk_object_unref(mgr);
+		}
+		else{
+			TSK_DEBUG_WARN("No media session associated to this session");
 		}
 	}
 	return this->mediaMgr;
@@ -501,9 +494,14 @@ bool MsrpSession::callMsrp(const char* remoteUri, ActionConfig* config/*=tsk_nul
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
-bool MsrpSession::sendLMessage(ActionConfig* config/*=tsk_null*/)
+bool MsrpSession::sendMessage(const void* payload, unsigned len, ActionConfig* config/*=tsk_null*/)
 {
-	return false;
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
+
+	return (tsip_action_LARGE_MESSAGE(this->handle,
+		TSIP_ACTION_SET_PAYLOAD(payload, len),
+		TSIP_ACTION_SET_CONFIG(action_cfg),
+		TSIP_ACTION_SET_NULL()) == 0);
 }
 
 bool MsrpSession::sendFile(ActionConfig* config/*=tsk_null*/)
