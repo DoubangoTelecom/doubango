@@ -120,7 +120,7 @@ public: /* API functions */
 	bool deleteElement(const char* url);
 	bool deleteAttribute(const char* url);
 
-	bool putDocument(const char* url, const void* payload, unsigned len);
+	bool putDocument(const char* url, const void* payload, unsigned len, const char* contentType);
 	bool putElement(const char* url, const void* payload, unsigned len);
 	bool putAttribute(const char* url, const void* payload, unsigned len);
 

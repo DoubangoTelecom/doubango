@@ -93,8 +93,8 @@ public class XcapStack {
     return tinyWRAPJNI.XcapStack_deleteAttribute(swigCPtr, this, url);
   }
 
-  public boolean putDocument(String url, java.nio.ByteBuffer payload, long len) {
-    return tinyWRAPJNI.XcapStack_putDocument(swigCPtr, this, url, payload, len);
+  public boolean putDocument(String url, java.nio.ByteBuffer payload, long len, String contentType) {
+    return tinyWRAPJNI.XcapStack_putDocument(swigCPtr, this, url, payload, len, contentType);
   }
 
   public boolean putElement(String url, java.nio.ByteBuffer payload, long len) {

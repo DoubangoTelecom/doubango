@@ -497,11 +497,12 @@ bool XcapStack::deleteAttribute(const char* url)
 }
 
 
-bool XcapStack::putDocument(const char* url, const void* payload, unsigned len)
+bool XcapStack::putDocument(const char* url, const void* payload, unsigned len, const char* contentType)
 {
 	return txcap_action_create_document(this->handle,
 			TXCAP_ACTION_SET_REQUEST_URI(url),
 			TXCAP_ACTION_SET_PAYLOAD(payload, len),
+			TXCAP_ACTION_SET_HEADER("Content-Type", contentType),
 			TXCAP_ACTION_SET_NULL()) == 0;
 }
 

@@ -7163,12 +7163,13 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_XcapStack_1de
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_XcapStack_1putDocument(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jbyteArray jarg3, jlong jarg4) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_XcapStack_1putDocument(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jbyteArray jarg3, jlong jarg4, jstring jarg5) {
   jboolean jresult = 0 ;
   XcapStack *arg1 = (XcapStack *) 0 ;
   char *arg2 = (char *) 0 ;
   void *arg3 = (void *) 0 ;
   unsigned int arg4 ;
+  char *arg5 = (char *) 0 ;
   bool result;
   
   (void)jenv;
@@ -7184,9 +7185,15 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_XcapStack_1pu
   arg3 = jenv->GetDirectBufferAddress(jarg3); 
   
   arg4 = (unsigned int)jarg4; 
-  result = (bool)(arg1)->putDocument((char const *)arg2,(void const *)arg3,arg4);
+  arg5 = 0;
+  if (jarg5) {
+    arg5 = (char *)jenv->GetStringUTFChars(jarg5, 0);
+    if (!arg5) return 0;
+  }
+  result = (bool)(arg1)->putDocument((char const *)arg2,(void const *)arg3,arg4,(char const *)arg5);
   jresult = (jboolean)result; 
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  if (arg5) jenv->ReleaseStringUTFChars(jarg5, (const char *)arg5);
   return jresult;
 }
 

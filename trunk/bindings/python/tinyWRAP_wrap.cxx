@@ -14636,6 +14636,7 @@ SWIGINTERN PyObject *_wrap_XcapStack_putDocument(PyObject *SWIGUNUSEDPARM(self),
   char *arg2 = (char *) 0 ;
   void *arg3 = (void *) 0 ;
   unsigned int arg4 ;
+  char *arg5 = (char *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int res2 ;
@@ -14644,13 +14645,17 @@ SWIGINTERN PyObject *_wrap_XcapStack_putDocument(PyObject *SWIGUNUSEDPARM(self),
   int res3 ;
   unsigned int val4 ;
   int ecode4 = 0 ;
+  int res5 ;
+  char *buf5 = 0 ;
+  int alloc5 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
   PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:XcapStack_putDocument",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:XcapStack_putDocument",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_XcapStack, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "XcapStack_putDocument" "', argument " "1"" of type '" "XcapStack *""'"); 
@@ -14670,12 +14675,19 @@ SWIGINTERN PyObject *_wrap_XcapStack_putDocument(PyObject *SWIGUNUSEDPARM(self),
     SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "XcapStack_putDocument" "', argument " "4"" of type '" "unsigned int""'");
   } 
   arg4 = static_cast< unsigned int >(val4);
-  result = (bool)(arg1)->putDocument((char const *)arg2,(void const *)arg3,arg4);
+  res5 = SWIG_AsCharPtrAndSize(obj4, &buf5, NULL, &alloc5);
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "XcapStack_putDocument" "', argument " "5"" of type '" "char const *""'");
+  }
+  arg5 = reinterpret_cast< char * >(buf5);
+  result = (bool)(arg1)->putDocument((char const *)arg2,(void const *)arg3,arg4,(char const *)arg5);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc5 == SWIG_NEWOBJ) delete[] buf5;
   return resultobj;
 fail:
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc5 == SWIG_NEWOBJ) delete[] buf5;
   return NULL;
 }
 
@@ -17363,10 +17375,12 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tdav_codec_id_h264_bp30",SWIG_From_int(static_cast< int >(tdav_codec_id_h264_bp30)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_theora",SWIG_From_int(static_cast< int >(tdav_codec_id_theora)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_mp4ves_es",SWIG_From_int(static_cast< int >(tdav_codec_id_mp4ves_es)));
+  SWIG_Python_SetConstant(d, "thttp_event_dialog_started",SWIG_From_int(static_cast< int >(thttp_event_dialog_started)));
   SWIG_Python_SetConstant(d, "thttp_event_message",SWIG_From_int(static_cast< int >(thttp_event_message)));
   SWIG_Python_SetConstant(d, "thttp_event_auth_failed",SWIG_From_int(static_cast< int >(thttp_event_auth_failed)));
   SWIG_Python_SetConstant(d, "thttp_event_closed",SWIG_From_int(static_cast< int >(thttp_event_closed)));
   SWIG_Python_SetConstant(d, "thttp_event_transport_error",SWIG_From_int(static_cast< int >(thttp_event_transport_error)));
+  SWIG_Python_SetConstant(d, "thttp_event_dialog_terminated",SWIG_From_int(static_cast< int >(thttp_event_dialog_terminated)));
   SWIG_Python_SetConstant(d, "twrap_rpmessage_type_sms_none",SWIG_From_int(static_cast< int >(twrap_rpmessage_type_sms_none)));
   SWIG_Python_SetConstant(d, "twrap_rpmessage_type_sms_submit",SWIG_From_int(static_cast< int >(twrap_rpmessage_type_sms_submit)));
   SWIG_Python_SetConstant(d, "twrap_rpmessage_type_sms_deliver",SWIG_From_int(static_cast< int >(twrap_rpmessage_type_sms_deliver)));
