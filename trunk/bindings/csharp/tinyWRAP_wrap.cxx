@@ -5123,19 +5123,21 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_deleteAttribute(void * jarg
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_putDocument(void * jarg1, char * jarg2, void * jarg3, unsigned int jarg4) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_putDocument(void * jarg1, char * jarg2, void * jarg3, unsigned int jarg4, char * jarg5) {
   unsigned int jresult ;
   XcapStack *arg1 = (XcapStack *) 0 ;
   char *arg2 = (char *) 0 ;
   void *arg3 = (void *) 0 ;
   unsigned int arg4 ;
+  char *arg5 = (char *) 0 ;
   bool result;
   
   arg1 = (XcapStack *)jarg1; 
   arg2 = (char *)jarg2; 
   arg3 = jarg3; 
   arg4 = (unsigned int)jarg4; 
-  result = (bool)(arg1)->putDocument((char const *)arg2,(void const *)arg3,arg4);
+  arg5 = (char *)jarg5; 
+  result = (bool)(arg1)->putDocument((char const *)arg2,(void const *)arg3,arg4,(char const *)arg5);
   jresult = result; 
   return jresult;
 }

@@ -325,7 +325,7 @@ class tinyWRAPJNI {
   public final static native boolean XcapStack_deleteDocument(long jarg1, XcapStack jarg1_, String jarg2);
   public final static native boolean XcapStack_deleteElement(long jarg1, XcapStack jarg1_, String jarg2);
   public final static native boolean XcapStack_deleteAttribute(long jarg1, XcapStack jarg1_, String jarg2);
-  public final static native boolean XcapStack_putDocument(long jarg1, XcapStack jarg1_, String jarg2, java.nio.ByteBuffer jarg3, long jarg4);
+  public final static native boolean XcapStack_putDocument(long jarg1, XcapStack jarg1_, String jarg2, java.nio.ByteBuffer jarg3, long jarg4, String jarg5);
   public final static native boolean XcapStack_putElement(long jarg1, XcapStack jarg1_, String jarg2, java.nio.ByteBuffer jarg3, long jarg4);
   public final static native boolean XcapStack_putAttribute(long jarg1, XcapStack jarg1_, String jarg2, java.nio.ByteBuffer jarg3, long jarg4);
   public final static native boolean XcapStack_stop(long jarg1, XcapStack jarg1_);

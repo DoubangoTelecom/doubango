@@ -1010,10 +1010,12 @@ class XcapStack(_object):
 XcapStack_swigregister = _tinyWRAP.XcapStack_swigregister
 XcapStack_swigregister(XcapStack)
 
+thttp_event_dialog_started = _tinyWRAP.thttp_event_dialog_started
 thttp_event_message = _tinyWRAP.thttp_event_message
 thttp_event_auth_failed = _tinyWRAP.thttp_event_auth_failed
 thttp_event_closed = _tinyWRAP.thttp_event_closed
 thttp_event_transport_error = _tinyWRAP.thttp_event_transport_error
+thttp_event_dialog_terminated = _tinyWRAP.thttp_event_dialog_terminated
 twrap_rpmessage_type_sms_none = _tinyWRAP.twrap_rpmessage_type_sms_none
 twrap_rpmessage_type_sms_submit = _tinyWRAP.twrap_rpmessage_type_sms_submit
 twrap_rpmessage_type_sms_deliver = _tinyWRAP.twrap_rpmessage_type_sms_deliver

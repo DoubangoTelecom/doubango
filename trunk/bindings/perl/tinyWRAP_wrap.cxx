@@ -13322,6 +13322,7 @@ XS(_wrap_XcapStack_putDocument) {
     char *arg2 = (char *) 0 ;
     void *arg3 = (void *) 0 ;
     unsigned int arg4 ;
+    char *arg5 = (char *) 0 ;
     void *argp1 = 0 ;
     int res1 = 0 ;
     int res2 ;
@@ -13330,12 +13331,15 @@ XS(_wrap_XcapStack_putDocument) {
     int res3 ;
     unsigned int val4 ;
     int ecode4 = 0 ;
+    int res5 ;
+    char *buf5 = 0 ;
+    int alloc5 = 0 ;
     int argvi = 0;
     bool result;
     dXSARGS;
     
-    if ((items < 4) || (items > 4)) {
-      SWIG_croak("Usage: XcapStack_putDocument(self,url,payload,len);");
+    if ((items < 5) || (items > 5)) {
+      SWIG_croak("Usage: XcapStack_putDocument(self,url,payload,len,contentType);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_XcapStack, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
@@ -13356,18 +13360,25 @@ XS(_wrap_XcapStack_putDocument) {
       SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "XcapStack_putDocument" "', argument " "4"" of type '" "unsigned int""'");
     } 
     arg4 = static_cast< unsigned int >(val4);
-    result = (bool)(arg1)->putDocument((char const *)arg2,(void const *)arg3,arg4);
+    res5 = SWIG_AsCharPtrAndSize(ST(4), &buf5, NULL, &alloc5);
+    if (!SWIG_IsOK(res5)) {
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "XcapStack_putDocument" "', argument " "5"" of type '" "char const *""'");
+    }
+    arg5 = reinterpret_cast< char * >(buf5);
+    result = (bool)(arg1)->putDocument((char const *)arg2,(void const *)arg3,arg4,(char const *)arg5);
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     
     if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
     
     
+    if (alloc5 == SWIG_NEWOBJ) delete[] buf5;
     XSRETURN(argvi);
   fail:
     
     if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
     
     
+    if (alloc5 == SWIG_NEWOBJ) delete[] buf5;
     SWIG_croak_null();
   }
 }
@@ -16323,6 +16334,11 @@ XS(SWIG_init) {
   SWIG_TypeClientData(SWIGTYPE_p_XcapCallback, (void*) "tinyWRAP::XcapCallback");
   SWIG_TypeClientData(SWIGTYPE_p_XcapStack, (void*) "tinyWRAP::XcapStack");
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "thttp_event_dialog_started", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(thttp_event_dialog_started)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "thttp_event_message", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(thttp_event_message)));
     SvREADONLY_on(sv);
@@ -16340,6 +16356,11 @@ XS(SWIG_init) {
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "thttp_event_transport_error", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(thttp_event_transport_error)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "thttp_event_dialog_terminated", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(thttp_event_dialog_terminated)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {

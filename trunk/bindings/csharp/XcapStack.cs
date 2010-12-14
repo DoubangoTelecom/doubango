@@ -112,8 +112,8 @@ public class XcapStack : IDisposable {
     return ret;
   }
 
-  public bool putDocument(string url, byte[] payload, uint len) {
-    bool ret = tinyWRAPPINVOKE.XcapStack_putDocument(swigCPtr, url, payload, len);
+  public bool putDocument(string url, byte[] payload, uint len, string contentType) {
+    bool ret = tinyWRAPPINVOKE.XcapStack_putDocument(swigCPtr, url, payload, len, contentType);
     return ret;
   }
 

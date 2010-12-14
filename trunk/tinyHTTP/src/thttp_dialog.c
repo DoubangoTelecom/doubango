@@ -117,6 +117,7 @@ int thttp_dialog_Started_2_Transfering_X_request(va_list *app)
 {
 	thttp_dialog_t *self;
 	const thttp_action_t* action;
+	thttp_event_t* e;
 
 	self = va_arg(*app, thttp_dialog_t *);
 	va_arg(*app, const thttp_message_t *);
@@ -126,6 +127,12 @@ int thttp_dialog_Started_2_Transfering_X_request(va_list *app)
 		self->action = tsk_object_ref((void*)action);
 	}
 	
+	// alert the user
+	if((e = thttp_event_create(thttp_event_dialog_started, self->session, "Dialog Started", tsk_null))){
+		/*ret =*/ thttp_stack_alert(self->session->stack, e);
+		TSK_OBJECT_SAFE_FREE(e);
+	}
+
 	return thttp_dialog_send_request(self);
 }
 
@@ -144,7 +151,7 @@ int thttp_dialog_Transfering_2_Transfering_X_401_407(va_list *app)
 		thttp_event_t* e = tsk_null;
 		TSK_DEBUG_ERROR("HTTP authentication failed.");
 		
-		if((e = thttp_event_create(thttp_event_auth_failed, self->session, "Authentication Failed.", tsk_null))){
+		if((e = thttp_event_create(thttp_event_auth_failed, self->session, THTTP_MESSAGE_DESCRIPTION(response), response))){
 			thttp_stack_alert(self->session->stack, e);
 			TSK_OBJECT_SAFE_FREE(e);
 		}
@@ -414,14 +421,19 @@ int thttp_dialog_OnTerminated(thttp_dialog_t *self)
 	
 	/* removes the dialog from the session */
 	if(self->session){
+		thttp_event_t* e;
+		// alert the user
+		if((e = thttp_event_create(thttp_event_dialog_terminated, self->session, "Dialog Terminated", tsk_null))){
+			/*ret =*/ thttp_stack_alert(self->session->stack, e);
+			TSK_OBJECT_SAFE_FREE(e);
+		}
+		
 		tsk_list_remove_item_by_data(self->session->dialogs, self);
 		return 0;
 	}
 
 	return -1;
 }
-
-
 
 
 

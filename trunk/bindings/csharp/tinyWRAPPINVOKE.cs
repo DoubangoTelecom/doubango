@@ -1155,7 +1155,7 @@ class tinyWRAPPINVOKE {
   public static extern bool XcapStack_deleteAttribute(HandleRef jarg1, string jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_putDocument")]
-  public static extern bool XcapStack_putDocument(HandleRef jarg1, string jarg2, byte[] jarg3, uint jarg4);
+  public static extern bool XcapStack_putDocument(HandleRef jarg1, string jarg2, byte[] jarg3, uint jarg4, string jarg5);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_putElement")]
   public static extern bool XcapStack_putElement(HandleRef jarg1, string jarg2, byte[] jarg3, uint jarg4);
