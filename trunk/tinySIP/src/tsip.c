@@ -275,6 +275,10 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 				{	/* (tsk_bool_t)ENABLED_BOOL */
 					if((self->security.enable_secagree_ipsec = va_arg(*app, tsk_bool_t))){
 						tsk_strupdate(&self->security.secagree_mech, "ipsec-3gpp");
+						TNET_SOCKET_TYPE_SET_IPSEC(self->network.proxy_cscf_type);
+					}
+					else{
+						TNET_SOCKET_TYPE_UNSET(self->network.proxy_cscf_type, IPSEC);
 					}
 					break;
 				}
@@ -543,7 +547,7 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 	}
 	/* === Transport type === */
 	if(!tsk_strnullORempty(stack->security.secagree_mech)){
-		if(tsk_striequals(stack->security.secagree_mech, "ipsec-3gpp")){
+		if(tsk_striequals(stack->security.secagree_mech, "ipsec-3gpp") && stack->security.enable_secagree_ipsec){
 			TNET_SOCKET_TYPE_SET_IPSEC(stack->network.proxy_cscf_type);
 		}
 		//else if if(tsk_striquals(stack->security.secagree_mech, "ipsec-ike"))
@@ -587,7 +591,7 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 	}
 	
 	/* === Get Best source address ===  */
-	if(!stack->network.local_ip){ /* loacal-ip is missing? */
+	if(!stack->network.local_ip || tsk_striequals(stack->network.local_ip, "127.0.0.1")){ /* loacal-ip is missing? */
 		tnet_ip_t bestsource;
 		if((ret = tnet_getbestsource(stack->network.proxy_cscf, stack->network.proxy_cscf_port, stack->network.proxy_cscf_type, &bestsource))){ /* FIXME: what about linux version? */
 			TSK_DEBUG_ERROR("Failed to get best source [%d].", ret);

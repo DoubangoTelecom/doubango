@@ -56,7 +56,7 @@ TINYMSRP_API tmsrp_sender_t* tmsrp_sender_create(tmsrp_config_t* config, tnet_fd
 
 TINYMSRP_API int tmsrp_sender_set_fd(tmsrp_sender_t* self, tnet_fd_t fd);
 TINYMSRP_API int tmsrp_sender_start(tmsrp_sender_t* self);
-TINYMSRP_API int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* data, tsk_size_t size, const char* ctype);
+TINYMSRP_API int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* data, tsk_size_t size, const char* ctype, const char* wctype);
 TINYMSRP_API int tsmrp_sender_send_file(tmsrp_sender_t* self, const char* filepath);
 TINYMSRP_API int tmsrp_sender_stop(tmsrp_sender_t* self);
 

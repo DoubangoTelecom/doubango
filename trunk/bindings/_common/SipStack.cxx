@@ -252,6 +252,36 @@ bool SipStack::setSTUNCred(const char* login, const char* password)
 		TSIP_STACK_SET_NULL()) == 0);
 }
 
+bool SipStack::setTLSSecAgree(bool enabled)
+{
+	tsk_bool_t _enable = enabled;
+	return (tsip_stack_set(this->handle,
+		TSIP_STACK_SET_SECAGREE_TLS(_enable),
+		TSIP_STACK_SET_NULL()) == 0);
+}
+
+bool SipStack::setSSLCretificates(const char* privKey, const char* pubKey, const char* caKey)
+{
+	return (tsip_stack_set(this->handle,
+		TSIP_STACK_SET_TLS_CERTS(caKey, pubKey, privKey),
+		TSIP_STACK_SET_NULL()) == 0);
+}
+
+bool SipStack::setIPSecSecAgree(bool enabled)
+{
+	tsk_bool_t _enable = enabled;
+	return (tsip_stack_set(this->handle,
+		TSIP_STACK_SET_SECAGREE_IPSEC(_enable),
+		TSIP_STACK_SET_NULL()) == 0);
+}
+
+bool SipStack::setIPSecParameters(const char* algo, const char* ealgo, const char* mode, const char* proto)
+{
+	return (tsip_stack_set(this->handle,
+		TSIP_STACK_SET_IPSEC_PARAMS(algo, ealgo, mode, proto),
+		TSIP_STACK_SET_NULL()) == 0);
+}
+
 char* SipStack::dnsENUM(const char* service, const char* e164num, const char* domain)
 {
 	tnet_dns_ctx_t* dnsctx = tsip_stack_get_dnsctx(this->handle);

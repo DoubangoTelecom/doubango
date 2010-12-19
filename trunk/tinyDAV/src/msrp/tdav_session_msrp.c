@@ -30,6 +30,8 @@
  */
 #include "tinydav/msrp/tdav_session_msrp.h"
 
+#include <string.h> /* strtok() */
+
 #define TDAV_MSRP_CONNECT_TIMEOUT	2000
 
 static void send_pending_file(tdav_session_msrp_t *session);
@@ -205,9 +207,36 @@ static const char* setup_to_string(tdav_msrp_setup_t setup)
 	return "active";
 }
 
+static int init_neg_types(tdav_session_msrp_t* msrp, const tsdp_header_M_t* m)
+{
+	const tsdp_header_A_t* A;
+
+	if((A = tsdp_header_M_findA(m, "accept-types"))){
+		char* atype = strtok((char*)A->value, " ");
+		const char* default_atype = atype;
+		while(atype){
+			if(tsk_striequals(atype, "message/CPIM")){
+				tsk_strupdate(&msrp->neg_accept_type, atype);
+				if((A = tsdp_header_M_findA(m, "accept-wrapped-types"))){
+					char* awtype = strtok((char*)A->value, " ");
+					tsk_strupdate(&msrp->neg_accept_w_type, awtype); // first
+				}
+				break;
+			}
+			atype = strtok(tsk_null, " ");
+		}
+		
+		if(!msrp->neg_accept_type){
+			tsk_strupdate(&msrp->neg_accept_type, default_atype);
+		}
+
+		return 0;
+	}
+	return -1;
+}
+
 static int populate_lo(tdav_session_msrp_t* self, tsk_bool_t initial)
 {
-	//char* tmp = tsk_null;
 	if(!self || !TMEDIA_SESSION(self)->M.lo){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
@@ -225,6 +254,9 @@ static int populate_lo(tdav_session_msrp_t* self, tsk_bool_t initial)
 			tsdp_header_M_add_headers(TMEDIA_SESSION(self)->M.lo,
 				TSDP_HEADER_A_VA_ARGS("accept-types", self->accept_types),
 				tsk_null);
+		}
+		else if(TMEDIA_SESSION(self)->M.ro){
+			init_neg_types(self, TMEDIA_SESSION(self)->M.ro);
 		}
 		if(self->accept_w_types){
 			/* a=accept-wrapped-types:application/octet-stream */
@@ -335,6 +367,14 @@ int tdav_session_msrp_set(tmedia_session_t* self, const tmedia_param_t* param)
 		}
 		else if(tsk_striequals(param->key, "accept-wrapped-types")){
 			tsk_strupdate(&msrp->accept_w_types, param->value);
+		}
+
+		/* Configuration */
+		else if(tsk_striequals(param->key, "Failure-Report")){
+			msrp->config->Failure_Report = tsk_striequals(param->value, "yes");
+		}
+		else if(tsk_striequals(param->key, "Success-Report")){
+			msrp->config->Success_Report = tsk_striequals(param->value, "yes");
 		}
 
 		/* File Transfer */
@@ -717,6 +757,9 @@ int tdav_session_msrp_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 		}
 	}
 
+	/* Neg parameters */
+	init_neg_types(msrp, m);
+
 
 	/* [OMA-TS-SIMPLE_IM-V1_0-20100322-C] - 5.8.2 Support of Application Level Gateway */
 
@@ -782,7 +825,9 @@ int tdav_session_msrp_send_message(tmedia_session_msrp_t* self, const void* data
 		return -1;
 	}
 
-	ret = tsmrp_sender_send_data(msrp->sender, data, size, "text/plain");
+	ret = tsmrp_sender_send_data(msrp->sender, data, size, 
+		msrp->neg_accept_type, msrp->neg_accept_w_type
+		);
 
 	return ret;
 }
@@ -825,6 +870,8 @@ static tsk_object_t* tdav_session_msrp_dtor(tsk_object_t * self)
 		TSK_FREE(session->remote_ip);
 		TSK_FREE(session->local_ip);
 		
+		TSK_FREE(session->neg_accept_type);
+		TSK_FREE(session->neg_accept_w_type);
 		TSK_FREE(session->accept_types);
 		TSK_FREE(session->accept_w_types);
 		

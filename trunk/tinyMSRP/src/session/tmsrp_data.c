@@ -63,56 +63,20 @@ tmsrp_data_out_t* tmsrp_data_out_file_create(const char* filepath)
 
 
 /* =========================== Common ============================= */
+static int tmsrp_data_deinit(tmsrp_data_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 
-//int tmsrp_data_init(tmsrp_data_t* self, tsk_bool_t outgoing, const void* pdata, tsk_size_t size, tsk_bool_t isfilepath, const char* ctype)
-//{	
-//	if(!self || !pdata || !size){
-//		return -1;
-//	}
-//	
-//	if(isfilepath){
-//		if(self->file){
-//			fclose(self->file);
-//		}
-//		if(outgoing){
-//			if(!(self->file = fopen((const char*)pdata, "rb"))){
-//				TSK_DEBUG_ERROR("Failed to open(rb) this file:%s", pdata);
-//				return -2;
-//			}
-//		}
-//		else{
-//			if(!(self->file = fopen((const char*)pdata, "wb"))){
-//				TSK_DEBUG_ERROR("Failed to open(wb) this file:%s", pdata);
-//				return -3;
-//			}
-//		}
-//	}
-//	else{
-//		self->buffer = tsk_buffer_create(pdata, size);
-//	}
-//	// ctype
-//	tsk_strupdate(&self->ctype, ctype);
-//
-//	return 0;
-//}
+	TSK_FREE(self->id);
+	TSK_FREE(self->ctype);
+	TSK_FREE(self->wctype);
 
-//int tmsrp_data_deinit(tmsrp_data_t* self)
-//{
-//	if(!self){
-//		return -1;
-//	}
-//
-//	TSK_FREE(self->id);
-//	TSK_FREE(self->ctype);
-//	TSK_OBJECT_SAFE_FREE(self->buffer);
-//	
-//	if(self->file){
-//		fclose(self->file);
-//		self->file = tsk_null;
-//	}
-//
-//	return 0;
-//}
+	return 0;
+}
+
 
 
 
@@ -226,9 +190,7 @@ static void* tmsrp_data_in_dtor(tsk_object_t * self)
 { 
 	tmsrp_data_in_t *data_in = self;
 	if(data_in){
-		TSK_FREE(TMSRP_DATA(data_in)->id);
-		TSK_FREE(TMSRP_DATA(data_in)->ctype);
-
+		tmsrp_data_deinit(TMSRP_DATA(data_in));
 		TSK_OBJECT_SAFE_FREE(data_in->buffer);
 	}
 
@@ -288,6 +250,7 @@ static void* tmsrp_data_out_ctor(tsk_object_t * self, va_list * app)
 		
 		// content type
 		TMSRP_DATA(data_out)->ctype = tsk_strdup("application/octet-stream");
+		TMSRP_DATA(data_out)->wctype = tsk_strdup("text/plain");
 		// random id
 		tsk_strrandom(&id);
 		TMSRP_DATA(data_out)->id = tsk_strdup(id);
@@ -299,8 +262,7 @@ static void* tmsrp_data_out_dtor(tsk_object_t * self)
 { 
 	tmsrp_data_out_t *data_out = self;
 	if(data_out){
-		TSK_FREE(TMSRP_DATA(data_out)->id);
-		TSK_FREE(TMSRP_DATA(data_out)->ctype);
+		tmsrp_data_deinit(TMSRP_DATA(data_out));
 		TSK_OBJECT_SAFE_FREE(data_out->message);
 		
 		if(data_out->file){

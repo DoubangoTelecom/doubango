@@ -51,6 +51,7 @@ typedef struct tmsrp_data_s
 	
 	char* id;
 	char* ctype;
+	char* wctype;
 }
 tmsrp_data_t;
 

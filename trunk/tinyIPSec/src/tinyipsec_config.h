@@ -73,12 +73,14 @@
 //
 // IPSEC
 //
-#if (_WIN32_WINNT >= 0x0600) && 0/*FIXME*/
-#	define HAVE_IPSEC_VISTA		1
-#elif (_WIN32_WINNT >= 0x0501)
-#	define HAVE_IPSEC_XP		1
-#elif HAVE_IPSEC_TOOLS
-#	define HAVE_IPSEC_RACOON	1
+#if HAVE_IPSEC
+#	if (_WIN32_WINNT >= 0x0600)
+#		define HAVE_IPSEC_VISTA		1
+#	elif (_WIN32_WINNT >= 0x0501)
+#		define HAVE_IPSEC_XP		0
+#	elif HAVE_IPSEC_TOOLS
+#		define HAVE_IPSEC_RACOON	1
+#	endif
 #endif
 
 

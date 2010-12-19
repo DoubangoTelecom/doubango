@@ -125,6 +125,22 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_setSTUNCred(swigCPtr, this, login, password);
   }
 
+  public boolean setTLSSecAgree(boolean enabled) {
+    return tinyWRAPJNI.SipStack_setTLSSecAgree(swigCPtr, this, enabled);
+  }
+
+  public boolean setSSLCretificates(String privKey, String pubKey, String caKey) {
+    return tinyWRAPJNI.SipStack_setSSLCretificates(swigCPtr, this, privKey, pubKey, caKey);
+  }
+
+  public boolean setIPSecSecAgree(boolean enabled) {
+    return tinyWRAPJNI.SipStack_setIPSecSecAgree(swigCPtr, this, enabled);
+  }
+
+  public boolean setIPSecParameters(String algo, String ealgo, String mode, String proto) {
+    return tinyWRAPJNI.SipStack_setIPSecParameters(swigCPtr, this, algo, ealgo, mode, proto);
+  }
+
   public String dnsENUM(String service, String e164num, String domain) {
     return tinyWRAPJNI.SipStack_dnsENUM(swigCPtr, this, service, e164num, domain);
   }

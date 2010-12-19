@@ -23,13 +23,27 @@ inattributes="[MarshalAs(UnmanagedType.LPArray)]") TYPE[] "CSTYPE[]"
 %typemap(csdirectorin) void * "$iminput"
 
 
-
+//======== SipMessage ========//
 %typemap(cscode) SipMessage %{
   public byte[] getSipContent() {
     uint clen = this.getSipContentLength();
     if(clen>0){
         byte[] bytes = new byte[clen];
         this.getSipContent(bytes, clen);
+        return bytes;
+    }
+    return null;
+  }
+%}
+
+
+//======= MediaContent ========//
+%typemap(cscode) MediaContent %{
+  public byte[] getPayload() {
+    uint clen = this.getPayloadLength();
+    if(clen>0){
+        byte[] bytes = new byte[clen];
+        this.getPayload(bytes, clen);
         return bytes;
     }
     return null;

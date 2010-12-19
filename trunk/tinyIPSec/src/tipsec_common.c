@@ -44,32 +44,35 @@ tipsec_context_t* tipsec_context_create(tipsec_ipproto_t ipproto, tsk_bool_t use
 
 int tipsec_start(tipsec_context_t* ctx)
 {
-	TSK_DEBUG_ERROR("No IPSec implementation found.");
-	return -1;
+	TSK_DEBUG_WARN("No IPSec implementation found.");
+	return 0;
 }
 
 int tipsec_set_local(tipsec_context_t* ctx, const char* addr_local, const char* addr_remote, tipsec_port_t port_uc, tipsec_port_t port_us)
 {
-	TSK_DEBUG_ERROR("No IPSec implementation found.");
+	TSK_DEBUG_WARN("No IPSec implementation found.");
+
+	ctx->port_uc = port_uc;
+	ctx->port_us = port_us;
 	return -1;
 }
 
 int tipsec_set_keys(tipsec_context_t* ctx, const tipsec_key_t* ik, const tipsec_key_t* ck)
 {
-	TSK_DEBUG_ERROR("No IPSec implementation found.");
-	return -1;
+	TSK_DEBUG_WARN("No IPSec implementation found.");
+	return 0;
 }
 
 int tipsec_set_remote(tipsec_context_t* ctx, tipsec_spi_t spi_pc, tipsec_spi_t spi_ps, tipsec_port_t port_pc, tipsec_port_t port_ps, tipsec_lifetime_t lifetime)
 {
-	TSK_DEBUG_ERROR("No IPSec implementation found.");
-	return -1;
+	TSK_DEBUG_WARN("No IPSec implementation found.");
+	return 0;
 }
 
 int tipsec_stop(tipsec_context_t* ctx)
 {
-	TSK_DEBUG_ERROR("No IPSec implementation found.");
-	return -1;
+	TSK_DEBUG_WARN("No IPSec implementation found.");
+	return 0;
 }
 
 
@@ -80,18 +83,15 @@ int tipsec_stop(tipsec_context_t* ctx)
 static tsk_object_t* tipsec_context_ctor(tsk_object_t * self, va_list * app)
 {
 	tipsec_context_t *context = self;
-	if(context)
-	{
+	if(context){
 	}
-bail:
 	return self;
 }
 
 static tsk_object_t* tipsec_context_dtor(tsk_object_t * self)
 { 
 	tipsec_context_t *context = self;
-	if(context)
-	{
+	if(context){
 	}
 	
 	return self;

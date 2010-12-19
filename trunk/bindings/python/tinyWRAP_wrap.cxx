@@ -3127,73 +3127,75 @@ namespace Swig {
 #define SWIGTYPE_p_DialogEvent swig_types[3]
 #define SWIGTYPE_p_InviteEvent swig_types[4]
 #define SWIGTYPE_p_InviteSession swig_types[5]
-#define SWIGTYPE_p_MediaSessionMgr swig_types[6]
-#define SWIGTYPE_p_MessagingEvent swig_types[7]
-#define SWIGTYPE_p_MessagingSession swig_types[8]
-#define SWIGTYPE_p_MsrpCallback swig_types[9]
-#define SWIGTYPE_p_MsrpEvent swig_types[10]
-#define SWIGTYPE_p_MsrpMessage swig_types[11]
-#define SWIGTYPE_p_MsrpSession swig_types[12]
-#define SWIGTYPE_p_OptionsEvent swig_types[13]
-#define SWIGTYPE_p_OptionsSession swig_types[14]
-#define SWIGTYPE_p_ProxyAudioConsumer swig_types[15]
-#define SWIGTYPE_p_ProxyAudioProducer swig_types[16]
-#define SWIGTYPE_p_ProxyVideoConsumer swig_types[17]
-#define SWIGTYPE_p_ProxyVideoFrame swig_types[18]
-#define SWIGTYPE_p_ProxyVideoProducer swig_types[19]
-#define SWIGTYPE_p_PublicationEvent swig_types[20]
-#define SWIGTYPE_p_PublicationSession swig_types[21]
-#define SWIGTYPE_p_RPMessage swig_types[22]
-#define SWIGTYPE_p_RegistrationEvent swig_types[23]
-#define SWIGTYPE_p_RegistrationSession swig_types[24]
-#define SWIGTYPE_p_SMSData swig_types[25]
-#define SWIGTYPE_p_SMSEncoder swig_types[26]
-#define SWIGTYPE_p_SafeObject swig_types[27]
-#define SWIGTYPE_p_SdpMessage swig_types[28]
-#define SWIGTYPE_p_SipCallback swig_types[29]
-#define SWIGTYPE_p_SipEvent swig_types[30]
-#define SWIGTYPE_p_SipMessage swig_types[31]
-#define SWIGTYPE_p_SipSession swig_types[32]
-#define SWIGTYPE_p_SipStack swig_types[33]
-#define SWIGTYPE_p_SipUri swig_types[34]
-#define SWIGTYPE_p_StackEvent swig_types[35]
-#define SWIGTYPE_p_SubscriptionEvent swig_types[36]
-#define SWIGTYPE_p_SubscriptionSession swig_types[37]
-#define SWIGTYPE_p_XcapCallback swig_types[38]
-#define SWIGTYPE_p_XcapEvent swig_types[39]
-#define SWIGTYPE_p_XcapMessage swig_types[40]
-#define SWIGTYPE_p_XcapSelector swig_types[41]
-#define SWIGTYPE_p_XcapStack swig_types[42]
-#define SWIGTYPE_p_char swig_types[43]
-#define SWIGTYPE_p_int swig_types[44]
-#define SWIGTYPE_p_long_long swig_types[45]
-#define SWIGTYPE_p_short swig_types[46]
-#define SWIGTYPE_p_signed_char swig_types[47]
-#define SWIGTYPE_p_tdav_codec_id_e swig_types[48]
-#define SWIGTYPE_p_thttp_event_type_e swig_types[49]
-#define SWIGTYPE_p_tmedia_bandwidth_level_e swig_types[50]
-#define SWIGTYPE_p_tmedia_chroma_e swig_types[51]
-#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[52]
-#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[53]
-#define SWIGTYPE_p_tmsrp_event_type_e swig_types[54]
-#define SWIGTYPE_p_tmsrp_request_type_e swig_types[55]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[56]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[57]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[58]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[59]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[60]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[61]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[62]
-#define SWIGTYPE_p_tsk_list_t swig_types[63]
-#define SWIGTYPE_p_twrap_media_type_e swig_types[64]
-#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[65]
-#define SWIGTYPE_p_twrap_sms_type_e swig_types[66]
-#define SWIGTYPE_p_unsigned_char swig_types[67]
-#define SWIGTYPE_p_unsigned_int swig_types[68]
-#define SWIGTYPE_p_unsigned_long_long swig_types[69]
-#define SWIGTYPE_p_unsigned_short swig_types[70]
-static swig_type_info *swig_types[72];
-static swig_module_info swig_module = {swig_types, 71, 0, 0, 0, 0};
+#define SWIGTYPE_p_MediaContent swig_types[6]
+#define SWIGTYPE_p_MediaContentCPIM swig_types[7]
+#define SWIGTYPE_p_MediaSessionMgr swig_types[8]
+#define SWIGTYPE_p_MessagingEvent swig_types[9]
+#define SWIGTYPE_p_MessagingSession swig_types[10]
+#define SWIGTYPE_p_MsrpCallback swig_types[11]
+#define SWIGTYPE_p_MsrpEvent swig_types[12]
+#define SWIGTYPE_p_MsrpMessage swig_types[13]
+#define SWIGTYPE_p_MsrpSession swig_types[14]
+#define SWIGTYPE_p_OptionsEvent swig_types[15]
+#define SWIGTYPE_p_OptionsSession swig_types[16]
+#define SWIGTYPE_p_ProxyAudioConsumer swig_types[17]
+#define SWIGTYPE_p_ProxyAudioProducer swig_types[18]
+#define SWIGTYPE_p_ProxyVideoConsumer swig_types[19]
+#define SWIGTYPE_p_ProxyVideoFrame swig_types[20]
+#define SWIGTYPE_p_ProxyVideoProducer swig_types[21]
+#define SWIGTYPE_p_PublicationEvent swig_types[22]
+#define SWIGTYPE_p_PublicationSession swig_types[23]
+#define SWIGTYPE_p_RPMessage swig_types[24]
+#define SWIGTYPE_p_RegistrationEvent swig_types[25]
+#define SWIGTYPE_p_RegistrationSession swig_types[26]
+#define SWIGTYPE_p_SMSData swig_types[27]
+#define SWIGTYPE_p_SMSEncoder swig_types[28]
+#define SWIGTYPE_p_SafeObject swig_types[29]
+#define SWIGTYPE_p_SdpMessage swig_types[30]
+#define SWIGTYPE_p_SipCallback swig_types[31]
+#define SWIGTYPE_p_SipEvent swig_types[32]
+#define SWIGTYPE_p_SipMessage swig_types[33]
+#define SWIGTYPE_p_SipSession swig_types[34]
+#define SWIGTYPE_p_SipStack swig_types[35]
+#define SWIGTYPE_p_SipUri swig_types[36]
+#define SWIGTYPE_p_StackEvent swig_types[37]
+#define SWIGTYPE_p_SubscriptionEvent swig_types[38]
+#define SWIGTYPE_p_SubscriptionSession swig_types[39]
+#define SWIGTYPE_p_XcapCallback swig_types[40]
+#define SWIGTYPE_p_XcapEvent swig_types[41]
+#define SWIGTYPE_p_XcapMessage swig_types[42]
+#define SWIGTYPE_p_XcapSelector swig_types[43]
+#define SWIGTYPE_p_XcapStack swig_types[44]
+#define SWIGTYPE_p_char swig_types[45]
+#define SWIGTYPE_p_int swig_types[46]
+#define SWIGTYPE_p_long_long swig_types[47]
+#define SWIGTYPE_p_short swig_types[48]
+#define SWIGTYPE_p_signed_char swig_types[49]
+#define SWIGTYPE_p_tdav_codec_id_e swig_types[50]
+#define SWIGTYPE_p_thttp_event_type_e swig_types[51]
+#define SWIGTYPE_p_tmedia_bandwidth_level_e swig_types[52]
+#define SWIGTYPE_p_tmedia_chroma_e swig_types[53]
+#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[54]
+#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[55]
+#define SWIGTYPE_p_tmsrp_event_type_e swig_types[56]
+#define SWIGTYPE_p_tmsrp_request_type_e swig_types[57]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[58]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[59]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[60]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[61]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[62]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[63]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[64]
+#define SWIGTYPE_p_tsk_list_t swig_types[65]
+#define SWIGTYPE_p_twrap_media_type_e swig_types[66]
+#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[67]
+#define SWIGTYPE_p_twrap_sms_type_e swig_types[68]
+#define SWIGTYPE_p_unsigned_char swig_types[69]
+#define SWIGTYPE_p_unsigned_int swig_types[70]
+#define SWIGTYPE_p_unsigned_long_long swig_types[71]
+#define SWIGTYPE_p_unsigned_short swig_types[72]
+static swig_type_info *swig_types[74];
+static swig_module_info swig_module = {swig_types, 73, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3559,6 +3561,7 @@ SWIG_From_int  (int value)
 
 #include "ActionConfig.h"
 #include "MediaSessionMgr.h"
+#include "MediaContent.h"
 #include "SipUri.h"
 #include "SipMessage.h"
 #include "SipEvent.h"
@@ -3625,52 +3628,9 @@ SWIG_From_unsigned_SS_long  (unsigned long value)
 
 
 SWIGINTERNINLINE PyObject *
-SWIG_From_unsigned_SS_short  (unsigned short value)
+SWIG_From_unsigned_SS_int  (unsigned int value)
 {    
   return SWIG_From_unsigned_SS_long  (value);
-}
-
-
-SWIGINTERN int
-SWIG_AsCharArray(PyObject * obj, char *val, size_t size)
-{ 
-  char* cptr = 0; size_t csize = 0; int alloc = SWIG_OLDOBJ;
-  int res = SWIG_AsCharPtrAndSize(obj, &cptr, &csize, &alloc);
-  if (SWIG_IsOK(res)) {
-    if ((csize == size + 1) && cptr && !(cptr[csize-1])) --csize;
-    if (csize <= size) {
-      if (val) {
-	if (csize) memcpy(val, cptr, csize*sizeof(char));
-	if (csize < size) memset(val + csize, 0, (size - csize)*sizeof(char));
-      }
-      if (alloc == SWIG_NEWOBJ) {
-	delete[] cptr;
-	res = SWIG_DelNewMask(res);
-      }      
-      return res;
-    }
-    if (alloc == SWIG_NEWOBJ) delete[] cptr;
-  }
-  return SWIG_TypeError;
-}
-
-
-SWIGINTERN int
-SWIG_AsVal_char (PyObject * obj, char *val)
-{    
-  int res = SWIG_AsCharArray(obj, val, 1);
-  if (!SWIG_IsOK(res)) {
-    long v;
-    res = SWIG_AddCast(SWIG_AsVal_long (obj, &v));
-    if (SWIG_IsOK(res)) {
-      if ((CHAR_MIN <= v) && (v <= CHAR_MAX)) {
-	if (val) *val = static_cast< char >(v);
-      } else {
-	res = SWIG_OverflowError;
-      }
-    }
-  }
-  return res;
 }
 
 
@@ -3735,9 +3695,52 @@ SWIG_AsVal_unsigned_SS_int (PyObject * obj, unsigned int *val)
 
 
 SWIGINTERNINLINE PyObject *
-SWIG_From_unsigned_SS_int  (unsigned int value)
+SWIG_From_unsigned_SS_short  (unsigned short value)
 {    
   return SWIG_From_unsigned_SS_long  (value);
+}
+
+
+SWIGINTERN int
+SWIG_AsCharArray(PyObject * obj, char *val, size_t size)
+{ 
+  char* cptr = 0; size_t csize = 0; int alloc = SWIG_OLDOBJ;
+  int res = SWIG_AsCharPtrAndSize(obj, &cptr, &csize, &alloc);
+  if (SWIG_IsOK(res)) {
+    if ((csize == size + 1) && cptr && !(cptr[csize-1])) --csize;
+    if (csize <= size) {
+      if (val) {
+	if (csize) memcpy(val, cptr, csize*sizeof(char));
+	if (csize < size) memset(val + csize, 0, (size - csize)*sizeof(char));
+      }
+      if (alloc == SWIG_NEWOBJ) {
+	delete[] cptr;
+	res = SWIG_DelNewMask(res);
+      }      
+      return res;
+    }
+    if (alloc == SWIG_NEWOBJ) delete[] cptr;
+  }
+  return SWIG_TypeError;
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_char (PyObject * obj, char *val)
+{    
+  int res = SWIG_AsCharArray(obj, val, 1);
+  if (!SWIG_IsOK(res)) {
+    long v;
+    res = SWIG_AddCast(SWIG_AsVal_long (obj, &v));
+    if (SWIG_IsOK(res)) {
+      if ((CHAR_MIN <= v) && (v <= CHAR_MAX)) {
+	if (val) *val = static_cast< char >(v);
+      } else {
+	res = SWIG_OverflowError;
+      }
+    }
+  }
+  return res;
 }
 
 
@@ -5573,6 +5576,422 @@ SWIGINTERN PyObject *MediaSessionMgr_swigregister(PyObject *SWIGUNUSEDPARM(self)
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
   SWIG_TypeNewClientData(SWIGTYPE_p_MediaSessionMgr, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_delete_MediaContent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MediaContent *arg1 = (MediaContent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_MediaContent",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MediaContent, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_MediaContent" "', argument " "1"" of type '" "MediaContent *""'"); 
+  }
+  arg1 = reinterpret_cast< MediaContent * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaContent_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MediaContent *arg1 = (MediaContent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaContent_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MediaContent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaContent_getType" "', argument " "1"" of type '" "MediaContent *""'"); 
+  }
+  arg1 = reinterpret_cast< MediaContent * >(argp1);
+  result = (char *)(arg1)->getType();
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaContent_getDataLength(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MediaContent *arg1 = (MediaContent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  unsigned int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaContent_getDataLength",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MediaContent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaContent_getDataLength" "', argument " "1"" of type '" "MediaContent *""'"); 
+  }
+  arg1 = reinterpret_cast< MediaContent * >(argp1);
+  result = (unsigned int)(arg1)->getDataLength();
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaContent_getData(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MediaContent *arg1 = (MediaContent *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  unsigned int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:MediaContent_getData",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MediaContent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaContent_getData" "', argument " "1"" of type '" "MediaContent *""'"); 
+  }
+  arg1 = reinterpret_cast< MediaContent * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MediaContent_getData" "', argument " "2"" of type '" "void *""'"); 
+  }
+  ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MediaContent_getData" "', argument " "3"" of type '" "unsigned int""'");
+  } 
+  arg3 = static_cast< unsigned int >(val3);
+  result = (unsigned int)(arg1)->getData(arg2,arg3);
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaContent_parse__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  void *arg1 = (void *) 0 ;
+  unsigned int arg2 ;
+  char *arg3 = (char *) 0 ;
+  int res1 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  MediaContent *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:MediaContent_parse",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0,SWIG_as_voidptrptr(&arg1), 0, 0);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaContent_parse" "', argument " "1"" of type '" "void const *""'"); 
+  }
+  ecode2 = SWIG_AsVal_unsigned_SS_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaContent_parse" "', argument " "2"" of type '" "unsigned int""'");
+  } 
+  arg2 = static_cast< unsigned int >(val2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MediaContent_parse" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  result = (MediaContent *)MediaContent::parse((void const *)arg1,arg2,(char const *)arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MediaContent, SWIG_POINTER_OWN |  0 );
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return resultobj;
+fail:
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaContent_parse__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  void *arg1 = (void *) 0 ;
+  unsigned int arg2 ;
+  int res1 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  MediaContentCPIM *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MediaContent_parse",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0,SWIG_as_voidptrptr(&arg1), 0, 0);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaContent_parse" "', argument " "1"" of type '" "void const *""'"); 
+  }
+  ecode2 = SWIG_AsVal_unsigned_SS_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaContent_parse" "', argument " "2"" of type '" "unsigned int""'");
+  } 
+  arg2 = static_cast< unsigned int >(val2);
+  result = (MediaContentCPIM *)MediaContent::parse((void const *)arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MediaContentCPIM, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaContent_parse(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[4];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = (int)PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 3); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 2) {
+    int _v;
+    void *ptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &ptr, 0, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_MediaContent_parse__SWIG_1(self, args);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *ptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &ptr, 0, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        int res = SWIG_AsCharPtrAndSize(argv[2], 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_MediaContent_parse__SWIG_0(self, args);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'MediaContent_parse'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    parse(void const *,unsigned int,char const *)\n"
+    "    MediaContent::parse(void const *,unsigned int)\n");
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaContent_getPayloadLength(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MediaContent *arg1 = (MediaContent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  unsigned int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaContent_getPayloadLength",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MediaContent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaContent_getPayloadLength" "', argument " "1"" of type '" "MediaContent *""'"); 
+  }
+  arg1 = reinterpret_cast< MediaContent * >(argp1);
+  result = (unsigned int)(arg1)->getPayloadLength();
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaContent_getPayload(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MediaContent *arg1 = (MediaContent *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  unsigned int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:MediaContent_getPayload",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MediaContent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaContent_getPayload" "', argument " "1"" of type '" "MediaContent *""'"); 
+  }
+  arg1 = reinterpret_cast< MediaContent * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MediaContent_getPayload" "', argument " "2"" of type '" "void *""'"); 
+  }
+  ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MediaContent_getPayload" "', argument " "3"" of type '" "unsigned int""'");
+  } 
+  arg3 = static_cast< unsigned int >(val3);
+  result = (unsigned int)(arg1)->getPayload(arg2,arg3);
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *MediaContent_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_MediaContent, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_delete_MediaContentCPIM(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MediaContentCPIM *arg1 = (MediaContentCPIM *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_MediaContentCPIM",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MediaContentCPIM, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_MediaContentCPIM" "', argument " "1"" of type '" "MediaContentCPIM *""'"); 
+  }
+  arg1 = reinterpret_cast< MediaContentCPIM * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaContentCPIM_getPayloadLength(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MediaContentCPIM *arg1 = (MediaContentCPIM *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  unsigned int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaContentCPIM_getPayloadLength",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MediaContentCPIM, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaContentCPIM_getPayloadLength" "', argument " "1"" of type '" "MediaContentCPIM *""'"); 
+  }
+  arg1 = reinterpret_cast< MediaContentCPIM * >(argp1);
+  result = (unsigned int)(arg1)->getPayloadLength();
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaContentCPIM_getPayload(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MediaContentCPIM *arg1 = (MediaContentCPIM *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  unsigned int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:MediaContentCPIM_getPayload",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MediaContentCPIM, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaContentCPIM_getPayload" "', argument " "1"" of type '" "MediaContentCPIM *""'"); 
+  }
+  arg1 = reinterpret_cast< MediaContentCPIM * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MediaContentCPIM_getPayload" "', argument " "2"" of type '" "void *""'"); 
+  }
+  ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MediaContentCPIM_getPayload" "', argument " "3"" of type '" "unsigned int""'");
+  } 
+  arg3 = static_cast< unsigned int >(val3);
+  result = (unsigned int)(arg1)->getPayload(arg2,arg3);
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaContentCPIM_getHeaderValue(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MediaContentCPIM *arg1 = (MediaContentCPIM *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MediaContentCPIM_getHeaderValue",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MediaContentCPIM, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaContentCPIM_getHeaderValue" "', argument " "1"" of type '" "MediaContentCPIM *""'"); 
+  }
+  arg1 = reinterpret_cast< MediaContentCPIM * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MediaContentCPIM_getHeaderValue" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  result = (char *)(arg1)->getHeaderValue((char const *)arg2);
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *MediaContentCPIM_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_MediaContentCPIM, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -12765,6 +13184,196 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SipStack_setTLSSecAgree(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipStack_setTLSSecAgree",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setTLSSecAgree" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  ecode2 = SWIG_AsVal_bool(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SipStack_setTLSSecAgree" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = static_cast< bool >(val2);
+  result = (bool)(arg1)->setTLSSecAgree(arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setSSLCretificates(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  int res4 ;
+  char *buf4 = 0 ;
+  int alloc4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:SipStack_setSSLCretificates",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setSSLCretificates" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setSSLCretificates" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_setSSLCretificates" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  res4 = SWIG_AsCharPtrAndSize(obj3, &buf4, NULL, &alloc4);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SipStack_setSSLCretificates" "', argument " "4"" of type '" "char const *""'");
+  }
+  arg4 = reinterpret_cast< char * >(buf4);
+  result = (bool)(arg1)->setSSLCretificates((char const *)arg2,(char const *)arg3,(char const *)arg4);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setIPSecSecAgree(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipStack_setIPSecSecAgree",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setIPSecSecAgree" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  ecode2 = SWIG_AsVal_bool(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SipStack_setIPSecSecAgree" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = static_cast< bool >(val2);
+  result = (bool)(arg1)->setIPSecSecAgree(arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setIPSecParameters(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  char *arg5 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  int res4 ;
+  char *buf4 = 0 ;
+  int alloc4 = 0 ;
+  int res5 ;
+  char *buf5 = 0 ;
+  int alloc5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:SipStack_setIPSecParameters",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setIPSecParameters" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setIPSecParameters" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_setIPSecParameters" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  res4 = SWIG_AsCharPtrAndSize(obj3, &buf4, NULL, &alloc4);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SipStack_setIPSecParameters" "', argument " "4"" of type '" "char const *""'");
+  }
+  arg4 = reinterpret_cast< char * >(buf4);
+  res5 = SWIG_AsCharPtrAndSize(obj4, &buf5, NULL, &alloc5);
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "SipStack_setIPSecParameters" "', argument " "5"" of type '" "char const *""'");
+  }
+  arg5 = reinterpret_cast< char * >(buf5);
+  result = (bool)(arg1)->setIPSecParameters((char const *)arg2,(char const *)arg3,(char const *)arg4,(char const *)arg5);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  if (alloc5 == SWIG_NEWOBJ) delete[] buf5;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  if (alloc5 == SWIG_NEWOBJ) delete[] buf5;
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_SipStack_dnsENUM(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -15620,6 +16229,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MsrpMessage_isFirstChunck(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MsrpMessage_isFirstChunck",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MsrpMessage, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MsrpMessage_isFirstChunck" "', argument " "1"" of type '" "MsrpMessage *""'"); 
+  }
+  arg1 = reinterpret_cast< MsrpMessage * >(argp1);
+  result = (bool)(arg1)->isFirstChunck();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_MsrpMessage_getMsrpHeaderValue(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MsrpMessage *arg1 = (MsrpMessage *) 0 ;
@@ -16004,6 +16635,19 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_producerSetInt32", _wrap_MediaSessionMgr_producerSetInt32, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_producerSetInt64", _wrap_MediaSessionMgr_producerSetInt64, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_swigregister", MediaSessionMgr_swigregister, METH_VARARGS, NULL},
+	 { (char *)"delete_MediaContent", _wrap_delete_MediaContent, METH_VARARGS, NULL},
+	 { (char *)"MediaContent_getType", _wrap_MediaContent_getType, METH_VARARGS, NULL},
+	 { (char *)"MediaContent_getDataLength", _wrap_MediaContent_getDataLength, METH_VARARGS, NULL},
+	 { (char *)"MediaContent_getData", _wrap_MediaContent_getData, METH_VARARGS, NULL},
+	 { (char *)"MediaContent_parse", _wrap_MediaContent_parse, METH_VARARGS, NULL},
+	 { (char *)"MediaContent_getPayloadLength", _wrap_MediaContent_getPayloadLength, METH_VARARGS, NULL},
+	 { (char *)"MediaContent_getPayload", _wrap_MediaContent_getPayload, METH_VARARGS, NULL},
+	 { (char *)"MediaContent_swigregister", MediaContent_swigregister, METH_VARARGS, NULL},
+	 { (char *)"delete_MediaContentCPIM", _wrap_delete_MediaContentCPIM, METH_VARARGS, NULL},
+	 { (char *)"MediaContentCPIM_getPayloadLength", _wrap_MediaContentCPIM_getPayloadLength, METH_VARARGS, NULL},
+	 { (char *)"MediaContentCPIM_getPayload", _wrap_MediaContentCPIM_getPayload, METH_VARARGS, NULL},
+	 { (char *)"MediaContentCPIM_getHeaderValue", _wrap_MediaContentCPIM_getHeaderValue, METH_VARARGS, NULL},
+	 { (char *)"MediaContentCPIM_swigregister", MediaContentCPIM_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_SipUri", _wrap_new_SipUri, METH_VARARGS, NULL},
 	 { (char *)"delete_SipUri", _wrap_delete_SipUri, METH_VARARGS, NULL},
 	 { (char *)"SipUri_isValid", _wrap_SipUri_isValid, METH_VARARGS, NULL},
@@ -16225,6 +16869,10 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipStack_removeSigCompCompartment", _wrap_SipStack_removeSigCompCompartment, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setSTUNServer", _wrap_SipStack_setSTUNServer, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setSTUNCred", _wrap_SipStack_setSTUNCred, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setTLSSecAgree", _wrap_SipStack_setTLSSecAgree, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setSSLCretificates", _wrap_SipStack_setSSLCretificates, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setIPSecSecAgree", _wrap_SipStack_setIPSecSecAgree, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setIPSecParameters", _wrap_SipStack_setIPSecParameters, METH_VARARGS, NULL},
 	 { (char *)"SipStack_dnsENUM", _wrap_SipStack_dnsENUM, METH_VARARGS, NULL},
 	 { (char *)"SipStack_dnsNaptrSrv", _wrap_SipStack_dnsNaptrSrv, METH_VARARGS, NULL},
 	 { (char *)"SipStack_dnsSrv", _wrap_SipStack_dnsSrv, METH_VARARGS, NULL},
@@ -16315,6 +16963,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MsrpMessage_getRequestType", _wrap_MsrpMessage_getRequestType, METH_VARARGS, NULL},
 	 { (char *)"MsrpMessage_getByteRange", _wrap_MsrpMessage_getByteRange, METH_VARARGS, NULL},
 	 { (char *)"MsrpMessage_isLastChunck", _wrap_MsrpMessage_isLastChunck, METH_VARARGS, NULL},
+	 { (char *)"MsrpMessage_isFirstChunck", _wrap_MsrpMessage_isFirstChunck, METH_VARARGS, NULL},
 	 { (char *)"MsrpMessage_getMsrpHeaderValue", _wrap_MsrpMessage_getMsrpHeaderValue, METH_VARARGS, NULL},
 	 { (char *)"MsrpMessage_getMsrpHeaderParamValue", _wrap_MsrpMessage_getMsrpHeaderParamValue, METH_VARARGS, NULL},
 	 { (char *)"MsrpMessage_getMsrpContentLength", _wrap_MsrpMessage_getMsrpContentLength, METH_VARARGS, NULL},
@@ -16393,12 +17042,17 @@ static void *_p_MsrpSessionTo_p_InviteSession(void *x, int *SWIGUNUSEDPARM(newme
 static void *_p_SipStackTo_p_SafeObject(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SafeObject *)  ((SipStack *) x));
 }
+static void *_p_MediaContentCPIMTo_p_MediaContent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((MediaContent *)  ((MediaContentCPIM *) x));
+}
 static swig_type_info _swigt__p_ActionConfig = {"_p_ActionConfig", "ActionConfig *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_CallSession = {"_p_CallSession", "CallSession *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DDebugCallback = {"_p_DDebugCallback", "DDebugCallback *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DialogEvent = {"_p_DialogEvent", "DialogEvent *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_InviteEvent = {"_p_InviteEvent", "InviteEvent *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_InviteSession = {"_p_InviteSession", "InviteSession *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_MediaContent = {"_p_MediaContent", "MediaContent *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_MediaContentCPIM = {"_p_MediaContentCPIM", "MediaContentCPIM *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MediaSessionMgr = {"_p_MediaSessionMgr", "MediaSessionMgr *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MessagingEvent = {"_p_MessagingEvent", "MessagingEvent *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MessagingSession = {"_p_MessagingSession", "MessagingSession *", 0, 0, (void*)0, 0};
@@ -16472,6 +17126,8 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_DialogEvent,
   &_swigt__p_InviteEvent,
   &_swigt__p_InviteSession,
+  &_swigt__p_MediaContent,
+  &_swigt__p_MediaContentCPIM,
   &_swigt__p_MediaSessionMgr,
   &_swigt__p_MessagingEvent,
   &_swigt__p_MessagingSession,
@@ -16545,6 +17201,8 @@ static swig_cast_info _swigc__p_DDebugCallback[] = {  {&_swigt__p_DDebugCallback
 static swig_cast_info _swigc__p_DialogEvent[] = {  {&_swigt__p_DialogEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_InviteEvent[] = {  {&_swigt__p_InviteEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_InviteSession[] = {  {&_swigt__p_InviteSession, 0, 0, 0},  {&_swigt__p_CallSession, _p_CallSessionTo_p_InviteSession, 0, 0},  {&_swigt__p_MsrpSession, _p_MsrpSessionTo_p_InviteSession, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_MediaContent[] = {  {&_swigt__p_MediaContent, 0, 0, 0},  {&_swigt__p_MediaContentCPIM, _p_MediaContentCPIMTo_p_MediaContent, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_MediaContentCPIM[] = {  {&_swigt__p_MediaContentCPIM, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MediaSessionMgr[] = {  {&_swigt__p_MediaSessionMgr, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MessagingEvent[] = {  {&_swigt__p_MessagingEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MessagingSession[] = {  {&_swigt__p_MessagingSession, 0, 0, 0},{0, 0, 0, 0}};
@@ -16618,6 +17276,8 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_DialogEvent,
   _swigc__p_InviteEvent,
   _swigc__p_InviteSession,
+  _swigc__p_MediaContent,
+  _swigc__p_MediaContentCPIM,
   _swigc__p_MediaSessionMgr,
   _swigc__p_MessagingEvent,
   _swigc__p_MessagingSession,

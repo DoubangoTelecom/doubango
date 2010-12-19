@@ -339,6 +339,7 @@ namespace Swig {
 
 #include "ActionConfig.h"
 #include "MediaSessionMgr.h"
+#include "MediaContent.h"
 #include "SipUri.h"
 #include "SipMessage.h"
 #include "SipEvent.h"
@@ -1315,6 +1316,162 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_producerSetInt64(void
   arg4 = (int64_t)jarg4; 
   result = (bool)(arg1)->producerSetInt64(arg2,(char const *)arg3,arg4);
   jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_MediaContent(void * jarg1) {
+  MediaContent *arg1 = (MediaContent *) 0 ;
+  
+  arg1 = (MediaContent *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_MediaContent_getType(void * jarg1) {
+  char * jresult ;
+  MediaContent *arg1 = (MediaContent *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (MediaContent *)jarg1; 
+  result = (char *)(arg1)->getType();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaContent_getDataLength(void * jarg1) {
+  unsigned int jresult ;
+  MediaContent *arg1 = (MediaContent *) 0 ;
+  unsigned int result;
+  
+  arg1 = (MediaContent *)jarg1; 
+  result = (unsigned int)(arg1)->getDataLength();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaContent_getData(void * jarg1, void * jarg2, unsigned int jarg3) {
+  unsigned int jresult ;
+  MediaContent *arg1 = (MediaContent *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  unsigned int result;
+  
+  arg1 = (MediaContent *)jarg1; 
+  arg2 = jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  result = (unsigned int)(arg1)->getData(arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_MediaContent_parse__SWIG_0(void * jarg1, unsigned int jarg2, char * jarg3) {
+  void * jresult ;
+  void *arg1 = (void *) 0 ;
+  unsigned int arg2 ;
+  char *arg3 = (char *) 0 ;
+  MediaContent *result = 0 ;
+  
+  arg1 = jarg1; 
+  arg2 = (unsigned int)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (MediaContent *)MediaContent::parse((void const *)arg1,arg2,(char const *)arg3);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_MediaContent_parse__SWIG_1(void * jarg1, unsigned int jarg2) {
+  void * jresult ;
+  void *arg1 = (void *) 0 ;
+  unsigned int arg2 ;
+  MediaContentCPIM *result = 0 ;
+  
+  arg1 = jarg1; 
+  arg2 = (unsigned int)jarg2; 
+  result = (MediaContentCPIM *)MediaContent::parse((void const *)arg1,arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaContent_getPayloadLength(void * jarg1) {
+  unsigned int jresult ;
+  MediaContent *arg1 = (MediaContent *) 0 ;
+  unsigned int result;
+  
+  arg1 = (MediaContent *)jarg1; 
+  result = (unsigned int)(arg1)->getPayloadLength();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaContent_getPayload(void * jarg1, void * jarg2, unsigned int jarg3) {
+  unsigned int jresult ;
+  MediaContent *arg1 = (MediaContent *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  unsigned int result;
+  
+  arg1 = (MediaContent *)jarg1; 
+  arg2 = jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  result = (unsigned int)(arg1)->getPayload(arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_MediaContentCPIM(void * jarg1) {
+  MediaContentCPIM *arg1 = (MediaContentCPIM *) 0 ;
+  
+  arg1 = (MediaContentCPIM *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaContentCPIM_getPayloadLength(void * jarg1) {
+  unsigned int jresult ;
+  MediaContentCPIM *arg1 = (MediaContentCPIM *) 0 ;
+  unsigned int result;
+  
+  arg1 = (MediaContentCPIM *)jarg1; 
+  result = (unsigned int)(arg1)->getPayloadLength();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaContentCPIM_getPayload(void * jarg1, void * jarg2, unsigned int jarg3) {
+  unsigned int jresult ;
+  MediaContentCPIM *arg1 = (MediaContentCPIM *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  unsigned int result;
+  
+  arg1 = (MediaContentCPIM *)jarg1; 
+  arg2 = jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  result = (unsigned int)(arg1)->getPayload(arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_MediaContentCPIM_getHeaderValue(void * jarg1, char * jarg2) {
+  char * jresult ;
+  MediaContentCPIM *arg1 = (MediaContentCPIM *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (MediaContentCPIM *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (char *)(arg1)->getHeaderValue((char const *)arg2);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
   return jresult;
 }
 
@@ -4275,6 +4432,72 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setSTUNCred(void * jarg1, ch
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setTLSSecAgree(void * jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  bool arg2 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  result = (bool)(arg1)->setTLSSecAgree(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setSSLCretificates(void * jarg1, char * jarg2, char * jarg3, char * jarg4) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (char *)jarg4; 
+  result = (bool)(arg1)->setSSLCretificates((char const *)arg2,(char const *)arg3,(char const *)arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setIPSecSecAgree(void * jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  bool arg2 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  result = (bool)(arg1)->setIPSecSecAgree(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setIPSecParameters(void * jarg1, char * jarg2, char * jarg3, char * jarg4, char * jarg5) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  char *arg5 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (char *)jarg4; 
+  arg5 = (char *)jarg5; 
+  result = (bool)(arg1)->setIPSecParameters((char const *)arg2,(char const *)arg3,(char const *)arg4,(char const *)arg5);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_dnsENUM(void * jarg1, char * jarg2, char * jarg3, char * jarg4) {
   char * jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -5531,6 +5754,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpMessage_isLastChunck(void * jarg1
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpMessage_isFirstChunck(void * jarg1) {
+  unsigned int jresult ;
+  MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+  bool result;
+  
+  arg1 = (MsrpMessage *)jarg1; 
+  result = (bool)(arg1)->isFirstChunck();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT char * SWIGSTDCALL CSharp_MsrpMessage_getMsrpHeaderValue(void * jarg1, char * jarg2) {
   char * jresult ;
   MsrpMessage *arg1 = (MsrpMessage *) 0 ;
@@ -5689,6 +5924,10 @@ SWIGEXPORT void SWIGSTDCALL CSharp_MsrpCallback_director_connect(void *objarg, S
   }
 }
 
+
+SWIGEXPORT MediaContent * SWIGSTDCALL CSharp_MediaContentCPIMUpcast(MediaContentCPIM *objectRef) {
+    return (MediaContent *)objectRef;
+}
 
 SWIGEXPORT SipEvent * SWIGSTDCALL CSharp_DialogEventUpcast(DialogEvent *objectRef) {
     return (SipEvent *)objectRef;
