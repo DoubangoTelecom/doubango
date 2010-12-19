@@ -238,6 +238,26 @@
 				RelativePath=".\include\tinymedia\tmedia_vad.h"
 				>
 			</File>
+			<Filter
+				Name="content"
+				>
+				<File
+					RelativePath=".\include\tinymedia\content\tmedia_content.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinymedia\content\tmedia_content_cpim.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinymedia\content\tmedia_content_multipart.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinymedia\content\tmedia_content_sip_frag.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="source(*.c)"
@@ -294,6 +314,38 @@
 			</File>
 			<File
 				RelativePath=".\src\tmedia_vad.c"
+				>
+			</File>
+			<Filter
+				Name="content"
+				>
+				<File
+					RelativePath=".\src\content\tmedia_content.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\content\tmedia_content_cpim.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\content\tmedia_content_multipart.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\content\tmedia_content_sip_frag.c"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="ragel"
+			>
+			<File
+				RelativePath=".\ragel\tmedia_content_cpim.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\tmedia_machine_utils.rl"
 				>
 			</File>
 		</Filter>

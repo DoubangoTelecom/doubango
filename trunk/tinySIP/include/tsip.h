@@ -422,8 +422,8 @@ int ret = tsip_stack_set(stack,
 * @sa @ref TSIP_STACK_SET_IPSEC_PARAMS()
 */
 #define TSIP_STACK_SET_EARLY_IMS(ENABLED_BOOL)				tsip_pname_early_ims, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_STACK_SET_SECAGREE_IPSEC(ENABLED_BOOL)			tsip_pname_scagree_ipsec, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_STACK_SET_SECAGREE_TLS(ENABLED_BOOL)			tsip_pname_scagree_tls, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_SECAGREE_IPSEC(ENABLED_BOOL)			tsip_pname_secagree_ipsec, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_SECAGREE_TLS(ENABLED_BOOL)			tsip_pname_secagree_tls, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_STACK_SET_IMS_AKA_AMF(AMF_UINT16)				tsip_pname_amf, (uint16_t)AMF_UINT16
 #define TSIP_STACK_SET_IMS_AKA_OPERATOR_ID(OPID_HEX_STR)	tsip_pname_operator_id, (const char*)OPID_HEX_STR
 #define TSIP_STACK_SET_IPSEC_PARAMS(ALG_STR, EALG_STR, MODE_STR, PROTOCOL_STR)	tsip_pname_ipsec_params, (const char*)ALG_STR, (const char*)EALG_STR, (const char*)MODE_STR, (const char*)PROTOCOL_STR

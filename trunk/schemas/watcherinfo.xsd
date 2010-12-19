@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+       targetNamespace="urn:ietf:params:xml:ns:watcherinfo"
+       xmlns:tns="urn:ietf:params:xml:ns:watcherinfo" >
+  <!-- This import brings in the XML language attribute xml:lang-->
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+             schemaLocation="http://www.w3.org/2001/03/xml.xsd" />
+  <xs:element name="watcherinfo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="tns:watcher-list" minOccurs="0"
+                    maxOccurs="unbounded"/>
+        <xs:any namespace="##other" processContents="lax" minOccurs="0"
+                maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="version" type="xs:nonNegativeInteger"
+                    use="required"/>
+      <xs:attribute name="state" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="full"/>
+            <xs:enumeration value="partial"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="watcher-list">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="tns:watcher" minOccurs="0" maxOccurs=
+         "unbounded"/>
+        <xs:any namespace="##other" processContents="lax"
+                minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="resource" type="xs:anyURI" use="required"/>
+      <xs:attribute name="package" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="watcher">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:anyURI">
+          <xs:attribute name="display-name" type="xs:string"/>
+          <xs:attribute name="status" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="pending"/>
+                <xs:enumeration value="active"/>
+                <xs:enumeration value="waiting"/>
+                <xs:enumeration value="terminated"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:attribute name="event" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="subscribe"/>
+                <xs:enumeration value="approved"/>
+                <xs:enumeration value="deactivated"/>
+                <xs:enumeration value="probation"/>
+                <xs:enumeration value="rejected"/>
+                <xs:enumeration value="timeout"/>
+                <xs:enumeration value="giveup"/>
+                <xs:enumeration value="noresource"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:attribute name="expiration" type="xs:unsignedLong"/>
+          <xs:attribute name="id" type="xs:string" use="required"/>
+          <xs:attribute name="duration-subscribed"
+              type="xs:unsignedLong"/>
+          <xs:attribute ref="xml:lang"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

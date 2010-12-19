@@ -175,10 +175,6 @@
 			Name="source"
 			>
 			<File
-				RelativePath=".\dummy.c"
-				>
-			</File>
-			<File
 				RelativePath=".\test.c"
 				>
 			</File>
@@ -196,6 +192,10 @@
 			>
 			<File
 				RelativePath=".\test_codecs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test_contents.h"
 				>
 			</File>
 			<File

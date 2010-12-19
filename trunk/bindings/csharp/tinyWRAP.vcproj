@@ -185,6 +185,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\_common\MediaContent.cxx"
+				>
+			</File>
+			<File
 				RelativePath="..\_common\MediaSessionMgr.cxx"
 				>
 			</File>
@@ -256,6 +260,10 @@
 			</File>
 			<File
 				RelativePath="..\_common\DDebug.h"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\MediaContent.h"
 				>
 			</File>
 			<File

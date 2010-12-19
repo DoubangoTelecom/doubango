@@ -413,7 +413,7 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 	if(self && description)
 	{
 		tsip_transport_t *transport = 
-			TNET_SOCKET_TYPE_IS_IPSEC(type) ? 
+			(TNET_SOCKET_TYPE_IS_IPSEC(type) || self->stack->security.enable_secagree_ipsec) ? 
 			(tsip_transport_t *)tsip_transport_ipsec_create((tsip_stack_t*)self->stack, local_host, local_port, type, description) /* IPSec is a special case. All other are ok. */
 			: tsip_transport_create((tsip_stack_t*)self->stack, local_host, local_port, type, description); /* UDP, SCTP, TCP, TLS */
 			

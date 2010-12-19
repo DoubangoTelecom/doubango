@@ -134,6 +134,46 @@ class MediaSessionMgr(_object):
 MediaSessionMgr_swigregister = _tinyWRAP.MediaSessionMgr_swigregister
 MediaSessionMgr_swigregister(MediaSessionMgr)
 
+class MediaContent(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, MediaContent, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, MediaContent, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_MediaContent
+    __del__ = lambda self : None;
+    def getType(self): return _tinyWRAP.MediaContent_getType(self)
+    def getDataLength(self): return _tinyWRAP.MediaContent_getDataLength(self)
+    def getData(self, *args): return _tinyWRAP.MediaContent_getData(self, *args)
+    __swig_getmethods__["parse"] = lambda x: _tinyWRAP.MediaContent_parse
+    if _newclass:parse = staticmethod(_tinyWRAP.MediaContent_parse)
+    def getPayloadLength(self): return _tinyWRAP.MediaContent_getPayloadLength(self)
+    def getPayload(self, *args): return _tinyWRAP.MediaContent_getPayload(self, *args)
+MediaContent_swigregister = _tinyWRAP.MediaContent_swigregister
+MediaContent_swigregister(MediaContent)
+
+def MediaContent_parse(*args):
+  return _tinyWRAP.MediaContent_parse(*args)
+MediaContent_parse = _tinyWRAP.MediaContent_parse
+
+class MediaContentCPIM(MediaContent):
+    __swig_setmethods__ = {}
+    for _s in [MediaContent]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, MediaContentCPIM, name, value)
+    __swig_getmethods__ = {}
+    for _s in [MediaContent]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, MediaContentCPIM, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_MediaContentCPIM
+    __del__ = lambda self : None;
+    def getPayloadLength(self): return _tinyWRAP.MediaContentCPIM_getPayloadLength(self)
+    def getPayload(self, *args): return _tinyWRAP.MediaContentCPIM_getPayload(self, *args)
+    def getHeaderValue(self, *args): return _tinyWRAP.MediaContentCPIM_getHeaderValue(self, *args)
+MediaContentCPIM_swigregister = _tinyWRAP.MediaContentCPIM_swigregister
+MediaContentCPIM_swigregister(MediaContentCPIM)
+
 class SipUri(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, SipUri, name, value)
@@ -770,6 +810,10 @@ class SipStack(SafeObject):
     def removeSigCompCompartment(self, *args): return _tinyWRAP.SipStack_removeSigCompCompartment(self, *args)
     def setSTUNServer(self, *args): return _tinyWRAP.SipStack_setSTUNServer(self, *args)
     def setSTUNCred(self, *args): return _tinyWRAP.SipStack_setSTUNCred(self, *args)
+    def setTLSSecAgree(self, *args): return _tinyWRAP.SipStack_setTLSSecAgree(self, *args)
+    def setSSLCretificates(self, *args): return _tinyWRAP.SipStack_setSSLCretificates(self, *args)
+    def setIPSecSecAgree(self, *args): return _tinyWRAP.SipStack_setIPSecSecAgree(self, *args)
+    def setIPSecParameters(self, *args): return _tinyWRAP.SipStack_setIPSecParameters(self, *args)
     def dnsENUM(self, *args): return _tinyWRAP.SipStack_dnsENUM(self, *args)
     def dnsNaptrSrv(self, *args): return _tinyWRAP.SipStack_dnsNaptrSrv(self, *args)
     def dnsSrv(self, *args): return _tinyWRAP.SipStack_dnsSrv(self, *args)
@@ -1125,6 +1169,7 @@ class MsrpMessage(_object):
     def getRequestType(self): return _tinyWRAP.MsrpMessage_getRequestType(self)
     def getByteRange(self): return _tinyWRAP.MsrpMessage_getByteRange(self)
     def isLastChunck(self): return _tinyWRAP.MsrpMessage_isLastChunck(self)
+    def isFirstChunck(self): return _tinyWRAP.MsrpMessage_isFirstChunck(self)
     def getMsrpHeaderValue(self, *args): return _tinyWRAP.MsrpMessage_getMsrpHeaderValue(self, *args)
     def getMsrpHeaderParamValue(self, *args): return _tinyWRAP.MsrpMessage_getMsrpHeaderParamValue(self, *args)
     def getMsrpContentLength(self): return _tinyWRAP.MsrpMessage_getMsrpContentLength(self)

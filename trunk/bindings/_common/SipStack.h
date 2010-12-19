@@ -61,6 +61,11 @@ public: /* API functions */
 	
 	bool setSTUNServer(const char* ip, unsigned short port);
 	bool setSTUNCred(const char* login, const char* password);
+
+	bool setTLSSecAgree(bool enabled);
+	bool setSSLCretificates(const char* privKey, const char* pubKey, const char* caKey);
+	bool setIPSecSecAgree(bool enabled);
+	bool setIPSecParameters(const char* algo, const char* ealgo, const char* mode, const char* proto);
 	
 	char* dnsENUM(const char* service, const char* e164num, const char* domain);
 	char* dnsNaptrSrv(const char* domain, const char* service, unsigned short *OUTPUT);

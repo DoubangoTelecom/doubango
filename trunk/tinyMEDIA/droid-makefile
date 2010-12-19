@@ -17,7 +17,12 @@ OBJS = \
 	src/tmedia_qos.o \
 	src/tmedia_session.o \
 	src/tmedia_session_dummy.o \
-	src/tmedia_session_ghost.o
+	src/tmedia_session_ghost.o \
+	\
+	src/content/tmedia_content.o \
+	src/content/tmedia_content_cpim.o \
+	src/content/tmedia_content_multipart.o \
+	src/content/tmedia_content_sip_frag.o
 	
 
 $(APP): $(OBJS)

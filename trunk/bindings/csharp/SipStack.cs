@@ -151,6 +151,26 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public bool setTLSSecAgree(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setTLSSecAgree(swigCPtr, enabled);
+    return ret;
+  }
+
+  public bool setSSLCretificates(string privKey, string pubKey, string caKey) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setSSLCretificates(swigCPtr, privKey, pubKey, caKey);
+    return ret;
+  }
+
+  public bool setIPSecSecAgree(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setIPSecSecAgree(swigCPtr, enabled);
+    return ret;
+  }
+
+  public bool setIPSecParameters(string algo, string ealgo, string mode, string proto) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setIPSecParameters(swigCPtr, algo, ealgo, mode, proto);
+    return ret;
+  }
+
   public string dnsENUM(string service, string e164num, string domain) {
     string ret = tinyWRAPPINVOKE.SipStack_dnsENUM(swigCPtr, service, e164num, domain);
     return ret;

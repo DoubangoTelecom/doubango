@@ -251,6 +251,42 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_producerSetInt64")]
   public static extern bool MediaSessionMgr_producerSetInt64(HandleRef jarg1, int jarg2, string jarg3, long jarg4);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_MediaContent")]
+  public static extern void delete_MediaContent(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaContent_getType")]
+  public static extern string MediaContent_getType(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaContent_getDataLength")]
+  public static extern uint MediaContent_getDataLength(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaContent_getData")]
+  public static extern uint MediaContent_getData(HandleRef jarg1, byte[] jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaContent_parse__SWIG_0")]
+  public static extern IntPtr MediaContent_parse__SWIG_0(byte[] jarg1, uint jarg2, string jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaContent_parse__SWIG_1")]
+  public static extern IntPtr MediaContent_parse__SWIG_1(byte[] jarg1, uint jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaContent_getPayloadLength")]
+  public static extern uint MediaContent_getPayloadLength(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaContent_getPayload")]
+  public static extern uint MediaContent_getPayload(HandleRef jarg1, byte[] jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_MediaContentCPIM")]
+  public static extern void delete_MediaContentCPIM(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaContentCPIM_getPayloadLength")]
+  public static extern uint MediaContentCPIM_getPayloadLength(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaContentCPIM_getPayload")]
+  public static extern uint MediaContentCPIM_getPayload(HandleRef jarg1, byte[] jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaContentCPIM_getHeaderValue")]
+  public static extern string MediaContentCPIM_getHeaderValue(HandleRef jarg1, string jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_SipUri")]
   public static extern IntPtr new_SipUri(string jarg1);
 
@@ -953,6 +989,18 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSTUNCred")]
   public static extern bool SipStack_setSTUNCred(HandleRef jarg1, string jarg2, string jarg3);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setTLSSecAgree")]
+  public static extern bool SipStack_setTLSSecAgree(HandleRef jarg1, bool jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSSLCretificates")]
+  public static extern bool SipStack_setSSLCretificates(HandleRef jarg1, string jarg2, string jarg3, string jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setIPSecSecAgree")]
+  public static extern bool SipStack_setIPSecSecAgree(HandleRef jarg1, bool jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setIPSecParameters")]
+  public static extern bool SipStack_setIPSecParameters(HandleRef jarg1, string jarg2, string jarg3, string jarg4, string jarg5);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_dnsENUM")]
   public static extern string SipStack_dnsENUM(HandleRef jarg1, string jarg2, string jarg3, string jarg4);
 
@@ -1247,6 +1295,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MsrpMessage_isLastChunck")]
   public static extern bool MsrpMessage_isLastChunck(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MsrpMessage_isFirstChunck")]
+  public static extern bool MsrpMessage_isFirstChunck(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_MsrpMessage_getMsrpHeaderValue")]
   public static extern string MsrpMessage_getMsrpHeaderValue(HandleRef jarg1, string jarg2);
 
@@ -1285,6 +1336,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MsrpCallback_director_connect")]
   public static extern void MsrpCallback_director_connect(HandleRef jarg1, MsrpCallback.SwigDelegateMsrpCallback_0 delegate0);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaContentCPIMUpcast")]
+  public static extern IntPtr MediaContentCPIMUpcast(IntPtr objectRef);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_DialogEventUpcast")]
   public static extern IntPtr DialogEventUpcast(IntPtr objectRef);

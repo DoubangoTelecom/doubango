@@ -75,6 +75,8 @@ typedef struct tdav_session_msrp_s
 	char* remote_ip;
 	uint16_t remote_port;
 
+	char* neg_accept_type;
+	char* neg_accept_w_type;
 	char* accept_types;
 	char* accept_w_types;
 	uint64_t chunck_duration;

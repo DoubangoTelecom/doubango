@@ -126,6 +126,20 @@ int tmsrp_receiver_recv(tmsrp_receiver_t* self, const void* data, tsk_size_t siz
 				}
 			}
 			/* ============= REPORT =============== */
+			if(TMSRP_REQUEST_IS_REPORT(message)){
+				tmsrp_response_t* r2xx;
+
+				// send 200 OK
+				if((r2xx = tmsrp_create_response(message, 200, "Report received"))){
+					if(tmsrp_message_serialize(r2xx, self->buffer) == 0 && self->buffer->data){
+						tnet_sockfd_send(self->fd, self->buffer->data, self->buffer->size, 0);
+					}
+					
+					tsk_buffer_cleanup(self->buffer);
+					TSK_OBJECT_SAFE_FREE(r2xx);
+				}
+			}
+
 			/* ============= AUTH =============== */
 			/* ============= METHOD =============== */
 		}

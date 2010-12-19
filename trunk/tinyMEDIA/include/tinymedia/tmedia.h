@@ -40,6 +40,9 @@
 
 TMEDIA_BEGIN_DECLS
 
+
+#if 0
+
 #define TMEDIA_VA_ARGS(name, host, socket_type)		tmedia_def_t, (const char*) name, (const char*) host, (tnet_socket_type_t) socket_type
 
 #define TMEDIA(self)		((tmedia_t*)(self))
@@ -109,6 +112,8 @@ TINYMEDIA_API int tmedia_set_remote_offer(tmedia_t* , const tsdp_message_t* );
 TINYMEDIA_API int tmedia_perform(tmedia_t* , tmedia_action_t, ... );
 
 TINYMEDIA_GEXTERN const void *tmedia_def_t;
+
+#endif
 
 TMEDIA_END_DECLS
 

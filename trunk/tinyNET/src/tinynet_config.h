@@ -90,13 +90,6 @@
 #	define TNET_USE_POLL		1
 #endif
 
-
-#if TNET_UNDER_WINDOWS && !defined(_WIN32_WCE)
-#	define TNET_HAVE_OPENSSL_H	0
-#else
-#	define TNET_HAVE_OPENSSL_H	0
-#endif
-
 #if defined(__APPLE__)
 #	define HAVE_IFADDRS			1
 #   define HAVE_DNS_H			1

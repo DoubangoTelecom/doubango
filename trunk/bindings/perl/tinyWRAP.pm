@@ -167,6 +167,77 @@ sub ACQUIRE {
 }
 
 
+############# Class : tinyWRAP::MediaContent ##############
+
+package tinyWRAP::MediaContent;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_MediaContent($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getType = *tinyWRAPc::MediaContent_getType;
+*getDataLength = *tinyWRAPc::MediaContent_getDataLength;
+*getData = *tinyWRAPc::MediaContent_getData;
+*parse = *tinyWRAPc::MediaContent_parse;
+*getPayloadLength = *tinyWRAPc::MediaContent_getPayloadLength;
+*getPayload = *tinyWRAPc::MediaContent_getPayload;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::MediaContentCPIM ##############
+
+package tinyWRAP::MediaContentCPIM;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP::MediaContent tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_MediaContentCPIM($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getPayloadLength = *tinyWRAPc::MediaContentCPIM_getPayloadLength;
+*getPayload = *tinyWRAPc::MediaContentCPIM_getPayload;
+*getHeaderValue = *tinyWRAPc::MediaContentCPIM_getHeaderValue;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
 ############# Class : tinyWRAP::SipUri ##############
 
 package tinyWRAP::SipUri;
@@ -1307,6 +1378,10 @@ sub DESTROY {
 *removeSigCompCompartment = *tinyWRAPc::SipStack_removeSigCompCompartment;
 *setSTUNServer = *tinyWRAPc::SipStack_setSTUNServer;
 *setSTUNCred = *tinyWRAPc::SipStack_setSTUNCred;
+*setTLSSecAgree = *tinyWRAPc::SipStack_setTLSSecAgree;
+*setSSLCretificates = *tinyWRAPc::SipStack_setSSLCretificates;
+*setIPSecSecAgree = *tinyWRAPc::SipStack_setIPSecSecAgree;
+*setIPSecParameters = *tinyWRAPc::SipStack_setIPSecParameters;
 *dnsENUM = *tinyWRAPc::SipStack_dnsENUM;
 *dnsNaptrSrv = *tinyWRAPc::SipStack_dnsNaptrSrv;
 *dnsSrv = *tinyWRAPc::SipStack_dnsSrv;
@@ -1692,6 +1767,7 @@ sub DESTROY {
 *getRequestType = *tinyWRAPc::MsrpMessage_getRequestType;
 *getByteRange = *tinyWRAPc::MsrpMessage_getByteRange;
 *isLastChunck = *tinyWRAPc::MsrpMessage_isLastChunck;
+*isFirstChunck = *tinyWRAPc::MsrpMessage_isFirstChunck;
 *getMsrpHeaderValue = *tinyWRAPc::MsrpMessage_getMsrpHeaderValue;
 *getMsrpHeaderParamValue = *tinyWRAPc::MsrpMessage_getMsrpHeaderParamValue;
 *getMsrpContentLength = *tinyWRAPc::MsrpMessage_getMsrpContentLength;

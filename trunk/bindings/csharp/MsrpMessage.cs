@@ -71,6 +71,11 @@ public class MsrpMessage : IDisposable {
     return ret;
   }
 
+  public bool isFirstChunck() {
+    bool ret = tinyWRAPPINVOKE.MsrpMessage_isFirstChunck(swigCPtr);
+    return ret;
+  }
+
   public string getMsrpHeaderValue(string name) {
     string ret = tinyWRAPPINVOKE.MsrpMessage_getMsrpHeaderValue(swigCPtr, name);
     return ret;

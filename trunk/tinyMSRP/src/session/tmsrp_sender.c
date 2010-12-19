@@ -74,7 +74,7 @@ bail:
 	return ret;
 }
 
-int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* pdata, tsk_size_t size, const char* ctype)
+int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* pdata, tsk_size_t size, const char* ctype, const char* wctype)
 {
 	tmsrp_data_out_t* data_out;
 
@@ -84,6 +84,12 @@ int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* pdata, tsk_size_t s
 	}
 
 	if((data_out = tmsrp_data_out_create(pdata, size))){
+		if(ctype){
+			tsk_strupdate(&TMSRP_DATA(data_out)->ctype, ctype);
+		}
+		if(wctype){
+			tsk_strupdate(&TMSRP_DATA(data_out)->wctype, wctype);
+		}
 		TSK_RUNNABLE_ENQUEUE_OBJECT(self, data_out);
 		return 0;
 	}
@@ -178,7 +184,22 @@ void *run(void* self)
 
 				tsk_null);
 			// add data
-			tmsrp_message_add_content(SEND, TMSRP_DATA(data_out)->ctype, chunck->data, chunck->size);
+			if(start == 1 && chunck->size && tsk_striequals(TMSRP_DATA(data_out)->ctype, "message/CPIM")){
+				tsk_buffer_t* content_cpim = tsk_buffer_create_null();
+				if(content_cpim){
+					tsk_buffer_append_2(content_cpim, "Subject: %s\r\n\r\nContent-Type: %s\r\n\r\n",
+						"test", TMSRP_DATA(data_out)->wctype);
+					tsk_buffer_append(content_cpim, chunck->data, chunck->size);
+					tmsrp_message_add_content(SEND, TMSRP_DATA(data_out)->ctype, content_cpim->data, content_cpim->size);
+					TSK_OBJECT_SAFE_FREE(content_cpim);
+				}
+				else{
+					TSK_DEBUG_ERROR("Failed to allocate new buffer");
+				}
+			}
+			else{
+				tmsrp_message_add_content(SEND, TMSRP_DATA(data_out)->ctype, chunck->data, chunck->size);
+			}
 			// set continuation flag
 			SEND->end_line.cflag = (end == total) ? '$' : '+';
 			// serialize and send

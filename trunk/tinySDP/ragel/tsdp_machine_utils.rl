@@ -19,7 +19,7 @@
 * along with DOUBANGO.
 *
 */
-/**@file tsip_machine_utils.rl
+/**@file tsdp_machine_utils.rl
  * @brief Ragel file.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>

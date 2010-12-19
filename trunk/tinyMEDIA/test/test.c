@@ -20,22 +20,25 @@
 *
 */
 #include "tinymedia/tmedia.h"
-#include "dummy.h"
+//#include "dummy.h"
 
 #include "tinymedia.h"
 
 #include "test_codecs.h"
 #include "test_sessions.h"
 #include "test_qos.h"
+#include "test_contents.h"
 
 #define RUN_TEST_LOOP		1
 
 #define RUN_TEST_ALL		0
 #define RUN_TEST_CODECS		0
-#define RUN_TEST_SESSIONS	1
+#define RUN_TEST_SESSIONS	0
 #define RUN_TEST_QOS		0
+#define RUN_TEST_CONTENTS	1
 
-void test_register_dummy_plugins();
+static void test_register_dummy_plugins();
+static void test_register_contents_plugins();
 
 #ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
@@ -45,6 +48,8 @@ int main()
 {
 	/* Register dummy plugins */
 	test_register_dummy_plugins();
+	/* Register content plugins */
+	test_register_contents_plugins();
 
 	do {
 
@@ -59,6 +64,10 @@ int main()
 #if RUN_TEST_ALL  || RUN_TEST_QOS
 		test_qos();
 #endif
+
+#if RUN_TEST_ALL  || RUN_TEST_CONTENTS
+		test_contents();
+#endif
 		
 	}
 	while(RUN_TEST_LOOP);
@@ -66,6 +75,13 @@ int main()
 	return 0;
 }
 
+
+void test_register_contents_plugins()
+{
+	tmedia_content_plugin_register("text/html", tmedia_content_dummy_plugin_def_t);
+	tmedia_content_plugin_register("text/plain", tmedia_content_dummy_plugin_def_t);
+	tmedia_content_plugin_register("message/CPIM", tmedia_content_cpim_plugin_def_t);
+}
 
 void test_register_dummy_plugins()
 {

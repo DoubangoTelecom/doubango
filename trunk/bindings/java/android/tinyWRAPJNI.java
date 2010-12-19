@@ -32,6 +32,18 @@ class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_consumerSetInt64(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, long jarg4);
   public final static native boolean MediaSessionMgr_producerSetInt32(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, int jarg4);
   public final static native boolean MediaSessionMgr_producerSetInt64(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, long jarg4);
+  public final static native void delete_MediaContent(long jarg1);
+  public final static native String MediaContent_getType(long jarg1, MediaContent jarg1_);
+  public final static native long MediaContent_getDataLength(long jarg1, MediaContent jarg1_);
+  public final static native long MediaContent_getData(long jarg1, MediaContent jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native long MediaContent_parse__SWIG_0(java.nio.ByteBuffer jarg1, long jarg2, String jarg3);
+  public final static native long MediaContent_parse__SWIG_1(java.nio.ByteBuffer jarg1, long jarg2);
+  public final static native long MediaContent_getPayloadLength(long jarg1, MediaContent jarg1_);
+  public final static native long MediaContent_getPayload(long jarg1, MediaContent jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native void delete_MediaContentCPIM(long jarg1);
+  public final static native long MediaContentCPIM_getPayloadLength(long jarg1, MediaContentCPIM jarg1_);
+  public final static native long MediaContentCPIM_getPayload(long jarg1, MediaContentCPIM jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native String MediaContentCPIM_getHeaderValue(long jarg1, MediaContentCPIM jarg1_, String jarg2);
   public final static native long new_SipUri(String jarg1);
   public final static native void delete_SipUri(long jarg1);
   public final static native boolean SipUri_isValid__SWIG_0(String jarg1);
@@ -271,6 +283,10 @@ class tinyWRAPJNI {
   public final static native boolean SipStack_removeSigCompCompartment(long jarg1, SipStack jarg1_, String jarg2);
   public final static native boolean SipStack_setSTUNServer(long jarg1, SipStack jarg1_, String jarg2, int jarg3);
   public final static native boolean SipStack_setSTUNCred(long jarg1, SipStack jarg1_, String jarg2, String jarg3);
+  public final static native boolean SipStack_setTLSSecAgree(long jarg1, SipStack jarg1_, boolean jarg2);
+  public final static native boolean SipStack_setSSLCretificates(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4);
+  public final static native boolean SipStack_setIPSecSecAgree(long jarg1, SipStack jarg1_, boolean jarg2);
+  public final static native boolean SipStack_setIPSecParameters(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4, String jarg5);
   public final static native String SipStack_dnsENUM(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4);
   public final static native String SipStack_dnsNaptrSrv(long jarg1, SipStack jarg1_, String jarg2, String jarg3, int[] jarg4);
   public final static native String SipStack_dnsSrv(long jarg1, SipStack jarg1_, String jarg2, int[] jarg3);
@@ -356,6 +372,7 @@ class tinyWRAPJNI {
   public final static native int MsrpMessage_getRequestType(long jarg1, MsrpMessage jarg1_);
   public final static native void MsrpMessage_getByteRange(long jarg1, MsrpMessage jarg1_, long[] jarg2, long[] jarg3, long[] jarg4);
   public final static native boolean MsrpMessage_isLastChunck(long jarg1, MsrpMessage jarg1_);
+  public final static native boolean MsrpMessage_isFirstChunck(long jarg1, MsrpMessage jarg1_);
   public final static native String MsrpMessage_getMsrpHeaderValue(long jarg1, MsrpMessage jarg1_, String jarg2);
   public final static native String MsrpMessage_getMsrpHeaderParamValue(long jarg1, MsrpMessage jarg1_, String jarg2, String jarg3);
   public final static native long MsrpMessage_getMsrpContentLength(long jarg1, MsrpMessage jarg1_);
@@ -370,6 +387,7 @@ class tinyWRAPJNI {
   public final static native int MsrpCallback_OnEventSwigExplicitMsrpCallback(long jarg1, MsrpCallback jarg1_, long jarg2, MsrpEvent jarg2_);
   public final static native void MsrpCallback_director_connect(MsrpCallback obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void MsrpCallback_change_ownership(MsrpCallback obj, long cptr, boolean take_or_release);
+  public final static native long SWIGMediaContentCPIMUpcast(long jarg1);
   public final static native long SWIGDialogEventUpcast(long jarg1);
   public final static native long SWIGStackEventUpcast(long jarg1);
   public final static native long SWIGInviteEventUpcast(long jarg1);

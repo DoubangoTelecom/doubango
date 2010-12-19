@@ -45,6 +45,7 @@ public:
 	void getByteRange(int64_t* start, int64_t* end, int64_t* total);
 #endif
 	bool isLastChunck();
+	bool isFirstChunck();
 	char* getMsrpHeaderValue(const char* name);
 	char* getMsrpHeaderParamValue(const char* name, const char* param);
 	unsigned getMsrpContentLength();

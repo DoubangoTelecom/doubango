@@ -28,6 +28,9 @@
  */
 #include "tinydav/tdav.h"
 
+// Media Contents, ...
+#include "tinymedia.h"
+
 // Sessions
 #include "tinymedia/tmedia_session_ghost.h"
 #include "tinydav/audio/tdav_session_audio.h"
@@ -81,6 +84,20 @@ int tdav_init()
 #if HAVE_FFMPEG
 	avcodec_init();
 #endif
+
+	/* === Register media contents === */
+	tmedia_content_plugin_register("text/html", tmedia_content_dummy_plugin_def_t);
+	tmedia_content_plugin_register("text/plain", tmedia_content_dummy_plugin_def_t);
+	tmedia_content_plugin_register("application/octet-stream", tmedia_content_dummy_plugin_def_t);
+	tmedia_content_plugin_register("message/CPIM", tmedia_content_cpim_plugin_def_t);
+	/*tmedia_content_plugin_register("message/sipfrag", tmedia_content_sipfrag_plugin_def_t);
+	tmedia_content_plugin_register("multipart/digest", tmedia_content_multipart_plugin_def_t);
+	tmedia_content_plugin_register("multipart/mixed", tmedia_content_multipart_plugin_def_t);
+	tmedia_content_plugin_register("multipart/related", tmedia_content_multipart_plugin_def_t);
+	tmedia_content_plugin_register("multipart/alternative", tmedia_content_multipart_plugin_def_t);
+	tmedia_content_plugin_register("multipart/encrypted", tmedia_content_multipart_plugin_def_t);
+	tmedia_content_plugin_register("multipart/parallel", tmedia_content_multipart_plugin_def_t);
+	tmedia_content_plugin_register("multipart/signed", tmedia_content_multipart_plugin_def_t);	*/
 
 	/* === Register sessions === */
 	tmedia_session_plugin_register(tmedia_session_ghost_plugin_def_t);
@@ -304,6 +321,9 @@ tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
 
 int tdav_deinit()
 {
+	/* === UnRegister media contents === */
+	tmedia_content_plugin_unregister_all();
+
 	/* === UnRegister sessions === */
 	tmedia_session_plugin_unregister(tmedia_session_ghost_plugin_def_t);
 	tmedia_session_plugin_unregister(tdav_session_audio_plugin_def_t);

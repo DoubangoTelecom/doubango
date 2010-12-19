@@ -88,6 +88,11 @@ bool MsrpMessage::isLastChunck()
 	return false;
 }
 
+bool MsrpMessage::isFirstChunck()
+{
+	return (this->message && this->message->ByteRange->start == 1);
+}
+
 char* MsrpMessage::getMsrpHeaderValue(const char* name)
 {
 	const tmsrp_header_t* header = this->getMsrpHeader(name, 0);
