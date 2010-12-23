@@ -141,6 +141,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(OutDir)\tinySAK.lib"
 				LinkIncremental="1"
+				IgnoreDefaultLibraryNames="MSVCRTD"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

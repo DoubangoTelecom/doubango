@@ -8,12 +8,11 @@
 
 package org.doubango.tinyWRAP;
 
-public class ProxyAudioProducer {
+public class ProxyAudioProducer extends ProxyPlugin {
   private long swigCPtr;
-  protected boolean swigCMemOwn;
 
   protected ProxyAudioProducer(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
+    super(tinyWRAPJNI.SWIGProxyAudioProducerUpcast(cPtr), cMemoryOwn);
     swigCPtr = cPtr;
   }
 
@@ -31,50 +30,15 @@ public class ProxyAudioProducer {
       tinyWRAPJNI.delete_ProxyAudioProducer(swigCPtr);
     }
     swigCPtr = 0;
-  }
-
-  protected void swigDirectorDisconnect() {
-    swigCMemOwn = false;
-    delete();
-  }
-
-  public void swigReleaseOwnership() {
-    swigCMemOwn = false;
-    tinyWRAPJNI.ProxyAudioProducer_change_ownership(this, swigCPtr, false);
-  }
-
-  public void swigTakeOwnership() {
-    swigCMemOwn = true;
-    tinyWRAPJNI.ProxyAudioProducer_change_ownership(this, swigCPtr, true);
-  }
-
-  public ProxyAudioProducer() {
-    this(tinyWRAPJNI.new_ProxyAudioProducer(), true);
-    tinyWRAPJNI.ProxyAudioProducer_director_connect(this, swigCPtr, swigCMemOwn, false);
-  }
-
-  public int prepare(int ptime, int rate, int channels) {
-    return (getClass() == ProxyAudioProducer.class) ? tinyWRAPJNI.ProxyAudioProducer_prepare(swigCPtr, this, ptime, rate, channels) : tinyWRAPJNI.ProxyAudioProducer_prepareSwigExplicitProxyAudioProducer(swigCPtr, this, ptime, rate, channels);
-  }
-
-  public int start() {
-    return (getClass() == ProxyAudioProducer.class) ? tinyWRAPJNI.ProxyAudioProducer_start(swigCPtr, this) : tinyWRAPJNI.ProxyAudioProducer_startSwigExplicitProxyAudioProducer(swigCPtr, this);
-  }
-
-  public int pause() {
-    return (getClass() == ProxyAudioProducer.class) ? tinyWRAPJNI.ProxyAudioProducer_pause(swigCPtr, this) : tinyWRAPJNI.ProxyAudioProducer_pauseSwigExplicitProxyAudioProducer(swigCPtr, this);
-  }
-
-  public int stop() {
-    return (getClass() == ProxyAudioProducer.class) ? tinyWRAPJNI.ProxyAudioProducer_stop(swigCPtr, this) : tinyWRAPJNI.ProxyAudioProducer_stopSwigExplicitProxyAudioProducer(swigCPtr, this);
-  }
-
-  public void setActivate(boolean enabled) {
-    tinyWRAPJNI.ProxyAudioProducer_setActivate(swigCPtr, this, enabled);
+    super.delete();
   }
 
   public int push(java.nio.ByteBuffer buffer, long size) {
     return tinyWRAPJNI.ProxyAudioProducer_push(swigCPtr, this, buffer, size);
+  }
+
+  public void setCallback(ProxyAudioProducerCallback _callback) {
+    tinyWRAPJNI.ProxyAudioProducer_setCallback(swigCPtr, this, ProxyAudioProducerCallback.getCPtr(_callback), _callback);
   }
 
   public static boolean registerPlugin() {

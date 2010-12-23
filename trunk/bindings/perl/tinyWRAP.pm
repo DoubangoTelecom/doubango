@@ -154,6 +154,8 @@ sub DESTROY {
 *consumerSetInt64 = *tinyWRAPc::MediaSessionMgr_consumerSetInt64;
 *producerSetInt32 = *tinyWRAPc::MediaSessionMgr_producerSetInt32;
 *producerSetInt64 = *tinyWRAPc::MediaSessionMgr_producerSetInt64;
+*findProxyPluginConsumer = *tinyWRAPc::MediaSessionMgr_findProxyPluginConsumer;
+*findProxyPluginProducer = *tinyWRAPc::MediaSessionMgr_findProxyPluginProducer;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1035,19 +1037,163 @@ sub ACQUIRE {
 }
 
 
-############# Class : tinyWRAP::ProxyAudioConsumer ##############
+############# Class : tinyWRAP::ProxyPluginMgr ##############
 
-package tinyWRAP::ProxyAudioConsumer;
+package tinyWRAP::ProxyPluginMgr;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_ProxyPluginMgr($self);
+        delete $OWNER{$self};
+    }
+}
+
+*createInstance = *tinyWRAPc::ProxyPluginMgr_createInstance;
+*getInstance = *tinyWRAPc::ProxyPluginMgr_getInstance;
+*findAudioConsumer = *tinyWRAPc::ProxyPluginMgr_findAudioConsumer;
+*findVideoConsumer = *tinyWRAPc::ProxyPluginMgr_findVideoConsumer;
+*findAudioProducer = *tinyWRAPc::ProxyPluginMgr_findAudioProducer;
+*findVideoProducer = *tinyWRAPc::ProxyPluginMgr_findVideoProducer;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::ProxyPluginMgrCallback ##############
+
+package tinyWRAP::ProxyPluginMgrCallback;
 use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
 @ISA = qw( tinyWRAP );
 %OWNER = ();
 %ITERATORS = ();
 sub new {
     my $pkg = shift;
-    my $self = tinyWRAPc::new_ProxyAudioConsumer(@_);
+    my $self = tinyWRAPc::new_ProxyPluginMgrCallback(@_);
     bless $self, $pkg if defined($self);
 }
 
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_ProxyPluginMgrCallback($self);
+        delete $OWNER{$self};
+    }
+}
+
+*OnPluginCreated = *tinyWRAPc::ProxyPluginMgrCallback_OnPluginCreated;
+*OnPluginDestroyed = *tinyWRAPc::ProxyPluginMgrCallback_OnPluginDestroyed;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::ProxyPlugin ##############
+
+package tinyWRAP::ProxyPlugin;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_ProxyPlugin($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getType = *tinyWRAPc::ProxyPlugin_getType;
+*getId = *tinyWRAPc::ProxyPlugin_getId;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::ProxyAudioConsumerCallback ##############
+
+package tinyWRAP::ProxyAudioConsumerCallback;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_ProxyAudioConsumerCallback(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_ProxyAudioConsumerCallback($self);
+        delete $OWNER{$self};
+    }
+}
+
+*prepare = *tinyWRAPc::ProxyAudioConsumerCallback_prepare;
+*start = *tinyWRAPc::ProxyAudioConsumerCallback_start;
+*pause = *tinyWRAPc::ProxyAudioConsumerCallback_pause;
+*stop = *tinyWRAPc::ProxyAudioConsumerCallback_stop;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::ProxyAudioConsumer ##############
+
+package tinyWRAP::ProxyAudioConsumer;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP::ProxyPlugin tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
 sub DESTROY {
     return unless $_[0]->isa('HASH');
     my $self = tied(%{$_[0]});
@@ -1059,14 +1205,52 @@ sub DESTROY {
     }
 }
 
-*prepare = *tinyWRAPc::ProxyAudioConsumer_prepare;
-*start = *tinyWRAPc::ProxyAudioConsumer_start;
-*pause = *tinyWRAPc::ProxyAudioConsumer_pause;
-*stop = *tinyWRAPc::ProxyAudioConsumer_stop;
-*setActivate = *tinyWRAPc::ProxyAudioConsumer_setActivate;
 *pull = *tinyWRAPc::ProxyAudioConsumer_pull;
 *reset = *tinyWRAPc::ProxyAudioConsumer_reset;
+*setCallback = *tinyWRAPc::ProxyAudioConsumer_setCallback;
 *registerPlugin = *tinyWRAPc::ProxyAudioConsumer_registerPlugin;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::ProxyVideoConsumerCallback ##############
+
+package tinyWRAP::ProxyVideoConsumerCallback;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_ProxyVideoConsumerCallback(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_ProxyVideoConsumerCallback($self);
+        delete $OWNER{$self};
+    }
+}
+
+*prepare = *tinyWRAPc::ProxyVideoConsumerCallback_prepare;
+*consume = *tinyWRAPc::ProxyVideoConsumerCallback_consume;
+*start = *tinyWRAPc::ProxyVideoConsumerCallback_start;
+*pause = *tinyWRAPc::ProxyVideoConsumerCallback_pause;
+*stop = *tinyWRAPc::ProxyVideoConsumerCallback_stop;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1084,15 +1268,9 @@ sub ACQUIRE {
 
 package tinyWRAP::ProxyVideoConsumer;
 use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
-@ISA = qw( tinyWRAP );
+@ISA = qw( tinyWRAP::ProxyPlugin tinyWRAP );
 %OWNER = ();
 %ITERATORS = ();
-sub new {
-    my $pkg = shift;
-    my $self = tinyWRAPc::new_ProxyVideoConsumer(@_);
-    bless $self, $pkg if defined($self);
-}
-
 sub DESTROY {
     return unless $_[0]->isa('HASH');
     my $self = tied(%{$_[0]});
@@ -1104,14 +1282,10 @@ sub DESTROY {
     }
 }
 
-*prepare = *tinyWRAPc::ProxyVideoConsumer_prepare;
-*consume = *tinyWRAPc::ProxyVideoConsumer_consume;
-*start = *tinyWRAPc::ProxyVideoConsumer_start;
-*pause = *tinyWRAPc::ProxyVideoConsumer_pause;
-*stop = *tinyWRAPc::ProxyVideoConsumer_stop;
-*setActivate = *tinyWRAPc::ProxyVideoConsumer_setActivate;
 *setDisplaySize = *tinyWRAPc::ProxyVideoConsumer_setDisplaySize;
+*setCallback = *tinyWRAPc::ProxyVideoConsumer_setCallback;
 *registerPlugin = *tinyWRAPc::ProxyVideoConsumer_registerPlugin;
+*setDefaultChroma = *tinyWRAPc::ProxyVideoConsumer_setDefaultChroma;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1158,19 +1332,54 @@ sub ACQUIRE {
 }
 
 
-############# Class : tinyWRAP::ProxyAudioProducer ##############
+############# Class : tinyWRAP::ProxyAudioProducerCallback ##############
 
-package tinyWRAP::ProxyAudioProducer;
+package tinyWRAP::ProxyAudioProducerCallback;
 use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
 @ISA = qw( tinyWRAP );
 %OWNER = ();
 %ITERATORS = ();
 sub new {
     my $pkg = shift;
-    my $self = tinyWRAPc::new_ProxyAudioProducer(@_);
+    my $self = tinyWRAPc::new_ProxyAudioProducerCallback(@_);
     bless $self, $pkg if defined($self);
 }
 
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_ProxyAudioProducerCallback($self);
+        delete $OWNER{$self};
+    }
+}
+
+*prepare = *tinyWRAPc::ProxyAudioProducerCallback_prepare;
+*start = *tinyWRAPc::ProxyAudioProducerCallback_start;
+*pause = *tinyWRAPc::ProxyAudioProducerCallback_pause;
+*stop = *tinyWRAPc::ProxyAudioProducerCallback_stop;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::ProxyAudioProducer ##############
+
+package tinyWRAP::ProxyAudioProducer;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP::ProxyPlugin tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
 sub DESTROY {
     return unless $_[0]->isa('HASH');
     my $self = tied(%{$_[0]});
@@ -1182,13 +1391,50 @@ sub DESTROY {
     }
 }
 
-*prepare = *tinyWRAPc::ProxyAudioProducer_prepare;
-*start = *tinyWRAPc::ProxyAudioProducer_start;
-*pause = *tinyWRAPc::ProxyAudioProducer_pause;
-*stop = *tinyWRAPc::ProxyAudioProducer_stop;
-*setActivate = *tinyWRAPc::ProxyAudioProducer_setActivate;
 *push = *tinyWRAPc::ProxyAudioProducer_push;
+*setCallback = *tinyWRAPc::ProxyAudioProducer_setCallback;
 *registerPlugin = *tinyWRAPc::ProxyAudioProducer_registerPlugin;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::ProxyVideoProducerCallback ##############
+
+package tinyWRAP::ProxyVideoProducerCallback;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_ProxyVideoProducerCallback(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_ProxyVideoProducerCallback($self);
+        delete $OWNER{$self};
+    }
+}
+
+*prepare = *tinyWRAPc::ProxyVideoProducerCallback_prepare;
+*start = *tinyWRAPc::ProxyVideoProducerCallback_start;
+*pause = *tinyWRAPc::ProxyVideoProducerCallback_pause;
+*stop = *tinyWRAPc::ProxyVideoProducerCallback_stop;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1206,15 +1452,9 @@ sub ACQUIRE {
 
 package tinyWRAP::ProxyVideoProducer;
 use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
-@ISA = qw( tinyWRAP );
+@ISA = qw( tinyWRAP::ProxyPlugin tinyWRAP );
 %OWNER = ();
 %ITERATORS = ();
-sub new {
-    my $pkg = shift;
-    my $self = tinyWRAPc::new_ProxyVideoProducer(@_);
-    bless $self, $pkg if defined($self);
-}
-
 sub DESTROY {
     return unless $_[0]->isa('HASH');
     my $self = tied(%{$_[0]});
@@ -1226,15 +1466,12 @@ sub DESTROY {
     }
 }
 
-*prepare = *tinyWRAPc::ProxyVideoProducer_prepare;
-*start = *tinyWRAPc::ProxyVideoProducer_start;
-*pause = *tinyWRAPc::ProxyVideoProducer_pause;
-*stop = *tinyWRAPc::ProxyVideoProducer_stop;
 *getRotation = *tinyWRAPc::ProxyVideoProducer_getRotation;
 *setRotation = *tinyWRAPc::ProxyVideoProducer_setRotation;
-*setActivate = *tinyWRAPc::ProxyVideoProducer_setActivate;
 *push = *tinyWRAPc::ProxyVideoProducer_push;
+*setCallback = *tinyWRAPc::ProxyVideoProducer_setCallback;
 *registerPlugin = *tinyWRAPc::ProxyVideoProducer_registerPlugin;
+*setDefaultChroma = *tinyWRAPc::ProxyVideoProducer_setDefaultChroma;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1866,6 +2103,10 @@ package tinyWRAP;
 *twrap_media_video = *tinyWRAPc::twrap_media_video;
 *twrap_media_audiovideo = *tinyWRAPc::twrap_media_audiovideo;
 *twrap_media_msrp = *tinyWRAPc::twrap_media_msrp;
+*twrap_proxy_plugin_audio_producer = *tinyWRAPc::twrap_proxy_plugin_audio_producer;
+*twrap_proxy_plugin_video_producer = *tinyWRAPc::twrap_proxy_plugin_video_producer;
+*twrap_proxy_plugin_audio_consumer = *tinyWRAPc::twrap_proxy_plugin_audio_consumer;
+*twrap_proxy_plugin_video_consumer = *tinyWRAPc::twrap_proxy_plugin_video_consumer;
 *tsip_event_invite = *tinyWRAPc::tsip_event_invite;
 *tsip_event_message = *tinyWRAPc::tsip_event_message;
 *tsip_event_options = *tinyWRAPc::tsip_event_options;

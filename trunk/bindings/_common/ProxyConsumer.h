@@ -32,70 +32,101 @@
 
 #include "tinyWRAP_config.h"
 
+#include "ProxyPluginMgr.h"
+
 #include "tinymedia/tmedia_common.h"
 
-class ProxyAudioConsumer
+/* ============ ProxyAudioConsumerCallback Class ================= */
+class ProxyAudioConsumerCallback
 {
 public:
-	ProxyAudioConsumer();
+	ProxyAudioConsumerCallback() { }
+	virtual ~ProxyAudioConsumerCallback(){ }
+
+	virtual int prepare(int ptime, int rate, int channels) { return -1; }
+	virtual int start() { return -1; }
+	virtual int pause() { return -1; }
+	virtual int stop() { return -1; }
+};
+
+/* ============ ProxyAudioConsumer Class ================= */
+class ProxyAudioConsumer : public ProxyPlugin
+{
+public:
+#if !defined(SWIG)
+	ProxyAudioConsumer(struct twrap_consumer_proxy_audio_s* consumer);
+#endif
 	virtual ~ProxyAudioConsumer();
 
-	/* Callback functions */
-	virtual int prepare(int ptime, int rate, int channels) { return 0; }
-	virtual int start() { return 0; }
-	virtual int pause() { return 0; }
-	virtual int stop() { return 0; }
-
-	void setActivate(bool enabled);
 	unsigned pull(void* output, unsigned size);
 	bool reset();
+	void setCallback(ProxyAudioConsumerCallback* _callback) { this->callback = _callback; }
+#if !defined(SWIG)
+	inline ProxyAudioConsumerCallback* getCallback() { return this->callback; }
+	virtual bool isWrapping(tsk_object_t* wrapped_plugin){
+		return this->consumer == wrapped_plugin;
+	}
+#endif
 
 public:
 	static bool registerPlugin();
 
-#if !defined(SWIG)
-	void takeConsumer(struct twrap_consumer_proxy_audio_s*);
-	void releaseConsumer(struct twrap_consumer_proxy_audio_s*);
-	static ProxyAudioConsumer* instance;
-#endif
-
 private:
 	struct twrap_consumer_proxy_audio_s* consumer;
+	ProxyAudioConsumerCallback* callback;
 };
 
 class ProxyVideoFrame;
 
-class ProxyVideoConsumer
+/* ============ ProxyVideoConsumerCallback Class ================= */
+class ProxyVideoConsumerCallback
 {
 public:
-	ProxyVideoConsumer(tmedia_chroma_t chroma);
+	ProxyVideoConsumerCallback(){}
+	virtual ~ProxyVideoConsumerCallback() {}
+
+	virtual int prepare(int width, int height, int fps) { return -1; }
+	virtual int consume(const ProxyVideoFrame* frame) { return -1; }
+	virtual int start() { return -1; }
+	virtual int pause() { return -1; }
+	virtual int stop() { return -1; }
+};
+
+/* ============ ProxyVideoConsumer Class ================= */
+class ProxyVideoConsumer : public ProxyPlugin
+{
+public:
+#if !defined(SWIG)
+	ProxyVideoConsumer(tmedia_chroma_t chroma, struct twrap_consumer_proxy_video_s* consumer);
+#endif
 	virtual ~ProxyVideoConsumer();
 
-	/* Callback functions */
-	virtual int prepare(int width, int height, int fps) { return 0; }
-	virtual int consume(const ProxyVideoFrame* frame) { return 0; }
-	virtual int start() { return 0; }
-	virtual int pause() { return 0; }
-	virtual int stop() { return 0; }
-
-	void setActivate(bool enabled);
 	bool setDisplaySize(int width, int height);
+	void setCallback(ProxyVideoConsumerCallback* _callback) { this->callback = _callback; }
+#if !defined(SWIG)
+	inline ProxyVideoConsumerCallback* getCallback() { return this->callback; }
+	virtual bool isWrapping(tsk_object_t* wrapped_plugin){
+		return this->consumer == wrapped_plugin;
+	}
+#endif
 
 public:
 	static bool registerPlugin();
+	static void setDefaultChroma(tmedia_chroma_t chroma){ ProxyVideoConsumer::defaultChroma =  chroma; }
 
 #if !defined(SWIG)
 	tmedia_chroma_t getChroma();
-	void takeConsumer(struct twrap_consumer_proxy_video_s*);
-	void releaseConsumer(struct twrap_consumer_proxy_video_s*);
-	static ProxyVideoConsumer* instance;
+	static tmedia_chroma_t getDefaultChroma() { return ProxyVideoConsumer::defaultChroma; }
 #endif
 
 private:
 	struct twrap_consumer_proxy_video_s* consumer;
 	tmedia_chroma_t chroma;
+	ProxyVideoConsumerCallback* callback;
+	static tmedia_chroma_t defaultChroma;
 };
 
+/* ============ ProxyVideoFrame Class ================= */
 class ProxyVideoFrame
 {
 public:

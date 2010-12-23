@@ -251,6 +251,12 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_producerSetInt64")]
   public static extern bool MediaSessionMgr_producerSetInt64(HandleRef jarg1, int jarg2, string jarg3, long jarg4);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_findProxyPluginConsumer")]
+  public static extern IntPtr MediaSessionMgr_findProxyPluginConsumer(HandleRef jarg1, int jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_findProxyPluginProducer")]
+  public static extern IntPtr MediaSessionMgr_findProxyPluginProducer(HandleRef jarg1, int jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_MediaContent")]
   public static extern void delete_MediaContent(HandleRef jarg1);
 
@@ -656,38 +662,92 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SubscriptionSession_unSubscribe")]
   public static extern bool SubscriptionSession_unSubscribe(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_new_ProxyAudioConsumer")]
-  public static extern IntPtr new_ProxyAudioConsumer();
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyPluginMgr")]
+  public static extern void delete_ProxyPluginMgr(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyPluginMgr_createInstance")]
+  public static extern IntPtr ProxyPluginMgr_createInstance(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyPluginMgr_getInstance")]
+  public static extern IntPtr ProxyPluginMgr_getInstance();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyPluginMgr_findAudioConsumer")]
+  public static extern IntPtr ProxyPluginMgr_findAudioConsumer(HandleRef jarg1, ulong jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyPluginMgr_findVideoConsumer")]
+  public static extern IntPtr ProxyPluginMgr_findVideoConsumer(HandleRef jarg1, ulong jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyPluginMgr_findAudioProducer")]
+  public static extern IntPtr ProxyPluginMgr_findAudioProducer(HandleRef jarg1, ulong jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyPluginMgr_findVideoProducer")]
+  public static extern IntPtr ProxyPluginMgr_findVideoProducer(HandleRef jarg1, ulong jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_ProxyPluginMgrCallback")]
+  public static extern IntPtr new_ProxyPluginMgrCallback();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyPluginMgrCallback")]
+  public static extern void delete_ProxyPluginMgrCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyPluginMgrCallback_OnPluginCreated")]
+  public static extern int ProxyPluginMgrCallback_OnPluginCreated(HandleRef jarg1, ulong jarg2, int jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyPluginMgrCallback_OnPluginCreatedSwigExplicitProxyPluginMgrCallback")]
+  public static extern int ProxyPluginMgrCallback_OnPluginCreatedSwigExplicitProxyPluginMgrCallback(HandleRef jarg1, ulong jarg2, int jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyPluginMgrCallback_OnPluginDestroyed")]
+  public static extern int ProxyPluginMgrCallback_OnPluginDestroyed(HandleRef jarg1, ulong jarg2, int jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyPluginMgrCallback_OnPluginDestroyedSwigExplicitProxyPluginMgrCallback")]
+  public static extern int ProxyPluginMgrCallback_OnPluginDestroyedSwigExplicitProxyPluginMgrCallback(HandleRef jarg1, ulong jarg2, int jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyPluginMgrCallback_director_connect")]
+  public static extern void ProxyPluginMgrCallback_director_connect(HandleRef jarg1, ProxyPluginMgrCallback.SwigDelegateProxyPluginMgrCallback_0 delegate0, ProxyPluginMgrCallback.SwigDelegateProxyPluginMgrCallback_1 delegate1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyPlugin")]
+  public static extern void delete_ProxyPlugin(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyPlugin_getType")]
+  public static extern int ProxyPlugin_getType(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyPlugin_getId")]
+  public static extern ulong ProxyPlugin_getId(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_ProxyAudioConsumerCallback")]
+  public static extern IntPtr new_ProxyAudioConsumerCallback();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyAudioConsumerCallback")]
+  public static extern void delete_ProxyAudioConsumerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumerCallback_prepare")]
+  public static extern int ProxyAudioConsumerCallback_prepare(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumerCallback_prepareSwigExplicitProxyAudioConsumerCallback")]
+  public static extern int ProxyAudioConsumerCallback_prepareSwigExplicitProxyAudioConsumerCallback(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumerCallback_start")]
+  public static extern int ProxyAudioConsumerCallback_start(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumerCallback_startSwigExplicitProxyAudioConsumerCallback")]
+  public static extern int ProxyAudioConsumerCallback_startSwigExplicitProxyAudioConsumerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumerCallback_pause")]
+  public static extern int ProxyAudioConsumerCallback_pause(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumerCallback_pauseSwigExplicitProxyAudioConsumerCallback")]
+  public static extern int ProxyAudioConsumerCallback_pauseSwigExplicitProxyAudioConsumerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumerCallback_stop")]
+  public static extern int ProxyAudioConsumerCallback_stop(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumerCallback_stopSwigExplicitProxyAudioConsumerCallback")]
+  public static extern int ProxyAudioConsumerCallback_stopSwigExplicitProxyAudioConsumerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumerCallback_director_connect")]
+  public static extern void ProxyAudioConsumerCallback_director_connect(HandleRef jarg1, ProxyAudioConsumerCallback.SwigDelegateProxyAudioConsumerCallback_0 delegate0, ProxyAudioConsumerCallback.SwigDelegateProxyAudioConsumerCallback_1 delegate1, ProxyAudioConsumerCallback.SwigDelegateProxyAudioConsumerCallback_2 delegate2, ProxyAudioConsumerCallback.SwigDelegateProxyAudioConsumerCallback_3 delegate3);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyAudioConsumer")]
   public static extern void delete_ProxyAudioConsumer(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_prepare")]
-  public static extern int ProxyAudioConsumer_prepare(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_prepareSwigExplicitProxyAudioConsumer")]
-  public static extern int ProxyAudioConsumer_prepareSwigExplicitProxyAudioConsumer(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_start")]
-  public static extern int ProxyAudioConsumer_start(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_startSwigExplicitProxyAudioConsumer")]
-  public static extern int ProxyAudioConsumer_startSwigExplicitProxyAudioConsumer(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_pause")]
-  public static extern int ProxyAudioConsumer_pause(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_pauseSwigExplicitProxyAudioConsumer")]
-  public static extern int ProxyAudioConsumer_pauseSwigExplicitProxyAudioConsumer(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_stop")]
-  public static extern int ProxyAudioConsumer_stop(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_stopSwigExplicitProxyAudioConsumer")]
-  public static extern int ProxyAudioConsumer_stopSwigExplicitProxyAudioConsumer(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_setActivate")]
-  public static extern void ProxyAudioConsumer_setActivate(HandleRef jarg1, bool jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_pull")]
   public static extern uint ProxyAudioConsumer_pull(HandleRef jarg1, byte[] jarg2, uint jarg3);
@@ -695,59 +755,65 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_reset")]
   public static extern bool ProxyAudioConsumer_reset(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_setCallback")]
+  public static extern void ProxyAudioConsumer_setCallback(HandleRef jarg1, HandleRef jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_registerPlugin")]
   public static extern bool ProxyAudioConsumer_registerPlugin();
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_director_connect")]
-  public static extern void ProxyAudioConsumer_director_connect(HandleRef jarg1, ProxyAudioConsumer.SwigDelegateProxyAudioConsumer_0 delegate0, ProxyAudioConsumer.SwigDelegateProxyAudioConsumer_1 delegate1, ProxyAudioConsumer.SwigDelegateProxyAudioConsumer_2 delegate2, ProxyAudioConsumer.SwigDelegateProxyAudioConsumer_3 delegate3);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_ProxyVideoConsumerCallback")]
+  public static extern IntPtr new_ProxyVideoConsumerCallback();
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_new_ProxyVideoConsumer")]
-  public static extern IntPtr new_ProxyVideoConsumer(int jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyVideoConsumerCallback")]
+  public static extern void delete_ProxyVideoConsumerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumerCallback_prepare")]
+  public static extern int ProxyVideoConsumerCallback_prepare(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumerCallback_prepareSwigExplicitProxyVideoConsumerCallback")]
+  public static extern int ProxyVideoConsumerCallback_prepareSwigExplicitProxyVideoConsumerCallback(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumerCallback_consume")]
+  public static extern int ProxyVideoConsumerCallback_consume(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumerCallback_consumeSwigExplicitProxyVideoConsumerCallback")]
+  public static extern int ProxyVideoConsumerCallback_consumeSwigExplicitProxyVideoConsumerCallback(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumerCallback_start")]
+  public static extern int ProxyVideoConsumerCallback_start(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumerCallback_startSwigExplicitProxyVideoConsumerCallback")]
+  public static extern int ProxyVideoConsumerCallback_startSwigExplicitProxyVideoConsumerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumerCallback_pause")]
+  public static extern int ProxyVideoConsumerCallback_pause(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumerCallback_pauseSwigExplicitProxyVideoConsumerCallback")]
+  public static extern int ProxyVideoConsumerCallback_pauseSwigExplicitProxyVideoConsumerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumerCallback_stop")]
+  public static extern int ProxyVideoConsumerCallback_stop(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumerCallback_stopSwigExplicitProxyVideoConsumerCallback")]
+  public static extern int ProxyVideoConsumerCallback_stopSwigExplicitProxyVideoConsumerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumerCallback_director_connect")]
+  public static extern void ProxyVideoConsumerCallback_director_connect(HandleRef jarg1, ProxyVideoConsumerCallback.SwigDelegateProxyVideoConsumerCallback_0 delegate0, ProxyVideoConsumerCallback.SwigDelegateProxyVideoConsumerCallback_1 delegate1, ProxyVideoConsumerCallback.SwigDelegateProxyVideoConsumerCallback_2 delegate2, ProxyVideoConsumerCallback.SwigDelegateProxyVideoConsumerCallback_3 delegate3, ProxyVideoConsumerCallback.SwigDelegateProxyVideoConsumerCallback_4 delegate4);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyVideoConsumer")]
   public static extern void delete_ProxyVideoConsumer(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_prepare")]
-  public static extern int ProxyVideoConsumer_prepare(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_prepareSwigExplicitProxyVideoConsumer")]
-  public static extern int ProxyVideoConsumer_prepareSwigExplicitProxyVideoConsumer(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_consume")]
-  public static extern int ProxyVideoConsumer_consume(HandleRef jarg1, HandleRef jarg2);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_consumeSwigExplicitProxyVideoConsumer")]
-  public static extern int ProxyVideoConsumer_consumeSwigExplicitProxyVideoConsumer(HandleRef jarg1, HandleRef jarg2);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_start")]
-  public static extern int ProxyVideoConsumer_start(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_startSwigExplicitProxyVideoConsumer")]
-  public static extern int ProxyVideoConsumer_startSwigExplicitProxyVideoConsumer(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_pause")]
-  public static extern int ProxyVideoConsumer_pause(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_pauseSwigExplicitProxyVideoConsumer")]
-  public static extern int ProxyVideoConsumer_pauseSwigExplicitProxyVideoConsumer(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_stop")]
-  public static extern int ProxyVideoConsumer_stop(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_stopSwigExplicitProxyVideoConsumer")]
-  public static extern int ProxyVideoConsumer_stopSwigExplicitProxyVideoConsumer(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_setActivate")]
-  public static extern void ProxyVideoConsumer_setActivate(HandleRef jarg1, bool jarg2);
-
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_setDisplaySize")]
   public static extern bool ProxyVideoConsumer_setDisplaySize(HandleRef jarg1, int jarg2, int jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_setCallback")]
+  public static extern void ProxyVideoConsumer_setCallback(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_registerPlugin")]
   public static extern bool ProxyVideoConsumer_registerPlugin();
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_director_connect")]
-  public static extern void ProxyVideoConsumer_director_connect(HandleRef jarg1, ProxyVideoConsumer.SwigDelegateProxyVideoConsumer_0 delegate0, ProxyVideoConsumer.SwigDelegateProxyVideoConsumer_1 delegate1, ProxyVideoConsumer.SwigDelegateProxyVideoConsumer_2 delegate2, ProxyVideoConsumer.SwigDelegateProxyVideoConsumer_3 delegate3, ProxyVideoConsumer.SwigDelegateProxyVideoConsumer_4 delegate4);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_setDefaultChroma")]
+  public static extern void ProxyVideoConsumer_setDefaultChroma(int jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyVideoFrame")]
   public static extern void delete_ProxyVideoFrame(HandleRef jarg1);
@@ -758,77 +824,86 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoFrame_getContent")]
   public static extern uint ProxyVideoFrame_getContent(HandleRef jarg1, byte[] jarg2, uint jarg3);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_new_ProxyAudioProducer")]
-  public static extern IntPtr new_ProxyAudioProducer();
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_ProxyAudioProducerCallback")]
+  public static extern IntPtr new_ProxyAudioProducerCallback();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyAudioProducerCallback")]
+  public static extern void delete_ProxyAudioProducerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducerCallback_prepare")]
+  public static extern int ProxyAudioProducerCallback_prepare(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducerCallback_prepareSwigExplicitProxyAudioProducerCallback")]
+  public static extern int ProxyAudioProducerCallback_prepareSwigExplicitProxyAudioProducerCallback(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducerCallback_start")]
+  public static extern int ProxyAudioProducerCallback_start(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducerCallback_startSwigExplicitProxyAudioProducerCallback")]
+  public static extern int ProxyAudioProducerCallback_startSwigExplicitProxyAudioProducerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducerCallback_pause")]
+  public static extern int ProxyAudioProducerCallback_pause(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducerCallback_pauseSwigExplicitProxyAudioProducerCallback")]
+  public static extern int ProxyAudioProducerCallback_pauseSwigExplicitProxyAudioProducerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducerCallback_stop")]
+  public static extern int ProxyAudioProducerCallback_stop(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducerCallback_stopSwigExplicitProxyAudioProducerCallback")]
+  public static extern int ProxyAudioProducerCallback_stopSwigExplicitProxyAudioProducerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducerCallback_director_connect")]
+  public static extern void ProxyAudioProducerCallback_director_connect(HandleRef jarg1, ProxyAudioProducerCallback.SwigDelegateProxyAudioProducerCallback_0 delegate0, ProxyAudioProducerCallback.SwigDelegateProxyAudioProducerCallback_1 delegate1, ProxyAudioProducerCallback.SwigDelegateProxyAudioProducerCallback_2 delegate2, ProxyAudioProducerCallback.SwigDelegateProxyAudioProducerCallback_3 delegate3);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyAudioProducer")]
   public static extern void delete_ProxyAudioProducer(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_prepare")]
-  public static extern int ProxyAudioProducer_prepare(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_prepareSwigExplicitProxyAudioProducer")]
-  public static extern int ProxyAudioProducer_prepareSwigExplicitProxyAudioProducer(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_start")]
-  public static extern int ProxyAudioProducer_start(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_startSwigExplicitProxyAudioProducer")]
-  public static extern int ProxyAudioProducer_startSwigExplicitProxyAudioProducer(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_pause")]
-  public static extern int ProxyAudioProducer_pause(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_pauseSwigExplicitProxyAudioProducer")]
-  public static extern int ProxyAudioProducer_pauseSwigExplicitProxyAudioProducer(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_stop")]
-  public static extern int ProxyAudioProducer_stop(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_stopSwigExplicitProxyAudioProducer")]
-  public static extern int ProxyAudioProducer_stopSwigExplicitProxyAudioProducer(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_setActivate")]
-  public static extern void ProxyAudioProducer_setActivate(HandleRef jarg1, bool jarg2);
-
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_push")]
   public static extern int ProxyAudioProducer_push(HandleRef jarg1, byte[] jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_setCallback")]
+  public static extern void ProxyAudioProducer_setCallback(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_registerPlugin")]
   public static extern bool ProxyAudioProducer_registerPlugin();
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_director_connect")]
-  public static extern void ProxyAudioProducer_director_connect(HandleRef jarg1, ProxyAudioProducer.SwigDelegateProxyAudioProducer_0 delegate0, ProxyAudioProducer.SwigDelegateProxyAudioProducer_1 delegate1, ProxyAudioProducer.SwigDelegateProxyAudioProducer_2 delegate2, ProxyAudioProducer.SwigDelegateProxyAudioProducer_3 delegate3);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_ProxyVideoProducerCallback")]
+  public static extern IntPtr new_ProxyVideoProducerCallback();
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_new_ProxyVideoProducer")]
-  public static extern IntPtr new_ProxyVideoProducer(int jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyVideoProducerCallback")]
+  public static extern void delete_ProxyVideoProducerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducerCallback_prepare")]
+  public static extern int ProxyVideoProducerCallback_prepare(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducerCallback_prepareSwigExplicitProxyVideoProducerCallback")]
+  public static extern int ProxyVideoProducerCallback_prepareSwigExplicitProxyVideoProducerCallback(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducerCallback_start")]
+  public static extern int ProxyVideoProducerCallback_start(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducerCallback_startSwigExplicitProxyVideoProducerCallback")]
+  public static extern int ProxyVideoProducerCallback_startSwigExplicitProxyVideoProducerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducerCallback_pause")]
+  public static extern int ProxyVideoProducerCallback_pause(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducerCallback_pauseSwigExplicitProxyVideoProducerCallback")]
+  public static extern int ProxyVideoProducerCallback_pauseSwigExplicitProxyVideoProducerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducerCallback_stop")]
+  public static extern int ProxyVideoProducerCallback_stop(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducerCallback_stopSwigExplicitProxyVideoProducerCallback")]
+  public static extern int ProxyVideoProducerCallback_stopSwigExplicitProxyVideoProducerCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducerCallback_director_connect")]
+  public static extern void ProxyVideoProducerCallback_director_connect(HandleRef jarg1, ProxyVideoProducerCallback.SwigDelegateProxyVideoProducerCallback_0 delegate0, ProxyVideoProducerCallback.SwigDelegateProxyVideoProducerCallback_1 delegate1, ProxyVideoProducerCallback.SwigDelegateProxyVideoProducerCallback_2 delegate2, ProxyVideoProducerCallback.SwigDelegateProxyVideoProducerCallback_3 delegate3);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyVideoProducer")]
   public static extern void delete_ProxyVideoProducer(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_prepare")]
-  public static extern int ProxyVideoProducer_prepare(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_prepareSwigExplicitProxyVideoProducer")]
-  public static extern int ProxyVideoProducer_prepareSwigExplicitProxyVideoProducer(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_start")]
-  public static extern int ProxyVideoProducer_start(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_startSwigExplicitProxyVideoProducer")]
-  public static extern int ProxyVideoProducer_startSwigExplicitProxyVideoProducer(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_pause")]
-  public static extern int ProxyVideoProducer_pause(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_pauseSwigExplicitProxyVideoProducer")]
-  public static extern int ProxyVideoProducer_pauseSwigExplicitProxyVideoProducer(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_stop")]
-  public static extern int ProxyVideoProducer_stop(HandleRef jarg1);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_stopSwigExplicitProxyVideoProducer")]
-  public static extern int ProxyVideoProducer_stopSwigExplicitProxyVideoProducer(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_getRotation")]
   public static extern int ProxyVideoProducer_getRotation(HandleRef jarg1);
@@ -836,17 +911,17 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_setRotation")]
   public static extern void ProxyVideoProducer_setRotation(HandleRef jarg1, int jarg2);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_setActivate")]
-  public static extern void ProxyVideoProducer_setActivate(HandleRef jarg1, bool jarg2);
-
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_push")]
   public static extern int ProxyVideoProducer_push(HandleRef jarg1, byte[] jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_setCallback")]
+  public static extern void ProxyVideoProducer_setCallback(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_registerPlugin")]
   public static extern bool ProxyVideoProducer_registerPlugin();
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_director_connect")]
-  public static extern void ProxyVideoProducer_director_connect(HandleRef jarg1, ProxyVideoProducer.SwigDelegateProxyVideoProducer_0 delegate0, ProxyVideoProducer.SwigDelegateProxyVideoProducer_1 delegate1, ProxyVideoProducer.SwigDelegateProxyVideoProducer_2 delegate2, ProxyVideoProducer.SwigDelegateProxyVideoProducer_3 delegate3);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_setDefaultChroma")]
+  public static extern void ProxyVideoProducer_setDefaultChroma(int jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_SipCallback")]
   public static extern IntPtr new_SipCallback();
@@ -1387,6 +1462,18 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SubscriptionSessionUpcast")]
   public static extern IntPtr SubscriptionSessionUpcast(IntPtr objectRef);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumerUpcast")]
+  public static extern IntPtr ProxyAudioConsumerUpcast(IntPtr objectRef);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumerUpcast")]
+  public static extern IntPtr ProxyVideoConsumerUpcast(IntPtr objectRef);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducerUpcast")]
+  public static extern IntPtr ProxyAudioProducerUpcast(IntPtr objectRef);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducerUpcast")]
+  public static extern IntPtr ProxyVideoProducerUpcast(IntPtr objectRef);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStackUpcast")]
   public static extern IntPtr SipStackUpcast(IntPtr objectRef);

@@ -1513,63 +1513,71 @@ SWIG_Perl_SetModule(swig_module_info *module) {
 #define SWIGTYPE_p_OptionsEvent swig_types[15]
 #define SWIGTYPE_p_OptionsSession swig_types[16]
 #define SWIGTYPE_p_ProxyAudioConsumer swig_types[17]
-#define SWIGTYPE_p_ProxyAudioProducer swig_types[18]
-#define SWIGTYPE_p_ProxyVideoConsumer swig_types[19]
-#define SWIGTYPE_p_ProxyVideoFrame swig_types[20]
-#define SWIGTYPE_p_ProxyVideoProducer swig_types[21]
-#define SWIGTYPE_p_PublicationEvent swig_types[22]
-#define SWIGTYPE_p_PublicationSession swig_types[23]
-#define SWIGTYPE_p_RPMessage swig_types[24]
-#define SWIGTYPE_p_RegistrationEvent swig_types[25]
-#define SWIGTYPE_p_RegistrationSession swig_types[26]
-#define SWIGTYPE_p_SMSData swig_types[27]
-#define SWIGTYPE_p_SMSEncoder swig_types[28]
-#define SWIGTYPE_p_SafeObject swig_types[29]
-#define SWIGTYPE_p_SdpMessage swig_types[30]
-#define SWIGTYPE_p_SipCallback swig_types[31]
-#define SWIGTYPE_p_SipEvent swig_types[32]
-#define SWIGTYPE_p_SipMessage swig_types[33]
-#define SWIGTYPE_p_SipSession swig_types[34]
-#define SWIGTYPE_p_SipStack swig_types[35]
-#define SWIGTYPE_p_SipUri swig_types[36]
-#define SWIGTYPE_p_StackEvent swig_types[37]
-#define SWIGTYPE_p_SubscriptionEvent swig_types[38]
-#define SWIGTYPE_p_SubscriptionSession swig_types[39]
-#define SWIGTYPE_p_XcapCallback swig_types[40]
-#define SWIGTYPE_p_XcapEvent swig_types[41]
-#define SWIGTYPE_p_XcapMessage swig_types[42]
-#define SWIGTYPE_p_XcapSelector swig_types[43]
-#define SWIGTYPE_p_XcapStack swig_types[44]
-#define SWIGTYPE_p_char swig_types[45]
-#define SWIGTYPE_p_int swig_types[46]
-#define SWIGTYPE_p_long_long swig_types[47]
-#define SWIGTYPE_p_short swig_types[48]
-#define SWIGTYPE_p_signed_char swig_types[49]
-#define SWIGTYPE_p_tdav_codec_id_e swig_types[50]
-#define SWIGTYPE_p_thttp_event_type_e swig_types[51]
-#define SWIGTYPE_p_tmedia_bandwidth_level_e swig_types[52]
-#define SWIGTYPE_p_tmedia_chroma_e swig_types[53]
-#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[54]
-#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[55]
-#define SWIGTYPE_p_tmsrp_event_type_e swig_types[56]
-#define SWIGTYPE_p_tmsrp_request_type_e swig_types[57]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[58]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[59]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[60]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[61]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[62]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[63]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[64]
-#define SWIGTYPE_p_tsk_list_t swig_types[65]
-#define SWIGTYPE_p_twrap_media_type_e swig_types[66]
-#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[67]
-#define SWIGTYPE_p_twrap_sms_type_e swig_types[68]
-#define SWIGTYPE_p_unsigned_char swig_types[69]
-#define SWIGTYPE_p_unsigned_int swig_types[70]
-#define SWIGTYPE_p_unsigned_long_long swig_types[71]
-#define SWIGTYPE_p_unsigned_short swig_types[72]
-static swig_type_info *swig_types[74];
-static swig_module_info swig_module = {swig_types, 73, 0, 0, 0, 0};
+#define SWIGTYPE_p_ProxyAudioConsumerCallback swig_types[18]
+#define SWIGTYPE_p_ProxyAudioProducer swig_types[19]
+#define SWIGTYPE_p_ProxyAudioProducerCallback swig_types[20]
+#define SWIGTYPE_p_ProxyPlugin swig_types[21]
+#define SWIGTYPE_p_ProxyPluginMgr swig_types[22]
+#define SWIGTYPE_p_ProxyPluginMgrCallback swig_types[23]
+#define SWIGTYPE_p_ProxyVideoConsumer swig_types[24]
+#define SWIGTYPE_p_ProxyVideoConsumerCallback swig_types[25]
+#define SWIGTYPE_p_ProxyVideoFrame swig_types[26]
+#define SWIGTYPE_p_ProxyVideoProducer swig_types[27]
+#define SWIGTYPE_p_ProxyVideoProducerCallback swig_types[28]
+#define SWIGTYPE_p_PublicationEvent swig_types[29]
+#define SWIGTYPE_p_PublicationSession swig_types[30]
+#define SWIGTYPE_p_RPMessage swig_types[31]
+#define SWIGTYPE_p_RegistrationEvent swig_types[32]
+#define SWIGTYPE_p_RegistrationSession swig_types[33]
+#define SWIGTYPE_p_SMSData swig_types[34]
+#define SWIGTYPE_p_SMSEncoder swig_types[35]
+#define SWIGTYPE_p_SafeObject swig_types[36]
+#define SWIGTYPE_p_SdpMessage swig_types[37]
+#define SWIGTYPE_p_SipCallback swig_types[38]
+#define SWIGTYPE_p_SipEvent swig_types[39]
+#define SWIGTYPE_p_SipMessage swig_types[40]
+#define SWIGTYPE_p_SipSession swig_types[41]
+#define SWIGTYPE_p_SipStack swig_types[42]
+#define SWIGTYPE_p_SipUri swig_types[43]
+#define SWIGTYPE_p_StackEvent swig_types[44]
+#define SWIGTYPE_p_SubscriptionEvent swig_types[45]
+#define SWIGTYPE_p_SubscriptionSession swig_types[46]
+#define SWIGTYPE_p_XcapCallback swig_types[47]
+#define SWIGTYPE_p_XcapEvent swig_types[48]
+#define SWIGTYPE_p_XcapMessage swig_types[49]
+#define SWIGTYPE_p_XcapSelector swig_types[50]
+#define SWIGTYPE_p_XcapStack swig_types[51]
+#define SWIGTYPE_p_char swig_types[52]
+#define SWIGTYPE_p_int swig_types[53]
+#define SWIGTYPE_p_long_long swig_types[54]
+#define SWIGTYPE_p_short swig_types[55]
+#define SWIGTYPE_p_signed_char swig_types[56]
+#define SWIGTYPE_p_tdav_codec_id_e swig_types[57]
+#define SWIGTYPE_p_thttp_event_type_e swig_types[58]
+#define SWIGTYPE_p_tmedia_bandwidth_level_e swig_types[59]
+#define SWIGTYPE_p_tmedia_chroma_e swig_types[60]
+#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[61]
+#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[62]
+#define SWIGTYPE_p_tmsrp_event_type_e swig_types[63]
+#define SWIGTYPE_p_tmsrp_request_type_e swig_types[64]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[65]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[66]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[67]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[68]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[69]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[70]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[71]
+#define SWIGTYPE_p_tsk_list_t swig_types[72]
+#define SWIGTYPE_p_twrap_media_type_e swig_types[73]
+#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[74]
+#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[75]
+#define SWIGTYPE_p_twrap_sms_type_e swig_types[76]
+#define SWIGTYPE_p_unsigned_char swig_types[77]
+#define SWIGTYPE_p_unsigned_int swig_types[78]
+#define SWIGTYPE_p_unsigned_long_long swig_types[79]
+#define SWIGTYPE_p_unsigned_short swig_types[80]
+static swig_type_info *swig_types[82];
+static swig_module_info swig_module = {swig_types, 81, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -1691,6 +1699,7 @@ SWIG_From_int  SWIG_PERL_DECL_ARGS_1(int value)
 #include "SipEvent.h"
 #include "SipSession.h"
 
+#include "ProxyPluginMgr.h"
 #include "ProxyConsumer.h"
 #include "ProxyProducer.h"
 
@@ -2063,28 +2072,49 @@ SWIG_AsVal_bool SWIG_PERL_DECL_ARGS_2(SV *obj, bool* val)
 
 
 SWIGINTERN int
-SWIG_AsVal_unsigned_SS_short SWIG_PERL_DECL_ARGS_2(SV * obj, unsigned short *val)
-{
-  unsigned long v;
-  int res = SWIG_AsVal_unsigned_SS_long SWIG_PERL_CALL_ARGS_2(obj, &v);
-  if (SWIG_IsOK(res)) {
-    if ((v > USHRT_MAX)) {
-      return SWIG_OverflowError;
+SWIG_AsVal_unsigned_SS_long_SS_long SWIG_PERL_DECL_ARGS_2(SV *obj, unsigned long long *val)
+{ 
+  if (SvUOK(obj)) {
+    if (val) *val = SvUV(obj);
+    return SWIG_OK;
+  } else  if (SvIOK(obj)) {
+    long v = SvIV(obj);
+    if (v >= 0) {
+      if (val) *val = v;
+      return SWIG_OK;
     } else {
-      if (val) *val = static_cast< unsigned short >(v);
+      return SWIG_OverflowError;
     }
-  }  
-  return res;
+  } else {
+    int dispatch = 0;
+    const char *nptr = SvPV_nolen(obj);
+    if (nptr) {
+      char *endptr;
+      unsigned long long v;
+      errno = 0;
+      v = strtoull(nptr, &endptr,0);
+      if (errno == ERANGE) {
+	errno = 0;
+	return SWIG_OverflowError;
+      } else {
+	if (*endptr == '\0') {
+	  if (val) *val = v;
+	  return SWIG_Str2NumCast(SWIG_OK);
+	}
+      }
+    }
+    if (!dispatch) {
+      const double mant_max = 1LL << DBL_MANT_DIG;
+      double d;
+      int res = SWIG_AddCast(SWIG_AsVal_double SWIG_PERL_CALL_ARGS_2(obj,&d));
+      if (SWIG_IsOK(res) && SWIG_CanCastAsInteger(&d, 0, mant_max)) {
+	if (val) *val = (unsigned long long)(d);
+	return res;
+      }
+    }
+  }
+  return SWIG_TypeError;
 }
-
-
-#include "Xcap.h"
-
-
-#include "SMSEncoder.h"
-
-
-#include "Msrp.h"
 
 
 #include <stdio.h>
@@ -2108,6 +2138,46 @@ SWIG_From_long_SS_long  SWIG_PERL_DECL_ARGS_1(long long value)
     return obj;
   }
 }
+
+
+SWIGINTERNINLINE SV *
+SWIG_From_unsigned_SS_long_SS_long  SWIG_PERL_DECL_ARGS_1(unsigned long long value)
+{
+  if (value < (unsigned long long) LONG_MAX) {
+    return SWIG_From_long_SS_long  SWIG_PERL_CALL_ARGS_1(static_cast< long long >(value));
+  } else {
+    char temp[256]; 
+    SV *obj = sv_newmortal();
+    sprintf(temp, "%llu", value);
+    sv_setpv(obj, temp);
+    return obj;
+  }
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_unsigned_SS_short SWIG_PERL_DECL_ARGS_2(SV * obj, unsigned short *val)
+{
+  unsigned long v;
+  int res = SWIG_AsVal_unsigned_SS_long SWIG_PERL_CALL_ARGS_2(obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v > USHRT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< unsigned short >(v);
+    }
+  }  
+  return res;
+}
+
+
+#include "Xcap.h"
+
+
+#include "SMSEncoder.h"
+
+
+#include "Msrp.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -2869,6 +2939,82 @@ XS(_wrap_MediaSessionMgr_producerSetInt64) {
     
     
     if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_findProxyPluginConsumer) {
+  {
+    MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+    twrap_media_type_t arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    ProxyPlugin *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: MediaSessionMgr_findProxyPluginConsumer(self,media);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MediaSessionMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_findProxyPluginConsumer" "', argument " "1"" of type '" "MediaSessionMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_findProxyPluginConsumer" "', argument " "2"" of type '" "twrap_media_type_t""'");
+    } 
+    arg2 = static_cast< twrap_media_type_t >(val2);
+    result = (ProxyPlugin *)(arg1)->findProxyPluginConsumer(arg2);
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyPlugin, 0 | SWIG_SHADOW); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_findProxyPluginProducer) {
+  {
+    MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+    twrap_media_type_t arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    ProxyPlugin *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: MediaSessionMgr_findProxyPluginProducer(self,media);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MediaSessionMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_findProxyPluginProducer" "', argument " "1"" of type '" "MediaSessionMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_findProxyPluginProducer" "', argument " "2"" of type '" "twrap_media_type_t""'");
+    } 
+    arg2 = static_cast< twrap_media_type_t >(val2);
+    result = (ProxyPlugin *)(arg1)->findProxyPluginProducer(arg2);
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyPlugin, 0 | SWIG_SHADOW); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
     
     SWIG_croak_null();
   }
@@ -8803,19 +8949,637 @@ XS(_wrap_SubscriptionSession_unSubscribe) {
 }
 
 
-XS(_wrap_new_ProxyAudioConsumer) {
+XS(_wrap_delete_ProxyPluginMgr) {
   {
+    ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: delete_ProxyPluginMgr(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyPluginMgr, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyPluginMgr" "', argument " "1"" of type '" "ProxyPluginMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyPluginMgr * >(argp1);
+    delete arg1;
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyPluginMgr_createInstance) {
+  {
+    ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    ProxyPluginMgr *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyPluginMgr_createInstance(callback);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyPluginMgrCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgr_createInstance" "', argument " "1"" of type '" "ProxyPluginMgrCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyPluginMgrCallback * >(argp1);
+    result = (ProxyPluginMgr *)ProxyPluginMgr::createInstance(arg1);
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyPluginMgr, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyPluginMgr_getInstance) {
+  {
+    int argvi = 0;
+    ProxyPluginMgr *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: ProxyPluginMgr_getInstance();");
+    }
+    result = (ProxyPluginMgr *)ProxyPluginMgr::getInstance();
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyPluginMgr, 0 | SWIG_SHADOW); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyPluginMgr_findAudioConsumer) {
+  {
+    ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+    uint64_t arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    unsigned long long val2 ;
+    int ecode2 = 0 ;
     int argvi = 0;
     ProxyAudioConsumer *result = 0 ;
     dXSARGS;
     
-    if ((items < 0) || (items > 0)) {
-      SWIG_croak("Usage: new_ProxyAudioConsumer();");
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: ProxyPluginMgr_findAudioConsumer(self,id);");
     }
-    result = (ProxyAudioConsumer *)new ProxyAudioConsumer();
-    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyAudioConsumer, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyPluginMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgr_findAudioConsumer" "', argument " "1"" of type '" "ProxyPluginMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyPluginMgr * >(argp1);
+    ecode2 = SWIG_AsVal_unsigned_SS_long_SS_long SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyPluginMgr_findAudioConsumer" "', argument " "2"" of type '" "uint64_t""'");
+    } 
+    arg2 = static_cast< uint64_t >(val2);
+    result = (ProxyAudioConsumer *)(arg1)->findAudioConsumer(arg2);
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyAudioConsumer, 0 | SWIG_SHADOW); argvi++ ;
+    
+    
     XSRETURN(argvi);
   fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyPluginMgr_findVideoConsumer) {
+  {
+    ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+    uint64_t arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    unsigned long long val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    ProxyVideoConsumer *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: ProxyPluginMgr_findVideoConsumer(self,id);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyPluginMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgr_findVideoConsumer" "', argument " "1"" of type '" "ProxyPluginMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyPluginMgr * >(argp1);
+    ecode2 = SWIG_AsVal_unsigned_SS_long_SS_long SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyPluginMgr_findVideoConsumer" "', argument " "2"" of type '" "uint64_t""'");
+    } 
+    arg2 = static_cast< uint64_t >(val2);
+    result = (ProxyVideoConsumer *)(arg1)->findVideoConsumer(arg2);
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyVideoConsumer, 0 | SWIG_SHADOW); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyPluginMgr_findAudioProducer) {
+  {
+    ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+    uint64_t arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    unsigned long long val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    ProxyAudioProducer *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: ProxyPluginMgr_findAudioProducer(self,id);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyPluginMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgr_findAudioProducer" "', argument " "1"" of type '" "ProxyPluginMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyPluginMgr * >(argp1);
+    ecode2 = SWIG_AsVal_unsigned_SS_long_SS_long SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyPluginMgr_findAudioProducer" "', argument " "2"" of type '" "uint64_t""'");
+    } 
+    arg2 = static_cast< uint64_t >(val2);
+    result = (ProxyAudioProducer *)(arg1)->findAudioProducer(arg2);
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyAudioProducer, 0 | SWIG_SHADOW); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyPluginMgr_findVideoProducer) {
+  {
+    ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+    uint64_t arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    unsigned long long val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    ProxyVideoProducer *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: ProxyPluginMgr_findVideoProducer(self,id);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyPluginMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgr_findVideoProducer" "', argument " "1"" of type '" "ProxyPluginMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyPluginMgr * >(argp1);
+    ecode2 = SWIG_AsVal_unsigned_SS_long_SS_long SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyPluginMgr_findVideoProducer" "', argument " "2"" of type '" "uint64_t""'");
+    } 
+    arg2 = static_cast< uint64_t >(val2);
+    result = (ProxyVideoProducer *)(arg1)->findVideoProducer(arg2);
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyVideoProducer, 0 | SWIG_SHADOW); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_new_ProxyPluginMgrCallback) {
+  {
+    int argvi = 0;
+    ProxyPluginMgrCallback *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: new_ProxyPluginMgrCallback();");
+    }
+    result = (ProxyPluginMgrCallback *)new ProxyPluginMgrCallback();
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyPluginMgrCallback, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_delete_ProxyPluginMgrCallback) {
+  {
+    ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: delete_ProxyPluginMgrCallback(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyPluginMgrCallback, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyPluginMgrCallback" "', argument " "1"" of type '" "ProxyPluginMgrCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyPluginMgrCallback * >(argp1);
+    delete arg1;
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyPluginMgrCallback_OnPluginCreated) {
+  {
+    ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+    uint64_t arg2 ;
+    enum twrap_proxy_plugin_type_e arg3 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    unsigned long long val2 ;
+    int ecode2 = 0 ;
+    int val3 ;
+    int ecode3 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 3) || (items > 3)) {
+      SWIG_croak("Usage: ProxyPluginMgrCallback_OnPluginCreated(self,id,type);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyPluginMgrCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgrCallback_OnPluginCreated" "', argument " "1"" of type '" "ProxyPluginMgrCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyPluginMgrCallback * >(argp1);
+    ecode2 = SWIG_AsVal_unsigned_SS_long_SS_long SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyPluginMgrCallback_OnPluginCreated" "', argument " "2"" of type '" "uint64_t""'");
+    } 
+    arg2 = static_cast< uint64_t >(val2);
+    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyPluginMgrCallback_OnPluginCreated" "', argument " "3"" of type '" "enum twrap_proxy_plugin_type_e""'");
+    } 
+    arg3 = static_cast< enum twrap_proxy_plugin_type_e >(val3);
+    result = (int)(arg1)->OnPluginCreated(arg2,arg3);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyPluginMgrCallback_OnPluginDestroyed) {
+  {
+    ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+    uint64_t arg2 ;
+    enum twrap_proxy_plugin_type_e arg3 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    unsigned long long val2 ;
+    int ecode2 = 0 ;
+    int val3 ;
+    int ecode3 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 3) || (items > 3)) {
+      SWIG_croak("Usage: ProxyPluginMgrCallback_OnPluginDestroyed(self,id,type);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyPluginMgrCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgrCallback_OnPluginDestroyed" "', argument " "1"" of type '" "ProxyPluginMgrCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyPluginMgrCallback * >(argp1);
+    ecode2 = SWIG_AsVal_unsigned_SS_long_SS_long SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyPluginMgrCallback_OnPluginDestroyed" "', argument " "2"" of type '" "uint64_t""'");
+    } 
+    arg2 = static_cast< uint64_t >(val2);
+    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyPluginMgrCallback_OnPluginDestroyed" "', argument " "3"" of type '" "enum twrap_proxy_plugin_type_e""'");
+    } 
+    arg3 = static_cast< enum twrap_proxy_plugin_type_e >(val3);
+    result = (int)(arg1)->OnPluginDestroyed(arg2,arg3);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_delete_ProxyPlugin) {
+  {
+    ProxyPlugin *arg1 = (ProxyPlugin *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: delete_ProxyPlugin(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyPlugin, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyPlugin" "', argument " "1"" of type '" "ProxyPlugin *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyPlugin * >(argp1);
+    delete arg1;
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyPlugin_getType) {
+  {
+    ProxyPlugin *arg1 = (ProxyPlugin *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    twrap_proxy_plugin_type_t result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyPlugin_getType(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyPlugin, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPlugin_getType" "', argument " "1"" of type '" "ProxyPlugin const *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyPlugin * >(argp1);
+    result = (twrap_proxy_plugin_type_t)((ProxyPlugin const *)arg1)->getType();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyPlugin_getId) {
+  {
+    ProxyPlugin *arg1 = (ProxyPlugin *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    uint64_t result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyPlugin_getId(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyPlugin, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPlugin_getId" "', argument " "1"" of type '" "ProxyPlugin const *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyPlugin * >(argp1);
+    result = (uint64_t)((ProxyPlugin const *)arg1)->getId();
+    ST(argvi) = SWIG_From_unsigned_SS_long_SS_long  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned long long >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_new_ProxyAudioConsumerCallback) {
+  {
+    int argvi = 0;
+    ProxyAudioConsumerCallback *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: new_ProxyAudioConsumerCallback();");
+    }
+    result = (ProxyAudioConsumerCallback *)new ProxyAudioConsumerCallback();
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyAudioConsumerCallback, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_delete_ProxyAudioConsumerCallback) {
+  {
+    ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: delete_ProxyAudioConsumerCallback(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioConsumerCallback, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyAudioConsumerCallback" "', argument " "1"" of type '" "ProxyAudioConsumerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioConsumerCallback * >(argp1);
+    delete arg1;
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyAudioConsumerCallback_prepare) {
+  {
+    ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
+    int arg2 ;
+    int arg3 ;
+    int arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int val3 ;
+    int ecode3 = 0 ;
+    int val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: ProxyAudioConsumerCallback_prepare(self,ptime,rate,channels);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioConsumerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumerCallback_prepare" "', argument " "1"" of type '" "ProxyAudioConsumerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioConsumerCallback * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioConsumerCallback_prepare" "', argument " "2"" of type '" "int""'");
+    } 
+    arg2 = static_cast< int >(val2);
+    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyAudioConsumerCallback_prepare" "', argument " "3"" of type '" "int""'");
+    } 
+    arg3 = static_cast< int >(val3);
+    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyAudioConsumerCallback_prepare" "', argument " "4"" of type '" "int""'");
+    } 
+    arg4 = static_cast< int >(val4);
+    result = (int)(arg1)->prepare(arg2,arg3,arg4);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyAudioConsumerCallback_start) {
+  {
+    ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyAudioConsumerCallback_start(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioConsumerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumerCallback_start" "', argument " "1"" of type '" "ProxyAudioConsumerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioConsumerCallback * >(argp1);
+    result = (int)(arg1)->start();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyAudioConsumerCallback_pause) {
+  {
+    ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyAudioConsumerCallback_pause(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioConsumerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumerCallback_pause" "', argument " "1"" of type '" "ProxyAudioConsumerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioConsumerCallback * >(argp1);
+    result = (int)(arg1)->pause();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyAudioConsumerCallback_stop) {
+  {
+    ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyAudioConsumerCallback_stop(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioConsumerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumerCallback_stop" "', argument " "1"" of type '" "ProxyAudioConsumerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioConsumerCallback * >(argp1);
+    result = (int)(arg1)->stop();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
     SWIG_croak_null();
   }
 }
@@ -8842,185 +9606,6 @@ XS(_wrap_delete_ProxyAudioConsumer) {
     
     XSRETURN(argvi);
   fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyAudioConsumer_prepare) {
-  {
-    ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
-    int arg2 ;
-    int arg3 ;
-    int arg4 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int val2 ;
-    int ecode2 = 0 ;
-    int val3 ;
-    int ecode3 = 0 ;
-    int val4 ;
-    int ecode4 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 4) || (items > 4)) {
-      SWIG_croak("Usage: ProxyAudioConsumer_prepare(self,ptime,rate,channels);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_prepare" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
-    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
-    if (!SWIG_IsOK(ecode2)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioConsumer_prepare" "', argument " "2"" of type '" "int""'");
-    } 
-    arg2 = static_cast< int >(val2);
-    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
-    if (!SWIG_IsOK(ecode3)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyAudioConsumer_prepare" "', argument " "3"" of type '" "int""'");
-    } 
-    arg3 = static_cast< int >(val3);
-    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
-    if (!SWIG_IsOK(ecode4)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyAudioConsumer_prepare" "', argument " "4"" of type '" "int""'");
-    } 
-    arg4 = static_cast< int >(val4);
-    result = (int)(arg1)->prepare(arg2,arg3,arg4);
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    
-    
-    
-    XSRETURN(argvi);
-  fail:
-    
-    
-    
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyAudioConsumer_start) {
-  {
-    ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: ProxyAudioConsumer_start(self);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_start" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
-    result = (int)(arg1)->start();
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    XSRETURN(argvi);
-  fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyAudioConsumer_pause) {
-  {
-    ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: ProxyAudioConsumer_pause(self);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_pause" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
-    result = (int)(arg1)->pause();
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    XSRETURN(argvi);
-  fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyAudioConsumer_stop) {
-  {
-    ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: ProxyAudioConsumer_stop(self);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_stop" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
-    result = (int)(arg1)->stop();
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    XSRETURN(argvi);
-  fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyAudioConsumer_setActivate) {
-  {
-    ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
-    bool arg2 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    bool val2 ;
-    int ecode2 = 0 ;
-    int argvi = 0;
-    dXSARGS;
-    
-    if ((items < 2) || (items > 2)) {
-      SWIG_croak("Usage: ProxyAudioConsumer_setActivate(self,enabled);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_setActivate" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
-    ecode2 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
-    if (!SWIG_IsOK(ecode2)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioConsumer_setActivate" "', argument " "2"" of type '" "bool""'");
-    } 
-    arg2 = static_cast< bool >(val2);
-    (arg1)->setActivate(arg2);
-    ST(argvi) = sv_newmortal();
-    
-    
-    XSRETURN(argvi);
-  fail:
-    
     
     SWIG_croak_null();
   }
@@ -9101,6 +9686,43 @@ XS(_wrap_ProxyAudioConsumer_reset) {
 }
 
 
+XS(_wrap_ProxyAudioConsumer_setCallback) {
+  {
+    ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+    ProxyAudioConsumerCallback *arg2 = (ProxyAudioConsumerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    void *argp2 = 0 ;
+    int res2 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: ProxyAudioConsumer_setCallback(self,_callback);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_setCallback" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
+    res2 = SWIG_ConvertPtr(ST(1), &argp2,SWIGTYPE_p_ProxyAudioConsumerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyAudioConsumer_setCallback" "', argument " "2"" of type '" "ProxyAudioConsumerCallback *""'"); 
+    }
+    arg2 = reinterpret_cast< ProxyAudioConsumerCallback * >(argp2);
+    (arg1)->setCallback(arg2);
+    ST(argvi) = sv_newmortal();
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_ProxyAudioConsumer_registerPlugin) {
   {
     int argvi = 0;
@@ -9119,25 +9741,222 @@ XS(_wrap_ProxyAudioConsumer_registerPlugin) {
 }
 
 
-XS(_wrap_new_ProxyVideoConsumer) {
+XS(_wrap_new_ProxyVideoConsumerCallback) {
   {
-    tmedia_chroma_t arg1 ;
-    int val1 ;
-    int ecode1 = 0 ;
     int argvi = 0;
-    ProxyVideoConsumer *result = 0 ;
+    ProxyVideoConsumerCallback *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: new_ProxyVideoConsumerCallback();");
+    }
+    result = (ProxyVideoConsumerCallback *)new ProxyVideoConsumerCallback();
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyVideoConsumerCallback, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_delete_ProxyVideoConsumerCallback) {
+  {
+    ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
     dXSARGS;
     
     if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: new_ProxyVideoConsumer(chroma);");
+      SWIG_croak("Usage: delete_ProxyVideoConsumerCallback(self);");
     }
-    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
-    if (!SWIG_IsOK(ecode1)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_ProxyVideoConsumer" "', argument " "1"" of type '" "tmedia_chroma_t""'");
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoConsumerCallback, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyVideoConsumerCallback" "', argument " "1"" of type '" "ProxyVideoConsumerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp1);
+    delete arg1;
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoConsumerCallback_prepare) {
+  {
+    ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
+    int arg2 ;
+    int arg3 ;
+    int arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int val3 ;
+    int ecode3 = 0 ;
+    int val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: ProxyVideoConsumerCallback_prepare(self,width,height,fps);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoConsumerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumerCallback_prepare" "', argument " "1"" of type '" "ProxyVideoConsumerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoConsumerCallback_prepare" "', argument " "2"" of type '" "int""'");
     } 
-    arg1 = static_cast< tmedia_chroma_t >(val1);
-    result = (ProxyVideoConsumer *)new ProxyVideoConsumer(arg1);
-    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyVideoConsumer, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    arg2 = static_cast< int >(val2);
+    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoConsumerCallback_prepare" "', argument " "3"" of type '" "int""'");
+    } 
+    arg3 = static_cast< int >(val3);
+    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyVideoConsumerCallback_prepare" "', argument " "4"" of type '" "int""'");
+    } 
+    arg4 = static_cast< int >(val4);
+    result = (int)(arg1)->prepare(arg2,arg3,arg4);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoConsumerCallback_consume) {
+  {
+    ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
+    ProxyVideoFrame *arg2 = (ProxyVideoFrame *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    void *argp2 = 0 ;
+    int res2 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: ProxyVideoConsumerCallback_consume(self,frame);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoConsumerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumerCallback_consume" "', argument " "1"" of type '" "ProxyVideoConsumerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp1);
+    res2 = SWIG_ConvertPtr(ST(1), &argp2,SWIGTYPE_p_ProxyVideoFrame, 0 |  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyVideoConsumerCallback_consume" "', argument " "2"" of type '" "ProxyVideoFrame const *""'"); 
+    }
+    arg2 = reinterpret_cast< ProxyVideoFrame * >(argp2);
+    result = (int)(arg1)->consume((ProxyVideoFrame const *)arg2);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoConsumerCallback_start) {
+  {
+    ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoConsumerCallback_start(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoConsumerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumerCallback_start" "', argument " "1"" of type '" "ProxyVideoConsumerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp1);
+    result = (int)(arg1)->start();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoConsumerCallback_pause) {
+  {
+    ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoConsumerCallback_pause(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoConsumerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumerCallback_pause" "', argument " "1"" of type '" "ProxyVideoConsumerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp1);
+    result = (int)(arg1)->pause();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoConsumerCallback_stop) {
+  {
+    ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoConsumerCallback_stop(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoConsumerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumerCallback_stop" "', argument " "1"" of type '" "ProxyVideoConsumerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp1);
+    result = (int)(arg1)->stop();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
     
     XSRETURN(argvi);
   fail:
@@ -9168,223 +9987,6 @@ XS(_wrap_delete_ProxyVideoConsumer) {
     
     XSRETURN(argvi);
   fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyVideoConsumer_prepare) {
-  {
-    ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
-    int arg2 ;
-    int arg3 ;
-    int arg4 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int val2 ;
-    int ecode2 = 0 ;
-    int val3 ;
-    int ecode3 = 0 ;
-    int val4 ;
-    int ecode4 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 4) || (items > 4)) {
-      SWIG_croak("Usage: ProxyVideoConsumer_prepare(self,width,height,fps);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_prepare" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
-    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
-    if (!SWIG_IsOK(ecode2)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoConsumer_prepare" "', argument " "2"" of type '" "int""'");
-    } 
-    arg2 = static_cast< int >(val2);
-    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
-    if (!SWIG_IsOK(ecode3)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoConsumer_prepare" "', argument " "3"" of type '" "int""'");
-    } 
-    arg3 = static_cast< int >(val3);
-    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
-    if (!SWIG_IsOK(ecode4)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyVideoConsumer_prepare" "', argument " "4"" of type '" "int""'");
-    } 
-    arg4 = static_cast< int >(val4);
-    result = (int)(arg1)->prepare(arg2,arg3,arg4);
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    
-    
-    
-    XSRETURN(argvi);
-  fail:
-    
-    
-    
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyVideoConsumer_consume) {
-  {
-    ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
-    ProxyVideoFrame *arg2 = (ProxyVideoFrame *) 0 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    void *argp2 = 0 ;
-    int res2 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 2) || (items > 2)) {
-      SWIG_croak("Usage: ProxyVideoConsumer_consume(self,frame);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_consume" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
-    res2 = SWIG_ConvertPtr(ST(1), &argp2,SWIGTYPE_p_ProxyVideoFrame, 0 |  0 );
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyVideoConsumer_consume" "', argument " "2"" of type '" "ProxyVideoFrame const *""'"); 
-    }
-    arg2 = reinterpret_cast< ProxyVideoFrame * >(argp2);
-    result = (int)(arg1)->consume((ProxyVideoFrame const *)arg2);
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    
-    XSRETURN(argvi);
-  fail:
-    
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyVideoConsumer_start) {
-  {
-    ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: ProxyVideoConsumer_start(self);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_start" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
-    result = (int)(arg1)->start();
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    XSRETURN(argvi);
-  fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyVideoConsumer_pause) {
-  {
-    ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: ProxyVideoConsumer_pause(self);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_pause" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
-    result = (int)(arg1)->pause();
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    XSRETURN(argvi);
-  fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyVideoConsumer_stop) {
-  {
-    ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: ProxyVideoConsumer_stop(self);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_stop" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
-    result = (int)(arg1)->stop();
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    XSRETURN(argvi);
-  fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyVideoConsumer_setActivate) {
-  {
-    ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
-    bool arg2 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    bool val2 ;
-    int ecode2 = 0 ;
-    int argvi = 0;
-    dXSARGS;
-    
-    if ((items < 2) || (items > 2)) {
-      SWIG_croak("Usage: ProxyVideoConsumer_setActivate(self,enabled);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_setActivate" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
-    ecode2 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
-    if (!SWIG_IsOK(ecode2)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoConsumer_setActivate" "', argument " "2"" of type '" "bool""'");
-    } 
-    arg2 = static_cast< bool >(val2);
-    (arg1)->setActivate(arg2);
-    ST(argvi) = sv_newmortal();
-    
-    
-    XSRETURN(argvi);
-  fail:
-    
     
     SWIG_croak_null();
   }
@@ -9439,6 +10041,43 @@ XS(_wrap_ProxyVideoConsumer_setDisplaySize) {
 }
 
 
+XS(_wrap_ProxyVideoConsumer_setCallback) {
+  {
+    ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+    ProxyVideoConsumerCallback *arg2 = (ProxyVideoConsumerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    void *argp2 = 0 ;
+    int res2 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: ProxyVideoConsumer_setCallback(self,_callback);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_setCallback" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
+    res2 = SWIG_ConvertPtr(ST(1), &argp2,SWIGTYPE_p_ProxyVideoConsumerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyVideoConsumer_setCallback" "', argument " "2"" of type '" "ProxyVideoConsumerCallback *""'"); 
+    }
+    arg2 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp2);
+    (arg1)->setCallback(arg2);
+    ST(argvi) = sv_newmortal();
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_ProxyVideoConsumer_registerPlugin) {
   {
     int argvi = 0;
@@ -9452,6 +10091,33 @@ XS(_wrap_ProxyVideoConsumer_registerPlugin) {
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     XSRETURN(argvi);
   fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoConsumer_setDefaultChroma) {
+  {
+    tmedia_chroma_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoConsumer_setDefaultChroma(chroma);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "ProxyVideoConsumer_setDefaultChroma" "', argument " "1"" of type '" "tmedia_chroma_t""'");
+    } 
+    arg1 = static_cast< tmedia_chroma_t >(val1);
+    ProxyVideoConsumer::setDefaultChroma(arg1);
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
     SWIG_croak_null();
   }
 }
@@ -9558,19 +10224,188 @@ XS(_wrap_ProxyVideoFrame_getContent) {
 }
 
 
-XS(_wrap_new_ProxyAudioProducer) {
+XS(_wrap_new_ProxyAudioProducerCallback) {
   {
     int argvi = 0;
-    ProxyAudioProducer *result = 0 ;
+    ProxyAudioProducerCallback *result = 0 ;
     dXSARGS;
     
     if ((items < 0) || (items > 0)) {
-      SWIG_croak("Usage: new_ProxyAudioProducer();");
+      SWIG_croak("Usage: new_ProxyAudioProducerCallback();");
     }
-    result = (ProxyAudioProducer *)new ProxyAudioProducer();
-    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyAudioProducer, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    result = (ProxyAudioProducerCallback *)new ProxyAudioProducerCallback();
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyAudioProducerCallback, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
     XSRETURN(argvi);
   fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_delete_ProxyAudioProducerCallback) {
+  {
+    ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: delete_ProxyAudioProducerCallback(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioProducerCallback, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyAudioProducerCallback" "', argument " "1"" of type '" "ProxyAudioProducerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioProducerCallback * >(argp1);
+    delete arg1;
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyAudioProducerCallback_prepare) {
+  {
+    ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
+    int arg2 ;
+    int arg3 ;
+    int arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int val3 ;
+    int ecode3 = 0 ;
+    int val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: ProxyAudioProducerCallback_prepare(self,ptime,rate,channels);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioProducerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducerCallback_prepare" "', argument " "1"" of type '" "ProxyAudioProducerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioProducerCallback * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioProducerCallback_prepare" "', argument " "2"" of type '" "int""'");
+    } 
+    arg2 = static_cast< int >(val2);
+    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyAudioProducerCallback_prepare" "', argument " "3"" of type '" "int""'");
+    } 
+    arg3 = static_cast< int >(val3);
+    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyAudioProducerCallback_prepare" "', argument " "4"" of type '" "int""'");
+    } 
+    arg4 = static_cast< int >(val4);
+    result = (int)(arg1)->prepare(arg2,arg3,arg4);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyAudioProducerCallback_start) {
+  {
+    ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyAudioProducerCallback_start(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioProducerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducerCallback_start" "', argument " "1"" of type '" "ProxyAudioProducerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioProducerCallback * >(argp1);
+    result = (int)(arg1)->start();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyAudioProducerCallback_pause) {
+  {
+    ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyAudioProducerCallback_pause(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioProducerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducerCallback_pause" "', argument " "1"" of type '" "ProxyAudioProducerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioProducerCallback * >(argp1);
+    result = (int)(arg1)->pause();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyAudioProducerCallback_stop) {
+  {
+    ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyAudioProducerCallback_stop(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioProducerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducerCallback_stop" "', argument " "1"" of type '" "ProxyAudioProducerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioProducerCallback * >(argp1);
+    result = (int)(arg1)->stop();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
     SWIG_croak_null();
   }
 }
@@ -9597,185 +10432,6 @@ XS(_wrap_delete_ProxyAudioProducer) {
     
     XSRETURN(argvi);
   fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyAudioProducer_prepare) {
-  {
-    ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
-    int arg2 ;
-    int arg3 ;
-    int arg4 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int val2 ;
-    int ecode2 = 0 ;
-    int val3 ;
-    int ecode3 = 0 ;
-    int val4 ;
-    int ecode4 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 4) || (items > 4)) {
-      SWIG_croak("Usage: ProxyAudioProducer_prepare(self,ptime,rate,channels);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_prepare" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
-    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
-    if (!SWIG_IsOK(ecode2)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioProducer_prepare" "', argument " "2"" of type '" "int""'");
-    } 
-    arg2 = static_cast< int >(val2);
-    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
-    if (!SWIG_IsOK(ecode3)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyAudioProducer_prepare" "', argument " "3"" of type '" "int""'");
-    } 
-    arg3 = static_cast< int >(val3);
-    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
-    if (!SWIG_IsOK(ecode4)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyAudioProducer_prepare" "', argument " "4"" of type '" "int""'");
-    } 
-    arg4 = static_cast< int >(val4);
-    result = (int)(arg1)->prepare(arg2,arg3,arg4);
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    
-    
-    
-    XSRETURN(argvi);
-  fail:
-    
-    
-    
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyAudioProducer_start) {
-  {
-    ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: ProxyAudioProducer_start(self);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_start" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
-    result = (int)(arg1)->start();
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    XSRETURN(argvi);
-  fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyAudioProducer_pause) {
-  {
-    ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: ProxyAudioProducer_pause(self);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_pause" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
-    result = (int)(arg1)->pause();
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    XSRETURN(argvi);
-  fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyAudioProducer_stop) {
-  {
-    ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: ProxyAudioProducer_stop(self);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_stop" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
-    result = (int)(arg1)->stop();
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    XSRETURN(argvi);
-  fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyAudioProducer_setActivate) {
-  {
-    ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
-    bool arg2 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    bool val2 ;
-    int ecode2 = 0 ;
-    int argvi = 0;
-    dXSARGS;
-    
-    if ((items < 2) || (items > 2)) {
-      SWIG_croak("Usage: ProxyAudioProducer_setActivate(self,enabled);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_setActivate" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
-    ecode2 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
-    if (!SWIG_IsOK(ecode2)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioProducer_setActivate" "', argument " "2"" of type '" "bool""'");
-    } 
-    arg2 = static_cast< bool >(val2);
-    (arg1)->setActivate(arg2);
-    ST(argvi) = sv_newmortal();
-    
-    
-    XSRETURN(argvi);
-  fail:
-    
     
     SWIG_croak_null();
   }
@@ -9828,6 +10484,43 @@ XS(_wrap_ProxyAudioProducer_push) {
 }
 
 
+XS(_wrap_ProxyAudioProducer_setCallback) {
+  {
+    ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+    ProxyAudioProducerCallback *arg2 = (ProxyAudioProducerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    void *argp2 = 0 ;
+    int res2 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: ProxyAudioProducer_setCallback(self,_callback);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_setCallback" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
+    res2 = SWIG_ConvertPtr(ST(1), &argp2,SWIGTYPE_p_ProxyAudioProducerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyAudioProducer_setCallback" "', argument " "2"" of type '" "ProxyAudioProducerCallback *""'"); 
+    }
+    arg2 = reinterpret_cast< ProxyAudioProducerCallback * >(argp2);
+    (arg1)->setCallback(arg2);
+    ST(argvi) = sv_newmortal();
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_ProxyAudioProducer_registerPlugin) {
   {
     int argvi = 0;
@@ -9846,25 +10539,184 @@ XS(_wrap_ProxyAudioProducer_registerPlugin) {
 }
 
 
-XS(_wrap_new_ProxyVideoProducer) {
+XS(_wrap_new_ProxyVideoProducerCallback) {
   {
-    tmedia_chroma_t arg1 ;
-    int val1 ;
-    int ecode1 = 0 ;
     int argvi = 0;
-    ProxyVideoProducer *result = 0 ;
+    ProxyVideoProducerCallback *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: new_ProxyVideoProducerCallback();");
+    }
+    result = (ProxyVideoProducerCallback *)new ProxyVideoProducerCallback();
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyVideoProducerCallback, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_delete_ProxyVideoProducerCallback) {
+  {
+    ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
     dXSARGS;
     
     if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: new_ProxyVideoProducer(chroma);");
+      SWIG_croak("Usage: delete_ProxyVideoProducerCallback(self);");
     }
-    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
-    if (!SWIG_IsOK(ecode1)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_ProxyVideoProducer" "', argument " "1"" of type '" "tmedia_chroma_t""'");
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducerCallback, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyVideoProducerCallback" "', argument " "1"" of type '" "ProxyVideoProducerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducerCallback * >(argp1);
+    delete arg1;
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducerCallback_prepare) {
+  {
+    ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
+    int arg2 ;
+    int arg3 ;
+    int arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int val3 ;
+    int ecode3 = 0 ;
+    int val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: ProxyVideoProducerCallback_prepare(self,width,height,fps);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducerCallback_prepare" "', argument " "1"" of type '" "ProxyVideoProducerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducerCallback * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoProducerCallback_prepare" "', argument " "2"" of type '" "int""'");
     } 
-    arg1 = static_cast< tmedia_chroma_t >(val1);
-    result = (ProxyVideoProducer *)new ProxyVideoProducer(arg1);
-    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyVideoProducer, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    arg2 = static_cast< int >(val2);
+    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoProducerCallback_prepare" "', argument " "3"" of type '" "int""'");
+    } 
+    arg3 = static_cast< int >(val3);
+    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyVideoProducerCallback_prepare" "', argument " "4"" of type '" "int""'");
+    } 
+    arg4 = static_cast< int >(val4);
+    result = (int)(arg1)->prepare(arg2,arg3,arg4);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducerCallback_start) {
+  {
+    ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoProducerCallback_start(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducerCallback_start" "', argument " "1"" of type '" "ProxyVideoProducerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducerCallback * >(argp1);
+    result = (int)(arg1)->start();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducerCallback_pause) {
+  {
+    ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoProducerCallback_pause(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducerCallback_pause" "', argument " "1"" of type '" "ProxyVideoProducerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducerCallback * >(argp1);
+    result = (int)(arg1)->pause();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducerCallback_stop) {
+  {
+    ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoProducerCallback_stop(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducerCallback_stop" "', argument " "1"" of type '" "ProxyVideoProducerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducerCallback * >(argp1);
+    result = (int)(arg1)->stop();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
     
     XSRETURN(argvi);
   fail:
@@ -9892,148 +10744,6 @@ XS(_wrap_delete_ProxyVideoProducer) {
     arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
     delete arg1;
     ST(argvi) = sv_newmortal();
-    
-    XSRETURN(argvi);
-  fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyVideoProducer_prepare) {
-  {
-    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
-    int arg2 ;
-    int arg3 ;
-    int arg4 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int val2 ;
-    int ecode2 = 0 ;
-    int val3 ;
-    int ecode3 = 0 ;
-    int val4 ;
-    int ecode4 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 4) || (items > 4)) {
-      SWIG_croak("Usage: ProxyVideoProducer_prepare(self,width,height,fps);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_prepare" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
-    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
-    if (!SWIG_IsOK(ecode2)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoProducer_prepare" "', argument " "2"" of type '" "int""'");
-    } 
-    arg2 = static_cast< int >(val2);
-    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
-    if (!SWIG_IsOK(ecode3)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoProducer_prepare" "', argument " "3"" of type '" "int""'");
-    } 
-    arg3 = static_cast< int >(val3);
-    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
-    if (!SWIG_IsOK(ecode4)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyVideoProducer_prepare" "', argument " "4"" of type '" "int""'");
-    } 
-    arg4 = static_cast< int >(val4);
-    result = (int)(arg1)->prepare(arg2,arg3,arg4);
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    
-    
-    
-    XSRETURN(argvi);
-  fail:
-    
-    
-    
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyVideoProducer_start) {
-  {
-    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: ProxyVideoProducer_start(self);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_start" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
-    result = (int)(arg1)->start();
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    XSRETURN(argvi);
-  fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyVideoProducer_pause) {
-  {
-    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: ProxyVideoProducer_pause(self);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_pause" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
-    result = (int)(arg1)->pause();
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    XSRETURN(argvi);
-  fail:
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyVideoProducer_stop) {
-  {
-    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: ProxyVideoProducer_stop(self);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_stop" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
-    result = (int)(arg1)->stop();
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
     
     XSRETURN(argvi);
   fail:
@@ -10108,43 +10818,6 @@ XS(_wrap_ProxyVideoProducer_setRotation) {
 }
 
 
-XS(_wrap_ProxyVideoProducer_setActivate) {
-  {
-    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
-    bool arg2 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    bool val2 ;
-    int ecode2 = 0 ;
-    int argvi = 0;
-    dXSARGS;
-    
-    if ((items < 2) || (items > 2)) {
-      SWIG_croak("Usage: ProxyVideoProducer_setActivate(self,enabled);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_setActivate" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
-    ecode2 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
-    if (!SWIG_IsOK(ecode2)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoProducer_setActivate" "', argument " "2"" of type '" "bool""'");
-    } 
-    arg2 = static_cast< bool >(val2);
-    (arg1)->setActivate(arg2);
-    ST(argvi) = sv_newmortal();
-    
-    
-    XSRETURN(argvi);
-  fail:
-    
-    
-    SWIG_croak_null();
-  }
-}
-
-
 XS(_wrap_ProxyVideoProducer_push) {
   {
     ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
@@ -10191,6 +10864,43 @@ XS(_wrap_ProxyVideoProducer_push) {
 }
 
 
+XS(_wrap_ProxyVideoProducer_setCallback) {
+  {
+    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+    ProxyVideoProducerCallback *arg2 = (ProxyVideoProducerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    void *argp2 = 0 ;
+    int res2 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: ProxyVideoProducer_setCallback(self,_callback);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_setCallback" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+    res2 = SWIG_ConvertPtr(ST(1), &argp2,SWIGTYPE_p_ProxyVideoProducerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyVideoProducer_setCallback" "', argument " "2"" of type '" "ProxyVideoProducerCallback *""'"); 
+    }
+    arg2 = reinterpret_cast< ProxyVideoProducerCallback * >(argp2);
+    (arg1)->setCallback(arg2);
+    ST(argvi) = sv_newmortal();
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_ProxyVideoProducer_registerPlugin) {
   {
     int argvi = 0;
@@ -10204,6 +10914,33 @@ XS(_wrap_ProxyVideoProducer_registerPlugin) {
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     XSRETURN(argvi);
   fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducer_setDefaultChroma) {
+  {
+    tmedia_chroma_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoProducer_setDefaultChroma(chroma);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "ProxyVideoProducer_setDefaultChroma" "', argument " "1"" of type '" "tmedia_chroma_t""'");
+    } 
+    arg1 = static_cast< tmedia_chroma_t >(val1);
+    ProxyVideoProducer::setDefaultChroma(arg1);
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
     SWIG_croak_null();
   }
 }
@@ -15585,29 +16322,29 @@ XS(_wrap_MsrpCallback_OnEvent) {
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
-static void *_p_InviteEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((InviteEvent *) x));
+static void *_p_ProxyAudioConsumerTo_p_ProxyPlugin(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ProxyPlugin *)  ((ProxyAudioConsumer *) x));
 }
-static void *_p_OptionsEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((OptionsEvent *) x));
+static void *_p_ProxyVideoConsumerTo_p_ProxyPlugin(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ProxyPlugin *)  ((ProxyVideoConsumer *) x));
 }
-static void *_p_DialogEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((DialogEvent *) x));
+static void *_p_ProxyAudioProducerTo_p_ProxyPlugin(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ProxyPlugin *)  ((ProxyAudioProducer *) x));
 }
-static void *_p_PublicationEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((PublicationEvent *) x));
+static void *_p_ProxyVideoProducerTo_p_ProxyPlugin(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ProxyPlugin *)  ((ProxyVideoProducer *) x));
 }
-static void *_p_RegistrationEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((RegistrationEvent *) x));
+static void *_p_SipStackTo_p_SafeObject(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SafeObject *)  ((SipStack *) x));
 }
-static void *_p_SubscriptionEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((SubscriptionEvent *) x));
+static void *_p_MediaContentCPIMTo_p_MediaContent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((MediaContent *)  ((MediaContentCPIM *) x));
 }
-static void *_p_StackEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((StackEvent *) x));
+static void *_p_CallSessionTo_p_InviteSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((InviteSession *)  ((CallSession *) x));
 }
-static void *_p_MessagingEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((MessagingEvent *) x));
+static void *_p_MsrpSessionTo_p_InviteSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((InviteSession *)  ((MsrpSession *) x));
 }
 static void *_p_InviteSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SipSession *)  ((InviteSession *) x));
@@ -15633,17 +16370,29 @@ static void *_p_RegistrationSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(
 static void *_p_SubscriptionSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SipSession *)  ((SubscriptionSession *) x));
 }
-static void *_p_CallSessionTo_p_InviteSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((InviteSession *)  ((CallSession *) x));
+static void *_p_InviteEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((InviteEvent *) x));
 }
-static void *_p_MsrpSessionTo_p_InviteSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((InviteSession *)  ((MsrpSession *) x));
+static void *_p_OptionsEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((OptionsEvent *) x));
 }
-static void *_p_SipStackTo_p_SafeObject(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SafeObject *)  ((SipStack *) x));
+static void *_p_DialogEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((DialogEvent *) x));
 }
-static void *_p_MediaContentCPIMTo_p_MediaContent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((MediaContent *)  ((MediaContentCPIM *) x));
+static void *_p_PublicationEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((PublicationEvent *) x));
+}
+static void *_p_RegistrationEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((RegistrationEvent *) x));
+}
+static void *_p_SubscriptionEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((SubscriptionEvent *) x));
+}
+static void *_p_StackEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((StackEvent *) x));
+}
+static void *_p_MessagingEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((MessagingEvent *) x));
 }
 static swig_type_info _swigt__p_ActionConfig = {"_p_ActionConfig", "ActionConfig *", 0, 0, (void*)"tinyWRAP::ActionConfig", 0};
 static swig_type_info _swigt__p_CallSession = {"_p_CallSession", "CallSession *", 0, 0, (void*)"tinyWRAP::CallSession", 0};
@@ -15663,10 +16412,17 @@ static swig_type_info _swigt__p_MsrpSession = {"_p_MsrpSession", "MsrpSession *"
 static swig_type_info _swigt__p_OptionsEvent = {"_p_OptionsEvent", "OptionsEvent *", 0, 0, (void*)"tinyWRAP::OptionsEvent", 0};
 static swig_type_info _swigt__p_OptionsSession = {"_p_OptionsSession", "OptionsSession *", 0, 0, (void*)"tinyWRAP::OptionsSession", 0};
 static swig_type_info _swigt__p_ProxyAudioConsumer = {"_p_ProxyAudioConsumer", "ProxyAudioConsumer *", 0, 0, (void*)"tinyWRAP::ProxyAudioConsumer", 0};
+static swig_type_info _swigt__p_ProxyAudioConsumerCallback = {"_p_ProxyAudioConsumerCallback", "ProxyAudioConsumerCallback *", 0, 0, (void*)"tinyWRAP::ProxyAudioConsumerCallback", 0};
 static swig_type_info _swigt__p_ProxyAudioProducer = {"_p_ProxyAudioProducer", "ProxyAudioProducer *", 0, 0, (void*)"tinyWRAP::ProxyAudioProducer", 0};
+static swig_type_info _swigt__p_ProxyAudioProducerCallback = {"_p_ProxyAudioProducerCallback", "ProxyAudioProducerCallback *", 0, 0, (void*)"tinyWRAP::ProxyAudioProducerCallback", 0};
+static swig_type_info _swigt__p_ProxyPlugin = {"_p_ProxyPlugin", "ProxyPlugin *", 0, 0, (void*)"tinyWRAP::ProxyPlugin", 0};
+static swig_type_info _swigt__p_ProxyPluginMgr = {"_p_ProxyPluginMgr", "ProxyPluginMgr *", 0, 0, (void*)"tinyWRAP::ProxyPluginMgr", 0};
+static swig_type_info _swigt__p_ProxyPluginMgrCallback = {"_p_ProxyPluginMgrCallback", "ProxyPluginMgrCallback *", 0, 0, (void*)"tinyWRAP::ProxyPluginMgrCallback", 0};
 static swig_type_info _swigt__p_ProxyVideoConsumer = {"_p_ProxyVideoConsumer", "ProxyVideoConsumer *", 0, 0, (void*)"tinyWRAP::ProxyVideoConsumer", 0};
+static swig_type_info _swigt__p_ProxyVideoConsumerCallback = {"_p_ProxyVideoConsumerCallback", "ProxyVideoConsumerCallback *", 0, 0, (void*)"tinyWRAP::ProxyVideoConsumerCallback", 0};
 static swig_type_info _swigt__p_ProxyVideoFrame = {"_p_ProxyVideoFrame", "ProxyVideoFrame *", 0, 0, (void*)"tinyWRAP::ProxyVideoFrame", 0};
 static swig_type_info _swigt__p_ProxyVideoProducer = {"_p_ProxyVideoProducer", "ProxyVideoProducer *", 0, 0, (void*)"tinyWRAP::ProxyVideoProducer", 0};
+static swig_type_info _swigt__p_ProxyVideoProducerCallback = {"_p_ProxyVideoProducerCallback", "ProxyVideoProducerCallback *", 0, 0, (void*)"tinyWRAP::ProxyVideoProducerCallback", 0};
 static swig_type_info _swigt__p_PublicationEvent = {"_p_PublicationEvent", "PublicationEvent *", 0, 0, (void*)"tinyWRAP::PublicationEvent", 0};
 static swig_type_info _swigt__p_PublicationSession = {"_p_PublicationSession", "PublicationSession *", 0, 0, (void*)"tinyWRAP::PublicationSession", 0};
 static swig_type_info _swigt__p_RPMessage = {"_p_RPMessage", "RPMessage *", 0, 0, (void*)"tinyWRAP::RPMessage", 0};
@@ -15710,8 +16466,9 @@ static swig_type_info _swigt__p_tsip_options_event_type_e = {"_p_tsip_options_ev
 static swig_type_info _swigt__p_tsip_publish_event_type_e = {"_p_tsip_publish_event_type_e", "enum tsip_publish_event_type_e *|tsip_publish_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_register_event_type_e = {"_p_tsip_register_event_type_e", "enum tsip_register_event_type_e *|tsip_register_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_subscribe_event_type_e = {"_p_tsip_subscribe_event_type_e", "enum tsip_subscribe_event_type_e *|tsip_subscribe_event_type_t *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_tsk_list_t = {"_p_tsk_list_t", "twrap_xcap_steps_L_t *|tsk_list_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_tsk_list_t = {"_p_tsk_list_t", "twrap_xcap_steps_L_t *|twrap_proxy_plungins_L_t *|tsk_list_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_twrap_media_type_e = {"_p_twrap_media_type_e", "enum twrap_media_type_e *|twrap_media_type_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_twrap_proxy_plugin_type_e = {"_p_twrap_proxy_plugin_type_e", "enum twrap_proxy_plugin_type_e *|twrap_proxy_plugin_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_twrap_rpmessage_type_e = {"_p_twrap_rpmessage_type_e", "enum twrap_rpmessage_type_e *|twrap_rpmessage_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_twrap_sms_type_e = {"_p_twrap_sms_type_e", "enum twrap_sms_type_e *|twrap_sms_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_unsigned_char = {"_p_unsigned_char", "unsigned char *|uint_least8_t *|uint_fast8_t *|uint8_t *", 0, 0, (void*)0, 0};
@@ -15738,10 +16495,17 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_OptionsEvent,
   &_swigt__p_OptionsSession,
   &_swigt__p_ProxyAudioConsumer,
+  &_swigt__p_ProxyAudioConsumerCallback,
   &_swigt__p_ProxyAudioProducer,
+  &_swigt__p_ProxyAudioProducerCallback,
+  &_swigt__p_ProxyPlugin,
+  &_swigt__p_ProxyPluginMgr,
+  &_swigt__p_ProxyPluginMgrCallback,
   &_swigt__p_ProxyVideoConsumer,
+  &_swigt__p_ProxyVideoConsumerCallback,
   &_swigt__p_ProxyVideoFrame,
   &_swigt__p_ProxyVideoProducer,
+  &_swigt__p_ProxyVideoProducerCallback,
   &_swigt__p_PublicationEvent,
   &_swigt__p_PublicationSession,
   &_swigt__p_RPMessage,
@@ -15787,6 +16551,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_tsip_subscribe_event_type_e,
   &_swigt__p_tsk_list_t,
   &_swigt__p_twrap_media_type_e,
+  &_swigt__p_twrap_proxy_plugin_type_e,
   &_swigt__p_twrap_rpmessage_type_e,
   &_swigt__p_twrap_sms_type_e,
   &_swigt__p_unsigned_char,
@@ -15813,10 +16578,17 @@ static swig_cast_info _swigc__p_MsrpSession[] = {  {&_swigt__p_MsrpSession, 0, 0
 static swig_cast_info _swigc__p_OptionsEvent[] = {  {&_swigt__p_OptionsEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_OptionsSession[] = {  {&_swigt__p_OptionsSession, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ProxyAudioConsumer[] = {  {&_swigt__p_ProxyAudioConsumer, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyAudioConsumerCallback[] = {  {&_swigt__p_ProxyAudioConsumerCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ProxyAudioProducer[] = {  {&_swigt__p_ProxyAudioProducer, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyAudioProducerCallback[] = {  {&_swigt__p_ProxyAudioProducerCallback, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyPlugin[] = {  {&_swigt__p_ProxyPlugin, 0, 0, 0},  {&_swigt__p_ProxyAudioConsumer, _p_ProxyAudioConsumerTo_p_ProxyPlugin, 0, 0},  {&_swigt__p_ProxyVideoConsumer, _p_ProxyVideoConsumerTo_p_ProxyPlugin, 0, 0},  {&_swigt__p_ProxyAudioProducer, _p_ProxyAudioProducerTo_p_ProxyPlugin, 0, 0},  {&_swigt__p_ProxyVideoProducer, _p_ProxyVideoProducerTo_p_ProxyPlugin, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyPluginMgr[] = {  {&_swigt__p_ProxyPluginMgr, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyPluginMgrCallback[] = {  {&_swigt__p_ProxyPluginMgrCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ProxyVideoConsumer[] = {  {&_swigt__p_ProxyVideoConsumer, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyVideoConsumerCallback[] = {  {&_swigt__p_ProxyVideoConsumerCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ProxyVideoFrame[] = {  {&_swigt__p_ProxyVideoFrame, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ProxyVideoProducer[] = {  {&_swigt__p_ProxyVideoProducer, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyVideoProducerCallback[] = {  {&_swigt__p_ProxyVideoProducerCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationEvent[] = {  {&_swigt__p_PublicationEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationSession[] = {  {&_swigt__p_PublicationSession, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_RPMessage[] = {  {&_swigt__p_RPMessage, 0, 0, 0},{0, 0, 0, 0}};
@@ -15862,6 +16634,7 @@ static swig_cast_info _swigc__p_tsip_register_event_type_e[] = {  {&_swigt__p_ts
 static swig_cast_info _swigc__p_tsip_subscribe_event_type_e[] = {  {&_swigt__p_tsip_subscribe_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsk_list_t[] = {  {&_swigt__p_tsk_list_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_twrap_media_type_e[] = {  {&_swigt__p_twrap_media_type_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_twrap_proxy_plugin_type_e[] = {  {&_swigt__p_twrap_proxy_plugin_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_twrap_rpmessage_type_e[] = {  {&_swigt__p_twrap_rpmessage_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_twrap_sms_type_e[] = {  {&_swigt__p_twrap_sms_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_unsigned_char[] = {  {&_swigt__p_unsigned_char, 0, 0, 0},{0, 0, 0, 0}};
@@ -15888,10 +16661,17 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_OptionsEvent,
   _swigc__p_OptionsSession,
   _swigc__p_ProxyAudioConsumer,
+  _swigc__p_ProxyAudioConsumerCallback,
   _swigc__p_ProxyAudioProducer,
+  _swigc__p_ProxyAudioProducerCallback,
+  _swigc__p_ProxyPlugin,
+  _swigc__p_ProxyPluginMgr,
+  _swigc__p_ProxyPluginMgrCallback,
   _swigc__p_ProxyVideoConsumer,
+  _swigc__p_ProxyVideoConsumerCallback,
   _swigc__p_ProxyVideoFrame,
   _swigc__p_ProxyVideoProducer,
+  _swigc__p_ProxyVideoProducerCallback,
   _swigc__p_PublicationEvent,
   _swigc__p_PublicationSession,
   _swigc__p_RPMessage,
@@ -15937,6 +16717,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_tsip_subscribe_event_type_e,
   _swigc__p_tsk_list_t,
   _swigc__p_twrap_media_type_e,
+  _swigc__p_twrap_proxy_plugin_type_e,
   _swigc__p_twrap_rpmessage_type_e,
   _swigc__p_twrap_sms_type_e,
   _swigc__p_unsigned_char,
@@ -15975,6 +16756,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_consumerSetInt64", _wrap_MediaSessionMgr_consumerSetInt64},
 {"tinyWRAPc::MediaSessionMgr_producerSetInt32", _wrap_MediaSessionMgr_producerSetInt32},
 {"tinyWRAPc::MediaSessionMgr_producerSetInt64", _wrap_MediaSessionMgr_producerSetInt64},
+{"tinyWRAPc::MediaSessionMgr_findProxyPluginConsumer", _wrap_MediaSessionMgr_findProxyPluginConsumer},
+{"tinyWRAPc::MediaSessionMgr_findProxyPluginProducer", _wrap_MediaSessionMgr_findProxyPluginProducer},
 {"tinyWRAPc::delete_MediaContent", _wrap_delete_MediaContent},
 {"tinyWRAPc::MediaContent_getType", _wrap_MediaContent_getType},
 {"tinyWRAPc::MediaContent_getDataLength", _wrap_MediaContent_getDataLength},
@@ -16093,49 +16876,69 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::delete_SubscriptionSession", _wrap_delete_SubscriptionSession},
 {"tinyWRAPc::SubscriptionSession_subscribe", _wrap_SubscriptionSession_subscribe},
 {"tinyWRAPc::SubscriptionSession_unSubscribe", _wrap_SubscriptionSession_unSubscribe},
-{"tinyWRAPc::new_ProxyAudioConsumer", _wrap_new_ProxyAudioConsumer},
+{"tinyWRAPc::delete_ProxyPluginMgr", _wrap_delete_ProxyPluginMgr},
+{"tinyWRAPc::ProxyPluginMgr_createInstance", _wrap_ProxyPluginMgr_createInstance},
+{"tinyWRAPc::ProxyPluginMgr_getInstance", _wrap_ProxyPluginMgr_getInstance},
+{"tinyWRAPc::ProxyPluginMgr_findAudioConsumer", _wrap_ProxyPluginMgr_findAudioConsumer},
+{"tinyWRAPc::ProxyPluginMgr_findVideoConsumer", _wrap_ProxyPluginMgr_findVideoConsumer},
+{"tinyWRAPc::ProxyPluginMgr_findAudioProducer", _wrap_ProxyPluginMgr_findAudioProducer},
+{"tinyWRAPc::ProxyPluginMgr_findVideoProducer", _wrap_ProxyPluginMgr_findVideoProducer},
+{"tinyWRAPc::new_ProxyPluginMgrCallback", _wrap_new_ProxyPluginMgrCallback},
+{"tinyWRAPc::delete_ProxyPluginMgrCallback", _wrap_delete_ProxyPluginMgrCallback},
+{"tinyWRAPc::ProxyPluginMgrCallback_OnPluginCreated", _wrap_ProxyPluginMgrCallback_OnPluginCreated},
+{"tinyWRAPc::ProxyPluginMgrCallback_OnPluginDestroyed", _wrap_ProxyPluginMgrCallback_OnPluginDestroyed},
+{"tinyWRAPc::delete_ProxyPlugin", _wrap_delete_ProxyPlugin},
+{"tinyWRAPc::ProxyPlugin_getType", _wrap_ProxyPlugin_getType},
+{"tinyWRAPc::ProxyPlugin_getId", _wrap_ProxyPlugin_getId},
+{"tinyWRAPc::new_ProxyAudioConsumerCallback", _wrap_new_ProxyAudioConsumerCallback},
+{"tinyWRAPc::delete_ProxyAudioConsumerCallback", _wrap_delete_ProxyAudioConsumerCallback},
+{"tinyWRAPc::ProxyAudioConsumerCallback_prepare", _wrap_ProxyAudioConsumerCallback_prepare},
+{"tinyWRAPc::ProxyAudioConsumerCallback_start", _wrap_ProxyAudioConsumerCallback_start},
+{"tinyWRAPc::ProxyAudioConsumerCallback_pause", _wrap_ProxyAudioConsumerCallback_pause},
+{"tinyWRAPc::ProxyAudioConsumerCallback_stop", _wrap_ProxyAudioConsumerCallback_stop},
 {"tinyWRAPc::delete_ProxyAudioConsumer", _wrap_delete_ProxyAudioConsumer},
-{"tinyWRAPc::ProxyAudioConsumer_prepare", _wrap_ProxyAudioConsumer_prepare},
-{"tinyWRAPc::ProxyAudioConsumer_start", _wrap_ProxyAudioConsumer_start},
-{"tinyWRAPc::ProxyAudioConsumer_pause", _wrap_ProxyAudioConsumer_pause},
-{"tinyWRAPc::ProxyAudioConsumer_stop", _wrap_ProxyAudioConsumer_stop},
-{"tinyWRAPc::ProxyAudioConsumer_setActivate", _wrap_ProxyAudioConsumer_setActivate},
 {"tinyWRAPc::ProxyAudioConsumer_pull", _wrap_ProxyAudioConsumer_pull},
 {"tinyWRAPc::ProxyAudioConsumer_reset", _wrap_ProxyAudioConsumer_reset},
+{"tinyWRAPc::ProxyAudioConsumer_setCallback", _wrap_ProxyAudioConsumer_setCallback},
 {"tinyWRAPc::ProxyAudioConsumer_registerPlugin", _wrap_ProxyAudioConsumer_registerPlugin},
-{"tinyWRAPc::new_ProxyVideoConsumer", _wrap_new_ProxyVideoConsumer},
+{"tinyWRAPc::new_ProxyVideoConsumerCallback", _wrap_new_ProxyVideoConsumerCallback},
+{"tinyWRAPc::delete_ProxyVideoConsumerCallback", _wrap_delete_ProxyVideoConsumerCallback},
+{"tinyWRAPc::ProxyVideoConsumerCallback_prepare", _wrap_ProxyVideoConsumerCallback_prepare},
+{"tinyWRAPc::ProxyVideoConsumerCallback_consume", _wrap_ProxyVideoConsumerCallback_consume},
+{"tinyWRAPc::ProxyVideoConsumerCallback_start", _wrap_ProxyVideoConsumerCallback_start},
+{"tinyWRAPc::ProxyVideoConsumerCallback_pause", _wrap_ProxyVideoConsumerCallback_pause},
+{"tinyWRAPc::ProxyVideoConsumerCallback_stop", _wrap_ProxyVideoConsumerCallback_stop},
 {"tinyWRAPc::delete_ProxyVideoConsumer", _wrap_delete_ProxyVideoConsumer},
-{"tinyWRAPc::ProxyVideoConsumer_prepare", _wrap_ProxyVideoConsumer_prepare},
-{"tinyWRAPc::ProxyVideoConsumer_consume", _wrap_ProxyVideoConsumer_consume},
-{"tinyWRAPc::ProxyVideoConsumer_start", _wrap_ProxyVideoConsumer_start},
-{"tinyWRAPc::ProxyVideoConsumer_pause", _wrap_ProxyVideoConsumer_pause},
-{"tinyWRAPc::ProxyVideoConsumer_stop", _wrap_ProxyVideoConsumer_stop},
-{"tinyWRAPc::ProxyVideoConsumer_setActivate", _wrap_ProxyVideoConsumer_setActivate},
 {"tinyWRAPc::ProxyVideoConsumer_setDisplaySize", _wrap_ProxyVideoConsumer_setDisplaySize},
+{"tinyWRAPc::ProxyVideoConsumer_setCallback", _wrap_ProxyVideoConsumer_setCallback},
 {"tinyWRAPc::ProxyVideoConsumer_registerPlugin", _wrap_ProxyVideoConsumer_registerPlugin},
+{"tinyWRAPc::ProxyVideoConsumer_setDefaultChroma", _wrap_ProxyVideoConsumer_setDefaultChroma},
 {"tinyWRAPc::delete_ProxyVideoFrame", _wrap_delete_ProxyVideoFrame},
 {"tinyWRAPc::ProxyVideoFrame_getSize", _wrap_ProxyVideoFrame_getSize},
 {"tinyWRAPc::ProxyVideoFrame_getContent", _wrap_ProxyVideoFrame_getContent},
-{"tinyWRAPc::new_ProxyAudioProducer", _wrap_new_ProxyAudioProducer},
+{"tinyWRAPc::new_ProxyAudioProducerCallback", _wrap_new_ProxyAudioProducerCallback},
+{"tinyWRAPc::delete_ProxyAudioProducerCallback", _wrap_delete_ProxyAudioProducerCallback},
+{"tinyWRAPc::ProxyAudioProducerCallback_prepare", _wrap_ProxyAudioProducerCallback_prepare},
+{"tinyWRAPc::ProxyAudioProducerCallback_start", _wrap_ProxyAudioProducerCallback_start},
+{"tinyWRAPc::ProxyAudioProducerCallback_pause", _wrap_ProxyAudioProducerCallback_pause},
+{"tinyWRAPc::ProxyAudioProducerCallback_stop", _wrap_ProxyAudioProducerCallback_stop},
 {"tinyWRAPc::delete_ProxyAudioProducer", _wrap_delete_ProxyAudioProducer},
-{"tinyWRAPc::ProxyAudioProducer_prepare", _wrap_ProxyAudioProducer_prepare},
-{"tinyWRAPc::ProxyAudioProducer_start", _wrap_ProxyAudioProducer_start},
-{"tinyWRAPc::ProxyAudioProducer_pause", _wrap_ProxyAudioProducer_pause},
-{"tinyWRAPc::ProxyAudioProducer_stop", _wrap_ProxyAudioProducer_stop},
-{"tinyWRAPc::ProxyAudioProducer_setActivate", _wrap_ProxyAudioProducer_setActivate},
 {"tinyWRAPc::ProxyAudioProducer_push", _wrap_ProxyAudioProducer_push},
+{"tinyWRAPc::ProxyAudioProducer_setCallback", _wrap_ProxyAudioProducer_setCallback},
 {"tinyWRAPc::ProxyAudioProducer_registerPlugin", _wrap_ProxyAudioProducer_registerPlugin},
-{"tinyWRAPc::new_ProxyVideoProducer", _wrap_new_ProxyVideoProducer},
+{"tinyWRAPc::new_ProxyVideoProducerCallback", _wrap_new_ProxyVideoProducerCallback},
+{"tinyWRAPc::delete_ProxyVideoProducerCallback", _wrap_delete_ProxyVideoProducerCallback},
+{"tinyWRAPc::ProxyVideoProducerCallback_prepare", _wrap_ProxyVideoProducerCallback_prepare},
+{"tinyWRAPc::ProxyVideoProducerCallback_start", _wrap_ProxyVideoProducerCallback_start},
+{"tinyWRAPc::ProxyVideoProducerCallback_pause", _wrap_ProxyVideoProducerCallback_pause},
+{"tinyWRAPc::ProxyVideoProducerCallback_stop", _wrap_ProxyVideoProducerCallback_stop},
 {"tinyWRAPc::delete_ProxyVideoProducer", _wrap_delete_ProxyVideoProducer},
-{"tinyWRAPc::ProxyVideoProducer_prepare", _wrap_ProxyVideoProducer_prepare},
-{"tinyWRAPc::ProxyVideoProducer_start", _wrap_ProxyVideoProducer_start},
-{"tinyWRAPc::ProxyVideoProducer_pause", _wrap_ProxyVideoProducer_pause},
-{"tinyWRAPc::ProxyVideoProducer_stop", _wrap_ProxyVideoProducer_stop},
 {"tinyWRAPc::ProxyVideoProducer_getRotation", _wrap_ProxyVideoProducer_getRotation},
 {"tinyWRAPc::ProxyVideoProducer_setRotation", _wrap_ProxyVideoProducer_setRotation},
-{"tinyWRAPc::ProxyVideoProducer_setActivate", _wrap_ProxyVideoProducer_setActivate},
 {"tinyWRAPc::ProxyVideoProducer_push", _wrap_ProxyVideoProducer_push},
+{"tinyWRAPc::ProxyVideoProducer_setCallback", _wrap_ProxyVideoProducer_setCallback},
 {"tinyWRAPc::ProxyVideoProducer_registerPlugin", _wrap_ProxyVideoProducer_registerPlugin},
+{"tinyWRAPc::ProxyVideoProducer_setDefaultChroma", _wrap_ProxyVideoProducer_setDefaultChroma},
 {"tinyWRAPc::new_SipCallback", _wrap_new_SipCallback},
 {"tinyWRAPc::delete_SipCallback", _wrap_delete_SipCallback},
 {"tinyWRAPc::SipCallback_OnDialogEvent", _wrap_SipCallback_OnDialogEvent},
@@ -16615,10 +17418,37 @@ XS(SWIG_init) {
   SWIG_TypeClientData(SWIGTYPE_p_PublicationSession, (void*) "tinyWRAP::PublicationSession");
   SWIG_TypeClientData(SWIGTYPE_p_RegistrationSession, (void*) "tinyWRAP::RegistrationSession");
   SWIG_TypeClientData(SWIGTYPE_p_SubscriptionSession, (void*) "tinyWRAP::SubscriptionSession");
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "twrap_proxy_plugin_audio_producer", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(twrap_proxy_plugin_audio_producer)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "twrap_proxy_plugin_video_producer", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(twrap_proxy_plugin_video_producer)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "twrap_proxy_plugin_audio_consumer", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(twrap_proxy_plugin_audio_consumer)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "twrap_proxy_plugin_video_consumer", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(twrap_proxy_plugin_video_consumer)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  SWIG_TypeClientData(SWIGTYPE_p_ProxyPluginMgr, (void*) "tinyWRAP::ProxyPluginMgr");
+  SWIG_TypeClientData(SWIGTYPE_p_ProxyPluginMgrCallback, (void*) "tinyWRAP::ProxyPluginMgrCallback");
+  SWIG_TypeClientData(SWIGTYPE_p_ProxyPlugin, (void*) "tinyWRAP::ProxyPlugin");
+  SWIG_TypeClientData(SWIGTYPE_p_ProxyAudioConsumerCallback, (void*) "tinyWRAP::ProxyAudioConsumerCallback");
   SWIG_TypeClientData(SWIGTYPE_p_ProxyAudioConsumer, (void*) "tinyWRAP::ProxyAudioConsumer");
+  SWIG_TypeClientData(SWIGTYPE_p_ProxyVideoConsumerCallback, (void*) "tinyWRAP::ProxyVideoConsumerCallback");
   SWIG_TypeClientData(SWIGTYPE_p_ProxyVideoConsumer, (void*) "tinyWRAP::ProxyVideoConsumer");
   SWIG_TypeClientData(SWIGTYPE_p_ProxyVideoFrame, (void*) "tinyWRAP::ProxyVideoFrame");
+  SWIG_TypeClientData(SWIGTYPE_p_ProxyAudioProducerCallback, (void*) "tinyWRAP::ProxyAudioProducerCallback");
   SWIG_TypeClientData(SWIGTYPE_p_ProxyAudioProducer, (void*) "tinyWRAP::ProxyAudioProducer");
+  SWIG_TypeClientData(SWIGTYPE_p_ProxyVideoProducerCallback, (void*) "tinyWRAP::ProxyVideoProducerCallback");
   SWIG_TypeClientData(SWIGTYPE_p_ProxyVideoProducer, (void*) "tinyWRAP::ProxyVideoProducer");
   SWIG_TypeClientData(SWIGTYPE_p_SipCallback, (void*) "tinyWRAP::SipCallback");
   SWIG_TypeClientData(SWIGTYPE_p_SafeObject, (void*) "tinyWRAP::SafeObject");

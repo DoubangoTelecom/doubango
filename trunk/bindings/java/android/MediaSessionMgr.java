@@ -53,4 +53,14 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_producerSetInt64(swigCPtr, this, media.swigValue(), key, value);
   }
 
+  public ProxyPlugin findProxyPluginConsumer(twrap_media_type_t media) {
+    long cPtr = tinyWRAPJNI.MediaSessionMgr_findProxyPluginConsumer(swigCPtr, this, media.swigValue());
+    return (cPtr == 0) ? null : new ProxyPlugin(cPtr, false);
+  }
+
+  public ProxyPlugin findProxyPluginProducer(twrap_media_type_t media) {
+    long cPtr = tinyWRAPJNI.MediaSessionMgr_findProxyPluginProducer(swigCPtr, this, media.swigValue());
+    return (cPtr == 0) ? null : new ProxyPlugin(cPtr, false);
+  }
+
 }

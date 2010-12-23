@@ -64,6 +64,18 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public ProxyPlugin findProxyPluginConsumer(twrap_media_type_t media) {
+    IntPtr cPtr = tinyWRAPPINVOKE.MediaSessionMgr_findProxyPluginConsumer(swigCPtr, (int)media);
+    ProxyPlugin ret = (cPtr == IntPtr.Zero) ? null : new ProxyPlugin(cPtr, false);
+    return ret;
+  }
+
+  public ProxyPlugin findProxyPluginProducer(twrap_media_type_t media) {
+    IntPtr cPtr = tinyWRAPPINVOKE.MediaSessionMgr_findProxyPluginProducer(swigCPtr, (int)media);
+    ProxyPlugin ret = (cPtr == IntPtr.Zero) ? null : new ProxyPlugin(cPtr, false);
+    return ret;
+  }
+
 }
 
 }

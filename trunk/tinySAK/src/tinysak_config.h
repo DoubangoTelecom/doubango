@@ -88,6 +88,10 @@
 #	define HAVE_GETTIMEOFDAY				1
 #endif
 
+#if defined(ANDROID)
+#	define HAVE_CLOCK_GETTIME	1
+#endif
+
 #include <stdint.h>
 #include <stddef.h>
 #include "tsk_common.h"

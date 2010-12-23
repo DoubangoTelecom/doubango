@@ -97,6 +97,7 @@ typedef struct tdav_session_video_s
 }
 tdav_session_video_t;
 
+#define TDAV_SESSION_VIDEO(self) ((tdav_session_video_t*)(self))
 
 TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_video_plugin_def_t;
 

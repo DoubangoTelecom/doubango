@@ -125,6 +125,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -140,6 +141,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\thirdparties\win32\lib\directshow\strmbase.lib dmoguids.lib strmiids.lib uuid.lib Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyMEDIA.lib"
 				LinkIncremental="1"
+				IgnoreDefaultLibraryNames="MSVCRTD"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

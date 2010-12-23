@@ -8,12 +8,11 @@
 
 package org.doubango.tinyWRAP;
 
-public class ProxyAudioConsumer {
+public class ProxyAudioConsumer extends ProxyPlugin {
   private long swigCPtr;
-  protected boolean swigCMemOwn;
 
   protected ProxyAudioConsumer(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
+    super(tinyWRAPJNI.SWIGProxyAudioConsumerUpcast(cPtr), cMemoryOwn);
     swigCPtr = cPtr;
   }
 
@@ -31,46 +30,7 @@ public class ProxyAudioConsumer {
       tinyWRAPJNI.delete_ProxyAudioConsumer(swigCPtr);
     }
     swigCPtr = 0;
-  }
-
-  protected void swigDirectorDisconnect() {
-    swigCMemOwn = false;
-    delete();
-  }
-
-  public void swigReleaseOwnership() {
-    swigCMemOwn = false;
-    tinyWRAPJNI.ProxyAudioConsumer_change_ownership(this, swigCPtr, false);
-  }
-
-  public void swigTakeOwnership() {
-    swigCMemOwn = true;
-    tinyWRAPJNI.ProxyAudioConsumer_change_ownership(this, swigCPtr, true);
-  }
-
-  public ProxyAudioConsumer() {
-    this(tinyWRAPJNI.new_ProxyAudioConsumer(), true);
-    tinyWRAPJNI.ProxyAudioConsumer_director_connect(this, swigCPtr, swigCMemOwn, false);
-  }
-
-  public int prepare(int ptime, int rate, int channels) {
-    return (getClass() == ProxyAudioConsumer.class) ? tinyWRAPJNI.ProxyAudioConsumer_prepare(swigCPtr, this, ptime, rate, channels) : tinyWRAPJNI.ProxyAudioConsumer_prepareSwigExplicitProxyAudioConsumer(swigCPtr, this, ptime, rate, channels);
-  }
-
-  public int start() {
-    return (getClass() == ProxyAudioConsumer.class) ? tinyWRAPJNI.ProxyAudioConsumer_start(swigCPtr, this) : tinyWRAPJNI.ProxyAudioConsumer_startSwigExplicitProxyAudioConsumer(swigCPtr, this);
-  }
-
-  public int pause() {
-    return (getClass() == ProxyAudioConsumer.class) ? tinyWRAPJNI.ProxyAudioConsumer_pause(swigCPtr, this) : tinyWRAPJNI.ProxyAudioConsumer_pauseSwigExplicitProxyAudioConsumer(swigCPtr, this);
-  }
-
-  public int stop() {
-    return (getClass() == ProxyAudioConsumer.class) ? tinyWRAPJNI.ProxyAudioConsumer_stop(swigCPtr, this) : tinyWRAPJNI.ProxyAudioConsumer_stopSwigExplicitProxyAudioConsumer(swigCPtr, this);
-  }
-
-  public void setActivate(boolean enabled) {
-    tinyWRAPJNI.ProxyAudioConsumer_setActivate(swigCPtr, this, enabled);
+    super.delete();
   }
 
   public long pull(java.nio.ByteBuffer output, long size) {
@@ -79,6 +39,10 @@ public class ProxyAudioConsumer {
 
   public boolean reset() {
     return tinyWRAPJNI.ProxyAudioConsumer_reset(swigCPtr, this);
+  }
+
+  public void setCallback(ProxyAudioConsumerCallback _callback) {
+    tinyWRAPJNI.ProxyAudioConsumer_setCallback(swigCPtr, this, ProxyAudioConsumerCallback.getCPtr(_callback), _callback);
   }
 
   public static boolean registerPlugin() {

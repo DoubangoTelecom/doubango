@@ -139,6 +139,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyDAV.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinyXCAP.lib $(OutDir)\tinySMS.lib $(OutDir)\tinyMSRP.lib $(OutDir)\tinySDP.lib"
 				LinkIncremental="1"
+				IgnoreDefaultLibraryNames="MSVCRTD"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -198,6 +199,10 @@
 			</File>
 			<File
 				RelativePath="..\_common\ProxyConsumer.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\ProxyPluginMgr.cxx"
 				>
 			</File>
 			<File
@@ -276,6 +281,10 @@
 			</File>
 			<File
 				RelativePath="..\_common\ProxyConsumer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\ProxyPluginMgr.h"
 				>
 			</File>
 			<File

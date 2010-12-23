@@ -32,6 +32,8 @@
 %newobject InviteEvent::takeCallSessionOwnership;
 %newobject InviteEvent::takeMsrpSessionOwnership;
 
+%newobject ProxyPluginMgr::createInstance;
+
 %newobject MediaContent::parse;
 
 %include SipStack.i

@@ -11,12 +11,10 @@ namespace org.doubango.tinyWRAP {
 using System;
 using System.Runtime.InteropServices;
 
-public class ProxyVideoConsumer : IDisposable {
+public class ProxyVideoConsumer : ProxyPlugin {
   private HandleRef swigCPtr;
-  protected bool swigCMemOwn;
 
-  internal ProxyVideoConsumer(IntPtr cPtr, bool cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
+  internal ProxyVideoConsumer(IntPtr cPtr, bool cMemoryOwn) : base(tinyWRAPPINVOKE.ProxyVideoConsumerUpcast(cPtr), cMemoryOwn) {
     swigCPtr = new HandleRef(this, cPtr);
   }
 
@@ -28,7 +26,7 @@ public class ProxyVideoConsumer : IDisposable {
     Dispose();
   }
 
-  public virtual void Dispose() {
+  public override void Dispose() {
     lock(this) {
       if(swigCPtr.Handle != IntPtr.Zero && swigCMemOwn) {
         swigCMemOwn = false;
@@ -36,40 +34,8 @@ public class ProxyVideoConsumer : IDisposable {
       }
       swigCPtr = new HandleRef(null, IntPtr.Zero);
       GC.SuppressFinalize(this);
+      base.Dispose();
     }
-  }
-
-  public ProxyVideoConsumer(tmedia_chroma_t chroma) : this(tinyWRAPPINVOKE.new_ProxyVideoConsumer((int)chroma), true) {
-    SwigDirectorConnect();
-  }
-
-  public virtual int prepare(int width, int height, int fps) {
-    int ret = ((this.GetType() == typeof(ProxyVideoConsumer)) ? tinyWRAPPINVOKE.ProxyVideoConsumer_prepare(swigCPtr, width, height, fps) : tinyWRAPPINVOKE.ProxyVideoConsumer_prepareSwigExplicitProxyVideoConsumer(swigCPtr, width, height, fps));
-    return ret;
-  }
-
-  public virtual int consume(ProxyVideoFrame frame) {
-    int ret = ((this.GetType() == typeof(ProxyVideoConsumer)) ? tinyWRAPPINVOKE.ProxyVideoConsumer_consume(swigCPtr, ProxyVideoFrame.getCPtr(frame)) : tinyWRAPPINVOKE.ProxyVideoConsumer_consumeSwigExplicitProxyVideoConsumer(swigCPtr, ProxyVideoFrame.getCPtr(frame)));
-    return ret;
-  }
-
-  public virtual int start() {
-    int ret = ((this.GetType() == typeof(ProxyVideoConsumer)) ? tinyWRAPPINVOKE.ProxyVideoConsumer_start(swigCPtr) : tinyWRAPPINVOKE.ProxyVideoConsumer_startSwigExplicitProxyVideoConsumer(swigCPtr));
-    return ret;
-  }
-
-  public virtual int pause() {
-    int ret = ((this.GetType() == typeof(ProxyVideoConsumer)) ? tinyWRAPPINVOKE.ProxyVideoConsumer_pause(swigCPtr) : tinyWRAPPINVOKE.ProxyVideoConsumer_pauseSwigExplicitProxyVideoConsumer(swigCPtr));
-    return ret;
-  }
-
-  public virtual int stop() {
-    int ret = ((this.GetType() == typeof(ProxyVideoConsumer)) ? tinyWRAPPINVOKE.ProxyVideoConsumer_stop(swigCPtr) : tinyWRAPPINVOKE.ProxyVideoConsumer_stopSwigExplicitProxyVideoConsumer(swigCPtr));
-    return ret;
-  }
-
-  public void setActivate(bool enabled) {
-    tinyWRAPPINVOKE.ProxyVideoConsumer_setActivate(swigCPtr, enabled);
   }
 
   public bool setDisplaySize(int width, int height) {
@@ -77,68 +43,19 @@ public class ProxyVideoConsumer : IDisposable {
     return ret;
   }
 
+  public void setCallback(ProxyVideoConsumerCallback _callback) {
+    tinyWRAPPINVOKE.ProxyVideoConsumer_setCallback(swigCPtr, ProxyVideoConsumerCallback.getCPtr(_callback));
+  }
+
   public static bool registerPlugin() {
     bool ret = tinyWRAPPINVOKE.ProxyVideoConsumer_registerPlugin();
     return ret;
   }
 
-  private void SwigDirectorConnect() {
-    if (SwigDerivedClassHasMethod("prepare", swigMethodTypes0))
-      swigDelegate0 = new SwigDelegateProxyVideoConsumer_0(SwigDirectorprepare);
-    if (SwigDerivedClassHasMethod("consume", swigMethodTypes1))
-      swigDelegate1 = new SwigDelegateProxyVideoConsumer_1(SwigDirectorconsume);
-    if (SwigDerivedClassHasMethod("start", swigMethodTypes2))
-      swigDelegate2 = new SwigDelegateProxyVideoConsumer_2(SwigDirectorstart);
-    if (SwigDerivedClassHasMethod("pause", swigMethodTypes3))
-      swigDelegate3 = new SwigDelegateProxyVideoConsumer_3(SwigDirectorpause);
-    if (SwigDerivedClassHasMethod("stop", swigMethodTypes4))
-      swigDelegate4 = new SwigDelegateProxyVideoConsumer_4(SwigDirectorstop);
-    tinyWRAPPINVOKE.ProxyVideoConsumer_director_connect(swigCPtr, swigDelegate0, swigDelegate1, swigDelegate2, swigDelegate3, swigDelegate4);
+  public static void setDefaultChroma(tmedia_chroma_t chroma) {
+    tinyWRAPPINVOKE.ProxyVideoConsumer_setDefaultChroma((int)chroma);
   }
 
-  private bool SwigDerivedClassHasMethod(string methodName, Type[] methodTypes) {
-    System.Reflection.MethodInfo methodInfo = this.GetType().GetMethod(methodName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance, null, methodTypes, null);
-    bool hasDerivedMethod = methodInfo.DeclaringType.IsSubclassOf(typeof(ProxyVideoConsumer));
-    return hasDerivedMethod;
-  }
-
-  private int SwigDirectorprepare(int width, int height, int fps) {
-    return prepare(width, height, fps);
-  }
-
-  private int SwigDirectorconsume(IntPtr frame) {
-    return consume((frame == IntPtr.Zero) ? null : new ProxyVideoFrame(frame, false));
-  }
-
-  private int SwigDirectorstart() {
-    return start();
-  }
-
-  private int SwigDirectorpause() {
-    return pause();
-  }
-
-  private int SwigDirectorstop() {
-    return stop();
-  }
-
-  public delegate int SwigDelegateProxyVideoConsumer_0(int width, int height, int fps);
-  public delegate int SwigDelegateProxyVideoConsumer_1(IntPtr frame);
-  public delegate int SwigDelegateProxyVideoConsumer_2();
-  public delegate int SwigDelegateProxyVideoConsumer_3();
-  public delegate int SwigDelegateProxyVideoConsumer_4();
-
-  private SwigDelegateProxyVideoConsumer_0 swigDelegate0;
-  private SwigDelegateProxyVideoConsumer_1 swigDelegate1;
-  private SwigDelegateProxyVideoConsumer_2 swigDelegate2;
-  private SwigDelegateProxyVideoConsumer_3 swigDelegate3;
-  private SwigDelegateProxyVideoConsumer_4 swigDelegate4;
-
-  private static Type[] swigMethodTypes0 = new Type[] { typeof(int), typeof(int), typeof(int) };
-  private static Type[] swigMethodTypes1 = new Type[] { typeof(ProxyVideoFrame) };
-  private static Type[] swigMethodTypes2 = new Type[] {  };
-  private static Type[] swigMethodTypes3 = new Type[] {  };
-  private static Type[] swigMethodTypes4 = new Type[] {  };
 }
 
 }

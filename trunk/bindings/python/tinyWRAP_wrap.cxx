@@ -3139,63 +3139,71 @@ namespace Swig {
 #define SWIGTYPE_p_OptionsEvent swig_types[15]
 #define SWIGTYPE_p_OptionsSession swig_types[16]
 #define SWIGTYPE_p_ProxyAudioConsumer swig_types[17]
-#define SWIGTYPE_p_ProxyAudioProducer swig_types[18]
-#define SWIGTYPE_p_ProxyVideoConsumer swig_types[19]
-#define SWIGTYPE_p_ProxyVideoFrame swig_types[20]
-#define SWIGTYPE_p_ProxyVideoProducer swig_types[21]
-#define SWIGTYPE_p_PublicationEvent swig_types[22]
-#define SWIGTYPE_p_PublicationSession swig_types[23]
-#define SWIGTYPE_p_RPMessage swig_types[24]
-#define SWIGTYPE_p_RegistrationEvent swig_types[25]
-#define SWIGTYPE_p_RegistrationSession swig_types[26]
-#define SWIGTYPE_p_SMSData swig_types[27]
-#define SWIGTYPE_p_SMSEncoder swig_types[28]
-#define SWIGTYPE_p_SafeObject swig_types[29]
-#define SWIGTYPE_p_SdpMessage swig_types[30]
-#define SWIGTYPE_p_SipCallback swig_types[31]
-#define SWIGTYPE_p_SipEvent swig_types[32]
-#define SWIGTYPE_p_SipMessage swig_types[33]
-#define SWIGTYPE_p_SipSession swig_types[34]
-#define SWIGTYPE_p_SipStack swig_types[35]
-#define SWIGTYPE_p_SipUri swig_types[36]
-#define SWIGTYPE_p_StackEvent swig_types[37]
-#define SWIGTYPE_p_SubscriptionEvent swig_types[38]
-#define SWIGTYPE_p_SubscriptionSession swig_types[39]
-#define SWIGTYPE_p_XcapCallback swig_types[40]
-#define SWIGTYPE_p_XcapEvent swig_types[41]
-#define SWIGTYPE_p_XcapMessage swig_types[42]
-#define SWIGTYPE_p_XcapSelector swig_types[43]
-#define SWIGTYPE_p_XcapStack swig_types[44]
-#define SWIGTYPE_p_char swig_types[45]
-#define SWIGTYPE_p_int swig_types[46]
-#define SWIGTYPE_p_long_long swig_types[47]
-#define SWIGTYPE_p_short swig_types[48]
-#define SWIGTYPE_p_signed_char swig_types[49]
-#define SWIGTYPE_p_tdav_codec_id_e swig_types[50]
-#define SWIGTYPE_p_thttp_event_type_e swig_types[51]
-#define SWIGTYPE_p_tmedia_bandwidth_level_e swig_types[52]
-#define SWIGTYPE_p_tmedia_chroma_e swig_types[53]
-#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[54]
-#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[55]
-#define SWIGTYPE_p_tmsrp_event_type_e swig_types[56]
-#define SWIGTYPE_p_tmsrp_request_type_e swig_types[57]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[58]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[59]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[60]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[61]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[62]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[63]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[64]
-#define SWIGTYPE_p_tsk_list_t swig_types[65]
-#define SWIGTYPE_p_twrap_media_type_e swig_types[66]
-#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[67]
-#define SWIGTYPE_p_twrap_sms_type_e swig_types[68]
-#define SWIGTYPE_p_unsigned_char swig_types[69]
-#define SWIGTYPE_p_unsigned_int swig_types[70]
-#define SWIGTYPE_p_unsigned_long_long swig_types[71]
-#define SWIGTYPE_p_unsigned_short swig_types[72]
-static swig_type_info *swig_types[74];
-static swig_module_info swig_module = {swig_types, 73, 0, 0, 0, 0};
+#define SWIGTYPE_p_ProxyAudioConsumerCallback swig_types[18]
+#define SWIGTYPE_p_ProxyAudioProducer swig_types[19]
+#define SWIGTYPE_p_ProxyAudioProducerCallback swig_types[20]
+#define SWIGTYPE_p_ProxyPlugin swig_types[21]
+#define SWIGTYPE_p_ProxyPluginMgr swig_types[22]
+#define SWIGTYPE_p_ProxyPluginMgrCallback swig_types[23]
+#define SWIGTYPE_p_ProxyVideoConsumer swig_types[24]
+#define SWIGTYPE_p_ProxyVideoConsumerCallback swig_types[25]
+#define SWIGTYPE_p_ProxyVideoFrame swig_types[26]
+#define SWIGTYPE_p_ProxyVideoProducer swig_types[27]
+#define SWIGTYPE_p_ProxyVideoProducerCallback swig_types[28]
+#define SWIGTYPE_p_PublicationEvent swig_types[29]
+#define SWIGTYPE_p_PublicationSession swig_types[30]
+#define SWIGTYPE_p_RPMessage swig_types[31]
+#define SWIGTYPE_p_RegistrationEvent swig_types[32]
+#define SWIGTYPE_p_RegistrationSession swig_types[33]
+#define SWIGTYPE_p_SMSData swig_types[34]
+#define SWIGTYPE_p_SMSEncoder swig_types[35]
+#define SWIGTYPE_p_SafeObject swig_types[36]
+#define SWIGTYPE_p_SdpMessage swig_types[37]
+#define SWIGTYPE_p_SipCallback swig_types[38]
+#define SWIGTYPE_p_SipEvent swig_types[39]
+#define SWIGTYPE_p_SipMessage swig_types[40]
+#define SWIGTYPE_p_SipSession swig_types[41]
+#define SWIGTYPE_p_SipStack swig_types[42]
+#define SWIGTYPE_p_SipUri swig_types[43]
+#define SWIGTYPE_p_StackEvent swig_types[44]
+#define SWIGTYPE_p_SubscriptionEvent swig_types[45]
+#define SWIGTYPE_p_SubscriptionSession swig_types[46]
+#define SWIGTYPE_p_XcapCallback swig_types[47]
+#define SWIGTYPE_p_XcapEvent swig_types[48]
+#define SWIGTYPE_p_XcapMessage swig_types[49]
+#define SWIGTYPE_p_XcapSelector swig_types[50]
+#define SWIGTYPE_p_XcapStack swig_types[51]
+#define SWIGTYPE_p_char swig_types[52]
+#define SWIGTYPE_p_int swig_types[53]
+#define SWIGTYPE_p_long_long swig_types[54]
+#define SWIGTYPE_p_short swig_types[55]
+#define SWIGTYPE_p_signed_char swig_types[56]
+#define SWIGTYPE_p_tdav_codec_id_e swig_types[57]
+#define SWIGTYPE_p_thttp_event_type_e swig_types[58]
+#define SWIGTYPE_p_tmedia_bandwidth_level_e swig_types[59]
+#define SWIGTYPE_p_tmedia_chroma_e swig_types[60]
+#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[61]
+#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[62]
+#define SWIGTYPE_p_tmsrp_event_type_e swig_types[63]
+#define SWIGTYPE_p_tmsrp_request_type_e swig_types[64]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[65]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[66]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[67]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[68]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[69]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[70]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[71]
+#define SWIGTYPE_p_tsk_list_t swig_types[72]
+#define SWIGTYPE_p_twrap_media_type_e swig_types[73]
+#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[74]
+#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[75]
+#define SWIGTYPE_p_twrap_sms_type_e swig_types[76]
+#define SWIGTYPE_p_unsigned_char swig_types[77]
+#define SWIGTYPE_p_unsigned_int swig_types[78]
+#define SWIGTYPE_p_unsigned_long_long swig_types[79]
+#define SWIGTYPE_p_unsigned_short swig_types[80]
+static swig_type_info *swig_types[82];
+static swig_module_info swig_module = {swig_types, 81, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3567,6 +3575,7 @@ SWIG_From_int  (int value)
 #include "SipEvent.h"
 #include "SipSession.h"
 
+#include "ProxyPluginMgr.h"
 #include "ProxyConsumer.h"
 #include "ProxyProducer.h"
 
@@ -3763,6 +3772,58 @@ SWIG_AsVal_bool (PyObject *obj, bool *val)
 
 
 SWIGINTERN int
+SWIG_AsVal_unsigned_SS_long_SS_long (PyObject *obj, unsigned long long *val)
+{
+  int res = SWIG_TypeError;
+  if (PyLong_Check(obj)) {
+    unsigned long long v = PyLong_AsUnsignedLongLong(obj);
+    if (!PyErr_Occurred()) {
+      if (val) *val = v;
+      return SWIG_OK;
+    } else {
+      PyErr_Clear();
+    }
+  } else {
+    unsigned long v;
+    res = SWIG_AsVal_unsigned_SS_long (obj,&v);
+    if (SWIG_IsOK(res)) {
+      if (val) *val = v;
+      return res;
+    }
+  }
+#ifdef SWIG_PYTHON_CAST_MODE
+  {
+    const double mant_max = 1LL << DBL_MANT_DIG;
+    double d;
+    res = SWIG_AsVal_double (obj,&d);
+    if (SWIG_IsOK(res) && SWIG_CanCastAsInteger(&d, 0, mant_max)) {
+      if (val) *val = (unsigned long long)(d);
+      return SWIG_AddCast(res);
+    }
+    res = SWIG_TypeError;
+  }
+#endif
+  return res;
+}
+
+
+SWIGINTERNINLINE PyObject* 
+SWIG_From_long_SS_long  (long long value)
+{
+  return ((value < LONG_MIN) || (value > LONG_MAX)) ?
+    PyLong_FromLongLong(value) : PyInt_FromLong(static_cast< long >(value)); 
+}
+
+
+SWIGINTERNINLINE PyObject* 
+SWIG_From_unsigned_SS_long_SS_long  (unsigned long long value)
+{
+  return (value > LONG_MAX) ?
+    PyLong_FromUnsignedLongLong(value) : PyInt_FromLong(static_cast< long >(value)); 
+}
+
+
+SWIGINTERN int
 SWIG_AsVal_unsigned_SS_short (PyObject * obj, unsigned short *val)
 {
   unsigned long v;
@@ -3785,14 +3846,6 @@ SWIG_AsVal_unsigned_SS_short (PyObject * obj, unsigned short *val)
 
 
 #include "Msrp.h"
-
-
-SWIGINTERNINLINE PyObject* 
-SWIG_From_long_SS_long  (long long value)
-{
-  return ((value < LONG_MIN) || (value > LONG_MAX)) ?
-    PyLong_FromLongLong(value) : PyInt_FromLong(static_cast< long >(value)); 
-}
 
 
 
@@ -3936,39 +3989,37 @@ int SwigDirector_DDebugCallback::OnDebugFatal(char const *message) {
 }
 
 
-SwigDirector_ProxyAudioConsumer::SwigDirector_ProxyAudioConsumer(PyObject *self): ProxyAudioConsumer(), Swig::Director(self) {
-  SWIG_DIRECTOR_RGTR((ProxyAudioConsumer *)this, this); 
+SwigDirector_ProxyPluginMgrCallback::SwigDirector_ProxyPluginMgrCallback(PyObject *self): ProxyPluginMgrCallback(), Swig::Director(self) {
+  SWIG_DIRECTOR_RGTR((ProxyPluginMgrCallback *)this, this); 
 }
 
 
 
 
-SwigDirector_ProxyAudioConsumer::~SwigDirector_ProxyAudioConsumer() {
+SwigDirector_ProxyPluginMgrCallback::~SwigDirector_ProxyPluginMgrCallback() {
 }
 
-int SwigDirector_ProxyAudioConsumer::prepare(int ptime, int rate, int channels) {
+int SwigDirector_ProxyPluginMgrCallback::OnPluginCreated(uint64_t id, enum twrap_proxy_plugin_type_e type) {
   int c_result;
   swig::SwigVar_PyObject obj0;
-  obj0 = SWIG_From_int(static_cast< int >(ptime));
+  obj0 = SWIG_From_unsigned_SS_long_SS_long(static_cast< unsigned long long >(id));
   swig::SwigVar_PyObject obj1;
-  obj1 = SWIG_From_int(static_cast< int >(rate));
-  swig::SwigVar_PyObject obj2;
-  obj2 = SWIG_From_int(static_cast< int >(channels));
+  obj1 = SWIG_From_int(static_cast< int >(type));
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioConsumer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyPluginMgrCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 0;
-  const char * const swig_method_name = "prepare";
+  const char * const swig_method_name = "OnPluginCreated";
   PyObject* method = swig_get_method(swig_method_index, swig_method_name);
-  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(OOO)" ,(PyObject *)obj0,(PyObject *)obj1,(PyObject *)obj2);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(OO)" ,(PyObject *)obj0,(PyObject *)obj1);
 #else
-  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"prepare", (char *)"(OOO)" ,(PyObject *)obj0,(PyObject *)obj1,(PyObject *)obj2);
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnPluginCreated", (char *)"(OO)" ,(PyObject *)obj0,(PyObject *)obj1);
 #endif
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioConsumer.prepare'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyPluginMgrCallback.OnPluginCreated'");
     }
   }
   int swig_val;
@@ -3981,10 +4032,88 @@ int SwigDirector_ProxyAudioConsumer::prepare(int ptime, int rate, int channels) 
 }
 
 
-int SwigDirector_ProxyAudioConsumer::start() {
+int SwigDirector_ProxyPluginMgrCallback::OnPluginDestroyed(uint64_t id, enum twrap_proxy_plugin_type_e type) {
+  int c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_From_unsigned_SS_long_SS_long(static_cast< unsigned long long >(id));
+  swig::SwigVar_PyObject obj1;
+  obj1 = SWIG_From_int(static_cast< int >(type));
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyPluginMgrCallback.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 1;
+  const char * const swig_method_name = "OnPluginDestroyed";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(OO)" ,(PyObject *)obj0,(PyObject *)obj1);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnPluginDestroyed", (char *)"(OO)" ,(PyObject *)obj0,(PyObject *)obj1);
+#endif
+  if (result == NULL) {
+    PyObject *error = PyErr_Occurred();
+    if (error != NULL) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyPluginMgrCallback.OnPluginDestroyed'");
+    }
+  }
+  int swig_val;
+  int swig_res = SWIG_AsVal_int(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""int""'");
+  }
+  c_result = static_cast< int >(swig_val);
+  return (int) c_result;
+}
+
+
+SwigDirector_ProxyAudioConsumerCallback::SwigDirector_ProxyAudioConsumerCallback(PyObject *self): ProxyAudioConsumerCallback(), Swig::Director(self) {
+  SWIG_DIRECTOR_RGTR((ProxyAudioConsumerCallback *)this, this); 
+}
+
+
+
+
+SwigDirector_ProxyAudioConsumerCallback::~SwigDirector_ProxyAudioConsumerCallback() {
+}
+
+int SwigDirector_ProxyAudioConsumerCallback::prepare(int ptime, int rate, int channels) {
+  int c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_From_int(static_cast< int >(ptime));
+  swig::SwigVar_PyObject obj1;
+  obj1 = SWIG_From_int(static_cast< int >(rate));
+  swig::SwigVar_PyObject obj2;
+  obj2 = SWIG_From_int(static_cast< int >(channels));
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioConsumerCallback.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 0;
+  const char * const swig_method_name = "prepare";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(OOO)" ,(PyObject *)obj0,(PyObject *)obj1,(PyObject *)obj2);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"prepare", (char *)"(OOO)" ,(PyObject *)obj0,(PyObject *)obj1,(PyObject *)obj2);
+#endif
+  if (result == NULL) {
+    PyObject *error = PyErr_Occurred();
+    if (error != NULL) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioConsumerCallback.prepare'");
+    }
+  }
+  int swig_val;
+  int swig_res = SWIG_AsVal_int(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""int""'");
+  }
+  c_result = static_cast< int >(swig_val);
+  return (int) c_result;
+}
+
+
+int SwigDirector_ProxyAudioConsumerCallback::start() {
   int c_result;
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioConsumer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioConsumerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 1;
@@ -3997,7 +4126,7 @@ int SwigDirector_ProxyAudioConsumer::start() {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioConsumer.start'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioConsumerCallback.start'");
     }
   }
   int swig_val;
@@ -4010,10 +4139,10 @@ int SwigDirector_ProxyAudioConsumer::start() {
 }
 
 
-int SwigDirector_ProxyAudioConsumer::pause() {
+int SwigDirector_ProxyAudioConsumerCallback::pause() {
   int c_result;
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioConsumer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioConsumerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 2;
@@ -4026,7 +4155,7 @@ int SwigDirector_ProxyAudioConsumer::pause() {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioConsumer.pause'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioConsumerCallback.pause'");
     }
   }
   int swig_val;
@@ -4039,10 +4168,10 @@ int SwigDirector_ProxyAudioConsumer::pause() {
 }
 
 
-int SwigDirector_ProxyAudioConsumer::stop() {
+int SwigDirector_ProxyAudioConsumerCallback::stop() {
   int c_result;
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioConsumer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioConsumerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 3;
@@ -4055,7 +4184,7 @@ int SwigDirector_ProxyAudioConsumer::stop() {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioConsumer.stop'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioConsumerCallback.stop'");
     }
   }
   int swig_val;
@@ -4068,17 +4197,17 @@ int SwigDirector_ProxyAudioConsumer::stop() {
 }
 
 
-SwigDirector_ProxyVideoConsumer::SwigDirector_ProxyVideoConsumer(PyObject *self, tmedia_chroma_t chroma): ProxyVideoConsumer(chroma), Swig::Director(self) {
-  SWIG_DIRECTOR_RGTR((ProxyVideoConsumer *)this, this); 
+SwigDirector_ProxyVideoConsumerCallback::SwigDirector_ProxyVideoConsumerCallback(PyObject *self): ProxyVideoConsumerCallback(), Swig::Director(self) {
+  SWIG_DIRECTOR_RGTR((ProxyVideoConsumerCallback *)this, this); 
 }
 
 
 
 
-SwigDirector_ProxyVideoConsumer::~SwigDirector_ProxyVideoConsumer() {
+SwigDirector_ProxyVideoConsumerCallback::~SwigDirector_ProxyVideoConsumerCallback() {
 }
 
-int SwigDirector_ProxyVideoConsumer::prepare(int width, int height, int fps) {
+int SwigDirector_ProxyVideoConsumerCallback::prepare(int width, int height, int fps) {
   int c_result;
   swig::SwigVar_PyObject obj0;
   obj0 = SWIG_From_int(static_cast< int >(width));
@@ -4087,7 +4216,7 @@ int SwigDirector_ProxyVideoConsumer::prepare(int width, int height, int fps) {
   swig::SwigVar_PyObject obj2;
   obj2 = SWIG_From_int(static_cast< int >(fps));
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoConsumer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoConsumerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 0;
@@ -4100,7 +4229,7 @@ int SwigDirector_ProxyVideoConsumer::prepare(int width, int height, int fps) {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoConsumer.prepare'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoConsumerCallback.prepare'");
     }
   }
   int swig_val;
@@ -4113,12 +4242,12 @@ int SwigDirector_ProxyVideoConsumer::prepare(int width, int height, int fps) {
 }
 
 
-int SwigDirector_ProxyVideoConsumer::consume(ProxyVideoFrame const *frame) {
+int SwigDirector_ProxyVideoConsumerCallback::consume(ProxyVideoFrame const *frame) {
   int c_result;
   swig::SwigVar_PyObject obj0;
   obj0 = SWIG_NewPointerObj(SWIG_as_voidptr(frame), SWIGTYPE_p_ProxyVideoFrame,  0 );
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoConsumer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoConsumerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 1;
@@ -4131,7 +4260,7 @@ int SwigDirector_ProxyVideoConsumer::consume(ProxyVideoFrame const *frame) {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoConsumer.consume'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoConsumerCallback.consume'");
     }
   }
   int swig_val;
@@ -4144,10 +4273,10 @@ int SwigDirector_ProxyVideoConsumer::consume(ProxyVideoFrame const *frame) {
 }
 
 
-int SwigDirector_ProxyVideoConsumer::start() {
+int SwigDirector_ProxyVideoConsumerCallback::start() {
   int c_result;
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoConsumer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoConsumerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 2;
@@ -4160,7 +4289,7 @@ int SwigDirector_ProxyVideoConsumer::start() {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoConsumer.start'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoConsumerCallback.start'");
     }
   }
   int swig_val;
@@ -4173,10 +4302,10 @@ int SwigDirector_ProxyVideoConsumer::start() {
 }
 
 
-int SwigDirector_ProxyVideoConsumer::pause() {
+int SwigDirector_ProxyVideoConsumerCallback::pause() {
   int c_result;
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoConsumer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoConsumerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 3;
@@ -4189,7 +4318,7 @@ int SwigDirector_ProxyVideoConsumer::pause() {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoConsumer.pause'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoConsumerCallback.pause'");
     }
   }
   int swig_val;
@@ -4202,10 +4331,10 @@ int SwigDirector_ProxyVideoConsumer::pause() {
 }
 
 
-int SwigDirector_ProxyVideoConsumer::stop() {
+int SwigDirector_ProxyVideoConsumerCallback::stop() {
   int c_result;
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoConsumer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoConsumerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 4;
@@ -4218,7 +4347,7 @@ int SwigDirector_ProxyVideoConsumer::stop() {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoConsumer.stop'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoConsumerCallback.stop'");
     }
   }
   int swig_val;
@@ -4231,17 +4360,17 @@ int SwigDirector_ProxyVideoConsumer::stop() {
 }
 
 
-SwigDirector_ProxyAudioProducer::SwigDirector_ProxyAudioProducer(PyObject *self): ProxyAudioProducer(), Swig::Director(self) {
-  SWIG_DIRECTOR_RGTR((ProxyAudioProducer *)this, this); 
+SwigDirector_ProxyAudioProducerCallback::SwigDirector_ProxyAudioProducerCallback(PyObject *self): ProxyAudioProducerCallback(), Swig::Director(self) {
+  SWIG_DIRECTOR_RGTR((ProxyAudioProducerCallback *)this, this); 
 }
 
 
 
 
-SwigDirector_ProxyAudioProducer::~SwigDirector_ProxyAudioProducer() {
+SwigDirector_ProxyAudioProducerCallback::~SwigDirector_ProxyAudioProducerCallback() {
 }
 
-int SwigDirector_ProxyAudioProducer::prepare(int ptime, int rate, int channels) {
+int SwigDirector_ProxyAudioProducerCallback::prepare(int ptime, int rate, int channels) {
   int c_result;
   swig::SwigVar_PyObject obj0;
   obj0 = SWIG_From_int(static_cast< int >(ptime));
@@ -4250,7 +4379,7 @@ int SwigDirector_ProxyAudioProducer::prepare(int ptime, int rate, int channels) 
   swig::SwigVar_PyObject obj2;
   obj2 = SWIG_From_int(static_cast< int >(channels));
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioProducer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioProducerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 0;
@@ -4263,7 +4392,7 @@ int SwigDirector_ProxyAudioProducer::prepare(int ptime, int rate, int channels) 
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioProducer.prepare'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioProducerCallback.prepare'");
     }
   }
   int swig_val;
@@ -4276,10 +4405,10 @@ int SwigDirector_ProxyAudioProducer::prepare(int ptime, int rate, int channels) 
 }
 
 
-int SwigDirector_ProxyAudioProducer::start() {
+int SwigDirector_ProxyAudioProducerCallback::start() {
   int c_result;
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioProducer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioProducerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 1;
@@ -4292,7 +4421,7 @@ int SwigDirector_ProxyAudioProducer::start() {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioProducer.start'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioProducerCallback.start'");
     }
   }
   int swig_val;
@@ -4305,10 +4434,10 @@ int SwigDirector_ProxyAudioProducer::start() {
 }
 
 
-int SwigDirector_ProxyAudioProducer::pause() {
+int SwigDirector_ProxyAudioProducerCallback::pause() {
   int c_result;
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioProducer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioProducerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 2;
@@ -4321,7 +4450,7 @@ int SwigDirector_ProxyAudioProducer::pause() {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioProducer.pause'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioProducerCallback.pause'");
     }
   }
   int swig_val;
@@ -4334,10 +4463,10 @@ int SwigDirector_ProxyAudioProducer::pause() {
 }
 
 
-int SwigDirector_ProxyAudioProducer::stop() {
+int SwigDirector_ProxyAudioProducerCallback::stop() {
   int c_result;
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioProducer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioProducerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 3;
@@ -4350,7 +4479,7 @@ int SwigDirector_ProxyAudioProducer::stop() {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioProducer.stop'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioProducerCallback.stop'");
     }
   }
   int swig_val;
@@ -4363,17 +4492,17 @@ int SwigDirector_ProxyAudioProducer::stop() {
 }
 
 
-SwigDirector_ProxyVideoProducer::SwigDirector_ProxyVideoProducer(PyObject *self, tmedia_chroma_t chroma): ProxyVideoProducer(chroma), Swig::Director(self) {
-  SWIG_DIRECTOR_RGTR((ProxyVideoProducer *)this, this); 
+SwigDirector_ProxyVideoProducerCallback::SwigDirector_ProxyVideoProducerCallback(PyObject *self): ProxyVideoProducerCallback(), Swig::Director(self) {
+  SWIG_DIRECTOR_RGTR((ProxyVideoProducerCallback *)this, this); 
 }
 
 
 
 
-SwigDirector_ProxyVideoProducer::~SwigDirector_ProxyVideoProducer() {
+SwigDirector_ProxyVideoProducerCallback::~SwigDirector_ProxyVideoProducerCallback() {
 }
 
-int SwigDirector_ProxyVideoProducer::prepare(int width, int height, int fps) {
+int SwigDirector_ProxyVideoProducerCallback::prepare(int width, int height, int fps) {
   int c_result;
   swig::SwigVar_PyObject obj0;
   obj0 = SWIG_From_int(static_cast< int >(width));
@@ -4382,7 +4511,7 @@ int SwigDirector_ProxyVideoProducer::prepare(int width, int height, int fps) {
   swig::SwigVar_PyObject obj2;
   obj2 = SWIG_From_int(static_cast< int >(fps));
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoProducer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoProducerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 0;
@@ -4395,7 +4524,7 @@ int SwigDirector_ProxyVideoProducer::prepare(int width, int height, int fps) {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoProducer.prepare'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoProducerCallback.prepare'");
     }
   }
   int swig_val;
@@ -4408,10 +4537,10 @@ int SwigDirector_ProxyVideoProducer::prepare(int width, int height, int fps) {
 }
 
 
-int SwigDirector_ProxyVideoProducer::start() {
+int SwigDirector_ProxyVideoProducerCallback::start() {
   int c_result;
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoProducer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoProducerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 1;
@@ -4424,7 +4553,7 @@ int SwigDirector_ProxyVideoProducer::start() {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoProducer.start'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoProducerCallback.start'");
     }
   }
   int swig_val;
@@ -4437,10 +4566,10 @@ int SwigDirector_ProxyVideoProducer::start() {
 }
 
 
-int SwigDirector_ProxyVideoProducer::pause() {
+int SwigDirector_ProxyVideoProducerCallback::pause() {
   int c_result;
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoProducer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoProducerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 2;
@@ -4453,7 +4582,7 @@ int SwigDirector_ProxyVideoProducer::pause() {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoProducer.pause'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoProducerCallback.pause'");
     }
   }
   int swig_val;
@@ -4466,10 +4595,10 @@ int SwigDirector_ProxyVideoProducer::pause() {
 }
 
 
-int SwigDirector_ProxyVideoProducer::stop() {
+int SwigDirector_ProxyVideoProducerCallback::stop() {
   int c_result;
   if (!swig_get_self()) {
-    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoProducer.__init__.");
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyVideoProducerCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 3;
@@ -4482,7 +4611,7 @@ int SwigDirector_ProxyVideoProducer::stop() {
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoProducer.stop'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyVideoProducerCallback.stop'");
     }
   }
   int swig_val;
@@ -5568,6 +5697,68 @@ SWIGINTERN PyObject *_wrap_MediaSessionMgr_producerSetInt64(PyObject *SWIGUNUSED
   return resultobj;
 fail:
   if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_findProxyPluginConsumer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  ProxyPlugin *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MediaSessionMgr_findProxyPluginConsumer",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MediaSessionMgr, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_findProxyPluginConsumer" "', argument " "1"" of type '" "MediaSessionMgr *""'"); 
+  }
+  arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_findProxyPluginConsumer" "', argument " "2"" of type '" "twrap_media_type_t""'");
+  } 
+  arg2 = static_cast< twrap_media_type_t >(val2);
+  result = (ProxyPlugin *)(arg1)->findProxyPluginConsumer(arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyPlugin, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_findProxyPluginProducer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  ProxyPlugin *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MediaSessionMgr_findProxyPluginProducer",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MediaSessionMgr, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_findProxyPluginProducer" "', argument " "1"" of type '" "MediaSessionMgr *""'"); 
+  }
+  arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_findProxyPluginProducer" "', argument " "2"" of type '" "twrap_media_type_t""'");
+  } 
+  arg2 = static_cast< twrap_media_type_t >(val2);
+  result = (ProxyPlugin *)(arg1)->findProxyPluginProducer(arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyPlugin, 0 |  0 );
+  return resultobj;
+fail:
   return NULL;
 }
 
@@ -10277,41 +10468,19 @@ SWIGINTERN PyObject *SubscriptionSession_swigregister(PyObject *SWIGUNUSEDPARM(s
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_ProxyAudioConsumer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_ProxyPluginMgr(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  PyObject *arg1 = (PyObject *) 0 ;
-  PyObject * obj0 = 0 ;
-  ProxyAudioConsumer *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:new_ProxyAudioConsumer",&obj0)) SWIG_fail;
-  arg1 = obj0;
-  if ( arg1 != Py_None ) {
-    /* subclassed */
-    result = (ProxyAudioConsumer *)new SwigDirector_ProxyAudioConsumer(arg1); 
-  } else {
-    result = (ProxyAudioConsumer *)new ProxyAudioConsumer(); 
-  }
-  
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyAudioConsumer, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_delete_ProxyAudioConsumer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyAudioConsumer",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumer, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyPluginMgr",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyPluginMgr, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyAudioConsumer" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyPluginMgr" "', argument " "1"" of type '" "ProxyPluginMgr *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
+  arg1 = reinterpret_cast< ProxyPluginMgr * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -10320,9 +10489,469 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_prepare(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyPluginMgr_createInstance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  ProxyPluginMgr *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyPluginMgr_createInstance",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyPluginMgrCallback, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgr_createInstance" "', argument " "1"" of type '" "ProxyPluginMgrCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyPluginMgrCallback * >(argp1);
+  result = (ProxyPluginMgr *)ProxyPluginMgr::createInstance(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyPluginMgr, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyPluginMgr_getInstance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyPluginMgr *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":ProxyPluginMgr_getInstance")) SWIG_fail;
+  result = (ProxyPluginMgr *)ProxyPluginMgr::getInstance();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyPluginMgr, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyPluginMgr_findAudioConsumer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+  uint64_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned long long val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  ProxyAudioConsumer *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyPluginMgr_findAudioConsumer",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyPluginMgr, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgr_findAudioConsumer" "', argument " "1"" of type '" "ProxyPluginMgr *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyPluginMgr * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_long_SS_long(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyPluginMgr_findAudioConsumer" "', argument " "2"" of type '" "uint64_t""'");
+  } 
+  arg2 = static_cast< uint64_t >(val2);
+  result = (ProxyAudioConsumer *)(arg1)->findAudioConsumer(arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyPluginMgr_findVideoConsumer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+  uint64_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned long long val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  ProxyVideoConsumer *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyPluginMgr_findVideoConsumer",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyPluginMgr, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgr_findVideoConsumer" "', argument " "1"" of type '" "ProxyPluginMgr *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyPluginMgr * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_long_SS_long(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyPluginMgr_findVideoConsumer" "', argument " "2"" of type '" "uint64_t""'");
+  } 
+  arg2 = static_cast< uint64_t >(val2);
+  result = (ProxyVideoConsumer *)(arg1)->findVideoConsumer(arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyPluginMgr_findAudioProducer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+  uint64_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned long long val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  ProxyAudioProducer *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyPluginMgr_findAudioProducer",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyPluginMgr, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgr_findAudioProducer" "', argument " "1"" of type '" "ProxyPluginMgr *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyPluginMgr * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_long_SS_long(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyPluginMgr_findAudioProducer" "', argument " "2"" of type '" "uint64_t""'");
+  } 
+  arg2 = static_cast< uint64_t >(val2);
+  result = (ProxyAudioProducer *)(arg1)->findAudioProducer(arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyPluginMgr_findVideoProducer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+  uint64_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned long long val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  ProxyVideoProducer *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyPluginMgr_findVideoProducer",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyPluginMgr, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgr_findVideoProducer" "', argument " "1"" of type '" "ProxyPluginMgr *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyPluginMgr * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_long_SS_long(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyPluginMgr_findVideoProducer" "', argument " "2"" of type '" "uint64_t""'");
+  } 
+  arg2 = static_cast< uint64_t >(val2);
+  result = (ProxyVideoProducer *)(arg1)->findVideoProducer(arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *ProxyPluginMgr_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_ProxyPluginMgr, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_new_ProxyPluginMgrCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  PyObject * obj0 = 0 ;
+  ProxyPluginMgrCallback *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_ProxyPluginMgrCallback",&obj0)) SWIG_fail;
+  arg1 = obj0;
+  if ( arg1 != Py_None ) {
+    /* subclassed */
+    result = (ProxyPluginMgrCallback *)new SwigDirector_ProxyPluginMgrCallback(arg1); 
+  } else {
+    result = (ProxyPluginMgrCallback *)new ProxyPluginMgrCallback(); 
+  }
+  
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyPluginMgrCallback, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_ProxyPluginMgrCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyPluginMgrCallback",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyPluginMgrCallback, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyPluginMgrCallback" "', argument " "1"" of type '" "ProxyPluginMgrCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyPluginMgrCallback * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyPluginMgrCallback_OnPluginCreated(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+  uint64_t arg2 ;
+  enum twrap_proxy_plugin_type_e arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned long long val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:ProxyPluginMgrCallback_OnPluginCreated",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyPluginMgrCallback, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgrCallback_OnPluginCreated" "', argument " "1"" of type '" "ProxyPluginMgrCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyPluginMgrCallback * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_long_SS_long(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyPluginMgrCallback_OnPluginCreated" "', argument " "2"" of type '" "uint64_t""'");
+  } 
+  arg2 = static_cast< uint64_t >(val2);
+  ecode3 = SWIG_AsVal_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyPluginMgrCallback_OnPluginCreated" "', argument " "3"" of type '" "enum twrap_proxy_plugin_type_e""'");
+  } 
+  arg3 = static_cast< enum twrap_proxy_plugin_type_e >(val3);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (int)(arg1)->ProxyPluginMgrCallback::OnPluginCreated(arg2,arg3);
+    } else {
+      result = (int)(arg1)->OnPluginCreated(arg2,arg3);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyPluginMgrCallback_OnPluginDestroyed(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+  uint64_t arg2 ;
+  enum twrap_proxy_plugin_type_e arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned long long val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:ProxyPluginMgrCallback_OnPluginDestroyed",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyPluginMgrCallback, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgrCallback_OnPluginDestroyed" "', argument " "1"" of type '" "ProxyPluginMgrCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyPluginMgrCallback * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_long_SS_long(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyPluginMgrCallback_OnPluginDestroyed" "', argument " "2"" of type '" "uint64_t""'");
+  } 
+  arg2 = static_cast< uint64_t >(val2);
+  ecode3 = SWIG_AsVal_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyPluginMgrCallback_OnPluginDestroyed" "', argument " "3"" of type '" "enum twrap_proxy_plugin_type_e""'");
+  } 
+  arg3 = static_cast< enum twrap_proxy_plugin_type_e >(val3);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (int)(arg1)->ProxyPluginMgrCallback::OnPluginDestroyed(arg2,arg3);
+    } else {
+      result = (int)(arg1)->OnPluginDestroyed(arg2,arg3);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_disown_ProxyPluginMgrCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:disown_ProxyPluginMgrCallback",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyPluginMgrCallback, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_ProxyPluginMgrCallback" "', argument " "1"" of type '" "ProxyPluginMgrCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyPluginMgrCallback * >(argp1);
+  {
+    Swig::Director *director = SWIG_DIRECTOR_CAST(arg1);
+    if (director) director->swig_disown();
+  }
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *ProxyPluginMgrCallback_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_ProxyPluginMgrCallback, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_delete_ProxyPlugin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyPlugin *arg1 = (ProxyPlugin *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyPlugin",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyPlugin, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyPlugin" "', argument " "1"" of type '" "ProxyPlugin *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyPlugin * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyPlugin_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyPlugin *arg1 = (ProxyPlugin *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  twrap_proxy_plugin_type_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyPlugin_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyPlugin, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPlugin_getType" "', argument " "1"" of type '" "ProxyPlugin const *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyPlugin * >(argp1);
+  result = (twrap_proxy_plugin_type_t)((ProxyPlugin const *)arg1)->getType();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyPlugin_getId(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyPlugin *arg1 = (ProxyPlugin *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  uint64_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyPlugin_getId",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyPlugin, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPlugin_getId" "', argument " "1"" of type '" "ProxyPlugin const *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyPlugin * >(argp1);
+  result = (uint64_t)((ProxyPlugin const *)arg1)->getId();
+  resultobj = SWIG_From_unsigned_SS_long_SS_long(static_cast< unsigned long long >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *ProxyPlugin_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_ProxyPlugin, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_new_ProxyAudioConsumerCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  PyObject * obj0 = 0 ;
+  ProxyAudioConsumerCallback *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_ProxyAudioConsumerCallback",&obj0)) SWIG_fail;
+  arg1 = obj0;
+  if ( arg1 != Py_None ) {
+    /* subclassed */
+    result = (ProxyAudioConsumerCallback *)new SwigDirector_ProxyAudioConsumerCallback(arg1); 
+  } else {
+    result = (ProxyAudioConsumerCallback *)new ProxyAudioConsumerCallback(); 
+  }
+  
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyAudioConsumerCallback, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_ProxyAudioConsumerCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyAudioConsumerCallback",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumerCallback, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyAudioConsumerCallback" "', argument " "1"" of type '" "ProxyAudioConsumerCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyAudioConsumerCallback * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyAudioConsumerCallback_prepare(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
   int arg2 ;
   int arg3 ;
   int arg4 ;
@@ -10342,32 +10971,32 @@ SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_prepare(PyObject *SWIGUNUSEDPARM(s
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:ProxyAudioConsumer_prepare",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:ProxyAudioConsumerCallback_prepare",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_prepare" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumerCallback_prepare" "', argument " "1"" of type '" "ProxyAudioConsumerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
+  arg1 = reinterpret_cast< ProxyAudioConsumerCallback * >(argp1);
   ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioConsumer_prepare" "', argument " "2"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioConsumerCallback_prepare" "', argument " "2"" of type '" "int""'");
   } 
   arg2 = static_cast< int >(val2);
   ecode3 = SWIG_AsVal_int(obj2, &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyAudioConsumer_prepare" "', argument " "3"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyAudioConsumerCallback_prepare" "', argument " "3"" of type '" "int""'");
   } 
   arg3 = static_cast< int >(val3);
   ecode4 = SWIG_AsVal_int(obj3, &val4);
   if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyAudioConsumer_prepare" "', argument " "4"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyAudioConsumerCallback_prepare" "', argument " "4"" of type '" "int""'");
   } 
   arg4 = static_cast< int >(val4);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyAudioConsumer::prepare(arg2,arg3,arg4);
+      result = (int)(arg1)->ProxyAudioConsumerCallback::prepare(arg2,arg3,arg4);
     } else {
       result = (int)(arg1)->prepare(arg2,arg3,arg4);
     }
@@ -10381,9 +11010,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_start(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyAudioConsumerCallback_start(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -10391,17 +11020,17 @@ SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_start(PyObject *SWIGUNUSEDPARM(sel
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioConsumer_start",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioConsumerCallback_start",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_start" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumerCallback_start" "', argument " "1"" of type '" "ProxyAudioConsumerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
+  arg1 = reinterpret_cast< ProxyAudioConsumerCallback * >(argp1);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyAudioConsumer::start();
+      result = (int)(arg1)->ProxyAudioConsumerCallback::start();
     } else {
       result = (int)(arg1)->start();
     }
@@ -10415,9 +11044,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_pause(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyAudioConsumerCallback_pause(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -10425,17 +11054,17 @@ SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_pause(PyObject *SWIGUNUSEDPARM(sel
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioConsumer_pause",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioConsumerCallback_pause",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_pause" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumerCallback_pause" "', argument " "1"" of type '" "ProxyAudioConsumerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
+  arg1 = reinterpret_cast< ProxyAudioConsumerCallback * >(argp1);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyAudioConsumer::pause();
+      result = (int)(arg1)->ProxyAudioConsumerCallback::pause();
     } else {
       result = (int)(arg1)->pause();
     }
@@ -10449,9 +11078,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_stop(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyAudioConsumerCallback_stop(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -10459,17 +11088,17 @@ SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_stop(PyObject *SWIGUNUSEDPARM(self
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioConsumer_stop",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioConsumerCallback_stop",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_stop" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumerCallback_stop" "', argument " "1"" of type '" "ProxyAudioConsumerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
+  arg1 = reinterpret_cast< ProxyAudioConsumerCallback * >(argp1);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyAudioConsumer::stop();
+      result = (int)(arg1)->ProxyAudioConsumerCallback::stop();
     } else {
       result = (int)(arg1)->stop();
     }
@@ -10483,29 +11112,52 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_setActivate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_disown_ProxyAudioConsumerCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
-  bool arg2 ;
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  bool val2 ;
-  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyAudioConsumer_setActivate",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:disown_ProxyAudioConsumerCallback",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_setActivate" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_ProxyAudioConsumerCallback" "', argument " "1"" of type '" "ProxyAudioConsumerCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyAudioConsumerCallback * >(argp1);
+  {
+    Swig::Director *director = SWIG_DIRECTOR_CAST(arg1);
+    if (director) director->swig_disown();
+  }
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *ProxyAudioConsumerCallback_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_ProxyAudioConsumerCallback, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_delete_ProxyAudioConsumer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyAudioConsumer",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumer, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyAudioConsumer" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
   }
   arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
-  ecode2 = SWIG_AsVal_bool(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioConsumer_setActivate" "', argument " "2"" of type '" "bool""'");
-  } 
-  arg2 = static_cast< bool >(val2);
-  (arg1)->setActivate(arg2);
+  delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -10573,6 +11225,36 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_setCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyAudioConsumerCallback *arg2 = (ProxyAudioConsumerCallback *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyAudioConsumer_setCallback",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_setCallback" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_ProxyAudioConsumerCallback, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyAudioConsumer_setCallback" "', argument " "2"" of type '" "ProxyAudioConsumerCallback *""'"); 
+  }
+  arg2 = reinterpret_cast< ProxyAudioConsumerCallback * >(argp2);
+  (arg1)->setCallback(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_registerPlugin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   bool result;
@@ -10586,31 +11268,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_disown_ProxyAudioConsumer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:disown_ProxyAudioConsumer",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_ProxyAudioConsumer" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
-  }
-  arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
-  {
-    Swig::Director *director = SWIG_DIRECTOR_CAST(arg1);
-    if (director) director->swig_disown();
-  }
-  
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *ProxyAudioConsumer_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -10618,50 +11275,41 @@ SWIGINTERN PyObject *ProxyAudioConsumer_swigregister(PyObject *SWIGUNUSEDPARM(se
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_ProxyVideoConsumer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_ProxyVideoConsumerCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PyObject *arg1 = (PyObject *) 0 ;
-  tmedia_chroma_t arg2 ;
-  int val2 ;
-  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  ProxyVideoConsumer *result = 0 ;
+  ProxyVideoConsumerCallback *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_ProxyVideoConsumer",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_ProxyVideoConsumerCallback",&obj0)) SWIG_fail;
   arg1 = obj0;
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "new_ProxyVideoConsumer" "', argument " "2"" of type '" "tmedia_chroma_t""'");
-  } 
-  arg2 = static_cast< tmedia_chroma_t >(val2);
   if ( arg1 != Py_None ) {
     /* subclassed */
-    result = (ProxyVideoConsumer *)new SwigDirector_ProxyVideoConsumer(arg1,arg2); 
+    result = (ProxyVideoConsumerCallback *)new SwigDirector_ProxyVideoConsumerCallback(arg1); 
   } else {
-    result = (ProxyVideoConsumer *)new ProxyVideoConsumer(arg2); 
+    result = (ProxyVideoConsumerCallback *)new ProxyVideoConsumerCallback(); 
   }
   
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyVideoConsumer, SWIG_POINTER_NEW |  0 );
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyVideoConsumerCallback, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_ProxyVideoConsumer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_ProxyVideoConsumerCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyVideoConsumer",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumer, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyVideoConsumerCallback",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumerCallback, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyVideoConsumer" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyVideoConsumerCallback" "', argument " "1"" of type '" "ProxyVideoConsumerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
+  arg1 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -10670,9 +11318,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_prepare(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyVideoConsumerCallback_prepare(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   int arg2 ;
   int arg3 ;
   int arg4 ;
@@ -10692,32 +11340,32 @@ SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_prepare(PyObject *SWIGUNUSEDPARM(s
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:ProxyVideoConsumer_prepare",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:ProxyVideoConsumerCallback_prepare",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_prepare" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumerCallback_prepare" "', argument " "1"" of type '" "ProxyVideoConsumerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
+  arg1 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp1);
   ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoConsumer_prepare" "', argument " "2"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoConsumerCallback_prepare" "', argument " "2"" of type '" "int""'");
   } 
   arg2 = static_cast< int >(val2);
   ecode3 = SWIG_AsVal_int(obj2, &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoConsumer_prepare" "', argument " "3"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoConsumerCallback_prepare" "', argument " "3"" of type '" "int""'");
   } 
   arg3 = static_cast< int >(val3);
   ecode4 = SWIG_AsVal_int(obj3, &val4);
   if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyVideoConsumer_prepare" "', argument " "4"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyVideoConsumerCallback_prepare" "', argument " "4"" of type '" "int""'");
   } 
   arg4 = static_cast< int >(val4);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyVideoConsumer::prepare(arg2,arg3,arg4);
+      result = (int)(arg1)->ProxyVideoConsumerCallback::prepare(arg2,arg3,arg4);
     } else {
       result = (int)(arg1)->prepare(arg2,arg3,arg4);
     }
@@ -10731,9 +11379,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_consume(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyVideoConsumerCallback_consume(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   ProxyVideoFrame *arg2 = (ProxyVideoFrame *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -10745,22 +11393,22 @@ SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_consume(PyObject *SWIGUNUSEDPARM(s
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyVideoConsumer_consume",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyVideoConsumerCallback_consume",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_consume" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumerCallback_consume" "', argument " "1"" of type '" "ProxyVideoConsumerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
+  arg1 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_ProxyVideoFrame, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyVideoConsumer_consume" "', argument " "2"" of type '" "ProxyVideoFrame const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyVideoConsumerCallback_consume" "', argument " "2"" of type '" "ProxyVideoFrame const *""'"); 
   }
   arg2 = reinterpret_cast< ProxyVideoFrame * >(argp2);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyVideoConsumer::consume((ProxyVideoFrame const *)arg2);
+      result = (int)(arg1)->ProxyVideoConsumerCallback::consume((ProxyVideoFrame const *)arg2);
     } else {
       result = (int)(arg1)->consume((ProxyVideoFrame const *)arg2);
     }
@@ -10774,9 +11422,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_start(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyVideoConsumerCallback_start(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -10784,17 +11432,17 @@ SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_start(PyObject *SWIGUNUSEDPARM(sel
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoConsumer_start",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoConsumerCallback_start",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_start" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumerCallback_start" "', argument " "1"" of type '" "ProxyVideoConsumerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
+  arg1 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp1);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyVideoConsumer::start();
+      result = (int)(arg1)->ProxyVideoConsumerCallback::start();
     } else {
       result = (int)(arg1)->start();
     }
@@ -10808,9 +11456,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_pause(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyVideoConsumerCallback_pause(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -10818,17 +11466,17 @@ SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_pause(PyObject *SWIGUNUSEDPARM(sel
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoConsumer_pause",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoConsumerCallback_pause",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_pause" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumerCallback_pause" "', argument " "1"" of type '" "ProxyVideoConsumerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
+  arg1 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp1);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyVideoConsumer::pause();
+      result = (int)(arg1)->ProxyVideoConsumerCallback::pause();
     } else {
       result = (int)(arg1)->pause();
     }
@@ -10842,9 +11490,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_stop(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyVideoConsumerCallback_stop(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -10852,17 +11500,17 @@ SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_stop(PyObject *SWIGUNUSEDPARM(self
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoConsumer_stop",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoConsumerCallback_stop",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_stop" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumerCallback_stop" "', argument " "1"" of type '" "ProxyVideoConsumerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
+  arg1 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp1);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyVideoConsumer::stop();
+      result = (int)(arg1)->ProxyVideoConsumerCallback::stop();
     } else {
       result = (int)(arg1)->stop();
     }
@@ -10876,29 +11524,52 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_setActivate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_disown_ProxyVideoConsumerCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
-  bool arg2 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  bool val2 ;
-  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyVideoConsumer_setActivate",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:disown_ProxyVideoConsumerCallback",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_setActivate" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_ProxyVideoConsumerCallback" "', argument " "1"" of type '" "ProxyVideoConsumerCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp1);
+  {
+    Swig::Director *director = SWIG_DIRECTOR_CAST(arg1);
+    if (director) director->swig_disown();
+  }
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *ProxyVideoConsumerCallback_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_ProxyVideoConsumerCallback, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_delete_ProxyVideoConsumer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyVideoConsumer",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumer, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyVideoConsumer" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
   }
   arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
-  ecode2 = SWIG_AsVal_bool(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoConsumer_setActivate" "', argument " "2"" of type '" "bool""'");
-  } 
-  arg2 = static_cast< bool >(val2);
-  (arg1)->setActivate(arg2);
+  delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -10946,6 +11617,36 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_setCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg2 = (ProxyVideoConsumerCallback *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyVideoConsumer_setCallback",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_setCallback" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_ProxyVideoConsumerCallback, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyVideoConsumer_setCallback" "', argument " "2"" of type '" "ProxyVideoConsumerCallback *""'"); 
+  }
+  arg2 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp2);
+  (arg1)->setCallback(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_registerPlugin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   bool result;
@@ -10959,24 +11660,20 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_disown_ProxyVideoConsumer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_setDefaultChroma(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
+  tmedia_chroma_t arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:disown_ProxyVideoConsumer",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_ProxyVideoConsumer" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
-  }
-  arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
-  {
-    Swig::Director *director = SWIG_DIRECTOR_CAST(arg1);
-    if (director) director->swig_disown();
-  }
-  
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoConsumer_setDefaultChroma",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "ProxyVideoConsumer_setDefaultChroma" "', argument " "1"" of type '" "tmedia_chroma_t""'");
+  } 
+  arg1 = static_cast< tmedia_chroma_t >(val1);
+  ProxyVideoConsumer::setDefaultChroma(arg1);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -11079,41 +11776,41 @@ SWIGINTERN PyObject *ProxyVideoFrame_swigregister(PyObject *SWIGUNUSEDPARM(self)
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_ProxyAudioProducer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_ProxyAudioProducerCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PyObject *arg1 = (PyObject *) 0 ;
   PyObject * obj0 = 0 ;
-  ProxyAudioProducer *result = 0 ;
+  ProxyAudioProducerCallback *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_ProxyAudioProducer",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_ProxyAudioProducerCallback",&obj0)) SWIG_fail;
   arg1 = obj0;
   if ( arg1 != Py_None ) {
     /* subclassed */
-    result = (ProxyAudioProducer *)new SwigDirector_ProxyAudioProducer(arg1); 
+    result = (ProxyAudioProducerCallback *)new SwigDirector_ProxyAudioProducerCallback(arg1); 
   } else {
-    result = (ProxyAudioProducer *)new ProxyAudioProducer(); 
+    result = (ProxyAudioProducerCallback *)new ProxyAudioProducerCallback(); 
   }
   
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyAudioProducer, SWIG_POINTER_NEW |  0 );
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyAudioProducerCallback, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_ProxyAudioProducer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_ProxyAudioProducerCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyAudioProducer",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducer, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyAudioProducerCallback",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducerCallback, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyAudioProducer" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyAudioProducerCallback" "', argument " "1"" of type '" "ProxyAudioProducerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
+  arg1 = reinterpret_cast< ProxyAudioProducerCallback * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -11122,9 +11819,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyAudioProducer_prepare(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyAudioProducerCallback_prepare(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   int arg2 ;
   int arg3 ;
   int arg4 ;
@@ -11144,32 +11841,32 @@ SWIGINTERN PyObject *_wrap_ProxyAudioProducer_prepare(PyObject *SWIGUNUSEDPARM(s
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:ProxyAudioProducer_prepare",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:ProxyAudioProducerCallback_prepare",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_prepare" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducerCallback_prepare" "', argument " "1"" of type '" "ProxyAudioProducerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
+  arg1 = reinterpret_cast< ProxyAudioProducerCallback * >(argp1);
   ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioProducer_prepare" "', argument " "2"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioProducerCallback_prepare" "', argument " "2"" of type '" "int""'");
   } 
   arg2 = static_cast< int >(val2);
   ecode3 = SWIG_AsVal_int(obj2, &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyAudioProducer_prepare" "', argument " "3"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyAudioProducerCallback_prepare" "', argument " "3"" of type '" "int""'");
   } 
   arg3 = static_cast< int >(val3);
   ecode4 = SWIG_AsVal_int(obj3, &val4);
   if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyAudioProducer_prepare" "', argument " "4"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyAudioProducerCallback_prepare" "', argument " "4"" of type '" "int""'");
   } 
   arg4 = static_cast< int >(val4);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyAudioProducer::prepare(arg2,arg3,arg4);
+      result = (int)(arg1)->ProxyAudioProducerCallback::prepare(arg2,arg3,arg4);
     } else {
       result = (int)(arg1)->prepare(arg2,arg3,arg4);
     }
@@ -11183,9 +11880,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyAudioProducer_start(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyAudioProducerCallback_start(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -11193,17 +11890,17 @@ SWIGINTERN PyObject *_wrap_ProxyAudioProducer_start(PyObject *SWIGUNUSEDPARM(sel
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioProducer_start",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioProducerCallback_start",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_start" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducerCallback_start" "', argument " "1"" of type '" "ProxyAudioProducerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
+  arg1 = reinterpret_cast< ProxyAudioProducerCallback * >(argp1);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyAudioProducer::start();
+      result = (int)(arg1)->ProxyAudioProducerCallback::start();
     } else {
       result = (int)(arg1)->start();
     }
@@ -11217,9 +11914,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyAudioProducer_pause(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyAudioProducerCallback_pause(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -11227,17 +11924,17 @@ SWIGINTERN PyObject *_wrap_ProxyAudioProducer_pause(PyObject *SWIGUNUSEDPARM(sel
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioProducer_pause",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioProducerCallback_pause",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_pause" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducerCallback_pause" "', argument " "1"" of type '" "ProxyAudioProducerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
+  arg1 = reinterpret_cast< ProxyAudioProducerCallback * >(argp1);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyAudioProducer::pause();
+      result = (int)(arg1)->ProxyAudioProducerCallback::pause();
     } else {
       result = (int)(arg1)->pause();
     }
@@ -11251,9 +11948,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyAudioProducer_stop(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyAudioProducerCallback_stop(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -11261,17 +11958,17 @@ SWIGINTERN PyObject *_wrap_ProxyAudioProducer_stop(PyObject *SWIGUNUSEDPARM(self
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioProducer_stop",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioProducerCallback_stop",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_stop" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducerCallback_stop" "', argument " "1"" of type '" "ProxyAudioProducerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
+  arg1 = reinterpret_cast< ProxyAudioProducerCallback * >(argp1);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyAudioProducer::stop();
+      result = (int)(arg1)->ProxyAudioProducerCallback::stop();
     } else {
       result = (int)(arg1)->stop();
     }
@@ -11285,29 +11982,52 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyAudioProducer_setActivate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_disown_ProxyAudioProducerCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
-  bool arg2 ;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  bool val2 ;
-  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyAudioProducer_setActivate",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:disown_ProxyAudioProducerCallback",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_setActivate" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_ProxyAudioProducerCallback" "', argument " "1"" of type '" "ProxyAudioProducerCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyAudioProducerCallback * >(argp1);
+  {
+    Swig::Director *director = SWIG_DIRECTOR_CAST(arg1);
+    if (director) director->swig_disown();
+  }
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *ProxyAudioProducerCallback_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_ProxyAudioProducerCallback, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_delete_ProxyAudioProducer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyAudioProducer",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducer, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyAudioProducer" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
   }
   arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
-  ecode2 = SWIG_AsVal_bool(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioProducer_setActivate" "', argument " "2"" of type '" "bool""'");
-  } 
-  arg2 = static_cast< bool >(val2);
-  (arg1)->setActivate(arg2);
+  delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -11353,6 +12073,36 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ProxyAudioProducer_setCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg2 = (ProxyAudioProducerCallback *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyAudioProducer_setCallback",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_setCallback" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_ProxyAudioProducerCallback, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyAudioProducer_setCallback" "', argument " "2"" of type '" "ProxyAudioProducerCallback *""'"); 
+  }
+  arg2 = reinterpret_cast< ProxyAudioProducerCallback * >(argp2);
+  (arg1)->setCallback(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_ProxyAudioProducer_registerPlugin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   bool result;
@@ -11366,31 +12116,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_disown_ProxyAudioProducer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:disown_ProxyAudioProducer",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_ProxyAudioProducer" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
-  }
-  arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
-  {
-    Swig::Director *director = SWIG_DIRECTOR_CAST(arg1);
-    if (director) director->swig_disown();
-  }
-  
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *ProxyAudioProducer_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -11398,50 +12123,41 @@ SWIGINTERN PyObject *ProxyAudioProducer_swigregister(PyObject *SWIGUNUSEDPARM(se
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_ProxyVideoProducer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_ProxyVideoProducerCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PyObject *arg1 = (PyObject *) 0 ;
-  tmedia_chroma_t arg2 ;
-  int val2 ;
-  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  ProxyVideoProducer *result = 0 ;
+  ProxyVideoProducerCallback *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_ProxyVideoProducer",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_ProxyVideoProducerCallback",&obj0)) SWIG_fail;
   arg1 = obj0;
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "new_ProxyVideoProducer" "', argument " "2"" of type '" "tmedia_chroma_t""'");
-  } 
-  arg2 = static_cast< tmedia_chroma_t >(val2);
   if ( arg1 != Py_None ) {
     /* subclassed */
-    result = (ProxyVideoProducer *)new SwigDirector_ProxyVideoProducer(arg1,arg2); 
+    result = (ProxyVideoProducerCallback *)new SwigDirector_ProxyVideoProducerCallback(arg1); 
   } else {
-    result = (ProxyVideoProducer *)new ProxyVideoProducer(arg2); 
+    result = (ProxyVideoProducerCallback *)new ProxyVideoProducerCallback(); 
   }
   
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyVideoProducer, SWIG_POINTER_NEW |  0 );
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyVideoProducerCallback, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_ProxyVideoProducer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_ProxyVideoProducerCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyVideoProducer",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducer, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyVideoProducerCallback",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducerCallback, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyVideoProducer" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyVideoProducerCallback" "', argument " "1"" of type '" "ProxyVideoProducerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+  arg1 = reinterpret_cast< ProxyVideoProducerCallback * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -11450,9 +12166,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyVideoProducer_prepare(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyVideoProducerCallback_prepare(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
   int arg2 ;
   int arg3 ;
   int arg4 ;
@@ -11472,32 +12188,32 @@ SWIGINTERN PyObject *_wrap_ProxyVideoProducer_prepare(PyObject *SWIGUNUSEDPARM(s
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:ProxyVideoProducer_prepare",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:ProxyVideoProducerCallback_prepare",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_prepare" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducerCallback_prepare" "', argument " "1"" of type '" "ProxyVideoProducerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+  arg1 = reinterpret_cast< ProxyVideoProducerCallback * >(argp1);
   ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoProducer_prepare" "', argument " "2"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoProducerCallback_prepare" "', argument " "2"" of type '" "int""'");
   } 
   arg2 = static_cast< int >(val2);
   ecode3 = SWIG_AsVal_int(obj2, &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoProducer_prepare" "', argument " "3"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoProducerCallback_prepare" "', argument " "3"" of type '" "int""'");
   } 
   arg3 = static_cast< int >(val3);
   ecode4 = SWIG_AsVal_int(obj3, &val4);
   if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyVideoProducer_prepare" "', argument " "4"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyVideoProducerCallback_prepare" "', argument " "4"" of type '" "int""'");
   } 
   arg4 = static_cast< int >(val4);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyVideoProducer::prepare(arg2,arg3,arg4);
+      result = (int)(arg1)->ProxyVideoProducerCallback::prepare(arg2,arg3,arg4);
     } else {
       result = (int)(arg1)->prepare(arg2,arg3,arg4);
     }
@@ -11511,9 +12227,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyVideoProducer_start(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyVideoProducerCallback_start(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -11521,17 +12237,17 @@ SWIGINTERN PyObject *_wrap_ProxyVideoProducer_start(PyObject *SWIGUNUSEDPARM(sel
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoProducer_start",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoProducerCallback_start",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_start" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducerCallback_start" "', argument " "1"" of type '" "ProxyVideoProducerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+  arg1 = reinterpret_cast< ProxyVideoProducerCallback * >(argp1);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyVideoProducer::start();
+      result = (int)(arg1)->ProxyVideoProducerCallback::start();
     } else {
       result = (int)(arg1)->start();
     }
@@ -11545,9 +12261,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyVideoProducer_pause(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyVideoProducerCallback_pause(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -11555,17 +12271,17 @@ SWIGINTERN PyObject *_wrap_ProxyVideoProducer_pause(PyObject *SWIGUNUSEDPARM(sel
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoProducer_pause",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoProducerCallback_pause",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_pause" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducerCallback_pause" "', argument " "1"" of type '" "ProxyVideoProducerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+  arg1 = reinterpret_cast< ProxyVideoProducerCallback * >(argp1);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyVideoProducer::pause();
+      result = (int)(arg1)->ProxyVideoProducerCallback::pause();
     } else {
       result = (int)(arg1)->pause();
     }
@@ -11579,9 +12295,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyVideoProducer_stop(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyVideoProducerCallback_stop(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -11589,17 +12305,17 @@ SWIGINTERN PyObject *_wrap_ProxyVideoProducer_stop(PyObject *SWIGUNUSEDPARM(self
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoProducer_stop",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoProducerCallback_stop",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducerCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_stop" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducerCallback_stop" "', argument " "1"" of type '" "ProxyVideoProducerCallback *""'"); 
   }
-  arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+  arg1 = reinterpret_cast< ProxyVideoProducerCallback * >(argp1);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->ProxyVideoProducer::stop();
+      result = (int)(arg1)->ProxyVideoProducerCallback::stop();
     } else {
       result = (int)(arg1)->stop();
     }
@@ -11607,6 +12323,59 @@ SWIGINTERN PyObject *_wrap_ProxyVideoProducer_stop(PyObject *SWIGUNUSEDPARM(self
     SWIG_fail;
   }
   resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_disown_ProxyVideoProducerCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:disown_ProxyVideoProducerCallback",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducerCallback, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_ProxyVideoProducerCallback" "', argument " "1"" of type '" "ProxyVideoProducerCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyVideoProducerCallback * >(argp1);
+  {
+    Swig::Director *director = SWIG_DIRECTOR_CAST(arg1);
+    if (director) director->swig_disown();
+  }
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *ProxyVideoProducerCallback_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_ProxyVideoProducerCallback, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_delete_ProxyVideoProducer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_ProxyVideoProducer",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducer, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ProxyVideoProducer" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
   return NULL;
@@ -11665,36 +12434,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyVideoProducer_setActivate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
-  bool arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyVideoProducer_setActivate",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_setActivate" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
-  }
-  arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
-  ecode2 = SWIG_AsVal_bool(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoProducer_setActivate" "', argument " "2"" of type '" "bool""'");
-  } 
-  arg2 = static_cast< bool >(val2);
-  (arg1)->setActivate(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_ProxyVideoProducer_push(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
@@ -11733,6 +12472,36 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ProxyVideoProducer_setCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg2 = (ProxyVideoProducerCallback *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ProxyVideoProducer_setCallback",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_setCallback" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_ProxyVideoProducerCallback, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyVideoProducer_setCallback" "', argument " "2"" of type '" "ProxyVideoProducerCallback *""'"); 
+  }
+  arg2 = reinterpret_cast< ProxyVideoProducerCallback * >(argp2);
+  (arg1)->setCallback(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_ProxyVideoProducer_registerPlugin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   bool result;
@@ -11746,24 +12515,20 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_disown_ProxyVideoProducer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyVideoProducer_setDefaultChroma(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
+  tmedia_chroma_t arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:disown_ProxyVideoProducer",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_ProxyVideoProducer" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
-  }
-  arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
-  {
-    Swig::Director *director = SWIG_DIRECTOR_CAST(arg1);
-    if (director) director->swig_disown();
-  }
-  
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoProducer_setDefaultChroma",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "ProxyVideoProducer_setDefaultChroma" "', argument " "1"" of type '" "tmedia_chroma_t""'");
+  } 
+  arg1 = static_cast< tmedia_chroma_t >(val1);
+  ProxyVideoProducer::setDefaultChroma(arg1);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -16634,6 +17399,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_consumerSetInt64", _wrap_MediaSessionMgr_consumerSetInt64, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_producerSetInt32", _wrap_MediaSessionMgr_producerSetInt32, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_producerSetInt64", _wrap_MediaSessionMgr_producerSetInt64, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_findProxyPluginConsumer", _wrap_MediaSessionMgr_findProxyPluginConsumer, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_findProxyPluginProducer", _wrap_MediaSessionMgr_findProxyPluginProducer, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_swigregister", MediaSessionMgr_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_MediaContent", _wrap_delete_MediaContent, METH_VARARGS, NULL},
 	 { (char *)"MediaContent_getType", _wrap_MediaContent_getType, METH_VARARGS, NULL},
@@ -16776,57 +17543,85 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SubscriptionSession_subscribe", _wrap_SubscriptionSession_subscribe, METH_VARARGS, NULL},
 	 { (char *)"SubscriptionSession_unSubscribe", _wrap_SubscriptionSession_unSubscribe, METH_VARARGS, NULL},
 	 { (char *)"SubscriptionSession_swigregister", SubscriptionSession_swigregister, METH_VARARGS, NULL},
-	 { (char *)"new_ProxyAudioConsumer", _wrap_new_ProxyAudioConsumer, METH_VARARGS, NULL},
+	 { (char *)"delete_ProxyPluginMgr", _wrap_delete_ProxyPluginMgr, METH_VARARGS, NULL},
+	 { (char *)"ProxyPluginMgr_createInstance", _wrap_ProxyPluginMgr_createInstance, METH_VARARGS, NULL},
+	 { (char *)"ProxyPluginMgr_getInstance", _wrap_ProxyPluginMgr_getInstance, METH_VARARGS, NULL},
+	 { (char *)"ProxyPluginMgr_findAudioConsumer", _wrap_ProxyPluginMgr_findAudioConsumer, METH_VARARGS, NULL},
+	 { (char *)"ProxyPluginMgr_findVideoConsumer", _wrap_ProxyPluginMgr_findVideoConsumer, METH_VARARGS, NULL},
+	 { (char *)"ProxyPluginMgr_findAudioProducer", _wrap_ProxyPluginMgr_findAudioProducer, METH_VARARGS, NULL},
+	 { (char *)"ProxyPluginMgr_findVideoProducer", _wrap_ProxyPluginMgr_findVideoProducer, METH_VARARGS, NULL},
+	 { (char *)"ProxyPluginMgr_swigregister", ProxyPluginMgr_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_ProxyPluginMgrCallback", _wrap_new_ProxyPluginMgrCallback, METH_VARARGS, NULL},
+	 { (char *)"delete_ProxyPluginMgrCallback", _wrap_delete_ProxyPluginMgrCallback, METH_VARARGS, NULL},
+	 { (char *)"ProxyPluginMgrCallback_OnPluginCreated", _wrap_ProxyPluginMgrCallback_OnPluginCreated, METH_VARARGS, NULL},
+	 { (char *)"ProxyPluginMgrCallback_OnPluginDestroyed", _wrap_ProxyPluginMgrCallback_OnPluginDestroyed, METH_VARARGS, NULL},
+	 { (char *)"disown_ProxyPluginMgrCallback", _wrap_disown_ProxyPluginMgrCallback, METH_VARARGS, NULL},
+	 { (char *)"ProxyPluginMgrCallback_swigregister", ProxyPluginMgrCallback_swigregister, METH_VARARGS, NULL},
+	 { (char *)"delete_ProxyPlugin", _wrap_delete_ProxyPlugin, METH_VARARGS, NULL},
+	 { (char *)"ProxyPlugin_getType", _wrap_ProxyPlugin_getType, METH_VARARGS, NULL},
+	 { (char *)"ProxyPlugin_getId", _wrap_ProxyPlugin_getId, METH_VARARGS, NULL},
+	 { (char *)"ProxyPlugin_swigregister", ProxyPlugin_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_ProxyAudioConsumerCallback", _wrap_new_ProxyAudioConsumerCallback, METH_VARARGS, NULL},
+	 { (char *)"delete_ProxyAudioConsumerCallback", _wrap_delete_ProxyAudioConsumerCallback, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioConsumerCallback_prepare", _wrap_ProxyAudioConsumerCallback_prepare, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioConsumerCallback_start", _wrap_ProxyAudioConsumerCallback_start, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioConsumerCallback_pause", _wrap_ProxyAudioConsumerCallback_pause, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioConsumerCallback_stop", _wrap_ProxyAudioConsumerCallback_stop, METH_VARARGS, NULL},
+	 { (char *)"disown_ProxyAudioConsumerCallback", _wrap_disown_ProxyAudioConsumerCallback, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioConsumerCallback_swigregister", ProxyAudioConsumerCallback_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_ProxyAudioConsumer", _wrap_delete_ProxyAudioConsumer, METH_VARARGS, NULL},
-	 { (char *)"ProxyAudioConsumer_prepare", _wrap_ProxyAudioConsumer_prepare, METH_VARARGS, NULL},
-	 { (char *)"ProxyAudioConsumer_start", _wrap_ProxyAudioConsumer_start, METH_VARARGS, NULL},
-	 { (char *)"ProxyAudioConsumer_pause", _wrap_ProxyAudioConsumer_pause, METH_VARARGS, NULL},
-	 { (char *)"ProxyAudioConsumer_stop", _wrap_ProxyAudioConsumer_stop, METH_VARARGS, NULL},
-	 { (char *)"ProxyAudioConsumer_setActivate", _wrap_ProxyAudioConsumer_setActivate, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_pull", _wrap_ProxyAudioConsumer_pull, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_reset", _wrap_ProxyAudioConsumer_reset, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioConsumer_setCallback", _wrap_ProxyAudioConsumer_setCallback, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_registerPlugin", _wrap_ProxyAudioConsumer_registerPlugin, METH_VARARGS, NULL},
-	 { (char *)"disown_ProxyAudioConsumer", _wrap_disown_ProxyAudioConsumer, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_swigregister", ProxyAudioConsumer_swigregister, METH_VARARGS, NULL},
-	 { (char *)"new_ProxyVideoConsumer", _wrap_new_ProxyVideoConsumer, METH_VARARGS, NULL},
+	 { (char *)"new_ProxyVideoConsumerCallback", _wrap_new_ProxyVideoConsumerCallback, METH_VARARGS, NULL},
+	 { (char *)"delete_ProxyVideoConsumerCallback", _wrap_delete_ProxyVideoConsumerCallback, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoConsumerCallback_prepare", _wrap_ProxyVideoConsumerCallback_prepare, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoConsumerCallback_consume", _wrap_ProxyVideoConsumerCallback_consume, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoConsumerCallback_start", _wrap_ProxyVideoConsumerCallback_start, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoConsumerCallback_pause", _wrap_ProxyVideoConsumerCallback_pause, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoConsumerCallback_stop", _wrap_ProxyVideoConsumerCallback_stop, METH_VARARGS, NULL},
+	 { (char *)"disown_ProxyVideoConsumerCallback", _wrap_disown_ProxyVideoConsumerCallback, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoConsumerCallback_swigregister", ProxyVideoConsumerCallback_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_ProxyVideoConsumer", _wrap_delete_ProxyVideoConsumer, METH_VARARGS, NULL},
-	 { (char *)"ProxyVideoConsumer_prepare", _wrap_ProxyVideoConsumer_prepare, METH_VARARGS, NULL},
-	 { (char *)"ProxyVideoConsumer_consume", _wrap_ProxyVideoConsumer_consume, METH_VARARGS, NULL},
-	 { (char *)"ProxyVideoConsumer_start", _wrap_ProxyVideoConsumer_start, METH_VARARGS, NULL},
-	 { (char *)"ProxyVideoConsumer_pause", _wrap_ProxyVideoConsumer_pause, METH_VARARGS, NULL},
-	 { (char *)"ProxyVideoConsumer_stop", _wrap_ProxyVideoConsumer_stop, METH_VARARGS, NULL},
-	 { (char *)"ProxyVideoConsumer_setActivate", _wrap_ProxyVideoConsumer_setActivate, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_setDisplaySize", _wrap_ProxyVideoConsumer_setDisplaySize, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoConsumer_setCallback", _wrap_ProxyVideoConsumer_setCallback, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_registerPlugin", _wrap_ProxyVideoConsumer_registerPlugin, METH_VARARGS, NULL},
-	 { (char *)"disown_ProxyVideoConsumer", _wrap_disown_ProxyVideoConsumer, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoConsumer_setDefaultChroma", _wrap_ProxyVideoConsumer_setDefaultChroma, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_swigregister", ProxyVideoConsumer_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_ProxyVideoFrame", _wrap_delete_ProxyVideoFrame, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoFrame_getSize", _wrap_ProxyVideoFrame_getSize, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoFrame_getContent", _wrap_ProxyVideoFrame_getContent, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoFrame_swigregister", ProxyVideoFrame_swigregister, METH_VARARGS, NULL},
-	 { (char *)"new_ProxyAudioProducer", _wrap_new_ProxyAudioProducer, METH_VARARGS, NULL},
+	 { (char *)"new_ProxyAudioProducerCallback", _wrap_new_ProxyAudioProducerCallback, METH_VARARGS, NULL},
+	 { (char *)"delete_ProxyAudioProducerCallback", _wrap_delete_ProxyAudioProducerCallback, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioProducerCallback_prepare", _wrap_ProxyAudioProducerCallback_prepare, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioProducerCallback_start", _wrap_ProxyAudioProducerCallback_start, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioProducerCallback_pause", _wrap_ProxyAudioProducerCallback_pause, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioProducerCallback_stop", _wrap_ProxyAudioProducerCallback_stop, METH_VARARGS, NULL},
+	 { (char *)"disown_ProxyAudioProducerCallback", _wrap_disown_ProxyAudioProducerCallback, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioProducerCallback_swigregister", ProxyAudioProducerCallback_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_ProxyAudioProducer", _wrap_delete_ProxyAudioProducer, METH_VARARGS, NULL},
-	 { (char *)"ProxyAudioProducer_prepare", _wrap_ProxyAudioProducer_prepare, METH_VARARGS, NULL},
-	 { (char *)"ProxyAudioProducer_start", _wrap_ProxyAudioProducer_start, METH_VARARGS, NULL},
-	 { (char *)"ProxyAudioProducer_pause", _wrap_ProxyAudioProducer_pause, METH_VARARGS, NULL},
-	 { (char *)"ProxyAudioProducer_stop", _wrap_ProxyAudioProducer_stop, METH_VARARGS, NULL},
-	 { (char *)"ProxyAudioProducer_setActivate", _wrap_ProxyAudioProducer_setActivate, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioProducer_push", _wrap_ProxyAudioProducer_push, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioProducer_setCallback", _wrap_ProxyAudioProducer_setCallback, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioProducer_registerPlugin", _wrap_ProxyAudioProducer_registerPlugin, METH_VARARGS, NULL},
-	 { (char *)"disown_ProxyAudioProducer", _wrap_disown_ProxyAudioProducer, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioProducer_swigregister", ProxyAudioProducer_swigregister, METH_VARARGS, NULL},
-	 { (char *)"new_ProxyVideoProducer", _wrap_new_ProxyVideoProducer, METH_VARARGS, NULL},
+	 { (char *)"new_ProxyVideoProducerCallback", _wrap_new_ProxyVideoProducerCallback, METH_VARARGS, NULL},
+	 { (char *)"delete_ProxyVideoProducerCallback", _wrap_delete_ProxyVideoProducerCallback, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoProducerCallback_prepare", _wrap_ProxyVideoProducerCallback_prepare, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoProducerCallback_start", _wrap_ProxyVideoProducerCallback_start, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoProducerCallback_pause", _wrap_ProxyVideoProducerCallback_pause, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoProducerCallback_stop", _wrap_ProxyVideoProducerCallback_stop, METH_VARARGS, NULL},
+	 { (char *)"disown_ProxyVideoProducerCallback", _wrap_disown_ProxyVideoProducerCallback, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoProducerCallback_swigregister", ProxyVideoProducerCallback_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_ProxyVideoProducer", _wrap_delete_ProxyVideoProducer, METH_VARARGS, NULL},
-	 { (char *)"ProxyVideoProducer_prepare", _wrap_ProxyVideoProducer_prepare, METH_VARARGS, NULL},
-	 { (char *)"ProxyVideoProducer_start", _wrap_ProxyVideoProducer_start, METH_VARARGS, NULL},
-	 { (char *)"ProxyVideoProducer_pause", _wrap_ProxyVideoProducer_pause, METH_VARARGS, NULL},
-	 { (char *)"ProxyVideoProducer_stop", _wrap_ProxyVideoProducer_stop, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_getRotation", _wrap_ProxyVideoProducer_getRotation, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_setRotation", _wrap_ProxyVideoProducer_setRotation, METH_VARARGS, NULL},
-	 { (char *)"ProxyVideoProducer_setActivate", _wrap_ProxyVideoProducer_setActivate, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_push", _wrap_ProxyVideoProducer_push, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoProducer_setCallback", _wrap_ProxyVideoProducer_setCallback, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_registerPlugin", _wrap_ProxyVideoProducer_registerPlugin, METH_VARARGS, NULL},
-	 { (char *)"disown_ProxyVideoProducer", _wrap_disown_ProxyVideoProducer, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoProducer_setDefaultChroma", _wrap_ProxyVideoProducer_setDefaultChroma, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_swigregister", ProxyVideoProducer_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_SipCallback", _wrap_new_SipCallback, METH_VARARGS, NULL},
 	 { (char *)"delete_SipCallback", _wrap_delete_SipCallback, METH_VARARGS, NULL},
@@ -16985,29 +17780,29 @@ static PyMethodDef SwigMethods[] = {
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
-static void *_p_InviteEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((InviteEvent *) x));
+static void *_p_ProxyAudioConsumerTo_p_ProxyPlugin(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ProxyPlugin *)  ((ProxyAudioConsumer *) x));
 }
-static void *_p_OptionsEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((OptionsEvent *) x));
+static void *_p_ProxyVideoConsumerTo_p_ProxyPlugin(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ProxyPlugin *)  ((ProxyVideoConsumer *) x));
 }
-static void *_p_DialogEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((DialogEvent *) x));
+static void *_p_ProxyAudioProducerTo_p_ProxyPlugin(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ProxyPlugin *)  ((ProxyAudioProducer *) x));
 }
-static void *_p_PublicationEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((PublicationEvent *) x));
+static void *_p_ProxyVideoProducerTo_p_ProxyPlugin(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ProxyPlugin *)  ((ProxyVideoProducer *) x));
 }
-static void *_p_RegistrationEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((RegistrationEvent *) x));
+static void *_p_SipStackTo_p_SafeObject(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SafeObject *)  ((SipStack *) x));
 }
-static void *_p_SubscriptionEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((SubscriptionEvent *) x));
+static void *_p_MediaContentCPIMTo_p_MediaContent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((MediaContent *)  ((MediaContentCPIM *) x));
 }
-static void *_p_StackEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((StackEvent *) x));
+static void *_p_CallSessionTo_p_InviteSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((InviteSession *)  ((CallSession *) x));
 }
-static void *_p_MessagingEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SipEvent *)  ((MessagingEvent *) x));
+static void *_p_MsrpSessionTo_p_InviteSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((InviteSession *)  ((MsrpSession *) x));
 }
 static void *_p_InviteSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SipSession *)  ((InviteSession *) x));
@@ -17033,17 +17828,29 @@ static void *_p_RegistrationSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(
 static void *_p_SubscriptionSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SipSession *)  ((SubscriptionSession *) x));
 }
-static void *_p_CallSessionTo_p_InviteSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((InviteSession *)  ((CallSession *) x));
+static void *_p_InviteEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((InviteEvent *) x));
 }
-static void *_p_MsrpSessionTo_p_InviteSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((InviteSession *)  ((MsrpSession *) x));
+static void *_p_OptionsEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((OptionsEvent *) x));
 }
-static void *_p_SipStackTo_p_SafeObject(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((SafeObject *)  ((SipStack *) x));
+static void *_p_DialogEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((DialogEvent *) x));
 }
-static void *_p_MediaContentCPIMTo_p_MediaContent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((MediaContent *)  ((MediaContentCPIM *) x));
+static void *_p_PublicationEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((PublicationEvent *) x));
+}
+static void *_p_RegistrationEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((RegistrationEvent *) x));
+}
+static void *_p_SubscriptionEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((SubscriptionEvent *) x));
+}
+static void *_p_StackEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((StackEvent *) x));
+}
+static void *_p_MessagingEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((MessagingEvent *) x));
 }
 static swig_type_info _swigt__p_ActionConfig = {"_p_ActionConfig", "ActionConfig *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_CallSession = {"_p_CallSession", "CallSession *", 0, 0, (void*)0, 0};
@@ -17063,10 +17870,17 @@ static swig_type_info _swigt__p_MsrpSession = {"_p_MsrpSession", "MsrpSession *"
 static swig_type_info _swigt__p_OptionsEvent = {"_p_OptionsEvent", "OptionsEvent *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_OptionsSession = {"_p_OptionsSession", "OptionsSession *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ProxyAudioConsumer = {"_p_ProxyAudioConsumer", "ProxyAudioConsumer *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_ProxyAudioConsumerCallback = {"_p_ProxyAudioConsumerCallback", "ProxyAudioConsumerCallback *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ProxyAudioProducer = {"_p_ProxyAudioProducer", "ProxyAudioProducer *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_ProxyAudioProducerCallback = {"_p_ProxyAudioProducerCallback", "ProxyAudioProducerCallback *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_ProxyPlugin = {"_p_ProxyPlugin", "ProxyPlugin *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_ProxyPluginMgr = {"_p_ProxyPluginMgr", "ProxyPluginMgr *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_ProxyPluginMgrCallback = {"_p_ProxyPluginMgrCallback", "ProxyPluginMgrCallback *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ProxyVideoConsumer = {"_p_ProxyVideoConsumer", "ProxyVideoConsumer *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_ProxyVideoConsumerCallback = {"_p_ProxyVideoConsumerCallback", "ProxyVideoConsumerCallback *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ProxyVideoFrame = {"_p_ProxyVideoFrame", "ProxyVideoFrame *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ProxyVideoProducer = {"_p_ProxyVideoProducer", "ProxyVideoProducer *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_ProxyVideoProducerCallback = {"_p_ProxyVideoProducerCallback", "ProxyVideoProducerCallback *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_PublicationEvent = {"_p_PublicationEvent", "PublicationEvent *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_PublicationSession = {"_p_PublicationSession", "PublicationSession *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_RPMessage = {"_p_RPMessage", "RPMessage *", 0, 0, (void*)0, 0};
@@ -17110,8 +17924,9 @@ static swig_type_info _swigt__p_tsip_options_event_type_e = {"_p_tsip_options_ev
 static swig_type_info _swigt__p_tsip_publish_event_type_e = {"_p_tsip_publish_event_type_e", "enum tsip_publish_event_type_e *|tsip_publish_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_register_event_type_e = {"_p_tsip_register_event_type_e", "enum tsip_register_event_type_e *|tsip_register_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_subscribe_event_type_e = {"_p_tsip_subscribe_event_type_e", "enum tsip_subscribe_event_type_e *|tsip_subscribe_event_type_t *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_tsk_list_t = {"_p_tsk_list_t", "twrap_xcap_steps_L_t *|tsk_list_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_tsk_list_t = {"_p_tsk_list_t", "twrap_xcap_steps_L_t *|twrap_proxy_plungins_L_t *|tsk_list_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_twrap_media_type_e = {"_p_twrap_media_type_e", "enum twrap_media_type_e *|twrap_media_type_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_twrap_proxy_plugin_type_e = {"_p_twrap_proxy_plugin_type_e", "enum twrap_proxy_plugin_type_e *|twrap_proxy_plugin_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_twrap_rpmessage_type_e = {"_p_twrap_rpmessage_type_e", "enum twrap_rpmessage_type_e *|twrap_rpmessage_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_twrap_sms_type_e = {"_p_twrap_sms_type_e", "enum twrap_sms_type_e *|twrap_sms_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_unsigned_char = {"_p_unsigned_char", "unsigned char *|uint_least8_t *|uint_fast8_t *|uint8_t *", 0, 0, (void*)0, 0};
@@ -17138,10 +17953,17 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_OptionsEvent,
   &_swigt__p_OptionsSession,
   &_swigt__p_ProxyAudioConsumer,
+  &_swigt__p_ProxyAudioConsumerCallback,
   &_swigt__p_ProxyAudioProducer,
+  &_swigt__p_ProxyAudioProducerCallback,
+  &_swigt__p_ProxyPlugin,
+  &_swigt__p_ProxyPluginMgr,
+  &_swigt__p_ProxyPluginMgrCallback,
   &_swigt__p_ProxyVideoConsumer,
+  &_swigt__p_ProxyVideoConsumerCallback,
   &_swigt__p_ProxyVideoFrame,
   &_swigt__p_ProxyVideoProducer,
+  &_swigt__p_ProxyVideoProducerCallback,
   &_swigt__p_PublicationEvent,
   &_swigt__p_PublicationSession,
   &_swigt__p_RPMessage,
@@ -17187,6 +18009,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_tsip_subscribe_event_type_e,
   &_swigt__p_tsk_list_t,
   &_swigt__p_twrap_media_type_e,
+  &_swigt__p_twrap_proxy_plugin_type_e,
   &_swigt__p_twrap_rpmessage_type_e,
   &_swigt__p_twrap_sms_type_e,
   &_swigt__p_unsigned_char,
@@ -17213,10 +18036,17 @@ static swig_cast_info _swigc__p_MsrpSession[] = {  {&_swigt__p_MsrpSession, 0, 0
 static swig_cast_info _swigc__p_OptionsEvent[] = {  {&_swigt__p_OptionsEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_OptionsSession[] = {  {&_swigt__p_OptionsSession, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ProxyAudioConsumer[] = {  {&_swigt__p_ProxyAudioConsumer, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyAudioConsumerCallback[] = {  {&_swigt__p_ProxyAudioConsumerCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ProxyAudioProducer[] = {  {&_swigt__p_ProxyAudioProducer, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyAudioProducerCallback[] = {  {&_swigt__p_ProxyAudioProducerCallback, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyPlugin[] = {  {&_swigt__p_ProxyPlugin, 0, 0, 0},  {&_swigt__p_ProxyAudioConsumer, _p_ProxyAudioConsumerTo_p_ProxyPlugin, 0, 0},  {&_swigt__p_ProxyVideoConsumer, _p_ProxyVideoConsumerTo_p_ProxyPlugin, 0, 0},  {&_swigt__p_ProxyAudioProducer, _p_ProxyAudioProducerTo_p_ProxyPlugin, 0, 0},  {&_swigt__p_ProxyVideoProducer, _p_ProxyVideoProducerTo_p_ProxyPlugin, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyPluginMgr[] = {  {&_swigt__p_ProxyPluginMgr, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyPluginMgrCallback[] = {  {&_swigt__p_ProxyPluginMgrCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ProxyVideoConsumer[] = {  {&_swigt__p_ProxyVideoConsumer, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyVideoConsumerCallback[] = {  {&_swigt__p_ProxyVideoConsumerCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ProxyVideoFrame[] = {  {&_swigt__p_ProxyVideoFrame, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ProxyVideoProducer[] = {  {&_swigt__p_ProxyVideoProducer, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ProxyVideoProducerCallback[] = {  {&_swigt__p_ProxyVideoProducerCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationEvent[] = {  {&_swigt__p_PublicationEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationSession[] = {  {&_swigt__p_PublicationSession, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_RPMessage[] = {  {&_swigt__p_RPMessage, 0, 0, 0},{0, 0, 0, 0}};
@@ -17262,6 +18092,7 @@ static swig_cast_info _swigc__p_tsip_register_event_type_e[] = {  {&_swigt__p_ts
 static swig_cast_info _swigc__p_tsip_subscribe_event_type_e[] = {  {&_swigt__p_tsip_subscribe_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsk_list_t[] = {  {&_swigt__p_tsk_list_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_twrap_media_type_e[] = {  {&_swigt__p_twrap_media_type_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_twrap_proxy_plugin_type_e[] = {  {&_swigt__p_twrap_proxy_plugin_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_twrap_rpmessage_type_e[] = {  {&_swigt__p_twrap_rpmessage_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_twrap_sms_type_e[] = {  {&_swigt__p_twrap_sms_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_unsigned_char[] = {  {&_swigt__p_unsigned_char, 0, 0, 0},{0, 0, 0, 0}};
@@ -17288,10 +18119,17 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_OptionsEvent,
   _swigc__p_OptionsSession,
   _swigc__p_ProxyAudioConsumer,
+  _swigc__p_ProxyAudioConsumerCallback,
   _swigc__p_ProxyAudioProducer,
+  _swigc__p_ProxyAudioProducerCallback,
+  _swigc__p_ProxyPlugin,
+  _swigc__p_ProxyPluginMgr,
+  _swigc__p_ProxyPluginMgrCallback,
   _swigc__p_ProxyVideoConsumer,
+  _swigc__p_ProxyVideoConsumerCallback,
   _swigc__p_ProxyVideoFrame,
   _swigc__p_ProxyVideoProducer,
+  _swigc__p_ProxyVideoProducerCallback,
   _swigc__p_PublicationEvent,
   _swigc__p_PublicationSession,
   _swigc__p_RPMessage,
@@ -17337,6 +18175,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_tsip_subscribe_event_type_e,
   _swigc__p_tsk_list_t,
   _swigc__p_twrap_media_type_e,
+  _swigc__p_twrap_proxy_plugin_type_e,
   _swigc__p_twrap_rpmessage_type_e,
   _swigc__p_twrap_sms_type_e,
   _swigc__p_unsigned_char,
@@ -17937,6 +18776,10 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "twrap_media_video",SWIG_From_int(static_cast< int >(twrap_media_video)));
   SWIG_Python_SetConstant(d, "twrap_media_audiovideo",SWIG_From_int(static_cast< int >(twrap_media_audiovideo)));
   SWIG_Python_SetConstant(d, "twrap_media_msrp",SWIG_From_int(static_cast< int >(twrap_media_msrp)));
+  SWIG_Python_SetConstant(d, "twrap_proxy_plugin_audio_producer",SWIG_From_int(static_cast< int >(twrap_proxy_plugin_audio_producer)));
+  SWIG_Python_SetConstant(d, "twrap_proxy_plugin_video_producer",SWIG_From_int(static_cast< int >(twrap_proxy_plugin_video_producer)));
+  SWIG_Python_SetConstant(d, "twrap_proxy_plugin_audio_consumer",SWIG_From_int(static_cast< int >(twrap_proxy_plugin_audio_consumer)));
+  SWIG_Python_SetConstant(d, "twrap_proxy_plugin_video_consumer",SWIG_From_int(static_cast< int >(twrap_proxy_plugin_video_consumer)));
   SWIG_Python_SetConstant(d, "tsip_event_invite",SWIG_From_int(static_cast< int >(tsip_event_invite)));
   SWIG_Python_SetConstant(d, "tsip_event_message",SWIG_From_int(static_cast< int >(tsip_event_message)));
   SWIG_Python_SetConstant(d, "tsip_event_options",SWIG_From_int(static_cast< int >(tsip_event_options)));

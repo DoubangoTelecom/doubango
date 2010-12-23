@@ -8,6 +8,7 @@
 #include "SipEvent.h"
 #include "SipSession.h"
 
+#include "ProxyPluginMgr.h"
 #include "ProxyConsumer.h"
 #include "ProxyProducer.h"
 
@@ -18,10 +19,11 @@
 
 /* Callbacks */
 %feature("director") SipCallback;
-%feature("director") ProxyAudioConsumer;
-%feature("director") ProxyVideoConsumer;
-%feature("director") ProxyAudioProducer;
-%feature("director") ProxyVideoProducer;
+%feature("director") ProxyPluginMgrCallback;
+%feature("director") ProxyAudioConsumerCallback;
+%feature("director") ProxyVideoConsumerCallback;
+%feature("director") ProxyAudioProducerCallback;
+%feature("director") ProxyVideoProducerCallback;
 
 
 %nodefaultctor;
@@ -33,6 +35,7 @@
 %include "SipEvent.h"
 %include "SipSession.h"
 
+%include "ProxyPluginMgr.h"
 %include "ProxyConsumer.h"
 %include "ProxyProducer.h"
 
