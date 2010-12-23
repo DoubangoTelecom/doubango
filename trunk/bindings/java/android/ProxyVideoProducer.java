@@ -8,12 +8,11 @@
 
 package org.doubango.tinyWRAP;
 
-public class ProxyVideoProducer {
+public class ProxyVideoProducer extends ProxyPlugin {
   private long swigCPtr;
-  protected boolean swigCMemOwn;
 
   protected ProxyVideoProducer(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
+    super(tinyWRAPJNI.SWIGProxyVideoProducerUpcast(cPtr), cMemoryOwn);
     swigCPtr = cPtr;
   }
 
@@ -31,42 +30,7 @@ public class ProxyVideoProducer {
       tinyWRAPJNI.delete_ProxyVideoProducer(swigCPtr);
     }
     swigCPtr = 0;
-  }
-
-  protected void swigDirectorDisconnect() {
-    swigCMemOwn = false;
-    delete();
-  }
-
-  public void swigReleaseOwnership() {
-    swigCMemOwn = false;
-    tinyWRAPJNI.ProxyVideoProducer_change_ownership(this, swigCPtr, false);
-  }
-
-  public void swigTakeOwnership() {
-    swigCMemOwn = true;
-    tinyWRAPJNI.ProxyVideoProducer_change_ownership(this, swigCPtr, true);
-  }
-
-  public ProxyVideoProducer(tmedia_chroma_t chroma) {
-    this(tinyWRAPJNI.new_ProxyVideoProducer(chroma.swigValue()), true);
-    tinyWRAPJNI.ProxyVideoProducer_director_connect(this, swigCPtr, swigCMemOwn, false);
-  }
-
-  public int prepare(int width, int height, int fps) {
-    return (getClass() == ProxyVideoProducer.class) ? tinyWRAPJNI.ProxyVideoProducer_prepare(swigCPtr, this, width, height, fps) : tinyWRAPJNI.ProxyVideoProducer_prepareSwigExplicitProxyVideoProducer(swigCPtr, this, width, height, fps);
-  }
-
-  public int start() {
-    return (getClass() == ProxyVideoProducer.class) ? tinyWRAPJNI.ProxyVideoProducer_start(swigCPtr, this) : tinyWRAPJNI.ProxyVideoProducer_startSwigExplicitProxyVideoProducer(swigCPtr, this);
-  }
-
-  public int pause() {
-    return (getClass() == ProxyVideoProducer.class) ? tinyWRAPJNI.ProxyVideoProducer_pause(swigCPtr, this) : tinyWRAPJNI.ProxyVideoProducer_pauseSwigExplicitProxyVideoProducer(swigCPtr, this);
-  }
-
-  public int stop() {
-    return (getClass() == ProxyVideoProducer.class) ? tinyWRAPJNI.ProxyVideoProducer_stop(swigCPtr, this) : tinyWRAPJNI.ProxyVideoProducer_stopSwigExplicitProxyVideoProducer(swigCPtr, this);
+    super.delete();
   }
 
   public int getRotation() {
@@ -77,16 +41,20 @@ public class ProxyVideoProducer {
     tinyWRAPJNI.ProxyVideoProducer_setRotation(swigCPtr, this, rot);
   }
 
-  public void setActivate(boolean enabled) {
-    tinyWRAPJNI.ProxyVideoProducer_setActivate(swigCPtr, this, enabled);
-  }
-
   public int push(java.nio.ByteBuffer buffer, long size) {
     return tinyWRAPJNI.ProxyVideoProducer_push(swigCPtr, this, buffer, size);
   }
 
+  public void setCallback(ProxyVideoProducerCallback _callback) {
+    tinyWRAPJNI.ProxyVideoProducer_setCallback(swigCPtr, this, ProxyVideoProducerCallback.getCPtr(_callback), _callback);
+  }
+
   public static boolean registerPlugin() {
     return tinyWRAPJNI.ProxyVideoProducer_registerPlugin();
+  }
+
+  public static void setDefaultChroma(tmedia_chroma_t chroma) {
+    tinyWRAPJNI.ProxyVideoProducer_setDefaultChroma(chroma.swigValue());
   }
 
 }

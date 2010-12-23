@@ -32,6 +32,8 @@ class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_consumerSetInt64(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, long jarg4);
   public final static native boolean MediaSessionMgr_producerSetInt32(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, int jarg4);
   public final static native boolean MediaSessionMgr_producerSetInt64(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, long jarg4);
+  public final static native long MediaSessionMgr_findProxyPluginConsumer(long jarg1, MediaSessionMgr jarg1_, int jarg2);
+  public final static native long MediaSessionMgr_findProxyPluginProducer(long jarg1, MediaSessionMgr jarg1_, int jarg2);
   public final static native void delete_MediaContent(long jarg1);
   public final static native String MediaContent_getType(long jarg1, MediaContent jarg1_);
   public final static native long MediaContent_getDataLength(long jarg1, MediaContent jarg1_);
@@ -167,74 +169,98 @@ class tinyWRAPJNI {
   public final static native void delete_SubscriptionSession(long jarg1);
   public final static native boolean SubscriptionSession_subscribe(long jarg1, SubscriptionSession jarg1_);
   public final static native boolean SubscriptionSession_unSubscribe(long jarg1, SubscriptionSession jarg1_);
-  public final static native long new_ProxyAudioConsumer();
+  public final static native void delete_ProxyPluginMgr(long jarg1);
+  public final static native long ProxyPluginMgr_createInstance(long jarg1, ProxyPluginMgrCallback jarg1_);
+  public final static native long ProxyPluginMgr_getInstance();
+  public final static native long ProxyPluginMgr_findAudioConsumer(long jarg1, ProxyPluginMgr jarg1_, java.math.BigInteger jarg2);
+  public final static native long ProxyPluginMgr_findVideoConsumer(long jarg1, ProxyPluginMgr jarg1_, java.math.BigInteger jarg2);
+  public final static native long ProxyPluginMgr_findAudioProducer(long jarg1, ProxyPluginMgr jarg1_, java.math.BigInteger jarg2);
+  public final static native long ProxyPluginMgr_findVideoProducer(long jarg1, ProxyPluginMgr jarg1_, java.math.BigInteger jarg2);
+  public final static native long new_ProxyPluginMgrCallback();
+  public final static native void delete_ProxyPluginMgrCallback(long jarg1);
+  public final static native int ProxyPluginMgrCallback_OnPluginCreated(long jarg1, ProxyPluginMgrCallback jarg1_, java.math.BigInteger jarg2, int jarg3);
+  public final static native int ProxyPluginMgrCallback_OnPluginCreatedSwigExplicitProxyPluginMgrCallback(long jarg1, ProxyPluginMgrCallback jarg1_, java.math.BigInteger jarg2, int jarg3);
+  public final static native int ProxyPluginMgrCallback_OnPluginDestroyed(long jarg1, ProxyPluginMgrCallback jarg1_, java.math.BigInteger jarg2, int jarg3);
+  public final static native int ProxyPluginMgrCallback_OnPluginDestroyedSwigExplicitProxyPluginMgrCallback(long jarg1, ProxyPluginMgrCallback jarg1_, java.math.BigInteger jarg2, int jarg3);
+  public final static native void ProxyPluginMgrCallback_director_connect(ProxyPluginMgrCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void ProxyPluginMgrCallback_change_ownership(ProxyPluginMgrCallback obj, long cptr, boolean take_or_release);
+  public final static native void delete_ProxyPlugin(long jarg1);
+  public final static native int ProxyPlugin_getType(long jarg1, ProxyPlugin jarg1_);
+  public final static native java.math.BigInteger ProxyPlugin_getId(long jarg1, ProxyPlugin jarg1_);
+  public final static native long new_ProxyAudioConsumerCallback();
+  public final static native void delete_ProxyAudioConsumerCallback(long jarg1);
+  public final static native int ProxyAudioConsumerCallback_prepare(long jarg1, ProxyAudioConsumerCallback jarg1_, int jarg2, int jarg3, int jarg4);
+  public final static native int ProxyAudioConsumerCallback_prepareSwigExplicitProxyAudioConsumerCallback(long jarg1, ProxyAudioConsumerCallback jarg1_, int jarg2, int jarg3, int jarg4);
+  public final static native int ProxyAudioConsumerCallback_start(long jarg1, ProxyAudioConsumerCallback jarg1_);
+  public final static native int ProxyAudioConsumerCallback_startSwigExplicitProxyAudioConsumerCallback(long jarg1, ProxyAudioConsumerCallback jarg1_);
+  public final static native int ProxyAudioConsumerCallback_pause(long jarg1, ProxyAudioConsumerCallback jarg1_);
+  public final static native int ProxyAudioConsumerCallback_pauseSwigExplicitProxyAudioConsumerCallback(long jarg1, ProxyAudioConsumerCallback jarg1_);
+  public final static native int ProxyAudioConsumerCallback_stop(long jarg1, ProxyAudioConsumerCallback jarg1_);
+  public final static native int ProxyAudioConsumerCallback_stopSwigExplicitProxyAudioConsumerCallback(long jarg1, ProxyAudioConsumerCallback jarg1_);
+  public final static native void ProxyAudioConsumerCallback_director_connect(ProxyAudioConsumerCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void ProxyAudioConsumerCallback_change_ownership(ProxyAudioConsumerCallback obj, long cptr, boolean take_or_release);
   public final static native void delete_ProxyAudioConsumer(long jarg1);
-  public final static native int ProxyAudioConsumer_prepare(long jarg1, ProxyAudioConsumer jarg1_, int jarg2, int jarg3, int jarg4);
-  public final static native int ProxyAudioConsumer_prepareSwigExplicitProxyAudioConsumer(long jarg1, ProxyAudioConsumer jarg1_, int jarg2, int jarg3, int jarg4);
-  public final static native int ProxyAudioConsumer_start(long jarg1, ProxyAudioConsumer jarg1_);
-  public final static native int ProxyAudioConsumer_startSwigExplicitProxyAudioConsumer(long jarg1, ProxyAudioConsumer jarg1_);
-  public final static native int ProxyAudioConsumer_pause(long jarg1, ProxyAudioConsumer jarg1_);
-  public final static native int ProxyAudioConsumer_pauseSwigExplicitProxyAudioConsumer(long jarg1, ProxyAudioConsumer jarg1_);
-  public final static native int ProxyAudioConsumer_stop(long jarg1, ProxyAudioConsumer jarg1_);
-  public final static native int ProxyAudioConsumer_stopSwigExplicitProxyAudioConsumer(long jarg1, ProxyAudioConsumer jarg1_);
-  public final static native void ProxyAudioConsumer_setActivate(long jarg1, ProxyAudioConsumer jarg1_, boolean jarg2);
   public final static native long ProxyAudioConsumer_pull(long jarg1, ProxyAudioConsumer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native boolean ProxyAudioConsumer_reset(long jarg1, ProxyAudioConsumer jarg1_);
+  public final static native void ProxyAudioConsumer_setCallback(long jarg1, ProxyAudioConsumer jarg1_, long jarg2, ProxyAudioConsumerCallback jarg2_);
   public final static native boolean ProxyAudioConsumer_registerPlugin();
-  public final static native void ProxyAudioConsumer_director_connect(ProxyAudioConsumer obj, long cptr, boolean mem_own, boolean weak_global);
-  public final static native void ProxyAudioConsumer_change_ownership(ProxyAudioConsumer obj, long cptr, boolean take_or_release);
-  public final static native long new_ProxyVideoConsumer(int jarg1);
+  public final static native long new_ProxyVideoConsumerCallback();
+  public final static native void delete_ProxyVideoConsumerCallback(long jarg1);
+  public final static native int ProxyVideoConsumerCallback_prepare(long jarg1, ProxyVideoConsumerCallback jarg1_, int jarg2, int jarg3, int jarg4);
+  public final static native int ProxyVideoConsumerCallback_prepareSwigExplicitProxyVideoConsumerCallback(long jarg1, ProxyVideoConsumerCallback jarg1_, int jarg2, int jarg3, int jarg4);
+  public final static native int ProxyVideoConsumerCallback_consume(long jarg1, ProxyVideoConsumerCallback jarg1_, long jarg2, ProxyVideoFrame jarg2_);
+  public final static native int ProxyVideoConsumerCallback_consumeSwigExplicitProxyVideoConsumerCallback(long jarg1, ProxyVideoConsumerCallback jarg1_, long jarg2, ProxyVideoFrame jarg2_);
+  public final static native int ProxyVideoConsumerCallback_start(long jarg1, ProxyVideoConsumerCallback jarg1_);
+  public final static native int ProxyVideoConsumerCallback_startSwigExplicitProxyVideoConsumerCallback(long jarg1, ProxyVideoConsumerCallback jarg1_);
+  public final static native int ProxyVideoConsumerCallback_pause(long jarg1, ProxyVideoConsumerCallback jarg1_);
+  public final static native int ProxyVideoConsumerCallback_pauseSwigExplicitProxyVideoConsumerCallback(long jarg1, ProxyVideoConsumerCallback jarg1_);
+  public final static native int ProxyVideoConsumerCallback_stop(long jarg1, ProxyVideoConsumerCallback jarg1_);
+  public final static native int ProxyVideoConsumerCallback_stopSwigExplicitProxyVideoConsumerCallback(long jarg1, ProxyVideoConsumerCallback jarg1_);
+  public final static native void ProxyVideoConsumerCallback_director_connect(ProxyVideoConsumerCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void ProxyVideoConsumerCallback_change_ownership(ProxyVideoConsumerCallback obj, long cptr, boolean take_or_release);
   public final static native void delete_ProxyVideoConsumer(long jarg1);
-  public final static native int ProxyVideoConsumer_prepare(long jarg1, ProxyVideoConsumer jarg1_, int jarg2, int jarg3, int jarg4);
-  public final static native int ProxyVideoConsumer_prepareSwigExplicitProxyVideoConsumer(long jarg1, ProxyVideoConsumer jarg1_, int jarg2, int jarg3, int jarg4);
-  public final static native int ProxyVideoConsumer_consume(long jarg1, ProxyVideoConsumer jarg1_, long jarg2, ProxyVideoFrame jarg2_);
-  public final static native int ProxyVideoConsumer_consumeSwigExplicitProxyVideoConsumer(long jarg1, ProxyVideoConsumer jarg1_, long jarg2, ProxyVideoFrame jarg2_);
-  public final static native int ProxyVideoConsumer_start(long jarg1, ProxyVideoConsumer jarg1_);
-  public final static native int ProxyVideoConsumer_startSwigExplicitProxyVideoConsumer(long jarg1, ProxyVideoConsumer jarg1_);
-  public final static native int ProxyVideoConsumer_pause(long jarg1, ProxyVideoConsumer jarg1_);
-  public final static native int ProxyVideoConsumer_pauseSwigExplicitProxyVideoConsumer(long jarg1, ProxyVideoConsumer jarg1_);
-  public final static native int ProxyVideoConsumer_stop(long jarg1, ProxyVideoConsumer jarg1_);
-  public final static native int ProxyVideoConsumer_stopSwigExplicitProxyVideoConsumer(long jarg1, ProxyVideoConsumer jarg1_);
-  public final static native void ProxyVideoConsumer_setActivate(long jarg1, ProxyVideoConsumer jarg1_, boolean jarg2);
   public final static native boolean ProxyVideoConsumer_setDisplaySize(long jarg1, ProxyVideoConsumer jarg1_, int jarg2, int jarg3);
+  public final static native void ProxyVideoConsumer_setCallback(long jarg1, ProxyVideoConsumer jarg1_, long jarg2, ProxyVideoConsumerCallback jarg2_);
   public final static native boolean ProxyVideoConsumer_registerPlugin();
-  public final static native void ProxyVideoConsumer_director_connect(ProxyVideoConsumer obj, long cptr, boolean mem_own, boolean weak_global);
-  public final static native void ProxyVideoConsumer_change_ownership(ProxyVideoConsumer obj, long cptr, boolean take_or_release);
+  public final static native void ProxyVideoConsumer_setDefaultChroma(int jarg1);
   public final static native void delete_ProxyVideoFrame(long jarg1);
   public final static native long ProxyVideoFrame_getSize(long jarg1, ProxyVideoFrame jarg1_);
   public final static native long ProxyVideoFrame_getContent(long jarg1, ProxyVideoFrame jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
-  public final static native long new_ProxyAudioProducer();
+  public final static native long new_ProxyAudioProducerCallback();
+  public final static native void delete_ProxyAudioProducerCallback(long jarg1);
+  public final static native int ProxyAudioProducerCallback_prepare(long jarg1, ProxyAudioProducerCallback jarg1_, int jarg2, int jarg3, int jarg4);
+  public final static native int ProxyAudioProducerCallback_prepareSwigExplicitProxyAudioProducerCallback(long jarg1, ProxyAudioProducerCallback jarg1_, int jarg2, int jarg3, int jarg4);
+  public final static native int ProxyAudioProducerCallback_start(long jarg1, ProxyAudioProducerCallback jarg1_);
+  public final static native int ProxyAudioProducerCallback_startSwigExplicitProxyAudioProducerCallback(long jarg1, ProxyAudioProducerCallback jarg1_);
+  public final static native int ProxyAudioProducerCallback_pause(long jarg1, ProxyAudioProducerCallback jarg1_);
+  public final static native int ProxyAudioProducerCallback_pauseSwigExplicitProxyAudioProducerCallback(long jarg1, ProxyAudioProducerCallback jarg1_);
+  public final static native int ProxyAudioProducerCallback_stop(long jarg1, ProxyAudioProducerCallback jarg1_);
+  public final static native int ProxyAudioProducerCallback_stopSwigExplicitProxyAudioProducerCallback(long jarg1, ProxyAudioProducerCallback jarg1_);
+  public final static native void ProxyAudioProducerCallback_director_connect(ProxyAudioProducerCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void ProxyAudioProducerCallback_change_ownership(ProxyAudioProducerCallback obj, long cptr, boolean take_or_release);
   public final static native void delete_ProxyAudioProducer(long jarg1);
-  public final static native int ProxyAudioProducer_prepare(long jarg1, ProxyAudioProducer jarg1_, int jarg2, int jarg3, int jarg4);
-  public final static native int ProxyAudioProducer_prepareSwigExplicitProxyAudioProducer(long jarg1, ProxyAudioProducer jarg1_, int jarg2, int jarg3, int jarg4);
-  public final static native int ProxyAudioProducer_start(long jarg1, ProxyAudioProducer jarg1_);
-  public final static native int ProxyAudioProducer_startSwigExplicitProxyAudioProducer(long jarg1, ProxyAudioProducer jarg1_);
-  public final static native int ProxyAudioProducer_pause(long jarg1, ProxyAudioProducer jarg1_);
-  public final static native int ProxyAudioProducer_pauseSwigExplicitProxyAudioProducer(long jarg1, ProxyAudioProducer jarg1_);
-  public final static native int ProxyAudioProducer_stop(long jarg1, ProxyAudioProducer jarg1_);
-  public final static native int ProxyAudioProducer_stopSwigExplicitProxyAudioProducer(long jarg1, ProxyAudioProducer jarg1_);
-  public final static native void ProxyAudioProducer_setActivate(long jarg1, ProxyAudioProducer jarg1_, boolean jarg2);
   public final static native int ProxyAudioProducer_push(long jarg1, ProxyAudioProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native void ProxyAudioProducer_setCallback(long jarg1, ProxyAudioProducer jarg1_, long jarg2, ProxyAudioProducerCallback jarg2_);
   public final static native boolean ProxyAudioProducer_registerPlugin();
-  public final static native void ProxyAudioProducer_director_connect(ProxyAudioProducer obj, long cptr, boolean mem_own, boolean weak_global);
-  public final static native void ProxyAudioProducer_change_ownership(ProxyAudioProducer obj, long cptr, boolean take_or_release);
-  public final static native long new_ProxyVideoProducer(int jarg1);
+  public final static native long new_ProxyVideoProducerCallback();
+  public final static native void delete_ProxyVideoProducerCallback(long jarg1);
+  public final static native int ProxyVideoProducerCallback_prepare(long jarg1, ProxyVideoProducerCallback jarg1_, int jarg2, int jarg3, int jarg4);
+  public final static native int ProxyVideoProducerCallback_prepareSwigExplicitProxyVideoProducerCallback(long jarg1, ProxyVideoProducerCallback jarg1_, int jarg2, int jarg3, int jarg4);
+  public final static native int ProxyVideoProducerCallback_start(long jarg1, ProxyVideoProducerCallback jarg1_);
+  public final static native int ProxyVideoProducerCallback_startSwigExplicitProxyVideoProducerCallback(long jarg1, ProxyVideoProducerCallback jarg1_);
+  public final static native int ProxyVideoProducerCallback_pause(long jarg1, ProxyVideoProducerCallback jarg1_);
+  public final static native int ProxyVideoProducerCallback_pauseSwigExplicitProxyVideoProducerCallback(long jarg1, ProxyVideoProducerCallback jarg1_);
+  public final static native int ProxyVideoProducerCallback_stop(long jarg1, ProxyVideoProducerCallback jarg1_);
+  public final static native int ProxyVideoProducerCallback_stopSwigExplicitProxyVideoProducerCallback(long jarg1, ProxyVideoProducerCallback jarg1_);
+  public final static native void ProxyVideoProducerCallback_director_connect(ProxyVideoProducerCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void ProxyVideoProducerCallback_change_ownership(ProxyVideoProducerCallback obj, long cptr, boolean take_or_release);
   public final static native void delete_ProxyVideoProducer(long jarg1);
-  public final static native int ProxyVideoProducer_prepare(long jarg1, ProxyVideoProducer jarg1_, int jarg2, int jarg3, int jarg4);
-  public final static native int ProxyVideoProducer_prepareSwigExplicitProxyVideoProducer(long jarg1, ProxyVideoProducer jarg1_, int jarg2, int jarg3, int jarg4);
-  public final static native int ProxyVideoProducer_start(long jarg1, ProxyVideoProducer jarg1_);
-  public final static native int ProxyVideoProducer_startSwigExplicitProxyVideoProducer(long jarg1, ProxyVideoProducer jarg1_);
-  public final static native int ProxyVideoProducer_pause(long jarg1, ProxyVideoProducer jarg1_);
-  public final static native int ProxyVideoProducer_pauseSwigExplicitProxyVideoProducer(long jarg1, ProxyVideoProducer jarg1_);
-  public final static native int ProxyVideoProducer_stop(long jarg1, ProxyVideoProducer jarg1_);
-  public final static native int ProxyVideoProducer_stopSwigExplicitProxyVideoProducer(long jarg1, ProxyVideoProducer jarg1_);
   public final static native int ProxyVideoProducer_getRotation(long jarg1, ProxyVideoProducer jarg1_);
   public final static native void ProxyVideoProducer_setRotation(long jarg1, ProxyVideoProducer jarg1_, int jarg2);
-  public final static native void ProxyVideoProducer_setActivate(long jarg1, ProxyVideoProducer jarg1_, boolean jarg2);
   public final static native int ProxyVideoProducer_push(long jarg1, ProxyVideoProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native void ProxyVideoProducer_setCallback(long jarg1, ProxyVideoProducer jarg1_, long jarg2, ProxyVideoProducerCallback jarg2_);
   public final static native boolean ProxyVideoProducer_registerPlugin();
-  public final static native void ProxyVideoProducer_director_connect(ProxyVideoProducer obj, long cptr, boolean mem_own, boolean weak_global);
-  public final static native void ProxyVideoProducer_change_ownership(ProxyVideoProducer obj, long cptr, boolean take_or_release);
+  public final static native void ProxyVideoProducer_setDefaultChroma(int jarg1);
   public final static native long new_SipCallback();
   public final static native void delete_SipCallback(long jarg1);
   public final static native int SipCallback_OnDialogEvent(long jarg1, SipCallback jarg1_, long jarg2, DialogEvent jarg2_);
@@ -404,6 +430,10 @@ class tinyWRAPJNI {
   public final static native long SWIGPublicationSessionUpcast(long jarg1);
   public final static native long SWIGRegistrationSessionUpcast(long jarg1);
   public final static native long SWIGSubscriptionSessionUpcast(long jarg1);
+  public final static native long SWIGProxyAudioConsumerUpcast(long jarg1);
+  public final static native long SWIGProxyVideoConsumerUpcast(long jarg1);
+  public final static native long SWIGProxyAudioProducerUpcast(long jarg1);
+  public final static native long SWIGProxyVideoProducerUpcast(long jarg1);
   public final static native long SWIGSipStackUpcast(long jarg1);
 
   public static int SwigDirector_DDebugCallback_OnDebugInfo(DDebugCallback self, String message) {
@@ -418,55 +448,61 @@ class tinyWRAPJNI {
   public static int SwigDirector_DDebugCallback_OnDebugFatal(DDebugCallback self, String message) {
     return self.OnDebugFatal(message);
   }
-  public static int SwigDirector_ProxyAudioConsumer_prepare(ProxyAudioConsumer self, int ptime, int rate, int channels) {
+  public static int SwigDirector_ProxyPluginMgrCallback_OnPluginCreated(ProxyPluginMgrCallback self, java.math.BigInteger id, int type) {
+    return self.OnPluginCreated(id, twrap_proxy_plugin_type_t.swigToEnum(type));
+  }
+  public static int SwigDirector_ProxyPluginMgrCallback_OnPluginDestroyed(ProxyPluginMgrCallback self, java.math.BigInteger id, int type) {
+    return self.OnPluginDestroyed(id, twrap_proxy_plugin_type_t.swigToEnum(type));
+  }
+  public static int SwigDirector_ProxyAudioConsumerCallback_prepare(ProxyAudioConsumerCallback self, int ptime, int rate, int channels) {
     return self.prepare(ptime, rate, channels);
   }
-  public static int SwigDirector_ProxyAudioConsumer_start(ProxyAudioConsumer self) {
+  public static int SwigDirector_ProxyAudioConsumerCallback_start(ProxyAudioConsumerCallback self) {
     return self.start();
   }
-  public static int SwigDirector_ProxyAudioConsumer_pause(ProxyAudioConsumer self) {
+  public static int SwigDirector_ProxyAudioConsumerCallback_pause(ProxyAudioConsumerCallback self) {
     return self.pause();
   }
-  public static int SwigDirector_ProxyAudioConsumer_stop(ProxyAudioConsumer self) {
+  public static int SwigDirector_ProxyAudioConsumerCallback_stop(ProxyAudioConsumerCallback self) {
     return self.stop();
   }
-  public static int SwigDirector_ProxyVideoConsumer_prepare(ProxyVideoConsumer self, int width, int height, int fps) {
+  public static int SwigDirector_ProxyVideoConsumerCallback_prepare(ProxyVideoConsumerCallback self, int width, int height, int fps) {
     return self.prepare(width, height, fps);
   }
-  public static int SwigDirector_ProxyVideoConsumer_consume(ProxyVideoConsumer self, long frame) {
+  public static int SwigDirector_ProxyVideoConsumerCallback_consume(ProxyVideoConsumerCallback self, long frame) {
     return self.consume((frame == 0) ? null : new ProxyVideoFrame(frame, false));
   }
-  public static int SwigDirector_ProxyVideoConsumer_start(ProxyVideoConsumer self) {
+  public static int SwigDirector_ProxyVideoConsumerCallback_start(ProxyVideoConsumerCallback self) {
     return self.start();
   }
-  public static int SwigDirector_ProxyVideoConsumer_pause(ProxyVideoConsumer self) {
+  public static int SwigDirector_ProxyVideoConsumerCallback_pause(ProxyVideoConsumerCallback self) {
     return self.pause();
   }
-  public static int SwigDirector_ProxyVideoConsumer_stop(ProxyVideoConsumer self) {
+  public static int SwigDirector_ProxyVideoConsumerCallback_stop(ProxyVideoConsumerCallback self) {
     return self.stop();
   }
-  public static int SwigDirector_ProxyAudioProducer_prepare(ProxyAudioProducer self, int ptime, int rate, int channels) {
+  public static int SwigDirector_ProxyAudioProducerCallback_prepare(ProxyAudioProducerCallback self, int ptime, int rate, int channels) {
     return self.prepare(ptime, rate, channels);
   }
-  public static int SwigDirector_ProxyAudioProducer_start(ProxyAudioProducer self) {
+  public static int SwigDirector_ProxyAudioProducerCallback_start(ProxyAudioProducerCallback self) {
     return self.start();
   }
-  public static int SwigDirector_ProxyAudioProducer_pause(ProxyAudioProducer self) {
+  public static int SwigDirector_ProxyAudioProducerCallback_pause(ProxyAudioProducerCallback self) {
     return self.pause();
   }
-  public static int SwigDirector_ProxyAudioProducer_stop(ProxyAudioProducer self) {
+  public static int SwigDirector_ProxyAudioProducerCallback_stop(ProxyAudioProducerCallback self) {
     return self.stop();
   }
-  public static int SwigDirector_ProxyVideoProducer_prepare(ProxyVideoProducer self, int width, int height, int fps) {
+  public static int SwigDirector_ProxyVideoProducerCallback_prepare(ProxyVideoProducerCallback self, int width, int height, int fps) {
     return self.prepare(width, height, fps);
   }
-  public static int SwigDirector_ProxyVideoProducer_start(ProxyVideoProducer self) {
+  public static int SwigDirector_ProxyVideoProducerCallback_start(ProxyVideoProducerCallback self) {
     return self.start();
   }
-  public static int SwigDirector_ProxyVideoProducer_pause(ProxyVideoProducer self) {
+  public static int SwigDirector_ProxyVideoProducerCallback_pause(ProxyVideoProducerCallback self) {
     return self.pause();
   }
-  public static int SwigDirector_ProxyVideoProducer_stop(ProxyVideoProducer self) {
+  public static int SwigDirector_ProxyVideoProducerCallback_stop(ProxyVideoProducerCallback self) {
     return self.stop();
   }
   public static int SwigDirector_SipCallback_OnDialogEvent(SipCallback self, long e) {

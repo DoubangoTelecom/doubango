@@ -29,12 +29,28 @@ protected:
     bool swig_override[4];
 };
 
-class SwigDirector_ProxyAudioConsumer : public ProxyAudioConsumer, public Swig::Director {
+class SwigDirector_ProxyPluginMgrCallback : public ProxyPluginMgrCallback, public Swig::Director {
 
 public:
     void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
-    SwigDirector_ProxyAudioConsumer(JNIEnv *jenv);
-    virtual ~SwigDirector_ProxyAudioConsumer();
+    SwigDirector_ProxyPluginMgrCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_ProxyPluginMgrCallback();
+    virtual int OnPluginCreated(uint64_t id, enum twrap_proxy_plugin_type_e type);
+    virtual int OnPluginDestroyed(uint64_t id, enum twrap_proxy_plugin_type_e type);
+public:
+    bool swig_overrides(int n) {
+      return (n < 2 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[2];
+};
+
+class SwigDirector_ProxyAudioConsumerCallback : public ProxyAudioConsumerCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_ProxyAudioConsumerCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_ProxyAudioConsumerCallback();
     virtual int prepare(int ptime, int rate, int channels);
     virtual int start();
     virtual int pause();
@@ -47,12 +63,12 @@ protected:
     bool swig_override[4];
 };
 
-class SwigDirector_ProxyVideoConsumer : public ProxyVideoConsumer, public Swig::Director {
+class SwigDirector_ProxyVideoConsumerCallback : public ProxyVideoConsumerCallback, public Swig::Director {
 
 public:
     void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
-    SwigDirector_ProxyVideoConsumer(JNIEnv *jenv, tmedia_chroma_t chroma);
-    virtual ~SwigDirector_ProxyVideoConsumer();
+    SwigDirector_ProxyVideoConsumerCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_ProxyVideoConsumerCallback();
     virtual int prepare(int width, int height, int fps);
     virtual int consume(ProxyVideoFrame const *frame);
     virtual int start();
@@ -66,12 +82,12 @@ protected:
     bool swig_override[5];
 };
 
-class SwigDirector_ProxyAudioProducer : public ProxyAudioProducer, public Swig::Director {
+class SwigDirector_ProxyAudioProducerCallback : public ProxyAudioProducerCallback, public Swig::Director {
 
 public:
     void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
-    SwigDirector_ProxyAudioProducer(JNIEnv *jenv);
-    virtual ~SwigDirector_ProxyAudioProducer();
+    SwigDirector_ProxyAudioProducerCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_ProxyAudioProducerCallback();
     virtual int prepare(int ptime, int rate, int channels);
     virtual int start();
     virtual int pause();
@@ -84,12 +100,12 @@ protected:
     bool swig_override[4];
 };
 
-class SwigDirector_ProxyVideoProducer : public ProxyVideoProducer, public Swig::Director {
+class SwigDirector_ProxyVideoProducerCallback : public ProxyVideoProducerCallback, public Swig::Director {
 
 public:
     void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
-    SwigDirector_ProxyVideoProducer(JNIEnv *jenv, tmedia_chroma_t chroma);
-    virtual ~SwigDirector_ProxyVideoProducer();
+    SwigDirector_ProxyVideoProducerCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_ProxyVideoProducerCallback();
     virtual int prepare(int width, int height, int fps);
     virtual int start();
     virtual int pause();

@@ -11,12 +11,10 @@ namespace org.doubango.tinyWRAP {
 using System;
 using System.Runtime.InteropServices;
 
-public class ProxyAudioProducer : IDisposable {
+public class ProxyAudioProducer : ProxyPlugin {
   private HandleRef swigCPtr;
-  protected bool swigCMemOwn;
 
-  internal ProxyAudioProducer(IntPtr cPtr, bool cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
+  internal ProxyAudioProducer(IntPtr cPtr, bool cMemoryOwn) : base(tinyWRAPPINVOKE.ProxyAudioProducerUpcast(cPtr), cMemoryOwn) {
     swigCPtr = new HandleRef(this, cPtr);
   }
 
@@ -28,7 +26,7 @@ public class ProxyAudioProducer : IDisposable {
     Dispose();
   }
 
-  public virtual void Dispose() {
+  public override void Dispose() {
     lock(this) {
       if(swigCPtr.Handle != IntPtr.Zero && swigCMemOwn) {
         swigCMemOwn = false;
@@ -36,35 +34,8 @@ public class ProxyAudioProducer : IDisposable {
       }
       swigCPtr = new HandleRef(null, IntPtr.Zero);
       GC.SuppressFinalize(this);
+      base.Dispose();
     }
-  }
-
-  public ProxyAudioProducer() : this(tinyWRAPPINVOKE.new_ProxyAudioProducer(), true) {
-    SwigDirectorConnect();
-  }
-
-  public virtual int prepare(int ptime, int rate, int channels) {
-    int ret = ((this.GetType() == typeof(ProxyAudioProducer)) ? tinyWRAPPINVOKE.ProxyAudioProducer_prepare(swigCPtr, ptime, rate, channels) : tinyWRAPPINVOKE.ProxyAudioProducer_prepareSwigExplicitProxyAudioProducer(swigCPtr, ptime, rate, channels));
-    return ret;
-  }
-
-  public virtual int start() {
-    int ret = ((this.GetType() == typeof(ProxyAudioProducer)) ? tinyWRAPPINVOKE.ProxyAudioProducer_start(swigCPtr) : tinyWRAPPINVOKE.ProxyAudioProducer_startSwigExplicitProxyAudioProducer(swigCPtr));
-    return ret;
-  }
-
-  public virtual int pause() {
-    int ret = ((this.GetType() == typeof(ProxyAudioProducer)) ? tinyWRAPPINVOKE.ProxyAudioProducer_pause(swigCPtr) : tinyWRAPPINVOKE.ProxyAudioProducer_pauseSwigExplicitProxyAudioProducer(swigCPtr));
-    return ret;
-  }
-
-  public virtual int stop() {
-    int ret = ((this.GetType() == typeof(ProxyAudioProducer)) ? tinyWRAPPINVOKE.ProxyAudioProducer_stop(swigCPtr) : tinyWRAPPINVOKE.ProxyAudioProducer_stopSwigExplicitProxyAudioProducer(swigCPtr));
-    return ret;
-  }
-
-  public void setActivate(bool enabled) {
-    tinyWRAPPINVOKE.ProxyAudioProducer_setActivate(swigCPtr, enabled);
   }
 
   public int push(byte[] buffer, uint size) {
@@ -72,59 +43,15 @@ public class ProxyAudioProducer : IDisposable {
     return ret;
   }
 
+  public void setCallback(ProxyAudioProducerCallback _callback) {
+    tinyWRAPPINVOKE.ProxyAudioProducer_setCallback(swigCPtr, ProxyAudioProducerCallback.getCPtr(_callback));
+  }
+
   public static bool registerPlugin() {
     bool ret = tinyWRAPPINVOKE.ProxyAudioProducer_registerPlugin();
     return ret;
   }
 
-  private void SwigDirectorConnect() {
-    if (SwigDerivedClassHasMethod("prepare", swigMethodTypes0))
-      swigDelegate0 = new SwigDelegateProxyAudioProducer_0(SwigDirectorprepare);
-    if (SwigDerivedClassHasMethod("start", swigMethodTypes1))
-      swigDelegate1 = new SwigDelegateProxyAudioProducer_1(SwigDirectorstart);
-    if (SwigDerivedClassHasMethod("pause", swigMethodTypes2))
-      swigDelegate2 = new SwigDelegateProxyAudioProducer_2(SwigDirectorpause);
-    if (SwigDerivedClassHasMethod("stop", swigMethodTypes3))
-      swigDelegate3 = new SwigDelegateProxyAudioProducer_3(SwigDirectorstop);
-    tinyWRAPPINVOKE.ProxyAudioProducer_director_connect(swigCPtr, swigDelegate0, swigDelegate1, swigDelegate2, swigDelegate3);
-  }
-
-  private bool SwigDerivedClassHasMethod(string methodName, Type[] methodTypes) {
-    System.Reflection.MethodInfo methodInfo = this.GetType().GetMethod(methodName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance, null, methodTypes, null);
-    bool hasDerivedMethod = methodInfo.DeclaringType.IsSubclassOf(typeof(ProxyAudioProducer));
-    return hasDerivedMethod;
-  }
-
-  private int SwigDirectorprepare(int ptime, int rate, int channels) {
-    return prepare(ptime, rate, channels);
-  }
-
-  private int SwigDirectorstart() {
-    return start();
-  }
-
-  private int SwigDirectorpause() {
-    return pause();
-  }
-
-  private int SwigDirectorstop() {
-    return stop();
-  }
-
-  public delegate int SwigDelegateProxyAudioProducer_0(int ptime, int rate, int channels);
-  public delegate int SwigDelegateProxyAudioProducer_1();
-  public delegate int SwigDelegateProxyAudioProducer_2();
-  public delegate int SwigDelegateProxyAudioProducer_3();
-
-  private SwigDelegateProxyAudioProducer_0 swigDelegate0;
-  private SwigDelegateProxyAudioProducer_1 swigDelegate1;
-  private SwigDelegateProxyAudioProducer_2 swigDelegate2;
-  private SwigDelegateProxyAudioProducer_3 swigDelegate3;
-
-  private static Type[] swigMethodTypes0 = new Type[] { typeof(int), typeof(int), typeof(int) };
-  private static Type[] swigMethodTypes1 = new Type[] {  };
-  private static Type[] swigMethodTypes2 = new Type[] {  };
-  private static Type[] swigMethodTypes3 = new Type[] {  };
 }
 
 }

@@ -43,71 +43,83 @@ typedef struct twrap_consumer_proxy_audio_s
 {
 	TDAV_DECLARE_CONSUMER_AUDIO;
 
+	uint64_t id;
 	tsk_bool_t started;
 }
 twrap_consumer_proxy_audio_t;
+#define TWRAP_CONSUMER_PROXY_AUDIO(self) ((twrap_consumer_proxy_audio_t*)(self))
 
 
 int twrap_consumer_proxy_audio_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
-	if(ProxyAudioConsumer::instance && codec){
-		ProxyAudioConsumer::instance->takeConsumer((twrap_consumer_proxy_audio_t*)self);
-		ProxyAudioConsumer::instance->prepare(20, codec->plugin->rate, codec->plugin->audio.channels);
+	ProxyPluginMgr* manager;
+	int ret = -1;
+	if(codec && (manager = ProxyPluginMgr::getInstance())){
+		ProxyAudioConsumer* audioConsumer;
+		if((audioConsumer = manager->findAudioConsumer(TWRAP_CONSUMER_PROXY_AUDIO(self)->id)) && audioConsumer->getCallback()){
+			ret = audioConsumer->getCallback()->prepare((int)codec->plugin->audio.ptime, codec->plugin->rate, codec->plugin->audio.channels);
+		}
 	}
-	return 0;
+	
+	return ret;
 }
 
 int twrap_consumer_proxy_audio_start(tmedia_consumer_t* self)
 {
-	twrap_consumer_proxy_audio_t* consumer = (twrap_consumer_proxy_audio_t*)self;
-
-	if(ProxyAudioConsumer::instance){
-		ProxyAudioConsumer::instance->start();
+	ProxyPluginMgr* manager;
+	int ret = -1;
+	if((manager = ProxyPluginMgr::getInstance())){
+		ProxyAudioConsumer* audioConsumer;
+		if((audioConsumer = manager->findAudioConsumer(TWRAP_CONSUMER_PROXY_AUDIO(self)->id)) && audioConsumer->getCallback()){
+			ret = audioConsumer->getCallback()->start();
+		}
 	}
-
-	consumer->started = tsk_true;
-
-	return 0;
+	
+	TWRAP_CONSUMER_PROXY_AUDIO(self)->started = (ret == 0);
+	return ret;
 }
 
 int twrap_consumer_proxy_audio_consume(tmedia_consumer_t* self, void** buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
 {
-	twrap_consumer_proxy_audio_t* consumer = (twrap_consumer_proxy_audio_t*)self;
-
-	if(!consumer || !buffer || !*buffer || !size){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
+	ProxyPluginMgr* manager;
+	int ret = -1;
+	if((manager = ProxyPluginMgr::getInstance())){
+		ProxyAudioConsumer* audioConsumer;
+		if((audioConsumer = manager->findAudioConsumer(TWRAP_CONSUMER_PROXY_AUDIO(self)->id)) && audioConsumer->getCallback()){
+			ret = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(self), buffer, size, proto_hdr);
+		}
 	}
 	
-	if(ProxyAudioConsumer::instance){
-		return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(consumer), buffer, size, proto_hdr);
-	}
-	else{
-		return 0;
-	}
+	return ret;
 }
 
 int twrap_consumer_proxy_audio_pause(tmedia_consumer_t* self)
 {
-	if(ProxyAudioConsumer::instance){
-		ProxyAudioConsumer::instance->pause();
+	ProxyPluginMgr* manager;
+	int ret = -1;
+	if((manager = ProxyPluginMgr::getInstance())){
+		ProxyAudioConsumer* audioConsumer;
+		if((audioConsumer = manager->findAudioConsumer(TWRAP_CONSUMER_PROXY_AUDIO(self)->id)) && audioConsumer->getCallback()){
+			ret = audioConsumer->getCallback()->pause();
+		}
 	}
-
-	return 0;
+	
+	return ret;
 }
 
 int twrap_consumer_proxy_audio_stop(tmedia_consumer_t* self)
 {
-	twrap_consumer_proxy_audio_t* consumer = (twrap_consumer_proxy_audio_t*)self;
-
-	if(ProxyAudioConsumer::instance){
-		ProxyAudioConsumer::instance->stop();
-		ProxyAudioConsumer::instance->releaseConsumer((twrap_consumer_proxy_audio_t*)self);
+	ProxyPluginMgr* manager;
+	int ret = -1;
+	if((manager = ProxyPluginMgr::getInstance())){
+		ProxyAudioConsumer* audioConsumer;
+		if((audioConsumer = manager->findAudioConsumer(TWRAP_CONSUMER_PROXY_AUDIO(self)->id)) && audioConsumer->getCallback()){
+			ret = audioConsumer->getCallback()->stop();
+		}
 	}
-
-	consumer->started = tsk_false;
-
-	return 0;
+	
+	TWRAP_CONSUMER_PROXY_AUDIO(self)->started = (ret == 0) ? tsk_false : tsk_true;
+	return ret;
 }
 
 
@@ -123,7 +135,14 @@ static tsk_object_t* twrap_consumer_proxy_audio_ctor(tsk_object_t * self, va_lis
 		tdav_consumer_audio_init(TDAV_CONSUMER_AUDIO(consumer));
 		/* init self */
 
-		/* do not call takeConsumer() */
+		/* Add the plugin to the manager */
+		ProxyPluginMgr* manager = ProxyPluginMgr::getInstance();
+		if(manager){
+			ProxyPlugin* proxyConsumer = new ProxyAudioConsumer(consumer);
+			uint64_t id = proxyConsumer->getId();
+			manager->addPlugin(&proxyConsumer);
+			manager->getCallback()->OnPluginCreated(id, twrap_proxy_plugin_audio_consumer);
+		}
 	}
 	return self;
 }
@@ -132,7 +151,6 @@ static tsk_object_t* twrap_consumer_proxy_audio_dtor(tsk_object_t * self)
 { 
 	twrap_consumer_proxy_audio_t *consumer = (twrap_consumer_proxy_audio_t *)self;
 	if(consumer){
-
 		/* stop */
 		if(consumer->started){
 			twrap_consumer_proxy_audio_stop(TMEDIA_CONSUMER(consumer));
@@ -142,7 +160,13 @@ static tsk_object_t* twrap_consumer_proxy_audio_dtor(tsk_object_t * self)
 		tdav_consumer_audio_deinit(TDAV_CONSUMER_AUDIO(consumer));
 		/* deinit self */
 
-		/* do not call releaseConsumer() */
+
+		/* Remove plugin from the manager */
+		ProxyPluginMgr* manager = ProxyPluginMgr::getInstance();
+		if(manager){
+			manager->getCallback()->OnPluginDestroyed(consumer->id, twrap_proxy_plugin_audio_consumer);
+			manager->removePlugin(consumer->id);
+		}
 	}
 
 	return self;
@@ -176,30 +200,14 @@ TINYWRAP_GEXTERN const tmedia_consumer_plugin_def_t *twrap_consumer_proxy_audio_
 
 
 /* ============ ProxyAudioConsumer Class ================= */
-ProxyAudioConsumer* ProxyAudioConsumer::instance = tsk_null;
-
-ProxyAudioConsumer::ProxyAudioConsumer()
-:consumer(tsk_null)
+ProxyAudioConsumer::ProxyAudioConsumer(twrap_consumer_proxy_audio_t* _consumer)
+:ProxyPlugin(twrap_proxy_plugin_audio_consumer), consumer(_consumer), callback(tsk_null)
 {
+	this->consumer->id = this->getId();
 }
 
 ProxyAudioConsumer::~ProxyAudioConsumer()
 {
-	this->releaseConsumer(this->consumer);
-
-	if(ProxyAudioConsumer::instance == this){
-		ProxyAudioConsumer::instance = tsk_null;
-	}
-}
-
-void ProxyAudioConsumer::setActivate(bool enabled)
-{
-	if(enabled){
-		ProxyAudioConsumer::instance = this;
-	}
-	else{
-		ProxyAudioConsumer::instance = tsk_null;
-	}
 }
 
 unsigned ProxyAudioConsumer::pull(void* output, unsigned size)
@@ -221,18 +229,6 @@ bool ProxyAudioConsumer::reset()
 		return (tdav_consumer_audio_reset(TDAV_CONSUMER_AUDIO(this->consumer)) == 0);
 	}
 	return false;
-}
-
-void ProxyAudioConsumer::takeConsumer(twrap_consumer_proxy_audio_t* _consumer)
-{
-	if(!this->consumer){
-		this->consumer = (twrap_consumer_proxy_audio_t*)tsk_object_ref(_consumer);
-	}
-}
-
-void ProxyAudioConsumer::releaseConsumer(twrap_consumer_proxy_audio_t* _consumer)
-{
-	TSK_OBJECT_SAFE_FREE(this->consumer);
 }
 
 bool ProxyAudioConsumer::registerPlugin()
@@ -280,81 +276,96 @@ typedef struct twrap_consumer_proxy_video_s
 {
 	TMEDIA_DECLARE_CONSUMER;
 
+	uint64_t id;
 	tsk_bool_t started;
 }
 twrap_consumer_proxy_video_t;
+#define TWRAP_CONSUMER_PROXY_VIDEO(self) ((twrap_consumer_proxy_video_t*)(self))
 
 
 int twrap_consumer_proxy_video_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
-	if(ProxyVideoConsumer::instance && codec){
-		/* default values */
-		self->video.chroma = ProxyVideoConsumer::instance->getChroma();
-		self->video.fps = TMEDIA_CODEC_VIDEO(codec)->fps;
-		self->video.width = TMEDIA_CODEC_VIDEO(codec)->width;
-		self->video.height = TMEDIA_CODEC_VIDEO(codec)->height;
-
-		ProxyVideoConsumer::instance->takeConsumer((twrap_consumer_proxy_video_t*)self);
-		ProxyVideoConsumer::instance->prepare(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, TMEDIA_CODEC_VIDEO(codec)->fps);
+	ProxyPluginMgr* manager;
+	int ret = -1;
+	if(codec && (manager = ProxyPluginMgr::getInstance())){
+		ProxyVideoConsumer* videoConsumer;
+		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
+			// default values
+			self->video.chroma = videoConsumer->getChroma();
+			self->video.fps = TMEDIA_CODEC_VIDEO(codec)->fps;
+			self->video.width = TMEDIA_CODEC_VIDEO(codec)->width;
+			self->video.height = TMEDIA_CODEC_VIDEO(codec)->height;
+			ret = videoConsumer->getCallback()->prepare(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, TMEDIA_CODEC_VIDEO(codec)->fps);
+		}
 	}
-	return 0;
+	
+	return ret;
 }
 
 int twrap_consumer_proxy_video_start(tmedia_consumer_t* self)
 {
-	twrap_consumer_proxy_video_t* consumer = (twrap_consumer_proxy_video_t*)self;
-
-	if(ProxyVideoConsumer::instance){
-		ProxyVideoConsumer::instance->start();
+	ProxyPluginMgr* manager;
+	int ret = -1;
+	if((manager = ProxyPluginMgr::getInstance())){
+		ProxyVideoConsumer* videoConsumer;
+		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
+			ret = videoConsumer->getCallback()->start();
+		}
 	}
-
-	consumer->started = tsk_true;
-
-	return 0;
+	
+	TWRAP_CONSUMER_PROXY_VIDEO(self)->started = (ret == 0);
+	return ret;
 }
 
 int twrap_consumer_proxy_video_consume(tmedia_consumer_t* self, void** buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
 {
-	twrap_consumer_proxy_video_t* consumer = (twrap_consumer_proxy_video_t*)self;
-	
-	if(!consumer || !buffer || !*buffer || !size){
+	ProxyPluginMgr* manager;
+	int ret = -1;
+
+	if(!self || !buffer || !*buffer || !size){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	
-	if(ProxyVideoConsumer::instance){
-		int ret;
-		ProxyVideoFrame* frame = new ProxyVideoFrame(*buffer, size);
-		ret = ProxyVideoConsumer::instance->consume(frame);
-		delete frame;
-		return ret;
+	if((manager = ProxyPluginMgr::getInstance())){
+		ProxyVideoConsumer* videoConsumer;
+		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
+			ProxyVideoFrame* frame = new ProxyVideoFrame(*buffer, size);
+			ret = videoConsumer->getCallback()->consume(frame);
+			delete frame, frame = tsk_null;
+		}
 	}
-	else{
-		return 0;
-	}
+
+	return ret;
 }
 
 int twrap_consumer_proxy_video_pause(tmedia_consumer_t* self)
 {
-	if(ProxyVideoConsumer::instance){
-		ProxyVideoConsumer::instance->pause();
+	ProxyPluginMgr* manager;
+	int ret = -1;
+	if((manager = ProxyPluginMgr::getInstance())){
+		ProxyVideoConsumer* videoConsumer;
+		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
+			ret = videoConsumer->getCallback()->pause();
+		}
 	}
-
-	return 0;
+	
+	return ret;
 }
 
 int twrap_consumer_proxy_video_stop(tmedia_consumer_t* self)
 {
-	twrap_consumer_proxy_video_t* consumer = (twrap_consumer_proxy_video_t*)self;
-
-	if(ProxyVideoConsumer::instance){
-		ProxyVideoConsumer::instance->stop();
-		ProxyVideoConsumer::instance->releaseConsumer((twrap_consumer_proxy_video_t*)self);
+	ProxyPluginMgr* manager;
+	int ret = -1;
+	if((manager = ProxyPluginMgr::getInstance())){
+		ProxyVideoConsumer* videoConsumer;
+		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
+			ret = videoConsumer->getCallback()->stop();
+		}
 	}
-
-	consumer->started = tsk_false;
-
-	return 0;
+	
+	TWRAP_CONSUMER_PROXY_VIDEO(self)->started = (ret == 0) ? tsk_false : tsk_true;
+	return ret;
 }
 
 
@@ -370,7 +381,14 @@ static tsk_object_t* twrap_consumer_proxy_video_ctor(tsk_object_t * self, va_lis
 		tmedia_consumer_init(TMEDIA_CONSUMER(consumer));
 		/* init self */
 
-		/* do not call takeConsumer() */
+		/* Add the plugin to the manager */
+		ProxyPluginMgr* manager = ProxyPluginMgr::getInstance();
+		if(manager){
+			ProxyPlugin* proxyConsumer = new ProxyVideoConsumer(ProxyVideoConsumer::getDefaultChroma(), consumer);
+			uint64_t id = proxyConsumer->getId();
+			manager->addPlugin(&proxyConsumer);
+			manager->getCallback()->OnPluginCreated(id, twrap_proxy_plugin_video_consumer);
+		}
 	}
 	return self;
 }
@@ -389,7 +407,12 @@ static tsk_object_t* twrap_consumer_proxy_video_dtor(tsk_object_t * self)
 		tmedia_consumer_deinit(TMEDIA_CONSUMER(consumer));
 		/* deinit self */
 
-		/* do not call releaseConsumer() */
+		/* Remove plugin from the manager */
+		ProxyPluginMgr* manager = ProxyPluginMgr::getInstance();
+		if(manager){
+			manager->getCallback()->OnPluginDestroyed(consumer->id, twrap_proxy_plugin_video_consumer);
+			manager->removePlugin(consumer->id);
+		}
 	}
 
 	return self;
@@ -423,30 +446,16 @@ TINYWRAP_GEXTERN const tmedia_consumer_plugin_def_t *twrap_consumer_proxy_video_
 
 
 /* ============ ProxyVideoConsumer Class ================= */
-ProxyVideoConsumer* ProxyVideoConsumer::instance = tsk_null;
+tmedia_chroma_t ProxyVideoConsumer::defaultChroma = tmedia_rgb565le;
 
-ProxyVideoConsumer::ProxyVideoConsumer(tmedia_chroma_t _chroma)
-:consumer(tsk_null), chroma(_chroma)
+ProxyVideoConsumer::ProxyVideoConsumer(tmedia_chroma_t _chroma, struct twrap_consumer_proxy_video_s* _consumer)
+: chroma(_chroma), consumer(_consumer), callback(tsk_null), ProxyPlugin(twrap_proxy_plugin_video_consumer)
 {
+	this->consumer->id = this->getId();
 }
 
 ProxyVideoConsumer::~ProxyVideoConsumer()
 {
-	this->releaseConsumer(this->consumer);
-
-	if(ProxyVideoConsumer::instance == this){
-		ProxyVideoConsumer::instance = tsk_null;
-	}
-}
-
-void ProxyVideoConsumer::setActivate(bool enabled)
-{
-	if(enabled){
-		ProxyVideoConsumer::instance = this;
-	}
-	else{
-		ProxyVideoConsumer::instance = tsk_null;
-	}
 }
 
 bool ProxyVideoConsumer::setDisplaySize(int width, int height)
@@ -463,18 +472,6 @@ bool ProxyVideoConsumer::setDisplaySize(int width, int height)
 tmedia_chroma_t ProxyVideoConsumer::getChroma()
 {
 	return this->chroma;
-}
-
-void ProxyVideoConsumer::takeConsumer(twrap_consumer_proxy_video_t* _consumer)
-{
-	if(!this->consumer){
-		this->consumer = (twrap_consumer_proxy_video_t*)tsk_object_ref(_consumer);
-	}
-}
-
-void ProxyVideoConsumer::releaseConsumer(twrap_consumer_proxy_video_t* _consumer)
-{
-	TSK_OBJECT_SAFE_FREE(this->consumer);
 }
 
 bool ProxyVideoConsumer::registerPlugin()

@@ -342,44 +342,95 @@ CallSession::~CallSession()
 {
 }
 
+#define ANDROID32 1
+
+#if ANDROID
+typedef struct twrap_async_action_call_s
+{
+	const tsip_ssession_handle_t *session;
+	const ActionConfig* config;
+	tmedia_type_t media_type;
+}
+twrap_async_action_call_t;
+
+static void *__droid_call_thread(void *param)
+{	
+	twrap_async_action_call_t* asyn_action = (twrap_async_action_call_t*)param;
+	const tsip_action_handle_t* action_cfg = asyn_action->config ? asyn_action->config->getHandle() : tsk_null;
+
+	tsip_action_INVITE(asyn_action->session, asyn_action->media_type,
+		TSIP_ACTION_SET_CONFIG(action_cfg),
+		TSIP_ACTION_SET_NULL());
+
+	return tsk_null;
+}
+
+static bool __droid_call(tsip_ssession_handle_t * session_handle, tmedia_type_t type, ActionConfig* config/*=tsk_null*/)
+{
+	void* tid[1] = {0};
+	tsip_ssession_handle_t *handle;
+	int ret;
+	twrap_async_action_call_t asyn_action = {0};
+	
+	handle = tsk_object_ref(session_handle);
+	asyn_action.config = config;
+	asyn_action.session = handle;
+	asyn_action.media_type = type;
+
+	ret = tsk_thread_create(tid, __droid_call_thread, &asyn_action);
+	tsk_thread_join(tid);
+	tsk_object_unref(handle);
+
+	return (ret == 0);
+}
+#endif
 
 bool CallSession::callAudio(const char* remoteUri, ActionConfig* config/*=tsk_null*/)
 {
-	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-
 	tsip_ssession_set(this->handle,
 		TSIP_SSESSION_SET_TO(remoteUri),
 		TSIP_SSESSION_SET_NULL());
-
+#if ANDROID
+	__droid_call(this->handle, tmedia_audio, config);
+	return true;
+#else
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 	return (tsip_action_INVITE(this->handle, tmedia_audio,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
+#endif
 }
 
 bool CallSession::callAudioVideo(const char* remoteUri, ActionConfig* config/*=tsk_null*/)
 {
-	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-
 	tsip_ssession_set(this->handle,
 		TSIP_SSESSION_SET_TO(remoteUri),
 		TSIP_SSESSION_SET_NULL());
-
+#if ANDROID
+	__droid_call(this->handle, (tmedia_type_t)(tmedia_audio | tmedia_video), config);
+	return true;
+#else
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 	return (tsip_action_INVITE(this->handle, (tmedia_type_t)(tmedia_audio | tmedia_video),
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
+#endif
 }
 
 bool CallSession::callVideo(const char* remoteUri, ActionConfig* config/*=tsk_null*/)
 {
-	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-
 	tsip_ssession_set(this->handle,
 		TSIP_SSESSION_SET_TO(remoteUri),
 		TSIP_SSESSION_SET_NULL());
-
+#if ANDROID
+	__droid_call(this->handle, tmedia_video, config);
+	return true;
+#else
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 	return (tsip_action_INVITE(this->handle, tmedia_video,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
+#endif
 }
 
 bool CallSession::setSessionTimer(unsigned timeout, const char* refresher)

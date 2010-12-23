@@ -105,7 +105,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_dtmf_plugin_def_s =
 	8000, // rate
 	
 	{ /* audio */
-		1 // channels
+		1, // channels
+		20 // ptime
 	},
 
 	/* video */

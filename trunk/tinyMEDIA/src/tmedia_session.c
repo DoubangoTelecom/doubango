@@ -488,6 +488,14 @@ tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* 
 
 /**@ingroup tmedia_session_group
 */
+tmedia_session_t* tmedia_session_mgr_find(tmedia_session_mgr_t* self, tmedia_type_t type)
+{	
+	tmedia_session_t* session = (tmedia_session_t*)tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_type, &type);
+	return tsk_object_ref(session);
+}
+
+/**@ingroup tmedia_session_group
+*/
 int tmedia_session_mgr_set_natt_ctx(tmedia_session_mgr_t* self, tnet_nat_context_handle_t* natt_ctx, const char* public_addr)
 {
 	if(!self || !natt_ctx){

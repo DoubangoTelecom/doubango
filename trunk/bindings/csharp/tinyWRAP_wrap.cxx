@@ -345,6 +345,7 @@ namespace Swig {
 #include "SipEvent.h"
 #include "SipSession.h"
 
+#include "ProxyPluginMgr.h"
 #include "ProxyConsumer.h"
 #include "ProxyProducer.h"
 
@@ -452,16 +453,69 @@ void SwigDirector_DDebugCallback::swig_init_callbacks() {
   swig_callbackOnDebugFatal = 0;
 }
 
-SwigDirector_ProxyAudioConsumer::SwigDirector_ProxyAudioConsumer() : ProxyAudioConsumer(), Swig::Director() {
+SwigDirector_ProxyPluginMgrCallback::SwigDirector_ProxyPluginMgrCallback() : ProxyPluginMgrCallback(), Swig::Director() {
   swig_init_callbacks();
 }
 
-SwigDirector_ProxyAudioConsumer::~SwigDirector_ProxyAudioConsumer() {
+SwigDirector_ProxyPluginMgrCallback::~SwigDirector_ProxyPluginMgrCallback() {
   
 }
 
 
-int SwigDirector_ProxyAudioConsumer::prepare(int ptime, int rate, int channels) {
+int SwigDirector_ProxyPluginMgrCallback::OnPluginCreated(uint64_t id, enum twrap_proxy_plugin_type_e type) {
+  int c_result = SwigValueInit< int >() ;
+  int jresult = 0 ;
+  unsigned long long jid  ;
+  int jtype  ;
+  
+  if (!swig_callbackOnPluginCreated) {
+    return ProxyPluginMgrCallback::OnPluginCreated(id,type);
+  } else {
+    jid = id;
+    jtype = type;
+    jresult = (int) swig_callbackOnPluginCreated(jid, jtype);
+    c_result = (int)jresult; 
+  }
+  return c_result;
+}
+
+int SwigDirector_ProxyPluginMgrCallback::OnPluginDestroyed(uint64_t id, enum twrap_proxy_plugin_type_e type) {
+  int c_result = SwigValueInit< int >() ;
+  int jresult = 0 ;
+  unsigned long long jid  ;
+  int jtype  ;
+  
+  if (!swig_callbackOnPluginDestroyed) {
+    return ProxyPluginMgrCallback::OnPluginDestroyed(id,type);
+  } else {
+    jid = id;
+    jtype = type;
+    jresult = (int) swig_callbackOnPluginDestroyed(jid, jtype);
+    c_result = (int)jresult; 
+  }
+  return c_result;
+}
+
+void SwigDirector_ProxyPluginMgrCallback::swig_connect_director(SWIG_Callback0_t callbackOnPluginCreated, SWIG_Callback1_t callbackOnPluginDestroyed) {
+  swig_callbackOnPluginCreated = callbackOnPluginCreated;
+  swig_callbackOnPluginDestroyed = callbackOnPluginDestroyed;
+}
+
+void SwigDirector_ProxyPluginMgrCallback::swig_init_callbacks() {
+  swig_callbackOnPluginCreated = 0;
+  swig_callbackOnPluginDestroyed = 0;
+}
+
+SwigDirector_ProxyAudioConsumerCallback::SwigDirector_ProxyAudioConsumerCallback() : ProxyAudioConsumerCallback(), Swig::Director() {
+  swig_init_callbacks();
+}
+
+SwigDirector_ProxyAudioConsumerCallback::~SwigDirector_ProxyAudioConsumerCallback() {
+  
+}
+
+
+int SwigDirector_ProxyAudioConsumerCallback::prepare(int ptime, int rate, int channels) {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   int jptime  ;
@@ -469,7 +523,7 @@ int SwigDirector_ProxyAudioConsumer::prepare(int ptime, int rate, int channels) 
   int jchannels  ;
   
   if (!swig_callbackprepare) {
-    return ProxyAudioConsumer::prepare(ptime,rate,channels);
+    return ProxyAudioConsumerCallback::prepare(ptime,rate,channels);
   } else {
     jptime = ptime;
     jrate = rate;
@@ -480,12 +534,12 @@ int SwigDirector_ProxyAudioConsumer::prepare(int ptime, int rate, int channels) 
   return c_result;
 }
 
-int SwigDirector_ProxyAudioConsumer::start() {
+int SwigDirector_ProxyAudioConsumerCallback::start() {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   
   if (!swig_callbackstart) {
-    return ProxyAudioConsumer::start();
+    return ProxyAudioConsumerCallback::start();
   } else {
     jresult = (int) swig_callbackstart();
     c_result = (int)jresult; 
@@ -493,12 +547,12 @@ int SwigDirector_ProxyAudioConsumer::start() {
   return c_result;
 }
 
-int SwigDirector_ProxyAudioConsumer::pause() {
+int SwigDirector_ProxyAudioConsumerCallback::pause() {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   
   if (!swig_callbackpause) {
-    return ProxyAudioConsumer::pause();
+    return ProxyAudioConsumerCallback::pause();
   } else {
     jresult = (int) swig_callbackpause();
     c_result = (int)jresult; 
@@ -506,12 +560,12 @@ int SwigDirector_ProxyAudioConsumer::pause() {
   return c_result;
 }
 
-int SwigDirector_ProxyAudioConsumer::stop() {
+int SwigDirector_ProxyAudioConsumerCallback::stop() {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   
   if (!swig_callbackstop) {
-    return ProxyAudioConsumer::stop();
+    return ProxyAudioConsumerCallback::stop();
   } else {
     jresult = (int) swig_callbackstop();
     c_result = (int)jresult; 
@@ -519,30 +573,30 @@ int SwigDirector_ProxyAudioConsumer::stop() {
   return c_result;
 }
 
-void SwigDirector_ProxyAudioConsumer::swig_connect_director(SWIG_Callback0_t callbackprepare, SWIG_Callback1_t callbackstart, SWIG_Callback2_t callbackpause, SWIG_Callback3_t callbackstop) {
+void SwigDirector_ProxyAudioConsumerCallback::swig_connect_director(SWIG_Callback0_t callbackprepare, SWIG_Callback1_t callbackstart, SWIG_Callback2_t callbackpause, SWIG_Callback3_t callbackstop) {
   swig_callbackprepare = callbackprepare;
   swig_callbackstart = callbackstart;
   swig_callbackpause = callbackpause;
   swig_callbackstop = callbackstop;
 }
 
-void SwigDirector_ProxyAudioConsumer::swig_init_callbacks() {
+void SwigDirector_ProxyAudioConsumerCallback::swig_init_callbacks() {
   swig_callbackprepare = 0;
   swig_callbackstart = 0;
   swig_callbackpause = 0;
   swig_callbackstop = 0;
 }
 
-SwigDirector_ProxyVideoConsumer::SwigDirector_ProxyVideoConsumer(tmedia_chroma_t chroma) : ProxyVideoConsumer(chroma), Swig::Director() {
+SwigDirector_ProxyVideoConsumerCallback::SwigDirector_ProxyVideoConsumerCallback() : ProxyVideoConsumerCallback(), Swig::Director() {
   swig_init_callbacks();
 }
 
-SwigDirector_ProxyVideoConsumer::~SwigDirector_ProxyVideoConsumer() {
+SwigDirector_ProxyVideoConsumerCallback::~SwigDirector_ProxyVideoConsumerCallback() {
   
 }
 
 
-int SwigDirector_ProxyVideoConsumer::prepare(int width, int height, int fps) {
+int SwigDirector_ProxyVideoConsumerCallback::prepare(int width, int height, int fps) {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   int jwidth  ;
@@ -550,7 +604,7 @@ int SwigDirector_ProxyVideoConsumer::prepare(int width, int height, int fps) {
   int jfps  ;
   
   if (!swig_callbackprepare) {
-    return ProxyVideoConsumer::prepare(width,height,fps);
+    return ProxyVideoConsumerCallback::prepare(width,height,fps);
   } else {
     jwidth = width;
     jheight = height;
@@ -561,13 +615,13 @@ int SwigDirector_ProxyVideoConsumer::prepare(int width, int height, int fps) {
   return c_result;
 }
 
-int SwigDirector_ProxyVideoConsumer::consume(ProxyVideoFrame const *frame) {
+int SwigDirector_ProxyVideoConsumerCallback::consume(ProxyVideoFrame const *frame) {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   void * jframe = 0 ;
   
   if (!swig_callbackconsume) {
-    return ProxyVideoConsumer::consume(frame);
+    return ProxyVideoConsumerCallback::consume(frame);
   } else {
     jframe = (void *) frame; 
     jresult = (int) swig_callbackconsume(jframe);
@@ -576,12 +630,12 @@ int SwigDirector_ProxyVideoConsumer::consume(ProxyVideoFrame const *frame) {
   return c_result;
 }
 
-int SwigDirector_ProxyVideoConsumer::start() {
+int SwigDirector_ProxyVideoConsumerCallback::start() {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   
   if (!swig_callbackstart) {
-    return ProxyVideoConsumer::start();
+    return ProxyVideoConsumerCallback::start();
   } else {
     jresult = (int) swig_callbackstart();
     c_result = (int)jresult; 
@@ -589,12 +643,12 @@ int SwigDirector_ProxyVideoConsumer::start() {
   return c_result;
 }
 
-int SwigDirector_ProxyVideoConsumer::pause() {
+int SwigDirector_ProxyVideoConsumerCallback::pause() {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   
   if (!swig_callbackpause) {
-    return ProxyVideoConsumer::pause();
+    return ProxyVideoConsumerCallback::pause();
   } else {
     jresult = (int) swig_callbackpause();
     c_result = (int)jresult; 
@@ -602,12 +656,12 @@ int SwigDirector_ProxyVideoConsumer::pause() {
   return c_result;
 }
 
-int SwigDirector_ProxyVideoConsumer::stop() {
+int SwigDirector_ProxyVideoConsumerCallback::stop() {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   
   if (!swig_callbackstop) {
-    return ProxyVideoConsumer::stop();
+    return ProxyVideoConsumerCallback::stop();
   } else {
     jresult = (int) swig_callbackstop();
     c_result = (int)jresult; 
@@ -615,7 +669,7 @@ int SwigDirector_ProxyVideoConsumer::stop() {
   return c_result;
 }
 
-void SwigDirector_ProxyVideoConsumer::swig_connect_director(SWIG_Callback0_t callbackprepare, SWIG_Callback1_t callbackconsume, SWIG_Callback2_t callbackstart, SWIG_Callback3_t callbackpause, SWIG_Callback4_t callbackstop) {
+void SwigDirector_ProxyVideoConsumerCallback::swig_connect_director(SWIG_Callback0_t callbackprepare, SWIG_Callback1_t callbackconsume, SWIG_Callback2_t callbackstart, SWIG_Callback3_t callbackpause, SWIG_Callback4_t callbackstop) {
   swig_callbackprepare = callbackprepare;
   swig_callbackconsume = callbackconsume;
   swig_callbackstart = callbackstart;
@@ -623,7 +677,7 @@ void SwigDirector_ProxyVideoConsumer::swig_connect_director(SWIG_Callback0_t cal
   swig_callbackstop = callbackstop;
 }
 
-void SwigDirector_ProxyVideoConsumer::swig_init_callbacks() {
+void SwigDirector_ProxyVideoConsumerCallback::swig_init_callbacks() {
   swig_callbackprepare = 0;
   swig_callbackconsume = 0;
   swig_callbackstart = 0;
@@ -631,16 +685,16 @@ void SwigDirector_ProxyVideoConsumer::swig_init_callbacks() {
   swig_callbackstop = 0;
 }
 
-SwigDirector_ProxyAudioProducer::SwigDirector_ProxyAudioProducer() : ProxyAudioProducer(), Swig::Director() {
+SwigDirector_ProxyAudioProducerCallback::SwigDirector_ProxyAudioProducerCallback() : ProxyAudioProducerCallback(), Swig::Director() {
   swig_init_callbacks();
 }
 
-SwigDirector_ProxyAudioProducer::~SwigDirector_ProxyAudioProducer() {
+SwigDirector_ProxyAudioProducerCallback::~SwigDirector_ProxyAudioProducerCallback() {
   
 }
 
 
-int SwigDirector_ProxyAudioProducer::prepare(int ptime, int rate, int channels) {
+int SwigDirector_ProxyAudioProducerCallback::prepare(int ptime, int rate, int channels) {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   int jptime  ;
@@ -648,7 +702,7 @@ int SwigDirector_ProxyAudioProducer::prepare(int ptime, int rate, int channels) 
   int jchannels  ;
   
   if (!swig_callbackprepare) {
-    return ProxyAudioProducer::prepare(ptime,rate,channels);
+    return ProxyAudioProducerCallback::prepare(ptime,rate,channels);
   } else {
     jptime = ptime;
     jrate = rate;
@@ -659,12 +713,12 @@ int SwigDirector_ProxyAudioProducer::prepare(int ptime, int rate, int channels) 
   return c_result;
 }
 
-int SwigDirector_ProxyAudioProducer::start() {
+int SwigDirector_ProxyAudioProducerCallback::start() {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   
   if (!swig_callbackstart) {
-    return ProxyAudioProducer::start();
+    return ProxyAudioProducerCallback::start();
   } else {
     jresult = (int) swig_callbackstart();
     c_result = (int)jresult; 
@@ -672,12 +726,12 @@ int SwigDirector_ProxyAudioProducer::start() {
   return c_result;
 }
 
-int SwigDirector_ProxyAudioProducer::pause() {
+int SwigDirector_ProxyAudioProducerCallback::pause() {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   
   if (!swig_callbackpause) {
-    return ProxyAudioProducer::pause();
+    return ProxyAudioProducerCallback::pause();
   } else {
     jresult = (int) swig_callbackpause();
     c_result = (int)jresult; 
@@ -685,12 +739,12 @@ int SwigDirector_ProxyAudioProducer::pause() {
   return c_result;
 }
 
-int SwigDirector_ProxyAudioProducer::stop() {
+int SwigDirector_ProxyAudioProducerCallback::stop() {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   
   if (!swig_callbackstop) {
-    return ProxyAudioProducer::stop();
+    return ProxyAudioProducerCallback::stop();
   } else {
     jresult = (int) swig_callbackstop();
     c_result = (int)jresult; 
@@ -698,30 +752,30 @@ int SwigDirector_ProxyAudioProducer::stop() {
   return c_result;
 }
 
-void SwigDirector_ProxyAudioProducer::swig_connect_director(SWIG_Callback0_t callbackprepare, SWIG_Callback1_t callbackstart, SWIG_Callback2_t callbackpause, SWIG_Callback3_t callbackstop) {
+void SwigDirector_ProxyAudioProducerCallback::swig_connect_director(SWIG_Callback0_t callbackprepare, SWIG_Callback1_t callbackstart, SWIG_Callback2_t callbackpause, SWIG_Callback3_t callbackstop) {
   swig_callbackprepare = callbackprepare;
   swig_callbackstart = callbackstart;
   swig_callbackpause = callbackpause;
   swig_callbackstop = callbackstop;
 }
 
-void SwigDirector_ProxyAudioProducer::swig_init_callbacks() {
+void SwigDirector_ProxyAudioProducerCallback::swig_init_callbacks() {
   swig_callbackprepare = 0;
   swig_callbackstart = 0;
   swig_callbackpause = 0;
   swig_callbackstop = 0;
 }
 
-SwigDirector_ProxyVideoProducer::SwigDirector_ProxyVideoProducer(tmedia_chroma_t chroma) : ProxyVideoProducer(chroma), Swig::Director() {
+SwigDirector_ProxyVideoProducerCallback::SwigDirector_ProxyVideoProducerCallback() : ProxyVideoProducerCallback(), Swig::Director() {
   swig_init_callbacks();
 }
 
-SwigDirector_ProxyVideoProducer::~SwigDirector_ProxyVideoProducer() {
+SwigDirector_ProxyVideoProducerCallback::~SwigDirector_ProxyVideoProducerCallback() {
   
 }
 
 
-int SwigDirector_ProxyVideoProducer::prepare(int width, int height, int fps) {
+int SwigDirector_ProxyVideoProducerCallback::prepare(int width, int height, int fps) {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   int jwidth  ;
@@ -729,7 +783,7 @@ int SwigDirector_ProxyVideoProducer::prepare(int width, int height, int fps) {
   int jfps  ;
   
   if (!swig_callbackprepare) {
-    return ProxyVideoProducer::prepare(width,height,fps);
+    return ProxyVideoProducerCallback::prepare(width,height,fps);
   } else {
     jwidth = width;
     jheight = height;
@@ -740,12 +794,12 @@ int SwigDirector_ProxyVideoProducer::prepare(int width, int height, int fps) {
   return c_result;
 }
 
-int SwigDirector_ProxyVideoProducer::start() {
+int SwigDirector_ProxyVideoProducerCallback::start() {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   
   if (!swig_callbackstart) {
-    return ProxyVideoProducer::start();
+    return ProxyVideoProducerCallback::start();
   } else {
     jresult = (int) swig_callbackstart();
     c_result = (int)jresult; 
@@ -753,12 +807,12 @@ int SwigDirector_ProxyVideoProducer::start() {
   return c_result;
 }
 
-int SwigDirector_ProxyVideoProducer::pause() {
+int SwigDirector_ProxyVideoProducerCallback::pause() {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   
   if (!swig_callbackpause) {
-    return ProxyVideoProducer::pause();
+    return ProxyVideoProducerCallback::pause();
   } else {
     jresult = (int) swig_callbackpause();
     c_result = (int)jresult; 
@@ -766,12 +820,12 @@ int SwigDirector_ProxyVideoProducer::pause() {
   return c_result;
 }
 
-int SwigDirector_ProxyVideoProducer::stop() {
+int SwigDirector_ProxyVideoProducerCallback::stop() {
   int c_result = SwigValueInit< int >() ;
   int jresult = 0 ;
   
   if (!swig_callbackstop) {
-    return ProxyVideoProducer::stop();
+    return ProxyVideoProducerCallback::stop();
   } else {
     jresult = (int) swig_callbackstop();
     c_result = (int)jresult; 
@@ -779,14 +833,14 @@ int SwigDirector_ProxyVideoProducer::stop() {
   return c_result;
 }
 
-void SwigDirector_ProxyVideoProducer::swig_connect_director(SWIG_Callback0_t callbackprepare, SWIG_Callback1_t callbackstart, SWIG_Callback2_t callbackpause, SWIG_Callback3_t callbackstop) {
+void SwigDirector_ProxyVideoProducerCallback::swig_connect_director(SWIG_Callback0_t callbackprepare, SWIG_Callback1_t callbackstart, SWIG_Callback2_t callbackpause, SWIG_Callback3_t callbackstop) {
   swig_callbackprepare = callbackprepare;
   swig_callbackstart = callbackstart;
   swig_callbackpause = callbackpause;
   swig_callbackstop = callbackstop;
 }
 
-void SwigDirector_ProxyVideoProducer::swig_init_callbacks() {
+void SwigDirector_ProxyVideoProducerCallback::swig_init_callbacks() {
   swig_callbackprepare = 0;
   swig_callbackstart = 0;
   swig_callbackpause = 0;
@@ -1316,6 +1370,34 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_producerSetInt64(void
   arg4 = (int64_t)jarg4; 
   result = (bool)(arg1)->producerSetInt64(arg2,(char const *)arg3,arg4);
   jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_MediaSessionMgr_findProxyPluginConsumer(void * jarg1, int jarg2) {
+  void * jresult ;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  ProxyPlugin *result = 0 ;
+  
+  arg1 = (MediaSessionMgr *)jarg1; 
+  arg2 = (twrap_media_type_t)jarg2; 
+  result = (ProxyPlugin *)(arg1)->findProxyPluginConsumer(arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_MediaSessionMgr_findProxyPluginProducer(void * jarg1, int jarg2) {
+  void * jresult ;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  ProxyPlugin *result = 0 ;
+  
+  arg1 = (MediaSessionMgr *)jarg1; 
+  arg2 = (twrap_media_type_t)jarg2; 
+  result = (ProxyPlugin *)(arg1)->findProxyPluginProducer(arg2);
+  jresult = (void *)result; 
   return jresult;
 }
 
@@ -3001,33 +3083,242 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SubscriptionSession_unSubscribe(void 
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_new_ProxyAudioConsumer() {
-  void * jresult ;
-  ProxyAudioConsumer *result = 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyPluginMgr(void * jarg1) {
+  ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
   
-  result = (ProxyAudioConsumer *)new SwigDirector_ProxyAudioConsumer();
+  arg1 = (ProxyPluginMgr *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_ProxyPluginMgr_createInstance(void * jarg1) {
+  void * jresult ;
+  ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+  ProxyPluginMgr *result = 0 ;
+  
+  arg1 = (ProxyPluginMgrCallback *)jarg1; 
+  result = (ProxyPluginMgr *)ProxyPluginMgr::createInstance(arg1);
   jresult = (void *)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyAudioConsumer(void * jarg1) {
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+SWIGEXPORT void * SWIGSTDCALL CSharp_ProxyPluginMgr_getInstance() {
+  void * jresult ;
+  ProxyPluginMgr *result = 0 ;
   
-  arg1 = (ProxyAudioConsumer *)jarg1; 
+  result = (ProxyPluginMgr *)ProxyPluginMgr::getInstance();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_ProxyPluginMgr_findAudioConsumer(void * jarg1, unsigned long long jarg2) {
+  void * jresult ;
+  ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+  uint64_t arg2 ;
+  ProxyAudioConsumer *result = 0 ;
+  
+  arg1 = (ProxyPluginMgr *)jarg1; 
+  arg2 = (uint64_t)jarg2; 
+  result = (ProxyAudioConsumer *)(arg1)->findAudioConsumer(arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_ProxyPluginMgr_findVideoConsumer(void * jarg1, unsigned long long jarg2) {
+  void * jresult ;
+  ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+  uint64_t arg2 ;
+  ProxyVideoConsumer *result = 0 ;
+  
+  arg1 = (ProxyPluginMgr *)jarg1; 
+  arg2 = (uint64_t)jarg2; 
+  result = (ProxyVideoConsumer *)(arg1)->findVideoConsumer(arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_ProxyPluginMgr_findAudioProducer(void * jarg1, unsigned long long jarg2) {
+  void * jresult ;
+  ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+  uint64_t arg2 ;
+  ProxyAudioProducer *result = 0 ;
+  
+  arg1 = (ProxyPluginMgr *)jarg1; 
+  arg2 = (uint64_t)jarg2; 
+  result = (ProxyAudioProducer *)(arg1)->findAudioProducer(arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_ProxyPluginMgr_findVideoProducer(void * jarg1, unsigned long long jarg2) {
+  void * jresult ;
+  ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+  uint64_t arg2 ;
+  ProxyVideoProducer *result = 0 ;
+  
+  arg1 = (ProxyPluginMgr *)jarg1; 
+  arg2 = (uint64_t)jarg2; 
+  result = (ProxyVideoProducer *)(arg1)->findVideoProducer(arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_ProxyPluginMgrCallback() {
+  void * jresult ;
+  ProxyPluginMgrCallback *result = 0 ;
+  
+  result = (ProxyPluginMgrCallback *)new SwigDirector_ProxyPluginMgrCallback();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyPluginMgrCallback(void * jarg1) {
+  ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+  
+  arg1 = (ProxyPluginMgrCallback *)jarg1; 
   delete arg1;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumer_prepare(void * jarg1, int jarg2, int jarg3, int jarg4) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyPluginMgrCallback_OnPluginCreated(void * jarg1, unsigned long long jarg2, int jarg3) {
   int jresult ;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+  uint64_t arg2 ;
+  enum twrap_proxy_plugin_type_e arg3 ;
+  int result;
+  
+  arg1 = (ProxyPluginMgrCallback *)jarg1; 
+  arg2 = (uint64_t)jarg2; 
+  arg3 = (enum twrap_proxy_plugin_type_e)jarg3; 
+  result = (int)(arg1)->OnPluginCreated(arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyPluginMgrCallback_OnPluginCreatedSwigExplicitProxyPluginMgrCallback(void * jarg1, unsigned long long jarg2, int jarg3) {
+  int jresult ;
+  ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+  uint64_t arg2 ;
+  enum twrap_proxy_plugin_type_e arg3 ;
+  int result;
+  
+  arg1 = (ProxyPluginMgrCallback *)jarg1; 
+  arg2 = (uint64_t)jarg2; 
+  arg3 = (enum twrap_proxy_plugin_type_e)jarg3; 
+  result = (int)(arg1)->ProxyPluginMgrCallback::OnPluginCreated(arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyPluginMgrCallback_OnPluginDestroyed(void * jarg1, unsigned long long jarg2, int jarg3) {
+  int jresult ;
+  ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+  uint64_t arg2 ;
+  enum twrap_proxy_plugin_type_e arg3 ;
+  int result;
+  
+  arg1 = (ProxyPluginMgrCallback *)jarg1; 
+  arg2 = (uint64_t)jarg2; 
+  arg3 = (enum twrap_proxy_plugin_type_e)jarg3; 
+  result = (int)(arg1)->OnPluginDestroyed(arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyPluginMgrCallback_OnPluginDestroyedSwigExplicitProxyPluginMgrCallback(void * jarg1, unsigned long long jarg2, int jarg3) {
+  int jresult ;
+  ProxyPluginMgrCallback *arg1 = (ProxyPluginMgrCallback *) 0 ;
+  uint64_t arg2 ;
+  enum twrap_proxy_plugin_type_e arg3 ;
+  int result;
+  
+  arg1 = (ProxyPluginMgrCallback *)jarg1; 
+  arg2 = (uint64_t)jarg2; 
+  arg3 = (enum twrap_proxy_plugin_type_e)jarg3; 
+  result = (int)(arg1)->ProxyPluginMgrCallback::OnPluginDestroyed(arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_ProxyPluginMgrCallback_director_connect(void *objarg, SwigDirector_ProxyPluginMgrCallback::SWIG_Callback0_t callback0, SwigDirector_ProxyPluginMgrCallback::SWIG_Callback1_t callback1) {
+  ProxyPluginMgrCallback *obj = (ProxyPluginMgrCallback *)objarg;
+  SwigDirector_ProxyPluginMgrCallback *director = dynamic_cast<SwigDirector_ProxyPluginMgrCallback *>(obj);
+  if (director) {
+    director->swig_connect_director(callback0, callback1);
+  }
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyPlugin(void * jarg1) {
+  ProxyPlugin *arg1 = (ProxyPlugin *) 0 ;
+  
+  arg1 = (ProxyPlugin *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyPlugin_getType(void * jarg1) {
+  int jresult ;
+  ProxyPlugin *arg1 = (ProxyPlugin *) 0 ;
+  twrap_proxy_plugin_type_t result;
+  
+  arg1 = (ProxyPlugin *)jarg1; 
+  result = (twrap_proxy_plugin_type_t)((ProxyPlugin const *)arg1)->getType();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned long long SWIGSTDCALL CSharp_ProxyPlugin_getId(void * jarg1) {
+  unsigned long long jresult ;
+  ProxyPlugin *arg1 = (ProxyPlugin *) 0 ;
+  uint64_t result;
+  
+  arg1 = (ProxyPlugin *)jarg1; 
+  result = (uint64_t)((ProxyPlugin const *)arg1)->getId();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_ProxyAudioConsumerCallback() {
+  void * jresult ;
+  ProxyAudioConsumerCallback *result = 0 ;
+  
+  result = (ProxyAudioConsumerCallback *)new SwigDirector_ProxyAudioConsumerCallback();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyAudioConsumerCallback(void * jarg1) {
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
+  
+  arg1 = (ProxyAudioConsumerCallback *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumerCallback_prepare(void * jarg1, int jarg2, int jarg3, int jarg4) {
+  int jresult ;
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
   int arg2 ;
   int arg3 ;
   int arg4 ;
   int result;
   
-  arg1 = (ProxyAudioConsumer *)jarg1; 
+  arg1 = (ProxyAudioConsumerCallback *)jarg1; 
   arg2 = (int)jarg2; 
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
@@ -3037,103 +3328,110 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumer_prepare(void * jarg1, int j
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumer_prepareSwigExplicitProxyAudioConsumer(void * jarg1, int jarg2, int jarg3, int jarg4) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumerCallback_prepareSwigExplicitProxyAudioConsumerCallback(void * jarg1, int jarg2, int jarg3, int jarg4) {
   int jresult ;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
   int arg2 ;
   int arg3 ;
   int arg4 ;
   int result;
   
-  arg1 = (ProxyAudioConsumer *)jarg1; 
+  arg1 = (ProxyAudioConsumerCallback *)jarg1; 
   arg2 = (int)jarg2; 
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
-  result = (int)(arg1)->ProxyAudioConsumer::prepare(arg2,arg3,arg4);
+  result = (int)(arg1)->ProxyAudioConsumerCallback::prepare(arg2,arg3,arg4);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumer_start(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumerCallback_start(void * jarg1) {
   int jresult ;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyAudioConsumer *)jarg1; 
+  arg1 = (ProxyAudioConsumerCallback *)jarg1; 
   result = (int)(arg1)->start();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumer_startSwigExplicitProxyAudioConsumer(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumerCallback_startSwigExplicitProxyAudioConsumerCallback(void * jarg1) {
   int jresult ;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyAudioConsumer *)jarg1; 
-  result = (int)(arg1)->ProxyAudioConsumer::start();
+  arg1 = (ProxyAudioConsumerCallback *)jarg1; 
+  result = (int)(arg1)->ProxyAudioConsumerCallback::start();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumer_pause(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumerCallback_pause(void * jarg1) {
   int jresult ;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyAudioConsumer *)jarg1; 
+  arg1 = (ProxyAudioConsumerCallback *)jarg1; 
   result = (int)(arg1)->pause();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumer_pauseSwigExplicitProxyAudioConsumer(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumerCallback_pauseSwigExplicitProxyAudioConsumerCallback(void * jarg1) {
   int jresult ;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyAudioConsumer *)jarg1; 
-  result = (int)(arg1)->ProxyAudioConsumer::pause();
+  arg1 = (ProxyAudioConsumerCallback *)jarg1; 
+  result = (int)(arg1)->ProxyAudioConsumerCallback::pause();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumer_stop(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumerCallback_stop(void * jarg1) {
   int jresult ;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyAudioConsumer *)jarg1; 
+  arg1 = (ProxyAudioConsumerCallback *)jarg1; 
   result = (int)(arg1)->stop();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumer_stopSwigExplicitProxyAudioConsumer(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioConsumerCallback_stopSwigExplicitProxyAudioConsumerCallback(void * jarg1) {
   int jresult ;
-  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyAudioConsumerCallback *arg1 = (ProxyAudioConsumerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyAudioConsumer *)jarg1; 
-  result = (int)(arg1)->ProxyAudioConsumer::stop();
+  arg1 = (ProxyAudioConsumerCallback *)jarg1; 
+  result = (int)(arg1)->ProxyAudioConsumerCallback::stop();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_ProxyAudioConsumer_setActivate(void * jarg1, unsigned int jarg2) {
+SWIGEXPORT void SWIGSTDCALL CSharp_ProxyAudioConsumerCallback_director_connect(void *objarg, SwigDirector_ProxyAudioConsumerCallback::SWIG_Callback0_t callback0, SwigDirector_ProxyAudioConsumerCallback::SWIG_Callback1_t callback1, SwigDirector_ProxyAudioConsumerCallback::SWIG_Callback2_t callback2, SwigDirector_ProxyAudioConsumerCallback::SWIG_Callback3_t callback3) {
+  ProxyAudioConsumerCallback *obj = (ProxyAudioConsumerCallback *)objarg;
+  SwigDirector_ProxyAudioConsumerCallback *director = dynamic_cast<SwigDirector_ProxyAudioConsumerCallback *>(obj);
+  if (director) {
+    director->swig_connect_director(callback0, callback1, callback2, callback3);
+  }
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyAudioConsumer(void * jarg1) {
   ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
-  bool arg2 ;
   
   arg1 = (ProxyAudioConsumer *)jarg1; 
-  arg2 = jarg2 ? true : false; 
-  (arg1)->setActivate(arg2);
+  delete arg1;
 }
 
 
@@ -3165,6 +3463,16 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyAudioConsumer_reset(void * jarg1
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_ProxyAudioConsumer_setCallback(void * jarg1, void * jarg2) {
+  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  ProxyAudioConsumerCallback *arg2 = (ProxyAudioConsumerCallback *) 0 ;
+  
+  arg1 = (ProxyAudioConsumer *)jarg1; 
+  arg2 = (ProxyAudioConsumerCallback *)jarg2; 
+  (arg1)->setCallback(arg2);
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyAudioConsumer_registerPlugin() {
   unsigned int jresult ;
   bool result;
@@ -3175,44 +3483,33 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyAudioConsumer_registerPlugin() {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_ProxyAudioConsumer_director_connect(void *objarg, SwigDirector_ProxyAudioConsumer::SWIG_Callback0_t callback0, SwigDirector_ProxyAudioConsumer::SWIG_Callback1_t callback1, SwigDirector_ProxyAudioConsumer::SWIG_Callback2_t callback2, SwigDirector_ProxyAudioConsumer::SWIG_Callback3_t callback3) {
-  ProxyAudioConsumer *obj = (ProxyAudioConsumer *)objarg;
-  SwigDirector_ProxyAudioConsumer *director = dynamic_cast<SwigDirector_ProxyAudioConsumer *>(obj);
-  if (director) {
-    director->swig_connect_director(callback0, callback1, callback2, callback3);
-  }
-}
-
-
-SWIGEXPORT void * SWIGSTDCALL CSharp_new_ProxyVideoConsumer(int jarg1) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_ProxyVideoConsumerCallback() {
   void * jresult ;
-  tmedia_chroma_t arg1 ;
-  ProxyVideoConsumer *result = 0 ;
+  ProxyVideoConsumerCallback *result = 0 ;
   
-  arg1 = (tmedia_chroma_t)jarg1; 
-  result = (ProxyVideoConsumer *)new SwigDirector_ProxyVideoConsumer(arg1);
+  result = (ProxyVideoConsumerCallback *)new SwigDirector_ProxyVideoConsumerCallback();
   jresult = (void *)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyVideoConsumer(void * jarg1) {
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyVideoConsumerCallback(void * jarg1) {
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   
-  arg1 = (ProxyVideoConsumer *)jarg1; 
+  arg1 = (ProxyVideoConsumerCallback *)jarg1; 
   delete arg1;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumer_prepare(void * jarg1, int jarg2, int jarg3, int jarg4) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumerCallback_prepare(void * jarg1, int jarg2, int jarg3, int jarg4) {
   int jresult ;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   int arg2 ;
   int arg3 ;
   int arg4 ;
   int result;
   
-  arg1 = (ProxyVideoConsumer *)jarg1; 
+  arg1 = (ProxyVideoConsumerCallback *)jarg1; 
   arg2 = (int)jarg2; 
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
@@ -3222,31 +3519,31 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumer_prepare(void * jarg1, int j
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumer_prepareSwigExplicitProxyVideoConsumer(void * jarg1, int jarg2, int jarg3, int jarg4) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumerCallback_prepareSwigExplicitProxyVideoConsumerCallback(void * jarg1, int jarg2, int jarg3, int jarg4) {
   int jresult ;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   int arg2 ;
   int arg3 ;
   int arg4 ;
   int result;
   
-  arg1 = (ProxyVideoConsumer *)jarg1; 
+  arg1 = (ProxyVideoConsumerCallback *)jarg1; 
   arg2 = (int)jarg2; 
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
-  result = (int)(arg1)->ProxyVideoConsumer::prepare(arg2,arg3,arg4);
+  result = (int)(arg1)->ProxyVideoConsumerCallback::prepare(arg2,arg3,arg4);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumer_consume(void * jarg1, void * jarg2) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumerCallback_consume(void * jarg1, void * jarg2) {
   int jresult ;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   ProxyVideoFrame *arg2 = (ProxyVideoFrame *) 0 ;
   int result;
   
-  arg1 = (ProxyVideoConsumer *)jarg1; 
+  arg1 = (ProxyVideoConsumerCallback *)jarg1; 
   arg2 = (ProxyVideoFrame *)jarg2; 
   result = (int)(arg1)->consume((ProxyVideoFrame const *)arg2);
   jresult = result; 
@@ -3254,99 +3551,106 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumer_consume(void * jarg1, void 
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumer_consumeSwigExplicitProxyVideoConsumer(void * jarg1, void * jarg2) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumerCallback_consumeSwigExplicitProxyVideoConsumerCallback(void * jarg1, void * jarg2) {
   int jresult ;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   ProxyVideoFrame *arg2 = (ProxyVideoFrame *) 0 ;
   int result;
   
-  arg1 = (ProxyVideoConsumer *)jarg1; 
+  arg1 = (ProxyVideoConsumerCallback *)jarg1; 
   arg2 = (ProxyVideoFrame *)jarg2; 
-  result = (int)(arg1)->ProxyVideoConsumer::consume((ProxyVideoFrame const *)arg2);
+  result = (int)(arg1)->ProxyVideoConsumerCallback::consume((ProxyVideoFrame const *)arg2);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumer_start(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumerCallback_start(void * jarg1) {
   int jresult ;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyVideoConsumer *)jarg1; 
+  arg1 = (ProxyVideoConsumerCallback *)jarg1; 
   result = (int)(arg1)->start();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumer_startSwigExplicitProxyVideoConsumer(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumerCallback_startSwigExplicitProxyVideoConsumerCallback(void * jarg1) {
   int jresult ;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyVideoConsumer *)jarg1; 
-  result = (int)(arg1)->ProxyVideoConsumer::start();
+  arg1 = (ProxyVideoConsumerCallback *)jarg1; 
+  result = (int)(arg1)->ProxyVideoConsumerCallback::start();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumer_pause(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumerCallback_pause(void * jarg1) {
   int jresult ;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyVideoConsumer *)jarg1; 
+  arg1 = (ProxyVideoConsumerCallback *)jarg1; 
   result = (int)(arg1)->pause();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumer_pauseSwigExplicitProxyVideoConsumer(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumerCallback_pauseSwigExplicitProxyVideoConsumerCallback(void * jarg1) {
   int jresult ;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyVideoConsumer *)jarg1; 
-  result = (int)(arg1)->ProxyVideoConsumer::pause();
+  arg1 = (ProxyVideoConsumerCallback *)jarg1; 
+  result = (int)(arg1)->ProxyVideoConsumerCallback::pause();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumer_stop(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumerCallback_stop(void * jarg1) {
   int jresult ;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyVideoConsumer *)jarg1; 
+  arg1 = (ProxyVideoConsumerCallback *)jarg1; 
   result = (int)(arg1)->stop();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumer_stopSwigExplicitProxyVideoConsumer(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoConsumerCallback_stopSwigExplicitProxyVideoConsumerCallback(void * jarg1) {
   int jresult ;
-  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg1 = (ProxyVideoConsumerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyVideoConsumer *)jarg1; 
-  result = (int)(arg1)->ProxyVideoConsumer::stop();
+  arg1 = (ProxyVideoConsumerCallback *)jarg1; 
+  result = (int)(arg1)->ProxyVideoConsumerCallback::stop();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoConsumer_setActivate(void * jarg1, unsigned int jarg2) {
+SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoConsumerCallback_director_connect(void *objarg, SwigDirector_ProxyVideoConsumerCallback::SWIG_Callback0_t callback0, SwigDirector_ProxyVideoConsumerCallback::SWIG_Callback1_t callback1, SwigDirector_ProxyVideoConsumerCallback::SWIG_Callback2_t callback2, SwigDirector_ProxyVideoConsumerCallback::SWIG_Callback3_t callback3, SwigDirector_ProxyVideoConsumerCallback::SWIG_Callback4_t callback4) {
+  ProxyVideoConsumerCallback *obj = (ProxyVideoConsumerCallback *)objarg;
+  SwigDirector_ProxyVideoConsumerCallback *director = dynamic_cast<SwigDirector_ProxyVideoConsumerCallback *>(obj);
+  if (director) {
+    director->swig_connect_director(callback0, callback1, callback2, callback3, callback4);
+  }
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyVideoConsumer(void * jarg1) {
   ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
-  bool arg2 ;
   
   arg1 = (ProxyVideoConsumer *)jarg1; 
-  arg2 = jarg2 ? true : false; 
-  (arg1)->setActivate(arg2);
+  delete arg1;
 }
 
 
@@ -3366,6 +3670,16 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoConsumer_setDisplaySize(voi
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoConsumer_setCallback(void * jarg1, void * jarg2) {
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  ProxyVideoConsumerCallback *arg2 = (ProxyVideoConsumerCallback *) 0 ;
+  
+  arg1 = (ProxyVideoConsumer *)jarg1; 
+  arg2 = (ProxyVideoConsumerCallback *)jarg2; 
+  (arg1)->setCallback(arg2);
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoConsumer_registerPlugin() {
   unsigned int jresult ;
   bool result;
@@ -3376,12 +3690,11 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoConsumer_registerPlugin() {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoConsumer_director_connect(void *objarg, SwigDirector_ProxyVideoConsumer::SWIG_Callback0_t callback0, SwigDirector_ProxyVideoConsumer::SWIG_Callback1_t callback1, SwigDirector_ProxyVideoConsumer::SWIG_Callback2_t callback2, SwigDirector_ProxyVideoConsumer::SWIG_Callback3_t callback3, SwigDirector_ProxyVideoConsumer::SWIG_Callback4_t callback4) {
-  ProxyVideoConsumer *obj = (ProxyVideoConsumer *)objarg;
-  SwigDirector_ProxyVideoConsumer *director = dynamic_cast<SwigDirector_ProxyVideoConsumer *>(obj);
-  if (director) {
-    director->swig_connect_director(callback0, callback1, callback2, callback3, callback4);
-  }
+SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoConsumer_setDefaultChroma(int jarg1) {
+  tmedia_chroma_t arg1 ;
+  
+  arg1 = (tmedia_chroma_t)jarg1; 
+  ProxyVideoConsumer::setDefaultChroma(arg1);
 }
 
 
@@ -3421,33 +3734,33 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoFrame_getContent(void * jar
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_new_ProxyAudioProducer() {
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_ProxyAudioProducerCallback() {
   void * jresult ;
-  ProxyAudioProducer *result = 0 ;
+  ProxyAudioProducerCallback *result = 0 ;
   
-  result = (ProxyAudioProducer *)new SwigDirector_ProxyAudioProducer();
+  result = (ProxyAudioProducerCallback *)new SwigDirector_ProxyAudioProducerCallback();
   jresult = (void *)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyAudioProducer(void * jarg1) {
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyAudioProducerCallback(void * jarg1) {
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   
-  arg1 = (ProxyAudioProducer *)jarg1; 
+  arg1 = (ProxyAudioProducerCallback *)jarg1; 
   delete arg1;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducer_prepare(void * jarg1, int jarg2, int jarg3, int jarg4) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducerCallback_prepare(void * jarg1, int jarg2, int jarg3, int jarg4) {
   int jresult ;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   int arg2 ;
   int arg3 ;
   int arg4 ;
   int result;
   
-  arg1 = (ProxyAudioProducer *)jarg1; 
+  arg1 = (ProxyAudioProducerCallback *)jarg1; 
   arg2 = (int)jarg2; 
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
@@ -3457,103 +3770,110 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducer_prepare(void * jarg1, int j
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducer_prepareSwigExplicitProxyAudioProducer(void * jarg1, int jarg2, int jarg3, int jarg4) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducerCallback_prepareSwigExplicitProxyAudioProducerCallback(void * jarg1, int jarg2, int jarg3, int jarg4) {
   int jresult ;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   int arg2 ;
   int arg3 ;
   int arg4 ;
   int result;
   
-  arg1 = (ProxyAudioProducer *)jarg1; 
+  arg1 = (ProxyAudioProducerCallback *)jarg1; 
   arg2 = (int)jarg2; 
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
-  result = (int)(arg1)->ProxyAudioProducer::prepare(arg2,arg3,arg4);
+  result = (int)(arg1)->ProxyAudioProducerCallback::prepare(arg2,arg3,arg4);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducer_start(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducerCallback_start(void * jarg1) {
   int jresult ;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyAudioProducer *)jarg1; 
+  arg1 = (ProxyAudioProducerCallback *)jarg1; 
   result = (int)(arg1)->start();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducer_startSwigExplicitProxyAudioProducer(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducerCallback_startSwigExplicitProxyAudioProducerCallback(void * jarg1) {
   int jresult ;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyAudioProducer *)jarg1; 
-  result = (int)(arg1)->ProxyAudioProducer::start();
+  arg1 = (ProxyAudioProducerCallback *)jarg1; 
+  result = (int)(arg1)->ProxyAudioProducerCallback::start();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducer_pause(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducerCallback_pause(void * jarg1) {
   int jresult ;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyAudioProducer *)jarg1; 
+  arg1 = (ProxyAudioProducerCallback *)jarg1; 
   result = (int)(arg1)->pause();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducer_pauseSwigExplicitProxyAudioProducer(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducerCallback_pauseSwigExplicitProxyAudioProducerCallback(void * jarg1) {
   int jresult ;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyAudioProducer *)jarg1; 
-  result = (int)(arg1)->ProxyAudioProducer::pause();
+  arg1 = (ProxyAudioProducerCallback *)jarg1; 
+  result = (int)(arg1)->ProxyAudioProducerCallback::pause();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducer_stop(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducerCallback_stop(void * jarg1) {
   int jresult ;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyAudioProducer *)jarg1; 
+  arg1 = (ProxyAudioProducerCallback *)jarg1; 
   result = (int)(arg1)->stop();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducer_stopSwigExplicitProxyAudioProducer(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducerCallback_stopSwigExplicitProxyAudioProducerCallback(void * jarg1) {
   int jresult ;
-  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyAudioProducer *)jarg1; 
-  result = (int)(arg1)->ProxyAudioProducer::stop();
+  arg1 = (ProxyAudioProducerCallback *)jarg1; 
+  result = (int)(arg1)->ProxyAudioProducerCallback::stop();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_ProxyAudioProducer_setActivate(void * jarg1, unsigned int jarg2) {
+SWIGEXPORT void SWIGSTDCALL CSharp_ProxyAudioProducerCallback_director_connect(void *objarg, SwigDirector_ProxyAudioProducerCallback::SWIG_Callback0_t callback0, SwigDirector_ProxyAudioProducerCallback::SWIG_Callback1_t callback1, SwigDirector_ProxyAudioProducerCallback::SWIG_Callback2_t callback2, SwigDirector_ProxyAudioProducerCallback::SWIG_Callback3_t callback3) {
+  ProxyAudioProducerCallback *obj = (ProxyAudioProducerCallback *)objarg;
+  SwigDirector_ProxyAudioProducerCallback *director = dynamic_cast<SwigDirector_ProxyAudioProducerCallback *>(obj);
+  if (director) {
+    director->swig_connect_director(callback0, callback1, callback2, callback3);
+  }
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyAudioProducer(void * jarg1) {
   ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
-  bool arg2 ;
   
   arg1 = (ProxyAudioProducer *)jarg1; 
-  arg2 = jarg2 ? true : false; 
-  (arg1)->setActivate(arg2);
+  delete arg1;
 }
 
 
@@ -3573,6 +3893,16 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ProxyAudioProducer_push(void * jarg1, void * j
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_ProxyAudioProducer_setCallback(void * jarg1, void * jarg2) {
+  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  ProxyAudioProducerCallback *arg2 = (ProxyAudioProducerCallback *) 0 ;
+  
+  arg1 = (ProxyAudioProducer *)jarg1; 
+  arg2 = (ProxyAudioProducerCallback *)jarg2; 
+  (arg1)->setCallback(arg2);
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyAudioProducer_registerPlugin() {
   unsigned int jresult ;
   bool result;
@@ -3583,44 +3913,33 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyAudioProducer_registerPlugin() {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_ProxyAudioProducer_director_connect(void *objarg, SwigDirector_ProxyAudioProducer::SWIG_Callback0_t callback0, SwigDirector_ProxyAudioProducer::SWIG_Callback1_t callback1, SwigDirector_ProxyAudioProducer::SWIG_Callback2_t callback2, SwigDirector_ProxyAudioProducer::SWIG_Callback3_t callback3) {
-  ProxyAudioProducer *obj = (ProxyAudioProducer *)objarg;
-  SwigDirector_ProxyAudioProducer *director = dynamic_cast<SwigDirector_ProxyAudioProducer *>(obj);
-  if (director) {
-    director->swig_connect_director(callback0, callback1, callback2, callback3);
-  }
-}
-
-
-SWIGEXPORT void * SWIGSTDCALL CSharp_new_ProxyVideoProducer(int jarg1) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_ProxyVideoProducerCallback() {
   void * jresult ;
-  tmedia_chroma_t arg1 ;
-  ProxyVideoProducer *result = 0 ;
+  ProxyVideoProducerCallback *result = 0 ;
   
-  arg1 = (tmedia_chroma_t)jarg1; 
-  result = (ProxyVideoProducer *)new SwigDirector_ProxyVideoProducer(arg1);
+  result = (ProxyVideoProducerCallback *)new SwigDirector_ProxyVideoProducerCallback();
   jresult = (void *)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyVideoProducer(void * jarg1) {
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyVideoProducerCallback(void * jarg1) {
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
   
-  arg1 = (ProxyVideoProducer *)jarg1; 
+  arg1 = (ProxyVideoProducerCallback *)jarg1; 
   delete arg1;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_prepare(void * jarg1, int jarg2, int jarg3, int jarg4) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducerCallback_prepare(void * jarg1, int jarg2, int jarg3, int jarg4) {
   int jresult ;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
   int arg2 ;
   int arg3 ;
   int arg4 ;
   int result;
   
-  arg1 = (ProxyVideoProducer *)jarg1; 
+  arg1 = (ProxyVideoProducerCallback *)jarg1; 
   arg2 = (int)jarg2; 
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
@@ -3630,93 +3949,110 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_prepare(void * jarg1, int j
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_prepareSwigExplicitProxyVideoProducer(void * jarg1, int jarg2, int jarg3, int jarg4) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducerCallback_prepareSwigExplicitProxyVideoProducerCallback(void * jarg1, int jarg2, int jarg3, int jarg4) {
   int jresult ;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
   int arg2 ;
   int arg3 ;
   int arg4 ;
   int result;
   
-  arg1 = (ProxyVideoProducer *)jarg1; 
+  arg1 = (ProxyVideoProducerCallback *)jarg1; 
   arg2 = (int)jarg2; 
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
-  result = (int)(arg1)->ProxyVideoProducer::prepare(arg2,arg3,arg4);
+  result = (int)(arg1)->ProxyVideoProducerCallback::prepare(arg2,arg3,arg4);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_start(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducerCallback_start(void * jarg1) {
   int jresult ;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyVideoProducer *)jarg1; 
+  arg1 = (ProxyVideoProducerCallback *)jarg1; 
   result = (int)(arg1)->start();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_startSwigExplicitProxyVideoProducer(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducerCallback_startSwigExplicitProxyVideoProducerCallback(void * jarg1) {
   int jresult ;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyVideoProducer *)jarg1; 
-  result = (int)(arg1)->ProxyVideoProducer::start();
+  arg1 = (ProxyVideoProducerCallback *)jarg1; 
+  result = (int)(arg1)->ProxyVideoProducerCallback::start();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_pause(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducerCallback_pause(void * jarg1) {
   int jresult ;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyVideoProducer *)jarg1; 
+  arg1 = (ProxyVideoProducerCallback *)jarg1; 
   result = (int)(arg1)->pause();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_pauseSwigExplicitProxyVideoProducer(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducerCallback_pauseSwigExplicitProxyVideoProducerCallback(void * jarg1) {
   int jresult ;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyVideoProducer *)jarg1; 
-  result = (int)(arg1)->ProxyVideoProducer::pause();
+  arg1 = (ProxyVideoProducerCallback *)jarg1; 
+  result = (int)(arg1)->ProxyVideoProducerCallback::pause();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_stop(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducerCallback_stop(void * jarg1) {
   int jresult ;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyVideoProducer *)jarg1; 
+  arg1 = (ProxyVideoProducerCallback *)jarg1; 
   result = (int)(arg1)->stop();
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_stopSwigExplicitProxyVideoProducer(void * jarg1) {
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducerCallback_stopSwigExplicitProxyVideoProducerCallback(void * jarg1) {
   int jresult ;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg1 = (ProxyVideoProducerCallback *) 0 ;
   int result;
   
-  arg1 = (ProxyVideoProducer *)jarg1; 
-  result = (int)(arg1)->ProxyVideoProducer::stop();
+  arg1 = (ProxyVideoProducerCallback *)jarg1; 
+  result = (int)(arg1)->ProxyVideoProducerCallback::stop();
   jresult = result; 
   return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoProducerCallback_director_connect(void *objarg, SwigDirector_ProxyVideoProducerCallback::SWIG_Callback0_t callback0, SwigDirector_ProxyVideoProducerCallback::SWIG_Callback1_t callback1, SwigDirector_ProxyVideoProducerCallback::SWIG_Callback2_t callback2, SwigDirector_ProxyVideoProducerCallback::SWIG_Callback3_t callback3) {
+  ProxyVideoProducerCallback *obj = (ProxyVideoProducerCallback *)objarg;
+  SwigDirector_ProxyVideoProducerCallback *director = dynamic_cast<SwigDirector_ProxyVideoProducerCallback *>(obj);
+  if (director) {
+    director->swig_connect_director(callback0, callback1, callback2, callback3);
+  }
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyVideoProducer(void * jarg1) {
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  
+  arg1 = (ProxyVideoProducer *)jarg1; 
+  delete arg1;
 }
 
 
@@ -3742,16 +4078,6 @@ SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoProducer_setRotation(void * jarg1, 
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoProducer_setActivate(void * jarg1, unsigned int jarg2) {
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
-  bool arg2 ;
-  
-  arg1 = (ProxyVideoProducer *)jarg1; 
-  arg2 = jarg2 ? true : false; 
-  (arg1)->setActivate(arg2);
-}
-
-
 SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_push(void * jarg1, void * jarg2, unsigned int jarg3) {
   int jresult ;
   ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
@@ -3768,6 +4094,16 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_push(void * jarg1, void * j
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoProducer_setCallback(void * jarg1, void * jarg2) {
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  ProxyVideoProducerCallback *arg2 = (ProxyVideoProducerCallback *) 0 ;
+  
+  arg1 = (ProxyVideoProducer *)jarg1; 
+  arg2 = (ProxyVideoProducerCallback *)jarg2; 
+  (arg1)->setCallback(arg2);
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoProducer_registerPlugin() {
   unsigned int jresult ;
   bool result;
@@ -3778,12 +4114,11 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoProducer_registerPlugin() {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoProducer_director_connect(void *objarg, SwigDirector_ProxyVideoProducer::SWIG_Callback0_t callback0, SwigDirector_ProxyVideoProducer::SWIG_Callback1_t callback1, SwigDirector_ProxyVideoProducer::SWIG_Callback2_t callback2, SwigDirector_ProxyVideoProducer::SWIG_Callback3_t callback3) {
-  ProxyVideoProducer *obj = (ProxyVideoProducer *)objarg;
-  SwigDirector_ProxyVideoProducer *director = dynamic_cast<SwigDirector_ProxyVideoProducer *>(obj);
-  if (director) {
-    director->swig_connect_director(callback0, callback1, callback2, callback3);
-  }
+SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoProducer_setDefaultChroma(int jarg1) {
+  tmedia_chroma_t arg1 ;
+  
+  arg1 = (tmedia_chroma_t)jarg1; 
+  ProxyVideoProducer::setDefaultChroma(arg1);
 }
 
 
@@ -5991,6 +6326,22 @@ SWIGEXPORT SipSession * SWIGSTDCALL CSharp_RegistrationSessionUpcast(Registratio
 
 SWIGEXPORT SipSession * SWIGSTDCALL CSharp_SubscriptionSessionUpcast(SubscriptionSession *objectRef) {
     return (SipSession *)objectRef;
+}
+
+SWIGEXPORT ProxyPlugin * SWIGSTDCALL CSharp_ProxyAudioConsumerUpcast(ProxyAudioConsumer *objectRef) {
+    return (ProxyPlugin *)objectRef;
+}
+
+SWIGEXPORT ProxyPlugin * SWIGSTDCALL CSharp_ProxyVideoConsumerUpcast(ProxyVideoConsumer *objectRef) {
+    return (ProxyPlugin *)objectRef;
+}
+
+SWIGEXPORT ProxyPlugin * SWIGSTDCALL CSharp_ProxyAudioProducerUpcast(ProxyAudioProducer *objectRef) {
+    return (ProxyPlugin *)objectRef;
+}
+
+SWIGEXPORT ProxyPlugin * SWIGSTDCALL CSharp_ProxyVideoProducerUpcast(ProxyVideoProducer *objectRef) {
+    return (ProxyPlugin *)objectRef;
 }
 
 SWIGEXPORT SafeObject * SWIGSTDCALL CSharp_SipStackUpcast(SipStack *objectRef) {

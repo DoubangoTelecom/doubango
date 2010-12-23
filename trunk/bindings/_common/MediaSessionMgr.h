@@ -25,6 +25,8 @@
 #include "tinymedia.h"
 #include "Common.h"
 
+class ProxyPlugin;
+
 class MediaSessionMgr
 {
 public:
@@ -41,6 +43,17 @@ public:
 
 	bool producerSetInt32(twrap_media_type_t media, const char* key, int32_t value);
 	bool producerSetInt64(twrap_media_type_t media, const char* key, int64_t value);
+
+#if !defined(SWIG)
+	ProxyPlugin* findProxyPlugin(twrap_media_type_t media, bool consumer);
+#endif
+
+	ProxyPlugin* findProxyPluginConsumer(twrap_media_type_t media){
+		return this->findProxyPlugin(media, true);
+	}
+	ProxyPlugin* findProxyPluginProducer(twrap_media_type_t media){
+		return this->findProxyPlugin(media, false);
+	}
 
 private:
 	tmedia_session_mgr_t* mgr;

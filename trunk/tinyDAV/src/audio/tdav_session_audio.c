@@ -46,7 +46,7 @@
 
 static int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id);
 static struct tdav_session_audio_dtmfe_s* _tdav_session_audio_dtmfe_create(const tdav_session_audio_t* session, uint8_t event, uint16_t duration, uint32_t seq, uint32_t timestamp, uint8_t format, tsk_bool_t M, tsk_bool_t E);
-static tsk_bool_t _tdav_has_at_least_one_codec(const tdav_session_audio_t* session);
+static const tmedia_codec_t* _tdav_first_best_neg_codec(const tdav_session_audio_t* session);
 
 
 /* DTMF event object */
@@ -262,6 +262,7 @@ int tdav_session_audio_prepare(tmedia_session_t* self)
 int tdav_session_audio_start(tmedia_session_t* self)
 {
 	tdav_session_audio_t* audio;
+	const tmedia_codec_t* codec;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -270,14 +271,13 @@ int tdav_session_audio_start(tmedia_session_t* self)
 
 	audio = (tdav_session_audio_t*)self;
 
-	if(!_tdav_has_at_least_one_codec(audio)){
+	if(!(codec = _tdav_first_best_neg_codec(audio))){
 		TSK_DEBUG_ERROR("No codec matched");
 		return -2;
 	}
 
 	if(audio->rtp_manager){
 		int ret;
-		const tmedia_codec_t* codec = (const tmedia_codec_t*)TSK_LIST_FIRST_DATA(self->neg_codecs);
 		/* RTP/RTCP manager: use latest information. */
 		ret = trtp_manager_set_rtp_remote(audio->rtp_manager, audio->remote_ip, audio->remote_port);
 		//trtp_manager_set_payload_type(audio->rtp_manager, codec->neg_format ? atoi(codec->neg_format) : atoi(codec->format));
@@ -661,16 +661,16 @@ int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 	return 0;
 }
 
-/* Internal function used to check that there is a least one valid codec in the negociated list */
-tsk_bool_t _tdav_has_at_least_one_codec(const tdav_session_audio_t* session)
+/* first best negotiated codec (ignore dtmf) */
+const tmedia_codec_t* _tdav_first_best_neg_codec(const tdav_session_audio_t* session)
 {
 	const tsk_list_item_t* item;
 	tsk_list_foreach(item, TMEDIA_SESSION(session)->neg_codecs){
 		if(!IS_DTMF_CODEC(item->data)){
-			return tsk_true;
+			return TMEDIA_CODEC(item->data);
 		}
 	}
-	return tsk_false;
+	return tsk_null;
 }
 
 

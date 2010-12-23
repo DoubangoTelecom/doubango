@@ -28,6 +28,11 @@ MediaSessionMgr::MediaSessionMgr(tmedia_session_mgr_t* _mgr)
 	this->mgr = (tmedia_session_mgr_t*)tsk_object_ref(_mgr);
 }
 
+MediaSessionMgr::~MediaSessionMgr()
+{
+	TSK_OBJECT_SAFE_FREE(this->mgr);
+}
+
 bool MediaSessionMgr::sessionSetInt32(twrap_media_type_t media, const char* key, int32_t value)
 {
 	TSK_DEBUG_ERROR("Not implemented");
@@ -62,8 +67,48 @@ bool MediaSessionMgr::producerSetInt64(twrap_media_type_t media, const char* key
 		TMEDIA_SESSION_SET_NULL()) == 0);
 }
 
-MediaSessionMgr::~MediaSessionMgr()
+#include "tinydav/audio/tdav_session_audio.h"
+#include "tinydav/video/tdav_session_video.h"
+#include "ProxyPluginMgr.h"
+
+
+ProxyPlugin* MediaSessionMgr::findProxyPlugin(twrap_media_type_t media, bool consumer)
 {
-	TSK_OBJECT_SAFE_FREE(this->mgr);
+	ProxyPlugin* plugin = tsk_null;
+	ProxyPluginMgr* manager = ProxyPluginMgr::getInstance();
+
+	if(media != twrap_media_audio && media != twrap_media_video){
+		TSK_DEBUG_ERROR("Invalid media type");
+		return tsk_null;
+	}
+
+	if(manager && this->mgr){
+		tmedia_type_t _media = _get_media_type(media);
+		tmedia_session_t* session = tmedia_session_mgr_find(this->mgr, _media);
+		if(session){
+			if(session->plugin == tdav_session_audio_plugin_def_t){
+				if(consumer){
+					plugin = manager->findPlugin(TDAV_SESSION_AUDIO(session)->consumer);
+				}
+				else{
+					plugin = manager->findPlugin(TDAV_SESSION_AUDIO(session)->producer);
+				}
+			}
+			else if(session->plugin == tdav_session_video_plugin_def_t){
+				if(consumer){
+					plugin = manager->findPlugin(TDAV_SESSION_VIDEO(session)->consumer);
+				}
+				else{
+					plugin = manager->findPlugin(TDAV_SESSION_VIDEO(session)->producer);
+				}
+			}
+			tsk_object_unref(session);
+		}
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid state");
+	}
+
+	return plugin;
 }
 

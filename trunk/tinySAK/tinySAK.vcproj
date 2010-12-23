@@ -228,6 +228,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(NOINHERIT)"
 				LinkIncremental="1"
+				IgnoreDefaultLibraryNames="MSVCRTD"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -499,6 +500,8 @@
 		</Configuration>
 		<Configuration
 			Name="Static_Release|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			>
 			<Tool

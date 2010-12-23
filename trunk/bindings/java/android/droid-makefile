@@ -38,6 +38,7 @@ OBJS = tinyWRAP_wrap.o\
 	../../_common/MediaSessionMgr.o \
 	../../_common/Msrp.o \
 	../../_common/ProxyConsumer.o \
+	../../_common/ProxyPluginMgr.o \
 	../../_common/ProxyProducer.o \
 	../../_common/SafeObject.o \
 	../../_common/SipCallback.o \
