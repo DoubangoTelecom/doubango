@@ -119,14 +119,16 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="&quot;..\thirdparties\win32\include&quot;;&quot;..\tinySAK\src&quot;"
 				PreprocessorDefinitions="HAVE_IPSEC=0;WIN32;_WIN32_WINNT=0x0501;NDEBUG;_WINDOWS;_USRDLL;TINYIPSEC_EXPORTS"
 				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 				CompileAs="1"
 			/>
 			<Tool
@@ -143,13 +145,13 @@
 				AdditionalDependencies="Ws2_32.lib $(OutDir)\tinySAK.lib"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="MSVCRTD"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				TargetMachine="1"
+				TargetMachine="0"
 			/>
 			<Tool
 				Name="VCALinkTool"

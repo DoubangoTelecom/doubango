@@ -200,15 +200,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				EnableIntrinsicFunctions="true"
+				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="&quot;..\thirdparties\win32\include&quot;;&quot;..\tinyHTTP\include&quot;;&quot;..\tinySAK\src&quot;;&quot;..\tinyNET\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYHTTP_EXPORTS"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
+				EnableFunctionLevelLinking="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 				CompileAs="1"
 			/>
 			<Tool
@@ -225,11 +225,11 @@
 				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="MSVCRTD"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				TargetMachine="1"
+				TargetMachine="0"
 			/>
 			<Tool
 				Name="VCALinkTool"

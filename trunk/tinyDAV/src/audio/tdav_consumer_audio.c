@@ -52,6 +52,8 @@
 #define TDAV_10MS_FRAME_SIZE(self)		(((self)->rate * TDAV_10MS)/1000)
 #define TDAV_PTIME_FRAME_SIZE(self)		(((self)->rate * (self)->ptime)/1000)
 
+int static size_of_short = sizeof(short);
+
 /** Initialize audio consumer */
 int tdav_consumer_audio_init(tdav_consumer_audio_t* self)
 {
@@ -112,9 +114,13 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data, tsk_size_t
 
 	/* synchronize the reference timestamp */
 	if(!self->jb.ref_timestamp){
+		uint64_t epoch = tsk_time_epoch();
 		struct timeval tv;
 		long ts = (rtp_hdr->timestamp/(self->rate/1000));
-		tsk_gettimeofday(&tv, tsk_null);
+		//=> Do not use (see clock_gettime() on linux): tsk_gettimeofday(&tv, tsk_null);
+		tv.tv_sec = (epoch)/1000;
+		tv.tv_usec = (epoch - (tv.tv_sec*1000))*1000;
+
 		tv.tv_sec -= (ts / self->rate);
 		tv.tv_usec -= (ts % self->rate) * 125;
 		if((tv.tv_usec -= (tv.tv_usec % (TDAV_10MS * 10000))) <0){
@@ -147,9 +153,9 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data, tsk_size_t
 	now = (long) (tsk_time_now()-self->jb.ref_timestamp);
 	ts = (long)(rtp_hdr->timestamp/(self->rate/1000));
 	_10ms_size_shorts = TDAV_10MS_FRAME_SIZE(self);
-	_10ms_size_bytes = _10ms_size_shorts * sizeof(short);
+	_10ms_size_bytes = _10ms_size_shorts * size_of_short;
 	for(i=0; i<(int)(size/_10ms_size_bytes);i++){
-		if((_10ms_buf = tsk_calloc(_10ms_size_shorts, sizeof(short)))){
+		if((_10ms_buf = tsk_calloc(_10ms_size_shorts, size_of_short))){
 			memcpy(_10ms_buf, &((uint8_t*)*data)[i*_10ms_size_bytes], _10ms_size_bytes);
 			jb_put(self->jb.jbuffer, _10ms_buf, JB_TYPE_VOICE, TDAV_10MS, ts, now, self->jb.jcodec);
 			_10ms_buf = tsk_null;
@@ -177,7 +183,7 @@ void* tdav_consumer_audio_get(tdav_consumer_audio_t* self)
 	}
 	
 	_10ms_size_shorts = TDAV_10MS_FRAME_SIZE(self);
-	_10ms_size_bytes = (_10ms_size_shorts * sizeof(short));
+	_10ms_size_bytes = (_10ms_size_shorts * size_of_short);
 	_10ms_count = (TDAV_PTIME_FRAME_SIZE(self)/_10ms_size_shorts);
 	now = (long) (tsk_time_now()-self->jb.ref_timestamp);
 
@@ -193,6 +199,7 @@ void* tdav_consumer_audio_get(tdav_consumer_audio_t* self)
 			case JB_EMPTY:
 			case JB_NOFRAME:
 			case JB_NOJB:
+				{
 					if(data){
 						if((data = tsk_realloc(data, (data_size + _10ms_size_bytes)))){
 							if(_10ms_buf && (jret == JB_OK)){
@@ -208,16 +215,17 @@ void* tdav_consumer_audio_get(tdav_consumer_audio_t* self)
 						else{ /* realloc failed */
 							data_size = 0;
 						}
-
-						if(jret == JB_INTERP){
-							jb_reset_all(self->jb.jbuffer);
-						}
 					}
 					else{
 						data = _10ms_buf, _10ms_buf = tsk_null;
 						data_size = _10ms_size_bytes;
 					}
 					break;
+
+					if(jret == JB_INTERP){
+						jb_reset_all(self->jb.jbuffer);
+					}
+				}
 			
 			default:
 				break;

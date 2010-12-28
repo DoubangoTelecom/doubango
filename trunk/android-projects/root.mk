@@ -43,7 +43,7 @@ export CFLAGS_COMMON=$(CFLAGS) $(DEBUG_FLAGS) -I$(ANDROID_NDK_ROOT)/build/platfo
 ifeq ($(NEON), yes)
 export MARCH=armv7-a
 export CFLAGS_COMMON+=-march=$(MARCH) -mtune=cortex-a8 -mfpu=neon -DHAVE_NEON=1 \
--D__ARM_ARCH_7__ -Wno-psabi -mfloat-abi=softfp
+-D__ARM_ARCH_7__ -D__ARM_ARCH_7A__ -Wno-psabi -mfloat-abi=softfp
 else
 export MARCH=armv5te
 export CFLAGS_COMMON+=-march=$(MARCH) -mtune=xscale

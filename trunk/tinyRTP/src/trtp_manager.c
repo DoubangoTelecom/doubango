@@ -34,6 +34,8 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#define TINY_RCVBUF					0 /* tiny buffer used to disable receiving */
+
 // TODO: Add support for outbound DTMF (http://www.ietf.org/rfc/rfc2833.txt)
 
 /* ======================= Transport callback ========================== */
@@ -140,6 +142,27 @@ int trtp_manager_prepare(trtp_manager_t* self)
 			tnet_transport_set_callback(self->transport, trtp_transport_layer_cb, self);
 			tsk_strupdate(&self->rtp.public_ip, self->transport->master->ip);
 			self->rtp.public_port = local_port;
+#if DISABLE_RCV_UNTIL_STARTED
+			/* Disable receiving until we start the transport (To avoid buffering) */
+			if(!self->rtp.rcv_disabled){
+				int error, oplen = sizeof(int);
+				TSK_DEBUG_INFO("Disabling recv on RTP socket...");
+				// Save default buffer (from the kernel) value
+				if((error = getsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&self->rtp.so_rcvbuf, &oplen))){
+					TNET_PRINT_LAST_ERROR("getsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", error);
+				}
+				else{
+					int len = TINY_RCVBUF;
+					if((error = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&len, oplen))){
+						TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", error);
+					}
+					else{
+						self->rtp.rcv_disabled = tsk_true;
+						TSK_DEBUG_INFO("Disabling recv on RTP socket OK");
+					}
+				}
+			}
+#endif
 		}
 		else {
 			TSK_DEBUG_ERROR("Failed to create RTP/RTCP Transport");
@@ -272,6 +295,22 @@ int trtp_manager_start(trtp_manager_t* self)
 		TSK_DEBUG_ERROR("RTP/RTCP manager not prepared");
 		return -2;
 	}
+
+#if DISABLE_RCV_UNTIL_STARTED
+	if(self->rtp.rcv_disabled){
+		char buff[1024];
+		// Buffer should be empty ...but who know?
+		// rcv() should never block() as we are always using non-blocking sockets
+		while ((ret = recv(self->transport->master->fd, buff, sizeof(buff), 0)) > 0){
+			TSK_DEBUG_INFO("Flushing RTP Buffer %d", ret);
+		}
+		if((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&self->rtp.so_rcvbuf, sizeof(self->rtp.so_rcvbuf)))){
+			TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", ret);
+			return ret;
+		}
+		self->rtp.rcv_disabled = tsk_false;
+	}
+#endif
 
 	/* start the transport */
 	if((ret = tnet_transport_start(self->transport))){
