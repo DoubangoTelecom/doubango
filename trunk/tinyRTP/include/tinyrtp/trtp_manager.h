@@ -35,6 +35,8 @@
 
 TRTP_BEGIN_DECLS
 
+#define DISABLE_RCV_UNTIL_STARTED	1 /* To avoid buffering (e.g. early media) */
+
 /* Forward declarations */
 struct trtp_rtp_packet_s;
 struct trtp_rtcp_packet_s;
@@ -57,6 +59,10 @@ typedef struct trtp_manager_s
 		tnet_port_t remote_port;
 		struct sockaddr_storage remote_addr;
 
+#if DISABLE_RCV_UNTIL_STARTED
+		int so_rcvbuf;
+		tsk_bool_t rcv_disabled;
+#endif
 		char* public_ip;
 		tnet_port_t public_port;
 

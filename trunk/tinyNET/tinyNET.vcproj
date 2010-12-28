@@ -202,15 +202,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				EnableIntrinsicFunctions="true"
+				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="src;&quot;..\thirdparties\win32\include&quot;;&quot;..\tinySAK\src&quot;"
 				PreprocessorDefinitions="TNET_HAVE_OPENSSL_H=1;WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYNET_EXPORTS"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
+				EnableFunctionLevelLinking="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 				CompileAs="1"
 			/>
 			<Tool
@@ -227,11 +227,11 @@
 				AdditionalDependencies="ws2_32.lib IPHLPAPI.lib &quot;$(OutDir)\tinySAK.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\openssl\libeay32.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\openssl\ssleay32.lib&quot;"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="MSVCRTD"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				TargetMachine="1"
+				TargetMachine="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
