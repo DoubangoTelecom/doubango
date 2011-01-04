@@ -25,8 +25,8 @@
 //stun.ekiga.net
 //#define STUN_SERVER_IP			"numb.viagenie.ca"
 #define STUN_SERVER_IP			"numb.viagenie.ca"
-#define STUN_USERNAME			"bossiel@yahoo.fr"
-#define STUN_PASSWORD			"diopmama"
+#define STUN_USERNAME			"xxxxx"
+#define STUN_PASSWORD			"xxxxx"
 #define STUN_SERVER_PORT		TNET_STUN_TCP_UDP_DEFAULT_PORT
 #define STUN_SERVER_PROTO		tnet_socket_type_udp_ipv4
 
