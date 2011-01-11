@@ -295,14 +295,14 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			}
 		case event_closed:
 			// alert all dialogs
-			if((session = thttp_session_get_by_fd(stack->sessions, e->fd))){
+			if((session = thttp_session_get_by_fd(stack->sessions, e->local_fd))){
 				ret = thttp_session_signal_closed(session);
 			}
 			goto bail;
 
 		case event_error:
 			// alert all dialogs
-			if((session = thttp_session_get_by_fd(stack->sessions, e->fd))){
+			if((session = thttp_session_get_by_fd(stack->sessions, e->local_fd))){
 				ret = thttp_session_signal_error(session);
 			}
 			goto bail;
@@ -314,7 +314,7 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	}
 	
 	/* Gets the associated dialog */
-	if((session = thttp_session_get_by_fd(stack->sessions, e->fd))){
+	if((session = thttp_session_get_by_fd(stack->sessions, e->local_fd))){
 		if(!(dialog = thttp_dialog_get_oldest(session->dialogs))){
 			TSK_DEBUG_ERROR("Failed to found associated dialog.");
 			ret = -5;

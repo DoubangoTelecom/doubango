@@ -35,7 +35,7 @@
 
 TSDP_BEGIN_DECLS
 
-#define TSDP_HEADER_A_VA_ARGS(field, value)		tsdp_header_A_def_t, (const char*)field, (const char*)value
+#define TSDP_HEADER_A_VA_ARGS(field, value)		tsdp_header_A_def_t, (const char*)(field), (const char*)(value)
 
 #define TSDP_HEADER_A(self)		((tsdp_header_A_t*)(self))
 

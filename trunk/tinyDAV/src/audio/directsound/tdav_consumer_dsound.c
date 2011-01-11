@@ -68,7 +68,8 @@ static void *__playback_thread(void *param)
 			break;
 		}
 		else {
-			data = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(dsound));
+			tsk_size_t out_size = 0;
+			data = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(dsound), &out_size);
 			index = (dwEvent == (TDAV_DSOUNS_CONSUMER_NOTIF_POS_COUNT-1)) ? 0 : (dwEvent + 1);
 			
 			// lock
@@ -79,7 +80,7 @@ static void *__playback_thread(void *param)
 
 			if(data){
 				// copy data to dsound buffers
-				memcpy(lpvAudio1, data, dwBytesAudio1);
+				memcpy(lpvAudio1, data, TSK_MIN(dwBytesAudio1, out_size));
 				if(lpvAudio2){
 					memcpy(lpvAudio2, ((LPBYTE*)data) + dwBytesAudio1, dwBytesAudio2);
 				}

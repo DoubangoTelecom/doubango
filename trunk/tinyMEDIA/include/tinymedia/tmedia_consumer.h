@@ -62,6 +62,7 @@ typedef struct tmedia_consumer_s
 		tsk_size_t height;
 	} video;
 
+	uint64_t session_id;
 	const struct tmedia_consumer_plugin_def_s* plugin;
 }
 tmedia_consumer_t;
@@ -88,7 +89,7 @@ tmedia_consumer_plugin_def_t;
 
 #define TMEDIA_DECLARE_CONSUMER tmedia_consumer_t __consumer__
 
-TINYMEDIA_API tmedia_consumer_t* tmedia_consumer_create(tmedia_type_t type);
+TINYMEDIA_API tmedia_consumer_t* tmedia_consumer_create(tmedia_type_t type, uint64_t session_id);
 TINYMEDIA_API int tmedia_consumer_init(tmedia_consumer_t* self);
 TINYMEDIA_API int tmedia_consumer_set(tmedia_consumer_t *self, const tmedia_param_t* param);
 TINYMEDIA_API int tmedia_consumer_prepare(tmedia_consumer_t *self, const tmedia_codec_t* codec);

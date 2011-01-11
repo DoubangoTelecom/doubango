@@ -153,6 +153,10 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_dnsSrv(swigCPtr, this, service, OUTPUT);
   }
 
+  public String getLocalIPnPort(String protocol, int[] OUTPUT) {
+    return tinyWRAPJNI.SipStack_getLocalIPnPort(swigCPtr, this, protocol, OUTPUT);
+  }
+
   public String getPreferredIdentity() {
     return tinyWRAPJNI.SipStack_getPreferredIdentity(swigCPtr, this);
   }

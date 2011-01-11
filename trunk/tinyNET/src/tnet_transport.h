@@ -67,7 +67,8 @@ typedef struct tnet_transport_event_s
 	tsk_size_t size;
 
 	const void* callback_data;
-	tnet_fd_t fd;
+	tnet_fd_t local_fd;
+	struct sockaddr_storage remote_addr;
 }
 tnet_transport_event_t;
 

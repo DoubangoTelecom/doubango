@@ -446,6 +446,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationEvent_getSession")]
   public static extern IntPtr RegistrationEvent_getSession(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationEvent_takeSessionOwnership")]
+  public static extern IntPtr RegistrationEvent_takeSessionOwnership(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_SubscriptionEvent")]
   public static extern void delete_SubscriptionEvent(HandleRef jarg1);
 
@@ -650,6 +653,18 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_unRegister")]
   public static extern bool RegistrationSession_unRegister(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_accept__SWIG_0")]
+  public static extern bool RegistrationSession_accept__SWIG_0(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_accept__SWIG_1")]
+  public static extern bool RegistrationSession_accept__SWIG_1(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_reject__SWIG_0")]
+  public static extern bool RegistrationSession_reject__SWIG_0(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_reject__SWIG_1")]
+  public static extern bool RegistrationSession_reject__SWIG_1(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_SubscriptionSession")]
   public static extern IntPtr new_SubscriptionSession(HandleRef jarg1);
 
@@ -758,6 +773,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_setCallback")]
   public static extern void ProxyAudioConsumer_setCallback(HandleRef jarg1, HandleRef jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_getMediaSessionId")]
+  public static extern ulong ProxyAudioConsumer_getMediaSessionId(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_registerPlugin")]
   public static extern bool ProxyAudioConsumer_registerPlugin();
 
@@ -808,6 +826,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_setCallback")]
   public static extern void ProxyVideoConsumer_setCallback(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_getMediaSessionId")]
+  public static extern ulong ProxyVideoConsumer_getMediaSessionId(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_registerPlugin")]
   public static extern bool ProxyVideoConsumer_registerPlugin();
@@ -866,6 +887,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_setCallback")]
   public static extern void ProxyAudioProducer_setCallback(HandleRef jarg1, HandleRef jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_getMediaSessionId")]
+  public static extern ulong ProxyAudioProducer_getMediaSessionId(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_registerPlugin")]
   public static extern bool ProxyAudioProducer_registerPlugin();
 
@@ -916,6 +940,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_setCallback")]
   public static extern void ProxyVideoProducer_setCallback(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_getMediaSessionId")]
+  public static extern ulong ProxyVideoProducer_getMediaSessionId(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_registerPlugin")]
   public static extern bool ProxyVideoProducer_registerPlugin();
@@ -1085,6 +1112,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_dnsSrv")]
   public static extern string SipStack_dnsSrv(HandleRef jarg1, string jarg2, out ushort jarg3);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_getLocalIPnPort")]
+  public static extern string SipStack_getLocalIPnPort(HandleRef jarg1, string jarg2, out ushort jarg3);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_getPreferredIdentity")]
   public static extern string SipStack_getPreferredIdentity(HandleRef jarg1);
 
@@ -1234,6 +1264,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_XcapStack")]
   public static extern void delete_XcapStack(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_registerAUID")]
+  public static extern bool XcapStack_registerAUID(HandleRef jarg1, string jarg2, string jarg3, string jarg4, string jarg5, bool jarg6);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_XcapStack_start")]
   public static extern bool XcapStack_start(HandleRef jarg1);

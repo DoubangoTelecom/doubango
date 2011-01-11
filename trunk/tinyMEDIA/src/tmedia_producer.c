@@ -168,9 +168,10 @@ int tmedia_producer_deinit(tmedia_producer_t* self)
 /**@ingroup tmedia_producer_group
 * Creates a new producer using an already registered plugin.
 * @param type The type of the producer to create
+* @param session_id
 * @sa @ref tmedia_producer_plugin_register()
 */
-tmedia_producer_t* tmedia_producer_create(tmedia_type_t type)
+tmedia_producer_t* tmedia_producer_create(tmedia_type_t type, uint64_t session_id)
 {
 	tmedia_producer_t* producer = tsk_null;
 	const tmedia_producer_plugin_def_t* plugin;
@@ -181,6 +182,7 @@ tmedia_producer_t* tmedia_producer_create(tmedia_type_t type)
 			if((producer = tsk_object_new(plugin->objdef))){
 				/* initialize the newly created producer */
 				producer->plugin = plugin;
+				producer->session_id = session_id;
 				break;
 			}
 		}

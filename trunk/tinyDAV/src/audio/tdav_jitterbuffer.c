@@ -724,7 +724,7 @@ static void calculate_info(jitterbuffer *jb, long ts, long now, int codec)
   } 
   
   //find the optimum delay..
-  while(max_index>10 && (B >= A ||p2<p1)) { 
+  while(max_index>10 && (B > A ||p2<p1)) { // By MDI: from ">=" to ">"
     //the packetloss with this delay
     p2 =(n*100.0f/size);
     // estimate MOS-value

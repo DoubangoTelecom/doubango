@@ -43,6 +43,7 @@ OBJS += src/dialogs/tsip_dialog.o\
 	src/dialogs/tsip_dialog_message.o\
 	src/dialogs/tsip_dialog_options.o\
 	src/dialogs/tsip_dialog_publish.client.o\
+	src/dialogs/tsip_dialog_register.o\
 	src/dialogs/tsip_dialog_register.client.o\
 	src/dialogs/tsip_dialog_register.server.o\
 	src/dialogs/tsip_dialog_subscribe.client.o\

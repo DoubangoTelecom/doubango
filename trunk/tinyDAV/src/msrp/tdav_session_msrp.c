@@ -86,7 +86,7 @@ int tdav_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			if(!session->connectedFD){
 				tdav_session_msrp_t *msrp = tsk_object_ref((void*)session);
 				/* We are passive ==> update connection info */
-				msrp->connectedFD = e->fd;
+				msrp->connectedFD = e->local_fd;
 				tmsrp_sender_set_fd(msrp->sender, msrp->connectedFD);
 				tmsrp_receiver_set_fd(msrp->receiver, msrp->connectedFD);
 				msrp->fresh_conn = tsk_true;
@@ -102,7 +102,7 @@ int tdav_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			}
 			break;
 		case event_closed:
-			if(e->fd == session->connectedFD){
+			if(e->local_fd == session->connectedFD){
 				TSK_DEBUG_INFO("MSRP Socket closed");
 				TMSRP_ALERT_USER(tmsrp_event_type_disconnected);
 			}
@@ -111,7 +111,7 @@ int tdav_transport_layer_stream_cb(const tnet_transport_event_t* e)
 		case event_connected:
 			{
 				tdav_session_msrp_t *msrp = tsk_object_ref((void*)session);
-				if(e->fd == msrp->connectedFD){
+				if(e->local_fd == msrp->connectedFD){
 					msrp->fresh_conn = tsk_true;
 					/* Send Bodiless request */
 					if(msrp->send_bodiless){
@@ -249,19 +249,16 @@ static int populate_lo(tdav_session_msrp_t* self, tsk_bool_t initial)
 			tsk_null
 		);
 		
-		if(self->accept_types){
+		if(self->accept_types || self->neg_accept_type){
 			/* a=accept-types:message/CPIM application/octet-stream */
 			tsdp_header_M_add_headers(TMEDIA_SESSION(self)->M.lo,
-				TSDP_HEADER_A_VA_ARGS("accept-types", self->accept_types),
+				TSDP_HEADER_A_VA_ARGS("accept-types", self->accept_types ? self->accept_types : self->neg_accept_type),
 				tsk_null);
 		}
-		else if(TMEDIA_SESSION(self)->M.ro){
-			init_neg_types(self, TMEDIA_SESSION(self)->M.ro);
-		}
-		if(self->accept_w_types){
+		if(self->accept_w_types || self->neg_accept_w_type){
 			/* a=accept-wrapped-types:application/octet-stream */
 			tsdp_header_M_add_headers(TMEDIA_SESSION(self)->M.lo,
-				TSDP_HEADER_A_VA_ARGS("accept-wrapped-types", self->accept_w_types),
+				TSDP_HEADER_A_VA_ARGS("accept-wrapped-types", self->accept_w_types ? self->accept_w_types : self->neg_accept_w_type),
 				tsk_null);
 		}
 
@@ -815,19 +812,44 @@ int tdav_session_msrp_send_file(tmedia_session_msrp_t* self, const char* path, v
 	return ret;
 }
 
-int tdav_session_msrp_send_message(tmedia_session_msrp_t* self, const void* data, tsk_size_t size, va_list *app)
+int tdav_session_msrp_send_message(tmedia_session_msrp_t* self, const void* data, tsk_size_t size, const tmedia_params_L_t *params)
 {
-	tdav_session_msrp_t* msrp;
+	const tdav_session_msrp_t* msrp;
+	const tmedia_param_t* param;
 	int ret;
+	const tsk_list_item_t* item;
+	const char* content_type = tsk_null;
+	const char* w_content_type = tsk_null;
 
 	if(!data || !size || !(msrp = (tdav_session_msrp_t*)self) || !msrp->sender){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	ret = tsmrp_sender_send_data(msrp->sender, data, size, 
-		msrp->neg_accept_type, msrp->neg_accept_w_type
-		);
+	tsk_list_foreach(item, params){
+		if((param = TMEDIA_PARAM(item->data))){
+			if((param->media_type & tmedia_msrp) == param->media_type 
+				&& param->plugin_type == tmedia_ppt_session
+				&& param->value_type == tmedia_pvt_pchar){
+
+					if(tsk_striequals(param->key, "content-type")){
+						content_type = (const char*)param->value;
+					}
+					else if(tsk_striequals(param->key, "w-content-type")){
+						w_content_type = (const char*)param->value;
+					}
+			}
+		}
+	}
+
+	if(content_type || w_content_type){ // user-defined content-types
+		ret = tsmrp_sender_send_data(msrp->sender, data, size, content_type, w_content_type);
+	}
+	else{ // neg. content-types
+		ret = tsmrp_sender_send_data(msrp->sender, data, size, 
+			msrp->neg_accept_type, msrp->neg_accept_w_type
+			);
+	}
 
 	return ret;
 }

@@ -27,10 +27,12 @@
 %newobject SipStack::dnsNaptrSrv;
 %newobject SipStack::dnsSrv;
 %newobject SipStack::getPreferredIdentity;
+%newobject SipStack::getLocalIPnPort;
 
 %newobject MessagingEvent::takeSessionOwnership;
 %newobject InviteEvent::takeCallSessionOwnership;
 %newobject InviteEvent::takeMsrpSessionOwnership;
+%newobject RegistrationEvent::takeSessionOwnership;
 
 %newobject ProxyPluginMgr::createInstance;
 

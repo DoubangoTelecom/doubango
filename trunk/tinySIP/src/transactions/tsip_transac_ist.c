@@ -109,6 +109,7 @@ int tsip_transac_ist_Completed_2_Terminated_timerH(va_list *app);
 int tsip_transac_ist_Completed_2_Confirmed_ACK(va_list *app);
 int tsip_transac_ist_Accepted_2_Accepted_INVITE(va_list *app);
 int tsip_transac_ist_Accepted_2_Accepted_2xx(va_list *app);
+int tsip_transac_ist_Accepted_2_Accepted_iACK(va_list *app);  /* doubango-specific */
 int tsip_transac_ist_Accepted_2_Terminated_timerL(va_list *app);
 int tsip_transac_ist_Confirmed_2_Terminated_timerI(va_list *app);
 int tsip_transac_ist_Any_2_Terminated_X_transportError(va_list *app);
@@ -277,6 +278,8 @@ int tsip_transac_ist_init(tsip_transac_ist_t *self)
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Accepted, _fsm_action_recv_INVITE, _fsm_state_Accepted, tsip_transac_ist_Accepted_2_Accepted_INVITE, "tsip_transac_ist_Accepted_2_Accepted_INVITE"),
 			// Accepted -> (send 2xx) -> Accepted
 			TSK_FSM_ADD(_fsm_state_Accepted, _fsm_action_send_2xx, _fsm_cond_is_resp2INVITE, _fsm_state_Accepted, tsip_transac_ist_Accepted_2_Accepted_2xx, "tsip_transac_ist_Accepted_2_Accepted_2xx"),
+			// Accepted -> (recv ACK) -> Accepted
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Accepted, _fsm_action_recv_ACK, _fsm_state_Accepted, tsip_transac_ist_Accepted_2_Accepted_iACK, "tsip_transac_ist_Accepted_2_Accepted_iACK"),
 			// Accepted -> (timerL) -> Terminated
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Accepted, _fsm_action_timerL, _fsm_state_Terminated, tsip_transac_ist_Accepted_2_Terminated_timerL, "tsip_transac_ist_Accepted_2_Terminated_timerL"),
 
@@ -608,6 +611,16 @@ int tsip_transac_ist_Accepted_2_Accepted_2xx(va_list *app)
 	return ret;
 }
 
+/*	Accepted --> (Recv ACK) --> Accepted
+* Doubango specific
+*/
+int tsip_transac_ist_Accepted_2_Accepted_iACK(va_list *app)
+{
+	tsip_transac_ist_t *self = va_arg(*app, tsip_transac_ist_t *);
+	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, request);
+}
+
 /*	Accepted --> (timerL) --> Terminated
 */
 int tsip_transac_ist_Accepted_2_Terminated_timerL(va_list *app)
@@ -647,7 +660,7 @@ int tsip_transac_ist_Any_2_Terminated_X_transportError(va_list *app)
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, tsk_null);
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, tsk_null);
 }
 
 /* Any -> (Error) -> Terminated

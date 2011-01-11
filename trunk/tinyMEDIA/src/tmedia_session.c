@@ -88,6 +88,7 @@ int __pred_find_session_by_type(const tsk_list_item_t *item, const void *type)
 int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type)
 {
 	int ret = 0;
+	static uint64_t __UniqueId = 1;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -96,6 +97,7 @@ int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type)
 	
 	if(!self->initialized){
 		/* set values */
+		self->id = ++__UniqueId;
 		self->type = type;
 		self->initialized = tsk_true;
 		self->bl = tmedia_bl_low;
@@ -1130,7 +1132,7 @@ int tmedia_session_mgr_send_file(tmedia_session_mgr_t* self, const char* path, .
 	return ret;
 }
 
-int tmedia_session_mgr_send_message(tmedia_session_mgr_t* self, const void* data, tsk_size_t size, ...)
+int tmedia_session_mgr_send_message(tmedia_session_mgr_t* self, const void* data, tsk_size_t size, const tmedia_params_L_t *params)
 {
 	tmedia_session_msrp_t* session;
 	tmedia_type_t msrp_type = tmedia_msrp;
@@ -1143,12 +1145,9 @@ int tmedia_session_mgr_send_message(tmedia_session_mgr_t* self, const void* data
 
 	session = (tmedia_session_msrp_t*)tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_type, &msrp_type);
 	if(session && session->send_message){
-		va_list ap;
-		va_start(ap, size);
 		session = tsk_object_ref(session);
-		ret = session->send_message(TMEDIA_SESSION_MSRP(session), data, size, &ap);
+		ret = session->send_message(TMEDIA_SESSION_MSRP(session), data, size, params);
 		TSK_OBJECT_SAFE_FREE(session);
-		va_end(ap);
 	}
 	else{
 		TSK_DEBUG_ERROR("No MSRP session associated to this manager or session does not support file transfer");

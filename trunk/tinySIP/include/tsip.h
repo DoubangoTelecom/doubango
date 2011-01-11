@@ -81,7 +81,8 @@ typedef enum tsip_stack_param_type_e
 	tsip_pname_discovery_naptr,
 	tsip_pname_discovery_dhcp,
 	tsip_pname_proxy_cscf,
-	pnale_dnsserver,
+	tsip_pname_dnsserver,
+	tsip_pname_mode_server,
 
 	
 	/* === Security === */
@@ -322,6 +323,15 @@ int ret = tsip_stack_set(stack,
               TSIP_STACK_SET_NULL());
 * @endcode
 */
+/**@ingroup tsip_stack_group
+* @def TSIP_STACK_SET_MODE_SERVER
+* Configure the stack to be used as server. Cannot be changed later.
+* @code
+int ret = tsip_stack_set(stack, 
+              TSIP_STACK_SET_MODE_SERVER(),
+              TSIP_STACK_SET_NULL());
+* @endcode
+*/
 #define TSIP_STACK_SET_REALM(URI_STR)					tsip_pname_realm, (const char*)URI_STR
 #define TSIP_STACK_SET_LOCAL_IP(IP_STR)					tsip_pname_local_ip, (const char*)IP_STR
 #define TSIP_STACK_SET_LOCAL_PORT(PORT_UINT)			tsip_pname_local_port, (unsigned)PORT_UINT
@@ -329,7 +339,8 @@ int ret = tsip_stack_set(stack,
 #define TSIP_STACK_SET_DISCOVERY_NAPTR(ENABLED_BOOL)	tsip_pname_discovery_naptr, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_STACK_SET_DISCOVERY_DHCP(ENABLED_BOOL)		tsip_pname_discovery_dhcp, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR, PORT_UINT, TRANSPORT_STR, IP_VERSION_STR)			tsip_pname_proxy_cscf, (const char*)FQDN_STR, (unsigned)PORT_UINT, (const char*)TRANSPORT_STR, (const char*)IP_VERSION_STR
-#define TSIP_STACK_SET_DNS_SERVER(IP_STR)				pnale_dnsserver, (const char*)IP_STR
+#define TSIP_STACK_SET_DNS_SERVER(IP_STR)				tsip_pname_dnsserver, (const char*)IP_STR
+#define TSIP_STACK_SET_MODE_SERVER()					tsip_pname_mode_server
 
 /* === Security === */
 /**@ingroup tsip_stack_group
@@ -557,6 +568,7 @@ typedef struct tsip_stack_s
 
 		tsk_bool_t discovery_naptr;
 		tsk_bool_t discovery_dhcp;
+		tsk_bool_t mode_server;
 	} network;
 
 	/* === Security === */
@@ -639,6 +651,7 @@ TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
 TINYSIP_API const void* tsip_stack_get_userdata(const tsip_stack_handle_t *self);
 TINYSIP_API tnet_dns_ctx_t* tsip_stack_get_dnsctx(tsip_stack_handle_t *self);
 TINYSIP_API tsip_uri_t* tsip_stack_get_preferred_id(tsip_stack_handle_t *self);
+TINYSIP_API int tsip_stack_get_local_ip_n_port(const tsip_stack_handle_t *self, const char* protocol, tnet_port_t *port, tnet_ip_t *ip);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);
 
 #define TSIP_STACK_EVENT_RAISE(stack, status_code, reason_phrase, incoming, type) \

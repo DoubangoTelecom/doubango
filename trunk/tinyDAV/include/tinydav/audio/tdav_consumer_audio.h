@@ -42,6 +42,11 @@ TDAV_BEGIN_DECLS
 
 #define TDAV_CONSUMER_AUDIO(self)		((tdav_consumer_audio_t*)(self))
 
+#define TDAV_BITS_PER_SAMPLE_DEFAULT	16
+#define TDAV_CHANNELS_DEFAULT			1
+#define TDAV_RATE_DEFAULT				8000
+#define TDAV_PTIME_DEFAULT				20
+
 typedef struct tdav_consumer_audio_s
 {
 	TMEDIA_DECLARE_CONSUMER;
@@ -69,7 +74,7 @@ TINYDAV_API int tdav_consumer_audio_cmp(const tsk_object_t* consumer1, const tsk
 #define tdav_consumer_audio_pause(self) tmedia_consumer_pause(TDAV_CONSUMER_AUDIO(self))
 #define tdav_consumer_audio_stop(self) tmedia_consumer_stop(TDAV_CONSUMER_AUDIO(self))
 TINYDAV_API int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data, tsk_size_t size, const tsk_object_t* proto_hdr);
-TINYDAV_API void* tdav_consumer_audio_get(tdav_consumer_audio_t* self);
+TINYDAV_API void* tdav_consumer_audio_get(tdav_consumer_audio_t* self, tsk_size_t* out_size);
 TINYDAV_API int tdav_consumer_audio_reset(tdav_consumer_audio_t* self);
 TINYDAV_API int tdav_consumer_audio_deinit(tdav_consumer_audio_t* self);
 

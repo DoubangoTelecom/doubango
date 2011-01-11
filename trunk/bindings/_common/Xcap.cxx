@@ -395,6 +395,16 @@ XcapStack::~XcapStack()
 	}
 }
 
+bool XcapStack::registerAUID(const char* id, const char* mime_type, const char* ns, const char* document_name, bool is_global)
+{
+	txcap_stack_t* stack = (txcap_stack_t*)this->handle;
+	if(stack){
+		tsk_bool_t _global = is_global?tsk_true:tsk_false; // 32bit <-> 64bit workaround
+		return (txcap_auid_register(stack->auids, id, mime_type, ns, document_name, _global) == 0);
+	}
+	return false;
+}
+
 bool XcapStack::start()
 {
 	return (txcap_stack_start(this->handle) == 0);

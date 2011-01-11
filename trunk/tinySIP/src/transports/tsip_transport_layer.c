@@ -46,6 +46,7 @@
 * Tests have been done with both compact and full headers */
 #define TSIP_MIN_STREAM_CHUNCK_SIZE 0xA0
 
+
 tsip_transport_layer_t* tsip_transport_layer_create(tsip_stack_t *stack)
 {
 	return tsk_object_new(tsip_transport_layer_def_t, stack);
@@ -127,7 +128,7 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 		
 		if(data_size){
 			if(is_nack){
-				tsip_transport_send_raw(transport, SigCompBuffer, data_size);
+				tsip_transport_send_raw(transport, tsk_null, SigCompBuffer, data_size);
 			}
 			else{
 				// append result
@@ -141,7 +142,7 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 		// Query for all other chuncks
 		while((next_size = tsip_sigcomp_handler_uncompress_next(transport->stack->sigcomp.handle, comp_id, &nack_data, &is_nack)) || nack_data){
 			if(is_nack){
-				tsip_transport_send_raw(transport, nack_data, next_size);
+				tsip_transport_send_raw(transport, NULL, nack_data, next_size);
 				TSK_FREE(nack_data);
 			}
 			else{
@@ -188,7 +189,7 @@ parse_buffer:
 
 	if(message && message->firstVia && message->Call_ID && message->CSeq && message->From && message->To){
 		/* Set fd */
-		message->sockfd = e->fd;
+		message->local_fd = e->local_fd;
 		/* Alert transaction/dialog layer */
 		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
 		/* Parse next chunck */
@@ -234,7 +235,10 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 
 	/* === SigComp === */
 	if(TSIP_IS_SIGCOMP_DATA(e->data)){
-		//====== FIXME: This implmentation will always use the first SigComp-Id for decompression =====
+		//====== 
+		// FIXME: This implmentation will always use the first SigComp-Id for decompression
+		// The destination addr will always be the pcscf which will not work for server mode
+		//=====
 		tsk_bool_t is_nack;
 		const char* comp_id;
 
@@ -243,7 +247,7 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 		data_ptr = SigCompBuffer;
 		if(data_size){
 			if(is_nack){
-				tsip_transport_send_raw(transport, data_ptr, data_size);
+				tsip_transport_send_raw(transport, tsk_null, data_ptr, data_size);
 				return 0;
 			}
 		}
@@ -261,8 +265,10 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 	if(tsip_message_parse(&state, &message, tsk_true) == tsk_true 
 		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
 	{
-		/* Set fd */
-		message->sockfd = e->fd;
+		/* Set local fd used to receive the message and the address of the remote peer */
+		message->local_fd = e->local_fd;
+		message->remote_addr = e->remote_addr;
+
 		/* Alert transaction/dialog layer */
 		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
 	}
@@ -271,16 +277,17 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 	return ret;
 }
 
-tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, const tsip_message_t *msg, const char* destIP, int32_t *destPort)
+const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, const tsip_message_t *msg, const char** destIP, int32_t *destPort)
 {
 	tsip_transport_t* transport = 0;
 
-	destIP = self->stack->network.proxy_cscf;
-	*destPort = self->stack->network.proxy_cscf_port;
-
-	if(!self){
-		return 0;
+	if(!self || !destIP){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
 	}
+
+	*destIP = self->stack->network.proxy_cscf;
+	*destPort = self->stack->network.proxy_cscf_port;
 
 	/* =========== Sending Request =========
 	*
@@ -355,7 +362,7 @@ tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, 
 							This effectively adds a new processing step between bullets two and
 							three in Section 18.2.2 of SIP [1].
 						*/
-						destIP = msg->firstVia->received;
+						*destIP = msg->firstVia->received;
 						*destPort = msg->firstVia->rport;
 					}
 					else
@@ -369,7 +376,7 @@ tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, 
 							unreachable" response, the procedures of Section 5 of [4]
 							SHOULD be used to determine where to send the response.
 						*/
-						destIP = msg->firstVia->received;
+						*destIP = msg->firstVia->received;
 						*destPort = msg->firstVia->port ? msg->firstVia->port : 5060;
 					}
 				}
@@ -380,7 +387,7 @@ tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, 
 						sent to the address indicated by the "sent-by" value, using the
 						procedures in Section 5 of [4].
 					*/
-					destIP = msg->firstVia->host;
+					*destIP = msg->firstVia->host;
 					if(msg->firstVia->port >0)
 					{
 						*destPort = msg->firstVia->port;
@@ -395,7 +402,7 @@ tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, 
 			tsk_list_foreach(item, self->transports)
 			{
 				curr = item->data;
-				if(tsip_transport_have_socket(curr,msg->sockfd))
+				if(tsip_transport_have_socket(curr, msg->local_fd))
 				{
 					transport = curr;
 					break;
@@ -439,9 +446,9 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 int tsip_transport_layer_send(const tsip_transport_layer_t* self, const char *branch, const tsip_message_t *msg)
 {
 	if(msg && self && self->stack){
-		const char* destIP = 0;
+		const char* destIP = tsk_null;
 		int32_t destPort = 5060;
-		tsip_transport_t *transport = tsip_transport_layer_find(self, msg, destIP, &destPort);
+		const tsip_transport_t *transport = tsip_transport_layer_find(self, msg, &destIP, &destPort);
 		if(transport){
 			if(tsip_transport_send(transport, branch, TSIP_MESSAGE(msg), destIP, destPort)){
 				return 0;
@@ -568,7 +575,7 @@ int tsip_transport_layer_start(tsip_transport_layer_t* self)
 			/* start() */
 			tsk_list_foreach(item, self->transports){
 				transport = item->data;
-				if(ret = tsip_transport_start(transport)){
+				if((ret = tsip_transport_start(transport))){
 					return ret;
 				}
 			}

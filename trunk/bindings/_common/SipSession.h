@@ -188,11 +188,16 @@ class RegistrationSession : public SipSession
 {
 public: /* ctor() and dtor() */
 	RegistrationSession(SipStack* Stack);
+#if !defined(SWIG)
+	RegistrationSession(SipStack* Stack, tsip_ssession_handle_t* handle);
+#endif
 	virtual ~RegistrationSession();
 
 public: /* Public functions */
 	bool register_();
 	bool unRegister();
+	bool accept(ActionConfig* config=tsk_null);
+	bool reject(ActionConfig* config=tsk_null);
 };
 
 

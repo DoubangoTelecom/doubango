@@ -3274,6 +3274,21 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationEven
 }
 
 
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationEvent_1takeSessionOwnership(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
+  RegistrationSession *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(RegistrationEvent **)&jarg1; 
+  result = (RegistrationSession *)((RegistrationEvent const *)arg1)->takeSessionOwnership();
+  *(RegistrationSession **)&jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1SubscriptionEvent(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
   
@@ -4459,6 +4474,72 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationS
 }
 
 
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationSession_1accept_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jboolean jresult = 0 ;
+  RegistrationSession *arg1 = (RegistrationSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(RegistrationSession **)&jarg1; 
+  arg2 = *(ActionConfig **)&jarg2; 
+  result = (bool)(arg1)->accept(arg2);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationSession_1accept_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  RegistrationSession *arg1 = (RegistrationSession *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(RegistrationSession **)&jarg1; 
+  result = (bool)(arg1)->accept();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationSession_1reject_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jboolean jresult = 0 ;
+  RegistrationSession *arg1 = (RegistrationSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(RegistrationSession **)&jarg1; 
+  arg2 = *(ActionConfig **)&jarg2; 
+  result = (bool)(arg1)->reject(arg2);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationSession_1reject_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  RegistrationSession *arg1 = (RegistrationSession *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(RegistrationSession **)&jarg1; 
+  result = (bool)(arg1)->reject();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1SubscriptionSession(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -5203,6 +5284,37 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyAudioConsume
 }
 
 
+SWIGEXPORT jobject JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyAudioConsumer_1getMediaSessionId(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  uint64_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyAudioConsumer **)&jarg1; 
+  result = (uint64_t)(arg1)->getMediaSessionId();
+  {
+    jbyteArray ba = jenv->NewByteArray(9);
+    jbyte* bae = jenv->GetByteArrayElements(ba, 0);
+    jclass clazz = jenv->FindClass("java/math/BigInteger");
+    jmethodID mid = jenv->GetMethodID(clazz, "<init>", "([B)V");
+    jobject bigint;
+    int i;
+    
+    bae[0] = 0;
+    for(i=1; i<9; i++ ) {
+      bae[i] = (jbyte)(result>>8*(8-i));
+    }
+    
+    jenv->ReleaseByteArrayElements(ba, bae, 0);
+    bigint = jenv->NewObject(clazz, mid, ba);
+    jresult = bigint;
+  }
+  return jresult;
+}
+
+
 SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyAudioConsumer_1registerPlugin(JNIEnv *jenv, jclass jcls) {
   jboolean jresult = 0 ;
   bool result;
@@ -5465,6 +5577,37 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsume
   arg1 = *(ProxyVideoConsumer **)&jarg1; 
   arg2 = *(ProxyVideoConsumerCallback **)&jarg2; 
   (arg1)->setCallback(arg2);
+}
+
+
+SWIGEXPORT jobject JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoConsumer_1getMediaSessionId(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  uint64_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoConsumer **)&jarg1; 
+  result = (uint64_t)(arg1)->getMediaSessionId();
+  {
+    jbyteArray ba = jenv->NewByteArray(9);
+    jbyte* bae = jenv->GetByteArrayElements(ba, 0);
+    jclass clazz = jenv->FindClass("java/math/BigInteger");
+    jmethodID mid = jenv->GetMethodID(clazz, "<init>", "([B)V");
+    jobject bigint;
+    int i;
+    
+    bae[0] = 0;
+    for(i=1; i<9; i++ ) {
+      bae[i] = (jbyte)(result>>8*(8-i));
+    }
+    
+    jenv->ReleaseByteArrayElements(ba, bae, 0);
+    bigint = jenv->NewObject(clazz, mid, ba);
+    jresult = bigint;
+  }
+  return jresult;
 }
 
 
@@ -5755,6 +5898,37 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyAudioProduce
 }
 
 
+SWIGEXPORT jobject JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyAudioProducer_1getMediaSessionId(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  uint64_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyAudioProducer **)&jarg1; 
+  result = (uint64_t)(arg1)->getMediaSessionId();
+  {
+    jbyteArray ba = jenv->NewByteArray(9);
+    jbyte* bae = jenv->GetByteArrayElements(ba, 0);
+    jclass clazz = jenv->FindClass("java/math/BigInteger");
+    jmethodID mid = jenv->GetMethodID(clazz, "<init>", "([B)V");
+    jobject bigint;
+    int i;
+    
+    bae[0] = 0;
+    for(i=1; i<9; i++ ) {
+      bae[i] = (jbyte)(result>>8*(8-i));
+    }
+    
+    jenv->ReleaseByteArrayElements(ba, bae, 0);
+    bigint = jenv->NewObject(clazz, mid, ba);
+    jresult = bigint;
+  }
+  return jresult;
+}
+
+
 SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyAudioProducer_1registerPlugin(JNIEnv *jenv, jclass jcls) {
   jboolean jresult = 0 ;
   bool result;
@@ -6011,6 +6185,37 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoProduce
   arg1 = *(ProxyVideoProducer **)&jarg1; 
   arg2 = *(ProxyVideoProducerCallback **)&jarg2; 
   (arg1)->setCallback(arg2);
+}
+
+
+SWIGEXPORT jobject JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoProducer_1getMediaSessionId(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  uint64_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoProducer **)&jarg1; 
+  result = (uint64_t)(arg1)->getMediaSessionId();
+  {
+    jbyteArray ba = jenv->NewByteArray(9);
+    jbyte* bae = jenv->GetByteArrayElements(ba, 0);
+    jclass clazz = jenv->FindClass("java/math/BigInteger");
+    jmethodID mid = jenv->GetMethodID(clazz, "<init>", "([B)V");
+    jobject bigint;
+    int i;
+    
+    bae[0] = 0;
+    for(i=1; i<9; i++ ) {
+      bae[i] = (jbyte)(result>>8*(8-i));
+    }
+    
+    jenv->ReleaseByteArrayElements(ba, bae, 0);
+    bigint = jenv->NewObject(clazz, mid, ba);
+    jresult = bigint;
+  }
+  return jresult;
 }
 
 
@@ -7196,6 +7401,47 @@ SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1dnsS
 }
 
 
+SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1getLocalIPnPort(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jintArray jarg3) {
+  jstring jresult = 0 ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned short *arg3 = (unsigned short *) 0 ;
+  unsigned short temp3 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipStack **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  {
+    if (!jarg3) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "array null");
+      return 0;
+    }
+    if (jenv->GetArrayLength(jarg3) == 0) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaIndexOutOfBoundsException, "Array must contain at least 1 element");
+      return 0;
+    }
+    arg3 = &temp3; 
+  }
+  result = (char *)(arg1)->getLocalIPnPort((char const *)arg2,arg3);
+  if(result) jresult = jenv->NewStringUTF((const char *)result);
+  {
+    jint jvalue = (jint)temp3;
+    jenv->SetIntArrayRegion(jarg3, 0, 1, &jvalue);
+  }
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  
+  delete [] result;
+  return jresult;
+}
+
+
 SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1getPreferredIdentity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jstring jresult = 0 ;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -7858,6 +8104,51 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1XcapStack
   (void)jcls;
   arg1 = *(XcapStack **)&jarg1; 
   delete arg1;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_XcapStack_1registerAUID(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jstring jarg3, jstring jarg4, jstring jarg5, jboolean jarg6) {
+  jboolean jresult = 0 ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  char *arg5 = (char *) 0 ;
+  bool arg6 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(XcapStack **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  arg4 = 0;
+  if (jarg4) {
+    arg4 = (char *)jenv->GetStringUTFChars(jarg4, 0);
+    if (!arg4) return 0;
+  }
+  arg5 = 0;
+  if (jarg5) {
+    arg5 = (char *)jenv->GetStringUTFChars(jarg5, 0);
+    if (!arg5) return 0;
+  }
+  arg6 = jarg6 ? true : false; 
+  result = (bool)(arg1)->registerAUID((char const *)arg2,(char const *)arg3,(char const *)arg4,(char const *)arg5,arg6);
+  jresult = (jboolean)result; 
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
+  if (arg4) jenv->ReleaseStringUTFChars(jarg4, (const char *)arg4);
+  if (arg5) jenv->ReleaseStringUTFChars(jarg5, (const char *)arg5);
+  return jresult;
 }
 
 

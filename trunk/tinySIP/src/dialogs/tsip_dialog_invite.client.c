@@ -94,8 +94,6 @@ int tsip_dialog_invite_client_init(tsip_dialog_invite_t *self)
 			// Outgoing -> (300-699 INVITE) -> Terminated
 			TSK_FSM_ADD(_fsm_state_Outgoing, _fsm_action_i300_to_i699, _fsm_cond_is_resp2INVITE, _fsm_state_Terminated, c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE, "c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE"),
 
-
-
 			TSK_FSM_ADD_NULL());
 }
 

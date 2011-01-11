@@ -2165,6 +2165,18 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_RegistrationEvent_getSession(void * jarg1) 
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_RegistrationEvent_takeSessionOwnership(void * jarg1) {
+  void * jresult ;
+  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
+  RegistrationSession *result = 0 ;
+  
+  arg1 = (RegistrationEvent *)jarg1; 
+  result = (RegistrationSession *)((RegistrationEvent const *)arg1)->takeSessionOwnership();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_SubscriptionEvent(void * jarg1) {
   SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
   
@@ -3039,6 +3051,58 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RegistrationSession_unRegister(void *
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RegistrationSession_accept__SWIG_0(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  RegistrationSession *arg1 = (RegistrationSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (RegistrationSession *)jarg1; 
+  arg2 = (ActionConfig *)jarg2; 
+  result = (bool)(arg1)->accept(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RegistrationSession_accept__SWIG_1(void * jarg1) {
+  unsigned int jresult ;
+  RegistrationSession *arg1 = (RegistrationSession *) 0 ;
+  bool result;
+  
+  arg1 = (RegistrationSession *)jarg1; 
+  result = (bool)(arg1)->accept();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RegistrationSession_reject__SWIG_0(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  RegistrationSession *arg1 = (RegistrationSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (RegistrationSession *)jarg1; 
+  arg2 = (ActionConfig *)jarg2; 
+  result = (bool)(arg1)->reject(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RegistrationSession_reject__SWIG_1(void * jarg1) {
+  unsigned int jresult ;
+  RegistrationSession *arg1 = (RegistrationSession *) 0 ;
+  bool result;
+  
+  arg1 = (RegistrationSession *)jarg1; 
+  result = (bool)(arg1)->reject();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_SubscriptionSession(void * jarg1) {
   void * jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -3473,6 +3537,18 @@ SWIGEXPORT void SWIGSTDCALL CSharp_ProxyAudioConsumer_setCallback(void * jarg1, 
 }
 
 
+SWIGEXPORT unsigned long long SWIGSTDCALL CSharp_ProxyAudioConsumer_getMediaSessionId(void * jarg1) {
+  unsigned long long jresult ;
+  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  uint64_t result;
+  
+  arg1 = (ProxyAudioConsumer *)jarg1; 
+  result = (uint64_t)(arg1)->getMediaSessionId();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyAudioConsumer_registerPlugin() {
   unsigned int jresult ;
   bool result;
@@ -3677,6 +3753,18 @@ SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoConsumer_setCallback(void * jarg1, 
   arg1 = (ProxyVideoConsumer *)jarg1; 
   arg2 = (ProxyVideoConsumerCallback *)jarg2; 
   (arg1)->setCallback(arg2);
+}
+
+
+SWIGEXPORT unsigned long long SWIGSTDCALL CSharp_ProxyVideoConsumer_getMediaSessionId(void * jarg1) {
+  unsigned long long jresult ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  uint64_t result;
+  
+  arg1 = (ProxyVideoConsumer *)jarg1; 
+  result = (uint64_t)(arg1)->getMediaSessionId();
+  jresult = result; 
+  return jresult;
 }
 
 
@@ -3903,6 +3991,18 @@ SWIGEXPORT void SWIGSTDCALL CSharp_ProxyAudioProducer_setCallback(void * jarg1, 
 }
 
 
+SWIGEXPORT unsigned long long SWIGSTDCALL CSharp_ProxyAudioProducer_getMediaSessionId(void * jarg1) {
+  unsigned long long jresult ;
+  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  uint64_t result;
+  
+  arg1 = (ProxyAudioProducer *)jarg1; 
+  result = (uint64_t)(arg1)->getMediaSessionId();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyAudioProducer_registerPlugin() {
   unsigned int jresult ;
   bool result;
@@ -4101,6 +4201,18 @@ SWIGEXPORT void SWIGSTDCALL CSharp_ProxyVideoProducer_setCallback(void * jarg1, 
   arg1 = (ProxyVideoProducer *)jarg1; 
   arg2 = (ProxyVideoProducerCallback *)jarg2; 
   (arg1)->setCallback(arg2);
+}
+
+
+SWIGEXPORT unsigned long long SWIGSTDCALL CSharp_ProxyVideoProducer_getMediaSessionId(void * jarg1) {
+  unsigned long long jresult ;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  uint64_t result;
+  
+  arg1 = (ProxyVideoProducer *)jarg1; 
+  result = (uint64_t)(arg1)->getMediaSessionId();
+  jresult = result; 
+  return jresult;
 }
 
 
@@ -4888,6 +5000,23 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_dnsSrv(void * jarg1, char * jarg2,
 }
 
 
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_getLocalIPnPort(void * jarg1, char * jarg2, unsigned short * jarg3) {
+  char * jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned short *arg3 = (unsigned short *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (unsigned short *)jarg3; 
+  result = (char *)(arg1)->getLocalIPnPort((char const *)arg2,arg3);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
 SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_getPreferredIdentity(void * jarg1) {
   char * jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -5480,6 +5609,28 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_XcapStack(void * jarg1) {
   
   arg1 = (XcapStack *)jarg1; 
   delete arg1;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_XcapStack_registerAUID(void * jarg1, char * jarg2, char * jarg3, char * jarg4, char * jarg5, unsigned int jarg6) {
+  unsigned int jresult ;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  char *arg5 = (char *) 0 ;
+  bool arg6 ;
+  bool result;
+  
+  arg1 = (XcapStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (char *)jarg4; 
+  arg5 = (char *)jarg5; 
+  arg6 = jarg6 ? true : false; 
+  result = (bool)(arg1)->registerAUID((char const *)arg2,(char const *)arg3,(char const *)arg4,(char const *)arg5,arg6);
+  jresult = result; 
+  return jresult;
 }
 
 

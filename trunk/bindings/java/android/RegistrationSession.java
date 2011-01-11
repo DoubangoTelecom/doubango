@@ -45,4 +45,20 @@ public class RegistrationSession extends SipSession {
     return tinyWRAPJNI.RegistrationSession_unRegister(swigCPtr, this);
   }
 
+  public boolean accept(ActionConfig config) {
+    return tinyWRAPJNI.RegistrationSession_accept__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
+  }
+
+  public boolean accept() {
+    return tinyWRAPJNI.RegistrationSession_accept__SWIG_1(swigCPtr, this);
+  }
+
+  public boolean reject(ActionConfig config) {
+    return tinyWRAPJNI.RegistrationSession_reject__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
+  }
+
+  public boolean reject() {
+    return tinyWRAPJNI.RegistrationSession_reject__SWIG_1(swigCPtr, this);
+  }
+
 }

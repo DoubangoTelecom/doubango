@@ -51,6 +51,26 @@ public class RegistrationSession : SipSession {
     return ret;
   }
 
+  public bool accept(ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.RegistrationSession_accept__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
+    return ret;
+  }
+
+  public bool accept() {
+    bool ret = tinyWRAPPINVOKE.RegistrationSession_accept__SWIG_1(swigCPtr);
+    return ret;
+  }
+
+  public bool reject(ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.RegistrationSession_reject__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
+    return ret;
+  }
+
+  public bool reject() {
+    bool ret = tinyWRAPPINVOKE.RegistrationSession_reject__SWIG_1(swigCPtr);
+    return ret;
+  }
+
 }
 
 }

@@ -468,7 +468,7 @@ int x0000_Connected_2_Connected_X_oLMessage(va_list *app)
 
 	if(action && action->payload){
 		ret = tmedia_session_mgr_send_message(self->msession_mgr, action->payload->data, action->payload->size, 
-			TMEDIA_SESSION_SET_NULL());
+			action->media.params);
 	}
 	else{
 		TSK_DEBUG_ERROR("Invalid action");

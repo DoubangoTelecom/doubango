@@ -83,6 +83,15 @@ static const auid_t __txcap_auids[] =
 		tsk_false 
 	},
 
+	/*== pidf-manipulation ==*/{
+		tauid_ietf_pres_rules, 
+		TXCAP_AUID_IETF_PIDF_MANIPULATION_ID, 
+		TXCAP_AUID_IETF_PIDF_MANIPULATION_MIME_TYPE, 
+		TXCAP_AUID_IETF_PIDF_MANIPULATION_NS,
+		TXCAP_AUID_IETF_PIDF_MANIPULATION_DOC, 
+		tsk_false 
+	},
+
 	/*== org.openmobilealliance.pres-rules ==*/{
 		tauid_oma_pres_rules, 
 		TXCAP_AUID_OMA_PRES_RULES_ID, 

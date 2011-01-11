@@ -42,4 +42,9 @@ public class RegistrationEvent extends SipEvent {
     return (cPtr == 0) ? null : new RegistrationSession(cPtr, false);
   }
 
+  public RegistrationSession takeSessionOwnership() {
+    long cPtr = tinyWRAPJNI.RegistrationEvent_takeSessionOwnership(swigCPtr, this);
+    return (cPtr == 0) ? null : new RegistrationSession(cPtr, true);
+  }
+
 }

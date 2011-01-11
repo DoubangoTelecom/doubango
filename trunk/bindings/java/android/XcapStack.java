@@ -37,6 +37,10 @@ public class XcapStack {
     this(tinyWRAPJNI.new_XcapStack(XcapCallback.getCPtr(callback), callback, xui, password, xcap_root), true);
   }
 
+  public boolean registerAUID(String id, String mime_type, String ns, String document_name, boolean is_global) {
+    return tinyWRAPJNI.XcapStack_registerAUID(swigCPtr, this, id, mime_type, ns, document_name, is_global);
+  }
+
   public boolean start() {
     return tinyWRAPJNI.XcapStack_start(swigCPtr, this);
   }

@@ -93,22 +93,29 @@ tsip_dialog_t* tsip_dialog_layer_find_by_ss(tsip_dialog_layer_t *self, const tsi
 }
 
 // it's up to the caller to release the returned object
-tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const char* callid, const char* to_tag, const char* from_tag, tsk_bool_t is_cancel,tsk_bool_t *cid_matched)
+tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const char* callid, const char* to_tag, const char* from_tag, tsip_request_type_t type, tsk_bool_t *cid_matched)
 {
 	tsip_dialog_t *ret = tsk_null;
 	tsip_dialog_t *dialog;
 	tsk_list_item_t *item;
 
 	*cid_matched = tsk_false;
-
+	
 	tsk_safeobj_lock(self);
 
 	tsk_list_foreach(item, self->dialogs){
 		dialog = item->data;
 		if(tsk_strequals(dialog->callid, callid)){
+			tsk_bool_t is_cancel = (type == tsip_CANCEL); // Incoming CANCEL
+			tsk_bool_t is_register = (type == tsip_REGISTER); // Incoming REGISTER
 			*cid_matched = tsk_true;
 			/* CANCEL Request will have the same local tag than the INVITE request -> do not compare tags */
 			if((is_cancel || tsk_strequals(dialog->tag_local, from_tag)) && tsk_strequals(dialog->tag_remote, to_tag)){
+				ret = tsk_object_ref(dialog);
+				break;
+			}
+			/* REGISTER is dialogless which means that each reREGISTER or unREGISTER will have empty to tag  */
+			if(is_register /* Do not check tags */){
 				ret = tsk_object_ref(dialog);
 				break;
 			}
@@ -273,7 +280,7 @@ tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type
 			}
 		case tsip_dialog_REGISTER:
 			{
-				if((dialog = (tsip_dialog_t*)tsip_dialog_register_create(ss))){
+				if((dialog = (tsip_dialog_t*)tsip_dialog_register_create(ss, tsk_null))){
 					ret = tsk_object_ref(dialog);
 					tsk_list_push_back_data(self->dialogs, (void**)&dialog);
 				}
@@ -349,11 +356,13 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	//tsk_safeobj_lock(self);
 	dialog = tsip_dialog_layer_find(self, message->Call_ID->value, 
 		TSIP_MESSAGE_IS_RESPONSE(message) ? message->To->tag : message->From->tag, 
-		TSIP_MESSAGE_IS_RESPONSE(message) ? message->From->tag : message->To->tag, TSIP_REQUEST_IS_CANCEL(message), &cid_matched);
+		TSIP_MESSAGE_IS_RESPONSE(message) ? message->From->tag : message->To->tag, 
+		TSIP_MESSAGE_IS_REQUEST(message) ? TSIP_MESSAGE_AS_REQUEST(message)->line.request.request_type : tsip_NONE, 
+		&cid_matched);
 	//tsk_safeobj_unlock(self);
 	
 	if(dialog){
-		if(TSIP_REQUEST_IS_CANCEL(message)){
+		if(TSIP_REQUEST_IS_CANCEL(message) || TSIP_REQUEST_IS_ACK(message)){
 			ret = dialog->callback(dialog, tsip_dialog_i_msg, message);
 			tsk_object_unref(dialog);
 			goto bail;
@@ -373,6 +382,14 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 					{	/* Server incoming MESSAGE */
 						if((ss = tsip_ssession_create_2(self->stack, message))){
 							newdialog = (tsip_dialog_t*)tsip_dialog_message_create(ss);
+						}
+						break;
+					}
+
+				case tsip_REGISTER:
+					{	/* incoming REGISTER */
+						if((ss = tsip_ssession_create_2(self->stack, message))){
+							newdialog = (tsip_dialog_t*)tsip_dialog_register_create(ss, message->Call_ID ? message->Call_ID->value : tsk_null);
 						}
 						break;
 					}

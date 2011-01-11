@@ -361,6 +361,7 @@ class RegistrationEvent(SipEvent):
     __del__ = lambda self : None;
     def getType(self): return _tinyWRAP.RegistrationEvent_getType(self)
     def getSession(self): return _tinyWRAP.RegistrationEvent_getSession(self)
+    def takeSessionOwnership(self): return _tinyWRAP.RegistrationEvent_takeSessionOwnership(self)
 RegistrationEvent_swigregister = _tinyWRAP.RegistrationEvent_swigregister
 RegistrationEvent_swigregister(RegistrationEvent)
 
@@ -548,6 +549,8 @@ class RegistrationSession(SipSession):
     __del__ = lambda self : None;
     def register_(self): return _tinyWRAP.RegistrationSession_register_(self)
     def unRegister(self): return _tinyWRAP.RegistrationSession_unRegister(self)
+    def accept(self, *args): return _tinyWRAP.RegistrationSession_accept(self, *args)
+    def reject(self, *args): return _tinyWRAP.RegistrationSession_reject(self, *args)
 RegistrationSession_swigregister = _tinyWRAP.RegistrationSession_swigregister
 RegistrationSession_swigregister(RegistrationSession)
 
@@ -682,6 +685,7 @@ class ProxyAudioConsumer(ProxyPlugin):
     def pull(self, *args): return _tinyWRAP.ProxyAudioConsumer_pull(self, *args)
     def reset(self): return _tinyWRAP.ProxyAudioConsumer_reset(self)
     def setCallback(self, *args): return _tinyWRAP.ProxyAudioConsumer_setCallback(self, *args)
+    def getMediaSessionId(self): return _tinyWRAP.ProxyAudioConsumer_getMediaSessionId(self)
     __swig_getmethods__["registerPlugin"] = lambda x: _tinyWRAP.ProxyAudioConsumer_registerPlugin
     if _newclass:registerPlugin = staticmethod(_tinyWRAP.ProxyAudioConsumer_registerPlugin)
 ProxyAudioConsumer_swigregister = _tinyWRAP.ProxyAudioConsumer_swigregister
@@ -732,6 +736,7 @@ class ProxyVideoConsumer(ProxyPlugin):
     __del__ = lambda self : None;
     def setDisplaySize(self, *args): return _tinyWRAP.ProxyVideoConsumer_setDisplaySize(self, *args)
     def setCallback(self, *args): return _tinyWRAP.ProxyVideoConsumer_setCallback(self, *args)
+    def getMediaSessionId(self): return _tinyWRAP.ProxyVideoConsumer_getMediaSessionId(self)
     __swig_getmethods__["registerPlugin"] = lambda x: _tinyWRAP.ProxyVideoConsumer_registerPlugin
     if _newclass:registerPlugin = staticmethod(_tinyWRAP.ProxyVideoConsumer_registerPlugin)
     __swig_getmethods__["setDefaultChroma"] = lambda x: _tinyWRAP.ProxyVideoConsumer_setDefaultChroma
@@ -801,6 +806,7 @@ class ProxyAudioProducer(ProxyPlugin):
     __del__ = lambda self : None;
     def push(self, *args): return _tinyWRAP.ProxyAudioProducer_push(self, *args)
     def setCallback(self, *args): return _tinyWRAP.ProxyAudioProducer_setCallback(self, *args)
+    def getMediaSessionId(self): return _tinyWRAP.ProxyAudioProducer_getMediaSessionId(self)
     __swig_getmethods__["registerPlugin"] = lambda x: _tinyWRAP.ProxyAudioProducer_registerPlugin
     if _newclass:registerPlugin = staticmethod(_tinyWRAP.ProxyAudioProducer_registerPlugin)
 ProxyAudioProducer_swigregister = _tinyWRAP.ProxyAudioProducer_swigregister
@@ -852,6 +858,7 @@ class ProxyVideoProducer(ProxyPlugin):
     def setRotation(self, *args): return _tinyWRAP.ProxyVideoProducer_setRotation(self, *args)
     def push(self, *args): return _tinyWRAP.ProxyVideoProducer_push(self, *args)
     def setCallback(self, *args): return _tinyWRAP.ProxyVideoProducer_setCallback(self, *args)
+    def getMediaSessionId(self): return _tinyWRAP.ProxyVideoProducer_getMediaSessionId(self)
     __swig_getmethods__["registerPlugin"] = lambda x: _tinyWRAP.ProxyVideoProducer_registerPlugin
     if _newclass:registerPlugin = staticmethod(_tinyWRAP.ProxyVideoProducer_registerPlugin)
     __swig_getmethods__["setDefaultChroma"] = lambda x: _tinyWRAP.ProxyVideoProducer_setDefaultChroma
@@ -958,6 +965,7 @@ class SipStack(SafeObject):
     def dnsENUM(self, *args): return _tinyWRAP.SipStack_dnsENUM(self, *args)
     def dnsNaptrSrv(self, *args): return _tinyWRAP.SipStack_dnsNaptrSrv(self, *args)
     def dnsSrv(self, *args): return _tinyWRAP.SipStack_dnsSrv(self, *args)
+    def getLocalIPnPort(self, *args): return _tinyWRAP.SipStack_getLocalIPnPort(self, *args)
     def getPreferredIdentity(self): return _tinyWRAP.SipStack_getPreferredIdentity(self)
     def isValid(self): return _tinyWRAP.SipStack_isValid(self)
     def stop(self): return _tinyWRAP.SipStack_stop(self)
@@ -1003,6 +1011,7 @@ tsip_event_code_stack_started = _tinyWRAP.tsip_event_code_stack_started
 tsip_event_code_stack_stopped = _tinyWRAP.tsip_event_code_stack_stopped
 tsip_event_code_stack_failed_to_start = _tinyWRAP.tsip_event_code_stack_failed_to_start
 tsip_event_code_stack_failed_to_stop = _tinyWRAP.tsip_event_code_stack_failed_to_stop
+tsip_i_newreg = _tinyWRAP.tsip_i_newreg
 tsip_i_register = _tinyWRAP.tsip_i_register
 tsip_ao_register = _tinyWRAP.tsip_ao_register
 tsip_i_unregister = _tinyWRAP.tsip_i_unregister
@@ -1174,6 +1183,7 @@ class XcapStack(_object):
         except: self.this = this
     __swig_destroy__ = _tinyWRAP.delete_XcapStack
     __del__ = lambda self : None;
+    def registerAUID(self, *args): return _tinyWRAP.XcapStack_registerAUID(self, *args)
     def start(self): return _tinyWRAP.XcapStack_start(self)
     def setCredentials(self, *args): return _tinyWRAP.XcapStack_setCredentials(self, *args)
     def setXcapRoot(self, *args): return _tinyWRAP.XcapStack_setXcapRoot(self, *args)

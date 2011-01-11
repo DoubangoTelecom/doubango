@@ -502,7 +502,7 @@ static tsk_object_t* tsip_message_ctor(tsk_object_t *self, va_list * app)
 	{
 		message->type = va_arg(*app, tsip_message_type_t); 
 		message->headers = tsk_list_create();
-		message->sockfd = TNET_INVALID_FD;
+		message->local_fd = TNET_INVALID_FD;
 		message->line.request.request_type = tsip_NONE;
 
 
@@ -532,8 +532,9 @@ static tsk_object_t* tsip_message_ctor(tsk_object_t *self, va_list * app)
 #endif
 				message->line.response.reason_phrase = tsk_strdup(va_arg(*app, const char*)); 
 				
-				/* Copy sockfd */
-				message->sockfd = request->sockfd;
+				/* Copy network information */
+				message->local_fd = request->local_fd;
+				message->remote_addr = request->remote_addr;
 
 				/*
 				RFC 3261 - 8.2.6.2 Headers and Tags
