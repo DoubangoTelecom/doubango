@@ -215,6 +215,13 @@ bool SipStack::setAoR(const char* ip, int port)
 		TSIP_STACK_SET_NULL()) == 0);
 }
 
+bool SipStack::setModeServer()
+{
+	return (tsip_stack_set(this->handle,
+		TSIP_STACK_SET_MODE_SERVER(),
+		TSIP_STACK_SET_NULL()) == 0); 
+}
+
 bool SipStack::setSigCompParams(unsigned dms, unsigned sms, unsigned cpb, bool enablePresDict)
 {
 	tsk_bool_t _enablePresDict= enablePresDict;// 32bit/64bit workaround
@@ -339,6 +346,26 @@ char* SipStack::dnsSrv(const char* service, unsigned short* OUTPUT)
 		TSK_DEBUG_ERROR("No DNS Context could be found");
 		return tsk_null;
 	}
+}
+
+char* SipStack::getLocalIPnPort(const char* protocol, unsigned short* OUTPUT)
+{
+	tnet_ip_t ip;
+	tnet_port_t port;
+	int ret;
+
+	if(!OUTPUT || !protocol){
+		TSK_DEBUG_ERROR("invalid parameter");
+		return tsk_null;
+	}
+
+	if((ret = tsip_stack_get_local_ip_n_port(this->handle, protocol, &port, &ip))){
+		TSK_DEBUG_ERROR("Failed to get local ip and port with error code=%d", ret);
+		return tsk_null;
+	}
+
+	*OUTPUT = port;
+	return tsk_strdup(ip); // See Swig %newobject
 }
 
 char* SipStack::getPreferredIdentity()

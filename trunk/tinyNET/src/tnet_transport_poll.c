@@ -714,7 +714,7 @@ void *tnet_transport_mainthread(void *param)
 				e->data = buffer;
 				e->size = len;
 				
-				TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(transport), e);
+				TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(transport), e);
 
 TNET_POLLIN_DONE:;
 			}

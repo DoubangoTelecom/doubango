@@ -42,6 +42,11 @@ public class XcapStack : IDisposable {
   public XcapStack(XcapCallback callback, string xui, string password, string xcap_root) : this(tinyWRAPPINVOKE.new_XcapStack(XcapCallback.getCPtr(callback), xui, password, xcap_root), true) {
   }
 
+  public bool registerAUID(string id, string mime_type, string ns, string document_name, bool is_global) {
+    bool ret = tinyWRAPPINVOKE.XcapStack_registerAUID(swigCPtr, id, mime_type, ns, document_name, is_global);
+    return ret;
+  }
+
   public bool start() {
     bool ret = tinyWRAPPINVOKE.XcapStack_start(swigCPtr);
     return ret;

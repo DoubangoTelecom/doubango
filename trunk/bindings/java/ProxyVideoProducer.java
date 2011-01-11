@@ -49,6 +49,10 @@ public class ProxyVideoProducer extends ProxyPlugin {
     tinyWRAPJNI.ProxyVideoProducer_setCallback(swigCPtr, this, ProxyVideoProducerCallback.getCPtr(_callback), _callback);
   }
 
+  public java.math.BigInteger getMediaSessionId() {
+    return tinyWRAPJNI.ProxyVideoProducer_getMediaSessionId(swigCPtr, this);
+  }
+
   public static boolean registerPlugin() {
     return tinyWRAPJNI.ProxyVideoProducer_registerPlugin();
   }

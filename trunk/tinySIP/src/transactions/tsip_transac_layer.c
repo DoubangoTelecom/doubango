@@ -227,15 +227,20 @@ tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self,
 
 	tsk_list_foreach(item, self->transactions){
 		transac = item->data;
-		if(tsk_strequals(transac->branch, message->firstVia->branch) 
+		if(TSIP_REQUEST_IS_ACK(message) && tsk_strequals(transac->callid, message->Call_ID->value)){ /* 1. ACK branch won't match INVITE's but they MUST have the same CSeq/CallId values */
+			if(tsk_striequals(transac->cseq_method, "INVITE") && message->CSeq->seq == transac->cseq_value){
+				ret = tsk_object_ref(transac);
+				break;
+			}
+		}
+		else if(tsk_strequals(transac->branch, message->firstVia->branch) /* 2. Compare branches*/
 			&& (1 == 1) /* FIXME: compare host:ip */
-			)
-		{
+			){
 			if(tsk_strequals(transac->cseq_method, message->CSeq->method)){
 				ret = tsk_object_ref(transac);
 				break;
 			}
-			else if(TSIP_REQUEST_IS_ACK(message) || TSIP_REQUEST_IS_CANCEL(message) || TSIP_RESPONSE_IS_TO_CANCEL(message)){
+			else if(TSIP_REQUEST_IS_CANCEL(message) || TSIP_RESPONSE_IS_TO_CANCEL(message)){
 				ret = tsk_object_ref(transac);
 				break;
 			}

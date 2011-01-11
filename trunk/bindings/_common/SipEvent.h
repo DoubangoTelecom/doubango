@@ -56,6 +56,11 @@ public:
 	const SipMessage* getSipMessage() const;
 
 protected:
+#if !defined(SWIG)
+	SipStack* getStack()const;
+#endif
+
+protected:
 	const tsip_event_t *sipevent;
 	SipMessage* sipmessage;
 };
@@ -102,9 +107,6 @@ public: /* Public API functions */
 	const InviteSession* getSession() const;
 	CallSession* takeCallSessionOwnership() const;
 	MsrpSession* takeMsrpSessionOwnership() const;
-
-private:
-	SipStack* getStack()const;
 };
 
 
@@ -169,6 +171,7 @@ public:
 public: /* Public API functions */
 	tsip_register_event_type_t getType() const;
 	const RegistrationSession* getSession() const;
+	RegistrationSession* takeSessionOwnership() const;
 	
 };
 

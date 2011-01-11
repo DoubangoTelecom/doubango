@@ -47,6 +47,11 @@ public class ProxyAudioProducer : ProxyPlugin {
     tinyWRAPPINVOKE.ProxyAudioProducer_setCallback(swigCPtr, ProxyAudioProducerCallback.getCPtr(_callback));
   }
 
+  public virtual ulong getMediaSessionId() {
+    ulong ret = tinyWRAPPINVOKE.ProxyAudioProducer_getMediaSessionId(swigCPtr);
+    return ret;
+  }
+
   public static bool registerPlugin() {
     bool ret = tinyWRAPPINVOKE.ProxyAudioProducer_registerPlugin();
     return ret;

@@ -49,6 +49,12 @@ public class RegistrationEvent : SipEvent {
     return ret;
   }
 
+  public RegistrationSession takeSessionOwnership() {
+    IntPtr cPtr = tinyWRAPPINVOKE.RegistrationEvent_takeSessionOwnership(swigCPtr);
+    RegistrationSession ret = (cPtr == IntPtr.Zero) ? null : new RegistrationSession(cPtr, true);
+    return ret;
+  }
+
 }
 
 }

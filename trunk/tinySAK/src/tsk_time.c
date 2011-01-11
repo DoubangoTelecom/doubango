@@ -139,7 +139,9 @@ uint64_t tsk_time_get_ms(struct timeval* tv)
 */
 uint64_t tsk_time_epoch()
 {
-#if HAVE_CLOCK_GETTIME
+#if TSK_UNDER_WINDOWS
+	return (uint64_t)timeGetTime();
+#elif HAVE_CLOCK_GETTIME
 	struct timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
 	return (((uint64_t)ts.tv_sec)*(uint64_t)1000) + (((uint64_t)ts.tv_nsec)/(uint64_t)1000000);

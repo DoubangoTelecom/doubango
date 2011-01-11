@@ -32,7 +32,7 @@
 
 #include "tinysip/api/tsip_api_invite.h"
 
-#define DEBUG_STATE_MACHINE										1
+#define DEBUG_STATE_MACHINE										0
 #define TSIP_DIALOG_INVITE_SIGNAL(self, type, code, phrase, message)	\
 	tsip_invite_event_signal(type, TSIP_DIALOG(self)->ss, code, phrase, message)
 #define TSIP_DIALOG_INVITE_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(invite, TX)
@@ -109,5 +109,7 @@ _fsm_state_t;
 #define send_INVITE(self, force_sdp) send_INVITEorUPDATE(self, tsk_true, force_sdp)
 #define send_UPDATE(self, force_sdp) send_INVITEorUPDATE(self, tsk_false, force_sdp)
 
+#else
+#error "This file must only be included in a source(.c or .cxx)"
 
 #endif /* TINYSIP_DIALOG_INVITE_COMMON_H */

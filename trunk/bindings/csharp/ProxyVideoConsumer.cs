@@ -47,6 +47,11 @@ public class ProxyVideoConsumer : ProxyPlugin {
     tinyWRAPPINVOKE.ProxyVideoConsumer_setCallback(swigCPtr, ProxyVideoConsumerCallback.getCPtr(_callback));
   }
 
+  public virtual ulong getMediaSessionId() {
+    ulong ret = tinyWRAPPINVOKE.ProxyVideoConsumer_getMediaSessionId(swigCPtr);
+    return ret;
+  }
+
   public static bool registerPlugin() {
     bool ret = tinyWRAPPINVOKE.ProxyVideoConsumer_registerPlugin();
     return ret;

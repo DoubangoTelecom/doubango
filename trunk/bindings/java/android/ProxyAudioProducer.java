@@ -41,6 +41,10 @@ public class ProxyAudioProducer extends ProxyPlugin {
     tinyWRAPJNI.ProxyAudioProducer_setCallback(swigCPtr, this, ProxyAudioProducerCallback.getCPtr(_callback), _callback);
   }
 
+  public java.math.BigInteger getMediaSessionId() {
+    return tinyWRAPJNI.ProxyAudioProducer_getMediaSessionId(swigCPtr, this);
+  }
+
   public static boolean registerPlugin() {
     return tinyWRAPJNI.ProxyAudioProducer_registerPlugin();
   }

@@ -212,15 +212,16 @@ ProxyAudioConsumer::~ProxyAudioConsumer()
 
 unsigned ProxyAudioConsumer::pull(void* output, unsigned size)
 {
+	tsk_size_t out_size = 0;
 	if(this->consumer){
 		void* data;
-		if((data = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(this->consumer)))){
-			memcpy(output, data, size);
+		if((data = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(this->consumer), &out_size))){
+			memcpy(output, data, TSK_MIN(size, out_size));
 			TSK_FREE(data);
-			return size;
+			return TSK_MIN(size, out_size);
 		}
 	}
-	return 0;
+	return out_size;
 }
 
 bool ProxyAudioConsumer::reset()

@@ -35,6 +35,7 @@
 #include "ProxyPluginMgr.h"
 
 #include "tinymedia/tmedia_common.h"
+#include "tinymedia/tmedia_producer.h"
 
 /* ============ ProxyAudioProducerCallback Class ================= */
 class ProxyAudioProducerCallback
@@ -63,10 +64,13 @@ public:
 	void setCallback(ProxyAudioProducerCallback* _callback) { this->callback = _callback; }
 #if !defined(SWIG)
 	inline ProxyAudioProducerCallback* getCallback() { return this->callback; }
-	virtual bool isWrapping(tsk_object_t* wrapped_plugin){
+	virtual inline bool isWrapping(tsk_object_t* wrapped_plugin){
 		return this->producer == wrapped_plugin;
 	}
 #endif
+	virtual inline uint64_t getMediaSessionId(){
+		return this->producer ? TMEDIA_PRODUCER(this->producer)->session_id : 0;
+	}
 
 public:
 	static bool registerPlugin();
@@ -104,10 +108,13 @@ public:
 	void setCallback(ProxyVideoProducerCallback* _callback) { this->callback = _callback; }
 #if !defined(SWIG)
 	inline ProxyVideoProducerCallback* getCallback() { return this->callback; }
-	virtual bool isWrapping(tsk_object_t* wrapped_plugin){
+	virtual inline bool isWrapping(tsk_object_t* wrapped_plugin){
 		return this->producer == wrapped_plugin;
 	}
 #endif
+	virtual inline uint64_t getMediaSessionId(){
+		return this->producer ? TMEDIA_PRODUCER(this->producer)->session_id : 0;
+	}
 
 public:
 	static bool registerPlugin();

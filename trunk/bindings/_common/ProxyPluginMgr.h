@@ -109,7 +109,8 @@ public:
 	virtual bool operator ==(const ProxyPlugin &plugin)const{
 		return this->getId() == plugin.getId();
 	}
-	virtual bool isWrapping(tsk_object_t* wrapped_plugin) = 0;
+	virtual inline bool isWrapping(tsk_object_t* wrapped_plugin) = 0;
+	virtual inline uint64_t getMediaSessionId() = 0;
 #endif
 
 	inline twrap_proxy_plugin_type_t getType()const{ return this->type; }

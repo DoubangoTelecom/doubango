@@ -748,10 +748,10 @@ static tsk_object_t* tdav_session_audio_ctor(tsk_object_t * self, va_list * app)
 		/* init base: called by tmedia_session_create() */
 		/* init self */
 		tsk_safeobj_init(session);
-		if(!(session->consumer = tmedia_consumer_create(tmedia_audio))){
+		if(!(session->consumer = tmedia_consumer_create(tdav_session_audio_plugin_def_t->type, TMEDIA_SESSION(session)->id))){
 			TSK_DEBUG_ERROR("Failed to create Audio consumer");
 		}
-		if((session->producer = tmedia_producer_create(tmedia_audio))){
+		if((session->producer = tmedia_producer_create(tdav_session_audio_plugin_def_t->type, TMEDIA_SESSION(session)->id))){
 			tmedia_producer_set_callback(session->producer, tdav_session_audio_producer_cb, self);
 		}
 		else{

@@ -35,6 +35,7 @@
 #include "ProxyPluginMgr.h"
 
 #include "tinymedia/tmedia_common.h"
+#include "tinymedia/tmedia_consumer.h"
 
 /* ============ ProxyAudioConsumerCallback Class ================= */
 class ProxyAudioConsumerCallback
@@ -63,10 +64,13 @@ public:
 	void setCallback(ProxyAudioConsumerCallback* _callback) { this->callback = _callback; }
 #if !defined(SWIG)
 	inline ProxyAudioConsumerCallback* getCallback() { return this->callback; }
-	virtual bool isWrapping(tsk_object_t* wrapped_plugin){
+	virtual inline bool isWrapping(tsk_object_t* wrapped_plugin){
 		return this->consumer == wrapped_plugin;
 	}
 #endif
+	virtual inline uint64_t getMediaSessionId(){
+		return this->consumer ? TMEDIA_CONSUMER(this->consumer)->session_id : 0;
+	}
 
 public:
 	static bool registerPlugin();
@@ -105,10 +109,13 @@ public:
 	void setCallback(ProxyVideoConsumerCallback* _callback) { this->callback = _callback; }
 #if !defined(SWIG)
 	inline ProxyVideoConsumerCallback* getCallback() { return this->callback; }
-	virtual bool isWrapping(tsk_object_t* wrapped_plugin){
+	virtual inline bool isWrapping(tsk_object_t* wrapped_plugin){
 		return this->consumer == wrapped_plugin;
 	}
 #endif
+	virtual inline uint64_t getMediaSessionId(){
+		return this->consumer ? TMEDIA_CONSUMER(this->consumer)->session_id : 0;
+	}
 
 public:
 	static bool registerPlugin();
@@ -135,8 +142,15 @@ public:
 #endif
 	virtual ~ProxyVideoFrame();
 
+public: /* For Java/C# applications */
 	unsigned getSize();
 	unsigned getContent(void* output, unsigned maxsize);
+
+#if !defined(SWIG) /* For C/C++ applications */
+public:
+	inline unsigned fastGetSize(){ return size; }
+	inline const void* fastGetContent(){ return buffer; }
+#endif
 
 private:
 	const void* buffer;

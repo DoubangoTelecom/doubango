@@ -57,6 +57,9 @@ typedef struct tmedia_session_s
 {
 	TSK_DECLARE_OBJECT;
 	
+	//! unique id
+	uint64_t id;
+	//! session type
 	tmedia_type_t type;
 	//! list of codecs managed by this session
 	tmedia_codecs_L_t* codecs;
@@ -159,7 +162,7 @@ typedef struct tmedia_session_msrp_s
 	} callback;
 	
 	int (* send_file) (struct tmedia_session_msrp_s*, const char* path, va_list *app);
-	int (* send_message) (struct tmedia_session_msrp_s*, const void* data, tsk_size_t size, va_list *app);
+	int (* send_message) (struct tmedia_session_msrp_s*, const void* data, tsk_size_t size, const tmedia_params_L_t *params);
 }
 tmedia_session_msrp_t;
 #define tmedia_session_msrp_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmed_sess_type_msrp)
@@ -172,6 +175,7 @@ typedef struct tmedia_session_mgr_s
 {
 	TSK_DECLARE_OBJECT;
 	
+	//! whether we are the offerer or not
 	tsk_bool_t offerer;
 	//! local IP address or FQDN
 	char* addr;
@@ -377,7 +381,7 @@ TINYMEDIA_API tsk_bool_t tmedia_session_mgr_canresume(tmedia_session_mgr_t* self
 TINYMEDIA_API tsk_bool_t tmedia_session_mgr_has_active_session(tmedia_session_mgr_t* self);
 TINYMEDIA_API int tmedia_session_mgr_send_dtmf(tmedia_session_mgr_t* self, uint8_t event);
 TINYMEDIA_API int tmedia_session_mgr_send_file(tmedia_session_mgr_t* self, const char* path, ...);
-TINYMEDIA_API int tmedia_session_mgr_send_message(tmedia_session_mgr_t* self, const void* data, tsk_size_t size, ...);
+TINYMEDIA_API int tmedia_session_mgr_send_message(tmedia_session_mgr_t* self, const void* data, tsk_size_t size, const tmedia_params_L_t *params);
 TINYMEDIA_API int tmedia_session_mgr_set_msrp_cb(tmedia_session_mgr_t* self, const void* callback_data, tmedia_session_msrp_cb_f func);
 
 

@@ -47,6 +47,46 @@ typedef void * (*tsk_runnable_func_run)(void* self);
 #define TSK_RUNNABLE(self)	((tsk_runnable_t*)(self))
 
 /**@ingroup tsk_runnable_group
+* Runnable.
+*/
+typedef struct tsk_runnable_s
+{
+	TSK_DECLARE_OBJECT;
+	
+	const tsk_object_def_t *objdef;
+	
+	void* tid[1];
+	tsk_runnable_func_run run;
+	tsk_semaphore_handle_t *semaphore;
+	
+	tsk_bool_t running;
+	tsk_bool_t started;
+	tsk_bool_t initialized;
+	/** whether the enqueued data are important or not. 
+	* if yes, the thread will not be joined until all data in the queue have been consumed.
+	* default value: tsk_false
+	*/
+	tsk_bool_t important;
+	
+	tsk_list_t *objects;
+}
+tsk_runnable_t;
+
+/**@ingroup tsk_runnable_group
+*/
+#define TSK_DECLARE_RUNNABLE tsk_runnable_t __runnable__
+
+TINYSAK_API tsk_runnable_t* tsk_runnable_create();
+
+TINYSAK_API int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef);
+TINYSAK_API int tsk_runnable_set_important(tsk_runnable_t *self, tsk_bool_t important);
+TINYSAK_API int tsk_runnable_enqueue(tsk_runnable_t *self, ...);
+TINYSAK_API int tsk_runnable_stop(tsk_runnable_t *self);
+
+TINYSAK_GEXTERN const tsk_object_def_t *tsk_runnable_def_t;
+
+
+/**@ingroup tsk_runnable_group
 * @def TSK_RUNNABLE_RUN_BEGIN
 */
 /**@ingroup tsk_runnable_group
@@ -85,9 +125,23 @@ typedef void * (*tsk_runnable_func_run)(void* self);
 
 #define TSK_RUNNABLE_ENQUEUE_OBJECT(self, object)									\
 {																					\
-	if((self) && TSK_RUNNABLE(self)->initialized){												\
-		tsk_list_push_back_data(TSK_RUNNABLE(self)->objects, (void**)&object);					\
-		tsk_semaphore_increment(TSK_RUNNABLE(self)->semaphore);									\
+	if((self) && TSK_RUNNABLE(self)->initialized){									\
+		tsk_list_push_back_data(TSK_RUNNABLE(self)->objects, (void**)&object);		\
+		tsk_semaphore_increment(TSK_RUNNABLE(self)->semaphore);						\
+	}																				\
+	else{																			\
+		TSK_DEBUG_WARN("Invalid/uninitialized runnable object.");					\
+		TSK_OBJECT_SAFE_FREE(object);												\
+	}																				\
+}
+
+#define TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(self, object)								\
+{																					\
+	if((self) && TSK_RUNNABLE(self)->initialized){									\
+		tsk_list_lock(TSK_RUNNABLE(self)->objects);									\
+		tsk_list_push_back_data(TSK_RUNNABLE(self)->objects, (void**)&object);		\
+		tsk_list_unlock(TSK_RUNNABLE(self)->objects);								\
+		tsk_semaphore_increment(TSK_RUNNABLE(self)->semaphore);						\
 	}																				\
 	else{																			\
 		TSK_DEBUG_WARN("Invalid/uninitialized runnable object.");					\
@@ -99,46 +153,13 @@ typedef void * (*tsk_runnable_func_run)(void* self);
 */
 #define TSK_RUNNABLE_POP_FIRST(self) \
 	tsk_list_pop_first_item(TSK_RUNNABLE(self)->objects)
-
-
-/**@ingroup tsk_runnable_group
-* Runnable.
-*/
-typedef struct tsk_runnable_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	const tsk_object_def_t *objdef;
-	
-	void* tid[1];
-	tsk_runnable_func_run run;
-	tsk_semaphore_handle_t *semaphore;
-	
-	tsk_bool_t running;
-	tsk_bool_t started;
-	tsk_bool_t initialized;
-	/** whether the enqueued data are important or not. 
-	* if yes, the thread will not be joined until all data in the queue have been consumed.
-	* default value: tsk_false
-	*/
-	tsk_bool_t important;
-	
-	tsk_list_t *objects;
+static tsk_list_item_t* TSK_RUNNABLE_POP_FIRST_SAFE(tsk_runnable_t* self){
+	tsk_list_item_t* item;
+	tsk_list_lock(self->objects);
+	item= tsk_list_pop_first_item(self->objects);
+	tsk_list_unlock(self->objects);
+	return item;
 }
-tsk_runnable_t;
-
-/**@ingroup tsk_runnable_group
-*/
-#define TSK_DECLARE_RUNNABLE tsk_runnable_t __runnable__
-
-TINYSAK_API tsk_runnable_t* tsk_runnable_create();
-
-TINYSAK_API int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef);
-TINYSAK_API int tsk_runnable_set_important(tsk_runnable_t *self, tsk_bool_t important);
-TINYSAK_API int tsk_runnable_enqueue(tsk_runnable_t *self, ...);
-TINYSAK_API int tsk_runnable_stop(tsk_runnable_t *self);
-
-TINYSAK_GEXTERN const tsk_object_def_t *tsk_runnable_def_t;
 
 TSK_END_DECLS
 

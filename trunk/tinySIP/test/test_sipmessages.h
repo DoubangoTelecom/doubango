@@ -84,7 +84,7 @@
 #define SIP_MESSAGE \
 	"MESSAGE sip:mamadou@open-ims.test SIP/2.0\r\n" \
 	"Via: SIP/2.0/tcp 127.0.0.1:5082;branch=z9hG4bKc16be5aee32df400d01015675ab911ba,SIP/2.0/udp 127.0.0.1:5082;branch=z9hG4bKeec53b25db240bec92ea250964b8c1fa;received_port_ext=5081;received=192.168.0.13,SIP/2.0/UDP 192.168.0.12:57121;rport=57121;branch=z9hG4bK1274980921982;received_port_ext=5081;received=192.168.0.12\r\n" \
-	"From: \"Bob\"<sip:bob@open-ims.test>;tag=mercuro\r\n" \
+	"From: Bob <sip:bob@open-ims.test>;tag=mercuro\r\n" \
 	"To: \"Alice\"<sip:alice@open-ims.test>\r\n" \
 	"m: <sip:mamadou@127.0.0.1:5060>\r\n" \
 	"Call-ID: 1262767804423\r\n" \
@@ -312,8 +312,8 @@ void test_responses()
 
 void test_messages()
 {
-	test_parser();
-	test_requests();
+	//test_parser();
+	//test_requests();
 	test_responses();
 }
 

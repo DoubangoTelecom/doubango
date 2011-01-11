@@ -143,7 +143,8 @@ typedef struct tsip_message_s
 
 	/*== to hack the message */
 	char* sigcomp_id;
-	tnet_fd_t sockfd;
+	tnet_fd_t local_fd;
+	struct sockaddr_storage remote_addr; // Only valid for Dgram
 	tsk_bool_t update;
 }
 tsip_message_t;

@@ -59,6 +59,12 @@ TXCAP_BEGIN_DECLS
 #define TXCAP_AUID_IETF_PRES_RULES_NS "urn:ietf:params:xml:ns:pres-rules"
 #define TXCAP_AUID_IETF_PRES_RULES_DOC "index"
 
+/*== pidf-manipulation ==*/
+#define TXCAP_AUID_IETF_PIDF_MANIPULATION_ID "pidf-manipulation"
+#define TXCAP_AUID_IETF_PIDF_MANIPULATION_MIME_TYPE "application/pidf+xml"
+#define TXCAP_AUID_IETF_PIDF_MANIPULATION_NS "urn:ietf:params:xml:ns:pidf"
+#define TXCAP_AUID_IETF_PIDF_MANIPULATION_DOC "index"
+
 /*== org.openmobilealliance.pres-rules ==*/
 #define TXCAP_AUID_OMA_PRES_RULES_ID "org.openmobilealliance.pres-rules"
 #define TXCAP_AUID_OMA_PRES_RULES_MIME_TYPE "application/auth-policy+xml"
@@ -140,7 +146,7 @@ txcap_auid_t;
 
 typedef tsk_list_t txcap_auids_L_t;
 
-int txcap_auid_register(txcap_auids_L_t* auids, const char* id, const char* mime_type, const char* ns, const char* document_name, tsk_bool_t is_global);
+TINYXCAP_API int txcap_auid_register(txcap_auids_L_t* auids, const char* id, const char* mime_type, const char* ns, const char* document_name, tsk_bool_t is_global);
 txcap_auid_t* txcap_auid_get_by_id(txcap_auids_L_t* auids, const char* id);
 int txcap_auids_init(txcap_auids_L_t** auids);
 

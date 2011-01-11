@@ -794,7 +794,7 @@ int __txcap_stack_set(txcap_stack_t* self, va_list *app)
 				{	/* (const char*)NAME_STR, (const char*)VALUE_STR */
 					const char* NAME_STR = va_arg(*app, const char*);
 					const char* VALUE_STR = va_arg(*app, const char*);
-					if(NAME_STR == (const char*)-1){
+					if(VALUE_STR == (const char*)-1){
 						tsk_params_remove_param(((thttp_session_t*)self->http_session)->headers, NAME_STR);
 					}
 					else{

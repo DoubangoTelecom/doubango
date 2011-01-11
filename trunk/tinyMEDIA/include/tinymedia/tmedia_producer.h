@@ -67,6 +67,8 @@ typedef struct tmedia_producer_s
 
 	const struct tmedia_producer_plugin_def_s* plugin;
 
+	uint64_t session_id;
+
 	tmedia_producer_cb_f callback;
 	const void* callback_data;
 }
@@ -93,7 +95,7 @@ tmedia_producer_plugin_def_t;
 
 #define TMEDIA_DECLARE_PRODUCER tmedia_producer_t __producer__
 
-TINYMEDIA_API tmedia_producer_t* tmedia_producer_create(tmedia_type_t type);
+TINYMEDIA_API tmedia_producer_t* tmedia_producer_create(tmedia_type_t type, uint64_t session_id);
 TINYMEDIA_API int tmedia_producer_init(tmedia_producer_t* self);
 TINYMEDIA_API int tmedia_producer_set_callback(tmedia_producer_t *self, tmedia_producer_cb_f callback, const void* callback_data);
 TINYMEDIA_API int tmedia_producer_set(tmedia_producer_t* self, const tmedia_param_t* param);

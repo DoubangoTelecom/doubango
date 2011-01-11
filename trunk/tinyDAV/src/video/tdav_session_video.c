@@ -585,10 +585,10 @@ static tsk_object_t* tdav_session_video_ctor(tsk_object_t * self, va_list * app)
 		/* init base: called by tmedia_session_create() */
 		/* init self */
 		tsk_safeobj_init(session);
-		if(!(session->consumer = tmedia_consumer_create(tdav_session_video_plugin_def_t->type))){
+		if(!(session->consumer = tmedia_consumer_create(tdav_session_video_plugin_def_t->type, TMEDIA_SESSION(session)->id))){
 			TSK_DEBUG_ERROR("Failed to create Video consumer");
 		}
-		if((session->producer = tmedia_producer_create(tdav_session_video_plugin_def_t->type))){
+		if((session->producer = tmedia_producer_create(tdav_session_video_plugin_def_t->type, TMEDIA_SESSION(session)->id))){
 			tmedia_producer_set_callback(session->producer, tdav_session_video_producer_cb, self);
 		}
 		else{

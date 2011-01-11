@@ -619,6 +619,7 @@ sub DESTROY {
 
 *getType = *tinyWRAPc::RegistrationEvent_getType;
 *getSession = *tinyWRAPc::RegistrationEvent_getSession;
+*takeSessionOwnership = *tinyWRAPc::RegistrationEvent_takeSessionOwnership;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -985,6 +986,8 @@ sub DESTROY {
 
 *register_ = *tinyWRAPc::RegistrationSession_register_;
 *unRegister = *tinyWRAPc::RegistrationSession_unRegister;
+*accept = *tinyWRAPc::RegistrationSession_accept;
+*reject = *tinyWRAPc::RegistrationSession_reject;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1208,6 +1211,7 @@ sub DESTROY {
 *pull = *tinyWRAPc::ProxyAudioConsumer_pull;
 *reset = *tinyWRAPc::ProxyAudioConsumer_reset;
 *setCallback = *tinyWRAPc::ProxyAudioConsumer_setCallback;
+*getMediaSessionId = *tinyWRAPc::ProxyAudioConsumer_getMediaSessionId;
 *registerPlugin = *tinyWRAPc::ProxyAudioConsumer_registerPlugin;
 sub DISOWN {
     my $self = shift;
@@ -1284,6 +1288,7 @@ sub DESTROY {
 
 *setDisplaySize = *tinyWRAPc::ProxyVideoConsumer_setDisplaySize;
 *setCallback = *tinyWRAPc::ProxyVideoConsumer_setCallback;
+*getMediaSessionId = *tinyWRAPc::ProxyVideoConsumer_getMediaSessionId;
 *registerPlugin = *tinyWRAPc::ProxyVideoConsumer_registerPlugin;
 *setDefaultChroma = *tinyWRAPc::ProxyVideoConsumer_setDefaultChroma;
 sub DISOWN {
@@ -1393,6 +1398,7 @@ sub DESTROY {
 
 *push = *tinyWRAPc::ProxyAudioProducer_push;
 *setCallback = *tinyWRAPc::ProxyAudioProducer_setCallback;
+*getMediaSessionId = *tinyWRAPc::ProxyAudioProducer_getMediaSessionId;
 *registerPlugin = *tinyWRAPc::ProxyAudioProducer_registerPlugin;
 sub DISOWN {
     my $self = shift;
@@ -1470,6 +1476,7 @@ sub DESTROY {
 *setRotation = *tinyWRAPc::ProxyVideoProducer_setRotation;
 *push = *tinyWRAPc::ProxyVideoProducer_push;
 *setCallback = *tinyWRAPc::ProxyVideoProducer_setCallback;
+*getMediaSessionId = *tinyWRAPc::ProxyVideoProducer_getMediaSessionId;
 *registerPlugin = *tinyWRAPc::ProxyVideoProducer_registerPlugin;
 *setDefaultChroma = *tinyWRAPc::ProxyVideoProducer_setDefaultChroma;
 sub DISOWN {
@@ -1622,6 +1629,7 @@ sub DESTROY {
 *dnsENUM = *tinyWRAPc::SipStack_dnsENUM;
 *dnsNaptrSrv = *tinyWRAPc::SipStack_dnsNaptrSrv;
 *dnsSrv = *tinyWRAPc::SipStack_dnsSrv;
+*getLocalIPnPort = *tinyWRAPc::SipStack_getLocalIPnPort;
 *getPreferredIdentity = *tinyWRAPc::SipStack_getPreferredIdentity;
 *isValid = *tinyWRAPc::SipStack_isValid;
 *stop = *tinyWRAPc::SipStack_stop;
@@ -1824,6 +1832,7 @@ sub DESTROY {
     }
 }
 
+*registerAUID = *tinyWRAPc::XcapStack_registerAUID;
 *start = *tinyWRAPc::XcapStack_start;
 *setCredentials = *tinyWRAPc::XcapStack_setCredentials;
 *setXcapRoot = *tinyWRAPc::XcapStack_setXcapRoot;
@@ -2128,6 +2137,7 @@ package tinyWRAP;
 *tsip_event_code_stack_stopped = *tinyWRAPc::tsip_event_code_stack_stopped;
 *tsip_event_code_stack_failed_to_start = *tinyWRAPc::tsip_event_code_stack_failed_to_start;
 *tsip_event_code_stack_failed_to_stop = *tinyWRAPc::tsip_event_code_stack_failed_to_stop;
+*tsip_i_newreg = *tinyWRAPc::tsip_i_newreg;
 *tsip_i_register = *tinyWRAPc::tsip_i_register;
 *tsip_ao_register = *tinyWRAPc::tsip_ao_register;
 *tsip_i_unregister = *tinyWRAPc::tsip_i_unregister;

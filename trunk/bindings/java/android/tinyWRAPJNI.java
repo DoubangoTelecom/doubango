@@ -97,6 +97,7 @@ class tinyWRAPJNI {
   public final static native void delete_RegistrationEvent(long jarg1);
   public final static native int RegistrationEvent_getType(long jarg1, RegistrationEvent jarg1_);
   public final static native long RegistrationEvent_getSession(long jarg1, RegistrationEvent jarg1_);
+  public final static native long RegistrationEvent_takeSessionOwnership(long jarg1, RegistrationEvent jarg1_);
   public final static native void delete_SubscriptionEvent(long jarg1);
   public final static native int SubscriptionEvent_getType(long jarg1, SubscriptionEvent jarg1_);
   public final static native long SubscriptionEvent_getSession(long jarg1, SubscriptionEvent jarg1_);
@@ -165,6 +166,10 @@ class tinyWRAPJNI {
   public final static native void delete_RegistrationSession(long jarg1);
   public final static native boolean RegistrationSession_register_(long jarg1, RegistrationSession jarg1_);
   public final static native boolean RegistrationSession_unRegister(long jarg1, RegistrationSession jarg1_);
+  public final static native boolean RegistrationSession_accept__SWIG_0(long jarg1, RegistrationSession jarg1_, long jarg2, ActionConfig jarg2_);
+  public final static native boolean RegistrationSession_accept__SWIG_1(long jarg1, RegistrationSession jarg1_);
+  public final static native boolean RegistrationSession_reject__SWIG_0(long jarg1, RegistrationSession jarg1_, long jarg2, ActionConfig jarg2_);
+  public final static native boolean RegistrationSession_reject__SWIG_1(long jarg1, RegistrationSession jarg1_);
   public final static native long new_SubscriptionSession(long jarg1, SipStack jarg1_);
   public final static native void delete_SubscriptionSession(long jarg1);
   public final static native boolean SubscriptionSession_subscribe(long jarg1, SubscriptionSession jarg1_);
@@ -203,6 +208,7 @@ class tinyWRAPJNI {
   public final static native long ProxyAudioConsumer_pull(long jarg1, ProxyAudioConsumer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native boolean ProxyAudioConsumer_reset(long jarg1, ProxyAudioConsumer jarg1_);
   public final static native void ProxyAudioConsumer_setCallback(long jarg1, ProxyAudioConsumer jarg1_, long jarg2, ProxyAudioConsumerCallback jarg2_);
+  public final static native java.math.BigInteger ProxyAudioConsumer_getMediaSessionId(long jarg1, ProxyAudioConsumer jarg1_);
   public final static native boolean ProxyAudioConsumer_registerPlugin();
   public final static native long new_ProxyVideoConsumerCallback();
   public final static native void delete_ProxyVideoConsumerCallback(long jarg1);
@@ -221,6 +227,7 @@ class tinyWRAPJNI {
   public final static native void delete_ProxyVideoConsumer(long jarg1);
   public final static native boolean ProxyVideoConsumer_setDisplaySize(long jarg1, ProxyVideoConsumer jarg1_, int jarg2, int jarg3);
   public final static native void ProxyVideoConsumer_setCallback(long jarg1, ProxyVideoConsumer jarg1_, long jarg2, ProxyVideoConsumerCallback jarg2_);
+  public final static native java.math.BigInteger ProxyVideoConsumer_getMediaSessionId(long jarg1, ProxyVideoConsumer jarg1_);
   public final static native boolean ProxyVideoConsumer_registerPlugin();
   public final static native void ProxyVideoConsumer_setDefaultChroma(int jarg1);
   public final static native void delete_ProxyVideoFrame(long jarg1);
@@ -241,6 +248,7 @@ class tinyWRAPJNI {
   public final static native void delete_ProxyAudioProducer(long jarg1);
   public final static native int ProxyAudioProducer_push(long jarg1, ProxyAudioProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native void ProxyAudioProducer_setCallback(long jarg1, ProxyAudioProducer jarg1_, long jarg2, ProxyAudioProducerCallback jarg2_);
+  public final static native java.math.BigInteger ProxyAudioProducer_getMediaSessionId(long jarg1, ProxyAudioProducer jarg1_);
   public final static native boolean ProxyAudioProducer_registerPlugin();
   public final static native long new_ProxyVideoProducerCallback();
   public final static native void delete_ProxyVideoProducerCallback(long jarg1);
@@ -259,6 +267,7 @@ class tinyWRAPJNI {
   public final static native void ProxyVideoProducer_setRotation(long jarg1, ProxyVideoProducer jarg1_, int jarg2);
   public final static native int ProxyVideoProducer_push(long jarg1, ProxyVideoProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native void ProxyVideoProducer_setCallback(long jarg1, ProxyVideoProducer jarg1_, long jarg2, ProxyVideoProducerCallback jarg2_);
+  public final static native java.math.BigInteger ProxyVideoProducer_getMediaSessionId(long jarg1, ProxyVideoProducer jarg1_);
   public final static native boolean ProxyVideoProducer_registerPlugin();
   public final static native void ProxyVideoProducer_setDefaultChroma(int jarg1);
   public final static native long new_SipCallback();
@@ -316,6 +325,7 @@ class tinyWRAPJNI {
   public final static native String SipStack_dnsENUM(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4);
   public final static native String SipStack_dnsNaptrSrv(long jarg1, SipStack jarg1_, String jarg2, String jarg3, int[] jarg4);
   public final static native String SipStack_dnsSrv(long jarg1, SipStack jarg1_, String jarg2, int[] jarg3);
+  public final static native String SipStack_getLocalIPnPort(long jarg1, SipStack jarg1_, String jarg2, int[] jarg3);
   public final static native String SipStack_getPreferredIdentity(long jarg1, SipStack jarg1_);
   public final static native boolean SipStack_isValid(long jarg1, SipStack jarg1_);
   public final static native boolean SipStack_stop(long jarg1, SipStack jarg1_);
@@ -353,6 +363,7 @@ class tinyWRAPJNI {
   public final static native void XcapCallback_change_ownership(XcapCallback obj, long cptr, boolean take_or_release);
   public final static native long new_XcapStack(long jarg1, XcapCallback jarg1_, String jarg2, String jarg3, String jarg4);
   public final static native void delete_XcapStack(long jarg1);
+  public final static native boolean XcapStack_registerAUID(long jarg1, XcapStack jarg1_, String jarg2, String jarg3, String jarg4, String jarg5, boolean jarg6);
   public final static native boolean XcapStack_start(long jarg1, XcapStack jarg1_);
   public final static native boolean XcapStack_setCredentials(long jarg1, XcapStack jarg1_, String jarg2, String jarg3);
   public final static native boolean XcapStack_setXcapRoot(long jarg1, XcapStack jarg1_, String jarg2);

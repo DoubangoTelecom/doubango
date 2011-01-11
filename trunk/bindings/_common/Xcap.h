@@ -28,6 +28,9 @@ class XcapStack;
 
 typedef tsk_list_t twrap_xcap_steps_L_t;
 
+//
+//	XcapSelector
+//
 class XcapSelector
 {
 public:
@@ -51,6 +54,9 @@ private:
 	twrap_xcap_steps_L_t* steps;
 };
 
+//
+//	XcapMessage
+//
 class XcapMessage
 {
 public:
@@ -72,6 +78,9 @@ private:
 	const thttp_message_t *httpmessage;
 };
 
+//
+//	XcapEvent
+//
 class XcapEvent
 {
 public:
@@ -87,6 +96,10 @@ private:
 	const XcapMessage* httpmessage;
 };
 
+
+//
+//	XcapCallback
+//
 class XcapCallback
 {
 public:
@@ -96,6 +109,10 @@ public:
 	virtual int onEvent(const XcapEvent* e)const { return -1; }
 };
 
+
+//
+//	XcapStack
+//
 class XcapStack
 {
 public:
@@ -103,6 +120,7 @@ public:
 	virtual ~XcapStack();
 
 public: /* API functions */
+	bool registerAUID(const char* id, const char* mime_type, const char* ns, const char* document_name, bool is_global);
 	bool start();
 	bool setCredentials(const char* xui, const char* password);
 	bool setXcapRoot(const char* xcap_root);
@@ -124,7 +142,7 @@ public: /* API functions */
 	bool putElement(const char* url, const void* payload, unsigned len);
 	bool putAttribute(const char* url, const void* payload, unsigned len);
 
-	bool stop();
+	bool stop();	
 
 public: /* Public helper function */
 #if !defined(SWIG)

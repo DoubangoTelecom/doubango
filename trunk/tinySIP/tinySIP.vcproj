@@ -828,6 +828,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\dialogs\tsip_dialog_register.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\dialogs\tsip_dialog_register.client.c"
 					>
 				</File>
@@ -1471,6 +1475,10 @@
 				</File>
 				<File
 					RelativePath=".\include\tinysip\dialogs\tsip_dialog_publish.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\dialogs\tsip_dialog_register.common.h"
 					>
 				</File>
 				<File

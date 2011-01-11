@@ -85,7 +85,9 @@ tsip_event_type_t;
 /* ====== From "tinySIP\include\tinysip\tsip_api_register.h"  ====== */
 typedef enum tsip_register_event_type_e
 {
-	tsip_i_register,
+	tsip_i_newreg,
+
+	tsip_i_register, // refresh
 	tsip_ao_register,
 
 	tsip_i_unregister,

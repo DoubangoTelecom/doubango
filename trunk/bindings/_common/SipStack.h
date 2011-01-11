@@ -54,6 +54,9 @@ public: /* API functions */
 	bool addDnsServer(const char* ip);
 	bool setDnsDiscovery(bool enabled);
 	bool setAoR(const char* ip, int port);
+#if !defined(SWIG)
+	bool setModeServer();
+#endif
 
 	bool setSigCompParams(unsigned dms, unsigned sms, unsigned cpb, bool enablePresDict);
 	bool addSigCompCompartment(const char* compId);
@@ -70,6 +73,8 @@ public: /* API functions */
 	char* dnsENUM(const char* service, const char* e164num, const char* domain);
 	char* dnsNaptrSrv(const char* domain, const char* service, unsigned short *OUTPUT);
 	char* dnsSrv(const char* service, unsigned short* OUTPUT);
+
+	char* getLocalIPnPort(const char* protocol, unsigned short* OUTPUT);
 
 	char* getPreferredIdentity();
 

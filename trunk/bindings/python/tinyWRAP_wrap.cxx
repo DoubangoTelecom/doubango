@@ -7768,6 +7768,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_RegistrationEvent_takeSessionOwnership(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  RegistrationSession *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:RegistrationEvent_takeSessionOwnership",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RegistrationEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegistrationEvent_takeSessionOwnership" "', argument " "1"" of type '" "RegistrationEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< RegistrationEvent * >(argp1);
+  result = (RegistrationSession *)((RegistrationEvent const *)arg1)->takeSessionOwnership();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RegistrationSession, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *RegistrationEvent_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -10367,6 +10389,198 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_RegistrationSession_accept__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RegistrationSession *arg1 = (RegistrationSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:RegistrationSession_accept",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RegistrationSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegistrationSession_accept" "', argument " "1"" of type '" "RegistrationSession *""'"); 
+  }
+  arg1 = reinterpret_cast< RegistrationSession * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_ActionConfig, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RegistrationSession_accept" "', argument " "2"" of type '" "ActionConfig *""'"); 
+  }
+  arg2 = reinterpret_cast< ActionConfig * >(argp2);
+  result = (bool)(arg1)->accept(arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_RegistrationSession_accept__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RegistrationSession *arg1 = (RegistrationSession *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:RegistrationSession_accept",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RegistrationSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegistrationSession_accept" "', argument " "1"" of type '" "RegistrationSession *""'"); 
+  }
+  arg1 = reinterpret_cast< RegistrationSession * >(argp1);
+  result = (bool)(arg1)->accept();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_RegistrationSession_accept(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[3];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = (int)PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 2); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RegistrationSession, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_RegistrationSession_accept__SWIG_1(self, args);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RegistrationSession, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_ActionConfig, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_RegistrationSession_accept__SWIG_0(self, args);
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'RegistrationSession_accept'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    accept(RegistrationSession *,ActionConfig *)\n"
+    "    accept(RegistrationSession *)\n");
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_RegistrationSession_reject__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RegistrationSession *arg1 = (RegistrationSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:RegistrationSession_reject",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RegistrationSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegistrationSession_reject" "', argument " "1"" of type '" "RegistrationSession *""'"); 
+  }
+  arg1 = reinterpret_cast< RegistrationSession * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_ActionConfig, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RegistrationSession_reject" "', argument " "2"" of type '" "ActionConfig *""'"); 
+  }
+  arg2 = reinterpret_cast< ActionConfig * >(argp2);
+  result = (bool)(arg1)->reject(arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_RegistrationSession_reject__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RegistrationSession *arg1 = (RegistrationSession *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:RegistrationSession_reject",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RegistrationSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegistrationSession_reject" "', argument " "1"" of type '" "RegistrationSession *""'"); 
+  }
+  arg1 = reinterpret_cast< RegistrationSession * >(argp1);
+  result = (bool)(arg1)->reject();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_RegistrationSession_reject(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[3];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = (int)PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 2); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RegistrationSession, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_RegistrationSession_reject__SWIG_1(self, args);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RegistrationSession, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_ActionConfig, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_RegistrationSession_reject__SWIG_0(self, args);
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'RegistrationSession_reject'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    reject(RegistrationSession *,ActionConfig *)\n"
+    "    reject(RegistrationSession *)\n");
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *RegistrationSession_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -11255,6 +11469,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_getMediaSessionId(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  uint64_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioConsumer_getMediaSessionId",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_getMediaSessionId" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
+  result = (uint64_t)(arg1)->getMediaSessionId();
+  resultobj = SWIG_From_unsigned_SS_long_SS_long(static_cast< unsigned long long >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_registerPlugin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   bool result;
@@ -11641,6 +11877,28 @@ SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_setCallback(PyObject *SWIGUNUSEDPA
   arg2 = reinterpret_cast< ProxyVideoConsumerCallback * >(argp2);
   (arg1)->setCallback(arg2);
   resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_getMediaSessionId(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  uint64_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoConsumer_getMediaSessionId",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_getMediaSessionId" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
+  result = (uint64_t)(arg1)->getMediaSessionId();
+  resultobj = SWIG_From_unsigned_SS_long_SS_long(static_cast< unsigned long long >(result));
   return resultobj;
 fail:
   return NULL;
@@ -12103,6 +12361,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ProxyAudioProducer_getMediaSessionId(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  uint64_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioProducer_getMediaSessionId",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_getMediaSessionId" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
+  result = (uint64_t)(arg1)->getMediaSessionId();
+  resultobj = SWIG_From_unsigned_SS_long_SS_long(static_cast< unsigned long long >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_ProxyAudioProducer_registerPlugin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   bool result;
@@ -12496,6 +12776,28 @@ SWIGINTERN PyObject *_wrap_ProxyVideoProducer_setCallback(PyObject *SWIGUNUSEDPA
   arg2 = reinterpret_cast< ProxyVideoProducerCallback * >(argp2);
   (arg1)->setCallback(arg2);
   resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyVideoProducer_getMediaSessionId(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  uint64_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoProducer_getMediaSessionId",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_getMediaSessionId" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+  result = (uint64_t)(arg1)->getMediaSessionId();
+  resultobj = SWIG_From_unsigned_SS_long_SS_long(static_cast< unsigned long long >(result));
   return resultobj;
 fail:
   return NULL;
@@ -14300,6 +14602,51 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SipStack_getLocalIPnPort(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned short *arg3 = (unsigned short *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  unsigned short temp3 ;
+  int res3 = SWIG_TMPOBJ ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  char *result = 0 ;
+  
+  arg3 = &temp3;
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipStack_getLocalIPnPort",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_getLocalIPnPort" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_getLocalIPnPort" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  result = (char *)(arg1)->getLocalIPnPort((char const *)arg2,arg3);
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  if (SWIG_IsTmpObj(res3)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_unsigned_SS_short((*arg3)));
+  } else {
+    int new_flags = SWIG_IsNewObj(res3) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg3), SWIGTYPE_p_unsigned_short, new_flags));
+  }
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  delete[] result;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_SipStack_getPreferredIdentity(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -15518,6 +15865,85 @@ SWIGINTERN PyObject *_wrap_delete_XcapStack(PyObject *SWIGUNUSEDPARM(self), PyOb
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_XcapStack_registerAUID(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  XcapStack *arg1 = (XcapStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  char *arg5 = (char *) 0 ;
+  bool arg6 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  int res4 ;
+  char *buf4 = 0 ;
+  int alloc4 = 0 ;
+  int res5 ;
+  char *buf5 = 0 ;
+  int alloc5 = 0 ;
+  bool val6 ;
+  int ecode6 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:XcapStack_registerAUID",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_XcapStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "XcapStack_registerAUID" "', argument " "1"" of type '" "XcapStack *""'"); 
+  }
+  arg1 = reinterpret_cast< XcapStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "XcapStack_registerAUID" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "XcapStack_registerAUID" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  res4 = SWIG_AsCharPtrAndSize(obj3, &buf4, NULL, &alloc4);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "XcapStack_registerAUID" "', argument " "4"" of type '" "char const *""'");
+  }
+  arg4 = reinterpret_cast< char * >(buf4);
+  res5 = SWIG_AsCharPtrAndSize(obj4, &buf5, NULL, &alloc5);
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "XcapStack_registerAUID" "', argument " "5"" of type '" "char const *""'");
+  }
+  arg5 = reinterpret_cast< char * >(buf5);
+  ecode6 = SWIG_AsVal_bool(obj5, &val6);
+  if (!SWIG_IsOK(ecode6)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "XcapStack_registerAUID" "', argument " "6"" of type '" "bool""'");
+  } 
+  arg6 = static_cast< bool >(val6);
+  result = (bool)(arg1)->registerAUID((char const *)arg2,(char const *)arg3,(char const *)arg4,(char const *)arg5,arg6);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  if (alloc5 == SWIG_NEWOBJ) delete[] buf5;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  if (alloc5 == SWIG_NEWOBJ) delete[] buf5;
   return NULL;
 }
 
@@ -17472,6 +17898,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_RegistrationEvent", _wrap_delete_RegistrationEvent, METH_VARARGS, NULL},
 	 { (char *)"RegistrationEvent_getType", _wrap_RegistrationEvent_getType, METH_VARARGS, NULL},
 	 { (char *)"RegistrationEvent_getSession", _wrap_RegistrationEvent_getSession, METH_VARARGS, NULL},
+	 { (char *)"RegistrationEvent_takeSessionOwnership", _wrap_RegistrationEvent_takeSessionOwnership, METH_VARARGS, NULL},
 	 { (char *)"RegistrationEvent_swigregister", RegistrationEvent_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_SubscriptionEvent", _wrap_delete_SubscriptionEvent, METH_VARARGS, NULL},
 	 { (char *)"SubscriptionEvent_getType", _wrap_SubscriptionEvent_getType, METH_VARARGS, NULL},
@@ -17537,6 +17964,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_RegistrationSession", _wrap_delete_RegistrationSession, METH_VARARGS, NULL},
 	 { (char *)"RegistrationSession_register_", _wrap_RegistrationSession_register_, METH_VARARGS, NULL},
 	 { (char *)"RegistrationSession_unRegister", _wrap_RegistrationSession_unRegister, METH_VARARGS, NULL},
+	 { (char *)"RegistrationSession_accept", _wrap_RegistrationSession_accept, METH_VARARGS, NULL},
+	 { (char *)"RegistrationSession_reject", _wrap_RegistrationSession_reject, METH_VARARGS, NULL},
 	 { (char *)"RegistrationSession_swigregister", RegistrationSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_SubscriptionSession", _wrap_new_SubscriptionSession, METH_VARARGS, NULL},
 	 { (char *)"delete_SubscriptionSession", _wrap_delete_SubscriptionSession, METH_VARARGS, NULL},
@@ -17573,6 +18002,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"ProxyAudioConsumer_pull", _wrap_ProxyAudioConsumer_pull, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_reset", _wrap_ProxyAudioConsumer_reset, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_setCallback", _wrap_ProxyAudioConsumer_setCallback, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioConsumer_getMediaSessionId", _wrap_ProxyAudioConsumer_getMediaSessionId, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_registerPlugin", _wrap_ProxyAudioConsumer_registerPlugin, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_swigregister", ProxyAudioConsumer_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_ProxyVideoConsumerCallback", _wrap_new_ProxyVideoConsumerCallback, METH_VARARGS, NULL},
@@ -17587,6 +18017,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_ProxyVideoConsumer", _wrap_delete_ProxyVideoConsumer, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_setDisplaySize", _wrap_ProxyVideoConsumer_setDisplaySize, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_setCallback", _wrap_ProxyVideoConsumer_setCallback, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoConsumer_getMediaSessionId", _wrap_ProxyVideoConsumer_getMediaSessionId, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_registerPlugin", _wrap_ProxyVideoConsumer_registerPlugin, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_setDefaultChroma", _wrap_ProxyVideoConsumer_setDefaultChroma, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_swigregister", ProxyVideoConsumer_swigregister, METH_VARARGS, NULL},
@@ -17605,6 +18036,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_ProxyAudioProducer", _wrap_delete_ProxyAudioProducer, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioProducer_push", _wrap_ProxyAudioProducer_push, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioProducer_setCallback", _wrap_ProxyAudioProducer_setCallback, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioProducer_getMediaSessionId", _wrap_ProxyAudioProducer_getMediaSessionId, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioProducer_registerPlugin", _wrap_ProxyAudioProducer_registerPlugin, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioProducer_swigregister", ProxyAudioProducer_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_ProxyVideoProducerCallback", _wrap_new_ProxyVideoProducerCallback, METH_VARARGS, NULL},
@@ -17620,6 +18052,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"ProxyVideoProducer_setRotation", _wrap_ProxyVideoProducer_setRotation, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_push", _wrap_ProxyVideoProducer_push, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_setCallback", _wrap_ProxyVideoProducer_setCallback, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoProducer_getMediaSessionId", _wrap_ProxyVideoProducer_getMediaSessionId, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_registerPlugin", _wrap_ProxyVideoProducer_registerPlugin, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_setDefaultChroma", _wrap_ProxyVideoProducer_setDefaultChroma, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_swigregister", ProxyVideoProducer_swigregister, METH_VARARGS, NULL},
@@ -17671,6 +18104,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipStack_dnsENUM", _wrap_SipStack_dnsENUM, METH_VARARGS, NULL},
 	 { (char *)"SipStack_dnsNaptrSrv", _wrap_SipStack_dnsNaptrSrv, METH_VARARGS, NULL},
 	 { (char *)"SipStack_dnsSrv", _wrap_SipStack_dnsSrv, METH_VARARGS, NULL},
+	 { (char *)"SipStack_getLocalIPnPort", _wrap_SipStack_getLocalIPnPort, METH_VARARGS, NULL},
 	 { (char *)"SipStack_getPreferredIdentity", _wrap_SipStack_getPreferredIdentity, METH_VARARGS, NULL},
 	 { (char *)"SipStack_isValid", _wrap_SipStack_isValid, METH_VARARGS, NULL},
 	 { (char *)"SipStack_stop", _wrap_SipStack_stop, METH_VARARGS, NULL},
@@ -17709,6 +18143,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"XcapCallback_swigregister", XcapCallback_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_XcapStack", _wrap_new_XcapStack, METH_VARARGS, NULL},
 	 { (char *)"delete_XcapStack", _wrap_delete_XcapStack, METH_VARARGS, NULL},
+	 { (char *)"XcapStack_registerAUID", _wrap_XcapStack_registerAUID, METH_VARARGS, NULL},
 	 { (char *)"XcapStack_start", _wrap_XcapStack_start, METH_VARARGS, NULL},
 	 { (char *)"XcapStack_setCredentials", _wrap_XcapStack_setCredentials, METH_VARARGS, NULL},
 	 { (char *)"XcapStack_setXcapRoot", _wrap_XcapStack_setXcapRoot, METH_VARARGS, NULL},
@@ -18801,6 +19236,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tsip_event_code_stack_stopped",SWIG_From_int(static_cast< int >(951)));
   SWIG_Python_SetConstant(d, "tsip_event_code_stack_failed_to_start",SWIG_From_int(static_cast< int >(952)));
   SWIG_Python_SetConstant(d, "tsip_event_code_stack_failed_to_stop",SWIG_From_int(static_cast< int >(953)));
+  SWIG_Python_SetConstant(d, "tsip_i_newreg",SWIG_From_int(static_cast< int >(tsip_i_newreg)));
   SWIG_Python_SetConstant(d, "tsip_i_register",SWIG_From_int(static_cast< int >(tsip_i_register)));
   SWIG_Python_SetConstant(d, "tsip_ao_register",SWIG_From_int(static_cast< int >(tsip_ao_register)));
   SWIG_Python_SetConstant(d, "tsip_i_unregister",SWIG_From_int(static_cast< int >(tsip_i_unregister)));

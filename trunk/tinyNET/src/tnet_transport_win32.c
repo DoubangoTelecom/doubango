@@ -511,6 +511,7 @@ void *tnet_transport_mainthread(void *param)
 	DWORD flags = 0;
 	int ret;
 
+	struct sockaddr_storage remote_addr = {0};
 	WSAEVENT active_event;
 	transport_socket_t* active_socket;
 	int index;
@@ -649,7 +650,14 @@ void *tnet_transport_mainthread(void *param)
 				}
 			}
 			else{
-				ret = WSARecv(active_socket->fd, &wsaBuffer, 1, &readCount, &flags, 0, 0);
+				if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
+					ret = WSARecv(active_socket->fd, &wsaBuffer, 1, &readCount, &flags, 0, 0);
+				}
+				else{
+					int len = sizeof(remote_addr);
+					ret = WSARecvFrom(active_socket->fd, &wsaBuffer, 1, &readCount, &flags, 
+						(struct sockaddr*)&remote_addr, &len, 0, 0);
+				}
 				if(readCount < wsaBuffer.len){
 					wsaBuffer.len = readCount;
 					/* wsaBuffer.buf = tsk_realloc(wsaBuffer.buf, readCount); */
@@ -679,8 +687,9 @@ void *tnet_transport_mainthread(void *param)
 				tnet_transport_event_t* e = tnet_transport_event_create(event_data, transport->callback_data, active_socket->fd);
 				e->data = wsaBuffer.buf;
 				e->size = wsaBuffer.len;
+				e->remote_addr = remote_addr;				
 
-				TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(transport), e);
+				TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(transport), e);
 			}
 FD_READ_DONE:;
 		}

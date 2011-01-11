@@ -34,7 +34,7 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-#define TINY_RCVBUF					0 /* tiny buffer used to disable receiving */
+#define TINY_RCVBUF					(256/2/*Will be doubled and min on linux is 256*/) /* tiny buffer used to disable receiving */
 
 // TODO: Add support for outbound DTMF (http://www.ietf.org/rfc/rfc2833.txt)
 
@@ -59,13 +59,13 @@ static int trtp_transport_layer_cb(const tnet_transport_event_t* e)
 	//
 	//	RTCP
 	//
-	if(manager->rtcp.local_socket && manager->rtcp.local_socket->fd == e->fd){
+	if(manager->rtcp.local_socket && manager->rtcp.local_socket->fd == e->local_fd){
 		TSK_DEBUG_INFO("RTCP packet");
 	}
 	//
 	// RTP
 	//
-	else if(manager->transport->master && (manager->transport->master->fd == e->fd)){
+	else if(manager->transport->master && (manager->transport->master->fd == e->local_fd)){
 		if(manager->rtp.callback){
 			if((packet = trtp_rtp_packet_deserialize(e->data, e->size))){
 				manager->rtp.callback(manager->rtp.callback_data, packet);
@@ -299,6 +299,7 @@ int trtp_manager_start(trtp_manager_t* self)
 #if DISABLE_RCV_UNTIL_STARTED
 	if(self->rtp.rcv_disabled){
 		char buff[1024];
+		TSK_DEBUG_INFO("Start flushing RTP socket...");
 		// Buffer should be empty ...but who know?
 		// rcv() should never block() as we are always using non-blocking sockets
 		while ((ret = recv(self->transport->master->fd, buff, sizeof(buff), 0)) > 0){
@@ -309,6 +310,7 @@ int trtp_manager_start(trtp_manager_t* self)
 			return ret;
 		}
 		self->rtp.rcv_disabled = tsk_false;
+		TSK_DEBUG_INFO("End flushing RTP socket");
 	}
 #endif
 

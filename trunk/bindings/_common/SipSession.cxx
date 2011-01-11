@@ -663,6 +663,12 @@ RegistrationSession::RegistrationSession(SipStack* Stack)
 {
 }
 
+RegistrationSession::RegistrationSession(SipStack* Stack, tsip_ssession_handle_t* handle)
+: SipSession(Stack, handle)
+{
+
+}
+
 RegistrationSession::~RegistrationSession()
 {
 }
@@ -679,6 +685,23 @@ bool RegistrationSession::unRegister()
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
+bool RegistrationSession::accept(ActionConfig* config/*=tsk_null*/)
+{
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
+
+	return (tsip_action_ACCEPT(this->handle,
+		TSIP_ACTION_SET_CONFIG(action_cfg),
+		TSIP_ACTION_SET_NULL()) == 0);
+}
+
+bool RegistrationSession::reject(ActionConfig* config/*=tsk_null*/)
+{
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
+
+	return (tsip_action_REJECT(this->handle,
+		TSIP_ACTION_SET_CONFIG(action_cfg),
+		TSIP_ACTION_SET_NULL()) == 0);
+}
 
 
 /* ======================== SubscriptionSession ========================*/

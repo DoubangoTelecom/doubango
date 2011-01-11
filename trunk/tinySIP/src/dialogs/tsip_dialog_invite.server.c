@@ -294,20 +294,20 @@ int s0000_Started_2_Ringing_X_iINVITE(va_list *app)
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	tsip_request_t *request = va_arg(*app, tsip_request_t *);
 
-	/* We are not the client */
+	/* we are not the client */
 	self->is_client = tsk_false;
 
 	/* update last INVITE */
 	TSK_OBJECT_SAFE_FREE(self->last_iInvite);
 	self->last_iInvite = tsk_object_ref(request);
 
-	/* Update state */
+	/* update state */
 	tsip_dialog_update_2(TSIP_DIALOG(self), request);
 
-	/* Send Ringing */
+	/* send Ringing */
 	send_RESPONSE(self, request, 180, "Ringing", tsk_false);
 
-	/* Alert the user (session) */
+	/* alert the user (session) */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_newcall, 
 			tsip_event_code_dialog_request_incoming, "Incoming Call", request);
 
@@ -585,7 +585,7 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 		}
 	}
 
-	/* Alert the user (dialog) */
+	/* alert the user (dialog) */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connected, "Dialog connected");
 
 	return ret;

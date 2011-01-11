@@ -161,9 +161,10 @@ int tmedia_consumer_deinit(tmedia_consumer_t* self)
 /**@ingroup tmedia_consumer_group
 * Creates a new consumer using an already registered plugin.
 * @param type The type of the consumer to create
+* @param session_id
 * @sa @ref tmedia_consumer_plugin_register()
 */
-tmedia_consumer_t* tmedia_consumer_create(tmedia_type_t type)
+tmedia_consumer_t* tmedia_consumer_create(tmedia_type_t type, uint64_t session_id)
 {
 	tmedia_consumer_t* consumer = tsk_null;
 	const tmedia_consumer_plugin_def_t* plugin;
@@ -174,6 +175,7 @@ tmedia_consumer_t* tmedia_consumer_create(tmedia_type_t type)
 			if((consumer = tsk_object_new(plugin->objdef))){
 				/* initialize the newly created consumer */
 				consumer->plugin = plugin;
+				consumer->session_id = session_id;
 				break;
 			}
 		}

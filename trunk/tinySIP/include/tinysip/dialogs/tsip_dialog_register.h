@@ -45,11 +45,14 @@ typedef struct tsip_dialog_register
 	tsip_timer_t timerrefresh;
 	tsip_timer_t timershutdown;
 
+	tsip_request_t* last_iRegister;
+
 	tsk_bool_t unregistering;
+	tsk_bool_t is_server;
 }
 tsip_dialog_register_t;
 
-tsip_dialog_register_t* tsip_dialog_register_create(const tsip_ssession_handle_t* ss);
+tsip_dialog_register_t* tsip_dialog_register_create(const tsip_ssession_handle_t* ss, const char* call_id);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_dialog_register_def_t;
 

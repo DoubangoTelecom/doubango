@@ -43,11 +43,6 @@
 #	include <sys/time.h>
 #endif
 
-#define TDAV_BITS_PER_SAMPLE_DEFAULT	16
-#define TDAV_CHANNELS_DEFAULT			2
-#define TDAV_RATE_DEFAULT				8000
-#define TDAV_PTIME_DEFAULT				20
-
 #define TDAV_10MS						10
 #define TDAV_10MS_FRAME_SIZE(self)		(((self)->rate * TDAV_10MS)/1000)
 #define TDAV_PTIME_FRAME_SIZE(self)		(((self)->rate * (self)->ptime)/1000)
@@ -168,14 +163,16 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data, tsk_size_t
 }
 
 /* get data drom the jitter buffer (consumers should always have ptime of 20ms) */
-void* tdav_consumer_audio_get(tdav_consumer_audio_t* self)
+void* tdav_consumer_audio_get(tdav_consumer_audio_t* self, tsk_size_t* out_size)
 {
 	void* data = tsk_null;
 	int jret;
 
-	int i, _10ms_count, _10ms_size_bytes, _10ms_size_shorts, data_size = 0;
+	int i, _10ms_count, _10ms_size_bytes, _10ms_size_shorts;
 	long now;
 	short* _10ms_buf = tsk_null;
+
+	*out_size = 0;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -191,40 +188,47 @@ void* tdav_consumer_audio_get(tdav_consumer_audio_t* self)
 	for(i=0; i<_10ms_count; i++){
 
 		jret = jb_get(self->jb.jbuffer, (void**)&_10ms_buf, now, TDAV_10MS);
-		
+
+		//if(!_10ms_buf){
+		//	TSK_DEBUG_ERROR("NO DATA");
+		//}
 
 		switch(jret){
-			case JB_OK:
 			case JB_INTERP:
+				TSK_DEBUG_INFO("JB_INTERP");
+				jb_reset_all(self->jb.jbuffer);
+				if((data = tsk_realloc(data, _10ms_size_bytes * _10ms_count))){
+					*out_size = _10ms_size_bytes * _10ms_count;
+					memset(data, 0, *out_size); // silence
+				}
+				i = _10ms_count; // for exit
+				break;
+			case JB_OK:
 			case JB_EMPTY:
 			case JB_NOFRAME:
 			case JB_NOJB:
 				{
 					if(data){
-						if((data = tsk_realloc(data, (data_size + _10ms_size_bytes)))){
+						if((data = tsk_realloc(data, (*out_size + _10ms_size_bytes)))){
 							if(_10ms_buf && (jret == JB_OK)){
 								/* copy data */
-								memcpy(&((uint8_t*)data)[data_size], _10ms_buf, _10ms_size_bytes);
+								memcpy(&((uint8_t*)data)[*out_size], _10ms_buf, _10ms_size_bytes);
 							}
 							else{
 								/* copy silence */
-								memset(&((uint8_t*)data)[data_size], 0, _10ms_size_bytes);
+								memset(&((uint8_t*)data)[*out_size], 0, _10ms_size_bytes);
 							}
-							data_size += _10ms_size_bytes;
+							*out_size += _10ms_size_bytes;
 						}
 						else{ /* realloc failed */
-							data_size = 0;
+							*out_size = 0;
 						}
 					}
 					else{
 						data = _10ms_buf, _10ms_buf = tsk_null;
-						data_size = _10ms_size_bytes;
+						*out_size = _10ms_size_bytes;
 					}
 					break;
-
-					if(jret == JB_INTERP){
-						jb_reset_all(self->jb.jbuffer);
-					}
 				}
 			
 			default:

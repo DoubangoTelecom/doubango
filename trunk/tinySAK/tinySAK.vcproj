@@ -67,7 +67,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(NOINHERIT)"
+				AdditionalDependencies="Winmm.lib $(NOINHERIT)"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -226,7 +226,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(NOINHERIT)"
+				AdditionalDependencies="Winmm.lib $(NOINHERIT)"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="MSVCRTD"
 				GenerateDebugInformation="false"

@@ -38,6 +38,8 @@
 
 TMEDIA_BEGIN_DECLS
 
+#define TMEDIA_PARAM(self) ((tmedia_param_t*)(self))
+
 typedef enum tmedia_param_access_type_e
 {
 	//tmedia_pat_get,

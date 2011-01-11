@@ -43,8 +43,8 @@ TSIP_BEGIN_DECLS
 #define TSIP_MESSAGE_IS_RESPONSE(self) ((self) ? (self)->type == tsip_response : tsk_false)
 
 #define TSIP_MESSAGE(self)				((tsip_message_t*)(self))
-#define TSIP_MESSAGE_AS_RESPONSE(self)	((tsip_response_t*)(self))
-#define TSIP_MESSAGE_AS_REQUEST(self)	((tsip_request_t*)(self))
+#define TSIP_MESSAGE_AS_RESPONSE(self)	(TSIP_MESSAGE_IS_RESPONSE((self)) ? (tsip_response_t*)(self) : tsk_null)
+#define TSIP_MESSAGE_AS_REQUEST(self)	(TSIP_MESSAGE_IS_REQUEST((self)) ? (tsip_request_t*)(self) : tsk_null)
 
 
 #define TSIP_RESPONSE_CODE(self)			 (TSIP_MESSAGE_IS_RESPONSE((self)) ? (self)->line.response.status_code : 0)

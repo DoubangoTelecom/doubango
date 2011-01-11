@@ -372,7 +372,7 @@ static void *run(void* self)
 	
 	TSK_RUNNABLE_RUN_BEGIN(transport);
 	
-	if((curr = TSK_RUNNABLE_POP_FIRST(transport))){
+	if((curr = TSK_RUNNABLE_POP_FIRST_SAFE(TSK_RUNNABLE(transport)))){
 		const tnet_transport_event_t *e = (const tnet_transport_event_t*)curr->data;
 		
 		if(transport->callback){
@@ -468,7 +468,7 @@ static tsk_object_t* tnet_transport_event_ctor(tsk_object_t * self, va_list * ap
 	if(e){
 		e->type = va_arg(*app, tnet_transport_event_type_t);
 		e->callback_data = va_arg(*app, const void*);
-		e->fd = va_arg(*app, tnet_fd_t);	
+		e->local_fd = va_arg(*app, tnet_fd_t);	
 	}
 	return self;
 }
