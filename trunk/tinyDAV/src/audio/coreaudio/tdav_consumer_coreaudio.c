@@ -42,15 +42,16 @@
 static void __handle_output_buffer(void *userdata, AudioQueueRef queue, AudioQueueBufferRef buffer) {
     OSStatus ret;
 	void *data;
+	tsk_size_t out_size = 0;
     tdav_consumer_coreaudio_t* consumer = (tdav_consumer_coreaudio_t*)userdata;
 
     if (!consumer->started) {
         return;
     }
     
-	if((data = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(consumer)))){
+	if((data = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(consumer), &out_size))){
         // If we can get audio to play, then copy in the buffer
-		memcpy(buffer->mAudioData, data, consumer->buffer_size);
+		memcpy(buffer->mAudioData, data, TSK_MIN(consumer->buffer_size, out_size));
 		TSK_FREE(data);
 	} else{
         // Put silence if there is no audio to play
