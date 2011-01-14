@@ -26,22 +26,20 @@
 
 #include "tsk.h"
 
-#include "tmsrp.h"
+#include "tinymsrp.h"
 
-#include "tinymsrp/session/tmsrp_media.h"
-#include "tinymsrp/parsers/tmsrp_parser_message.h"
 
 #include "test_parser.h"
 #include "test_uri.h"
-#include "test_session.h"
+//#include "test_session.h"
 
 
 #define RUN_TEST_LOOP		1
 
 #define RUN_TEST_ALL		0
 #define RUN_TEST_URI		0
-#define RUN_TEST_PARSER		0
-#define RUN_TEST_SESSION	1
+#define RUN_TEST_PARSER		1
+#define RUN_TEST_SESSION	0
 
 #ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])

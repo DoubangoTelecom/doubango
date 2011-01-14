@@ -135,9 +135,11 @@ int tdav_init()
 #endif
 #if HAVE_FFMPEG
 	tmedia_codec_plugin_register(tdav_codec_mp4ves_plugin_def_t);
+#	if !defined(HAVE_H264) || HAVE_H264
 	tmedia_codec_plugin_register(tdav_codec_h264_bp10_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h264_bp20_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h264_bp30_plugin_def_t);
+#endif
 	tmedia_codec_plugin_register(tdav_codec_h263p_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h263pp_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_theora_plugin_def_t);
@@ -220,9 +222,11 @@ void tdav_set_codecs(tdav_codec_id_t codecs)
 #if HAVE_FFMPEG
 		
 		{ tdav_codec_id_mp4ves_es, &tdav_codec_mp4ves_plugin_def_t },
+#		if !defined(HAVE_H264) || HAVE_H264
 		{ tdav_codec_id_h264_bp10, &tdav_codec_h264_bp10_plugin_def_t },
 		{ tdav_codec_id_h264_bp20, &tdav_codec_h264_bp20_plugin_def_t },
 		{ tdav_codec_id_h264_bp30, &tdav_codec_h264_bp30_plugin_def_t },
+#endif
 		{ tdav_codec_id_h263p, &tdav_codec_h263p_plugin_def_t },
 		{ tdav_codec_id_h263pp, &tdav_codec_h263pp_plugin_def_t },
 		{ tdav_codec_id_theora, &tdav_codec_theora_plugin_def_t },
@@ -292,17 +296,22 @@ tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
 			return tsk_false;
 #endif
 		
-		
 		case tdav_codec_id_h261:
 		case tdav_codec_id_h263:
 		case tdav_codec_id_h263p:
 		case tdav_codec_id_h263pp:
-		case tdav_codec_id_h264_bp10:
-		case tdav_codec_id_h264_bp20:
-		case tdav_codec_id_h264_bp30:
 		case tdav_codec_id_theora:
 		case tdav_codec_id_mp4ves_es:
 #if HAVE_FFMPEG
+			return tsk_true;
+#else
+			return tsk_false;
+#endif
+
+		case tdav_codec_id_h264_bp10:
+		case tdav_codec_id_h264_bp20:
+		case tdav_codec_id_h264_bp30:
+#if !defined(HAVE_H264) || HAVE_H264
 			return tsk_true;
 #else
 			return tsk_false;
@@ -360,9 +369,11 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_h263_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h263p_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h263pp_plugin_def_t);
+#	if  !defined(HAVE_H264) || HAVE_H264
 	tmedia_codec_plugin_unregister(tdav_codec_h264_bp10_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h264_bp20_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h264_bp30_plugin_def_t);
+#endif
 	tmedia_codec_plugin_unregister(tdav_codec_theora_plugin_def_t);
 
 #endif
