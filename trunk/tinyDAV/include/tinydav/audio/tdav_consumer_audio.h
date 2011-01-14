@@ -42,11 +42,6 @@ TDAV_BEGIN_DECLS
 
 #define TDAV_CONSUMER_AUDIO(self)		((tdav_consumer_audio_t*)(self))
 
-#define TDAV_BITS_PER_SAMPLE_DEFAULT	16
-#define TDAV_CHANNELS_DEFAULT			1
-#define TDAV_RATE_DEFAULT				8000
-#define TDAV_PTIME_DEFAULT				20
-
 typedef struct tdav_consumer_audio_s
 {
 	TMEDIA_DECLARE_CONSUMER;

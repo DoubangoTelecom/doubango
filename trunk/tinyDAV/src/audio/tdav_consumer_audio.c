@@ -43,6 +43,11 @@
 #	include <sys/time.h>
 #endif
 
+#define TDAV_BITS_PER_SAMPLE_DEFAULT	16
+#define TDAV_CHANNELS_DEFAULT			2
+#define TDAV_RATE_DEFAULT				8000
+#define TDAV_PTIME_DEFAULT				20
+
 #define TDAV_10MS						10
 #define TDAV_10MS_FRAME_SIZE(self)		(((self)->rate * TDAV_10MS)/1000)
 #define TDAV_PTIME_FRAME_SIZE(self)		(((self)->rate * (self)->ptime)/1000)
@@ -113,8 +118,8 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data, tsk_size_t
 		struct timeval tv;
 		long ts = (rtp_hdr->timestamp/(self->rate/1000));
 		//=> Do not use (see clock_gettime() on linux): tsk_gettimeofday(&tv, tsk_null);
-		tv.tv_sec = (epoch)/1000;
-		tv.tv_usec = (epoch - (tv.tv_sec*1000))*1000;
+		tv.tv_sec = (long)(epoch)/1000;
+		tv.tv_usec = (long)(epoch - (tv.tv_sec*1000))*1000;
 
 		tv.tv_sec -= (ts / self->rate);
 		tv.tv_usec -= (ts % self->rate) * 125;

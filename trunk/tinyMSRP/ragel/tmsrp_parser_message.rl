@@ -39,6 +39,8 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+static tsk_bool_t parse_payload(tmsrp_message_t* msrp_msg, const char* tag_start, const char** p, const char* pe);
+static void set_payload(tmsrp_message_t* msrp_msg, const void* ptr, tsk_size_t len);
 
 #define TMSRP_MSG_PARSER_ADD_HEADER(name) \
 	if((header = (tmsrp_header_t*)tmsrp_header_##name##_parse(tag_start, (p - tag_start)))){ \
@@ -159,18 +161,19 @@
 		TSK_PARSER_SET_STRING(msrp_msg->line.response.comment);
 	}
 
-
+	
+	action try_parse_data{
+		parse_payload(msrp_msg, tag_start, &p, pe); // will update "p"
+	}
 
 	action parse_data{
-		int len = (int)(p  - tag_start); 
-		if(len>0){
-			if(msrp_msg->Content){
-				tsk_buffer_cleanup(msrp_msg->Content);
-				tsk_buffer_append(msrp_msg->Content, tag_start, (tsk_size_t)len);
-			}
-			else{
-				msrp_msg->Content = tsk_buffer_create(tag_start, (tsk_size_t)len);
-			}
+		// if the msrp message contain a valid content-type, then gob it otherwise continue until we reach the endline
+		int len;
+		if(parse_payload(msrp_msg, tag_start, &p, pe)){ // will update "p"
+			// (This space left deliberately blank)
+		}
+		else if((len = (int)(p  - tag_start))>0){
+			set_payload(msrp_msg, tag_start, (tsk_size_t)len);
 		}
 	}
 
@@ -244,7 +247,7 @@
 	###########################################
 	req_start = "MSRP" SP transact_id>tag %parse_tid SP method>tag %parse_method CRLF;
 	#content_stuff = (Other_Mime_header)* CRLF data>tag %parse_data :>CRLF;
-	content_stuff = data>tag %parse_data;
+	content_stuff = data>tag >try_parse_data %parse_data;
 	msrp_request = req_start headers>10 (CRLF content_stuff CRLF)?>5 :>end_line when endtid_match >into_endline;
 
 	###########################################
@@ -312,4 +315,33 @@ tmsrp_message_t* tmsrp_message_parse_2(const void *input, tsk_size_t size, tsk_s
 	
 bail:
 	return msrp_msg;
+}
+
+static tsk_bool_t parse_payload(tmsrp_message_t* msrp_msg, const char* tag_start, const char** p, const char* pe)
+{
+	int64_t payload_len, endline_len;
+	tsk_bool_t can_parse_payload;
+
+	if(pe && p && *p && msrp_msg && (can_parse_payload = TMSRP_HEADER_BYTE_RANGE_IS_VALID(msrp_msg->ByteRange))){
+		payload_len = (msrp_msg->ByteRange->end - msrp_msg->ByteRange->start) + 1;
+		endline_len = 2/*CRLF*/ + 7/*hyphens*/ + tsk_strlen(msrp_msg->tid) + 2/*CRLF*/;
+		can_parse_payload = (pe - tag_start) > (payload_len + endline_len);
+		if(can_parse_payload){
+			set_payload(msrp_msg, tag_start, (tsk_size_t)payload_len);
+			*p = (tag_start + payload_len);
+			return tsk_true;
+		}
+	}
+	return tsk_false;
+}
+
+static void set_payload(tmsrp_message_t* msrp_msg, const void* ptr, tsk_size_t len)
+{
+	if(msrp_msg->Content){
+		tsk_buffer_cleanup(msrp_msg->Content);
+		tsk_buffer_append(msrp_msg->Content, ptr, len);
+	}
+	else{
+		msrp_msg->Content = tsk_buffer_create(ptr, len);
+	}
 }

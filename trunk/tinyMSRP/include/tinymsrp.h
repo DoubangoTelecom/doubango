@@ -36,6 +36,8 @@
 /* === tinySAK (tinySAK/src)=== */
 #include "tsk.h"
 
+#include "tmsrp.h"
+
 #include "tinymsrp/tmsrp_message.h"
 #include "tinymsrp/tmsrp_event.h"
 #include "tinymsrp/tmsrp_uri.h"

@@ -30,15 +30,15 @@
 	"From-Path: msrp://atlanta.example.com:7654/jshA7weztas;tcp\r\n" \
 	"Message-ID: 87652491\r\n" \
 	"Byte-Dummy: 1-25/25\r\n" \
-	"Byte-Range: 1-25/25\r\n" \
+	"Byte-Range: 1-5/3\r\n" \
 	"Byte-Range: 1-25/*\r\n" \
 	"Byte-Range: 1-*/*\r\n" \
 	"Failure-Report: partial\r\n" \
     "Success-Report: yes\r\n" \
 	"Content-Type: text/plain;charset=utf8\r\n" \
 	"\r\n" \
-	"\r\n-------fake-tid+\r\n Hey Bob, are you there?\r\n" \
-	"-------a786hjs2$\r\nMSRP 000"
+	"ab\r\nc\r\n" \
+	"-------a786hjs2$\r\nMSRP"
 
 #define MSRP_MSG_RESPONSE \
 	"MSRP a786hjs2 200 OK\r\n" \

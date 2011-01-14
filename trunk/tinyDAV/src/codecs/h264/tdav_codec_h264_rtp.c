@@ -31,7 +31,7 @@
 
 #include "tinydav/codecs/h264/tdav_codec_h264.h"
 
-#if HAVE_FFMPEG
+#if HAVE_FFMPEG && (!defined(HAVE_H264) || HAVE_H264)
 
 #include "tinymedia/tmedia_codec.h"
 

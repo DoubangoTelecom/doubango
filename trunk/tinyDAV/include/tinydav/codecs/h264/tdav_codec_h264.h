@@ -33,7 +33,7 @@
 
 #include "tinydav_config.h"
 
-#if HAVE_FFMPEG
+#if HAVE_FFMPEG && (!defined(HAVE_H264) || HAVE_H264)
 
 #include "tinymedia/tmedia_codec.h"
 
@@ -88,7 +88,6 @@ typedef struct tdav_codec_h264_s
 		AVFrame* picture;
 
 		void* accumulator;
-		uint8_t ebit;
 		tsk_size_t accumulator_pos;
 		uint16_t last_seq;
 	} decoder;
