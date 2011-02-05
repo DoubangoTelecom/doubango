@@ -50,7 +50,7 @@
 
 /* Disable some well-known warnings */
 #ifdef _MSC_VER
-#	pragma warning (disable:4995) 
+#	pragma warning (disable:4995 4996) 
 #	define _CRT_SECURE_NO_WARNINGS
 #endif
 
