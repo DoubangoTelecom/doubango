@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="tinyNET"
 	ProjectGUID="{7522A458-92F4-4259-B906-E84C2A65D9F1}"
 	RootNamespace="tinyNET"
@@ -66,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib IPHLPAPI.lib &quot;$(OutDir)\tinySAK.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\openssl\libeay32.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\openssl\ssleay32.lib&quot;"
+				AdditionalDependencies="ws2_32.lib IPHLPAPI.lib &quot;$(OutDir)\tinySAK.lib&quot; &quot;..\thirdparties\win32\lib\openssl\libeay32.lib&quot; &quot;..\thirdparties\win32\lib\openssl\ssleay32.lib&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -224,7 +224,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib IPHLPAPI.lib &quot;$(OutDir)\tinySAK.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\openssl\libeay32.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\openssl\ssleay32.lib&quot;"
+				AdditionalDependencies="ws2_32.lib IPHLPAPI.lib &quot;$(OutDir)\tinySAK.lib&quot; &quot;..\thirdparties\win32\lib\openssl\libeay32.lib&quot; &quot;..\thirdparties\win32\lib\openssl\ssleay32.lib&quot;"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="MSVCRTD"
 				GenerateDebugInformation="false"
