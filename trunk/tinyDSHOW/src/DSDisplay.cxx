@@ -218,6 +218,19 @@ void DSDisplay::setSize(int w, int h)
 	}
 }
 
+void DSDisplay::applyRatio(RECT rect)
+{
+	long w = rect.right - rect.left;
+	long h = rect.bottom - rect.top;
+	float ratio = ((float)176/(float)144);//FIXME
+	// (w/h)=ratio => 
+	// 1) h=w/ratio 
+	// and 
+	// 2) w=h*ratio
+	this->width = (int)(w/ratio) > h ? (int)(h * ratio) : w;
+	this->height = (int)(this->width/ratio) > h ? h : (int)(this->width/ratio);
+}
+
 bool DSDisplay::isFullscreen()
 {
 #if defined(VMR9_WINDOWLESS)
@@ -311,10 +324,7 @@ LRESULT DSDisplay::handleEvents(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		{
 			RECT rect = {0};
 			GetWindowRect(hWnd, &rect);
-
-			// TODO: resizing support must respect ratio (width/height)
-			this->width = (rect.right - rect.left);
-			this->height = (rect.bottom - rect.top);
+			applyRatio(rect);
 
 #if defined(VMR9_WINDOWLESS)
 			this->graph->getWindowlessControl()->SetVideoPosition(&rect, &rect);
@@ -433,8 +443,7 @@ void DSDisplay::hook()
 
 	RECT rect;
 	GetWindowRect(this->window, &rect);
-	this->width = rect.right - rect.left;
-	this->height = rect.bottom - rect.top;
+	applyRatio(rect);
 
 #if defined(VMR9_WINDOWLESS)
 	rect.left = 0;

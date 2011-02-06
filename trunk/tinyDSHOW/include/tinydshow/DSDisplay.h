@@ -61,6 +61,7 @@ public:
 private:
 	void hook();
 	void unhook();
+	void applyRatio(RECT rect);
 
 private:
 	DSDisplayGraph *graph;

@@ -135,14 +135,20 @@ int _tsip_action_set(tsip_action_handle_t* self, va_list* app)
 					{ /* (const tsip_action_handle_t*)ACTION_CONFIG_HANDLE */
 						const tsip_action_t* handle = va_arg(*app, const tsip_action_handle_t *);
 						if(handle && handle->type == tsip_atype_config){
-							if(!TSK_LIST_IS_EMPTY(handle->headers)){ /* Copy headers */
+							/* Copy headers */
+							if(!TSK_LIST_IS_EMPTY(handle->headers)){
 								tsk_list_pushback_list(action->headers, handle->headers);
 							}
-							if(handle->payload && handle->payload->data && handle->payload->size){ /* copy payload */
+							/* Copy payload */
+							if(handle->payload && handle->payload->data && handle->payload->size){
 								TSK_OBJECT_SAFE_FREE(action->payload);
 								action->payload = tsk_buffer_create(handle->payload->data, handle->payload->size);
 							}
-							if(!TSK_LIST_IS_EMPTY(handle->media.params)){ /* Copy media params */
+							/* Copy resp line */
+							action->line_resp.code = handle->line_resp.code;
+							tsk_strupdate(&action->line_resp.phrase, handle->line_resp.phrase);
+							/* Copy media params */
+							if(!TSK_LIST_IS_EMPTY(handle->media.params)){ 
 								if(!action->media.params){
 									action->media.params = tmedia_params_create();
 								}
@@ -163,6 +169,15 @@ int _tsip_action_set(tsip_action_handle_t* self, va_list* app)
 							TSK_OBJECT_SAFE_FREE(action->payload);
 							action->payload = tsk_buffer_create(payload, size);
 						}
+						break;
+					}
+				
+				case aptype_resp_line:
+					{	/* (int32_t)CODE_INT, (const char*)PHRASE_STR */
+						int32_t code = va_arg(*app, int32_t);
+						const char* phrase = va_arg(*app, const void *);
+						action->line_resp.code = (short)code;
+						tsk_strupdate(&action->line_resp.phrase, phrase);
 						break;
 					}
 
@@ -240,6 +255,8 @@ static tsk_object_t* tsip_action_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(action->payload);
 
 		TSK_OBJECT_SAFE_FREE(action->media.params);
+
+		TSK_FREE(action->line_resp.phrase);
 
 		TSK_FREE(action->ect.to);
 	}

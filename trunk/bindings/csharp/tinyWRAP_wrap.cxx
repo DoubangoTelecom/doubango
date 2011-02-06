@@ -1240,6 +1240,22 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ActionConfig_addHeader(void * jarg1, 
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_ActionConfig_setResponseLine(void * jarg1, short jarg2, char * jarg3) {
+  void * jresult ;
+  ActionConfig *arg1 = (ActionConfig *) 0 ;
+  short arg2 ;
+  char *arg3 = (char *) 0 ;
+  ActionConfig *result = 0 ;
+  
+  arg1 = (ActionConfig *)jarg1; 
+  arg2 = (short)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (ActionConfig *)(arg1)->setResponseLine(arg2,(char const *)arg3);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_ActionConfig_setMediaString(void * jarg1, int jarg2, char * jarg3, char * jarg4) {
   void * jresult ;
   ActionConfig *arg1 = (ActionConfig *) 0 ;
@@ -4189,6 +4205,26 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_push(void * jarg1, void * j
   arg2 = jarg2; 
   arg3 = (unsigned int)jarg3; 
   result = (int)(arg1)->push((void const *)arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_send(void * jarg1, void * jarg2, unsigned int jarg3, unsigned int jarg4, unsigned int jarg5) {
+  int jresult ;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  unsigned int arg4 ;
+  bool arg5 ;
+  int result;
+  
+  arg1 = (ProxyVideoProducer *)jarg1; 
+  arg2 = jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  arg4 = (unsigned int)jarg4; 
+  arg5 = jarg5 ? true : false; 
+  result = (int)(arg1)->send((void const *)arg2,arg3,arg4,arg5);
   jresult = result; 
   return jresult;
 }

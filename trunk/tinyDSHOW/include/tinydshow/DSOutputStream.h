@@ -26,6 +26,8 @@
 
 #include <streams.h>
 
+#include "tsk_mutex.h"
+
 class DSOutputFilter;
 
 class DSOutputStream : public CSourceStream
@@ -40,6 +42,18 @@ public:
 	HRESULT setImageFormat(UINT width, UINT height);
 	bool getImageFormat(UINT &width, UINT &height);
 	STDMETHODIMP Notify(IBaseFilter *pSelf, Quality q) { return E_NOTIMPL; };
+	inline bool lockBuffer(){
+		if(this->mutex){
+			return tsk_mutex_lock(this->mutex) == 0;
+		}
+		return false;
+	}
+	inline bool unlockBuffer(){
+		if(this->mutex){
+			return tsk_mutex_unlock(this->mutex) == 0;
+		}
+		return false;
+	}
 
 public:
 	void			*buffer;
@@ -73,6 +87,8 @@ private:
 	HDC				paintDC;
 	HBITMAP			hDibSection;
 	HGDIOBJ			hObject;
+
+	tsk_mutex_handle_t* mutex;
 };
 
 

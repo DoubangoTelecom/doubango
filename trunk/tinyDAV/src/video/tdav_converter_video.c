@@ -48,7 +48,7 @@
 
 tdav_converter_video_t* tdav_converter_video_create(tsk_size_t srcWidth, tsk_size_t srcHeight, tsk_size_t dstWidth, tsk_size_t dstHeight, tmedia_chroma_t chroma, tsk_bool_t toYUV420)
 {
-#if HAVE_FFMPEG
+#if HAVE_FFMPEG || HAVE_SWSSCALE
 	tdav_converter_video_t* converter;
 	enum PixelFormat pixfmt;
 
@@ -82,6 +82,9 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t srcWidth, tsk_siz
 		case tmedia_uyvy422:
 			pixfmt = PIX_FMT_UYVY422;
 			break;
+		case tmedia_yuv420p:
+			pixfmt = PIX_FMT_YUV420P;
+			break;
 		default:
 			TSK_DEBUG_ERROR("Invalid chroma");
 			return tsk_null;
@@ -108,7 +111,7 @@ tdav_converter_video_t* tdav_converter_video_create(tsk_size_t srcWidth, tsk_siz
 
 tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void* buffer, void** output, tsk_size_t* output_max_size)
 {
-#if HAVE_FFMPEG
+#if HAVE_FFMPEG || HAVE_SWSSCALE
 	int ret, size;
 	enum PixelFormat srcFormat, dstFormat;
 
@@ -245,7 +248,7 @@ static tsk_object_t* tdav_converter_video_dtor(tsk_object_t * self)
 { 
 	tdav_converter_video_t *converter = self;
 	if(converter){
-#if HAVE_FFMPEG
+#if HAVE_FFMPEG || HAVE_SWSSCALE
 		if(converter->context){
 			sws_freeContext(converter->context);
 		}

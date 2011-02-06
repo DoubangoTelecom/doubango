@@ -2023,6 +2023,30 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ActionConfig_
 }
 
 
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ActionConfig_1setResponseLine(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jshort jarg2, jstring jarg3) {
+  jlong jresult = 0 ;
+  ActionConfig *arg1 = (ActionConfig *) 0 ;
+  short arg2 ;
+  char *arg3 = (char *) 0 ;
+  ActionConfig *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ActionConfig **)&jarg1; 
+  arg2 = (short)jarg2; 
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  result = (ActionConfig *)(arg1)->setResponseLine(arg2,(char const *)arg3);
+  *(ActionConfig **)&jresult = result; 
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ActionConfig_1setMediaString(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jstring jarg3, jstring jarg4) {
   jlong jresult = 0 ;
   ActionConfig *arg1 = (ActionConfig *) 0 ;
@@ -6169,6 +6193,31 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoProduce
   
   arg3 = (unsigned int)jarg3; 
   result = (int)(arg1)->push((void const *)arg2,arg3);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoProducer_1send(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbyteArray jarg2, jlong jarg3, jlong jarg4, jboolean jarg5) {
+  jint jresult = 0 ;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  unsigned int arg4 ;
+  bool arg5 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoProducer **)&jarg1; 
+  
+  arg2 = jenv->GetDirectBufferAddress(jarg2); 
+  
+  arg3 = (unsigned int)jarg3; 
+  arg4 = (unsigned int)jarg4; 
+  arg5 = jarg5 ? true : false; 
+  result = (int)(arg1)->send((void const *)arg2,arg3,arg4,arg5);
   jresult = (jint)result; 
   return jresult;
 }

@@ -44,7 +44,8 @@ TMEDIA_BEGIN_DECLS
 /** cast any pointer to @ref tmedia_producer_t* object */
 #define TMEDIA_PRODUCER(self)		((tmedia_producer_t*)(self))
 
-typedef int (*tmedia_producer_cb_f)(const void* callback_data, const void* buffer, tsk_size_t size);
+typedef int (*tmedia_producer_enc_cb_f)(const void* callback_data, const void* buffer, tsk_size_t size);
+typedef int (*tmedia_producer_raw_cb_f)(const void* callback_data, const void* buffer, tsk_size_t size, uint32_t duration, tsk_bool_t marker);
 
 /**  Default Video chroma */
 #define TMEDIA_PRODUCER_CHROMA_DEFAULT tmedia_yuv420p
@@ -69,8 +70,15 @@ typedef struct tmedia_producer_s
 
 	uint64_t session_id;
 
-	tmedia_producer_cb_f callback;
-	const void* callback_data;
+	struct{
+		tmedia_producer_enc_cb_f callback;
+		const void* callback_data;
+	} enc_cb;
+
+	struct{
+		tmedia_producer_raw_cb_f callback;
+		const void* callback_data;
+	} raw_cb;
 }
 tmedia_producer_t;
 
@@ -97,7 +105,8 @@ tmedia_producer_plugin_def_t;
 
 TINYMEDIA_API tmedia_producer_t* tmedia_producer_create(tmedia_type_t type, uint64_t session_id);
 TINYMEDIA_API int tmedia_producer_init(tmedia_producer_t* self);
-TINYMEDIA_API int tmedia_producer_set_callback(tmedia_producer_t *self, tmedia_producer_cb_f callback, const void* callback_data);
+TINYMEDIA_API int tmedia_producer_set_enc_callback(tmedia_producer_t *self, tmedia_producer_enc_cb_f callback, const void* callback_data);
+TINYMEDIA_API int tmedia_producer_set_raw_callback(tmedia_producer_t *self, tmedia_producer_raw_cb_f callback, const void* callback_data);
 TINYMEDIA_API int tmedia_producer_set(tmedia_producer_t* self, const tmedia_param_t* param);
 TINYMEDIA_API int tmedia_producer_prepare(tmedia_producer_t *self, const tmedia_codec_t* codec);
 TINYMEDIA_API int tmedia_producer_start(tmedia_producer_t *self);

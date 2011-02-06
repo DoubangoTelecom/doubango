@@ -112,6 +112,7 @@ class ActionConfig(_object):
     __swig_destroy__ = _tinyWRAP.delete_ActionConfig
     __del__ = lambda self : None;
     def addHeader(self, *args): return _tinyWRAP.ActionConfig_addHeader(self, *args)
+    def setResponseLine(self, *args): return _tinyWRAP.ActionConfig_setResponseLine(self, *args)
     def setMediaString(self, *args): return _tinyWRAP.ActionConfig_setMediaString(self, *args)
     def setMediaInt(self, *args): return _tinyWRAP.ActionConfig_setMediaInt(self, *args)
 ActionConfig_swigregister = _tinyWRAP.ActionConfig_swigregister
@@ -857,6 +858,7 @@ class ProxyVideoProducer(ProxyPlugin):
     def getRotation(self): return _tinyWRAP.ProxyVideoProducer_getRotation(self)
     def setRotation(self, *args): return _tinyWRAP.ProxyVideoProducer_setRotation(self, *args)
     def push(self, *args): return _tinyWRAP.ProxyVideoProducer_push(self, *args)
+    def send(self, *args): return _tinyWRAP.ProxyVideoProducer_send(self, *args)
     def setCallback(self, *args): return _tinyWRAP.ProxyVideoProducer_setCallback(self, *args)
     def getMediaSessionId(self): return _tinyWRAP.ProxyVideoProducer_getMediaSessionId(self)
     __swig_getmethods__["registerPlugin"] = lambda x: _tinyWRAP.ProxyVideoProducer_registerPlugin

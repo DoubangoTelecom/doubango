@@ -193,8 +193,8 @@ ProxyAudioProducer::~ProxyAudioProducer()
 
 int ProxyAudioProducer::push(const void* buffer, unsigned size)
 {
-	if(this->producer && TMEDIA_PRODUCER(this->producer)->callback){
-		return TMEDIA_PRODUCER(this->producer)->callback(TMEDIA_PRODUCER(this->producer)->callback_data, buffer, size);
+	if(this->producer && TMEDIA_PRODUCER(this->producer)->enc_cb.callback){
+		return TMEDIA_PRODUCER(this->producer)->enc_cb.callback(TMEDIA_PRODUCER(this->producer)->enc_cb.callback_data, buffer, size);
 	}
 	return 0;
 }
@@ -406,10 +406,20 @@ void ProxyVideoProducer::setRotation(int rot)
 	}
 }
 
+// encode() then send()
 int ProxyVideoProducer::push(const void* buffer, unsigned size)
 {
-	if(this->producer && TMEDIA_PRODUCER(this->producer)->callback){
-		return TMEDIA_PRODUCER(this->producer)->callback(TMEDIA_PRODUCER(this->producer)->callback_data, buffer, size);
+	if(this->producer && TMEDIA_PRODUCER(this->producer)->enc_cb.callback){
+		return TMEDIA_PRODUCER(this->producer)->enc_cb.callback(TMEDIA_PRODUCER(this->producer)->enc_cb.callback_data, buffer, size);
+	}
+	return 0;
+}
+
+// send() "as is"
+int ProxyVideoProducer::send(const void* buffer, unsigned size, unsigned duration, bool marker)
+{
+	if(this->producer && TMEDIA_PRODUCER(this->producer)->raw_cb.callback){
+		return TMEDIA_PRODUCER(this->producer)->raw_cb.callback(TMEDIA_PRODUCER(this->producer)->raw_cb.callback_data, buffer, size, duration, marker);
 	}
 	return 0;
 }

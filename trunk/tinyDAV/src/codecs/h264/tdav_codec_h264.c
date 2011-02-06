@@ -59,7 +59,7 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 {
 	int ret;
 	int size;
-	float bitRate = 64000.f;
+	float bitRate;
 
 	tdav_codec_h264_t* h264 = (tdav_codec_h264_t*)self;
 
@@ -89,7 +89,7 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 
 	h264->encoder.context->rc_lookahead = 0;
 
-	//h264->encoder.context->refs = 2;
+	//h264->encoder.context->refs = 1;
     h264->encoder.context->scenechange_threshold = 0;
     h264->encoder.context->me_subpel_quality = 0;
     h264->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
@@ -98,8 +98,8 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 
 	h264->encoder.context->me_range = 16;
 	h264->encoder.context->max_qdiff = 4;
-	/*h264->encoder.context->mb_qmin =*/ h264->encoder.context->qmin = 10;
-	/*h264->encoder.context->mb_qmax =*/ h264->encoder.context->qmax = 51;
+	h264->encoder.context->mb_qmin = h264->encoder.context->qmin = 10;
+	h264->encoder.context->mb_qmax = h264->encoder.context->qmax = 51;
 	h264->encoder.context->qcompress = 0.6f;
 	h264->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
 	h264->encoder.context->flags2 |= CODEC_FLAG2_FASTPSKIP;
@@ -112,23 +112,30 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	switch(h264->profile){
 		case tdav_codec_h264_bp10:
 		default:
-			bitRate = 128000.f; // Base Profile 1.2
+			h264->encoder.context->profile = FF_PROFILE_H264_BASELINE;
+			h264->encoder.context->level = 10;
+			bitRate = 128000.f;
 			break;
 		case tdav_codec_h264_bp20:
+			h264->encoder.context->profile = FF_PROFILE_H264_BASELINE;
+			h264->encoder.context->level = 20;
 			bitRate = 491400.f;
 			break;
 		case tdav_codec_h264_bp30:
+			h264->encoder.context->profile = FF_PROFILE_H264_BASELINE;
+			h264->encoder.context->level = 30;
 			bitRate = 2725300.f;
 			break;
 	}
 
-	h264->encoder.context->thread_count = 1;
+	h264->encoder.context->crf = 22;
+	h264->encoder.context->thread_count = 0;
 	h264->encoder.context->rtp_payload_size = H264_RTP_PAYLOAD_SIZE;
 	h264->encoder.context->opaque = tsk_null;
-	h264->encoder.context->bit_rate = (int) (bitRate * 0.80f);
-	h264->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
-	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->fps*3; // Each 3 seconds
-	
+	//h264->encoder.context->bit_rate = (int) (bitRate * 0.80f);
+	//h264->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
+	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->fps*4; // Each 4 second(s)
+		
 
 	// Picture (YUV 420)
 	if(!(h264->encoder.picture = avcodec_alloc_frame())){
@@ -259,23 +266,22 @@ tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk
 	tdav_converter_video_flip(h264->encoder.picture, h264->encoder.context->height);
 #endif
 
-	// Encode data
-	h264->encoder.picture->pts = AV_NOPTS_VALUE;
-	ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);	
-
-	if(ret >0){
-		if((h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->fps*3) 
-			&& ((h264->encoder.frame_count++%TMEDIA_CODEC_VIDEO(h264)->fps)==0)){
-			
-			// You must patch FFmpeg to switch from X264_TYPE_AUTO to X264_TYPE_IDR
-			h264->encoder.picture->pict_type = FF_I_TYPE;
-			tdav_codec_h264_encap(h264, h264->encoder.context->extradata, (tsk_size_t)h264->encoder.context->extradata_size);
-		}
-		else{
-			h264->encoder.picture->pict_type = 0;
+	if((h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->fps*3) 
+		&& ((h264->encoder.frame_count++%TMEDIA_CODEC_VIDEO(h264)->fps)==0)){
+		
+		// You must patch FFmpeg to switch from X264_TYPE_AUTO to X264_TYPE_IDR
+		h264->encoder.picture->pict_type = FF_I_TYPE;
+		tdav_codec_h264_encap(h264, h264->encoder.context->extradata, (tsk_size_t)h264->encoder.context->extradata_size);
+	}
+	else{
+		// Encode data
+		h264->encoder.picture->pts = AV_NOPTS_VALUE;
+		ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);	
+		if(ret >0){
 			tdav_codec_h264_encap(h264, h264->encoder.buffer, (tsk_size_t)ret);
 		}
-	}	
+		h264->encoder.picture->pict_type = 0;//reset
+	}
 
 	return 0;
 }
@@ -446,6 +452,7 @@ tsk_bool_t tdav_codec_h264_fmtp_match(const tmedia_codec_t* codec, const char* f
 					break;
 				default:
 					TMEDIA_CODEC_VIDEO(h264)->width = 352, TMEDIA_CODEC_VIDEO(h264)->height = 288;
+					//TMEDIA_CODEC_VIDEO(h264)->width = 704, TMEDIA_CODEC_VIDEO(h264)->height = 480;
 					break;
 			}
 		}

@@ -47,6 +47,12 @@ public class ActionConfig : IDisposable {
     return ret;
   }
 
+  public ActionConfig setResponseLine(short code, string phrase) {
+    IntPtr cPtr = tinyWRAPPINVOKE.ActionConfig_setResponseLine(swigCPtr, code, phrase);
+    ActionConfig ret = (cPtr == IntPtr.Zero) ? null : new ActionConfig(cPtr, false);
+    return ret;
+  }
+
   public ActionConfig setMediaString(twrap_media_type_t type, string key, string value) {
     IntPtr cPtr = tinyWRAPPINVOKE.ActionConfig_setMediaString(swigCPtr, (int)type, key, value);
     ActionConfig ret = (cPtr == IntPtr.Zero) ? null : new ActionConfig(cPtr, false);

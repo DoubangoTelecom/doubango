@@ -54,7 +54,7 @@ static int tdav_session_video_rtp_cb(const void* callback_data, const struct trt
 	if(session->consumer){
 		tmedia_codec_t* codec;
 		tsk_istr_t format;
-		tsk_size_t out_size = 0;
+		tsk_size_t out_size;
 
 		// Find the codec to use to decode the RTP payload
 		tsk_itoa(packet->header->payload_type, &format);
@@ -81,19 +81,32 @@ static int tdav_session_video_rtp_cb(const void* callback_data, const struct trt
 		}
 
 		// Convert decoded data to the consumer chroma and size
-#define CONSUMER_SIZE_CHANGED (session->conv.consumerWidth != session->consumer->video.width) || (session->conv.consumerHeight != session->consumer->video.height) \
-		|| (session->conv.xConsumerSize != out_size)
-		if((session->consumer->video.chroma != tmedia_yuv420p) || CONSUMER_SIZE_CHANGED){
+#define CONSUMER_INSIZE_CHANGED				((session->consumer->video.in.width * session->consumer->video.in.height * 3)/2 != out_size)// we have good reasons not to use 1.5f
+#define CONSUMER_DISPLAY_NEED_RESIZE		(session->consumer->video.in.width != session->consumer->video.display.width || session->consumer->video.in.height != session->consumer->video.display.height)
+#define CONSUMER_DISPLAYSIZE_CHANGED		(session->conv.consumerLastWidth != session->consumer->video.display.width || session->conv.consumerLastHeight != session->consumer->video.display.height)
+#define CONSUMER_DISPLAY_NEED_CHROMACHANGE	(session->consumer->video.display.chroma != tmedia_yuv420p)
+
+		if((CONSUMER_DISPLAY_NEED_CHROMACHANGE || CONSUMER_DISPLAYSIZE_CHANGED || CONSUMER_DISPLAY_NEED_RESIZE || CONSUMER_INSIZE_CHANGED)){
 			tsk_size_t _output_size;
+
 			// Create video converter if not already done
-			if(!session->conv.fromYUV420 || CONSUMER_SIZE_CHANGED){
+			if(!session->conv.fromYUV420 || CONSUMER_DISPLAYSIZE_CHANGED || CONSUMER_INSIZE_CHANGED){
 				const tmedia_video_size_t* video_size = tmedia_get_video_size(tmedia_yuv420p, out_size);
 				TSK_OBJECT_SAFE_FREE(session->conv.fromYUV420);
-				session->conv.consumerWidth = session->consumer->video.width;
-				session->conv.consumerHeight = session->consumer->video.height;
-				session->conv.xConsumerSize = (tsk_size_t)(((float)(video_size->width * video_size->height)) * 1.5f/*YUV420P*/);
-				if(!(session->conv.fromYUV420 = tdav_converter_video_create(video_size->width, video_size->height, session->conv.consumerWidth, session->conv.consumerHeight,
-					session->consumer->video.chroma, tsk_false))){
+				// update in (set by the codec)
+				session->consumer->video.in.width = video_size->width;
+				session->consumer->video.in.height = video_size->height;
+				
+				// important: do not override the display size (used by the end-user) unless requested
+				if(session->consumer->video.display.auto_resize){
+					session->consumer->video.display.width = session->consumer->video.in.width;
+					session->consumer->video.display.height = session->consumer->video.in.height;
+				}
+				// set xdisplay with latest valid sizes (set by the user)
+				session->conv.consumerLastWidth = session->consumer->video.display.width;
+				session->conv.consumerLastHeight = session->consumer->video.display.height;
+				if(!(session->conv.fromYUV420 = tdav_converter_video_create(video_size->width, video_size->height, session->conv.consumerLastWidth, session->conv.consumerLastHeight,
+					session->consumer->video.display.chroma, tsk_false))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
 					ret = -3;
 					goto bail;
@@ -128,20 +141,20 @@ bail:
 	return ret;
 }
 
-// Codec callback (From codec to the network)
-static int tdav_session_video_codec_cb(const void* callback_data, const void* buffer, tsk_size_t size, uint32_t duration, tsk_bool_t marker)
+// Codec callback (From codec/producer to the network) to send() data "as is"
+static int tdav_session_video_raw_cb(const void* callback_data, const void* buffer, tsk_size_t size, uint32_t duration, tsk_bool_t marker)
 {
 	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
 	
-	if(session->rtp_manager){
+	if(session->rtp_manager && session->rtp_manager->started){
 		return trtp_manager_send_rtp(session->rtp_manager, buffer, size, duration, marker, marker);
 	}
 
 	return 0;
 }
 
-// Producer callback (From the producer to the network)
-static int tdav_session_video_producer_cb(const void* callback_data, const void* buffer, tsk_size_t size)
+// Producer callback (From the producer to the network) => encode data before send()
+static int tdav_session_video_producer_enc_cb(const void* callback_data, const void* buffer, tsk_size_t size)
 {
 	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
 	tsk_size_t yuv420p_size = 0;
@@ -217,7 +230,7 @@ static int tdav_session_video_producer_cb(const void* callback_data, const void*
 		}
 
 		if(out_size){
-			/* Never called, see tdav_session_video_codec_cb() */
+			/* Never called, see tdav_session_video_raw_cb() */
 			trtp_manager_send_rtp(session->rtp_manager, session->encoder.buffer, out_size, 6006, tsk_true, tsk_true);
 		}
 bail:
@@ -475,7 +488,7 @@ const tsdp_header_M_t* tdav_session_video_get_lo(tmedia_session_t* self)
 				self->neg_codecs = neg_codecs;
 				// set video codec callback
 				if(!TSK_LIST_IS_EMPTY(self->neg_codecs)){
-					tmedia_codec_video_set_callback((tmedia_codec_video_t*)TSK_LIST_FIRST_DATA(self->neg_codecs), tdav_session_video_codec_cb, self);
+					tmedia_codec_video_set_callback((tmedia_codec_video_t*)TSK_LIST_FIRST_DATA(self->neg_codecs), tdav_session_video_raw_cb, self);
 				}
 			}
 			/* from codecs to sdp */
@@ -540,7 +553,7 @@ int tdav_session_video_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 			self->neg_codecs = neg_codecs;
 			// set codec callback
 			if(!TSK_LIST_IS_EMPTY(self->neg_codecs)){
-				tmedia_codec_video_set_callback((tmedia_codec_video_t*)TSK_LIST_FIRST_DATA(self->neg_codecs), tdav_session_video_codec_cb, self);
+				tmedia_codec_video_set_callback((tmedia_codec_video_t*)TSK_LIST_FIRST_DATA(self->neg_codecs), tdav_session_video_raw_cb, self);
 			}
 		}
 		else{
@@ -589,7 +602,8 @@ static tsk_object_t* tdav_session_video_ctor(tsk_object_t * self, va_list * app)
 			TSK_DEBUG_ERROR("Failed to create Video consumer");
 		}
 		if((session->producer = tmedia_producer_create(tdav_session_video_plugin_def_t->type, TMEDIA_SESSION(session)->id))){
-			tmedia_producer_set_callback(session->producer, tdav_session_video_producer_cb, self);
+			tmedia_producer_set_enc_callback(session->producer, tdav_session_video_producer_enc_cb, self);
+			tmedia_producer_set_raw_callback(session->producer, tdav_session_video_raw_cb, self);
 		}
 		else{
 			TSK_DEBUG_ERROR("Failed to create Video producer");

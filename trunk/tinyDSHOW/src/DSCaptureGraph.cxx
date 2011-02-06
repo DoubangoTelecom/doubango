@@ -163,7 +163,7 @@ HRESULT DSCaptureGraph::setParameters(DSCaptureFormat *format, int framerate)
 	hr = this->grabberController->SetSize(w,h);
 #else
 	// Set fps using tdshow filter
-	hr = this->frameRateFilter->SetFps((int) SECONDS_FROM_100NS(vih->AvgTimePerFrame)/*format->getFramerate()*/, framerate);
+	hr = this->frameRateFilter->SetFps((int) ((float)vih->AvgTimePerFrame/10000.f)/*format->getFramerate()*/, framerate);
 #endif
 	if (FAILED(hr)) goto bail;
 

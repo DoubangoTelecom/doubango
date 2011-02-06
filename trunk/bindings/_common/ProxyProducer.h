@@ -105,6 +105,7 @@ public:
 	int getRotation();
 	void setRotation(int rot);
 	int push(const void* buffer, unsigned size);
+	int send(const void* buffer, unsigned size, unsigned duration, bool marker);
 	void setCallback(ProxyVideoProducerCallback* _callback) { this->callback = _callback; }
 #if !defined(SWIG)
 	inline ProxyVideoProducerCallback* getCallback() { return this->callback; }

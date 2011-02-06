@@ -24,6 +24,7 @@ class tinyWRAPJNI {
   public final static native long new_ActionConfig();
   public final static native void delete_ActionConfig(long jarg1);
   public final static native boolean ActionConfig_addHeader(long jarg1, ActionConfig jarg1_, String jarg2, String jarg3);
+  public final static native long ActionConfig_setResponseLine(long jarg1, ActionConfig jarg1_, short jarg2, String jarg3);
   public final static native long ActionConfig_setMediaString(long jarg1, ActionConfig jarg1_, int jarg2, String jarg3, String jarg4);
   public final static native long ActionConfig_setMediaInt(long jarg1, ActionConfig jarg1_, int jarg2, String jarg3, int jarg4);
   public final static native void delete_MediaSessionMgr(long jarg1);
@@ -266,6 +267,7 @@ class tinyWRAPJNI {
   public final static native int ProxyVideoProducer_getRotation(long jarg1, ProxyVideoProducer jarg1_);
   public final static native void ProxyVideoProducer_setRotation(long jarg1, ProxyVideoProducer jarg1_, int jarg2);
   public final static native int ProxyVideoProducer_push(long jarg1, ProxyVideoProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native int ProxyVideoProducer_send(long jarg1, ProxyVideoProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3, long jarg4, boolean jarg5);
   public final static native void ProxyVideoProducer_setCallback(long jarg1, ProxyVideoProducer jarg1_, long jarg2, ProxyVideoProducerCallback jarg2_);
   public final static native java.math.BigInteger ProxyVideoProducer_getMediaSessionId(long jarg1, ProxyVideoProducer jarg1_);
   public final static native boolean ProxyVideoProducer_registerPlugin();

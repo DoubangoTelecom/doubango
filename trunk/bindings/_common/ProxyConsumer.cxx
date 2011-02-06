@@ -291,11 +291,19 @@ int twrap_consumer_proxy_video_prepare(tmedia_consumer_t* self, const tmedia_cod
 	if(codec && (manager = ProxyPluginMgr::getInstance())){
 		ProxyVideoConsumer* videoConsumer;
 		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
-			// default values
-			self->video.chroma = videoConsumer->getChroma();
 			self->video.fps = TMEDIA_CODEC_VIDEO(codec)->fps;
-			self->video.width = TMEDIA_CODEC_VIDEO(codec)->width;
-			self->video.height = TMEDIA_CODEC_VIDEO(codec)->height;
+			// in
+			self->video.in.chroma = tmedia_yuv420p;
+			self->video.in.width = TMEDIA_CODEC_VIDEO(codec)->width;
+			self->video.in.height = TMEDIA_CODEC_VIDEO(codec)->height;
+			// display (out)
+			self->video.display.chroma = videoConsumer->getChroma();
+			if(!self->video.display.width){
+				self->video.display.width = self->video.in.width;
+			}
+			if(!self->video.display.height){
+				self->video.display.height = self->video.in.height;
+			}
 			ret = videoConsumer->getCallback()->prepare(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, TMEDIA_CODEC_VIDEO(codec)->fps);
 		}
 	}
@@ -462,8 +470,8 @@ ProxyVideoConsumer::~ProxyVideoConsumer()
 bool ProxyVideoConsumer::setDisplaySize(int width, int height)
 {
 	if((this->consumer = (twrap_consumer_proxy_video_t*)tsk_object_ref(this->consumer))){
-		TMEDIA_CONSUMER(this->consumer)->video.width = width;
-		TMEDIA_CONSUMER(this->consumer)->video.height = height;
+		TMEDIA_CONSUMER(this->consumer)->video.display.width = width;
+		TMEDIA_CONSUMER(this->consumer)->video.display.height = height;
 		this->consumer = (twrap_consumer_proxy_video_t*)tsk_object_unref(this->consumer);
 		return true;
 	}

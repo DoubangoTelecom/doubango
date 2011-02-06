@@ -148,8 +148,8 @@ public: /* For Java/C# applications */
 
 #if !defined(SWIG) /* For C/C++ applications */
 public:
-	inline unsigned fastGetSize(){ return size; }
-	inline const void* fastGetContent(){ return buffer; }
+	inline unsigned fastGetSize()const{ return size; }
+	inline const void* fastGetContent()const{ return buffer; }
 #endif
 
 private:

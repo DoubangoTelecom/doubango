@@ -56,10 +56,18 @@ typedef struct tmedia_consumer_s
 	const char* desc;
 
 	struct{
-		tmedia_chroma_t chroma;
 		int fps;
-		tsk_size_t width;
-		tsk_size_t height;
+		struct {
+			tmedia_chroma_t chroma;
+			tsk_size_t width;
+			tsk_size_t height;
+		} in;
+		struct {
+			tmedia_chroma_t chroma;
+			tsk_size_t width;
+			tsk_size_t height;
+			tsk_bool_t auto_resize; // auto_resize to "in.width, in.height"
+		} display;
 	} video;
 
 	uint64_t session_id;

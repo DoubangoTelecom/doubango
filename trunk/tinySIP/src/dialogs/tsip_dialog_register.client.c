@@ -45,15 +45,15 @@ extern int tsip_dialog_register_timer_callback(const tsip_dialog_register_t* sel
 extern int tsip_dialog_register_send_REGISTER(tsip_dialog_register_t *self, tsk_bool_t initial);
 
 /* ======================== transitions ======================== */
-int tsip_dialog_register_Started_2_Trying_X_oRegister(va_list *app);
-int tsip_dialog_register_Trying_2_Trying_X_1xx(va_list *app);
-int tsip_dialog_register_Trying_2_Terminated_X_2xx(va_list *app);
-int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app);
-int tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(va_list *app);
-int tsip_dialog_register_Trying_2_Trying_X_423(va_list *app);
-int tsip_dialog_register_Trying_2_Terminated_X_300_to_699(va_list *app);
-int tsip_dialog_register_Trying_2_Terminated_X_cancel(va_list *app);
-int tsip_dialog_register_Connected_2_Trying_X_oRegister(va_list *app);
+int tsip_dialog_register_Started_2_InProgress_X_oRegister(va_list *app);
+int tsip_dialog_register_InProgress_2_InProgress_X_1xx(va_list *app);
+int tsip_dialog_register_InProgress_2_Terminated_X_2xx(va_list *app);
+int tsip_dialog_register_InProgress_2_Connected_X_2xx(va_list *app);
+int tsip_dialog_register_InProgress_2_InProgress_X_401_407_421_494(va_list *app);
+int tsip_dialog_register_InProgress_2_InProgress_X_423(va_list *app);
+int tsip_dialog_register_InProgress_2_Terminated_X_300_to_699(va_list *app);
+int tsip_dialog_register_InProgress_2_Terminated_X_cancel(va_list *app);
+int tsip_dialog_register_Connected_2_InProgress_X_oRegister(va_list *app);
 
 
 /* ======================== conds ======================== */
@@ -79,42 +79,42 @@ int tsip_dialog_register_client_init(tsip_dialog_register_t *self)
 			/*=======================
 			* === Started === 
 			*/
-			// Started -> (REGISTER) -> Trying
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_oREGISTER, _fsm_state_Trying, tsip_dialog_register_Started_2_Trying_X_oRegister, "tsip_dialog_register_Started_2_Trying_X_oRegister"),
+			// Started -> (REGISTER) -> InProgress
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_oREGISTER, _fsm_state_InProgress, tsip_dialog_register_Started_2_InProgress_X_oRegister, "tsip_dialog_register_Started_2_InProgress_X_oRegister"),
 			// Started -> (Any) -> Started
 			//TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Started, "tsip_dialog_register_Started_2_Started_X_any"),
 			
 
 			/*=======================
-			* === Trying === 
+			* === InProgress === 
 			*/
-			// Trying -> (1xx) -> Trying
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_1xx, _fsm_state_Trying, tsip_dialog_register_Trying_2_Trying_X_1xx, "tsip_dialog_register_Trying_2_Trying_X_1xx"),
-			// Trying -> (2xx) -> Terminated
-			TSK_FSM_ADD(_fsm_state_Trying, _fsm_action_2xx, _fsm_cond_client_unregistering, _fsm_state_Terminated, tsip_dialog_register_Trying_2_Terminated_X_2xx, "tsip_dialog_register_Trying_2_Terminated_X_2xx"),
-			// Trying -> (2xx) -> Connected
-			TSK_FSM_ADD(_fsm_state_Trying, _fsm_action_2xx, _fsm_cond_client_registering, _fsm_state_Connected, tsip_dialog_register_Trying_2_Connected_X_2xx, "tsip_dialog_register_Trying_2_Connected_X_2xx"),
-			// Trying -> (401/407/421/494) -> Trying
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_401_407_421_494, _fsm_state_Trying, tsip_dialog_register_Trying_2_Trying_X_401_407_421_494, "tsip_dialog_register_Trying_2_Trying_X_401_407_421_494"),
-			// Trying -> (423) -> Trying
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_423, _fsm_state_Trying, tsip_dialog_register_Trying_2_Trying_X_423, "tsip_dialog_register_Trying_2_Trying_X_423"),
-			// Trying -> (300_to_699) -> Terminated
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_300_to_699, _fsm_state_Terminated, tsip_dialog_register_Trying_2_Terminated_X_300_to_699, "tsip_dialog_register_Trying_2_Terminated_X_300_to_699"),
-			// Trying -> (cancel) -> Terminated
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_cancel, _fsm_state_Terminated, tsip_dialog_register_Trying_2_Terminated_X_cancel, "tsip_dialog_register_Trying_2_Terminated_X_cancel"),
-			// Trying -> (hangup) -> Terminated
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_hangup, _fsm_state_Terminated, tsk_null, "tsip_dialog_register_Trying_2_Terminated_X_hangup"),
-			// Trying -> (shutdown) -> Terminated
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_shutdown, _fsm_state_Terminated, tsk_null, "tsip_dialog_register_Trying_2_Terminated_X_shutdown"),
-			// Trying -> (Any) -> Trying
-			//TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Trying, "tsip_dialog_register_Trying_2_Trying_X_any"),
+			// InProgress -> (1xx) -> InProgress
+			TSK_FSM_ADD_ALWAYS(_fsm_state_InProgress, _fsm_action_1xx, _fsm_state_InProgress, tsip_dialog_register_InProgress_2_InProgress_X_1xx, "tsip_dialog_register_InProgress_2_InProgress_X_1xx"),
+			// InProgress -> (2xx) -> Terminated
+			TSK_FSM_ADD(_fsm_state_InProgress, _fsm_action_2xx, _fsm_cond_client_unregistering, _fsm_state_Terminated, tsip_dialog_register_InProgress_2_Terminated_X_2xx, "tsip_dialog_register_InProgress_2_Terminated_X_2xx"),
+			// InProgress -> (2xx) -> Connected
+			TSK_FSM_ADD(_fsm_state_InProgress, _fsm_action_2xx, _fsm_cond_client_registering, _fsm_state_Connected, tsip_dialog_register_InProgress_2_Connected_X_2xx, "tsip_dialog_register_InProgress_2_Connected_X_2xx"),
+			// InProgress -> (401/407/421/494) -> InProgress
+			TSK_FSM_ADD_ALWAYS(_fsm_state_InProgress, _fsm_action_401_407_421_494, _fsm_state_InProgress, tsip_dialog_register_InProgress_2_InProgress_X_401_407_421_494, "tsip_dialog_register_InProgress_2_InProgress_X_401_407_421_494"),
+			// InProgress -> (423) -> InProgress
+			TSK_FSM_ADD_ALWAYS(_fsm_state_InProgress, _fsm_action_423, _fsm_state_InProgress, tsip_dialog_register_InProgress_2_InProgress_X_423, "tsip_dialog_register_InProgress_2_InProgress_X_423"),
+			// InProgress -> (300_to_699) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_InProgress, _fsm_action_300_to_699, _fsm_state_Terminated, tsip_dialog_register_InProgress_2_Terminated_X_300_to_699, "tsip_dialog_register_InProgress_2_Terminated_X_300_to_699"),
+			// InProgress -> (cancel) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_InProgress, _fsm_action_cancel, _fsm_state_Terminated, tsip_dialog_register_InProgress_2_Terminated_X_cancel, "tsip_dialog_register_InProgress_2_Terminated_X_cancel"),
+			// InProgress -> (hangup) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_InProgress, _fsm_action_hangup, _fsm_state_Terminated, tsk_null, "tsip_dialog_register_InProgress_2_Terminated_X_hangup"),
+			// InProgress -> (shutdown) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_InProgress, _fsm_action_shutdown, _fsm_state_Terminated, tsk_null, "tsip_dialog_register_InProgress_2_Terminated_X_shutdown"),
+			// InProgress -> (Any) -> InProgress
+			//TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_InProgress, "tsip_dialog_register_InProgress_2_InProgress_X_any"),
 
 
 			/*=======================
 			* === Connected === 
 			*/
-			// Connected -> (register) -> Trying [refresh case]
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_oREGISTER, _fsm_state_Trying, tsip_dialog_register_Connected_2_Trying_X_oRegister, "tsip_dialog_register_Connected_2_Trying_X_oRegister"),
+			// Connected -> (register) -> InProgress [refresh case]
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_oREGISTER, _fsm_state_InProgress, tsip_dialog_register_Connected_2_InProgress_X_oRegister, "tsip_dialog_register_Connected_2_InProgress_X_oRegister"),
 
 
 			TSK_FSM_ADD_NULL());
@@ -126,9 +126,9 @@ int tsip_dialog_register_client_init(tsip_dialog_register_t *self)
 //				== STATE MACHINE BEGIN ==
 //--------------------------------------------------------
 
-/* Started -> (REGISTER) -> Trying
+/* Started -> (REGISTER) -> InProgress
 */
-int tsip_dialog_register_Started_2_Trying_X_oRegister(va_list *app)
+int tsip_dialog_register_Started_2_InProgress_X_oRegister(va_list *app)
 {
 	tsip_dialog_register_t *self;
 	const tsip_action_t* action;
@@ -146,9 +146,9 @@ int tsip_dialog_register_Started_2_Trying_X_oRegister(va_list *app)
 	return tsip_dialog_register_send_REGISTER(self, tsk_true);
 }
 
-/* Trying -> (1xx) -> Trying
+/* InProgress -> (1xx) -> InProgress
 */
-int tsip_dialog_register_Trying_2_Trying_X_1xx(va_list *app)
+int tsip_dialog_register_InProgress_2_InProgress_X_1xx(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
@@ -160,10 +160,10 @@ int tsip_dialog_register_Trying_2_Trying_X_1xx(va_list *app)
 	return tsip_dialog_update(TSIP_DIALOG(self), response);
 }
 
-/* Trying -> (2xx) -> Connected
+/* InProgress -> (2xx) -> Connected
 */
 //#include "tsk_thread.h"
-int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
+int tsip_dialog_register_InProgress_2_Connected_X_2xx(va_list *app)
 {
 	int ret;
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
@@ -277,9 +277,9 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 	return ret;
 }
 
-/* Trying -> (2xx) -> Terminated
+/* InProgress -> (2xx) -> Terminated
 */
-int tsip_dialog_register_Trying_2_Terminated_X_2xx(va_list *app)
+int tsip_dialog_register_InProgress_2_Terminated_X_2xx(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
@@ -291,9 +291,9 @@ int tsip_dialog_register_Trying_2_Terminated_X_2xx(va_list *app)
 	return 0;
 }
 
-/*	Trying --> (401/407/421/494) --> Trying
+/*	InProgress --> (401/407/421/494) --> InProgress
 */
-int tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(va_list *app)
+int tsip_dialog_register_InProgress_2_InProgress_X_401_407_421_494(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
@@ -318,9 +318,9 @@ int tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(va_list *app)
 	return tsip_dialog_register_send_REGISTER(self, tsk_false);
 }
 
-/*	Trying -> (423) -> Trying
+/*	InProgress -> (423) -> InProgress
 */
-int tsip_dialog_register_Trying_2_Trying_X_423(va_list *app)
+int tsip_dialog_register_InProgress_2_InProgress_X_423(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
@@ -356,9 +356,9 @@ int tsip_dialog_register_Trying_2_Trying_X_423(va_list *app)
 	return ret;
 }
 
-/* Trying -> (300-699) -> Terminated
+/* InProgress -> (300-699) -> Terminated
 */
-int tsip_dialog_register_Trying_2_Terminated_X_300_to_699(va_list *app)
+int tsip_dialog_register_InProgress_2_Terminated_X_300_to_699(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
@@ -373,9 +373,9 @@ int tsip_dialog_register_Trying_2_Terminated_X_300_to_699(va_list *app)
 	return 0;
 }
 
-/* Trying -> (cancel) -> Terminated
+/* InProgress -> (cancel) -> Terminated
 */
-int tsip_dialog_register_Trying_2_Terminated_X_cancel(va_list *app)
+int tsip_dialog_register_InProgress_2_Terminated_X_cancel(va_list *app)
 {
 	int ret;
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
@@ -394,9 +394,9 @@ int tsip_dialog_register_Trying_2_Terminated_X_cancel(va_list *app)
 	return ret;
 }
 
-/* Connected -> (REGISTER) -> Trying
+/* Connected -> (REGISTER) -> InProgress
 */
-int tsip_dialog_register_Connected_2_Trying_X_oRegister(va_list *app)
+int tsip_dialog_register_Connected_2_InProgress_X_oRegister(va_list *app)
 {
 	tsip_dialog_register_t *self;
 	const tsip_action_t* action;

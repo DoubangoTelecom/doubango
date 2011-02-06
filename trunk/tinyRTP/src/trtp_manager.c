@@ -35,6 +35,8 @@
 #include "tsk_debug.h"
 
 #define TINY_RCVBUF					(256/2/*Will be doubled and min on linux is 256*/) /* tiny buffer used to disable receiving */
+#define BIG_RCVBUF					64000
+#define BIG_SNDBUF					64000
 
 // TODO: Add support for outbound DTMF (http://www.ietf.org/rfc/rfc2833.txt)
 
@@ -142,27 +144,14 @@ int trtp_manager_prepare(trtp_manager_t* self)
 			tnet_transport_set_callback(self->transport, trtp_transport_layer_cb, self);
 			tsk_strupdate(&self->rtp.public_ip, self->transport->master->ip);
 			self->rtp.public_port = local_port;
-#if DISABLE_RCV_UNTIL_STARTED
 			/* Disable receiving until we start the transport (To avoid buffering) */
-			if(!self->rtp.rcv_disabled){
-				int error, oplen = sizeof(int);
-				TSK_DEBUG_INFO("Disabling recv on RTP socket...");
-				// Save default buffer (from the kernel) value
-				if((error = getsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&self->rtp.so_rcvbuf, &oplen))){
-					TNET_PRINT_LAST_ERROR("getsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", error);
-				}
-				else{
-					int len = TINY_RCVBUF;
-					if((error = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&len, oplen))){
-						TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", error);
-					}
-					else{
-						self->rtp.rcv_disabled = tsk_true;
-						TSK_DEBUG_INFO("Disabling recv on RTP socket OK");
-					}
-				}
+			{
+				int error, optval = TINY_RCVBUF;
+				int len = TINY_RCVBUF;
+				if((error = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&optval, sizeof(optval)))){
+					TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", error);
+				}				
 			}
-#endif
 		}
 		else {
 			TSK_DEBUG_ERROR("Failed to create RTP/RTCP Transport");
@@ -296,23 +285,26 @@ int trtp_manager_start(trtp_manager_t* self)
 		return -2;
 	}
 
-#if DISABLE_RCV_UNTIL_STARTED
-	if(self->rtp.rcv_disabled){
+	/* Change RCV and SND buffer sizes */
+	{
 		char buff[1024];
+		int rcv_buf = BIG_RCVBUF, snd_buf = BIG_SNDBUF;
 		TSK_DEBUG_INFO("Start flushing RTP socket...");
 		// Buffer should be empty ...but who know?
 		// rcv() should never block() as we are always using non-blocking sockets
 		while ((ret = recv(self->transport->master->fd, buff, sizeof(buff), 0)) > 0){
 			TSK_DEBUG_INFO("Flushing RTP Buffer %d", ret);
 		}
-		if((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&self->rtp.so_rcvbuf, sizeof(self->rtp.so_rcvbuf)))){
+		TSK_DEBUG_INFO("End flushing RTP socket");
+		if((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&rcv_buf, sizeof(rcv_buf)))){
 			TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", ret);
 			return ret;
 		}
-		self->rtp.rcv_disabled = tsk_false;
-		TSK_DEBUG_INFO("End flushing RTP socket");
+		if((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_SNDBUF, (char*)&snd_buf, sizeof(snd_buf)))){
+			TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", ret);
+			return ret;
+		}
 	}
-#endif
 
 	/* start the transport */
 	if((ret = tnet_transport_start(self->transport))){

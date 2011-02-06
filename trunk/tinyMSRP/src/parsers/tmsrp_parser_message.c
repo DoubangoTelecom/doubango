@@ -41,7 +41,7 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-static tsk_bool_t parse_payload(tmsrp_message_t* msrp_msg, const char* tag_start, const char** p, const char* pe);
+static tsk_bool_t parse_payload(tmsrp_message_t* msrp_msg, const char* tag_start, const char** p, const char* pe, tsk_bool_t* payload_parsed);
 static void set_payload(tmsrp_message_t* msrp_msg, const void* ptr, tsk_size_t len);
 
 #define TMSRP_MSG_PARSER_ADD_HEADER(name) \
@@ -3412,6 +3412,7 @@ tmsrp_message_t* tmsrp_message_parse_2(const void *input, tsk_size_t size, tsk_s
 	const char* tag_start = tsk_null;
 	tmsrp_header_t* header = tsk_null;
 	tsk_bool_t into_endline = tsk_false;
+	tsk_bool_t payload_parsed = tsk_false;
 	
 	/* Ragel variables */
 	int cs = 0;
@@ -3432,16 +3433,16 @@ tmsrp_message_t* tmsrp_message_parse_2(const void *input, tsk_size_t size, tsk_s
 
 	/* Ragel init */
 	
-/* #line 3436 "./src/parsers/tmsrp_parser_message.c" */
+/* #line 3437 "./src/parsers/tmsrp_parser_message.c" */
 	{
 	cs = tmsrp_machine_message_start;
 	}
 
-/* #line 305 "./ragel/tmsrp_parser_message.rl" */
+/* #line 306 "./ragel/tmsrp_parser_message.rl" */
 
 	/* Ragel execute */
 	
-/* #line 3445 "./src/parsers/tmsrp_parser_message.c" */
+/* #line 3446 "./src/parsers/tmsrp_parser_message.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -3697,7 +3698,7 @@ _match:
 	case 21:
 /* #line 165 "./ragel/tmsrp_parser_message.rl" */
 	{
-		parse_payload(msrp_msg, tag_start, &p, pe); // will update "p"
+		parse_payload(msrp_msg, tag_start, &p, pe, &payload_parsed); // will update "p"
 	}
 	break;
 	case 22:
@@ -3705,7 +3706,7 @@ _match:
 	{
 		// if the msrp message contain a valid content-type, then gob it otherwise continue until we reach the endline
 		int len;
-		if(parse_payload(msrp_msg, tag_start, &p, pe)){ // will update "p"
+		if(parse_payload(msrp_msg, tag_start, &p, pe, &payload_parsed)){ // will update "p"
 			// (This space left deliberately blank)
 		}
 		else if((len = (int)(p  - tag_start))>0){
@@ -3740,7 +3741,7 @@ _match:
 		into_endline = tsk_true;
 	}
 	break;
-/* #line 3744 "./src/parsers/tmsrp_parser_message.c" */
+/* #line 3745 "./src/parsers/tmsrp_parser_message.c" */
 		}
 	}
 
@@ -3753,13 +3754,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 308 "./ragel/tmsrp_parser_message.rl" */
+/* #line 309 "./ragel/tmsrp_parser_message.rl" */
 
 	/* Check result */
 	if( cs < 
-/* #line 3761 "./src/parsers/tmsrp_parser_message.c" */
+/* #line 3762 "./src/parsers/tmsrp_parser_message.c" */
 701
-/* #line 310 "./ragel/tmsrp_parser_message.rl" */
+/* #line 311 "./ragel/tmsrp_parser_message.rl" */
  ){
 		//TSK_DEBUG_ERROR("Failed to parse MSRP message."); --> very common case(stream): do not bother us...
 		TSK_OBJECT_SAFE_FREE(msrp_msg);
@@ -3770,10 +3771,15 @@ bail:
 	return msrp_msg;
 }
 
-static tsk_bool_t parse_payload(tmsrp_message_t* msrp_msg, const char* tag_start, const char** p, const char* pe)
+static tsk_bool_t parse_payload(tmsrp_message_t* msrp_msg, const char* tag_start, const char** p, const char* pe, tsk_bool_t* payload_parsed)
 {
 	int64_t payload_len, endline_len;
 	tsk_bool_t can_parse_payload;
+
+	if(*payload_parsed){
+		TSK_DEBUG_INFO("payload already parsed");
+		return tsk_true;
+	}
 
 	if(pe && p && *p && msrp_msg && (can_parse_payload = TMSRP_HEADER_BYTE_RANGE_IS_VALID(msrp_msg->ByteRange))){
 		payload_len = (msrp_msg->ByteRange->end - msrp_msg->ByteRange->start) + 1;
@@ -3781,7 +3787,8 @@ static tsk_bool_t parse_payload(tmsrp_message_t* msrp_msg, const char* tag_start
 		can_parse_payload = (pe - tag_start) > (payload_len + endline_len);
 		if(can_parse_payload){
 			set_payload(msrp_msg, tag_start, (tsk_size_t)payload_len);
-			*p = (tag_start + payload_len);
+			*p = ((tag_start + payload_len) - 1);
+			*payload_parsed = tsk_true;
 			return tsk_true;
 		}
 	}

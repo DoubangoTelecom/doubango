@@ -41,13 +41,18 @@ DSOutputFilter::~DSOutputFilter()
 
 void DSOutputFilter::setBuffer(void *pointer, int size)
 {
+	this->outputStream->lockBuffer();
 	if(pointer && size){
-		if(!this->outputStream->buffer_size != size){
-			this->outputStream->buffer_size = size;
-			this->outputStream->buffer = tsk_realloc(this->outputStream->buffer, size);
+		if(this->outputStream->buffer_size != size){
+			if((this->outputStream->buffer = tsk_realloc(this->outputStream->buffer, size))){
+				this->outputStream->buffer_size = size;
+			}
+			else goto done;
 		}
 		memcpy(this->outputStream->buffer, pointer, size);
 	}
+done:
+	this->outputStream->unlockBuffer();
 }
 
 void DSOutputFilter::getMediaType(AM_MEDIA_TYPE* &pmt)
@@ -89,7 +94,10 @@ void DSOutputFilter::showOverlay(int value)
 void DSOutputFilter::reset()
 {
 	this->outputStream->frameNumber = 0;
+	this->outputStream->lockBuffer();
 	this->outputStream->buffer = NULL;
+	this->outputStream->buffer_size = 0;
+	this->outputStream->unlockBuffer();
 }
 
 #ifdef _WIN32_WCE

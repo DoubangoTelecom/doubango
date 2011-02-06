@@ -30,6 +30,7 @@
 #include "tinydav/audio/tdav_session_audio.h"
 
 #include "tinydav/codecs/dtmf/tdav_codec_dtmf.h"
+#include "tinydav/audio/tdav_consumer_audio.h"
 
 #include "tinymedia/tmedia_denoise.h"
 #include "tinymedia/tmedia_consumer.h"
@@ -100,9 +101,10 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &audio->decoder.buffer, &audio->decoder.buffer_size, packet->header);
 		if(out_size){
 			// Denoise (VAD, AGC, Noise suppression, ...)
-			if(audio->denoise && TMEDIA_DENOISE(audio->denoise)->opened){
-				tmedia_denoise_echo_playback(TMEDIA_DENOISE(audio->denoise), audio->decoder.buffer);
-			}
+			// See tdav_consumer_audio.c::tdav_consumer_audio_get()
+			//if(audio->denoise && TMEDIA_DENOISE(audio->denoise)->opened){
+			//	tmedia_denoise_echo_playback(TMEDIA_DENOISE(audio->denoise), audio->decoder.buffer);
+			//}
 			tmedia_consumer_consume(audio->consumer, &audio->decoder.buffer, out_size, packet->header);
 			if(!audio->decoder.buffer){
 				/* taken by the consumer */
@@ -114,8 +116,8 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 	return 0;
 }
 
-// Producer callback (From the producer to the network)
-static int tdav_session_audio_producer_cb(const void* callback_data, const void* buffer, tsk_size_t size)
+// Producer callback (From the producer to the network). Will encode() data before sending
+static int tdav_session_audio_producer_enc_cb(const void* callback_data, const void* buffer, tsk_size_t size)
 {
 	int ret;
 
@@ -139,7 +141,9 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 						trtp_manager_set_payload_type(audio->rtp_manager, audio->encoder.codec->neg_format ? atoi(audio->encoder.codec->neg_format) : atoi(audio->encoder.codec->format));
 						/* Denoise */
 						if(audio->denoise && !audio->denoise->opened){
-							ret = tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), TMEDIA_CODEC_RATE(audio->encoder.codec), tsk_true, 8000.0f, tsk_true, tsk_true);
+							ret = tmedia_denoise_open(audio->denoise, 
+								TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), //160 if 20ms at 8khz
+								TMEDIA_CODEC_RATE(audio->encoder.codec), tsk_true, 8000.0f, tsk_true, tsk_false);
 						}
 						break;
 				}
@@ -165,9 +169,9 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 			tsk_bool_t silence_or_noise = tsk_false;
 			ret = tmedia_denoise_process(TMEDIA_DENOISE(audio->denoise), (void*)buffer, &silence_or_noise);
 			if(silence_or_noise && (ret == 0)){
-				//TSK_DEBUG_INFO("Silence or Noise buffer");
 				//FIXME:
-				//return 0;
+				TSK_DEBUG_INFO("Silence or Noise buffer");
+				return 0;
 			}
 		}
 
@@ -752,13 +756,16 @@ static tsk_object_t* tdav_session_audio_ctor(tsk_object_t * self, va_list * app)
 			TSK_DEBUG_ERROR("Failed to create Audio consumer");
 		}
 		if((session->producer = tmedia_producer_create(tdav_session_audio_plugin_def_t->type, TMEDIA_SESSION(session)->id))){
-			tmedia_producer_set_callback(session->producer, tdav_session_audio_producer_cb, self);
+			tmedia_producer_set_enc_callback(session->producer, tdav_session_audio_producer_enc_cb, self);
 		}
 		else{
 			TSK_DEBUG_ERROR("Failed to create Audio producer");
 		}
 		if(!(session->denoise = tmedia_denoise_create())){
 			TSK_DEBUG_WARN("No Audio denoiser found");
+		}
+		else if(session->consumer){// IMPORTANT: This means that the consumer must be child of "tdav_consumer_audio_t" object.
+			tdav_consumer_audio_set_denoise(TDAV_CONSUMER_AUDIO(session->consumer), session->denoise);
 		}
 	}
 	return self;

@@ -110,7 +110,6 @@ int tdav_init()
 	avcodec_register_all();
 #endif
 	
-	tmedia_codec_plugin_register(tdav_codec_dtmf_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_msrp_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
@@ -133,6 +132,9 @@ int tdav_init()
 #if HAVE_G729
 	tmedia_codec_plugin_register(tdav_codec_g729ab_plugin_def_t);
 #endif
+	// last: dtmf
+	tmedia_codec_plugin_register(tdav_codec_dtmf_plugin_def_t);
+
 #if HAVE_FFMPEG
 	tmedia_codec_plugin_register(tdav_codec_mp4ves_plugin_def_t);
 #	if !defined(HAVE_H264) || HAVE_H264

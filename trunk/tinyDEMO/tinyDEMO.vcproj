@@ -297,6 +297,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\core-doubango.sn"
+				>
+			</File>
+			<File
 				RelativePath=".\core-ericsson.sn"
 				>
 			</File>

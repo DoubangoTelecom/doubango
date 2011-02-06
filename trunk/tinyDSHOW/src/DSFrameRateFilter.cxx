@@ -124,16 +124,3 @@ CUnknown * WINAPI DSFrameRateFilter::CreateInstance(LPUNKNOWN punk, HRESULT *phr
 	}
 	return pNewObject;
 } 
-
-#ifdef _WIN32_WCE
-STDMETHODIMP_(ULONG) DSFrameRateFilter::NonDelegatingRelease()
-{
-	if(InterlockedDecrement(&m_cRef) == 0)
-	{
-		delete this;
-		return 0;
-	}
-	return m_cRef;
-}
-#endif
-

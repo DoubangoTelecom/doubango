@@ -78,7 +78,7 @@ void DSGrabber::setCaptureDevice(const std::string &devicePath)
 	this->graph->setSource(devicePath);
 }
 
-void DSGrabber::setCallback(tmedia_producer_cb_f callback, const void* callback_data)
+void DSGrabber::setCallback(tmedia_producer_enc_cb_f callback, const void* callback_data)
 {
 	this->plugin_cb = callback;
 	this->plugin_cb_data = callback_data;

@@ -160,6 +160,7 @@ void *run(void* self)
 			continue;
 		}
 		
+		error = tsk_false;
 		start = 1;
 		total = data_out->size;
 		
@@ -177,10 +178,9 @@ void *run(void* self)
 			// add other headers
 			tmsrp_message_add_headers(SEND,
 				TMSRP_HEADER_MESSAGE_ID_VA_ARGS(TMSRP_DATA(data_out)->id),
-				TMSRP_HEADER_BYTE_RANGE_VA_ARGS(start, end, total),
+				// TMSRP_HEADER_BYTE_RANGE_VA_ARGS(start, end, total), => See below
 				TMSRP_HEADER_FAILURE_REPORT_VA_ARGS(sender->config->Failure_Report ? freport_yes : freport_no),
 				TMSRP_HEADER_SUCCESS_REPORT_VA_ARGS(sender->config->Success_Report),
-				//TMSRP_HEADER_CONTENT_TYPE_VA_ARGS(TMSRP_DATA(data_out)->ctype),
 
 				tsk_null);
 			// add data
@@ -189,6 +189,8 @@ void *run(void* self)
 				if(content_cpim){
 					tsk_buffer_append_2(content_cpim, "Subject: %s\r\n\r\nContent-Type: %s\r\n\r\n",
 						"test", TMSRP_DATA(data_out)->wctype);
+					end += content_cpim->size;
+					total += content_cpim->size;
 					tsk_buffer_append(content_cpim, chunck->data, chunck->size);
 					tmsrp_message_add_content(SEND, TMSRP_DATA(data_out)->ctype, content_cpim->data, content_cpim->size);
 					TSK_OBJECT_SAFE_FREE(content_cpim);
@@ -200,6 +202,13 @@ void *run(void* self)
 			else{
 				tmsrp_message_add_content(SEND, TMSRP_DATA(data_out)->ctype, chunck->data, chunck->size);
 			}
+			// add byte range here not before: think about message/cpim
+			tmsrp_message_add_headers(SEND,
+				TMSRP_HEADER_BYTE_RANGE_VA_ARGS(start, end, total),
+
+				tsk_null);
+
+
 			// set continuation flag
 			SEND->end_line.cflag = (end == total) ? '$' : '+';
 			// serialize and send
