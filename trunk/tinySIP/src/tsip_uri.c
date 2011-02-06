@@ -267,6 +267,7 @@ static int tsip_uri_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 		*/
 		if(!tsk_strequals(uri1->scheme, uri2->scheme) ||
 			!tsip_uri_strequals(uri1->user_name, uri2->user_name) ||
+			!tsip_uri_strequals(uri1->host, uri2->host) ||
 			!tsk_strequals(uri1->password, uri2->password) ||
 			uri1->port != uri2->port){
 				return -2;

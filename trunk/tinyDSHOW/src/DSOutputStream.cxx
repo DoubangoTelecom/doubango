@@ -47,7 +47,7 @@ DSOutputStream::DSOutputStream(HRESULT *phr, DSOutputFilter *pParent, LPCWSTR pP
 	this->buffer_size = NULL;
 
 	this->frameNumber = 0;
-	this->frameLength = (10000000)/DEFAULT_FPS;
+	this->frameLength = (1000)/DEFAULT_FPS;
 	this->fps = DEFAULT_FPS;
 
 	this->width = 176;
@@ -59,18 +59,21 @@ DSOutputStream::DSOutputStream(HRESULT *phr, DSOutputFilter *pParent, LPCWSTR pP
 	this->paintDC = NULL;
 	this->hDibSection = NULL;
 	this->hObject = NULL;
+
+	this->mutex = tsk_mutex_create();
 }
 
 DSOutputStream::~DSOutputStream()
 {
 	SAFE_DELETE_PTR(this->buffer);
+	tsk_mutex_destroy(&this->mutex);
 	// TODO : Is there anything to free ???
 }
 
 void DSOutputStream::setFps(int fps_)
 {
 	this->fps = fps_;
-	this->frameLength = (10000000)/this->fps;
+	this->frameLength = (1000)/this->fps;
 }
 
 void DSOutputStream::showOverlay(int value)
@@ -124,7 +127,7 @@ HRESULT DSOutputStream::GetMediaType(CMediaType *pMediaType)
 	pvi->bmiHeader.biClrImportant	= 0;
 
 	// Frame rate
-	pvi->AvgTimePerFrame			= 10000000/this->fps;
+	pvi->AvgTimePerFrame			= DS_MILLIS_TO_100NS(1000/this->fps);
 	
 	SetRectEmpty(&(pvi->rcSource));	// we want the whole image area rendered.
 	SetRectEmpty(&(pvi->rcTarget));	// no particular destination rectangle
@@ -276,7 +279,9 @@ HRESULT DSOutputStream::FillBuffer(IMediaSample *pSample)
 			}
 #endif
 			// Why try do not work, see: http://msdn2.microsoft.com/en-us/library/xwtb73ad(vs.80).aspx
-			this->TransfertBuffer(this->buffer, (void*)pBuffer, lSize);
+			this->lockBuffer();
+			this->TransfertBuffer(this->buffer, (void*)pBuffer, TSK_MIN(lSize, this->buffer_size));
+			this->unlockBuffer();
 		}
 		else
 		{
@@ -284,8 +289,8 @@ HRESULT DSOutputStream::FillBuffer(IMediaSample *pSample)
 			memset((void*)pBuffer, NULL, lSize);
 		}
 
-		REFERENCE_TIME rtStart = this->frameNumber * this->frameLength;
-		REFERENCE_TIME rtStop  = rtStart + this->frameLength;
+		REFERENCE_TIME rtStart = DS_MILLIS_TO_100NS(this->frameNumber * this->frameLength);
+		REFERENCE_TIME rtStop  = rtStart + DS_MILLIS_TO_100NS(this->frameLength);
 		
 		this->frameNumber++;
 

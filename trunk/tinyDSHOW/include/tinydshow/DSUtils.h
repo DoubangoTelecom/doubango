@@ -32,8 +32,14 @@
 #define SAFE_DELETE_PTR(x) if (x) { delete x; x = NULL; }
 #define SAFE_DELETE_ARRAY(x) if (x) { delete[] x; x = NULL; }
 
-#define SECONDS_TO_100NS(s) (LONGLONG)(10000000/(s))
-#define SECONDS_FROM_100NS(ns) (10000000/(ns))
+#define DS_NANOS_TO_100NS(NANOS) (((LONGLONG)(NANOS)) / 100ui64)
+#define DS_MICROS_TO_100NS(MICROS) (((LONGLONG)(MICROS)) * 10ui64)
+#define DS_MILLIS_TO_100NS(MILLIS) (((LONGLONG)(MILLIS)) * 10000ui64)
+#define DS_SECONDS_TO_100NS(SEC) (((LONGLONG)(SEC)) * 10000000ui64)
+//#define DS_100NS_TO_SECONDS(NANOS) (((LONGLONG)(NANOS)) / 10000000ui64)  
+
+//#define SECONDS_TO_100NS(s) (LONGLONG)(10000000/(s))
+//#define SECONDS_FROM_100NS(ns) (10000000/(ns))
 
 #define COCREATE(cls, iid, target) \
 	CoCreateInstance(cls, NULL, CLSCTX_INPROC_SERVER, iid, reinterpret_cast<void**>(&target))

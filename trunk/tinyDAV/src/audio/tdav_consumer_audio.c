@@ -29,6 +29,7 @@
  */
 #include "tinydav/audio/tdav_consumer_audio.h"
 
+#include "tinymedia/tmedia_denoise.h"
 #include "tinyrtp/rtp/trtp_rtp_header.h"
 
 #include "tsk_memory.h"
@@ -243,7 +244,24 @@ void* tdav_consumer_audio_get(tdav_consumer_audio_t* self, tsk_size_t* out_size)
 	}
 	tsk_safeobj_unlock(self);
 
+	// Denoise()
+	if(data && *out_size == _10ms_size_bytes*2){
+		if(self->denoise && self->denoise->opened){
+			tmedia_denoise_echo_playback(self->denoise, data);
+		}
+	}
+	//else{
+	//	TSK_DEBUG_WARN("Invalid buffer");
+	//}
+
 	return data;
+}
+
+/* set denioiser */
+void tdav_consumer_audio_set_denoise(tdav_consumer_audio_t* self, struct tmedia_denoise_s* denoise)
+{
+	TSK_OBJECT_SAFE_FREE(self->denoise);
+	self->denoise = tsk_object_ref(denoise);
 }
 
 /** Reset jitterbuffer */
@@ -284,6 +302,7 @@ int tdav_consumer_audio_deinit(tdav_consumer_audio_t* self)
 	if(self->jb.jbuffer){
 		jb_destroy(self->jb.jbuffer);
 	}
+	TSK_OBJECT_SAFE_FREE(self->denoise);
 
 	tsk_safeobj_deinit(self);
 

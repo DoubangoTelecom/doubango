@@ -278,7 +278,9 @@ int tdav_codec_h264_get_nalunit_pay(const uint8_t* in_data, tsk_size_t in_size, 
 	return 0;
 }
 
-
+#if TDAV_UNDER_WINDOWS
+#	include "tsk_thread.h"
+#endif
 void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_s *self, const void *data, tsk_size_t size, tsk_bool_t marker)
 {
 	uint8_t* pdata = (uint8_t*)data;	
@@ -302,6 +304,10 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_s *self, const void *da
 		}
 	}
 	else if(size > H264_NAL_UNIT_TYPE_HEADER_SIZE){
+#if TDAV_UNDER_WINDOWS
+		tsk_bool_t burst = ((size/H264_RTP_PAYLOAD_SIZE) > 5);
+		int count = 0;
+#endif
 		/* Should be Fragmented as FUA */
 		uint8_t fua_hdr[H264_FUA_HEADER_SIZE]; /* "FU indicator" and "FU header" - 2bytes */
 		fua_hdr[0] = pdata[0] & 0x60/* F=0 */, fua_hdr[0] |= fu_a;
@@ -337,6 +343,11 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_s *self, const void *da
 			// send data
 			if(TMEDIA_CODEC_VIDEO(self)->callback){
 				TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, self->rtp.ptr, (packet_size + H264_FUA_HEADER_SIZE), (3003* (30/TMEDIA_CODEC_VIDEO(self)->fps)), (size == 0));
+#if TDAV_UNDER_WINDOWS// FIXME: WinSock problem: Why do we get packet lost (burst case only)?
+				if(burst && (++count % 2 == 0)){
+					tsk_thread_sleep(1); // 1 millisecond
+				}
+#endif
 			}
 		}
 	}

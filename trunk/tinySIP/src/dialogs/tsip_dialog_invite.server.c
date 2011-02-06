@@ -595,6 +595,9 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 int s0000_Ringing_2_Terminated_X_Reject(va_list *app)
 {
 	int ret;
+	short code;
+	const char* phrase;
+	char* reason = tsk_null;
 
 	tsip_dialog_invite_t *self;
 	const tsip_action_t* action;
@@ -610,7 +613,11 @@ int s0000_Ringing_2_Terminated_X_Reject(va_list *app)
 	TSIP_DIALOG_TIMER_CANCEL(100rel);
 
 	/* Send Reject */
-	ret = send_ERROR(self, self->last_iInvite, 603, "Decline", "SIP; cause=603; text=\"Call declined\"");
+	code = action->line_resp.code>=300 ? action->line_resp.code : 603;
+	phrase = action->line_resp.phrase ? action->line_resp.phrase : "Decline";
+	tsk_sprintf(&reason, "SIP; cause=%hi; text=\"%s\"", code, phrase);
+	ret = send_ERROR(self, self->last_iInvite, code, phrase, reason);
+	TSK_FREE(reason);
 
 	/* set last error (or info) */
 	tsip_dialog_set_lasterror(TSIP_DIALOG(self), "Call Terminated");

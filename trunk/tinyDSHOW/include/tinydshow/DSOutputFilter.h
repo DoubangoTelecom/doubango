@@ -107,6 +107,16 @@ public:
 		return InterlockedIncrement(&m_cRef);
 	}*/
 #endif
+/*
+	STDMETHODIMP_(ULONG) NonDelegatingRelease()
+	{
+		if(InterlockedDecrement(&m_cRef) == 0)
+		{
+			delete this;
+			return 0;
+		}
+		return m_cRef;
+	}*/
 
 private:
 	DSOutputStream *outputStream;

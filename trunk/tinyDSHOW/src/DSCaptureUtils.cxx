@@ -350,10 +350,6 @@ HRESULT getSupportedFormats(IBaseFilter *sourceFilter, std::vector<DSCaptureForm
 			TSK_DEBUG_ERROR("Failed to get Stream caps");
 			break;
 		}
-		if(IsEqualGUID(streamConfigCaps.guid, MEDIASUBTYPE_YV12)){
-			int x = 0;
-			x++;
-		}
 
 		if (streamConfigCaps.guid == FORMAT_VideoInfo){
 			VIDEOINFOHEADER* vih = reinterpret_cast<VIDEOINFOHEADER*>(mediaType->pbFormat);
@@ -361,7 +357,7 @@ HRESULT getSupportedFormats(IBaseFilter *sourceFilter, std::vector<DSCaptureForm
 
 			int width = abs(bih->biWidth);
 			int height = abs(bih->biHeight);
-			int fps = (int) SECONDS_FROM_100NS(vih->AvgTimePerFrame);
+			int fps = (int) ((float)(vih->AvgTimePerFrame)/10000.f);
 			GUID chroma = mediaType->subtype;
 
 			// Add format to the list

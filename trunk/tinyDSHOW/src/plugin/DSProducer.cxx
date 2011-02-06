@@ -50,8 +50,8 @@ static int tdshow_plugin_cb(const void* callback_data, const void* buffer, tsk_s
 {
 	const tdshow_producer_t* producer = (const tdshow_producer_t*)callback_data;
 
-	if(producer && TMEDIA_PRODUCER(producer)->callback){
-		TMEDIA_PRODUCER(producer)->callback(TMEDIA_PRODUCER(producer)->callback_data, buffer, size);
+	if(producer && TMEDIA_PRODUCER(producer)->enc_cb.callback){
+		TMEDIA_PRODUCER(producer)->enc_cb.callback(TMEDIA_PRODUCER(producer)->enc_cb.callback_data, buffer, size);
 	}
 
 	return 0;

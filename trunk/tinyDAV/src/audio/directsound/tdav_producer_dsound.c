@@ -71,13 +71,13 @@ static void *__playback_thread(void *param)
 				goto next;
 			}
 
-			if(TMEDIA_PRODUCER(dsound)->callback){
+			if(TMEDIA_PRODUCER(dsound)->enc_cb.callback){
 				if(lpvAudio2){
-					TMEDIA_PRODUCER(dsound)->callback(TMEDIA_PRODUCER(dsound)->callback_data, lpvAudio1, dwBytesAudio1);
-					TMEDIA_PRODUCER(dsound)->callback(TMEDIA_PRODUCER(dsound)->callback_data, lpvAudio2, dwBytesAudio2);
+					TMEDIA_PRODUCER(dsound)->enc_cb.callback(TMEDIA_PRODUCER(dsound)->enc_cb.callback_data, lpvAudio1, dwBytesAudio1);
+					TMEDIA_PRODUCER(dsound)->enc_cb.callback(TMEDIA_PRODUCER(dsound)->enc_cb.callback_data, lpvAudio2, dwBytesAudio2);
 				}
 				else{
-					TMEDIA_PRODUCER(dsound)->callback(TMEDIA_PRODUCER(dsound)->callback_data, lpvAudio1, dwBytesAudio1);
+					TMEDIA_PRODUCER(dsound)->enc_cb.callback(TMEDIA_PRODUCER(dsound)->enc_cb.callback_data, lpvAudio1, dwBytesAudio1);
 				}
 			}
 

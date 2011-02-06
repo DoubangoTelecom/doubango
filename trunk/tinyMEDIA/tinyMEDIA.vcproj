@@ -116,7 +116,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="1"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="&quot;..\thirdparties\win32\include&quot;;include;&quot;..\tinySAK\src&quot;;&quot;..\tinySDP\include&quot;;&quot;..\tinyNET\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS"
@@ -141,7 +141,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyNET.lib"
 				LinkIncremental="1"
-				IgnoreDefaultLibraryNames="MSVCRTD"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"

@@ -227,6 +227,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ActionConfig_addHeader")]
   public static extern bool ActionConfig_addHeader(HandleRef jarg1, string jarg2, string jarg3);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ActionConfig_setResponseLine")]
+  public static extern IntPtr ActionConfig_setResponseLine(HandleRef jarg1, short jarg2, string jarg3);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_ActionConfig_setMediaString")]
   public static extern IntPtr ActionConfig_setMediaString(HandleRef jarg1, int jarg2, string jarg3, string jarg4);
 
@@ -937,6 +940,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_push")]
   public static extern int ProxyVideoProducer_push(HandleRef jarg1, byte[] jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_send")]
+  public static extern int ProxyVideoProducer_send(HandleRef jarg1, byte[] jarg2, uint jarg3, uint jarg4, bool jarg5);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_setCallback")]
   public static extern void ProxyVideoProducer_setCallback(HandleRef jarg1, HandleRef jarg2);

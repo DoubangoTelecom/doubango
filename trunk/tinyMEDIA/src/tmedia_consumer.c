@@ -51,7 +51,8 @@ int tmedia_consumer_init(tmedia_consumer_t* self)
 		return -1;
 	}
 
-	self->video.chroma = TMEDIA_CONSUMER_CHROMA_DEFAULT;
+	self->video.in.chroma = TMEDIA_CONSUMER_CHROMA_DEFAULT;
+	self->video.display.chroma = TMEDIA_CONSUMER_CHROMA_DEFAULT;
 
 	return 0;
 }

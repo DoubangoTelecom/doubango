@@ -233,7 +233,7 @@ tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_
 	}
 	
 	if(!TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type)){
-		TSK_DEBUG_ERROR("In order to use WSASendTo you must use an udp transport.");
+		TSK_DEBUG_ERROR("In order to use sendto() you must use an udp transport.");
 		goto bail;
 	}
 	

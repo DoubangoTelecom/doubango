@@ -58,8 +58,8 @@ _fsm_action_t;
 typedef enum _fsm_state_e
 {
 	_fsm_state_Started,
-	_fsm_state_Trying, // Outgoing (Client)
-	_fsm_state_InProgress, // Incoming (Server)
+	_fsm_state_InProgress, // Outgoing (Client)
+	_fsm_state_Incoming, // Incoming (Server)
 	_fsm_state_Connected,
 	_fsm_state_Terminated
 }

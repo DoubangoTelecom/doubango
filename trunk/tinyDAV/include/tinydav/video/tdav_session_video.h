@@ -82,9 +82,8 @@ typedef struct tdav_session_video_s
 	struct tmedia_consumer_s* consumer;
 	struct tmedia_producer_s* producer;
 	struct {
-		tsk_size_t consumerWidth;
-		tsk_size_t consumerHeight;
-		tsk_size_t xConsumerSize;
+		tsk_size_t consumerLastWidth;
+		tsk_size_t consumerLastHeight;
 		struct tdav_converter_video_s* fromYUV420;
 		
 		tsk_size_t producerWidth;

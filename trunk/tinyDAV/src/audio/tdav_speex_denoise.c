@@ -34,7 +34,7 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-#define ECHO_TAIL 20
+#define ECHO_TAIL 10
 
 int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_t sampling_rate, tsk_bool_t denoise, float agc_level, tsk_bool_t aec, tsk_bool_t vad)
 {
@@ -43,7 +43,7 @@ int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_
 	int i;
 
 	if(!denoiser->echo_state){
-		if((denoiser->echo_state = speex_echo_state_init(frame_size, 1200/*(ECHO_TAIL*frame_size)*/))){
+		if((denoiser->echo_state = speex_echo_state_init(frame_size, ECHO_TAIL*frame_size))){
 			speex_echo_ctl(denoiser->echo_state, SPEEX_ECHO_SET_SAMPLING_RATE, &sampling_rate);
 		}
 	}
@@ -56,6 +56,12 @@ int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_
 
 			if(denoiser->echo_state){
 				speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_ECHO_STATE, denoiser->echo_state);
+
+				i = -40;
+				speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_ECHO_SUPPRESS, &i);
+				i = -15;
+				speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_ECHO_SUPPRESS_ACTIVE, &i);
+
 				TSK_FREE(denoiser->echo_output_frame);
 				denoiser->echo_output_frame = tsk_calloc(denoiser->frame_size, sizeof(spx_int16_t));
 			}
@@ -75,6 +81,13 @@ int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_
 				i = 1;
 				speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_AGC, &i);
 				speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_AGC_LEVEL, &agc_level);
+				//speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_AGC_TARGET, &agc_level);
+				i = 30;
+				speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_AGC_MAX_GAIN, &i);
+				i = 12;
+				speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_AGC_INCREMENT, &i);
+				i = -40;
+				speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_AGC_DECREMENT, &i);
 			}
 			else{
 				i = 0, f = 8000.0f;
@@ -83,12 +96,12 @@ int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_
 			}
 			i = vad ? 1 : 2;
 			speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_VAD, &i);
-			i=0;
-			speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_DEREVERB, &i);
-			f=.0;
-			speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_DEREVERB_DECAY, &f);
-			f=.0;
-			speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_DEREVERB_LEVEL, &f);
+			//i=1;
+			//speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_DEREVERB, &i);
+			//i=1;
+			//speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_DEREVERB_DECAY, &i);
+			//i=1;
+			//speex_preprocess_ctl(denoiser->preprocess_state, SPEEX_PREPROCESS_SET_DEREVERB_LEVEL, &i);
 
 			return 0;
 		}

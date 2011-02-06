@@ -62,9 +62,15 @@ public:
     static CUnknown *WINAPI CreateInstance(LPUNKNOWN punk, HRESULT *phr);
     DECLARE_IUNKNOWN;
 
-#ifdef _WIN32_WCE
-	STDMETHODIMP_(ULONG) NonDelegatingRelease();
-#endif
+	/*STDMETHODIMP_(ULONG) NonDelegatingRelease()
+	{
+		if(InterlockedDecrement(&m_cRef) == 0)
+		{
+			delete this;
+			return 0;
+		}
+		return m_cRef;
+	}*/
 
 private:
 	int m_progress;

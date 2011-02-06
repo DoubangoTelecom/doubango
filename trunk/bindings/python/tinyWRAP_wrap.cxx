@@ -3592,6 +3592,22 @@ SWIGINTERNINLINE PyObject*
 
 
 SWIGINTERN int
+SWIG_AsVal_short (PyObject * obj, short *val)
+{
+  long v;
+  int res = SWIG_AsVal_long (obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v < SHRT_MIN || v > SHRT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< short >(v);
+    }
+  }  
+  return res;
+}
+
+
+SWIGINTERN int
 SWIG_AsVal_long_SS_long (PyObject *obj, long long *val)
 {
   int res = SWIG_TypeError;
@@ -5301,6 +5317,49 @@ SWIGINTERN PyObject *_wrap_ActionConfig_addHeader(PyObject *SWIGUNUSEDPARM(self)
   return resultobj;
 fail:
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ActionConfig_setResponseLine(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ActionConfig *arg1 = (ActionConfig *) 0 ;
+  short arg2 ;
+  char *arg3 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  short val2 ;
+  int ecode2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  ActionConfig *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:ActionConfig_setResponseLine",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ActionConfig, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ActionConfig_setResponseLine" "', argument " "1"" of type '" "ActionConfig *""'"); 
+  }
+  arg1 = reinterpret_cast< ActionConfig * >(argp1);
+  ecode2 = SWIG_AsVal_short(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ActionConfig_setResponseLine" "', argument " "2"" of type '" "short""'");
+  } 
+  arg2 = static_cast< short >(val2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ActionConfig_setResponseLine" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  result = (ActionConfig *)(arg1)->setResponseLine(arg2,(char const *)arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ActionConfig, 0 |  0 );
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return resultobj;
+fail:
   if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
   return NULL;
 }
@@ -12752,6 +12811,62 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ProxyVideoProducer_send(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  unsigned int arg4 ;
+  bool arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
+  bool val5 ;
+  int ecode5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:ProxyVideoProducer_send",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_send" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyVideoProducer_send" "', argument " "2"" of type '" "void const *""'"); 
+  }
+  ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoProducer_send" "', argument " "3"" of type '" "unsigned int""'");
+  } 
+  arg3 = static_cast< unsigned int >(val3);
+  ecode4 = SWIG_AsVal_unsigned_SS_int(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyVideoProducer_send" "', argument " "4"" of type '" "unsigned int""'");
+  } 
+  arg4 = static_cast< unsigned int >(val4);
+  ecode5 = SWIG_AsVal_bool(obj4, &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "ProxyVideoProducer_send" "', argument " "5"" of type '" "bool""'");
+  } 
+  arg5 = static_cast< bool >(val5);
+  result = (int)(arg1)->send((void const *)arg2,arg3,arg4,arg5);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_ProxyVideoProducer_setCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
@@ -17816,6 +17931,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"new_ActionConfig", _wrap_new_ActionConfig, METH_VARARGS, NULL},
 	 { (char *)"delete_ActionConfig", _wrap_delete_ActionConfig, METH_VARARGS, NULL},
 	 { (char *)"ActionConfig_addHeader", _wrap_ActionConfig_addHeader, METH_VARARGS, NULL},
+	 { (char *)"ActionConfig_setResponseLine", _wrap_ActionConfig_setResponseLine, METH_VARARGS, NULL},
 	 { (char *)"ActionConfig_setMediaString", _wrap_ActionConfig_setMediaString, METH_VARARGS, NULL},
 	 { (char *)"ActionConfig_setMediaInt", _wrap_ActionConfig_setMediaInt, METH_VARARGS, NULL},
 	 { (char *)"ActionConfig_swigregister", ActionConfig_swigregister, METH_VARARGS, NULL},
@@ -18051,6 +18167,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"ProxyVideoProducer_getRotation", _wrap_ProxyVideoProducer_getRotation, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_setRotation", _wrap_ProxyVideoProducer_setRotation, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_push", _wrap_ProxyVideoProducer_push, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoProducer_send", _wrap_ProxyVideoProducer_send, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_setCallback", _wrap_ProxyVideoProducer_setCallback, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_getMediaSessionId", _wrap_ProxyVideoProducer_getMediaSessionId, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoProducer_registerPlugin", _wrap_ProxyVideoProducer_registerPlugin, METH_VARARGS, NULL},

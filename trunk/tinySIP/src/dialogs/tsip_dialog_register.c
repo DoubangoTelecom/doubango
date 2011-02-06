@@ -42,8 +42,8 @@ int tsip_dialog_register_send_RESPONSE(tsip_dialog_register_t *self, const tsip_
 int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self);
 
 /* ======================== transitions ======================== */
-int tsip_dialog_register_Any_2_Trying_X_hangup(va_list *app);
-int tsip_dialog_register_Any_2_Trying_X_shutdown(va_list *app);
+int tsip_dialog_register_Any_2_InProgress_X_hangup(va_list *app);
+int tsip_dialog_register_Any_2_InProgress_X_shutdown(va_list *app);
 int tsip_dialog_register_Any_2_Terminated_X_transportError(va_list *app);
 int tsip_dialog_register_Any_2_Terminated_X_Error(va_list *app);
 
@@ -183,14 +183,14 @@ int tsip_dialog_register_init(tsip_dialog_register_t *self)
 			/*=======================
 			* === Any === 
 			*/
-			// Any -> (hangup) -> Trying
-			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_hangup, _fsm_cond_not_silent_hangup, _fsm_state_Trying, tsip_dialog_register_Any_2_Trying_X_hangup, "tsip_dialog_register_Any_2_Trying_X_hangup"),
+			// Any -> (hangup) -> InProgress
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_hangup, _fsm_cond_not_silent_hangup, _fsm_state_InProgress, tsip_dialog_register_Any_2_InProgress_X_hangup, "tsip_dialog_register_Any_2_InProgress_X_hangup"),
 			// Any -> (silenthangup) -> Terminated
-			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_hangup, _fsm_cond_silent_hangup, _fsm_state_Terminated, tsk_null, "tsip_dialog_register_Any_2_Trying_X_silenthangup"),
-			// Any -> (shutdown) -> Trying
-			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_shutdown, _fsm_cond_not_silent_shutdown, _fsm_state_Trying, tsip_dialog_register_Any_2_Trying_X_shutdown, "tsip_dialog_register_Any_2_Trying_X_shutdown"),
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_hangup, _fsm_cond_silent_hangup, _fsm_state_Terminated, tsk_null, "tsip_dialog_register_Any_2_InProgress_X_silenthangup"),
+			// Any -> (shutdown) -> InProgress
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_shutdown, _fsm_cond_not_silent_shutdown, _fsm_state_InProgress, tsip_dialog_register_Any_2_InProgress_X_shutdown, "tsip_dialog_register_Any_2_InProgress_X_shutdown"),
 			// Any -> (silentshutdown) -> Terminated
-			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_shutdown, _fsm_cond_silent_shutdown, _fsm_state_Terminated, tsk_null, "tsip_dialog_register_Any_2_Trying_X_silentshutdown"),
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_shutdown, _fsm_cond_silent_shutdown, _fsm_state_Terminated, tsk_null, "tsip_dialog_register_Any_2_InProgress_X_silentshutdown"),
 			// Any -> (shutdown timedout) -> Terminated
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_shutdown_timedout, _fsm_state_Terminated, tsk_null, "tsip_dialog_register_shutdown_timedout"),			
 			// Any -> (transport error) -> Terminated
@@ -215,9 +215,9 @@ int tsip_dialog_register_init(tsip_dialog_register_t *self)
 
 
 
-/* Any -> (hangup) -> Trying
+/* Any -> (hangup) -> InProgress
 */
-int tsip_dialog_register_Any_2_Trying_X_hangup(va_list *app)
+int tsip_dialog_register_Any_2_InProgress_X_hangup(va_list *app)
 {
 	tsip_dialog_register_t *self;
 	const tsip_action_t* action;
@@ -236,9 +236,9 @@ int tsip_dialog_register_Any_2_Trying_X_hangup(va_list *app)
 	return tsip_dialog_register_send_REGISTER(self, tsk_true);
 }
 
-/* Any -> (shutdown) -> Trying
+/* Any -> (shutdown) -> InProgress
 */
-int tsip_dialog_register_Any_2_Trying_X_shutdown(va_list *app)
+int tsip_dialog_register_Any_2_InProgress_X_shutdown(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	

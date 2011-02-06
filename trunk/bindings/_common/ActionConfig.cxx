@@ -58,6 +58,15 @@ bool ActionConfig::addHeader(const char* name, const char* value)
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
+ActionConfig* ActionConfig::setResponseLine(short code, const char* phrase)
+{
+	int32_t _code = code;
+	tsip_action_set(this->handle, 
+		TSIP_ACTION_SET_RESP_LINE(_code, phrase),
+		TSIP_ACTION_SET_NULL());
+	return this;
+}
+
 ActionConfig* ActionConfig::setMediaString(twrap_media_type_t type, const char* key, const char* value)
 {
 	tmedia_type_t media_type = _get_media_type(type);

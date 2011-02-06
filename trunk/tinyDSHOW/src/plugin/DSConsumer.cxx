@@ -56,12 +56,12 @@ int tdshow_consumer_set(tmedia_consumer_t *self, const tmedia_param_t* param)
 		if(tsk_striequals(param->key, "remote-hwnd")){
 			INT64 hWnd = (INT64)*((int64_t*)param->value);
 			if(DSCONSUMER(self)->display){
-				//if(hWnd){
+				if(hWnd){
 					DSCONSUMER(self)->display->attach(hWnd);
-				//}
-				//else{
-				//	DSCONSUMER(self)->display->detach();
-				//}
+				}
+				else{
+					DSCONSUMER(self)->display->detach();
+				}
 			}
 			else{
 				DSCONSUMER(self)->window = hWnd;
@@ -83,8 +83,15 @@ int tdshow_consumer_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec
 	}
 	
 	TMEDIA_CONSUMER(consumer)->video.fps = TMEDIA_CODEC_VIDEO(codec)->fps;
-	TMEDIA_CONSUMER(consumer)->video.width = TMEDIA_CODEC_VIDEO(codec)->width;
-	TMEDIA_CONSUMER(consumer)->video.height = TMEDIA_CODEC_VIDEO(codec)->height;
+	TMEDIA_CONSUMER(consumer)->video.in.width = TMEDIA_CODEC_VIDEO(codec)->width;
+	TMEDIA_CONSUMER(consumer)->video.in.height = TMEDIA_CODEC_VIDEO(codec)->height;
+
+	if(!TMEDIA_CONSUMER(consumer)->video.display.width){
+		TMEDIA_CONSUMER(consumer)->video.display.width = TMEDIA_CONSUMER(consumer)->video.in.width;
+	}
+	if(!TMEDIA_CONSUMER(consumer)->video.display.height){
+		TMEDIA_CONSUMER(consumer)->video.display.height = TMEDIA_CONSUMER(consumer)->video.in.height;
+	}
 
 	return 0;
 }
@@ -118,7 +125,8 @@ int tdshow_consumer_start(tmedia_consumer_t* self)
 	}
 	// Set parameters
 	consumer->display->setFps(TMEDIA_CONSUMER(consumer)->video.fps);
-	consumer->display->setSize(TMEDIA_CONSUMER(consumer)->video.width, TMEDIA_CONSUMER(consumer)->video.height);
+	// do not change the display size: see hook()
+	// consumer->display->setSize(TMEDIA_CONSUMER(consumer)->video.display.width, TMEDIA_CONSUMER(consumer)->video.display.height);
 	if(consumer->window){
 		consumer->display->attach(consumer->window);
 	}
@@ -136,7 +144,7 @@ int tdshow_consumer_consume(tmedia_consumer_t* self, void** buffer, tsk_size_t s
 {
 	tdshow_consumer_t* consumer = (tdshow_consumer_t*)self;
 	if(consumer && consumer->display && buffer){
-		consumer->display->handleVideoFrame(*buffer, TMEDIA_CONSUMER(consumer)->video.width, TMEDIA_CONSUMER(consumer)->video.height);
+		consumer->display->handleVideoFrame(*buffer, TMEDIA_CONSUMER(consumer)->video.display.width, TMEDIA_CONSUMER(consumer)->video.display.height);
 		return 0;
 	}
 	else{
@@ -206,12 +214,13 @@ static tsk_object_t* tdshow_consumer_ctor(tsk_object_t * self, va_list * app)
 
 		/* init base */
 		tmedia_consumer_init(TMEDIA_CONSUMER(consumer));
-		TMEDIA_CONSUMER(consumer)->video.chroma = tmedia_bgr24; // RGB24 on x86 (little endians) stored as BGR24
+		TMEDIA_CONSUMER(consumer)->video.display.chroma = tmedia_bgr24; // RGB24 on x86 (little endians) stored as BGR24
 
 		/* init self */
 		TMEDIA_CONSUMER(consumer)->video.fps = 15;
-		TMEDIA_CONSUMER(consumer)->video.width = 352;
-		TMEDIA_CONSUMER(consumer)->video.height = 288;
+		TMEDIA_CONSUMER(consumer)->video.display.width = 352;
+		TMEDIA_CONSUMER(consumer)->video.display.height = 288;
+		TMEDIA_CONSUMER(consumer)->video.display.auto_resize = tsk_true;
 
 		if(IsMainThread()){
 			consumer->display = new DSDisplay(&hr);

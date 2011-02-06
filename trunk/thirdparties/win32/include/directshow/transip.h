@@ -163,7 +163,8 @@ public:
     // We override EnumMediaTypes to bypass the transform class enumerator
     // which would otherwise call this.
     HRESULT GetMediaType(int iPosition, CMediaType *pMediaType)
-        {   DbgBreak("CTransInPlaceFilter::GetMediaType should never be called");
+        {   
+			DbgBreak("CTransInPlaceFilter::GetMediaType should never be called");
             return E_UNEXPECTED;
         }
 

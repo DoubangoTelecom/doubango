@@ -34,7 +34,7 @@
 
 #include "tinymedia/tmedia_common.h"
 
-#if HAVE_FFMPEG
+#if HAVE_FFMPEG || HAVE_SWSSCALE
 #include <libswscale/swscale.h>
 #include <libavcodec/avcodec.h>
 #endif
@@ -47,7 +47,7 @@ typedef struct tdav_converter_video_s
 {
 	TSK_DECLARE_OBJECT;
 	
-#if HAVE_FFMPEG
+#if HAVE_FFMPEG || HAVE_SWSSCALE
 	struct SwsContext *context;
 
 	enum PixelFormat pixfmt;

@@ -49,7 +49,7 @@ public:
 	DSGrabber(HRESULT *hr);
 	virtual ~DSGrabber();
 
-	void setCallback(tmedia_producer_cb_f callback, const void* callback_data);
+	void setCallback(tmedia_producer_enc_cb_f callback, const void* callback_data);
 	void setCaptureDevice(const std::string &devicePath);
 
 	virtual void start();
@@ -85,7 +85,7 @@ private:
 	bool				first_buffer;
 
 	const void* plugin_cb_data;
-	tmedia_producer_cb_f plugin_cb;
+	tmedia_producer_enc_cb_f plugin_cb;
 };
 
 #endif

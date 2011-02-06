@@ -1242,7 +1242,15 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 	}
 
 	while(sent < size){
+#if TNET_UNDER_WINDOWS
+		WSABUF wsaBuffer;
+		DWORD numberOfBytesSent = 0;
+		wsaBuffer.buf = ((CHAR*)buf) + sent;
+		wsaBuffer.len = (size-sent);
+		ret = WSASendTo(fd, &wsaBuffer, 1, &numberOfBytesSent, 0, to, tnet_get_sockaddr_size(to), 0, 0);
+#else
 		ret = sendto(fd, (((const uint8_t*)buf)+sent), (size-sent), 0, to, tnet_get_sockaddr_size(to));
+#endif
 		if(ret <= 0){
 			goto bail;
 		}

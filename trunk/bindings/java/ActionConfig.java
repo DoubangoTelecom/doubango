@@ -41,6 +41,11 @@ public class ActionConfig {
     return tinyWRAPJNI.ActionConfig_addHeader(swigCPtr, this, name, value);
   }
 
+  public ActionConfig setResponseLine(short code, String phrase) {
+    long cPtr = tinyWRAPJNI.ActionConfig_setResponseLine(swigCPtr, this, code, phrase);
+    return (cPtr == 0) ? null : new ActionConfig(cPtr, false);
+  }
+
   public ActionConfig setMediaString(twrap_media_type_t type, String key, String value) {
     long cPtr = tinyWRAPJNI.ActionConfig_setMediaString(swigCPtr, this, type.swigValue(), key, value);
     return (cPtr == 0) ? null : new ActionConfig(cPtr, false);

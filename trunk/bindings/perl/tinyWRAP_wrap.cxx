@@ -1834,6 +1834,22 @@ SWIG_AsVal_long SWIG_PERL_DECL_ARGS_2(SV *obj, long* val)
 
 
 SWIGINTERN int
+SWIG_AsVal_short SWIG_PERL_DECL_ARGS_2(SV * obj, short *val)
+{
+  long v;
+  int res = SWIG_AsVal_long SWIG_PERL_CALL_ARGS_2(obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v < SHRT_MIN || v > SHRT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< short >(v);
+    }
+  }  
+  return res;
+}
+
+
+SWIGINTERN int
 SWIG_AsVal_int SWIG_PERL_DECL_ARGS_2(SV * obj, int *val)
 {
   long v;
@@ -2498,6 +2514,55 @@ XS(_wrap_ActionConfig_addHeader) {
   fail:
     
     if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ActionConfig_setResponseLine) {
+  {
+    ActionConfig *arg1 = (ActionConfig *) 0 ;
+    short arg2 ;
+    char *arg3 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    short val2 ;
+    int ecode2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    int argvi = 0;
+    ActionConfig *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 3) || (items > 3)) {
+      SWIG_croak("Usage: ActionConfig_setResponseLine(self,code,phrase);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ActionConfig, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ActionConfig_setResponseLine" "', argument " "1"" of type '" "ActionConfig *""'"); 
+    }
+    arg1 = reinterpret_cast< ActionConfig * >(argp1);
+    ecode2 = SWIG_AsVal_short SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ActionConfig_setResponseLine" "', argument " "2"" of type '" "short""'");
+    } 
+    arg2 = static_cast< short >(val2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ActionConfig_setResponseLine" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = reinterpret_cast< char * >(buf3);
+    result = (ActionConfig *)(arg1)->setResponseLine(arg2,(char const *)arg3);
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ActionConfig, 0 | SWIG_SHADOW); argvi++ ;
+    
+    
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    XSRETURN(argvi);
+  fail:
+    
+    
     if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
     SWIG_croak_null();
   }
@@ -11250,6 +11315,72 @@ XS(_wrap_ProxyVideoProducer_push) {
 }
 
 
+XS(_wrap_ProxyVideoProducer_send) {
+  {
+    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+    void *arg2 = (void *) 0 ;
+    unsigned int arg3 ;
+    unsigned int arg4 ;
+    bool arg5 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    unsigned int val3 ;
+    int ecode3 = 0 ;
+    unsigned int val4 ;
+    int ecode4 = 0 ;
+    bool val5 ;
+    int ecode5 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 5) || (items > 5)) {
+      SWIG_croak("Usage: ProxyVideoProducer_send(self,buffer,size,duration,marker);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_send" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+    res2 = SWIG_ConvertPtr(ST(1),SWIG_as_voidptrptr(&arg2), 0, 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyVideoProducer_send" "', argument " "2"" of type '" "void const *""'"); 
+    }
+    ecode3 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoProducer_send" "', argument " "3"" of type '" "unsigned int""'");
+    } 
+    arg3 = static_cast< unsigned int >(val3);
+    ecode4 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyVideoProducer_send" "', argument " "4"" of type '" "unsigned int""'");
+    } 
+    arg4 = static_cast< unsigned int >(val4);
+    ecode5 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(4), &val5);
+    if (!SWIG_IsOK(ecode5)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "ProxyVideoProducer_send" "', argument " "5"" of type '" "bool""'");
+    } 
+    arg5 = static_cast< bool >(val5);
+    result = (int)(arg1)->send((void const *)arg2,arg3,arg4,arg5);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_ProxyVideoProducer_setCallback) {
   {
     ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
@@ -17296,6 +17427,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::new_ActionConfig", _wrap_new_ActionConfig},
 {"tinyWRAPc::delete_ActionConfig", _wrap_delete_ActionConfig},
 {"tinyWRAPc::ActionConfig_addHeader", _wrap_ActionConfig_addHeader},
+{"tinyWRAPc::ActionConfig_setResponseLine", _wrap_ActionConfig_setResponseLine},
 {"tinyWRAPc::ActionConfig_setMediaString", _wrap_ActionConfig_setMediaString},
 {"tinyWRAPc::ActionConfig_setMediaInt", _wrap_ActionConfig_setMediaInt},
 {"tinyWRAPc::delete_MediaSessionMgr", _wrap_delete_MediaSessionMgr},
@@ -17490,6 +17622,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::ProxyVideoProducer_getRotation", _wrap_ProxyVideoProducer_getRotation},
 {"tinyWRAPc::ProxyVideoProducer_setRotation", _wrap_ProxyVideoProducer_setRotation},
 {"tinyWRAPc::ProxyVideoProducer_push", _wrap_ProxyVideoProducer_push},
+{"tinyWRAPc::ProxyVideoProducer_send", _wrap_ProxyVideoProducer_send},
 {"tinyWRAPc::ProxyVideoProducer_setCallback", _wrap_ProxyVideoProducer_setCallback},
 {"tinyWRAPc::ProxyVideoProducer_getMediaSessionId", _wrap_ProxyVideoProducer_getMediaSessionId},
 {"tinyWRAPc::ProxyVideoProducer_registerPlugin", _wrap_ProxyVideoProducer_registerPlugin},

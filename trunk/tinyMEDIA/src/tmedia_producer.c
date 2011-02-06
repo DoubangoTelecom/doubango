@@ -57,22 +57,33 @@ int tmedia_producer_init(tmedia_producer_t* self)
 }
 
 /**@ingroup tmedia_producer_group
-* Sets callback function and data.
-* @param self The producer object for which to set the the callback data and function
-* @param callback The callback function to call when new data become available.
-* @param callback_data User defined data which will be passed back when the callback function is called.
-* Could be used as context.
-* @retval Zero if succeed and non-zero error code otherwise
+* callback to encode and send() data
 */
-int tmedia_producer_set_callback(tmedia_producer_t *self, tmedia_producer_cb_f callback, const void* callback_data)
+int tmedia_producer_set_enc_callback(tmedia_producer_t *self, tmedia_producer_enc_cb_f callback, const void* callback_data)
 {
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	self->callback = callback;
-	self->callback_data = callback_data;
+	self->enc_cb.callback = callback;
+	self->enc_cb.callback_data = callback_data;
+
+	return 0;
+}
+
+/**@ingroup tmedia_producer_group
+* callback to send() data "as is"
+*/
+int tmedia_producer_set_raw_callback(tmedia_producer_t *self, tmedia_producer_raw_cb_f callback, const void* callback_data)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	self->raw_cb.callback = callback;
+	self->raw_cb.callback_data = callback_data;
 
 	return 0;
 }

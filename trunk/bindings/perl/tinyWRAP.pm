@@ -116,6 +116,7 @@ sub DESTROY {
 }
 
 *addHeader = *tinyWRAPc::ActionConfig_addHeader;
+*setResponseLine = *tinyWRAPc::ActionConfig_setResponseLine;
 *setMediaString = *tinyWRAPc::ActionConfig_setMediaString;
 *setMediaInt = *tinyWRAPc::ActionConfig_setMediaInt;
 sub DISOWN {
@@ -1475,6 +1476,7 @@ sub DESTROY {
 *getRotation = *tinyWRAPc::ProxyVideoProducer_getRotation;
 *setRotation = *tinyWRAPc::ProxyVideoProducer_setRotation;
 *push = *tinyWRAPc::ProxyVideoProducer_push;
+*send = *tinyWRAPc::ProxyVideoProducer_send;
 *setCallback = *tinyWRAPc::ProxyVideoProducer_setCallback;
 *getMediaSessionId = *tinyWRAPc::ProxyVideoProducer_getMediaSessionId;
 *registerPlugin = *tinyWRAPc::ProxyVideoProducer_registerPlugin;
