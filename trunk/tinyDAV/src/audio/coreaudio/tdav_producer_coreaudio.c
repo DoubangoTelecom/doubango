@@ -27,8 +27,8 @@ void __handle_input_buffer (void *userdata, AudioQueueRef queue, AudioQueueBuffe
     }
                            
 	// Alert the session that there is new data to send
-	if(TMEDIA_PRODUCER(producer)->callback) {
-		TMEDIA_PRODUCER(producer)->callback(TMEDIA_PRODUCER(producer)->callback_data, buffer->mAudioData, buffer->mAudioDataByteSize);
+	if(TMEDIA_PRODUCER(producer)->enc_cb.callback) {
+		TMEDIA_PRODUCER(producer)->enc_cb.callback(TMEDIA_PRODUCER(producer)->enc_cb.callback_data, buffer->mAudioData, buffer->mAudioDataByteSize);
 	}
     
     // Re-enqueue the buffer

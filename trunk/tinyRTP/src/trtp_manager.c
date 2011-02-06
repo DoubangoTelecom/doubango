@@ -146,10 +146,9 @@ int trtp_manager_prepare(trtp_manager_t* self)
 			self->rtp.public_port = local_port;
 			/* Disable receiving until we start the transport (To avoid buffering) */
 			{
-				int error, optval = TINY_RCVBUF;
-				int len = TINY_RCVBUF;
-				if((error = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&optval, sizeof(optval)))){
-					TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", error);
+				int err, optval = TINY_RCVBUF;
+				if((err = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&optval, sizeof(optval)))){
+					TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", err);
 				}				
 			}
 		}
