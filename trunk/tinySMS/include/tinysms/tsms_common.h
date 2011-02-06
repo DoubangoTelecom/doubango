@@ -165,7 +165,7 @@ int tsms_tpdu_message_deinit(tsms_tpdu_message_t* self);
 
 /**< Indicates whether to append SMSC address at the begining of the TPDU content.
 */
-#define TSMS_TPDU_APPEND_SMSC	1
+#define TSMS_TPDU_APPEND_SMSC	0
 
 /* ======================== RPDU ======================== 
 =========================================================*/
