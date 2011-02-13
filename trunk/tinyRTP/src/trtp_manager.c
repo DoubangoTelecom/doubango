@@ -467,7 +467,7 @@ int trtp_manager_stop(trtp_manager_t* self)
 
 
 //=================================================================================================
-//	RTP packet object definition
+//	RTP manager object definition
 //
 static tsk_object_t* trtp_manager_ctor(tsk_object_t * self, va_list * app)
 {

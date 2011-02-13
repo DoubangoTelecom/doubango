@@ -24,10 +24,9 @@
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
- * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMEDIA_RTP_PACKET_H
-#define TINYMEDIA_RTP_PACKET_H
+#ifndef TINYRTP_RTP_PACKET_H
+#define TINYRTP_RTP_PACKET_H
 
 #include "tinyrtp_config.h"
 
@@ -68,4 +67,4 @@ TINYRTP_GEXTERN const tsk_object_def_t *trtp_rtp_packet_def_t;
 
 TRTP_END_DECLS
 
-#endif /* TINYMEDIA_RTP_PACKET_H */
+#endif /* TINYRTP_RTP_PACKET_H */
