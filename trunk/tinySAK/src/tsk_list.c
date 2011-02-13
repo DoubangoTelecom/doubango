@@ -225,7 +225,7 @@ tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predi
 * @param predicate The predicate function used to match the item.
 * @param data Arbitrary data to pass to the predicate function.
 */
-void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const tsk_object_t * data)
+void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
 {
 	tsk_list_item_t* item;
 	if((item = tsk_list_pop_item_by_pred(list, predicate, data))){

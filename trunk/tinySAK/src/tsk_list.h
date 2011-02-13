@@ -97,8 +97,8 @@ TINYSAK_API int tsk_list_unlock(tsk_list_t* list);
 TINYSAK_API void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item);
 TINYSAK_API tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj);
 TINYSAK_API void tsk_list_remove_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj);
-TINYSAK_API void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const tsk_object_t * data);
-TINYSAK_API tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const tsk_object_t * data);
+TINYSAK_API void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
+TINYSAK_API tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
 TINYSAK_API void tsk_list_clear_items(tsk_list_t* list);
 
 TINYSAK_API tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list);
