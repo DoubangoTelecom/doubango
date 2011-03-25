@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="urn:ietf:params:xml:ns:simple-filter" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:ietf:params:xml:ns:simple-filter" elementFormDefault="qualified">
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+  <xs:annotation>
+    <xs:documentation xml:lang="en">
+         XML Schema Definition for Filter Criteria.
+       </xs:documentation>
+  </xs:annotation>
+  <xs:element name="filter-set" type="FilterSetType"/>
+  <xs:complexType name="FilterSetType">
+    <xs:sequence>
+      <xs:element name="ns-bindings" type="NSBindings" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="filter" type="FilterType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="package" type="xs:string" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="NSBindings">
+    <xs:sequence>
+      <xs:element name="ns-binding" type="NSBinding" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NSBinding">
+    <xs:attribute name="prefix" type="xs:string" use="required"/>
+    <xs:attribute name="urn" type="xs:anyURI" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="FilterType">
+    <xs:sequence>
+      <xs:element name="what" type="WhatType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="trigger" type="TriggerType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="uri" type="xs:anyURI" use="optional"/>
+    <xs:attribute name="domain" type="xs:string" use="optional"/>
+    <xs:attribute name="remove" type="xs:boolean" use="optional" default="false"/>
+    <xs:attribute name="enabled" type="xs:boolean" use="optional" default="true"/>
+    <xs:anyAttribute namespace="##other" processContents="lax"/>
+  </xs:complexType>
+  <xs:complexType name="WhatType">
+    <xs:sequence>
+      <xs:element name="include" type="InclType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="exclude" type="ExclType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="InclType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="type" type="TypeType" default="xpath" use="optional"/>
+        <xs:anyAttribute namespace="##other" processContents="lax"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ExclType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="type" type="TypeType" default="xpath" use="optional"/>
+        <xs:anyAttribute namespace="##other" processContents="lax"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:simpleType name="TypeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="xpath"/>
+      <xs:enumeration value="namespace"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="TriggerType">
+    <xs:sequence>
+      <xs:element name="changed" type="ChangedType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="added" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="removed" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ChangedType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="from" type="xs:anySimpleType" use="optional"/>
+        <xs:attribute name="to" type="xs:anySimpleType" use="optional"/>
+        <xs:attribute name="by" type="xs:decimal" use="optional"/>
+        <xs:anyAttribute namespace="##other" processContents="lax"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:schema>

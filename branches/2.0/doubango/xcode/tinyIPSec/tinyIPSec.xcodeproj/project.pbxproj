@@ -1,0 +1,233 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EC2E0229114445AD0021A2A6 /* tinyipsec_config.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2E021D114445AD0021A2A6 /* tinyipsec_config.h */; };
+		EC2E022A114445AD0021A2A6 /* tipsec.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2E021E114445AD0021A2A6 /* tipsec.c */; };
+		EC2E022B114445AD0021A2A6 /* tipsec.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2E021F114445AD0021A2A6 /* tipsec.h */; };
+		EC2E022C114445AD0021A2A6 /* tipsec_common.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2E0220114445AD0021A2A6 /* tipsec_common.c */; };
+		EC2E022D114445AD0021A2A6 /* tipsec_common.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2E0221114445AD0021A2A6 /* tipsec_common.h */; };
+		EC2E022E114445AD0021A2A6 /* tipsec_racoon.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2E0222114445AD0021A2A6 /* tipsec_racoon.c */; };
+		EC2E022F114445AD0021A2A6 /* tipsec_racoon.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2E0223114445AD0021A2A6 /* tipsec_racoon.h */; };
+		EC2E0230114445AD0021A2A6 /* tipsec_vista.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2E0224114445AD0021A2A6 /* tipsec_vista.c */; };
+		EC2E0231114445AD0021A2A6 /* tipsec_vista.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2E0225114445AD0021A2A6 /* tipsec_vista.h */; };
+		EC2E0232114445AD0021A2A6 /* tipsec_xp.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2E0226114445AD0021A2A6 /* tipsec_xp.c */; };
+		EC2E0233114445AD0021A2A6 /* tipsec_xp.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2E0227114445AD0021A2A6 /* tipsec_xp.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		D2AAC0630554660B00DB518D /* libtinyIPSec.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinyIPSec.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC2E021D114445AD0021A2A6 /* tinyipsec_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyipsec_config.h; sourceTree = "<group>"; };
+		EC2E021E114445AD0021A2A6 /* tipsec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tipsec.c; sourceTree = "<group>"; };
+		EC2E021F114445AD0021A2A6 /* tipsec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tipsec.h; sourceTree = "<group>"; };
+		EC2E0220114445AD0021A2A6 /* tipsec_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tipsec_common.c; sourceTree = "<group>"; };
+		EC2E0221114445AD0021A2A6 /* tipsec_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tipsec_common.h; sourceTree = "<group>"; };
+		EC2E0222114445AD0021A2A6 /* tipsec_racoon.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tipsec_racoon.c; sourceTree = "<group>"; };
+		EC2E0223114445AD0021A2A6 /* tipsec_racoon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tipsec_racoon.h; sourceTree = "<group>"; };
+		EC2E0224114445AD0021A2A6 /* tipsec_vista.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tipsec_vista.c; sourceTree = "<group>"; };
+		EC2E0225114445AD0021A2A6 /* tipsec_vista.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tipsec_vista.h; sourceTree = "<group>"; };
+		EC2E0226114445AD0021A2A6 /* tipsec_xp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tipsec_xp.c; sourceTree = "<group>"; };
+		EC2E0227114445AD0021A2A6 /* tipsec_xp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tipsec_xp.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D289988505E68E00004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* tinyIPSec */ = {
+			isa = PBXGroup;
+			children = (
+				EC2E021B114445AD0021A2A6 /* src */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = tinyIPSec;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC0630554660B00DB518D /* libtinyIPSec.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EC2E021B114445AD0021A2A6 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				EC2E021D114445AD0021A2A6 /* tinyipsec_config.h */,
+				EC2E021E114445AD0021A2A6 /* tipsec.c */,
+				EC2E021F114445AD0021A2A6 /* tipsec.h */,
+				EC2E0220114445AD0021A2A6 /* tipsec_common.c */,
+				EC2E0221114445AD0021A2A6 /* tipsec_common.h */,
+				EC2E0222114445AD0021A2A6 /* tipsec_racoon.c */,
+				EC2E0223114445AD0021A2A6 /* tipsec_racoon.h */,
+				EC2E0224114445AD0021A2A6 /* tipsec_vista.c */,
+				EC2E0225114445AD0021A2A6 /* tipsec_vista.h */,
+				EC2E0226114445AD0021A2A6 /* tipsec_xp.c */,
+				EC2E0227114445AD0021A2A6 /* tipsec_xp.h */,
+			);
+			name = src;
+			path = ../../tinyIPSec/src;
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC0600554660B00DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC2E0229114445AD0021A2A6 /* tinyipsec_config.h in Headers */,
+				EC2E022B114445AD0021A2A6 /* tipsec.h in Headers */,
+				EC2E022D114445AD0021A2A6 /* tipsec_common.h in Headers */,
+				EC2E022F114445AD0021A2A6 /* tipsec_racoon.h in Headers */,
+				EC2E0231114445AD0021A2A6 /* tipsec_vista.h in Headers */,
+				EC2E0233114445AD0021A2A6 /* tipsec_xp.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2AAC0620554660B00DB518D /* tinyIPSec */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "tinyIPSec" */;
+			buildPhases = (
+				D2AAC0600554660B00DB518D /* Headers */,
+				D2AAC0610554660B00DB518D /* Sources */,
+				D289988505E68E00004EDB86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tinyIPSec;
+			productName = tinyIPSec;
+			productReference = D2AAC0630554660B00DB518D /* libtinyIPSec.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "tinyIPSec" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* tinyIPSec */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2AAC0620554660B00DB518D /* tinyIPSec */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2AAC0610554660B00DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC2E022A114445AD0021A2A6 /* tipsec.c in Sources */,
+				EC2E022C114445AD0021A2A6 /* tipsec_common.c in Sources */,
+				EC2E022E114445AD0021A2A6 /* tipsec_racoon.c in Sources */,
+				EC2E0230114445AD0021A2A6 /* tipsec_vista.c in Sources */,
+				EC2E0232114445AD0021A2A6 /* tipsec_xp.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB914B08733D8E0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = ../../../doubango/tinySAK/src;
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_CFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
+				PRODUCT_NAME = tinyIPSec;
+			};
+			name = Debug;
+		};
+		1DEB914C08733D8E0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = tinyIPSec;
+			};
+			name = Release;
+		};
+		1DEB914F08733D8E0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Debug;
+		};
+		1DEB915008733D8E0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "tinyIPSec" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB914B08733D8E0010E9CD /* Debug */,
+				1DEB914C08733D8E0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "tinyIPSec" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB914F08733D8E0010E9CD /* Debug */,
+				1DEB915008733D8E0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

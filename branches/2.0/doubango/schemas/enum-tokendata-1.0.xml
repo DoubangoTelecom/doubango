@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<schema targetNamespace="urn:ietf:params:xml:ns:enum-tokendata-1.0"
+  xmlns:enum-tokendata="urn:ietf:params:xml:ns:enum-tokendata-1.0"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified">
+
+  <element name="tokendata" type="enum-tokendata:tokenDataType"/>
+
+  <simpleType name="E115String">
+    <restriction base="string">
+ <pattern value="[&#x20;-&#x7A;&#xA0;-&#xD7FF;&#xE000;-&#xFFFD;]*"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="E115StringUb256">
+    <restriction base="enum-tokendata:E115String">
+      <minLength value="1"/>
+      <maxLength value="256"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="countryCodeType">
+    <restriction base="token">
+      <minLength value="2"/>
+      <maxLength value="2"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="TokenType">
+    <restriction base="token">
+      <minLength value="1"/>
+      <maxLength value="64"/>
+    </restriction>
+  </simpleType>
+
+  <complexType name="addressType">
+    <all>
+      <element name="streetName"     minOccurs="0"
+       type="enum-tokendata:E115StringUb256" />
+      <element name="houseNumber"    minOccurs="0"
+       type="enum-tokendata:E115StringUb256"/>
+      <element name="postalCode"     minOccurs="0"
+       type="enum-tokendata:E115StringUb256"/>
+      <element name="locality"       minOccurs="0"
+       type="enum-tokendata:E115StringUb256"/>
+      <element name="countyStateOrProvince" minOccurs="0"
+       type="enum-tokendata:E115StringUb256"/>
+      <element name="ISOcountryCode" minOccurs="0"
+       type="enum-tokendata:countryCodeType"/>
+    </all>
+  </complexType>
+
+  <group name="tokenContactBaseGroup">
+    <sequence>
+      <element name="organisation"  minOccurs="0"
+       type="enum-tokendata:E115StringUb256"/>
+      <element name="commercialregisternumber" minOccurs="0"
+       type="enum-tokendata:TokenType"/>
+      <element name="title"         minOccurs="0"
+       type="enum-tokendata:TokenType"/>
+      <element name="firstname"     minOccurs="0"
+       type="enum-tokendata:E115StringUb256"/>
+      <element name="lastname"      minOccurs="0"
+       type="enum-tokendata:E115StringUb256"/>
+      <element name="address"       minOccurs="0"
+       type="enum-tokendata:addressType"/>
+      <element name="phone" type="enum-tokendata:TokenType"
+       minOccurs="0" maxOccurs="10" />
+      <element name="fax"   type="enum-tokendata:TokenType"
+       minOccurs="0" maxOccurs="10" />
+      <element name="email" type="enum-tokendata:TokenType"
+       minOccurs="0" maxOccurs="10" />
+    </sequence>
+  </group>
+
+  <complexType name="contactType">
+    <sequence>
+      <group ref="enum-tokendata:tokenContactBaseGroup"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="tokenDataType">
+    <sequence>
+      <element name="contact" type="enum-tokendata:contactType"/>
+    </sequence>
+  </complexType>
+
+</schema>

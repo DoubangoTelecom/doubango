@@ -1,0 +1,445 @@
+<?xml version="1.0"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dreg="urn:ietf:params:xml:ns:dreg1" xmlns:iris="urn:ietf:params:xml:ns:iris1" targetNamespace="urn:ietf:params:xml:ns:dreg1" elementFormDefault="qualified">
+  <import namespace="urn:ietf:params:xml:ns:iris1"/>
+  <annotation>
+    <documentation>
+         Domain registry schema
+         derived from IRIS schema
+       </documentation>
+  </annotation>
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Query Types                               -->
+<!--                                           -->
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Find Registrars By Name                   -->
+<!--                                           -->
+  <complexType name="findRegistrarsByNameType">
+    <complexContent>
+      <extension base="iris:queryType">
+        <sequence>
+          <element ref="dreg:baseDomain" minOccurs="0" maxOccurs="1"/>
+          <element name="namePart" type="dreg:exactOrPartialMatchParameter" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="findRegistrarsByName" type="dreg:findRegistrarsByNameType" substitutionGroup="iris:query"/>
+<!--                                           -->
+<!-- Find Domains By Contact                   -->
+<!--                                           -->
+  <complexType name="findDomainsByContactType">
+    <complexContent>
+      <extension base="iris:queryType">
+        <sequence>
+          <element ref="dreg:baseDomain" minOccurs="0" maxOccurs="1"/>
+          <choice>
+            <group ref="dreg:contactSearchGroup"/>
+            <element name="contactHandle" type="dreg:exactMatchParameter"/>
+          </choice>
+          <element name="role" minOccurs="0" maxOccurs="1">
+            <simpleType>
+              <restriction base="string">
+                <enumeration value="registrant"/>
+                <enumeration value="billingContact"/>
+                <enumeration value="technicalContact"/>
+                <enumeration value="administrativeContact"/>
+                <enumeration value="legalContact"/>
+                <enumeration value="zoneContact"/>
+                <enumeration value="abuseContact"/>
+                <enumeration value="securityContact"/>
+                <enumeration value="otherContact"/>
+              </restriction>
+            </simpleType>
+          </element>
+          <element name="language" type="language" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="findDomainsByContact" type="dreg:findDomainsByContactType" substitutionGroup="iris:query"/>
+<!--                                           -->
+<!-- Find Domains By Name                      -->
+<!--                                           -->
+  <complexType name="findDomainsByNameType">
+    <complexContent>
+      <extension base="iris:queryType">
+        <sequence>
+          <element name="namePart" type="dreg:partialMatchParameter"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="findDomainsByName" type="dreg:findDomainsByNameType" substitutionGroup="iris:query"/>
+<!--                                           -->
+<!-- Find Domains By Internationalized Name    -->
+<!--                                           -->
+  <complexType name="findDomainsByIDNType">
+    <complexContent>
+      <extension base="iris:queryType">
+        <sequence>
+          <element name="namePart" type="dreg:exactMatchParameter"/>
+          <element name="language" type="language" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="findDomainsByIDN" type="dreg:findDomainsByIDNType" substitutionGroup="iris:query"/>
+<!--                                           -->
+<!-- Find Contacts                             -->
+<!--                                           -->
+  <complexType name="findContactsType">
+    <complexContent>
+      <extension base="iris:queryType">
+        <sequence>
+          <group ref="dreg:contactSearchGroup"/>
+          <element name="language" type="language" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="findContacts" type="dreg:findContactsType" substitutionGroup="iris:query"/>
+<!--                                           -->
+<!-- Find Domains By Host                      -->
+<!--                                           -->
+  <complexType name="findDomainsByHostType">
+    <complexContent>
+      <extension base="iris:queryType">
+        <sequence>
+          <element ref="dreg:baseDomain" minOccurs="0" maxOccurs="1"/>
+          <choice>
+            <element name="hostName" type="dreg:exactMatchParameter"/>
+            <element name="hostHandle" type="dreg:exactMatchParameter"/>
+            <element name="ipV4Address" type="dreg:exactMatchParameter"/>
+            <element name="ipV6Address" type="dreg:exactMatchParameter"/>
+          </choice>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="findDomainsByHost" type="dreg:findDomainsByHostType" substitutionGroup="iris:query"/>
+<!--                                           -->
+<!-- Contact Search Group                      -->
+<!--                                           -->
+  <group name="contactSearchGroup">
+    <choice>
+      <element name="commonName" type="dreg:exactOrPartialMatchParameter"/>
+      <element name="organization" type="dreg:exactOrPartialMatchParameter"/>
+      <element name="eMail" type="dreg:domainResourceParameter"/>
+      <element name="city" type="dreg:exactMatchParameter"/>
+      <element name="region" type="dreg:exactMatchParameter"/>
+      <element name="postalCode" type="dreg:exactMatchParameter"/>
+    </choice>
+  </group>
+  <complexType name="exactOrPartialMatchParameter">
+    <choice>
+      <group ref="dreg:partialMatchGroup"/>
+      <group ref="dreg:exactMatchGroup"/>
+    </choice>
+  </complexType>
+  <complexType name="exactMatchParameter">
+    <group ref="dreg:exactMatchGroup"/>
+  </complexType>
+  <complexType name="partialMatchParameter">
+    <sequence>
+      <group ref="dreg:partialMatchGroup"/>
+    </sequence>
+  </complexType>
+  <complexType name="domainResourceParameter">
+    <choice>
+      <group ref="dreg:exactMatchGroup"/>
+      <element name="inDomain" type="token"/>
+    </choice>
+  </complexType>
+  <element name="baseDomain" type="normalizedString"/>
+  <group name="partialMatchGroup">
+    <choice>
+      <sequence>
+        <element name="beginsWith">
+          <simpleType>
+            <restriction base="token">
+              <minLength value="1"/>
+            </restriction>
+          </simpleType>
+        </element>
+        <element minOccurs="0" name="endsWith">
+          <simpleType>
+            <restriction base="token">
+              <minLength value="1"/>
+            </restriction>
+          </simpleType>
+        </element>
+      </sequence>
+      <element name="endsWith">
+        <simpleType>
+          <restriction base="token">
+            <minLength value="1"/>
+          </restriction>
+        </simpleType>
+      </element>
+    </choice>
+  </group>
+  <group name="exactMatchGroup">
+    <sequence>
+      <element name="exactMatch" type="normalizedString"/>
+    </sequence>
+  </group>
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Result Types                              -->
+<!--                                           -->
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Domain                                    -->
+<!--                                           -->
+  <complexType name="domainType">
+    <complexContent>
+      <extension base="iris:resultType">
+        <sequence>
+          <element name="domainName" type="token"/>
+          <element name="idn" type="token" minOccurs="0" maxOccurs="1"/>
+          <element name="domainHandle" type="dreg:normalizedStringPrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="nameServer" type="iris:entityType" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="registrant" type="iris:entityType" minOccurs="0" maxOccurs="1"/>
+          <element name="billingContact" type="iris:entityType" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="technicalContact" type="iris:entityType" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="administrativeContact" type="iris:entityType" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="legalContact" type="iris:entityType" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="zoneContact" type="iris:entityType" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="abuseContact" type="iris:entityType" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="securityContact" type="iris:entityType" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="otherContact" type="iris:entityType" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="lastContactModificationDateTime" type="dreg:dateTimePrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="lastContactModificationBy" type="iris:entityType" minOccurs="0" maxOccurs="1"/>
+          <element name="status" minOccurs="0" maxOccurs="1">
+            <complexType>
+              <all>
+                <element name="reservedDelegation" minOccurs="0" maxOccurs="1" type="dreg:domainStatusType"/>
+                <element name="assignedAndActive" minOccurs="0" maxOccurs="1" type="dreg:domainStatusType"/>
+                <element name="assignedAndInactive" minOccurs="0" maxOccurs="1" type="dreg:domainStatusType"/>
+                <element name="assignedAndOnHold" minOccurs="0" maxOccurs="1" type="dreg:domainStatusType"/>
+                <element name="revoked" minOccurs="0" maxOccurs="1" type="dreg:domainStatusType"/>
+                <element name="transferPending" minOccurs="0" maxOccurs="1" type="dreg:domainStatusType"/>
+                <element name="registryLock" minOccurs="0" maxOccurs="1" type="dreg:domainStatusType"/>
+                <element name="registrarLock" minOccurs="0" maxOccurs="1" type="dreg:domainStatusType"/>
+                <element name="other" minOccurs="0" maxOccurs="1" type="dreg:domainStatusType"/>
+              </all>
+            </complexType>
+          </element>
+          <element name="domainVariant" type="iris:entityType" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="registrationReference" type="iris:entityType" minOccurs="0" maxOccurs="1"/>
+          <element name="registry" minOccurs="0" maxOccurs="1">
+            <complexType>
+              <complexContent>
+                <extension base="iris:entityType">
+                  <attribute name="hosting" type="boolean"/>
+                </extension>
+              </complexContent>
+            </complexType>
+          </element>
+          <element name="registrar" minOccurs="0" maxOccurs="1">
+            <complexType>
+              <complexContent>
+                <extension base="iris:entityType">
+                  <attribute name="hosting" type="boolean"/>
+                </extension>
+              </complexContent>
+            </complexType>
+          </element>
+          <element name="initialDelegationDateTime" type="dreg:dateTimePrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="lastRenewalDateTime" type="dreg:dateTimePrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="expirationDateTime" type="dreg:dateTimePrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="lastDelegationModificationDateTime" type="dreg:dateTimePrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="lastDelegationModificationBy" type="iris:entityType" minOccurs="0" maxOccurs="1"/>
+          <element name="lastVerificationDateTime" type="dreg:dateTimePrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element ref="iris:seeAlso" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="domain" type="dreg:domainType" substitutionGroup="iris:result"/>
+<!--                                           -->
+<!-- Host                                      -->
+<!--                                           -->
+  <complexType name="hostType">
+    <complexContent>
+      <extension base="iris:resultType">
+        <sequence>
+          <element name="hostHandle" type="dreg:normalizedStringPrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="hostName" type="normalizedString"/>
+          <element name="ipV4Address" type="token" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="ipV6Address" type="token" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="hostContact" type="iris:entityType" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="createdDateTime" type="dreg:dateTimePrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="lastModificationDateTime" type="dreg:dateTimePrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="lastVerificationDateTime" type="dreg:dateTimePrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element ref="iris:seeAlso" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="host" type="dreg:hostType" substitutionGroup="iris:result"/>
+<!--                                           -->
+<!-- Contact                                   -->
+<!--                                           -->
+  <complexType name="contactType">
+    <complexContent>
+      <extension base="iris:resultType">
+        <sequence>
+          <element name="contactHandle" type="dreg:normalizedStringPrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="commonName" type="dreg:normalizedStringPrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="language" type="language" minOccurs="0" maxOccurs="1"/>
+          <element name="type" minOccurs="0" maxOccurs="1">
+            <complexType>
+              <choice>
+                <element name="person" type="dreg:contactTypeType"/>
+                <element name="organization" type="dreg:contactTypeType"/>
+                <element name="role" type="dreg:contactTypeType"/>
+                <element name="other" type="dreg:contactTypeType"/>
+              </choice>
+            </complexType>
+          </element>
+          <element name="organization" type="dreg:normalizedStringPrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="eMail" type="dreg:stringPrivacyType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="IDNeMail" type="dreg:stringPrivacyType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="sip" type="dreg:stringPrivacyType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="postalAddress" minOccurs="0" maxOccurs="unbounded">
+            <complexType>
+              <sequence>
+                <element name="address" type="dreg:stringPrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+                <element name="city" type="dreg:stringPrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+                <element name="region" type="dreg:stringPrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+                <element name="postalCode" type="dreg:normalizedStringPrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+                <element name="country" type="dreg:tokenPrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+              </sequence>
+            </complexType>
+          </element>
+          <element name="phone" type="dreg:normalizedStringPrivacyType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="fax" type="dreg:normalizedStringPrivacyType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="createdDateTime" type="dreg:dateTimePrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="lastModificationDateTime" type="dreg:dateTimePrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="lastVerificationDateTime" type="dreg:dateTimePrivacyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+          <element name="translatedContact" type="iris:entityType" minOccurs="0" maxOccurs="unbounded"/>
+          <element ref="iris:seeAlso" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="contact" type="dreg:contactType" substitutionGroup="iris:result"/>
+<!--                                           -->
+<!-- Registration Authority                    -->
+<!--                                           -->
+  <complexType name="registrationAuthorityType">
+    <complexContent>
+      <extension base="iris:resultType">
+        <sequence>
+          <element name="serviceInstance" type="iris:entityType"/>
+          <element name="organizationName" type="string" minOccurs="0" maxOccurs="1"/>
+          <choice minOccurs="0" maxOccurs="3">
+            <element name="registry">
+              <complexType/>
+            </element>
+            <element name="registrar">
+              <complexType/>
+            </element>
+            <element name="other">
+              <complexType/>
+            </element>
+          </choice>
+          <element name="domain" type="token" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="registrationAuthority" type="dreg:registrationAuthorityType" substitutionGroup="iris:result"/>
+<!--                                           -->
+<!-- Privacy Label Types                       -->
+<!--                                           -->
+  <attributeGroup name="privacyLabelAttributeGroup">
+    <attribute name="private" type="boolean"/>
+    <attribute name="denied" type="boolean"/>
+    <attribute name="doNotRedistribute" type="boolean"/>
+    <attribute name="specialAccess" type="boolean"/>
+  </attributeGroup>
+  <complexType name="dateTimePrivacyType">
+    <simpleContent>
+      <extension base="dateTime">
+        <attributeGroup ref="dreg:privacyLabelAttributeGroup"/>
+      </extension>
+    </simpleContent>
+  </complexType>
+  <complexType name="stringPrivacyType">
+    <simpleContent>
+      <extension base="string">
+        <attributeGroup ref="dreg:privacyLabelAttributeGroup"/>
+      </extension>
+    </simpleContent>
+  </complexType>
+  <complexType name="normalizedStringPrivacyType">
+    <simpleContent>
+      <extension base="normalizedString">
+        <attributeGroup ref="dreg:privacyLabelAttributeGroup"/>
+      </extension>
+    </simpleContent>
+  </complexType>
+  <complexType name="tokenPrivacyType">
+    <simpleContent>
+      <extension base="token">
+        <attributeGroup ref="dreg:privacyLabelAttributeGroup"/>
+      </extension>
+    </simpleContent>
+  </complexType>
+  <complexType name="domainStatusType">
+    <sequence>
+      <element name="appliedDate" type="dateTime" minOccurs="0" maxOccurs="1"/>
+      <element name="description" minOccurs="0" maxOccurs="unbounded">
+        <complexType>
+          <simpleContent>
+            <extension base="string">
+              <attribute name="language" type="language" use="required"/>
+            </extension>
+          </simpleContent>
+        </complexType>
+      </element>
+    </sequence>
+    <attributeGroup ref="dreg:privacyLabelAttributeGroup"/>
+    <attribute name="scope" type="string"/>
+  </complexType>
+  <complexType name="contactTypeType">
+    <sequence>
+      <element name="description" minOccurs="0" maxOccurs="unbounded">
+        <complexType>
+          <simpleContent>
+            <extension base="string">
+              <attribute name="language" type="language" use="required"/>
+            </extension>
+          </simpleContent>
+        </complexType>
+      </element>
+    </sequence>
+    <attributeGroup ref="dreg:privacyLabelAttributeGroup"/>
+  </complexType>
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Error Codes                               -->
+<!--                                           -->
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Search Too Wide                           -->
+<!--                                           -->
+  <element name="searchTooWide" type="iris:codeType" substitutionGroup="iris:genericCode"/>
+<!--                                           -->
+<!-- Language Not Supported                    -->
+<!--                                           -->
+  <complexType name="languageNotSupportedType">
+    <complexContent>
+      <extension base="iris:codeType">
+        <sequence>
+          <element name="unsupportedLanguage" type="language" minOccurs="1" maxOccurs="unbounded"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="languageNotSupported" type="dreg:languageNotSupportedType" substitutionGroup="iris:genericCode"/>
+</schema>

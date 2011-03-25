@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Extracted from RFC 4745
+http://www.rfc-editor.org/rfc/rfc4745.txt
+
+NOTE: This file has been patched in order to generate a usable object mapping
+-->
+<xs:schema targetNamespace="urn:ietf:params:xml:ns:common-policy" xmlns:cp="urn:ietf:params:xml:ns:common-policy" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <!-- /ruleset -->
+  <xs:element name="ruleset">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="rule" type="cp:ruleType" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <!-- /ruleset/rule -->
+  <xs:complexType name="ruleType">
+    <xs:sequence>
+      <xs:element name="conditions" type="cp:conditionsType" minOccurs="0" />
+      <xs:element name="actions" type="cp:extensibleType" minOccurs="0" />
+      <xs:element name="transformations" type="cp:extensibleType" minOccurs="0" />
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required" />
+  </xs:complexType>
+  <!-- //rule/conditions -->
+  <xs:complexType name="conditionsType">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element name="identity" type="cp:identityType" minOccurs="0" />
+      <xs:element name="sphere" type="cp:sphereType" minOccurs="0" />
+      <xs:element name="validity" type="cp:validityType" minOccurs="0" />
+      <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+    </xs:choice>
+  </xs:complexType>
+  <!-- //conditions/identity -->
+  <xs:complexType name="identityType">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="one" type="cp:oneType" />
+      <xs:element name="many" type="cp:manyType" />
+      <xs:any namespace="##other" processContents="lax" />
+    </xs:choice>
+  </xs:complexType>
+  <!-- //identity/one -->
+  <xs:complexType name="oneType">
+    <xs:sequence>
+      <xs:any namespace="##other" minOccurs="0" processContents="lax" />
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:anyURI" use="required" />
+  </xs:complexType>
+  <!-- //identity/many -->
+  <xs:complexType name="manyType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="except" type="cp:exceptType" />
+      <xs:any namespace="##other" minOccurs="0" processContents="lax" />
+    </xs:choice>
+    <xs:attribute name="domain" use="optional" type="xs:string" />
+  </xs:complexType>
+  <!-- //many/except -->
+  <xs:complexType name="exceptType">
+    <xs:attribute name="domain" type="xs:string" use="optional" />
+    <xs:attribute name="id" type="xs:anyURI" use="optional" />
+  </xs:complexType>
+  <!-- //conditions/sphere -->
+  <xs:complexType name="sphereType">
+    <xs:attribute name="value" type="xs:string" use="required" />
+  </xs:complexType>
+  <!-- //conditions/validity -->
+  <xs:complexType name="validityType">
+    <xs:sequence minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="from" type="xs:dateTime" />
+      <xs:element name="until" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <!-- //rule/actions or //rule/transformations -->
+  <xs:complexType name="extensibleType">
+    <xs:sequence>
+      <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+  xmlns:dchk="urn:ietf:params:xml:ns:dchk1"
+  xmlns:iris="urn:ietf:params:xml:ns:iris1"
+  targetNamespace="urn:ietf:params:xml:ns:dchk1"
+  elementFormDefault="qualified" >
+
+  <import namespace="urn:ietf:params:xml:ns:iris1" />
+
+  <annotation>
+    <documentation>
+      Domain availability check schema
+      derived from IRIS schema
+    </documentation>
+  </annotation>
+
+  <!-- ========================================= -->
+  <!--                                           -->
+  <!-- Result Types                              -->
+  <!--                                           -->
+  <!-- ========================================= -->
+
+  <!--                                           -->
+  <!-- Domain                                    -->
+  <!--                                           -->
+
+  <complexType
+    name="domainType">
+    <complexContent>
+      <extension
+        base="iris:resultType">
+        <sequence>
+          <element
+            name="domainName"
+            type="token" />
+          <element
+            name="idn"
+            type="token"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element name="status"
+            minOccurs="0"
+            maxOccurs="1">
+            <complexType>
+              <choice minOccurs="0" maxOccurs="unbounded">
+                <element
+                  name="active"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="inactive"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="dispute"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="renew"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="addPeriod"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="renewPeriod"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="autoRenewPeriod"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="transferPeriod"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="redemptionPeriod"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="restore"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="policyCompliant"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="policyNoncompliant"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="reserved"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="create"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="delete"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="transfer"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="update"
+                  type="dchk:domainStatusType" />
+                <element
+                  name="other"
+                  type="dchk:domainStatusType" />
+              </choice>
+            </complexType>
+          </element>
+          <element
+            name="registrationReference"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="createdDateTime"
+            type="dateTime"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="initialDelegationDateTime"
+            type="dateTime"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="expirationDateTime"
+            type="dateTime"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="lastDatabaseUpdateDateTime"
+            type="dateTime"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            ref="iris:seeAlso"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <element
+    name="domain"
+    type="dchk:domainType"
+    substitutionGroup="iris:result" />
+
+  <complexType
+    name="domainStatusType">
+    <sequence>
+      <element
+        name="appliedDate"
+        type="dateTime"
+        minOccurs="0"
+        maxOccurs="1" />
+      <element
+        name="ticket"
+        type="token"
+        minOccurs="0"
+        maxOccurs="unbounded" />
+      <element
+        name="description"
+        minOccurs="0"
+        maxOccurs="unbounded">
+        <complexType>
+          <simpleContent>
+            <extension
+              base="string">
+              <attribute
+                name="language"
+                type="language"
+                use="required" />
+            </extension>
+          </simpleContent>
+        </complexType>
+      </element>
+      <element
+        name="subStatus"
+        minOccurs="0"
+        maxOccurs="1">
+        <complexType>
+          <simpleContent>
+            <extension
+              base="token">
+              <attribute
+                type="token"
+                use="required"
+                name="authority"/>
+            </extension>
+          </simpleContent>
+        </complexType>
+      </element>
+    </sequence>
+    <attribute
+      name="actor">
+      <simpleType>
+        <restriction
+          base="string">
+          <enumeration
+            value="registry"/>
+          <enumeration
+            value="registrar"/>
+          <enumeration
+            value="registrationServiceProvider"/>
+        </restriction>
+      </simpleType>
+    </attribute>
+    <attribute
+      name="disposition">
+      <simpleType>
+        <restriction
+          base="string">
+          <enumeration
+            value="prohibited"/>
+          <enumeration
+            value="pending"/>
+        </restriction>
+      </simpleType>
+    </attribute>
+    <attribute
+      name="scope"
+      type="token" />
+  </complexType>
+</schema>

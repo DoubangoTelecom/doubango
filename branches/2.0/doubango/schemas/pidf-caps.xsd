@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="urn:ietf:params:xml:ns:pidf:caps"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="urn:ietf:params:xml:ns:pidf:caps"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
+
+  <!-- This import brings in the XML language
+     attribute xml:lang-->
+
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+   schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+
+  <!-- ROOT -->
+  <xs:element name="servcaps" type="tns:servcapstype"/>
+  <xs:complexType name="servcapstype">
+    <xs:sequence>
+      <xs:element name="actor" type="tns:actortype"
+       minOccurs="0"/>
+      <xs:element name="application" type="tns:applicationtype"
+       minOccurs="0"/>
+      <xs:element name="audio" type="tns:audiotype" minOccurs="0"/>
+      <xs:element name="automata" type="tns:automatatype"
+       minOccurs="0"/>
+      <xs:element name="class" type="tns:classtype"
+       minOccurs="0"/>
+      <xs:element name="control" type="tns:controltype"
+       minOccurs="0"/>
+      <xs:element name="data" type="tns:datatype"
+       minOccurs="0"/>
+      <xs:element name="description" type="tns:descriptiontype"
+       minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="duplex" type="tns:duplextype"
+       minOccurs="0"/>
+      <xs:element name="event-packages" type="tns:event-packagestype"
+       minOccurs="0"/>
+      <xs:element name="extensions" type="tns:extensionstype"
+
+    minOccurs="0"/>
+      <xs:element name="isfocus" type="tns:isfocustype"
+       minOccurs="0"/>
+      <xs:element name="message" type="tns:messagetype"
+       minOccurs="0"/>
+      <xs:element name="methods" type="tns:methodstype"
+       minOccurs="0"/>
+      <xs:element name="languages" type="tns:languagestype"
+       minOccurs="0"/>
+      <xs:element name="priority" type="tns:prioritytype"
+       minOccurs="0"/>
+      <xs:element name="schemes" type="tns:schemestype"
+       minOccurs="0"/>
+      <xs:element name="text" type="tns:texttype"
+       minOccurs="0"/>
+      <xs:element name="type" type="tns:typetype"
+       minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="video" type="tns:videotype"
+       minOccurs="0"/>
+      <xs:any namespace="##other" processContents="lax"
+       minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:anyAttribute namespace="##any" processContents="lax"/>
+  </xs:complexType>
+
+  <xs:element name="devcaps" type="tns:devcaps"/>
+  <xs:complexType name="devcaps">
+    <xs:sequence>
+      <xs:element name="description" type="tns:descriptiontype"
+       minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="mobility" type="tns:mobilitytype"
+       minOccurs="0"/>
+      <xs:any namespace="##other" processContents="lax"
+       minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:anyAttribute namespace="##any" processContents="lax"/>
+  </xs:complexType>
+
+  <!-- AUDIO -->
+  <xs:simpleType name="audiotype">
+    <xs:restriction base="xs:boolean"/>
+  </xs:simpleType>
+
+  <!-- APPLICATION -->
+  <xs:simpleType name="applicationtype">
+    <xs:restriction base="xs:boolean"/>
+  </xs:simpleType>
+
+
+
+  <!-- DATA -->
+  <xs:simpleType name="datatype">
+    <xs:restriction base="xs:boolean"/>
+  </xs:simpleType>
+
+  <!-- CONTROL -->
+  <xs:simpleType name="controltype">
+    <xs:restriction base="xs:boolean"/>
+  </xs:simpleType>
+
+  <!-- VIDEO -->
+  <xs:simpleType name="videotype">
+    <xs:restriction base="xs:boolean"/>
+  </xs:simpleType>
+
+  <!-- TEXT -->
+  <xs:simpleType name="texttype">
+    <xs:restriction base="xs:boolean"/>
+  </xs:simpleType>
+
+  <!-- MESSAGE -->
+  <xs:simpleType name="messagetype">
+    <xs:restriction base="xs:boolean"/>
+  </xs:simpleType>
+
+  <!-- TYPE -->
+  <xs:simpleType name="typetype">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+
+  <!-- AUTOMATA -->
+  <xs:simpleType name="automatatype">
+    <xs:restriction base="xs:boolean"/>
+  </xs:simpleType>
+
+  <!-- CLASS -->
+  <xs:complexType name="classtype">
+    <xs:sequence>
+      <xs:element name="supported" type="tns:classtypes"
+       minOccurs="0"/>
+      <xs:element name="notsupported" type="tns:classtypes"
+       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="classtypes">
+    <xs:sequence>
+      <xs:element name="business" type="xs:string"
+       minOccurs="0"/>
+
+
+      <xs:element name="personal" type="xs:string"
+       minOccurs="0"/>
+      <xs:any namespace="##other" processContents="lax"
+       minOccurs="0"
+       maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- DUPLEX -->
+  <xs:complexType name="duplextype">
+    <xs:sequence>
+      <xs:element name="supported" type="tns:duplextypes"
+       minOccurs="0"/>
+      <xs:element name="notsupported" type="tns:duplextypes"
+       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="duplextypes">
+    <xs:sequence>
+      <xs:element name="full" type="xs:string"
+       minOccurs="0"/>
+      <xs:element name="half" type="xs:string"
+       minOccurs="0"/>
+      <xs:element name="receive-only" type="xs:string"
+       minOccurs="0"/>
+      <xs:element name="send-only" type="xs:string"
+       minOccurs="0"/>
+      <xs:any namespace="##other" processContents="lax"
+       minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- DESCRIPTION -->
+  <xs:complexType name="descriptiontype">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute ref="xml:lang"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- EVENT-PACKAGES -->
+  <xs:complexType name="event-packagestype">
+    <xs:sequence>
+      <xs:element name="supported" type="tns:eventtypes"
+       minOccurs="0"/>
+      <xs:element name="notsupported" type="tns:eventtypes"
+       minOccurs="0"/>
+
+
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="eventtypes">
+    <xs:sequence>
+      <xs:element name="conference" type="xs:string"
+       minOccurs="0"/>
+      <xs:element name="dialog" type="xs:string"
+       minOccurs="0"/>
+      <xs:element name="kpml" type="xs:string"
+       minOccurs="0"/>
+      <xs:element name="message-summary" type="xs:string"
+       minOccurs="0"/>
+      <xs:element name="poc-settings" type="xs:string"
+       minOccurs="0"/>
+      <xs:element name="presence" type="xs:string"
+       minOccurs="0"/>
+      <xs:element name="reg" type="xs:string"
+       minOccurs="0"/>
+      <xs:element name="refer" type="xs:string"
+       minOccurs="0"/>
+      <xs:element name="Siemens-RTP-Stats"
+       type="xs:string" minOccurs="0"/>
+      <xs:element name="spirits-INDPs"
+       type="xs:string" minOccurs="0"/>
+      <xs:element name="spirits-user-prof"
+       type="xs:string" minOccurs="0"/>
+      <xs:element name="winfo" type="xs:string"
+       minOccurs="0"/>
+      <xs:any namespace="##other" processContents="lax"
+       minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- PRIORITY -->
+  <xs:complexType name="prioritytype">
+    <xs:sequence>
+      <xs:element name="supported" type="tns:prioritytypes"
+       minOccurs="0"/>
+      <xs:element name="notsupported" type="tns:prioritytypes"
+       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="prioritytypes">
+    <xs:sequence>
+      <xs:element name="equals" type="tns:equalstype"
+       minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="higherhan" type="tns:higherthantype"
+       minOccurs="0" maxOccurs="unbounded"/>
+
+
+      <xs:element name="lowerthan" type="tns:lowerthantype"
+       minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="range" type="tns:rangetype"
+       minOccurs="0" maxOccurs="unbounded"/>
+      <xs:any namespace="##other" processContents="lax"
+       minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="lowerthantype">
+    <xs:attribute name="maxvalue" type="xs:integer"
+     use="required"/>
+  </xs:complexType>
+  <xs:complexType name="higherthantype">
+    <xs:attribute name="minvalue" type="xs:integer"
+     use="required"/>
+  </xs:complexType>
+  <xs:complexType name="equalstype">
+    <xs:attribute name="value" type="xs:integer"
+     use="required"/>
+  </xs:complexType>
+  <xs:complexType name="rangetype">
+    <xs:attribute name="minvalue" type="xs:integer"
+     use="required"/>
+    <xs:attribute name="maxvalue" type="xs:integer"
+     use="required"/>
+  </xs:complexType>
+
+  <!-- METHODS -->
+  <xs:complexType name="methodstype">
+    <xs:sequence>
+      <xs:element name="supported" type="tns:methodtypes"
+       minOccurs="0"/>
+      <xs:element name="notsupported" type="tns:methodtypes"
+       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="methodtypes">
+    <xs:sequence>
+      <xs:element name="ACK" type="xs:string" minOccurs="0"/>
+      <xs:element name="BYE" type="xs:string" minOccurs="0"/>
+      <xs:element name="CANCEL" type="xs:string" minOccurs="0"/>
+      <xs:element name="INFO" type="xs:string" minOccurs="0"/>
+      <xs:element name="INVITE" type="xs:string" minOccurs="0"/>
+      <xs:element name="MESSAGE" type="xs:string" minOccurs="0"/>
+      <xs:element name="NOTIFY" type="xs:string" minOccurs="0"/>
+      <xs:element name="OPTIONS" type="xs:string" minOccurs="0"/>
+      <xs:element name="PRACK" type="xs:string" minOccurs="0"/>
+      <xs:element name="PUBLISH" type="xs:string" minOccurs="0"/>
+
+
+      <xs:element name="REFER" type="xs:string" minOccurs="0"/>
+      <xs:element name="REGISTER" type="xs:string" minOccurs="0"/>
+      <xs:element name="SUBSCRIBE" type="xs:string" minOccurs="0"/>
+      <xs:element name="UPDATE" type="xs:string" minOccurs="0"/>
+      <xs:any namespace="##other" processContents="lax" minOccurs="0"
+       maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- EXTENSIONS -->
+  <xs:complexType name="extensionstype">
+    <xs:sequence>
+      <xs:element name="supported" type="tns:extensiontypes"
+       minOccurs="0"/>
+      <xs:element name="notsupported" type="tns:extensiontypes"
+       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="extensiontypes">
+    <xs:sequence>
+      <xs:element name="rel100" type="xs:string" minOccurs="0"/>
+      <xs:element name="early-session" type="xs:string" minOccurs="0"/>
+      <xs:element name="eventlist" type="xs:string" minOccurs="0"/>
+      <xs:element name="from-change" type="xs:string" minOccurs="0"/>
+      <xs:element name="gruu" type="xs:string" minOccurs="0"/>
+      <xs:element name="hist-info" type="xs:string" minOccurs="0"/>
+      <xs:element name="join" type="xs:string" minOccurs="0"/>
+      <xs:element name="norefersub" type="xs:string" minOccurs="0"/>
+      <xs:element name="path" type="xs:string" minOccurs="0"/>
+      <xs:element name="precondition" type="xs:string" minOccurs="0"/>
+      <xs:element name="pref" type="xs:string" minOccurs="0"/>
+      <xs:element name="privacy" type="xs:string" minOccurs="0"/>
+      <xs:element name="replaces" type="xs:string" minOccurs="0"/>
+      <xs:element name="resource-priority" type="xs:string" minOccurs="0"/>
+      <xs:element name="sdp-anat" type="xs:string" minOccurs="0"/>
+      <xs:element name="sec-agree" type="xs:string" minOccurs="0"/>
+      <xs:element name="tdialog" type="xs:string" minOccurs="0"/>
+      <xs:element name="timer" type="xs:string" minOccurs="0"/>
+      <xs:any namespace="##other" processContents="lax"
+       minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- SCHEMES -->
+  <xs:complexType name="schemestype">
+    <xs:sequence>
+      <xs:element name="supported" minOccurs="0">
+        <xs:complexType>
+
+
+          <xs:sequence>
+            <xs:element name="s" type="xs:string" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="notsupported" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="s" type="xs:string" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ACTOR -->
+  <xs:complexType name="actortype">
+    <xs:sequence>
+      <xs:element name="supported" type="tns:actortypes"
+       minOccurs="0"/>
+      <xs:element name="notsupported" type="tns:actortypes"
+       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="actortypes">
+    <xs:sequence>
+      <xs:element name="attendant" type="xs:string" minOccurs="0"/>
+      <xs:element name="information" type="xs:string" minOccurs="0"/>
+      <xs:element name="msg-taker" type="xs:string" minOccurs="0"/>
+      <xs:element name="principal" type="xs:string" minOccurs="0"/>
+      <xs:any namespace="##other" processContents="lax" minOccurs="0"
+       maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ISFOCUS -->
+  <xs:simpleType name="isfocustype">
+    <xs:restriction base="xs:boolean"/>
+  </xs:simpleType>
+
+  <!-- LANGUAGES -->
+  <xs:complexType name="languagestype">
+    <xs:sequence>
+      <xs:element name="supported" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="l" type="xs:string" maxOccurs="unbounded"/>
+          </xs:sequence>
+
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="notsupported" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="l" type="xs:string" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- MOBILITY -->
+  <xs:complexType name="mobilitytype">
+    <xs:sequence>
+      <xs:element name="supported" type="tns:mobilitytypes"
+       minOccurs="0"/>
+      <xs:element name="notsupported" type="tns:mobilitytypes"
+       minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="mobilitytypes">
+    <xs:sequence>
+      <xs:element name="fixed" type="xs:string"
+       minOccurs="0"/>
+      <xs:element name="mobile" type="xs:string"
+       minOccurs="0"/>
+      <xs:any namespace="##other" processContents="lax" minOccurs="0"
+       maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

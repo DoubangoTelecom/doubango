@@ -1,0 +1,420 @@
+.omabutton {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-WEIGHT: normal; FONT-SIZE: 12px; PADDING-BOTTOM: 0px; COLOR: #666666; LINE-HEIGHT: normal; PADDING-TOP: 0px; FONT-STYLE: normal; FONT-FAMILY: "Century Gothic"; TEXT-DECORATION: none
+}
+.footer {
+	FONT-SIZE: 9pt; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.header {
+	FONT-SIZE: 9pt; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.navbartab {
+	FONT-SIZE: 9pt; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.footerlink {
+	FONT-SIZE: 11px; COLOR: #336600; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.maintext {
+	FONT-SIZE: 11px; COLOR: #000000; LINE-HEIGHT: 14px; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.subtitles {
+	FONT-SIZE: 12px; COLOR: #000000; LINE-HEIGHT: 15px; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.login {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; COLOR: #666666; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+BODY {
+	MARGIN: 0pt 0px 0px; HEIGHT: 100%; BACKGROUND-COLOR: #413c3c
+}
+.GCF-GT {
+	
+}
+.A-FOOTER {
+	FONT-SIZE: 65%; COLOR: #003333; TEXT-DECORATION: none
+}
+.left_nav_item_on A {
+	FONT-WEIGHT: bold; COLOR: #000000; FONT-FAMILY: "Arial", Verdana, Helvetica, Sans-serif
+}
+.link_leftnav_sel A {
+	FONT-WEIGHT: bold; COLOR: #000000; FONT-FAMILY: "Arial", Verdana, Helvetica, Sans-serif
+}
+.left_nav_item_on A {
+	FONT-WEIGHT: bold; COLOR: #000000; FONT-FAMILY: "Arial", Verdana, Helvetica, Sans-serif
+}
+A.ALOGINMENU {
+	COLOR: #555555; FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A.NAVIGATOR:link {
+	COLOR: #074401
+}
+A.NAVIGATOR:visited {
+	FONT-SIZE: 110%; COLOR: #074401
+}
+A.NAVIGATOR:active {
+	COLOR: #076901
+}
+A.SORTBY {
+	FONT-WEIGHT: bold; COLOR: black; TEXT-DECORATION: none
+}
+.ARCHIVED {
+	BACKGROUND-COLOR: #d2d2d2
+}
+.BCKG {
+	BACKGROUND-COLOR: #fef4e2
+}
+.BIGBOLDTEXT {
+	FONT-WEIGHT: bolder; FONT-SIZE: 100%; FONT-FAMILY: Arial, "Verdana", Helvetica, Sans-serif
+}
+.BIGTEXT {
+	FONT-SIZE: 100%; FONT-FAMILY: Arial, "Verdana", Helvetica, Sans-serif
+}
+.BLUE-LIGHT {
+	BACKGROUND: #5780d5
+}
+BODY {
+	MARGIN: 0pt; COLOR: #000000; FONT-FAMILY: Arial, Helvetica, Sans-serif; BACKGROUND-COLOR: #ffffff
+}
+BODY.POPUP {
+	MARGIN: 3pt; OVERFLOW: auto; COLOR: #000000; FONT-FAMILY: Arial, "Verdana", Helvetica, Sans-serif; BACKGROUND-COLOR: #ffffff
+}
+.BODY-ICONS {
+	MARGIN: 4pt 22pt 4pt 12pt
+}
+.BORDER {
+	BORDER-RIGHT: #c0c0c0 1px solid; BORDER-TOP: #c0c0c0 1px solid; BORDER-LEFT: #c0c0c0 1px solid; BORDER-BOTTOM: #c0c0c0 1px solid
+}
+.BORDER-BROWSER {
+	BORDER-RIGHT: lightgrey 3px inset; BORDER-TOP: dimgray 3px inset; MARGIN-TOP: 7px; MARGIN-LEFT: 3px; BORDER-LEFT: dimgray 3px inset; WIDTH: 98%; MARGIN-RIGHT: 3px; BORDER-BOTTOM: lightgrey 3px inset
+}
+.BORDER-HEADER {
+	BORDER-RIGHT: #c0c0c0 0px solid; BORDER-TOP: #c0c0c0 0px solid; BORDER-LEFT: #c0c0c0 0px solid; BORDER-BOTTOM: #c0c0c0 0px solid
+}
+.BULLET1 {
+	LIST-STYLE-IMAGE: url(../Images/arrow.gif); LIST-STYLE-TYPE: disc
+}
+BUTTON {
+	BORDER-TOP-STYLE: none; FONT-FAMILY: Verdana, Helvetica, sans-serif; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+.BUTTONdisabled {
+	FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif
+}
+CAPTION {
+	FONT-WEIGHT: lighter; FONT-SIZE: 70%; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-ALIGN: left
+}
+.CAL-ITEMS {
+	FONT-SIZE: 8pt; COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.CAL-ITEMS A {
+	TEXT-DECORATION: none
+}
+.CAL-WE A {
+	TEXT-DECORATION: none
+}
+.CAL-TODAY A {
+	TEXT-DECORATION: none
+}
+.CAL-NEXTPREV A {
+	TEXT-DECORATION: none
+}
+.CAL_NEXTPREV {
+	FONT-WEIGHT: bolder; FONT-SIZE: 9pt; COLOR: #fffff0; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #669933
+}
+.CAL-WE {
+	FONT-SIZE: 8pt; COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #a2cc83
+}
+.CAL-TITLE {
+	FONT-WEIGHT: bolder; FONT-SIZE: 9pt; COLOR: #fffff0; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #517f40
+}
+.CAL-TODAY {
+	FONT-SIZE: 8pt; COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #99cc66
+}
+.CELL-BORDER {
+	BORDER-RIGHT: #ffffff 1px solid; BORDER-TOP: #ffffff 1px solid; BORDER-LEFT: #ffffff 1px solid; BORDER-BOTTOM: #ffffff 1px solid
+}
+.CELL-HEADER {
+	BACKGROUND-COLOR: #99cc00
+}
+.CELL-MENU {
+	PADDING-RIGHT: 2pt; PADDING-LEFT: 2pt; VERTICAL-ALIGN: top; PADDING-TOP: 3pt; BACKGROUND-COLOR: #ffffff
+}
+.CENTER {
+	TEXT-ALIGN: center
+}
+.DATAGRID {
+	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px
+}
+.DATAGRID TD {
+	PADDING-RIGHT: 3px; PADDING-LEFT: 3px; FONT-SIZE: 9pt; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; BORDER-COLLAPSE: collapse
+}
+DG-NAVIGATOR {
+	BORDER-RIGHT: white 0px; BORDER-TOP: white 0px; FONT-WEIGHT: bolder; BORDER-LEFT: white 0px; COLOR: #5780d5; BORDER-BOTTOM: white 0px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+DD {
+	FONT-SIZE: 70%; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+DT {
+	FONT-WEIGHT: bolder; FONT-SIZE: 70%; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.ERROR {
+	FONT-SIZE: 11px; COLOR: #aa0000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.EVEN {
+	BACKGROUND-COLOR: #f1ece1; TEXT-ALIGN: left
+}
+.FILEBROWSER {
+	FONT-SIZE: 70%; COLOR: black; FONT-FAMILY: Tahoma,Verdana
+}
+.FILEBROWSER_HEADER_CELL {
+	BORDER-RIGHT: black 1px solid; BORDER-TOP: white 1px solid; FONT-SIZE: 70%; BORDER-LEFT: white 1px solid; BORDER-BOTTOM: black 1px solid; FONT-FAMILY: Tahoma,Verdana
+}
+.FILEBROWSER_HEADER_LINE {
+	BACKGROUND-COLOR: #d6d6ce
+}
+FORM {
+	MARGIN-BOTTOM: 0px; WIDTH: 100%; HEIGHT: 100%
+}
+FORM.POPUP {
+	MARGIN-BOTTOM: 0px; OVERFLOW: auto; WIDTH: 100%; HEIGHT: 100%
+}
+.FRAMETOP {
+	FONT-WEIGHT: bold; COLOR: black; BORDER-BOTTOM: #333399 2px solid; FONT-FAMILY: Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; HEIGHT: 13px; BACKGROUND-COLOR: #cbe5e5
+}
+H1 {
+	MARGIN-TOP: 0pt; FONT-SIZE: 90%; MARGIN-BOTTOM: 9pt; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-ALIGN: left
+}
+H2 {
+	MARGIN-TOP: 0pt; FONT-SIZE: 85%; MARGIN-BOTTOM: 6pt; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-ALIGN: left
+}
+H3 {
+	MARGIN-TOP: 0pt; FONT-WEIGHT: bolder; FONT-SIZE: 80%; MARGIN-BOTTOM: 3pt; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-ALIGN: left
+}
+.HEAD0 {
+	FONT-WEIGHT: bold; COLOR: white; FONT-FAMILY: Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; HEIGHT: 25px; BACKGROUND-COLOR: #6f695c
+}
+.HEAD1 {
+	FONT-WEIGHT: bolder; FONT-SIZE: 70%; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #feefc6
+}
+.HIDDEN {
+	DISPLAY: none
+}
+.INFO {
+	COLOR: #5780d5
+}
+.LEFT {
+	TEXT-ALIGN: left
+}
+.LEFT-HEADER {
+	PADDING-LEFT: 40pt; FONT-SIZE: 110%; VERTICAL-ALIGN: middle; COLOR: #fffff0; TEXT-ALIGN: left
+}
+LI {
+	FONT-SIZE: 100%; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.LISTTABLE {
+	MARGIN-TOP: 3px; MARGIN-LEFT: 3px; WIDTH: 98%; MARGIN-RIGHT: 3px; BORDER-COLLAPSE: collapse; BACKGROUND-COLOR: #dbeccd
+}
+.LOGINMENU {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; COLOR: #555555; FONT-FAMILY: Arial
+}
+TR.LOGINMENU TD {
+	BORDER-COLLAPSE: collapse; HEIGHT: 25px
+}
+.MANDATORYFIELD {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: red; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.MENU-ICON {
+	FONT-WEIGHT: normal; FONT-SIZE: 75%; COLOR: #555555; FONT-FAMILY: Arial; TEXT-ALIGN: right; TEXT-DECORATION: none
+}
+A.MENU-ICON2 {
+	FONT-WEIGHT: normal; FONT-SIZE: 75%; COLOR: #222222; FONT-FAMILY: Arial; TEXT-ALIGN: right; TEXT-DECORATION: none
+}
+.MENU-TITLE {
+	COLOR: white; FONT-FAMILY: Verdana, Helvetica, sans-serif; HEIGHT: 29px
+}
+.MENU-ICON {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; COLOR: #979080; FONT-FAMILY: Arial
+}
+.MENU-ICON-NIV1 {
+	FONT-SIZE: 60%; MARGIN-LEFT: 10px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.MENU-TABLE {
+	WIDTH: 226px; BACKGROUND-COLOR: white
+}
+.SEARCH-CELL {
+	BORDER-RIGHT: #c0c0c0 2px solid; MARGIN-BOTTOM: 3px; WIDTH: 15%; BACKGROUND-COLOR: #f1ece1
+}
+.NAVIGATION {
+	FONT-WEIGHT: bolder; COLOR: #5780d5; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.NAVIGATOR {
+	FONT-WEIGHT: bold; FONT-SIZE: 110%; COLOR: black
+}
+.NAVIGATORCURRENT {
+	FONT-WEIGHT: bold; FONT-SIZE: 110%; COLOR: green
+}
+.NORMALBOLDTEXT {
+	FONT-WEIGHT: bolder; FONT-SIZE: 9pt; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.NORMALITALICTEXT {
+	FONT-SIZE: 9pt; FONT-STYLE: italic; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.NORMALTEXT {
+	FONT-SIZE: 9pt; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.ODD {
+	BACKGROUND-COLOR: #ffffff; TEXT-ALIGN: left
+}
+OL {
+	FONT-WEIGHT: bolder; COLOR: #44628e
+}
+P {
+	MARGIN-TOP: 0pt; FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif; TEXT-ALIGN: justify
+}
+.RIGHT {
+	TEXT-ALIGN: right
+}
+.RIGHT-HEADER {
+	COLOR: #fffff0; TEXT-ALIGN: right
+}
+.RIGHT-INLINE {
+	DISPLAY: inline; TEXT-ALIGN: right
+}
+.SEARCH-TABLE {
+	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BACKGROUND: #f1ece1; BORDER-BOTTOM-WIDTH: 0px; WIDTH: 100%; TEXT-ALIGN: left; BORDER-RIGHT-WIDTH: 0px
+}
+.SMALLBOLDTEXT {
+	FONT-WEIGHT: bolder; FONT-SIZE: 9pt; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.SMALLITALICTEXT {
+	FONT-SIZE: 65%; FONT-STYLE: italic; FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif
+}
+.SMALLTEXT {
+	FONT-SIZE: 9pt; FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif
+}
+.SMALLEVEN {
+	FONT-SIZE: 10px; COLOR: #c43c03; FONT-FAMILY: Arial, "Verdana", Helvetica, Sans-serif
+}
+.SMALLODD {
+	FONT-SIZE: 10px; COLOR: navy; FONT-FAMILY: Arial, "Verdana", Helvetica, Sans-serif
+}
+.SORTBY {
+	FONT-WEIGHT: bold; COLOR: black
+}
+.SUBTITLE {
+	BACKGROUND-COLOR: #fef4e2
+}
+.TABLE-FOOTER {
+	BACKGROUND: #ffffff
+}
+.TABLE-HEADER {
+	BACKGROUND: #99cc00; WIDTH: 100%; COLOR: #fffff0; HEIGHT: 100%
+}
+TABLE-FORM {
+	BORDER-RIGHT: 0px solid; BORDER-TOP: 0px solid; MARGIN-BOTTOM: 5px; MARGIN-LEFT: 5px; BORDER-LEFT: 0px solid; MARGIN-RIGHT: 3px; BORDER-BOTTOM: 0px solid
+}
+.TABLE-MAX-HEIGHT {
+	HEIGHT: 100%
+}
+.TABLE-SEPARATOR {
+	COLOR: #f5f5f5
+}
+TD.FILEBROWSER A {
+	COLOR: black; TEXT-DECORATION: none
+}
+A:hover {
+	
+}
+A {
+	TEXT-DECORATION: none
+}
+TD.LIST {
+	BORDER-RIGHT: #cccccc 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: #cccccc 1px solid; PADDING-LEFT: 0px; FONT-SIZE: 60%; PADDING-BOTTOM: 0px; BORDER-LEFT: #cccccc 1px solid; PADDING-TOP: 0px; BORDER-BOTTOM: #cccccc 1px solid; BORDER-COLLAPSE: collapse
+}
+.TEXT-FOOTER {
+	FONT-SIZE: 9pt; COLOR: silver
+}
+TH {
+	FONT-WEIGHT: bolder; FONT-SIZE: 10px; COLOR: white; BORDER-BOTTOM: #c1c1c1 1px solid; FONT-FAMILY: Verdana, Helvetica, Sans-serif; WHITE-SPACE: nowrap; HEIGHT: 25px; BACKGROUND-COLOR: #6f695c
+}
+.TITLE {
+	FONT-WEIGHT: bolder; FONT-SIZE: 95%; COLOR: #000000; FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif; BACKGROUND-COLOR: #cbe5e5; TEXT-ALIGN: center
+}
+.TITLE1 {
+	FONT-WEIGHT: bolder; FONT-SIZE: 100%; COLOR: #000000; FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif; BACKGROUND-COLOR: #e0e8f8; TEXT-ALIGN: center
+}
+UL {
+	FONT-SIZE: 100%
+}
+.UNSPACE {
+	PADDING-RIGHT: 0pt; PADDING-LEFT: 0pt; PADDING-BOTTOM: 0pt; PADDING-TOP: 0pt
+}
+.WARNING {
+	FONT-SIZE: 100%; COLOR: #ff0000; FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif
+}
+.WARNING-SMALL {
+	FONT-SIZE: 65%; COLOR: #ff0000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.igmv_Month {
+	TABLE-LAYOUT: fixed; MARGIN-TOP: 5px; FONT-WEIGHT: bold; FONT-SIZE: x-small; OVERFLOW: hidden; BORDER-LEFT: #aca899 1px outset; COLOR: white; LINE-HEIGHT: 25px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BORDER-COLLAPSE: collapse
+}
+.igmv_WeekNumber {
+	BORDER-RIGHT: black 1px solid; PADDING-RIGHT: 1px; BORDER-TOP: 1px outset; FONT-SIZE: 10pt; WIDTH: 20px; BORDER-BOTTOM: 1px outset; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #ece9d8; TEXT-ALIGN: center
+}
+.igmv_MonthDayOfWeekHeader {
+	BORDER-RIGHT: 1px outset; PADDING-RIGHT: 2px; BORDER-TOP: 1px outset; MARGIN-TOP: 1px; PADDING-LEFT: 0px; FONT-SIZE: 8pt; PADDING-BOTTOM: 1px; MARGIN-LEFT: 1px; BORDER-LEFT: 1px outset; CURSOR: default; MARGIN-RIGHT: 1px; PADDING-TOP: 3px; BORDER-BOTTOM: #aca899 1px solid; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica, sans-serif; HEIGHT: 20px; BACKGROUND-COLOR: #ece9d8; TEXT-ALIGN: center
+}
+.igmv_MonthHeader {
+	WIDTH: 100%; HEIGHT: 25px; TEXT-ALIGN: center
+}
+.igmv_CaptionHeader {
+	BORDER-RIGHT: #608058 1px solid; FONT-WEIGHT: bold; FONT-SIZE: x-small; BACKGROUND-IMAGE: url(../images/MonthHeaderCaption_bg.png); COLOR: #ffffff; LINE-HEIGHT: 25px; BORDER-BOTTOM: #608058 1px solid; BACKGROUND-REPEAT: repeat-x; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; HEIGHT: 25px; TEXT-ALIGN: center
+}
+.igmv_Day {
+	BORDER-RIGHT: black 1px solid; COLOR: black; BORDER-BOTTOM: black 1px solid; BACKGROUND-COLOR: #ffffff
+}
+.igmv_OtherMonthDay {
+	BORDER-RIGHT: black 1px solid; COLOR: black; BORDER-BOTTOM: black 1px solid; BACKGROUND-COLOR: #dbeccd
+}
+.igmv_Today {
+	
+}
+.igmv_ActiveDay {
+	
+}
+.igmv_DayHeader {
+	PADDING-RIGHT: 2px; FONT-SIZE: x-small; COLOR: black; PADDING-TOP: 1px; BORDER-BOTTOM: #ffffd5 1px solid; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; HEIGHT: 15px; TEXT-ALIGN: right
+}
+.igmv_OtherMonthDayHeader {
+	PADDING-RIGHT: 2px; FONT-SIZE: x-small; PADDING-BOTTOM: 2px; COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; HEIGHT: 15px; TEXT-ALIGN: right
+}
+.igmv_TodayHeader {
+	BACKGROUND-POSITION: 50% bottom; BACKGROUND-IMAGE: url(../images/TodayHeader_bg.png); LINE-HEIGHT: 16px; BACKGROUND-REPEAT: repeat-x; HEIGHT: 17px; BACKGROUND-COLOR: #ffffd5
+}
+.igmv_ActiveDayHeader {
+	BORDER-RIGHT: #ffffd5 1px solid; PADDING-RIGHT: 1px; BORDER-TOP: #ffffd5 1px solid; BACKGROUND-IMAGE: none; BORDER-LEFT: #ffffd5 1px solid; COLOR: #ffffff; PADDING-TOP: 0px; BORDER-BOTTOM: #ffffd5 1px solid; HEIGHT: 13px; BACKGROUND-COLOR: #a2cc83
+}
+.igmv_Appointment {
+	MARGIN-TOP: 1px; PADDING-LEFT: 1px; FONT-SIZE: xx-small; MARGIN-LEFT: 2px; CURSOR: pointer; LINE-HEIGHT: 10px; MARGIN-RIGHT: 2px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; POSITION: relative; TOP: 0px; TEXT-ALIGN: left
+}
+.igmv_SelectedAppointment {
+	MARGIN-TOP: 1px; PADDING-LEFT: 0px; FONT-SIZE: xx-small; PADDING-BOTTOM: 0px; MARGIN-LEFT: 2px; CURSOR: pointer; COLOR: white; LINE-HEIGHT: 10px; MARGIN-RIGHT: 2px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; POSITION: relative; TOP: 0px; HEIGHT: 10px; BACKGROUND-COLOR: #93a070
+}
+.igmv_AllDayEvent {
+	MARGIN-TOP: 0px; FONT-SIZE: xx-small; MARGIN-LEFT: 0px; CURSOR: pointer; LINE-HEIGHT: 10px; MARGIN-RIGHT: 0px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #ffffff; TEXT-ALIGN: left
+}
+.igmv_NavigationButton {
+	BORDER-TOP-WIDTH: 0px; PADDING-RIGHT: 0px; BACKGROUND-POSITION: left top; PADDING-LEFT: 0px; BORDER-LEFT-WIDTH: 0px; BACKGROUND-IMAGE: url(../images/MonthHeaderCaption_bg.png); BORDER-BOTTOM-WIDTH: 0px; PADDING-BOTTOM: 0px; MARGIN-LEFT: 5px; LINE-HEIGHT: 25px; MARGIN-RIGHT: 5px; PADDING-TOP: 0px; HEIGHT: 24px; BORDER-RIGHT-WIDTH: 0px
+}
+.REALTYPE1 {
+	FONT-SIZE: xx-small; COLOR: #339933; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.REALTYPE2 {
+	FONT-SIZE: xx-small; COLOR: #0000ff; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.REALTYPE3 {
+	FONT-SIZE: xx-small; COLOR: #cc0000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.REALTYPE4 {
+	FONT-SIZE: xx-small; COLOR: #ff9933; FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif
+}
+.REALTYPE5 {
+	FONT-SIZE: xx-small; COLOR: #9933cc; FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif
+}

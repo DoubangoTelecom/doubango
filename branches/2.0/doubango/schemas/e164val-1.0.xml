@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <schema targetNamespace="urn:ietf:params:xml:ns:e164val-1.0"
+           xmlns:e164val="urn:ietf:params:xml:ns:e164val-1.0"
+           xmlns:eppcom="urn:ietf:params:xml:ns:eppcom-1.0"
+           xmlns="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+   <!--
+   Import common element types.
+   -->
+     <import namespace="urn:ietf:params:xml:ns:eppcom-1.0"
+             schemaLocation="eppcom-1.0.xsd"/>
+
+     <annotation>
+       <documentation>
+         Extensible Provisioning Protocol v1.0
+         domain name extension schema for framework for
+         provisioning of E.164 number validation information.
+       </documentation>
+     </annotation>
+
+   <!--
+   Child elements found in EPP commands.
+   -->
+     <element name="create" type="e164val:insertType"/>
+     <element name="update" type="e164val:updateType"/>
+     <element name="renew" type="e164val:insertType"/>
+     <element name="transfer" type="e164val:insertType"/>
+
+   <!--
+   Child elements of the <create>, <renew>, and <update> commands.
+   -->
+     <complexType name="insertType">
+       <sequence>
+         <element name="add" type="e164val:addType"
+          maxOccurs="unbounded" />
+       </sequence>
+     </complexType>
+
+   <!--
+   Child elements of the <update> command.
+   -->
+     <complexType name="updateType">
+       <sequence>
+         <element name="add" type="e164val:addType"
+          minOccurs="0"
+          maxOccurs="unbounded"/>
+         <element name="rem" type="e164val:remType"
+          minOccurs="0"
+          maxOccurs="unbounded"/>
+         <element name="chg" type="e164val:chgType"
+          minOccurs="0"
+          maxOccurs="unbounded"/>
+       </sequence>
+     </complexType>
+
+   <!--
+   Data elements for add, chg and rem.
+   -->
+     <complexType name="addType">
+       <sequence>
+         <element ref="e164val:validationInfo"/>
+       </sequence>
+       <attribute name="id" type="eppcom:minTokenType"
+        use="required"/>
+     </complexType>
+
+     <complexType name="chgType">
+       <sequence>
+         <element ref="e164val:validationInfo"/>
+       </sequence>
+       <attribute name="id" type="eppcom:minTokenType"
+        use="required"/>
+     </complexType>
+
+     <complexType name="remType">
+       <attribute name="id" type="eppcom:minTokenType"
+        use="required"/>
+     </complexType>
+
+
+   <!--
+   Child elements found in EPP responses
+   -->
+     <element name="infData" type="e164val:infDataType"/>
+
+   <!--
+   child elements of the <info> response.
+   -->
+     <complexType name="infDataType">
+       <sequence>
+         <element name="inf" type="e164val:infType"
+          minOccurs="0"
+          maxOccurs="unbounded"/>
+       </sequence>
+     </complexType>
+
+   <!--
+   Data elements for inf
+   -->
+     <complexType name="infType">
+       <sequence>
+         <element ref="e164val:validationInfo"/>
+       </sequence>
+       <attribute name="id" type="eppcom:minTokenType"
+        use="required"/>
+     </complexType>
+
+   <!--
+   Global elements.
+   -->
+     <element name="validationInfo" type="e164val:ValidationInfoType" />
+
+   <!--
+   Extension framework types.
+   -->
+     <complexType name="ValidationInfoType">
+       <sequence>
+         <any namespace="##other"/>
+       </sequence>
+     </complexType>
+
+
+   <!--
+   End of schema.
+   -->
+   </schema>

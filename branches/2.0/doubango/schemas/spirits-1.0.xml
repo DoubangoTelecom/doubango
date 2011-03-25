@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="urn:ietf:params:xml:ns:spirits-1.0"
+          xmlns:tns="urn:ietf:params:xml:ns:spirits-1.0"
+          xmlns:xs="http://www.w3.org/2001/XMLSchema"
+          elementFormDefault="qualified"
+          attributeFormDefault="unqualified">
+
+        <!-- This import brings in the XML language attribute xml:lang-->
+        <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+                   schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+        <xs:annotation>
+           <xs:documentation xml:lang="en">
+                 Describes SPIRITS events.
+           </xs:documentation>
+        </xs:annotation>
+
+        <xs:element name="spirits-event" type="tns:SpiritsEventType"/>
+
+        <xs:complexType name="SpiritsEventType">
+           <xs:sequence>
+              <xs:element name="Event" type="tns:EventType" minOccurs="1"
+                  maxOccurs="unbounded"/>
+              <xs:any namespace="##other" processContents="lax"
+                  maxOccurs="unbounded"/>
+           </xs:sequence>
+        </xs:complexType>
+
+        <xs:complexType name="EventType">
+           <xs:sequence>
+              <xs:element name="CalledPartyNumber" type="xs:token"
+                  minOccurs="0" maxOccurs="1"/>
+              <xs:element name="CallingPartyNumber" type="xs:token"
+                  minOccurs="0" maxOccurs="1"/>
+              <xs:element name="DialledDigits" type="xs:token"
+                  minOccurs="0" maxOccurs="1"/>
+              <xs:element name="Cell-ID" type="xs:token"
+                  minOccurs="0" maxOccurs="1"/>
+              <xs:element name="Cause" type="tns:CauseType"
+                  minOccurs="0" maxOccurs="1"/>
+           </xs:sequence>
+           <xs:attribute name="type" type="tns:PayloadType"
+               use="required"/>
+           <xs:attribute name="name" type="tns:EventNameType"
+               use="required"/>
+           <xs:attribute name="mode" type="tns:ModeType"
+               use="optional" default="N"/>
+        </xs:complexType>
+
+        <xs:simpleType name="PayloadType">
+           <!-- The <spirits-event> will contain either a list of -->
+           <!-- INDPs events or a list of userprof events -->
+           <xs:restriction base="xs:string">
+              <xs:enumeration value="INDPs"/>
+              <xs:enumeration value="userprof"/>
+           </xs:restriction>
+        </xs:simpleType>
+
+        <xs:simpleType name="EventNameType">
+           <xs:restriction base="xs:string">
+              <!-- These are the call related events (DPs).  If the -->
+              <!-- PaylaodType is "INDPs", then the value of the "name" -->
+              <!-- attribute is one of these; example -->
+              <!-- <spirits-event type="INDPs" name="OCI"> -->
+              <xs:enumeration value="OAA"/>
+              <xs:enumeration value="OCI"/>
+              <xs:enumeration value="OAI"/>
+              <xs:enumeration value="OA"/>
+              <xs:enumeration value="OTS"/>
+              <xs:enumeration value="ONA"/>
+              <xs:enumeration value="OCPB"/>
+              <xs:enumeration value="ORSF"/>
+              <xs:enumeration value="OMC"/>
+              <xs:enumeration value="OAB"/>
+              <xs:enumeration value="OD"/>
+              <xs:enumeration value="TA"/>
+              <xs:enumeration value="TMC"/>
+              <xs:enumeration value="TAB"/>
+              <xs:enumeration value="TD"/>
+              <xs:enumeration value="TAA"/>
+              <xs:enumeration value="TFSA"/>
+              <xs:enumeration value="TB"/>
+              <!-- These are the non-call related events.  If the -->
+              <!-- PayloadType is "user-prof", then the value of the -->
+              <!-- "name" attribute is one of these; example -->
+              <!-- <spirits-event type="userprof" name="LUDV"> -->
+              <xs:enumeration value="LUSV"/>
+              <xs:enumeration value="LUDV"/>
+              <xs:enumeration value="REG"/>
+              <xs:enumeration value="UNREGMS"/>
+              <xs:enumeration value="UNREGNTWK"/>
+           </xs:restriction>
+        </xs:simpleType>
+
+        <xs:simpleType name="ModeType">
+           <!-- One of two values: "N"otification or "R"equest -->
+           <xs:restriction base="xs:string">
+              <xs:enumeration value="N"/>
+              <xs:enumeration value="R"/>
+           </xs:restriction>
+        </xs:simpleType>
+
+        <xs:simpleType name="CauseType">
+           <xs:restriction base="xs:string">
+              <xs:enumeration value="Busy"/>
+              <xs:enumeration value="Unreachable"/>
+           </xs:restriction>
+        </xs:simpleType>
+   </xs:schema>
