@@ -1,0 +1,1199 @@
+<?xml version="1.0"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+  xmlns:ereg="urn:ietf:params:xml:ns:ereg1"
+  xmlns:iris="urn:ietf:params:xml:ns:iris1"
+  targetNamespace="urn:ietf:params:xml:ns:ereg1"
+  elementFormDefault="qualified" >
+
+  <import namespace="urn:ietf:params:xml:ns:iris1" />
+
+  <annotation>
+    <documentation>
+      ENUM registry schema
+      derived from IRIS schema
+    </documentation>
+  </annotation>
+
+  <!-- ========================================= -->
+  <!--                                           -->
+  <!-- Query Types                               -->
+  <!--                                           -->
+  <!-- ========================================= -->
+
+  <!--                                           -->
+  <!-- Find ENUMs by E.164                       -->
+  <!--                                           -->
+
+  <complexType
+    name="findEnumsByE164Type">
+    <complexContent>
+      <extension
+        base="iris:queryType">
+        <sequence>
+          <element
+            name="e164Prefix"
+            type="token" />
+          <element
+            name="specificity"
+            minOccurs="0" >
+            <simpleType>
+              <restriction
+                base="string">
+                <enumeration
+                  value="less"/>
+                <enumeration
+                  value="more"/>
+              </restriction>
+            </simpleType>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <element
+    name="findEnumsByE164"
+    type="ereg:findEnumsByE164Type"
+    substitutionGroup="iris:query" />
+
+  <!--                                           -->
+  <!-- Find ENUMs By Contact                     -->
+  <!--                                           -->
+
+  <complexType
+    name="findEnumsByContactType">
+    <complexContent>
+      <extension
+        base="iris:queryType">
+        <sequence>
+          <choice>
+            <group
+              ref="ereg:contactSearchGroup" />
+            <element
+              name="contactHandle"
+              type="ereg:exactMatchParameter" />
+          </choice>
+          <element
+            name="role"
+            minOccurs="0"
+            maxOccurs="1" >
+            <simpleType>
+              <restriction
+                base="string" >
+                <enumeration
+                  value="registrant" />
+                <enumeration
+                  value="billingContact" />
+                <enumeration
+                  value="technicalContact" />
+                <enumeration
+                  value="administrativeContact" />
+                <enumeration
+                  value="legalContact" />
+                <enumeration
+                  value="zoneContact" />
+                <enumeration
+                  value="abuseContact" />
+                <enumeration
+                  value="securityContact" />
+                <enumeration
+                  value="otherContact" />
+              </restriction>
+            </simpleType>
+          </element>
+          <element
+            name="language"
+            type="language"
+            minOccurs="0"
+            maxOccurs="unbounded"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <element
+    name="findEnumsByContact"
+    type="ereg:findEnumsByContactType"
+    substitutionGroup="iris:query" />
+
+  <!--                                           -->
+  <!-- Find Contacts                             -->
+  <!--                                           -->
+
+  <complexType
+    name="findContactsType">
+    <complexContent>
+      <extension
+        base="iris:queryType">
+        <sequence>
+          <group
+            ref="ereg:contactSearchGroup" />
+          <element
+            name="language"
+            type="language"
+            minOccurs="0"
+            maxOccurs="unbounded"/>
+         </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <element
+    name="findContacts"
+    type="ereg:findContactsType"
+    substitutionGroup="iris:query" />
+
+  <!--                                           -->
+  <!-- Find ENUMs By Host                        -->
+  <!--                                           -->
+
+  <complexType
+    name="findEnumsByHostType">
+    <complexContent>
+      <extension
+        base="iris:queryType">
+        <sequence>
+          <choice>
+            <element
+              name="hostName"
+              type="ereg:exactMatchParameter" />
+            <element
+              name="hostHandle"
+              type="ereg:exactMatchParameter" />
+            <element
+              name="ipV4Address"
+              type="ereg:exactMatchParameter" />
+            <element
+              name="ipV6Address"
+              type="ereg:exactMatchParameter" />
+          </choice>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <element
+    name="findEnumsByHost"
+    type="ereg:findEnumsByHostType"
+    substitutionGroup="iris:query" />
+
+  <!--                                           -->
+  <!-- Contact Search Group                      -->
+  <!--                                           -->
+
+  <group
+    name="contactSearchGroup">
+    <choice>
+      <element
+        name="commonName"
+        type="ereg:exactOrPartialMatchParameter" />
+      <element
+        name="organization"
+        type="ereg:exactOrPartialMatchParameter" />
+      <element
+        name="eMail"
+        type="ereg:domainResourceParameter" />
+      <element
+        name="sip"
+        type="ereg:domainResourceParameter" />
+      <element
+        name="city"
+        type="ereg:exactMatchParameter" />
+      <element
+        name="region"
+        type="ereg:exactMatchParameter" />
+      <element
+        name="postalCode"
+        type="ereg:exactMatchParameter" />
+    </choice>
+  </group>
+
+  <complexType
+    name="exactOrPartialMatchParameter">
+    <choice>
+      <group
+        ref="ereg:partialMatchGroup" />
+      <group
+        ref="ereg:exactMatchGroup" />
+    </choice>
+  </complexType>
+
+  <complexType
+    name="exactMatchParameter">
+    <group
+      ref="ereg:exactMatchGroup" />
+  </complexType>
+
+  <complexType
+    name="partialMatchParameter">
+    <sequence>
+      <group
+        ref="ereg:partialMatchGroup" />
+    </sequence>
+  </complexType>
+
+  <complexType
+    name="domainResourceParameter" >
+    <choice>
+      <group
+        ref="ereg:exactMatchGroup" />
+      <element
+        name="inDomain"
+        type="token" />
+    </choice>
+  </complexType>
+
+  <group
+    name="partialMatchGroup">
+    <choice>
+      <sequence>
+        <element
+          name="beginsWith">
+          <simpleType>
+            <restriction
+              base="token">
+              <minLength
+                value="1"/>
+            </restriction>
+          </simpleType>
+        </element>
+        <element
+          minOccurs="0"
+          name="endsWith"
+          type="ereg:endsWithType" />
+      </sequence>
+      <element
+        name="endsWith"
+        type="ereg:endsWithType" />
+    </choice>
+  </group>
+
+  <simpleType
+    name="endsWithType">
+    <restriction
+      base="token">
+      <minLength
+        value="1" />
+    </restriction>
+  </simpleType>
+
+  <group
+    name="exactMatchGroup">
+    <sequence>
+      <element
+        name="exactMatch"
+        type="normalizedString" />
+    </sequence>
+  </group>
+
+  <!-- ========================================= -->
+  <!--                                           -->
+  <!-- Result Types                              -->
+  <!--                                           -->
+  <!-- ========================================= -->
+
+  <!--                                           -->
+  <!-- ENUM                                      -->
+  <!--                                           -->
+
+  <complexType
+    name="enumType">
+    <complexContent>
+      <extension
+        base="iris:resultType">
+        <sequence>
+          <element
+            name="e164Number"
+            type="token" />
+          <element
+            name="enumHandle"
+            type="ereg:normalizedStringPrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="nameServer"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="registrant"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <group ref="ereg:contactGroup" />
+          <element
+            name="lastContactModificationDateTime"
+            type="ereg:dateTimePrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="lastContactModificationBy"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="status"
+            minOccurs="0"
+            maxOccurs="1">
+            <complexType>
+              <choice
+                minOccurs="1"
+                maxOccurs="unbounded">
+                <element
+                  name="reserved"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="create"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="active"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="inactive"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="dispute"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="delete"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="transfer"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="renew"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="update"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="addPeriod"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="renewPeriod"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="autoRenewPeriod"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="transferPeriod"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="redemptionPeriod"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="restore"
+                  type="ereg:enumStatusType" />
+                <element
+                  name="other"
+                  type="ereg:enumStatusType" />
+              </choice>
+            </complexType>
+          </element>
+          <element
+            name="registrationReference"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="registry"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="registrar"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="validationEntity"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="signalCSP"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="dataCSP"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="lineCSP"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="unbounded"/>
+          <element
+            name="voiceCSP"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="otherCSP"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="validationEvent"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="unbounded"/>
+          <element
+            name="initialDelegationDateTime"
+            type="ereg:dateTimePrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="lastRenewalDateTime"
+            type="ereg:dateTimePrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="expirationDateTime"
+            type="ereg:dateTimePrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="lastDelegationModificationDateTime"
+            type="ereg:dateTimePrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="lastDelegationModificationBy"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="lastVerificationDateTime"
+            type="ereg:dateTimePrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            ref="iris:seeAlso"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <element
+    name="enum"
+    type="ereg:enumType"
+    substitutionGroup="iris:result" />
+
+  <!--                                           -->
+  <!-- Host                                      -->
+  <!--                                           -->
+
+  <complexType
+    name="hostType">
+    <complexContent>
+      <extension
+        base="iris:resultType">
+        <sequence>
+          <element
+            name="hostHandle"
+            type="ereg:normalizedStringPrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="hostName"
+            type="normalizedString" />
+          <element
+            name="ipV4Address"
+            type="token"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="ipV6Address"
+            type="token"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="hostContact"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+           <element
+            name="createdDateTime"
+            type="ereg:dateTimePrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="lastModificationDateTime"
+            type="ereg:dateTimePrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="lastVerificationDateTime"
+            type="ereg:dateTimePrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            ref="iris:seeAlso"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <element
+    name="host"
+    type="ereg:hostType"
+    substitutionGroup="iris:result" />
+
+  <!--                                           -->
+  <!-- Contact                                   -->
+  <!--                                           -->
+
+  <complexType
+    name="contactType">
+    <complexContent>
+      <extension
+        base="iris:resultType">
+        <sequence>
+          <element
+            name="contactHandle"
+            type="ereg:normalizedStringPrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="commonName"
+            type="ereg:normalizedStringPrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1"/>
+          <element
+            name="language"
+            type="language"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="type"
+            minOccurs="0"
+            maxOccurs="1">
+            <complexType>
+              <choice>
+                <element
+                  name="person"
+                  type="ereg:contactTypeType" />
+                <element
+                  name="organization"
+                  type="ereg:contactTypeType" />
+                <element
+                  name="role"
+                  type="ereg:contactTypeType" />
+                <element
+                  name="other"
+                  type="ereg:contactTypeType" />
+              </choice>
+            </complexType>
+          </element>
+          <element
+            name="organization"
+            type="ereg:normalizedStringPrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="legalId"
+            type="ereg:tokenPrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="eMail"
+            type="ereg:stringPrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="sip"
+            type="ereg:stringPrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="postalAddress"
+            minOccurs="0"
+            maxOccurs="unbounded" >
+            <complexType>
+              <sequence>
+                <element
+                  name="address"
+                  type="ereg:stringPrivacyType"
+                  nillable="true"
+                  minOccurs="0"
+                  maxOccurs="1" />
+                <element
+                  name="city"
+                  type="ereg:stringPrivacyType"
+                  nillable="true"
+                  minOccurs="0"
+                  maxOccurs="1" />
+                <element
+                  name="region"
+                  type="ereg:stringPrivacyType"
+                  nillable="true"
+                  minOccurs="0"
+                  maxOccurs="1" />
+                <element
+                  name="postalCode"
+                  type="ereg:normalizedStringPrivacyType"
+                  nillable="true"
+                  minOccurs="0"
+                  maxOccurs="1" />
+                <element
+                  name="country"
+                  type="ereg:tokenPrivacyType"
+                  nillable="true"
+                  minOccurs="0"
+                  maxOccurs="1" />
+              </sequence>
+            </complexType>
+          </element>
+          <element
+            name="phone"
+            type="ereg:normalizedStringPrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="fax"
+            type="ereg:normalizedStringPrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="createdDateTime"
+            type="ereg:dateTimePrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="lastModificationDateTime"
+            type="ereg:dateTimePrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="lastVerificationDateTime"
+            type="ereg:dateTimePrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="translatedContact"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            ref="iris:seeAlso"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <element
+    name="contact"
+    type="ereg:contactType"
+    substitutionGroup="iris:result" />
+
+  <!--                                           -->
+  <!-- Registration Authority                    -->
+  <!--                                           -->
+
+  <complexType
+    name="registrationAuthorityType">
+    <complexContent>
+      <extension
+        base="iris:resultType">
+        <sequence>
+          <element
+            name="serviceInstance"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="organizationName"
+            type="string"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="legalId"
+            type="token"
+            minOccurs="0"
+            maxOccurs="1"/>
+          <choice
+            minOccurs="0"
+            maxOccurs="3">
+            <element
+              name="registry">
+              <complexType/>
+            </element>
+            <element
+              name="registrar">
+              <complexType/>
+            </element>
+            <element
+              name="other">
+              <complexType/>
+            </element>
+          </choice>
+          <group ref="ereg:contactGroup" />
+          <element
+            ref="iris:seeAlso"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+   <element
+    name="registrationAuthority"
+    type="ereg:registrationAuthorityType"
+    substitutionGroup="iris:result" />
+
+  <!--                                           -->
+  <!-- Validation Entity                         -->
+  <!--                                           -->
+
+  <complexType
+    name="validationEntityType">
+    <complexContent>
+      <extension
+        base="iris:resultType">
+        <sequence>
+          <element
+            name="serviceInstance"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="organizationName"
+            type="string"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="legalId"
+            type="token"
+            minOccurs="0"
+            maxOccurs="1"/>
+          <group ref="ereg:contactGroup" />
+          <element
+            ref="iris:seeAlso"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <element
+    name="validationEntity"
+    type="ereg:validationEntityType"
+    substitutionGroup="iris:result" />
+
+  <!--                                           -->
+  <!-- Communication Service Provider            -->
+  <!--                                           -->
+
+  <complexType
+    name="communicationServiceProviderType">
+    <complexContent>
+      <extension
+        base="iris:resultType">
+        <sequence>
+          <element
+            name="serviceInstance"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="organizationName"
+            type="string"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="legalId"
+            type="token"
+            minOccurs="0"
+            maxOccurs="1"/>
+          <element
+            name="cspId"
+            type="token"
+            minOccurs="0"
+            maxOccurs="1"/>
+          <choice
+            minOccurs="0"
+            maxOccurs="5">
+            <element
+              minOccurs="0"
+              maxOccurs="1"
+              name="line">
+              <complexType/>
+            </element>
+            <element
+              minOccurs="0"
+              maxOccurs="1"
+              name="data">
+              <complexType/>
+            </element>
+            <element
+              minOccurs="0"
+              maxOccurs="1"
+              name="voice">
+              <complexType/>
+            </element>
+            <element
+              minOccurs="0"
+              maxOccurs="1"
+              name="signal">
+              <complexType/>
+            </element>
+            <element
+              minOccurs="0"
+              maxOccurs="1"
+              name="other">
+              <complexType/>
+            </element>
+          </choice>
+          <group ref="ereg:contactGroup" />
+          <element
+            ref="iris:seeAlso"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <element
+    name="communicationServiceProvider"
+    type="ereg:communicationServiceProviderType"
+    substitutionGroup="iris:result" />
+
+  <!--                                           -->
+  <!-- Validation Event                          -->
+  <!--                                           -->
+
+  <complexType
+    name="validationEventType">
+    <complexContent>
+      <extension
+        base="iris:resultType">
+        <sequence>
+          <element
+            name="serial"
+            type="token"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="methodId"
+            type="token"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="validationEntity"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="registrar"
+            type="iris:entityType"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+          <element
+            name="executionDateTime"
+            type="ereg:dateTimePrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            name="expirationDateTime"
+            type="ereg:dateTimePrivacyType"
+            nillable="true"
+            minOccurs="0"
+            maxOccurs="1" />
+          <element
+            ref="iris:seeAlso"
+            minOccurs="0"
+            maxOccurs="unbounded" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <element
+    name="validationEvent"
+    type="ereg:validationEventType"
+    substitutionGroup="iris:result" />
+
+  <!--                                           -->
+  <!-- Contact Group                             -->
+  <!--                                           -->
+
+  <group name="contactGroup">
+    <sequence>
+      <element
+        name="billingContact"
+        type="iris:entityType"
+        minOccurs="0"
+        maxOccurs="unbounded" />
+      <element
+        name="technicalContact"
+        type="iris:entityType"
+        minOccurs="0"
+        maxOccurs="unbounded" />
+      <element
+        name="administrativeContact"
+        type="iris:entityType"
+        minOccurs="0"
+        maxOccurs="unbounded" />
+      <element
+        name="legalContact"
+        type="iris:entityType"
+        minOccurs="0"
+        maxOccurs="unbounded" />
+      <element
+        name="zoneContact"
+        type="iris:entityType"
+        minOccurs="0"
+        maxOccurs="unbounded" />
+      <element
+        name="abuseContact"
+        type="iris:entityType"
+        minOccurs="0"
+        maxOccurs="unbounded" />
+      <element
+        name="securityContact"
+        type="iris:entityType"
+        minOccurs="0"
+        maxOccurs="unbounded" />
+      <element
+        name="otherContact"
+        type="iris:entityType"
+        minOccurs="0"
+        maxOccurs="unbounded" />
+    </sequence>
+  </group>
+
+  <!--                                           -->
+  <!-- Privacy Label Types                       -->
+  <!--                                           -->
+
+  <attributeGroup
+    name="privacyLabelAttributeGroup">
+    <attribute
+      name="private"
+      type="boolean" />
+    <attribute
+      name="denied"
+      type="boolean" />
+    <attribute
+      name="doNotRedistribute"
+      type="boolean" />
+    <attribute
+      name="specialAccess"
+      type="boolean" />
+  </attributeGroup>
+
+  <complexType
+    name="dateTimePrivacyType">
+    <simpleContent>
+      <extension
+        base="dateTime">
+        <attributeGroup
+          ref="ereg:privacyLabelAttributeGroup" />
+      </extension>
+    </simpleContent>
+  </complexType>
+
+  <complexType
+    name="stringPrivacyType">
+    <simpleContent>
+      <extension
+        base="string">
+        <attributeGroup
+          ref="ereg:privacyLabelAttributeGroup" />
+      </extension>
+    </simpleContent>
+  </complexType>
+
+  <complexType
+    name="normalizedStringPrivacyType">
+    <simpleContent>
+      <extension
+        base="normalizedString">
+        <attributeGroup
+          ref="ereg:privacyLabelAttributeGroup" />
+      </extension>
+    </simpleContent>
+  </complexType>
+
+  <complexType
+    name="tokenPrivacyType">
+    <simpleContent>
+      <extension
+        base="token">
+        <attributeGroup
+          ref="ereg:privacyLabelAttributeGroup" />
+      </extension>
+    </simpleContent>
+  </complexType>
+
+  <complexType
+    name="enumStatusType">
+    <sequence>
+      <element
+        name="appliedDate"
+        type="dateTime"
+        minOccurs="0"
+        maxOccurs="1" />
+      <element
+        name="description"
+        minOccurs="0"
+        maxOccurs="unbounded">
+        <complexType>
+          <simpleContent>
+            <extension
+              base="string">
+              <attribute
+                name="language"
+                type="language"
+                use="required" />
+            </extension>
+          </simpleContent>
+        </complexType>
+      </element>
+      <element
+        name="subStatus"
+        minOccurs="0"
+        maxOccurs="1">
+        <complexType>
+          <simpleContent>
+            <extension
+              base="token">
+              <attribute
+                type="token"
+                use="required"
+                name="authority"/>
+            </extension>
+          </simpleContent>
+        </complexType>
+      </element>
+    </sequence>
+    <attributeGroup
+      ref="ereg:privacyLabelAttributeGroup" />
+    <attribute
+      name="actor">
+      <simpleType>
+        <restriction
+          base="string">
+          <enumeration
+            value="registry"/>
+          <enumeration
+            value="registrar"/>
+        </restriction>
+      </simpleType>
+    </attribute>
+    <attribute
+      name="disposition">
+      <simpleType>
+        <restriction
+          base="string">
+          <enumeration
+            value="prohibited"/>
+          <enumeration
+            value="pending"/>
+        </restriction>
+      </simpleType>
+    </attribute>
+    <attribute
+      name="scope"
+      type="token" />
+  </complexType>
+
+  <complexType
+    name="contactTypeType">
+    <sequence>
+      <element
+        name="description"
+        minOccurs="0"
+        maxOccurs="unbounded">
+        <complexType>
+          <simpleContent>
+            <extension
+              base="string">
+              <attribute
+                name="language"
+                type="language"
+                use="required" />
+            </extension>
+          </simpleContent>
+        </complexType>
+      </element>
+    </sequence>
+    <attributeGroup
+      ref="ereg:privacyLabelAttributeGroup" />
+  </complexType>
+
+  <!-- ========================================= -->
+  <!--                                           -->
+  <!-- Error Codes                               -->
+  <!--                                           -->
+  <!-- ========================================= -->
+
+  <!--                                           -->
+  <!-- Search Too Wide                           -->
+  <!--                                           -->
+
+  <element
+    name="searchTooWide"
+    type="iris:codeType"
+    substitutionGroup="iris:genericCode" />
+
+  <!--                                           -->
+  <!-- Language Not Supported                    -->
+  <!--                                           -->
+
+  <complexType
+    name="languageNotSupportedType">
+    <complexContent>
+      <extension
+        base="iris:codeType">
+        <sequence>
+          <element
+            name="unsupportedLanguage"
+            type="language"
+            minOccurs="1"
+            maxOccurs="unbounded" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <element
+    name="languageNotSupported"
+    type="ereg:languageNotSupportedType"
+    substitutionGroup="iris:genericCode" />
+
+</schema>

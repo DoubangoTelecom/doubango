@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+     <grammar
+       xmlns="http://relaxng.org/ns/structure/1.0"
+       xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+       datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+       ns="urn:ietf:params:xml:ns:imdn">
+
+         <start>
+             <element name="imdn">
+                 <element name="message-id">
+                     <data type="token"/>
+                 </element>
+                 <element name="datetime">
+                     <data type="string"/>
+                 </element>
+                 <optional>
+                     <element name="recipient-uri">
+                         <data type="anyURI"/>
+                     </element>
+                     <element name="original-recipient-uri">
+                         <data type="anyURI"/>
+                     </element>
+                     <optional>
+                         <element name="subject">
+                             <data type="string"/>
+                         </element>
+                     </optional>
+                 </optional>
+                 <choice>
+                     <ref name="deliveryNotification"/>
+                     <ref name="displayNotification"/>
+                     <ref name="processingNotification"/>
+                     <empty/>
+                 </choice>
+                 <ref name="imdnExtension"/>
+             </element>
+         </start>
+
+         <define name="deliveryNotification">
+             <element name="delivery-notification">
+                 <element name="status">
+                     <choice>
+                         <element name="delivered">
+                             <empty/>
+                         </element>
+                         <element name="failed">
+                             <empty/>
+                         </element>
+                         <ref name="commonDispositionStatus"></ref>
+                     </choice>
+                     <ref name="deliveryExtension"/>
+                   </element>
+              </element>
+         </define>
+
+         <define name="displayNotification">
+             <element name="display-notification">
+                 <element name="status">
+                     <choice>
+                         <element name="displayed">
+                             <empty/>
+                         </element>
+                         <ref name="commonDispositionStatus"></ref>
+                     </choice>
+                     <ref name="displayExtension"/>
+                 </element>
+             </element>
+         </define>
+
+         <define name="processingNotification">
+             <element name="processing-notification">
+                 <element name="status">
+                     <choice>
+                         <element name="processed">
+                             <empty/>
+                         </element>
+                         <element name="stored">
+                             <empty/>
+                         </element>
+                         <ref name="commonDispositionStatus"></ref>
+                     </choice>
+                     <ref name="processingExtension"/>
+                  </element>
+             </element>
+         </define>
+
+         <define name="commonDispositionStatus">
+             <choice>
+                 <element name="forbidden">
+                     <empty/>
+                 </element>
+                 <element name="error">
+                     <empty/>
+                 </element>
+             </choice>
+         </define>
+
+         <!-- <imdn> extension point for the extension schemas to add
+              new definitions with the combine="interleave" pattern.
+              Extension schemas should add proper cardinalities. For example, the
+              <zeroOrMore> cardinality should be used if the extension is to allow
+              multiple elements, and the <optional> cardinality should be used if the
+              extension is to allow a single optional element. -->
+         <define name="imdnExtension">
+             <zeroOrMore>
+                 <ref name="anyIMDN"/>
+             </zeroOrMore>
+         </define>
+
+         <!-- delivery-notification <status> extension point -->
+         <define name="deliveryExtension">
+             <zeroOrMore>
+                 <ref name="anyIMDN"/>
+             </zeroOrMore>
+         </define>
+
+         <!-- display-notification <status> extension point -->
+         <define name="displayExtension">
+             <zeroOrMore>
+                 <ref name="anyIMDN"/>
+             </zeroOrMore>
+         </define>
+
+         <!-- processing-notification <status> extension point -->
+         <define name="processingExtension">
+             <zeroOrMore>
+                 <ref name="anyIMDN"/>
+             </zeroOrMore>
+         </define>
+
+         <!-- wildcard definition for complex elements (of mixed type)
+              unqualified or qualified in the imdn namespace.
+              Extension schemas MUST redefine this or the
+              individual previous definitions which use this definition.
+              In other words, the extension schema MUST reduce the
+              allowable content in order to maintain deterministic
+              and unambiquous schemas with the interleave pattern. -->
+         <define name="anyIMDN">
+             <element>
+                 <anyName>
+                     <except>
+                         <nsName ns="urn:ietf:params:xml:ns:imdn"/>
+                         <nsName ns=""/>
+                     </except>
+                 </anyName>
+                 <ref name="anyExtension"/>
+             </element>
+         </define>
+
+        <!-- the rest of the "anyIMDN" wildcard definition -->
+         <define name="anyExtension">
+             <zeroOrMore>
+                <choice>
+                    <attribute>
+                       <anyName/>
+                    </attribute>
+                    <ref name="any"/>
+                </choice>
+             </zeroOrMore>
+         </define>
+
+         <!-- wildcard type for complex elements (of mixed type)
+              without any namespace or content restrictions -->
+         <define name="any">
+             <element>
+                 <anyName/>
+                 <zeroOrMore>
+                    <choice>
+                       <attribute>
+                          <anyName/>
+                       </attribute>
+                       <text/>
+                       <ref name="any"/>
+                    </choice>
+                 </zeroOrMore>
+             </element>
+         </define>
+
+    </grammar>

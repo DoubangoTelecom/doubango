@@ -1,0 +1,1770 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		ECB98701117D156000425AA2 /* tinySAK_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986C4117D156000425AA2 /* tinySAK_config.h */; };
+		ECB98702117D156000425AA2 /* tsk.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986C5117D156000425AA2 /* tsk.c */; };
+		ECB98703117D156000425AA2 /* tsk.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986C6117D156000425AA2 /* tsk.h */; };
+		ECB98704117D156000425AA2 /* tsk_base64.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986C7117D156000425AA2 /* tsk_base64.c */; };
+		ECB98705117D156000425AA2 /* tsk_base64.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986C8117D156000425AA2 /* tsk_base64.h */; };
+		ECB98706117D156000425AA2 /* tsk_binaryutils.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986C9117D156000425AA2 /* tsk_binaryutils.c */; };
+		ECB98707117D156000425AA2 /* tsk_binaryutils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986CA117D156000425AA2 /* tsk_binaryutils.h */; };
+		ECB98708117D156000425AA2 /* tsk_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986CB117D156000425AA2 /* tsk_buffer.c */; };
+		ECB98709117D156000425AA2 /* tsk_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986CC117D156000425AA2 /* tsk_buffer.h */; };
+		ECB9870A117D156000425AA2 /* tsk_common.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986CD117D156000425AA2 /* tsk_common.h */; };
+		ECB9870B117D156000425AA2 /* tsk_condwait.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986CE117D156000425AA2 /* tsk_condwait.c */; };
+		ECB9870C117D156000425AA2 /* tsk_condwait.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986CF117D156000425AA2 /* tsk_condwait.h */; };
+		ECB9870D117D156000425AA2 /* tsk_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986D0117D156000425AA2 /* tsk_debug.c */; };
+		ECB9870E117D156000425AA2 /* tsk_debug.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986D1117D156000425AA2 /* tsk_debug.h */; };
+		ECB9870F117D156000425AA2 /* tsk_errno.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986D2117D156000425AA2 /* tsk_errno.h */; };
+		ECB98710117D156000425AA2 /* tsk_fsm.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986D3117D156000425AA2 /* tsk_fsm.c */; };
+		ECB98711117D156000425AA2 /* tsk_fsm.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986D4117D156000425AA2 /* tsk_fsm.h */; };
+		ECB98712117D156000425AA2 /* tsk_hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986D5117D156000425AA2 /* tsk_hmac.c */; };
+		ECB98713117D156000425AA2 /* tsk_hmac.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986D6117D156000425AA2 /* tsk_hmac.h */; };
+		ECB98714117D156000425AA2 /* tsk_list.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986D7117D156000425AA2 /* tsk_list.c */; };
+		ECB98715117D156000425AA2 /* tsk_list.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986D8117D156000425AA2 /* tsk_list.h */; };
+		ECB98716117D156000425AA2 /* tsk_md5.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986D9117D156000425AA2 /* tsk_md5.c */; };
+		ECB98717117D156000425AA2 /* tsk_md5.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986DA117D156000425AA2 /* tsk_md5.h */; };
+		ECB98718117D156000425AA2 /* tsk_memory.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986DB117D156000425AA2 /* tsk_memory.c */; };
+		ECB98719117D156000425AA2 /* tsk_memory.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986DC117D156000425AA2 /* tsk_memory.h */; };
+		ECB9871A117D156000425AA2 /* tsk_mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986DD117D156000425AA2 /* tsk_mutex.c */; };
+		ECB9871B117D156000425AA2 /* tsk_mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986DE117D156000425AA2 /* tsk_mutex.h */; };
+		ECB9871C117D156000425AA2 /* tsk_object.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986DF117D156000425AA2 /* tsk_object.c */; };
+		ECB9871D117D156000425AA2 /* tsk_object.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986E0117D156000425AA2 /* tsk_object.h */; };
+		ECB9871E117D156000425AA2 /* tsk_options.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986E1117D156000425AA2 /* tsk_options.c */; };
+		ECB9871F117D156000425AA2 /* tsk_options.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986E2117D156000425AA2 /* tsk_options.h */; };
+		ECB98720117D156000425AA2 /* tsk_params.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986E3117D156000425AA2 /* tsk_params.c */; };
+		ECB98721117D156000425AA2 /* tsk_params.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986E4117D156000425AA2 /* tsk_params.h */; };
+		ECB98722117D156000425AA2 /* tsk_ppfcs16.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986E5117D156000425AA2 /* tsk_ppfcs16.c */; };
+		ECB98723117D156000425AA2 /* tsk_ppfcs16.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986E6117D156000425AA2 /* tsk_ppfcs16.h */; };
+		ECB98724117D156000425AA2 /* tsk_ppfcs32.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986E7117D156000425AA2 /* tsk_ppfcs32.c */; };
+		ECB98725117D156000425AA2 /* tsk_ppfcs32.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986E8117D156000425AA2 /* tsk_ppfcs32.h */; };
+		ECB98726117D156000425AA2 /* tsk_ragel_state.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986E9117D156000425AA2 /* tsk_ragel_state.c */; };
+		ECB98727117D156000425AA2 /* tsk_ragel_state.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986EA117D156000425AA2 /* tsk_ragel_state.h */; };
+		ECB98728117D156000425AA2 /* tsk_runnable.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986EB117D156000425AA2 /* tsk_runnable.c */; };
+		ECB98729117D156000425AA2 /* tsk_runnable.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986EC117D156000425AA2 /* tsk_runnable.h */; };
+		ECB9872A117D156000425AA2 /* tsk_safeobj.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986ED117D156000425AA2 /* tsk_safeobj.c */; };
+		ECB9872B117D156000425AA2 /* tsk_safeobj.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986EE117D156000425AA2 /* tsk_safeobj.h */; };
+		ECB9872C117D156000425AA2 /* tsk_semaphore.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986EF117D156000425AA2 /* tsk_semaphore.c */; };
+		ECB9872D117D156000425AA2 /* tsk_semaphore.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986F0117D156000425AA2 /* tsk_semaphore.h */; };
+		ECB9872E117D156000425AA2 /* tsk_sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986F1117D156000425AA2 /* tsk_sha1.c */; };
+		ECB9872F117D156000425AA2 /* tsk_sha1.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986F2117D156000425AA2 /* tsk_sha1.h */; };
+		ECB98730117D156000425AA2 /* tsk_string.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986F3117D156000425AA2 /* tsk_string.c */; };
+		ECB98731117D156000425AA2 /* tsk_string.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986F4117D156000425AA2 /* tsk_string.h */; };
+		ECB98732117D156000425AA2 /* tsk_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986F5117D156000425AA2 /* tsk_thread.c */; };
+		ECB98733117D156000425AA2 /* tsk_thread.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986F6117D156000425AA2 /* tsk_thread.h */; };
+		ECB98734117D156000425AA2 /* tsk_time.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986F7117D156000425AA2 /* tsk_time.c */; };
+		ECB98735117D156000425AA2 /* tsk_time.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986F8117D156000425AA2 /* tsk_time.h */; };
+		ECB98736117D156000425AA2 /* tsk_timer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986F9117D156000425AA2 /* tsk_timer.c */; };
+		ECB98737117D156000425AA2 /* tsk_timer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986FA117D156000425AA2 /* tsk_timer.h */; };
+		ECB98738117D156000425AA2 /* tsk_url.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986FB117D156000425AA2 /* tsk_url.c */; };
+		ECB98739117D156000425AA2 /* tsk_url.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986FC117D156000425AA2 /* tsk_url.h */; };
+		ECB9873A117D156000425AA2 /* tsk_uuid.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986FD117D156000425AA2 /* tsk_uuid.c */; };
+		ECB9873B117D156000425AA2 /* tsk_uuid.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB986FE117D156000425AA2 /* tsk_uuid.h */; };
+		ECB9873C117D156000425AA2 /* tsk_xml.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB986FF117D156000425AA2 /* tsk_xml.c */; };
+		ECB9873D117D156000425AA2 /* tsk_xml.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98700117D156000425AA2 /* tsk_xml.h */; };
+		ECB987C1117D159400425AA2 /* tnet_dhcp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98750117D159400425AA2 /* tnet_dhcp.c */; };
+		ECB987C2117D159400425AA2 /* tnet_dhcp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98751117D159400425AA2 /* tnet_dhcp.h */; };
+		ECB987C3117D159400425AA2 /* tnet_dhcp_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98752117D159400425AA2 /* tnet_dhcp_message.c */; };
+		ECB987C4117D159400425AA2 /* tnet_dhcp_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98753117D159400425AA2 /* tnet_dhcp_message.h */; };
+		ECB987C5117D159400425AA2 /* tnet_dhcp_option.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98754117D159400425AA2 /* tnet_dhcp_option.c */; };
+		ECB987C6117D159400425AA2 /* tnet_dhcp_option.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98755117D159400425AA2 /* tnet_dhcp_option.h */; };
+		ECB987C7117D159400425AA2 /* tnet_dhcp_option_sip.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98756117D159400425AA2 /* tnet_dhcp_option_sip.c */; };
+		ECB987C8117D159400425AA2 /* tnet_dhcp_option_sip.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98757117D159400425AA2 /* tnet_dhcp_option_sip.h */; };
+		ECB987C9117D159400425AA2 /* tnet_dhcp6.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98759117D159400425AA2 /* tnet_dhcp6.c */; };
+		ECB987CA117D159400425AA2 /* tnet_dhcp6.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9875A117D159400425AA2 /* tnet_dhcp6.h */; };
+		ECB987CB117D159400425AA2 /* tnet_dhcp6_duid.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9875B117D159400425AA2 /* tnet_dhcp6_duid.c */; };
+		ECB987CC117D159400425AA2 /* tnet_dhcp6_duid.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9875C117D159400425AA2 /* tnet_dhcp6_duid.h */; };
+		ECB987CD117D159400425AA2 /* tnet_dhcp6_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9875D117D159400425AA2 /* tnet_dhcp6_message.c */; };
+		ECB987CE117D159400425AA2 /* tnet_dhcp6_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9875E117D159400425AA2 /* tnet_dhcp6_message.h */; };
+		ECB987CF117D159400425AA2 /* tnet_dhcp6_option.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9875F117D159400425AA2 /* tnet_dhcp6_option.c */; };
+		ECB987D0117D159400425AA2 /* tnet_dhcp6_option.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98760117D159400425AA2 /* tnet_dhcp6_option.h */; };
+		ECB987D1117D159400425AA2 /* tnet_dns.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98762117D159400425AA2 /* tnet_dns.c */; };
+		ECB987D2117D159400425AA2 /* tnet_dns.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98763117D159400425AA2 /* tnet_dns.h */; };
+		ECB987D3117D159400425AA2 /* tnet_dns_a.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98764117D159400425AA2 /* tnet_dns_a.c */; };
+		ECB987D4117D159400425AA2 /* tnet_dns_a.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98765117D159400425AA2 /* tnet_dns_a.h */; };
+		ECB987D5117D159400425AA2 /* tnet_dns_aaaa.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98766117D159400425AA2 /* tnet_dns_aaaa.c */; };
+		ECB987D6117D159400425AA2 /* tnet_dns_aaaa.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98767117D159400425AA2 /* tnet_dns_aaaa.h */; };
+		ECB987D7117D159400425AA2 /* tnet_dns_cname.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98768117D159400425AA2 /* tnet_dns_cname.c */; };
+		ECB987D8117D159400425AA2 /* tnet_dns_cname.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98769117D159400425AA2 /* tnet_dns_cname.h */; };
+		ECB987D9117D159400425AA2 /* tnet_dns_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9876A117D159400425AA2 /* tnet_dns_message.c */; };
+		ECB987DA117D159400425AA2 /* tnet_dns_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9876B117D159400425AA2 /* tnet_dns_message.h */; };
+		ECB987DB117D159400425AA2 /* tnet_dns_mx.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9876C117D159400425AA2 /* tnet_dns_mx.c */; };
+		ECB987DC117D159400425AA2 /* tnet_dns_mx.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9876D117D159400425AA2 /* tnet_dns_mx.h */; };
+		ECB987DD117D159400425AA2 /* tnet_dns_naptr.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9876E117D159400425AA2 /* tnet_dns_naptr.c */; };
+		ECB987DE117D159400425AA2 /* tnet_dns_naptr.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9876F117D159400425AA2 /* tnet_dns_naptr.h */; };
+		ECB987DF117D159400425AA2 /* tnet_dns_ns.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98770117D159400425AA2 /* tnet_dns_ns.c */; };
+		ECB987E0117D159400425AA2 /* tnet_dns_ns.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98771117D159400425AA2 /* tnet_dns_ns.h */; };
+		ECB987E1117D159400425AA2 /* tnet_dns_opt.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98772117D159400425AA2 /* tnet_dns_opt.c */; };
+		ECB987E2117D159400425AA2 /* tnet_dns_opt.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98773117D159400425AA2 /* tnet_dns_opt.h */; };
+		ECB987E3117D159400425AA2 /* tnet_dns_ptr.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98774117D159400425AA2 /* tnet_dns_ptr.c */; };
+		ECB987E4117D159400425AA2 /* tnet_dns_ptr.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98775117D159400425AA2 /* tnet_dns_ptr.h */; };
+		ECB987E5117D159400425AA2 /* tnet_dns_regexp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98776117D159400425AA2 /* tnet_dns_regexp.c */; };
+		ECB987E6117D159400425AA2 /* tnet_dns_regexp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98777117D159400425AA2 /* tnet_dns_regexp.h */; };
+		ECB987E7117D159400425AA2 /* tnet_dns_resolvconf.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98778117D159400425AA2 /* tnet_dns_resolvconf.c */; };
+		ECB987E8117D159400425AA2 /* tnet_dns_resolvconf.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98779117D159400425AA2 /* tnet_dns_resolvconf.h */; };
+		ECB987E9117D159400425AA2 /* tnet_dns_rr.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9877A117D159400425AA2 /* tnet_dns_rr.c */; };
+		ECB987EA117D159400425AA2 /* tnet_dns_rr.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9877B117D159400425AA2 /* tnet_dns_rr.h */; };
+		ECB987EB117D159400425AA2 /* tnet_dns_soa.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9877C117D159400425AA2 /* tnet_dns_soa.c */; };
+		ECB987EC117D159400425AA2 /* tnet_dns_soa.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9877D117D159400425AA2 /* tnet_dns_soa.h */; };
+		ECB987ED117D159400425AA2 /* tnet_dns_srv.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9877E117D159400425AA2 /* tnet_dns_srv.c */; };
+		ECB987EE117D159400425AA2 /* tnet_dns_srv.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9877F117D159400425AA2 /* tnet_dns_srv.h */; };
+		ECB987EF117D159400425AA2 /* tnet_dns_txt.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98780117D159400425AA2 /* tnet_dns_txt.c */; };
+		ECB987F0117D159400425AA2 /* tnet_dns_txt.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98781117D159400425AA2 /* tnet_dns_txt.h */; };
+		ECB987F1117D159400425AA2 /* tnet_ice.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98783117D159400425AA2 /* tnet_ice.c */; };
+		ECB987F2117D159400425AA2 /* tnet_ice.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98784117D159400425AA2 /* tnet_ice.h */; };
+		ECB987F3117D159400425AA2 /* tnet_stun.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98786117D159400425AA2 /* tnet_stun.c */; };
+		ECB987F4117D159400425AA2 /* tnet_stun.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98787117D159400425AA2 /* tnet_stun.h */; };
+		ECB987F5117D159400425AA2 /* tnet_stun_attribute.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98788117D159400425AA2 /* tnet_stun_attribute.c */; };
+		ECB987F6117D159400425AA2 /* tnet_stun_attribute.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98789117D159400425AA2 /* tnet_stun_attribute.h */; };
+		ECB987F7117D159400425AA2 /* tnet_stun_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9878A117D159400425AA2 /* tnet_stun_message.c */; };
+		ECB987F8117D159400425AA2 /* tnet_stun_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9878B117D159400425AA2 /* tnet_stun_message.h */; };
+		ECB987F9117D159400425AA2 /* tinynet.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9878C117D159400425AA2 /* tinynet.h */; };
+		ECB987FA117D159400425AA2 /* tinyNET_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9878D117D159400425AA2 /* tinyNET_config.h */; };
+		ECB987FB117D159400425AA2 /* tnet_tls.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9878F117D159400425AA2 /* tnet_tls.c */; };
+		ECB987FC117D159400425AA2 /* tnet_tls.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98790117D159400425AA2 /* tnet_tls.h */; };
+		ECB987FD117D159400425AA2 /* tnet.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98791117D159400425AA2 /* tnet.c */; };
+		ECB987FE117D159400425AA2 /* tnet.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98792117D159400425AA2 /* tnet.h */; };
+		ECB987FF117D159400425AA2 /* tnet_auth.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98793117D159400425AA2 /* tnet_auth.c */; };
+		ECB98800117D159400425AA2 /* tnet_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98794117D159400425AA2 /* tnet_auth.h */; };
+		ECB98801117D159400425AA2 /* tnet_endianness.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98795117D159400425AA2 /* tnet_endianness.c */; };
+		ECB98802117D159400425AA2 /* tnet_endianness.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98796117D159400425AA2 /* tnet_endianness.h */; };
+		ECB98803117D159400425AA2 /* tnet_hardwares.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98797117D159400425AA2 /* tnet_hardwares.h */; };
+		ECB98804117D159400425AA2 /* tnet_nat.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98798117D159400425AA2 /* tnet_nat.c */; };
+		ECB98805117D159400425AA2 /* tnet_nat.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98799117D159400425AA2 /* tnet_nat.h */; };
+		ECB98806117D159400425AA2 /* tnet_poll.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9879A117D159400425AA2 /* tnet_poll.c */; };
+		ECB98807117D159400425AA2 /* tnet_poll.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9879B117D159400425AA2 /* tnet_poll.h */; };
+		ECB98808117D159400425AA2 /* tnet_proto.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9879C117D159400425AA2 /* tnet_proto.h */; };
+		ECB98809117D159400425AA2 /* tnet_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9879D117D159400425AA2 /* tnet_socket.c */; };
+		ECB9880A117D159400425AA2 /* tnet_socket.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9879E117D159400425AA2 /* tnet_socket.h */; };
+		ECB9880B117D159400425AA2 /* tnet_transport.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9879F117D159400425AA2 /* tnet_transport.c */; };
+		ECB9880C117D159400425AA2 /* tnet_transport.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB987A0117D159400425AA2 /* tnet_transport.h */; };
+		ECB9880D117D159400425AA2 /* tnet_transport_poll.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB987A1117D159400425AA2 /* tnet_transport_poll.c */; };
+		ECB9880E117D159400425AA2 /* tnet_transport_win32.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB987A2117D159400425AA2 /* tnet_transport_win32.c */; };
+		ECB9880F117D159400425AA2 /* tnet_types.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB987A3117D159400425AA2 /* tnet_types.h */; };
+		ECB98810117D159400425AA2 /* tnet_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB987A4117D159400425AA2 /* tnet_utils.c */; };
+		ECB98811117D159400425AA2 /* tnet_utils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB987A5117D159400425AA2 /* tnet_utils.h */; };
+		ECB98812117D159400425AA2 /* tnet_turn.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB987A7117D159400425AA2 /* tnet_turn.c */; };
+		ECB98813117D159400425AA2 /* tnet_turn.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB987A8117D159400425AA2 /* tnet_turn.h */; };
+		ECB98814117D159400425AA2 /* tnet_turn_attribute.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB987A9117D159400425AA2 /* tnet_turn_attribute.c */; };
+		ECB98815117D159400425AA2 /* tnet_turn_attribute.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB987AA117D159400425AA2 /* tnet_turn_attribute.h */; };
+		ECB98816117D159400425AA2 /* tnet_turn_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB987AB117D159400425AA2 /* tnet_turn_message.c */; };
+		ECB98817117D159400425AA2 /* tnet_turn_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB987AC117D159400425AA2 /* tnet_turn_message.h */; };
+		ECB98881117D15BE00425AA2 /* thttp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98830117D15BE00425AA2 /* thttp.h */; };
+		ECB98882117D15BE00425AA2 /* thttp_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98833117D15BE00425AA2 /* thttp_auth.h */; };
+		ECB98883117D15BE00425AA2 /* thttp_challenge.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98834117D15BE00425AA2 /* thttp_challenge.h */; };
+		ECB98884117D15BE00425AA2 /* thttp_header.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98836117D15BE00425AA2 /* thttp_header.h */; };
+		ECB98885117D15BE00425AA2 /* thttp_header_Authorization.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98837117D15BE00425AA2 /* thttp_header_Authorization.h */; };
+		ECB98886117D15BE00425AA2 /* thttp_header_Content_Length.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98838117D15BE00425AA2 /* thttp_header_Content_Length.h */; };
+		ECB98887117D15BE00425AA2 /* thttp_header_Content_Type.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98839117D15BE00425AA2 /* thttp_header_Content_Type.h */; };
+		ECB98888117D15BE00425AA2 /* thttp_header_Dummy.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9883A117D15BE00425AA2 /* thttp_header_Dummy.h */; };
+		ECB98889117D15BE00425AA2 /* thttp_header_ETag.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9883B117D15BE00425AA2 /* thttp_header_ETag.h */; };
+		ECB9888A117D15BE00425AA2 /* thttp_header_Transfer_Encoding.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9883C117D15BE00425AA2 /* thttp_header_Transfer_Encoding.h */; };
+		ECB9888B117D15BE00425AA2 /* thttp_header_WWW_Authenticate.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9883D117D15BE00425AA2 /* thttp_header_WWW_Authenticate.h */; };
+		ECB9888C117D15BE00425AA2 /* thttp_parser_header.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB9883F117D15BE00425AA2 /* thttp_parser_header.h */; };
+		ECB9888D117D15BE00425AA2 /* thttp_parser_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98840117D15BE00425AA2 /* thttp_parser_message.h */; };
+		ECB9888E117D15BE00425AA2 /* thttp_parser_url.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98841117D15BE00425AA2 /* thttp_parser_url.h */; };
+		ECB9888F117D15BE00425AA2 /* thttp_action.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98842117D15BE00425AA2 /* thttp_action.h */; };
+		ECB98890117D15BE00425AA2 /* thttp_dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98843117D15BE00425AA2 /* thttp_dialog.h */; };
+		ECB98891117D15BE00425AA2 /* thttp_event.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98844117D15BE00425AA2 /* thttp_event.h */; };
+		ECB98892117D15BE00425AA2 /* thttp_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98845117D15BE00425AA2 /* thttp_message.h */; };
+		ECB98893117D15BE00425AA2 /* thttp_session.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98846117D15BE00425AA2 /* thttp_session.h */; };
+		ECB98894117D15BE00425AA2 /* thttp_url.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98847117D15BE00425AA2 /* thttp_url.h */; };
+		ECB98895117D15BE00425AA2 /* tinyhttp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98848117D15BE00425AA2 /* tinyhttp.h */; };
+		ECB98896117D15BE00425AA2 /* tinyhttp_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB98849117D15BE00425AA2 /* tinyhttp_config.h */; };
+		ECB98897117D15BE00425AA2 /* thttp_auth.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9885C117D15BE00425AA2 /* thttp_auth.c */; };
+		ECB98898117D15BE00425AA2 /* thttp_challenge.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9885D117D15BE00425AA2 /* thttp_challenge.c */; };
+		ECB98899117D15BE00425AA2 /* thttp_header.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9885F117D15BE00425AA2 /* thttp_header.c */; };
+		ECB9889A117D15BE00425AA2 /* thttp_header_Authorization.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98860117D15BE00425AA2 /* thttp_header_Authorization.c */; };
+		ECB9889B117D15BE00425AA2 /* thttp_header_Content_Length.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98861117D15BE00425AA2 /* thttp_header_Content_Length.c */; };
+		ECB9889C117D15BE00425AA2 /* thttp_header_Content_Type.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98862117D15BE00425AA2 /* thttp_header_Content_Type.c */; };
+		ECB9889D117D15BE00425AA2 /* thttp_header_Dummy.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98863117D15BE00425AA2 /* thttp_header_Dummy.c */; };
+		ECB9889E117D15BE00425AA2 /* thttp_header_ETag.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98864117D15BE00425AA2 /* thttp_header_ETag.c */; };
+		ECB9889F117D15BE00425AA2 /* thttp_header_Transfer_Encoding.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98865117D15BE00425AA2 /* thttp_header_Transfer_Encoding.c */; };
+		ECB988A0117D15BE00425AA2 /* thttp_header_WWW_Authenticate.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98866117D15BE00425AA2 /* thttp_header_WWW_Authenticate.c */; };
+		ECB988A2117D15BE00425AA2 /* thttp_parser_header.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98869117D15BE00425AA2 /* thttp_parser_header.c */; };
+		ECB988A3117D15BE00425AA2 /* thttp_parser_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9886A117D15BE00425AA2 /* thttp_parser_message.c */; };
+		ECB988A4117D15BE00425AA2 /* thttp_parser_url.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9886B117D15BE00425AA2 /* thttp_parser_url.c */; };
+		ECB988A5117D15BE00425AA2 /* thttp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9886C117D15BE00425AA2 /* thttp.c */; };
+		ECB988A6117D15BE00425AA2 /* thttp_action.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9886D117D15BE00425AA2 /* thttp_action.c */; };
+		ECB988A7117D15BE00425AA2 /* thttp_dialog.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9886E117D15BE00425AA2 /* thttp_dialog.c */; };
+		ECB988A8117D15BE00425AA2 /* thttp_event.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9886F117D15BE00425AA2 /* thttp_event.c */; };
+		ECB988A9117D15BE00425AA2 /* thttp_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98870117D15BE00425AA2 /* thttp_message.c */; };
+		ECB988AA117D15BE00425AA2 /* thttp_session.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98871117D15BE00425AA2 /* thttp_session.c */; };
+		ECB988AB117D15BE00425AA2 /* thttp_url.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98872117D15BE00425AA2 /* thttp_url.c */; };
+		ECB988B8117D166800425AA2 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECB986AD117D14DC00425AA2 /* libtinySAK.dylib */; };
+		ECB988C2117D174800425AA2 /* libtinyNET.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECB986B4117D14ED00425AA2 /* libtinyNET.dylib */; };
+		ECB988C3117D174800425AA2 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECB986AD117D14DC00425AA2 /* libtinySAK.dylib */; };
+		ECB988D6117D17F300425AA2 /* txcap_action.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB988C7117D17F300425AA2 /* txcap_action.h */; };
+		ECB988D7117D17F300425AA2 /* txcap_auid.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB988C8117D17F300425AA2 /* txcap_auid.h */; };
+		ECB988D8117D17F300425AA2 /* txcap_document.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB988C9117D17F300425AA2 /* txcap_document.h */; };
+		ECB988D9117D17F300425AA2 /* txcap_node.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB988CA117D17F300425AA2 /* txcap_node.h */; };
+		ECB988DA117D17F300425AA2 /* txcap_selector.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB988CB117D17F300425AA2 /* txcap_selector.h */; };
+		ECB988DB117D17F300425AA2 /* tinyxcap.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB988CC117D17F300425AA2 /* tinyxcap.h */; };
+		ECB988DC117D17F300425AA2 /* tinyxcap_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB988CD117D17F300425AA2 /* tinyxcap_config.h */; };
+		ECB988DD117D17F300425AA2 /* txcap.h in Headers */ = {isa = PBXBuildFile; fileRef = ECB988CE117D17F300425AA2 /* txcap.h */; };
+		ECB988DE117D17F300425AA2 /* txcap.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB988D0117D17F300425AA2 /* txcap.c */; };
+		ECB988DF117D17F300425AA2 /* txcap_action.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB988D1117D17F300425AA2 /* txcap_action.c */; };
+		ECB988E0117D17F300425AA2 /* txcap_auid.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB988D2117D17F300425AA2 /* txcap_auid.c */; };
+		ECB988E1117D17F300425AA2 /* txcap_document.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB988D3117D17F300425AA2 /* txcap_document.c */; };
+		ECB988E2117D17F300425AA2 /* txcap_node.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB988D4117D17F300425AA2 /* txcap_node.c */; };
+		ECB988E3117D17F300425AA2 /* txcap_selector.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB988D5117D17F300425AA2 /* txcap_selector.c */; };
+		ECB988EC117D185800425AA2 /* libtinyHTTP.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECB986BB117D14FA00425AA2 /* libtinyHTTP.dylib */; };
+		ECB988ED117D185800425AA2 /* libtinyNET.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECB986B4117D14ED00425AA2 /* libtinyNET.dylib */; };
+		ECB988EE117D185800425AA2 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECB986AD117D14DC00425AA2 /* libtinySAK.dylib */; };
+		ECB98911117D194200425AA2 /* libtinyHTTP.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECB986BB117D14FA00425AA2 /* libtinyHTTP.dylib */; };
+		ECB98912117D194200425AA2 /* libtinyNET.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECB986B4117D14ED00425AA2 /* libtinyNET.dylib */; };
+		ECB98913117D194200425AA2 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECB986AD117D14DC00425AA2 /* libtinySAK.dylib */; };
+		ECB98914117D194200425AA2 /* libtinyXCAP.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC0630554660B00DB518D /* libtinyXCAP.dylib */; };
+		ECB9891F117D19A400425AA2 /* stdafx.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB98918117D19A400425AA2 /* stdafx.c */; };
+		ECB98920117D19A400425AA2 /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = ECB9891B117D19A400425AA2 /* test.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		ECB988B6117D166300425AA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECB986AC117D14DC00425AA2 /* tinySAK */;
+			remoteInfo = tinySAK;
+		};
+		ECB988BE117D174000425AA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECB986AC117D14DC00425AA2 /* tinySAK */;
+			remoteInfo = tinySAK;
+		};
+		ECB988C0117D174000425AA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECB986B3117D14ED00425AA2 /* tinyNET */;
+			remoteInfo = tinyNET;
+		};
+		ECB988E6117D185300425AA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECB986AC117D14DC00425AA2 /* tinySAK */;
+			remoteInfo = tinySAK;
+		};
+		ECB988E8117D185300425AA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECB986B3117D14ED00425AA2 /* tinyNET */;
+			remoteInfo = tinyNET;
+		};
+		ECB988EA117D185300425AA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECB986BA117D14FA00425AA2 /* tinyHTTP */;
+			remoteInfo = tinyHTTP;
+		};
+		ECB98909117D193C00425AA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC0620554660B00DB518D /* tinyXCAP */;
+			remoteInfo = tinyXCAP;
+		};
+		ECB9890B117D193C00425AA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECB986AC117D14DC00425AA2 /* tinySAK */;
+			remoteInfo = tinySAK;
+		};
+		ECB9890D117D193C00425AA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECB986B3117D14ED00425AA2 /* tinyNET */;
+			remoteInfo = tinyNET;
+		};
+		ECB9890F117D193C00425AA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECB986BA117D14FA00425AA2 /* tinyHTTP */;
+			remoteInfo = tinyHTTP;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		D2AAC0630554660B00DB518D /* libtinyXCAP.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinyXCAP.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECB986AD117D14DC00425AA2 /* libtinySAK.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinySAK.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECB986B4117D14ED00425AA2 /* libtinyNET.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinyNET.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECB986BB117D14FA00425AA2 /* libtinyHTTP.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinyHTTP.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECB986C4117D156000425AA2 /* tinySAK_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinySAK_config.h; sourceTree = "<group>"; };
+		ECB986C5117D156000425AA2 /* tsk.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk.c; sourceTree = "<group>"; };
+		ECB986C6117D156000425AA2 /* tsk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk.h; sourceTree = "<group>"; };
+		ECB986C7117D156000425AA2 /* tsk_base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_base64.c; sourceTree = "<group>"; };
+		ECB986C8117D156000425AA2 /* tsk_base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_base64.h; sourceTree = "<group>"; };
+		ECB986C9117D156000425AA2 /* tsk_binaryutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_binaryutils.c; sourceTree = "<group>"; };
+		ECB986CA117D156000425AA2 /* tsk_binaryutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_binaryutils.h; sourceTree = "<group>"; };
+		ECB986CB117D156000425AA2 /* tsk_buffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_buffer.c; sourceTree = "<group>"; };
+		ECB986CC117D156000425AA2 /* tsk_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_buffer.h; sourceTree = "<group>"; };
+		ECB986CD117D156000425AA2 /* tsk_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_common.h; sourceTree = "<group>"; };
+		ECB986CE117D156000425AA2 /* tsk_condwait.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_condwait.c; sourceTree = "<group>"; };
+		ECB986CF117D156000425AA2 /* tsk_condwait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_condwait.h; sourceTree = "<group>"; };
+		ECB986D0117D156000425AA2 /* tsk_debug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_debug.c; sourceTree = "<group>"; };
+		ECB986D1117D156000425AA2 /* tsk_debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_debug.h; sourceTree = "<group>"; };
+		ECB986D2117D156000425AA2 /* tsk_errno.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_errno.h; sourceTree = "<group>"; };
+		ECB986D3117D156000425AA2 /* tsk_fsm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_fsm.c; sourceTree = "<group>"; };
+		ECB986D4117D156000425AA2 /* tsk_fsm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_fsm.h; sourceTree = "<group>"; };
+		ECB986D5117D156000425AA2 /* tsk_hmac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_hmac.c; sourceTree = "<group>"; };
+		ECB986D6117D156000425AA2 /* tsk_hmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_hmac.h; sourceTree = "<group>"; };
+		ECB986D7117D156000425AA2 /* tsk_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_list.c; sourceTree = "<group>"; };
+		ECB986D8117D156000425AA2 /* tsk_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_list.h; sourceTree = "<group>"; };
+		ECB986D9117D156000425AA2 /* tsk_md5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_md5.c; sourceTree = "<group>"; };
+		ECB986DA117D156000425AA2 /* tsk_md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_md5.h; sourceTree = "<group>"; };
+		ECB986DB117D156000425AA2 /* tsk_memory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_memory.c; sourceTree = "<group>"; };
+		ECB986DC117D156000425AA2 /* tsk_memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_memory.h; sourceTree = "<group>"; };
+		ECB986DD117D156000425AA2 /* tsk_mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_mutex.c; sourceTree = "<group>"; };
+		ECB986DE117D156000425AA2 /* tsk_mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_mutex.h; sourceTree = "<group>"; };
+		ECB986DF117D156000425AA2 /* tsk_object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_object.c; sourceTree = "<group>"; };
+		ECB986E0117D156000425AA2 /* tsk_object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_object.h; sourceTree = "<group>"; };
+		ECB986E1117D156000425AA2 /* tsk_options.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_options.c; sourceTree = "<group>"; };
+		ECB986E2117D156000425AA2 /* tsk_options.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_options.h; sourceTree = "<group>"; };
+		ECB986E3117D156000425AA2 /* tsk_params.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_params.c; sourceTree = "<group>"; };
+		ECB986E4117D156000425AA2 /* tsk_params.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_params.h; sourceTree = "<group>"; };
+		ECB986E5117D156000425AA2 /* tsk_ppfcs16.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_ppfcs16.c; sourceTree = "<group>"; };
+		ECB986E6117D156000425AA2 /* tsk_ppfcs16.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_ppfcs16.h; sourceTree = "<group>"; };
+		ECB986E7117D156000425AA2 /* tsk_ppfcs32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_ppfcs32.c; sourceTree = "<group>"; };
+		ECB986E8117D156000425AA2 /* tsk_ppfcs32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_ppfcs32.h; sourceTree = "<group>"; };
+		ECB986E9117D156000425AA2 /* tsk_ragel_state.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_ragel_state.c; sourceTree = "<group>"; };
+		ECB986EA117D156000425AA2 /* tsk_ragel_state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_ragel_state.h; sourceTree = "<group>"; };
+		ECB986EB117D156000425AA2 /* tsk_runnable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_runnable.c; sourceTree = "<group>"; };
+		ECB986EC117D156000425AA2 /* tsk_runnable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_runnable.h; sourceTree = "<group>"; };
+		ECB986ED117D156000425AA2 /* tsk_safeobj.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_safeobj.c; sourceTree = "<group>"; };
+		ECB986EE117D156000425AA2 /* tsk_safeobj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_safeobj.h; sourceTree = "<group>"; };
+		ECB986EF117D156000425AA2 /* tsk_semaphore.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_semaphore.c; sourceTree = "<group>"; };
+		ECB986F0117D156000425AA2 /* tsk_semaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_semaphore.h; sourceTree = "<group>"; };
+		ECB986F1117D156000425AA2 /* tsk_sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_sha1.c; sourceTree = "<group>"; };
+		ECB986F2117D156000425AA2 /* tsk_sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_sha1.h; sourceTree = "<group>"; };
+		ECB986F3117D156000425AA2 /* tsk_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_string.c; sourceTree = "<group>"; };
+		ECB986F4117D156000425AA2 /* tsk_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_string.h; sourceTree = "<group>"; };
+		ECB986F5117D156000425AA2 /* tsk_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_thread.c; sourceTree = "<group>"; };
+		ECB986F6117D156000425AA2 /* tsk_thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_thread.h; sourceTree = "<group>"; };
+		ECB986F7117D156000425AA2 /* tsk_time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_time.c; sourceTree = "<group>"; };
+		ECB986F8117D156000425AA2 /* tsk_time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_time.h; sourceTree = "<group>"; };
+		ECB986F9117D156000425AA2 /* tsk_timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_timer.c; sourceTree = "<group>"; };
+		ECB986FA117D156000425AA2 /* tsk_timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_timer.h; sourceTree = "<group>"; };
+		ECB986FB117D156000425AA2 /* tsk_url.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_url.c; sourceTree = "<group>"; };
+		ECB986FC117D156000425AA2 /* tsk_url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_url.h; sourceTree = "<group>"; };
+		ECB986FD117D156000425AA2 /* tsk_uuid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_uuid.c; sourceTree = "<group>"; };
+		ECB986FE117D156000425AA2 /* tsk_uuid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_uuid.h; sourceTree = "<group>"; };
+		ECB986FF117D156000425AA2 /* tsk_xml.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_xml.c; sourceTree = "<group>"; };
+		ECB98700117D156000425AA2 /* tsk_xml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_xml.h; sourceTree = "<group>"; };
+		ECB9874B117D159400425AA2 /* tnet_dns_regexp.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tnet_dns_regexp.rl; sourceTree = "<group>"; };
+		ECB9874C117D159400425AA2 /* tnet_dns_resolvconf.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tnet_dns_resolvconf.rl; sourceTree = "<group>"; };
+		ECB98750117D159400425AA2 /* tnet_dhcp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp.c; sourceTree = "<group>"; };
+		ECB98751117D159400425AA2 /* tnet_dhcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp.h; sourceTree = "<group>"; };
+		ECB98752117D159400425AA2 /* tnet_dhcp_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp_message.c; sourceTree = "<group>"; };
+		ECB98753117D159400425AA2 /* tnet_dhcp_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp_message.h; sourceTree = "<group>"; };
+		ECB98754117D159400425AA2 /* tnet_dhcp_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp_option.c; sourceTree = "<group>"; };
+		ECB98755117D159400425AA2 /* tnet_dhcp_option.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp_option.h; sourceTree = "<group>"; };
+		ECB98756117D159400425AA2 /* tnet_dhcp_option_sip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp_option_sip.c; sourceTree = "<group>"; };
+		ECB98757117D159400425AA2 /* tnet_dhcp_option_sip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp_option_sip.h; sourceTree = "<group>"; };
+		ECB98759117D159400425AA2 /* tnet_dhcp6.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp6.c; sourceTree = "<group>"; };
+		ECB9875A117D159400425AA2 /* tnet_dhcp6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp6.h; sourceTree = "<group>"; };
+		ECB9875B117D159400425AA2 /* tnet_dhcp6_duid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp6_duid.c; sourceTree = "<group>"; };
+		ECB9875C117D159400425AA2 /* tnet_dhcp6_duid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp6_duid.h; sourceTree = "<group>"; };
+		ECB9875D117D159400425AA2 /* tnet_dhcp6_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp6_message.c; sourceTree = "<group>"; };
+		ECB9875E117D159400425AA2 /* tnet_dhcp6_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp6_message.h; sourceTree = "<group>"; };
+		ECB9875F117D159400425AA2 /* tnet_dhcp6_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp6_option.c; sourceTree = "<group>"; };
+		ECB98760117D159400425AA2 /* tnet_dhcp6_option.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp6_option.h; sourceTree = "<group>"; };
+		ECB98762117D159400425AA2 /* tnet_dns.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns.c; sourceTree = "<group>"; };
+		ECB98763117D159400425AA2 /* tnet_dns.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns.h; sourceTree = "<group>"; };
+		ECB98764117D159400425AA2 /* tnet_dns_a.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_a.c; sourceTree = "<group>"; };
+		ECB98765117D159400425AA2 /* tnet_dns_a.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_a.h; sourceTree = "<group>"; };
+		ECB98766117D159400425AA2 /* tnet_dns_aaaa.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_aaaa.c; sourceTree = "<group>"; };
+		ECB98767117D159400425AA2 /* tnet_dns_aaaa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_aaaa.h; sourceTree = "<group>"; };
+		ECB98768117D159400425AA2 /* tnet_dns_cname.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_cname.c; sourceTree = "<group>"; };
+		ECB98769117D159400425AA2 /* tnet_dns_cname.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_cname.h; sourceTree = "<group>"; };
+		ECB9876A117D159400425AA2 /* tnet_dns_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_message.c; sourceTree = "<group>"; };
+		ECB9876B117D159400425AA2 /* tnet_dns_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_message.h; sourceTree = "<group>"; };
+		ECB9876C117D159400425AA2 /* tnet_dns_mx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_mx.c; sourceTree = "<group>"; };
+		ECB9876D117D159400425AA2 /* tnet_dns_mx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_mx.h; sourceTree = "<group>"; };
+		ECB9876E117D159400425AA2 /* tnet_dns_naptr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_naptr.c; sourceTree = "<group>"; };
+		ECB9876F117D159400425AA2 /* tnet_dns_naptr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_naptr.h; sourceTree = "<group>"; };
+		ECB98770117D159400425AA2 /* tnet_dns_ns.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_ns.c; sourceTree = "<group>"; };
+		ECB98771117D159400425AA2 /* tnet_dns_ns.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_ns.h; sourceTree = "<group>"; };
+		ECB98772117D159400425AA2 /* tnet_dns_opt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_opt.c; sourceTree = "<group>"; };
+		ECB98773117D159400425AA2 /* tnet_dns_opt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_opt.h; sourceTree = "<group>"; };
+		ECB98774117D159400425AA2 /* tnet_dns_ptr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_ptr.c; sourceTree = "<group>"; };
+		ECB98775117D159400425AA2 /* tnet_dns_ptr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_ptr.h; sourceTree = "<group>"; };
+		ECB98776117D159400425AA2 /* tnet_dns_regexp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_regexp.c; sourceTree = "<group>"; };
+		ECB98777117D159400425AA2 /* tnet_dns_regexp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_regexp.h; sourceTree = "<group>"; };
+		ECB98778117D159400425AA2 /* tnet_dns_resolvconf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_resolvconf.c; sourceTree = "<group>"; };
+		ECB98779117D159400425AA2 /* tnet_dns_resolvconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_resolvconf.h; sourceTree = "<group>"; };
+		ECB9877A117D159400425AA2 /* tnet_dns_rr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_rr.c; sourceTree = "<group>"; };
+		ECB9877B117D159400425AA2 /* tnet_dns_rr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_rr.h; sourceTree = "<group>"; };
+		ECB9877C117D159400425AA2 /* tnet_dns_soa.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_soa.c; sourceTree = "<group>"; };
+		ECB9877D117D159400425AA2 /* tnet_dns_soa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_soa.h; sourceTree = "<group>"; };
+		ECB9877E117D159400425AA2 /* tnet_dns_srv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_srv.c; sourceTree = "<group>"; };
+		ECB9877F117D159400425AA2 /* tnet_dns_srv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_srv.h; sourceTree = "<group>"; };
+		ECB98780117D159400425AA2 /* tnet_dns_txt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_txt.c; sourceTree = "<group>"; };
+		ECB98781117D159400425AA2 /* tnet_dns_txt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_txt.h; sourceTree = "<group>"; };
+		ECB98783117D159400425AA2 /* tnet_ice.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_ice.c; sourceTree = "<group>"; };
+		ECB98784117D159400425AA2 /* tnet_ice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_ice.h; sourceTree = "<group>"; };
+		ECB98786117D159400425AA2 /* tnet_stun.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_stun.c; sourceTree = "<group>"; };
+		ECB98787117D159400425AA2 /* tnet_stun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_stun.h; sourceTree = "<group>"; };
+		ECB98788117D159400425AA2 /* tnet_stun_attribute.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_stun_attribute.c; sourceTree = "<group>"; };
+		ECB98789117D159400425AA2 /* tnet_stun_attribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_stun_attribute.h; sourceTree = "<group>"; };
+		ECB9878A117D159400425AA2 /* tnet_stun_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_stun_message.c; sourceTree = "<group>"; };
+		ECB9878B117D159400425AA2 /* tnet_stun_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_stun_message.h; sourceTree = "<group>"; };
+		ECB9878C117D159400425AA2 /* tinynet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinynet.h; sourceTree = "<group>"; };
+		ECB9878D117D159400425AA2 /* tinyNET_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyNET_config.h; sourceTree = "<group>"; };
+		ECB9878F117D159400425AA2 /* tnet_tls.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_tls.c; sourceTree = "<group>"; };
+		ECB98790117D159400425AA2 /* tnet_tls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_tls.h; sourceTree = "<group>"; };
+		ECB98791117D159400425AA2 /* tnet.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet.c; sourceTree = "<group>"; };
+		ECB98792117D159400425AA2 /* tnet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet.h; sourceTree = "<group>"; };
+		ECB98793117D159400425AA2 /* tnet_auth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_auth.c; sourceTree = "<group>"; };
+		ECB98794117D159400425AA2 /* tnet_auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_auth.h; sourceTree = "<group>"; };
+		ECB98795117D159400425AA2 /* tnet_endianness.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_endianness.c; sourceTree = "<group>"; };
+		ECB98796117D159400425AA2 /* tnet_endianness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_endianness.h; sourceTree = "<group>"; };
+		ECB98797117D159400425AA2 /* tnet_hardwares.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_hardwares.h; sourceTree = "<group>"; };
+		ECB98798117D159400425AA2 /* tnet_nat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_nat.c; sourceTree = "<group>"; };
+		ECB98799117D159400425AA2 /* tnet_nat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_nat.h; sourceTree = "<group>"; };
+		ECB9879A117D159400425AA2 /* tnet_poll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_poll.c; sourceTree = "<group>"; };
+		ECB9879B117D159400425AA2 /* tnet_poll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_poll.h; sourceTree = "<group>"; };
+		ECB9879C117D159400425AA2 /* tnet_proto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_proto.h; sourceTree = "<group>"; };
+		ECB9879D117D159400425AA2 /* tnet_socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_socket.c; sourceTree = "<group>"; };
+		ECB9879E117D159400425AA2 /* tnet_socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_socket.h; sourceTree = "<group>"; };
+		ECB9879F117D159400425AA2 /* tnet_transport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_transport.c; sourceTree = "<group>"; };
+		ECB987A0117D159400425AA2 /* tnet_transport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_transport.h; sourceTree = "<group>"; };
+		ECB987A1117D159400425AA2 /* tnet_transport_poll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_transport_poll.c; sourceTree = "<group>"; };
+		ECB987A2117D159400425AA2 /* tnet_transport_win32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_transport_win32.c; sourceTree = "<group>"; };
+		ECB987A3117D159400425AA2 /* tnet_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_types.h; sourceTree = "<group>"; };
+		ECB987A4117D159400425AA2 /* tnet_utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_utils.c; sourceTree = "<group>"; };
+		ECB987A5117D159400425AA2 /* tnet_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_utils.h; sourceTree = "<group>"; };
+		ECB987A7117D159400425AA2 /* tnet_turn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_turn.c; sourceTree = "<group>"; };
+		ECB987A8117D159400425AA2 /* tnet_turn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_turn.h; sourceTree = "<group>"; };
+		ECB987A9117D159400425AA2 /* tnet_turn_attribute.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_turn_attribute.c; sourceTree = "<group>"; };
+		ECB987AA117D159400425AA2 /* tnet_turn_attribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_turn_attribute.h; sourceTree = "<group>"; };
+		ECB987AB117D159400425AA2 /* tnet_turn_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_turn_message.c; sourceTree = "<group>"; };
+		ECB987AC117D159400425AA2 /* tnet_turn_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_turn_message.h; sourceTree = "<group>"; };
+		ECB98828117D15BE00425AA2 /* http.abnf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = http.abnf; sourceTree = "<group>"; };
+		ECB98829117D15BE00425AA2 /* httpauth.abnf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = httpauth.abnf; sourceTree = "<group>"; };
+		ECB9882A117D15BE00425AA2 /* uri.abnf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = uri.abnf; sourceTree = "<group>"; };
+		ECB98830117D15BE00425AA2 /* thttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp.h; sourceTree = "<group>"; };
+		ECB98833117D15BE00425AA2 /* thttp_auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_auth.h; sourceTree = "<group>"; };
+		ECB98834117D15BE00425AA2 /* thttp_challenge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_challenge.h; sourceTree = "<group>"; };
+		ECB98836117D15BE00425AA2 /* thttp_header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header.h; sourceTree = "<group>"; };
+		ECB98837117D15BE00425AA2 /* thttp_header_Authorization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header_Authorization.h; sourceTree = "<group>"; };
+		ECB98838117D15BE00425AA2 /* thttp_header_Content_Length.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header_Content_Length.h; sourceTree = "<group>"; };
+		ECB98839117D15BE00425AA2 /* thttp_header_Content_Type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header_Content_Type.h; sourceTree = "<group>"; };
+		ECB9883A117D15BE00425AA2 /* thttp_header_Dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header_Dummy.h; sourceTree = "<group>"; };
+		ECB9883B117D15BE00425AA2 /* thttp_header_ETag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header_ETag.h; sourceTree = "<group>"; };
+		ECB9883C117D15BE00425AA2 /* thttp_header_Transfer_Encoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header_Transfer_Encoding.h; sourceTree = "<group>"; };
+		ECB9883D117D15BE00425AA2 /* thttp_header_WWW_Authenticate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header_WWW_Authenticate.h; sourceTree = "<group>"; };
+		ECB9883F117D15BE00425AA2 /* thttp_parser_header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_parser_header.h; sourceTree = "<group>"; };
+		ECB98840117D15BE00425AA2 /* thttp_parser_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_parser_message.h; sourceTree = "<group>"; };
+		ECB98841117D15BE00425AA2 /* thttp_parser_url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_parser_url.h; sourceTree = "<group>"; };
+		ECB98842117D15BE00425AA2 /* thttp_action.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_action.h; sourceTree = "<group>"; };
+		ECB98843117D15BE00425AA2 /* thttp_dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_dialog.h; sourceTree = "<group>"; };
+		ECB98844117D15BE00425AA2 /* thttp_event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_event.h; sourceTree = "<group>"; };
+		ECB98845117D15BE00425AA2 /* thttp_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_message.h; sourceTree = "<group>"; };
+		ECB98846117D15BE00425AA2 /* thttp_session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_session.h; sourceTree = "<group>"; };
+		ECB98847117D15BE00425AA2 /* thttp_url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_url.h; sourceTree = "<group>"; };
+		ECB98848117D15BE00425AA2 /* tinyhttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyhttp.h; sourceTree = "<group>"; };
+		ECB98849117D15BE00425AA2 /* tinyhttp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyhttp_config.h; sourceTree = "<group>"; };
+		ECB9884C117D15BE00425AA2 /* thttp_machine_header.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_machine_header.rl; sourceTree = "<group>"; };
+		ECB9884D117D15BE00425AA2 /* thttp_machine_message.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_machine_message.rl; sourceTree = "<group>"; };
+		ECB9884E117D15BE00425AA2 /* thttp_machine_utils.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_machine_utils.rl; sourceTree = "<group>"; };
+		ECB9884F117D15BE00425AA2 /* thttp_parser_header.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header.rl; sourceTree = "<group>"; };
+		ECB98850117D15BE00425AA2 /* thttp_parser_header_Authorization.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header_Authorization.rl; sourceTree = "<group>"; };
+		ECB98851117D15BE00425AA2 /* thttp_parser_header_Content_Length.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header_Content_Length.rl; sourceTree = "<group>"; };
+		ECB98852117D15BE00425AA2 /* thttp_parser_header_Content_Type.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header_Content_Type.rl; sourceTree = "<group>"; };
+		ECB98853117D15BE00425AA2 /* thttp_parser_header_Dummy.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header_Dummy.rl; sourceTree = "<group>"; };
+		ECB98854117D15BE00425AA2 /* thttp_parser_header_ETag.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header_ETag.rl; sourceTree = "<group>"; };
+		ECB98855117D15BE00425AA2 /* thttp_parser_header_Transfer_Encoding.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header_Transfer_Encoding.rl; sourceTree = "<group>"; };
+		ECB98856117D15BE00425AA2 /* thttp_parser_header_WWW_Authenticate.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header_WWW_Authenticate.rl; sourceTree = "<group>"; };
+		ECB98857117D15BE00425AA2 /* thttp_parser_message.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_message.rl; sourceTree = "<group>"; };
+		ECB98858117D15BE00425AA2 /* thttp_parser_url.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_url.rl; sourceTree = "<group>"; };
+		ECB9885C117D15BE00425AA2 /* thttp_auth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_auth.c; sourceTree = "<group>"; };
+		ECB9885D117D15BE00425AA2 /* thttp_challenge.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_challenge.c; sourceTree = "<group>"; };
+		ECB9885F117D15BE00425AA2 /* thttp_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header.c; sourceTree = "<group>"; };
+		ECB98860117D15BE00425AA2 /* thttp_header_Authorization.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Authorization.c; sourceTree = "<group>"; };
+		ECB98861117D15BE00425AA2 /* thttp_header_Content_Length.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Content_Length.c; sourceTree = "<group>"; };
+		ECB98862117D15BE00425AA2 /* thttp_header_Content_Type.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Content_Type.c; sourceTree = "<group>"; };
+		ECB98863117D15BE00425AA2 /* thttp_header_Dummy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Dummy.c; sourceTree = "<group>"; };
+		ECB98864117D15BE00425AA2 /* thttp_header_ETag.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_ETag.c; sourceTree = "<group>"; };
+		ECB98865117D15BE00425AA2 /* thttp_header_Transfer_Encoding.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Transfer_Encoding.c; sourceTree = "<group>"; };
+		ECB98866117D15BE00425AA2 /* thttp_header_WWW_Authenticate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_WWW_Authenticate.c; sourceTree = "<group>"; };
+		ECB98869117D15BE00425AA2 /* thttp_parser_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_parser_header.c; sourceTree = "<group>"; };
+		ECB9886A117D15BE00425AA2 /* thttp_parser_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_parser_message.c; sourceTree = "<group>"; };
+		ECB9886B117D15BE00425AA2 /* thttp_parser_url.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_parser_url.c; sourceTree = "<group>"; };
+		ECB9886C117D15BE00425AA2 /* thttp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp.c; sourceTree = "<group>"; };
+		ECB9886D117D15BE00425AA2 /* thttp_action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_action.c; sourceTree = "<group>"; };
+		ECB9886E117D15BE00425AA2 /* thttp_dialog.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_dialog.c; sourceTree = "<group>"; };
+		ECB9886F117D15BE00425AA2 /* thttp_event.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_event.c; sourceTree = "<group>"; };
+		ECB98870117D15BE00425AA2 /* thttp_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_message.c; sourceTree = "<group>"; };
+		ECB98871117D15BE00425AA2 /* thttp_session.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_session.c; sourceTree = "<group>"; };
+		ECB98872117D15BE00425AA2 /* thttp_url.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_url.c; sourceTree = "<group>"; };
+		ECB988C7117D17F300425AA2 /* txcap_action.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = txcap_action.h; sourceTree = "<group>"; };
+		ECB988C8117D17F300425AA2 /* txcap_auid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = txcap_auid.h; sourceTree = "<group>"; };
+		ECB988C9117D17F300425AA2 /* txcap_document.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = txcap_document.h; sourceTree = "<group>"; };
+		ECB988CA117D17F300425AA2 /* txcap_node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = txcap_node.h; sourceTree = "<group>"; };
+		ECB988CB117D17F300425AA2 /* txcap_selector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = txcap_selector.h; sourceTree = "<group>"; };
+		ECB988CC117D17F300425AA2 /* tinyxcap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxcap.h; sourceTree = "<group>"; };
+		ECB988CD117D17F300425AA2 /* tinyxcap_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxcap_config.h; sourceTree = "<group>"; };
+		ECB988CE117D17F300425AA2 /* txcap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = txcap.h; sourceTree = "<group>"; };
+		ECB988D0117D17F300425AA2 /* txcap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = txcap.c; sourceTree = "<group>"; };
+		ECB988D1117D17F300425AA2 /* txcap_action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = txcap_action.c; sourceTree = "<group>"; };
+		ECB988D2117D17F300425AA2 /* txcap_auid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = txcap_auid.c; sourceTree = "<group>"; };
+		ECB988D3117D17F300425AA2 /* txcap_document.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = txcap_document.c; sourceTree = "<group>"; };
+		ECB988D4117D17F300425AA2 /* txcap_node.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = txcap_node.c; sourceTree = "<group>"; };
+		ECB988D5117D17F300425AA2 /* txcap_selector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = txcap_selector.c; sourceTree = "<group>"; };
+		ECB98905117D193400425AA2 /* test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECB98918117D19A400425AA2 /* stdafx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stdafx.c; sourceTree = "<group>"; };
+		ECB98919117D19A400425AA2 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
+		ECB9891A117D19A400425AA2 /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = targetver.h; sourceTree = "<group>"; };
+		ECB9891B117D19A400425AA2 /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
+		ECB9891D117D19A400425AA2 /* test_selector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_selector.h; sourceTree = "<group>"; };
+		ECB9891E117D19A400425AA2 /* test_stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_stack.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D289988505E68E00004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB988EC117D185800425AA2 /* libtinyHTTP.dylib in Frameworks */,
+				ECB988ED117D185800425AA2 /* libtinyNET.dylib in Frameworks */,
+				ECB988EE117D185800425AA2 /* libtinySAK.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB986AB117D14DC00425AA2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB986B2117D14ED00425AA2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB988B8117D166800425AA2 /* libtinySAK.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB986B9117D14FA00425AA2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB988C2117D174800425AA2 /* libtinyNET.dylib in Frameworks */,
+				ECB988C3117D174800425AA2 /* libtinySAK.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB98903117D193400425AA2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB98911117D194200425AA2 /* libtinyHTTP.dylib in Frameworks */,
+				ECB98912117D194200425AA2 /* libtinyNET.dylib in Frameworks */,
+				ECB98913117D194200425AA2 /* libtinySAK.dylib in Frameworks */,
+				ECB98914117D194200425AA2 /* libtinyXCAP.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* tinyXCAP */ = {
+			isa = PBXGroup;
+			children = (
+				ECB98916117D19A400425AA2 /* test */,
+				ECB988C5117D17F300425AA2 /* include */,
+				ECB988CF117D17F300425AA2 /* src */,
+				ECB98826117D15BE00425AA2 /* tinyHTTP */,
+				ECB9873E117D159400425AA2 /* tinyNET */,
+				ECB986C1117D154100425AA2 /* tinySAK */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = tinyXCAP;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC0630554660B00DB518D /* libtinyXCAP.dylib */,
+				ECB986AD117D14DC00425AA2 /* libtinySAK.dylib */,
+				ECB986B4117D14ED00425AA2 /* libtinyNET.dylib */,
+				ECB986BB117D14FA00425AA2 /* libtinyHTTP.dylib */,
+				ECB98905117D193400425AA2 /* test */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ECB986C1117D154100425AA2 /* tinySAK */ = {
+			isa = PBXGroup;
+			children = (
+				ECB986C2117D156000425AA2 /* src */,
+			);
+			name = tinySAK;
+			sourceTree = "<group>";
+		};
+		ECB986C2117D156000425AA2 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				ECB986C4117D156000425AA2 /* tinySAK_config.h */,
+				ECB986C5117D156000425AA2 /* tsk.c */,
+				ECB986C6117D156000425AA2 /* tsk.h */,
+				ECB986C7117D156000425AA2 /* tsk_base64.c */,
+				ECB986C8117D156000425AA2 /* tsk_base64.h */,
+				ECB986C9117D156000425AA2 /* tsk_binaryutils.c */,
+				ECB986CA117D156000425AA2 /* tsk_binaryutils.h */,
+				ECB986CB117D156000425AA2 /* tsk_buffer.c */,
+				ECB986CC117D156000425AA2 /* tsk_buffer.h */,
+				ECB986CD117D156000425AA2 /* tsk_common.h */,
+				ECB986CE117D156000425AA2 /* tsk_condwait.c */,
+				ECB986CF117D156000425AA2 /* tsk_condwait.h */,
+				ECB986D0117D156000425AA2 /* tsk_debug.c */,
+				ECB986D1117D156000425AA2 /* tsk_debug.h */,
+				ECB986D2117D156000425AA2 /* tsk_errno.h */,
+				ECB986D3117D156000425AA2 /* tsk_fsm.c */,
+				ECB986D4117D156000425AA2 /* tsk_fsm.h */,
+				ECB986D5117D156000425AA2 /* tsk_hmac.c */,
+				ECB986D6117D156000425AA2 /* tsk_hmac.h */,
+				ECB986D7117D156000425AA2 /* tsk_list.c */,
+				ECB986D8117D156000425AA2 /* tsk_list.h */,
+				ECB986D9117D156000425AA2 /* tsk_md5.c */,
+				ECB986DA117D156000425AA2 /* tsk_md5.h */,
+				ECB986DB117D156000425AA2 /* tsk_memory.c */,
+				ECB986DC117D156000425AA2 /* tsk_memory.h */,
+				ECB986DD117D156000425AA2 /* tsk_mutex.c */,
+				ECB986DE117D156000425AA2 /* tsk_mutex.h */,
+				ECB986DF117D156000425AA2 /* tsk_object.c */,
+				ECB986E0117D156000425AA2 /* tsk_object.h */,
+				ECB986E1117D156000425AA2 /* tsk_options.c */,
+				ECB986E2117D156000425AA2 /* tsk_options.h */,
+				ECB986E3117D156000425AA2 /* tsk_params.c */,
+				ECB986E4117D156000425AA2 /* tsk_params.h */,
+				ECB986E5117D156000425AA2 /* tsk_ppfcs16.c */,
+				ECB986E6117D156000425AA2 /* tsk_ppfcs16.h */,
+				ECB986E7117D156000425AA2 /* tsk_ppfcs32.c */,
+				ECB986E8117D156000425AA2 /* tsk_ppfcs32.h */,
+				ECB986E9117D156000425AA2 /* tsk_ragel_state.c */,
+				ECB986EA117D156000425AA2 /* tsk_ragel_state.h */,
+				ECB986EB117D156000425AA2 /* tsk_runnable.c */,
+				ECB986EC117D156000425AA2 /* tsk_runnable.h */,
+				ECB986ED117D156000425AA2 /* tsk_safeobj.c */,
+				ECB986EE117D156000425AA2 /* tsk_safeobj.h */,
+				ECB986EF117D156000425AA2 /* tsk_semaphore.c */,
+				ECB986F0117D156000425AA2 /* tsk_semaphore.h */,
+				ECB986F1117D156000425AA2 /* tsk_sha1.c */,
+				ECB986F2117D156000425AA2 /* tsk_sha1.h */,
+				ECB986F3117D156000425AA2 /* tsk_string.c */,
+				ECB986F4117D156000425AA2 /* tsk_string.h */,
+				ECB986F5117D156000425AA2 /* tsk_thread.c */,
+				ECB986F6117D156000425AA2 /* tsk_thread.h */,
+				ECB986F7117D156000425AA2 /* tsk_time.c */,
+				ECB986F8117D156000425AA2 /* tsk_time.h */,
+				ECB986F9117D156000425AA2 /* tsk_timer.c */,
+				ECB986FA117D156000425AA2 /* tsk_timer.h */,
+				ECB986FB117D156000425AA2 /* tsk_url.c */,
+				ECB986FC117D156000425AA2 /* tsk_url.h */,
+				ECB986FD117D156000425AA2 /* tsk_uuid.c */,
+				ECB986FE117D156000425AA2 /* tsk_uuid.h */,
+				ECB986FF117D156000425AA2 /* tsk_xml.c */,
+				ECB98700117D156000425AA2 /* tsk_xml.h */,
+			);
+			name = src;
+			path = ../../tinySAK/src;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECB9873E117D159400425AA2 /* tinyNET */ = {
+			isa = PBXGroup;
+			children = (
+				ECB9874A117D159400425AA2 /* ragel */,
+				ECB9874E117D159400425AA2 /* src */,
+			);
+			name = tinyNET;
+			path = ../../tinyNET;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECB9874A117D159400425AA2 /* ragel */ = {
+			isa = PBXGroup;
+			children = (
+				ECB9874B117D159400425AA2 /* tnet_dns_regexp.rl */,
+				ECB9874C117D159400425AA2 /* tnet_dns_resolvconf.rl */,
+			);
+			path = ragel;
+			sourceTree = "<group>";
+		};
+		ECB9874E117D159400425AA2 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				ECB9874F117D159400425AA2 /* dhcp */,
+				ECB98758117D159400425AA2 /* dhcp6 */,
+				ECB98761117D159400425AA2 /* dns */,
+				ECB98782117D159400425AA2 /* ice */,
+				ECB98785117D159400425AA2 /* stun */,
+				ECB9878C117D159400425AA2 /* tinynet.h */,
+				ECB9878D117D159400425AA2 /* tinyNET_config.h */,
+				ECB9878E117D159400425AA2 /* tls */,
+				ECB98791117D159400425AA2 /* tnet.c */,
+				ECB98792117D159400425AA2 /* tnet.h */,
+				ECB98793117D159400425AA2 /* tnet_auth.c */,
+				ECB98794117D159400425AA2 /* tnet_auth.h */,
+				ECB98795117D159400425AA2 /* tnet_endianness.c */,
+				ECB98796117D159400425AA2 /* tnet_endianness.h */,
+				ECB98797117D159400425AA2 /* tnet_hardwares.h */,
+				ECB98798117D159400425AA2 /* tnet_nat.c */,
+				ECB98799117D159400425AA2 /* tnet_nat.h */,
+				ECB9879A117D159400425AA2 /* tnet_poll.c */,
+				ECB9879B117D159400425AA2 /* tnet_poll.h */,
+				ECB9879C117D159400425AA2 /* tnet_proto.h */,
+				ECB9879D117D159400425AA2 /* tnet_socket.c */,
+				ECB9879E117D159400425AA2 /* tnet_socket.h */,
+				ECB9879F117D159400425AA2 /* tnet_transport.c */,
+				ECB987A0117D159400425AA2 /* tnet_transport.h */,
+				ECB987A1117D159400425AA2 /* tnet_transport_poll.c */,
+				ECB987A2117D159400425AA2 /* tnet_transport_win32.c */,
+				ECB987A3117D159400425AA2 /* tnet_types.h */,
+				ECB987A4117D159400425AA2 /* tnet_utils.c */,
+				ECB987A5117D159400425AA2 /* tnet_utils.h */,
+				ECB987A6117D159400425AA2 /* turn */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		ECB9874F117D159400425AA2 /* dhcp */ = {
+			isa = PBXGroup;
+			children = (
+				ECB98750117D159400425AA2 /* tnet_dhcp.c */,
+				ECB98751117D159400425AA2 /* tnet_dhcp.h */,
+				ECB98752117D159400425AA2 /* tnet_dhcp_message.c */,
+				ECB98753117D159400425AA2 /* tnet_dhcp_message.h */,
+				ECB98754117D159400425AA2 /* tnet_dhcp_option.c */,
+				ECB98755117D159400425AA2 /* tnet_dhcp_option.h */,
+				ECB98756117D159400425AA2 /* tnet_dhcp_option_sip.c */,
+				ECB98757117D159400425AA2 /* tnet_dhcp_option_sip.h */,
+			);
+			path = dhcp;
+			sourceTree = "<group>";
+		};
+		ECB98758117D159400425AA2 /* dhcp6 */ = {
+			isa = PBXGroup;
+			children = (
+				ECB98759117D159400425AA2 /* tnet_dhcp6.c */,
+				ECB9875A117D159400425AA2 /* tnet_dhcp6.h */,
+				ECB9875B117D159400425AA2 /* tnet_dhcp6_duid.c */,
+				ECB9875C117D159400425AA2 /* tnet_dhcp6_duid.h */,
+				ECB9875D117D159400425AA2 /* tnet_dhcp6_message.c */,
+				ECB9875E117D159400425AA2 /* tnet_dhcp6_message.h */,
+				ECB9875F117D159400425AA2 /* tnet_dhcp6_option.c */,
+				ECB98760117D159400425AA2 /* tnet_dhcp6_option.h */,
+			);
+			path = dhcp6;
+			sourceTree = "<group>";
+		};
+		ECB98761117D159400425AA2 /* dns */ = {
+			isa = PBXGroup;
+			children = (
+				ECB98762117D159400425AA2 /* tnet_dns.c */,
+				ECB98763117D159400425AA2 /* tnet_dns.h */,
+				ECB98764117D159400425AA2 /* tnet_dns_a.c */,
+				ECB98765117D159400425AA2 /* tnet_dns_a.h */,
+				ECB98766117D159400425AA2 /* tnet_dns_aaaa.c */,
+				ECB98767117D159400425AA2 /* tnet_dns_aaaa.h */,
+				ECB98768117D159400425AA2 /* tnet_dns_cname.c */,
+				ECB98769117D159400425AA2 /* tnet_dns_cname.h */,
+				ECB9876A117D159400425AA2 /* tnet_dns_message.c */,
+				ECB9876B117D159400425AA2 /* tnet_dns_message.h */,
+				ECB9876C117D159400425AA2 /* tnet_dns_mx.c */,
+				ECB9876D117D159400425AA2 /* tnet_dns_mx.h */,
+				ECB9876E117D159400425AA2 /* tnet_dns_naptr.c */,
+				ECB9876F117D159400425AA2 /* tnet_dns_naptr.h */,
+				ECB98770117D159400425AA2 /* tnet_dns_ns.c */,
+				ECB98771117D159400425AA2 /* tnet_dns_ns.h */,
+				ECB98772117D159400425AA2 /* tnet_dns_opt.c */,
+				ECB98773117D159400425AA2 /* tnet_dns_opt.h */,
+				ECB98774117D159400425AA2 /* tnet_dns_ptr.c */,
+				ECB98775117D159400425AA2 /* tnet_dns_ptr.h */,
+				ECB98776117D159400425AA2 /* tnet_dns_regexp.c */,
+				ECB98777117D159400425AA2 /* tnet_dns_regexp.h */,
+				ECB98778117D159400425AA2 /* tnet_dns_resolvconf.c */,
+				ECB98779117D159400425AA2 /* tnet_dns_resolvconf.h */,
+				ECB9877A117D159400425AA2 /* tnet_dns_rr.c */,
+				ECB9877B117D159400425AA2 /* tnet_dns_rr.h */,
+				ECB9877C117D159400425AA2 /* tnet_dns_soa.c */,
+				ECB9877D117D159400425AA2 /* tnet_dns_soa.h */,
+				ECB9877E117D159400425AA2 /* tnet_dns_srv.c */,
+				ECB9877F117D159400425AA2 /* tnet_dns_srv.h */,
+				ECB98780117D159400425AA2 /* tnet_dns_txt.c */,
+				ECB98781117D159400425AA2 /* tnet_dns_txt.h */,
+			);
+			path = dns;
+			sourceTree = "<group>";
+		};
+		ECB98782117D159400425AA2 /* ice */ = {
+			isa = PBXGroup;
+			children = (
+				ECB98783117D159400425AA2 /* tnet_ice.c */,
+				ECB98784117D159400425AA2 /* tnet_ice.h */,
+			);
+			path = ice;
+			sourceTree = "<group>";
+		};
+		ECB98785117D159400425AA2 /* stun */ = {
+			isa = PBXGroup;
+			children = (
+				ECB98786117D159400425AA2 /* tnet_stun.c */,
+				ECB98787117D159400425AA2 /* tnet_stun.h */,
+				ECB98788117D159400425AA2 /* tnet_stun_attribute.c */,
+				ECB98789117D159400425AA2 /* tnet_stun_attribute.h */,
+				ECB9878A117D159400425AA2 /* tnet_stun_message.c */,
+				ECB9878B117D159400425AA2 /* tnet_stun_message.h */,
+			);
+			path = stun;
+			sourceTree = "<group>";
+		};
+		ECB9878E117D159400425AA2 /* tls */ = {
+			isa = PBXGroup;
+			children = (
+				ECB9878F117D159400425AA2 /* tnet_tls.c */,
+				ECB98790117D159400425AA2 /* tnet_tls.h */,
+			);
+			path = tls;
+			sourceTree = "<group>";
+		};
+		ECB987A6117D159400425AA2 /* turn */ = {
+			isa = PBXGroup;
+			children = (
+				ECB987A7117D159400425AA2 /* tnet_turn.c */,
+				ECB987A8117D159400425AA2 /* tnet_turn.h */,
+				ECB987A9117D159400425AA2 /* tnet_turn_attribute.c */,
+				ECB987AA117D159400425AA2 /* tnet_turn_attribute.h */,
+				ECB987AB117D159400425AA2 /* tnet_turn_message.c */,
+				ECB987AC117D159400425AA2 /* tnet_turn_message.h */,
+			);
+			path = turn;
+			sourceTree = "<group>";
+		};
+		ECB98826117D15BE00425AA2 /* tinyHTTP */ = {
+			isa = PBXGroup;
+			children = (
+				ECB98827117D15BE00425AA2 /* abnf */,
+				ECB9882F117D15BE00425AA2 /* include */,
+				ECB9884B117D15BE00425AA2 /* ragel */,
+				ECB9885A117D15BE00425AA2 /* src */,
+			);
+			name = tinyHTTP;
+			path = ../../tinyHTTP;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECB98827117D15BE00425AA2 /* abnf */ = {
+			isa = PBXGroup;
+			children = (
+				ECB98828117D15BE00425AA2 /* http.abnf */,
+				ECB98829117D15BE00425AA2 /* httpauth.abnf */,
+				ECB9882A117D15BE00425AA2 /* uri.abnf */,
+			);
+			path = abnf;
+			sourceTree = "<group>";
+		};
+		ECB9882F117D15BE00425AA2 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				ECB98830117D15BE00425AA2 /* thttp.h */,
+				ECB98831117D15BE00425AA2 /* tinyHTTP */,
+				ECB98848117D15BE00425AA2 /* tinyhttp.h */,
+				ECB98849117D15BE00425AA2 /* tinyhttp_config.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		ECB98831117D15BE00425AA2 /* tinyHTTP */ = {
+			isa = PBXGroup;
+			children = (
+				ECB98832117D15BE00425AA2 /* auth */,
+				ECB98835117D15BE00425AA2 /* headers */,
+				ECB9883E117D15BE00425AA2 /* parsers */,
+				ECB98842117D15BE00425AA2 /* thttp_action.h */,
+				ECB98843117D15BE00425AA2 /* thttp_dialog.h */,
+				ECB98844117D15BE00425AA2 /* thttp_event.h */,
+				ECB98845117D15BE00425AA2 /* thttp_message.h */,
+				ECB98846117D15BE00425AA2 /* thttp_session.h */,
+				ECB98847117D15BE00425AA2 /* thttp_url.h */,
+			);
+			path = tinyHTTP;
+			sourceTree = "<group>";
+		};
+		ECB98832117D15BE00425AA2 /* auth */ = {
+			isa = PBXGroup;
+			children = (
+				ECB98833117D15BE00425AA2 /* thttp_auth.h */,
+				ECB98834117D15BE00425AA2 /* thttp_challenge.h */,
+			);
+			path = auth;
+			sourceTree = "<group>";
+		};
+		ECB98835117D15BE00425AA2 /* headers */ = {
+			isa = PBXGroup;
+			children = (
+				ECB98836117D15BE00425AA2 /* thttp_header.h */,
+				ECB98837117D15BE00425AA2 /* thttp_header_Authorization.h */,
+				ECB98838117D15BE00425AA2 /* thttp_header_Content_Length.h */,
+				ECB98839117D15BE00425AA2 /* thttp_header_Content_Type.h */,
+				ECB9883A117D15BE00425AA2 /* thttp_header_Dummy.h */,
+				ECB9883B117D15BE00425AA2 /* thttp_header_ETag.h */,
+				ECB9883C117D15BE00425AA2 /* thttp_header_Transfer_Encoding.h */,
+				ECB9883D117D15BE00425AA2 /* thttp_header_WWW_Authenticate.h */,
+			);
+			path = headers;
+			sourceTree = "<group>";
+		};
+		ECB9883E117D15BE00425AA2 /* parsers */ = {
+			isa = PBXGroup;
+			children = (
+				ECB9883F117D15BE00425AA2 /* thttp_parser_header.h */,
+				ECB98840117D15BE00425AA2 /* thttp_parser_message.h */,
+				ECB98841117D15BE00425AA2 /* thttp_parser_url.h */,
+			);
+			path = parsers;
+			sourceTree = "<group>";
+		};
+		ECB9884B117D15BE00425AA2 /* ragel */ = {
+			isa = PBXGroup;
+			children = (
+				ECB9884C117D15BE00425AA2 /* thttp_machine_header.rl */,
+				ECB9884D117D15BE00425AA2 /* thttp_machine_message.rl */,
+				ECB9884E117D15BE00425AA2 /* thttp_machine_utils.rl */,
+				ECB9884F117D15BE00425AA2 /* thttp_parser_header.rl */,
+				ECB98850117D15BE00425AA2 /* thttp_parser_header_Authorization.rl */,
+				ECB98851117D15BE00425AA2 /* thttp_parser_header_Content_Length.rl */,
+				ECB98852117D15BE00425AA2 /* thttp_parser_header_Content_Type.rl */,
+				ECB98853117D15BE00425AA2 /* thttp_parser_header_Dummy.rl */,
+				ECB98854117D15BE00425AA2 /* thttp_parser_header_ETag.rl */,
+				ECB98855117D15BE00425AA2 /* thttp_parser_header_Transfer_Encoding.rl */,
+				ECB98856117D15BE00425AA2 /* thttp_parser_header_WWW_Authenticate.rl */,
+				ECB98857117D15BE00425AA2 /* thttp_parser_message.rl */,
+				ECB98858117D15BE00425AA2 /* thttp_parser_url.rl */,
+			);
+			path = ragel;
+			sourceTree = "<group>";
+		};
+		ECB9885A117D15BE00425AA2 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				ECB9885B117D15BE00425AA2 /* auth */,
+				ECB9885E117D15BE00425AA2 /* headers */,
+				ECB98868117D15BE00425AA2 /* parsers */,
+				ECB9886C117D15BE00425AA2 /* thttp.c */,
+				ECB9886D117D15BE00425AA2 /* thttp_action.c */,
+				ECB9886E117D15BE00425AA2 /* thttp_dialog.c */,
+				ECB9886F117D15BE00425AA2 /* thttp_event.c */,
+				ECB98870117D15BE00425AA2 /* thttp_message.c */,
+				ECB98871117D15BE00425AA2 /* thttp_session.c */,
+				ECB98872117D15BE00425AA2 /* thttp_url.c */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		ECB9885B117D15BE00425AA2 /* auth */ = {
+			isa = PBXGroup;
+			children = (
+				ECB9885C117D15BE00425AA2 /* thttp_auth.c */,
+				ECB9885D117D15BE00425AA2 /* thttp_challenge.c */,
+			);
+			path = auth;
+			sourceTree = "<group>";
+		};
+		ECB9885E117D15BE00425AA2 /* headers */ = {
+			isa = PBXGroup;
+			children = (
+				ECB9885F117D15BE00425AA2 /* thttp_header.c */,
+				ECB98860117D15BE00425AA2 /* thttp_header_Authorization.c */,
+				ECB98861117D15BE00425AA2 /* thttp_header_Content_Length.c */,
+				ECB98862117D15BE00425AA2 /* thttp_header_Content_Type.c */,
+				ECB98863117D15BE00425AA2 /* thttp_header_Dummy.c */,
+				ECB98864117D15BE00425AA2 /* thttp_header_ETag.c */,
+				ECB98865117D15BE00425AA2 /* thttp_header_Transfer_Encoding.c */,
+				ECB98866117D15BE00425AA2 /* thttp_header_WWW_Authenticate.c */,
+			);
+			path = headers;
+			sourceTree = "<group>";
+		};
+		ECB98868117D15BE00425AA2 /* parsers */ = {
+			isa = PBXGroup;
+			children = (
+				ECB98869117D15BE00425AA2 /* thttp_parser_header.c */,
+				ECB9886A117D15BE00425AA2 /* thttp_parser_message.c */,
+				ECB9886B117D15BE00425AA2 /* thttp_parser_url.c */,
+			);
+			path = parsers;
+			sourceTree = "<group>";
+		};
+		ECB988C5117D17F300425AA2 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				ECB988C6117D17F300425AA2 /* tinyXCAP */,
+				ECB988CC117D17F300425AA2 /* tinyxcap.h */,
+				ECB988CD117D17F300425AA2 /* tinyxcap_config.h */,
+				ECB988CE117D17F300425AA2 /* txcap.h */,
+			);
+			name = include;
+			path = ../../tinyXCAP/include;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECB988C6117D17F300425AA2 /* tinyXCAP */ = {
+			isa = PBXGroup;
+			children = (
+				ECB988C7117D17F300425AA2 /* txcap_action.h */,
+				ECB988C8117D17F300425AA2 /* txcap_auid.h */,
+				ECB988C9117D17F300425AA2 /* txcap_document.h */,
+				ECB988CA117D17F300425AA2 /* txcap_node.h */,
+				ECB988CB117D17F300425AA2 /* txcap_selector.h */,
+			);
+			path = tinyXCAP;
+			sourceTree = "<group>";
+		};
+		ECB988CF117D17F300425AA2 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				ECB988D0117D17F300425AA2 /* txcap.c */,
+				ECB988D1117D17F300425AA2 /* txcap_action.c */,
+				ECB988D2117D17F300425AA2 /* txcap_auid.c */,
+				ECB988D3117D17F300425AA2 /* txcap_document.c */,
+				ECB988D4117D17F300425AA2 /* txcap_node.c */,
+				ECB988D5117D17F300425AA2 /* txcap_selector.c */,
+			);
+			name = src;
+			path = ../../tinyXCAP/src;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECB98916117D19A400425AA2 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				ECB98918117D19A400425AA2 /* stdafx.c */,
+				ECB98919117D19A400425AA2 /* stdafx.h */,
+				ECB9891A117D19A400425AA2 /* targetver.h */,
+				ECB9891B117D19A400425AA2 /* test.c */,
+				ECB9891D117D19A400425AA2 /* test_selector.h */,
+				ECB9891E117D19A400425AA2 /* test_stack.h */,
+			);
+			name = test;
+			path = ../../tinyXCAP/test;
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC0600554660B00DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB988D6117D17F300425AA2 /* txcap_action.h in Headers */,
+				ECB988D7117D17F300425AA2 /* txcap_auid.h in Headers */,
+				ECB988D8117D17F300425AA2 /* txcap_document.h in Headers */,
+				ECB988D9117D17F300425AA2 /* txcap_node.h in Headers */,
+				ECB988DA117D17F300425AA2 /* txcap_selector.h in Headers */,
+				ECB988DB117D17F300425AA2 /* tinyxcap.h in Headers */,
+				ECB988DC117D17F300425AA2 /* tinyxcap_config.h in Headers */,
+				ECB988DD117D17F300425AA2 /* txcap.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB986A9117D14DC00425AA2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB98701117D156000425AA2 /* tinySAK_config.h in Headers */,
+				ECB98703117D156000425AA2 /* tsk.h in Headers */,
+				ECB98705117D156000425AA2 /* tsk_base64.h in Headers */,
+				ECB98707117D156000425AA2 /* tsk_binaryutils.h in Headers */,
+				ECB98709117D156000425AA2 /* tsk_buffer.h in Headers */,
+				ECB9870A117D156000425AA2 /* tsk_common.h in Headers */,
+				ECB9870C117D156000425AA2 /* tsk_condwait.h in Headers */,
+				ECB9870E117D156000425AA2 /* tsk_debug.h in Headers */,
+				ECB9870F117D156000425AA2 /* tsk_errno.h in Headers */,
+				ECB98711117D156000425AA2 /* tsk_fsm.h in Headers */,
+				ECB98713117D156000425AA2 /* tsk_hmac.h in Headers */,
+				ECB98715117D156000425AA2 /* tsk_list.h in Headers */,
+				ECB98717117D156000425AA2 /* tsk_md5.h in Headers */,
+				ECB98719117D156000425AA2 /* tsk_memory.h in Headers */,
+				ECB9871B117D156000425AA2 /* tsk_mutex.h in Headers */,
+				ECB9871D117D156000425AA2 /* tsk_object.h in Headers */,
+				ECB9871F117D156000425AA2 /* tsk_options.h in Headers */,
+				ECB98721117D156000425AA2 /* tsk_params.h in Headers */,
+				ECB98723117D156000425AA2 /* tsk_ppfcs16.h in Headers */,
+				ECB98725117D156000425AA2 /* tsk_ppfcs32.h in Headers */,
+				ECB98727117D156000425AA2 /* tsk_ragel_state.h in Headers */,
+				ECB98729117D156000425AA2 /* tsk_runnable.h in Headers */,
+				ECB9872B117D156000425AA2 /* tsk_safeobj.h in Headers */,
+				ECB9872D117D156000425AA2 /* tsk_semaphore.h in Headers */,
+				ECB9872F117D156000425AA2 /* tsk_sha1.h in Headers */,
+				ECB98731117D156000425AA2 /* tsk_string.h in Headers */,
+				ECB98733117D156000425AA2 /* tsk_thread.h in Headers */,
+				ECB98735117D156000425AA2 /* tsk_time.h in Headers */,
+				ECB98737117D156000425AA2 /* tsk_timer.h in Headers */,
+				ECB98739117D156000425AA2 /* tsk_url.h in Headers */,
+				ECB9873B117D156000425AA2 /* tsk_uuid.h in Headers */,
+				ECB9873D117D156000425AA2 /* tsk_xml.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB986B0117D14ED00425AA2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB987C2117D159400425AA2 /* tnet_dhcp.h in Headers */,
+				ECB987C4117D159400425AA2 /* tnet_dhcp_message.h in Headers */,
+				ECB987C6117D159400425AA2 /* tnet_dhcp_option.h in Headers */,
+				ECB987C8117D159400425AA2 /* tnet_dhcp_option_sip.h in Headers */,
+				ECB987CA117D159400425AA2 /* tnet_dhcp6.h in Headers */,
+				ECB987CC117D159400425AA2 /* tnet_dhcp6_duid.h in Headers */,
+				ECB987CE117D159400425AA2 /* tnet_dhcp6_message.h in Headers */,
+				ECB987D0117D159400425AA2 /* tnet_dhcp6_option.h in Headers */,
+				ECB987D2117D159400425AA2 /* tnet_dns.h in Headers */,
+				ECB987D4117D159400425AA2 /* tnet_dns_a.h in Headers */,
+				ECB987D6117D159400425AA2 /* tnet_dns_aaaa.h in Headers */,
+				ECB987D8117D159400425AA2 /* tnet_dns_cname.h in Headers */,
+				ECB987DA117D159400425AA2 /* tnet_dns_message.h in Headers */,
+				ECB987DC117D159400425AA2 /* tnet_dns_mx.h in Headers */,
+				ECB987DE117D159400425AA2 /* tnet_dns_naptr.h in Headers */,
+				ECB987E0117D159400425AA2 /* tnet_dns_ns.h in Headers */,
+				ECB987E2117D159400425AA2 /* tnet_dns_opt.h in Headers */,
+				ECB987E4117D159400425AA2 /* tnet_dns_ptr.h in Headers */,
+				ECB987E6117D159400425AA2 /* tnet_dns_regexp.h in Headers */,
+				ECB987E8117D159400425AA2 /* tnet_dns_resolvconf.h in Headers */,
+				ECB987EA117D159400425AA2 /* tnet_dns_rr.h in Headers */,
+				ECB987EC117D159400425AA2 /* tnet_dns_soa.h in Headers */,
+				ECB987EE117D159400425AA2 /* tnet_dns_srv.h in Headers */,
+				ECB987F0117D159400425AA2 /* tnet_dns_txt.h in Headers */,
+				ECB987F2117D159400425AA2 /* tnet_ice.h in Headers */,
+				ECB987F4117D159400425AA2 /* tnet_stun.h in Headers */,
+				ECB987F6117D159400425AA2 /* tnet_stun_attribute.h in Headers */,
+				ECB987F8117D159400425AA2 /* tnet_stun_message.h in Headers */,
+				ECB987F9117D159400425AA2 /* tinynet.h in Headers */,
+				ECB987FA117D159400425AA2 /* tinyNET_config.h in Headers */,
+				ECB987FC117D159400425AA2 /* tnet_tls.h in Headers */,
+				ECB987FE117D159400425AA2 /* tnet.h in Headers */,
+				ECB98800117D159400425AA2 /* tnet_auth.h in Headers */,
+				ECB98802117D159400425AA2 /* tnet_endianness.h in Headers */,
+				ECB98803117D159400425AA2 /* tnet_hardwares.h in Headers */,
+				ECB98805117D159400425AA2 /* tnet_nat.h in Headers */,
+				ECB98807117D159400425AA2 /* tnet_poll.h in Headers */,
+				ECB98808117D159400425AA2 /* tnet_proto.h in Headers */,
+				ECB9880A117D159400425AA2 /* tnet_socket.h in Headers */,
+				ECB9880C117D159400425AA2 /* tnet_transport.h in Headers */,
+				ECB9880F117D159400425AA2 /* tnet_types.h in Headers */,
+				ECB98811117D159400425AA2 /* tnet_utils.h in Headers */,
+				ECB98813117D159400425AA2 /* tnet_turn.h in Headers */,
+				ECB98815117D159400425AA2 /* tnet_turn_attribute.h in Headers */,
+				ECB98817117D159400425AA2 /* tnet_turn_message.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB986B7117D14FA00425AA2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB98881117D15BE00425AA2 /* thttp.h in Headers */,
+				ECB98882117D15BE00425AA2 /* thttp_auth.h in Headers */,
+				ECB98883117D15BE00425AA2 /* thttp_challenge.h in Headers */,
+				ECB98884117D15BE00425AA2 /* thttp_header.h in Headers */,
+				ECB98885117D15BE00425AA2 /* thttp_header_Authorization.h in Headers */,
+				ECB98886117D15BE00425AA2 /* thttp_header_Content_Length.h in Headers */,
+				ECB98887117D15BE00425AA2 /* thttp_header_Content_Type.h in Headers */,
+				ECB98888117D15BE00425AA2 /* thttp_header_Dummy.h in Headers */,
+				ECB98889117D15BE00425AA2 /* thttp_header_ETag.h in Headers */,
+				ECB9888A117D15BE00425AA2 /* thttp_header_Transfer_Encoding.h in Headers */,
+				ECB9888B117D15BE00425AA2 /* thttp_header_WWW_Authenticate.h in Headers */,
+				ECB9888C117D15BE00425AA2 /* thttp_parser_header.h in Headers */,
+				ECB9888D117D15BE00425AA2 /* thttp_parser_message.h in Headers */,
+				ECB9888E117D15BE00425AA2 /* thttp_parser_url.h in Headers */,
+				ECB9888F117D15BE00425AA2 /* thttp_action.h in Headers */,
+				ECB98890117D15BE00425AA2 /* thttp_dialog.h in Headers */,
+				ECB98891117D15BE00425AA2 /* thttp_event.h in Headers */,
+				ECB98892117D15BE00425AA2 /* thttp_message.h in Headers */,
+				ECB98893117D15BE00425AA2 /* thttp_session.h in Headers */,
+				ECB98894117D15BE00425AA2 /* thttp_url.h in Headers */,
+				ECB98895117D15BE00425AA2 /* tinyhttp.h in Headers */,
+				ECB98896117D15BE00425AA2 /* tinyhttp_config.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2AAC0620554660B00DB518D /* tinyXCAP */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "tinyXCAP" */;
+			buildPhases = (
+				D2AAC0600554660B00DB518D /* Headers */,
+				D2AAC0610554660B00DB518D /* Sources */,
+				D289988505E68E00004EDB86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECB988E7117D185300425AA2 /* PBXTargetDependency */,
+				ECB988E9117D185300425AA2 /* PBXTargetDependency */,
+				ECB988EB117D185300425AA2 /* PBXTargetDependency */,
+			);
+			name = tinyXCAP;
+			productName = tinyXCAP;
+			productReference = D2AAC0630554660B00DB518D /* libtinyXCAP.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		ECB986AC117D14DC00425AA2 /* tinySAK */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECB986BE117D152400425AA2 /* Build configuration list for PBXNativeTarget "tinySAK" */;
+			buildPhases = (
+				ECB986A9117D14DC00425AA2 /* Headers */,
+				ECB986AA117D14DC00425AA2 /* Sources */,
+				ECB986AB117D14DC00425AA2 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tinySAK;
+			productName = tinySAK;
+			productReference = ECB986AD117D14DC00425AA2 /* libtinySAK.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		ECB986B3117D14ED00425AA2 /* tinyNET */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECB986BF117D152400425AA2 /* Build configuration list for PBXNativeTarget "tinyNET" */;
+			buildPhases = (
+				ECB986B0117D14ED00425AA2 /* Headers */,
+				ECB986B1117D14ED00425AA2 /* Sources */,
+				ECB986B2117D14ED00425AA2 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECB988B7117D166300425AA2 /* PBXTargetDependency */,
+			);
+			name = tinyNET;
+			productName = tinyNET;
+			productReference = ECB986B4117D14ED00425AA2 /* libtinyNET.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		ECB986BA117D14FA00425AA2 /* tinyHTTP */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECB986C0117D152400425AA2 /* Build configuration list for PBXNativeTarget "tinyHTTP" */;
+			buildPhases = (
+				ECB986B7117D14FA00425AA2 /* Headers */,
+				ECB986B8117D14FA00425AA2 /* Sources */,
+				ECB986B9117D14FA00425AA2 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECB988BF117D174000425AA2 /* PBXTargetDependency */,
+				ECB988C1117D174000425AA2 /* PBXTargetDependency */,
+			);
+			name = tinyHTTP;
+			productName = tinyHTTP;
+			productReference = ECB986BB117D14FA00425AA2 /* libtinyHTTP.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		ECB98904117D193400425AA2 /* test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECB98915117D196100425AA2 /* Build configuration list for PBXNativeTarget "test" */;
+			buildPhases = (
+				ECB98902117D193400425AA2 /* Sources */,
+				ECB98903117D193400425AA2 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECB9890A117D193C00425AA2 /* PBXTargetDependency */,
+				ECB9890C117D193C00425AA2 /* PBXTargetDependency */,
+				ECB9890E117D193C00425AA2 /* PBXTargetDependency */,
+				ECB98910117D193C00425AA2 /* PBXTargetDependency */,
+			);
+			name = test;
+			productName = test;
+			productReference = ECB98905117D193400425AA2 /* test */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "tinyXCAP" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* tinyXCAP */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2AAC0620554660B00DB518D /* tinyXCAP */,
+				ECB986AC117D14DC00425AA2 /* tinySAK */,
+				ECB986B3117D14ED00425AA2 /* tinyNET */,
+				ECB986BA117D14FA00425AA2 /* tinyHTTP */,
+				ECB98904117D193400425AA2 /* test */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2AAC0610554660B00DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB988DE117D17F300425AA2 /* txcap.c in Sources */,
+				ECB988DF117D17F300425AA2 /* txcap_action.c in Sources */,
+				ECB988E0117D17F300425AA2 /* txcap_auid.c in Sources */,
+				ECB988E1117D17F300425AA2 /* txcap_document.c in Sources */,
+				ECB988E2117D17F300425AA2 /* txcap_node.c in Sources */,
+				ECB988E3117D17F300425AA2 /* txcap_selector.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB986AA117D14DC00425AA2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB98702117D156000425AA2 /* tsk.c in Sources */,
+				ECB98704117D156000425AA2 /* tsk_base64.c in Sources */,
+				ECB98706117D156000425AA2 /* tsk_binaryutils.c in Sources */,
+				ECB98708117D156000425AA2 /* tsk_buffer.c in Sources */,
+				ECB9870B117D156000425AA2 /* tsk_condwait.c in Sources */,
+				ECB9870D117D156000425AA2 /* tsk_debug.c in Sources */,
+				ECB98710117D156000425AA2 /* tsk_fsm.c in Sources */,
+				ECB98712117D156000425AA2 /* tsk_hmac.c in Sources */,
+				ECB98714117D156000425AA2 /* tsk_list.c in Sources */,
+				ECB98716117D156000425AA2 /* tsk_md5.c in Sources */,
+				ECB98718117D156000425AA2 /* tsk_memory.c in Sources */,
+				ECB9871A117D156000425AA2 /* tsk_mutex.c in Sources */,
+				ECB9871C117D156000425AA2 /* tsk_object.c in Sources */,
+				ECB9871E117D156000425AA2 /* tsk_options.c in Sources */,
+				ECB98720117D156000425AA2 /* tsk_params.c in Sources */,
+				ECB98722117D156000425AA2 /* tsk_ppfcs16.c in Sources */,
+				ECB98724117D156000425AA2 /* tsk_ppfcs32.c in Sources */,
+				ECB98726117D156000425AA2 /* tsk_ragel_state.c in Sources */,
+				ECB98728117D156000425AA2 /* tsk_runnable.c in Sources */,
+				ECB9872A117D156000425AA2 /* tsk_safeobj.c in Sources */,
+				ECB9872C117D156000425AA2 /* tsk_semaphore.c in Sources */,
+				ECB9872E117D156000425AA2 /* tsk_sha1.c in Sources */,
+				ECB98730117D156000425AA2 /* tsk_string.c in Sources */,
+				ECB98732117D156000425AA2 /* tsk_thread.c in Sources */,
+				ECB98734117D156000425AA2 /* tsk_time.c in Sources */,
+				ECB98736117D156000425AA2 /* tsk_timer.c in Sources */,
+				ECB98738117D156000425AA2 /* tsk_url.c in Sources */,
+				ECB9873A117D156000425AA2 /* tsk_uuid.c in Sources */,
+				ECB9873C117D156000425AA2 /* tsk_xml.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB986B1117D14ED00425AA2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB987C1117D159400425AA2 /* tnet_dhcp.c in Sources */,
+				ECB987C3117D159400425AA2 /* tnet_dhcp_message.c in Sources */,
+				ECB987C5117D159400425AA2 /* tnet_dhcp_option.c in Sources */,
+				ECB987C7117D159400425AA2 /* tnet_dhcp_option_sip.c in Sources */,
+				ECB987C9117D159400425AA2 /* tnet_dhcp6.c in Sources */,
+				ECB987CB117D159400425AA2 /* tnet_dhcp6_duid.c in Sources */,
+				ECB987CD117D159400425AA2 /* tnet_dhcp6_message.c in Sources */,
+				ECB987CF117D159400425AA2 /* tnet_dhcp6_option.c in Sources */,
+				ECB987D1117D159400425AA2 /* tnet_dns.c in Sources */,
+				ECB987D3117D159400425AA2 /* tnet_dns_a.c in Sources */,
+				ECB987D5117D159400425AA2 /* tnet_dns_aaaa.c in Sources */,
+				ECB987D7117D159400425AA2 /* tnet_dns_cname.c in Sources */,
+				ECB987D9117D159400425AA2 /* tnet_dns_message.c in Sources */,
+				ECB987DB117D159400425AA2 /* tnet_dns_mx.c in Sources */,
+				ECB987DD117D159400425AA2 /* tnet_dns_naptr.c in Sources */,
+				ECB987DF117D159400425AA2 /* tnet_dns_ns.c in Sources */,
+				ECB987E1117D159400425AA2 /* tnet_dns_opt.c in Sources */,
+				ECB987E3117D159400425AA2 /* tnet_dns_ptr.c in Sources */,
+				ECB987E5117D159400425AA2 /* tnet_dns_regexp.c in Sources */,
+				ECB987E7117D159400425AA2 /* tnet_dns_resolvconf.c in Sources */,
+				ECB987E9117D159400425AA2 /* tnet_dns_rr.c in Sources */,
+				ECB987EB117D159400425AA2 /* tnet_dns_soa.c in Sources */,
+				ECB987ED117D159400425AA2 /* tnet_dns_srv.c in Sources */,
+				ECB987EF117D159400425AA2 /* tnet_dns_txt.c in Sources */,
+				ECB987F1117D159400425AA2 /* tnet_ice.c in Sources */,
+				ECB987F3117D159400425AA2 /* tnet_stun.c in Sources */,
+				ECB987F5117D159400425AA2 /* tnet_stun_attribute.c in Sources */,
+				ECB987F7117D159400425AA2 /* tnet_stun_message.c in Sources */,
+				ECB987FB117D159400425AA2 /* tnet_tls.c in Sources */,
+				ECB987FD117D159400425AA2 /* tnet.c in Sources */,
+				ECB987FF117D159400425AA2 /* tnet_auth.c in Sources */,
+				ECB98801117D159400425AA2 /* tnet_endianness.c in Sources */,
+				ECB98804117D159400425AA2 /* tnet_nat.c in Sources */,
+				ECB98806117D159400425AA2 /* tnet_poll.c in Sources */,
+				ECB98809117D159400425AA2 /* tnet_socket.c in Sources */,
+				ECB9880B117D159400425AA2 /* tnet_transport.c in Sources */,
+				ECB9880D117D159400425AA2 /* tnet_transport_poll.c in Sources */,
+				ECB9880E117D159400425AA2 /* tnet_transport_win32.c in Sources */,
+				ECB98810117D159400425AA2 /* tnet_utils.c in Sources */,
+				ECB98812117D159400425AA2 /* tnet_turn.c in Sources */,
+				ECB98814117D159400425AA2 /* tnet_turn_attribute.c in Sources */,
+				ECB98816117D159400425AA2 /* tnet_turn_message.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB986B8117D14FA00425AA2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB98897117D15BE00425AA2 /* thttp_auth.c in Sources */,
+				ECB98898117D15BE00425AA2 /* thttp_challenge.c in Sources */,
+				ECB98899117D15BE00425AA2 /* thttp_header.c in Sources */,
+				ECB9889A117D15BE00425AA2 /* thttp_header_Authorization.c in Sources */,
+				ECB9889B117D15BE00425AA2 /* thttp_header_Content_Length.c in Sources */,
+				ECB9889C117D15BE00425AA2 /* thttp_header_Content_Type.c in Sources */,
+				ECB9889D117D15BE00425AA2 /* thttp_header_Dummy.c in Sources */,
+				ECB9889E117D15BE00425AA2 /* thttp_header_ETag.c in Sources */,
+				ECB9889F117D15BE00425AA2 /* thttp_header_Transfer_Encoding.c in Sources */,
+				ECB988A0117D15BE00425AA2 /* thttp_header_WWW_Authenticate.c in Sources */,
+				ECB988A2117D15BE00425AA2 /* thttp_parser_header.c in Sources */,
+				ECB988A3117D15BE00425AA2 /* thttp_parser_message.c in Sources */,
+				ECB988A4117D15BE00425AA2 /* thttp_parser_url.c in Sources */,
+				ECB988A5117D15BE00425AA2 /* thttp.c in Sources */,
+				ECB988A6117D15BE00425AA2 /* thttp_action.c in Sources */,
+				ECB988A7117D15BE00425AA2 /* thttp_dialog.c in Sources */,
+				ECB988A8117D15BE00425AA2 /* thttp_event.c in Sources */,
+				ECB988A9117D15BE00425AA2 /* thttp_message.c in Sources */,
+				ECB988AA117D15BE00425AA2 /* thttp_session.c in Sources */,
+				ECB988AB117D15BE00425AA2 /* thttp_url.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECB98902117D193400425AA2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECB9891F117D19A400425AA2 /* stdafx.c in Sources */,
+				ECB98920117D19A400425AA2 /* test.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		ECB988B7117D166300425AA2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECB986AC117D14DC00425AA2 /* tinySAK */;
+			targetProxy = ECB988B6117D166300425AA2 /* PBXContainerItemProxy */;
+		};
+		ECB988BF117D174000425AA2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECB986AC117D14DC00425AA2 /* tinySAK */;
+			targetProxy = ECB988BE117D174000425AA2 /* PBXContainerItemProxy */;
+		};
+		ECB988C1117D174000425AA2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECB986B3117D14ED00425AA2 /* tinyNET */;
+			targetProxy = ECB988C0117D174000425AA2 /* PBXContainerItemProxy */;
+		};
+		ECB988E7117D185300425AA2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECB986AC117D14DC00425AA2 /* tinySAK */;
+			targetProxy = ECB988E6117D185300425AA2 /* PBXContainerItemProxy */;
+		};
+		ECB988E9117D185300425AA2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECB986B3117D14ED00425AA2 /* tinyNET */;
+			targetProxy = ECB988E8117D185300425AA2 /* PBXContainerItemProxy */;
+		};
+		ECB988EB117D185300425AA2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECB986BA117D14FA00425AA2 /* tinyHTTP */;
+			targetProxy = ECB988EA117D185300425AA2 /* PBXContainerItemProxy */;
+		};
+		ECB9890A117D193C00425AA2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC0620554660B00DB518D /* tinyXCAP */;
+			targetProxy = ECB98909117D193C00425AA2 /* PBXContainerItemProxy */;
+		};
+		ECB9890C117D193C00425AA2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECB986AC117D14DC00425AA2 /* tinySAK */;
+			targetProxy = ECB9890B117D193C00425AA2 /* PBXContainerItemProxy */;
+		};
+		ECB9890E117D193C00425AA2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECB986B3117D14ED00425AA2 /* tinyNET */;
+			targetProxy = ECB9890D117D193C00425AA2 /* PBXContainerItemProxy */;
+		};
+		ECB98910117D193C00425AA2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECB986BA117D14FA00425AA2 /* tinyHTTP */;
+			targetProxy = ECB9890F117D193C00425AA2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB914B08733D8E0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					../../tinyNET/src,
+					../../tinyHTTP/include,
+					../../tinyXCAP/include,
+				);
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_CFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
+				PRODUCT_NAME = tinyXCAP;
+			};
+			name = Debug;
+		};
+		1DEB914C08733D8E0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = tinyXCAP;
+			};
+			name = Release;
+		};
+		1DEB914F08733D8E0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Debug;
+		};
+		1DEB915008733D8E0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Release;
+		};
+		ECB986AE117D14DD00425AA2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_CFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
+				PREBINDING = NO;
+				PRODUCT_NAME = tinySAK;
+			};
+			name = Debug;
+		};
+		ECB986AF117D14DD00425AA2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinySAK;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		ECB986B5117D14ED00425AA2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = ../../tinyNET/src;
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_CFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
+				PREBINDING = NO;
+				PRODUCT_NAME = tinyNET;
+			};
+			name = Debug;
+		};
+		ECB986B6117D14ED00425AA2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinyNET;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		ECB986BC117D14FA00425AA2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					../../tinyNET/src,
+					../../tinyHTTP/include,
+				);
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_CFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
+				PREBINDING = NO;
+				PRODUCT_NAME = tinyHTTP;
+			};
+			name = Debug;
+		};
+		ECB986BD117D14FA00425AA2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinyHTTP;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		ECB98907117D193400425AA2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					../../tinyNET/src,
+					../../tinyHTTP/include,
+					../../tinyXCAP/include,
+				);
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
+				PREBINDING = NO;
+				PRODUCT_NAME = test;
+			};
+			name = Debug;
+		};
+		ECB98908117D193400425AA2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = test;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "tinyXCAP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB914B08733D8E0010E9CD /* Debug */,
+				1DEB914C08733D8E0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "tinyXCAP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB914F08733D8E0010E9CD /* Debug */,
+				1DEB915008733D8E0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECB986BE117D152400425AA2 /* Build configuration list for PBXNativeTarget "tinySAK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECB986AE117D14DD00425AA2 /* Debug */,
+				ECB986AF117D14DD00425AA2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECB986BF117D152400425AA2 /* Build configuration list for PBXNativeTarget "tinyNET" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECB986B5117D14ED00425AA2 /* Debug */,
+				ECB986B6117D14ED00425AA2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECB986C0117D152400425AA2 /* Build configuration list for PBXNativeTarget "tinyHTTP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECB986BC117D14FA00425AA2 /* Debug */,
+				ECB986BD117D14FA00425AA2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECB98915117D196100425AA2 /* Build configuration list for PBXNativeTarget "test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECB98907117D193400425AA2 /* Debug */,
+				ECB98908117D193400425AA2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

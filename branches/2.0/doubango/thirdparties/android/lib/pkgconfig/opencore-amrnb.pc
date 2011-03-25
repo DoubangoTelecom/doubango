@@ -1,0 +1,10 @@
+prefix=/home/inexbee/Bureau/opencore-amr-0.1.2/android
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/opencore-amrnb
+
+Name: OpenCORE AMR-NB
+Description: Adaptive Multi-Rate speech codec library
+Version: 0.1.2
+Libs: -L${libdir} -lopencore-amrnb
+Cflags: -I${includedir}

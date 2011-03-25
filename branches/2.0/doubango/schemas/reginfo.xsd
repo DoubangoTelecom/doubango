@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="urn:ietf:params:xml:ns:reginfo"
+xmlns:tns="urn:ietf:params:xml:ns:reginfo"
+xmlns:xs="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <!-- This import brings in the XML language attribute xml:lang-->
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+schemaLocation="http://www.w3.org/2001/03/xml.xsd"/>
+  <xs:element name="reginfo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="tns:registration" minOccurs="0"
+   maxOccurs="unbounded"/>
+        <xs:any namespace="##other" processContents="lax" minOccurs="0"
+   maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="version" type="xs:nonNegativeInteger"
+  use="required"/>
+      <xs:attribute name="state" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="full"/>
+            <xs:enumeration value="partial"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="registration">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="tns:contact" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:any namespace="##other" processContents="lax" minOccurs="0"
+   maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="aor" type="xs:anyURI" use="required"/>
+      <xs:attribute name="id" type="xs:string" use="required"/>
+      <xs:attribute name="state" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="init"/>
+            <xs:enumeration value="active"/>
+            <xs:enumeration value="terminated"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="contact">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="uri" type="xs:anyURI"/>
+        <xs:element name="display-name" minOccurs="0">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="xs:string">
+                <xs:attribute ref="xml:lang" use="optional"/>
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="unknown-param" minOccurs="0"
+   maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="xs:string">
+                <xs:attribute name="name" type="xs:string" use="required"/>
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace="##other" processContents="lax" minOccurs="0"
+   maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="state" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="active"/>
+            <xs:enumeration value="terminated"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="event" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="registered"/>
+            <xs:enumeration value="created"/>
+            <xs:enumeration value="refreshed"/>
+            <xs:enumeration value="shortened"/>
+            <xs:enumeration value="expired"/>
+            <xs:enumeration value="deactivated"/>
+            <xs:enumeration value="probation"/>
+            <xs:enumeration value="unregistered"/>
+            <xs:enumeration value="rejected"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="duration-registered" type="xs:unsignedLong"/>
+      <xs:attribute name="expires" type="xs:unsignedLong"/>
+      <xs:attribute name="retry-after" type="xs:unsignedLong"/>
+      <xs:attribute name="id" type="xs:string" use="required"/>
+      <xs:attribute name="q" type="xs:string"/>
+      <xs:attribute name="callid" type="xs:string"/>
+      <xs:attribute name="cseq" type="xs:unsignedLong"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

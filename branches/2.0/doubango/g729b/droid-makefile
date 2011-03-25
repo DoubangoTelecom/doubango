@@ -1,0 +1,65 @@
+APP := lib$(PROJECT)_$(MARCH).$(EXT)
+
+CFLAGS := $(CFLAGS_LIB) -D__unix__
+LDFLAGS := $(LDFLAGS_LIB)
+
+all: $(APP)
+
+OBJS = acelp_ca.o\
+		basic_op.o\
+		bits.o\
+		calcexc.o\
+		cod_ld8a.o\
+		cor_func.o\
+		dec_gain.o\
+		dec_lag3.o\
+		dec_ld8a.o\
+		dec_sid.o\
+		de_acelp.o\
+		dspfunc.o\
+		dtx.o\
+		filter.o\
+		gainpred.o\
+		lpc.o\
+		lpcfunc.o\
+		lspdec.o\
+		lspgetq.o\
+		oper_32b.o\
+		pitch_a.o\
+		postfilt.o\
+		post_pro.o\
+		pred_lt3.o\
+		pre_proc.o\
+		p_parity.o\
+		qsidgain.o\
+		qsidlsf.o\
+		qua_gain.o\
+		qua_lsp.o\
+		tab_dtx.o\
+		tab_ld8a.o\
+		taming.o\
+		util.o\
+		vad.o
+
+	
+$(APP): $(OBJS)
+ifeq ($(EXT), a)
+	$(AR) rcs $@ $^
+else
+	$(CC) $(LDFLAGS) -o $@ $^
+endif
+
+%.O: %.C
+	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+install: $(APP)
+	cp -f $(APP) ../thirdparties/android/lib
+
+shell:
+	$(ANDROID_SDK_ROOT)/tools/adb shell
+
+run:
+	$(ANDROID_SDK_ROOT)/tools/adb shell $(LIB_DIR)/$(APP)
+	
+clean:
+	@rm -f $(OBJS) $(APP)

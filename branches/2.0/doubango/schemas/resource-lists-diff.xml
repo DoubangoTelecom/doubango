@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <xs:schema
+         targetNamespace="urn:ietf:params:xml:ns:resource-lists"
+         xmlns="urn:ietf:params:xml:ns:resource-lists"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         elementFormDefault="qualified">
+
+     <!-- include patch-ops type definitions -->
+      <xs:include
+           schemaLocation="urn:ietf:params:xml:schema:patch-ops"/>
+
+     <!-- partial updates -->
+   <xs:element name="resource-lists-diff">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+     <xs:choice>
+      <xs:element name="add">
+       <xs:complexType mixed="true">
+        <xs:complexContent>
+         <xs:extension base="add">
+          <xs:anyAttribute processContents="lax"/>
+         </xs:extension>
+        </xs:complexContent>
+       </xs:complexType>
+      </xs:element>
+      <xs:element name="remove">
+       <xs:complexType>
+        <xs:complexContent>
+         <xs:extension base="remove">
+          <xs:anyAttribute processContents="lax"/>
+         </xs:extension>
+        </xs:complexContent>
+       </xs:complexType>
+      </xs:element>
+      <xs:element name="replace">
+       <xs:complexType mixed="true">
+        <xs:complexContent>
+         <xs:extension base="replace">
+          <xs:anyAttribute processContents="lax"/>
+         </xs:extension>
+        </xs:complexContent>
+       </xs:complexType>
+      </xs:element>
+      <xs:any namespace="##other" processContents="lax"/>
+     </xs:choice>
+    </xs:sequence>
+    <xs:anyAttribute processContents="lax"/>
+   </xs:element>
+  </xs:schema>

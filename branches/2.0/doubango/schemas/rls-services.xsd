@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:ietf:params:xml:ns:rls-services" xmlns:rl="urn:ietf:params:xml:ns:resource-lists" targetNamespace="urn:ietf:params:xml:ns:rls-services" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="rls-services">
+    <xs:complexType>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="service" type="serviceType"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="serviceType">
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="resource-list" type="xs:anyURI"/>
+        <xs:element name="list" type="rl:listType"/>
+      </xs:choice>
+      <xs:element name="packages" type="packagesType" minOccurs="0"/>
+      <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="uri" type="xs:anyURI" use="required"/>
+    <xs:anyAttribute namespace="##other"/>
+  </xs:complexType>
+  <xs:complexType name="packagesType">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="package" type="packageType"/>
+      <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="packageType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+</xs:schema>

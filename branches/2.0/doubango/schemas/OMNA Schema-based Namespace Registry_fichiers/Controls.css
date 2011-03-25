@@ -1,0 +1,123 @@
+BODY.RadEContextMenu DIV.ContentElement {
+	OVERFLOW: hidden; WIDTH: 99%
+}
+.RadEMozillaDropdownIframe {
+	BORDER-RIGHT: #808080 1px solid; BORDER-TOP: #808080 1px solid; OVERFLOW-Y: scroll; BORDER-LEFT: #808080 1px solid; BORDER-BOTTOM: #808080 1px solid; BACKGROUND-COLOR: white
+}
+BODY {
+	SCROLLBAR-FACE-COLOR: #e9e9e9; SCROLLBAR-HIGHLIGHT-COLOR: #ffffff; SCROLLBAR-SHADOW-COLOR: #e9e9e9; SCROLLBAR-3DLIGHT-COLOR: #dbdbdb; SCROLLBAR-ARROW-COLOR: #787878; SCROLLBAR-TRACK-COLOR: #f5f5f5; SCROLLBAR-DARKSHADOW-COLOR: #aeaeae
+}
+BODY.RadEDropdownMenu DIV.ContentElement {
+	HEIGHT: 100%; BACKGROUND-COLOR: white
+}
+BODY.RadEDropdownMenuNonScrollable DIV.ContentElement {
+	BACKGROUND-COLOR: #f9f9f9
+}
+.RadESpellChecker {
+	BACKGROUND-COLOR: #f9f9f9
+}
+.RadESpellChecker .SuggestionTable TD {
+	BORDER-RIGHT: #f9f9f9 1px solid; BORDER-TOP: #f9f9f9 1px solid; FONT: bold 11px Tahoma; BORDER-LEFT: #f9f9f9 1px solid; COLOR: #000000; BORDER-BOTTOM: #f9f9f9 1px solid
+}
+.RadESpellChecker .SuggestionTable TD.Over {
+	BORDER-RIGHT: #666666 1px solid; BORDER-TOP: #666666 1px solid; FONT-WEIGHT: bold; BORDER-LEFT: #666666 1px solid; BORDER-BOTTOM: #666666 1px solid; BACKGROUND-COLOR: #e3e3e3
+}
+.RadESpellChecker .ButtonTable {
+	BORDER-TOP: #999999 1px solid
+}
+.RadESpellChecker .ButtonTable TD {
+	BORDER-RIGHT: #f9f9f9 1px solid; BORDER-TOP: #f9f9f9 1px solid; FONT: 11px Tahoma; BORDER-LEFT: #f9f9f9 1px solid; COLOR: #000000; BORDER-BOTTOM: #f9f9f9 1px solid
+}
+.RadESpellChecker .ButtonTable TD.Over {
+	BORDER-RIGHT: #666666 1px solid; BORDER-TOP: #666666 1px solid; BORDER-LEFT: #666666 1px solid; BORDER-BOTTOM: #666666 1px solid; BACKGROUND-COLOR: #e3e3e3
+}
+.RadEContextMenu {
+	BACKGROUND-IMAGE: url(Dialogs/tableBorderControlV.gif); BACKGROUND-REPEAT: repeat-y; BACKGROUND-COLOR: #fdfaff
+}
+.RadESymbolPicker {
+	BACKGROUND-COLOR: #f9f9f9
+}
+.RadESymbolPicker TD {
+	BORDER-RIGHT: #f9f9f9 1px solid; BORDER-TOP: #f9f9f9 1px solid; FONT: 11px Tahoma; BORDER-LEFT: #f9f9f9 1px solid; WIDTH: 20px; COLOR: #000000; BORDER-BOTTOM: #f9f9f9 1px solid; HEIGHT: 20px; TEXT-ALIGN: center
+}
+.RadESymbolPicker TD.Over {
+	BORDER-RIGHT: #666666 1px solid; BORDER-TOP: #666666 1px solid; BORDER-LEFT: #666666 1px solid; BORDER-BOTTOM: #666666 1px solid; BACKGROUND-COLOR: #e3e3e3
+}
+.RadETablePicker {
+	CURSOR: default; FONT-FAMILY: Tahoma; BACKGROUND-COLOR: #f9f9f9
+}
+.RadETablePicker TD {
+	BORDER-RIGHT: #000000 1px solid; BORDER-TOP: #000000 1px solid; FONT-SIZE: 11px; BORDER-LEFT: #000000 1px solid; BORDER-BOTTOM: #000000 1px solid; BACKGROUND-COLOR: #ffffff
+}
+.RadETablePicker TD.Over {
+	COLOR: #ffffff; BACKGROUND-COLOR: #666666
+}
+.RadETablePicker .Wizard {
+	BORDER-RIGHT: #aaaaaa 1px solid; BORDER-TOP: #aaaaaa 1px solid; FONT: 11px Tahoma; BORDER-LEFT: #aaaaaa 1px solid; CURSOR: default; BORDER-BOTTOM: #aaaaaa 1px solid; BACKGROUND-COLOR: #f9f9f9; TEXT-ALIGN: center
+}
+.RadETablePicker .WizardOver {
+	BORDER-RIGHT: #666666 1px solid; BORDER-TOP: #666666 1px solid; FONT: 11px Tahoma; BORDER-LEFT: #666666 1px solid; CURSOR: default; BORDER-BOTTOM: #666666 1px solid; BACKGROUND-COLOR: #e3e3e3; TEXT-ALIGN: center
+}
+.RadETablePicker TD.Counter {
+	FONT: 11px Tahoma; BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BACKGROUND-COLOR: #f9f9f9; TEXT-ALIGN: center; BORDER-BOTTOM-STYLE: none
+}
+.RadETablePickerToolTable {
+	PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; VERTICAL-ALIGN: top; TEXT-ALIGN: left
+}
+.RadEColorPicker {
+	MARGIN: 2px; CURSOR: default; BACKGROUND-COLOR: #f9f9f9
+}
+.RadEColorPicker TD {
+	BORDER-RIGHT: #f9f9f9 1px solid; BORDER-TOP: #f9f9f9 1px solid; FONT: 11px Tahoma; BORDER-LEFT: #f9f9f9 1px solid; WIDTH: 14px; BORDER-BOTTOM: #f9f9f9 1px solid; HEIGHT: 14px; TEXT-ALIGN: center
+}
+.RadEColorPicker TD.Over {
+	BORDER-RIGHT: #808080 1px solid; BORDER-TOP: #808080 1px solid; BORDER-LEFT: #808080 1px solid; BORDER-BOTTOM: #808080 1px solid
+}
+.RadEColorPicker TD DIV {
+	BORDER-RIGHT: #808080 1px solid; BORDER-TOP: #808080 1px solid; FONT-SIZE: 6px; BORDER-LEFT: #808080 1px solid; WIDTH: 12px; BORDER-BOTTOM: #808080 1px solid; HEIGHT: 12px
+}
+.RadEColorPicker TD SPAN {
+	BORDER-RIGHT: #808080 1px solid; BORDER-TOP: #808080 1px solid; FONT-SIZE: 6px; BORDER-LEFT: #808080 1px solid; WIDTH: 12px; BORDER-BOTTOM: #808080 1px solid; HEIGHT: 12px
+}
+.RadEDropDownFont {
+	BACKGROUND-COLOR: #ffffff
+}
+.RadEDropDownFont TD {
+	BORDER-RIGHT: #ffffff 1px solid; PADDING-RIGHT: 1px; BORDER-TOP: #ffffff 1px solid; PADDING-LEFT: 1px; PADDING-BOTTOM: 0px; FONT: 11px Tahoma; BORDER-LEFT: #ffffff 1px solid; PADDING-TOP: 0px; BORDER-BOTTOM: #ffffff 1px solid
+}
+.RadEDropDownFont TD.Over {
+	BORDER-RIGHT: #666666 1px solid; BORDER-TOP: #666666 1px solid; BORDER-LEFT: #666666 1px solid; CURSOR: default; BORDER-BOTTOM: #666666 1px solid
+}
+.RadEDropDownTable {
+	BACKGROUND-COLOR: #ffffff
+}
+.RadEDropDownTable TD {
+	BORDER-RIGHT: #aaaaaa 1px solid; BORDER-TOP: #aaaaaa 1px solid; FONT: 11px Tahoma; BORDER-LEFT: #aaaaaa 1px solid; COLOR: #000000; BORDER-BOTTOM: #aaaaaa 1px solid
+}
+.RadEDropDownTable TD.Over {
+	BORDER-RIGHT: #666666 1px solid; BORDER-TOP: #666666 1px solid; BORDER-LEFT: #666666 1px solid; BORDER-BOTTOM: #666666 1px solid
+}
+.RadELinks {
+	BACKGROUND-COLOR: #ffffff
+}
+.RadELinks TD {
+	PADDING-RIGHT: 1px; PADDING-LEFT: 2px; PADDING-BOTTOM: 1px; FONT: 11px Tahoma; COLOR: black; PADDING-TOP: 1px; TEXT-DECORATION: none
+}
+.RadELinks SPAN {
+	PADDING-RIGHT: 1px; PADDING-LEFT: 2px; PADDING-BOTTOM: 1px; FONT: 11px Tahoma; COLOR: black; PADDING-TOP: 1px; TEXT-DECORATION: none
+}
+.RadELinks TD.Over {
+	FONT: 11px Tahoma; COLOR: #666666; TEXT-DECORATION: underline
+}
+.RadELinks SPAN.Over {
+	FONT: 11px Tahoma; COLOR: #666666; TEXT-DECORATION: underline
+}
+.RadAlignmentSelectorTable {
+	BORDER-RIGHT: #7f9db9 1px solid; BORDER-TOP: #7f9db9 1px solid; BORDER-LEFT: #7f9db9 1px solid; CURSOR: default; BORDER-BOTTOM: #7f9db9 1px solid; BACKGROUND-COLOR: #fefefe
+}
+.RadAlignmentSelectorTable TD {
+	BORDER-RIGHT: #fefefe 1px solid; BORDER-TOP: #fefefe 1px solid; BORDER-LEFT: #fefefe 1px solid; BORDER-BOTTOM: #fefefe 1px solid; TEXT-ALIGN: center
+}
+.RadAlignmentSelectorTable TD.Over {
+	BORDER-RIGHT: #4d6185 1px solid; BORDER-TOP: #4d6185 1px solid; BORDER-LEFT: #4d6185 1px solid; BORDER-BOTTOM: #4d6185 1px solid; BACKGROUND-COLOR: #e3e3e3; TEXT-ALIGN: center
+}

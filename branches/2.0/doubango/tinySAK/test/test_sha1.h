@@ -1,0 +1,96 @@
+/*
+* Copyright (C) 2009 Mamadou Diop.
+*
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+*	
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+*/
+#ifndef _TEST_SHA1_H_
+#define _TEST_SHA1_H_
+
+struct sha1_result
+{
+	const char* msg;
+	const char* xres;
+};
+
+struct sha1_result msgs[] = 
+{
+	{ "", "da39a3ee5e6b4b0d3255bfef95601890afd80709" },
+	{ "The quick brown fox jumps over the lazy dog", "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12" },
+	{ "The quick brown fox jumps over the lazy cog", "de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3" },
+};
+
+void test_sha1()
+{
+	size_t i;
+	tsk_sha1string_t sha1result;
+
+	for(i=0; i< sizeof(msgs)/sizeof(struct sha1_result); i++)
+	{
+		tsk_sha1compute(msgs[i].msg, strlen(msgs[i].msg), &sha1result);
+		if(tsk_striequals(msgs[i].xres, sha1result))
+		{
+			TSK_DEBUG_INFO("[SHA1-%d] ==> OK", i);
+		}
+		else
+		{
+			TSK_DEBUG_INFO("[SHA1-%d] ==> NOK", i);
+		}
+	}
+}
+
+struct hmac_sha1_result
+{
+	const char* msg;
+	const char* key;
+	const char* xres;
+};
+
+struct hmac_sha1_result hmac_sha1_msgs[] = 
+{
+	{ "Hi There", "\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b", "b617318655057264e28bc0b6fb378c8ef146be00" },
+	{ "what do ya want for nothing?", "Jefe", "effcdf6ae5eb2fa2d27416d5f184df9c259a7c79" },
+	{ "\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd\xdd", "\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa", "125d7342b9ac11cd91a39af48aa17b4f63f175d3" },
+	{ "\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd", "\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19", "4c9007f4026250c6bc8414f9bf50c86c2d7235da" },
+	{ "Test With Truncation", "\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c", "4c1a03424b55e07fe7f27be1d58bb9324a9a5a04" },
+	{ "Test Using Larger Than Block-Size Key - Hash Key First", "\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa", "aa4ae5e15272d00e95705637ce8a3b55ed402112" },
+	{ "Test Using Larger Than Block-Size Key and Larger Than One Block-Size Data", "\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa", "e8e99d0f45237d786d6bbaa7965c7808bbff1a91" },
+
+};
+
+void test_hmac_sha1()
+{
+	size_t i;
+	tsk_sha1string_t sha1result;
+
+	for(i=0; i< sizeof(hmac_sha1_msgs)/sizeof(struct hmac_sha1_result); i++)
+	{
+		hmac_sha1_compute((const uint8_t*)hmac_sha1_msgs[i].msg, strlen(hmac_sha1_msgs[i].msg), hmac_sha1_msgs[i].key, strlen(hmac_sha1_msgs[i].key), &sha1result);
+		if(tsk_striequals(hmac_sha1_msgs[i].xres, sha1result))
+		{
+			TSK_DEBUG_INFO("[SHA1-%d] ==> OK", i);
+		}
+		else
+		{
+			TSK_DEBUG_INFO("[SHA1-%d] ==> NOK", i);
+		}
+	}
+}
+
+
+#endif /* _TEST_SHA1_H_ */

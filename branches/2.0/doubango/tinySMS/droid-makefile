@@ -1,0 +1,41 @@
+APP := lib$(PROJECT)_$(MARCH).$(EXT)
+
+CFLAGS := $(CFLAGS_LIB) -I../tinySAK/src -I./include
+LDFLAGS := $(LDFLAGS_LIB) -ltinySAK_$(MARCH)
+
+all: $(APP)
+
+OBJS = \
+	src/tsms.o\
+	src/tsms_address.o\
+	src/tsms_common.o\
+	src/tsms_packing.o
+	
+	### rpdu
+OBJS += src/rpdu/tsms_rpdu.o
+	
+	### tpdu
+OBJS += src/tpdu/tsms_tpdu_command.o\
+	src/tpdu/tsms_tpdu_deliver.o\
+	src/tpdu/tsms_tpdu_report.o\
+	src/tpdu/tsms_tpdu_status_report.o\
+	src/tpdu/tsms_tpdu_submit.o
+	
+
+$(APP): $(OBJS)
+ifeq ($(EXT), a)
+	$(AR) rcs $@ $^
+else
+	$(CC) $(LDFLAGS) -o $@ $^
+endif
+
+%.o: %.c
+	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+install: $(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb remount
+	$(ANDROID_SDK_ROOT)/tools/adb push $(APP) $(LIB_DIR)/$(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb shell chmod 777 $(LIB_DIR)/$(APP)
+	
+clean:
+	@rm -f $(OBJS) $(APP)
