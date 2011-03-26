@@ -105,40 +105,41 @@ class ProxyVideoProducer : public ProxyPlugin
 {
 public:
 #if !defined(SWIG)
-	ProxyVideoProducer(tmedia_chroma_t chroma, struct twrap_producer_proxy_video_s* producer);
+	ProxyVideoProducer(tmedia_chroma_t eChroma, struct twrap_producer_proxy_video_s* pProducer);
 #endif
 	virtual ~ProxyVideoProducer();	
 
 	int getRotation();
-	void setRotation(int rot);
-	int push(const void* buffer, unsigned size);
-	int send(const void* buffer, unsigned size, unsigned duration, bool marker);
-	void setCallback(ProxyVideoProducerCallback* _callback) { this->callback = _callback; }
+	void setRotation(int nRot);
+	int push(const void* pBuffer, unsigned nSize);
+	int send(const void* pBuffer, unsigned nSize, unsigned nDuration, bool bMarker);
+	void setCallback(ProxyVideoProducerCallback* pCallback) { m_pCallback = pCallback; }
 #if !defined(SWIG)
-	inline ProxyVideoProducerCallback* getCallback() { return this->callback; }
+	inline ProxyVideoProducerCallback* getCallback() { return m_pCallback; }
 	virtual inline bool isWrapping(tsk_object_t* wrapped_plugin){
-		return this->producer == wrapped_plugin;
+		return m_pWrappedPlugin == wrapped_plugin;
 	}
 #endif
 	virtual inline uint64_t getMediaSessionId(){
-		return this->producer ? TMEDIA_PRODUCER(this->producer)->session_id : 0;
+		return m_pWrappedPlugin ? TMEDIA_PRODUCER(m_pWrappedPlugin)->session_id : 0;
 	}
 
 public:
 	static bool registerPlugin();
-	static void setDefaultChroma(tmedia_chroma_t chroma){ ProxyVideoProducer::defaultChroma =  chroma; }
+	static void setDefaultChroma(tmedia_chroma_t eChroma){ s_eDefaultChroma =  eChroma; }
 
 #if !defined(SWIG)
 	tmedia_chroma_t getChroma();
-	static tmedia_chroma_t getDefaultChroma() { return ProxyVideoProducer::defaultChroma; }
+	static tmedia_chroma_t getDefaultChroma() { return s_eDefaultChroma; }
 #endif
 
 private:
-	struct twrap_producer_proxy_video_s* producer;
-	ProxyVideoProducerCallback* callback;
-	tmedia_chroma_t chroma;
-	static tmedia_chroma_t defaultChroma;
-	int rotation;
+	struct twrap_producer_proxy_video_s* m_pWrappedPlugin;
+	ProxyVideoProducerCallback* m_pCallback;
+	tmedia_chroma_t m_eChroma;
+	int m_nRotation;
+
+	static tmedia_chroma_t s_eDefaultChroma;
 };
 
 #endif /* TINYWRAP_PRODUCER_PROXY_H */

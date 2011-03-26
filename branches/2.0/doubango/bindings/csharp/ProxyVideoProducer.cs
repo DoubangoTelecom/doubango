@@ -45,22 +45,22 @@ public class ProxyVideoProducer : ProxyPlugin {
     return ret;
   }
 
-  public void setRotation(int rot) {
-    tinyWRAPPINVOKE.ProxyVideoProducer_setRotation(swigCPtr, rot);
+  public void setRotation(int nRot) {
+    tinyWRAPPINVOKE.ProxyVideoProducer_setRotation(swigCPtr, nRot);
   }
 
-  public int push(byte[] buffer, uint size) {
-    int ret = tinyWRAPPINVOKE.ProxyVideoProducer_push(swigCPtr, buffer, size);
+  public int push(byte[] pBuffer, uint nSize) {
+    int ret = tinyWRAPPINVOKE.ProxyVideoProducer_push(swigCPtr, pBuffer, nSize);
     return ret;
   }
 
-  public int send(byte[] buffer, uint size, uint duration, bool marker) {
-    int ret = tinyWRAPPINVOKE.ProxyVideoProducer_send(swigCPtr, buffer, size, duration, marker);
+  public int send(byte[] pBuffer, uint nSize, uint nDuration, bool bMarker) {
+    int ret = tinyWRAPPINVOKE.ProxyVideoProducer_send(swigCPtr, pBuffer, nSize, nDuration, bMarker);
     return ret;
   }
 
-  public void setCallback(ProxyVideoProducerCallback _callback) {
-    tinyWRAPPINVOKE.ProxyVideoProducer_setCallback(swigCPtr, ProxyVideoProducerCallback.getCPtr(_callback));
+  public void setCallback(ProxyVideoProducerCallback pCallback) {
+    tinyWRAPPINVOKE.ProxyVideoProducer_setCallback(swigCPtr, ProxyVideoProducerCallback.getCPtr(pCallback));
   }
 
   public virtual ulong getMediaSessionId() {
@@ -73,8 +73,8 @@ public class ProxyVideoProducer : ProxyPlugin {
     return ret;
   }
 
-  public static void setDefaultChroma(tmedia_chroma_t chroma) {
-    tinyWRAPPINVOKE.ProxyVideoProducer_setDefaultChroma((int)chroma);
+  public static void setDefaultChroma(tmedia_chroma_t eChroma) {
+    tinyWRAPPINVOKE.ProxyVideoProducer_setDefaultChroma((int)eChroma);
   }
 
 }

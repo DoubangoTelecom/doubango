@@ -419,12 +419,14 @@ TINYWRAP_GEXTERN const tmedia_producer_plugin_def_t *twrap_producer_proxy_video_
 
 
 /* ============ ProxyVideoProducer Class ================= */
-tmedia_chroma_t ProxyVideoProducer::defaultChroma = tmedia_nv21;
+tmedia_chroma_t ProxyVideoProducer::s_eDefaultChroma = tmedia_nv21;
 
-ProxyVideoProducer::ProxyVideoProducer(tmedia_chroma_t _chroma, struct twrap_producer_proxy_video_s* _producer)
-:callback(tsk_null), chroma(_chroma), rotation(0), producer(_producer), ProxyPlugin(twrap_proxy_plugin_video_producer)
+ProxyVideoProducer::ProxyVideoProducer(tmedia_chroma_t eChroma, struct twrap_producer_proxy_video_s* pProducer)
+:m_pCallback(tsk_null), m_eChroma(eChroma), m_nRotation(0), m_pWrappedPlugin(pProducer), ProxyPlugin(twrap_proxy_plugin_video_producer)
 {
-	this->producer->id = this->getId();
+	if(m_pWrappedPlugin){
+		m_pWrappedPlugin->id = this->getId();
+	}
 }
 
 ProxyVideoProducer::~ProxyVideoProducer()
@@ -433,38 +435,38 @@ ProxyVideoProducer::~ProxyVideoProducer()
 
 int ProxyVideoProducer::getRotation()
 {
-	return this->rotation;
+	return m_nRotation;
 }
 
-void ProxyVideoProducer::setRotation(int rot)
+void ProxyVideoProducer::setRotation(int nRot)
 {
-	this->rotation = rot;
-	if(this->producer){
-		TMEDIA_PRODUCER(this->producer)->video.rotation = this->rotation;
+	m_nRotation = nRot;
+	if(m_pWrappedPlugin){
+		TMEDIA_PRODUCER(m_pWrappedPlugin)->video.rotation = m_nRotation;
 	}
 }
 
 // encode() then send()
-int ProxyVideoProducer::push(const void* buffer, unsigned size)
+int ProxyVideoProducer::push(const void* pBuffer, unsigned nSize)
 {
-	if(this->producer && TMEDIA_PRODUCER(this->producer)->enc_cb.callback){
-		return TMEDIA_PRODUCER(this->producer)->enc_cb.callback(TMEDIA_PRODUCER(this->producer)->enc_cb.callback_data, buffer, size);
+	if(m_pWrappedPlugin && TMEDIA_PRODUCER(m_pWrappedPlugin)->enc_cb.callback){
+		return TMEDIA_PRODUCER(m_pWrappedPlugin)->enc_cb.callback(TMEDIA_PRODUCER(m_pWrappedPlugin)->enc_cb.callback_data, pBuffer, nSize);
 	}
 	return 0;
 }
 
 // send() "as is"
-int ProxyVideoProducer::send(const void* buffer, unsigned size, unsigned duration, bool marker)
+int ProxyVideoProducer::send(const void* pBuffer, unsigned nSize, unsigned nDuration, bool bMarker)
 {
-	if(this->producer && TMEDIA_PRODUCER(this->producer)->raw_cb.callback){
-		return TMEDIA_PRODUCER(this->producer)->raw_cb.callback(TMEDIA_PRODUCER(this->producer)->raw_cb.callback_data, buffer, size, duration, marker);
+	if(m_pWrappedPlugin && TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.callback){
+		return TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.callback(TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.callback_data, pBuffer, nSize, nDuration, bMarker);
 	}
 	return 0;
 }
 
 tmedia_chroma_t ProxyVideoProducer::getChroma()
 {
-	return this->chroma;
+	return m_eChroma;
 }
 
 bool ProxyVideoProducer::registerPlugin()

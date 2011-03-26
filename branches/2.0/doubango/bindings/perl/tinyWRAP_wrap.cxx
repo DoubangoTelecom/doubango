@@ -12824,7 +12824,7 @@ XS(_wrap_ProxyVideoProducer_setRotation) {
     dXSARGS;
     
     if ((items < 2) || (items > 2)) {
-      SWIG_croak("Usage: ProxyVideoProducer_setRotation(self,rot);");
+      SWIG_croak("Usage: ProxyVideoProducer_setRotation(self,nRot);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
@@ -12864,7 +12864,7 @@ XS(_wrap_ProxyVideoProducer_push) {
     dXSARGS;
     
     if ((items < 3) || (items > 3)) {
-      SWIG_croak("Usage: ProxyVideoProducer_push(self,buffer,size);");
+      SWIG_croak("Usage: ProxyVideoProducer_push(self,pBuffer,nSize);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
@@ -12916,7 +12916,7 @@ XS(_wrap_ProxyVideoProducer_send) {
     dXSARGS;
     
     if ((items < 5) || (items > 5)) {
-      SWIG_croak("Usage: ProxyVideoProducer_send(self,buffer,size,duration,marker);");
+      SWIG_croak("Usage: ProxyVideoProducer_send(self,pBuffer,nSize,nDuration,bMarker);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
@@ -12973,7 +12973,7 @@ XS(_wrap_ProxyVideoProducer_setCallback) {
     dXSARGS;
     
     if ((items < 2) || (items > 2)) {
-      SWIG_croak("Usage: ProxyVideoProducer_setCallback(self,_callback);");
+      SWIG_croak("Usage: ProxyVideoProducer_setCallback(self,pCallback);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
@@ -13053,7 +13053,7 @@ XS(_wrap_ProxyVideoProducer_setDefaultChroma) {
     dXSARGS;
     
     if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: ProxyVideoProducer_setDefaultChroma(chroma);");
+      SWIG_croak("Usage: ProxyVideoProducer_setDefaultChroma(eChroma);");
     }
     ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
     if (!SWIG_IsOK(ecode1)) {

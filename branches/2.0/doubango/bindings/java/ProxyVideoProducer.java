@@ -39,20 +39,20 @@ public class ProxyVideoProducer extends ProxyPlugin {
     return tinyWRAPJNI.ProxyVideoProducer_getRotation(swigCPtr, this);
   }
 
-  public void setRotation(int rot) {
-    tinyWRAPJNI.ProxyVideoProducer_setRotation(swigCPtr, this, rot);
+  public void setRotation(int nRot) {
+    tinyWRAPJNI.ProxyVideoProducer_setRotation(swigCPtr, this, nRot);
   }
 
-  public int push(java.nio.ByteBuffer buffer, long size) {
-    return tinyWRAPJNI.ProxyVideoProducer_push(swigCPtr, this, buffer, size);
+  public int push(java.nio.ByteBuffer pBuffer, long nSize) {
+    return tinyWRAPJNI.ProxyVideoProducer_push(swigCPtr, this, pBuffer, nSize);
   }
 
-  public int send(java.nio.ByteBuffer buffer, long size, long duration, boolean marker) {
-    return tinyWRAPJNI.ProxyVideoProducer_send(swigCPtr, this, buffer, size, duration, marker);
+  public int send(java.nio.ByteBuffer pBuffer, long nSize, long nDuration, boolean bMarker) {
+    return tinyWRAPJNI.ProxyVideoProducer_send(swigCPtr, this, pBuffer, nSize, nDuration, bMarker);
   }
 
-  public void setCallback(ProxyVideoProducerCallback _callback) {
-    tinyWRAPJNI.ProxyVideoProducer_setCallback(swigCPtr, this, ProxyVideoProducerCallback.getCPtr(_callback), _callback);
+  public void setCallback(ProxyVideoProducerCallback pCallback) {
+    tinyWRAPJNI.ProxyVideoProducer_setCallback(swigCPtr, this, ProxyVideoProducerCallback.getCPtr(pCallback), pCallback);
   }
 
   public java.math.BigInteger getMediaSessionId() {
@@ -63,8 +63,8 @@ public class ProxyVideoProducer extends ProxyPlugin {
     return tinyWRAPJNI.ProxyVideoProducer_registerPlugin();
   }
 
-  public static void setDefaultChroma(tmedia_chroma_t chroma) {
-    tinyWRAPJNI.ProxyVideoProducer_setDefaultChroma(chroma.swigValue());
+  public static void setDefaultChroma(tmedia_chroma_t eChroma) {
+    tinyWRAPJNI.ProxyVideoProducer_setDefaultChroma(eChroma.swigValue());
   }
 
 }
