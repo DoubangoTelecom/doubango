@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009-2010 Mamadou Diop.
+* Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -24,7 +24,7 @@
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
- * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+
  */
 #include "tinyrtp/rtp/trtp_rtp_header.h"
 
@@ -57,7 +57,7 @@ trtp_rtp_header_t* trtp_rtp_header_create_null()
 trtp_rtp_header_t* trtp_rtp_header_create(uint32_t ssrc, uint16_t seq_num, uint32_t timestamp, uint8_t payload_type, tsk_bool_t marker)
 {
 	trtp_rtp_header_t* header;
-	if((header = tsk_object_new(trtp_rtp_header_def_t))){
+	if((header = trtp_rtp_header_create_null())){
 		header->version = TRTP_RTP_VERSION;
 		header->marker = marker ? 1 : 0;
 		header->payload_type = payload_type;
