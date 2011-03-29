@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="tinyRTP"
 	ProjectGUID="{99B7D02F-8C70-4B45-AF3C-92313C3CEE15}"
 	RootNamespace="tinyRTP"
@@ -207,6 +207,46 @@
 				Name="rtcp"
 				>
 				<File
+					RelativePath=".\src\rtcp\trtp_rtcp_header.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\rtcp\trtp_rtcp_packet.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\rtcp\trtp_rtcp_report.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\rtcp\trtp_rtcp_report_rb.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\rtcp\trtp_rtcp_report_rr.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\rtcp\trtp_rtcp_report_sdes.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\rtcp\trtp_rtcp_report_si.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\rtcp\trtp_rtcp_report_sr.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\rtcp\trtp_rtcp_report_xr.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\rtcp\trtp_rtcp_sdes_item.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\rtcp\trtp_rtcp_session.c"
 					>
 				</File>
@@ -256,6 +296,46 @@
 			<Filter
 				Name="rtcp"
 				>
+				<File
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_header.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_packet.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report_rb.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report_rr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report_sdes.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report_si.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report_sr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report_xr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_sdes_item.h"
+					>
+				</File>
 				<File
 					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_session.h"
 					>

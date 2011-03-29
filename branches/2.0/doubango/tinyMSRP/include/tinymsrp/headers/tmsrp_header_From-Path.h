@@ -25,7 +25,7 @@
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
- * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+
  */
 #ifndef _TMSRP_HEADER_FROM_PATH_H_
 #define _TMSRP_HEADER_FROM_PATH_H_

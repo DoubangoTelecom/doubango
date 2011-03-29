@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009-2010 Mamadou Diop.
+* Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -24,10 +24,9 @@
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
- * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMEDIA_RTP_HEADER_H
-#define TINYMEDIA_RTP_HEADER_H
+#ifndef TINYRTP_RTP_HEADER_H
+#define TINYRTP_RTP_HEADER_H
 
 #include "tinyrtp_config.h"
 
@@ -78,4 +77,4 @@ TINYRTP_GEXTERN const tsk_object_def_t *trtp_rtp_header_def_t;
 
 TRTP_END_DECLS
 
-#endif /* TINYMEDIA_RTP_HEADER_H */
+#endif /* TINYRTP_RTP_HEADER_H */

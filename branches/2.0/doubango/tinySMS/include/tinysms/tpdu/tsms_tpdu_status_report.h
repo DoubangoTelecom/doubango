@@ -25,7 +25,7 @@
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
- * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+
  */
 #ifndef TINYSMS_TSMS_TPDU_STATUS_REPORT_H
 #define TINYSMS_TSMS_TPDU_STATUS_REPORT_H

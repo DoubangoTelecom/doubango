@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009-2010 Mamadou Diop.
+* Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -26,7 +26,7 @@
  * For more information about Theora, http://www.theora.org/doc/Theora.pdf.
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
- * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+
  */
 #ifndef TINYDAV_CODEC_THEORA_H
 #define TINYDAV_CODEC_THEORA_H

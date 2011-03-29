@@ -3,7 +3,7 @@
 
 
 /*
-* Copyright (C) 2009-2010 Mamadou Diop.
+* Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -29,7 +29,7 @@
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
- * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+
  */
 #include "tinysip/headers/tsip_header_Session_Expires.h"
 

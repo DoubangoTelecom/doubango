@@ -1,7 +1,7 @@
 
 /* #line 1 "./ragel/tmedia_content_cpim.rl" */
 /*
-* Copyright (C) 2009-2010 Mamadou Diop.
+* Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
