@@ -243,6 +243,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\rtcp\trtp_rtcp_sdes_chunck.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\rtcp\trtp_rtcp_sdes_item.c"
 					>
 				</File>
@@ -330,6 +334,10 @@
 				</File>
 				<File
 					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report_xr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_sdes_chunck.h"
 					>
 				</File>
 				<File

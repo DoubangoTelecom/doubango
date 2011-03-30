@@ -7,8 +7,8 @@ export _BT=static
 
 for IS_NEON in no yes
 do
-	for project in tinySAK tinyNET tinyHTTP tinyXCAP tinyIPSec tinySMS tinySIGCOMP tinySDP tinyRTP tinyMSRP tinyMEDIA tinyDAV tinySIP
-	#for project in tinyDAV
+	#for project in tinySAK tinyNET tinyHTTP tinyXCAP tinyIPSec tinySMS tinySIGCOMP tinySDP tinyRTP tinyMSRP tinyMEDIA tinyDAV tinySIP
+	for project in tinyDAV
 	do
 		echo -e building "$project with parameters: $@ NEON=$IS_NEON $WIPHONE_PARAMS\n"
 		make PROJECT=$project clean

@@ -101,27 +101,36 @@ int trtp_rtcp_header_serialize_2(const trtp_rtcp_header_t *self, uint8_t output[
 trtp_rtcp_header_t* trtp_rtcp_header_deserialize(const void *data, tsk_size_t size)
 {
 	trtp_rtcp_header_t* header = tsk_null;
-	const uint8_t* pdata = (uint8_t*)data;
-	if(!data || size != TRTP_RTCP_HEADER_SIZE){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return tsk_null;
+	if(trtp_rtcp_header_deserialize_2(&header, data, size)){
+		TSK_DEBUG_ERROR("Failed to deserialize the rtcp header");
+		TSK_OBJECT_SAFE_FREE(header);
 	}
-
-	if((header = trtp_rtcp_header_create_null())){
-		header->version = pdata[0]>>6;
-		header->padding = (pdata[0]>>5)&0x01;
-		header->rc = pdata[0]&0x1f;
-		header->type = (enum trtp_rtcp_packet_type_e)pdata[1];
-		header->length = tnet_ntohs_2(&pdata[2]);
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to create new object");
-		return tsk_null;
-	}
-
 	return header;
 }
 
+int trtp_rtcp_header_deserialize_2(trtp_rtcp_header_t** self, const void *data, tsk_size_t size)
+{
+	const uint8_t* pdata = (uint8_t*)data;
+	if(!self || !data || !size){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	if(size<TRTP_RTCP_HEADER_SIZE){
+		TSK_DEBUG_ERROR("%u is too short", size);
+		return -2;
+	}
+	if(!*self && !(*self = trtp_rtcp_header_create_null())){
+		TSK_DEBUG_ERROR("Failed to create new rtcp header");
+		return -3;
+	}
+	(*self)->version = pdata[0]>>6;
+	(*self)->padding = (pdata[0]>>5)&0x01;
+	(*self)->rc = pdata[0]&0x1f;
+	(*self)->type = (enum trtp_rtcp_packet_type_e)pdata[1];
+	(*self)->length = tnet_ntohs_2(&pdata[2]);
+
+	return 0;
+}
 
 //=================================================================================================
 //	RTCP header object definition
