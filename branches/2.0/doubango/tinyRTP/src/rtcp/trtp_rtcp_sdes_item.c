@@ -27,6 +27,8 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#include <string.h> /* strlen() */
+
 static trtp_rtcp_sdes_item_t* _trtp_rtcp_sdes_item_create_null(trtp_rtcp_sdes_item_type_t type)
 {
 	switch(type){
@@ -107,9 +109,39 @@ trtp_rtcp_sdes_item_t* trtp_rtcp_sdes_item_deserialize(const void* data, tsk_siz
 		TSK_DEBUG_ERROR("%hu is invalid as header length", header.length);
 		return tsk_null;
 	}
+	pdata+=TRTP_RTCP_SDES_HEADER_SIZE;
 	// create item
 	if((item = trtp_rtcp_sdes_item_create(header.version, header.padding, header.type, header.length))){
-		// FIXME: To be completed...
+		switch(item->header.type){
+			case trtp_rtcp_sdes_item_type_end:
+			default:
+				TSK_DEBUG_ERROR("%d is not a valid SDES type", item->header.type);
+				break;
+			case trtp_rtcp_sdes_item_type_cname:
+				TRTP_RTCP_SDES_ITEM_CNAME(item)->cname = tsk_strndup((const char*)pdata, item->header.length);
+				break;
+			case trtp_rtcp_sdes_item_type_name:
+				TRTP_RTCP_SDES_ITEM_NAME(item)->name = tsk_strndup((const char*)pdata, item->header.length);
+				break;
+			case trtp_rtcp_sdes_item_type_email:
+				TRTP_RTCP_SDES_ITEM_EMAIL(item)->email = tsk_strndup((const char*)pdata, item->header.length);
+				break;
+			case trtp_rtcp_sdes_item_type_phone:
+				TRTP_RTCP_SDES_ITEM_PHONE(item)->phone = tsk_strndup((const char*)pdata, item->header.length);
+				break;
+			case trtp_rtcp_sdes_item_type_loc:
+				TRTP_RTCP_SDES_ITEM_LOC(item)->loc = tsk_strndup((const char*)pdata, item->header.length);
+				break;
+			case trtp_rtcp_sdes_item_type_tool:
+				TRTP_RTCP_SDES_ITEM_TOOL(item)->tool = tsk_strndup((const char*)pdata, item->header.length);
+				break;
+			case trtp_rtcp_sdes_item_type_note:
+				TRTP_RTCP_SDES_ITEM_NOTE(item)->note = tsk_strndup((const char*)pdata, item->header.length);
+				break;
+			case trtp_rtcp_sdes_item_type_priv:
+				TRTP_RTCP_SDES_ITEM_PRIV(item)->priv = tsk_buffer_create(pdata, item->header.length);
+				break;
+		}
 	}
 
 	return item;
@@ -125,6 +157,35 @@ tsk_buffer_t* trtp_rtcp_sdes_item_serialize(trtp_rtcp_sdes_item_t* self)
 	return buffer;
 }
 
+tsk_size_t trtp_rtcp_sdes_item_get_size(trtp_rtcp_sdes_item_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+	switch(self->header.type){
+		case trtp_rtcp_sdes_item_type_end:
+		default:
+			TSK_DEBUG_ERROR("%d is not a valid SDES type", self->header.type);
+			return 0;
+		case trtp_rtcp_sdes_item_type_cname:
+			return trtp_rtcp_sdes_item_cname_get_size(TRTP_RTCP_SDES_ITEM_CNAME(self));
+		case trtp_rtcp_sdes_item_type_name:
+			return trtp_rtcp_sdes_item_name_get_size(TRTP_RTCP_SDES_ITEM_NAME(self));
+		case trtp_rtcp_sdes_item_type_email:
+			return trtp_rtcp_sdes_item_email_get_size(TRTP_RTCP_SDES_ITEM_EMAIL(self));
+		case trtp_rtcp_sdes_item_type_phone:
+			return trtp_rtcp_sdes_item_phone_get_size(TRTP_RTCP_SDES_ITEM_PHONE(self));
+		case trtp_rtcp_sdes_item_type_loc:
+			return trtp_rtcp_sdes_item_loc_get_size(TRTP_RTCP_SDES_ITEM_LOC(self));
+		case trtp_rtcp_sdes_item_type_tool:
+			return trtp_rtcp_sdes_item_tool_get_size(TRTP_RTCP_SDES_ITEM_TOOL(self));
+		case trtp_rtcp_sdes_item_type_note:
+			return trtp_rtcp_sdes_item_note_get_size(TRTP_RTCP_SDES_ITEM_NOTE(self));
+		case trtp_rtcp_sdes_item_type_priv:
+			return trtp_rtcp_sdes_item_priv_get_size(TRTP_RTCP_SDES_ITEM_PRIV(self));
+	}
+}
 
 
 /* RFC 3550 6.5.1 CNAME: Canonical End-Point Identifier SDES Item
@@ -146,6 +207,15 @@ trtp_rtcp_sdes_item_cname_t* trtp_rtcp_sdes_item_cname_create(const char* cname)
 		item->cname = tsk_strdup(cname);
 	}
 	return item;
+}
+
+tsk_size_t trtp_rtcp_sdes_item_cname_get_size(trtp_rtcp_sdes_item_cname_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return TRTP_RTCP_SDES_HEADER_SIZE + tsk_strlen(self->cname);
 }
 
 static tsk_object_t* trtp_rtcp_sdes_item_cname_ctor(tsk_object_t * self, va_list * app)
@@ -193,6 +263,15 @@ trtp_rtcp_sdes_item_name_t* trtp_rtcp_sdes_item_name_create(const char* name)
 		item->name = tsk_strdup(name);
 	}
 	return item;
+}
+
+tsk_size_t trtp_rtcp_sdes_item_name_get_size(trtp_rtcp_sdes_item_name_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return TRTP_RTCP_SDES_HEADER_SIZE + tsk_strlen(self->name);
 }
 
 static tsk_object_t* trtp_rtcp_sdes_item_name_ctor(tsk_object_t * self, va_list * app)
@@ -243,6 +322,15 @@ trtp_rtcp_sdes_item_email_t* trtp_rtcp_sdes_item_email_create(const char* email)
 	return item;
 }
 
+tsk_size_t trtp_rtcp_sdes_item_email_get_size(trtp_rtcp_sdes_item_email_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return TRTP_RTCP_SDES_HEADER_SIZE + tsk_strlen(self->email);
+}
+
 static tsk_object_t* trtp_rtcp_sdes_item_email_ctor(tsk_object_t * self, va_list * app)
 {
 	trtp_rtcp_sdes_item_email_t *item = self;
@@ -289,6 +377,15 @@ trtp_rtcp_sdes_item_phone_t* trtp_rtcp_sdes_item_phone_create(const char* phone)
 		item->phone = tsk_strdup(phone);
 	}
 	return item;
+}
+
+tsk_size_t trtp_rtcp_sdes_item_phone_get_size(trtp_rtcp_sdes_item_phone_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return TRTP_RTCP_SDES_HEADER_SIZE + tsk_strlen(self->phone);
 }
 
 static tsk_object_t* trtp_rtcp_sdes_item_phone_ctor(tsk_object_t * self, va_list * app)
@@ -338,6 +435,15 @@ trtp_rtcp_sdes_item_loc_t* trtp_rtcp_sdes_item_loc_create(const char* loc)
 	return item;
 }
 
+tsk_size_t trtp_rtcp_sdes_item_loc_get_size(trtp_rtcp_sdes_item_loc_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return TRTP_RTCP_SDES_HEADER_SIZE + tsk_strlen(self->loc);
+}
+
 static tsk_object_t* trtp_rtcp_sdes_item_loc_ctor(tsk_object_t * self, va_list * app)
 {
 	trtp_rtcp_sdes_item_loc_t *item = self;
@@ -383,6 +489,15 @@ trtp_rtcp_sdes_item_tool_t* trtp_rtcp_sdes_item_tool_create(const char * tool)
 		item->tool = tsk_strdup(tool);
 	}
 	return item;
+}
+
+tsk_size_t trtp_rtcp_sdes_item_tool_get_size(trtp_rtcp_sdes_item_tool_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return TRTP_RTCP_SDES_HEADER_SIZE + tsk_strlen(self->tool);
 }
 
 static tsk_object_t* trtp_rtcp_sdes_item_tool_ctor(tsk_object_t * self, va_list * app)
@@ -432,6 +547,15 @@ trtp_rtcp_sdes_item_note_t* trtp_rtcp_sdes_item_note_create(const char* note)
 	return item;
 }
 
+tsk_size_t trtp_rtcp_sdes_item_note_get_size(trtp_rtcp_sdes_item_note_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return TRTP_RTCP_SDES_HEADER_SIZE + tsk_strlen(self->note);
+}
+
 static tsk_object_t* trtp_rtcp_sdes_item_note_ctor(tsk_object_t * self, va_list * app)
 {
 	trtp_rtcp_sdes_item_note_t *item = self;
@@ -479,6 +603,15 @@ trtp_rtcp_sdes_item_priv_t* trtp_rtcp_sdes_item_priv_create(const void* data, ts
 		item->priv = tsk_buffer_create(data, size);
 	}
 	return item;
+}
+
+tsk_size_t trtp_rtcp_sdes_item_priv_get_size(trtp_rtcp_sdes_item_priv_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return self->priv ? TRTP_RTCP_SDES_HEADER_SIZE + self->priv->size : TRTP_RTCP_SDES_HEADER_SIZE;
 }
 
 static tsk_object_t* trtp_rtcp_sdes_item_priv_ctor(tsk_object_t * self, va_list * app)

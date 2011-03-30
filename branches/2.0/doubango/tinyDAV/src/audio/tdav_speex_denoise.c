@@ -34,7 +34,7 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-#define ECHO_TAIL 10
+#define ECHO_TAIL 20
 
 int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_t sampling_rate, tsk_bool_t denoise, float agc_level, tsk_bool_t aec, tsk_bool_t vad)
 {
