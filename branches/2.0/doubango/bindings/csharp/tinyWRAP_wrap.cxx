@@ -3016,7 +3016,25 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_MessagingSession(void * jarg1) {
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MessagingSession_send(void * jarg1, void * jarg2, unsigned int jarg3) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MessagingSession_send__SWIG_0(void * jarg1, void * jarg2, unsigned int jarg3, void * jarg4) {
+  unsigned int jresult ;
+  MessagingSession *arg1 = (MessagingSession *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  ActionConfig *arg4 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (MessagingSession *)jarg1; 
+  arg2 = jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  arg4 = (ActionConfig *)jarg4; 
+  result = (bool)(arg1)->send((void const *)arg2,arg3,arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MessagingSession_send__SWIG_1(void * jarg1, void * jarg2, unsigned int jarg3) {
   unsigned int jresult ;
   MessagingSession *arg1 = (MessagingSession *) 0 ;
   void *arg2 = (void *) 0 ;
@@ -3032,7 +3050,21 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MessagingSession_send(void * jarg1, v
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MessagingSession_accept(void * jarg1) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MessagingSession_accept__SWIG_0(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  MessagingSession *arg1 = (MessagingSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (MessagingSession *)jarg1; 
+  arg2 = (ActionConfig *)jarg2; 
+  result = (bool)(arg1)->accept(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MessagingSession_accept__SWIG_1(void * jarg1) {
   unsigned int jresult ;
   MessagingSession *arg1 = (MessagingSession *) 0 ;
   bool result;
@@ -3044,7 +3076,21 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MessagingSession_accept(void * jarg1)
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MessagingSession_reject(void * jarg1) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MessagingSession_reject__SWIG_0(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  MessagingSession *arg1 = (MessagingSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (MessagingSession *)jarg1; 
+  arg2 = (ActionConfig *)jarg2; 
+  result = (bool)(arg1)->reject(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MessagingSession_reject__SWIG_1(void * jarg1) {
   unsigned int jresult ;
   MessagingSession *arg1 = (MessagingSession *) 0 ;
   bool result;
@@ -3174,7 +3220,25 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_PublicationSession(void * jarg1) {
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_PublicationSession_publish(void * jarg1, void * jarg2, unsigned int jarg3) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_PublicationSession_publish__SWIG_0(void * jarg1, void * jarg2, unsigned int jarg3, void * jarg4) {
+  unsigned int jresult ;
+  PublicationSession *arg1 = (PublicationSession *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  ActionConfig *arg4 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (PublicationSession *)jarg1; 
+  arg2 = jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  arg4 = (ActionConfig *)jarg4; 
+  result = (bool)(arg1)->publish((void const *)arg2,arg3,arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_PublicationSession_publish__SWIG_1(void * jarg1, void * jarg2, unsigned int jarg3) {
   unsigned int jresult ;
   PublicationSession *arg1 = (PublicationSession *) 0 ;
   void *arg2 = (void *) 0 ;
@@ -3190,7 +3254,21 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_PublicationSession_publish(void * jar
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_PublicationSession_unPublish(void * jarg1) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_PublicationSession_unPublish__SWIG_0(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  PublicationSession *arg1 = (PublicationSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (PublicationSession *)jarg1; 
+  arg2 = (ActionConfig *)jarg2; 
+  result = (bool)(arg1)->unPublish(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_PublicationSession_unPublish__SWIG_1(void * jarg1) {
   unsigned int jresult ;
   PublicationSession *arg1 = (PublicationSession *) 0 ;
   bool result;

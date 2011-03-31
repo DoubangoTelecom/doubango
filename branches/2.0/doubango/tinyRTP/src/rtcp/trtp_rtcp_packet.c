@@ -79,7 +79,7 @@ trtp_rtcp_packet_t* trtp_rtcp_packet_deserialize(const void* data, tsk_size_t si
 		case trtp_rtcp_packet_type_sdes:
 			if((packet = (trtp_rtcp_packet_t*)trtp_rtcp_report_sdes_create_null())){
 				packet->header = tsk_object_ref(header);
-				if(!(trtp_rtcp_report_sdes_parse_payload(TRTP_RTCP_REPORT_SDES(packet),(const void*)pdata,size))){
+				if(!(trtp_rtcp_report_sdes_deserialize_payload(TRTP_RTCP_REPORT_SDES(packet),(const void*)pdata,size))){
 					TSK_DEBUG_ERROR("Failed to parse data");
 					goto bail;
 				}

@@ -639,14 +639,23 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_MessagingSession")]
   public static extern void delete_MessagingSession(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_send")]
-  public static extern bool MessagingSession_send(HandleRef jarg1, byte[] jarg2, uint jarg3);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_send__SWIG_0")]
+  public static extern bool MessagingSession_send__SWIG_0(HandleRef jarg1, byte[] jarg2, uint jarg3, HandleRef jarg4);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_accept")]
-  public static extern bool MessagingSession_accept(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_send__SWIG_1")]
+  public static extern bool MessagingSession_send__SWIG_1(HandleRef jarg1, byte[] jarg2, uint jarg3);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_reject")]
-  public static extern bool MessagingSession_reject(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_accept__SWIG_0")]
+  public static extern bool MessagingSession_accept__SWIG_0(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_accept__SWIG_1")]
+  public static extern bool MessagingSession_accept__SWIG_1(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_reject__SWIG_0")]
+  public static extern bool MessagingSession_reject__SWIG_0(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_reject__SWIG_1")]
+  public static extern bool MessagingSession_reject__SWIG_1(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_OptionsSession")]
   public static extern IntPtr new_OptionsSession(HandleRef jarg1);
@@ -678,11 +687,17 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_PublicationSession")]
   public static extern void delete_PublicationSession(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_PublicationSession_publish")]
-  public static extern bool PublicationSession_publish(HandleRef jarg1, byte[] jarg2, uint jarg3);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_PublicationSession_publish__SWIG_0")]
+  public static extern bool PublicationSession_publish__SWIG_0(HandleRef jarg1, byte[] jarg2, uint jarg3, HandleRef jarg4);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_PublicationSession_unPublish")]
-  public static extern bool PublicationSession_unPublish(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_PublicationSession_publish__SWIG_1")]
+  public static extern bool PublicationSession_publish__SWIG_1(HandleRef jarg1, byte[] jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_PublicationSession_unPublish__SWIG_0")]
+  public static extern bool PublicationSession_unPublish__SWIG_0(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_PublicationSession_unPublish__SWIG_1")]
+  public static extern bool PublicationSession_unPublish__SWIG_1(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_RegistrationSession")]
   public static extern IntPtr new_RegistrationSession(HandleRef jarg1);

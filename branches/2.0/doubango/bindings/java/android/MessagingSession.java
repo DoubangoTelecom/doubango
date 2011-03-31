@@ -39,16 +39,28 @@ public class MessagingSession extends SipSession {
     this(tinyWRAPJNI.new_MessagingSession(SipStack.getCPtr(Stack), Stack), true);
   }
 
+  public boolean send(java.nio.ByteBuffer payload, long len, ActionConfig config) {
+    return tinyWRAPJNI.MessagingSession_send__SWIG_0(swigCPtr, this, payload, len, ActionConfig.getCPtr(config), config);
+  }
+
   public boolean send(java.nio.ByteBuffer payload, long len) {
-    return tinyWRAPJNI.MessagingSession_send(swigCPtr, this, payload, len);
+    return tinyWRAPJNI.MessagingSession_send__SWIG_1(swigCPtr, this, payload, len);
+  }
+
+  public boolean accept(ActionConfig config) {
+    return tinyWRAPJNI.MessagingSession_accept__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
   }
 
   public boolean accept() {
-    return tinyWRAPJNI.MessagingSession_accept(swigCPtr, this);
+    return tinyWRAPJNI.MessagingSession_accept__SWIG_1(swigCPtr, this);
+  }
+
+  public boolean reject(ActionConfig config) {
+    return tinyWRAPJNI.MessagingSession_reject__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
   }
 
   public boolean reject() {
-    return tinyWRAPJNI.MessagingSession_reject(swigCPtr, this);
+    return tinyWRAPJNI.MessagingSession_reject__SWIG_1(swigCPtr, this);
   }
 
 }

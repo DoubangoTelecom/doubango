@@ -215,11 +215,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\rtcp\trtp_rtcp_report.c"
+					RelativePath=".\src\rtcp\trtp_rtcp_rblock.c"
 					>
 				</File>
 				<File
-					RelativePath=".\src\rtcp\trtp_rtcp_report_rb.c"
+					RelativePath=".\src\rtcp\trtp_rtcp_report.c"
 					>
 				</File>
 				<File
@@ -228,10 +228,6 @@
 				</File>
 				<File
 					RelativePath=".\src\rtcp\trtp_rtcp_report_sdes.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\rtcp\trtp_rtcp_report_si.c"
 					>
 				</File>
 				<File
@@ -309,11 +305,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report.h"
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_rblock.h"
 					>
 				</File>
 				<File
-					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report_rb.h"
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report.h"
 					>
 				</File>
 				<File
@@ -322,10 +318,6 @@
 				</File>
 				<File
 					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report_sdes.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report_si.h"
 					>
 				</File>
 				<File

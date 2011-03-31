@@ -64,7 +64,8 @@ trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_deserialize(const void* data, tsk
 	return packet;
 }
 
-int trtp_rtcp_report_sdes_parse_payload(trtp_rtcp_report_sdes_t* self, const void* payload, tsk_size_t size)
+// @NotImplemented
+int trtp_rtcp_report_sdes_deserialize_payload(trtp_rtcp_report_sdes_t* self, const void* payload, tsk_size_t size)
 {
 	if(!self || !payload || !size){
 		TSK_DEBUG_ERROR("Invalid parameter");

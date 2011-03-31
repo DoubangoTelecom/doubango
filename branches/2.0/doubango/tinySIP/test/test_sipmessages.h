@@ -313,8 +313,8 @@ void test_responses()
 void test_messages()
 {
 	//test_parser();
-	//test_requests();
-	test_responses();
+	test_requests();
+	//test_responses();
 }
 
 

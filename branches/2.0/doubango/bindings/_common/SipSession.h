@@ -150,9 +150,9 @@ public: /* ctor() and dtor() */
 	virtual ~MessagingSession();
 
 public: /* Public functions */
-	bool send(const void* payload, unsigned len);
-	bool accept();
-	bool reject();
+	bool send(const void* payload, unsigned len, ActionConfig* config=tsk_null);
+	bool accept(ActionConfig* config=tsk_null);
+	bool reject(ActionConfig* config=tsk_null);
 };
 
 /* ======================== OptionsSession ========================*/
@@ -181,8 +181,8 @@ public: /* ctor() and dtor() */
 	virtual ~PublicationSession();
 
 public: /* Public functions */
-	bool publish(const void* payload, unsigned len);
-	bool unPublish();
+	bool publish(const void* payload, unsigned len, ActionConfig* config=tsk_null);
+	bool unPublish(ActionConfig* config=tsk_null);
 };
 
 
