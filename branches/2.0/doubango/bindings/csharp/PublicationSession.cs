@@ -43,13 +43,23 @@ public class PublicationSession : SipSession {
   public PublicationSession(SipStack Stack) : this(tinyWRAPPINVOKE.new_PublicationSession(SipStack.getCPtr(Stack)), true) {
   }
 
+  public bool publish(byte[] payload, uint len, ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.PublicationSession_publish__SWIG_0(swigCPtr, payload, len, ActionConfig.getCPtr(config));
+    return ret;
+  }
+
   public bool publish(byte[] payload, uint len) {
-    bool ret = tinyWRAPPINVOKE.PublicationSession_publish(swigCPtr, payload, len);
+    bool ret = tinyWRAPPINVOKE.PublicationSession_publish__SWIG_1(swigCPtr, payload, len);
+    return ret;
+  }
+
+  public bool unPublish(ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.PublicationSession_unPublish__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
     return ret;
   }
 
   public bool unPublish() {
-    bool ret = tinyWRAPPINVOKE.PublicationSession_unPublish(swigCPtr);
+    bool ret = tinyWRAPPINVOKE.PublicationSession_unPublish__SWIG_1(swigCPtr);
     return ret;
   }
 

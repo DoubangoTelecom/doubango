@@ -449,8 +449,8 @@ tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_u
 
 	if((request = tsip_request_create(method, request_uri))){
 		tsip_message_add_headers(request,
-			TSIP_HEADER_TO_VA_ARGS(tsk_null, to, tsk_null),
-			TSIP_HEADER_FROM_VA_ARGS(tsk_null, from, tsk_null),
+			TSIP_HEADER_TO_VA_ARGS(to?to->display_name:tsk_null, to, tsk_null),
+			TSIP_HEADER_FROM_VA_ARGS(from?from->display_name:tsk_null, from, tsk_null),
 			TSIP_HEADER_CSEQ_VA_ARGS(cseq, method),
 			TSIP_HEADER_CALL_ID_VA_ARGS(call_id),
 			TSIP_HEADER_MAX_FORWARDS_VA_ARGS(TSIP_HEADER_MAX_FORWARDS_DEFAULT),

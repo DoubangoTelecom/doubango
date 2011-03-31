@@ -518,8 +518,8 @@ class MessagingSession(SipSession):
     __swig_destroy__ = _tinyWRAP.delete_MessagingSession
     __del__ = lambda self : None;
     def send(self, *args): return _tinyWRAP.MessagingSession_send(self, *args)
-    def accept(self): return _tinyWRAP.MessagingSession_accept(self)
-    def reject(self): return _tinyWRAP.MessagingSession_reject(self)
+    def accept(self, *args): return _tinyWRAP.MessagingSession_accept(self, *args)
+    def reject(self, *args): return _tinyWRAP.MessagingSession_reject(self, *args)
 MessagingSession_swigregister = _tinyWRAP.MessagingSession_swigregister
 MessagingSession_swigregister(MessagingSession)
 
@@ -558,7 +558,7 @@ class PublicationSession(SipSession):
     __swig_destroy__ = _tinyWRAP.delete_PublicationSession
     __del__ = lambda self : None;
     def publish(self, *args): return _tinyWRAP.PublicationSession_publish(self, *args)
-    def unPublish(self): return _tinyWRAP.PublicationSession_unPublish(self)
+    def unPublish(self, *args): return _tinyWRAP.PublicationSession_unPublish(self, *args)
 PublicationSession_swigregister = _tinyWRAP.PublicationSession_swigregister
 PublicationSession_swigregister(PublicationSession)
 

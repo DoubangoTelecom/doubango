@@ -42,7 +42,7 @@ typedef tsk_list_t trtp_rtcp_report_sdess_L_t; /**< List of @ref trtp_rtcp_repor
 
 trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_create_null();
 trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_deserialize(const void* data, tsk_size_t size);
-int trtp_rtcp_report_sdes_parse_payload(trtp_rtcp_report_sdes_t* self, const void* payload, tsk_size_t size);
+int trtp_rtcp_report_sdes_deserialize_payload(trtp_rtcp_report_sdes_t* self, const void* payload, tsk_size_t size);
 
 TRTP_END_DECLS
 

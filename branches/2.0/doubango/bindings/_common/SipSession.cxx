@@ -575,13 +575,14 @@ MessagingSession::~MessagingSession()
 {
 }
 
-bool MessagingSession::send(const void* payload, unsigned len)
+bool MessagingSession::send(const void* payload, unsigned len, ActionConfig* config/*=tsk_null*/)
 {
-	TSK_DEBUG_INFO("MessagingSession::Send()");
 	int ret;
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 	if(payload && len){
 		ret = tsip_action_MESSAGE(this->handle,
 			TSIP_ACTION_SET_PAYLOAD(payload, len),
+			TSIP_ACTION_SET_CONFIG(action_cfg),
 			TSIP_ACTION_SET_NULL());
 	}
 	else{
@@ -591,15 +592,19 @@ bool MessagingSession::send(const void* payload, unsigned len)
 	return (ret == 0);
 }
 
-bool MessagingSession::accept()
+bool MessagingSession::accept(ActionConfig* config/*=tsk_null*/)
 {
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 	return (tsip_action_ACCEPT(this->handle,
+		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
-bool MessagingSession::reject()
+bool MessagingSession::reject(ActionConfig* config/*=tsk_null*/)
 {
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 	return (tsip_action_REJECT(this->handle,
+		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
@@ -656,9 +661,10 @@ PublicationSession::~PublicationSession()
 {
 }
 
-bool PublicationSession::publish(const void* payload, unsigned len)
+bool PublicationSession::publish(const void* payload, unsigned len, ActionConfig* config/*=tsk_null*/)
 {
 	int ret;
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 	if(payload && len){
 		ret = tsip_action_PUBLISH(this->handle,
 			TSIP_ACTION_SET_PAYLOAD(payload, len),
@@ -666,14 +672,17 @@ bool PublicationSession::publish(const void* payload, unsigned len)
 	}
 	else{
 		ret = tsip_action_PUBLISH(this->handle,
+			TSIP_ACTION_SET_CONFIG(action_cfg),
 			TSIP_ACTION_SET_NULL());
 	}
 	return (ret == 0);
 }
 
-bool PublicationSession::unPublish()
+bool PublicationSession::unPublish(ActionConfig* config/*=tsk_null*/)
 {
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 	return (tsip_action_UNPUBLISH(this->handle,
+		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 

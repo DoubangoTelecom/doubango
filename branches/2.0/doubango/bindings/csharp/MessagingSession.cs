@@ -43,18 +43,33 @@ public class MessagingSession : SipSession {
   public MessagingSession(SipStack Stack) : this(tinyWRAPPINVOKE.new_MessagingSession(SipStack.getCPtr(Stack)), true) {
   }
 
+  public bool send(byte[] payload, uint len, ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.MessagingSession_send__SWIG_0(swigCPtr, payload, len, ActionConfig.getCPtr(config));
+    return ret;
+  }
+
   public bool send(byte[] payload, uint len) {
-    bool ret = tinyWRAPPINVOKE.MessagingSession_send(swigCPtr, payload, len);
+    bool ret = tinyWRAPPINVOKE.MessagingSession_send__SWIG_1(swigCPtr, payload, len);
+    return ret;
+  }
+
+  public bool accept(ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.MessagingSession_accept__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
     return ret;
   }
 
   public bool accept() {
-    bool ret = tinyWRAPPINVOKE.MessagingSession_accept(swigCPtr);
+    bool ret = tinyWRAPPINVOKE.MessagingSession_accept__SWIG_1(swigCPtr);
+    return ret;
+  }
+
+  public bool reject(ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.MessagingSession_reject__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
     return ret;
   }
 
   public bool reject() {
-    bool ret = tinyWRAPPINVOKE.MessagingSession_reject(swigCPtr);
+    bool ret = tinyWRAPPINVOKE.MessagingSession_reject__SWIG_1(swigCPtr);
     return ret;
   }
 

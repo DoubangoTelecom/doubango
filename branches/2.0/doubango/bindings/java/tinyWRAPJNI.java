@@ -160,9 +160,12 @@ public class tinyWRAPJNI {
   public final static native boolean MsrpSession_sendFile__SWIG_1(long jarg1, MsrpSession jarg1_);
   public final static native long new_MessagingSession(long jarg1, SipStack jarg1_);
   public final static native void delete_MessagingSession(long jarg1);
-  public final static native boolean MessagingSession_send(long jarg1, MessagingSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
-  public final static native boolean MessagingSession_accept(long jarg1, MessagingSession jarg1_);
-  public final static native boolean MessagingSession_reject(long jarg1, MessagingSession jarg1_);
+  public final static native boolean MessagingSession_send__SWIG_0(long jarg1, MessagingSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3, long jarg4, ActionConfig jarg4_);
+  public final static native boolean MessagingSession_send__SWIG_1(long jarg1, MessagingSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native boolean MessagingSession_accept__SWIG_0(long jarg1, MessagingSession jarg1_, long jarg2, ActionConfig jarg2_);
+  public final static native boolean MessagingSession_accept__SWIG_1(long jarg1, MessagingSession jarg1_);
+  public final static native boolean MessagingSession_reject__SWIG_0(long jarg1, MessagingSession jarg1_, long jarg2, ActionConfig jarg2_);
+  public final static native boolean MessagingSession_reject__SWIG_1(long jarg1, MessagingSession jarg1_);
   public final static native long new_OptionsSession(long jarg1, SipStack jarg1_);
   public final static native void delete_OptionsSession(long jarg1);
   public final static native boolean OptionsSession_send__SWIG_0(long jarg1, OptionsSession jarg1_, long jarg2, ActionConfig jarg2_);
@@ -173,8 +176,10 @@ public class tinyWRAPJNI {
   public final static native boolean OptionsSession_reject__SWIG_1(long jarg1, OptionsSession jarg1_);
   public final static native long new_PublicationSession(long jarg1, SipStack jarg1_);
   public final static native void delete_PublicationSession(long jarg1);
-  public final static native boolean PublicationSession_publish(long jarg1, PublicationSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
-  public final static native boolean PublicationSession_unPublish(long jarg1, PublicationSession jarg1_);
+  public final static native boolean PublicationSession_publish__SWIG_0(long jarg1, PublicationSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3, long jarg4, ActionConfig jarg4_);
+  public final static native boolean PublicationSession_publish__SWIG_1(long jarg1, PublicationSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native boolean PublicationSession_unPublish__SWIG_0(long jarg1, PublicationSession jarg1_, long jarg2, ActionConfig jarg2_);
+  public final static native boolean PublicationSession_unPublish__SWIG_1(long jarg1, PublicationSession jarg1_);
   public final static native long new_RegistrationSession(long jarg1, SipStack jarg1_);
   public final static native void delete_RegistrationSession(long jarg1);
   public final static native boolean RegistrationSession_register_(long jarg1, RegistrationSession jarg1_);

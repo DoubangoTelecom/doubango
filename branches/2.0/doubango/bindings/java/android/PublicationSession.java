@@ -47,12 +47,20 @@ public class PublicationSession extends SipSession {
     this(tinyWRAPJNI.new_PublicationSession(SipStack.getCPtr(Stack), Stack), true);
   }
 
+  public boolean publish(java.nio.ByteBuffer payload, long len, ActionConfig config) {
+    return tinyWRAPJNI.PublicationSession_publish__SWIG_0(swigCPtr, this, payload, len, ActionConfig.getCPtr(config), config);
+  }
+
   public boolean publish(java.nio.ByteBuffer payload, long len) {
-    return tinyWRAPJNI.PublicationSession_publish(swigCPtr, this, payload, len);
+    return tinyWRAPJNI.PublicationSession_publish__SWIG_1(swigCPtr, this, payload, len);
+  }
+
+  public boolean unPublish(ActionConfig config) {
+    return tinyWRAPJNI.PublicationSession_unPublish__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
   }
 
   public boolean unPublish() {
-    return tinyWRAPJNI.PublicationSession_unPublish(swigCPtr, this);
+    return tinyWRAPJNI.PublicationSession_unPublish__SWIG_1(swigCPtr, this);
   }
 
 }
