@@ -35,7 +35,7 @@ TRTP_BEGIN_DECLS
 typedef struct trtp_rtcp_report_sr_s
 {
 	TRTP_DECLARE_RTCP_PACKET;
-
+	
 	uint32_t sender_ssrc;
 	struct{
 		uint32_t ntp_msw; /**< NTP timestamp, most significant word */
