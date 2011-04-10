@@ -2,13 +2,13 @@
 # Build tinyWRAP for Google Android Systems
 
 # wiPhone parameters
-export GPL_PARAMS="FFMPEG=yes H264=yes THEORA=yes OPENCORE_AMR=no SPEEX_DSP=yes SPEEX_JB=yes SPEEX_RESAMPLER=yes SPEEX_DENOISE=no SPEEX=no ILBC=no LIBGSM=no G729=no"
+export GPL_PARAMS="FFMPEG=yes H264=yes THEORA=yes OPENCORE_AMR=no SPEEX_DSP=yes SPEEX_JB=yes SPEEX_RESAMPLER=yes SPEEX_DENOISE=no SPEEX=no ILBC=no LIBGSM=yes G729=no"
 export _BT=static
 
 for IS_NEON in no yes
 do
-	#for project in tinySAK tinyNET tinyHTTP tinyXCAP tinyIPSec tinySMS tinySIGCOMP tinySDP tinyRTP tinyMSRP tinyMEDIA tinyDAV tinySIP
-	for project in tinyDAV
+	for project in tinySAK tinyNET tinyHTTP tinyXCAP tinyIPSec tinySMS tinySIGCOMP tinySDP tinyRTP tinyMSRP tinyMEDIA tinyDAV tinySIP
+	#for project in tinyDAV
 	do
 		echo -e building "$project with parameters: $@ NEON=$IS_NEON $GPL_PARAMS\n"
 		make PROJECT=$project clean

@@ -102,14 +102,16 @@ int tdav_init()
 	tmedia_content_plugin_register("text/plain", tmedia_content_dummy_plugin_def_t);
 	tmedia_content_plugin_register("application/octet-stream", tmedia_content_dummy_plugin_def_t);
 	tmedia_content_plugin_register("message/CPIM", tmedia_content_cpim_plugin_def_t);
-	/*tmedia_content_plugin_register("message/sipfrag", tmedia_content_sipfrag_plugin_def_t);
+	/*
+	tmedia_content_plugin_register("message/sipfrag", tmedia_content_sipfrag_plugin_def_t);
 	tmedia_content_plugin_register("multipart/digest", tmedia_content_multipart_plugin_def_t);
 	tmedia_content_plugin_register("multipart/mixed", tmedia_content_multipart_plugin_def_t);
 	tmedia_content_plugin_register("multipart/related", tmedia_content_multipart_plugin_def_t);
 	tmedia_content_plugin_register("multipart/alternative", tmedia_content_multipart_plugin_def_t);
 	tmedia_content_plugin_register("multipart/encrypted", tmedia_content_multipart_plugin_def_t);
 	tmedia_content_plugin_register("multipart/parallel", tmedia_content_multipart_plugin_def_t);
-	tmedia_content_plugin_register("multipart/signed", tmedia_content_multipart_plugin_def_t);	*/
+	tmedia_content_plugin_register("multipart/signed", tmedia_content_multipart_plugin_def_t);
+	*/
 
 	/* === Register sessions === */
 	tmedia_session_plugin_register(tmedia_session_ghost_plugin_def_t);

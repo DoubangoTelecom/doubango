@@ -658,7 +658,7 @@ bool ProxyVideoConsumer::registerPlugin()
 ProxyVideoFrame::ProxyVideoFrame(const void* pBuffer, unsigned nSize)
 {
 	m_pBuffer = pBuffer;
-	nSize = nSize;
+	m_nSize = nSize;
 }
 
 ProxyVideoFrame::~ProxyVideoFrame()
