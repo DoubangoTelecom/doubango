@@ -38,7 +38,7 @@ trtp_rtcp_header_t* trtp_rtcp_header_create_null()
 	return tsk_object_new(trtp_rtcp_header_def_t);
 }
 
-trtp_rtcp_header_t* trtp_rtcp_header_create(uint8_t version, uint8_t padding, uint8_t rc, enum trtp_rtcp_packet_type_e type, uint16_t length)
+trtp_rtcp_header_t* trtp_rtcp_header_create(uint8_t version, uint8_t padding, uint8_t rc, trtp_rtcp_packet_type_t type, uint16_t length)
 {
 	trtp_rtcp_header_t* header;
 	if((header = trtp_rtcp_header_create_null())){
@@ -72,7 +72,7 @@ tsk_buffer_t* trtp_rtcp_header_serialize(const trtp_rtcp_header_t *self)
 			TSK_FREE(bytes);
 			return tsk_null;
 		}
-		tsk_buffer_takeownership(buffer, &bytes, TRTP_RTCP_HEADER_SIZE);
+		tsk_buffer_takeownership(buffer, (void**)&bytes, TRTP_RTCP_HEADER_SIZE);
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to allocate new buffer");

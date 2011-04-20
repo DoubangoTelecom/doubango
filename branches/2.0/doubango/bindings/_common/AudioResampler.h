@@ -29,6 +29,7 @@
 #define TINYWRAP_AUDIO_RESAMPLER_H
 
 #include "tinyWRAP_config.h"
+#include "tsk_common.h"
 
 class AudioResampler
 {
@@ -37,7 +38,7 @@ public:
 	~AudioResampler();
 
 public:
-	inline bool isValid(){ return (m_pWrappedResampler != NULL); }
+	inline bool isValid(){ return (m_pWrappedResampler != tsk_null); }
 	inline uint32_t getOutputRequiredSizeInShort(){ return (m_nOutFreq * m_nFrameDuration)/1000; }
 	inline uint32_t getInputRequiredSizeInShort(){ return (m_nInFreq * m_nFrameDuration)/1000; }
 	uint32_t process(const void* pInData, uint32_t nInSizeInBytes, void* pOutData, uint32_t nOutSizeInBytes);

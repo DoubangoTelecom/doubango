@@ -49,8 +49,6 @@
 #define TDAV_RATE_DEFAULT				8000
 #define TDAV_PTIME_DEFAULT				20
 
-int static size_of_short = sizeof(short);
-
 /** Initialize audio consumer */
 int tdav_consumer_audio_init(tdav_consumer_audio_t* self)
 {

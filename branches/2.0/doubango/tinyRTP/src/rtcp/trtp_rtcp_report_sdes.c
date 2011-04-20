@@ -51,7 +51,7 @@ trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_create_null()
 trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_deserialize(const void* data, tsk_size_t size)
 {
 	trtp_rtcp_report_sdes_t* packet = tsk_null;
-	const uint8_t* pdata = (const uint8_t*)data;
+	//-- const uint8_t* pdata = (const uint8_t*)data;
 	if(!data || !size){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;

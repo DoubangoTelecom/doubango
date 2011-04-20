@@ -51,7 +51,7 @@ tmedia_content_plugin_entry_t __tmedia_content_plugin_entries[TMEDIA_CONTENT_MAX
 int tmedia_content_plugin_register(const char* type, const tmedia_content_plugin_def_t* plugin)
 {
 	tsk_size_t i;
-	int a = sizeof(__tmedia_content_plugin_entries);
+	//-- int a = sizeof(__tmedia_content_plugin_entries);
 	if(!plugin || !plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;

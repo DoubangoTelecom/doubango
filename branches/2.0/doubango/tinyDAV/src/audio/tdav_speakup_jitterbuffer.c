@@ -33,6 +33,8 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#include <string.h>
+
 #if TSK_UNDER_WINDOWS
 #       include <Winsock2.h> // timeval
 #elif defined(__SYMBIAN32__)
