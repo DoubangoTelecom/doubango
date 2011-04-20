@@ -356,7 +356,7 @@ SMSData* SMSEncoder::decode(const void* data, unsigned size, bool MobOrig)
 			}
 		case tsms_rpdu_type_smma_mo:
 			{
-				tsms_rpdu_smma_t* rp_smma = TSMS_RPDU_SMMA(rp_message);
+				// tsms_rpdu_smma_t* rp_smma = TSMS_RPDU_SMMA(rp_message);
 				// ...do whatever you want
 				decodedData = new SMSData(twrap_sms_type_smma, rp_message->mr, tsk_null, 0);
 				break;

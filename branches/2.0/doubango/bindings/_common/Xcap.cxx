@@ -541,7 +541,6 @@ bool XcapStack::stop()
 
 int stack_callback(const thttp_event_t *httpevent)
 {
-	int ret = 0;
 	const XcapStack* stack = tsk_null;
 	XcapEvent* e = tsk_null;
 

@@ -20,6 +20,7 @@
 *
 */
 #include "tinyrtp/rtcp/trtp_rtcp_sdes_item.h"
+#include "tinyrtp/rtcp/trtp_rtcp_packet.h"
 
 #include "tnet_endianness.h"
 

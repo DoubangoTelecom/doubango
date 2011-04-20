@@ -23,6 +23,7 @@
 #define TINYRTP_RTCP_HEADER_H
 
 #include "tinyrtp_config.h"
+#include "tinyrtp/rtcp/trtp_rtcp_packet.h"
 
 #include "tsk_buffer.h"
 #include "tsk_list.h"
@@ -39,7 +40,7 @@ typedef struct trtp_rtcp_header_s
 	unsigned version:2;
 	unsigned padding:1;
 	unsigned rc:5;
-	enum trtp_rtcp_packet_type_e type; /**< Packet Type on 8bits */
+	trtp_rtcp_packet_type_t type; /**< Packet Type on 8bits */
 	uint16_t length;
 }
 trtp_rtcp_header_t;
@@ -48,7 +49,7 @@ trtp_rtcp_header_t;
 typedef tsk_list_t trtp_rtcp_headers_L_t; /**< List of @ref trtp_rtcp_header_t elements */
 
 TINYRTP_API trtp_rtcp_header_t* trtp_rtcp_header_create_null();
-TINYRTP_API trtp_rtcp_header_t* trtp_rtcp_header_create(uint8_t version, uint8_t padding, uint8_t rc, enum trtp_rtcp_packet_type_e type, uint16_t length);
+TINYRTP_API trtp_rtcp_header_t* trtp_rtcp_header_create(uint8_t version, uint8_t padding, uint8_t rc, trtp_rtcp_packet_type_t type, uint16_t length);
 TINYRTP_API tsk_buffer_t* trtp_rtcp_header_serialize(const trtp_rtcp_header_t *self);
 TINYRTP_API int trtp_rtcp_header_serialize_2(const trtp_rtcp_header_t *self, uint8_t output[TRTP_RTCP_HEADER_SIZE]);
 TINYRTP_API trtp_rtcp_header_t* trtp_rtcp_header_deserialize(const void *data, tsk_size_t size);
