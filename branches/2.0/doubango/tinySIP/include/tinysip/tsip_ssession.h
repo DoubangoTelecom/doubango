@@ -66,8 +66,10 @@ typedef enum tsip_ssession_param_type_e
 	sstype_header,
 	sstype_caps,
 	sstype_userdata,
-	sstype_to,
-	sstype_from,
+	sstype_to_str,
+	sstype_from_str,
+	sstype_to_obj,
+	sstype_from_obj,
 	sstype_nocontact,
 	sstype_expires,
 	sstype_silent_hangup,
@@ -81,8 +83,12 @@ tsip_ssession_param_type_t;
 #define TSIP_SSESSION_SET_CAPS(NAME_STR, VALUE_STR)					sstype_caps, (const char*)NAME_STR, (const char*)VALUE_STR /* RFC 3840 */
 #define TSIP_SSESSION_UNSET_CAPS(NAME_STR)							TSIP_SSESSION_SET_CAPS(NAME_STR, (const char*)-1)
 #define TSIP_SSESSION_SET_USERDATA(DATA_PTR)						sstype_userdata, (const void*)DATA_PTR
-#define TSIP_SSESSION_SET_TO(TO_URI_STR)							sstype_to, (const char*)TO_URI_STR
-#define TSIP_SSESSION_SET_FROM(FROM_URI_STR)						sstype_from, (const char*)FROM_URI_STR
+#define TSIP_SSESSION_SET_TO_STR(URI_STR)							sstype_to_str, (const char*)URI_STR
+#define TSIP_SSESSION_SET_FROM_STR(URI_STR)							sstype_from_str, (const char*)URI_STR
+#define TSIP_SSESSION_SET_TO(URI_STR)								TSIP_SSESSION_SET_TO_STR(URI_STR)
+#define TSIP_SSESSION_SET_FROM(URI_STR)								TSIP_SSESSION_SET_FROM_STR(URI_STR)
+#define TSIP_SSESSION_SET_TO_OBJ(URI_OBJ)							sstype_to_obj, (const tsip_uri_t*)URI_OBJ
+#define TSIP_SSESSION_SET_FROM_OBJ(URI_OBJ)							sstype_from_obj, (const tsip_uri_t*)URI_OBJ
 #define TSIP_SSESSION_SET_NO_CONTACT(ENABLED_BOOL)					sstype_nocontact, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_SSESSION_SET_EXPIRES(VALUE_UINT)						sstype_expires, (unsigned)VALUE_UINT
 #define TSIP_SSESSION_SET_SILENT_HANGUP(ENABLED_BOOL)				sstype_silent_hangup, (tsk_bool_t)ENABLED_BOOL

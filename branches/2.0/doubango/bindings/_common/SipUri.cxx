@@ -21,71 +21,80 @@
 */
 #include "SipUri.h"
 
-SipUri::SipUri(const char* uristring)
+SipUri::SipUri(const char* uriString, const char* displayName/*=tsk_null*/)
 {
-	this->uri = tsip_uri_parse(uristring, tsk_strlen(uristring));
+	if((m_pUri = tsip_uri_parse(uriString, tsk_strlen(uriString))) && displayName){
+		m_pUri->display_name = tsk_strdup(displayName);
+	}
 }
 
 SipUri::~SipUri()
 {
-	TSK_OBJECT_SAFE_FREE(this->uri);
+	TSK_OBJECT_SAFE_FREE(m_pUri);
 }
 
 bool SipUri::isValid(const char* uriString)
 {
-	tsip_uri_t* _uri;
+	tsip_uri_t* uri;
 	bool ret = false;
 
-	if((_uri = tsip_uri_parse(uriString, tsk_strlen(uriString)))){
-		ret = (_uri->type != uri_unknown)
-			&& (!tsk_strnullORempty(_uri->host));
-		TSK_OBJECT_SAFE_FREE(_uri);
+	if((uri = tsip_uri_parse(uriString, tsk_strlen(uriString)))){
+		ret = (uri->type != uri_unknown)
+			&& (!tsk_strnullORempty(uri->host));
+		TSK_OBJECT_SAFE_FREE(uri);
 	}
 	return ret;
 }
 
 bool SipUri::isValid()
 {
-	return (this->uri != tsk_null);
+	return (m_pUri != tsk_null);
 }
 
 const char* SipUri::getScheme()
 {
-	if(this->uri){
-		return this->uri->scheme;
+	if(m_pUri){
+		return m_pUri->scheme;
 	}
 	return tsk_null;
 }
 
 const char* SipUri::getHost()
 {
-	return this->uri ? this->uri->host : tsk_null;
+	return m_pUri ? m_pUri->host : tsk_null;
 }
 
 unsigned short SipUri::getPort()
 {
-	return this->uri ? this->uri->port : 0;
+	return m_pUri ? m_pUri->port : 0;
 }
 
 const char* SipUri::getUserName()
 {
-	return this->uri ? this->uri->user_name : tsk_null;
+	return m_pUri ? m_pUri->user_name : tsk_null;
 }
 
 const char* SipUri::getPassword()
 {
-	return this->uri ? this->uri->password : tsk_null;
+	return m_pUri ? m_pUri->password : tsk_null;
 }
 
 const char* SipUri::getDisplayName()
 {
-	return this->uri ? this->uri->display_name : tsk_null;
+	return m_pUri ? m_pUri->display_name : tsk_null;
+}
+
+void SipUri::setDisplayName(const char* displayName)
+{
+	if(m_pUri){
+		tsk_strupdate(&m_pUri->display_name, displayName);
+	}
 }
 
 const char* SipUri::getParamValue(const char* pname)
 {
-	if(this->uri && this->uri->params){
-		const char* pvalue = tsk_params_get_param_value(this->uri->params,  pname);
+	if(m_pUri && m_pUri->params){
+		const char* pvalue = tsk_params_get_param_value(m_pUri->params,  pname);
 		return pvalue;
 	}
 	return tsk_null;

@@ -27,7 +27,7 @@
 class SipUri
 {
 public:
-	SipUri(const char*);
+	SipUri(const char* uriString, const char* displayName=tsk_null);
 	~SipUri();
 
 public:
@@ -41,9 +41,15 @@ public:
 	const char* getPassword();
 	const char* getDisplayName();
 	const char* getParamValue(const char* pname);
+	void setDisplayName(const char* displayName);
+#if !defined(SWIG)
+	inline const tsip_uri_t* getWrappedUri()const{
+		return m_pUri;
+	}
+#endif
 
 private:
-	tsip_uri_t* uri;
+	tsip_uri_t* m_pUri;
 };
 
 #endif /* TINYWRAP_SIPURI_H */

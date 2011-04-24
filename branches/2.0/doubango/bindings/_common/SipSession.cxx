@@ -22,7 +22,7 @@
 #include "SipSession.h"
 #include "SipStack.h"
 #include "MediaSessionMgr.h"
-
+#include "SipUri.h"
 #include "Msrp.h"
 
 /* ======================== AsyncAction ========================*/
@@ -39,157 +39,171 @@ twrap_async_action_t;
 /* ======================== SipSession ========================*/
 SipSession::SipSession(SipStack* stack)
 {
-	this->init(stack);
+	init(stack);
 }
 
-SipSession::SipSession(SipStack* stack, tsip_ssession_handle_t* handle)
+SipSession::SipSession(SipStack* stack, tsip_ssession_handle_t* pHandle)
 {
-	this->init(stack, handle);
+	init(stack, pHandle);
 }
 
 SipSession::~SipSession()
 {
-	tsip_ssession_set(this->handle,
+	tsip_ssession_set(m_pHandle,
 		TSIP_SSESSION_SET_USERDATA(tsk_null),
 		TSIP_SSESSION_SET_NULL());
 
-	TSK_OBJECT_SAFE_FREE(this->handle);
+	TSK_OBJECT_SAFE_FREE(m_pHandle);
 }
 
-void SipSession::init(SipStack* _stack, tsip_ssession_handle_t* _handle/*=tsk_null*/)
+void SipSession::init(SipStack* pStack, tsip_ssession_handle_t* pHandle/*=tsk_null*/)
 {
-	if(_handle){
+	if(pHandle){
 		/* "server-side-session" */
-		if(tsip_ssession_take_ownership(_handle)){ /* should never happen */
+		if(tsip_ssession_take_ownership(pHandle)){ /* should never happen */
 			TSK_DEBUG_ERROR("Failed to take ownership");
 			return;
 		}
-		this->handle = _handle;
+		m_pHandle = pHandle;
 	}
 	else{
 		/* "client-side-session" */
-		this->handle = tsip_ssession_create(_stack->getHandle(),
+		m_pHandle = tsip_ssession_create(pStack->getHandle(),
 			TSIP_SSESSION_SET_USERDATA(this),
 			TSIP_SSESSION_SET_NULL());
 	}
 
 	/* set userdata (context) and ref. the stack handle */
-	tsip_ssession_set(this->handle,
+	tsip_ssession_set(m_pHandle,
 			TSIP_SSESSION_SET_USERDATA(this),
 			TSIP_SSESSION_SET_NULL());
-	this->stack = _stack;
+	m_pStack = pStack;
 }
 
 bool SipSession::addHeader(const char* name, const char* value)
 {
-	return (tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(m_pHandle,
 		TSIP_SSESSION_SET_HEADER(name, value),
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::haveOwnership()
 {
-	return (tsip_ssession_have_ownership(this->handle) == tsk_true);
+	return (tsip_ssession_have_ownership(m_pHandle) == tsk_true);
 }
 
 bool SipSession::removeHeader(const char* name)
 {
-	return (tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(m_pHandle,
 		TSIP_SSESSION_UNSET_HEADER(name),
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::addCaps(const char* name, const char* value)
 {
-	return (tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(m_pHandle,
 		TSIP_SSESSION_SET_CAPS(name, value),
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::addCaps(const char* name)
 {
-	return (tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(m_pHandle,
 		TSIP_SSESSION_SET_CAPS(name, tsk_null),
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::removeCaps(const char* name)
 {
-	return (tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(m_pHandle,
 		TSIP_SSESSION_UNSET_CAPS(name),
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::setExpires(unsigned expires)
 {
-	return (tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(m_pHandle,
 		TSIP_SSESSION_SET_EXPIRES(expires),
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
-bool SipSession::setFromUri(const char* fromUri)
+bool SipSession::setFromUri(const char* fromUriString)
 {
-	return (tsip_ssession_set(this->handle,
-		TSIP_SSESSION_SET_FROM(fromUri),
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_FROM_STR(fromUriString),
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
-bool SipSession::setToUri(const char* toUri)
+bool SipSession::setFromUri(const SipUri* fromUri)
 {
-	return (tsip_ssession_set(this->handle,
-		TSIP_SSESSION_SET_TO(toUri),
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_FROM_OBJ(fromUri->getWrappedUri()),
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
+bool SipSession::setToUri(const char* toUriString)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_TO_STR(toUriString),
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
+bool SipSession::setToUri(const SipUri* toUri)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_TO_OBJ(toUri->getWrappedUri()),
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::setSilentHangup(bool silent)
 {
-	return (tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(m_pHandle,
 		TSIP_SSESSION_SET_SILENT_HANGUP(silent ? tsk_true : tsk_false),
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::addSigCompCompartment(const char* compId)
 {
-	return (tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(m_pHandle,
 		TSIP_SSESSION_SET_SIGCOMP_COMPARTMENT(compId),
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool SipSession::removeSigCompCompartment()
 {
-	return (tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(m_pHandle,
 		TSIP_SSESSION_UNSET_SIGCOMP_COMPARTMENT(),
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 unsigned SipSession::getId()
 {
-	return (unsigned)tsip_ssession_get_id(this->handle);
+	return (unsigned)tsip_ssession_get_id(m_pHandle);
 }
 
 const SipStack* SipSession::getStack()const
 {
-	return this->stack;
+	return m_pStack;
 }
 
 
 /* ======================== InviteSession ========================*/
 
-InviteSession::InviteSession(SipStack* Stack)
-: SipSession(Stack), mediaMgr(tsk_null)
+InviteSession::InviteSession(SipStack* pStack)
+: SipSession(pStack), m_pMediaMgr(tsk_null)
 {
 }
 
-InviteSession::InviteSession(SipStack* Stack, tsip_ssession_handle_t* handle)
-: SipSession(Stack, handle), mediaMgr(tsk_null)
+InviteSession::InviteSession(SipStack* pStack, tsip_ssession_handle_t* pHandle)
+: SipSession(pStack, pHandle), m_pMediaMgr(tsk_null)
 {
 
 }
 
 InviteSession::~InviteSession()
 {
-	if(this->mediaMgr){
-		delete this->mediaMgr, this->mediaMgr = tsk_null;
+	if(m_pMediaMgr){
+		delete m_pMediaMgr, m_pMediaMgr = tsk_null;
 	}
 }
 
@@ -213,7 +227,7 @@ bool InviteSession::hangup(ActionConfig* config/*=tsk_null*/)
 	int ret;
 	twrap_async_action_t asyn_action = {0};
 	
-	handle = tsk_object_ref(this->handle);
+	handle = tsk_object_ref(m_pHandle);
 	asyn_action.config = config;
 	asyn_action.session = handle;
 	ret = tsk_thread_create(tid, __droid_hangup, &asyn_action);
@@ -225,7 +239,7 @@ bool InviteSession::hangup(ActionConfig* config/*=tsk_null*/)
 #else
 bool InviteSession::hangup(ActionConfig* config/*=tsk_null*/)
 {
-	return (tsip_action_BYE(this->handle,
+	return (tsip_action_BYE(m_pHandle,
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 #endif
@@ -250,7 +264,7 @@ bool InviteSession::reject(ActionConfig* config/*=tsk_null*/)
 	int ret;
 	twrap_async_action_t asyn_action = {0};
 	
-	handle = tsk_object_ref(this->handle);
+	handle = tsk_object_ref(m_pHandle);
 	asyn_action.config = config;
 	asyn_action.session = handle;
 	ret = tsk_thread_create(tid, __droid_reject, &asyn_action);
@@ -264,7 +278,7 @@ bool InviteSession::reject(ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 
-	return (tsip_action_REJECT(this->handle,
+	return (tsip_action_REJECT(m_pHandle,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
@@ -291,7 +305,7 @@ bool InviteSession::accept(ActionConfig* config/*=tsk_null*/)
 	twrap_async_action_t asyn_action = {0};
 	
 	
-	handle = tsk_object_ref(this->handle);
+	handle = tsk_object_ref(m_pHandle);
 	asyn_action.config = config;
 	asyn_action.session = handle;
 	ret = tsk_thread_create(tid, __droid_accept, &asyn_action);
@@ -305,7 +319,7 @@ bool InviteSession::accept(ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 
-	return (tsip_action_ACCEPT(this->handle,
+	return (tsip_action_ACCEPT(m_pHandle,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
@@ -313,17 +327,17 @@ bool InviteSession::accept(ActionConfig* config/*=tsk_null*/)
 
 const MediaSessionMgr* InviteSession::getMediaMgr()
 {
-	if(!this->mediaMgr && this->handle){
-		tmedia_session_mgr_t* mgr = tsip_session_get_mediamgr(this->handle);
+	if(!m_pMediaMgr && m_pHandle){
+		tmedia_session_mgr_t* mgr = tsip_session_get_mediamgr(m_pHandle);
 		if(mgr){
-			this->mediaMgr = new MediaSessionMgr(mgr);
+			m_pMediaMgr = new MediaSessionMgr(mgr);
 			tsk_object_unref(mgr);
 		}
 		else{
 			TSK_DEBUG_WARN("No media session associated to this session");
 		}
 	}
-	return this->mediaMgr;
+	return m_pMediaMgr;
 }
 
 
@@ -385,57 +399,99 @@ static bool __droid_call(tsip_ssession_handle_t * session_handle, tmedia_type_t 
 }
 #endif
 
-bool CallSession::callAudio(const char* remoteUri, ActionConfig* config/*=tsk_null*/)
+bool CallSession::callAudio(const SipUri* remoteUri, ActionConfig* config/*=tsk_null*/)
 {
-	tsip_ssession_set(this->handle,
-		TSIP_SSESSION_SET_TO(remoteUri),
+	if(!remoteUri){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return false;
+	}
+	tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_TO_OBJ(remoteUri->getWrappedUri()),
 		TSIP_SSESSION_SET_NULL());
 #if ANDROID
-	__droid_call(this->handle, tmedia_audio, config);
+	__droid_call(m_pHandle, tmedia_audio, config);
 	return true;
 #else
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-	return (tsip_action_INVITE(this->handle, tmedia_audio,
+	return (tsip_action_INVITE(m_pHandle, tmedia_audio,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 #endif
 }
 
-bool CallSession::callAudioVideo(const char* remoteUri, ActionConfig* config/*=tsk_null*/)
+bool CallSession::callAudio(const char* remoteUriString, ActionConfig* config/*=tsk_null*/)
 {
-	tsip_ssession_set(this->handle,
-		TSIP_SSESSION_SET_TO(remoteUri),
+	SipUri sipUri(remoteUriString);
+	if(sipUri.isValid()){
+		return callAudio(&sipUri, config);
+	}
+	TSK_DEBUG_ERROR("Failed to parse sip uri=%s", remoteUriString);
+	return false;
+}
+
+bool CallSession::callAudioVideo(const SipUri* remoteUri, ActionConfig* config/*=tsk_null*/)
+{
+	if(!remoteUri){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return false;
+	}
+	tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_TO_OBJ(remoteUri->getWrappedUri()),
 		TSIP_SSESSION_SET_NULL());
 #if ANDROID
-	__droid_call(this->handle, (tmedia_type_t)(tmedia_audio | tmedia_video), config);
+	__droid_call(m_pHandle, (tmedia_type_t)(tmedia_audio | tmedia_video), config);
 	return true;
 #else
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-	return (tsip_action_INVITE(this->handle, (tmedia_type_t)(tmedia_audio | tmedia_video),
+	return (tsip_action_INVITE(m_pHandle, (tmedia_type_t)(tmedia_audio | tmedia_video),
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 #endif
 }
 
-bool CallSession::callVideo(const char* remoteUri, ActionConfig* config/*=tsk_null*/)
+bool CallSession::callAudioVideo(const char* remoteUriString, ActionConfig* config/*=tsk_null*/)
 {
-	tsip_ssession_set(this->handle,
-		TSIP_SSESSION_SET_TO(remoteUri),
+	SipUri sipUri(remoteUriString);
+	if(sipUri.isValid()){
+		return callAudioVideo(&sipUri, config);
+	}
+	TSK_DEBUG_ERROR("Failed to parse sip uri=%s", remoteUriString);
+	return false;
+}
+
+bool CallSession::callVideo(const SipUri* remoteUri, ActionConfig* config/*=tsk_null*/)
+{
+	if(!remoteUri){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return false;
+	}
+	tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_TO_OBJ(remoteUri->getWrappedUri()),
 		TSIP_SSESSION_SET_NULL());
 #if ANDROID
-	__droid_call(this->handle, tmedia_video, config);
+	__droid_call(m_pHandle, tmedia_video, config);
 	return true;
 #else
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-	return (tsip_action_INVITE(this->handle, tmedia_video,
+	return (tsip_action_INVITE(m_pHandle, tmedia_video,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 #endif
+}
+
+bool CallSession::callVideo(const char* remoteUriString, ActionConfig* config/*=tsk_null*/)
+{
+	SipUri sipUri(remoteUriString);
+	if(sipUri.isValid()){
+		return callVideo(&sipUri, config);
+	}
+	TSK_DEBUG_ERROR("Failed to parse sip uri=%s", remoteUriString);
+	return false;
 }
 
 bool CallSession::setSessionTimer(unsigned timeout, const char* refresher)
 {
-	return (tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(m_pHandle,
 			TSIP_SSESSION_SET_MEDIA(
 				TSIP_MSESSION_SET_TIMERS(timeout, refresher),
 				TSIP_MSESSION_SET_NULL()
@@ -446,7 +502,7 @@ bool CallSession::setSessionTimer(unsigned timeout, const char* refresher)
 bool CallSession::set100rel(bool enabled)
 {
 	if(enabled){
-		return (tsip_ssession_set(this->handle,
+		return (tsip_ssession_set(m_pHandle,
 			TSIP_SSESSION_SET_MEDIA(
 				TSIP_MSESSION_SET_100rel(),
 				TSIP_MSESSION_SET_NULL()
@@ -454,7 +510,7 @@ bool CallSession::set100rel(bool enabled)
 			TSIP_SSESSION_SET_NULL()) == 0);
 	}
 	else{
-		return (tsip_ssession_set(this->handle,
+		return (tsip_ssession_set(m_pHandle,
 			TSIP_SSESSION_SET_MEDIA(
 				TSIP_MSESSION_UNSET_100rel(),
 				TSIP_MSESSION_SET_NULL()
@@ -465,7 +521,7 @@ bool CallSession::set100rel(bool enabled)
 
 bool CallSession::setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength)
 {
-	return (tsip_ssession_set(this->handle,
+	return (tsip_ssession_set(m_pHandle,
 			TSIP_SSESSION_SET_MEDIA(
 				TSIP_MSESSION_SET_QOS(type, strength),
 				TSIP_MSESSION_SET_NULL()
@@ -477,7 +533,7 @@ bool CallSession::hold(ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 
-	return (tsip_action_HOLD(this->handle, tmedia_all,
+	return (tsip_action_HOLD(m_pHandle, tmedia_all,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) ==0 );
 }
@@ -486,24 +542,24 @@ bool CallSession::resume(ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 
-	return (tsip_action_RESUME(this->handle, tmedia_all,
+	return (tsip_action_RESUME(m_pHandle, tmedia_all,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
 bool CallSession::sendDTMF(int number)
 {
-	return (tsip_action_DTMF(this->handle, number,
+	return (tsip_action_DTMF(m_pHandle, number,
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
 
 /* ======================== MsrpSession ========================*/
 
-MsrpSession::MsrpSession(SipStack* Stack, MsrpCallback* _callback)
-: InviteSession(Stack), callback(_callback)
+MsrpSession::MsrpSession(SipStack* pStack, MsrpCallback* pCallback)
+: InviteSession(pStack), m_pCallback(pCallback)
 {
-	tsip_ssession_set(this->handle,
+	tsip_ssession_set(m_pHandle,
 		TSIP_SSESSION_SET_MEDIA(
 			TSIP_MSESSION_SET_MSRP_CB(twrap_msrp_cb),
 			TSIP_MSESSION_SET_NULL()
@@ -511,10 +567,10 @@ MsrpSession::MsrpSession(SipStack* Stack, MsrpCallback* _callback)
 		TSIP_SSESSION_SET_NULL());
 }
 
-MsrpSession::MsrpSession(SipStack* Stack, tsip_ssession_handle_t* handle)
-: InviteSession(Stack, handle), callback(tsk_null)
+MsrpSession::MsrpSession(SipStack* pStack, tsip_ssession_handle_t* pHandle)
+: InviteSession(pStack, pHandle), m_pCallback(tsk_null)
 {
-	tsip_ssession_set(this->handle,
+	tsip_ssession_set(m_pHandle,
 		TSIP_SSESSION_SET_MEDIA(
 			TSIP_MSESSION_SET_MSRP_CB(twrap_msrp_cb),
 			TSIP_MSESSION_SET_NULL()
@@ -526,30 +582,44 @@ MsrpSession::~MsrpSession()
 {
 }
 
-bool MsrpSession::setCallback(MsrpCallback* _callback)
+bool MsrpSession::setCallback(MsrpCallback* pCallback)
 {
-	this->callback = _callback;
+	m_pCallback = pCallback;
 	return true;
 }
 
-bool MsrpSession::callMsrp(const char* remoteUri, ActionConfig* config/*=tsk_null*/)
+bool MsrpSession::callMsrp(const SipUri* remoteUri, ActionConfig* config/*=tsk_null*/)
 {
+	if(!remoteUri){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return false;
+	}
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 
-	tsip_ssession_set(this->handle,
-		TSIP_SSESSION_SET_TO(remoteUri),
+	tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_TO_OBJ(remoteUri->getWrappedUri()),
 		TSIP_SSESSION_SET_NULL());
 
-	return (tsip_action_INVITE(this->handle, tmedia_msrp,
+	return (tsip_action_INVITE(m_pHandle, tmedia_msrp,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
+}
+
+bool MsrpSession::callMsrp(const char* remoteUriString, ActionConfig* config/*=tsk_null*/)
+{
+	SipUri sipUri(remoteUriString);
+	if(sipUri.isValid()){
+		return callMsrp(&sipUri, config);
+	}
+	TSK_DEBUG_ERROR("Failed to parse sip uri=%s", remoteUriString);
+	return false;
 }
 
 bool MsrpSession::sendMessage(const void* payload, unsigned len, ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 
-	return (tsip_action_LARGE_MESSAGE(this->handle,
+	return (tsip_action_LARGE_MESSAGE(m_pHandle,
 		TSIP_ACTION_SET_PAYLOAD(payload, len),
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
@@ -561,13 +631,13 @@ bool MsrpSession::sendFile(ActionConfig* config/*=tsk_null*/)
 }
 
 /* ======================== MessagingSession ========================*/
-MessagingSession::MessagingSession(SipStack* Stack)
-: SipSession(Stack)
+MessagingSession::MessagingSession(SipStack* pStack)
+: SipSession(pStack)
 {
 }
 
-MessagingSession::MessagingSession(SipStack* Stack, tsip_ssession_handle_t* handle)
-: SipSession(Stack, handle)
+MessagingSession::MessagingSession(SipStack* pStack, tsip_ssession_handle_t* pHandle)
+: SipSession(pStack, pHandle)
 {
 }
 
@@ -580,13 +650,13 @@ bool MessagingSession::send(const void* payload, unsigned len, ActionConfig* con
 	int ret;
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 	if(payload && len){
-		ret = tsip_action_MESSAGE(this->handle,
+		ret = tsip_action_MESSAGE(m_pHandle,
 			TSIP_ACTION_SET_PAYLOAD(payload, len),
 			TSIP_ACTION_SET_CONFIG(action_cfg),
 			TSIP_ACTION_SET_NULL());
 	}
 	else{
-		ret = tsip_action_PUBLISH(this->handle,
+		ret = tsip_action_PUBLISH(m_pHandle,
 			TSIP_ACTION_SET_NULL());
 	}
 	return (ret == 0);
@@ -595,7 +665,7 @@ bool MessagingSession::send(const void* payload, unsigned len, ActionConfig* con
 bool MessagingSession::accept(ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-	return (tsip_action_ACCEPT(this->handle,
+	return (tsip_action_ACCEPT(m_pHandle,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
@@ -603,20 +673,20 @@ bool MessagingSession::accept(ActionConfig* config/*=tsk_null*/)
 bool MessagingSession::reject(ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-	return (tsip_action_REJECT(this->handle,
+	return (tsip_action_REJECT(m_pHandle,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
 
 /* ======================== OptionsSession ========================*/
-OptionsSession::OptionsSession(SipStack* Stack)
-: SipSession(Stack)
+OptionsSession::OptionsSession(SipStack* pStack)
+: SipSession(pStack)
 {
 }
 
-OptionsSession::OptionsSession(SipStack* Stack, tsip_ssession_handle_t* handle)
-: SipSession(Stack, handle)
+OptionsSession::OptionsSession(SipStack* pStack, tsip_ssession_handle_t* pHandle)
+: SipSession(pStack, pHandle)
 {
 }
 
@@ -627,7 +697,7 @@ OptionsSession::~OptionsSession()
 bool OptionsSession::send(ActionConfig* config/*=tsk_null*/)
 {	
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-	return (tsip_action_OPTIONS(this->handle,
+	return (tsip_action_OPTIONS(m_pHandle,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
@@ -635,7 +705,7 @@ bool OptionsSession::send(ActionConfig* config/*=tsk_null*/)
 bool OptionsSession::accept(ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-	return (tsip_action_ACCEPT(this->handle,
+	return (tsip_action_ACCEPT(m_pHandle,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
@@ -643,7 +713,7 @@ bool OptionsSession::accept(ActionConfig* config/*=tsk_null*/)
 bool OptionsSession::reject(ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-	return (tsip_action_REJECT(this->handle,
+	return (tsip_action_REJECT(m_pHandle,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
@@ -666,12 +736,12 @@ bool PublicationSession::publish(const void* payload, unsigned len, ActionConfig
 	int ret;
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 	if(payload && len){
-		ret = tsip_action_PUBLISH(this->handle,
+		ret = tsip_action_PUBLISH(m_pHandle,
 			TSIP_ACTION_SET_PAYLOAD(payload, len),
 			TSIP_ACTION_SET_NULL());
 	}
 	else{
-		ret = tsip_action_PUBLISH(this->handle,
+		ret = tsip_action_PUBLISH(m_pHandle,
 			TSIP_ACTION_SET_CONFIG(action_cfg),
 			TSIP_ACTION_SET_NULL());
 	}
@@ -681,7 +751,7 @@ bool PublicationSession::publish(const void* payload, unsigned len, ActionConfig
 bool PublicationSession::unPublish(ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-	return (tsip_action_UNPUBLISH(this->handle,
+	return (tsip_action_UNPUBLISH(m_pHandle,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
@@ -689,13 +759,13 @@ bool PublicationSession::unPublish(ActionConfig* config/*=tsk_null*/)
 
 
 /* ======================== RegistrationSession ========================*/
-RegistrationSession::RegistrationSession(SipStack* Stack)
-: SipSession(Stack)
+RegistrationSession::RegistrationSession(SipStack* pStack)
+: SipSession(pStack)
 {
 }
 
-RegistrationSession::RegistrationSession(SipStack* Stack, tsip_ssession_handle_t* handle)
-: SipSession(Stack, handle)
+RegistrationSession::RegistrationSession(SipStack* pStack, tsip_ssession_handle_t* pHandle)
+: SipSession(pStack, pHandle)
 {
 
 }
@@ -706,13 +776,13 @@ RegistrationSession::~RegistrationSession()
 
 bool RegistrationSession::register_()
 {
-	return (tsip_action_REGISTER(this->handle,
+	return (tsip_action_REGISTER(m_pHandle,
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
 bool RegistrationSession::unRegister()
 {
-	return (tsip_action_UNREGISTER(this->handle,
+	return (tsip_action_UNREGISTER(m_pHandle,
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
@@ -720,7 +790,7 @@ bool RegistrationSession::accept(ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 
-	return (tsip_action_ACCEPT(this->handle,
+	return (tsip_action_ACCEPT(m_pHandle,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
@@ -729,15 +799,15 @@ bool RegistrationSession::reject(ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 
-	return (tsip_action_REJECT(this->handle,
+	return (tsip_action_REJECT(m_pHandle,
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
 
 /* ======================== SubscriptionSession ========================*/
-SubscriptionSession::SubscriptionSession(SipStack* Stack)
-: SipSession(Stack)
+SubscriptionSession::SubscriptionSession(SipStack* pStack)
+: SipSession(pStack)
 {
 }
 
@@ -747,12 +817,12 @@ SubscriptionSession::~SubscriptionSession()
 
 bool SubscriptionSession::subscribe()
 {
-	return (tsip_action_SUBSCRIBE(this->handle,
+	return (tsip_action_SUBSCRIBE(m_pHandle,
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
 bool SubscriptionSession::unSubscribe()
 {
-	return (tsip_action_UNSUBSCRIBE(this->handle,
+	return (tsip_action_UNSUBSCRIBE(m_pHandle,
 		TSIP_ACTION_SET_NULL()) == 0);
 }
