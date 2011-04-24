@@ -26,6 +26,7 @@
 #include "tinymedia/tmedia_qos.h"
 #include "ActionConfig.h"
 
+class SipUri;
 class SipStack;
 class MsrpCallback;
 class MediaSessionMgr;
@@ -36,7 +37,7 @@ class SipSession
 public:
 	SipSession(SipStack* stack);
 #if !defined(SWIG)
-	SipSession(SipStack* stack, tsip_ssession_handle_t* handle);
+	SipSession(SipStack* stack, tsip_ssession_handle_t* pHandle);
 #endif
 	virtual ~SipSession();
 
@@ -48,8 +49,10 @@ public:
 	bool addCaps(const char* name);
 	bool removeCaps(const char* name);
 	bool setExpires(unsigned expires);
-	bool setFromUri(const char* fromUri);
-	bool setToUri(const char* toUri);
+	bool setFromUri(const char* fromUriString);
+	bool setFromUri(const SipUri* fromUri);
+	bool setToUri(const char* toUriString);
+	bool setToUri(const SipUri* toUri);
 	bool setSilentHangup(bool silent);
 	bool addSigCompCompartment(const char* compId);
 	bool removeSigCompCompartment();
@@ -60,11 +63,11 @@ public:
 #endif
 	
 private:
-	void init(SipStack* stack, tsip_ssession_handle_t* handle=tsk_null);
+	void init(SipStack* stack, tsip_ssession_handle_t* pHandle=tsk_null);
 
 protected:
-	tsip_ssession_handle_t* handle;
-	const SipStack* stack;
+	tsip_ssession_handle_t* m_pHandle;
+	const SipStack* m_pStack;
 };
 
 /* ======================== InviteSession ========================*/
@@ -73,7 +76,7 @@ class InviteSession : public SipSession
 public: /* ctor() and dtor() */
 	InviteSession(SipStack* Stack);
 #if !defined(SWIG)
-	InviteSession(SipStack* Stack, tsip_ssession_handle_t* handle);
+	InviteSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
 #endif
 	virtual ~InviteSession();
 
@@ -84,7 +87,7 @@ public: /* Public functions */
 	const MediaSessionMgr* getMediaMgr();
 
 private:
-	MediaSessionMgr* mediaMgr;
+	MediaSessionMgr* m_pMediaMgr;
 };
 
 
@@ -92,16 +95,19 @@ private:
 class CallSession : public InviteSession
 {
 public: /* ctor() and dtor() */
-	CallSession(SipStack* Stack);
+	CallSession(SipStack* pStack);
 #if !defined(SWIG)
-	CallSession(SipStack* Stack, tsip_ssession_handle_t* handle);
+	CallSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
 #endif
 	virtual ~CallSession();
 
 public: /* Public functions */
-	bool callAudio(const char* remoteUri, ActionConfig* config=tsk_null);
-	bool callAudioVideo(const char* remoteUri, ActionConfig* config=tsk_null);
-	bool callVideo(const char* remoteUri, ActionConfig* config=tsk_null);
+	bool callAudio(const char* remoteUriString, ActionConfig* config=tsk_null);
+	bool callAudio(const SipUri* remoteUri, ActionConfig* config=tsk_null);
+	bool callAudioVideo(const char* remoteUriString, ActionConfig* config=tsk_null);
+	bool callAudioVideo(const SipUri* remoteUri, ActionConfig* config=tsk_null);
+	bool callVideo(const char* remoteUriString, ActionConfig* config=tsk_null);
+	bool callVideo(const SipUri* remoteUri, ActionConfig* config=tsk_null);
 	bool setSessionTimer(unsigned timeout, const char* refresher);
 	bool set100rel(bool enabled);
 	bool setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength);
@@ -114,27 +120,28 @@ public: /* Public functions */
 class MsrpSession : public InviteSession
 {
 public: /* ctor() and dtor() */
-	MsrpSession(SipStack* Stack, MsrpCallback* callback);
+	MsrpSession(SipStack* pStack, MsrpCallback* pCallback);
 #if !defined(SWIG)
-	MsrpSession(SipStack* Stack, tsip_ssession_handle_t* handle);
+	MsrpSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
 #endif
 	virtual ~MsrpSession();
 
 public: /* Public functions */
-	bool setCallback(MsrpCallback* callback);
-	bool callMsrp(const char* remoteUri, ActionConfig* config=tsk_null);
+	bool setCallback(MsrpCallback* pCallback);
+	bool callMsrp(const char* remoteUriString, ActionConfig* config=tsk_null);
+	bool callMsrp(const SipUri* remoteUri, ActionConfig* config=tsk_null);
 	bool sendMessage(const void* payload, unsigned len, ActionConfig* config=tsk_null);
 	bool sendFile(ActionConfig* config=tsk_null);
 
 	public: /* Public helper function */
 #if !defined(SWIG)
 		inline MsrpCallback* getCallback()const{
-			return this->callback;
+			return m_pCallback;
 		}
 #endif
 
 private:
-	MsrpCallback* callback;
+	MsrpCallback* m_pCallback;
 };
 
 
@@ -143,9 +150,9 @@ private:
 class MessagingSession : public SipSession
 {
 public: /* ctor() and dtor() */
-	MessagingSession(SipStack* Stack);
+	MessagingSession(SipStack* pStack);
 #if !defined(SWIG)
-	MessagingSession(SipStack* Stack, tsip_ssession_handle_t* handle);
+	MessagingSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
 #endif
 	virtual ~MessagingSession();
 
@@ -159,9 +166,9 @@ public: /* Public functions */
 class OptionsSession : public SipSession
 {
 public: /* ctor() and dtor() */
-	OptionsSession(SipStack* Stack);
+	OptionsSession(SipStack* pStack);
 #if !defined(SWIG)
-	OptionsSession(SipStack* Stack, tsip_ssession_handle_t* handle);
+	OptionsSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
 #endif
 	virtual ~OptionsSession();
 
@@ -177,7 +184,7 @@ public: /* Public functions */
 class PublicationSession : public SipSession
 {
 public: /* ctor() and dtor() */
-	PublicationSession(SipStack* Stack);
+	PublicationSession(SipStack* pStack);
 	virtual ~PublicationSession();
 
 public: /* Public functions */
@@ -190,9 +197,9 @@ public: /* Public functions */
 class RegistrationSession : public SipSession
 {
 public: /* ctor() and dtor() */
-	RegistrationSession(SipStack* Stack);
+	RegistrationSession(SipStack* pStack);
 #if !defined(SWIG)
-	RegistrationSession(SipStack* Stack, tsip_ssession_handle_t* handle);
+	RegistrationSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
 #endif
 	virtual ~RegistrationSession();
 
@@ -208,7 +215,7 @@ public: /* Public functions */
 class SubscriptionSession : public SipSession
 {
 public: /* ctor() and dtor() */
-	SubscriptionSession(SipStack* Stack);
+	SubscriptionSession(SipStack* pStack);
 	virtual ~SubscriptionSession();
 
 public: /* Public functions */

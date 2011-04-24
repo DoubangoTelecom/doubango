@@ -4,7 +4,7 @@ swig -c++ -csharp -namespace org.doubango.tinyWRAP -outdir csharp -o csharp/tiny
 
 ##### Objective-C
 #echo "--->Objective-C...<---"
-swig -c++ -objc -outdir objc -o -objc/tinyWRAP_wrap.cxx -objc/-objc.i
+#swig -c++ -objc -outdir objc -o -objc/tinyWRAP_wrap.cxx -objc/-objc.i
 
 
 ##### Java

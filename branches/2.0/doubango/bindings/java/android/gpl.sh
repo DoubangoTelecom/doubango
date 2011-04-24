@@ -2,7 +2,7 @@
 # Build tinyWRAP for Google Android Systems
 
 # wiPhone parameters
-export GPL_PARAMS="FFMPEG=yes H264=yes THEORA=yes OPENCORE_AMR=no SPEEX_DSP=yes SPEEX_JB=yes SPEEX_RESAMPLER=yes SPEEX_DENOISE=no SPEEX=no ILBC=no LIBGSM=yes G729=no"
+export GPL_PARAMS="FFMPEG=yes H264=yes THEORA=yes OPENCORE_AMR=no SPEEX_DSP=yes SPEEX_JB=yes SPEEX_RESAMPLER=yes SPEEX_DENOISE=no SPEEX=yes ILBC=yes LIBGSM=yes G729=yes"
 export _BT=static
 
 for IS_NEON in no yes

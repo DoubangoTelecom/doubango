@@ -62,8 +62,8 @@ tsip_ssession_handle_t* tsip_ssession_create_2(const tsip_stack_t* stack, const 
 		if((ss = tsip_ssession_create((tsip_stack_handle_t*)stack, TSIP_SSESSION_SET_NULL()))){
 			tsip_ssession_set(ss, 
 				/* default values should be in conformance with the swig wrapper */
-				TSIP_SSESSION_SET_FROM(from),
-				TSIP_SSESSION_SET_TO(to),
+				TSIP_SSESSION_SET_FROM_STR(from),
+				TSIP_SSESSION_SET_TO_STR(to),
 				TSIP_SSESSION_SET_NULL());
 		}
 
@@ -84,7 +84,7 @@ tsip_ssession_handle_t* tsip_ssession_create_2(const tsip_stack_t* stack, const 
 }
 
 int __tsip_ssession_set_To(tsip_ssession_t *self, const char* value)
-{
+{	
 	tsip_uri_t* uri;
 	if(value && (uri = tsip_uri_parse(value, tsk_strlen(value)))){
 		TSK_OBJECT_SAFE_FREE(self->to);
@@ -175,17 +175,35 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 					self->userdata = va_arg(*app, const void *);
 					break;
 				}
-			case sstype_to:
-				{	/* (const char*)TO_URI_STR */
+			case sstype_to_str:
+				{	/* (const char*)URI_STR */
 					if((ret = __tsip_ssession_set_To(self, va_arg(*app, const char *)))){
 						return ret;
 					}
 					break;
 				}
-			case sstype_from:
-				{	/* (const char*)FROM_URI_STR */
+			case sstype_from_str:
+				{	/* (const char*)URI_STR*/
 					if((ret = __tsip_ssession_set_From(self, va_arg(*app, const char *)))){
 						return ret;
+					}
+					break;
+				}
+			case sstype_to_obj:
+				{	/* (const tsip_uri_t*)URI_OBJ */
+					const tsip_uri_t* URI_OBJ = va_arg(*app, const tsip_uri_t *);
+					if(URI_OBJ){
+						TSK_OBJECT_SAFE_FREE(self->to);
+						self->to = tsk_object_ref((void*)URI_OBJ);
+					}
+					break;
+				}
+			case sstype_from_obj:
+				{	/* (const char*)URI_OBJ*/
+					const tsip_uri_t* URI_OBJ = va_arg(*app, const tsip_uri_t *);
+					if(URI_OBJ){
+						TSK_OBJECT_SAFE_FREE(self->from);
+						self->from = tsk_object_ref((void*)URI_OBJ);
 					}
 					break;
 				}

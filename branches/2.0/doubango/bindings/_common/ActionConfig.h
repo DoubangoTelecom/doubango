@@ -38,12 +38,12 @@ public:
 	ActionConfig* setMediaInt(twrap_media_type_t type, const char* key, int value);
 
 private:
-	tsip_action_handle_t* handle;
+	tsip_action_handle_t* m_pHandle;
 
 #if !defined(SWIG)
 public:
-	const tsip_action_handle_t* getHandle()const{
-		return this->handle;
+	const inline tsip_action_handle_t* getHandle()const{
+		return m_pHandle;
 	}
 #endif
 };

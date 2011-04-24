@@ -42,18 +42,18 @@ tmedia_type_t _get_media_type(twrap_media_type_t type){
 
 ActionConfig::ActionConfig()
 {
-	this->handle = tsip_action_create(tsip_atype_config,
+	m_pHandle = tsip_action_create(tsip_atype_config,
 			TSIP_ACTION_SET_NULL());
 }
 
 ActionConfig::~ActionConfig()
 {
-	TSK_OBJECT_SAFE_FREE(this->handle);
+	TSK_OBJECT_SAFE_FREE(m_pHandle);
 }
 
 bool ActionConfig::addHeader(const char* name, const char* value)
 {
-	return (tsip_action_set(this->handle, 
+	return (tsip_action_set(m_pHandle, 
 		TSIP_ACTION_SET_HEADER(name, value),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
@@ -61,7 +61,7 @@ bool ActionConfig::addHeader(const char* name, const char* value)
 ActionConfig* ActionConfig::setResponseLine(short code, const char* phrase)
 {
 	int32_t _code = code;
-	tsip_action_set(this->handle, 
+	tsip_action_set(m_pHandle, 
 		TSIP_ACTION_SET_RESP_LINE(_code, phrase),
 		TSIP_ACTION_SET_NULL());
 	return this;
@@ -70,7 +70,7 @@ ActionConfig* ActionConfig::setResponseLine(short code, const char* phrase)
 ActionConfig* ActionConfig::setMediaString(twrap_media_type_t type, const char* key, const char* value)
 {
 	tmedia_type_t media_type = _get_media_type(type);
-	tsip_action_set(this->handle,
+	tsip_action_set(m_pHandle,
 			TSIP_ACTION_SET_MEDIA(
 				TMEDIA_SESSION_SET_STR(media_type, key, value),
 				TMEDIA_SESSION_SET_NULL()),
@@ -82,7 +82,7 @@ ActionConfig* ActionConfig::setMediaString(twrap_media_type_t type, const char* 
 ActionConfig* ActionConfig::setMediaInt(twrap_media_type_t type, const char* key, int value)
 {
 	tmedia_type_t media_type = _get_media_type(type);
-	tsip_action_set(this->handle,
+	tsip_action_set(m_pHandle,
 			TSIP_ACTION_SET_MEDIA(
 				TMEDIA_SESSION_SET_INT32(media_type, key, value),
 				TMEDIA_SESSION_SET_NULL()),
