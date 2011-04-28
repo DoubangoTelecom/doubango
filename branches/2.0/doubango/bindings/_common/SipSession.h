@@ -56,7 +56,7 @@ public:
 	bool setSilentHangup(bool silent);
 	bool addSigCompCompartment(const char* compId);
 	bool removeSigCompCompartment();
-	unsigned getId();
+	unsigned getId()const;
 
 #if !defined(SWIG)
 	const SipStack* getStack() const;

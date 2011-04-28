@@ -176,7 +176,7 @@ bool SipSession::removeSigCompCompartment()
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
-unsigned SipSession::getId()
+unsigned SipSession::getId()const
 {
 	return (unsigned)tsip_ssession_get_id(m_pHandle);
 }
