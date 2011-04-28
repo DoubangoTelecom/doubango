@@ -184,7 +184,7 @@ int tsip_challenge_get_akares(tsip_challenge_t *self, char const *password, char
 		memcpy((res_ik_ck + AKA_RES_SIZE), IK, AKA_IK_SIZE);
 		memcpy((res_ik_ck + AKA_RES_SIZE + AKA_IK_SIZE), CK, AKA_CK_SIZE);
 
-		if((ret = hmac_md5digest_compute("http-digest-akav2-password", 26, res_ik_ck, sizeof(res_ik_ck), md5_digest))){/* PRF(RES||IK||CK, ...) */
+		if((ret = hmac_md5digest_compute((const uint8_t*)"http-digest-akav2-password", 26, (const char*)res_ik_ck, sizeof(res_ik_ck), md5_digest))){/* PRF(RES||IK||CK, ...) */
 			TSK_DEBUG_ERROR("hmac_md5digest_compute() failed. AKAv2 response will be invalid.");
 
 			ret = -3;
