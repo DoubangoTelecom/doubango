@@ -1,4 +1,3 @@
-
 /*
 * Copyright (C) 2011 Mamadou Diop.
 *
@@ -31,7 +30,7 @@
 
 #include "tinydav_config.h"
 
-#include "tinymedia/tmedia_JitterBuffer.h"
+#include "tinymedia/tmedia_jitterbuffer.h"
 
 #include "tinydav/audio/tdav_jitterbuffer.h"
 
