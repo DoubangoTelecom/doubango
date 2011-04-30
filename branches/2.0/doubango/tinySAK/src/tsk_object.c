@@ -198,6 +198,11 @@ tsk_object_t* tsk_object_unref(tsk_object_t *self)
 	return self;
 }
 
+tsk_size_t tsk_object_get_refcount(tsk_object_t *self)
+{
+	return self ? TSK_OBJECT_HEADER(self)->refCount : 0;
+}
+
 /**@ingroup tsk_object_group
 * Delete an object. This function will delete the object even if it's reference counter is greater than 1.
 * This mean that this function is not safe. You should use @ref TSK_OBJECT_SAFE_FREE to safely delete an object.

@@ -165,6 +165,7 @@ TINYSAK_API tsk_size_t tsk_object_sizeof(const tsk_object_t *);
 TINYSAK_API int tsk_object_cmp(const void *self, const tsk_object_t *object);
 TINYSAK_API tsk_object_t* tsk_object_ref(tsk_object_t *self);
 TINYSAK_API tsk_object_t* tsk_object_unref(tsk_object_t *self);
+TINYSAK_API tsk_size_t tsk_object_get_refcount(tsk_object_t *self);
 TINYSAK_API void tsk_object_delete(tsk_object_t *self);
 
 TSK_END_DECLS
