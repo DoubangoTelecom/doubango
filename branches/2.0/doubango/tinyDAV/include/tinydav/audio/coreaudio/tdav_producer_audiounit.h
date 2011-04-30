@@ -1,0 +1,54 @@
+/*
+ * Copyright (C) 2010-2011 Mamadou Diop.
+ *
+ * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+ *	
+ * This file is part of Open Source Doubango Framework.
+ *
+ * DOUBANGO is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *	
+ * DOUBANGO is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *	
+ * You should have received a copy of the GNU General Public License
+ * along with DOUBANGO.
+ *
+ */
+#ifndef TINYDAV_PRODUCER_COREAUDIO_AUDIO_UNIT_H
+#define TINYDAV_PRODUCER_COREAUDIO_AUDIO_UNIT_H
+
+#include "tinydav_config.h"
+
+#if HAVE_COREAUDIO_AUDIO_UNIT
+
+#include <AudioToolbox/AudioToolbox.h>
+#include "tinydav/audio/coreaudio/tdav_audiounit.h"
+#include "tinydav/audio/tdav_producer_audio.h"
+
+TDAV_BEGIN_DECLS
+
+typedef struct tdav_producer_audiounit_s
+{
+	TDAV_DECLARE_PRODUCER_AUDIO;
+	
+	tdav_audiounit_handle_t* audioUnitHandle;
+	tsk_bool_t started;
+	tsk_bool_t paused;
+}
+tdav_producer_audiounit_t;
+
+TINYDAV_GEXTERN const tmedia_producer_plugin_def_t *tdav_producer_audiounit_plugin_def_t;
+
+TDAV_END_DECLS
+
+#endif /* HAVE_COREAUDIO_AUDIO_UNIT */
+
+#endif /* TINYDAV_PRODUCER_COREAUDIO_AUDIO_UNIT_H */
+
+
+

@@ -156,7 +156,7 @@ tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t 
 		}
 	}
 
-	return 0;
+	return tsk_null;
 }
 
 /**@ingroup tsk_list_group

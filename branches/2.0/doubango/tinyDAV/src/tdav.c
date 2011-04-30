@@ -56,7 +56,8 @@
 // Consumers
 #include "tinydav/audio/waveapi/tdav_consumer_waveapi.h"
 #include "tinydav/audio/directsound/tdav_consumer_dsound.h"
-#include "tinydav/audio/coreaudio/tdav_consumer_coreaudio.h"
+#include "tinydav/audio/coreaudio/tdav_consumer_audioqueue.h"
+#include "tinydav/audio/coreaudio/tdav_consumer_audiounit.h"
 #if HAVE_TINYDSHOW // DirectShow
 #	include "tinydshow/plugin/DSConsumer.h"
 #endif
@@ -64,7 +65,8 @@
 // Producers
 #include "tinydav/audio/waveapi/tdav_producer_waveapi.h"
 #include "tinydav/audio/directsound/tdav_producer_dsound.h"
-#include "tinydav/audio/coreaudio/tdav_producer_coreaudio.h"
+#include "tinydav/audio/coreaudio/tdav_producer_audioqueue.h"
+#include "tinydav/audio/coreaudio/tdav_producer_audiounit.h"
 #if HAVE_TINYDSHOW // DirectShow
 #	include "tinydshow/plugin/DSProducer.h"
 #endif
@@ -174,8 +176,10 @@ int tdav_init()
 	tmedia_consumer_plugin_register(tdshow_consumer_plugin_def_t);
 #endif
 
-#if HAVE_COREAUDIO
-	tmedia_consumer_plugin_register(tdav_consumer_coreaudio_plugin_def_t);
+#if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit
+	tmedia_consumer_plugin_register(tdav_consumer_audiounit_plugin_def_t);
+#elif HAVE_COREAUDIO_AUDIO_QUEUE // CoreAudio based on AudioQueue
+	tmedia_consumer_plugin_register(tdav_consumer_audioqueue_plugin_def_t);
 #endif
 
 #if HAVE_OSS_H
@@ -192,8 +196,10 @@ int tdav_init()
 	tmedia_producer_plugin_register(tdshow_producer_plugin_def_t);
 #endif
 	
-#if HAVE_COREAUDIO
-	tmedia_producer_plugin_register(tdav_producer_coreaudio_plugin_def_t);
+#if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit
+	tmedia_producer_plugin_register(tdav_producer_audiounit_plugin_def_t);
+#elif HAVE_COREAUDIO_AUDIO_QUEUE // CoreAudio based on AudioQueue
+	tmedia_producer_plugin_register(tdav_producer_audioqueue_plugin_def_t);
 #endif
 
 	/* === Register Audio Denoise (AGC, VAD, Noise Suppression and AEC) === */
@@ -421,8 +427,10 @@ int tdav_deinit()
 #if HAVE_TINYDSHOW // DirectShow
 	tmedia_consumer_plugin_unregister(tdshow_consumer_plugin_def_t);
 #endif
-#if HAVE_COREAUDIO // CoreAudio
-	tmedia_consumer_plugin_unregister(tdav_consumer_coreaudio_plugin_def_t);
+#if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit
+	tmedia_consumer_plugin_unregister(tdav_consumer_audiounit_plugin_def_t);
+#elif HAVE_COREAUDIO_AUDIO_QUEUE // CoreAudio based on AudioQueue
+	tmedia_consumer_plugin_unregister(tdav_consumer_audioqueue_plugin_def_t);
 #endif
 
 	/* === UnRegister producers === */
@@ -434,8 +442,11 @@ int tdav_deinit()
 #if HAVE_TINYDSHOW // DirectShow
 	tmedia_producer_plugin_unregister(tdshow_producer_plugin_def_t);
 #endif
-#if HAVE_COREAUDIO // CoreAudio
-	tmedia_producer_plugin_unregister(tdav_producer_coreaudio_plugin_def_t);
+
+#if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit
+	tmedia_producer_plugin_unregister(tdav_producer_audiounit_plugin_def_t);
+#elif HAVE_COREAUDIO_AUDIO_QUEUE // CoreAudio based on AudioQueue
+	tmedia_producer_plugin_unregister(tdav_producer_audioqueue_plugin_def_t);
 #endif
 
 #if HAVE_OSS_H
