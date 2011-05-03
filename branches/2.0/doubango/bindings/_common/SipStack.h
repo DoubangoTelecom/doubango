@@ -33,12 +33,12 @@ class DDebugCallback;
 class SipStack: public SafeObject
 {
 public: /* ctor() and dtor() */
-	SipStack(SipCallback* callback, const char* realm_uri, const char* impi_uri, const char* impu_uri);
+	SipStack(SipCallback* pCallback, const char* realm_uri, const char* impi_uri, const char* impu_uri);
     ~SipStack();
 
 public: /* API functions */
 	bool start();
-	bool setDebugCallback(DDebugCallback* callback);
+	bool setDebugCallback(DDebugCallback* pCallback);
 	bool setRealm(const char* realm_uri);
 	bool setIMPI(const char* impi);
 	bool setIMPU(const char* impu_uri);
@@ -88,20 +88,20 @@ public: /* API functions */
 public: /* Public helper function */
 #if !defined(SWIG)
 	inline tsip_stack_handle_t* getHandle()const{
-		return this->handle;
+		return m_pHandle;
 	}
 	inline SipCallback* getCallback()const{
-		return this->callback;
+		return m_pCallback;
 	}
 	inline DDebugCallback* getDebugCallback() const{
-		return this->debugCallback;
+		return m_pDebugCallback;
 	}
 #endif
 
 private:
-	SipCallback* callback;
-	DDebugCallback* debugCallback;
-	tsip_stack_handle_t *handle;
+	SipCallback* m_pCallback;
+	DDebugCallback* m_pDebugCallback;
+	tsip_stack_handle_t* m_pHandle;
 
 	static unsigned count;
 };

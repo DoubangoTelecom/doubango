@@ -161,7 +161,9 @@ tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, 
 	
 	if(!TMEDIA_JITTER_BUFFER(self->jitterbuffer)->opened){
 		int ret;
-		if((ret = tmedia_jitterbuffer_open(TMEDIA_JITTER_BUFFER(self->jitterbuffer), TMEDIA_CONSUMER(self)->audio.ptime, TMEDIA_CONSUMER(self)->audio.in.rate))){
+		uint32_t frame_duration = TMEDIA_CONSUMER(self)->audio.ptime;
+		uint32_t rate = TMEDIA_CONSUMER(self)->audio.in.rate;
+		if((ret = tmedia_jitterbuffer_open(TMEDIA_JITTER_BUFFER(self->jitterbuffer), frame_duration, rate))){
 			TSK_DEBUG_ERROR("Failed to open jitterbuffer (%d)", ret);
 			tsk_safeobj_unlock(self);
 			return 0;

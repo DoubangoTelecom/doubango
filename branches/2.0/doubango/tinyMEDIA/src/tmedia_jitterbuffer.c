@@ -40,7 +40,7 @@ int tmedia_jitterbuffer_init(tmedia_jitterbuffer_t* self)
 	return 0;
 }
 
-int tmedia_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t framesize, uint32_t rate)
+int tmedia_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate)
 {
 	int ret;
 
@@ -53,7 +53,7 @@ int tmedia_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t framesize, ui
 		return 0;
 	}
 	
-	if((ret = self->plugin->open(self, framesize, rate))){
+	if((ret = self->plugin->open(self, frame_duration, rate))){
 		TSK_DEBUG_ERROR("Failed to open [%s] jitterbufferr", self->plugin->desc);
 		return ret;
 	}

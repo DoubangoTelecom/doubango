@@ -40,26 +40,21 @@
 #include "tsk_debug.h"
 
 static void __handle_output_buffer(void *userdata, AudioQueueRef queue, AudioQueueBufferRef buffer) {
-    OSStatus ret;
-	void *data;
-	tsk_size_t out_size = 0;
     tdav_consumer_audioqueue_t* consumer = (tdav_consumer_audioqueue_t*)userdata;
 	
     if (!consumer->started) {
         return;
     }
     
-	if((data = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(consumer), &out_size))){
-        // If we can get audio to play, then copy in the buffer
-		memcpy(buffer->mAudioData, data, TSK_MIN(consumer->buffer_size, out_size));
-		TSK_FREE(data);
-	} else{
-        // Put silence if there is no audio to play
-        memset(buffer->mAudioData, 0, consumer->buffer_size);
+	if(!tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(consumer), buffer->mAudioData, consumer->buffer_size)){
+		// Put silence
+		memset(buffer->mAudioData, 0, consumer->buffer_size);
 	}
     
     // Re-enqueue the buffer
-    ret = AudioQueueEnqueueBuffer(consumer->queue, buffer, 0, NULL);
+    AudioQueueEnqueueBuffer(consumer->queue, buffer, 0, NULL);
+	// alert the jitter buffer
+	tdav_consumer_audio_tick(TDAV_CONSUMER_AUDIO(consumer));
 }
 
 /* ============ Media Consumer Interface ================= */
@@ -87,17 +82,17 @@ int tdav_consumer_audioqueue_prepare(tmedia_consumer_t* self, const tmedia_codec
 	
     // Create the audio stream description
     AudioStreamBasicDescription *description = &(consumer->description);
-    description->mSampleRate = TDAV_CONSUMER_AUDIO(consumer)->output_rate ? TDAV_CONSUMER_AUDIO(consumer)->output_rate : TDAV_CONSUMER_AUDIO(consumer)->codec_rate;
+    description->mSampleRate = TMEDIA_CONSUMER(consumer)->audio.out.rate ? TMEDIA_CONSUMER(consumer)->audio.out.rate : TMEDIA_CONSUMER(consumer)->audio.in.rate;
     description->mFormatID = kAudioFormatLinearPCM;
     description->mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
-    description->mChannelsPerFrame = TDAV_CONSUMER_AUDIO(consumer)->channels;
+    description->mChannelsPerFrame = TMEDIA_CONSUMER(consumer)->audio.in.channels;
     description->mFramesPerPacket = 1;
-    description->mBitsPerChannel = TDAV_CONSUMER_AUDIO(consumer)->bits_per_sample;
+    description->mBitsPerChannel = TMEDIA_CONSUMER(consumer)->audio.bits_per_sample;
     description->mBytesPerPacket = description->mBitsPerChannel / 8 * description->mChannelsPerFrame;
     description->mBytesPerFrame = description->mBytesPerPacket;
     description->mReserved = 0;
     
-    int packetperbuffer = 1000 / TDAV_CONSUMER_AUDIO(consumer)->ptime;
+    int packetperbuffer = 1000 / TMEDIA_CONSUMER(consumer)->audio.ptime;
     consumer->buffer_size = description->mSampleRate * description->mBytesPerFrame / packetperbuffer;
     
     // Create the playback audio queue
@@ -155,7 +150,7 @@ int tdav_consumer_audioqueue_consume(tmedia_consumer_t* self, const void* buffer
 {
 	tdav_consumer_audioqueue_t* consumer = (tdav_consumer_audioqueue_t*)self;
 	
-	if(!consumer || !buffer || !*buffer || !size){
+	if(!consumer || !buffer || !size){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}

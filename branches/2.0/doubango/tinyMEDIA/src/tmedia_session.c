@@ -79,6 +79,11 @@ int __pred_find_session_by_type(const tsk_list_item_t *item, const void *type)
 	return -1;
 }
 
+uint64_t tmedia_session_get_unique_id(){
+	static uint64_t __UniqueId = 1; // MUST not be equal to zero
+	return __UniqueId++;
+}
+
 /**@ingroup tmedia_session_group
 * Initializes a newly created media session.
 * @param self the media session to initialize.
@@ -88,7 +93,6 @@ int __pred_find_session_by_type(const tsk_list_item_t *item, const void *type)
 int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type)
 {
 	int ret = 0;
-	static uint64_t __UniqueId = 1;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -97,7 +101,9 @@ int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type)
 	
 	if(!self->initialized){
 		/* set values */
-		self->id = ++__UniqueId;
+		if(!self->id){
+			self->id = tmedia_session_get_unique_id();
+		}
 		self->type = type;
 		self->initialized = tsk_true;
 		self->bl = tmedia_bl_low;

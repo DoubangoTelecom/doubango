@@ -25,7 +25,15 @@
 
 #if HAVE_COREAUDIO_AUDIO_UNIT
 
+// AudioUnit already contains denoiser
+#if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_DENOISE) || HAVE_SPEEX_DENOISE)
+#	error "AudioUnit already contain denoiser => Disable it"
+#endif
+
+#include "tsk_memory.h"
 #include "tsk_debug.h"
+
+#define kRingPacketCount	+3
 
 static OSStatus __handle_input_buffer(void *inRefCon, 
                                   AudioUnitRenderActionFlags *ioActionFlags, 
@@ -33,7 +41,41 @@ static OSStatus __handle_input_buffer(void *inRefCon,
                                   UInt32 inBusNumber, 
                                   UInt32 inNumberFrames, 
                                   AudioBufferList *ioData) {
-    return noErr;
+	OSStatus status = noErr;
+	tdav_producer_audiounit_t* producer = (tdav_producer_audiounit_t*)inRefCon;
+	
+	// holder
+	AudioBuffer buffer;
+	buffer.mData =  tsk_null;
+	buffer.mDataByteSize = 0;
+	
+	// list of holders
+	AudioBufferList buffers;
+	buffers.mNumberBuffers = 1;
+	buffers.mBuffers[0] = buffer;
+	
+	// render to get frames from the system
+	status = AudioUnitRender(tdav_audiounit_handle_get_instance(producer->audioUnitHandle), 
+							 ioActionFlags, 
+							 inTimeStamp, 
+							 inBusNumber, 
+							 inNumberFrames, 
+							 &buffers);
+	if(!status){
+		// Alert the session that there is new data to send
+		if(TMEDIA_PRODUCER(producer)->enc_cb.callback) {
+			speex_buffer_write(producer->ring.buffer, buffers.mBuffers[0].mData, buffers.mBuffers[0].mDataByteSize);
+			tsk_ssize_t avail = speex_buffer_get_available(producer->ring.buffer);
+			while (avail >= producer->ring.chunck.size) {
+				tsk_size_t read = speex_buffer_read(producer->ring.buffer, producer->ring.chunck.buffer, producer->ring.chunck.size);
+				TMEDIA_PRODUCER(producer)->enc_cb.callback(TMEDIA_PRODUCER(producer)->enc_cb.callback_data, 
+														   producer->ring.chunck.buffer, producer->ring.chunck.size);
+				avail -= read;
+			}
+		}
+	}
+	
+    return status;
 }
 
 /* ============ Media Producer Interface ================= */
@@ -42,11 +84,12 @@ static OSStatus __handle_input_buffer(void *inRefCon,
 static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
 {
 	static UInt32 flagOne = 1;
-	static UInt32 flagZero = 0;
+	// static UInt32 flagZero = 0;
 #define kInputBus  1
 	
 	tdav_producer_audiounit_t* producer = (tdav_producer_audiounit_t*)self;
 	OSStatus status;
+	AudioStreamBasicDescription audioFormat;
 	
 	if(!producer || !codec || !codec->plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -56,7 +99,7 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 		TSK_DEBUG_ERROR("Already propared");
 		return -2;
 	}
-	if(!(producer->audioUnitHandle = tdav_audiounit_handle_create(TMEDIA_PRODUCER(producer)->session_id))){
+	if(!(producer->audioUnitHandle = tdav_audiounit_handle_create(TMEDIA_PRODUCER(producer)->session_id, codec->plugin->audio.ptime))){
 		TSK_DEBUG_ERROR("Failed to get audio unit instance for session with id=%lld", TMEDIA_PRODUCER(producer)->session_id);
 		return -3;
 	}
@@ -79,7 +122,6 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 		/* codec should have ptime */
 		
 		// set format
-		AudioStreamBasicDescription audioFormat;
 		audioFormat.mSampleRate = TMEDIA_PRODUCER(producer)->audio.rate;
 		audioFormat.mFormatID = kAudioFormatLinearPCM;
 		audioFormat.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
@@ -116,17 +158,41 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 			}
 			else {
 				// disbale buffer allocation as we will provide ours
-				status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(producer->audioUnitHandle), 
-											  kAudioUnitProperty_ShouldAllocateBuffer,
-											  kAudioUnitScope_Output, 
-											  kInputBus,
-											  &flagZero, 
-											  sizeof(flagZero));
+				//status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(producer->audioUnitHandle), 
+				//							  kAudioUnitProperty_ShouldAllocateBuffer,
+				//							  kAudioUnitScope_Output, 
+				//							  kInputBus,
+				//							  &flagZero, 
+				//							  sizeof(flagZero));
+				
+				int packetperbuffer = (1000 / codec->plugin->audio.ptime);
+				producer->ring.chunck.size = audioFormat.mSampleRate * audioFormat.mBytesPerFrame / packetperbuffer;
+				// allocate our chunck buffer
+				if(!(producer->ring.chunck.buffer = tsk_realloc(producer->ring.chunck.buffer, producer->ring.chunck.size))){
+					TSK_DEBUG_ERROR("Failed to allocate new buffer");
+					return -7;
+				}
+				// create ringbuffer
+				producer->ring.size = kRingPacketCount * producer->ring.chunck.size;
+				if(!producer->ring.buffer){
+					producer->ring.buffer = speex_buffer_init(producer->ring.size);
+				}
+				else {
+					int ret;
+					if((ret = speex_buffer_resize(producer->ring.buffer, producer->ring.size))){
+						TSK_DEBUG_ERROR("speex_buffer_resize(%d) failed with error code=%d", producer->ring.size, ret);
+						return ret;
+					}
+				}
+				if(!producer->ring.buffer){
+					TSK_DEBUG_ERROR("Failed to create a new ring buffer with size = %d", producer->ring.size);
+					return -8;
+				}
 			}
 
 		}
 	}
-
+	
 	TSK_DEBUG_INFO("AudioUnit producer prepared");
 	return tdav_audiounit_handle_signal_producer_prepared(producer->audioUnitHandle);;
 }
@@ -224,7 +290,10 @@ static tsk_object_t* tdav_producer_audiounit_dtor(tsk_object_t * self)
         if (producer->audioUnitHandle) {
 			tdav_audiounit_handle_destroy(&producer->audioUnitHandle);
         }
-        
+        TSK_FREE(producer->ring.chunck.buffer);
+		if(producer->ring.buffer){
+			speex_buffer_destroy(producer->ring.buffer);
+		}
 		/* deinit base */
 		tdav_producer_audio_deinit(TDAV_PRODUCER_AUDIO(producer));
 	}

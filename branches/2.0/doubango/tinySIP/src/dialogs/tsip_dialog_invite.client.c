@@ -186,7 +186,7 @@ int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	const tsip_response_t *r2xxINVITE = va_arg(*app, const tsip_response_t *);
-	const tsip_action_t* action = va_arg(*app, const tsip_action_t *);
+	/* const tsip_action_t* action = */ va_arg(*app, const tsip_action_t *);
 
 	/* Update the dialog state */
 	if((ret = tsip_dialog_update(TSIP_DIALOG(self), r2xxINVITE))){
