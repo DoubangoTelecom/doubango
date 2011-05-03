@@ -44,7 +44,7 @@ typedef struct tdav_speakup_jitterBuffer_s
 	jitterbuffer *jbuffer;
 	uint8_t jcodec;
 	uint64_t ref_timestamp;
-	uint32_t framesize;
+	uint32_t frame_duration;
 	uint32_t rate;
 }
 tdav_speakup_jitterbuffer_t;

@@ -27,10 +27,14 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
-/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
-*/
+/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition. */
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define TDAV_UNDER_WINDOWS	1
+#endif
+
+/* OS X or iOS */
+#if defined(__APPLE__)
+#	define TDAV_UNDER_APPLE		1
 #endif
 
 #if (TDAV_UNDER_WINDOWS || defined(__SYMBIAN32__)) && defined(TINYDAV_EXPORTS)
@@ -44,8 +48,7 @@
 #	define TINYDAV_GEXTERN	extern
 #endif
 
-/* Guards against C++ name mangling 
-*/
+/* Guards against C++ name mangling  */
 #ifdef __cplusplus
 #	define TDAV_BEGIN_DECLS extern "C" {
 #	define TDAV_END_DECLS }

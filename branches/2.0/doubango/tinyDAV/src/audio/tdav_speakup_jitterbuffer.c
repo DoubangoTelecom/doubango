@@ -49,7 +49,7 @@ static int _10ms_size_bytes = 160;
 #define TDAV_SPEAKUP_10MS_FRAME_SIZE(self)		(((self)->rate * TDAV_SPEAKUP_10MS)/1000)
 #define TDAV_SPEAKUP_PTIME_FRAME_SIZE(self)		(((self)->rate * (self)->framesize)/1000)
 
-int tdav_speakup_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t framesize, uint32_t rate)
+int tdav_speakup_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate)
 {
 	tdav_speakup_jitterbuffer_t *jitterbuffer = (tdav_speakup_jitterbuffer_t *)self;
 	if(!jitterbuffer->jbuffer){
@@ -60,7 +60,7 @@ int tdav_speakup_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t framesi
 		jitterbuffer->jcodec = JB_CODEC_OTHER;
 	}
 	jitterbuffer->ref_timestamp = 0;
-	jitterbuffer->framesize = framesize;
+	jitterbuffer->frame_duration = frame_duration;
 	jitterbuffer->rate = rate;
 
 	return 0;

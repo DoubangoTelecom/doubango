@@ -57,7 +57,7 @@ typedef struct tmedia_session_s
 {
 	TSK_DECLARE_OBJECT;
 	
-	//! unique id
+	//! unique id. If you want to modifiy this field then you must use @ref tmedia_session_get_unique_id()
 	uint64_t id;
 	//! session type
 	tmedia_type_t type;
@@ -113,6 +113,7 @@ typedef struct tmedia_session_plugin_def_s
 }
 tmedia_session_plugin_def_t;
 
+TINYMEDIA_API uint64_t tmedia_session_get_unique_id();
 TINYMEDIA_API int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type);
 TINYMEDIA_API int tmedia_session_cmp(const tsk_object_t* sess1, const tsk_object_t* sess2);
 TINYMEDIA_API int tmedia_session_plugin_register(const tmedia_session_plugin_def_t* plugin);

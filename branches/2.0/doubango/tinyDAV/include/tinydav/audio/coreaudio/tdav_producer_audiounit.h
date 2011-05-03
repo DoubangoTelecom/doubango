@@ -27,6 +27,7 @@
 #if HAVE_COREAUDIO_AUDIO_UNIT
 
 #include <AudioToolbox/AudioToolbox.h>
+#include <speex/speex_buffer.h>
 #include "tinydav/audio/coreaudio/tdav_audiounit.h"
 #include "tinydav/audio/tdav_producer_audio.h"
 
@@ -37,8 +38,17 @@ typedef struct tdav_producer_audiounit_s
 	TDAV_DECLARE_PRODUCER_AUDIO;
 	
 	tdav_audiounit_handle_t* audioUnitHandle;
-	tsk_bool_t started;
-	tsk_bool_t paused;
+	unsigned started:1;
+	unsigned paused:1;
+	
+	struct {
+		struct {
+			void* buffer;
+			tsk_size_t size;
+		} chunck;
+		SpeexBuffer* buffer;
+		tsk_size_t size;
+	} ring;
 }
 tdav_producer_audiounit_t;
 

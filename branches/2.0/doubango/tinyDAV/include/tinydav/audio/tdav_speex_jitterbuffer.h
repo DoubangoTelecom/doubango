@@ -45,6 +45,7 @@ typedef struct tdav_speex_jitterBuffer_s
 
 	JitterBuffer* state;
 	uint32_t rate;
+	uint32_t frame_duration;
 }
 tdav_speex_jitterbuffer_t;
 

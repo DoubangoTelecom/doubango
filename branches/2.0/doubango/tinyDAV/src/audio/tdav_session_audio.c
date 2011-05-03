@@ -296,16 +296,14 @@ int tdav_session_audio_start(tmedia_session_t* self)
 		//trtp_manager_set_payload_type(audio->rtp_manager, codec->neg_format ? atoi(codec->neg_format) : atoi(codec->format));
 		ret = trtp_manager_start(audio->rtp_manager);
 	
-		/* Consumer */
-		if(audio->consumer){
-			tmedia_consumer_prepare(audio->consumer, codec);
-			tmedia_consumer_start(audio->consumer);
-		}
-		/* Producer */
-		if(audio->producer){
-			tmedia_producer_prepare(audio->producer, codec);
-			tmedia_producer_start(audio->producer);
-		}
+		// because of AudioUnit under iOS => prepare both consumer and producer then start() at the same time
+		/* prepare consumer and producer */
+		if(audio->consumer) tmedia_consumer_prepare(audio->consumer, codec);
+		if(audio->producer) tmedia_producer_prepare(audio->producer, codec);
+		/* start consumer and producer */
+		if(audio->consumer) tmedia_consumer_start(audio->consumer);
+		if(audio->producer) tmedia_producer_start(audio->producer);
+		
 		/* Denoise (AEC, Noise Suppression, AGC) */
 		if(audio->denoise && audio->encoder.codec){
 			tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), TMEDIA_CODEC_RATE(audio->encoder.codec), tsk_true, 8000.0f, tsk_true, tsk_true);
@@ -784,11 +782,15 @@ static tsk_object_t* tdav_session_audio_ctor(tsk_object_t * self, va_list * app)
 	if(session){
 		/* init base: called by tmedia_session_create() */
 		/* init self */
+		uint64_t session_id = TMEDIA_SESSION(session)->id;
 		tsk_safeobj_init(session);
-		if(!(session->consumer = tmedia_consumer_create(tdav_session_audio_plugin_def_t->type, TMEDIA_SESSION(session)->id))){
+		if(!session_id){ // set the session id if not already done
+			TMEDIA_SESSION(session)->id = session_id = tmedia_session_get_unique_id();
+		}
+		if(!(session->consumer = tmedia_consumer_create(tdav_session_audio_plugin_def_t->type, session_id))){
 			TSK_DEBUG_ERROR("Failed to create Audio consumer");
 		}
-		if((session->producer = tmedia_producer_create(tdav_session_audio_plugin_def_t->type, TMEDIA_SESSION(session)->id))){
+		if((session->producer = tmedia_producer_create(tdav_session_audio_plugin_def_t->type, session_id))){
 			tmedia_producer_set_enc_callback(session->producer, tdav_session_audio_producer_enc_cb, self);
 		}
 		else{

@@ -41,7 +41,6 @@
 #include "tsk_debug.h"
 
 static void __handle_input_buffer (void *userdata, AudioQueueRef queue, AudioQueueBufferRef buffer, const AudioTimeStamp *start_time, UInt32 number_packet_descriptions, const AudioStreamPacketDescription *packet_descriptions ) {
-    OSStatus ret;
 	tdav_producer_audioqueue_t* producer = (tdav_producer_audioqueue_t*)userdata;
     
     if (!producer->started) {
@@ -54,7 +53,7 @@ static void __handle_input_buffer (void *userdata, AudioQueueRef queue, AudioQue
 	}
     
     // Re-enqueue the buffer
-    ret = AudioQueueEnqueueBuffer(producer->queue, buffer, 0, NULL);
+    AudioQueueEnqueueBuffer(producer->queue, buffer, 0, NULL);
 }
 
 /* ============ Media Producer Interface ================= */
@@ -83,7 +82,7 @@ static int tdav_producer_audioqueue_prepare(tmedia_producer_t* self, const tmedi
 	
     // Create the audio stream description
     AudioStreamBasicDescription *description = &(producer->description);
-    description->mSampleRate = TMEDIA_PRODUCER(producer)->audio.rate
+    description->mSampleRate = TMEDIA_PRODUCER(producer)->audio.rate;
     description->mFormatID = kAudioFormatLinearPCM;
     description->mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
     description->mChannelsPerFrame = TMEDIA_PRODUCER(producer)->audio.channels;
@@ -93,7 +92,7 @@ static int tdav_producer_audioqueue_prepare(tmedia_producer_t* self, const tmedi
     description->mBytesPerFrame = description->mBytesPerPacket;
     description->mReserved = 0;
     
-    int packetperbuffer = 1000 / TDAV_PRODUCER_AUDIO(producer)->ptime;
+    int packetperbuffer = 1000 / TMEDIA_PRODUCER(producer)->audio.ptime;
     producer->buffer_size = description->mSampleRate * description->mBytesPerFrame / packetperbuffer;
     
     // Create the record audio queue

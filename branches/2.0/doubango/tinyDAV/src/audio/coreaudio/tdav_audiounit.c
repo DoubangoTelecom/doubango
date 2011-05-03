@@ -37,6 +37,7 @@ typedef struct tdav_audiounit_instance_s
 {
 	TSK_DECLARE_OBJECT;
 	uint64_t session_id;
+	uint32_t frame_duration;
 	AudioComponentInstance audioUnit;
 	struct{
 		unsigned consumer:1;
@@ -84,7 +85,7 @@ static int _tdav_audiounit_handle_signal_xxx_prepared(tdav_audiounit_handle_t* s
 	return 0;
 }
 
-tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id)
+tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id, uint32_t ptime)
 {
 	tdav_audiounit_instance_t* inst = tsk_null;
 	const tsk_list_item_t* item;
@@ -96,11 +97,14 @@ tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id)
 		audioDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
 		audioDescription.componentFlags = 0;
 		audioDescription.componentFlagsMask = 0;
-		__audioSystem = AudioComponentFindNext(NULL, &audioDescription);
-	}
-	if(!__audioSystem){
-		TSK_DEBUG_ERROR("Failed to find new audio component");
-		goto done;
+		if((__audioSystem = AudioComponentFindNext(NULL, &audioDescription))){
+			// leave blank
+		}
+		else {
+			TSK_DEBUG_ERROR("Failed to find new audio component");
+			goto done;
+		}
+
 	}
 	// create list used to hold instances
 	if(!__audioUnitInstances && !(__audioUnitInstances = tsk_list_create())){
@@ -123,11 +127,44 @@ tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id)
 	if((inst = tsk_object_new(tdav_audiounit_instance_def_t))){
 		OSStatus status;
 		tdav_audiounit_instance_t* _inst;
+		// set preferred buffer size
+		Float32 preferredBufferSize = (Float32)ptime / 1000.f; // in seconds
+		status = AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration, sizeof(preferredBufferSize), &preferredBufferSize);
+		if(status){
+			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback) failed with status=%d", (int32_t)status);
+			TSK_OBJECT_SAFE_FREE(inst);
+			goto done;
+		}
+		 UInt32 size = sizeof(preferredBufferSize);
+		status = AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareIOBufferDuration, &size, &preferredBufferSize);
+		if(!status){
+			inst->frame_duration = (preferredBufferSize * 1000);
+			TSK_DEBUG_INFO("Frame duration=%d", inst->frame_duration);
+		}
+		else {
+			TSK_DEBUG_ERROR("AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareIOBufferDuration, %f) failed", preferredBufferSize);
+		}
+
+		// create new instance
 		if((status= AudioComponentInstanceNew(__audioSystem, &inst->audioUnit))){
 			TSK_DEBUG_ERROR("AudioComponentInstanceNew() failed with status=%d", (int32_t)status);
 			TSK_OBJECT_SAFE_FREE(inst);
 			goto done;
 		}
+		// enable all even if we know that it's already done by default
+		static UInt32 kOne = 1;
+		static UInt32 kZero = 0;
+		// static UInt32 kVoiceQuality = 127;
+#define kInputBus 1
+		status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_BypassVoiceProcessing,
+							 kAudioUnitScope_Global, kInputBus, &kZero, sizeof(kZero));
+		status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_VoiceProcessingEnableAGC,
+							 kAudioUnitScope_Global, kInputBus, &kOne, sizeof(kOne));
+		status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_DuckNonVoiceAudio,
+							 kAudioUnitScope_Global, kInputBus, &kOne, sizeof(kOne));
+		// status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_VoiceProcessingQuality,
+		//							  kAudioUnitScope_Global, kInputBus, &kVoiceQuality, sizeof(kVoiceQuality));
+		
 		_inst = inst, _inst->session_id = session_id;
 		tsk_list_push_back_data(__audioUnitInstances, (void**)&_inst);
 	}
@@ -173,6 +210,14 @@ int tdav_audiounit_handle_start(tdav_audiounit_handle_t* self)
 	tsk_safeobj_unlock(inst);
 	inst->started = status == 0 ? tsk_true : tsk_false;
 	return status ? -2 : 0;
+}
+
+uint32_t tdav_audiounit_handle_get_frame_duration(tdav_audiounit_handle_t* self)
+{
+	if(self){
+		return ((tdav_audiounit_instance_t*)self)->frame_duration;
+	}
+	return 0;
 }
 
 int tdav_audiounit_handle_stop(tdav_audiounit_handle_t* self)

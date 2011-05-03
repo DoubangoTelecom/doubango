@@ -33,11 +33,12 @@ TDAV_BEGIN_DECLS
 
 typedef void* tdav_audiounit_handle_t;
 
-tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id);
-AudioComponentInstance tdav_audiounit_handle_get_instance(tdav_audiounit_handle_t* self);
+tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id, uint32_t ptime);
+/*inline*/ AudioComponentInstance tdav_audiounit_handle_get_instance(tdav_audiounit_handle_t* self);
 int tdav_audiounit_handle_signal_consumer_prepared(tdav_audiounit_handle_t* self);
 int tdav_audiounit_handle_signal_producer_prepared(tdav_audiounit_handle_t* self);
 int tdav_audiounit_handle_start(tdav_audiounit_handle_t* self);
+uint32_t tdav_audiounit_handle_get_frame_duration(tdav_audiounit_handle_t* self);
 int tdav_audiounit_handle_stop(tdav_audiounit_handle_t* self);
 int tdav_audiounit_handle_destroy(tdav_audiounit_handle_t** self);
 

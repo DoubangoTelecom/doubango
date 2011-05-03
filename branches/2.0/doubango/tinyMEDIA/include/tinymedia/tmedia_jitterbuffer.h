@@ -59,7 +59,7 @@ typedef struct tmedia_jitterbuffer_plugin_def_s
 	//! full description (usefull for debugging)
 	const char* desc;
 
-	int (* open) (tmedia_jitterbuffer_t*, uint32_t framesize, uint32_t rate);
+	int (* open) (tmedia_jitterbuffer_t*, uint32_t frame_duration, uint32_t rate);
 	int (* tick) (tmedia_jitterbuffer_t*);
 	int (* put) (tmedia_jitterbuffer_t*, void* data, tsk_size_t data_size, const tsk_object_t* proto_hdr);
 	tsk_size_t (* get) (tmedia_jitterbuffer_t*, void* out_data, tsk_size_t out_size);
@@ -69,7 +69,7 @@ typedef struct tmedia_jitterbuffer_plugin_def_s
 tmedia_jitterbuffer_plugin_def_t;
 
 TINYMEDIA_API int tmedia_jitterbuffer_init(tmedia_jitterbuffer_t* self);
-TINYMEDIA_API int tmedia_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t framesize, uint32_t rate);
+TINYMEDIA_API int tmedia_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate);
 TINYMEDIA_API int tmedia_jitterbuffer_tick(tmedia_jitterbuffer_t* self);
 TINYMEDIA_API int tmedia_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, tsk_size_t data_size, const tsk_object_t* proto_hdr);
 TINYMEDIA_API tsk_size_t tmedia_jitterbuffer_get(tmedia_jitterbuffer_t* self, void* out_data, tsk_size_t out_size);

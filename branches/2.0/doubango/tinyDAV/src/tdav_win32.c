@@ -32,6 +32,11 @@
 
 #include "tsk_debug.h"
 
+int tdav_win32_init()
+{
+	return 0;
+}
+
 void tdav_win32_print_error(const char* func, HRESULT hr)
 {
 	CHAR* message = tsk_null;
@@ -54,5 +59,9 @@ void tdav_win32_print_error(const char* func, HRESULT hr)
 	LocalFree(message);
 }
 
+int tdav_win32_deinit()
+{
+	return 0;
+}
 
 #endif /* TDAV_UNDER_WINDOWS */

@@ -35,14 +35,15 @@
 #include "tsk_debug.h"
 
 
-int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t framesize, uint32_t rate)
+int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate)
 {
 	tdav_speex_jitterbuffer_t *jitterbuffer = (tdav_speex_jitterbuffer_t *)self;
-	if(!(jitterbuffer->state = jitter_buffer_init((int)framesize))){
+	if(!(jitterbuffer->state = jitter_buffer_init((int)frame_duration))){
 		TSK_DEBUG_ERROR("jitter_buffer_init() failed");
 		return -2;
 	}
 	jitterbuffer->rate = rate;
+	jitterbuffer->frame_duration = frame_duration;
 
 	return 0;
 }
@@ -78,7 +79,7 @@ int tdav_speex_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, tsk_siz
 	jb_packet.data = data;
 	jb_packet.len = data_size;
 	jb_packet.span = (data_size*500)/jitterbuffer->rate;
-	jb_packet.timestamp = (rtp_hdr->seq_num*jb_packet.span);
+	jb_packet.timestamp = (rtp_hdr->seq_num * jb_packet.span);
 	
 	jb_packet.sequence = rtp_hdr->seq_num;
 	jb_packet.user_data = 0;
@@ -114,6 +115,7 @@ tsk_size_t tdav_speex_jitterbuffer_get(tmedia_jitterbuffer_t* self, void* out_da
 		// jitter_buffer_update_delay(jitterbuffer->state, &jb_packet, NULL);
 		return 0;
 	}
+	jitter_buffer_update_delay(jitterbuffer->state, &jb_packet, NULL);
 
 	return out_size;
 }

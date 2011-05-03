@@ -28,6 +28,12 @@
  */
 #include "tinydav/tdav.h"
 
+#if TDAV_UNDER_WINDOWS
+#	include "tinydav/tdav_win32.h"
+#elif TDAV_UNDER_APPLE
+#	include "tinydav/tdav_apple.h"
+#endif
+
 // Media Contents, ...
 #include "tinymedia.h"
 
@@ -94,6 +100,19 @@
 
 int tdav_init()
 {
+	int ret = 0;
+	
+	/* === OS specific === */
+#if TDAV_UNDER_WINDOWS
+	if ((ret = tdav_win32_init())) {
+		return ret;
+	}
+#elif TDAV_UNDER_APPLE
+	if ((ret = tdav_apple_init())) {
+		return ret;
+	}
+#endif
+	
 	/* === Initialize ffmpeg === */
 #if HAVE_FFMPEG
 	avcodec_init();
@@ -219,7 +238,7 @@ int tdav_init()
 	tmedia_jitterbuffer_plugin_register(tdav_speakup_jitterbuffer_plugin_def_t);
 #endif
 
-	return 0;
+	return ret;
 }
 
 typedef struct tdav_codec_decl_s{
@@ -370,6 +389,19 @@ tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
 
 int tdav_deinit()
 {
+	int ret = 0;
+	
+	/* === OS specific === */
+#if TDAV_UNDER_WINDOWS
+	if ((ret = tdav_win32_deinit())) {
+		return ret;
+	}
+#elif TDAV_UNDER_APPLE
+	if ((ret = tdav_apple_deinit())) {
+		return ret;
+	}
+#endif
+	
 	/* === UnRegister media contents === */
 	tmedia_content_plugin_unregister_all();
 
@@ -470,5 +502,5 @@ int tdav_deinit()
 	tmedia_jitterbuffer_plugin_unregister(tdav_speakup_jitterbuffer_plugin_def_t);
 #endif
 
-	return 0;
+	return ret;
 }

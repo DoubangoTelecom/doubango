@@ -25,7 +25,22 @@
 
 #if HAVE_COREAUDIO_AUDIO_UNIT
 
+// AudioUnit already contains denoiser
+#if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_DENOISE) || HAVE_SPEEX_DENOISE)
+#	error "AudioUnit already contain denoiser => Disable it"
+#endif
+// FIXME: ONLY WORKS with SpeexJitterBuffer => add ifdef elif...
+
+#undef DISABLE_JITTER_BUFFER
+#define DISABLE_JITTER_BUFFER	0 // FIXME: Find why there is too delay when we use speex jitter buffer
+
 #include "tsk_debug.h"
+#include "tsk_memory.h"
+
+#define kNoDataError		-1
+#define kRingPacketCount	+5
+
+static tsk_size_t tdav_consumer_audiounit_get(tdav_consumer_audiounit_t* self, void* data, tsk_size_t size);
 
 static OSStatus __handle_output_buffer(void *inRefCon, 
 								 AudioUnitRenderActionFlags *ioActionFlags, 
@@ -33,7 +48,50 @@ static OSStatus __handle_output_buffer(void *inRefCon,
 								 UInt32 inBusNumber, 
 								 UInt32 inNumberFrames, 
 								 AudioBufferList *ioData) {
-    return noErr;
+	OSStatus status = noErr;
+	// tsk_size_t out_size;
+	tdav_consumer_audiounit_t* consumer = (tdav_consumer_audiounit_t* )inRefCon;
+	
+	if(!consumer->started || consumer->paused){
+		goto done;
+	}
+	
+	if(!ioData){
+		TSK_DEBUG_ERROR("Invalid argument");
+		status = kNoDataError;
+		goto done;
+	}
+	// read from jitter buffer and fill ioData buffers
+	for(int i=0; i<ioData->mNumberBuffers; i++){
+		/* int ret = */ tdav_consumer_audiounit_get(consumer, ioData->mBuffers[i].mData, ioData->mBuffers[i].mDataByteSize);
+	}
+	
+done:
+#if !DISABLE_JITTER_BUFFER
+	// alert the jitter buffer
+	tdav_consumer_audio_tick(TDAV_CONSUMER_AUDIO(consumer));
+#endif
+	
+    return status;
+}
+
+static tsk_size_t tdav_consumer_audiounit_get(tdav_consumer_audiounit_t* self, void* data, tsk_size_t size)
+{
+	tsk_ssize_t retSize = 0;
+#if DISABLE_JITTER_BUFFER
+	retSize = speex_buffer_read(self->ring.buffer, data, size);
+	if(retSize < size){
+		memset(((uint8_t*)data)+retSize, 0, (size - retSize));
+	}
+#else
+	retSize =  (tsk_ssize_t)tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(self), data, 370/*TSK_MIN(self->ring.chunck.size, size)*/);
+	printf("size=%d\n", size);
+	if(retSize < size){
+		memset(((uint8_t*)data)+retSize, 0, (size - retSize));
+	}
+#endif
+
+	return retSize;
 }
 
 /* ============ Media Consumer Interface ================= */
@@ -42,6 +100,7 @@ static OSStatus __handle_output_buffer(void *inRefCon,
 static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
 	static UInt32 flagOne = 1;
+	AudioStreamBasicDescription audioFormat;
 #define kOutputBus  0
 	
 	tdav_consumer_audiounit_t* consumer = (tdav_consumer_audiounit_t*)self;
@@ -55,7 +114,7 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 		TSK_DEBUG_ERROR("Already propared");
 		return -2;
 	}
-	if(!(consumer->audioUnitHandle = tdav_audiounit_handle_create(TMEDIA_CONSUMER(consumer)->session_id))){
+	if(!(consumer->audioUnitHandle = tdav_audiounit_handle_create(TMEDIA_CONSUMER(consumer)->session_id, codec->plugin->audio.ptime))){
 		TSK_DEBUG_ERROR("Failed to get audio unit instance for session with id=%lld", TMEDIA_CONSUMER(consumer)->session_id);
 		return -3;
 	}
@@ -72,12 +131,12 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 		return -4;
 	}
 	else {
-		TMEDIA_CONSUMER(consumer)->audio.ptime = codec->plugin->audio.ptime;
+		uint32_t frame_duration = tdav_audiounit_handle_get_frame_duration(consumer->audioUnitHandle);
+		TMEDIA_CONSUMER(consumer)->audio.ptime = frame_duration ? frame_duration : codec->plugin->audio.ptime;
 		TMEDIA_CONSUMER(consumer)->audio.in.channels = codec->plugin->audio.channels;
 		TMEDIA_CONSUMER(consumer)->audio.in.rate = codec->plugin->rate;
-	
+		
 		// set format
-		AudioStreamBasicDescription audioFormat;
 		audioFormat.mSampleRate = TMEDIA_CONSUMER(consumer)->audio.out.rate ? TMEDIA_CONSUMER(consumer)->audio.out.rate : TMEDIA_CONSUMER(consumer)->audio.in.rate;
 		audioFormat.mFormatID = kAudioFormatLinearPCM;
 		audioFormat.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
@@ -93,6 +152,7 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 									  kOutputBus, 
 									  &audioFormat, 
 									  sizeof(audioFormat));
+		
 		if(status){
 			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioUnitProperty_StreamFormat) failed with status=%d", (int32_t)status);
 			return -5;
@@ -114,6 +174,46 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 			}
 		}
 	}
+	
+	// allocate the chunck buffer and create the ring
+	int packetperbuffer = (1000 / TMEDIA_CONSUMER(consumer)->audio.ptime);
+	consumer->ring.chunck.size = audioFormat.mSampleRate * audioFormat.mBytesPerFrame / packetperbuffer;
+	consumer->ring.size = kRingPacketCount * consumer->ring.chunck.size;
+	if(!(consumer->ring.chunck.buffer = tsk_realloc(consumer->ring.chunck.buffer, consumer->ring.chunck.size))){
+		TSK_DEBUG_ERROR("Failed to allocate new buffer");
+		return -7;
+	}
+	if(!consumer->ring.buffer){
+		consumer->ring.buffer = speex_buffer_init(consumer->ring.size);
+	}
+	else {
+		int ret;
+		if((ret = speex_buffer_resize(consumer->ring.buffer, consumer->ring.size))){
+			TSK_DEBUG_ERROR("speex_buffer_resize(%d) failed with error code=%d", consumer->ring.size, ret);
+			return ret;
+		}
+	}
+	if(!consumer->ring.buffer){
+		TSK_DEBUG_ERROR("Failed to create a new ring buffer with size = %d", consumer->ring.size);
+		return -8;
+	}
+	if(!(consumer->ring.mutex = tsk_mutex_create())){
+		TSK_DEBUG_ERROR("Failed to create mutex");
+		return -9;
+	}
+
+	// set maximum frames per slice as buffer size
+	//UInt32 numFrames = (UInt32)consumer->ring.chunck.size;
+	//status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle), 
+	//							  kAudioUnitProperty_MaximumFramesPerSlice,
+	//							  kAudioUnitScope_Global, 
+	//							  0, 
+	//							  &numFrames, 
+	//							  sizeof(numFrames));
+	//if(status){
+	//	TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioUnitProperty_MaximumFramesPerSlice, %u) failed with status=%d", (unsigned)numFrames, (int32_t)status);
+	//	return -6;
+	//}
 	
 	TSK_DEBUG_INFO("AudioUnit producer prepared");
     return tdav_audiounit_handle_signal_consumer_prepared(consumer->audioUnitHandle);
@@ -148,9 +248,36 @@ static int tdav_consumer_audiounit_start(tmedia_consumer_t* self)
 }
 
 static int tdav_consumer_audiounit_consume(tmedia_consumer_t* self, const void* buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
-{
-	TSK_DEBUG_ERROR("Not implemented");
-	return -1;
+{	
+	tdav_consumer_audiounit_t* consumer = (tdav_consumer_audiounit_t*)self;
+	if(!consumer || !buffer || !size){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+#if DISABLE_JITTER_BUFFER
+	{
+		if(consumer->ring.buffer){
+			tsk_mutex_lock(consumer->ring.mutex);
+			speex_buffer_write(consumer->ring.buffer, (void*)buffer, size);
+			tsk_mutex_unlock(consumer->ring.mutex);
+			return 0;
+		}
+		return -2;
+	}
+#else
+	{
+		tsk_mutex_lock(consumer->ring.mutex);
+		speex_buffer_write(consumer->ring.buffer, (void*)buffer, size);
+		int avail = speex_buffer_get_available(consumer->ring.buffer);
+		while (avail >= consumer->ring.chunck.size) {
+			speex_buffer_read(consumer->ring.buffer, consumer->ring.chunck.buffer, consumer->ring.chunck.size);
+			tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(consumer), consumer->ring.chunck.buffer, consumer->ring.chunck.size, proto_hdr);
+			avail -= consumer->ring.chunck.size;
+		}
+		tsk_mutex_unlock(consumer->ring.mutex);
+		return 0;
+	}
+#endif
 }
 
 static int tdav_consumer_audiounit_pause(tmedia_consumer_t* self)
@@ -200,6 +327,7 @@ static tsk_object_t* tdav_consumer_audiounit_ctor(tsk_object_t * self, va_list *
 	if(consumer){
 		/* init base */
 		tdav_consumer_audio_init(TDAV_CONSUMER_AUDIO(consumer));
+		/* init self */
 	}
 	return self;
 }
@@ -208,6 +336,7 @@ static tsk_object_t* tdav_consumer_audiounit_dtor(tsk_object_t * self)
 { 
 	tdav_consumer_audiounit_t *consumer = self;
 	if(consumer){
+		/* deinit self */
 		// Stop the consumer if not done
 		if(consumer->started){
 			tdav_consumer_audiounit_stop(self);
@@ -215,6 +344,13 @@ static tsk_object_t* tdav_consumer_audiounit_dtor(tsk_object_t * self)
 		// destroy handle
 		if(consumer->audioUnitHandle){
 			tdav_audiounit_handle_destroy(&consumer->audioUnitHandle);
+		}
+		TSK_FREE(consumer->ring.chunck.buffer);
+		if(consumer->ring.buffer){
+			speex_buffer_destroy(consumer->ring.buffer);
+		}
+		if(consumer->ring.mutex){
+			tsk_mutex_destroy(&consumer->ring.mutex);
 		}
         
 		/* deinit base */
