@@ -406,7 +406,23 @@
 					Name="coreaudio"
 					>
 					<File
-						RelativePath=".\include\tinydav\audio\coreaudio\tdav_consumer_coreaudio.h"
+						RelativePath=".\include\tinydav\audio\coreaudio\tdav_audiounit.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\tinydav\audio\coreaudio\tdav_consumer_audioqueue.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\tinydav\audio\coreaudio\tdav_consumer_audiounit.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\tinydav\audio\coreaudio\tdav_producer_audioqueue.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\tinydav\audio\coreaudio\tdav_producer_audiounit.h"
 						>
 					</File>
 				</Filter>
@@ -674,11 +690,23 @@
 					Name="coreaudio"
 					>
 					<File
-						RelativePath=".\src\audio\coreaudio\tdav_consumer_coreaudio.c"
+						RelativePath=".\src\audio\coreaudio\tdav_audiounit.c"
 						>
 					</File>
 					<File
-						RelativePath=".\src\audio\coreaudio\tdav_producer_coreaudio.c"
+						RelativePath=".\src\audio\coreaudio\tdav_consumer_audioqueue.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\audio\coreaudio\tdav_consumer_audiounit.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\audio\coreaudio\tdav_producer_audioqueue.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\audio\coreaudio\tdav_producer_audiounit.c"
 						>
 					</File>
 				</Filter>

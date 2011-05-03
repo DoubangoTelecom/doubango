@@ -31,6 +31,7 @@
 #if TDAV_UNDER_WINDOWS
 
 #include "tsk_debug.h"
+#include <windows.h> 
 
 int tdav_win32_init()
 {

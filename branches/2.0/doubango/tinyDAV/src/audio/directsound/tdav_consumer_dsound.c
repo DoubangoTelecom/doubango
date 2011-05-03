@@ -34,13 +34,13 @@
 #	pragma comment(lib, "dxguid.lib")
 #endif
 
-#include "tinydav/tdav_win32.h"
-
 #include "tsk_thread.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
 #include <initguid.h>
+
+extern void tdav_win32_print_error(const char* func, HRESULT hr);
 
 static void *__playback_thread(void *param)
 {
