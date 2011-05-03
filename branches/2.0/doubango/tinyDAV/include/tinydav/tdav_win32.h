@@ -33,12 +33,9 @@
 
 #if TDAV_UNDER_WINDOWS
 
-#include <windows.h>
-
 TDAV_BEGIN_DECLS
 
 int tdav_win32_init();
-void tdav_win32_print_error(const char* func, HRESULT hr);
 int tdav_win32_deinit();
 
 TDAV_END_DECLS
