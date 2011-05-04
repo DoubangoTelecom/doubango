@@ -108,7 +108,7 @@ tsip_invite_event_type_t InviteEvent::getType() const
 	return TSIP_INVITE_EVENT(this->sipevent)->type;
 }
 
-twrap_media_type_t InviteEvent::getMediaType()
+twrap_media_type_t InviteEvent::getMediaType() const
 {
 	// Ignore Mixed session (both audio/video and MSRP) as specified by GSMA RCS.
 	if(this->sipevent && this->sipevent->ss){
