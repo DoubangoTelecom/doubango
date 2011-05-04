@@ -48,6 +48,7 @@ typedef struct tdav_consumer_audiounit_s
 			void* buffer;
 			tsk_size_t size;
 		} chunck;
+		tsk_ssize_t leftBytes;
 		SpeexBuffer* buffer;
 		tsk_size_t size;
 		tsk_mutex_handle_t* mutex;

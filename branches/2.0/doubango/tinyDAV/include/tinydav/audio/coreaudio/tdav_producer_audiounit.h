@@ -30,6 +30,8 @@
 #include <speex/speex_buffer.h>
 #include "tinydav/audio/coreaudio/tdav_audiounit.h"
 #include "tinydav/audio/tdav_producer_audio.h"
+#include "tsk_condwait.h"
+#include "tsk_mutex.h"
 
 TDAV_BEGIN_DECLS
 
@@ -40,6 +42,8 @@ typedef struct tdav_producer_audiounit_s
 	tdav_audiounit_handle_t* audioUnitHandle;
 	unsigned started:1;
 	unsigned paused:1;
+	void* senderThreadId[1];
+	tsk_condwait_handle_t* senderCondWait;
 	
 	struct {
 		struct {
@@ -48,6 +52,7 @@ typedef struct tdav_producer_audiounit_s
 		} chunck;
 		SpeexBuffer* buffer;
 		tsk_size_t size;
+		tsk_mutex_handle_t* mutex;
 	} ring;
 }
 tdav_producer_audiounit_t;

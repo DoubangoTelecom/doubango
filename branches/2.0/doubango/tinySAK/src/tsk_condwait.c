@@ -174,8 +174,7 @@ int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
 	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
 
 #if TSK_UNDER_WINDOWS
-	if((ret = WaitForSingleObject(condwait->pcond, (DWORD)ms)) != WAIT_OBJECT_0)
-	{
+	if((ret = WaitForSingleObject(condwait->pcond, (DWORD)ms)) != WAIT_OBJECT_0){
 		if(ret == TIMED_OUT){
 			/* TSK_DEBUG_INFO("WaitForSingleObject function timedout: %d", ret); */
 		}
@@ -185,8 +184,7 @@ int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
 		return ((ret == TIMED_OUT) ? 0 : ret);
 	}
 #else
-	if(condwait && condwait->mutex)
-	{
+	if(condwait && condwait->mutex){
 		struct timespec   ts = {0, 0};
 		struct timeval    tv = {0, 0};
 		/*int rc =*/  tsk_gettimeofday(&tv, 0);
@@ -234,8 +232,7 @@ int tsk_condwait_signal(tsk_condwait_handle_t* handle)
 	if(condwait && condwait->mutex){
 		tsk_mutex_lock(condwait->mutex);
 
-		if(ret = pthread_cond_signal(condwait->pcond))
-		{
+		if(ret = pthread_cond_signal(condwait->pcond)){
 			TSK_DEBUG_ERROR("pthread_cond_signal function failed: %d", ret);
 		}
 		tsk_mutex_unlock(condwait->mutex);
@@ -257,17 +254,14 @@ int tsk_condwait_broadcast(tsk_condwait_handle_t* handle)
 	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
 
 #if TSK_UNDER_WINDOWS
-	if(ret = ((SetEvent(condwait->pcond) && ResetEvent(condwait->pcond)) ? 0 : -1))
-	{
+	if(ret = ((SetEvent(condwait->pcond) && ResetEvent(condwait->pcond)) ? 0 : -1)){
 		ret = GetLastError();
 		TSK_DEBUG_ERROR("SetEvent function failed: %d", ret);
 	}
 #else
-	if(condwait && condwait->mutex)
-	{
+	if(condwait && condwait->mutex){
 		tsk_mutex_lock(condwait->mutex);
-		if(ret = pthread_cond_broadcast(condwait->pcond))
-		{
+		if(ret = pthread_cond_broadcast(condwait->pcond)){
 			TSK_DEBUG_ERROR("pthread_cond_broadcast function failed: %d", ret);
 		}
 		tsk_mutex_unlock(condwait->mutex);

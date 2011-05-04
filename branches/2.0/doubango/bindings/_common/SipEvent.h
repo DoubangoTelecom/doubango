@@ -103,7 +103,7 @@ public:
 
 public: /* Public API functions */
 	tsip_invite_event_type_t getType() const;
-	twrap_media_type_t getMediaType();
+	twrap_media_type_t getMediaType() const;
 	const InviteSession* getSession() const;
 	CallSession* takeCallSessionOwnership() const;
 	MsrpSession* takeMsrpSessionOwnership() const;

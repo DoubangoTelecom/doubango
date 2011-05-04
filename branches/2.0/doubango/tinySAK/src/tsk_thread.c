@@ -37,6 +37,8 @@
 #	include <pthread.h>
 #endif
 
+#include <string.h>
+
 /**@defgroup tsk_thread_group Utility functions for threading.
 */
 
@@ -71,6 +73,44 @@ int tsk_thread_create(void** tid, void *(*start) (void *), void *arg)
 #else
 	*tid = tsk_calloc(1, sizeof(pthread_t));
 	return pthread_create((pthread_t*)*tid, 0, start, arg);
+#endif
+}
+
+/**@ingroup tsk_thread_group
+ */
+int tsk_thread_set_priority(void* tid, int32_t priority)
+{
+#if TSK_UNDER_WINDOWS
+	// SetPriorityClass()
+	TSK_DEBUG_ERROR("Not implemented");
+	return -1;
+#else
+	struct sched_param sp;
+	int ret;
+	if(!tid){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+    memset(&sp, 0, sizeof(struct sched_param));
+    sp.sched_priority = priority;
+    if ((ret = pthread_setschedparam(*((pthread_t*)tid), SCHED_RR, &sp))) {
+        TSK_DEBUG_ERROR("Failed to change priority to %d with error code=%d", priority, ret);
+        return ret;
+    }
+    return 0;
+#endif
+}
+
+/**@ingroup tsk_thread_group
+ */
+int tsk_thread_set_priority_2(int32_t priority)
+{
+#if TSK_UNDER_WINDOWS
+	TSK_DEBUG_ERROR("Not implemented");
+	return -1;
+#else
+	pthread_t thread = pthread_self();
+	return tsk_thread_set_priority(&thread, priority);
 #endif
 }
 

@@ -76,7 +76,7 @@ trtp_rtcp_sdes_chunck_t* trtp_rtcp_sdes_chunck_deserialize(const void* data, tsk
 		pdata+=4;
 		while(pdata<pend){
 			if((item = trtp_rtcp_sdes_item_deserialize(pdata, (pend-pdata)))){
-				tsk_list_push_back_data(chunck->items, &item);
+				tsk_list_push_back_data(chunck->items, (void**)&item);
 				pdata+=trtp_rtcp_sdes_item_get_size(item);
 			}
 			else{
