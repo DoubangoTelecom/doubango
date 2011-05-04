@@ -43,6 +43,12 @@
 #endif
 
 #include <time.h>
+#if defined __APPLE__ && 0
+#	include <mach/mach.h>
+#	include <mach/mach_time.h>
+
+static mach_timebase_info_data_t    __apple_timebase_info = {0, 0};
+#endif
 
 /**@defgroup tsk_time_group Datetime functions.
 */
@@ -141,14 +147,39 @@ uint64_t tsk_time_epoch()
 {
 #if TSK_UNDER_WINDOWS
 	return (uint64_t)timeGetTime();
-#elif HAVE_CLOCK_GETTIME
+#elif HAVE_CLOCK_GETTIME || _POSIX_TIMERS > 0
 	struct timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
 	return (((uint64_t)ts.tv_sec)*(uint64_t)1000) + (((uint64_t)ts.tv_nsec)/(uint64_t)1000000);
+#elif defined(__APPLE__) && 0
+	if(__apple_timebase_info.denom == 0){
+        (void) mach_timebase_info(&__apple_timebase_info);
+    }
+	return (mach_absolute_time() * __apple_timebase_info.numer / __apple_timebase_info.denom)*1e-6;
 #else
 	struct timeval tv;
 	gettimeofday(&tv, 0); 
 	return (((uint64_t)tv.tv_sec)*(uint64_t)1000) + (((uint64_t)tv.tv_usec)/(uint64_t)1000);
 #endif
+}
+
+int tsk_time_epoch_2(struct timespec *ts)
+{
+#if HAVE_CLOCK_GETTIME || _POSIX_TIMERS > 0
+	clock_gettime(CLOCK_MONOTONIC, ts);
+#elif defined(__APPLE__) && 0
+	if(__apple_timebase_info.denom == 0){
+        (void) mach_timebase_info(&__apple_timebase_info);
+    }
+	uint64_t nano = mach_absolute_time() * __apple_timebase_info.numer / __apple_timebase_info.denom;
+	ts->tv_sec = nano * 1e-9;  
+	ts->tv_nsec = nano - (ts->tv_sec * 1e9); 
+#else
+	struct timeval tv;
+	gettimeofday(&tv, tsk_null);
+	ts->tv_sec = tv.tv_sec;
+	ts->tv_nsec = tv.tv_usec * 1000;
+#endif
+	return 0;
 }
 

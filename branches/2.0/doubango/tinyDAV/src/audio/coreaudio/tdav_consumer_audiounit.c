@@ -29,7 +29,6 @@
 #if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_DENOISE) || HAVE_SPEEX_DENOISE)
 #	error "AudioUnit already contain denoiser => Disable it"
 #endif
-// FIXME: ONLY WORKS with SpeexJitterBuffer => add ifdef elif...
 
 #undef DISABLE_JITTER_BUFFER
 #define DISABLE_JITTER_BUFFER	0 // FIXME: Find why there is too delay when we use speex jitter buffer
@@ -66,12 +65,7 @@ static OSStatus __handle_output_buffer(void *inRefCon,
 		/* int ret = */ tdav_consumer_audiounit_get(consumer, ioData->mBuffers[i].mData, ioData->mBuffers[i].mDataByteSize);
 	}
 	
-done:
-#if !DISABLE_JITTER_BUFFER
-	// alert the jitter buffer
-	tdav_consumer_audio_tick(TDAV_CONSUMER_AUDIO(consumer));
-#endif
-	
+done:	
     return status;
 }
 
@@ -84,8 +78,14 @@ static tsk_size_t tdav_consumer_audiounit_get(tdav_consumer_audiounit_t* self, v
 		memset(((uint8_t*)data)+retSize, 0, (size - retSize));
 	}
 #else
-	retSize =  (tsk_ssize_t)tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(self), data, 370/*TSK_MIN(self->ring.chunck.size, size)*/);
-	printf("size=%d\n", size);
+	self->ring.leftBytes += size;
+	while (self->ring.leftBytes >= self->ring.chunck.size) {
+		self->ring.leftBytes -= self->ring.chunck.size;
+		retSize =  (tsk_ssize_t)tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(self), self->ring.chunck.buffer, self->ring.chunck.size);
+		tdav_consumer_audio_tick(TDAV_CONSUMER_AUDIO(self));
+		speex_buffer_write(self->ring.buffer, self->ring.chunck.buffer, retSize);
+	}
+	retSize = speex_buffer_read(self->ring.buffer, data, size);
 	if(retSize < size){
 		memset(((uint8_t*)data)+retSize, 0, (size - retSize));
 	}
@@ -131,8 +131,7 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 		return -4;
 	}
 	else {
-		uint32_t frame_duration = tdav_audiounit_handle_get_frame_duration(consumer->audioUnitHandle);
-		TMEDIA_CONSUMER(consumer)->audio.ptime = frame_duration ? frame_duration : codec->plugin->audio.ptime;
+		TMEDIA_CONSUMER(consumer)->audio.ptime = codec->plugin->audio.ptime;
 		TMEDIA_CONSUMER(consumer)->audio.in.channels = codec->plugin->audio.channels;
 		TMEDIA_CONSUMER(consumer)->audio.in.rate = codec->plugin->rate;
 		
@@ -266,16 +265,7 @@ static int tdav_consumer_audiounit_consume(tmedia_consumer_t* self, const void* 
 	}
 #else
 	{
-		tsk_mutex_lock(consumer->ring.mutex);
-		speex_buffer_write(consumer->ring.buffer, (void*)buffer, size);
-		int avail = speex_buffer_get_available(consumer->ring.buffer);
-		while (avail >= consumer->ring.chunck.size) {
-			speex_buffer_read(consumer->ring.buffer, consumer->ring.chunck.buffer, consumer->ring.chunck.size);
-			tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(consumer), consumer->ring.chunck.buffer, consumer->ring.chunck.size, proto_hdr);
-			avail -= consumer->ring.chunck.size;
-		}
-		tsk_mutex_unlock(consumer->ring.mutex);
-		return 0;
+		return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(consumer), buffer, size, proto_hdr);
 	}
 #endif
 }
