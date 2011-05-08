@@ -26,7 +26,6 @@
 #include "tsk_debug.h"
 
 #if HAVE_COREAUDIO_AUDIO_UNIT
-
 #if 1 // Echo cancellation, AGC, ...
 #	define kDoubangoAudioUnitSubType	kAudioUnitSubType_VoiceProcessingIO
 #else

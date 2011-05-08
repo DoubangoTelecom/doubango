@@ -37,7 +37,12 @@
 #include "tsk_thread.h"
 #include "tsk_debug.h"
 
-#define kRingPacketCount	+10
+#define kRingPacketCount				+10
+// If the "ptime" value is less than "kMaxPtimeBeforeUsingCondVars", then we can use nonosleep() function instead of conditional
+// variables for better performance. 
+// When the prodcuer's stop() function is called we will wait until the sender thread exist (using join()) this is
+// why "kMaxPtimeBeforeUsingCondVars" should be small. This problem will not happen when using conditional variables: thanks to braodcast().
+#define kMaxPtimeBeforeUsingCondVars	+500 /* milliseconds */
 
 static void *__sender_thread(void *param);
 static int __sender_thread_set_realtime(uint32_t ptime);
@@ -118,7 +123,7 @@ static int __sender_thread_set_realtime(uint32_t ptime) {
 	 * preemptible: This indicates that the computation may be
 	 * interrupted, subject to the constraint specified above.
 	 */
-	policy.period = (ptime/2) * freq_ms; // take half of the ptime
+	policy.period = (ptime/2) * freq_ms; // Half of the ptime
 	policy.computation = 2 * freq_ms;
 	policy.constraint = 3 * freq_ms;
 	policy.preemptible = true;
@@ -136,29 +141,43 @@ static int __sender_thread_set_realtime(uint32_t ptime) {
 
 static void *__sender_thread(void *param)
 {
+	TSK_DEBUG_INFO("__sender_thread::ENTER");
+	
 	tdav_producer_audiounit_t* producer = (tdav_producer_audiounit_t*)param;
 	uint32_t ptime = TMEDIA_PRODUCER(producer)->audio.ptime;
-	tsk_ssize_t avail, read;
-	TSK_DEBUG_INFO("__sender_thread::ENTER");
+	tsk_ssize_t avail;
+	
+	// interval to sleep when using nonosleep() instead of conditional variable
+	struct timespec interval;
+	interval.tv_sec = (long)(ptime/1000); 
+	interval.tv_nsec = (long)(ptime%1000) * 1000000; 
+	
+	// change thread priority
 	__sender_thread_set_realtime(TMEDIA_PRODUCER(producer)->audio.ptime);
+	
+	// starts looping
 	for (;;) {
-		tsk_condwait_timedwait(producer->senderCondWait, (uint64_t)ptime);
+		// wait for "ptime" milliseconds
+		if(ptime <= kMaxPtimeBeforeUsingCondVars){
+			nanosleep(&interval, 0);
+		}
+		else {
+			tsk_condwait_timedwait(producer->senderCondWait, (uint64_t)ptime);
+		}
+		// check state
 		if(!producer->started){
 			break;
 		}
+		// read data and send them
 		if(TMEDIA_PRODUCER(producer)->enc_cb.callback) {
 			tsk_mutex_lock(producer->ring.mutex);
 			avail = speex_buffer_get_available(producer->ring.buffer);
-			if(avail >= producer->ring.chunck.size){
-				read = speex_buffer_read(producer->ring.buffer, producer->ring.chunck.buffer, producer->ring.chunck.size);
-			}
-			else{ 
-				read = 0;
+			while (producer->started && avail >= producer->ring.chunck.size) {
+				avail -= speex_buffer_read(producer->ring.buffer, producer->ring.chunck.buffer, producer->ring.chunck.size);
+				TMEDIA_PRODUCER(producer)->enc_cb.callback(TMEDIA_PRODUCER(producer)->enc_cb.callback_data, 
+														   producer->ring.chunck.buffer, producer->ring.chunck.size);
 			}
 			tsk_mutex_unlock(producer->ring.mutex);
-			if(read > 0){
-				TMEDIA_PRODUCER(producer)->enc_cb.callback(TMEDIA_PRODUCER(producer)->enc_cb.callback_data, producer->ring.chunck.buffer, read);
-			}
 		}
 		else;
 	}
@@ -261,7 +280,7 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 					return -7;
 				}
 				// create mutex for ring buffer
-				if(!(producer->ring.mutex = tsk_mutex_create())){
+				if(!(producer->ring.mutex = tsk_mutex_create_2(tsk_false))){
 					TSK_DEBUG_ERROR("Failed to create new mutex");
 					return -8;
 				}

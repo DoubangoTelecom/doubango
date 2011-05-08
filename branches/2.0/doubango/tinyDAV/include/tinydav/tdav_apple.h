@@ -32,6 +32,7 @@
 static int tdav_apple_init()
 {
 	// initialize audio session
+#if TARGET_OS_IPHONE
 	OSStatus status;
 	status = AudioSessionInitialize(NULL, NULL, NULL, NULL);
 	if(status){
@@ -51,6 +52,7 @@ static int tdav_apple_init()
 		TSK_DEBUG_ERROR("AudioSessionSetActive(true) failed with status code=%d", (int32_t)status);
 		return -3;
 	}
+#endif
 	return 0;
 }
 
