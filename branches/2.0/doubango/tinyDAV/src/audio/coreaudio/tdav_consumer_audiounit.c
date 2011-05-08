@@ -196,7 +196,7 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 		TSK_DEBUG_ERROR("Failed to create a new ring buffer with size = %d", consumer->ring.size);
 		return -8;
 	}
-	if(!(consumer->ring.mutex = tsk_mutex_create())){
+	if(!(consumer->ring.mutex = tsk_mutex_create_2(tsk_false))){
 		TSK_DEBUG_ERROR("Failed to create mutex");
 		return -9;
 	}

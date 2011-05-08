@@ -77,9 +77,10 @@ static int tdav_producer_audioqueue_prepare(tmedia_producer_t* self, const tmedi
 	
 	
 	// Set audio category
+#if TARGET_OS_IPHONE
 	UInt32 category = kAudioSessionCategory_PlayAndRecord;
 	AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(category), &category);
-	
+#endif
     // Create the audio stream description
     AudioStreamBasicDescription *description = &(producer->description);
     description->mSampleRate = TMEDIA_PRODUCER(producer)->audio.rate;

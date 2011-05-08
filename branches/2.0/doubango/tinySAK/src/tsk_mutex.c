@@ -56,10 +56,21 @@
 /**@ingroup tsk_mutex_group
 * Creates new recursive mutex handle.
 * @retval New mutex handle. It is up to you free the returned handle using  @ref tsk_mutex_destroy.
-* @sa @ref tsk_mutex_destroy.
+* @sa @ref tsk_mutex_destroy() @ref tsk_mutex_create_2()
 */
 tsk_mutex_handle_t* tsk_mutex_create()
 {	
+	return tsk_mutex_create_2(tsk_true);
+}
+
+/**@ingroup tsk_mutex_group
+ * Creates new recursive mutex handle.
+ * @param recursive whether we want a recursive mutex or not
+ * @retval New mutex handle. It is up to you free the returned handle using  @ref tsk_mutex_destroy.
+ * @sa @ref tsk_mutex_destroy.
+ */
+tsk_mutex_handle_t* tsk_mutex_create_2(tsk_bool_t recursive)
+{
 	MUTEX_T handle = tsk_null;
 	
 #if TSK_UNDER_WINDOWS
@@ -72,7 +83,7 @@ tsk_mutex_handle_t* tsk_mutex_create()
 		TSK_DEBUG_ERROR("pthread_mutexattr_init failed with error code %d", ret);
 		return tsk_null;
 	}
-	if((ret = pthread_mutexattr_settype(&mta, PTHREAD_MUTEX_RECURSIVE))){
+	if(recursive && (ret = pthread_mutexattr_settype(&mta, PTHREAD_MUTEX_RECURSIVE))){
 		TSK_DEBUG_ERROR("pthread_mutexattr_settype failed with error code %d", ret);
 		pthread_mutexattr_destroy(&mta);
 		return tsk_null;
