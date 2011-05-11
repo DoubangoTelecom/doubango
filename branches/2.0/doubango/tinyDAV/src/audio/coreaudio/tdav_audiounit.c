@@ -26,11 +26,17 @@
 #include "tsk_debug.h"
 
 #if HAVE_COREAUDIO_AUDIO_UNIT
-#if 1 // Echo cancellation, AGC, ...
-#	define kDoubangoAudioUnitSubType	kAudioUnitSubType_VoiceProcessingIO
-#else
-#	define kDoubangoAudioUnitSubType	kAudioUnitSubType_RemoteIO
-#endif
+	#if TARGET_OS_IPHONE
+		#if 1 // Echo cancellation, AGC, ...
+			#define kDoubangoAudioUnitSubType	kAudioUnitSubType_VoiceProcessingIO
+		#else
+			#define kDoubangoAudioUnitSubType	kAudioUnitSubType_RemoteIO
+		#endif
+	#elif TARGET_OS_MAC
+		#define kDoubangoAudioUnitSubType	kAudioUnitSubType_DefaultOutput
+	#else
+		#error "Unknown target"
+	#endif
 
 typedef struct tdav_audiounit_instance_s
 {
@@ -150,6 +156,7 @@ tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id, uint3
 			TSK_OBJECT_SAFE_FREE(inst);
 			goto done;
 		}
+#if TARGET_OS_IPHONE
 		// enable all even if we know that it's already done by default
 		static UInt32 kOne = 1;
 		static UInt32 kZero = 0;
@@ -163,7 +170,7 @@ tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id, uint3
 							 kAudioUnitScope_Global, kInputBus, &kOne, sizeof(kOne));
 		// status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_VoiceProcessingQuality,
 		//							  kAudioUnitScope_Global, kInputBus, &kVoiceQuality, sizeof(kVoiceQuality));
-		
+#endif /* TARGET_OS_IPHONE */
 		_inst = inst, _inst->session_id = session_id;
 		tsk_list_push_back_data(__audioUnitInstances, (void**)&_inst);
 	}
