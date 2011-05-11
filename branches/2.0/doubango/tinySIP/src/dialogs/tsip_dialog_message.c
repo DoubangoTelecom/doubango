@@ -287,10 +287,19 @@ int tsip_dialog_message_Sending_2_Terminated_X_2xx(va_list *app)
 */
 int tsip_dialog_message_Sending_2_Sending_X_401_407_421_494(va_list *app)
 {
-	/*tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);*/
-	/*const tsip_response_t *response = va_arg(*app, const tsip_response_t *);*/
-
-	return 0;
+	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	int ret;
+	
+	if((ret = tsip_dialog_update(TSIP_DIALOG(self), response))){
+		/* Alert the user. */
+		TSIP_DIALOG_MESSAGE_SIGNAL(self, tsip_ao_message, 
+								   TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+		
+		return ret;
+	}
+	
+	return send_MESSAGE(self);
 }
 
 /*	Sending -> (300 to 699) -> Terminated
