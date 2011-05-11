@@ -77,8 +77,10 @@ int tdav_consumer_audioqueue_prepare(tmedia_consumer_t* self, const tmedia_codec
 	/* codec should have ptime */
 	
 	// Set audio category
+#if TARGET_OS_IPHONE
 	UInt32 category = kAudioSessionCategory_PlayAndRecord; 
 	AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(category), &category);
+#endif
 	
     // Create the audio stream description
     AudioStreamBasicDescription *description = &(consumer->description);
