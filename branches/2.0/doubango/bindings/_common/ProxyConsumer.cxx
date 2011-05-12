@@ -57,7 +57,7 @@ int twrap_consumer_proxy_audio_prepare(tmedia_consumer_t* self, const tmedia_cod
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if(codec && (manager = ProxyPluginMgr::getInstance())){
-		ProxyAudioConsumer* audioConsumer;
+		const ProxyAudioConsumer* audioConsumer;
 		if((audioConsumer = manager->findAudioConsumer(TWRAP_CONSUMER_PROXY_AUDIO(self)->id)) && audioConsumer->getCallback()){
 			self->audio.ptime = codec->plugin->audio.ptime;
 			self->audio.in.channels = codec->plugin->audio.channels;
@@ -74,7 +74,7 @@ int twrap_consumer_proxy_audio_start(tmedia_consumer_t* self)
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
-		ProxyAudioConsumer* audioConsumer;
+		const ProxyAudioConsumer* audioConsumer;
 		if((audioConsumer = manager->findAudioConsumer(TWRAP_CONSUMER_PROXY_AUDIO(self)->id)) && audioConsumer->getCallback()){
 			ret = audioConsumer->getCallback()->start();
 		}
@@ -89,7 +89,7 @@ int twrap_consumer_proxy_audio_consume(tmedia_consumer_t* self, const void* buff
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
-		ProxyAudioConsumer* audioConsumer;
+		const ProxyAudioConsumer* audioConsumer;
 		if((audioConsumer = manager->findAudioConsumer(TWRAP_CONSUMER_PROXY_AUDIO(self)->id)) && audioConsumer->getCallback()){
 			ret = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(self), buffer, size, proto_hdr);
 		}
@@ -103,7 +103,7 @@ int twrap_consumer_proxy_audio_pause(tmedia_consumer_t* self)
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
-		ProxyAudioConsumer* audioConsumer;
+		const ProxyAudioConsumer* audioConsumer;
 		if((audioConsumer = manager->findAudioConsumer(TWRAP_CONSUMER_PROXY_AUDIO(self)->id)) && audioConsumer->getCallback()){
 			ret = audioConsumer->getCallback()->pause();
 		}
@@ -117,7 +117,7 @@ int twrap_consumer_proxy_audio_stop(tmedia_consumer_t* self)
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
-		ProxyAudioConsumer* audioConsumer;
+		const ProxyAudioConsumer* audioConsumer;
 		if((audioConsumer = manager->findAudioConsumer(TWRAP_CONSUMER_PROXY_AUDIO(self)->id)) && audioConsumer->getCallback()){
 			ret = audioConsumer->getCallback()->stop();
 		}
@@ -377,7 +377,7 @@ int twrap_consumer_proxy_video_prepare(tmedia_consumer_t* self, const tmedia_cod
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if(codec && (manager = ProxyPluginMgr::getInstance())){
-		ProxyVideoConsumer* videoConsumer;
+		const ProxyVideoConsumer* videoConsumer;
 		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
 			self->video.fps = TMEDIA_CODEC_VIDEO(codec)->fps;
 			// in
@@ -405,7 +405,7 @@ int twrap_consumer_proxy_video_start(tmedia_consumer_t* self)
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
-		ProxyVideoConsumer* videoConsumer;
+		const ProxyVideoConsumer* videoConsumer;
 		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
 			ret = videoConsumer->getCallback()->start();
 		}
@@ -426,7 +426,7 @@ int twrap_consumer_proxy_video_consume(tmedia_consumer_t* self, const void* buff
 	}
 	
 	if((manager = ProxyPluginMgr::getInstance())){
-		ProxyVideoConsumer* videoConsumer;
+		const ProxyVideoConsumer* videoConsumer;
 		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
 			if(videoConsumer->hasConsumeBuffer()){
 				unsigned nCopiedSize = videoConsumer->copyBuffer(buffer, size); 
@@ -448,7 +448,7 @@ int twrap_consumer_proxy_video_pause(tmedia_consumer_t* self)
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
-		ProxyVideoConsumer* videoConsumer;
+		const ProxyVideoConsumer* videoConsumer;
 		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
 			ret = videoConsumer->getCallback()->pause();
 		}
@@ -462,7 +462,7 @@ int twrap_consumer_proxy_video_stop(tmedia_consumer_t* self)
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
-		ProxyVideoConsumer* videoConsumer;
+		const ProxyVideoConsumer* videoConsumer;
 		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
 			ret = videoConsumer->getCallback()->stop();
 		}
@@ -607,7 +607,7 @@ unsigned ProxyVideoConsumer::getDisplayHeight()
 	return displayHeight;
 }
 
-tmedia_chroma_t ProxyVideoConsumer::getChroma()
+tmedia_chroma_t ProxyVideoConsumer::getChroma()const
 {
 	return m_eChroma;
 }
@@ -623,7 +623,7 @@ bool ProxyVideoConsumer::setAutoResizeDisplay(bool bAutoResizeDisplay){
 	return false;
 }
 
-bool ProxyVideoConsumer::getAutoResizeDisplay()
+bool ProxyVideoConsumer::getAutoResizeDisplay()const
 {
 	return m_bAutoResizeDisplay;
 }
@@ -635,7 +635,7 @@ bool ProxyVideoConsumer::setConsumeBuffer(const void* pConsumeBufferPtr, unsigne
 	return true;
 }
 
-unsigned ProxyVideoConsumer::copyBuffer(const void* pBuffer, unsigned nSize)
+unsigned ProxyVideoConsumer::copyBuffer(const void* pBuffer, unsigned nSize)const
 {
 	unsigned nRetsize = 0;
 	if(pBuffer && nSize && m_ConsumeBuffer.pConsumeBufferPtr && m_ConsumeBuffer.nConsumeBufferSize){

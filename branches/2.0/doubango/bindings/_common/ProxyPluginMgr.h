@@ -61,18 +61,18 @@ public:
 	static uint64_t getUniqueId();
 
 	int addPlugin(ProxyPlugin**);
-	ProxyPlugin* findPlugin(uint64_t id);
-	ProxyPlugin* findPlugin(tsk_object_t* wrapped_plugin);
+	const ProxyPlugin* findPlugin(uint64_t id);
+	const ProxyPlugin* findPlugin(tsk_object_t* wrapped_plugin);
 	int removePlugin(uint64_t id);
 	int removePlugin(ProxyPlugin**);
 
 	inline ProxyPluginMgrCallback* getCallback(){ return this->callback; }
 #endif
 
-	ProxyAudioConsumer* findAudioConsumer(uint64_t id);
-	ProxyVideoConsumer* findVideoConsumer(uint64_t id);
-	ProxyAudioProducer* findAudioProducer(uint64_t id);
-	ProxyVideoProducer* findVideoProducer(uint64_t id);
+	const ProxyAudioConsumer* findAudioConsumer(uint64_t id);
+	const ProxyVideoConsumer* findVideoConsumer(uint64_t id);
+	const ProxyAudioProducer* findAudioProducer(uint64_t id);
+	const ProxyVideoProducer* findVideoProducer(uint64_t id);
 
 private:
 	static ProxyPluginMgr* instance;

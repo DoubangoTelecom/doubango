@@ -95,9 +95,9 @@ bool MediaSessionMgr::producerSetInt64(twrap_media_type_t media, const char* key
 #include "ProxyPluginMgr.h"
 
 
-ProxyPlugin* MediaSessionMgr::findProxyPlugin(twrap_media_type_t media, bool consumer)
+const ProxyPlugin* MediaSessionMgr::findProxyPlugin(twrap_media_type_t media, bool consumer)const
 {
-	ProxyPlugin* plugin = tsk_null;
+	const ProxyPlugin* plugin = tsk_null;
 	ProxyPluginMgr* manager = ProxyPluginMgr::getInstance();
 
 	if(media != twrap_media_audio && media != twrap_media_video){
