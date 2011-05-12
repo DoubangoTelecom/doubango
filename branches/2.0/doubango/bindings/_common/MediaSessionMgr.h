@@ -45,13 +45,13 @@ public:
 	bool producerSetInt64(twrap_media_type_t media, const char* key, int64_t value);
 
 #if !defined(SWIG)
-	ProxyPlugin* findProxyPlugin(twrap_media_type_t media, bool consumer);
+	const ProxyPlugin* findProxyPlugin(twrap_media_type_t media, bool consumer)const;
 #endif
 
-	ProxyPlugin* findProxyPluginConsumer(twrap_media_type_t media){
+	const ProxyPlugin* findProxyPluginConsumer(twrap_media_type_t media)const{
 		return this->findProxyPlugin(media, true);
 	}
-	ProxyPlugin* findProxyPluginProducer(twrap_media_type_t media){
+	const ProxyPlugin* findProxyPluginProducer(twrap_media_type_t media)const{
 		return this->findProxyPlugin(media, false);
 	}
 

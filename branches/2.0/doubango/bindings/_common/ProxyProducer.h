@@ -66,7 +66,7 @@ public:
 	unsigned getGain();
 	void setCallback(ProxyAudioProducerCallback* pCallback) { m_pCallback = pCallback; }
 #if !defined(SWIG)
-	inline ProxyAudioProducerCallback* getCallback() { return m_pCallback; }
+	inline ProxyAudioProducerCallback* getCallback()const { return m_pCallback; }
 	virtual inline bool isWrapping(tsk_object_t* pWrappedPlugin){
 		return m_pWrappedPlugin == pWrappedPlugin;
 	}
@@ -109,15 +109,18 @@ public:
 #endif
 	virtual ~ProxyVideoProducer();	
 
-	int getRotation();
+	int getRotation()const;
 	void setRotation(int nRot);
 	int push(const void* pBuffer, unsigned nSize);
 	int send(const void* pBuffer, unsigned nSize, unsigned nDuration, bool bMarker);
 	void setCallback(ProxyVideoProducerCallback* pCallback) { m_pCallback = pCallback; }
 #if !defined(SWIG)
-	inline ProxyVideoProducerCallback* getCallback() { return m_pCallback; }
+	inline ProxyVideoProducerCallback* getCallback()const { return m_pCallback; }
 	virtual inline bool isWrapping(tsk_object_t* wrapped_plugin){
 		return m_pWrappedPlugin == wrapped_plugin;
+	}
+	virtual inline const tmedia_producer_t* getWrappedPlugin()const{
+		return (tmedia_producer_t*)m_pWrappedPlugin;
 	}
 #endif
 	virtual inline uint64_t getMediaSessionId(){
@@ -129,7 +132,7 @@ public:
 	static void setDefaultChroma(tmedia_chroma_t eChroma){ s_eDefaultChroma =  eChroma; }
 
 #if !defined(SWIG)
-	tmedia_chroma_t getChroma();
+	tmedia_chroma_t getChroma()const;
 	static tmedia_chroma_t getDefaultChroma() { return s_eDefaultChroma; }
 #endif
 

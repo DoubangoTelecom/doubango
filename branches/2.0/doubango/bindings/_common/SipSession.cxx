@@ -330,7 +330,7 @@ const MediaSessionMgr* InviteSession::getMediaMgr()
 	if(!m_pMediaMgr && m_pHandle){
 		tmedia_session_mgr_t* mgr = tsip_session_get_mediamgr(m_pHandle);
 		if(mgr){
-			m_pMediaMgr = new MediaSessionMgr(mgr);
+			m_pMediaMgr = new MediaSessionMgr(mgr); // new() it's not yours: see "m_pMediaMgr" which is destroy in the destructor()
 			tsk_object_unref(mgr);
 		}
 		else{

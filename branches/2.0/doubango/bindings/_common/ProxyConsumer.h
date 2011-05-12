@@ -67,7 +67,7 @@ public:
 	bool reset();
 	void setCallback(ProxyAudioConsumerCallback* pCallback) { m_pCallback = pCallback; }
 #if !defined(SWIG)
-	inline ProxyAudioConsumerCallback* getCallback() { return m_pCallback; }
+	inline ProxyAudioConsumerCallback* getCallback()const { return m_pCallback; }
 	virtual inline bool isWrapping(tsk_object_t* pWrappedPlugin){
 		return m_pWrappedPlugin == pWrappedPlugin;
 	}
@@ -126,13 +126,13 @@ public:
 
 	void setCallback(ProxyVideoConsumerCallback* pCallback) { m_pCallback = pCallback; }
 	bool setAutoResizeDisplay(bool bAutoResizeDisplay);
-	bool getAutoResizeDisplay();
+	bool getAutoResizeDisplay()const;
 	bool setConsumeBuffer(const void* pConsumeBufferPtr, unsigned nConsumeBufferSize);
 	
 #if !defined(SWIG)
-	bool hasConsumeBuffer() { return m_ConsumeBuffer.pConsumeBufferPtr && m_ConsumeBuffer.nConsumeBufferSize; }
-	unsigned copyBuffer(const void* pBuffer, unsigned nSize);
-	inline ProxyVideoConsumerCallback* getCallback() { return m_pCallback; }
+	bool hasConsumeBuffer()const { return m_ConsumeBuffer.pConsumeBufferPtr && m_ConsumeBuffer.nConsumeBufferSize; }
+	unsigned copyBuffer(const void* pBuffer, unsigned nSize)const;
+	inline ProxyVideoConsumerCallback* getCallback()const { return m_pCallback; }
 	virtual inline bool isWrapping(tsk_object_t* wrapped_plugin){
 		return m_pWrappedPlugin == wrapped_plugin;
 	}
@@ -147,7 +147,7 @@ public:
 	static void setDefaultAutoResizeDisplay(bool bAutoResizeDisplay){  s_bAutoResizeDisplay = bAutoResizeDisplay;}
 
 #if !defined(SWIG)
-	tmedia_chroma_t getChroma();
+	tmedia_chroma_t getChroma()const;
 	static tmedia_chroma_t getDefaultChroma() { return s_eDefaultChroma; }
 	static bool getDefaultAutoResizeDisplay() { return s_bAutoResizeDisplay; }
 #endif

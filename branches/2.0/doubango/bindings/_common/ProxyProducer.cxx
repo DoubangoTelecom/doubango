@@ -54,7 +54,7 @@ int twrap_producer_proxy_audio_prepare(tmedia_producer_t* self, const tmedia_cod
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if(codec && (manager = ProxyPluginMgr::getInstance())){
-		ProxyAudioProducer* audioProducer;
+		const ProxyAudioProducer* audioProducer;
 		if((audioProducer = manager->findAudioProducer(TWRAP_PRODUCER_PROXY_AUDIO(self)->id)) && audioProducer->getCallback()){
 			self->audio.channels = codec->plugin->audio.channels;
 			self->audio.rate = codec->plugin->rate;
@@ -70,7 +70,7 @@ int twrap_producer_proxy_audio_start(tmedia_producer_t* self)
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
-		ProxyAudioProducer* audioProducer;
+		const ProxyAudioProducer* audioProducer;
 		if((audioProducer = manager->findAudioProducer(TWRAP_PRODUCER_PROXY_AUDIO(self)->id)) && audioProducer->getCallback()){
 			ret = audioProducer->getCallback()->start();
 		}
@@ -85,7 +85,7 @@ int twrap_producer_proxy_audio_pause(tmedia_producer_t* self)
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
-		ProxyAudioProducer* audioProducer;
+		const ProxyAudioProducer* audioProducer;
 		if((audioProducer = manager->findAudioProducer(TWRAP_PRODUCER_PROXY_AUDIO(self)->id)) && audioProducer->getCallback()){
 			ret = audioProducer->getCallback()->pause();
 		}
@@ -98,7 +98,7 @@ int twrap_producer_proxy_audio_stop(tmedia_producer_t* self)
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
-		ProxyAudioProducer* audioProducer;
+		const ProxyAudioProducer* audioProducer;
 		if((audioProducer = manager->findAudioProducer(TWRAP_PRODUCER_PROXY_AUDIO(self)->id)) && audioProducer->getCallback()){
 			ret = audioProducer->getCallback()->stop();
 		}
@@ -287,7 +287,7 @@ int twrap_producer_proxy_video_prepare(tmedia_producer_t* self, const tmedia_cod
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if(codec && (manager = ProxyPluginMgr::getInstance())){
-		ProxyVideoProducer* videoProducer;
+		const ProxyVideoProducer* videoProducer;
 		if((videoProducer = manager->findVideoProducer(TWRAP_PRODUCER_PROXY_VIDEO(self)->id)) && videoProducer->getCallback()){
 			self->video.chroma = videoProducer->getChroma();
 			self->video.rotation = videoProducer->getRotation();
@@ -303,7 +303,7 @@ int twrap_producer_proxy_video_start(tmedia_producer_t* self)
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
-		ProxyVideoProducer* videoProducer;
+		const ProxyVideoProducer* videoProducer;
 		if((videoProducer = manager->findVideoProducer(TWRAP_PRODUCER_PROXY_VIDEO(self)->id)) && videoProducer->getCallback()){
 			ret = videoProducer->getCallback()->start();
 		}
@@ -318,7 +318,7 @@ int twrap_producer_proxy_video_pause(tmedia_producer_t* self)
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
-		ProxyVideoProducer* videoProducer;
+		const ProxyVideoProducer* videoProducer;
 		if((videoProducer = manager->findVideoProducer(TWRAP_PRODUCER_PROXY_VIDEO(self)->id)) && videoProducer->getCallback()){
 			ret = videoProducer->getCallback()->pause();
 		}
@@ -332,7 +332,7 @@ int twrap_producer_proxy_video_stop(tmedia_producer_t* self)
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
-		ProxyVideoProducer* videoProducer;
+		const ProxyVideoProducer* videoProducer;
 		if((videoProducer = manager->findVideoProducer(TWRAP_PRODUCER_PROXY_VIDEO(self)->id)) && videoProducer->getCallback()){
 			ret = videoProducer->getCallback()->stop();
 		}
@@ -433,7 +433,7 @@ ProxyVideoProducer::~ProxyVideoProducer()
 {
 }
 
-int ProxyVideoProducer::getRotation()
+int ProxyVideoProducer::getRotation()const
 {
 	return m_nRotation;
 }
@@ -464,7 +464,7 @@ int ProxyVideoProducer::send(const void* pBuffer, unsigned nSize, unsigned nDura
 	return 0;
 }
 
-tmedia_chroma_t ProxyVideoProducer::getChroma()
+tmedia_chroma_t ProxyVideoProducer::getChroma()const
 {
 	return m_eChroma;
 }

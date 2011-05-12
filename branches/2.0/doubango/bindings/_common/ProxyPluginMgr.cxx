@@ -127,7 +127,7 @@ int ProxyPluginMgr::removePlugin(ProxyPlugin** plugin)
 	return this->removePlugin((*plugin)->getId());
 }
 
-ProxyPlugin* ProxyPluginMgr::findPlugin(uint64_t id)
+const ProxyPlugin* ProxyPluginMgr::findPlugin(uint64_t id)
 {
 	ProxyPlugin* ret = tsk_null;
 
@@ -145,7 +145,7 @@ ProxyPlugin* ProxyPluginMgr::findPlugin(uint64_t id)
 	return ret;
 }
 
-ProxyPlugin* ProxyPluginMgr::findPlugin(tsk_object_t* wrapped_plugin)
+const ProxyPlugin* ProxyPluginMgr::findPlugin(tsk_object_t* wrapped_plugin)
 {
 	ProxyPlugin* ret = tsk_null;
 
@@ -180,38 +180,38 @@ int ProxyPluginMgr::removePlugin(uint64_t id)
 	return 0;
 }
 
-ProxyAudioConsumer* ProxyPluginMgr::findAudioConsumer(uint64_t id)
+const ProxyAudioConsumer* ProxyPluginMgr::findAudioConsumer(uint64_t id)
 {
-	ProxyPlugin* audioConsumer = this->findPlugin(id);
+	const ProxyPlugin* audioConsumer = this->findPlugin(id);
 	if(audioConsumer && audioConsumer->getType() == twrap_proxy_plugin_audio_consumer){
-		return dyn_cast<ProxyAudioConsumer*>(audioConsumer);
+		return dyn_cast<const ProxyAudioConsumer*>(audioConsumer);
 	}
 	return tsk_null;
 }
 
-ProxyVideoConsumer* ProxyPluginMgr::findVideoConsumer(uint64_t id)
+const ProxyVideoConsumer* ProxyPluginMgr::findVideoConsumer(uint64_t id)
 {
-	ProxyPlugin* videoConsumer = this->findPlugin(id);
+	const ProxyPlugin* videoConsumer = this->findPlugin(id);
 	if(videoConsumer && videoConsumer->getType() == twrap_proxy_plugin_video_consumer){
-		return dyn_cast<ProxyVideoConsumer*>(videoConsumer);
+		return dyn_cast<const ProxyVideoConsumer*>(videoConsumer);
 	}
 	return tsk_null;
 }
 
-ProxyAudioProducer* ProxyPluginMgr::findAudioProducer(uint64_t id)
+const ProxyAudioProducer* ProxyPluginMgr::findAudioProducer(uint64_t id)
 {
-	ProxyPlugin* audioProducer = this->findPlugin(id);
+	const ProxyPlugin* audioProducer = this->findPlugin(id);
 	if(audioProducer && audioProducer->getType() == twrap_proxy_plugin_audio_producer){
-		return dyn_cast<ProxyAudioProducer*>(audioProducer);
+		return dyn_cast<const ProxyAudioProducer*>(audioProducer);
 	}
 	return tsk_null;
 }
 
-ProxyVideoProducer* ProxyPluginMgr::findVideoProducer(uint64_t id)
+const ProxyVideoProducer* ProxyPluginMgr::findVideoProducer(uint64_t id)
 {
-	ProxyPlugin* videoProducer = this->findPlugin(id);
+	const ProxyPlugin* videoProducer = this->findPlugin(id);
 	if(videoProducer && videoProducer->getType() == twrap_proxy_plugin_video_producer){
-		return dyn_cast<ProxyVideoProducer*>(videoProducer);
+		return dyn_cast<const ProxyVideoProducer*>(videoProducer);
 	}
 	return tsk_null;
 }
