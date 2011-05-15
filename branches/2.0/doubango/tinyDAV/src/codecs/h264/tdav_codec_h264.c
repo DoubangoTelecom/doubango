@@ -135,6 +135,7 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	//h264->encoder.context->bit_rate = (int) (bitRate * 0.80f);
 	//h264->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
 	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->fps*4; // Each 4 second(s)
+	// h264->encoder.context->keyint_min = TMEDIA_CODEC_VIDEO(h264)->fps;
 		
 
 	// Picture (YUV 420)
