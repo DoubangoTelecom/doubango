@@ -1274,7 +1274,7 @@ static tsk_object_t* tmedia_session_mgr_ctor(tsk_object_t * self, va_list * app)
 
 		mgr->qos.type = tmedia_qos_stype_none;
 		mgr->qos.strength = tmedia_qos_strength_optional;
-		mgr->bl = tmedia_bl_low;
+		mgr->bl = tmedia_bl_medium;
 	}
 	return self;
 }
