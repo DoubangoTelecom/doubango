@@ -176,7 +176,6 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		case tsip_MESSAGE:
 		case tsip_PUBLISH:
 		case tsip_BYE:
-		case tsip_OPTIONS:
 			{
 				if(request->line.request.request_type == tsip_PUBLISH) {
 					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_EXPIRES_VA_ARGS(TSK_TIME_MS_2_S(self->expires)));
@@ -452,7 +451,6 @@ tsip_response_t *tsip_dialog_response_new(const tsip_dialog_t *self, short statu
 		switch(request->line.request.request_type){
 			case tsip_MESSAGE:
 			case tsip_PUBLISH:
-			case tsip_OPTIONS:
 				break;
 			default:
 				/* Is there a To tag?  */
