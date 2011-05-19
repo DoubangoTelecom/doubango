@@ -3,3 +3,4 @@
 - "Laurent Etiemble" <laurent(dot)etiemble(AT)gmail(dot)com>
 - "Mamadou Diop" <diopmamadou(AT)doubango(dot)org>
 - "Philippe Verney" <verney(dot)philippe(AT)gmail(dot)com>
+- "Rich Hovey" <rich(AT)hovey(dot)org>
