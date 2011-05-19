@@ -24,11 +24,7 @@
  * @brief Audio Session plugin.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
- * @contributor Alberto Panizzo <alberto@amarulasolutions.com>
- *		Audio gain function
- *
-
+ * @contributors: See $(DOUBANGO_HOME)\contributors.txt
  */
 #include "tinydav/audio/tdav_session_audio.h"
 
