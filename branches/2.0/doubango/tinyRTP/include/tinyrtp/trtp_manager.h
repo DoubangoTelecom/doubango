@@ -81,6 +81,7 @@ typedef struct trtp_manager_s
 	tsk_bool_t ipv6;
 	tsk_bool_t started;
 	tsk_bool_t enable_rtcp;
+	tsk_bool_t socket_disabled;
 	tnet_transport_t* transport;
 }
 trtp_manager_t;

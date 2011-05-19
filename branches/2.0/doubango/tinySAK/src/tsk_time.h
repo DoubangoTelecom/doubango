@@ -48,7 +48,6 @@ struct timespec;
 TINYSAK_API int tsk_gettimeofday(struct timeval *tv, struct timezone *tz);
 TINYSAK_API uint64_t tsk_time_get_ms(struct timeval *tv);
 TINYSAK_API uint64_t tsk_time_epoch();
-TINYSAK_API int tsk_time_epoch_2(struct timespec *ts);
 
 
 /**@ingroup tsk_time_group

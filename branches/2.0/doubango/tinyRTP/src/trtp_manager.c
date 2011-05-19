@@ -41,7 +41,7 @@
 // TODO: Add support for outbound DTMF (http://www.ietf.org/rfc/rfc2833.txt)
 
 /* ======================= Transport callback ========================== */
-static int trtp_transport_layer_cb(const tnet_transport_event_t* e)
+static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 {
 	int ret = -1;
 	const trtp_manager_t *manager = e->callback_data;
@@ -93,6 +93,34 @@ bail:
 }
 
 
+static int _trtp_manager_enable_sockets(trtp_manager_t* self)
+{
+	int rcv_buf = BIG_RCVBUF;
+	int snd_buf = BIG_SNDBUF;
+	int ret;
+
+	if(!self->socket_disabled){
+		return 0;
+	}
+
+	if(!self || !self->transport){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&rcv_buf, sizeof(rcv_buf)))){
+		TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", ret);
+		return ret;
+	}
+	if((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_SNDBUF, (char*)&snd_buf, sizeof(snd_buf)))){
+		TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", ret);
+		return ret;
+	}
+
+	self->socket_disabled = tsk_false;
+	return 0;
+}
+
 
 /** Create RTP/RTCP manager */
 trtp_manager_t* trtp_manager_create(tsk_bool_t enable_rtcp, const char* local_ip, tsk_bool_t ipv6)
@@ -141,15 +169,16 @@ int trtp_manager_prepare(trtp_manager_t* self)
 		/* RTP */
 		if((self->transport = tnet_transport_create(self->local_ip, local_port, socket_type, "RTP/RTCP Manager"))){
 			/* set callback function */
-			tnet_transport_set_callback(self->transport, trtp_transport_layer_cb, self);
+			tnet_transport_set_callback(self->transport, _trtp_transport_layer_cb, self);
 			tsk_strupdate(&self->rtp.public_ip, self->transport->master->ip);
 			self->rtp.public_port = local_port;
 			/* Disable receiving until we start the transport (To avoid buffering) */
-			{
+			if(!self->socket_disabled){
 				int err, optval = TINY_RCVBUF;
 				if((err = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&optval, sizeof(optval)))){
 					TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", err);
-				}				
+				}
+				self->socket_disabled = (err == 0);
 			}
 		}
 		else {
@@ -192,25 +221,27 @@ int trtp_manager_set_natt_ctx(trtp_manager_t* self, tnet_nat_context_handle_t* n
 {
 	int ret;
 
-	if(!self || !self->transport){
+	if(!self || !self->transport || !natt_ctx){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	if(!(ret = tnet_transport_set_natt_ctx(self->transport, natt_ctx))){
 		tnet_ip_t public_ip = {0};
 		tnet_port_t public_port = 0;
-		/* get RTP public IP and Port */
+		// get RTP public IP and Port
 		if(!tnet_transport_get_public_ip_n_port(self->transport, self->transport->master->fd, &public_ip, &public_port)){
 			tsk_strupdate(&self->rtp.public_ip, public_ip);
 			self->rtp.public_port = public_port;
 		}
-		/* get RTCP public IP and Port */
+		// get RTCP public IP and Port
 		memset(public_ip, 0, sizeof(public_ip));
 		public_port = 0;
 		if(self->rtcp.local_socket && !tnet_transport_get_public_ip_n_port(self->transport, self->rtcp.local_socket->fd, &public_ip, &public_port)){
 			tsk_strupdate(&self->rtcp.public_ip, public_ip);
 			self->rtcp.public_port = public_port;
 		}
+		// re-enable sockets to be able to receive STUN packets
+		_trtp_manager_enable_sockets(self);
 	}
 	return ret;
 }
@@ -284,10 +315,13 @@ int trtp_manager_start(trtp_manager_t* self)
 		return -2;
 	}
 
-	/* Change RCV and SND buffer sizes */
+	/* Flush buffers and re-enable sockets */
 	{
 		char buff[1024];
-		int rcv_buf = BIG_RCVBUF, snd_buf = BIG_SNDBUF;
+		
+		// re-enable sockets
+		_trtp_manager_enable_sockets(self);
+		
 		TSK_DEBUG_INFO("Start flushing RTP socket...");
 		// Buffer should be empty ...but who know?
 		// rcv() should never block() as we are always using non-blocking sockets
@@ -295,14 +329,6 @@ int trtp_manager_start(trtp_manager_t* self)
 			TSK_DEBUG_INFO("Flushing RTP Buffer %d", ret);
 		}
 		TSK_DEBUG_INFO("End flushing RTP socket");
-		if((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&rcv_buf, sizeof(rcv_buf)))){
-			TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", ret);
-			return ret;
-		}
-		if((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_SNDBUF, (char*)&snd_buf, sizeof(snd_buf)))){
-			TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", ret);
-			return ret;
-		}
 	}
 
 	/* start the transport */
