@@ -902,7 +902,7 @@ tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_t *stack, const char* pro
 			tsip_transport_t *transport = item->data;
 
 			if(transport){
-				if(tsk_strequals(transport->protocol, protocol)){
+				if(tsk_striequals(transport->protocol, protocol)){
 					tsip_uri_t* uri = tsk_null;
 					if((uri = tsip_transport_get_uri(transport, 0))){
 						tsk_strupdate(&uri->user_name, stack->identity.impu->user_name);
