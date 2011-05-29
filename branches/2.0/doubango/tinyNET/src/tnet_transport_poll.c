@@ -35,7 +35,7 @@
 #include "tsk_buffer.h"
 #include "tsk_safeobj.h"
 
-#if TNET_USE_POLL
+#if TNET_USE_POLL //&& !(__IPHONE_OS_VERSION_MIN_REQUIRED >= 40000)
 
 #include "tnet_poll.h"
 
@@ -346,21 +346,21 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 				CFWriteStreamSetProperty(sock->cfWriteStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanFalse);
 				
 				if(!CFReadStreamSetProperty(sock->cfReadStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP)){
-					//TNET_PRINT_LAST_ERROR("CFReadStreamSetProperty(cfReadStream, kCFStreamNetworkServiceTypeVoIP) failed");
+					TNET_PRINT_LAST_ERROR("CFReadStreamSetProperty(cfReadStream, kCFStreamNetworkServiceTypeVoIP) failed");
 				}
 				if(!CFWriteStreamSetProperty(sock->cfWriteStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP)){
-					//TNET_PRINT_LAST_ERROR("CFReadStreamSetProperty(cfWriteStream, kCFStreamNetworkServiceTypeVoIP) failed");
+					TNET_PRINT_LAST_ERROR("CFReadStreamSetProperty(cfWriteStream, kCFStreamNetworkServiceTypeVoIP) failed");
 				}
 			}
 		
 			if(sock->cfReadStream){
 				if(!CFReadStreamOpen(sock->cfReadStream)){
-					//TNET_PRINT_LAST_ERROR("CFReadStreamOpen(cfWriteStream) failed");
+					TNET_PRINT_LAST_ERROR("CFReadStreamOpen(cfWriteStream) failed");
 				}
 			}
 			if(sock->cfWriteStream){
 				if(!CFWriteStreamOpen(sock->cfWriteStream)){
-					//TNET_PRINT_LAST_ERROR("CFWriteStreamOpen(cfWriteStream) failed");
+					TNET_PRINT_LAST_ERROR("CFWriteStreamOpen(cfWriteStream) failed");
 				}
 			}
 		}

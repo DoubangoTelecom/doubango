@@ -133,7 +133,7 @@ tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id, uint3
 		OSStatus status;
 		tdav_audiounit_instance_t* _inst;
 		// set preferred buffer size
-		Float32 preferredBufferSize = (Float32)ptime / 1000.f; // in seconds
+		Float32 preferredBufferSize = ((Float32)ptime / 1000.f); // in seconds
 		status = AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration, sizeof(preferredBufferSize), &preferredBufferSize);
 		if(status){
 			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback) failed with status=%d", (int32_t)status);
