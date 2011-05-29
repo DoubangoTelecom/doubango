@@ -73,7 +73,7 @@ static OSStatus __handle_input_buffer(void *inRefCon,
 							 inBusNumber, 
 							 inNumberFrames, 
 							 &buffers);
-	if(!status){
+	if(status == 0){
 		tsk_mutex_lock(producer->ring.mutex);
 		speex_buffer_write(producer->ring.buffer, buffers.mBuffers[0].mData, buffers.mBuffers[0].mDataByteSize);
 		tsk_mutex_unlock(producer->ring.mutex);
