@@ -26,12 +26,13 @@ const char* uris[] =
 {
 	
 	//== SIP:
+	"sip:123.com",
 	"sip:open-ims.test",
 	"sip:pcscf.open-ims.test:4060;lr;transport=udp",
 	"sip:2233392625@sip2sip.info",
 	"sip:alice@iatlanta.com;p1=23",
 	"sip:*666*@atlanta.com",
-	"sip:#66#@atlanta.com",
+	"sip:#66#@atlanta.com", // should fail: # must be replaced with %23
 	"sip:alice:secretword@atlanta.com",
 	"sip:alice:secretword@atlanta.com:65535;transport=tcp",
     "sip:+1-212-555-1212:1234@gateway.com;user=phone",
@@ -40,7 +41,7 @@ const char* uris[] =
 	"sip:atlanta.com",
 	"sip:alice@[1111::aaa:bbb:ccc:ddd]",
 	"sip:alice@[1111::aaa:bbb:ccc:ddd]:5060;user=phone",
-	"sip:alice@1111::aaa:bbb:ccc:ddd",
+	"sip:alice@1111::aaa:bbb:ccc:ddd", // should fail
 	"sip:alice@[::127]",
 	"sip:ss2.biloxi.example.com;lr",// FIXME
     "sip:atlanta.com;method=REGISTER?to=alice%40atlanta.com",

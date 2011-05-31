@@ -99,7 +99,7 @@
 							
 							("tel:"i %is_tel (any+)>tag %parse_user_name :> uri_parameters) @100 { };
 							
-							( (IPv6reference >is_ipv6)>89 | (IPv4address >is_ipv4)>88 | (hostname >is_hostname)>87 ) @90
+							( (IPv6reference >is_ipv6)@89 | (IPv4address >is_ipv4)@88 | (hostname >is_hostname)@87 ) @90
 							{
 								TSK_SCANNER_SET_STRING(uri->host);
 								if(uri->host_type == host_ipv6){

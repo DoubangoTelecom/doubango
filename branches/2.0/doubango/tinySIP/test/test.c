@@ -34,8 +34,8 @@
 #define RUN_TEST_LOOP		1
 
 #define RUN_TEST_ALL		0
-#define RUN_TEST_MESSAGES	1
-#define RUN_TEST_URI		0
+#define RUN_TEST_MESSAGES	0
+#define RUN_TEST_URI		1
 #define RUN_TEST_TRANSAC	0
 #define RUN_TEST_STACK		0
 #define RUN_TEST_IMS_AKA	0
