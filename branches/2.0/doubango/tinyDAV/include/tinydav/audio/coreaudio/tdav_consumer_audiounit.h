@@ -30,6 +30,7 @@
 #include <speex/speex_buffer.h>
 #include "tinydav/audio/coreaudio/tdav_audiounit.h"
 #include "tinydav/audio/tdav_consumer_audio.h"
+#import "tinymedia/tmedia_resampler.h"
 
 #include "tsk_mutex.h"
 
@@ -53,6 +54,8 @@ typedef struct tdav_consumer_audiounit_s
 		tsk_size_t size;
 		tsk_mutex_handle_t* mutex;
 	} ring;
+	
+	tmedia_resampler_t *resampler;
 }
 tdav_consumer_audiounit_t;
 

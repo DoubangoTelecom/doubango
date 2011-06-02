@@ -25,7 +25,6 @@
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
-
  */
 #include "tinymedia/tmedia.h"
 

@@ -269,7 +269,7 @@ int tsip_dialog_invite_server_init(tsip_dialog_invite_t *self)
 int s0000_Started_2_Terminated_X_iINVITE(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
-	tsip_request_t *request = va_arg(*app, tsip_request_t *);
+	/* tsip_request_t *request = va_arg(*app, tsip_request_t *); */
 
 	/* We are not the client */
 	self->is_client = tsk_false;

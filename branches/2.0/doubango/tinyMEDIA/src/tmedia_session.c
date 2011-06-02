@@ -30,6 +30,7 @@
 #include "tinymedia/tmedia_session.h"
 
 #include "tinymedia/tmedia_session_ghost.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tinysdp/headers/tsdp_header_O.h"
 
@@ -106,7 +107,7 @@ int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type)
 		}
 		self->type = type;
 		self->initialized = tsk_true;
-		self->bl = tmedia_bl_low;
+		self->bl = tmedia_defaults_get_bl();
 		/* load associated codecs */
 		ret = _tmedia_session_load_codecs(self);
 	}
@@ -1274,7 +1275,7 @@ static tsk_object_t* tmedia_session_mgr_ctor(tsk_object_t * self, va_list * app)
 
 		mgr->qos.type = tmedia_qos_stype_none;
 		mgr->qos.strength = tmedia_qos_strength_optional;
-		mgr->bl = tmedia_bl_medium;
+		mgr->bl = tmedia_defaults_get_bl();
 	}
 	return self;
 }

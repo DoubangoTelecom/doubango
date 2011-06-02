@@ -106,7 +106,8 @@ typedef enum tmedia_bandwidth_level_e
 {
 	tmedia_bl_low,
 	tmedia_bl_medium,
-	tmedia_bl_hight
+	tmedia_bl_hight,
+	tmedia_bl_unrestricted
 }
 tmedia_bandwidth_level_t;
 

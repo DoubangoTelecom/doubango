@@ -205,7 +205,7 @@ int tsip_transac_ict_timer_callback(const tsip_transac_ict_t* self, tsk_timer_id
 {
 	int ret = -1;
 
-	if(self)
+	if(self && TSIP_TRANSAC(self))
 	{
 		if(timer_id == self->timerA.id){
 			ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_timerA, tsk_null);

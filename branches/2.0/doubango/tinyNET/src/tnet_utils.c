@@ -1441,15 +1441,18 @@ tnet_fd_t tnet_sockfd_accept(tnet_fd_t fd, struct sockaddr *addr, socklen_t *add
 */
 int tnet_sockfd_close(tnet_fd_t *fd)
 {
-	int ret;
+	if(*fd != TNET_INVALID_FD){
+		int ret;
 #if TNET_UNDER_WINDOWS
-	ret = closesocket(*fd);
+		ret = closesocket(*fd);
 #else
-	ret = close(*fd);
+		ret = close(*fd);
 #endif
 
-	*fd = TNET_INVALID_FD;
-	return ret;
+		*fd = TNET_INVALID_FD;
+		return ret;
+	}
+	return 0;
 }
 
 

@@ -697,8 +697,11 @@ int x0000_Any_2_Any_X_i1xx(va_list *app)
 		dialog.  In particular, a UAC SHOULD NOT retransmit the PRACK request
 		when it receives a retransmission of the provisional response being
 		acknowledged, although doing so does not create a protocol error.
+	 
+		Additional information: We should only process the SDP from reliable responses (require:100rel)
+		but there was many problem with some clients sending SDP with this tag: tiscali, DTAG, samsung, ...
 	*/
-	if((TSIP_RESPONSE_CODE(r1xx) >= 101 && TSIP_RESPONSE_CODE(r1xx) <=199) && tsip_message_required(r1xx, "100rel")){
+	if((TSIP_RESPONSE_CODE(r1xx) >= 101 && TSIP_RESPONSE_CODE(r1xx) <=199) && TSIP_MESSAGE_HAS_CONTENT(r1xx)){
 		/* Process Remote offer */
 		if((ret = tsip_dialog_invite_process_ro(self, r1xx))){
 			/* Send Error */
@@ -1322,16 +1325,16 @@ static tsk_object_t* tsip_dialog_invite_dtor(tsk_object_t * _self)
 { 
 	tsip_dialog_invite_t *self = _self;
 	if(self){
-		/* Cancel all timers */
+		// Cancel all timers
 		tsip_dialog_invite_stimers_cancel(self);
 		tsip_dialog_invite_qos_timer_cancel(self);
 		TSIP_DIALOG_TIMER_CANCEL(shutdown);
 		TSIP_DIALOG_TIMER_CANCEL(100rel);
 
-		/* DeInitialize base class */
+		// DeInitialize base class
 		tsip_dialog_deinit(TSIP_DIALOG(self));
 		
-		/* DeInitialize self */
+		// DeInitialize self
 		TSK_OBJECT_SAFE_FREE(self->msession_mgr);
 		TSK_OBJECT_SAFE_FREE(self->last_oInvite);
 		TSK_OBJECT_SAFE_FREE(self->last_iInvite);

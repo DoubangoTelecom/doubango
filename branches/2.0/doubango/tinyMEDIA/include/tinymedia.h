@@ -40,6 +40,7 @@
 
 #include "tinymedia/tmedia_common.h"
 #include "tinymedia/tmedia_qos.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tinymedia/content/tmedia_content.h"
 #include "tinymedia/content/tmedia_content_cpim.h"
