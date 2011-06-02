@@ -619,7 +619,7 @@ static tsk_object_t* tdav_session_video_dtor(tsk_object_t * self)
 
 		// Do it in this order (deinit self first)
 		
-		/* deinit self (rtp manager should be destroyed after the producer) */
+		// deinit self (rtp manager should be destroyed after the producer)
 		TSK_OBJECT_SAFE_FREE(session->consumer);
 		TSK_OBJECT_SAFE_FREE(session->producer);
 		TSK_OBJECT_SAFE_FREE(session->conv.toYUV420);
@@ -633,12 +633,12 @@ static tsk_object_t* tdav_session_video_dtor(tsk_object_t * self)
 		TSK_FREE(session->decoder.buffer);
 		TSK_FREE(session->decoder.conv_buffer);
 
-		/* NAT Traversal context */
+		// NAT Traversal context
 		TSK_OBJECT_SAFE_FREE(session->natt_ctx);
 
 		tsk_safeobj_deinit(session);
 
-		/* deinit base */
+		// deinit base
 		tmedia_session_deinit(self);
 	}
 

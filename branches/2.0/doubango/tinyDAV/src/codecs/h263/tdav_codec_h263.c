@@ -148,6 +148,7 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 			break;
 		case tmedia_bl_medium:
 		case tmedia_bl_hight:
+		case tmedia_bl_unrestricted:
 			bitRate = 128000.f;
 			break;
 	}
@@ -491,6 +492,7 @@ tsk_bool_t tdav_codec_h263_fmtp_match(const tmedia_codec_t* codec, const char* f
 
 			case tmedia_bl_medium:
 			case tmedia_bl_hight:
+			case tmedia_bl_unrestricted:
 				if(tsk_params_have_param(params, "CIF")){
 					h263->width = 352, h263->height = 288;
 					ret = tsk_true;
@@ -520,6 +522,7 @@ char* tdav_codec_h263_fmtp_get(const tmedia_codec_t* self)
 			break;
 		case tmedia_bl_medium:
 		case tmedia_bl_hight:
+		case tmedia_bl_unrestricted:
 			return tsk_strdup("CIF=2;QCIF=2;SQCIF=2");
 			break;
 	}

@@ -25,6 +25,11 @@
 #include "tsk_safeobj.h"
 #include "tsk_debug.h"
 
+#if TARGET_OS_IPHONE
+static UInt32 kOne = 1;
+static UInt32 kZero = 0;
+#endif /* TARGET_OS_IPHONE */
+
 #if HAVE_COREAUDIO_AUDIO_UNIT
 	#if TARGET_OS_IPHONE
 		#if 1 // Echo cancellation, AGC, ...
@@ -37,6 +42,11 @@
 	#else
 		#error "Unknown target"
 	#endif
+
+#undef kInputBus
+#define kInputBus 1
+#undef kOutputBus
+#define kOutputBus 0
 
 typedef struct tdav_audiounit_instance_s
 {
@@ -158,16 +168,13 @@ tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id, uint3
 		}
 #if TARGET_OS_IPHONE
 		// enable all even if we know that it's already done by default
-		static UInt32 kOne = 1;
-		static UInt32 kZero = 0;
 		// static UInt32 kVoiceQuality = 127;
-#define kInputBus 1
-		status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_BypassVoiceProcessing,
-							 kAudioUnitScope_Global, kInputBus, &kZero, sizeof(kZero));
-		status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_VoiceProcessingEnableAGC,
-							 kAudioUnitScope_Global, kInputBus, &kOne, sizeof(kOne));
-		status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_DuckNonVoiceAudio,
-							 kAudioUnitScope_Global, kInputBus, &kOne, sizeof(kOne));
+		//status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_BypassVoiceProcessing,
+		//					 kAudioUnitScope_Global, kInputBus, &kZero, sizeof(kZero));
+		//status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_VoiceProcessingEnableAGC,
+		//					 kAudioUnitScope_Global, kInputBus, &kOne, sizeof(kOne));
+		//status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_DuckNonVoiceAudio,
+		//					 kAudioUnitScope_Global, kInputBus, &kOne, sizeof(kOne));
 		// status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_VoiceProcessingQuality,
 		//							  kAudioUnitScope_Global, kInputBus, &kVoiceQuality, sizeof(kVoiceQuality));
 #endif /* TARGET_OS_IPHONE */
@@ -224,6 +231,21 @@ uint32_t tdav_audiounit_handle_get_frame_duration(tdav_audiounit_handle_t* self)
 		return ((tdav_audiounit_instance_t*)self)->frame_duration;
 	}
 	return 0;
+}
+
+int tdav_audiounit_handle_mute(tdav_audiounit_handle_t* self, tsk_bool_t mute)
+{
+	tdav_audiounit_instance_t* inst = (tdav_audiounit_instance_t*)self;
+	OSStatus status = noErr;
+	if(!inst || !inst->audioUnit){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_MuteOutput,
+								  kAudioUnitScope_Output, kOutputBus, mute ? &kOne : &kZero, mute ? sizeof(kOne) : sizeof(kZero));
+	
+	return status ? -2 : 0;
 }
 
 int tdav_audiounit_handle_stop(tdav_audiounit_handle_t* self)

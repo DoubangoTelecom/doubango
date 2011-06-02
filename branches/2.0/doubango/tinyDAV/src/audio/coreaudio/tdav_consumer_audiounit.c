@@ -25,19 +25,14 @@
 
 #if HAVE_COREAUDIO_AUDIO_UNIT
 
-// AudioUnit already contains denoiser
-#if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_DENOISE) || HAVE_SPEEX_DENOISE)
-#	error "AudioUnit already contain denoiser => Disable it"
-#endif
-
 #undef DISABLE_JITTER_BUFFER
-#define DISABLE_JITTER_BUFFER	0 // FIXME: Find why there is too delay when we use speex jitter buffer
+#define DISABLE_JITTER_BUFFER	0
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
 #define kNoDataError		-1
-#define kRingPacketCount	+5
+#define kRingPacketCount	+10
 
 static tsk_size_t tdav_consumer_audiounit_get(tdav_consumer_audiounit_t* self, void* data, tsk_size_t size);
 
@@ -95,7 +90,10 @@ static tsk_size_t tdav_consumer_audiounit_get(tdav_consumer_audiounit_t* self, v
 }
 
 /* ============ Media Consumer Interface ================= */
-#define tdav_consumer_audiounit_set tsk_null
+int tdav_consumer_audiounit_set(tmedia_consumer_t* self, const tmedia_param_t* param)
+{
+	return tdav_consumer_audio_set(TDAV_CONSUMER_AUDIO(self), param);
+}
 
 static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
@@ -136,6 +134,23 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 		TMEDIA_CONSUMER(consumer)->audio.in.rate = codec->plugin->rate;
 		
 		// set format
+		/*Float64 hrwSampleRate = 0.;
+		UInt32 propertySize = sizeof(audioFormat.mSampleRate);
+		status = AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareSampleRate,
+								&propertySize,
+								   &hrwSampleRate);
+		if (TMEDIA_CONSUMER(consumer)->audio.in.rate != (uint32_t)hrwSampleRate) {
+			if((consumer->resampler = tmedia_resampler_create())){
+				int ret = tmedia_resampler_open(consumer->resampler, 
+												TMEDIA_CONSUMER(consumer)->audio.in.rate, 
+												(uint32_t)hrwSampleRate, 
+												<#uint32_t frame_duration#>, <#uint32_t channels#>, <#uint32_t quality#>)
+			}
+		}
+		if(status == 0){
+			TMEDIA_CONSUMER(consumer)->audio.out.rate = (int)hrwSampleRate;
+		}*/
+		
 		audioFormat.mSampleRate = TMEDIA_CONSUMER(consumer)->audio.out.rate ? TMEDIA_CONSUMER(consumer)->audio.out.rate : TMEDIA_CONSUMER(consumer)->audio.in.rate;
 		audioFormat.mFormatID = kAudioFormatLinearPCM;
 		audioFormat.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
@@ -163,7 +178,7 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 			callback.inputProcRefCon = consumer;
 			status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle), 
 										  kAudioUnitProperty_SetRenderCallback, 
-										  kAudioUnitScope_Global, 
+										  kAudioUnitScope_Input, 
 										  kOutputBus,
 										  &callback, 
 										  sizeof(callback));

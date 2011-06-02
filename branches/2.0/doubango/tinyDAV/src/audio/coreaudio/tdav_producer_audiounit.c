@@ -25,11 +25,6 @@
 
 #if HAVE_COREAUDIO_AUDIO_UNIT
 
-// AudioUnit already contains denoiser
-#if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_DENOISE) || HAVE_SPEEX_DENOISE)
-#	error "AudioUnit already contain denoiser => Disable it"
-#endif
-
 #include <mach/mach.h>
 #import <sys/sysctl.h>
 
@@ -186,7 +181,18 @@ static void *__sender_thread(void *param)
 }
 
 /* ============ Media Producer Interface ================= */
-#define tdav_producer_audiounit_set tsk_null
+int tdav_producer_audiounit_set(tmedia_producer_t* self, const tmedia_param_t* param)
+{	
+	if(param->plugin_type == tmedia_ppt_producer){
+		if(param->value_type == tmedia_pvt_int32){
+			if(tsk_striequals(param->key, "mute")){
+				int32_t mute = TSK_TO_INT32((uint8_t*)param->value);
+				return tdav_audiounit_handle_mute(((tdav_producer_audiounit_t*)self)->audioUnitHandle, mute ? tsk_true : tsk_false);
+			}
+		}
+	}
+	return tdav_producer_audio_set(TDAV_PRODUCER_AUDIO(self), param);
+}
 
 static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
 {
@@ -255,7 +261,7 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 			callback.inputProcRefCon = producer;
 			status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(producer->audioUnitHandle), 
 										  kAudioOutputUnitProperty_SetInputCallback, 
-										  kAudioUnitScope_Global, 
+										  kAudioUnitScope_Output, 
 										  kInputBus, 
 										  &callback, 
 										  sizeof(callback));

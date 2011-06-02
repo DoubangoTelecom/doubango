@@ -158,6 +158,7 @@ int tdav_codec_mp4ves_open(tmedia_codec_t* self)
 			bitRate = 128000.f;
 			break;
 		case tmedia_bl_hight:
+		case tmedia_bl_unrestricted:
 			bitRate = 250000.f;
 			break;
 	}
@@ -409,6 +410,17 @@ tsk_bool_t tdav_codec_mp4ves_fmtp_match(const tmedia_codec_t* codec, const char*
 			mp4v->profile = val_int; // FIXME: Take the remote profile-level-id even if the bandwidth level doesn't match
 		}
 	}
+	
+	switch (mp4v->profile ) {
+		case Simple_Profile_Level_1:
+			TMEDIA_CODEC_VIDEO(mp4v)->width = 176, TMEDIA_CODEC_VIDEO(mp4v)->height = 144;
+			break;
+		case Simple_Profile_Level_2:
+		case Simple_Profile_Level_3:
+		default:
+			TMEDIA_CODEC_VIDEO(mp4v)->width = 352, TMEDIA_CODEC_VIDEO(mp4v)->height = 288;
+			break;
+	}
 
 	TSK_OBJECT_SAFE_FREE(params);
 
@@ -429,6 +441,7 @@ char* tdav_codec_mp4ves_fmtp_get(const tmedia_codec_t* self)
 			mp4v->profile = Simple_Profile_Level_2;
 			break;
 		case tmedia_bl_hight:
+		case tmedia_bl_unrestricted:
 			mp4v->profile = Simple_Profile_Level_3;
 			break;
 	}

@@ -339,7 +339,7 @@ int tnet_transport_shutdown(tnet_transport_handle_t* handle)
 {
 	if(handle){
 		int ret;
-		if(!(ret = tnet_transport_stop(handle))){
+		if((ret = tnet_transport_stop(handle)) == 0){
 			ret = tnet_transport_unprepare(handle);
 		}
 		return ret;

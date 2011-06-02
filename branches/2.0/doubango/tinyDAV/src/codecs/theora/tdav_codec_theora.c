@@ -116,6 +116,7 @@ int tdav_codec_theora_open(tmedia_codec_t* self)
 			break;
 		case tmedia_bl_medium:
 		case tmedia_bl_hight:
+		case tmedia_bl_unrestricted:
 			bitRate = 128000.f;
 			break;
 	}
@@ -502,6 +503,7 @@ tsk_bool_t tdav_codec_theora_fmtp_match(const tmedia_codec_t* codec, const char*
 
 			case tmedia_bl_medium:
 			case tmedia_bl_hight:
+			case tmedia_bl_unrestricted:
 				if(width<=352 && height<=288){
 					theora->width = width, theora->height = height;
 				}
