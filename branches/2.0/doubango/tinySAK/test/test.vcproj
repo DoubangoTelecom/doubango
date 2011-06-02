@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="test"
 	ProjectGUID="{7A1F8D56-A91F-4658-867F-5E24837071C0}"
 	RootNamespace="test"
@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(SolutionDir)src&quot;"
+				AdditionalIncludeDirectories="&quot;..\..\thirdparties\win32\include&quot;;&quot;$(SolutionDir)src&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE;_WIN32_WINNT 0x0501"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

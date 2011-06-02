@@ -208,6 +208,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\tinymedia\tmedia_defaults.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\tinymedia\tmedia_denoise.h"
 				>
 			</File>
@@ -291,6 +295,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tmedia_consumer.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tmedia_defaults.c"
 				>
 			</File>
 			<File

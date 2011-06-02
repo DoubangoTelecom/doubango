@@ -18,13 +18,36 @@ export EXEC_DIR=/data/tmp
 # Path where to copy libraries (*.so) -on the device or emulator-
 export LIB_DIR=/system/lib
 
+# Test the NDK directory structure
+export ANDROID_NDK_BASE=$(shell if [ -r $(ANDROID_NDK_ROOT)/build/platforms ] ; then \
+		echo $(ANDROID_NDK_ROOT)/build/platforms ; \
+	elif [ -r $(ANDROID_NDK_ROOT)/platforms ] ; then \
+		echo $(ANDROID_NDK_ROOT)/platforms ; \
+	else \
+		echo "Err_Unable_to_recognize_the_NDK_structure_for_ANDROID_NDK_BASE" ; \
+	fi)
+
+export ANDROID_NDK_TOOL_BASE=$(shell if [ -r $(ANDROID_NDK_ROOT)/build/prebuilt/$(ANDROID_HOST)/arm-eabi-$(ANDROID_GCC_VER) ] ; then \
+		echo $(ANDROID_NDK_ROOT)/build/prebuilt/$(ANDROID_HOST)/arm-eabi-$(ANDROID_GCC_VER) ; \
+	elif [ -r $(ANDROID_NDK_ROOT)/toolchains/arm-eabi-$(ANDROID_GCC_VER)/prebuilt/$(ANDROID_HOST) ] ; then \
+		echo $(ANDROID_NDK_ROOT)/toolchains/arm-eabi-$(ANDROID_GCC_VER)/prebuilt/$(ANDROID_HOST) ; \
+	else \
+		echo "Err_Unable_to_recognize_the_NDK_structure_for_ANDROID_NDK_TOOL_BASE" ; \
+	fi)
+
 ##################################################################################
 
 export AR=arm-eabi-ar
 export CC=arm-eabi-gcc-$(ANDROID_GCC_VER)
 export CPP=arm-eabi-g++
 
-export CFLAGS_COMMON=$(CFLAGS) $(DEBUG_FLAGS) -I$(ANDROID_NDK_ROOT)/build/platforms/$(ANDROID_PLATFORM)/arch-arm/usr/include \
+
+ifeq ($(LICENSE),)
+	export LICENSE=gpl
+endif
+
+
+export CFLAGS_COMMON=$(CFLAGS) $(DEBUG_FLAGS) -I$(ANDROID_NDK_BASE)/$(ANDROID_PLATFORM)/arch-arm/usr/include \
 -msoft-float \
 -fpic \
 -mthumb-interwork \
@@ -57,7 +80,7 @@ export CFLAGS_LIB= $(CFLAGS_COMMON) \
 -DANDROID
 #-mthumb
 
-export LDFLAGS_COMMON=$(LDFLAGS) -Wl,-rpath=/system/lib,-rpath-link=$(ANDROID_NDK_ROOT)/build/platforms/$(ANDROID_PLATFORM)/arch-arm/usr/lib,-rpath-link=$(OUTPUT_DIR),-dynamic-linker=/system/bin/linker,-T,$(ANDROID_NDK_ROOT)/build/prebuilt/$(ANDROID_HOST)/arm-eabi-$(ANDROID_GCC_VER)/arm-eabi/lib/ldscripts/armelf.xsc -L$(ANDROID_NDK_ROOT)/build/platforms/$(ANDROID_PLATFORM)/arch-arm/usr/lib
+export LDFLAGS_COMMON=$(LDFLAGS) -Wl,-rpath=/system/lib,-rpath-link=$(ANDROID_NDK_BASE)/$(ANDROID_PLATFORM)/arch-arm/usr/lib,-rpath-link=$(OUTPUT_DIR),-dynamic-linker=/system/bin/linker,-T,$(ANDROID_NDK_TOOL_BASE)/arm-eabi/lib/ldscripts/armelf.xsc -L$(ANDROID_NDK_BASE)/$(ANDROID_PLATFORM)/arch-arm/usr/lib
 export LDFLAGS_COMMON+=-nostdlib -lc -L$(OUTPUT_DIR)
 
 ifeq ($(BT), static)

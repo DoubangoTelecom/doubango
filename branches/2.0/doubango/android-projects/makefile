@@ -24,14 +24,11 @@ clean:
 else ##### All other libraries (tiny*)
 all:
 	(cd ../$(PROJECT) ; $(MAKE) -f droid-makefile all; cp -f lib$(PROJECT)_$(MARCH).$(EXT) $(OUTPUT_DIR))
-test:
-	(cd ../$(PROJECT)/test; $(MAKE) -f droid-makefile all; cp -f test $(OUTPUT_DIR))
 install:
 	(cd ../$(PROJECT) ; $(MAKE) -f droid-makefile install)
 
 clean:
 	(cd ../$(PROJECT); $(MAKE) -f droid-makefile clean)
-	(cd ../$(PROJECT)/test; $(MAKE) -f droid-makefile clean)
 endif
 
 

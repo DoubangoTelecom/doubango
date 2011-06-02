@@ -11,6 +11,7 @@ OBJS = \
 	src/tmedia_codec_dummy.o \
 	src/tmedia_common.o \
 	src/tmedia_consumer.o \
+	src/tmedia_defaults.o \
 	src/tmedia_denoise.o \
 	src/tmedia_jitterbuffer.o \
 	src/tmedia_params.o \
