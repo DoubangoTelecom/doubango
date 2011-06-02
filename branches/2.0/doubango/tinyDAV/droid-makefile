@@ -4,13 +4,26 @@ THIRDPARTIES_INC := ../thirdparties/android/include
 THIRDPARTIES_LIB := ../thirdparties/android/lib
 THIRDPARTIES_MARCH_LIB := ../thirdparties/android/lib/$(MARCH)
 
+##########
+# Before starting to set parmeters we will override those provided by the user
+#
+
+ifeq ($(LICENSE),lgpl)
+	H264 := no
+endif
+
+
+##########
+# Set LD and CFLAGS according to the user parameters
+#
+
 # FFMPEG (Default: enabled)
 ifeq ($(FFMPEG), no)
 	FFMPEG_CFLAGS := -DHAVE_FFMPEG=0
 	FFMPEG_LDFLAGS :=
 else
 	FFMPEG_CFLAGS := -DHAVE_FFMPEG=1
-	FFMPEG_LDFLAGS := -lavutil -lswscale -lavcore -lavcodec
+	FFMPEG_LDFLAGS := -lavutil-$(LICENSE) -lswscale-$(LICENSE) -lavcore-$(LICENSE) -lavcodec-$(LICENSE)
 endif
 # H264 (Default: enabled)
 ifeq ($(H264),no) # TODO: should depend on FFMPEG
