@@ -88,9 +88,9 @@ static int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, 
 			
 			// Automatic gain control
 			if(TMEDIA_DENOISE(denoiser)->agc_enabled){
+				float agc_level = TMEDIA_DENOISE(denoiser)->agc_level;
 				i = 1;
 				speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_AGC, &i);
-				float agc_level = TMEDIA_DENOISE(denoiser)->agc_level;
 				speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_AGC_LEVEL, &agc_level);
 			}
 			else{

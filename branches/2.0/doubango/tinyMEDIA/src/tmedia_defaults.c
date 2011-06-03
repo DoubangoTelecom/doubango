@@ -87,7 +87,8 @@ tsk_bool_t tmedia_defaults_get_agc_enabled()
 
 int tmedia_defaults_set_agc_level(float agc_level)
 {
-	return __agc_level = agc_level;
+	__agc_level = agc_level;
+	return 0;
 }
 
 float tmedia_defaults_get_agc_level()

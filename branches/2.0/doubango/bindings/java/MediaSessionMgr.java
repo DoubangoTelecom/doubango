@@ -65,4 +65,68 @@ public class MediaSessionMgr {
     return (cPtr == 0) ? null : new ProxyPlugin(cPtr, false);
   }
 
+  public static boolean defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetBandwidthLevel(bl.swigValue());
+  }
+
+  public static tmedia_bandwidth_level_t defaultsGetBandwidthLevel() {
+    return tmedia_bandwidth_level_t.swigToEnum(tinyWRAPJNI.MediaSessionMgr_defaultsGetBandwidthLevel());
+  }
+
+  public static boolean defaultsSetEchoTail(long echo_tail) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetEchoTail(echo_tail);
+  }
+
+  public static long defaultsGetEchoTail() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetEchoTail();
+  }
+
+  public static boolean defaultsSetEchoSuppEnabled(boolean echo_supp_enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetEchoSuppEnabled(echo_supp_enabled);
+  }
+
+  public static boolean defaultsGetEchoSuppEnabled() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetEchoSuppEnabled();
+  }
+
+  public static boolean defaultsSetAgcEnabled(boolean agc_enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetAgcEnabled(agc_enabled);
+  }
+
+  public static boolean defaultsGetAgcEnabled() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetAgcEnabled();
+  }
+
+  public static boolean defaultsSetAgcLevel(float agc_level) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetAgcLevel(agc_level);
+  }
+
+  public static float defaultsGetAgcLevel() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetAgcLevel();
+  }
+
+  public static boolean defaultsSetVadEnabled(boolean vad_enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetVadEnabled(vad_enabled);
+  }
+
+  public static boolean defaultsGetGetVadEnabled() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetGetVadEnabled();
+  }
+
+  public static boolean defaultsSetNoiseSuppEnabled(boolean noise_supp_enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetNoiseSuppEnabled(noise_supp_enabled);
+  }
+
+  public static boolean defaultsGetNoiseSuppEnabled() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetNoiseSuppEnabled();
+  }
+
+  public static boolean defaultsSetNoiseSuppLevel(int noise_supp_level) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetNoiseSuppLevel(noise_supp_level);
+  }
+
+  public static int defaultsGetNoiseSuppLevel() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetNoiseSuppLevel();
+  }
+
 }

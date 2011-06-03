@@ -78,6 +78,86 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetBandwidthLevel((int)bl);
+    return ret;
+  }
+
+  public static tmedia_bandwidth_level_t defaultsGetBandwidthLevel() {
+    tmedia_bandwidth_level_t ret = (tmedia_bandwidth_level_t)tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetBandwidthLevel();
+    return ret;
+  }
+
+  public static bool defaultsSetEchoTail(uint echo_tail) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetEchoTail(echo_tail);
+    return ret;
+  }
+
+  public static uint defaultsGetEchoTail() {
+    uint ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetEchoTail();
+    return ret;
+  }
+
+  public static bool defaultsSetEchoSuppEnabled(bool echo_supp_enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetEchoSuppEnabled(echo_supp_enabled);
+    return ret;
+  }
+
+  public static bool defaultsGetEchoSuppEnabled() {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetEchoSuppEnabled();
+    return ret;
+  }
+
+  public static bool defaultsSetAgcEnabled(bool agc_enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetAgcEnabled(agc_enabled);
+    return ret;
+  }
+
+  public static bool defaultsGetAgcEnabled() {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetAgcEnabled();
+    return ret;
+  }
+
+  public static bool defaultsSetAgcLevel(float agc_level) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetAgcLevel(agc_level);
+    return ret;
+  }
+
+  public static float defaultsGetAgcLevel() {
+    float ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetAgcLevel();
+    return ret;
+  }
+
+  public static bool defaultsSetVadEnabled(bool vad_enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetVadEnabled(vad_enabled);
+    return ret;
+  }
+
+  public static bool defaultsGetGetVadEnabled() {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetGetVadEnabled();
+    return ret;
+  }
+
+  public static bool defaultsSetNoiseSuppEnabled(bool noise_supp_enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetNoiseSuppEnabled(noise_supp_enabled);
+    return ret;
+  }
+
+  public static bool defaultsGetNoiseSuppEnabled() {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetNoiseSuppEnabled();
+    return ret;
+  }
+
+  public static bool defaultsSetNoiseSuppLevel(int noise_supp_level) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetNoiseSuppLevel(noise_supp_level);
+    return ret;
+  }
+
+  public static int defaultsGetNoiseSuppLevel() {
+    int ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetNoiseSuppLevel();
+    return ret;
+  }
+
 }
 
 }

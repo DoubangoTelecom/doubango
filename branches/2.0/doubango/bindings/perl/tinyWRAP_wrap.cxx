@@ -2020,6 +2020,55 @@ SWIG_AsVal_long_SS_long SWIG_PERL_DECL_ARGS_2(SV *obj, long long *val)
 }
 
 
+SWIGINTERN int
+SWIG_AsVal_bool SWIG_PERL_DECL_ARGS_2(SV *obj, bool* val)
+{
+  if (obj == &PL_sv_yes) {
+    if (val) *val = true;
+    return SWIG_OK;
+  } else if (obj == &PL_sv_no) { 
+    if (val) *val = false;
+    return SWIG_OK;
+  } else {
+    if (val) *val = SvTRUE(obj) ? true: false;
+    return SWIG_AddCast(SWIG_OK);    
+  }
+  return SWIG_TypeError;
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_float SWIG_PERL_DECL_ARGS_2(SV * obj, float *val)
+{
+  double v;
+  int res = SWIG_AsVal_double SWIG_PERL_CALL_ARGS_2(obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v < -FLT_MAX || v > FLT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< float >(v);
+    }
+  }  
+  return res;
+}
+
+
+SWIGINTERNINLINE SV *
+SWIG_From_double  SWIG_PERL_DECL_ARGS_1(double value)
+{    
+  SV *obj = sv_newmortal();
+  sv_setnv(obj, value);
+  return obj;
+}
+
+
+SWIGINTERNINLINE SV *
+SWIG_From_float  SWIG_PERL_DECL_ARGS_1(float value)
+{    
+  return SWIG_From_double  SWIG_PERL_CALL_ARGS_1(value);
+}
+
+
 SWIGINTERNINLINE SV *
 SWIG_FromCharPtrAndSize(const char* carray, size_t size)
 {
@@ -2094,23 +2143,6 @@ SWIGINTERNINLINE SV *
 SWIG_From_short  SWIG_PERL_DECL_ARGS_1(short value)
 {    
   return SWIG_From_long  SWIG_PERL_CALL_ARGS_1(value);
-}
-
-
-SWIGINTERN int
-SWIG_AsVal_bool SWIG_PERL_DECL_ARGS_2(SV *obj, bool* val)
-{
-  if (obj == &PL_sv_yes) {
-    if (val) *val = true;
-    return SWIG_OK;
-  } else if (obj == &PL_sv_no) { 
-    if (val) *val = false;
-    return SWIG_OK;
-  } else {
-    if (val) *val = SvTRUE(obj) ? true: false;
-    return SWIG_AddCast(SWIG_OK);    
-  }
-  return SWIG_TypeError;
 }
 
 
@@ -3351,6 +3383,374 @@ XS(_wrap_MediaSessionMgr_findProxyPluginProducer) {
   fail:
     
     
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetBandwidthLevel) {
+  {
+    tmedia_bandwidth_level_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetBandwidthLevel(bl);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetBandwidthLevel" "', argument " "1"" of type '" "tmedia_bandwidth_level_t""'");
+    } 
+    arg1 = static_cast< tmedia_bandwidth_level_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetBandwidthLevel(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsGetBandwidthLevel) {
+  {
+    int argvi = 0;
+    tmedia_bandwidth_level_t result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsGetBandwidthLevel();");
+    }
+    result = (tmedia_bandwidth_level_t)MediaSessionMgr::defaultsGetBandwidthLevel();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetEchoTail) {
+  {
+    uint32_t arg1 ;
+    unsigned int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetEchoTail(echo_tail);");
+    }
+    ecode1 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetEchoTail" "', argument " "1"" of type '" "uint32_t""'");
+    } 
+    arg1 = static_cast< uint32_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetEchoTail(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsGetEchoTail) {
+  {
+    int argvi = 0;
+    uint32_t result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsGetEchoTail();");
+    }
+    result = (uint32_t)MediaSessionMgr::defaultsGetEchoTail();
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetEchoSuppEnabled) {
+  {
+    bool arg1 ;
+    bool val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetEchoSuppEnabled(echo_supp_enabled);");
+    }
+    ecode1 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetEchoSuppEnabled" "', argument " "1"" of type '" "bool""'");
+    } 
+    arg1 = static_cast< bool >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetEchoSuppEnabled(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsGetEchoSuppEnabled) {
+  {
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsGetEchoSuppEnabled();");
+    }
+    result = (bool)MediaSessionMgr::defaultsGetEchoSuppEnabled();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetAgcEnabled) {
+  {
+    bool arg1 ;
+    bool val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetAgcEnabled(agc_enabled);");
+    }
+    ecode1 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetAgcEnabled" "', argument " "1"" of type '" "bool""'");
+    } 
+    arg1 = static_cast< bool >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetAgcEnabled(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsGetAgcEnabled) {
+  {
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsGetAgcEnabled();");
+    }
+    result = (bool)MediaSessionMgr::defaultsGetAgcEnabled();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetAgcLevel) {
+  {
+    float arg1 ;
+    float val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetAgcLevel(agc_level);");
+    }
+    ecode1 = SWIG_AsVal_float SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetAgcLevel" "', argument " "1"" of type '" "float""'");
+    } 
+    arg1 = static_cast< float >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetAgcLevel(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsGetAgcLevel) {
+  {
+    int argvi = 0;
+    float result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsGetAgcLevel();");
+    }
+    result = (float)MediaSessionMgr::defaultsGetAgcLevel();
+    ST(argvi) = SWIG_From_float  SWIG_PERL_CALL_ARGS_1(static_cast< float >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetVadEnabled) {
+  {
+    bool arg1 ;
+    bool val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetVadEnabled(vad_enabled);");
+    }
+    ecode1 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetVadEnabled" "', argument " "1"" of type '" "bool""'");
+    } 
+    arg1 = static_cast< bool >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetVadEnabled(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsGetGetVadEnabled) {
+  {
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsGetGetVadEnabled();");
+    }
+    result = (bool)MediaSessionMgr::defaultsGetGetVadEnabled();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetNoiseSuppEnabled) {
+  {
+    bool arg1 ;
+    bool val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetNoiseSuppEnabled(noise_supp_enabled);");
+    }
+    ecode1 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetNoiseSuppEnabled" "', argument " "1"" of type '" "bool""'");
+    } 
+    arg1 = static_cast< bool >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetNoiseSuppEnabled(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsGetNoiseSuppEnabled) {
+  {
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsGetNoiseSuppEnabled();");
+    }
+    result = (bool)MediaSessionMgr::defaultsGetNoiseSuppEnabled();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetNoiseSuppLevel) {
+  {
+    int32_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetNoiseSuppLevel(noise_supp_level);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetNoiseSuppLevel" "', argument " "1"" of type '" "int32_t""'");
+    } 
+    arg1 = static_cast< int32_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetNoiseSuppLevel(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsGetNoiseSuppLevel) {
+  {
+    int argvi = 0;
+    int32_t result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsGetNoiseSuppLevel();");
+    }
+    result = (int32_t)MediaSessionMgr::defaultsGetNoiseSuppLevel();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
     SWIG_croak_null();
   }
 }
@@ -20701,6 +21101,22 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_producerSetInt64", _wrap_MediaSessionMgr_producerSetInt64},
 {"tinyWRAPc::MediaSessionMgr_findProxyPluginConsumer", _wrap_MediaSessionMgr_findProxyPluginConsumer},
 {"tinyWRAPc::MediaSessionMgr_findProxyPluginProducer", _wrap_MediaSessionMgr_findProxyPluginProducer},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthLevel", _wrap_MediaSessionMgr_defaultsSetBandwidthLevel},
+{"tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel", _wrap_MediaSessionMgr_defaultsGetBandwidthLevel},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetEchoTail", _wrap_MediaSessionMgr_defaultsSetEchoTail},
+{"tinyWRAPc::MediaSessionMgr_defaultsGetEchoTail", _wrap_MediaSessionMgr_defaultsGetEchoTail},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetEchoSuppEnabled", _wrap_MediaSessionMgr_defaultsSetEchoSuppEnabled},
+{"tinyWRAPc::MediaSessionMgr_defaultsGetEchoSuppEnabled", _wrap_MediaSessionMgr_defaultsGetEchoSuppEnabled},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetAgcEnabled", _wrap_MediaSessionMgr_defaultsSetAgcEnabled},
+{"tinyWRAPc::MediaSessionMgr_defaultsGetAgcEnabled", _wrap_MediaSessionMgr_defaultsGetAgcEnabled},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetAgcLevel", _wrap_MediaSessionMgr_defaultsSetAgcLevel},
+{"tinyWRAPc::MediaSessionMgr_defaultsGetAgcLevel", _wrap_MediaSessionMgr_defaultsGetAgcLevel},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetVadEnabled", _wrap_MediaSessionMgr_defaultsSetVadEnabled},
+{"tinyWRAPc::MediaSessionMgr_defaultsGetGetVadEnabled", _wrap_MediaSessionMgr_defaultsGetGetVadEnabled},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetNoiseSuppEnabled", _wrap_MediaSessionMgr_defaultsSetNoiseSuppEnabled},
+{"tinyWRAPc::MediaSessionMgr_defaultsGetNoiseSuppEnabled", _wrap_MediaSessionMgr_defaultsGetNoiseSuppEnabled},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetNoiseSuppLevel", _wrap_MediaSessionMgr_defaultsSetNoiseSuppLevel},
+{"tinyWRAPc::MediaSessionMgr_defaultsGetNoiseSuppLevel", _wrap_MediaSessionMgr_defaultsGetNoiseSuppLevel},
 {"tinyWRAPc::delete_MediaContent", _wrap_delete_MediaContent},
 {"tinyWRAPc::MediaContent_getType", _wrap_MediaContent_getType},
 {"tinyWRAPc::MediaContent_getDataLength", _wrap_MediaContent_getDataLength},

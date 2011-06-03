@@ -282,6 +282,54 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_findProxyPluginProducer")]
   public static extern IntPtr MediaSessionMgr_findProxyPluginProducer(HandleRef jarg1, int jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetBandwidthLevel")]
+  public static extern bool MediaSessionMgr_defaultsSetBandwidthLevel(int jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetBandwidthLevel")]
+  public static extern int MediaSessionMgr_defaultsGetBandwidthLevel();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetEchoTail")]
+  public static extern bool MediaSessionMgr_defaultsSetEchoTail(uint jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetEchoTail")]
+  public static extern uint MediaSessionMgr_defaultsGetEchoTail();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetEchoSuppEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetEchoSuppEnabled(bool jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetEchoSuppEnabled")]
+  public static extern bool MediaSessionMgr_defaultsGetEchoSuppEnabled();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetAgcEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetAgcEnabled(bool jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetAgcEnabled")]
+  public static extern bool MediaSessionMgr_defaultsGetAgcEnabled();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetAgcLevel")]
+  public static extern bool MediaSessionMgr_defaultsSetAgcLevel(float jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetAgcLevel")]
+  public static extern float MediaSessionMgr_defaultsGetAgcLevel();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetVadEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetVadEnabled(bool jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetGetVadEnabled")]
+  public static extern bool MediaSessionMgr_defaultsGetGetVadEnabled();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetNoiseSuppEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetNoiseSuppEnabled(bool jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetNoiseSuppEnabled")]
+  public static extern bool MediaSessionMgr_defaultsGetNoiseSuppEnabled();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetNoiseSuppLevel")]
+  public static extern bool MediaSessionMgr_defaultsSetNoiseSuppLevel(int jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetNoiseSuppLevel")]
+  public static extern int MediaSessionMgr_defaultsGetNoiseSuppLevel();
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_MediaContent")]
   public static extern void delete_MediaContent(HandleRef jarg1);
 
