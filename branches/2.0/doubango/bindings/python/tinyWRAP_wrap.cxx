@@ -3770,6 +3770,43 @@ SWIG_AsVal_long_SS_long (PyObject *obj, long long *val)
 }
 
 
+SWIGINTERN int
+SWIG_AsVal_bool (PyObject *obj, bool *val)
+{
+  int r = PyObject_IsTrue(obj);
+  if (r == -1)
+    return SWIG_ERROR;
+  if (val) *val = r ? true : false;
+  return SWIG_OK;
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_float (PyObject * obj, float *val)
+{
+  double v;
+  int res = SWIG_AsVal_double (obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v < -FLT_MAX || v > FLT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< float >(v);
+    }
+  }  
+  return res;
+}
+
+
+  #define SWIG_From_double   PyFloat_FromDouble 
+
+
+SWIGINTERNINLINE PyObject *
+SWIG_From_float  (float value)
+{    
+  return SWIG_From_double  (value);
+}
+
+
 SWIGINTERNINLINE PyObject *
 SWIG_From_unsigned_SS_short  (unsigned short value)
 {    
@@ -3824,17 +3861,6 @@ SWIGINTERNINLINE PyObject *
 SWIG_From_short  (short value)
 {    
   return SWIG_From_long  (value);
-}
-
-
-SWIGINTERN int
-SWIG_AsVal_bool (PyObject *obj, bool *val)
-{
-  int r = PyObject_IsTrue(obj);
-  if (r == -1)
-    return SWIG_ERROR;
-  if (val) *val = r ? true : false;
-  return SWIG_OK;
 }
 
 
@@ -6106,6 +6132,286 @@ SWIGINTERN PyObject *_wrap_MediaSessionMgr_findProxyPluginProducer(PyObject *SWI
   arg2 = static_cast< twrap_media_type_t >(val2);
   result = (ProxyPlugin *)((MediaSessionMgr const *)arg1)->findProxyPluginProducer(arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyPlugin, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetBandwidthLevel(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  tmedia_bandwidth_level_t arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetBandwidthLevel",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetBandwidthLevel" "', argument " "1"" of type '" "tmedia_bandwidth_level_t""'");
+  } 
+  arg1 = static_cast< tmedia_bandwidth_level_t >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetBandwidthLevel(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetBandwidthLevel(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  tmedia_bandwidth_level_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetBandwidthLevel")) SWIG_fail;
+  result = (tmedia_bandwidth_level_t)MediaSessionMgr::defaultsGetBandwidthLevel();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetEchoTail(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  uint32_t arg1 ;
+  unsigned int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetEchoTail",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_unsigned_SS_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetEchoTail" "', argument " "1"" of type '" "uint32_t""'");
+  } 
+  arg1 = static_cast< uint32_t >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetEchoTail(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetEchoTail(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  uint32_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetEchoTail")) SWIG_fail;
+  result = (uint32_t)MediaSessionMgr::defaultsGetEchoTail();
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetEchoSuppEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool arg1 ;
+  bool val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetEchoSuppEnabled",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_bool(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetEchoSuppEnabled" "', argument " "1"" of type '" "bool""'");
+  } 
+  arg1 = static_cast< bool >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetEchoSuppEnabled(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetEchoSuppEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetEchoSuppEnabled")) SWIG_fail;
+  result = (bool)MediaSessionMgr::defaultsGetEchoSuppEnabled();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetAgcEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool arg1 ;
+  bool val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetAgcEnabled",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_bool(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetAgcEnabled" "', argument " "1"" of type '" "bool""'");
+  } 
+  arg1 = static_cast< bool >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetAgcEnabled(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetAgcEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetAgcEnabled")) SWIG_fail;
+  result = (bool)MediaSessionMgr::defaultsGetAgcEnabled();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetAgcLevel(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  float arg1 ;
+  float val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetAgcLevel",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_float(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetAgcLevel" "', argument " "1"" of type '" "float""'");
+  } 
+  arg1 = static_cast< float >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetAgcLevel(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetAgcLevel(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetAgcLevel")) SWIG_fail;
+  result = (float)MediaSessionMgr::defaultsGetAgcLevel();
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetVadEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool arg1 ;
+  bool val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetVadEnabled",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_bool(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetVadEnabled" "', argument " "1"" of type '" "bool""'");
+  } 
+  arg1 = static_cast< bool >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetVadEnabled(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetGetVadEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetGetVadEnabled")) SWIG_fail;
+  result = (bool)MediaSessionMgr::defaultsGetGetVadEnabled();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetNoiseSuppEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool arg1 ;
+  bool val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetNoiseSuppEnabled",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_bool(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetNoiseSuppEnabled" "', argument " "1"" of type '" "bool""'");
+  } 
+  arg1 = static_cast< bool >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetNoiseSuppEnabled(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetNoiseSuppEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetNoiseSuppEnabled")) SWIG_fail;
+  result = (bool)MediaSessionMgr::defaultsGetNoiseSuppEnabled();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetNoiseSuppLevel(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int32_t arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetNoiseSuppLevel",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetNoiseSuppLevel" "', argument " "1"" of type '" "int32_t""'");
+  } 
+  arg1 = static_cast< int32_t >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetNoiseSuppLevel(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetNoiseSuppLevel(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int32_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetNoiseSuppLevel")) SWIG_fail;
+  result = (int32_t)MediaSessionMgr::defaultsGetNoiseSuppLevel();
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -20351,6 +20657,22 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_producerSetInt64", _wrap_MediaSessionMgr_producerSetInt64, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_findProxyPluginConsumer", _wrap_MediaSessionMgr_findProxyPluginConsumer, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_findProxyPluginProducer", _wrap_MediaSessionMgr_findProxyPluginProducer, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetBandwidthLevel", _wrap_MediaSessionMgr_defaultsSetBandwidthLevel, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetBandwidthLevel", _wrap_MediaSessionMgr_defaultsGetBandwidthLevel, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetEchoTail", _wrap_MediaSessionMgr_defaultsSetEchoTail, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetEchoTail", _wrap_MediaSessionMgr_defaultsGetEchoTail, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetEchoSuppEnabled", _wrap_MediaSessionMgr_defaultsSetEchoSuppEnabled, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetEchoSuppEnabled", _wrap_MediaSessionMgr_defaultsGetEchoSuppEnabled, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetAgcEnabled", _wrap_MediaSessionMgr_defaultsSetAgcEnabled, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetAgcEnabled", _wrap_MediaSessionMgr_defaultsGetAgcEnabled, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetAgcLevel", _wrap_MediaSessionMgr_defaultsSetAgcLevel, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetAgcLevel", _wrap_MediaSessionMgr_defaultsGetAgcLevel, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetVadEnabled", _wrap_MediaSessionMgr_defaultsSetVadEnabled, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetGetVadEnabled", _wrap_MediaSessionMgr_defaultsGetGetVadEnabled, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetNoiseSuppEnabled", _wrap_MediaSessionMgr_defaultsSetNoiseSuppEnabled, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetNoiseSuppEnabled", _wrap_MediaSessionMgr_defaultsGetNoiseSuppEnabled, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetNoiseSuppLevel", _wrap_MediaSessionMgr_defaultsSetNoiseSuppLevel, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetNoiseSuppLevel", _wrap_MediaSessionMgr_defaultsGetNoiseSuppLevel, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_swigregister", MediaSessionMgr_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_MediaContent", _wrap_delete_MediaContent, METH_VARARGS, NULL},
 	 { (char *)"MediaContent_getType", _wrap_MediaContent_getType, METH_VARARGS, NULL},

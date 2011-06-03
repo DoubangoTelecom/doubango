@@ -198,6 +198,22 @@ sub DESTROY {
 *producerSetInt64 = *tinyWRAPc::MediaSessionMgr_producerSetInt64;
 *findProxyPluginConsumer = *tinyWRAPc::MediaSessionMgr_findProxyPluginConsumer;
 *findProxyPluginProducer = *tinyWRAPc::MediaSessionMgr_findProxyPluginProducer;
+*defaultsSetBandwidthLevel = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthLevel;
+*defaultsGetBandwidthLevel = *tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel;
+*defaultsSetEchoTail = *tinyWRAPc::MediaSessionMgr_defaultsSetEchoTail;
+*defaultsGetEchoTail = *tinyWRAPc::MediaSessionMgr_defaultsGetEchoTail;
+*defaultsSetEchoSuppEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetEchoSuppEnabled;
+*defaultsGetEchoSuppEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGetEchoSuppEnabled;
+*defaultsSetAgcEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetAgcEnabled;
+*defaultsGetAgcEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGetAgcEnabled;
+*defaultsSetAgcLevel = *tinyWRAPc::MediaSessionMgr_defaultsSetAgcLevel;
+*defaultsGetAgcLevel = *tinyWRAPc::MediaSessionMgr_defaultsGetAgcLevel;
+*defaultsSetVadEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetVadEnabled;
+*defaultsGetGetVadEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGetGetVadEnabled;
+*defaultsSetNoiseSuppEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetNoiseSuppEnabled;
+*defaultsGetNoiseSuppEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGetNoiseSuppEnabled;
+*defaultsSetNoiseSuppLevel = *tinyWRAPc::MediaSessionMgr_defaultsSetNoiseSuppLevel;
+*defaultsGetNoiseSuppLevel = *tinyWRAPc::MediaSessionMgr_defaultsGetNoiseSuppLevel;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);

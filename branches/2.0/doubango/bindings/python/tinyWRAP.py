@@ -159,8 +159,104 @@ class MediaSessionMgr(_object):
     def producerSetInt64(self, *args): return _tinyWRAP.MediaSessionMgr_producerSetInt64(self, *args)
     def findProxyPluginConsumer(self, *args): return _tinyWRAP.MediaSessionMgr_findProxyPluginConsumer(self, *args)
     def findProxyPluginProducer(self, *args): return _tinyWRAP.MediaSessionMgr_findProxyPluginProducer(self, *args)
+    __swig_getmethods__["defaultsSetBandwidthLevel"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthLevel
+    if _newclass:defaultsSetBandwidthLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetBandwidthLevel)
+    __swig_getmethods__["defaultsGetBandwidthLevel"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel
+    if _newclass:defaultsGetBandwidthLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel)
+    __swig_getmethods__["defaultsSetEchoTail"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetEchoTail
+    if _newclass:defaultsSetEchoTail = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetEchoTail)
+    __swig_getmethods__["defaultsGetEchoTail"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetEchoTail
+    if _newclass:defaultsGetEchoTail = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetEchoTail)
+    __swig_getmethods__["defaultsSetEchoSuppEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetEchoSuppEnabled
+    if _newclass:defaultsSetEchoSuppEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetEchoSuppEnabled)
+    __swig_getmethods__["defaultsGetEchoSuppEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetEchoSuppEnabled
+    if _newclass:defaultsGetEchoSuppEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetEchoSuppEnabled)
+    __swig_getmethods__["defaultsSetAgcEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetAgcEnabled
+    if _newclass:defaultsSetAgcEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetAgcEnabled)
+    __swig_getmethods__["defaultsGetAgcEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetAgcEnabled
+    if _newclass:defaultsGetAgcEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetAgcEnabled)
+    __swig_getmethods__["defaultsSetAgcLevel"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetAgcLevel
+    if _newclass:defaultsSetAgcLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetAgcLevel)
+    __swig_getmethods__["defaultsGetAgcLevel"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetAgcLevel
+    if _newclass:defaultsGetAgcLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetAgcLevel)
+    __swig_getmethods__["defaultsSetVadEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetVadEnabled
+    if _newclass:defaultsSetVadEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetVadEnabled)
+    __swig_getmethods__["defaultsGetGetVadEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetGetVadEnabled
+    if _newclass:defaultsGetGetVadEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetGetVadEnabled)
+    __swig_getmethods__["defaultsSetNoiseSuppEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetNoiseSuppEnabled
+    if _newclass:defaultsSetNoiseSuppEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetNoiseSuppEnabled)
+    __swig_getmethods__["defaultsGetNoiseSuppEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetNoiseSuppEnabled
+    if _newclass:defaultsGetNoiseSuppEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetNoiseSuppEnabled)
+    __swig_getmethods__["defaultsSetNoiseSuppLevel"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetNoiseSuppLevel
+    if _newclass:defaultsSetNoiseSuppLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetNoiseSuppLevel)
+    __swig_getmethods__["defaultsGetNoiseSuppLevel"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetNoiseSuppLevel
+    if _newclass:defaultsGetNoiseSuppLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetNoiseSuppLevel)
 MediaSessionMgr_swigregister = _tinyWRAP.MediaSessionMgr_swigregister
 MediaSessionMgr_swigregister(MediaSessionMgr)
+
+def MediaSessionMgr_defaultsSetBandwidthLevel(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthLevel(*args)
+MediaSessionMgr_defaultsSetBandwidthLevel = _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthLevel
+
+def MediaSessionMgr_defaultsGetBandwidthLevel():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel()
+MediaSessionMgr_defaultsGetBandwidthLevel = _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel
+
+def MediaSessionMgr_defaultsSetEchoTail(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetEchoTail(*args)
+MediaSessionMgr_defaultsSetEchoTail = _tinyWRAP.MediaSessionMgr_defaultsSetEchoTail
+
+def MediaSessionMgr_defaultsGetEchoTail():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetEchoTail()
+MediaSessionMgr_defaultsGetEchoTail = _tinyWRAP.MediaSessionMgr_defaultsGetEchoTail
+
+def MediaSessionMgr_defaultsSetEchoSuppEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetEchoSuppEnabled(*args)
+MediaSessionMgr_defaultsSetEchoSuppEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetEchoSuppEnabled
+
+def MediaSessionMgr_defaultsGetEchoSuppEnabled():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetEchoSuppEnabled()
+MediaSessionMgr_defaultsGetEchoSuppEnabled = _tinyWRAP.MediaSessionMgr_defaultsGetEchoSuppEnabled
+
+def MediaSessionMgr_defaultsSetAgcEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetAgcEnabled(*args)
+MediaSessionMgr_defaultsSetAgcEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetAgcEnabled
+
+def MediaSessionMgr_defaultsGetAgcEnabled():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetAgcEnabled()
+MediaSessionMgr_defaultsGetAgcEnabled = _tinyWRAP.MediaSessionMgr_defaultsGetAgcEnabled
+
+def MediaSessionMgr_defaultsSetAgcLevel(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetAgcLevel(*args)
+MediaSessionMgr_defaultsSetAgcLevel = _tinyWRAP.MediaSessionMgr_defaultsSetAgcLevel
+
+def MediaSessionMgr_defaultsGetAgcLevel():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetAgcLevel()
+MediaSessionMgr_defaultsGetAgcLevel = _tinyWRAP.MediaSessionMgr_defaultsGetAgcLevel
+
+def MediaSessionMgr_defaultsSetVadEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetVadEnabled(*args)
+MediaSessionMgr_defaultsSetVadEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetVadEnabled
+
+def MediaSessionMgr_defaultsGetGetVadEnabled():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetGetVadEnabled()
+MediaSessionMgr_defaultsGetGetVadEnabled = _tinyWRAP.MediaSessionMgr_defaultsGetGetVadEnabled
+
+def MediaSessionMgr_defaultsSetNoiseSuppEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetNoiseSuppEnabled(*args)
+MediaSessionMgr_defaultsSetNoiseSuppEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetNoiseSuppEnabled
+
+def MediaSessionMgr_defaultsGetNoiseSuppEnabled():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetNoiseSuppEnabled()
+MediaSessionMgr_defaultsGetNoiseSuppEnabled = _tinyWRAP.MediaSessionMgr_defaultsGetNoiseSuppEnabled
+
+def MediaSessionMgr_defaultsSetNoiseSuppLevel(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetNoiseSuppLevel(*args)
+MediaSessionMgr_defaultsSetNoiseSuppLevel = _tinyWRAP.MediaSessionMgr_defaultsSetNoiseSuppLevel
+
+def MediaSessionMgr_defaultsGetNoiseSuppLevel():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetNoiseSuppLevel()
+MediaSessionMgr_defaultsGetNoiseSuppLevel = _tinyWRAP.MediaSessionMgr_defaultsGetNoiseSuppLevel
 
 class MediaContent(_object):
     __swig_setmethods__ = {}

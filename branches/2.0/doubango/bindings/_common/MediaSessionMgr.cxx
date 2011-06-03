@@ -163,7 +163,7 @@ bool MediaSessionMgr::defaultsSetEchoSuppEnabled(bool echo_supp_enabled)
 
 bool MediaSessionMgr::defaultsGetEchoSuppEnabled()
 {
-	return tmedia_defaults_get_echo_supp_enabled();
+	return tmedia_defaults_get_echo_supp_enabled() ? true : false;
 }
 
 bool MediaSessionMgr::defaultsSetAgcEnabled(bool agc_enabled)
@@ -173,7 +173,7 @@ bool MediaSessionMgr::defaultsSetAgcEnabled(bool agc_enabled)
 
 bool MediaSessionMgr::defaultsGetAgcEnabled()
 {
-	return tmedia_defaults_get_agc_enabled();
+	return tmedia_defaults_get_agc_enabled() ? true : false;
 }
 
 bool MediaSessionMgr::defaultsSetAgcLevel(float agc_level)
@@ -183,7 +183,7 @@ bool MediaSessionMgr::defaultsSetAgcLevel(float agc_level)
 
 float MediaSessionMgr::defaultsGetAgcLevel()
 {
-	return tmedia_defaults_get_agc_enabled();
+	return tmedia_defaults_get_agc_level();
 }
 
 bool MediaSessionMgr::defaultsSetVadEnabled(bool vad_enabled)
@@ -193,7 +193,7 @@ bool MediaSessionMgr::defaultsSetVadEnabled(bool vad_enabled)
 
 bool MediaSessionMgr::defaultsGetGetVadEnabled()
 {
-	return tmedia_defaults_get_vad_enabled();
+	return tmedia_defaults_get_vad_enabled() ? true : false;
 }
 
 bool MediaSessionMgr::defaultsSetNoiseSuppEnabled(bool noise_supp_enabled)
@@ -203,7 +203,7 @@ bool MediaSessionMgr::defaultsSetNoiseSuppEnabled(bool noise_supp_enabled)
 
 bool MediaSessionMgr::defaultsGetNoiseSuppEnabled()
 {
-	return tmedia_defaults_get_noise_supp_enabled();
+	return tmedia_defaults_get_noise_supp_enabled() ? true : false;
 }
 
 bool MediaSessionMgr::defaultsSetNoiseSuppLevel(int32_t noise_supp_level)

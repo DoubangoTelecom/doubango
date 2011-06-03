@@ -1519,6 +1519,182 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_MediaSessionMgr_findProxyPluginProducer(voi
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetBandwidthLevel(int jarg1) {
+  unsigned int jresult ;
+  tmedia_bandwidth_level_t arg1 ;
+  bool result;
+  
+  arg1 = (tmedia_bandwidth_level_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetBandwidthLevel(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetBandwidthLevel() {
+  int jresult ;
+  tmedia_bandwidth_level_t result;
+  
+  result = (tmedia_bandwidth_level_t)MediaSessionMgr::defaultsGetBandwidthLevel();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetEchoTail(unsigned int jarg1) {
+  unsigned int jresult ;
+  uint32_t arg1 ;
+  bool result;
+  
+  arg1 = (uint32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetEchoTail(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetEchoTail() {
+  unsigned int jresult ;
+  uint32_t result;
+  
+  result = (uint32_t)MediaSessionMgr::defaultsGetEchoTail();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetEchoSuppEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetEchoSuppEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetEchoSuppEnabled() {
+  unsigned int jresult ;
+  bool result;
+  
+  result = (bool)MediaSessionMgr::defaultsGetEchoSuppEnabled();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetAgcEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetAgcEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetAgcEnabled() {
+  unsigned int jresult ;
+  bool result;
+  
+  result = (bool)MediaSessionMgr::defaultsGetAgcEnabled();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetAgcLevel(float jarg1) {
+  unsigned int jresult ;
+  float arg1 ;
+  bool result;
+  
+  arg1 = (float)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetAgcLevel(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetAgcLevel() {
+  float jresult ;
+  float result;
+  
+  result = (float)MediaSessionMgr::defaultsGetAgcLevel();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetVadEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetVadEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetGetVadEnabled() {
+  unsigned int jresult ;
+  bool result;
+  
+  result = (bool)MediaSessionMgr::defaultsGetGetVadEnabled();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetNoiseSuppEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetNoiseSuppEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetNoiseSuppEnabled() {
+  unsigned int jresult ;
+  bool result;
+  
+  result = (bool)MediaSessionMgr::defaultsGetNoiseSuppEnabled();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetNoiseSuppLevel(int jarg1) {
+  unsigned int jresult ;
+  int32_t arg1 ;
+  bool result;
+  
+  arg1 = (int32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetNoiseSuppLevel(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetNoiseSuppLevel() {
+  int jresult ;
+  int32_t result;
+  
+  result = (int32_t)MediaSessionMgr::defaultsGetNoiseSuppLevel();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_MediaContent(void * jarg1) {
   MediaContent *arg1 = (MediaContent *) 0 ;
   
