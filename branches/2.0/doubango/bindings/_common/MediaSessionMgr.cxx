@@ -135,3 +135,87 @@ const ProxyPlugin* MediaSessionMgr::findProxyPlugin(twrap_media_type_t media, bo
 	return plugin;
 }
 
+
+bool MediaSessionMgr::defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl)
+{
+	return tmedia_defaults_set_bl(bl) == 0;
+}
+
+tmedia_bandwidth_level_t MediaSessionMgr::defaultsGetBandwidthLevel()
+{
+	return tmedia_defaults_get_bl();
+}
+
+bool MediaSessionMgr::defaultsSetEchoTail(uint32_t echo_tail)
+{
+	return tmedia_defaults_set_echo_tail(echo_tail) == 0;
+}
+
+uint32_t MediaSessionMgr::defaultsGetEchoTail()
+{
+	return tmedia_defaults_get_echo_tail();
+}
+
+bool MediaSessionMgr::defaultsSetEchoSuppEnabled(bool echo_supp_enabled)
+{
+	return tmedia_defaults_set_echo_supp_enabled(echo_supp_enabled) == 0;
+}
+
+bool MediaSessionMgr::defaultsGetEchoSuppEnabled()
+{
+	return tmedia_defaults_get_echo_supp_enabled();
+}
+
+bool MediaSessionMgr::defaultsSetAgcEnabled(bool agc_enabled)
+{
+	return tmedia_defaults_set_agc_enabled(agc_enabled ? tsk_true : tsk_false) == 0;
+}
+
+bool MediaSessionMgr::defaultsGetAgcEnabled()
+{
+	return tmedia_defaults_get_agc_enabled();
+}
+
+bool MediaSessionMgr::defaultsSetAgcLevel(float agc_level)
+{
+	return tmedia_defaults_set_agc_level(agc_level) == 0;
+}
+
+float MediaSessionMgr::defaultsGetAgcLevel()
+{
+	return tmedia_defaults_get_agc_enabled();
+}
+
+bool MediaSessionMgr::defaultsSetVadEnabled(bool vad_enabled)
+{
+	return tmedia_defaults_set_vad_enabled(vad_enabled ? tsk_true : tsk_false) == 0;
+}
+
+bool MediaSessionMgr::defaultsGetGetVadEnabled()
+{
+	return tmedia_defaults_get_vad_enabled();
+}
+
+bool MediaSessionMgr::defaultsSetNoiseSuppEnabled(bool noise_supp_enabled)
+{
+	return tmedia_defaults_set_noise_supp_enabled(noise_supp_enabled ? tsk_true : tsk_false) == 0;
+}
+
+bool MediaSessionMgr::defaultsGetNoiseSuppEnabled()
+{
+	return tmedia_defaults_get_noise_supp_enabled();
+}
+
+bool MediaSessionMgr::defaultsSetNoiseSuppLevel(int32_t noise_supp_level)
+{
+	return tmedia_defaults_set_noise_supp_level(noise_supp_level) == 0;
+}
+
+int32_t MediaSessionMgr::defaultsGetNoiseSuppLevel()
+{
+	return tmedia_defaults_get_noise_supp_level();
+}
+
+
+
+

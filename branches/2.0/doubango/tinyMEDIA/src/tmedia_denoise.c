@@ -28,6 +28,7 @@
 
  */
 #include "tinymedia/tmedia_denoise.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tsk_debug.h"
 
@@ -40,10 +41,35 @@ int tmedia_denoise_init(tmedia_denoise_t* self)
 		return -1;
 	}
 
+	self->echo_tail = tmedia_defaults_get_echo_tail();
+	self->echo_supp_enabled = tmedia_defaults_get_echo_supp_enabled();
+	self->agc_enabled = tmedia_defaults_get_agc_enabled();
+	self->agc_level = tmedia_defaults_get_agc_level();
+	self->vad_enabled = tmedia_defaults_get_vad_enabled();
+	self->noise_supp_enabled = tmedia_defaults_get_noise_supp_enabled();
+	self->noise_supp_level = tmedia_defaults_get_noise_supp_level();
+	
 	return 0;
 }
 
-int tmedia_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_t sampling_rate, tsk_bool_t denoise, float agc_level, tsk_bool_t aec, tsk_bool_t vad)
+int tmedia_denoise_set(tmedia_denoise_t* self, const tmedia_param_t* param)
+{
+	if(!self || !self->plugin){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	if(self->plugin->set){
+		
+		// FIXME: to be implemnted
+		TSK_DEBUG_ERROR("Not implemented");
+		
+		return self->plugin->set(self, param);
+	}
+	return 0;
+}
+
+int tmedia_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_t sampling_rate)
 {
 	if(!self || !self->plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -56,7 +82,7 @@ int tmedia_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_t sa
 
 	if(self->plugin->open){
 		int ret;
-		if((ret = self->plugin->open(self, frame_size, sampling_rate, denoise, agc_level, aec, vad))){
+		if((ret = self->plugin->open(self, frame_size, sampling_rate))){
 			TSK_DEBUG_ERROR("Failed to open [%s] denoiser", self->plugin->desc);
 			return ret;
 		}
@@ -83,7 +109,7 @@ int tmedia_denoise_echo_playback(tmedia_denoise_t* self, const void* echo_frame)
 		return -2;
 	}
 
-	if(self->plugin->process){
+	if(self->plugin->echo_playback){
 		return self->plugin->echo_playback(self, echo_frame);
 	}
 	else{
@@ -91,8 +117,7 @@ int tmedia_denoise_echo_playback(tmedia_denoise_t* self, const void* echo_frame)
 	}
 }
 
-
-int tmedia_denoise_process(tmedia_denoise_t* self, void* audio_frame, tsk_bool_t* silence_or_noise)
+int tmedia_denoise_process_record(tmedia_denoise_t* self, void* audio_frame, tsk_bool_t* silence_or_noise)
 {
 	if(!self || !self->plugin || !silence_or_noise){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -104,13 +129,31 @@ int tmedia_denoise_process(tmedia_denoise_t* self, void* audio_frame, tsk_bool_t
 		return -2;
 	}
 
-	if(self->plugin->process){
-		return self->plugin->process(self, audio_frame, silence_or_noise);
+	if(self->plugin->process_record){
+		return self->plugin->process_record(self, audio_frame, silence_or_noise);
 	}
 	else{
 		*silence_or_noise = tsk_false;
 		return 0;
 	}
+}
+
+int tmedia_denoise_process_playback(tmedia_denoise_t* self, void* audio_frame)
+{
+	if(!self || !self->plugin){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	if(!self->opened){
+		TSK_DEBUG_ERROR("Denoiser not opened");
+		return -2;
+	}
+	
+	if(self->plugin->process_playback){
+		return self->plugin->process_playback(self, audio_frame);
+	}
+	return 0;
 }
 
 int tmedia_denoise_close(tmedia_denoise_t* self)

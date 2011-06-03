@@ -173,12 +173,13 @@ tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, 
 	
 	tsk_safeobj_unlock(self);
 
-	// Denoise()
-	//if(ret_size == 320){
-		if(ret_size && self->denoise && self->denoise->opened){
-			tmedia_denoise_echo_playback(self->denoise, out_data);
-		}
-	//}
+	// denoiser
+	if(ret_size && self->denoise && self->denoise->opened){
+		// echo playback
+		tmedia_denoise_echo_playback(self->denoise, out_data);
+		// suppress noise
+		tmedia_denoise_process_playback(self->denoise, out_data);
+	}
 
 	return ret_size;
 }

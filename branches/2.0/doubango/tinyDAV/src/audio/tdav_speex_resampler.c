@@ -33,12 +33,14 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#define TDAV_SPEEX_RESAMPLER_MAX_QUALITY 10
+
 int tdav_speex_resampler_open(tmedia_resampler_t* self, uint32_t in_freq, uint32_t out_freq, tsk_size_t frame_duration, int8_t _channels, uint32_t quality)
 {
 	tdav_speex_resampler_t *resampler = (tdav_speex_resampler_t *)self;
 	int ret = 0;
 
-	if(!(resampler->state = speex_resampler_init(_channels, in_freq, out_freq, quality>10 ? TMEDIA_RESAMPLER_QUALITY : quality, &ret))){
+	if(!(resampler->state = speex_resampler_init(_channels, in_freq, out_freq, quality>10 ? TDAV_SPEEX_RESAMPLER_MAX_QUALITY : quality, &ret))){
 		TSK_DEBUG_ERROR("speex_resampler_init() returned %d", ret);
 		return -2;
 	}
