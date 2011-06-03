@@ -40,12 +40,17 @@ static int tdav_apple_init()
 		return -1;
 	}
 	
+	// enable record/playback
 	UInt32 audioCategory = kAudioSessionCategory_PlayAndRecord;
 	status = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(audioCategory), &audioCategory);
 	if(status){
 		TSK_DEBUG_ERROR("AudioSessionSetProperty(kAudioSessionProperty_AudioCategory) failed with status code=%d", (int32_t)status);
 		return -2;
 	}
+	
+	// duck other mixable audio
+	// kAudioSessionProperty_OtherMixableAudioShouldDuck
+	
 	// enable audio session
 	status = AudioSessionSetActive(true);
 	if(status){

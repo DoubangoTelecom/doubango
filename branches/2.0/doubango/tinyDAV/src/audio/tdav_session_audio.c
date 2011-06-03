@@ -143,8 +143,8 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 						/* Denoise */
 						if(audio->denoise && !audio->denoise->opened){
 							ret = tmedia_denoise_open(audio->denoise, 
-								TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), //160 if 20ms at 8khz
-								TMEDIA_CODEC_RATE(audio->encoder.codec), tsk_true, 8000.0f, tsk_true, tsk_false);
+								TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), //160 (shorts) if 20ms at 8khz
+								TMEDIA_CODEC_RATE(audio->encoder.codec));
 						}
 						break;
 				}
@@ -168,9 +168,9 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		// Denoise (VAD, AGC, Noise suppression, ...)
 		if(audio->denoise){
 			tsk_bool_t silence_or_noise = tsk_false;
-			ret = tmedia_denoise_process(TMEDIA_DENOISE(audio->denoise), (void*)buffer, &silence_or_noise);
+			ret = tmedia_denoise_process_record(TMEDIA_DENOISE(audio->denoise), (void*)buffer, &silence_or_noise);
 			if(silence_or_noise && (ret == 0)){
-				//FIXME:
+				//FIXME: Fixed-point implementation don't support VAD
 				TSK_DEBUG_INFO("Silence or Noise buffer");
 				return 0;
 			}
@@ -302,7 +302,7 @@ int tdav_session_audio_start(tmedia_session_t* self)
 		
 		/* Denoise (AEC, Noise Suppression, AGC) */
 		if(audio->denoise && audio->encoder.codec){
-			tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), TMEDIA_CODEC_RATE(audio->encoder.codec), tsk_true, 8000.0f, tsk_true, tsk_true);
+			tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), TMEDIA_CODEC_RATE(audio->encoder.codec));
 		}
 
 		/* for test */

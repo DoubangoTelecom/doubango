@@ -54,6 +54,25 @@ public:
 	const ProxyPlugin* findProxyPluginProducer(twrap_media_type_t media)const{
 		return this->findProxyPlugin(media, false);
 	}
+	
+	// Defaults
+	static bool defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl);
+	static tmedia_bandwidth_level_t defaultsGetBandwidthLevel();
+	static bool defaultsSetEchoTail(uint32_t echo_tail);
+	static uint32_t defaultsGetEchoTail();
+	static bool defaultsSetEchoSuppEnabled(bool echo_supp_enabled);
+	static bool defaultsGetEchoSuppEnabled();
+	static bool defaultsSetAgcEnabled(bool agc_enabled);
+	static bool defaultsGetAgcEnabled();
+	static bool defaultsSetAgcLevel(float agc_level);
+	static float defaultsGetAgcLevel();
+	static bool defaultsSetVadEnabled(bool vad_enabled);
+	static bool defaultsGetGetVadEnabled();
+	static bool defaultsSetNoiseSuppEnabled(bool noise_supp_enabled);
+	static bool defaultsGetNoiseSuppEnabled();
+	static bool defaultsSetNoiseSuppLevel(int32_t noise_supp_level);
+	static int32_t defaultsGetNoiseSuppLevel();
+	
 
 private:
 	tmedia_session_mgr_t* mgr;

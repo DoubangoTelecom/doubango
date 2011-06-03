@@ -63,6 +63,7 @@ typedef struct tmedia_resampler_plugin_def_s
 	//! full description (usefull for debugging)
 	const char* desc;
 
+	// ! quality is from 0-10
 	int (* open) (tmedia_resampler_t*,  uint32_t in_freq, uint32_t out_freq, tsk_size_t frame_duration, int8_t channels, uint32_t quality);
 	tsk_size_t (* process) (tmedia_resampler_t*, const uint16_t* in_data, tsk_size_t in_size, uint16_t* out_data, tsk_size_t out_size);
 	int (* close) (tmedia_resampler_t* );

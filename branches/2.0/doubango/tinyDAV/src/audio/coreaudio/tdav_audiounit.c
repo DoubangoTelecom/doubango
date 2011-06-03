@@ -174,7 +174,7 @@ tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id, uint3
 		//status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_VoiceProcessingEnableAGC,
 		//					 kAudioUnitScope_Global, kInputBus, &kOne, sizeof(kOne));
 		//status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_DuckNonVoiceAudio,
-		//					 kAudioUnitScope_Global, kInputBus, &kOne, sizeof(kOne));
+		//					 kAudioUnitScope_Global, kInputBus, &kZero, sizeof(kZero));
 		// status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_VoiceProcessingQuality,
 		//							  kAudioUnitScope_Global, kInputBus, &kVoiceQuality, sizeof(kVoiceQuality));
 #endif /* TARGET_OS_IPHONE */
