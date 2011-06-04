@@ -182,3 +182,15 @@ const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_siz
 
 	return &tmedia_video_sizes[0];;
 }
+
+// #retval: 1(best)-31(worst) */
+int tmedia_get_video_quality(tmedia_bandwidth_level_t bl)
+{
+	switch(bl){
+		case tmedia_bl_low:
+		default: return 13;
+		case tmedia_bl_medium: return 9;
+		case tmedia_bl_hight: return 5;
+		case tmedia_bl_unrestricted: return 1;
+	}
+}

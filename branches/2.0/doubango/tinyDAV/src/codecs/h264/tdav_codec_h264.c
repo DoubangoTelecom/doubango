@@ -59,7 +59,7 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 {
 	int ret;
 	int size;
-	float bitRate;
+
 
 	tdav_codec_h264_t* h264 = (tdav_codec_h264_t*)self;
 
@@ -114,17 +114,14 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 		default:
 			h264->encoder.context->profile = FF_PROFILE_H264_BASELINE;
 			h264->encoder.context->level = 10;
-			bitRate = 128000.f;
 			break;
 		case tdav_codec_h264_bp20:
 			h264->encoder.context->profile = FF_PROFILE_H264_BASELINE;
 			h264->encoder.context->level = 20;
-			bitRate = 491400.f;
 			break;
 		case tdav_codec_h264_bp30:
 			h264->encoder.context->profile = FF_PROFILE_H264_BASELINE;
 			h264->encoder.context->level = 30;
-			bitRate = 2725300.f;
 			break;
 	}
 
@@ -132,10 +129,7 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context->thread_count = 0;
 	h264->encoder.context->rtp_payload_size = H264_RTP_PAYLOAD_SIZE;
 	h264->encoder.context->opaque = tsk_null;
-	//h264->encoder.context->bit_rate = (int) (bitRate * 0.80f);
-	//h264->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
 	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->fps*4; // Each 4 second(s)
-	// h264->encoder.context->keyint_min = TMEDIA_CODEC_VIDEO(h264)->fps;
 		
 
 	// Picture (YUV 420)

@@ -112,7 +112,6 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 {
 	int ret;
 	int size;
-	float bitRate = 64000.f;
 
 	tdav_codec_h263_t* h263 = (tdav_codec_h263_t*)self;
 
@@ -137,30 +136,14 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 
 	/*h263->encoder.context->mb_qmin =*/ h263->encoder.context->qmin = 4;
 	/*h263->encoder.context->mb_qmax =*/ h263->encoder.context->qmax = 31;
-	h263->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
-	//h263->encoder.context->me_method = ME_EPZS;
-	//h263->encoder.context->flags |=  CODEC_FLAG_INPUT_PRESERVED | CODEC_FLAG_PASS1;
-	
-	switch(self->bl){
-		case tmedia_bl_low:
-		default:
-			bitRate = 64000.f;
-			break;
-		case tmedia_bl_medium:
-		case tmedia_bl_hight:
-		case tmedia_bl_unrestricted:
-			bitRate = 128000.f;
-			break;
-	}
+	h263->encoder.context->mb_decision = FF_MB_DECISION_RD;
 
 	h263->encoder.context->thread_count = 1;
 	h263->encoder.context->rtp_payload_size = RTP_PAYLOAD_SIZE;
 	h263->encoder.context->opaque = tsk_null;
-	h263->encoder.context->bit_rate = (int)(bitRate * 0.80f);
-	h263->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
-	h263->encoder.context->rc_min_rate = 0;
-	h263->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h263)->fps*3; /* each 3 seconds */
-	
+	h263->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h263)->fps*2; /* each 2 seconds */
+	h263->encoder.context->flags |= CODEC_FLAG_QSCALE;
+	h263->encoder.context->global_quality = FF_QP2LAMBDA * tmedia_get_video_qscale(self->bl);
 
 	// Picture (YUV 420)
 	if(!(h263->encoder.picture = avcodec_alloc_frame())){
@@ -311,6 +294,7 @@ tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_data, tsk
 #endif
 
 	h263->encoder.picture->pts = AV_NOPTS_VALUE;
+	h263->encoder.picture->quality = h263->encoder.context->global_quality;
 	ret = avcodec_encode_video(h263->encoder.context, h263->encoder.buffer, size, h263->encoder.picture);
 	if(ret > 0){
 		tdav_codec_h263_encap(h263, h263->encoder.buffer, (tsk_size_t)ret);
@@ -505,6 +489,11 @@ tsk_bool_t tdav_codec_h263_fmtp_match(const tmedia_codec_t* codec, const char* f
 					h263->width = 128, h263->height = 96;
 					ret = tsk_true;
 				}
+				else { // Default: to be fixed
+					h263->width = 352, h263->height = 288;
+					ret = tsk_true;
+				}
+
 				break;
 		}
 	}

@@ -114,6 +114,8 @@ tmedia_bandwidth_level_t;
 TINYMEDIA_API tmedia_type_t tmedia_type_from_sdp(const tsdp_message_t* sdp);
 TINYMEDIA_API int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t* channels);
 TINYMEDIA_API const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_size_t size);
+TINYMEDIA_API int tmedia_get_video_quality(tmedia_bandwidth_level_t bl);
+#define tmedia_get_video_qscale tmedia_get_video_quality
 
 TMEDIA_END_DECLS
 

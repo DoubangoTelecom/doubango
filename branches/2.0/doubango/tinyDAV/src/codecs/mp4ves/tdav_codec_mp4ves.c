@@ -121,7 +121,6 @@ int tdav_codec_mp4ves_open(tmedia_codec_t* self)
 {
 	int ret;
 	int size;
-	float bitRate = 64000.f;
 	
 	tdav_codec_mp4ves_t* mp4v = (tdav_codec_mp4ves_t*)self;
 
@@ -147,27 +146,16 @@ int tdav_codec_mp4ves_open(tmedia_codec_t* self)
 	mp4v->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(mp4v)->fps;
 	mp4v->encoder.context->width = TMEDIA_CODEC_VIDEO(mp4v)->width;
 	mp4v->encoder.context->height = TMEDIA_CODEC_VIDEO(mp4v)->height;
-	mp4v->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
-
-	switch(self->bl){
-		case tmedia_bl_low:
-		default:
-			bitRate = 64000.f;
-			break;
-		case tmedia_bl_medium:
-			bitRate = 128000.f;
-			break;
-		case tmedia_bl_hight:
-		case tmedia_bl_unrestricted:
-			bitRate = 250000.f;
-			break;
-	}
+	mp4v->encoder.context->mb_decision = FF_MB_DECISION_RD;
+	mp4v->encoder.context->noise_reduction = 250;
+	mp4v->encoder.context->flags |= CODEC_FLAG_QSCALE;
+	mp4v->encoder.context->global_quality = FF_QP2LAMBDA * tmedia_get_video_qscale(self->bl);
 
 	mp4v->encoder.context->thread_count = 1;
 	mp4v->encoder.context->rtp_payload_size = MP4V_RTP_PAYLOAD_SIZE;
 	mp4v->encoder.context->opaque = tsk_null;
-	mp4v->encoder.context->bit_rate = (int) (bitRate * 0.80f);
-	mp4v->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
+	//mp4v->encoder.context->bit_rate = (int) (bitRate * 0.80f);
+	//mp4v->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
 	mp4v->encoder.context->profile = mp4v->profile>>4;
 	mp4v->encoder.context->level = mp4v->profile & 0x0F;
 	mp4v->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(mp4v)->fps*2; // each 2 seconds
@@ -308,6 +296,7 @@ tsk_size_t tdav_codec_mp4ves_encode(tmedia_codec_t* self, const void* in_data, t
 #endif
 
 	mp4v->encoder.picture->pts = AV_NOPTS_VALUE;
+	mp4v->encoder.picture->quality = mp4v->encoder.context->global_quality;
 	ret = avcodec_encode_video(mp4v->encoder.context, mp4v->encoder.buffer, size, mp4v->encoder.picture);
 	if(ret > 0){
 		tdav_codec_mp4ves_encap(mp4v, mp4v->encoder.buffer, (tsk_size_t)ret);
