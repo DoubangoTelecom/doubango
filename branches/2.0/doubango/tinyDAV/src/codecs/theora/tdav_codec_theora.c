@@ -104,20 +104,23 @@ int tdav_codec_theora_open(tmedia_codec_t* self)
 	theora->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(theora)->fps;
 	theora->encoder.context->width = TMEDIA_CODEC_VIDEO(theora)->width;
 	theora->encoder.context->height = TMEDIA_CODEC_VIDEO(theora)->height;
+	
+	theora->encoder.context->mb_decision = FF_MB_DECISION_RD;
 
-	//theora->encoder.context->mb_qmin = theora->encoder.context->qmin = 4;
-	//theora->encoder.context->mb_qmax = theora->encoder.context->qmax = 4;
-	theora->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
-
+	// Theoraenc doesn't honor 'CODEC_FLAG_QSCALE'
 	switch(self->bl){
 		case tmedia_bl_low:
 		default:
-			bitRate = 64000.f;
+			bitRate = 72000.f;
 			break;
 		case tmedia_bl_medium:
+			bitRate = 150000.f;
+			break;
 		case tmedia_bl_hight:
+			bitRate = 320000.f;
+			break;
 		case tmedia_bl_unrestricted:
-			bitRate = 128000.f;
+			bitRate = 510000.f;
 			break;
 	}
 
