@@ -77,6 +77,20 @@ int tmedia_codec_init(tmedia_codec_t* self, tmedia_type_t type, const char* name
 	tsk_strupdate(&self->name, name);
 	tsk_strupdate(&self->desc,desc);
 	tsk_strupdate(&self->format, format);
+	
+	// Video flipping: For backward compatibility we have to initialize the default values
+	// according to the CFLAGS: 'FLIP_ENCODED_PICT' and 'FLIP_DECODED_PICT'. At any time you
+	// can update thse values (e.g. when the device switch from landscape to portrait) using video_session->set();
+#if FLIP_ENCODED_PICT
+	self->video.flip.encoded = tsk_true;
+#else
+	self->video.flip.encoded = tsk_false;
+#endif
+#if FLIP_DECODED_PICT
+	self->video.flip.decoded = tsk_true;
+#else
+	self->video.flip.decoded = tsk_false;
+#endif
 
 	return 0;
 }

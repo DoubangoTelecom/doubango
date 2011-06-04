@@ -145,6 +145,18 @@ typedef struct tmedia_codec_s
 	tmedia_bandwidth_level_t bl;
 	//! the negociated format (only useful for codecs with dyn. payload type)
 	char* neg_format;
+	
+	struct {
+		unsigned __FIXME__:1;
+	} audio;
+	
+	struct {
+		struct {
+			unsigned encoded:1;
+			unsigned decoded:1;
+		} flip;
+	} video;
+	
 	//! plugin used to create the codec
 	const struct tmedia_codec_plugin_def_s* plugin;
 }

@@ -260,10 +260,11 @@ tsk_size_t tdav_codec_theora_encode(tmedia_codec_t* self, const void* in_data, t
 		TSK_DEBUG_ERROR("Invalid size");
 		return 0;
 	}
-	/* Flip */
-#if FLIP_ENCODED_PICT
-	tdav_converter_video_flip(theora->encoder.picture, theora->encoder.context->height);
-#endif
+	
+	// Flip 
+	if(self->video.flip.encoded){
+		tdav_converter_video_flip(theora->encoder.picture, theora->encoder.context->height);
+	}
 	
 	// Encode data
 	//theora->encoder.picture->pts = tsk_time_epoch();
@@ -362,9 +363,9 @@ tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, t
 						}
 						else{
 							retsize = xsize;
-#if FLIP_DECODED_PICT
-							tdav_converter_video_flip(theora->decoder.picture, theora->decoder.context->height);
-#endif
+							if(self->video.flip.decoded){
+								tdav_converter_video_flip(theora->decoder.picture, theora->decoder.context->height);
+							}
 							/* allocate buffer */
 							if(*out_max_size <xsize){
 								if((*out_data = tsk_realloc(*out_data, xsize))){

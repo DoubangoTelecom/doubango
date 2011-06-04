@@ -264,12 +264,34 @@ int tmedia_session_video_set(tmedia_session_t* self, const tmedia_param_t* param
 			TSK_DEBUG_ERROR("No consumer associated to this session");
 			return -1;
 		}
+		if(param->value_type == tmedia_pvt_int32){
+			if(tsk_striequals(param->key, "flip")){
+				tsk_list_item_t* item;
+				tsk_bool_t flip = (tsk_bool_t)TSK_TO_INT32((uint8_t*)param->value);
+				tmedia_codecs_L_t *codecs = tsk_object_ref(self->codecs);
+				tsk_list_foreach(item, codecs){
+					((tmedia_codec_t*)item->data)->video.flip.decoded = flip;
+				}
+				tsk_object_unref(codecs);
+			}
+		}
 		ret = tmedia_consumer_set(video->consumer, param);
 	}
 	else if(param->plugin_type == tmedia_ppt_producer){
 		if(!video->producer){
 			TSK_DEBUG_ERROR("No producer associated to this session");
 			return -1;
+		}
+		if(param->value_type == tmedia_pvt_int32){
+			if(tsk_striequals(param->key, "flip")){
+				tsk_list_item_t* item;
+				tsk_bool_t flip = (tsk_bool_t)TSK_TO_INT32((uint8_t*)param->value);
+				tmedia_codecs_L_t *codecs = tsk_object_ref(self->codecs);
+				tsk_list_foreach(item, codecs){
+					((tmedia_codec_t*)item->data)->video.flip.encoded = flip;
+				}
+				tsk_object_unref(codecs);
+			}
 		}
 		ret = tmedia_producer_set(video->producer, param);
 	}
@@ -291,7 +313,7 @@ int tmedia_session_video_set(tmedia_session_t* self, const tmedia_param_t* param
 		else if(param->value_type == tmedia_pvt_int32){
 			if(tsk_striequals(param->key, "bandwidth-level")){
 				tsk_list_item_t* item;
-				self->bl = (tmedia_bandwidth_level_t) TSK_TO_UINT32((uint8_t*)param->value);
+				self->bl = (tmedia_bandwidth_level_t) TSK_TO_INT32((uint8_t*)param->value);
 				self->codecs = tsk_object_ref(self->codecs);
 				tsk_list_foreach(item, self->codecs){
 					((tmedia_codec_t*)item->data)->bl = self->bl;
