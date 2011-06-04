@@ -223,10 +223,11 @@ tsk_size_t tdav_codec_h261_encode(tmedia_codec_t* self, const void* in_data, tsk
 		TSK_DEBUG_ERROR("Invalid size");
 		return 0;
 	}
-	/* Flip */
-#if FLIP_ENCODED_PICT
-	tdav_converter_video_flip(h261->encoder.picture, h261->encoder.context->height);
-#endif
+	
+	// Flip
+	if(self->video.flip.encoded){
+		tdav_converter_video_flip(h261->encoder.picture, h261->encoder.context->height);
+	}
 
 	// Encode data
 	h261->encoder.picture->pts = AV_NOPTS_VALUE;
@@ -328,9 +329,9 @@ tsk_size_t tdav_codec_h261_decode(tmedia_codec_t* self, const void* in_data, tsk
 		}
 		else{
 			retsize = xsize;
-#if FLIP_DECODED_PICT
-			tdav_converter_video_flip(h261->decoder.picture, h261->decoder.context->height);
-#endif
+			if(self->video.flip.decoded){
+				tdav_converter_video_flip(h261->decoder.picture, h261->decoder.context->height);
+			}
 			/* copy picture into a linear buffer */
 			avpicture_layout((AVPicture *)h261->decoder.picture, h261->decoder.context->pix_fmt, h261->decoder.context->width, h261->decoder.context->height,
 				*out_data, retsize);

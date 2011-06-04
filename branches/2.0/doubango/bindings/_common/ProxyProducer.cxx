@@ -34,9 +34,6 @@
 
 #include "tinydav/audio/tdav_producer_audio.h"
 
-#define twrap_producer_proxy_audio_set tsk_null
-#define twrap_producer_proxy_video_set tsk_null
-
 
 /* ============ Audio Media Producer Interface ================= */
 typedef struct twrap_producer_proxy_audio_s
@@ -48,6 +45,11 @@ typedef struct twrap_producer_proxy_audio_s
 }
 twrap_producer_proxy_audio_t;
 #define TWRAP_PRODUCER_PROXY_AUDIO(self) ((twrap_producer_proxy_audio_t*)(self))
+
+int twrap_producer_proxy_audio_set(tmedia_producer_t* self, const tmedia_param_t* params)
+{
+	return 0;
+}
 
 int twrap_producer_proxy_audio_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
 {
@@ -281,6 +283,11 @@ typedef struct twrap_producer_proxy_video_s
 }
 twrap_producer_proxy_video_t;
 #define TWRAP_PRODUCER_PROXY_VIDEO(self) ((twrap_producer_proxy_video_t*)(self))
+
+int twrap_producer_proxy_video_set(tmedia_producer_t* self, const tmedia_param_t* params)
+{
+	return 0;
+}
 
 int twrap_producer_proxy_video_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
 {

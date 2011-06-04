@@ -256,10 +256,11 @@ tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk
 		TSK_DEBUG_ERROR("Invalid size");
 		return 0;
 	}
-	/* Flip */
-#if FLIP_ENCODED_PICT
-	tdav_converter_video_flip(h264->encoder.picture, h264->encoder.context->height);
-#endif
+	
+	// Flip
+	if(self->video.flip.encoded){
+		tdav_converter_video_flip(h264->encoder.picture, h264->encoder.context->height);
+	}
 
 	if((h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->fps*3) 
 		&& ((h264->encoder.frame_count++%TMEDIA_CODEC_VIDEO(h264)->fps)==0)){
@@ -362,9 +363,9 @@ tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_data, tsk
 			TSK_DEBUG_ERROR("=============Failed to decode the buffer");
 		}
 		else if(got_picture_ptr){
-#if FLIP_DECODED_PICT
-			tdav_converter_video_flip(h264->decoder.picture, h264->decoder.context->height);
-#endif
+			if(self->video.flip.decoded){
+				tdav_converter_video_flip(h264->decoder.picture, h264->decoder.context->height);
+			}
 			/* fill out */
 			if(*out_max_size<xsize){
 				if((*out_data = tsk_realloc(*out_data, xsize))){
