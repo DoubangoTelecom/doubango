@@ -160,13 +160,21 @@ tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id, uint3
 			TSK_DEBUG_ERROR("AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareIOBufferDuration, %f) failed", preferredBufferSize);
 		}
 
+#if TARGET_OS_IPHONE
+		UInt32 audioCategory = kAudioSessionCategory_PlayAndRecord;
+		status = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(audioCategory), &audioCategory);
+		if(status){
+			TSK_DEBUG_ERROR("AudioSessionSetProperty(kAudioSessionProperty_AudioCategory) failed with status code=%d", (int32_t)status);
+			goto done;
+		}
+#endif/* TARGET_OS_IPHONE */
 		// create new instance
 		if((status= AudioComponentInstanceNew(__audioSystem, &inst->audioUnit))){
 			TSK_DEBUG_ERROR("AudioComponentInstanceNew() failed with status=%d", (int32_t)status);
 			TSK_OBJECT_SAFE_FREE(inst);
 			goto done;
 		}
-#if TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE		
 		// enable all even if we know that it's already done by default
 		// static UInt32 kVoiceQuality = 127;
 		//status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_BypassVoiceProcessing,
