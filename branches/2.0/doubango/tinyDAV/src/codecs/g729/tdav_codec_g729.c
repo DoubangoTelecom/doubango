@@ -91,6 +91,10 @@ int tdav_codec_g729ab_close(tmedia_codec_t* self)
 {
 	tdav_codec_g729ab_t* g729a = (tdav_codec_g729ab_t*)self;	
 
+	(g729a);
+	
+	/* resources will be freed by the dctor() */
+	
 	return 0;
 }
 
