@@ -46,7 +46,7 @@ int tdav_codec_speex_open(tmedia_codec_t* self)
 {
 	static int quality = 6;
 	tdav_codec_speex_t* speex = (tdav_codec_speex_t*)self;
-	tsk_size_t size = 0;
+	// tsk_size_t size = 0;
 	
 	switch(speex->type){
 		case tdav_codec_speex_type_nb:
@@ -84,7 +84,7 @@ int tdav_codec_speex_close(tmedia_codec_t* self)
 {
 	tdav_codec_speex_t* speex = (tdav_codec_speex_t*)self;
 
-	
+	(speex);
 
 	return 0;
 }
