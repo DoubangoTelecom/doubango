@@ -161,8 +161,8 @@ static const int tdns_machine_resolvconf_en_main = 0;
 		servers = tsk_list_create();
 	}
 	else{
-#if ANDROID
-		TSK_DEBUG_INFO("Failed to open [%s]. But don't panic, we have detected that you are using Google Android System.\n"
+#if ANDROID || defined(__APPLE__) /* TARGET_OS_IPHONE not defined for bsd libraries */
+		TSK_DEBUG_INFO("Failed to open [%s]. But don't panic, we have detected that you are using Google Android/iOS Systems.\n"
 			"You should look at the Progammer's Guide for more information.\n If you are not using DNS functions, don't worry about this warning.", 
 			fullpath);
 #else
