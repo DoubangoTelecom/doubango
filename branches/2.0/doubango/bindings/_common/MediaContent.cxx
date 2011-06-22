@@ -23,92 +23,92 @@
 
 
 
-MediaContent::MediaContent(tmedia_content_t* _content)
-: data(tsk_null)
+MediaContent::MediaContent(tmedia_content_t* pContent)
+: m_pData(tsk_null)
 {
-	this->content = (tmedia_content_t*)tsk_object_ref(_content);
+	m_pContent = (tmedia_content_t*)tsk_object_ref(pContent);
 }
 
 MediaContent::~MediaContent()
 {
-	TSK_OBJECT_SAFE_FREE(this->content);
-	TSK_OBJECT_SAFE_FREE(this->data);
+	TSK_OBJECT_SAFE_FREE(m_pContent);
+	TSK_OBJECT_SAFE_FREE(m_pData);
 }
 
 const char* MediaContent::getType()
 {
-	if(this->content){
-		return this->content->type;
+	if(m_pContent){
+		return m_pContent->type;
 	}
 	return tsk_null;
 }
 
 unsigned MediaContent::getDataLength()
 {
-	if(!this->content){
+	if(!m_pContent){
 		TSK_DEBUG_ERROR("Invalid internal object");
 		return 0;
 	}
 
-	if(!this->data){
-		this->data = tmedia_content_get_data(this->content);
+	if(!m_pData){
+		m_pData = tmedia_content_get_data(m_pContent);
 	}
 
-	return (this->data ? this->data->size : 0);
+	return (m_pData ? m_pData->size : 0);
 }
 
-unsigned MediaContent::getData(void* output, unsigned maxsize)
+unsigned MediaContent::getData(void* pOutput, unsigned nMaxsize)
 {
-	unsigned retsize = 0;
+	unsigned nRetsize = 0;
 
-	if(!this->content){
+	if(!m_pContent){
 		TSK_DEBUG_ERROR("Invalid internal object");
 		return 0;
 	}
 
-	if(!this->data){
-		this->data = tmedia_content_get_data(this->content);
+	if(!m_pData){
+		m_pData = tmedia_content_get_data(m_pContent);
 	}	
 		
-	if(output && maxsize && this->data){
-		retsize = (this->data->size > maxsize) ? maxsize : this->data->size;
-		memcpy(output, this->data->data, retsize);
+	if(pOutput && nMaxsize && m_pData){
+		nRetsize = (m_pData->size > nMaxsize) ? nMaxsize : m_pData->size;
+		memcpy(pOutput, m_pData->data, nRetsize);
 	}
 
-	return retsize;
+	return nRetsize;
 }
 
-MediaContent* MediaContent::parse(const void* data, unsigned size, const char* type)
+MediaContent* MediaContent::parse(const void* pData, unsigned nSize, const char* pType)
 {
-	MediaContent* mediaContent = tsk_null;
+	MediaContent* pMediaContent = tsk_null;
 
-	tmedia_content_t* _content = tmedia_content_parse(data, (tsk_size_t)size, type);
-	if(_content){
-		if(TMEDIA_CONTENT_IS_CPIM(_content)){
-			mediaContent = new MediaContentCPIM(_content);
+	tmedia_content_t* pContent = tmedia_content_parse(pData, (tsk_size_t)nSize, pType);
+	if(pContent){
+		if(TMEDIA_CONTENT_IS_CPIM(pContent)){
+			pMediaContent = new MediaContentCPIM(pContent);
 		}
-		else if(TMEDIA_CONTENT_IS_DUMMY(_content)){
+		else if(TMEDIA_CONTENT_IS_DUMMY(pContent)){
 			// Todo
 		}
-		TSK_OBJECT_SAFE_FREE(_content);
+		TSK_OBJECT_SAFE_FREE(pContent);
 	}
 
-	return mediaContent;
+	return pMediaContent;
 }
 
-MediaContentCPIM* MediaContent::parse(const void* data, unsigned size)
+MediaContentCPIM* MediaContent::parse(const void* pData, unsigned nSize)
 {
-	MediaContent* mediaContent;
-	if((mediaContent = MediaContent::parse(data, size, TMEDIA_CONTENT_CPIM_TYPE))){
-		return dyn_cast<MediaContentCPIM*>(mediaContent);
+	MediaContent* pMediaContent;
+	if((pMediaContent = MediaContent::parse(pData, nSize, TMEDIA_CONTENT_CPIM_TYPE))){
+		return dyn_cast<MediaContentCPIM*>(pMediaContent);
 	}
 	return tsk_null;
 }
 
 /* ============ message/CPIM ================= */
 
-MediaContentCPIM::MediaContentCPIM(tmedia_content_t* _content)
-: MediaContent(_content)
+MediaContentCPIM::MediaContentCPIM(tmedia_content_t* pContent)
+: MediaContent(pContent)
 {
 }
 
@@ -118,29 +118,38 @@ MediaContentCPIM::~MediaContentCPIM()
 
 unsigned MediaContentCPIM::getPayloadLength()
 {
-	if(!this->content || !TMEDIA_CONTENT_IS_CPIM(this->content)){
+	if(!m_pContent || !TMEDIA_CONTENT_IS_CPIM(m_pContent)){
 		TSK_DEBUG_ERROR("Invalid internal object");
 		return 0;
 	}
 
-	return (TMEDIA_CONTENT_CPIM(this->content)->e ? TMEDIA_CONTENT_CPIM(this->content)->e->size : 0);
+	return (TMEDIA_CONTENT_CPIM(m_pContent)->e ? TMEDIA_CONTENT_CPIM(m_pContent)->e->size : 0);
 }
 
-unsigned MediaContentCPIM::getPayload(void* output, unsigned maxsize)
+unsigned MediaContentCPIM::getPayload(void* pOutput, unsigned nMaxsize)
 {
-	unsigned retsize = 0;
+	unsigned nRetsize = 0;
 
-	if(!this->content || !TMEDIA_CONTENT_IS_CPIM(this->content)){
+	if(!m_pContent || !TMEDIA_CONTENT_IS_CPIM(m_pContent)){
 		TSK_DEBUG_ERROR("Invalid internal object");
 		return 0;
 	}
 
-	if(output && maxsize && TMEDIA_CONTENT_CPIM(this->content)->e){
-		retsize = (TMEDIA_CONTENT_CPIM(this->content)->e->size > maxsize) ? maxsize : TMEDIA_CONTENT_CPIM(this->content)->e->size;
-		memcpy(output, TMEDIA_CONTENT_CPIM(this->content)->e->data, retsize);
+	if(pOutput && nMaxsize && TMEDIA_CONTENT_CPIM(m_pContent)->e){
+		nRetsize = (TMEDIA_CONTENT_CPIM(m_pContent)->e->size > nMaxsize) ? nMaxsize : TMEDIA_CONTENT_CPIM(m_pContent)->e->size;
+		memcpy(pOutput, TMEDIA_CONTENT_CPIM(m_pContent)->e->data, nRetsize);
 	}
 
-	return retsize;
+	return nRetsize;
+}
+
+const void* MediaContentCPIM::getPayloadPtr(){
+	if(!m_pContent || !TMEDIA_CONTENT_IS_CPIM(m_pContent)){
+		TSK_DEBUG_ERROR("Invalid internal object");
+		return tsk_null;
+	}
+	
+	return TMEDIA_CONTENT_CPIM(m_pContent)->e ? TMEDIA_CONTENT_CPIM(m_pContent)->e->data : tsk_null;
 }
 
 const char* MediaContentCPIM::getHeaderValue(const char* name)
@@ -148,12 +157,12 @@ const char* MediaContentCPIM::getHeaderValue(const char* name)
 	const tmedia_content_cpim_t* cpim;
 	const tsk_list_item_t* item;
 
-	if(!this->content || !TMEDIA_CONTENT_IS_CPIM(this->content)){
+	if(!m_pContent || !TMEDIA_CONTENT_IS_CPIM(m_pContent)){
 		TSK_DEBUG_ERROR("Invalid internal object");
 		return tsk_null;
 	}
 
-	cpim = TMEDIA_CONTENT_CPIM(this->content);
+	cpim = TMEDIA_CONTENT_CPIM(m_pContent);
 	tsk_list_foreach(item, cpim->h_headers){
 		if(tsk_striequals(name, TMEDIA_CONTENT_HEADER(item->data)->name)){
 			return TMEDIA_CONTENT_HEADER(item->data)->value;

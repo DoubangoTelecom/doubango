@@ -38,20 +38,20 @@ public:
 public:
 	const char* getType();
 	virtual unsigned getDataLength();
-	virtual unsigned getData(void* output, unsigned maxsize);
+	virtual unsigned getData(void* pOutput, unsigned nMaxsize);
 	
 	// SWIG %newobject()
-	static MediaContent* parse(const void* data, unsigned size, const char* type);
-	static MediaContentCPIM* parse(const void* data, unsigned size);
+	static MediaContent* parse(const void* pData, unsigned nSize, const char* pType);
+	static MediaContentCPIM* parse(const void* pData, unsigned nSize);
 
 	virtual unsigned getPayloadLength() = 0;
-	virtual unsigned getPayload(void* output, unsigned maxsize) = 0;
+	virtual unsigned getPayload(void* pOutput, unsigned nMaxsize) = 0;
 
 protected:
-	tmedia_content_t* content;
+	tmedia_content_t* m_pContent;
 
 private:
-	tsk_buffer_t* data;
+	tsk_buffer_t* m_pData;
 };
 
 
@@ -60,14 +60,17 @@ class MediaContentCPIM : public MediaContent
 {
 public:
 #if !defined(SWIG)
-	MediaContentCPIM(tmedia_content_t* content);
+	MediaContentCPIM(tmedia_content_t* pContent);
 #endif
 	virtual ~MediaContentCPIM();
 
 public:
 	virtual unsigned getPayloadLength();
-	virtual unsigned getPayload(void* output, unsigned maxsize);
-	const char* getHeaderValue(const char* name);
+	virtual unsigned getPayload(void* pOutput, unsigned nMaxsize);
+#if !defined(SWIG)
+	const void* getPayloadPtr();
+#endif
+	const char* getHeaderValue(const char* pName);
 };
 
 #endif /*TINYWRAP_MEDIA_CONTENT_H*/
