@@ -51,6 +51,8 @@ TINYMEDIA_API int tmedia_defaults_set_noise_supp_enabled(tsk_bool_t noise_supp_e
 TINYMEDIA_API tsk_bool_t tmedia_defaults_get_noise_supp_enabled();
 TINYMEDIA_API int tmedia_defaults_set_noise_supp_level(int32_t noise_supp_level);
 TINYMEDIA_API int32_t tmedia_defaults_get_noise_supp_level();
+TINYMEDIA_API int tmedia_defaults_set_100rel_enabled(tsk_bool_t _100rel_enabled);
+TINYMEDIA_API tsk_bool_t tmedia_defaults_get_100rel_enabled();
 
 TMEDIA_END_DECLS
 

@@ -998,7 +998,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 			self->challenges = tsk_list_create();
 		}
 
-		/* Sets default expires value. */
+		/* Sets some defalt values */
 		self->expires = TSIP_SSESSION_EXPIRES_DEFAULT;
 		
 		if(call_id){

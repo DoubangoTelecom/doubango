@@ -47,6 +47,8 @@
 
 #include "tinysdp/parsers/tsdp_parser_message.h"
 
+#import "tinymedia/tmedia_defaults.h"
+
 #include "tsk_debug.h"
 
 // http://cdnet.stpi.org.tw/techroom/market/_pdf/2009/eetelecomm_09_009_OneVoiceProfile.pdf
@@ -75,14 +77,14 @@
 */
 
 /* ======================== internal functions ======================== */
-int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bool_t force_sdp);
-int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx);
-int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
-int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase, tsk_bool_t force_sdp);
-int send_ERROR(tsip_dialog_invite_t* self, const tsip_request_t* request, short code, const char* phrase, const char* reason);
-int send_BYE(tsip_dialog_invite_t *self);
-int send_CANCEL(tsip_dialog_invite_t *self);
-int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self);
+/*static*/ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bool_t force_sdp);
+/*static*/ int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx);
+/*static*/ int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
+/*static*/ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase, tsk_bool_t force_sdp);
+/*static*/ int send_ERROR(tsip_dialog_invite_t* self, const tsip_request_t* request, short code, const char* phrase, const char* reason);
+/*static*/ int send_BYE(tsip_dialog_invite_t *self);
+/*static*/ int send_CANCEL(tsip_dialog_invite_t *self);
+static int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self);
 
 /* ======================== external functions ======================== */
 extern int tsip_dialog_invite_stimers_cancel(tsip_dialog_invite_t* self);
@@ -707,8 +709,9 @@ int x0000_Any_2_Any_X_i1xx(va_list *app)
 			/* Send Error */
 			return ret;
 		}
-
-		if((ret = send_PRACK(self, r1xx))){
+		
+		// don't send PRACK if 100rel is only inside "supported" header
+		if(tsip_message_required(r1xx, "100rel") && (ret = send_PRACK(self, r1xx))){
 			return ret;
 		}
 	}
@@ -1315,6 +1318,10 @@ static tsk_object_t* tsip_dialog_invite_ctor(tsk_object_t * self, va_list * app)
 		TSIP_DIALOG_GET_FSM(dialog)->debug = DEBUG_STATE_MACHINE;
 		tsk_fsm_set_callback_terminated(TSIP_DIALOG_GET_FSM(dialog), TSK_FSM_ONTERMINATED_F(tsip_dialog_invite_OnTerminated), (const void*)dialog);
 
+		/* default values */
+		dialog->supported._100rel = tmedia_defaults_get_100rel_enabled();
+		// ... do the same for preconditions, replaces, ....
+		
 		/* Initialize the class itself */
 		tsip_dialog_invite_init(self);
 	}

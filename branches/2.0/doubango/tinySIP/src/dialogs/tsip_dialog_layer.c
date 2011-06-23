@@ -108,6 +108,7 @@ tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const cha
 		if(tsk_strequals(dialog->callid, callid)){
 			tsk_bool_t is_cancel = (type == tsip_CANCEL); // Incoming CANCEL
 			tsk_bool_t is_register = (type == tsip_REGISTER); // Incoming REGISTER
+			tsk_bool_t is_notify = (type == tsip_NOTIFY); // Incoming NOTIFY
 			*cid_matched = tsk_true;
 			/* CANCEL Request will have the same local tag than the INVITE request -> do not compare tags */
 			if((is_cancel || tsk_strequals(dialog->tag_local, from_tag)) && tsk_strequals(dialog->tag_remote, to_tag)){
@@ -116,6 +117,17 @@ tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const cha
 			}
 			/* REGISTER is dialogless which means that each reREGISTER or unREGISTER will have empty to tag  */
 			if(is_register /* Do not check tags */){
+				ret = tsk_object_ref(dialog);
+				break;
+			}
+			/*	NOTIFY could arrive before the 200 SUBSCRIBE => This is why we don't try to match both tags
+			 
+				RFC 3265 - 3.1.4.4. Confirmation of Subscription Creation
+				Due to the potential for both out-of-order messages and forking, the
+				subscriber MUST be prepared to receive NOTIFY messages before the
+				SUBSCRIBE transaction has completed.
+			 */
+			if(is_notify /* Do not check tags */){
 				ret = tsk_object_ref(dialog);
 				break;
 			}
@@ -341,6 +353,8 @@ int tsip_dialog_layer_remove(tsip_dialog_layer_t *self, const tsip_dialog_t *dia
 	return -1;
 }
 
+// this function is only called if no transaction match
+// for responses, the transaction will always match
 int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const tsip_message_t* message)
 {
 	int ret = -1;
@@ -352,7 +366,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	if(!layer_transac){
 		goto bail;
 	}
-
+	
 	//tsk_safeobj_lock(self);
 	dialog = tsip_dialog_layer_find(self, message->Call_ID->value, 
 		TSIP_MESSAGE_IS_RESPONSE(message) ? message->To->tag : message->From->tag, 
@@ -415,6 +429,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 					}
 			}//switch
 
+			// for new dialog, create a new transac and start it later
 			if(newdialog){
 				transac = tsip_transac_layer_new(layer_transac, tsk_false, message, newdialog);
 				tsk_list_push_back_data(self->dialogs, (void**)&newdialog); /* add new dialog to the layer */

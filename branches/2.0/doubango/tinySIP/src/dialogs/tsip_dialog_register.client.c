@@ -45,15 +45,15 @@ extern int tsip_dialog_register_timer_callback(const tsip_dialog_register_t* sel
 extern int tsip_dialog_register_send_REGISTER(tsip_dialog_register_t *self, tsk_bool_t initial);
 
 /* ======================== transitions ======================== */
-int tsip_dialog_register_Started_2_InProgress_X_oRegister(va_list *app);
-int tsip_dialog_register_InProgress_2_InProgress_X_1xx(va_list *app);
-int tsip_dialog_register_InProgress_2_Terminated_X_2xx(va_list *app);
-int tsip_dialog_register_InProgress_2_Connected_X_2xx(va_list *app);
-int tsip_dialog_register_InProgress_2_InProgress_X_401_407_421_494(va_list *app);
-int tsip_dialog_register_InProgress_2_InProgress_X_423(va_list *app);
-int tsip_dialog_register_InProgress_2_Terminated_X_300_to_699(va_list *app);
-int tsip_dialog_register_InProgress_2_Terminated_X_cancel(va_list *app);
-int tsip_dialog_register_Connected_2_InProgress_X_oRegister(va_list *app);
+static int tsip_dialog_register_Started_2_InProgress_X_oRegister(va_list *app);
+static int tsip_dialog_register_InProgress_2_InProgress_X_1xx(va_list *app);
+static int tsip_dialog_register_InProgress_2_Terminated_X_2xx(va_list *app);
+static int tsip_dialog_register_InProgress_2_Connected_X_2xx(va_list *app);
+static int tsip_dialog_register_InProgress_2_InProgress_X_401_407_421_494(va_list *app);
+static int tsip_dialog_register_InProgress_2_InProgress_X_423(va_list *app);
+static int tsip_dialog_register_InProgress_2_Terminated_X_300_to_699(va_list *app);
+static int tsip_dialog_register_InProgress_2_Terminated_X_cancel(va_list *app);
+static int tsip_dialog_register_Connected_2_InProgress_X_oRegister(va_list *app);
 
 
 /* ======================== conds ======================== */

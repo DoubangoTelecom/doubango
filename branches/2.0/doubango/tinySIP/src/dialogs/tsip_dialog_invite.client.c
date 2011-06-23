@@ -51,11 +51,11 @@ extern int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const t
 extern int x0000_Any_2_Any_X_i1xx(va_list *app);
 
 /* ======================== transitions ======================== */
-int c0000_Started_2_Outgoing_X_oINVITE(va_list *app);
-int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app);
-int c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app);
-int c0000_Outgoing_2_Cancelling_X_oCANCEL(va_list *app);
-int c0000_Cancelling_2_Terminated_X_i300_to_699(va_list *app); /* 487 INVITE (To have more chances, any 300-699) */
+static int c0000_Started_2_Outgoing_X_oINVITE(va_list *app);
+static int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app);
+static int c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app);
+static int c0000_Outgoing_2_Cancelling_X_oCANCEL(va_list *app);
+static int c0000_Cancelling_2_Terminated_X_i300_to_699(va_list *app); /* 487 INVITE (To have more chances, any 300-699) */
 
 /* ======================== conds ======================== */
 static tsk_bool_t _fsm_cond_is_resp2INVITE(tsip_dialog_invite_t* self, tsip_message_t* message)

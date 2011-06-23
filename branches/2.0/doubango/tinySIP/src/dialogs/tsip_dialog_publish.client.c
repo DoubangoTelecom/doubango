@@ -49,23 +49,23 @@
 	tsip_publish_event_signal(type, TSIP_DIALOG(self)->ss, code, phrase, message)
 
 /* ======================== internal functions ======================== */
-int send_PUBLISH(tsip_dialog_publish_t *self);
-int tsip_dialog_publish_OnTerminated(tsip_dialog_publish_t *self);
+static int send_PUBLISH(tsip_dialog_publish_t *self);
+static int tsip_dialog_publish_OnTerminated(tsip_dialog_publish_t *self);
 
 /* ======================== transitions ======================== */
-int tsip_dialog_publish_Started_2_Trying_X_publish(va_list *app);
-int tsip_dialog_publish_Trying_2_Trying_X_1xx(va_list *app);
-int tsip_dialog_publish_Trying_2_Terminated_X_2xx(va_list *app);
-int tsip_dialog_publish_Trying_2_Connected_X_2xx(va_list *app);
-int tsip_dialog_publish_Trying_2_Trying_X_401_407_421_494(va_list *app);
-int tsip_dialog_publish_Trying_2_Trying_X_423(va_list *app);
-int tsip_dialog_publish_Trying_2_Terminated_X_300_to_699(va_list *app);
-int tsip_dialog_publish_Trying_2_Terminated_X_cancel(va_list *app);
-int tsip_dialog_publish_Connected_2_Trying_X_publish(va_list *app);
-int tsip_dialog_publish_Any_2_Trying_X_hangup(va_list *app);
-int tsip_dialog_publish_Any_2_Trying_X_shutdown(va_list *app);
-int tsip_dialog_publish_Any_2_Terminated_X_transportError(va_list *app);
-int tsip_dialog_publish_Any_2_Terminated_X_Error(va_list *app);
+static int tsip_dialog_publish_Started_2_Trying_X_publish(va_list *app);
+static int tsip_dialog_publish_Trying_2_Trying_X_1xx(va_list *app);
+static int tsip_dialog_publish_Trying_2_Terminated_X_2xx(va_list *app);
+static int tsip_dialog_publish_Trying_2_Connected_X_2xx(va_list *app);
+static int tsip_dialog_publish_Trying_2_Trying_X_401_407_421_494(va_list *app);
+static int tsip_dialog_publish_Trying_2_Trying_X_423(va_list *app);
+static int tsip_dialog_publish_Trying_2_Terminated_X_300_to_699(va_list *app);
+static int tsip_dialog_publish_Trying_2_Terminated_X_cancel(va_list *app);
+static int tsip_dialog_publish_Connected_2_Trying_X_publish(va_list *app);
+static int tsip_dialog_publish_Any_2_Trying_X_hangup(va_list *app);
+static int tsip_dialog_publish_Any_2_Trying_X_shutdown(va_list *app);
+static int tsip_dialog_publish_Any_2_Terminated_X_transportError(va_list *app);
+static int tsip_dialog_publish_Any_2_Terminated_X_Error(va_list *app);
 
 
 /* ======================== conds ======================== */

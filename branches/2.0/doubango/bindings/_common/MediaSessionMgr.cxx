@@ -216,6 +216,12 @@ int32_t MediaSessionMgr::defaultsGetNoiseSuppLevel()
 	return tmedia_defaults_get_noise_supp_level();
 }
 
+bool MediaSessionMgr::defaultsSet100relEnabled(bool _100rel_enabled){
+	return tmedia_defaults_set_100rel_enabled(_100rel_enabled ? tsk_true : tsk_false) == 0;
+}
 
+bool MediaSessionMgr::defaultsGet100relEnabled(){
+	return tmedia_defaults_get_100rel_enabled();
+}
 
 
