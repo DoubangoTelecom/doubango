@@ -49,28 +49,29 @@
 	tsip_subscribe_event_signal(type, TSIP_DIALOG(self)->ss, code, phrase, message)
 
 /* ======================== internal functions ======================== */
-int send_SUBSCRIBE(tsip_dialog_subscribe_t *self);
-int send_200NOTIFY(tsip_dialog_subscribe_t *self, const tsip_request_t* request);
-int tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self);
+static int process_i_notify(tsip_dialog_subscribe_t *self, const tsip_request_t* notify);
+static int send_SUBSCRIBE(tsip_dialog_subscribe_t *self);
+static int send_200NOTIFY(tsip_dialog_subscribe_t *self, const tsip_request_t* request);
+static int tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self);
 
 /* ======================== transitions ======================== */
-int tsip_dialog_subscribe_Started_2_Trying_X_subscribe(va_list *app);
-int tsip_dialog_subscribe_Trying_2_Trying_X_1xx(va_list *app);
-int tsip_dialog_subscribe_Trying_2_Terminated_X_2xx(va_list *app);
-int tsip_dialog_subscribe_Trying_2_Connected_X_2xx(va_list *app);
-int tsip_dialog_subscribe_Trying_2_Trying_X_401_407_421_494(va_list *app);
-int tsip_dialog_subscribe_Trying_2_Trying_X_423(va_list *app);
-int tsip_dialog_subscribe_Trying_2_Terminated_X_300_to_699(va_list *app);
-int tsip_dialog_subscribe_Trying_2_Terminated_X_cancel(va_list *app);
-int tsip_dialog_subscribe_Trying_2_Trying_X_NOTIFY(va_list *app);
-int tsip_dialog_subscribe_Connected_2_Trying_X_unsubscribe(va_list *app);
-int tsip_dialog_subscribe_Connected_2_Trying_X_subscribe(va_list *app);
-int tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY(va_list *app);
-int tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY(va_list *app);
-int tsip_dialog_subscribe_Any_2_Trying_X_hangup(va_list *app);
-int tsip_dialog_subscribe_Any_2_Trying_X_shutdown(va_list *app);
-int tsip_dialog_subscribe_Any_2_Terminated_X_transportError(va_list *app);
-int tsip_dialog_subscribe_Any_2_Terminated_X_Error(va_list *app);
+static int tsip_dialog_subscribe_Started_2_Trying_X_subscribe(va_list *app);
+static int tsip_dialog_subscribe_Trying_2_Trying_X_1xx(va_list *app);
+static int tsip_dialog_subscribe_Trying_2_Terminated_X_2xx(va_list *app);
+static int tsip_dialog_subscribe_Trying_2_Connected_X_2xx(va_list *app);
+static int tsip_dialog_subscribe_Trying_2_Trying_X_401_407_421_494(va_list *app);
+static int tsip_dialog_subscribe_Trying_2_Trying_X_423(va_list *app);
+static int tsip_dialog_subscribe_Trying_2_Terminated_X_300_to_699(va_list *app);
+static int tsip_dialog_subscribe_Trying_2_Terminated_X_cancel(va_list *app);
+static int tsip_dialog_subscribe_Trying_2_Trying_X_NOTIFY(va_list *app);
+static int tsip_dialog_subscribe_Connected_2_Trying_X_unsubscribe(va_list *app);
+static int tsip_dialog_subscribe_Connected_2_Trying_X_subscribe(va_list *app);
+static int tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY(va_list *app);
+static int tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY(va_list *app);
+static int tsip_dialog_subscribe_Any_2_Trying_X_hangup(va_list *app);
+static int tsip_dialog_subscribe_Any_2_Trying_X_shutdown(va_list *app);
+static int tsip_dialog_subscribe_Any_2_Terminated_X_transportError(va_list *app);
+static int tsip_dialog_subscribe_Any_2_Terminated_X_Error(va_list *app);
 
 
 /* ======================== conds ======================== */
@@ -498,10 +499,15 @@ int tsip_dialog_subscribe_Trying_2_Terminated_X_cancel(va_list *app)
 */
 int tsip_dialog_subscribe_Trying_2_Trying_X_NOTIFY(va_list *app)
 {
+	int ret;
+	
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
 	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
 
-	return send_200NOTIFY(self, request);
+	ret = send_200NOTIFY(self, request);
+	ret = process_i_notify(self, request);
+	
+	return ret;
 }
 
 /* Connected -> (SUBSCRIBE) -> Trying
@@ -530,14 +536,7 @@ int tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY(va_list *app)
 	int ret;
 
 	ret = send_200NOTIFY(self, request);
-	
-	/* Request timeout for dialog refresh (re-registration). */
-	self->timerrefresh.timeout = tsip_dialog_get_newdelay(TSIP_DIALOG(self), request);
-	TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(refresh);
-
-	/* Alert the user */
-	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, tsip_i_notify, 
-		tsip_event_code_dialog_request_incoming, "Incoming NOTIFY.", request);
+	ret = process_i_notify(self, request);
 
 	return ret;
 }
@@ -669,6 +668,25 @@ int send_200NOTIFY(tsip_dialog_subscribe_t *self, const tsip_request_t* request)
 		TSK_OBJECT_SAFE_FREE(response);
 	}
 	return ret;
+}
+
+// process incoming notify: refresh delay and alert the user
+int process_i_notify(tsip_dialog_subscribe_t *self, const tsip_request_t* notify)
+{
+	if(!self || !notify){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	/* Request timeout for dialog refresh (re-registration). */
+	self->timerrefresh.timeout = tsip_dialog_get_newdelay(TSIP_DIALOG(self), notify);
+	TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(refresh);
+	
+	/* Alert the user */
+	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, tsip_i_notify, 
+								 tsip_event_code_dialog_request_incoming, "Incoming NOTIFY.", notify);
+	
+	return 0;
 }
 
 /**

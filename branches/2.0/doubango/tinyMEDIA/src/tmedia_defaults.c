@@ -51,6 +51,7 @@ static float __agc_level = 8000.0f;
 static tsk_bool_t __vad_enabled = tsk_false;
 static tsk_bool_t __noise_supp_enabled = tsk_true;
 static int32_t __noise_supp_level = -30;
+static tsk_bool_t __100rel_enabled = tsk_true;
 
 int tmedia_defaults_set_echo_tail(uint32_t echo_tail)
 {
@@ -129,5 +130,11 @@ int32_t tmedia_defaults_get_noise_supp_level()
 	return __noise_supp_level;
 }
 
+int tmedia_defaults_set_100rel_enabled(tsk_bool_t _100rel_enabled){
+	return __100rel_enabled = _100rel_enabled;
+}
 
+tsk_bool_t tmedia_defaults_get_100rel_enabled(){
+	return __100rel_enabled;
+}
 

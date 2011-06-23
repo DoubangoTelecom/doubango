@@ -27,11 +27,11 @@
 extern int tsip_dialog_register_send_RESPONSE(tsip_dialog_register_t *self, const tsip_request_t* request, short code, const char* phrase);
 
 /* ======================== transitions ======================== */
-int s0000_Started_2_Terminated_X_iREGISTER(va_list *app);
-int s0000_Started_2_Incoming_X_iREGISTER(va_list *app);
-int s0000_Incoming_2_Connected_X_Accept(va_list *app);
-int s0000_Incoming_2_Terminated_X_Reject(va_list *app);
-int s0000_Connected_2_Terminated_X_iREGISTER(va_list *app);
+static int s0000_Started_2_Terminated_X_iREGISTER(va_list *app);
+static int s0000_Started_2_Incoming_X_iREGISTER(va_list *app);
+static int s0000_Incoming_2_Connected_X_Accept(va_list *app);
+static int s0000_Incoming_2_Terminated_X_Reject(va_list *app);
+static int s0000_Connected_2_Terminated_X_iREGISTER(va_list *app);
 
 
 /* ======================== conds ======================== */

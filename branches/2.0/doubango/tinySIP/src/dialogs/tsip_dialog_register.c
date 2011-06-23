@@ -37,15 +37,15 @@
 
 
 /* ======================== internal functions ======================== */
-int tsip_dialog_register_send_REGISTER(tsip_dialog_register_t *self, tsk_bool_t initial);
-int tsip_dialog_register_send_RESPONSE(tsip_dialog_register_t *self, const tsip_request_t* request, short code, const char* phrase);
-int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self);
+/*static*/ int tsip_dialog_register_send_REGISTER(tsip_dialog_register_t *self, tsk_bool_t initial);
+/*static*/ int tsip_dialog_register_send_RESPONSE(tsip_dialog_register_t *self, const tsip_request_t* request, short code, const char* phrase);
+/*static*/ int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self);
 
 /* ======================== transitions ======================== */
-int tsip_dialog_register_Any_2_InProgress_X_hangup(va_list *app);
-int tsip_dialog_register_Any_2_InProgress_X_shutdown(va_list *app);
-int tsip_dialog_register_Any_2_Terminated_X_transportError(va_list *app);
-int tsip_dialog_register_Any_2_Terminated_X_Error(va_list *app);
+static int tsip_dialog_register_Any_2_InProgress_X_hangup(va_list *app);
+static int tsip_dialog_register_Any_2_InProgress_X_shutdown(va_list *app);
+static int tsip_dialog_register_Any_2_Terminated_X_transportError(va_list *app);
+static int tsip_dialog_register_Any_2_Terminated_X_Error(va_list *app);
 
 /* ======================== conds ======================== */
 static tsk_bool_t _fsm_cond_silent_hangup(tsip_dialog_register_t* dialog, tsip_message_t* message)

@@ -55,23 +55,23 @@ extern int send_ERROR(tsip_dialog_invite_t* self, const tsip_request_t* request,
 extern int tsip_dialog_invite_timer_callback(const tsip_dialog_invite_t* self, tsk_timer_id_t timer_id);
 
 /* ======================== internal functions ======================== */
-int send_UNSUPPORTED(tsip_dialog_invite_t* self, const tsip_request_t* request, const char* option);
+static int send_UNSUPPORTED(tsip_dialog_invite_t* self, const tsip_request_t* request, const char* option);
 
 /* ======================== transitions ======================== */
-int s0000_Started_2_Terminated_X_iINVITE(va_list *app); // Failure
-int s0000_Started_2_Started_X_iINVITE(va_list *app); // Session Interval Too Small
-int s0000_Started_2_InProgress_X_iINVITE(va_list *app); // 100rel supported
-int s0000_Started_2_Ringing_X_iINVITE(va_list *app); // Neither 100rel nor QoS
-int s0000_InProgress_2_InProgress_X_iPRACK(va_list *app); // PRACK for our 18x response (with QoS)
-int s0000_InProgress_2_Ringing_X_iPRACK(va_list *app); // PRACK for our 18x response (without QoS)
-int s0000_InProgress_2_InProgress_X_iUPDATE(va_list *app); // QoS cannot resume
-int s0000_InProgress_2_Ringing_X_iUPDATE(va_list *app); // QoS can resume (do not alert user, wait for PRACK)
-int s0000_Inprogress_2_Terminated_X_iCANCEL(va_list *app);
-int s0000_Ringing_2_Ringing_X_iPRACK(va_list *app); // Alert user
-int s0000_Ringing_2_Connected_X_Accept(va_list *app);
-int s0000_Ringing_2_Terminated_X_Reject(va_list *app);
-int s0000_Ringing_2_Terminated_X_iCANCEL(va_list *app);
-int s0000_Any_2_Any_X_timer100rel(va_list *app);
+static int s0000_Started_2_Terminated_X_iINVITE(va_list *app); // Failure
+static int s0000_Started_2_Started_X_iINVITE(va_list *app); // Session Interval Too Small
+static int s0000_Started_2_InProgress_X_iINVITE(va_list *app); // 100rel supported
+static int s0000_Started_2_Ringing_X_iINVITE(va_list *app); // Neither 100rel nor QoS
+static int s0000_InProgress_2_InProgress_X_iPRACK(va_list *app); // PRACK for our 18x response (with QoS)
+static int s0000_InProgress_2_Ringing_X_iPRACK(va_list *app); // PRACK for our 18x response (without QoS)
+static int s0000_InProgress_2_InProgress_X_iUPDATE(va_list *app); // QoS cannot resume
+static int s0000_InProgress_2_Ringing_X_iUPDATE(va_list *app); // QoS can resume (do not alert user, wait for PRACK)
+static int s0000_Inprogress_2_Terminated_X_iCANCEL(va_list *app);
+static int s0000_Ringing_2_Ringing_X_iPRACK(va_list *app); // Alert user
+static int s0000_Ringing_2_Connected_X_Accept(va_list *app);
+static int s0000_Ringing_2_Terminated_X_Reject(va_list *app);
+static int s0000_Ringing_2_Terminated_X_iCANCEL(va_list *app);
+static int s0000_Any_2_Any_X_timer100rel(va_list *app);
 
 /* ======================== conds ======================== */
 static tsk_bool_t _fsm_cond_bad_extension(tsip_dialog_invite_t* self, tsip_message_t* message)
