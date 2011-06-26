@@ -47,7 +47,7 @@
 
 #include "tinysdp/parsers/tsdp_parser_message.h"
 
-#import "tinymedia/tmedia_defaults.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tsk_debug.h"
 
