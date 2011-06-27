@@ -703,13 +703,12 @@ int x0000_Any_2_Any_X_i1xx(va_list *app)
 		Additional information: We should only process the SDP from reliable responses (require:100rel)
 		but there was many problem with some clients sending SDP with this tag: tiscali, DTAG, samsung, ...
 	*/
-	if((TSIP_RESPONSE_CODE(r1xx) >= 101 && TSIP_RESPONSE_CODE(r1xx) <=199) && TSIP_MESSAGE_HAS_CONTENT(r1xx)){
+	if((TSIP_RESPONSE_CODE(r1xx) >= 101 && TSIP_RESPONSE_CODE(r1xx) <=199)){
 		/* Process Remote offer */
-		if((ret = tsip_dialog_invite_process_ro(self, r1xx))){
+		if(TSIP_MESSAGE_HAS_CONTENT(r1xx) && (ret = tsip_dialog_invite_process_ro(self, r1xx))){
 			/* Send Error */
 			return ret;
 		}
-		
 		// don't send PRACK if 100rel is only inside "supported" header
 		if(tsip_message_required(r1xx, "100rel") && (ret = send_PRACK(self, r1xx))){
 			return ret;

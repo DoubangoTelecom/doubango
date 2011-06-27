@@ -221,7 +221,5 @@ bool MediaSessionMgr::defaultsSet100relEnabled(bool _100rel_enabled){
 }
 
 bool MediaSessionMgr::defaultsGet100relEnabled(){
-	return tmedia_defaults_get_100rel_enabled();
+	return tmedia_defaults_get_100rel_enabled() == 0;
 }
-
-

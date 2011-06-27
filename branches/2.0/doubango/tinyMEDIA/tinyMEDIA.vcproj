@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="tinyMEDIA"
 	ProjectGUID="{52814B0D-7DCA-45B8-9A16-8B147040D619}"
 	RootNamespace="tinyMEDIA"
@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;..\thirdparties\win32\include&quot;;include;&quot;..\tinySAK\src&quot;;&quot;..\tinySDP\include&quot;;&quot;..\tinyNET\src&quot;"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS;FLIP_ENCODED_PICT=1;FLIP_DECODED_PICT=1"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -119,7 +119,7 @@
 				Optimization="1"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="&quot;..\thirdparties\win32\include&quot;;include;&quot;..\tinySAK\src&quot;;&quot;..\tinySDP\include&quot;;&quot;..\tinyNET\src&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS;FLIP_ENCODED_PICT=1;FLIP_DECODED_PICT=1"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="false"
 				UsePrecompiledHeader="0"
