@@ -45,6 +45,7 @@
 extern int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bool_t force_sdp);
 extern int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
 extern int send_CANCEL(tsip_dialog_invite_t *self);
+extern int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase, tsk_bool_t force_sdp);
 extern int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message);
 extern int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_message_t* message);
 
@@ -52,6 +53,7 @@ extern int x0000_Any_2_Any_X_i1xx(va_list *app);
 
 /* ======================== transitions ======================== */
 static int c0000_Started_2_Outgoing_X_oINVITE(va_list *app);
+static int c0000_Outgoing_2_Outgoing_X_iINVITEorUPDATE(va_list *app);
 static int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app);
 static int c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app);
 static int c0000_Outgoing_2_Cancelling_X_oCANCEL(va_list *app);
@@ -84,6 +86,10 @@ int tsip_dialog_invite_client_init(tsip_dialog_invite_t *self)
 			*/
 			// Outgoing -> (i2xx INVITE) -> Connected
 			TSK_FSM_ADD(_fsm_state_Outgoing, _fsm_action_i2xx, _fsm_cond_is_resp2INVITE, _fsm_state_Connected, c0000_Outgoing_2_Connected_X_i2xxINVITE, "c0000_Outgoing_2_Connected_X_i2xxINVITE"),
+			// Outgoing -> (iINVITE ) -> Outgoing
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Outgoing, _fsm_action_iINVITE, _fsm_state_Outgoing, c0000_Outgoing_2_Outgoing_X_iINVITEorUPDATE, "c0000_Outgoing_2_Outgoing_X_iINVITEorUPDATE"),
+			// Outgoing -> (iUPDATE) -> Outgoing
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Outgoing, _fsm_action_iUPDATE, _fsm_state_Outgoing, c0000_Outgoing_2_Outgoing_X_iINVITEorUPDATE, "c0000_Outgoing_2_Outgoing_X_iINVITEorUPDATE"),
 			// Outgoing -> (oCANCEL) -> Cancelling
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Outgoing, _fsm_action_oCANCEL, _fsm_state_Cancelling, c0000_Outgoing_2_Cancelling_X_oCANCEL, "c0000_Outgoing_2_Cancelling_X_oCANCEL"),
 			// Cancelling -> (any response to cancel CANCEL) -> Cancelling
@@ -224,6 +230,33 @@ int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 			TMEDIA_SESSION_SET_NULL());
 	}*/
 	
+	return ret;
+}
+
+/* Outgoing -> (iINVITE or iINVITE) -> Outgoing
+*/
+int c0000_Outgoing_2_Outgoing_X_iINVITEorUPDATE(va_list *app)
+{
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	const tsip_request_t *rINVITEorUPDATE = va_arg(*app, const tsip_request_t *);
+
+	int ret = 0;
+
+	/* process remote offer */
+	if((ret = tsip_dialog_invite_process_ro(self, rINVITEorUPDATE))){
+		/* Send error */
+		return ret;
+	}
+
+	/* Send 200 OK */
+	ret = send_RESPONSE(self, rINVITEorUPDATE, 200, "OK", 
+		(self->msession_mgr && (self->msession_mgr->ro_changed || self->msession_mgr->state_changed)));
+
+	/* alert the user */
+	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_request, 
+			tsip_event_code_dialog_request_incoming, "Incoming Request.", rINVITEorUPDATE);
+	
+
 	return ret;
 }
 
