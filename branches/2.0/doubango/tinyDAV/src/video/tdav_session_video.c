@@ -298,9 +298,8 @@ int tmedia_session_video_set(tmedia_session_t* self, const tmedia_param_t* param
 	else{
 		if(param->value_type == tmedia_pvt_pchar){
 			if(tsk_striequals(param->key, "remote-ip")){
-				/* only if no ip associated to the "m=" line */
-				if(param->value && !video->remote_ip){
-					video->remote_ip = tsk_strdup(param->value);
+				if(param->value){
+					tsk_strupdate(&video->remote_ip, param->value);
 				}
 			}
 			else if(tsk_striequals(param->key, "local-ip")){

@@ -201,29 +201,27 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 #define kInputBus  1
 	
 	tdav_producer_audiounit_t* producer = (tdav_producer_audiounit_t*)self;
-	OSStatus status;
+	OSStatus status = noErr;
 	AudioStreamBasicDescription audioFormat;
 	
 	if(!producer || !codec || !codec->plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if(producer->audioUnitHandle){
-		TSK_DEBUG_ERROR("Already propared");
-		return -2;
-	}
-	if(!(producer->audioUnitHandle = tdav_audiounit_handle_create(TMEDIA_PRODUCER(producer)->session_id, codec->plugin->audio.ptime))){
-		TSK_DEBUG_ERROR("Failed to get audio unit instance for session with id=%lld", TMEDIA_PRODUCER(producer)->session_id);
-		return -3;
+	if(!producer->audioUnitHandle){
+		if(!(producer->audioUnitHandle = tdav_audiounit_handle_create(TMEDIA_PRODUCER(producer)->session_id, codec->plugin->audio.ptime))){
+			TSK_DEBUG_ERROR("Failed to get audio unit instance for session with id=%lld", TMEDIA_PRODUCER(producer)->session_id);
+			return -3;
+		}
+		// enable
+		status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(producer->audioUnitHandle), 
+									  kAudioOutputUnitProperty_EnableIO, 
+									  kAudioUnitScope_Input, 
+									  kInputBus,
+									  &flagOne, 
+									  sizeof(flagOne));
 	}
 	
-	// enable
-	status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(producer->audioUnitHandle), 
-								  kAudioOutputUnitProperty_EnableIO, 
-								  kAudioUnitScope_Input, 
-								  kInputBus,
-								  &flagOne, 
-								  sizeof(flagOne));
 	if(status){
 		TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO) failed with status=%d", (int32_t)status);
 		return -4;
@@ -286,7 +284,7 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 					return -7;
 				}
 				// create mutex for ring buffer
-				if(!(producer->ring.mutex = tsk_mutex_create_2(tsk_false))){
+				if(!producer->ring.mutex && !(producer->ring.mutex = tsk_mutex_create_2(tsk_false))){
 					TSK_DEBUG_ERROR("Failed to create new mutex");
 					return -8;
 				}
@@ -297,7 +295,7 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 				}
 				else {
 					int ret;
-					if((ret = speex_buffer_resize(producer->ring.buffer, producer->ring.size))){
+					if((ret = speex_buffer_resize(producer->ring.buffer, producer->ring.size)) < 0){
 						TSK_DEBUG_ERROR("speex_buffer_resize(%d) failed with error code=%d", producer->ring.size, ret);
 						return ret;
 					}

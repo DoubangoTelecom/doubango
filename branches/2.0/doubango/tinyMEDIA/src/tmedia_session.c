@@ -762,7 +762,10 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	const tsdp_header_C_t* C; /* global "c=" line */
 	const tsdp_header_O_t* O;
 	tsk_size_t index = 0;
+	int ret = 0;
 	tsk_bool_t found;
+	tsk_bool_t stopped_to_reconf = tsk_false;
+	tsk_bool_t is_hold_resume = tsk_false;
 	tmedia_qos_stype_t qos_type = tmedia_qos_stype_none;
 
 	if(!self || !sdp){
@@ -786,6 +789,20 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	else{
 		TSK_DEBUG_ERROR("o= line is missing");
 		return -2;
+	}
+	
+	/*
+	  * It's almost impossible to update the codecs, the connection information etc etc whil the session are running
+	  * For example, if the video producer is already started then, you probably cannot update its configuration
+	  * without stoping it and restart again with the right config. Same for RTP Network config (ip addresses, NAT, ports, IP version, ...)
+	  * FIXME: We must check that it's not a basic hold/resume because this kind of request doesn't update the stream config
+	 */
+	if(self->started && !is_hold_resume){
+		if((ret = tmedia_session_mgr_stop(self))){
+			TSK_DEBUG_ERROR("Failed to stop session manager");
+			return ret;
+		}
+		stopped_to_reconf = tsk_true;
 	}
 
 	/* update remote offer */
@@ -848,6 +865,14 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		self->qos.type = qos_type;
 	}
 
+	/* manager was started and we stopped it in order to reconfigure it (codecs, network, ....) */
+	if(stopped_to_reconf){
+		if((ret = tmedia_session_mgr_start(self))){
+			TSK_DEBUG_ERROR("Failed to re-start session manager");
+			return ret;
+		}
+	}
+	
 	/* signal that ro has changed (will be used to update lo) */
 	self->ro_changed = tsk_true;
 
