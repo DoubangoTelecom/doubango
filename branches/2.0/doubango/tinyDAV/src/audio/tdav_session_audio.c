@@ -220,9 +220,8 @@ int tdav_session_audio_set(tmedia_session_t* self, const tmedia_param_t* param)
 	else{
 		if(param->value_type == tmedia_pvt_pchar){
 			if(tsk_striequals(param->key, "remote-ip")){
-				/* only if no ip associated to the "m=" line */
-				if(param->value && !audio->remote_ip){
-					audio->remote_ip = tsk_strdup(param->value);
+				if(param->value){
+					tsk_strupdate(&audio->remote_ip, param->value);
 				}
 			}
 			else if(tsk_striequals(param->key, "local-ip")){
@@ -567,7 +566,9 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 			/* update negociated codecs */
 			if((neg_codecs = tmedia_session_match_codec(self, self->M.ro))){
 				self->neg_codecs = neg_codecs;
+				tsk_safeobj_lock(audio);
 				TSK_OBJECT_SAFE_FREE(audio->encoder.codec);
+				tsk_safeobj_unlock(audio);
 			}
 			/* from codecs to sdp */
 			if(TSK_LIST_IS_EMPTY(self->neg_codecs) || ((self->neg_codecs->tail == self->neg_codecs->head) && IS_DTMF_CODEC(TSK_LIST_FIRST_DATA(self->neg_codecs)))){

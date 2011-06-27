@@ -102,28 +102,26 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 #define kOutputBus  0
 	
 	tdav_consumer_audiounit_t* consumer = (tdav_consumer_audiounit_t*)self;
-	OSStatus status;
+	OSStatus status = noErr;
 	
 	if(!consumer || !codec || !codec->plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if(consumer->audioUnitHandle){
-		TSK_DEBUG_ERROR("Already propared");
-		return -2;
-	}
-	if(!(consumer->audioUnitHandle = tdav_audiounit_handle_create(TMEDIA_CONSUMER(consumer)->session_id, codec->plugin->audio.ptime))){
-		TSK_DEBUG_ERROR("Failed to get audio unit instance for session with id=%lld", TMEDIA_CONSUMER(consumer)->session_id);
-		return -3;
+	if(!consumer->audioUnitHandle){
+		if(!(consumer->audioUnitHandle = tdav_audiounit_handle_create(TMEDIA_CONSUMER(consumer)->session_id, codec->plugin->audio.ptime))){
+			TSK_DEBUG_ERROR("Failed to get audio unit instance for session with id=%lld", TMEDIA_CONSUMER(consumer)->session_id);
+			return -3;
+		}
+		// enable
+		status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle), 
+									  kAudioOutputUnitProperty_EnableIO, 
+									  kAudioUnitScope_Output, 
+									  kOutputBus,
+									  &flagOne, 
+									  sizeof(flagOne));
 	}
 	
-	// enable
-	status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle), 
-								  kAudioOutputUnitProperty_EnableIO, 
-								  kAudioUnitScope_Output, 
-								  kOutputBus,
-								  &flagOne, 
-								  sizeof(flagOne));
 	if(status){
 		TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO) failed with status=%d", (int32_t)status);
 		return -4;
@@ -132,24 +130,6 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 		TMEDIA_CONSUMER(consumer)->audio.ptime = codec->plugin->audio.ptime;
 		TMEDIA_CONSUMER(consumer)->audio.in.channels = codec->plugin->audio.channels;
 		TMEDIA_CONSUMER(consumer)->audio.in.rate = codec->plugin->rate;
-		
-		// set format
-		/*Float64 hrwSampleRate = 0.;
-		UInt32 propertySize = sizeof(audioFormat.mSampleRate);
-		status = AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareSampleRate,
-								&propertySize,
-								   &hrwSampleRate);
-		if (TMEDIA_CONSUMER(consumer)->audio.in.rate != (uint32_t)hrwSampleRate) {
-			if((consumer->resampler = tmedia_resampler_create())){
-				int ret = tmedia_resampler_open(consumer->resampler, 
-												TMEDIA_CONSUMER(consumer)->audio.in.rate, 
-												(uint32_t)hrwSampleRate, 
-												<#uint32_t frame_duration#>, <#uint32_t channels#>, <#uint32_t quality#>)
-			}
-		}
-		if(status == 0){
-			TMEDIA_CONSUMER(consumer)->audio.out.rate = (int)hrwSampleRate;
-		}*/
 		
 		audioFormat.mSampleRate = TMEDIA_CONSUMER(consumer)->audio.out.rate ? TMEDIA_CONSUMER(consumer)->audio.out.rate : TMEDIA_CONSUMER(consumer)->audio.in.rate;
 		audioFormat.mFormatID = kAudioFormatLinearPCM;
@@ -202,7 +182,7 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 	}
 	else {
 		int ret;
-		if((ret = speex_buffer_resize(consumer->ring.buffer, consumer->ring.size))){
+		if((ret = speex_buffer_resize(consumer->ring.buffer, consumer->ring.size)) < 0){
 			TSK_DEBUG_ERROR("speex_buffer_resize(%d) failed with error code=%d", consumer->ring.size, ret);
 			return ret;
 		}
@@ -211,7 +191,7 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 		TSK_DEBUG_ERROR("Failed to create a new ring buffer with size = %d", consumer->ring.size);
 		return -8;
 	}
-	if(!(consumer->ring.mutex = tsk_mutex_create_2(tsk_false))){
+	if(!consumer->ring.mutex && !(consumer->ring.mutex = tsk_mutex_create_2(tsk_false))){
 		TSK_DEBUG_ERROR("Failed to create mutex");
 		return -9;
 	}
