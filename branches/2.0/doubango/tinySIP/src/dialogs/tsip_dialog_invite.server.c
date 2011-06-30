@@ -158,7 +158,7 @@ static tsk_bool_t _fsm_cond_toosmall(tsip_dialog_invite_t* self, tsip_message_t*
 }
 static tsk_bool_t _fsm_cond_supports_100rel(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
-	if(tsip_message_supported(message, "100rel") || tsip_message_required(message, "100rel")){
+	if((tsip_message_supported(message, "100rel") && self->supported._100rel) || tsip_message_required(message, "100rel")){
 		return tsk_true;
 	}
 	return tsk_false;
