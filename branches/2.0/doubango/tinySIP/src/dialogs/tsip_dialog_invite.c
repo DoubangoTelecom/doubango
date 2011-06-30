@@ -508,6 +508,7 @@ int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app)
 	const tsip_request_t *rINVITEorUPDATE = va_arg(*app, const tsip_request_t *);
 
 	int ret = 0;
+	tsk_bool_t bodiless_invite;
 
 	/* process remote offer */
 	if((ret = tsip_dialog_invite_process_ro(self, rINVITEorUPDATE))){
@@ -515,9 +516,25 @@ int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app)
 		return ret;
 	}
 	
-	/* Send 200 OK */
-	ret = send_RESPONSE(self, rINVITEorUPDATE, 200, "OK", 
-		(self->msession_mgr && (self->msession_mgr->ro_changed || self->msession_mgr->state_changed)));
+	/** response to bodiless iINVITE always contains SDP as explained below
+		RFC3261 - 14.1 UAC Behavior 
+		   The same offer-answer model that applies to session descriptions in 
+		   INVITEs (Section 13.2.1) applies to re-INVITEs.  As a result, a UAC 
+		   that wants to add a media stream, for example, will create a new 
+		   offer that contains this media stream, and send that in an INVITE 
+		   request to its peer.  It is important to note that the full 
+		   description of the session, not just the change, is sent.  This 
+		   supports stateless session processing in various elements, and 
+		   supports failover and recovery capabilities.  Of course, a UAC MAY 
+		   send a re-INVITE with no session description, in which case the first 
+		   reliable non-failure response to the re-INVITE will contain the offer 
+		   (in this specification, that is a 2xx response).
+	*/
+	bodiless_invite = !TSIP_MESSAGE_HAS_CONTENT(rINVITEorUPDATE) && TSIP_REQUEST_IS_INVITE(rINVITEorUPDATE);
+
+	// send the response
+	ret = send_RESPONSE(self, rINVITEorUPDATE, 200, "OK",
+		(self->msession_mgr && (bodiless_invite || self->msession_mgr->ro_changed || self->msession_mgr->state_changed)));
 
 	/* session timers */
 	if(self->stimers.timer.timeout){
@@ -1216,11 +1233,11 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 			/* SDP content */
 			if(self->msession_mgr && force_sdp){
 				const tsdp_message_t* sdp_lo;
-				char* sdp;
+				char* sdp = tsk_null;
 				if((sdp_lo = tmedia_session_mgr_get_lo(self->msession_mgr)) && (sdp = tsdp_message_tostring(sdp_lo))){
 					tsip_message_add_content(response, "application/sdp", sdp, tsk_strlen(sdp));
-					TSK_FREE(sdp);
 				}
+				TSK_FREE(sdp);
 			}
 
 			/* Add Allow header */
