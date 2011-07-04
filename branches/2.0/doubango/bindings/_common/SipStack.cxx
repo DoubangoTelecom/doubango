@@ -81,7 +81,8 @@ SipStack::~SipStack()
 
 bool SipStack::start()
 {
-	return (tsip_stack_start(m_pHandle) == 0);
+	bool ret = (tsip_stack_start(m_pHandle) == 0);
+	return ret;
 }
 
 bool SipStack::setDebugCallback(DDebugCallback* pCallback)
