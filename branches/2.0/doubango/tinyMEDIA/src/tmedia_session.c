@@ -766,6 +766,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	tsk_bool_t found;
 	tsk_bool_t stopped_to_reconf = tsk_false;
 	tsk_bool_t is_hold_resume = tsk_false;
+	tsk_bool_t is_loopback_address = tsk_false;
 	tmedia_qos_stype_t qos_type = tmedia_qos_stype_none;
 
 	if(!self || !sdp){
@@ -791,13 +792,25 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		return -2;
 	}
 	
+	/* This is to hack fake forking from ZTE => ignore SDP with loopback address in order to not start/stop the camera several
+	 * times which leads to more than ten seconds for session connection.
+	 * Gets the global connection line: "c="
+	 * Loopback address is only invalid on 
+	 */
+	if((C = (const tsdp_header_C_t*)tsdp_message_get_header(sdp, tsdp_htype_C)) && C->addr){
+		is_loopback_address = (tsk_striequals("IP4", C->addrtype) && tsk_striequals("127.0.0.1", C->addr))
+						|| (tsk_striequals("IP6", C->addrtype) && tsk_striequals("::1", C->addr));
+	}
+	
 	/*
 	  * It's almost impossible to update the codecs, the connection information etc etc whil the session are running
 	  * For example, if the video producer is already started then, you probably cannot update its configuration
 	  * without stoping it and restart again with the right config. Same for RTP Network config (ip addresses, NAT, ports, IP version, ...)
+	  * "is_loopback_address" is used as a guard to avoid reconf for loopback address used for example by ZTE for fake forking. In all case
+	  * loopback address won't work on embedded devices such as iOS and Android.
 	  * FIXME: We must check that it's not a basic hold/resume because this kind of request doesn't update the stream config
 	 */
-	if(self->started && !is_hold_resume){
+	if(self->started && !is_hold_resume && !is_loopback_address){
 		if((ret = tmedia_session_mgr_stop(self))){
 			TSK_DEBUG_ERROR("Failed to stop session manager");
 			return ret;
@@ -821,7 +834,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	/* get global connection line (common to all sessions) 
 	* Each session should override this info if it has a different one in its "m=" line
 	*/
-	if((C = (const tsdp_header_C_t*)tsdp_message_get_header(sdp, tsdp_htype_C)) && C->addr){
+	if(C && C->addr){
 		tmedia_session_mgr_set(self,
 			TMEDIA_SESSION_SET_STR(self->type, "remote-ip", C->addr),
 			TMEDIA_SESSION_SET_NULL());
