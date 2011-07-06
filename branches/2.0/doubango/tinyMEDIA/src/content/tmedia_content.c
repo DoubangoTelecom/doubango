@@ -288,7 +288,7 @@ tmedia_content_header_t* tmedia_content_header_create(const char* name, const ch
 		return tsk_null;
 	}
 	header->name = tsk_strdup(name);
-	if((str = strstr(value, ";"))){
+	if(value && (str = strstr(value, ";"))){
 		header->value = tsk_strndup(value, (str - value));
 		header->params = tsk_params_fromstring((str + 1), ";", tsk_true);
 	}
