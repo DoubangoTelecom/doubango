@@ -21,10 +21,10 @@
 */
 
 /**@file tdav_consumer_audio.c
- * @brief Base class for all Audio consumers.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- */
+* @brief Base class for all Audio consumers.
+*
+* @author Mamadou Diop <diopmamadou(at)doubango.org>
+*/
 #include "tinydav/audio/tdav_consumer_audio.h"
 
 #include "tinymedia/tmedia_denoise.h"
@@ -131,7 +131,7 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, const void* data, tsk_s
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	
+
 	tsk_safeobj_lock(self);
 
 	if(!TMEDIA_JITTER_BUFFER(self->jitterbuffer)->opened){
@@ -156,9 +156,9 @@ tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, 
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
-	
+
 	tsk_safeobj_lock(self);
-	
+
 	if(!TMEDIA_JITTER_BUFFER(self->jitterbuffer)->opened){
 		int ret;
 		uint32_t frame_duration = TMEDIA_CONSUMER(self)->audio.ptime;
@@ -170,15 +170,24 @@ tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, 
 		}
 	}
 	ret_size = tmedia_jitterbuffer_get(TMEDIA_JITTER_BUFFER(self->jitterbuffer), out_data, out_size);
-	
+
 	tsk_safeobj_unlock(self);
+	// Echo process last frame 
+	if(self->denoise && self->denoise->opened && TSK_BUFFER_SIZE(self->denoise->last_frame)){
+		tmedia_denoise_echo_playback(self->denoise, TSK_BUFFER_DATA(self->denoise->last_frame));
+	}
 
 	// denoiser
 	if(ret_size && self->denoise && self->denoise->opened){
-		// echo playback
-		tmedia_denoise_echo_playback(self->denoise, out_data);
+		if(self->denoise->echo_supp_enabled){
+			// echo playback
+			tsk_buffer_copy(self->denoise->last_frame, 0, out_data, ret_size);
+		}
+
+#if 0 // Noise suppression only on producers
 		// suppress noise
 		tmedia_denoise_process_playback(self->denoise, out_data);
+#endif
 	}
 
 	return ret_size;

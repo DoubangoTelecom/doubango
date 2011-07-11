@@ -21,12 +21,12 @@
 */
 
 /**@file tdav_speex_denoise.c
- * @brief Speex Denoiser (Noise suppression, AGC, AEC) Plugin
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
+* @brief Speex Denoiser (Noise suppression, AGC, AEC) Plugin
+*
+* @author Mamadou Diop <diopmamadou(at)doubango.org>
+*
 
- */
+*/
 #include "tinydav/audio/tdav_speex_denoise.h"
 
 #if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_DENOISE) || HAVE_SPEEX_DENOISE)
@@ -51,6 +51,8 @@ static int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, 
 	int i;
 
 	if(!denoiser->echo_state && TMEDIA_DENOISE(denoiser)->echo_supp_enabled){
+		TSK_DEBUG_INFO("Init Aec frame_size[%d] filter_length[%d] SampleRate[%d]",
+			frame_size* sizeof(spx_int16_t),TMEDIA_DENOISE(denoiser)->echo_tail*frame_size,sampling_rate);
 		if((denoiser->echo_state = speex_echo_state_init(frame_size, TMEDIA_DENOISE(denoiser)->echo_tail*frame_size))){
 			speex_echo_ctl(denoiser->echo_state, SPEEX_ECHO_SET_SAMPLING_RATE, &sampling_rate);
 		}
@@ -60,50 +62,64 @@ static int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, 
 		denoiser->frame_size = frame_size;
 
 		if((denoiser->preprocess_state_record = speex_preprocess_state_init(frame_size, sampling_rate))
-		   && (denoiser->preprocess_state_playback = speex_preprocess_state_init(frame_size, sampling_rate))
-		   ){
+			&& (denoiser->preprocess_state_playback = speex_preprocess_state_init(frame_size, sampling_rate))
+			){
 
-			// Echo suppression
-			if(denoiser->echo_state){
-				speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_ECHO_STATE, denoiser->echo_state);
+				// Echo suppression
+				if(denoiser->echo_state){
+					int echo_supp , echo_supp_active = 0;
 
-				TSK_FREE(denoiser->echo_output_frame);
-				denoiser->echo_output_frame = tsk_calloc(denoiser->frame_size, sizeof(spx_int16_t));
-			}
-			
-			// Noise suppression
-			if(TMEDIA_DENOISE(denoiser)->noise_supp_enabled){
-				i = 1;
-				speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_DENOISE, &i);
-				speex_preprocess_ctl(denoiser->preprocess_state_playback, SPEEX_PREPROCESS_SET_DENOISE, &i);
-				i = TMEDIA_DENOISE(denoiser)->noise_supp_level;
-				speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &i);
-				speex_preprocess_ctl(denoiser->preprocess_state_playback, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &i);
-			}
-			else{
-				i = 0;
-				speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_DENOISE, &i);
-				speex_preprocess_ctl(denoiser->preprocess_state_playback, SPEEX_PREPROCESS_SET_DENOISE, &i);
-			}
-			
-			// Automatic gain control
-			if(TMEDIA_DENOISE(denoiser)->agc_enabled){
-				float agc_level = TMEDIA_DENOISE(denoiser)->agc_level;
-				i = 1;
-				speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_AGC, &i);
-				speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_AGC_LEVEL, &agc_level);
-			}
-			else{
-				i = 0, f = 8000.0f;
-				speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_AGC, &i);
-				speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_AGC_LEVEL, &f);
-			}
-			
-			// Voice Activity detection
-			i = TMEDIA_DENOISE(denoiser)->vad_enabled ? 1 : 0;
-			speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_VAD, &i);
+					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_ECHO_STATE, denoiser->echo_state);
 
-			return 0;
+					TSK_FREE(denoiser->echo_output_frame);
+					denoiser->echo_output_frame = tsk_calloc(denoiser->frame_size, sizeof(spx_int16_t));
+
+					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_GET_ECHO_SUPPRESS , &echo_supp );
+					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_GET_ECHO_SUPPRESS_ACTIVE , &echo_supp_active );                             
+					TSK_DEBUG_INFO("AEC echo_supp level [%d] echo_supp_active level[%d] ", echo_supp , echo_supp_active);
+					echo_supp = -60 ;
+					echo_supp_active = -60 ;
+					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_ECHO_SUPPRESS , &echo_supp );
+					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_ECHO_SUPPRESS_ACTIVE , &echo_supp_active );                             
+					// TRACES
+					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_GET_ECHO_SUPPRESS , &echo_supp );
+					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_GET_ECHO_SUPPRESS_ACTIVE , &echo_supp_active );                             
+					TSK_DEBUG_INFO("New aec echo_supp level [%d] echo_supp_active level[%d] ", echo_supp , echo_supp_active);
+				}
+
+				// Noise suppression
+				if(TMEDIA_DENOISE(denoiser)->noise_supp_enabled){
+					i = 1;
+					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_DENOISE, &i);
+					speex_preprocess_ctl(denoiser->preprocess_state_playback, SPEEX_PREPROCESS_SET_DENOISE, &i);
+					i = TMEDIA_DENOISE(denoiser)->noise_supp_level;
+					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &i);
+					speex_preprocess_ctl(denoiser->preprocess_state_playback, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &i);
+				}
+				else{
+					i = 0;
+					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_DENOISE, &i);
+					speex_preprocess_ctl(denoiser->preprocess_state_playback, SPEEX_PREPROCESS_SET_DENOISE, &i);
+				}
+
+				// Automatic gain control
+				if(TMEDIA_DENOISE(denoiser)->agc_enabled){
+					float agc_level = TMEDIA_DENOISE(denoiser)->agc_level;
+					i = 1;
+					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_AGC, &i);
+					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_AGC_LEVEL, &agc_level);
+				}
+				else{
+					i = 0, f = 8000.0f;
+					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_AGC, &i);
+					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_AGC_LEVEL, &f);
+				}
+
+				// Voice Activity detection
+				i = TMEDIA_DENOISE(denoiser)->vad_enabled ? 1 : 0;
+				speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_VAD, &i);
+
+				return 0;
 		}
 		else{
 			TSK_DEBUG_ERROR("Failed to create Speex preprocessor state");
@@ -147,7 +163,7 @@ static int tdav_speex_denoise_process_record(tmedia_denoise_t* self, void* audio
 static int tdav_speex_denoise_process_playback(tmedia_denoise_t* self, void* audio_frame)
 {
 	tdav_speex_denoise_t *denoiser = (tdav_speex_denoise_t *)self;
-	
+
 	if(denoiser->preprocess_state_playback){
 		speex_preprocess_run(denoiser->preprocess_state_playback, audio_frame);
 	}
@@ -157,7 +173,7 @@ static int tdav_speex_denoise_process_playback(tmedia_denoise_t* self, void* aud
 static int tdav_speex_denoise_close(tmedia_denoise_t* self)
 {
 	tdav_speex_denoise_t *denoiser = (tdav_speex_denoise_t *)self;
-	
+
 	if(denoiser->preprocess_state_record){
 		speex_preprocess_state_destroy(denoiser->preprocess_state_record);
 		denoiser->preprocess_state_record = tsk_null;
@@ -229,9 +245,9 @@ static const tsk_object_def_t tdav_speex_denoise_def_s =
 static const tmedia_denoise_plugin_def_t tdav_speex_denoise_plugin_def_s = 
 {
 	&tdav_speex_denoise_def_s,
-	
+
 	"Audio Denoiser based on Speex",
-	
+
 	tdav_speex_denoise_set,
 	tdav_speex_denoise_open,
 	tdav_speex_denoise_echo_playback,

@@ -3199,6 +3199,36 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1SipMessag
 }
 
 
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipMessage_1isResponse(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipMessage **)&jarg1; 
+  result = (bool)(arg1)->isResponse();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jshort JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipMessage_1getResponseCode(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jshort jresult = 0 ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  short result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipMessage **)&jarg1; 
+  result = (short)(arg1)->getResponseCode();
+  jresult = (jshort)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipMessage_1getSipHeaderValue_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jlong jarg3) {
   jstring jresult = 0 ;
   SipMessage *arg1 = (SipMessage *) 0 ;

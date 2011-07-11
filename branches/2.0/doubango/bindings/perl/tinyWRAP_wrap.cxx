@@ -5179,6 +5179,62 @@ XS(_wrap_delete_SipMessage) {
 }
 
 
+XS(_wrap_SipMessage_isResponse) {
+  {
+    SipMessage *arg1 = (SipMessage *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: SipMessage_isResponse(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipMessage, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipMessage_isResponse" "', argument " "1"" of type '" "SipMessage *""'"); 
+    }
+    arg1 = reinterpret_cast< SipMessage * >(argp1);
+    result = (bool)(arg1)->isResponse();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipMessage_getResponseCode) {
+  {
+    SipMessage *arg1 = (SipMessage *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    short result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: SipMessage_getResponseCode(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipMessage, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipMessage_getResponseCode" "', argument " "1"" of type '" "SipMessage *""'"); 
+    }
+    arg1 = reinterpret_cast< SipMessage * >(argp1);
+    result = (short)(arg1)->getResponseCode();
+    ST(argvi) = SWIG_From_short  SWIG_PERL_CALL_ARGS_1(static_cast< short >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_SipMessage_getSipHeaderValue__SWIG_0) {
   {
     SipMessage *arg1 = (SipMessage *) 0 ;
@@ -21168,6 +21224,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SdpMessage_getSdpHeaderAValue", _wrap_SdpMessage_getSdpHeaderAValue},
 {"tinyWRAPc::new_SipMessage", _wrap_new_SipMessage},
 {"tinyWRAPc::delete_SipMessage", _wrap_delete_SipMessage},
+{"tinyWRAPc::SipMessage_isResponse", _wrap_SipMessage_isResponse},
+{"tinyWRAPc::SipMessage_getResponseCode", _wrap_SipMessage_getResponseCode},
 {"tinyWRAPc::SipMessage_getSipHeaderValue", _wrap_SipMessage_getSipHeaderValue},
 {"tinyWRAPc::SipMessage_getSipHeaderParamValue", _wrap_SipMessage_getSipHeaderParamValue},
 {"tinyWRAPc::SipMessage_getSipContentLength", _wrap_SipMessage_getSipContentLength},
@@ -21920,13 +21978,18 @@ XS(SWIG_init) {
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tsip_event_code_dialog_request_outgoing", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(802)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_event_code_dialog_request_cancelled", TRUE | 0x2 | GV_ADDMULTI);
-    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(801)));
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(803)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_event_code_dialog_request_sent", TRUE | 0x2 | GV_ADDMULTI);
-    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(802)));
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(804)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
@@ -22097,6 +22160,16 @@ XS(SWIG_init) {
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_m_early_media", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_m_early_media)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tsip_m_updating", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_m_updating)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tsip_m_updated", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_m_updated)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {

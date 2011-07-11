@@ -13,8 +13,9 @@ public interface tinyWRAPConstants {
   public final static int tsip_event_code_dialog_global_error = 703;
   public final static int tsip_event_code_dialog_message_error = 704;
   public final static int tsip_event_code_dialog_request_incoming = 800;
-  public final static int tsip_event_code_dialog_request_cancelled = 801;
-  public final static int tsip_event_code_dialog_request_sent = 802;
+  public final static int tsip_event_code_dialog_request_outgoing = 802;
+  public final static int tsip_event_code_dialog_request_cancelled = 803;
+  public final static int tsip_event_code_dialog_request_sent = 804;
   public final static int tsip_event_code_dialog_connecting = 900;
   public final static int tsip_event_code_dialog_connected = 901;
   public final static int tsip_event_code_dialog_terminating = 902;

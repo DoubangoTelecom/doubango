@@ -1077,25 +1077,46 @@ int tsip_dialog_set_curr_action(tsip_dialog_t* self, const tsip_action_t* action
 	return 0;
 }
 
-int tsip_dialog_set_lasterror(tsip_dialog_t* self, const char* error)
+int tsip_dialog_set_lasterror_2(tsip_dialog_t* self, const char* phrase, short code, const tsip_message_t *message)
 {
-	if(!self || tsk_strnullORempty(error)){
+	if(!self || tsk_strnullORempty(phrase)){
 		TSK_DEBUG_ERROR("Invalid parameter.");
 		return -1;
 	}
 
-	tsk_strupdate(&self->lasterror, error);
+	tsk_strupdate(&self->last_error.phrase, phrase);
+	self->last_error.code = code;
+	TSK_OBJECT_SAFE_FREE(self->last_error.message);
+	if(message){
+		self->last_error.message = (tsip_message_t*)tsk_object_ref((void*)message);
+	}
 	return 0;
 }
 
-const char* tsip_dialog_get_lasterror(const tsip_dialog_t* self)
+int tsip_dialog_set_lasterror(tsip_dialog_t* self, const char* phrase, short code)
+{
+	return tsip_dialog_set_lasterror_2(self, phrase, code, tsk_null);
+}
+
+int tsip_dialog_get_lasterror(const tsip_dialog_t* self, short *code, const char** phrase, const tsip_message_t **message)
 {
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter.");
-		return tsk_null;
+		return -1;
 	}
-
-	return self->lasterror;
+	
+	if(code){
+		*code = self->last_error.code;
+	}
+	if(phrase){
+		*phrase = self->last_error.phrase;
+	}
+	
+	if(message){
+		*message = self->last_error.message;
+	}
+	
+	return 0;
 }
 
 int tsip_dialog_hangup(tsip_dialog_t *self, const tsip_action_t* action)
@@ -1163,7 +1184,8 @@ int tsip_dialog_deinit(tsip_dialog_t *self)
 		TSK_FREE(self->cseq_method);
 		TSK_FREE(self->callid);
 
-		TSK_FREE(self->lasterror);
+		TSK_FREE(self->last_error.phrase);
+		TSK_OBJECT_SAFE_FREE(self->last_error.message);
 
 		TSK_OBJECT_SAFE_FREE(self->record_routes);
 		TSK_OBJECT_SAFE_FREE(self->challenges);

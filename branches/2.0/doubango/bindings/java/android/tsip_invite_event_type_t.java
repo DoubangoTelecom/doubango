@@ -16,6 +16,8 @@ public enum tsip_invite_event_type_t {
   tsip_o_ect_nok,
   tsip_i_ect,
   tsip_m_early_media,
+  tsip_m_updating,
+  tsip_m_updated,
   tsip_m_local_hold_ok,
   tsip_m_local_hold_nok,
   tsip_m_local_resume_ok,

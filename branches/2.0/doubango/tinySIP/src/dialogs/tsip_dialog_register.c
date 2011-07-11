@@ -273,7 +273,7 @@ int tsip_dialog_register_Any_2_Terminated_X_Error(va_list *app)
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
 	/* set last error (or info) */
-	tsip_dialog_set_lasterror(TSIP_DIALOG(self), TSIP_RESPONSE_PHRASE(response));
+	tsip_dialog_set_lasterror(TSIP_DIALOG(self), TSIP_RESPONSE_PHRASE(response), TSIP_RESPONSE_CODE(response));
 
 	/* Alert the user. */
 	if(response){
@@ -438,7 +438,7 @@ int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
 
 	/* Alert the user */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, 
-		TSIP_DIALOG(self)->lasterror ? TSIP_DIALOG(self)->lasterror : "Dialog terminated");
+		TSIP_DIALOG(self)->last_error.phrase ? TSIP_DIALOG(self)->last_error.phrase : "Dialog terminated");
 	
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

@@ -99,6 +99,7 @@ TINYSIP_GEXTERN const tsk_object_def_t *tsip_event_def_t;
 
 int tsip_event_init(tsip_event_t* self, tsip_ssession_t* ss, short code, const char *phrase, const struct tsip_message_s* sipmessage, tsip_event_type_t type);
 int tsip_event_signal(tsip_event_type_t type, tsip_ssession_t* ss, short code, const char *phrase);
+int tsip_event_signal_2(tsip_event_type_t type, tsip_ssession_t* ss, short code, const char *phrase, const struct tsip_message_s* sipmessage);
 int tsip_event_deinit(tsip_event_t* self);
 
 typedef int (*tsip_stack_callback_f)(const tsip_event_t *sipevent);

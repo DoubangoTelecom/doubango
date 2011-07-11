@@ -198,10 +198,10 @@ int tsk_buffer_realloc(tsk_buffer_t* self, tsk_size_t size)
 			return tsk_buffer_cleanup(self);
 		}
 
-		if(self->size == 0){
+		if(self->size == 0){ // first time?
 			self->data = tsk_calloc(size, sizeof(uint8_t));
 		}
-		else{
+		else if(self->size != size){ // only realloc if different sizes
 			self->data = tsk_realloc(self->data, size);
 		}
 
@@ -272,6 +272,24 @@ int tsk_buffer_insert(tsk_buffer_t* self, tsk_size_t position, const void* data,
 		return 0;
 	}
 	return -1;
+}
+
+int tsk_buffer_copy(tsk_buffer_t* self, tsk_size_t start, const void* data, tsk_size_t size)
+{
+	int ret = 0;
+	if(!self || !data || !size){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	// realloc the buffer to match the overral size
+	if((ret = tsk_buffer_realloc(self, (start + size)))){
+		TSK_DEBUG_ERROR("failed to realloc the buffer");
+		return ret;
+	}
+
+	memcpy(((uint8_t*)self->data) + start, data, size);
+	return ret;
 }
 
 /**@ingroup tsk_buffer_group

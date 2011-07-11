@@ -7523,6 +7523,50 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SipMessage_isResponse(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipMessage_isResponse",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipMessage, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipMessage_isResponse" "', argument " "1"" of type '" "SipMessage *""'"); 
+  }
+  arg1 = reinterpret_cast< SipMessage * >(argp1);
+  result = (bool)(arg1)->isResponse();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipMessage_getResponseCode(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  short result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipMessage_getResponseCode",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipMessage, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipMessage_getResponseCode" "', argument " "1"" of type '" "SipMessage *""'"); 
+  }
+  arg1 = reinterpret_cast< SipMessage * >(argp1);
+  result = (short)(arg1)->getResponseCode();
+  resultobj = SWIG_From_short(static_cast< short >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_SipMessage_getSipHeaderValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipMessage *arg1 = (SipMessage *) 0 ;
@@ -20694,6 +20738,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SdpMessage_swigregister", SdpMessage_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_SipMessage", _wrap_new_SipMessage, METH_VARARGS, NULL},
 	 { (char *)"delete_SipMessage", _wrap_delete_SipMessage, METH_VARARGS, NULL},
+	 { (char *)"SipMessage_isResponse", _wrap_SipMessage_isResponse, METH_VARARGS, NULL},
+	 { (char *)"SipMessage_getResponseCode", _wrap_SipMessage_getResponseCode, METH_VARARGS, NULL},
 	 { (char *)"SipMessage_getSipHeaderValue", _wrap_SipMessage_getSipHeaderValue, METH_VARARGS, NULL},
 	 { (char *)"SipMessage_getSipHeaderParamValue", _wrap_SipMessage_getSipHeaderParamValue, METH_VARARGS, NULL},
 	 { (char *)"SipMessage_getSipContentLength", _wrap_SipMessage_getSipContentLength, METH_VARARGS, NULL},
@@ -22083,8 +22129,9 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_global_error",SWIG_From_int(static_cast< int >(703)));
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_message_error",SWIG_From_int(static_cast< int >(704)));
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_request_incoming",SWIG_From_int(static_cast< int >(800)));
-  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_request_cancelled",SWIG_From_int(static_cast< int >(801)));
-  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_request_sent",SWIG_From_int(static_cast< int >(802)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_request_outgoing",SWIG_From_int(static_cast< int >(802)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_request_cancelled",SWIG_From_int(static_cast< int >(803)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_request_sent",SWIG_From_int(static_cast< int >(804)));
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_connecting",SWIG_From_int(static_cast< int >(900)));
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_connected",SWIG_From_int(static_cast< int >(901)));
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_terminating",SWIG_From_int(static_cast< int >(902)));
@@ -22119,6 +22166,8 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tsip_o_ect_nok",SWIG_From_int(static_cast< int >(tsip_o_ect_nok)));
   SWIG_Python_SetConstant(d, "tsip_i_ect",SWIG_From_int(static_cast< int >(tsip_i_ect)));
   SWIG_Python_SetConstant(d, "tsip_m_early_media",SWIG_From_int(static_cast< int >(tsip_m_early_media)));
+  SWIG_Python_SetConstant(d, "tsip_m_updating",SWIG_From_int(static_cast< int >(tsip_m_updating)));
+  SWIG_Python_SetConstant(d, "tsip_m_updated",SWIG_From_int(static_cast< int >(tsip_m_updated)));
   SWIG_Python_SetConstant(d, "tsip_m_local_hold_ok",SWIG_From_int(static_cast< int >(tsip_m_local_hold_ok)));
   SWIG_Python_SetConstant(d, "tsip_m_local_hold_nok",SWIG_From_int(static_cast< int >(tsip_m_local_hold_nok)));
   SWIG_Python_SetConstant(d, "tsip_m_local_resume_ok",SWIG_From_int(static_cast< int >(tsip_m_local_resume_ok)));

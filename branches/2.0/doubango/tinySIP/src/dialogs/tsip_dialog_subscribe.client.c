@@ -467,7 +467,10 @@ int tsip_dialog_subscribe_Trying_2_Terminated_X_300_to_699(va_list *app)
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
-	/* Alert the user. */
+	/* save last error */
+	tsip_dialog_set_lasterror_2(TSIP_DIALOG(self), TSIP_RESPONSE_PHRASE(response), TSIP_RESPONSE_CODE(response), response);
+
+	/* alert the user */
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe,  
 		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 
@@ -489,7 +492,7 @@ int tsip_dialog_subscribe_Trying_2_Terminated_X_cancel(va_list *app)
 		A CANCEL request SHOULD NOT be sent to cancel a request other than INVITE.
    */
 
-	/* Alert the user */
+	/* alert the user */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_request_cancelled, "Subscription cancelled");
 
 	return ret;
@@ -699,8 +702,9 @@ int tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self)
 	TSK_DEBUG_INFO("=== SUBSCRIBE Dialog terminated ===");
 
 	/* Alert the user */
-	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, 
-		TSIP_DIALOG(self)->lasterror ? TSIP_DIALOG(self)->lasterror : "Dialog terminated");
+	TSIP_DIALOG_SIGNAL_2(self, tsip_event_code_dialog_terminated,
+			TSIP_DIALOG(self)->last_error.phrase ? TSIP_DIALOG(self)->last_error.phrase : "Dialog terminated",
+			TSIP_DIALOG(self)->last_error.message);
 
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

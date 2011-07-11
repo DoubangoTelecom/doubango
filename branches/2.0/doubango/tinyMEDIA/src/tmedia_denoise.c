@@ -21,12 +21,12 @@
 */
 
 /**@file tmedia_denoise.c
- * @brief Denoiser (Noise suppression, AGC, AEC, VAD) Plugin
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
+* @brief Denoiser (Noise suppression, AGC, AEC, VAD) Plugin
+*
+* @author Mamadou Diop <diopmamadou(at)doubango.org>
+*
 
- */
+*/
 #include "tinymedia/tmedia_denoise.h"
 #include "tinymedia/tmedia_defaults.h"
 
@@ -48,7 +48,7 @@ int tmedia_denoise_init(tmedia_denoise_t* self)
 	self->vad_enabled = tmedia_defaults_get_vad_enabled();
 	self->noise_supp_enabled = tmedia_defaults_get_noise_supp_enabled();
 	self->noise_supp_level = tmedia_defaults_get_noise_supp_level();
-	
+
 	return 0;
 }
 
@@ -58,12 +58,12 @@ int tmedia_denoise_set(tmedia_denoise_t* self, const tmedia_param_t* param)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	
+
 	if(self->plugin->set){
-		
+
 		// FIXME: to be implemnted
 		TSK_DEBUG_ERROR("Not implemented");
-		
+
 		return self->plugin->set(self, param);
 	}
 	return 0;
@@ -82,6 +82,18 @@ int tmedia_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_t sa
 
 	if(self->plugin->open){
 		int ret;
+
+		// create the buffer. do not use tsk_buffer_create(data,size) which requires a valid buffer pointer
+		if(!self->last_frame && !(self->last_frame = tsk_buffer_create_null())){
+			TSK_DEBUG_ERROR("Failed to realloc the buffer");
+			return -2;
+		}
+		// resize the buffer
+		if((ret = tsk_buffer_realloc(self->last_frame, (frame_size * sizeof(int16_t))))){
+			TSK_DEBUG_ERROR("Failed to realloc the buffer");
+			return ret;
+		}
+
 		if((ret = self->plugin->open(self, frame_size, sampling_rate))){
 			TSK_DEBUG_ERROR("Failed to open [%s] denoiser", self->plugin->desc);
 			return ret;
@@ -144,12 +156,12 @@ int tmedia_denoise_process_playback(tmedia_denoise_t* self, void* audio_frame)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	
+
 	if(!self->opened){
 		TSK_DEBUG_ERROR("Denoiser not opened");
 		return -2;
 	}
-	
+
 	if(self->plugin->process_playback){
 		return self->plugin->process_playback(self, audio_frame);
 	}
@@ -191,10 +203,12 @@ int tmedia_denoise_deinit(tmedia_denoise_t* self)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-
+	
 	if(self->opened){
 		tmedia_denoise_close(self);
 	}
+
+	TSK_OBJECT_SAFE_FREE(self->last_frame);
 
 	return 0;
 }
