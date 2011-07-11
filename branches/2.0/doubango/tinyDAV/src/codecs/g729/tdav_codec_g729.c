@@ -62,7 +62,7 @@ static void pack_SID(const Word16 ituBits[], uint8_t bitstream[]);
 
 #define tdav_codec_g729ab_fmtp_set tsk_null
 
-int tdav_codec_g729ab_open(tmedia_codec_t* self)
+static int tdav_codec_g729ab_open(tmedia_codec_t* self)
 {
 	tdav_codec_g729ab_t* g729a = (tdav_codec_g729ab_t*)self;
 
@@ -87,7 +87,7 @@ int tdav_codec_g729ab_open(tmedia_codec_t* self)
 	return 0;
 }
 
-int tdav_codec_g729ab_close(tmedia_codec_t* self)
+static int tdav_codec_g729ab_close(tmedia_codec_t* self)
 {
 	tdav_codec_g729ab_t* g729a = (tdav_codec_g729ab_t*)self;	
 
@@ -98,7 +98,7 @@ int tdav_codec_g729ab_close(tmedia_codec_t* self)
 	return 0;
 }
 
-tsk_size_t tdav_codec_g729ab_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
+static tsk_size_t tdav_codec_g729ab_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {	
 	tsk_size_t ex_size, out_size = 0;
 	tdav_codec_g729ab_t* g729a = (tdav_codec_g729ab_t*)self;
@@ -155,7 +155,7 @@ tsk_size_t tdav_codec_g729ab_encode(tmedia_codec_t* self, const void* in_data, t
 	return out_size;
 }
 
-tsk_size_t tdav_codec_g729ab_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
+static tsk_size_t tdav_codec_g729ab_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	tsk_size_t out_size = 0;
 	int i, frame_count;
@@ -234,7 +234,7 @@ tsk_size_t tdav_codec_g729ab_decode(tmedia_codec_t* self, const void* in_data, t
 	return out_size;
 }
 
-tsk_bool_t tdav_codec_g729ab_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+static tsk_bool_t tdav_codec_g729ab_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
 {
 	tsk_params_L_t* params = tsk_null;
 	const char* val_str;
@@ -252,7 +252,7 @@ tsk_bool_t tdav_codec_g729ab_fmtp_match(const tmedia_codec_t* codec, const char*
 	return tsk_true;
 }
 
-char* tdav_codec_g729ab_fmtp_get(const tmedia_codec_t* codec)
+static char* tdav_codec_g729ab_fmtp_get(const tmedia_codec_t* codec)
 {
 	tdav_codec_g729ab_t* g729a = (tdav_codec_g729ab_t*)codec;
 

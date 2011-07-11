@@ -74,14 +74,18 @@ int tsip_action_INVITE(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...
 	
 	va_start(ap, type);
 	if((action = _tsip_action_create(tsip_atype_invite, &ap))){
+		tsk_bool_t new_dialog = tsk_false;
 		/* Media type */
 		action->media.type = type;
 
 		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, ss))){
 			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_INVITE, ss);
+			new_dialog = tsk_true;
 		}
 		if(!(ret = tsip_dialog_fsm_act(dialog, action->type, tsk_null, action))){
-			TSIP_SSESSION(_ss)->media.type = type; // Update Session Media Type
+			if(new_dialog){ // otherwise we are trying to refresh the media type and the type will be updated if 200 OK
+				TSIP_SSESSION(_ss)->media.type = type; // Update Session Media Type
+			}
 		}
 		
 		tsk_object_unref(dialog);

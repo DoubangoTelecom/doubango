@@ -40,7 +40,7 @@
 
 #define tdav_codec_ilbc_fmtp_set tsk_null
 
-int tdav_codec_ilbc_open(tmedia_codec_t* self)
+static int tdav_codec_ilbc_open(tmedia_codec_t* self)
 {
 	tdav_codec_ilbc_t* ilbc = (tdav_codec_ilbc_t*)self;
 	
@@ -50,7 +50,7 @@ int tdav_codec_ilbc_open(tmedia_codec_t* self)
 	return 0;
 }
 
-int tdav_codec_ilbc_close(tmedia_codec_t* self)
+static int tdav_codec_ilbc_close(tmedia_codec_t* self)
 {
 	tdav_codec_ilbc_t* ilbc = (tdav_codec_ilbc_t*)self;
 
@@ -60,7 +60,7 @@ int tdav_codec_ilbc_close(tmedia_codec_t* self)
 	return 0;
 }
 
-tsk_size_t tdav_codec_ilbc_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
+static tsk_size_t tdav_codec_ilbc_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {	
 	tdav_codec_ilbc_t* ilbc = (tdav_codec_ilbc_t*)self;
 	int k;
@@ -91,7 +91,7 @@ tsk_size_t tdav_codec_ilbc_encode(tmedia_codec_t* self, const void* in_data, tsk
 	return ilbc->encoder.no_of_bytes;
 }
 
-tsk_size_t tdav_codec_ilbc_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
+static tsk_size_t tdav_codec_ilbc_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	int blocks, i, k, block_size;
 	float dtmp;
@@ -157,14 +157,14 @@ tsk_size_t tdav_codec_ilbc_decode(tmedia_codec_t* self, const void* in_data, tsk
 	return out_size;
 }
 
-char* tdav_codec_ilbc_fmtp_get(const tmedia_codec_t* codec)
+static char* tdav_codec_ilbc_fmtp_get(const tmedia_codec_t* codec)
 {
 	char* fmtp = tsk_null;
 	tsk_sprintf(&fmtp, "mode=%d", TDAV_ILBC_MODE);
 	return fmtp;
 }
 
-tsk_bool_t tdav_codec_ilbc_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+static tsk_bool_t tdav_codec_ilbc_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
 {	/*	RFC 3952 - 5. Mapping To SDP Parameters
 		
 		The offer contains the preferred mode of the offerer.  The answerer

@@ -702,10 +702,15 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 	}
 	
 	/* creates local sdp if not already done or update it's value (because of set_ro())*/
-	if((self->ro_changed || self->state_changed) && self->sdp.lo){
+	if((self->ro_changed || self->state_changed || self->mediaType_changed) && self->sdp.lo){
 		TSK_OBJECT_SAFE_FREE(self->sdp.lo);
+		if(self->mediaType_changed){
+			// reload session with new medias and keep the old one
+			_tmedia_session_mgr_load_sessions(self);
+		}
 		self->ro_changed = tsk_false;
 		self->state_changed = tsk_false;
+		self->mediaType_changed = tsk_false;
 	}
 
 	if(self->sdp.lo){
@@ -781,7 +786,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		an offer that contains SDP with a version that has not changed; this is effectively a no-op.
 	*/
 	if((O = (const tsdp_header_O_t*)tsdp_message_get_header(sdp, tsdp_htype_O))){
-		if(self->sdp.ro_ver == (int32_t)O->sess_version){
+		if(self->sdp.ro_ver == (int32_t)O->sess_version && 0){
 			TSK_DEBUG_INFO("Remote offer has not changed");
 			return 0;
 		}
@@ -1228,11 +1233,13 @@ int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 	tsk_size_t i = 0;
 	tmedia_session_t* session;
 	const tmedia_session_plugin_def_t* plugin;
-
-	if(TSK_LIST_IS_EMPTY(self->sessions)){
+	
+#define has_media(media_type) (tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_type, &(media_type)))
+	
+	if(TSK_LIST_IS_EMPTY(self->sessions) || self->mediaType_changed){
 		/* for each registered plugin create a session instance */
 		while((i < TMED_SESSION_MAX_PLUGINS) && (plugin = __tmedia_session_plugins[i++])){
-			if((plugin->type & self->type) == plugin->type){
+			if((plugin->type & self->type) == plugin->type && !has_media(plugin->type)){
 				if((session = tmedia_session_create(plugin->type))){
 					tsk_list_push_back_data(self->sessions, (void**)(&session));
 				}
@@ -1248,6 +1255,7 @@ int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 		/* load params */
 		_tmedia_session_mgr_apply_params(self);
 	}
+#undef has_media
 	return 0;
 }
 

@@ -42,7 +42,7 @@
 #define tdav_codec_msrp_encode tsk_null
 #define tdav_codec_msrp_decode tsk_null
 
-tsk_bool_t tdav_codec_msrp_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+static tsk_bool_t tdav_codec_msrp_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
 {	/* always match */
 	return tsk_true;
 }

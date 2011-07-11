@@ -194,17 +194,17 @@ int tdav_consumer_dsound_start(tmedia_consumer_t* self)
 	HRESULT hr;
 	LPDIRECTSOUNDNOTIFY lpDSBNotify;
 	DSBPOSITIONNOTIFY pPosNotify[TDAV_DSOUNS_CONSUMER_NOTIF_POS_COUNT] = {0};
-
+	
 	if(!dsound){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-
+	
 	if(!dsound->device || !dsound->primaryBuffer || !dsound->secondaryBuffer){
 		TSK_DEBUG_ERROR("Consumer not prepared");
 		return -2;
 	}
-
+	
 	if(dsound->started){
 		TSK_DEBUG_WARN("Consumer already started");
 		return 0;

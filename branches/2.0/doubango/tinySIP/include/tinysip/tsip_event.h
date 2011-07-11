@@ -62,8 +62,9 @@ tsip_event_type_t;
 
 // 8xx ==> success
 #define tsip_event_code_dialog_request_incoming		800
-#define tsip_event_code_dialog_request_cancelled	801
-#define tsip_event_code_dialog_request_sent			802
+#define tsip_event_code_dialog_request_outgoing		802
+#define tsip_event_code_dialog_request_cancelled	803
+#define tsip_event_code_dialog_request_sent			804
 
 // 9xx ==> Informational
 #define tsip_event_code_dialog_connecting			900

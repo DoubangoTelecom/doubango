@@ -61,7 +61,9 @@ typedef enum tsip_invite_event_type_e
 	//
 
 	tsip_m_early_media,
-
+	tsip_m_updating, // Trying to update from Audio -> Video for example
+	tsip_m_updated, // succeed to update
+	
 	/* 3GPP TS 24.610: Communication Hold */
 	tsip_m_local_hold_ok,
 	tsip_m_local_hold_nok,

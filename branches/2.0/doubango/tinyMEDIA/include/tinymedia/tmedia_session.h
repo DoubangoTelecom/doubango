@@ -196,6 +196,7 @@ typedef struct tmedia_session_mgr_s
 	tsk_bool_t started;
 	tsk_bool_t ro_changed;
 	tsk_bool_t state_changed;
+	tsk_bool_t mediaType_changed;
 
 	//! session type
 	tmedia_type_t type;

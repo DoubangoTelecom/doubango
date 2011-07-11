@@ -99,20 +99,21 @@ static int x0000_Connected_2_Connected_X_oDTMF(va_list *app);
 static int x0000_Connected_2_Connected_X_oLMessage(va_list *app);
 static int x0000_Connected_2_Connected_X_iACK(va_list *app);
 static int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app);
+static int x0000_Connected_2_Connected_X_oINVITE(va_list *app);
 
 
-int x0000_Any_2_Any_X_i1xx(va_list *app);
-int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app);
-int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app);
+static int x0000_Any_2_Any_X_i1xx(va_list *app);
+static int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app);
+static int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app);
 
-int x0000_Any_2_Any_X_iPRACK(va_list *app);
-int x0000_Any_2_Any_X_iOPTIONS(va_list *app);
-int x0000_Any_2_Trying_X_oBYE(va_list *app); /* If not Connected => Cancel will be called instead. See tsip_dialog_hangup() */
-int x0000_Any_2_Terminated_X_iBYE(va_list *app);
-int x0000_Any_2_Trying_X_shutdown(va_list *app);
+static int x0000_Any_2_Any_X_iPRACK(va_list *app);
+static int x0000_Any_2_Any_X_iOPTIONS(va_list *app);
+static int x0000_Any_2_Trying_X_oBYE(va_list *app); /* If not Connected => Cancel will be called instead. See tsip_dialog_hangup() */
+static int x0000_Any_2_Terminated_X_iBYE(va_list *app);
+static int x0000_Any_2_Trying_X_shutdown(va_list *app);
 
-int x9998_Any_2_Any_X_transportError(va_list *app);
-int x9999_Any_2_Any_X_Error(va_list *app);
+static int x9998_Any_2_Any_X_transportError(va_list *app);
+static int x9999_Any_2_Any_X_Error(va_list *app);
 
 /* ======================== conds ======================== */
 static tsk_bool_t _fsm_cond_is_resp2INVITE(tsip_dialog_invite_t* self, tsip_message_t* message)
@@ -292,7 +293,9 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_iINVITE, _fsm_state_Connected, x0000_Connected_2_Connected_X_iINVITEorUPDATE, "x0000_Connected_2_Connected_X_iINVITE"),
 		// Connected -> (iUPDATE) -> Connected
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_iUPDATE, _fsm_state_Connected, x0000_Connected_2_Connected_X_iINVITEorUPDATE, "x0000_Connected_2_Connected_X_iUPDATE"),
-
+		// Connected -> (send reINVITE) -> Connected
+		TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_oINVITE, _fsm_state_Connected, x0000_Connected_2_Connected_X_oINVITE, "x0000_Connected_2_Connected_X_oINVITE"),
+				
 		/*=======================
 		* === BYE/SHUTDOWN === 
 		*/
@@ -365,6 +368,9 @@ int tsip_dialog_invite_start(tsip_dialog_invite_t *self)
 int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message)
 {
 	tsdp_message_t* sdp_ro = tsk_null;
+	tmedia_type_t old_media_type;
+	tmedia_type_t new_media_type;
+	tsk_bool_t media_session_was_null;
 	int ret = 0;
 
 	if(!self || !message){
@@ -393,12 +399,14 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 			return 0;
 		}
 	}
+	
+	media_session_was_null = (self->msession_mgr == tsk_null);
+	old_media_type = TSIP_DIALOG_GET_SS(self)->media.type;
+	new_media_type = sdp_ro ? tmedia_type_from_sdp(sdp_ro) : old_media_type;
 
 	/* Create session Manager if not already done */
 	if(!self->msession_mgr){
-		if(sdp_ro){
-			TSIP_DIALOG_GET_SS(self)->media.type = tmedia_type_from_sdp(sdp_ro);
-		}
+		TSIP_DIALOG_GET_SS(self)->media.type = new_media_type;
 		self->msession_mgr = tmedia_session_mgr_create(TSIP_DIALOG_GET_SS(self)->media.type, TSIP_DIALOG_GET_STACK(self)->network.local_ip, 
 			TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type), (sdp_ro == tsk_null));
 		if(TSIP_DIALOG_GET_STACK(self)->natt.ctx){
@@ -411,6 +419,14 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 			TSK_DEBUG_ERROR("Failed to set remote offer");
 			goto bail;
 		}
+	}
+	
+	// is media update?
+	if(!media_session_was_null && (old_media_type != new_media_type) && (self->msession_mgr->sdp.lo && self->msession_mgr->sdp.ro)){
+		// at this point the media session manager has been succeffuly started and all is ok
+		TSIP_DIALOG_GET_SS(self)->media.type = new_media_type;
+		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_m_updated, 
+								  TSIP_RESPONSE_CODE(message), TSIP_RESPONSE_PHRASE(message), message);
 	}
 	
 	/* start session manager */
@@ -549,6 +565,45 @@ int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app)
 			tsip_event_code_dialog_request_incoming, "Incoming Request.", rINVITEorUPDATE);
 	
 
+	return ret;
+}
+
+/* Connected -> (send reINVITE) -> Connected */
+static int x0000_Connected_2_Connected_X_oINVITE(va_list *app)
+{
+	int ret;
+	tsk_bool_t mediaType_changed;
+	tsip_dialog_invite_t *self;
+	const tsip_action_t* action;
+	
+	self = va_arg(*app, tsip_dialog_invite_t *);
+	va_arg(*app, const tsip_message_t *);
+	action = va_arg(*app, const tsip_action_t *);
+	
+	/* Update current action */
+	ret = tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
+	
+	/* Get Media type from the action */
+	mediaType_changed = (TSIP_DIALOG_GET_SS(self)->media.type != action->media.type && action->media.type != tmedia_none);
+	if(self->msession_mgr && mediaType_changed){
+		self->msession_mgr->mediaType_changed = tsk_true;
+		self->msession_mgr->type = action->media.type;
+	}
+	
+	/* Appy media params received from the user */
+	if(!TSK_LIST_IS_EMPTY(action->media.params)){
+		ret = tmedia_session_mgr_set_3(self->msession_mgr, action->media.params);
+	}
+	
+	/* send the request */
+	ret = send_INVITE(self, mediaType_changed);
+	
+	/* alert the user */
+	if(mediaType_changed){
+		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_m_updating,
+							  tsip_event_code_dialog_request_outgoing, "Updating media type", self->last_oInvite);
+	}
+	
 	return ret;
 }
 
