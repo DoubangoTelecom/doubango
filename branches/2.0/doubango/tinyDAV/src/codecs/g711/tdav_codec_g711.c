@@ -36,10 +36,12 @@
 
 /* ============ G.711u Plugin interface ================= */
 
+#define tdav_codec_g711u_open tsk_null
+#define tdav_codec_g711u_close tsk_null
 #define tdav_codec_g711u_fmtp_get tsk_null
 #define tdav_codec_g711u_fmtp_set tsk_null
 
-tsk_size_t tdav_codec_g711u_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
+static tsk_size_t tdav_codec_g711u_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	register tsk_size_t i;
 	register uint8_t* pout_data;
@@ -68,7 +70,7 @@ tsk_size_t tdav_codec_g711u_encode(tmedia_codec_t* self, const void* in_data, ts
 	return (in_size/2);
 }
 
-tsk_size_t tdav_codec_g711u_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
+static tsk_size_t tdav_codec_g711u_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	tsk_size_t i;
 
@@ -94,7 +96,7 @@ tsk_size_t tdav_codec_g711u_decode(tmedia_codec_t* self, const void* in_data, ts
 	return (in_size*2);
 }
 
-tsk_bool_t tdav_codec_g711u_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+static tsk_bool_t tdav_codec_g711u_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
 {	/* always match */
 	return tsk_true;
 }
@@ -138,7 +140,7 @@ static const tsk_object_def_t tdav_codec_g711u_def_s =
 static const tmedia_codec_plugin_def_t tdav_codec_g711u_plugin_def_s = 
 {
 	&tdav_codec_g711u_def_s,
-
+	
 	tmedia_audio,
 	"PCMU",
 	"G.711u codec (From tinyDAV)",
@@ -150,12 +152,12 @@ static const tmedia_codec_plugin_def_t tdav_codec_g711u_plugin_def_s =
 		1, // channels
 		20 // ptime
 	},
-
+	
 	/* video */
 	{0},
-
-	tsk_null, // open
-	tsk_null, // close
+	
+	tdav_codec_g711u_open,
+	tdav_codec_g711u_close,
 	tdav_codec_g711u_encode,
 	tdav_codec_g711u_decode,
 	tdav_codec_g711u_fmtp_match,
@@ -167,20 +169,22 @@ const tmedia_codec_plugin_def_t *tdav_codec_g711u_plugin_def_t = &tdav_codec_g71
 
 /* ============ G.711a Plugin interface ================= */
 
+#define tdav_codec_g711a_open tsk_null
+#define tdav_codec_g711a_close tsk_null
 #define tdav_codec_g711a_fmtp_get tsk_null
 #define tdav_codec_g711a_fmtp_set tsk_null
 
-tsk_size_t tdav_codec_g711a_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
+static tsk_size_t tdav_codec_g711a_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	register tsk_size_t i;
 	register uint8_t* pout_data;
 	register short* pin_data;
-
+	
 	if(!self || !in_data || !in_size || !out_data){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
-
+	
 	if(*out_max_size <in_size/2){
 		if(!(*out_data = tsk_realloc(*out_data, in_size/2))){
 			TSK_DEBUG_ERROR("Failed to allocate new buffer");
@@ -189,7 +193,7 @@ tsk_size_t tdav_codec_g711a_encode(tmedia_codec_t* self, const void* in_data, ts
 		}
 		*out_max_size = in_size/2;
 	}
-
+	
 	pout_data = *out_data;
 	pin_data = (short*)in_data;
 	for(i = 0; i<(in_size/2); i++){
@@ -203,10 +207,10 @@ tsk_size_t tdav_codec_g711a_encode(tmedia_codec_t* self, const void* in_data, ts
 FILE* file = tsk_null;
 int count = 0;
 #endif
-tsk_size_t tdav_codec_g711a_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
+static tsk_size_t tdav_codec_g711a_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	tsk_size_t i;
-
+	
 	if(!self || !in_data || !in_size || !out_data){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
@@ -241,7 +245,7 @@ tsk_size_t tdav_codec_g711a_decode(tmedia_codec_t* self, const void* in_data, ts
 	return (in_size*2);
 }
 
-tsk_bool_t tdav_codec_g711a_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+static tsk_bool_t tdav_codec_g711a_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
 {	/* always match */
 	return tsk_true;
 }
@@ -301,8 +305,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_g711a_plugin_def_s =
 	/* video */
 	{0},
 
-	tsk_null, // open
-	tsk_null, // close
+	tdav_codec_g711a_open,
+	tdav_codec_g711a_close,
 	tdav_codec_g711a_encode,
 	tdav_codec_g711a_decode,
 	tdav_codec_g711a_fmtp_match,

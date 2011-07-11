@@ -139,7 +139,7 @@ tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const cha
 	return ret;
 }
 
-/** Hangup all dialogs staring by REGISTER  */
+/** Hangup all dialogs starting by non-REGISTER  */
 int tsip_dialog_layer_shutdownAll(tsip_dialog_layer_t *self)
 {
 	if(self){
@@ -235,7 +235,7 @@ phase3_loop:
 				tsip_dialog_shutdown(dialog, tsk_null);
 
 				// if "tsip_dialog_shutdown()" remove the dialog, then
-				// "self->dialogs" will be unsafe
+				// "self->dialogs" will became unsafe while looping
 				if(!(item = tsk_object_unref(item))){
 					goto phase3_loop;
 				}

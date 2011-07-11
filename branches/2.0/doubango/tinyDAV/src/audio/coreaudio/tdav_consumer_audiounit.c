@@ -223,7 +223,6 @@ static int tdav_consumer_audiounit_start(tmedia_consumer_t* self)
 	}
 	if(consumer->paused){
 		consumer->paused = tsk_false;
-		return tsk_false;
 	}
 	if(consumer->started){
 		TSK_DEBUG_WARN("Already started");

@@ -37,6 +37,8 @@
 #include "tinysip/dialogs/tsip_dialog_layer.h"
 #include "tinysip/tsip_message.h"
 
+#include "tinymedia/tmedia_defaults.h"
+
 #include "tsk_debug.h"
 
 /**@defgroup tsip_session_group SIP sessions
@@ -541,6 +543,7 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		// default expires value
 		ss->expires = TSIP_SSESSION_EXPIRES_DEFAULT;
 		// default media values
+		ss->media.enable_100rel = tmedia_defaults_get_100rel_enabled();
 		ss->media.type = tmedia_none;
 		ss->media.qos.type = tmedia_qos_stype_none;
 		ss->media.qos.strength = tmedia_qos_strength_none;
