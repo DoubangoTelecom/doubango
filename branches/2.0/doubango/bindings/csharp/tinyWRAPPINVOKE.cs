@@ -428,6 +428,12 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_SipMessage")]
   public static extern void delete_SipMessage(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipMessage_isResponse")]
+  public static extern bool SipMessage_isResponse(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipMessage_getResponseCode")]
+  public static extern short SipMessage_getResponseCode(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipMessage_getSipHeaderValue__SWIG_0")]
   public static extern string SipMessage_getSipHeaderValue__SWIG_0(HandleRef jarg1, string jarg2, uint jarg3);
 
@@ -1348,6 +1354,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_request_incoming_get")]
   public static extern int tsip_event_code_dialog_request_incoming_get();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_request_outgoing_get")]
+  public static extern int tsip_event_code_dialog_request_outgoing_get();
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_request_cancelled_get")]
   public static extern int tsip_event_code_dialog_request_cancelled_get();

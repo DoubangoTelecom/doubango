@@ -49,6 +49,14 @@ public class SipMessage {
     this(tinyWRAPJNI.new_SipMessage(), true);
   }
 
+  public boolean isResponse() {
+    return tinyWRAPJNI.SipMessage_isResponse(swigCPtr, this);
+  }
+
+  public short getResponseCode() {
+    return tinyWRAPJNI.SipMessage_getResponseCode(swigCPtr, this);
+  }
+
   public String getSipHeaderValue(String name, long index) {
     return tinyWRAPJNI.SipMessage_getSipHeaderValue__SWIG_0(swigCPtr, this, name, index);
   }

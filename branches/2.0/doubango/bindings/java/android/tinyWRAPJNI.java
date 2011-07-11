@@ -91,6 +91,8 @@ class tinyWRAPJNI {
   public final static native String SdpMessage_getSdpHeaderAValue(long jarg1, SdpMessage jarg1_, String jarg2, String jarg3);
   public final static native long new_SipMessage();
   public final static native void delete_SipMessage(long jarg1);
+  public final static native boolean SipMessage_isResponse(long jarg1, SipMessage jarg1_);
+  public final static native short SipMessage_getResponseCode(long jarg1, SipMessage jarg1_);
   public final static native String SipMessage_getSipHeaderValue__SWIG_0(long jarg1, SipMessage jarg1_, String jarg2, long jarg3);
   public final static native String SipMessage_getSipHeaderValue__SWIG_1(long jarg1, SipMessage jarg1_, String jarg2);
   public final static native String SipMessage_getSipHeaderParamValue__SWIG_0(long jarg1, SipMessage jarg1_, String jarg2, String jarg3, long jarg4);

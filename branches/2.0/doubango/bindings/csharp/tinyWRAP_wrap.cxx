@@ -2119,6 +2119,30 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_SipMessage(void * jarg1) {
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipMessage_isResponse(void * jarg1) {
+  unsigned int jresult ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  bool result;
+  
+  arg1 = (SipMessage *)jarg1; 
+  result = (bool)(arg1)->isResponse();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT short SWIGSTDCALL CSharp_SipMessage_getResponseCode(void * jarg1) {
+  short jresult ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  short result;
+  
+  arg1 = (SipMessage *)jarg1; 
+  result = (short)(arg1)->getResponseCode();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT char * SWIGSTDCALL CSharp_SipMessage_getSipHeaderValue__SWIG_0(void * jarg1, char * jarg2, unsigned int jarg3) {
   char * jresult ;
   SipMessage *arg1 = (SipMessage *) 0 ;
@@ -6052,11 +6076,21 @@ SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_request_incoming_get() 
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_request_outgoing_get() {
+  int jresult ;
+  int result;
+  
+  result = (int) 802;
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_request_cancelled_get() {
   int jresult ;
   int result;
   
-  result = (int) 801;
+  result = (int) 803;
   jresult = result; 
   return jresult;
 }
@@ -6066,7 +6100,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_request_sent_get() {
   int jresult ;
   int result;
   
-  result = (int) 802;
+  result = (int) 804;
   jresult = result; 
   return jresult;
 }

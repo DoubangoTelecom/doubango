@@ -32,7 +32,7 @@
 
 #if HAVE_SPEEX_DSP && HAVE_SPEEX_JB
 
-#include "tinymedia/tmedia_JitterBuffer.h"
+#include "tinymedia/tmedia_jitterbuffer.h"
 
 #include <speex/speex_jitter.h>
 

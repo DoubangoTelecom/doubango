@@ -357,6 +357,8 @@ class SipMessage(_object):
         except: self.this = this
     __swig_destroy__ = _tinyWRAP.delete_SipMessage
     __del__ = lambda self : None;
+    def isResponse(self): return _tinyWRAP.SipMessage_isResponse(self)
+    def getResponseCode(self): return _tinyWRAP.SipMessage_getResponseCode(self)
     def getSipHeaderValue(self, *args): return _tinyWRAP.SipMessage_getSipHeaderValue(self, *args)
     def getSipHeaderParamValue(self, *args): return _tinyWRAP.SipMessage_getSipHeaderParamValue(self, *args)
     def getSipContentLength(self): return _tinyWRAP.SipMessage_getSipContentLength(self)
@@ -1153,6 +1155,7 @@ tsip_event_code_dialog_transport_error = _tinyWRAP.tsip_event_code_dialog_transp
 tsip_event_code_dialog_global_error = _tinyWRAP.tsip_event_code_dialog_global_error
 tsip_event_code_dialog_message_error = _tinyWRAP.tsip_event_code_dialog_message_error
 tsip_event_code_dialog_request_incoming = _tinyWRAP.tsip_event_code_dialog_request_incoming
+tsip_event_code_dialog_request_outgoing = _tinyWRAP.tsip_event_code_dialog_request_outgoing
 tsip_event_code_dialog_request_cancelled = _tinyWRAP.tsip_event_code_dialog_request_cancelled
 tsip_event_code_dialog_request_sent = _tinyWRAP.tsip_event_code_dialog_request_sent
 tsip_event_code_dialog_connecting = _tinyWRAP.tsip_event_code_dialog_connecting
@@ -1189,6 +1192,8 @@ tsip_o_ect_ok = _tinyWRAP.tsip_o_ect_ok
 tsip_o_ect_nok = _tinyWRAP.tsip_o_ect_nok
 tsip_i_ect = _tinyWRAP.tsip_i_ect
 tsip_m_early_media = _tinyWRAP.tsip_m_early_media
+tsip_m_updating = _tinyWRAP.tsip_m_updating
+tsip_m_updated = _tinyWRAP.tsip_m_updated
 tsip_m_local_hold_ok = _tinyWRAP.tsip_m_local_hold_ok
 tsip_m_local_hold_nok = _tinyWRAP.tsip_m_local_hold_nok
 tsip_m_local_resume_ok = _tinyWRAP.tsip_m_local_resume_ok

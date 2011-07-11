@@ -268,7 +268,7 @@ int c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app)
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
 	/* set last error (or info) */
-	tsip_dialog_set_lasterror(TSIP_DIALOG(self), TSIP_RESPONSE_PHRASE(response));
+	tsip_dialog_set_lasterror(TSIP_DIALOG(self), TSIP_RESPONSE_PHRASE(response), TSIP_RESPONSE_CODE(response));
 
 	/* alert the user */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_request, 
@@ -292,9 +292,10 @@ int c0000_Outgoing_2_Cancelling_X_oCANCEL(va_list *app)
 int c0000_Cancelling_2_Terminated_X_i300_to_699(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
 	/* set last error (or info) */
-	tsip_dialog_set_lasterror(TSIP_DIALOG(self), "Request cancelled");
+	tsip_dialog_set_lasterror(TSIP_DIALOG(self), "Request cancelled", TSIP_RESPONSE_CODE(response));
 
 	return 0;
 }

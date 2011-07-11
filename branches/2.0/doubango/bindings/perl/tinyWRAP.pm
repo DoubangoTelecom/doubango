@@ -409,6 +409,8 @@ sub DESTROY {
     }
 }
 
+*isResponse = *tinyWRAPc::SipMessage_isResponse;
+*getResponseCode = *tinyWRAPc::SipMessage_getResponseCode;
 *getSipHeaderValue = *tinyWRAPc::SipMessage_getSipHeaderValue;
 *getSipHeaderParamValue = *tinyWRAPc::SipMessage_getSipHeaderParamValue;
 *getSipContentLength = *tinyWRAPc::SipMessage_getSipContentLength;
@@ -2206,6 +2208,7 @@ package tinyWRAP;
 *tsip_event_code_dialog_global_error = *tinyWRAPc::tsip_event_code_dialog_global_error;
 *tsip_event_code_dialog_message_error = *tinyWRAPc::tsip_event_code_dialog_message_error;
 *tsip_event_code_dialog_request_incoming = *tinyWRAPc::tsip_event_code_dialog_request_incoming;
+*tsip_event_code_dialog_request_outgoing = *tinyWRAPc::tsip_event_code_dialog_request_outgoing;
 *tsip_event_code_dialog_request_cancelled = *tinyWRAPc::tsip_event_code_dialog_request_cancelled;
 *tsip_event_code_dialog_request_sent = *tinyWRAPc::tsip_event_code_dialog_request_sent;
 *tsip_event_code_dialog_connecting = *tinyWRAPc::tsip_event_code_dialog_connecting;
@@ -2242,6 +2245,8 @@ package tinyWRAP;
 *tsip_o_ect_nok = *tinyWRAPc::tsip_o_ect_nok;
 *tsip_i_ect = *tinyWRAPc::tsip_i_ect;
 *tsip_m_early_media = *tinyWRAPc::tsip_m_early_media;
+*tsip_m_updating = *tinyWRAPc::tsip_m_updating;
+*tsip_m_updated = *tinyWRAPc::tsip_m_updated;
 *tsip_m_local_hold_ok = *tinyWRAPc::tsip_m_local_hold_ok;
 *tsip_m_local_hold_nok = *tinyWRAPc::tsip_m_local_hold_nok;
 *tsip_m_local_resume_ok = *tinyWRAPc::tsip_m_local_resume_ok;

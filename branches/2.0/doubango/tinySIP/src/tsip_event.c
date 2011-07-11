@@ -65,11 +65,16 @@ int tsip_event_init(tsip_event_t* self, tsip_ssession_t *ss, short code, const c
 	return 0;
 }
 
-/* signal new event (enque) */
+/* signal new event (enqueue) */
 int tsip_event_signal(tsip_event_type_t type, tsip_ssession_t* ss, short code, const char *phrase)
 {
+	return tsip_event_signal_2(type, ss, code, phrase, tsk_null);
+}
+
+int tsip_event_signal_2(tsip_event_type_t type, tsip_ssession_t* ss, short code, const char *phrase, const struct tsip_message_s* sipmessage)
+{
 	tsip_event_t* e;
-	if((e = tsip_event_create(ss, code, phrase, tsk_null, type))){
+	if((e = tsip_event_create(ss, code, phrase, sipmessage, type))){
 		TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(ss->stack), e);
 		return 0;
 	}

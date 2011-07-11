@@ -52,7 +52,7 @@ typedef struct tmedia_denoise_s
 	tsk_bool_t vad_enabled;
 	tsk_bool_t noise_supp_enabled;
 	int32_t noise_supp_level;
-
+    tsk_buffer_t *last_frame;
 	const struct tmedia_denoise_plugin_def_s* plugin;
 }
 tmedia_denoise_t;

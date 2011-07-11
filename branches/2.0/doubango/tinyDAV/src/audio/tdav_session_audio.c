@@ -21,11 +21,11 @@
 */
 
 /**@file tdav_session_audio.c
- * @brief Audio Session plugin.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- * @contributors: See $(DOUBANGO_HOME)\contributors.txt
- */
+* @brief Audio Session plugin.
+*
+* @author Mamadou Diop <diopmamadou(at)doubango.org>
+* @contributors: See $(DOUBANGO_HOME)\contributors.txt
+*/
 #include "tinydav/audio/tdav_session_audio.h"
 
 #include "tinydav/codecs/dtmf/tdav_codec_dtmf.h"
@@ -53,7 +53,7 @@ static void _tdav_session_audio_apply_gain(void* buffer, int len, int bps, int g
 typedef struct tdav_session_audio_dtmfe_s
 {
 	TSK_DECLARE_OBJECT;
-	
+
 	tsk_timer_id_t timer_id;
 	trtp_rtp_packet_t* packet;
 
@@ -127,7 +127,7 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 	if(audio->rtp_manager){
 		/* encode */
 		tsk_size_t out_size = 0;
-		
+
 		ret = 0;
 
 		//
@@ -168,11 +168,11 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		// Denoise (VAD, AGC, Noise suppression, ...)
 		if(audio->denoise){
 			tsk_bool_t silence_or_noise = tsk_false;
-			ret = tmedia_denoise_process_record(TMEDIA_DENOISE(audio->denoise), (void*)buffer, &silence_or_noise);
-			if(silence_or_noise && (ret == 0)){
-				//FIXME: Fixed-point implementation don't support VAD
-				TSK_DEBUG_INFO("Silence or Noise buffer");
-				return 0;
+			if(audio->denoise->echo_supp_enabled ){
+				ret = tmedia_denoise_process_record(TMEDIA_DENOISE(audio->denoise), (void*)buffer, &silence_or_noise);
+			}
+			else if(audio->denoise->vad_enabled  ||  audio->denoise->noise_supp_enabled){
+				ret = tmedia_denoise_process_playback(TMEDIA_DENOISE(audio->denoise), (void*)buffer);
 			}
 		}
 		// adjust the gain
@@ -252,7 +252,7 @@ int tdav_session_audio_prepare(tmedia_session_t* self)
 	/* set local port */
 	if(!audio->rtp_manager){
 		if((audio->rtp_manager = trtp_manager_create(audio->rtcp_enabled, audio->local_ip, audio->useIPv6))){
-			
+
 			ret = trtp_manager_set_rtp_callback(audio->rtp_manager, tdav_session_audio_rtp_cb, audio);
 			ret = trtp_manager_prepare(audio->rtp_manager);
 			if(audio->natt_ctx){
@@ -290,7 +290,7 @@ int tdav_session_audio_start(tmedia_session_t* self)
 		ret = trtp_manager_set_rtp_remote(audio->rtp_manager, audio->remote_ip, audio->remote_port);
 		//trtp_manager_set_payload_type(audio->rtp_manager, codec->neg_format ? atoi(codec->neg_format) : atoi(codec->format));
 		ret = trtp_manager_start(audio->rtp_manager);
-	
+
 		// because of AudioUnit under iOS => prepare both consumer and producer then start() at the same time
 		/* prepare consumer and producer */
 		if(audio->consumer) tmedia_consumer_prepare(audio->consumer, codec);
@@ -298,7 +298,7 @@ int tdav_session_audio_start(tmedia_session_t* self)
 		/* start consumer and producer */
 		if(audio->consumer) tmedia_consumer_start(audio->consumer);
 		if(audio->producer) tmedia_producer_start(audio->producer);
-		
+
 		/* Denoise (AEC, Noise Suppression, AGC) */
 		if(audio->denoise && audio->encoder.codec){
 			tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), TMEDIA_CODEC_RATE(audio->encoder.codec));
@@ -312,7 +312,7 @@ int tdav_session_audio_start(tmedia_session_t* self)
 		TSK_DEBUG_ERROR("Invalid RTP/RTCP manager");
 		return -3;
 	}
-	
+
 	return 0;
 }
 
@@ -400,47 +400,47 @@ int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 
 
 	/*	RFC 4733 - 5.  Examples
-	
+
 	+-------+-----------+------+--------+------+--------+--------+------+
-   |  Time | Event     |   M  |  Time- |  Seq |  Event |  Dura- |   E  |
-   |  (ms) |           |  bit |  stamp |   No |  Code  |   tion |  bit |
-   +-------+-----------+------+--------+------+--------+--------+------+
-   |     0 | "9"       |      |        |      |        |        |      |
-   |       | starts    |      |        |      |        |        |      |
-   |    50 | RTP       |  "1" |      0 |    1 |    9   |    400 |  "0" |
-   |       | packet 1  |      |        |      |        |        |      |
-   |       | sent      |      |        |      |        |        |      |
-   |   100 | RTP       |  "0" |      0 |    2 |    9   |    800 |  "0" |
-   |       | packet 2  |      |        |      |        |        |      |
-   |       | sent      |      |        |      |        |        |      |
-   |   150 | RTP       |  "0" |      0 |    3 |    9   |   1200 |  "0" |
-   |       | packet 3  |      |        |      |        |        |      |
-   |       | sent      |      |        |      |        |        |      |
-   |   200 | RTP       |  "0" |      0 |    4 |    9   |   1600 |  "0" |
-   |       | packet 4  |      |        |      |        |        |      |
-   |       | sent      |      |        |      |        |        |      |
-   |   200 | "9" ends  |      |        |      |        |        |      |
-   |   250 | RTP       |  "0" |      0 |    5 |    9   |   1600 |  "1" |
-   |       | packet 4  |      |        |      |        |        |      |
-   |       | first     |      |        |      |        |        |      |
-   |       | retrans-  |      |        |      |        |        |      |
-   |       | mission   |      |        |      |        |        |      |
-   |   300 | RTP       |  "0" |      0 |    6 |    9   |   1600 |  "1" |
-   |       | packet 4  |      |        |      |        |        |      |
-   |       | second    |      |        |      |        |        |      |
-   |       | retrans-  |      |        |      |        |        |      |
-   |       | mission   |      |        |      |        |        |      |
-   =====================================================================
-   |   880 | First "1" |      |        |      |        |        |      |
-   |       | starts    |      |        |      |        |        |      |
-   |   930 | RTP       |  "1" |   7040 |    7 |    1   |    400 |  "0" |
-   |       | packet 5  |      |        |      |        |        |      |
-   |       | sent      |      |        |      |        |        |      |
+	|  Time | Event     |   M  |  Time- |  Seq |  Event |  Dura- |   E  |
+	|  (ms) |           |  bit |  stamp |   No |  Code  |   tion |  bit |
+	+-------+-----------+------+--------+------+--------+--------+------+
+	|     0 | "9"       |      |        |      |        |        |      |
+	|       | starts    |      |        |      |        |        |      |
+	|    50 | RTP       |  "1" |      0 |    1 |    9   |    400 |  "0" |
+	|       | packet 1  |      |        |      |        |        |      |
+	|       | sent      |      |        |      |        |        |      |
+	|   100 | RTP       |  "0" |      0 |    2 |    9   |    800 |  "0" |
+	|       | packet 2  |      |        |      |        |        |      |
+	|       | sent      |      |        |      |        |        |      |
+	|   150 | RTP       |  "0" |      0 |    3 |    9   |   1200 |  "0" |
+	|       | packet 3  |      |        |      |        |        |      |
+	|       | sent      |      |        |      |        |        |      |
+	|   200 | RTP       |  "0" |      0 |    4 |    9   |   1600 |  "0" |
+	|       | packet 4  |      |        |      |        |        |      |
+	|       | sent      |      |        |      |        |        |      |
+	|   200 | "9" ends  |      |        |      |        |        |      |
+	|   250 | RTP       |  "0" |      0 |    5 |    9   |   1600 |  "1" |
+	|       | packet 4  |      |        |      |        |        |      |
+	|       | first     |      |        |      |        |        |      |
+	|       | retrans-  |      |        |      |        |        |      |
+	|       | mission   |      |        |      |        |        |      |
+	|   300 | RTP       |  "0" |      0 |    6 |    9   |   1600 |  "1" |
+	|       | packet 4  |      |        |      |        |        |      |
+	|       | second    |      |        |      |        |        |      |
+	|       | retrans-  |      |        |      |        |        |      |
+	|       | mission   |      |        |      |        |        |      |
+	=====================================================================
+	|   880 | First "1" |      |        |      |        |        |      |
+	|       | starts    |      |        |      |        |        |      |
+	|   930 | RTP       |  "1" |   7040 |    7 |    1   |    400 |  "0" |
+	|       | packet 5  |      |        |      |        |        |      |
+	|       | sent      |      |        |      |        |        |      |
 	*/
-	
+
 	// ref()(thread safeness)
 	audio = tsk_object_ref(audio);
-	
+
 	duration = (rate * ptime)/1000;
 	/* Not mandatory but elegant */
 	timestamp += duration;
@@ -516,7 +516,7 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "fmtp");
 		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "rtpmap");
 		tsk_list_clear_items(self->M.lo->FMTs);
-		
+
 		/* QoS */
 		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "curr");
 		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "des");
@@ -534,17 +534,17 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 					tsk_null);
 			}
 			/* 3GPP TS 24.229 - 6.1.1 General
-				In order to support accurate bandwidth calculations, the UE may include the "a=ptime" attribute for all "audio" media
-				lines as described in RFC 4566 [39]. If a UE receives an "audio" media line with "a=ptime" specified, the UE should
-				transmit at the specified packetization rate. If a UE receives an "audio" media line which does not have "a=ptime"
-				specified or the UE does not support the "a=ptime" attribute, the UE should transmit at the default codec packetization
-				rate as defined in RFC 3551 [55A]. The UE will transmit consistent with the resources available from the network.
+			In order to support accurate bandwidth calculations, the UE may include the "a=ptime" attribute for all "audio" media
+			lines as described in RFC 4566 [39]. If a UE receives an "audio" media line with "a=ptime" specified, the UE should
+			transmit at the specified packetization rate. If a UE receives an "audio" media line which does not have "a=ptime"
+			specified or the UE does not support the "a=ptime" attribute, the UE should transmit at the default codec packetization
+			rate as defined in RFC 3551 [55A]. The UE will transmit consistent with the resources available from the network.
 
-				For "video" and "audio" media types that utilize the RTP/RTCP, the UE shall specify the proposed bandwidth for each
-				media stream utilizing the "b=" media descriptor and the "AS" bandwidth modifier in the SDP.
+			For "video" and "audio" media types that utilize the RTP/RTCP, the UE shall specify the proposed bandwidth for each
+			media stream utilizing the "b=" media descriptor and the "AS" bandwidth modifier in the SDP.
 
-				The UE shall include the MIME subtype "telephone-event" in the "m=" media descriptor in the SDP for audio media
-				flows that support both audio codec and DTMF payloads in RTP packets as described in RFC 4733 [23].
+			The UE shall include the MIME subtype "telephone-event" in the "m=" media descriptor in the SDP for audio media
+			flows that support both audio codec and DTMF payloads in RTP packets as described in RFC 4733 [23].
 			*/
 			tsdp_header_M_add_headers(self->M.lo,
 				TSDP_HEADER_A_VA_ARGS("ptime", "20"),
@@ -560,7 +560,7 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 	/* from codecs to sdp */
 	if(changed){
 		tmedia_codecs_L_t* neg_codecs = tsk_null;
-		
+
 		if(self->M.ro){
 			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
 			/* update negociated codecs */
@@ -664,7 +664,7 @@ int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 	}
 	/* set remote port */
 	audio->remote_port = m->port;
-	
+
 
 	return 0;
 }
@@ -686,7 +686,7 @@ void _tdav_session_audio_apply_gain(void* buffer, int len, int bps, int gain)
 {
 	register int i;
 	int max_val;
-	
+
 	max_val = (1 << (bps - 1 - gain)) - 1;
 
 	if (bps == 8) {
@@ -712,15 +712,15 @@ tdav_session_audio_dtmfe_t* _tdav_session_audio_dtmfe_create(const tdav_session_
 	tdav_session_audio_dtmfe_t* dtmfe;
 	static uint8_t volume = 10;
 	static uint32_t ssrc = 0x5234A8;
-	
+
 	uint8_t pay[4] = {0};
 
 	/* RFC 4733 - 2.3.  Payload Format
-		0                   1                   2                   3
-		0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-	   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	   |     event     |E|R| volume    |          duration             |
-	   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	0                   1                   2                   3
+	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|     event     |E|R| volume    |          duration             |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	*/
 
 	if(!(dtmfe = tsk_object_new(tdav_session_audio_dtmfe_def_t))){
@@ -734,7 +734,7 @@ tdav_session_audio_dtmfe_t* _tdav_session_audio_dtmfe_create(const tdav_session_
 		TSK_OBJECT_SAFE_FREE(dtmfe);
 		return tsk_null;
 	}
-	
+
 	pay[0] = event;
 	pay[1] |= ((E << 7) | (volume & 0x3F));
 	pay[2] = (duration >> 8);
@@ -807,7 +807,7 @@ static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 { 
 	tdav_session_audio_t *session = self;
 	if(session){
-		
+
 		// Do it in this order (deinit self first)
 
 		/* Timer manager */
@@ -862,10 +862,10 @@ static const tsk_object_def_t tdav_session_audio_def_s =
 static const tmedia_session_plugin_def_t tdav_session_audio_plugin_def_s = 
 {
 	&tdav_session_audio_def_s,
-	
+
 	tmedia_audio,
 	"audio",
-	
+
 	tdav_session_audio_set,
 	tdav_session_audio_prepare,
 	tdav_session_audio_start,

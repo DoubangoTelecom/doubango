@@ -109,6 +109,16 @@ SipMessage::~SipMessage()
 	}
 }
 
+bool SipMessage::isResponse()
+{
+	return TSIP_MESSAGE_IS_RESPONSE(m_pSipMessage);
+}
+
+short SipMessage::getResponseCode()
+{
+	return TSIP_RESPONSE_CODE(m_pSipMessage);
+}
+
 const tsip_header_t* SipMessage::getSipHeader(const char* name, unsigned index /* =0 */)
 {
 	/* Do not worry about calling tsk_striequals() several times because the function
