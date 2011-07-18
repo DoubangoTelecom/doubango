@@ -329,7 +329,7 @@ tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self
 		hdr->qop = tsk_strdup(self->qop);													\
 		hdr->opaque = tsk_strdup(self->opaque);												\
 		hdr->algorithm = self->algorithm ? tsk_strdup(self->algorithm) : tsk_strdup("MD5");	\
-		hdr->cnonce = self->nc? tsk_strdup(self->cnonce) : 0;								\
+		hdr->cnonce = self->nc? tsk_strdup(self->cnonce) : tsk_null;						\
 		hdr->uri = tsk_strdup(uristring);													\
 		hdr->nc = self->nc? tsk_strdup(nc) : 0;												\
 		hdr->response = tsk_strdup(response);												\

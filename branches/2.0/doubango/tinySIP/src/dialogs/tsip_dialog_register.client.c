@@ -282,11 +282,14 @@ int tsip_dialog_register_InProgress_2_Connected_X_2xx(va_list *app)
 int tsip_dialog_register_InProgress_2_Terminated_X_2xx(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	/* save last error */
+	tsip_dialog_set_lasterror_2(TSIP_DIALOG(self), TSIP_RESPONSE_PHRASE(response), TSIP_RESPONSE_CODE(response), response);
 
 	/* Alert the user */
 	TSIP_DIALOG_REGISTER_SIGNAL(self, tsip_ao_unregister, 
-		TSIP_RESPONSE_CODE(message), TSIP_RESPONSE_PHRASE(message), message);
+		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 
 	return 0;
 }
@@ -363,9 +366,9 @@ int tsip_dialog_register_InProgress_2_Terminated_X_300_to_699(va_list *app)
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
-	/* set last error (or info) */
-	tsip_dialog_set_lasterror(TSIP_DIALOG(self), TSIP_RESPONSE_PHRASE(response), TSIP_RESPONSE_CODE(response));
-
+	/* save last error */
+	tsip_dialog_set_lasterror_2(TSIP_DIALOG(self), TSIP_RESPONSE_PHRASE(response), TSIP_RESPONSE_CODE(response), response);
+	
 	/* Alert the user. */
 	TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
 		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);

@@ -198,7 +198,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 
 		default:
 			{
-				char* contact = tsk_false;
+				char* contact = tsk_null;
 				tsip_header_Contacts_L_t *hdr_contacts;
 
 				if(request->line.request.request_type == tsip_OPTIONS || 

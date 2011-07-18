@@ -279,7 +279,7 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 
 const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, const tsip_message_t *msg, const char** destIP, int32_t *destPort)
 {
-	tsip_transport_t* transport = 0;
+	tsip_transport_t* transport = tsk_null;
 
 	if(!self || !destIP){
 		TSK_DEBUG_ERROR("Invalid parameter");
