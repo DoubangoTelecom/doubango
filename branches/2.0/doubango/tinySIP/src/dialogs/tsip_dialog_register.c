@@ -80,58 +80,57 @@ int tsip_dialog_register_event_callback(const tsip_dialog_register_t *self, tsip
 	int ret = -1;
 
 	switch(type){
-
-	case tsip_dialog_i_msg:
-		{
-			if(msg){
-				if(TSIP_MESSAGE_IS_RESPONSE(msg)){
-					//
-					//	RESPONSE
-					//
-					if(TSIP_RESPONSE_IS_1XX(msg)){
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_1xx, msg, tsk_null);
-					}
-					else if(TSIP_RESPONSE_IS_2XX(msg)){
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_2xx, msg, tsk_null);
-					}
-					else if(TSIP_RESPONSE_IS(msg,401) || TSIP_RESPONSE_IS(msg,407) || TSIP_RESPONSE_IS(msg,421) || TSIP_RESPONSE_IS(msg,494)){
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_401_407_421_494, msg, tsk_null);
-					}
-					else if(TSIP_RESPONSE_IS(msg,423)){
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_423, msg, tsk_null);
+		case tsip_dialog_i_msg:
+			{
+				if(msg){
+					if(TSIP_MESSAGE_IS_RESPONSE(msg)){
+						//
+						//	RESPONSE
+						//
+						if(TSIP_RESPONSE_IS_1XX(msg)){
+							ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_1xx, msg, tsk_null);
+						}
+						else if(TSIP_RESPONSE_IS_2XX(msg)){
+							ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_2xx, msg, tsk_null);
+						}
+						else if(TSIP_RESPONSE_IS(msg,401) || TSIP_RESPONSE_IS(msg,407) || TSIP_RESPONSE_IS(msg,421) || TSIP_RESPONSE_IS(msg,494)){
+							ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_401_407_421_494, msg, tsk_null);
+						}
+						else if(TSIP_RESPONSE_IS(msg,423)){
+							ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_423, msg, tsk_null);
+						}
+						else{
+							// Alert User
+							ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_error, msg, tsk_null);
+							/* TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg)); */
+						}
 					}
 					else{
-						// Alert User
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_error, msg, tsk_null);
-						/* TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg)); */
+						//
+						//	REQUEST
+						//
+						if(TSIP_REQUEST_IS_REGISTER(msg)){
+							ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iREGISTER, msg, tsk_null);
+						}
 					}
 				}
-				else{
-					//
-					//	REQUEST
-					//
-					if(TSIP_REQUEST_IS_REGISTER(msg)){
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iREGISTER, msg, tsk_null);
-					}
-				}
+				break;
 			}
-			break;
-		}
 
-	case tsip_dialog_canceled:
-		{
-			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_cancel, msg, tsk_null);
-			break;
-		}
+		case tsip_dialog_canceled:
+			{
+				ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_cancel, msg, tsk_null);
+				break;
+			}
 
-	case tsip_dialog_terminated:
-	case tsip_dialog_timedout:
-	case tsip_dialog_error:
-	case tsip_dialog_transport_error:
-		{
-			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_transporterror, msg, tsk_null);
-			break;
-		}
+		case tsip_dialog_terminated:
+		case tsip_dialog_timedout:
+		case tsip_dialog_error:
+		case tsip_dialog_transport_error:
+			{
+				ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_transporterror, msg, tsk_null);
+				break;
+			}
 	}
 
 	return ret;
@@ -272,8 +271,8 @@ int tsip_dialog_register_Any_2_Terminated_X_Error(va_list *app)
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
-	/* set last error (or info) */
-	tsip_dialog_set_lasterror(TSIP_DIALOG(self), TSIP_RESPONSE_PHRASE(response), TSIP_RESPONSE_CODE(response));
+	/* save last error */
+	tsip_dialog_set_lasterror_2(TSIP_DIALOG(self), TSIP_RESPONSE_PHRASE(response), TSIP_RESPONSE_CODE(response), response);
 
 	/* Alert the user. */
 	if(response){
@@ -437,8 +436,9 @@ int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
 	}
 
 	/* Alert the user */
-	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, 
-		TSIP_DIALOG(self)->last_error.phrase ? TSIP_DIALOG(self)->last_error.phrase : "Dialog terminated");
+	TSIP_DIALOG_SIGNAL_2(self, tsip_event_code_dialog_terminated,
+			TSIP_DIALOG(self)->last_error.phrase ? TSIP_DIALOG(self)->last_error.phrase : "Dialog terminated",
+			TSIP_DIALOG(self)->last_error.message);
 	
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

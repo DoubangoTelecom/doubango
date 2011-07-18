@@ -227,7 +227,7 @@ int tsip_transac_nict_init(tsip_transac_nict_t *self)
 			*/
 			// Trying -> (timerE) -> Trying
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_timerE, _fsm_state_Trying, tsip_transac_nict_Trying_2_Trying_X_timerE, "tsip_transac_nict_Trying_2_Trying_X_timerE"),
-			// Trying -> (timerF) -> Trying
+			// Trying -> (timerF) -> Terminated
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_timerF, _fsm_state_Terminated, tsip_transac_nict_Trying_2_Terminated_X_timerF, "tsip_transac_nict_Trying_2_Terminated_X_timerF"),
 			// Trying -> (transport error) -> Terminated
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_transporterror, _fsm_state_Terminated, tsip_transac_nict_Trying_2_Terminated_X_transportError, "tsip_transac_nict_Trying_2_Terminated_X_transportError"),
@@ -261,7 +261,7 @@ int tsip_transac_nict_init(tsip_transac_nict_t *self)
 			*/
 			// Any -> (transport error) -> Terminated
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, tsip_transac_nict_Any_2_Terminated_X_transportError, "tsip_transac_nict_Any_2_Terminated_X_transportError"),
-			// Any -> (transport error) -> Terminated
+			// Any -> (error) -> Terminated
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_error, _fsm_state_Terminated, tsip_transac_nict_Any_2_Terminated_X_Error, "tsip_transac_nict_Any_2_Terminated_X_Error"),
 			// Any -> (cancel) -> Terminated
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_cancel, _fsm_state_Terminated, tsip_transac_nict_Any_2_Terminated_X_cancel, "tsip_transac_nict_Any_2_Terminated_X_cancel"),

@@ -904,7 +904,7 @@ tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_t *stack, const char* pro
 			if(transport){
 				if(tsk_striequals(transport->protocol, protocol)){
 					tsip_uri_t* uri = tsk_null;
-					if((uri = tsip_transport_get_uri(transport, 0))){
+					if((uri = tsip_transport_get_uri(transport, tsk_false))){
 						tsk_strupdate(&uri->user_name, stack->identity.impu->user_name);
 						return uri;
 					}
@@ -923,8 +923,8 @@ tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_t *stack, tsk_bool_t lr)
 			tsip_transport_t *transport = stack->layer_transport->transports->head->data;
 			if(transport){
 				tsip_uri_t* uri = tsk_null;
-				int ipv6 = TNET_SOCKET_TYPE_IS_IPV6(transport->type);
-				int quote_ip = (ipv6 && tsk_strcontains(stack->network.proxy_cscf, tsk_strlen(stack->network.proxy_cscf), ":")) /* IPv6 IP string?*/;
+				tsk_bool_t ipv6 = TNET_SOCKET_TYPE_IS_IPV6(transport->type);
+				tsk_bool_t quote_ip = (ipv6 && tsk_strcontains(stack->network.proxy_cscf, tsk_strlen(stack->network.proxy_cscf), ":")) /* IPv6 IP string?*/;
 			
 				char* uristring = tsk_null;
 				tsk_sprintf(&uristring, "%s:%s%s%s:%d;%s;transport=%s",

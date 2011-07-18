@@ -86,7 +86,7 @@ int thttp_auth_digest_HA1(const char* username, const char* realm, const char* p
 	/* RFC 2617 - 3.2.2.2 A1
 		A1       = unq(username-value) ":" unq(realm-value) ":" passwd
 	*/
-	char *a1 = 0;
+	char *a1 = tsk_null;
 	tsk_sprintf(&a1, "%s:%s:%s", username, realm, password);	
 	ret = tsk_md5compute(a1, tsk_strlen(a1), ha1);
 	TSK_FREE(a1);
@@ -118,7 +118,7 @@ int thttp_auth_digest_HA1sess(const char* username, const char* realm, const cha
                      ":" unq(nonce-value) ":" unq(cnonce-value)
 	*/
 
-	char *a1sess = 0;
+	char *a1sess = tsk_null;
 	tsk_sprintf(&a1sess, "%s:%s:%s:%s:%s", username, realm, password, nonce, cnonce);	
 	ret = tsk_md5compute(a1sess, tsk_strlen(a1sess), ha1sess);
 	TSK_FREE(a1sess);
@@ -151,7 +151,7 @@ int thttp_auth_digest_HA2(const char* method, const char* url, const tsk_buffer_
 	A2       = Method ":" digest-url-value ":" H(entity-body)
 	*/
 
-	char *a2 = 0;
+	char *a2 = tsk_null;
 
 	if(!qop || tsk_strempty(qop) || tsk_striequals(qop, "auth")){
 		tsk_sprintf(&a2, "%s:%s", method, url);
@@ -216,7 +216,7 @@ int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce, co
 	<">
 	*/
 
-	char *res = 0;
+	char *res = tsk_null;
 
 	if(tsk_striequals(qop, "auth") || tsk_striequals(qop, "auth-int")){
 		/* CASE 1 */
