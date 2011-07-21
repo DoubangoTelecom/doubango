@@ -180,7 +180,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\_common\AudioResampler.cxx"
+				>
+			</File>
+			<File
 				RelativePath="..\_common\DDebug.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\MediaContent.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\MediaSessionMgr.cxx"
 				>
 			</File>
 			<File
@@ -189,6 +201,10 @@
 			</File>
 			<File
 				RelativePath="..\_common\ProxyConsumer.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\ProxyPluginMgr.cxx"
 				>
 			</File>
 			<File
@@ -246,6 +262,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\_common\AudioResampler.h"
+				>
+			</File>
+			<File
 				RelativePath="..\_common\Common.h"
 				>
 			</File>
@@ -254,11 +274,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\_common\MediaContent.h"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\MediaSessionMgr.h"
+				>
+			</File>
+			<File
 				RelativePath="..\_common\Msrp.h"
 				>
 			</File>
 			<File
 				RelativePath="..\_common\ProxyConsumer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\ProxyPluginMgr.h"
 				>
 			</File>
 			<File
