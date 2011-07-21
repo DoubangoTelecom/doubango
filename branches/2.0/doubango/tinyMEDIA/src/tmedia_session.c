@@ -63,7 +63,7 @@ int tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m);
 
 
 /*== Predicate function to find session object by media */
-int __pred_find_session_by_media(const tsk_list_item_t *item, const void *media)
+static int __pred_find_session_by_media(const tsk_list_item_t *item, const void *media)
 {
 	if(item && item->data){
 		return tsk_stricmp(tmedia_session_get_media((const tmedia_session_t *)item->data), (const char*)media);
@@ -72,10 +72,19 @@ int __pred_find_session_by_media(const tsk_list_item_t *item, const void *media)
 }
 
 /*== Predicate function to find session object by type */
-int __pred_find_session_by_type(const tsk_list_item_t *item, const void *type)
+static int __pred_find_session_by_type(const tsk_list_item_t *item, const void *type)
 {
 	if(item && item->data){
 		return ((const tmedia_session_t *)item->data)->type - *((tmedia_type_t*)type);
+	}
+	return -1;
+}
+
+/*== Predicate function to find codec object by address */
+int __pred_find_codec_by_format(const tsk_list_item_t *item, const void *codec)
+{
+	if(item && item->data && codec){
+		return tsk_stricmp(((const tmedia_codec_t*)item->data)->format, ((const tmedia_codec_t*)codec)->format);
 	}
 	return -1;
 }
@@ -329,6 +338,13 @@ tmedia_codecs_L_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp
 		/* foreach codec */
 		tsk_list_foreach(it2, self->codecs){
 			if(!(codec = it2->data) || !codec->plugin){
+				continue;
+			}
+			
+			// Guard to avoid matching a codec more than once
+			// For example, H.264 codecs without profiles (Jetsi,Tiscali PC client) to distinguish them could match more than once
+			if(matchingCodecs && tsk_list_find_object_by_pred(matchingCodecs, __pred_find_codec_by_format, codec)){
+				TSK_DEBUG_WARN("Codec already matched. Try to add valid FMTP to your codec to help matching.");
 				continue;
 			}
 			
