@@ -262,8 +262,8 @@ tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk
 		tdav_converter_video_flip(h264->encoder.picture, h264->encoder.context->height);
 	}
 
-	if((h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->fps*3) 
-		&& ((h264->encoder.frame_count++%TMEDIA_CODEC_VIDEO(h264)->fps)==0)){
+	if(h264->encoder.frame_count++ == 0 || (h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->fps*4) 
+		&& ((h264->encoder.frame_count %TMEDIA_CODEC_VIDEO(h264)->fps)==0)){
 		
 		// You must patch FFmpeg to switch from X264_TYPE_AUTO to X264_TYPE_IDR
 		h264->encoder.picture->pict_type = FF_I_TYPE;
