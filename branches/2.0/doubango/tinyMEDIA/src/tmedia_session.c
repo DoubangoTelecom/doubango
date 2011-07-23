@@ -802,7 +802,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		an offer that contains SDP with a version that has not changed; this is effectively a no-op.
 	*/
 	if((O = (const tsdp_header_O_t*)tsdp_message_get_header(sdp, tsdp_htype_O))){
-		if(self->sdp.ro_ver == (int32_t)O->sess_version && 0){
+		if(self->sdp.ro_ver == (int32_t)O->sess_version){
 			TSK_DEBUG_INFO("Remote offer has not changed");
 			return 0;
 		}
