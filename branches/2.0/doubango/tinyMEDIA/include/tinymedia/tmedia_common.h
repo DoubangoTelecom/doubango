@@ -72,6 +72,7 @@ typedef enum tmedia_video_size_type_e
 	tmedia_vst_hd1080p,
 	
 	tmedia_vst_ios_low,
+	tmedia_vst_ios_medium,
 	tmedia_vst_ios_high
 }
 tmedia_video_size_type_t;

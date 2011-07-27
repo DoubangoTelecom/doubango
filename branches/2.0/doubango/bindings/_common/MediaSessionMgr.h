@@ -74,6 +74,7 @@ public:
 	static int32_t defaultsGetNoiseSuppLevel();
 	static bool defaultsSet100relEnabled(bool _100rel_enabled);
 	static bool defaultsGet100relEnabled();
+	static bool defaultsSetScreenSize(int32_t sx, int32_t sy);
 	
 
 private:

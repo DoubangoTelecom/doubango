@@ -264,11 +264,21 @@ typedef struct tmedia_codec_video_s
 {
 	TMEDIA_DECLARE_CODEC;
 
-	unsigned width;
-	unsigned height;
-	unsigned fps;
-	unsigned max_br;
-	unsigned max_mbps;
+	struct{
+		unsigned width;
+		unsigned height;
+		unsigned fps;
+		unsigned max_br;
+		unsigned max_mbps;
+	}in;// decoded
+	struct{
+		unsigned width;
+		unsigned height;
+		unsigned fps;
+		unsigned max_br;
+		unsigned max_mbps;
+	}out;// encoded
+
 
 	tmedia_codec_video_rtpcb_f callback;
 	const void* callback_data;

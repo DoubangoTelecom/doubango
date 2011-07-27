@@ -298,7 +298,7 @@ int twrap_producer_proxy_video_prepare(tmedia_producer_t* self, const tmedia_cod
 		if((videoProducer = manager->findVideoProducer(TWRAP_PRODUCER_PROXY_VIDEO(self)->id)) && videoProducer->getCallback()){
 			self->video.chroma = videoProducer->getChroma();
 			self->video.rotation = videoProducer->getRotation();
-			ret = videoProducer->getCallback()->prepare(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, TMEDIA_CODEC_VIDEO(codec)->fps);
+			ret = videoProducer->getCallback()->prepare(TMEDIA_CODEC_VIDEO(codec)->out.width, TMEDIA_CODEC_VIDEO(codec)->out.height, TMEDIA_CODEC_VIDEO(codec)->out.fps);
 		}
 	}
 	

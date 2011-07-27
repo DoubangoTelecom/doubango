@@ -140,6 +140,7 @@ static const tmedia_video_size_t tmedia_video_sizes[] =
 	{tmedia_vst_hd1080p, 1920, 1080},
 	
 	{tmedia_vst_ios_low, 200, 152},
+	{tmedia_vst_ios_medium, 480, 360},
 	{tmedia_vst_ios_high, 400, 304},
 };
 

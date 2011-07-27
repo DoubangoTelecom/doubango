@@ -101,12 +101,12 @@ int tdav_codec_theora_open(tmedia_codec_t* self)
 	
 	theora->encoder.context->pix_fmt		= PIX_FMT_YUV420P;
 	theora->encoder.context->time_base.num  = 1;
-	theora->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(theora)->fps;
-	theora->encoder.context->width = TMEDIA_CODEC_VIDEO(theora)->width;
-	theora->encoder.context->height = TMEDIA_CODEC_VIDEO(theora)->height;
+	theora->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(theora)->out.fps;
+	theora->encoder.context->width = TMEDIA_CODEC_VIDEO(theora)->out.width;
+	theora->encoder.context->height = TMEDIA_CODEC_VIDEO(theora)->out.height;
 	
 	theora->encoder.context->mb_decision = FF_MB_DECISION_RD;
-
+	
 	// Theoraenc doesn't honor 'CODEC_FLAG_QSCALE'
 	switch(self->bl){
 		case tmedia_bl_low:
@@ -129,7 +129,7 @@ int tdav_codec_theora_open(tmedia_codec_t* self)
 	theora->encoder.context->opaque = tsk_null;
 	theora->encoder.context->bit_rate = (int) (bitRate * 0.80f);
 	theora->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
-	theora->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(theora)->fps*2; // each 2 seconds
+	theora->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(theora)->out.fps*2; // each 2 seconds
 
 	// Picture (YUV 420)
 	if(!(theora->encoder.picture = avcodec_alloc_frame())){
@@ -161,8 +161,8 @@ int tdav_codec_theora_open(tmedia_codec_t* self)
 	avcodec_get_context_defaults(theora->decoder.context);
 	
 	theora->decoder.context->pix_fmt = PIX_FMT_YUV420P;
-	theora->decoder.context->width = TMEDIA_CODEC_VIDEO(theora)->width;
-	theora->decoder.context->height = TMEDIA_CODEC_VIDEO(theora)->height;
+	theora->decoder.context->width = TMEDIA_CODEC_VIDEO(theora)->in.width;
+	theora->decoder.context->height = TMEDIA_CODEC_VIDEO(theora)->in.height;
 
 	// Picture (YUV 420)
 	if(!(theora->decoder.picture = avcodec_alloc_frame())){
@@ -363,6 +363,8 @@ tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, t
 						}
 						else{
 							retsize = xsize;
+							TMEDIA_CODEC_VIDEO(theora)->in.width = theora->decoder.context->width;
+							TMEDIA_CODEC_VIDEO(theora)->in.height = theora->decoder.context->height;
 							if(self->video.flip.decoded){
 								tdav_converter_video_flip(theora->decoder.picture, theora->decoder.context->height);
 							}
@@ -498,10 +500,10 @@ tsk_bool_t tdav_codec_theora_fmtp_match(const tmedia_codec_t* codec, const char*
 			case tmedia_bl_low:
 			default:
 				if(width<=176 && height<=144){
-					theora->width = width, theora->height = height;
+					theora->in.width = theora->out.width = width, theora->in.height = theora->out.height = height;
 				}
 				else{
-					theora->width = 176, theora->height = 144;
+					theora->in.width = theora->out.width = 176, theora->in.height = theora->out.height = 144;
 				}
 				break;
 
@@ -509,10 +511,10 @@ tsk_bool_t tdav_codec_theora_fmtp_match(const tmedia_codec_t* codec, const char*
 			case tmedia_bl_hight:
 			case tmedia_bl_unrestricted:
 				if(width<=352 && height<=288){
-					theora->width = width, theora->height = height;
+					theora->in.width = theora->out.width = width, theora->in.height = theora->out.height = height;
 				}
 				else{
-					theora->width = 352, theora->height = 288;
+					theora->in.width = theora->out.width = 352, theora->in.height = theora->out.height = 288;
 				}
 				break;
 		}
@@ -703,7 +705,7 @@ int tdav_codec_theora_send(tdav_codec_theora_t* self, const uint8_t* data, tsk_s
 
 		// Send data over the network
 		if(TMEDIA_CODEC_VIDEO(self)->callback){
-			TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, self->rtp.ptr, (pay_size + sizeof(pay_hdr)), (3003* (30/TMEDIA_CODEC_VIDEO(self)->fps)), (size == 0));
+			TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, self->rtp.ptr, (pay_size + sizeof(pay_hdr)), (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps)), (size == 0));
 		}
 	}
 

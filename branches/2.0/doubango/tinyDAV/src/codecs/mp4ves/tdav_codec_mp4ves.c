@@ -143,9 +143,9 @@ int tdav_codec_mp4ves_open(tmedia_codec_t* self)
 	
 	mp4v->encoder.context->pix_fmt		= PIX_FMT_YUV420P;
 	mp4v->encoder.context->time_base.num  = 1;
-	mp4v->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(mp4v)->fps;
-	mp4v->encoder.context->width = TMEDIA_CODEC_VIDEO(mp4v)->width;
-	mp4v->encoder.context->height = TMEDIA_CODEC_VIDEO(mp4v)->height;
+	mp4v->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(mp4v)->in.fps;
+	mp4v->encoder.context->width = TMEDIA_CODEC_VIDEO(mp4v)->in.width;
+	mp4v->encoder.context->height = TMEDIA_CODEC_VIDEO(mp4v)->in.height;
 	mp4v->encoder.context->mb_decision = FF_MB_DECISION_RD;
 	mp4v->encoder.context->noise_reduction = 250;
 	mp4v->encoder.context->flags |= CODEC_FLAG_QSCALE;
@@ -158,7 +158,7 @@ int tdav_codec_mp4ves_open(tmedia_codec_t* self)
 	//mp4v->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
 	mp4v->encoder.context->profile = mp4v->profile>>4;
 	mp4v->encoder.context->level = mp4v->profile & 0x0F;
-	mp4v->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(mp4v)->fps*2; // each 2 seconds
+	mp4v->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(mp4v)->in.fps*2; // each 2 seconds
 	mp4v->encoder.context->max_b_frames = 0;
 	mp4v->encoder.context->b_frame_strategy = 1;
     mp4v->encoder.context->flags |= CODEC_FLAG_AC_PRED;
@@ -192,8 +192,8 @@ int tdav_codec_mp4ves_open(tmedia_codec_t* self)
 	avcodec_get_context_defaults(mp4v->decoder.context);
 	
 	mp4v->decoder.context->pix_fmt = PIX_FMT_YUV420P;
-	mp4v->decoder.context->width = TMEDIA_CODEC_VIDEO(mp4v)->width;
-	mp4v->decoder.context->height = TMEDIA_CODEC_VIDEO(mp4v)->height;
+	mp4v->decoder.context->width = TMEDIA_CODEC_VIDEO(mp4v)->out.width;
+	mp4v->decoder.context->height = TMEDIA_CODEC_VIDEO(mp4v)->out.height;
 
 	// Picture (YUV 420)
 	if(!(mp4v->decoder.picture = avcodec_alloc_frame())){
@@ -367,6 +367,8 @@ tsk_size_t tdav_codec_mp4ves_decode(tmedia_codec_t* self, const void* in_data, t
 		}
 		else{
 			retsize = xsize;
+			TMEDIA_CODEC_VIDEO(mp4v)->in.width = mp4v->decoder.context->width;
+			TMEDIA_CODEC_VIDEO(mp4v)->in.height = mp4v->decoder.context->height;
 			// flip
 			if(self->video.flip.decoded){
 				tdav_converter_video_flip(mp4v->decoder.picture, mp4v->decoder.context->height);
@@ -403,12 +405,12 @@ tsk_bool_t tdav_codec_mp4ves_fmtp_match(const tmedia_codec_t* codec, const char*
 	
 	switch (mp4v->profile ) {
 		case Simple_Profile_Level_1:
-			TMEDIA_CODEC_VIDEO(mp4v)->width = 176, TMEDIA_CODEC_VIDEO(mp4v)->height = 144;
+			TMEDIA_CODEC_VIDEO(mp4v)->out.width = TMEDIA_CODEC_VIDEO(mp4v)->in.width = 176, TMEDIA_CODEC_VIDEO(mp4v)->in.height = TMEDIA_CODEC_VIDEO(mp4v)->out.height = 144;
 			break;
 		case Simple_Profile_Level_2:
 		case Simple_Profile_Level_3:
 		default:
-			TMEDIA_CODEC_VIDEO(mp4v)->width = 352, TMEDIA_CODEC_VIDEO(mp4v)->height = 288;
+			TMEDIA_CODEC_VIDEO(mp4v)->out.width = TMEDIA_CODEC_VIDEO(mp4v)->in.width = 352, TMEDIA_CODEC_VIDEO(mp4v)->in.height = TMEDIA_CODEC_VIDEO(mp4v)->out.height = 288;
 			break;
 	}
 
@@ -564,7 +566,7 @@ static void tdav_codec_mp4ves_rtp_callback(tdav_codec_mp4ves_t *mp4v, const void
 {
 	// Send data over the network
 	if(TMEDIA_CODEC_VIDEO(mp4v)->callback){
-		TMEDIA_CODEC_VIDEO(mp4v)->callback(TMEDIA_CODEC_VIDEO(mp4v)->callback_data, data, size, (3003* (30/TMEDIA_CODEC_VIDEO(mp4v)->fps)), marker);
+		TMEDIA_CODEC_VIDEO(mp4v)->callback(TMEDIA_CODEC_VIDEO(mp4v)->callback_data, data, size, (3003* (30/TMEDIA_CODEC_VIDEO(mp4v)->out.fps)), marker);
 	}
 }
 

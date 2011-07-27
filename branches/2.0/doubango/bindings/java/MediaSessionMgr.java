@@ -135,4 +135,8 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsGet100relEnabled();
   }
 
+  public static boolean defaultsSetScreenSize(int sx, int sy) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetScreenSize(sx, sy);
+  }
+
 }

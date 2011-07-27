@@ -28,6 +28,7 @@
 
  */
 #include "tinymedia/tmedia_codec.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
@@ -281,9 +282,9 @@ tmedia_codec_t* tmedia_codec_create(const char* format)
 						{ /* Video codec */
 							tmedia_codec_video_t* video = TMEDIA_CODEC_VIDEO(codec);
 							tmedia_codec_video_init(TMEDIA_CODEC(video), plugin->name, plugin->desc, plugin->format);
-							video->width = plugin->video.width;
-							video->height = plugin->video.height;
-							video->fps = plugin->video.fps;
+							video->in.width = video->out.width = plugin->video.width;
+							video->in.width = video->out.height = plugin->video.height;
+							video->in.fps = video->out.fps = plugin->video.fps;
 							break;
 						}
 					case tmedia_msrp:
@@ -454,13 +455,19 @@ int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 	}
 
 	tsk_list_foreach(item, codecs){
+		tsk_bool_t is_audio, is_video;
+		const char *neg_format;
 		codec = item->data;
 		/* add fmt */
-		if((ret = tsdp_header_M_add_fmt(m, codec->neg_format?  codec->neg_format : codec->format))){
+		neg_format = codec->neg_format?  codec->neg_format : codec->format;
+		if((ret = tsdp_header_M_add_fmt(m, neg_format))){
 			TSK_DEBUG_ERROR("Failed to add format");
 			return ret;
 		}
-		if(tsk_striequals(m->media, "audio") || tsk_striequals(m->media, "video")){
+		is_audio = tsk_striequals(m->media, "audio");
+		is_video = tsk_striequals(m->media, "video");
+		if(is_audio || is_video){
+			char* temp = tsk_null;
 			/* add rtpmap attributes */
 			if((rtpmap = tmedia_codec_get_rtpmap(codec))){
 				tsdp_header_M_add_headers(m,
@@ -470,8 +477,12 @@ int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 			}
 			/* add fmtp attributes */
 			if((fmtp = tmedia_codec_get_fmtp(codec))){
-				char* temp = tsk_null;
-				tsk_sprintf(&temp, "%s %s",  codec->neg_format?  codec->neg_format : codec->format, fmtp);
+				if(is_video){
+					tsk_sprintf(&temp, "%s %s;sx=%d;sy=%d",  neg_format, fmtp, tmedia_defaults_get_screen_x(), tmedia_defaults_get_screen_y());//doubango clients
+				}
+				else{
+					tsk_sprintf(&temp, "%s %s",  neg_format, fmtp);
+				}
 				tsdp_header_M_add_headers(m,
 					TSDP_HEADER_A_VA_ARGS("fmtp", temp),
 				tsk_null);

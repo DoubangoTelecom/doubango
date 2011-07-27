@@ -384,11 +384,11 @@ int twrap_consumer_proxy_video_prepare(tmedia_consumer_t* self, const tmedia_cod
 	if(codec && (manager = ProxyPluginMgr::getInstance())){
 		const ProxyVideoConsumer* videoConsumer;
 		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
-			self->video.fps = TMEDIA_CODEC_VIDEO(codec)->fps;
+			self->video.fps = TMEDIA_CODEC_VIDEO(codec)->in.fps;
 			// in
 			self->video.in.chroma = tmedia_yuv420p;
-			self->video.in.width = TMEDIA_CODEC_VIDEO(codec)->width;
-			self->video.in.height = TMEDIA_CODEC_VIDEO(codec)->height;
+			self->video.in.width = TMEDIA_CODEC_VIDEO(codec)->in.width;
+			self->video.in.height = TMEDIA_CODEC_VIDEO(codec)->in.height;
 			// display (out)
 			self->video.display.chroma = videoConsumer->getChroma();
 			self->video.display.auto_resize = videoConsumer->getAutoResizeDisplay();
@@ -398,7 +398,7 @@ int twrap_consumer_proxy_video_prepare(tmedia_consumer_t* self, const tmedia_cod
 			if(!self->video.display.height){
 				self->video.display.height = self->video.in.height;
 			}
-			ret = videoConsumer->getCallback()->prepare(TMEDIA_CODEC_VIDEO(codec)->width, TMEDIA_CODEC_VIDEO(codec)->height, TMEDIA_CODEC_VIDEO(codec)->fps);
+			ret = videoConsumer->getCallback()->prepare(TMEDIA_CODEC_VIDEO(codec)->in.width, TMEDIA_CODEC_VIDEO(codec)->in.height, TMEDIA_CODEC_VIDEO(codec)->in.fps);
 		}
 	}
 	

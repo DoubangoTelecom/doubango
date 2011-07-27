@@ -82,9 +82,9 @@ int tdshow_consumer_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec
 		return -1;
 	}
 	
-	TMEDIA_CONSUMER(consumer)->video.fps = TMEDIA_CODEC_VIDEO(codec)->fps;
-	TMEDIA_CONSUMER(consumer)->video.in.width = TMEDIA_CODEC_VIDEO(codec)->width;
-	TMEDIA_CONSUMER(consumer)->video.in.height = TMEDIA_CODEC_VIDEO(codec)->height;
+	TMEDIA_CONSUMER(consumer)->video.fps = TMEDIA_CODEC_VIDEO(codec)->in.fps;
+	TMEDIA_CONSUMER(consumer)->video.in.width = TMEDIA_CODEC_VIDEO(codec)->in.width;
+	TMEDIA_CONSUMER(consumer)->video.in.height = TMEDIA_CODEC_VIDEO(codec)->in.height;
 
 	if(!TMEDIA_CONSUMER(consumer)->video.display.width){
 		TMEDIA_CONSUMER(consumer)->video.display.width = TMEDIA_CONSUMER(consumer)->video.in.width;
@@ -218,7 +218,7 @@ static tsk_object_t* tdshow_consumer_ctor(tsk_object_t * self, va_list * app)
 
 		/* init self */
 		TMEDIA_CONSUMER(consumer)->video.fps = 15;
-		TMEDIA_CONSUMER(consumer)->video.display.width = 352;
+		TMEDIA_CONSUMER(consumer)->video.display.width = 320;
 		TMEDIA_CONSUMER(consumer)->video.display.height = 288;
 		TMEDIA_CONSUMER(consumer)->video.display.auto_resize = tsk_true;
 
