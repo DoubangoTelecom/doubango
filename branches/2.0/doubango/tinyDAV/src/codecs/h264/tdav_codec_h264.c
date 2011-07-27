@@ -68,7 +68,7 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 		return -1;
 	}
 	
-	/* the caller (base class) already checked that the codec is not opened */
+	/* the caller (base class) alreasy checked that the codec is not opened */
 
 
 	//
@@ -83,9 +83,9 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 
 	h264->encoder.context->pix_fmt		= PIX_FMT_YUV420P;
 	h264->encoder.context->time_base.num  = 1;
-	h264->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(h264)->fps;
-	h264->encoder.context->width = TMEDIA_CODEC_VIDEO(h264)->width;
-	h264->encoder.context->height = TMEDIA_CODEC_VIDEO(h264)->height;
+	h264->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(h264)->out.fps;
+	h264->encoder.context->width = TMEDIA_CODEC_VIDEO(h264)->out.width;
+	h264->encoder.context->height = TMEDIA_CODEC_VIDEO(h264)->out.height;
 
 	h264->encoder.context->rc_lookahead = 0;
 
@@ -129,7 +129,7 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context->thread_count = 0;
 	h264->encoder.context->rtp_payload_size = H264_RTP_PAYLOAD_SIZE;
 	h264->encoder.context->opaque = tsk_null;
-	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->fps*4; // Each 4 second(s)
+	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->out.fps * 2; // Each 2 second(s)
 		
 
 	// Picture (YUV 420)
@@ -160,8 +160,8 @@ int tdav_codec_h264_open(tmedia_codec_t* self)
 	
 	h264->decoder.context->pix_fmt = PIX_FMT_YUV420P;
 	h264->decoder.context->flags2 |= CODEC_FLAG2_FAST;
-	h264->decoder.context->width = TMEDIA_CODEC_VIDEO(h264)->width;
-	h264->decoder.context->height = TMEDIA_CODEC_VIDEO(h264)->height;
+	h264->decoder.context->width = TMEDIA_CODEC_VIDEO(h264)->in.width;
+	h264->decoder.context->height = TMEDIA_CODEC_VIDEO(h264)->in.height;
 	
 #if TDAV_UNDER_WINDOWS
 	h264->decoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
@@ -198,7 +198,7 @@ int tdav_codec_h264_close(tmedia_codec_t* self)
 		return -1;
 	}
 
-	/* the caller (base class) already checked that the codec is opened */
+	/* the caller (base class) alreasy checked that the codec is opened */
 
 	//
 	//	Encoder
@@ -262,8 +262,8 @@ tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk
 		tdav_converter_video_flip(h264->encoder.picture, h264->encoder.context->height);
 	}
 
-	if(h264->encoder.frame_count++ == 0 || (h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->fps*4) 
-		&& ((h264->encoder.frame_count %TMEDIA_CODEC_VIDEO(h264)->fps)==0)){
+	if(h264->encoder.frame_count++ == 0 || (h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->out.fps*4) 
+		&& ((h264->encoder.frame_count %TMEDIA_CODEC_VIDEO(h264)->out.fps)==0)){
 		
 		// You must patch FFmpeg to switch from X264_TYPE_AUTO to X264_TYPE_IDR
 		h264->encoder.picture->pict_type = FF_I_TYPE;
@@ -368,7 +368,7 @@ tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_data, tsk
 			}
 			/* fill out */
 			if(*out_max_size<xsize){
-				if((*out_data = tsk_realloc(*out_data, xsize))){
+				if((*out_data = tsk_realloc(*out_data, (xsize + FF_INPUT_BUFFER_PADDING_SIZE)))){
 					*out_max_size = xsize;
 				}
 				else{
@@ -377,6 +377,8 @@ tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_data, tsk
 				}
 			}
 			retsize = xsize;
+			TMEDIA_CODEC_VIDEO(h264)->in.width = h264->decoder.context->width;
+			TMEDIA_CODEC_VIDEO(h264)->in.height = h264->decoder.context->height;
 			avpicture_layout((AVPicture *)h264->decoder.picture, h264->decoder.context->pix_fmt, h264->decoder.context->width, h264->decoder.context->height,
 					*out_data, retsize);
 		}
@@ -390,7 +392,7 @@ tsk_bool_t tdav_codec_h264_fmtp_match(const tmedia_codec_t* codec, const char* f
 {
 	tdav_codec_h264_t* h264 = (tdav_codec_h264_t*)codec;
 	tsk_params_L_t* params = tsk_null;
-	int val_int;
+	int val_int, sx = -1, sy = -1;
 	const char* val_str;
 	tsk_bool_t ret = tsk_true;
 	tdav_codec_h264_profile_t profile;
@@ -414,13 +416,13 @@ tsk_bool_t tdav_codec_h264_fmtp_match(const tmedia_codec_t* codec, const char* f
 		/* === max-br ===*/
 		if((val_int = tsk_params_get_param_value_as_int(params, "max-br")) != -1){
 			// should compare "max-br"?
-			TMEDIA_CODEC_VIDEO(h264)->max_br = val_int*1000;
+			TMEDIA_CODEC_VIDEO(h264)->out.max_br = val_int*1000;
 		}
 
 		/* === max-mbps ===*/
 		if((val_int = tsk_params_get_param_value_as_int(params, "max-mbps")) != -1){
 			// should compare "max-mbps"?
-			TMEDIA_CODEC_VIDEO(h264)->max_mbps = val_int*1000;
+			TMEDIA_CODEC_VIDEO(h264)->out.max_mbps = val_int*1000;
 		}
 
 		/* === packetization-mode ===*/
@@ -435,21 +437,36 @@ tsk_bool_t tdav_codec_h264_fmtp_match(const tmedia_codec_t* codec, const char* f
 			}
 		}
 
+		/* === sx and sy used by doubango clients ===*/
+		sx = tsk_params_get_param_value_as_int(params, "sx");
+		sy = tsk_params_get_param_value_as_int(params, "sy");
+
 		/* === profile-level-id ===*/
 		if((val_str = tsk_params_get_param_value(params, "profile-level-id"))){
 			level_idc_t l_idc;
-			/* profile-idc and level-idc already tested by tdav_codec_h264_get_profile() */
+			int std_w, std_h;
+			/* profile-idc and level-idc alreasy tested by tdav_codec_h264_get_profile() */
 			tdav_codec_h264_parse_profile(val_str, tsk_null, tsk_null, &l_idc);
 			switch(l_idc){
 				case level_idc_1_0:
 				case level_idc_1_b:
 				case level_idc_1_1:
-					TMEDIA_CODEC_VIDEO(h264)->width = 176, TMEDIA_CODEC_VIDEO(h264)->height = 144;
+					std_w = 176, std_h = 144;
 					break;
 				default:
-					TMEDIA_CODEC_VIDEO(h264)->width = 352, TMEDIA_CODEC_VIDEO(h264)->height = 288;
-					//TMEDIA_CODEC_VIDEO(h264)->width = 704, TMEDIA_CODEC_VIDEO(h264)->height = 480;
+					std_w = 352, std_h = 288;
 					break;
+			}
+			
+			//set it high to avoid overflow on the accumulator (codec::open)
+			// will be update with codec::context after first successful decode
+			TMEDIA_CODEC_VIDEO(h264)->in.width = 680, TMEDIA_CODEC_VIDEO(h264)->in.height = 480;
+			if(sx > 0 && sy > 0){
+				while((sx > std_w && sy > std_h) || (sx > std_h && sy > std_w)){
+					sx >>= 1;
+					sy >>= 1;
+				}
+				TMEDIA_CODEC_VIDEO(h264)->out.width = sx&(~1), TMEDIA_CODEC_VIDEO(h264)->out.height = sy&(~1);
 			}
 		}
 	}
@@ -483,7 +500,7 @@ char* tdav_codec_h264_fmtp_get(const tmedia_codec_t* self)
 
 	if(fmtp){
 		tsk_strcat_2(&fmtp, "; packetization-mode=%d; max-br=%d; max-mbps=%d",
-			h264->pack_mode, TMEDIA_CODEC_VIDEO(h264)->max_br/1000, TMEDIA_CODEC_VIDEO(h264)->max_mbps/1000);
+			h264->pack_mode, TMEDIA_CODEC_VIDEO(h264)->in.max_br/1000, TMEDIA_CODEC_VIDEO(h264)->in.max_mbps/1000);
 	}
 
 	return fmtp;
@@ -731,13 +748,13 @@ int tdav_codec_h264_init(tdav_codec_h264_t* self, tdav_codec_h264_profile_t prof
 	
 	self->pack_mode = H264_PACKETIZATION_MODE;
 	self->profile = profile;
-	TMEDIA_CODEC_VIDEO(self)->max_mbps = H264_MAX_MBPS*1000;
-	TMEDIA_CODEC_VIDEO(self)->max_br = H264_MAX_BR*1000;
+	TMEDIA_CODEC_VIDEO(self)->in.max_mbps = TMEDIA_CODEC_VIDEO(self)->out.max_mbps = H264_MAX_MBPS*1000;
+	TMEDIA_CODEC_VIDEO(self)->in.max_br = TMEDIA_CODEC_VIDEO(self)->out.max_br = H264_MAX_BR*1000;
 
 	// At this time self->plugin is Null
-	TMEDIA_CODEC_VIDEO(self)->width = 176;
-	TMEDIA_CODEC_VIDEO(self)->height = 144;
-	TMEDIA_CODEC_VIDEO(self)->fps = 15;
+	TMEDIA_CODEC_VIDEO(self)->in.width = TMEDIA_CODEC_VIDEO(self)->out.width = 176;
+	TMEDIA_CODEC_VIDEO(self)->in.height = TMEDIA_CODEC_VIDEO(self)->out.height = 144;
+	TMEDIA_CODEC_VIDEO(self)->in.fps = TMEDIA_CODEC_VIDEO(self)->out.fps = 15;
 
 	if(!(self->encoder.codec = avcodec_find_encoder(CODEC_ID_H264))){
 		TSK_DEBUG_ERROR("Failed to find H.264 encoder");

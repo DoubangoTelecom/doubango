@@ -141,7 +141,7 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 
 	size = avpicture_get_size(dstFormat, self->dstWidth, self->dstHeight);
 	if((int)*output_max_size <size){
-		if(!(*output = tsk_realloc(*output, size))){
+		if(!(*output = tsk_realloc(*output, (size + FF_INPUT_BUFFER_PADDING_SIZE)))){
 			*output_max_size = 0;
 			TSK_DEBUG_ERROR("Failed to allocate buffer");
 			return 0;

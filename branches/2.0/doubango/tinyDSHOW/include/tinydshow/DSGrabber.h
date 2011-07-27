@@ -56,8 +56,8 @@ public:
 	virtual void stop();
 
 	virtual bool setCaptureParameters(int format, int f);
+	virtual bool setCaptureParameters(int w, int h, int f);
 
-	virtual VIDEOFORMAT getCaptureFormat();
 	virtual int getFramerate();
 
 	virtual HRESULT STDMETHODCALLTYPE SampleCB(double SampleTime, IMediaSample *pSample);

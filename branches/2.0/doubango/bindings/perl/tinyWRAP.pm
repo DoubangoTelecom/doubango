@@ -216,6 +216,7 @@ sub DESTROY {
 *defaultsGetNoiseSuppLevel = *tinyWRAPc::MediaSessionMgr_defaultsGetNoiseSuppLevel;
 *defaultsSet100relEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSet100relEnabled;
 *defaultsGet100relEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGet100relEnabled;
+*defaultsSetScreenSize = *tinyWRAPc::MediaSessionMgr_defaultsSetScreenSize;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);

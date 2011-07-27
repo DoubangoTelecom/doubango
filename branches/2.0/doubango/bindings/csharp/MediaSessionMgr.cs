@@ -166,6 +166,11 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetScreenSize(int sx, int sy) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetScreenSize(sx, sy);
+    return ret;
+  }
+
 }
 
 }

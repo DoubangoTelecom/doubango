@@ -91,9 +91,9 @@ int tdshow_producer_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec
 		return -1;
 	}
 	
-	producer->fps = TMEDIA_CODEC_VIDEO(codec)->fps;
-	producer->width = TMEDIA_CODEC_VIDEO(codec)->width;
-	producer->height = TMEDIA_CODEC_VIDEO(codec)->height;
+	producer->fps = TMEDIA_CODEC_VIDEO(codec)->out.fps;
+	producer->width = TMEDIA_CODEC_VIDEO(codec)->out.width;
+	producer->height = TMEDIA_CODEC_VIDEO(codec)->out.height;
 
 	return 0;
 }
@@ -101,7 +101,6 @@ int tdshow_producer_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec
 int tdshow_producer_start(tmedia_producer_t* self)
 {
 	tdshow_producer_t* producer = (tdshow_producer_t*)self;
-	VIDEOFORMAT format;
 	HRESULT hr;
 		
 	if(!producer){
@@ -130,8 +129,7 @@ int tdshow_producer_start(tmedia_producer_t* self)
 	producer->grabber->setCaptureDevice("Null");
 
 	// set parameters
-	SIZE_TO_VIDEOFORMAT(producer->width, producer->height, format);
-	producer->grabber->setCaptureParameters(format, producer->fps);
+	producer->grabber->setCaptureParameters(producer->width, producer->height, producer->fps);
 
 	// set callback function
 	producer->grabber->setCallback(tdshow_plugin_cb, producer);

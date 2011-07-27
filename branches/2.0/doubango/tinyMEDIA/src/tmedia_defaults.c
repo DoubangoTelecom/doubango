@@ -52,6 +52,8 @@ static tsk_bool_t __vad_enabled = tsk_false;
 static tsk_bool_t __noise_supp_enabled = tsk_true;
 static int32_t __noise_supp_level = -30;
 static tsk_bool_t __100rel_enabled = tsk_true;
+static int32_t __sx = -1;
+static int32_t __sy = -1;
 
 int tmedia_defaults_set_echo_tail(uint32_t echo_tail)
 {
@@ -138,3 +140,16 @@ tsk_bool_t tmedia_defaults_get_100rel_enabled(){
 	return __100rel_enabled;
 }
 
+int tmedia_defaults_set_screen_size(int32_t sx, int32_t sy){
+	__sx = sx;
+	__sy = sy;
+	return 0;
+}
+
+int32_t tmedia_defaults_get_screen_x(){
+	return __sx;
+}
+
+int32_t tmedia_defaults_get_screen_y(){
+	return __sy;
+}

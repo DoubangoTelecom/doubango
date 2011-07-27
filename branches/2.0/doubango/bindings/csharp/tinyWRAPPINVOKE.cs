@@ -332,6 +332,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGet100relEnabled")]
   public static extern bool MediaSessionMgr_defaultsGet100relEnabled();
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetScreenSize")]
+  public static extern bool MediaSessionMgr_defaultsSetScreenSize(int jarg1, int jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_MediaContent")]
   public static extern void delete_MediaContent(HandleRef jarg1);
 

@@ -130,9 +130,9 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 	
 	h263->encoder.context->pix_fmt		= PIX_FMT_YUV420P;
 	h263->encoder.context->time_base.num  = 1;
-	h263->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(h263)->fps;
-	h263->encoder.context->width = TMEDIA_CODEC_VIDEO(h263)->width;
-	h263->encoder.context->height = TMEDIA_CODEC_VIDEO(h263)->height;
+	h263->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(h263)->out.fps;
+	h263->encoder.context->width = TMEDIA_CODEC_VIDEO(h263)->out.width;
+	h263->encoder.context->height = TMEDIA_CODEC_VIDEO(h263)->out.height;
 
 	/*h263->encoder.context->mb_qmin =*/ h263->encoder.context->qmin = 4;
 	/*h263->encoder.context->mb_qmax =*/ h263->encoder.context->qmax = 31;
@@ -141,7 +141,7 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 	h263->encoder.context->thread_count = 1;
 	h263->encoder.context->rtp_payload_size = RTP_PAYLOAD_SIZE;
 	h263->encoder.context->opaque = tsk_null;
-	h263->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h263)->fps*2; /* each 2 seconds */
+	h263->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h263)->out.fps*2; /* each 2 seconds */
 	h263->encoder.context->flags |= CODEC_FLAG_QSCALE;
 	h263->encoder.context->global_quality = FF_QP2LAMBDA * tmedia_get_video_qscale(self->bl);
 
@@ -201,8 +201,8 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 	avcodec_get_context_defaults(h263->decoder.context);
 	
 	h263->decoder.context->pix_fmt = PIX_FMT_YUV420P;
-	h263->decoder.context->width = TMEDIA_CODEC_VIDEO(h263)->width;
-	h263->decoder.context->height = TMEDIA_CODEC_VIDEO(h263)->height;
+	h263->decoder.context->width = TMEDIA_CODEC_VIDEO(h263)->in.width;
+	h263->decoder.context->height = TMEDIA_CODEC_VIDEO(h263)->in.height;
 
 	// Picture (YUV 420)
 	if(!(h263->decoder.picture = avcodec_alloc_frame())){
@@ -440,6 +440,8 @@ tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk
 		}
 		else{
 			retsize = xsize;
+			TMEDIA_CODEC_VIDEO(h263)->in.width = h263->decoder.context->width;
+			TMEDIA_CODEC_VIDEO(h263)->in.height = h263->decoder.context->height;
 			// flip
 			if(self->video.flip.decoded){
 				tdav_converter_video_flip(h263->decoder.picture, h263->decoder.context->height);
@@ -466,11 +468,11 @@ tsk_bool_t tdav_codec_h263_fmtp_match(const tmedia_codec_t* codec, const char* f
 			case tmedia_bl_low:
 			default:
 				if(tsk_params_have_param(params, "QCIF")){
-					h263->width = 176, h263->height = 144;
+					h263->in.width = h263->out.width = 176, h263->in.height = h263->out.height = 144;
 					ret = tsk_true;
 				}
 				else if(tsk_params_have_param(params, "SQCIF")){
-					h263->width = 128, h263->height = 96;
+					h263->in.width = h263->out.width = 128, h263->in.height = h263->out.height = 96;
 					ret = tsk_true;
 				}
 				break;
@@ -479,19 +481,19 @@ tsk_bool_t tdav_codec_h263_fmtp_match(const tmedia_codec_t* codec, const char* f
 			case tmedia_bl_hight:
 			case tmedia_bl_unrestricted:
 				if(tsk_params_have_param(params, "CIF")){
-					h263->width = 352, h263->height = 288;
+					h263->in.width = h263->out.width = 352, h263->in.height = h263->out.height = 288;
 					ret = tsk_true;
 				}
 				else if(tsk_params_have_param(params, "QCIF")){
-					h263->width = 176, h263->height = 144;
+					h263->in.width = h263->out.width = 176, h263->in.height = h263->out.height = 144;
 					ret = tsk_true;
 				}
 				else if(tsk_params_have_param(params, "SQCIF")){
-					h263->width = 128, h263->height = 96;
+					h263->in.width = h263->out.width = 128, h263->in.height = h263->out.height = 96;
 					ret = tsk_true;
 				}
 				else { // Default: to be fixed
-					h263->width = 352, h263->height = 288;
+					h263->in.width = h263->out.width = 352, h263->in.height = h263->out.height = 288;
 					ret = tsk_true;
 				}
 
@@ -1073,7 +1075,7 @@ static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *da
 
 	// Send data over the network
 	if(TMEDIA_CODEC_VIDEO(self)->callback){
-		TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, self->rtp.ptr, (size + H263_HEADER_MODE_A_SIZE), (3003* (30/TMEDIA_CODEC_VIDEO(self)->fps)), marker);
+		TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, self->rtp.ptr, (size + H263_HEADER_MODE_A_SIZE), (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps)), marker);
 	}
 }
 
@@ -1214,7 +1216,7 @@ static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *d
 
 	// Send data over the network
 	if(TMEDIA_CODEC_VIDEO(self)->callback){
-		TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, _ptr, _size, (3003* (30/TMEDIA_CODEC_VIDEO(self)->fps)), marker);
+		TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, _ptr, _size, (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps)), marker);
 	}
 }
 

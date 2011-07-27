@@ -53,6 +53,9 @@ TINYMEDIA_API int tmedia_defaults_set_noise_supp_level(int32_t noise_supp_level)
 TINYMEDIA_API int32_t tmedia_defaults_get_noise_supp_level();
 TINYMEDIA_API int tmedia_defaults_set_100rel_enabled(tsk_bool_t _100rel_enabled);
 TINYMEDIA_API tsk_bool_t tmedia_defaults_get_100rel_enabled();
+TINYMEDIA_API int tmedia_defaults_set_screen_size(int32_t sx, int32_t sy);
+TINYMEDIA_API int32_t tmedia_defaults_get_screen_x();
+TINYMEDIA_API int32_t tmedia_defaults_get_screen_y();
 
 TMEDIA_END_DECLS
 

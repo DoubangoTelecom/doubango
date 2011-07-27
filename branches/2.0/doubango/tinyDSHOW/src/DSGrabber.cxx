@@ -103,15 +103,14 @@ void DSGrabber::stop()
 	}
 }
 
-bool DSGrabber::setCaptureParameters(int format, int f)
+bool DSGrabber::setCaptureParameters(int w, int h, int f)
 {
 	tsk_mutex_lock(this->mutex_buffer);
 
-	// Get size from the format
-	VIDEOFORMAT_TO_SIZE(format, this->width, this->height)
-
 	// Store the framerate
 	this->fps = f;
+	this->width = w;
+	this->height = h;
 
 	// Store the required dimensions
 	this->bitmapInfo.biWidth = this->width;
@@ -149,11 +148,12 @@ bool DSGrabber::setCaptureParameters(int format, int f)
 	return SUCCEEDED(hr);
 }
 
-VIDEOFORMAT DSGrabber::getCaptureFormat()
+bool DSGrabber::setCaptureParameters(int format, int f)
 {
-	VIDEOFORMAT format;
-	SIZE_TO_VIDEOFORMAT(this->width, this->height, format);
-	return format;
+	int w, h;
+	// Get size from the format
+	VIDEOFORMAT_TO_SIZE(format, w, h);
+	return this->setCaptureParameters(w, h, f);
 }
 
 int DSGrabber::getFramerate()

@@ -80,9 +80,9 @@ int tdav_codec_h261_open(tmedia_codec_t* self)
 	
 	h261->encoder.context->pix_fmt		= PIX_FMT_YUV420P;
 	h261->encoder.context->time_base.num  = 1;
-	h261->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(h261)->fps;
-	h261->encoder.context->width = TMEDIA_CODEC_VIDEO(h261)->width;
-	h261->encoder.context->height = TMEDIA_CODEC_VIDEO(h261)->height;
+	h261->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(h261)->out.fps;
+	h261->encoder.context->width = TMEDIA_CODEC_VIDEO(h261)->out.width;
+	h261->encoder.context->height = TMEDIA_CODEC_VIDEO(h261)->out.height;
 
 	h261->encoder.context->mb_qmin = h261->encoder.context->qmin = 4;
 	h261->encoder.context->mb_qmax = h261->encoder.context->qmax = 31;
@@ -93,7 +93,7 @@ int tdav_codec_h261_open(tmedia_codec_t* self)
 	h261->encoder.context->opaque = tsk_null;
 	h261->encoder.context->bit_rate = (float) (500000) * 0.80f;
 	h261->encoder.context->bit_rate_tolerance = (int) (500000 * 0.20f);
-	h261->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h261)->fps*4; /* each 4 seconds */
+	h261->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h261)->out.fps*4; /* each 4 seconds */
 
 	// Picture (YUV 420)
 	if(!(h261->encoder.picture = avcodec_alloc_frame())){
@@ -128,8 +128,8 @@ int tdav_codec_h261_open(tmedia_codec_t* self)
 	avcodec_get_context_defaults(h261->decoder.context);
 	
 	h261->decoder.context->pix_fmt = PIX_FMT_YUV420P;
-	h261->decoder.context->width = TMEDIA_CODEC_VIDEO(h261)->width;
-	h261->decoder.context->height = TMEDIA_CODEC_VIDEO(h261)->height;
+	h261->decoder.context->width = TMEDIA_CODEC_VIDEO(h261)->in.width;
+	h261->decoder.context->height = TMEDIA_CODEC_VIDEO(h261)->in.height;
 
 	// Picture (YUV 420)
 	if(!(h261->decoder.picture = avcodec_alloc_frame())){
@@ -329,6 +329,8 @@ tsk_size_t tdav_codec_h261_decode(tmedia_codec_t* self, const void* in_data, tsk
 		}
 		else{
 			retsize = xsize;
+			TMEDIA_CODEC_VIDEO(h261)->in.width = h261->decoder.context->width;
+			TMEDIA_CODEC_VIDEO(h261)->in.height = h261->decoder.context->height;
 			if(self->video.flip.decoded){
 				tdav_converter_video_flip(h261->decoder.picture, h261->decoder.context->height);
 			}
@@ -350,10 +352,10 @@ tsk_bool_t tdav_codec_h261_fmtp_match(const tmedia_codec_t* codec, const char* f
 	tmedia_codec_video_t* h261 = (tmedia_codec_video_t*)codec;
 
 	if(!(ret = tmedia_codec_parse_fmtp(fmtp, &maxbr, &fps, &width, &height))){
-		h261->max_br = maxbr * 1000;
-		h261->fps = fps;
-		h261->width = width;
-		h261->height = height;
+		h261->in.max_br = h261->out.max_br = maxbr * 1000;
+		h261->in.fps = h261->out.fps = fps;
+		h261->in.width = h261->out.width = width;
+		h261->in.height = h261->out.height = height;
 		return tsk_true;
 	}
 	else{

@@ -189,6 +189,8 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSet100relEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSet100relEnabled)
     __swig_getmethods__["defaultsGet100relEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGet100relEnabled
     if _newclass:defaultsGet100relEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGet100relEnabled)
+    __swig_getmethods__["defaultsSetScreenSize"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetScreenSize
+    if _newclass:defaultsSetScreenSize = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetScreenSize)
 MediaSessionMgr_swigregister = _tinyWRAP.MediaSessionMgr_swigregister
 MediaSessionMgr_swigregister(MediaSessionMgr)
 
@@ -263,6 +265,10 @@ MediaSessionMgr_defaultsSet100relEnabled = _tinyWRAP.MediaSessionMgr_defaultsSet
 def MediaSessionMgr_defaultsGet100relEnabled():
   return _tinyWRAP.MediaSessionMgr_defaultsGet100relEnabled()
 MediaSessionMgr_defaultsGet100relEnabled = _tinyWRAP.MediaSessionMgr_defaultsGet100relEnabled
+
+def MediaSessionMgr_defaultsSetScreenSize(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetScreenSize(*args)
+MediaSessionMgr_defaultsSetScreenSize = _tinyWRAP.MediaSessionMgr_defaultsSetScreenSize
 
 class MediaContent(_object):
     __swig_setmethods__ = {}
