@@ -163,6 +163,8 @@ int tdav_init()
 #endif
 #if HAVE_LIB_SPEEX
 	tmedia_codec_plugin_register(tdav_codec_speex_nb_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_speex_wb_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_speex_uwb_plugin_def_t);
 #endif
 #if HAVE_G729
 	tmedia_codec_plugin_register(tdav_codec_g729ab_plugin_def_t);
@@ -267,6 +269,8 @@ void tdav_set_codecs(tdav_codec_id_t codecs)
 #endif
 #if HAVE_LIB_SPEEX
 		{ tdav_codec_id_speex_nb, &tdav_codec_speex_nb_plugin_def_t },
+		{ tdav_codec_id_speex_wb, &tdav_codec_speex_wb_plugin_def_t },
+		{ tdav_codec_id_speex_uwb, &tdav_codec_speex_uwb_plugin_def_t },
 #endif
 #if HAVE_G729
 		{ tdav_codec_id_g729ab, &tdav_codec_g729ab_plugin_def_t },
@@ -328,6 +332,8 @@ tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
 #endif
 
 		case tdav_codec_id_speex_nb:
+		case tdav_codec_id_speex_wb:
+		case tdav_codec_id_speex_uwb:
 #if HAVE_LIB_SPEEX
 			return tsk_true;
 #else
@@ -377,8 +383,6 @@ tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
 
 		case tdav_codec_id_amr_wb_oa:
 		case tdav_codec_id_amr_wb_be:
-		case tdav_codec_id_speex_wb:
-		case tdav_codec_id_speex_uwb:
 		case tdav_codec_id_bv32:
 		case tdav_codec_id_evrc:
 		default:
@@ -430,6 +434,8 @@ int tdav_deinit()
 #endif
 #if HAVE_LIB_SPEEX
 	tmedia_codec_plugin_unregister(tdav_codec_speex_nb_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_speex_wb_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_speex_uwb_plugin_def_t);
 #endif
 #if HAVE_G729
 	tmedia_codec_plugin_unregister(tdav_codec_g729ab_plugin_def_t);
