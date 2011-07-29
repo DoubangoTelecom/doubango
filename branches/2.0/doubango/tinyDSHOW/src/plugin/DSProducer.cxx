@@ -36,11 +36,7 @@ typedef struct tdshow_producer_s
 	
 	DSGrabber* grabber;
 	INT64 previewHwnd;
-
-	int fps;
-	int width;
-	int height;
-
+	
 	tsk_bool_t started;
 }
 tdshow_producer_t;
@@ -91,10 +87,11 @@ int tdshow_producer_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec
 		return -1;
 	}
 	
-	producer->fps = TMEDIA_CODEC_VIDEO(codec)->out.fps;
-	producer->width = TMEDIA_CODEC_VIDEO(codec)->out.width;
-	producer->height = TMEDIA_CODEC_VIDEO(codec)->out.height;
-
+	TMEDIA_PRODUCER(producer)->video.fps = TMEDIA_CODEC_VIDEO(codec)->out.fps;
+	// FIXME
+	TMEDIA_PRODUCER(producer)->video.width = 320;//TMEDIA_CODEC_VIDEO(codec)->out.width;
+	TMEDIA_PRODUCER(producer)->video.height = 240;//TMEDIA_CODEC_VIDEO(codec)->out.height;
+	
 	return 0;
 }
 
@@ -129,7 +126,7 @@ int tdshow_producer_start(tmedia_producer_t* self)
 	producer->grabber->setCaptureDevice("Null");
 
 	// set parameters
-	producer->grabber->setCaptureParameters(producer->width, producer->height, producer->fps);
+	producer->grabber->setCaptureParameters(TMEDIA_PRODUCER(producer)->video.width, TMEDIA_PRODUCER(producer)->video.height, TMEDIA_PRODUCER(producer)->video.fps);
 
 	// set callback function
 	producer->grabber->setCallback(tdshow_plugin_cb, producer);
@@ -139,7 +136,7 @@ int tdshow_producer_start(tmedia_producer_t* self)
 		if(producer->previewHwnd){
 			producer->grabber->preview->attach(producer->previewHwnd);
 		}
-		producer->grabber->preview->setSize(producer->width, producer->height);
+		producer->grabber->preview->setSize(TMEDIA_PRODUCER(producer)->video.width, TMEDIA_PRODUCER(producer)->video.height);
 	}
 	
 	// start grabber
@@ -212,9 +209,9 @@ static tsk_object_t* tdshow_producer_ctor(tsk_object_t * self, va_list * app)
 		tmedia_producer_init(TMEDIA_PRODUCER(producer));
 		TMEDIA_PRODUCER(producer)->video.chroma = tmedia_bgr24; // RGB24 on x86 (little endians) stored as BGR24
 		/* init self with default values*/
-		producer->fps = 15;
-		producer->width = 176;
-		producer->height = 144;
+		TMEDIA_PRODUCER(producer)->video.fps = 15;
+		TMEDIA_PRODUCER(producer)->video.width = 176;
+		TMEDIA_PRODUCER(producer)->video.height = 144;
 
 		if(IsMainThread()){
 			producer->grabber = new DSGrabber(&hr);

@@ -43,8 +43,14 @@ public class ProxyVideoProducer : ProxyPlugin {
     return ret;
   }
 
-  public void setRotation(int nRot) {
-    tinyWRAPPINVOKE.ProxyVideoProducer_setRotation(swigCPtr, nRot);
+  public bool setRotation(int nRot) {
+    bool ret = tinyWRAPPINVOKE.ProxyVideoProducer_setRotation(swigCPtr, nRot);
+    return ret;
+  }
+
+  public bool setActualCameraOutputSize(uint nWidth, uint nHeight) {
+    bool ret = tinyWRAPPINVOKE.ProxyVideoProducer_setActualCameraOutputSize(swigCPtr, nWidth, nHeight);
+    return ret;
   }
 
   public int push(byte[] pBuffer, uint nSize) {

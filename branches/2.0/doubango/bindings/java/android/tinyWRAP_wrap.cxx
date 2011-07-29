@@ -7345,16 +7345,39 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoProduce
 }
 
 
-SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoProducer_1setRotation(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoProducer_1setRotation(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jboolean jresult = 0 ;
   ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
   int arg2 ;
+  bool result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(ProxyVideoProducer **)&jarg1; 
   arg2 = (int)jarg2; 
-  (arg1)->setRotation(arg2);
+  result = (bool)(arg1)->setRotation(arg2);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoProducer_1setActualCameraOutputSize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jlong jarg3) {
+  jboolean jresult = 0 ;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  unsigned int arg2 ;
+  unsigned int arg3 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoProducer **)&jarg1; 
+  arg2 = (unsigned int)jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  result = (bool)(arg1)->setActualCameraOutputSize(arg2,arg3);
+  jresult = (jboolean)result; 
+  return jresult;
 }
 
 

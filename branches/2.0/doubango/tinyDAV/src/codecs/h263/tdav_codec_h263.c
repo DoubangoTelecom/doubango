@@ -753,6 +753,8 @@ tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_data, ts
 		}
 		else{
 			retsize = xsize;
+			TMEDIA_CODEC_VIDEO(h263)->in.width = h263->decoder.context->width;
+			TMEDIA_CODEC_VIDEO(h263)->in.height = h263->decoder.context->height;
 			// flip
 			if(self->video.flip.decoded){
 				tdav_converter_video_flip(h263->decoder.picture, h263->decoder.context->height);

@@ -83,14 +83,14 @@ static int tdav_session_video_rtp_cb(const void* callback_data, const struct trt
 		// Convert decoded data to the consumer chroma and size
 #define CONSUMER_INSIZE_CHANGED				((session->consumer->video.in.width * session->consumer->video.in.height * 3)/2 != out_size)// we have good reasons not to use 1.5f
 #define CONSUMER_DISPLAY_NEED_RESIZE		(session->consumer->video.in.width != session->consumer->video.display.width || session->consumer->video.in.height != session->consumer->video.display.height)
-#define CONSUMER_DISPLAYSIZE_CHANGED		(session->conv.consumerLastWidth != session->consumer->video.display.width || session->conv.consumerLastHeight != session->consumer->video.display.height)
+#define CONSUMER_DECODED_HAS_DIFF_SIZE		(session->consumer->video.display.width != TMEDIA_CODEC_VIDEO(codec)->in.width || session->consumer->video.display.height != TMEDIA_CODEC_VIDEO(codec)->in.height)
 #define CONSUMER_DISPLAY_NEED_CHROMACHANGE	(session->consumer->video.display.chroma != tmedia_yuv420p)
 
-		if((CONSUMER_DISPLAY_NEED_CHROMACHANGE || CONSUMER_DISPLAYSIZE_CHANGED || CONSUMER_DISPLAY_NEED_RESIZE || CONSUMER_INSIZE_CHANGED)){
+		if((CONSUMER_DISPLAY_NEED_CHROMACHANGE || CONSUMER_DECODED_HAS_DIFF_SIZE || CONSUMER_DISPLAY_NEED_RESIZE || CONSUMER_INSIZE_CHANGED)){
 			tsk_size_t _output_size;
 
 			// Create video converter if not already done
-			if(!session->conv.fromYUV420 || CONSUMER_DISPLAYSIZE_CHANGED || CONSUMER_INSIZE_CHANGED){
+			if(!session->conv.fromYUV420 || CONSUMER_DECODED_HAS_DIFF_SIZE || CONSUMER_INSIZE_CHANGED){
 				TSK_OBJECT_SAFE_FREE(session->conv.fromYUV420);
 				// update in (set by the codec)
 				session->consumer->video.in.width = TMEDIA_CODEC_VIDEO(codec)->in.width;//decoded width
@@ -101,10 +101,8 @@ static int tdav_session_video_rtp_cb(const void* callback_data, const struct trt
 					session->consumer->video.display.width = session->consumer->video.in.width;
 					session->consumer->video.display.height = session->consumer->video.in.height;
 				}
-				// set xdisplay with latest valid sizes (set by the user)
-				session->conv.consumerLastWidth = session->consumer->video.display.width;
-				session->conv.consumerLastHeight = session->consumer->video.display.height;
-				if(!(session->conv.fromYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->in.width, TMEDIA_CODEC_VIDEO(codec)->in.height, session->conv.consumerLastWidth, session->conv.consumerLastHeight,
+				// create converter
+				if(!(session->conv.fromYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->in.width, TMEDIA_CODEC_VIDEO(codec)->in.height, session->consumer->video.display.width, session->consumer->video.display.height,
 					session->consumer->video.display.chroma, tsk_false))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
 					ret = -3;
