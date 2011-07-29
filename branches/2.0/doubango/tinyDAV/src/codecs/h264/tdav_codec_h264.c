@@ -445,7 +445,7 @@ tsk_bool_t tdav_codec_h264_fmtp_match(const tmedia_codec_t* codec, const char* f
 		if((val_str = tsk_params_get_param_value(params, "profile-level-id"))){
 			level_idc_t l_idc;
 			int std_w, std_h;
-			/* profile-idc and level-idc alreasy tested by tdav_codec_h264_get_profile() */
+			/* profile-idc and level-idc already tested by tdav_codec_h264_get_profile() */
 			tdav_codec_h264_parse_profile(val_str, tsk_null, tsk_null, &l_idc);
 			switch(l_idc){
 				case level_idc_1_0:
@@ -460,13 +460,16 @@ tsk_bool_t tdav_codec_h264_fmtp_match(const tmedia_codec_t* codec, const char* f
 			
 			//set it high to avoid overflow on the accumulator (codec::open)
 			// will be update with codec::context after first successful decode
-			TMEDIA_CODEC_VIDEO(h264)->in.width = 680, TMEDIA_CODEC_VIDEO(h264)->in.height = 480;
+			TMEDIA_CODEC_VIDEO(h264)->in.width = std_w, TMEDIA_CODEC_VIDEO(h264)->in.height = std_h;
 			if(sx > 0 && sy > 0){
-				while((sx > std_w && sy > std_h) || (sx > std_h && sy > std_w)){
-					sx >>= 1;
-					sy >>= 1;
-				}
-				TMEDIA_CODEC_VIDEO(h264)->out.width = sx&(~1), TMEDIA_CODEC_VIDEO(h264)->out.height = sy&(~1);
+				//while((sx > std_w && sy > std_h) || (sx > std_h && sy > std_w)){
+				//	sx >>= 1;
+				//	sy >>= 1;
+				//}
+				TMEDIA_CODEC_VIDEO(h264)->out.width = sx&(~1), TMEDIA_CODEC_VIDEO(h264)->in.height = sy&(~1);
+			}
+			else{
+				TMEDIA_CODEC_VIDEO(h264)->out.width = std_w, TMEDIA_CODEC_VIDEO(h264)->in.height = std_h;
 			}
 		}
 	}

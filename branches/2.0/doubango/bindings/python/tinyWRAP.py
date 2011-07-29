@@ -1015,6 +1015,7 @@ class ProxyVideoProducer(ProxyPlugin):
     __del__ = lambda self : None;
     def getRotation(self): return _tinyWRAP.ProxyVideoProducer_getRotation(self)
     def setRotation(self, *args): return _tinyWRAP.ProxyVideoProducer_setRotation(self, *args)
+    def setActualCameraOutputSize(self, *args): return _tinyWRAP.ProxyVideoProducer_setActualCameraOutputSize(self, *args)
     def push(self, *args): return _tinyWRAP.ProxyVideoProducer_push(self, *args)
     def send(self, *args): return _tinyWRAP.ProxyVideoProducer_send(self, *args)
     def setCallback(self, *args): return _tinyWRAP.ProxyVideoProducer_setCallback(self, *args)

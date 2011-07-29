@@ -110,7 +110,8 @@ public:
 	virtual ~ProxyVideoProducer();	
 
 	int getRotation()const;
-	void setRotation(int nRot);
+	bool setRotation(int nRot);
+	bool setActualCameraOutputSize(unsigned nWidth, unsigned nHeight);
 	int push(const void* pBuffer, unsigned nSize);
 	int send(const void* pBuffer, unsigned nSize, unsigned nDuration, bool bMarker);
 	void setCallback(ProxyVideoProducerCallback* pCallback) { m_pCallback = pCallback; }

@@ -1555,6 +1555,7 @@ sub DESTROY {
 
 *getRotation = *tinyWRAPc::ProxyVideoProducer_getRotation;
 *setRotation = *tinyWRAPc::ProxyVideoProducer_setRotation;
+*setActualCameraOutputSize = *tinyWRAPc::ProxyVideoProducer_setActualCameraOutputSize;
 *push = *tinyWRAPc::ProxyVideoProducer_push;
 *send = *tinyWRAPc::ProxyVideoProducer_send;
 *setCallback = *tinyWRAPc::ProxyVideoProducer_setCallback;

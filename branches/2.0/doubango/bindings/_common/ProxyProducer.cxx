@@ -445,12 +445,26 @@ int ProxyVideoProducer::getRotation()const
 	return m_nRotation;
 }
 
-void ProxyVideoProducer::setRotation(int nRot)
+bool ProxyVideoProducer::setRotation(int nRot)
 {
 	m_nRotation = nRot;
 	if(m_pWrappedPlugin){
 		TMEDIA_PRODUCER(m_pWrappedPlugin)->video.rotation = m_nRotation;
+		return true;
 	}
+	return false;
+}
+
+// alert the encoder which size your camera is using because it's very hard to retrieve it from send(buffer, size) function
+// this function is only needed if the actual size (output from your camera) is different than the negociated one
+bool ProxyVideoProducer::setActualCameraOutputSize(unsigned nWidth, unsigned nHeight)
+{
+	if(m_pWrappedPlugin){
+		TMEDIA_PRODUCER(m_pWrappedPlugin)->video.width = nWidth;
+		TMEDIA_PRODUCER(m_pWrappedPlugin)->video.height = nHeight;
+		return true;
+	}
+	return false;
 }
 
 // encode() then send()

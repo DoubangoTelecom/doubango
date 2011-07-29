@@ -37,8 +37,12 @@ public class ProxyVideoProducer extends ProxyPlugin {
     return tinyWRAPJNI.ProxyVideoProducer_getRotation(swigCPtr, this);
   }
 
-  public void setRotation(int nRot) {
-    tinyWRAPJNI.ProxyVideoProducer_setRotation(swigCPtr, this, nRot);
+  public boolean setRotation(int nRot) {
+    return tinyWRAPJNI.ProxyVideoProducer_setRotation(swigCPtr, this, nRot);
+  }
+
+  public boolean setActualCameraOutputSize(long nWidth, long nHeight) {
+    return tinyWRAPJNI.ProxyVideoProducer_setActualCameraOutputSize(swigCPtr, this, nWidth, nHeight);
   }
 
   public int push(java.nio.ByteBuffer pBuffer, long nSize) {

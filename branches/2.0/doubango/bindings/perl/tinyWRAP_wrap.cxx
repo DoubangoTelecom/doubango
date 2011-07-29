@@ -15009,6 +15009,7 @@ XS(_wrap_ProxyVideoProducer_setRotation) {
     int val2 ;
     int ecode2 = 0 ;
     int argvi = 0;
+    bool result;
     dXSARGS;
     
     if ((items < 2) || (items > 2)) {
@@ -15024,12 +15025,60 @@ XS(_wrap_ProxyVideoProducer_setRotation) {
       SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoProducer_setRotation" "', argument " "2"" of type '" "int""'");
     } 
     arg2 = static_cast< int >(val2);
-    (arg1)->setRotation(arg2);
-    ST(argvi) = sv_newmortal();
+    result = (bool)(arg1)->setRotation(arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     
     
     XSRETURN(argvi);
   fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducer_setActualCameraOutputSize) {
+  {
+    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+    unsigned int arg2 ;
+    unsigned int arg3 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    unsigned int val2 ;
+    int ecode2 = 0 ;
+    unsigned int val3 ;
+    int ecode3 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 3) || (items > 3)) {
+      SWIG_croak("Usage: ProxyVideoProducer_setActualCameraOutputSize(self,nWidth,nHeight);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_setActualCameraOutputSize" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+    ecode2 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoProducer_setActualCameraOutputSize" "', argument " "2"" of type '" "unsigned int""'");
+    } 
+    arg2 = static_cast< unsigned int >(val2);
+    ecode3 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoProducer_setActualCameraOutputSize" "', argument " "3"" of type '" "unsigned int""'");
+    } 
+    arg3 = static_cast< unsigned int >(val3);
+    result = (bool)(arg1)->setActualCameraOutputSize(arg2,arg3);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
     
     
     SWIG_croak_null();
@@ -21438,6 +21487,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::delete_ProxyVideoProducer", _wrap_delete_ProxyVideoProducer},
 {"tinyWRAPc::ProxyVideoProducer_getRotation", _wrap_ProxyVideoProducer_getRotation},
 {"tinyWRAPc::ProxyVideoProducer_setRotation", _wrap_ProxyVideoProducer_setRotation},
+{"tinyWRAPc::ProxyVideoProducer_setActualCameraOutputSize", _wrap_ProxyVideoProducer_setActualCameraOutputSize},
 {"tinyWRAPc::ProxyVideoProducer_push", _wrap_ProxyVideoProducer_push},
 {"tinyWRAPc::ProxyVideoProducer_send", _wrap_ProxyVideoProducer_send},
 {"tinyWRAPc::ProxyVideoProducer_setCallback", _wrap_ProxyVideoProducer_setCallback},
