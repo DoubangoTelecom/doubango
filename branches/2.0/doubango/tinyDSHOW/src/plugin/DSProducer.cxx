@@ -89,8 +89,8 @@ int tdshow_producer_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec
 	
 	TMEDIA_PRODUCER(producer)->video.fps = TMEDIA_CODEC_VIDEO(codec)->out.fps;
 	// FIXME
-	TMEDIA_PRODUCER(producer)->video.width = 320;//TMEDIA_CODEC_VIDEO(codec)->out.width;
-	TMEDIA_PRODUCER(producer)->video.height = 240;//TMEDIA_CODEC_VIDEO(codec)->out.height;
+	TMEDIA_PRODUCER(producer)->video.width = TMEDIA_CODEC_VIDEO(codec)->out.width;
+	TMEDIA_PRODUCER(producer)->video.height = TMEDIA_CODEC_VIDEO(codec)->out.height;
 	
 	return 0;
 }

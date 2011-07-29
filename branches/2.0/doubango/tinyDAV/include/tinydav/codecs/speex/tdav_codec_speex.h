@@ -71,6 +71,8 @@ typedef struct tdav_codec_speex_s
 tdav_codec_speex_t;
 
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_speex_nb_plugin_def_t;
+TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_speex_wb_plugin_def_t;
+TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_speex_uwb_plugin_def_t;
 
 TDAV_END_DECLS
 

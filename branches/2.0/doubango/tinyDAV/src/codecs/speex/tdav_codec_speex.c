@@ -34,6 +34,9 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#define SPEEX_BUFFER_MAX_SIZE		1024
+#define SPEEX_DEFAULT_QUALITY		6
+
 /* ============ Common ================= */
 int tdav_codec_speex_init(tdav_codec_speex_t* self, tdav_codec_speex_type_t type);
 int tdav_codec_speex_deinit(tdav_codec_speex_t* self);
@@ -44,32 +47,39 @@ int tdav_codec_speex_deinit(tdav_codec_speex_t* self);
 
 int tdav_codec_speex_open(tmedia_codec_t* self)
 {
-	static int quality = 6;
+	static int quality = SPEEX_DEFAULT_QUALITY;
 	tdav_codec_speex_t* speex = (tdav_codec_speex_t*)self;
-	// tsk_size_t size = 0;
 	
 	switch(speex->type){
 		case tdav_codec_speex_type_nb:
 			speex->encoder.state = speex_encoder_init(&speex_nb_mode);
 			speex->decoder.state = speex_decoder_init(&speex_nb_mode);
-
-			speex_decoder_ctl(speex->decoder.state, SPEEX_GET_FRAME_SIZE, &speex->decoder.size);
-			speex->decoder.size = (speex->decoder.size ? speex->decoder.size : 160) * sizeof(spx_int16_t);
-			if(!(speex->decoder.buffer = tsk_calloc(speex->decoder.size, 1))){
-				speex->decoder.size = 0;
-				TSK_DEBUG_ERROR("Failed to allocate new buffer");
-				return -3;
-			}
-
-			speex_encoder_ctl(speex->encoder.state, SPEEX_SET_QUALITY, &quality);
-			speex_encoder_ctl(speex->encoder.state, SPEEX_GET_FRAME_SIZE, &speex->encoder.size);
-			if(!speex->encoder.size){
-				speex->encoder.size = 20;
-			}
+			break;
+		case tdav_codec_speex_type_wb:
+			speex->encoder.state = speex_encoder_init(&speex_wb_mode);
+			speex->decoder.state = speex_decoder_init(&speex_wb_mode);
+			break;
+		case tdav_codec_speex_type_uwb:
+			speex->encoder.state = speex_encoder_init(&speex_uwb_mode);
+			speex->decoder.state = speex_decoder_init(&speex_uwb_mode);
 			break;
 		default:
 			TSK_DEBUG_ERROR("Not implemented");
 			return -2;
+	}
+
+	speex_decoder_ctl(speex->decoder.state, SPEEX_GET_FRAME_SIZE, &speex->decoder.size);
+	speex->decoder.size = (speex->decoder.size ? speex->decoder.size : SPEEX_BUFFER_MAX_SIZE) * sizeof(spx_int16_t);
+	if(!(speex->decoder.buffer = tsk_calloc(speex->decoder.size, 1))){
+		speex->decoder.size = 0;
+		TSK_DEBUG_ERROR("Failed to allocate new buffer");
+		return -3;
+	}
+
+	speex_encoder_ctl(speex->encoder.state, SPEEX_SET_QUALITY, &quality);
+	speex_encoder_ctl(speex->encoder.state, SPEEX_GET_FRAME_SIZE, &speex->encoder.size);
+	if(!speex->encoder.size){
+		speex->encoder.size = SPEEX_BUFFER_MAX_SIZE;
 	}
 
 	speex_bits_init(&speex->encoder.bits);
@@ -170,71 +180,69 @@ tsk_bool_t tdav_codec_speex_fmtp_match(const tmedia_codec_t* codec, const char* 
 
 
 //
-//	Speex Narrow Band Plugin definition
+//	Speex Codec Object definition
 //
+#define SPEEX_OBJECT_DEFINITION(mode,name,description,format,rate) \
+	static tsk_object_t* tdav_codec_speex_##mode##_ctor(tsk_object_t * self, va_list * app) \
+	{ \
+		tdav_codec_speex_t *speex = self; \
+		if(speex){ \
+			tdav_codec_speex_init(speex, tdav_codec_speex_type_##mode); \
+		} \
+		return self; \
+	} \
+	static tsk_object_t* tdav_codec_speex_##mode##_dtor(tsk_object_t * self) \
+	{  \
+		tdav_codec_speex_t *speex = self; \
+		if(speex){ \
+			/* deinit base */ \
+			tmedia_codec_audio_deinit(speex); \
+			/* deinit self */ \
+			tdav_codec_speex_deinit(speex); \
+		} \
+	 \
+		return self; \
+	} \
+	static const tsk_object_def_t tdav_codec_speex_##mode##_def_s = \
+	{ \
+		sizeof(tdav_codec_speex_t), \
+		tdav_codec_speex_##mode##_ctor,  \
+		tdav_codec_speex_##mode##_dtor, \
+		tmedia_codec_cmp,  \
+	}; \
+	static const tmedia_codec_plugin_def_t tdav_codec_speex_##mode##_plugin_def_s =  \
+	{ \
+	&tdav_codec_speex_##mode##_def_s, \
+	 \
+		tmedia_audio, \
+		name, \
+		description, \
+		format, \
+		tsk_true, \
+		rate, /* rate*/ \
+		 \
+		{ /* audio */ \
+			1, /* channels*/ \
+			20 /* ptime*/ \
+		}, \
+	 \
+		/* video */ \
+		{0}, \
+	 \
+		tdav_codec_speex_open, \
+		tdav_codec_speex_close, \
+		tdav_codec_speex_encode, \
+		tdav_codec_speex_decode, \
+		tdav_codec_speex_fmtp_match, \
+		tdav_codec_speex_fmtp_get, \
+		tdav_codec_speex_fmtp_set \
+	}; \
+	const tmedia_codec_plugin_def_t *tdav_codec_speex_##mode##_plugin_def_t = &tdav_codec_speex_##mode##_plugin_def_s;
 
-/* constructor */
-static tsk_object_t* tdav_codec_speex_nb_ctor(tsk_object_t * self, va_list * app)
-{
-	tdav_codec_speex_t *speex = self;
-	if(speex){
-		/* init base: called by tmedia_codec_create() */
-		/* init self */
-		tdav_codec_speex_init(speex, tdav_codec_speex_type_nb);
-	}
-	return self;
-}
-/* destructor */
-static tsk_object_t* tdav_codec_speex_nb_dtor(tsk_object_t * self)
-{ 
-	tdav_codec_speex_t *speex = self;
-	if(speex){
-		/* deinit base */
-		tmedia_codec_audio_deinit(speex);
-		/* deinit self */
-		tdav_codec_speex_deinit(speex);
-	}
 
-	return self;
-}
-/* object definition */
-static const tsk_object_def_t tdav_codec_speex_nb_def_s = 
-{
-	sizeof(tdav_codec_speex_t),
-	tdav_codec_speex_nb_ctor, 
-	tdav_codec_speex_nb_dtor,
-	tmedia_codec_cmp, 
-};
-/* plugin definition*/
-static const tmedia_codec_plugin_def_t tdav_codec_speex_nb_plugin_def_s = 
-{
-	&tdav_codec_speex_nb_def_s,
-
-	tmedia_audio,
-	"SPEEX",
-	"Speex Narrow Band Codec",
-	TMEDIA_CODEC_FORMAT_SPEEX_NB,
-	tsk_true,
-	8000, // rate
-	
-	{ /* audio */
-		1, // channels
-		20 // ptime
-	},
-
-	/* video */
-	{0},
-
-	tdav_codec_speex_open,
-	tdav_codec_speex_close,
-	tdav_codec_speex_encode,
-	tdav_codec_speex_decode,
-	tdav_codec_speex_fmtp_match,
-	tdav_codec_speex_fmtp_get,
-	tdav_codec_speex_fmtp_set
-};
-const tmedia_codec_plugin_def_t *tdav_codec_speex_nb_plugin_def_t = &tdav_codec_speex_nb_plugin_def_s;
-
+SPEEX_OBJECT_DEFINITION(nb,"SPEEX","Speex-NB Codec",TMEDIA_CODEC_FORMAT_SPEEX_NB,8000);
+SPEEX_OBJECT_DEFINITION(wb,"SPEEX","Speex-WB Codec",TMEDIA_CODEC_FORMAT_SPEEX_WB,16000);
+SPEEX_OBJECT_DEFINITION(uwb,"SPEEX","Speex-UWB Codec",TMEDIA_CODEC_FORMAT_SPEEX_UWB,32000);
 
 //
 // Common functions

@@ -218,7 +218,7 @@ static tsk_object_t* tdshow_consumer_ctor(tsk_object_t * self, va_list * app)
 
 		/* init self */
 		TMEDIA_CONSUMER(consumer)->video.fps = 15;
-		TMEDIA_CONSUMER(consumer)->video.display.width = 320;
+		TMEDIA_CONSUMER(consumer)->video.display.width = 352;
 		TMEDIA_CONSUMER(consumer)->video.display.height = 288;
 		TMEDIA_CONSUMER(consumer)->video.display.auto_resize = tsk_true;
 
