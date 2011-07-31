@@ -184,7 +184,7 @@ tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, 
 			tsk_buffer_copy(self->denoise->last_frame, 0, out_data, ret_size);
 		}
 
-#if 0 // Noise suppression only on producers
+#if 1 // suppress noise if not supported by remote party's encoder
 		// suppress noise
 		tmedia_denoise_process_playback(self->denoise, out_data);
 #endif
