@@ -171,9 +171,6 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 			if(audio->denoise->echo_supp_enabled ){
 				ret = tmedia_denoise_process_record(TMEDIA_DENOISE(audio->denoise), (void*)buffer, &silence_or_noise);
 			}
-			else if(audio->denoise->vad_enabled  ||  audio->denoise->noise_supp_enabled){
-				ret = tmedia_denoise_process_playback(TMEDIA_DENOISE(audio->denoise), (void*)buffer);
-			}
 		}
 		// adjust the gain
 		if(audio->producer->audio.gain){
