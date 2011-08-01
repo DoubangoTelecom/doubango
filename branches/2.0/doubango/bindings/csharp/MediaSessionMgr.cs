@@ -96,6 +96,11 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetEchoSkew(uint echo_skew) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetEchoSkew(echo_skew);
+    return ret;
+  }
+
   public static bool defaultsSetEchoSuppEnabled(bool echo_supp_enabled) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetEchoSuppEnabled(echo_supp_enabled);
     return ret;

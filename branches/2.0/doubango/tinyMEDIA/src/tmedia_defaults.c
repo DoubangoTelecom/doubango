@@ -45,6 +45,7 @@ tmedia_bandwidth_level_t tmedia_defaults_get_bl()
 // Denoiser: Echo suppression, AEC, Noise redution, AGC, ...
 //
 static uint32_t __echo_tail = 20;
+static uint32_t __echo_skew = 0;
 static tsk_bool_t __echo_supp_enabled;
 static tsk_bool_t __agc_enabled = tsk_false;
 static float __agc_level = 8000.0f;
@@ -61,9 +62,20 @@ int tmedia_defaults_set_echo_tail(uint32_t echo_tail)
 	return 0;
 }
 
+int tmedia_defaults_set_echo_skew(uint32_t echo_skew)
+{
+	__echo_skew = echo_skew;
+	return 0;
+}
+
 uint32_t tmedia_defaults_get_echo_tail()
 {
 	return __echo_tail;
+}
+
+uint32_t tmedia_defaults_get_echo_skew()
+{
+	return __echo_skew;
 }
 
 int tmedia_defaults_set_echo_supp_enabled(tsk_bool_t echo_supp_enabled)

@@ -81,6 +81,9 @@
 #if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_DENOISE) || HAVE_SPEEX_DENOISE)
 #	include "tinydav/audio/tdav_speex_denoise.h"
 #endif
+#if HAVE_WEBRTC && (!defined(HAVE_WEBRTC_DENOISE) || HAVE_WEBRTC_DENOISE)
+#	include "tinydav/audio/tdav_webrtc_denoise.h"
+#endif
 
 // Audio resampler
 #if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_RESAMPLER) || HAVE_SPEEX_RESAMPLER)
@@ -226,6 +229,9 @@ int tdav_init()
 	/* === Register Audio Denoise (AGC, VAD, Noise Suppression and AEC) === */
 #if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_DENOISE) || HAVE_SPEEX_DENOISE)
 	tmedia_denoise_plugin_register(tdav_speex_denoise_plugin_def_t);
+#endif
+#if HAVE_WEBRTC && (!defined(HAVE_WEBRTC_DENOISE) || HAVE_WEBRTC_DENOISE)
+	tmedia_denoise_plugin_register(tdav_webrtc_denoise_plugin_def_t);
 #endif
 
 	/* === Register Audio Resampler === */
@@ -493,6 +499,9 @@ int tdav_deinit()
 	/* === UnRegister Audio Denoise (AGC, VAD, Noise Suppression and AEC) === */
 #if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_DENOISE) || HAVE_SPEEX_DENOISE)
 	tmedia_denoise_plugin_unregister(tdav_speex_denoise_plugin_def_t);
+#endif
+#if HAVE_WEBRTC && (!defined(HAVE_WEBRTC_DENOISE) || HAVE_WEBRTC_DENOISE)
+	tmedia_denoise_plugin_unregister(tdav_webrtc_denoise_plugin_def_t);
 #endif
 
 	/* === UnRegister Audio Resampler === */

@@ -79,6 +79,10 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsGetEchoTail();
   }
 
+  public static boolean defaultsSetEchoSkew(long echo_skew) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetEchoSkew(echo_skew);
+  }
+
   public static boolean defaultsSetEchoSuppEnabled(boolean echo_supp_enabled) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetEchoSuppEnabled(echo_supp_enabled);
   }

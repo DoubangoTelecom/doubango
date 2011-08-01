@@ -1566,6 +1566,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetEchoTail()
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetEchoSkew(unsigned int jarg1) {
+  unsigned int jresult ;
+  uint32_t arg1 ;
+  bool result;
+  
+  arg1 = (uint32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetEchoSkew(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetEchoSuppEnabled(unsigned int jarg1) {
   unsigned int jresult ;
   bool arg1 ;

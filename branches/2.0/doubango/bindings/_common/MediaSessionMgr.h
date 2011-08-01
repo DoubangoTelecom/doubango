@@ -60,6 +60,7 @@ public:
 	static tmedia_bandwidth_level_t defaultsGetBandwidthLevel();
 	static bool defaultsSetEchoTail(uint32_t echo_tail);
 	static uint32_t defaultsGetEchoTail();
+	static bool defaultsSetEchoSkew(uint32_t echo_skew);
 	static bool defaultsSetEchoSuppEnabled(bool echo_supp_enabled);
 	static bool defaultsGetEchoSuppEnabled();
 	static bool defaultsSetAgcEnabled(bool agc_enabled);

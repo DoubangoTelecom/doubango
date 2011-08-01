@@ -161,6 +161,8 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetEchoTail = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetEchoTail)
     __swig_getmethods__["defaultsGetEchoTail"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetEchoTail
     if _newclass:defaultsGetEchoTail = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetEchoTail)
+    __swig_getmethods__["defaultsSetEchoSkew"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetEchoSkew
+    if _newclass:defaultsSetEchoSkew = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetEchoSkew)
     __swig_getmethods__["defaultsSetEchoSuppEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetEchoSuppEnabled
     if _newclass:defaultsSetEchoSuppEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetEchoSuppEnabled)
     __swig_getmethods__["defaultsGetEchoSuppEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetEchoSuppEnabled
@@ -209,6 +211,10 @@ MediaSessionMgr_defaultsSetEchoTail = _tinyWRAP.MediaSessionMgr_defaultsSetEchoT
 def MediaSessionMgr_defaultsGetEchoTail():
   return _tinyWRAP.MediaSessionMgr_defaultsGetEchoTail()
 MediaSessionMgr_defaultsGetEchoTail = _tinyWRAP.MediaSessionMgr_defaultsGetEchoTail
+
+def MediaSessionMgr_defaultsSetEchoSkew(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetEchoSkew(*args)
+MediaSessionMgr_defaultsSetEchoSkew = _tinyWRAP.MediaSessionMgr_defaultsSetEchoSkew
 
 def MediaSessionMgr_defaultsSetEchoSuppEnabled(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetEchoSuppEnabled(*args)

@@ -344,7 +344,6 @@ tmedia_codecs_L_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp
 			// Guard to avoid matching a codec more than once
 			// For example, H.264 codecs without profiles (Jetsi,Tiscali PC client) to distinguish them could match more than once
 			if(matchingCodecs && tsk_list_find_object_by_pred(matchingCodecs, __pred_find_codec_by_format, codec)){
-				TSK_DEBUG_WARN("Codec already matched. Try to add valid FMTP to your codec to help matching.");
 				continue;
 			}
 			

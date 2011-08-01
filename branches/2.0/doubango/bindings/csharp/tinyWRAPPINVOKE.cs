@@ -290,6 +290,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetEchoTail")]
   public static extern uint MediaSessionMgr_defaultsGetEchoTail();
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetEchoSkew")]
+  public static extern bool MediaSessionMgr_defaultsSetEchoSkew(uint jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetEchoSuppEnabled")]
   public static extern bool MediaSessionMgr_defaultsSetEchoSuppEnabled(bool jarg1);
 

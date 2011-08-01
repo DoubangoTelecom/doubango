@@ -202,6 +202,7 @@ sub DESTROY {
 *defaultsGetBandwidthLevel = *tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel;
 *defaultsSetEchoTail = *tinyWRAPc::MediaSessionMgr_defaultsSetEchoTail;
 *defaultsGetEchoTail = *tinyWRAPc::MediaSessionMgr_defaultsGetEchoTail;
+*defaultsSetEchoSkew = *tinyWRAPc::MediaSessionMgr_defaultsSetEchoSkew;
 *defaultsSetEchoSuppEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetEchoSuppEnabled;
 *defaultsGetEchoSuppEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGetEchoSuppEnabled;
 *defaultsSetAgcEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetAgcEnabled;

@@ -3455,6 +3455,34 @@ XS(_wrap_MediaSessionMgr_defaultsGetEchoTail) {
 }
 
 
+XS(_wrap_MediaSessionMgr_defaultsSetEchoSkew) {
+  {
+    uint32_t arg1 ;
+    unsigned int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetEchoSkew(echo_skew);");
+    }
+    ecode1 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetEchoSkew" "', argument " "1"" of type '" "uint32_t""'");
+    } 
+    arg1 = static_cast< uint32_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetEchoSkew(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_MediaSessionMgr_defaultsSetEchoSuppEnabled) {
   {
     bool arg1 ;
@@ -21269,6 +21297,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel", _wrap_MediaSessionMgr_defaultsGetBandwidthLevel},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetEchoTail", _wrap_MediaSessionMgr_defaultsSetEchoTail},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetEchoTail", _wrap_MediaSessionMgr_defaultsGetEchoTail},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetEchoSkew", _wrap_MediaSessionMgr_defaultsSetEchoSkew},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetEchoSuppEnabled", _wrap_MediaSessionMgr_defaultsSetEchoSuppEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetEchoSuppEnabled", _wrap_MediaSessionMgr_defaultsGetEchoSuppEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetAgcEnabled", _wrap_MediaSessionMgr_defaultsSetAgcEnabled},

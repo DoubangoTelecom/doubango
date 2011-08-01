@@ -156,6 +156,11 @@ uint32_t MediaSessionMgr::defaultsGetEchoTail()
 	return tmedia_defaults_get_echo_tail();
 }
 
+bool MediaSessionMgr::defaultsSetEchoSkew(uint32_t echo_skew)
+{
+	return tmedia_defaults_set_echo_skew(echo_skew) == 0;
+}
+
 bool MediaSessionMgr::defaultsSetEchoSuppEnabled(bool echo_supp_enabled)
 {
 	return tmedia_defaults_set_echo_supp_enabled(echo_supp_enabled) == 0;
