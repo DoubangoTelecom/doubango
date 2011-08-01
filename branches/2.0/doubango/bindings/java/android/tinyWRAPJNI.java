@@ -45,6 +45,7 @@ class tinyWRAPJNI {
   public final static native int MediaSessionMgr_defaultsGetBandwidthLevel();
   public final static native boolean MediaSessionMgr_defaultsSetEchoTail(long jarg1);
   public final static native long MediaSessionMgr_defaultsGetEchoTail();
+  public final static native boolean MediaSessionMgr_defaultsSetEchoSkew(long jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetEchoSuppEnabled(boolean jarg1);
   public final static native boolean MediaSessionMgr_defaultsGetEchoSuppEnabled();
   public final static native boolean MediaSessionMgr_defaultsSetAgcEnabled(boolean jarg1);

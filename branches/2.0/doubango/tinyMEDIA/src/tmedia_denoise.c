@@ -42,6 +42,7 @@ int tmedia_denoise_init(tmedia_denoise_t* self)
 	}
 
 	self->echo_tail = tmedia_defaults_get_echo_tail();
+	self->echo_skew = tmedia_defaults_get_echo_skew();
 	self->echo_supp_enabled = tmedia_defaults_get_echo_supp_enabled();
 	self->agc_enabled = tmedia_defaults_get_agc_enabled();
 	self->agc_level = tmedia_defaults_get_agc_level();

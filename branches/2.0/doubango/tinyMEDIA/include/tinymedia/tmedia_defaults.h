@@ -38,7 +38,9 @@ TINYMEDIA_API tmedia_bandwidth_level_t tmedia_defaults_get_bl();
 // Denoiser: Echo suppression, AEC, Noise redution, AGC, ...
 //
 TINYMEDIA_API int tmedia_defaults_set_echo_tail(uint32_t echo_tail);
+TINYMEDIA_API int tmedia_defaults_set_echo_skew(uint32_t echo_skew);
 TINYMEDIA_API uint32_t tmedia_defaults_get_echo_tail();
+TINYMEDIA_API uint32_t tmedia_defaults_get_echo_skew();
 TINYMEDIA_API int tmedia_defaults_set_echo_supp_enabled(tsk_bool_t echo_supp_enabled);
 TINYMEDIA_API tsk_bool_t tmedia_defaults_get_echo_supp_enabled();
 TINYMEDIA_API int tmedia_defaults_set_agc_enabled(tsk_bool_t agc_enabled);

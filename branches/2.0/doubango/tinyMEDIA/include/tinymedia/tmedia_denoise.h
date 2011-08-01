@@ -46,6 +46,7 @@ typedef struct tmedia_denoise_s
 	tsk_bool_t opened;
 	
 	uint32_t echo_tail;
+	uint32_t echo_skew;
 	tsk_bool_t echo_supp_enabled;
 	tsk_bool_t agc_enabled ;
 	float agc_level;

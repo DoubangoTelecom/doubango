@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(PSDK_DIR)include&quot;;&quot;$(DXSDK_DIR)include&quot;;..\thirdparties\win32\include;include;..\tinyMSRP\include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinySDP\include;..\tinyNET\src;..\tinyDSHOW\include;..\tinySAK\src;..\thirdparties\win32\include\BroadVoice16\bvcommon;..\thirdparties\win32\include\BroadVoice16\bv16"
-				PreprocessorDefinitions="HAVE_G729=0;HAVE_BV16=0;HAVE_OPENCORE_AMR=1;HAVE_ILBC=0;HAVE_LIBGSM=1;HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_WAVE_API=0;HAVE_FFMPEG=1;HAVE_SPEEX_DSP=1;HAVE_SPEEX_JB=1;HAVE_LIB_SPEEX=1;G192BITSTREAM=0;DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT=0x0501;TINYDAV_EXPORTS"
+				PreprocessorDefinitions="HAVE_G729=0;HAVE_BV16=0;HAVE_OPENCORE_AMR=1;HAVE_ILBC=0;HAVE_LIBGSM=1;HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_WAVE_API=0;HAVE_FFMPEG=1;HAVE_SPEEX_DSP=1;HAVE_WEBRTC=1;HAVE_SPEEX_JB=1;HAVE_LIB_SPEEX=1;G192BITSTREAM=0;DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT=0x0501;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -64,9 +64,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinyMSRP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib &quot;..\thirdparties\win32\lib\gsm\libgsm.a&quot; &quot;..\thirdparties\win32\lib\ilbc\libiLBC.a&quot; &quot;..\thirdparties\win32\lib\speex\libspeex.a&quot; &quot;..\thirdparties\win32\lib\speex\libspeexdsp.a&quot; ..\thirdparties\win32\lib\libgcc.a ..\thirdparties\win32\lib\libmingwex.a &quot;..\thirdparties\win32\lib\ffmpeg\libavcodec.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavutil.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libswscale.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavcore.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libx264.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libtheora.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libogg.a&quot;"
+				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinyMSRP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib &quot;..\thirdparties\win32\lib\gsm\libgsm.a&quot; &quot;..\thirdparties\win32\lib\ilbc\libiLBC.a&quot; &quot;..\thirdparties\win32\lib\speex\libspeex.a&quot; &quot;..\thirdparties\win32\lib\speex\libspeexdsp.a&quot; ..\thirdparties\win32\lib\libgcc.a ..\thirdparties\win32\lib\libmingwex.a &quot;..\thirdparties\win32\lib\ffmpeg\libavcodec.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavutil.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libswscale.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavcore.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libx264.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libtheora.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libogg.a&quot; &quot;..\thirdparties\win32\lib\webrtc\aec.lib&quot; &quot;..\thirdparties\win32\lib\webrtc\apm_util.lib&quot; &quot;..\thirdparties\win32\lib\webrtc\system_wrappers.lib&quot; &quot;..\thirdparties\win32\lib\webrtc\ns.lib&quot;"
 				LinkIncremental="2"
-				IgnoreDefaultLibraryNames="MSVCRT"
+				IgnoreDefaultLibraryNames="MSVCRT;LIBCMTD;LIBCMT"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
@@ -122,7 +122,7 @@
 				Name="VCCLCompilerTool"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="&quot;$(PSDK_DIR)include&quot;;&quot;$(DXSDK_DIR)include&quot;;..\thirdparties\win32\include;include;..\tinyMSRP\include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinySDP\include;..\tinyNET\src;..\tinyDSHOW\include;..\tinySAK\src;..\thirdparties\win32\include\BroadVoice16\bvcommon;..\thirdparties\win32\include\BroadVoice16\bv16"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS;DEBUG_LEVEL=DEBUG_LEVEL_INFOS;HAVE_G729=0;HAVE_BV16=0;HAVE_OPENCORE_AMR=1;HAVE_ILBC=0;HAVE_LIBGSM=1;HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_WAVE_API=0;HAVE_FFMPEG=1;HAVE_SPEEX_DSP=1;HAVE_SPEEX_JB=1;HAVE_LIB_SPEEX=1;G192BITSTREAM=0;_WIN32_WINNT=0x0501"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS;DEBUG_LEVEL=DEBUG_LEVEL_INFOS;HAVE_G729=0;HAVE_BV16=0;HAVE_OPENCORE_AMR=1;HAVE_ILBC=0;HAVE_LIBGSM=1;HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_WAVE_API=0;HAVE_FFMPEG=1;HAVE_SPEEX_DSP=1;HAVE_WEBRTC=1;HAVE_SPEEX_JB=1;HAVE_LIB_SPEEX=1;G192BITSTREAM=0;_WIN32_WINNT=0x0501"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="false"
 				UsePrecompiledHeader="0"
@@ -143,9 +143,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinyMSRP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib &quot;..\thirdparties\win32\lib\gsm\libgsm.a&quot; &quot;..\thirdparties\win32\lib\ilbc\libiLBC.a&quot; &quot;..\thirdparties\win32\lib\speex\libspeex.a&quot; &quot;..\thirdparties\win32\lib\speex\libspeexdsp.a&quot; ..\thirdparties\win32\lib\libgcc.a ..\thirdparties\win32\lib\libmingwex.a &quot;..\thirdparties\win32\lib\ffmpeg\libavcodec.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavutil.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libswscale.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavcore.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libx264.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libtheora.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libogg.a&quot; &quot;..\thirdparties\win32\lib\BroadVoice16\libbv16.a&quot; &quot;..\thirdparties\win32\lib\opencore\libopencore-amrnb.a&quot;"
+				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinyMSRP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib &quot;..\thirdparties\win32\lib\gsm\libgsm.a&quot; &quot;..\thirdparties\win32\lib\ilbc\libiLBC.a&quot; &quot;..\thirdparties\win32\lib\speex\libspeex.a&quot; &quot;..\thirdparties\win32\lib\speex\libspeexdsp.a&quot; ..\thirdparties\win32\lib\libgcc.a ..\thirdparties\win32\lib\libmingwex.a &quot;..\thirdparties\win32\lib\ffmpeg\libavcodec.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavutil.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libswscale.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavcore.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libx264.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libtheora.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libogg.a&quot; &quot;..\thirdparties\win32\lib\BroadVoice16\libbv16.a&quot; &quot;..\thirdparties\win32\lib\opencore\libopencore-amrnb.a&quot; &quot;..\thirdparties\win32\lib\webrtc\aec.lib&quot; &quot;..\thirdparties\win32\lib\webrtc\apm_util.lib&quot; &quot;..\thirdparties\win32\lib\webrtc\system_wrappers.lib&quot; &quot;..\thirdparties\win32\lib\webrtc\ns.lib&quot;"
 				LinkIncremental="1"
-				IgnoreDefaultLibraryNames="MSVCRTD"
+				IgnoreDefaultLibraryNames="MSVCRTD;LIBCMT"
 				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -368,6 +368,10 @@
 				</File>
 				<File
 					RelativePath=".\include\tinydav\audio\tdav_speex_resampler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinydav\audio\tdav_webrtc_denoise.h"
 					>
 				</File>
 				<Filter
@@ -652,6 +656,10 @@
 				</File>
 				<File
 					RelativePath=".\src\audio\tdav_speex_resampler.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\audio\tdav_webrtc_denoise.c"
 					>
 				</File>
 				<Filter
