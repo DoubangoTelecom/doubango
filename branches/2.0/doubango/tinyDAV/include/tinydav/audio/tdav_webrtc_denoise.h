@@ -40,7 +40,11 @@
 #include <webrtc/noise_suppression.h>
 
 #if !defined(PREFER_SPEEX_DENOISER)
-#	define PREFER_SPEEX_DENOISER	0
+#	if ANDROID
+#		define PREFER_SPEEX_DENOISER	1 // WebRTC denoise produce robotic voice on Android (tested on Galaxy S)
+#	else
+#		define PREFER_SPEEX_DENOISER	0
+#	endif
 #endif
 
 #if HAVE_SPEEX_DSP && PREFER_SPEEX_DENOISER /* Speex denoiser works better than WebRTC's denoiser */
