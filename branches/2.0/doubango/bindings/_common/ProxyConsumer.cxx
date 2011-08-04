@@ -443,6 +443,9 @@ int twrap_consumer_proxy_video_consume(tmedia_consumer_t* self, const void* buff
 				delete frame, frame = tsk_null;
 			}
 		}
+		else{
+			TSK_DEBUG_ERROR("Cannot find consumer with id=%lld", TWRAP_CONSUMER_PROXY_VIDEO(self)->id);
+		}
 	}
 
 	return ret;

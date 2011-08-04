@@ -163,6 +163,13 @@ static tsk_bool_t _fsm_cond_supports_100rel(tsip_dialog_invite_t* self, tsip_mes
 	}
 	return tsk_false;
 }
+static tsk_bool_t _fsm_cond_supports_precondition(tsip_dialog_invite_t* self, tsip_message_t* message)
+{
+	if((tsip_message_supported(message, "precondition") && self->supported.precondition) || tsip_message_required(message, "precondition")){
+		return tsk_true;
+	}
+	return tsk_false;
+}
 static tsk_bool_t _fsm_cond_prack_match(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
 	const tsip_header_RAck_t* RAck;
@@ -218,7 +225,7 @@ int tsip_dialog_invite_server_init(tsip_dialog_invite_t *self)
 		// Started -> (Session Interval Too Small) -> Started
 		TSK_FSM_ADD(_fsm_state_Started, _fsm_action_iINVITE, _fsm_cond_toosmall, _fsm_state_Started, s0000_Started_2_Started_X_iINVITE, "s0000_Started_2_Started_X_iINVITE"),
 		// Started -> (100rel or QoS, the later need the first) -> InProgress
-		TSK_FSM_ADD(_fsm_state_Started, _fsm_action_iINVITE, _fsm_cond_supports_100rel, _fsm_state_InProgress, s0000_Started_2_InProgress_X_iINVITE, "s0000_Started_2_InProgress_X_iINVITE"),
+		TSK_FSM_ADD(_fsm_state_Started, _fsm_action_iINVITE, _fsm_cond_supports_precondition, _fsm_state_InProgress, s0000_Started_2_InProgress_X_iINVITE, "s0000_Started_2_InProgress_X_iINVITE"),
 		// Started -> (non-100rel and non-QoS, referred to as "basic") -> Ringing
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_iINVITE, _fsm_state_Ringing, s0000_Started_2_Ringing_X_iINVITE, "s0000_Started_2_Ringing_X_iINVITE"),
 
@@ -301,6 +308,11 @@ int s0000_Started_2_Ringing_X_iINVITE(va_list *app)
 	TSK_OBJECT_SAFE_FREE(self->last_iInvite);
 	self->last_iInvite = tsk_object_ref(request);
 
+	// add "require" tag if the incoming INVITE contains "100rel" tag in "supported" header
+	if(self->last_iInvite && (tsip_message_supported(self->last_iInvite, "100rel") || tsip_message_required(self->last_iInvite, "100rel")) && self->supported._100rel){
+		self->require._100rel = tsk_true;
+	}
+
 	/* update state */
 	tsip_dialog_update_2(TSIP_DIALOG(self), request);
 
@@ -314,7 +326,7 @@ int s0000_Started_2_Ringing_X_iINVITE(va_list *app)
 	return 0;
 }
 
-/* Started -> (100rel or QoS, the later need the first) -> InProgress */
+/* Started -> (QoS (preconditions)) -> InProgress */
 int s0000_Started_2_InProgress_X_iINVITE(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
