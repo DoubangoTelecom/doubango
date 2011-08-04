@@ -672,7 +672,7 @@ void *tnet_transport_mainthread(void *param)
 				
 				if(!len){
 					TSK_DEBUG_WARN("IOCTLT returned zero for fd=%d", active_socket->fd);
-#if defined(ANDROID) || 1 /* FIXME: On Android/MAC OS X this mean that the socket has been closed?  */
+#if !defined(ANDROID) /* FIXME: On Android/MAC OS X this mean that the socket has been closed? For sure this is not true for Android. */
 					TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, active_socket->fd);
 					removeSocket(i, context);
 #else
