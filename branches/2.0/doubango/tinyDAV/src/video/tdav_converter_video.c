@@ -216,7 +216,7 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 		
 		// Copy frame
 		if((ret = sws_scale(self->rot.context, (const uint8_t* const*)self->rot.frame->data, self->rot.frame->linesize, 
-			0, h, self->dstFrame->data, self->dstFrame->linesize)) <0)
+					0, h, self->dstFrame->data, self->dstFrame->linesize)) < 0)
 		{
 			TSK_DEBUG_ERROR("Failed to copy frame");
 			TSK_FREE(*output);

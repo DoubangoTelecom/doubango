@@ -205,18 +205,23 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 		
 		// Noise suppression
 #if HAVE_SPEEX_DSP && PREFER_SPEEX_DENOISER
-		speex_preprocess_run(denoiser->SpeexDenoiser_proc, pAudioFrame);
+		if(denoiser->SpeexDenoiser_proc){
+			speex_preprocess_run(denoiser->SpeexDenoiser_proc, denoiser->temp_rec_out);
+		}
+		memcpy(denoiser->temp_rec_out, pAudioFrame, denoiser->frame_size * sizeof(spx_int16_t));
 #else
 
 		// WebRTC NoiseSupp only accept 10ms frames
 		// Our encoder will always output 20ms frames ==> execute 2x noise_supp
-		if(
-				(ret = WebRtcNs_Process(denoiser->NS_inst, pAudioFrame, tsk_null, denoiser->temp_rec_out, tsk_null)) ||
-				(ret = WebRtcNs_Process(denoiser->NS_inst, &pAudioFrame[denoiser->frame_size/2], tsk_null, &denoiser->temp_rec_out[denoiser->frame_size/2], tsk_null))
-			)
-		{
-			TSK_DEBUG_ERROR("WebRtcNs_Process with error code = %d", ret);
-			return ret;
+		if(denoiser->NS_inst){
+			if(
+					(ret = WebRtcNs_Process(denoiser->NS_inst, pAudioFrame, tsk_null, denoiser->temp_rec_out, tsk_null)) ||
+					(ret = WebRtcNs_Process(denoiser->NS_inst, &pAudioFrame[denoiser->frame_size/2], tsk_null, &denoiser->temp_rec_out[denoiser->frame_size/2], tsk_null))
+				)
+			{
+				TSK_DEBUG_ERROR("WebRtcNs_Process with error code = %d", ret);
+				return ret;
+			}
 		}
 #endif
 
@@ -255,7 +260,6 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 	return 0;
 }
 
-WebRtc_Word16 test[];
 static int tdav_webrtc_denoise_process_playback(tmedia_denoise_t* self, void* audio_frame)
 {
 	tdav_webrtc_denoise_t *denoiser = (tdav_webrtc_denoise_t *)self;
