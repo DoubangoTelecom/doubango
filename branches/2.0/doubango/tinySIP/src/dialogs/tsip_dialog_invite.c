@@ -1258,6 +1258,9 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 			/* 183 Session in Progress */
 			if(code == 180 || code == 183){
 				if(self->require._100rel){
+					if(self->rseq == 0){
+						self->rseq = TSK_ABS((rand() ^ rand()) + 1);
+					}
 					tsip_message_add_headers(response,
 						TSIP_HEADER_REQUIRE_VA_ARGS("100rel"),
 						TSIP_HEADER_RSEQ_VA_ARGS(self->rseq),

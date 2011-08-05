@@ -29,10 +29,13 @@
  */
 #include "tinydav/audio/tdav_producer_audio.h"
 
+#include "tinymedia/tmedia_defaults.h"
+
 #define TDAV_BITS_PER_SAMPLE_DEFAULT	16
 #define TDAV_CHANNELS_DEFAULT			1
 #define TDAV_RATE_DEFAULT				8000
 #define TDAV_PTIME_DEFAULT				20
+#define TDAV_AUDIO_GAIN_MAX				15
 
 #include "tsk_debug.h"
 
@@ -57,6 +60,7 @@ int tdav_producer_audio_init(tdav_producer_audio_t* self)
 	TMEDIA_PRODUCER(self)->audio.channels = TDAV_CHANNELS_DEFAULT;
 	TMEDIA_PRODUCER(self)->audio.rate = TDAV_RATE_DEFAULT;
 	TMEDIA_PRODUCER(self)->audio.ptime = TDAV_PTIME_DEFAULT;
+	TMEDIA_PRODUCER(self)->audio.gain = TSK_MIN(tmedia_defaults_get_audio_producer_gain(), TDAV_AUDIO_GAIN_MAX);
 
 	return 0;
 }
@@ -86,7 +90,7 @@ int tdav_producer_audio_set(tdav_producer_audio_t* self, const tmedia_param_t* p
 		if(param->value_type == tmedia_pvt_int32){
 			if(tsk_striequals(param->key, "gain")){
 				uint32_t gain = TSK_TO_UINT32((uint8_t*)param->value);
-				if(gain<15 && gain>=0){
+				if(gain<TDAV_AUDIO_GAIN_MAX && gain>=0){
 					TMEDIA_PRODUCER(self)->audio.gain = (uint8_t)gain;
 					TSK_DEBUG_INFO("audio producer gain=%u", gain);
 				}

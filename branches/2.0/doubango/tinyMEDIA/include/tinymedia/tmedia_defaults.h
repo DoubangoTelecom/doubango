@@ -58,6 +58,10 @@ TINYMEDIA_API tsk_bool_t tmedia_defaults_get_100rel_enabled();
 TINYMEDIA_API int tmedia_defaults_set_screen_size(int32_t sx, int32_t sy);
 TINYMEDIA_API int32_t tmedia_defaults_get_screen_x();
 TINYMEDIA_API int32_t tmedia_defaults_get_screen_y();
+TINYMEDIA_API int tmedia_defaults_set_audio_gain(int32_t audio_producer_gain, int32_t audio_consumer_gain);
+TINYMEDIA_API int32_t tmedia_defaults_get_audio_producer_gain();
+TINYMEDIA_API int32_t tmedia_defaults_get_audio_consumer_gain();
+
 
 TMEDIA_END_DECLS
 

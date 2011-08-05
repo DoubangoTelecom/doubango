@@ -398,12 +398,22 @@ void SipStack::setCodecs(tdav_codec_id_t codecs)
 
 void SipStack::setCodecs_2(int codecs) // For stupid languages
 {
-	tdav_set_codecs((tdav_codec_id_t)codecs);
+	SipStack::setCodecs((tdav_codec_id_t)codecs);
 }
 
-bool SipStack::isCodecSupported(tdav_codec_id_t codec)
+bool SipStack::setCodecPriority(tdav_codec_id_t codec_id, int priority)
 {
-	return tdav_codec_is_supported(codec) ? true : false;
+	return tdav_codec_set_priority(codec_id, priority) == 0;
+}
+
+bool SipStack::setCodecPriority(int codec_id, int priority)// For stupid languages
+{
+	return SipStack::setCodecPriority((tdav_codec_id_t)codec_id, priority);
+}
+
+bool SipStack::isCodecSupported(tdav_codec_id_t codec_id)
+{
+	return tdav_codec_is_supported(codec_id) ? true : false;
 }
 
 static int stack_callback(const tsip_event_t *sipevent)

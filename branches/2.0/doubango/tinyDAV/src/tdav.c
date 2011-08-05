@@ -254,48 +254,79 @@ typedef struct tdav_codec_decl_s{
 	const tmedia_codec_plugin_def_t** plugin;
 } tdav_codec_decl_t;
 
+static tdav_codec_decl_t __codecs[] = {
+#if HAVE_OPENCORE_AMR
+	{ tdav_codec_id_amr_nb_oa, &tdav_codec_amrnb_oa_plugin_def_t },
+	{ tdav_codec_id_amr_nb_be, &tdav_codec_amrnb_be_plugin_def_t },
+#endif
+#if HAVE_BV16
+	{ tdav_codec_id_bv16, &tdav_codec_bv16_plugin_def_t },
+#endif
+#if HAVE_LIBGSM
+	{ tdav_codec_id_gsm, &tdav_codec_gsm_plugin_def_t },
+#endif
+	{ tdav_codec_id_pcma, &tdav_codec_g711a_plugin_def_t },
+	{ tdav_codec_id_pcmu, &tdav_codec_g711u_plugin_def_t },
+#if HAVE_ILBC
+	{ tdav_codec_id_ilbc, &tdav_codec_ilbc_plugin_def_t },
+#endif
+#if HAVE_LIB_SPEEX
+	{ tdav_codec_id_speex_nb, &tdav_codec_speex_nb_plugin_def_t },
+	{ tdav_codec_id_speex_wb, &tdav_codec_speex_wb_plugin_def_t },
+	{ tdav_codec_id_speex_uwb, &tdav_codec_speex_uwb_plugin_def_t },
+#endif
+#if HAVE_G729
+	{ tdav_codec_id_g729ab, &tdav_codec_g729ab_plugin_def_t },
+#endif
+	
+#if HAVE_FFMPEG
+#if !defined(HAVE_H264) || HAVE_H264
+	{ tdav_codec_id_h264_bp30, &tdav_codec_h264_bp30_plugin_def_t },
+	{ tdav_codec_id_h264_bp20, &tdav_codec_h264_bp20_plugin_def_t },
+	{ tdav_codec_id_h264_bp10, &tdav_codec_h264_bp10_plugin_def_t },		
+#endif
+	{ tdav_codec_id_mp4ves_es, &tdav_codec_mp4ves_plugin_def_t },
+	{ tdav_codec_id_h263p, &tdav_codec_h263p_plugin_def_t },
+	{ tdav_codec_id_h263pp, &tdav_codec_h263pp_plugin_def_t },
+	{ tdav_codec_id_theora, &tdav_codec_theora_plugin_def_t },
+	{ tdav_codec_id_h263, &tdav_codec_h263_plugin_def_t },
+	{ tdav_codec_id_h261, &tdav_codec_h261_plugin_def_t },
+#endif
+};
+
+int tdav_codec_set_priority(tdav_codec_id_t codec_id, int priority)
+{
+	static int count = sizeof(__codecs)/sizeof(tdav_codec_decl_t);
+	int i;
+	
+	if(priority < 0){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	for(i = 0; i<count; ++i){
+		if(__codecs[i].id == codec_id){
+			tdav_codec_decl_t codec_decl_1, codec_decl_2;
+			if(!tmedia_codec_plugin_is_registered(*__codecs[i].plugin)){
+				TSK_DEBUG_INFO("Codec not registered");
+				return 0;
+			}
+			priority = TSK_MIN(priority, count-1);
+			codec_decl_1 = __codecs[priority];
+			codec_decl_2 = __codecs[i];
+			
+			__codecs[i] = codec_decl_1;
+			__codecs[priority] = codec_decl_2;
+			return 0;
+		}
+	}
+	
+	TSK_DEBUG_ERROR("cannot find codec with id=%d", codec_id);
+	return -2;
+}
+
 void tdav_set_codecs(tdav_codec_id_t codecs)
 {
 	int i;
-	static const tdav_codec_decl_t __codecs[] = {
-#if HAVE_OPENCORE_AMR
-		{ tdav_codec_id_amr_nb_oa, &tdav_codec_amrnb_oa_plugin_def_t },
-		{ tdav_codec_id_amr_nb_be, &tdav_codec_amrnb_be_plugin_def_t },
-#endif
-#if HAVE_BV16
-		{ tdav_codec_id_bv16, &tdav_codec_bv16_plugin_def_t },
-#endif
-#if HAVE_LIBGSM
-		{ tdav_codec_id_gsm, &tdav_codec_gsm_plugin_def_t },
-#endif
-		{ tdav_codec_id_pcma, &tdav_codec_g711a_plugin_def_t },
-		{ tdav_codec_id_pcmu, &tdav_codec_g711u_plugin_def_t },
-#if HAVE_ILBC
-		{ tdav_codec_id_ilbc, &tdav_codec_ilbc_plugin_def_t },
-#endif
-#if HAVE_LIB_SPEEX
-		{ tdav_codec_id_speex_nb, &tdav_codec_speex_nb_plugin_def_t },
-		{ tdav_codec_id_speex_wb, &tdav_codec_speex_wb_plugin_def_t },
-		{ tdav_codec_id_speex_uwb, &tdav_codec_speex_uwb_plugin_def_t },
-#endif
-#if HAVE_G729
-		{ tdav_codec_id_g729ab, &tdav_codec_g729ab_plugin_def_t },
-#endif
-
-#if HAVE_FFMPEG
-#if !defined(HAVE_H264) || HAVE_H264
-		{ tdav_codec_id_h264_bp30, &tdav_codec_h264_bp30_plugin_def_t },
-		{ tdav_codec_id_h264_bp20, &tdav_codec_h264_bp20_plugin_def_t },
-		{ tdav_codec_id_h264_bp10, &tdav_codec_h264_bp10_plugin_def_t },		
-#endif
-		{ tdav_codec_id_mp4ves_es, &tdav_codec_mp4ves_plugin_def_t },
-		{ tdav_codec_id_h263p, &tdav_codec_h263p_plugin_def_t },
-		{ tdav_codec_id_h263pp, &tdav_codec_h263pp_plugin_def_t },
-		{ tdav_codec_id_theora, &tdav_codec_theora_plugin_def_t },
-		{ tdav_codec_id_h263, &tdav_codec_h263_plugin_def_t },
-		{ tdav_codec_id_h261, &tdav_codec_h261_plugin_def_t },
-#endif
-	};
 
 	for(i=0; i<sizeof(__codecs)/sizeof(tdav_codec_decl_t); i++){
 		if((codecs & __codecs[i].id)){
