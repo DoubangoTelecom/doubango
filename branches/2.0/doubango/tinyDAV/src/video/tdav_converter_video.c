@@ -207,7 +207,7 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 		
 		/* Context */
 		if(!self->rot.context){
-			if(!(self->rot.context = sws_getContext(w, h, dstFormat, h, w, dstFormat, SWS_FAST_BILINEAR, NULL, NULL, NULL))){
+			if(!(self->rot.context = sws_getContext(w, h, dstFormat, w, h, dstFormat, SWS_FAST_BILINEAR, NULL, NULL, NULL))){
 				TSK_DEBUG_ERROR("Failed to create context");
 				TSK_FREE(*output);
 				return 0;
