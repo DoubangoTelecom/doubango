@@ -181,10 +181,12 @@ int tdav_init()
 	tmedia_codec_plugin_register(tdav_codec_h264_bp10_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h264_bp20_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h264_bp30_plugin_def_t);
-#endif
+#	endif
 	tmedia_codec_plugin_register(tdav_codec_h263p_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h263pp_plugin_def_t);
+#	if !defined(HAVE_THEORA) || HAVE_THEORA
 	tmedia_codec_plugin_register(tdav_codec_theora_plugin_def_t);
+#	endif
 	tmedia_codec_plugin_register(tdav_codec_h263_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h261_plugin_def_t);
 #endif
@@ -280,15 +282,17 @@ static tdav_codec_decl_t __codecs[] = {
 #endif
 	
 #if HAVE_FFMPEG
-#if !defined(HAVE_H264) || HAVE_H264
+#	if !defined(HAVE_H264) || HAVE_H264
 	{ tdav_codec_id_h264_bp30, &tdav_codec_h264_bp30_plugin_def_t },
 	{ tdav_codec_id_h264_bp20, &tdav_codec_h264_bp20_plugin_def_t },
 	{ tdav_codec_id_h264_bp10, &tdav_codec_h264_bp10_plugin_def_t },		
-#endif
+#	endif
 	{ tdav_codec_id_mp4ves_es, &tdav_codec_mp4ves_plugin_def_t },
 	{ tdav_codec_id_h263p, &tdav_codec_h263p_plugin_def_t },
 	{ tdav_codec_id_h263pp, &tdav_codec_h263pp_plugin_def_t },
+#	if !defined(HAVE_THEORA) || HAVE_THEORA
 	{ tdav_codec_id_theora, &tdav_codec_theora_plugin_def_t },
+#	endif
 	{ tdav_codec_id_h263, &tdav_codec_h263_plugin_def_t },
 	{ tdav_codec_id_h261, &tdav_codec_h261_plugin_def_t },
 #endif
@@ -487,8 +491,10 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_h264_bp10_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h264_bp20_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h264_bp30_plugin_def_t);
-#endif
+#	endif
+#	if !defined(HAVE_THEORA) || HAVE_THEORA
 	tmedia_codec_plugin_unregister(tdav_codec_theora_plugin_def_t);
+#	endif
 
 #endif
 
