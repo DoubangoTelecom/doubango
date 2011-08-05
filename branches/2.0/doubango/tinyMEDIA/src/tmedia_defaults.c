@@ -55,6 +55,8 @@ static int32_t __noise_supp_level = -30;
 static tsk_bool_t __100rel_enabled = tsk_true;
 static int32_t __sx = -1;
 static int32_t __sy = -1;
+static int32_t __audio_producer_gain = 0;
+static int32_t __audio_consumer_gain = 0;
 
 int tmedia_defaults_set_echo_tail(uint32_t echo_tail)
 {
@@ -165,3 +167,18 @@ int32_t tmedia_defaults_get_screen_x(){
 int32_t tmedia_defaults_get_screen_y(){
 	return __sy;
 }
+
+int tmedia_defaults_set_audio_gain(int32_t audio_producer_gain, int32_t audio_consumer_gain){
+	__audio_producer_gain = audio_producer_gain;
+	__audio_consumer_gain = audio_consumer_gain;
+	return 0;
+}
+
+int32_t tmedia_defaults_get_audio_producer_gain(){
+	return __audio_producer_gain;
+}
+
+int32_t tmedia_defaults_get_audio_consumer_gain(){
+	return __audio_consumer_gain;
+}
+

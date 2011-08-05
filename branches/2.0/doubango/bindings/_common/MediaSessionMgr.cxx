@@ -232,3 +232,7 @@ bool MediaSessionMgr::defaultsGet100relEnabled(){
 bool MediaSessionMgr::defaultsSetScreenSize(int32_t sx, int32_t sy){
 	return tmedia_defaults_set_screen_size(sx, sy) == 0;
 }
+
+bool MediaSessionMgr::defaultsSetAudioGain(int32_t producer_gain, int32_t consumer_gain){
+	return tmedia_defaults_set_audio_gain(producer_gain, consumer_gain) == 0;
+}

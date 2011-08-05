@@ -27,6 +27,7 @@
 */
 #include "tinydav/audio/tdav_consumer_audio.h"
 
+#include "tinymedia/tmedia_defaults.h"
 #include "tinymedia/tmedia_denoise.h"
 #include "tinymedia/tmedia_resampler.h"
 #include "tinymedia/tmedia_jitterbuffer.h"
@@ -49,6 +50,8 @@
 #define TDAV_RATE_DEFAULT				8000
 #define TDAV_PTIME_DEFAULT				20
 
+#define TDAV_AUDIO_GAIN_MAX				15
+
 /** Initialize audio consumer */
 int tdav_consumer_audio_init(tdav_consumer_audio_t* self)
 {
@@ -68,6 +71,7 @@ int tdav_consumer_audio_init(tdav_consumer_audio_t* self)
 	TMEDIA_CONSUMER(self)->audio.ptime = TDAV_PTIME_DEFAULT;
 	TMEDIA_CONSUMER(self)->audio.in.channels = TDAV_CHANNELS_DEFAULT;
 	TMEDIA_CONSUMER(self)->audio.in.rate = TDAV_RATE_DEFAULT;
+	TMEDIA_CONSUMER(self)->audio.gain = TSK_MIN(tmedia_defaults_get_audio_consumer_gain(), TDAV_AUDIO_GAIN_MAX);
 
 	/* self:jitterbuffer */
 	if(!(self->jitterbuffer = tmedia_jitterbuffer_create())){
@@ -106,7 +110,7 @@ int tdav_consumer_audio_set(tdav_consumer_audio_t* self, const tmedia_param_t* p
 		if(param->value_type == tmedia_pvt_int32){
 			if(tsk_striequals(param->key, "gain")){
 				uint32_t gain = TSK_TO_UINT32((uint8_t*)param->value);
-				if(gain<15 && gain>=0){
+				if(gain<TDAV_AUDIO_GAIN_MAX && gain>=0){
 					TMEDIA_CONSUMER(self)->audio.gain = (uint8_t)gain;
 					TSK_DEBUG_INFO("audio consumer gain=%u", gain);
 				}

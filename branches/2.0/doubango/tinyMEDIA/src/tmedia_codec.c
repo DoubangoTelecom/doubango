@@ -216,6 +216,25 @@ int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin)
 }
 
 /**@ingroup tmedia_codec_group
+ * Checks whether a codec plugin is registered or not.
+ * @param plugin the definition of the plugin to check for availability.
+ * @retval 1 (tsk_true) if registered and 0 (tsk_false) otherwise.
+ * @sa @ref tmedia_codec_plugin_register() and @ref tmedia_codec_plugin_unregister()
+ */
+tsk_bool_t tmedia_codec_plugin_is_registered(const tmedia_codec_plugin_def_t* plugin)
+{
+	if(plugin){
+		tsk_size_t i;
+		for(i = 0; i<TMED_CODEC_MAX_PLUGINS && __tmedia_codec_plugins[i]; i++){
+			if(__tmedia_codec_plugins[i] == plugin){
+				return tsk_true;
+			}
+		}
+	}
+	return tsk_false;
+}
+
+/**@ingroup tmedia_codec_group
 * UnRegisters a codec plugin.
 * @param plugin the definition of the plugin.
 * @retval Zero if succeed and non-zero error code otherwise.
