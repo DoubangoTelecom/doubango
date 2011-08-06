@@ -32,10 +32,10 @@ static UInt32 kZero = 0;
 
 #if HAVE_COREAUDIO_AUDIO_UNIT
 	#if TARGET_OS_IPHONE
-		#if 1 // Echo cancellation, AGC, ...
-			#define kDoubangoAudioUnitSubType	kAudioUnitSubType_VoiceProcessingIO
-		#else
+		#if TARGET_IPHONE_SIMULATOR // VoiceProcessingIO will give unexpected result on the simulator when using iOS 5
 			#define kDoubangoAudioUnitSubType	kAudioUnitSubType_RemoteIO
+		#else // Echo cancellation, AGC, ...
+			#define kDoubangoAudioUnitSubType	kAudioUnitSubType_VoiceProcessingIO
 		#endif
 	#elif TARGET_OS_MAC
 		#define kDoubangoAudioUnitSubType	kAudioUnitSubType_DefaultOutput
