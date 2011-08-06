@@ -205,7 +205,12 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 		rotate90(self->dstWidth/2, self->dstHeight/2, self->dstFrame->data[1], self->rot.frame->data[1]);
 		rotate90(self->dstWidth/2, self->dstHeight/2, self->dstFrame->data[2], self->rot.frame->data[2]);
 		
-		/* Context */
+#if 1
+        // rotating the picture won't change the buffer size => layout is safe
+        avpicture_layout((const AVPicture*)self->rot.frame, dstFormat, h, w, *output, *output_max_size);
+#else // Crash
+        
+		// Context
 		if(!self->rot.context){
 			if(!(self->rot.context = sws_getContext(w, h, dstFormat, w, h, dstFormat, SWS_FAST_BILINEAR, NULL, NULL, NULL))){
 				TSK_DEBUG_ERROR("Failed to create context");
@@ -222,6 +227,7 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 			TSK_FREE(*output);
 			return 0;
 		}
+#endif
 	}//end of rotation
 
 	return size;
