@@ -302,7 +302,7 @@ tmedia_codec_t* tmedia_codec_create(const char* format)
 							tmedia_codec_video_t* video = TMEDIA_CODEC_VIDEO(codec);
 							tmedia_codec_video_init(TMEDIA_CODEC(video), plugin->name, plugin->desc, plugin->format);
 							video->in.width = video->out.width = plugin->video.width;
-							video->in.width = video->out.height = plugin->video.height;
+							video->in.height = video->out.height = plugin->video.height;
 							video->in.fps = video->out.fps = plugin->video.fps;
 							break;
 						}
