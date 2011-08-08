@@ -406,7 +406,7 @@ bool SipStack::setCodecPriority(tdav_codec_id_t codec_id, int priority)
 	return tdav_codec_set_priority(codec_id, priority) == 0;
 }
 
-bool SipStack::setCodecPriority(int codec_id, int priority)// For stupid languages
+bool SipStack::setCodecPriority_2(int codec_id, int priority)// For stupid languages
 {
 	return SipStack::setCodecPriority((tdav_codec_id_t)codec_id, priority);
 }
