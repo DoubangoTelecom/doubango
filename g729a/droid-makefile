@@ -1,0 +1,58 @@
+APP := lib$(PROJECT)_$(MARCH).$(EXT)
+
+CFLAGS := $(CFLAGS_LIB) -D__unix__
+LDFLAGS := $(LDFLAGS_LIB) -lgcc
+
+all: $(APP)
+
+OBJS = ACELP_CA.o\
+	BASIC_OP.o\
+	BITS.o\
+	COD_LD8A.o\
+	COR_FUNC.o\
+	DEC_GAIN.o\
+	DEC_LAG3.o\
+	DEC_LD8A.o\
+	DE_ACELP.o\
+	DSPFUNC.o\
+	FILTER.o\
+	GAINPRED.o\
+	LPC.o\
+	LPCFUNC.o\
+	LSPDEC.o\
+	LSPGETQ.o\
+	OPER_32B.o\
+	PITCH_A.o\
+	POSTFILT.o\
+	POST_PRO.o\
+	PRED_LT3.o\
+	PRE_PROC.o\
+	P_PARITY.o\
+	QUA_GAIN.o\
+	QUA_LSP.o\
+	TAB_LD8A.o\
+	TAMING.o\
+	UTIL.o
+
+	
+$(APP): $(OBJS)
+ifeq ($(EXT), a)
+	$(AR) rcs $@ $^
+else
+	$(CC) $(LDFLAGS) -o $@ $^
+endif
+
+%.o: %.c
+	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+install: $(APP)
+	cp -f $(APP) ../thirdparties/android/lib
+
+shell:
+	$(ANDROID_SDK_ROOT)/tools/adb shell
+
+run:
+	$(ANDROID_SDK_ROOT)/tools/adb shell $(LIB_DIR)/$(APP)
+	
+clean:
+	@rm -f $(OBJS) $(APP)

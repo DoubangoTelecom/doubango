@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "g729a", "g729a.vcproj", "{E70DA42C-FE52-4C1F-B85E-9DB825E488A4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release_Shared|Win32 = Release_Shared|Win32
+		Release_Static|Win32 = Release_Static|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E70DA42C-FE52-4C1F-B85E-9DB825E488A4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E70DA42C-FE52-4C1F-B85E-9DB825E488A4}.Debug|Win32.Build.0 = Debug|Win32
+		{E70DA42C-FE52-4C1F-B85E-9DB825E488A4}.Release_Shared|Win32.ActiveCfg = Release_Shared|Win32
+		{E70DA42C-FE52-4C1F-B85E-9DB825E488A4}.Release_Shared|Win32.Build.0 = Release_Shared|Win32
+		{E70DA42C-FE52-4C1F-B85E-9DB825E488A4}.Release_Static|Win32.ActiveCfg = Release|Win32
+		{E70DA42C-FE52-4C1F-B85E-9DB825E488A4}.Release_Static|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,231 @@
+/*
+* Copyright (C) 2009-2010 Mamadou Diop.
+*
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+*	
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+*/
+
+/**@file tsdp_header_T.c
+ * @brief SDP "t=" header (Timing).
+ *
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ *
+ * @date Created: Uat Nov 8 16:54:58 2009 mdiop
+ */
+#include "tinysdp/headers/tsdp_header_T.h"
+
+#include "tsk_debug.h"
+#include "tsk_memory.h"
+#include "tsk_string.h"
+
+#include <string.h>
+
+/***********************************
+*	Ragel state machine.
+*/
+%%{
+	machine tsdp_machine_parser_header_T;
+
+	# Includes
+	include tsdp_machine_utils "./ragel/tsdp_machine_utils.rl";
+	
+	action tag{
+		tag_start = p;
+	}
+
+	action parse_value{
+		TSK_PARSER_SET_STRING(hdr_T->value);
+	}
+
+	action parse_start_time{
+		TSK_PARSER_SET_INTEGER_EX(hdr_T->start, uint64_t, atoi64);
+	}
+
+	action parse_stop_time{
+		TSK_PARSER_SET_INTEGER_EX(hdr_T->stop, uint64_t, atoi64);
+	}
+
+	action parse_repeat_fields{
+		tsdp_header_R_t* header_R;
+		if((header_R = tsdp_header_R_parse(tag_start, (p - tag_start)))){
+			if(!hdr_T->repeat_fields){
+				hdr_T->repeat_fields = tsk_list_create();
+			}
+			tsk_list_push_back_data(hdr_T->repeat_fields, (void**)&header_R);
+		}
+	}
+	
+	start_time = DIGIT+ >tag %parse_start_time;
+	stop_time = DIGIT+ >tag %parse_stop_time;
+	repeat_fields = any+ >tag %parse_repeat_fields;
+
+	T = 't' SP* "=" SP*<: start_time :>SP stop_time (CRLF <:repeat_fields)?;
+	
+	# Entry point
+	main := T :>CRLF?;
+
+}%%
+
+
+tsdp_header_T_t* tsdp_header_T_create(uint64_t start, uint64_t stop)
+{
+	return tsk_object_new(TSDP_HEADER_T_VA_ARGS(start, stop));
+}
+
+tsdp_header_T_t* tsdp_header_T_create_null()
+{
+	return tsdp_header_T_create(0, 0);
+}
+
+int tsdp_header_T_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsdp_header_T_t *T = (const tsdp_header_T_t *)header;
+		const tsk_list_item_t *item;
+		
+		//"t=3034423619 3042462419\r\n"
+		//"r=7d 1h 0 25h\r\n"
+		// IMPORTANT: Do not append the last CRLF (because we only print the header value).
+		tsk_buffer_append_2(output, "%llu %llu", 
+			T->start,
+			T->stop
+			);
+
+		tsk_list_foreach(item, T->repeat_fields)
+		{
+			if(TSK_LIST_IS_FIRST(T->repeat_fields, item)){
+				tsk_buffer_append(output, "\r\n", 2);
+			}
+			tsk_buffer_append_2(output, "%c=", tsdp_header_get_nameex(TSDP_HEADER(item->data)));
+			TSDP_HEADER(item->data)->tostring(TSDP_HEADER(item->data), output);
+			//tsdp_header_tostring(TSDP_HEADER(item->data), output);
+
+			if(!TSK_LIST_IS_LAST(T->repeat_fields, item)){
+				tsk_buffer_append(output, "\r\n", 2);
+			}
+		}
+
+		return 0;
+	}
+
+	return -1;
+}
+
+tsdp_header_t* tsdp_header_T_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_T_t *T = (const tsdp_header_T_t *)header;
+		tsdp_header_T_t* clone;
+		const tsk_list_item_t *item;
+
+		if((clone = tsdp_header_T_create(T->start, T->stop))){
+
+			if(T->repeat_fields){
+				clone->repeat_fields = tsk_list_create();
+			}
+
+			tsk_list_foreach(item, T->repeat_fields){
+				const tsdp_header_t* curr = item->data;
+				tsdp_header_t* hdr_clone = curr->clone(curr);
+				tsk_list_push_back_data(clone->repeat_fields, (void**)&hdr_clone);
+			}
+		}
+		return TSDP_HEADER(clone);
+	}
+	return tsk_null;
+}
+
+tsdp_header_T_t *tsdp_header_T_parse(const char *data, tsk_size_t size)
+{
+	int cs = 0;
+	const char *p = data;
+	const char *pe = p + size;
+	const char *eof = pe;
+	tsdp_header_T_t *hdr_T = tsdp_header_T_create_null();
+	
+	const char *tag_start;
+
+	%%write data;
+	%%write init;
+	%%write exec;
+	
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse \"t=\" header.");
+		TSK_OBJECT_SAFE_FREE(hdr_T);
+	}
+	
+	return hdr_T;
+}
+
+
+
+
+
+
+
+//========================================================
+//	T header object definition
+//
+
+static tsk_object_t* tsdp_header_T_ctor(tsk_object_t *self, va_list * app)
+{
+	tsdp_header_T_t *T = self;
+	if(T){
+		TSDP_HEADER(T)->type = tsdp_htype_T;
+		TSDP_HEADER(T)->tostring = tsdp_header_T_tostring;
+		TSDP_HEADER(T)->clone = tsdp_header_T_clone;
+		TSDP_HEADER(T)->rank = TSDP_HTYPE_T_RANK;
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to create new U header.");
+	}
+	return self;
+}
+
+static tsk_object_t* tsdp_header_T_dtor(tsk_object_t *self)
+{
+	tsdp_header_T_t *T = self;
+	if(T){
+		TSK_OBJECT_SAFE_FREE(T->repeat_fields);
+	}
+	else{
+		TSK_DEBUG_ERROR("Null U header.");
+	}
+
+	return self;
+}
+static int tsdp_header_T_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
+{
+	if(obj1 && obj2){
+		return tsdp_header_rank_cmp(obj1, obj2);
+	}
+	else{
+		return -1;
+	}
+}
+
+static const tsk_object_def_t tsdp_header_T_def_s = 
+{
+	sizeof(tsdp_header_T_t),
+	tsdp_header_T_ctor,
+	tsdp_header_T_dtor,
+	tsdp_header_T_cmp
+};
+
+const tsk_object_def_t *tsdp_header_T_def_t = &tsdp_header_T_def_s;

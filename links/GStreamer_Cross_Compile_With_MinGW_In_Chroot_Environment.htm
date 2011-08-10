@@ -1,0 +1,418 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<meta name="robots" content="index,nofollow">
+
+
+<title>gstreamer Wiki - GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment</title>
+<link rel="stylesheet" type="text/css" charset="utf-8" media="all" href="/moin/freedesktop/css/common.css">
+<link rel="stylesheet" type="text/css" charset="utf-8" media="screen" href="/moin/freedesktop/css/screen.css">
+<link rel="stylesheet" type="text/css" charset="utf-8" media="print" href="/moin/freedesktop/css/print.css">
+<link rel="stylesheet" type="text/css" charset="utf-8" media="projection" href="/moin/freedesktop/css/projection.css">
+
+<!-- css only for MSIE browsers -->
+<!--[if IE]>
+   <link rel="stylesheet" type="text/css" charset="utf-8" media="all" href="/moin/freedesktop/css/msie.css">
+<![endif]-->
+
+
+<script type="text/javascript" src="/moin/common/js/common.js"></script>
+
+
+
+<script type="text/javascript">
+<!--
+var search_hint = "Search";
+//-->
+</script>
+
+
+<link rel="Start" href="/wiki/FrontPage">
+<link rel="Alternate" title="Wiki Markup" href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=raw">
+<link rel="Alternate" media="print" title="Print View" href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=print">
+<link rel="Search" href="/wiki/FindPage">
+<link rel="Index" href="/wiki/TitleIndex">
+<link rel="Glossary" href="/wiki/WordIndex">
+<link rel="Help" href="/wiki/HelpOnFormatting">
+</head>
+
+<body  lang="en" dir="ltr">
+
+
+<ul id="username"><li><a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=login" id="login" rel="nofollow">Login</a></li></ul>
+<div id="logo"><a href="/wiki/FrontPage">gstreamer Wiki</a></div>
+
+<table id="navtable" align=center border=0 cellpadding=0 cellspacing=0>
+  <tr height=12>
+    <td width=12 style="background-image: url(/png/ul.png); background-repeat: none; border: none;">
+    </td>
+    <td style="background-image: url(/png/t.png); background-repeat: repeat-x; border: none;">
+    </td>
+    <td width=12 style="background-image: url(/png/ur.png); background-repeat: none; border: none;">
+    </td>
+  </tr>
+  <tr>
+    <td width=12 style="background-image: url(/png/l.png); background-repeat: repeat-y; border: none;">
+    </td>
+    <td style="background-image: url(/png/bg.png); border: none;">
+<a href="RecentChanges"><a href="/wiki/RecentChanges">RecentChanges</a></a>
+<a href="FindPage"><a href="/wiki/FindPage">FindPage</a></a>
+<a href="HelpContents"><a href="/wiki/HelpContents">HelpContents</a></a>
+
+    </td>
+    <td width=12 style="background-image: url(/png/r.png); background-repeat: repeat-y; border: none;">
+    </td>
+  </tr>
+  <tr height=12 style="font-size: 1pt">
+    <td width=12 style="border: none;"><img src="/png/ll.png"></td>
+    <td style="background-image: url(/png/b.png); background-repeat: repeat-x; border: none;">
+    </td>
+    <td width=12 style="border: none;"><img src="/png/lr.png"></td>
+  </tr>
+</table>
+
+
+<form id="searchform" method="get" action="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment">
+<div>
+<input type="hidden" name="action" value="fullsearch">
+<input type="hidden" name="context" value="180">
+<label for="searchinput">Search:</label>
+<input id="searchinput" type="text" name="value" value="" size="20"
+    onfocus="searchFocus(this)" onblur="searchBlur(this)"
+    onkeyup="searchChange(this)" onchange="searchChange(this)" alt="Search">
+<input id="titlesearch" name="titlesearch" type="submit"
+    value="Titles" alt="Search Titles">
+<input id="fullsearch" name="fullsearch" type="submit"
+    value="Text" alt="Search Full Text">
+</div>
+</form>
+<script type="text/javascript">
+<!--// Initialize search form
+var f = document.getElementById('searchform');
+f.getElementsByTagName('label')[0].style.display = 'none';
+var e = document.getElementById('searchinput');
+searchChange(e);
+searchBlur(e);
+//-->
+</script>
+
+<div id="title"><h1>GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment</h1></div>
+<ul id="iconbar">
+<li><a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=edit" rel="nofollow" title="Edit"><img alt="Edit" height="12" src="/moin/freedesktop/img/moin-edit.png" title="Edit" width="12" /></a></li>
+<li><a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment" rel="nofollow" title="View"><img alt="View" height="13" src="/moin/freedesktop/img/moin-show.png" title="View" width="12" /></a></li>
+<li><a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=diff" rel="nofollow" title="Diffs"><img alt="Diffs" height="11" src="/moin/freedesktop/img/moin-diff.png" title="Diffs" width="15" /></a></li>
+<li><a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=info" rel="nofollow" title="Info"><img alt="Info" height="11" src="/moin/freedesktop/img/moin-info.png" title="Info" width="12" /></a></li>
+<li><a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=subscribe" rel="nofollow" title="Subscribe"><img alt="Subscribe" height="10" src="/moin/freedesktop/img/moin-subscribe.png" title="Subscribe" width="14" /></a></li>
+<li><a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=raw" rel="nofollow" title="Raw"><img alt="Raw" height="13" src="/moin/freedesktop/img/moin-raw.png" title="Raw" width="12" /></a></li>
+<li><a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=print" rel="nofollow" title="Print"><img alt="Print" height="14" src="/moin/freedesktop/img/moin-print.png" title="Print" width="16" /></a></li>
+</ul>
+
+<p style="clear: both;">
+
+
+<div dir="ltr" id="content" lang="en"><span class="anchor" id="top"></span>
+<span class="anchor" id="line-2"></span><span class="anchor" id="line-3"></span><p class="line867"><img alt="&lt;!&gt;" height="15" src="/moin/freedesktop/img/attention.png" title="&lt;!&gt;" width="15" /> A simpler method for cross compiling is described in <a href="/wiki/Win32_Cross_Compiling_With_Mingw">Win32_Cross_Compiling_With_Mingw</a>. <span class="anchor" id="line-4"></span><span class="anchor" id="line-5"></span><p class="line862">This document provides instructions for building native win32 gstreamer binaries. Specifically, it describes a method of using the MinGW cross compiler in chroot environment under debian linux<sup><a href="#fnref-593d3505d2c410341aa2efc9124339e5dd99528e" id="fndef-593d3505d2c410341aa2efc9124339e5dd99528e-0">1</a></sup>. <span class="anchor" id="line-6"></span><span class="anchor" id="line-7"></span><span class="anchor" id="line-8"></span><p class="line867"><div class="table-of-contents"><p class="table-of-contents-heading">Contents<ol><li><a href="#head-4c894c20e7645f000bc31244455c72b9231befb4">Motivation</a></li><li><a href="#head-10ec2aebef002de3f3bd024a75b577b1e8021693">Creating a chroot environment</a><ol><li><a href="#head-d37e14abb565e482c6f7e2f99b41e34eaa40f198">Create the Debian system</a></li><li><a href="#head-2da1e31cbb76e461640b91fb41274d32c82ed388">Install required packages on chroot system</a></li><li><a href="#head-e42e388662acf8a2a0559b33a6f7361a8094b95b">Move standard headers, libs, binutils out of the way</a></li><li><a href="#head-1f885de30af0404c0d98adabd0f9bff484a01afd">Setup normal user environment inside chroot</a></li></ol><li><a href="#head-605fd1ffd401a297bf7132ee12d04feb48622b78">Building 3rd party win32 repository</a><ol><li><a href="#head-5304168c588883f802534ff87a1260c76246898b">Initializing stow repository</a></li><li><a href="#head-2d8201d6345a44978aaaccf1a81c82e0f3dc4f0c">Install precompiled Win32 binaries</a><ol><li><a href="#head-2fe3eca5f96d66d1de50d3d05aeefd5ab0d653a9">Glib</a></li><li><a href="#head-64c466f0b40ef5c3b7241106ae6b1b7421644b4a">Iconv</a></li><li><a href="#head-ccf9c2a0c7443654ab9476fb07cf3e1b3be7a9b2">Gettext</a></li><li><a href="#head-26b6697d2793b23e2757bab0a1c65efb4a3e42e2">Directx headers</a></li></ol><li><a href="#head-0019b8a75bd2174dec7412393cb27c4ea48c71ec">Compile other 3rd party packages</a><ol><li><a href="#head-30541ffad6710aa6bc8ccf088bbc099cbc895b5a">Liboil</a></li><li><a href="#head-b23107886b0354c965d63529da8a8f51685886c6">Libxml2</a></li><li><a href="#head-91dce9cfef0393a6db213d48238bab6bd3a9b54e">Zlib</a></li><li><a href="#head-9e540b4a9a4fbf4093ba90a01ccba7730914f189">Libpng</a></li><li><a href="#head-4ef67d74f8103393d5c6b4b682e1f7a8690c8a7c">Libogg</a></li><li><a href="#head-c26ae587115b6ceea6b39531d9145b9e24dba8ae">Libvorbis</a></li><li><a href="#head-fb2d91eba7415b5f2e7085e8524ed44f8c30fb35">a52dec</a></li><li><a href="#head-d6629fd786b4fd33b7d7882b39a3190b59ed876e">mpeg2dec</a></li><li><a href="#head-c38daf1f7c16495e27de0cb6e30f8919d2a2b918">Libdvdread/Libdvdnav</a></li><li><a href="#head-eca21948694de3d0615f466d4977797851d6f7db">Libdvdcss</a></li></ol></li></ol><li><a href="#head-b7f33f3e30f49f6c283e79ae9163e482e2146177">Building gstreamer</a><ol><li><a href="#head-3a017b373282f6eba40ceafd8e3ef415ece71677">gstreamer</a></li><li><a href="#head-5f82ce01d674c98e07bec46732eb19a3e33cef8a">gst-plugins-base</a></li><li><a href="#head-af94b8930d738d42889cd975bb08ded55779fd7d">gst-plugins-good</a></li><li><a href="#head-2c3fa59b719602d055ac67c40e5aadded47386a1">gst-plugins-bad</a></li><li><a href="#head-ce3edf2b6fdb73e84e85a511a40b542ae734b340">gst-plugins-ugly</a></li></ol><li><a href="#head-978bffe7fb071833f835dac65b97b3a1fe63a1dd">Plugin specific build problems</a><ol><li><a href="#head-9f66975cce090098afd9d96362134e7b0d2a3ed5">directdraw, directsound</a></li><li><a href="#head-d618b5b4c1c045f08b0a28c91a8ec74fb3c551c0">dvdread</a></li><li><a href="#head-9b4e473a0b6f9fde7ac14f51ae9268c9040bee6c">a52</a></li></ol><li><a href="#head-464ce281dadea1a3fd833c8ec15345559267b69c">Testing</a><ol><li><a href="#head-a926d6a380722101b14eae8d023c55f8d312d657">Using wine</a></li><li><a href="#head-dd06d6a10420ca0a56d44a1f30edd582a433a061">On a real MS Windows machine</a></li></ol></li></ol></div> <span class="anchor" id="line-9"></span><span class="anchor" id="line-10"></span><p class="line867">
+<h2 id="head-4c894c20e7645f000bc31244455c72b9231befb4">1. Motivation</h2>
+<span class="anchor" id="line-11"></span><p class="line874">Building native win32 binaries can be acheived from the comfort of your Linux box by using the mingw cross compiler. I've found, however, that some of the autoconf macros will pick-up native Linux headers/libraries installed under /usr/local or /usr. By creating a gstreamer-cross-build chroot environment it is possible to prevent this kind of mix-up and obliterate the need to pass lots of --disable-xxx to the configure script   for  Here are instructions on how to cross-compile gstreamer on a Debian/Linux using the MinGW cross-compiler to create win32 binaries. <span class="anchor" id="line-12"></span>
+<h2 id="head-10ec2aebef002de3f3bd024a75b577b1e8021693">2. Creating a chroot environment</h2>
+<span class="anchor" id="line-13"></span><p class="line867"><img alt="(!)" height="15" src="/moin/freedesktop/img/idea.png" title="(!)" width="15" /> You need to decide either to install mingw 3.4.5 compatible (such as debian <em>etch</em>) or the newer mingw32 4.2.1 (Ubuntu <em>hardy</em>) based system. You may also want to install both. See below. <span class="anchor" id="line-14"></span><span class="anchor" id="line-15"></span><p class="line867"><img alt="/!\" height="15" src="/moin/freedesktop/img/alert.png" title="/!\" width="15" /> The dvdreadsrc plugin compiled with mingw32 4.2.1 did not work for me (<a class="nonexistent" href="/wiki/TalShalif">TalShalif</a>), while the same compiled with mingw 3.4.5 worked fine (you can even copy the one you compiled on 3.4.5 to 4.2.1 and see either it will work for you too).  <span class="anchor" id="line-16"></span>
+<h3 id="head-d37e14abb565e482c6f7e2f99b41e34eaa40f198">2.1. Create the Debian system</h3>
+<span class="anchor" id="line-17"></span><ol type="1"><li>Install debootstrap <span class="anchor" id="line-18"></span><span class="anchor" id="line-19"></span><pre>tanaka@linux&gt; sudo apt-get install debootstrap</pre><span class="anchor" id="line-20"></span><span class="anchor" id="line-21"></span></li><li class="gap">Create root file system <span class="anchor" id="line-22"></span><ul><li><p class="line862">Ubuntu <em>hardy</em> (mingw32 4.2.1) <span class="anchor" id="line-23"></span><span class="anchor" id="line-24"></span><pre>tanaka@linux&gt; sudo debootstrap hardy mingw-chroot</pre><span class="anchor" id="line-25"></span></li><li><p class="line862">Debian <em>etch</em> (mingw32 3.4.5) <span class="anchor" id="line-26"></span><span class="anchor" id="line-27"></span><pre>tanaka@linux&gt; sudo debootstrap etch mingw-chroot</pre><span class="anchor" id="line-28"></span></li></ul></li><li>(optional) Add shell chroot ID to avoid confusion <span class="anchor" id="line-29"></span><span class="anchor" id="line-30"></span><span class="anchor" id="line-31"></span><span class="anchor" id="line-32"></span><pre>root@linux&gt; sudo chroot mingw-chroot
+root@linux# echo "gstreamer-mingw" &gt; /etc/debian_chroot
+root@linux# exit</pre><span class="anchor" id="line-33"></span></li></ol><p class="line867">
+<h3 id="head-2da1e31cbb76e461640b91fb41274d32c82ed388">2.2. Install required packages on chroot system</h3>
+<span class="anchor" id="line-34"></span><p class="line867"><span class="anchor" id="line-35"></span><span class="anchor" id="line-36"></span><pre>tanaka@linux&gt; sudo chroot mingw-chroot</pre><span class="anchor" id="line-37"></span><ol type="1"><li>Update /etc/apt/source.list <span class="anchor" id="line-38"></span><ul><li><p class="line862">Ubuntu <em>hardy</em>: <span class="anchor" id="line-39"></span><span class="anchor" id="line-40"></span><span class="anchor" id="line-41"></span><span class="anchor" id="line-42"></span><span class="anchor" id="line-43"></span><span class="anchor" id="line-44"></span><pre># Binary
+deb hardy main restricted universe multiverse
+deb hardy-updates main restricted universe multiverse
+deb hardy-security main restricted universe multiverse</pre><span class="anchor" id="line-45"></span></li><li><p class="line862">Debian <em>etch</em>: <span class="anchor" id="line-46"></span>{{{deb <a class="http" href="http://ftp.us.debian.org/debian">http://ftp.us.debian.org/debian</a> etch main contrib non-free <span class="anchor" id="line-47"></span></li></ul></li></ol><p class="line862">deb <a class="http" href="http://ftp.us.debian.org/debian">http://ftp.us.debian.org/debian</a> etch-proposed-updates main contrib non-free <span class="anchor" id="line-48"></span>}}} <span class="anchor" id="line-49"></span><ul><li style="list-style-type:none"><span class="anchor" id="line-50"></span><pre>(gstreamer-mingw)root@linux# apt-get update    </pre><span class="anchor" id="line-51"></span><span class="anchor" id="line-52"></span></li><li class="gap">Install packages <span class="anchor" id="line-53"></span><ul><li><p class="line862">Ubuntu <em>hardy</em>: <span class="anchor" id="line-54"></span><span class="anchor" id="line-55"></span><pre>(gstreamer-mingw)root@linux# apt-get install mingw32 dpkg-dev pkg-config wget libglib2.0-dev language-pack-en tzdata unzip libtool automake autoconf m4 gettext cvs flex bison stow wine git-core subversion</pre><span class="anchor" id="line-56"></span></li><li><p class="line862">Debian <em>etch</em>: <span class="anchor" id="line-57"></span><span class="anchor" id="line-58"></span><span class="anchor" id="line-59"></span><pre>(gstreamer-mingw)root@linux# apt-get install mingw32 mingw32-binutils dpkg-dev pkg-config wget libglib2.0-dev bzip2 less tzdata unzip libtool automake autoconf m4 gettext cvs flex bison stow wine  git-core subversion locales-all</pre><span class="anchor" id="line-60"></span><span class="anchor" id="line-61"></span></li></ul></li></ul><p class="line867"><img alt="&lt;!&gt;" height="15" src="/moin/freedesktop/img/attention.png" title="&lt;!&gt;" width="15" /> After completing the above steps, you may find it simpler to continue your compilation using David Schleef's script, as described in <a href="/wiki/Win32_Cross_Compiling_With_Mingw">Win32_Cross_Compiling_With_Mingw</a>. <span class="anchor" id="line-62"></span><span class="anchor" id="line-63"></span><p class="line867">
+<h3 id="head-e42e388662acf8a2a0559b33a6f7361a8094b95b">2.3. Move standard headers, libs, binutils out of the way</h3>
+<span class="anchor" id="line-64"></span><p class="line874">You don't want any of gstreamer's autoconfig macros to pick-up libraries nor headers installed on the system (i.e. /usr/lib, /usr/include): <span class="anchor" id="line-65"></span><span class="anchor" id="line-66"></span><ol type="1"><li>Move headers out of the way <span class="anchor" id="line-67"></span><span class="anchor" id="line-68"></span><pre>(gstreamer-mingw)root@linux# mkdir /usr/include/tmp &amp;&amp; mv /usr/include/* /usr/include/tmp</pre><span class="anchor" id="line-69"></span><span class="anchor" id="line-70"></span></li><li class="gap">Move away link libraries <span class="anchor" id="line-71"></span><span class="anchor" id="line-72"></span><pre>(gstreamer-mingw)root@linux# mkdir /usr/lib/tmp &amp;&amp; mv /usr/lib/*.{a,so} /usr/lib/tmp</pre><span class="anchor" id="line-73"></span>Against the standard practice of libxx.so.n, some runtime libraries are named libxx-n.n.so. Put them back: <span class="anchor" id="line-74"></span><span class="anchor" id="line-75"></span><span class="anchor" id="line-76"></span><pre>(gstreamer-mingw)root@linux# mv /usr/lib/tmp/*[0-9]*.so /usr/lib</pre><span class="anchor" id="line-77"></span>But, but.. except for glib libraries named libgxxx-2.0.so, which need to be moved away again: <span class="anchor" id="line-78"></span><span class="anchor" id="line-79"></span><pre>(gstreamer-mingw)root@linux# mv /usr/lib/libg*-2.0.so /usr/lib/tmp</pre><span class="anchor" id="line-80"></span></li><li>Replace native binutils executables with links to mingw tools <span class="anchor" id="line-81"></span><span class="anchor" id="line-82"></span><span class="anchor" id="line-83"></span><span class="anchor" id="line-84"></span><span class="anchor" id="line-85"></span><span class="anchor" id="line-86"></span><span class="anchor" id="line-87"></span><span class="anchor" id="line-88"></span><span class="anchor" id="line-89"></span><span class="anchor" id="line-90"></span><pre>cd /usr/bin
+mkdir tmp
+mv gcc ar ranlib as ld cc cpp tmp
+for i in gcc ar ranlib as ld cc cpp; do \
+  ln -s i586-mingw32msvc-$i $i; \
+done
+ln -s i586-mingw32msvc-dlltool dlltool
+ln -s i586-mingw32msvc-dllwrap dllwrap</pre><span class="anchor" id="line-91"></span><span class="anchor" id="line-92"></span></li></ol><p class="line867">
+<h3 id="head-1f885de30af0404c0d98adabd0f9bff484a01afd">2.4. Setup normal user environment inside chroot</h3>
+<span class="anchor" id="line-93"></span><p class="line874">Now you would want to be able to access your gstreamer development tree and/or home directory as a normal user from inside the chroot environment: <span class="anchor" id="line-94"></span><span class="anchor" id="line-95"></span><ol type="1"><li>Mount host home directory <span class="anchor" id="line-96"></span><span class="anchor" id="line-97"></span><pre>tanaka@linux&gt; sudo mount --bind /home mingw-chroot/home    </pre><span class="anchor" id="line-98"></span><span class="anchor" id="line-99"></span></li><li class="gap"><p class="line862">Add/Synchronize linux host =&gt; chroot host user ID Assuming your real user name is 'tanaka' and your uid on the Linux host is 1000: <span class="anchor" id="line-100"></span><span class="anchor" id="line-101"></span><pre>(gstreamer-mingw)root@linux# useradd -d /home/tanaka -s /bin/bash -u 1000 tanaka</pre><span class="anchor" id="line-102"></span>Now you can log into your chroot system as user 'tanaka' thusly: <span class="anchor" id="line-103"></span><span class="anchor" id="line-104"></span><span class="anchor" id="line-105"></span><span class="anchor" id="line-106"></span><pre>tanaka@linux&gt; sudo chroot mingw-chroot su - tanaka
+(gstreamer-mingw)tanaka@linux:~$ id
+=&gt; uid=1000(tanaka) gid=1000(tanaka) groups=1000(tanaka)</pre><span class="anchor" id="line-107"></span></li></ol><p class="line867">
+<h2 id="head-605fd1ffd401a297bf7132ee12d04feb48622b78">3. Building 3rd party win32 repository</h2>
+<span class="anchor" id="line-108"></span><p class="line867">
+<h3 id="head-5304168c588883f802534ff87a1260c76246898b">3.1. Initializing stow repository</h3>
+<span class="anchor" id="line-109"></span><p class="line867"><span class="anchor" id="line-110"></span><pre>mkdir -p ~/win32/stow    </pre><span class="anchor" id="line-111"></span><p class="line874">Make win32 repo available as /x on both the chroot environment as well as the real host. This will enable mapping ~tanaka/win32 to drive x: on a real windows machine. <span class="anchor" id="line-112"></span><span class="anchor" id="line-113"></span><span class="anchor" id="line-114"></span><span class="anchor" id="line-115"></span><pre>tanaka@linux&gt; sudo ln -s ~/win32 /x
+(gstreamer-mingw)root@linux# ln -s ~tanaka/win32 /x</pre><span class="anchor" id="line-116"></span><p class="line867">
+<h3 id="head-2d8201d6345a44978aaaccf1a81c82e0f3dc4f0c">3.2. Install precompiled Win32 binaries</h3>
+<span class="anchor" id="line-117"></span><p class="line867"><span class="anchor" id="line-118"></span><span class="anchor" id="line-119"></span><pre>tanaka@linux&gt; cd /x/stow</pre><span class="anchor" id="line-120"></span><p class="line874">Download fromhttp://www.gtk.org/download-windows.htmland install the following: <span class="anchor" id="line-121"></span><span class="anchor" id="line-122"></span><p class="line867">
+<h4 id="head-2fe3eca5f96d66d1de50d3d05aeefd5ab0d653a9">3.2.1. Glib</h4>
+<span class="anchor" id="line-123"></span><p class="line867"><span class="anchor" id="line-124"></span><span class="anchor" id="line-125"></span><span class="anchor" id="line-126"></span><span class="anchor" id="line-127"></span><span class="anchor" id="line-128"></span><span class="anchor" id="line-129"></span><span class="anchor" id="line-130"></span><span class="anchor" id="line-131"></span><span class="anchor" id="line-132"></span><span class="anchor" id="line-133"></span><pre>cd /tmp
+wget http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.16/glib-2.16.5.zip
+wget http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.16/glib-dev-2.16.5.zip
+mkdir -p /x/stow/glib-2.16.5
+cd /x/stow/glib-2.16.5
+unzip /tmp/glib-2.16.5.zip
+unzip /tmp/glib-dev-2.16.5.zip
+find -name "*\.pc" | xargs sed -i 's,^prefix=.*$,prefix=/x,'
+cd /x/stow
+stow glib-2.16.5</pre><span class="anchor" id="line-134"></span><p class="line867">
+<h4 id="head-64c466f0b40ef5c3b7241106ae6b1b7421644b4a">3.2.2. Iconv</h4>
+<span class="anchor" id="line-135"></span><p class="line867"><span class="anchor" id="line-136"></span><span class="anchor" id="line-137"></span><span class="anchor" id="line-138"></span><span class="anchor" id="line-139"></span><span class="anchor" id="line-140"></span><span class="anchor" id="line-141"></span><span class="anchor" id="line-142"></span><pre>cd /tmp
+wget http://www.gimp.org/~tml/gimp/win32/libiconv-1.9.1.bin.woe32.zip
+mkdir -p /x/stow/libiconv-1.9.1
+cd /x/stow/libiconv-1.9.1
+unzip /tmp/libiconv-1.9.1.bin.woe32.zip
+cd /x/stow
+stow libiconv-1.9.1</pre><span class="anchor" id="line-143"></span><p class="line867">
+<h4 id="head-ccf9c2a0c7443654ab9476fb07cf3e1b3be7a9b2">3.2.3. Gettext</h4>
+<span class="anchor" id="line-144"></span><p class="line867"><span class="anchor" id="line-145"></span><span class="anchor" id="line-146"></span><span class="anchor" id="line-147"></span><span class="anchor" id="line-148"></span><span class="anchor" id="line-149"></span><span class="anchor" id="line-150"></span><span class="anchor" id="line-151"></span><span class="anchor" id="line-152"></span><span class="anchor" id="line-153"></span><span class="anchor" id="line-154"></span><pre>cd /tmp/
+wget http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/gettext-runtime-0.17-1.zip
+wget http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/gettext-runtime-dev-0.17-1.zip
+mkdir /x/stow/gettext-runtime-0.17-1
+cd /x/stow/gettext-runtime-0.17-1
+unzip /tmp/gettext-runtime-0.17-1.zip
+unzip /tmp/gettext-runtime-dev-0.17-1.zip
+cd /x/stow
+stow gettext-runtime-0.17-1</pre><span class="anchor" id="line-155"></span><p class="line867">
+<h4 id="head-26b6697d2793b23e2757bab0a1c65efb4a3e42e2">3.2.4. Directx headers</h4>
+<span class="anchor" id="line-156"></span><ul><li>Install headers <span class="anchor" id="line-157"></span><span class="anchor" id="line-158"></span><span class="anchor" id="line-159"></span><span class="anchor" id="line-160"></span><span class="anchor" id="line-161"></span><span class="anchor" id="line-162"></span><pre>cd /tmp
+wget http://www.lysator.liu.se/~peda/directx-headers/directx-headers-0.03.tar.gz
+tar -C /x/stow -zxvf /tmp/directx-headers-0.03.tar.gz
+cd /x/stow
+stow directx-headers-0.03</pre><span class="anchor" id="line-163"></span></li><li>Fix small header compilation error <span class="anchor" id="line-164"></span><span class="anchor" id="line-165"></span><p class="line891"><img alt="&lt;!&gt;" height="15" src="/moin/freedesktop/img/attention.png" title="&lt;!&gt;" width="15" /> Patch will fail unless the following is copied as-is.  <span class="anchor" id="line-166"></span><span class="anchor" id="line-167"></span><p class="line891"><img alt="(!)" height="15" src="/moin/freedesktop/img/idea.png" title="(!)" width="15" /> This change is trivial enough to modify by hand <span class="anchor" id="line-168"></span><span class="anchor" id="line-169"></span><span class="anchor" id="line-170"></span><span class="anchor" id="line-171"></span><span class="anchor" id="line-172"></span><span class="anchor" id="line-173"></span><span class="anchor" id="line-174"></span><span class="anchor" id="line-175"></span><span class="anchor" id="line-176"></span><span class="anchor" id="line-177"></span><span class="anchor" id="line-178"></span><span class="anchor" id="line-179"></span><span class="anchor" id="line-180"></span><span class="anchor" id="line-181"></span><span class="anchor" id="line-182"></span><span class="anchor" id="line-183"></span><span class="anchor" id="line-184"></span><pre>cd /x/stow/directx-headers-0.03/include
+patch &lt;&lt;EOF
+--- dsound.h    2008-07-31 17:43:23.000000000 +0300
++++ dsound.h    2008-07-31 16:51:58.000000000 +0300
+@@ -1138,7 +1138,7 @@
+ #ifndef _IKsPropertySet_
+ #define _IKsPropertySet_
+
+-typedef struct IKsPropertySet IKsPropertySet,*LPKSPROPERTYSET;
++typedef struct IKsPropertySet *LPKSPROPERTYSET;
+
+ DEFINE_GUID(IID_IKsPropertySet,0x31EFAC30,0x515C,0x11D0,0xA9,0xAA,0x00,0xAA,0x00,0x61,0xBE,0x93);
+ 
+EOF</pre><span class="anchor" id="line-185"></span></li></ul><p class="line867">
+<h3 id="head-0019b8a75bd2174dec7412393cb27c4ea48c71ec">3.3. Compile other 3rd party packages</h3>
+<span class="anchor" id="line-186"></span><p class="line867"><img alt="{i}" height="16" src="/moin/freedesktop/img/icon-info.png" title="{i}" width="16" /> It probably won't hurt (?) to add -mthreads to CFLAGS of all compilations. Also, some net functions (e.g. <em>getaddrinfo()</em>) are only available if you set WindowsXP compilation compatibility: <span class="anchor" id="line-187"></span><span class="anchor" id="line-188"></span><span class="anchor" id="line-189"></span><pre>export CFLAGS='-mthreads -D_WIN32_WINNT=0x0501 -DWINVER=0x0501'</pre><span class="anchor" id="line-190"></span><p class="line867">
+<h4 id="head-30541ffad6710aa6bc8ccf088bbc099cbc895b5a">3.3.1. Liboil</h4>
+<span class="anchor" id="line-191"></span><p class="line867"><img alt="&lt;!&gt;" height="15" src="/moin/freedesktop/img/attention.png" title="&lt;!&gt;" width="15" /> There is a linking error compiling one of the examples. Use the '-k' flag to force compilation <span class="anchor" id="line-192"></span><span class="anchor" id="line-193"></span><span class="anchor" id="line-194"></span><span class="anchor" id="line-195"></span><span class="anchor" id="line-196"></span><span class="anchor" id="line-197"></span><span class="anchor" id="line-198"></span><span class="anchor" id="line-199"></span><span class="anchor" id="line-200"></span><span class="anchor" id="line-201"></span><span class="anchor" id="line-202"></span><span class="anchor" id="line-203"></span><span class="anchor" id="line-204"></span><span class="anchor" id="line-205"></span><pre>cd /tmp
+wget http://liboil.freedesktop.org/download/liboil-0.3.15.tar.gz
+tar zxvf liboil-0.3.15.tar.gz
+cd liboil-0.3.15
+./configure --prefix=/x --host=i586-mingw32msvc
+make -k
+rm -rf /tmp/liboil-0.3.15-dist
+make -k install DESTDIR=/tmp/liboil-0.3.15-dist
+(cd /x/stow &amp;&amp; stow -D liboil-0.3.15)
+rm -rf /x/stow/liboil-0.3.15
+mv /tmp/liboil-0.3.15-dist/x /x/stow/liboil-0.3.15
+cd /x/stow
+stow liboil-0.3.15</pre><span class="anchor" id="line-206"></span><p class="line867">
+<h4 id="head-b23107886b0354c965d63529da8a8f51685886c6">3.3.2. Libxml2</h4>
+<span class="anchor" id="line-207"></span><p class="line867"><span class="anchor" id="line-208"></span><span class="anchor" id="line-209"></span><span class="anchor" id="line-210"></span><span class="anchor" id="line-211"></span><span class="anchor" id="line-212"></span><span class="anchor" id="line-213"></span><span class="anchor" id="line-214"></span><span class="anchor" id="line-215"></span><span class="anchor" id="line-216"></span><span class="anchor" id="line-217"></span><pre>cd /tmp
+wget ftp://xmlsoft.org/libxml2/libxml2-2.6.31.tar.gz
+tar zxvf libxml2-2.6.31.tar.gz
+cd libxml-2.6.31
+./configure --prefix=/x --host=i586-mingw32msvc
+make
+make install DESTDIR=/tmp/libxml2-2.6.31-dist
+mv /tmp/libxml2-2.6.31-dist/x /x/stow/libxml2-2.6.31
+cd /x/stow/
+stow libxml2-2.6.31</pre><span class="anchor" id="line-218"></span><p class="line867">
+<h4 id="head-91dce9cfef0393a6db213d48238bab6bd3a9b54e">3.3.3. Zlib</h4>
+<span class="anchor" id="line-219"></span><ol type="1"><li>Get source <span class="anchor" id="line-220"></span><span class="anchor" id="line-221"></span><span class="anchor" id="line-222"></span><span class="anchor" id="line-223"></span><span class="anchor" id="line-224"></span><span class="anchor" id="line-225"></span><pre>cd /tmp
+wget http://www.gzip.org/zlib/zlib-1.2.3.tar.gz
+tar zxvf zlib-1.2.3.tar.gz
+cd zlib-1.2.3</pre><span class="anchor" id="line-226"></span></li><li>Configure <span class="anchor" id="line-227"></span><p class="line891"><img alt="{i}" height="16" src="/moin/freedesktop/img/icon-info.png" title="{i}" width="16" /> Zlib does not use automake/libtool <span class="anchor" id="line-228"></span><span class="anchor" id="line-229"></span><p class="line891"><img alt="(!)" height="15" src="/moin/freedesktop/img/idea.png" title="(!)" width="15" /> We can create and use a cross-compile libtool script doing the following: <span class="anchor" id="line-230"></span><span class="anchor" id="line-231"></span><span class="anchor" id="line-232"></span><span class="anchor" id="line-233"></span><span class="anchor" id="line-234"></span><span class="anchor" id="line-235"></span><span class="anchor" id="line-236"></span><span class="anchor" id="line-237"></span><span class="anchor" id="line-238"></span><span class="anchor" id="line-239"></span><span class="anchor" id="line-240"></span><span class="anchor" id="line-241"></span><span class="anchor" id="line-242"></span><pre>cat &gt; configure.ac &lt;&lt;EOF
+AC_INIT(zlib, 1.2.3)
+
+AC_LIBTOOL_WIN32_DLL
+AC_PROG_LIBTOOL
+EOF
+libtoolize
+aclocal
+autoconf
+touch install.sh
+./configure --prefix=/x --host=i586-mingw32msvc</pre><span class="anchor" id="line-243"></span></li><li>build <span class="anchor" id="line-244"></span><p class="line862">The above would have craeted a <em>libtool</em> script which we will use to build zlib: <span class="anchor" id="line-245"></span><span class="anchor" id="line-246"></span><span class="anchor" id="line-247"></span><span class="anchor" id="line-248"></span><span class="anchor" id="line-249"></span><span class="anchor" id="line-250"></span><pre>for i in adler32 compress crc32 deflate gzio infback inffast inflate inftrees trees uncompr zutil; do \
+  ./libtool --mode=compile --tag=CC i586-mingw32msvc-gcc -O3 -Wall -mthreads -c -o $i.lo $i.c; \
+done
+./libtool --tag=CC --mode=link i586-mingw32msvc-gcc -version-info 1 -mthreads -o libz.la -rpath /x/lib -module  -no-undefined *.lo</pre><span class="anchor" id="line-251"></span></li><li>install <span class="anchor" id="line-252"></span>Manually install required files: <span class="anchor" id="line-253"></span><span class="anchor" id="line-254"></span><span class="anchor" id="line-255"></span><span class="anchor" id="line-256"></span><span class="anchor" id="line-257"></span><span class="anchor" id="line-258"></span><span class="anchor" id="line-259"></span><span class="anchor" id="line-260"></span><pre>mkdir -p /x/stow/zlib-1.2.3/{bin,lib,include}
+./libtool --mode=install /usr/bin/install -c  libz.la /x/stow/zlib-1.2.3/lib/libz.la
+(cd /x/stow/zlib-1.2.3/bin &amp;&amp; ln -s ../lib/*.dll .)
+cp zlib.h zconf.h /x/stow/zlib-1.2.3/include
+cd /x/stow
+stow zlib-1.2.3</pre><span class="anchor" id="line-261"></span></li></ol><p class="line867">
+<h4 id="head-9e540b4a9a4fbf4093ba90a01ccba7730914f189">3.3.4. Libpng</h4>
+<span class="anchor" id="line-262"></span><p class="line867"><span class="anchor" id="line-263"></span><span class="anchor" id="line-264"></span><span class="anchor" id="line-265"></span><span class="anchor" id="line-266"></span><span class="anchor" id="line-267"></span><span class="anchor" id="line-268"></span><span class="anchor" id="line-269"></span><span class="anchor" id="line-270"></span><span class="anchor" id="line-271"></span><span class="anchor" id="line-272"></span><span class="anchor" id="line-273"></span><pre>cd /tmp
+wget http://prdownloads.sourceforge.net/libpng/libpng-1.2.29.tar.bz2
+tar jxvf libpng-1.2.29.tar.bz2
+cd libpng-1.2.29
+LDFLAGS=-L/x/lib CFLAGS=-I/x/include PKG_CONFIG_PATH=/x/lib/pkgconfig ./configure --prefix=/x --host=i586-mingw32msvc
+make
+make -k install DESTDIR=/tmp/libpng-1.2.29-dist
+mv /tmp/libpng-1.2.29-dist/x/ /x/stow/libpng-1.2.29
+cd /x/stow/
+stow libpng-1.2.29</pre><span class="anchor" id="line-274"></span><p class="line867">
+<h4 id="head-4ef67d74f8103393d5c6b4b682e1f7a8690c8a7c">3.3.5. Libogg</h4>
+<span class="anchor" id="line-275"></span><p class="line867"><img alt="/!\" height="15" src="/moin/freedesktop/img/alert.png" title="/!\" width="15" /> Could not compile under mingw 3.4.5 <span class="anchor" id="line-276"></span><span class="anchor" id="line-277"></span><span class="anchor" id="line-278"></span><span class="anchor" id="line-279"></span><span class="anchor" id="line-280"></span><span class="anchor" id="line-281"></span><span class="anchor" id="line-282"></span><span class="anchor" id="line-283"></span><span class="anchor" id="line-284"></span><span class="anchor" id="line-285"></span><span class="anchor" id="line-286"></span><pre>cd /tmp
+wget http://downloads.xiph.org/releases/ogg/libogg-1.1.3.tar.gz
+tar zxvf libogg-1.1.3.tar.gz
+cd libogg-1.1.3
+./configure --prefix=/x --host=i586-mingw32msvc
+make
+make  install DESTDIR=/tmp/libogg-1.1.3-dist
+mv /tmp/libogg-1.1.3-dist/x /x/stow/libogg-1.1.3
+cd /x/stow
+stow libogg-1.1.3</pre><span class="anchor" id="line-287"></span><p class="line867">
+<h4 id="head-c26ae587115b6ceea6b39531d9145b9e24dba8ae">3.3.6. Libvorbis</h4>
+<span class="anchor" id="line-288"></span><p class="line867"><span class="anchor" id="line-289"></span><span class="anchor" id="line-290"></span><span class="anchor" id="line-291"></span><span class="anchor" id="line-292"></span><span class="anchor" id="line-293"></span><span class="anchor" id="line-294"></span><span class="anchor" id="line-295"></span><span class="anchor" id="line-296"></span><span class="anchor" id="line-297"></span><pre>cd /tmp
+wget http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz
+cd libvorbis-1.2.0
+PKG_CONFIG_PATH=/x/lib/pkgconfig ./configure --prefix=/x --host=i586-mingw32msvc
+make LDFLAGS='-L/x/lib -logg' -k
+make LDFLAGS='-L/x/lib -logg' -k install DESTDIR=/tmp/libvorbis-1.2.0-dist
+mv /tmp/libvorbis-1.2.0-dist/x /x/stow/libvorbis-1.2.0
+cd /x/stow
+stow libvorbis-1.2.0</pre><span class="anchor" id="line-298"></span><p class="line867">
+<h4 id="head-fb2d91eba7415b5f2e7085e8524ed44f8c30fb35">3.3.7. a52dec</h4>
+<span class="anchor" id="line-299"></span><ul><li>Get source <span class="anchor" id="line-300"></span><span class="anchor" id="line-301"></span><span class="anchor" id="line-302"></span><span class="anchor" id="line-303"></span><span class="anchor" id="line-304"></span><pre>cd /tmp
+wget http://liba52.sourceforge.net/files/a52dec-0.7.4.tar.gz
+tar zxvf a52dec-0.7.4.tar.gz
+cd a52dec-0.7.4</pre><span class="anchor" id="line-305"></span></li><li>To create a shared DLL you need to update configure using the latest autotools <span class="anchor" id="line-306"></span><span class="anchor" id="line-307"></span><span class="anchor" id="line-308"></span><span class="anchor" id="line-309"></span><span class="anchor" id="line-310"></span><span class="anchor" id="line-311"></span><pre>autoheader
+aclocal
+libtoolize --force
+autoconf
+automake --add-missing</pre><span class="anchor" id="line-312"></span></li><li>Then run configure as usual: <span class="anchor" id="line-313"></span><span class="anchor" id="line-314"></span><span class="anchor" id="line-315"></span><span class="anchor" id="line-316"></span><span class="anchor" id="line-317"></span><span class="anchor" id="line-318"></span><span class="anchor" id="line-319"></span><pre>PKG_CONFIG_PATH=/x/lib/pkgconfig ./configure --prefix=/x --host=i586-mingw32msvc --enable-shared
+make
+make install DESTDIR=/tmp/a52dec-0.7.4-dist
+mv /tmp/a52dec-0.7.4-dist/x /x/stow/a52dec-0.7.4
+cd /x/stow
+stow a52dec-0.7.4  </pre><span class="anchor" id="line-320"></span></li></ul><p class="line867">
+<h4 id="head-d6629fd786b4fd33b7d7882b39a3190b59ed876e">3.3.8. mpeg2dec</h4>
+<span class="anchor" id="line-321"></span><p class="line867"><span class="anchor" id="line-322"></span><span class="anchor" id="line-323"></span><span class="anchor" id="line-324"></span><span class="anchor" id="line-325"></span><span class="anchor" id="line-326"></span><span class="anchor" id="line-327"></span><span class="anchor" id="line-328"></span><span class="anchor" id="line-329"></span><span class="anchor" id="line-330"></span><span class="anchor" id="line-331"></span><span class="anchor" id="line-332"></span><pre>cd /tmp/
+wget http://libmpeg2.sourceforge.net/files/libmpeg2-0.5.1.tar.gz
+tar zxvf libmpeg2-0.5.1.tar.gz
+cd libmpeg2-0.5.1
+PKG_CONFIG_PATH=/x/lib/pkgconfig ./configure --prefix=/x --host=i586-mingw32msvc  --enable-shared
+make
+make install DESTDIR=/tmp/libmpeg2-0.5.1-dist
+mv /tmp/libmpeg2-0.5.1-dist/x /x/stow/libmpeg2-0.5.1
+cd /x/stow/
+stow libmpeg2-0.5.1</pre><span class="anchor" id="line-333"></span><p class="line867">
+<h4 id="head-c38daf1f7c16495e27de0cb6e30f8919d2a2b918">3.3.9. Libdvdread/Libdvdnav</h4>
+<span class="anchor" id="line-334"></span><p class="line867"><img alt="/!\" height="15" src="/moin/freedesktop/img/alert.png" title="/!\" width="15" /> There are some problems compiling/linking against libdvdread on mingw32 4.2.1 (<a class="nonexistent" href="/wiki/TalShalif">TalShalif</a>). <span class="anchor" id="line-335"></span><span class="anchor" id="line-336"></span><p class="line867"><img alt="{i}" height="16" src="/moin/freedesktop/img/icon-info.png" title="{i}" width="16" /> libdvdnav contains a copy of libdvdread. The latest libdvdnav from mplayer seems to include also all the latest dvdread patches. It also does not hard-code dependancy on libdvdcss. <span class="anchor" id="line-337"></span><span class="anchor" id="line-338"></span><p class="line867"><img alt="&lt;!&gt;" height="15" src="/moin/freedesktop/img/attention.png" title="&lt;!&gt;" width="15" /> use <em>make -k</em> due to link error in an unused library <span class="anchor" id="line-339"></span><span class="anchor" id="line-340"></span><span class="anchor" id="line-341"></span><span class="anchor" id="line-342"></span><span class="anchor" id="line-343"></span><span class="anchor" id="line-344"></span><span class="anchor" id="line-345"></span><span class="anchor" id="line-346"></span><span class="anchor" id="line-347"></span><span class="anchor" id="line-348"></span><span class="anchor" id="line-349"></span><span class="anchor" id="line-350"></span><span class="anchor" id="line-351"></span><pre>cd /tmp
+wget http://www7.mplayerhq.hu/MPlayer/releases/dvdnav/libdvdnav-4.1.2.tar.gz
+tar zxvf libdvdnav-4.1.2.tar.gz
+cd libdvdnav-4.1.2
+./autogen.sh noconfig
+PKG_CONFIG_PATH=/x/lib/pkgconfig ./configure --prefix=/x --host=i586-mingw32msvc
+make -k
+make -k install DESTDIR=/tmp/libdvdnav-4.1.2-dist
+mv /tmp/libdvdnav-4.1.2-dist/x /x/stow/libdvdnav-4.1.2
+cd /x/stow
+stow libdvdnav-4.1.2</pre><span class="anchor" id="line-352"></span><p class="line867">
+<h4 id="head-eca21948694de3d0615f466d4977797851d6f7db">3.3.10. Libdvdcss</h4>
+<span class="anchor" id="line-353"></span><p class="line867"><img alt="{i}" height="16" src="/moin/freedesktop/img/icon-info.png" title="{i}" width="16" /> There is no compilation-time dependancy on libdvdcss. However, libdvdread looks for a runtime DLL <em>libdvdcss.dll</em> in order to read encrypted DVDs <span class="anchor" id="line-354"></span><ol type="1"><li>Download and upack code <span class="anchor" id="line-355"></span><span class="anchor" id="line-356"></span><span class="anchor" id="line-357"></span><span class="anchor" id="line-358"></span><span class="anchor" id="line-359"></span><pre>cd /tmp
+wget http://download.videolan.org/pub/libdvdcss/1.2.9/libdvdcss-1.2.9.tar.bz2
+tar jxvf libdvdcss-1.2.9.tar.bz2</pre><span class="anchor" id="line-360"></span></li><li>Configure <span class="anchor" id="line-361"></span><span class="anchor" id="line-362"></span><span class="anchor" id="line-363"></span><span class="anchor" id="line-364"></span><pre>cd libdvdcss-1.2.9
+PKG_CONFIG_PATH=/x/lib/pkgconfig ./configure --prefix=/x --host=i586-mingw32msvc  --enable-shared</pre><span class="anchor" id="line-365"></span></li><li>Force creation of a DLL using our libtool hack <span class="anchor" id="line-366"></span><span class="anchor" id="line-367"></span><span class="anchor" id="line-368"></span><span class="anchor" id="line-369"></span><pre>sed -i 's,build_libtool_libs=no,build_libtool_libs=yes,' libtool
+make</pre><span class="anchor" id="line-370"></span></li><li>Install <span class="anchor" id="line-371"></span><span class="anchor" id="line-372"></span><span class="anchor" id="line-373"></span><span class="anchor" id="line-374"></span><pre>make install DESTDIR=/tmp/libdvdcss-1.2.9-dist
+mv /tmp/libdvdcss-1.2.9-dist/x /x/stow/libdvdcss-1.2.9</pre><span class="anchor" id="line-375"></span></li><li><p class="line862">crete <em>libdvdcss.dll</em>: <span class="anchor" id="line-376"></span><span class="anchor" id="line-377"></span><span class="anchor" id="line-378"></span><span class="anchor" id="line-379"></span><pre>cd /x/stow/libdvdcss-1.2.9/bin
+ln -s libdvdcss-2.dll libdvdcss.dll</pre><span class="anchor" id="line-380"></span></li><li>stow <span class="anchor" id="line-381"></span><span class="anchor" id="line-382"></span><span class="anchor" id="line-383"></span><span class="anchor" id="line-384"></span><pre>cd /x/stow
+stow libdvdcss-1.2.9</pre><span class="anchor" id="line-385"></span></li></ol><p class="line867">
+<h2 id="head-b7f33f3e30f49f6c283e79ae9163e482e2146177">4. Building gstreamer</h2>
+<span class="anchor" id="line-386"></span><p class="line867"><img alt="{i}" height="16" src="/moin/freedesktop/img/icon-info.png" title="{i}" width="16" /> If you want gstreamer's net features, you would need to set WindowsXP compilation compatibility. Put: <span class="anchor" id="line-387"></span><ul><li style="list-style-type:none"><span class="anchor" id="line-388"></span><span class="anchor" id="line-389"></span><pre>export CFLAGS='-mthreads -D_WIN32_WINNT=0x0501 -DWINVER=0x0501'</pre><span class="anchor" id="line-390"></span><p class="line862">before running the <em>configure</em> script under the chroot environment <span class="anchor" id="line-391"></span><span class="anchor" id="line-392"></span></li></ul><p class="line867"><img alt="&lt;!&gt;" height="15" src="/moin/freedesktop/img/attention.png" title="&lt;!&gt;" width="15" /> The chroot environment should really be used only to cross-compile gstreamer. Develop and manage your gstreamer sources under your home directory and chroot into 'gstreamer-mingw' only to run 'configure' and 'make' to build and install. If you have not done so already, on the <strong>linux host</strong>, get the gstreamer source and generate the configuration script under each component. For example: <span class="anchor" id="line-393"></span><span class="anchor" id="line-394"></span><ul><li>Get source <span class="anchor" id="line-395"></span><span class="anchor" id="line-396"></span><span class="anchor" id="line-397"></span><span class="anchor" id="line-398"></span><span class="anchor" id="line-399"></span><span class="anchor" id="line-400"></span><span class="anchor" id="line-401"></span><span class="anchor" id="line-402"></span><span class="anchor" id="line-403"></span><pre>mkdir -p ~/src/gstreamer-dev
+cd ~/src/gstreamer-dev
+cvs -d :pserver:anoncvs@anoncvs.freedesktop.org:/cvs/gstreamer co gstreamer
+cvs -d :pserver:anoncvs@anoncvs.freedesktop.org:/cvs/gstreamer co gst-plugins-base
+cvs -d :pserver:anoncvs@anoncvs.freedesktop.org:/cvs/gstreamer co gst-plugins-good
+cvs -d :pserver:anoncvs@anoncvs.freedesktop.org:/cvs/gstreamer co gst-plugins-bad
+cvs -d :pserver:anoncvs@anoncvs.freedesktop.org:/cvs/gstreamer co gst-plugins-ugly</pre><span class="anchor" id="line-404"></span></li><li>Generate the configure script <span class="anchor" id="line-405"></span><span class="anchor" id="line-406"></span><span class="anchor" id="line-407"></span><span class="anchor" id="line-408"></span><span class="anchor" id="line-409"></span><span class="anchor" id="line-410"></span><span class="anchor" id="line-411"></span><pre>cd ~/src/gstreamer-dev/
+(cd gstreamer &amp;&amp; NOCONFIGURE=1 ./autogen.sh)
+(cd gst-plugins-base &amp;&amp; NOCONFIGURE=1 ./autogen.sh)
+(cd gst-plugins-good &amp;&amp; NOCONFIGURE=1 ./autogen.sh)
+(cd gst-plugins-bad &amp;&amp; NOCONFIGURE=1 ./autogen.sh)
+(cd gst-plugins-ugly &amp;&amp; NOCONFIGURE=1 ./autogen.sh)</pre><span class="anchor" id="line-412"></span></li></ul><p class="line867">
+<h3 id="head-3a017b373282f6eba40ceafd8e3ef415ece71677">4.1. gstreamer</h3>
+<span class="anchor" id="line-413"></span><p class="line867"><img alt="(!)" height="15" src="/moin/freedesktop/img/idea.png" title="(!)" width="15" /> gstreamer and gst-* have <em>-Werror</em> in CFLAGS, so some win32-specific compilation warnings will cause make to fail. You can try running <em>make ERROR_CFLAGS="-Wall -Wdeclaration-after-statement -fno-strict-aliasing"</em> to ignore such warnings. <span class="anchor" id="line-414"></span><span class="anchor" id="line-415"></span><p class="line867"><img alt="(!)" height="15" src="/moin/freedesktop/img/idea.png" title="(!)" width="15" /> Under 'gstreamer-mingw' chroot: <span class="anchor" id="line-416"></span><span class="anchor" id="line-417"></span><ul><li>configure   <span class="anchor" id="line-418"></span><span class="anchor" id="line-419"></span><span class="anchor" id="line-420"></span><span class="anchor" id="line-421"></span><pre>cd ~/src/gstreamer-dev/gstreamer
+PKG_CONFIG_PATH=/x/lib/pkgconfig ./configure --prefix=/x --host=i586-mingw32msvc</pre><span class="anchor" id="line-422"></span></li><li>build <span class="anchor" id="line-423"></span><span class="anchor" id="line-424"></span><span class="anchor" id="line-425"></span><pre>make</pre><span class="anchor" id="line-426"></span></li><li>install <span class="anchor" id="line-427"></span><span class="anchor" id="line-428"></span><span class="anchor" id="line-429"></span><span class="anchor" id="line-430"></span><span class="anchor" id="line-431"></span><span class="anchor" id="line-432"></span><span class="anchor" id="line-433"></span><span class="anchor" id="line-434"></span><span class="anchor" id="line-435"></span><span class="anchor" id="line-436"></span><span class="anchor" id="line-437"></span><pre>ver=`date +%Y%m%d`
+name=gstreamer
+rm -rf /tmp/${name}-${ver}-dist
+make DESTDIR=/tmp/${name}-${ver}-dist install
+(cd /x/stow &amp;&amp; stow -D ${name}-*)
+rm -rf /x/stow/${name}-${ver}
+mv /tmp/${name}-${ver}-dist/x /x/stow/${name}-${ver}
+cd /x/stow/
+stow ${name}-${ver}</pre><span class="anchor" id="line-438"></span></li></ul><p class="line867">
+<h3 id="head-5f82ce01d674c98e07bec46732eb19a3e33cef8a">4.2. gst-plugins-base</h3>
+<span class="anchor" id="line-439"></span><p class="line867"><img alt="{i}" height="16" src="/moin/freedesktop/img/icon-info.png" title="{i}" width="16" /> compile and install 3rd party libogg, libvorbis if you want these plugins to be installed. <span class="anchor" id="line-440"></span><span class="anchor" id="line-441"></span><p class="line867"><img alt="(!)" height="15" src="/moin/freedesktop/img/idea.png" title="(!)" width="15" /> Under 'gstreamer-mingw' chroot: <span class="anchor" id="line-442"></span><ul><li>configure    <span class="anchor" id="line-443"></span><span class="anchor" id="line-444"></span><span class="anchor" id="line-445"></span><span class="anchor" id="line-446"></span><pre>cd ~/src/gstreamer-dev/gst-plugins-base
+PKG_CONFIG_PATH=/x/lib/pkgconfig ./configure --prefix=/x --host=i586-mingw32msvc</pre><span class="anchor" id="line-447"></span></li><li>build <span class="anchor" id="line-448"></span><span class="anchor" id="line-449"></span><span class="anchor" id="line-450"></span><pre>make</pre><span class="anchor" id="line-451"></span></li><li>install <span class="anchor" id="line-452"></span><span class="anchor" id="line-453"></span><span class="anchor" id="line-454"></span><span class="anchor" id="line-455"></span><span class="anchor" id="line-456"></span><span class="anchor" id="line-457"></span><span class="anchor" id="line-458"></span><pre>ver=`date +%Y%m%d`
+make install DESTDIR=/tmp/gst-plugins-base-${ver}-dist
+mv /tmp/gst-plugins-base-${ver}-dist/x /x/stow/gst-plugins-base-${ver}
+cd /x/stow/
+stow gst-plugins-base-${ver}</pre><span class="anchor" id="line-459"></span></li></ul><p class="line867">
+<h3 id="head-af94b8930d738d42889cd975bb08ded55779fd7d">4.3. gst-plugins-good</h3>
+<span class="anchor" id="line-460"></span><p class="line867"><img alt="{i}" height="16" src="/moin/freedesktop/img/icon-info.png" title="{i}" width="16" /> you will need to install the directx headers to compile the directvideosink and directaudiosink. <span class="anchor" id="line-461"></span><span class="anchor" id="line-462"></span><p class="line867"><img alt="(!)" height="15" src="/moin/freedesktop/img/idea.png" title="(!)" width="15" /> Under 'gstreamer-mingw' chroot: <span class="anchor" id="line-463"></span><span class="anchor" id="line-464"></span><ul><li>configure <span class="anchor" id="line-465"></span><span class="anchor" id="line-466"></span><span class="anchor" id="line-467"></span><span class="anchor" id="line-468"></span><pre>cd ~/src/gstreamer-dev/gst-plugins-good
+PKG_CONFIG_PATH=/x/lib/pkgconfig ./configure --prefix=/x --host=i586-mingw32msvc</pre><span class="anchor" id="line-469"></span></li><li>build <span class="anchor" id="line-470"></span><span class="anchor" id="line-471"></span><span class="anchor" id="line-472"></span><pre>make ERROR_CFLAGS='-Wall -Wdeclaration-after-statement -fno-strict-aliasing'</pre><span class="anchor" id="line-473"></span></li><li>install <span class="anchor" id="line-474"></span><span class="anchor" id="line-475"></span><span class="anchor" id="line-476"></span><span class="anchor" id="line-477"></span><span class="anchor" id="line-478"></span><span class="anchor" id="line-479"></span><span class="anchor" id="line-480"></span><pre>ver=`date +%Y%m%d`
+make ERROR_CFLAGS='-Wall -Wdeclaration-after-statement -fno-strict-aliasing' install DESTDIR=/tmp/gst-plugins-good-${ver}-dist
+mv /tmp/gst-plugins-good-${ver}-dist/x /x/stow/gst-plugins-good-${ver}
+cd /x/stow/
+stow gst-plugins-good-${ver}</pre><span class="anchor" id="line-481"></span></li></ul><p class="line867">
+<h3 id="head-2c3fa59b719602d055ac67c40e5aadded47386a1">4.4. gst-plugins-bad</h3>
+<span class="anchor" id="line-482"></span><p class="line867"><img alt="(!)" height="15" src="/moin/freedesktop/img/idea.png" title="(!)" width="15" /> Under 'gstreamer-mingw' chroot: <span class="anchor" id="line-483"></span><span class="anchor" id="line-484"></span><ul><li>configure <span class="anchor" id="line-485"></span><span class="anchor" id="line-486"></span><span class="anchor" id="line-487"></span><span class="anchor" id="line-488"></span><pre>cd ~/src/gstreamer-dev/gst-plugins-bad
+PKG_CONFIG_PATH=/x/lib/pkgconfig ./configure --prefix=/x --host=i586-mingw32msvc</pre><span class="anchor" id="line-489"></span></li><li>build <span class="anchor" id="line-490"></span><span class="anchor" id="line-491"></span><pre>make ERROR_CFLAGS='-Wall -Wdeclaration-after-statement -fno-strict-aliasing'</pre><span class="anchor" id="line-492"></span></li><li>instal <span class="anchor" id="line-493"></span><span class="anchor" id="line-494"></span><span class="anchor" id="line-495"></span><span class="anchor" id="line-496"></span><span class="anchor" id="line-497"></span><span class="anchor" id="line-498"></span><span class="anchor" id="line-499"></span><pre>ver=`date +%Y%m%d`
+make ERROR_CFLAGS='-Wall -Wdeclaration-after-statement -fno-strict-aliasing' install DESTDIR=/tmp/gst-plugins-bad-${ver}-dist
+mv /tmp/gst-plugins-bad-${ver}-dist/x /x/stow/gst-plugins-bad-${ver}
+cd /x/stow/
+stow gst-plugins-bad-${ver}</pre><span class="anchor" id="line-500"></span></li></ul><p class="line867">
+<h3 id="head-ce3edf2b6fdb73e84e85a511a40b542ae734b340">4.5. gst-plugins-ugly</h3>
+<span class="anchor" id="line-501"></span><p class="line867"><img alt="/!\" height="15" src="/moin/freedesktop/img/alert.png" title="/!\" width="15" /> The dvdreadsrc plugin compiled with mingw32 4.2.1 did not work for me (<a class="nonexistent" href="/wiki/TalShalif">TalShalif</a>), while the same compiled with mingw 3.4.5 worked fine (you can even copy the one you compiled on 3.4.5 to 4.2.1 and see either it will work for you too).  <span class="anchor" id="line-502"></span><span class="anchor" id="line-503"></span><p class="line867"><img alt="(!)" height="15" src="/moin/freedesktop/img/idea.png" title="(!)" width="15" /> Under 'gstreamer-mingw' chroot: <span class="anchor" id="line-504"></span><span class="anchor" id="line-505"></span><ul><li>configure <span class="anchor" id="line-506"></span><span class="anchor" id="line-507"></span><span class="anchor" id="line-508"></span><span class="anchor" id="line-509"></span><pre>cd ~/src/gstreamer-dev/gst-plugins-ugly
+PKG_CONFIG_PATH=/x/lib/pkgconfig ./configure --prefix=/x --host=i586-mingw32msvc</pre><span class="anchor" id="line-510"></span></li><li>build <span class="anchor" id="line-511"></span><span class="anchor" id="line-512"></span><pre>make ERROR_CFLAGS='-Wall -Wdeclaration-after-statement -fno-strict-aliasing'</pre><span class="anchor" id="line-513"></span></li><li>install <span class="anchor" id="line-514"></span><span class="anchor" id="line-515"></span><span class="anchor" id="line-516"></span><span class="anchor" id="line-517"></span><span class="anchor" id="line-518"></span><span class="anchor" id="line-519"></span><span class="anchor" id="line-520"></span><pre>ver=`date +%Y%m%d`
+make ERROR_CFLAGS='-Wall -Wdeclaration-after-statement -fno-strict-aliasing' install DESTDIR=/tmp/gst-plugins-ugly-${ver}-dist
+mv /tmp/gst-plugins-ugly-${ver}-dist/x /x/stow/gst-plugins-ugly-${ver}
+cd /x/stow/
+stow gst-plugins-ugly-${ver}</pre><span class="anchor" id="line-521"></span></li></ul><p class="line867">
+<h2 id="head-978bffe7fb071833f835dac65b97b3a1fe63a1dd">5. Plugin specific build problems</h2>
+<span class="anchor" id="line-522"></span><p class="line867"><img alt="(!)" height="15" src="/moin/freedesktop/img/idea.png" title="(!)" width="15" /> You can try to disable plugins which break your build with <em>--disable-xx</em> - run ./configure --help for more details <span class="anchor" id="line-523"></span><span class="anchor" id="line-524"></span><p class="line867"><img alt="{i}" height="16" src="/moin/freedesktop/img/icon-info.png" title="{i}" width="16" /> Some plugins will not be built for reasons such as faulty shared library dependancy detection. You can always go directly to the plugin sub-directory and run <em>make</em> there to build that particular plugin. You will need to manually copy the result DLL file to /x/stow/gst-plugins-xxx-vvv/lib/gstreamer-0.10 and run <em>stow --restow</em> on gst-plugins-xxx-vvv. Look at the directdraw/directsound example below - you may or may not need to use the <em>forcedll-libtool</em> hack. <span class="anchor" id="line-525"></span>
+<h3 id="head-9f66975cce090098afd9d96362134e7b0d2a3ed5">5.1. directdraw, directsound</h3>
+<span class="anchor" id="line-526"></span><p class="line874">libtool refuses to create the plugin DLLs for directdraw and directsound - both under gst-plugins-good. I have managed to force-create those using the following (the following example is for directdraw, but the same methodology applies to directsound): <span class="anchor" id="line-527"></span><ol type="1"><li>The following changes to ltmain.sh will force libtool to at least go through the steps of making the DLLs: <span class="anchor" id="line-528"></span><span class="anchor" id="line-529"></span><span class="anchor" id="line-530"></span><span class="anchor" id="line-531"></span><pre>cd ~/src/gstreamer-dev/gst-plugins-good
+sed 's,build_libtool_libs=no,build_libtool_libs=yes,' &lt; libtool &gt; forcedll-libtool</pre><span class="anchor" id="line-532"></span></li><li>rebuild directdraw usgin forcedll-libtool <span class="anchor" id="line-533"></span><span class="anchor" id="line-534"></span><span class="anchor" id="line-535"></span><span class="anchor" id="line-536"></span><span class="anchor" id="line-537"></span><pre>cd ~/src/gstreamer-dev/gst-plugins-good/sys/directdraw
+make clean
+make ERROR_CFLAGS='-Wall -Wdeclaration-after-statement -fno-strict-aliasing'</pre><span class="anchor" id="line-538"></span></li><li>re-ran manually the last libtool link phase replacing ../../libtool with ../../forcedll-libtool: <span class="anchor" id="line-539"></span><span class="anchor" id="line-540"></span>e.g. <span class="anchor" id="line-541"></span><span class="anchor" id="line-542"></span><span class="anchor" id="line-543"></span><span class="anchor" id="line-544"></span><pre>/bin/bash ../../libtool --tag=CC --mode=link i586-mingw32msvc-gcc  -g -O2   -o libgstdirectdrawsink.la -rpath /x/lib/gstreamer-0.10 -module -avoid-version -export-symbols-regex '^_*gst_plugin_desc$' -no-undefined libgstdirectdrawsink_la-gstdirectdrawsink.lo libgstdirectdrawsink_la-gstdirectdrawplugin.lo -lddraw -ldxguid -lgdi32 -L/x/lib -lgstbase-0.10 -lgstreamer-0.10 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lxml2 -lglib-2.0 -lintl   -L/x/lib -lgstreamer-0.10 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lxml2 -lglib-2.0 -lintl   -lgstvideo-0.10 -lgstinterfaces-0.10</pre><span class="anchor" id="line-545"></span><span class="anchor" id="line-546"></span>with: <span class="anchor" id="line-547"></span><span class="anchor" id="line-548"></span><span class="anchor" id="line-549"></span><span class="anchor" id="line-550"></span><pre>/bin/bash ../../forcedll-libtool --tag=CC --mode=link i586-mingw32msvc-gcc  -g -O2   -o libgstdirectdrawsink.la -rpath /x/lib/gstreamer-0.10 -module -avoid-version -export-symbols-regex '^_*gst_plugin_desc$' -no-undefined libgstdirectdrawsink_la-gstdirectdrawsink.lo libgstdirectdrawsink_la-gstdirectdrawplugin.lo -lddraw -ldxguid -lgdi32 -L/x/lib -lgstbase-0.10 -lgstreamer-0.10 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lxml2 -lglib-2.0 -lintl   -L/x/lib -lgstreamer-0.10 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lxml2 -lglib-2.0 -lintl   -lgstvideo-0.10 -lgstinterfaces-0.10</pre><span class="anchor" id="line-551"></span><span class="anchor" id="line-552"></span></li><li class="gap">Ran manually the final from the above output gcc link command appending the missing library libtool complains it can not find (-ldxguid in directdraw's case): <span class="anchor" id="line-553"></span><span class="anchor" id="line-554"></span>e.g. replace:  <span class="anchor" id="line-555"></span><span class="anchor" id="line-556"></span><span class="anchor" id="line-557"></span><span class="anchor" id="line-558"></span><pre>i586-mingw32msvc-gcc -shared .libs/libgstdirectdrawsink.dll.def  .libs/libgstdirectdrawsink_la-gstdirectdrawsink.o .libs/libgstdirectdrawsink_la-gstdirectdrawplugin.o  -lddraw -lgdi32 -L/x/lib /x/lib/libgstbase-0.10.dll.a /x/lib/libgstreamer-0.10.dll.a -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 /x/lib/libxml2.dll.a -lglib-2.0 -lintl /x/lib/libgstvideo-0.10.dll.a /x/lib/libgstinterfaces-0.10.dll.a  -o .libs/libgstdirectdrawsink.dll -Wl,--enable-auto-image-base -Xlinker --out-implib -Xlinker .libs/libgstdirectdrawsink.dll.a</pre><span class="anchor" id="line-559"></span><span class="anchor" id="line-560"></span>with: <span class="anchor" id="line-561"></span><span class="anchor" id="line-562"></span><span class="anchor" id="line-563"></span><span class="anchor" id="line-564"></span><pre>i586-mingw32msvc-gcc -shared .libs/libgstdirectdrawsink.dll.def  .libs/libgstdirectdrawsink_la-gstdirectdrawsink.o .libs/libgstdirectdrawsink_la-gstdirectdrawplugin.o  -lddraw -lgdi32 -L/x/lib /x/lib/libgstbase-0.10.dll.a /x/lib/libgstreamer-0.10.dll.a -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 /x/lib/libxml2.dll.a -lglib-2.0 -lintl /x/lib/libgstvideo-0.10.dll.a /x/lib/libgstinterfaces-0.10.dll.a  -o .libs/libgstdirectdrawsink.dll -Wl,--enable-auto-image-base -Xlinker --out-implib -Xlinker .libs/libgstdirectdrawsink.dll.a -ldxguid</pre><span class="anchor" id="line-565"></span></li><li>Copy DLL to plugin directory <span class="anchor" id="line-566"></span><span class="anchor" id="line-567"></span><span class="anchor" id="line-568"></span><span class="anchor" id="line-569"></span><span class="anchor" id="line-570"></span><pre>cp .libs/*.dll /x/stow/gst-plugins-good-${ver}/lib/gstreamer-0.10
+cd /x/stow
+stow --restow gst-plugins-good-${ver}</pre><span class="anchor" id="line-571"></span></li></ol><p class="line867">
+<h3 id="head-d618b5b4c1c045f08b0a28c91a8ec74fb3c551c0">5.2. dvdread</h3>
+<span class="anchor" id="line-572"></span><p class="line862">configure disabled this plugin due to libdvdread detection failure. When manually compiling this plugin I had to re-ran manually the last <em>libtool --tag=CC --mode=link</em> command with <em>-dvdread</em> appended. <span class="anchor" id="line-573"></span>
+<h3 id="head-9b4e473a0b6f9fde7ac14f51ae9268c9040bee6c">5.3. a52</h3>
+<span class="anchor" id="line-574"></span><p class="line862">I had to re-ran manually the last <em>libtool --tag=CC --mode=link</em> command with <em>-a52</em> appended. <span class="anchor" id="line-575"></span>
+<h2 id="head-464ce281dadea1a3fd833c8ec15345559267b69c">6. Testing</h2>
+<span class="anchor" id="line-576"></span><p class="line867">
+<h3 id="head-a926d6a380722101b14eae8d023c55f8d312d657">6.1. Using wine</h3>
+<span class="anchor" id="line-577"></span><p class="line867"><img alt="(!)" height="15" src="/moin/freedesktop/img/idea.png" title="(!)" width="15" /> Do this on your real linux machine. <span class="anchor" id="line-578"></span><span class="anchor" id="line-579"></span><p class="line874">Install wine and try to run some simple pipelines: <span class="anchor" id="line-580"></span><ul><li>Install the wine package <span class="anchor" id="line-581"></span><span class="anchor" id="line-582"></span><span class="anchor" id="line-583"></span><pre>sudo apt-get install wine</pre><span class="anchor" id="line-584"></span></li><li>Run a pipeline <span class="anchor" id="line-585"></span><span class="anchor" id="line-586"></span><span class="anchor" id="line-587"></span><span class="anchor" id="line-588"></span><span class="anchor" id="line-589"></span><span class="anchor" id="line-590"></span><pre>cd /x/bin
+wine ./gst-launch-0.10.exe fakesrc ! fakesink
+wine ./gst-launch-0.10.exe audiotestsrc ! directsoundsink
+wine ./gst-launch-0.10.exe videotestsrc ! directdrawsink</pre><span class="anchor" id="line-591"></span></li></ul><p class="line867">
+<h3 id="head-dd06d6a10420ca0a56d44a1f30edd582a433a061">6.2. On a real MS Windows machine</h3>
+<span class="anchor" id="line-592"></span><p class="line867"><img alt="(!)" height="15" src="/moin/freedesktop/img/idea.png" title="(!)" width="15" /> you need to configure samba with user home directory accsess on your linux machine. <span class="anchor" id="line-593"></span><span class="anchor" id="line-594"></span><p class="line874">Suposing your Linux machine IP address is 10.0.0.1: <span class="anchor" id="line-595"></span><ul><li>log onto your windows machine: <span class="anchor" id="line-596"></span><ul><li style="list-style-type:none">Map \\10.0.0.1\tanaka to drive X: <span class="anchor" id="line-597"></span></li></ul></li><li>Run a command shell: <span class="anchor" id="line-598"></span><span class="anchor" id="line-599"></span><span class="anchor" id="line-600"></span><span class="anchor" id="line-601"></span><span class="anchor" id="line-602"></span><pre>C:\&gt; X:
+X:\bin&gt;gst-launch-0.10.exe --gst-plugin-path=x:/lib/gstreamer-0.10 fakesrc ! fakesink
+X:\bin&gt;gst-launch-0.10.exe --gst-plugin-path=x:/lib/gstreamer-0.10 videotestsrc ! directdrawsink</pre><span class="anchor" id="line-603"></span>Or if you have MSYS: <span class="anchor" id="line-604"></span><span class="anchor" id="line-605"></span><span class="anchor" id="line-606"></span><span class="anchor" id="line-607"></span><pre>$ cd /x/bin
+$ gst-launch-0.10.exe --gst-plugin-path=x:/lib/gstreamer-0.10 fakesrc ! fakesink</pre><span class="anchor" id="line-608"></span><span class="anchor" id="line-609"></span></li></ul><p class="line874">Other pipelines to try: <span class="anchor" id="line-610"></span><span class="anchor" id="line-611"></span><span class="anchor" id="line-612"></span><pre>x:/bin/gst-launch-0.10.exe --gst-plugin-path=x:/lib/gstreamer-0.10 dvdreadsrc device=e: ! queue ! dvddemux name=demux .current_video ! queue ! mpeg2dec ! ffmpegcolorspace ! directdrawsink demux.current_audio ! queue ! a52dec ! audioconvert ! directsoundsink</pre><span class="anchor" id="line-613"></span><div class="footnotes"><ol><li><p><a id="fnref-593d3505d2c410341aa2efc9124339e5dd99528e"></a><span class="anchor" id="line-1"></span>I am running Ubuntu 8.04.1  (<a href="#fndef-593d3505d2c410341aa2efc9124339e5dd99528e-0">1</a>)</li></ol></div><span class="anchor" id="bottom"></span></div><div id="pagebottom"></div>
+</div>
+
+
+<div id="footer">
+<p id="pageinfo" class="info" lang="en" dir="ltr">GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment  (last edited 2009-01-13 11:33:33 by <span title="??? @ localhost[127.0.0.1]">localhost</span>)</p>
+
+<ul class="editbar"><li><span class="disabled">Immutable Page</span></li></ul><p><a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=refresh" rel="nofollow">DeleteCache</a> (cached 2009-10-20 19:32:34)</p><p>Or try one of these actions: <a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=AttachFile" rel="nofollow">Attachments</a>, <a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=CopyPage" rel="nofollow">CopyPage</a>, <a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=Despam" rel="nofollow">Despam</a>, <a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=LikePages" rel="nofollow">LikePages</a>, <a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=Load" rel="nofollow">Load</a>, <a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=LocalSiteMap" rel="nofollow">LocalSiteMap</a>, <a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=MyPages" rel="nofollow">MyPages</a>, <a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=PackagePages" rel="nofollow">PackagePages</a>, <a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=RenderAsDocbook" rel="nofollow">RenderAsDocbook</a>, <a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=Save" rel="nofollow">Save</a>, <a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=SpellCheck" rel="nofollow">SpellCheck</a>, <a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=SubscribeUser" rel="nofollow">SubscribeUser</a>, <a href="/wiki/GStreamer_Cross_Compile_With_MinGW_In_Chroot_Environment?action=SyncPages" rel="nofollow">SyncPages</a></p>
+
+</div>
+<ul id="credits">
+<li><a href="http://moinmo.in/" title="This site uses the MoinMoin Wiki software.">MoinMoin Powered</a></li><li><a href="http://moinmo.in/Python" title="MoinMoin is written in Python.">Python Powered</a></li><li><a href="http://moinmo.in/GPL" title="MoinMoin is GPL licensed.">GPL licensed</a></li><li><a href="http://validator.w3.org/check?uri=referer" title="Click here to validate this page.">Valid HTML 4.01</a></li>
+</ul>
+
+
+</body>
+</html>
+

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+  targetNamespace="urn:ietf:params:xml:ns:pidf:geopriv10"
+  xmlns:tns="urn:ietf:params:xml:ns:pidf:geopriv10"
+  xmlns:gbp="urn:ietf:params:xml:ns:pidf:geopriv10:basicPolicy"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+<xs:import namespace=
+     "urn:ietf:params:xml:ns:pidf:geopriv10:basicPolicy" />
+
+   <!-- This import brings in the XML language attribute xml:lang-->
+
+   <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+     schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+
+   <xs:element name="geopriv" type="tns:geopriv"/>
+
+<xs:complexType name="geopriv">
+ <xs:sequence>
+   <xs:element name="location-info" type="tns:locInfoType"
+      minOccurs="1" maxOccurs="1"/>
+   <xs:element name="usage-rules" type="gbp:locPolicyType"
+      minOccurs="1" maxOccurs="1"/>
+   <xs:element name="method" type="tns:locMethod"
+      minOccurs="0" maxOccurs="1"/>
+   <xs:element name="provided-by" type="tns:locProvidedBy"
+      minOccurs="0" maxOccurs="1"/>
+   <xs:any namespace="##other" processContents="lax" minOccurs="0"
+      maxOccurs="unbounded"/>
+ </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="locInfoType">
+ <xs:sequence>
+   <xs:any namespace="##other" processContents="lax" minOccurs="0"
+      maxOccurs="unbounded"/>
+ </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="locMethod">
+  <xs:simpleContent>
+    <xs:extension base="xs:string">
+      <xs:attribute ref="xml:lang" />
+    </xs:extension>
+  </xs:simpleContent>
+</xs:complexType>
+
+<xs:complexType name="locProvidedBy">
+ <xs:sequence>
+   <xs:any namespace="##other" processContents="skip"
+      minOccurs="1" maxOccurs="unbounded"/>
+ </xs:sequence>
+</xs:complexType>
+
+</xs:schema>

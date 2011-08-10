@@ -1,0 +1,258 @@
+
+%{
+#include "ActionConfig.h"
+#include "MediaSessionMgr.h"
+#include "MediaContent.h"
+#include "SipUri.h"
+#include "SipMessage.h"
+#include "SipEvent.h"
+#include "SipSession.h"
+
+#include "ProxyPluginMgr.h"
+#include "ProxyConsumer.h"
+#include "ProxyProducer.h"
+
+#include "SipCallback.h"
+#include "SafeObject.h"
+#include "SipStack.h"
+%}
+
+/* Callbacks */
+%feature("director") SipCallback;
+%feature("director") ProxyPluginMgrCallback;
+%feature("director") ProxyAudioConsumerCallback;
+%feature("director") ProxyVideoConsumerCallback;
+%feature("director") ProxyAudioProducerCallback;
+%feature("director") ProxyVideoProducerCallback;
+
+
+%nodefaultctor;
+%include "ActionConfig.h"
+%include "MediaSessionMgr.h"
+%include "MediaContent.h"
+%include "SipUri.h"
+%include "SipMessage.h"
+%include "SipEvent.h"
+%include "SipSession.h"
+
+%include "ProxyPluginMgr.h"
+%include "ProxyConsumer.h"
+%include "ProxyProducer.h"
+
+%include "SipCallback.h"
+%include "SafeObject.h"
+%include "SipStack.h"
+%clearnodefaultctor;
+
+
+
+
+
+/* ====== From "tinySIP\include\tinysip\tsip_event.h"  ====== */
+typedef enum tsip_event_type_e
+{
+	tsip_event_invite,
+	tsip_event_message,
+	tsip_event_options,
+	tsip_event_publish,
+	tsip_event_register,
+	tsip_event_subscribe,
+	
+	tsip_event_dialog
+}
+tsip_event_type_t;
+
+// 7xx ==> errors
+#define tsip_event_code_dialog_transport_error		702
+#define tsip_event_code_dialog_global_error			703
+#define tsip_event_code_dialog_message_error		704
+
+// 8xx ==> success
+#define tsip_event_code_dialog_request_incoming		800
+#define tsip_event_code_dialog_request_cancelled	801
+#define tsip_event_code_dialog_request_sent			802
+
+// 9xx ==> Informational
+#define tsip_event_code_dialog_connecting			900
+#define tsip_event_code_dialog_connected			901
+#define tsip_event_code_dialog_terminating			902
+#define tsip_event_code_dialog_terminated			903
+#define tsip_event_code_stack_started				950
+#define tsip_event_code_stack_stopped				951
+#define tsip_event_code_stack_failed_to_start		952
+#define tsip_event_code_stack_failed_to_stop		953
+
+/* ====== From "tinySIP\include\tinysip\tsip_api_register.h"  ====== */
+typedef enum tsip_register_event_type_e
+{
+	tsip_i_newreg,
+
+	tsip_i_register, // refresh
+	tsip_ao_register,
+
+	tsip_i_unregister,
+	tsip_ao_unregister,
+}
+tsip_register_event_type_t;
+
+/* ====== From "tinySIP\include\tinysip\tsip_api_subscribe.h"  ====== */
+typedef enum tsip_subscribe_event_type_e
+{
+	tsip_i_subscribe,
+	tsip_ao_subscribe,
+	
+	tsip_i_unsubscribe,
+	tsip_ao_unsubscribe,
+
+	tsip_i_notify,
+	tsip_ao_notify
+}
+tsip_subscribe_event_type_t;
+
+/* ====== From "tinySIP\include\tinysip\tsip_api_publish.h"  ====== */
+typedef enum tsip_publish_event_type_e
+{
+	tsip_i_publish,
+	tsip_ao_publish,
+	
+	tsip_i_unpublish,
+	tsip_ao_unpublish
+}
+tsip_publish_event_type_t;
+
+/* ====== From "tinySIP\include\tinysip\tsip_api_message.h"  ====== */
+typedef enum tsip_message_event_type_e
+{
+	tsip_i_message,
+	tsip_ao_message,
+}
+tsip_message_event_type_t;
+
+/* ====== From "tinySIP\include\tinysip\tsip_api_options.h"  ====== */
+typedef enum tsip_options_event_type_e
+{
+	tsip_i_options,
+	tsip_ao_options,
+}
+tsip_options_event_type_t;
+
+
+/* ====== From "tinySIP\include\tinysip\tsip_api_invite.h"  ====== */
+typedef enum tsip_invite_event_type_e
+{
+	// ============================
+	//	Sip Events
+	//
+	tsip_i_newcall,
+	
+	//! in-dialog requests/reponses
+	tsip_i_request,
+	tsip_ao_request,
+	
+	/* Explicit Call Transfer (ECT) */
+	tsip_o_ect_ok,
+	tsip_o_ect_nok,
+	tsip_i_ect,
+	
+	// ============================
+	//	Media Events
+	//
+
+	tsip_m_early_media,
+
+	/* 3GPP TS 24.610: Communication Hold */
+	tsip_m_local_hold_ok,
+	tsip_m_local_hold_nok,
+	tsip_m_local_resume_ok,
+	tsip_m_local_resume_nok,
+	tsip_m_remote_hold,
+	tsip_m_remote_resume,
+}
+tsip_invite_event_type_t;
+
+
+
+/* ====== From "tinymedia/tmedia_common.h"  ====== */
+// used by tinyWRAP
+typedef enum tmedia_chroma_e
+{
+	tmedia_rgb24,		// will be stored as bgr24 on x86 (little endians) machines; e.g. WindowsPhone7
+	tmedia_bgr24,		// used by windows consumer (DirectShow) - 
+	tmedia_rgb32,       // used by iOS4 consumer (iPhone and iPod touch)
+	tmedia_rgb565le,	// (used by both android and wince consumers)
+	tmedia_rgb565be,
+	tmedia_nv12, // used by iOS4 producer (iPhone and iPod Touch 3GS and 4)
+	tmedia_nv21, // Yuv420 SP (used by android producer)
+	tmedia_yuv422p,
+	tmedia_uyvy422, // used by iOS4 producer (iPhone and iPod Touch 3G)
+	tmedia_yuv420p, // Default
+}
+tmedia_chroma_t;
+
+/* ====== From "tinymedia/tmedia_qos.h"  ====== */
+typedef enum tmedia_qos_stype_e
+{
+	tmedia_qos_stype_none,/* not part of the RFC */
+
+	tmedia_qos_stype_segmented,
+	tmedia_qos_stype_e2e,
+}
+tmedia_qos_stype_t;
+
+/* ====== From "tinymedia/tmedia_qos.h"  ====== */
+typedef enum tmedia_qos_strength_e
+{
+	/* do no change the order (none -> optional -> manadatory) */
+	tmedia_qos_strength_none,	
+	tmedia_qos_strength_failure,
+	tmedia_qos_strength_unknown,
+	tmedia_qos_strength_optional,
+	tmedia_qos_strength_mandatory
+}
+tmedia_qos_strength_t;
+
+/* ====== From "tinymedia/tmedia_common.h"  ====== */
+typedef enum tmedia_bandwidth_level_e
+{
+	tmedia_bl_low,
+	tmedia_bl_medium,
+	tmedia_bl_hight
+}
+tmedia_bandwidth_level_t;
+
+
+/* ====== From "tinydav/tdav.h"  ====== */
+typedef enum tdav_codec_id_e
+{
+	tdav_codec_id_none = 0x00000000,
+	
+	tdav_codec_id_amr_nb_oa = 0x00000001<<0,
+	tdav_codec_id_amr_nb_be = 0x00000001<<1,
+	tdav_codec_id_amr_wb_oa = 0x00000001<<2,
+	tdav_codec_id_amr_wb_be = 0x00000001<<3,
+	tdav_codec_id_gsm = 0x00000001<<4,
+	tdav_codec_id_pcma = 0x00000001<<5,
+	tdav_codec_id_pcmu = 0x00000001<<6,
+	tdav_codec_id_ilbc = 0x00000001<<7,
+	tdav_codec_id_speex_nb = 0x00000001<<8,
+	tdav_codec_id_speex_wb = 0x00000001<<9,
+	tdav_codec_id_speex_uwb = 0x00000001<<10,
+	tdav_codec_id_bv16 = 0x00000001<<11,
+	tdav_codec_id_bv32 = 0x00000001<<12,
+	tdav_codec_id_evrc = 0x00000001<<13,
+	tdav_codec_id_g729ab = 0x00000001<<14,
+	
+	/* room for new Audio codecs */
+	
+	tdav_codec_id_h261 = 0x00010000<<0,
+	tdav_codec_id_h263 = 0x00010000<<1,
+	tdav_codec_id_h263p = 0x00010000<<2,
+	tdav_codec_id_h263pp = 0x00010000<<3,
+	tdav_codec_id_h264_bp10 = 0x00010000<<4,
+	tdav_codec_id_h264_bp20 = 0x00010000<<5,
+	tdav_codec_id_h264_bp30 = 0x00010000<<6,
+	tdav_codec_id_theora = 0x00010000<<7,
+	tdav_codec_id_mp4ves_es = 0x00010000<<8,
+
+}
+tdav_codec_id_t;

@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>doubango - open source 3GPP IMS/LTE framework for embedded systems</title>
+  <meta name="Keywords" content="doubango, 3GPP IMS/LTE framework, open source, SIP, RFC 3261, 3GPP TS 24.229, VoIP, MMTel, IPTV, 4G, LTE, XCAP, MSRP, IPSec, SigComp, One Voice, GSMA RCS " />
+  <meta name="Description" content="cross-platform and open source 3GPP IMS/LTE framework for embedded devices such as Android, Symbian, iPhone, Windows Mobile or uLinux." />
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" type="text/css" href="css.css" /><!-- Post in the Forum at http://www.donutey.frihost.net/forum with any questions about the code. -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ p.c1 {text-align: center;}
+/*]]>*/
+</style>
+</head>
+
+<body>
+  <div id="center">
+    <div id="border">
+      <div id="logo">
+        <p class="companyname">doubango</p>
+      </div>
+
+      <div id="menu">
+          <a href="/index.html" title="Homepage" class="active">Home</a> <a href="/gettingstarted.html"
+              title="Getting Started">Getting Started</a> <a href="http://code.google.com/p/doubango/source/checkout"
+                  title="Source Code" target="_blank">Source Code</a> <a href="/apiref.html" title="API Reference">API Reference</a> <a href="/contact.html" title="Contact">Contact</a>
+      </div>
+
+      <div id="main">
+        <h2>Welcome</h2>
+          <p>
+              <a href="http://en.wikipedia.org/wiki/IP_Multimedia_Subsystem" target="_blank">3GPP IMS</a> (IP Multimedia Subsystem) is the next generation network for delivering
+              IP multimedia services. IMS is standardized by the 3rd Generation Partnership Project
+              (3GPP). <br />
+              IMS services could be used over any type of network, such as <a href="http://en.wikipedia.org/wiki/3GPP_Long_Term_Evolution" target="_blank">3GPP LTE</a>, GPRS, Wireless
+              LAN, CDMA2000 or fixed line.
+          </p>
+          <p>
+              <b>doubango is the world's most advanced open source 3GPP IMS/RCS framework</b> for both embedded
+              and desktop systems.<br />
+              The framework is written in ANSI-C to ease portability and
+              has been carefully designed to efficiently work on embedded systems with limited
+              memory and low computing power and to be extremely portable.
+          </p>
+
+        <h2>Proof Of Concept</h2>
+        <table border="1">
+        <tr bgcolor="#99CCFF"><td colspan="2">Client-side components</td></tr>
+        <tr>
+        <td><a href="http://code.google.com/p/boghe/">Boghe</a></td>
+        <td>IMS/RCS Client for Windows</td>
+        </tr>
+        <tr>
+        <td><a href="http://code.google.com/p/imsdroid/">IMSDroid</a></td>
+        <td>SIP/IMS Client for Android</td>
+        </tr>
+        <tr>
+        <td><a href="http://code.google.com/p/idoubs/">iDoubs</a></td>
+        <td>SIP/IMS VideoPhone for iOS (iPhone, iPad and iPod Touch)</td>
+        </tr>
+        
+        <tr bgcolor="#99CCFF"><td colspan="2">Server-side components</td></tr>
+        <tr>
+        <td><a href="http://code.google.com/p/openvcs/">OpenVCS</a></td>
+        <td>OpenVCS stands for Open Source Video Conferencing Server and is used to manage Multipoint Control Units (<a href="http://en.wikipedia.org/wiki/Multipoint_Control_Unit">MCU</a>).
+        Each MCU (a.k.a Bridge) can handle <b>up to 64 participants</b>.
+        </td>
+        </tr>
+        <tr>
+        <td><a href="http://code.google.com/p/flash2ims/">Flash2IMS</a></td>
+        <td>Adobe® Flash® to SIP/IMS Gateway.</td>
+        </tr>
+        
+        </table>
+
+<!--
+        <br />
+        <table width="100%">
+        <tr align ="center" >
+        <td><img  alt="IMSDroid Visio call" src="http://imsdroid.googlecode.com/svn/trunk/screenshots/visio.png" /></td>
+        </tr>
+        <tr align ="center">
+        <td><i><a href="http://code.google.com/p/imsdroid">IMSDroid</a> - Android IMS Client using doubango v1.0.0</i></td>
+        </tr>
+        </table>        
+        !-->
+        <h2>Features</h2>
+
+        <ul>
+          <li>SIP (RFC 3261, 3GPP TS 24.229 Rel-9)</li>
+          
+          <li>IMS-AKA (RFC 3310, 3GPP TS 33.203, 35.205, 35.206, 35.207, 35.208 and 35.909)</li>
+          
+          <li>Private extension headers for 3GPP</li>
+          
+          <li>IPv4/IPv6 dual stack</li>
+          
+          <li>UDP, TCP, TLS and SCTP</li>
+          
+          <li>Service-Route Discovery (RFC 3608)</li>
+          
+          <li>Proxy-CSCF discovery using DHCPv4/v6 or/and DNS NAPTR</li>
+          
+          <li>SigComp (RFC 3320, 3485, 4077, 4464, 4465, 4896, 5049, 5112 and 1951)</li>
+
+          <li>IPSec</li>
+          
+          <li>Security Agreement (RFC 3329)</li>
+
+          <li>NAT Traversal (STUN, TURN and ICE)</li>
+
+          <li>Preconditions (RFC 3312, 4032 and 5027)</li>
+
+          <li>SMS over IP (3GPP TS 23.038, 24.040, 24.011, 24.341 and 24.451)</li>
+          
+          <li>ENUM (RFC 3761)</li>
+          
+          <li>The tel URI for Telephone Numbers (RFC 3966)</li>
+          
+          <li>SIP SIMPLE (Presence Subscription/Publication and Pager Mode IM)</li>
+          
+          <li>MMTel (UNI)</li>
+          
+          <li>SDP (RFC 3264)</li>
+          
+          <li>RTP/RTCP</li>
+          
+          <li>XCAP (RFC 4825)</li>
+          
+          <li>MSRP (RFC 4975 and 5547)</li>
+          
+          <li>Audio/Video (AMR, Speex, G.711, GSM, H.264, H.263, Theora...)</li>
+          
+          <li>...and many other features</li>
+          
+        </ul>
+
+          <h2>
+              The One Voice Profile (4G/LTE)</h2>
+          <p>
+              doubango supports both Voice and SMS over LTE as defined by the <b>One Voice initiative</b>.
+              <br />
+              For more information, please refer to <a href="http://news.vzw.com/OneVoiceProfile.pdf"
+                  target="_blank">Voice over IMS profile V1.0.0(2009-11)</a>.
+          </p>
+          <img src="/LTE_Architecture.png" alt="3GPP LTE Architecture" title="3GPP LTE Architecture" />
+
+        
+        <h2>Multimedia Telephony (MMTel)</h2>
+        
+        <ul>
+        
+        <li>MMTel Supplementary Services (3GPP TS 24.173, 24607, 24.608, 24.607, 24.604, 24.611, 24.610, 24.606, 24.615 and 24.605)</li>
+        
+        <li>Supplementary Service Configuration (3GPP TS 24.623)</li>
+        
+        <li>Ad-Hoc Multi Party Conference (3GPP TS 24.605)</li>
+        
+        <li>Communication Waiting (3GPP TS 24.615)</li>
+        
+        <li>Message Waiting Indication (3GPP TS 24.606 and RFC 3842)</li>
+        
+        <li>Originating/Terminating Identification Restriction (3GPP TS 24.607/608)</li>
+        
+        <li>Communication Diversion (3GPP TS 24.604)</li>
+        
+        <li>Communication Barring (3GPP TS 24.611)</li>
+        
+        </ul>
+
+        <p class="code">Supplementary Service Configuration, Communication Diversion and Communication Barring services use <b>XCAP</b> protocol, which is supported throught <a href="/API/tinyXCAP/">tinyXCAP</a>.</p>
+
+        <p>All these features are used as part of One Voice Profile (LTE).</p>
+
+        <div class="twoleft">
+          <h2>Protocols</h2>
+
+          <ul>
+          <li>SIP/SigComp</li>
+          <li>SDP</li>
+          <li>RTP/RTCP</li>
+          <li>XCAP (RFC 4825)</li>
+          <li>MSRP/MSRPS (RFC 4975 and 5547)</li>
+          <li>HTTP/HTTPS (RFC 2616 and 2617)</li>
+          <li>DHCPv4 (RFC 2131)</li>
+          <li>DHCPv6 (RFC 3315)</li>
+          <li>DNS (RFC 1034, 1035, 3401, 3402, 3403, 3404, 3596, 2035, 2671, and 2782)</li>
+          
+          </ul>
+        </div>
+
+        <div class="tworight">
+          <h2>SDP Offer-Answer</h2>
+            <p>
+                The media layer contains a complete SOA (SDP Offer-Answer) framework with MMTel
+                and PoC extensions to develop Multimedia telephony applications without having to
+                read hundreds of technical specifications. The SOA machine is designed as per RFC
+                3264 and draft-ietf-sipping-sip-offeranswer-12.
+            </p>
+        </div>
+        
+        <div class="tworight">
+          <h2>OMA SIMPLE IM</h2>
+          <ul>
+            <li>Pager Mode IM (MESSAGE)</li>
+            <li>Session Mode Messaging (MSRP)</li>
+            <li>Large Message IM (OMA)</li>
+            <li>File Transfer(MSRP) and Image Sharing (GMSA IR.79)</li>
+          </ul>
+        </div>
+               
+      <div class="twoleft">
+          <h2>IPTV over IMS</h2>
+          &nbsp;&nbsp;&nbsp;IMS-based IPTV (ETSI TS 182 027)<br />
+          &nbsp;&nbsp;&nbsp;Comming soon...
+      </div>
+        
+        
+      </div>
+
+      <p class="caps c1">"Inspiring the Future"</p>
+
+      <div id="footer">
+        <div id="navtwo">
+          <a href="http://betelco.blogspot.com/">&copy; 2009-2010 Mamadou DIOP</a>
+        </div>
+
+        <p class="footer"><a href="http://validator.w3.org/check?uri=referer">Valid XHTML 1.1</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="http://jigsaw.w3.org/css-validator/">Valid CSS</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href="copy.php">Copyright/left</a> &nbsp;&nbsp;|&nbsp;&nbsp; Design by <a href="http://www.donutey.frihost.net">Donutey</a></p>
+      </div>
+    </div>
+  </div>
+  
+  
+      <!-- GOOGLE ANALYTICS -->
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+
+    <script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-6868621-8");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</body>
+</html>
+

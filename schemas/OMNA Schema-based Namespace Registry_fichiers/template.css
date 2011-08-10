@@ -1,0 +1,672 @@
+.copy_main_list {
+	FONT-SIZE: 1em; COLOR: #3b3b39; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.icon_arrow {
+	FLOAT: right; MARGIN: 4px 8px 0px 0px
+}
+.icon_arrow_rb {
+	FLOAT: left; MARGIN: 4px 4px 0px 0px
+}
+.icon_open {
+	MARGIN: 2px 0px 0px; VERTICAL-ALIGN: top
+}
+.icon_minus {
+	MARGIN: 2px 0px 0px; VERTICAL-ALIGN: top
+}
+#leftarea_margin {
+	FLOAT: left; WIDTH: 6px
+}
+#leftarea {
+	FLOAT: left; MARGIN: 2px 0px 0px; WIDTH: 234px; HEIGHT: 100%
+}
+#left_block_hp {
+	FLOAT: left; WIDTH: 374px; HEIGHT: 100%
+}
+#left_block_hp_top {
+	FLOAT: left; WIDTH: 374px; LINE-HEIGHT: 5px; HEIGHT: 5px; BACKGROUND-COLOR: #348fcd
+}
+#left_block_hp_btm {
+	FLOAT: left; WIDTH: 374px; LINE-HEIGHT: 5px; HEIGHT: 5px; BACKGROUND-COLOR: #b9e1f5
+}
+#left_block_hp_body {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/back_lft1.jpg); WIDTH: 374px; BACKGROUND-REPEAT: repeat-x; HEIGHT: 674px
+}
+.left_block_hp_margin {
+	FLOAT: left; WIDTH: 12px
+}
+#left_block_hp_content {
+	FLOAT: left; WIDTH: 93%
+}
+#left_block_hp_tl {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/left_block_tl.gif); WIDTH: 5px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 5px
+}
+#left_block_hp_tr {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/left_block_tr.gif); WIDTH: 5px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 5px
+}
+#left_block_hp_bl {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/left_block_bl.gif); WIDTH: 5px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 5px
+}
+#left_block_hp_br {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/left_block_br.gif); WIDTH: 5px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 5px
+}
+.arrow_left {
+	FLOAT: left; MARGIN: 4px 4px 0px 0px
+}
+.home_tl_img {
+	FLOAT: left
+}
+#right_block_home_container {
+	FLOAT: left; WIDTH: 597px; HEIGHT: 100%
+}
+#right_block_home_top {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/home_right_block_top_strip.gif); WIDTH: 100%; LINE-HEIGHT: 6px; BACKGROUND-REPEAT: repeat-x; HEIGHT: 6px
+}
+#right_block_top_tl {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/home_right_block_top_tl.gif); WIDTH: 6px; LINE-HEIGHT: 6px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 6px
+}
+#right_block_top_tr {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/home_right_block_top_tr.gif); WIDTH: 6px; LINE-HEIGHT: 6px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 6px
+}
+#right_block_home_heading_bg {
+	BORDER-RIGHT: #dcdcdc 1px solid; FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/home_right_top_strip.gif); BORDER-LEFT: #dcdcdc 1px solid; WIDTH: 595px; LINE-HEIGHT: 6px; BACKGROUND-REPEAT: repeat-x; HEIGHT: 59px
+}
+#right_block_inner {
+	BORDER-RIGHT: #dcdcdc 1px solid; FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/back_rtg.jpg); BORDER-LEFT: #dcdcdc 1px solid; WIDTH: 595px; BACKGROUND-REPEAT: repeat-x; HEIGHT: 565px; BACKGROUND-COLOR: #e0f1fa
+}
+#right_block_inner_plain {
+	BORDER-RIGHT: #dcdcdc 1px solid; FLOAT: left; BORDER-LEFT: #dcdcdc 1px solid; WIDTH: 595px; HEIGHT: 100%; BACKGROUND-COLOR: #fff
+}
+#right_block_inner_btm {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/hr_block_btm_dark_strip.gif); WIDTH: 597px; LINE-HEIGHT: 7px; BACKGROUND-REPEAT: repeat-x; HEIGHT: 7px
+}
+#right_block_inner_btm_bl {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/hr_block_btm_dark_bl.gif); WIDTH: 5px; LINE-HEIGHT: 7px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 7px
+}
+#right_block_inner_btm_br {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/hr_block_btm_dark_br.gif); WIDTH: 5px; LINE-HEIGHT: 7px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 7px
+}
+#right_block_home_btm_light {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/home_right_block_btm_light.gif); WIDTH: 597px; LINE-HEIGHT: 7px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 7px
+}
+#right_block_top_section {
+	FLOAT: left; WIDTH: 594px
+}
+#right_block_home_container .divider {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/body_divider.gif); MARGIN: 2px 6px 0px; WIDTH: 1px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 11px
+}
+.right_box_object {
+	FLOAT: left; MARGIN: 0px 0px 6px 4px; WIDTH: 584px
+}
+.right_box_top {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_box_grad_strip.gif); BACKGROUND-REPEAT: repeat-x; HEIGHT: 23px
+}
+.right_box_tr {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_box_tr.gif); WIDTH: 5px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 23px
+}
+.right_box_tl {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_box_tl.gif); WIDTH: 5px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 23px
+}
+.right_box_bl {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_box_bl.gif); WIDTH: 17px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 20px
+}
+.right_box_br {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_box_br.gif); WIDTH: 19px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 20px
+}
+#right_box_top_section_body {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/top_section_grad_strip.gif); WIDTH: 594px; BACKGROUND-REPEAT: repeat-y
+}
+.right_box_body {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_box_dbl_grad_strip.gif); WIDTH: 585px; BACKGROUND-REPEAT: repeat-y; HEIGHT: 84px
+}
+.right_box_content_left {
+	FLOAT: left; MARGIN: 6px 0px 0px 8px; WIDTH: 268px
+}
+.right_box_content_right {
+	FLOAT: left; MARGIN: 6px 0px 0px 28px; WIDTH: 268px
+}
+.right_box_content {
+	FLOAT: left; MARGIN: 6px 0px 0px 8px; WIDTH: 404px
+}
+#right_box_top_section_content {
+	FLOAT: left; MARGIN: 0px 0px 0px 6px; WIDTH: 580px
+}
+.right_box_btm {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_box_btm_strip.gif); WIDTH: 594px; LINE-HEIGHT: 20px; BACKGROUND-REPEAT: repeat-x; HEIGHT: 20px
+}
+.right_double_box_btm {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_box_btm.gif); WIDTH: 585px; LINE-HEIGHT: 19px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 19px
+}
+.right_box_btm_lc {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_box_bl.gif); WIDTH: 13px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 20px
+}
+.right_box_btm_rc {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_box_br.gif); WIDTH: 15px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 20px
+}
+.right_box_top_content {
+	FLOAT: left; MARGIN: 3px 0px 0px 6px; WIDTH: 240px; HEIGHT: 20px
+}
+.right_box_icon {
+	FLOAT: right; MARGIN: 4px 2px 0px 0px
+}
+#right_box_wide_body {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_box_wide_grad_strip.gif); WIDTH: 406px; BACKGROUND-REPEAT: repeat-y
+}
+#content_nav {
+	BORDER-RIGHT: #dcdcdc 1px solid; FLOAT: left; BORDER-LEFT: #dcdcdc 1px solid; WIDTH: 595px; HEIGHT: 27px
+}
+#ContentDivContainer {
+	FLOAT: left; WIDTH: 410px; HEIGHT: 100%
+}
+#right_block_left_col {
+	FLOAT: left; WIDTH: 312px; HEIGHT: 100%
+}
+.right_block_img {
+	CLEAR: both; FLOAT: left; MARGIN: 8px 0px 8px 6px
+}
+#right_block_right_col {
+	FLOAT: left; WIDTH: 280px; HEIGHT: 100%
+}
+#rightblue_container {
+	CLEAR: both; BORDER-TOP: white 2px solid; FLOAT: left; WIDTH: 706px; HEIGHT: 100%
+}
+#rightblue_top {
+	FLOAT: left; WIDTH: 716px; HEIGHT: 6px; BACKGROUND-COLOR: #387cae
+}
+#rightblue_tlc {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/rightblue_tl.gif); WIDTH: 5px; LINE-HEIGHT: 6px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 6px
+}
+#rightblue_trc {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/rightblue_tr.gif); WIDTH: 5px; LINE-HEIGHT: 6px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 6px
+}
+#rightblue_body {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/rightblue_grad_strip.gif); WIDTH: 716px; BACKGROUND-REPEAT: repeat-x; HEIGHT: 100%
+}
+#rightblue_main_block {
+	FONT-SIZE: 0.8em; FLOAT: left; WIDTH: 460px; HEIGHT: 100%
+}
+#rightblue_main_block_wide {
+	FLOAT: left; WIDTH: 694px; HEIGHT: 100%
+}
+#rightblue_main_body {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/righblue_main_grad_strip.gif); WIDTH: 439px; BACKGROUND-REPEAT: repeat-x; HEIGHT: 100%; BACKGROUND-COLOR: #fff
+}
+#rightblue_main_body_wide {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/righblue_main_grad_strip.gif); WIDTH: 682px; BACKGROUND-REPEAT: repeat-x; HEIGHT: 100%; BACKGROUND-COLOR: #fff
+}
+#rightblue_main_content_wide {
+	PADDING-RIGHT: 8px; PADDING-LEFT: 8px; FONT-SIZE: 0.8em; FLOAT: left; PADDING-BOTTOM: 8px; WIDTH: 662px; PADDING-TOP: 8px; HEIGHT: 100%
+}
+#rightwhite_main_body {
+	FLOAT: left; WIDTH: 682px; HEIGHT: 100%; BACKGROUND-COLOR: #fff
+}
+#rightblue_main_content {
+	PADDING-RIGHT: 14px; PADDING-LEFT: 14px; MIN-HEIGHT: 400px; FLOAT: left; PADDING-BOTTOM: 8px; WIDTH: 410px; PADDING-TOP: 8px; HEIGHT: 400px
+}
+.panel_object {
+	CLEAR: both; FLOAT: left; MARGIN: 0px 0px 2px; WIDTH: 234px
+}
+.panel_top {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/panel_grad_strip.gif); WIDTH: 234px; BORDER-BOTTOM: #9dbcda 1px solid; BACKGROUND-REPEAT: repeat-x; HEIGHT: 22px
+}
+.panel_lc {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/panel_lc.gif); WIDTH: 5px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 22px
+}
+.panel_rc {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/panel_rc.gif); WIDTH: 5px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 22px
+}
+.panel_body {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/panel_grad_body_strip.gif); WIDTH: 234px; BACKGROUND-REPEAT: repeat-y; HEIGHT: 100%
+}
+#panel_btm {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_panel_btm.gif); WIDTH: 234px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 16px
+}
+.panel_content {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 10px; FLOAT: left; PADDING-BOTTOM: 6px; WIDTH: 214px; PADDING-TOP: 6px
+}
+.panel_arrow {
+	FLOAT: left; MARGIN: 4px 6px 0px 0px
+}
+.panel_heading {
+	FLOAT: left; MARGIN: 5px 0px 0px 3px
+}
+#heading_margin {
+	FLOAT: left; WIDTH: 8px; HEIGHT: 12px
+}
+#heading_block {
+	FLOAT: left; MARGIN: 6px 0px; WIDTH: 439px
+}
+#heading_top {
+	CLEAR: both; FLOAT: left; WIDTH: 439px; LINE-HEIGHT: 12px; HEIGHT: 12px; BACKGROUND-COLOR: #659bc1
+}
+#heading_btm {
+	CLEAR: both; FLOAT: left; WIDTH: 439px; LINE-HEIGHT: 12px; HEIGHT: 12px; BACKGROUND-COLOR: #71a2c5
+}
+#heading_body {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/heading_grad_strip.gif); WIDTH: 439px; BACKGROUND-REPEAT: repeat-x; HEIGHT: 100%
+}
+#heading_content {
+	WIDTH: 500px
+}
+#heading_block_tl {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/heading_tl.gif); WIDTH: 12px; LINE-HEIGHT: 13px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 12px
+}
+#heading_block_tr {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/heading_tr.gif); WIDTH: 12px; LINE-HEIGHT: 12px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 12px
+}
+#heading_block_bl {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/heading_bl.gif); WIDTH: 12px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 12px
+}
+#heading_block_br {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/heading_br.gif); WIDTH: 12px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 12px
+}
+#righblue_main_top {
+	CLEAR: both; FLOAT: left; WIDTH: 439px; LINE-HEIGHT: 9px; HEIGHT: 9px
+}
+#righblue_main_tl {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/contentnav_tlc.gif); WIDTH: 10px; LINE-HEIGHT: 9px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 9px
+}
+#righblue_main_tr {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/contentnav_trc.gif); WIDTH: 10px; LINE-HEIGHT: 9px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 9px
+}
+#righblue_main_tl_light {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/contentnav_tlc_light.gif); WIDTH: 10px; LINE-HEIGHT: 9px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 9px
+}
+#righblue_main_tr_light {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/contentnav_trc_light.gif); WIDTH: 10px; LINE-HEIGHT: 9px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 9px
+}
+#right_btm_section_container {
+	FLOAT: left; WIDTH: 418px; HEIGHT: 97px
+}
+#right_btm_section_left {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_btm_section_corners.gif); WIDTH: 14px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 97px
+}
+#right_btm_section_body {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_btm_section_body_bg.gif); WIDTH: 404px; BACKGROUND-REPEAT: repeat-x; HEIGHT: 97px
+}
+#right_btm_content {
+	FLOAT: left; MARGIN: 0px 0px 0px 8px; WIDTH: 300px
+}
+.right_btm_section_img {
+	FLOAT: right; MARGIN: -143px 0px 0px
+}
+.right_btm_section_heading {
+	FLOAT: left; MARGIN: 12px 0px 0px
+}
+#top_right_links {
+	FLOAT: right; MARGIN: 0px 5px 0px 0px; WIDTH: 140px; HEIGHT: 44px
+}
+#top_right_links_lc {
+	FLOAT: left; WIDTH: 120px; TEXT-ALIGN: right
+}
+#top_right_links_rc {
+	FLOAT: left; WIDTH: 18px
+}
+.top_right_icon {
+	CLEAR: both; FLOAT: right; MARGIN: 3px 0px 0px
+}
+#right_box_wide_body {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/right_box_wide_grad_strip.gif); WIDTH: 415px; BACKGROUND-REPEAT: repeat-y
+}
+#contentnav_container {
+	FLOAT: left; WIDTH: 439px; HEIGHT: 29px
+}
+.contentnav_link {
+	FLOAT: left
+}
+.copy_main {
+	FONT-SIZE: 0.75em; COLOR: #3b3b39; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.copy_main_lg {
+	FONT-SIZE: 1em; COLOR: #3b3b39; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.copy_home_main {
+	FONT-SIZE: 0.8em; COLOR: #3b3b39; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.copy_main_heading {
+	COLOR: #3b3b39; LINE-HEIGHT: 1em
+}
+.copy_heading_alt {
+	FONT-SIZE: 1.5em; FLOAT: left; MARGIN: 0px 0px 0px 8px; COLOR: #fff; LINE-HEIGHT: 1.2em
+}
+.copy_heading_dark {
+	FONT-SIZE: 1.5em; FLOAT: left; MARGIN: 12px 0px 12px 6px; LINE-HEIGHT: 1.2em
+}
+.copy_heading_right_box {
+	FONT-SIZE: 0.9em; COLOR: #fff; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.copy_subhead_right_box {
+	FONT-WEIGHT: bold; FONT-SIZE: 0.7em; COLOR: #3a3a3a; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.copy_reg_light {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 0.7em; PADDING-BOTTOM: 0px; MARGIN: 0px 0px 4px; COLOR: #5e5f61; LINE-HEIGHT: 1.2em; PADDING-TOP: 0px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.copy_reg_bold {
+	FONT-WEIGHT: bold
+}
+A.link_main:link {
+	FONT-SIZE: 0.9em; COLOR: #002a4c; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_main:active {
+	FONT-SIZE: 0.9em; COLOR: #002a4c; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_main:visited {
+	FONT-SIZE: 0.9em; COLOR: #002a4c; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_main:hover {
+	FONT-SIZE: 0.9em; COLOR: #2a79b0; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_panel:link {
+	FONT-SIZE: 0.7em; FLOAT: left; COLOR: #002a4c; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_panel:active {
+	FONT-SIZE: 0.7em; FLOAT: left; COLOR: #002a4c; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_panel:visited {
+	FONT-SIZE: 0.7em; FLOAT: left; COLOR: #002a4c; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_panel:hover {
+	FONT-SIZE: 0.7em; FLOAT: left; COLOR: #2a79b0; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_icon:link {
+	FONT-SIZE: 0.6em; COLOR: #002a4c; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_icon:active {
+	FONT-SIZE: 0.6em; COLOR: #002a4c; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_icon:visited {
+	FONT-SIZE: 0.6em; COLOR: #002a4c; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_icon:hover {
+	FONT-SIZE: 0.6em; COLOR: #fff; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_right_box:link {
+	FONT-SIZE: 0.6em; FLOAT: left; COLOR: #002b4c; LINE-HEIGHT: 1.9em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_right_box:active {
+	FONT-SIZE: 0.6em; FLOAT: left; COLOR: #002b4c; LINE-HEIGHT: 1.9em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_right_box:visited {
+	FONT-SIZE: 0.6em; FLOAT: left; COLOR: #002b4c; LINE-HEIGHT: 1.9em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_right_box:hover {
+	FONT-SIZE: 0.6em; FLOAT: left; COLOR: #002b4c; LINE-HEIGHT: 1.9em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_right_box_bold:link {
+	FONT-WEIGHT: bold; FONT-SIZE: 0.6em; FLOAT: left; COLOR: #002b4c; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_right_box:active {
+	FONT-WEIGHT: bold; FONT-SIZE: 0.6em; FLOAT: left; COLOR: #002b4c; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_right_box_bold:visited {
+	FONT-WEIGHT: bold; FONT-SIZE: 0.6em; FLOAT: left; COLOR: #002b4c; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_right_box_bold:hover {
+	FONT-WEIGHT: bold; FONT-SIZE: 0.6em; FLOAT: left; COLOR: #002b4c; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.margin_12pxwide {
+	FLOAT: left; WIDTH: 12px
+}
+TABLE .heading {
+	FONT-WEIGHT: bold; FONT-SIZE: 0.9em; COLOR: #002a4c; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #9aceee
+}
+TABLE .data {
+	BORDER-RIGHT: #deeffa 1px solid; BORDER-TOP: #deeffa 1px solid; FONT-SIZE: 0.9em; BORDER-LEFT: #deeffa 1px solid; COLOR: #3b3b39; BORDER-BOTTOM: #deeffa 1px solid; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+#heading_block_light_tl {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/heading_light_tl.gif); WIDTH: 12px; LINE-HEIGHT: 12px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 12px
+}
+#heading_block_light_tr {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/heading_light_tr.gif); WIDTH: 12px; LINE-HEIGHT: 12px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 12px
+}
+#heading_block_light_bl {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/heading_light_bl.gif); WIDTH: 12px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 12px
+}
+#heading_block_light_br {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/heading_light_br.gif); WIDTH: 12px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 12px
+}
+#heading_landing_body {
+	FLOAT: left; WIDTH: 439px; HEIGHT: 100%; BACKGROUND-COLOR: #fff
+}
+#rightblue_body_landing {
+	FLOAT: left; WIDTH: 716px; HEIGHT: 100%; BACKGROUND-COLOR: #50b9e6
+}
+#landing_tlc {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/landing_tl.gif); WIDTH: 10px; LINE-HEIGHT: 10px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 10px
+}
+#landing_trc {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/landing_tr.gif); WIDTH: 10px; LINE-HEIGHT: 10px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 10px
+}
+#landing_blc {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/landing_bl.gif); WIDTH: 10px; LINE-HEIGHT: 10px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 10px
+}
+#landing_brc {
+	FLOAT: right; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/landing_br.gif); WIDTH: 10px; LINE-HEIGHT: 10px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 10px
+}
+#landing_btm {
+	FLOAT: left; WIDTH: 716px; HEIGHT: 10px; BACKGROUND-COLOR: #52b9e4
+}
+#landing_main_btm {
+	CLEAR: both; FLOAT: left; WIDTH: 439px; LINE-HEIGHT: 12px; HEIGHT: 12px; BACKGROUND-COLOR: #fff
+}
+#landing_forth_events_body {
+	FONT-SIZE: 0.7em; FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/landing_events_strip.gif); WIDTH: 246px; COLOR: #3a3a38; LINE-HEIGHT: 1.1em; BACKGROUND-REPEAT: repeat-y; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; HEIGHT: 100%
+}
+#heading_top_ms {
+	CLEAR: both; FLOAT: left; WIDTH: 439px; LINE-HEIGHT: 12px; HEIGHT: 0px
+}
+#heading_btm_ms {
+	CLEAR: both; FLOAT: left; WIDTH: 439px; LINE-HEIGHT: 12px; HEIGHT: 12px
+}
+#heading_content_ms {
+	CLEAR: both; FLOAT: left; WIDTH: 439px; HEIGHT: 23px
+}
+#rightblue_body_landing_ms {
+	FLOAT: left; WIDTH: 720px; HEIGHT: 100%; BACKGROUND-COLOR: #fff
+}
+#rightblue_main_block_ms {
+	FLOAT: left; WIDTH: 508px; HEIGHT: 100%
+}
+#rightblue_main_block_wide_ms {
+	FLOAT: left; WIDTH: 715px; HEIGHT: 100%
+}
+#rightblue_container_ms {
+	CLEAR: both; FLOAT: left; WIDTH: 722px; HEIGHT: 100%
+}
+#rightblue_top_ms {
+	FLOAT: left; WIDTH: 719px; HEIGHT: 6px
+}
+#rightblue_top_left {
+	FLOAT: left; WIDTH: 497px; HEIGHT: 6px
+}
+#rightblue_top_right {
+	FLOAT: left; BORDER-LEFT: white 3px solid; WIDTH: 69px; HEIGHT: 6px
+}
+#heading_landing_body_ms {
+	FLOAT: left; WIDTH: 439px; HEIGHT: 40px; BACKGROUND-COLOR: #50b9e6
+}
+#landing_tlc_ms {
+	FLOAT: left; BACKGROUND-IMAGE: url(/ETSISite/Organization/ETSI/images/landing_tl_event.gif); WIDTH: 10px; LINE-HEIGHT: 10px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 10px
+}
+#landing_trc_ms {
+	FLOAT: right; BACKGROUND-IMAGE: url(/ETSISite/Organization/ETSI/images/landing_tr_event.gif); WIDTH: 10px; LINE-HEIGHT: 10px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 10px
+}
+.copy_landing_ms {
+	FONT-SIZE: 0.7em; COLOR: #3a3a38; LINE-HEIGHT: 1.1em; FONT-FAMILY: Verdana, Arial, sans-serif, Helvetica
+}
+#landing_main_body_ms {
+	FLOAT: left; WIDTH: 507px; HEIGHT: 100%; BACKGROUND-COLOR: #fff
+}
+.landing_events_container_ms {
+	FLOAT: left; WIDTH: 200px; HEIGHT: 100%
+}
+.landing_events_body_ms {
+	BORDER-RIGHT: red 0px solid; BORDER-TOP: red 0px solid; FLOAT: left; BORDER-LEFT: red 0px solid; WIDTH: 200px; BORDER-BOTTOM: red 0px solid; HEIGHT: 100%
+}
+.landing_events_top_panel_ms {
+	BORDER-RIGHT: red 0px solid; BORDER-TOP: red 0px solid; FLOAT: left; BACKGROUND-IMAGE: url(/ETSISite/Organization/ETSI/images/events_top_strip.gif); BORDER-LEFT: red 0px solid; WIDTH: 205px; BORDER-BOTTOM: red 0px solid; BACKGROUND-REPEAT: repeat-y; HEIGHT: 100%
+}
+.landing_events_copy_ms {
+	FLOAT: left; MARGIN: 0px 0px 0px 6px; WIDTH: 150px; HEIGHT: 100%
+}
+#quote_container_ms {
+	FLOAT: left; MARGIN: 0px 0px 0px 8px; WIDTH: 95%; HEIGHT: 100%
+}
+#rightblue_top_ms {
+	FLOAT: left; WIDTH: 716px; HEIGHT: 6px; BACKGROUND-COLOR: #377eb2
+}
+.plugtest_page_title {
+	FONT-SIZE: 1.4em; FLOAT: left; MARGIN: 0px 0px 0px 8px; COLOR: #24a5de; LINE-HEIGHT: 1.2em; POSITION: relative
+}
+.copy_landing {
+	FONT-SIZE: 1em; COLOR: #3a3a38; LINE-HEIGHT: 1.1em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.copy_landing_bold {
+	FONT-WEIGHT: bold; FONT-SIZE: 0.7em; COLOR: #3a3a38; LINE-HEIGHT: 0.7em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.copy_landing_events {
+	FONT-SIZE: 0.7em; FLOAT: left; MARGIN: 0px 0px 6px; COLOR: #3a3a38; LINE-HEIGHT: 1.1em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.copy_landing_events_bold {
+	FONT-WEIGHT: bold; FONT-SIZE: 0.7em; FLOAT: left; MARGIN: 6px 0px 0px; COLOR: #3a3a38; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.copy_landing_subheading {
+	FONT-WEIGHT: bold; FONT-SIZE: 0.8em; FLOAT: left; COLOR: #fff; LINE-HEIGHT: 1.1em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; HEIGHT: 18px
+}
+.plugtest_quote {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 8px; FONT-SIZE: 1em; FLOAT: left; PADDING-BOTTOM: 12px; WIDTH: 190px; COLOR: #29aae1; LINE-HEIGHT: 1.1em; PADDING-TOP: 12px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.plugtest_quote_bold {
+	FONT-WEIGHT: bold
+}
+.copy_content_box {
+	FONT-SIZE: 0.7em; FLOAT: left; COLOR: #53a9cc; LINE-HEIGHT: 1.1em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.copy_content_box_heading {
+	FONT-WEIGHT: bold; FONT-SIZE: 0.7em; FLOAT: left; MARGIN: 0px 0px 8px; WIDTH: 140px; COLOR: #53a9cc; LINE-HEIGHT: 1.1em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_landing:link {
+	FONT-SIZE: 0.6em; COLOR: #fff; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_landing:active {
+	FONT-SIZE: 0.6em; COLOR: #fff; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_landing:visited {
+	FONT-SIZE: 0.6em; COLOR: #fff; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_landing:hover {
+	FONT-SIZE: 0.6em; COLOR: #2a79b0; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A.link_events:link {
+	FONT-SIZE: 0.7em; FLOAT: left; MARGIN: 4px 0px; COLOR: #53a9cc; LINE-HEIGHT: 1.2em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A.link_events:active {
+	FONT-SIZE: 0.7em; FLOAT: left; MARGIN: 4px 0px; COLOR: #53a9cc; LINE-HEIGHT: 1.2em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A.link_events:visited {
+	FONT-SIZE: 0.7em; FLOAT: left; MARGIN: 4px 0px; COLOR: #53a9cc; LINE-HEIGHT: 1.2em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+A.link_events:hover {
+	FONT-SIZE: 0.7em; FLOAT: left; MARGIN: 4px 0px; COLOR: #53a9cc; LINE-HEIGHT: 1.2em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+#landing_main_body {
+	FLOAT: left; WIDTH: 439px; HEIGHT: 100%
+}
+.main_landing_img {
+	FLOAT: left
+}
+.main_body_img {
+	FLOAT: right
+}
+#landing_main_content {
+	FLOAT: left; MARGIN: 0px 0px 4px; BORDER-LEFT: #50b9e6 1px solid; WIDTH: 439px; HEIGHT: 100%; BACKGROUND-COLOR: #fff
+}
+#landing_main_inner_content {
+	FLOAT: left; MARGIN: 4px 0px 4px 8px; WIDTH: 420px; HEIGHT: 100%
+}
+#landing_main_left_col {
+	FLOAT: left; MARGIN: 8px 0px 0px; WIDTH: 190px; HEIGHT: 100%
+}
+#landing_main_right_col {
+	FLOAT: right; WIDTH: 224px; HEIGHT: 100%
+}
+#landing_main_col {
+	FONT-SIZE: 1em; FLOAT: left; MARGIN: 8px 0px 0px; WIDTH: 420px; COLOR: #3a3a38; LINE-HEIGHT: 1.1em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; HEIGHT: 100%
+}
+.landing_events_container {
+	FLOAT: left; WIDTH: 246px; HEIGHT: 100%
+}
+.landing_events_body {
+	FONT-SIZE: 0.7em; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/landing_events_strip.gif); WIDTH: 246px; COLOR: #3a3a38; LINE-HEIGHT: 1.1em; BACKGROUND-REPEAT: repeat-y; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; HEIGHT: 100%
+}
+.landing_events_btm {
+	FLOAT: left
+}
+.landing_events_top_panel {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/landing_events_top_strip.gif); WIDTH: 246px; BACKGROUND-REPEAT: repeat-y; HEIGHT: 100%
+}
+.landing_events_copy {
+	FLOAT: left; MARGIN: 0px 0px 0px 6px; WIDTH: 190px; HEIGHT: 100%
+}
+#quote_container {
+	FLOAT: left; MARGIN: 0px 0px 0px 8px; WIDTH: 95%; HEIGHT: 100%
+}
+.quote_open {
+	FLOAT: left
+}
+.quote_closed {
+	FLOAT: right
+}
+#leftarea_landing_margin {
+	FLOAT: left; WIDTH: 2px
+}
+#content_box {
+	FONT-SIZE: 1em; FLOAT: left; WIDTH: 224px; COLOR: #53a9cc; LINE-HEIGHT: 1.1em; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; HEIGHT: 100%
+}
+#content_box_top {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/content_box_top.gif); WIDTH: 224px; LINE-HEIGHT: 17px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 17px
+}
+#content_box_btm {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/content_box_btm.gif); WIDTH: 224px; LINE-HEIGHT: 17px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 17px
+}
+#content_box_body {
+	FLOAT: left; BACKGROUND-IMAGE: url(/GenericSite/Organization/ETSI/images/content_box_bg_strip.gif); WIDTH: 224px; BACKGROUND-REPEAT: repeat-y; HEIGHT: 100%
+}
+#content_box_copy {
+	FLOAT: left; MARGIN: 0px 0px 0px 10px; WIDTH: 180px
+}
+.content_banner_image {
+	
+}
+.question_mark {
+	FLOAT: right
+}
+.plugtests_logo {
+	FLOAT: right; MARGIN: 0px 8px 0px 0px
+}
+.oma_main_content {
+	HEIGHT: 80%
+}
+#content_main {
+	PADDING-LEFT: 15px; BACKGROUND: white; WIDTH: 450px; PADDING-TOP: 18px; HEIGHT: 200px
+}
+#content_main_onecol {
+	PADDING-LEFT: 15px; BACKGROUND: white; WIDTH: 674px; PADDING-TOP: 18px; HEIGHT: 200px
+}
+#content_whitespace {
+	PADDING-LEFT: 0px; BACKGROUND: white; WIDTH: 0px; PADDING-TOP: 0px; HEIGHT: 200px
+}
+#content_right_menu_top {
+	WIDTH: 228px; HEIGHT: 100px
+}
+#content_right_menu_bottom {
+	WIDTH: 228px; HEIGHT: 100px
+}
+#oma_nomenu_container {
+	PADDING-LEFT: 0px
+}
+#main_table {
+	WIDTH: 800px
+}
+.oma_homepage_zone_separator {
+	WIDTH: 9px
+}

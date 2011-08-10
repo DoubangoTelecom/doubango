@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <xs:schema targetNamespace="urn:ietf:params:xml:ns:gruuinfo"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns="urn:ietf:params:xml:ns:gruuinfo">
+    <xs:complexType name="pubGruu">
+      <xs:attribute name="uri" type="xs:anyURI"
+                    use="required"/>
+    </xs:complexType>
+    <xs:complexType name="tempGruu">
+      <xs:complexContent>
+        <xs:extension base="tns:pubGruu">
+          <xs:attribute name="first-cseq"
+                        type="xs:unsignedLong"
+                        use="required"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="pub-gruu" type="tns:pubGruu"/>
+    <xs:element name="temp-gruu" type="tns:tempGruu"/>
+</xs:schema>

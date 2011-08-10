@@ -1,0 +1,311 @@
+default namespace ns1 = "urn:ietf:params:xml:ns:lost1"
+
+
+##
+##       Location-to-Service Translation Protocol (LoST)
+##
+##       A LoST XML instance has three request types, each with
+##       a cooresponding response type: find service, list services,
+##       and get service boundary.
+##
+start =
+  findService
+  | listServices
+  | listServicesByLocation
+  | getServiceBoundary
+  | findServiceResponse
+  | listServicesResponse
+  | listServicesByLocationResponse
+  | getServiceBoundaryResponse
+  | errors
+  | redirect
+
+##
+##       The queries.
+##
+div {
+  findService =
+    element findService {
+      requestLocation,
+      commonRequestPattern,
+      attribute validateLocation {
+        xsd:boolean >> a:defaultValue [ "false" ]
+      }?,
+      attribute serviceBoundary {
+        ("reference" | "value") >> a:defaultValue [ "reference" ]
+      }?,
+      attribute recursive { xsd:boolean >> a:defaultValue [ "false" ] }?
+    }
+  listServices = element listServices { commonRequestPattern }
+  listServicesByLocation =
+    element listServicesByLocation {
+      requestLocation,
+      commonRequestPattern,
+      attribute recursive { xsd:boolean >> a:defaultValue [ "true" ] }?
+    }
+  getServiceBoundary =
+    element getServiceBoundary { serviceBoundaryKey, extensionPoint }
+}
+
+##
+##       The responses.
+##
+div {
+  findServiceResponse =
+    element findServiceResponse {
+      mapping+, locationValidation?, commonResponsePattern, locationUsed
+    }
+  listServicesResponse =
+    element listServicesResponse { serviceList, commonResponsePattern }
+  listServicesByLocationResponse =
+    element listServicesByLocationResponse {
+      serviceList, commonResponsePattern, locationUsed
+    }
+  getServiceBoundaryResponse =
+    element getServiceBoundaryResponse {
+      serviceBoundary, commonResponsePattern
+    }
+}
+
+##
+##       A pattern common to some of the queries.
+##
+div {
+  commonRequestPattern = service, path?, extensionPoint
+}
+
+##
+##       A pattern common to responses.
+##
+div {
+  commonResponsePattern = warnings*, path, extensionPoint
+}
+
+##
+##       Location in Requests
+##
+div {
+  requestLocation =
+    element location {
+      attribute id { xsd:token },
+      locationInformation
+    }+
+}
+
+##
+##       Location Information
+##
+div {
+  locationInformation =
+    extensionPoint+,
+    attribute profile { xsd:NMTOKEN }?
+}
+
+##
+##       Service Boundary
+##
+div {
+  serviceBoundary = element serviceBoundary { locationInformation }+
+}
+
+##
+##       Service Boundary Reference
+##
+div {
+  serviceBoundaryReference =
+    element serviceBoundaryReference {
+      source, serviceBoundaryKey, extensionPoint
+    }
+  serviceBoundaryKey = attribute key { xsd:token }
+}
+
+##
+##       Path -
+##       Contains a list of via elements -
+##       places through which information flowed
+##
+div {
+  path =
+    element path {
+      element via { source, extensionPoint }+
+    }
+}
+
+##
+##       Location Used
+##
+div {
+  locationUsed =
+    element locationUsed {
+      attribute id { xsd:token }
+    }?
+}
+
+##
+##       Expires pattern
+##
+div {
+  expires =
+    attribute expires { xsd:dateTime | "NO-CACHE" | "NO-EXPIRATION" }
+}
+
+##
+##       A QName list
+##
+div {
+  qnameList = list { xsd:QName* }
+}
+
+##
+##       A location-to-service mapping.
+##
+div {
+  mapping =
+    element mapping {
+      element displayName {
+        xsd:string,
+        attribute xml:lang { xsd:language }
+      }*,
+      service,
+      (serviceBoundary | serviceBoundaryReference)?,
+      element uri { xsd:anyURI }*,
+      element serviceNumber {
+        xsd:token { pattern = "[0-9*#]+" }
+      }?,
+      extensionPoint,
+      expires,
+      attribute lastUpdated { xsd:dateTime },
+      source,
+      attribute sourceId { xsd:token },
+      message
+    }
+}
+
+##
+##       Location validation
+##
+div {
+  locationValidation =
+    element locationValidation {
+      element valid { qnameList }?,
+      element invalid { qnameList }?,
+      element unchecked { qnameList }?,
+      extensionPoint
+    }
+}
+
+##
+##       Errors and Warnings Container.
+##
+div {
+  exceptionContainer =
+    (badRequest?
+     & internalError?
+     & serviceSubstitution?
+     & defaultMappingReturned?
+     & forbidden?
+     & notFound?
+     & loop?
+     & serviceNotImplemented?
+     & serverTimeout?
+     & serverError?
+     & locationInvalid?
+     & locationProfileUnrecognized?),
+    extensionPoint,
+    source
+  errors = element errors { exceptionContainer }
+  warnings = element warnings { exceptionContainer }
+}
+
+##
+##       Basic Exceptions
+##
+div {
+
+  ##
+  ##         Exception pattern.
+  ##
+  basicException = message, extensionPoint
+  badRequest = element badRequest { basicException }
+  internalError = element internalError { basicException }
+  serviceSubstitution = element serviceSubstitution { basicException }
+  defaultMappingReturned =
+    element defaultMappingReturned { basicException }
+  forbidden = element forbidden { basicException }
+  notFound = element notFound { basicException }
+  loop = element loop { basicException }
+  serviceNotImplemented =
+    element serviceNotImplemented { basicException }
+  serverTimeout = element serverTimeout { basicException }
+  serverError = element serverError { basicException }
+  locationInvalid = element locationInvalid { basicException }
+  locationValidationUnavailable =
+    element locationValidationUnavailable { basicException }
+  locationProfileUnrecognized =
+    element locationProfileUnrecognized {
+      attribute unsupportedProfiles { xsd:NMTOKENS },
+      basicException
+    }
+}
+
+##
+##       Redirect.
+##
+div {
+
+  ##
+  ##         Redirect pattern
+  ##
+  redirect =
+    element redirect {
+      attribute target { appUniqueString },
+      source,
+      message,
+      extensionPoint
+    }
+}
+
+##
+##       Some common patterns.
+##
+div {
+  message =
+    (attribute message { xsd:token },
+     attribute xml:lang { xsd:language })?
+  service = element service { xsd:anyURI }?
+  appUniqueString =
+    xsd:token { pattern = "([a-zA-Z0-9\-]+\.)+[a-zA-Z0-9]+" }
+  source = attribute source { appUniqueString }
+  serviceList =
+    element serviceList {
+      list { xsd:anyURI* }
+    }
+}
+
+##
+##       Patterns for inclusion of elements from schemas in
+##       other namespaces.
+##
+div {
+
+  ##
+  ##         Any element not in the LoST namespace.
+  ##
+  notLost = element * - (ns1:* | ns1:*) { anyElement }
+
+  ##
+  ##         A wildcard pattern for including any element
+  ##         from any other namespace.
+  ##
+  anyElement =
+    (element * { anyElement }
+     | attribute * { text }
+     | text)*
+
+  ##
+  ##         A point where future extensions
+  ##         (elements from other namespaces)
+  ##         can be added.
+  ##
+  extensionPoint = notLost*
+}

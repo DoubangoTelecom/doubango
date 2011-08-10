@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?fileVersion 4.0.0?>
+
+<cproject>
+<storageModule buildFromInf="true" buildingTestComps="true" cleanLevel="0" concurrentBuildJobs="4" defaultMMPChangedAction="0" infBuildComponents="" infFileLocation="group/bld.inf" macrosFile="" makeEngineToUse="make" manageDependencies="true" moduleId="com.nokia.carbide.cdt.builder.carbideCPPBuilder" overrideMakeEngine="false" overrideWorkspaceSettings="false" promptForMMPChangedAction="false" useConcurrentBuilding="true" useDebugMode="false" useIncrementalBuilder="false" useKeepGoing="false" useMMPMacros="true"/>
+<storageModule moduleId="org.eclipse.cdt.core.settings">
+<cconfiguration id="Emulator Debug (WINSCW) [S60_5th_Edition_SDK_v1.0]">
+<storageModule buildSystemId="com.nokia.carbide.cdt.builder.CarbideConfigurationDataProvider" id="Emulator Debug (WINSCW) [S60_5th_Edition_SDK_v1.0]" moduleId="org.eclipse.cdt.core.settings" name="Emulator Debug (WINSCW) [S60_5th_Edition_SDK_v1.0]">
+<externalSettings/>
+<extensions>
+<extension id="org.eclipse.cdt.core.PE" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="com.nokia.cdt.debug.cw.symbian.SymbianE32" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="com.nokia.carbide.cdt.builder.MakeDefErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.SBSv2ErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.MWLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.MWCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.CarbideMakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.RCOMPErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.MakmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+</extensions>
+</storageModule>
+<storageModule moduleId="CarbideConfigurationDataProvider">
+<ENV_VAR_DATA_ID/>
+<ARGUMENTS_DATA_ID ABLDFREEZEARGSSTORAGE="-r"/>
+<ROM_BUILDER_DATA_ID ROMBUILDWORKINGDIRECTORYSTORAGE="C:\"/>
+</storageModule>
+<storageModule filesCache="C:\Projects\Doubango\carbide\tinyNET\group\bld.inf;C:\Projects\Doubango\carbide\tinyNET\group\tinyNET.mmp;" includesCache="C:/Projects/Doubango/tinySAK/src[LOCAL];C:/Projects/Doubango/tinyNET/src[LOCAL];C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include;C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include/stdapis;C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include/stdapis/sys;" macrosCache="__SYMBIAN32__;__SUPPORT_CPP_EXCEPTIONS__;__CW32__;TINYNET_EXPORTS;__S60_50__;__WINSCW__;_UNICODE;__S60_3X__;__S60_5X__;_DEBUG;__SERIES60_3X__;__DLL__;__WINS__;" moduleId="configDataCache" sourcesCache="/tinyNET/src;/tinySAK/src;" timestampCache="1264385561285" useMmpMacrosCache="true"/>
+<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
+</cconfiguration>
+<cconfiguration id="Phone Debug (ARMV5) [S60_5th_Edition_SDK_v1.0]">
+<storageModule buildSystemId="com.nokia.carbide.cdt.builder.CarbideConfigurationDataProvider" id="Phone Debug (ARMV5) [S60_5th_Edition_SDK_v1.0]" moduleId="org.eclipse.cdt.core.settings" name="Phone Debug (ARMV5) [S60_5th_Edition_SDK_v1.0]">
+<externalSettings/>
+<extensions>
+<extension id="org.eclipse.cdt.core.PE" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="com.nokia.cdt.debug.cw.symbian.SymbianE32" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="com.nokia.carbide.cdt.builder.RVCTCompilerErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.MakeDefErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.SBSv2ErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.RVCTLinkerErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.CarbideMakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.RCOMPErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.Elf2E32ErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.MakmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+</extensions>
+</storageModule>
+<storageModule moduleId="CarbideConfigurationDataProvider">
+<ENV_VAR_DATA_ID/>
+<ARGUMENTS_DATA_ID ABLDFREEZEARGSSTORAGE="-r"/>
+<ROM_BUILDER_DATA_ID ROMBUILDWORKINGDIRECTORYSTORAGE="C:\"/>
+</storageModule>
+<storageModule filesCache="C:\Projects\Doubango\carbide\tinyNET\group\bld.inf;C:\Projects\Doubango\carbide\tinyNET\group\tinyNET.mmp;" includesCache="C:/Projects/Doubango/tinySAK/src[LOCAL];C:/Projects/Doubango/tinyNET/src[LOCAL];C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include;C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include/stdapis;C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include/stdapis/sys;" macrosCache="__GENERIC_MARM__;__SYMBIAN32__;__SUPPORT_CPP_EXCEPTIONS__;__EPOC32__;__EABI__;__ARMCC_2__;TINYNET_EXPORTS;__ARMCC__;__MARM__;__S60_50__;__S60_3X__;__ARMCC_2_2__;_UNICODE;__S60_5X__;_DEBUG;__SERIES60_3X__;__MARM_ARMV5__;__DLL__;" moduleId="configDataCache" sourcesCache="/tinyNET/src;/tinySAK/src;" timestampCache="1264385561301" useMmpMacrosCache="true"/>
+<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
+</cconfiguration>
+<cconfiguration id="Phone Release (ARMV5) [S60_5th_Edition_SDK_v1.0]">
+<storageModule buildSystemId="com.nokia.carbide.cdt.builder.CarbideConfigurationDataProvider" id="Phone Release (ARMV5) [S60_5th_Edition_SDK_v1.0]" moduleId="org.eclipse.cdt.core.settings" name="Phone Release (ARMV5) [S60_5th_Edition_SDK_v1.0]">
+<externalSettings/>
+<extensions>
+<extension id="org.eclipse.cdt.core.PE" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="com.nokia.cdt.debug.cw.symbian.SymbianE32" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="com.nokia.carbide.cdt.builder.RVCTCompilerErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.MakeDefErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.SBSv2ErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.RVCTLinkerErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.CarbideMakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.RCOMPErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.Elf2E32ErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.MakmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+</extensions>
+</storageModule>
+<storageModule moduleId="CarbideConfigurationDataProvider">
+<ENV_VAR_DATA_ID/>
+<ARGUMENTS_DATA_ID ABLDFREEZEARGSSTORAGE="-r"/>
+<ROM_BUILDER_DATA_ID ROMBUILDWORKINGDIRECTORYSTORAGE="C:\"/>
+</storageModule>
+<storageModule filesCache="C:\Projects\Doubango\carbide\tinyNET\group\bld.inf;C:\Projects\Doubango\carbide\tinyNET\group\tinyNET.mmp;" includesCache="C:/Projects/Doubango/tinySAK/src[LOCAL];C:/Projects/Doubango/tinyNET/src[LOCAL];C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include;C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include/stdapis;C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include/stdapis/sys;" macrosCache="__GENERIC_MARM__;__SYMBIAN32__;__SUPPORT_CPP_EXCEPTIONS__;__EPOC32__;__EABI__;__ARMCC_2__;NDEBUG;TINYNET_EXPORTS;__ARMCC__;__MARM__;__S60_50__;__S60_3X__;__ARMCC_2_2__;_UNICODE;__S60_5X__;__SERIES60_3X__;__MARM_ARMV5__;__DLL__;" moduleId="configDataCache" sourcesCache="/tinyNET/src;/tinySAK/src;" timestampCache="1264385561316" useMmpMacrosCache="true"/>
+<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
+</cconfiguration>
+<cconfiguration id="Phone Debug (GCCE) [S60_5th_Edition_SDK_v1.0]">
+<storageModule buildSystemId="com.nokia.carbide.cdt.builder.CarbideConfigurationDataProvider" id="Phone Debug (GCCE) [S60_5th_Edition_SDK_v1.0]" moduleId="org.eclipse.cdt.core.settings" name="Phone Debug (GCCE) [S60_5th_Edition_SDK_v1.0]">
+<externalSettings/>
+<extensions>
+<extension id="org.eclipse.cdt.core.PE" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="com.nokia.cdt.debug.cw.symbian.SymbianE32" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="com.nokia.carbide.cdt.builder.MakeDefErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.SBSv2ErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.GCCEErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.CarbideMakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.RCOMPErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.Elf2E32ErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.MakmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+</extensions>
+</storageModule>
+<storageModule moduleId="CarbideConfigurationDataProvider">
+<ENV_VAR_DATA_ID/>
+<ARGUMENTS_DATA_ID ABLDFREEZEARGSSTORAGE="-r"/>
+<ROM_BUILDER_DATA_ID ROMBUILDWORKINGDIRECTORYSTORAGE="C:\"/>
+</storageModule>
+<storageModule filesCache="C:\Projects\Doubango\carbide\tinyNET\group\bld.inf;C:\Projects\Doubango\carbide\tinyNET\group\tinyNET.mmp;" includesCache="C:/Projects/Doubango/tinySAK/src[LOCAL];C:/Projects/Doubango/tinyNET/src[LOCAL];C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include;C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include/stdapis;C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include/stdapis/sys;" macrosCache="__GENERIC_MARM__;__SYMBIAN32__;__SUPPORT_CPP_EXCEPTIONS__;__EPOC32__;__EABI__;__GCCE__;TINYNET_EXPORTS;__MARM__;__S60_50__;_UNICODE;__S60_3X__;__S60_5X__;_DEBUG;__SERIES60_3X__;__MARM_ARMV5__;__DLL__;" moduleId="configDataCache" sourcesCache="/tinyNET/src;/tinySAK/src;" timestampCache="1264385561332" useMmpMacrosCache="true"/>
+<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
+</cconfiguration>
+<cconfiguration id="Phone Release (GCCE) [S60_5th_Edition_SDK_v1.0]">
+<storageModule buildSystemId="com.nokia.carbide.cdt.builder.CarbideConfigurationDataProvider" id="Phone Release (GCCE) [S60_5th_Edition_SDK_v1.0]" moduleId="org.eclipse.cdt.core.settings" name="Phone Release (GCCE) [S60_5th_Edition_SDK_v1.0]">
+<externalSettings/>
+<extensions>
+<extension id="org.eclipse.cdt.core.PE" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="com.nokia.cdt.debug.cw.symbian.SymbianE32" point="org.eclipse.cdt.core.BinaryParser"/>
+<extension id="com.nokia.carbide.cdt.builder.MakeDefErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.SBSv2ErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.GCCEErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.CarbideMakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.RCOMPErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.Elf2E32ErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="com.nokia.carbide.cdt.builder.MakmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+</extensions>
+</storageModule>
+<storageModule moduleId="CarbideConfigurationDataProvider">
+<ENV_VAR_DATA_ID/>
+<ARGUMENTS_DATA_ID ABLDFREEZEARGSSTORAGE="-r"/>
+<ROM_BUILDER_DATA_ID ROMBUILDWORKINGDIRECTORYSTORAGE="C:\"/>
+</storageModule>
+<storageModule filesCache="C:\Projects\Doubango\carbide\tinyNET\group\bld.inf;C:\Projects\Doubango\carbide\tinyNET\group\tinyNET.mmp;" includesCache="C:/Projects/Doubango/tinySAK/src[LOCAL];C:/Projects/Doubango/tinyNET/src[LOCAL];C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include;C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include/stdapis;C:/S60/devices/S60_5th_Edition_SDK_v1.0/epoc32/include/stdapis/sys;" macrosCache="__GENERIC_MARM__;__SYMBIAN32__;__SUPPORT_CPP_EXCEPTIONS__;__EPOC32__;__EABI__;__GCCE__;NDEBUG;TINYNET_EXPORTS;__MARM__;__S60_50__;_UNICODE;__S60_3X__;__S60_5X__;__SERIES60_3X__;__MARM_ARMV5__;__DLL__;" moduleId="configDataCache" sourcesCache="/tinyNET/src;/tinySAK/src;" timestampCache="1264385561348" useMmpMacrosCache="true"/>
+<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
+</cconfiguration>
+</storageModule>
+</cproject>

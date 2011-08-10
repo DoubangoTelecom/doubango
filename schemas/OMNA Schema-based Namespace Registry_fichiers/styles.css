@@ -1,0 +1,135 @@
+.RadMenu_Default {
+	BORDER-RIGHT: #e5e5e5 1px solid; BORDER-TOP: #e5e5e5 1px solid; BACKGROUND: url(img/MenuItemBackground.gif) #ececec repeat-x; BORDER-LEFT: #bbbbbb 1px solid; BORDER-BOTTOM: #bbbbbb 1px solid
+}
+.RadMenu_Default_Context {
+	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BACKGROUND: none transparent scroll repeat 0% 0%; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px
+}
+.RadMenu_Default .link {
+	BORDER-RIGHT: #d6d6d6 1px solid; BACKGROUND: url(img/MenuItemBackground.gif) #ececec repeat-x; BORDER-LEFT: #fff 1px solid; COLOR: #666; LINE-HEIGHT: 20px; TEXT-DECORATION: none
+}
+.RadMenu_Default .link:hover {
+	COLOR: #000
+}
+.RadMenu_Default .focused {
+	COLOR: #000
+}
+.RadMenu_Default .expanded {
+	COLOR: #000
+}
+.RadMenu_Default .text {
+	PADDING-RIGHT: 36px; PADDING-LEFT: 10px; FONT-SIZE: 11px; FONT-FAMILY: Arial, Verdana
+}
+.RadMenu_Default .group {
+	BORDER-RIGHT: #bbbbbb 0px solid; BORDER-TOP: #bbbbbb 1px solid; BORDER-LEFT: #bbbbbb 1px solid; BORDER-BOTTOM: #bbbbbb 0px solid
+}
+.RadMenu_Default .group .link {
+	BORDER-TOP: #fff 1px solid; BACKGROUND: #f7f7f7; BORDER-BOTTOM: #d7d7d7 1px solid; TEXT-ALIGN: left
+}
+.RadMenu_Default .group .link:hover {
+	FONT-WEIGHT: normal; BACKGROUND: #ededed; BORDER-BOTTOM-COLOR: #d7d7d7
+}
+.RadMenu_Default .group .focused {
+	FONT-WEIGHT: normal; BACKGROUND: #ededed; BORDER-BOTTOM-COLOR: #d7d7d7
+}
+.RadMenu_Default .group .expanded {
+	FONT-WEIGHT: normal; BACKGROUND: #ededed; BORDER-BOTTOM-COLOR: #d7d7d7
+}
+.RadMenu_Default .leftArrow {
+	BACKGROUND: url(img/left.gif) #ededed no-repeat center center; WIDTH: 15px
+}
+.RadMenu_Default .rightArrow {
+	BACKGROUND: url(img/left.gif) #ededed no-repeat center center; WIDTH: 15px
+}
+.RadMenu_Default .topArrow {
+	BACKGROUND: url(img/left.gif) #ededed no-repeat center center; WIDTH: 15px
+}
+.RadMenu_Default .bottomArrow {
+	BACKGROUND: url(img/left.gif) #ededed no-repeat center center; WIDTH: 15px
+}
+.RadMenu_Default .leftArrowDisabled {
+	BACKGROUND: url(img/left.gif) #ededed no-repeat center center; WIDTH: 15px
+}
+.RadMenu_Default .rightArrowDisabled {
+	BACKGROUND: url(img/left.gif) #ededed no-repeat center center; WIDTH: 15px
+}
+.RadMenu_Default .topArrowDisabled {
+	BACKGROUND: url(img/left.gif) #ededed no-repeat center center; WIDTH: 15px
+}
+.RadMenu_Default .bottomArrowDisabled {
+	BACKGROUND: url(img/left.gif) #ededed no-repeat center center; WIDTH: 15px
+}
+.RadMenu_Default .topArrow {
+	BACKGROUND-IMAGE: url(img/top.gif); WIDTH: 100%
+}
+.RadMenu_Default .topArrowDisabled {
+	BACKGROUND-IMAGE: url(img/top.gif); WIDTH: 100%
+}
+.RadMenu_Default .bottomArrow {
+	BACKGROUND-IMAGE: url(img/bottom.gif); WIDTH: 100%
+}
+.RadMenu_Default .bottomArrowDisabled {
+	BACKGROUND-IMAGE: url(img/bottom.gif); WIDTH: 100%
+}
+.RadMenu_Default .rightArrow {
+	HEIGHT: 100%
+}
+.RadMenu_Default .leftArrow {
+	HEIGHT: 100%
+}
+.RadMenu_Default .rightArrow {
+	BACKGROUND-IMAGE: url(img/right.gif)
+}
+.RadMenu_Default .rightArrowDisabled {
+	BACKGROUND-IMAGE: url(img/right.gif)
+}
+.RadMenu_Default .vertical .separator .text {
+	FONT-SIZE: 1px; BACKGROUND: #ccc; PADDING-TOP: 2px
+}
+.RadMenu_Default .expandLeft {
+	BACKGROUND: url(img/groupImage.gif) no-repeat right center; MARGIN-RIGHT: 4px
+}
+.RadMenu_Default .expandRight {
+	BACKGROUND: url(img/groupImage.gif) no-repeat right center; MARGIN-RIGHT: 4px
+}
+.RadMenu_Default_rtl .expandLeft {
+	BACKGROUND: url(img/groupImageRTL.gif) no-repeat left center
+}
+.RadMenu_Default_rtl .expandRight {
+	BACKGROUND: url(img/groupImageRTL.gif) no-repeat left center
+}
+.RadMenu_Default .link:hover .expandLeft {
+	BACKGROUND: url(img/invertedGroupImage.gif) no-repeat right center
+}
+.RadMenu_Default .link:hover .expandRight {
+	BACKGROUND: url(img/invertedGroupImage.gif) no-repeat right center
+}
+.RadMenu_Default .focused .expandLeft {
+	BACKGROUND: url(img/invertedGroupImage.gif) no-repeat right center
+}
+.RadMenu_Default .focused .expandRight {
+	BACKGROUND: url(img/invertedGroupImage.gif) no-repeat right center
+}
+.RadMenu_Default .expanded .expandLeft {
+	BACKGROUND: url(img/invertedGroupImage.gif) no-repeat right center
+}
+.RadMenu_Default .expanded .expandRight {
+	BACKGROUND: url(img/invertedGroupImage.gif) no-repeat right center
+}
+.RadMenu_Default_rtl .link:hover .expandLeft {
+	BACKGROUND: url(img/groupImageRTL.gif) no-repeat left center
+}
+.RadMenu_Default_rtl .link:hover .expandRight {
+	BACKGROUND: url(img/groupImageRTL.gif) no-repeat left center
+}
+.RadMenu_Default_rtl .focused .expandLeft {
+	BACKGROUND: url(img/groupImageRTL.gif) no-repeat left center
+}
+.RadMenu_Default_rtl .focused .expandRight {
+	BACKGROUND: url(img/groupImageRTL.gif) no-repeat left center
+}
+.RadMenu_Default_rtl .expanded .expandLeft {
+	BACKGROUND: url(img/groupImageRTL.gif) no-repeat left center
+}
+.RadMenu_Default_rtl .expanded .expandRight {
+	BACKGROUND: url(img/groupImageRTL.gif) no-repeat left center
+}
