@@ -36,11 +36,26 @@
 
 #include "tinymedia/tmedia_denoise.h"
 
-#include <webrtc/echo_cancellation.h>
+#if TDAV_UNDER_MOBILE && !defined(ANDROID) // Not working on Android
+#	include <webrtc/echo_control_mobile.h>
+#	define	TDAV_WebRtcAec_Create(aecInst)	WebRtcAecm_Create(aecInst)
+#	define	TDAV_WebRtcAec_Free(aecInst)	WebRtcAecm_Free(aecInst)
+#	define	TDAV_WebRtcAec_Init(aecInst, sampFreq, scSampFreq)		WebRtcAecm_Init(aecInst, sampFreq)
+#	define	TDAV_WebRtcAec_BufferFarend(aecInst, farend, nrOfSamples)	WebRtcAecm_BufferFarend(aecInst, farend, nrOfSamples)
+#	define	TDAV_WebRtcAec_Process(aecInst, nearend, nearendH, out, outH, nrOfSamples, msInSndCardBuf, skew)	WebRtcAecm_Process(aecInst, nearend, nearend, out, nrOfSamples, msInSndCardBuf)
+#else
+#	include <webrtc/echo_cancellation.h>
+#	define	TDAV_WebRtcAec_Create(aecInst)	WebRtcAec_Create(aecInst)
+#	define	TDAV_WebRtcAec_Free(aecInst)	WebRtcAec_Free(aecInst)
+#	define	TDAV_WebRtcAec_Init(aecInst, sampFreq, scSampFreq)	WebRtcAec_Init(aecInst, sampFreq, scSampFreq)
+#	define	TDAV_WebRtcAec_BufferFarend(aecInst, farend, nrOfSamples)	WebRtcAec_BufferFarend(aecInst, farend, nrOfSamples)
+#	define	TDAV_WebRtcAec_Process(aecInst, nearend, nearendH, out, outH, nrOfSamples, msInSndCardBuf, skew)	WebRtcAec_Process(aecInst, nearend, nearendH, out, outH, nrOfSamples, msInSndCardBuf, skew)
+#endif
+
 #include <webrtc/noise_suppression.h>
 
 #if !defined(PREFER_SPEEX_DENOISER)
-#	if ANDROID
+#	if defined(ANDROID)
 #		define PREFER_SPEEX_DENOISER	1 // WebRTC denoise produce robotic voice on Android (tested on Galaxy S)
 #	else
 #		define PREFER_SPEEX_DENOISER	0

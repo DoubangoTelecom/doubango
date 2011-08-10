@@ -108,7 +108,7 @@ int tdav_codec_h263_deinit(tdav_codec_h263_t* self)
 //
 //	H.263-1996 object definition
 //
-int tdav_codec_h263_open(tmedia_codec_t* self)
+static int tdav_codec_h263_open(tmedia_codec_t* self)
 {
 	int ret;
 	int size;
@@ -226,7 +226,7 @@ int tdav_codec_h263_open(tmedia_codec_t* self)
 	return 0;
 }
 
-int tdav_codec_h263_close(tmedia_codec_t* self)
+static int tdav_codec_h263_close(tmedia_codec_t* self)
 {
 	tdav_codec_h263_t* h263 = (tdav_codec_h263_t*)self;
 
@@ -269,7 +269,7 @@ int tdav_codec_h263_close(tmedia_codec_t* self)
 	return 0;
 }
 
-tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
+static tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	int ret;
 	int size;
@@ -304,7 +304,7 @@ tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_data, tsk
 	return 0;
 }
 
-tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
+static tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	uint8_t F, P, sbit, ebit;
 	const uint8_t* pdata = in_data;
@@ -457,7 +457,7 @@ tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_data, tsk
 	return retsize;
 }
 
-tsk_bool_t tdav_codec_h263_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+static tsk_bool_t tdav_codec_h263_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
 {	
 	tsk_bool_t ret = tsk_false;
 	tmedia_codec_video_t* h263 = (tmedia_codec_video_t*)codec;
@@ -468,11 +468,11 @@ tsk_bool_t tdav_codec_h263_fmtp_match(const tmedia_codec_t* codec, const char* f
 			case tmedia_bl_low:
 			default:
 				if(tsk_params_have_param(params, "QCIF")){
-					h263->in.width = h263->out.width = 176, h263->in.height = h263->out.height = 144;
+					h263->in.width = h263->out.width = 176; h263->in.height = h263->out.height = 144;
 					ret = tsk_true;
 				}
 				else if(tsk_params_have_param(params, "SQCIF")){
-					h263->in.width = h263->out.width = 128, h263->in.height = h263->out.height = 96;
+					h263->in.width = h263->out.width = 128; h263->in.height = h263->out.height = 96;
 					ret = tsk_true;
 				}
 				break;
@@ -481,19 +481,19 @@ tsk_bool_t tdav_codec_h263_fmtp_match(const tmedia_codec_t* codec, const char* f
 			case tmedia_bl_hight:
 			case tmedia_bl_unrestricted:
 				if(tsk_params_have_param(params, "CIF")){
-					h263->in.width = h263->out.width = 352, h263->in.height = h263->out.height = 288;
+					h263->in.width = h263->out.width = 352; h263->in.height = h263->out.height = 288;
 					ret = tsk_true;
 				}
 				else if(tsk_params_have_param(params, "QCIF")){
-					h263->in.width = h263->out.width = 176, h263->in.height = h263->out.height = 144;
+					h263->in.width = h263->out.width = 176; h263->in.height = h263->out.height = 144;
 					ret = tsk_true;
 				}
 				else if(tsk_params_have_param(params, "SQCIF")){
-					h263->in.width = h263->out.width = 128, h263->in.height = h263->out.height = 96;
+					h263->in.width = h263->out.width = 128; h263->in.height = h263->out.height = 96;
 					ret = tsk_true;
 				}
 				else { // Default: to be fixed
-					h263->in.width = h263->out.width = 352, h263->in.height = h263->out.height = 288;
+					h263->in.width = h263->out.width = 352; h263->in.height = h263->out.height = 288;
 					ret = tsk_true;
 				}
 
@@ -505,7 +505,7 @@ tsk_bool_t tdav_codec_h263_fmtp_match(const tmedia_codec_t* codec, const char* f
 	return ret;
 }
 
-char* tdav_codec_h263_fmtp_get(const tmedia_codec_t* self)
+static char* tdav_codec_h263_fmtp_get(const tmedia_codec_t* self)
 {
 	switch(self->bl){
 		case tmedia_bl_low:
@@ -520,7 +520,7 @@ char* tdav_codec_h263_fmtp_get(const tmedia_codec_t* self)
 	}
 }
 
-int tdav_codec_h263_fmtp_set(tmedia_codec_t* self, const char* fmtp)
+static int tdav_codec_h263_fmtp_set(tmedia_codec_t* self, const char* fmtp)
 {
 	TSK_DEBUG_INFO("remote fmtp=%s", fmtp);
 	return 0;
@@ -615,22 +615,22 @@ const tmedia_codec_plugin_def_t *tdav_codec_h263_plugin_def_t = &tdav_codec_h263
 //	H.263-1998 object definition
 //
 
-int tdav_codec_h263p_open(tmedia_codec_t* self)
+static int tdav_codec_h263p_open(tmedia_codec_t* self)
 {
 	return tdav_codec_h263_open(self);
 }
 
-int tdav_codec_h263p_close(tmedia_codec_t* self)
+static int tdav_codec_h263p_close(tmedia_codec_t* self)
 {
 	return tdav_codec_h263_close(self);
 }
 
-tsk_size_t tdav_codec_h263p_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
+static tsk_size_t tdav_codec_h263p_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	return tdav_codec_h263_encode(self, in_data, in_size, out_data, out_max_size);
 }
 
-tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
+static tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	uint8_t P, V, PLEN, PEBIT;
 	uint8_t* pdata = (uint8_t*)in_data;

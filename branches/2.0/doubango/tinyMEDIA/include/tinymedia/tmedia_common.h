@@ -103,6 +103,7 @@ typedef enum tmedia_chroma_e
 tmedia_chroma_t;
 
 // used by tinyWRAP
+// keep order (low->unrestricted)
 typedef enum tmedia_bandwidth_level_e
 {
 	tmedia_bl_low,
@@ -114,6 +115,7 @@ tmedia_bandwidth_level_t;
 
 TINYMEDIA_API tmedia_type_t tmedia_type_from_sdp(const tsdp_message_t* sdp);
 TINYMEDIA_API int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t* channels);
+TINYMEDIA_API int tmedia_parse_video_fmtp(const char* fmtp, tmedia_bandwidth_level_t bl, unsigned* width, unsigned* height, unsigned* fps);
 TINYMEDIA_API const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_size_t size);
 TINYMEDIA_API int tmedia_get_video_quality(tmedia_bandwidth_level_t bl);
 #define tmedia_get_video_qscale tmedia_get_video_quality

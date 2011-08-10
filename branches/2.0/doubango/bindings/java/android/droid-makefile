@@ -30,28 +30,32 @@ FFMPEG_LDFLAGS := -lavutil-$(LICENSE) -lswscale-$(LICENSE) -lavcore-$(LICENSE) -
 	endif
 endif
 
+ifeq ($(VPX),yes)
+	VPX_LDLAGS := -lvpx_$(MARCH)
+endif
+
 ifneq ($(OPENCORE_AMR), no)
-OPENCORE_ARM_LDFLAGS := -lopencore-amrnb
+	OPENCORE_ARM_LDFLAGS := -lopencore-amrnb
 endif
 
 ifeq ($(SPEEX_DSP), yes)
-SPEEX_DSP_LDFLAGS := -lspeexdsp
+	SPEEX_DSP_LDFLAGS := -lspeexdsp
 endif
 
 ifeq ($(SPEEX), yes)
-SPEEX_LDFLAGS := -lspeex
+	SPEEX_LDFLAGS := -lspeex
 endif
 
 ifeq ($(HAVE_WEBRTC), yes)
-	WEBRTC_LDFLAGS := -lwebrtc_aec_$(MARCH) -lwebrtc_apm_utility_$(MARCH) -lwebrtc_ns_$(MARCH) -lwebrtc_system_wrappers_$(MARCH)
+	WEBRTC_LDFLAGS := -lwebrtc_aecm_$(MARCH) -lwebrtc_aec_$(MARCH) -lwebrtc_spl_$(MARCH) -lwebrtc_apm_utility_$(MARCH) -lwebrtc_ns_$(MARCH) -lwebrtc_system_wrappers_$(MARCH)
 endif
 
 ifeq ($(ILBC), yes)
-ILBC_LDFLAGS := -liLBC
+	ILBC_LDFLAGS := -liLBC
 endif
 
 ifneq ($(LIBGSM),no)
-LIBGSM_LDFLAGS := -lgsm
+	LIBGSM_LDFLAGS := -lgsm
 endif
 
 #BV16_LDFLAGS := -lbv16
@@ -72,7 +76,7 @@ else
 	_LT=Bstatic
 endif
 
-LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) -L$(THIRDPARTIES_MARCH_LIB) $(FFMPEG_LDFLAGS) $(WEBRTC_LDFLAGS) $(SPEEX_DSP_LDFLAGS) $(SPEEX_LDFLAGS) $(OPENCORE_ARM_LDFLAGS) $(BV16_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) $(G729_LDFLAGS)\
+LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) -L$(THIRDPARTIES_MARCH_LIB) $(FFMPEG_LDFLAGS) $(VPX_LDLAGS) $(WEBRTC_LDFLAGS) $(SPEEX_DSP_LDFLAGS) $(SPEEX_LDFLAGS) $(OPENCORE_ARM_LDFLAGS) $(BV16_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) $(G729_LDFLAGS)\
 	-Wl,-Bdynamic -lm -lstdc++ -lgcc -llog \
 	-Wl,-$(_LT) -ltinySAK_$(MARCH) -ltinyHTTP_$(MARCH) -ltinyXCAP_$(MARCH) -ltinyIPSec_$(MARCH) -ltinySIGCOMP_$(MARCH) -ltinySMS_$(MARCH) -ltinyNET_$(MARCH) -ltinySDP_$(MARCH) -ltinyRTP_$(MARCH) -ltinyMEDIA_$(MARCH) -ltinyMSRP_$(MARCH) -ltinyDAV_$(MARCH) -ltinySIP_$(MARCH)
 

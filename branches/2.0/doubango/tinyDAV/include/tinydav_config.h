@@ -27,14 +27,19 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
-/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition. */
+// Windows (XP/Vista/7/CE and Windows Mobile) macro definition
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define TDAV_UNDER_WINDOWS	1
 #endif
 
-/* OS X or iOS */
+// OS X or iOS
 #if defined(__APPLE__)
 #	define TDAV_UNDER_APPLE		1
+#endif
+
+// Mobile
+#if defined(_WIN32_WCE) || defined(ANDROID) // iOS (not true)=> || defined(IOS)
+#	define TDAV_UNDER_MOBILE	1
 #endif
 
 #if (TDAV_UNDER_WINDOWS || defined(__SYMBIAN32__)) && defined(TINYDAV_EXPORTS)
