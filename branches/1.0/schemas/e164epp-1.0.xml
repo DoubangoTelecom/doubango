@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns:e164="urn:ietf:params:xml:ns:e164epp-1.0" xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:ietf:params:xml:ns:e164epp-1.0" elementFormDefault="qualified">
+  <annotation>
+    <documentation>
+         Extensible Provisioning Protocol v1.0
+         domain name extension schema for E.164 number provisioning.
+       </documentation>
+  </annotation>
+<!--
+   Child elements found in EPP commands.
+   -->
+  <element name="create" type="e164:createType"/>
+  <element name="update" type="e164:updateType"/>
+<!--
+   Global elements.
+   -->
+  <element name="naptr" type="e164:naptrType"/>
+<!--
+   Child elements of the <create> command.
+   -->
+  <complexType name="createType">
+    <sequence>
+      <element ref="e164:naptr" maxOccurs="unbounded"/>
+    </sequence>
+  </complexType>
+  <complexType name="naptrType">
+    <sequence>
+      <element name="order" type="unsignedShort"/>
+      <element name="pref" type="unsignedShort"/>
+      <element name="flags" type="e164:flagsType" minOccurs="0"/>
+      <element name="svc" type="e164:svcType"/>
+      <element name="regex" type="e164:regexType" minOccurs="0"/>
+      <element name="repl" type="e164:replType" minOccurs="0"/>
+    </sequence>
+  </complexType>
+  <simpleType name="flagsType">
+    <restriction base="token">
+      <pattern value="[A-Z]|[a-z]|[0-9]"/>
+      <length value="1"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="svcType">
+    <restriction base="token">
+      <minLength value="1"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="regexType">
+    <restriction base="token">
+      <minLength value="1"/>
+    </restriction>
+  </simpleType>
+  <simpleType name="replType">
+    <restriction base="token">
+      <minLength value="1"/>
+      <maxLength value="255"/>
+    </restriction>
+  </simpleType>
+<!--
+   Child elements of the <update> command.
+   -->
+  <complexType name="updateType">
+    <sequence>
+      <element name="add" type="e164:addRemType" minOccurs="0"/>
+      <element name="rem" type="e164:addRemType" minOccurs="0"/>
+    </sequence>
+  </complexType>
+<!--
+   Data elements that can be added or removed.
+   -->
+  <complexType name="addRemType">
+    <sequence>
+      <element ref="e164:naptr" maxOccurs="unbounded"/>
+    </sequence>
+  </complexType>
+<!--
+   Child response elements.
+   -->
+  <element name="infData" type="e164:infDataType"/>
+<!--
+   <info> response elements.
+   -->
+  <complexType name="infDataType">
+    <sequence>
+      <element ref="e164:naptr" maxOccurs="unbounded"/>
+    </sequence>
+  </complexType>
+<!--
+   End of schema.
+   -->
+</schema>

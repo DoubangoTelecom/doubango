@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+     schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+    <xs:simpleType name="Timestamp_t">
+     <xs:annotation>
+      <xs:documentation>Timestamp type</xs:documentation>
+     </xs:annotation>
+     <xs:restriction base="xs:dateTime"/>
+    </xs:simpleType>
+    <xs:simpleType name="deviceID_t">
+     <xs:annotation>
+      <xs:documentation>Device ID, a URN</xs:documentation>
+     </xs:annotation>
+     <xs:restriction base="xs:anyURI"/>
+    </xs:simpleType>
+    <xs:complexType name="Note_t">
+     <xs:annotation>
+      <xs:documentation>Note type</xs:documentation>
+     </xs:annotation>
+     <xs:simpleContent>
+      <xs:extension base="xs:string">
+       <xs:attribute ref="xml:lang"/>
+      </xs:extension>
+     </xs:simpleContent>
+    </xs:complexType>
+    <xs:attributeGroup name="fromUntil">
+     <xs:attribute name="from" type="xs:dateTime"/>
+     <xs:attribute name="until" type="xs:dateTime"/>
+    </xs:attributeGroup>
+    <xs:complexType name="empty"/>
+   </xs:schema>

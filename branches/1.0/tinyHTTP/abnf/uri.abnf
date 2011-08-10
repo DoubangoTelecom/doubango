@@ -1,0 +1,88 @@
+; FIXME:
+DQUOTE= %x22 ; " (Double Quote)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; URI (2396) - ABNF
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;; 1.6. Syntax Notation and Common Elements
+alpha    = lowalpha / upalpha
+lowalpha = "a" / "b" / "c" / "d" / "e" / "f" / "g" / "h" / "i" / "j" / "k" / "l" / "m" / "n" / "o" / "p" / "q" / "r" / "s" / "t" / "u" / "v" / "w" / "x" / "y" / "z"
+upalpha  = "A" / "B" / "C" / "D" / "E" / "F" / "G" / "H" / "I" / "J" / "K" / "L" / "M" / "N" / "O" / "P" / "Q" / "R" / "S" / "T" / "U" / "V" / "W" / "X" / "Y" / "Z"
+digit    = "0" / "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9"
+alphanum = alpha / digit
+
+;;;; 2. URI Characters and Escape Sequences
+urlc     = reserved / unreserved / escaped
+
+;;;; 2.2. Reserved Characters
+reserved    = ";" / "/" / "?" / ":" / "@" / "&" / "=" / "+" / "$" / ","
+
+;;;; 2.3. Unreserved Characters
+unreserved  = alphanum / mark
+mark        = "-" / "_" / "." / "!" / "~" / "*" / "'" / "(" / ")"
+
+;;;; 2.4.1. Escaped Encoding
+escaped    = "%" hex hex
+hex         = digit / "A" / "B" / "C" / "D" / "E" / "F" / "a" / "b" / "c" / "d" / "e" / "f"
+
+
+;;;; 2.4.3. Excluded US-ASCII Characters
+control = %x00-1F / %x7F ;<US-ASCII coded characters 00-1F and 7F hexadecimal>
+space   = %x20 ;<US-ASCII coded character 20 hexadecimal>
+delims  = "<" / ">" / "#" / "%" / DQUOTE
+unwise  = "{" / "}" / "/" / "\" / "^" / "[" / "]" / "`"
+
+
+;;;; 3. URI Syntactic Components
+absoluteURI   = scheme ":" ( hier-part / opaque-part )
+hier-part     = ( net-path / abs-path ) [ "?" query ]
+net-path      = "//" authority [ abs-path ]
+abs-path      = "/"  path-segments
+opaque-part   = urlc-no-slash *urlc
+urlc-no-slash = unreserved / escaped / ";" / "?" / ":" / "@" / "&" / "=" / "+" / "$" / ","
+
+;;;; 3.1. Scheme Component
+scheme        = alpha *( alpha / digit / "+" / "-" / "." )
+
+;;;; 3.2. Authority Component
+authority     = server / reg-name
+
+;;;; Registry-based Naming Authority
+reg-name      = 1*( unreserved / escaped / "$" / "," / ";" / ":" / "@" / "&" / "=" / "+" )
+
+;;;; 3.2.2. Server-based Naming Authority
+server        = [ [ userinfo "@" ] hostport ]
+userinfo      = *( unreserved / escaped / ";" / ":" / "&" / "=" / "+" / "$" / "," )
+hostport      = host [ ":" port ]
+host          = hostname / IPv4address
+hostname      = *( domainlabel "." ) toplabel [ "." ]
+domainlabel   = alphanum / alphanum *( alphanum / "-" ) alphanum
+toplabel      = alpha / alpha *( alphanum / "-" ) alphanum
+IPv4address   = 1*digit "." 1*digit "." 1*digit "." 1*digit
+port          = *digit
+
+;;;; 3.3. Path Component
+path          = [ abs-path / opaque-part ]
+path-segments = segment *( "/" segment )
+segment       = *pchar *( ";" param )
+param         = *pchar
+pchar         = unreserved / escaped / ":" / "@" / "&" / "=" / "+" / "$" / ","
+
+;;;; 3.4. Query Component
+query         = *urlc
+
+;;;; 4. URI References
+URI-reference = [ absoluteURI / relativeURI ] [ "#" fragment ]
+
+
+;;;; 4.1. Fragment Identifier
+fragment      = *urlc
+
+;;;; 5. Relative URI References
+relativeURI   = ( net-path / abs-path / rel-path ) [ "?" query ]
+rel-path      = rel-segment [ abs-path ]
+rel-segment   = 1*( unreserved / escaped / ";" / "@" / "&" / "=" / "+" / "$" / "," )

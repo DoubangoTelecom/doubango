@@ -1,0 +1,16 @@
+## libxml2 ##
+In include/wsockcompat.h remove line 9 [#include <winsock.h>]
+
+## pthread ##
+In pthread.h remove line 245 [#define NEED_ERRNO]
+In pthread.h remove line 1219 [__declspec(dllimport) extern int * __cdecl _errno(void);]
+In pthread.h remove line 1220 [#        define errno   (*_errno())]
+In sched.h remove line 96 [#define NEED_ERRNO]
+In pthread_cancel.c add this around line #63:
+#if defined(_ARM_)
+    #define PTW32_PROGCTR(Context)  ((Context).Psr)
+#endif
+In errno.c remove _errno function
+_endthread, endthread, _beginthreadex and beginthreadex are my own implementation (in wcecompat)
+	==> if there is a problem, double check these functions
+In implement.h replace line 93 from [#if defined(__MINGW32__)] to [#if defined(_WIN32_WCE)]

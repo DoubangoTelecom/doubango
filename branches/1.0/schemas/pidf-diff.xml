@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+    targetNamespace="urn:ietf:params:xml:ns:pidf-diff"
+    xmlns:tns="urn:ietf:params:xml:ns:pidf-diff"
+    xmlns:pidf="urn:ietf:params:xml:ns:pidf"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified">
+
+ <!-- include patch-ops type definitions -->
+ <xsd:include
+      schemaLocation="urn:ietf:params:xml:schema:patch-ops"/>
+
+ <!-- import PIDF definitions -->
+ <xsd:import namespace="urn:ietf:params:xml:ns:pidf"
+             schemaLocation="pidf.xsd"/>
+
+ <!-- partial updates -->
+ <xsd:element name="pidf-diff">
+  <xsd:complexType>
+   <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+    <xsd:choice>
+     <xsd:element name="add" type="tns:add"/>
+     <xsd:element name="replace" type="tns:replace"/>
+     <xsd:element name="remove" type="tns:remove"/>
+    </xsd:choice>
+   </xsd:sequence>
+   <xsd:attribute name="version" type="xsd:unsignedInt"/>
+   <xsd:attribute name="entity" type="xsd:anyURI"/>
+  </xsd:complexType>
+ </xsd:element>
+
+ <!-- full PIDF in addition to optional version -->
+ <xsd:element name="pidf-full">
+  <xsd:complexType>
+   <xsd:complexContent>
+    <xsd:extension base="pidf:presence">
+     <xsd:attribute name="version" type="xsd:unsignedInt"/>
+    </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+ </xsd:element>
+
+</xsd:schema>

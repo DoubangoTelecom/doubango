@@ -1,0 +1,1 @@
+./configure --enable-shared --disable-static --disable-dependency-tracking 

@@ -1,0 +1,576 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; RFC 5234 - ABNF CORE RULES
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+OCTET=  %x00-FF  ; 8 bits of data
+CHAR= %x01-7F ; any 7-bit US-ASCII character, excluding NUL
+VCHAR= %x21-7E ; visible (printing) characters
+ALPHA= %x41-5A / %x61-7A ; A-Z / a-z
+DIGIT= %x30-39 ; 0-9
+ 
+CTL= %x00-1F / %x7F ; any US-ASCII control character: ; (octets 0 - 31) and DEL (127)
+ 
+HTAB= %x09 ; horizontal tab
+LF= %x0A ; linefeed
+CR= %x0D ; carriage return
+SP= %x20 ; space
+DQUOTE= %x22 ; " (Double Quote)
+BIT= "0" / "1"  
+ 
+HEXDIG= DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
+ 
+CRLF= CR LF ; Internet standard newline
+WSP= SP / HTAB ; white space
+LWSP= *(WSP / CRLF WSP) ; linear white space (past newline)
+;---------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; RFC 2396 - URI
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;; 1.6. Syntax Notation and Common Elements
+;alpha    = lowalpha / upalpha
+lowalpha = "a" / "b" / "c" / "d" / "e" / "f" / "g" / "h" / "i" / "j" / "k" / "l" / "m" / "n" / "o" / "p" / "q" / "r" / "s" / "t" / "u" / "v" / "w" / "x" / "y" / "z"
+upalpha  = "A" / "B" / "C" / "D" / "E" / "F" / "G" / "H" / "I" / "J" / "K" / "L" / "M" / "N" / "O" / "P" / "Q" / "R" / "S" / "T" / "U" / "V" / "W" / "X" / "Y" / "Z"
+;digit    = "0" / "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9"
+alphanum = alpha / digit
+
+;;;; 2. URI Characters and Escape Sequences
+urlc     = reserved / unreserved / escaped
+
+;;;; 2.2. Reserved Characters
+reserved    = ";" / "/" / "?" / ":" / "@" / "&" / "=" / "+" / "$" / ","
+
+;;;; 2.3. Unreserved Characters
+unreserved  = alphanum / mark
+mark        = "-" / "_" / "." / "!" / "~" / "*" / "'" / "(" / ")"
+
+;;;; 2.4.1. Escaped Encoding
+escaped    = "%" hex hex
+hex         = digit / "A" / "B" / "C" / "D" / "E" / "F" / "a" / "b" / "c" / "d" / "e" / "f"
+
+
+;;;; 2.4.3. Excluded US-ASCII Characters
+control = %x00-1F / %x7F ;<US-ASCII coded characters 00-1F and 7F hexadecimal>
+space   = %x20 ;<US-ASCII coded character 20 hexadecimal>
+delims  = "<" / ">" / "#" / "%" / DQUOTE
+unwise  = "{" / "}" / "/" / "\" / "^" / "[" / "]" / "`"
+
+
+;;;; 3. URI Syntactic Components
+absoluteURI   = scheme ":" ( hier-part / opaque-part )
+hier-part     = ( net-path / abs-path ) [ "?" query ]
+net-path      = "//" authority [ abs-path ]
+abs-path      = "/"  path-segments
+opaque-part   = urlc-no-slash *urlc
+urlc-no-slash = unreserved / escaped / ";" / "?" / ":" / "@" / "&" / "=" / "+" / "$" / ","
+
+;;;; 3.1. Scheme Component
+scheme        = alpha *( alpha / digit / "+" / "-" / "." )
+
+;;;; 3.2. Authority Component
+authority     = server / reg-name
+
+;;;; Registry-based Naming Authority
+reg-name      = 1*( unreserved / escaped / "$" / "," / ";" / ":" / "@" / "&" / "=" / "+" )
+
+;;;; 3.2.2. Server-based Naming Authority
+server        = [ [ userinfo "@" ] hostport ]
+userinfo      = *( unreserved / escaped / ";" / ":" / "&" / "=" / "+" / "$" / "," )
+hostport      = host [ ":" port ]
+host          = hostname / IPv4address
+hostname      = *( domainlabel "." ) toplabel [ "." ]
+domainlabel   = alphanum / alphanum *( alphanum / "-" ) alphanum
+toplabel      = alpha / alpha *( alphanum / "-" ) alphanum
+IPv4address   = 1*digit "." 1*digit "." 1*digit "." 1*digit
+port          = *digit
+
+;;;; 3.3. Path Component
+path          = [ abs-path / opaque-part ]
+path-segments = segment *( "/" segment )
+segment       = *pchar *( ";" param )
+param         = *pchar
+pchar         = unreserved / escaped / ":" / "@" / "&" / "=" / "+" / "$" / ","
+
+;;;; 3.4. Query Component
+query         = *urlc
+
+;;;; 4. URI References
+URI-reference = [ absoluteURI / relativeURI ] [ "#" fragment ]
+
+
+;;;; 4.1. Fragment Identifier
+fragment      = *urlc
+
+;;;; 5. Relative URI References
+relativeURI   = ( net-path / abs-path / rel-path ) [ "?" query ]
+rel-path      = rel-segment [ abs-path ]
+rel-segment   = 1*( unreserved / escaped / ";" / "@" / "&" / "=" / "+" / "$" / "," )
+;---------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; HTTP digest authentication (2617) - ABNF
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;; 1.2 Access Authentication Framework
+auth-scheme    = token
+auth-param     = token "=" ( token / quoted-string )
+
+challenge   = auth-scheme 1*SP auth-param *(COMMA auth-param)
+
+realm       = "realm" "=" realm-value
+realm-value = quoted-string
+
+;;;; 2 Basic Authentication Scheme
+basic-challenge   = "Basic" realm
+basic-credentials = "Basic" basic-credentials-value
+
+basic-credentials-value = base64-user-pass
+base64-user-pass  = token ;<base64 [4] encoding of user-pass, except not limited to 76 char/line>
+user-pass   = userid ":" password
+userid      = *TEXT ;*<TEXT excluding ":">
+password    = *TEXT
+
+;;;; 3.2.1 The WWW-Authenticate Response Header
+;challenge        =  "Digest" digest-challenge
+
+digest-challenge  = digest-challenge-value *(COMMA digest-challenge-value)
+digest-challenge-value = ( realm / [ domain ] / nonce / [ opaque ] /[ stale ] / [ algorithm ] / [ qop-options ] / [auth-param] )
+
+domain            = "domain" "=" <"> URI ( 1*SP URI ) <">
+URI               = absoluteURI / abs-path
+nonce             = "nonce" "=" nonce-value
+nonce-value       = quoted-string
+opaque            = "opaque" "=" quoted-string
+stale             = "stale" "=" ( "true" / "false" )
+algorithm         = "algorithm" "=" ( "MD5" / "MD5-sess" / token )
+qop-options       = "qop" "=" DQUOTE qop-value *(COMMA qop-value) DQUOTE
+qop-value         = "auth" / "auth-int" / token
+
+
+;;;; 3.2.2 The Authorization Request Header
+credentials      = "Digest" digest-response
+digest-response  = digest-response-value *(COMMA digest-response-value)
+digest-response-value = ( username / realm / nonce / digest-url / auth-response / [ algorithm ] / [cnonce] / [opaque] / [message-qop] / [nonce-count]  / [auth-param] )
+
+username         = "username" "=" username-value
+username-value   = quoted-string
+digest-url       = "url" "=" digest-url-value
+digest-url-value = request-url   ; As specified by HTTP/1.1
+message-qop      = "qop" "=" qop-value
+cnonce           = "cnonce" "=" cnonce-value
+cnonce-value     = nonce-value
+nonce-count      = "nc" "=" nc-value
+nc-value         = 8LHEX
+auth-response    = "response" "=" request-digest
+request-digest   = DQUOTE 32LHEX DQUOTE
+LHEX             = "0" / "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9" / "a" / "b" / "c" / "d" / "e" / "f"
+
+
+;;;; 3.2.3 The Authentication-Info Header
+AuthenticationInfo = "Authentication-Info" ":" auth-info
+auth-info          = auth-info-value *(COMMA auth-info-value)
+auth-info-value    = (nextnonce / [ message-qop ] / [ response-auth ] / [ cnonce ] / [nonce-count] )
+nextnonce          = "nextnonce" "=" nonce-value
+response-auth      = "rspauth" "=" response-digest
+response-digest    = DQUOTE *LHEX DQUOTE
+;---------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; HTTP (2616) - ABNF
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+HT             = %x09; <US-ASCII HT, horizontal-tab (9)>
+separators	   = "("   /   ")"   /   "<"   /   ">"   /   "@" /   ","   /   ";"   /   ":"   /   "\"   /   DQUOTE /   "/"   /   "["   /   "]"   /   "?"   /   "=" /   "{"   /   "}"   /   SP   /   HTAB
+token	       = 1*( alphanum / separators )  ; *<any CHAR except CTLs or separators>
+LWS	           = [*WSP   CRLF]   1*WSP  	; linear whitespace
+SWS	           = 	[LWS] 	; sep whitespace 
+TEXT           = 1*(token / LWS) ; <any OCTET except CTLs, but including LWS>
+COMMA	       = SWS 	"," 	SWS 	; comma
+
+;;;; text (from http ==> is it right?)
+TEXT-UTF8-TRIM	= 1*TEXT-UTF8char    *(*LWS   TEXT-UTF8char)
+TEXT-UTF8char	= %x21-7E   /   UTF8-NONASCII
+UTF8-NONASCII	= %xC0-DF 	1UTF8-CONT /	%xE0-EF 	2UTF8-CONT /	%xF0-F7 	3UTF8-CONT /	%xF8-FB 	4UTF8-CONT /	%xFC-FD 	5UTF8-CONT
+UTF8-CONT	    = %x80-BF
+
+
+comment         = "(" *( ctext / quoted-pair / comment ) ")"
+ctext	        = %x21-27   /   %x2A-5B   /   %x5D-7E /   UTF8-NONASCII   /   LWS ; <any TEXT excluding "(" and ")">
+
+;;;; quoted-string
+quoted-string  = ( DQUOTE *(qdtext / quoted-pair ) DQUOTE )
+qdtext	       = LWS   /   %x21   /   %x23-5B   /   %x5D-7E   /   UTF8-NONASCII ; <any TEXT except DQUOTE>
+quoted-pair    = "\" CHAR
+
+;;;; HTTP-Version
+HTTP-Version   = "HTTP" "/" 1*DIGIT "." 1*DIGIT
+
+;;;; HTTP-date
+HTTP-date     = rfc1123-date / rfc850-date / asctime-date
+rfc1123-date  = wkday "," SP date1 SP time SP "GMT"
+rfc850-date   = weekday "," SP date2 SP time SP "GMT"
+asctime-date  = wkday SP date3 SP time SP 4DIGIT
+date1         = 2DIGIT SP month SP 4DIGIT ; day month year (e.g., 02 Jun 1982)
+date2         = 2DIGIT "-" month "-" 2DIGIT ; day-month-year (e.g., 02-Jun-82)
+date3         = month SP ( 2DIGIT / ( SP 1DIGIT )) ; month day (e.g., Jun  2)
+time          = 2DIGIT ":" 2DIGIT ":" 2DIGIT ; 00:00:00 - 23:59:59
+wkday         = "Mon" / "Tue" / "Wed" / "Thu" / "Fri" / "Sat" / "Sun"
+weekday       = "Monday" / "Tuesday" / "Wednesday" / "Thursday" / "Friday" / "Saturday" / "Sunday"
+month         = "Jan" / "Feb" / "Mar" / "Apr" / "May" / "Jun" / "Jul" / "Aug" / "Sep" / "Oct" / "Nov" / "Dec"
+
+;;;; 3.3.2 Delta Seconds
+delta-seconds       = 1*DIGIT
+
+;;;; 3.4 Character Sets
+charset             = token
+
+;;;; 3.5 Content Codings
+content-coding      = token
+
+;;;; 3.6 Transfer Codings
+transfer-coding     = "chunked" / transfer-extension
+transfer-extension  = token *( ";" parameter )
+parameter           = attribute "=" value
+attribute           = token
+value               = token / quoted-string
+
+;;;; 3.6.1 Chunked Transfer Coding
+Chunked-Body   = *chunk last-chunk chunck-trailer CRLF
+chunk          = chunk-size [ chunk-extension ] CRLF chunk-data CRLF
+chunk-size     = 1*HEX
+last-chunk     = 1*("0") [ chunk-extension ] CRLF
+chunk-extension= *( ";" chunk-ext-name [ "=" chunk-ext-val ] )
+chunk-ext-name = token
+chunk-ext-val  = token / quoted-string
+chunk-data     = chunk-size
+chunck-trailer = *(entity-header CRLF)
+
+;;;; 3.7 Media Types
+media-type     = type "/" subtype *( ";" parameter )
+type           = token
+subtype        = token
+
+;;;; 3.8 Product Tokens
+product         = token ["/" product-version]
+product-version = token
+
+;;;;3.9 Quality Values
+qvalue         = ( "0" [ "." 0*3DIGIT ] ) / ( "1" [ "." 0*3("0") ] )
+
+;;;; 3.10 Language Tags
+language-tag  = primary-tag *( "-" subtag )
+primary-tag   = 1*8ALPHA
+subtag        = 1*8ALPHA
+
+;;;; 3.11 Entity Tags
+entity-tag = [ weak ] opaque-tag
+weak       = "W/"
+opaque-tag = quoted-string
+
+;;;; 3.12 Range Units
+range-unit       = bytes-unit / other-range-unit
+bytes-unit       = "bytes"
+other-range-unit = token
+
+
+;;;; 4.1 Message Types
+HTTP-message   = Request / Response     ; HTTP/1.1 messages
+generic-message = start-line *(message-header CRLF) CRLF [ message-body ]
+start-line      = Request-Line / Status-Line
+
+
+;;;;4.2 Message Headers
+message-header = field-name ":" [ field-value ]
+field-name     = token
+field-value    = *( field-content / LWS )
+field-content  = token ;<the OCTETs making up the field-value and consisting of either *TEXT or combinations of token, separators, and quoted-string>
+
+
+;;;; 4.3 Message Body
+message-body = entity-body ;/ <entity-body encoded as per Transfer-Encoding>
+
+
+;;;; 4.5 General Header Fields
+general-header    = Cache-Control / Connection / Date / Pragma / Trailer / Transfer-Encoding / Upgrade / Via / Warning
+;Cache-Control     = "Cache-Control" ":" [ field-value ]
+;Connection        = "Connection" ":" [ field-value ]
+;Date              = "Date" ":" [ field-value ]
+;Pragma            = "Pragma" ":" [ field-value ]
+;Trailer           = "Trailer" ":" [ field-value ]
+;Transfer-Encoding = "Transfer-Encoding" ":" [ field-value ]
+;Upgrade           = "Upgrade" ":" [ field-value ]
+;Via               = "Via" ":" [ field-value ]
+;Warning           = "Warning" ":" [ field-value ]
+
+;;;; 5 Request
+Request       = Request-Line *(( general-header / request-header / entity-header ) CRLF) CRLF [ message-body ]
+
+;;;; 5.1 Request-Line
+Request-Line   = Method SP Request-URI SP HTTP-Version CRLF
+
+;;;; 5.1.1 Method
+Method          = "OPTIONS" / "GET" / "HEAD" / "POST" / "PUT" / "DELETE" / "TRACE" / "CONNECT" / extension-method
+extension-method = token
+
+;;;; 5.1.2 Request-URI
+Request-URI    = "*" / absoluteURI / abs-path / authority
+
+;;;; 5.3 Request Header Fields
+request-header = Accept / Accept-Charset / Accept-Encoding / Accept-Language / Authorization / Expect / From / Host / If-Match / If-Modified-Since / If-None-Match / If-Range / If-Unmodified-Since / Max-Forwards / Proxy-Authorization / Range / Referer / TE / User-Agent
+
+;;;; 6 Response
+Response       = Status-Line *(( general-header / response-header / entity-header ) CRLF) CRLF [ message-body ]
+
+;;;; 6.1 Status-Line
+Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
+
+;;;; 6.1.1 Status Code and Reason Phrase
+Status-Code    = "100" / "101" / "200"  / "201" / "202" / "203" / "204" / "205" / "206" / "300" / "301" / "302" / "303" / "304" / "305" / "307" / "400" / "401" / "402" / "403" / "404" / "405" / "406" / "407" / "408" / "409" / "410" / "411" / "412" / "413" / "414" / "415" / "416" / "417" / "500" / "501" / "502" / "503" / "504" / "505" / extension-code
+extension-code = 3DIGIT
+Reason-Phrase  = *( reserved / unreserved / escaped / UTF8-NONASCII / UTF8-CONT / SP / HTAB ) ;*<TEXT, excluding CR, LF>
+
+;;;; 6.2 Response Header Fields
+response-header = Accept-Ranges / Age / ETag / Location / Proxy-Authenticate / Retry-After / Server / Vary / WWW-Authenticate
+
+;;;; 7.1 Entity Header Fields
+entity-header  = Allow / Content-Encoding  / Content-Language / Content-Length / Content-Location / Content-MD5  / Content-Range / Content-Type / Expires / Last-Modified / extension-header
+extension-header = message-header
+
+;;;; 7.2 Entity Body
+entity-body    = *OCTET
+
+;;;; 7.2.1 Type
+;entity-body := Content-Encoding( Content-Type( data ) )
+
+;;;; 14.1 Accept
+Accept         = "Accept" ":" [ media-range [ accept-params ] ]
+media-range    = ( "*/*" / ( type "/" "*" ) / ( type "/" subtype )) *( ";" parameter )
+accept-params  = ";" "q" "=" qvalue *( accept-extension )
+accept-extension = ";" token [ "=" ( token / quoted-string ) ]
+
+;;;; 14.2 Accept-Charset
+Accept-Charset = "Accept-Charset" ":" Accept-Charset-Value *(COMMA Accept-Charset-Value)
+Accept-Charset-Value = token;FIXME:( charset / "*" )[ ";" "q" "=" qvalue ] )
+
+;;;; 14.3 Accept-Encoding
+Accept-Encoding  = "Accept-Encoding" ":" Accept-Encoding-Value *(COMMA Accept-Encoding-Value)
+Accept-Encoding-Value = ( codings [ ";" "q" "=" qvalue ] )
+codings          = ( content-coding / "*" )
+
+;;;; 14.4 Accept-Language
+Accept-Language = "Accept-Language" ":" Accept-Language-Value *(COMMA Accept-Language-Value)
+Accept-Language-Value = ( language-range [ ";" "q" "=" qvalue ] )
+language-range  = ( ( 1*8ALPHA *( "-" 1*8ALPHA ) ) / "*" )
+
+;;;; 14.5 Accept-Ranges
+Accept-Ranges     = "Accept-Ranges" ":" acceptable-ranges
+acceptable-ranges = (range-unit *(COMMA range-unit)) / "none"
+
+;;;; 14.6 Age
+Age = "Age" ":" age-value
+age-value = delta-seconds
+           
+;;;; 14.7 Allow
+Allow   = "Allow" ":" [Method]
+
+;;;; 14.8 Authorization
+Authorization  = "Authorization" ":" credentials
+
+;;;; 14.9 Cache-Control
+Cache-Control   = "Cache-Control" ":" cache-directive *(COMMA cache-directive)
+cache-directive = cache-request-directive / cache-response-directive
+cache-request-directive = "no-cache" / "no-store" / "max-age" "=" delta-seconds / "max-stale" [ "=" delta-seconds ] / "min-fresh" "=" delta-seconds / "no-transform" / "only-if-cached" / cache-extension 
+cache-response-directive = "public" / "private" [ "=" DQUOTE field-name *(COMMA field-name) DQUOTE ] / "no-cache" [ "=" DQUOTE field-name *(COMMA field-name) DQUOTE ] / "no-store" / "no-transform" / "must-revalidate" / "proxy-revalidate" / "max-age" "=" delta-seconds / "s-maxage" "=" delta-seconds   / cache-extension
+cache-extension = token [ "=" ( token / quoted-string ) ]
+
+;;;; 14.9.6 Cache Control Extensions
+;Cache-Control: private, community="UCI"
+
+;;;; 14.10 Connection
+Connection = "Connection" ":" (connection-token) *(COMMA connection-token)
+connection-token  = token
+
+;;;; 14.11 Content-Encoding
+Content-Encoding  = "Content-Encoding" ":" content-coding *(COMMA content-coding)
+
+;;;; 14.12 Content-Language
+Content-Language  = "Content-Language" ":" language-tag *(COMMA language-tag)
+
+;;;; 14.13 Content-Length
+Content-Length    = "Content-Length" ":" 1*DIGIT
+
+;;;; 14.14 Content-Location
+Content-Location = "Content-Location" ":" ( absoluteURI / relativeURI )
+
+;;;; 14.15 Content-MD5
+Content-MD5   = "Content-MD5" ":" md5-digest
+md5-digest    = *OCTET ;<base64 of 128 bit MD5 digest as per RFC 1864>
+
+;;;; 14.16 Content-Range
+Content-Range = "Content-Range" ":" content-range-spec
+content-range-spec      = byte-content-range-spec
+byte-content-range-spec = bytes-unit SP byte-range-resp-spec "/" ( instance-length / "*" )
+byte-range-resp-spec = (first-byte-pos "-" last-byte-pos) / "*"
+instance-length      = 1*DIGIT
+
+;;;; 14.17 Content-Type
+Content-Type   = "Content-Type" ":" media-type
+
+;;;; 14.18 Date
+Date  = "Date" ":" HTTP-date
+
+;;;; 14.19 ETag
+ETag = "ETag" ":" entity-tag
+
+;;;; 14.20 Expect
+Expect  =  "Expect" ":" expectation *(COMMA expectation)
+expectation  =  "100-continue" / expectation-extension
+expectation-extension =  token [ "=" ( token / quoted-string ) *expect-params ]
+expect-params =  ";" token [ "=" ( token / quoted-string ) ]
+
+;;;; 14.21 Expires
+Expires = "Expires" ":" HTTP-date
+
+;;;; 14.22 From
+From   = "From" ":" mailbox
+mailbox = token ; FIXME
+
+;;;; 14.23 Host
+Host = "Host" ":" host [ ":" port ] ; Section 3.2.2
+
+;;;; 14.24 If-Match
+If-Match = "If-Match" ":" ( "*" / entity-tag *(COMMA entity-tag) )
+
+;;;; 14.25 If-Modified-Since
+If-Modified-Since = "If-Modified-Since" ":" HTTP-date
+
+;;;; 14.26 If-None-Match
+If-None-Match = "If-None-Match" ":" ( "*" / entity-tag *(COMMA entity-tag) )
+
+;;;; 14.27 If-Range
+If-Range = "If-Range" ":" ( entity-tag / HTTP-date )
+
+;;;; 14.28 If-Unmodified-Since
+If-Unmodified-Since = "If-Unmodified-Since" ":" HTTP-date
+
+;;;; 14.29 Last-Modified
+Last-Modified  = "Last-Modified" ":" HTTP-date
+
+;;;; 14.30 Location
+Location       = "Location" ":" absoluteURI
+
+;;;; 14.31 Max-Forwards
+Max-Forwards   = "Max-Forwards" ":" 1*DIGIT
+
+;;;; 14.32 Pragma
+Pragma            = "Pragma" ":" pragma-directive *(COMMA pragma-directive)
+pragma-directive  = "no-cache" / extension-pragma
+extension-pragma  = token [ "=" ( token / quoted-string ) ]
+
+;;;; 14.33 Proxy-Authenticate
+Proxy-Authenticate  = "Proxy-Authenticate" ":" challenge *(COMMA challenge)
+
+;;;; 14.34 Proxy-Authorization
+Proxy-Authorization     = "Proxy-Authorization" ":" credentials
+
+;;;; 14.35.1 Byte Ranges
+ranges-specifier = byte-ranges-specifier
+byte-ranges-specifier = bytes-unit "=" byte-range-set
+byte-range-set  = byte-range-set-value *(COMMA byte-range-set-value)
+byte-range-set-value = ( byte-range-spec / suffix-byte-range-spec )
+byte-range-spec = first-byte-pos "-" [last-byte-pos]
+first-byte-pos  = 1*DIGIT
+last-byte-pos   = 1*DIGIT
+suffix-byte-range-spec = "-" suffix-length
+suffix-length = 1*DIGIT
+
+;;;; 14.35.2 Range Retrieval Requests
+Range = "Range" ":" ranges-specifier
+
+;;;; 14.36 Referer
+Referer        = "Referer" ":" ( absoluteURI / relativeURI )
+
+;;;; 14.37 Retry-After
+Retry-After  = "Retry-After" ":" ( HTTP-date / delta-seconds )
+
+;;;; 14.38 Server
+Server         = "Server" ":" 1*( product / comment )
+
+;;;; 14.39 TE
+TE        = "TE" ":" [t-codings *(COMMA t-codings)]
+t-codings = "trailers" / ( transfer-extension [ accept-params ] )
+
+;;;; 14.40 Trailer
+Trailer  = "Trailer" ":" field-name *(COMMA field-name)
+
+;;;; 14.41 Transfer-Encoding
+Transfer-Encoding       = "Transfer-Encoding" ":" transfer-coding *(COMMA transfer-coding)
+
+;;;; 14.42 Upgrade
+Upgrade        = "Upgrade" ":" product *(COMMA product)
+
+;;;; 14.43 User-Agent
+User-Agent     = "User-Agent" ":" 1*( product / comment )
+
+;;;; 14.44 Vary
+Vary  = "Vary" ":" ( "*" / field-name *(COMMA field-name) )
+
+;;;; 14.45  Via
+Via =  "Via" ":" Via-Value *(COMMA Via-Value)
+Via-Value = ( received-protocol received-by [ comment ] )
+received-protocol = [ protocol-name "/" ] protocol-version
+protocol-name     = token
+protocol-version  = token
+received-by       = ( host [ ":" port ] ) / pseudonym
+pseudonym         = token
+
+;;;; 14.46 Warning
+Warning    = "Warning" ":" warning-value *(COMMA warning-value)
+warning-value = warn-code SP warn-agent SP warn-text [SP warn-date]
+warn-code  = 3DIGIT
+warn-agent = ( host [ ":" port ] ) / pseudonym ; the name or pseudonym of the server adding ; the Warning header, for use in debugging
+warn-text  = quoted-string
+warn-date  = DQUOTE HTTP-date DQUOTE
+
+;;;; 14.47 WWW-Authenticate
+WWW-Authenticate  = "WWW-Authenticate" ":" challenge *(COMMA challenge)

@@ -1,0 +1,144 @@
+at (32)
+readonly (0)
+
+:index                      pad (2)
+:extra_length_bits          pad (2)
+:len_value                  pad (2)
+:extra_dist_bits            pad (2)
+:dist_value                 pad (2)
+
+
+at (42)
+
+:req_feed_loc                   pad (1)
+:req_feed_len                   pad (1)
+:req_feed_field                 pad (12)
+:hash_start                     pad (8)
+
+at (64)
+
+:byte_copy_left                 pad (2)
+:byte_copy_right                pad (2)
+:input_bit_order                pad (2)
+:decompressed_ptr               pad (2)
+:length_table                   pad (116)
+:distance_table                 pad (120)
+
+:hash_len_loc                   pad (2)
+:state_len_loc                  pad (2)
+:ret_params_loc                 pad (1)
+:sigcomp_version                pad (1)
+:dicts                          pad (2)
+
+align (64)
+
+
+readonly (1)
+:initialize_memory
+
+set (udvm_memory_size, 8192)
+set (length_table_start, (((length_table - 4) / 4) + 16384))
+set (length_table_mid, (length_table_start + 24))
+set (dist_table_start, (distance_table / 4))
+
+MULTILOAD (64, 122, circular_buffer, udvm_memory_size, 5,
+circular_buffer,
+
+0,       3,       0,       4,       0,       5,
+0,       6,       0,       7,       0,       8,
+0,       9,       0,       10,      1,       11,
+1,       13,      1,       15,      1,       17,
+2,       19,      2,       23,      2,       27,
+2,       31,      3,       35,      3,       43,
+3,       51,      3,       59,      4,       67,
+4,       83,      4,       99,      4,       115,
+5,       131,     5,       163,     5,       195,
+5,       227,     0,       258,
+
+0,       1,       0,       2,       0,       3,
+0,       4,       1,       5,       1,       7,
+2,       9,       2,       13,      3,       17,
+3,       25,      4,       33,      4,       49,
+5,       65,      5,       97,      6,       129,
+6,       193,     7,       257,     7,       385,
+8,       513,     8,       769,     9,       1025,
+9,       1537,    10,      2049,    10,      3073,
+11,      4097,    11,      6145,    12,      8193,
+12,      12289,   13,      16385,   13,      24577)
+
+; -- hash_len, state_len, params, version, dicts
+INPUT-BYTES (8, hash_len_loc, !)
+LOAD (66, $state_len_loc)
+ADD(66, 64)
+
+
+:decompress_sigcomp_msg
+
+; -- DICTIONARIES
+SWITCH (4, $dicts, sip, pres, sip_pres, start_decomp)
+
+:sip
+MULTILOAD (dicts, 4, 1787, 58631, 57317, 58880)
+JUMP (start_decomp)
+:pres
+MULTILOAD (dicts, 4, 1753, 16937, 32011, 45824)
+JUMP (start_decomp)
+:sip_pres
+MULTILOAD (dicts, 7, 1787, 58631, 57317, 58886, 55618, 10621, 2995)
+
+:start_decomp
+
+INPUT-BITS (3, extra_length_bits, !)
+
+:next_char
+
+INPUT-HUFFMAN (index, end_of_msg, 4,
+   7, 0, 23, length_table_start,
+   1, 48, 191, 0,
+   0, 192, 199, length_table_mid,
+   1, 400, 511, 144)
+COMPARE ($index, length_table_start, literal, end_of_msg,
+length_distance)
+
+:literal
+
+set (index_lsb, (index + 1))
+
+OUTPUT (index_lsb, 1)
+COPY-LITERAL (index_lsb, 1, $decompressed_ptr)
+JUMP (next_char)
+
+:length_distance
+
+; this is the length part
+
+MULTIPLY ($index, 4)
+COPY ($index, 4, extra_length_bits)
+INPUT-BITS ($extra_length_bits, extra_length_bits, !)
+ADD ($len_value, $extra_length_bits)
+
+; this is the distance part
+
+INPUT-HUFFMAN (index, !, 1, 5, 0, 31, dist_table_start)
+MULTIPLY ($index, 4)
+COPY ($index, 4, extra_dist_bits)
+
+
+INPUT-BITS ($extra_dist_bits, extra_dist_bits, !)
+ADD ($dist_value, $extra_dist_bits)
+LOAD (index, $decompressed_ptr)
+COPY-OFFSET ($dist_value, $len_value, $decompressed_ptr)
+OUTPUT ($index, $len_value)
+JUMP (next_char)
+
+:end_of_msg
+
+
+LOAD (req_feed_loc, 1158)
+MULTILOAD (hash_start, 4, $state_len_loc, 64, decompress_sigcomp_msg, 6)
+SHA-1 (hash_start, $hash_len_loc, req_feed_field)
+
+END-MESSAGE (req_feed_loc, ret_params_loc, $state_len_loc, 64, decompress_sigcomp_msg, 6, 0)
+
+readonly (0)
+:circular_buffer

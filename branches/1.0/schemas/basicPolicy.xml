@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+  targetNamespace="urn:ietf:params:xml:ns:pidf:geopriv10:basicPolicy"
+  xmlns:tns="urn:ietf:params:xml:ns:pidf:geopriv10:basicPolicy"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <!-- This import brings in the XML language attribute xml:lang-->
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+    schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+
+  <xs:complexType name="locPolicyType">
+   <xs:sequence>
+     <xs:element name="retransmission-allowed" type="xs:boolean"
+        minOccurs="0" maxOccurs="1"/>
+     <xs:element name="retention-expiry" type="xs:dateTime"
+        minOccurs="0" maxOccurs="1"/>
+     <xs:element name="external-ruleset" type="xs:anyURI"
+        minOccurs="0" maxOccurs="1"/>
+     <xs:element name="note-well" type="tns:notewell"
+        minOccurs="0" maxOccurs="1"/>
+     <xs:any namespace="##other" processContents="lax" minOccurs="0"
+        maxOccurs="unbounded"/>
+   </xs:sequence>
+  </xs:complexType>
+
+    <xs:complexType name="notewell">
+       <xs:simpleContent>
+         <xs:extension base="xs:string">
+           <xs:attribute ref="xml:lang" />
+         </xs:extension>
+       </xs:simpleContent>
+    </xs:complexType>
+
+</xs:schema>

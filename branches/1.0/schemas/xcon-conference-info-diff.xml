@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+ targetNamespace="urn:ietf:params:xml:ns:xcon-conference-info"
+ xmlns="urn:ietf:params:xml:ns:xcon-conference-info"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+ elementFormDefault="qualified">
+
+ <!-- include patch-ops type definitions -->
+ <xs:include
+  schemaLocation="urn:ietf:params:xml:schema:patch-ops"/>
+
+ <!-- partial updates -->
+ <xs:element name="conference-info-diff">
+  <xs:complexType>
+   <xs:sequence minOccurs="0" maxOccurs="unbounded">
+    <xs:choice>
+     <!-- add some content -->
+     <xs:element name="add">
+      <xs:complexType mixed="true">
+       <xs:complexContent>
+        <xs:extension base="add">
+         <xs:anyAttribute processContents="lax"/>
+        </xs:extension>
+       </xs:complexContent>
+      </xs:complexType>
+     </xs:element>
+     <!-- remove some content -->
+     <xs:element name="remove">
+      <xs:complexType>
+       <xs:complexContent>
+        <xs:extension base="remove">
+         <xs:anyAttribute processContents="lax"/>
+        </xs:extension>
+       </xs:complexContent>
+      </xs:complexType>
+     </xs:element>
+     <!-- replace some content -->
+     <xs:element name="replace">
+      <xs:complexType mixed="true">
+       <xs:complexContent>
+        <xs:extension base="replace">
+         <xs:anyAttribute processContents="lax"/>
+        </xs:extension>
+       </xs:complexContent>
+      </xs:complexType>
+     </xs:element>
+     <!-- allow extension elements from other namespaces -->
+     <xs:any namespace="##other" processContents="lax"/>
+    </xs:choice>
+   </xs:sequence>
+   <xs:attribute name="entity" type="xs:anyURI" use="required"/>
+   <xs:anyAttribute processContents="lax"/>
+  </xs:complexType>
+ </xs:element>
+</xs:schema>

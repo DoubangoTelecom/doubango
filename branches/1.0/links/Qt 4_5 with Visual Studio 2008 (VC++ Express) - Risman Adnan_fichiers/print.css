@@ -1,0 +1,156 @@
+BODY {
+	FONT-SIZE: 0.9em; MARGIN: 0px; FONT-FAMILY: Verdana, Geneva, Arial, Helvetica, sans-serif
+}
+A:visited {
+	COLOR: #00f; TEXT-DECORATION: none
+}
+A:active {
+	COLOR: #00f; TEXT-DECORATION: none
+}
+A:link {
+	COLOR: #00f; TEXT-DECORATION: none
+}
+A:hover {
+	TEXT-DECORATION: underline
+}
+H1 {
+	FONT-SIZE: 1.5em; MARGIN: 0px
+}
+H1 A:visited {
+	COLOR: #000
+}
+H1 A:active {
+	COLOR: #000
+}
+H1 A:link {
+	COLOR: #000
+}
+H1 A:hover {
+	COLOR: #47f; TEXT-DECORATION: none
+}
+H2 {
+	MARGIN-TOP: 10px; FONT-SIZE: 1em
+}
+H5 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+#header {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 10px; PADDING-BOTTOM: 10px; COLOR: #000; PADDING-TOP: 10px; BORDER-BOTTOM: #47f 4px solid; BACKGROUND-COLOR: #adf
+}
+#tagline {
+	FONT-SIZE: 0.8em; MARGIN: 0px
+}
+P.date IMG {
+	VERTICAL-ALIGN: middle
+}
+P.date {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-WEIGHT: bold; FONT-SIZE: 0.9em; MARGIN-BOTTOM: 0px; PADDING-BOTTOM: 2px; PADDING-TOP: 2px; BORDER-BOTTOM: #aaa 1px solid
+}
+BLOCKQUOTE {
+	FONT-STYLE: italic
+}
+P.postfoot {
+	FONT-SIZE: 0.75em
+}
+#sidebar-a {
+	DISPLAY: none
+}
+#sidebar-b {
+	DISPLAY: none
+}
+#content {
+	BORDER-BOTTOM: #47f 4px solid; BACKGROUND-COLOR: #eee
+}
+#footer {
+	FONT-SIZE: 0.7em; MARGIN: 0px; PADDING-TOP: 5px; TEXT-ALIGN: center
+}
+INPUT.text {
+	WIDTH: 300px
+}
+TEXTAREA {
+	WIDTH: 300px; HEIGHT: 200px
+}
+#comments H4 SPAN {
+	COLOR: #999
+}
+#comments H4 {
+	FONT-SIZE: 0.9em; MARGIN: 0px
+}
+#comments {
+	MARGIN-TOP: 15px
+}
+P {
+	MARGIN: 10px 0px
+}
+H3 {
+	FONT-SIZE: 1.2em; BORDER-BOTTOM: #aaa 1px solid
+}
+#relatedlinks UL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN-LEFT: 10px; PADDING-TOP: 0px; LIST-STYLE-TYPE: none
+}
+#commentform {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 3px; PADDING-TOP: 10px
+}
+#contactform {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 3px; PADDING-TOP: 10px
+}
+#commentform {
+	DISPLAY: none
+}
+#commentform DL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+#contactform DL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+#commentform DT {
+	COLOR: #333
+}
+#contactform DT {
+	COLOR: #333
+}
+#commentform DT EM {
+	FONT-WEIGHT: normal; COLOR: #999; FONT-STYLE: normal
+}
+#contactform DT EM {
+	FONT-WEIGHT: normal; COLOR: #999; FONT-STYLE: normal
+}
+#commentform .smallbox {
+	BORDER-RIGHT: #ccc 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #ccc 1px solid; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; BORDER-LEFT: #ccc 1px solid; WIDTH: 300px; COLOR: #444; PADDING-TOP: 2px; BORDER-BOTTOM: #ccc 1px solid
+}
+#contactform .contactbox {
+	BORDER-RIGHT: #ccc 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #ccc 1px solid; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; BORDER-LEFT: #ccc 1px solid; WIDTH: 300px; COLOR: #444; PADDING-TOP: 2px; BORDER-BOTTOM: #ccc 1px solid
+}
+#commentform TEXTAREA {
+	BORDER-RIGHT: #ccc 1px solid; BORDER-TOP: #ccc 1px solid; BORDER-LEFT: #ccc 1px solid; WIDTH: 400px; COLOR: #444; BORDER-BOTTOM: #ccc 1px solid; HEIGHT: 180px
+}
+#contactform TEXTAREA {
+	BORDER-RIGHT: #ccc 1px solid; BORDER-TOP: #ccc 1px solid; BORDER-LEFT: #ccc 1px solid; WIDTH: 400px; COLOR: #444; BORDER-BOTTOM: #ccc 1px solid; HEIGHT: 180px
+}
+#search .searchBox {
+	BORDER-RIGHT: #ccc 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #ccc 1px solid; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; BORDER-LEFT: #ccc 1px solid; WIDTH: 150px; PADDING-TOP: 2px; BORDER-BOTTOM: #ccc 1px solid
+}
+#search {
+	MARGIN-BOTTOM: 5px
+}
+#news {
+	MARGIN-BOTTOM: 5px
+}
+.CalendarTitle TD {
+	FONT-WEIGHT: bold; FONT-SIZE: 0.75em; WIDTH: 14%; COLOR: #000
+}
+TD.CalendarDays {
+	FONT-WEIGHT: bold; FONT-SIZE: 0.75em; WIDTH: 14%; COLOR: #000
+}
+TD.CalendarNextPrev {
+	FONT-WEIGHT: normal; FONT-SIZE: 0.65em; WIDTH: 15%
+}
+TD.CalendarDay {
+	FONT-SIZE: 0.75em; COLOR: #000
+}
+.copyright {
+	FONT-SIZE: 0.65em; FONT-STYLE: italic; TEXT-ALIGN: center
+}
+.rateMenu {
+	BORDER-RIGHT: 1px outset; BORDER-TOP: 1px outset; BORDER-LEFT: 1px outset; BORDER-BOTTOM: 1px outset; BACKGROUND-COLOR: #fff
+}
