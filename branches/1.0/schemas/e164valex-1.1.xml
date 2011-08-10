@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="urn:ietf:params:xml:ns:e164valex-1.1"
+        xmlns:e164valex="urn:ietf:params:xml:ns:e164valex-1.1"
+        xmlns:eppcom="urn:ietf:params:xml:ns:eppcom-1.0"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified">
+
+<!--
+Import common element types.
+-->
+  <import namespace="urn:ietf:params:xml:ns:eppcom-1.0"
+          schemaLocation="eppcom-1.0.xsd"/>
+
+  <annotation>
+    <documentation>
+      Example for E.164 number validation information.
+    </documentation>
+  </annotation>
+
+
+  <element name="simpleVal" type="e164valex:simpleValType"/>
+
+  <complexType name="simpleValType">
+    <sequence>
+      <element name="methodID" type="e164valex:methodIdType"/>
+      <element name="validationEntityID" type="eppcom:clIDType"
+       minOccurs="0"/>
+      <element name="registrarID" type="eppcom:clIDType"
+       minOccurs="0"/>
+      <element name="executionDate" type="date"/>
+      <element name="expirationDate" type="date"
+       minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+  <simpleType name="methodIdType">
+    <restriction base="token">
+      <minLength value="1"/>
+      <maxLength value="63"/>
+    </restriction>
+  </simpleType>
+
+<!--
+End of schema.
+-->
+</schema>

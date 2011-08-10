@@ -1,0 +1,59 @@
+APP := lib$(PROJECT)_$(MARCH).$(EXT)
+
+CFLAGS := $(CFLAGS_LIB) -I./include -I../tinySAK/src -I../tinyNET/src -I../tinyHTTP/include -I../tinySDP/include
+LDFLAGS := $(LDFLAGS_LIB) -ltinySAK_$(MARCH) -ltinyNET_$(MARCH) -ltinyHTTP_$(MARCH) -ltinySDP_$(MARCH)
+
+all: $(APP)
+
+OBJS = \
+	src/tmsrp.o\
+	src/tmsrp_event.o\
+	src/tmsrp_message.o\
+	src/tmsrp_uri.o
+	
+	### Headers
+OBJS += src/headers/tmsrp_header.o\
+		src/headers/tmsrp_header_Authentication-Info.o\
+		src/headers/tmsrp_header_Authorization.o\
+		src/headers/tmsrp_header_Byte-Range.o\
+		src/headers/tmsrp_header_Content-Type.o\
+		src/headers/tmsrp_header_Dummy.o\
+		src/headers/tmsrp_header_Expires.o\
+		src/headers/tmsrp_header_Failure-Report.o\
+		src/headers/tmsrp_header_From-Path.o\
+		src/headers/tmsrp_header_Max-Expires.o\
+		src/headers/tmsrp_header_Message-ID.o\
+		src/headers/tmsrp_header_Min-Expires.o\
+		src/headers/tmsrp_header_Status.o\
+		src/headers/tmsrp_header_Success-Report.o\
+		src/headers/tmsrp_header_To-Path.o\
+		src/headers/tmsrp_header_Use-Path.o\
+		src/headers/tmsrp_header_WWW-Authenticate.o
+	
+	### parsers
+OBJS += src/parsers/tmsrp_parser_message.o\
+	src/parsers/tmsrp_parser_uri.o
+	
+	### session
+OBJS += src/session/tmsrp_config.o\
+	src/session/tmsrp_data.o \
+	src/session/tmsrp_receiver.o \
+	src/session/tmsrp_sender.o
+
+$(APP): $(OBJS)
+ifeq ($(EXT), a)
+	$(AR) rcs $@ $^
+else
+	$(CC) $(LDFLAGS) -o $@ $^
+endif
+
+%.o: %.c
+	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+install: $(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb remount
+	$(ANDROID_SDK_ROOT)/tools/adb push $(APP) $(LIB_DIR)/$(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb shell chmod 777 $(LIB_DIR)/$(APP)
+	
+clean:
+	@rm -f $(OBJS) $(APP)

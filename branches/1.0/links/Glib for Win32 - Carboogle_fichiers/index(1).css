@@ -1,0 +1,6 @@
+A.new {
+	COLOR: #cc2200
+}
+#quickbar A.new {
+	COLOR: #cc2200
+}

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+ <xs:include schemaLocation="msml-core-datatypes.xsd"/>
+ <xs:include schemaLocation="msml-conf-core-datatypes.xsd"/>
+ <xs:include schemaLocation="msml-dialog-core-datatypes.xsd"/>
+ <xs:include schemaLocation="msml-dialog-base-datatypes.xsd"/>
+ <xs:include schemaLocation="msml-dialog-transform-datatypes.xsd"/>
+ <xs:include schemaLocation="msml-dialog-group-datatypes.xsd"/>
+ <xs:include schemaLocation="msml-dialog-speech-datatypes.xsd"/>
+ <xs:include schemaLocation="msml-dialog-fax-detect-datatypes.xsd"/>
+ <xs:include schemaLocation="msml-dialog-fax-sendrecv-
+             datatypes.xsd"/>
+ <xs:include schemaLocation="msml-audit-core-datatypes.xsd"/>
+ <xs:include schemaLocation="msml-audit-conf-datatypes.xsd"/>
+ <xs:include schemaLocation="msml-audit-conn-datatypes.xsd"/>
+ <xs:include schemaLocation="msml-audit-dialog-datatypes.xsd"/>
+ <xs:include schemaLocation="msml-audit-stream-datatypes.xsd"/>
+ <xs:element name="msml">
+  <xs:complexType>
+   <xs:choice>
+    <xs:group ref="msmlRequestType" maxOccurs="unbounded"/>
+    <xs:element name="event">
+     <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+       <xs:sequence>
+        <xs:element name="name" type="msmlEventNameValue.datatype"/>
+        <xs:element name="value">
+         <xs:simpleType>
+          <xs:restriction base="xs:string">
+           <xs:pattern value="[a-zA-Z0-9.]+"/>
+          </xs:restriction>
+         </xs:simpleType>
+        </xs:element>
+       </xs:sequence>
+      </xs:choice>
+      <xs:attribute name="name" type="msmlEventName.datatype"
+                    use="required"/>
+      <xs:attribute name="id" type="msmlEventSource.datatype"
+                    use="required"/>
+     </xs:complexType>
+    </xs:element>
+    <xs:element name="result">
+     <xs:complexType>
+      <xs:choice>
+       <xs:element ref="description" minOccurs="0"/>
+       <xs:sequence>
+        <xs:element ref="msmlResultSimple" minOccurs="0"
+                    maxOccurs="unbounded"/>
+        <xs:element ref="msmlResultComplex" minOccurs="0"
+                    maxOccurs="unbounded"/>
+       </xs:sequence>
+      </xs:choice>
+      <xs:attribute name="response">
+       <xs:simpleType>
+        <xs:restriction base="xs:string">
+         <xs:pattern value="\d{3}"/>
+        </xs:restriction>
+       </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="mark" type="mark.datatype"/>
+     </xs:complexType>
+    </xs:element>
+   </xs:choice>
+   <xs:attribute name="version" type="xs:string" use="required"
+                 fixed="1.1"/>
+  </xs:complexType>
+ </xs:element>
+</xs:schema>

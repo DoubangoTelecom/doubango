@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="urn:ietf:params:xml:ns:consent-status"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:tns="urn:ietf:params:xml:ns:consent-status">
+   <xs:element name="consent-status">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="pending"/>
+          <xs:enumeration value="waiting"/>
+          <xs:enumeration value="error"/>
+          <xs:enumeration value="denied"/>
+          <xs:enumeration value="granted"/>
+        </xs:restriction>
+      </xs:simpleType>
+   </xs:element>
+</xs:schema>

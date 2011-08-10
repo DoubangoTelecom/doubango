@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<schema targetNamespace="urn:ietf:params:xml:ns:enum-token-1.0"
+  xmlns:enum-token="urn:ietf:params:xml:ns:enum-token-1.0"
+  xmlns:enum-tokendata="urn:ietf:params:xml:ns:enum-tokendata-1.0"
+  xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified">
+
+<!--  Import common element types.  -->
+
+  <import namespace="http://www.w3.org/2000/09/xmldsig#"
+          schemaLocation="xmldsig-core-schema.xsd"/>
+  <import namespace="urn:ietf:params:xml:ns:enum-tokendata-1.0"
+          schemaLocation="enum-tokendata-1.0.xsd"/>
+
+  <annotation>
+    <documentation>
+      enum.at Validation Token core schema
+    </documentation>
+  </annotation>
+
+  <element name="token" type="enum-token:tokenBaseType"/>
+
+  <simpleType name="shortTokenType">
+    <restriction base="token">
+      <minLength value="1"/>
+      <maxLength value="20"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="e164numberType">
+    <restriction base="token">
+      <maxLength value="20"/>
+      <pattern value="\+\d\d*"/>
+    </restriction>
+
+  </simpleType>
+
+  <complexType name="validationDataType">
+    <sequence>
+      <element name="E164Number"
+                      type="enum-token:e164numberType"/>
+      <element name="lastE164Number" minOccurs="0"
+                      type="enum-token:e164numberType"/>
+      <element name="validationEntityID"
+                      type="enum-token:shortTokenType"/>
+      <element name="registrarID"
+                      type="enum-token:shortTokenType"/>
+      <element name="methodID"
+                      type="enum-token:shortTokenType"/>
+      <element name="executionDate" type="date"/>
+      <element name="expirationDate"
+                      type="date" minOccurs="0"/>
+    </sequence>
+    <attribute name="serial" type="enum-token:shortTokenType"
+     use="required"/>
+  </complexType>
+
+  <complexType name="tokenBaseType">
+    <sequence>
+      <element name="validation"
+       type="enum-token:validationDataType"/>
+      <any namespace="urn:ietf:params:xml:ns:enum-tokendata-1.0"
+       minOccurs="0"/>
+      <any namespace="http://www.w3.org/2000/09/xmldsig#"/>
+    </sequence>
+    <attribute name="Id" type="ID" use="required"/>
+  </complexType>
+</schema>
+

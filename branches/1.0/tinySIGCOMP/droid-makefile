@@ -1,0 +1,59 @@
+APP := lib$(PROJECT)_$(MARCH).$(EXT)
+
+CFLAGS := $(CFLAGS_LIB) -I../tinySAK/src -I./include
+LDFLAGS := $(LDFLAGS_LIB) -ltinySAK_$(MARCH) -lm
+
+all: $(APP)
+
+OBJS = \
+	src/adler32.o\
+	src/compress.o\
+	src/deflate.o\
+	src/tcomp.o\
+	src/tcomp_buffer.o\
+	src/tcomp_compartment.o\
+	src/tcomp_compressordata.o\
+	src/tcomp_compressordisp.o\
+	src/tcomp_compressor_deflate.o\
+	src/tcomp_compressor_dummy.o\
+	src/tcomp_decompressordisp.o\
+	src/tcomp_deflatedata.o\
+	src/tcomp_deflatedata.ghost.o\
+	src/tcomp_deflatedata.zlib.o\
+	src/tcomp_dicts.o\
+	src/tcomp_manager.o\
+	src/tcomp_message.o\
+	src/tcomp_nackinfo.o\
+	src/tcomp_params.o\
+	src/tcomp_reqfeed.o\
+	src/tcomp_result.o\
+	src/tcomp_state.o\
+	src/tcomp_statehandler.o\
+	src/tcomp_udvm.bytecopy.o\
+	src/tcomp_udvm.o\
+	src/tcomp_udvm.instructions.o\
+	src/tcomp_udvm.nack.o\
+	src/tcomp_udvm.operands.o\
+	src/tcomp_udvm.statemanagment.o\
+	src/trees.o\
+	src/zutil.o\
+
+	
+
+$(APP): $(OBJS)
+ifeq ($(EXT), a)
+	$(AR) rcs $@ $^
+else
+	$(CC) $(LDFLAGS) -o $@ $^
+endif
+
+%.o: %.c
+	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+install: $(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb remount
+	$(ANDROID_SDK_ROOT)/tools/adb push $(APP) $(LIB_DIR)/$(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb shell chmod 777 $(LIB_DIR)/$(APP)
+	
+clean:
+	@rm -f $(OBJS) $(APP)

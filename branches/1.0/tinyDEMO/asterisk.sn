@@ -1,0 +1,52 @@
+## For more information about scenarios, please refer to the Programmer's Guide
+
+# user's parameters (like ANSI-C #define)
+%%domain octavius.inet.org
+%%user user2
+%%pwd 1234
+%%proxy_ip octavius.i6net.org # IP address or FQDN
+%%proxy_port 5060
+%%proxy_trans udp # udp, tcp, tls or sctp
+%%expires 300 # expires used by all dialogs
+%%sleep-sec 1.0 # number of seconds to wait before sending next sip message
+
+%%reg-sid
+%%sub-reg-sid
+%%sub-pres-sid
+%%pub-sid
+%%inv_audio_sid
+
+# Configure the stack
+# Realm, IMPI and IMPU are mandatory
+++cst --realm $$(domain) --impi $$(user) --impu sip:$$(user)@$$(domain) --pwd $$(pwd) \
+	--pcscf-ip $$(proxy_ip) --pcscf-trans $$(proxy_trans) \
+	--header Privacy=none --header Allow=INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER \
+	--header P-Access-Network-Info=ADSL;utran-cell-id-3gpp=00000000 \
+	--header User-Agent=IM-client/OMA1.0 doubango/v1.0.0 # last should not have backslash
+
+# Run the engine
+++r
+
+# OPTIONS to hack AOR
+#++opt
+#++sleep --sec $$(sleep-sec)
+
+# REGISTER
+++reg --xp $$(expires) --caps +g.oma.sip-im --caps +g.3gpp.smsip --caps language="en,fr" \
+	--header Action-Header=Myheader-value @@action \
+	>>(reg-sid)
+	
+	
+# Press ENTER
+++sleep --sec -1
+
+#++av --to sip:2233392625@$$(domain) \
+#		--header Action-Header=Myheader-value @@action \
+#		>>(inv_audio_sid)
+
+#++sleep --sec -1
+#++hu --sid $$(inv_audio_sid)
+
+	
+# Exit the application
+++e

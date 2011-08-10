@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <xs:schema targetNamespace="urn:ietf:params:xml:ns:pidf:data-model"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="urn:ietf:params:xml:ns:pidf:data-model"
+    elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:include schemaLocation="common-schema.xsd"/>
+    <xs:element name="deviceID" type="deviceID_t">
+     <xs:annotation>
+      <xs:documentation>Device ID, a URN</xs:documentation>
+     </xs:annotation>
+    </xs:element>
+    <xs:element name="device">
+     <xs:annotation>
+      <xs:documentation>Contains information about the
+       device</xs:documentation>
+     </xs:annotation>
+     <xs:complexType>
+      <xs:sequence>
+       <xs:any namespace="##other" processContents="lax"
+        minOccurs="0" maxOccurs="unbounded"/>
+       <xs:element ref="deviceID"/>
+       <xs:element name="note" type="Note_t" minOccurs="0"
+        maxOccurs="unbounded"/>
+       <xs:element name="timestamp" type="Timestamp_t" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:ID" use="required"/>
+     </xs:complexType>
+    </xs:element>
+    <xs:element name="person">
+     <xs:annotation>
+      <xs:documentation>Contains information about the human
+       user</xs:documentation>
+     </xs:annotation>
+     <xs:complexType>
+      <xs:sequence>
+       <xs:any namespace="##other" processContents="lax"
+        minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+         <xs:documentation>Characteristic and status
+          information</xs:documentation>
+        </xs:annotation>
+       </xs:any>
+       <xs:element name="note" type="Note_t" minOccurs="0"
+        maxOccurs="unbounded"/>
+       <xs:element name="timestamp" type="Timestamp_t" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:ID" use="required"/>
+     </xs:complexType>
+    </xs:element>
+   </xs:schema>
+

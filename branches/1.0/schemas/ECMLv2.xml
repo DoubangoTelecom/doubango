@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+   <!-- Electronic Commerce Modeling Language v2 -->
+
+   <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+     elementFormDefault="qualified">
+
+     <xs:attribute name="Mode">
+       <xs:simpleType>
+         <xs:restriction base="xs:string">
+           <xs:enumeration value="Query"/>
+           <xs:enumeration value="Assert"/>
+         </xs:restriction>
+       </xs:simpleType>
+     </xs:attribute>
+     <xs:attribute name="id" type="xs:ID"/>
+     <xs:complexType name="EcomSimpleText">
+       <xs:simpleContent>
+         <xs:extension base="xs:string">
+           <xs:attribute ref="Mode" use="optional"/>
+           <xs:attribute ref="id" use="optional"/>
+         </xs:extension>
+       </xs:simpleContent>
+     </xs:complexType>
+
+     <xs:element name="Ecom">
+       <xs:complexType mixed="true">
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
+           <xs:element ref="ShipTo"/>
+           <xs:element ref="BillTo"/>
+           <xs:element ref="ReceiptTo"/>
+           <xs:element ref="Payment"/>
+           <xs:element ref="Loyalty"/>
+           <xs:element ref="User"/>
+           <xs:element ref="Merchant"/>
+           <xs:element ref="Transaction"/>
+           <xs:element ref="TransactionComplete"/>
+         </xs:choice>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+         <xs:attribute name="ConsumerOrderID" use="optional"/>
+         <xs:attribute name="Merchant" use="optional"/>
+         <xs:attribute name="Processor" use="optional"/>
+         <xs:attribute name="SchemaVersion" type="xs:string"
+           fixed="urn:ietf:params:ecml:v2.0"/>
+         <xs:attribute name="WalletID" use="optional"/>
+         <xs:attribute name="WalletLocation" type="xs:anyURI"
+           use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="ShipTo">
+       <xs:complexType mixed="true">
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
+           <xs:element ref="Postal"/>
+           <xs:element ref="Telecom"/>
+           <xs:element ref="Online"/>
+         </xs:choice>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="BillTo">
+       <xs:complexType mixed="true">
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
+           <xs:element ref="Postal"/>
+           <xs:element ref="Telecom"/>
+           <xs:element ref="Online"/>
+         </xs:choice>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="ReceiptTo">
+       <xs:complexType mixed="true">
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
+           <xs:element ref="Postal"/>
+           <xs:element ref="Telecom"/>
+           <xs:element ref="Online"/>
+         </xs:choice>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Postal">
+       <xs:complexType mixed="true">
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
+           <xs:element ref="Name"/>
+           <xs:element ref="Company"/>
+           <xs:element ref="Street"/>
+           <xs:element ref="City"/>
+           <xs:element ref="StateProv"/>
+         </xs:choice>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+         <xs:attribute name="PostalCode" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="CountryCode" type="xs:NMTOKEN"
+           use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Telecom">
+       <xs:complexType mixed="true">
+         <xs:sequence maxOccurs="unbounded">
+           <xs:element name="Phone">
+             <xs:complexType>
+               <xs:attribute ref="Mode" use="optional"/>
+               <xs:attribute ref="id" use="optional"/>
+               <xs:attribute name="Number"/>
+             </xs:complexType>
+           </xs:element>
+         </xs:sequence>
+         <xs:attribute ref="Mode" use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Online">
+       <xs:complexType mixed="true">
+         <xs:sequence maxOccurs="unbounded">
+           <xs:element name="Email">
+             <xs:complexType>
+               <xs:attribute ref="Mode" use="optional"/>
+               <xs:attribute ref="id" use="optional"/>
+               <xs:attribute name="Address"/>
+             </xs:complexType>
+           </xs:element>
+         </xs:sequence>
+         <xs:attribute ref="Mode" use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Payment">
+       <xs:complexType>
+         <xs:sequence>
+           <xs:element name="Card">
+             <xs:complexType>
+               <xs:sequence>
+                 <xs:element ref="ExpDate"/>
+                 <xs:element ref="ValidDate" minOccurs="0"/>
+               </xs:sequence>
+               <xs:attribute ref="Mode" use="optional"/>
+               <xs:attribute ref="id" use="optional"/>
+               <xs:attribute name="Name" use="optional"/>
+               <xs:attribute name="Type" type="xs:NMTOKEN"
+                 use="optional"/>
+               <xs:attribute name="Number" type="xs:decimal"/>
+               <xs:attribute name="Protocols" type="xs:NMTOKENS"
+                 use="optional"/>
+               <xs:attribute name="Verification"
+                 type="xs:NMTOKEN" use="optional"/>
+               <xs:attribute name="Issuer" type="xs:NMTOKEN"
+                 use="optional"/>
+             </xs:complexType>
+           </xs:element>
+         </xs:sequence>
+         <xs:attribute ref="Mode" use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Loyalty">
+       <xs:complexType>
+         <xs:sequence>
+           <xs:element ref="ExpDate"/>
+           <xs:element ref="ValidDate" minOccurs="0"/>
+         </xs:sequence>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+         <xs:attribute name="Name" use="optional"/>
+         <xs:attribute name="Type" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="Number" type="xs:NMTOKEN"/>
+         <xs:attribute name="Verification" type="xs:NMTOKEN"
+           use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="ExpDate">
+       <xs:complexType>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+         <xs:attribute name="Day" type="xs:positiveInteger"/>
+         <xs:attribute name="Month" type="xs:positiveInteger"/>
+         <xs:attribute name="Year" type="xs:positiveInteger"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="ValidDate">
+       <xs:complexType>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+         <xs:attribute name="Day" type="xs:positiveInteger"/>
+         <xs:attribute name="Month" type="xs:positiveInteger"/>
+         <xs:attribute name="Year" type="xs:positiveInteger"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="User">
+       <xs:complexType mixed="true">
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
+           <xs:element ref="UserID"/>
+           <xs:element ref="Password"/>
+         </xs:choice>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+         <xs:attribute name="CertificateURL" type="xs:anyURI"
+           use="optional"/>
+         <xs:attribute name="DataCountry" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="DataLanguage" type="xs:language"
+           use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Transaction">
+       <xs:complexType mixed="true">
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
+           <xs:element ref="Id"/>
+           <xs:element ref="Code"/>
+           <xs:element ref="Date"/>
+           <xs:element ref="Data"/>
+           <xs:element ref="Inquiry"/>
+           <xs:element ref="Signature"/>
+         </xs:choice>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute name="Currency" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="Type" type="xs:NMTOKEN"
+           use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Date">
+       <xs:complexType>
+         <xs:sequence>
+           <xs:element ref="Effective" minOccurs="0"/>
+           <xs:element ref="Settle" minOccurs="0"/>
+           <xs:element ref="Capture" minOccurs="0"/>
+         </xs:sequence>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Data">
+       <xs:complexType mixed="true">
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
+           <xs:element ref="Trace"/>
+           <xs:element ref="PrivateUse"/>
+           <xs:element ref="Response"/>
+           <xs:element ref="AAV"/>
+           <xs:element ref="Track1"/>
+           <xs:element ref="Track2"/>
+         </xs:choice>
+         <xs:attribute ref="Mode" use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Merchant">
+       <xs:complexType>
+         <xs:sequence>
+           <xs:element name="Terminal">
+             <xs:complexType>
+               <xs:attribute ref="Mode" use="optional"/>
+               <xs:attribute ref="id" use="optional"/>
+               <xs:attribute name="Data" use="optional"/>
+             </xs:complexType>
+           </xs:element>
+         </xs:sequence>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+       </xs:complexType>
+     </xs:element>
+
+     <xs:element name="AAV" type="EcomSimpleText"/>
+     <xs:element name="Capture">
+       <xs:complexType>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+         <xs:attribute name="Day" type="xs:NMTOKEN"/>
+         <xs:attribute name="Month" type="xs:NMTOKEN"/>
+         <xs:attribute name="Year" type="xs:NMTOKEN"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="City" type="EcomSimpleText"/>
+     <xs:element name="Code">
+       <xs:complexType>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute name="Processing" use="optional"/>
+         <xs:attribute name="Approval" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="Retrieval" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="Action" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="Reason" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="POS" type="xs:NMTOKEN"
+           use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Company" type="EcomSimpleText"/>
+     <xs:element name="Effective">
+       <xs:complexType>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+         <xs:attribute name="Day" type="xs:NMTOKEN"/>
+         <xs:attribute name="Month" type="xs:NMTOKEN"/>
+         <xs:attribute name="Year" type="xs:NMTOKEN"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Id">
+       <xs:complexType>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+         <xs:attribute name="CID" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="Reference" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="Acquire" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="Forward" type="xs:NMTOKEN"
+           use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Inquiry">
+       <xs:complexType>
+         <xs:simpleContent>
+           <xs:extension base="xs:anyURI">
+             <xs:attribute ref="Mode" use="optional"/>
+             <xs:attribute ref="id" use="optional"/>
+           </xs:extension>
+        </xs:simpleContent>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Name">
+       <xs:complexType>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+         <xs:attribute name="Prefix" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="First" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="Middle" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="Last" type="xs:NMTOKEN"
+           use="optional"/>
+         <xs:attribute name="Suffix" type="xs:NMTOKEN"
+           use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Password" type="EcomSimpleText"/>
+     <xs:element name="PrivateUse" type="EcomSimpleText"/>
+     <xs:element name="Response" type="EcomSimpleText"/>
+     <xs:element name="Settle">
+       <xs:complexType>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+         <xs:attribute name="Day" type="xs:NMTOKEN"/>
+         <xs:attribute name="Month" type="xs:NMTOKEN"/>
+         <xs:attribute name="Year" type="xs:NMTOKEN"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Signature">
+       <xs:complexType>
+         <xs:simpleContent>
+           <xs:extension base="xs:string">
+             <xs:attribute ref="Mode" use="optional"/>
+             <xs:attribute ref="id" use="optional"/>
+           </xs:extension>
+        </xs:simpleContent>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="StateProv" type="EcomSimpleText"/>
+     <xs:element name="Street">
+       <xs:complexType>
+         <xs:attribute ref="Mode" use="optional"/>
+         <xs:attribute ref="id" use="optional"/>
+         <xs:attribute name="Line1"/>
+         <xs:attribute name="Line2" use="optional"/>
+         <xs:attribute name="Line3" use="optional"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="Trace" type="EcomSimpleText"/>
+     <xs:element name="Track1" type="EcomSimpleText"/>
+     <xs:element name="Track2" type="EcomSimpleText"/>
+     <xs:element name="TransactionComplete">
+       <xs:complexType/>
+     </xs:element>
+     <xs:element name="UserID" type="EcomSimpleText"/>
+
+   </xs:schema>

@@ -1,0 +1,624 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!-- saved from url=(0108)http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx -->
+<HTML lang=en xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><HEAD 
+id=ctl00_ctl00><TITLE>Qt 4.5 with Visual Studio 2008 (VC++ Express) - Risman Adnan</TITLE>
+<META content="INDC Geeks" name=description>
+<META content="Indonesia .NET Developer Community" name=keywords>
+<META content="MSHTML 6.00.2900.3627" name=GENERATOR><LINK 
+href="http://geeks.netindonesia.net/blogs/risman/pingback.aspx" 
+rel=pingback><LINK href="/favicon.ico" type=image/ico rel="shortcut icon"><LINK 
+title="Risman Adnan (RSS 2.0)" 
+href="http://geeks.netindonesia.net/blogs/risman/rss.aspx" 
+type=application/rss+xml rel=alternate><LINK title="Risman Adnan (Atom 1.0)" 
+href="http://geeks.netindonesia.net/blogs/risman/atom.aspx" 
+type=application/atom+xml rel=alternate><LINK 
+title="Risman Adnan - All Comments (RSS 2.0)" 
+href="http://geeks.netindonesia.net/blogs/risman/rsscomments.aspx" 
+type=application/rss+xml rel=alternate><LINK 
+title="Qt 4.5 with Visual Studio 2008 (VC++ Express) - Comments for this post (RSS 2.0)" 
+href="http://geeks.netindonesia.net/blogs/risman/rsscomments.aspx?PostID=90901" 
+type=application/rss+xml rel=alternate>
+<META http-equiv=Content-Type content="text/html; charset=UTF-8"><LINK 
+media=screen 
+href="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/style.css" 
+type=text/css rel=stylesheet><LINK media=print 
+href="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/print.css" 
+type=text/css rel=stylesheet><LINK media=screen 
+href="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/blue.css" 
+type=text/css rel=stylesheet><LINK media=screen 
+href="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/DynamicStyle.css" 
+type=text/css rel=stylesheet><LINK title=RSD 
+href="http://geeks.netindonesia.net/blogs/risman/rsd.ashx" 
+type=application/rsd+xml rel=EditURI><LINK title=WLWManifest 
+href="http://geeks.netindonesia.net/blogs/risman/wlwmanifest.ashx" 
+type=application/wlwmanifest+xml rel=wlwmanifest></HEAD>
+<BODY>
+<FORM id=aspnetForm name=aspnetForm 
+action=/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx 
+method=post>
+<DIV><INPUT id=__EVENTTARGET type=hidden name=__EVENTTARGET> <INPUT 
+id=__EVENTARGUMENT type=hidden name=__EVENTARGUMENT> <INPUT id=__VIEWSTATE 
+type=hidden value=/wEPDwULLTE3NDg3MTUwMzhkZOYIvNsGSa2+7GVILNC+fLNmUdyg 
+name=__VIEWSTATE> </DIV>
+<SCRIPT type=text/javascript>
+//<![CDATA[
+var theForm = document.forms['aspnetForm'];
+if (!theForm) {
+    theForm = document.aspnetForm;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</SCRIPT>
+
+<SCRIPT 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/WebResource.axd" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT 
+src="C:\projects\doubango\help\Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers\WebResource(1).axd" 
+type=text/javascript></SCRIPT>
+
+<DIV id=masthead>
+<DIV id=welcome align=right><A 
+href="http://geeks.netindonesia.net/login.aspx?ReturnUrl=%2fblogs%2frisman%2farchive%2f2009%2f04%2f02%2fqt-4-5-with-visual-studio-2008-vc-express.aspx">Sign 
+in </A>| <A 
+href="http://geeks.netindonesia.net/user/CreateUser.aspx?ReturnUrl=">Join</A> | 
+<A href="http://communityserver.org/r.ashx?K">Help</A> </DIV></DIV>
+<DIV id=wrapper>
+<DIV id=container>
+<DIV id=header>
+<DIV id=title>
+<H1 class=headermaintitle><A 
+href="http://geeks.netindonesia.net/blogs/risman/default.aspx">Risman 
+Adnan</A></H1>
+<P id=tagline>MASM::C::C++::C#::Web Adventurer</P>See also: <A id=ctl00_MovedTo 
+style="COLOR: maroon; BACKGROUND-COLOR: yellow" 
+href="http://geeks.netindonesia.net/blogs/">http://geeks.netindonesia.net/blogs/</A> 
+</DIV></DIV>
+<DIV id=contentwrapper>
+<DIV id=sidebar-a>
+<DIV id=BlogLinksSideBar>
+<DIV id=WeblogLinks>
+<H3>This Blog</H3>
+<UL>
+  <LI><A href="http://geeks.netindonesia.net/blogs/risman/default.aspx">Home</A> 
+
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/contact.aspx">Contact</A> 
+  </LI></UL></DIV></DIV>
+<DIV id=TasksSideBar></DIV>
+<DIV id=SubscriptionsSideBar>
+<DIV id=Subscriptions>
+<H3>Syndication</H3>
+<UL>
+  <LI><A href="http://geeks.netindonesia.net/blogs/risman/rss.aspx">RSS</A> 
+  <LI><A href="http://geeks.netindonesia.net/blogs/risman/atom.aspx">Atom</A> 
+  <LI id=RssComments><A 
+  href="http://geeks.netindonesia.net/blogs/risman/rsscomments.aspx">Comments 
+  RSS</A> </LI></UL></DIV></DIV>
+<DIV id=SearchSideBar>
+<DIV id=Search>
+<H3>Search</H3>
+<UL>
+  <LI><INPUT class=searchBox id=ctl00_SideBar_ctl10_ctl00_SearchBox 
+  onblur="if(this.value=='') this.value=this.defaultValue;" 
+  onclick="if(this.defaultValue==this.value) this.value='';" 
+  name=ctl00$SideBar$ctl10$ctl00$SearchBox Button="SearchButton"> <A 
+  id=ctl00_SideBar_ctl10_ctl00_SearchButton 
+  href="javascript:__doPostBack('ctl00$SideBar$ctl10$ctl00$SearchButton','')">Go</A> 
+  </LI></UL></DIV></DIV>
+<DIV id=TagSideBar>
+<H3>Tags</H3>
+<UL>
+  <UL class=SidebarTagCloud>
+    <LI class=Tag2><A 
+    href="http://geeks.netindonesia.net/blogs/risman/archive/tags/.NET+Framework/default.aspx" 
+    rel=tag>.NET Framework</A> 
+    <LI class=Tag4><A 
+    href="http://geeks.netindonesia.net/blogs/risman/archive/tags/.NET+Performance/default.aspx" 
+    rel=tag>.NET Performance</A> 
+    <LI class=Tag6><A 
+    href="http://geeks.netindonesia.net/blogs/risman/archive/tags/Algorithm/default.aspx" 
+    rel=tag>Algorithm</A> 
+    <LI class=Tag2><A 
+    href="http://geeks.netindonesia.net/blogs/risman/archive/tags/All+new+Stuffs/default.aspx" 
+    rel=tag>All new Stuffs</A> 
+    <LI class=Tag6><A 
+    href="http://geeks.netindonesia.net/blogs/risman/archive/tags/Atlas/default.aspx" 
+    rel=tag>Atlas</A> 
+    <LI class=Tag3><A 
+    href="http://geeks.netindonesia.net/blogs/risman/archive/tags/C_2F00_C_2B002B00_+/default.aspx" 
+    rel=tag>C/C++ </A>
+    <LI class=Tag4><A 
+    href="http://geeks.netindonesia.net/blogs/risman/archive/tags/COM+_2600_+Win32+API/default.aspx" 
+    rel=tag>COM &amp; Win32 API</A> 
+    <LI class=Tag5><A 
+    href="http://geeks.netindonesia.net/blogs/risman/archive/tags/Inside+CLR/default.aspx" 
+    rel=tag>Inside CLR</A> 
+    <LI class=Tag6><A 
+    href="http://geeks.netindonesia.net/blogs/risman/archive/tags/Multithreading/default.aspx" 
+    rel=tag>Multithreading</A> 
+    <LI class=Tag3><A 
+    href="http://geeks.netindonesia.net/blogs/risman/archive/tags/Optimization/default.aspx" 
+    rel=tag>Optimization</A> 
+    <LI class=Tag1><A 
+    href="http://geeks.netindonesia.net/blogs/risman/archive/tags/Random+Stuffs/default.aspx" 
+    rel=tag>Random Stuffs</A> 
+    <LI class=Tag2><A 
+    href="http://geeks.netindonesia.net/blogs/risman/archive/tags/Win32+API/default.aspx" 
+    rel=tag>Win32 API</A> 
+    <LI class=Tag6><A 
+    href="http://geeks.netindonesia.net/blogs/risman/archive/tags/WinFX_3A00_WPF_2B00_WCF_2B00_WWF/default.aspx" 
+    rel=tag>WinFX:WPF+WCF+WWF</A> </LI></UL></UL></DIV>
+<DIV id=NavSideBar>
+<H3>Navigation</H3>
+<UL>
+  <LI><A href="http://geeks.netindonesia.net/">Home</A>
+  <LI><A href="http://geeks.netindonesia.net/blogs/">Blogs</A>
+  <LI><A href="http://geeks.netindonesia.net/blogs/video">Video</A>
+  <LI><A href="http://geeks.netindonesia.net/learn">Learning</A>
+  <LI><A href="http://geeks.netindonesia.net/forums/">Forums</A>
+  <LI><A href="http://geeks.netindonesia.net/files/">Downloads</A> 
+</LI></UL></DIV>
+<DIV id=ArchiveSideBar>
+<H3>Archives</H3>
+<UL>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2009/10.aspx">October 
+  2009 (2)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2009/04.aspx">April 
+  2009 (7)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2009/03.aspx">March 
+  2009 (13)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2008/10.aspx">October 
+  2008 (9)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2008/09.aspx">September 
+  2008 (1)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2008/08.aspx">August 
+  2008 (3)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2008/07.aspx">July 
+  2008 (15)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2008/06.aspx">June 
+  2008 (6)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2008/05.aspx">May 
+  2008 (4)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2008/04.aspx">April 
+  2008 (5)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2008/03.aspx">March 
+  2008 (13)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2008/02.aspx">February 
+  2008 (4)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2008/01.aspx">January 
+  2008 (12)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2007/12.aspx">December 
+  2007 (3)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2007/11.aspx">November 
+  2007 (9)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2007/10.aspx">October 
+  2007 (4)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2007/09.aspx">September 
+  2007 (8)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2007/08.aspx">August 
+  2007 (7)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2007/07.aspx">July 
+  2007 (1)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2007/06.aspx">June 
+  2007 (14)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2007/05.aspx">May 
+  2007 (3)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2007/04.aspx">April 
+  2007 (3)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2007/03.aspx">March 
+  2007 (1)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2007/02.aspx">February 
+  2007 (11)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2007/01.aspx">January 
+  2007 (9)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2006/12.aspx">December 
+  2006 (4)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2006/11.aspx">November 
+  2006 (13)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2006/10.aspx">October 
+  2006 (2)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2006/09.aspx">September 
+  2006 (23)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2006/08.aspx">August 
+  2006 (33)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2006/07.aspx">July 
+  2006 (4)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2006/05.aspx">May 
+  2006 (2)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2006/04.aspx">April 
+  2006 (3)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2006/03.aspx">March 
+  2006 (1)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2006/02.aspx">February 
+  2006 (2)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2006/01.aspx">January 
+  2006 (2)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2005/12.aspx">December 
+  2005 (3)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2005/11.aspx">November 
+  2005 (4)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2005/10.aspx">October 
+  2005 (4)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2005/09.aspx">September 
+  2005 (12)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2005/08.aspx">August 
+  2005 (1)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2005/07.aspx">July 
+  2005 (2)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2005/06.aspx">June 
+  2005 (4)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2005/05.aspx">May 
+  2005 (10)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2005/04.aspx">April 
+  2005 (10)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2005/03.aspx">March 
+  2005 (2)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2005/02.aspx">February 
+  2005 (4)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2005/01.aspx">January 
+  2005 (9)</A>
+  <LI><A 
+  href="http://geeks.netindonesia.net/blogs/risman/archive/2004/12.aspx">December 
+  2004 (11)</A> </LI></UL></DIV>
+<H3>MVP Blogs</H3>
+<UL>
+  <LI><A href="http://blogs.netindonesia.net/tahir">Tahir Tahang</A>
+  <LI><A href="http://blogs.netindonesia.net/agus/">Agus Kurniawan</A>
+  <LI><A href="http://blogs.netindonesia.net/norman/">Norman Sasono</A>
+  <LI><A href="http://blogs.netindonesia.net/agung/">Agung Riyadi</A>
+  <LI><A href="http://bappedyanto.com/">Dondy Bappedyanto</A>
+  <LI><A href="http://choirulamri.or.id/">M. Choirul Amri</A>
+  <LI><A href="http://blogs.netindonesia.net/maya">Dewi Maya</A>
+  <LI><A href="http://blogs.netindonesia.net/basir">Basiruddin Rahman</A> 
+</LI></UL>
+<H3>Compiler Groups</H3>
+<UL>
+  <LI><A href="http://www.compilerconnection.com/">Connection</A>
+  <LI><A 
+  href="http://www.cs.cmu.edu/afs/cs.cmu.edu/user/mleone/web/language-people.html">Researcher</A>
+  <LI><A 
+  href="http://www.compilerconnection.com/consultants/consultants.htm">Consultants</A>
+  <LI><A 
+  href="http://www.compilerconnection.com/benchmarks/benchmarks.htm">Benchmarks</A>
+  <LI><A 
+  href="http://www.compilerconnection.com/companies/companies.htm">Companies</A>
+  <LI><A href="http://suif.stanford.edu/~lam/">Monica S. Lam</A>
+  <LI><A href="http://www.compilerconnection.com/books/books.htm">Books</A> 
+</LI></UL>
+<H3>My Gurus</H3>
+<UL>
+  <LI><A href="http://en.wikipedia.org/wiki/Al-Khwarizmi">Al-Khwarizmi</A>
+  <LI><A href="http://en.wikipedia.org/wiki/Don_Box">Don Box</A>
+  <LI><A href="http://www.bluebytesoftware.com/blog/Default.aspx">Joe Duffy</A>
+  <LI><A href="http://research.microsoft.com/~Gray/">Jim Gray</A>
+  <LI><A href="http://blogs.msdn.com/stevenpr/">Steven Pratschner </A>
+  <LI><A href="http://www.charlespetzold.com/">Charles Petzold</A>
+  <LI><A href="http://en.wikipedia.org/wiki/Donald_Knuth">Donald Knuth</A>
+  <LI><A href="http://www.kindel.com/blogs/charlie">Charlie Kindel</A>
+  <LI><A href="http://blogs.msdn.com/kangsu">Kangsu Gatlin</A>
+  <LI><A href="http://blogs.msdn.com/branbray">Bran Bray</A>
+  <LI><A href="http://blogs.msdn.com/oldnewthing/">Raymond Chen</A> </LI></UL>
+<H3>SA Blogs</H3>
+<UL>
+  <LI><A href="http://blogs.netindonesia.net/adrian">Adrian Godong</A>
+  <LI><A href="http://blogs.netindonesia.net/umar">Umar Ali Ahmad</A>
+  <LI><A href="http://blogs.netindonesia.net/ferry">Ferry Mulyono</A>
+  <LI><A href="http://blogs.netindonesia.net/joule">Zuliady</A>
+  <LI><A href="http://blogs.netindonesia.net/ridi">Ridi Ferdiana</A> 
+</LI></UL></DIV>
+<DIV id=content>
+<DIV id=content2>
+<DIV class=post>
+<DIV class=postview>
+<H2>Qt 4.5 with Visual Studio 2008 (VC++ Express)</H2>
+<P><A href="http://www.qtsoftware.com/" target=_blank>Qt</A> is a cross platform 
+GUI toolkit from Nokia. Its SDK is available under an LPGL license, it means we 
+can use it free of charge to develop proprietary, commercial, closed-source 
+software (thanks to Nokia).&nbsp; However, the current LPGL release leaves some 
+gaps in using Qt from within Visual Studio 2008. This is somewhat understandable 
+given that Visual Studio integration was a commercial-only offering and Nokia 
+has Qt Creator (and not Visual Studio).&nbsp; My problem with <STRONG>Qt 
+Creator</STRONG> is it uses <STRONG>MingGW</STRONG> (gcc) compiler which is 
+nowhere near as good as VC++ 2008.&nbsp; Also for Visual Studio background like 
+me, who is not familiar with Qt creator, learning Qt Creator will take time. 
+Thanks to <A href="http://geeks.netindonesia.net/blogs/lontong" 
+target=_blank>Wiria</A> and <A href="http://geeks.netindonesia.net/blogs/agus/" 
+target=_blank>AK</A> who brought Qt to my table for a review. <BR></P>
+<P>Qt GUI Toolkit is very useful to develop portable application (single source 
+codes) for *NIX, MAC and Windows (including Windows 98 but not being tested for 
+Windows 7).&nbsp; In this post, I will show you how to start using Qt SDK only 
+with Visual C++ 2008, you can use FREE Visual C++ 2008 express too. <BR></P>
+<P><STRONG><FONT color=#000080>Build VC++ Version of Qt</FONT></STRONG></P>
+<P>- Download and install <A 
+href="http://www.qtsoftware.com/downloads/sdk-windows-cpp" 
+target=_blank>qt-sdk-win-opensource-2009.01.1</A>. <BR>- Install the SDK to 
+default directory, in my case C:\qt\2009.01. I didn;t install MingGW and Qt 
+Creator as I don’t need.&nbsp;&nbsp; <BR><A 
+href="http://geeks.netindonesia.net/blogs/risman/01_505F8A8D.jpg" 
+target=_blank><IMG title=01 
+style="BORDER-TOP-WIDTH: 0px; DISPLAY: inline; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+height=138 alt=01 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/01_thumb_0F40E55C.jpg" 
+width=380 border=0></A> </P>
+<P>- Once QT and VisualStudio 2008 both are installed and ready, open the 
+VisualStudio 2008 Command Prompt. <BR>- Change directory to the Qt SDK 
+installation folder in the Command Prompt. Usually it would be of the form 
+"C:\Qt\2009.01\qt" <BR>- Run Configure.exe to target platform win32-msvc2008. 
+You can simply run by typing <STRONG>configure</STRONG> or using other options. 
+For example: <BR><BR>&nbsp;&nbsp; <FONT size=2>C:\Qt\2009.01\configure 
+-no-sql-sqlite -no-qt3support -no-opengl -platform win32-msvc2008&nbsp; 
+<BR>&nbsp;&nbsp; -no-libtiff -no-dbus -no-phonon -no-phonon-backend -no-webkit 
+</FONT></P>
+<P>- Build Qt for use with Visual Studio 2008 by typing <STRONG>nmake</STRONG> 
+<BR>- <STRONG>Configure</STRONG> and <STRONG>nmake</STRONG> will take time, be 
+patient enough. <FONT color=#ff0000>In my case, I started to build 19.17 PM and 
+completed on 23.47 (4:30 hours)!</FONT> <BR>- Once completed, Qt SDK is ready 
+for Visual Studio 2008. <BR><BR><A 
+href="http://geeks.netindonesia.net/blogs/risman/03_21798651.jpg" 
+target=_blank><IMG title=03 
+style="BORDER-TOP-WIDTH: 0px; DISPLAY: inline; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+height=219 alt=03 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/03_thumb_6227E48E.jpg" 
+width=410 border=0></A> <A 
+href="http://geeks.netindonesia.net/blogs/risman/09_0071D9DE.jpg" 
+target=_blank><IMG title=09 
+style="BORDER-TOP-WIDTH: 0px; DISPLAY: inline; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+height=219 alt=09 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/09_thumb_626FB7EA.jpg" 
+width=438 border=0></A> <BR><BR><STRONG><FONT color=#000080>Build and Run the Qt 
+SDK Samples</FONT></STRONG></P>
+<P>Once your Qt SDK is ready to be used you can see samples directory in your Qt 
+SDK installation (usually, <FONT color=#0000ff>C:\Qt\2009.01\qt\examples</FONT>) 
+and then open the examples.sln file from your Visual Studio 2008. If 
+double-clicking .sln file does not work, open it manually from your Visual 
+Studio. There are a lot of samples from Qt SDK. </P>
+<P><A href="http://geeks.netindonesia.net/blogs/risman/12_08819FDC.jpg" 
+target=_blank><IMG title=12 
+style="BORDER-TOP-WIDTH: 0px; DISPLAY: inline; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+height=402 alt=12 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/12_thumb_22D142F7.jpg" 
+width=625 border=0></A> </P>
+<P>If you build and debug – calculator project of instance – you will 
+notification that the application because QtGuid4.dll was not found. </P>
+<P><A href="http://geeks.netindonesia.net/blogs/risman/10_2C85C2FB.jpg" 
+target=_blank><IMG title=10 
+style="BORDER-TOP-WIDTH: 0px; DISPLAY: inline; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+height=164 alt=10 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/10_thumb_526B4D84.jpg" 
+width=410 border=0></A>&nbsp; <A 
+href="http://geeks.netindonesia.net/blogs/risman/11_308F4F26.jpg" 
+target=_blank><IMG title=11 
+style="BORDER-TOP-WIDTH: 0px; DISPLAY: inline; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+height=254 alt=11 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/11_thumb_60397F80.jpg" 
+width=238 border=0></A> </P>
+<P>To let Visual Studio knows the include and library files of Qt, add their 
+paths to the:&nbsp;&nbsp; <BR><BR><FONT color=#0000ff>Visual Studio 
+Tools|Options|Projects and Solutions|VC++ Directories<STRONG> 
+<BR><BR></STRONG></FONT>section. Typically you would want to add <FONT 
+color=#0000ff>C:\Qt\2009.01\qt\include</FONT> to the Include, <FONT 
+color=#0000ff>C:\Qt\2009.01\qt\lib</FONT> to the libraries and <FONT 
+color=#0000ff>C:\Qt\2009.01\qt\bin</FONT> to the Executables sections. Also you 
+can add C:\Qt\2009.01\qt\bin to the Path System variable so that the Qt dlls get 
+probed correctly when loaded from your application. </P>
+<P><A href="http://geeks.netindonesia.net/blogs/risman/13_0F97C880.jpg" 
+target=_blank><IMG title=13 
+style="BORDER-TOP-WIDTH: 0px; DISPLAY: inline; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+height=381 alt=13 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/13_thumb_75076401.jpg" 
+width=625 border=0></A> </P>
+<P>A lot of Qt samples inside the SDK. Try to build and run those sample 
+applications to see how powerful Qt as GUI Toolkit. </P>
+<P><A href="http://geeks.netindonesia.net/blogs/risman/14_6E901C0C.jpg" 
+target=_blank><IMG title=14 
+style="BORDER-TOP-WIDTH: 0px; DISPLAY: inline; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+height=487 alt=14 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/14_thumb_26023F09.jpg" 
+width=625 border=0></A> </P>
+<P><STRONG><FONT color=#000080></FONT></STRONG></P>
+<P><STRONG><FONT color=#000080>Using Qt’s Visual Studio 2008 
+Plug-in</FONT></STRONG></P>
+<P>You can try Visual Studio add-in RC version (this will be a commercial 
+product) to get integrated Qt templates and visual IDE features in Visual Studio 
+2008. I will not cover in this post, but this tools is promising. I will show 
+you in my other Qt-VC++ post. </P>
+<P><A href="http://geeks.netindonesia.net/blogs/risman/04_6A020F21.jpg" 
+target=_blank><IMG title=04 
+style="BORDER-TOP-WIDTH: 0px; DISPLAY: inline; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+height=419 alt=04 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/04_thumb_2867112E.jpg" 
+width=625 border=0></A>&nbsp;</P>
+<P>Hope this helps!</P>
+<P>&nbsp;</P>
+<P>Ciao – RAM </P>
+<DIV class=shareblock><STRONG>Share this post: </STRONG><A 
+title="Send via email" 
+href="mailto:?body=Thought you might like this: http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx&amp;subject=Qt 4.5 with Visual Studio 2008 (VC++ Express)" 
+target=_blank><IMG 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/Share.Mail.16.gif" 
+border=0></A> | <A 
+title="Submit Qt 4.5 with Visual Studio 2008 (VC++ Express) to DotNetKicks" 
+href="http://www.facebook.com/sharer.php?u=http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx&amp;t=Qt+4.5+with+Visual+Studio+2008+(VC%2b%2b+Express)" 
+target=_blank><IMG 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/Share.Facebook.16.gif" 
+border=0></A> | <A 
+title="Submit Qt 4.5 with Visual Studio 2008 (VC++ Express) to del.icio.us" 
+href="http://del.icio.us/post?url=http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx&amp;title=Qt+4.5+with+Visual+Studio+2008+(VC%2b%2b+Express)" 
+target=_blank><IMG 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/Share.Delicious.16.gif" 
+border=0></A> | <A 
+title="Submit Qt 4.5 with Visual Studio 2008 (VC++ Express) to digg.com" 
+href="http://www.digg.com/submit?url=http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx&amp;phase=2" 
+target=_blank><IMG 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/Share.Digg.16.gif" 
+border=0></A> | <A 
+title="Add Qt 4.5 with Visual Studio 2008 (VC++ Express) to Live Bookmarks" 
+href="https://favorites.live.com/quickadd.aspx?marklet=1&amp;mkt=en-us&amp;url=http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx&amp;title=Qt+4.5+with+Visual+Studio+2008+(VC%2b%2b+Express)" 
+target=_blank><IMG 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/Share.Live.16.gif" 
+border=0></A></DIV>
+<DIV class=postfoot><SPAN class=em>Published</SPAN> Thursday, April 02, 2009 
+1:31 AM by <A href="http://geeks.netindonesia.net/members/risman.aspx">Risman 
+Adnan Mattotorang</A> </DIV></DIV></DIV><A name=Comments></A>
+<H3>Comments</H3>
+<DIV id=comments>
+<DIV class=comment>
+<H4><A 
+href="http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx#91024">#</A> 
+<SPAN>re: Qt 4.5 with Visual Studio 2008 (VC++ Express)</SPAN> </H4>
+<DIV class=commentsbody>
+<P>
+<P>Bookmarked :)</P>
+<P></P></DIV>
+<DIV class=commentssubhead><SPAN class=commentspan></SPAN>Thursday, April 02, 
+2009 7:09 AM by <A title=ridi href="http://ridilabs.net/blog">ridi</A> 
+</DIV></DIV>
+<DIV class=comment>
+<H4><A 
+href="http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx#91260">#</A> 
+<SPAN>Working with Qt Visual Studio 2008 Add-In</SPAN> </H4>
+<DIV class=commentsbody>
+<P>
+<P>After built and configured your Qt 4.5 SDK , you can download and install 
+qt-vs-addin-1.0.0- rc1 .exe</P>
+<P></P></DIV>
+<DIV class=commentssubhead><SPAN class=commentspan></SPAN>Thursday, April 02, 
+2009 7:03 PM by <A title=TrackBack 
+href="http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/working-with-qt-visual-studio-2008-add-in.aspx" 
+rel=nofollow>Risman Adnan</A> </DIV></DIV>
+<DIV class=comment>
+<H4><A 
+href="http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx#91334">#</A> 
+<SPAN>re: Qt 4.5 with Visual Studio 2008 (VC++ Express)</SPAN> </H4>
+<DIV class=commentsbody>
+<P>
+<P>with qt-vs-addin you don't have to add the include/lib-files in visual 
+studio, do you?</P>
+<P>An another tutorial tells to set the environment variable QTDIR="" for this 
+addin...</P>
+<P></P></DIV>
+<DIV class=commentssubhead><SPAN class=commentspan></SPAN>Friday, April 03, 2009 
+12:19 AM by hiccup </DIV></DIV>
+<DIV class=commentowner>
+<H4><A 
+href="http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx#91433">#</A> 
+<SPAN>re: Qt 4.5 with Visual Studio 2008 (VC++ Express)</SPAN> </H4>
+<DIV class=commentsbody>
+<P>
+<P>Hi, I just posted how to use the Qt Add-in for VS 2008. Easy, go to menu Qt 
+after installation, choose Options and then set the location of your Qt 
+directory. </P>
+<P></P></DIV>
+<DIV class=commentssubhead><SPAN class=commentspan></SPAN>Friday, April 03, 2009 
+8:02 AM by <A title="Risman Adnan Mattotorang" 
+href="http://geeks.netindonesia.net/blogs/risman">Risman Adnan Mattotorang</A> 
+</DIV></DIV>
+<DIV class=comment>
+<H4><A 
+href="http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx#91810">#</A> 
+<SPAN>re: Qt 4.5 with Visual Studio 2008 (VC++ Express)</SPAN> </H4>
+<DIV class=commentsbody>
+<P>
+<P>Bookmarked :)</P>
+<P>Thursday, April 02, 2009 7:09 AM by ridi </P>
+<P>-------------------------------------------</P>
+<P>ditto!</P>
+<P></P></DIV>
+<DIV class=commentssubhead><SPAN class=commentspan></SPAN>Saturday, April 04, 
+2009 6:20 PM by osm </DIV></DIV>
+<DIV class=comment>
+<H4><A 
+href="http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx#110566">#</A> 
+<SPAN>Windows 7 Release Candidate gets new features</SPAN> </H4>
+<DIV class=commentsbody>
+<P>
+<P>I still can't believe their so ontime for the RC release, Gone are the Vista 
+days i guess.</P>
+<P></P></DIV>
+<DIV class=commentssubhead><SPAN class=commentspan></SPAN>Monday, April 27, 2009 
+10:30 PM by <A title=TrackBack 
+href="http://twisted88.co.cc/2009/04/windows-7-release-candidate-1s-best-surprise-new-features-windows-7-rc1/" 
+rel=nofollow>Windows 7 Release Candidate gets new features</A> 
+</DIV></DIV></DIV></DIV></DIV>
+<DIV id=contentfooter>&nbsp;</DIV></DIV>
+<DIV id=footer>
+<DIV class=Copyright>Copyright © <A 
+href="http://www.netindonesia.net/">INDC</A>, 2006. All rights reserved.</DIV><A 
+href="http://communityserver.org/r.ashx?j" target=_blank><IMG 
+id=ctl00_BodyFooterRegion_ctl02_ctl03_ctl00 
+style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+alt="Powered by Community Server (Commercial Edition), by Telligent Systems " 
+src="Qt 4_5 with Visual Studio 2008 (VC++ Express) - Risman Adnan_fichiers/PoweredByCS_commercial.gif"></A> 
+</DIV></DIV></DIV><!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+<rdf:Description
+rdf:about="http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx"
+dc:identifier="http://geeks.netindonesia.net/blogs/risman/archive/2009/04/02/qt-4-5-with-visual-studio-2008-vc-express.aspx"
+dc:title="Qt 4.5 with Visual Studio 2008 (VC++ Express)"
+trackback:ping="http://geeks.netindonesia.net/blogs/risman/trackback.ashx?PostID=90901" />
+</rdf:RDF>
+-->
+<SCRIPT type=text/javascript>
+// <![CDATA[
+Telligent_Modal.Configure('/utility/loading.htm',['Modal'],['ModalTitle'],['ModalClose'],['ModalContent'],['ModalFooter'],['ModalResize'],['ModalMask'],100);
+// ]]>
+</SCRIPT>
+</FORM></BODY></HTML>

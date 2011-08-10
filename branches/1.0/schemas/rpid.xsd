@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <xs:schema targetNamespace="urn:ietf:params:xml:ns:pidf:rpid"
+      xmlns="urn:ietf:params:xml:ns:pidf:rpid"
+      xmlns:dm="urn:ietf:params:xml:ns:pidf:data-model"
+      xmlns:xs="http://www.w3.org/2001/XMLSchema"
+      elementFormDefault="qualified"
+      attributeFormDefault="unqualified">
+
+     <xs:include schemaLocation="common-schema.xsd"/>
+
+     <xs:simpleType name="activeIdle">
+       <xs:restriction base="xs:string">
+         <xs:enumeration value="active"/>
+         <xs:enumeration value="idle"/>
+       </xs:restriction>
+     </xs:simpleType>
+
+     <xs:element name="activities">
+       <xs:annotation>
+         <xs:documentation>
+           Describes what the person is currently doing, expressed as
+           an enumeration of activity-describing elements.  A person
+           can be engaged in multiple activities at the same time,
+           e.g., traveling and having a meal.
+         </xs:documentation>
+       </xs:annotation>
+       <xs:complexType>
+         <xs:sequence>
+           <xs:element name="note" type="Note_t" minOccurs="0"/>
+           <xs:choice>
+             <xs:element name="unknown" type="empty" minOccurs="0"/>
+             <xs:sequence maxOccurs="unbounded">
+               <xs:choice>
+                 <xs:element name="appointment"
+                   type="empty" />
+                 <xs:element name="away"
+                   type="empty" />
+                 <xs:element name="breakfast"
+                   type="empty" />
+                 <xs:element name="busy"
+                   type="empty" />
+                 <xs:element name="dinner"
+                   type="empty" />
+                 <xs:element name="holiday"
+                   type="empty" />
+                 <xs:element name="in-transit"
+                   type="empty" />
+                 <xs:element name="looking-for-work"
+                   type="empty" />
+                 <xs:element name="meal"
+                   type="empty" />
+                 <xs:element name="meeting"
+                   type="empty" />
+                 <xs:element name="on-the-phone"
+                   type="empty" />
+                 <xs:element name="performance"
+                   type="empty" />
+                 <xs:element name="permanent-absence"
+                   type="empty" />
+                 <xs:element name="playing"
+                   type="empty" />
+                 <xs:element name="presentation"
+                   type="empty" />
+                 <xs:element name="shopping"
+                   type="empty" />
+                 <xs:element name="sleeping"
+                   type="empty" />
+                 <xs:element name="spectator"
+                   type="empty" />
+                 <xs:element name="steering"
+                   type="empty" />
+                 <xs:element name="travel"
+                   type="empty" />
+                 <xs:element name="tv"
+                   type="empty" />
+                 <xs:element name="vacation"
+                   type="empty" />
+                 <xs:element name="working"
+                   type="empty" />
+                 <xs:element name="worship"
+                   type="empty" />
+                 <xs:element name="other"
+                   type="Note_t" />
+                 <xs:any namespace="##other"
+                   maxOccurs="unbounded" processContents="lax"/>
+               </xs:choice>
+             </xs:sequence>
+           </xs:choice>
+         </xs:sequence>
+         <xs:attributeGroup ref="fromUntil"/>
+         <xs:attribute name="id" type="xs:ID"/>
+         <xs:anyAttribute namespace="##any" processContents="lax"/>
+       </xs:complexType>
+     </xs:element>
+
+     <xs:element name="class" type="xs:token">
+       <xs:annotation>
+         <xs:documentation>
+           Describes the class of the service, device or person.
+         </xs:documentation>
+       </xs:annotation>
+     </xs:element>
+
+     <xs:element name="mood">
+       <xs:annotation>
+         <xs:documentation>
+           Describes the mood of the presentity.
+         </xs:documentation>
+       </xs:annotation>
+       <xs:complexType>
+         <xs:sequence>
+           <xs:element name="note" type="Note_t" minOccurs="0"/>
+           <xs:choice>
+             <xs:element name="unknown" type="empty"/>
+             <xs:sequence maxOccurs="unbounded">
+               <xs:choice>
+                 <xs:element name="afraid"
+                   type="empty"/>
+                 <xs:element name="amazed"
+                   type="empty"/>
+                 <xs:element name="angry"
+                   type="empty"/>
+                 <xs:element name="annoyed"
+                   type="empty"/>
+                 <xs:element name="anxious"
+                   type="empty" />
+                 <xs:element name="ashamed"
+                   type="empty" />
+                 <xs:element name="bored"
+                   type="empty" />
+                 <xs:element name="brave"
+                   type="empty" />
+                 <xs:element name="calm"
+                   type="empty" />
+                 <xs:element name="cold"
+                   type="empty" />
+                 <xs:element name="confused"
+                   type="empty" />
+                 <xs:element name="contented"
+                   type="empty" />
+                 <xs:element name="cranky"
+                   type="empty" />
+                 <xs:element name="curious"
+                   type="empty" />
+                 <xs:element name="depressed"
+                   type="empty" />
+                 <xs:element name="disappointed"
+                   type="empty" />
+                 <xs:element name="disgusted"
+                   type="empty" />
+                 <xs:element name="distracted"
+                   type="empty" />
+                 <xs:element name="embarrassed"
+                   type="empty" />
+                 <xs:element name="excited"
+                   type="empty" />
+                 <xs:element name="flirtatious"
+                   type="empty" />
+                 <xs:element name="frustrated"
+                   type="empty" />
+                 <xs:element name="grumpy"
+                   type="empty" />
+                 <xs:element name="guilty"
+                   type="empty" />
+                 <xs:element name="happy"
+                   type="empty" />
+                 <xs:element name="hot"
+                   type="empty" />
+                 <xs:element name="humbled"
+                   type="empty" />
+                 <xs:element name="humiliated"
+                   type="empty" />
+                 <xs:element name="hungry"
+                   type="empty" />
+                 <xs:element name="hurt"
+                   type="empty" />
+                 <xs:element name="impressed"
+                   type="empty" />
+                 <xs:element name="in_awe"
+                   type="empty" />
+                 <xs:element name="in_love"
+                   type="empty" />
+                 <xs:element name="indignant"
+                   type="empty" />
+                 <xs:element name="interested"
+                   type="empty" />
+                 <xs:element name="invincible"
+                   type="empty" />
+                 <xs:element name="jealous"
+                   type="empty" />
+                 <xs:element name="lonely"
+                   type="empty" />
+                 <xs:element name="mean"
+                   type="empty" />
+                 <xs:element name="moody"
+                   type="empty" />
+                 <xs:element name="nervous"
+                   type="empty" />
+                 <xs:element name="neutral"
+                   type="empty" />
+                 <xs:element name="offended"
+                   type="empty" />
+                 <xs:element name="playful"
+                   type="empty" />
+                 <xs:element name="proud"
+                   type="empty" />
+                 <xs:element name="relieved"
+                   type="empty" />
+                 <xs:element name="remorseful"
+                   type="empty" />
+                 <xs:element name="restless"
+                   type="empty" />
+                 <xs:element name="sad"
+                   type="empty" />
+                 <xs:element name="sarcastic"
+                   type="empty" />
+                 <xs:element name="serious"
+                   type="empty" />
+                 <xs:element name="shocked"
+                   type="empty" />
+                 <xs:element name="shy"
+                   type="empty" />
+                 <xs:element name="sick"
+                   type="empty" />
+                 <xs:element name="sleepy"
+                   type="empty" />
+                 <xs:element name="stressed"
+                   type="empty" />
+                 <xs:element name="surprised"
+                   type="empty" />
+                 <xs:element name="thirsty"
+                   type="empty" />
+                 <xs:element name="worried"
+                   type="empty" />
+                 <xs:element name="other"
+                   type="Note_t" />
+                 <xs:any namespace="##other"
+                   maxOccurs="unbounded" processContents="lax"/>
+               </xs:choice>
+             </xs:sequence>
+           </xs:choice>
+         </xs:sequence>
+         <xs:attributeGroup ref="fromUntil"/>
+         <xs:attribute name="id" type="xs:ID"/>
+         <xs:anyAttribute namespace="##any" processContents="lax"/>
+       </xs:complexType>
+     </xs:element>
+     <xs:element name="place-is">
+       <xs:complexType>
+         <xs:sequence>
+           <xs:element name="note" type="Note_t" minOccurs="0"/>
+           <xs:element name="audio" minOccurs="0">
+             <xs:complexType>
+               <xs:choice>
+                 <xs:element name="noisy" type="empty" />
+                 <xs:element name="ok" type="empty" />
+                 <xs:element name="quiet" type="empty" />
+                 <xs:element name="unknown" type="empty" />
+               </xs:choice>
+             </xs:complexType>
+           </xs:element>
+           <xs:element name="video" minOccurs="0">
+             <xs:complexType>
+               <xs:choice>
+                 <xs:element name="toobright" type="empty" />
+                 <xs:element name="ok" type="empty" />
+                 <xs:element name="dark" type="empty" />
+                 <xs:element name="unknown" type="empty" />
+               </xs:choice>
+             </xs:complexType>
+           </xs:element>
+           <xs:element name="text" minOccurs="0">
+             <xs:complexType>
+               <xs:choice>
+                 <xs:element name="uncomfortable" type="empty" />
+                 <xs:element name="inappropriate" type="empty" />
+                 <xs:element name="ok" type="empty" />
+                 <xs:element name="unknown" type="empty" />
+               </xs:choice>
+             </xs:complexType>
+           </xs:element>
+         </xs:sequence>
+         <xs:attributeGroup ref="fromUntil"/>
+         <xs:attribute name="id" type="xs:ID"/>
+         <xs:anyAttribute namespace="##any" processContents="lax"/>
+       </xs:complexType>
+     </xs:element>
+
+     <xs:element name="place-type">
+       <xs:annotation>
+         <xs:documentation>
+           Describes the type of place the person is currently at.
+         </xs:documentation>
+       </xs:annotation>
+       <xs:complexType>
+         <xs:sequence>
+           <xs:element name="note" type="Note_t" minOccurs="0"/>
+           <xs:choice>
+             <xs:element name="aircraft" type="empty" />
+             <xs:element name="airport" type="empty" />
+             <xs:element name="arena" type="empty" />
+             <xs:element name="automobile" type="empty" />
+             <xs:element name="bank" type="empty" />
+             <xs:element name="bar" type="empty" />
+             <xs:element name="bus" type="empty" />
+             <xs:element name="bus-station" type="empty" />
+             <xs:element name="cafe" type="empty" />
+             <xs:element name="classroom" type="empty" />
+             <xs:element name="club" type="empty" />
+             <xs:element name="construction" type="empty" />
+             <xs:element name="convention-center" type="empty" />
+             <xs:element name="cycle" type="empty" />
+             <xs:element name="government" type="empty" />
+             <xs:element name="hospital" type="empty" />
+             <xs:element name="hotel" type="empty" />
+             <xs:element name="industrial" type="empty" />
+             <xs:element name="library" type="empty" />
+             <xs:element name="office" type="empty" />
+             <xs:element name="outdoors" type="empty" />
+             <xs:element name="parking" type="empty" />
+             <xs:element name="place-of-worship" type="empty" />
+             <xs:element name="prison" type="empty" />
+             <xs:element name="public" type="empty" />
+             <xs:element name="public-transport" type="empty" />
+             <xs:element name="residence" type="empty" />
+             <xs:element name="restaurant" type="empty" />
+             <xs:element name="school" type="empty" />
+             <xs:element name="shopping-area" type="empty" />
+             <xs:element name="stadium" type="empty" />
+             <xs:element name="store" type="empty" />
+             <xs:element name="street" type="empty" />
+             <xs:element name="theater" type="empty" />
+             <xs:element name="train" type="empty" />
+             <xs:element name="train-station" type="empty" />
+             <xs:element name="truck" type="empty" />
+             <xs:element name="underway" type="empty" />
+             <xs:element name="unknown" type="empty" />
+             <xs:element name="warehouse" type="empty" />
+             <xs:element name="water" type="empty" />
+             <xs:element name="watercraft" type="empty" />
+             <xs:element name="other"  type="Note_t"/>
+             <xs:any namespace="##other" maxOccurs="unbounded"
+               processContents="lax"/>
+           </xs:choice>
+         </xs:sequence>
+         <xs:attributeGroup ref="fromUntil"/>
+         <xs:attribute name="id" type="xs:ID"/>
+         <xs:anyAttribute namespace="##any" processContents="lax"/>
+       </xs:complexType>
+     </xs:element>
+
+     <xs:element name="privacy">
+       <xs:annotation>
+          <xs:documentation>
+            Indicates which type of communication third parties in the
+            vicinity of the presentity are unlikely to be able to
+            intercept accidentally or intentionally.
+          </xs:documentation>
+       </xs:annotation>
+       <xs:complexType>
+         <xs:sequence>
+           <xs:element name="note" type="Note_t" minOccurs="0"/>
+           <xs:choice>
+             <xs:element name="unknown" type="empty"/>
+             <xs:sequence minOccurs="1">
+               <xs:element name="audio" type="empty" minOccurs="0"/>
+               <xs:element name="text" type="empty" minOccurs="0"/>
+               <xs:element name="video" type="empty" minOccurs="0"/>
+               <xs:any namespace="##other" minOccurs="0"
+                  maxOccurs="unbounded" processContents="lax"/>
+             </xs:sequence>
+           </xs:choice>
+         </xs:sequence>
+         <xs:attributeGroup ref="fromUntil"/>
+         <xs:attribute name="id" type="xs:ID"/>
+         <xs:anyAttribute namespace="##any" processContents="lax"/>
+       </xs:complexType>
+     </xs:element>
+
+     <xs:element name="relationship">
+         <xs:annotation>
+            <xs:documentation>
+              Designates the type of relationship an alternate contact
+              has with the presentity.
+            </xs:documentation>
+         </xs:annotation>
+         <xs:complexType>
+           <xs:sequence>
+             <xs:element name="note" type="Note_t" minOccurs="0"/>
+             <xs:choice>
+                <xs:element name="assistant" type="empty" />
+                <xs:element name="associate" type="empty" />
+                <xs:element name="family" type="empty" />
+                <xs:element name="friend" type="empty" />
+                <xs:element name="other" type="Note_t" minOccurs="0" />
+                <xs:element name="self" type="empty" />
+                <xs:element name="supervisor" type="empty" />
+                <xs:element name="unknown" type="empty" />
+                <xs:any namespace="##other" maxOccurs="unbounded"
+                  processContents="lax"/>
+             </xs:choice>
+           </xs:sequence>
+         </xs:complexType>
+     </xs:element>
+
+     <xs:element name="service-class">
+       <xs:annotation>
+         <xs:documentation>
+           Designates the type of service offered.
+         </xs:documentation>
+       </xs:annotation>
+       <xs:complexType>
+         <xs:sequence>
+           <xs:element name="note" type="Note_t" minOccurs="0"/>
+           <xs:choice>
+             <xs:element name="courier" type="empty" />
+             <xs:element name="electronic" type="empty" />
+             <xs:element name="freight" type="empty" />
+             <xs:element name="in-person" type="empty" />
+             <xs:element name="postal" type="empty" />
+             <xs:element name="unknown" type="empty" />
+             <xs:any namespace="##other" maxOccurs="unbounded"
+               processContents="lax"/>
+           </xs:choice>
+         </xs:sequence>
+       </xs:complexType>
+     </xs:element>
+
+     <xs:element name="sphere">
+       <xs:annotation>
+         <xs:documentation>
+           Designates the current state and role that the person plays.
+         </xs:documentation>
+       </xs:annotation>
+       <xs:complexType mixed="true">
+         <xs:choice minOccurs="0">
+           <xs:element name="home" type="empty" />
+           <xs:element name="work" type="empty" />
+           <xs:element name="unknown" type="empty" />
+           <xs:any namespace="##other" maxOccurs="unbounded"
+              processContents="lax"/>
+         </xs:choice>
+         <xs:attributeGroup ref="fromUntil"/>
+         <xs:attribute name="id" type="xs:ID"/>
+         <xs:anyAttribute namespace="##any" processContents="lax"/>
+       </xs:complexType>
+     </xs:element>
+
+     <xs:element name="status-icon">
+       <xs:annotation>
+         <xs:documentation>
+           A URI pointing to an image (icon) representing the current
+           status of the person or service.
+         </xs:documentation>
+       </xs:annotation>
+       <xs:complexType>
+         <xs:simpleContent>
+           <xs:extension base="xs:anyURI">
+             <xs:attributeGroup ref="fromUntil"/>
+             <xs:attribute name="id" type="xs:ID"/>
+             <xs:anyAttribute namespace="##any" processContents="lax"/>
+           </xs:extension>
+         </xs:simpleContent>
+       </xs:complexType>
+     </xs:element>
+
+     <xs:element name="time-offset">
+       <xs:annotation>
+         <xs:documentation>
+           Describes the number of minutes of offset from UTC at the
+           user's current location.
+         </xs:documentation>
+       </xs:annotation>
+       <xs:complexType>
+         <xs:simpleContent>
+           <xs:extension base="xs:integer">
+             <xs:attributeGroup ref="fromUntil"/>
+             <xs:attribute name="description"
+                type="xs:string"/>
+             <xs:attribute name="id" type="xs:ID"/>
+             <xs:anyAttribute namespace="##any" processContents="lax"/>
+           </xs:extension>
+         </xs:simpleContent>
+       </xs:complexType>
+     </xs:element>
+
+     <xs:element name="user-input">
+       <xs:annotation>
+         <xs:documentation>
+           Records the user-input or usage state of the service or
+           device.
+         </xs:documentation>
+       </xs:annotation>
+       <xs:complexType>
+           <xs:simpleContent>
+             <xs:extension base="activeIdle">
+               <xs:attribute name="idle-threshold"
+                 type="xs:positiveInteger"/>
+               <xs:attribute name="last-input" type="xs:dateTime"/>
+               <xs:attribute name="id" type="xs:ID"/>
+               <xs:anyAttribute namespace="##any"
+                 processContents="lax"/>
+             </xs:extension>
+           </xs:simpleContent>
+       </xs:complexType>
+     </xs:element>
+   </xs:schema>

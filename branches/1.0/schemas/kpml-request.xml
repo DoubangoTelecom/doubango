@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="urn:ietf:params:xml:ns:kpml-request" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:ietf:params:xml:ns:kpml-request" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="kpml-request">
+    <xs:annotation>
+      <xs:documentation>IETF Keypad Markup Language Request
+         </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="stream" minOccurs="0">
+          <xs:complexType>
+            <xs:choice>
+              <xs:element name="reverse" minOccurs="0"/>
+              <xs:any namespace="##other"/>
+            </xs:choice>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="pattern">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="flush" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>
+                       Default is to not flush buffer
+                     </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string"/>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="regex" maxOccurs="unbounded">
+                <xs:annotation>
+                  <xs:documentation>
+                       Key press notation is a string to allow
+                       for future extension of non-16 digit
+                       keypads or named keys
+                     </xs:documentation>
+                </xs:annotation>
+                <xs:complexType mixed="true">
+                  <xs:choice>
+                    <xs:element name="pre" minOccurs="0">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string"/>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:any namespace="##other"/>
+                  </xs:choice>
+                  <xs:attribute name="tag" type="xs:string" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="persist" use="optional">
+              <xs:annotation>
+                <xs:documentation>Default is "one-shot"
+                   </xs:documentation>
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:enumeration value="one-shot"/>
+                  <xs:enumeration value="persist"/>
+                  <xs:enumeration value="single-notify"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="interdigittimer" type="xs:integer" use="optional">
+              <xs:annotation>
+                <xs:documentation>Default is 4000 (ms)
+                   </xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="criticaldigittimer" type="xs:integer" use="optional">
+              <xs:annotation>
+                <xs:documentation>Default is 1000 (ms)
+                   </xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="extradigittimer" type="xs:integer" use="optional">
+              <xs:annotation>
+                <xs:documentation>Default is 500 (ms)
+                   </xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="long" type="xs:integer" use="optional"/>
+            <xs:attribute name="longrepeat" type="xs:boolean" use="optional"/>
+            <xs:attribute name="nopartial" type="xs:boolean" use="optional">
+              <xs:annotation>
+                <xs:documentation>Default is false
+                   </xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="enterkey" type="xs:string" use="optional">
+              <xs:annotation>
+                <xs:documentation>No default enterkey
+                   </xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="version" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

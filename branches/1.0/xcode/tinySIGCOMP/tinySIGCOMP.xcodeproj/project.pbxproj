@@ -1,0 +1,903 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		ECED62BC10F98C67006B4DC9 /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED627B10F98C67006B4DC9 /* adler32.c */; };
+		ECED62BD10F98C67006B4DC9 /* compress.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED627C10F98C67006B4DC9 /* compress.c */; };
+		ECED62BE10F98C67006B4DC9 /* deflate.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED627D10F98C67006B4DC9 /* deflate.c */; };
+		ECED62BF10F98C67006B4DC9 /* deflate.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED627E10F98C67006B4DC9 /* deflate.h */; };
+		ECED62C010F98C67006B4DC9 /* tcomp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED627F10F98C67006B4DC9 /* tcomp.c */; };
+		ECED62C110F98C67006B4DC9 /* tcomp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED628010F98C67006B4DC9 /* tcomp.h */; };
+		ECED62C210F98C67006B4DC9 /* tcomp_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED628110F98C67006B4DC9 /* tcomp_buffer.c */; };
+		ECED62C310F98C67006B4DC9 /* tcomp_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED628210F98C67006B4DC9 /* tcomp_buffer.h */; };
+		ECED62C410F98C67006B4DC9 /* tcomp_compartment.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED628310F98C67006B4DC9 /* tcomp_compartment.c */; };
+		ECED62C510F98C67006B4DC9 /* tcomp_compartment.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED628410F98C67006B4DC9 /* tcomp_compartment.h */; };
+		ECED62C610F98C67006B4DC9 /* tcomp_compressor.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED628510F98C67006B4DC9 /* tcomp_compressor.h */; };
+		ECED62C710F98C67006B4DC9 /* tcomp_compressor_deflate.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED628610F98C67006B4DC9 /* tcomp_compressor_deflate.c */; };
+		ECED62C810F98C67006B4DC9 /* tcomp_compressor_deflate.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED628710F98C67006B4DC9 /* tcomp_compressor_deflate.h */; };
+		ECED62C910F98C67006B4DC9 /* tcomp_compressor_dummy.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED628810F98C67006B4DC9 /* tcomp_compressor_dummy.c */; };
+		ECED62CA10F98C67006B4DC9 /* tcomp_compressor_dummy.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED628910F98C67006B4DC9 /* tcomp_compressor_dummy.h */; };
+		ECED62CB10F98C67006B4DC9 /* tcomp_compressordata.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED628A10F98C67006B4DC9 /* tcomp_compressordata.c */; };
+		ECED62CC10F98C67006B4DC9 /* tcomp_compressordata.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED628B10F98C67006B4DC9 /* tcomp_compressordata.h */; };
+		ECED62CD10F98C67006B4DC9 /* tcomp_compressordisp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED628C10F98C67006B4DC9 /* tcomp_compressordisp.c */; };
+		ECED62CE10F98C67006B4DC9 /* tcomp_compressordisp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED628D10F98C67006B4DC9 /* tcomp_compressordisp.h */; };
+		ECED62CF10F98C67006B4DC9 /* tcomp_decompressordisp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED628E10F98C67006B4DC9 /* tcomp_decompressordisp.c */; };
+		ECED62D010F98C67006B4DC9 /* tcomp_decompressordisp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED628F10F98C67006B4DC9 /* tcomp_decompressordisp.h */; };
+		ECED62D110F98C67006B4DC9 /* tcomp_deflatedata.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED629010F98C67006B4DC9 /* tcomp_deflatedata.c */; };
+		ECED62D210F98C67006B4DC9 /* tcomp_deflatedata.ghost.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED629110F98C67006B4DC9 /* tcomp_deflatedata.ghost.c */; };
+		ECED62D310F98C67006B4DC9 /* tcomp_deflatedata.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED629210F98C67006B4DC9 /* tcomp_deflatedata.h */; };
+		ECED62D410F98C67006B4DC9 /* tcomp_deflatedata.zlib.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED629310F98C67006B4DC9 /* tcomp_deflatedata.zlib.c */; };
+		ECED62D510F98C67006B4DC9 /* tcomp_dicts.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED629410F98C67006B4DC9 /* tcomp_dicts.c */; };
+		ECED62D610F98C67006B4DC9 /* tcomp_dicts.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED629510F98C67006B4DC9 /* tcomp_dicts.h */; };
+		ECED62D710F98C67006B4DC9 /* tcomp_headers_index.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED629610F98C67006B4DC9 /* tcomp_headers_index.h */; };
+		ECED62D810F98C67006B4DC9 /* tcomp_instructions.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED629710F98C67006B4DC9 /* tcomp_instructions.h */; };
+		ECED62D910F98C67006B4DC9 /* tcomp_manager.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED629810F98C67006B4DC9 /* tcomp_manager.c */; };
+		ECED62DA10F98C67006B4DC9 /* tcomp_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED629910F98C67006B4DC9 /* tcomp_manager.h */; };
+		ECED62DB10F98C67006B4DC9 /* tcomp_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED629A10F98C67006B4DC9 /* tcomp_message.c */; };
+		ECED62DC10F98C67006B4DC9 /* tcomp_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED629B10F98C67006B4DC9 /* tcomp_message.h */; };
+		ECED62DD10F98C67006B4DC9 /* tcomp_nack_codes.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED629C10F98C67006B4DC9 /* tcomp_nack_codes.h */; };
+		ECED62DE10F98C67006B4DC9 /* tcomp_nackinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED629D10F98C67006B4DC9 /* tcomp_nackinfo.c */; };
+		ECED62DF10F98C67006B4DC9 /* tcomp_nackinfo.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED629E10F98C67006B4DC9 /* tcomp_nackinfo.h */; };
+		ECED62E010F98C67006B4DC9 /* tcomp_operands.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED629F10F98C67006B4DC9 /* tcomp_operands.h */; };
+		ECED62E110F98C67006B4DC9 /* tcomp_params.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED62A010F98C67006B4DC9 /* tcomp_params.c */; };
+		ECED62E210F98C67006B4DC9 /* tcomp_params.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62A110F98C67006B4DC9 /* tcomp_params.h */; };
+		ECED62E310F98C67006B4DC9 /* tcomp_reqfeed.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED62A210F98C67006B4DC9 /* tcomp_reqfeed.c */; };
+		ECED62E410F98C67006B4DC9 /* tcomp_reqfeed.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62A310F98C67006B4DC9 /* tcomp_reqfeed.h */; };
+		ECED62E510F98C67006B4DC9 /* tcomp_result.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED62A410F98C67006B4DC9 /* tcomp_result.c */; };
+		ECED62E610F98C67006B4DC9 /* tcomp_result.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62A510F98C67006B4DC9 /* tcomp_result.h */; };
+		ECED62E710F98C67006B4DC9 /* tcomp_rfc3485_dictionary_sip.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62A610F98C67006B4DC9 /* tcomp_rfc3485_dictionary_sip.h */; };
+		ECED62E810F98C67006B4DC9 /* tcomp_rfc5049_sip.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62A710F98C67006B4DC9 /* tcomp_rfc5049_sip.h */; };
+		ECED62E910F98C67006B4DC9 /* tcomp_rfc5112_dictionary_presence.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62A810F98C67006B4DC9 /* tcomp_rfc5112_dictionary_presence.h */; };
+		ECED62EA10F98C67006B4DC9 /* tcomp_state.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED62A910F98C67006B4DC9 /* tcomp_state.c */; };
+		ECED62EB10F98C67006B4DC9 /* tcomp_state.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62AA10F98C67006B4DC9 /* tcomp_state.h */; };
+		ECED62EC10F98C67006B4DC9 /* tcomp_statehandler.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED62AB10F98C67006B4DC9 /* tcomp_statehandler.c */; };
+		ECED62ED10F98C67006B4DC9 /* tcomp_statehandler.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62AC10F98C67006B4DC9 /* tcomp_statehandler.h */; };
+		ECED62EE10F98C67006B4DC9 /* tcomp_types.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62AD10F98C67006B4DC9 /* tcomp_types.h */; };
+		ECED62EF10F98C67006B4DC9 /* tcomp_udvm.bytecopy.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED62AE10F98C67006B4DC9 /* tcomp_udvm.bytecopy.c */; };
+		ECED62F010F98C67006B4DC9 /* tcomp_udvm.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED62AF10F98C67006B4DC9 /* tcomp_udvm.c */; };
+		ECED62F110F98C67006B4DC9 /* tcomp_udvm.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62B010F98C67006B4DC9 /* tcomp_udvm.h */; };
+		ECED62F210F98C67006B4DC9 /* tcomp_udvm.instructions.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED62B110F98C67006B4DC9 /* tcomp_udvm.instructions.c */; };
+		ECED62F310F98C67006B4DC9 /* tcomp_udvm.nack.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED62B210F98C67006B4DC9 /* tcomp_udvm.nack.c */; };
+		ECED62F410F98C67006B4DC9 /* tcomp_udvm.operands.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED62B310F98C67006B4DC9 /* tcomp_udvm.operands.c */; };
+		ECED62F510F98C67006B4DC9 /* tcomp_udvm.statemanagment.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED62B410F98C67006B4DC9 /* tcomp_udvm.statemanagment.c */; };
+		ECED62F610F98C67006B4DC9 /* tinysigcomp_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62B510F98C67006B4DC9 /* tinysigcomp_config.h */; };
+		ECED62F710F98C67006B4DC9 /* trees.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED62B610F98C67006B4DC9 /* trees.c */; };
+		ECED62F810F98C67006B4DC9 /* trees.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62B710F98C67006B4DC9 /* trees.h */; };
+		ECED62F910F98C67006B4DC9 /* zconf.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62B810F98C67006B4DC9 /* zconf.h */; };
+		ECED62FA10F98C67006B4DC9 /* zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62B910F98C67006B4DC9 /* zlib.h */; };
+		ECED62FB10F98C67006B4DC9 /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED62BA10F98C67006B4DC9 /* zutil.c */; };
+		ECED62FC10F98C67006B4DC9 /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED62BB10F98C67006B4DC9 /* zutil.h */; };
+		ECED633F10F98DC5006B4DC9 /* tinySAK_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED630A10F98DC5006B4DC9 /* tinySAK_config.h */; };
+		ECED634010F98DC5006B4DC9 /* tsk.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED630B10F98DC5006B4DC9 /* tsk.c */; };
+		ECED634110F98DC5006B4DC9 /* tsk.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED630C10F98DC5006B4DC9 /* tsk.h */; };
+		ECED634210F98DC5006B4DC9 /* tsk_base64.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED630D10F98DC5006B4DC9 /* tsk_base64.c */; };
+		ECED634310F98DC5006B4DC9 /* tsk_base64.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED630E10F98DC5006B4DC9 /* tsk_base64.h */; };
+		ECED634410F98DC5006B4DC9 /* tsk_binaryutils.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED630F10F98DC5006B4DC9 /* tsk_binaryutils.c */; };
+		ECED634510F98DC5006B4DC9 /* tsk_binaryutils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED631010F98DC5006B4DC9 /* tsk_binaryutils.h */; };
+		ECED634610F98DC5006B4DC9 /* tsk_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED631110F98DC5006B4DC9 /* tsk_buffer.c */; };
+		ECED634710F98DC5006B4DC9 /* tsk_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED631210F98DC5006B4DC9 /* tsk_buffer.h */; };
+		ECED634810F98DC5006B4DC9 /* tsk_condwait.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED631310F98DC5006B4DC9 /* tsk_condwait.c */; };
+		ECED634910F98DC5006B4DC9 /* tsk_condwait.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED631410F98DC5006B4DC9 /* tsk_condwait.h */; };
+		ECED634A10F98DC5006B4DC9 /* tsk_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED631510F98DC5006B4DC9 /* tsk_debug.c */; };
+		ECED634B10F98DC5006B4DC9 /* tsk_debug.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED631610F98DC5006B4DC9 /* tsk_debug.h */; };
+		ECED634C10F98DC5006B4DC9 /* tsk_errno.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED631710F98DC5006B4DC9 /* tsk_errno.h */; };
+		ECED634D10F98DC5006B4DC9 /* tsk_heap.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED631810F98DC5006B4DC9 /* tsk_heap.c */; };
+		ECED634E10F98DC5006B4DC9 /* tsk_heap.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED631910F98DC5006B4DC9 /* tsk_heap.h */; };
+		ECED634F10F98DC5006B4DC9 /* tsk_hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED631A10F98DC5006B4DC9 /* tsk_hmac.c */; };
+		ECED635010F98DC5006B4DC9 /* tsk_hmac.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED631B10F98DC5006B4DC9 /* tsk_hmac.h */; };
+		ECED635110F98DC5006B4DC9 /* tsk_list.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED631C10F98DC5006B4DC9 /* tsk_list.c */; };
+		ECED635210F98DC5006B4DC9 /* tsk_list.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED631D10F98DC5006B4DC9 /* tsk_list.h */; };
+		ECED635310F98DC5006B4DC9 /* tsk_macros.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED631E10F98DC5006B4DC9 /* tsk_macros.h */; };
+		ECED635410F98DC5006B4DC9 /* tsk_md5.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED631F10F98DC5006B4DC9 /* tsk_md5.c */; };
+		ECED635510F98DC5006B4DC9 /* tsk_md5.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED632010F98DC5006B4DC9 /* tsk_md5.h */; };
+		ECED635610F98DC5006B4DC9 /* tsk_memory.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED632110F98DC5006B4DC9 /* tsk_memory.c */; };
+		ECED635710F98DC5006B4DC9 /* tsk_memory.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED632210F98DC5006B4DC9 /* tsk_memory.h */; };
+		ECED635810F98DC5006B4DC9 /* tsk_mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED632310F98DC5006B4DC9 /* tsk_mutex.c */; };
+		ECED635910F98DC5006B4DC9 /* tsk_mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED632410F98DC5006B4DC9 /* tsk_mutex.h */; };
+		ECED635A10F98DC5006B4DC9 /* tsk_object.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED632510F98DC5006B4DC9 /* tsk_object.c */; };
+		ECED635B10F98DC5006B4DC9 /* tsk_object.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED632610F98DC5006B4DC9 /* tsk_object.h */; };
+		ECED635C10F98DC5006B4DC9 /* tsk_params.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED632710F98DC5006B4DC9 /* tsk_params.c */; };
+		ECED635D10F98DC5006B4DC9 /* tsk_params.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED632810F98DC5006B4DC9 /* tsk_params.h */; };
+		ECED635E10F98DC5006B4DC9 /* tsk_ppfcs16.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED632910F98DC5006B4DC9 /* tsk_ppfcs16.c */; };
+		ECED635F10F98DC5006B4DC9 /* tsk_ppfcs16.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED632A10F98DC5006B4DC9 /* tsk_ppfcs16.h */; };
+		ECED636010F98DC5006B4DC9 /* tsk_runnable.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED632B10F98DC5006B4DC9 /* tsk_runnable.c */; };
+		ECED636110F98DC5006B4DC9 /* tsk_runnable.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED632C10F98DC5006B4DC9 /* tsk_runnable.h */; };
+		ECED636210F98DC5006B4DC9 /* tsk_safeobj.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED632D10F98DC5006B4DC9 /* tsk_safeobj.c */; };
+		ECED636310F98DC5006B4DC9 /* tsk_safeobj.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED632E10F98DC5006B4DC9 /* tsk_safeobj.h */; };
+		ECED636410F98DC5006B4DC9 /* tsk_semaphore.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED632F10F98DC5006B4DC9 /* tsk_semaphore.c */; };
+		ECED636510F98DC5006B4DC9 /* tsk_semaphore.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED633010F98DC5006B4DC9 /* tsk_semaphore.h */; };
+		ECED636610F98DC5006B4DC9 /* tsk_sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED633110F98DC5006B4DC9 /* tsk_sha1.c */; };
+		ECED636710F98DC5006B4DC9 /* tsk_sha1.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED633210F98DC5006B4DC9 /* tsk_sha1.h */; };
+		ECED636810F98DC5006B4DC9 /* tsk_string.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED633310F98DC5006B4DC9 /* tsk_string.c */; };
+		ECED636910F98DC5006B4DC9 /* tsk_string.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED633410F98DC5006B4DC9 /* tsk_string.h */; };
+		ECED636A10F98DC5006B4DC9 /* tsk_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED633510F98DC5006B4DC9 /* tsk_thread.c */; };
+		ECED636B10F98DC5006B4DC9 /* tsk_thread.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED633610F98DC5006B4DC9 /* tsk_thread.h */; };
+		ECED636C10F98DC5006B4DC9 /* tsk_time.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED633710F98DC5006B4DC9 /* tsk_time.c */; };
+		ECED636D10F98DC5006B4DC9 /* tsk_time.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED633810F98DC5006B4DC9 /* tsk_time.h */; };
+		ECED636E10F98DC5006B4DC9 /* tsk_timer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED633910F98DC5006B4DC9 /* tsk_timer.c */; };
+		ECED636F10F98DC5006B4DC9 /* tsk_timer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED633A10F98DC5006B4DC9 /* tsk_timer.h */; };
+		ECED637010F98DC5006B4DC9 /* tsk_url.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED633B10F98DC5006B4DC9 /* tsk_url.c */; };
+		ECED637110F98DC5006B4DC9 /* tsk_url.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED633C10F98DC5006B4DC9 /* tsk_url.h */; };
+		ECED637210F98DC5006B4DC9 /* tsk_xml.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED633D10F98DC5006B4DC9 /* tsk_xml.c */; };
+		ECED637310F98DC5006B4DC9 /* tsk_xml.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED633E10F98DC5006B4DC9 /* tsk_xml.h */; };
+		ECED637710F98DEC006B4DC9 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED630510F98D55006B4DC9 /* libtinySAK.dylib */; };
+		ECED639110F99173006B4DC9 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED630510F98D55006B4DC9 /* libtinySAK.dylib */; };
+		ECED639210F99173006B4DC9 /* libtinySIGCOMP.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC0630554660B00DB518D /* libtinySIGCOMP.dylib */; };
+		ECED639810F9918E006B4DC9 /* stdafx.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED639410F9918E006B4DC9 /* stdafx.c */; };
+		ECED639910F9918E006B4DC9 /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED639710F9918E006B4DC9 /* test.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		ECED637510F98DE8006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECED630410F98D55006B4DC9;
+			remoteInfo = tinySAK;
+		};
+		ECED638D10F9916E006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC0620554660B00DB518D;
+			remoteInfo = tinySIGCOMP;
+		};
+		ECED638F10F9916E006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECED630410F98D55006B4DC9;
+			remoteInfo = tinySAK;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		D2AAC0630554660B00DB518D /* libtinySIGCOMP.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinySIGCOMP.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECED627B10F98C67006B4DC9 /* adler32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = adler32.c; path = ../../tinySIGCOMP/src/adler32.c; sourceTree = SOURCE_ROOT; };
+		ECED627C10F98C67006B4DC9 /* compress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = compress.c; path = ../../tinySIGCOMP/src/compress.c; sourceTree = SOURCE_ROOT; };
+		ECED627D10F98C67006B4DC9 /* deflate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = deflate.c; path = ../../tinySIGCOMP/src/deflate.c; sourceTree = SOURCE_ROOT; };
+		ECED627E10F98C67006B4DC9 /* deflate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = deflate.h; path = ../../tinySIGCOMP/src/deflate.h; sourceTree = SOURCE_ROOT; };
+		ECED627F10F98C67006B4DC9 /* tcomp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp.c; path = ../../tinySIGCOMP/src/tcomp.c; sourceTree = SOURCE_ROOT; };
+		ECED628010F98C67006B4DC9 /* tcomp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp.h; path = ../../tinySIGCOMP/src/tcomp.h; sourceTree = SOURCE_ROOT; };
+		ECED628110F98C67006B4DC9 /* tcomp_buffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_buffer.c; path = ../../tinySIGCOMP/src/tcomp_buffer.c; sourceTree = SOURCE_ROOT; };
+		ECED628210F98C67006B4DC9 /* tcomp_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_buffer.h; path = ../../tinySIGCOMP/src/tcomp_buffer.h; sourceTree = SOURCE_ROOT; };
+		ECED628310F98C67006B4DC9 /* tcomp_compartment.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_compartment.c; path = ../../tinySIGCOMP/src/tcomp_compartment.c; sourceTree = SOURCE_ROOT; };
+		ECED628410F98C67006B4DC9 /* tcomp_compartment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_compartment.h; path = ../../tinySIGCOMP/src/tcomp_compartment.h; sourceTree = SOURCE_ROOT; };
+		ECED628510F98C67006B4DC9 /* tcomp_compressor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_compressor.h; path = ../../tinySIGCOMP/src/tcomp_compressor.h; sourceTree = SOURCE_ROOT; };
+		ECED628610F98C67006B4DC9 /* tcomp_compressor_deflate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_compressor_deflate.c; path = ../../tinySIGCOMP/src/tcomp_compressor_deflate.c; sourceTree = SOURCE_ROOT; };
+		ECED628710F98C67006B4DC9 /* tcomp_compressor_deflate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_compressor_deflate.h; path = ../../tinySIGCOMP/src/tcomp_compressor_deflate.h; sourceTree = SOURCE_ROOT; };
+		ECED628810F98C67006B4DC9 /* tcomp_compressor_dummy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_compressor_dummy.c; path = ../../tinySIGCOMP/src/tcomp_compressor_dummy.c; sourceTree = SOURCE_ROOT; };
+		ECED628910F98C67006B4DC9 /* tcomp_compressor_dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_compressor_dummy.h; path = ../../tinySIGCOMP/src/tcomp_compressor_dummy.h; sourceTree = SOURCE_ROOT; };
+		ECED628A10F98C67006B4DC9 /* tcomp_compressordata.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_compressordata.c; path = ../../tinySIGCOMP/src/tcomp_compressordata.c; sourceTree = SOURCE_ROOT; };
+		ECED628B10F98C67006B4DC9 /* tcomp_compressordata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_compressordata.h; path = ../../tinySIGCOMP/src/tcomp_compressordata.h; sourceTree = SOURCE_ROOT; };
+		ECED628C10F98C67006B4DC9 /* tcomp_compressordisp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_compressordisp.c; path = ../../tinySIGCOMP/src/tcomp_compressordisp.c; sourceTree = SOURCE_ROOT; };
+		ECED628D10F98C67006B4DC9 /* tcomp_compressordisp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_compressordisp.h; path = ../../tinySIGCOMP/src/tcomp_compressordisp.h; sourceTree = SOURCE_ROOT; };
+		ECED628E10F98C67006B4DC9 /* tcomp_decompressordisp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_decompressordisp.c; path = ../../tinySIGCOMP/src/tcomp_decompressordisp.c; sourceTree = SOURCE_ROOT; };
+		ECED628F10F98C67006B4DC9 /* tcomp_decompressordisp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_decompressordisp.h; path = ../../tinySIGCOMP/src/tcomp_decompressordisp.h; sourceTree = SOURCE_ROOT; };
+		ECED629010F98C67006B4DC9 /* tcomp_deflatedata.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_deflatedata.c; path = ../../tinySIGCOMP/src/tcomp_deflatedata.c; sourceTree = SOURCE_ROOT; };
+		ECED629110F98C67006B4DC9 /* tcomp_deflatedata.ghost.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_deflatedata.ghost.c; path = ../../tinySIGCOMP/src/tcomp_deflatedata.ghost.c; sourceTree = SOURCE_ROOT; };
+		ECED629210F98C67006B4DC9 /* tcomp_deflatedata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_deflatedata.h; path = ../../tinySIGCOMP/src/tcomp_deflatedata.h; sourceTree = SOURCE_ROOT; };
+		ECED629310F98C67006B4DC9 /* tcomp_deflatedata.zlib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_deflatedata.zlib.c; path = ../../tinySIGCOMP/src/tcomp_deflatedata.zlib.c; sourceTree = SOURCE_ROOT; };
+		ECED629410F98C67006B4DC9 /* tcomp_dicts.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_dicts.c; path = ../../tinySIGCOMP/src/tcomp_dicts.c; sourceTree = SOURCE_ROOT; };
+		ECED629510F98C67006B4DC9 /* tcomp_dicts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_dicts.h; path = ../../tinySIGCOMP/src/tcomp_dicts.h; sourceTree = SOURCE_ROOT; };
+		ECED629610F98C67006B4DC9 /* tcomp_headers_index.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_headers_index.h; path = ../../tinySIGCOMP/src/tcomp_headers_index.h; sourceTree = SOURCE_ROOT; };
+		ECED629710F98C67006B4DC9 /* tcomp_instructions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_instructions.h; path = ../../tinySIGCOMP/src/tcomp_instructions.h; sourceTree = SOURCE_ROOT; };
+		ECED629810F98C67006B4DC9 /* tcomp_manager.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_manager.c; path = ../../tinySIGCOMP/src/tcomp_manager.c; sourceTree = SOURCE_ROOT; };
+		ECED629910F98C67006B4DC9 /* tcomp_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_manager.h; path = ../../tinySIGCOMP/src/tcomp_manager.h; sourceTree = SOURCE_ROOT; };
+		ECED629A10F98C67006B4DC9 /* tcomp_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_message.c; path = ../../tinySIGCOMP/src/tcomp_message.c; sourceTree = SOURCE_ROOT; };
+		ECED629B10F98C67006B4DC9 /* tcomp_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_message.h; path = ../../tinySIGCOMP/src/tcomp_message.h; sourceTree = SOURCE_ROOT; };
+		ECED629C10F98C67006B4DC9 /* tcomp_nack_codes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_nack_codes.h; path = ../../tinySIGCOMP/src/tcomp_nack_codes.h; sourceTree = SOURCE_ROOT; };
+		ECED629D10F98C67006B4DC9 /* tcomp_nackinfo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_nackinfo.c; path = ../../tinySIGCOMP/src/tcomp_nackinfo.c; sourceTree = SOURCE_ROOT; };
+		ECED629E10F98C67006B4DC9 /* tcomp_nackinfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_nackinfo.h; path = ../../tinySIGCOMP/src/tcomp_nackinfo.h; sourceTree = SOURCE_ROOT; };
+		ECED629F10F98C67006B4DC9 /* tcomp_operands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_operands.h; path = ../../tinySIGCOMP/src/tcomp_operands.h; sourceTree = SOURCE_ROOT; };
+		ECED62A010F98C67006B4DC9 /* tcomp_params.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_params.c; path = ../../tinySIGCOMP/src/tcomp_params.c; sourceTree = SOURCE_ROOT; };
+		ECED62A110F98C67006B4DC9 /* tcomp_params.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_params.h; path = ../../tinySIGCOMP/src/tcomp_params.h; sourceTree = SOURCE_ROOT; };
+		ECED62A210F98C67006B4DC9 /* tcomp_reqfeed.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_reqfeed.c; path = ../../tinySIGCOMP/src/tcomp_reqfeed.c; sourceTree = SOURCE_ROOT; };
+		ECED62A310F98C67006B4DC9 /* tcomp_reqfeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_reqfeed.h; path = ../../tinySIGCOMP/src/tcomp_reqfeed.h; sourceTree = SOURCE_ROOT; };
+		ECED62A410F98C67006B4DC9 /* tcomp_result.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_result.c; path = ../../tinySIGCOMP/src/tcomp_result.c; sourceTree = SOURCE_ROOT; };
+		ECED62A510F98C67006B4DC9 /* tcomp_result.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_result.h; path = ../../tinySIGCOMP/src/tcomp_result.h; sourceTree = SOURCE_ROOT; };
+		ECED62A610F98C67006B4DC9 /* tcomp_rfc3485_dictionary_sip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_rfc3485_dictionary_sip.h; path = ../../tinySIGCOMP/src/tcomp_rfc3485_dictionary_sip.h; sourceTree = SOURCE_ROOT; };
+		ECED62A710F98C67006B4DC9 /* tcomp_rfc5049_sip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_rfc5049_sip.h; path = ../../tinySIGCOMP/src/tcomp_rfc5049_sip.h; sourceTree = SOURCE_ROOT; };
+		ECED62A810F98C67006B4DC9 /* tcomp_rfc5112_dictionary_presence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_rfc5112_dictionary_presence.h; path = ../../tinySIGCOMP/src/tcomp_rfc5112_dictionary_presence.h; sourceTree = SOURCE_ROOT; };
+		ECED62A910F98C67006B4DC9 /* tcomp_state.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_state.c; path = ../../tinySIGCOMP/src/tcomp_state.c; sourceTree = SOURCE_ROOT; };
+		ECED62AA10F98C67006B4DC9 /* tcomp_state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_state.h; path = ../../tinySIGCOMP/src/tcomp_state.h; sourceTree = SOURCE_ROOT; };
+		ECED62AB10F98C67006B4DC9 /* tcomp_statehandler.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_statehandler.c; path = ../../tinySIGCOMP/src/tcomp_statehandler.c; sourceTree = SOURCE_ROOT; };
+		ECED62AC10F98C67006B4DC9 /* tcomp_statehandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_statehandler.h; path = ../../tinySIGCOMP/src/tcomp_statehandler.h; sourceTree = SOURCE_ROOT; };
+		ECED62AD10F98C67006B4DC9 /* tcomp_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_types.h; path = ../../tinySIGCOMP/src/tcomp_types.h; sourceTree = SOURCE_ROOT; };
+		ECED62AE10F98C67006B4DC9 /* tcomp_udvm.bytecopy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_udvm.bytecopy.c; path = ../../tinySIGCOMP/src/tcomp_udvm.bytecopy.c; sourceTree = SOURCE_ROOT; };
+		ECED62AF10F98C67006B4DC9 /* tcomp_udvm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_udvm.c; path = ../../tinySIGCOMP/src/tcomp_udvm.c; sourceTree = SOURCE_ROOT; };
+		ECED62B010F98C67006B4DC9 /* tcomp_udvm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tcomp_udvm.h; path = ../../tinySIGCOMP/src/tcomp_udvm.h; sourceTree = SOURCE_ROOT; };
+		ECED62B110F98C67006B4DC9 /* tcomp_udvm.instructions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_udvm.instructions.c; path = ../../tinySIGCOMP/src/tcomp_udvm.instructions.c; sourceTree = SOURCE_ROOT; };
+		ECED62B210F98C67006B4DC9 /* tcomp_udvm.nack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_udvm.nack.c; path = ../../tinySIGCOMP/src/tcomp_udvm.nack.c; sourceTree = SOURCE_ROOT; };
+		ECED62B310F98C67006B4DC9 /* tcomp_udvm.operands.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_udvm.operands.c; path = ../../tinySIGCOMP/src/tcomp_udvm.operands.c; sourceTree = SOURCE_ROOT; };
+		ECED62B410F98C67006B4DC9 /* tcomp_udvm.statemanagment.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tcomp_udvm.statemanagment.c; path = ../../tinySIGCOMP/src/tcomp_udvm.statemanagment.c; sourceTree = SOURCE_ROOT; };
+		ECED62B510F98C67006B4DC9 /* tinysigcomp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinysigcomp_config.h; path = ../../tinySIGCOMP/src/tinysigcomp_config.h; sourceTree = SOURCE_ROOT; };
+		ECED62B610F98C67006B4DC9 /* trees.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = trees.c; path = ../../tinySIGCOMP/src/trees.c; sourceTree = SOURCE_ROOT; };
+		ECED62B710F98C67006B4DC9 /* trees.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = trees.h; path = ../../tinySIGCOMP/src/trees.h; sourceTree = SOURCE_ROOT; };
+		ECED62B810F98C67006B4DC9 /* zconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zconf.h; path = ../../tinySIGCOMP/src/zconf.h; sourceTree = SOURCE_ROOT; };
+		ECED62B910F98C67006B4DC9 /* zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zlib.h; path = ../../tinySIGCOMP/src/zlib.h; sourceTree = SOURCE_ROOT; };
+		ECED62BA10F98C67006B4DC9 /* zutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zutil.c; path = ../../tinySIGCOMP/src/zutil.c; sourceTree = SOURCE_ROOT; };
+		ECED62BB10F98C67006B4DC9 /* zutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zutil.h; path = ../../tinySIGCOMP/src/zutil.h; sourceTree = SOURCE_ROOT; };
+		ECED630510F98D55006B4DC9 /* libtinySAK.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinySAK.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECED630A10F98DC5006B4DC9 /* tinySAK_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinySAK_config.h; path = ../../tinySAK/src/tinySAK_config.h; sourceTree = SOURCE_ROOT; };
+		ECED630B10F98DC5006B4DC9 /* tsk.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk.c; path = ../../tinySAK/src/tsk.c; sourceTree = SOURCE_ROOT; };
+		ECED630C10F98DC5006B4DC9 /* tsk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk.h; path = ../../tinySAK/src/tsk.h; sourceTree = SOURCE_ROOT; };
+		ECED630D10F98DC5006B4DC9 /* tsk_base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_base64.c; path = ../../tinySAK/src/tsk_base64.c; sourceTree = SOURCE_ROOT; };
+		ECED630E10F98DC5006B4DC9 /* tsk_base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_base64.h; path = ../../tinySAK/src/tsk_base64.h; sourceTree = SOURCE_ROOT; };
+		ECED630F10F98DC5006B4DC9 /* tsk_binaryutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_binaryutils.c; path = ../../tinySAK/src/tsk_binaryutils.c; sourceTree = SOURCE_ROOT; };
+		ECED631010F98DC5006B4DC9 /* tsk_binaryutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_binaryutils.h; path = ../../tinySAK/src/tsk_binaryutils.h; sourceTree = SOURCE_ROOT; };
+		ECED631110F98DC5006B4DC9 /* tsk_buffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_buffer.c; path = ../../tinySAK/src/tsk_buffer.c; sourceTree = SOURCE_ROOT; };
+		ECED631210F98DC5006B4DC9 /* tsk_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_buffer.h; path = ../../tinySAK/src/tsk_buffer.h; sourceTree = SOURCE_ROOT; };
+		ECED631310F98DC5006B4DC9 /* tsk_condwait.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_condwait.c; path = ../../tinySAK/src/tsk_condwait.c; sourceTree = SOURCE_ROOT; };
+		ECED631410F98DC5006B4DC9 /* tsk_condwait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_condwait.h; path = ../../tinySAK/src/tsk_condwait.h; sourceTree = SOURCE_ROOT; };
+		ECED631510F98DC5006B4DC9 /* tsk_debug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_debug.c; path = ../../tinySAK/src/tsk_debug.c; sourceTree = SOURCE_ROOT; };
+		ECED631610F98DC5006B4DC9 /* tsk_debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_debug.h; path = ../../tinySAK/src/tsk_debug.h; sourceTree = SOURCE_ROOT; };
+		ECED631710F98DC5006B4DC9 /* tsk_errno.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_errno.h; path = ../../tinySAK/src/tsk_errno.h; sourceTree = SOURCE_ROOT; };
+		ECED631810F98DC5006B4DC9 /* tsk_heap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_heap.c; path = ../../tinySAK/src/tsk_heap.c; sourceTree = SOURCE_ROOT; };
+		ECED631910F98DC5006B4DC9 /* tsk_heap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_heap.h; path = ../../tinySAK/src/tsk_heap.h; sourceTree = SOURCE_ROOT; };
+		ECED631A10F98DC5006B4DC9 /* tsk_hmac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_hmac.c; path = ../../tinySAK/src/tsk_hmac.c; sourceTree = SOURCE_ROOT; };
+		ECED631B10F98DC5006B4DC9 /* tsk_hmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_hmac.h; path = ../../tinySAK/src/tsk_hmac.h; sourceTree = SOURCE_ROOT; };
+		ECED631C10F98DC5006B4DC9 /* tsk_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_list.c; path = ../../tinySAK/src/tsk_list.c; sourceTree = SOURCE_ROOT; };
+		ECED631D10F98DC5006B4DC9 /* tsk_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_list.h; path = ../../tinySAK/src/tsk_list.h; sourceTree = SOURCE_ROOT; };
+		ECED631E10F98DC5006B4DC9 /* tsk_macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_macros.h; path = ../../tinySAK/src/tsk_macros.h; sourceTree = SOURCE_ROOT; };
+		ECED631F10F98DC5006B4DC9 /* tsk_md5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_md5.c; path = ../../tinySAK/src/tsk_md5.c; sourceTree = SOURCE_ROOT; };
+		ECED632010F98DC5006B4DC9 /* tsk_md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_md5.h; path = ../../tinySAK/src/tsk_md5.h; sourceTree = SOURCE_ROOT; };
+		ECED632110F98DC5006B4DC9 /* tsk_memory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_memory.c; path = ../../tinySAK/src/tsk_memory.c; sourceTree = SOURCE_ROOT; };
+		ECED632210F98DC5006B4DC9 /* tsk_memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_memory.h; path = ../../tinySAK/src/tsk_memory.h; sourceTree = SOURCE_ROOT; };
+		ECED632310F98DC5006B4DC9 /* tsk_mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_mutex.c; path = ../../tinySAK/src/tsk_mutex.c; sourceTree = SOURCE_ROOT; };
+		ECED632410F98DC5006B4DC9 /* tsk_mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_mutex.h; path = ../../tinySAK/src/tsk_mutex.h; sourceTree = SOURCE_ROOT; };
+		ECED632510F98DC5006B4DC9 /* tsk_object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_object.c; path = ../../tinySAK/src/tsk_object.c; sourceTree = SOURCE_ROOT; };
+		ECED632610F98DC5006B4DC9 /* tsk_object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_object.h; path = ../../tinySAK/src/tsk_object.h; sourceTree = SOURCE_ROOT; };
+		ECED632710F98DC5006B4DC9 /* tsk_params.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_params.c; path = ../../tinySAK/src/tsk_params.c; sourceTree = SOURCE_ROOT; };
+		ECED632810F98DC5006B4DC9 /* tsk_params.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_params.h; path = ../../tinySAK/src/tsk_params.h; sourceTree = SOURCE_ROOT; };
+		ECED632910F98DC5006B4DC9 /* tsk_ppfcs16.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_ppfcs16.c; path = ../../tinySAK/src/tsk_ppfcs16.c; sourceTree = SOURCE_ROOT; };
+		ECED632A10F98DC5006B4DC9 /* tsk_ppfcs16.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_ppfcs16.h; path = ../../tinySAK/src/tsk_ppfcs16.h; sourceTree = SOURCE_ROOT; };
+		ECED632B10F98DC5006B4DC9 /* tsk_runnable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_runnable.c; path = ../../tinySAK/src/tsk_runnable.c; sourceTree = SOURCE_ROOT; };
+		ECED632C10F98DC5006B4DC9 /* tsk_runnable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_runnable.h; path = ../../tinySAK/src/tsk_runnable.h; sourceTree = SOURCE_ROOT; };
+		ECED632D10F98DC5006B4DC9 /* tsk_safeobj.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_safeobj.c; path = ../../tinySAK/src/tsk_safeobj.c; sourceTree = SOURCE_ROOT; };
+		ECED632E10F98DC5006B4DC9 /* tsk_safeobj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_safeobj.h; path = ../../tinySAK/src/tsk_safeobj.h; sourceTree = SOURCE_ROOT; };
+		ECED632F10F98DC5006B4DC9 /* tsk_semaphore.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_semaphore.c; path = ../../tinySAK/src/tsk_semaphore.c; sourceTree = SOURCE_ROOT; };
+		ECED633010F98DC5006B4DC9 /* tsk_semaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_semaphore.h; path = ../../tinySAK/src/tsk_semaphore.h; sourceTree = SOURCE_ROOT; };
+		ECED633110F98DC5006B4DC9 /* tsk_sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_sha1.c; path = ../../tinySAK/src/tsk_sha1.c; sourceTree = SOURCE_ROOT; };
+		ECED633210F98DC5006B4DC9 /* tsk_sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_sha1.h; path = ../../tinySAK/src/tsk_sha1.h; sourceTree = SOURCE_ROOT; };
+		ECED633310F98DC5006B4DC9 /* tsk_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_string.c; path = ../../tinySAK/src/tsk_string.c; sourceTree = SOURCE_ROOT; };
+		ECED633410F98DC5006B4DC9 /* tsk_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_string.h; path = ../../tinySAK/src/tsk_string.h; sourceTree = SOURCE_ROOT; };
+		ECED633510F98DC5006B4DC9 /* tsk_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_thread.c; path = ../../tinySAK/src/tsk_thread.c; sourceTree = SOURCE_ROOT; };
+		ECED633610F98DC5006B4DC9 /* tsk_thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_thread.h; path = ../../tinySAK/src/tsk_thread.h; sourceTree = SOURCE_ROOT; };
+		ECED633710F98DC5006B4DC9 /* tsk_time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_time.c; path = ../../tinySAK/src/tsk_time.c; sourceTree = SOURCE_ROOT; };
+		ECED633810F98DC5006B4DC9 /* tsk_time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_time.h; path = ../../tinySAK/src/tsk_time.h; sourceTree = SOURCE_ROOT; };
+		ECED633910F98DC5006B4DC9 /* tsk_timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_timer.c; path = ../../tinySAK/src/tsk_timer.c; sourceTree = SOURCE_ROOT; };
+		ECED633A10F98DC5006B4DC9 /* tsk_timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_timer.h; path = ../../tinySAK/src/tsk_timer.h; sourceTree = SOURCE_ROOT; };
+		ECED633B10F98DC5006B4DC9 /* tsk_url.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_url.c; path = ../../tinySAK/src/tsk_url.c; sourceTree = SOURCE_ROOT; };
+		ECED633C10F98DC5006B4DC9 /* tsk_url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_url.h; path = ../../tinySAK/src/tsk_url.h; sourceTree = SOURCE_ROOT; };
+		ECED633D10F98DC5006B4DC9 /* tsk_xml.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_xml.c; path = ../../tinySAK/src/tsk_xml.c; sourceTree = SOURCE_ROOT; };
+		ECED633E10F98DC5006B4DC9 /* tsk_xml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_xml.h; path = ../../tinySAK/src/tsk_xml.h; sourceTree = SOURCE_ROOT; };
+		ECED638910F99166006B4DC9 /* test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECED639310F9918E006B4DC9 /* rfc4465_torture_tests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rfc4465_torture_tests.h; path = ../../tinySIGCOMP/test/rfc4465_torture_tests.h; sourceTree = SOURCE_ROOT; };
+		ECED639410F9918E006B4DC9 /* stdafx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = stdafx.c; path = ../../tinySIGCOMP/test/stdafx.c; sourceTree = SOURCE_ROOT; };
+		ECED639510F9918E006B4DC9 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stdafx.h; path = ../../tinySIGCOMP/test/stdafx.h; sourceTree = SOURCE_ROOT; };
+		ECED639610F9918E006B4DC9 /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = targetver.h; path = ../../tinySIGCOMP/test/targetver.h; sourceTree = SOURCE_ROOT; };
+		ECED639710F9918E006B4DC9 /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = test.c; path = ../../tinySIGCOMP/test/test.c; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D289988505E68E00004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED637710F98DEC006B4DC9 /* libtinySAK.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED630310F98D55006B4DC9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED638710F99166006B4DC9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED639110F99173006B4DC9 /* libtinySAK.dylib in Frameworks */,
+				ECED639210F99173006B4DC9 /* libtinySIGCOMP.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* tinySIGCOMP */ = {
+			isa = PBXGroup;
+			children = (
+				ECED639B10F99193006B4DC9 /* test */,
+				ECED630910F98DA7006B4DC9 /* tinySAK */,
+				ECED627310F98C27006B4DC9 /* include */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = tinySIGCOMP;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				ECED629410F98C67006B4DC9 /* tcomp_dicts.c */,
+				ECED629810F98C67006B4DC9 /* tcomp_manager.c */,
+				ECED629A10F98C67006B4DC9 /* tcomp_message.c */,
+				ECED629310F98C67006B4DC9 /* tcomp_deflatedata.zlib.c */,
+				ECED629D10F98C67006B4DC9 /* tcomp_nackinfo.c */,
+				ECED62AF10F98C67006B4DC9 /* tcomp_udvm.c */,
+				ECED62A010F98C67006B4DC9 /* tcomp_params.c */,
+				ECED62A210F98C67006B4DC9 /* tcomp_reqfeed.c */,
+				ECED62A410F98C67006B4DC9 /* tcomp_result.c */,
+				ECED62A910F98C67006B4DC9 /* tcomp_state.c */,
+				ECED62AB10F98C67006B4DC9 /* tcomp_statehandler.c */,
+				ECED62AE10F98C67006B4DC9 /* tcomp_udvm.bytecopy.c */,
+				ECED62B110F98C67006B4DC9 /* tcomp_udvm.instructions.c */,
+				ECED62B210F98C67006B4DC9 /* tcomp_udvm.nack.c */,
+				ECED62B310F98C67006B4DC9 /* tcomp_udvm.operands.c */,
+				ECED62B410F98C67006B4DC9 /* tcomp_udvm.statemanagment.c */,
+				ECED62B610F98C67006B4DC9 /* trees.c */,
+				ECED627B10F98C67006B4DC9 /* adler32.c */,
+				ECED627C10F98C67006B4DC9 /* compress.c */,
+				ECED627D10F98C67006B4DC9 /* deflate.c */,
+				ECED627F10F98C67006B4DC9 /* tcomp.c */,
+				ECED628110F98C67006B4DC9 /* tcomp_buffer.c */,
+				ECED628310F98C67006B4DC9 /* tcomp_compartment.c */,
+				ECED628610F98C67006B4DC9 /* tcomp_compressor_deflate.c */,
+				ECED628810F98C67006B4DC9 /* tcomp_compressor_dummy.c */,
+				ECED628A10F98C67006B4DC9 /* tcomp_compressordata.c */,
+				ECED628C10F98C67006B4DC9 /* tcomp_compressordisp.c */,
+				ECED628E10F98C67006B4DC9 /* tcomp_decompressordisp.c */,
+				ECED629010F98C67006B4DC9 /* tcomp_deflatedata.c */,
+				ECED629110F98C67006B4DC9 /* tcomp_deflatedata.ghost.c */,
+				ECED62BA10F98C67006B4DC9 /* zutil.c */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC0630554660B00DB518D /* libtinySIGCOMP.dylib */,
+				ECED630510F98D55006B4DC9 /* libtinySAK.dylib */,
+				ECED638910F99166006B4DC9 /* test */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ECED627310F98C27006B4DC9 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				ECED627E10F98C67006B4DC9 /* deflate.h */,
+				ECED628010F98C67006B4DC9 /* tcomp.h */,
+				ECED628210F98C67006B4DC9 /* tcomp_buffer.h */,
+				ECED628410F98C67006B4DC9 /* tcomp_compartment.h */,
+				ECED628510F98C67006B4DC9 /* tcomp_compressor.h */,
+				ECED628710F98C67006B4DC9 /* tcomp_compressor_deflate.h */,
+				ECED628910F98C67006B4DC9 /* tcomp_compressor_dummy.h */,
+				ECED628B10F98C67006B4DC9 /* tcomp_compressordata.h */,
+				ECED628D10F98C67006B4DC9 /* tcomp_compressordisp.h */,
+				ECED628F10F98C67006B4DC9 /* tcomp_decompressordisp.h */,
+				ECED629210F98C67006B4DC9 /* tcomp_deflatedata.h */,
+				ECED629510F98C67006B4DC9 /* tcomp_dicts.h */,
+				ECED629610F98C67006B4DC9 /* tcomp_headers_index.h */,
+				ECED629710F98C67006B4DC9 /* tcomp_instructions.h */,
+				ECED629910F98C67006B4DC9 /* tcomp_manager.h */,
+				ECED629B10F98C67006B4DC9 /* tcomp_message.h */,
+				ECED629C10F98C67006B4DC9 /* tcomp_nack_codes.h */,
+				ECED629E10F98C67006B4DC9 /* tcomp_nackinfo.h */,
+				ECED629F10F98C67006B4DC9 /* tcomp_operands.h */,
+				ECED62A110F98C67006B4DC9 /* tcomp_params.h */,
+				ECED62A310F98C67006B4DC9 /* tcomp_reqfeed.h */,
+				ECED62A510F98C67006B4DC9 /* tcomp_result.h */,
+				ECED62A610F98C67006B4DC9 /* tcomp_rfc3485_dictionary_sip.h */,
+				ECED62A710F98C67006B4DC9 /* tcomp_rfc5049_sip.h */,
+				ECED62A810F98C67006B4DC9 /* tcomp_rfc5112_dictionary_presence.h */,
+				ECED62AA10F98C67006B4DC9 /* tcomp_state.h */,
+				ECED62AC10F98C67006B4DC9 /* tcomp_statehandler.h */,
+				ECED62AD10F98C67006B4DC9 /* tcomp_types.h */,
+				ECED62B010F98C67006B4DC9 /* tcomp_udvm.h */,
+				ECED62B510F98C67006B4DC9 /* tinysigcomp_config.h */,
+				ECED62B710F98C67006B4DC9 /* trees.h */,
+				ECED62B810F98C67006B4DC9 /* zconf.h */,
+				ECED62B910F98C67006B4DC9 /* zlib.h */,
+				ECED62BB10F98C67006B4DC9 /* zutil.h */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		ECED630910F98DA7006B4DC9 /* tinySAK */ = {
+			isa = PBXGroup;
+			children = (
+				ECED630A10F98DC5006B4DC9 /* tinySAK_config.h */,
+				ECED630B10F98DC5006B4DC9 /* tsk.c */,
+				ECED630C10F98DC5006B4DC9 /* tsk.h */,
+				ECED630D10F98DC5006B4DC9 /* tsk_base64.c */,
+				ECED630E10F98DC5006B4DC9 /* tsk_base64.h */,
+				ECED630F10F98DC5006B4DC9 /* tsk_binaryutils.c */,
+				ECED631010F98DC5006B4DC9 /* tsk_binaryutils.h */,
+				ECED631110F98DC5006B4DC9 /* tsk_buffer.c */,
+				ECED631210F98DC5006B4DC9 /* tsk_buffer.h */,
+				ECED631310F98DC5006B4DC9 /* tsk_condwait.c */,
+				ECED631410F98DC5006B4DC9 /* tsk_condwait.h */,
+				ECED631510F98DC5006B4DC9 /* tsk_debug.c */,
+				ECED631610F98DC5006B4DC9 /* tsk_debug.h */,
+				ECED631710F98DC5006B4DC9 /* tsk_errno.h */,
+				ECED631810F98DC5006B4DC9 /* tsk_heap.c */,
+				ECED631910F98DC5006B4DC9 /* tsk_heap.h */,
+				ECED631A10F98DC5006B4DC9 /* tsk_hmac.c */,
+				ECED631B10F98DC5006B4DC9 /* tsk_hmac.h */,
+				ECED631C10F98DC5006B4DC9 /* tsk_list.c */,
+				ECED631D10F98DC5006B4DC9 /* tsk_list.h */,
+				ECED631E10F98DC5006B4DC9 /* tsk_macros.h */,
+				ECED631F10F98DC5006B4DC9 /* tsk_md5.c */,
+				ECED632010F98DC5006B4DC9 /* tsk_md5.h */,
+				ECED632110F98DC5006B4DC9 /* tsk_memory.c */,
+				ECED632210F98DC5006B4DC9 /* tsk_memory.h */,
+				ECED632310F98DC5006B4DC9 /* tsk_mutex.c */,
+				ECED632410F98DC5006B4DC9 /* tsk_mutex.h */,
+				ECED632510F98DC5006B4DC9 /* tsk_object.c */,
+				ECED632610F98DC5006B4DC9 /* tsk_object.h */,
+				ECED632710F98DC5006B4DC9 /* tsk_params.c */,
+				ECED632810F98DC5006B4DC9 /* tsk_params.h */,
+				ECED632910F98DC5006B4DC9 /* tsk_ppfcs16.c */,
+				ECED632A10F98DC5006B4DC9 /* tsk_ppfcs16.h */,
+				ECED632B10F98DC5006B4DC9 /* tsk_runnable.c */,
+				ECED632C10F98DC5006B4DC9 /* tsk_runnable.h */,
+				ECED632D10F98DC5006B4DC9 /* tsk_safeobj.c */,
+				ECED632E10F98DC5006B4DC9 /* tsk_safeobj.h */,
+				ECED632F10F98DC5006B4DC9 /* tsk_semaphore.c */,
+				ECED633010F98DC5006B4DC9 /* tsk_semaphore.h */,
+				ECED633110F98DC5006B4DC9 /* tsk_sha1.c */,
+				ECED633210F98DC5006B4DC9 /* tsk_sha1.h */,
+				ECED633310F98DC5006B4DC9 /* tsk_string.c */,
+				ECED633410F98DC5006B4DC9 /* tsk_string.h */,
+				ECED633510F98DC5006B4DC9 /* tsk_thread.c */,
+				ECED633610F98DC5006B4DC9 /* tsk_thread.h */,
+				ECED633710F98DC5006B4DC9 /* tsk_time.c */,
+				ECED633810F98DC5006B4DC9 /* tsk_time.h */,
+				ECED633910F98DC5006B4DC9 /* tsk_timer.c */,
+				ECED633A10F98DC5006B4DC9 /* tsk_timer.h */,
+				ECED633B10F98DC5006B4DC9 /* tsk_url.c */,
+				ECED633C10F98DC5006B4DC9 /* tsk_url.h */,
+				ECED633D10F98DC5006B4DC9 /* tsk_xml.c */,
+				ECED633E10F98DC5006B4DC9 /* tsk_xml.h */,
+			);
+			name = tinySAK;
+			sourceTree = "<group>";
+		};
+		ECED639B10F99193006B4DC9 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				ECED639310F9918E006B4DC9 /* rfc4465_torture_tests.h */,
+				ECED639410F9918E006B4DC9 /* stdafx.c */,
+				ECED639510F9918E006B4DC9 /* stdafx.h */,
+				ECED639610F9918E006B4DC9 /* targetver.h */,
+				ECED639710F9918E006B4DC9 /* test.c */,
+			);
+			name = test;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC0600554660B00DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED62BF10F98C67006B4DC9 /* deflate.h in Headers */,
+				ECED62C110F98C67006B4DC9 /* tcomp.h in Headers */,
+				ECED62C310F98C67006B4DC9 /* tcomp_buffer.h in Headers */,
+				ECED62C510F98C67006B4DC9 /* tcomp_compartment.h in Headers */,
+				ECED62C610F98C67006B4DC9 /* tcomp_compressor.h in Headers */,
+				ECED62C810F98C67006B4DC9 /* tcomp_compressor_deflate.h in Headers */,
+				ECED62CA10F98C67006B4DC9 /* tcomp_compressor_dummy.h in Headers */,
+				ECED62CC10F98C67006B4DC9 /* tcomp_compressordata.h in Headers */,
+				ECED62CE10F98C67006B4DC9 /* tcomp_compressordisp.h in Headers */,
+				ECED62D010F98C67006B4DC9 /* tcomp_decompressordisp.h in Headers */,
+				ECED62D310F98C67006B4DC9 /* tcomp_deflatedata.h in Headers */,
+				ECED62D610F98C67006B4DC9 /* tcomp_dicts.h in Headers */,
+				ECED62D710F98C67006B4DC9 /* tcomp_headers_index.h in Headers */,
+				ECED62D810F98C67006B4DC9 /* tcomp_instructions.h in Headers */,
+				ECED62DA10F98C67006B4DC9 /* tcomp_manager.h in Headers */,
+				ECED62DC10F98C67006B4DC9 /* tcomp_message.h in Headers */,
+				ECED62DD10F98C67006B4DC9 /* tcomp_nack_codes.h in Headers */,
+				ECED62DF10F98C67006B4DC9 /* tcomp_nackinfo.h in Headers */,
+				ECED62E010F98C67006B4DC9 /* tcomp_operands.h in Headers */,
+				ECED62E210F98C67006B4DC9 /* tcomp_params.h in Headers */,
+				ECED62E410F98C67006B4DC9 /* tcomp_reqfeed.h in Headers */,
+				ECED62E610F98C67006B4DC9 /* tcomp_result.h in Headers */,
+				ECED62E710F98C67006B4DC9 /* tcomp_rfc3485_dictionary_sip.h in Headers */,
+				ECED62E810F98C67006B4DC9 /* tcomp_rfc5049_sip.h in Headers */,
+				ECED62E910F98C67006B4DC9 /* tcomp_rfc5112_dictionary_presence.h in Headers */,
+				ECED62EB10F98C67006B4DC9 /* tcomp_state.h in Headers */,
+				ECED62ED10F98C67006B4DC9 /* tcomp_statehandler.h in Headers */,
+				ECED62EE10F98C67006B4DC9 /* tcomp_types.h in Headers */,
+				ECED62F110F98C67006B4DC9 /* tcomp_udvm.h in Headers */,
+				ECED62F610F98C67006B4DC9 /* tinysigcomp_config.h in Headers */,
+				ECED62F810F98C67006B4DC9 /* trees.h in Headers */,
+				ECED62F910F98C67006B4DC9 /* zconf.h in Headers */,
+				ECED62FA10F98C67006B4DC9 /* zlib.h in Headers */,
+				ECED62FC10F98C67006B4DC9 /* zutil.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED630110F98D55006B4DC9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED633F10F98DC5006B4DC9 /* tinySAK_config.h in Headers */,
+				ECED634110F98DC5006B4DC9 /* tsk.h in Headers */,
+				ECED634310F98DC5006B4DC9 /* tsk_base64.h in Headers */,
+				ECED634510F98DC5006B4DC9 /* tsk_binaryutils.h in Headers */,
+				ECED634710F98DC5006B4DC9 /* tsk_buffer.h in Headers */,
+				ECED634910F98DC5006B4DC9 /* tsk_condwait.h in Headers */,
+				ECED634B10F98DC5006B4DC9 /* tsk_debug.h in Headers */,
+				ECED634C10F98DC5006B4DC9 /* tsk_errno.h in Headers */,
+				ECED634E10F98DC5006B4DC9 /* tsk_heap.h in Headers */,
+				ECED635010F98DC5006B4DC9 /* tsk_hmac.h in Headers */,
+				ECED635210F98DC5006B4DC9 /* tsk_list.h in Headers */,
+				ECED635310F98DC5006B4DC9 /* tsk_macros.h in Headers */,
+				ECED635510F98DC5006B4DC9 /* tsk_md5.h in Headers */,
+				ECED635710F98DC5006B4DC9 /* tsk_memory.h in Headers */,
+				ECED635910F98DC5006B4DC9 /* tsk_mutex.h in Headers */,
+				ECED635B10F98DC5006B4DC9 /* tsk_object.h in Headers */,
+				ECED635D10F98DC5006B4DC9 /* tsk_params.h in Headers */,
+				ECED635F10F98DC5006B4DC9 /* tsk_ppfcs16.h in Headers */,
+				ECED636110F98DC5006B4DC9 /* tsk_runnable.h in Headers */,
+				ECED636310F98DC5006B4DC9 /* tsk_safeobj.h in Headers */,
+				ECED636510F98DC5006B4DC9 /* tsk_semaphore.h in Headers */,
+				ECED636710F98DC5006B4DC9 /* tsk_sha1.h in Headers */,
+				ECED636910F98DC5006B4DC9 /* tsk_string.h in Headers */,
+				ECED636B10F98DC5006B4DC9 /* tsk_thread.h in Headers */,
+				ECED636D10F98DC5006B4DC9 /* tsk_time.h in Headers */,
+				ECED636F10F98DC5006B4DC9 /* tsk_timer.h in Headers */,
+				ECED637110F98DC5006B4DC9 /* tsk_url.h in Headers */,
+				ECED637310F98DC5006B4DC9 /* tsk_xml.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2AAC0620554660B00DB518D /* tinySIGCOMP */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "tinySIGCOMP" */;
+			buildPhases = (
+				D2AAC0600554660B00DB518D /* Headers */,
+				D2AAC0610554660B00DB518D /* Sources */,
+				D289988505E68E00004EDB86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECED637610F98DE8006B4DC9 /* PBXTargetDependency */,
+			);
+			name = tinySIGCOMP;
+			productName = tinySIGCOMP;
+			productReference = D2AAC0630554660B00DB518D /* libtinySIGCOMP.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		ECED630410F98D55006B4DC9 /* tinySAK */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECED630810F98D73006B4DC9 /* Build configuration list for PBXNativeTarget "tinySAK" */;
+			buildPhases = (
+				ECED630110F98D55006B4DC9 /* Headers */,
+				ECED630210F98D55006B4DC9 /* Sources */,
+				ECED630310F98D55006B4DC9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tinySAK;
+			productName = tinySAK;
+			productReference = ECED630510F98D55006B4DC9 /* libtinySAK.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		ECED638810F99166006B4DC9 /* test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECED639A10F9918E006B4DC9 /* Build configuration list for PBXNativeTarget "test" */;
+			buildPhases = (
+				ECED638610F99166006B4DC9 /* Sources */,
+				ECED638710F99166006B4DC9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECED638E10F9916E006B4DC9 /* PBXTargetDependency */,
+				ECED639010F9916E006B4DC9 /* PBXTargetDependency */,
+			);
+			name = test;
+			productName = test;
+			productReference = ECED638910F99166006B4DC9 /* test */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "tinySIGCOMP" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* tinySIGCOMP */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2AAC0620554660B00DB518D /* tinySIGCOMP */,
+				ECED630410F98D55006B4DC9 /* tinySAK */,
+				ECED638810F99166006B4DC9 /* test */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2AAC0610554660B00DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED62BC10F98C67006B4DC9 /* adler32.c in Sources */,
+				ECED62BD10F98C67006B4DC9 /* compress.c in Sources */,
+				ECED62BE10F98C67006B4DC9 /* deflate.c in Sources */,
+				ECED62C010F98C67006B4DC9 /* tcomp.c in Sources */,
+				ECED62C210F98C67006B4DC9 /* tcomp_buffer.c in Sources */,
+				ECED62C410F98C67006B4DC9 /* tcomp_compartment.c in Sources */,
+				ECED62C710F98C67006B4DC9 /* tcomp_compressor_deflate.c in Sources */,
+				ECED62C910F98C67006B4DC9 /* tcomp_compressor_dummy.c in Sources */,
+				ECED62CB10F98C67006B4DC9 /* tcomp_compressordata.c in Sources */,
+				ECED62CD10F98C67006B4DC9 /* tcomp_compressordisp.c in Sources */,
+				ECED62CF10F98C67006B4DC9 /* tcomp_decompressordisp.c in Sources */,
+				ECED62D110F98C67006B4DC9 /* tcomp_deflatedata.c in Sources */,
+				ECED62D210F98C67006B4DC9 /* tcomp_deflatedata.ghost.c in Sources */,
+				ECED62D410F98C67006B4DC9 /* tcomp_deflatedata.zlib.c in Sources */,
+				ECED62D510F98C67006B4DC9 /* tcomp_dicts.c in Sources */,
+				ECED62D910F98C67006B4DC9 /* tcomp_manager.c in Sources */,
+				ECED62DB10F98C67006B4DC9 /* tcomp_message.c in Sources */,
+				ECED62DE10F98C67006B4DC9 /* tcomp_nackinfo.c in Sources */,
+				ECED62E110F98C67006B4DC9 /* tcomp_params.c in Sources */,
+				ECED62E310F98C67006B4DC9 /* tcomp_reqfeed.c in Sources */,
+				ECED62E510F98C67006B4DC9 /* tcomp_result.c in Sources */,
+				ECED62EA10F98C67006B4DC9 /* tcomp_state.c in Sources */,
+				ECED62EC10F98C67006B4DC9 /* tcomp_statehandler.c in Sources */,
+				ECED62EF10F98C67006B4DC9 /* tcomp_udvm.bytecopy.c in Sources */,
+				ECED62F010F98C67006B4DC9 /* tcomp_udvm.c in Sources */,
+				ECED62F210F98C67006B4DC9 /* tcomp_udvm.instructions.c in Sources */,
+				ECED62F310F98C67006B4DC9 /* tcomp_udvm.nack.c in Sources */,
+				ECED62F410F98C67006B4DC9 /* tcomp_udvm.operands.c in Sources */,
+				ECED62F510F98C67006B4DC9 /* tcomp_udvm.statemanagment.c in Sources */,
+				ECED62F710F98C67006B4DC9 /* trees.c in Sources */,
+				ECED62FB10F98C67006B4DC9 /* zutil.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED630210F98D55006B4DC9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED634010F98DC5006B4DC9 /* tsk.c in Sources */,
+				ECED634210F98DC5006B4DC9 /* tsk_base64.c in Sources */,
+				ECED634410F98DC5006B4DC9 /* tsk_binaryutils.c in Sources */,
+				ECED634610F98DC5006B4DC9 /* tsk_buffer.c in Sources */,
+				ECED634810F98DC5006B4DC9 /* tsk_condwait.c in Sources */,
+				ECED634A10F98DC5006B4DC9 /* tsk_debug.c in Sources */,
+				ECED634D10F98DC5006B4DC9 /* tsk_heap.c in Sources */,
+				ECED634F10F98DC5006B4DC9 /* tsk_hmac.c in Sources */,
+				ECED635110F98DC5006B4DC9 /* tsk_list.c in Sources */,
+				ECED635410F98DC5006B4DC9 /* tsk_md5.c in Sources */,
+				ECED635610F98DC5006B4DC9 /* tsk_memory.c in Sources */,
+				ECED635810F98DC5006B4DC9 /* tsk_mutex.c in Sources */,
+				ECED635A10F98DC5006B4DC9 /* tsk_object.c in Sources */,
+				ECED635C10F98DC5006B4DC9 /* tsk_params.c in Sources */,
+				ECED635E10F98DC5006B4DC9 /* tsk_ppfcs16.c in Sources */,
+				ECED636010F98DC5006B4DC9 /* tsk_runnable.c in Sources */,
+				ECED636210F98DC5006B4DC9 /* tsk_safeobj.c in Sources */,
+				ECED636410F98DC5006B4DC9 /* tsk_semaphore.c in Sources */,
+				ECED636610F98DC5006B4DC9 /* tsk_sha1.c in Sources */,
+				ECED636810F98DC5006B4DC9 /* tsk_string.c in Sources */,
+				ECED636A10F98DC5006B4DC9 /* tsk_thread.c in Sources */,
+				ECED636C10F98DC5006B4DC9 /* tsk_time.c in Sources */,
+				ECED636E10F98DC5006B4DC9 /* tsk_timer.c in Sources */,
+				ECED637010F98DC5006B4DC9 /* tsk_url.c in Sources */,
+				ECED637210F98DC5006B4DC9 /* tsk_xml.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED638610F99166006B4DC9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED639810F9918E006B4DC9 /* stdafx.c in Sources */,
+				ECED639910F9918E006B4DC9 /* test.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		ECED637610F98DE8006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECED630410F98D55006B4DC9 /* tinySAK */;
+			targetProxy = ECED637510F98DE8006B4DC9 /* PBXContainerItemProxy */;
+		};
+		ECED638E10F9916E006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC0620554660B00DB518D /* tinySIGCOMP */;
+			targetProxy = ECED638D10F9916E006B4DC9 /* PBXContainerItemProxy */;
+		};
+		ECED639010F9916E006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECED630410F98D55006B4DC9 /* tinySAK */;
+			targetProxy = ECED638F10F9916E006B4DC9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB914B08733D8E0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = tinySIGCOMP;
+			};
+			name = Debug;
+		};
+		1DEB914C08733D8E0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = tinySIGCOMP;
+			};
+			name = Release;
+		};
+		1DEB914F08733D8E0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Debug;
+		};
+		1DEB915008733D8E0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Release;
+		};
+		ECED630610F98D55006B4DC9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinySAK;
+			};
+			name = Debug;
+		};
+		ECED630710F98D55006B4DC9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinySAK;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		ECED638B10F99167006B4DC9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
+				PREBINDING = NO;
+				PRODUCT_NAME = test;
+			};
+			name = Debug;
+		};
+		ECED638C10F99167006B4DC9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = test;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "tinySIGCOMP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB914B08733D8E0010E9CD /* Debug */,
+				1DEB914C08733D8E0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "tinySIGCOMP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB914F08733D8E0010E9CD /* Debug */,
+				1DEB915008733D8E0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECED630810F98D73006B4DC9 /* Build configuration list for PBXNativeTarget "tinySAK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECED630610F98D55006B4DC9 /* Debug */,
+				ECED630710F98D55006B4DC9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECED639A10F9918E006B4DC9 /* Build configuration list for PBXNativeTarget "test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECED638B10F99167006B4DC9 /* Debug */,
+				ECED638C10F99167006B4DC9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="urn:ietf:params:xml:ns:copycontrol"
+    xmlns="urn:ietf:params:xml:ns:copycontrol"
+    xmlns:rls="urn:ietf:params:xml:ns:resource-lists"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+         Adds the copyControl, anonymize, and count attributes
+         to URIs included in a resource list.
+      </xs:documentation>
+    </xs:annotation>
+
+   <xs:import namespace="urn:ietf:params:xml:ns:resource-lists"
+         schemaLocation="urn:ietf:params:xml:schema:resource-lists"/>
+
+    <xs:attribute name="copyControl">
+       <xs:simpleType>
+          <xs:restriction base="xs:string">
+             <xs:enumeration value="to"/>
+             <xs:enumeration value="cc"/>
+             <xs:enumeration value="bcc"/>
+          </xs:restriction>
+       </xs:simpleType>
+    </xs:attribute>
+
+   <xs:attribute name="anonymize" type="xs:boolean" default="false"/>
+   <xs:attribute name="count" type="xs:nonNegativeInteger"
+                              default="1"/>
+
+</xs:schema>

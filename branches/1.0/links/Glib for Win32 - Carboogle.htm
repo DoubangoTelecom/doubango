@@ -1,0 +1,410 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!-- saved from url=(0082)http://mathieu.carbou.free.fr/wiki/index.php?title=How_to_compile_glib_under_MinGW -->
+<HTML lang=en dir=ltr xml:lang="en" 
+xmlns="http://www.w3.org/1999/xhtml"><HEAD><TITLE>Glib for Win32 - Carboogle</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=utf-8">
+<META 
+content="How to compile glib under MinGW,Glib for Win32,How to compile gettext under MinGW,Setup and configure MinGW" 
+name=KEYWORDS>
+<META content=index,follow name=robots><LINK href="../favicon.ico" 
+rel="shortcut icon"><LINK href="/wiki/index.php?title=Copyrights" rel=copyright>
+<STYLE type=text/css media=screen,projection>@import url( /wiki/skins/monobook/main.css );
+</STYLE>
+<LINK media=print href="Glib for Win32 - Carboogle_fichiers/commonPrint.css" 
+type=text/css rel=stylesheet><!--[if lt IE 5.5000]><style type="text/css">@import "/wiki/skins/monobook/IE50Fixes.css";</style><![endif]--><!--[if IE 5.5000]><style type="text/css">@import "/wiki/skins/monobook/IE55Fixes.css";</style><![endif]--><!--[if gte IE 6]>
+<STYLE type=text/css>@import url( /wiki/skins/monobook/IE60Fixes.css );
+</STYLE>
+<![endif]--><!--[if IE]>
+<SCRIPT src="Glib for Win32 - Carboogle_fichiers/IEFixes.js" 
+type=text/javascript></SCRIPT>
+
+<META http-equiv=imagetoolbar content=no><![endif]-->
+<SCRIPT src="Glib for Win32 - Carboogle_fichiers/index.php" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT src="Glib for Win32 - Carboogle_fichiers/wikibits.js" 
+type=text/javascript></SCRIPT>
+
+<STYLE type=text/css>@import url( /wiki/index.php?title=MediaWiki:Monobook.css&action=raw&ctype=text/css&smaxage=18000 );
+@import url( /wiki/index.php?title=-&action=raw&gen=css&maxage=18000 );
+</STYLE>
+
+<META content="MSHTML 6.00.2900.3627" name=GENERATOR></HEAD>
+<BODY class=ns-0>
+<DIV id=globalWrapper>
+<DIV id=column-content>
+<DIV id=content><A id=top name=top></A>
+<H1 class=firstHeading>Glib for Win32</H1>
+<DIV id=bodyContent>
+<H3 id=siteSub>From Carboogle</H3>
+<DIV id=contentSub>(Redirected from <A title="How to compile glib under MinGW" 
+href="http://mathieu.carbou.free.fr/wiki/index.php?title=How_to_compile_glib_under_MinGW&amp;redirect=no">How 
+to compile glib under MinGW</A>)</DIV><!-- start content -->
+<TABLE class=toc id=toc>
+  <TBODY>
+  <TR>
+    <TD>
+      <DIV id=toctitle>
+      <H2>Contents</H2></DIV>
+      <UL>
+        <LI class=toclevel-1><A 
+        href="http://mathieu.carbou.free.fr/wiki/index.php?title=How_to_compile_glib_under_MinGW#Get_the_library"><SPAN 
+        class=tocnumber>1</SPAN> <SPAN class=toctext>Get the library</SPAN></A> 
+        <LI class=toclevel-1><A 
+        href="http://mathieu.carbou.free.fr/wiki/index.php?title=How_to_compile_glib_under_MinGW#Compiling_under_MinGW"><SPAN 
+        class=tocnumber>2</SPAN> <SPAN class=toctext>Compiling under 
+        MinGW</SPAN></A> 
+        <UL>
+          <LI class=toclevel-2><A 
+          href="http://mathieu.carbou.free.fr/wiki/index.php?title=How_to_compile_glib_under_MinGW#Requirements"><SPAN 
+          class=tocnumber>2.1</SPAN> <SPAN class=toctext>Requirements</SPAN></A> 
+
+          <LI class=toclevel-2><A 
+          href="http://mathieu.carbou.free.fr/wiki/index.php?title=How_to_compile_glib_under_MinGW#Compile_glib"><SPAN 
+          class=tocnumber>2.2</SPAN> <SPAN class=toctext>Compile glib</SPAN></A> 
+          </LI></UL></LI></UL></TD></TR></TBODY></TABLE>
+<P>
+<SCRIPT type=text/javascript> if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </SCRIPT>
+</P>
+<DIV class=editsection style="FLOAT: right; MARGIN-LEFT: 5px">[<A 
+title="Glib for Win32" 
+href="http://mathieu.carbou.free.fr/wiki/index.php?title=Glib_for_Win32&amp;action=edit&amp;section=1">edit</A>]</DIV><A 
+name=Get_the_library></A>
+<H2>Get the library </H2>
+<UL>
+  <LI>Official website: <A class="external free" 
+  title=http://www.gnu.org/software/gettext/ 
+  href="http://www.gnu.org/software/gettext/" 
+  rel=nofollow>http://www.gnu.org/software/gettext/</A> 
+  <LI>Mirror: <A class="external free" 
+  title=ftp://mirrors.kernel.org/gnu/gettext/ 
+  href="ftp://mirrors.kernel.org/gnu/gettext/" 
+  rel=nofollow>ftp://mirrors.kernel.org/gnu/gettext/</A> </LI></UL>
+<DIV class=editsection style="FLOAT: right; MARGIN-LEFT: 5px">[<A 
+title="Glib for Win32" 
+href="http://mathieu.carbou.free.fr/wiki/index.php?title=Glib_for_Win32&amp;action=edit&amp;section=2">edit</A>]</DIV><A 
+name=Compiling_under_MinGW></A>
+<H2>Compiling under MinGW </H2>
+<DIV class=editsection style="FLOAT: right; MARGIN-LEFT: 5px">[<A 
+title="Glib for Win32" 
+href="http://mathieu.carbou.free.fr/wiki/index.php?title=Glib_for_Win32&amp;action=edit&amp;section=3">edit</A>]</DIV><A 
+name=Requirements></A>
+<H3>Requirements </H3>
+<UL>
+  <LI>First <A title="Setup and configure MinGW" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Setup_and_configure_MinGW">install 
+  MinGW</A> 
+  <LI>Compile required library <A class="external text" 
+  title=http://www.gnu.org/software/libiconv/ 
+  href="http://www.gnu.org/software/libiconv/" rel=nofollow>libiconv</A> and <A 
+  title="How to compile gettext under MinGW" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=How_to_compile_gettext_under_MinGW">gettext</A> 
+  </LI></UL>
+<DIV class=editsection style="FLOAT: right; MARGIN-LEFT: 5px">[<A 
+title="Glib for Win32" 
+href="http://mathieu.carbou.free.fr/wiki/index.php?title=Glib_for_Win32&amp;action=edit&amp;section=4">edit</A>]</DIV><A 
+name=Compile_glib></A>
+<H3>Compile glib </H3>
+<P>Commands to use: </P><PRE>./configure
+make
+make install
+</PRE>
+<P>When compiling glib 2.14.1, i had the following error: </P><PRE>configure: error: *** No iconv() implementation found in C library or libiconv
+</PRE>
+<P>This is caused of the compilation of libiconv and gettext that install stuff 
+in /local. To fix this you can type the following commands&nbsp;: </P><PRE>export CFLAGS="-I/local/include"
+export LDFLAGS="-L/local/lib"
+./configure
+make
+make install
+</PRE>
+<DIV class=printfooter>Retrieved from "<A 
+href="http://mathieu.carbou.free.fr/wiki/index.php?title=Glib_for_Win32">http://mathieu.carbou.free.fr/wiki/index.php?title=Glib_for_Win32</A>"</DIV><!-- end content -->
+<DIV class=visualClear></DIV></DIV></DIV></DIV>
+<DIV id=column-one>
+<DIV class=portlet id=p-cactions>
+<H5>Views</H5>
+<UL>
+  <LI class=selected id=ca-nstab-main><A 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Glib_for_Win32">Article</A>
+  <LI class=new id=ca-talk><A 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Talk:Glib_for_Win32&amp;action=edit">Discussion</A>
+  <LI id=ca-edit><A 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Glib_for_Win32&amp;action=edit">Edit</A>
+  <LI id=ca-history><A 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Glib_for_Win32&amp;action=history">History</A> 
+  </LI></UL></DIV>
+<DIV class=portlet id=p-personal>
+<H5>Personal tools</H5>
+<DIV class=pBody>
+<UL>
+  <LI id=pt-login><A 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Special:Userlogin&amp;returnto=Glib_for_Win32">Create 
+  an account or log in</A> </LI></UL></DIV></DIV>
+<DIV class=portlet id=p-logo><A title=Home 
+style="BACKGROUND-IMAGE: url(/wiki/images/wiki.png)" 
+href="http://mathieu.carbou.free.fr/wiki/index.php?title=Home"></A></DIV>
+<SCRIPT type=text/javascript> if (window.isMSIE55) fixalpha(); </SCRIPT>
+
+<P></P>
+<DIV class=portlet><A name=carboogle></A>
+<H5>carboogle</H5>
+<DIV>
+<DIV class=pBody>
+<UL>
+  <LI><A title=Contact 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Contact">Contact</A> 
+  <LI><A title=Contact 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Contact">CV</A> 
+  <LI><A class="external text" title=http://blog.mycila.com/ 
+  href="http://blog.mycila.com/" rel=nofollow>BLOG</A> 
+  <LI><A class="external text" title=http://gallery.mycila.com/ 
+  href="http://gallery.mycila.com/" rel=nofollow>PHOTOS</A> 
+  <LI><A class="external text" title=http://code.mycila.com/ 
+  href="http://code.mycila.com/" rel=nofollow>PROJECTS</A> 
+  <LI><A class="external text" title=http://www.mycila.com/ 
+  href="http://www.mycila.com/" rel=nofollow>MYCILA.COM</A> 
+  <LI><A title=News 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=News">News</A> 
+  <LI><A title=Support 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Support">Donations</A> 
+  </LI></UL></DIV>
+<P></P>
+<DIV class=portlet><A name=google_code_projects></A>
+<H5>google code projects</H5>
+<DIV>
+<DIV class=pBody>
+<UL>
+  <LI><A class="external text" title=http://code.google.com/p/xmltool/ 
+  href="http://code.google.com/p/xmltool/" rel=nofollow>xmltool</A> 
+  <LI><A class="external text" 
+  title=http://code.google.com/p/maven-license-plugin/ 
+  href="http://code.google.com/p/maven-license-plugin/" 
+  rel=nofollow>maven-license-plugin</A> 
+  <LI><A class="external text" title=http://code.google.com/p/mycila/ 
+  href="http://code.google.com/p/mycila/" rel=nofollow>mycila</A> 
+  <LI><A class="external text" title=http://code.google.com/p/mc-repo/ 
+  href="http://code.google.com/p/mc-repo/" rel=nofollow>maven repo</A> 
+</LI></UL></DIV>
+<P></P>
+<DIV class=portlet><A name=projects></A>
+<H5>projects</H5>
+<DIV>
+<DIV class=pBody>
+<UL>
+  <LI><A title=BroadChat 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=BroadChat">BroadChat</A> 
+
+  <LI><A title=Common 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Common">Common</A> 
+  <LI><A title=JavaMailWatcher 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=JavaMailWatcher">JavaMailWatcher</A> 
+
+  <LI><A title=JavaVoice 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=JavaVoice">JavaVoice</A> 
+
+  <LI><A title=JideoGuard 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=JideoGuard">JideoGuard</A> 
+
+  <LI><A title=Mecanica 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Mecanica">Mecanica</A> 
+
+  <LI><A title=W-Rent 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=W-Rent">W-Rent</A> 
+  </LI></UL>
+<HR>
+
+<UL>
+  <LI><A title=Projects 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Projects">Other 
+  projects...</A> </LI></UL></DIV>
+<P></P>
+<DIV class=portlet><A name=ports></A>
+<H5>ports</H5>
+<DIV>
+<DIV class=pBody>
+<UL>
+  <LI><A title="Arping for Win32" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Arping_for_Win32">arping</A> 
+
+  <LI><A title="Berkeley DB for MinGW" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Berkeley_DB_for_MinGW">Berkeley 
+  DB</A> 
+  <LI><A title="Gettext for Win32" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Gettext_for_Win32">gettext</A> 
+
+  <LI><STRONG>glib</STRONG> 
+  <LI><A title="Gnet for Win32" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Gnet_for_Win32">gnet</A> 
+
+  <LI><A title="Libnet for Win32" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Libnet_for_Win32">libnet</A> 
+
+  <LI><A title="Libnids for Win32" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Libnids_for_Win32">libnids</A> 
+
+  <LI><A title="Winpcap / Libpcap" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Winpcap_/_Libpcap">Winpcap 
+  / Libpcap</A> </LI></UL>
+<HR>
+
+<UL>
+  <LI><A title="Setup and configure MinGW" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Setup_and_configure_MinGW">MinGW 
+  Setup</A> </LI></UL></DIV>
+<P></P>
+<DIV class=portlet><A name=articles></A>
+<H5>articles</H5>
+<DIV>
+<DIV class=pBody>
+<UL>
+  <LI><A title=Books 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Books">Books</A> 
+</LI></UL>
+<HR>
+
+<UL>
+  <LI><A title="Setup and configure Ubuntu Dapper Drake Linux" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Setup_and_configure_Ubuntu_Dapper_Drake_Linux">Ubuntu 
+  Dapper Drake</A> </LI></UL>
+<HR>
+
+<UL>
+  <LI><A title="How to setup a Java development environment" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=How_to_setup_a_Java_development_environment">Eclipse/Tomcat 
+  setup</A> 
+  <LI><A title="EntityBean with CMP" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=EntityBean_with_CMP">EntityBean 
+  with CMP</A> </LI></UL></DIV>
+<P></P>
+<DIV class=portlet><A name=lessons></A>
+<H5>lessons</H5>
+<DIV>
+<DIV class=pBody>
+<UL>
+  <LI><A title=Inf4482 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Inf4482">Inf4482</A> 
+  <LI><A title=Inf5270 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Inf5270">Inf5270</A> 
+  <LI><A title=Inm5151 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Inm5151">Inm5151</A> 
+  </LI></UL></DIV>
+<P><SPAN id=showhide1012>
+<SCRIPT type=text/javascript><!--
+shWas=new Array();
+function showSHToggle(show,hide,num) {
+	if(document.getElementById) {
+		document.writeln('<span class=\'toctoggle\'>[<a href="javascript:toggleSH('+num+')" class="internal">' +
+		'<span id="showlink'+num+'" style="display:none;">' + show + '</span>' +
+		'<span id="hidelink'+num+'">' + hide + '</span>' +
+		'</a>]</span>');
+	}
+}
+function toggleSH(num) {
+	var shmain = document.getElementById('showhide'+num);
+	var sh = document.getElementById('shinside'+num);
+	var showlink=document.getElementById('showlink'+num);
+	var hidelink=document.getElementById('hidelink'+num);
+	if(sh.style.display == 'none') {
+		sh.style.display = shWas[num];
+		hidelink.style.display='';
+		showlink.style.display='none';
+		shmain.className = '';
+	} else {
+		shWas[num] = sh.style.display;
+		sh.style.display = 'none';
+		hidelink.style.display='none';
+		showlink.style.display='';
+		shmain.className = 'tochidden';
+	}
+} // --></SCRIPT>
+</P>
+<DIV class=portlet><A name=admin></A>
+<H5>admin</H5>
+<SCRIPT type=text/javascript>showSHToggle("show","hide",1012)</SCRIPT>
+
+<DIV>
+<DIV id=shinside1012>
+<DIV class=pBody>
+<UL>
+  <LI><A title=MediaWiki:Sidebar 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=MediaWiki:Sidebar">SideBar</A> 
+
+  <LI><A title=MediaWiki:Menu 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=MediaWiki:Menu">Menu 
+  bar</A> 
+  <LI><A title="Template:Lessons menu" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Template:Lessons_menu">Lessons 
+  menu</A> 
+  <LI><A title="Template:Projects menu" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Template:Projects_menu">Projects 
+  menu</A> 
+  <LI><A title="Template:Articles menu" 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Template:Articles_menu">Articles 
+  menu</A> 
+  <LI><A title=Special:Allpages 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Special:Allpages">Allpages</A> 
+
+  <LI><A title=Special:Imagelist 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Special:Imagelist">Uploaded 
+  files</A> 
+  <LI><A class="external text" title=http://meta.wikimedia.org/wiki/Help:Editor 
+  href="http://meta.wikimedia.org/wiki/Help:Editor" rel=nofollow>MediaWiki 
+  Help</A> </LI></UL></DIV></DIV></DIV></DIV></SPAN>
+<SCRIPT type=text/javascript>toggleSH(1012)</SCRIPT>
+</DIV></DIV></DIV></DIV></DIV></DIV></DIV></DIV></DIV></DIV></DIV></DIV>
+<DIV class=portlet id=p-search>
+<H5><LABEL for=searchInput>Search</LABEL></H5>
+<DIV class=pBody>
+<FORM id=searchform name=searchform 
+action=/wiki/index.php?title=Special:Search><INPUT id=searchInput accessKey=f 
+name=search> <INPUT class=searchButton id=searchGoButton type=submit value=Go name=go>&nbsp;<INPUT class=searchButton type=submit value=Search name=fulltext> 
+</FORM></DIV></DIV>
+<DIV class=portlet id=p-tb>
+<H5>Toolbox</H5>
+<DIV class=pBody>
+<UL>
+  <LI id=t-whatlinkshere><A 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Special:Whatlinkshere/Glib_for_Win32">What 
+  links here</A> 
+  <LI id=t-recentchangeslinked><A 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Special:Recentchangeslinked/Glib_for_Win32">Related 
+  changes</A> 
+  <LI id=t-upload><A 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Special:Upload">Upload 
+  file</A> 
+  <LI id=t-specialpages><A 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Special:Specialpages">Special 
+  pages</A> 
+  <LI id=t-print><A 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Glib_for_Win32&amp;printable=yes">Printable 
+  version</A> </LI></UL></DIV></DIV></DIV><!-- end of the left (by default at least) column -->
+<DIV class=visualClear></DIV>
+<DIV id=footer>
+<DIV id=f-docfooter>
+<FORM action=https://www.paypal.com/cgi-bin/webscr method=post><INPUT 
+type=hidden value=_s-xclick name=cmd><INPUT type=image 
+alt="Make payments with PayPal - it's fast, free and secure!" 
+src="Glib for Win32 - Carboogle_fichiers/x-click-but04.gif" name=submit><INPUT 
+type=hidden 
+value="-----BEGIN PKCS7-----MIIHsQYJKoZIhvcNAQcEoIIHojCCB54CAQExggEwMIIBLAIBADCBlDCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20CAQAwDQYJKoZIhvcNAQEBBQAEgYAlNodRwjjEiEstOu/TFtAgdYgMjl8leX8ak5lPrcj1Rn0XMJzi63iCS7X8ouVhifQGN3Zlsd9bo2ThjEntwtm/wCD3JzMUUaOJekr0uCq/tB2jH9rBOMcLeFmXEfNtYwXXMI2bk/eHGjUGav5jaqT8WTHnf04cDZJRxYwPzosWvTELMAkGBSsOAwIaBQAwggEtBgkqhkiG9w0BBwEwFAYIKoZIhvcNAwcECMsNANqlG/rPgIIBCEAvtNVC90t8o0LamGZRd6xIrN7zEOgT2GeEK5kcA/XIO3X3uupzDXnlwzQEDn1Q6NxJtj18aIT3jshg+jq271Cbae4lTqn08iRJpEt48tnSvY65enB2IQoG/BQr1CeHEIFGT7jjEAOJYvy/fTXMERxTQuUKLDZlCcT+pcq8RQS5C4R81fTD4zkHluxs2lNdKzbqyE1XRlsX0x2AYu1Ri9LvBAIKeTXvZUrhvKKv0vha4sTc1OB4q0MukXswfOL5GwMxeDRG5HL8+CX5xNOdtMaOQz/BQIiC8pGyBTZc7wiPr6zjtjiFncZ0piHvJ9W9glPq/Gy4/llR/BLNwf+MipplWCYGwqmrgaCCA4cwggODMIIC7KADAgECAgEAMA0GCSqGSIb3DQEBBQUAMIGOMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxFDASBgNVBAoTC1BheVBhbCBJbmMuMRMwEQYDVQQLFApsaXZlX2NlcnRzMREwDwYDVQQDFAhsaXZlX2FwaTEcMBoGCSqGSIb3DQEJARYNcmVAcGF5cGFsLmNvbTAeFw0wNDAyMTMxMDEzMTVaFw0zNTAyMTMxMDEzMTVaMIGOMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxFDASBgNVBAoTC1BheVBhbCBJbmMuMRMwEQYDVQQLFApsaXZlX2NlcnRzMREwDwYDVQQDFAhsaXZlX2FwaTEcMBoGCSqGSIb3DQEJARYNcmVAcGF5cGFsLmNvbTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAwUdO3fxEzEtcnI7ZKZL412XvZPugoni7i7D7prCe0AtaHTc97CYgm7NsAtJyxNLixmhLV8pyIEaiHXWAh8fPKW+R017+EmXrr9EaquPmsVvTywAAE1PMNOKqo2kl4Gxiz9zZqIajOm1fZGWcGS0f5JQ2kBqNbvbg2/Za+GJ/qwUCAwEAAaOB7jCB6zAdBgNVHQ4EFgQUlp98u8ZvF71ZP1LXChvsENZklGswgbsGA1UdIwSBszCBsIAUlp98u8ZvF71ZP1LXChvsENZklGuhgZSkgZEwgY4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEUMBIGA1UEChMLUGF5UGFsIEluYy4xEzARBgNVBAsUCmxpdmVfY2VydHMxETAPBgNVBAMUCGxpdmVfYXBpMRwwGgYJKoZIhvcNAQkBFg1yZUBwYXlwYWwuY29tggEAMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEAgV86VpqAWuXvX6Oro4qJ1tYVIT5DgWpE692Ag422H7yRIr/9j/iKG4Thia/Oflx4TdL+IFJBAyPK9v6zZNZtBgPBynXb048hsP16l2vi0k5Q2JKiPDsEfBhGI+HnxLXEaUWAcVfCsQFvd2A1sxRr67ip5y2wwBelUecP3AjJ+YcxggGaMIIBlgIBATCBlDCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20CAQAwCQYFKw4DAhoFAKBdMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTA2MDEwNTIzMjg0MVowIwYJKoZIhvcNAQkEMRYEFFGUaRYlHAjGoHlNRF1KJ0Hu744KMA0GCSqGSIb3DQEBAQUABIGAYnGJUWJscFbuTH8AjHjh8/NsNIsHWdaRKrjHN7nMU7cYBdptTUq5rWf4x/87CpjNoymrjT8ztCRYxqBQ08xDePtT71yD03eR7YUmLj0XVWbM9ycHOIkYMB8ii0NISQuyKhWlYeN/S88K/hGLQckzeecMNnADdvUsgIUtOEoSjNI=-----END PKCS7-----" 
+name=encrypted></FORM>
+<P>&nbsp;</P></DIV>
+<DIV id=f-poweredbyico><A href="http://www.mediawiki.org/"><IMG alt=MediaWiki 
+src="Glib for Win32 - Carboogle_fichiers/poweredby_mediawiki_88x31.png"></A>&nbsp;<A 
+href="http://www.sf.net/"><IMG alt=Sourceforge 
+src="Glib for Win32 - Carboogle_fichiers/sflogo.png"></A></DIV>
+<UL id=f-list>
+  <LI id=f-lastmod>This page was last modified 20:10, 19 September 2007. 
+  <LI id=f-viewcount>This page has been accessed 2,541 times. 
+  <LI id=f-copyright><A title=Copyrights 
+  href="http://mathieu.carbou.free.fr/wiki/index.php?title=Copyrights">Copyright 
+  © 2005-2007 Mathieu Carbou</A> </LI></UL></DIV></DIV><!-- Served by mathieu.carbou.free.fr in 0.21 secs. -->
+<SCRIPT src="Glib for Win32 - Carboogle_fichiers/urchin.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT type=text/javascript>
+        _uacct = "UA-78519-2";
+        urchinTracker();
+    </SCRIPT>
+</BODY></HTML>

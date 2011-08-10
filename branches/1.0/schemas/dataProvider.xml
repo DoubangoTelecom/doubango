@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 3 U (http://www.xmlspy.com) by Patricia
+Bluhm (HBF Group) -->
+<xs:schema
+targetNamespace="urn:ietf:params:xml:ns:pidf:geopriv10:dataProvider"
+xmlns:tns="urn:ietf:params:xml:ns:pidf:geopriv10:dataProvider"
+xmlns:xs="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="DataProviderIDType">
+		<xs:annotation>
+			<xs:documentation>NENA registered Company ID for
+Service Provider supplying location information</xs:documentation>
+		</xs:annotation>
+		<xs:all>
+			<xs:element name="DataProviderID"
+type="tns:NENACompanyIDType" minOccurs="0"/>
+			<xs:element name="TelURI" type="tns:TelURI_24x7Type"
+minOccurs="0"/>
+			<xs:element name="URL" type="xs:anyURI"
+minOccurs="0"/>
+		</xs:all>
+	</xs:complexType>
+	<xs:simpleType name="NENACompanyIDType">
+		<xs:annotation>
+			<xs:documentation>NENA registered Company
+ID.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TelURI_24x7Type">
+		<xs:annotation>
+			<xs:documentation>24x7 Tel URI for the caller's
+[location data] service provider.  To be used for contacting service
+provider to resolve problems with location data.  Possible values TN number,
+enumerated values when not available.</xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="xs:anyURI">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:maxLength value="10"/>
+					<xs:enumeration value="NOT FOUND"/>
+					<xs:enumeration value="UNAVAILABL"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+</xs:schema>
+
+
+
+
+
+

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <xs:schema targetNamespace="urn:ietf:params:xml:ns:location-type"
+      xmlns="urn:ietf:params:xml:ns:location-type"
+      xmlns:xs="http://www.w3.org/2001/XMLSchema"
+      elementFormDefault="qualified"
+      attributeFormDefault="unqualified">
+
+     <xs:complexType name="empty"/>
+
+     <xs:element name="aircraft" type="empty" />
+     <xs:element name="airport" type="empty" />
+     <xs:element name="arena" type="empty" />
+     <xs:element name="automobile" type="empty" />
+     <xs:element name="bank" type="empty" />
+     <xs:element name="bar" type="empty" />
+     <xs:element name="bus" type="empty" />
+     <xs:element name="bicyle" type="empty" />
+     <xs:element name="bus-station" type="empty" />
+     <xs:element name="cafe" type="empty" />
+     <xs:element name="classroom" type="empty" />
+     <xs:element name="club" type="empty" />
+     <xs:element name="construction" type="empty" />
+     <xs:element name="convention-center" type="empty" />
+     <xs:element name="government" type="empty" />
+     <xs:element name="hospital" type="empty" />
+     <xs:element name="hotel" type="empty" />
+     <xs:element name="industrial" type="empty" />
+     <xs:element name="library" type="empty" />
+     <xs:element name="motorcyle" type="empty" />
+     <xs:element name="office" type="empty" />
+     <xs:element name="outdoors" type="empty" />
+     <xs:element name="parking" type="empty" />
+     <xs:element name="place-of-worship" type="empty" />
+     <xs:element name="prison" type="empty" />
+     <xs:element name="public" type="empty" />
+     <xs:element name="public-transport" type="empty" />
+     <xs:element name="residence" type="empty" />
+     <xs:element name="restaurant" type="empty" />
+     <xs:element name="school" type="empty" />
+     <xs:element name="shopping-area" type="empty" />
+     <xs:element name="stadium" type="empty" />
+     <xs:element name="store" type="empty" />
+     <xs:element name="street" type="empty" />
+     <xs:element name="theater" type="empty" />
+     <xs:element name="train" type="empty" />
+     <xs:element name="train-station" type="empty" />
+     <xs:element name="truck" type="empty" />
+     <xs:element name="underway" type="empty" />
+     <xs:element name="unknown" type="empty" />
+     <xs:element name="warehouse" type="empty" />
+     <xs:element name="water" type="empty" />
+     <xs:element name="watercraft" type="empty" />
+   </xs:schema>

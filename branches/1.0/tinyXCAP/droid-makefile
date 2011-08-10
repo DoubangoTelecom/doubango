@@ -1,0 +1,33 @@
+APP := lib$(PROJECT)_$(MARCH).$(EXT)
+
+CFLAGS := $(CFLAGS_LIB) -I../tinySAK/src -I../tinyNET/src -I../tinyHTTP/include -I./include
+LDFLAGS := $(LDFLAGS_LIB) -ltinySAK_$(MARCH) -ltinyNET_$(MARCH) -ltinyHTTP_$(MARCH)
+
+all: $(APP)
+
+OBJS = \
+	src/txcap.o\
+	src/txcap_auid.o\
+	src/txcap_document.o\
+	src/txcap_node.o\
+	src/txcap_selector.o\
+	src/txcap_action.o
+	
+
+$(APP): $(OBJS)
+ifeq ($(EXT), a)
+	$(AR) rcs $@ $^
+else
+	$(CC) $(LDFLAGS) -o $@ $^
+endif
+
+%.o: %.c
+	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+install: $(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb remount
+	$(ANDROID_SDK_ROOT)/tools/adb push $(APP) $(LIB_DIR)/$(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb shell chmod 777 $(LIB_DIR)/$(APP)
+	
+clean:
+	@rm -f $(OBJS) $(APP)

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+   <schema targetNamespace="urn:ietf:params:xml:ns:secDNS-1.0"
+           xmlns:secDNS="urn:ietf:params:xml:ns:secDNS-1.0"
+           xmlns="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+     <annotation>
+       <documentation>
+         Extensible Provisioning Protocol v1.0
+         domain name extension schema for provisioning
+         DNS security (DNSSEC) extensions.
+       </documentation>
+     </annotation>
+
+   <!--
+   Child elements found in EPP commands.
+   -->
+     <element name="create" type="secDNS:dsType"/>
+     <element name="update" type="secDNS:updateType"/>
+
+   <!--
+   Child elements of the <create> command.
+   -->
+     <complexType name="dsType">
+       <sequence>
+         <element name="dsData" type="secDNS:dsDataType"
+          maxOccurs="unbounded"/>
+       </sequence>
+     </complexType>
+
+     <complexType name="dsDataType">
+       <sequence>
+         <element name="keyTag" type="unsignedShort"/>
+         <element name="alg" type="unsignedByte"/>
+         <element name="digestType" type="unsignedByte"/>
+         <element name="digest" type="hexBinary"/>
+         <element name="maxSigLife" type="secDNS:maxSigLifeType"
+          minOccurs="0"/>
+         <element name="keyData" type="secDNS:keyDataType"
+          minOccurs="0"/>
+       </sequence>
+     </complexType>
+
+     <simpleType name="maxSigLifeType">
+       <restriction base="int">
+         <minInclusive value="1"/>
+       </restriction>
+     </simpleType>
+
+     <complexType name="keyDataType">
+       <sequence>
+         <element name="flags" type="unsignedShort"/>
+         <element name="protocol" type="unsignedByte"/>
+         <element name="alg" type="unsignedByte"/>
+         <element name="pubKey" type="secDNS:keyType"/>
+       </sequence>
+     </complexType>
+
+     <simpleType name="keyType">
+       <restriction base="base64Binary">
+         <minLength value="1"/>
+       </restriction>
+     </simpleType>
+
+   <!--
+   Child elements of the <update> command.
+   -->
+     <complexType name="updateType">
+       <choice>
+         <element name="add" type="secDNS:dsType"/>
+         <element name="chg" type="secDNS:dsType"/>
+         <element name="rem" type="secDNS:remType"/>
+       </choice>
+       <attribute name="urgent" type="boolean" default="false"/>
+     </complexType>
+
+     <complexType name="remType">
+       <sequence>
+         <element name="keyTag" type="unsignedShort"
+          maxOccurs="unbounded"/>
+       </sequence>
+     </complexType>
+
+   <!--
+   Child response elements.
+   -->
+     <element name="infData" type="secDNS:dsType"/>
+
+   <!--
+   End of schema.
+   -->
+   </schema>
+
