@@ -39,6 +39,14 @@ else
 	FFMPEG_CFLAGS := $(FFMPEG_CFLAGS) -DHAVE_THEORA=1
 	FFMPEG_LDFLAGS := $(FFMPEG_LDFLAGS) -ltheora -logg
 endif
+# VP8 (Default: disbled because of NEON)
+ifeq ($(VPX),yes)
+	VPX_CFLAGS := -DHAVE_LIBVPX=1
+	VPX_LDFLAGS := -lvpx_$(MARCH)
+	
+else
+	VPX_CFLAGS := -DHAVE_LIBVPX=0
+endif
 
 # AMR (Default: enabled)
 ifeq ($(OPENCORE_AMR), no)
@@ -85,7 +93,7 @@ endif
 # Google WebRTC (Default: enabled)
 ifeq ($(HAVE_WEBRTC), yes)
 	WEBRTC_CFLAGS := -DHAVE_WEBRTC=1
-	WEBRTC_LDFLAGS := -lwebrtc_aec_$(MARCH) -lwebrtc_apm_utility_$(MARCH) -lwebrtc_ns_$(MARCH) -lwebrtc_system_wrappers_$(MARCH)
+	WEBRTC_LDFLAGS := -lwebrtc_aecm_$(MARCH) -lwebrtc_aec_$(MARCH) -lwebrtc_spl_$(MARCH) -lwebrtc_apm_utility_$(MARCH) -lwebrtc_ns_$(MARCH) -lwebrtc_system_wrappers_$(MARCH)
 else
 	WEBRTC_CFLAGS := -DHAVE_WEBRTC=0
 endif
@@ -97,18 +105,18 @@ endif
 
 # ILBC (Default: disabled)
 ifeq ($(ILBC), yes)
-ILBC_CFLAGS := -DHAVE_ILBC=1
-ILBC_LDFLAGS := -liLBC
+	ILBC_CFLAGS := -DHAVE_ILBC=1
+	ILBC_LDFLAGS := -liLBC
 else
-ILBC_CFLAGS := -DHAVE_ILBC=0
+	ILBC_CFLAGS := -DHAVE_ILBC=0
 endif
 
 # GSM (Default: enabled)
 ifeq ($(LIBGSM),no)
-LIBGSM_CFLAGS := -DHAVE_LIBGSM=0
+	LIBGSM_CFLAGS := -DHAVE_LIBGSM=0
 else
-LIBGSM_CFLAGS := -DHAVE_LIBGSM=1
-LIBGSM_LDFLAGS := -lgsm
+	LIBGSM_CFLAGS := -DHAVE_LIBGSM=1
+	LIBGSM_LDFLAGS := -lgsm
 endif
 
 # BV16 (Always disabled)
@@ -134,12 +142,12 @@ endif
 ################################
 
 CFLAGS := $(CFLAGS_LIB) -I$(THIRDPARTIES_INC) $(ILBC_CFLAGS) $(LIBGSM_CFLAGS) \
-	$(FFMPEG_CFLAGS) $(SPEEX_CFLAGS) $(SPEEX_DSP_CFLAGS) $(WEBRTC_CFLAGS) $(OPENCORE_AMR_CFLAGS) $(BV16_CFLAGS) $(G729_CFLAGS) \
+	$(FFMPEG_CFLAGS) $(VPX_CFLAGS) $(SPEEX_CFLAGS) $(SPEEX_DSP_CFLAGS) $(WEBRTC_CFLAGS) $(OPENCORE_AMR_CFLAGS) $(BV16_CFLAGS) $(G729_CFLAGS) \
 	-I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I../tinyRTP/include -I../tinyMEDIA/include -I../tinyMSRP/include -I./include \
 	-DJB_HISTORY_SIZE=500
 	
 LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) -L$(THIRDPARTIES_MARCH_LIB) \
-	 $(FFMPEG_LDFLAGS) $(SPEEX_LDFLAGS) $(SPEEX_DSP_LDFLAGS) $(WEBRTC_LDFLAGS) $(OPENCORE_AMR_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) $(BV16_LDFLAGS) $(G729_LDFLAGS)\
+	 $(FFMPEG_LDFLAGS) $(VPX_LDFLAGS) $(SPEEX_LDFLAGS) $(SPEEX_DSP_LDFLAGS) $(WEBRTC_LDFLAGS) $(OPENCORE_AMR_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) $(BV16_LDFLAGS) $(G729_LDFLAGS)\
 	 -ltinySAK_$(MARCH) -ltinyNET_$(MARCH) -ltinySDP_$(MARCH) -ltinyRTP_$(MARCH) -ltinyMEDIA_$(MARCH) -ltinyMSRP_$(MARCH) -lm -lgcc
 
 all: $(APP)
@@ -207,6 +215,9 @@ OBJS += src/codecs/h264/tdav_codec_h264.o \
 		
 	### codecs (Theora)
 OBJS += src/codecs/theora/tdav_codec_theora.o
+
+	### codecs (VPX)
+OBJS += src/codecs/vpx/tdav_codec_vp8.o
 
 	### codecs (MP4V-ES)
 OBJS += src/codecs/mp4ves/tdav_codec_mp4ves.o

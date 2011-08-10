@@ -6,5 +6,5 @@ export MINIMAL_PARAMS="FFMPEG=no H264=no THEORA=no OPENCORE_AMR=no SPEEX_DSP=yes
 
 for IS_NEON in no yes
 do
-../bindings/java/android/buildAll.sh $@ NEON=$IS_NEON $MINIMAL_PARAMS HAVE_WEBRTC=$IS_NEON HAVE_WEBRTC_DENOISE=$IS_NEON
+../bindings/java/android/buildAll.sh $@ NEON=$IS_NEON $MINIMAL_PARAMS VPX=$IS_NEON HAVE_WEBRTC=$IS_NEON HAVE_WEBRTC_DENOISE=$IS_NEON
 done

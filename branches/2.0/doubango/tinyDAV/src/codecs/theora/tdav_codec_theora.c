@@ -500,10 +500,10 @@ tsk_bool_t tdav_codec_theora_fmtp_match(const tmedia_codec_t* codec, const char*
 			case tmedia_bl_low:
 			default:
 				if(width<=176 && height<=144){
-					theora->in.width = theora->out.width = width, theora->in.height = theora->out.height = height;
+					theora->in.width = theora->out.width = width; theora->in.height = theora->out.height = height;
 				}
 				else{
-					theora->in.width = theora->out.width = 176, theora->in.height = theora->out.height = 144;
+					theora->in.width = theora->out.width = 176; theora->in.height = theora->out.height = 144;
 				}
 				break;
 
@@ -511,10 +511,10 @@ tsk_bool_t tdav_codec_theora_fmtp_match(const tmedia_codec_t* codec, const char*
 			case tmedia_bl_hight:
 			case tmedia_bl_unrestricted:
 				if(width<=352 && height<=288){
-					theora->in.width = theora->out.width = width, theora->in.height = theora->out.height = height;
+					theora->in.width = theora->out.width = width; theora->in.height = theora->out.height = height;
 				}
 				else{
-					theora->in.width = theora->out.width = 352, theora->in.height = theora->out.height = 288;
+					theora->in.width = theora->out.width = 352; theora->in.height = theora->out.height = 288;
 				}
 				break;
 		}

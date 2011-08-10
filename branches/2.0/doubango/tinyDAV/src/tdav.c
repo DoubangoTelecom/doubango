@@ -58,6 +58,7 @@
 #include "tinydav/codecs/h264/tdav_codec_h264.h"
 #include "tinydav/codecs/theora/tdav_codec_theora.h"
 #include "tinydav/codecs/mp4ves/tdav_codec_mp4ves.h"
+#include "tinydav/codecs/vpx/tdav_codec_vp8.h"
 
 // Consumers
 #include "tinydav/audio/waveapi/tdav_consumer_waveapi.h"
@@ -126,7 +127,7 @@ int tdav_init()
 	tmedia_content_plugin_register("text/plain", tmedia_content_dummy_plugin_def_t);
 	tmedia_content_plugin_register("application/octet-stream", tmedia_content_dummy_plugin_def_t);
 	tmedia_content_plugin_register("message/CPIM", tmedia_content_cpim_plugin_def_t);
-	/*
+	/* To be implemented
 	tmedia_content_plugin_register("message/sipfrag", tmedia_content_sipfrag_plugin_def_t);
 	tmedia_content_plugin_register("multipart/digest", tmedia_content_multipart_plugin_def_t);
 	tmedia_content_plugin_register("multipart/mixed", tmedia_content_multipart_plugin_def_t);
@@ -175,6 +176,9 @@ int tdav_init()
 	// last: dtmf
 	tmedia_codec_plugin_register(tdav_codec_dtmf_plugin_def_t);
 
+#if HAVE_LIBVPX
+	tmedia_codec_plugin_register(tdav_codec_vp8_plugin_def_t);
+#endif
 #if HAVE_FFMPEG
 	tmedia_codec_plugin_register(tdav_codec_mp4ves_plugin_def_t);
 #	if !defined(HAVE_H264) || HAVE_H264
@@ -281,6 +285,10 @@ static tdav_codec_decl_t __codecs[] = {
 	{ tdav_codec_id_g729ab, &tdav_codec_g729ab_plugin_def_t },
 #endif
 	
+#if HAVE_LIBVPX
+	{ tdav_codec_id_vp8, &tdav_codec_vp8_plugin_def_t },
+#endif
+
 #if HAVE_FFMPEG
 #	if !defined(HAVE_H264) || HAVE_H264
 	{ tdav_codec_id_h264_bp30, &tdav_codec_h264_bp30_plugin_def_t },
@@ -395,6 +403,13 @@ tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
 			return tsk_false;
 #endif
 		
+		case tdav_codec_id_vp8:
+#if HAVE_LIBVPX
+			return tsk_true;
+#else
+			return tsk_false;
+#endif
+
 		case tdav_codec_id_h261:
 		case tdav_codec_id_h263:
 		case tdav_codec_id_h263p:
@@ -480,6 +495,10 @@ int tdav_deinit()
 #endif
 #if HAVE_G729
 	tmedia_codec_plugin_unregister(tdav_codec_g729ab_plugin_def_t);
+#endif
+
+#if HAVE_LIBVPX
+	tmedia_codec_plugin_unregister(tdav_codec_vp8_plugin_def_t);
 #endif
 #if HAVE_FFMPEG
 	tmedia_codec_plugin_unregister(tdav_codec_mp4ves_plugin_def_t);

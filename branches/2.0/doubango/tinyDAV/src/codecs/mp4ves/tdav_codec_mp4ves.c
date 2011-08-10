@@ -405,12 +405,12 @@ tsk_bool_t tdav_codec_mp4ves_fmtp_match(const tmedia_codec_t* codec, const char*
 	
 	switch (mp4v->profile ) {
 		case Simple_Profile_Level_1:
-			TMEDIA_CODEC_VIDEO(mp4v)->out.width = TMEDIA_CODEC_VIDEO(mp4v)->in.width = 176, TMEDIA_CODEC_VIDEO(mp4v)->in.height = TMEDIA_CODEC_VIDEO(mp4v)->out.height = 144;
+			TMEDIA_CODEC_VIDEO(mp4v)->out.width = TMEDIA_CODEC_VIDEO(mp4v)->in.width = 176; TMEDIA_CODEC_VIDEO(mp4v)->in.height = TMEDIA_CODEC_VIDEO(mp4v)->out.height = 144;
 			break;
 		case Simple_Profile_Level_2:
 		case Simple_Profile_Level_3:
 		default:
-			TMEDIA_CODEC_VIDEO(mp4v)->out.width = TMEDIA_CODEC_VIDEO(mp4v)->in.width = 352, TMEDIA_CODEC_VIDEO(mp4v)->in.height = TMEDIA_CODEC_VIDEO(mp4v)->out.height = 288;
+			TMEDIA_CODEC_VIDEO(mp4v)->out.width = TMEDIA_CODEC_VIDEO(mp4v)->in.width = 352; TMEDIA_CODEC_VIDEO(mp4v)->in.height = TMEDIA_CODEC_VIDEO(mp4v)->out.height = 288;
 			break;
 	}
 

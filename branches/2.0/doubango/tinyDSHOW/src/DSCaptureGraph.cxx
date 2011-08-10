@@ -196,13 +196,13 @@ HRESULT DSCaptureGraph::connect()
 	if (this->captureFormat->isRGB())
 	{
 #if _WIN32_WCE
-		hr = ConnectFilters(this->graphBuilder, this->sourceFilter, this->colorConvertor565)		;	if(FAILED(hr))return hr;
-		hr = ConnectFilters(this->graphBuilder, this->colorConvertor565, this->sampleGrabberFilter)	;	if(FAILED(hr))return hr;
-		hr = ConnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter);	if(FAILED(hr))return hr;
+		hr = ConnectFilters(this->graphBuilder, this->sourceFilter, this->colorConvertor565)		;	if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
+		hr = ConnectFilters(this->graphBuilder, this->colorConvertor565, this->sampleGrabberFilter)	;	if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
+		hr = ConnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter);	if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
 #else
-		hr = ConnectFilters(this->graphBuilder, this->sourceFilter, this->frameRateFilter); if(FAILED(hr))return hr;
-		hr = ConnectFilters(this->graphBuilder, this->frameRateFilter, this->sampleGrabberFilter); if(FAILED(hr))return hr;
-		hr = ConnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter); if(FAILED(hr))return hr;
+		hr = ConnectFilters(this->graphBuilder, this->sourceFilter, this->frameRateFilter); if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
+		hr = ConnectFilters(this->graphBuilder, this->frameRateFilter, this->sampleGrabberFilter); if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
+		hr = ConnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter); if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
 #endif
 	}
 	else
@@ -212,10 +212,10 @@ HRESULT DSCaptureGraph::connect()
 		hr = ConnectFilters(this->graphBuilder, this->colorConvertor565, this->sampleGrabberFilter)	;	if(FAILED(hr))return hr;
 		hr = ConnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter);	if(FAILED(hr))return hr;
 #else
-		hr = ConnectFilters(this->graphBuilder, this->sourceFilter, this->decompressorFilter); if(FAILED(hr))return hr;
-		hr = ConnectFilters(this->graphBuilder, this->decompressorFilter, this->frameRateFilter); if(FAILED(hr))return hr;
-		hr = ConnectFilters(this->graphBuilder, this->frameRateFilter, this->sampleGrabberFilter); if(FAILED(hr))return hr;
-		hr = ConnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter); if(FAILED(hr))return hr;
+		hr = ConnectFilters(this->graphBuilder, this->sourceFilter, this->decompressorFilter); if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
+		hr = ConnectFilters(this->graphBuilder, this->decompressorFilter, this->frameRateFilter); if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
+		hr = ConnectFilters(this->graphBuilder, this->frameRateFilter, this->sampleGrabberFilter); if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
+		hr = ConnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter); if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
 #endif
 	}
 
