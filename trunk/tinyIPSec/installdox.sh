@@ -1,1 +1,0 @@
-docs/html/installdox -l tinySAK.tag@http://doubango.org/API/tinySAK docs/html/*.html
