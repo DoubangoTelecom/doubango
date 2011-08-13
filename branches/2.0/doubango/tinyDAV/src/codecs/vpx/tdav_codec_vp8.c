@@ -84,6 +84,10 @@ static int tdav_codec_vp8_open(tmedia_codec_t* self)
 	enc_cfg.g_error_resilient = VPX_ERROR_RESILIENT_DEFAULT;
 	enc_cfg.g_lag_in_frames = 0;
 	enc_cfg.g_threads = TDAV_SYSTEM_CORES_COUNT;
+	enc_cfg.g_pass = VPX_RC_ONE_PASS;
+	enc_cfg.rc_min_quantizer = 4;
+	enc_cfg.rc_max_quantizer = 56;
+	enc_cfg.rc_resize_allowed = 0;
 
 	enc_flags = 0; //VPX_EFLAG_XXX
 
