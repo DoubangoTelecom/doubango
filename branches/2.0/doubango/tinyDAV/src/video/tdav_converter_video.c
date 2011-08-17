@@ -205,14 +205,59 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 		rotate90(self->dstWidth/2, self->dstHeight/2, self->dstFrame->data[1], self->rot.frame->data[1]);
 		rotate90(self->dstWidth/2, self->dstHeight/2, self->dstFrame->data[2], self->rot.frame->data[2]);
 		
-#if 0
-        // rotating the picture won't change the buffer size => layout is safe
-        avpicture_layout((const AVPicture*)self->rot.frame, dstFormat, h, w, *output, *output_max_size);
+#if 1
+		{
+			static int y_shift = 1;
+			static int x_shift = 1;
+			int pad = ((int)self->dstWidth-w)>((int)self->dstHeight-h)?((int)self->dstWidth-w):((int)self->dstHeight-h);
+			if(pad<0){
+				pad=0;
+			}
+			int r_size;
+			int r_w = w+pad;
+			int r_h = h+pad;
+			int left_band = (r_w-self->dstWidth)/2;
+			int top_band = (r_h-self->dstHeight)/3;
+			
+			if(!self->rot.context){
+				if(!(self->rot.context = sws_getContext(w, h, dstFormat, r_w, r_h, dstFormat, SWS_FAST_BILINEAR, NULL, NULL, NULL))){
+					TSK_DEBUG_ERROR("Failed to create context");
+					TSK_FREE(*output);
+					return 0;
+				}
+			}
+			
+			r_size = avpicture_get_size(dstFormat, r_w, r_h);
+			if((int)*output_max_size <r_size){
+				if(!(*output = tsk_realloc(*output, (r_size + FF_INPUT_BUFFER_PADDING_SIZE)))){
+					*output_max_size = 0;
+					TSK_DEBUG_ERROR("Failed to allocate buffer");
+					return 0;
+				}
+				*output_max_size = r_size;
+			}
+			
+			// re-wrap
+			avpicture_fill((AVPicture *)self->dstFrame, (uint8_t*)*output, dstFormat, r_w, r_h);
+			
+			// pad
+			sws_scale(self->rot.context, (const uint8_t* const*)self->rot.frame->data, self->rot.frame->linesize, 
+					  0, h, self->dstFrame->data, self->dstFrame->linesize);
+			
+			// crop
+			self->dstFrame->data[0] = self->dstFrame->data[0] + (top_band * self->dstFrame->linesize[0]) + left_band;
+			self->dstFrame->data[1] = self->dstFrame->data[1] + ((top_band >> y_shift) * self->dstFrame->linesize[1]) + (left_band >> x_shift);
+			self->dstFrame->data[2] = self->dstFrame->data[2] + ((top_band >> y_shift) * self->dstFrame->linesize[2]) + (left_band >> x_shift);
+			
+			avpicture_layout((const AVPicture*)self->dstFrame, dstFormat, self->dstWidth, self->dstHeight, *output, *output_max_size);
+		}
+		
+		
 #else // Crash
         
 		// Context
 		if(!self->rot.context){
-			if(!(self->rot.context = sws_getContext(w, h, dstFormat, h, w, dstFormat, SWS_FAST_BILINEAR, NULL, NULL, NULL))){
+			if(!(self->rot.context = sws_getContext(w, h, dstFormat, h, w, dstFormat, SWS_BICUBIC, NULL, NULL, NULL))){
 				TSK_DEBUG_ERROR("Failed to create context");
 				TSK_FREE(*output);
 				return 0;
