@@ -209,15 +209,16 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 		{
 			static int y_shift = 1;
 			static int x_shift = 1;
+			int r_size, r_w, r_h, left_band, top_band;
 			int pad = ((int)self->dstWidth-w)>((int)self->dstHeight-h)?((int)self->dstWidth-w):((int)self->dstHeight-h);
 			if(pad<0){
 				pad=0;
 			}
-			int r_size;
-			int r_w = w+pad;
-			int r_h = h+pad;
-			int left_band = (r_w-self->dstWidth)/2;
-			int top_band = (r_h-self->dstHeight)/3;
+			r_size;
+			r_w = w+pad;
+			r_h = h+pad;
+			left_band = (r_w-self->dstWidth)/2;
+			top_band = (r_h-self->dstHeight)/3;
 			
 			if(!self->rot.context){
 				if(!(self->rot.context = sws_getContext(w, h, dstFormat, r_w, r_h, dstFormat, SWS_FAST_BILINEAR, NULL, NULL, NULL))){
