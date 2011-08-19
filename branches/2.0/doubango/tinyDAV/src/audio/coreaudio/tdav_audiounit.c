@@ -82,16 +82,16 @@ static int _tdav_audiounit_handle_signal_xxx_prepared(tdav_audiounit_handle_t* s
 	tsk_safeobj_lock(inst);
 	
 	if(consumer){
-		inst->prepared.consumer = 1;
+		inst->prepared.consumer = tsk_true;
 	}
 	else {
-		inst->prepared.producer = 1;
+		inst->prepared.producer = tsk_true;
 	}
 
 	if(inst->prepared.consumer && inst->prepared.producer){
 		OSStatus status = AudioUnitInitialize(inst->audioUnit);
 		if(status){
-			TSK_DEBUG_ERROR("AudioUnitInitialize failed with status =%d", (int32_t)status);
+			TSK_DEBUG_ERROR("AudioUnitInitialize failed with status =%ld", status);
 			tsk_safeobj_unlock(inst);
 			return -2;
 		}
@@ -140,13 +140,13 @@ tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id, uint3
 	
 	// create instance object and put it into the list
 	if((inst = tsk_object_new(tdav_audiounit_instance_def_t))){
-		OSStatus status;
+		OSStatus status = noErr;
 		tdav_audiounit_instance_t* _inst;
 		// set preferred buffer size
 		Float32 preferredBufferSize = ((Float32)ptime / 1000.f); // in seconds
 		status = AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration, sizeof(preferredBufferSize), &preferredBufferSize);
 		if(status){
-			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback) failed with status=%d", (int32_t)status);
+			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback) failed with status=%ld", status);
 			TSK_OBJECT_SAFE_FREE(inst);
 			goto done;
 		}
@@ -164,13 +164,13 @@ tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id, uint3
 		UInt32 audioCategory = kAudioSessionCategory_PlayAndRecord;
 		status = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(audioCategory), &audioCategory);
 		if(status){
-			TSK_DEBUG_ERROR("AudioSessionSetProperty(kAudioSessionProperty_AudioCategory) failed with status code=%d", (int32_t)status);
+			TSK_DEBUG_ERROR("AudioSessionSetProperty(kAudioSessionProperty_AudioCategory) failed with status code=%ld", status);
 			goto done;
 		}
 #endif/* TARGET_OS_IPHONE */
 		// create new instance
 		if((status= AudioComponentInstanceNew(__audioSystem, &inst->audioUnit))){
-			TSK_DEBUG_ERROR("AudioComponentInstanceNew() failed with status=%d", (int32_t)status);
+			TSK_DEBUG_ERROR("AudioComponentInstanceNew() failed with status=%ld", status);
 			TSK_OBJECT_SAFE_FREE(inst);
 			goto done;
 		}
@@ -226,10 +226,10 @@ int tdav_audiounit_handle_start(tdav_audiounit_handle_t* self)
 	
 	tsk_safeobj_lock(inst);
 	if(!inst->started && (status = AudioOutputUnitStart(inst->audioUnit))){
-		TSK_DEBUG_ERROR("AudioOutputUnitStart failed with status=%d", (int32_t)status);
+		TSK_DEBUG_ERROR("AudioOutputUnitStart failed with status=%ld", status);
 	}
+    inst->started = status == 0 ? tsk_true : tsk_false;
 	tsk_safeobj_unlock(inst);
-	inst->started = status == 0 ? tsk_true : tsk_false;
 	return status ? -2 : 0;
 }
 
@@ -260,17 +260,26 @@ int tdav_audiounit_handle_stop(tdav_audiounit_handle_t* self)
 {
 	tdav_audiounit_instance_t* inst = (tdav_audiounit_instance_t*)self;
 	OSStatus status = noErr;
-	if(!inst || !inst->audioUnit){
+	if(!inst || (inst->started && !inst->audioUnit)){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	
 	tsk_safeobj_lock(inst);
 	if(inst->started && (status = AudioOutputUnitStop(inst->audioUnit))){
-		TSK_DEBUG_ERROR("AudioOutputUnitStop failed with status=%d", (int32_t)status);
+		TSK_DEBUG_ERROR("AudioOutputUnitStop failed with status=%ld", status);
 	}
+    if(!(inst->started = status == 0 ? tsk_false : tsk_true)){
+        // https://devforums.apple.com/thread/118595
+        // We can safely destroy the audioUnit embedded instance because it will no longer be used by any function
+        // Next Start() will always be preceded by a Prepare() to create new handle
+        if(inst->audioUnit){
+            AudioUnitUninitialize(inst->audioUnit);
+            AudioComponentInstanceDispose(inst->audioUnit);
+            inst->audioUnit = tsk_null;
+        }
+    }
 	tsk_safeobj_unlock(inst);
-	inst->started = status == 0 ? tsk_false : tsk_true;
 	return status ? -2 : 0;
 }
 
@@ -306,9 +315,14 @@ static tsk_object_t* tdav_audiounit_instance_dtor(tsk_object_t * self)
 { 
 	tdav_audiounit_instance_t* inst = self;
 	if(inst){
+        tsk_safeobj_lock(inst);
 		if(inst->audioUnit){
-			AudioUnitUninitialize(inst->audioUnit);
+            AudioUnitUninitialize(inst->audioUnit);
+            AudioComponentInstanceDispose(inst->audioUnit);
+            inst->audioUnit = tsk_null;
 		}
+        tsk_safeobj_unlock(inst);
+        
 		tsk_safeobj_deinit(inst);
 	}
 	return self;

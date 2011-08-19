@@ -223,7 +223,7 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 	}
 	
 	if(status){
-		TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO) failed with status=%d", (int32_t)status);
+		TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO) failed with status=%ld", status);
 		return -4;
 	}
 	else {
@@ -249,7 +249,7 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 									  &audioFormat, 
 								sizeof(audioFormat));
 		if(status){
-			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioUnitProperty_StreamFormat) failed with status=%d", (int32_t)status);
+			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioUnitProperty_StreamFormat) failed with status=%ld", status);
 			return -5;
 		}
 		else {
@@ -264,7 +264,7 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 										  &callback, 
 										  sizeof(callback));
 			if(status){
-				TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback) failed with status=%d", (int32_t)status);
+				TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback) failed with status=%ld", status);
 				return -6;
 			}
 			else {

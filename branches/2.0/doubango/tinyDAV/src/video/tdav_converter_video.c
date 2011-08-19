@@ -123,8 +123,7 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 	/* Formats */
 	srcFormat = self->toYUV420 ? self->pixfmt : PIX_FMT_YUV420P;
 	dstFormat = self->toYUV420 ? PIX_FMT_YUV420P : self->pixfmt;
-
-
+	
 	/* Pictures */
 	if(!self->srcFrame){
 		if(!(self->srcFrame = avcodec_alloc_frame())){
