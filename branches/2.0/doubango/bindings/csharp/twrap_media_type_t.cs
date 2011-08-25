@@ -10,10 +10,10 @@ namespace org.doubango.tinyWRAP {
 
 public enum twrap_media_type_t {
   twrap_media_none = 0x00,
-  twrap_media_audio = (0x01 << 0),
-  twrap_media_video = (0x01 << 1),
-  twrap_media_audiovideo = (twrap_media_audio|twrap_media_video),
-  twrap_media_msrp = (0x01 << 2)
+  twrap_media_audio = 0x01,
+  twrap_media_video = 0x02,
+  twrap_media_audiovideo = 0x03,
+  twrap_media_msrp = 0x04
 }
 
 }
