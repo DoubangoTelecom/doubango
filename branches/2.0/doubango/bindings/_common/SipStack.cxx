@@ -28,7 +28,7 @@
 
 #include "Common.h"
 
-unsigned SipStack::count = 0;
+bool SipStack::g_bInitialized = false;
 
 
 /* === ANSI-C functions (local use) === */
@@ -50,10 +50,9 @@ SipStack::SipStack(SipCallback* pCallback, const char* realm_uri, const char* im
 	m_pDebugCallback = tsk_null;
 	m_pCallback = pCallback;
 
-	/* Initialize network layer */
-	if(SipStack::count == 0){
-		tdav_init();
-		tnet_startup();
+	/* Initialize network and media layers */
+	if(!SipStack::initialize()){
+		return;// isValid() will be false
 	}
 
 	/* Creates stack handle */
@@ -61,8 +60,6 @@ SipStack::SipStack(SipCallback* pCallback, const char* realm_uri, const char* im
 			TSIP_STACK_SET_LOCAL_IP(DEFAULT_LOCAL_IP),
 			TSIP_STACK_SET_USERDATA(this), /* used as context (useful for server-initiated requests) */
 			TSIP_STACK_SET_NULL());
-
-	SipStack::count++;
 }
 
 SipStack::~SipStack()
@@ -71,12 +68,6 @@ SipStack::~SipStack()
 
 	/* Destroy stack handle */
 	TSK_OBJECT_SAFE_FREE(m_pHandle);
-
-	/* DeInitialize the network layer (only if last stack) */
-	if(--SipStack::count == 0){
-		tdav_deinit();
-		tnet_cleanup();
-	}
 }
 
 bool SipStack::start()
@@ -389,6 +380,35 @@ bool SipStack::stop()
 {
 	int ret = tsip_stack_stop(m_pHandle);
 	return (ret == 0);
+}
+
+bool SipStack::initialize()
+{
+	if(!g_bInitialized)
+	{
+		int ret;
+		
+		if((ret = tnet_startup())){
+			TSK_DEBUG_ERROR("tnet_startup failed with error code=%d", ret);
+			return false;
+		}
+		if((ret = tdav_init())){
+			TSK_DEBUG_ERROR("tdav_init failed with error code=%d", ret);
+			return false;
+		}
+		g_bInitialized = true;
+	}
+	return true;
+}
+
+bool SipStack::deInitialize()
+{
+	if(SipStack::g_bInitialized){
+		tdav_deinit();
+		tnet_cleanup();
+		SipStack::g_bInitialized = false;
+	}
+	return false;
 }
 
 void SipStack::setCodecs(tdav_codec_id_t codecs)

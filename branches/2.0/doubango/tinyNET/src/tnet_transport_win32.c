@@ -516,6 +516,8 @@ void *tnet_transport_mainthread(void *param)
 	transport_socket_t* active_socket;
 	int index;
 
+	SetPriorityClass(GetCurrentThread(), REALTIME_PRIORITY_CLASS);
+
 	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 	
 	while(TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started)

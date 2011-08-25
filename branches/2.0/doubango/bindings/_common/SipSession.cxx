@@ -176,6 +176,7 @@ bool SipSession::removeSigCompCompartment()
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
+// FIXME: should be "uint64_t" instead of "unsigned"
 unsigned SipSession::getId()const
 {
 	return (unsigned)tsip_ssession_get_id(m_pHandle);

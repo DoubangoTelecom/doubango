@@ -198,6 +198,7 @@ sub DESTROY {
 *producerSetInt64 = *tinyWRAPc::MediaSessionMgr_producerSetInt64;
 *findProxyPluginConsumer = *tinyWRAPc::MediaSessionMgr_findProxyPluginConsumer;
 *findProxyPluginProducer = *tinyWRAPc::MediaSessionMgr_findProxyPluginProducer;
+*getSessionId = *tinyWRAPc::MediaSessionMgr_getSessionId;
 *defaultsSetBandwidthLevel = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthLevel;
 *defaultsGetBandwidthLevel = *tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel;
 *defaultsSetEchoTail = *tinyWRAPc::MediaSessionMgr_defaultsSetEchoTail;
@@ -1718,6 +1719,8 @@ sub DESTROY {
 *getPreferredIdentity = *tinyWRAPc::SipStack_getPreferredIdentity;
 *isValid = *tinyWRAPc::SipStack_isValid;
 *stop = *tinyWRAPc::SipStack_stop;
+*initialize = *tinyWRAPc::SipStack_initialize;
+*deInitialize = *tinyWRAPc::SipStack_deInitialize;
 *setCodecs = *tinyWRAPc::SipStack_setCodecs;
 *setCodecs_2 = *tinyWRAPc::SipStack_setCodecs_2;
 *setCodecPriority = *tinyWRAPc::SipStack_setCodecPriority;

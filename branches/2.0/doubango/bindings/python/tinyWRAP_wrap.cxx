@@ -3721,6 +3721,22 @@ SWIG_AsVal_long_SS_long (PyObject *obj, long long *val)
 }
 
 
+SWIGINTERNINLINE PyObject* 
+SWIG_From_long_SS_long  (long long value)
+{
+  return ((value < LONG_MIN) || (value > LONG_MAX)) ?
+    PyLong_FromLongLong(value) : PyInt_FromLong(static_cast< long >(value)); 
+}
+
+
+SWIGINTERNINLINE PyObject* 
+SWIG_From_unsigned_SS_long_SS_long  (unsigned long long value)
+{
+  return (value > LONG_MAX) ?
+    PyLong_FromUnsignedLongLong(value) : PyInt_FromLong(static_cast< long >(value)); 
+}
+
+
 SWIGINTERN int
 SWIG_AsVal_bool (PyObject *obj, bool *val)
 {
@@ -3848,22 +3864,6 @@ SWIG_AsVal_unsigned_SS_long_SS_long (PyObject *obj, unsigned long long *val)
   }
 #endif
   return res;
-}
-
-
-SWIGINTERNINLINE PyObject* 
-SWIG_From_long_SS_long  (long long value)
-{
-  return ((value < LONG_MIN) || (value > LONG_MAX)) ?
-    PyLong_FromLongLong(value) : PyInt_FromLong(static_cast< long >(value)); 
-}
-
-
-SWIGINTERNINLINE PyObject* 
-SWIG_From_unsigned_SS_long_SS_long  (unsigned long long value)
-{
-  return (value > LONG_MAX) ?
-    PyLong_FromUnsignedLongLong(value) : PyInt_FromLong(static_cast< long >(value)); 
 }
 
 
@@ -6083,6 +6083,37 @@ SWIGINTERN PyObject *_wrap_MediaSessionMgr_findProxyPluginProducer(PyObject *SWI
   arg2 = static_cast< twrap_media_type_t >(val2);
   result = (ProxyPlugin *)((MediaSessionMgr const *)arg1)->findProxyPluginProducer(arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyPlugin, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_getSessionId(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  uint64_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MediaSessionMgr_getSessionId",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MediaSessionMgr, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_getSessionId" "', argument " "1"" of type '" "MediaSessionMgr const *""'"); 
+  }
+  arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_getSessionId" "', argument " "2"" of type '" "twrap_media_type_t""'");
+  } 
+  arg2 = static_cast< twrap_media_type_t >(val2);
+  result = (uint64_t)((MediaSessionMgr const *)arg1)->getSessionId(arg2);
+  resultobj = SWIG_From_unsigned_SS_long_SS_long(static_cast< unsigned long long >(result));
   return resultobj;
 fail:
   return NULL;
@@ -17691,6 +17722,32 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SipStack_initialize(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":SipStack_initialize")) SWIG_fail;
+  result = (bool)SipStack::initialize();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_deInitialize(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":SipStack_deInitialize")) SWIG_fail;
+  result = (bool)SipStack::deInitialize();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_SipStack_setCodecs(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   tdav_codec_id_t arg1 ;
@@ -20874,6 +20931,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_producerSetInt64", _wrap_MediaSessionMgr_producerSetInt64, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_findProxyPluginConsumer", _wrap_MediaSessionMgr_findProxyPluginConsumer, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_findProxyPluginProducer", _wrap_MediaSessionMgr_findProxyPluginProducer, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_getSessionId", _wrap_MediaSessionMgr_getSessionId, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetBandwidthLevel", _wrap_MediaSessionMgr_defaultsSetBandwidthLevel, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetBandwidthLevel", _wrap_MediaSessionMgr_defaultsGetBandwidthLevel, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetEchoTail", _wrap_MediaSessionMgr_defaultsSetEchoTail, METH_VARARGS, NULL},
@@ -21198,6 +21256,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipStack_getPreferredIdentity", _wrap_SipStack_getPreferredIdentity, METH_VARARGS, NULL},
 	 { (char *)"SipStack_isValid", _wrap_SipStack_isValid, METH_VARARGS, NULL},
 	 { (char *)"SipStack_stop", _wrap_SipStack_stop, METH_VARARGS, NULL},
+	 { (char *)"SipStack_initialize", _wrap_SipStack_initialize, METH_VARARGS, NULL},
+	 { (char *)"SipStack_deInitialize", _wrap_SipStack_deInitialize, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setCodecs", _wrap_SipStack_setCodecs, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setCodecs_2", _wrap_SipStack_setCodecs_2, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setCodecPriority", _wrap_SipStack_setCodecPriority, METH_VARARGS, NULL},

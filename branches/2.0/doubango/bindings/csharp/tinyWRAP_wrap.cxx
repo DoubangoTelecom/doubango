@@ -1522,6 +1522,20 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_MediaSessionMgr_findProxyPluginProducer(voi
 }
 
 
+SWIGEXPORT unsigned long long SWIGSTDCALL CSharp_MediaSessionMgr_getSessionId(void * jarg1, int jarg2) {
+  unsigned long long jresult ;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  uint64_t result;
+  
+  arg1 = (MediaSessionMgr *)jarg1; 
+  arg2 = (twrap_media_type_t)jarg2; 
+  result = (uint64_t)((MediaSessionMgr const *)arg1)->getSessionId(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetBandwidthLevel(int jarg1) {
   unsigned int jresult ;
   tmedia_bandwidth_level_t arg1 ;
@@ -6063,6 +6077,26 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_stop(void * jarg1) {
   
   arg1 = (SipStack *)jarg1; 
   result = (bool)(arg1)->stop();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_initialize() {
+  unsigned int jresult ;
+  bool result;
+  
+  result = (bool)SipStack::initialize();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_deInitialize() {
+  unsigned int jresult ;
+  bool result;
+  
+  result = (bool)SipStack::deInitialize();
   jresult = result; 
   return jresult;
 }

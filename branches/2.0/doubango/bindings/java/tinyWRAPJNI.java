@@ -41,6 +41,7 @@ class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_producerSetInt64(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, long jarg4);
   public final static native long MediaSessionMgr_findProxyPluginConsumer(long jarg1, MediaSessionMgr jarg1_, int jarg2);
   public final static native long MediaSessionMgr_findProxyPluginProducer(long jarg1, MediaSessionMgr jarg1_, int jarg2);
+  public final static native java.math.BigInteger MediaSessionMgr_getSessionId(long jarg1, MediaSessionMgr jarg1_, int jarg2);
   public final static native boolean MediaSessionMgr_defaultsSetBandwidthLevel(int jarg1);
   public final static native int MediaSessionMgr_defaultsGetBandwidthLevel();
   public final static native boolean MediaSessionMgr_defaultsSetEchoTail(long jarg1);
@@ -403,6 +404,8 @@ class tinyWRAPJNI {
   public final static native String SipStack_getPreferredIdentity(long jarg1, SipStack jarg1_);
   public final static native boolean SipStack_isValid(long jarg1, SipStack jarg1_);
   public final static native boolean SipStack_stop(long jarg1, SipStack jarg1_);
+  public final static native boolean SipStack_initialize();
+  public final static native boolean SipStack_deInitialize();
   public final static native void SipStack_setCodecs(int jarg1);
   public final static native void SipStack_setCodecs_2(int jarg1);
   public final static native boolean SipStack_setCodecPriority(int jarg1, int jarg2);

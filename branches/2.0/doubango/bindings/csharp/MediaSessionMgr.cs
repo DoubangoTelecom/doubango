@@ -76,6 +76,11 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public ulong getSessionId(twrap_media_type_t media) {
+    ulong ret = tinyWRAPPINVOKE.MediaSessionMgr_getSessionId(swigCPtr, (int)media);
+    return ret;
+  }
+
   public static bool defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetBandwidthLevel((int)bl);
     return ret;

@@ -35,6 +35,14 @@
 
 int tdav_win32_init()
 {
+	MMRESULT result;
+
+	// Timers accuracy
+	result = timeBeginPeriod(1);
+	if(result){
+		TSK_DEBUG_ERROR("timeBeginPeriod(1) returned result=%u", result);
+	}
+
 	return 0;
 }
 
@@ -62,6 +70,13 @@ void tdav_win32_print_error(const char* func, HRESULT hr)
 
 int tdav_win32_deinit()
 {
+	MMRESULT result;
+
+	// Timers accuracy
+	result = timeEndPeriod(1);
+	if(result){
+		TSK_DEBUG_ERROR("timeEndPeriod(1) returned result=%u", result);
+	}
 	return 0;
 }
 

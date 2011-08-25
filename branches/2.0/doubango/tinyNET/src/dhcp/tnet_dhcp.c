@@ -115,7 +115,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 	}
 
 	/* Set timeout */
-	timeout = tsk_time_epoch() + ctx->timeout;
+	timeout = tsk_time_now() + ctx->timeout;
 
 	do
 	{

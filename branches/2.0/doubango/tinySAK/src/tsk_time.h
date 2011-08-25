@@ -48,26 +48,8 @@ struct timespec;
 TINYSAK_API int tsk_gettimeofday(struct timeval *tv, struct timezone *tz);
 TINYSAK_API uint64_t tsk_time_get_ms(struct timeval *tv);
 TINYSAK_API uint64_t tsk_time_epoch();
+TINYSAK_API uint64_t tsk_time_now();
 
-
-/**@ingroup tsk_time_group
-* Gets the number of milliseconds since the EPOCH.
-*/
-#define tsk_time_now() tsk_time_epoch()
-
-//#ifdef _WIN32_WCE
-//
-//#ifndef TIMEVAL
-///* On wince timeval struct is defined in "Winsock2.h" but I don't want to add it */
-//struct timeval 
-//{
-//  long tv_sec;
-//  long tv_usec;
-//};
-//#define TIMEVAL
-//#endif TIMEVAL
-//
-//#endif
 
 TSK_END_DECLS
 

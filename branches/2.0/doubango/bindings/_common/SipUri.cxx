@@ -23,7 +23,7 @@
 
 SipUri::SipUri(const char* uriString, const char* displayName/*=tsk_null*/)
 {
-	if((m_pUri = tsip_uri_parse(uriString, tsk_strlen(uriString))) && displayName){
+	if((m_pUri = tsip_uri_parse(uriString, (tsk_size_t)tsk_strlen(uriString))) && displayName){
 		m_pUri->display_name = tsk_strdup(displayName);
 	}
 }
@@ -38,7 +38,7 @@ bool SipUri::isValid(const char* uriString)
 	tsip_uri_t* uri;
 	bool ret = false;
 
-	if((uri = tsip_uri_parse(uriString, tsk_strlen(uriString)))){
+	if((uri = tsip_uri_parse(uriString, (tsk_size_t)tsk_strlen(uriString)))){
 		ret = (uri->type != uri_unknown)
 			&& (!tsk_strnullORempty(uri->host));
 		TSK_OBJECT_SAFE_FREE(uri);

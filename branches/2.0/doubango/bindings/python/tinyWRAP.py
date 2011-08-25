@@ -153,6 +153,7 @@ class MediaSessionMgr(_object):
     def producerSetInt64(self, *args): return _tinyWRAP.MediaSessionMgr_producerSetInt64(self, *args)
     def findProxyPluginConsumer(self, *args): return _tinyWRAP.MediaSessionMgr_findProxyPluginConsumer(self, *args)
     def findProxyPluginProducer(self, *args): return _tinyWRAP.MediaSessionMgr_findProxyPluginProducer(self, *args)
+    def getSessionId(self, *args): return _tinyWRAP.MediaSessionMgr_getSessionId(self, *args)
     __swig_getmethods__["defaultsSetBandwidthLevel"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthLevel
     if _newclass:defaultsSetBandwidthLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetBandwidthLevel)
     __swig_getmethods__["defaultsGetBandwidthLevel"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel
@@ -1142,6 +1143,10 @@ class SipStack(SafeObject):
     def getPreferredIdentity(self): return _tinyWRAP.SipStack_getPreferredIdentity(self)
     def isValid(self): return _tinyWRAP.SipStack_isValid(self)
     def stop(self): return _tinyWRAP.SipStack_stop(self)
+    __swig_getmethods__["initialize"] = lambda x: _tinyWRAP.SipStack_initialize
+    if _newclass:initialize = staticmethod(_tinyWRAP.SipStack_initialize)
+    __swig_getmethods__["deInitialize"] = lambda x: _tinyWRAP.SipStack_deInitialize
+    if _newclass:deInitialize = staticmethod(_tinyWRAP.SipStack_deInitialize)
     __swig_getmethods__["setCodecs"] = lambda x: _tinyWRAP.SipStack_setCodecs
     if _newclass:setCodecs = staticmethod(_tinyWRAP.SipStack_setCodecs)
     __swig_getmethods__["setCodecs_2"] = lambda x: _tinyWRAP.SipStack_setCodecs_2
@@ -1154,6 +1159,14 @@ class SipStack(SafeObject):
     if _newclass:isCodecSupported = staticmethod(_tinyWRAP.SipStack_isCodecSupported)
 SipStack_swigregister = _tinyWRAP.SipStack_swigregister
 SipStack_swigregister(SipStack)
+
+def SipStack_initialize():
+  return _tinyWRAP.SipStack_initialize()
+SipStack_initialize = _tinyWRAP.SipStack_initialize
+
+def SipStack_deInitialize():
+  return _tinyWRAP.SipStack_deInitialize()
+SipStack_deInitialize = _tinyWRAP.SipStack_deInitialize
 
 def SipStack_setCodecs(*args):
   return _tinyWRAP.SipStack_setCodecs(*args)

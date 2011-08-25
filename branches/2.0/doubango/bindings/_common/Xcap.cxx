@@ -215,7 +215,7 @@ char* XcapSelector::getString()
 
 	/* append the namespace */
 	if(_namespace){
-		tsk_buffer_append(buffer, _namespace, strlen(_namespace));
+		tsk_buffer_append(buffer, _namespace, (tsk_size_t)tsk_strlen(_namespace));
 		TSK_FREE(_namespace);
 	}
 

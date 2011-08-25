@@ -267,7 +267,7 @@ tsk_size_t tdav_codec_theora_encode(tmedia_codec_t* self, const void* in_data, t
 	}
 	
 	// Encode data
-	//theora->encoder.picture->pts = tsk_time_epoch();
+	//theora->encoder.picture->pts = tsk_time_now();
 	theora->encoder.picture->pts = AV_NOPTS_VALUE;
 	//theora->encoder.picture->pict_type = FF_I_TYPE;
 	ret = avcodec_encode_video(theora->encoder.context, theora->encoder.buffer, size, theora->encoder.picture);
@@ -607,7 +607,7 @@ const tmedia_codec_plugin_def_t *tdav_codec_theora_plugin_def_t = &tdav_codec_th
 static void tdav_codec_theora_encap(tdav_codec_theora_t* theora, const uint8_t* pdata, tsk_size_t size)
 {
 	if((theora->encoder.conf_count < THEORA_CONF_SEND_COUNT) && theora->encoder.context && theora->encoder.context->extradata){
-		if((theora->encoder.conf_last + (250 *theora->encoder.conf_count)) < tsk_time_epoch()){
+		if((theora->encoder.conf_last + (250 *theora->encoder.conf_count)) < tsk_time_now()){
 			int hdr_size, i, exd_size = theora->encoder.context->extradata_size, conf_pkt_size = 0;
 			uint8_t *conf_pkt_ptr = tsk_null, *exd_ptr = theora->encoder.context->extradata;
 			for(i=0; i<3 && exd_size; i++){
@@ -637,7 +637,7 @@ static void tdav_codec_theora_encap(tdav_codec_theora_t* theora, const uint8_t* 
 				TSK_FREE(conf_pkt_ptr);
 			}
 
-			theora->encoder.conf_last = tsk_time_epoch();
+			theora->encoder.conf_last = tsk_time_now();
 			theora->encoder.conf_count++;
 		}
 	}

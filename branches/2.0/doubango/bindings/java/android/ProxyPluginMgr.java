@@ -33,8 +33,8 @@ public class ProxyPluginMgr {
     swigCPtr = 0;
   }
 
-  public static ProxyPluginMgr createInstance(ProxyPluginMgrCallback callback) {
-    long cPtr = tinyWRAPJNI.ProxyPluginMgr_createInstance(ProxyPluginMgrCallback.getCPtr(callback), callback);
+  public static ProxyPluginMgr createInstance(ProxyPluginMgrCallback pCallback) {
+    long cPtr = tinyWRAPJNI.ProxyPluginMgr_createInstance(ProxyPluginMgrCallback.getCPtr(pCallback), pCallback);
     return (cPtr == 0) ? null : new ProxyPluginMgr(cPtr, true);
   }
 

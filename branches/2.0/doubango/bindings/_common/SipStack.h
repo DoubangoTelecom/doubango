@@ -81,6 +81,8 @@ public: /* API functions */
 	bool isValid();
 	bool stop();
 	
+	static bool initialize();
+	static bool deInitialize();
 	static void setCodecs(tdav_codec_id_t codecs);
 	static void setCodecs_2(int codecs); // For stupid languages
 	static bool setCodecPriority(tdav_codec_id_t codec_id, int priority);
@@ -105,7 +107,7 @@ private:
 	DDebugCallback* m_pDebugCallback;
 	tsip_stack_handle_t* m_pHandle;
 
-	static unsigned count;
+	static bool g_bInitialized;
 };
 
 #endif /* TINYWRAP_SIPSTACK_H */
