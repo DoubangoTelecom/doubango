@@ -206,6 +206,16 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public static bool initialize() {
+    bool ret = tinyWRAPPINVOKE.SipStack_initialize();
+    return ret;
+  }
+
+  public static bool deInitialize() {
+    bool ret = tinyWRAPPINVOKE.SipStack_deInitialize();
+    return ret;
+  }
+
   public static void setCodecs(tdav_codec_id_t codecs) {
     tinyWRAPPINVOKE.SipStack_setCodecs((int)codecs);
   }

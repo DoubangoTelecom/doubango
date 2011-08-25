@@ -74,6 +74,7 @@ TINYSAK_API void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self);
 
 TINYSAK_API tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint64_t timeout, tsk_timer_callback_f callback, const void *arg);
 TINYSAK_API int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id);
+TINYSAK_API int tsk_timer_manager_destroy(tsk_timer_manager_handle_t **self);
 
 
 // Global Timer manager

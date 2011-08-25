@@ -1995,6 +1995,44 @@ SWIG_AsVal_long_SS_long SWIG_PERL_DECL_ARGS_2(SV *obj, long long *val)
 }
 
 
+#include <stdio.h>
+#if defined(_MSC_VER) || defined(__BORLANDC__) || defined(_WATCOM)
+# ifndef snprintf
+#  define snprintf _snprintf
+# endif
+#endif
+
+
+SWIGINTERNINLINE SV *
+SWIG_From_long_SS_long  SWIG_PERL_DECL_ARGS_1(long long value)
+{
+  if (((long long) LONG_MIN <= value) && (value <= (long long) LONG_MAX)) {
+    return SWIG_From_long  SWIG_PERL_CALL_ARGS_1(static_cast< long >(value));
+  } else {    
+    char temp[256]; 
+    SV *obj = sv_newmortal();
+    sprintf(temp, "%lld", value);
+    sv_setpv(obj, temp);
+    return obj;
+  }
+}
+
+
+SWIGINTERNINLINE SV *
+SWIG_From_unsigned_SS_long_SS_long  SWIG_PERL_DECL_ARGS_1(unsigned long long value)
+{
+  if (value < (unsigned long long) LONG_MAX) {
+    return SWIG_From_long_SS_long  SWIG_PERL_CALL_ARGS_1(static_cast< long long >(value));
+  } else {
+    char temp[256]; 
+    SV *obj = sv_newmortal();
+    sprintf(temp, "%llu", value);
+    sv_setpv(obj, temp);
+    return obj;
+  }
+}
+
+
 SWIGINTERN int
 SWIG_AsVal_bool SWIG_PERL_DECL_ARGS_2(SV *obj, bool* val)
 {
@@ -2164,44 +2202,6 @@ SWIG_AsVal_unsigned_SS_long_SS_long SWIG_PERL_DECL_ARGS_2(SV *obj, unsigned long
     }
   }
   return SWIG_TypeError;
-}
-
-
-#include <stdio.h>
-#if defined(_MSC_VER) || defined(__BORLANDC__) || defined(_WATCOM)
-# ifndef snprintf
-#  define snprintf _snprintf
-# endif
-#endif
-
-
-SWIGINTERNINLINE SV *
-SWIG_From_long_SS_long  SWIG_PERL_DECL_ARGS_1(long long value)
-{
-  if (((long long) LONG_MIN <= value) && (value <= (long long) LONG_MAX)) {
-    return SWIG_From_long  SWIG_PERL_CALL_ARGS_1(static_cast< long >(value));
-  } else {    
-    char temp[256]; 
-    SV *obj = sv_newmortal();
-    sprintf(temp, "%lld", value);
-    sv_setpv(obj, temp);
-    return obj;
-  }
-}
-
-
-SWIGINTERNINLINE SV *
-SWIG_From_unsigned_SS_long_SS_long  SWIG_PERL_DECL_ARGS_1(unsigned long long value)
-{
-  if (value < (unsigned long long) LONG_MAX) {
-    return SWIG_From_long_SS_long  SWIG_PERL_CALL_ARGS_1(static_cast< long long >(value));
-  } else {
-    char temp[256]; 
-    SV *obj = sv_newmortal();
-    sprintf(temp, "%llu", value);
-    sv_setpv(obj, temp);
-    return obj;
-  }
 }
 
 
@@ -3352,6 +3352,44 @@ XS(_wrap_MediaSessionMgr_findProxyPluginProducer) {
     arg2 = static_cast< twrap_media_type_t >(val2);
     result = (ProxyPlugin *)((MediaSessionMgr const *)arg1)->findProxyPluginProducer(arg2);
     ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyPlugin, 0 | SWIG_SHADOW); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_getSessionId) {
+  {
+    MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+    twrap_media_type_t arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    uint64_t result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: MediaSessionMgr_getSessionId(self,media);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MediaSessionMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_getSessionId" "', argument " "1"" of type '" "MediaSessionMgr const *""'"); 
+    }
+    arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_getSessionId" "', argument " "2"" of type '" "twrap_media_type_t""'");
+    } 
+    arg2 = static_cast< twrap_media_type_t >(val2);
+    result = (uint64_t)((MediaSessionMgr const *)arg1)->getSessionId(arg2);
+    ST(argvi) = SWIG_From_unsigned_SS_long_SS_long  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned long long >(result)); argvi++ ;
     
     
     XSRETURN(argvi);
@@ -12288,7 +12326,7 @@ XS(_wrap_ProxyPluginMgr_createInstance) {
     dXSARGS;
     
     if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: ProxyPluginMgr_createInstance(callback);");
+      SWIG_croak("Usage: ProxyPluginMgr_createInstance(pCallback);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyPluginMgrCallback, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
@@ -17381,6 +17419,42 @@ XS(_wrap_SipStack_stop) {
 }
 
 
+XS(_wrap_SipStack_initialize) {
+  {
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: SipStack_initialize();");
+    }
+    result = (bool)SipStack::initialize();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipStack_deInitialize) {
+  {
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: SipStack_deInitialize();");
+    }
+    result = (bool)SipStack::deInitialize();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_SipStack_setCodecs) {
   {
     tdav_codec_id_t arg1 ;
@@ -21407,6 +21481,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_producerSetInt64", _wrap_MediaSessionMgr_producerSetInt64},
 {"tinyWRAPc::MediaSessionMgr_findProxyPluginConsumer", _wrap_MediaSessionMgr_findProxyPluginConsumer},
 {"tinyWRAPc::MediaSessionMgr_findProxyPluginProducer", _wrap_MediaSessionMgr_findProxyPluginProducer},
+{"tinyWRAPc::MediaSessionMgr_getSessionId", _wrap_MediaSessionMgr_getSessionId},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthLevel", _wrap_MediaSessionMgr_defaultsSetBandwidthLevel},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel", _wrap_MediaSessionMgr_defaultsGetBandwidthLevel},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetEchoTail", _wrap_MediaSessionMgr_defaultsSetEchoTail},
@@ -21687,6 +21762,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SipStack_getPreferredIdentity", _wrap_SipStack_getPreferredIdentity},
 {"tinyWRAPc::SipStack_isValid", _wrap_SipStack_isValid},
 {"tinyWRAPc::SipStack_stop", _wrap_SipStack_stop},
+{"tinyWRAPc::SipStack_initialize", _wrap_SipStack_initialize},
+{"tinyWRAPc::SipStack_deInitialize", _wrap_SipStack_deInitialize},
 {"tinyWRAPc::SipStack_setCodecs", _wrap_SipStack_setCodecs},
 {"tinyWRAPc::SipStack_setCodecs_2", _wrap_SipStack_setCodecs_2},
 {"tinyWRAPc::SipStack_setCodecPriority", _wrap_SipStack_setCodecPriority},

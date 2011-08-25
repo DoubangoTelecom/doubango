@@ -278,6 +278,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_findProxyPluginProducer")]
   public static extern IntPtr MediaSessionMgr_findProxyPluginProducer(HandleRef jarg1, int jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_getSessionId")]
+  public static extern ulong MediaSessionMgr_getSessionId(HandleRef jarg1, int jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetBandwidthLevel")]
   public static extern bool MediaSessionMgr_defaultsSetBandwidthLevel(int jarg1);
 
@@ -1345,6 +1348,12 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_stop")]
   public static extern bool SipStack_stop(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_initialize")]
+  public static extern bool SipStack_initialize();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_deInitialize")]
+  public static extern bool SipStack_deInitialize();
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setCodecs")]
   public static extern void SipStack_setCodecs(int jarg1);

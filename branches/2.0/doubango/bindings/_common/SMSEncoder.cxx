@@ -316,7 +316,7 @@ SMSData* SMSEncoder::decode(const void* data, unsigned size, bool MobOrig)
 				if((tpdu = tsms_tpdu_message_deserialize(rp_data->udata->data, rp_data->udata->size, MobOrig))){
 					if(tpdu->mti == tsms_tpdu_mti_deliver_mt || tpdu->mti == tsms_tpdu_mti_submit_mo){ /* SMS-SUBMIT or SMS-DELIVER? */
 						ascii = tsms_tpdu_message_get_payload(tpdu);
-						decodedData = new SMSData(twrap_sms_type_rpdata, rp_message->mr, ascii, tsk_strlen(ascii));
+						decodedData = new SMSData(twrap_sms_type_rpdata, rp_message->mr, ascii, (tsk_size_t)tsk_strlen(ascii));
 
 						if(tpdu->mti == tsms_tpdu_mti_deliver_mt){
 							tsms_tpdu_deliver_t* tpdu_deliver = (tsms_tpdu_deliver_t*)tpdu;

@@ -50,12 +50,12 @@ int tsk_uuidgenerate(tsk_uuidstring_t *result)
 	*	Note that the 160 bit SHA-1 hash is truncated to 128 bits to make the length work out.
 	*/
 	tsk_sha1string_t sha1result;
-	tsk_istr_t epoch;
+	tsk_istr_t now;
 	unsigned i, k;
 	static char HEX[] = "0123456789abcdef";
 
-	tsk_itoa(tsk_time_epoch(), &epoch);
-	tsk_sha1compute(epoch, sizeof(epoch), &sha1result);
+	tsk_itoa(tsk_time_now(), &now);
+	tsk_sha1compute(now, sizeof(now), &sha1result);
 
 	/* XOR the SHA-1 result with random numbers. */
 	for(i=0; i<(TSK_UUID_DIGEST_SIZE*2); i+=4){

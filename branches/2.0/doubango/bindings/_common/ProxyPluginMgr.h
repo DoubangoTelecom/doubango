@@ -54,7 +54,10 @@ public:
 	virtual ~ProxyPluginMgr();
 
 	// SWIG %newobject
-	static ProxyPluginMgr* createInstance(ProxyPluginMgrCallback* callback);
+	static ProxyPluginMgr* createInstance(ProxyPluginMgrCallback* pCallback);
+#if !defined(SWIG)
+	static void destroyInstance(ProxyPluginMgr** ppInstance);
+#endif
 	static ProxyPluginMgr* getInstance();
 
 #if !defined(SWIG)

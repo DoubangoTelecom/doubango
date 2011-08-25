@@ -31,7 +31,7 @@ class MediaSessionMgr
 {
 public:
 #if !defined(SWIG)
-	MediaSessionMgr(tmedia_session_mgr_t* mgr);
+	MediaSessionMgr(tmedia_session_mgr_t* pWrappedMgr);
 #endif
 	virtual ~MediaSessionMgr();
 
@@ -54,6 +54,8 @@ public:
 	const ProxyPlugin* findProxyPluginProducer(twrap_media_type_t media)const{
 		return this->findProxyPlugin(media, false);
 	}
+
+	uint64_t getSessionId(twrap_media_type_t media)const;
 	
 	// Defaults
 	static bool defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl);
@@ -80,7 +82,7 @@ public:
 	
 
 private:
-	tmedia_session_mgr_t* mgr;
+	tmedia_session_mgr_t* m_pWrappedMgr;
 };
 
 #endif /* TINYWRAP_MEDIA_SESSIONMGR_H */

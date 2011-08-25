@@ -35,7 +35,7 @@
 #include "tsk_debug.h"
 
 
-int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate)
+static int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate)
 {
 	tdav_speex_jitterbuffer_t *jitterbuffer = (tdav_speex_jitterbuffer_t *)self;
 	if(!(jitterbuffer->state = jitter_buffer_init((int)frame_duration))){
@@ -48,7 +48,7 @@ int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_dur
 	return 0;
 }
 
-int tdav_speex_jitterbuffer_tick(tmedia_jitterbuffer_t* self)
+static int tdav_speex_jitterbuffer_tick(tmedia_jitterbuffer_t* self)
 {
 	tdav_speex_jitterbuffer_t *jitterbuffer = (tdav_speex_jitterbuffer_t *)self;
 	if(!jitterbuffer->state){
@@ -59,7 +59,7 @@ int tdav_speex_jitterbuffer_tick(tmedia_jitterbuffer_t* self)
 	return 0;
 }
 
-int tdav_speex_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, tsk_size_t data_size, const tsk_object_t* proto_hdr)
+static int tdav_speex_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, tsk_size_t data_size, const tsk_object_t* proto_hdr)
 {
 	tdav_speex_jitterbuffer_t *jitterbuffer = (tdav_speex_jitterbuffer_t *)self;
 	const trtp_rtp_header_t* rtp_hdr;
@@ -88,7 +88,7 @@ int tdav_speex_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, tsk_siz
 	return 0;
 }
 
-tsk_size_t tdav_speex_jitterbuffer_get(tmedia_jitterbuffer_t* self, void* out_data, tsk_size_t out_size)
+static tsk_size_t tdav_speex_jitterbuffer_get(tmedia_jitterbuffer_t* self, void* out_data, tsk_size_t out_size)
 {
 	tdav_speex_jitterbuffer_t *jitterbuffer = (tdav_speex_jitterbuffer_t *)self;
 	JitterBufferPacket jb_packet;
@@ -120,7 +120,7 @@ tsk_size_t tdav_speex_jitterbuffer_get(tmedia_jitterbuffer_t* self, void* out_da
 	return out_size;
 }
 
-int tdav_speex_jitterbuffer_reset(tmedia_jitterbuffer_t* self)
+static int tdav_speex_jitterbuffer_reset(tmedia_jitterbuffer_t* self)
 {
 	tdav_speex_jitterbuffer_t *jitterbuffer = (tdav_speex_jitterbuffer_t *)self;
 	if(jitterbuffer->state){
@@ -129,7 +129,7 @@ int tdav_speex_jitterbuffer_reset(tmedia_jitterbuffer_t* self)
 	return 0;
 }
 
-int tdav_speex_jitterbuffer_close(tmedia_jitterbuffer_t* self)
+static int tdav_speex_jitterbuffer_close(tmedia_jitterbuffer_t* self)
 {
 	tdav_speex_jitterbuffer_t *jitterbuffer = (tdav_speex_jitterbuffer_t *)self;
 	if(jitterbuffer->state){

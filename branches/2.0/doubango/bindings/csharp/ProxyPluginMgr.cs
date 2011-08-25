@@ -39,8 +39,8 @@ public class ProxyPluginMgr : IDisposable {
     }
   }
 
-  public static ProxyPluginMgr createInstance(ProxyPluginMgrCallback callback) {
-    IntPtr cPtr = tinyWRAPPINVOKE.ProxyPluginMgr_createInstance(ProxyPluginMgrCallback.getCPtr(callback));
+  public static ProxyPluginMgr createInstance(ProxyPluginMgrCallback pCallback) {
+    IntPtr cPtr = tinyWRAPPINVOKE.ProxyPluginMgr_createInstance(ProxyPluginMgrCallback.getCPtr(pCallback));
     ProxyPluginMgr ret = (cPtr == IntPtr.Zero) ? null : new ProxyPluginMgr(cPtr, true);
     return ret;
   }

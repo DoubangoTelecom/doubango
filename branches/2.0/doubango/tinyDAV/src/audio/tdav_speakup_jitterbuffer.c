@@ -87,12 +87,12 @@ int tdav_speakup_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, tsk_s
 
 	/* synchronize the reference timestamp */
 	if(!jitterbuffer->ref_timestamp){
-		uint64_t epoch = tsk_time_epoch();
+		uint64_t now = tsk_time_now();
 		struct timeval tv;
 		long ts = (rtp_hdr->timestamp/(jitterbuffer->rate/1000));
 		//=> Do not use (see clock_gettime() on linux): tsk_gettimeofday(&tv, tsk_null);
-		tv.tv_sec = (long)(epoch)/1000;
-		tv.tv_usec = (long)(epoch - (tv.tv_sec*1000))*1000;
+		tv.tv_sec = (long)(now)/1000;
+		tv.tv_usec = (long)(now - (tv.tv_sec*1000))*1000;
 
 		tv.tv_sec -= (ts / jitterbuffer->rate);
 		tv.tv_usec -= (ts % jitterbuffer->rate) * 125;

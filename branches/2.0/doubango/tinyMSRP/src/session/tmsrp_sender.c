@@ -148,7 +148,7 @@ void *run(void* self)
 	tsk_size_t end;
 	tsk_size_t total;
 	tsk_istr_t tid;
-	int64_t __now = (int64_t)tsk_time_epoch();
+	int64_t __now = (int64_t)tsk_time_now();
 	tsk_bool_t error = tsk_false;
 
 	TSK_DEBUG_INFO("MSRP SENDER::run -- START");

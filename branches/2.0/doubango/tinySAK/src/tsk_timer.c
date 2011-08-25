@@ -141,7 +141,7 @@ void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self)
 		
 		tsk_list_foreach(item, manager->timers){
 			tsk_timer_t* timer = item->data;
-			TSK_DEBUG_INFO("timer [%llu]- %llu, %llu", timer->id, timer->timeout, tsk_time_epoch());
+			TSK_DEBUG_INFO("timer [%llu]- %llu, %llu", timer->id, timer->timeout, tsk_time_now());
 		}
 
 		tsk_mutex_unlock(manager->mutex);
@@ -241,6 +241,16 @@ int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id
 	return ret;
 }
 
+int tsk_timer_manager_destroy(tsk_timer_manager_handle_t **self)
+{
+	if(!self || !*self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	TSK_OBJECT_SAFE_FREE(*self);
+	return 0;
+}
+
 static void *run(void* self)
 {
 	int ret;
@@ -248,7 +258,7 @@ static void *run(void* self)
 	tsk_timer_manager_t *manager = self;
 
 	TSK_RUNNABLE(manager)->running = tsk_true; // VERY IMPORTANT --> needed by the main thread
-	
+
 	/* create main thread */
 	if((ret = tsk_thread_create(&(manager->mainThreadId[0]), __tsk_timer_manager_mainthread, manager))){
 		TSK_DEBUG_FATAL("Failed to create mainthread: %d\n", ret);
@@ -259,7 +269,7 @@ static void *run(void* self)
 
 	TSK_RUNNABLE_RUN_BEGIN(manager);
 
-	if(curr = TSK_RUNNABLE_POP_FIRST(manager)){
+	if(curr = TSK_RUNNABLE_POP_FIRST_SAFE(TSK_RUNNABLE(manager))){
 		tsk_timer_t *timer = (tsk_timer_t *)curr->data;
 		if(timer->callback){
 			timer->callback(timer->arg, timer->id);
@@ -292,7 +302,7 @@ static void *__tsk_timer_manager_mainthread(void *param)
 	tsk_timer_manager_t *manager = param;
 
 	TSK_DEBUG_INFO("TIMER MANAGER -- START");
-	
+
 	while(TSK_RUNNABLE(manager)->running){
 		tsk_semaphore_decrement(manager->sem);
 
@@ -306,13 +316,13 @@ peek_first:
 		tsk_mutex_unlock(manager->mutex);
 
 		if(curr && !curr->canceled) {
-			epoch = tsk_time_epoch();
+			epoch = tsk_time_now();
 			if(epoch >= curr->timeout){
 				tsk_timer_t *timer = tsk_object_ref(curr);
 				//TSK_DEBUG_INFO("Timer raise %llu", timer->id);
 
 				tsk_mutex_lock(manager->mutex);
-				TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(manager), timer);
+				TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(manager), timer);
 				tsk_list_remove_item_by_data(manager->timers, curr);
 				tsk_mutex_unlock(manager->mutex);
 			}
@@ -493,7 +503,7 @@ static tsk_object_t* tsk_timer_ctor(tsk_object_t * self, va_list * app)
 		timer->callback = va_arg(*app, tsk_timer_callback_f);
 		timer->arg = va_arg(*app, const void *);
 
-		timer->timeout += tsk_time_epoch();
+		timer->timeout += tsk_time_now();
 	}
 	return self;
 }

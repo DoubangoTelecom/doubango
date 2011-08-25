@@ -61,16 +61,27 @@ ProxyPluginMgr::~ProxyPluginMgr()
 	TSK_OBJECT_SAFE_FREE(this->plugins);
 }
 
-ProxyPluginMgr* ProxyPluginMgr::createInstance(ProxyPluginMgrCallback* _callback)
+ProxyPluginMgr* ProxyPluginMgr::createInstance(ProxyPluginMgrCallback* pCallback)
 {
 	if(!ProxyPluginMgr::instance){
-		ProxyPluginMgr::instance = new ProxyPluginMgr(_callback);
+		ProxyPluginMgr::instance = new ProxyPluginMgr(pCallback);
 	}
 	else{
 		TSK_DEBUG_WARN("Plugin instance already exist");
-		ProxyPluginMgr::instance->callback = _callback;
+		ProxyPluginMgr::instance->callback = pCallback;
 	}
 	return ProxyPluginMgr::instance;
+}
+
+void ProxyPluginMgr::destroyInstance(ProxyPluginMgr** ppInstance)
+{
+	if(ppInstance && *ppInstance){
+		bool bMatch = ProxyPluginMgr::instance && (*ppInstance == ProxyPluginMgr::instance);
+		delete *ppInstance, *ppInstance = tsk_null;
+		if(bMatch){
+			ProxyPluginMgr::instance = tsk_null;
+		}
+	}
 }
 
 ProxyPluginMgr* ProxyPluginMgr::getInstance()

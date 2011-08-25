@@ -63,6 +63,10 @@ public class MediaSessionMgr {
     return (cPtr == 0) ? null : new ProxyPlugin(cPtr, false);
   }
 
+  public java.math.BigInteger getSessionId(twrap_media_type_t media) {
+    return tinyWRAPJNI.MediaSessionMgr_getSessionId(swigCPtr, this, media.swigValue());
+  }
+
   public static boolean defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetBandwidthLevel(bl.swigValue());
   }

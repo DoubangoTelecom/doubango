@@ -30,9 +30,9 @@ static void *__droid_destroy_mgr(void *mgr){
 #endif
 
 
-MediaSessionMgr::MediaSessionMgr(tmedia_session_mgr_t* _mgr)
+MediaSessionMgr::MediaSessionMgr(tmedia_session_mgr_t* pWrappedMgr)
 {
-	this->mgr = (tmedia_session_mgr_t*)tsk_object_ref(_mgr);
+	m_pWrappedMgr = (tmedia_session_mgr_t*)tsk_object_ref(pWrappedMgr);
 }
 
 MediaSessionMgr::~MediaSessionMgr()
@@ -41,14 +41,14 @@ MediaSessionMgr::~MediaSessionMgr()
 	// On Android, deleting the manager from the managed code will trigger OnPluginDestroyed() event
 	// for each plugin associated to this manager (audio,video,...consumers/producers)
 	void* tid[1] = { tsk_null };
-	if(tsk_thread_create(tid, __droid_destroy_mgr, this->mgr) == 0){
+	if(tsk_thread_create(tid, __droid_destroy_mgr, m_pWrappedMgr) == 0){
 		tsk_thread_join(tid);
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to start the thread");
 	}
 #else
-	TSK_OBJECT_SAFE_FREE(this->mgr);
+	TSK_OBJECT_SAFE_FREE(m_pWrappedMgr);
 #endif
 }
 
@@ -61,7 +61,7 @@ bool MediaSessionMgr::sessionSetInt32(twrap_media_type_t media, const char* key,
 bool MediaSessionMgr::consumerSetInt32(twrap_media_type_t media, const char* key, int32_t value)
 {
 	tmedia_type_t _media = _get_media_type(media);
-	return (tmedia_session_mgr_set(this->mgr,
+	return (tmedia_session_mgr_set(m_pWrappedMgr,
 		TMEDIA_SESSION_CONSUMER_SET_INT32(_media, key, value),
 		TMEDIA_SESSION_SET_NULL()) == 0);
 }
@@ -69,7 +69,7 @@ bool MediaSessionMgr::consumerSetInt32(twrap_media_type_t media, const char* key
 bool MediaSessionMgr::consumerSetInt64(twrap_media_type_t media, const char* key, int64_t value)
 {
 	tmedia_type_t _media = _get_media_type(media);
-	return (tmedia_session_mgr_set(this->mgr,
+	return (tmedia_session_mgr_set(m_pWrappedMgr,
 		TMEDIA_SESSION_CONSUMER_SET_INT64(_media, key, value),
 		TMEDIA_SESSION_SET_NULL()) == 0);
 }
@@ -77,7 +77,7 @@ bool MediaSessionMgr::consumerSetInt64(twrap_media_type_t media, const char* key
 bool MediaSessionMgr::producerSetInt32(twrap_media_type_t media, const char* key, int32_t value)
 {
 	tmedia_type_t _media = _get_media_type(media);
-	return (tmedia_session_mgr_set(this->mgr,
+	return (tmedia_session_mgr_set(m_pWrappedMgr,
 		TMEDIA_SESSION_PRODUCER_SET_INT32(_media, key, value),
 		TMEDIA_SESSION_SET_NULL()) == 0);
 }
@@ -85,7 +85,7 @@ bool MediaSessionMgr::producerSetInt32(twrap_media_type_t media, const char* key
 bool MediaSessionMgr::producerSetInt64(twrap_media_type_t media, const char* key, int64_t value)
 {
 	tmedia_type_t _media = _get_media_type(media);
-	return (tmedia_session_mgr_set(this->mgr,
+	return (tmedia_session_mgr_set(m_pWrappedMgr,
 		TMEDIA_SESSION_PRODUCER_SET_INT64(_media, key, value),
 		TMEDIA_SESSION_SET_NULL()) == 0);
 }
@@ -105,9 +105,9 @@ const ProxyPlugin* MediaSessionMgr::findProxyPlugin(twrap_media_type_t media, bo
 		return tsk_null;
 	}
 
-	if(manager && this->mgr){
+	if(manager && m_pWrappedMgr){
 		tmedia_type_t _media = _get_media_type(media);
-		tmedia_session_t* session = tmedia_session_mgr_find(this->mgr, _media);
+		tmedia_session_t* session = tmedia_session_mgr_find(m_pWrappedMgr, _media);
 		if(session){
 			if(session->plugin == tdav_session_audio_plugin_def_t){
 				if(consumer){
@@ -135,6 +135,31 @@ const ProxyPlugin* MediaSessionMgr::findProxyPlugin(twrap_media_type_t media, bo
 	return plugin;
 }
 
+uint64_t MediaSessionMgr::getSessionId(twrap_media_type_t media)const
+{
+	const ProxyPlugin* plugin = tsk_null;
+	ProxyPluginMgr* manager = ProxyPluginMgr::getInstance();
+	uint64_t id = 0;
+
+	if(media != twrap_media_audio && media != twrap_media_video){
+		TSK_DEBUG_ERROR("Invalid media type");
+		return tsk_null;
+	}
+
+	if(manager && m_pWrappedMgr){
+		tmedia_type_t _media = _get_media_type(media);
+		tmedia_session_t* session = tmedia_session_mgr_find(m_pWrappedMgr, _media);
+		if(session){
+			id = session->id;
+		}
+		tsk_object_unref(session);
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid state");
+	}
+
+	return id;
+}
 
 bool MediaSessionMgr::defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl)
 {
