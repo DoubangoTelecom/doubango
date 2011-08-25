@@ -54,6 +54,7 @@ typedef enum tdav_codec_id_e
 	tdav_codec_id_bv32 = 0x00000001<<12,
 	tdav_codec_id_evrc = 0x00000001<<13,
 	tdav_codec_id_g729ab = 0x00000001<<14,
+	tdav_codec_id_g722 = 0x00000001<<15,
 	
 	/* room for new Audio codecs */
 	

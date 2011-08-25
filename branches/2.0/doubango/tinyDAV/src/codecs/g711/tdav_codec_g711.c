@@ -29,7 +29,7 @@
  */
 #include "tinydav/codecs/g711/tdav_codec_g711.h"
 
-#include "tinydav/codecs/g711/g711.h" /* alforithms */
+#include "tinydav/codecs/g711/g711.h" /* algorithms */
 
 #include "tsk_memory.h"
 #include "tsk_debug.h"
@@ -45,29 +45,29 @@ static tsk_size_t tdav_codec_g711u_encode(tmedia_codec_t* self, const void* in_d
 {
 	register tsk_size_t i;
 	register uint8_t* pout_data;
-	register short* pin_data;
+	register int16_t* pin_data;
 	
 	if(!self || !in_data || !in_size || !out_data){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 	
-	if(*out_max_size <in_size/2){
-		if(!(*out_data = tsk_realloc(*out_data, in_size/2))){
+	if(*out_max_size <in_size>>1){
+		if(!(*out_data = tsk_realloc(*out_data, in_size>>1))){
 			TSK_DEBUG_ERROR("Failed to allocate new buffer");
 			*out_max_size = 0;
 			return 0;
 		}
-		*out_max_size = in_size/2;
+		*out_max_size = in_size>>1;
 	}
 	
 	pout_data = *out_data;
-	pin_data = (short*)in_data;
-	for(i = 0; i<(in_size/2); i++){
+	pin_data = (int16_t*)in_data;
+	for(i = 0; i<(in_size>>1); i++){
 		pout_data[i] = linear2ulaw(pin_data[i]);
 	}
 	
-	return (in_size/2);
+	return (in_size>>1);
 }
 
 static tsk_size_t tdav_codec_g711u_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
@@ -80,20 +80,20 @@ static tsk_size_t tdav_codec_g711u_decode(tmedia_codec_t* self, const void* in_d
 	}
 
 	/* allocate new buffer */
-	if(*out_max_size<(in_size*2)){
-		if(!(*out_data = tsk_calloc(in_size, sizeof(short)))){
+	if(*out_max_size<(in_size<<1)){
+		if(!(*out_data = tsk_calloc(in_size, sizeof(int16_t)))){
 			TSK_DEBUG_ERROR("Failed to allocate new buffer");
 			*out_max_size = 0;
 			return 0;
 		}
-		*out_max_size = in_size*2;
+		*out_max_size = in_size<<1;
 	}
 
 	for(i = 0; i<in_size; i++){
 		((short*)*out_data)[i] = ulaw2linear(((uint8_t*)in_data)[i]);
 	}
 	
-	return (in_size*2);
+	return (in_size<<1);
 }
 
 static tsk_bool_t tdav_codec_g711u_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
@@ -178,29 +178,29 @@ static tsk_size_t tdav_codec_g711a_encode(tmedia_codec_t* self, const void* in_d
 {
 	register tsk_size_t i;
 	register uint8_t* pout_data;
-	register short* pin_data;
+	register int16_t* pin_data;
 	
 	if(!self || !in_data || !in_size || !out_data){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 	
-	if(*out_max_size <in_size/2){
-		if(!(*out_data = tsk_realloc(*out_data, in_size/2))){
+	if(*out_max_size <in_size>>1){
+		if(!(*out_data = tsk_realloc(*out_data, in_size>>1))){
 			TSK_DEBUG_ERROR("Failed to allocate new buffer");
 			*out_max_size = 0;
 			return 0;
 		}
-		*out_max_size = in_size/2;
+		*out_max_size = in_size>>1;
 	}
 	
 	pout_data = *out_data;
-	pin_data = (short*)in_data;
-	for(i = 0; i<(in_size/2); i++){
+	pin_data = (int16_t*)in_data;
+	for(i = 0; i<(in_size>>1); i++){
 		pout_data[i] = linear2alaw(pin_data[i]);
 	}
 
-	return (in_size/2);
+	return (in_size>>1);
 }
 
 #if 0
@@ -221,13 +221,13 @@ static tsk_size_t tdav_codec_g711a_decode(tmedia_codec_t* self, const void* in_d
 	}
 #endif
 	/* allocate new buffer */
-	if(*out_max_size<(in_size*2)){
-		if(!(*out_data = tsk_realloc(*out_data, in_size*2))){
+	if(*out_max_size<(in_size<<1)){
+		if(!(*out_data = tsk_realloc(*out_data, in_size<<1))){
 			TSK_DEBUG_ERROR("Failed to allocate new buffer");
 			*out_max_size = 0;
 			return 0;
 		}
-		*out_max_size = in_size*2;
+		*out_max_size = in_size<<1;
 	}
 	
 	for(i = 0; i<in_size; i++){
@@ -242,7 +242,7 @@ static tsk_size_t tdav_codec_g711a_decode(tmedia_codec_t* self, const void* in_d
 		file = tsk_null;
 	}
 #endif
-	return (in_size*2);
+	return (in_size<<1);
 }
 
 static tsk_bool_t tdav_codec_g711a_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
