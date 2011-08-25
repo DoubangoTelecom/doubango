@@ -2300,6 +2300,7 @@ package tinyWRAP;
 *tdav_codec_id_bv32 = *tinyWRAPc::tdav_codec_id_bv32;
 *tdav_codec_id_evrc = *tinyWRAPc::tdav_codec_id_evrc;
 *tdav_codec_id_g729ab = *tinyWRAPc::tdav_codec_id_g729ab;
+*tdav_codec_id_g722 = *tinyWRAPc::tdav_codec_id_g722;
 *tdav_codec_id_h261 = *tinyWRAPc::tdav_codec_id_h261;
 *tdav_codec_id_h263 = *tinyWRAPc::tdav_codec_id_h263;
 *tdav_codec_id_h263p = *tinyWRAPc::tdav_codec_id_h263p;

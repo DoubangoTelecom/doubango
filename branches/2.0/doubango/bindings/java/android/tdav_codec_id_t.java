@@ -25,6 +25,7 @@ public enum tdav_codec_id_t {
   tdav_codec_id_bv32(0x00000001 << 12),
   tdav_codec_id_evrc(0x00000001 << 13),
   tdav_codec_id_g729ab(0x00000001 << 14),
+  tdav_codec_id_g722(0x00000001 << 15),
   tdav_codec_id_h261(0x00010000 << 0),
   tdav_codec_id_h263(0x00010000 << 1),
   tdav_codec_id_h263p(0x00010000 << 2),

@@ -162,7 +162,7 @@ static void *__playback_thread(void *param)
 
 	TSK_DEBUG_INFO("__playback_thread -- START");
 
-	SetPriorityClass(GetCurrentThread(), REALTIME_PRIORITY_CLASS);
+	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 
 	for(;;){
 		dwEvent = WaitForMultipleObjects(2, consumer->events, FALSE, INFINITE);

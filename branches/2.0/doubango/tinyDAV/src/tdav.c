@@ -52,6 +52,7 @@
 #include "tinydav/codecs/gsm/tdav_codec_gsm.h"
 #include "tinydav/codecs/ilbc/tdav_codec_ilbc.h"
 #include "tinydav/codecs/g729/tdav_codec_g729.h"
+#include "tinydav/codecs/g722/tdav_codec_g722.h"
 #include "tinydav/codecs/speex/tdav_codec_speex.h"
 #include "tinydav/codecs/h261/tdav_codec_h261.h"
 #include "tinydav/codecs/h263/tdav_codec_h263.h"
@@ -152,6 +153,7 @@ int tdav_init()
 	tmedia_codec_plugin_register(tdav_codec_msrp_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_g722_plugin_def_t);
 #if HAVE_OPENCORE_AMR
 	tmedia_codec_plugin_register(tdav_codec_amrnb_oa_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_amrnb_be_plugin_def_t);
@@ -273,6 +275,7 @@ static tdav_codec_decl_t __codecs[] = {
 #endif
 	{ tdav_codec_id_pcma, &tdav_codec_g711a_plugin_def_t },
 	{ tdav_codec_id_pcmu, &tdav_codec_g711u_plugin_def_t },
+	{ tdav_codec_id_g722, &tdav_codec_g722_plugin_def_t },
 #if HAVE_ILBC
 	{ tdav_codec_id_ilbc, &tdav_codec_ilbc_plugin_def_t },
 #endif
@@ -371,6 +374,7 @@ tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
 
 		case tdav_codec_id_pcma:
 		case tdav_codec_id_pcmu:
+		case tdav_codec_id_g722:
 			return tsk_true;
 
 		case tdav_codec_id_ilbc:
@@ -475,6 +479,7 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_msrp_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_g711u_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_g722_plugin_def_t);
 #if HAVE_OPENCORE_AMR
 	tmedia_codec_plugin_unregister(tdav_codec_amrnb_oa_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_amrnb_be_plugin_def_t);

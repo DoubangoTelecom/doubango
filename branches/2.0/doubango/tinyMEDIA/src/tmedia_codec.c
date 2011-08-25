@@ -343,11 +343,18 @@ char* tmedia_codec_get_rtpmap(const tmedia_codec_t* self)
 		case tmedia_audio:
 			{	/* audio codecs */
 				/* const tmedia_codec_audio_t* audioCodec = (const tmedia_codec_audio_t*)self; */
-				if(self->plugin->audio.channels > 0){
-					tsk_sprintf(&rtpmap, "%s %s/%d/%d", self->neg_format? self->neg_format : self->format, self->name, self->plugin->rate, self->plugin->audio.channels);
+
+				// special case for G.722 which has fake rate
+				if(tsk_strequals(self->plugin->format,TMEDIA_CODEC_FORMAT_G722)){
+					tsk_sprintf(&rtpmap, "%s %s/8000/%d", self->neg_format? self->neg_format : self->format, self->name, self->plugin->audio.channels);
 				}
 				else{
-					tsk_sprintf(&rtpmap, "%s %s/%d", self->neg_format? self->neg_format : self->format, self->name, self->plugin->audio);
+					if(self->plugin->audio.channels > 0){
+						tsk_sprintf(&rtpmap, "%s %s/%d/%d", self->neg_format? self->neg_format : self->format, self->name, self->plugin->rate, self->plugin->audio.channels);
+					}
+					else{
+						tsk_sprintf(&rtpmap, "%s %s/%d", self->neg_format? self->neg_format : self->format, self->name, self->plugin->audio);
+					}
 				}
 			}
 			break;

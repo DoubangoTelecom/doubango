@@ -54,7 +54,7 @@ static void *__playback_thread(void *param)
 
 	TSK_DEBUG_INFO("__record_thread -- START");
 
-	SetPriorityClass(GetCurrentThread(), REALTIME_PRIORITY_CLASS);
+	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 
 	for(;;){
 		DWORD dwEvent = WaitForMultipleObjects(sizeof(dsound->notifEvents)/sizeof(HANDLE), dsound->notifEvents, FALSE, INFINITE);

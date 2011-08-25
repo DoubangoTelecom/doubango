@@ -22465,6 +22465,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tdav_codec_id_bv32",SWIG_From_int(static_cast< int >(tdav_codec_id_bv32)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_evrc",SWIG_From_int(static_cast< int >(tdav_codec_id_evrc)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_g729ab",SWIG_From_int(static_cast< int >(tdav_codec_id_g729ab)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_g722",SWIG_From_int(static_cast< int >(tdav_codec_id_g722)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h261",SWIG_From_int(static_cast< int >(tdav_codec_id_h261)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h263",SWIG_From_int(static_cast< int >(tdav_codec_id_h263)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h263p",SWIG_From_int(static_cast< int >(tdav_codec_id_h263p)));

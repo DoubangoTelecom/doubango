@@ -225,6 +225,14 @@
 				<Filter
 					Name="g722"
 					>
+					<File
+						RelativePath=".\include\tinydav\codecs\g722\g722_enc_dec.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\tinydav\codecs\g722\tdav_codec_g722.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="gsm"
@@ -521,6 +529,18 @@
 				<Filter
 					Name="g722"
 					>
+					<File
+						RelativePath=".\src\codecs\g722\g722_decode.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\codecs\g722\g722_encode.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\codecs\g722\tdav_codec_g722.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="gsm"

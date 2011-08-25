@@ -138,7 +138,7 @@ static int tdav_webrtc_denoise_echo_playback(tmedia_denoise_t* self, const void*
 			case 32000:
 				{
 					uint32_t i;
-					for(i = 0; i<denoiser->frame_size; i+=denoiser->frame_size/2){
+					for(i = 0; i<1/*denoiser->frame_size*/; i+=denoiser->frame_size/2){
 						if((ret = TDAV_WebRtcAec_BufferFarend(denoiser->AEC_inst, &pEchoFrame[i], denoiser->frame_size/2))){
 							TSK_DEBUG_ERROR("WebRtcAec_BufferFarend failed with error code = %d", ret);
 							return ret;

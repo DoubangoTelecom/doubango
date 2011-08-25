@@ -184,6 +184,11 @@ OBJS += src/codecs/amr/tdav_codec_amr.o
 OBJS += src/codecs/g711/g711.o \
 	src/codecs/g711/tdav_codec_g711.o
 	
+		### codecs (G.722)
+OBJS += src/codecs/g722/g722_decode.o \
+		src/codecs/g722/g722_encode.o \
+		src/codecs/g722/tdav_codec_g722.o
+	
 	### codecs (G.729)
 OBJS += src/codecs/g729/tdav_codec_g729.o
 	
