@@ -142,6 +142,7 @@ tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id, uint3
 	if((inst = tsk_object_new(tdav_audiounit_instance_def_t))){
 		OSStatus status = noErr;
 		tdav_audiounit_instance_t* _inst;
+#if TARGET_OS_IPHONE
 		// set preferred buffer size
 		Float32 preferredBufferSize = ((Float32)ptime / 1000.f); // in seconds
 		status = AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration, sizeof(preferredBufferSize), &preferredBufferSize);
@@ -160,7 +161,7 @@ tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id, uint3
 			TSK_DEBUG_ERROR("AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareIOBufferDuration, %f) failed", preferredBufferSize);
 		}
 
-#if TARGET_OS_IPHONE
+		
 		UInt32 audioCategory = kAudioSessionCategory_PlayAndRecord;
 		status = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(audioCategory), &audioCategory);
 		if(status){
@@ -249,11 +250,14 @@ int tdav_audiounit_handle_mute(tdav_audiounit_handle_t* self, tsk_bool_t mute)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	
+#if TARGET_OS_IPHONE
 	status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_MuteOutput,
 								  kAudioUnitScope_Output, kOutputBus, mute ? &kOne : &kZero, mute ? sizeof(kOne) : sizeof(kZero));
 	
 	return status ? -2 : 0;
+#else
+	return 0;
+#endif
 }
 
 int tdav_audiounit_handle_stop(tdav_audiounit_handle_t* self)

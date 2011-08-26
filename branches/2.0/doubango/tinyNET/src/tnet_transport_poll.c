@@ -580,6 +580,7 @@ void *tnet_transport_mainthread(void *param)
 	int ret;
 	tsk_size_t i;
 
+	struct sockaddr_storage remote_addr = {0};
 	transport_socket_t* active_socket;
 
 	/* check whether the transport is already prepared */
@@ -700,14 +701,24 @@ void *tnet_transport_mainthread(void *param)
 						len = tlslen;
 					}
 				}
-				else if((ret = tnet_sockfd_recv(active_socket->fd, buffer, len, 0)) < 0){
-					TSK_FREE(buffer);
+				else {
+					if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
+						ret = tnet_sockfd_recv(active_socket->fd, buffer, len, 0);
+					}
+					else {
+						ret = tnet_sockfd_recvfrom(active_socket->fd, buffer, len, 0, (struct sockaddr*)&remote_addr);
+					}
 					
-					removeSocket(i, context);
-					TNET_PRINT_LAST_ERROR("recv have failed.");
-					continue;
+					if(ret < 0){
+						TSK_FREE(buffer);
+						
+						removeSocket(i, context);
+						TNET_PRINT_LAST_ERROR("recv/recvfrom have failed.");
+						continue;
+					}
 				}
-				else if((len != (tsk_size_t)ret) && len){ /* useless test? */
+				
+				if((len != (tsk_size_t)ret) && len){ /* useless test? */
 					len = (tsk_size_t)ret;
 					/* buffer = tsk_realloc(buffer, len); */
 				}
@@ -715,6 +726,7 @@ void *tnet_transport_mainthread(void *param)
 				e = tnet_transport_event_create(event_data, transport->callback_data, active_socket->fd);
 				e->data = buffer;
 				e->size = len;
+				e->remote_addr = remote_addr;
 				
 				TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(transport), e);
 
