@@ -94,7 +94,7 @@
 #	define HAVE_IFADDRS			1
 #   define HAVE_DNS_H			1
 #	define TNET_HAVE_SS_LEN		1
-#	define TNET_HAVE_SA_LEN		1
+#	define TNET_HAVE_SA_LEN		0
 #else
 #	define HAVE_IFADDRS			0
 #   define HAVE_DNS_H			0

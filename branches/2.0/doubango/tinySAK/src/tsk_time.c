@@ -43,11 +43,9 @@
 #endif
 
 #include <time.h>
-#if defined __APPLE__ && 0
+#if defined (__APPLE__)
 #	include <mach/mach.h>
 #	include <mach/mach_time.h>
-
-static mach_timebase_info_data_t    __apple_timebase_info = {0, 0};
 #endif
 
 /**@defgroup tsk_time_group Datetime functions.
@@ -56,7 +54,7 @@ static mach_timebase_info_data_t    __apple_timebase_info = {0, 0};
 #if !HAVE_GETTIMEOFDAY
 #if TSK_UNDER_WINDOWS
 
-/* Thanks to "http://www.cpp-programming.net/c-tidbits/gettimeofday-function-for-windows" */
+/* For windows implementation of "gettimeofday" Thanks to "http://www.cpp-programming.net/c-tidbits/gettimeofday-function-for-windows" */
 #if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
 #define DELTA_EPOCH_IN_MICROSECS 11644473600000000Ui64
 #else
@@ -164,6 +162,12 @@ uint64_t tsk_time_now()
 	struct timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
 	return (((uint64_t)ts.tv_sec)*(uint64_t)1000) + (((uint64_t)ts.tv_nsec)/(uint64_t)1000000);
+#elif defined(__APPLE__)
+    static mach_timebase_info_data_t __apple_timebase_info = {0, 0};
+    if (__apple_timebase_info.denom == 0) {
+        (void) mach_timebase_info(&__apple_timebase_info);
+    }
+    return (uint64_t)((mach_absolute_time() * __apple_timebase_info.numer) / (1e+6 * __apple_timebase_info.denom));
 #else
 	struct timeval tv;
 	gettimeofday(&tv, 0); 

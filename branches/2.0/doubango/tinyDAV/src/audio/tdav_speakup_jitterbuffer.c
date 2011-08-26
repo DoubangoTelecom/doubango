@@ -43,8 +43,6 @@
 #       include <sys/time.h>
 #endif
 
-static int _10ms_size_bytes = 160;
-
 #define TDAV_SPEAKUP_10MS						10
 #define TDAV_SPEAKUP_10MS_FRAME_SIZE(self)		(((self)->rate * TDAV_SPEAKUP_10MS)/1000)
 #define TDAV_SPEAKUP_PTIME_FRAME_SIZE(self)		(((self)->rate * (self)->framesize)/1000)
@@ -62,6 +60,7 @@ int tdav_speakup_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_d
 	jitterbuffer->ref_timestamp = 0;
 	jitterbuffer->frame_duration = frame_duration;
 	jitterbuffer->rate = rate;
+	jitterbuffer->_10ms_size_bytes = 160 * (rate/8000);
 
 	return 0;
 }
@@ -124,9 +123,9 @@ int tdav_speakup_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, tsk_s
 	now = (long) (tsk_time_now()-jitterbuffer->ref_timestamp);
 	ts = (long)(rtp_hdr->timestamp/(jitterbuffer->rate/1000));
 	pdata = (uint8_t*)data;
-	for(i=0; i<(int)(data_size/_10ms_size_bytes);i++){
-		if((_10ms_buf = tsk_calloc(_10ms_size_bytes, 1))){
-			memcpy(_10ms_buf, &pdata[i*_10ms_size_bytes], _10ms_size_bytes);
+	for(i=0; i<(int)(data_size/jitterbuffer->_10ms_size_bytes);i++){
+		if((_10ms_buf = tsk_calloc(jitterbuffer->_10ms_size_bytes, 1))){
+			memcpy(_10ms_buf, &pdata[i*jitterbuffer->_10ms_size_bytes], jitterbuffer->_10ms_size_bytes);
 			jb_put(jitterbuffer->jbuffer, _10ms_buf, JB_TYPE_VOICE, TDAV_SPEAKUP_10MS, ts, now, jitterbuffer->jcodec);
 			_10ms_buf = tsk_null;
 		}
@@ -146,12 +145,12 @@ tsk_size_t tdav_speakup_jitterbuffer_get(tmedia_jitterbuffer_t* self, void* out_
 	short* _10ms_buf = tsk_null;
 	uint8_t* pout_data = (uint8_t*)out_data;
 
-	if(!out_data || (out_size % _10ms_size_bytes)){
+	if(!out_data || (out_size % jitterbuffer->_10ms_size_bytes)){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 	
-	_10ms_count = (out_size/_10ms_size_bytes);
+	_10ms_count = (out_size/jitterbuffer->_10ms_size_bytes);
 	now = (long) (tsk_time_now() - jitterbuffer->ref_timestamp);
 	for(i=0; i<_10ms_count; i++){
 
@@ -160,7 +159,7 @@ tsk_size_t tdav_speakup_jitterbuffer_get(tmedia_jitterbuffer_t* self, void* out_
 			case JB_INTERP:
 				TSK_DEBUG_INFO("JB_INTERP");
 				jb_reset_all(jitterbuffer->jbuffer);
-				memset(&pout_data[i*_10ms_size_bytes], 0, (_10ms_count*_10ms_size_bytes)-(i*_10ms_size_bytes));
+				memset(&pout_data[i*jitterbuffer->_10ms_size_bytes], 0, (_10ms_count*jitterbuffer->_10ms_size_bytes)-(i*jitterbuffer->_10ms_size_bytes));
 				i = _10ms_count; // for exit
 				break;
 			case JB_OK:
@@ -170,11 +169,11 @@ tsk_size_t tdav_speakup_jitterbuffer_get(tmedia_jitterbuffer_t* self, void* out_
 				{
 					if(_10ms_buf && (jret == JB_OK)){
 						/* copy data */
-						memcpy(&pout_data[i*_10ms_size_bytes], _10ms_buf, _10ms_size_bytes);
+						memcpy(&pout_data[i*jitterbuffer->_10ms_size_bytes], _10ms_buf, jitterbuffer->_10ms_size_bytes);
 					}
 					else{
 						/* copy silence */
-						memset(&pout_data[i*_10ms_size_bytes], 0, _10ms_size_bytes);
+						memset(&pout_data[i*jitterbuffer->_10ms_size_bytes], 0, jitterbuffer->_10ms_size_bytes);
 					}
 				}
 
@@ -184,7 +183,7 @@ tsk_size_t tdav_speakup_jitterbuffer_get(tmedia_jitterbuffer_t* self, void* out_
 		TSK_FREE(_10ms_buf);
 	}
 
-	return (_10ms_count * _10ms_size_bytes);
+	return (_10ms_count * jitterbuffer->_10ms_size_bytes);
 }
 
 int tdav_speakup_jitterbuffer_reset(tmedia_jitterbuffer_t* self)
