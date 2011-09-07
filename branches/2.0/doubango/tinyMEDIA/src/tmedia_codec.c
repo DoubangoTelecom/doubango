@@ -82,16 +82,14 @@ int tmedia_codec_init(tmedia_codec_t* self, tmedia_type_t type, const char* name
 	// Video flipping: For backward compatibility we have to initialize the default values
 	// according to the CFLAGS: 'FLIP_ENCODED_PICT' and 'FLIP_DECODED_PICT'. At any time you
 	// can update thse values (e.g. when the device switch from landscape to portrait) using video_session->set();
+	if(type & tmedia_video){
 #if FLIP_ENCODED_PICT
-	self->video.flip.encoded = tsk_true;
-#else
-	self->video.flip.encoded = tsk_false;
+		TMEDIA_CODEC_VIDEO(self)->out.flip = tsk_true;
 #endif
 #if FLIP_DECODED_PICT
-	self->video.flip.decoded = tsk_true;
-#else
-	self->video.flip.decoded = tsk_false;
+		TMEDIA_CODEC_VIDEO(self)->in.flip = tsk_true;
 #endif
+	}
 
 	return 0;
 }
@@ -301,9 +299,11 @@ tmedia_codec_t* tmedia_codec_create(const char* format)
 						{ /* Video codec */
 							tmedia_codec_video_t* video = TMEDIA_CODEC_VIDEO(codec);
 							tmedia_codec_video_init(TMEDIA_CODEC(video), plugin->name, plugin->desc, plugin->format);
-							video->in.width = video->out.width = plugin->video.width;
-							video->in.height = video->out.height = plugin->video.height;
-							video->in.fps = video->out.fps = plugin->video.fps;
+							if(!video->in.width)video->in.width = video->out.width = plugin->video.width;
+							if(!video->in.height)video->in.height = video->out.height = plugin->video.height;
+							if(!video->in.fps)video->in.fps = video->out.fps = plugin->video.fps;
+							if(video->in.chroma==tmedia_chroma_none)video->in.chroma = tmedia_chroma_yuv420p;
+							if(video->out.chroma==tmedia_chroma_none)video->out.chroma = tmedia_chroma_yuv420p;
 							break;
 						}
 					case tmedia_msrp:

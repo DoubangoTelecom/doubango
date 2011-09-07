@@ -216,7 +216,7 @@ static tsk_object_t* tnet_socket_ctor(tsk_object_t * self, va_list * app)
 		
 		/* Find our address. */
 		for(ptr = result; ptr; ptr = ptr->ai_next){
-			sock->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+			sock->fd = tnet_soccket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 			if(ptr->ai_family != AF_INET6 && ptr->ai_family != AF_INET){
 				continue;
 			}

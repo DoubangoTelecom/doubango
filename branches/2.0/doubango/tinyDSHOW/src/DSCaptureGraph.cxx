@@ -48,7 +48,6 @@ DSCaptureGraph::DSCaptureGraph(ISampleGrabberCB* callback, HRESULT *hr)
 	this->colorConvertor565 = NULL;
 #else
 	this->frameRateFilter = NULL;
-	this->decompressorFilter = NULL;
 #endif
 
 	this->nullRendererFilter = NULL;
@@ -75,7 +74,6 @@ DSCaptureGraph::~DSCaptureGraph()
 #ifdef _WIN32_WCE
 	SAFE_RELEASE(this->colorConvertor565);
 #else
-	SAFE_RELEASE(this->decompressorFilter);
 #endif
 
 	SAFE_RELEASE(this->nullRendererFilter);
@@ -212,8 +210,9 @@ HRESULT DSCaptureGraph::connect()
 		hr = ConnectFilters(this->graphBuilder, this->colorConvertor565, this->sampleGrabberFilter)	;	if(FAILED(hr))return hr;
 		hr = ConnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter);	if(FAILED(hr))return hr;
 #else
-		hr = ConnectFilters(this->graphBuilder, this->sourceFilter, this->decompressorFilter); if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
-		hr = ConnectFilters(this->graphBuilder, this->decompressorFilter, this->frameRateFilter); if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
+		// No convertor needed
+		// AVI Decompressor Filter is automatically by the Filter Graph Manager when needed
+		hr = ConnectFilters(this->graphBuilder, this->sourceFilter, this->frameRateFilter); if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
 		hr = ConnectFilters(this->graphBuilder, this->frameRateFilter, this->sampleGrabberFilter); if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
 		hr = ConnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter); if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
 #endif
@@ -255,8 +254,7 @@ HRESULT DSCaptureGraph::disconnect()
 		hr = DisconnectFilters(this->graphBuilder, this->colorConvertor565, this->sampleGrabberFilter); if(FAILED(hr))return hr;
 		hr = DisconnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter); if(FAILED(hr))return hr;
 #else
-		hr = DisconnectFilters(this->graphBuilder, this->sourceFilter, this->decompressorFilter);
-		hr = DisconnectFilters(this->graphBuilder, this->decompressorFilter, this->frameRateFilter);
+		hr = DisconnectFilters(this->graphBuilder, this->sourceFilter, this->frameRateFilter);
 		hr = DisconnectFilters(this->graphBuilder, this->frameRateFilter, this->sampleGrabberFilter);
 		hr = DisconnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter);
 #endif
@@ -375,10 +373,6 @@ HRESULT DSCaptureGraph::createCaptureGraph()
 	hr = COCREATE(CLSID_SampleGrabber, IID_IBaseFilter, this->sampleGrabberFilter);
 	if(FAILED(hr)) return hr;
 
-	// Create the AVI decoder filter
-	hr = COCREATE(CLSID_AVIDec, IID_IBaseFilter, this->decompressorFilter);
-	if(FAILED(hr)) return hr;
-
 	// Create tdshow filter
 	LPUNKNOWN pUnk = NULL;
 	this->frameRateFilter = new DSFrameRateFilter(FILTER_FRAMERATE, pUnk, &hr);
@@ -400,21 +394,9 @@ HRESULT DSCaptureGraph::createCaptureGraph()
 	hr = this->graphBuilder->AddFilter(this->frameRateFilter, FILTER_FRAMERATE);
 	if(FAILED(hr)) return hr;
 
-	// Add AVIDec to the graph
-	hr = this->graphBuilder->AddFilter(this->decompressorFilter, FILTER_AVI_DECOMPRESSOR);
-	if(FAILED(hr)) return hr;
-
 	// Find media control
 	hr = QUERY(this->graphBuilder, IID_IMediaControl, this->mediaController);
 	if(FAILED(hr)) return hr;
-
-	// Disable timing
-	/*IMediaFilter *mediaFilterController;
-	hr = QUERY(this->graphBuilder, IID_IMediaFilter, mediaFilterController);
-	if(FAILED(hr)) return hr;
-
-	mediaFilterController->SetSyncSource(NULL);
-	SAFE_RELEASE(mediaFilterController);*/
 
 	// Create the sample grabber
 	hr = QUERY(this->sampleGrabberFilter, IID_ISampleGrabber, this->grabberController);

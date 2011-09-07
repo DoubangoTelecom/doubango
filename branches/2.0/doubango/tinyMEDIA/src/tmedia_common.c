@@ -222,27 +222,27 @@ const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_siz
 	tsk_size_t i;
 	switch(chroma)
 	{
-		case tmedia_rgb24:
-		case tmedia_bgr24:
+		case tmedia_chroma_rgb24:
+		case tmedia_chroma_bgr24:
 			factor = 3.f;
 			break;
-		case tmedia_rgb565le:
-		case tmedia_rgb565be:
+		case tmedia_chroma_rgb565le:
+		case tmedia_chroma_rgb565be:
 			factor = 2.f;
 			break;
 		
-		case tmedia_rgb32:
+		case tmedia_chroma_rgb32:
 			factor = 4.f;
 			break;
 		
-		case tmedia_nv21:
-		case tmedia_nv12:
-		case tmedia_yuv420p:
+		case tmedia_chroma_nv21:
+		case tmedia_chroma_nv12:
+		case tmedia_chroma_yuv420p:
 			factor = 1.5f;
 			break;
 			
-		case tmedia_yuv422p:
-		case tmedia_uyvy422:
+		case tmedia_chroma_yuv422p:
+		case tmedia_chroma_uyvy422:
 			factor = 2.f;
 			break;
 	}

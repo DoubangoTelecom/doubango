@@ -899,6 +899,8 @@ class ProxyVideoConsumer(ProxyPlugin):
     def setAutoResizeDisplay(self, *args): return _tinyWRAP.ProxyVideoConsumer_setAutoResizeDisplay(self, *args)
     def getAutoResizeDisplay(self): return _tinyWRAP.ProxyVideoConsumer_getAutoResizeDisplay(self)
     def setConsumeBuffer(self, *args): return _tinyWRAP.ProxyVideoConsumer_setConsumeBuffer(self, *args)
+    def pull(self, *args): return _tinyWRAP.ProxyVideoConsumer_pull(self, *args)
+    def reset(self): return _tinyWRAP.ProxyVideoConsumer_reset(self)
     def getMediaSessionId(self): return _tinyWRAP.ProxyVideoConsumer_getMediaSessionId(self)
     __swig_getmethods__["registerPlugin"] = lambda x: _tinyWRAP.ProxyVideoConsumer_registerPlugin
     if _newclass:registerPlugin = staticmethod(_tinyWRAP.ProxyVideoConsumer_registerPlugin)
@@ -1244,16 +1246,17 @@ tsip_m_local_resume_ok = _tinyWRAP.tsip_m_local_resume_ok
 tsip_m_local_resume_nok = _tinyWRAP.tsip_m_local_resume_nok
 tsip_m_remote_hold = _tinyWRAP.tsip_m_remote_hold
 tsip_m_remote_resume = _tinyWRAP.tsip_m_remote_resume
-tmedia_rgb24 = _tinyWRAP.tmedia_rgb24
-tmedia_bgr24 = _tinyWRAP.tmedia_bgr24
-tmedia_rgb32 = _tinyWRAP.tmedia_rgb32
-tmedia_rgb565le = _tinyWRAP.tmedia_rgb565le
-tmedia_rgb565be = _tinyWRAP.tmedia_rgb565be
-tmedia_nv12 = _tinyWRAP.tmedia_nv12
-tmedia_nv21 = _tinyWRAP.tmedia_nv21
-tmedia_yuv422p = _tinyWRAP.tmedia_yuv422p
-tmedia_uyvy422 = _tinyWRAP.tmedia_uyvy422
-tmedia_yuv420p = _tinyWRAP.tmedia_yuv420p
+tmedia_chroma_none = _tinyWRAP.tmedia_chroma_none
+tmedia_chroma_rgb24 = _tinyWRAP.tmedia_chroma_rgb24
+tmedia_chroma_bgr24 = _tinyWRAP.tmedia_chroma_bgr24
+tmedia_chroma_rgb32 = _tinyWRAP.tmedia_chroma_rgb32
+tmedia_chroma_rgb565le = _tinyWRAP.tmedia_chroma_rgb565le
+tmedia_chroma_rgb565be = _tinyWRAP.tmedia_chroma_rgb565be
+tmedia_chroma_nv12 = _tinyWRAP.tmedia_chroma_nv12
+tmedia_chroma_nv21 = _tinyWRAP.tmedia_chroma_nv21
+tmedia_chroma_yuv422p = _tinyWRAP.tmedia_chroma_yuv422p
+tmedia_chroma_uyvy422 = _tinyWRAP.tmedia_chroma_uyvy422
+tmedia_chroma_yuv420p = _tinyWRAP.tmedia_chroma_yuv420p
 tmedia_qos_stype_none = _tinyWRAP.tmedia_qos_stype_none
 tmedia_qos_stype_segmented = _tinyWRAP.tmedia_qos_stype_segmented
 tmedia_qos_stype_e2e = _tinyWRAP.tmedia_qos_stype_e2e
@@ -1290,6 +1293,7 @@ tdav_codec_id_h263pp = _tinyWRAP.tdav_codec_id_h263pp
 tdav_codec_id_h264_bp10 = _tinyWRAP.tdav_codec_id_h264_bp10
 tdav_codec_id_h264_bp20 = _tinyWRAP.tdav_codec_id_h264_bp20
 tdav_codec_id_h264_bp30 = _tinyWRAP.tdav_codec_id_h264_bp30
+tdav_codec_id_h264_svc = _tinyWRAP.tdav_codec_id_h264_svc
 tdav_codec_id_theora = _tinyWRAP.tdav_codec_id_theora
 tdav_codec_id_mp4ves_es = _tinyWRAP.tdav_codec_id_mp4ves_es
 tdav_codec_id_vp8 = _tinyWRAP.tdav_codec_id_vp8

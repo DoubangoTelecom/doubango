@@ -290,11 +290,6 @@ tsk_size_t tdav_codec_mp4ves_encode(tmedia_codec_t* self, const void* in_data, t
 		TSK_DEBUG_ERROR("Invalid size");
 		return 0;
 	}
-	
-	// Flip
-	if(self->video.flip.encoded){
-		tdav_converter_video_flip(mp4v->encoder.picture, mp4v->encoder.context->height);
-	}
 
 	mp4v->encoder.picture->pts = AV_NOPTS_VALUE;
 	mp4v->encoder.picture->quality = mp4v->encoder.context->global_quality;
@@ -369,10 +364,7 @@ tsk_size_t tdav_codec_mp4ves_decode(tmedia_codec_t* self, const void* in_data, t
 			retsize = xsize;
 			TMEDIA_CODEC_VIDEO(mp4v)->in.width = mp4v->decoder.context->width;
 			TMEDIA_CODEC_VIDEO(mp4v)->in.height = mp4v->decoder.context->height;
-			// flip
-			if(self->video.flip.decoded){
-				tdav_converter_video_flip(mp4v->decoder.picture, mp4v->decoder.context->height);
-			}
+
 			/* copy picture into a linear buffer */
 			avpicture_layout((AVPicture *)mp4v->decoder.picture, mp4v->decoder.context->pix_fmt, mp4v->decoder.context->width, mp4v->decoder.context->height,
 				*out_data, retsize);

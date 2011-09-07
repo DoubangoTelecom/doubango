@@ -52,7 +52,7 @@ typedef int (*tmedia_producer_enc_cb_f)(const void* callback_data, const void* b
 typedef int (*tmedia_producer_raw_cb_f)(const void* callback_data, const void* buffer, tsk_size_t size, uint32_t duration, tsk_bool_t marker);
 
 /**  Default Video chroma */
-#define TMEDIA_PRODUCER_CHROMA_DEFAULT tmedia_yuv420p
+#define TMEDIA_PRODUCER_CHROMA_DEFAULT tmedia_chroma_yuv420p
 
 /** Base object for all Producers */
 typedef struct tmedia_producer_s

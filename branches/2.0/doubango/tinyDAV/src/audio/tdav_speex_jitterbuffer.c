@@ -34,6 +34,11 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+static int tdav_speex_jitterbuffer_set(tmedia_jitterbuffer_t *self, const tmedia_param_t* param)
+{
+	TSK_DEBUG_ERROR("Not implemented");
+	return -2;
+}
 
 static int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate)
 {
@@ -184,9 +189,10 @@ static const tsk_object_def_t tdav_speex_jitterbuffer_def_s =
 static const tmedia_jitterbuffer_plugin_def_t tdav_speex_jitterbuffer_plugin_def_s = 
 {
 	&tdav_speex_jitterbuffer_def_s,
+	tmedia_audio,
+	"Audio JitterBuffer based on Speex",
 	
-	"Audio/video JitterBuffer based on Speex",
-	
+	tdav_speex_jitterbuffer_set,
 	tdav_speex_jitterbuffer_open,
 	tdav_speex_jitterbuffer_tick,
 	tdav_speex_jitterbuffer_put,

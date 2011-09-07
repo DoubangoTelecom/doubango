@@ -14567,6 +14567,66 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_pull(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  unsigned int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:ProxyVideoConsumer_pull",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_pull" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyVideoConsumer_pull" "', argument " "2"" of type '" "void *""'"); 
+  }
+  ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoConsumer_pull" "', argument " "3"" of type '" "unsigned int""'");
+  } 
+  arg3 = static_cast< unsigned int >(val3);
+  result = (unsigned int)(arg1)->pull(arg2,arg3);
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_reset(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyVideoConsumer_reset",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyVideoConsumer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoConsumer_reset" "', argument " "1"" of type '" "ProxyVideoConsumer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyVideoConsumer * >(argp1);
+  result = (bool)(arg1)->reset();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_ProxyVideoConsumer_getMediaSessionId(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
@@ -21159,6 +21219,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"ProxyVideoConsumer_setAutoResizeDisplay", _wrap_ProxyVideoConsumer_setAutoResizeDisplay, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_getAutoResizeDisplay", _wrap_ProxyVideoConsumer_getAutoResizeDisplay, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_setConsumeBuffer", _wrap_ProxyVideoConsumer_setConsumeBuffer, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoConsumer_pull", _wrap_ProxyVideoConsumer_pull, METH_VARARGS, NULL},
+	 { (char *)"ProxyVideoConsumer_reset", _wrap_ProxyVideoConsumer_reset, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_getMediaSessionId", _wrap_ProxyVideoConsumer_getMediaSessionId, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_registerPlugin", _wrap_ProxyVideoConsumer_registerPlugin, METH_VARARGS, NULL},
 	 { (char *)"ProxyVideoConsumer_setDefaultChroma", _wrap_ProxyVideoConsumer_setDefaultChroma, METH_VARARGS, NULL},
@@ -22427,16 +22489,17 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tsip_m_local_resume_nok",SWIG_From_int(static_cast< int >(tsip_m_local_resume_nok)));
   SWIG_Python_SetConstant(d, "tsip_m_remote_hold",SWIG_From_int(static_cast< int >(tsip_m_remote_hold)));
   SWIG_Python_SetConstant(d, "tsip_m_remote_resume",SWIG_From_int(static_cast< int >(tsip_m_remote_resume)));
-  SWIG_Python_SetConstant(d, "tmedia_rgb24",SWIG_From_int(static_cast< int >(tmedia_rgb24)));
-  SWIG_Python_SetConstant(d, "tmedia_bgr24",SWIG_From_int(static_cast< int >(tmedia_bgr24)));
-  SWIG_Python_SetConstant(d, "tmedia_rgb32",SWIG_From_int(static_cast< int >(tmedia_rgb32)));
-  SWIG_Python_SetConstant(d, "tmedia_rgb565le",SWIG_From_int(static_cast< int >(tmedia_rgb565le)));
-  SWIG_Python_SetConstant(d, "tmedia_rgb565be",SWIG_From_int(static_cast< int >(tmedia_rgb565be)));
-  SWIG_Python_SetConstant(d, "tmedia_nv12",SWIG_From_int(static_cast< int >(tmedia_nv12)));
-  SWIG_Python_SetConstant(d, "tmedia_nv21",SWIG_From_int(static_cast< int >(tmedia_nv21)));
-  SWIG_Python_SetConstant(d, "tmedia_yuv422p",SWIG_From_int(static_cast< int >(tmedia_yuv422p)));
-  SWIG_Python_SetConstant(d, "tmedia_uyvy422",SWIG_From_int(static_cast< int >(tmedia_uyvy422)));
-  SWIG_Python_SetConstant(d, "tmedia_yuv420p",SWIG_From_int(static_cast< int >(tmedia_yuv420p)));
+  SWIG_Python_SetConstant(d, "tmedia_chroma_none",SWIG_From_int(static_cast< int >(tmedia_chroma_none)));
+  SWIG_Python_SetConstant(d, "tmedia_chroma_rgb24",SWIG_From_int(static_cast< int >(tmedia_chroma_rgb24)));
+  SWIG_Python_SetConstant(d, "tmedia_chroma_bgr24",SWIG_From_int(static_cast< int >(tmedia_chroma_bgr24)));
+  SWIG_Python_SetConstant(d, "tmedia_chroma_rgb32",SWIG_From_int(static_cast< int >(tmedia_chroma_rgb32)));
+  SWIG_Python_SetConstant(d, "tmedia_chroma_rgb565le",SWIG_From_int(static_cast< int >(tmedia_chroma_rgb565le)));
+  SWIG_Python_SetConstant(d, "tmedia_chroma_rgb565be",SWIG_From_int(static_cast< int >(tmedia_chroma_rgb565be)));
+  SWIG_Python_SetConstant(d, "tmedia_chroma_nv12",SWIG_From_int(static_cast< int >(tmedia_chroma_nv12)));
+  SWIG_Python_SetConstant(d, "tmedia_chroma_nv21",SWIG_From_int(static_cast< int >(tmedia_chroma_nv21)));
+  SWIG_Python_SetConstant(d, "tmedia_chroma_yuv422p",SWIG_From_int(static_cast< int >(tmedia_chroma_yuv422p)));
+  SWIG_Python_SetConstant(d, "tmedia_chroma_uyvy422",SWIG_From_int(static_cast< int >(tmedia_chroma_uyvy422)));
+  SWIG_Python_SetConstant(d, "tmedia_chroma_yuv420p",SWIG_From_int(static_cast< int >(tmedia_chroma_yuv420p)));
   SWIG_Python_SetConstant(d, "tmedia_qos_stype_none",SWIG_From_int(static_cast< int >(tmedia_qos_stype_none)));
   SWIG_Python_SetConstant(d, "tmedia_qos_stype_segmented",SWIG_From_int(static_cast< int >(tmedia_qos_stype_segmented)));
   SWIG_Python_SetConstant(d, "tmedia_qos_stype_e2e",SWIG_From_int(static_cast< int >(tmedia_qos_stype_e2e)));
@@ -22473,6 +22536,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tdav_codec_id_h264_bp10",SWIG_From_int(static_cast< int >(tdav_codec_id_h264_bp10)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h264_bp20",SWIG_From_int(static_cast< int >(tdav_codec_id_h264_bp20)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_h264_bp30",SWIG_From_int(static_cast< int >(tdav_codec_id_h264_bp30)));
+  SWIG_Python_SetConstant(d, "tdav_codec_id_h264_svc",SWIG_From_int(static_cast< int >(tdav_codec_id_h264_svc)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_theora",SWIG_From_int(static_cast< int >(tdav_codec_id_theora)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_mp4ves_es",SWIG_From_int(static_cast< int >(tdav_codec_id_mp4ves_es)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_vp8",SWIG_From_int(static_cast< int >(tdav_codec_id_vp8)));

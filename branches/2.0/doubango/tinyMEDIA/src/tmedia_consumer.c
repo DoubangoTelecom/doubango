@@ -35,7 +35,7 @@
 */
 
 /* pointer to all registered consumers */
-const tmedia_consumer_plugin_def_t* __tmedia_consumer_plugins[TMED_CONSUMER_MAX_PLUGINS] = {0};
+static const tmedia_consumer_plugin_def_t* __tmedia_consumer_plugins[TMED_CONSUMER_MAX_PLUGINS] = {0};
 
 /**@ingroup tmedia_consumer_group
 * Initialize the consumer.

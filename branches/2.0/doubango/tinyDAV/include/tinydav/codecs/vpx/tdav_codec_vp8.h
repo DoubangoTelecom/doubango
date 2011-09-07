@@ -74,6 +74,7 @@ typedef struct tdav_codec_vp8_s
 		unsigned last_PartID:4;
 		unsigned last_S:1;
 		unsigned last_N:1;
+		unsigned frame_corrupted;
 	} decoder;
 }
 tdav_codec_vp8_t;

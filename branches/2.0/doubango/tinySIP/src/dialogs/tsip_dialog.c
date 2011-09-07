@@ -391,6 +391,8 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		request->sigcomp_id = tsk_strdup(self->ss->sigcomp_id);
 	}
 
+	/* Remote Address: Used if "Server mode" otherwise Proxy-CSCF will be used  */
+	request->remote_addr = self->remote_addr;
 
 	TSK_OBJECT_SAFE_FREE(request_uri);
 	TSK_OBJECT_SAFE_FREE(from_uri);
@@ -441,7 +443,7 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 	return ret;
 }
 
-tsip_response_t *tsip_dialog_response_new(const tsip_dialog_t *self, short status, const char* phrase, const tsip_request_t* request)
+tsip_response_t *tsip_dialog_response_new(tsip_dialog_t *self, short status, const char* phrase, const tsip_request_t* request)
 {
 	/* Reponse is created as per RFC 3261 subclause 8.2.6 and (headers+tags) are copied
 	* as per subclause 8.2.6.2.
@@ -480,6 +482,8 @@ tsip_response_t *tsip_dialog_response_new(const tsip_dialog_t *self, short statu
 			* it's up to the transport layer to copy it to these headers */
 			response->sigcomp_id = tsk_strdup(self->ss->sigcomp_id);
 		}
+		/* Remote Addr: used to send requests if "Server Mode" otherwise Proxy-CSCF address will be used */
+		self->remote_addr = request->remote_addr;
 	}
 	return response;
 }

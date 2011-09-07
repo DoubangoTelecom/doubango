@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(PSDK_DIR)include&quot;;&quot;$(DXSDK_DIR)include&quot;;..\thirdparties\win32\include;include;..\tinyMSRP\include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinySDP\include;..\tinyNET\src;..\tinyDSHOW\include;..\tinySAK\src;..\thirdparties\win32\include\BroadVoice16\bvcommon;..\thirdparties\win32\include\BroadVoice16\bv16"
-				PreprocessorDefinitions="HAVE_G729=0;HAVE_BV16=0;HAVE_OPENCORE_AMR=1;HAVE_ILBC=0;HAVE_LIBGSM=1;HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_WAVE_API=0;HAVE_FFMPEG=1;HAVE_SPEEX_DSP=1;HAVE_WEBRTC=1;HAVE_SPEEX_JB=1;HAVE_LIB_SPEEX=1;HAVE_LIBVPX=1;G192BITSTREAM=0;DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT=0x0501;TINYDAV_EXPORTS"
+				AdditionalIncludeDirectories="&quot;$(PSDK_DIR)include&quot;;&quot;$(DXSDK_DIR)include&quot;;&quot;$(CUDA_PATH)\include&quot;;..\thirdparties\win32\include;include;..\tinyMSRP\include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinySDP\include;..\tinyNET\src;..\tinyDSHOW\include;..\tinySAK\src;..\thirdparties\win32\include\BroadVoice16\bvcommon;..\thirdparties\win32\include\BroadVoice16\bv16"
+				PreprocessorDefinitions="HAVE_CUDA=0;HAVE_G729=0;HAVE_BV16=0;HAVE_OPENCORE_AMR=1;HAVE_ILBC=0;HAVE_LIBGSM=1;HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_WAVE_API=0;HAVE_FFMPEG=1;HAVE_SPEEX_DSP=1;HAVE_WEBRTC=1;HAVE_SPEEX_JB=1;HAVE_LIB_SPEEX=1;HAVE_LIBVPX=1;G192BITSTREAM=0;DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT=0x0501;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -51,7 +51,7 @@
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
-				CompileAs="1"
+				CompileAs="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinyMSRP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDSHOW.lib &quot;..\thirdparties\win32\lib\gsm\libgsm.a&quot; &quot;..\thirdparties\win32\lib\ilbc\libiLBC.a&quot; &quot;..\thirdparties\win32\lib\speex\libspeex.a&quot; &quot;..\thirdparties\win32\lib\speex\libspeexdsp.a&quot; ..\thirdparties\win32\lib\libgcc.a ..\thirdparties\win32\lib\libmingwex.a &quot;..\thirdparties\win32\lib\ffmpeg\libavcodec.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavutil.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libswscale.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavcore.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libx264.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libtheora.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libogg.a&quot; &quot;..\thirdparties\win32\lib\webrtc\aec.lib&quot; &quot;..\thirdparties\win32\lib\webrtc\apm_util.lib&quot; &quot;..\thirdparties\win32\lib\webrtc\system_wrappers.lib&quot; &quot;..\thirdparties\win32\lib\webrtc\spl.lib&quot; &quot;..\thirdparties\win32\lib\webrtc\ns.lib&quot; &quot;..\thirdparties\win32\lib\vpx\vpxmd.lib&quot;"
+				AdditionalDependencies="Winmm.lib &quot;$(OutDir)\tinySAK.lib&quot; &quot;$(OutDir)\tinyNET.lib&quot; &quot;$(OutDir)\tinyRTP.lib&quot; &quot;$(OutDir)\tinyMSRP.lib&quot; &quot;$(OutDir)\tinySDP.lib&quot; &quot;$(OutDir)\tinyMEDIA.lib&quot; &quot;$(OutDir)\tinyDSHOW.lib&quot; &quot;..\thirdparties\win32\lib\gsm\libgsm.a&quot; &quot;..\thirdparties\win32\lib\ilbc\libiLBC.a&quot; &quot;..\thirdparties\win32\lib\speex\libspeex.a&quot; &quot;..\thirdparties\win32\lib\speex\libspeexdsp.a&quot; ..\thirdparties\win32\lib\libgcc.a ..\thirdparties\win32\lib\libmingwex.a &quot;..\thirdparties\win32\lib\ffmpeg\libavcodec.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavutil.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libswscale.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libavcore.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libx264.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libtheora.a&quot; &quot;..\thirdparties\win32\lib\ffmpeg\libogg.a&quot; &quot;..\thirdparties\win32\lib\webrtc\aec.lib&quot; &quot;..\thirdparties\win32\lib\webrtc\apm_util.lib&quot; &quot;..\thirdparties\win32\lib\webrtc\system_wrappers.lib&quot; &quot;..\thirdparties\win32\lib\webrtc\spl.lib&quot; &quot;..\thirdparties\win32\lib\webrtc\ns.lib&quot; &quot;..\thirdparties\win32\lib\vpx\vpxmd.lib&quot;"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="MSVCRT;LIBCMTD;LIBCMT"
 				GenerateDebugInformation="true"
@@ -122,7 +122,7 @@
 				Name="VCCLCompilerTool"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="&quot;$(PSDK_DIR)include&quot;;&quot;$(DXSDK_DIR)include&quot;;..\thirdparties\win32\include;include;..\tinyMSRP\include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinySDP\include;..\tinyNET\src;..\tinyDSHOW\include;..\tinySAK\src;..\thirdparties\win32\include\BroadVoice16\bvcommon;..\thirdparties\win32\include\BroadVoice16\bv16"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS;DEBUG_LEVEL=DEBUG_LEVEL_INFOS;HAVE_G729=0;HAVE_BV16=0;HAVE_OPENCORE_AMR=1;HAVE_ILBC=0;HAVE_LIBGSM=1;HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_WAVE_API=0;HAVE_FFMPEG=1;HAVE_SPEEX_DSP=1;HAVE_WEBRTC=1;HAVE_SPEEX_JB=1;HAVE_LIB_SPEEX=1;HAVE_LIBVPX=1;G192BITSTREAM=0;_WIN32_WINNT=0x0501"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS;DEBUG_LEVEL=DEBUG_LEVEL_INFOS;HAVE_CUDA=0;HAVE_G729=0;HAVE_BV16=0;HAVE_OPENCORE_AMR=1;HAVE_ILBC=0;HAVE_LIBGSM=1;HAVE_TINYDSHOW=1;HAVE_DSOUND_H=1;HAVE_WAVE_API=0;HAVE_FFMPEG=1;HAVE_SPEEX_DSP=1;HAVE_WEBRTC=1;HAVE_SPEEX_JB=1;HAVE_LIB_SPEEX=1;HAVE_LIBVPX=1;G192BITSTREAM=0;_WIN32_WINNT=0x0501"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="false"
 				UsePrecompiledHeader="0"
@@ -263,6 +263,14 @@
 					>
 					<File
 						RelativePath=".\include\tinydav\codecs\h264\tdav_codec_h264.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\tinydav\codecs\h264\tdav_codec_h264_common.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\tinydav\codecs\h264\tdav_codec_h264_cuda.h"
 						>
 					</File>
 					<File
@@ -451,6 +459,10 @@
 				Name="video"
 				>
 				<File
+					RelativePath=".\include\tinydav\video\tdav_consumer_video.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tinydav\video\tdav_converter_video.h"
 					>
 				</File>
@@ -460,6 +472,10 @@
 				</File>
 				<File
 					RelativePath=".\include\tinydav\video\tdav_session_video.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinydav\video\tdav_video_jitterbuffer.h"
 					>
 				</File>
 				<Filter
@@ -571,6 +587,10 @@
 					>
 					<File
 						RelativePath=".\src\codecs\h264\tdav_codec_h264.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\codecs\h264\tdav_codec_h264_cuda.cxx"
 						>
 					</File>
 					<File
@@ -759,6 +779,10 @@
 				Name="video"
 				>
 				<File
+					RelativePath=".\src\video\tdav_consumer_video.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\video\tdav_converter_video.c"
 					>
 				</File>
@@ -768,6 +792,10 @@
 				</File>
 				<File
 					RelativePath=".\src\video\tdav_session_video.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\video\tdav_video_jitterbuffer.c"
 					>
 				</File>
 				<Filter

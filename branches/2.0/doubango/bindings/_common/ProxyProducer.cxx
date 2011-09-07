@@ -426,7 +426,7 @@ TINYWRAP_GEXTERN const tmedia_producer_plugin_def_t *twrap_producer_proxy_video_
 
 
 /* ============ ProxyVideoProducer Class ================= */
-tmedia_chroma_t ProxyVideoProducer::s_eDefaultChroma = tmedia_nv21;
+tmedia_chroma_t ProxyVideoProducer::s_eDefaultChroma = tmedia_chroma_nv21;
 
 ProxyVideoProducer::ProxyVideoProducer(tmedia_chroma_t eChroma, struct twrap_producer_proxy_video_s* pProducer)
 :m_pCallback(tsk_null), m_eChroma(eChroma), m_nRotation(0), m_pWrappedPlugin(pProducer), ProxyPlugin(twrap_proxy_plugin_video_producer)

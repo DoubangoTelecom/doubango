@@ -47,7 +47,13 @@
 #define TDAV_SPEAKUP_10MS_FRAME_SIZE(self)		(((self)->rate * TDAV_SPEAKUP_10MS)/1000)
 #define TDAV_SPEAKUP_PTIME_FRAME_SIZE(self)		(((self)->rate * (self)->framesize)/1000)
 
-int tdav_speakup_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate)
+static int tdav_speakup_jitterbuffer_set(tmedia_jitterbuffer_t *self, const tmedia_param_t* param)
+{
+	TSK_DEBUG_ERROR("Not implemented");
+	return -2;
+}
+
+static int tdav_speakup_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate)
 {
 	tdav_speakup_jitterbuffer_t *jitterbuffer = (tdav_speakup_jitterbuffer_t *)self;
 	if(!jitterbuffer->jbuffer){
@@ -65,12 +71,12 @@ int tdav_speakup_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_d
 	return 0;
 }
 
-int tdav_speakup_jitterbuffer_tick(tmedia_jitterbuffer_t* self)
+static int tdav_speakup_jitterbuffer_tick(tmedia_jitterbuffer_t* self)
 {
 	return 0;
 }
 
-int tdav_speakup_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, tsk_size_t data_size, const tsk_object_t* proto_hdr)
+static int tdav_speakup_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, tsk_size_t data_size, const tsk_object_t* proto_hdr)
 {
 	tdav_speakup_jitterbuffer_t *jitterbuffer = (tdav_speakup_jitterbuffer_t *)self;
 	const trtp_rtp_header_t* rtp_hdr = (const trtp_rtp_header_t*)proto_hdr;
@@ -135,7 +141,7 @@ int tdav_speakup_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, tsk_s
 	return 0;
 }
 
-tsk_size_t tdav_speakup_jitterbuffer_get(tmedia_jitterbuffer_t* self, void* out_data, tsk_size_t out_size)
+static tsk_size_t tdav_speakup_jitterbuffer_get(tmedia_jitterbuffer_t* self, void* out_data, tsk_size_t out_size)
 {
 	tdav_speakup_jitterbuffer_t *jitterbuffer = (tdav_speakup_jitterbuffer_t *)self;
 	int jret;
@@ -186,7 +192,7 @@ tsk_size_t tdav_speakup_jitterbuffer_get(tmedia_jitterbuffer_t* self, void* out_
 	return (_10ms_count * jitterbuffer->_10ms_size_bytes);
 }
 
-int tdav_speakup_jitterbuffer_reset(tmedia_jitterbuffer_t* self)
+static int tdav_speakup_jitterbuffer_reset(tmedia_jitterbuffer_t* self)
 {
 	tdav_speakup_jitterbuffer_t *jitterbuffer = (tdav_speakup_jitterbuffer_t *)self;
 	if(jitterbuffer->jbuffer){
@@ -199,7 +205,7 @@ int tdav_speakup_jitterbuffer_reset(tmedia_jitterbuffer_t* self)
 	}
 }
 
-int tdav_speakup_jitterbuffer_close(tmedia_jitterbuffer_t* self)
+static int tdav_speakup_jitterbuffer_close(tmedia_jitterbuffer_t* self)
 {
 	tdav_speakup_jitterbuffer_t *jitterbuffer = (tdav_speakup_jitterbuffer_t *)self;
 	if(jitterbuffer->jbuffer){
@@ -254,9 +260,10 @@ static const tsk_object_def_t tdav_speakup_jitterbuffer_def_s =
 static const tmedia_jitterbuffer_plugin_def_t tdav_speakup_jitterbuffer_plugin_def_s = 
 {
 	&tdav_speakup_jitterbuffer_def_s,
-	
+	tmedia_audio,
 	"Audio/video JitterBuffer based on Speex",
 	
+	tdav_speakup_jitterbuffer_set,
 	tdav_speakup_jitterbuffer_open,
 	tdav_speakup_jitterbuffer_tick,
 	tdav_speakup_jitterbuffer_put,

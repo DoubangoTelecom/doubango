@@ -4668,6 +4668,34 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoConsumer_setConsumeBuffer(v
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoConsumer_pull(void * jarg1, void * jarg2, unsigned int jarg3) {
+  unsigned int jresult ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  unsigned int result;
+  
+  arg1 = (ProxyVideoConsumer *)jarg1; 
+  arg2 = jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  result = (unsigned int)(arg1)->pull(arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoConsumer_reset(void * jarg1) {
+  unsigned int jresult ;
+  ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;
+  bool result;
+  
+  arg1 = (ProxyVideoConsumer *)jarg1; 
+  result = (bool)(arg1)->reset();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned long long SWIGSTDCALL CSharp_ProxyVideoConsumer_getMediaSessionId(void * jarg1) {
   unsigned long long jresult ;
   ProxyVideoConsumer *arg1 = (ProxyVideoConsumer *) 0 ;

@@ -54,7 +54,7 @@
 	"a=rtpmap:115 BV16/8000\r\n" \
 	"a=fmtp:102 octet-align=0; mode-set=0,1,2,3,4,5,6,7; mode-change-period=1; mode-change-capability=2; mode-change-neighbor=0\r\n" \
     "a=fmtp:103 octet-align=1; mode-set=0,1,2,3,4,5,6,7; mode-change-period=1; mode-change-capability=2; mode-change-neighbor=0\r\n" \
-	"m=video 6060 RTP/AVP 125 111 98 121 31 126 34 32\r\n" \
+	"m=video 6060 RTP/AVP 125 98 111 121 31 126 34 32\r\n" \
 	"i=Video line\r\n" \
 	"b=A-YZ:92\r\n" \
 	"b=B-YZ:256\r\n" \

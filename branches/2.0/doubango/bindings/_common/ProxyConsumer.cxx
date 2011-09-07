@@ -35,6 +35,8 @@
 #include "tsk_debug.h"
 
 #include "tinydav/audio/tdav_consumer_audio.h"
+#include "tinydav/video/tdav_consumer_video.h"
+
 
 /* ============ Audio Consumer Interface ================= */
 
@@ -267,7 +269,7 @@ bool ProxyAudioConsumer::setPullBuffer(const void* pPullBufferPtr, unsigned nPul
 
 unsigned ProxyAudioConsumer::pull(void* _pOutput/*=tsk_null*/, unsigned _nSize/*=0*/)
 {
-	if(m_pWrappedPlugin){
+	if((m_pWrappedPlugin = (twrap_consumer_proxy_audio_t*)tsk_object_ref(m_pWrappedPlugin))){
 		void* pOutput;
 		unsigned nSize;
 		if(_pOutput && _nSize){
@@ -290,6 +292,8 @@ unsigned ProxyAudioConsumer::pull(void* _pOutput/*=tsk_null*/, unsigned _nSize/*
 		}
 
 		tdav_consumer_audio_tick(TDAV_CONSUMER_AUDIO(m_pWrappedPlugin));
+
+		m_pWrappedPlugin = (twrap_consumer_proxy_audio_t*)tsk_object_unref(m_pWrappedPlugin);
 		return nRetSize;
 	}
 	return 0;
@@ -364,7 +368,7 @@ bool ProxyAudioConsumer::registerPlugin()
 
 typedef struct twrap_consumer_proxy_video_s
 {
-	TMEDIA_DECLARE_CONSUMER;
+	TDAV_DECLARE_CONSUMER_VIDEO;
 
 	uint64_t id;
 	tsk_bool_t started;
@@ -386,7 +390,7 @@ int twrap_consumer_proxy_video_prepare(tmedia_consumer_t* self, const tmedia_cod
 		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
 			self->video.fps = TMEDIA_CODEC_VIDEO(codec)->in.fps;
 			// in
-			self->video.in.chroma = tmedia_yuv420p;
+			self->video.in.chroma = tmedia_chroma_yuv420p;
 			self->video.in.width = TMEDIA_CODEC_VIDEO(codec)->in.width;
 			self->video.in.height = TMEDIA_CODEC_VIDEO(codec)->in.height;
 			// display (out)
@@ -433,14 +437,19 @@ int twrap_consumer_proxy_video_consume(tmedia_consumer_t* self, const void* buff
 	if((manager = ProxyPluginMgr::getInstance())){
 		const ProxyVideoConsumer* videoConsumer;
 		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
-			if(videoConsumer->hasConsumeBuffer()){
-				unsigned nCopiedSize = videoConsumer->copyBuffer(buffer, size); 
-				ret = videoConsumer->getCallback()->bufferCopied(nCopiedSize, size);
+			if(tdav_consumer_video_has_jb(TDAV_CONSUMER_VIDEO(self))){
+				ret = tdav_consumer_video_put(TDAV_CONSUMER_VIDEO(self), buffer, size, proto_hdr);
 			}
 			else{
-				ProxyVideoFrame* frame = new ProxyVideoFrame(buffer, size);
-				ret = videoConsumer->getCallback()->consume(frame);
-				delete frame, frame = tsk_null;
+				if(videoConsumer->hasConsumeBuffer()){
+					unsigned nCopiedSize = videoConsumer->copyBuffer(buffer, size); 
+					ret = videoConsumer->getCallback()->bufferCopied(nCopiedSize, size);
+				}
+				else{
+					ProxyVideoFrame* frame = new ProxyVideoFrame(buffer, size);
+					ret = videoConsumer->getCallback()->consume(frame);
+					delete frame, frame = tsk_null;
+				}
 			}
 		}
 		else{
@@ -490,7 +499,7 @@ static tsk_object_t* twrap_consumer_proxy_video_ctor(tsk_object_t * self, va_lis
 	twrap_consumer_proxy_video_t *consumer = (twrap_consumer_proxy_video_t *)self;
 	if(consumer){
 		/* init base */
-		tmedia_consumer_init(TMEDIA_CONSUMER(consumer));
+		tdav_consumer_video_init(TDAV_CONSUMER_VIDEO(consumer));
 		/* init self */
 
 		/* Add the plugin to the manager */
@@ -516,7 +525,7 @@ static tsk_object_t* twrap_consumer_proxy_video_dtor(tsk_object_t * self)
 		}
 
 		/* deinit base */
-		tmedia_consumer_deinit(TMEDIA_CONSUMER(consumer));
+		tdav_consumer_video_deinit(TDAV_CONSUMER_VIDEO(consumer));
 		/* deinit self */
 
 		/* Remove plugin from the manager */
@@ -558,7 +567,7 @@ TINYWRAP_GEXTERN const tmedia_consumer_plugin_def_t *twrap_consumer_proxy_video_
 
 
 /* ============ ProxyVideoConsumer Class ================= */
-tmedia_chroma_t ProxyVideoConsumer::s_eDefaultChroma = tmedia_rgb565le;
+tmedia_chroma_t ProxyVideoConsumer::s_eDefaultChroma = tmedia_chroma_rgb565le;
 bool ProxyVideoConsumer::s_bAutoResizeDisplay = false;
 
 ProxyVideoConsumer::ProxyVideoConsumer(tmedia_chroma_t eChroma, struct twrap_consumer_proxy_video_s* pConsumer)
@@ -651,6 +660,44 @@ unsigned ProxyVideoConsumer::copyBuffer(const void* pBuffer, unsigned nSize)cons
 		memcpy((void*)m_ConsumeBuffer.pConsumeBufferPtr, pBuffer, nRetsize);
 	}
 	return nRetsize;
+}
+
+unsigned ProxyVideoConsumer::pull(void* pOutput, unsigned nSize)
+{
+	if(pOutput && nSize && (m_pWrappedPlugin = (twrap_consumer_proxy_video_t*)tsk_object_ref(m_pWrappedPlugin))){
+		tsk_size_t nRetSize = 0;
+
+		if(!tdav_consumer_video_has_jb(TDAV_CONSUMER_VIDEO(m_pWrappedPlugin))){
+			TSK_DEBUG_ERROR("This consumer doesn't hold any jitter buffer.\n\nTo pull a buffer you must register a callback ('class ProxyVideoConsumerCallback') and listen for either 'consume' or 'bufferCopied' functions");
+			goto done;
+		}
+		
+		nRetSize = tdav_consumer_video_get(TDAV_CONSUMER_VIDEO(m_pWrappedPlugin), pOutput, nSize);
+
+		tdav_consumer_video_tick(TDAV_CONSUMER_VIDEO(m_pWrappedPlugin));
+
+done:
+		m_pWrappedPlugin = (twrap_consumer_proxy_video_t*)tsk_object_unref(m_pWrappedPlugin);
+		return nRetSize;
+	}
+	return 0;
+}
+
+bool ProxyVideoConsumer::reset()
+{
+	bool ret = false;
+	if((m_pWrappedPlugin = (twrap_consumer_proxy_video_t*)tsk_object_ref(m_pWrappedPlugin))){
+		if(tdav_consumer_video_has_jb(TDAV_CONSUMER_VIDEO(m_pWrappedPlugin))){
+			ret = (tdav_consumer_video_reset(TDAV_CONSUMER_VIDEO(m_pWrappedPlugin)) == 0);
+		}
+		else{
+			TSK_DEBUG_ERROR("This consumer doesn't hold any jitter buffer");
+		}
+		m_pWrappedPlugin = (twrap_consumer_proxy_video_t*)tsk_object_unref(m_pWrappedPlugin);
+	}
+
+	TSK_DEBUG_ERROR("This consumer doesn't wrap any plugin");
+	return ret;
 }
 
 bool ProxyVideoConsumer::registerPlugin()

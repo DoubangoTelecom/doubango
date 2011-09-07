@@ -294,6 +294,8 @@ class tinyWRAPJNI {
   public final static native boolean ProxyVideoConsumer_setAutoResizeDisplay(long jarg1, ProxyVideoConsumer jarg1_, boolean jarg2);
   public final static native boolean ProxyVideoConsumer_getAutoResizeDisplay(long jarg1, ProxyVideoConsumer jarg1_);
   public final static native boolean ProxyVideoConsumer_setConsumeBuffer(long jarg1, ProxyVideoConsumer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native long ProxyVideoConsumer_pull(long jarg1, ProxyVideoConsumer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native boolean ProxyVideoConsumer_reset(long jarg1, ProxyVideoConsumer jarg1_);
   public final static native java.math.BigInteger ProxyVideoConsumer_getMediaSessionId(long jarg1, ProxyVideoConsumer jarg1_);
   public final static native boolean ProxyVideoConsumer_registerPlugin();
   public final static native void ProxyVideoConsumer_setDefaultChroma(int jarg1);

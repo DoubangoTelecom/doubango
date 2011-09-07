@@ -90,21 +90,26 @@
 */
 tsk_semaphore_handle_t* tsk_semaphore_create()
 {
+	return tsk_semaphore_create_2(0);
+}
+
+tsk_semaphore_handle_t* tsk_semaphore_create_2(int initial_val)
+{
 	SEMAPHORE_T handle = 0;
 	
 #if TSK_UNDER_WINDOWS
-	handle = CreateSemaphore(NULL, 0, 0x7FFFFFFF, NULL);
+	handle = CreateSemaphore(NULL, initial_val, 0x7FFFFFFF, NULL);
 #else
 	handle = tsk_calloc(1, sizeof(SEMAPHORE_S));
 	
 #if TSK_USE_NAMED_SEM
 	named_sem_t * nsem = (named_sem_t*)handle;
 	tsk_sprintf(&(nsem->name), "/sem-%d", sem_count++);
-	if((nsem->sem = sem_open(nsem->name, O_CREAT /*| O_EXCL*/, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED)
+	if((nsem->sem = sem_open(nsem->name, O_CREAT /*| O_EXCL*/, S_IRUSR | S_IWUSR, initial_val)) == SEM_FAILED)
 	{
 		TSK_FREE(nsem->name);
 #else
-	if(sem_init((SEMAPHORE_T)handle, 0, 0))
+	if(sem_init((SEMAPHORE_T)handle, 0, initial_val))
 	{
 #endif
 		TSK_FREE(handle);

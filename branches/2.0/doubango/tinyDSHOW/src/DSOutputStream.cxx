@@ -50,8 +50,8 @@ DSOutputStream::DSOutputStream(HRESULT *phr, DSOutputFilter *pParent, LPCWSTR pP
 	this->frameLength = (1000)/DEFAULT_FPS;
 	this->fps = DEFAULT_FPS;
 
-	this->width = 176;
-	this->height = 144;
+	this->width = 352;
+	this->height = 288;
 
 	this->overlay = false;
 

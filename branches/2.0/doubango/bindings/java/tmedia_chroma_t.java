@@ -9,16 +9,17 @@
 package org.doubango.tinyWRAP;
 
 public enum tmedia_chroma_t {
-  tmedia_rgb24,
-  tmedia_bgr24,
-  tmedia_rgb32,
-  tmedia_rgb565le,
-  tmedia_rgb565be,
-  tmedia_nv12,
-  tmedia_nv21,
-  tmedia_yuv422p,
-  tmedia_uyvy422,
-  tmedia_yuv420p;
+  tmedia_chroma_none(0),
+  tmedia_chroma_rgb24,
+  tmedia_chroma_bgr24,
+  tmedia_chroma_rgb32,
+  tmedia_chroma_rgb565le,
+  tmedia_chroma_rgb565be,
+  tmedia_chroma_nv12,
+  tmedia_chroma_nv21,
+  tmedia_chroma_yuv422p,
+  tmedia_chroma_uyvy422,
+  tmedia_chroma_yuv420p;
 
   public final int swigValue() {
     return swigValue;

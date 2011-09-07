@@ -38,7 +38,7 @@
 
 TDAV_BEGIN_DECLS
 
-/** Speex JitterBufferr*/
+/** Speex JitterBuffer*/
 typedef struct tdav_speex_jitterBuffer_s
 {
 	TMEDIA_DECLARE_JITTER_BUFFER;

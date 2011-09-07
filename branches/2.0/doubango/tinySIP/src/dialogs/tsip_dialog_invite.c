@@ -698,12 +698,19 @@ int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app)
 int x0000_Any_2_Trying_X_oBYE(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	int ret;
 
 	/* Alert the user */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminating, "Terminating dialog");
 
 	/* send BYE */
-	return send_BYE(self);
+	if((ret = send_BYE(self)) == 0){
+		// stop session manager
+		if(self->msession_mgr && self->msession_mgr->started){
+			tmedia_session_mgr_stop(self->msession_mgr);
+		}
+	}
+	return ret;
 }
 
 /* Any -> (iBYE) -> Terminated */
