@@ -294,7 +294,14 @@ static int tdav_consumer_audiounit_stop(tmedia_consumer_t* self)
 			TSK_DEBUG_ERROR("tdav_audiounit_handle_stop failed with error code=%d", ret);
 			return ret;
 		}
-	}	
+	}
+#if 1
+	//https://devforums.apple.com/thread/118595
+	if(consumer->audioUnitHandle){
+		tdav_audiounit_handle_destroy(&consumer->audioUnitHandle);
+	}
+#endif
+	
 	consumer->started = tsk_false;
 	TSK_DEBUG_INFO("AudioUnit consumer stoppped");
 	return 0;	

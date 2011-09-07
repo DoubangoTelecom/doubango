@@ -273,16 +273,7 @@ int tdav_audiounit_handle_stop(tdav_audiounit_handle_t* self)
 	if(inst->started && (status = AudioOutputUnitStop(inst->audioUnit))){
 		TSK_DEBUG_ERROR("AudioOutputUnitStop failed with status=%ld", status);
 	}
-    if(!(inst->started = status == 0 ? tsk_false : tsk_true)){
-        // https://devforums.apple.com/thread/118595
-        // We can safely destroy the audioUnit embedded instance because it will no longer be used by any function
-        // Next Start() will always be preceded by a Prepare() to create new handle
-        if(inst->audioUnit){
-            AudioUnitUninitialize(inst->audioUnit);
-            AudioComponentInstanceDispose(inst->audioUnit);
-            inst->audioUnit = tsk_null;
-        }
-    }
+    inst->started = (status == noErr ? tsk_false : tsk_true);
 	tsk_safeobj_unlock(inst);
 	return status ? -2 : 0;
 }

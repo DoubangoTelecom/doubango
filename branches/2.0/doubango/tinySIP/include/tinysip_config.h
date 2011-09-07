@@ -30,6 +30,8 @@
 /* Windows (XP/Vista/7/CE and Windows Mobile) macro definition */
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define TSIP_UNDER_WINDOWS	1
+#elif __APPLE__
+#	define TSIP_UNDER_APPLE		1
 #endif
 
 #if !defined(__GNUC__) && defined(TINYSIP_EXPORTS)

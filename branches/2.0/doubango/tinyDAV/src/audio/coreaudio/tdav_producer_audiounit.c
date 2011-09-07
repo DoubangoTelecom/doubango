@@ -386,6 +386,12 @@ static int tdav_producer_audiounit_stop(tmedia_producer_t* self)
 			TSK_DEBUG_ERROR("tdav_audiounit_handle_stop failed with error code=%d", ret);
 			// do not return even if failed => we MUST stop the thread!
 		}
+#if 1
+		//https://devforums.apple.com/thread/118595
+		if(producer->audioUnitHandle){
+			tdav_audiounit_handle_destroy(&producer->audioUnitHandle);
+		}
+#endif
 	}	
 	producer->started = tsk_false;
 	// signal
