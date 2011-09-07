@@ -705,10 +705,12 @@ int x0000_Any_2_Trying_X_oBYE(va_list *app)
 
 	/* send BYE */
 	if((ret = send_BYE(self)) == 0){
+#if !TSIP_UNDER_APPLE // FIXME: hangs up on iOS (RTP transport runnable join never exits)
 		// stop session manager
 		if(self->msession_mgr && self->msession_mgr->started){
 			tmedia_session_mgr_stop(self->msession_mgr);
 		}
+#endif
 	}
 	return ret;
 }
