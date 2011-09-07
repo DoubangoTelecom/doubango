@@ -35,8 +35,8 @@
 #include "tsk_debug.h"
 
 #define TINY_RCVBUF					(256/2/*Will be doubled and min on linux is 256*/) /* tiny buffer used to disable receiving */
-#define BIG_RCVBUF					64000
-#define BIG_SNDBUF					64000
+#define BIG_RCVBUF					(64 * 1024)
+#define BIG_SNDBUF					(64 * 1024)
 
 // TODO: Add support for outbound DTMF (http://www.ietf.org/rfc/rfc2833.txt)
 
@@ -317,7 +317,7 @@ int trtp_manager_start(trtp_manager_t* self)
 
 	/* Flush buffers and re-enable sockets */
 	{
-		char buff[1024];
+		char buff[2048];
 		
 		// re-enable sockets
 		_trtp_manager_enable_sockets(self);

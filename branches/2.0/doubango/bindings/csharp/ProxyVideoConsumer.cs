@@ -72,6 +72,16 @@ public class ProxyVideoConsumer : ProxyPlugin {
     return ret;
   }
 
+  public uint pull(byte[] pOutput, uint nSize) {
+    uint ret = tinyWRAPPINVOKE.ProxyVideoConsumer_pull(swigCPtr, pOutput, nSize);
+    return ret;
+  }
+
+  public bool reset() {
+    bool ret = tinyWRAPPINVOKE.ProxyVideoConsumer_reset(swigCPtr);
+    return ret;
+  }
+
   public virtual ulong getMediaSessionId() {
     ulong ret = tinyWRAPPINVOKE.ProxyVideoConsumer_getMediaSessionId(swigCPtr);
     return ret;

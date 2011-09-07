@@ -43,9 +43,10 @@ typedef int tsk_boolean_t;
 #define tsk_true	1
 #define tsk_false	0
 
-#define TSK_MIN(a,b)            (((a) < (b)) ? (a) : (b))
-#define TSK_MAX(a,b)            (((a) > (b)) ? (a) : (b))
-#define TSK_ABS(a)				(((a)< 0) ? -(a) : (a))
+#define TSK_MIN(a,b)					(((a) < (b)) ? (a) : (b))
+#define TSK_MAX(a,b)					(((a) > (b)) ? (a) : (b))
+#define TSK_ABS(a)						(((a)< 0) ? -(a) : (a))
+#define TSK_CLAMP(nMin, nVal, nMax)		((nVal) > (nMax)) ? (nMax) : (((nVal) < (nMin)) ? (nMin) : (nVal))
 
 // used to avoid doing *((uint32_t*)ptr) which don't respect memory alignment on
 // some embedded (ARM,?...) platforms

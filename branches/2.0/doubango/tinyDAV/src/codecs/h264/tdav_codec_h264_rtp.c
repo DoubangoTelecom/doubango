@@ -29,9 +29,7 @@
  */
 #include "tinydav/codecs/h264/tdav_codec_h264_rtp.h"
 
-#include "tinydav/codecs/h264/tdav_codec_h264.h"
-
-#if HAVE_FFMPEG && (!defined(HAVE_H264) || HAVE_H264)
+#include "tinydav/codecs/h264/tdav_codec_h264_common.h"
 
 #include "tinymedia/tmedia_codec.h"
 
@@ -164,11 +162,10 @@ int tdav_codec_h264_get_pay(const void* in_data, tsk_size_t in_size, const void*
 		case stap_b:
 		case mtap16:
 		case mtap24:
+		case fu_b:
 			break;
 		case fu_a:
 			return tdav_codec_h264_get_fua_pay(pdata, in_size, out_data, out_size, append_scp);
-		case fu_b:
-			return -1;
 		default: /* NAL unit (1-23) */
 			return tdav_codec_h264_get_nalunit_pay(pdata, in_size, out_data, out_size);
 	}
@@ -278,12 +275,11 @@ int tdav_codec_h264_get_nalunit_pay(const uint8_t* in_data, tsk_size_t in_size, 
 	return 0;
 }
 
-#if TDAV_UNDER_WINDOWS
-#	include "tsk_thread.h"
-#endif
-void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_s *self, const void *data, tsk_size_t size, tsk_bool_t marker)
+void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_common_s *self, const void *data, tsk_size_t size, tsk_bool_t marker)
 {
-	uint8_t* pdata = (uint8_t*)data;	
+	uint8_t* pdata = (uint8_t*)data;
+
+	//TSK_DEBUG_INFO("%x %x %x %x -- %u", pdata[0], pdata[1], pdata[2], pdata[3], size);
 
 	if(size>4 && pdata[0] == H264_START_CODE_PREFIX[0] && pdata[1] == H264_START_CODE_PREFIX[1]){
 		if(pdata[2] == H264_START_CODE_PREFIX[3]){
@@ -304,10 +300,6 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_s *self, const void *da
 		}
 	}
 	else if(size > H264_NAL_UNIT_TYPE_HEADER_SIZE){
-#if TDAV_UNDER_WINDOWS
-		tsk_bool_t burst = ((size/H264_RTP_PAYLOAD_SIZE) > 5);
-		int count = 0;
-#endif
 		/* Should be Fragmented as FUA */
 		uint8_t fua_hdr[H264_FUA_HEADER_SIZE]; /* "FU indicator" and "FU header" - 2bytes */
 		fua_hdr[0] = pdata[0] & 0x60/* F=0 */, fua_hdr[0] |= fu_a;
@@ -343,14 +335,7 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_s *self, const void *da
 			// send data
 			if(TMEDIA_CODEC_VIDEO(self)->callback){
 				TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, self->rtp.ptr, (packet_size + H264_FUA_HEADER_SIZE), (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps)), (size == 0));
-#if TDAV_UNDER_WINDOWS// FIXME: WinSock problem: Why do we get packet lost (burst case only)?
-				if(burst && (++count % 2 == 0)){
-					tsk_thread_sleep(1); // 1 millisecond
-				}
-#endif
 			}
 		}
 	}
 }
-
-#endif /* HAVE_FFMPEG */

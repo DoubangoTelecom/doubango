@@ -296,10 +296,11 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 				}
 			}
 			else{
-				if(self->stack->network.mode_server && TSIP_MESSAGE_IS_RESPONSE(msg)){ // In server mode we will never send request. At least for now ;)
+				if(self->stack->network.mode_server){
 					ret = tsip_transport_send_raw(self, (const struct sockaddr*)&msg->remote_addr, buffer->data, buffer->size);
 				}
 				else{
+					// always send to the Proxy-CSCF
 					ret = tsip_transport_send_raw(self, tsk_null/* Use P-CSCF addr */, buffer->data, buffer->size);
 				}				
 

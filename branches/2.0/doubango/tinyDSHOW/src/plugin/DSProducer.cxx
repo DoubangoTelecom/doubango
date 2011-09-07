@@ -88,7 +88,6 @@ int tdshow_producer_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec
 	}
 	
 	TMEDIA_PRODUCER(producer)->video.fps = TMEDIA_CODEC_VIDEO(codec)->out.fps;
-	// FIXME
 	TMEDIA_PRODUCER(producer)->video.width = TMEDIA_CODEC_VIDEO(codec)->out.width;
 	TMEDIA_PRODUCER(producer)->video.height = TMEDIA_CODEC_VIDEO(codec)->out.height;
 	
@@ -207,11 +206,11 @@ static tsk_object_t* tdshow_producer_ctor(tsk_object_t * self, va_list * app)
 
 		/* init base */
 		tmedia_producer_init(TMEDIA_PRODUCER(producer));
-		TMEDIA_PRODUCER(producer)->video.chroma = tmedia_bgr24; // RGB24 on x86 (little endians) stored as BGR24
+		TMEDIA_PRODUCER(producer)->video.chroma = tmedia_chroma_bgr24; // RGB24 on x86 (little endians) stored as BGR24
 		/* init self with default values*/
 		TMEDIA_PRODUCER(producer)->video.fps = 15;
-		TMEDIA_PRODUCER(producer)->video.width = 176;
-		TMEDIA_PRODUCER(producer)->video.height = 144;
+		TMEDIA_PRODUCER(producer)->video.width = 352;
+		TMEDIA_PRODUCER(producer)->video.height = 288;
 
 		if(IsMainThread()){
 			producer->grabber = new DSGrabber(&hr);

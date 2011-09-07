@@ -25,7 +25,6 @@
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
-
  */
 #include "tinydav/video/tdav_session_video.h"
 
@@ -81,16 +80,17 @@ static int tdav_session_video_rtp_cb(const void* callback_data, const struct trt
 		}
 
 		// Convert decoded data to the consumer chroma and size
-#define CONSUMER_INSIZE_CHANGED				((session->consumer->video.in.width * session->consumer->video.in.height * 3)/2 != out_size)// we have good reasons not to use 1.5f
-#define CONSUMER_DISPLAY_NEED_RESIZE		(session->consumer->video.in.width != session->consumer->video.display.width || session->consumer->video.in.height != session->consumer->video.display.height)
-#define CONSUMER_DECODED_HAS_DIFF_SIZE		(session->consumer->video.display.width != TMEDIA_CODEC_VIDEO(codec)->in.width || session->consumer->video.display.height != TMEDIA_CODEC_VIDEO(codec)->in.height)
-#define CONSUMER_DISPLAY_NEED_CHROMACHANGE	(session->consumer->video.display.chroma != tmedia_yuv420p)
+#define CONSUMER_INSIZE_MISMATCH				((session->consumer->video.in.width * session->consumer->video.in.height * 3)>>1 != out_size)// we have good reasons not to use 1.5f
+#define CONSUMER_IN_N_DISPLAY_MISMATCH		(session->consumer->video.in.width != session->consumer->video.display.width || session->consumer->video.in.height != session->consumer->video.display.height)
+#define CONSUMER_DISPLAY_N_CODEC_MISMATCH		(session->consumer->video.display.width != TMEDIA_CODEC_VIDEO(codec)->in.width || session->consumer->video.display.height != TMEDIA_CODEC_VIDEO(codec)->in.height)
+#define CONSUMER_DISPLAY_N_CONVERTER_MISMATCH	( (session->conv.fromYUV420 && session->conv.fromYUV420->dstWidth != session->consumer->video.display.width) || (session->conv.fromYUV420 && session->conv.fromYUV420->dstHeight != session->consumer->video.display.height) )
+#define CONSUMER_CHROMA_MISMATCH	(session->consumer->video.display.chroma != TMEDIA_CODEC_VIDEO(codec)->in.chroma)
+#define DECODED_NEED_FLIP	(TMEDIA_CODEC_VIDEO(codec)->in.flip)
 
-		if((CONSUMER_DISPLAY_NEED_CHROMACHANGE || CONSUMER_DECODED_HAS_DIFF_SIZE || CONSUMER_DISPLAY_NEED_RESIZE || CONSUMER_INSIZE_CHANGED)){
-			tsk_size_t _output_size;
+		if((CONSUMER_CHROMA_MISMATCH || CONSUMER_DISPLAY_N_CODEC_MISMATCH || CONSUMER_IN_N_DISPLAY_MISMATCH || CONSUMER_INSIZE_MISMATCH || CONSUMER_DISPLAY_N_CONVERTER_MISMATCH || DECODED_NEED_FLIP)){
 
 			// Create video converter if not already done
-			if(!session->conv.fromYUV420 || CONSUMER_DECODED_HAS_DIFF_SIZE || CONSUMER_INSIZE_CHANGED){
+			if(!session->conv.fromYUV420 || CONSUMER_DISPLAY_N_CONVERTER_MISMATCH || CONSUMER_INSIZE_MISMATCH){
 				TSK_OBJECT_SAFE_FREE(session->conv.fromYUV420);
 				// update in (set by the codec)
 				session->consumer->video.in.width = TMEDIA_CODEC_VIDEO(codec)->in.width;//decoded width
@@ -102,22 +102,27 @@ static int tdav_session_video_rtp_cb(const void* callback_data, const struct trt
 					session->consumer->video.display.height = session->consumer->video.in.height;
 				}
 				// create converter
-				if(!(session->conv.fromYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->in.width, TMEDIA_CODEC_VIDEO(codec)->in.height, session->consumer->video.display.width, session->consumer->video.display.height,
-					session->consumer->video.display.chroma, tsk_false))){
+				if(!(session->conv.fromYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->in.width, TMEDIA_CODEC_VIDEO(codec)->in.height, TMEDIA_CODEC_VIDEO(codec)->in.chroma, session->consumer->video.display.width, session->consumer->video.display.height,
+					session->consumer->video.display.chroma))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
 					ret = -3;
 					goto bail;
 				}
 			}
+		}
+
+		if(session->conv.fromYUV420){
+			// update one-shot parameters
+			tdav_converter_video_init(session->conv.fromYUV420, 0/*rotation*/, TMEDIA_CODEC_VIDEO(codec)->in.flip);
 			// convert data to the consumer's chroma
-			_output_size = tdav_converter_video_convert(session->conv.fromYUV420, session->decoder.buffer, &session->decoder.conv_buffer, &session->decoder.conv_buffer_size);
-			if(!_output_size || !session->decoder.conv_buffer){
+			out_size = tdav_converter_video_convert(session->conv.fromYUV420, session->decoder.buffer, &session->decoder.conv_buffer, &session->decoder.conv_buffer_size);
+			if(!out_size || !session->decoder.conv_buffer){
 				TSK_DEBUG_ERROR("Failed to convert YUV420 buffer to consumer's chroma");
 				ret = -4;
 				goto bail;
 			}
 
-			tmedia_consumer_consume(session->consumer, session->decoder.conv_buffer, _output_size, packet->header);
+			tmedia_consumer_consume(session->consumer, session->decoder.conv_buffer, out_size, packet->header);
 			if(!session->decoder.conv_buffer){
 				/* taken  by the consumer */
 				session->decoder.conv_buffer_size = 0;
@@ -189,8 +194,9 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 	
 #define PRODUCER_SIZE_CHANGED (session->conv.producerWidth != session->producer->video.width) || (session->conv.producerHeight != session->producer->video.height) \
 || (session->conv.xProducerSize != size)
+#define ENCODED_NEED_FLIP TMEDIA_CODEC_VIDEO(codec)->out.flip
 		// Video codecs only accept YUV420P buffers ==> do conversion if needed or producer doesn't have the right size
-		if((session->producer->video.chroma != tmedia_yuv420p) || PRODUCER_SIZE_CHANGED){
+		if((session->producer->video.chroma != TMEDIA_CODEC_VIDEO(codec)->out.chroma) || PRODUCER_SIZE_CHANGED || ENCODED_NEED_FLIP){
 			// Create video converter if not already done or producer size has changed
 			if(!session->conv.toYUV420 || PRODUCER_SIZE_CHANGED){
 				TSK_OBJECT_SAFE_FREE(session->conv.toYUV420);
@@ -198,15 +204,18 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 				session->conv.producerHeight = session->producer->video.height;
 				session->conv.xProducerSize = size;
 				
-				if(!(session->conv.toYUV420 = tdav_converter_video_create(session->producer->video.width, session->producer->video.height, TMEDIA_CODEC_VIDEO(codec)->out.width, TMEDIA_CODEC_VIDEO(codec)->out.height,
-					session->producer->video.chroma, tsk_true))){
+				if(!(session->conv.toYUV420 = tdav_converter_video_create(session->producer->video.width, session->producer->video.height, session->producer->video.chroma, TMEDIA_CODEC_VIDEO(codec)->out.width, TMEDIA_CODEC_VIDEO(codec)->out.height,
+					TMEDIA_CODEC_VIDEO(codec)->out.chroma))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
 					ret = -5;
 					goto bail;
 				}
 			}
+		}
+
+		if(session->conv.toYUV420){
 			// update one-shot parameters
-			tdav_converter_video_init(session->conv.toYUV420, session->producer->video.rotation);
+			tdav_converter_video_init(session->conv.toYUV420, session->producer->video.rotation, TMEDIA_CODEC_VIDEO(codec)->out.flip);
 			// convert data to yuv420p
 			yuv420p_size = tdav_converter_video_convert(session->conv.toYUV420, buffer, &session->encoder.conv_buffer, &session->encoder.conv_buffer_size);
 			if(!yuv420p_size || !session->encoder.conv_buffer){
@@ -267,7 +276,7 @@ int tmedia_session_video_set(tmedia_session_t* self, const tmedia_param_t* param
 				tsk_bool_t flip = (tsk_bool_t)TSK_TO_INT32((uint8_t*)param->value);
 				tmedia_codecs_L_t *codecs = tsk_object_ref(self->codecs);
 				tsk_list_foreach(item, codecs){
-					((tmedia_codec_t*)item->data)->video.flip.decoded = flip;
+					TMEDIA_CODEC_VIDEO(item->data)->in.flip = flip;
 				}
 				tsk_object_unref(codecs);
 			}
@@ -285,7 +294,7 @@ int tmedia_session_video_set(tmedia_session_t* self, const tmedia_param_t* param
 				tsk_bool_t flip = (tsk_bool_t)TSK_TO_INT32((uint8_t*)param->value);
 				tmedia_codecs_L_t *codecs = tsk_object_ref(self->codecs);
 				tsk_list_foreach(item, codecs){
-					((tmedia_codec_t*)item->data)->video.flip.encoded = flip;
+					TMEDIA_CODEC_VIDEO(item->data)->out.flip = flip;
 				}
 				tsk_object_unref(codecs);
 			}

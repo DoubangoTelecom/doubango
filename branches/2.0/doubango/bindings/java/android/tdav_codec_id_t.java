@@ -33,9 +33,10 @@ public enum tdav_codec_id_t {
   tdav_codec_id_h264_bp10(0x00010000 << 4),
   tdav_codec_id_h264_bp20(0x00010000 << 5),
   tdav_codec_id_h264_bp30(0x00010000 << 6),
-  tdav_codec_id_theora(0x00010000 << 7),
-  tdav_codec_id_mp4ves_es(0x00010000 << 8),
-  tdav_codec_id_vp8(0x00010000 << 9);
+  tdav_codec_id_h264_svc(0x00010000 << 7),
+  tdav_codec_id_theora(0x00010000 << 8),
+  tdav_codec_id_mp4ves_es(0x00010000 << 9),
+  tdav_codec_id_vp8(0x00010000 << 10);
 
   public final int swigValue() {
     return swigValue;

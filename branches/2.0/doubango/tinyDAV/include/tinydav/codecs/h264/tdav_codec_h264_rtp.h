@@ -32,8 +32,6 @@
 
 #include "tinydav_config.h"
 
-#if HAVE_FFMPEG && (!defined(HAVE_H264) || HAVE_H264)
-
 #include "tsk_common.h"
 
 TDAV_BEGIN_DECLS
@@ -46,7 +44,7 @@ TDAV_BEGIN_DECLS
 
 #define H264_START_CODE_PREFIX_SIZE	4
 
-struct tdav_codec_h264_s;
+struct tdav_codec_h264_common_s;
 
 extern uint8_t H264_START_CODE_PREFIX[4];
 
@@ -114,10 +112,8 @@ nal_unit_type_t;
 int tdav_codec_h264_parse_profile(const char* profile_level_id, profile_idc_t *p_idc, profile_iop_t *p_iop, level_idc_t *l_idc);
 int tdav_codec_h264_get_pay(const void* in_data, tsk_size_t in_size, const void** out_data, tsk_size_t *out_size, tsk_bool_t* append_scp);
 
-void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_s *self, const void *data, tsk_size_t size, tsk_bool_t marker);
+void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_common_s *self, const void *data, tsk_size_t size, tsk_bool_t marker);
 
 TDAV_END_DECLS
-
-#endif /* HAVE_FFMPEG */
 
 #endif /* TINYDAV_CODEC_H264_RTP_H */

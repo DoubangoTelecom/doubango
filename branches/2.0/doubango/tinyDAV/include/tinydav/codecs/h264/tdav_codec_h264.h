@@ -21,12 +21,11 @@
 */
 
 /**@file tdav_codec_h264.h
- * @brief H.264 codec plugin
+ * @brief H.264 codec plugin using FFmpeg for decoding and x264 for encoding
  * RTP payloader/depayloader follows RFC 3984.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
-
  */
 #ifndef TINYDAV_CODEC_H264_H
 #define TINYDAV_CODEC_H264_H
@@ -35,42 +34,15 @@
 
 #if HAVE_FFMPEG && (!defined(HAVE_H264) || HAVE_H264)
 
-#include "tinymedia/tmedia_codec.h"
+#include "tinydav/codecs/h264/tdav_codec_h264_common.h"
 
 #include <libavcodec/avcodec.h>
 
 TDAV_BEGIN_DECLS
 
-// Because of FD, declare it here
-typedef enum packetization_mode_e{
-	Single_NAL_Unit_Mode = 0,		/* Single NAL mode (Only nals from 1-23 are allowed) */
-	Non_Interleaved_Mode = 1,		/* Non-interleaved Mode: 1-23, 24 (STAP-A), 28 (FU-A) are allowed */
-	Interleaved_Mode = 2			/* 25 (STAP-B), 26 (MTAP16), 27 (MTAP24), 28 (FU-A), and 29 (FU-B) are allowed.*/
-}
-packetization_mode_t;
-
-typedef enum tdav_codec_h264_profile_e
-{
-	tdav_codec_h264_bp99,
-
-	tdav_codec_h264_bp10,
-	tdav_codec_h264_bp20,
-	tdav_codec_h264_bp30,
-}
-tdav_codec_h264_profile_t;
-
 typedef struct tdav_codec_h264_s
 {
-	TMEDIA_DECLARE_CODEC_VIDEO;
-
-	tdav_codec_h264_profile_t profile;
-
-	packetization_mode_t pack_mode;
-
-	struct{
-		uint8_t* ptr;
-		tsk_size_t size;
-	} rtp;
+	TDAV_DECLARE_CODEC_H264_COMMON;
 
 	// Encoder
 	struct{
@@ -78,7 +50,7 @@ typedef struct tdav_codec_h264_s
 		AVCodecContext* context;
 		AVFrame* picture;
 		void* buffer;
-		int frame_count;
+		int64_t frame_count;
 	} encoder;
 	
 	// decoder
@@ -89,6 +61,7 @@ typedef struct tdav_codec_h264_s
 
 		void* accumulator;
 		tsk_size_t accumulator_pos;
+		tsk_size_t accumulator_size;
 		uint16_t last_seq;
 	} decoder;
 }
@@ -97,6 +70,14 @@ tdav_codec_h264_t;
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h264_bp10_plugin_def_t;
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h264_bp20_plugin_def_t;
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h264_bp30_plugin_def_t;
+
+static inline tsk_bool_t tdav_codec_h264_is_ffmpeg_plugin(const tmedia_codec_plugin_def_t *plugin)
+{
+	if(plugin && (plugin == tdav_codec_h264_bp10_plugin_def_t || plugin == tdav_codec_h264_bp20_plugin_def_t || plugin == tdav_codec_h264_bp30_plugin_def_t)){
+		return tsk_true;
+	}
+	return tsk_false;
+}
 
 TDAV_END_DECLS
 

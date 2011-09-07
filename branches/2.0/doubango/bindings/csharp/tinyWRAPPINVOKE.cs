@@ -1028,6 +1028,12 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_setConsumeBuffer")]
   public static extern bool ProxyVideoConsumer_setConsumeBuffer(HandleRef jarg1, byte[] jarg2, uint jarg3);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_pull")]
+  public static extern uint ProxyVideoConsumer_pull(HandleRef jarg1, byte[] jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_reset")]
+  public static extern bool ProxyVideoConsumer_reset(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoConsumer_getMediaSessionId")]
   public static extern ulong ProxyVideoConsumer_getMediaSessionId(HandleRef jarg1);
 

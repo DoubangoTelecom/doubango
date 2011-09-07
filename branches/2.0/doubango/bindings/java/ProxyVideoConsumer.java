@@ -61,6 +61,14 @@ public class ProxyVideoConsumer extends ProxyPlugin {
     return tinyWRAPJNI.ProxyVideoConsumer_setConsumeBuffer(swigCPtr, this, pConsumeBufferPtr, nConsumeBufferSize);
   }
 
+  public long pull(java.nio.ByteBuffer pOutput, long nSize) {
+    return tinyWRAPJNI.ProxyVideoConsumer_pull(swigCPtr, this, pOutput, nSize);
+  }
+
+  public boolean reset() {
+    return tinyWRAPJNI.ProxyVideoConsumer_reset(swigCPtr, this);
+  }
+
   public java.math.BigInteger getMediaSessionId() {
     return tinyWRAPJNI.ProxyVideoConsumer_getMediaSessionId(swigCPtr, this);
   }

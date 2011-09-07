@@ -21,7 +21,7 @@
 */
 
 /**@file tmedia_jitterbuffer.c
- * @brief JitterBuffer plugin
+ * @brief Audio/Video  JitterBuffer plugin
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  */
@@ -29,7 +29,8 @@
 
 #include "tsk_debug.h"
 
-static const tmedia_jitterbuffer_plugin_def_t* __tmedia_jitterbuffer_plugin = tsk_null;
+/* pointer to all registered jitter_buffers */
+static const tmedia_jitterbuffer_plugin_def_t* __tmedia_jitterbuffer_plugins[TMED_JITTER_BUFFER_MAX_PLUGINS] = {0};
 
 int tmedia_jitterbuffer_init(tmedia_jitterbuffer_t* self)
 {
@@ -38,6 +39,15 @@ int tmedia_jitterbuffer_init(tmedia_jitterbuffer_t* self)
 		return -1;
 	}
 	return 0;
+}
+
+int tmedia_jitterbuffer_set(tmedia_jitterbuffer_t *self, const tmedia_param_t* param)
+{
+	if(!self || !self->plugin || !param){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+	return self->plugin->set ? self->plugin->set(self, param) : 0;
 }
 
 int tmedia_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate)
@@ -164,30 +174,108 @@ int tmedia_jitterbuffer_deinit(tmedia_jitterbuffer_t* self)
 	return 0;
 }
 
+tmedia_jitterbuffer_t* tmedia_jitterbuffer_create(tmedia_type_t type)
+{
+	tmedia_jitterbuffer_t* jitter_buffer = tsk_null;
+	const tmedia_jitterbuffer_plugin_def_t* plugin;
+	tsk_size_t i = 0;
+
+	while((i < TMED_JITTER_BUFFER_MAX_PLUGINS) && (plugin = __tmedia_jitterbuffer_plugins[i++])){
+		if(plugin->objdef && plugin->type == type){
+			if((jitter_buffer = tsk_object_new(plugin->objdef))){
+				/* initialize the newly created jitter_buffer */
+				jitter_buffer->plugin = plugin;
+				break;
+			}
+		}
+	}
+
+	return jitter_buffer;
+}
+
 int tmedia_jitterbuffer_plugin_register(const tmedia_jitterbuffer_plugin_def_t* plugin)
 {
+	tsk_size_t i;
 	if(!plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	__tmedia_jitterbuffer_plugin = plugin;
-	return 0;
-}
 
-int tmedia_jitterbuffer_plugin_unregister()
-{
-	__tmedia_jitterbuffer_plugin = tsk_null;
-	return 0;
-}
-
-tmedia_jitterbuffer_t* tmedia_jitterbuffer_create()
-{
-	tmedia_jitterbuffer_t* jitterbuffer = tsk_null;
-
-	if(__tmedia_jitterbuffer_plugin){
-		if((jitterbuffer = tsk_object_new(__tmedia_jitterbuffer_plugin->objdef))){
-			jitterbuffer->plugin = __tmedia_jitterbuffer_plugin;
+	/* add or replace the plugin */
+	for(i = 0; i<TMED_JITTER_BUFFER_MAX_PLUGINS; i++){
+		if(!__tmedia_jitterbuffer_plugins[i] || (__tmedia_jitterbuffer_plugins[i] == plugin)){
+			__tmedia_jitterbuffer_plugins[i] = plugin;
+			return 0;
 		}
 	}
-	return jitterbuffer;
+	
+	TSK_DEBUG_ERROR("There are already %d plugins.", TMED_JITTER_BUFFER_MAX_PLUGINS);
+	return -2;
+}
+
+/**@ingroup tmedia_jitterbuffer_group
+* UnRegisters a jitter_buffer plugin.
+* @param plugin the definition of the plugin.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
+int tmedia_jitterbuffer_plugin_unregister(const tmedia_jitterbuffer_plugin_def_t* plugin)
+{
+	tsk_size_t i;
+	tsk_bool_t found = tsk_false;
+	if(!plugin){
+		TSK_DEBUG_ERROR("Invalid Parameter");
+		return -1;
+	}
+
+	/* find the plugin to unregister */
+	for(i = 0; i<TMED_JITTER_BUFFER_MAX_PLUGINS && __tmedia_jitterbuffer_plugins[i]; i++){
+		if(__tmedia_jitterbuffer_plugins[i] == plugin){
+			__tmedia_jitterbuffer_plugins[i] = tsk_null;
+			found = tsk_true;
+			break;
+		}
+	}
+
+	/* compact */
+	if(found){
+		for(; i<(TMED_JITTER_BUFFER_MAX_PLUGINS - 1); i++){
+			if(__tmedia_jitterbuffer_plugins[i+1]){
+				__tmedia_jitterbuffer_plugins[i] = __tmedia_jitterbuffer_plugins[i+1];
+			}
+			else{
+				break;
+			}
+		}
+		__tmedia_jitterbuffer_plugins[i] = tsk_null;
+	}
+	return (found ? 0 : -2);
+}
+
+int tmedia_jitterbuffer_plugin_unregister_by_type(tmedia_type_t type)
+{
+	tsk_size_t i;
+	tsk_bool_t found = tsk_false;
+
+	/* find the plugin to unregister */
+	for(i = 0; i<TMED_JITTER_BUFFER_MAX_PLUGINS && __tmedia_jitterbuffer_plugins[i]; i++){
+		if((__tmedia_jitterbuffer_plugins[i]->type & type) == __tmedia_jitterbuffer_plugins[i]->type){
+			__tmedia_jitterbuffer_plugins[i] = tsk_null;
+			found = tsk_true;
+			break;
+		}
+	}
+
+	/* compact */
+	if(found){
+		for(; i<(TMED_JITTER_BUFFER_MAX_PLUGINS - 1); i++){
+			if(__tmedia_jitterbuffer_plugins[i+1]){
+				__tmedia_jitterbuffer_plugins[i] = __tmedia_jitterbuffer_plugins[i+1];
+			}
+			else{
+				break;
+			}
+		}
+		__tmedia_jitterbuffer_plugins[i] = tsk_null;
+	}
+	return (found ? 0 : -2);
 }

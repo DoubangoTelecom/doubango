@@ -57,6 +57,7 @@
 #include "tinydav/codecs/h261/tdav_codec_h261.h"
 #include "tinydav/codecs/h263/tdav_codec_h263.h"
 #include "tinydav/codecs/h264/tdav_codec_h264.h"
+#include "tinydav/codecs/h264/tdav_codec_h264_cuda.h"
 #include "tinydav/codecs/theora/tdav_codec_theora.h"
 #include "tinydav/codecs/mp4ves/tdav_codec_mp4ves.h"
 #include "tinydav/codecs/vpx/tdav_codec_vp8.h"
@@ -98,10 +99,16 @@
 #else 
 #	include "tinydav/audio/tdav_speakup_jitterbuffer.h"
 #endif
+#if TELEPRESENCE
+#	include "tinydav/video/tdav_video_jitterbuffer.h"
+#endif
 
 #if HAVE_FFMPEG
 #	include <libavcodec/avcodec.h>
 #endif
+
+
+static inline tsk_bool_t _tdav_codec_is_supported(tdav_codec_id_t codec, const tmedia_codec_plugin_def_t* plugin);
 
 int tdav_init()
 {
@@ -181,6 +188,13 @@ int tdav_init()
 #if HAVE_LIBVPX
 	tmedia_codec_plugin_register(tdav_codec_vp8_plugin_def_t);
 #endif
+#if HAVE_CUDA
+	if(tdav_codec_h264_cuda_is_supported()){
+		tmedia_codec_plugin_register(tdav_codec_h264_cuda_bp10_plugin_def_t);
+		tmedia_codec_plugin_register(tdav_codec_h264_cuda_bp20_plugin_def_t);
+		tmedia_codec_plugin_register(tdav_codec_h264_cuda_bp30_plugin_def_t);
+	}
+#endif
 #if HAVE_FFMPEG
 	tmedia_codec_plugin_register(tdav_codec_mp4ves_plugin_def_t);
 #	if !defined(HAVE_H264) || HAVE_H264
@@ -253,6 +267,9 @@ int tdav_init()
 #else
 	tmedia_jitterbuffer_plugin_register(tdav_speakup_jitterbuffer_plugin_def_t);
 #endif
+#if TELEPRESENCE
+	tmedia_jitterbuffer_plugin_register(tdav_video_jitterbuffer_plugin_def_t);
+#endif
 
 	return ret;
 }
@@ -292,8 +309,14 @@ static tdav_codec_decl_t __codecs[] = {
 	{ tdav_codec_id_vp8, &tdav_codec_vp8_plugin_def_t },
 #endif
 
+#if HAVE_CUDA
+	// tdav_codec_h264_cuda_is_supported() will be used to check availability at runtime
+	{ tdav_codec_id_h264_bp30, &tdav_codec_h264_cuda_bp30_plugin_def_t },
+	{ tdav_codec_id_h264_bp20, &tdav_codec_h264_cuda_bp20_plugin_def_t },
+	{ tdav_codec_id_h264_bp10, &tdav_codec_h264_cuda_bp10_plugin_def_t },
+#endif
 #if HAVE_FFMPEG
-#	if !defined(HAVE_H264) || HAVE_H264
+#	if (!defined(HAVE_H264) || HAVE_H264) || HAVE_CUDA
 	{ tdav_codec_id_h264_bp30, &tdav_codec_h264_bp30_plugin_def_t },
 	{ tdav_codec_id_h264_bp20, &tdav_codec_h264_bp20_plugin_def_t },
 	{ tdav_codec_id_h264_bp10, &tdav_codec_h264_bp10_plugin_def_t },		
@@ -343,17 +366,19 @@ void tdav_set_codecs(tdav_codec_id_t codecs)
 {
 	int i;
 
-	for(i=0; i<sizeof(__codecs)/sizeof(tdav_codec_decl_t); i++){
+	for(i=0; i<sizeof(__codecs)/sizeof(tdav_codec_decl_t); ++i){
 		if((codecs & __codecs[i].id)){
-			tmedia_codec_plugin_register(*__codecs[i].plugin);
+			if(_tdav_codec_is_supported(__codecs[i].id, *(__codecs[i].plugin))){
+				tmedia_codec_plugin_register(*(__codecs[i].plugin));
+			}
 		}
 		else{
-			tmedia_codec_plugin_unregister(*__codecs[i].plugin);
+			tmedia_codec_plugin_unregister(*(__codecs[i].plugin));
 		}
 	}
 }
 
-tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
+tsk_bool_t _tdav_codec_is_supported(tdav_codec_id_t codec, const tmedia_codec_plugin_def_t* plugin)
 {
 	switch(codec){
 
@@ -435,11 +460,25 @@ tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
 		case tdav_codec_id_h264_bp10:
 		case tdav_codec_id_h264_bp20:
 		case tdav_codec_id_h264_bp30:
-#if HAVE_FFMPEG && (!defined(HAVE_H264) || HAVE_H264)
-			return tsk_true;
-#else
-			return tsk_false;
+			{
+				if(plugin){
+#if HAVE_CUDA
+					if(tdav_codec_h264_is_cuda_plugin(plugin) && tdav_codec_h264_cuda_is_supported()) return tsk_true;
 #endif
+#if HAVE_FFMPEG && (!defined(HAVE_H264) || HAVE_H264)
+					if(tdav_codec_h264_is_ffmpeg_plugin(plugin)) return tsk_true;
+#endif
+				}
+				else{
+#if HAVE_CUDA
+				if(tdav_codec_h264_cuda_is_supported()) return tsk_true;
+#endif
+#if HAVE_FFMPEG && (!defined(HAVE_H264) || HAVE_H264)
+					return tsk_true;
+#endif
+				}
+				return tsk_false;
+			}
 
 		case tdav_codec_id_amr_wb_oa:
 		case tdav_codec_id_amr_wb_be:
@@ -448,6 +487,11 @@ tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
 		default:
 			return tsk_false;
 	}
+}
+
+tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
+{
+	return _tdav_codec_is_supported(codec, tsk_null);
 }
 
 int tdav_deinit()
@@ -504,6 +548,13 @@ int tdav_deinit()
 
 #if HAVE_LIBVPX
 	tmedia_codec_plugin_unregister(tdav_codec_vp8_plugin_def_t);
+#endif
+#if HAVE_CUDA
+	if(tdav_codec_h264_cuda_is_supported()){
+		tmedia_codec_plugin_unregister(tdav_codec_h264_cuda_bp10_plugin_def_t);
+		tmedia_codec_plugin_unregister(tdav_codec_h264_cuda_bp20_plugin_def_t);
+		tmedia_codec_plugin_unregister(tdav_codec_h264_cuda_bp30_plugin_def_t);
+	}
 #endif
 #if HAVE_FFMPEG
 	tmedia_codec_plugin_unregister(tdav_codec_mp4ves_plugin_def_t);
@@ -575,6 +626,9 @@ int tdav_deinit()
 	tmedia_jitterbuffer_plugin_unregister(tdav_speex_jitterbuffer_plugin_def_t);
 #else
 	tmedia_jitterbuffer_plugin_unregister(tdav_speakup_jitterbuffer_plugin_def_t);
+#endif
+#if TELEPRESENCE
+	tmedia_jitterbuffer_plugin_unregister(tdav_video_jitterbuffer_plugin_def_t);
 #endif
 
 	return ret;

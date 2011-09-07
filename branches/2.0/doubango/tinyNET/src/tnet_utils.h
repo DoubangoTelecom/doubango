@@ -114,6 +114,14 @@ TINYNET_API int tnet_get_peerip_n_port(tnet_fd_t localFD, tnet_ip_t *ip, tnet_po
 #	define tnet_get_sockaddr_size(psockaddr)	((psockaddr)->sa_family == AF_INET6 ? sizeof(struct sockaddr_in6): ((psockaddr)->sa_family == AF_INET ? sizeof(struct sockaddr_in) : sizeof(*(psockaddr))))
 #endif
 
+#if TNET_UNDER_WINDOWS
+#	define tnet_ioctlt ioctlsocket /* FIXME: use WSAIoctl */
+#	define tnet_soccket(family, type, protocol) WSASocket((family), (type), (protocol), NULL, 0, WSA_FLAG_OVERLAPPED)
+#else
+#	define tnet_ioctlt ioctl
+#	define tnet_soccket(family, type, protocol) socket((family), (type), (protocol))
+#endif
+
 TINYNET_API int tnet_getnameinfo(const struct sockaddr *sa, socklen_t salen, char* node, socklen_t nodelen, char* service, socklen_t servicelen, int flags);
 TINYNET_API int tnet_gethostname(tnet_host_t* result);
 
@@ -154,13 +162,6 @@ TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 		TSK_DEBUG_ERROR(FMT, ##__VA_ARGS__); \
 		TSK_DEBUG_ERROR("(SYSTEM)NETWORK ERROR ==>%s", error) \
 	}
-
-
-#if TSK_UNDER_WINDOWS
-#	define tnet_ioctlt ioctlsocket /* FIXME: use WSAIoctl */
-#else
-#	define tnet_ioctlt ioctl
-#endif
 
 
 tnet_interface_t* tnet_interface_create(const char* description, const void* mac_address, tsk_size_t mac_address_length);

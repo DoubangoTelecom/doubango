@@ -167,9 +167,11 @@ OBJS += src/audio/tdav_consumer_audio.o \
     src/audio/tdav_webrtc_denoise.o
     
      ### video
-OBJS += src/video/tdav_converter_video.o \
+OBJS += src/video/tdav_consumer_video.o \
+	src/video/tdav_converter_video.o \
 	src/video/tdav_runnable_video.o \
-	src/video/tdav_session_video.o
+	src/video/tdav_session_video.o \
+	src/video/tdav_video_jitterbuffer.o
 	
     ### msrp
 OBJS += src/msrp/tdav_consumer_msrp.o \

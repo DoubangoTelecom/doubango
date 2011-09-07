@@ -44,13 +44,17 @@ TMEDIA_BEGIN_DECLS
 #define TMEDIA_CONSUMER_PTIME_DEFAULT				20
 
 /**Max number of plugins (consumer types) we can create */
-#define TMED_CONSUMER_MAX_PLUGINS			0x0F
+#if !defined(TMED_CONSUMER_MAX_PLUGINS)
+#	define TMED_CONSUMER_MAX_PLUGINS			0x0F
+#endif
 
 /** cast any pointer to @ref tmedia_consumer_t* object */
 #define TMEDIA_CONSUMER(self)		((tmedia_consumer_t*)(self))
 
 /**  Default Video chroma */
-#define TMEDIA_CONSUMER_CHROMA_DEFAULT tmedia_yuv420p
+#if !defined(TMEDIA_CONSUMER_CHROMA_DEFAULT)
+#	define TMEDIA_CONSUMER_CHROMA_DEFAULT tmedia_chroma_yuv420p
+#endif
 
 /** Base object for all Consumers */
 typedef struct tmedia_consumer_s

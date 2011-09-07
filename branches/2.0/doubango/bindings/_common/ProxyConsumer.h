@@ -105,6 +105,7 @@ public:
 
 	virtual int prepare(int nWidth, int nHeight, int nFps) { return -1; }
 	virtual int consume(const ProxyVideoFrame* frame) { return -1; }
+	// only called if a buffer is registered using setPullBuffer(). Otherwise, consume() will be called
 	virtual int bufferCopied(unsigned nCopiedSize, unsigned nAvailableSize) { return -1; }
 	virtual int start() { return -1; }
 	virtual int pause() { return -1; }
@@ -128,6 +129,8 @@ public:
 	bool setAutoResizeDisplay(bool bAutoResizeDisplay);
 	bool getAutoResizeDisplay()const;
 	bool setConsumeBuffer(const void* pConsumeBufferPtr, unsigned nConsumeBufferSize);
+	unsigned pull(void* pOutput, unsigned nSize);
+	bool reset();
 	
 #if !defined(SWIG)
 	bool hasConsumeBuffer()const { return m_ConsumeBuffer.pConsumeBufferPtr && m_ConsumeBuffer.nConsumeBufferSize; }

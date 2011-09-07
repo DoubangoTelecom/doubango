@@ -83,7 +83,6 @@ private:
 #ifdef _WIN32_WCE
 	IBaseFilter						*colorConvertor565; //http://msdn.microsoft.com/en-us/library/aa926076.aspx
 #else
-	IBaseFilter						*decompressorFilter;
 	DSFrameRateFilter				*frameRateFilter;
 #endif
 

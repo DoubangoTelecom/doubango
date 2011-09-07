@@ -138,7 +138,8 @@ typedef struct tsip_dialog_s
 	tsip_uri_t* uri_remote;
 	
 	tsip_uri_t* uri_remote_target;
-	
+	struct sockaddr_storage remote_addr; // Only valid for Dgram
+
 	uint32_t cseq_value;
 	char* cseq_method;
 	
@@ -162,7 +163,7 @@ typedef tsk_list_t tsip_dialogs_L_t;
 
 tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* method);
 int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request);
-tsip_response_t *tsip_dialog_response_new(const tsip_dialog_t *self, short status, const char* phrase, const tsip_request_t* request);
+tsip_response_t *tsip_dialog_response_new(tsip_dialog_t *self, short status, const char* phrase, const tsip_request_t* request);
 int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* response);
 int tsip_dialog_apply_action(tsip_message_t* message, const tsip_action_t* action);
 

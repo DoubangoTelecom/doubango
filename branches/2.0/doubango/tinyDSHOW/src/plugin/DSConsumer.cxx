@@ -214,7 +214,7 @@ static tsk_object_t* tdshow_consumer_ctor(tsk_object_t * self, va_list * app)
 
 		/* init base */
 		tmedia_consumer_init(TMEDIA_CONSUMER(consumer));
-		TMEDIA_CONSUMER(consumer)->video.display.chroma = tmedia_bgr24; // RGB24 on x86 (little endians) stored as BGR24
+		TMEDIA_CONSUMER(consumer)->video.display.chroma = tmedia_chroma_bgr24; // RGB24 on x86 (little endians) stored as BGR24
 
 		/* init self */
 		TMEDIA_CONSUMER(consumer)->video.fps = 15;

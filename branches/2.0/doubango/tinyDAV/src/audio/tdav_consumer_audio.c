@@ -74,7 +74,7 @@ int tdav_consumer_audio_init(tdav_consumer_audio_t* self)
 	TMEDIA_CONSUMER(self)->audio.gain = TSK_MIN(tmedia_defaults_get_audio_consumer_gain(), TDAV_AUDIO_GAIN_MAX);
 
 	/* self:jitterbuffer */
-	if(!(self->jitterbuffer = tmedia_jitterbuffer_create())){
+	if(!(self->jitterbuffer = tmedia_jitterbuffer_create(tmedia_audio))){
 		TSK_DEBUG_ERROR("Failed to create jitter buffer");
 		return -2;
 	}

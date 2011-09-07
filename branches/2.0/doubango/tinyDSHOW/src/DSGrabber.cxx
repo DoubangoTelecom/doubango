@@ -50,8 +50,8 @@ DSGrabber::DSGrabber(HRESULT *hr)
 	// Init the bitmap info header with default values
 	memset(&(this->bitmapInfo), 0, sizeof(BITMAPINFOHEADER));
 	this->bitmapInfo.biSize = sizeof(BITMAPINFOHEADER);
-	this->bitmapInfo.biWidth = 176;
-	this->bitmapInfo.biHeight = 144;
+	this->bitmapInfo.biWidth = 352;
+	this->bitmapInfo.biHeight = 288;
 	this->bitmapInfo.biPlanes = 1;
 	this->bitmapInfo.biBitCount = 24; 
 	this->bitmapInfo.biCompression = 0;
@@ -89,7 +89,9 @@ void DSGrabber::start()
 	if (!this->graph->isRunning()){
 		first_buffer = true;
 
-		this->preview->start();
+		if(this->preview){
+			this->preview->start();
+		}
 		this->graph->connect();
 		this->graph->start();
 	}
@@ -97,7 +99,9 @@ void DSGrabber::start()
 void DSGrabber::stop()
 {
 	if (this->graph->isRunning()){
-		this->preview->stop();
+		if(this->preview){
+			this->preview->stop();
+		}
 		this->graph->stop();
 		this->graph->disconnect();
 	}
@@ -140,8 +144,10 @@ bool DSGrabber::setCaptureParameters(int w, int h, int f)
 	// Setup source filter in the graph
 	HRESULT hr = this->graph->setParameters(fmt, this->fps);
 	// Set preview parameters
-	this->preview->setFps(this->fps);
-	this->preview->setSize(this->width, this->height);
+	if(this->preview){
+		this->preview->setFps(this->fps);
+		this->preview->setSize(this->width, this->height);
+	}
 
 	tsk_mutex_unlock(this->mutex_buffer);
 

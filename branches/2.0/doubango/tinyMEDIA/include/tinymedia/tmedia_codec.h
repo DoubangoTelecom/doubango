@@ -147,17 +147,6 @@ typedef struct tmedia_codec_s
 	//! the negociated format (only useful for codecs with dyn. payload type)
 	char* neg_format;
 	
-	struct {
-		unsigned __FIXME__:1;
-	} audio;
-	
-	struct {
-		struct {
-			unsigned encoded:1;
-			unsigned decoded:1;
-		} flip;
-	} video;
-	
 	//! plugin used to create the codec
 	const struct tmedia_codec_plugin_def_s* plugin;
 }
@@ -272,6 +261,8 @@ typedef struct tmedia_codec_video_s
 		unsigned fps;
 		unsigned max_br;
 		unsigned max_mbps;
+		tmedia_chroma_t chroma;
+		tsk_bool_t flip;
 	}in;// decoded
 	struct{
 		unsigned width;
@@ -279,6 +270,8 @@ typedef struct tmedia_codec_video_s
 		unsigned fps;
 		unsigned max_br;
 		unsigned max_mbps;
+		tmedia_chroma_t chroma;
+		tsk_bool_t flip;
 	}out;// encoded
 
 
