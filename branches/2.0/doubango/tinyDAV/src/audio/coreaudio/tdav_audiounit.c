@@ -38,7 +38,7 @@ static UInt32 kZero = 0;
 			#define kDoubangoAudioUnitSubType	kAudioUnitSubType_VoiceProcessingIO
 		#endif
 	#elif TARGET_OS_MAC
-		#define kDoubangoAudioUnitSubType	kAudioUnitSubType_DefaultOutput
+		#define kDoubangoAudioUnitSubType	kAudioUnitSubType_HALOutput
 	#else
 		#error "Unknown target"
 	#endif
@@ -87,23 +87,30 @@ static int _tdav_audiounit_handle_signal_xxx_prepared(tdav_audiounit_handle_t* s
 	else {
 		inst->prepared.producer = tsk_true;
 	}
-
-	if(inst->prepared.consumer && inst->prepared.producer){
-		OSStatus status = AudioUnitInitialize(inst->audioUnit);
-		if(status){
-			TSK_DEBUG_ERROR("AudioUnitInitialize failed with status =%ld", status);
+	
+	OSStatus status;
+	
+	// For iOS we are using full-duplex AudioUnit and we wait for both consumer and producer to be prepared
+#if TARGET_OS_IPHONE
+	if(inst->prepared.consumer && inst->prepared.producer)
+#endif
+	{
+		status = AudioUnitInitialize(inst->audioUnit);
+		if(status != noErr){
+			TSK_DEBUG_ERROR("AudioUnitInitialize failed with status =%ld", (signed long)status);
 			tsk_safeobj_unlock(inst);
 			return -2;
 		}
-	}
+	}	
+	
 	tsk_safeobj_unlock(inst);
 	return 0;
 }
 
-tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id, uint32_t ptime)
+tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id)
 {
 	tdav_audiounit_instance_t* inst = tsk_null;
-	const tsk_list_item_t* item;
+	
 	// create audio unit component
 	if(!__audioSystem){
 		AudioComponentDescription audioDescription;
@@ -130,63 +137,30 @@ tdav_audiounit_handle_t* tdav_audiounit_handle_create(uint64_t session_id, uint3
 	//= lock the list
 	tsk_list_lock(__audioUnitInstances);
 	
+	// For iOS we are using full-duplex AudioUnit and to keep it unique for both
+	// the consumer and producer we use the session id.
+#if TARGET_OS_IPHONE
 	// find the instance from the list
+	const tsk_list_item_t* item;
 	tsk_list_foreach(item,__audioUnitInstances){
 		if(((tdav_audiounit_instance_t*)item->data)->session_id == session_id){
 			inst = tsk_object_ref(item->data);
 			goto done;
 		}
 	}
+#endif
 	
 	// create instance object and put it into the list
 	if((inst = tsk_object_new(tdav_audiounit_instance_def_t))){
 		OSStatus status = noErr;
 		tdav_audiounit_instance_t* _inst;
-#if TARGET_OS_IPHONE
-		// set preferred buffer size
-		Float32 preferredBufferSize = ((Float32)ptime / 1000.f); // in seconds
-		status = AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration, sizeof(preferredBufferSize), &preferredBufferSize);
-		if(status){
-			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback) failed with status=%ld", status);
-			TSK_OBJECT_SAFE_FREE(inst);
-			goto done;
-		}
-		 UInt32 size = sizeof(preferredBufferSize);
-		status = AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareIOBufferDuration, &size, &preferredBufferSize);
-		if(!status){
-			inst->frame_duration = (preferredBufferSize * 1000);
-			TSK_DEBUG_INFO("Frame duration=%d", inst->frame_duration);
-		}
-		else {
-			TSK_DEBUG_ERROR("AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareIOBufferDuration, %f) failed", preferredBufferSize);
-		}
-
 		
-		UInt32 audioCategory = kAudioSessionCategory_PlayAndRecord;
-		status = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(audioCategory), &audioCategory);
-		if(status){
-			TSK_DEBUG_ERROR("AudioSessionSetProperty(kAudioSessionProperty_AudioCategory) failed with status code=%ld", status);
-			goto done;
-		}
-#endif/* TARGET_OS_IPHONE */
 		// create new instance
-		if((status= AudioComponentInstanceNew(__audioSystem, &inst->audioUnit))){
-			TSK_DEBUG_ERROR("AudioComponentInstanceNew() failed with status=%ld", status);
+		if((status= AudioComponentInstanceNew(__audioSystem, &inst->audioUnit)) != noErr){
+			TSK_DEBUG_ERROR("AudioComponentInstanceNew() failed with status=%ld", (signed long)status);
 			TSK_OBJECT_SAFE_FREE(inst);
 			goto done;
 		}
-#if TARGET_OS_IPHONE		
-		// enable all even if we know that it's already done by default
-		// static UInt32 kVoiceQuality = 127;
-		//status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_BypassVoiceProcessing,
-		//					 kAudioUnitScope_Global, kInputBus, &kZero, sizeof(kZero));
-		//status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_VoiceProcessingEnableAGC,
-		//					 kAudioUnitScope_Global, kInputBus, &kOne, sizeof(kOne));
-		//status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_DuckNonVoiceAudio,
-		//					 kAudioUnitScope_Global, kInputBus, &kZero, sizeof(kZero));
-		// status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_VoiceProcessingQuality,
-		//							  kAudioUnitScope_Global, kInputBus, &kVoiceQuality, sizeof(kVoiceQuality));
-#endif /* TARGET_OS_IPHONE */
 		_inst = inst, _inst->session_id = session_id;
 		tsk_list_push_back_data(__audioUnitInstances, (void**)&_inst);
 	}
@@ -227,7 +201,7 @@ int tdav_audiounit_handle_start(tdav_audiounit_handle_t* self)
 	
 	tsk_safeobj_lock(inst);
 	if(!inst->started && (status = AudioOutputUnitStart(inst->audioUnit))){
-		TSK_DEBUG_ERROR("AudioOutputUnitStart failed with status=%ld", status);
+		TSK_DEBUG_ERROR("AudioOutputUnitStart failed with status=%ld", (signed long)status);
 	}
     inst->started = status == 0 ? tsk_true : tsk_false;
 	tsk_safeobj_unlock(inst);
@@ -242,15 +216,77 @@ uint32_t tdav_audiounit_handle_get_frame_duration(tdav_audiounit_handle_t* self)
 	return 0;
 }
 
+int tdav_audiounit_handle_configure(tdav_audiounit_handle_t* self, tsk_bool_t consumer, uint32_t ptime, AudioStreamBasicDescription* audioFormat)
+{
+	OSStatus status = noErr;
+	tdav_audiounit_instance_t* inst = (tdav_audiounit_instance_t*)self;
+	
+	if(!inst || !audioFormat){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+#if TARGET_OS_IPHONE
+	// set preferred buffer size
+	Float32 preferredBufferSize = ((Float32)ptime / 1000.f); // in seconds
+	UInt32 size = sizeof(preferredBufferSize);
+	status = AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration, sizeof(preferredBufferSize), &preferredBufferSize);
+	if(status != noErr){
+		TSK_DEBUG_ERROR("AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration) failed with status=%ld", status);
+		TSK_OBJECT_SAFE_FREE(inst);
+		goto done;
+	}
+	status = AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareIOBufferDuration, &size, &preferredBufferSize);
+	if(status == noErr){
+		inst->frame_duration = (preferredBufferSize * 1000);
+		TSK_DEBUG_INFO("Frame duration=%d", inst->frame_duration);
+	}
+	else {
+		TSK_DEBUG_ERROR("AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareIOBufferDuration, %f) failed", preferredBufferSize);
+	}
+	
+	
+	UInt32 audioCategory = kAudioSessionCategory_PlayAndRecord;
+	status = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(audioCategory), &audioCategory);
+	if(status != noErr){
+		TSK_DEBUG_ERROR("AudioSessionSetProperty(kAudioSessionProperty_AudioCategory) failed with status code=%ld", status);
+		goto done;
+	}
+	
+#elif TARGET_OS_MAC
+#if 1
+	// set preferred buffer size
+	UInt32 preferredBufferSize = ((ptime * audioFormat->mSampleRate)/1000); // in bytes
+	UInt32 size = sizeof(preferredBufferSize);
+	status = AudioUnitSetProperty(inst->audioUnit, kAudioDevicePropertyBufferFrameSize, kAudioUnitScope_Global, 0, &preferredBufferSize, size);
+	if(status != noErr){
+		TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback) failed with status=%ld", (signed long)status);
+	}
+	status = AudioUnitGetProperty(inst->audioUnit, kAudioDevicePropertyBufferFrameSize, kAudioUnitScope_Global, 0, &preferredBufferSize, &size);
+	if(status == noErr){
+		inst->frame_duration = ((preferredBufferSize * 1000)/audioFormat->mSampleRate);
+		TSK_DEBUG_INFO("Frame duration=%d", inst->frame_duration);
+	}
+	else {
+		TSK_DEBUG_ERROR("AudioUnitGetProperty(kAudioDevicePropertyBufferFrameSize, %lu) failed", (unsigned long)preferredBufferSize);
+	}
+#endif
+	
+#endif
+	
+done:
+	return (status == noErr) ? 0 : -2;
+}
+
 int tdav_audiounit_handle_mute(tdav_audiounit_handle_t* self, tsk_bool_t mute)
 {
 	tdav_audiounit_instance_t* inst = (tdav_audiounit_instance_t*)self;
-	OSStatus status = noErr;
 	if(!inst || !inst->audioUnit){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 #if TARGET_OS_IPHONE
+	OSStatus status = noErr;
 	status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_MuteOutput,
 								  kAudioUnitScope_Output, kOutputBus, mute ? &kOne : &kZero, mute ? sizeof(kOne) : sizeof(kZero));
 	
@@ -271,7 +307,7 @@ int tdav_audiounit_handle_stop(tdav_audiounit_handle_t* self)
 	
 	tsk_safeobj_lock(inst);
 	if(inst->started && (status = AudioOutputUnitStop(inst->audioUnit))){
-		TSK_DEBUG_ERROR("AudioOutputUnitStop failed with status=%ld", status);
+		TSK_DEBUG_ERROR("AudioOutputUnitStop failed with status=%ld", (signed long)status);
 	}
     inst->started = (status == noErr ? tsk_false : tsk_true);
 	tsk_safeobj_unlock(inst);

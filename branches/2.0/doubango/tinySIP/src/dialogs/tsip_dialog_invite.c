@@ -525,12 +525,17 @@ int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app)
 
 	int ret = 0;
 	tsk_bool_t bodiless_invite;
+	tmedia_type_t old_media_type = self->msession_mgr ? self->msession_mgr->type : tmedia_none;
+	tmedia_type_t new_media_type;
 
 	/* process remote offer */
 	if((ret = tsip_dialog_invite_process_ro(self, rINVITEorUPDATE))){
 		/* Send error */
 		return ret;
 	}
+	
+	// get new media_type after processing the remote offer
+	new_media_type = self->msession_mgr ? self->msession_mgr->type : tmedia_none;
 	
 	/** response to bodiless iINVITE always contains SDP as explained below
 		RFC3261 - 14.1 UAC Behavior 
@@ -550,7 +555,7 @@ int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app)
 
 	// send the response
 	ret = send_RESPONSE(self, rINVITEorUPDATE, 200, "OK",
-		(self->msession_mgr && (bodiless_invite || self->msession_mgr->ro_changed || self->msession_mgr->state_changed)));
+		(self->msession_mgr && (bodiless_invite || self->msession_mgr->ro_changed || self->msession_mgr->state_changed || (old_media_type != new_media_type))));
 
 	/* session timers */
 	if(self->stimers.timer.timeout){
@@ -586,8 +591,7 @@ static int x0000_Connected_2_Connected_X_oINVITE(va_list *app)
 	/* Get Media type from the action */
 	mediaType_changed = (TSIP_DIALOG_GET_SS(self)->media.type != action->media.type && action->media.type != tmedia_none);
 	if(self->msession_mgr && mediaType_changed){
-		self->msession_mgr->mediaType_changed = tsk_true;
-		self->msession_mgr->type = action->media.type;
+		ret = tmedia_session_mgr_set_media_type(self->msession_mgr, action->media.type);
 	}
 	
 	/* Appy media params received from the user */

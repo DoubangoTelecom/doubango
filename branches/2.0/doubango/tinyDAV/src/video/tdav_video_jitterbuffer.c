@@ -67,6 +67,7 @@ static int tdav_video_jitterbuffer_tick(tmedia_jitterbuffer_t* self)
 {
 	tdav_video_jitterbuffer_t *jb = (tdav_video_jitterbuffer_t *)self;
 	
+	(jb);
 	
 	// do nothing
 	// only useful for audio
@@ -168,6 +169,7 @@ static int tdav_video_jitterbuffer_reset(tmedia_jitterbuffer_t* self)
 {
 	tdav_video_jitterbuffer_t *jb = (tdav_video_jitterbuffer_t *)self;
 	
+	(jb);
 
 	return 0;
 }
@@ -176,6 +178,7 @@ static int tdav_video_jitterbuffer_close(tmedia_jitterbuffer_t* self)
 {
 	tdav_video_jitterbuffer_t *jb = (tdav_video_jitterbuffer_t *)self;
 	
+	(jb);
 
 	return 0;
 }

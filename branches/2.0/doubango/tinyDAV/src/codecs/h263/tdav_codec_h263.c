@@ -144,6 +144,7 @@ static int tdav_codec_h263_open(tmedia_codec_t* self)
 	h263->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h263)->out.fps*2; /* each 2 seconds */
 	h263->encoder.context->flags |= CODEC_FLAG_QSCALE;
 	h263->encoder.context->global_quality = FF_QP2LAMBDA * tmedia_get_video_qscale(self->bl);
+	h263->encoder.context->max_b_frames = 0;
 
 	// Picture (YUV 420)
 	if(!(h263->encoder.picture = avcodec_alloc_frame())){
@@ -166,25 +167,25 @@ static int tdav_codec_h263_open(tmedia_codec_t* self)
 	// RTP Callback
 	switch(h263->type){
 		case tdav_codec_h263_1996:
-			{	/* H263 - 1996 */
+			{	// H263 - 1996 
 				break;
 			}
 		case tdav_codec_h263_1998:
-			{	/* H263 - 1998 */
-				h263->encoder.context->flags |= CODEC_FLAG_H263P_UMV;		/* Annex D+ */
-				h263->encoder.context->flags |= CODEC_FLAG_AC_PRED;			/* Annex I and T */
-				h263->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;		/* Annex J */
-				h263->encoder.context->flags |= CODEC_FLAG_H263P_SLICE_STRUCT;	/* Annex K */
-				h263->encoder.context->flags |= CODEC_FLAG_H263P_AIV;			/* Annex S */
+			{	// H263 - 1998 
+				h263->encoder.context->flags |= CODEC_FLAG_H263P_UMV;		// Annex D+ 
+				h263->encoder.context->flags |= CODEC_FLAG_AC_PRED;			// Annex I and T 
+				h263->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;		// Annex J 
+				h263->encoder.context->flags |= CODEC_FLAG_H263P_SLICE_STRUCT;	// Annex K 
+				h263->encoder.context->flags |= CODEC_FLAG_H263P_AIV;			// Annex S 
 				break;
 			}
 		case tdav_codec_h263_2000:
-			{	/* H263 - 2000 */
-				h263->encoder.context->flags |= CODEC_FLAG_H263P_UMV;		/* Annex D+ */
-				h263->encoder.context->flags |= CODEC_FLAG_AC_PRED;			/* Annex I and T */
-				h263->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;		/* Annex J */
-				h263->encoder.context->flags |= CODEC_FLAG_H263P_SLICE_STRUCT;	/* Annex K */
-				h263->encoder.context->flags |= CODEC_FLAG_H263P_AIV;			/* Annex S */
+			{	// H263 - 2000 
+				h263->encoder.context->flags |= CODEC_FLAG_H263P_UMV;		// Annex D+ 
+				h263->encoder.context->flags |= CODEC_FLAG_AC_PRED;			// Annex I and T 
+				h263->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;		// Annex J 
+				h263->encoder.context->flags |= CODEC_FLAG_H263P_SLICE_STRUCT;	// Annex K 
+				h263->encoder.context->flags |= CODEC_FLAG_H263P_AIV;			// Annex S 
 				break;
 			}
 	}

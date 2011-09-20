@@ -524,8 +524,8 @@ static void tdav_codec_mp4ves_encap(tdav_codec_mp4ves_t* mp4v, const uint8_t* pd
 				int startcode = 0xffffffff;
 
 				if(scode == visual_object_sequence_start_code && size >=5){
-					uint8_t profile_and_level_indication = pdata[4]; /* IEC 14496-2: 6.3.2 Visual Object Sequence and Visual Object */
-					TSK_DEBUG_INFO("profile_and_level_indication=%d", profile_and_level_indication);
+					//uint8_t profile_and_level_indication = pdata[4]; /* IEC 14496-2: 6.3.2 Visual Object Sequence and Visual Object */
+					// TSK_DEBUG_INFO("profile_and_level_indication=%d", profile_and_level_indication);
 				}
 
 				if(size < MP4V_RTP_PAYLOAD_SIZE){

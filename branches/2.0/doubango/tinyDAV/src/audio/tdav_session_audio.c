@@ -31,6 +31,7 @@
 #include "tinydav/codecs/dtmf/tdav_codec_dtmf.h"
 #include "tinydav/audio/tdav_consumer_audio.h"
 
+#include "tinymedia/tmedia_resampler.h"
 #include "tinymedia/tmedia_denoise.h"
 #include "tinymedia/tmedia_consumer.h"
 #include "tinymedia/tmedia_producer.h"
@@ -165,7 +166,49 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 			}
 			tsk_safeobj_unlock(audio);
 		}
+		
+		// resample if needed
+		if(audio->producer->audio.rate != audio->encoder.codec->plugin->rate){
+			tsk_size_t resampler_result_size = 0;
+			if(!audio->decoder.resampler.instance){
+				uint32_t resampler_buff_size = ((audio->encoder.codec->plugin->rate * audio->producer->audio.ptime)/1000) * sizeof(int16_t);
+				if(!(audio->decoder.resampler.instance = tmedia_resampler_create())){
+					TSK_DEBUG_ERROR("Failed to create audio resampler");
+					ret = -1;
+					goto done;
+				}
+				else {
+#define TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY 5
+					if((ret = tmedia_resampler_open(audio->decoder.resampler.instance, audio->producer->audio.rate, audio->encoder.codec->plugin->rate, audio->producer->audio.ptime, audio->producer->audio.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY))){
+						TSK_DEBUG_ERROR("Failed to open audio resampler (%d)", ret);
+						TSK_OBJECT_SAFE_FREE(audio->decoder.resampler.instance);
+						goto done;
+					}
+				}
+				// create temp resampler buffer
+				if((audio->decoder.resampler.buffer = tsk_realloc(audio->decoder.resampler.buffer, resampler_buff_size))){
+					audio->decoder.resampler.buffer_size = resampler_buff_size;
+				}
+				else {
+					TSK_DEBUG_ERROR("Failed to allocate resampler buffer");
+					TSK_OBJECT_SAFE_FREE(audio->decoder.resampler.instance);
+					ret = -1;
+					goto done;
+				}
+			}
+			
+			if(!(resampler_result_size = tmedia_resampler_process(audio->decoder.resampler.instance, buffer, size/sizeof(int16_t), audio->decoder.resampler.buffer, audio->decoder.resampler.buffer_size/sizeof(int16_t)))){
+				TSK_DEBUG_ERROR("Failed to process audio resampler input buffer");
+				ret = -1;
+				goto done;
+			}
+			
+			buffer = audio->decoder.resampler.buffer;
+			size = audio->decoder.resampler.buffer_size;
+		}
+		
 		// Denoise (VAD, AGC, Noise suppression, ...)
+		// Must be done after resampling
 		if(audio->denoise){
 			tsk_bool_t silence_or_noise = tsk_false;
 			if(audio->denoise->echo_supp_enabled ){
@@ -173,6 +216,7 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 			}
 		}
 		// adjust the gain
+		// Must be done after resampling
 		if(audio->producer->audio.gain){
 			_tdav_session_audio_apply_gain((void*)buffer, size, audio->producer->audio.bits_per_sample, audio->producer->audio.gain);
 		}
@@ -190,6 +234,7 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		}
 	}
 
+done:
 	return ret;
 }
 
@@ -290,8 +335,9 @@ int tdav_session_audio_start(tmedia_session_t* self)
 
 		// because of AudioUnit under iOS => prepare both consumer and producer then start() at the same time
 		/* prepare consumer and producer */
-		if(audio->consumer) tmedia_consumer_prepare(audio->consumer, codec);
 		if(audio->producer) tmedia_producer_prepare(audio->producer, codec);
+		if(audio->consumer) tmedia_consumer_prepare(audio->consumer, codec);
+		
 		/* start consumer and producer */
 		if(audio->consumer) tmedia_consumer_start(audio->consumer);
 		if(audio->producer) tmedia_producer_start(audio->producer);
@@ -835,6 +881,10 @@ static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(session->encoder.codec);
 		TSK_FREE(session->encoder.buffer);
 		TSK_FREE(session->decoder.buffer);
+		
+		// free resampler
+		TSK_FREE(session->decoder.resampler.buffer);
+		TSK_OBJECT_SAFE_FREE(session->decoder.resampler.instance);
 
 		/* NAT Traversal context */
 		TSK_OBJECT_SAFE_FREE(session->natt_ctx);

@@ -65,14 +65,14 @@ typedef struct tmedia_resampler_plugin_def_s
 
 	// ! quality is from 0-10
 	int (* open) (tmedia_resampler_t*,  uint32_t in_freq, uint32_t out_freq, tsk_size_t frame_duration, int8_t channels, uint32_t quality);
-	tsk_size_t (* process) (tmedia_resampler_t*, const uint16_t* in_data, tsk_size_t in_size, uint16_t* out_data, tsk_size_t out_size);
+	tsk_size_t (* process) (tmedia_resampler_t*, const uint16_t* in_data, tsk_size_t in_size_in_short, uint16_t* out_data, tsk_size_t out_size_in_short);
 	int (* close) (tmedia_resampler_t* );
 }
 tmedia_resampler_plugin_def_t;
 
 TINYMEDIA_API int tmedia_resampler_init(tmedia_resampler_t* self);
 TINYMEDIA_API int tmedia_resampler_open(tmedia_resampler_t* self, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t channels, uint32_t quality);
-TINYMEDIA_API tsk_size_t tmedia_resampler_process(tmedia_resampler_t* self, const uint16_t* in_data, tsk_size_t in_size, uint16_t* out_data, tsk_size_t out_size);
+TINYMEDIA_API tsk_size_t tmedia_resampler_process(tmedia_resampler_t* self, const uint16_t* in_data, tsk_size_t in_size_in_short, uint16_t* out_data, tsk_size_t out_size_in_short);
 TINYMEDIA_API int tmedia_resampler_close(tmedia_resampler_t* self);
 TINYMEDIA_API int tmedia_resampler_deinit(tmedia_resampler_t* self);
 

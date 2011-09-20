@@ -576,6 +576,8 @@ int tsip_transac_ist_Completed_2_Confirmed_ACK(va_list *app)
 */
 int tsip_transac_ist_Accepted_2_Accepted_INVITE(va_list *app)
 {
+	tsip_transac_ist_t *self = va_arg(*app, tsip_transac_ist_t *);
+	
 	/*	draft-sparks-sip-invfix-03 - 8.7. Page 137
 		The purpose of the "Accepted" state is to absorb retransmissions
 		of an accepted INVITE request.  Any such retransmissions are
@@ -588,6 +590,9 @@ int tsip_transac_ist_Accepted_2_Accepted_INVITE(va_list *app)
 	/*	Do not pass to the TU (see above)
 		VERY IMPORTANT: INVITE dialog is responsible for reliability of the 2xx response.
 	*/
+	if(self->lastResponse){
+		return tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, self->lastResponse);
+	}
 	return 0;
 }
 

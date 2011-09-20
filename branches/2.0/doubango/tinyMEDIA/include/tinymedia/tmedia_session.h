@@ -364,6 +364,7 @@ tmedia_session_param_type_t;
 
 
 TINYMEDIA_API tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* addr, tsk_bool_t ipv6, tsk_bool_t offerer);
+TINYMEDIA_API int tmedia_session_mgr_set_media_type(tmedia_session_mgr_t* self, tmedia_type_t type);
 TINYMEDIA_API tmedia_session_t* tmedia_session_mgr_find(tmedia_session_mgr_t* self, tmedia_type_t type);
 TINYMEDIA_API int tmedia_session_mgr_set_natt_ctx(tmedia_session_mgr_t* self, tnet_nat_context_handle_t* natt_ctx, const char* public_addr);
 TINYMEDIA_API int tmedia_session_mgr_start(tmedia_session_mgr_t* self);

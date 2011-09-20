@@ -51,8 +51,8 @@ static int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, 
 	int i;
 
 	if(!denoiser->echo_state && TMEDIA_DENOISE(denoiser)->echo_supp_enabled){
-		TSK_DEBUG_INFO("Init Aec frame_size[%d] filter_length[%d] SampleRate[%d]",
-			frame_size* sizeof(spx_int16_t),TMEDIA_DENOISE(denoiser)->echo_tail*frame_size,sampling_rate);
+		TSK_DEBUG_INFO("Init Aec frame_size[%u] filter_length[%u] SampleRate[%u]",
+			(uint32_t)(frame_size* sizeof(spx_int16_t)),TMEDIA_DENOISE(denoiser)->echo_tail*frame_size,sampling_rate);
 		if((denoiser->echo_state = speex_echo_state_init(frame_size, TMEDIA_DENOISE(denoiser)->echo_tail))){
 			speex_echo_ctl(denoiser->echo_state, SPEEX_ECHO_SET_SAMPLING_RATE, &sampling_rate);
 		}

@@ -228,6 +228,8 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 static int tdav_webrtc_denoise_process_playback(tmedia_denoise_t* self, void* audio_frame)
 {
 	tdav_webrtc_denoise_t *denoiser = (tdav_webrtc_denoise_t *)self;
+	
+	(denoiser);
 
 	// Not mandatory but we could denoise the audio data sent from an encoder without denoiser
 	// All Doubango clients support noise suppression

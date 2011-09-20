@@ -688,8 +688,8 @@ void *tnet_transport_mainthread(void *param)
 					continue;
 				}
 				
-
-				/* Receive the waiting data. */
+				
+				// Receive the waiting data
 				if(active_socket->tlshandle){
 					int isEncrypted;
 					tsk_size_t tlslen = len;
@@ -718,9 +718,9 @@ void *tnet_transport_mainthread(void *param)
 					}
 				}
 				
-				if((len != (tsk_size_t)ret) && len){ /* useless test? */
+				if((len != (tsk_size_t)ret) && len){
 					len = (tsk_size_t)ret;
-					/* buffer = tsk_realloc(buffer, len); */
+					// buffer = tsk_realloc(buffer, len);
 				}
 					
 				e = tnet_transport_event_create(event_data, transport->callback_data, active_socket->fd);

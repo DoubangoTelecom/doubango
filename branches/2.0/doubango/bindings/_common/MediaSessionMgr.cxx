@@ -137,7 +137,7 @@ const ProxyPlugin* MediaSessionMgr::findProxyPlugin(twrap_media_type_t media, bo
 
 uint64_t MediaSessionMgr::getSessionId(twrap_media_type_t media)const
 {
-	const ProxyPlugin* plugin = tsk_null;
+	//const ProxyPlugin* plugin = tsk_null;
 	ProxyPluginMgr* manager = ProxyPluginMgr::getInstance();
 	uint64_t id = 0;
 

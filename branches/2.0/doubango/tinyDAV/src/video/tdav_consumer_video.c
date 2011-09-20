@@ -58,7 +58,7 @@ int tdav_consumer_video_init(tdav_consumer_video_t* self)
 
 	/* self:jitterbuffer */
 	if(!self->jitterbuffer && !(self->jitterbuffer = tmedia_jitterbuffer_create(tmedia_video))){
-		TSK_DEBUG_WARN("Failed to video create jitter buffer");
+		// -- TSK_DEBUG_WARN("Failed to create video jitter buffer");
 	}
 	if(self->jitterbuffer){
 		tmedia_jitterbuffer_init(TMEDIA_JITTER_BUFFER(self->jitterbuffer));
