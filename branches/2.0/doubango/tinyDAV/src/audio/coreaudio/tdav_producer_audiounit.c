@@ -55,6 +55,7 @@ static OSStatus __handle_input_buffer(void *inRefCon,
 	AudioBuffer buffer;
 	buffer.mData =  tsk_null;
 	buffer.mDataByteSize = 0;
+	buffer.mNumberChannels = TMEDIA_PRODUCER(producer)->audio.channels;
 	
 	// list of holders
 	AudioBufferList buffers;
@@ -148,7 +149,9 @@ static void *__sender_thread(void *param)
 	interval.tv_nsec = (long)(ptime%1000) * 1000000; 
 	
 	// change thread priority
+//#if TARGET_OS_IPHONE
 	__sender_thread_set_realtime(TMEDIA_PRODUCER(producer)->audio.ptime);
+//#endif
 	
 	// starts looping
 	for (;;) {
@@ -197,51 +200,108 @@ int tdav_producer_audiounit_set(tmedia_producer_t* self, const tmedia_param_t* p
 static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
 {
 	static UInt32 flagOne = 1;
+	UInt32 param;
 	// static UInt32 flagZero = 0;
 #define kInputBus  1
 	
 	tdav_producer_audiounit_t* producer = (tdav_producer_audiounit_t*)self;
 	OSStatus status = noErr;
 	AudioStreamBasicDescription audioFormat;
+	AudioStreamBasicDescription	deviceFormat;
 	
 	if(!producer || !codec || !codec->plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	if(!producer->audioUnitHandle){
-		if(!(producer->audioUnitHandle = tdav_audiounit_handle_create(TMEDIA_PRODUCER(producer)->session_id, codec->plugin->audio.ptime))){
+		if(!(producer->audioUnitHandle = tdav_audiounit_handle_create(TMEDIA_PRODUCER(producer)->session_id))){
 			TSK_DEBUG_ERROR("Failed to get audio unit instance for session with id=%lld", TMEDIA_PRODUCER(producer)->session_id);
 			return -3;
 		}
-		// enable
-		status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(producer->audioUnitHandle), 
-									  kAudioOutputUnitProperty_EnableIO, 
-									  kAudioUnitScope_Input, 
-									  kInputBus,
-									  &flagOne, 
-									  sizeof(flagOne));
 	}
 	
-	if(status){
-		TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO) failed with status=%ld", status);
+	// enable
+	status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(producer->audioUnitHandle), 
+								  kAudioOutputUnitProperty_EnableIO, 
+								  kAudioUnitScope_Input, 
+								  kInputBus,
+								  &flagOne, 
+								  sizeof(flagOne));
+	if(status != noErr){
+		TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO) failed with status=%ld", (signed long)status);
 		return -4;
 	}
 	else {
+#if !TARGET_OS_IPHONE // strange: TARGET_OS_MAC is equal to '1' on Smulator
+		// disable output
+		param = 0;
+		status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(producer->audioUnitHandle), 
+									  kAudioOutputUnitProperty_EnableIO, 
+									  kAudioUnitScope_Output, 
+									  0, 
+									  &param, 
+									  sizeof(UInt32));
+		if(status != noErr){
+			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO) failed with status=%ld", (signed long)status);
+			return -4;
+		}
+		
+		// set default audio device
+		param = sizeof(AudioDeviceID);
+		AudioDeviceID inputDeviceID;
+		status = AudioHardwareGetProperty(kAudioHardwarePropertyDefaultInputDevice, &param, &inputDeviceID);
+		if(status != noErr){
+			TSK_DEBUG_ERROR("AudioHardwareGetProperty(kAudioHardwarePropertyDefaultInputDevice) failed with status=%ld", (signed long)status);
+			return -4;
+		}
+		
+		// set the current device to the default input unit
+		status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(producer->audioUnitHandle), 
+									  kAudioOutputUnitProperty_CurrentDevice, 
+									  kAudioUnitScope_Output, 
+									  0, 
+									  &inputDeviceID, 
+									  sizeof(AudioDeviceID));
+		if(status != noErr){
+			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_CurrentDevice) failed with status=%ld", (signed long)status);
+			return -4;
+		}
+#endif /* TARGET_OS_MAC */
+		
+		/* codec should have ptime */
 		TMEDIA_PRODUCER(producer)->audio.channels = codec->plugin->audio.channels;
 		TMEDIA_PRODUCER(producer)->audio.rate = codec->plugin->rate;
 		TMEDIA_PRODUCER(producer)->audio.ptime = codec->plugin->audio.ptime;
-		/* codec should have ptime */
+		
+		// get device format
+		param = sizeof(AudioStreamBasicDescription);
+		status = AudioUnitGetProperty(tdav_audiounit_handle_get_instance(producer->audioUnitHandle), 
+								   kAudioUnitProperty_StreamFormat, 
+								   kAudioUnitScope_Input, 
+								   kInputBus, 
+								   &deviceFormat, &param);
+		if(status == noErr && deviceFormat.mSampleRate){
+#if TARGET_OS_IPHONE
+			// iOS support 8Khz, 16kHz and 32kHz => do not override the sampleRate
+#elif TARGET_OS_MAC
+			// For example, iSight supports only 48kHz
+			TMEDIA_PRODUCER(producer)->audio.rate = deviceFormat.mSampleRate;
+#endif
+		}
 		
 		// set format
 		audioFormat.mSampleRate = TMEDIA_PRODUCER(producer)->audio.rate;
 		audioFormat.mFormatID = kAudioFormatLinearPCM;
-		audioFormat.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
+		audioFormat.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked | kAudioFormatFlagIsNonInterleaved;
 		audioFormat.mChannelsPerFrame = TMEDIA_PRODUCER(producer)->audio.channels;
 		audioFormat.mFramesPerPacket = 1;
 		audioFormat.mBitsPerChannel = TMEDIA_PRODUCER(producer)->audio.bits_per_sample;
 		audioFormat.mBytesPerPacket = audioFormat.mBitsPerChannel / 8 * audioFormat.mChannelsPerFrame;
 		audioFormat.mBytesPerFrame = audioFormat.mBytesPerPacket;
 		audioFormat.mReserved = 0;
+		if(audioFormat.mFormatID == kAudioFormatLinearPCM && audioFormat.mChannelsPerFrame  == 1){
+			audioFormat.mFormatFlags &= ~kLinearPCMFormatFlagIsNonInterleaved;
+		}
 		status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(producer->audioUnitHandle), 
 									  kAudioUnitProperty_StreamFormat, 
 									  kAudioUnitScope_Output, 
@@ -249,10 +309,17 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 									  &audioFormat, 
 								sizeof(audioFormat));
 		if(status){
-			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioUnitProperty_StreamFormat) failed with status=%ld", status);
+			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioUnitProperty_StreamFormat) failed with status=%ld", (signed long)status);
 			return -5;
 		}
 		else {
+			
+			// configure
+			if(tdav_audiounit_handle_configure(producer->audioUnitHandle, tsk_false, TMEDIA_PRODUCER(producer)->audio.ptime, &audioFormat)){
+				TSK_DEBUG_ERROR("tdav_audiounit_handle_set_rate(%d) failed", TMEDIA_PRODUCER(producer)->audio.rate);
+				return -4;
+			}
+			
 			// set callback function
 			AURenderCallbackStruct callback;
 			callback.inputProc = __handle_input_buffer;
@@ -264,7 +331,7 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 										  &callback, 
 										  sizeof(callback));
 			if(status){
-				TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback) failed with status=%ld", status);
+				TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback) failed with status=%ld", (signed long)status);
 				return -6;
 			}
 			else {
@@ -386,7 +453,7 @@ static int tdav_producer_audiounit_stop(tmedia_producer_t* self)
 			TSK_DEBUG_ERROR("tdav_audiounit_handle_stop failed with error code=%d", ret);
 			// do not return even if failed => we MUST stop the thread!
 		}
-#if 1
+#if TARGET_OS_IPHONE
 		//https://devforums.apple.com/thread/118595
 		if(producer->audioUnitHandle){
 			tdav_audiounit_handle_destroy(&producer->audioUnitHandle);

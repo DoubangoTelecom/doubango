@@ -511,6 +511,21 @@ tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* 
 }
 
 /**@ingroup tmedia_session_group
+ */
+int tmedia_session_mgr_set_media_type(tmedia_session_mgr_t* self, tmedia_type_t type)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	if(self->type != type){
+		self->mediaType_changed = tsk_true;
+		self->type = type;
+	}
+	return 0;
+}
+
+/**@ingroup tmedia_session_group
 */
 tmedia_session_t* tmedia_session_mgr_find(tmedia_session_mgr_t* self, tmedia_type_t type)
 {	
@@ -787,7 +802,9 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	tsk_bool_t stopped_to_reconf = tsk_false;
 	tsk_bool_t is_hold_resume = tsk_false;
 	tsk_bool_t is_loopback_address = tsk_false;
+	tsk_bool_t is_mediatype_changed = tsk_false;
 	tmedia_qos_stype_t qos_type = tmedia_qos_stype_none;
+	tmedia_type_t new_mediatype = tmedia_none;
 
 	if(!self || !sdp){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -822,15 +839,26 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 						|| (tsk_striequals("IP6", C->addrtype) && tsk_striequals("::1", C->addr));
 	}
 	
+	/* Check if media type has changed or not
+	 * For initial offer we don't need to check anything
+	 */
+	if(self->sdp.lo){
+		new_mediatype = tmedia_type_from_sdp(sdp);
+		if((is_mediatype_changed = (new_mediatype != self->type))){
+			tmedia_session_mgr_set_media_type(self, new_mediatype);
+			TSK_DEBUG_INFO("media type has changed");
+		}
+	}
+	
 	/*
-	  * It's almost impossible to update the codecs, the connection information etc etc whil the session are running
+	  * It's almost impossible to update the codecs, the connection information etc etc while the sessions are running
 	  * For example, if the video producer is already started then, you probably cannot update its configuration
 	  * without stoping it and restart again with the right config. Same for RTP Network config (ip addresses, NAT, ports, IP version, ...)
 	  * "is_loopback_address" is used as a guard to avoid reconf for loopback address used for example by ZTE for fake forking. In all case
 	  * loopback address won't work on embedded devices such as iOS and Android.
 	  * FIXME: We must check that it's not a basic hold/resume because this kind of request doesn't update the stream config
 	 */
-	if(self->started && !is_hold_resume && !is_loopback_address){
+	if(self->started && ((!is_hold_resume && !is_loopback_address) || is_mediatype_changed)){
 		if((ret = tmedia_session_mgr_stop(self))){
 			TSK_DEBUG_ERROR("Failed to stop session manager");
 			return ret;
@@ -844,7 +872,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 
 	/* prepare the session manager if not already done (create all sessions with their codecs) 
 	* if network-initiated: think about tmedia_type_from_sdp() before creating the manager */
-	if(TSK_LIST_IS_EMPTY(self->sessions)){
+	/*if(TSK_LIST_IS_EMPTY(self->sessions) || stopped_to_reconf)*/{
 		if(_tmedia_session_mgr_load_sessions(self)){
 			TSK_DEBUG_ERROR("Failed to prepare the session manager");
 			return -3;
@@ -893,21 +921,24 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		}
 	}
 
-	/* Update QoS type */
+	/* update QoS type */
 	if(!self->offerer && (qos_type != tmedia_qos_stype_none)){
 		self->qos.type = qos_type;
 	}
 
+	/* signal that ro has changed (will be used to update lo) */
+	self->ro_changed = tsk_true;
+	
 	/* manager was started and we stopped it in order to reconfigure it (codecs, network, ....) */
 	if(stopped_to_reconf){
+		/* update local offer before restarting the session manager otherwise neg_codecs won't match if new codecs
+		 have been added or removed */
+		(tmedia_session_mgr_get_lo(self));
 		if((ret = tmedia_session_mgr_start(self))){
 			TSK_DEBUG_ERROR("Failed to re-start session manager");
 			return ret;
 		}
 	}
-	
-	/* signal that ro has changed (will be used to update lo) */
-	self->ro_changed = tsk_true;
 
 	return 0;
 }
@@ -1254,10 +1285,13 @@ int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 	if(TSK_LIST_IS_EMPTY(self->sessions) || self->mediaType_changed){
 		/* for each registered plugin create a session instance */
 		while((i < TMED_SESSION_MAX_PLUGINS) && (plugin = __tmedia_session_plugins[i++])){
-			if((plugin->type & self->type) == plugin->type && !has_media(plugin->type)){
+			if((plugin->type & self->type) == plugin->type && !has_media(plugin->type)){// we don't have a session with this media type yet
 				if((session = tmedia_session_create(plugin->type))){
 					tsk_list_push_back_data(self->sessions, (void**)(&session));
 				}
+			}
+			else if(!(plugin->type & self->type) && has_media(plugin->type)){// we have media session from previous call (before update)
+				tsk_list_remove_item_by_pred(self->sessions, __pred_find_session_by_type, &(plugin->type));
 			}
 		}
 		/* set default values */

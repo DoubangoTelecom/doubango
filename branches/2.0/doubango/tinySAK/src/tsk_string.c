@@ -32,13 +32,12 @@
 #include "tsk_memory.h"
 #include "tsk_time.h"
 #include "tsk_debug.h"
-#include "tsk_common.h"
 
-#include <stdarg.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 
 #if defined(_MSC_VER)
 #	define snprintf		_snprintf

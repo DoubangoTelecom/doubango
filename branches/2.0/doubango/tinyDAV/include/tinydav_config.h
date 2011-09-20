@@ -29,12 +29,26 @@
 
 // Windows (XP/Vista/7/CE and Windows Mobile) macro definition
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
-#	define TDAV_UNDER_WINDOWS	1
+#	define TDAV_UNDER_WINDOWS			1
 #endif
 
 // OS X or iOS
 #if defined(__APPLE__)
-#	define TDAV_UNDER_APPLE		1
+#	define TDAV_UNDER_APPLE				1
+#endif
+#if TARGET_OS_MAC
+#	define TDAV_UNDER_MAC				1
+#endif
+#if TARGET_OS_IPHONE
+#	define TDAV_UNDER_IPHONE			1
+#endif
+#if TARGET_IPHONE_SIMULATOR
+#	define TDAV_UNDER_IPHONE_SIMULATOR	1
+#endif
+
+// x86
+#if TDAV_UNDER_WINDOWS || defined(__x86_64__) || defined(__x86__) || defined(__i386__)
+#	define TDAV_UNDER_X86				1
 #endif
 
 // Mobile

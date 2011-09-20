@@ -94,6 +94,8 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdarg.h>
+
 #include "tsk_common.h"
 
 

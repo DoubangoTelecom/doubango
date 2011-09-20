@@ -57,11 +57,15 @@ typedef int tsk_boolean_t;
 typedef int tsk_ssize_t; /**< Signed size */
 typedef unsigned int tsk_size_t; /**< Unsigned size */
 
-#if !defined(va_copy)
-#	define tsk_va_copy(D, S)       ((D) = (S))
-#else
+
+#if defined(va_copy)
 #	define tsk_va_copy(D, S)       va_copy((D), (S))
+#elif defined(__va_copy)
+#	define tsk_va_copy(D, S)       __va_copy((D), (S))
+#else
+#	define tsk_va_copy(D, S)       ((D) = (S))
 #endif
+
 
 #ifdef NULL
 #define tsk_null    NULL /**< Null pointer */

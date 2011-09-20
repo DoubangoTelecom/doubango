@@ -72,7 +72,7 @@ static int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context = avcodec_alloc_context();
 	avcodec_get_context_defaults(h264->encoder.context);
 
-#if TDAV_UNDER_WINDOWS
+#if TDAV_UNDER_X86
 	h264->encoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
 #endif
 
@@ -98,6 +98,10 @@ static int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context->qcompress = 0.6f;
 	h264->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
 	h264->encoder.context->flags2 |= CODEC_FLAG2_FASTPSKIP;
+#if TDAV_UNDER_X86
+	//h264->encoder.context->flags2 &= ~CODEC_FLAG2_PSY;
+	//h264->encoder.context->flags2 |= CODEC_FLAG2_SSIM;
+#endif
 	h264->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
 	h264->encoder.context->flags |= CODEC_FLAG_GLOBAL_HEADER;
 	h264->encoder.context->max_b_frames = 0;
@@ -121,6 +125,7 @@ static int tdav_codec_h264_open(tmedia_codec_t* self)
 	}
 
 	h264->encoder.context->crf = 22;
+	//h264->encoder.context->cqp = 22;
 	h264->encoder.context->thread_count = 0;
 	h264->encoder.context->rtp_payload_size = H264_RTP_PAYLOAD_SIZE;
 	h264->encoder.context->opaque = tsk_null;
@@ -256,13 +261,14 @@ static tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_da
 	   )
 	{
 		
-		// You must patch FFmpeg to switch from X264_TYPE_AUTO to X264_TYPE_IDR
+		// You must patch FFmpeg to switch from X264_TYPE_AUTO to X264_TYPE_IDR or use r26402+
 		h264->encoder.picture->pict_type = FF_I_TYPE;
 		tdav_codec_h264_encap(h264, h264->encoder.context->extradata, (tsk_size_t)h264->encoder.context->extradata_size);
 	}
 	else{
 		// Encode data
-		h264->encoder.picture->pts = AV_NOPTS_VALUE;
+		//h264->encoder.picture->pts = AV_NOPTS_VALUE;
+		h264->encoder.picture->pts = h264->encoder.frame_count;
 		ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);	
 		if(ret >0){
 			tdav_codec_h264_encap(h264, h264->encoder.buffer, (tsk_size_t)ret);

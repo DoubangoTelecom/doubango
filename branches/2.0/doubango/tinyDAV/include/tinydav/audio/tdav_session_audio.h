@@ -64,6 +64,11 @@ typedef struct tdav_session_audio_s
 	struct {
 		void* buffer;
 		tsk_size_t buffer_size;
+		struct {
+			void* buffer;
+			tsk_size_t buffer_size;
+			struct tmedia_resampler_s* instance;
+		} resampler;
 	} decoder;
 
 	char* local_ip;

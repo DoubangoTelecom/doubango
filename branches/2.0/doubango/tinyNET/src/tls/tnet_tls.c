@@ -39,7 +39,7 @@
 
 #define TNET_CIPHER_LIST "AES128-SHA"
 
-#if TNET_HAVE_OPENSSL_H
+#if TNET_HAVE_OPENSSL_H || HAVE_OPENSSL_H
 #	include <openssl/ssl.h>
 #endif
 
@@ -59,7 +59,7 @@ typedef struct tnet_tls_socket_s
 	char* tlsfile_pbk;
 	char* password; /* password for the private vkey */
 
-#if TNET_HAVE_OPENSSL_H
+#if TNET_HAVE_OPENSSL_H || HAVE_OPENSSL_H
 	/* SSL */
 	SSL_METHOD *ssl_meth;
 	SSL_CTX *ssl_ctx;
@@ -101,7 +101,7 @@ int tnet_tls_socket_isok(const tnet_tls_socket_handle_t* self)
 
 int tnet_tls_socket_connect(tnet_tls_socket_handle_t* self)
 {
-#if !TNET_HAVE_OPENSSL_H
+#if !TNET_HAVE_OPENSSL_H || !HAVE_OPENSSL_H
 	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
@@ -152,7 +152,7 @@ int tnet_tls_socket_connect(tnet_tls_socket_handle_t* self)
 
 int tnet_tls_socket_write(tnet_tls_socket_handle_t* self, const void* data, tsk_size_t size)
 {
-#if !TNET_HAVE_OPENSSL_H
+#if !TNET_HAVE_OPENSSL_H || !HAVE_OPENSSL_H
 	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
@@ -229,7 +229,7 @@ ssl_write:
 
 int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void** data, tsk_size_t *size, int *isEncrypted)
 {
-#if !TNET_HAVE_OPENSSL_H
+#if !TNET_HAVE_OPENSSL_H || !HAVE_OPENSSL_H
 	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
@@ -320,7 +320,7 @@ bail:
 
 int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 {
-#if !TNET_HAVE_OPENSSL_H
+#if !TNET_HAVE_OPENSSL_H || !HAVE_OPENSSL_H
 	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
@@ -402,7 +402,7 @@ int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 //
 static tsk_object_t* tnet_tls_socket_ctor(tsk_object_t * self, va_list * app)
 {
-#if TNET_HAVE_OPENSSL_H
+#if TNET_HAVE_OPENSSL_H || HAVE_OPENSSL_H
 	static tsk_bool_t __ssl_initialized = tsk_false;
 #endif
 	tnet_tls_socket_t *socket = self;
@@ -430,7 +430,7 @@ static tsk_object_t* tnet_tls_socket_ctor(tsk_object_t * self, va_list * app)
 		}
 
 		/* Initialize SSL: http://www.openssl.org/docs/ssl/SSL_library_init.html */
-#if TNET_HAVE_OPENSSL_H
+#if TNET_HAVE_OPENSSL_H || HAVE_OPENSSL_H
 		if(!__ssl_initialized){
 			__ssl_initialized = tsk_true;
 			SSL_library_init();
@@ -461,7 +461,7 @@ static tsk_object_t* tnet_tls_socket_dtor(tsk_object_t * self)
 		TSK_FREE(socket->tlsfile_pbk);
 		TSK_FREE(socket->password);
 
-#if TNET_HAVE_OPENSSL_H
+#if TNET_HAVE_OPENSSL_H || HAVE_OPENSSL_H
 		if(socket->ssl){
 			//SSL_shutdown(socket->ssl);
 			SSL_free(socket->ssl);

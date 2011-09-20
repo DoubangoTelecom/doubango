@@ -44,6 +44,7 @@
 	} \
 }
 
+#if HAVE_FFMPEG || HAVE_SWSSCALE
 static inline enum PixelFormat _tdav_converter_video_get_pixfmt(tmedia_chroma_t chroma)
 {
 	switch(chroma){
@@ -72,6 +73,7 @@ static inline enum PixelFormat _tdav_converter_video_get_pixfmt(tmedia_chroma_t 
 			return PIX_FMT_NONE;
 	}
 }
+#endif
 
 
 tdav_converter_video_t* tdav_converter_video_create(tsk_size_t srcWidth, tsk_size_t srcHeight, tmedia_chroma_t srcChroma, tsk_size_t dstWidth, tsk_size_t dstHeight, tmedia_chroma_t dstChroma)

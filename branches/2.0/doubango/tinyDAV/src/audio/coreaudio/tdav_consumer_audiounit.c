@@ -22,6 +22,7 @@
 #include "tinydav/audio/coreaudio/tdav_consumer_audiounit.h"
 
 // http://developer.apple.com/library/ios/#documentation/MusicAudio/Conceptual/AudioUnitHostingGuide_iOS/Introduction/Introduction.html%23//apple_ref/doc/uid/TP40009492-CH1-SW1
+// Resampler: http://developer.apple.com/library/mac/#technotes/tn2097/_index.html
 
 #if HAVE_COREAUDIO_AUDIO_UNIT
 
@@ -56,9 +57,11 @@ static OSStatus __handle_output_buffer(void *inRefCon,
 		goto done;
 	}
 	// read from jitter buffer and fill ioData buffers
+	tsk_mutex_lock(consumer->ring.mutex);
 	for(int i=0; i<ioData->mNumberBuffers; i++){
 		/* int ret = */ tdav_consumer_audiounit_get(consumer, ioData->mBuffers[i].mData, ioData->mBuffers[i].mDataByteSize);
 	}
+	tsk_mutex_unlock(consumer->ring.mutex);
 	
 done:	
     return status;
@@ -67,6 +70,7 @@ done:
 static tsk_size_t tdav_consumer_audiounit_get(tdav_consumer_audiounit_t* self, void* data, tsk_size_t size)
 {
 	tsk_ssize_t retSize = 0;
+	
 #if DISABLE_JITTER_BUFFER
 	retSize = speex_buffer_read(self->ring.buffer, data, size);
 	if(retSize < size){
@@ -80,9 +84,13 @@ static tsk_size_t tdav_consumer_audiounit_get(tdav_consumer_audiounit_t* self, v
 		tdav_consumer_audio_tick(TDAV_CONSUMER_AUDIO(self));
 		speex_buffer_write(self->ring.buffer, self->ring.chunck.buffer, retSize);
 	}
-	retSize = speex_buffer_read(self->ring.buffer, data, size);
-	if(retSize < size){
-		memset(((uint8_t*)data)+retSize, 0, (size - retSize));
+	// IMPORTANT: looks like there is a bug in speex: continously trying to read more than avail
+	// many times can corrupt the buffer. At least on OS X 1.5
+	if(speex_buffer_get_available(self->ring.buffer) >= size){
+		retSize = speex_buffer_read(self->ring.buffer, data, size);
+	}
+	else{
+		memset(data, 0, size);
 	}
 #endif
 
@@ -109,24 +117,59 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 		return -1;
 	}
 	if(!consumer->audioUnitHandle){
-		if(!(consumer->audioUnitHandle = tdav_audiounit_handle_create(TMEDIA_CONSUMER(consumer)->session_id, codec->plugin->audio.ptime))){
+		if(!(consumer->audioUnitHandle = tdav_audiounit_handle_create(TMEDIA_CONSUMER(consumer)->session_id))){
 			TSK_DEBUG_ERROR("Failed to get audio unit instance for session with id=%lld", TMEDIA_CONSUMER(consumer)->session_id);
 			return -3;
 		}
-		// enable
-		status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle), 
-									  kAudioOutputUnitProperty_EnableIO, 
-									  kAudioUnitScope_Output, 
-									  kOutputBus,
-									  &flagOne, 
-									  sizeof(flagOne));
 	}
-	
+
+	// enable
+	status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle), 
+								  kAudioOutputUnitProperty_EnableIO, 
+								  kAudioUnitScope_Output, 
+								  kOutputBus,
+								  &flagOne, 
+								  sizeof(flagOne));
 	if(status){
 		TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO) failed with status=%d", (int32_t)status);
 		return -4;
 	}
 	else {
+		
+#if !TARGET_OS_IPHONE // strange: TARGET_OS_MAC is equal to '1' on Smulator
+		UInt32 param;
+		
+		// disable input
+		param = 0;
+		status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle), kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, 1, &param, sizeof(UInt32));
+		if(status != noErr){
+			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO) failed with status=%ld", (signed long)status);
+			return -4;
+		}
+		
+		// set default audio device
+		param = sizeof(AudioDeviceID);
+		AudioDeviceID outputDeviceID;
+		status = AudioHardwareGetProperty(kAudioHardwarePropertyDefaultOutputDevice, &param, &outputDeviceID);
+		if(status != noErr){
+			TSK_DEBUG_ERROR("AudioHardwareGetProperty(kAudioHardwarePropertyDefaultOutputDevice) failed with status=%ld", (signed long)status);
+			return -4;
+		}
+		
+		// set the current device to the default input unit
+		status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle), 
+									  kAudioOutputUnitProperty_CurrentDevice, 
+									  kAudioUnitScope_Global, 
+									  0, 
+									  &outputDeviceID, 
+									  sizeof(AudioDeviceID));
+		if(status != noErr){
+			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_CurrentDevice) failed with status=%ld", (signed long)status);
+			return -4;
+		}
+		
+#endif
+		
 		TMEDIA_CONSUMER(consumer)->audio.ptime = codec->plugin->audio.ptime;
 		TMEDIA_CONSUMER(consumer)->audio.in.channels = codec->plugin->audio.channels;
 		TMEDIA_CONSUMER(consumer)->audio.in.rate = codec->plugin->rate;
@@ -148,10 +191,16 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 									  sizeof(audioFormat));
 		
 		if(status){
-			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioUnitProperty_StreamFormat) failed with status=%ld", status);
+			TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioUnitProperty_StreamFormat) failed with status=%ld", (signed long)status);
 			return -5;
 		}
 		else {
+			// configure
+			if(tdav_audiounit_handle_configure(consumer->audioUnitHandle, tsk_true, TMEDIA_CONSUMER(consumer)->audio.ptime, &audioFormat)){
+				TSK_DEBUG_ERROR("tdav_audiounit_handle_set_rate(%d) failed", TMEDIA_CONSUMER(consumer)->audio.out.rate);
+				return -4;
+			}
+			
 			// set callback function
 			AURenderCallbackStruct callback;
 			callback.inputProc = __handle_output_buffer;
@@ -163,7 +212,7 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 										  &callback, 
 										  sizeof(callback));
 			if(status){
-				TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback) failed with status=%ld", status);
+				TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback) failed with status=%ld", (signed long)status);
 				return -6;
 			}
 		}
@@ -209,7 +258,7 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 	//	return -6;
 	//}
 	
-	TSK_DEBUG_INFO("AudioUnit producer prepared");
+	TSK_DEBUG_INFO("AudioUnit consumer prepared");
     return tdav_audiounit_handle_signal_consumer_prepared(consumer->audioUnitHandle);
 }
 
@@ -272,7 +321,7 @@ static int tdav_consumer_audiounit_pause(tmedia_consumer_t* self)
 		return -1;
 	}
 	consumer->paused = tsk_true;
-	TSK_DEBUG_INFO("AudioUnit producer paused");
+	TSK_DEBUG_INFO("AudioUnit consumer paused");
 	return 0;
 }
 
@@ -295,7 +344,7 @@ static int tdav_consumer_audiounit_stop(tmedia_consumer_t* self)
 			return ret;
 		}
 	}
-#if 1
+#if TARGET_OS_IPHONE
 	//https://devforums.apple.com/thread/118595
 	if(consumer->audioUnitHandle){
 		tdav_audiounit_handle_destroy(&consumer->audioUnitHandle);
