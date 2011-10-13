@@ -660,9 +660,9 @@ const tsdp_header_M_t* tdav_session_msrp_get_lo(tmedia_session_t* self)
 				tdav_msrp_setup_t setup = setup_from_string(A->value);
 				switch(setup){
 						case msrp_setup_passive:
+						case msrp_setup_actpass: // Because of NAT issues "actpass -(always)-> active"
 							msrp->setup = msrp_setup_active;
 							break;
-						case msrp_setup_actpass:
 						case msrp_setup_active:
 							msrp->setup = msrp_setup_passive;
 							break;
