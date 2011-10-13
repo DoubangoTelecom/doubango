@@ -179,8 +179,9 @@ char* tsk_strndup(const char *s1, tsk_size_t n)
 		tsk_size_t len = tsk_strlen(s1);
 		tsk_size_t nret = (n > len) ? (len) : (n);
 
-		ret = tsk_calloc((nret+1), sizeof(uint8_t));
-		memcpy(ret, s1, nret);
+		if((ret = tsk_calloc((nret+1), sizeof(uint8_t)))){
+			memcpy(ret, s1, nret);
+		}
 	}
 
 	return ret;

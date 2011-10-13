@@ -112,7 +112,7 @@ void tsk_free(void** ptr)
 */
 void* tsk_calloc(tsk_size_t num, tsk_size_t size)
 {
-	void* ret = 0;
+	void* ret = tsk_null;
 	if(num && size){
 		ret = calloc(num, size);
 		if(!ret){

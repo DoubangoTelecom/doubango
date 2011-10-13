@@ -80,17 +80,15 @@ int tsk_thread_create(void** tid, void *(*start) (void *), void *arg)
  */
 int tsk_thread_set_priority(void* tid, int32_t priority)
 {
-#if TSK_UNDER_WINDOWS
-	// SetPriorityClass()
-	TSK_DEBUG_ERROR("Not implemented");
-	return -1;
-#else
-	struct sched_param sp;
-	int ret;
 	if(!tid){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+#if TSK_UNDER_WINDOWS
+	return SetThreadPriority(tid, priority) ? 0 : -1;
+#else
+	struct sched_param sp;
+	int ret;
     memset(&sp, 0, sizeof(struct sched_param));
     sp.sched_priority = priority;
     if ((ret = pthread_setschedparam(*((pthread_t*)tid), SCHED_RR, &sp))) {

@@ -738,7 +738,7 @@ bail:
 
 
 	TSK_DEBUG_INFO("Stopped [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
-	return 0;
+	return tsk_null;
 }
 
 

@@ -70,7 +70,7 @@ int tsk_fsm_set(tsk_fsm_t* self, ...)
 	}
 	
 	va_start(args, self);
-	while((guard = va_arg(args, int))){
+	while((guard = va_arg(args, int)) == 1){
 		tsk_fsm_entry_t* entry;
 		if((entry = tsk_fsm_entry_create())){
 			entry->from = va_arg(args, tsk_fsm_state_id);
