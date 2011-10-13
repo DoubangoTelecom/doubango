@@ -35,6 +35,7 @@
 #include "tinymedia/tmedia_denoise.h"
 #include "tinymedia/tmedia_consumer.h"
 #include "tinymedia/tmedia_producer.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tinyrtp/trtp_manager.h"
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
@@ -296,6 +297,7 @@ int tdav_session_audio_prepare(tmedia_session_t* self)
 		if((audio->rtp_manager = trtp_manager_create(audio->rtcp_enabled, audio->local_ip, audio->useIPv6))){
 
 			ret = trtp_manager_set_rtp_callback(audio->rtp_manager, tdav_session_audio_rtp_cb, audio);
+			ret = trtp_manager_set_port_range(audio->rtp_manager, tmedia_defaults_get_rtp_port_range_start(), tmedia_defaults_get_rtp_port_range_stop());
 			ret = trtp_manager_prepare(audio->rtp_manager);
 			if(audio->natt_ctx){
 				ret = trtp_manager_set_natt_ctx(audio->rtp_manager, audio->natt_ctx);

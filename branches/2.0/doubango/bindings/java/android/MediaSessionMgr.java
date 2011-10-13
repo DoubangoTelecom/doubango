@@ -151,4 +151,8 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetAudioGain(producer_gain, consumer_gain);
   }
 
+  public static boolean defaultsSetRtpPortRange(int range_start, int range_stop) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetRtpPortRange(range_start, range_stop);
+  }
+
 }

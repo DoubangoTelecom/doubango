@@ -196,6 +196,8 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetScreenSize = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetScreenSize)
     __swig_getmethods__["defaultsSetAudioGain"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetAudioGain
     if _newclass:defaultsSetAudioGain = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetAudioGain)
+    __swig_getmethods__["defaultsSetRtpPortRange"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange
+    if _newclass:defaultsSetRtpPortRange = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange)
 MediaSessionMgr_swigregister = _tinyWRAP.MediaSessionMgr_swigregister
 MediaSessionMgr_swigregister(MediaSessionMgr)
 
@@ -282,6 +284,10 @@ MediaSessionMgr_defaultsSetScreenSize = _tinyWRAP.MediaSessionMgr_defaultsSetScr
 def MediaSessionMgr_defaultsSetAudioGain(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetAudioGain(*args)
 MediaSessionMgr_defaultsSetAudioGain = _tinyWRAP.MediaSessionMgr_defaultsSetAudioGain
+
+def MediaSessionMgr_defaultsSetRtpPortRange(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange(*args)
+MediaSessionMgr_defaultsSetRtpPortRange = _tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange
 
 class MediaContent(_object):
     __swig_setmethods__ = {}

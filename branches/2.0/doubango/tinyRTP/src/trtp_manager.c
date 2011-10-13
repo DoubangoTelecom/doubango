@@ -38,6 +38,13 @@
 #define BIG_RCVBUF					(64 * 1024)
 #define BIG_SNDBUF					(64 * 1024)
 
+#if !defined(TRTP_PORT_RANGE_START)
+#	define TRTP_PORT_RANGE_START 1024
+#endif
+#if !defined(TRTP_PORT_RANGE_STOP)
+#	define TRTP_PORT_RANGE_STOP 65535
+#endif
+
 // TODO: Add support for outbound DTMF (http://www.ietf.org/rfc/rfc2833.txt)
 
 /* ======================= Transport callback ========================== */
@@ -158,7 +165,7 @@ int trtp_manager_prepare(trtp_manager_t* self)
 #if 0
 		tnet_port_t local_port = 6060;
 #else
-		tnet_port_t local_port = ((rand() % 64510) + 1025);
+		tnet_port_t local_port = ((rand() % (self->port_range.stop - self->port_range.start)) + self->port_range.start);
 #endif
 		local_port = (local_port & 0xFFFE); /* turn to even number */
 		
@@ -292,6 +299,17 @@ int trtp_manager_set_rtcp_remote(trtp_manager_t* self, const char* remote_ip, tn
 	}
 	tsk_strupdate(&self->rtcp.remote_ip, remote_ip);
 	self->rtcp.remote_port = remote_port;
+	return 0;
+}
+
+int trtp_manager_set_port_range(trtp_manager_t* self, uint16_t start, uint16_t stop)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->port_range.start = start;
+	self->port_range.stop = stop;
 	return 0;
 }
 
@@ -499,6 +517,9 @@ static tsk_object_t* trtp_manager_ctor(tsk_object_t * self, va_list * app)
 {
 	trtp_manager_t *manager = self;
 	if(manager){
+		manager->port_range.start = TRTP_PORT_RANGE_START;
+		manager->port_range.stop = TRTP_PORT_RANGE_STOP;
+
 		/* rtp */
 		manager->rtp.timestamp = rand()^rand();
 		manager->rtp.seq_num = rand()^rand();

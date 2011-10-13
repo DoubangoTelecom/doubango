@@ -61,6 +61,9 @@ TINYMEDIA_API int32_t tmedia_defaults_get_screen_y();
 TINYMEDIA_API int tmedia_defaults_set_audio_gain(int32_t audio_producer_gain, int32_t audio_consumer_gain);
 TINYMEDIA_API int32_t tmedia_defaults_get_audio_producer_gain();
 TINYMEDIA_API int32_t tmedia_defaults_get_audio_consumer_gain();
+TINYMEDIA_API uint16_t tmedia_defaults_get_rtp_port_range_start();
+TINYMEDIA_API uint16_t tmedia_defaults_get_rtp_port_range_stop();
+TINYMEDIA_API int tmedia_defaults_set_rtp_port_range(uint16_t start, uint16_t stop);
 
 
 TMEDIA_END_DECLS
