@@ -79,6 +79,7 @@ public:
 	static bool defaultsGet100relEnabled();
 	static bool defaultsSetScreenSize(int32_t sx, int32_t sy);
 	static bool defaultsSetAudioGain(int32_t producer_gain, int32_t consumer_gain);
+	static bool defaultsSetRtpPortRange(uint16_t range_start, uint16_t range_stop);
 	
 
 private:

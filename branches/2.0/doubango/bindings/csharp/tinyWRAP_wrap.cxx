@@ -1774,6 +1774,20 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetAudioGain(
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetRtpPortRange(unsigned short jarg1, unsigned short jarg2) {
+  unsigned int jresult ;
+  uint16_t arg1 ;
+  uint16_t arg2 ;
+  bool result;
+  
+  arg1 = (uint16_t)jarg1; 
+  arg2 = (uint16_t)jarg2; 
+  result = (bool)MediaSessionMgr::defaultsSetRtpPortRange(arg1,arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_MediaContent(void * jarg1) {
   MediaContent *arg1 = (MediaContent *) 0 ;
   

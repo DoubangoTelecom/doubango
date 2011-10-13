@@ -3774,6 +3774,22 @@ SWIG_From_float  (float value)
 }
 
 
+SWIGINTERN int
+SWIG_AsVal_unsigned_SS_short (PyObject * obj, unsigned short *val)
+{
+  unsigned long v;
+  int res = SWIG_AsVal_unsigned_SS_long (obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v > USHRT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< unsigned short >(v);
+    }
+  }  
+  return res;
+}
+
+
 SWIGINTERNINLINE PyObject *
 SWIG_From_unsigned_SS_short  (unsigned short value)
 {    
@@ -3863,22 +3879,6 @@ SWIG_AsVal_unsigned_SS_long_SS_long (PyObject *obj, unsigned long long *val)
     res = SWIG_TypeError;
   }
 #endif
-  return res;
-}
-
-
-SWIGINTERN int
-SWIG_AsVal_unsigned_SS_short (PyObject * obj, unsigned short *val)
-{
-  unsigned long v;
-  int res = SWIG_AsVal_unsigned_SS_long (obj, &v);
-  if (SWIG_IsOK(res)) {
-    if ((v > USHRT_MAX)) {
-      return SWIG_OverflowError;
-    } else {
-      if (val) *val = static_cast< unsigned short >(v);
-    }
-  }  
   return res;
 }
 
@@ -6512,6 +6512,37 @@ SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetAudioGain(PyObject *SWIGUN
   } 
   arg2 = static_cast< int32_t >(val2);
   result = (bool)MediaSessionMgr::defaultsSetAudioGain(arg1,arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetRtpPortRange(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  uint16_t arg1 ;
+  uint16_t arg2 ;
+  unsigned short val1 ;
+  int ecode1 = 0 ;
+  unsigned short val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MediaSessionMgr_defaultsSetRtpPortRange",&obj0,&obj1)) SWIG_fail;
+  ecode1 = SWIG_AsVal_unsigned_SS_short(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetRtpPortRange" "', argument " "1"" of type '" "uint16_t""'");
+  } 
+  arg1 = static_cast< uint16_t >(val1);
+  ecode2 = SWIG_AsVal_unsigned_SS_short(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_defaultsSetRtpPortRange" "', argument " "2"" of type '" "uint16_t""'");
+  } 
+  arg2 = static_cast< uint16_t >(val2);
+  result = (bool)MediaSessionMgr::defaultsSetRtpPortRange(arg1,arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -21013,6 +21044,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_defaultsGet100relEnabled", _wrap_MediaSessionMgr_defaultsGet100relEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetScreenSize", _wrap_MediaSessionMgr_defaultsSetScreenSize, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetAudioGain", _wrap_MediaSessionMgr_defaultsSetAudioGain, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetRtpPortRange", _wrap_MediaSessionMgr_defaultsSetRtpPortRange, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_swigregister", MediaSessionMgr_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_MediaContent", _wrap_delete_MediaContent, METH_VARARGS, NULL},
 	 { (char *)"MediaContent_getType", _wrap_MediaContent_getType, METH_VARARGS, NULL},

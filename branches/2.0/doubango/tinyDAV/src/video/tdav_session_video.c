@@ -32,6 +32,7 @@
 
 #include "tinymedia/tmedia_consumer.h"
 #include "tinymedia/tmedia_producer.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tinyrtp/trtp_manager.h"
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
@@ -349,6 +350,7 @@ int tdav_session_video_prepare(tmedia_session_t* self)
 		if((video->rtp_manager = trtp_manager_create(video->rtcp_enabled, video->local_ip, video->useIPv6))){
 			
 			ret = trtp_manager_set_rtp_callback(video->rtp_manager, tdav_session_video_rtp_cb, video);
+			ret = trtp_manager_set_port_range(video->rtp_manager, tmedia_defaults_get_rtp_port_range_start(), tmedia_defaults_get_rtp_port_range_stop());
 			ret = trtp_manager_prepare(video->rtp_manager);
 			if(video->natt_ctx){
 				ret = trtp_manager_set_natt_ctx(video->rtp_manager, video->natt_ctx);

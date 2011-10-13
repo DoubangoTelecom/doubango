@@ -21,6 +21,7 @@
  */
 #include "tinymedia/tmedia_defaults.h"
 
+#include "tsk_debug.h"
 
 //
 // Codecs: Bandwidth
@@ -57,6 +58,8 @@ static int32_t __sx = -1;
 static int32_t __sy = -1;
 static int32_t __audio_producer_gain = 0;
 static int32_t __audio_consumer_gain = 0;
+static uint16_t __rtp_port_range_start = 1024;
+static uint16_t __rtp_port_range_stop = 65535;
 
 int tmedia_defaults_set_echo_tail(uint32_t echo_tail)
 {
@@ -182,3 +185,20 @@ int32_t tmedia_defaults_get_audio_consumer_gain(){
 	return __audio_consumer_gain;
 }
 
+uint16_t tmedia_defaults_get_rtp_port_range_start(){
+	return __rtp_port_range_start;
+}
+
+uint16_t tmedia_defaults_get_rtp_port_range_stop(){
+	return __rtp_port_range_stop;
+}
+
+int tmedia_defaults_set_rtp_port_range(uint16_t start, uint16_t stop){
+	if(start < 1024 || stop < 1024 || start >= stop){
+		TSK_DEBUG_ERROR("Invalid parameter: (%u < 1024 || %u < 1024 || %u >= %u)", start, stop, start, stop);
+		return -1;
+	}
+	__rtp_port_range_start = start;
+	__rtp_port_range_stop = stop;
+	return 0;
+}

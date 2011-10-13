@@ -186,6 +186,11 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetRtpPortRange(ushort range_start, ushort range_stop) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetRtpPortRange(range_start, range_stop);
+    return ret;
+  }
+
 }
 
 }

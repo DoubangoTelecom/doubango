@@ -2082,6 +2082,22 @@ SWIG_From_float  SWIG_PERL_DECL_ARGS_1(float value)
 }
 
 
+SWIGINTERN int
+SWIG_AsVal_unsigned_SS_short SWIG_PERL_DECL_ARGS_2(SV * obj, unsigned short *val)
+{
+  unsigned long v;
+  int res = SWIG_AsVal_unsigned_SS_long SWIG_PERL_CALL_ARGS_2(obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v > USHRT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< unsigned short >(v);
+    }
+  }  
+  return res;
+}
+
+
 SWIGINTERNINLINE SV *
 SWIG_FromCharPtrAndSize(const char* carray, size_t size)
 {
@@ -2202,22 +2218,6 @@ SWIG_AsVal_unsigned_SS_long_SS_long SWIG_PERL_DECL_ARGS_2(SV *obj, unsigned long
     }
   }
   return SWIG_TypeError;
-}
-
-
-SWIGINTERN int
-SWIG_AsVal_unsigned_SS_short SWIG_PERL_DECL_ARGS_2(SV * obj, unsigned short *val)
-{
-  unsigned long v;
-  int res = SWIG_AsVal_unsigned_SS_long SWIG_PERL_CALL_ARGS_2(obj, &v);
-  if (SWIG_IsOK(res)) {
-    if ((v > USHRT_MAX)) {
-      return SWIG_OverflowError;
-    } else {
-      if (val) *val = static_cast< unsigned short >(v);
-    }
-  }  
-  return res;
 }
 
 
@@ -3907,6 +3907,44 @@ XS(_wrap_MediaSessionMgr_defaultsSetAudioGain) {
     } 
     arg2 = static_cast< int32_t >(val2);
     result = (bool)MediaSessionMgr::defaultsSetAudioGain(arg1,arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetRtpPortRange) {
+  {
+    uint16_t arg1 ;
+    uint16_t arg2 ;
+    unsigned short val1 ;
+    int ecode1 = 0 ;
+    unsigned short val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetRtpPortRange(range_start,range_stop);");
+    }
+    ecode1 = SWIG_AsVal_unsigned_SS_short SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetRtpPortRange" "', argument " "1"" of type '" "uint16_t""'");
+    } 
+    arg1 = static_cast< uint16_t >(val1);
+    ecode2 = SWIG_AsVal_unsigned_SS_short SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_defaultsSetRtpPortRange" "', argument " "2"" of type '" "uint16_t""'");
+    } 
+    arg2 = static_cast< uint16_t >(val2);
+    result = (bool)MediaSessionMgr::defaultsSetRtpPortRange(arg1,arg2);
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     
     
@@ -21577,6 +21615,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsGet100relEnabled", _wrap_MediaSessionMgr_defaultsGet100relEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetScreenSize", _wrap_MediaSessionMgr_defaultsSetScreenSize},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetAudioGain", _wrap_MediaSessionMgr_defaultsSetAudioGain},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetRtpPortRange", _wrap_MediaSessionMgr_defaultsSetRtpPortRange},
 {"tinyWRAPc::delete_MediaContent", _wrap_delete_MediaContent},
 {"tinyWRAPc::MediaContent_getType", _wrap_MediaContent_getType},
 {"tinyWRAPc::MediaContent_getDataLength", _wrap_MediaContent_getDataLength},
