@@ -118,7 +118,7 @@ tsk_semaphore_handle_t* tsk_semaphore_create_2(int initial_val)
 #endif
 	
 	if(!handle){
-		TSK_DEBUG_ERROR("Failed to create new mutex.");
+		TSK_DEBUG_ERROR("Failed to create new semaphore");
 	}
 	return handle;
 }
@@ -184,7 +184,7 @@ void tsk_semaphore_destroy(tsk_semaphore_handle_t** handle)
 	{
 #if TSK_UNDER_WINDOWS
 		CloseHandle((SEMAPHORE_T)*handle);
-		*handle = 0;
+		*handle = tsk_null;
 #else
 #	if TSK_USE_NAMED_SEM
 		named_sem_t * nsem = ((named_sem_t*)*handle);

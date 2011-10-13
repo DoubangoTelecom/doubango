@@ -346,7 +346,7 @@ peek_first:
 	
 	TSK_DEBUG_INFO("TIMER MANAGER -- STOP");
 
-	return 0;
+	return tsk_null;
 }
 
 
