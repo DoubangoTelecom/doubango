@@ -20784,6 +20784,34 @@ XS(_wrap_MsrpMessage_isFirstChunck) {
 }
 
 
+XS(_wrap_MsrpMessage_isSuccessReport) {
+  {
+    MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MsrpMessage_isSuccessReport(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MsrpMessage, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MsrpMessage_isSuccessReport" "', argument " "1"" of type '" "MsrpMessage *""'"); 
+    }
+    arg1 = reinterpret_cast< MsrpMessage * >(argp1);
+    result = (bool)(arg1)->isSuccessReport();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_MsrpMessage_getMsrpHeaderValue) {
   {
     MsrpMessage *arg1 = (MsrpMessage *) 0 ;
@@ -21957,6 +21985,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MsrpMessage_getByteRange", _wrap_MsrpMessage_getByteRange},
 {"tinyWRAPc::MsrpMessage_isLastChunck", _wrap_MsrpMessage_isLastChunck},
 {"tinyWRAPc::MsrpMessage_isFirstChunck", _wrap_MsrpMessage_isFirstChunck},
+{"tinyWRAPc::MsrpMessage_isSuccessReport", _wrap_MsrpMessage_isSuccessReport},
 {"tinyWRAPc::MsrpMessage_getMsrpHeaderValue", _wrap_MsrpMessage_getMsrpHeaderValue},
 {"tinyWRAPc::MsrpMessage_getMsrpHeaderParamValue", _wrap_MsrpMessage_getMsrpHeaderParamValue},
 {"tinyWRAPc::MsrpMessage_getMsrpContentLength", _wrap_MsrpMessage_getMsrpContentLength},

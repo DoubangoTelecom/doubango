@@ -20629,6 +20629,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MsrpMessage_isSuccessReport(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MsrpMessage_isSuccessReport",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MsrpMessage, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MsrpMessage_isSuccessReport" "', argument " "1"" of type '" "MsrpMessage *""'"); 
+  }
+  arg1 = reinterpret_cast< MsrpMessage * >(argp1);
+  result = (bool)(arg1)->isSuccessReport();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_MsrpMessage_getMsrpHeaderValue(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MsrpMessage *arg1 = (MsrpMessage *) 0 ;
@@ -21440,6 +21462,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MsrpMessage_getByteRange", _wrap_MsrpMessage_getByteRange, METH_VARARGS, NULL},
 	 { (char *)"MsrpMessage_isLastChunck", _wrap_MsrpMessage_isLastChunck, METH_VARARGS, NULL},
 	 { (char *)"MsrpMessage_isFirstChunck", _wrap_MsrpMessage_isFirstChunck, METH_VARARGS, NULL},
+	 { (char *)"MsrpMessage_isSuccessReport", _wrap_MsrpMessage_isSuccessReport, METH_VARARGS, NULL},
 	 { (char *)"MsrpMessage_getMsrpHeaderValue", _wrap_MsrpMessage_getMsrpHeaderValue, METH_VARARGS, NULL},
 	 { (char *)"MsrpMessage_getMsrpHeaderParamValue", _wrap_MsrpMessage_getMsrpHeaderParamValue, METH_VARARGS, NULL},
 	 { (char *)"MsrpMessage_getMsrpContentLength", _wrap_MsrpMessage_getMsrpContentLength, METH_VARARGS, NULL},
