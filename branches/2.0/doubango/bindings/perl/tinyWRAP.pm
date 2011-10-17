@@ -2107,6 +2107,7 @@ sub DESTROY {
 *getByteRange = *tinyWRAPc::MsrpMessage_getByteRange;
 *isLastChunck = *tinyWRAPc::MsrpMessage_isLastChunck;
 *isFirstChunck = *tinyWRAPc::MsrpMessage_isFirstChunck;
+*isSuccessReport = *tinyWRAPc::MsrpMessage_isSuccessReport;
 *getMsrpHeaderValue = *tinyWRAPc::MsrpMessage_getMsrpHeaderValue;
 *getMsrpHeaderParamValue = *tinyWRAPc::MsrpMessage_getMsrpHeaderParamValue;
 *getMsrpContentLength = *tinyWRAPc::MsrpMessage_getMsrpContentLength;

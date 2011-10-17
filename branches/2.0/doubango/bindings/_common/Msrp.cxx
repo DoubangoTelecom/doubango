@@ -26,49 +26,49 @@
 
 /* ======================== MsrpMessage ========================*/
 MsrpMessage::MsrpMessage()
-:message(tsk_null)
+:m_pMessage(tsk_null)
 {
 }
 
 MsrpMessage::MsrpMessage(tmsrp_message_t *_message)
 {
-	this->message = (tmsrp_message_t *)tsk_object_ref(_message);
+	m_pMessage = (tmsrp_message_t *)tsk_object_ref(_message);
 }
 
 MsrpMessage::~MsrpMessage()
 {
-	TSK_OBJECT_SAFE_FREE(this->message);
+	TSK_OBJECT_SAFE_FREE(m_pMessage);
 }
 
 bool MsrpMessage::isRequest()
 {
-	return (this->message->type == tmsrp_request);
+	return (m_pMessage->type == tmsrp_request);
 }
 
 short MsrpMessage::getCode()
 {
-	return TMSRP_RESPONSE_CODE(this->message);
+	return TMSRP_RESPONSE_CODE(m_pMessage);
 }
 
 const char* MsrpMessage::getPhrase()
 {
-	return TMSRP_RESPONSE_PHRASE(this->message);
+	return TMSRP_RESPONSE_PHRASE(m_pMessage);
 }
 
 tmsrp_request_type_t MsrpMessage::getRequestType()
 {
-	if(TMSRP_MESSAGE_IS_REQUEST(this->message)){
-		return this->message->line.request.type;
+	if(TMSRP_MESSAGE_IS_REQUEST(m_pMessage)){
+		return m_pMessage->line.request.type;
 	}
 	return tmsrp_NONE;
 }
 
 void MsrpMessage::getByteRange(int64_t* start, int64_t* end, int64_t* total)
 {
-	if(this->message->ByteRange){
-		*start = this->message->ByteRange->start;
-		*end = this->message->ByteRange->end;
-		*total = this->message->ByteRange->total;
+	if(m_pMessage->ByteRange){
+		*start = m_pMessage->ByteRange->start;
+		*end = m_pMessage->ByteRange->end;
+		*total = m_pMessage->ByteRange->total;
 	}
 	else{
 		*start = *end = *total = -1;
@@ -77,12 +77,22 @@ void MsrpMessage::getByteRange(int64_t* start, int64_t* end, int64_t* total)
 
 bool MsrpMessage::isLastChunck()
 {
-	if(TMSRP_MESSAGE_IS_REQUEST(this->message)){
-		return (this->message->end_line.cflag == '$');
+	if(TMSRP_MESSAGE_IS_REQUEST(m_pMessage)){
+		return (m_pMessage->end_line.cflag == '$');
 	}
 	else{
-		if(this->message->ByteRange){
-			return (this->message->ByteRange->end >= this->message->ByteRange->total);
+		if(m_pMessage->ByteRange){
+			return (m_pMessage->ByteRange->end >= m_pMessage->ByteRange->total);
+		}
+	}
+	return false;
+}
+
+bool MsrpMessage::isSuccessReport()
+{
+	if(TMSRP_REQUEST_IS_REPORT(m_pMessage)){
+		if(m_pMessage->Status){
+			return m_pMessage->Status->code >= 200 && m_pMessage->Status->code <= 299;
 		}
 	}
 	return false;
@@ -90,7 +100,7 @@ bool MsrpMessage::isLastChunck()
 
 bool MsrpMessage::isFirstChunck()
 {
-	return (this->message && this->message->ByteRange->start == 1);
+	return (m_pMessage && m_pMessage->ByteRange->start == 1);
 }
 
 char* MsrpMessage::getMsrpHeaderValue(const char* name)
@@ -109,11 +119,11 @@ char* MsrpMessage::getMsrpHeaderParamValue(const char* name, const char* param)
 
 unsigned MsrpMessage::getMsrpContentLength()
 {
-	if(this->message && 
-		this->message->Content && 
-		this->message->Content->data && 
-		this->message->Content->size){
-		return this->message->Content->size;
+	if(m_pMessage && 
+		m_pMessage->Content && 
+		m_pMessage->Content->data && 
+		m_pMessage->Content->size){
+		return m_pMessage->Content->size;
 	}
 	return 0;
 }
@@ -122,16 +132,16 @@ unsigned MsrpMessage::getMsrpContent(void* output, unsigned maxsize)
 {
 	unsigned retsize = 0;
 	if(!output || 
-		!this->message || 
-		!this->message->Content || 
-		!this->message->Content->data || 
-		!this->message->Content->size){
+		!m_pMessage || 
+		!m_pMessage->Content || 
+		!m_pMessage->Content->data || 
+		!m_pMessage->Content->size){
 		return 0;
 	}
 
 	
-	retsize = (this->message->Content->size > maxsize) ? maxsize : this->message->Content->size;
-	memcpy(output, this->message->Content->data, retsize);
+	retsize = (m_pMessage->Content->size > maxsize) ? maxsize : m_pMessage->Content->size;
+	memcpy(output, m_pMessage->Content->data, retsize);
 	return retsize;
 }
 
@@ -142,54 +152,54 @@ const tmsrp_header_t* MsrpMessage::getMsrpHeader(const char* name, unsigned inde
 	const tsk_list_item_t *item;
 
 	/* From tmsrp_message_get_headerAt() */
-	if(!this->message || !name){
+	if(!m_pMessage || !name){
 		return tsk_null;
 	}
 
 	if(tsk_striequals(name, "To-Path")){
 		if(index == 0){
-			hdr = (const tmsrp_header_t*)this->message->To;
+			hdr = (const tmsrp_header_t*)m_pMessage->To;
 			goto bail;
 		}else pos++; }
 	if(tsk_striequals(name, "From-Path")){
 		if(index == 0){
-			hdr = (const tmsrp_header_t*)this->message->From;
+			hdr = (const tmsrp_header_t*)m_pMessage->From;
 			goto bail;
 		}else pos++; }
 	if(tsk_striequals(name, "Message-ID")){
 		if(index == 0){
-			hdr = (const tmsrp_header_t*)this->message->MessageID;
+			hdr = (const tmsrp_header_t*)m_pMessage->MessageID;
 			goto bail;
 		}else pos++; }
 	if(tsk_striequals(name, "Byte-Range")){
 		if(index == 0){
-			hdr = (const tmsrp_header_t*)this->message->ByteRange;
+			hdr = (const tmsrp_header_t*)m_pMessage->ByteRange;
 			goto bail;
 		}else pos++; }
 	if(tsk_striequals(name, "Failure-Report")){
 		if(index == 0){
-			hdr = (const tmsrp_header_t*)this->message->FailureReport;
+			hdr = (const tmsrp_header_t*)m_pMessage->FailureReport;
 			goto bail;
 		}else pos++; }
 	if(tsk_striequals(name, "Success-Report")){
 		if(index == 0){
-			hdr = (const tmsrp_header_t*)this->message->SuccessReport;
+			hdr = (const tmsrp_header_t*)m_pMessage->SuccessReport;
 			goto bail;
 		}else pos++; }
 	if(tsk_striequals(name, "Status")){
 		if(index == 0){
-			hdr = (const tmsrp_header_t*)this->message->Status;
+			hdr = (const tmsrp_header_t*)m_pMessage->Status;
 			goto bail;
 		}else pos++; }
 	if(tsk_striequals(name, "Content-Type")){
 		if(index == 0){
-			hdr = (const tmsrp_header_t*)this->message->ContentType;
+			hdr = (const tmsrp_header_t*)m_pMessage->ContentType;
 			goto bail;
 		}else pos++; }
 	
 
 	/* All other headers */
-	tsk_list_foreach(item, this->message->headers){
+	tsk_list_foreach(item, m_pMessage->headers){
 		if(tsk_striequals(tmsrp_header_get_nameex(TMSRP_HEADER(item->data)), name)){
 			if(pos++ >= index){
 				hdr = (const tmsrp_header_t*)item->data;
@@ -211,17 +221,17 @@ MsrpEvent::MsrpEvent(const tmsrp_event_t *_msrpevent)
 {
 	this->_event = _msrpevent;
 	if(this->_event && this->_event->message){	
-		this->message = new MsrpMessage((tmsrp_message_t *)this->_event->message);
+		m_pMessage = new MsrpMessage((tmsrp_message_t *)this->_event->message);
 	}
 	else{
-		this->message = tsk_null;
+		m_pMessage = tsk_null;
 	}
 }
 
 MsrpEvent::~MsrpEvent()
 {
-	if(this->message){
-		delete this->message;
+	if(m_pMessage){
+		delete m_pMessage;
 	}
 }
 
@@ -243,7 +253,7 @@ const MsrpSession* MsrpEvent::getSipSession()
 
 const MsrpMessage* MsrpEvent::getMessage() const
 {
-	return this->message;
+	return m_pMessage;
 }
 
 

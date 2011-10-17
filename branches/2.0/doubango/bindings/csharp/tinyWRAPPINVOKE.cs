@@ -1655,6 +1655,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MsrpMessage_isFirstChunck")]
   public static extern bool MsrpMessage_isFirstChunck(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MsrpMessage_isSuccessReport")]
+  public static extern bool MsrpMessage_isSuccessReport(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_MsrpMessage_getMsrpHeaderValue")]
   public static extern string MsrpMessage_getMsrpHeaderValue(HandleRef jarg1, string jarg2);
 

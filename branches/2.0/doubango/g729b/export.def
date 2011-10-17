@@ -1,0 +1,13 @@
+EXPORTS
+
+	Init_Decod_ld8a
+	Init_Post_Filter
+	Init_Post_Process
+	Decod_ld8a
+	Check_Parity_Pitch
+	bits2prm_ld8k
+	
+	Init_Pre_Process
+	Init_Coder_ld8a
+	Set_zero
+	

@@ -46,6 +46,7 @@ public:
 #endif
 	bool isLastChunck();
 	bool isFirstChunck();
+	bool isSuccessReport();
 	char* getMsrpHeaderValue(const char* name);
 	char* getMsrpHeaderParamValue(const char* name, const char* param);
 	unsigned getMsrpContentLength();
@@ -55,7 +56,7 @@ private:
 	const tmsrp_header_t* getMsrpHeader(const char* name, unsigned index = 0);
 
 private:
-	tmsrp_message_t *message;
+	tmsrp_message_t *m_pMessage;
 };
 
 class MsrpEvent
@@ -72,7 +73,7 @@ public:
 
 protected:
 	const tmsrp_event_t *_event;
-	MsrpMessage* message;
+	MsrpMessage* m_pMessage;
 };
 
 class MsrpCallback

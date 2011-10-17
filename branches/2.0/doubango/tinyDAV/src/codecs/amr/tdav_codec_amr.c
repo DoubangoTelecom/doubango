@@ -50,15 +50,15 @@ static const int tdav_codec_amr_nb_sizes[] = { 12, 13, 15, 17, 19, 20, 26, 31, 5
 static const int tdav_codec_amr_wb_sizes[] = { 17, 23, 32, 36, 40, 46, 50, 58, 60, 5, -1, -1, -1, -1, -1, -1 };
 
 /* ============ Common ================= */
-int tdav_codec_amr_init(tdav_codec_amr_t* self, tdav_codec_amr_type_t type, tdav_codec_amr_mode_t mode);
-int tdav_codec_amr_deinit(tdav_codec_amr_t* self);
-tdav_codec_amr_mode_t tdav_codec_amr_get_mode(const char* fmtp);
-int tdav_codec_amr_parse_fmtp(tdav_codec_amr_t* self, const char* fmtp);
-tsk_size_t tdav_codec_amr_oa_decode(tdav_codec_amr_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr);
-tsk_size_t tdav_codec_amr_be_decode(tdav_codec_amr_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr);
-tsk_size_t tdav_codec_amr_be_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size);
-tsk_size_t tdav_codec_amr_oa_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size);
-uint8_t tdav_codec_amr_bitbuffer_read(const void* bits, tsk_size_t size, tsk_size_t start, tsk_size_t count);
+static int tdav_codec_amr_init(tdav_codec_amr_t* self, tdav_codec_amr_type_t type, tdav_codec_amr_mode_t mode);
+static int tdav_codec_amr_deinit(tdav_codec_amr_t* self);
+static tdav_codec_amr_mode_t tdav_codec_amr_get_mode(const char* fmtp);
+static int tdav_codec_amr_parse_fmtp(tdav_codec_amr_t* self, const char* fmtp);
+static tsk_size_t tdav_codec_amr_oa_decode(tdav_codec_amr_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr);
+static tsk_size_t tdav_codec_amr_be_decode(tdav_codec_amr_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr);
+static tsk_size_t tdav_codec_amr_be_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size);
+static tsk_size_t tdav_codec_amr_oa_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size);
+static uint8_t tdav_codec_amr_bitbuffer_read(const void* bits, tsk_size_t size, tsk_size_t start, tsk_size_t count);
 
 /* ============ AMR-NB Plugin interface ================= 
 	The AMR codec was originally developed and standardized by the
@@ -327,7 +327,7 @@ const tmedia_codec_plugin_def_t *tdav_codec_amrnb_be_plugin_def_t = &tdav_codec_
 // Common functions
 //
 
-int tdav_codec_amr_init(tdav_codec_amr_t* self, tdav_codec_amr_type_t type, tdav_codec_amr_mode_t mode)
+static int tdav_codec_amr_init(tdav_codec_amr_t* self, tdav_codec_amr_type_t type, tdav_codec_amr_mode_t mode)
 {
 	if(self){
 		self->type = type;
@@ -342,7 +342,7 @@ int tdav_codec_amr_init(tdav_codec_amr_t* self, tdav_codec_amr_type_t type, tdav
 	}
 }
 
-int tdav_codec_amr_deinit(tdav_codec_amr_t* self)
+static int tdav_codec_amr_deinit(tdav_codec_amr_t* self)
 {
 	if(self){
 		switch(self->type){
@@ -372,7 +372,7 @@ int tdav_codec_amr_deinit(tdav_codec_amr_t* self)
 	}
 }
 
-tdav_codec_amr_mode_t tdav_codec_amr_get_mode(const char* fmtp)
+static tdav_codec_amr_mode_t tdav_codec_amr_get_mode(const char* fmtp)
 {
 	/* RFC 4867 - 8.1.  AMR Media Type Registration
 		octet-align: Permissible values are 0 and 1.  If 1, octet-aligned
@@ -480,7 +480,7 @@ bail:
 */
 
 
-tsk_size_t tdav_codec_amr_be_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
+static tsk_size_t tdav_codec_amr_be_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {	
 	tsk_size_t out_size = 0, i;
 	int ret_size;
@@ -622,7 +622,7 @@ bail:
 	return out_size;
 }
 
-tsk_size_t tdav_codec_amr_oa_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
+static tsk_size_t tdav_codec_amr_oa_encode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {	
 	tsk_size_t out_size = 0;
 	int ret_size;
@@ -660,7 +660,7 @@ bail:
 	return out_size;
 }
 
-tsk_size_t tdav_codec_amr_oa_decode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
+static tsk_size_t tdav_codec_amr_oa_decode(tdav_codec_amr_t* amr, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	tsk_size_t out_size = 0, pcm_frame_size = 0;
 	const uint8_t* pdata = (const uint8_t*)in_data;
@@ -779,7 +779,7 @@ bail:
 }
 
 
-uint8_t tdav_codec_amr_bitbuffer_read(const void* bits, tsk_size_t size, tsk_size_t start, tsk_size_t count)
+static uint8_t tdav_codec_amr_bitbuffer_read(const void* bits, tsk_size_t size, tsk_size_t start, tsk_size_t count)
 {
 	uint8_t byte, left, right, pad;
 

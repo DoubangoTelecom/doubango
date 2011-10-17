@@ -7380,6 +7380,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpMessage_isFirstChunck(void * jarg
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MsrpMessage_isSuccessReport(void * jarg1) {
+  unsigned int jresult ;
+  MsrpMessage *arg1 = (MsrpMessage *) 0 ;
+  bool result;
+  
+  arg1 = (MsrpMessage *)jarg1; 
+  result = (bool)(arg1)->isSuccessReport();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT char * SWIGSTDCALL CSharp_MsrpMessage_getMsrpHeaderValue(void * jarg1, char * jarg2) {
   char * jresult ;
   MsrpMessage *arg1 = (MsrpMessage *) 0 ;

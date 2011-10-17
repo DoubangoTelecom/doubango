@@ -1535,6 +1535,7 @@ class MsrpMessage(_object):
     def getByteRange(self): return _tinyWRAP.MsrpMessage_getByteRange(self)
     def isLastChunck(self): return _tinyWRAP.MsrpMessage_isLastChunck(self)
     def isFirstChunck(self): return _tinyWRAP.MsrpMessage_isFirstChunck(self)
+    def isSuccessReport(self): return _tinyWRAP.MsrpMessage_isSuccessReport(self)
     def getMsrpHeaderValue(self, *args): return _tinyWRAP.MsrpMessage_getMsrpHeaderValue(self, *args)
     def getMsrpHeaderParamValue(self, *args): return _tinyWRAP.MsrpMessage_getMsrpHeaderParamValue(self, *args)
     def getMsrpContentLength(self): return _tinyWRAP.MsrpMessage_getMsrpContentLength(self)
