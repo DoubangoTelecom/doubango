@@ -155,4 +155,8 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetRtpPortRange(range_start, range_stop);
   }
 
+  public static boolean defaultsSetMediaType(twrap_media_type_t media_type) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetMediaType(media_type.swigValue());
+  }
+
 }

@@ -265,3 +265,8 @@ bool MediaSessionMgr::defaultsSetAudioGain(int32_t producer_gain, int32_t consum
 bool MediaSessionMgr::defaultsSetRtpPortRange(uint16_t range_start, uint16_t range_stop){
 	return tmedia_defaults_set_rtp_port_range(range_start, range_stop) == 0;
 }
+
+bool MediaSessionMgr::defaultsSetMediaType(twrap_media_type_t media_type)
+{
+	return (tmedia_defaults_set_media_type(_get_media_type(media_type)) == 0);
+}

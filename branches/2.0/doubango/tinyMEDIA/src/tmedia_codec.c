@@ -213,6 +213,42 @@ int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin)
 	return -2;
 }
 
+int tmedia_codec_plugin_register_2(const tmedia_codec_plugin_def_t* plugin, int prio)
+{
+	tsk_size_t count = 0;
+	tsk_bool_t already_registered = tsk_false;
+	const tmedia_codec_plugin_def_t* tmp;
+	if(!plugin || tsk_strnullORempty(plugin->name) || tsk_strnullORempty(plugin->format) || (prio + 1) >= TMED_CODEC_MAX_PLUGINS){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	// count codecs and found if already registered
+	while(__tmedia_codec_plugins[count]){ 
+		if(__tmedia_codec_plugins[count] == plugin){
+			already_registered = tsk_true; 
+		}
+		++count;
+	}
+	
+	if(count >= TMED_CODEC_MAX_PLUGINS){
+		TSK_DEBUG_ERROR("No room");
+		return -1;
+	}
+
+	// unregister and compact
+	if(already_registered){
+		tmedia_codec_plugin_unregister(plugin);
+		--count;
+	}	
+	
+	 tmp = __tmedia_codec_plugins[prio];
+	__tmedia_codec_plugins[prio] = plugin;
+	__tmedia_codec_plugins[count] = tmp;// put old codec add prio to the end of the list
+	
+	return 0;
+}
+
 /**@ingroup tmedia_codec_group
  * Checks whether a codec plugin is registered or not.
  * @param plugin the definition of the plugin to check for availability.

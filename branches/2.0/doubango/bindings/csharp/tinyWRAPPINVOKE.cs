@@ -347,6 +347,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetRtpPortRange")]
   public static extern bool MediaSessionMgr_defaultsSetRtpPortRange(ushort jarg1, ushort jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetMediaType")]
+  public static extern bool MediaSessionMgr_defaultsSetMediaType(int jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_MediaContent")]
   public static extern void delete_MediaContent(HandleRef jarg1);
 

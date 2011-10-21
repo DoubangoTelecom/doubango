@@ -198,6 +198,8 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetAudioGain = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetAudioGain)
     __swig_getmethods__["defaultsSetRtpPortRange"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange
     if _newclass:defaultsSetRtpPortRange = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange)
+    __swig_getmethods__["defaultsSetMediaType"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetMediaType
+    if _newclass:defaultsSetMediaType = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetMediaType)
 MediaSessionMgr_swigregister = _tinyWRAP.MediaSessionMgr_swigregister
 MediaSessionMgr_swigregister(MediaSessionMgr)
 
@@ -288,6 +290,10 @@ MediaSessionMgr_defaultsSetAudioGain = _tinyWRAP.MediaSessionMgr_defaultsSetAudi
 def MediaSessionMgr_defaultsSetRtpPortRange(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange(*args)
 MediaSessionMgr_defaultsSetRtpPortRange = _tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange
+
+def MediaSessionMgr_defaultsSetMediaType(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetMediaType(*args)
+MediaSessionMgr_defaultsSetMediaType = _tinyWRAP.MediaSessionMgr_defaultsSetMediaType
 
 class MediaContent(_object):
     __swig_setmethods__ = {}
