@@ -213,6 +213,7 @@ TINYMEDIA_API int tmedia_codec_open(tmedia_codec_t* self);
 TINYMEDIA_API int tmedia_codec_close(tmedia_codec_t* self);
 TINYMEDIA_API int tmedia_codec_cmp(const tsk_object_t* codec1, const tsk_object_t* codec2);
 TINYMEDIA_API int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin);
+TINYMEDIA_API int tmedia_codec_plugin_register_2(const tmedia_codec_plugin_def_t* plugin, int prio);
 TINYMEDIA_API tsk_bool_t tmedia_codec_plugin_is_registered(const tmedia_codec_plugin_def_t* plugin);
 TINYMEDIA_API int tmedia_codec_plugin_unregister(const tmedia_codec_plugin_def_t* plugin);
 TINYMEDIA_API tmedia_codec_t* tmedia_codec_create(const char* format);

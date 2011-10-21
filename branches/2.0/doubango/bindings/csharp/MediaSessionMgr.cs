@@ -191,6 +191,11 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetMediaType(twrap_media_type_t media_type) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetMediaType((int)media_type);
+    return ret;
+  }
+
 }
 
 }

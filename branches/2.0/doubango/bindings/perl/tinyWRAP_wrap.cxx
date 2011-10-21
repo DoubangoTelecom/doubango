@@ -3957,6 +3957,34 @@ XS(_wrap_MediaSessionMgr_defaultsSetRtpPortRange) {
 }
 
 
+XS(_wrap_MediaSessionMgr_defaultsSetMediaType) {
+  {
+    twrap_media_type_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetMediaType(media_type);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetMediaType" "', argument " "1"" of type '" "twrap_media_type_t""'");
+    } 
+    arg1 = static_cast< twrap_media_type_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetMediaType(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_delete_MediaContent) {
   {
     MediaContent *arg1 = (MediaContent *) 0 ;
@@ -21644,6 +21672,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsSetScreenSize", _wrap_MediaSessionMgr_defaultsSetScreenSize},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetAudioGain", _wrap_MediaSessionMgr_defaultsSetAudioGain},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetRtpPortRange", _wrap_MediaSessionMgr_defaultsSetRtpPortRange},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetMediaType", _wrap_MediaSessionMgr_defaultsSetMediaType},
 {"tinyWRAPc::delete_MediaContent", _wrap_delete_MediaContent},
 {"tinyWRAPc::MediaContent_getType", _wrap_MediaContent_getType},
 {"tinyWRAPc::MediaContent_getDataLength", _wrap_MediaContent_getDataLength},

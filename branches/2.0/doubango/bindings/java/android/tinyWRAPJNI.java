@@ -64,6 +64,7 @@ class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_defaultsSetScreenSize(int jarg1, int jarg2);
   public final static native boolean MediaSessionMgr_defaultsSetAudioGain(int jarg1, int jarg2);
   public final static native boolean MediaSessionMgr_defaultsSetRtpPortRange(int jarg1, int jarg2);
+  public final static native boolean MediaSessionMgr_defaultsSetMediaType(int jarg1);
   public final static native void delete_MediaContent(long jarg1);
   public final static native String MediaContent_getType(long jarg1, MediaContent jarg1_);
   public final static native long MediaContent_getDataLength(long jarg1, MediaContent jarg1_);
@@ -492,6 +493,7 @@ class tinyWRAPJNI {
   public final static native void MsrpMessage_getByteRange(long jarg1, MsrpMessage jarg1_, long[] jarg2, long[] jarg3, long[] jarg4);
   public final static native boolean MsrpMessage_isLastChunck(long jarg1, MsrpMessage jarg1_);
   public final static native boolean MsrpMessage_isFirstChunck(long jarg1, MsrpMessage jarg1_);
+  public final static native boolean MsrpMessage_isSuccessReport(long jarg1, MsrpMessage jarg1_);
   public final static native String MsrpMessage_getMsrpHeaderValue(long jarg1, MsrpMessage jarg1_, String jarg2);
   public final static native String MsrpMessage_getMsrpHeaderParamValue(long jarg1, MsrpMessage jarg1_, String jarg2, String jarg3);
   public final static native long MsrpMessage_getMsrpContentLength(long jarg1, MsrpMessage jarg1_);

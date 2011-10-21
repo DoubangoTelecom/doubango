@@ -60,6 +60,7 @@ static int32_t __audio_producer_gain = 0;
 static int32_t __audio_consumer_gain = 0;
 static uint16_t __rtp_port_range_start = 1024;
 static uint16_t __rtp_port_range_stop = 65535;
+static tmedia_type_t __media_type = tmedia_audio;
 
 int tmedia_defaults_set_echo_tail(uint32_t echo_tail)
 {
@@ -200,5 +201,14 @@ int tmedia_defaults_set_rtp_port_range(uint16_t start, uint16_t stop){
 	}
 	__rtp_port_range_start = start;
 	__rtp_port_range_stop = stop;
+	return 0;
+}
+
+tmedia_type_t tmedia_defaults_get_media_type(){
+	return __media_type;
+}
+
+int tmedia_defaults_set_media_type(tmedia_type_t media_type){
+	__media_type = media_type;
 	return 0;
 }

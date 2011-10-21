@@ -65,6 +65,10 @@ public class MsrpMessage {
     return tinyWRAPJNI.MsrpMessage_isFirstChunck(swigCPtr, this);
   }
 
+  public boolean isSuccessReport() {
+    return tinyWRAPJNI.MsrpMessage_isSuccessReport(swigCPtr, this);
+  }
+
   public String getMsrpHeaderValue(String name) {
     return tinyWRAPJNI.MsrpMessage_getMsrpHeaderValue(swigCPtr, this, name);
   }

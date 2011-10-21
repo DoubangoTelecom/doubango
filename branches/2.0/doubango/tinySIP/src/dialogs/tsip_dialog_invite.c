@@ -393,7 +393,7 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 	}
 	else{
 		if(TSIP_DIALOG(self)->state == tsip_initial && TSIP_REQUEST_IS_INVITE(message)){ /* Bodiless initial INVITE */
-			TSIP_DIALOG_GET_SS(self)->media.type = tmedia_audio; // Default media for initial INVITE to send with the first reliable answer
+			TSIP_DIALOG_GET_SS(self)->media.type = tmedia_defaults_get_media_type(); // Default media for initial INVITE to send with the first reliable answer
 		}
 		else{
 			return 0;

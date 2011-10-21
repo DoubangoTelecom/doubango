@@ -1788,6 +1788,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetRtpPortRan
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetMediaType(int jarg1) {
+  unsigned int jresult ;
+  twrap_media_type_t arg1 ;
+  bool result;
+  
+  arg1 = (twrap_media_type_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetMediaType(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_MediaContent(void * jarg1) {
   MediaContent *arg1 = (MediaContent *) 0 ;
   

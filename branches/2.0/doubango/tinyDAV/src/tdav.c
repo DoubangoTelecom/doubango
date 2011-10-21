@@ -344,16 +344,17 @@ int tdav_codec_set_priority(tdav_codec_id_t codec_id, int priority)
 	for(i = 0; i<count; ++i){
 		if(__codecs[i].id == codec_id){
 			tdav_codec_decl_t codec_decl_1, codec_decl_2;
-			if(!tmedia_codec_plugin_is_registered(*__codecs[i].plugin)){
-				TSK_DEBUG_INFO("Codec not registered");
-				return 0;
-			}
 			priority = TSK_MIN(priority, count-1);
 			codec_decl_1 = __codecs[priority];
 			codec_decl_2 = __codecs[i];
 			
 			__codecs[i] = codec_decl_1;
 			__codecs[priority] = codec_decl_2;
+
+			// change priority if already registered and supported
+			if(_tdav_codec_is_supported(codec_decl_2.id, *codec_decl_2.plugin) && tmedia_codec_plugin_is_registered(*codec_decl_2.plugin)){
+				return tmedia_codec_plugin_register_2(*codec_decl_2.plugin, priority);
+			}
 			return 0;
 		}
 	}
@@ -365,11 +366,12 @@ int tdav_codec_set_priority(tdav_codec_id_t codec_id, int priority)
 void tdav_set_codecs(tdav_codec_id_t codecs)
 {
 	int i;
+	int prio;
 
-	for(i=0; i<sizeof(__codecs)/sizeof(tdav_codec_decl_t); ++i){
+	for(i=0,prio=0; i<sizeof(__codecs)/sizeof(tdav_codec_decl_t); ++i){
 		if((codecs & __codecs[i].id)){
 			if(_tdav_codec_is_supported(__codecs[i].id, *(__codecs[i].plugin))){
-				tmedia_codec_plugin_register(*(__codecs[i].plugin));
+				tmedia_codec_plugin_register_2(*(__codecs[i].plugin), prio++);
 			}
 		}
 		else{
