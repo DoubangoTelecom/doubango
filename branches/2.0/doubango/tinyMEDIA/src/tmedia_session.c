@@ -279,6 +279,7 @@ int _tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 	}
 	if(!(ret = self->plugin->set_remote_offer(self, m))){
 		self->ro_changed = tsk_true;
+		self->ro_held = tsdp_header_M_is_held(m, tsk_false);
 	}
 	return ret;
 }
@@ -962,8 +963,9 @@ int tmedia_session_mgr_hold(tmedia_session_mgr_t* self, tmedia_type_t type)
 	tsk_list_foreach(item, self->sessions){
 		tmedia_session_t* session = TMEDIA_SESSION(item->data);
 		if(((session->type & type) == session->type) && session->M.lo){
-			if(!tsdp_header_M_hold(session->M.lo, tsk_true)){
+			if(tsdp_header_M_hold(session->M.lo, tsk_true) == 0){
 				self->state_changed = tsk_true;
+				session->lo_held = tsk_true;
 			}
 		}
 	}
@@ -1029,6 +1031,7 @@ int tmedia_session_mgr_resume(tmedia_session_mgr_t* self, tmedia_type_t type)
 		if(((session->type & type) == session->type) && session->M.lo){
 			if(!tsdp_header_M_resume(session->M.lo, tsk_true)){
 				self->state_changed = tsk_true;
+				session->lo_held = tsk_false;
 			}
 		}
 	}

@@ -114,9 +114,16 @@ void DSDisplay::start()
 {
 	if (!this->graph->isRunning()){
 		this->hook();
+	}
+	if (!this->graph->isRunning() || this->graph->isPaused()){
 		this->graph->start();
 	}
 	this->graph->getVideoWindow()->put_Visible(OATRUE);
+}
+
+void DSDisplay::pause()
+{
+	this->graph->pause();
 }
 
 void DSDisplay::stop()

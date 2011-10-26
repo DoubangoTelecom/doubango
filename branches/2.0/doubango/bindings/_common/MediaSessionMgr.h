@@ -60,6 +60,8 @@ public:
 	// Defaults
 	static bool defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl);
 	static tmedia_bandwidth_level_t defaultsGetBandwidthLevel();
+	static bool defaultsSetJbMargin(uint32_t jb_margin_ms);
+	static bool defaultsSetJbMaxLateRate(uint32_t jb_late_rate_percent);
 	static bool defaultsSetEchoTail(uint32_t echo_tail);
 	static uint32_t defaultsGetEchoTail();
 	static bool defaultsSetEchoSkew(uint32_t echo_skew);

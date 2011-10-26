@@ -58,6 +58,7 @@ DSCaptureGraph::DSCaptureGraph(ISampleGrabberCB* callback, HRESULT *hr)
 	this->streamConfiguration = NULL;
 
 	this->running = FALSE;
+	this->paused = FALSE;
 	this->deviceId = "";
 
 	*hr = this->createCaptureGraph();
@@ -267,7 +268,9 @@ HRESULT DSCaptureGraph::start()
 {
 	HRESULT hr;
 
-	if(this->running) return S_OK;
+	if(isRunning() && !isPaused()){
+		return S_OK;
+	}
 	
 	//this->mediaController->Stop();
 
@@ -292,6 +295,18 @@ HRESULT DSCaptureGraph::start()
 	return hr;
 }
 
+HRESULT DSCaptureGraph::pause()
+{
+	HRESULT hr = S_OK;
+	if(isRunning()){
+		hr = this->mediaController->Pause();
+		if(SUCCEEDED(hr)){
+			this->paused = TRUE;
+		}
+	}
+	return hr;
+}
+
 HRESULT DSCaptureGraph::stop()
 {
 	HRESULT hr;
@@ -308,12 +323,18 @@ HRESULT DSCaptureGraph::stop()
 		TSK_DEBUG_ERROR("DSCaptureGraph::mediaController->Stop() has failed with %ld", hr);
 	}
 	this->running = false;
+	this->paused = false;
 	return hr;
 }
 
 bool DSCaptureGraph::isRunning()
 {
 	return this->running;
+}
+
+bool DSCaptureGraph::isPaused()
+{
+	return this->paused;
 }
 
 HRESULT DSCaptureGraph::getConnectedMediaType(AM_MEDIA_TYPE *mediaType)

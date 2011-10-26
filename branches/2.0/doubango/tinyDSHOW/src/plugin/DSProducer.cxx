@@ -27,7 +27,6 @@
 
 #include "tsk_debug.h"
 
-
 #define DSPRODUCER(self)		((tdshow_producer_t*)(self))
 
 typedef struct tdshow_producer_s
@@ -38,6 +37,7 @@ typedef struct tdshow_producer_s
 	INT64 previewHwnd;
 	
 	tsk_bool_t started;
+	tsk_bool_t mute;
 }
 tdshow_producer_t;
 
@@ -55,30 +55,44 @@ static int tdshow_plugin_cb(const void* callback_data, const void* buffer, tsk_s
 
 
 /* ============ Media Producer Interface ================= */
-int tdshow_producer_set(tmedia_producer_t *self, const tmedia_param_t* param)
+static int tdshow_producer_set(tmedia_producer_t *self, const tmedia_param_t* param)
 {
 	int ret = 0;
+	tdshow_producer_t* producer = (tdshow_producer_t*)self;
 
-	if(!self || !param){
+	if(!producer || !param){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
 	if(param->value_type == tmedia_pvt_int64){
 		if(tsk_striequals(param->key, "local-hwnd")){
-			if(DSPRODUCER(self)->grabber && DSPRODUCER(self)->grabber->preview){
-				DSPRODUCER(self)->grabber->preview->attach((INT64)*((int64_t*)param->value));
+			if(DSPRODUCER(producer)->grabber && DSPRODUCER(self)->grabber->preview){
+				DSPRODUCER(producer)->grabber->preview->attach((INT64)*((int64_t*)param->value));
 			}
 			else{
-				DSPRODUCER(self)->previewHwnd = (INT64)*((int64_t*)param->value);
+				DSPRODUCER(producer)->previewHwnd = (INT64)*((int64_t*)param->value);
 			}
 		}
 	}
-
+	else if(param->value_type == tmedia_pvt_int32){
+		if(tsk_striequals(param->key, "mute")){
+			producer->mute = (TSK_TO_INT32((uint8_t*)param->value) != 0);
+			if(producer->started){
+				if(producer->mute){
+					producer->grabber->pause();
+				}
+				else{
+					producer->grabber->start();
+				}
+			}
+		}
+	}
+	
 	return ret;
 }
 
-int tdshow_producer_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
+static int tdshow_producer_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
 {
 	tdshow_producer_t* producer = (tdshow_producer_t*)self;
 
@@ -94,7 +108,7 @@ int tdshow_producer_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec
 	return 0;
 }
 
-int tdshow_producer_start(tmedia_producer_t* self)
+static int tdshow_producer_start(tmedia_producer_t* self)
 {
 	tdshow_producer_t* producer = (tdshow_producer_t*)self;
 	HRESULT hr;
@@ -140,14 +154,16 @@ int tdshow_producer_start(tmedia_producer_t* self)
 	
 	// start grabber
 	TSK_DEBUG_INFO("Before starting DirectShow producer");
-	producer->grabber->start();
+	if(!producer->mute){
+		producer->grabber->start();
+	}
 	producer->started = tsk_true;
 	TSK_DEBUG_INFO("After starting DirectShow producer");
 
 	return 0;
 }
 
-int tdshow_producer_pause(tmedia_producer_t* self)
+static int tdshow_producer_pause(tmedia_producer_t* self)
 {
 	tdshow_producer_t* producer = (tdshow_producer_t*)self;
 
@@ -161,12 +177,12 @@ int tdshow_producer_pause(tmedia_producer_t* self)
 		return -2;
 	}
 
-	//producer->grabber->pause();
+	producer->grabber->pause();
 
 	return 0;
 }
 
-int tdshow_producer_stop(tmedia_producer_t* self)
+static int tdshow_producer_stop(tmedia_producer_t* self)
 {
 	tdshow_producer_t* producer = (tdshow_producer_t*)self;
 

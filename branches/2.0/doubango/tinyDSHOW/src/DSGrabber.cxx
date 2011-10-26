@@ -86,6 +86,12 @@ void DSGrabber::setCallback(tmedia_producer_enc_cb_f callback, const void* callb
 
 void DSGrabber::start()
 {
+	if(this->graph->isPaused()){
+		this->graph->start();
+		this->preview->start();
+		return;
+	}
+
 	if (!this->graph->isRunning()){
 		first_buffer = true;
 
@@ -96,6 +102,15 @@ void DSGrabber::start()
 		this->graph->start();
 	}
 }
+
+void DSGrabber::pause()
+{
+	if(this->graph && this->graph->isRunning()){
+		this->graph->pause();
+		this->preview->pause();
+	}
+}
+
 void DSGrabber::stop()
 {
 	if (this->graph->isRunning()){

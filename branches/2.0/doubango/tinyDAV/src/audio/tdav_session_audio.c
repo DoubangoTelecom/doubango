@@ -126,6 +126,17 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 
 	tdav_session_audio_t* audio = (tdav_session_audio_t*)callback_data;
 
+	if(!audio){
+		TSK_DEBUG_ERROR("Null session");
+		return 0;
+	}
+
+	// do nothing if session is held
+	// when the session is held the end user will get feedback he also has possibilities to put the consumer and producer on pause
+	if(TMEDIA_SESSION(audio)->lo_held){
+		return 0;
+	}
+	
 	if(audio->rtp_manager){
 		/* encode */
 		tsk_size_t out_size = 0;

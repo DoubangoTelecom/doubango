@@ -44,6 +44,8 @@ class tinyWRAPJNI {
   public final static native java.math.BigInteger MediaSessionMgr_getSessionId(long jarg1, MediaSessionMgr jarg1_, int jarg2);
   public final static native boolean MediaSessionMgr_defaultsSetBandwidthLevel(int jarg1);
   public final static native int MediaSessionMgr_defaultsGetBandwidthLevel();
+  public final static native boolean MediaSessionMgr_defaultsSetJbMargin(long jarg1);
+  public final static native boolean MediaSessionMgr_defaultsSetJbMaxLateRate(long jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetEchoTail(long jarg1);
   public final static native long MediaSessionMgr_defaultsGetEchoTail();
   public final static native boolean MediaSessionMgr_defaultsSetEchoSkew(long jarg1);

@@ -64,7 +64,7 @@ typedef struct transport_context_s
 transport_context_t;
 
 static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd);
-static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, int take_ownership, int is_client);
+static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client);
 static int removeSocket(int index, transport_context_t *context);
 
 /* Checks if socket is connected */
@@ -342,7 +342,7 @@ static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
 }
 
 /*== Add new socket ==*/
-static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, int take_ownership, int is_client)
+static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client)
 {
 	transport_context_t *context = transport?transport->context:0;
 
@@ -448,6 +448,18 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 		TSK_DEBUG_ERROR("Transport already prepared.");
 		return -2;
 	}
+
+	/* Prepare master */
+	if(!transport->master){
+		if((transport->master = tnet_socket_create(transport->local_host, transport->req_local_port, transport->type))){
+			tsk_strupdate(&transport->local_ip, transport->master->ip);
+			transport->bind_local_port = transport->master->port;
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to create master socket");
+			return -3;
+		}
+	}
 	
 	/* Start listening */
 	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
@@ -497,6 +509,8 @@ int tnet_transport_unprepare(tnet_transport_t *transport)
 	while(context->count){
 		removeSocket(0, context); // safe
 	}
+	// destroy master as it has been close by removeSocket()
+	TSK_OBJECT_SAFE_FREE(transport->master);
 
 	return 0;
 }

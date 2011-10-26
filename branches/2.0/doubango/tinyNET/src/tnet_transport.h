@@ -105,6 +105,9 @@ typedef struct tnet_transport_s
 
 	tnet_socket_type_t type;
 	char* local_ip;
+	char* local_host;
+	tnet_port_t req_local_port; // user requested local port
+	tnet_port_t bind_local_port; // local port on which we are listening (same as master socket)
 	tnet_nat_context_handle_t* natt_ctx;
 	tnet_socket_t *master;
 

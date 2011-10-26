@@ -91,6 +91,16 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetJbMargin(uint jb_margin_ms) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetJbMargin(jb_margin_ms);
+    return ret;
+  }
+
+  public static bool defaultsSetJbMaxLateRate(uint jb_late_rate_percent) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetJbMaxLateRate(jb_late_rate_percent);
+    return ret;
+  }
+
   public static bool defaultsSetEchoTail(uint echo_tail) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetEchoTail(echo_tail);
     return ret;

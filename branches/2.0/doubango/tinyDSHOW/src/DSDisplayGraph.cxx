@@ -36,6 +36,7 @@ using namespace std;
 DSDisplayGraph::DSDisplayGraph(HRESULT *hr)
 {
 	this->running = FALSE;
+	this->paused = FALSE;
 	this->fps = 15;
 	
 	this->graphBuilder = NULL;
@@ -168,11 +169,23 @@ HRESULT DSDisplayGraph::start()
 {
 	HRESULT hr;
 	this->running = true;
-	this->sourceFilter->reset();	
+	this->sourceFilter->reset();
 
 	hr = this->mediaController->Run();
 	if (!SUCCEEDED(hr)){
 		TSK_DEBUG_ERROR("DSDisplayGraph::mediaController->Run() has failed with %ld", hr);
+	}
+	return hr;
+}
+
+HRESULT DSDisplayGraph::pause()
+{
+	HRESULT hr = S_OK;
+	if(isRunning() && !isPaused()){
+		hr = this->mediaController->Pause();
+		if(SUCCEEDED(hr)){
+			this->paused = true;
+		}
 	}
 	return hr;
 }
@@ -194,6 +207,7 @@ HRESULT DSDisplayGraph::stop()
 	}
 
 	this->running = false;
+	this->paused = false;
 
 	return hr;
 }
@@ -201,6 +215,11 @@ HRESULT DSDisplayGraph::stop()
 bool DSDisplayGraph::isRunning()
 {
 	return this->running;
+}
+
+bool DSDisplayGraph::isPaused()
+{
+	return this->paused;
 }
 
 void DSDisplayGraph::handleFrame(const void* data, int w, int h)

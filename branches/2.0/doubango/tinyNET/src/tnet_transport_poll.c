@@ -496,6 +496,18 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 		TSK_DEBUG_ERROR("Transport already prepared.");
 		return -2;
 	}
+
+	/* Prepare master */
+	if(!transport->master){
+		if((transport->master = tnet_socket_create(transport->local_host, transport->req_local_port, transport->type))){
+			tsk_strupdate(&transport->local_ip, transport->master->ip);
+			transport->bind_local_port = transport->master->port;
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to create master socket");
+			return -3;
+		}
+	}
 	
 	/* set events */
 	context->events = TNET_POLLIN | TNET_POLLNVAL | TNET_POLLERR;
@@ -568,6 +580,9 @@ int tnet_transport_unprepare(tnet_transport_t *transport)
 	while(context->count){
 		removeSocket(0, context); // safe
 	}
+
+	// destroy master as it has been close by removeSocket()
+	TSK_OBJECT_SAFE_FREE(transport->master);
 
 	return 0;
 }

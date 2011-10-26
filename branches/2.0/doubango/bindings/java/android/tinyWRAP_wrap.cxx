@@ -2471,6 +2471,34 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1
 }
 
 
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetJbMargin(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jboolean jresult = 0 ;
+  uint32_t arg1 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (uint32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetJbMargin(arg1);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetJbMaxLateRate(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jboolean jresult = 0 ;
+  uint32_t arg1 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (uint32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetJbMaxLateRate(arg1);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetEchoTail(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   jboolean jresult = 0 ;
   uint32_t arg1 ;

@@ -47,6 +47,7 @@ typedef struct tdav_producer_dsound_s
 	TDAV_DECLARE_PRODUCER_AUDIO;
 
 	tsk_bool_t started;
+	tsk_bool_t mute;
 	tsk_size_t bytes_per_notif;
 	void* tid[1];
 

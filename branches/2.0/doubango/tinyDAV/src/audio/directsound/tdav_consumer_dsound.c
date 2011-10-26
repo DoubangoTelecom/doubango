@@ -105,12 +105,12 @@ next:
 
 
 /* ============ Media Consumer Interface ================= */
-int tdav_consumer_dsound_set(tmedia_consumer_t* self, const tmedia_param_t* params)
+static int tdav_consumer_dsound_set(tmedia_consumer_t* self, const tmedia_param_t* params)
 {
 	return tdav_consumer_audio_set(TDAV_CONSUMER_AUDIO(self), params);
 }
 
-int tdav_consumer_dsound_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
+static int tdav_consumer_dsound_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
 	HRESULT hr;
 	HWND hWnd;
@@ -186,7 +186,7 @@ int tdav_consumer_dsound_prepare(tmedia_consumer_t* self, const tmedia_codec_t* 
 	return 0;
 }
 
-int tdav_consumer_dsound_start(tmedia_consumer_t* self)
+static int tdav_consumer_dsound_start(tmedia_consumer_t* self)
 {
 	tdav_consumer_dsound_t* dsound = (tdav_consumer_dsound_t*)self;
 
@@ -245,7 +245,7 @@ int tdav_consumer_dsound_start(tmedia_consumer_t* self)
 	return 0;
 }
 
-int tdav_consumer_dsound_consume(tmedia_consumer_t* self, const void* buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
+static int tdav_consumer_dsound_consume(tmedia_consumer_t* self, const void* buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
 {
 	tdav_consumer_dsound_t* dsound = (tdav_consumer_dsound_t*)self;
 
@@ -257,12 +257,12 @@ int tdav_consumer_dsound_consume(tmedia_consumer_t* self, const void* buffer, ts
 	return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(dsound), buffer, size, proto_hdr);
 }
 
-int tdav_consumer_dsound_pause(tmedia_consumer_t* self)
+static int tdav_consumer_dsound_pause(tmedia_consumer_t* self)
 {
 	return 0;
 }
 
-int tdav_consumer_dsound_stop(tmedia_consumer_t* self)
+static int tdav_consumer_dsound_stop(tmedia_consumer_t* self)
 {
 	tdav_consumer_dsound_t* dsound = (tdav_consumer_dsound_t*)self;
 

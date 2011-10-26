@@ -45,6 +45,8 @@ tmedia_bandwidth_level_t tmedia_defaults_get_bl()
 //
 // Denoiser: Echo suppression, AEC, Noise redution, AGC, ...
 //
+static int32_t __jb_margin_ms = -1; // disable
+static int32_t __jb_max_late_rate_percent = -1; // -1: disable 4: default for speex
 static uint32_t __echo_tail = 20;
 static uint32_t __echo_skew = 0;
 static tsk_bool_t __echo_supp_enabled;
@@ -61,6 +63,28 @@ static int32_t __audio_consumer_gain = 0;
 static uint16_t __rtp_port_range_start = 1024;
 static uint16_t __rtp_port_range_stop = 65535;
 static tmedia_type_t __media_type = tmedia_audio;
+
+int tmedia_defaults_set_jb_margin(int32_t jb_margin_ms)
+{
+	__jb_margin_ms = jb_margin_ms;
+	return __jb_margin_ms;
+}
+
+int32_t tmedia_defaults_get_jb_margin()
+{
+	return __jb_margin_ms;
+}
+
+int tmedia_defaults_set_jb_max_late_rate(int32_t jb_max_late_rate_percent)
+{
+	__jb_max_late_rate_percent = jb_max_late_rate_percent;
+	return 0;
+}
+
+int32_t tmedia_defaults_get_jb_max_late_rate()
+{
+	return __jb_max_late_rate_percent;
+}
 
 int tmedia_defaults_set_echo_tail(uint32_t echo_tail)
 {

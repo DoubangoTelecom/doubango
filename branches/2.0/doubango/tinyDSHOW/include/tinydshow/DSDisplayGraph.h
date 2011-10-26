@@ -52,8 +52,10 @@ public:
 	HRESULT disconnect();
 
 	HRESULT start();
+	HRESULT pause();
 	HRESULT stop();
 	bool isRunning();
+	bool isPaused();
 
 	IMediaEventEx			*getMediaEvent()		{ return this->mediaEvent; };
 	IVideoWindow			*getVideoWindow()		{ return this->videoWindow; };
@@ -101,6 +103,7 @@ private:
 
 	bool connected;
 	bool running;
+	bool paused;
 	int fps;
 };
 

@@ -3447,6 +3447,62 @@ XS(_wrap_MediaSessionMgr_defaultsGetBandwidthLevel) {
 }
 
 
+XS(_wrap_MediaSessionMgr_defaultsSetJbMargin) {
+  {
+    uint32_t arg1 ;
+    unsigned int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetJbMargin(jb_margin_ms);");
+    }
+    ecode1 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetJbMargin" "', argument " "1"" of type '" "uint32_t""'");
+    } 
+    arg1 = static_cast< uint32_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetJbMargin(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetJbMaxLateRate) {
+  {
+    uint32_t arg1 ;
+    unsigned int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetJbMaxLateRate(jb_late_rate_percent);");
+    }
+    ecode1 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetJbMaxLateRate" "', argument " "1"" of type '" "uint32_t""'");
+    } 
+    arg1 = static_cast< uint32_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetJbMaxLateRate(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_MediaSessionMgr_defaultsSetEchoTail) {
   {
     uint32_t arg1 ;
@@ -21652,6 +21708,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_getSessionId", _wrap_MediaSessionMgr_getSessionId},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthLevel", _wrap_MediaSessionMgr_defaultsSetBandwidthLevel},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel", _wrap_MediaSessionMgr_defaultsGetBandwidthLevel},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetJbMargin", _wrap_MediaSessionMgr_defaultsSetJbMargin},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetJbMaxLateRate", _wrap_MediaSessionMgr_defaultsSetJbMaxLateRate},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetEchoTail", _wrap_MediaSessionMgr_defaultsSetEchoTail},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetEchoTail", _wrap_MediaSessionMgr_defaultsGetEchoTail},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetEchoSkew", _wrap_MediaSessionMgr_defaultsSetEchoSkew},
