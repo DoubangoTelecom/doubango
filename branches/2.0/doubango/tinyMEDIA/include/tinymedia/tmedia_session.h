@@ -71,6 +71,10 @@ typedef struct tmedia_session_s
 	tsk_bool_t initialized;
 	//! whether the session have been prepared (up to the manager to update the value)
 	tsk_bool_t prepared;
+	//! whether the session is localy held
+	tsk_bool_t lo_held;
+	//! whether the session is remotely held
+	tsk_bool_t ro_held;
 	//! QoS
 	tmedia_qos_tline_t* qos;
 	//! bandwidth level

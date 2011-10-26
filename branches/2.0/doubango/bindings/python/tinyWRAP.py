@@ -158,6 +158,10 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetBandwidthLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetBandwidthLevel)
     __swig_getmethods__["defaultsGetBandwidthLevel"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel
     if _newclass:defaultsGetBandwidthLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel)
+    __swig_getmethods__["defaultsSetJbMargin"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetJbMargin
+    if _newclass:defaultsSetJbMargin = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetJbMargin)
+    __swig_getmethods__["defaultsSetJbMaxLateRate"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetJbMaxLateRate
+    if _newclass:defaultsSetJbMaxLateRate = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetJbMaxLateRate)
     __swig_getmethods__["defaultsSetEchoTail"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetEchoTail
     if _newclass:defaultsSetEchoTail = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetEchoTail)
     __swig_getmethods__["defaultsGetEchoTail"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetEchoTail
@@ -210,6 +214,14 @@ MediaSessionMgr_defaultsSetBandwidthLevel = _tinyWRAP.MediaSessionMgr_defaultsSe
 def MediaSessionMgr_defaultsGetBandwidthLevel():
   return _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel()
 MediaSessionMgr_defaultsGetBandwidthLevel = _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel
+
+def MediaSessionMgr_defaultsSetJbMargin(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetJbMargin(*args)
+MediaSessionMgr_defaultsSetJbMargin = _tinyWRAP.MediaSessionMgr_defaultsSetJbMargin
+
+def MediaSessionMgr_defaultsSetJbMaxLateRate(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetJbMaxLateRate(*args)
+MediaSessionMgr_defaultsSetJbMaxLateRate = _tinyWRAP.MediaSessionMgr_defaultsSetJbMaxLateRate
 
 def MediaSessionMgr_defaultsSetEchoTail(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetEchoTail(*args)

@@ -201,6 +201,8 @@ sub DESTROY {
 *getSessionId = *tinyWRAPc::MediaSessionMgr_getSessionId;
 *defaultsSetBandwidthLevel = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthLevel;
 *defaultsGetBandwidthLevel = *tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel;
+*defaultsSetJbMargin = *tinyWRAPc::MediaSessionMgr_defaultsSetJbMargin;
+*defaultsSetJbMaxLateRate = *tinyWRAPc::MediaSessionMgr_defaultsSetJbMaxLateRate;
 *defaultsSetEchoTail = *tinyWRAPc::MediaSessionMgr_defaultsSetEchoTail;
 *defaultsGetEchoTail = *tinyWRAPc::MediaSessionMgr_defaultsGetEchoTail;
 *defaultsSetEchoSkew = *tinyWRAPc::MediaSessionMgr_defaultsSetEchoSkew;

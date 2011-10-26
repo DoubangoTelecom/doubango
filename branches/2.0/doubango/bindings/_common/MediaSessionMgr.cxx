@@ -171,6 +171,16 @@ tmedia_bandwidth_level_t MediaSessionMgr::defaultsGetBandwidthLevel()
 	return tmedia_defaults_get_bl();
 }
 
+bool MediaSessionMgr::defaultsSetJbMargin(uint32_t jb_margin_ms)
+{
+	return tmedia_defaults_set_jb_margin(jb_margin_ms) == 0;
+}
+
+bool MediaSessionMgr::defaultsSetJbMaxLateRate(uint32_t jb_late_rate_percent)
+{
+	return tmedia_defaults_set_jb_max_late_rate(jb_late_rate_percent) == 0;
+}
+
 bool MediaSessionMgr::defaultsSetEchoTail(uint32_t echo_tail)
 {
 	return tmedia_defaults_set_echo_tail(echo_tail) == 0;

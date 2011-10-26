@@ -1247,9 +1247,10 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 		DWORD numberOfBytesSent = 0;
 		wsaBuffer.buf = ((CHAR*)buf) + sent;
 		wsaBuffer.len = (size-sent);
-		ret = WSASendTo(fd, &wsaBuffer, 1, &numberOfBytesSent, 0, to, tnet_get_sockaddr_size(to), 0, 0);
+		ret = WSASendTo(fd, &wsaBuffer, 1, &numberOfBytesSent, 0, to, tnet_get_sockaddr_size(to), 0, 0); // returns zero if succeed
+		if(ret == 0) ret = numberOfBytesSent;
 #else
-		ret = sendto(fd, (((const uint8_t*)buf)+sent), (size-sent), 0, to, tnet_get_sockaddr_size(to));
+		ret = sendto(fd, (((const uint8_t*)buf)+sent), (size-sent), 0, to, tnet_get_sockaddr_size(to)); // returns number of sent bytes if succeed
 #endif
 		if(ret <= 0){
 			goto bail;

@@ -31,6 +31,8 @@
 
 #if HAVE_SPEEX_DSP && HAVE_SPEEX_JB
 
+#include "tinymedia/tmedia_defaults.h"
+
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -43,12 +45,28 @@ static int tdav_speex_jitterbuffer_set(tmedia_jitterbuffer_t *self, const tmedia
 static int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate)
 {
 	tdav_speex_jitterbuffer_t *jitterbuffer = (tdav_speex_jitterbuffer_t *)self;
+	spx_int32_t tmp;
+
 	if(!(jitterbuffer->state = jitter_buffer_init((int)frame_duration))){
 		TSK_DEBUG_ERROR("jitter_buffer_init() failed");
 		return -2;
 	}
 	jitterbuffer->rate = rate;
 	jitterbuffer->frame_duration = frame_duration;
+
+	jitter_buffer_ctl(jitterbuffer->state, JITTER_BUFFER_GET_MARGIN, &tmp);
+	TSK_DEBUG_INFO("Default Jitter buffer margin=%d", tmp);
+	jitter_buffer_ctl(jitterbuffer->state, JITTER_BUFFER_GET_MAX_LATE_RATE, &tmp);
+	TSK_DEBUG_INFO("Default Jitter max late rate=%d", tmp);
+	
+	if((tmp = tmedia_defaults_get_jb_margin()) >= 0){
+		jitter_buffer_ctl(jitterbuffer->state, JITTER_BUFFER_SET_MARGIN, &tmp);
+		TSK_DEBUG_INFO("New Jitter buffer margin=%d", tmp);
+	}
+	if((tmp = tmedia_defaults_get_jb_max_late_rate()) >= 0){
+		jitter_buffer_ctl(jitterbuffer->state, JITTER_BUFFER_SET_MAX_LATE_RATE, &tmp);
+		TSK_DEBUG_INFO("New Jitter buffer max late rate=%d", tmp);
+	}
 
 	return 0;
 }

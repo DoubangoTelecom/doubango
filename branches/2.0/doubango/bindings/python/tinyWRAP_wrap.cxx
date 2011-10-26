@@ -6155,6 +6155,50 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetJbMargin(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  uint32_t arg1 ;
+  unsigned int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetJbMargin",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_unsigned_SS_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetJbMargin" "', argument " "1"" of type '" "uint32_t""'");
+  } 
+  arg1 = static_cast< uint32_t >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetJbMargin(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetJbMaxLateRate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  uint32_t arg1 ;
+  unsigned int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetJbMaxLateRate",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_unsigned_SS_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetJbMaxLateRate" "', argument " "1"" of type '" "uint32_t""'");
+  } 
+  arg1 = static_cast< uint32_t >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetJbMaxLateRate(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetEchoTail(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   uint32_t arg1 ;
@@ -21069,6 +21113,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_getSessionId", _wrap_MediaSessionMgr_getSessionId, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetBandwidthLevel", _wrap_MediaSessionMgr_defaultsSetBandwidthLevel, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetBandwidthLevel", _wrap_MediaSessionMgr_defaultsGetBandwidthLevel, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetJbMargin", _wrap_MediaSessionMgr_defaultsSetJbMargin, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetJbMaxLateRate", _wrap_MediaSessionMgr_defaultsSetJbMaxLateRate, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetEchoTail", _wrap_MediaSessionMgr_defaultsSetEchoTail, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetEchoTail", _wrap_MediaSessionMgr_defaultsGetEchoTail, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetEchoSkew", _wrap_MediaSessionMgr_defaultsSetEchoSkew, METH_VARARGS, NULL},

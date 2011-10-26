@@ -163,7 +163,16 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 	tsk_size_t yuv420p_size = 0;
 	int ret = 0;
 
-	if(session && session->rtp_manager){
+	if(!session){
+		TSK_DEBUG_ERROR("Null session");
+		return 0;
+	}
+
+	if(TMEDIA_SESSION(session)->lo_held){
+		return 0;
+	}
+
+	if(session->rtp_manager){
 		/* encode */
 		tsk_size_t out_size = 0;
 		tmedia_codec_t* codec = tsk_null;

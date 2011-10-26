@@ -1558,6 +1558,30 @@ SWIGEXPORT int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetBandwidthLevel() {
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetJbMargin(unsigned int jarg1) {
+  unsigned int jresult ;
+  uint32_t arg1 ;
+  bool result;
+  
+  arg1 = (uint32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetJbMargin(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetJbMaxLateRate(unsigned int jarg1) {
+  unsigned int jresult ;
+  uint32_t arg1 ;
+  bool result;
+  
+  arg1 = (uint32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetJbMaxLateRate(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetEchoTail(unsigned int jarg1) {
   unsigned int jresult ;
   uint32_t arg1 ;

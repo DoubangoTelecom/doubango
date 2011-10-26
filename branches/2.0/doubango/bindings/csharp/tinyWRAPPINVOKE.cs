@@ -287,6 +287,12 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetBandwidthLevel")]
   public static extern int MediaSessionMgr_defaultsGetBandwidthLevel();
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetJbMargin")]
+  public static extern bool MediaSessionMgr_defaultsSetJbMargin(uint jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetJbMaxLateRate")]
+  public static extern bool MediaSessionMgr_defaultsSetJbMaxLateRate(uint jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetEchoTail")]
   public static extern bool MediaSessionMgr_defaultsSetEchoTail(uint jarg1);
 

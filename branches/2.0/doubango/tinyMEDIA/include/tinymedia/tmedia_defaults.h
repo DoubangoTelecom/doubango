@@ -37,6 +37,10 @@ TINYMEDIA_API tmedia_bandwidth_level_t tmedia_defaults_get_bl();
 //
 // Denoiser: Echo suppression, AEC, Noise redution, AGC, ...
 //
+TINYMEDIA_API int tmedia_defaults_set_jb_margin(int32_t jb_margin_ms);
+TINYMEDIA_API int32_t tmedia_defaults_get_jb_margin();
+TINYMEDIA_API int tmedia_defaults_set_jb_max_late_rate(int32_t jb_max_late_rate_percent);
+TINYMEDIA_API int32_t tmedia_defaults_get_jb_max_late_rate();
 TINYMEDIA_API int tmedia_defaults_set_echo_tail(uint32_t echo_tail);
 TINYMEDIA_API int tmedia_defaults_set_echo_skew(uint32_t echo_skew);
 TINYMEDIA_API uint32_t tmedia_defaults_get_echo_tail();

@@ -328,13 +328,13 @@ int trtp_manager_start(trtp_manager_t* self)
 		return 0;
 	}
 
-	if(!self->transport || !self->transport->master){
+	if(!self->transport){
 		TSK_DEBUG_ERROR("RTP/RTCP manager not prepared");
 		return -2;
 	}
 
 	/* Flush buffers and re-enable sockets */
-	{
+	if(self->transport->master){
 		char buff[2048];
 		
 		// re-enable sockets
@@ -409,12 +409,12 @@ int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t siz
 	tsk_buffer_t* buffer;
 	int ret = -1;
 
-	if(!self || !data || !size){
+	if(!self || !self->transport || !data || !size){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if(!self->started){
+	if(!self->started || !self->transport->master){
 		//--TSK_DEBUG_ERROR("RTP/RTCP manager should be started before trying to send data");
 		return -2;
 	}

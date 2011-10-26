@@ -57,7 +57,9 @@ public:
 
 	HRESULT start();
 	HRESULT stop();
+	HRESULT pause();
 	bool isRunning();
+	bool isPaused();
 
 	std::string getDeviceId() const { return this->deviceId; };
 
@@ -101,6 +103,7 @@ private:
 	DSCaptureFormat					*captureFormat;
 
 	bool							running;
+	bool							paused;
 	std::string						deviceId;
 };
 

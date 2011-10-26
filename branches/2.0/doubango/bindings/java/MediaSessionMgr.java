@@ -75,6 +75,14 @@ public class MediaSessionMgr {
     return tmedia_bandwidth_level_t.swigToEnum(tinyWRAPJNI.MediaSessionMgr_defaultsGetBandwidthLevel());
   }
 
+  public static boolean defaultsSetJbMargin(long jb_margin_ms) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetJbMargin(jb_margin_ms);
+  }
+
+  public static boolean defaultsSetJbMaxLateRate(long jb_late_rate_percent) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetJbMaxLateRate(jb_late_rate_percent);
+  }
+
   public static boolean defaultsSetEchoTail(long echo_tail) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetEchoTail(echo_tail);
   }

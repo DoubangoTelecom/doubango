@@ -53,6 +53,7 @@ public:
 	void setCaptureDevice(const std::string &devicePath);
 
 	virtual void start();
+	virtual void pause();
 	virtual void stop();
 
 	virtual bool setCaptureParameters(int format, int f);

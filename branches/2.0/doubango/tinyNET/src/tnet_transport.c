@@ -282,7 +282,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	*/
 	if(TNET_SOCKET_TYPE_IS_STREAM(type)){		
 		/* Create client socket descriptor. */
-		if(status = tnet_sockfd_init(transport->local_ip, TNET_SOCKET_PORT_ANY, type, &fd)){
+		if(status = tnet_sockfd_init(transport->local_host, TNET_SOCKET_PORT_ANY, type, &fd)){
 			TSK_DEBUG_ERROR("Failed to create new sockfd.");
 			goto bail;
 		}
@@ -398,31 +398,28 @@ static tsk_object_t* tnet_transport_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_transport_t *transport = self;
 	if(transport){
-		const char *host = va_arg(*app, const char*);
-		
+		const char *local_host = va_arg(*app, const char*);
 #if defined(__GNUC__)
-		tnet_port_t port = (uint16_t)va_arg(*app, unsigned);
+		tnet_port_t req_local_port = (uint16_t)va_arg(*app, unsigned);
 #else
-		tnet_port_t port = (tnet_port_t)va_arg(*app, tnet_port_t);
+		tnet_port_t req_local_port = (tnet_port_t)va_arg(*app, tnet_port_t);
 #endif
-		
 		tnet_socket_type_t type = va_arg(*app, tnet_socket_type_t);
 		const char *description = va_arg(*app, const char*);
-
-		if(description){
-			transport->description = tsk_strdup(description);
-		}
 		
+		transport->description = tsk_strdup(description);
+		transport->local_host = tsk_strdup(local_host);
+		transport->req_local_port = req_local_port;
 		transport->type = type;
-
-		transport->master = tnet_socket_create(host, port, type);
 		transport->context = tnet_transport_context_create();
-
-		if(TNET_SOCKET_TYPE_IS_IPV46(transport->type)){
-			transport->local_ip = tsk_strdup(host); /* FQDN */
+		
+		if((transport->master = tnet_socket_create(local_host, req_local_port, type))){
+			transport->local_ip = tsk_strdup(transport->master->ip);
+			transport->bind_local_port = transport->master->port;
 		}
 		else{
-			transport->local_ip = tsk_strdup(transport->master->ip); /* IP address */
+			TSK_DEBUG_ERROR("Failed to create master socket");
+			return tsk_null;
 		}
 	}
 	return self;
@@ -438,6 +435,7 @@ static tsk_object_t* tnet_transport_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(transport->natt_ctx);
 		TSK_FREE(transport->description);
 		TSK_FREE(transport->local_ip);
+		TSK_FREE(transport->local_host);
 
 		// tls
 		TSK_FREE(transport->tls.ca);

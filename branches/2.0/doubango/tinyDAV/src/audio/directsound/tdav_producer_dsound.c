@@ -98,12 +98,28 @@ next:;
 
 
 /* ============ Media Producer Interface ================= */
-int tdav_producer_dsound_set(tmedia_producer_t* self, const tmedia_param_t* params)
-{
-	return tdav_producer_audio_set(TDAV_PRODUCER_AUDIO(self), params);
+static int tdav_producer_dsound_set(tmedia_producer_t* self, const tmedia_param_t* param)
+{	
+	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)self;
+	if(param->plugin_type == tmedia_ppt_producer){
+		if(param->value_type == tmedia_pvt_int32){
+			if(tsk_striequals(param->key, "mute")){
+				dsound->mute = (TSK_TO_INT32((uint8_t*)param->value) != 0);
+				if(dsound->started){
+					if(dsound->mute){
+						IDirectSoundCaptureBuffer_Stop(dsound->captureBuffer);
+					}
+					else{
+						IDirectSoundCaptureBuffer_Start(dsound->captureBuffer, DSBPLAY_LOOPING);
+					}
+				}
+				return 0;
+			}
+		}
+	}
+	return tdav_producer_audio_set(TDAV_PRODUCER_AUDIO(self), param);
 }
-
-int tdav_producer_dsound_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
+static int tdav_producer_dsound_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
 {
 	HRESULT hr;
 
@@ -155,7 +171,7 @@ int tdav_producer_dsound_prepare(tmedia_producer_t* self, const tmedia_codec_t* 
 	return 0;
 }
 
-int tdav_producer_dsound_start(tmedia_producer_t* self)
+static int tdav_producer_dsound_start(tmedia_producer_t* self)
 {
 	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)self;
 
@@ -214,12 +230,12 @@ int tdav_producer_dsound_start(tmedia_producer_t* self)
 	return 0;
 }
 
-int tdav_producer_dsound_pause(tmedia_producer_t* self)
+static int tdav_producer_dsound_pause(tmedia_producer_t* self)
 {
 	return 0;
 }
 
-int tdav_producer_dsound_stop(tmedia_producer_t* self)
+static int tdav_producer_dsound_stop(tmedia_producer_t* self)
 {
 	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)self;
 

@@ -41,6 +41,7 @@ public:
 	virtual bool isAttached();
 
 	virtual void start();
+	virtual void pause();
 	virtual void stop();
 
 	virtual int getWidth();
