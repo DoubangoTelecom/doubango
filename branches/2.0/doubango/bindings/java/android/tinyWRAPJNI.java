@@ -30,6 +30,7 @@ class tinyWRAPJNI {
   public final static native long new_ActionConfig();
   public final static native void delete_ActionConfig(long jarg1);
   public final static native boolean ActionConfig_addHeader(long jarg1, ActionConfig jarg1_, String jarg2, String jarg3);
+  public final static native boolean ActionConfig_addPayload(long jarg1, ActionConfig jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native long ActionConfig_setResponseLine(long jarg1, ActionConfig jarg1_, short jarg2, String jarg3);
   public final static native long ActionConfig_setMediaString(long jarg1, ActionConfig jarg1_, int jarg2, String jarg3, String jarg4);
   public final static native long ActionConfig_setMediaInt(long jarg1, ActionConfig jarg1_, int jarg2, String jarg3, int jarg4);
@@ -100,6 +101,7 @@ class tinyWRAPJNI {
   public final static native long new_SipMessage();
   public final static native void delete_SipMessage(long jarg1);
   public final static native boolean SipMessage_isResponse(long jarg1, SipMessage jarg1_);
+  public final static native int SipMessage_getRequestType(long jarg1, SipMessage jarg1_);
   public final static native short SipMessage_getResponseCode(long jarg1, SipMessage jarg1_);
   public final static native String SipMessage_getSipHeaderValue__SWIG_0(long jarg1, SipMessage jarg1_, String jarg2, long jarg3);
   public final static native String SipMessage_getSipHeaderValue__SWIG_1(long jarg1, SipMessage jarg1_, String jarg2);
@@ -125,6 +127,10 @@ class tinyWRAPJNI {
   public final static native int MessagingEvent_getType(long jarg1, MessagingEvent jarg1_);
   public final static native long MessagingEvent_getSession(long jarg1, MessagingEvent jarg1_);
   public final static native long MessagingEvent_takeSessionOwnership(long jarg1, MessagingEvent jarg1_);
+  public final static native void delete_InfoEvent(long jarg1);
+  public final static native int InfoEvent_getType(long jarg1, InfoEvent jarg1_);
+  public final static native long InfoEvent_getSession(long jarg1, InfoEvent jarg1_);
+  public final static native long InfoEvent_takeSessionOwnership(long jarg1, InfoEvent jarg1_);
   public final static native void delete_OptionsEvent(long jarg1);
   public final static native int OptionsEvent_getType(long jarg1, OptionsEvent jarg1_);
   public final static native long OptionsEvent_getSession(long jarg1, OptionsEvent jarg1_);
@@ -164,6 +170,8 @@ class tinyWRAPJNI {
   public final static native boolean InviteSession_hangup__SWIG_1(long jarg1, InviteSession jarg1_);
   public final static native boolean InviteSession_reject__SWIG_0(long jarg1, InviteSession jarg1_, long jarg2, ActionConfig jarg2_);
   public final static native boolean InviteSession_reject__SWIG_1(long jarg1, InviteSession jarg1_);
+  public final static native boolean InviteSession_sendInfo__SWIG_0(long jarg1, InviteSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3, long jarg4, ActionConfig jarg4_);
+  public final static native boolean InviteSession_sendInfo__SWIG_1(long jarg1, InviteSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native long InviteSession_getMediaMgr(long jarg1, InviteSession jarg1_);
   public final static native long new_CallSession(long jarg1, SipStack jarg1_);
   public final static native void delete_CallSession(long jarg1);
@@ -206,6 +214,14 @@ class tinyWRAPJNI {
   public final static native boolean MessagingSession_accept__SWIG_1(long jarg1, MessagingSession jarg1_);
   public final static native boolean MessagingSession_reject__SWIG_0(long jarg1, MessagingSession jarg1_, long jarg2, ActionConfig jarg2_);
   public final static native boolean MessagingSession_reject__SWIG_1(long jarg1, MessagingSession jarg1_);
+  public final static native long new_InfoSession(long jarg1, SipStack jarg1_);
+  public final static native void delete_InfoSession(long jarg1);
+  public final static native boolean InfoSession_send__SWIG_0(long jarg1, InfoSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3, long jarg4, ActionConfig jarg4_);
+  public final static native boolean InfoSession_send__SWIG_1(long jarg1, InfoSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native boolean InfoSession_accept__SWIG_0(long jarg1, InfoSession jarg1_, long jarg2, ActionConfig jarg2_);
+  public final static native boolean InfoSession_accept__SWIG_1(long jarg1, InfoSession jarg1_);
+  public final static native boolean InfoSession_reject__SWIG_0(long jarg1, InfoSession jarg1_, long jarg2, ActionConfig jarg2_);
+  public final static native boolean InfoSession_reject__SWIG_1(long jarg1, InfoSession jarg1_);
   public final static native long new_OptionsSession(long jarg1, SipStack jarg1_);
   public final static native void delete_OptionsSession(long jarg1);
   public final static native boolean OptionsSession_send__SWIG_0(long jarg1, OptionsSession jarg1_, long jarg2, ActionConfig jarg2_);
@@ -361,6 +377,8 @@ class tinyWRAPJNI {
   public final static native int SipCallback_OnInviteEventSwigExplicitSipCallback(long jarg1, SipCallback jarg1_, long jarg2, InviteEvent jarg2_);
   public final static native int SipCallback_OnMessagingEvent(long jarg1, SipCallback jarg1_, long jarg2, MessagingEvent jarg2_);
   public final static native int SipCallback_OnMessagingEventSwigExplicitSipCallback(long jarg1, SipCallback jarg1_, long jarg2, MessagingEvent jarg2_);
+  public final static native int SipCallback_OnInfoEvent(long jarg1, SipCallback jarg1_, long jarg2, InfoEvent jarg2_);
+  public final static native int SipCallback_OnInfoEventSwigExplicitSipCallback(long jarg1, SipCallback jarg1_, long jarg2, InfoEvent jarg2_);
   public final static native int SipCallback_OnOptionsEvent(long jarg1, SipCallback jarg1_, long jarg2, OptionsEvent jarg2_);
   public final static native int SipCallback_OnOptionsEventSwigExplicitSipCallback(long jarg1, SipCallback jarg1_, long jarg2, OptionsEvent jarg2_);
   public final static native int SipCallback_OnPublicationEvent(long jarg1, SipCallback jarg1_, long jarg2, PublicationEvent jarg2_);
@@ -515,6 +533,7 @@ class tinyWRAPJNI {
   public final static native long SWIGStackEventUpcast(long jarg1);
   public final static native long SWIGInviteEventUpcast(long jarg1);
   public final static native long SWIGMessagingEventUpcast(long jarg1);
+  public final static native long SWIGInfoEventUpcast(long jarg1);
   public final static native long SWIGOptionsEventUpcast(long jarg1);
   public final static native long SWIGPublicationEventUpcast(long jarg1);
   public final static native long SWIGRegistrationEventUpcast(long jarg1);
@@ -523,6 +542,7 @@ class tinyWRAPJNI {
   public final static native long SWIGCallSessionUpcast(long jarg1);
   public final static native long SWIGMsrpSessionUpcast(long jarg1);
   public final static native long SWIGMessagingSessionUpcast(long jarg1);
+  public final static native long SWIGInfoSessionUpcast(long jarg1);
   public final static native long SWIGOptionsSessionUpcast(long jarg1);
   public final static native long SWIGPublicationSessionUpcast(long jarg1);
   public final static native long SWIGRegistrationSessionUpcast(long jarg1);
@@ -616,6 +636,9 @@ class tinyWRAPJNI {
   }
   public static int SwigDirector_SipCallback_OnMessagingEvent(SipCallback self, long e) {
     return self.OnMessagingEvent((e == 0) ? null : new MessagingEvent(e, false));
+  }
+  public static int SwigDirector_SipCallback_OnInfoEvent(SipCallback self, long e) {
+    return self.OnInfoEvent((e == 0) ? null : new InfoEvent(e, false));
   }
   public static int SwigDirector_SipCallback_OnOptionsEvent(SipCallback self, long e) {
     return self.OnOptionsEvent((e == 0) ? null : new OptionsEvent(e, false));

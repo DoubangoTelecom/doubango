@@ -61,6 +61,14 @@ public class InviteSession extends SipSession {
     return tinyWRAPJNI.InviteSession_reject__SWIG_1(swigCPtr, this);
   }
 
+  public boolean sendInfo(java.nio.ByteBuffer payload, long len, ActionConfig config) {
+    return tinyWRAPJNI.InviteSession_sendInfo__SWIG_0(swigCPtr, this, payload, len, ActionConfig.getCPtr(config), config);
+  }
+
+  public boolean sendInfo(java.nio.ByteBuffer payload, long len) {
+    return tinyWRAPJNI.InviteSession_sendInfo__SWIG_1(swigCPtr, this, payload, len);
+  }
+
   public MediaSessionMgr getMediaMgr() {
     long cPtr = tinyWRAPJNI.InviteSession_getMediaMgr(swigCPtr, this);
     return (cPtr == 0) ? null : new MediaSessionMgr(cPtr, false);

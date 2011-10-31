@@ -32,6 +32,7 @@ public:
 	virtual ~ActionConfig();
 	
 	bool addHeader(const char* name, const char* value);
+	bool addPayload(const void* payload, unsigned len);
 	
 	ActionConfig* setResponseLine(short code, const char* phrase);
 	ActionConfig* setMediaString(twrap_media_type_t type, const char* key, const char* value);

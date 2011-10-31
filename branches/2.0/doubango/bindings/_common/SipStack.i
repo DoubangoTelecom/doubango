@@ -45,6 +45,27 @@
 
 
 
+/* ====== From "tinySIP\include\tinysip\tsip_messag_common.h"  ====== */
+typedef enum tsip_request_type_e
+{
+	tsip_NONE = 0,
+
+	tsip_ACK,
+	tsip_BYE,
+	tsip_CANCEL,
+	tsip_INVITE,
+	tsip_OPTIONS,
+	tsip_REGISTER,
+	tsip_SUBSCRIBE,
+	tsip_NOTIFY,
+	tsip_REFER,
+	tsip_INFO,
+	tsip_UPDATE,
+	tsip_MESSAGE,
+	tsip_PUBLISH,
+	tsip_PRACK
+}
+tsip_request_type_t;
 
 
 /* ====== From "tinySIP\include\tinysip\tsip_event.h"  ====== */
@@ -52,6 +73,7 @@ typedef enum tsip_event_type_e
 {
 	tsip_event_invite,
 	tsip_event_message,
+	tsip_event_info,
 	tsip_event_options,
 	tsip_event_publish,
 	tsip_event_register,
@@ -127,6 +149,14 @@ typedef enum tsip_message_event_type_e
 	tsip_ao_message,
 }
 tsip_message_event_type_t;
+
+/* ====== From "tinySIP\include\tinysip\tsip_api_info.h"  ====== */
+typedef enum tsip_info_event_type_e
+{
+	tsip_i_info,
+	tsip_ao_info,
+}
+tsip_info_event_type_t;
 
 /* ====== From "tinySIP\include\tinysip\tsip_api_options.h"  ====== */
 typedef enum tsip_options_event_type_e

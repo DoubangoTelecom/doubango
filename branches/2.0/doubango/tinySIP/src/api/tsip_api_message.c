@@ -51,7 +51,7 @@ int tsip_message_event_signal(tsip_message_event_type_t type, tsip_ssession_hand
 	return 0;
 }
 
-int tsip_action_MESSAGE(const tsip_ssession_handle_t *ss, ...)
+int tsip_api_message_send_message(const tsip_ssession_handle_t *ss, ...)
 {
 	const tsip_ssession_t* _ss;
 	va_list ap;

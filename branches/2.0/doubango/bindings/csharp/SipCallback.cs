@@ -63,6 +63,11 @@ public class SipCallback : IDisposable {
     return ret;
   }
 
+  public virtual int OnInfoEvent(InfoEvent e) {
+    int ret = ((this.GetType() == typeof(SipCallback)) ? tinyWRAPPINVOKE.SipCallback_OnInfoEvent(swigCPtr, InfoEvent.getCPtr(e)) : tinyWRAPPINVOKE.SipCallback_OnInfoEventSwigExplicitSipCallback(swigCPtr, InfoEvent.getCPtr(e)));
+    return ret;
+  }
+
   public virtual int OnOptionsEvent(OptionsEvent e) {
     int ret = ((this.GetType() == typeof(SipCallback)) ? tinyWRAPPINVOKE.SipCallback_OnOptionsEvent(swigCPtr, OptionsEvent.getCPtr(e)) : tinyWRAPPINVOKE.SipCallback_OnOptionsEventSwigExplicitSipCallback(swigCPtr, OptionsEvent.getCPtr(e)));
     return ret;
@@ -92,15 +97,17 @@ public class SipCallback : IDisposable {
       swigDelegate2 = new SwigDelegateSipCallback_2(SwigDirectorOnInviteEvent);
     if (SwigDerivedClassHasMethod("OnMessagingEvent", swigMethodTypes3))
       swigDelegate3 = new SwigDelegateSipCallback_3(SwigDirectorOnMessagingEvent);
-    if (SwigDerivedClassHasMethod("OnOptionsEvent", swigMethodTypes4))
-      swigDelegate4 = new SwigDelegateSipCallback_4(SwigDirectorOnOptionsEvent);
-    if (SwigDerivedClassHasMethod("OnPublicationEvent", swigMethodTypes5))
-      swigDelegate5 = new SwigDelegateSipCallback_5(SwigDirectorOnPublicationEvent);
-    if (SwigDerivedClassHasMethod("OnRegistrationEvent", swigMethodTypes6))
-      swigDelegate6 = new SwigDelegateSipCallback_6(SwigDirectorOnRegistrationEvent);
-    if (SwigDerivedClassHasMethod("OnSubscriptionEvent", swigMethodTypes7))
-      swigDelegate7 = new SwigDelegateSipCallback_7(SwigDirectorOnSubscriptionEvent);
-    tinyWRAPPINVOKE.SipCallback_director_connect(swigCPtr, swigDelegate0, swigDelegate1, swigDelegate2, swigDelegate3, swigDelegate4, swigDelegate5, swigDelegate6, swigDelegate7);
+    if (SwigDerivedClassHasMethod("OnInfoEvent", swigMethodTypes4))
+      swigDelegate4 = new SwigDelegateSipCallback_4(SwigDirectorOnInfoEvent);
+    if (SwigDerivedClassHasMethod("OnOptionsEvent", swigMethodTypes5))
+      swigDelegate5 = new SwigDelegateSipCallback_5(SwigDirectorOnOptionsEvent);
+    if (SwigDerivedClassHasMethod("OnPublicationEvent", swigMethodTypes6))
+      swigDelegate6 = new SwigDelegateSipCallback_6(SwigDirectorOnPublicationEvent);
+    if (SwigDerivedClassHasMethod("OnRegistrationEvent", swigMethodTypes7))
+      swigDelegate7 = new SwigDelegateSipCallback_7(SwigDirectorOnRegistrationEvent);
+    if (SwigDerivedClassHasMethod("OnSubscriptionEvent", swigMethodTypes8))
+      swigDelegate8 = new SwigDelegateSipCallback_8(SwigDirectorOnSubscriptionEvent);
+    tinyWRAPPINVOKE.SipCallback_director_connect(swigCPtr, swigDelegate0, swigDelegate1, swigDelegate2, swigDelegate3, swigDelegate4, swigDelegate5, swigDelegate6, swigDelegate7, swigDelegate8);
   }
 
   private bool SwigDerivedClassHasMethod(string methodName, Type[] methodTypes) {
@@ -123,6 +130,10 @@ public class SipCallback : IDisposable {
 
   private int SwigDirectorOnMessagingEvent(IntPtr e) {
     return OnMessagingEvent((e == IntPtr.Zero) ? null : new MessagingEvent(e, false));
+  }
+
+  private int SwigDirectorOnInfoEvent(IntPtr e) {
+    return OnInfoEvent((e == IntPtr.Zero) ? null : new InfoEvent(e, false));
   }
 
   private int SwigDirectorOnOptionsEvent(IntPtr e) {
@@ -149,6 +160,7 @@ public class SipCallback : IDisposable {
   public delegate int SwigDelegateSipCallback_5(IntPtr e);
   public delegate int SwigDelegateSipCallback_6(IntPtr e);
   public delegate int SwigDelegateSipCallback_7(IntPtr e);
+  public delegate int SwigDelegateSipCallback_8(IntPtr e);
 
   private SwigDelegateSipCallback_0 swigDelegate0;
   private SwigDelegateSipCallback_1 swigDelegate1;
@@ -158,15 +170,17 @@ public class SipCallback : IDisposable {
   private SwigDelegateSipCallback_5 swigDelegate5;
   private SwigDelegateSipCallback_6 swigDelegate6;
   private SwigDelegateSipCallback_7 swigDelegate7;
+  private SwigDelegateSipCallback_8 swigDelegate8;
 
   private static Type[] swigMethodTypes0 = new Type[] { typeof(DialogEvent) };
   private static Type[] swigMethodTypes1 = new Type[] { typeof(StackEvent) };
   private static Type[] swigMethodTypes2 = new Type[] { typeof(InviteEvent) };
   private static Type[] swigMethodTypes3 = new Type[] { typeof(MessagingEvent) };
-  private static Type[] swigMethodTypes4 = new Type[] { typeof(OptionsEvent) };
-  private static Type[] swigMethodTypes5 = new Type[] { typeof(PublicationEvent) };
-  private static Type[] swigMethodTypes6 = new Type[] { typeof(RegistrationEvent) };
-  private static Type[] swigMethodTypes7 = new Type[] { typeof(SubscriptionEvent) };
+  private static Type[] swigMethodTypes4 = new Type[] { typeof(InfoEvent) };
+  private static Type[] swigMethodTypes5 = new Type[] { typeof(OptionsEvent) };
+  private static Type[] swigMethodTypes6 = new Type[] { typeof(PublicationEvent) };
+  private static Type[] swigMethodTypes7 = new Type[] { typeof(RegistrationEvent) };
+  private static Type[] swigMethodTypes8 = new Type[] { typeof(SubscriptionEvent) };
 }
 
 }

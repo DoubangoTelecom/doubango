@@ -100,7 +100,7 @@ tsip_ssession_id_t publish_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 		case cmd_publish:
 			{	/* Send SIP PUBLISH */
 				tsip_action_handle_t* action_config = action_get_config(opts);
-				tsip_action_PUBLISH(session->handle,
+				tsip_api_publish_send_publish(session->handle,
 					TSIP_ACTION_SET_CONFIG(action_config),
 					/* Any other TSIP_ACTION_SET_*() macros */
 					TSIP_ACTION_SET_NULL());

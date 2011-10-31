@@ -41,6 +41,10 @@ public class ActionConfig {
     return tinyWRAPJNI.ActionConfig_addHeader(swigCPtr, this, name, value);
   }
 
+  public boolean addPayload(java.nio.ByteBuffer payload, long len) {
+    return tinyWRAPJNI.ActionConfig_addPayload(swigCPtr, this, payload, len);
+  }
+
   public ActionConfig setResponseLine(short code, String phrase) {
     long cPtr = tinyWRAPJNI.ActionConfig_setResponseLine(swigCPtr, this, code, phrase);
     return (cPtr == 0) ? null : new ActionConfig(cPtr, false);

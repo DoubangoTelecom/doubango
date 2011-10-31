@@ -312,6 +312,7 @@ public:
     virtual int OnStackEvent(StackEvent const *e);
     virtual int OnInviteEvent(InviteEvent const *e);
     virtual int OnMessagingEvent(MessagingEvent const *e);
+    virtual int OnInfoEvent(InfoEvent const *e);
     virtual int OnOptionsEvent(OptionsEvent const *e);
     virtual int OnPublicationEvent(PublicationEvent const *e);
     virtual int OnRegistrationEvent(RegistrationEvent const *e);
@@ -349,7 +350,7 @@ private:
       return method;
     }
 private:
-    mutable swig::SwigVar_PyObject vtable[8];
+    mutable swig::SwigVar_PyObject vtable[9];
 #endif
 
 };

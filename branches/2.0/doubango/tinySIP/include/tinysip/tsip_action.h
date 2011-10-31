@@ -65,6 +65,9 @@ typedef enum tsip_action_type_e
 	/* === MESSAGE === */
 	tsip_atype_message_send, /**< Sends SIP MESSAGE request */
 
+	/* === INFO === */
+	tsip_atype_info_send, /**< Sends SIP INFO request */
+
 	/* === PUBLISH === */
 	tsip_atype_publish, /**< Sends SIP PUBLISH request */
 	//! Unpublish by sending SIP PUBLISH request with expires value equals to zero

@@ -609,6 +609,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\dialogs\tsip_dialog_info.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\dialogs\tsip_dialog_invite.c"
 					>
 				</File>
@@ -702,6 +706,10 @@
 				>
 				<File
 					RelativePath=".\src\api\tsip_api_common.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\api\tsip_api_info.c"
 					>
 				</File>
 				<File
@@ -1287,6 +1295,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\tinysip\dialogs\tsip_dialog_info.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tinysip\dialogs\tsip_dialog_invite.common.h"
 					>
 				</File>
@@ -1344,6 +1356,10 @@
 				>
 				<File
 					RelativePath=".\include\tinysip\api\tsip_api_common.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\api\tsip_api_info.h"
 					>
 				</File>
 				<File

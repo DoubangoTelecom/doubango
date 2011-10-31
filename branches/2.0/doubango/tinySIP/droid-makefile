@@ -16,6 +16,7 @@ OBJS = \
 	
 	### api
 OBJS += src/api/tsip_api_common.o\
+	src/api/tsip_api_info.o\
 	src/api/tsip_api_invite.o\
 	src/api/tsip_api_message.o\
 	src/api/tsip_api_options.o\
@@ -30,6 +31,7 @@ OBJS += src/authentication/tsip_challenge.o\
 	
 	### dialogs
 OBJS += src/dialogs/tsip_dialog.o\
+	src/dialogs/tsip_dialog_info.o\
 	src/dialogs/tsip_dialog_invite.o\
 	src/dialogs/tsip_dialog_invite.cdiv.o\
 	src/dialogs/tsip_dialog_invite.client.o\

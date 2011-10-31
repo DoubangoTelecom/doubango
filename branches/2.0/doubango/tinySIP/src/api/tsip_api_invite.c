@@ -41,7 +41,7 @@
 #define TSIP_INVITE_EVENT_CREATE( type)		tsk_object_new(tsip_invite_event_def_t, type)
 
 extern tsip_action_t* _tsip_action_create(tsip_action_type_t type, va_list* app);
-extern int _tsip_action_ANY(const tsip_ssession_handle_t *ss, tsip_action_type_t type, va_list* app);
+extern int _tsip_api_common_any(const tsip_ssession_handle_t *ss, tsip_action_type_t type, va_list* app);
 
 int tsip_invite_event_signal(tsip_invite_event_type_t type, tsip_ssession_handle_t* ss, short status_code, const char *phrase, const tsip_message_t* sipmessage)
 {
@@ -53,7 +53,7 @@ int tsip_invite_event_signal(tsip_invite_event_type_t type, tsip_ssession_handle
 	return 0;
 }
 
-int tsip_action_INVITE(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...)
+int tsip_api_invite_send_invite(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...)
 {
 	const tsip_ssession_t* _ss;
 	va_list ap;
@@ -96,7 +96,38 @@ int tsip_action_INVITE(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...
 	return ret;
 }
 
-int tsip_action_HOLD(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...)
+int tsip_api_invite_send_info(const tsip_ssession_handle_t *ss, ...)
+{
+	int ret = -1;
+	tsip_action_t* action;
+	const tsip_ssession_t* _ss;
+	va_list ap;
+
+	/* Checks for validity */
+	if(!(_ss = ss) || !_ss->stack){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		return ret;
+	}
+	
+	/* Checks if the stack has been started */
+	if(!TSK_RUNNABLE(_ss->stack)->started){
+		TSK_DEBUG_ERROR("Stack not started.");
+		return -2;
+	}
+
+	va_start(ap, ss);
+	/* execute action */
+	if((action = _tsip_action_create(tsip_atype_info_send, &ap))){
+		/* Perform action */
+		ret = tsip_ssession_handle(_ss, action);
+		TSK_OBJECT_SAFE_FREE(action);
+	}
+	va_end(ap);
+
+	return ret;
+}
+
+int tsip_api_invite_send_hold(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...)
 {
 	int ret = -1;
 	tsip_action_t* action;
@@ -129,7 +160,7 @@ int tsip_action_HOLD(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...)
 	return ret;
 }
 
-int tsip_action_RESUME(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...)
+int tsip_api_invite_send_resume(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...)
 {
 	int ret = -1;
 	tsip_action_t* action;
@@ -162,13 +193,13 @@ int tsip_action_RESUME(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...
 	return ret;
 }
 
-int tsip_action_LARGE_MESSAGE(const tsip_ssession_handle_t *ss, ...)
+int tsip_api_invite_send_large_message(const tsip_ssession_handle_t *ss, ...)
 {
 	int ret = -1;
 	va_list ap;
 	
 	va_start(ap, ss);
-	if((ret = _tsip_action_ANY(ss, tsip_atype_lmessage, &ap))){
+	if((ret = _tsip_api_common_any(ss, tsip_atype_lmessage, &ap))){
 		TSK_DEBUG_ERROR("Failed to send MSRP message");
 	}
 	va_end(ap);
@@ -176,7 +207,7 @@ int tsip_action_LARGE_MESSAGE(const tsip_ssession_handle_t *ss, ...)
 	return ret;
 }
 
-int tsip_action_ECT(const tsip_ssession_handle_t *ss, const char* toUri, ...)
+int tsip_api_invite_send_ect(const tsip_ssession_handle_t *ss, const char* toUri, ...)
 {
 	int ret = -1;
 	tsip_action_t* action;
@@ -209,7 +240,7 @@ int tsip_action_ECT(const tsip_ssession_handle_t *ss, const char* toUri, ...)
 	return ret;
 }
 
-int tsip_action_DTMF(const tsip_ssession_handle_t *ss, int event, ...)
+int tsip_api_invite_send_dtmf(const tsip_ssession_handle_t *ss, int event, ...)
 {
 	int ret = -1;
 	tsip_action_t* action;
@@ -242,13 +273,13 @@ int tsip_action_DTMF(const tsip_ssession_handle_t *ss, int event, ...)
 	return ret;
 }
 
-int tsip_action_BYE(const tsip_ssession_handle_t *ss, ...)
+int tsip_api_invite_send_bye(const tsip_ssession_handle_t *ss, ...)
 {
 	int ret = -1;
 	va_list ap;
 
 	va_start(ap, ss);
-	if((ret = _tsip_action_ANY(ss, tsip_atype_bye, &ap))){
+	if((ret = _tsip_api_common_any(ss, tsip_atype_bye, &ap))){
 		TSK_DEBUG_ERROR("Bye() failed.");
 	}
 	va_end(ap);

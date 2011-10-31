@@ -50,6 +50,7 @@ public:
 	virtual ~SipMessage();
 	
 	bool isResponse();
+	tsip_request_type_t getRequestType();
 	short getResponseCode();
 	char* getSipHeaderValue(const char* name, unsigned index = 0);
 	char* getSipHeaderParamValue(const char* name, const char* param, unsigned index = 0);

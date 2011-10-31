@@ -113,6 +113,7 @@ typedef enum tsip_message_type_e
 }
 tsip_message_type_t;
 
+// SWIG
 typedef enum tsip_request_type_e
 {
 	tsip_NONE = 0,

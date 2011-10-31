@@ -493,6 +493,14 @@ static int stack_callback(const tsip_event_t *sipevent)
 				}
 				break;
 			}
+		case tsip_event_info:
+			{	/* INFO */
+				if(sipStack->getCallback()){
+					e = new InfoEvent(sipevent);
+					sipStack->getCallback()->OnInfoEvent((const InfoEvent*)e);
+				}
+				break;
+			}
 		case tsip_event_options:
 			{ /* OPTIONS */
 				if(sipStack->getCallback()){

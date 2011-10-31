@@ -57,6 +57,11 @@ public class SipMessage : IDisposable {
     return ret;
   }
 
+  public tsip_request_type_t getRequestType() {
+    tsip_request_type_t ret = (tsip_request_type_t)tinyWRAPPINVOKE.SipMessage_getRequestType(swigCPtr);
+    return ret;
+  }
+
   public short getResponseCode() {
     short ret = tinyWRAPPINVOKE.SipMessage_getResponseCode(swigCPtr);
     return ret;

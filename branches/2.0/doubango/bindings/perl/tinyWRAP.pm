@@ -157,6 +157,7 @@ sub DESTROY {
 }
 
 *addHeader = *tinyWRAPc::ActionConfig_addHeader;
+*addPayload = *tinyWRAPc::ActionConfig_addPayload;
 *setResponseLine = *tinyWRAPc::ActionConfig_setResponseLine;
 *setMediaString = *tinyWRAPc::ActionConfig_setMediaString;
 *setMediaInt = *tinyWRAPc::ActionConfig_setMediaInt;
@@ -418,6 +419,7 @@ sub DESTROY {
 }
 
 *isResponse = *tinyWRAPc::SipMessage_isResponse;
+*getRequestType = *tinyWRAPc::SipMessage_getRequestType;
 *getResponseCode = *tinyWRAPc::SipMessage_getResponseCode;
 *getSipHeaderValue = *tinyWRAPc::SipMessage_getSipHeaderValue;
 *getSipHeaderParamValue = *tinyWRAPc::SipMessage_getSipHeaderParamValue;
@@ -591,6 +593,40 @@ sub DESTROY {
 *getType = *tinyWRAPc::MessagingEvent_getType;
 *getSession = *tinyWRAPc::MessagingEvent_getSession;
 *takeSessionOwnership = *tinyWRAPc::MessagingEvent_takeSessionOwnership;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::InfoEvent ##############
+
+package tinyWRAP::InfoEvent;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP::SipEvent tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_InfoEvent($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getType = *tinyWRAPc::InfoEvent_getType;
+*getSession = *tinyWRAPc::InfoEvent_getSession;
+*takeSessionOwnership = *tinyWRAPc::InfoEvent_takeSessionOwnership;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -814,6 +850,7 @@ sub DESTROY {
 *accept = *tinyWRAPc::InviteSession_accept;
 *hangup = *tinyWRAPc::InviteSession_hangup;
 *reject = *tinyWRAPc::InviteSession_reject;
+*sendInfo = *tinyWRAPc::InviteSession_sendInfo;
 *getMediaMgr = *tinyWRAPc::InviteSession_getMediaMgr;
 sub DISOWN {
     my $self = shift;
@@ -942,6 +979,46 @@ sub DESTROY {
 *send = *tinyWRAPc::MessagingSession_send;
 *accept = *tinyWRAPc::MessagingSession_accept;
 *reject = *tinyWRAPc::MessagingSession_reject;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::InfoSession ##############
+
+package tinyWRAP::InfoSession;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP::SipSession tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_InfoSession(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_InfoSession($self);
+        delete $OWNER{$self};
+    }
+}
+
+*send = *tinyWRAPc::InfoSession_send;
+*accept = *tinyWRAPc::InfoSession_accept;
+*reject = *tinyWRAPc::InfoSession_reject;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1612,6 +1689,7 @@ sub DESTROY {
 *OnStackEvent = *tinyWRAPc::SipCallback_OnStackEvent;
 *OnInviteEvent = *tinyWRAPc::SipCallback_OnInviteEvent;
 *OnMessagingEvent = *tinyWRAPc::SipCallback_OnMessagingEvent;
+*OnInfoEvent = *tinyWRAPc::SipCallback_OnInfoEvent;
 *OnOptionsEvent = *tinyWRAPc::SipCallback_OnOptionsEvent;
 *OnPublicationEvent = *tinyWRAPc::SipCallback_OnPublicationEvent;
 *OnRegistrationEvent = *tinyWRAPc::SipCallback_OnRegistrationEvent;
@@ -2213,8 +2291,24 @@ package tinyWRAP;
 *twrap_proxy_plugin_video_producer = *tinyWRAPc::twrap_proxy_plugin_video_producer;
 *twrap_proxy_plugin_audio_consumer = *tinyWRAPc::twrap_proxy_plugin_audio_consumer;
 *twrap_proxy_plugin_video_consumer = *tinyWRAPc::twrap_proxy_plugin_video_consumer;
+*tsip_NONE = *tinyWRAPc::tsip_NONE;
+*tsip_ACK = *tinyWRAPc::tsip_ACK;
+*tsip_BYE = *tinyWRAPc::tsip_BYE;
+*tsip_CANCEL = *tinyWRAPc::tsip_CANCEL;
+*tsip_INVITE = *tinyWRAPc::tsip_INVITE;
+*tsip_OPTIONS = *tinyWRAPc::tsip_OPTIONS;
+*tsip_REGISTER = *tinyWRAPc::tsip_REGISTER;
+*tsip_SUBSCRIBE = *tinyWRAPc::tsip_SUBSCRIBE;
+*tsip_NOTIFY = *tinyWRAPc::tsip_NOTIFY;
+*tsip_REFER = *tinyWRAPc::tsip_REFER;
+*tsip_INFO = *tinyWRAPc::tsip_INFO;
+*tsip_UPDATE = *tinyWRAPc::tsip_UPDATE;
+*tsip_MESSAGE = *tinyWRAPc::tsip_MESSAGE;
+*tsip_PUBLISH = *tinyWRAPc::tsip_PUBLISH;
+*tsip_PRACK = *tinyWRAPc::tsip_PRACK;
 *tsip_event_invite = *tinyWRAPc::tsip_event_invite;
 *tsip_event_message = *tinyWRAPc::tsip_event_message;
+*tsip_event_info = *tinyWRAPc::tsip_event_info;
 *tsip_event_options = *tinyWRAPc::tsip_event_options;
 *tsip_event_publish = *tinyWRAPc::tsip_event_publish;
 *tsip_event_register = *tinyWRAPc::tsip_event_register;
@@ -2252,6 +2346,8 @@ package tinyWRAP;
 *tsip_ao_unpublish = *tinyWRAPc::tsip_ao_unpublish;
 *tsip_i_message = *tinyWRAPc::tsip_i_message;
 *tsip_ao_message = *tinyWRAPc::tsip_ao_message;
+*tsip_i_info = *tinyWRAPc::tsip_i_info;
+*tsip_ao_info = *tinyWRAPc::tsip_ao_info;
 *tsip_i_options = *tinyWRAPc::tsip_i_options;
 *tsip_ao_options = *tinyWRAPc::tsip_ao_options;
 *tsip_i_newcall = *tinyWRAPc::tsip_i_newcall;

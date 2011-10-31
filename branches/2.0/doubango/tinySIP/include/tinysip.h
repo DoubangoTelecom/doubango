@@ -59,6 +59,7 @@
 #include "tinysip/api/tsip_api_common.h"
 #include "tinysip/api/tsip_api_invite.h"
 #include "tinysip/api/tsip_api_message.h"
+#include "tinysip/api/tsip_api_info.h"
 #include "tinysip/api/tsip_api_options.h"
 #include "tinysip/api/tsip_api_publish.h"
 #include "tinysip/api/tsip_api_register.h"

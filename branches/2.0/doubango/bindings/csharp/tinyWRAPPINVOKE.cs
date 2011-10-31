@@ -245,6 +245,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ActionConfig_addHeader")]
   public static extern bool ActionConfig_addHeader(HandleRef jarg1, string jarg2, string jarg3);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ActionConfig_addPayload")]
+  public static extern bool ActionConfig_addPayload(HandleRef jarg1, byte[] jarg2, uint jarg3);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_ActionConfig_setResponseLine")]
   public static extern IntPtr ActionConfig_setResponseLine(HandleRef jarg1, short jarg2, string jarg3);
 
@@ -455,6 +458,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipMessage_isResponse")]
   public static extern bool SipMessage_isResponse(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipMessage_getRequestType")]
+  public static extern int SipMessage_getRequestType(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipMessage_getResponseCode")]
   public static extern short SipMessage_getResponseCode(HandleRef jarg1);
 
@@ -529,6 +535,18 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingEvent_takeSessionOwnership")]
   public static extern IntPtr MessagingEvent_takeSessionOwnership(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_InfoEvent")]
+  public static extern void delete_InfoEvent(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_InfoEvent_getType")]
+  public static extern int InfoEvent_getType(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_InfoEvent_getSession")]
+  public static extern IntPtr InfoEvent_getSession(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_InfoEvent_takeSessionOwnership")]
+  public static extern IntPtr InfoEvent_takeSessionOwnership(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_OptionsEvent")]
   public static extern void delete_OptionsEvent(HandleRef jarg1);
@@ -646,6 +664,12 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_InviteSession_reject__SWIG_1")]
   public static extern bool InviteSession_reject__SWIG_1(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_InviteSession_sendInfo__SWIG_0")]
+  public static extern bool InviteSession_sendInfo__SWIG_0(HandleRef jarg1, byte[] jarg2, uint jarg3, HandleRef jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_InviteSession_sendInfo__SWIG_1")]
+  public static extern bool InviteSession_sendInfo__SWIG_1(HandleRef jarg1, byte[] jarg2, uint jarg3);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_InviteSession_getMediaMgr")]
   public static extern IntPtr InviteSession_getMediaMgr(HandleRef jarg1);
@@ -772,6 +796,30 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSession_reject__SWIG_1")]
   public static extern bool MessagingSession_reject__SWIG_1(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_InfoSession")]
+  public static extern IntPtr new_InfoSession(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_InfoSession")]
+  public static extern void delete_InfoSession(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_InfoSession_send__SWIG_0")]
+  public static extern bool InfoSession_send__SWIG_0(HandleRef jarg1, byte[] jarg2, uint jarg3, HandleRef jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_InfoSession_send__SWIG_1")]
+  public static extern bool InfoSession_send__SWIG_1(HandleRef jarg1, byte[] jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_InfoSession_accept__SWIG_0")]
+  public static extern bool InfoSession_accept__SWIG_0(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_InfoSession_accept__SWIG_1")]
+  public static extern bool InfoSession_accept__SWIG_1(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_InfoSession_reject__SWIG_0")]
+  public static extern bool InfoSession_reject__SWIG_0(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_InfoSession_reject__SWIG_1")]
+  public static extern bool InfoSession_reject__SWIG_1(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_OptionsSession")]
   public static extern IntPtr new_OptionsSession(HandleRef jarg1);
@@ -1223,6 +1271,12 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipCallback_OnMessagingEventSwigExplicitSipCallback")]
   public static extern int SipCallback_OnMessagingEventSwigExplicitSipCallback(HandleRef jarg1, HandleRef jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipCallback_OnInfoEvent")]
+  public static extern int SipCallback_OnInfoEvent(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipCallback_OnInfoEventSwigExplicitSipCallback")]
+  public static extern int SipCallback_OnInfoEventSwigExplicitSipCallback(HandleRef jarg1, HandleRef jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipCallback_OnOptionsEvent")]
   public static extern int SipCallback_OnOptionsEvent(HandleRef jarg1, HandleRef jarg2);
 
@@ -1248,7 +1302,7 @@ class tinyWRAPPINVOKE {
   public static extern int SipCallback_OnSubscriptionEventSwigExplicitSipCallback(HandleRef jarg1, HandleRef jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipCallback_director_connect")]
-  public static extern void SipCallback_director_connect(HandleRef jarg1, SipCallback.SwigDelegateSipCallback_0 delegate0, SipCallback.SwigDelegateSipCallback_1 delegate1, SipCallback.SwigDelegateSipCallback_2 delegate2, SipCallback.SwigDelegateSipCallback_3 delegate3, SipCallback.SwigDelegateSipCallback_4 delegate4, SipCallback.SwigDelegateSipCallback_5 delegate5, SipCallback.SwigDelegateSipCallback_6 delegate6, SipCallback.SwigDelegateSipCallback_7 delegate7);
+  public static extern void SipCallback_director_connect(HandleRef jarg1, SipCallback.SwigDelegateSipCallback_0 delegate0, SipCallback.SwigDelegateSipCallback_1 delegate1, SipCallback.SwigDelegateSipCallback_2 delegate2, SipCallback.SwigDelegateSipCallback_3 delegate3, SipCallback.SwigDelegateSipCallback_4 delegate4, SipCallback.SwigDelegateSipCallback_5 delegate5, SipCallback.SwigDelegateSipCallback_6 delegate6, SipCallback.SwigDelegateSipCallback_7 delegate7, SipCallback.SwigDelegateSipCallback_8 delegate8);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_SafeObject")]
   public static extern IntPtr new_SafeObject();
@@ -1721,6 +1775,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingEventUpcast")]
   public static extern IntPtr MessagingEventUpcast(IntPtr objectRef);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_InfoEventUpcast")]
+  public static extern IntPtr InfoEventUpcast(IntPtr objectRef);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_OptionsEventUpcast")]
   public static extern IntPtr OptionsEventUpcast(IntPtr objectRef);
 
@@ -1744,6 +1801,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MessagingSessionUpcast")]
   public static extern IntPtr MessagingSessionUpcast(IntPtr objectRef);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_InfoSessionUpcast")]
+  public static extern IntPtr InfoSessionUpcast(IntPtr objectRef);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_OptionsSessionUpcast")]
   public static extern IntPtr OptionsSessionUpcast(IntPtr objectRef);

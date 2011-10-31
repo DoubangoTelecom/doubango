@@ -400,7 +400,7 @@ int tsip_transac_nict_Trying_2_Terminated_X_timerF(va_list *app)
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 	
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_timedout, tsk_null);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_timedout, self->request);
 
 	return 0;
 }
@@ -414,7 +414,7 @@ int tsip_transac_nict_Trying_2_Terminated_X_transportError(va_list *app)
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, tsk_null);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, self->request);
 
 	return 0;
 }
