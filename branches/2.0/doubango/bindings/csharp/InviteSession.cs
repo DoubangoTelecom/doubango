@@ -71,6 +71,16 @@ public class InviteSession : SipSession {
     return ret;
   }
 
+  public bool sendInfo(byte[] payload, uint len, ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.InviteSession_sendInfo__SWIG_0(swigCPtr, payload, len, ActionConfig.getCPtr(config));
+    return ret;
+  }
+
+  public bool sendInfo(byte[] payload, uint len) {
+    bool ret = tinyWRAPPINVOKE.InviteSession_sendInfo__SWIG_1(swigCPtr, payload, len);
+    return ret;
+  }
+
   public MediaSessionMgr getMediaMgr() {
     IntPtr cPtr = tinyWRAPPINVOKE.InviteSession_getMediaMgr(swigCPtr);
     MediaSessionMgr ret = (cPtr == IntPtr.Zero) ? null : new MediaSessionMgr(cPtr, false);

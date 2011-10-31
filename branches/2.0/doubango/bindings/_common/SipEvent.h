@@ -32,6 +32,7 @@ class InviteSession;
 class CallSession;
 class MsrpSession;
 class MessagingSession;
+class InfoSession;
 class OptionsSession;
 class PublicationSession;
 class RegistrationSession;
@@ -125,6 +126,22 @@ public: /* Public API functions */
 	const MessagingSession* getSession() const;
 	MessagingSession* takeSessionOwnership() const;
 };
+
+/* ======================== InfoEvent ========================*/
+class InfoEvent: public SipEvent
+{
+public:
+#if !defined(SWIG)
+	InfoEvent(const tsip_event_t *sipevent);
+#endif
+	virtual ~InfoEvent();
+
+public: /* Public API functions */
+	tsip_info_event_type_t getType() const;
+	const InfoSession* getSession() const;
+	InfoSession* takeSessionOwnership() const;
+};
+
 
 
 /* ======================== OptionsEvent ========================*/

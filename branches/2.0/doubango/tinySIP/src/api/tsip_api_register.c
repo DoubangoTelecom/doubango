@@ -42,7 +42,7 @@
 
 /* Internal functions */
 extern tsip_action_t* _tsip_action_create(tsip_action_type_t type, va_list* app);
-extern int _tsip_action_ANY(const tsip_ssession_handle_t *ss, tsip_action_type_t type, va_list* app);
+extern int _tsip_api_common_any(const tsip_ssession_handle_t *ss, tsip_action_type_t type, va_list* app);
 
 /* internal function used to signal evant from REGISTER dialog to user app */
 int tsip_register_event_signal(tsip_register_event_type_t type, tsip_ssession_t* ss, short status_code, const char *phrase, const tsip_message_t* sipmessage)
@@ -62,9 +62,9 @@ int tsip_register_event_signal(tsip_register_event_type_t type, tsip_ssession_t*
 * @param ... Any TSIP_ACTION_SET_*() macros. e.g. @ref TSIP_ACTION_SET_HEADER(). 
 * MUST always ends with @ref TSIP_ACTION_SET_NULL().
 * @retval Zero if succeed and non-zero error code otherwise.
-* @sa @ref tsip_action_UNREGISTER
+* @sa @ref tsip_api_register_send_unregister
 */
-int tsip_action_REGISTER(const tsip_ssession_handle_t *ss, ...)
+int tsip_api_register_send_register(const tsip_ssession_handle_t *ss, ...)
 {
 	const tsip_ssession_t* _ss;
 	va_list ap;
@@ -105,15 +105,15 @@ int tsip_action_REGISTER(const tsip_ssession_handle_t *ss, ...)
 * @param ... Any TSIP_ACTION_SET_*() macros. e.g. @ref TSIP_ACTION_SET_HEADER(). 
 * MUST always ends with @ref TSIP_ACTION_SET_NULL().
 * @retval Zero if succeed and non-zero error code otherwise.
-* @sa @ref tsip_action_REGISTER
+* @sa @ref tsip_api_register_send_register
 */
-int tsip_action_UNREGISTER(const tsip_ssession_handle_t *ss, ...)
+int tsip_api_register_send_unregister(const tsip_ssession_handle_t *ss, ...)
 {
 	int ret = -1;
 	va_list ap;
 
 	va_start(ap, ss);
-	if((ret = _tsip_action_ANY(ss, tsip_atype_unregister, &ap))){
+	if((ret = _tsip_api_common_any(ss, tsip_atype_unregister, &ap))){
 		TSK_DEBUG_ERROR("unREGISTER() failed.");
 	}
 	va_end(ap);

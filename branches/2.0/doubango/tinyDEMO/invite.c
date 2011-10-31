@@ -74,9 +74,9 @@ int invite_handle_event(const tsip_event_t *_event)
 		case tsip_i_newcall:
 			{	/* New call */
 				tmedia_type_t media_type = tsip_ssession_get_mediatype(session);
-				tsip_action_ACCEPT(session->handle,
+				tsip_api_common_accept(session->handle,
 					TSIP_ACTION_SET_NULL());
-				/*tsip_action_REJECT(session->handle,
+				/*tsip_api_common_reject(session->handle,
 					TSIP_ACTION_SET_NULL());*/
 				break;
 			}
@@ -152,7 +152,7 @@ tsip_ssession_id_t invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 		case cmd_audiovideo:
 			{	/* Make Audio/Video call */
 				tsip_action_handle_t* action_config = action_get_config(opts);
-				tsip_action_INVITE(session->handle, (cmd == cmd_audio) ? tmedia_audio : (tmedia_audio|tmedia_video),
+				tsip_api_invite_send_invite(session->handle, (cmd == cmd_audio) ? tmedia_audio : (tmedia_audio|tmedia_video),
 					TSIP_ACTION_SET_CONFIG(action_config),
 					/* Any other TSIP_ACTION_SET_*() macros */
 					TSIP_ACTION_SET_NULL());
@@ -173,7 +173,7 @@ tsip_ssession_id_t invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 					TSIP_SSESSION_SET_NULL());
 
 				/* Send INVITE */
-				tsip_action_INVITE(session->handle, tmedia_msrp,
+				tsip_api_invite_send_invite(session->handle, tmedia_msrp,
 					TSIP_ACTION_SET_CONFIG(action_config),
 					
 					TSIP_ACTION_SET_MEDIA(
@@ -197,7 +197,7 @@ tsip_ssession_id_t invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 			{
 				const opt_t* opt = opt_get_by_type(opts, opt_event); // existance already checked
 				tsip_action_handle_t* action_config = action_get_config(opts);
-				tsip_action_DTMF(session->handle, atoi(opt->value), 
+				tsip_api_invite_send_dtmf(session->handle, atoi(opt->value), 
 					TSIP_ACTION_SET_CONFIG(action_config),
 					/* Any other TSIP_ACTION_SET_*() macros */
 					TSIP_ACTION_SET_NULL());
@@ -209,7 +209,7 @@ tsip_ssession_id_t invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 			{	/* Explict Call Transfer */
 				const opt_t* opt = opt_get_by_type(opts, opt_to); // existance already checked
 				tsip_action_handle_t* action_config = action_get_config(opts);
-				tsip_action_ECT(session->handle, opt? opt->value : "sip:anonymous@example.com", 
+				tsip_api_invite_send_ect(session->handle, opt? opt->value : "sip:anonymous@example.com", 
 					TSIP_ACTION_SET_CONFIG(action_config),
 					/* Any other TSIP_ACTION_SET_*() macros */
 					TSIP_ACTION_SET_NULL());
@@ -220,7 +220,7 @@ tsip_ssession_id_t invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 		case cmd_hold:
 			{	/* Put the session on hold state */
 				tsip_action_handle_t* action_config = action_get_config(opts);
-				tsip_action_HOLD(session->handle, tmedia_all,
+				tsip_api_invite_send_hold(session->handle, tmedia_all,
 					TSIP_ACTION_SET_CONFIG(action_config),
 					/* Any other TSIP_ACTION_SET_*() macros */
 					TSIP_ACTION_SET_NULL());
@@ -230,7 +230,7 @@ tsip_ssession_id_t invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 		case cmd_resume:
 			{	/* Put the session on hold state */
 				tsip_action_handle_t* action_config = action_get_config(opts);
-				tsip_action_RESUME(session->handle, tmedia_all,
+				tsip_api_invite_send_resume(session->handle, tmedia_all,
 					TSIP_ACTION_SET_CONFIG(action_config),
 					/* Any other TSIP_ACTION_SET_*() macros */
 					TSIP_ACTION_SET_NULL());

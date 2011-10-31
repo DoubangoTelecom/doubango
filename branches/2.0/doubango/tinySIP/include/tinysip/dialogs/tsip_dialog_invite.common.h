@@ -48,7 +48,8 @@ typedef enum _fsm_action_e
 	_fsm_action_oCANCEL = tsip_atype_cancel,
 	_fsm_action_oHold = tsip_atype_hold,
 	_fsm_action_oResume = tsip_atype_resume,
-	_fdm_action_oREFER = tsip_atype_ect,
+	_fsm_action_oREFER = tsip_atype_ect,
+	_fsm_action_oINFO = tsip_atype_info_send,
 	_fsm_action_oBYE = tsip_atype_hangup,
 	_fsm_action_oShutdown = tsip_atype_shutdown,
 
@@ -64,6 +65,7 @@ typedef enum _fsm_action_e
 	_fsm_action_oOPTIONS,
 	_fsm_action_iBYE,
 	_fsm_action_iREFER,
+	_fsm_action_iINFO,
 
 	_fsm_action_timer100rel,
 	_fsm_action_timerRefresh,

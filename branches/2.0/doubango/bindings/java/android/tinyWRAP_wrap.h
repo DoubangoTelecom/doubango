@@ -129,16 +129,17 @@ public:
     virtual int OnStackEvent(StackEvent const *e);
     virtual int OnInviteEvent(InviteEvent const *e);
     virtual int OnMessagingEvent(MessagingEvent const *e);
+    virtual int OnInfoEvent(InfoEvent const *e);
     virtual int OnOptionsEvent(OptionsEvent const *e);
     virtual int OnPublicationEvent(PublicationEvent const *e);
     virtual int OnRegistrationEvent(RegistrationEvent const *e);
     virtual int OnSubscriptionEvent(SubscriptionEvent const *e);
 public:
     bool swig_overrides(int n) {
-      return (n < 8 ? swig_override[n] : false);
+      return (n < 9 ? swig_override[n] : false);
     }
 protected:
-    bool swig_override[8];
+    bool swig_override[9];
 };
 
 class SwigDirector_XcapCallback : public XcapCallback, public Swig::Director {

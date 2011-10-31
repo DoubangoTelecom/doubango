@@ -42,6 +42,7 @@ typedef enum tsip_event_type_e
 {	
 	tsip_event_invite,
 	tsip_event_message,
+	tsip_event_info,
 	tsip_event_options,
 	tsip_event_publish,
 	tsip_event_register,

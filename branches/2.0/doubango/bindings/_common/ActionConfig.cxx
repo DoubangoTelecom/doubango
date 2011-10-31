@@ -58,6 +58,13 @@ bool ActionConfig::addHeader(const char* name, const char* value)
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
+bool ActionConfig::addPayload(const void* payload, unsigned len)
+{
+	return (tsip_action_set(m_pHandle, 
+		TSIP_ACTION_SET_PAYLOAD(payload, len),
+		TSIP_ACTION_SET_NULL()) == 0);
+}
+
 ActionConfig* ActionConfig::setResponseLine(short code, const char* phrase)
 {
 	int32_t _code = code;

@@ -94,7 +94,7 @@ typedef enum _fsm_state_e
 _fsm_state_t;
 
 
-int tsip_dialog_message_event_callback(const tsip_dialog_message_t *self, tsip_dialog_event_type_t type, const tsip_message_t *msg)
+static int tsip_dialog_message_event_callback(const tsip_dialog_message_t *self, tsip_dialog_event_type_t type, const tsip_message_t *msg)
 {
 	int ret = -1;
 
@@ -292,7 +292,7 @@ int tsip_dialog_message_Sending_2_Sending_X_401_407_421_494(va_list *app)
 	int ret;
 	
 	if((ret = tsip_dialog_update(TSIP_DIALOG(self), response))){
-		/* Alert the user. */
+		// Alert the user
 		TSIP_DIALOG_MESSAGE_SIGNAL(self, tsip_ao_message, 
 								   TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 		

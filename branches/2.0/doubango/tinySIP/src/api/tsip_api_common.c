@@ -37,11 +37,11 @@
 /* Internal functions */
 extern tsip_action_t* _tsip_action_create(tsip_action_type_t type, va_list* app);
 /* Local functions */
-int _tsip_action_ANY(const tsip_ssession_handle_t *ss, tsip_action_type_t type, va_list* app);
+int _tsip_api_common_any(const tsip_ssession_handle_t *ss, tsip_action_type_t type, va_list* app);
 
 /* internal function used to execute any user action 
 * can only handle session with dialogs */
-int _tsip_action_ANY(const tsip_ssession_handle_t *ss, tsip_action_type_t type, va_list* app)
+int _tsip_api_common_any(const tsip_ssession_handle_t *ss, tsip_action_type_t type, va_list* app)
 {
 	int ret = -1;
 	tsip_action_t* action;
@@ -74,13 +74,13 @@ int _tsip_action_ANY(const tsip_ssession_handle_t *ss, tsip_action_type_t type, 
 * MUST always ends with @ref TSIP_ACTION_SET_NULL().
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tsip_action_REJECT(const tsip_ssession_handle_t *ss, ...)
+int tsip_api_common_reject(const tsip_ssession_handle_t *ss, ...)
 {
 	int ret = -1;
 	va_list ap;
 
 	va_start(ap, ss);
-	if((ret = _tsip_action_ANY(ss, tsip_atype_reject, &ap))){
+	if((ret = _tsip_api_common_any(ss, tsip_atype_reject, &ap))){
 		TSK_DEBUG_ERROR("Reject() failed.");
 	}
 	va_end(ap);
@@ -96,13 +96,13 @@ int tsip_action_REJECT(const tsip_ssession_handle_t *ss, ...)
 * MUST always ends with @ref TSIP_ACTION_SET_NULL().
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tsip_action_HANGUP(const tsip_ssession_handle_t *ss, ...)
+int tsip_api_common_hangup(const tsip_ssession_handle_t *ss, ...)
 {
 	int ret = -1;
 	va_list ap;
 
 	va_start(ap, ss);
-	if((ret = _tsip_action_ANY(ss, tsip_atype_hangup, &ap))){
+	if((ret = _tsip_api_common_any(ss, tsip_atype_hangup, &ap))){
 		TSK_DEBUG_ERROR("Hang-up() failed.");
 	}
 	va_end(ap);
@@ -117,13 +117,13 @@ int tsip_action_HANGUP(const tsip_ssession_handle_t *ss, ...)
 * MUST always ends with @ref TSIP_ACTION_SET_NULL().
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tsip_action_ACCEPT(const tsip_ssession_handle_t *ss, ...)
+int tsip_api_common_accept(const tsip_ssession_handle_t *ss, ...)
 {
 	int ret = -1;
 	va_list ap;
 
 	va_start(ap, ss);
-	if((ret = _tsip_action_ANY(ss, tsip_atype_accept, &ap))){
+	if((ret = _tsip_api_common_any(ss, tsip_atype_accept, &ap))){
 		TSK_DEBUG_ERROR("Accept() failed.");
 	}
 	va_end(ap);

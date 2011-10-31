@@ -84,6 +84,7 @@ public: /* Public functions */
 	bool accept(ActionConfig* config=tsk_null);
 	bool hangup(ActionConfig* config=tsk_null);
 	bool reject(ActionConfig* config=tsk_null);
+	bool sendInfo(const void* payload, unsigned len, ActionConfig* config=tsk_null);
 	const MediaSessionMgr* getMediaMgr();
 
 private:
@@ -155,6 +156,22 @@ public: /* ctor() and dtor() */
 	MessagingSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
 #endif
 	virtual ~MessagingSession();
+
+public: /* Public functions */
+	bool send(const void* payload, unsigned len, ActionConfig* config=tsk_null);
+	bool accept(ActionConfig* config=tsk_null);
+	bool reject(ActionConfig* config=tsk_null);
+};
+
+/* ======================== InfoSession ========================*/
+class InfoSession : public SipSession
+{
+public: /* ctor() and dtor() */
+	InfoSession(SipStack* pStack);
+#if !defined(SWIG)
+	InfoSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
+#endif
+	virtual ~InfoSession();
 
 public: /* Public functions */
 	bool send(const void* payload, unsigned len, ActionConfig* config=tsk_null);

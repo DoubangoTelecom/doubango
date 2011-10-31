@@ -58,10 +58,15 @@ tsip_publish_event_t;
 
 int tsip_publish_event_signal(tsip_publish_event_type_t type, tsip_ssession_handle_t* ss, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
 
-TINYSIP_API int tsip_action_PUBLISH(const tsip_ssession_handle_t *ss, ...);
-TINYSIP_API int tsip_action_UNPUBLISH(const tsip_ssession_handle_t *ss, ...);
+TINYSIP_API int tsip_api_publish_send_publish(const tsip_ssession_handle_t *ss, ...);
+TINYSIP_API int tsip_api_publish_send_unpublish(const tsip_ssession_handle_t *ss, ...);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_publish_event_def_t;
+
+#if 1 // Backward Compatibility
+#	define tsip_action_PUBLISH	tsip_api_publish_send_publish
+#	define tsip_action_UNPUBLISH	tsip_api_publish_send_unpublish
+#endif
 
 TSIP_END_DECLS
 

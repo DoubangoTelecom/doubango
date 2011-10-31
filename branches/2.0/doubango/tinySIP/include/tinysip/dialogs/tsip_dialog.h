@@ -85,6 +85,7 @@ typedef enum tsip_dialog_type_e
 	tsip_dialog_unknown,
 	tsip_dialog_INVITE,
 	tsip_dialog_MESSAGE,
+	tsip_dialog_INFO,
 	tsip_dialog_OPTIONS,
 	tsip_dialog_PUBLISH,
 	tsip_dialog_REGISTER,

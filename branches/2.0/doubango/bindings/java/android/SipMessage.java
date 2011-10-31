@@ -53,6 +53,10 @@ public class SipMessage {
     return tinyWRAPJNI.SipMessage_isResponse(swigCPtr, this);
   }
 
+  public tsip_request_type_t getRequestType() {
+    return tsip_request_type_t.swigToEnum(tinyWRAPJNI.SipMessage_getRequestType(swigCPtr, this));
+  }
+
   public short getResponseCode() {
     return tinyWRAPJNI.SipMessage_getResponseCode(swigCPtr, this);
   }

@@ -51,7 +51,7 @@ int tsip_publish_event_signal(tsip_publish_event_type_t type, tsip_ssession_hand
 	return 0;
 }
 
-int tsip_action_PUBLISH(const tsip_ssession_handle_t *ss, ...)
+int tsip_api_publish_send_publish(const tsip_ssession_handle_t *ss, ...)
 {
 	const tsip_ssession_t* _ss;
 	va_list ap;
@@ -85,7 +85,7 @@ int tsip_action_PUBLISH(const tsip_ssession_handle_t *ss, ...)
 	return ret;
 }
 
-int tsip_action_UNPUBLISH(const tsip_ssession_handle_t *ss, ...)
+int tsip_api_publish_send_unpublish(const tsip_ssession_handle_t *ss, ...)
 {
 	const tsip_ssession_t* _ss;
 	va_list ap;

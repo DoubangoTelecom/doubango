@@ -114,6 +114,14 @@ bool SipMessage::isResponse()
 	return TSIP_MESSAGE_IS_RESPONSE(m_pSipMessage);
 }
 
+tsip_request_type_t SipMessage::getRequestType()
+{
+	if(TSIP_MESSAGE_IS_REQUEST(m_pSipMessage)){
+		return (m_pSipMessage)->line.request.request_type;
+	}
+	return tsip_NONE;
+}
+
 short SipMessage::getResponseCode()
 {
 	return TSIP_RESPONSE_CODE(m_pSipMessage);

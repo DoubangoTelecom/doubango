@@ -131,6 +131,7 @@ class ActionConfig(_object):
     __swig_destroy__ = _tinyWRAP.delete_ActionConfig
     __del__ = lambda self : None;
     def addHeader(self, *args): return _tinyWRAP.ActionConfig_addHeader(self, *args)
+    def addPayload(self, *args): return _tinyWRAP.ActionConfig_addPayload(self, *args)
     def setResponseLine(self, *args): return _tinyWRAP.ActionConfig_setResponseLine(self, *args)
     def setMediaString(self, *args): return _tinyWRAP.ActionConfig_setMediaString(self, *args)
     def setMediaInt(self, *args): return _tinyWRAP.ActionConfig_setMediaInt(self, *args)
@@ -401,6 +402,7 @@ class SipMessage(_object):
     __swig_destroy__ = _tinyWRAP.delete_SipMessage
     __del__ = lambda self : None;
     def isResponse(self): return _tinyWRAP.SipMessage_isResponse(self)
+    def getRequestType(self): return _tinyWRAP.SipMessage_getRequestType(self)
     def getResponseCode(self): return _tinyWRAP.SipMessage_getResponseCode(self)
     def getSipHeaderValue(self, *args): return _tinyWRAP.SipMessage_getSipHeaderValue(self, *args)
     def getSipHeaderParamValue(self, *args): return _tinyWRAP.SipMessage_getSipHeaderParamValue(self, *args)
@@ -489,6 +491,23 @@ class MessagingEvent(SipEvent):
     def takeSessionOwnership(self): return _tinyWRAP.MessagingEvent_takeSessionOwnership(self)
 MessagingEvent_swigregister = _tinyWRAP.MessagingEvent_swigregister
 MessagingEvent_swigregister(MessagingEvent)
+
+class InfoEvent(SipEvent):
+    __swig_setmethods__ = {}
+    for _s in [SipEvent]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, InfoEvent, name, value)
+    __swig_getmethods__ = {}
+    for _s in [SipEvent]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, InfoEvent, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_InfoEvent
+    __del__ = lambda self : None;
+    def getType(self): return _tinyWRAP.InfoEvent_getType(self)
+    def getSession(self): return _tinyWRAP.InfoEvent_getSession(self)
+    def takeSessionOwnership(self): return _tinyWRAP.InfoEvent_takeSessionOwnership(self)
+InfoEvent_swigregister = _tinyWRAP.InfoEvent_swigregister
+InfoEvent_swigregister(InfoEvent)
 
 class OptionsEvent(SipEvent):
     __swig_setmethods__ = {}
@@ -600,6 +619,7 @@ class InviteSession(SipSession):
     def accept(self, *args): return _tinyWRAP.InviteSession_accept(self, *args)
     def hangup(self, *args): return _tinyWRAP.InviteSession_hangup(self, *args)
     def reject(self, *args): return _tinyWRAP.InviteSession_reject(self, *args)
+    def sendInfo(self, *args): return _tinyWRAP.InviteSession_sendInfo(self, *args)
     def getMediaMgr(self): return _tinyWRAP.InviteSession_getMediaMgr(self)
 InviteSession_swigregister = _tinyWRAP.InviteSession_swigregister
 InviteSession_swigregister(InviteSession)
@@ -670,6 +690,26 @@ class MessagingSession(SipSession):
     def reject(self, *args): return _tinyWRAP.MessagingSession_reject(self, *args)
 MessagingSession_swigregister = _tinyWRAP.MessagingSession_swigregister
 MessagingSession_swigregister(MessagingSession)
+
+class InfoSession(SipSession):
+    __swig_setmethods__ = {}
+    for _s in [SipSession]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, InfoSession, name, value)
+    __swig_getmethods__ = {}
+    for _s in [SipSession]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, InfoSession, name)
+    __repr__ = _swig_repr
+    def __init__(self, *args): 
+        this = _tinyWRAP.new_InfoSession(*args)
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_InfoSession
+    __del__ = lambda self : None;
+    def send(self, *args): return _tinyWRAP.InfoSession_send(self, *args)
+    def accept(self, *args): return _tinyWRAP.InfoSession_accept(self, *args)
+    def reject(self, *args): return _tinyWRAP.InfoSession_reject(self, *args)
+InfoSession_swigregister = _tinyWRAP.InfoSession_swigregister
+InfoSession_swigregister(InfoSession)
 
 class OptionsSession(SipSession):
     __swig_setmethods__ = {}
@@ -1094,6 +1134,7 @@ class SipCallback(_object):
     def OnStackEvent(self, *args): return _tinyWRAP.SipCallback_OnStackEvent(self, *args)
     def OnInviteEvent(self, *args): return _tinyWRAP.SipCallback_OnInviteEvent(self, *args)
     def OnMessagingEvent(self, *args): return _tinyWRAP.SipCallback_OnMessagingEvent(self, *args)
+    def OnInfoEvent(self, *args): return _tinyWRAP.SipCallback_OnInfoEvent(self, *args)
     def OnOptionsEvent(self, *args): return _tinyWRAP.SipCallback_OnOptionsEvent(self, *args)
     def OnPublicationEvent(self, *args): return _tinyWRAP.SipCallback_OnPublicationEvent(self, *args)
     def OnRegistrationEvent(self, *args): return _tinyWRAP.SipCallback_OnRegistrationEvent(self, *args)
@@ -1214,8 +1255,24 @@ def SipStack_isCodecSupported(*args):
   return _tinyWRAP.SipStack_isCodecSupported(*args)
 SipStack_isCodecSupported = _tinyWRAP.SipStack_isCodecSupported
 
+tsip_NONE = _tinyWRAP.tsip_NONE
+tsip_ACK = _tinyWRAP.tsip_ACK
+tsip_BYE = _tinyWRAP.tsip_BYE
+tsip_CANCEL = _tinyWRAP.tsip_CANCEL
+tsip_INVITE = _tinyWRAP.tsip_INVITE
+tsip_OPTIONS = _tinyWRAP.tsip_OPTIONS
+tsip_REGISTER = _tinyWRAP.tsip_REGISTER
+tsip_SUBSCRIBE = _tinyWRAP.tsip_SUBSCRIBE
+tsip_NOTIFY = _tinyWRAP.tsip_NOTIFY
+tsip_REFER = _tinyWRAP.tsip_REFER
+tsip_INFO = _tinyWRAP.tsip_INFO
+tsip_UPDATE = _tinyWRAP.tsip_UPDATE
+tsip_MESSAGE = _tinyWRAP.tsip_MESSAGE
+tsip_PUBLISH = _tinyWRAP.tsip_PUBLISH
+tsip_PRACK = _tinyWRAP.tsip_PRACK
 tsip_event_invite = _tinyWRAP.tsip_event_invite
 tsip_event_message = _tinyWRAP.tsip_event_message
+tsip_event_info = _tinyWRAP.tsip_event_info
 tsip_event_options = _tinyWRAP.tsip_event_options
 tsip_event_publish = _tinyWRAP.tsip_event_publish
 tsip_event_register = _tinyWRAP.tsip_event_register
@@ -1253,6 +1310,8 @@ tsip_i_unpublish = _tinyWRAP.tsip_i_unpublish
 tsip_ao_unpublish = _tinyWRAP.tsip_ao_unpublish
 tsip_i_message = _tinyWRAP.tsip_i_message
 tsip_ao_message = _tinyWRAP.tsip_ao_message
+tsip_i_info = _tinyWRAP.tsip_i_info
+tsip_ao_info = _tinyWRAP.tsip_ao_info
 tsip_i_options = _tinyWRAP.tsip_i_options
 tsip_ao_options = _tinyWRAP.tsip_ao_options
 tsip_i_newcall = _tinyWRAP.tsip_i_newcall

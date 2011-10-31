@@ -33,6 +33,7 @@
 
 #include "tinysip/dialogs/tsip_dialog_invite.common.h"
 
+#include "tinysip/transactions/tsip_transac_layer.h"
 #include "tinysip/transports/tsip_transport_layer.h"
 
 #include "tinysip/headers/tsip_header_Allow.h"
@@ -103,6 +104,8 @@ static int x0000_Connected_2_Connected_X_oINVITE(va_list *app);
 
 
 static int x0000_Any_2_Any_X_i1xx(va_list *app);
+static int x0000_Any_2_Any_X_oINFO(va_list *app);
+static int x0000_Any_2_Any_X_iINFO(va_list *app);
 static int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app);
 static int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app);
 
@@ -199,6 +202,9 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 					else if(TSIP_REQUEST_IS_CANCEL(msg)){ // CANCEL
 						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iCANCEL, msg, tsk_null);
 					}
+					else if(TSIP_REQUEST_IS_INFO(msg)){ // INFO
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iINFO, msg, tsk_null);
+					}
 				}
 			}
 			break;
@@ -210,8 +216,15 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 			break;
 		}
 
-	case tsip_dialog_terminated:
 	case tsip_dialog_timedout:
+		{
+			// Do nothing if request type is "INFO"
+			if(!TSIP_MESSAGE_IS_REQUEST(msg) || !TSIP_REQUEST_IS_INFO(msg)){
+				ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_transporterror, msg, tsk_null);
+			}
+			break;
+		}
+	case tsip_dialog_terminated:
 	case tsip_dialog_error:
 	case tsip_dialog_transport_error:
 		{
@@ -318,6 +331,10 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		*/
 		// Any -> (i1xx) -> Any
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_i1xx, tsk_fsm_state_any, x0000_Any_2_Any_X_i1xx, "x0000_Any_2_Any_X_i1xx"),
+		// Any -> (oINFO) -> Any
+		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_oINFO, tsk_fsm_state_any, x0000_Any_2_Any_X_oINFO, "x0000_Any_2_Any_X_oINFO"),
+		// Any -> (iINFO) -> Any
+		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_iINFO, tsk_fsm_state_any, x0000_Any_2_Any_X_iINFO, "x0000_Any_2_Any_X_iINFO"),
 		// Any -> (i401/407)
 		//
 		// Any -> (iPRACK) -> Any
@@ -811,6 +828,46 @@ int x0000_Any_2_Any_X_i1xx(va_list *app)
 		TSIP_RESPONSE_CODE(r1xx), TSIP_RESPONSE_PHRASE(r1xx), r1xx);
 
 	return ret;
+}
+
+/* Any -> (oINFO) -> Any */
+int x0000_Any_2_Any_X_oINFO(va_list *app)
+{
+	tsip_dialog_invite_t *self;
+	const tsip_action_t* action;
+	tsip_request_t* rINFO;
+
+	self = va_arg(*app, tsip_dialog_invite_t *);
+	va_arg(*app, const tsip_message_t *);
+	action = va_arg(*app, const tsip_action_t *);
+	
+	if((rINFO = tsip_dialog_request_new(TSIP_DIALOG(self), "INFO"))){
+		int ret;
+		if(action){
+			ret = tsip_dialog_apply_action(TSIP_MESSAGE(rINFO), action);
+		}
+		ret = tsip_dialog_request_send(TSIP_DIALOG(self), rINFO);
+		TSK_OBJECT_SAFE_FREE(rINFO);
+		return ret;
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to create new INFO request");
+		return -1;
+	}
+}
+
+int x0000_Any_2_Any_X_iINFO(va_list *app)
+{
+	tsip_dialog_invite_t * self = va_arg(*app, tsip_dialog_invite_t *);
+	tsip_request_t* rINFO = (tsip_request_t*)va_arg(*app, const tsip_message_t *);
+
+	if(rINFO){
+		send_RESPONSE(self, rINFO, 200, "Ok", tsk_false);
+		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_request, 
+				tsip_event_code_dialog_request_incoming, "Incoming Request", rINFO);
+	}
+
+	return 0;
 }
 
 int x9998_Any_2_Any_X_transportError(va_list *app)
@@ -1354,6 +1411,11 @@ int send_ERROR(tsip_dialog_invite_t* self, const tsip_request_t* request, short 
 int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self)
 {
 	TSK_DEBUG_INFO("=== INVITE Dialog terminated ===");
+
+	/* Cancel all transactions associated to this dialog (will also be done when the dialog is destroyed ) 
+		worth nothing to do it here in order to cancel in-dialog request (such as INFO, REFER...)
+	*/
+	tsip_transac_layer_cancel_by_dialog(TSIP_DIALOG_GET_STACK(self)->layer_transac, TSIP_DIALOG(self));
 
 	/* stop session manager */
 	if(self->msession_mgr && self->msession_mgr->started){

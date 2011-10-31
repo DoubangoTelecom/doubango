@@ -733,24 +733,24 @@ int session_hangup(tsip_ssession_id_t sid)
 	if((session = session_get_by_sid(ctx->sessions, sid))){
 		switch(session->type){
 			case st_invite:
-				tsip_action_BYE(session->handle,
+				tsip_api_invite_send_bye(session->handle,
 					/* You can add your parameters */
 					TSIP_ACTION_SET_NULL());
 				break;
 			case st_message:
 				break;
 			case st_publish:
-				tsip_action_UNPUBLISH(session->handle,
+				tsip_api_publish_send_unpublish(session->handle,
 					/* You can add your parameters */
 					TSIP_ACTION_SET_NULL());
 				break;
 			case st_register:
-				tsip_action_UNREGISTER(session->handle,
+				tsip_api_register_send_unregister(session->handle,
 					/* You can add your parameters */
 					TSIP_ACTION_SET_NULL());
 				break;
 			case st_subscribe:
-				tsip_action_UNSUBSCRIBE(session->handle,
+				tsip_api_subscribe_send_unsubscribe(session->handle,
 					/* You can add your parameters */
 					TSIP_ACTION_SET_NULL());
 				break;

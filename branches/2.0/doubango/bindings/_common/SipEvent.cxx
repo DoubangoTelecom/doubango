@@ -193,6 +193,42 @@ MessagingSession* MessagingEvent::takeSessionOwnership() const
 	return tsk_null;
 }
 
+
+
+/* ======================== InfoEvent ========================*/
+InfoEvent::InfoEvent(const tsip_event_t *_sipevent)
+:SipEvent(_sipevent)
+{
+}
+
+InfoEvent::~InfoEvent()
+{
+}
+
+tsip_info_event_type_t InfoEvent::getType() const
+{
+	return TSIP_INFO_EVENT(this->sipevent)->type;
+}
+
+const InfoSession* InfoEvent::getSession() const
+{
+	return dyn_cast<const InfoSession*>(this->getBaseSession());
+}
+
+InfoSession* InfoEvent::takeSessionOwnership() const
+{
+	if(this->sipevent && this->sipevent->ss && !tsip_ssession_have_ownership(this->sipevent->ss)){
+		SipStack* stack = this->getStack();
+		if(stack){
+			/* The constructor will call take_ownerhip() */
+			return new InfoSession(stack, this->sipevent->ss);
+		}
+	}
+	return tsk_null;
+}
+
+
+
 /* ======================== OptionsEvent ========================*/
 OptionsEvent::OptionsEvent(const tsip_event_t *_sipevent)
 :SipEvent(_sipevent)

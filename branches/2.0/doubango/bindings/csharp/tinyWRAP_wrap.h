@@ -164,6 +164,7 @@ public:
     virtual int OnStackEvent(StackEvent const *e);
     virtual int OnInviteEvent(InviteEvent const *e);
     virtual int OnMessagingEvent(MessagingEvent const *e);
+    virtual int OnInfoEvent(InfoEvent const *e);
     virtual int OnOptionsEvent(OptionsEvent const *e);
     virtual int OnPublicationEvent(PublicationEvent const *e);
     virtual int OnRegistrationEvent(RegistrationEvent const *e);
@@ -177,17 +178,19 @@ public:
     typedef int (SWIGSTDCALL* SWIG_Callback5_t)(void *);
     typedef int (SWIGSTDCALL* SWIG_Callback6_t)(void *);
     typedef int (SWIGSTDCALL* SWIG_Callback7_t)(void *);
-    void swig_connect_director(SWIG_Callback0_t callbackOnDialogEvent, SWIG_Callback1_t callbackOnStackEvent, SWIG_Callback2_t callbackOnInviteEvent, SWIG_Callback3_t callbackOnMessagingEvent, SWIG_Callback4_t callbackOnOptionsEvent, SWIG_Callback5_t callbackOnPublicationEvent, SWIG_Callback6_t callbackOnRegistrationEvent, SWIG_Callback7_t callbackOnSubscriptionEvent);
+    typedef int (SWIGSTDCALL* SWIG_Callback8_t)(void *);
+    void swig_connect_director(SWIG_Callback0_t callbackOnDialogEvent, SWIG_Callback1_t callbackOnStackEvent, SWIG_Callback2_t callbackOnInviteEvent, SWIG_Callback3_t callbackOnMessagingEvent, SWIG_Callback4_t callbackOnInfoEvent, SWIG_Callback5_t callbackOnOptionsEvent, SWIG_Callback6_t callbackOnPublicationEvent, SWIG_Callback7_t callbackOnRegistrationEvent, SWIG_Callback8_t callbackOnSubscriptionEvent);
 
 private:
     SWIG_Callback0_t swig_callbackOnDialogEvent;
     SWIG_Callback1_t swig_callbackOnStackEvent;
     SWIG_Callback2_t swig_callbackOnInviteEvent;
     SWIG_Callback3_t swig_callbackOnMessagingEvent;
-    SWIG_Callback4_t swig_callbackOnOptionsEvent;
-    SWIG_Callback5_t swig_callbackOnPublicationEvent;
-    SWIG_Callback6_t swig_callbackOnRegistrationEvent;
-    SWIG_Callback7_t swig_callbackOnSubscriptionEvent;
+    SWIG_Callback4_t swig_callbackOnInfoEvent;
+    SWIG_Callback5_t swig_callbackOnOptionsEvent;
+    SWIG_Callback6_t swig_callbackOnPublicationEvent;
+    SWIG_Callback7_t swig_callbackOnRegistrationEvent;
+    SWIG_Callback8_t swig_callbackOnSubscriptionEvent;
     void swig_init_callbacks();
 };
 

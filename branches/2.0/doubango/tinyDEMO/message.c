@@ -84,13 +84,13 @@ int message_handle_event(const tsip_event_t *_event)
 				}
 				/* accept() the MESSAGE to terminate the dialog */
 				if(tsk_striequals("plain/text", content_type) || tsk_striequals("text/html", content_type)){
-					tsip_action_ACCEPT(session->handle,
+					tsip_api_common_accept(session->handle,
 						TSIP_ACTION_SET_HEADER("Info", "I've accept()ed your message"),// just for test
 						TSIP_ACTION_SET_NULL());
 				}
 				/* reject() the MESSAGE to terminate the dialog */
 				else{
-					tsip_action_REJECT(session->handle,
+					tsip_api_common_reject(session->handle,
 						TSIP_ACTION_SET_HEADER("Info", "I've reject()ed your message"),// just for test
 						TSIP_ACTION_SET_HEADER("In-Reply-To", "apb03a0s09dkjdfglkj49112"),// just for test
 						TSIP_ACTION_SET_NULL());
@@ -126,7 +126,7 @@ tsip_ssession_id_t message_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 		case cmd_message:
 			{	/* Send SIP MESSAGE */
 				tsip_action_handle_t* action_config = action_get_config(opts);
-				tsip_action_MESSAGE(session->handle,
+				tsip_api_message_send_message(session->handle,
 					TSIP_ACTION_SET_CONFIG(action_config),
 					/* Any other TSIP_ACTION_SET_*() macros */
 					TSIP_ACTION_SET_NULL());
@@ -184,7 +184,7 @@ tsip_ssession_id_t message_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 						}
 
 						/* Send the message */
-						tsip_action_MESSAGE(session->handle,
+						tsip_api_message_send_message(session->handle,
 							/* TSIP_ACTION_SET_HEADER("Content-Type", "application/vnd.3gpp.sms"), */
 							/* TSIP_ACTION_SET_HEADER("Transfer-Encoding", "binary"),*/
 							TSIP_ACTION_SET_PAYLOAD(binary_pay->data, binary_pay->size),

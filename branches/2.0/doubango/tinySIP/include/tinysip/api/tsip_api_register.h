@@ -60,10 +60,15 @@ tsip_register_event_t;
 
 int tsip_register_event_signal(tsip_register_event_type_t type, tsip_ssession_t* ss, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
 
-TINYSIP_API int tsip_action_REGISTER(const tsip_ssession_handle_t *ss, ...);
-TINYSIP_API int tsip_action_UNREGISTER(const tsip_ssession_handle_t *ss, ...);
+TINYSIP_API int tsip_api_register_send_register(const tsip_ssession_handle_t *ss, ...);
+TINYSIP_API int tsip_api_register_send_unregister(const tsip_ssession_handle_t *ss, ...);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_register_event_def_t;
+
+#if 1 // Backward Compatibility
+#	define tsip_action_REGISTER	tsip_api_register_send_register
+#	define tsip_action_UNREGISTER	tsip_api_register_send_unregister
+#endif
 
 TSIP_END_DECLS
 

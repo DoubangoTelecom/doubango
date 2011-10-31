@@ -47,6 +47,11 @@ public class ActionConfig : IDisposable {
     return ret;
   }
 
+  public bool addPayload(byte[] payload, uint len) {
+    bool ret = tinyWRAPPINVOKE.ActionConfig_addPayload(swigCPtr, payload, len);
+    return ret;
+  }
+
   public ActionConfig setResponseLine(short code, string phrase) {
     IntPtr cPtr = tinyWRAPPINVOKE.ActionConfig_setResponseLine(swigCPtr, code, phrase);
     ActionConfig ret = (cPtr == IntPtr.Zero) ? null : new ActionConfig(cPtr, false);
