@@ -243,6 +243,7 @@ static int populate_lo(tdav_session_msrp_t* self, tsk_bool_t initial)
 	}
 
 	if(initial){
+		const char* att_dir = tsk_null;
 		tsdp_header_M_add_headers(TMEDIA_SESSION(self)->M.lo,
 			TSDP_HEADER_A_VA_ARGS("setup", setup_to_string(self->setup)),
 			
@@ -262,6 +263,21 @@ static int populate_lo(tdav_session_msrp_t* self, tsk_bool_t initial)
 				tsk_null);
 		}
 
+		/* direction */
+		switch(self->dir){
+			case tdav_msrp_dir_sendonly: att_dir = "sendonly"; break;
+			case tdav_msrp_dir_recvonly: att_dir = "recvonly"; break;
+			case tdav_msrp_dir_sendrecv:
+			case tdav_msrp_dir_none:
+				{
+					att_dir = "sendrecv"; 
+					break;
+				}
+		}
+		tsdp_header_M_add_headers(TMEDIA_SESSION(self)->M.lo,
+				TSDP_HEADER_A_VA_ARGS(att_dir, tsk_null),
+				tsk_null);
+
 		/*=== File Transfer ===*/
 		if(self->file.path){
 			/* Compute default 'file-selector' */
@@ -279,15 +295,6 @@ static int populate_lo(tdav_session_msrp_t* self, tsk_bool_t initial)
 				tsk_strrandom(&rand_string);
 				self->file.transfer_id = tsk_strdup(rand_string);
 			}
-			
-			tsdp_header_M_add_headers(TMEDIA_SESSION(self)->M.lo,
-				TSDP_HEADER_A_VA_ARGS("sendonly", tsk_null),
-				tsk_null);
-		}
-		else{
-			tsdp_header_M_add_headers(TMEDIA_SESSION(self)->M.lo,
-				TSDP_HEADER_A_VA_ARGS("sendrecv", tsk_null),
-				tsk_null);
 		}
 
 		if(self->file.selector){
@@ -680,7 +687,12 @@ const tsdp_header_M_t* tdav_session_msrp_get_lo(tmedia_session_t* self)
 					tsk_null
 				);
 			msrp->offerer = tsk_true;
-		}		
+		}
+		
+		/* direction */
+		if(msrp->dir == tdav_msrp_dir_none){
+			msrp->dir = msrp->file.path ? tdav_msrp_dir_sendonly : tdav_msrp_dir_sendrecv;
+		}
 
 		/* Other SDP fields */
 		populate_lo(msrp, tsk_true);
@@ -751,6 +763,19 @@ int tdav_session_msrp_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 			case msrp_setup_active:
 				msrp->setup = msrp_setup_passive;
 				break;
+		}
+	}
+	
+	/* direction attribute */
+	if(msrp->dir == tdav_msrp_dir_none){
+		if((A = tsdp_header_M_findA(m, "sendonly"))){
+			msrp->dir = tdav_msrp_dir_recvonly;
+		}
+		else if((A = tsdp_header_M_findA(m, "sendrecv"))){
+			msrp->dir = tdav_msrp_dir_sendrecv;
+		}
+		else if((A = tsdp_header_M_findA(m, "recvonly"))){
+			msrp->dir = tdav_msrp_dir_sendonly;
 		}
 	}
 
@@ -873,6 +898,7 @@ static tsk_object_t* tdav_session_msrp_ctor(tsk_object_t * self, va_list * app)
 		
 		session->config = tmsrp_config_create();
 		session->setup = msrp_setup_actpass; /* draft-denis-simple-msrp-comedia-02 - 4.1.1. Sending the offer */
+		session->dir = tdav_msrp_dir_none;
 	}
 	return self;
 }
