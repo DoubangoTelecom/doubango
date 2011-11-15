@@ -53,6 +53,15 @@ typedef enum tdav_msrp_setup_e
 }
 tdav_msrp_setup_t;
 
+typedef enum tdav_msrp_dir_e
+{
+	tdav_msrp_dir_none = 0x00,
+	tdav_msrp_dir_sendonly = 0x01 << 0,
+	tdav_msrp_dir_recvonly = 0x01 << 1,
+	tdav_msrp_dir_sendrecv = (tdav_msrp_dir_sendonly | tdav_msrp_dir_recvonly),
+}
+tdav_msrp_dir_t;
+
 typedef struct tdav_session_msrp_s
 {
 	TMEDIA_DECLARE_SESSION_MSRP;
@@ -75,6 +84,7 @@ typedef struct tdav_session_msrp_s
 	char* remote_ip;
 	uint16_t remote_port;
 
+	tdav_msrp_dir_t dir;
 	char* neg_accept_type;
 	char* neg_accept_w_type;
 	char* accept_types;
@@ -90,7 +100,7 @@ typedef struct tdav_session_msrp_s
 		char* transfer_id;
 		unsigned sent:1;
 	} file;
-
+	
 	unsigned fresh_conn:1;
 	unsigned offerer:1;
 	unsigned send_bodiless:1;
