@@ -459,7 +459,10 @@ int s0000_InProgress_2_InProgress_X_iUPDATE(va_list *app)
 		return -4;
 	}
 	else{
-		ret = send_RESPONSE(self, request, 200, "OK", tsk_false);
+		// force SDP in 200 OK even if the request has the same SDP version
+		tsk_bool_t force_sdp = TSIP_MESSAGE_HAS_CONTENT(request);
+		ret = send_RESPONSE(self, request, 200, "OK", 
+			(self->msession_mgr && (force_sdp || self->msession_mgr->ro_changed || self->msession_mgr->state_changed)));
 	}
 
 	return ret;
@@ -472,6 +475,7 @@ int s0000_InProgress_2_Ringing_X_iUPDATE(va_list *app)
 
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	tsip_request_t *request = va_arg(*app, tsip_request_t *);
+	tsk_bool_t force_sdp;
 
 	if((ret = tsip_dialog_invite_process_ro(self, request))){
 		/* Send Error and break the FSM */
@@ -480,7 +484,10 @@ int s0000_InProgress_2_Ringing_X_iUPDATE(va_list *app)
 	}
 	
 	/* Send 200 UPDATE */
-	ret = send_RESPONSE(self, request, 200, "OK", tsk_false);
+	// force SDP in 200 OK even if the request has the same SDP version
+	force_sdp = TSIP_MESSAGE_HAS_CONTENT(request);
+	ret = send_RESPONSE(self, request, 200, "OK", 
+		(self->msession_mgr && (force_sdp || self->msession_mgr->ro_changed || self->msession_mgr->state_changed)));
 
 	/* Send Ringing */
 	ret = send_RESPONSE(self, self->last_iInvite, 180, "Ringing", tsk_false);

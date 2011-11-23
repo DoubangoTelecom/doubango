@@ -239,7 +239,7 @@ int c0000_Outgoing_2_Outgoing_X_iINVITEorUPDATE(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	const tsip_request_t *rINVITEorUPDATE = va_arg(*app, const tsip_request_t *);
-
+	tsk_bool_t force_sdp;
 	int ret = 0;
 
 	/* process remote offer */
@@ -249,8 +249,10 @@ int c0000_Outgoing_2_Outgoing_X_iINVITEorUPDATE(va_list *app)
 	}
 
 	/* Send 200 OK */
+	// force SDP in 200 OK even if the request has the same SDP version
+	force_sdp = TSIP_MESSAGE_HAS_CONTENT(rINVITEorUPDATE);
 	ret = send_RESPONSE(self, rINVITEorUPDATE, 200, "OK", 
-		(self->msession_mgr && (self->msession_mgr->ro_changed || self->msession_mgr->state_changed)));
+		(self->msession_mgr && (force_sdp || self->msession_mgr->ro_changed || self->msession_mgr->state_changed)));
 
 	/* alert the user */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_request, 

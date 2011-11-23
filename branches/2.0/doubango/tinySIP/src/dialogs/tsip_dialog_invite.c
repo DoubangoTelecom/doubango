@@ -544,7 +544,7 @@ int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app)
 	tsk_bool_t bodiless_invite;
 	tmedia_type_t old_media_type = self->msession_mgr ? self->msession_mgr->type : tmedia_none;
 	tmedia_type_t new_media_type;
-	static tsk_bool_t force_sdp = tsk_true; // This is a hack: many client fail to handle 200 Ok without sdp after reINVITE (e.g. hold/resume)
+	static tsk_bool_t force_sdp = tsk_true; // This is a hack: many clients fail to handle 200 Ok without sdp after reINVITE (e.g. hold/resume)
 
 	/* process remote offer */
 	if((ret = tsip_dialog_invite_process_ro(self, rINVITEorUPDATE))){
