@@ -28,8 +28,10 @@
 
  */
 #include "tinymedia/tmedia_consumer.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tsk_debug.h"
+
 
 /**@defgroup tmedia_consumer_group Producers
 */
@@ -56,6 +58,7 @@ int tmedia_consumer_init(tmedia_consumer_t* self)
 
 	self->audio.bits_per_sample = TMEDIA_CONSUMER_BITS_PER_SAMPLE_DEFAULT;
 	self->audio.ptime = TMEDIA_CONSUMER_PTIME_DEFAULT;
+	self->audio.volume = tmedia_defaults_get_volume();
 
 	return 0;
 }

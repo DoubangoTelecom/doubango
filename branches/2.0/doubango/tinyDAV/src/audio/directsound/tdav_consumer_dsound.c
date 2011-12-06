@@ -42,6 +42,12 @@
 
 extern void tdav_win32_print_error(const char* func, HRESULT hr);
 
+static _inline int32_t __convert_volume(int32_t volume)
+{
+	static const int32_t __step = (DSBVOLUME_MAX - DSBVOLUME_MIN) / 100;
+	return (volume * __step) + DSBVOLUME_MIN;
+}
+
 static void *__playback_thread(void *param)
 {
 	tdav_consumer_dsound_t* dsound = (tdav_consumer_dsound_t*)param; 
@@ -105,9 +111,21 @@ next:
 
 
 /* ============ Media Consumer Interface ================= */
-static int tdav_consumer_dsound_set(tmedia_consumer_t* self, const tmedia_param_t* params)
+static int tdav_consumer_dsound_set(tmedia_consumer_t* self, const tmedia_param_t* param)
 {
-	return tdav_consumer_audio_set(TDAV_CONSUMER_AUDIO(self), params);
+	tdav_consumer_dsound_t* dsound = (tdav_consumer_dsound_t*)self;
+	int ret = tdav_consumer_audio_set(TDAV_CONSUMER_AUDIO(self), param);
+
+	if(ret == 0){
+		if(dsound->secondaryBuffer && tsk_striequals(param->key, "volume")){
+			if(IDirectSoundBuffer_SetVolume(dsound->secondaryBuffer, __convert_volume(TMEDIA_CONSUMER(self)->audio.volume)) != DS_OK){
+				TSK_DEBUG_ERROR("IDirectSoundBuffer_SetVolume() failed");
+				ret = -1;
+			}
+		}
+	}
+
+	return ret;
 }
 
 static int tdav_consumer_dsound_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
@@ -173,7 +191,7 @@ static int tdav_consumer_dsound_prepare(tmedia_consumer_t* self, const tmedia_co
 	}
 
 	/* Creates the secondary buffer and apply format */
-	dsbd.dwFlags = (DSBCAPS_CTRLPOSITIONNOTIFY | DSBCAPS_GLOBALFOCUS);
+	dsbd.dwFlags = (DSBCAPS_CTRLPOSITIONNOTIFY | DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLVOLUME);
 	dsbd.dwBufferBytes = (TDAV_DSOUNS_CONSUMER_NOTIF_POS_COUNT * dsound->bytes_per_notif);
 	dsbd.lpwfxFormat = &wfx;
 
@@ -181,7 +199,11 @@ static int tdav_consumer_dsound_prepare(tmedia_consumer_t* self, const tmedia_co
 		tdav_win32_print_error("IDirectSound_CreateSoundBuffer", hr);
 		return -6;
 	}
-	
+
+	/* Set Volume */
+	if(IDirectSoundBuffer_SetVolume(dsound->secondaryBuffer, __convert_volume(TMEDIA_CONSUMER(self)->audio.volume)) != DS_OK){
+		TSK_DEBUG_ERROR("IDirectSoundBuffer_SetVolume() failed");
+	}
 
 	return 0;
 }

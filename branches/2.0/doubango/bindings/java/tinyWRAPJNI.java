@@ -68,6 +68,8 @@ class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_defaultsSetAudioGain(int jarg1, int jarg2);
   public final static native boolean MediaSessionMgr_defaultsSetRtpPortRange(int jarg1, int jarg2);
   public final static native boolean MediaSessionMgr_defaultsSetMediaType(int jarg1);
+  public final static native boolean MediaSessionMgr_defaultsSetVolume(int jarg1);
+  public final static native int MediaSessionMgr_defaultsGetVolume();
   public final static native void delete_MediaContent(long jarg1);
   public final static native String MediaContent_getType(long jarg1, MediaContent jarg1_);
   public final static native long MediaContent_getDataLength(long jarg1, MediaContent jarg1_);

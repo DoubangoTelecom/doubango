@@ -128,7 +128,7 @@ int tsk_gettimeofday(struct timeval *tv, struct timezone *tz)
 * Gets the number of milliseconds in @a tv
 * @retval The number of milliseconds
 */
-uint64_t tsk_time_get_ms(struct timeval* tv)
+uint64_t tsk_time_get_ms(const struct timeval* tv)
 {
 	if(!tv){
 		TSK_DEBUG_ERROR("Invalid parameter");

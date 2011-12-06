@@ -206,6 +206,16 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetVolume(int volume) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetVolume(volume);
+    return ret;
+  }
+
+  public static int defaultsGetVolume() {
+    int ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetVolume();
+    return ret;
+  }
+
 }
 
 }

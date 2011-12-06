@@ -167,4 +167,12 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetMediaType(media_type.swigValue());
   }
 
+  public static boolean defaultsSetVolume(int volume) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetVolume(volume);
+  }
+
+  public static int defaultsGetVolume() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetVolume();
+  }
+
 }

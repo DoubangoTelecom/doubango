@@ -99,6 +99,10 @@ int tdav_producer_audio_set(tdav_producer_audio_t* self, const tmedia_param_t* p
 					return -2;
 				}
 			}
+			else if(tsk_striequals(param->key, "volume")){
+				TMEDIA_PRODUCER(self)->audio.volume = TSK_TO_INT32((uint8_t*)param->value);
+				TMEDIA_PRODUCER(self)->audio.volume = TSK_CLAMP(0, TMEDIA_PRODUCER(self)->audio.volume, 100);
+			}
 		}
 	}
 

@@ -55,8 +55,6 @@
 /**@defgroup tsk_string_group String utillity functions.
 */
 
-static char HEX[] = "0123456789abcdef";
-
 /**@ingroup tsk_string_group
 */
 tsk_string_t* tsk_string_create(const char* str)
@@ -71,6 +69,7 @@ tsk_string_t* tsk_string_create(const char* str)
 */
 char tsk_b10tob16(char c)
 {
+	static char HEX[] = "0123456789abcdef";
 	return HEX[c & 15];
 }
 

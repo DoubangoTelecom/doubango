@@ -1189,7 +1189,7 @@ int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking)
 
 	// int on = 1;
 	// ioctl(fd, FIONBIO, (char *)&on);
-
+	
 	}
 	return 0;
 }

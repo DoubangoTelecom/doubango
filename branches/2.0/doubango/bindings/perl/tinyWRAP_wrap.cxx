@@ -4091,6 +4091,52 @@ XS(_wrap_MediaSessionMgr_defaultsSetMediaType) {
 }
 
 
+XS(_wrap_MediaSessionMgr_defaultsSetVolume) {
+  {
+    int32_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetVolume(volume);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetVolume" "', argument " "1"" of type '" "int32_t""'");
+    } 
+    arg1 = static_cast< int32_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetVolume(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsGetVolume) {
+  {
+    int argvi = 0;
+    int32_t result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsGetVolume();");
+    }
+    result = (int32_t)MediaSessionMgr::defaultsGetVolume();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_delete_MediaContent) {
   {
     MediaContent *arg1 = (MediaContent *) 0 ;
@@ -22732,6 +22778,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsSetAudioGain", _wrap_MediaSessionMgr_defaultsSetAudioGain},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetRtpPortRange", _wrap_MediaSessionMgr_defaultsSetRtpPortRange},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetMediaType", _wrap_MediaSessionMgr_defaultsSetMediaType},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetVolume", _wrap_MediaSessionMgr_defaultsSetVolume},
+{"tinyWRAPc::MediaSessionMgr_defaultsGetVolume", _wrap_MediaSessionMgr_defaultsGetVolume},
 {"tinyWRAPc::delete_MediaContent", _wrap_delete_MediaContent},
 {"tinyWRAPc::MediaContent_getType", _wrap_MediaContent_getType},
 {"tinyWRAPc::MediaContent_getDataLength", _wrap_MediaContent_getDataLength},

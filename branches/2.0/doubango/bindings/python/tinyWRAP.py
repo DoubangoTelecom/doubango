@@ -205,6 +205,10 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetRtpPortRange = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange)
     __swig_getmethods__["defaultsSetMediaType"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetMediaType
     if _newclass:defaultsSetMediaType = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetMediaType)
+    __swig_getmethods__["defaultsSetVolume"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetVolume
+    if _newclass:defaultsSetVolume = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetVolume)
+    __swig_getmethods__["defaultsGetVolume"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetVolume
+    if _newclass:defaultsGetVolume = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetVolume)
 MediaSessionMgr_swigregister = _tinyWRAP.MediaSessionMgr_swigregister
 MediaSessionMgr_swigregister(MediaSessionMgr)
 
@@ -307,6 +311,14 @@ MediaSessionMgr_defaultsSetRtpPortRange = _tinyWRAP.MediaSessionMgr_defaultsSetR
 def MediaSessionMgr_defaultsSetMediaType(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetMediaType(*args)
 MediaSessionMgr_defaultsSetMediaType = _tinyWRAP.MediaSessionMgr_defaultsSetMediaType
+
+def MediaSessionMgr_defaultsSetVolume(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetVolume(*args)
+MediaSessionMgr_defaultsSetVolume = _tinyWRAP.MediaSessionMgr_defaultsSetVolume
+
+def MediaSessionMgr_defaultsGetVolume():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetVolume()
+MediaSessionMgr_defaultsGetVolume = _tinyWRAP.MediaSessionMgr_defaultsGetVolume
 
 class MediaContent(_object):
     __swig_setmethods__ = {}

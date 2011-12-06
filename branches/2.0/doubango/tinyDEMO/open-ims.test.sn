@@ -2,12 +2,12 @@
 # 2233392625mamadoud3sb7j4fb8 
 
 # user's parameters (like ANSI-C #define)
-%%domain open-ims.test
-%%user bossiel
-%%pwd diopmama
+%%domain doubango.org
+%%user 002
+%%pwd 002
 #%%proxy_ip 2a01:e35:8b32:7050:212:f0ff:fe99:c9fc # IP address or FQDN
-%%proxy_ip 192.168.0.13
-%%proxy_port 4060
+%%proxy_ip 192.168.0.9
+%%proxy_port 5060
 %%proxy_trans udp # udp, tcp, tls or sctp
 %%expires 300 # expires used by all dialogs
 %%sleep-sec 1.0 # number of seconds to wait before sending next sip message
@@ -44,7 +44,7 @@
 # Press ENTER
 ++sleep --sec -1
 
-++a --to sip:johndoe@$$(domain) \
+++av --to sip:001@$$(domain) \
 		--header Action-Header=Myheader-value @@action \
 		>>(inv_audio_sid)
 

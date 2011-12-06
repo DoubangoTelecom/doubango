@@ -91,6 +91,7 @@ typedef struct tmedia_consumer_s
 			uint8_t channels;
 			uint32_t rate;
 		} out;
+		int32_t volume;
 	} audio;
 
 	uint64_t session_id;

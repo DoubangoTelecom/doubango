@@ -125,6 +125,7 @@
 	"WWW-Authenticate: Digest realm=\"ims.inexbee.com\", nonce=\"iTaxDEv2uO8sKxzVVaRy6IkU9Lra6wAA2xv4BrmCzvY=\", algorithm=AKAv1-MD5, qop=\"auth\"\r\n" \
 	"WWW-Authenticate: Digest realm=\"ims.cingularme.com\",\r\n   nonce=\"b7c9036dbf3054aea9404c7286aee9703dc8f84c2008\",\r\n   opaque=\"Lss:scsf-stdn.imsgroup0-001.ims1.wtcdca1.mobility.att.net:5060\",\r\n   algorithm=MD5,\r\n   qop=\"auth\"\r\n" \
 	"Content-Length: 11\r\n" \
+	"Etag: W/'1231-3213213'\r\n" \
 	"\r\n" \
 	"How are you"
 
@@ -313,8 +314,8 @@ void test_responses()
 void test_messages()
 {
 	//test_parser();
-	test_requests();
-	//test_responses();
+	//test_requests();
+	test_responses();
 }
 
 

@@ -2831,6 +2831,32 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionM
 }
 
 
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetVolume(JNIEnv *jenv, jclass jcls, jint jarg1) {
+  jboolean jresult = 0 ;
+  int32_t arg1 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetVolume(arg1);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsGetVolume(JNIEnv *jenv, jclass jcls) {
+  jint jresult = 0 ;
+  int32_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (int32_t)MediaSessionMgr::defaultsGetVolume();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1MediaContent(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   MediaContent *arg1 = (MediaContent *) 0 ;
   

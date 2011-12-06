@@ -76,6 +76,7 @@ typedef struct tmedia_producer_s
 		uint32_t rate;
 		uint8_t ptime;
 		uint8_t gain;
+		int32_t volume;
 	} audio;
 
 	const struct tmedia_producer_plugin_def_s* plugin;

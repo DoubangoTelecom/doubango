@@ -225,6 +225,8 @@ sub DESTROY {
 *defaultsSetAudioGain = *tinyWRAPc::MediaSessionMgr_defaultsSetAudioGain;
 *defaultsSetRtpPortRange = *tinyWRAPc::MediaSessionMgr_defaultsSetRtpPortRange;
 *defaultsSetMediaType = *tinyWRAPc::MediaSessionMgr_defaultsSetMediaType;
+*defaultsSetVolume = *tinyWRAPc::MediaSessionMgr_defaultsSetVolume;
+*defaultsGetVolume = *tinyWRAPc::MediaSessionMgr_defaultsGetVolume;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);

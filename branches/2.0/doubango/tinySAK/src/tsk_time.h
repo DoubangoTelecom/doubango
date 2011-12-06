@@ -46,7 +46,7 @@ struct timespec;
 #define TSK_TIME_MS_2_S(MS) ((MS)/1000)
 
 TINYSAK_API int tsk_gettimeofday(struct timeval *tv, struct timezone *tz);
-TINYSAK_API uint64_t tsk_time_get_ms(struct timeval *tv);
+TINYSAK_API uint64_t tsk_time_get_ms(const struct timeval *tv);
 TINYSAK_API uint64_t tsk_time_epoch();
 TINYSAK_API uint64_t tsk_time_now();
 

@@ -1857,6 +1857,28 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetMediaType(
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetVolume(int jarg1) {
+  unsigned int jresult ;
+  int32_t arg1 ;
+  bool result;
+  
+  arg1 = (int32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetVolume(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetVolume() {
+  int jresult ;
+  int32_t result;
+  
+  result = (int32_t)MediaSessionMgr::defaultsGetVolume();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_MediaContent(void * jarg1) {
   MediaContent *arg1 = (MediaContent *) 0 ;
   
