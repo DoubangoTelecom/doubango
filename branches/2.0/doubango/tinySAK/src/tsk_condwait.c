@@ -139,6 +139,10 @@ int tsk_condwait_wait(tsk_condwait_handle_t* handle)
 {
 	int ret = EINVAL;
 	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
+	if(!condwait){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 
 #if TSK_UNDER_WINDOWS
 	if((ret = (WaitForSingleObject(condwait->pcond, INFINITE) == WAIT_FAILED) ? -1 : 0)){
@@ -222,6 +226,10 @@ int tsk_condwait_signal(tsk_condwait_handle_t* handle)
 {
 	int ret = EINVAL;
 	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
+	if(!condwait){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 
 #if TSK_UNDER_WINDOWS
 	if(ret = ((SetEvent(condwait->pcond) && ResetEvent(condwait->pcond)) ? 0 : -1)){
@@ -252,6 +260,10 @@ int tsk_condwait_broadcast(tsk_condwait_handle_t* handle)
 {
 	int ret = EINVAL;
 	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
+	if(!condwait){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 
 #if TSK_UNDER_WINDOWS
 	if(ret = ((SetEvent(condwait->pcond) && ResetEvent(condwait->pcond)) ? 0 : -1)){

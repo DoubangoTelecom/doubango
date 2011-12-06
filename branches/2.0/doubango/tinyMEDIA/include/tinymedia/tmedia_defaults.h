@@ -70,6 +70,8 @@ TINYMEDIA_API uint16_t tmedia_defaults_get_rtp_port_range_stop();
 TINYMEDIA_API int tmedia_defaults_set_rtp_port_range(uint16_t start, uint16_t stop);
 TINYMEDIA_API tmedia_type_t tmedia_defaults_get_media_type();
 TINYMEDIA_API int tmedia_defaults_set_media_type(tmedia_type_t media_type);
+TINYMEDIA_API int tmedia_defaults_set_volume(int32_t volume);
+TINYMEDIA_API int32_t tmedia_defaults_get_volume();
 
 
 

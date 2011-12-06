@@ -83,6 +83,8 @@ public:
 	static bool defaultsSetAudioGain(int32_t producer_gain, int32_t consumer_gain);
 	static bool defaultsSetRtpPortRange(uint16_t range_start, uint16_t range_stop);
 	static bool defaultsSetMediaType(twrap_media_type_t media_type);
+	static bool defaultsSetVolume(int32_t volume);
+	static int32_t defaultsGetVolume();
 
 private:
 	tmedia_session_mgr_t* m_pWrappedMgr;

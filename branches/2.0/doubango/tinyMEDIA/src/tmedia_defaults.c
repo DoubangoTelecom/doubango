@@ -63,6 +63,7 @@ static int32_t __audio_consumer_gain = 0;
 static uint16_t __rtp_port_range_start = 1024;
 static uint16_t __rtp_port_range_stop = 65535;
 static tmedia_type_t __media_type = tmedia_audio;
+static int32_t __volume = 100;
 
 int tmedia_defaults_set_jb_margin(int32_t jb_margin_ms)
 {
@@ -235,4 +236,13 @@ tmedia_type_t tmedia_defaults_get_media_type(){
 int tmedia_defaults_set_media_type(tmedia_type_t media_type){
 	__media_type = media_type;
 	return 0;
+}
+
+int tmedia_defaults_set_volume(int32_t volume){
+	__volume = TSK_CLAMP(0, volume, 100);
+	return 0;
+}
+
+int32_t tmedia_defaults_get_volume(){
+	return __volume;
 }

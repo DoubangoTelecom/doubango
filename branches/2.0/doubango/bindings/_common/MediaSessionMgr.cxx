@@ -280,3 +280,13 @@ bool MediaSessionMgr::defaultsSetMediaType(twrap_media_type_t media_type)
 {
 	return (tmedia_defaults_set_media_type(_get_media_type(media_type)) == 0);
 }
+
+bool MediaSessionMgr::defaultsSetVolume(int32_t volume)
+{
+	return (tmedia_defaults_set_volume(volume) == 0);
+}
+
+int32_t MediaSessionMgr::defaultsGetVolume()
+{
+	return tmedia_defaults_get_volume();
+}

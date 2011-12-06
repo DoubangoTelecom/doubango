@@ -95,7 +95,7 @@ tsk_semaphore_handle_t* tsk_semaphore_create()
 
 tsk_semaphore_handle_t* tsk_semaphore_create_2(int initial_val)
 {
-	SEMAPHORE_T handle = 0;
+	SEMAPHORE_T handle = tsk_null;
 	
 #if TSK_UNDER_WINDOWS
 	handle = CreateSemaphore(NULL, initial_val, 0x7FFFFFFF, NULL);

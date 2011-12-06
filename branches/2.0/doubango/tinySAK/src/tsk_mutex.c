@@ -165,7 +165,7 @@ void tsk_mutex_destroy(tsk_mutex_handle_t** handle)
 	if(handle && *handle){
 #if TSK_UNDER_WINDOWS
 		CloseHandle((MUTEX_T)*handle);
-		*handle = 0;
+		*handle = tsk_null;
 #else
 		pthread_mutex_destroy((MUTEX_T)*handle);
 		tsk_free(handle);

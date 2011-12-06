@@ -28,6 +28,7 @@
 
  */
 #include "tinymedia/tmedia_producer.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tsk_debug.h"
 
@@ -55,6 +56,7 @@ int tmedia_producer_init(tmedia_producer_t* self)
 	self->audio.bits_per_sample = TMEDIA_PRODUCER_BITS_PER_SAMPLE_DEFAULT;
 	self->audio.channels = TMEDIA_PRODUCER_CHANNELS_DEFAULT;
 	self->audio.rate = TMEDIA_PRODUCER_RATE_DEFAULT;
+	self->audio.volume = tmedia_defaults_get_volume();
 
 	return 0;
 }
