@@ -170,22 +170,18 @@ int tnet_transport_get_public_ip_n_port(const tnet_transport_handle_t *handle, t
 
 	if(TNET_SOCKET_TYPE_IS_DGRAM(transport->type) && (natt_ctx = tsk_object_ref(transport->natt_ctx))){
 		tnet_stun_binding_id_t bind_id = TNET_STUN_INVALID_BINDING_ID;
-		// if the socket is already monitored by the transport we should pause beacuse both the transport and
+		// if the socket is already monitored by the transport we should pause because both the transport and
 		// NAT binder will try to read from it
-		tsk_bool_t pause_socket = (TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started);
 
 		// FIXME: change when ICE will be fully implemented
 		TSK_DEBUG_INFO("Getting public address");
+		
 		// Pause the soket
-		if(pause_socket){
-			tnet_transport_pause_socket(transport, fd, tsk_true);
-		}
+		tnet_transport_pause_socket(transport, fd, tsk_true);
 		// Performs STUN binding
 		bind_id = tnet_nat_stun_bind(transport->natt_ctx, fd);
 		// Resume the socket
-		if(pause_socket){
-			tnet_transport_pause_socket(transport, fd, tsk_false);
-		}
+		tnet_transport_pause_socket(transport, fd, tsk_false);
 		
 		if(TNET_STUN_IS_VALID_BINDING_ID(bind_id)){
 			char* public_ip = tsk_null;
