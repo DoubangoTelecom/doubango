@@ -240,6 +240,34 @@ int tsip_api_invite_send_ect(const tsip_ssession_handle_t *ss, const char* toUri
 	return ret;
 }
 
+int tsip_api_invite_send_ect_accept(const tsip_ssession_handle_t *ss, ...)
+{
+	int ret = -1;
+	va_list ap;
+	
+	va_start(ap, ss);
+	if((ret = _tsip_api_common_any(ss, tsip_atype_ect_accept, &ap))){
+		TSK_DEBUG_ERROR("Failed to accept incoming ECT");
+	}
+	va_end(ap);
+	
+	return ret;
+}
+
+int tsip_api_invite_send_ect_reject(const tsip_ssession_handle_t *ss, ...)
+{
+	int ret = -1;
+	va_list ap;
+	
+	va_start(ap, ss);
+	if((ret = _tsip_api_common_any(ss, tsip_atype_ect_reject, &ap))){
+		TSK_DEBUG_ERROR("Failed to reject incoming ECT");
+	}
+	va_end(ap);
+	
+	return ret;
+}
+
 int tsip_api_invite_send_dtmf(const tsip_ssession_handle_t *ss, int event, ...)
 {
 	int ret = -1;

@@ -74,10 +74,12 @@ typedef enum tsip_ssession_param_type_e
 	sstype_expires,
 	sstype_silent_hangup,
 	sstype_sigcomp_id,
+	sstype_parent_id,
 	sstype_media
 }
 tsip_ssession_param_type_t;
 
+#define TSIP_SSESSION_SET_PARENT_ID(PARENT_ID_SSID)					sstype_parent_id, ((tsip_ssession_id_t)PARENT_ID_SSID)
 #define TSIP_SSESSION_SET_HEADER(NAME_STR, VALUE_STR)				sstype_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define TSIP_SSESSION_UNSET_HEADER(NAME_STR)						TSIP_SSESSION_SET_HEADER(NAME_STR, (const char*)-1)
 #define TSIP_SSESSION_SET_CAPS(NAME_STR, VALUE_STR)					sstype_caps, (const char*)NAME_STR, (const char*)VALUE_STR /* RFC 3840 */
@@ -129,6 +131,7 @@ typedef struct tsip_ssession_s
 	TSK_DECLARE_OBJECT;
 	
 	tsip_ssession_id_t id;
+	tsip_ssession_id_t id_parent; //for call transfer
 	unsigned owner:1;
 	
 	const struct tsip_stack_s* stack;
@@ -181,6 +184,7 @@ typedef void tsip_stack_handle_t;
 TINYSIP_API tsip_ssession_handle_t* tsip_ssession_create(tsip_stack_handle_t *stack, ...);
 TINYSIP_API int tsip_ssession_set(tsip_ssession_handle_t *self, ...);
 TINYSIP_API tsip_ssession_id_t tsip_ssession_get_id(const tsip_ssession_handle_t *self);
+TINYSIP_API tsip_ssession_id_t tsip_ssession_get_id_parent(const tsip_ssession_handle_t *self);
 TINYSIP_API int tsip_ssession_take_ownership(tsip_ssession_handle_t *self);
 TINYSIP_API tsk_bool_t tsip_ssession_have_ownership(const tsip_ssession_handle_t *self);
 TINYSIP_API int tsip_ssession_respond(const tsip_ssession_handle_t *self, short status, const char* phrase, const void* payload, tsk_size_t size, const struct tsip_message_s* request, ...);

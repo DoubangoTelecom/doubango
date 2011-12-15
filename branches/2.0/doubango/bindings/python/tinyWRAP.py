@@ -658,7 +658,11 @@ class CallSession(InviteSession):
     def setQoS(self, *args): return _tinyWRAP.CallSession_setQoS(self, *args)
     def hold(self, *args): return _tinyWRAP.CallSession_hold(self, *args)
     def resume(self, *args): return _tinyWRAP.CallSession_resume(self, *args)
+    def transfer(self, *args): return _tinyWRAP.CallSession_transfer(self, *args)
+    def acceptTransfer(self, *args): return _tinyWRAP.CallSession_acceptTransfer(self, *args)
+    def rejectTransfer(self, *args): return _tinyWRAP.CallSession_rejectTransfer(self, *args)
     def sendDTMF(self, *args): return _tinyWRAP.CallSession_sendDTMF(self, *args)
+    def getSessionTransferId(self): return _tinyWRAP.CallSession_getSessionTransferId(self)
 CallSession_swigregister = _tinyWRAP.CallSession_swigregister
 CallSession_swigregister(CallSession)
 
@@ -1329,9 +1333,16 @@ tsip_ao_options = _tinyWRAP.tsip_ao_options
 tsip_i_newcall = _tinyWRAP.tsip_i_newcall
 tsip_i_request = _tinyWRAP.tsip_i_request
 tsip_ao_request = _tinyWRAP.tsip_ao_request
-tsip_o_ect_ok = _tinyWRAP.tsip_o_ect_ok
-tsip_o_ect_nok = _tinyWRAP.tsip_o_ect_nok
-tsip_i_ect = _tinyWRAP.tsip_i_ect
+tsip_o_ect_trying = _tinyWRAP.tsip_o_ect_trying
+tsip_o_ect_accepted = _tinyWRAP.tsip_o_ect_accepted
+tsip_o_ect_completed = _tinyWRAP.tsip_o_ect_completed
+tsip_o_ect_failed = _tinyWRAP.tsip_o_ect_failed
+tsip_o_ect_notify = _tinyWRAP.tsip_o_ect_notify
+tsip_i_ect_requested = _tinyWRAP.tsip_i_ect_requested
+tsip_i_ect_newcall = _tinyWRAP.tsip_i_ect_newcall
+tsip_i_ect_completed = _tinyWRAP.tsip_i_ect_completed
+tsip_i_ect_failed = _tinyWRAP.tsip_i_ect_failed
+tsip_i_ect_notify = _tinyWRAP.tsip_i_ect_notify
 tsip_m_early_media = _tinyWRAP.tsip_m_early_media
 tsip_m_updating = _tinyWRAP.tsip_m_updating
 tsip_m_updated = _tinyWRAP.tsip_m_updated

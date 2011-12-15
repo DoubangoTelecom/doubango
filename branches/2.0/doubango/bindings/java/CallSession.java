@@ -113,8 +113,36 @@ public class CallSession extends InviteSession {
     return tinyWRAPJNI.CallSession_resume__SWIG_1(swigCPtr, this);
   }
 
+  public boolean transfer(String referToUriString, ActionConfig config) {
+    return tinyWRAPJNI.CallSession_transfer__SWIG_0(swigCPtr, this, referToUriString, ActionConfig.getCPtr(config), config);
+  }
+
+  public boolean transfer(String referToUriString) {
+    return tinyWRAPJNI.CallSession_transfer__SWIG_1(swigCPtr, this, referToUriString);
+  }
+
+  public boolean acceptTransfer(ActionConfig config) {
+    return tinyWRAPJNI.CallSession_acceptTransfer__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
+  }
+
+  public boolean acceptTransfer() {
+    return tinyWRAPJNI.CallSession_acceptTransfer__SWIG_1(swigCPtr, this);
+  }
+
+  public boolean rejectTransfer(ActionConfig config) {
+    return tinyWRAPJNI.CallSession_rejectTransfer__SWIG_0(swigCPtr, this, ActionConfig.getCPtr(config), config);
+  }
+
+  public boolean rejectTransfer() {
+    return tinyWRAPJNI.CallSession_rejectTransfer__SWIG_1(swigCPtr, this);
+  }
+
   public boolean sendDTMF(int number) {
     return tinyWRAPJNI.CallSession_sendDTMF(swigCPtr, this, number);
+  }
+
+  public long getSessionTransferId() {
+    return tinyWRAPJNI.CallSession_getSessionTransferId(swigCPtr, this);
   }
 
 }

@@ -136,8 +136,43 @@ public class CallSession : InviteSession {
     return ret;
   }
 
+  public bool transfer(string referToUriString, ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.CallSession_transfer__SWIG_0(swigCPtr, referToUriString, ActionConfig.getCPtr(config));
+    return ret;
+  }
+
+  public bool transfer(string referToUriString) {
+    bool ret = tinyWRAPPINVOKE.CallSession_transfer__SWIG_1(swigCPtr, referToUriString);
+    return ret;
+  }
+
+  public bool acceptTransfer(ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.CallSession_acceptTransfer__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
+    return ret;
+  }
+
+  public bool acceptTransfer() {
+    bool ret = tinyWRAPPINVOKE.CallSession_acceptTransfer__SWIG_1(swigCPtr);
+    return ret;
+  }
+
+  public bool rejectTransfer(ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.CallSession_rejectTransfer__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
+    return ret;
+  }
+
+  public bool rejectTransfer() {
+    bool ret = tinyWRAPPINVOKE.CallSession_rejectTransfer__SWIG_1(swigCPtr);
+    return ret;
+  }
+
   public bool sendDTMF(int number) {
     bool ret = tinyWRAPPINVOKE.CallSession_sendDTMF(swigCPtr, number);
+    return ret;
+  }
+
+  public uint getSessionTransferId() {
+    uint ret = tinyWRAPPINVOKE.CallSession_getSessionTransferId(swigCPtr);
     return ret;
   }
 
