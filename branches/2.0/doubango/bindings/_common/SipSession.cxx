@@ -566,10 +566,44 @@ bool CallSession::resume(ActionConfig* config/*=tsk_null*/)
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
+bool CallSession::transfer(const char* referToUriString, ActionConfig* config/*=tsk_null*/)
+{
+	if(tsk_strnullORempty(referToUriString)){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return false;
+	}
+	
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
+	return (tsip_api_invite_send_ect(m_pHandle, referToUriString,
+		TSIP_ACTION_SET_CONFIG(action_cfg),
+		TSIP_ACTION_SET_NULL()) == 0);
+}
+
+bool CallSession::acceptTransfer(ActionConfig* config/*=tsk_null*/)
+{
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
+	return (tsip_api_invite_send_ect_accept(m_pHandle,
+		TSIP_ACTION_SET_CONFIG(action_cfg),
+		TSIP_ACTION_SET_NULL()) == 0);
+}
+
+bool CallSession::rejectTransfer(ActionConfig* config/*=tsk_null*/)
+{
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
+	return (tsip_api_invite_send_ect_reject(m_pHandle,
+		TSIP_ACTION_SET_CONFIG(action_cfg),
+		TSIP_ACTION_SET_NULL()) == 0);
+}
+
 bool CallSession::sendDTMF(int number)
 {
 	return (tsip_api_invite_send_dtmf(m_pHandle, number,
 		TSIP_ACTION_SET_NULL()) == 0);
+}
+
+unsigned CallSession::getSessionTransferId()
+{
+	return (unsigned)tsip_ssession_get_id_parent(m_pHandle);
 }
 
 

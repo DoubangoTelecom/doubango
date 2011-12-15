@@ -114,7 +114,11 @@ public: /* Public functions */
 	bool setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength);
 	bool hold(ActionConfig* config=tsk_null);
 	bool resume(ActionConfig* config=tsk_null);
+	bool transfer(const char* referToUriString, ActionConfig* config=tsk_null);
+	bool acceptTransfer(ActionConfig* config=tsk_null);
+	bool rejectTransfer(ActionConfig* config=tsk_null);
 	bool sendDTMF(int number);
+	unsigned getSessionTransferId();
 };
 
 /* ======================== MsrpSession ========================*/

@@ -235,6 +235,11 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 					}
 					break;
 				}
+			case sstype_parent_id:
+				{	/* sstype_parent_id, ((tsip_ssession_id_t)PARENT_ID_SSID) */
+					self->id_parent = va_arg(*app, tsip_ssession_id_t);
+					break;
+				}
 			case sstype_media:
 				{
 					//=========
@@ -367,6 +372,15 @@ tsip_ssession_id_t tsip_ssession_get_id(const tsip_ssession_handle_t *self)
 	if(self){
 		const tsip_ssession_t *ss = self;
 		return ss->id;
+	}
+	return TSIP_SSESSION_INVALID_ID;
+}
+
+tsip_ssession_id_t tsip_ssession_get_id_parent(const tsip_ssession_handle_t *self)
+{
+	if(self){
+		const tsip_ssession_t *ss = self;
+		return ss->id_parent;
 	}
 	return TSIP_SSESSION_INVALID_ID;
 }
@@ -535,13 +549,15 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		ss->stack = va_arg(*app, const tsip_stack_t*);
 		ss->caps = tsk_list_create();
 		ss->headers = tsk_list_create();
-
+		
 		/* unique identifier */
 		ss->id = ++unique_id;
 		// default: you are the owner
 		ss->owner = tsk_true;
 		// default expires value
 		ss->expires = TSIP_SSESSION_EXPIRES_DEFAULT;
+		// default parentid: not parent -> no pending transfer
+		ss->id_parent = TSIP_SSESSION_INVALID_ID;
 		// default media values
 		ss->media.enable_100rel = tmedia_defaults_get_100rel_enabled();
 		ss->media.type = tmedia_none;

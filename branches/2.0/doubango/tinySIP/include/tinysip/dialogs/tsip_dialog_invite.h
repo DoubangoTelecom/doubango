@@ -46,6 +46,8 @@ typedef struct tsip_dialog_invite
 	
 	tsk_bool_t support_update; /**< Indicates whether the remote party support UPDATE */
 	tsk_bool_t is_client;
+	tsk_bool_t is_transf;
+	tsk_bool_t refersub;
 	uint32_t rseq;
 	
 	tsip_timer_t timershutdown;
@@ -54,7 +56,9 @@ typedef struct tsip_dialog_invite
 	tsip_response_t* last_o1xxrel;
 	tsip_request_t* last_iInvite;
 	tsip_request_t* last_oInvite;
+	tsip_request_t* last_iRefer;
 	tmedia_session_mgr_t* msession_mgr; /**< Media session Manager. */
+	struct tsip_ssession_s* ss_transf;
 	
 	/* Session Timers */
 	struct{
@@ -78,12 +82,14 @@ typedef struct tsip_dialog_invite
 		unsigned _100rel:1;
 		unsigned precondition:1;
 		unsigned timer:1;
+		unsigned norefersub:1;
 	} supported;
 
 	struct{
 		unsigned _100rel:1;
 		unsigned precondition:1;
 		unsigned timer:1;
+		unsigned norefersub;
 	} require;
 }
 tsip_dialog_invite_t;

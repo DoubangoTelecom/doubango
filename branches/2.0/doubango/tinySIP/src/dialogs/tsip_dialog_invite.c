@@ -35,6 +35,7 @@
 
 #include "tinysip/transactions/tsip_transac_layer.h"
 #include "tinysip/transports/tsip_transport_layer.h"
+#include "tinysip/dialogs/tsip_dialog_layer.h"
 
 #include "tinysip/headers/tsip_header_Allow.h"
 #include "tinysip/headers/tsip_header_Dummy.h"
@@ -85,6 +86,7 @@
 /*static*/ int send_ERROR(tsip_dialog_invite_t* self, const tsip_request_t* request, short code, const char* phrase, const char* reason);
 /*static*/ int send_BYE(tsip_dialog_invite_t *self);
 /*static*/ int send_CANCEL(tsip_dialog_invite_t *self);
+/*static*/ int tsip_dialog_invite_notify_parent(tsip_dialog_invite_t *self, const tsip_response_t* response);
 static int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self);
 
 /* ======================== external functions ======================== */
@@ -135,6 +137,10 @@ static tsk_bool_t _fsm_cond_is_resp2PRACK(tsip_dialog_invite_t* self, tsip_messa
 {
 	return TSIP_RESPONSE_IS_TO_PRACK(message);
 }
+static tsk_bool_t _fsm_cond_is_resp2INFO(tsip_dialog_invite_t* self, tsip_message_t* message)
+{
+	return TSIP_RESPONSE_IS_TO_INFO(message);
+}
 
 /* ======================== actions ======================== */
 /* #include "tinysip/dialogs/tsip_dialog_invite.common.h" */
@@ -148,6 +154,8 @@ extern int tsip_dialog_invite_client_init(tsip_dialog_invite_t *self);
 extern int tsip_dialog_invite_server_init(tsip_dialog_invite_t *self);
 /* 3GPP TS 24.610: Communication Hold  */
 extern int tsip_dialog_invite_hold_init(tsip_dialog_invite_t *self);
+/* 3GPP TS 24.629: Explicit Communication Transfer (ECT) using IP Multimedia (IM) Core Network (CN) subsystem */
+extern int tsip_dialog_invite_ect_init(tsip_dialog_invite_t *self);
 /* RFC 4028: Session Timers */
 extern int tsip_dialog_invite_stimers_init(tsip_dialog_invite_t *self);
 /* RFC 3312: Integration of Resource Management and Session Initiation Protocol (SIP) */
@@ -204,6 +212,12 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 					}
 					else if(TSIP_REQUEST_IS_INFO(msg)){ // INFO
 						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iINFO, msg, tsk_null);
+					}
+					else if(TSIP_REQUEST_IS_NOTIFY(msg)){ // NOTIFY
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iNOTIFY, msg, tsk_null);
+					}
+					else if(TSIP_REQUEST_IS_REFER(msg)){ // REFER
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iREFER, msg, tsk_null);
 					}
 				}
 			}
@@ -279,6 +293,8 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 	tsip_dialog_invite_server_init(self);
 	/* 3GPP TS 24.610: Communication Hold  */
 	tsip_dialog_invite_hold_init(self);
+	/* 3GPP TS 24.629: Explicit Communication Transfer (ECT) using IP Multimedia (IM) Core Network (CN) subsystem */
+	tsip_dialog_invite_ect_init(self);
 	/* RFC 4028: Session Timers */
 	tsip_dialog_invite_stimers_init(self);
 	/* RFC 3312: Integration of Resource Management and Session Initiation Protocol (SIP) */
@@ -314,12 +330,12 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		*/
 		// Any -> (oBYE) -> Trying
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_oBYE, _fsm_state_Trying, x0000_Any_2_Trying_X_oBYE, "x0000_Any_2_Trying_X_oBYE"),
-		// Any -> (oBYE) -> Terminated
+		// Any -> (iBYE) -> Terminated
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_iBYE, _fsm_state_Terminated, x0000_Any_2_Terminated_X_iBYE, "x0000_Any_2_Terminated_X_iBYE"),
-		// Trying -> (i2xx BYE) -> Terminated
-		TSK_FSM_ADD(_fsm_state_Trying, _fsm_action_i2xx, _fsm_cond_is_resp2BYE, _fsm_state_Terminated, tsk_null, "x0000_Trying_2_Terminated_X_i2xxBYE"),
-		// Trying -> (i3xx-i6xx BYE) -> Terminated
-		TSK_FSM_ADD(_fsm_state_Trying, _fsm_action_i300_to_i699, _fsm_cond_is_resp2BYE, _fsm_state_Terminated, tsk_null, "x0000_Trying_2_Terminated_X_i2xxTOi6xxBYE"),
+		// Any -> (i3xx-i6xx BYE) -> Terminated
+		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i300_to_i699, _fsm_cond_is_resp2BYE, _fsm_state_Terminated, tsk_null, "x0000_Any_2_Terminated_X_i3xxTOi6xxBYE"),
+		// Any -> (i2xxx BYE) -> Terminated
+		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2BYE, _fsm_state_Terminated, tsk_null, "x0000_Any_2_Terminated_X_i2xxBYE"),
 		// Any -> (Shutdown) -> Trying
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_oShutdown, _fsm_state_Trying, x0000_Any_2_Trying_X_shutdown, "x0000_Any_2_Trying_X_shutdown"),
 		// Any -> (shutdown timedout) -> Terminated
@@ -350,7 +366,9 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		// Any -> (i401/407  UPDATE) -> Any
 		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i401_i407, _fsm_cond_is_resp2UPDATE, tsk_fsm_state_any, x0000_Any_2_Any_X_i401_407_INVITEorUPDATE, "x0000_Any_2_Any_X_i401_407_UPDATE"),
 		// Any -> (i2xx PRACK) -> Any
-		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2PRACK, tsk_fsm_state_any, tsk_null, "x0000_Any_2_Any_X_i2xxPRACK"), // FIXME: remove, now we have server
+		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2PRACK, tsk_fsm_state_any, tsk_null, "x0000_Any_2_Any_X_i2xxPRACK"),
+		// Any -> (i2xx INFO) -> Any
+		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2INFO, tsk_fsm_state_any, tsk_null, "x0000_Any_2_Any_X_i2xxINFO"),
 		// Any -> (transport error) -> Terminated
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, x9998_Any_2_Any_X_transportError, "x9998_Any_2_Any_X_transportError"),
 		// Any -> (transport error) -> Terminated
@@ -529,7 +547,7 @@ int x0000_Connected_2_Connected_X_iACK(va_list *app)
 
 	/* alert the user */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_request, 
-			tsip_event_code_dialog_request_incoming, "Incoming Request.", rACK);
+			tsip_event_code_dialog_request_incoming, "Incoming Request", rACK);
 
 	return 0;
 }
@@ -817,15 +835,18 @@ int x0000_Any_2_Any_X_i1xx(va_list *app)
 			return ret;
 		}
 	}
-
+	
 	/* QoS Reservation */
 	if((self->qos.timer.id == TSK_INVALID_TIMER_ID) && tsip_message_required(r1xx, "precondition") && !tmedia_session_mgr_canresume(self->msession_mgr)){
 		tsip_dialog_invite_qos_timer_schedule(self);
 	}
 
 	/* alert the user */
-	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_request,
+	ret = TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_request,
 		TSIP_RESPONSE_CODE(r1xx), TSIP_RESPONSE_PHRASE(r1xx), r1xx);
+	if(self->is_transf){
+		ret = tsip_dialog_invite_notify_parent(self, r1xx);
+	}
 
 	return ret;
 }
@@ -1181,6 +1202,28 @@ bail:
 	return ret;
 }
 
+int tsip_dialog_invite_notify_parent(tsip_dialog_invite_t *self, const tsip_response_t* response)
+{
+	int ret = -1;
+	tsip_dialog_t* dlg_parent = tsip_dialog_layer_find_by_ssid(TSIP_DIALOG_GET_STACK(self)->layer_dialog, TSIP_DIALOG_GET_SS(self)->id_parent);
+	if(dlg_parent){
+		tsip_action_t* action = tsip_action_create(tsip_atype_ect_lnotify,
+			TSIP_ACTION_SET_NULL());
+		if(action){
+			ret = tsip_dialog_fsm_act(dlg_parent, action->type, response, action);
+			TSK_OBJECT_SAFE_FREE(action);
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to create action object");
+		}
+		TSK_OBJECT_SAFE_FREE(dlg_parent);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to find parent with id = %llu", TSIP_DIALOG_GET_SS(self)->id_parent);
+	}
+	return ret;
+}
+
 // Send BYE
 int send_BYE(tsip_dialog_invite_t *self)
 {
@@ -1375,6 +1418,21 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 						tsk_null
 					);
 		}
+		else if(TSIP_REQUEST_IS_REFER(request)){
+			if(self->require.norefersub){
+					tsip_message_add_headers(response,
+						TSIP_HEADER_REQUIRE_VA_ARGS("norefersub"),
+						tsk_null
+					);
+			}
+			if(self->supported.norefersub){
+					tsip_message_add_headers(response,
+						TSIP_HEADER_SUPPORTED_VA_ARGS("norefersub"),
+						tsk_null
+					);
+			}
+		}
+			
 
 		ret = tsip_dialog_response_send(TSIP_DIALOG(self), response);
 		TSK_OBJECT_SAFE_FREE(response);
@@ -1423,8 +1481,9 @@ int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self)
 	}
 
 	/* alert the user */
-	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, 
-		TSIP_DIALOG(self)->last_error.phrase ? TSIP_DIALOG(self)->last_error.phrase : "Call Terminated");
+	TSIP_DIALOG_SIGNAL_2(self, tsip_event_code_dialog_terminated,
+			TSIP_DIALOG(self)->last_error.phrase ? TSIP_DIALOG(self)->last_error.phrase : "Call Terminated",
+			TSIP_DIALOG(self)->last_error.message);
 
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));
@@ -1470,6 +1529,8 @@ static tsk_object_t* tsip_dialog_invite_ctor(tsk_object_t * self, va_list * app)
 
 		/* default values */
 		dialog->supported._100rel = tmedia_defaults_get_100rel_enabled();
+		dialog->supported.norefersub = tsk_true;
+		dialog->refersub = tsk_true;
 		// ... do the same for preconditions, replaces, ....
 		
 		/* Initialize the class itself */
@@ -1492,10 +1553,12 @@ static tsk_object_t* tsip_dialog_invite_dtor(tsk_object_t * _self)
 		tsip_dialog_deinit(TSIP_DIALOG(self));
 		
 		// DeInitialize self
+		TSK_OBJECT_SAFE_FREE(self->ss_transf);
 		TSK_OBJECT_SAFE_FREE(self->msession_mgr);
 		TSK_OBJECT_SAFE_FREE(self->last_oInvite);
 		TSK_OBJECT_SAFE_FREE(self->last_iInvite);
 		TSK_OBJECT_SAFE_FREE(self->last_o1xxrel);
+		TSK_OBJECT_SAFE_FREE(self->last_iRefer);
 		TSK_FREE(self->stimers.refresher);
 		//...
 

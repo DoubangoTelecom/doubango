@@ -196,7 +196,14 @@ class tinyWRAPJNI {
   public final static native boolean CallSession_hold__SWIG_1(long jarg1, CallSession jarg1_);
   public final static native boolean CallSession_resume__SWIG_0(long jarg1, CallSession jarg1_, long jarg2, ActionConfig jarg2_);
   public final static native boolean CallSession_resume__SWIG_1(long jarg1, CallSession jarg1_);
+  public final static native boolean CallSession_transfer__SWIG_0(long jarg1, CallSession jarg1_, String jarg2, long jarg3, ActionConfig jarg3_);
+  public final static native boolean CallSession_transfer__SWIG_1(long jarg1, CallSession jarg1_, String jarg2);
+  public final static native boolean CallSession_acceptTransfer__SWIG_0(long jarg1, CallSession jarg1_, long jarg2, ActionConfig jarg2_);
+  public final static native boolean CallSession_acceptTransfer__SWIG_1(long jarg1, CallSession jarg1_);
+  public final static native boolean CallSession_rejectTransfer__SWIG_0(long jarg1, CallSession jarg1_, long jarg2, ActionConfig jarg2_);
+  public final static native boolean CallSession_rejectTransfer__SWIG_1(long jarg1, CallSession jarg1_);
   public final static native boolean CallSession_sendDTMF(long jarg1, CallSession jarg1_, int jarg2);
+  public final static native long CallSession_getSessionTransferId(long jarg1, CallSession jarg1_);
   public final static native long new_MsrpSession(long jarg1, SipStack jarg1_, long jarg2, MsrpCallback jarg2_);
   public final static native void delete_MsrpSession(long jarg1);
   public final static native boolean MsrpSession_setCallback(long jarg1, MsrpSession jarg1_, long jarg2, MsrpCallback jarg2_);

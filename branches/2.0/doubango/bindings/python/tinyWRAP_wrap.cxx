@@ -11363,6 +11363,326 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_CallSession_transfer__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  char *arg2 = (char *) 0 ;
+  ActionConfig *arg3 = (ActionConfig *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:CallSession_transfer",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_transfer" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CallSession_transfer" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_ActionConfig, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "CallSession_transfer" "', argument " "3"" of type '" "ActionConfig *""'"); 
+  }
+  arg3 = reinterpret_cast< ActionConfig * >(argp3);
+  result = (bool)(arg1)->transfer((char const *)arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_transfer__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:CallSession_transfer",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_transfer" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CallSession_transfer" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  result = (bool)(arg1)->transfer((char const *)arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_transfer(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[4];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = (int)PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 3); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_CallSession, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_CallSession_transfer__SWIG_1(self, args);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_CallSession, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_ActionConfig, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_CallSession_transfer__SWIG_0(self, args);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'CallSession_transfer'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    transfer(CallSession *,char const *,ActionConfig *)\n"
+    "    transfer(CallSession *,char const *)\n");
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_acceptTransfer__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:CallSession_acceptTransfer",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_acceptTransfer" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_ActionConfig, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CallSession_acceptTransfer" "', argument " "2"" of type '" "ActionConfig *""'"); 
+  }
+  arg2 = reinterpret_cast< ActionConfig * >(argp2);
+  result = (bool)(arg1)->acceptTransfer(arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_acceptTransfer__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CallSession_acceptTransfer",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_acceptTransfer" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  result = (bool)(arg1)->acceptTransfer();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_acceptTransfer(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[3];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = (int)PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 2); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_CallSession, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_CallSession_acceptTransfer__SWIG_1(self, args);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_CallSession, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_ActionConfig, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_CallSession_acceptTransfer__SWIG_0(self, args);
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'CallSession_acceptTransfer'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    acceptTransfer(CallSession *,ActionConfig *)\n"
+    "    acceptTransfer(CallSession *)\n");
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_rejectTransfer__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:CallSession_rejectTransfer",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_rejectTransfer" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_ActionConfig, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CallSession_rejectTransfer" "', argument " "2"" of type '" "ActionConfig *""'"); 
+  }
+  arg2 = reinterpret_cast< ActionConfig * >(argp2);
+  result = (bool)(arg1)->rejectTransfer(arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_rejectTransfer__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CallSession_rejectTransfer",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_rejectTransfer" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  result = (bool)(arg1)->rejectTransfer();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_rejectTransfer(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[3];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = (int)PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 2); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_CallSession, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_CallSession_rejectTransfer__SWIG_1(self, args);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_CallSession, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_ActionConfig, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_CallSession_rejectTransfer__SWIG_0(self, args);
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'CallSession_rejectTransfer'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    rejectTransfer(CallSession *,ActionConfig *)\n"
+    "    rejectTransfer(CallSession *)\n");
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_CallSession_sendDTMF(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   CallSession *arg1 = (CallSession *) 0 ;
@@ -11388,6 +11708,28 @@ SWIGINTERN PyObject *_wrap_CallSession_sendDTMF(PyObject *SWIGUNUSEDPARM(self), 
   arg2 = static_cast< int >(val2);
   result = (bool)(arg1)->sendDTMF(arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_getSessionTransferId(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  unsigned int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CallSession_getSessionTransferId",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_getSessionTransferId" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  result = (unsigned int)(arg1)->getSessionTransferId();
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -22068,7 +22410,11 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"CallSession_setQoS", _wrap_CallSession_setQoS, METH_VARARGS, NULL},
 	 { (char *)"CallSession_hold", _wrap_CallSession_hold, METH_VARARGS, NULL},
 	 { (char *)"CallSession_resume", _wrap_CallSession_resume, METH_VARARGS, NULL},
+	 { (char *)"CallSession_transfer", _wrap_CallSession_transfer, METH_VARARGS, NULL},
+	 { (char *)"CallSession_acceptTransfer", _wrap_CallSession_acceptTransfer, METH_VARARGS, NULL},
+	 { (char *)"CallSession_rejectTransfer", _wrap_CallSession_rejectTransfer, METH_VARARGS, NULL},
 	 { (char *)"CallSession_sendDTMF", _wrap_CallSession_sendDTMF, METH_VARARGS, NULL},
+	 { (char *)"CallSession_getSessionTransferId", _wrap_CallSession_getSessionTransferId, METH_VARARGS, NULL},
 	 { (char *)"CallSession_swigregister", CallSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_MsrpSession", _wrap_new_MsrpSession, METH_VARARGS, NULL},
 	 { (char *)"delete_MsrpSession", _wrap_delete_MsrpSession, METH_VARARGS, NULL},
@@ -23467,9 +23813,16 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tsip_i_newcall",SWIG_From_int(static_cast< int >(tsip_i_newcall)));
   SWIG_Python_SetConstant(d, "tsip_i_request",SWIG_From_int(static_cast< int >(tsip_i_request)));
   SWIG_Python_SetConstant(d, "tsip_ao_request",SWIG_From_int(static_cast< int >(tsip_ao_request)));
-  SWIG_Python_SetConstant(d, "tsip_o_ect_ok",SWIG_From_int(static_cast< int >(tsip_o_ect_ok)));
-  SWIG_Python_SetConstant(d, "tsip_o_ect_nok",SWIG_From_int(static_cast< int >(tsip_o_ect_nok)));
-  SWIG_Python_SetConstant(d, "tsip_i_ect",SWIG_From_int(static_cast< int >(tsip_i_ect)));
+  SWIG_Python_SetConstant(d, "tsip_o_ect_trying",SWIG_From_int(static_cast< int >(tsip_o_ect_trying)));
+  SWIG_Python_SetConstant(d, "tsip_o_ect_accepted",SWIG_From_int(static_cast< int >(tsip_o_ect_accepted)));
+  SWIG_Python_SetConstant(d, "tsip_o_ect_completed",SWIG_From_int(static_cast< int >(tsip_o_ect_completed)));
+  SWIG_Python_SetConstant(d, "tsip_o_ect_failed",SWIG_From_int(static_cast< int >(tsip_o_ect_failed)));
+  SWIG_Python_SetConstant(d, "tsip_o_ect_notify",SWIG_From_int(static_cast< int >(tsip_o_ect_notify)));
+  SWIG_Python_SetConstant(d, "tsip_i_ect_requested",SWIG_From_int(static_cast< int >(tsip_i_ect_requested)));
+  SWIG_Python_SetConstant(d, "tsip_i_ect_newcall",SWIG_From_int(static_cast< int >(tsip_i_ect_newcall)));
+  SWIG_Python_SetConstant(d, "tsip_i_ect_completed",SWIG_From_int(static_cast< int >(tsip_i_ect_completed)));
+  SWIG_Python_SetConstant(d, "tsip_i_ect_failed",SWIG_From_int(static_cast< int >(tsip_i_ect_failed)));
+  SWIG_Python_SetConstant(d, "tsip_i_ect_notify",SWIG_From_int(static_cast< int >(tsip_i_ect_notify)));
   SWIG_Python_SetConstant(d, "tsip_m_early_media",SWIG_From_int(static_cast< int >(tsip_m_early_media)));
   SWIG_Python_SetConstant(d, "tsip_m_updating",SWIG_From_int(static_cast< int >(tsip_m_updating)));
   SWIG_Python_SetConstant(d, "tsip_m_updated",SWIG_From_int(static_cast< int >(tsip_m_updated)));

@@ -3472,6 +3472,88 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_resume__SWIG_1(void * jar
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_transfer__SWIG_0(void * jarg1, char * jarg2, void * jarg3) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  char *arg2 = (char *) 0 ;
+  ActionConfig *arg3 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (ActionConfig *)jarg3; 
+  result = (bool)(arg1)->transfer((char const *)arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_transfer__SWIG_1(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->transfer((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_acceptTransfer__SWIG_0(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (ActionConfig *)jarg2; 
+  result = (bool)(arg1)->acceptTransfer(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_acceptTransfer__SWIG_1(void * jarg1) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  result = (bool)(arg1)->acceptTransfer();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_rejectTransfer__SWIG_0(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (ActionConfig *)jarg2; 
+  result = (bool)(arg1)->rejectTransfer(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_rejectTransfer__SWIG_1(void * jarg1) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  result = (bool)(arg1)->rejectTransfer();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_sendDTMF(void * jarg1, int jarg2) {
   unsigned int jresult ;
   CallSession *arg1 = (CallSession *) 0 ;
@@ -3481,6 +3563,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_sendDTMF(void * jarg1, in
   arg1 = (CallSession *)jarg1; 
   arg2 = (int)jarg2; 
   result = (bool)(arg1)->sendDTMF(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_getSessionTransferId(void * jarg1) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  unsigned int result;
+  
+  arg1 = (CallSession *)jarg1; 
+  result = (unsigned int)(arg1)->getSessionTransferId();
   jresult = result; 
   return jresult;
 }

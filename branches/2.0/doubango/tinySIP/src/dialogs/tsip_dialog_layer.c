@@ -74,6 +74,12 @@ tsip_dialog_layer_t* tsip_dialog_layer_create(tsip_stack_t* stack)
 // it's up to the caller to release the returned object
 tsip_dialog_t* tsip_dialog_layer_find_by_ss(tsip_dialog_layer_t *self, const tsip_ssession_handle_t *ss)
 {
+	return tsip_dialog_layer_find_by_ssid(self, tsip_ssession_get_id(ss));
+}
+
+// it's up to the caller to release the returned object
+tsip_dialog_t* tsip_dialog_layer_find_by_ssid(tsip_dialog_layer_t *self, tsip_ssession_id_t ssid)
+{
 	tsip_dialog_t *ret = 0;
 	tsip_dialog_t *dialog;
 	tsk_list_item_t *item;
@@ -82,7 +88,7 @@ tsip_dialog_t* tsip_dialog_layer_find_by_ss(tsip_dialog_layer_t *self, const tsi
 
 	tsk_list_foreach(item, self->dialogs){
 		dialog = item->data;
-		if( tsip_ssession_get_id(dialog->ss) == tsip_ssession_get_id(ss) ){
+		if(tsip_ssession_get_id(dialog->ss) == ssid){
 			ret = dialog;
 			break;
 		}

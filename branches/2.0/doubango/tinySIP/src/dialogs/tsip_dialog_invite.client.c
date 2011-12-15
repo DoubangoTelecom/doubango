@@ -48,6 +48,7 @@ extern int send_CANCEL(tsip_dialog_invite_t *self);
 extern int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase, tsk_bool_t force_sdp);
 extern int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message);
 extern int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_message_t* message);
+extern int tsip_dialog_invite_notify_parent(tsip_dialog_invite_t *self, const tsip_response_t* response);
 
 extern int x0000_Any_2_Any_X_i1xx(va_list *app);
 
@@ -130,6 +131,8 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 
 	/* We are the client */
 	self->is_client = tsk_true;
+	/* Whether it's a client dialog for call transfer */
+	self->is_transf = (TSIP_DIALOG_GET_SS(self)->id_parent != TSIP_SSESSION_INVALID_ID);
 
 	/* Update current action */
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
@@ -218,10 +221,15 @@ int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 	}
 	
 	/* Alert the user (session) */
-	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_request, 
-		TSIP_RESPONSE_CODE(r2xxINVITE), TSIP_RESPONSE_PHRASE(r2xxINVITE), r2xxINVITE);
-	/* Alert the user (dialog) */
-	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connected, "Dialog connected");
+	ret = TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_request, 
+			TSIP_RESPONSE_CODE(r2xxINVITE), TSIP_RESPONSE_PHRASE(r2xxINVITE), r2xxINVITE);
+		/* Alert the user (dialog) */
+	ret = TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connected, "Dialog connected");
+	
+	if(self->is_transf){
+		ret = tsip_dialog_invite_notify_parent(self, r2xxINVITE);
+		self->is_transf = tsk_false;//final response -> no longer need to notify the parent
+	}
 
 	/* MSRP File Transfer */
 	/*if(TSIP_DIALOG(self)->curr_action && ((TSIP_DIALOG(self)->curr_action->media.type & tmedia_msrp) == tmedia_msrp)){
@@ -266,17 +274,24 @@ int c0000_Outgoing_2_Outgoing_X_iINVITEorUPDATE(va_list *app)
 */
 int c0000_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app)
 {
+	int ret;
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
 	/* set last error (or info) */
-	tsip_dialog_set_lasterror(TSIP_DIALOG(self), TSIP_RESPONSE_PHRASE(response), TSIP_RESPONSE_CODE(response));
+	tsip_dialog_set_lasterror_2(TSIP_DIALOG(self), 
+			TSIP_RESPONSE_PHRASE(response), TSIP_RESPONSE_CODE(response), response);
 
 	/* alert the user */
-	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_request, 
+	ret = TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_request, 
 		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
-
-	return 0;
+	
+	if(self->is_transf){
+		ret = tsip_dialog_invite_notify_parent(self, response);
+		self->is_transf = tsk_false;//final response -> no longer need to notify the parent
+	}
+	
+	return ret;
 }
 
 /* Outgoing -> (oCANCEL ) -> Cancelling
@@ -294,7 +309,7 @@ int c0000_Outgoing_2_Cancelling_X_oCANCEL(va_list *app)
 int c0000_Cancelling_2_Terminated_X_i300_to_699(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
-	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);	
 
 	/* set last error (or info) */
 	tsip_dialog_set_lasterror(TSIP_DIALOG(self), "Request cancelled", TSIP_RESPONSE_CODE(response));

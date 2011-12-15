@@ -743,8 +743,29 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_resume__SWIG_1")]
   public static extern bool CallSession_resume__SWIG_1(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_transfer__SWIG_0")]
+  public static extern bool CallSession_transfer__SWIG_0(HandleRef jarg1, string jarg2, HandleRef jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_transfer__SWIG_1")]
+  public static extern bool CallSession_transfer__SWIG_1(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_acceptTransfer__SWIG_0")]
+  public static extern bool CallSession_acceptTransfer__SWIG_0(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_acceptTransfer__SWIG_1")]
+  public static extern bool CallSession_acceptTransfer__SWIG_1(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_rejectTransfer__SWIG_0")]
+  public static extern bool CallSession_rejectTransfer__SWIG_0(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_rejectTransfer__SWIG_1")]
+  public static extern bool CallSession_rejectTransfer__SWIG_1(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_sendDTMF")]
   public static extern bool CallSession_sendDTMF(HandleRef jarg1, int jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_getSessionTransferId")]
+  public static extern uint CallSession_getSessionTransferId(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_MsrpSession")]
   public static extern IntPtr new_MsrpSession(HandleRef jarg1, HandleRef jarg2);

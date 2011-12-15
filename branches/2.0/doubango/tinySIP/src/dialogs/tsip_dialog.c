@@ -114,7 +114,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	into the Request-URI.  The UAC MUST NOT add a Route header field to
 	the request.
 	*/
-	if(!self->record_routes || TSK_LIST_IS_EMPTY(self->record_routes)){
+	if(TSK_LIST_IS_EMPTY(self->record_routes)){
 		request_uri = tsk_object_ref((void*)self->uri_remote_target);
 	}
 

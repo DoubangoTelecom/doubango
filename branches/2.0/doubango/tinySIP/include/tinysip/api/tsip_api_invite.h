@@ -51,10 +51,17 @@ typedef enum tsip_invite_event_type_e
 	tsip_i_request,
 	tsip_ao_request,
 	
-	/* Explicit Call Transfer (ECT) */
-	tsip_o_ect_ok,
-	tsip_o_ect_nok,
-	tsip_i_ect,
+	/* 3GPP TS 24.629: Explicit Call Transfer (ECT) */
+	tsip_o_ect_trying,
+	tsip_o_ect_accepted,
+	tsip_o_ect_completed,
+	tsip_o_ect_failed,
+	tsip_o_ect_notify,
+	tsip_i_ect_requested,
+	tsip_i_ect_newcall,
+	tsip_i_ect_completed,
+	tsip_i_ect_failed,
+	tsip_i_ect_notify,
 	
 	// ============================
 	//	Media Events
@@ -98,6 +105,8 @@ TINYSIP_API int tsip_api_invite_send_hold(const tsip_ssession_handle_t *ss, tmed
 TINYSIP_API int tsip_api_invite_send_resume(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...);
 TINYSIP_API int tsip_api_invite_send_large_message(const tsip_ssession_handle_t *ss, ...);
 TINYSIP_API int tsip_api_invite_send_ect(const tsip_ssession_handle_t *ss, const char* toUri, ...);
+TINYSIP_API int tsip_api_invite_send_ect_accept(const tsip_ssession_handle_t *ss, ...);
+TINYSIP_API int tsip_api_invite_send_ect_reject(const tsip_ssession_handle_t *ss, ...);
 TINYSIP_API int tsip_api_invite_send_sos(const tsip_ssession_handle_t *ss, ...);
 TINYSIP_API int tsip_api_invite_send_dtmf(const tsip_ssession_handle_t *ss, int event, ...);
 TINYSIP_API int tsip_api_invite_send_bye(const tsip_ssession_handle_t *ss, ...);
