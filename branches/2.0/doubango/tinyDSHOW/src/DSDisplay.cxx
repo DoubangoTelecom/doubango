@@ -214,12 +214,14 @@ void DSDisplay::setSize(int w, int h)
 	if (!this->fullscreen){
 		this->graph->setImageFormat(w, h);
 		if(this->hooked){
-#if defined(VMR9_WINDOWLESS)
-			RECT rc;
-			SetRect(&rc, 0, 0, w, h);
-			this->graph->getWindowlessControl()->SetVideoPosition(&rc, &rc);
-#else
-			this->graph->getVideoWindow()->SetWindowPosition(0, 0, this->width , this->height);
+#if 0
+	#if defined(VMR9_WINDOWLESS)
+				RECT rc;
+				SetRect(&rc, 0, 0, w, h);
+				this->graph->getWindowlessControl()->SetVideoPosition(&rc, &rc);
+	#else
+				this->graph->getVideoWindow()->SetWindowPosition(0, 0, this->width , this->height);
+	#endif
 #endif
 		}
 	}
