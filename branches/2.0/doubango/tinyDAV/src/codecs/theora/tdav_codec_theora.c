@@ -212,6 +212,7 @@ int tdav_codec_theora_close(tmedia_codec_t* self)
 	}
 	if(theora->encoder.picture){
 		av_free(theora->encoder.picture);
+		theora->encoder.picture = tsk_null;
 	}
 	if(theora->encoder.buffer){
 		TSK_FREE(theora->encoder.buffer);

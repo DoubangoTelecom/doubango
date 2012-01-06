@@ -52,6 +52,7 @@ const tmedia_session_plugin_def_t* __tmedia_session_plugins[TMED_SESSION_MAX_PLU
 
 /* === local functions === */
 int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self);
+int _tmedia_session_mgr_clear_sessions(tmedia_session_mgr_t* self);
 int _tmedia_session_mgr_apply_params(tmedia_session_mgr_t* self);
 int _tmedia_session_prepare_lo(tmedia_session_t* self);
 int _tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m);
@@ -873,11 +874,9 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 
 	/* prepare the session manager if not already done (create all sessions with their codecs) 
 	* if network-initiated: think about tmedia_type_from_sdp() before creating the manager */
-	/*if(TSK_LIST_IS_EMPTY(self->sessions) || stopped_to_reconf)*/{
-		if(_tmedia_session_mgr_load_sessions(self)){
-			TSK_DEBUG_ERROR("Failed to prepare the session manager");
-			return -3;
-		}
+	if(_tmedia_session_mgr_load_sessions(self)){
+		TSK_DEBUG_ERROR("Failed to prepare the session manager");
+		return -3;
 	}
 	
 	/* get global connection line (common to all sessions) 
@@ -1308,6 +1307,15 @@ int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 		_tmedia_session_mgr_apply_params(self);
 	}
 #undef has_media
+	return 0;
+}
+
+/* internal function */
+int _tmedia_session_mgr_clear_sessions(tmedia_session_mgr_t* self)
+{
+	if(self && self->sessions){
+		tsk_list_clear_items(self->sessions);
+	}
 	return 0;
 }
 

@@ -200,9 +200,11 @@ static int tdav_codec_h264_close(tmedia_codec_t* self)
 	if(h264->encoder.context){
 		avcodec_close(h264->encoder.context);
 		av_free(h264->encoder.context);
+		h264->encoder.context = tsk_null;
 	}
 	if(h264->encoder.picture){
 		av_free(h264->encoder.picture);
+		h264->encoder.picture = tsk_null;
 	}
 	if(h264->encoder.buffer){
 		TSK_FREE(h264->encoder.buffer);
@@ -214,9 +216,11 @@ static int tdav_codec_h264_close(tmedia_codec_t* self)
 	if(h264->decoder.context){
 		avcodec_close(h264->decoder.context);
 		av_free(h264->decoder.context);
+		h264->decoder.context = tsk_null;
 	}
 	if(h264->decoder.picture){
 		av_free(h264->decoder.picture);
+		h264->decoder.picture = tsk_null;
 	}
 	TSK_FREE(h264->decoder.accumulator);
 	h264->decoder.accumulator_pos = 0;

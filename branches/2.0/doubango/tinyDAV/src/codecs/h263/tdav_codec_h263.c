@@ -244,9 +244,11 @@ static int tdav_codec_h263_close(tmedia_codec_t* self)
 	if(h263->encoder.context){
 		avcodec_close(h263->encoder.context);
 		av_free(h263->encoder.context);
+		h263->encoder.context = tsk_null;
 	}
 	if(h263->encoder.picture){
 		av_free(h263->encoder.picture);
+		h263->encoder.picture = tsk_null;
 	}
 	if(h263->encoder.buffer){
 		TSK_FREE(h263->encoder.buffer);
@@ -258,9 +260,11 @@ static int tdav_codec_h263_close(tmedia_codec_t* self)
 	if(h263->decoder.context){
 		avcodec_close(h263->decoder.context);
 		av_free(h263->decoder.context);
+		h263->decoder.context = tsk_null;
 	}
 	if(h263->decoder.picture){
 		av_free(h263->decoder.picture);
+		h263->decoder.picture = tsk_null;
 	}
 	if(h263->decoder.accumulator){
 		TSK_FREE(h263->decoder.accumulator);
