@@ -375,6 +375,7 @@ int tdav_session_audio_start(tmedia_session_t* self)
 int tdav_session_audio_stop(tmedia_session_t* self)
 {
 	tdav_session_audio_t* audio;
+	tmedia_codec_t* codec = tsk_null;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -395,6 +396,12 @@ int tdav_session_audio_stop(tmedia_session_t* self)
 	/* Producer */
 	if(audio->producer){
 		tmedia_producer_stop(audio->producer);
+	}
+
+	/* close codec to force open() for next start (e.g SIP UPDATE with SDP) */
+	if((codec = tsk_object_ref(TSK_LIST_FIRST_DATA(self->neg_codecs)))){
+		tmedia_codec_close(codec);
+		tsk_object_unref(codec);
 	}
 
 	return 0;
