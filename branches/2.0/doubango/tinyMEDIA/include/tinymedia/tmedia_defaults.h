@@ -72,6 +72,10 @@ TINYMEDIA_API tmedia_type_t tmedia_defaults_get_media_type();
 TINYMEDIA_API int tmedia_defaults_set_media_type(tmedia_type_t media_type);
 TINYMEDIA_API int tmedia_defaults_set_volume(int32_t volume);
 TINYMEDIA_API int32_t tmedia_defaults_get_volume();
+TINYMEDIA_API int32_t tmedia_defaults_get_inv_session_expires();
+TINYMEDIA_API int tmedia_defaults_set_inv_session_expires(int32_t timeout);
+TINYMEDIA_API const char* tmedia_defaults_get_inv_session_refresher();
+TINYMEDIA_API int tmedia_defaults_set_inv_session_refresher(const char* refresher);
 
 
 

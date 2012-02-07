@@ -2857,6 +2857,27 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1
 }
 
 
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetInviteSessionTimers(JNIEnv *jenv, jclass jcls, jint jarg1, jstring jarg2) {
+  jboolean jresult = 0 ;
+  int32_t arg1 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int32_t)jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  result = (bool)MediaSessionMgr::defaultsSetInviteSessionTimers(arg1,(char const *)arg2);
+  jresult = (jboolean)result; 
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1MediaContent(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   MediaContent *arg1 = (MediaContent *) 0 ;
   

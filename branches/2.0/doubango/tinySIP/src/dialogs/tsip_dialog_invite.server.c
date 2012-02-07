@@ -300,6 +300,7 @@ int s0000_Started_2_Ringing_X_iINVITE(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	tsip_request_t *request = va_arg(*app, tsip_request_t *);
+	const tsip_header_Session_Expires_t* hdr_SessionExpires;
 
 	/* we are not the client */
 	self->is_client = tsk_false;
@@ -308,9 +309,19 @@ int s0000_Started_2_Ringing_X_iINVITE(va_list *app)
 	TSK_OBJECT_SAFE_FREE(self->last_iInvite);
 	self->last_iInvite = tsk_object_ref(request);
 
-	// add "require" tag if the incoming INVITE contains "100rel" tag in "supported" header
+	// add "require:100rel" tag if the incoming INVITE contains "100rel" tag in "supported" header
 	if(self->last_iInvite && (tsip_message_supported(self->last_iInvite, "100rel") || tsip_message_required(self->last_iInvite, "100rel")) && self->supported._100rel){
 		self->require._100rel = tsk_true;
+	}
+
+	// add "require:timer" tag if incoming INVITE contains "timer" tag in "supported" header and session timers is enabled
+	if(TSIP_DIALOG_GET_SS(self)->media.timers.timeout){
+		if((hdr_SessionExpires = (const tsip_header_Session_Expires_t*)tsip_message_get_header(request, tsip_htype_Session_Expires))){
+			// "hdr_SessionExpires->delta_seconds" smallnest already checked
+			self->stimers.timer.timeout = hdr_SessionExpires->delta_seconds;
+			tsk_strupdate(&self->stimers.refresher, hdr_SessionExpires->refresher_uas ? "uas" : "uac");
+			self->require.timer = tsk_true;
+		}
 	}
 
 	/* update state */

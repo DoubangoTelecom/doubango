@@ -290,3 +290,10 @@ int32_t MediaSessionMgr::defaultsGetVolume()
 {
 	return tmedia_defaults_get_volume();
 }
+
+bool MediaSessionMgr::defaultsSetInviteSessionTimers(int32_t timeout, const char* refresher)
+{
+	int ret = tmedia_defaults_set_inv_session_expires(timeout);
+	ret &= tmedia_defaults_set_inv_session_refresher(refresher);
+	return (ret == 0);
+}

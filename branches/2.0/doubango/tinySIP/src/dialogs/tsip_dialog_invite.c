@@ -1351,7 +1351,14 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 	if((response = tsip_dialog_response_new(TSIP_DIALOG(self), code, phrase, request))){
 		if(TSIP_REQUEST_IS_INVITE(request) || TSIP_REQUEST_IS_UPDATE(request)){
 			/* Session timers (for 2xx to INVITE or UPDATE) */
-			if(self->stimers.timer.timeout){
+			if(self->require.timer){
+				tsip_message_add_headers(response,
+						TSIP_HEADER_REQUIRE_VA_ARGS("timer"),
+						TSIP_HEADER_SESSION_EXPIRES_VA_ARGS(self->stimers.timer.timeout, tsk_striequals(self->stimers.refresher, "uas")),
+						tsk_null
+					);
+			}
+			else if(self->supported.timer){
 				tsip_message_add_headers(response,
 						TSIP_HEADER_SUPPORTED_VA_ARGS("timer"),
 						TSIP_HEADER_SESSION_EXPIRES_VA_ARGS(self->stimers.timer.timeout, tsk_striequals(self->stimers.refresher, "uas")),

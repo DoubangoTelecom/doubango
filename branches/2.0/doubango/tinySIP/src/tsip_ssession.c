@@ -563,6 +563,8 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		ss->media.type = tmedia_none;
 		ss->media.qos.type = tmedia_qos_stype_none;
 		ss->media.qos.strength = tmedia_qos_strength_none;
+		ss->media.timers.refresher = tsk_strdup(tmedia_defaults_get_inv_session_refresher());
+		ss->media.timers.timeout = tmedia_defaults_get_inv_session_expires();
 
 		/* add the session to the stack */
 		if(ss->stack){

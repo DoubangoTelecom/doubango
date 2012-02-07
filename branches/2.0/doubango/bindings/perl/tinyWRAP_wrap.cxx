@@ -4137,6 +4137,45 @@ XS(_wrap_MediaSessionMgr_defaultsGetVolume) {
 }
 
 
+XS(_wrap_MediaSessionMgr_defaultsSetInviteSessionTimers) {
+  {
+    int32_t arg1 ;
+    char *arg2 = (char *) 0 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetInviteSessionTimers(timeout,refresher);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetInviteSessionTimers" "', argument " "1"" of type '" "int32_t""'");
+    } 
+    arg1 = static_cast< int32_t >(val1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MediaSessionMgr_defaultsSetInviteSessionTimers" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (bool)MediaSessionMgr::defaultsSetInviteSessionTimers(arg1,(char const *)arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_delete_MediaContent) {
   {
     MediaContent *arg1 = (MediaContent *) 0 ;
@@ -23257,6 +23296,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsSetMediaType", _wrap_MediaSessionMgr_defaultsSetMediaType},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetVolume", _wrap_MediaSessionMgr_defaultsSetVolume},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetVolume", _wrap_MediaSessionMgr_defaultsGetVolume},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetInviteSessionTimers", _wrap_MediaSessionMgr_defaultsSetInviteSessionTimers},
 {"tinyWRAPc::delete_MediaContent", _wrap_delete_MediaContent},
 {"tinyWRAPc::MediaContent_getType", _wrap_MediaContent_getType},
 {"tinyWRAPc::MediaContent_getDataLength", _wrap_MediaContent_getDataLength},

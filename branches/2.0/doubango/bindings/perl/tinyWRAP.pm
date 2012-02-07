@@ -227,6 +227,7 @@ sub DESTROY {
 *defaultsSetMediaType = *tinyWRAPc::MediaSessionMgr_defaultsSetMediaType;
 *defaultsSetVolume = *tinyWRAPc::MediaSessionMgr_defaultsSetVolume;
 *defaultsGetVolume = *tinyWRAPc::MediaSessionMgr_defaultsGetVolume;
+*defaultsSetInviteSessionTimers = *tinyWRAPc::MediaSessionMgr_defaultsSetInviteSessionTimers;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);

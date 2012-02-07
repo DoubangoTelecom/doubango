@@ -175,4 +175,8 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsGetVolume();
   }
 
+  public static boolean defaultsSetInviteSessionTimers(int timeout, String refresher) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetInviteSessionTimers(timeout, refresher);
+  }
+
 }

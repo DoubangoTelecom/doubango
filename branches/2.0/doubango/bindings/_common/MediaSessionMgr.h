@@ -85,6 +85,7 @@ public:
 	static bool defaultsSetMediaType(twrap_media_type_t media_type);
 	static bool defaultsSetVolume(int32_t volume);
 	static int32_t defaultsGetVolume();
+	static bool defaultsSetInviteSessionTimers(int32_t timeout, const char* refresher);
 
 private:
 	tmedia_session_mgr_t* m_pWrappedMgr;

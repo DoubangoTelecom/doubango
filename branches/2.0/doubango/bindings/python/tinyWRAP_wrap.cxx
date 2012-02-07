@@ -6724,6 +6724,40 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetInviteSessionTimers(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int32_t arg1 ;
+  char *arg2 = (char *) 0 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MediaSessionMgr_defaultsSetInviteSessionTimers",&obj0,&obj1)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetInviteSessionTimers" "', argument " "1"" of type '" "int32_t""'");
+  } 
+  arg1 = static_cast< int32_t >(val1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MediaSessionMgr_defaultsSetInviteSessionTimers" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  result = (bool)MediaSessionMgr::defaultsSetInviteSessionTimers(arg1,(char const *)arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *MediaSessionMgr_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -22290,6 +22324,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_defaultsSetMediaType", _wrap_MediaSessionMgr_defaultsSetMediaType, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetVolume", _wrap_MediaSessionMgr_defaultsSetVolume, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetVolume", _wrap_MediaSessionMgr_defaultsGetVolume, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetInviteSessionTimers", _wrap_MediaSessionMgr_defaultsSetInviteSessionTimers, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_swigregister", MediaSessionMgr_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_MediaContent", _wrap_delete_MediaContent, METH_VARARGS, NULL},
 	 { (char *)"MediaContent_getType", _wrap_MediaContent_getType, METH_VARARGS, NULL},
