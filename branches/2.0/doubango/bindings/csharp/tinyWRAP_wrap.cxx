@@ -1879,6 +1879,20 @@ SWIGEXPORT int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetVolume() {
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetInviteSessionTimers(int jarg1, char * jarg2) {
+  unsigned int jresult ;
+  int32_t arg1 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (int32_t)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)MediaSessionMgr::defaultsSetInviteSessionTimers(arg1,(char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_MediaContent(void * jarg1) {
   MediaContent *arg1 = (MediaContent *) 0 ;
   

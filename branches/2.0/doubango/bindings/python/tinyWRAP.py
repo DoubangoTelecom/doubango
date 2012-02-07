@@ -209,6 +209,8 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetVolume = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetVolume)
     __swig_getmethods__["defaultsGetVolume"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetVolume
     if _newclass:defaultsGetVolume = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetVolume)
+    __swig_getmethods__["defaultsSetInviteSessionTimers"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetInviteSessionTimers
+    if _newclass:defaultsSetInviteSessionTimers = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetInviteSessionTimers)
 MediaSessionMgr_swigregister = _tinyWRAP.MediaSessionMgr_swigregister
 MediaSessionMgr_swigregister(MediaSessionMgr)
 
@@ -319,6 +321,10 @@ MediaSessionMgr_defaultsSetVolume = _tinyWRAP.MediaSessionMgr_defaultsSetVolume
 def MediaSessionMgr_defaultsGetVolume():
   return _tinyWRAP.MediaSessionMgr_defaultsGetVolume()
 MediaSessionMgr_defaultsGetVolume = _tinyWRAP.MediaSessionMgr_defaultsGetVolume
+
+def MediaSessionMgr_defaultsSetInviteSessionTimers(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetInviteSessionTimers(*args)
+MediaSessionMgr_defaultsSetInviteSessionTimers = _tinyWRAP.MediaSessionMgr_defaultsSetInviteSessionTimers
 
 class MediaContent(_object):
     __swig_setmethods__ = {}

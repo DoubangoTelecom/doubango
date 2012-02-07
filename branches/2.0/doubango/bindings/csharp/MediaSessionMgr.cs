@@ -216,6 +216,11 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetInviteSessionTimers(int timeout, string refresher) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetInviteSessionTimers(timeout, refresher);
+    return ret;
+  }
+
 }
 
 }
