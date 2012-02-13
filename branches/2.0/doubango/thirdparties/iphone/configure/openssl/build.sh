@@ -1,71 +1,90 @@
-#!/bin/sh
+#!/bin/bash
+TARGET=openssl-1.0.1-beta2
+SDK_VERSION=4.3
 
-######################################
-# Copyright (C) 2010 Laurent Etiemble
-######################################
+OPATH=$PATH
 
-VERSION="4.0"
-BASEDIR=`pwd`
+############################################################
 
-function patch() {
-    echo "Patching OpenSSL..."
-    FILE="./crypto/ui/ui_openssl.c"
-    cp "$FILE" "$FILE.orig"
-    sed -e "s/static volatile sig_atomic_t intr_signal;/static volatile int intr_signal;/"  "$FILE.orig" > "$FILE"
+build_openssl() {
+
+LIBNAME=$1
+DISTDIR=`pwd`/dist-$LIBNAME
+PLATFORM=$2
+
+echo "Building binary for iPhone $LIBNAME $PLATFORM to $DISTDIR"
+
+echo Removing ${TARGET}
+/bin/rm -rf ${TARGET}
+echo Extracting ${TARGET}
+tar zxf ${TARGET}.tar.gz
+
+case $LIBNAME in
+device)  ARCH="armv6";ASSEMBLY="no-asm";;
+*)       ARCH="i386";ASSEMBLY="";;
+esac
+
+cd ${TARGET}
+
+echo Patching crypto/ui/ui_openssl.c
+echo From: `fgrep 'intr_signal;' crypto/ui/ui_openssl.c`
+perl -pi.bak \
+    -e 's/static volatile sig_atomic_t intr_signal;/static volatile int intr_signal;/;' \
+    crypto/ui/ui_openssl.c
+echo To: `fgrep 'intr_signal;' crypto/ui/ui_openssl.c`
+
+# Compile a version for the device...
+
+PATH=/Developer/Platforms/${PLATFORM}.platform/Developer/usr/bin:$OPATH
+export PATH
+
+SDKPATH="/Developer/Platforms/${PLATFORM}.platform/Developer/SDKs/${PLATFORM}${SDK_VERSION}.sdk"
+
+mkdir ${DISTDIR}
+
+./config --openssldir=${DISTDIR} ${ASSEMBLY}
+
+perl -pi.bak \
+    -e "s;CC= cc;CC = /Developer/Platforms/${PLATFORM}.platform/Developer/usr/bin/gcc; ;" \
+    -e "s;CFLAG= ;CFLAG=-arch ${ARCH} -isysroot ${SDKPATH} ; ;" \
+    -e "s;-arch i386;-arch ${ARCH}; ;" \
+	Makefile
+
+case $LIBNAME in
+simulator)
+	perl -pi.bak \
+	    -e 'if (/LIBDEPS=/) { s/\)}";/\)} -L.";/; }' \
+            Makefile.shared
+	(cd apps; ln -s ${SDKPATH}/usr/lib/crt1.10.5.o crt1.10.6.o);
+	(cd test; ln -s ${SDKPATH}/usr/lib/crt1.10.5.o crt1.10.6.o);
+	;;
+esac
+
+make
+make install
+
+cd ..
+
+echo Clean-up ${TARGET}
+/bin/rm -rf ${TARGET}
 }
 
-function build() {
-    TARGET="$1"
-    ARCHITECTURE="$2"
-    PREFIX="/Developer/Platforms/$TARGET.platform/Developer"
+build_openssl "device" "iPhoneOS"
+build_openssl "simulator" "iPhoneSimulator"
 
-    mkdir "$BASEDIR/$TARGET-$ARCHITECTURE"
-    ./Configure BSD-generic32 --openssldir="$BASEDIR/$TARGET-$ARCHITECTURE"
+### Then, combine them into one..
 
-    LINE_CC="CC= $PREFIX/usr/bin/gcc -arch $ARCHITECTURE"
-    LINE_CFLAG=`egrep "^CFLAG=" Makefile`
-    LINE_CFLAG=`echo $LINE_CFLAG | awk -F"=" '{ print $2 }'`
-    LINE_CFLAG="CFLAG= -isysroot $PREFIX/SDKs/$TARGET$VERSION.sdk $LINE_CFLAG"
+echo "Creating combined binary into directory 'dist'"
+/bin/rm -rf dist
+mkdir dist
+(cd dist-device; tar cf - . ) | (cd dist; tar xf -)
 
-    cp Makefile Makefile.tmp
-    sed -e "s|^CC=.*$|$LINE_CC|" -e "s|^CFLAG=.*$|$LINE_CFLAG|" Makefile.tmp > Makefile
+for i in crypto ssl
+do
+    lipo -create dist-device/lib/lib$i.a dist-simulator/lib/lib$i.a \
+	-o dist/lib/lib$i.a
+done
 
-    make clean
-    find . -name "*.o" -exec rm {} \;
+/bin/rm -rf dist-simulator dist-device
 
-    make
-    make install
-}
-
-function merge() {
-    DISTDIR="iPhoneOS"
-    
-    rm -Rf "$DISTDIR"
-    FILES=`ls -d iPhone*`
-    mkdir -p "$DISTDIR/include"
-    mkdir -p "$DISTDIR/lib"
-    
-    for f in $FILES; do
-        cp -R "$f/include/" "$DISTDIR/include"
-    done
-
-    OPTIONS=""
-    for f in $FILES; do
-        OPTIONS="$OPTIONS $f/lib/libssl.a"
-    done
-    lipo -create $OPTIONS -output $DISTDIR/lib/libssl.a
-    
-    OPTIONS=""
-    for f in $FILES; do
-        OPTIONS="$OPTIONS $f/lib/libcrypto.a"
-    done
-    lipo -create $OPTIONS -output $DISTDIR/lib/libcrypto.a
-}
-
-patch
-
-build   "iPhoneSimulator"   "i386"
-build   "iPhoneOS"          "armv6"
-build   "iPhoneOS"          "armv7"
-
-merge
+echo "Now package is ready in 'dist' directory'"
