@@ -713,7 +713,9 @@ void *tnet_transport_mainthread(void *param)
 							TSK_FREE(buffer);
 							continue;
 						}
-						len = tlslen;
+						if(ret == 0){
+							len = ret = tlslen;
+						}
 					}
 				}
 				else {
@@ -723,14 +725,14 @@ void *tnet_transport_mainthread(void *param)
 					else {
 						ret = tnet_sockfd_recvfrom(active_socket->fd, buffer, len, 0, (struct sockaddr*)&remote_addr);
 					}
+				}
+				
+				if(ret < 0){
+					TSK_FREE(buffer);
 					
-					if(ret < 0){
-						TSK_FREE(buffer);
-						
-						removeSocket(i, context);
-						TNET_PRINT_LAST_ERROR("recv/recvfrom have failed.");
-						continue;
-					}
+					removeSocket(i, context);
+					TNET_PRINT_LAST_ERROR("recv/recvfrom have failed.");
+					continue;
 				}
 				
 				if((len != (tsk_size_t)ret) && len){

@@ -37,7 +37,9 @@
 #include "tsk_safeobj.h"
 #include "tsk_thread.h"
 
-#define TNET_CIPHER_LIST "AES128-SHA"
+#ifndef TNET_CIPHER_LIST
+#	define TNET_CIPHER_LIST "AES128-SHA"
+#endif
 
 #if TNET_HAVE_OPENSSL_H || HAVE_OPENSSL_H
 #	include <openssl/ssl.h>
@@ -101,7 +103,7 @@ int tnet_tls_socket_isok(const tnet_tls_socket_handle_t* self)
 
 int tnet_tls_socket_connect(tnet_tls_socket_handle_t* self)
 {
-#if !TNET_HAVE_OPENSSL_H || !HAVE_OPENSSL_H
+#if !TNET_HAVE_OPENSSL_H && !HAVE_OPENSSL_H
 	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
@@ -152,7 +154,7 @@ int tnet_tls_socket_connect(tnet_tls_socket_handle_t* self)
 
 int tnet_tls_socket_write(tnet_tls_socket_handle_t* self, const void* data, tsk_size_t size)
 {
-#if !TNET_HAVE_OPENSSL_H || !HAVE_OPENSSL_H
+#if !TNET_HAVE_OPENSSL_H && !HAVE_OPENSSL_H
 	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
@@ -229,7 +231,7 @@ ssl_write:
 
 int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void** data, tsk_size_t *size, int *isEncrypted)
 {
-#if !TNET_HAVE_OPENSSL_H || !HAVE_OPENSSL_H
+#if !TNET_HAVE_OPENSSL_H && !HAVE_OPENSSL_H
 	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
@@ -320,7 +322,7 @@ bail:
 
 int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 {
-#if !TNET_HAVE_OPENSSL_H || !HAVE_OPENSSL_H
+#if !TNET_HAVE_OPENSSL_H && !HAVE_OPENSSL_H
 	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
@@ -331,7 +333,7 @@ int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 	}
 
 	/* Sets SSL method */
-	socket->ssl_meth = socket->isClient ? TLSv1_client_method() : TLSv1_server_method();
+	socket->ssl_meth = (SSL_METHOD *) (socket->isClient ? TLSv1_client_method() : TLSv1_server_method());
 	
 	/* Creates the context */
 	if(!(socket->ssl_ctx = SSL_CTX_new(socket->ssl_meth))){
@@ -370,7 +372,7 @@ int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 			}
 			/* Sets trusted CAs and CA file */
 			if((ret = SSL_CTX_load_verify_locations(socket->ssl_ctx, socket->tlsfile_ca, socket->tlsdir_cas)) < 1) {
-			   TSK_DEBUG_ERROR("SSL_CTX_load_verify_locations failed [%s].", ret);
+			   TSK_DEBUG_ERROR("SSL_CTX_load_verify_locations failed [%d].", ret);
 			   return -5;
 			}
 			/* Server verification */
@@ -422,7 +424,7 @@ static tsk_object_t* tnet_tls_socket_ctor(tsk_object_t * self, va_list * app)
 		socket->isClient = va_arg(*app, tsk_bool_t);
 
 		/* Mutual authentication requires that the TLS client-side also hold a certificate. */
-		if(socket->tlsfile_pvk && socket->tlsfile_pbk && socket->tlsfile_ca){
+		if(!tsk_strnullORempty(socket->tlsfile_pvk) && !tsk_strnullORempty(socket->tlsfile_pbk) && !tsk_strnullORempty(socket->tlsfile_ca)){
 			socket->mutual_auth = tsk_true;
 		}
 		else{
