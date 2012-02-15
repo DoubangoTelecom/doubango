@@ -49,7 +49,6 @@ static const char* supported_options[] = { "100rel", "precondition", "timer" };
 extern int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase, tsk_bool_t force_sdp);
 extern int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message);
 extern int tsip_dialog_invite_stimers_schedule(tsip_dialog_invite_t* self, uint64_t timeout);
-extern tsk_bool_t  tsip_dialog_invite_stimers_isRefresher(tsip_dialog_invite_t* self);
 extern int send_ERROR(tsip_dialog_invite_t* self, const tsip_request_t* request, short code, const char* phrase, const char* reason);
 
 extern int tsip_dialog_invite_timer_callback(const tsip_dialog_invite_t* self, tsk_timer_id_t timer_id);
@@ -148,6 +147,7 @@ static tsk_bool_t _fsm_cond_toosmall(tsip_dialog_invite_t* self, tsip_message_t*
 				const tsip_header_Min_SE_t* Min_SE;
 				self->stimers.timer.timeout = Session_Expires->delta_seconds;
 				tsk_strupdate(&self->stimers.refresher, Session_Expires->refresher_uas ? "uas" : "uac");
+				self->stimers.is_refresher = tsk_striequals(self->stimers.refresher, "uas");
 				if((Min_SE = (const tsip_header_Min_SE_t*)tsip_message_get_header(message, tsip_htype_Min_SE))){
 					self->stimers.minse = Min_SE->delta_seconds;
 				}
@@ -320,6 +320,7 @@ int s0000_Started_2_Ringing_X_iINVITE(va_list *app)
 			// "hdr_SessionExpires->delta_seconds" smallnest already checked
 			self->stimers.timer.timeout = hdr_SessionExpires->delta_seconds;
 			tsk_strupdate(&self->stimers.refresher, hdr_SessionExpires->refresher_uas ? "uas" : "uac");
+			self->stimers.is_refresher = tsk_striequals(self->stimers.refresher, "uas");
 			self->require.timer = tsk_true;
 		}
 	}
@@ -603,7 +604,7 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 
 	/* Session Timers */
 	if(self->stimers.timer.timeout){
-		if(tsip_dialog_invite_stimers_isRefresher(self)){
+		if(self->stimers.is_refresher){
 			/* RFC 4028 - 9. UAS Behavior
 				It is RECOMMENDED that this refresh be sent oncehalf the session interval has elapsed. 
 				Additional procedures for this refresh are described in Section 10.

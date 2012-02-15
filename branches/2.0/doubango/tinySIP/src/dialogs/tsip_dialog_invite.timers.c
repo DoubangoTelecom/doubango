@@ -39,7 +39,6 @@
 #include "tsk_debug.h"
 
 /* ======================== internal functions ======================== */
-tsk_bool_t  tsip_dialog_invite_stimers_isRefresher(tsip_dialog_invite_t* self);
 
 /* ======================== external functions ======================== */
 extern int tsip_dialog_invite_timer_callback(const tsip_dialog_invite_t* self, tsk_timer_id_t timer_id);
@@ -55,7 +54,7 @@ static int x0250_Any_2_Any_X_i422(va_list *app);
 /* ======================== conds ======================== */
 static tsk_bool_t _fsm_cond_is_refresher(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
-	return tsip_dialog_invite_stimers_isRefresher(self);
+	return self->stimers.is_refresher;
 }
 static tsk_bool_t _fsm_cond_is_not_refresher(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
@@ -171,17 +170,6 @@ int x0250_Any_2_Any_X_i422(va_list *app)
 
 
 
-/* Indicates whether we are the refresher or not */
-tsk_bool_t  tsip_dialog_invite_stimers_isRefresher(tsip_dialog_invite_t* self)
-{
-	if(!self){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return tsk_false;
-	}
-	return (self->is_client && tsk_striequals(self->stimers.refresher, "uac")) ||
-		(!self->is_client && tsk_striequals(self->stimers.refresher, "uas"));
-}
-
 /* cancel the timer */
 int tsip_dialog_invite_stimers_cancel(tsip_dialog_invite_t* self)
 {
@@ -227,6 +215,8 @@ int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_mes
 			}
 			else{
 				self->stimers.timer.timeout = hdr_SessionExpires->delta_seconds;
+				tsk_strupdate(&self->stimers.refresher, hdr_SessionExpires->refresher_uas ? "uas" : "uac");
+				self->stimers.is_refresher = tsk_striequals(self->stimers.refresher, "uas");
 			}
 		}
 	}
@@ -261,9 +251,8 @@ int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_mes
 				}
 				else{
 					self->stimers.timer.timeout = hdr_SessionExpires->delta_seconds;
-					if(tsk_strnullORempty(self->stimers.refresher)){
-						tsk_strupdate(&self->stimers.refresher, hdr_SessionExpires->refresher_uas ? "uas" : "uac");
-					}
+					tsk_strupdate(&self->stimers.refresher, hdr_SessionExpires->refresher_uas ? "uas" : "uac");
+					self->stimers.is_refresher = tsk_striequals(self->stimers.refresher, "uac");
 					self->supported.timer = (self->stimers.timer.timeout != 0);
 				}
 			}
@@ -293,7 +282,7 @@ int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_mes
 	
 	/* schedule timer */
 	if(self->stimers.timer.timeout){
-		if(tsip_dialog_invite_stimers_isRefresher(self)){
+		if(self->stimers.is_refresher){
 			/* RFC 4028 - 9. UAS Behavior
 				It is RECOMMENDED that this refresh be sent oncehalf the session interval has elapsed. 
 				Additional procedures for this refresh are described in Section 10.
