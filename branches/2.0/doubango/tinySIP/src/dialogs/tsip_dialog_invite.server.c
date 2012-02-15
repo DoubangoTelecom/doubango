@@ -135,7 +135,7 @@ static tsk_bool_t _fsm_cond_bad_content(tsip_dialog_invite_t* self, tsip_message
 
 static tsk_bool_t _fsm_cond_toosmall(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
-	if(tsip_message_supported(message, "timer") || tsip_message_required(message, "timer")){
+	if(TSIP_DIALOG_GET_SS(self)->media.timers.timeout && (tsip_message_supported(message, "timer") || tsip_message_required(message, "timer"))){
 		const tsip_header_Session_Expires_t* Session_Expires;
 		if((Session_Expires = (const tsip_header_Session_Expires_t*)tsip_message_get_header(message, tsip_htype_Session_Expires))){
 			if(Session_Expires->delta_seconds < TSIP_SESSION_EXPIRES_MIN_VALUE){

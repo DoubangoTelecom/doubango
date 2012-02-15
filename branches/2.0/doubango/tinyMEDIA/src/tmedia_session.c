@@ -805,6 +805,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	tsk_bool_t is_hold_resume = tsk_false;
 	tsk_bool_t is_loopback_address = tsk_false;
 	tsk_bool_t is_mediatype_changed = tsk_false;
+	tsk_bool_t had_ro_sdp;
 	tmedia_qos_stype_t qos_type = tmedia_qos_stype_none;
 	tmedia_type_t new_mediatype = tmedia_none;
 
@@ -812,6 +813,8 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+
+	had_ro_sdp = (self->sdp.ro != tsk_null);
 
 	/*	RFC 3264 subcaluse 8
 		When issuing an offer that modifies the session, the "o=" line of the new SDP MUST be identical to that in the previous SDP, 
@@ -926,8 +929,8 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		self->qos.type = qos_type;
 	}
 
-	/* signal that ro has changed (will be used to update lo) */
-	self->ro_changed = tsk_true;
+	/* signal that ro has changed (will be used to update lo) unless there was no ro_sdp*/
+	self->ro_changed = had_ro_sdp;
 	
 	/* manager was started and we stopped it in order to reconfigure it (codecs, network, ....) */
 	if(stopped_to_reconf){
