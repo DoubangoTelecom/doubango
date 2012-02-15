@@ -592,14 +592,14 @@ int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app)
 	*/
 	bodiless_invite = !TSIP_MESSAGE_HAS_CONTENT(rINVITEorUPDATE) && TSIP_REQUEST_IS_INVITE(rINVITEorUPDATE);
 
-	// send the response
-	ret = send_RESPONSE(self, rINVITEorUPDATE, 200, "OK",
-		(self->msession_mgr && (force_sdp || bodiless_invite || self->msession_mgr->ro_changed || self->msession_mgr->state_changed || (old_media_type != new_media_type))));
-
-	/* session timers */
+	/* session timers (must be before sending response) */
 	if(self->stimers.timer.timeout){
 		tsip_dialog_invite_stimers_handle(self, rINVITEorUPDATE);
 	}
+
+	// send the response
+	ret = send_RESPONSE(self, rINVITEorUPDATE, 200, "OK",
+		(self->msession_mgr && (force_sdp || bodiless_invite || self->msession_mgr->ro_changed || self->msession_mgr->state_changed || (old_media_type != new_media_type))));
 
 	/* hold/resume */
 	tsip_dialog_invite_hold_handle(self, rINVITEorUPDATE);

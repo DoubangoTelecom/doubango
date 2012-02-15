@@ -254,10 +254,13 @@ int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_mes
 					tsk_strupdate(&self->stimers.refresher, hdr_SessionExpires->refresher_uas ? "uas" : "uac");
 					self->stimers.is_refresher = tsk_striequals(self->stimers.refresher, "uac");
 					self->supported.timer = (self->stimers.timer.timeout != 0);
+					self->require.timer = self->supported.timer;
 				}
 			}
 			else{
 				self->stimers.timer.timeout = 0; /* turned-off */
+				self->supported.timer = tsk_false;
+				self->require.timer = tsk_false;
 				ret = send_RESPONSE(self, message, 481, "Session-Expires header is missing");
 				return 0;
 			}
@@ -274,6 +277,7 @@ int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_mes
 			*/
 			self->stimers.timer.timeout = 0; /* turned-off */
 			self->supported.timer = tsk_false;
+			self->require.timer = tsk_false;
 		}
 	}
 	
