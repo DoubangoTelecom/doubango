@@ -161,6 +161,7 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 	if(TSIP_DIALOG_GET_SS(self)->media.timers.timeout){
 		self->stimers.timer.timeout = TSIP_DIALOG_GET_SS(self)->media.timers.timeout;
 		tsk_strupdate(&self->stimers.refresher, TSIP_DIALOG_GET_SS(self)->media.timers.refresher);
+		self->stimers.is_refresher = tsk_striequals(self->stimers.refresher, "uac");
 		self->supported.timer = tsk_true;
 	}
 	

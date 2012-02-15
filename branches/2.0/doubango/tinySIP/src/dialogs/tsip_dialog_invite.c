@@ -958,14 +958,14 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bo
 		if(self->stimers.timer.timeout){
 			if(self->require.timer){
 				tsip_message_add_headers(request,
-						TSIP_HEADER_SESSION_EXPIRES_VA_ARGS(self->stimers.timer.timeout, tsk_striequals(self->stimers.refresher, "uas")),
+						TSIP_HEADER_SESSION_EXPIRES_VA_ARGS(self->stimers.timer.timeout, !self->stimers.is_refresher),
 						TSIP_HEADER_REQUIRE_VA_ARGS("timer"),
 						tsk_null
 					);
 			}
 			else if(self->supported.timer){
 				tsip_message_add_headers(request,
-						TSIP_HEADER_SESSION_EXPIRES_VA_ARGS(self->stimers.timer.timeout, tsk_striequals(self->stimers.refresher, "uas")),
+						TSIP_HEADER_SESSION_EXPIRES_VA_ARGS(self->stimers.timer.timeout, !self->stimers.is_refresher),
 						TSIP_HEADER_SUPPORTED_VA_ARGS("timer"),
 						tsk_null
 					);

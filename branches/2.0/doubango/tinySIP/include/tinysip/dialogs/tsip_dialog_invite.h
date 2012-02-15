@@ -65,6 +65,7 @@ typedef struct tsip_dialog_invite
 		tsip_timer_t timer;
 		char* refresher;
 		uint64_t minse;
+		tsk_bool_t is_refresher;
 	} stimers;
 	/* QoS (Preconditions) */
 	struct{
