@@ -117,10 +117,9 @@ static int record_wavehdr(tdav_producer_waveapi_t* producer, LPWAVEHDR lpHdr)
 	//
 	// Alert the session that there is new data to send over the network
 	//
-	if(TMEDIA_PRODUCER(producer)->callback){
-		TMEDIA_PRODUCER(producer)->callback(TMEDIA_PRODUCER(producer)->callback_data, lpHdr->lpData, (lpHdr->dwBytesRecorded/2));
+	if(TMEDIA_PRODUCER(producer)->enc_cb.callback){
+		TMEDIA_PRODUCER(producer)->enc_cb.callback(TMEDIA_PRODUCER(producer)->enc_cb.callback_data, lpHdr->lpData, (lpHdr->dwBytesRecorded/2));
 	}
-	
 
 	if(!producer->started){
 		return 0;
@@ -199,22 +198,23 @@ int tdav_producer_waveapi_prepare(tmedia_producer_t* self, const tmedia_codec_t*
 		return -1;
 	}
 	
-	TDAV_PRODUCER_AUDIO(producer)->channels = codec->plugin->audio.channels;
-	TDAV_PRODUCER_AUDIO(producer)->rate = codec->plugin->rate;
+	TMEDIA_PRODUCER(producer)->audio.channels = codec->plugin->audio.channels;
+	TMEDIA_PRODUCER(producer)->audio.rate = codec->plugin->rate;
+	TMEDIA_PRODUCER(producer)->audio.ptime = codec->plugin->audio.ptime;
 	/* codec should have ptime */
 	
 
 	/* Format */
 	ZeroMemory(&producer->wfx, sizeof(WAVEFORMATEX));
 	producer->wfx.wFormatTag = WAVE_FORMAT_PCM;
-	producer->wfx.nChannels = TDAV_PRODUCER_AUDIO(producer)->channels;
-	producer->wfx.nSamplesPerSec = TDAV_PRODUCER_AUDIO(producer)->rate;
-	producer->wfx.wBitsPerSample = TDAV_PRODUCER_AUDIO(producer)->bits_per_sample;
+	producer->wfx.nChannels = TMEDIA_PRODUCER(producer)->audio.channels;
+	producer->wfx.nSamplesPerSec = TMEDIA_PRODUCER(producer)->audio.rate;
+	producer->wfx.wBitsPerSample = TMEDIA_PRODUCER(producer)->audio.bits_per_sample;
 	producer->wfx.nBlockAlign = (producer->wfx.nChannels * producer->wfx.wBitsPerSample/8);
 	producer->wfx.nAvgBytesPerSec = (producer->wfx.nSamplesPerSec * producer->wfx.nBlockAlign);
 
 	/* Average bytes (count) for each notification */
-	producer->bytes_per_notif = ((producer->wfx.nAvgBytesPerSec * TDAV_PRODUCER_AUDIO(producer)->ptime)/1000);
+	producer->bytes_per_notif = ((producer->wfx.nAvgBytesPerSec * TMEDIA_PRODUCER(producer)->audio.ptime)/1000);
 
 	/* create buffers */
 	for(i = 0; i< sizeof(producer->hWaveHeaders)/sizeof(LPWAVEHDR); i++){
