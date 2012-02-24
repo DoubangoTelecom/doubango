@@ -248,8 +248,10 @@ class tinyWRAPJNI {
   public final static native boolean PublicationSession_unPublish__SWIG_1(long jarg1, PublicationSession jarg1_);
   public final static native long new_RegistrationSession(long jarg1, SipStack jarg1_);
   public final static native void delete_RegistrationSession(long jarg1);
-  public final static native boolean RegistrationSession_register_(long jarg1, RegistrationSession jarg1_);
-  public final static native boolean RegistrationSession_unRegister(long jarg1, RegistrationSession jarg1_);
+  public final static native boolean RegistrationSession_register___SWIG_0(long jarg1, RegistrationSession jarg1_, long jarg2, ActionConfig jarg2_);
+  public final static native boolean RegistrationSession_register___SWIG_1(long jarg1, RegistrationSession jarg1_);
+  public final static native boolean RegistrationSession_unRegister__SWIG_0(long jarg1, RegistrationSession jarg1_, long jarg2, ActionConfig jarg2_);
+  public final static native boolean RegistrationSession_unRegister__SWIG_1(long jarg1, RegistrationSession jarg1_);
   public final static native boolean RegistrationSession_accept__SWIG_0(long jarg1, RegistrationSession jarg1_, long jarg2, ActionConfig jarg2_);
   public final static native boolean RegistrationSession_accept__SWIG_1(long jarg1, RegistrationSession jarg1_);
   public final static native boolean RegistrationSession_reject__SWIG_0(long jarg1, RegistrationSession jarg1_, long jarg2, ActionConfig jarg2_);

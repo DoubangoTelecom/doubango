@@ -240,7 +240,7 @@ int tsip_uri_strcmp(const char* s1, const char* s2, tsk_bool_t case_sensitive)
 #define tsip_uri_strequals(s1, s2) !tsip_uri_strcmp(s1, s2, tsk_true)
 #define tsip_uri_striequals(s1, s2) !tsip_uri_strcmp(s1, s2, tsk_false)
 
-// FIXME: tel uris are caompred as per RFC 3966 section 4
+// FIXME: tel uris are compared as per RFC 3966 section 4
 static int tsip_uri_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	if(obj1 && obj2){

@@ -40,7 +40,7 @@
 
 TDAV_BEGIN_DECLS
 
-#define TDAV_DSOUNS_CONSUMER_NOTIF_POS_COUNT		4
+#define TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT		10
 
 typedef struct tdav_consumer_dsound_s
 {
@@ -53,7 +53,7 @@ typedef struct tdav_consumer_dsound_s
 	LPDIRECTSOUND device;
 	LPDIRECTSOUNDBUFFER primaryBuffer;
 	LPDIRECTSOUNDBUFFER secondaryBuffer;
-	HANDLE notifEvents[TDAV_DSOUNS_CONSUMER_NOTIF_POS_COUNT];
+	HANDLE notifEvents[TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT];
 }
 tdav_consumer_dsound_t;
 

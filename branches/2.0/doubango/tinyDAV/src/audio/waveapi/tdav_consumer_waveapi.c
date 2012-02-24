@@ -264,15 +264,14 @@ int tdav_consumer_waveapi_start(tmedia_consumer_t* self)
 		return -2;
 	 }
 
-	 /* start thread */
-	 tsk_thread_create(&consumer->tid[0], __playback_thread, consumer);
-
 	 /* write */
 	 for(i = 0; i< sizeof(consumer->hWaveHeaders)/sizeof(LPWAVEHDR); i++){
 		write_wavehdr(consumer, i);
 	}
 
-	consumer->started = tsk_true;
+	 /* start thread */
+	 consumer->started = tsk_true;
+	 tsk_thread_create(&consumer->tid[0], __playback_thread, consumer);
 
 	return 0;
 }

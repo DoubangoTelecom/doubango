@@ -786,8 +786,8 @@ class RegistrationSession(SipSession):
         except: self.this = this
     __swig_destroy__ = _tinyWRAP.delete_RegistrationSession
     __del__ = lambda self : None;
-    def register_(self): return _tinyWRAP.RegistrationSession_register_(self)
-    def unRegister(self): return _tinyWRAP.RegistrationSession_unRegister(self)
+    def register_(self, *args): return _tinyWRAP.RegistrationSession_register_(self, *args)
+    def unRegister(self, *args): return _tinyWRAP.RegistrationSession_unRegister(self, *args)
     def accept(self, *args): return _tinyWRAP.RegistrationSession_accept(self, *args)
     def reject(self, *args): return _tinyWRAP.RegistrationSession_reject(self, *args)
 RegistrationSession_swigregister = _tinyWRAP.RegistrationSession_swigregister

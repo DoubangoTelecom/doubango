@@ -4160,7 +4160,21 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_RegistrationSession(void * jarg1) {
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RegistrationSession_register_(void * jarg1) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RegistrationSession_register___SWIG_0(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  RegistrationSession *arg1 = (RegistrationSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (RegistrationSession *)jarg1; 
+  arg2 = (ActionConfig *)jarg2; 
+  result = (bool)(arg1)->register_(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RegistrationSession_register___SWIG_1(void * jarg1) {
   unsigned int jresult ;
   RegistrationSession *arg1 = (RegistrationSession *) 0 ;
   bool result;
@@ -4172,7 +4186,21 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RegistrationSession_register_(void * 
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RegistrationSession_unRegister(void * jarg1) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RegistrationSession_unRegister__SWIG_0(void * jarg1, void * jarg2) {
+  unsigned int jresult ;
+  RegistrationSession *arg1 = (RegistrationSession *) 0 ;
+  ActionConfig *arg2 = (ActionConfig *) 0 ;
+  bool result;
+  
+  arg1 = (RegistrationSession *)jarg1; 
+  arg2 = (ActionConfig *)jarg2; 
+  result = (bool)(arg1)->unRegister(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_RegistrationSession_unRegister__SWIG_1(void * jarg1) {
   unsigned int jresult ;
   RegistrationSession *arg1 = (RegistrationSession *) 0 ;
   bool result;

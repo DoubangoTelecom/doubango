@@ -225,8 +225,8 @@ public: /* ctor() and dtor() */
 	virtual ~RegistrationSession();
 
 public: /* Public functions */
-	bool register_();
-	bool unRegister();
+	bool register_(ActionConfig* config=tsk_null);
+	bool unRegister(ActionConfig* config=tsk_null);
 	bool accept(ActionConfig* config=tsk_null);
 	bool reject(ActionConfig* config=tsk_null);
 };

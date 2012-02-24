@@ -899,11 +899,17 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_RegistrationSession")]
   public static extern void delete_RegistrationSession(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_register_")]
-  public static extern bool RegistrationSession_register_(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_register___SWIG_0")]
+  public static extern bool RegistrationSession_register___SWIG_0(HandleRef jarg1, HandleRef jarg2);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_unRegister")]
-  public static extern bool RegistrationSession_unRegister(HandleRef jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_register___SWIG_1")]
+  public static extern bool RegistrationSession_register___SWIG_1(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_unRegister__SWIG_0")]
+  public static extern bool RegistrationSession_unRegister__SWIG_0(HandleRef jarg1, HandleRef jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_unRegister__SWIG_1")]
+  public static extern bool RegistrationSession_unRegister__SWIG_1(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_RegistrationSession_accept__SWIG_0")]
   public static extern bool RegistrationSession_accept__SWIG_0(HandleRef jarg1, HandleRef jarg2);
