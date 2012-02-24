@@ -41,13 +41,23 @@ public class RegistrationSession : SipSession {
   public RegistrationSession(SipStack pStack) : this(tinyWRAPPINVOKE.new_RegistrationSession(SipStack.getCPtr(pStack)), true) {
   }
 
+  public bool register_(ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.RegistrationSession_register___SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
+    return ret;
+  }
+
   public bool register_() {
-    bool ret = tinyWRAPPINVOKE.RegistrationSession_register_(swigCPtr);
+    bool ret = tinyWRAPPINVOKE.RegistrationSession_register___SWIG_1(swigCPtr);
+    return ret;
+  }
+
+  public bool unRegister(ActionConfig config) {
+    bool ret = tinyWRAPPINVOKE.RegistrationSession_unRegister__SWIG_0(swigCPtr, ActionConfig.getCPtr(config));
     return ret;
   }
 
   public bool unRegister() {
-    bool ret = tinyWRAPPINVOKE.RegistrationSession_unRegister(swigCPtr);
+    bool ret = tinyWRAPPINVOKE.RegistrationSession_unRegister__SWIG_1(swigCPtr);
     return ret;
   }
 

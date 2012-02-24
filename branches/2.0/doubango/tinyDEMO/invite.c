@@ -88,14 +88,17 @@ int invite_handle_event(const tsip_event_t *_event)
 			break;
 		
 		/* Explicit Call Transfer (ECT) */
-		case tsip_o_ect_ok:
-			TSK_DEBUG_INFO("invite_handle_event(tsip_o_ect_ok)");
-			break;
-		case tsip_o_ect_nok:
-			TSK_DEBUG_INFO("invite_handle_event(tsip_o_ect_nok)");
-			break;
-		case tsip_i_ect:
-			TSK_DEBUG_INFO("invite_handle_event(tsip_i_ect)");
+		case tsip_o_ect_trying:
+		case tsip_o_ect_accepted:
+		case tsip_o_ect_completed:
+		case tsip_o_ect_failed:
+		case tsip_o_ect_notify:
+		case tsip_i_ect_requested:
+		case tsip_i_ect_newcall:
+		case tsip_i_ect_completed:
+		case tsip_i_ect_failed:
+		case tsip_i_ect_notify:
+			TSK_DEBUG_INFO("ECT event");
 			break;
 		
 		// ============================

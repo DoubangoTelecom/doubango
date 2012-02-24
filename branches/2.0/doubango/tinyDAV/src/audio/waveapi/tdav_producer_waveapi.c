@@ -262,15 +262,14 @@ int tdav_producer_waveapi_start(tmedia_producer_t* self)
 		return -2;
 	 }
 
-	 /* start thread */
-	 tsk_thread_create(&producer->tid[0], __record_thread, producer);
-
 	 /* write */
 	 for(i = 0; i< sizeof(producer->hWaveHeaders)/sizeof(LPWAVEHDR); i++){
 		add_wavehdr(producer, i);
 	}
 
-	producer->started = tsk_true;
+	 /* start thread */
+	 producer->started = tsk_true;
+	 tsk_thread_create(&producer->tid[0], __record_thread, producer);
 
 	return 0;
 }

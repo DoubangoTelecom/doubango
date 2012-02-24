@@ -62,43 +62,43 @@ static void *__playback_thread(void *param)
 
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 
-	for(;;){
-		DWORD dwEvent = WaitForMultipleObjects(sizeof(dsound->notifEvents)/sizeof(HANDLE), dsound->notifEvents, FALSE, INFINITE);
+	while(dsound->started){
+		tsk_size_t out_size;
 
+		DWORD dwEvent = WaitForMultipleObjects(TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT, dsound->notifEvents, FALSE, INFINITE);
 		if(!dsound->started){
 			break;
 		}
-		else {
-			tsk_size_t out_size;
-			index = (dwEvent == (TDAV_DSOUNS_CONSUMER_NOTIF_POS_COUNT-1)) ? 0 : (dwEvent + 1);
-			
-			// lock
-			if((hr = IDirectSoundBuffer_Lock(dsound->secondaryBuffer, (index * dsound->bytes_per_notif), dsound->bytes_per_notif, &lpvAudio1, &dwBytesAudio1, &lpvAudio2, &dwBytesAudio2, 0)) != DS_OK){
-				tdav_win32_print_error("IDirectSoundBuffer_Lock", hr);
-				goto next;
-			}
-
-			if((out_size = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(dsound), lpvAudio1, dwBytesAudio1))){
-				//if(lpvAudio2){
-				//	memcpy(lpvAudio2, ((LPBYTE*)data) + dwBytesAudio1, dwBytesAudio2);
-				//}
-			}
-			else{
-				// Put silence
-				memset(lpvAudio1, 0, dwBytesAudio1);
-				if(lpvAudio2){
-					memset(lpvAudio2, 0, dwBytesAudio2);
-				}
-			}
-
-			// unlock
-			if((hr = IDirectSoundBuffer_Unlock(dsound->secondaryBuffer, lpvAudio1, dwBytesAudio1, lpvAudio2, dwBytesAudio2)) != DS_OK){
-				tdav_win32_print_error("IDirectSoundBuffer_UnLock", hr);
-				goto next;
-			}
-next:
-			tdav_consumer_audio_tick(TDAV_CONSUMER_AUDIO(dsound));
+		
+		index = (dwEvent == (TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT - 1)) ? 0 : (dwEvent + 1);
+		
+		// lock
+		if((hr = IDirectSoundBuffer_Lock(dsound->secondaryBuffer, (index * dsound->bytes_per_notif), dsound->bytes_per_notif, &lpvAudio1, &dwBytesAudio1, &lpvAudio2, &dwBytesAudio2, 0)) != DS_OK){
+			tdav_win32_print_error("IDirectSoundBuffer_Lock", hr);
+			goto next;
 		}
+
+		if((out_size = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(dsound), lpvAudio1, dwBytesAudio1))){
+			if(lpvAudio2){
+				TSK_DEBUG_ERROR("Not expected!");
+				//memcpy(lpvAudio2, ((LPBYTE*)data) + dwBytesAudio1, dwBytesAudio2);
+			}
+		}
+		else{
+			// Put silence
+			memset(lpvAudio1, 0, dwBytesAudio1);
+			if(lpvAudio2){
+				memset(lpvAudio2, 0, dwBytesAudio2);
+			}
+		}
+
+		// unlock
+		if((hr = IDirectSoundBuffer_Unlock(dsound->secondaryBuffer, lpvAudio1, dwBytesAudio1, lpvAudio2, dwBytesAudio2)) != DS_OK){
+			tdav_win32_print_error("IDirectSoundBuffer_UnLock", hr);
+			goto next;
+		}
+next:
+		tdav_consumer_audio_tick(TDAV_CONSUMER_AUDIO(dsound));
 	}
 
 	TSK_DEBUG_INFO("__playback_thread -- STOP");
@@ -159,9 +159,10 @@ static int tdav_consumer_dsound_prepare(tmedia_consumer_t* self, const tmedia_co
 	}
 
 	/* Set CooperativeLevel */
-	if((hWnd = GetConsoleWindow()) || (hWnd = GetDesktopWindow()) || (hWnd = GetForegroundWindow())){
+	if((hWnd = GetForegroundWindow()) || (hWnd = GetDesktopWindow()) || (hWnd = GetConsoleWindow())){
 		if((hr = IDirectSound_SetCooperativeLevel(dsound->device, hWnd, DSSCL_PRIORITY)) != DS_OK){
 			tdav_win32_print_error("IDirectSound_SetCooperativeLevel", hr);
+			return -2;
 		}
 	}
 
@@ -192,7 +193,7 @@ static int tdav_consumer_dsound_prepare(tmedia_consumer_t* self, const tmedia_co
 
 	/* Creates the secondary buffer and apply format */
 	dsbd.dwFlags = (DSBCAPS_CTRLPOSITIONNOTIFY | DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLVOLUME);
-	dsbd.dwBufferBytes = (TDAV_DSOUNS_CONSUMER_NOTIF_POS_COUNT * dsound->bytes_per_notif);
+	dsbd.dwBufferBytes = (TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT * dsound->bytes_per_notif);
 	dsbd.lpwfxFormat = &wfx;
 
 	if((hr = IDirectSound_CreateSoundBuffer(dsound->device, &dsbd, &dsound->secondaryBuffer, NULL)) != DS_OK){
@@ -215,7 +216,7 @@ static int tdav_consumer_dsound_start(tmedia_consumer_t* self)
 	tsk_size_t i;
 	HRESULT hr;
 	LPDIRECTSOUNDNOTIFY lpDSBNotify;
-	DSBPOSITIONNOTIFY pPosNotify[TDAV_DSOUNS_CONSUMER_NOTIF_POS_COUNT] = {0};
+	DSBPOSITIONNOTIFY pPosNotify[TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT] = {0};
 	
 	if(!dsound){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -238,12 +239,12 @@ static int tdav_consumer_dsound_start(tmedia_consumer_t* self)
 	}
 
 	/* Events associated to notification points */
-	for(i = 0; i<sizeof(dsound->notifEvents)/sizeof(HANDLE); i++){
+	for(i = 0; i<TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT; i++){
 		dsound->notifEvents[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
-		pPosNotify[i].dwOffset = ((dsound->bytes_per_notif * i) + dsound->bytes_per_notif) - 1;
+		pPosNotify[i].dwOffset = (dsound->bytes_per_notif * i) + (dsound->bytes_per_notif >> 1);
 		pPosNotify[i].hEventNotify = dsound->notifEvents[i];
 	}
-	if((hr = IDirectSoundNotify_SetNotificationPositions(lpDSBNotify, TDAV_DSOUNS_CONSUMER_NOTIF_POS_COUNT, pPosNotify)) != DS_OK){
+	if((hr = IDirectSoundNotify_SetNotificationPositions(lpDSBNotify, TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT, pPosNotify)) != DS_OK){
 		IDirectSoundNotify_Release(lpDSBNotify);
 		tdav_win32_print_error("IDirectSoundBuffer_QueryInterface", hr);
 		return -4;
@@ -253,17 +254,16 @@ static int tdav_consumer_dsound_start(tmedia_consumer_t* self)
 		tdav_win32_print_error("IDirectSoundNotify_Release", hr);
 	}
 	
-	/* start the reader thread */
-	tsk_thread_create(&dsound->tid[0], __playback_thread, dsound);
-	
 	/* Start the buffer */
-	if((hr = IDirectSoundBuffer_Play(dsound->secondaryBuffer,0, 0, DSBPLAY_LOOPING)) != DS_OK){
+	if((hr = IDirectSoundBuffer_Play(dsound->secondaryBuffer, 0, 0, DSBPLAY_LOOPING)) != DS_OK){
 		tdav_win32_print_error("IDirectSoundNotify_Release", hr);
 		return -5;
 	}
 	
+	/* start the reader thread */
 	dsound->started = tsk_true;
-	
+	tsk_thread_create(&dsound->tid[0], __playback_thread, dsound);
+
 	return 0;
 }
 
