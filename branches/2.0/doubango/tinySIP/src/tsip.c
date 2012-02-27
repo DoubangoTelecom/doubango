@@ -239,6 +239,12 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 				else if(tsk_striequals(TRANSPORT_STR, "SCTP")){
 					TNET_SOCKET_TYPE_SET_SCTP(self->network.proxy_cscf_type);
 				}
+				else if(tsk_striequals(TRANSPORT_STR, "WS")){
+					TNET_SOCKET_TYPE_SET_WS(self->network.proxy_cscf_type);
+				}
+				else if(tsk_striequals(TRANSPORT_STR, "WSS")){
+					TNET_SOCKET_TYPE_SET_WSS(self->network.proxy_cscf_type);
+				}
 				else{
 					TSK_DEBUG_ERROR("%s not a valid transport", TRANSPORT_STR);
 					/* not mandatoy */

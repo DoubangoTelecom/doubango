@@ -52,6 +52,7 @@ typedef struct tsip_transport_s
 	TSK_DECLARE_OBJECT;
 
 	tsk_bool_t initialized;
+	tsk_bool_t ws_handshake_done;
 
 	const tsip_stack_t *stack;
 

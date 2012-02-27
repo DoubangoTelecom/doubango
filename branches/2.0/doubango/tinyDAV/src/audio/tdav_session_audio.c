@@ -285,6 +285,13 @@ int tdav_session_audio_set(tmedia_session_t* self, const tmedia_param_t* param)
 				audio->useIPv6 = tsk_striequals(param->value, "ipv6");
 			}
 		}
+		else if(param->value_type == tmedia_pvt_int32){
+			if(tsk_striequals(param->key, "echo-supp")){
+				if(audio->denoise){
+					audio->denoise->echo_supp_enabled = (TSK_TO_INT32((uint8_t*)param->value) != 0);
+				}
+			}
+		}
 		else if(param->value_type == tmedia_pvt_pobject){
 			if(tsk_striequals(param->key, "natt-ctx")){
 				TSK_OBJECT_SAFE_FREE(audio->natt_ctx);

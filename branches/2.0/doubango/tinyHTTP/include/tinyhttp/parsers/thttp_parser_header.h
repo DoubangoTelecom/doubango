@@ -36,7 +36,7 @@
 
 THTTP_BEGIN_DECLS
 
-int thttp_header_parse(tsk_ragel_state_t *state, thttp_message_t *message);
+TINYHTTP_API int thttp_header_parse(tsk_ragel_state_t *state, thttp_message_t *message);
 
 THTTP_END_DECLS
 
