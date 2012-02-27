@@ -40,7 +40,7 @@
 
 TDAV_BEGIN_DECLS
 
-#define TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT		10
+#define TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT		20
 
 typedef struct tdav_producer_dsound_s
 {

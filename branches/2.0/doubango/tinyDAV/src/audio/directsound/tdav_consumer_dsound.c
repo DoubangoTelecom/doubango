@@ -217,6 +217,17 @@ static int tdav_consumer_dsound_start(tmedia_consumer_t* self)
 	HRESULT hr;
 	LPDIRECTSOUNDNOTIFY lpDSBNotify;
 	DSBPOSITIONNOTIFY pPosNotify[TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT] = {0};
+
+	static DWORD dwMajorVersion = -1;
+
+	// Get OS version
+	if(dwMajorVersion == -1){
+		OSVERSIONINFO osvi;
+		ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+		GetVersionEx(&osvi);
+		dwMajorVersion = osvi.dwMajorVersion;
+	}
 	
 	if(!dsound){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -241,7 +252,8 @@ static int tdav_consumer_dsound_start(tmedia_consumer_t* self)
 	/* Events associated to notification points */
 	for(i = 0; i<TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT; i++){
 		dsound->notifEvents[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
-		pPosNotify[i].dwOffset = (dsound->bytes_per_notif * i) + (dsound->bytes_per_notif >> 1);
+		// set notification point offset at the start of the buffer for Windows Vista and later and at the half of the buffer of XP and before
+		pPosNotify[i].dwOffset = (dsound->bytes_per_notif * i) + (dwMajorVersion > 5 ? (dsound->bytes_per_notif >> 1) : 1);
 		pPosNotify[i].hEventNotify = dsound->notifEvents[i];
 	}
 	if((hr = IDirectSoundNotify_SetNotificationPositions(lpDSBNotify, TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT, pPosNotify)) != DS_OK){
