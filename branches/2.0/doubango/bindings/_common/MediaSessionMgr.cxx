@@ -54,8 +54,10 @@ MediaSessionMgr::~MediaSessionMgr()
 
 bool MediaSessionMgr::sessionSetInt32(twrap_media_type_t media, const char* key, int32_t value)
 {
-	TSK_DEBUG_ERROR("Not implemented");
-	return false;
+	tmedia_type_t _media = _get_media_type(media);
+	return (tmedia_session_mgr_set(m_pWrappedMgr,
+		TMEDIA_SESSION_SET_INT32(_media, key, value),
+		TMEDIA_SESSION_SET_NULL()) == 0);
 }
 
 bool MediaSessionMgr::consumerSetInt32(twrap_media_type_t media, const char* key, int32_t value)

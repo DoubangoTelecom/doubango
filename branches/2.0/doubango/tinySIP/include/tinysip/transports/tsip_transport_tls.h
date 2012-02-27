@@ -20,12 +20,11 @@
 *
 */
 
-/**@file tsip_transport_ipsec.h
+/**@file tsip_transport_tls.h
  * @brief SIP/TLS transport.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
-
  */
 #ifndef TINYSIP_TRANSPORT_TLS_H
 #define TINYSIP_TRANSPORT_TLS_H

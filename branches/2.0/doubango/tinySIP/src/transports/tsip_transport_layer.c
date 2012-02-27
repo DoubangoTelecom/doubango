@@ -36,6 +36,8 @@
 
 #include "tinysip/parsers/tsip_parser_message.h"
 
+#include "tinyhttp.h"
+
 #include "tsk_thread.h"
 #include "tsk_debug.h"
 
@@ -68,8 +70,7 @@ int tsip_transport_layer_handle_incoming_msg(const tsip_transport_t *transport, 
 	return ret;
 }
 
-/*== Non-blocking callback function (STREAM: TCP, TLS and SCTP)
-*/
+/*== Non-blocking callback function (STREAM: TCP, TLS and SCTP) */
 static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 {
 	int ret = -1;
@@ -77,10 +78,11 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	tsip_message_t *message = tsk_null;
 	int endOfheaders = -1;
 	const tsip_transport_t *transport = e->callback_data;
+	tsk_bool_t is_websock;
 	
 	switch(e->type){
 		case event_data: {
-				//TSK_DEBUG_INFO("\n\n\nSIP Message:%s\n\n\n", e->data);
+				TSK_DEBUG_INFO("\n\n\nSIP Message:%s\n\n\n", e->data);
 				break;
 			}
 		case event_closed:
@@ -89,6 +91,8 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 				return 0;
 			}
 	}
+
+	is_websock = (TNET_SOCKET_TYPE_IS_WS(transport->type) || TNET_SOCKET_TYPE_IS_WSS(transport->type));
 
 
 	/* RFC 3261 - 7.5 Framing SIP Messages
@@ -162,6 +166,24 @@ parse_buffer:
 	if((endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(transport->buff_stream),TSK_BUFFER_SIZE(transport->buff_stream), "\r\n\r\n"/*2CRLF*/)) < 0){
 		TSK_DEBUG_INFO("No all SIP headers in the TCP buffer.");
 		goto bail;
+	}
+
+	/* WebSocket Handshake */
+	if(is_websock && !transport->ws_handshake_done && transport->buff_stream->size > 4){
+		const uint8_t* pdata = (const uint8_t*)transport->buff_stream->data;
+		if(pdata[0] == 'G' && pdata[1] == 'E' && pdata[2] == 'T'){
+			thttp_message_t *http_msg = tsk_null;
+			tsk_ragel_state_init(&state, TSK_BUFFER_DATA(transport->buff_stream), endOfheaders + 4/*2CRLF*/);
+			if((ret = thttp_message_parse(&state, &http_msg, tsk_false)) == 0){
+				
+			}
+			else{
+				TSK_DEBUG_ERROR("Failed to parse WebSocket handshake content");
+			}
+			tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove HTTP headers and CRLF */
+			TSK_OBJECT_SAFE_FREE(http_msg);
+			goto bail;
+		}
 	}
 	
 	/* If we are there this mean that we have all SIP headers.
@@ -422,11 +444,11 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 		tsip_transport_t *transport = 
 			(TNET_SOCKET_TYPE_IS_IPSEC(type) || self->stack->security.enable_secagree_ipsec) ? 
 			(tsip_transport_t *)tsip_transport_ipsec_create((tsip_stack_t*)self->stack, local_host, local_port, type, description) /* IPSec is a special case. All other are ok. */
-			: tsip_transport_create((tsip_stack_t*)self->stack, local_host, local_port, type, description); /* UDP, SCTP, TCP, TLS */
+			: tsip_transport_create((tsip_stack_t*)self->stack, local_host, local_port, type, description); /* UDP, SCTP, TCP, TLS, WS, WSS */
 			
 		if(transport && transport->net_transport && self->stack){
 			/* Set TLS certs */
-			if(TNET_SOCKET_TYPE_IS_TLS(type) || self->stack->security.enable_secagree_tls){
+			if(TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type) || self->stack->security.enable_secagree_tls){
 				tsip_transport_set_tlscerts(transport, self->stack->security.tls.ca, self->stack->security.tls.pbk, self->stack->security.tls.pvk);
 			}
 			/* Nat Traversal context */

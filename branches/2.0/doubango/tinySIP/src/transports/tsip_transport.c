@@ -374,16 +374,30 @@ int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const t
 	self->type = type;
 	self->net_transport = tnet_transport_create(host, port, type, description);
 		
-	self->scheme = TNET_SOCKET_TYPE_IS_TLS(type) ? "sips" : "sip";
+	self->scheme = "sip";
 
 	if(TNET_SOCKET_TYPE_IS_STREAM(type)){
-		self->protocol = "tcp";
-		self->via_protocol = "TCP";
-		self->service = "SIP+D2T";
-
 		if(TNET_SOCKET_TYPE_IS_TLS(type)){
+			self->scheme = "sips";
+			self->protocol = "tcp";
 			self->via_protocol = "TLS";
 			self->service = "SIPS+D2T";
+		}
+		else if(TNET_SOCKET_TYPE_IS_WS(type)){
+			self->protocol = "ws";
+			self->via_protocol = "WS";
+			self->service = "SIP+D2W";
+		}
+		else if(TNET_SOCKET_TYPE_IS_WSS(type)){
+			self->scheme = "sips";
+			self->protocol = "wss";
+			self->via_protocol = "WSS";
+			self->service = "SIPS+D2W";
+		}
+		else{
+			self->protocol = "tcp";
+			self->via_protocol = "TCP";
+			self->service = "SIP+D2T";
 		}
 
 		/* Stream buffer */

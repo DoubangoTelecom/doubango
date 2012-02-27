@@ -60,6 +60,7 @@ typedef struct tdav_converter_video_s
 		struct SwsContext *context;
 		AVFrame* frame;
 		uint8_t* buffer;
+		tsk_size_t buffer_size;
 	} rot;
 
 #endif
@@ -87,8 +88,8 @@ tsk_size_t tdav_converter_video_convert(tdav_converter_video_t* self, const void
 
 #define tdav_converter_video_flip(frame, height) \
     frame->data[0] += frame->linesize[0] * (height -1); \
-    frame->data[1] += frame->linesize[1] * ((height -1)/2); \
-    frame->data[2] += frame->linesize[2] * ((height -1)/2); \
+    frame->data[1] += frame->linesize[1] * ((height -1)>>1); \
+    frame->data[2] += frame->linesize[2] * ((height -1)>>1); \
     \
     frame->linesize[0] *= -1; \
     frame->linesize[1] *= -1; \
