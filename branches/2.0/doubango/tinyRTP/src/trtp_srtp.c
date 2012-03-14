@@ -45,11 +45,11 @@ int trtp_srtp_ctx_init(trtp_srtp_ctx_xt* ctx, int32_t tag, trtp_srtp_crypto_type
 
 	ctx->tag = tag;
 	ctx->crypto_type = type;
-	if((srtp_err = crypto_get_random(ctx->key_bin, sizeof(ctx->key_bin))) != err_status_ok){
+	if((srtp_err = crypto_get_random((unsigned char*)ctx->key_bin, sizeof(ctx->key_bin))) != err_status_ok){
 		TSK_DEBUG_ERROR("crypto_get_random() failed");
 		return -2;
 	}
-	size = tsk_base64_encode(ctx->key_bin, sizeof(ctx->key_bin), &key_str);
+	size = tsk_base64_encode((const uint8_t*)ctx->key_bin, sizeof(ctx->key_bin), &key_str);
 	key_str[size] = '\0';
 
 	switch(ctx->crypto_type){
@@ -68,7 +68,7 @@ int trtp_srtp_ctx_init(trtp_srtp_ctx_xt* ctx, int32_t tag, trtp_srtp_crypto_type
 			}
 	}
 	
-	ctx->policy.key = ctx->key_bin;
+	ctx->policy.key = (unsigned char*)ctx->key_bin;
 	ctx->policy.ssrc.type = ssrc_any_inbound;
 	ctx->policy.ssrc.value = ssrc;
 	if((srtp_err = srtp_create(&ctx->session, &ctx->policy)) != err_status_ok){
@@ -215,8 +215,8 @@ int trtp_srtp_set_remote(trtp_manager_t* rtp_mgr, const char* crypto_line)
 			}
 	}
 
-	key_bin = srtp_ctx->key_bin;
-	tsk_base64_decode(srtp_ctx->key_str, tsk_strlen(srtp_ctx->key_str), (char**)&key_bin);
+	key_bin = (unsigned char*)srtp_ctx->key_bin;
+	tsk_base64_decode((const uint8_t*)srtp_ctx->key_str, tsk_strlen(srtp_ctx->key_str), (char**)&key_bin);
 	srtp_ctx->policy.key = key_bin;
 	srtp_ctx->policy.ssrc.type = ssrc_any_inbound;
 	if((srtp_err = srtp_create(&srtp_ctx->session, &srtp_ctx->policy)) != err_status_ok){

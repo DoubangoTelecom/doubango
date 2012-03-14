@@ -226,7 +226,7 @@ tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t lo
 	}
 	if(self->ws_snd_buffer_size < data_size){
 		if(!(TSIP_TRANSPORT(self)->ws_snd_buffer = tsk_realloc(TSIP_TRANSPORT(self)->ws_snd_buffer, (tsk_size_t)data_size))){
-			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %u", data_size);
+			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %llu", data_size);
 			TSIP_TRANSPORT(self)->ws_snd_buffer_size = 0;
 			return 0;
 		}

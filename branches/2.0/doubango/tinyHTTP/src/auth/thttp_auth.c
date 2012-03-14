@@ -261,7 +261,7 @@ tsk_size_t thttp_auth_ws_response(const char* key, thttp_auth_ws_keystring_t* re
 		tsk_sha1compute(tmp, tsk_strlen(tmp), &sha1result);
 		size = tsk_strlen(sha1result);
 		for(i = 0; i<size; i+=2){
-			if(sscanf(&sha1result[i], "%2x", &ret) != EOF){;
+			if(sscanf(&sha1result[i], "%2x", (unsigned int *)&ret) != EOF){;
 				result[i >> 1] = (char)ret;
 			}
 		}
