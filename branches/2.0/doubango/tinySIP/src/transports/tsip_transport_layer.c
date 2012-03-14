@@ -78,11 +78,10 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	tsip_message_t *message = tsk_null;
 	int endOfheaders = -1;
 	const tsip_transport_t *transport = e->callback_data;
-	tsk_bool_t is_websock;
 	
 	switch(e->type){
 		case event_data: {
-				TSK_DEBUG_INFO("\n\n\nSIP Message:%s\n\n\n", e->data);
+				// TSK_DEBUG_INFO("\n\n\nSIP Message:%s\n\n\n", e->data);
 				break;
 			}
 		case event_closed:
@@ -91,9 +90,6 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 				return 0;
 			}
 	}
-
-	is_websock = (TNET_SOCKET_TYPE_IS_WS(transport->type) || TNET_SOCKET_TYPE_IS_WSS(transport->type));
-
 
 	/* RFC 3261 - 7.5 Framing SIP Messages
 		
@@ -161,29 +157,11 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 		tsk_buffer_append(transport->buff_stream, e->data, e->size);
 	}
 
-	/* Check if we have all SIP headers. */
+	/* Check if we have all SIP/WS headers. */
 parse_buffer:
 	if((endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(transport->buff_stream),TSK_BUFFER_SIZE(transport->buff_stream), "\r\n\r\n"/*2CRLF*/)) < 0){
 		TSK_DEBUG_INFO("No all SIP headers in the TCP buffer.");
 		goto bail;
-	}
-
-	/* WebSocket Handshake */
-	if(is_websock && !transport->ws_handshake_done && transport->buff_stream->size > 4){
-		const uint8_t* pdata = (const uint8_t*)transport->buff_stream->data;
-		if(pdata[0] == 'G' && pdata[1] == 'E' && pdata[2] == 'T'){
-			thttp_message_t *http_msg = tsk_null;
-			tsk_ragel_state_init(&state, TSK_BUFFER_DATA(transport->buff_stream), endOfheaders + 4/*2CRLF*/);
-			if((ret = thttp_message_parse(&state, &http_msg, tsk_false)) == 0){
-				
-			}
-			else{
-				TSK_DEBUG_ERROR("Failed to parse WebSocket handshake content");
-			}
-			tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove HTTP headers and CRLF */
-			TSK_OBJECT_SAFE_FREE(http_msg);
-			goto bail;
-		}
 	}
 	
 	/* If we are there this mean that we have all SIP headers.
@@ -232,8 +210,245 @@ bail:
 	return ret;
 }
 
-/*== Non-blocking callback function (DGRAM: UDP)
-*/
+/*== Non-blocking callback function (STREAM: WS, WSS) */
+static int tsip_transport_layer_ws_cb(const tnet_transport_event_t* e)
+{
+	int ret = -1;
+	tsk_ragel_state_t state;
+	tsip_message_t *message = tsk_null;
+	int endOfheaders = -1;
+	tsip_transport_t *transport = (tsip_transport_t *)e->callback_data;
+	tsk_bool_t check_end_of_hdrs = tsk_true;
+	tsk_bool_t go_message = tsk_false;
+	uint64_t data_len = 0;
+	uint64_t pay_len = 0;
+
+	switch(e->type){
+		case event_data: {
+				TSK_DEBUG_INFO("\n\n\nSIP Message:%s\n\n\n", e->data);
+				break;
+			}
+		case event_closed:
+		case event_connected:
+		default:{
+				return 0;
+			}
+	}
+
+	/* Check if buffer is too big to be valid (have we missed some chuncks?) */
+	if(TSK_BUFFER_SIZE(transport->buff_stream) >= TSIP_MAX_STREAM_CHUNCK_SIZE){
+		TSK_DEBUG_ERROR("TCP Buffer is too big to be valid");
+		tsk_buffer_cleanup(transport->buff_stream);
+	}
+
+	// Append new content
+	tsk_buffer_append(transport->buff_stream, e->data, e->size);
+
+	/* check if WebSocket data */
+	if(transport->buff_stream->size > 4){
+		const uint8_t* pdata = (const uint8_t*)transport->buff_stream->data;
+		if(pdata[0] != 'G' || pdata[1] != 'E' || pdata[2] != 'T'){
+			check_end_of_hdrs = tsk_false;
+		}
+	}
+
+	/* Check if we have all HTTP/SIP/WS headers. */
+parse_buffer:
+	if(check_end_of_hdrs && (endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(transport->buff_stream),TSK_BUFFER_SIZE(transport->buff_stream), "\r\n\r\n"/*2CRLF*/)) < 0){
+		TSK_DEBUG_INFO("No all headers in the WS buffer");
+		goto bail;
+	}
+
+	/* WebSocket handling*/
+	if(transport->buff_stream->size > 4){
+		const uint8_t* pdata = (const uint8_t*)transport->buff_stream->data;
+
+		/* WebSocket Handshake */
+		if(pdata[0] == 'G' && pdata[1] == 'E' && pdata[2] == 'T'){
+			thttp_message_t *http_req = thttp_message_create();
+			thttp_response_t *http_resp = tsk_null;
+			tsk_buffer_t *http_buff = tsk_null;
+			const thttp_header_Sec_WebSocket_Protocol_t* http_hdr_proto;
+			const thttp_header_Sec_WebSocket_Key_t* http_hdr_key;
+			const char* msg_start = (const char*)transport->buff_stream->data;
+			const char* msg_end = (msg_start + transport->buff_stream->size);
+			int32_t idx;
+
+			if((idx = tsk_strindexOf(msg_start, (msg_end - msg_start), "\r\n")) > 2){
+				msg_start += (idx + 2); // skip request header
+				while(msg_start < msg_end){
+					if((idx = tsk_strindexOf(msg_start, (msg_end - msg_start), "\r\n")) <= 2){
+						break;
+					}
+					idx+= 2;
+					tsk_ragel_state_init(&state, msg_start, idx);
+					if((ret = thttp_header_parse(&state, http_req))){
+						TSK_DEBUG_ERROR("Failed to parse header: %s", msg_start);
+					}
+					msg_start += idx;
+				}
+			}
+			
+			// get key header
+			if(!(http_hdr_key = (const thttp_header_Sec_WebSocket_Key_t*)thttp_message_get_header(http_req, thttp_htype_Sec_WebSocket_Key))){
+				TSK_DEBUG_ERROR("No 'Sec-WebSocket-Key' header");
+			}
+			
+
+			if(http_hdr_key && (http_hdr_proto = (const thttp_header_Sec_WebSocket_Protocol_t*)thttp_message_get_header(http_req, thttp_htype_Sec_WebSocket_Protocol))){
+				if(tsk_list_find_object_by_pred((const tsk_list_t*)http_hdr_proto->values, tsk_string_pred_icmp, "sip")){
+					// send response
+					if((http_resp = thttp_response_new((short)101, "Switching Protocols", http_req))){
+						// compute response key
+						thttp_auth_ws_keystring_t key_resp = {0};
+						thttp_auth_ws_response(http_hdr_key->value, &key_resp);
+
+						thttp_message_add_headers_2(http_resp,
+							THTTP_HEADER_DUMMY_VA_ARGS("Upgrade", "websocket"),
+							THTTP_HEADER_DUMMY_VA_ARGS("Connection", "Upgrade"),
+							THTTP_HEADER_SEC_WEBSOCKET_ACCEPT_VA_ARGS(key_resp),
+							THTTP_HEADER_SEC_WEBSOCKET_PROTOCOL_VA_ARGS("sip"),
+							THTTP_HEADER_SEC_WEBSOCKET_VERSION_VA_ARGS("13"),
+							tsk_null);
+
+						// serialize response
+						if((http_buff = tsk_buffer_create_null())){
+							thttp_message_serialize(http_resp, http_buff);
+							// TSK_DEBUG_INFO("WS response=%s", http_buff->data);
+							// send response
+							if((tnet_sockfd_send(e->local_fd, http_buff->data, http_buff->size, 0)) != http_buff->size){
+								TSK_DEBUG_ERROR("Failed to send reponse");
+							}
+						}
+					}
+				}
+				else{
+					TSK_DEBUG_ERROR("No SIP protocol");
+				}
+			}
+			else{
+				TSK_DEBUG_ERROR("No 'Sec-WebSocket-Protocol' header");
+			}
+			
+			tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove HTTP headers and CRLF */
+			TSK_OBJECT_SAFE_FREE(http_req);
+			TSK_OBJECT_SAFE_FREE(http_resp);
+			TSK_OBJECT_SAFE_FREE(http_buff);
+		} /* end-of WebSocket handshake */
+
+		/* WebSocket data */
+		else{
+			if((pdata[0] & 0x01)/* FIN */ && transport->buff_stream->size > 16){
+				const uint8_t opcode = pdata[0] & 0x0F;
+				const uint8_t mask_flag = (pdata[1] >> 7); // Must be "1" for "client -> server"
+				uint8_t mask_key[4] = { 0x00 };
+				uint64_t pay_idx;
+				uint8_t* pws_rcv_buffer;
+
+				if(pdata[0] & 0x40 || pdata[0] & 0x20 || pdata[0] & 0x10){
+					TSK_DEBUG_ERROR("Unknown extension: %d", (pdata[0] >> 4) & 0x07);
+					tsk_buffer_cleanup(transport->buff_stream);
+					goto bail;
+				}
+
+				pay_len = pdata[1] & 0x7F;
+				data_len = 2;
+				
+				if(pay_len == 126){
+					pay_len = (pdata[2] << 8 | pdata[3]);
+					pdata = &pdata[4];
+					data_len += 2;
+				}
+				else if(pay_len == 127){
+					pay_len = (((uint64_t)pdata[2]) << 56 | ((uint64_t)pdata[3]) << 48 | ((uint64_t)pdata[4]) << 40 | ((uint64_t)pdata[5]) << 32 | ((uint64_t)pdata[6]) << 24 | ((uint64_t)pdata[7]) << 16 | ((uint64_t)pdata[8]) << 8 || ((uint64_t)pdata[9]));
+					pdata = &pdata[10];
+					data_len += 8;
+				}
+				else{
+					pdata = &pdata[2];
+				}
+
+				if(mask_flag){ // must be "true"
+					mask_key[0] = pdata[0];
+					mask_key[1] = pdata[1];
+					mask_key[2] = pdata[2];
+					mask_key[3] = pdata[3];
+					pdata = &pdata[4];
+					data_len += 4;
+				}
+				
+				if((transport->buff_stream->size - data_len) < pay_len){
+					TSK_DEBUG_INFO("No all data in the WS buffer");
+					goto bail;
+				}
+
+				// create ws buffer tohold unmasked data
+				if(transport->ws_rcv_buffer_size < pay_len){
+					if(!(transport->ws_rcv_buffer = tsk_realloc(transport->ws_rcv_buffer, (tsk_size_t)pay_len))){
+						TSK_DEBUG_ERROR("Failed to allocate buffer of size %d", pay_len);
+						transport->ws_rcv_buffer_size = 0;
+						goto bail;
+					}
+					transport->ws_rcv_buffer_size = (tsk_size_t)pay_len;
+				}
+
+				pws_rcv_buffer = (uint8_t*)transport->ws_rcv_buffer;
+				data_len += pay_len;
+
+				// unmasking the payload
+				for(pay_idx = 0; pay_idx < pay_len; ++pay_idx){
+					pws_rcv_buffer[pay_idx] = (pdata[pay_idx] ^ mask_key[(pay_idx & 3)]);
+				}
+				
+				go_message = tsk_true;
+			}
+		}
+	}/* end-of WebSocket handling */
+
+	// skip SIP message parsing if websocket transport
+	
+	if(!go_message){
+		goto bail;
+	}
+	
+	TSK_DEBUG_INFO("%s", transport->ws_rcv_buffer);
+	
+	// If we are there this mean that we have all SIP headers.
+	//	==> Parse the SIP message without the content.
+	tsk_ragel_state_init(&state, transport->ws_rcv_buffer, (tsk_size_t)pay_len);
+	if(tsip_message_parse(&state, &message, tsk_false/* do not extract the content */) == tsk_true){
+		tsk_size_t clen = TSIP_MESSAGE_CONTENT_LENGTH(message); /* MUST have content-length header (see RFC 3261 - 7.5). If no CL header then the macro return zero. */
+		if(clen){
+			// Add the content to the message. */
+			tsip_message_add_content(message, tsk_null, (((uint8_t*)transport->ws_rcv_buffer) + (pay_len - clen - 1)), clen);
+		}
+		tsk_buffer_remove(transport->buff_stream, 0, (tsk_size_t)data_len);
+	}
+
+	if(message && message->firstVia && message->Call_ID && message->CSeq && message->From && message->To){
+		/* Set fd */
+		message->local_fd = e->local_fd;
+		/* Alert transaction/dialog layer */
+		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
+		/* Parse next chunck */
+		if(TSK_BUFFER_SIZE(transport->buff_stream) >= TSIP_MIN_STREAM_CHUNCK_SIZE){
+			/* message already passed to the dialog/transac layers */
+			TSK_OBJECT_SAFE_FREE(message);
+			goto parse_buffer;
+		}
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to parse SIP message");
+		ret = -15;
+	}
+
+bail:
+	TSK_OBJECT_SAFE_FREE(message);
+
+	return ret;
+}
+
+/*== Non-blocking callback function (DGRAM: UDP) */
 static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 {
 	int ret = -1;
@@ -606,8 +821,18 @@ int tsip_transport_layer_start(tsip_transport_layer_t* self)
 			tsk_list_foreach(item, self->transports){
 				tnet_fd_t fd;
 				transport = item->data;
+				
+				// set callback
+				if(TNET_SOCKET_TYPE_IS_DGRAM(transport->type)){
+					tsip_transport_set_callback(transport, TNET_TRANSPORT_CB_F(tsip_transport_layer_dgram_cb), transport);
+				}
+				else if(TNET_SOCKET_TYPE_IS_WS(transport->type) || TNET_SOCKET_TYPE_IS_WSS(transport->type)){
+					tsip_transport_set_callback(transport, TNET_TRANSPORT_CB_F(tsip_transport_layer_ws_cb), transport);
+				}
+				else{
+					tsip_transport_set_callback(transport, TNET_TRANSPORT_CB_F(tsip_transport_layer_stream_cb), transport);
+				}
 
-				tsip_transport_set_callback(transport, TNET_SOCKET_TYPE_IS_DGRAM(transport->type) ? TNET_TRANSPORT_CB_F(tsip_transport_layer_dgram_cb) : TNET_TRANSPORT_CB_F(tsip_transport_layer_stream_cb), transport);
 				if((ret = tnet_sockaddr_init(self->stack->network.proxy_cscf, self->stack->network.proxy_cscf_port, transport->type, &transport->pcscf_addr))){
 					TSK_DEBUG_ERROR("[%s:%u] is invalid address", self->stack->network.proxy_cscf, self->stack->network.proxy_cscf_port);
 					return ret;

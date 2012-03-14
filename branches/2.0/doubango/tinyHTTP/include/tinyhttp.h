@@ -43,3 +43,7 @@
 
 #include "tinyhttp/headers/thttp_header_Dummy.h"
 #include "tinyhttp/headers/thttp_header_ETag.h"
+#include "tinyhttp/headers/thttp_header_Sec_WebSocket_Accept.h"
+#include "tinyhttp/headers/thttp_header_Sec_WebSocket_Key.h"
+#include "tinyhttp/headers/thttp_header_Sec_WebSocket_Protocol.h"
+#include "tinyhttp/headers/thttp_header_Sec_WebSocket_Version.h"

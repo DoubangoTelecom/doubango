@@ -33,14 +33,13 @@
 #include "tinydav_config.h"
 
 #include "tinymedia/tmedia_session.h"
+#if HAVE_SRTP
+#	include "tinyrtp/trtp_srtp.h"
+#endif
 
 #include "tsk_safeobj.h"
 
 TDAV_BEGIN_DECLS
-
-// Forward declaration
-struct trtp_manager_s;
-struct tdav_consumer_audio_s;
 
 typedef tsk_list_t tdav_session_audio_dtmfe_L_t;
 
@@ -72,25 +71,34 @@ typedef struct tdav_session_audio_s
 	} decoder;
 
 	char* local_ip;
-	//uint16_t local_port;
 
 	/* NAT Traversal context */
 	tnet_nat_context_handle_t* natt_ctx;
 
 	char* remote_ip;
 	uint16_t remote_port;
-	
-	tsk_bool_t rtcp_enabled;
 
 	struct trtp_manager_s* rtp_manager;
 	
 	struct tmedia_consumer_s* consumer;
 	struct tmedia_producer_s* producer;
 	struct tmedia_denoise_s* denoise;
+	
+	tsk_bool_t rtcp_enabled;
 
 	tdav_session_audio_dtmfe_L_t* dtmf_events;
 
 	TSK_DECLARE_SAFEOBJ;
+
+#if HAVE_SRTP
+	struct {
+		int32_t tag;
+		trtp_srtp_crypto_type_t crypto_type;
+		char key[64];
+		tsk_bool_t pending;
+	}remote_srtp_neg;
+	tmedia_srtp_mode_t srtp_mode;
+#endif
 }
 tdav_session_audio_t;
 

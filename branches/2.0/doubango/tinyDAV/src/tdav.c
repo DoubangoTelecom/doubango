@@ -107,7 +107,6 @@
 #	include <libavcodec/avcodec.h>
 #endif
 
-
 static inline tsk_bool_t _tdav_codec_is_supported(tdav_codec_id_t codec, const tmedia_codec_plugin_def_t* plugin);
 
 int tdav_init()
@@ -129,6 +128,8 @@ int tdav_init()
 #if HAVE_FFMPEG
 	avcodec_init();
 #endif
+
+	/* === SRTP === */
 
 	/* === Register media contents === */
 	tmedia_content_plugin_register("text/html", tmedia_content_dummy_plugin_def_t);

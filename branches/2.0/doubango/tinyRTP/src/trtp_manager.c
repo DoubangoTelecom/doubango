@@ -32,6 +32,7 @@
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
+#include "tsk_base64.h"
 #include "tsk_debug.h"
 
 #define TINY_RCVBUF					(256/2/*Will be doubled and min on linux is 256*/) /* tiny buffer used to disable receiving */
@@ -45,14 +46,14 @@
 #	define TRTP_PORT_RANGE_STOP 65535
 #endif
 
-// TODO: Add support for outbound DTMF (http://www.ietf.org/rfc/rfc2833.txt)
-
 /* ======================= Transport callback ========================== */
 static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 {
 	int ret = -1;
 	const trtp_manager_t *manager = e->callback_data;
 	trtp_rtp_packet_t* packet = tsk_null;
+	void* data_ptr;
+	int data_size;
 
 	switch(e->type){
 		case event_data: {
@@ -69,14 +70,35 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 	//	RTCP
 	//
 	if(manager->rtcp.local_socket && manager->rtcp.local_socket->fd == e->local_fd){
+		data_ptr = (void*)(e->data);
+		data_size = (int)(e->size);
+#if HAVE_SRTP
+				if(manager->srtp_ctx_neg_remote){
+					if(srtp_unprotect_rtcp(manager->srtp_ctx_neg_remote->session, data_ptr, &data_size) != err_status_ok){
+						TSK_DEBUG_ERROR("srtp_unprotect() failed");
+						goto bail;
+					}
+				}
+#endif
+
 		TSK_DEBUG_INFO("RTCP packet");
 	}
 	//
 	// RTP
 	//
 	else if(manager->transport->master && (manager->transport->master->fd == e->local_fd)){
+		data_ptr = (void*)(e->data);
+		data_size = (int)(e->size);
 		if(manager->rtp.callback){
-			if((packet = trtp_rtp_packet_deserialize(e->data, e->size))){
+#if HAVE_SRTP
+				if(manager->srtp_ctx_neg_remote){
+					if(srtp_unprotect(manager->srtp_ctx_neg_remote->session, data_ptr, &data_size) != err_status_ok){
+						TSK_DEBUG_ERROR("srtp_unprotect() failed");
+						goto bail;
+					}
+				}
+#endif
+			if((packet = trtp_rtp_packet_deserialize(data_ptr, data_size))){
 				manager->rtp.callback(manager->rtp.callback_data, packet);
 				TSK_OBJECT_SAFE_FREE(packet);
 			}
@@ -128,11 +150,22 @@ static int _trtp_manager_enable_sockets(trtp_manager_t* self)
 	return 0;
 }
 
-
 /** Create RTP/RTCP manager */
 trtp_manager_t* trtp_manager_create(tsk_bool_t enable_rtcp, const char* local_ip, tsk_bool_t ipv6)
 {
 	trtp_manager_t* manager;
+
+#if HAVE_SRTP
+	static tsk_bool_t __strp_initialized = tsk_false;
+	err_status_t srtp_err;
+	if(!__strp_initialized){
+		if((srtp_err = srtp_init()) != err_status_ok){
+			TSK_DEBUG_ERROR("srtp_init() failed with error code = %d", srtp_err);
+		}
+		__strp_initialized = (srtp_err == err_status_ok);
+	}
+#endif
+
 	if((manager = tsk_object_new(trtp_manager_def_t))){
 		manager->enable_rtcp = enable_rtcp;
 		manager->local_ip = tsk_strdup(local_ip);
@@ -209,6 +242,14 @@ int trtp_manager_prepare(trtp_manager_t* self)
 		TSK_DEBUG_INFO("RTP/RTCP manager[End]: Trying to bind to random ports");
 		break;
 	}
+
+	/* SRTP */
+#if HAVE_SRTP
+	{		
+		trtp_srtp_ctx_init(&self->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][0], 1, HMAC_SHA1_80, self->rtp.ssrc);
+		trtp_srtp_ctx_init(&self->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][1], 2, HMAC_SHA1_32, self->rtp.ssrc);
+	}
+#endif
 
 	return 0;
 }
@@ -396,6 +437,29 @@ int trtp_manager_start(trtp_manager_t* self)
 				}
 			}
 #endif
+
+	/*SRTP*/
+#if HAVE_SRTP
+	{
+		const trtp_srtp_ctx_xt* ctx_remote = &self->srtp_contexts[TRTP_SRTP_LINE_IDX_REMOTE][0];
+		const trtp_srtp_ctx_xt* ctx_local = &self->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][0];
+		
+		if(ctx_remote->initialized){
+			self->srtp_ctx_neg_remote = ctx_remote;
+			if(ctx_local[0].crypto_type == ctx_remote->crypto_type){
+				self->srtp_ctx_neg_local = &ctx_local[0];
+			}
+			else if(ctx_local[1].crypto_type == ctx_remote->crypto_type){
+				self->srtp_ctx_neg_local = &ctx_local[1];
+			}
+		}
+		else{
+			self->srtp_ctx_neg_local = tsk_null;
+			self->srtp_ctx_neg_remote = tsk_null;
+		}
+	}
+#endif /* HAVE_SRTP */
+
 	self->started = tsk_true;
 
 	return 0;
@@ -406,7 +470,6 @@ int trtp_manager_start(trtp_manager_t* self)
 int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t size, uint32_t duration, tsk_bool_t marker, tsk_bool_t last_packet)
 {
 	trtp_rtp_packet_t* packet;
-	tsk_buffer_t* buffer;
 	int ret = -1;
 
 	if(!self || !self->transport || !data || !size){
@@ -438,20 +501,7 @@ int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t siz
 	packet->payload.size = size;
 #endif
 
-	/* serialize and send over the network */
-	if((buffer = trtp_rtp_packet_serialize(packet))){
-		if(/* number of bytes sent */tnet_sockfd_sendto(self->transport->master->fd, (const struct sockaddr *)&self->rtp.remote_addr, buffer->data, buffer->size)){
-			ret = 0;
-		}
-		TSK_OBJECT_SAFE_FREE(buffer);
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to serialize RTP packet");
-		ret = -5;
-		goto bail;
-	}
-
-bail:
+	ret = trtp_manager_send_rtp_2(self, packet);
 	TSK_OBJECT_SAFE_FREE(packet);
 	return ret;
 }
@@ -459,7 +509,14 @@ bail:
 int trtp_manager_send_rtp_2(trtp_manager_t* self, const struct trtp_rtp_packet_s* packet)
 {
 	tsk_buffer_t* buffer;
-	int ret;
+	int ret = -2;
+	tsk_size_t rtp_buff_pad_count = 0;
+
+#if HAVE_SRTP
+	if(self->srtp_ctx_neg_local){
+		rtp_buff_pad_count = SRTP_MAX_TRAILER_LEN;
+	}
+#endif
 
 	if(!self || !packet){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -467,8 +524,19 @@ int trtp_manager_send_rtp_2(trtp_manager_t* self, const struct trtp_rtp_packet_s
 	}
 
 	/* serialize and send over the network */
-	if((buffer = trtp_rtp_packet_serialize(packet))){
-		if(/* number of bytes sent */tnet_sockfd_sendto(self->transport->master->fd, (const struct sockaddr *)&self->rtp.remote_addr, buffer->data, buffer->size)){
+	if((buffer = trtp_rtp_packet_serialize(packet, rtp_buff_pad_count))){
+		void* data_ptr = buffer->data;
+		int data_size = buffer->size;
+#if HAVE_SRTP
+		if(self->srtp_ctx_neg_local){
+			if(srtp_protect(self->srtp_ctx_neg_local->session, data_ptr, &data_size) != err_status_ok){
+				TSK_DEBUG_ERROR("srtp_protect() failed");
+				TSK_OBJECT_SAFE_FREE(buffer);
+				return -5;
+			}
+		}
+#endif
+		if(/* number of bytes sent */tnet_sockfd_sendto(self->transport->master->fd, (const struct sockaddr *)&self->rtp.remote_addr, data_ptr, data_size)){
 			ret = 0;
 		}
 		TSK_OBJECT_SAFE_FREE(buffer);
@@ -477,6 +545,7 @@ int trtp_manager_send_rtp_2(trtp_manager_t* self, const struct trtp_rtp_packet_s
 		TSK_DEBUG_ERROR("Failed to serialize RTP packet");
 		ret = -5;
 	}
+
 	return ret;
 }
 
@@ -547,6 +616,17 @@ static tsk_object_t* trtp_manager_dtor(tsk_object_t * self)
 		TSK_FREE(manager->rtcp.remote_ip);
 		TSK_FREE(manager->rtcp.public_ip);
 		TSK_OBJECT_SAFE_FREE(manager->rtcp.local_socket);
+		
+		/* srtp */
+#if HAVE_SRTP
+		{
+			int i;
+			for(i = 0; i < 2; ++i){
+				trtp_srtp_ctx_deinit(&manager->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][i]);
+				trtp_srtp_ctx_deinit(&manager->srtp_contexts[TRTP_SRTP_LINE_IDX_REMOTE][i]);
+			}
+		}
+#endif
 
 		TSK_FREE(manager->local_ip);
 		TSK_OBJECT_SAFE_FREE(manager->transport);

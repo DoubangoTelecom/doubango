@@ -39,7 +39,7 @@
 *	Ragel state machine.
 */
 %%{
-	machine tsdp_machine_parser_header_U;
+	machine tsdp_machine_parser_header_O;
 
 	# Includes
 	include tsdp_machine_utils "./ragel/tsdp_machine_utils.rl";

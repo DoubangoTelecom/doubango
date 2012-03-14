@@ -1,0 +1,32 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; WebSocket (6455) - ABNF
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+extension-param = token [ "=" (token / quoted-string) ]
+NZDIGIT       =  "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9"
+version = DIGIT / (NZDIGIT DIGIT) / ("1" DIGIT DIGIT) / ("2" DIGIT DIGIT)
+base64-character = ALPHA / DIGIT / "+" / "/"
+
+Sec-WebSocket-Key = base64-value-non-empty
+Sec-WebSocket-Extensions = extension-list
+Sec-WebSocket-Protocol-Client = token *(COMMA token)
+Sec-WebSocket-Version-Client = version
+
+base64-value-non-empty = (1*base64-data [ base64-padding ]) / base64-padding
+base64-data      = 4base64-character
+base64-padding   = (2base64-character "==") / (3base64-character "=")
+
+extension-list = extension *(COMMA extension)
+extension = extension-token *( ";" extension-param )
+extension-token = registered-token
+registered-token = token
+
+Sec-WebSocket-Accept     = base64-value-non-empty
+Sec-WebSocket-Protocol-Server = token
+Sec-WebSocket-Version-Server = version *(COMMA version)
+
+Sec-WebSocket-Version = version *(COMMA version)
+Sec-WebSocket-Protocol = token *(COMMA token)
+
+

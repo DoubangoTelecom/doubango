@@ -54,6 +54,40 @@ void test_basic_auth()
 	}
 }
 
+
+//========================================================================
+
+struct auth_ws
+{
+	const char* key;
+	const char* xres;
+};
+
+struct auth_ws auth_ws_msgs[] = 
+{
+	{ "dGhlIHNhbXBsZSBub25jZQ==", "s3pPLMBiTxaQ9kYGzzhZRbK+xOo=" },
+	{ "x3JJHMbDL1EzLkh9GBhXDw==", "HSmrc0sMlYUkAGmm5OPpG2HaGWk=" },
+};
+
+void test_ws_auth()
+{
+	thttp_auth_ws_keystring_t response = {0};
+	size_t i, size;
+
+	for(i=0; i<sizeof(auth_ws_msgs)/sizeof(struct auth_ws); i++)
+	{
+		size = thttp_auth_ws_response(auth_ws_msgs[i].key, &response);
+		if(tsk_striequals(auth_ws_msgs[i].xres, response)){
+			TSK_DEBUG_INFO("[WS_AUTH-%d] ==> OK", i);
+		}
+		else{
+			TSK_DEBUG_INFO("[WS_AUTH-%d] ==> NOK", i);
+		}
+	}
+}
+
+
+
 //========================================================================
 
 
@@ -136,6 +170,8 @@ void test_digest_auth()
 		}
 	}
 }
+
+
 
 
 #endif /* _TEST_AUTH_H_ */

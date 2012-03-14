@@ -561,7 +561,7 @@ const tsdp_header_A_t* tsdp_header_M_findA_at(const tsdp_header_M_t* self, const
 			continue;
 		}
 
-		if(tsk_strequals(TSDP_HEADER_A(item->data)->field, field)){
+		if(tsk_strequals(A->field, field)){
 			if(pos++ >= index){
 				return A;
 			}
@@ -647,6 +647,10 @@ int tsdp_header_M_hold(tsdp_header_M_t* self, tsk_bool_t local)
 		// a "sendonly" SDP attribute if the stream was previously set to "sendrecv" media stream
 		tsk_strupdate(&(TSDP_HEADER_A(a)->field), local ? "sendonly" : "recvonly");
 	}
+	else if((a = tsdp_header_M_findA(self, "inactive"))){
+		// a "inactive" SDP attribute if the stream was previously set to "inactive" media stream
+		tsk_strupdate(&(TSDP_HEADER_A(a)->field), "inactive");
+	}
 	else{
 		// default value is sendrecv. hold on default --> sendonly
 		if(!(a = tsdp_header_M_findA(self, local ? "sendonly" : "recvonly")) && !(a = tsdp_header_M_findA(self, "inactive"))){
@@ -657,6 +661,34 @@ int tsdp_header_M_hold(tsdp_header_M_t* self, tsk_bool_t local)
 			}
 		}
 	}
+	return 0;
+}
+
+/* as per 3GPP TS 34.610 */
+int tsdp_header_M_set_holdresume_att(tsdp_header_M_t* self, tsk_bool_t lo_held, tsk_bool_t ro_held)
+{
+	const tsdp_header_A_t* A;
+	static const char* hold_resume_atts[2][2] = 
+	{
+		{"sendrecv", "recvonly"},
+		{"sendonly", "inactive"},
+	};
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if((A = tsdp_header_M_findA(self, "sendrecv")) || (A = tsdp_header_M_findA(self, "sendonly")) || (A = tsdp_header_M_findA(self, "recvonly")) || (A = tsdp_header_M_findA(self, "inactive"))){
+		tsk_strupdate(&(TSDP_HEADER_A(A)->field), hold_resume_atts[lo_held & 1][ro_held & 1]);
+	}
+	else{
+		tsdp_header_A_t* newA;
+		if((newA = tsdp_header_A_create(hold_resume_atts[lo_held & 1][ro_held & 1], tsk_null))){
+			tsdp_header_M_add(self, TSDP_HEADER_CONST(newA));
+			TSK_OBJECT_SAFE_FREE(newA);
+		}
+	}
+	
 	return 0;
 }
 

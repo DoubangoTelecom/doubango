@@ -514,7 +514,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_vp8_plugin_def_s =
 	"VP8",
 	"VP8 codec",
 	TMEDIA_CODEC_FORMAT_VP8,
-	tsk_false,
+	tsk_true,
 	90000, // rate
 	
 	/* audio */

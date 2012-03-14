@@ -674,6 +674,43 @@ int tmedia_session_mgr_set_3(tmedia_session_mgr_t* self, const tmedia_params_L_t
 	return 0;
 }
 
+int tmedia_session_mgr_get(tmedia_session_mgr_t* self, ...)
+{
+	va_list ap;
+	int ret = 0;
+	tmedia_params_L_t* params;
+	const tsk_list_item_t *item1, *item2;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	va_start(ap, self);
+
+	if((params = tmedia_params_create_2(&ap))){
+		tmedia_session_t* session;
+		tmedia_param_t* param;
+		tsk_list_foreach(item2, params){
+			if((param = item2->data)){
+				tsk_list_foreach(item1, self->sessions){
+					if(!(session = (tmedia_session_t*)item1->data) || !session->plugin){
+						continue;
+					}
+					if((session->type & param->media_type) == session->type && session->plugin->set){
+						ret = session->plugin->get(session, param);
+					}
+				}
+			}
+		}
+		TSK_OBJECT_SAFE_FREE(params);
+	}
+
+	va_end(ap);
+
+	return ret;
+}
+
 /**@ingroup tmedia_session_group
 * Stops the session manager by stopping all underlying sessions.
 * @param self The session manager to stop.
@@ -897,8 +934,13 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		/* Find session by media */
 		if((ms = tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_media, M->media))){
 			/* set remote ro at session-level */
-			if(_tmedia_session_set_ro(TMEDIA_SESSION(ms), M) == 0){
+			if((ret = _tmedia_session_set_ro(TMEDIA_SESSION(ms), M)) == 0){
 				found = tsk_true;
+			}
+			else{
+				// will send 488 Not Acceptable
+				TSK_DEBUG_WARN("_tmedia_session_set_ro() failed");
+				return ret;
 			}
 			/* set QoS type (only if we are not the offerer) */
 			if(/*!self->offerer ==> we suppose that the remote party respected our demand &&*/ (qos_type == tmedia_qos_stype_none)){
@@ -1019,10 +1061,10 @@ tsk_bool_t tmedia_session_mgr_is_held(tmedia_session_mgr_t* self, tmedia_type_t 
 * @retval Zero if succeed and non zero error code otherwise.
 * @sa @ref tmedia_session_mgr_hold
 */
-int tmedia_session_mgr_resume(tmedia_session_mgr_t* self, tmedia_type_t type)
+int tmedia_session_mgr_resume(tmedia_session_mgr_t* self, tmedia_type_t type, tsk_bool_t local)
 {
 	const tsk_list_item_t* item;
-
+	int ret = 0;
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
@@ -1031,13 +1073,18 @@ int tmedia_session_mgr_resume(tmedia_session_mgr_t* self, tmedia_type_t type)
 	tsk_list_foreach(item, self->sessions){
 		tmedia_session_t* session = TMEDIA_SESSION(item->data);
 		if(((session->type & type) == session->type) && session->M.lo){
-			if(!tsdp_header_M_resume(session->M.lo, tsk_true)){
+			if((ret = tsdp_header_M_resume(session->M.lo, local)) == 0){
 				self->state_changed = tsk_true;
-				session->lo_held = tsk_false;
+				if(local){
+					session->lo_held = tsk_false;
+				}
+				else{
+					session->ro_held = tsk_false;
+				}
 			}
 		}
 	}
-	return 0;
+	return ret;
 }
 
 /**@ingroup tmedia_session_group

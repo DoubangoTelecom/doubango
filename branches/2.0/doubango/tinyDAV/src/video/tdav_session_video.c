@@ -263,7 +263,7 @@ bail:
 
 /* ============ Plugin interface ================= */
 
-int tmedia_session_video_set(tmedia_session_t* self, const tmedia_param_t* param)
+static int tdav_session_video_set(tmedia_session_t* self, const tmedia_param_t* param)
 {
 	int ret = 0;
 	tdav_session_video_t* video;
@@ -335,6 +335,16 @@ int tmedia_session_video_set(tmedia_session_t* self, const tmedia_param_t* param
 				}
 				tsk_object_unref(self->codecs);
 			}
+			else if(tsk_striequals(param->key, "srtp-optional")){
+#if HAVE_SRTP
+				video->srtp_mode = (TSK_TO_INT32((uint8_t*)param->value) != 0);
+#endif
+			}
+			else if(tsk_striequals(param->key, "srtp-mandatory")){
+#if HAVE_SRTP
+				video->srtp_mode = (TSK_TO_INT32((uint8_t*)param->value) != 0);
+#endif
+			}
 		}
 		else if(param->value_type == tmedia_pvt_pobject){
 			if(tsk_striequals(param->key, "natt-ctx")){
@@ -347,7 +357,34 @@ int tmedia_session_video_set(tmedia_session_t* self, const tmedia_param_t* param
 	return ret;
 }
 
-int tdav_session_video_prepare(tmedia_session_t* self)
+static int tdav_session_video_get(tmedia_session_t* self, tmedia_param_t* param)
+{
+	int ret = 0;
+	tdav_session_video_t* video;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	video = (tdav_session_video_t*)self;
+
+	if(param->plugin_type == tmedia_ppt_session){
+		if(param->value_type == tmedia_pvt_int32){
+			if(tsk_striequals(param->key, "srtp-enabled")){
+#if HAVE_SRTP
+				if(video->rtp_manager){
+					((int8_t*)param->value)[0] = trtp_srtp_is_active(video->rtp_manager);
+				}
+#endif
+			}
+		}
+	}
+
+	return 0;
+}
+
+static int tdav_session_video_prepare(tmedia_session_t* self)
 {
 	tdav_session_video_t* video;
 	int ret = 0;
@@ -367,13 +404,26 @@ int tdav_session_video_prepare(tmedia_session_t* self)
 		}
 	}
 
+		/* SRTP */
+#if HAVE_SRTP
+	{
+		if(video->remote_srtp_neg.pending){
+			char* str = tsk_null;
+			video->remote_srtp_neg.pending = tsk_false;
+			tsk_sprintf(&str, "%d %s inline:%s", video->remote_srtp_neg.tag, trtp_srtp_crypto_type_strings[video->remote_srtp_neg.crypto_type], video->remote_srtp_neg.key);
+			trtp_srtp_set_remote(video->rtp_manager, str);
+			TSK_FREE(str);
+		}
+	}
+#endif
+
 	/* Consumer will be prepared in tdav_session_video_start() */
 	/* Producer will be prepared in tdav_session_video_start() */
 
 	return ret;
 }
 
-int tdav_session_video_start(tmedia_session_t* self)
+static int tdav_session_video_start(tmedia_session_t* self)
 {
 	tdav_session_video_t* video;
 
@@ -418,7 +468,7 @@ int tdav_session_video_start(tmedia_session_t* self)
 	}
 }
 
-int tdav_session_video_stop(tmedia_session_t* self)
+static int tdav_session_video_stop(tmedia_session_t* self)
 {
 	tdav_session_video_t* video;
 	tmedia_codec_t* codec = tsk_null;
@@ -453,7 +503,7 @@ int tdav_session_video_stop(tmedia_session_t* self)
 	return 0;
 }
 
-int tdav_session_video_pause(tmedia_session_t* self)
+static int tdav_session_video_pause(tmedia_session_t* self)
 {
 	tdav_session_video_t* video;
 
@@ -476,7 +526,7 @@ int tdav_session_video_pause(tmedia_session_t* self)
 	return 0;
 }
 
-const tsdp_header_M_t* tdav_session_video_get_lo(tmedia_session_t* self)
+static const tsdp_header_M_t* tdav_session_video_get_lo(tmedia_session_t* self)
 {
 	tdav_session_video_t* video;
 	tsk_bool_t changed = tsk_false;
@@ -551,14 +601,33 @@ const tsdp_header_M_t* tdav_session_video_get_lo(tmedia_session_t* self)
 		}
 		
 		/* Hold/Resume */
-		if(self->M.ro){
-			if(tsdp_header_M_is_held(self->M.ro, tsk_false)){
-				tsdp_header_M_hold(self->M.lo, tsk_false);
+		tsdp_header_M_set_holdresume_att(self->M.lo, self->lo_held, self->ro_held);
+
+		/* SRTP */
+#if HAVE_SRTP
+		{
+			tsk_bool_t is_srtp_remote_mandatory = (self->M.ro && (tsk_striequals(self->M.ro->proto, "RTP/SAVP") || tsk_striequals(self->M.ro->proto, "RTP/SAVPF")));
+			tsk_bool_t is_srtp_remote_optional = (self->M.ro && (tsdp_header_M_findA(self->M.ro, "crypto") != tsk_null));
+			if((video->srtp_mode == tmedia_srtp_mode_optional && (is_srtp_remote_optional || is_srtp_remote_mandatory || !self->M.ro)) || video->srtp_mode == tmedia_srtp_mode_mandatory){
+				const trtp_srtp_ctx_xt *ctx = tsk_null;
+				tsk_size_t ctx_count = 0, ctx_idx;
+				char* str = tsk_null;
+				// local
+				trtp_srtp_get_ctx_local(video->rtp_manager, &ctx, &ctx_count);
+				for(ctx_idx = 0; ctx_idx < ctx_count; ++ctx_idx){
+					tsk_sprintf(&str, "%d %s inline:%s", ctx[ctx_idx].tag, trtp_srtp_crypto_type_strings[ctx[ctx_idx].crypto_type], ctx[ctx_idx].key_str);
+					tsdp_header_M_add_headers(self->M.lo,
+						TSDP_HEADER_A_VA_ARGS("crypto", str),
+						tsk_null);
+					TSK_FREE(str);
+				}
 			}
-			else{
-				tsdp_header_M_resume(self->M.lo, tsk_false);
+			
+			if(is_srtp_remote_mandatory || (video->srtp_mode == tmedia_srtp_mode_mandatory) || trtp_srtp_is_initialized(video->rtp_manager)){
+				tsk_strupdate(&self->M.lo->proto, "RTP/SAVP");
 			}
 		}
+#endif
 		
 		/* QoS */
 		if(self->qos){
@@ -575,10 +644,12 @@ DONE:;
 	return self->M.lo;
 }
 
-int tdav_session_video_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
+static int tdav_session_video_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
 	tdav_session_video_t* video;
 	tmedia_codecs_L_t* neg_codecs;
+	tsk_bool_t is_srtp_remote_mandatory;
+	tsk_bool_t crypto_matched = tsk_false;
 
 	if(!self || !m){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -590,6 +661,8 @@ int tdav_session_video_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 	/* update remote offer */
 	TSK_OBJECT_SAFE_FREE(self->M.ro);
 	self->M.ro = tsk_object_ref((void*)m);
+
+	is_srtp_remote_mandatory = (tsk_striequals(m->proto, "RTP/SAVP") || tsk_striequals(m->proto, "RTP/SAVPF"));
 
 	if(self->M.lo){
 		if((neg_codecs = tmedia_session_match_codec(self, m))){
@@ -616,7 +689,7 @@ int tdav_session_video_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 	}
 
 	/* get connection associated to this media line
-	* If the connnection is global, then the manager will call tmedia_session_video_set() */
+	* If the connnection is global, then the manager will call tdav_session_video_set() */
 	if(m->C && m->C->addr){
 		tsk_strupdate(&video->remote_ip, m->C->addr);
 		video->useIPv6 = tsk_striequals(m->C->addrtype, "IP6");
@@ -624,6 +697,39 @@ int tdav_session_video_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 	/* set remote port */
 	video->remote_port = m->port;
 	
+	/* SRTP */
+#if HAVE_SRTP
+	if(video->srtp_mode == tmedia_srtp_mode_optional || video->srtp_mode == tmedia_srtp_mode_mandatory){
+		tsk_size_t i = 0;
+		const tsdp_header_A_t* A;
+		int ret;
+		while((A = tsdp_header_M_findA_at(m, "crypto", i++))){
+			if(video->rtp_manager){
+				if((ret = trtp_srtp_set_remote(video->rtp_manager, A->value)) == 0){
+					crypto_matched = tsk_true;
+					break;
+				}
+			}
+			else{
+				int ret;
+				if((ret = trtp_srtp_match_line(A->value, &video->remote_srtp_neg.tag, (int32_t*)&video->remote_srtp_neg.crypto_type, video->remote_srtp_neg.key, (sizeof(video->remote_srtp_neg.key) - 1))) == 0){
+					crypto_matched = tsk_true;
+					video->remote_srtp_neg.pending = tsk_true;
+					break;
+				}
+			}
+		}
+		if((video->srtp_mode == tmedia_srtp_mode_mandatory) && !crypto_matched){// local require but none match
+			TSK_DEBUG_ERROR("SRTP negotiation failed");
+			return -3;
+		}
+	}
+#endif
+	
+	if(is_srtp_remote_mandatory && !crypto_matched){// remote require but none match
+		TSK_DEBUG_ERROR("SRTP negotiation failed");
+		return -4;
+	}
 
 	return 0;
 }
@@ -653,6 +759,10 @@ static tsk_object_t* tdav_session_video_ctor(tsk_object_t * self, va_list * app)
 		else{
 			TSK_DEBUG_ERROR("Failed to create Video producer");
 		}
+
+#if HAVE_SRTP
+		session->srtp_mode = tmedia_defaults_get_srtp_mode();
+#endif
 	}
 	return self;
 }
@@ -705,7 +815,8 @@ static const tmedia_session_plugin_def_t tdav_session_video_plugin_def_s =
 	tmedia_video,
 	"video",
 	
-	tmedia_session_video_set,
+	tdav_session_video_set,
+	tdav_session_video_get,
 	tdav_session_video_prepare,
 	tdav_session_video_start,
 	tdav_session_video_pause,

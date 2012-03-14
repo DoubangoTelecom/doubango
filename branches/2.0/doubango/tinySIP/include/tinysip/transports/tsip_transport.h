@@ -52,7 +52,6 @@ typedef struct tsip_transport_s
 	TSK_DECLARE_OBJECT;
 
 	tsk_bool_t initialized;
-	tsk_bool_t ws_handshake_done;
 
 	const tsip_stack_t *stack;
 
@@ -67,6 +66,10 @@ typedef struct tsip_transport_s
 	const char *service; /**< NAPTR service name */
 
 	tsk_buffer_t *buff_stream;
+	void* ws_rcv_buffer;
+	uint64_t ws_rcv_buffer_size;
+	void* ws_snd_buffer;
+	uint64_t ws_snd_buffer_size;
 }
 tsip_transport_t;
 
@@ -79,6 +82,7 @@ int tsip_transport_deinit(tsip_transport_t* self);
 int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const char* pbk, const char* pvk);
 tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort);
 tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const struct sockaddr * to, const void* data, tsk_size_t size);
+tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t local_fd, const void* data, tsk_size_t size);
 tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
 
 #define tsip_transport_start(transport)													(transport ? tnet_transport_start(transport->net_transport) : -1)

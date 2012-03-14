@@ -37,6 +37,7 @@
 THTTP_BEGIN_DECLS
 
 typedef char nonce_count_t[9];
+typedef char thttp_auth_ws_keystring_t[255];
 #define THTTP_NCOUNT_2_STRING(nc_int32, nc_string)							\
 	{																		\
 		tsk_size_t i = 7;														\
@@ -56,6 +57,8 @@ TINYHTTP_API int thttp_auth_digest_HA2(const char* method, const char* url, cons
 
 TINYHTTP_API int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce, const nonce_count_t noncecount, const char* cnonce, 
 											const char* qop, const tsk_md5string_t* ha2, tsk_md5string_t* response);
+
+TINYHTTP_API tsk_size_t thttp_auth_ws_response(const char* key, thttp_auth_ws_keystring_t* response);
 
 THTTP_END_DECLS
 

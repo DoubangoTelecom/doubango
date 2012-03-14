@@ -76,8 +76,8 @@ TINYMEDIA_API int32_t tmedia_defaults_get_inv_session_expires();
 TINYMEDIA_API int tmedia_defaults_set_inv_session_expires(int32_t timeout);
 TINYMEDIA_API const char* tmedia_defaults_get_inv_session_refresher();
 TINYMEDIA_API int tmedia_defaults_set_inv_session_refresher(const char* refresher);
-
-
+TINYMEDIA_API tmedia_srtp_mode_t tmedia_defaults_get_srtp_mode();
+TINYMEDIA_API int tmedia_defaults_set_srtp_mode(tmedia_srtp_mode_t mode);
 
 TMEDIA_END_DECLS
 

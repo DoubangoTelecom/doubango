@@ -43,6 +43,11 @@ int tmedia_session_daudio_set(tmedia_session_t* self, const tmedia_param_t* para
 	return 0;
 }
 
+int tmedia_session_daudio_get(tmedia_session_t* self, tmedia_param_t* param)
+{
+	return 0;
+}
+
 int tmedia_session_daudio_prepare(tmedia_session_t* self)
 {
 	tmedia_session_daudio_t* daudio;
@@ -159,6 +164,11 @@ int tmedia_session_dvideo_set(tmedia_session_t* self, const tmedia_param_t* para
 	return 0;
 }
 
+int tmedia_session_dvideo_get(tmedia_session_t* self, tmedia_param_t* param)
+{
+	return 0;
+}
+
 int tmedia_session_dvideo_prepare(tmedia_session_t* self)
 {
 	tmedia_session_dvideo_t* dvideo;
@@ -269,6 +279,11 @@ int tmedia_session_dmsrp_set(tmedia_session_t* self, const tmedia_param_t* param
 	return 0;
 }
 
+int tmedia_session_dmsrp_get(tmedia_session_t* self, tmedia_param_t* param)
+{
+	return 0;
+}
+
 int tmedia_session_dmsrp_prepare(tmedia_session_t* self)
 {
 	return 0;
@@ -345,6 +360,7 @@ static const tmedia_session_plugin_def_t tmedia_session_daudio_plugin_def_s =
 	"audio",
 	
 	tmedia_session_daudio_set,
+	tmedia_session_daudio_get,
 	tmedia_session_daudio_prepare,
 	tmedia_session_daudio_start,
 	tmedia_session_daudio_pause,
@@ -401,6 +417,7 @@ static const tmedia_session_plugin_def_t tmedia_session_dvideo_plugin_def_s =
 	"video",
 	
 	tmedia_session_dvideo_set,
+	tmedia_session_dvideo_get,
 	tmedia_session_dvideo_prepare,
 	tmedia_session_dvideo_start,
 	tmedia_session_dvideo_pause,
@@ -458,6 +475,7 @@ static const tmedia_session_plugin_def_t tmedia_session_dmsrp_plugin_def_s =
 	"message",
 	
 	tmedia_session_dmsrp_set,
+	tmedia_session_dmsrp_get,
 	tmedia_session_dmsrp_prepare,
 	tmedia_session_dmsrp_start,
 	tmedia_session_dmsrp_pause,

@@ -48,10 +48,6 @@
 		tag_start = p;
 	}
 
-	action parse_value{
-		TSK_PARSER_SET_STRING(hdr_T->value);
-	}
-
 	action parse_start_time{
 		TSK_PARSER_SET_INTEGER_EX(hdr_T->start, uint64_t, atoi64);
 	}

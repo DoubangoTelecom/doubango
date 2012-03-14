@@ -156,7 +156,7 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 				TSK_DEBUG_INFO("State machine: %s", entry->desc);
 			}
 			
-			if(entry->to != tsk_fsm_action_any){ /* Stay at the current state if dest. state is Any */
+			if(entry->to != tsk_fsm_state_any){ /* Stay at the current state if dest. state is Any */
 				self->current = entry->to;
 			}
 			

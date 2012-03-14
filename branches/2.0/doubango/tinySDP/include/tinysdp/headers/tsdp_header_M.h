@@ -114,6 +114,7 @@ TINYSDP_API char* tsdp_header_M_get_rtpmap(const tsdp_header_M_t* self, const ch
 TINYSDP_API char* tsdp_header_M_get_fmtp(const tsdp_header_M_t* self, const char* fmt);
 TINYSDP_API int tsdp_header_M_hold(tsdp_header_M_t* self, tsk_bool_t local);
 TINYSDP_API tsk_bool_t tsdp_header_M_is_held(const tsdp_header_M_t* self, tsk_bool_t local);
+TINYSDP_API int tsdp_header_M_set_holdresume_att(tsdp_header_M_t* self, tsk_bool_t lo_held, tsk_bool_t ro_held);
 TINYSDP_API int tsdp_header_M_resume(tsdp_header_M_t* self, tsk_bool_t local);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_M_def_t;

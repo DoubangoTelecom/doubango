@@ -1561,28 +1561,29 @@ SWIG_Perl_SetModule(swig_module_info *module) {
 #define SWIGTYPE_p_tmedia_chroma_e swig_types[63]
 #define SWIGTYPE_p_tmedia_qos_strength_e swig_types[64]
 #define SWIGTYPE_p_tmedia_qos_stype_e swig_types[65]
-#define SWIGTYPE_p_tmsrp_event_type_e swig_types[66]
-#define SWIGTYPE_p_tmsrp_request_type_e swig_types[67]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[68]
-#define SWIGTYPE_p_tsip_info_event_type_e swig_types[69]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[70]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[71]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[72]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[73]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[74]
-#define SWIGTYPE_p_tsip_request_type_e swig_types[75]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[76]
-#define SWIGTYPE_p_tsk_list_t swig_types[77]
-#define SWIGTYPE_p_twrap_media_type_e swig_types[78]
-#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[79]
-#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[80]
-#define SWIGTYPE_p_twrap_sms_type_e swig_types[81]
-#define SWIGTYPE_p_unsigned_char swig_types[82]
-#define SWIGTYPE_p_unsigned_int swig_types[83]
-#define SWIGTYPE_p_unsigned_long_long swig_types[84]
-#define SWIGTYPE_p_unsigned_short swig_types[85]
-static swig_type_info *swig_types[87];
-static swig_module_info swig_module = {swig_types, 86, 0, 0, 0, 0};
+#define SWIGTYPE_p_tmedia_srtp_mode_e swig_types[66]
+#define SWIGTYPE_p_tmsrp_event_type_e swig_types[67]
+#define SWIGTYPE_p_tmsrp_request_type_e swig_types[68]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[69]
+#define SWIGTYPE_p_tsip_info_event_type_e swig_types[70]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[71]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[72]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[73]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[74]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[75]
+#define SWIGTYPE_p_tsip_request_type_e swig_types[76]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[77]
+#define SWIGTYPE_p_tsk_list_t swig_types[78]
+#define SWIGTYPE_p_twrap_media_type_e swig_types[79]
+#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[80]
+#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[81]
+#define SWIGTYPE_p_twrap_sms_type_e swig_types[82]
+#define SWIGTYPE_p_unsigned_char swig_types[83]
+#define SWIGTYPE_p_unsigned_int swig_types[84]
+#define SWIGTYPE_p_unsigned_long_long swig_types[85]
+#define SWIGTYPE_p_unsigned_short swig_types[86]
+static swig_type_info *swig_types[88];
+static swig_module_info swig_module = {swig_types, 87, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3101,6 +3102,55 @@ XS(_wrap_MediaSessionMgr_sessionSetInt32) {
 }
 
 
+XS(_wrap_MediaSessionMgr_sessionGetInt32) {
+  {
+    MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+    twrap_media_type_t arg2 ;
+    char *arg3 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    int argvi = 0;
+    int32_t result;
+    dXSARGS;
+    
+    if ((items < 3) || (items > 3)) {
+      SWIG_croak("Usage: MediaSessionMgr_sessionGetInt32(self,media,key);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MediaSessionMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_sessionGetInt32" "', argument " "1"" of type '" "MediaSessionMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_sessionGetInt32" "', argument " "2"" of type '" "twrap_media_type_t""'");
+    } 
+    arg2 = static_cast< twrap_media_type_t >(val2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MediaSessionMgr_sessionGetInt32" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = reinterpret_cast< char * >(buf3);
+    result = (int32_t)(arg1)->sessionGetInt32(arg2,(char const *)arg3);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    XSRETURN(argvi);
+  fail:
+    
+    
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_MediaSessionMgr_consumerSetInt32) {
   {
     MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
@@ -4171,6 +4221,34 @@ XS(_wrap_MediaSessionMgr_defaultsSetInviteSessionTimers) {
   fail:
     
     if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetSRtpMode) {
+  {
+    tmedia_srtp_mode_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetSRtpMode(mode);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetSRtpMode" "', argument " "1"" of type '" "tmedia_srtp_mode_t""'");
+    } 
+    arg1 = static_cast< tmedia_srtp_mode_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetSRtpMode(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
     SWIG_croak_null();
   }
 }
@@ -14204,6 +14282,44 @@ XS(_wrap_ProxyPluginMgr_getInstance) {
 }
 
 
+XS(_wrap_ProxyPluginMgr_findPlugin) {
+  {
+    ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+    uint64_t arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    unsigned long long val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    ProxyPlugin *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: ProxyPluginMgr_findPlugin(self,id);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyPluginMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyPluginMgr_findPlugin" "', argument " "1"" of type '" "ProxyPluginMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyPluginMgr * >(argp1);
+    ecode2 = SWIG_AsVal_unsigned_SS_long_SS_long SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyPluginMgr_findPlugin" "', argument " "2"" of type '" "uint64_t""'");
+    } 
+    arg2 = static_cast< uint64_t >(val2);
+    result = (ProxyPlugin *)(arg1)->findPlugin(arg2);
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ProxyPlugin, 0 | SWIG_SHADOW); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_ProxyPluginMgr_findAudioConsumer) {
   {
     ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
@@ -23160,6 +23276,7 @@ static swig_type_info _swigt__p_tmedia_bandwidth_level_e = {"_p_tmedia_bandwidth
 static swig_type_info _swigt__p_tmedia_chroma_e = {"_p_tmedia_chroma_e", "tmedia_chroma_t *|enum tmedia_chroma_e *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_qos_strength_e = {"_p_tmedia_qos_strength_e", "tmedia_qos_strength_t *|enum tmedia_qos_strength_e *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_qos_stype_e = {"_p_tmedia_qos_stype_e", "enum tmedia_qos_stype_e *|tmedia_qos_stype_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_tmedia_srtp_mode_e = {"_p_tmedia_srtp_mode_e", "enum tmedia_srtp_mode_e *|tmedia_srtp_mode_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmsrp_event_type_e = {"_p_tmsrp_event_type_e", "enum tmsrp_event_type_e *|tmsrp_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmsrp_request_type_e = {"_p_tmsrp_request_type_e", "enum tmsrp_request_type_e *|tmsrp_request_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_event_type_e = {"_p_tsip_event_type_e", "enum tsip_event_type_e *|tsip_event_type_t *", 0, 0, (void*)0, 0};
@@ -23248,6 +23365,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_tmedia_chroma_e,
   &_swigt__p_tmedia_qos_strength_e,
   &_swigt__p_tmedia_qos_stype_e,
+  &_swigt__p_tmedia_srtp_mode_e,
   &_swigt__p_tmsrp_event_type_e,
   &_swigt__p_tmsrp_request_type_e,
   &_swigt__p_tsip_event_type_e,
@@ -23336,6 +23454,7 @@ static swig_cast_info _swigc__p_tmedia_bandwidth_level_e[] = {  {&_swigt__p_tmed
 static swig_cast_info _swigc__p_tmedia_chroma_e[] = {  {&_swigt__p_tmedia_chroma_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_qos_strength_e[] = {  {&_swigt__p_tmedia_qos_strength_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_qos_stype_e[] = {  {&_swigt__p_tmedia_qos_stype_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_tmedia_srtp_mode_e[] = {  {&_swigt__p_tmedia_srtp_mode_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmsrp_event_type_e[] = {  {&_swigt__p_tmsrp_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmsrp_request_type_e[] = {  {&_swigt__p_tmsrp_request_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_event_type_e[] = {  {&_swigt__p_tsip_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
@@ -23424,6 +23543,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_tmedia_chroma_e,
   _swigc__p_tmedia_qos_strength_e,
   _swigc__p_tmedia_qos_stype_e,
+  _swigc__p_tmedia_srtp_mode_e,
   _swigc__p_tmsrp_event_type_e,
   _swigc__p_tmsrp_request_type_e,
   _swigc__p_tsip_event_type_e,
@@ -23480,6 +23600,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::ActionConfig_setMediaInt", _wrap_ActionConfig_setMediaInt},
 {"tinyWRAPc::delete_MediaSessionMgr", _wrap_delete_MediaSessionMgr},
 {"tinyWRAPc::MediaSessionMgr_sessionSetInt32", _wrap_MediaSessionMgr_sessionSetInt32},
+{"tinyWRAPc::MediaSessionMgr_sessionGetInt32", _wrap_MediaSessionMgr_sessionGetInt32},
 {"tinyWRAPc::MediaSessionMgr_consumerSetInt32", _wrap_MediaSessionMgr_consumerSetInt32},
 {"tinyWRAPc::MediaSessionMgr_consumerSetInt64", _wrap_MediaSessionMgr_consumerSetInt64},
 {"tinyWRAPc::MediaSessionMgr_producerSetInt32", _wrap_MediaSessionMgr_producerSetInt32},
@@ -23515,6 +23636,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsSetVolume", _wrap_MediaSessionMgr_defaultsSetVolume},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetVolume", _wrap_MediaSessionMgr_defaultsGetVolume},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetInviteSessionTimers", _wrap_MediaSessionMgr_defaultsSetInviteSessionTimers},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetSRtpMode", _wrap_MediaSessionMgr_defaultsSetSRtpMode},
 {"tinyWRAPc::delete_MediaContent", _wrap_delete_MediaContent},
 {"tinyWRAPc::MediaContent_getType", _wrap_MediaContent_getType},
 {"tinyWRAPc::MediaContent_getDataLength", _wrap_MediaContent_getDataLength},
@@ -23660,6 +23782,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::delete_ProxyPluginMgr", _wrap_delete_ProxyPluginMgr},
 {"tinyWRAPc::ProxyPluginMgr_createInstance", _wrap_ProxyPluginMgr_createInstance},
 {"tinyWRAPc::ProxyPluginMgr_getInstance", _wrap_ProxyPluginMgr_getInstance},
+{"tinyWRAPc::ProxyPluginMgr_findPlugin", _wrap_ProxyPluginMgr_findPlugin},
 {"tinyWRAPc::ProxyPluginMgr_findAudioConsumer", _wrap_ProxyPluginMgr_findAudioConsumer},
 {"tinyWRAPc::ProxyPluginMgr_findVideoConsumer", _wrap_ProxyPluginMgr_findVideoConsumer},
 {"tinyWRAPc::ProxyPluginMgr_findAudioProducer", _wrap_ProxyPluginMgr_findAudioProducer},
@@ -24725,6 +24848,21 @@ XS(SWIG_init) {
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tmedia_chroma_yuv420p", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_chroma_yuv420p)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_srtp_mode_none", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_srtp_mode_none)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_srtp_mode_optional", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_srtp_mode_optional)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_srtp_mode_mandatory", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_srtp_mode_mandatory)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {

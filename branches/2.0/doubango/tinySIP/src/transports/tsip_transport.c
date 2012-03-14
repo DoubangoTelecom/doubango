@@ -211,6 +211,58 @@ tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const struct so
 	return ret;
 }
 
+tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t local_fd, const void* data, tsk_size_t size)
+{
+	static const uint8_t __ws_first_byte = 0x82;
+	const uint8_t* pdata = (const uint8_t*)data;
+	uint64_t data_size = 1 + 1 + size;
+	uint64_t lsize = (uint64_t)size;
+	uint8_t* pws_snd_buffer;
+	if(lsize > 0x7D && lsize <= 0xFFFF){
+		data_size += 2;
+	}
+	else if(lsize > 0xFFFF){
+		data_size += 8;
+	}
+	if(self->ws_snd_buffer_size < data_size){
+		if(!(TSIP_TRANSPORT(self)->ws_snd_buffer = tsk_realloc(TSIP_TRANSPORT(self)->ws_snd_buffer, (tsk_size_t)data_size))){
+			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %u", data_size);
+			TSIP_TRANSPORT(self)->ws_snd_buffer_size = 0;
+			return 0;
+		}
+		TSIP_TRANSPORT(self)->ws_snd_buffer_size = data_size;
+	}
+	pws_snd_buffer = (uint8_t*)TSIP_TRANSPORT(self)->ws_snd_buffer;
+
+	pws_snd_buffer[0] = 0x82;
+	if(lsize <= 0x7D){
+		pws_snd_buffer[1] = (uint8_t)lsize;
+		pws_snd_buffer = &pws_snd_buffer[2];
+	}
+	else if(lsize <= 0xFFFF){
+		pws_snd_buffer[1] = 0x7E;
+		pws_snd_buffer[2] = (lsize >> 8) & 0xFF;
+		pws_snd_buffer[3] = (lsize & 0xFF);
+		pws_snd_buffer = &pws_snd_buffer[4];
+	}
+	else{
+		pws_snd_buffer[1] = 0x7F;
+		pws_snd_buffer[2] = (lsize >> 56) & 0xFF;
+		pws_snd_buffer[3] = (lsize >> 48) & 0xFF;
+		pws_snd_buffer[4] = (lsize >> 40) & 0xFF;
+		pws_snd_buffer[5] = (lsize >> 32) & 0xFF;
+		pws_snd_buffer[6] = (lsize >> 24) & 0xFF;
+		pws_snd_buffer[7] = (lsize >> 16) & 0xFF;
+		pws_snd_buffer[8] = (lsize >> 8) & 0xFF;
+		pws_snd_buffer[9] = (lsize & 0xFF);
+		pws_snd_buffer = &pws_snd_buffer[10];
+	}
+	
+	memcpy(pws_snd_buffer, pdata, (size_t)lsize);
+
+	return tnet_transport_send(self->net_transport, local_fd, self->ws_snd_buffer, (tsk_size_t)data_size);
+}
+
 /* sends a request 
 * all callers of this function should provide a sigcomp-id
 */
@@ -297,30 +349,17 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 			}
 			else{
 				if(self->stack->network.mode_server){
-					ret = tsip_transport_send_raw(self, (const struct sockaddr*)&msg->remote_addr, buffer->data, buffer->size);
+					if(TNET_SOCKET_TYPE_IS_WS(self->type) || TNET_SOCKET_TYPE_IS_WSS(self->type)){
+						ret = tsip_transport_send_raw_ws(self, msg->local_fd, buffer->data, buffer->size);
+					}
+					else{
+						ret = tsip_transport_send_raw(self, (const struct sockaddr*)&msg->remote_addr, buffer->data, buffer->size);
+					}
 				}
 				else{
 					// always send to the Proxy-CSCF
 					ret = tsip_transport_send_raw(self, tsk_null/* Use P-CSCF addr */, buffer->data, buffer->size);
-				}				
-
-				/*if(destIP && destPort)
-				{
-					struct sockaddr_storage to;
-					if(tnet_sockaddr_init(destIP, destPort, tsip_transport_get_socket_type(self), &to))
-					{
-						goto bail;
-					}
-					if(tnet_transport_sendto(self->net_transport, self->connectedFD, &to, buffer->data, buffer->size))
-					{
-						ret = 0;
-					}
 				}
-				else*/
-				//{
-				//	if((ret = tsip_transport_send_raw(self, buffer->data, buffer->size))){
-				//	}
-				//}
 			}
 
 //bail:
@@ -422,6 +461,10 @@ int tsip_transport_deinit(tsip_transport_t* self)
 
 	TSK_OBJECT_SAFE_FREE(self->net_transport);
 	TSK_OBJECT_SAFE_FREE(self->buff_stream);
+	TSK_SAFE_FREE(self->ws_rcv_buffer);
+	self->ws_rcv_buffer_size = 0;
+	TSK_SAFE_FREE(self->ws_snd_buffer);
+	self->ws_snd_buffer_size = 0;
 
 	self->initialized = 0;
 	return 0;

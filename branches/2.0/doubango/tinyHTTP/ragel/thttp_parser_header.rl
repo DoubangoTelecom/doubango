@@ -50,6 +50,10 @@
 //#include "tinyhttp/headers/thttp_header_Record_Route.h"
 //#include "tinyhttp/headers/thttp_header_Require.h"
 //#include "tinyhttp/headers/thttp_header_Route.h"
+#include "tinyhttp/headers/thttp_header_Sec_WebSocket_Accept.h"
+#include "tinyhttp/headers/thttp_header_Sec_WebSocket_Key.h"
+#include "tinyhttp/headers/thttp_header_Sec_WebSocket_Protocol.h"
+#include "tinyhttp/headers/thttp_header_Sec_WebSocket_Version.h"
 //#include "tinyhttp/headers/thttp_header_Service_Route.h"
 //#include "tinyhttp/headers/thttp_header_Supported.h"
 #include "tinyhttp/headers/thttp_header_Transfer_Encoding.h"
@@ -386,6 +390,35 @@
 		//TSK_DEBUG_WARN("parse_header_Referer NOT IMPLEMENTED. Will be added as Dummy header.");
 	}	
 	
+	# /* == Sec-WebSocket-Accept == */
+	action parse_header_Sec_WebSocket_Accept
+	{
+		thttp_header_Sec_WebSocket_Accept_t* header = thttp_header_Sec_WebSocket_Accept_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+	}
+
+	# /* == Sec-WebSocket-Key == */
+	action parse_header_Sec_WebSocket_Key
+	{
+		thttp_header_Sec_WebSocket_Key_t* header = thttp_header_Sec_WebSocket_Key_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+	}
+
+	# /* == Sec-WebSocket-Protocol == */
+	action parse_header_Sec_WebSocket_Protocol
+	{
+		thttp_header_Sec_WebSocket_Protocol_t* header = thttp_header_Sec_WebSocket_Protocol_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+	}
+
+
+	# /* == Sec-WebSocket-Version == */
+	action parse_header_Sec_WebSocket_Version
+	{
+		thttp_header_Sec_WebSocket_Version_t* header = thttp_header_Sec_WebSocket_Version_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+	}
+
 	# /*== TE: ==*/
 	action parse_header_TE
 	{
@@ -467,8 +500,8 @@
 
 
 	# Includes
-	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
-	include thttp_machine_header "./ragel/thttp_machine_header.rl";
+	include thttp_machine_utils "./thttp_machine_utils.rl";
+	include thttp_machine_header "./thttp_machine_header.rl";
 
 	# Entry point
 	main := HEADER;

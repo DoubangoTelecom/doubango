@@ -34,28 +34,28 @@
 
 /* ============ Ghost Session ================= */
 
-int tmedia_session_ghost_prepare(tmedia_session_t* self)
+static int tmedia_session_ghost_prepare(tmedia_session_t* self)
 {
 	return 0;
 }
 
-int tmedia_session_ghost_start(tmedia_session_t* self)
+static int tmedia_session_ghost_start(tmedia_session_t* self)
 {
 	return 0;
 }
 
-int tmedia_session_ghost_stop(tmedia_session_t* self)
+static int tmedia_session_ghost_stop(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_ghost_stop");
 	return 0;
 }
 
-int tmedia_session_ghost_pause(tmedia_session_t* self)
+static int tmedia_session_ghost_pause(tmedia_session_t* self)
 {
 	return 0;
 }
 
-const tsdp_header_M_t* tmedia_session_ghost_get_lo(tmedia_session_t* self)
+static const tsdp_header_M_t* tmedia_session_ghost_get_lo(tmedia_session_t* self)
 {
 	tmedia_session_ghost_t* ghost;
 
@@ -72,7 +72,7 @@ const tsdp_header_M_t* tmedia_session_ghost_get_lo(tmedia_session_t* self)
 	return self->M.lo;
 }
 
-int tmedia_session_ghost_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
+static int tmedia_session_ghost_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
 	return 0;
 }
@@ -126,7 +126,8 @@ static const tmedia_session_plugin_def_t tmedia_session_ghost_plugin_def_s =
 	tmedia_ghost,
 	"ghost",
 	
-	tsk_null,
+	tsk_null, /* set() */
+	tsk_null, /* get() */
 	tmedia_session_ghost_prepare,
 	tmedia_session_ghost_start,
 	tmedia_session_ghost_stop,

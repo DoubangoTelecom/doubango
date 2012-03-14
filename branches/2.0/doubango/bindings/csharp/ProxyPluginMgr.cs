@@ -51,6 +51,12 @@ public class ProxyPluginMgr : IDisposable {
     return ret;
   }
 
+  public ProxyPlugin findPlugin(ulong id) {
+    IntPtr cPtr = tinyWRAPPINVOKE.ProxyPluginMgr_findPlugin(swigCPtr, id);
+    ProxyPlugin ret = (cPtr == IntPtr.Zero) ? null : new ProxyPlugin(cPtr, false);
+    return ret;
+  }
+
   public ProxyAudioConsumer findAudioConsumer(ulong id) {
     IntPtr cPtr = tinyWRAPPINVOKE.ProxyPluginMgr_findAudioConsumer(swigCPtr, id);
     ProxyAudioConsumer ret = (cPtr == IntPtr.Zero) ? null : new ProxyAudioConsumer(cPtr, false);

@@ -44,6 +44,11 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public int sessionGetInt32(twrap_media_type_t media, string key) {
+    int ret = tinyWRAPPINVOKE.MediaSessionMgr_sessionGetInt32(swigCPtr, (int)media, key);
+    return ret;
+  }
+
   public bool consumerSetInt32(twrap_media_type_t media, string key, int value) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_consumerSetInt32(swigCPtr, (int)media, key, value);
     return ret;
@@ -218,6 +223,11 @@ public class MediaSessionMgr : IDisposable {
 
   public static bool defaultsSetInviteSessionTimers(int timeout, string refresher) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetInviteSessionTimers(timeout, refresher);
+    return ret;
+  }
+
+  public static bool defaultsSetSRtpMode(tmedia_srtp_mode_t mode) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetSRtpMode((int)mode);
     return ret;
   }
 

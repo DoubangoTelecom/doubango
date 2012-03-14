@@ -175,6 +175,29 @@ int thttp_message_add_headers(thttp_message_t *self, const thttp_headers_L_t *he
 	return -1;
 }
 
+int thttp_message_add_headers_2(thttp_message_t *self, ...)
+{
+	const tsk_object_def_t* objdef;
+	thttp_header_t *header;
+	va_list ap;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	va_start(ap, self);
+	while((objdef = va_arg(ap, const tsk_object_def_t*))){
+		if((header = tsk_object_new_2(objdef, &ap))){
+			thttp_message_add_header(self, header);
+			TSK_OBJECT_SAFE_FREE(header);
+		}
+	}
+	va_end(ap);
+
+	return 0;
+}
+
 /**@ingroup thttp_message_group
 */
 int thttp_message_add_content(thttp_message_t *self, const char* content_type, const void* content, tsk_size_t size)

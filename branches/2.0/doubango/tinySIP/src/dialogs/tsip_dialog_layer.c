@@ -261,6 +261,7 @@ tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type
 	tsip_dialog_t* ret = tsk_null;
 	tsip_dialog_t* dialog;
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		goto bail;
 	}
 

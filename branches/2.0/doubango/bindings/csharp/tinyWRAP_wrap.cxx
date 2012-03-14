@@ -1455,6 +1455,22 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_sessionSetInt32(void 
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_MediaSessionMgr_sessionGetInt32(void * jarg1, int jarg2, char * jarg3) {
+  int jresult ;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  char *arg3 = (char *) 0 ;
+  int32_t result;
+  
+  arg1 = (MediaSessionMgr *)jarg1; 
+  arg2 = (twrap_media_type_t)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (int32_t)(arg1)->sessionGetInt32(arg2,(char const *)arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_consumerSetInt32(void * jarg1, int jarg2, char * jarg3, int jarg4) {
   unsigned int jresult ;
   MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
@@ -1888,6 +1904,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetInviteSess
   arg1 = (int32_t)jarg1; 
   arg2 = (char *)jarg2; 
   result = (bool)MediaSessionMgr::defaultsSetInviteSessionTimers(arg1,(char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetSRtpMode(int jarg1) {
+  unsigned int jresult ;
+  tmedia_srtp_mode_t arg1 ;
+  bool result;
+  
+  arg1 = (tmedia_srtp_mode_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetSRtpMode(arg1);
   jresult = result; 
   return jresult;
 }
@@ -4333,6 +4361,20 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_ProxyPluginMgr_getInstance() {
   ProxyPluginMgr *result = 0 ;
   
   result = (ProxyPluginMgr *)ProxyPluginMgr::getInstance();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_ProxyPluginMgr_findPlugin(void * jarg1, unsigned long long jarg2) {
+  void * jresult ;
+  ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+  uint64_t arg2 ;
+  ProxyPlugin *result = 0 ;
+  
+  arg1 = (ProxyPluginMgr *)jarg1; 
+  arg2 = (uint64_t)jarg2; 
+  result = (ProxyPlugin *)(arg1)->findPlugin(arg2);
   jresult = (void *)result; 
   return jresult;
 }
