@@ -385,7 +385,7 @@ parse_buffer:
 				// create ws buffer tohold unmasked data
 				if(transport->ws_rcv_buffer_size < pay_len){
 					if(!(transport->ws_rcv_buffer = tsk_realloc(transport->ws_rcv_buffer, (tsk_size_t)pay_len))){
-						TSK_DEBUG_ERROR("Failed to allocate buffer of size %d", pay_len);
+						TSK_DEBUG_ERROR("Failed to allocate buffer of size %lld", pay_len);
 						transport->ws_rcv_buffer_size = 0;
 						goto bail;
 					}
