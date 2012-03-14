@@ -59,7 +59,9 @@ trtp_rtp_packet_t;
 
 TINYRTP_API trtp_rtp_packet_t* trtp_rtp_packet_create_null();
 TINYRTP_API trtp_rtp_packet_t* trtp_rtp_packet_create(uint32_t ssrc, uint16_t seq_num, uint32_t timestamp, uint8_t payload_type, tsk_bool_t marker);
-TINYRTP_API tsk_buffer_t* trtp_rtp_packet_serialize(const trtp_rtp_packet_t *self);
+TINYRTP_API tsk_size_t trtp_rtp_packet_guess_serialbuff_size(const trtp_rtp_packet_t *self);
+TINYRTP_API tsk_size_t trtp_rtp_packet_serialize_to(const trtp_rtp_packet_t *self, void* buffer, tsk_size_t size);
+TINYRTP_API tsk_buffer_t* trtp_rtp_packet_serialize(const trtp_rtp_packet_t *self, tsk_size_t num_bytes_pad);
 TINYRTP_API trtp_rtp_packet_t* trtp_rtp_packet_deserialize(const void *data, tsk_size_t size);
 
 

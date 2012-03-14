@@ -26,11 +26,12 @@
  *
 
  */
-#ifndef TINYMEDIA_MANAGER_H
-#define TINYMEDIA_MANAGER_H
+#ifndef TINYRTP_MANAGER_H
+#define TINYRTP_MANAGER_H
 
 #include "tinyrtp_config.h"
 
+#include "tinyrtp/trtp_srtp.h"
 #include "tinynet.h"
 
 TRTP_BEGIN_DECLS
@@ -87,6 +88,12 @@ typedef struct trtp_manager_s
 		uint16_t start;
 		uint16_t stop;
 	} port_range;
+
+#if HAVE_SRTP
+	trtp_srtp_ctx_xt srtp_contexts[2][2];
+	const struct trtp_srtp_ctx_xs* srtp_ctx_neg_local;
+	const struct trtp_srtp_ctx_xs* srtp_ctx_neg_remote;
+#endif
 }
 trtp_manager_t;
 
@@ -109,4 +116,4 @@ TINYRTP_GEXTERN const tsk_object_def_t *trtp_manager_def_t;
 
 TRTP_END_DECLS
 
-#endif /* TINYMEDIA_MANAGER_H */
+#endif /* TINYRTP_MANAGER_H */

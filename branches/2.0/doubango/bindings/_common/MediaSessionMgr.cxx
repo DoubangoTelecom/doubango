@@ -60,6 +60,16 @@ bool MediaSessionMgr::sessionSetInt32(twrap_media_type_t media, const char* key,
 		TMEDIA_SESSION_SET_NULL()) == 0);
 }
 
+int32_t MediaSessionMgr::sessionGetInt32(twrap_media_type_t media, const char* key)
+{
+	int32_t value = 0;
+	tmedia_type_t _media = _get_media_type(media);
+	(tmedia_session_mgr_get(m_pWrappedMgr,
+		TMEDIA_SESSION_GET_INT32(_media, key, &value),
+		TMEDIA_SESSION_GET_NULL()));
+	return value;
+}
+
 bool MediaSessionMgr::consumerSetInt32(twrap_media_type_t media, const char* key, int32_t value)
 {
 	tmedia_type_t _media = _get_media_type(media);
@@ -126,6 +136,9 @@ const ProxyPlugin* MediaSessionMgr::findProxyPlugin(twrap_media_type_t media, bo
 				else{
 					plugin = manager->findPlugin(TDAV_SESSION_VIDEO(session)->producer);
 				}
+			}
+			else{
+				TSK_DEBUG_ERROR("Unknown session with media type = %d", _media);
 			}
 			tsk_object_unref(session);
 		}
@@ -298,4 +311,8 @@ bool MediaSessionMgr::defaultsSetInviteSessionTimers(int32_t timeout, const char
 	int ret = tmedia_defaults_set_inv_session_expires(timeout);
 	ret &= tmedia_defaults_set_inv_session_refresher(refresher);
 	return (ret == 0);
+}
+
+bool MediaSessionMgr::defaultsSetSRtpMode(tmedia_srtp_mode_t mode){
+	return (tmedia_defaults_set_srtp_mode(mode) == 0);
 }

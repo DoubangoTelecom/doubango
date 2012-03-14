@@ -30,6 +30,7 @@ struct md5_result
 
 struct md5_result msgs_md5[] = 
 {
+	{ "x3JJHMbDL1EzLkh9GBhXDw==258EAFA5-E914-47DA-95CA-C5AB0DC85B11", "f3d129cf0d52088287dee3e6057fa18d" },
 	{ "", "d41d8cd98f00b204e9800998ecf8427e" },
 	{ "a", "0cc175b9c0f1b6a831c399e269772661" },
 	{ "abc", "900150983cd24fb0d6963f7d28e17f72" },
@@ -38,7 +39,7 @@ struct md5_result msgs_md5[] =
 	{ "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "d174ab98d277d9f5a5611c2c9f419d9f" },
 	{ "12345678901234567890123456789012345678901234567890123456789012345678901234567890", "57edf4a22be3c955ac49da2e2107b67a" },
 	{ "The quick brown fox jumps over the lazy dog", "9e107d9d372bb6826bd81d3542a419d6" },
-	{ "The quick brown fox jumps over the lazy dog.", "e4d909c290d0fb1ca068ffaddf22cbd0" }
+	{ "The quick brown fox jumps over the lazy dog.", "e4d909c290d0fb1ca068ffaddf22cbd0" },
 };
 
 void test_md5()

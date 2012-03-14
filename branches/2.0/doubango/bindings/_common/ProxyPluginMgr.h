@@ -64,13 +64,14 @@ public:
 	static uint64_t getUniqueId();
 
 	int addPlugin(ProxyPlugin**);
-	const ProxyPlugin* findPlugin(uint64_t id);
 	const ProxyPlugin* findPlugin(tsk_object_t* wrapped_plugin);
 	int removePlugin(uint64_t id);
 	int removePlugin(ProxyPlugin**);
 
 	inline ProxyPluginMgrCallback* getCallback(){ return this->callback; }
 #endif
+
+	const ProxyPlugin* findPlugin(uint64_t id);
 
 	const ProxyAudioConsumer* findAudioConsumer(uint64_t id);
 	const ProxyVideoConsumer* findVideoConsumer(uint64_t id);

@@ -162,6 +162,11 @@ const ProxyPlugin* ProxyPluginMgr::findPlugin(tsk_object_t* wrapped_plugin)
 
 	tsk_list_item_t* item;
 
+	if(!wrapped_plugin){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
 	tsk_list_lock(this->plugins);
 	tsk_list_foreach(item, this->plugins){
 		if(TWRAP_PROXY_PLUGIN(item->data)->plugin->isWrapping(wrapped_plugin)){

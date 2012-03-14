@@ -37,6 +37,7 @@ public:
 
 public:
 	bool sessionSetInt32(twrap_media_type_t media, const char* key, int32_t value);
+	int32_t sessionGetInt32(twrap_media_type_t media, const char* key);
 
 	bool consumerSetInt32(twrap_media_type_t media, const char* key, int32_t value);
 	bool consumerSetInt64(twrap_media_type_t media, const char* key, int64_t value);
@@ -86,6 +87,7 @@ public:
 	static bool defaultsSetVolume(int32_t volume);
 	static int32_t defaultsGetVolume();
 	static bool defaultsSetInviteSessionTimers(int32_t timeout, const char* refresher);
+	static bool defaultsSetSRtpMode(tmedia_srtp_mode_t mode);
 
 private:
 	tmedia_session_mgr_t* m_pWrappedMgr;

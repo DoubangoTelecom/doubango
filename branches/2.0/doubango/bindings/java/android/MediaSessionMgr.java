@@ -37,6 +37,10 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_sessionSetInt32(swigCPtr, this, media.swigValue(), key, value);
   }
 
+  public int sessionGetInt32(twrap_media_type_t media, String key) {
+    return tinyWRAPJNI.MediaSessionMgr_sessionGetInt32(swigCPtr, this, media.swigValue(), key);
+  }
+
   public boolean consumerSetInt32(twrap_media_type_t media, String key, int value) {
     return tinyWRAPJNI.MediaSessionMgr_consumerSetInt32(swigCPtr, this, media.swigValue(), key, value);
   }
@@ -177,6 +181,10 @@ public class MediaSessionMgr {
 
   public static boolean defaultsSetInviteSessionTimers(int timeout, String refresher) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetInviteSessionTimers(timeout, refresher);
+  }
+
+  public static boolean defaultsSetSRtpMode(tmedia_srtp_mode_t mode) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetSRtpMode(mode.swigValue());
   }
 
 }

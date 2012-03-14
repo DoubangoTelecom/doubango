@@ -44,7 +44,7 @@
 	machine thttp_machine_parser_header_Authorization;
 
 	# Includes
-	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
+	include thttp_machine_utils "./thttp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;

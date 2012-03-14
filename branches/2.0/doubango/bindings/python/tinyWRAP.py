@@ -148,6 +148,7 @@ class MediaSessionMgr(_object):
     __swig_destroy__ = _tinyWRAP.delete_MediaSessionMgr
     __del__ = lambda self : None;
     def sessionSetInt32(self, *args): return _tinyWRAP.MediaSessionMgr_sessionSetInt32(self, *args)
+    def sessionGetInt32(self, *args): return _tinyWRAP.MediaSessionMgr_sessionGetInt32(self, *args)
     def consumerSetInt32(self, *args): return _tinyWRAP.MediaSessionMgr_consumerSetInt32(self, *args)
     def consumerSetInt64(self, *args): return _tinyWRAP.MediaSessionMgr_consumerSetInt64(self, *args)
     def producerSetInt32(self, *args): return _tinyWRAP.MediaSessionMgr_producerSetInt32(self, *args)
@@ -211,6 +212,8 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsGetVolume = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetVolume)
     __swig_getmethods__["defaultsSetInviteSessionTimers"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetInviteSessionTimers
     if _newclass:defaultsSetInviteSessionTimers = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetInviteSessionTimers)
+    __swig_getmethods__["defaultsSetSRtpMode"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetSRtpMode
+    if _newclass:defaultsSetSRtpMode = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetSRtpMode)
 MediaSessionMgr_swigregister = _tinyWRAP.MediaSessionMgr_swigregister
 MediaSessionMgr_swigregister(MediaSessionMgr)
 
@@ -325,6 +328,10 @@ MediaSessionMgr_defaultsGetVolume = _tinyWRAP.MediaSessionMgr_defaultsGetVolume
 def MediaSessionMgr_defaultsSetInviteSessionTimers(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetInviteSessionTimers(*args)
 MediaSessionMgr_defaultsSetInviteSessionTimers = _tinyWRAP.MediaSessionMgr_defaultsSetInviteSessionTimers
+
+def MediaSessionMgr_defaultsSetSRtpMode(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetSRtpMode(*args)
+MediaSessionMgr_defaultsSetSRtpMode = _tinyWRAP.MediaSessionMgr_defaultsSetSRtpMode
 
 class MediaContent(_object):
     __swig_setmethods__ = {}
@@ -829,6 +836,7 @@ class ProxyPluginMgr(_object):
     if _newclass:createInstance = staticmethod(_tinyWRAP.ProxyPluginMgr_createInstance)
     __swig_getmethods__["getInstance"] = lambda x: _tinyWRAP.ProxyPluginMgr_getInstance
     if _newclass:getInstance = staticmethod(_tinyWRAP.ProxyPluginMgr_getInstance)
+    def findPlugin(self, *args): return _tinyWRAP.ProxyPluginMgr_findPlugin(self, *args)
     def findAudioConsumer(self, *args): return _tinyWRAP.ProxyPluginMgr_findAudioConsumer(self, *args)
     def findVideoConsumer(self, *args): return _tinyWRAP.ProxyPluginMgr_findVideoConsumer(self, *args)
     def findAudioProducer(self, *args): return _tinyWRAP.ProxyPluginMgr_findAudioProducer(self, *args)
@@ -1369,6 +1377,9 @@ tmedia_chroma_nv21 = _tinyWRAP.tmedia_chroma_nv21
 tmedia_chroma_yuv422p = _tinyWRAP.tmedia_chroma_yuv422p
 tmedia_chroma_uyvy422 = _tinyWRAP.tmedia_chroma_uyvy422
 tmedia_chroma_yuv420p = _tinyWRAP.tmedia_chroma_yuv420p
+tmedia_srtp_mode_none = _tinyWRAP.tmedia_srtp_mode_none
+tmedia_srtp_mode_optional = _tinyWRAP.tmedia_srtp_mode_optional
+tmedia_srtp_mode_mandatory = _tinyWRAP.tmedia_srtp_mode_mandatory
 tmedia_qos_stype_none = _tinyWRAP.tmedia_qos_stype_none
 tmedia_qos_stype_segmented = _tinyWRAP.tmedia_qos_stype_segmented
 tmedia_qos_stype_e2e = _tinyWRAP.tmedia_qos_stype_e2e

@@ -2322,6 +2322,30 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionM
 }
 
 
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1sessionGetInt32(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jstring jarg3) {
+  jint jresult = 0 ;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  char *arg3 = (char *) 0 ;
+  int32_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(MediaSessionMgr **)&jarg1; 
+  arg2 = (twrap_media_type_t)jarg2; 
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  result = (int32_t)(arg1)->sessionGetInt32(arg2,(char const *)arg3);
+  jresult = (jint)result; 
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
+  return jresult;
+}
+
+
 SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1consumerSetInt32(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jstring jarg3, jint jarg4) {
   jboolean jresult = 0 ;
   MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
@@ -2874,6 +2898,20 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionM
   result = (bool)MediaSessionMgr::defaultsSetInviteSessionTimers(arg1,(char const *)arg2);
   jresult = (jboolean)result; 
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetSRtpMode(JNIEnv *jenv, jclass jcls, jint jarg1) {
+  jboolean jresult = 0 ;
+  tmedia_srtp_mode_t arg1 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (tmedia_srtp_mode_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetSRtpMode(arg1);
+  jresult = (jboolean)result; 
   return jresult;
 }
 
@@ -6134,6 +6172,45 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyPluginMgr_1
   (void)jcls;
   result = (ProxyPluginMgr *)ProxyPluginMgr::getInstance();
   *(ProxyPluginMgr **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyPluginMgr_1findPlugin(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  jlong jresult = 0 ;
+  ProxyPluginMgr *arg1 = (ProxyPluginMgr *) 0 ;
+  uint64_t arg2 ;
+  ProxyPlugin *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyPluginMgr **)&jarg1; 
+  {
+    jclass clazz;
+    jmethodID mid;
+    jbyteArray ba;
+    jbyte* bae;
+    jsize sz;
+    int i;
+    
+    if (!jarg2) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "BigInteger null");
+      return 0;
+    }
+    clazz = jenv->GetObjectClass(jarg2);
+    mid = jenv->GetMethodID(clazz, "toByteArray", "()[B");
+    ba = (jbyteArray)jenv->CallObjectMethod(jarg2, mid);
+    bae = jenv->GetByteArrayElements(ba, 0);
+    sz = jenv->GetArrayLength(ba);
+    arg2 = 0;
+    for(i=0; i<sz; i++) {
+      arg2 = (arg2 << 8) | (uint64_t)(unsigned char)bae[i];
+    }
+    jenv->ReleaseByteArrayElements(ba, bae, 0);
+  }
+  result = (ProxyPlugin *)(arg1)->findPlugin(arg2);
+  *(ProxyPlugin **)&jresult = result; 
   return jresult;
 }
 

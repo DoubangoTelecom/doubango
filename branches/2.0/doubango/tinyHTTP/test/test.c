@@ -36,8 +36,8 @@
 #define LOOP						1
 
 #define RUN_TEST_ALL				0
-#define RUN_TEST_AUTH				0
-#define RUN_TEST_STACK				1
+#define RUN_TEST_AUTH				1
+#define RUN_TEST_STACK				0
 #define RUN_TEST_URL				0
 #define RUN_TEST_MSGS				0
 
@@ -60,6 +60,7 @@ int main()
 		printf("Doubango Project\nCopyright (C) 2009-2010 Mamadou Diop \n\n");
 
 #if RUN_TEST_AUTH || RUN_TEST_ALL
+		test_ws_auth();
 		test_basic_auth();
 		test_digest_auth();
 #endif

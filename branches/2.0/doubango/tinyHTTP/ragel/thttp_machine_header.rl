@@ -73,6 +73,13 @@
 	Warning = "Warning"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Warning;
 	WWW_Authenticate = "WWW-Authenticate"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_WWW_Authenticate;
 	
+	# WebSocket
+	Sec_WebSocket_Accept = "Sec-WebSocket-Accept"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Sec_WebSocket_Accept;
+	Sec_WebSocket_Key = "Sec-WebSocket-Key"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Sec_WebSocket_Key;
+	Sec_WebSocket_Protocol = "Sec-WebSocket-Protocol"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Sec_WebSocket_Protocol;
+	Sec_WebSocket_Version = "Sec-WebSocket-Version"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Sec_WebSocket_Version;
+	
+
 	######
 	extension_header = (token) SP* HCOLON SP*<: any* :>CRLF  @parse_header_extension_header;
 	
@@ -80,6 +87,7 @@
 	auth_header = Authorization | WWW_Authenticate | Proxy_Authorization | Proxy_Authenticate;
 	request_header = Accept | Accept_Charset | Accept_Encoding | Accept_Language | Expect | From | Host | If_Match | If_Modified_Since | If_None_Match | If_Range | If_Unmodified_Since | Max_Forwards | Range | Referer | TE | User_Agent;
 	entity_header = Allow | Content_Encoding | Content_Language | Content_Length | Content_Location | Content_MD5 | Content_Range | Content_Type | ETag | Expires | Last_Modified;
-	
-	HEADER = (general_header | auth_header | request_header | entity_header)@1 | extension_header@0;
+	ws_header = Sec_WebSocket_Accept | Sec_WebSocket_Key | Sec_WebSocket_Protocol | Sec_WebSocket_Version;
+
+	HEADER = (general_header | auth_header | request_header | entity_header | ws_header)@1 | extension_header@0;
 }%%

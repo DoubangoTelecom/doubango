@@ -112,7 +112,7 @@ tsip_header_Session_Expires_t *tsip_header_Session_Expires_parse(const char *dat
 	%%write exec;
 	
 	if( cs < %%{ write first_final; }%% ){
-		TSK_DEBUG_ERROR("Failed to parse 'Min-SE' header.");
+		TSK_DEBUG_ERROR("Failed to parse 'Session-Expires' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_session_expires);
 	}
 	

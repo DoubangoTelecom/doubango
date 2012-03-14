@@ -1,13 +1,23 @@
 APP := lib$(PROJECT)_$(MARCH).$(EXT)
 
-CFLAGS := $(CFLAGS_LIB) -I../tinySAK/src -I../tinyNET/src -I./include
-LDFLAGS := $(LDFLAGS_LIB) -ltinySAK_$(MARCH) -ltinyNET_$(MARCH)
+# SRTP (Default: enabled)
+ifeq ($(SRTP),no)
+	LIBSRTP_CFLAGS := -DHAVE_SRTP=0
+else
+	LIBSRTP_CFLAGS := -DHAVE_SRTP=1
+	LIBSRTP_LDFLAGS := -lsrtp
+endif
+
+THIRDPARTIES_INC := ../thirdparties/android/include
+CFLAGS := $(CFLAGS_LIB) -I$(THIRDPARTIES_INC) $(LIBSRTP_CFLAGS) -I../tinySAK/src -I../tinyNET/src -I./include
+LDFLAGS := $(LDFLAGS_LIB) $(LIBSRTP_LDFLAGS) -ltinySAK_$(MARCH) -ltinyNET_$(MARCH)
 
 all: $(APP)
 
 OBJS = \
 	src/trtp.o \
 	src/trtp_manager.o \
+	src/trtp_srtp.o
 	
 ## RTCP
 OBJS += src/rtcp/trtp_rtcp_session.o 

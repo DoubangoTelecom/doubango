@@ -43,6 +43,11 @@ public class ProxyPluginMgr {
     return (cPtr == 0) ? null : new ProxyPluginMgr(cPtr, false);
   }
 
+  public ProxyPlugin findPlugin(java.math.BigInteger id) {
+    long cPtr = tinyWRAPJNI.ProxyPluginMgr_findPlugin(swigCPtr, this, id);
+    return (cPtr == 0) ? null : new ProxyPlugin(cPtr, false);
+  }
+
   public ProxyAudioConsumer findAudioConsumer(java.math.BigInteger id) {
     long cPtr = tinyWRAPJNI.ProxyPluginMgr_findAudioConsumer(swigCPtr, this, id);
     return (cPtr == 0) ? null : new ProxyAudioConsumer(cPtr, false);

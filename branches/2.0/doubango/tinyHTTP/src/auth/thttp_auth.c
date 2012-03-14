@@ -29,9 +29,11 @@
 #include "tinyhttp/auth/thttp_auth.h"
 
 #include "tsk_string.h"
+#include "tsk_sha1.h"
 #include "tsk_base64.h"
 #include "tsk_buffer.h"
 #include "tsk_memory.h"
+#include "tsk_debug.h"
 
 #include <string.h>
 
@@ -231,4 +233,39 @@ int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce, co
 	TSK_FREE(res);
 
 	 return ret;
+}
+
+/**@ingroup thttp_auth_group
+ *
+ * Generates WebSocket Accept key.
+ * @param [in]	key		The value of the key received from the client ("Sec-WebSocket-Key" header). Must be null-terminated.
+ * @param [in,out]	response		The response ("Sec-WebSocket-Value" header).
+ *
+ * @return	The size of the response. Zero if error. 
+ */
+tsk_size_t thttp_auth_ws_response(const char* key, thttp_auth_ws_keystring_t* response)
+{
+	if(!key || !response){
+		TSK_DEBUG_ERROR("invalid parameter");
+		return 0;
+	}
+	else{
+		tsk_sha1string_t sha1result;
+		char* tmp = tsk_null;
+		long ret;
+		tsk_size_t size, i;
+		uint8_t result[21] = { 0 };
+
+		tsk_strcat_2(&tmp, "%s258EAFA5-E914-47DA-95CA-C5AB0DC85B11", key);
+
+		tsk_sha1compute(tmp, tsk_strlen(tmp), &sha1result);
+		size = tsk_strlen(sha1result);
+		for(i = 0; i<size; i+=2){
+			if(sscanf(&sha1result[i], "%2x", &ret) != EOF){;
+				result[i >> 1] = (char)ret;
+			}
+		}
+		TSK_FREE(tmp);
+		return tsk_base64_encode(result, (size >> 1), (char**)&response);
+	}
 }

@@ -68,50 +68,85 @@ trtp_rtp_header_t* trtp_rtp_header_create(uint32_t ssrc, uint16_t seq_num, uint3
 	return header;
 }
 
+/* guess what is the minimum require size to serialize the header */
+tsk_size_t trtp_rtp_header_guess_serialbuff_size(const trtp_rtp_header_t *self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+	return (TRTP_RTP_HEADER_MIN_SIZE + (self->csrc_count << 2));
+}
+
+/* serialize the RTP header to a buffer */
+// the buffer size must be at least equal to "trtp_rtp_header_guess_serialbuff_size()"
+// returns the number of written bytes
+tsk_size_t trtp_rtp_header_serialize_to(const trtp_rtp_header_t *self, void *buffer, tsk_size_t size)
+{
+	tsk_size_t ret;
+	tsk_size_t i, j;
+	uint8_t* pbuff = (uint8_t*)buffer;
+
+	if(!buffer || (size < (ret = trtp_rtp_header_guess_serialbuff_size(self)))){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+
+	// Octet-0: version(2), Padding(1), Extension(1), CSRC Count(4)
+	pbuff[0] = (((uint8_t)self->version)<< 6) |
+		(((uint8_t)self->padding)<< 5) |
+		(((uint8_t)self->extension)<< 4) |
+		((uint8_t)self->csrc_count);
+	// Octet-1: Marker(1), Payload Type(7)
+	pbuff[1] = (((uint8_t)self->marker)<< 7) |
+		((uint8_t)self->payload_type);
+	// Octet-2-3: Sequence number (16)
+	// *((uint16_t*)&pbuff[2]) = tnet_htons(self->seq_num);
+	pbuff[2] = self->seq_num >> 8;
+	pbuff[3] = self->seq_num & 0xFF;
+	// Octet-4-5-6-7: timestamp (32)
+	// ((uint32_t*)&pbuff[4]) = tnet_htonl(self->timestamp);
+	pbuff[4] = self->timestamp >> 24;
+	pbuff[5] = (self->timestamp >> 16) & 0xFF;
+	pbuff[6] = (self->timestamp >> 8) & 0xFF;
+	pbuff[7] = self->timestamp & 0xFF;	
+	// Octet-8-9-10-11: SSRC (32)
+	//((uint32_t*)&pbuff[8]) = tnet_htonl(self->ssrc);
+	pbuff[8] = self->ssrc >> 24;
+	pbuff[9] = (self->ssrc >> 16) & 0xFF;
+	pbuff[10] = (self->ssrc >> 8) & 0xFF;
+	pbuff[11] = self->ssrc & 0xFF;
+
+	// Octet-12-13-14-15-****: CSRC
+	for(i = 0, j = 12; i<self->csrc_count; ++i, ++j){
+		// *((uint32_t*)&pbuff[12+i]) = tnet_htonl(self->csrc[i]);
+		pbuff[j] = self->csrc[i] >> 24;
+		pbuff[j + 1] = (self->csrc[i] >> 16) & 0xFF;
+		pbuff[j + 2] = (self->csrc[i] >> 8) & 0xFF;
+		pbuff[j + 3] = self->csrc[i] & 0xFF;
+	}
+	
+	return ret;
+}
+
 /** Serialize rtp header object into binary buffer */
 tsk_buffer_t* trtp_rtp_header_serialize(const trtp_rtp_header_t *self)
 {
 	tsk_buffer_t* buffer;
-	uint8_t* data;
-	tsk_size_t i;
+	tsk_size_t size;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
-
-	if(!(data = tsk_calloc(TRTP_RTP_HEADER_MIN_SIZE + (4 * self->csrc_count), 1))){
-		TSK_DEBUG_ERROR("Failed to allocate buffer");
-		return tsk_null;
-	}
-
-	/* Octet-0: version(2), Padding(1), Extension(1), CSRC Count(4) */
-	data[0] = (((uint8_t)self->version)<< 6) |
-		(((uint8_t)self->padding)<< 5) |
-		(((uint8_t)self->extension)<< 4) |
-		((uint8_t)self->csrc_count);
-	/* Octet-1: Marker(1), Payload Type(7) */
-	data[1] = (((uint8_t)self->marker)<< 7) |
-		((uint8_t)self->payload_type);
-	/* Octet-2-3: Sequence number (16) */
-	*((uint16_t*)&data[2]) = tnet_htons(self->seq_num);
-	/* Octet-4-5-6-7: timestamp (32) */
-	*((uint32_t*)&data[4]) = tnet_htonl(self->timestamp);
-	/* Octet-8-9-10-11: SSRC (32) */
-	*((uint32_t*)&data[8]) = tnet_htonl(self->ssrc);
-
-	/* Octet-12-13-14-15-****: CSRC */
-	for(i=0; i<self->csrc_count; i++){
-		*((uint32_t*)&data[12+i]) = tnet_htonl(self->csrc[i]);
-	}
-
-	if(!(buffer = tsk_buffer_create_null())){
+	
+	size = trtp_rtp_header_guess_serialbuff_size(self);
+	if(!(buffer = tsk_buffer_create(tsk_null, size))){
 		TSK_DEBUG_ERROR("Failed to create new buffer");
-		TSK_FREE(data);
-		return tsk_null;
+		TSK_OBJECT_SAFE_FREE(buffer);
 	}
 	else{
-		tsk_buffer_takeownership(buffer, (void**)&data, TRTP_RTP_HEADER_MIN_SIZE + (4 * self->csrc_count));
+		size = trtp_rtp_header_serialize_to(self, buffer->data, buffer->size);
 	}
 
 	return buffer;
@@ -138,7 +173,7 @@ trtp_rtp_header_t* trtp_rtp_header_deserialize(const void *data, tsk_size_t size
 	* CSRC count (4 last bits)
 	*/
 	csrc_count = (*pdata & 0x0F);
-	if(size <(tsk_size_t)TRTP_RTP_HEADER_MIN_SIZE + (4 * csrc_count)){
+	if(size <(tsk_size_t)TRTP_RTP_HEADER_MIN_SIZE + (csrc_count << 2)){
 		TSK_DEBUG_ERROR("Too short to contain RTP header");
 		return tsk_null;
 	}
@@ -167,25 +202,25 @@ trtp_rtp_header_t* trtp_rtp_header_deserialize(const void *data, tsk_size_t size
 	++pdata;
 
 	/* Sequence Number (16bits) */
-	header->seq_num = tnet_ntohs(*((uint16_t*)pdata));
+	header->seq_num = pdata[0] << 8 | pdata[1];
 	// skip octets
 	pdata += 2;
 
 	/* timestamp (32bits) */
-	header->timestamp = tnet_ntohl(*((uint32_t*)pdata));
+	header->timestamp = pdata[0] << 8 | pdata[1];
 	// skip octets
 	pdata += 4;
 
 	/* synchronization source (SSRC) identifier (32bits) */
-	header->ssrc = tnet_ntohl(*((uint32_t*)pdata));
+	header->ssrc = pdata[0] << 8 | pdata[1];
 	// skip octets
 	pdata += 4;
 
 	/* contributing source (CSRC) identifiers */
 	for(i=0; i<csrc_count; i++, pdata += 4){
-		header->csrc[i] = tnet_ntohl(*((uint32_t*)pdata));
+		header->csrc[i] = pdata[0] << 24 | pdata[1] << 16 | pdata[2] << 8 | pdata[3];
 	}
-
+	
 	return header;
 }
 

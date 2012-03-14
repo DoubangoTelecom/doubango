@@ -62,6 +62,22 @@ tsk_string_t* tsk_string_create(const char* str)
 	return tsk_object_new(tsk_string_def_t, str);
 }
 
+int tsk_string_pred_icmp(const tsk_list_item_t* item, const void* str)
+{
+	if(item && str){
+		return tsk_stricmp(TSK_STRING_STR(item->data), str);
+	}
+	return -1;
+}
+
+int tsk_string_pred_cmp(const tsk_list_item_t* item, const void* str)
+{
+	if(item && str){
+		return tsk_strcmp(TSK_STRING_STR(item->data), str);
+	}
+	return -1;
+}
+
 /**@ingroup tsk_string_group
 * From base 10 to base 16
 * @param c the base 10 char to convert to base 16

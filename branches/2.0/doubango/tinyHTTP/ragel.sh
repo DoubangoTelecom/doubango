@@ -31,6 +31,18 @@ ragel.exe $OPTIONS -o ./src/headers/thttp_header_Dummy.c ./ragel/thttp_parser_he
 # ==ETag
 ragel.exe $OPTIONS -o ./src/headers/thttp_header_ETag.c ./ragel/thttp_parser_header_ETag.rl
 
+# ==Sec_WebSocket_Accept
+ragel.exe $OPTIONS -o ./src/headers/thttp_header_Sec_WebSocket_Accept.c ./ragel/thttp_parser_header_Sec_WebSocket_Accept.rl
+
+# ==Sec_WebSocket_Key
+ragel.exe $OPTIONS -o ./src/headers/thttp_header_Sec_WebSocket_Key.c ./ragel/thttp_parser_header_Sec_WebSocket_Key.rl
+
+# ==Sec_WebSocket_Protocol
+ragel.exe $OPTIONS -o ./src/headers/thttp_header_Sec_WebSocket_Protocol.c ./ragel/thttp_parser_header_Sec_WebSocket_Protocol.rl
+
+# ==Sec_WebSocket_Version
+ragel.exe $OPTIONS -o ./src/headers/thttp_header_Sec_WebSocket_Version.c ./ragel/thttp_parser_header_Sec_WebSocket_Version.rl
+
 # == Transfer-Encoding
 ragel.exe $OPTIONS -o ./src/headers/thttp_header_Transfer_Encoding.c ./ragel/thttp_parser_header_Transfer_Encoding.rl
 

@@ -31,6 +31,7 @@ static int s0000_Started_2_Terminated_X_iREGISTER(va_list *app);
 static int s0000_Started_2_Incoming_X_iREGISTER(va_list *app);
 static int s0000_Incoming_2_Connected_X_Accept(va_list *app);
 static int s0000_Incoming_2_Terminated_X_Reject(va_list *app);
+static int s0000_Connected_2_Connected_X_iREGISTER(va_list *app);
 static int s0000_Connected_2_Terminated_X_iREGISTER(va_list *app);
 
 
@@ -83,6 +84,8 @@ int tsip_dialog_register_server_init(tsip_dialog_register_t *self)
 		/*=======================
 		* === Connected === 
 		*/
+		// Connected -> (Register) -> Connected
+		TSK_FSM_ADD(_fsm_state_Connected, _fsm_action_iREGISTER, _fsm_cond_server_registering, _fsm_state_Connected, s0000_Connected_2_Connected_X_iREGISTER, "s0000_Connected_2_Connected_X_iREGISTER"),
 		// Connected -> (UnRegister) -> Terminated
 		TSK_FSM_ADD(_fsm_state_Connected, _fsm_action_iREGISTER, _fsm_cond_server_unregistering, _fsm_state_Terminated, s0000_Connected_2_Terminated_X_iREGISTER, "s0000_Connected_2_Terminated_X_iREGISTER"),
 		// Connected -> (TimedOut) -> Terminated
@@ -174,7 +177,21 @@ int s0000_Incoming_2_Terminated_X_Reject(va_list *app)
 	return -1;
 }
 
-/* Incoming -> (Unregister) -> Terminated
+/* Connected -> (register) -> Connected
+*/
+static int s0000_Connected_2_Connected_X_iREGISTER(va_list *app)
+{	
+	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
+	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
+
+	TSK_OBJECT_SAFE_FREE(self->last_iRegister);
+	self->last_iRegister = tsk_object_ref((tsk_object_t*)request);
+
+	/* send 2xx OK */
+	return tsip_dialog_register_send_RESPONSE(self, self->last_iRegister, 200, "OK");
+}
+
+/* Connected -> (Unregister) -> Terminated
 */
 int s0000_Connected_2_Terminated_X_iREGISTER(va_list *app)
 {

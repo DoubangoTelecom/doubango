@@ -54,25 +54,30 @@ tmedia_param_t* tmedia_param_create(tmedia_param_access_type_t access_type,
 		param->plugin_type = plugin_type;
 		param->value_type = value_type;
 		param->key = tsk_strdup(key);
-		switch(value_type){
-			case tmedia_pvt_int32:
-				if(param->value = tsk_calloc(1, sizeof(int32_t))){
-					memcpy(param->value, value, sizeof(int32_t));
-					//*((int32_t*)param->value) = *((int32_t*)value);
-				}
-				break;
-			case tmedia_pvt_pobject:
-				param->value = tsk_object_ref(value);
-				break;
-			case tmedia_pvt_pchar:
-				param->value = tsk_strdup(value);
-				break;
-			case tmedia_pvt_int64:
-				if(param->value = tsk_calloc(1, sizeof(int64_t))){
-					memcpy(param->value, value, sizeof(int64_t));
-					//*((int64_t*)param->value) = *((int64_t*)value);
-				}
-				break;
+		if(access_type == tmedia_pat_get){
+			param->value = (value);
+		}
+		else if(access_type == tmedia_pat_set){
+			switch(value_type){
+				case tmedia_pvt_int32:
+					if(param->value = tsk_calloc(1, sizeof(int32_t))){
+						memcpy(param->value, value, sizeof(int32_t));
+						//*((int32_t*)param->value) = *((int32_t*)value);
+					}
+					break;
+				case tmedia_pvt_pobject:
+					param->value = tsk_object_ref(value);
+					break;
+				case tmedia_pvt_pchar:
+					param->value = tsk_strdup(value);
+					break;
+				case tmedia_pvt_int64:
+					if(param->value = tsk_calloc(1, sizeof(int64_t))){
+						memcpy(param->value, value, sizeof(int64_t));
+						//*((int64_t*)param->value) = *((int64_t*)value);
+					}
+					break;
+			}
 		}
 	}
 	else{
@@ -96,6 +101,7 @@ tmedia_params_L_t* tmedia_params_create_2(va_list *app)
 	while((curr = va_arg(*app, tmedia_session_param_type_t)) != tmedia_sptype_null){
 		switch(curr){
 			case tmedia_sptype_set:
+			case tmedia_sptype_get:
 				{	/* (tmedia_type_t)MEDIA_TYPE_ENUM, (tmedia_param_plugin_type_t)PLUGIN_TYPE_ENUM, (tmedia_param_value_type_t)VALUE_TYPE_ENUM \
 						(const char*)KEY_STR, (void*)&VALUE */
 					/* IMPORTANT: do not pass va_arg() directly into the function */
@@ -104,7 +110,7 @@ tmedia_params_L_t* tmedia_params_create_2(va_list *app)
 					tmedia_param_value_type_t value_type = va_arg(*app, tmedia_param_value_type_t);
 					const char* key = va_arg(*app, const char*);
 					void* value = va_arg(*app, void*);
-					tmedia_params_add_param(&params, tmedia_pat_set, 
+					tmedia_params_add_param(&params, (curr == tmedia_sptype_set) ? tmedia_pat_set : tmedia_pat_get, 
 						media_type, plugin_type, value_type, key, value);
 					break;
 				}
@@ -164,15 +170,17 @@ static tsk_object_t* tmedia_param_dtor(tsk_object_t* self)
 	tmedia_param_t *param = self;
 	if(param){
 		TSK_FREE(param->key);
-		switch(param->value_type){
-			case tmedia_pvt_pobject:
-				TSK_OBJECT_SAFE_FREE(param->value);
-				break;
-			case tmedia_pvt_pchar:
-			case tmedia_pvt_int64:
-			case tmedia_pvt_int32:
-				TSK_FREE(param->value);
-				break;
+		if(param->access_type == tmedia_pat_set){
+			switch(param->value_type){
+				case tmedia_pvt_pobject:
+					TSK_OBJECT_SAFE_FREE(param->value);
+					break;
+				case tmedia_pvt_pchar:
+				case tmedia_pvt_int64:
+				case tmedia_pvt_int32:
+					TSK_FREE(param->value);
+					break;
+			}
 		}
 	}
 

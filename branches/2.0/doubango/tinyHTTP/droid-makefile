@@ -27,6 +27,10 @@ OBJS +=	src/headers/thttp_header.o\
 	src/headers/thttp_header_Content_Type.o\
 	src/headers/thttp_header_Dummy.o\
 	src/headers/thttp_header_ETag.o\
+	src/headers/thttp_header_Sec_WebSocket_Accept.o\
+	src/headers/thttp_header_Sec_WebSocket_Key.o\
+	src/headers/thttp_header_Sec_WebSocket_Protocol.o\
+	src/headers/thttp_header_Sec_WebSocket_Version.o\
 	src/headers/thttp_header_Transfer_Encoding.o\
 	src/headers/thttp_header_WWW_Authenticate.o
 	###################

@@ -46,6 +46,10 @@ const char *thttp_header_get_name(thttp_header_type_t type)
 		case thttp_htype_Proxy_Authorization: return "Proxy-Authorization";
 		case thttp_htype_Transfer_Encoding: return "Transfer-Encoding";
 		case thttp_htype_WWW_Authenticate: return "WWW-Authenticate";
+		case thttp_htype_Sec_WebSocket_Accept: return "Sec-WebSocket-Accept";
+		case thttp_htype_Sec_WebSocket_Protocol: return "Sec-WebSocket-Protocol";
+		case thttp_htype_Sec_WebSocket_Key: return "Sec-WebSocket-Key";
+		case thttp_htype_Sec_WebSocket_Version: return "Sec-WebSocket-Version";
 
 		default: return "unknown-header";
 	}

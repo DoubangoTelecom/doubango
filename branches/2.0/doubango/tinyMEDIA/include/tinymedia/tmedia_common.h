@@ -77,6 +77,15 @@ typedef enum tmedia_video_size_type_e
 }
 tmedia_video_size_type_t;
 
+// used by tinyWRAP
+typedef enum tmedia_srtp_mode_e
+{
+	tmedia_srtp_mode_none,
+	tmedia_srtp_mode_optional,
+	tmedia_srtp_mode_mandatory
+}
+tmedia_srtp_mode_t;
+
 typedef struct tmedia_video_size_s
 {
 	tmedia_video_size_type_t type;

@@ -35,15 +35,13 @@
 #include "tinydav/video/tdav_converter_video.h"
 
 #include "tinymedia/tmedia_session.h"
+#if HAVE_SRTP
+#	include "tinyrtp/trtp_srtp.h"
+#endif
 
 #include "tsk_safeobj.h"
 
 TDAV_BEGIN_DECLS
-
-// Forward declaration
-struct trtp_manager_s;
-struct tdav_consumer_video_s;
-struct tdav_converter_video_s;
 
 typedef struct tdav_session_video_s
 {
@@ -93,6 +91,16 @@ typedef struct tdav_session_video_s
 	} conv;
 
 	TSK_DECLARE_SAFEOBJ;
+
+#if HAVE_SRTP
+	struct {
+		int32_t tag;
+		trtp_srtp_crypto_type_t crypto_type;
+		char key[64];
+		tsk_bool_t pending;
+	}remote_srtp_neg;
+	tmedia_srtp_mode_t srtp_mode;
+#endif
 }
 tdav_session_video_t;
 

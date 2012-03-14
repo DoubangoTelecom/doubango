@@ -353,6 +353,7 @@ int tsip_dialog_register_InProgress_2_InProgress_X_423(va_list *app)
 		}
 	}
 	else{
+		TSK_DEBUG_ERROR("Missing header: Min_Expires");
 		ret = -1;
 	}
 

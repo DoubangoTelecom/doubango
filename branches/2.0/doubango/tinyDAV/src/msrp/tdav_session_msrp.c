@@ -419,6 +419,11 @@ int tdav_session_msrp_set(tmedia_session_t* self, const tmedia_param_t* param)
 	return ret;
 }
 
+int tdav_session_msrp_get(tmedia_session_t* self, tmedia_param_t* param)
+{
+	return -1;
+}
+
 int tdav_session_msrp_prepare(tmedia_session_t* self)
 {
 	tdav_session_msrp_t* msrp;
@@ -957,6 +962,7 @@ static const tmedia_session_plugin_def_t tdav_session_msrp_plugin_def_s =
 	"message",
 	
 	tdav_session_msrp_set,
+	tdav_session_msrp_get,
 	tdav_session_msrp_prepare,
 	tdav_session_msrp_start,
 	tdav_session_msrp_pause,

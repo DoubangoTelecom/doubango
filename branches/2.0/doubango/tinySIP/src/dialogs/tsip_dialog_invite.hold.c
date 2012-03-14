@@ -171,8 +171,9 @@ int x0102_Connected_2_Resuming_X_oResume(va_list *app)
 		return 0;
 	}
 
-	/* Resume */
-	ret = tmedia_session_mgr_resume(self->msession_mgr, action->media.type);
+	/* Resume both */
+	ret = tmedia_session_mgr_resume(self->msession_mgr, action->media.type, tsk_true);
+	ret = tmedia_session_mgr_resume(self->msession_mgr, action->media.type, tsk_false);
 
 	/* update current action */
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
@@ -224,7 +225,8 @@ int x0103_Resuming_2_Connected_X_ixxx(va_list *app)
 /* handle requests/responses (MUST be called after set_ro()) */
 int tsip_dialog_invite_hold_handle(tsip_dialog_invite_t* self, const tsip_request_t* rINVITEorUPDATE)
 {
-	tsk_bool_t remote_hold;
+	tsk_bool_t remote_hold, bodiless_invite;
+	int ret = 0;
 
 	if(!self || !rINVITEorUPDATE || !self->msession_mgr){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -233,13 +235,22 @@ int tsip_dialog_invite_hold_handle(tsip_dialog_invite_t* self, const tsip_reques
 
 	remote_hold = tmedia_session_mgr_is_held(self->msession_mgr, self->msession_mgr->type, tsk_false);
 
-	if(remote_hold != self->hold.remote){
+	// resume the call if we receive bodiless INVITE
+	bodiless_invite = !TSIP_MESSAGE_HAS_CONTENT(rINVITEorUPDATE) && TSIP_REQUEST_IS_INVITE(rINVITEorUPDATE);
+	if(bodiless_invite && remote_hold){
+		// resume remote
+		if((ret = tmedia_session_mgr_resume(self->msession_mgr, self->msession_mgr->type, tsk_false)) == 0){
+			remote_hold = tsk_false;
+		}
+	}
+
+	if(ret == 0 && (remote_hold != self->hold.remote)){
 		self->hold.remote = remote_hold;
 		TSIP_DIALOG_INVITE_SIGNAL(self, self->hold.remote ? tsip_m_remote_hold : tsip_m_remote_resume, 
 			tsip_event_code_dialog_request_incoming, "Hold/Resume state changed", rINVITEorUPDATE);
 	}
 
-	return 0;
+	return ret;
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++

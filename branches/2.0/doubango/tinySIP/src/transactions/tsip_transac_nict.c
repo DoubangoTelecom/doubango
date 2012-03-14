@@ -69,7 +69,6 @@
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
-
  */
 #include "tinysip/transactions/tsip_transac_nict.h"
 
@@ -507,7 +506,7 @@ int tsip_transac_nict_Proceeding_2_Terminated_X_timerF(va_list *app)
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, 0);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, tsk_null);
 
 	return 0;
 }

@@ -66,6 +66,7 @@ static tmedia_type_t __media_type = tmedia_audio;
 static int32_t __volume = 100;
 static int32_t __inv_session_expires = 0; // Session Timers: 0: disabled
 static char* __inv_session_refresher = tsk_null;
+static tmedia_srtp_mode_t __srtp_mode = tmedia_srtp_mode_none;
 
 int tmedia_defaults_set_jb_margin(int32_t jb_margin_ms)
 {
@@ -270,4 +271,12 @@ int tmedia_defaults_set_inv_session_refresher(const char* refresher){
 	}
 	TSK_DEBUG_ERROR("Invalid parameter");
 	return -1;
+}
+
+tmedia_srtp_mode_t tmedia_defaults_get_srtp_mode(){
+	return __srtp_mode;
+}
+int tmedia_defaults_set_srtp_mode(tmedia_srtp_mode_t mode){
+	__srtp_mode = mode;
+	return 0;
 }

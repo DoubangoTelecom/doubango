@@ -42,7 +42,7 @@ TMEDIA_BEGIN_DECLS
 
 typedef enum tmedia_param_access_type_e
 {
-	//tmedia_pat_get,
+	tmedia_pat_get,
 	tmedia_pat_set
 }
 tmedia_param_access_type_t;

@@ -218,6 +218,7 @@ typedef thttp_message_t thttp_response_t; /**< HTTP response message. */
 //
 TINYHTTP_API int thttp_message_add_header(thttp_message_t *self, const thttp_header_t *hdr);
 TINYHTTP_API int thttp_message_add_headers(thttp_message_t *self, const thttp_headers_L_t *headers);
+TINYHTTP_API int thttp_message_add_headers_2(thttp_message_t *self, ...);
 TINYHTTP_API int thttp_message_add_content(thttp_message_t *self, const char* content_type, const void* content, tsk_size_t size);
 TINYHTTP_API int thttp_message_append_content(thttp_message_t *self, const void* content, tsk_size_t size);
 

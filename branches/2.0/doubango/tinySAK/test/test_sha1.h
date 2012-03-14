@@ -31,6 +31,7 @@ struct sha1_result
 struct sha1_result msgs[] = 
 {
 	{ "", "da39a3ee5e6b4b0d3255bfef95601890afd80709" },
+	{ "x3JJHMbDL1EzLkh9GBhXDw==258EAFA5-E914-47DA-95CA-C5AB0DC85B11", "1d29ab734b0c9585240069a6e4e3e91b61da1969" },
 	{ "The quick brown fox jumps over the lazy dog", "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12" },
 	{ "The quick brown fox jumps over the lazy cog", "de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3" },
 };

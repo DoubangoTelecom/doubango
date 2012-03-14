@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="tinyRTP"
 	ProjectGUID="{99B7D02F-8C70-4B45-AF3C-92313C3CEE15}"
 	RootNamespace="tinyRTP"
@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\thirdparties\win32\include;include;..\tinySAK\src;..\tinyNET\src"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYRTP_EXPORTS"
+				AdditionalIncludeDirectories="include;..\tinySAK\src;..\tinyNET\src;..\thirdparties\win32\include"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;HAVE_SRTP=1;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYRTP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib"
+				AdditionalDependencies="ws2_32.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib &quot;..\thirdparties\win32\lib\srtp\libsrtp.a&quot; ..\thirdparties\win32\lib\libgcc.a"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -119,7 +119,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="..\thirdparties\win32\include;include;..\tinySAK\src;..\tinyNET\src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYRTP_EXPORTS"
+				PreprocessorDefinitions="HAVE_SRTP=1;WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYRTP_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="false"
 				UsePrecompiledHeader="0"
@@ -139,7 +139,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib"
+				AdditionalDependencies="ws2_32.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib &quot;..\thirdparties\win32\lib\srtp\libsrtp.a&quot; &quot;..\thirdparties\win32\lib\libgcc.a&quot;"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="MSVCRTD"
 				GenerateDebugInformation="false"
@@ -185,6 +185,10 @@
 			</File>
 			<File
 				RelativePath=".\src\trtp_manager.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\trtp_srtp.c"
 				>
 			</File>
 			<Filter
@@ -275,6 +279,10 @@
 			</File>
 			<File
 				RelativePath=".\include\tinyrtp\trtp_manager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinyrtp\trtp_srtp.h"
 				>
 			</File>
 			<Filter

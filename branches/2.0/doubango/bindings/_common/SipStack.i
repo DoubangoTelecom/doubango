@@ -229,6 +229,14 @@ typedef enum tmedia_chroma_e
 }
 tmedia_chroma_t;
 
+typedef enum tmedia_srtp_mode_e
+{
+	tmedia_srtp_mode_none,
+	tmedia_srtp_mode_optional,
+	tmedia_srtp_mode_mandatory
+}
+tmedia_srtp_mode_t;
+
 /* ====== From "tinymedia/tmedia_qos.h"  ====== */
 typedef enum tmedia_qos_stype_e
 {

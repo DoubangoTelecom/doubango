@@ -47,16 +47,63 @@
 	"Etag: W/\"1231-3213213\"\r\n" \
 	"\r\n"
 
-#define TEST_MSG TEST_MSG_401
+#define TEST_MSG_WS \
+	"Upgrade: websocket\r\n" \
+	"Connection: Upgrade\r\n" \
+	"Host: 192.168.0.11:5060\r\n" \
+	"Origin: null\r\n" \
+	"Sec-WebSocket-Key: Z8DmZQ9jZqK7vJqXbsDlYw==\r\n" \
+	"Sec-WebSocket-Version: 13, 5, 6\r\n" \
+	"Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\n" \
+	"\r\n"
+
+
+#define TEST_MSG TEST_MSG_WS
 
 
 void test_messages()
 {
 	thttp_message_t *message = tsk_null;
 	tsk_ragel_state_t state;
-	int ret;
-	uint8_t c = 'à';
+	int ret, idx;
 	
+	const char* msg_start = TEST_MSG_WS;
+	const char* msg_end = msg_start + tsk_strlen(msg_start);
+	const thttp_header_Sec_WebSocket_Key_t* ws_hdr_key;
+	const thttp_header_Sec_WebSocket_Version_t* ws_hdr_version;
+	const thttp_header_Sec_WebSocket_Accept_t* ws_hdr_accept;
+	message = thttp_message_create();
+
+	while(msg_start < msg_end){
+		if((idx = tsk_strindexOf(msg_start, (msg_end - msg_start), "\r\n")) <= 2){
+			break;
+		}
+		idx+= 2;
+		tsk_ragel_state_init(&state, msg_start, idx);
+		if((ret = thttp_header_parse(&state, message))){
+			break;
+		}
+		msg_start += idx;
+	}
+
+	if((ws_hdr_key = (const thttp_header_Sec_WebSocket_Key_t*)thttp_message_get_header(message, thttp_htype_Sec_WebSocket_Key))){
+		TSK_DEBUG_INFO("Sec-WebSocket-Key: %s", ws_hdr_key->value);
+	}
+
+	if((ws_hdr_accept = (const thttp_header_Sec_WebSocket_Accept_t*)thttp_message_get_header(message, thttp_htype_Sec_WebSocket_Accept))){
+		TSK_DEBUG_INFO("Sec-WebSocket-Accept: %s", ws_hdr_accept->value);
+	}
+
+	if((ws_hdr_version = (const thttp_header_Sec_WebSocket_Version_t*)thttp_message_get_header(message, thttp_htype_Sec_WebSocket_Version))){
+		const tsk_list_item_t* item;
+		tsk_list_foreach(item, ws_hdr_version->values){
+			TSK_DEBUG_INFO("Sec-WebSocket-Version: %s", TSK_STRING_STR(item->data));
+		}
+	}
+
+	tsk_ragel_state_init(&state, TEST_MSG, strlen(TEST_MSG));
+
+
 	/* deserialize the message */
 	tsk_ragel_state_init(&state, TEST_MSG, strlen(TEST_MSG));
 	if(!(ret = thttp_message_parse(&state, &message, tsk_true))){

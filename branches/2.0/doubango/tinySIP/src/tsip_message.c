@@ -127,6 +127,7 @@ int tsip_message_add_headers(tsip_message_t *self, ...)
 	va_list ap;
 
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 

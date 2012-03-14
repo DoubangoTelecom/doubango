@@ -41,7 +41,7 @@
 */
 TSK_BEGIN_DECLS
 
-#define TSK_STRING_STR(self)				((tsk_string_t*)self)->value
+#define TSK_STRING_STR(self)				((self) ? ((tsk_string_t*)(self))->value : tsk_null)
 
 typedef char tsk_istr_t[21]; /**< Integer number as string value. */
 
@@ -118,6 +118,8 @@ tsk_string_t;
 typedef tsk_list_t tsk_strings_L_t;
 
 TINYSAK_API tsk_string_t* tsk_string_create(const char* str);
+TINYSAK_API int tsk_string_pred_icmp(const struct tsk_list_item_s* item, const void* str);
+TINYSAK_API int tsk_string_pred_cmp(const struct tsk_list_item_s* item, const void* str);
 
 TINYSAK_GEXTERN const tsk_object_def_t *tsk_string_def_t;
 

@@ -161,7 +161,7 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 */
 int tsk_buffer_append(tsk_buffer_t* self, const void* data, tsk_size_t size)
 {
-	if(self && data && size){
+	if(self && size){
 		tsk_size_t oldsize = self->size;
 		tsk_size_t newsize = oldsize + size;
 		
@@ -173,7 +173,9 @@ int tsk_buffer_append(tsk_buffer_t* self, const void* data, tsk_size_t size)
 		}
 
 		if(self->data){
-			memcpy((void*)(TSK_BUFFER_TO_U8(self) + oldsize), data, size);
+			if(data){
+				memcpy((void*)(TSK_BUFFER_TO_U8(self) + oldsize), data, size);
+			}
 			self->size = newsize;
 			return 0;
 		}
@@ -351,9 +353,11 @@ static tsk_object_t* tsk_buffer_ctor(tsk_object_t * self, va_list * app)
 	const void *data = va_arg(*app, const void *);
 	tsk_size_t size = va_arg(*app, tsk_size_t);
 	
-	if(data && size){
+	if(size){
 		buffer->data = tsk_calloc((size+1), sizeof(uint8_t));
-		memcpy(buffer->data, data, size);
+		if(data){
+			memcpy(buffer->data, data, size);
+		}
 		buffer->size = size;
 	}
 	return self;

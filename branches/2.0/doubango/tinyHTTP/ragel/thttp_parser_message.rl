@@ -157,8 +157,8 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 	}
 
 	# Includes
-	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
-	include thttp_machine_message "./ragel/thttp_machine_message.rl";
+	include thttp_machine_utils "./thttp_machine_utils.rl";
+	include thttp_machine_message "./thttp_machine_message.rl";
 	
 	# Entry point
 	main := HTTP_message;

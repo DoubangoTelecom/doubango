@@ -67,6 +67,10 @@ typedef enum thttp_header_type_e
 	thttp_htype_ETag,
 	thttp_htype_Proxy_Authenticate,
 	thttp_htype_Proxy_Authorization,
+	thttp_htype_Sec_WebSocket_Accept,
+	thttp_htype_Sec_WebSocket_Protocol,
+	thttp_htype_Sec_WebSocket_Key,
+	thttp_htype_Sec_WebSocket_Version,
 	thttp_htype_Transfer_Encoding,
 	thttp_htype_WWW_Authenticate,
 }
@@ -83,7 +87,7 @@ typedef struct thttp_header_s
 }
 thttp_header_t;
 
-#define THTTP_DECLARE_HEADER thttp_header_t header
+#define THTTP_DECLARE_HEADER thttp_header_t __header__
 typedef tsk_list_t thttp_headers_L_t; /**< List of @ref thttp_header_t elements. */
 /*
 ================================*/

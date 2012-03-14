@@ -193,6 +193,7 @@ sub DESTROY {
 }
 
 *sessionSetInt32 = *tinyWRAPc::MediaSessionMgr_sessionSetInt32;
+*sessionGetInt32 = *tinyWRAPc::MediaSessionMgr_sessionGetInt32;
 *consumerSetInt32 = *tinyWRAPc::MediaSessionMgr_consumerSetInt32;
 *consumerSetInt64 = *tinyWRAPc::MediaSessionMgr_consumerSetInt64;
 *producerSetInt32 = *tinyWRAPc::MediaSessionMgr_producerSetInt32;
@@ -228,6 +229,7 @@ sub DESTROY {
 *defaultsSetVolume = *tinyWRAPc::MediaSessionMgr_defaultsSetVolume;
 *defaultsGetVolume = *tinyWRAPc::MediaSessionMgr_defaultsGetVolume;
 *defaultsSetInviteSessionTimers = *tinyWRAPc::MediaSessionMgr_defaultsSetInviteSessionTimers;
+*defaultsSetSRtpMode = *tinyWRAPc::MediaSessionMgr_defaultsSetSRtpMode;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1218,6 +1220,7 @@ sub DESTROY {
 
 *createInstance = *tinyWRAPc::ProxyPluginMgr_createInstance;
 *getInstance = *tinyWRAPc::ProxyPluginMgr_getInstance;
+*findPlugin = *tinyWRAPc::ProxyPluginMgr_findPlugin;
 *findAudioConsumer = *tinyWRAPc::ProxyPluginMgr_findAudioConsumer;
 *findVideoConsumer = *tinyWRAPc::ProxyPluginMgr_findVideoConsumer;
 *findAudioProducer = *tinyWRAPc::ProxyPluginMgr_findAudioProducer;
@@ -2390,6 +2393,9 @@ package tinyWRAP;
 *tmedia_chroma_yuv422p = *tinyWRAPc::tmedia_chroma_yuv422p;
 *tmedia_chroma_uyvy422 = *tinyWRAPc::tmedia_chroma_uyvy422;
 *tmedia_chroma_yuv420p = *tinyWRAPc::tmedia_chroma_yuv420p;
+*tmedia_srtp_mode_none = *tinyWRAPc::tmedia_srtp_mode_none;
+*tmedia_srtp_mode_optional = *tinyWRAPc::tmedia_srtp_mode_optional;
+*tmedia_srtp_mode_mandatory = *tinyWRAPc::tmedia_srtp_mode_mandatory;
 *tmedia_qos_stype_none = *tinyWRAPc::tmedia_qos_stype_none;
 *tmedia_qos_stype_segmented = *tinyWRAPc::tmedia_qos_stype_segmented;
 *tmedia_qos_stype_e2e = *tinyWRAPc::tmedia_qos_stype_e2e;

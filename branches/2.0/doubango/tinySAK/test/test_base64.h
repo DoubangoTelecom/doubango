@@ -82,7 +82,7 @@ void test_base64()
 {
 	size_t i, size;
 	char *output_e = 0, *output_d = 0;
-
+	
 	for(i=0; i<sizeof(b64_msgs)/sizeof(struct b64_msg); i++){
 		/*===========
 		*	Encoding 

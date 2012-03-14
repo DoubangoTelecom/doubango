@@ -36,6 +36,7 @@ class tinyWRAPJNI {
   public final static native long ActionConfig_setMediaInt(long jarg1, ActionConfig jarg1_, int jarg2, String jarg3, int jarg4);
   public final static native void delete_MediaSessionMgr(long jarg1);
   public final static native boolean MediaSessionMgr_sessionSetInt32(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, int jarg4);
+  public final static native int MediaSessionMgr_sessionGetInt32(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3);
   public final static native boolean MediaSessionMgr_consumerSetInt32(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, int jarg4);
   public final static native boolean MediaSessionMgr_consumerSetInt64(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, long jarg4);
   public final static native boolean MediaSessionMgr_producerSetInt32(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, int jarg4);
@@ -71,6 +72,7 @@ class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_defaultsSetVolume(int jarg1);
   public final static native int MediaSessionMgr_defaultsGetVolume();
   public final static native boolean MediaSessionMgr_defaultsSetInviteSessionTimers(int jarg1, String jarg2);
+  public final static native boolean MediaSessionMgr_defaultsSetSRtpMode(int jarg1);
   public final static native void delete_MediaContent(long jarg1);
   public final static native String MediaContent_getType(long jarg1, MediaContent jarg1_);
   public final static native long MediaContent_getDataLength(long jarg1, MediaContent jarg1_);
@@ -263,6 +265,7 @@ class tinyWRAPJNI {
   public final static native void delete_ProxyPluginMgr(long jarg1);
   public final static native long ProxyPluginMgr_createInstance(long jarg1, ProxyPluginMgrCallback jarg1_);
   public final static native long ProxyPluginMgr_getInstance();
+  public final static native long ProxyPluginMgr_findPlugin(long jarg1, ProxyPluginMgr jarg1_, java.math.BigInteger jarg2);
   public final static native long ProxyPluginMgr_findAudioConsumer(long jarg1, ProxyPluginMgr jarg1_, java.math.BigInteger jarg2);
   public final static native long ProxyPluginMgr_findVideoConsumer(long jarg1, ProxyPluginMgr jarg1_, java.math.BigInteger jarg2);
   public final static native long ProxyPluginMgr_findAudioProducer(long jarg1, ProxyPluginMgr jarg1_, java.math.BigInteger jarg2);
