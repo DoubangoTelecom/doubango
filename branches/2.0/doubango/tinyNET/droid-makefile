@@ -1,7 +1,19 @@
 APP := lib$(PROJECT)_$(MARCH).$(EXT)
 
-CFLAGS := $(CFLAGS_LIB) -I../tinySAK/src -I./src
-LDFLAGS := $(LDFLAGS_LIB) -ltinySAK_$(MARCH)
+THIRDPARTIES_INC := ../thirdparties/android/include
+THIRDPARTIES_LIB := ../thirdparties/android/lib
+
+# TLS (Default: enabled)
+ifeq ($(TLS), no)
+	TLS_CFLAGS := -DHAVE_OPENSSL_H=0
+	TLS_LDFLAGS :=
+else
+	TLS_CFLAGS := -DHAVE_OPENSSL_H=1
+	TLS_LDFLAGS := -lssl_$(MARCH) -lcrypto_$(MARCH)
+endif
+
+CFLAGS := $(CFLAGS_LIB) $(TLS_CFLAGS) -I$(THIRDPARTIES_INC) -I../tinySAK/src -I./src
+LDFLAGS := $(LDFLAGS_LIB) $(TLS_LDFLAGS) -L$(THIRDPARTIES_LIB) -ltinySAK_$(MARCH)
 
 all: $(APP)
 
