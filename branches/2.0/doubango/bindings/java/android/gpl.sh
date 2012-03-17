@@ -2,7 +2,7 @@
 # Build tinyWRAP for Google Android Systems
 
 # GPL parameters
-export GPL_PARAMS="LICENSE=gpl NO_FREE=yes FFMPEG=yes H264=yes THEORA=yes OPENCORE_AMR=yes SPEEX_DSP=yes SPEEX_JB=yes SPEEX_RESAMPLER=yes SPEEX_DENOISE=1 SPEEX=yes ILBC=yes LIBGSM=yes G729=yes SRTP=yes"
+export GPL_PARAMS="LICENSE=gpl NO_FREE=yes FFMPEG=yes H264=yes THEORA=yes OPENCORE_AMR=yes SPEEX_DSP=yes SPEEX_JB=yes SPEEX_RESAMPLER=yes SPEEX_DENOISE=1 SPEEX=yes ILBC=yes LIBGSM=yes G729=yes SRTP=yes TLS=yes"
 
 for IS_NEON in no yes
 do
