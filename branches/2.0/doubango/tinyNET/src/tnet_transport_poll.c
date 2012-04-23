@@ -594,6 +594,7 @@ void *tnet_transport_mainthread(void *param)
 	transport_context_t *context = transport->context;
 	int ret;
 	tsk_size_t i;
+	tsk_bool_t is_stream;
 
 	struct sockaddr_storage remote_addr = {0};
 	transport_socket_t* active_socket;
@@ -603,6 +604,8 @@ void *tnet_transport_mainthread(void *param)
 		TSK_DEBUG_ERROR("Transport must be prepared before strating.");
 		goto bail;
 	}
+	
+	is_stream = TNET_SOCKET_TYPE_IS_STREAM(transport->master->type);
 	
 	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 
@@ -671,7 +674,7 @@ void *tnet_transport_mainthread(void *param)
 				 * This apply whatever you are using the 3rd or 5th edition.
 				 * Download link: http://wiki.forum.nokia.com/index.php/Open_C/C%2B%2B_Release_History
 				 */
-				if(tnet_ioctlt(active_socket->fd, FIONREAD, &len) < 0){
+				if((tnet_ioctlt(active_socket->fd, FIONREAD, &len) < 0 || !len) && is_stream){
 					/* It's probably an incoming connection --> try to accept() it */
 					tnet_fd_t fd;
 					if((fd = accept(active_socket->fd, tsk_null, 0)) != TNET_INVALID_SOCKET){
@@ -719,7 +722,7 @@ void *tnet_transport_mainthread(void *param)
 					}
 				}
 				else {
-					if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
+					if(is_stream){
 						ret = tnet_sockfd_recv(active_socket->fd, buffer, len, 0);
 					}
 					else {
