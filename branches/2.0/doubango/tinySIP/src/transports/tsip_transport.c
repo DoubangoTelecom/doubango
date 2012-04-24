@@ -117,6 +117,7 @@ int tsip_transport_msg_update_aor(tsip_transport_t* self, tsip_message_t *msg)
 	if(!self->stack->network.aor.ip && !self->stack->network.aor.port){
 		tnet_ip_t ip = {0};
 		tnet_port_t port = 0;
+		
 		if((ret = tsip_transport_get_public_ip_n_port(self, &ip, &port))){
 			TSK_DEBUG_ERROR("Failed to get public IP");
 			return ret;
