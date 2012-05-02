@@ -240,7 +240,9 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 		if(self->producer) ret = tmedia_producer_start(self->producer);
 
 		// not that the RTP manager is activated check that SRTP is correctly activated
+#if HAVE_SRTP
 		self->use_srtp = trtp_srtp_is_active(self->rtp_manager);
+#endif
 		
 		return ret;
 	}
@@ -444,6 +446,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			}
 			else{
 				if(!self->use_avpf){ // only negotiate if not already using AVPF
+					#if HAVE_SRTP
 					tsk_bool_t enable_srtp = (have_libsrtp && (self->srtp_mode == tmedia_srtp_mode_mandatory || self->srtp_mode == tmedia_srtp_mode_optional));
 					// "a=acap:1 crypto" is not included because most of SIP client don't support RFC 5939
 					// "a=crypto" is always used to indicate optional support for SRTP
@@ -451,6 +454,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 						TSDP_HEADER_A_VA_ARGS("tcap", enable_srtp ? "1 RTP/SAVPF" : "1 RTP/AVPF"),
 						TSDP_HEADER_A_VA_ARGS("pcfg", "1 t=1"),
 						tsk_null);
+					#endif
 				}
 			}
 		}
@@ -688,14 +692,15 @@ SDPCapNegDone:;
 			return -3;
 		}
 	}
+	
+	self->use_srtp = trtp_srtp_is_initialized(self->rtp_manager);
+	
 #endif
 	
 	if(is_srtp_remote_mandatory && !crypto_matched){// remote require but none match
 		TSK_DEBUG_ERROR("SRTP negotiation failed");
 		return -4;
 	}
-
-	self->use_srtp = trtp_srtp_is_initialized(self->rtp_manager);
 
 	return 0;
 }
