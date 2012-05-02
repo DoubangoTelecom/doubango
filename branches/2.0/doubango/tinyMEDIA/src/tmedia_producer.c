@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tmedia_producer.c
  * @brief Base producer object.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -88,7 +88,7 @@ int tmedia_producer_set_raw_callback(tmedia_producer_t *self, tmedia_producer_ra
 	}
 
 	self->raw_cb.callback = callback;
-	self->raw_cb.callback_data = callback_data;
+	self->raw_cb.chunck_curr.usr_data = callback_data;
 
 	return 0;
 }

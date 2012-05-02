@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -26,7 +26,7 @@
  * communication to a third party.
  * This code inplement Consultative transfer mode (A.2).
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -47,7 +47,7 @@
 
 #include "tsk_debug.h"
 
-static int sendNOTIFY(tsip_dialog_invite_t *self, short code, const char* phrase);
+static int send_NOTIFY(tsip_dialog_invite_t *self, short code, const char* phrase);
 static int send_REFER(tsip_dialog_invite_t *self, const char* to);
 static short get_SipFragResponseCode(const tsip_request_t* notify);
 static tsip_response_t * get_SipFragMessage(const tsip_request_t* notify);
@@ -156,7 +156,6 @@ static int x0400_Connected_2_oECTing_X_oECT(va_list *app)
 	va_arg(*app, const tsip_message_t *);
 	action = va_arg(*app, const tsip_action_t *);
 
-	ret = tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 	ret = send_REFER(self, action->ect.to);
 
 	if(ret == 0){
@@ -283,8 +282,6 @@ static int x0400_iECTreq_2_Connected_X_reject(va_list *app)
 	va_arg(*app, const tsip_message_t *);
 	action = va_arg(*app, const tsip_action_t *);
 
-	ret = tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
-
 	// Send Reject
 	code = action->line_resp.code>=300 ? action->line_resp.code : 603;
 	phrase = action->line_resp.phrase ? action->line_resp.phrase : "Decline Transfer";
@@ -306,8 +303,6 @@ static int x0400_iECTreq_2_iECTing_X_accept(va_list *app)
 	self = va_arg(*app, tsip_dialog_invite_t *);
 	va_arg(*app, const tsip_message_t *);
 	action = va_arg(*app, const tsip_action_t *);
-
-	ret = tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
 	// Send 200 OK
 	ret = send_RESPONSE(self, self->last_iRefer, 200, "Transfering", tsk_false);
@@ -350,7 +345,7 @@ static int x0400_iECTing_2_iECTing_X_1xxfNOTIFY(va_list *app)
 	response = va_arg(*app, const tsip_message_t *);
 	
 	// send NOTIFY (event if norefersub enabled) and alert user
-	ret = sendNOTIFY(self, TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response));
+	ret = send_NOTIFY(self, TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response));
 
 	return ret;
 }
@@ -368,7 +363,7 @@ static int x0400_iECTing_2_Connected_X_23456fNOTIFY(va_list *app)
 	code = TSIP_RESPONSE_CODE(response);
 	
 	// send NOTIFY (event if norefersub enabled) and alert user
-	ret = sendNOTIFY(self, code, TSIP_RESPONSE_PHRASE(response));
+	ret = send_NOTIFY(self, code, TSIP_RESPONSE_PHRASE(response));
 	
 	if(code >= 200 && code <= 299){
 		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_ect_completed, 
@@ -385,7 +380,12 @@ static int x0400_iECTing_2_Connected_X_23456fNOTIFY(va_list *app)
 }
 
 
-static int sendNOTIFY(tsip_dialog_invite_t *self, short code, const char* phrase)
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//				== STATE MACHINE END ==
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+static int send_NOTIFY(tsip_dialog_invite_t *self, short code, const char* phrase)
 {
 	tsip_request_t *notify = tsk_null;
 	int ret = -1;

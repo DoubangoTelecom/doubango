@@ -23,7 +23,7 @@
 /**@file tsip_dialog_info.h
  * @brief SIP dialog INFO.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */

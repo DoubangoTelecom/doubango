@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,7 +25,7 @@
  * The SOA machine is designed as per RFC 3264 and draft-ietf-sipping-sip-offeranswer-12.
  * MMTel services implementation follow 3GPP TS 24.173.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -45,10 +45,15 @@
 extern int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bool_t force_sdp);
 extern int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
 extern int send_CANCEL(tsip_dialog_invite_t *self);
+extern int send_BYE(tsip_dialog_invite_t *self);
 extern int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase, tsk_bool_t force_sdp);
+extern int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self);
 extern int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message);
 extern int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_message_t* message);
 extern int tsip_dialog_invite_notify_parent(tsip_dialog_invite_t *self, const tsip_response_t* response);
+
+extern int tsip_dialog_invite_ice_timers_set(tsip_dialog_invite_t *self, int64_t timeout);
+extern tsk_bool_t tsip_dialog_invite_ice_is_enabled(const tsip_dialog_invite_t * self);
 
 extern int x0000_Any_2_Any_X_i1xx(va_list *app);
 
@@ -125,17 +130,17 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 		self->msession_mgr = tmedia_session_mgr_create(action ? action->media.type : tmedia_all,
 			TSIP_DIALOG_GET_STACK(self)->network.local_ip, TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type), tsk_true);
 		if(TSIP_DIALOG_GET_STACK(self)->natt.ctx){
-			tmedia_session_mgr_set_natt_ctx(self->msession_mgr, TSIP_DIALOG_GET_STACK(self)->natt.ctx, TSIP_DIALOG_GET_STACK(self)->network.aor.ip);
+			ret = tmedia_session_mgr_set_natt_ctx(self->msession_mgr, TSIP_DIALOG_GET_STACK(self)->natt.ctx, TSIP_DIALOG_GET_STACK(self)->network.aor.ip);
 		}
+		
+		ret = tmedia_session_mgr_set_ice_ctx(self->msession_mgr, self->ice.ctx_audio, self->ice.ctx_video);
+		ret = tsip_dialog_invite_msession_configure(self);
 	}
 
 	/* We are the client */
 	self->is_client = tsk_true;
 	/* Whether it's a client dialog for call transfer */
 	self->is_transf = (TSIP_DIALOG_GET_SS(self)->id_parent != TSIP_SSESSION_INVALID_ID);
-
-	/* Update current action */
-	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
 	/* Get Media type from the action */
 	TSIP_DIALOG_GET_SS(self)->media.type = action->media.type;
@@ -176,9 +181,6 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 	self->supported.precondition = (self->qos.strength == tmedia_qos_strength_optional);
 	self->require.precondition = (self->qos.strength == tmedia_qos_strength_mandatory);
 
-	/* 100rel */
-	self->supported._100rel = TSIP_DIALOG_GET_SS(self)->media.enable_100rel;
-
 	/* send the request */
 	ret = send_INVITE(self, tsk_false);
 
@@ -205,7 +207,7 @@ int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 	
 	/* Process remote offer */
 	if((ret = tsip_dialog_invite_process_ro(self, r2xxINVITE))){
-		/* Send error */
+		send_BYE(self);
 		return ret;
 	}
 	else{
@@ -219,6 +221,11 @@ int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 	/* Session Timers */
 	if(self->stimers.timer.timeout){
 		tsip_dialog_invite_stimers_handle(self, r2xxINVITE);
+	}
+
+	// starts ICE timers now that both parties received the "candidates"
+	if(tsip_dialog_invite_ice_is_enabled(self)){
+		tsip_dialog_invite_ice_timers_set(self, TSIP_DIALOG_INVITE_ICE_CONNCHECK_TIMEOUT);
 	}
 	
 	/* Alert the user (session) */

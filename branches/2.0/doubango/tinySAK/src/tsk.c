@@ -1,6 +1,6 @@
 /**
 * @file tsk.c
-* @author  Mamadou Diop <diopmamadou(at)doubango.org>
+* @author  Mamadou Diop <diopmamadou(at)doubango[dot]org>
 * @version 1.0
 *
 * @section LICENSE

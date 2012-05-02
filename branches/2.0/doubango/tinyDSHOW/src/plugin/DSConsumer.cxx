@@ -54,17 +54,21 @@ int tdshow_consumer_set(tmedia_consumer_t *self, const tmedia_param_t* param)
 
 	if(param->value_type == tmedia_pvt_int64){
 		if(tsk_striequals(param->key, "remote-hwnd")){
-			INT64 hWnd = (INT64)*((int64_t*)param->value);
+			DSCONSUMER(self)->window = (INT64)*((int64_t*)param->value);
 			if(DSCONSUMER(self)->display){
-				if(hWnd){
-					DSCONSUMER(self)->display->attach(hWnd);
+				if(DSCONSUMER(self)->window){
+					DSCONSUMER(self)->display->attach(DSCONSUMER(self)->window);
 				}
 				else{
 					DSCONSUMER(self)->display->detach();
 				}
 			}
-			else{
-				DSCONSUMER(self)->window = hWnd;
+		}
+	}
+	else if(param->value_type == tmedia_pvt_int32){
+		if(tsk_striequals(param->key, "fullscreen")){
+			if(DSCONSUMER(self)->display){
+				DSCONSUMER(self)->display->setFullscreen(*((int32_t*)param->value) != 0);
 			}
 		}
 	}
@@ -99,7 +103,6 @@ int tdshow_consumer_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec
 int tdshow_consumer_start(tmedia_consumer_t* self)
 {
 	tdshow_consumer_t* consumer = (tdshow_consumer_t*)self;
-	HRESULT hr;
 
 	if(!consumer){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -107,22 +110,18 @@ int tdshow_consumer_start(tmedia_consumer_t* self)
 	}
 
 	if(consumer->started){
-		TSK_DEBUG_WARN("Producer already started");
 		return 0;
 	}
 
-	if(!consumer->display){ /* Last chance to create the display */
-		if(!IsMainThread()){
-			TSK_DEBUG_WARN("Creating DirectShow objects outside the MainThread");
-		}
-		// create display
-		consumer->display = new DSDisplay(&hr);
-		if(FAILED(hr)){
-			TSK_DEBUG_ERROR("Failed to created DirectShow Display");
-			SAFE_DELETE_PTR(consumer->display);
+	// create display on UI thread
+	if(!consumer->display){
+		createOnUIThead(reinterpret_cast<HWND>((void*)consumer->window), (void**)&consumer->display, true);
+		if(!consumer->display){
+			TSK_DEBUG_ERROR("Failed to create display");
 			return -2;
 		}
 	}
+	
 	// Set parameters
 	consumer->display->setFps(TMEDIA_CONSUMER(consumer)->video.fps);
 	// do not change the display size: see hook()
@@ -132,10 +131,8 @@ int tdshow_consumer_start(tmedia_consumer_t* self)
 	}
 	
 	// Start display
-	TSK_DEBUG_INFO("Before starting DirectShow consumer");
 	consumer->display->start();
 	consumer->started = tsk_true;
-	TSK_DEBUG_INFO("After starting DirectShow consumer");
 
 	return 0;
 }
@@ -182,7 +179,6 @@ int tdshow_consumer_stop(tmedia_consumer_t* self)
 	}
 
 	if(!consumer->started){
-		TSK_DEBUG_WARN("Consumer not started");
 		return 0;
 	}
 
@@ -210,8 +206,6 @@ static tsk_object_t* tdshow_consumer_ctor(tsk_object_t * self, va_list * app)
 
 	tdshow_consumer_t *consumer = (tdshow_consumer_t *)self;
 	if(consumer){
-		HRESULT hr;
-
 		/* init base */
 		tmedia_consumer_init(TMEDIA_CONSUMER(consumer));
 		TMEDIA_CONSUMER(consumer)->video.display.chroma = tmedia_chroma_bgr24; // RGB24 on x86 (little endians) stored as BGR24
@@ -221,14 +215,6 @@ static tsk_object_t* tdshow_consumer_ctor(tsk_object_t * self, va_list * app)
 		TMEDIA_CONSUMER(consumer)->video.display.width = 352;
 		TMEDIA_CONSUMER(consumer)->video.display.height = 288;
 		TMEDIA_CONSUMER(consumer)->video.display.auto_resize = tsk_true;
-
-		if(IsMainThread()){
-			consumer->display = new DSDisplay(&hr);
-			if(FAILED(hr)){
-				TSK_DEBUG_ERROR("Failed to created DirectShow Display");
-				SAFE_DELETE_PTR(consumer->display);
-			}
-		}
 	}
 	return self;
 }

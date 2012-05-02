@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,7 +24,7 @@
 /**@file tsdp_header_M.c
  * @brief SDP "m=" header (Media Descriptions).
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
  * 
  */
@@ -232,7 +232,35 @@ tsdp_header_M_t *tsdp_header_M_parse(const char *data, tsk_size_t size)
 	return hdr_M;
 }
 
-
+// for A headers, use "tsdp_header_A_removeAll_by_field()"
+int tsdp_header_M_remove(tsdp_header_M_t* self, tsdp_header_type_t type)
+{
+	switch(type){
+		case tsdp_htype_I:
+			{
+				TSK_OBJECT_SAFE_FREE(self->I);
+				break;
+			}
+		case tsdp_htype_C:
+			{
+				TSK_OBJECT_SAFE_FREE(self->C);
+				break;
+			}
+		case tsdp_htype_B:
+			{
+				if(self->Bandwidths){
+					tsk_list_clear_items(self->Bandwidths);
+				}
+				break;
+			}
+		case tsdp_htype_K:
+			{
+				TSK_OBJECT_SAFE_FREE(self->K);
+				break;
+			}
+	}
+	return 0;
+}
 
 int tsdp_header_M_add(tsdp_header_M_t* self, const tsdp_header_t* header)
 {
@@ -378,9 +406,9 @@ const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const ch
 	return tsdp_header_M_findA_at(self, field, 0);
 }
 
-char* tsdp_header_M_get_rtpmap(const tsdp_header_M_t* self, const char* fmt)
-{	
-	char *rtpmap = tsk_null; /* e.g. AMR-WB/16000 */
+char* tsdp_header_M_getAValue(const tsdp_header_M_t* self, const char* field, const char* fmt)
+{
+	char *value = tsk_null; /* e.g. AMR-WB/16000 */
 	tsk_size_t i = 0, fmt_len, A_len;
 	int indexof;
 	const tsdp_header_A_t* A;
@@ -392,44 +420,17 @@ char* tsdp_header_M_get_rtpmap(const tsdp_header_M_t* self, const char* fmt)
 	}
 	
 	/* find "a=rtpmap" */
-	while((A = tsdp_header_M_findA_at(self, "rtpmap", i++))){
+	while((A = tsdp_header_M_findA_at(self, field, i++))){
 		/* A->value would be: "98 AMR-WB/16000" */
 		if((A_len = tsk_strlen(A->value)) < (fmt_len + 1/*space*/)){
 			continue;
 		}
 		if((indexof = tsk_strindexOf(A->value, A_len, fmt)) == 0 && (A->value[fmt_len] == ' ')){
-			rtpmap = tsk_strndup(&A->value[fmt_len+1], (A_len-(fmt_len+1)));
+			value = tsk_strndup(&A->value[fmt_len+1], (A_len-(fmt_len+1)));
 			break;
 		}
 	}
-	return rtpmap;
-}
-
-char* tsdp_header_M_get_fmtp(const tsdp_header_M_t* self, const char* fmt)
-{
-	char *fmtp = tsk_null; /* e.g. octet-align=1 */
-	tsk_size_t i = 0, fmt_len, A_len;
-	int indexof;
-	const tsdp_header_A_t* A;
-
-	fmt_len = tsk_strlen(fmt);
-	if(!self || !fmt_len || fmt_len > 3/*'0-255' or '*'*/){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return tsk_null;
-	}
-
-	/* find "a=fmtp" */
-	while((A = tsdp_header_M_findA_at(self, "fmtp", i++))){
-		/* A->value would be: "98 octet-align=1" */
-		if((A_len = tsk_strlen(A->value)) < (fmt_len + 1/*space*/)){
-			continue;
-		}
-		if((indexof = tsk_strindexOf(A->value, A_len, fmt)) == 0 && (A->value[fmt_len] == ' ')){
-			fmtp = tsk_strndup(&A->value[fmt_len+1], (A_len-(fmt_len+1)));
-			break;
-		}
-	}
-	return fmtp;
+	return value;
 }
 
 /* as per 3GPP TS 34.610 */

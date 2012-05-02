@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -175,7 +175,7 @@ int tsip_dialog_register_init(tsip_dialog_register_t *self)
 	tsip_dialog_register_client_init(self);
 	// initialize server side
 	tsip_dialog_register_server_init(self);
-
+	
 	/* Initialize common side */
 	tsk_fsm_set(TSIP_DIALOG_GET_FSM(self),
 			
@@ -198,7 +198,7 @@ int tsip_dialog_register_init(tsip_dialog_register_t *self)
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_error, _fsm_state_Terminated, tsip_dialog_register_Any_2_Terminated_X_Error, "tsip_dialog_register_Any_2_Terminated_X_Error"),
 
 			TSK_FSM_ADD_NULL());
-
+	
 	/* Sets callback function */
 	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK_F(tsip_dialog_register_event_callback);
 	
@@ -207,7 +207,7 @@ int tsip_dialog_register_init(tsip_dialog_register_t *self)
 	self->timerrefresh.timeout = TSIP_DIALOG(self)->expires;
 	self->timershutdown.id = TSK_INVALID_TIMER_ID;
 	self->timershutdown.timeout = TSIP_DIALOG_SHUTDOWN_TIMEOUT;
-
+	
 	return 0;
 }
 
@@ -219,14 +219,8 @@ int tsip_dialog_register_init(tsip_dialog_register_t *self)
 int tsip_dialog_register_Any_2_InProgress_X_hangup(va_list *app)
 {
 	tsip_dialog_register_t *self;
-	const tsip_action_t* action;
 
 	self = va_arg(*app, tsip_dialog_register_t *);
-	va_arg(*app, const tsip_message_t *);
-	action = va_arg(*app, const tsip_action_t *);
-
-	/* Set  current action */
-	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
 	/* Alert the user */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminating, "Terminating dialog");

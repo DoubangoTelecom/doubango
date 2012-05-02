@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -67,7 +67,7 @@
 /**@file tsip_transac_nict.c
  * @brief SIP Non-INVITE Client Transaction as per RFC 3261 subcaluse 17.1.2.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
  */
 #include "tinysip/transactions/tsip_transac_nict.h"

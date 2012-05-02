@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -24,8 +24,6 @@
 #include "tnet_endianness.h"
 #include "tsk_debug.h"
 
-#define TRTP_RTCP_RBLOCK_SIZE 24
-
 /* 6.4.1 SR: Sender Report RTCP Packet
 
 	   +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
@@ -42,65 +40,6 @@ block  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
        |                   delay since last SR (DLSR)                  |
        +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 */
-trtp_rtcp_rblock_t* trtp_rtcp_rblock_create_null()
-{
-	return tsk_object_new(trtp_rtcp_rblock_def_t);
-}
-
-trtp_rtcp_rblock_t* trtp_rtcp_rblock_deserialize(const void* data, tsk_size_t size)
-{
-	trtp_rtcp_rblock_t* block = tsk_null;
-	if(!data || !size){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return tsk_null;
-	}
-	if((block = trtp_rtcp_rblock_create_null())){
-		if(trtp_rtcp_rblock_deserialize_payload(block, data, size)){
-			TSK_DEBUG_ERROR("Failed to deserialize the payload");
-			TSK_OBJECT_SAFE_FREE(block);
-		}
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to create report block object");
-	}
-
-	return block;
-}
-
-int trtp_rtcp_rblock_deserialize_payload(trtp_rtcp_rblock_t* self, const void* payload, tsk_size_t size)
-{
-	const uint8_t* pdata = (const uint8_t*)payload;
-	if(!self || !payload || !size){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	if(size < TRTP_RTCP_RBLOCK_SIZE){
-		TSK_DEBUG_ERROR("%u is too short", size);
-		return -2;
-	}
-	self->ssrc = tnet_ntohl_2(pdata);
-	self->fraction = pdata[4];
-	self->cumulative_no_lost = tnet_ntohl_2(&pdata[5]);
-	self->last_seq = tnet_ntohl_2(&pdata[8]);
-	self->jitter = tnet_ntohl_2(&pdata[12]);
-	self->lsr = tnet_ntohl_2(&pdata[16]);
-	self->dlsr = tnet_ntohl_2(&pdata[18]);
-	
-	return 0;
-}
-
-tsk_size_t trtp_rtcp_rblock_get_size(trtp_rtcp_rblock_t* self)
-{
-	if(!self){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return 0;
-	}
-	return TRTP_RTCP_RBLOCK_SIZE;
-}
-
-//
-// Object definition
-//
 static tsk_object_t* trtp_rtcp_rblock_ctor(tsk_object_t * self, va_list * app)
 {
 	trtp_rtcp_rblock_t *block = self;
@@ -124,3 +63,91 @@ static const tsk_object_def_t trtp_rtcp_rblock_def_s =
 	tsk_null, 
 };
 const tsk_object_def_t *trtp_rtcp_rblock_def_t = &trtp_rtcp_rblock_def_s;
+
+trtp_rtcp_rblock_t* trtp_rtcp_rblock_create_null()
+{
+	return tsk_object_new(trtp_rtcp_rblock_def_t);
+}
+
+trtp_rtcp_rblock_t* trtp_rtcp_rblock_deserialize(const void* data, tsk_size_t size)
+{
+	trtp_rtcp_rblock_t* rblock = tsk_null;
+	const uint8_t* pdata = (const uint8_t*)data;
+	if(!data || size < TRTP_RTCP_RBLOCK_SIZE){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+	if((rblock = trtp_rtcp_rblock_create_null())){
+		rblock->ssrc = tnet_ntohl_2(pdata);
+		rblock->fraction = pdata[4];
+		rblock->cumulative_no_lost = (tnet_ntohl_2(&pdata[5]) >> 8) & 0xFFFFFF;
+		rblock->last_seq = tnet_ntohl_2(&pdata[8]);
+		rblock->jitter = tnet_ntohl_2(&pdata[12]);
+		rblock->lsr = tnet_ntohl_2(&pdata[16]);
+		rblock->dlsr = tnet_ntohl_2(&pdata[18]);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to create report block object");
+	}
+
+	return rblock;
+}
+
+// Up to the
+int trtp_rtcp_rblock_deserialize_list(const void* data, tsk_size_t _size, trtp_rtcp_rblocks_L_t* dest_list)
+{
+	int32_t size = _size;
+	const uint8_t* pdata = (const uint8_t*)data;
+	trtp_rtcp_rblock_t* rblock;
+
+	if(!data || !size || !dest_list){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	while(size >= TRTP_RTCP_RBLOCK_SIZE){
+		if((rblock = trtp_rtcp_rblock_deserialize(pdata, size))){
+			tsk_list_push_back_data(dest_list, (void**)&rblock);
+		}
+		if((size -= TRTP_RTCP_RBLOCK_SIZE) > 0){
+			pdata += TRTP_RTCP_RBLOCK_SIZE;
+		}
+	}
+	return 0;
+}
+
+int trtp_rtcp_rblock_serialize_to(const trtp_rtcp_rblock_t* self, void* data, tsk_size_t size)
+{
+	uint8_t* pdata = (uint8_t*)data;
+	if(!self || !data || size < TRTP_RTCP_RBLOCK_SIZE){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	pdata[0] = self->ssrc >> 24;
+	pdata[1] = (self->ssrc >> 16) & 0xFF;
+	pdata[2] = (self->ssrc >> 8) & 0xFF;
+	pdata[3] = (self->ssrc & 0xFF);
+	pdata[4] = self->fraction;
+	pdata[5] = (self->cumulative_no_lost >> 16) & 0xFF;
+	pdata[6] = (self->cumulative_no_lost >> 8) & 0xFF;
+	pdata[7] = (self->cumulative_no_lost & 0xFF);
+	pdata[8] = self->last_seq >> 24;
+	pdata[9] = (self->last_seq >> 16) & 0xFF;
+	pdata[10] = (self->last_seq >> 8) & 0xFF;
+	pdata[11] = (self->last_seq & 0xFF);
+	pdata[12] = self->jitter >> 24;
+	pdata[13] = (self->jitter >> 16) & 0xFF;
+	pdata[14] = (self->jitter >> 8) & 0xFF;
+	pdata[15] = (self->jitter & 0xFF);
+	pdata[16] = self->lsr >> 24;
+	pdata[17] = (self->lsr >> 16) & 0xFF;
+	pdata[18] = (self->lsr >> 8) & 0xFF;
+	pdata[19] = (self->lsr & 0xFF);
+	pdata[20] = self->dlsr >> 24;
+	pdata[21] = (self->dlsr >> 16) & 0xFF;
+	pdata[22] = (self->dlsr >> 8) & 0xFF;
+	pdata[23] = (self->dlsr & 0xFF);
+
+	return 0;
+}

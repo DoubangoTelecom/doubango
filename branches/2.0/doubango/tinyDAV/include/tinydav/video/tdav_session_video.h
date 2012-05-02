@@ -33,33 +33,23 @@
 #include "tinydav_config.h"
 
 #include "tinydav/video/tdav_converter_video.h"
-
-#include "tinymedia/tmedia_session.h"
-#if HAVE_SRTP
-#	include "tinyrtp/trtp_srtp.h"
-#endif
-
-#include "tsk_safeobj.h"
+#include "tinydav/tdav_session_av.h"
 
 TDAV_BEGIN_DECLS
 
+typedef enum tdav_session_video_pkt_loss_level_e
+{
+	tdav_session_video_pkt_loss_level_low,
+	tdav_session_video_pkt_loss_level_medium,
+	tdav_session_video_pkt_loss_level_high,
+}
+tdav_session_video_pkt_loss_level_t;
+
 typedef struct tdav_session_video_s
 {
-	TMEDIA_DECLARE_SESSION_VIDEO;
+	TDAV_DECLARE_SESSION_AV;
 
-	tsk_bool_t useIPv6;
-
-	char* local_ip;
-
-	char* remote_ip;
-	uint16_t remote_port;
-	
-	/* NAT Traversal context */
-	tnet_nat_context_handle_t* natt_ctx;
-
-	tsk_bool_t rtcp_enabled;
-
-	struct trtp_manager_s* rtp_manager;
+	struct tdav_video_jb_s* jb;
 
 	struct{
 		void* buffer;
@@ -67,6 +57,15 @@ typedef struct tdav_session_video_s
 
 		void* conv_buffer;
 		tsk_size_t conv_buffer_size;
+
+		tdav_session_video_pkt_loss_level_t pkt_loss_level;
+		int32_t pkt_loss_fact;
+		int32_t pkt_loss_prob_good;
+		int32_t pkt_loss_prob_bad;
+
+		uint8_t payload_type;
+		struct tmedia_codec_s* codec;
+		tsk_mutex_handle_t* h_mutex;
 	} encoder;
 
 	struct{
@@ -75,10 +74,11 @@ typedef struct tdav_session_video_s
 
 		void* conv_buffer;
 		tsk_size_t conv_buffer_size;
-	} decoder;
 
-	struct tmedia_consumer_s* consumer;
-	struct tmedia_producer_s* producer;
+		uint8_t payload_type;
+		struct tmedia_codec_s* codec;		
+	} decoder;
+	
 	struct {
 		tsk_size_t consumerLastWidth;
 		tsk_size_t consumerLastHeight;
@@ -90,17 +90,25 @@ typedef struct tdav_session_video_s
 		struct tdav_converter_video_s* toYUV420;
 	} conv;
 
-	TSK_DECLARE_SAFEOBJ;
+	struct{
+		uint8_t payload_type;
+		struct tmedia_codec_s* codec;
+		uint16_t seq_num;
+		uint32_t timestamp;
+	} ulpfec;
 
-#if HAVE_SRTP
-	struct {
-		int32_t tag;
-		trtp_srtp_crypto_type_t crypto_type;
-		char key[64];
-		tsk_bool_t pending;
-	}remote_srtp_neg;
-	tmedia_srtp_mode_t srtp_mode;
-#endif
+	struct{
+		uint8_t payload_type;
+		struct tmedia_codec_s* codec;
+	} red;
+
+	struct{
+		tsk_list_t* packets;
+		int32_t count;
+		int32_t max;
+		uint64_t last_fir_time;
+		uint64_t last_pli_time;
+	} avpf;
 }
 tdav_session_video_t;
 

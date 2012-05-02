@@ -38,10 +38,15 @@
 
 #include "tnet_endianness.h"
 
+#include "tinymedia/tmedia_params.h"
+
 #include "tsk_time.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#include <libavcodec/avcodec.h>
+
+#define TDAV_H263_GOP_SIZE_IN_SECONDS		25
 #define RTP_PAYLOAD_SIZE	750
 
 #define H263P_HEADER_SIZE		2
@@ -49,12 +54,129 @@
 #define H263_HEADER_MODE_B_SIZE 8
 #define H263_HEADER_MODE_C_SIZE 12
 
+#define tdav_codec_h263p_set tdav_codec_h263_set
+#define tdav_codec_h263p_open tdav_codec_h263_open
+#define tdav_codec_h263p_close tdav_codec_h263_close
+#define tdav_codec_h263p_encode tdav_codec_h263_encode
+#define tdav_codec_h263p_sdp_att_match tdav_codec_h263_sdp_att_match
+#define tdav_codec_h263p_sdp_att_get tdav_codec_h263_sdp_att_get
+
+#define tdav_codec_h263pp_set tdav_codec_h263_set
+#define tdav_codec_h263pp_open tdav_codec_h263_open
+#define tdav_codec_h263pp_close tdav_codec_h263_close
+#define tdav_codec_h263pp_encode tdav_codec_h263_encode
+#define tdav_codec_h263pp_decode tdav_codec_h263_decode
+#define tdav_codec_h263pp_sdp_att_match tdav_codec_h263_sdp_att_match
+#define tdav_codec_h263pp_sdp_att_get tdav_codec_h263_sdp_att_get
+
+
+#define TDAV_CODEC_H263(self) ((tdav_codec_h263_t*)(self))
+
+typedef enum tdav_codec_h263_type_e
+{
+	tdav_codec_h263_1996,
+	tdav_codec_h263_1998,
+	tdav_codec_h263_2000,
+}
+tdav_codec_h263_type_t;
+
+/** H.263-1996 codec */
+typedef struct tdav_codec_h263_s
+{
+	TMEDIA_DECLARE_CODEC_VIDEO;
+
+	tdav_codec_h263_type_t type;
+
+	struct{
+		uint8_t* ptr;
+		tsk_size_t size;
+	} rtp;
+
+	// Encoder
+	struct{
+		AVCodec* codec;
+		AVCodecContext* context;
+		AVFrame* picture;
+		void* buffer;
+		tsk_bool_t force_idr;
+		int32_t quality; // [1-31]
+	} encoder;
+	
+	// decoder
+	struct{
+		AVCodec* codec;
+		AVCodecContext* context;
+		AVFrame* picture;
+
+		void* accumulator;
+		uint8_t ebit;
+		tsk_size_t accumulator_pos;
+		uint16_t last_seq;
+	} decoder;
+}
+tdav_codec_h263_t;
+
+#define TDAV_DECLARE_CODEC_H263 tdav_codec_h263_t __codec_h263__
+
+int tdav_codec_h263_init(tdav_codec_h263_t* self, tdav_codec_h263_type_t type, enum CodecID encoder, enum CodecID decoder);
+int tdav_codec_h263_deinit(tdav_codec_h263_t* self);
+
+/** H.263-1998 codec */
+typedef struct tdav_codec_h263p_s
+{
+	TDAV_DECLARE_CODEC_H263;
+}
+tdav_codec_h263p_t;
+
+/** H.263-2000 codec */
+typedef struct tdav_codec_h263pp_s
+{
+	TDAV_DECLARE_CODEC_H263;
+}
+tdav_codec_h263pp_t;
+
+
 static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *data, tsk_size_t size, tsk_bool_t marker);
 static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *data, tsk_size_t size, tsk_bool_t frag, tsk_bool_t marker);
 
 static void tdav_codec_h263_encap(const tdav_codec_h263_t* h263, const uint8_t* pdata, tsk_size_t size);
 
+
 /* ============ Common To all H263 codecs ================= */
+
+static int tdav_codec_h263_set(tmedia_codec_t* self, const tmedia_param_t* param)
+{
+	tdav_codec_h263_t* h263 = (tdav_codec_h263_t*)self;
+	if(!self->opened){
+		TSK_DEBUG_ERROR("Codec not opened");
+		return -1;
+	}
+	if(param->value_type == tmedia_pvt_int32){
+		if(tsk_striequals(param->key, "action")){
+			tmedia_codec_action_t action = (tmedia_codec_action_t)TSK_TO_INT32((uint8_t*)param->value);
+			switch(action){
+				case tmedia_codec_action_encode_idr:
+					{
+						h263->encoder.force_idr = tsk_true;
+						break;
+					}
+				case tmedia_codec_action_bw_down:
+					{
+						h263->encoder.quality = TSK_CLAMP(1, (h263->encoder.quality + 1), 31);
+						h263->encoder.context->global_quality = FF_QP2LAMBDA * h263->encoder.quality;
+						break;
+					}
+				case tmedia_codec_action_bw_up:
+					{
+						h263->encoder.quality = TSK_CLAMP(1, (h263->encoder.quality - 1), 31);
+						h263->encoder.context->global_quality = FF_QP2LAMBDA * h263->encoder.quality;
+						break;
+					}
+			}
+		}
+	}
+	return 0;
+}
 
 int tdav_codec_h263_init(tdav_codec_h263_t* self, tdav_codec_h263_type_t type, enum CodecID encoder, enum CodecID decoder)
 {
@@ -66,6 +188,7 @@ int tdav_codec_h263_init(tdav_codec_h263_t* self, tdav_codec_h263_type_t type, e
 	}
 	
 	self->type = type;
+	self->encoder.quality = 1;
 
 	if(!(self->encoder.codec = avcodec_find_encoder(encoder))){
 		TSK_DEBUG_ERROR("Failed to find [%d]encoder", encoder);
@@ -134,16 +257,17 @@ static int tdav_codec_h263_open(tmedia_codec_t* self)
 	h263->encoder.context->width = TMEDIA_CODEC_VIDEO(h263)->out.width;
 	h263->encoder.context->height = TMEDIA_CODEC_VIDEO(h263)->out.height;
 
-	/*h263->encoder.context->mb_qmin =*/ h263->encoder.context->qmin = 4;
-	/*h263->encoder.context->mb_qmax =*/ h263->encoder.context->qmax = 31;
+	h263->encoder.context->mb_qmin = h263->encoder.context->qmin = 10;
+	h263->encoder.context->mb_qmax = h263->encoder.context->qmax = 51;
 	h263->encoder.context->mb_decision = FF_MB_DECISION_RD;
-
-	h263->encoder.context->thread_count = 1;
+	
+	h263->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(h263)->out.width * TMEDIA_CODEC_VIDEO(h263)->out.height * 128 / 320 / 240) * 1000);
+	h263->encoder.context->rc_lookahead = 0;
 	h263->encoder.context->rtp_payload_size = RTP_PAYLOAD_SIZE;
 	h263->encoder.context->opaque = tsk_null;
-	h263->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h263)->out.fps*2; /* each 2 seconds */
+	h263->encoder.context->gop_size = (TMEDIA_CODEC_VIDEO(h263)->out.fps * TDAV_H263_GOP_SIZE_IN_SECONDS);
 	h263->encoder.context->flags |= CODEC_FLAG_QSCALE;
-	h263->encoder.context->global_quality = FF_QP2LAMBDA * tmedia_get_video_qscale(self->bl);
+	h263->encoder.context->global_quality = FF_QP2LAMBDA * h263->encoder.quality;
 	h263->encoder.context->max_b_frames = 0;
 
 	// Picture (YUV 420)
@@ -294,6 +418,13 @@ static tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_da
 		return 0;
 	}
 
+	if(h263->encoder.force_idr){
+		h263->encoder.picture->pict_type = FF_I_TYPE;
+		h263->encoder.force_idr = tsk_false;
+	}
+	else{
+		h263->encoder.picture->pict_type = 0;// reset
+	}
 	h263->encoder.picture->pts = AV_NOPTS_VALUE;
 	h263->encoder.picture->quality = h263->encoder.context->global_quality;
 	ret = avcodec_encode_video(h263->encoder.context, h263->encoder.buffer, size, h263->encoder.picture);
@@ -435,10 +566,15 @@ static tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_da
 		packet.data = h263->decoder.accumulator;
 		ret = avcodec_decode_video2(h263->decoder.context, h263->decoder.picture, &got_picture_ptr, &packet);
 
-		if(ret <0 || !got_picture_ptr){
-			TSK_DEBUG_WARN("Failed to decode the buffer");
+		if(ret < 0){
+			TSK_DEBUG_WARN("Failed to decode the buffer with error code = %d", ret);
+			if(TMEDIA_CODEC_VIDEO(self)->in.callback){
+				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
+				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
+				TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
+			}
 		}
-		else{
+		else if(got_picture_ptr){
 			retsize = xsize;
 			TMEDIA_CODEC_VIDEO(h263)->in.width = h263->decoder.context->width;
 			TMEDIA_CODEC_VIDEO(h263)->in.height = h263->decoder.context->height;
@@ -453,73 +589,51 @@ static tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_da
 	return retsize;
 }
 
-static tsk_bool_t tdav_codec_h263_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+static tsk_bool_t tdav_codec_h263_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {	
-	tsk_bool_t ret = tsk_false;
-	tmedia_codec_video_t* h263 = (tmedia_codec_video_t*)codec;
-	tsk_params_L_t* params = tsk_null;
-
-	if((params = tsk_params_fromstring(fmtp, ";", tsk_true))){
-		switch(codec->bl){
-			case tmedia_bl_low:
-			default:
-				if(tsk_params_have_param(params, "QCIF")){
-					h263->in.width = h263->out.width = 176; h263->in.height = h263->out.height = 144;
-					ret = tsk_true;
-				}
-				else if(tsk_params_have_param(params, "SQCIF")){
-					h263->in.width = h263->out.width = 128; h263->in.height = h263->out.height = 96;
-					ret = tsk_true;
-				}
-				break;
-
-			case tmedia_bl_medium:
-			case tmedia_bl_hight:
-			case tmedia_bl_unrestricted:
-				if(tsk_params_have_param(params, "CIF")){
-					h263->in.width = h263->out.width = 352; h263->in.height = h263->out.height = 288;
-					ret = tsk_true;
-				}
-				else if(tsk_params_have_param(params, "QCIF")){
-					h263->in.width = h263->out.width = 176; h263->in.height = h263->out.height = 144;
-					ret = tsk_true;
-				}
-				else if(tsk_params_have_param(params, "SQCIF")){
-					h263->in.width = h263->out.width = 128; h263->in.height = h263->out.height = 96;
-					ret = tsk_true;
-				}
-				else { // Default: to be fixed
-					h263->in.width = h263->out.width = 352; h263->in.height = h263->out.height = 288;
-					ret = tsk_true;
-				}
-
-				break;
+	if(tsk_striequals(att_name, "fmtp")){
+		unsigned width, height, fps;
+		if(tmedia_parse_video_fmtp(att_value, TMEDIA_CODEC_VIDEO(codec)->pref_size, &width, &height, &fps)){
+			TSK_DEBUG_ERROR("Failed to match fmtp=%s", att_value);
+			return tsk_false;
 		}
+		TMEDIA_CODEC_VIDEO(codec)->in.width = TMEDIA_CODEC_VIDEO(codec)->out.width = width;
+		TMEDIA_CODEC_VIDEO(codec)->in.height = TMEDIA_CODEC_VIDEO(codec)->out.height = height;
+		TMEDIA_CODEC_VIDEO(codec)->in.fps = TMEDIA_CODEC_VIDEO(codec)->out.fps = fps;
 	}
-	TSK_OBJECT_SAFE_FREE(params);
-
-	return ret;
+#if 0
+	else if(tsk_striequals(att_name, "imageattr")){
+		unsigned in_width, in_height, out_width, out_height;
+		if(tmedia_parse_video_imageattr(att_value, TMEDIA_CODEC_VIDEO(codec)->pref_size, &in_width, &in_height, &out_width, &out_height) != 0){
+			return tsk_false;
+		}
+		TMEDIA_CODEC_VIDEO(codec)->in.width = in_width;
+		TMEDIA_CODEC_VIDEO(codec)->in.height = in_height;
+		TMEDIA_CODEC_VIDEO(codec)->out.width = out_width;
+		TMEDIA_CODEC_VIDEO(codec)->out.height = out_height;
+	}
+#endif
+	
+	return tsk_true;
 }
 
-static char* tdav_codec_h263_fmtp_get(const tmedia_codec_t* self)
+static char* tdav_codec_h263_sdp_att_get(const tmedia_codec_t* codec, const char* att_name)
 {
-	switch(self->bl){
-		case tmedia_bl_low:
-		default:
-			return tsk_strdup("QCIF=2;SQCIF=2");
-			break;
-		case tmedia_bl_medium:
-		case tmedia_bl_hight:
-		case tmedia_bl_unrestricted:
-			return tsk_strdup("CIF=2;QCIF=2;SQCIF=2");
-			break;
+	if(tsk_striequals(att_name, "fmtp")){
+		tmedia_pref_video_size_t cif_vs;
+		if(tmedia_video_get_closest_cif_size(TMEDIA_CODEC_VIDEO(codec)->pref_size, &cif_vs)){
+			TSK_DEBUG_ERROR("Failed to get closest CIF family size");
+			return tsk_null;
+		}
+		return tmedia_get_video_fmtp(cif_vs);
 	}
-}
-
-static int tdav_codec_h263_fmtp_set(tmedia_codec_t* self, const char* fmtp)
-{
-	TSK_DEBUG_INFO("remote fmtp=%s", fmtp);
-	return 0;
+#if 0
+	else if(tsk_striequals(att_name, "imageattr")){
+		return tmedia_get_video_imageattr(TMEDIA_CODEC_VIDEO(codec)->pref_size, 
+			TMEDIA_CODEC_VIDEO(codec)->in.width, TMEDIA_CODEC_VIDEO(codec)->in.height, TMEDIA_CODEC_VIDEO(codec)->out.width, TMEDIA_CODEC_VIDEO(codec)->out.height);
+	}
+#endif
+	return tsk_null;
 }
 
 /* constructor */
@@ -573,13 +687,13 @@ static const tmedia_codec_plugin_def_t tdav_codec_h263_plugin_def_s =
 	/* video */
 	{176, 144, 15},
 
+	tdav_codec_h263_set,
 	tdav_codec_h263_open,
 	tdav_codec_h263_close,
 	tdav_codec_h263_encode,
 	tdav_codec_h263_decode,
-	tdav_codec_h263_fmtp_match,
-	tdav_codec_h263_fmtp_get,
-	tdav_codec_h263_fmtp_set
+	tdav_codec_h263_sdp_att_match,
+	tdav_codec_h263_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tdav_codec_h263_plugin_def_t = &tdav_codec_h263_plugin_def_s;
 
@@ -610,21 +724,6 @@ const tmedia_codec_plugin_def_t *tdav_codec_h263_plugin_def_t = &tdav_codec_h263
 //
 //	H.263-1998 object definition
 //
-
-static int tdav_codec_h263p_open(tmedia_codec_t* self)
-{
-	return tdav_codec_h263_open(self);
-}
-
-static int tdav_codec_h263p_close(tmedia_codec_t* self)
-{
-	return tdav_codec_h263_close(self);
-}
-
-static tsk_size_t tdav_codec_h263p_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
-{
-	return tdav_codec_h263_encode(self, in_data, in_size, out_data, out_max_size);
-}
 
 static tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
@@ -762,22 +861,6 @@ static tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_d
 	return retsize;
 }
 
-tsk_bool_t tdav_codec_h263p_fmtp_match(const tmedia_codec_t* self, const char* fmtp)
-{	
-	return tdav_codec_h263_fmtp_match(self, fmtp);
-}
-
-char* tdav_codec_h263p_fmtp_get(const tmedia_codec_t* self)
-{
-	return tdav_codec_h263_fmtp_get(self);
-}
-
-int tdav_codec_h263p_fmtp_set(tmedia_codec_t* self, const char* fmtp)
-{
-	TSK_DEBUG_INFO("remote fmtp=%s", fmtp);
-	return 0;
-}
-
 /* constructor */
 static tsk_object_t* tdav_codec_h263p_ctor(tsk_object_t * self, va_list * app)
 {
@@ -828,13 +911,13 @@ static const tmedia_codec_plugin_def_t tdav_codec_h263p_plugin_def_s =
 	/* video */
 	{176, 144, 15},
 
+	tdav_codec_h263p_set,
 	tdav_codec_h263p_open,
 	tdav_codec_h263p_close,
 	tdav_codec_h263p_encode,
 	tdav_codec_h263p_decode,
-	tdav_codec_h263p_fmtp_match,
-	tdav_codec_h263p_fmtp_get,
-	tdav_codec_h263p_fmtp_set
+	tdav_codec_h263p_sdp_att_match,
+	tdav_codec_h263p_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tdav_codec_h263p_plugin_def_t = &tdav_codec_h263p_plugin_def_s;
 
@@ -856,42 +939,6 @@ const tmedia_codec_plugin_def_t *tdav_codec_h263p_plugin_def_t = &tdav_codec_h26
 //
 //	H.263-2000 object definition
 //
-
-int tdav_codec_h263pp_open(tmedia_codec_t* self)
-{
-	return tdav_codec_h263_open(self);
-}
-
-int tdav_codec_h263pp_close(tmedia_codec_t* self)
-{
-	return tdav_codec_h263_close(self);
-}
-
-tsk_size_t tdav_codec_h263pp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
-{
-	return tdav_codec_h263_encode(self, in_data, in_size, out_data, out_max_size);
-}
-
-tsk_size_t tdav_codec_h263pp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
-{
-	return tdav_codec_h263p_decode(self, in_data, in_size, out_data, out_max_size, proto_hdr);
-}
-
-tsk_bool_t tdav_codec_h263pp_fmtp_match(const tmedia_codec_t* self, const char* fmtp)
-{	
-	return tdav_codec_h263_fmtp_match(self, fmtp);
-}
-
-char* tdav_codec_h263pp_fmtp_get(const tmedia_codec_t* self)
-{
-	return tdav_codec_h263_fmtp_get(self);
-}
-
-int tdav_codec_h263pp_fmtp_set(tmedia_codec_t* self, const char* fmtp)
-{
-	TSK_DEBUG_INFO("remote fmtp=%s", fmtp);
-	return 0;
-}
 
 /* constructor */
 static tsk_object_t* tdav_codec_h263pp_ctor(tsk_object_t * self, va_list * app)
@@ -943,13 +990,13 @@ static const tmedia_codec_plugin_def_t tdav_codec_h263pp_plugin_def_s =
 	/* video */
 	{176, 144, 15},
 
+	tdav_codec_h263pp_set,
 	tdav_codec_h263pp_open,
 	tdav_codec_h263pp_close,
 	tdav_codec_h263pp_encode,
 	tdav_codec_h263pp_decode,
-	tdav_codec_h263pp_fmtp_match,
-	tdav_codec_h263pp_fmtp_get,
-	tdav_codec_h263pp_fmtp_set
+	tdav_codec_h263pp_sdp_att_match,
+	tdav_codec_h263pp_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tdav_codec_h263pp_plugin_def_t = &tdav_codec_h263pp_plugin_def_s;
 
@@ -1068,8 +1115,12 @@ static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *da
 	}
 
 	// Send data over the network
-	if(TMEDIA_CODEC_VIDEO(self)->callback){
-		TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, self->rtp.ptr, (size + H263_HEADER_MODE_A_SIZE), (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps)), marker);
+	if(TMEDIA_CODEC_VIDEO(self)->out.callback){
+		TMEDIA_CODEC_VIDEO(self)->out.result.buffer.ptr = self->rtp.ptr;
+		TMEDIA_CODEC_VIDEO(self)->out.result.buffer.size = (size + H263_HEADER_MODE_A_SIZE);
+		TMEDIA_CODEC_VIDEO(self)->out.result.duration = (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps));
+		TMEDIA_CODEC_VIDEO(self)->out.result.last_chunck = marker;
+		TMEDIA_CODEC_VIDEO(self)->out.callback(&TMEDIA_CODEC_VIDEO(self)->out.result);
 	}
 }
 
@@ -1209,8 +1260,12 @@ static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *d
 	
 
 	// Send data over the network
-	if(TMEDIA_CODEC_VIDEO(self)->callback){
-		TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, _ptr, _size, (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps)), marker);
+	if(TMEDIA_CODEC_VIDEO(self)->out.callback){
+		TMEDIA_CODEC_VIDEO(self)->out.result.buffer.ptr = _ptr;
+		TMEDIA_CODEC_VIDEO(self)->out.result.buffer.size = _size;
+		TMEDIA_CODEC_VIDEO(self)->out.result.duration = (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps));
+		TMEDIA_CODEC_VIDEO(self)->out.result.last_chunck = marker;
+		TMEDIA_CODEC_VIDEO(self)->out.callback(&TMEDIA_CODEC_VIDEO(self)->out.result);
 	}
 }
 

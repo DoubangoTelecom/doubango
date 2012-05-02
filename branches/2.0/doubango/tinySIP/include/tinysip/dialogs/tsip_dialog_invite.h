@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_dialog_invite.h
  * @brief SIP dialog INVITE.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -48,6 +48,7 @@ typedef struct tsip_dialog_invite
 	tsk_bool_t is_client;
 	tsk_bool_t is_transf;
 	tsk_bool_t refersub;
+	tsk_bool_t use_rtcp;
 	uint32_t rseq;
 	
 	tsip_timer_t timershutdown;
@@ -57,8 +58,21 @@ typedef struct tsip_dialog_invite
 	tsip_request_t* last_iInvite;
 	tsip_request_t* last_oInvite;
 	tsip_request_t* last_iRefer;
-	tmedia_session_mgr_t* msession_mgr; /**< Media session Manager. */
+	tmedia_session_mgr_t* msession_mgr; /**< Media session Manager */
+	
 	struct tsip_ssession_s* ss_transf;
+
+	/* ICE */
+	struct{
+		tmedia_type_t media_type;
+		tsk_bool_t is_jingle;
+		tsk_bool_t start_smgr;
+		struct tnet_ice_ctx_s *ctx_audio;
+		struct tnet_ice_ctx_s *ctx_video;
+		tsk_fsm_action_id last_action_id;
+		tsip_action_t* last_action;
+		tsip_message_t* last_message;
+	} ice;
 	
 	/* Session Timers */
 	struct{
@@ -84,6 +98,7 @@ typedef struct tsip_dialog_invite
 		unsigned precondition:1;
 		unsigned timer:1;
 		unsigned norefersub:1;
+		unsigned ice:1;
 	} supported;
 
 	struct{
@@ -91,6 +106,7 @@ typedef struct tsip_dialog_invite
 		unsigned precondition:1;
 		unsigned timer:1;
 		unsigned norefersub;
+		unsigned ice:1;
 	} require;
 }
 tsip_dialog_invite_t;

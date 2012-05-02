@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,18 +23,43 @@
 /**@file tmedia_common.c
  * @brief Common functions and definitions.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
 #include "tinymedia/tmedia_common.h"
 
 #include "tinymedia/tmedia_session.h"
+#include "tinymedia/tmedia_imageattr.h"
 
 #include "tsk_params.h"
 #include "tsk_debug.h"
 
 #include <stdlib.h> /* atoi() */
+
+typedef struct fmtp_size_s{
+	const char* name;
+	tmedia_pref_video_size_t pref_vs;
+	tsk_bool_t cif_family;
+	unsigned width;
+	unsigned height;
+}fmtp_size_t;
+static const fmtp_size_t fmtp_sizes[] = 
+{
+	/* must be sorted like this */
+	{"1080P", tmedia_pref_video_size_1080p, tsk_false, 1920, 1080},
+	{"16CIF", tmedia_pref_video_size_16cif, tsk_true, 1408, 1152},
+	{"720P", tmedia_pref_video_size_720p, tsk_false, 1280, 720},
+	{"480P", tmedia_pref_video_size_480p, tsk_false, 852, 480},
+	{"SVGA", tmedia_pref_video_size_svga, tsk_false, 800, 600},
+	{"4CIF", tmedia_pref_video_size_4cif, tsk_true, 704, 576},
+	{"VGA", tmedia_pref_video_size_vga, tsk_false, 640, 480},
+	{"HVGA", tmedia_pref_video_size_hvga, tsk_false, 480, 320},
+	{"CIF", tmedia_pref_video_size_cif, tsk_true, 352, 288},
+	{"QVGA", tmedia_pref_video_size_qvga, tsk_false, 320, 240},
+	{"QCIF", tmedia_pref_video_size_qcif, tsk_true, 176, 144},
+	{"SQCIF", tmedia_pref_video_size_sqcif, tsk_true, 128, 96}
+};
 
 tmedia_type_t tmedia_type_from_sdp(const tsdp_message_t* sdp)
 {
@@ -123,8 +148,36 @@ int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t*
 	//}
 }
 
+int tmedia_video_get_size(tmedia_pref_video_size_t pref_vs, unsigned *width, unsigned *height)
+{
+	int i;
+	for(i=0; i<sizeof(fmtp_sizes)/sizeof(fmtp_sizes[0]); i++){
+		if(fmtp_sizes[i].pref_vs == pref_vs){
+			if(width) *width = fmtp_sizes[i].width;
+			if(height) *height = fmtp_sizes[i].height;
+			return 0;
+		}
+	}
+	return -1;
+}
 
-int tmedia_parse_video_fmtp(const char* fmtp, tmedia_bandwidth_level_t bl, unsigned* width, unsigned* height, unsigned* fps)
+int tmedia_video_get_closest_cif_size(tmedia_pref_video_size_t pref_vs, tmedia_pref_video_size_t *cif_vs)
+{
+	int i;
+	if(!cif_vs){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	for(i=0; i<sizeof(fmtp_sizes)/sizeof(fmtp_sizes[0]); i++){
+		if(fmtp_sizes[i].pref_vs <= pref_vs && fmtp_sizes[i].cif_family){
+			*cif_vs = fmtp_sizes[i].pref_vs;
+			return 0;
+		}
+	}
+	return -2;
+}
+
+int tmedia_parse_video_fmtp(const char* fmtp, tmedia_pref_video_size_t pref_vs, unsigned* width, unsigned* height, unsigned* fps)
 {
 	int ret = -2;
 	tsk_params_L_t* params = tsk_null;
@@ -132,52 +185,23 @@ int tmedia_parse_video_fmtp(const char* fmtp, tmedia_bandwidth_level_t bl, unsig
 	const tsk_list_item_t* item;
 	int i;
 
-	struct fmtp_size{
-		const char* name;
-		tmedia_bandwidth_level_t min_bl;
-		unsigned width;
-		unsigned height;
-	};
-	static const struct fmtp_size fmtp_sizes[] = 
-	{
-		// from best to worst
-		{"CIF", tmedia_bl_medium, 352, 288},
-		{"QCIF", tmedia_bl_low, 176, 144},
-		{"SQCIF", tmedia_bl_low, 128, 96},		
-	};
-
 	if(!fmtp || !width || !height || !fps){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
 	// set default values
+	ret = tmedia_video_get_size(pref_vs, width, height);
 	*fps = 15;
-	switch(bl){
-		case tmedia_bl_low:
-		default:
-			{
-				*width= 176; 
-				*height = 144;
-				break;
-			}
-		case tmedia_bl_medium:
-		case tmedia_bl_hight:
-		case tmedia_bl_unrestricted:
-			{
-				*width= 352; 
-				*height = 288;
-				break;
-			}
-	}
+
 	if((params = tsk_params_fromstring(fmtp, ";", tsk_true))){
 		// set real values
 		tsk_list_foreach(item, params){
 			if(!(param = TSK_PARAM(item->data)) || !param->name || !param->value){
 				continue;
 			}
-			for(i=0;i<sizeof(fmtp_sizes)/sizeof(struct fmtp_size);i++){
-				if((int)bl >= (int)fmtp_sizes[i].min_bl && tsk_striequals(fmtp_sizes[i].name, param->name)){
+			for(i=0; i<sizeof(fmtp_sizes)/sizeof(fmtp_sizes[0]); i++){
+				if((int)pref_vs >= (int)fmtp_sizes[i].pref_vs && tsk_striequals(fmtp_sizes[i].name, param->name)){
 					*width= fmtp_sizes[i].width; 
 					*height = fmtp_sizes[i].height;
 					*fps = atoi(param->value);
@@ -194,67 +218,85 @@ done:
 	return ret;
 }
 
-static const tmedia_video_size_t tmedia_video_sizes[] = 
+static void _imageattr_get_best_size(const tmedia_imageattr_set_xt* set, xyvalue_t *width, xyvalue_t *height)
 {
-	{tmedia_vst_none , 176, 144},
-
-	{tmedia_vst_sqcif, 128, 96},
-	{tmedia_vst_qcif, 176, 144},
-	{tmedia_vst_qvga, 320, 240},
-	{tmedia_vst_cif, 352, 288},
-	{tmedia_vst_vga, 640, 480},
-	{tmedia_vst_4cif, 704, 576},
-	{tmedia_vst_svga, 800, 600},
-	{tmedia_vst_xga, 1024, 768},
-	{tmedia_vst_sxga, 1280, 1024},
-	{tmedia_vst_16cif, 1408, 1152},
-	{tmedia_vst_hd720p, 1280, 720},
-	{tmedia_vst_hd1080p, 1920, 1080},
-	
-	{tmedia_vst_ios_low, 200, 152},
-	{tmedia_vst_ios_medium, 480, 360},
-	{tmedia_vst_ios_high, 400, 304},
-};
-
-const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_size_t size)
-{
-	float factor = 3.f;
 	tsk_size_t i;
-	switch(chroma)
-	{
-		case tmedia_chroma_rgb24:
-		case tmedia_chroma_bgr24:
-			factor = 3.f;
-			break;
-		case tmedia_chroma_rgb565le:
-		case tmedia_chroma_rgb565be:
-			factor = 2.f;
-			break;
-		
-		case tmedia_chroma_rgb32:
-			factor = 4.f;
-			break;
-		
-		case tmedia_chroma_nv21:
-		case tmedia_chroma_nv12:
-		case tmedia_chroma_yuv420p:
-			factor = 1.5f;
-			break;
-			
-		case tmedia_chroma_yuv422p:
-		case tmedia_chroma_uyvy422:
-			factor = 2.f;
-			break;
+	if(set->xrange.is_range){
+		*width = TSK_MIN(set->xrange.range.end, *width);
 	}
-
-	for(i = 1; i< sizeof(tmedia_video_sizes)/sizeof(tmedia_video_size_t); i++){
-		if((((float)(tmedia_video_sizes[i].width * tmedia_video_sizes[i].height)) * factor) == size){
-			return &tmedia_video_sizes[i];
+	else{
+		for(i = 0; i < set->xrange.array.count; ++i){
+			*width = TSK_MIN(set->xrange.array.values[i], *width);
 		}
 	}
-
-	return &tmedia_video_sizes[0];;
+	if(set->yrange.is_range){
+		*height = TSK_MIN(set->yrange.range.end, *height);
+	}
+	else{
+		for(i = 0; i < set->yrange.array.count; ++i){
+			*height = TSK_MIN(set->yrange.array.values[i], *height);
+		}
+	}
 }
+
+int tmedia_parse_video_imageattr(const char* imageattr, tmedia_pref_video_size_t pref_vs, unsigned* in_width, unsigned* in_height, unsigned* out_width, unsigned* out_height)
+{
+	tmedia_imageattr_xt attr;
+	int ret;
+	tsk_size_t i;
+	
+	if(!imageattr || !in_width || !in_height || !out_width || !out_height){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	// set default values
+	ret = tmedia_video_get_size(pref_vs, in_width, in_height);
+	if(ret != 0){
+		TSK_DEBUG_ERROR("tmedia_video_get_size() failed with error code=%d", ret);
+		return ret;
+	}
+	*out_width = *in_width, *out_height = *in_height;
+
+	if((ret = tmedia_imageattr_parse(&attr, imageattr, tsk_strlen(imageattr)))){
+		TSK_DEBUG_ERROR("Failed to parse");
+		return 0; // use default values
+	}
+	
+	
+	for(i = 0; i < attr.send.count; ++i) _imageattr_get_best_size(&attr.send.sets[i], out_width, out_height);
+	for(i = 0; i < attr.recv.count; ++i) _imageattr_get_best_size(&attr.recv.sets[i], in_width, in_height);
+
+	return 0;
+}
+
+char* tmedia_get_video_fmtp(tmedia_pref_video_size_t pref_vs)
+{
+	tsk_size_t i;
+	char* fmtp = tsk_null;
+	
+
+	for(i = 0; i < sizeof(fmtp_sizes)/sizeof(fmtp_sizes[0]); ++i){
+		if(fmtp_sizes[i].cif_family && fmtp_sizes[i].pref_vs <= pref_vs){
+			if(!fmtp) tsk_strcat_2(&fmtp, "%s=2", fmtp_sizes[i].name);
+			else tsk_strcat_2(&fmtp, ";%s=2", fmtp_sizes[i].name);
+		}
+	}
+	return fmtp;
+}
+
+char* tmedia_get_video_imageattr(tmedia_pref_video_size_t pref_vs, unsigned in_width, unsigned in_height, unsigned out_width, unsigned out_height)
+{
+	unsigned width, height;
+	const fmtp_size_t* size_min = &fmtp_sizes[(sizeof(fmtp_sizes) / sizeof(fmtp_sizes[0]))-1];
+	char* ret = tsk_null;
+	if(tmedia_video_get_size(pref_vs, &width, &height) == 0){
+		tsk_sprintf(&ret, "recv [x=[%u:16:%u],y=[%u:16:%u]] send [x=[%u:16:%u],y=[%u:16:%u]]",
+			size_min->width, in_width, size_min->height, in_height,
+			size_min->width, out_width, size_min->height, out_height);
+	}
+	return ret;
+}
+
 
 // #retval: 1(best)-31(worst) */
 int tmedia_get_video_quality(tmedia_bandwidth_level_t bl)

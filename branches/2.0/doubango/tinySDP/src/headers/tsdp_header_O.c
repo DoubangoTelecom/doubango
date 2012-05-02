@@ -3,7 +3,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,7 +25,7 @@
 /**@file tsdp_header_O.c
  * @brief SDP "o=" header (Origin).
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
  * @date Created: Uat Nov 8 16:54:58 2009 mdiop
  */

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tmedia_content_cpim.c
  * @brief Common Presence and Instant Messaging (CPIM): Message Format (RFC 3862)
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
  */
 #include "tinymedia/content/tmedia_content_cpim.h"
@@ -67,7 +67,7 @@ A complete message looks something like this:
 	machine tmedia_machine_content_cpim;
 
 	# Includes
-	include tmedia_machine_utils "./ragel/tmedia_machine_utils.rl";
+	include tmedia_machine_utils "./tmedia_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;

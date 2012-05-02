@@ -36,16 +36,63 @@
 
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
 
+#include "tinymedia/tmedia_params.h"
+
+#include "tsk_buffer.h"
 #include "tsk_time.h"
 #include "tsk_params.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#include <libavcodec/avcodec.h>
+
 #define THEORA_RTP_PAYLOAD_SIZE		900
+#define THEORA_GOP_SIZE_IN_SECONDS	25
 #define THEORA_PAYLOAD_HEADER_SIZE	4 /* 2.2. Payload Header */
 #define THEORA_PAYLOAD_LENGTH_SIZE	2 /* 2.2. Payload Header */
 #define THEORA_IDENT_HEADER_SIZE	42 /* 6.2 Identification Header Decode */
 #define THEORA_CONF_SEND_COUNT		10 /* at 250ms, 500ms, 1000ms, ....  */
+
+typedef struct tdav_codec_theora_s
+{
+	TMEDIA_DECLARE_CODEC_VIDEO;
+
+	struct{
+		uint8_t* ptr;
+		tsk_size_t size;
+	} rtp;
+
+	// Encoder
+	struct{
+		AVCodec* codec;
+		AVCodecContext* context;
+		AVFrame* picture;
+		void* buffer;
+
+		uint64_t conf_last;
+		int conf_count;
+		tsk_bool_t force_idr;
+		int quality;
+	} encoder;
+	
+	// decoder
+	struct{
+		AVCodec* codec;
+		AVCodecContext* context;
+		AVFrame* picture;
+
+		tsk_bool_t opened;
+		uint8_t conf_ident[3];
+		tsk_buffer_t* conf_pkt;
+		
+		void* accumulator;
+		uint8_t ebit;
+		tsk_size_t accumulator_pos;
+		uint16_t last_seq;
+	} decoder;
+}
+tdav_codec_theora_t;
+
 
 /* 2.2. Payload Header filed 'F'*/
 typedef enum theora_frag_type_e{
@@ -72,7 +119,39 @@ static void tdav_codec_theora_encap(tdav_codec_theora_t* theora, const uint8_t* 
 
 /* ============ Theora Plugin interface functions ================= */
 
-#define tdav_codec_theora_fmtp_set tsk_null
+static int tdav_codec_theora_set(tmedia_codec_t* self, const tmedia_param_t* param)
+{
+	tdav_codec_theora_t* theora = (tdav_codec_theora_t*)self;
+	if(!self->opened){
+		TSK_DEBUG_ERROR("Codec not opened");
+		return -1;
+	}
+	if(param->value_type == tmedia_pvt_int32){
+		if(tsk_striequals(param->key, "action")){
+			tmedia_codec_action_t action = (tmedia_codec_action_t)TSK_TO_INT32((uint8_t*)param->value);
+			switch(action){
+				case tmedia_codec_action_encode_idr:
+					{
+						theora->encoder.force_idr = tsk_true;
+						break;
+					}
+				case tmedia_codec_action_bw_down:
+					{
+						theora->encoder.quality = TSK_CLAMP(1, (theora->encoder.quality + 1), 31);
+						theora->encoder.context->global_quality = FF_QP2LAMBDA * theora->encoder.quality;
+						break;
+					}
+				case tmedia_codec_action_bw_up:
+					{
+						theora->encoder.quality = TSK_CLAMP(1, (theora->encoder.quality - 1), 31);
+						theora->encoder.context->global_quality = FF_QP2LAMBDA * theora->encoder.quality;
+						break;
+					}
+			}
+		}
+	}
+	return 0;
+}
 
 int tdav_codec_theora_open(tmedia_codec_t* self)
 {
@@ -104,32 +183,17 @@ int tdav_codec_theora_open(tmedia_codec_t* self)
 	theora->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(theora)->out.fps;
 	theora->encoder.context->width = TMEDIA_CODEC_VIDEO(theora)->out.width;
 	theora->encoder.context->height = TMEDIA_CODEC_VIDEO(theora)->out.height;
-	
 	theora->encoder.context->mb_decision = FF_MB_DECISION_RD;
 	
 	// Theoraenc doesn't honor 'CODEC_FLAG_QSCALE'
-	switch(self->bl){
-		case tmedia_bl_low:
-		default:
-			bitRate = 72000.f;
-			break;
-		case tmedia_bl_medium:
-			bitRate = 150000.f;
-			break;
-		case tmedia_bl_hight:
-			bitRate = 320000.f;
-			break;
-		case tmedia_bl_unrestricted:
-			bitRate = 510000.f;
-			break;
-	}
+	theora->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(theora)->out.width * TMEDIA_CODEC_VIDEO(theora)->out.height * 128 / 320 / 240) * 1000);
+	theora->encoder.context->rc_lookahead = 0;
+	theora->encoder.context->global_quality = FF_QP2LAMBDA * theora->encoder.quality;
 
-	theora->encoder.context->thread_count = 1;
+	theora->encoder.context->thread_count = 0;
 	theora->encoder.context->rtp_payload_size = THEORA_RTP_PAYLOAD_SIZE;
 	theora->encoder.context->opaque = tsk_null;
-	theora->encoder.context->bit_rate = (int) (bitRate * 0.80f);
-	theora->encoder.context->bit_rate_tolerance = (int) (bitRate * 0.20f);
-	theora->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(theora)->out.fps*2; // each 2 seconds
+	theora->encoder.context->gop_size = (TMEDIA_CODEC_VIDEO(theora)->out.fps * THEORA_GOP_SIZE_IN_SECONDS);
 
 	// Picture (YUV 420)
 	if(!(theora->encoder.picture = avcodec_alloc_frame())){
@@ -263,9 +327,15 @@ tsk_size_t tdav_codec_theora_encode(tmedia_codec_t* self, const void* in_data, t
 	}
 	
 	// Encode data
-	//theora->encoder.picture->pts = tsk_time_now();
+	if(theora->encoder.force_idr){
+		theora->encoder.picture->pict_type = FF_I_TYPE;
+		theora->encoder.force_idr = tsk_false;
+	}
+	else{
+		theora->encoder.picture->pict_type = 0;// reset
+	}
 	theora->encoder.picture->pts = AV_NOPTS_VALUE;
-	//theora->encoder.picture->pict_type = FF_I_TYPE;
+	theora->encoder.picture->quality = theora->encoder.context->global_quality;
 	ret = avcodec_encode_video(theora->encoder.context, theora->encoder.buffer, size, theora->encoder.picture);
 	if(ret > 0){
 		tdav_codec_theora_encap(theora, theora->encoder.buffer, (tsk_size_t)ret);
@@ -354,10 +424,15 @@ tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, t
 						packet.data = theora->decoder.accumulator;
 						ret = avcodec_decode_video2(theora->decoder.context, theora->decoder.picture, &got_picture_ptr, &packet);
 						
-						if(ret <0 || !got_picture_ptr){
-							TSK_DEBUG_WARN("Failed to decode the buffer");
+						if(ret < 0){
+							TSK_DEBUG_WARN("Failed to decode the buffer with error code = %d", ret);
+							if(TMEDIA_CODEC_VIDEO(self)->in.callback){
+								TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
+								TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
+								TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
+							}
 						}
-						else{
+						else if(got_picture_ptr){
 							retsize = xsize;
 							TMEDIA_CODEC_VIDEO(theora)->in.width = theora->decoder.context->width;
 							TMEDIA_CODEC_VIDEO(theora)->in.height = theora->decoder.context->height;
@@ -479,57 +554,55 @@ tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, t
 	return retsize;
 }
 
-tsk_bool_t tdav_codec_theora_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+tsk_bool_t tdav_codec_theora_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {
 	tsk_bool_t ret = tsk_true; // accept decoding any size
-	tsk_params_L_t* params = tsk_null;
 	tmedia_codec_video_t* theora = (tmedia_codec_video_t*)codec;
 
-	if((params = tsk_params_fromstring(fmtp, ";", tsk_true))){
-		int width = tsk_params_get_param_value_as_int(params, "width");
-		int height = tsk_params_get_param_value_as_int(params, "height");		
-		
-		// Set Encoding size
-		switch(codec->bl){
-			case tmedia_bl_low:
-			default:
-				if(width<=176 && height<=144){
-					theora->in.width = theora->out.width = width; theora->in.height = theora->out.height = height;
+	if(tsk_striequals(att_name, "fmtp")){
+		tsk_params_L_t* params;
+		if((params = tsk_params_fromstring(att_value, ";", tsk_true))){
+			int pref_width, pref_height;
+			int prop_width = tsk_params_get_param_value_as_int(params, "width");
+			int prop_height = tsk_params_get_param_value_as_int(params, "height");		
+			
+			if(prop_width > 0 && prop_height > 0){
+				if(tmedia_video_get_size(TMEDIA_CODEC_VIDEO(codec)->pref_size, (unsigned *)&pref_width, (unsigned *)&pref_height) != 0){
+					TSK_OBJECT_SAFE_FREE(params);
+					return tsk_false;
 				}
-				else{
-					theora->in.width = theora->out.width = 176; theora->in.height = theora->out.height = 144;
-				}
-				break;
-
-			case tmedia_bl_medium:
-			case tmedia_bl_hight:
-			case tmedia_bl_unrestricted:
-				if(width<=352 && height<=288){
-					theora->in.width = theora->out.width = width; theora->in.height = theora->out.height = height;
-				}
-				else{
-					theora->in.width = theora->out.width = 352; theora->in.height = theora->out.height = 288;
-				}
-				break;
+				TMEDIA_CODEC_VIDEO(codec)->in.width = TMEDIA_CODEC_VIDEO(codec)->out.width = TSK_MIN(pref_width, prop_width);
+				TMEDIA_CODEC_VIDEO(codec)->in.height = TMEDIA_CODEC_VIDEO(codec)->out.height = TSK_MIN(pref_height, prop_height);
+			}
+			TSK_OBJECT_SAFE_FREE(params);
 		}
 	}
-	TSK_OBJECT_SAFE_FREE(params);
+	else if(tsk_striequals(att_name, "imageattr")){
+		unsigned in_width, in_height, out_width, out_height;
+		if(tmedia_parse_video_imageattr(att_value, TMEDIA_CODEC_VIDEO(codec)->pref_size, &in_width, &in_height, &out_width, &out_height) != 0){
+			return tsk_false;
+		}
+		TMEDIA_CODEC_VIDEO(codec)->in.width = in_width;
+		TMEDIA_CODEC_VIDEO(codec)->in.height = in_height;
+		TMEDIA_CODEC_VIDEO(codec)->out.width = out_width;
+		TMEDIA_CODEC_VIDEO(codec)->out.height = out_height;
+	}
 
 	return ret;
 }
 
-char* tdav_codec_theora_fmtp_get(const tmedia_codec_t* self)
+char* tdav_codec_theora_sdp_att_get(const tmedia_codec_t* codec, const char* att_name)
 {
-	switch(self->bl){
-		case tmedia_bl_low:
-		default:
-			return tsk_strdup("sampling=YCbCr-4:2:0; width=176; height=144");
-			break;
-		case tmedia_bl_medium:
-		case tmedia_bl_hight:
-			return tsk_strdup("sampling=YCbCr-4:2:0; width=352; height=288");
-			break;
+	if(tsk_striequals(att_name, "fmtp")){
+		char* fmtp = tsk_null;
+		tsk_sprintf(&fmtp, "sampling=YCbCr-4:2:0; width=%u; height=%u", TMEDIA_CODEC_VIDEO(codec)->out.width, TMEDIA_CODEC_VIDEO(codec)->out.height);
+		return fmtp;
 	}
+	else if(tsk_striequals(att_name, "imageattr")){
+		return tmedia_get_video_imageattr(TMEDIA_CODEC_VIDEO(codec)->pref_size, 
+			TMEDIA_CODEC_VIDEO(codec)->in.width, TMEDIA_CODEC_VIDEO(codec)->in.height, TMEDIA_CODEC_VIDEO(codec)->out.width, TMEDIA_CODEC_VIDEO(codec)->out.height);
+	}
+	return tsk_null;
 }
 
 
@@ -541,7 +614,7 @@ static tsk_object_t* tdav_codec_theora_ctor(tsk_object_t * self, va_list * app)
 	if(theora){
 		/* init base: called by tmedia_codec_create() */
 		/* init self */
-		//TSK_OBJECT_SAFE_FREE(theora->conf_data);
+		theora->encoder.quality = 1;
 	}
 	return self;
 }
@@ -586,13 +659,13 @@ static const tmedia_codec_plugin_def_t tdav_codec_theora_plugin_def_s =
 	/* video */
 	{176, 144, 15},
 
+	tdav_codec_theora_set,
 	tdav_codec_theora_open,
 	tdav_codec_theora_close,
 	tdav_codec_theora_encode,
 	tdav_codec_theora_decode,
-	tdav_codec_theora_fmtp_match,
-	tdav_codec_theora_fmtp_get,
-	tdav_codec_theora_fmtp_set
+	tdav_codec_theora_sdp_att_match,
+	tdav_codec_theora_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tdav_codec_theora_plugin_def_t = &tdav_codec_theora_plugin_def_s;
 
@@ -698,8 +771,12 @@ int tdav_codec_theora_send(tdav_codec_theora_t* self, const uint8_t* data, tsk_s
 		size -= pay_size;
 
 		// Send data over the network
-		if(TMEDIA_CODEC_VIDEO(self)->callback){
-			TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, self->rtp.ptr, (pay_size + sizeof(pay_hdr)), (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps)), (size == 0));
+		if(TMEDIA_CODEC_VIDEO(self)->out.callback){
+			TMEDIA_CODEC_VIDEO(self)->out.result.buffer.ptr = self->rtp.ptr;
+			TMEDIA_CODEC_VIDEO(self)->out.result.buffer.size = (pay_size + sizeof(pay_hdr));
+			TMEDIA_CODEC_VIDEO(self)->out.result.duration = (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps));
+			TMEDIA_CODEC_VIDEO(self)->out.result.last_chunck = (size == 0);
+			TMEDIA_CODEC_VIDEO(self)->out.callback(&TMEDIA_CODEC_VIDEO(self)->out.result);			
 		}
 	}
 

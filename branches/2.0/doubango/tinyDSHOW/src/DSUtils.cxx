@@ -24,12 +24,24 @@
 #include <atlbase.h>
 #include <atlstr.h>
 
-bool IsMainThread()
+#include "tsk_debug.h"
+
+HWND GetMainWindow()
 {
-	HWND hWnd = GetActiveWindow();
-	if(!hWnd) hWnd = GetForegroundWindow();
-	if(!hWnd) hWnd = GetConsoleWindow();
-	
+	HWND hWnd;
+	if(!(hWnd = GetActiveWindow())){
+		if(!(hWnd = GetForegroundWindow())){
+			if(!(hWnd = GetConsoleWindow())){
+				return NULL;
+			}
+		}
+	}
+	return hWnd;
+}
+
+bool IsMainThread()
+{	
+	HWND hWnd = GetMainWindow();
 	if(hWnd){
 		DWORD mainTid = GetWindowThreadProcessId(hWnd, NULL);
 		DWORD currentTid = GetCurrentThreadId();
@@ -152,4 +164,107 @@ bool RemoveAllFilters(IGraphBuilder *graphBuilder)
 
 	filterEnum.Release();
 	return true;
+}
+
+
+#include <tinydshow/DSDisplay.h>
+#include <tinydshow/DSGrabber.h>
+
+#define WM_CREATE_DISPLAY_ON_UI_THREAD				(WM_USER + 101)
+#define WM_CREATE_GRABBER_ON_UI_THREAD				(WM_CREATE_DISPLAY_ON_UI_THREAD + 1)
+#define WM_CREATE_ON_UI_THREAD_TIMEOUT		1000
+
+// C Callback that dispatch event to create display on UI thread
+static LRESULT CALLBACK __create__WndProcWindow(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	HANDLE* event = reinterpret_cast<HANDLE*>(wParam);
+
+	if(event && lParam){
+		switch(uMsg){
+			case WM_CREATE_DISPLAY_ON_UI_THREAD:
+				{
+					HRESULT hr;
+					DSDisplay** ppDisplay = reinterpret_cast<DSDisplay**>(lParam);
+					*ppDisplay = new DSDisplay(&hr);
+					SetEvent(event);
+					break;
+				}
+			case WM_CREATE_GRABBER_ON_UI_THREAD:
+				{
+					HRESULT hr;
+					DSGrabber** ppGrabber = reinterpret_cast<DSGrabber**>(lParam);
+					*ppGrabber = new DSGrabber(&hr);
+					SetEvent(event);
+					break;
+				}
+		}
+	}
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+int createOnUIThead(HWND hWnd, void** ppRet, bool display)
+{
+	if(!ppRet){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if(IsMainThread()){
+		HRESULT hr;
+		if(display) *ppRet = new DSDisplay(&hr);
+		else *ppRet = new DSGrabber(&hr);
+		if(FAILED(hr)){
+			TSK_DEBUG_ERROR("Failed to created DirectShow %s", display ? "Display" : "Grabber");
+			SAFE_DELETE_PTR(*ppRet);
+			return -2;
+		}
+		return 0;
+	}
+	else{
+
+		HANDLE event = NULL;
+		int ret = 0;
+		DWORD retWait, retryCount = 3;		
+
+		if(!hWnd){
+			if(!(hWnd = FindWindowA(NULL, "Boghe - IMS/RCS Client"))){
+				if(!(hWnd = GetMainWindow())){
+					TSK_DEBUG_ERROR("No Window handle could be used");
+					return -2;
+				}
+			}
+		}
+
+		WNDPROC wndProc = (WNDPROC) SetWindowLongPtr(hWnd, GWL_WNDPROC, (LONG) __create__WndProcWindow);
+		if(!wndProc){
+			TSK_DEBUG_ERROR("SetWindowLongPtr() failed");
+			return -3;
+		}
+
+		if(!(event = CreateEvent(NULL, TRUE, FALSE, NULL))){
+			TSK_DEBUG_ERROR("Failed to create new event");
+			ret = -4; goto bail;
+		}
+
+		if(!PostMessageA(hWnd, display ? WM_CREATE_DISPLAY_ON_UI_THREAD : WM_CREATE_GRABBER_ON_UI_THREAD, reinterpret_cast<WPARAM>(event), reinterpret_cast<LPARAM>(ppRet))){
+			TSK_DEBUG_ERROR("PostMessageA() failed");
+			ret = -5; goto bail;
+		}
+		
+		do{
+			retWait = WaitForSingleObject(event, WM_CREATE_ON_UI_THREAD_TIMEOUT);
+		}
+		while(retryCount-- > 0 && (retWait == WAIT_TIMEOUT));
+
+	bail:
+		// restore
+		if(hWnd && wndProc){
+			SetWindowLongPtr(hWnd, GWL_WNDPROC, (LONG)wndProc);
+		}
+		if(event){
+			CloseHandle(event);
+		}
+
+		return ret;
+	}
 }

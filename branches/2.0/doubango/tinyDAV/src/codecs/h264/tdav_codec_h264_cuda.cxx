@@ -544,10 +544,10 @@ bail:
 	return retsize;
 }
 
-static tsk_bool_t tdav_codec_h264_cuda_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+static tsk_bool_t tdav_codec_h264_cuda_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {
 	tdav_codec_h264_cuda_t* h264 = (tdav_codec_h264_cuda_t*)codec;
-	tdav_codec_h264_profile_t profile;
+	profile_idc_t profile;
 	
 	if(!h264){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -568,7 +568,7 @@ static tsk_bool_t tdav_codec_h264_cuda_fmtp_match(const tmedia_codec_t* codec, c
 	return tsk_true;
 }
 
-static char* tdav_codec_h264_cuda_fmtp_get(const tmedia_codec_t* self)
+static char* tdav_codec_h264_cuda_sdp_att_get(const tmedia_codec_t* self, const char* att_name)
 {
 	char* fmtp = tsk_null;
 	tdav_codec_h264_cuda_t* h264 = (tdav_codec_h264_cuda_t*)self;
@@ -616,7 +616,7 @@ tsk_bool_t tdav_codec_h264_cuda_is_supported()
 	return __is_supported;
 }
 
-static int tdav_codec_h264_cuda_init(tdav_codec_h264_cuda_t* self, tdav_codec_h264_profile_t profile)
+static int tdav_codec_h264_cuda_init(tdav_codec_h264_cuda_t* self, profile_idc_t profile)
 {
 	int ret = 0;
 
@@ -991,8 +991,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_h264_cuda_bp10_plugin_def_s =
 	tdav_codec_h264_cuda_close,
 	tdav_codec_h264_cuda_encode,
 	tdav_codec_h264_cuda_decode,
-	tdav_codec_h264_cuda_fmtp_match,
-	tdav_codec_h264_cuda_fmtp_get,
+	tdav_codec_h264_cuda_sdp_att_match,
+	tdav_codec_h264_cuda_sdp_att_get,
 	tdav_codec_h264_cuda_fmtp_set
 };
 extern const tmedia_codec_plugin_def_t *tdav_codec_h264_cuda_bp10_plugin_def_t = &tdav_codec_h264_cuda_bp10_plugin_def_s;
@@ -1055,8 +1055,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_h264_cuda_bp20_plugin_def_s =
 	tdav_codec_h264_cuda_close,
 	tdav_codec_h264_cuda_encode,
 	tdav_codec_h264_cuda_decode,
-	tdav_codec_h264_cuda_fmtp_match,
-	tdav_codec_h264_cuda_fmtp_get,
+	tdav_codec_h264_cuda_sdp_att_match,
+	tdav_codec_h264_cuda_sdp_att_get,
 	tdav_codec_h264_cuda_fmtp_set
 };
 extern const tmedia_codec_plugin_def_t *tdav_codec_h264_cuda_bp20_plugin_def_t = &tdav_codec_h264_cuda_bp20_plugin_def_s;
@@ -1119,8 +1119,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_h264_cuda_bp30_plugin_def_s =
 	tdav_codec_h264_cuda_close,
 	tdav_codec_h264_cuda_encode,
 	tdav_codec_h264_cuda_decode,
-	tdav_codec_h264_cuda_fmtp_match,
-	tdav_codec_h264_cuda_fmtp_get,
+	tdav_codec_h264_cuda_sdp_att_match,
+	tdav_codec_h264_cuda_sdp_att_get,
 	tdav_codec_h264_cuda_fmtp_set
 };
 extern const tmedia_codec_plugin_def_t *tdav_codec_h264_cuda_bp30_plugin_def_t = &tdav_codec_h264_cuda_bp30_plugin_def_s;

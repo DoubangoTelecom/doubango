@@ -37,18 +37,86 @@
 
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
 
+#include "tinymedia/tmedia_params.h"
+
 #include "tsk_params.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-static int tdav_codec_h264_init(tdav_codec_h264_t* self, tdav_codec_h264_profile_t profile);
+#include <libavcodec/avcodec.h>
+
+typedef struct tdav_codec_h264_s
+{
+	TDAV_DECLARE_CODEC_H264_COMMON;
+
+	// Encoder
+	struct{
+		AVCodec* codec;
+		AVCodecContext* context;
+		AVFrame* picture;
+		void* buffer;
+		int64_t frame_count;
+		tsk_bool_t force_idr;
+		int32_t quality; // [1-31]
+	} encoder;
+	
+	// decoder
+	struct{
+		AVCodec* codec;
+		AVCodecContext* context;
+		AVFrame* picture;
+
+		void* accumulator;
+		tsk_size_t accumulator_pos;
+		tsk_size_t accumulator_size;
+		uint16_t last_seq;
+	} decoder;
+}
+tdav_codec_h264_t;
+
+#define TDAV_H264_GOP_SIZE_IN_SECONDS		25
+
+static int tdav_codec_h264_init(tdav_codec_h264_t* self, profile_idc_t profile);
 static int tdav_codec_h264_deinit(tdav_codec_h264_t* self);
 
 static void tdav_codec_h264_encap(const tdav_codec_h264_t* h264, const uint8_t* pdata, tsk_size_t size);
 
-/* ============ H.264 Base Profile X.X Plugin interface functions ================= */
+/* ============ H.264 Base/Main Profile X.X Plugin interface functions ================= */
 
-#define tdav_codec_h264_fmtp_set tsk_null /* FIXME: should be removed from all plugins (useless) */
+static int tdav_codec_h264_set(tmedia_codec_t* self, const tmedia_param_t* param)
+{
+	tdav_codec_h264_t* h264 = (tdav_codec_h264_t*)self;
+	if(!self->opened){
+		TSK_DEBUG_ERROR("Codec not opened");
+		return -1;
+	}
+	if(param->value_type == tmedia_pvt_int32){
+		if(tsk_striequals(param->key, "action")){
+			tmedia_codec_action_t action = (tmedia_codec_action_t)TSK_TO_INT32((uint8_t*)param->value);
+			switch(action){
+				case tmedia_codec_action_encode_idr:
+					{
+						h264->encoder.force_idr = tsk_true;
+						break;
+					}
+				case tmedia_codec_action_bw_down:
+					{
+						h264->encoder.quality = TSK_CLAMP(1, (h264->encoder.quality + 1), 31);
+						h264->encoder.context->global_quality = FF_QP2LAMBDA * h264->encoder.quality;
+						break;
+					}
+				case tmedia_codec_action_bw_up:
+					{
+						h264->encoder.quality = TSK_CLAMP(1, (h264->encoder.quality - 1), 31);
+						h264->encoder.context->global_quality = FF_QP2LAMBDA * h264->encoder.quality;
+						break;
+					}
+			}
+		}
+	}
+	return 0;
+}
+
 
 static int tdav_codec_h264_open(tmedia_codec_t* self)
 {
@@ -82,17 +150,17 @@ static int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context->width = TMEDIA_CODEC_VIDEO(h264)->out.width;
 	h264->encoder.context->height = TMEDIA_CODEC_VIDEO(h264)->out.height;
 
+	h264->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(h264)->out.width * TMEDIA_CODEC_VIDEO(h264)->out.height * 128 / 320 / 240) * 1000);
 	h264->encoder.context->rc_lookahead = 0;
-
-	//h264->encoder.context->refs = 1;
-    h264->encoder.context->scenechange_threshold = 0;
+	h264->encoder.context->global_quality = FF_QP2LAMBDA * h264->encoder.quality;
+	
+	h264->encoder.context->scenechange_threshold = 0;
     h264->encoder.context->me_subpel_quality = 0;
     h264->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
     h264->encoder.context->me_method = ME_EPZS;
     h264->encoder.context->trellis = 0;
 
 	h264->encoder.context->me_range = 16;
-	h264->encoder.context->max_qdiff = 4;
 	h264->encoder.context->mb_qmin = h264->encoder.context->qmin = 10;
 	h264->encoder.context->mb_qmax = h264->encoder.context->qmax = 51;
 	h264->encoder.context->qcompress = 0.6f;
@@ -109,28 +177,21 @@ static int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context->chromaoffset = 0;
 
 	switch(TDAV_CODEC_H264_COMMON(h264)->profile){
-		case tdav_codec_h264_bp10:
+		case profile_idc_baseline:
 		default:
 			h264->encoder.context->profile = FF_PROFILE_H264_BASELINE;
-			h264->encoder.context->level = 10;
+			h264->encoder.context->level = TDAV_CODEC_H264_COMMON(h264)->level;
 			break;
-		case tdav_codec_h264_bp20:
-			h264->encoder.context->profile = FF_PROFILE_H264_BASELINE;
-			h264->encoder.context->level = 20;
-			break;
-		case tdav_codec_h264_bp30:
-			h264->encoder.context->profile = FF_PROFILE_H264_BASELINE;
-			h264->encoder.context->level = 30;
+		case profile_idc_main:
+			h264->encoder.context->profile = FF_PROFILE_H264_MAIN;
+			h264->encoder.context->level = TDAV_CODEC_H264_COMMON(h264)->level;
 			break;
 	}
-
-	h264->encoder.context->crf = 22;
-	//h264->encoder.context->cqp = 22;
-	h264->encoder.context->thread_count = 0;
+	
 	h264->encoder.context->rtp_payload_size = H264_RTP_PAYLOAD_SIZE;
 	h264->encoder.context->opaque = tsk_null;
-	h264->encoder.context->gop_size = TMEDIA_CODEC_VIDEO(h264)->out.fps * 2; // Each 2 second(s)
-		
+	h264->encoder.context->gop_size = (TMEDIA_CODEC_VIDEO(h264)->out.fps * TDAV_H264_GOP_SIZE_IN_SECONDS);
+	
 
 	// Picture (YUV 420)
 	if(!(h264->encoder.picture = avcodec_alloc_frame())){
@@ -255,24 +316,26 @@ static tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_da
 
 	// send keyframe for:
 	//	- the first frame
+	//  - remote peer requested an IDR
 	//	- every second within the first 4seconds
 	//  - every 5 seconds after the first 4seconds
-	if(h264->encoder.frame_count++ == 0 
-	   ||
-	   ( (h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->out.fps * 4) && ((h264->encoder.frame_count % TMEDIA_CODEC_VIDEO(h264)->out.fps)==0) )
-	   ||
-	   ( (h264->encoder.frame_count % (TMEDIA_CODEC_VIDEO(h264)->out.fps * 5))==0 )
+	if(h264->encoder.frame_count++ == 0
+	   || h264 ->encoder.force_idr
+	   || ( (h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->out.fps * 4) && ((h264->encoder.frame_count % TMEDIA_CODEC_VIDEO(h264)->out.fps)==0) )
+	   || ( (h264->encoder.frame_count % (TMEDIA_CODEC_VIDEO(h264)->out.fps * 5))==0 )
 	   )
 	{
 		
 		// You must patch FFmpeg to switch from X264_TYPE_AUTO to X264_TYPE_IDR or use r26402+
 		h264->encoder.picture->pict_type = FF_I_TYPE;
 		tdav_codec_h264_encap(h264, h264->encoder.context->extradata, (tsk_size_t)h264->encoder.context->extradata_size);
+		h264 ->encoder.force_idr = tsk_false;
 	}
 	else{
 		// Encode data
-		//h264->encoder.picture->pts = AV_NOPTS_VALUE;
-		h264->encoder.picture->pts = h264->encoder.frame_count;
+		h264->encoder.picture->pts = AV_NOPTS_VALUE;
+		h264->encoder.picture->quality = h264->encoder.context->global_quality;
+		// h264->encoder.picture->pts = h264->encoder.frame_count; MUST NOT
 		ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);	
 		if(ret >0){
 			tdav_codec_h264_encap(h264, h264->encoder.buffer, (tsk_size_t)ret);
@@ -305,13 +368,8 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 	//TSK_DEBUG_INFO("SeqNo=%hu", rtp_hdr->seq_num);
 
 	/* Packet lost? */
-	if(h264->decoder.last_seq != (rtp_hdr->seq_num - 1) && h264->decoder.last_seq){
-		if(h264->decoder.last_seq == rtp_hdr->seq_num){
-			// Could happen on some stupid emulators
-			TSK_DEBUG_INFO("Packet duplicated, seq_num=%d", rtp_hdr->seq_num);
-			return 0;
-		}
-		TSK_DEBUG_INFO("Packet lost, seq_num=%d", rtp_hdr->seq_num);
+	if((h264->decoder.last_seq + 1) != rtp_hdr->seq_num && h264->decoder.last_seq){
+		TSK_DEBUG_INFO("Packet lost, seq_num=%d", (h264->decoder.last_seq + 1));
 	}
 	h264->decoder.last_seq = rtp_hdr->seq_num;
 
@@ -384,7 +442,12 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 		ret = avcodec_decode_video2(h264->decoder.context, h264->decoder.picture, &got_picture_ptr, &packet);	
 
 		if(ret <0){
-			TSK_DEBUG_ERROR("=============Failed to decode the buffer");
+			TSK_DEBUG_ERROR("Failed to decode the buffer with error code =%d", ret);
+			if(TMEDIA_CODEC_VIDEO(self)->in.callback){
+				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
+				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
+				TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
+			}
 		}
 		else if(got_picture_ptr){
 			tsk_size_t xsize;
@@ -412,145 +475,144 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 	return retsize;
 }
 
-static tsk_bool_t tdav_codec_h264_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+static tsk_bool_t tdav_codec_h264_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {
 	tdav_codec_h264_t* h264 = (tdav_codec_h264_t*)codec;
-	tsk_params_L_t* params = tsk_null;
-	int val_int, sx = -1, sy = -1;
-	const char* val_str;
 	tsk_bool_t ret = tsk_true;
-	tdav_codec_h264_profile_t profile;
 
 	if(!h264){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_false;
 	}
 
-	TSK_DEBUG_INFO("Trying to match [%s]", fmtp);
+	TSK_DEBUG_INFO("Trying to match [%s:%s]", att_name, att_value);
 
-	/* Check whether the profile match (If the profile is missing, then we consider that it's ok) */
-	if(((profile = tdav_codec_h264_common_get_profile(fmtp)) != tdav_codec_h264_bp99) && (profile != TDAV_CODEC_H264_COMMON(h264)->profile)){
-		TSK_DEBUG_INFO("Profile not matching");
-		return tsk_false;
-	}
+	if(tsk_striequals(att_name, "fmtp")){
+		int val_int;
+		profile_idc_t profile;
+		level_idc_t level;
+		tsk_params_L_t* params;
 
-	/* e.g. profile-level-id=42e00a; packetization-mode=1; max-br=452; max-mbps=11880 */
-	if((params = tsk_params_fromstring(fmtp, ";", tsk_true))){
-		
-		/* === max-br ===*/
-		if((val_int = tsk_params_get_param_value_as_int(params, "max-br")) != -1){
-			// should compare "max-br"?
-			TMEDIA_CODEC_VIDEO(h264)->out.max_br = val_int*1000;
+		/* Check whether the profile match (If the profile is missing, then we consider that it's ok) */
+		if(tdav_codec_h264_get_profile_and_level(att_value, &profile, &level) != 0){
+			TSK_DEBUG_ERROR("Not valid profile-level: %s", att_value);
+			return tsk_false;
 		}
-
-		/* === max-mbps ===*/
-		if((val_int = tsk_params_get_param_value_as_int(params, "max-mbps")) != -1){
-			// should compare "max-mbps"?
-			TMEDIA_CODEC_VIDEO(h264)->out.max_mbps = val_int*1000;
+		if(TDAV_CODEC_H264_COMMON(codec)->profile != profile){
+			return tsk_false;
 		}
-
-		/* === packetization-mode ===*/
-		if((val_int = tsk_params_get_param_value_as_int(params, "packetization-mode")) != -1){
-			if((packetization_mode_t)val_int == Single_NAL_Unit_Mode || (packetization_mode_t)val_int == Non_Interleaved_Mode){
-				TDAV_CODEC_H264_COMMON(h264)->pack_mode = (packetization_mode_t)val_int;
-			}
-			else{
-				TSK_DEBUG_INFO("packetization-mode not matching");
-				ret = tsk_false;
-				goto bail;
+		else{
+			if(TDAV_CODEC_H264_COMMON(codec)->level != level){
+				unsigned width, height;
+				TDAV_CODEC_H264_COMMON(codec)->level = TSK_MIN(TDAV_CODEC_H264_COMMON(codec)->level, level);
+				if(tdav_codec_h264_common_size_from_level(TDAV_CODEC_H264_COMMON(codec)->level, &width, &height) != 0){
+					return tsk_false;
+				}
+				TMEDIA_CODEC_VIDEO(codec)->in.width = TMEDIA_CODEC_VIDEO(codec)->out.width = width;
+				TMEDIA_CODEC_VIDEO(codec)->in.height = TMEDIA_CODEC_VIDEO(codec)->out.height = height;
 			}
 		}
 
-		/* === sx and sy used by doubango clients ===*/
-		sx = tsk_params_get_param_value_as_int(params, "sx");
-		sy = tsk_params_get_param_value_as_int(params, "sy");
-
-		/* === profile-level-id ===*/
-		if((val_str = tsk_params_get_param_value(params, "profile-level-id"))){
-			level_idc_t l_idc;
-			int std_w, std_h;
-			/* profile-idc and level-idc already tested by tdav_codec_h264_get_profile() */
-			tdav_codec_h264_parse_profile(val_str, tsk_null, tsk_null, &l_idc);
-			switch(l_idc){
-				case level_idc_1_0:
-				case level_idc_1_b:
-				case level_idc_1_1:
-					std_w = 176, std_h = 144;
-					break;
-				default:
-					std_w = 352, std_h = 288;
-					break;
-			}
+		/* e.g. profile-level-id=42e00a; packetization-mode=1; max-br=452; max-mbps=11880 */
+		if((params = tsk_params_fromstring(att_value, ";", tsk_true))){
 			
-			//set it high to avoid overflow on the accumulator (codec::open)
-			// will be update with codec::context after first successful decode
-			TMEDIA_CODEC_VIDEO(h264)->in.width = std_w, TMEDIA_CODEC_VIDEO(h264)->in.height = std_h;
-			if(sx > 0 && sy > 0){
-				//while((sx > std_w && sy > std_h) || (sx > std_h && sy > std_w)){
-				//	sx >>= 1;
-				//	sy >>= 1;
-				//}
-				TMEDIA_CODEC_VIDEO(h264)->out.width = sx&(~1), TMEDIA_CODEC_VIDEO(h264)->out.height = sy&(~1);
+			/* === max-br ===*/
+			if((val_int = tsk_params_get_param_value_as_int(params, "max-br")) != -1){
+				// should compare "max-br"?
+				TMEDIA_CODEC_VIDEO(h264)->out.max_br = val_int*1000;
 			}
-			else{
-				TMEDIA_CODEC_VIDEO(h264)->out.width = std_w, TMEDIA_CODEC_VIDEO(h264)->out.height = std_h;
+
+			/* === max-mbps ===*/
+			if((val_int = tsk_params_get_param_value_as_int(params, "max-mbps")) != -1){
+				// should compare "max-mbps"?
+				TMEDIA_CODEC_VIDEO(h264)->out.max_mbps = val_int*1000;
+			}
+
+			/* === packetization-mode ===*/
+			if((val_int = tsk_params_get_param_value_as_int(params, "packetization-mode")) != -1){
+				if((packetization_mode_t)val_int == Single_NAL_Unit_Mode || (packetization_mode_t)val_int == Non_Interleaved_Mode){
+					TDAV_CODEC_H264_COMMON(h264)->pack_mode = (packetization_mode_t)val_int;
+				}
+				else{
+					TSK_DEBUG_INFO("packetization-mode not matching");
+					ret = tsk_false;
+					goto bail;
+				}
 			}
 		}
+bail:
+		TSK_OBJECT_SAFE_FREE(params);
+	}
+	else if(tsk_striequals(att_name, "imageattr")){
+		unsigned in_width, in_height, out_width, out_height;
+		unsigned width, height;
+		tsk_size_t s;
+		if(tmedia_parse_video_imageattr(att_value, TMEDIA_CODEC_VIDEO(codec)->pref_size, &in_width, &in_height, &out_width, &out_height) != 0){
+			return tsk_false;
+		}
+		// check that 'imageattr' is comform to H.264 'profile-level'
+		if(tdav_codec_h264_common_size_from_level(TDAV_CODEC_H264_COMMON(codec)->level, &width, &height) != 0){
+			return tsk_false;
+		}
+		if((s = ((width * height * 3) >> 1)) < ((in_width * in_height * 3) >> 1) || s < ((out_width * out_height * 3) >> 1)){
+			return tsk_false;
+		}
+
+		TMEDIA_CODEC_VIDEO(codec)->in.width = in_width;
+		TMEDIA_CODEC_VIDEO(codec)->in.height = in_height;
+		TMEDIA_CODEC_VIDEO(codec)->out.width = out_width;
+		TMEDIA_CODEC_VIDEO(codec)->out.height = out_height;
 	}
 
-bail:
-	TSK_OBJECT_SAFE_FREE(params);
 	return ret;
 }
 
-static char* tdav_codec_h264_fmtp_get(const tmedia_codec_t* self)
+static char* tdav_codec_h264_sdp_att_get(const tmedia_codec_t* self, const char* att_name)
 {
 	tdav_codec_h264_t* h264 = (tdav_codec_h264_t*)self;
-	char* fmtp = tsk_null;
-
-	if(!h264){
+	
+	if(!h264 || !att_name){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
 
-	switch(TDAV_CODEC_H264_COMMON(h264)->profile){
-		case tdav_codec_h264_bp10:
-			fmtp = tsk_strdup("profile-level-id=42e00a");
-			break;
-		case tdav_codec_h264_bp20:
-			fmtp = tsk_strdup("profile-level-id=42e014");
-			break;
-		case tdav_codec_h264_bp30:
-			fmtp = tsk_strdup("profile-level-id=42e01e");
-			break;
+	if(tsk_striequals(att_name, "fmtp")){
+		char* fmtp = tsk_null;
+#if 1
+		tsk_sprintf(&fmtp, "profile-level-id=%x; packetization-mode=%d", ((TDAV_CODEC_H264_COMMON(h264)->profile << 16) | TDAV_CODEC_H264_COMMON(h264)->level), TDAV_CODEC_H264_COMMON(h264)->pack_mode);
+#else
+		tsk_strcat_2(&fmtp, "profile-level-id=%s; packetization-mode=%d; max-br=%d; max-mbps=%d",
+			profile_level, TDAV_CODEC_H264_COMMON(h264)->pack_mode, TMEDIA_CODEC_VIDEO(h264)->in.max_br/1000, TMEDIA_CODEC_VIDEO(h264)->in.max_mbps/1000);
+#endif
+		return fmtp;
 	}
-
-	if(fmtp){
-		tsk_strcat_2(&fmtp, "; packetization-mode=%d; max-br=%d; max-mbps=%d",
-			TDAV_CODEC_H264_COMMON(h264)->pack_mode, TMEDIA_CODEC_VIDEO(h264)->in.max_br/1000, TMEDIA_CODEC_VIDEO(h264)->in.max_mbps/1000);
+	else if(tsk_striequals(att_name, "imageattr")){
+		return tmedia_get_video_imageattr(TMEDIA_CODEC_VIDEO(self)->pref_size, 
+			TMEDIA_CODEC_VIDEO(self)->in.width, TMEDIA_CODEC_VIDEO(self)->in.height, TMEDIA_CODEC_VIDEO(self)->out.width, TMEDIA_CODEC_VIDEO(self)->out.height);
 	}
-
-	return fmtp;
+	return tsk_null;
 }
 
 
 
 
-/* ============ H.264 Base Profile 1.0 Plugin interface ================= */
+/* ============ H.264 Base Profile Plugin interface ================= */
 
 /* constructor */
-static tsk_object_t* tdav_codec_h264_bp10_ctor(tsk_object_t * self, va_list * app)
+static tsk_object_t* tdav_codec_h264_base_ctor(tsk_object_t * self, va_list * app)
 {
 	tdav_codec_h264_t *h264 = self;
 	if(h264){
 		/* init base: called by tmedia_codec_create() */
 		/* init self */
-		tdav_codec_h264_init(h264, tdav_codec_h264_bp10);
+		if(tdav_codec_h264_init(h264, profile_idc_baseline) != 0){
+			return tsk_null;
+		}
 	}
 	return self;
 }
 /* destructor */
-static tsk_object_t* tdav_codec_h264_bp10_dtor(tsk_object_t * self)
+static tsk_object_t* tdav_codec_h264_base_dtor(tsk_object_t * self)
 { 
 	tdav_codec_h264_t *h264 = self;
 	if(h264){
@@ -564,22 +626,22 @@ static tsk_object_t* tdav_codec_h264_bp10_dtor(tsk_object_t * self)
 	return self;
 }
 /* object definition */
-static const tsk_object_def_t tdav_codec_h264_bp10_def_s = 
+static const tsk_object_def_t tdav_codec_h264_base_def_s = 
 {
 	sizeof(tdav_codec_h264_t),
-	tdav_codec_h264_bp10_ctor, 
-	tdav_codec_h264_bp10_dtor,
+	tdav_codec_h264_base_ctor, 
+	tdav_codec_h264_base_dtor,
 	tmedia_codec_cmp, 
 };
 /* plugin definition*/
-static const tmedia_codec_plugin_def_t tdav_codec_h264_bp10_plugin_def_s = 
+static const tmedia_codec_plugin_def_t tdav_codec_h264_base_plugin_def_s = 
 {
-	&tdav_codec_h264_bp10_def_s,
+	&tdav_codec_h264_base_def_s,
 
 	tmedia_video,
 	"H264",
-	"H264 Base Profile 1.0",
-	TMEDIA_CODEC_FORMAT_H264_BP10,
+	"H264 Base Profile",
+	TMEDIA_CODEC_FORMAT_H264_BP,
 	tsk_true,
 	90000, // rate
 	
@@ -589,32 +651,33 @@ static const tmedia_codec_plugin_def_t tdav_codec_h264_bp10_plugin_def_s =
 	/* video */
 	{176, 144, 15},
 
+	tdav_codec_h264_set,
 	tdav_codec_h264_open,
 	tdav_codec_h264_close,
 	tdav_codec_h264_encode,
 	tdav_codec_h264_decode,
-	tdav_codec_h264_fmtp_match,
-	tdav_codec_h264_fmtp_get,
-	tdav_codec_h264_fmtp_set
+	tdav_codec_h264_sdp_att_match,
+	tdav_codec_h264_sdp_att_get
 };
-const tmedia_codec_plugin_def_t *tdav_codec_h264_bp10_plugin_def_t = &tdav_codec_h264_bp10_plugin_def_s;
+const tmedia_codec_plugin_def_t *tdav_codec_h264_base_plugin_def_t = &tdav_codec_h264_base_plugin_def_s;
 
-
-/* ============ H.264 Base Profile 2.0 Plugin interface ================= */
+/* ============ H.264 Main Profile Plugin interface ================= */
 
 /* constructor */
-static tsk_object_t* tdav_codec_h264_bp20_ctor(tsk_object_t * self, va_list * app)
+static tsk_object_t* tdav_codec_h264_main_ctor(tsk_object_t * self, va_list * app)
 {
 	tdav_codec_h264_t *h264 = self;
 	if(h264){
 		/* init base: called by tmedia_codec_create() */
 		/* init self */
-		tdav_codec_h264_init(h264, tdav_codec_h264_bp20);
+		if(tdav_codec_h264_init(h264, profile_idc_main) != 0){
+			return tsk_null;
+		}
 	}
 	return self;
 }
 /* destructor */
-static tsk_object_t* tdav_codec_h264_bp20_dtor(tsk_object_t * self)
+static tsk_object_t* tdav_codec_h264_main_dtor(tsk_object_t * self)
 { 
 	tdav_codec_h264_t *h264 = self;
 	if(h264){
@@ -628,22 +691,22 @@ static tsk_object_t* tdav_codec_h264_bp20_dtor(tsk_object_t * self)
 	return self;
 }
 /* object definition */
-static const tsk_object_def_t tdav_codec_h264_bp20_def_s = 
+static const tsk_object_def_t tdav_codec_h264_main_def_s = 
 {
 	sizeof(tdav_codec_h264_t),
-	tdav_codec_h264_bp20_ctor, 
-	tdav_codec_h264_bp20_dtor,
+	tdav_codec_h264_main_ctor, 
+	tdav_codec_h264_main_dtor,
 	tmedia_codec_cmp, 
 };
 /* plugin definition*/
-static const tmedia_codec_plugin_def_t tdav_codec_h264_bp20_plugin_def_s = 
+static const tmedia_codec_plugin_def_t tdav_codec_h264_main_plugin_def_s = 
 {
-	&tdav_codec_h264_bp20_def_s,
+	&tdav_codec_h264_main_def_s,
 
 	tmedia_video,
 	"H264",
-	"H264 Base Profile 2.0",
-	TMEDIA_CODEC_FORMAT_H264_BP20,
+	"H264 Main Profile",
+	TMEDIA_CODEC_FORMAT_H264_MP,
 	tsk_true,
 	90000, // rate
 	
@@ -651,81 +714,18 @@ static const tmedia_codec_plugin_def_t tdav_codec_h264_bp20_plugin_def_s =
 	{ 0 },
 
 	/* video */
-	{352, 288, 15},
+	{176, 144, 15},
 
+	tdav_codec_h264_set,
 	tdav_codec_h264_open,
 	tdav_codec_h264_close,
 	tdav_codec_h264_encode,
 	tdav_codec_h264_decode,
-	tdav_codec_h264_fmtp_match,
-	tdav_codec_h264_fmtp_get,
-	tdav_codec_h264_fmtp_set
+	tdav_codec_h264_sdp_att_match,
+	tdav_codec_h264_sdp_att_get
 };
-const tmedia_codec_plugin_def_t *tdav_codec_h264_bp20_plugin_def_t = &tdav_codec_h264_bp20_plugin_def_s;
+const tmedia_codec_plugin_def_t *tdav_codec_h264_main_plugin_def_t = &tdav_codec_h264_main_plugin_def_s;
 
-
-/* ============ H.264 Base Profile 3.0 Plugin interface ================= */
-
-/* constructor */
-static tsk_object_t* tdav_codec_h264_bp30_ctor(tsk_object_t * self, va_list * app)
-{
-	tdav_codec_h264_t *h264 = self;
-	if(h264){
-		/* init base: called by tmedia_codec_create() */
-		/* init self */
-		tdav_codec_h264_init(h264, tdav_codec_h264_bp30);
-	}
-	return self;
-}
-/* destructor */
-static tsk_object_t* tdav_codec_h264_bp30_dtor(tsk_object_t * self)
-{ 
-	tdav_codec_h264_t *h264 = self;
-	if(h264){
-		/* deinit base */
-		tdav_codec_h264_common_deinit(self);
-		/* deinit self */
-		tdav_codec_h264_deinit(h264);
-		
-	}
-
-	return self;
-}
-/* object definition */
-static const tsk_object_def_t tdav_codec_h264_bp30_def_s = 
-{
-	sizeof(tdav_codec_h264_t),
-	tdav_codec_h264_bp30_ctor, 
-	tdav_codec_h264_bp30_dtor,
-	tmedia_codec_cmp, 
-};
-/* plugin definition*/
-static const tmedia_codec_plugin_def_t tdav_codec_h264_bp30_plugin_def_s = 
-{
-	&tdav_codec_h264_bp30_def_s,
-
-	tmedia_video,
-	"H264",
-	"H264 Base Profile 3.0",
-	TMEDIA_CODEC_FORMAT_H264_BP30,
-	tsk_true,
-	90000, // rate
-	
-	/* audio */
-	{ 0 },
-
-	/* video */
-	{352, 288, 15},
-
-	tdav_codec_h264_open,
-	tdav_codec_h264_close,
-	tdav_codec_h264_encode,
-	tdav_codec_h264_decode,
-	tdav_codec_h264_fmtp_match,
-	tdav_codec_h264_fmtp_get,
-	tdav_codec_h264_fmtp_set
-};
-const tmedia_codec_plugin_def_t *tdav_codec_h264_bp30_plugin_def_t = &tdav_codec_h264_bp30_plugin_def_s;
 
 
 
@@ -764,9 +764,10 @@ const tmedia_codec_plugin_def_t *tdav_codec_h264_bp30_plugin_def_t = &tdav_codec
 
 /* ============ Common To all H264 codecs ================= */
 
-int tdav_codec_h264_init(tdav_codec_h264_t* self, tdav_codec_h264_profile_t profile)
+int tdav_codec_h264_init(tdav_codec_h264_t* self, profile_idc_t profile)
 {
 	int ret = 0;
+	level_idc_t level;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -777,16 +778,17 @@ int tdav_codec_h264_init(tdav_codec_h264_t* self, tdav_codec_h264_profile_t prof
 		TSK_DEBUG_ERROR("tdav_codec_h264_common_init() faile with error code=%d", ret);
 		return ret;
 	}
+
+	if((ret = tdav_codec_h264_common_level_from_size(TMEDIA_CODEC_VIDEO(self)->out.width, TMEDIA_CODEC_VIDEO(self)->out.height, &level))){
+		TSK_DEBUG_ERROR("Failed to find level for size=[%u, %u]", TMEDIA_CODEC_VIDEO(self)->out.width, TMEDIA_CODEC_VIDEO(self)->out.height);
+		return ret;
+	}
 	
 	TDAV_CODEC_H264_COMMON(self)->pack_mode = H264_PACKETIZATION_MODE;
 	TDAV_CODEC_H264_COMMON(self)->profile = profile;
+	TDAV_CODEC_H264_COMMON(self)->level = level;
 	TMEDIA_CODEC_VIDEO(self)->in.max_mbps = TMEDIA_CODEC_VIDEO(self)->out.max_mbps = H264_MAX_MBPS*1000;
 	TMEDIA_CODEC_VIDEO(self)->in.max_br = TMEDIA_CODEC_VIDEO(self)->out.max_br = H264_MAX_BR*1000;
-
-	// At this time self->plugin is Null
-	TMEDIA_CODEC_VIDEO(self)->in.width = TMEDIA_CODEC_VIDEO(self)->out.width = 176;
-	TMEDIA_CODEC_VIDEO(self)->in.height = TMEDIA_CODEC_VIDEO(self)->out.height = 144;
-	TMEDIA_CODEC_VIDEO(self)->in.fps = TMEDIA_CODEC_VIDEO(self)->out.fps = 15;
 
 	if(!(self->encoder.codec = avcodec_find_encoder(CODEC_ID_H264))){
 		TSK_DEBUG_ERROR("Failed to find H.264 encoder");
@@ -797,6 +799,8 @@ int tdav_codec_h264_init(tdav_codec_h264_t* self, tdav_codec_h264_profile_t prof
 		TSK_DEBUG_ERROR("Failed to find H.264 decoder");
 		ret = -3;
 	}
+
+	self->encoder.quality = 1;
 
 	/* allocations MUST be done by open() */
 	return ret;

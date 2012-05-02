@@ -67,11 +67,9 @@ static int tdshow_producer_set(tmedia_producer_t *self, const tmedia_param_t* pa
 
 	if(param->value_type == tmedia_pvt_int64){
 		if(tsk_striequals(param->key, "local-hwnd")){
+			DSPRODUCER(producer)->previewHwnd = (INT64)*((int64_t*)param->value);
 			if(DSPRODUCER(producer)->grabber && DSPRODUCER(self)->grabber->preview){
-				DSPRODUCER(producer)->grabber->preview->attach((INT64)*((int64_t*)param->value));
-			}
-			else{
-				DSPRODUCER(producer)->previewHwnd = (INT64)*((int64_t*)param->value);
+				DSPRODUCER(producer)->grabber->preview->attach(DSPRODUCER(producer)->previewHwnd);
 			}
 		}
 	}
@@ -111,7 +109,6 @@ static int tdshow_producer_prepare(tmedia_producer_t* self, const tmedia_codec_t
 static int tdshow_producer_start(tmedia_producer_t* self)
 {
 	tdshow_producer_t* producer = (tdshow_producer_t*)self;
-	HRESULT hr;
 		
 	if(!producer){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -119,18 +116,14 @@ static int tdshow_producer_start(tmedia_producer_t* self)
 	}
 
 	if(producer->started){
-		TSK_DEBUG_WARN("Producer already started");
 		return 0;
 	}
 
-	if(!producer->grabber){ /* Last chance to greate the graber */
-		if(!IsMainThread()){
-			TSK_DEBUG_WARN("Creating DirectShow objects outside the MainThread");
-		}
-		producer->grabber = new DSGrabber(&hr);
-		if(FAILED(hr)){
-			TSK_DEBUG_ERROR("Failed to created DirectShow Grabber");
-			SAFE_DELETE_PTR(producer->grabber);
+	// create grabber on UI thread
+	if(!producer->grabber){
+		createOnUIThead(reinterpret_cast<HWND>((void*)DSPRODUCER(producer)->previewHwnd), (void**)&producer->grabber, false);
+		if(!producer->grabber){
+			TSK_DEBUG_ERROR("Failed to create grabber");
 			return -2;
 		}
 	}
@@ -153,12 +146,10 @@ static int tdshow_producer_start(tmedia_producer_t* self)
 	}
 	
 	// start grabber
-	TSK_DEBUG_INFO("Before starting DirectShow producer");
 	if(!producer->mute){
 		producer->grabber->start();
 	}
 	producer->started = tsk_true;
-	TSK_DEBUG_INFO("After starting DirectShow producer");
 
 	return 0;
 }
@@ -192,7 +183,6 @@ static int tdshow_producer_stop(tmedia_producer_t* self)
 	}
 
 	if(!producer->started){
-		TSK_DEBUG_WARN("Producer not started");
 		return 0;
 	}
 
@@ -218,8 +208,6 @@ static tsk_object_t* tdshow_producer_ctor(tsk_object_t * self, va_list * app)
 
 	tdshow_producer_t *producer = (tdshow_producer_t *)self;
 	if(producer){
-		HRESULT hr;
-
 		/* init base */
 		tmedia_producer_init(TMEDIA_PRODUCER(producer));
 		TMEDIA_PRODUCER(producer)->video.chroma = tmedia_chroma_bgr24; // RGB24 on x86 (little endians) stored as BGR24
@@ -227,14 +215,6 @@ static tsk_object_t* tdshow_producer_ctor(tsk_object_t * self, va_list * app)
 		TMEDIA_PRODUCER(producer)->video.fps = 15;
 		TMEDIA_PRODUCER(producer)->video.width = 352;
 		TMEDIA_PRODUCER(producer)->video.height = 288;
-
-		if(IsMainThread()){
-			producer->grabber = new DSGrabber(&hr);
-			if(FAILED(hr)){
-				TSK_DEBUG_ERROR("Failed to created DirectShow Grabber");
-				SAFE_DELETE_PTR(producer->grabber);
-			}
-		}
 	}
 	return self;
 }
@@ -243,7 +223,6 @@ static tsk_object_t* tdshow_producer_dtor(tsk_object_t * self)
 { 
 	tdshow_producer_t *producer = (tdshow_producer_t *)self;
 	if(producer){
-
 		/* stop */
 		if(producer->started){
 			tdshow_producer_stop((tmedia_producer_t*)self);
@@ -258,7 +237,6 @@ static tsk_object_t* tdshow_producer_dtor(tsk_object_t * self)
 		tmedia_producer_deinit(TMEDIA_PRODUCER(producer));
 		/* deinit self */
 		SAFE_DELETE_PTR(producer->grabber);
-		
 	}
 
 	return self;

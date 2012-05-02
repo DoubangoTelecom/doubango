@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -75,7 +75,7 @@
 /**@file tsip_transac_ist.c
  * @brief SIP INVITE Server Transaction as per RFC 3261 subclause 17.2.1.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -98,23 +98,23 @@ int tsip_transac_ist_init(tsip_transac_ist_t *self);
 int tsip_transac_ist_OnTerminated(tsip_transac_ist_t *self);
 
 /* ======================== transitions ======================== */
-int tsip_transac_ist_Started_2_Proceeding_X_INVITE(va_list *app);
-int tsip_transac_ist_Proceeding_2_Proceeding_X_INVITE(va_list *app);
-int tsip_transac_ist_Proceeding_2_Proceeding_X_1xx(va_list *app);
-int tsip_transac_ist_Proceeding_2_Completed_X_300_to_699(va_list *app);
-int tsip_transac_ist_Proceeding_2_Accepted_X_2xx(va_list *app);
-int tsip_transac_ist_Completed_2_Completed_INVITE(va_list *app);
-int tsip_transac_ist_Completed_2_Completed_timerG(va_list *app);
-int tsip_transac_ist_Completed_2_Terminated_timerH(va_list *app);
-int tsip_transac_ist_Completed_2_Confirmed_ACK(va_list *app);
-int tsip_transac_ist_Accepted_2_Accepted_INVITE(va_list *app);
-int tsip_transac_ist_Accepted_2_Accepted_2xx(va_list *app);
-int tsip_transac_ist_Accepted_2_Accepted_iACK(va_list *app);  /* doubango-specific */
-int tsip_transac_ist_Accepted_2_Terminated_timerL(va_list *app);
-int tsip_transac_ist_Confirmed_2_Terminated_timerI(va_list *app);
-int tsip_transac_ist_Any_2_Terminated_X_transportError(va_list *app);
-int tsip_transac_ist_Any_2_Terminated_X_Error(va_list *app);
-int tsip_transac_ist_Any_2_Terminated_X_cancel(va_list *app); /* doubango-specific */
+static int tsip_transac_ist_Started_2_Proceeding_X_INVITE(va_list *app);
+static int tsip_transac_ist_Proceeding_2_Proceeding_X_INVITE(va_list *app);
+static int tsip_transac_ist_Proceeding_2_Proceeding_X_1xx(va_list *app);
+static int tsip_transac_ist_Proceeding_2_Completed_X_300_to_699(va_list *app);
+static int tsip_transac_ist_Proceeding_2_Accepted_X_2xx(va_list *app);
+static int tsip_transac_ist_Completed_2_Completed_INVITE(va_list *app);
+static int tsip_transac_ist_Completed_2_Completed_timerG(va_list *app);
+static int tsip_transac_ist_Completed_2_Terminated_timerH(va_list *app);
+static int tsip_transac_ist_Completed_2_Confirmed_ACK(va_list *app);
+static int tsip_transac_ist_Accepted_2_Accepted_INVITE(va_list *app);
+static int tsip_transac_ist_Accepted_2_Accepted_2xx(va_list *app);
+static int tsip_transac_ist_Accepted_2_Accepted_iACK(va_list *app);  /* doubango-specific */
+static int tsip_transac_ist_Accepted_2_Terminated_timerL(va_list *app);
+static int tsip_transac_ist_Confirmed_2_Terminated_timerI(va_list *app);
+static int tsip_transac_ist_Any_2_Terminated_X_transportError(va_list *app);
+static int tsip_transac_ist_Any_2_Terminated_X_Error(va_list *app);
+static int tsip_transac_ist_Any_2_Terminated_X_cancel(va_list *app); /* doubango-specific */
 
 /* ======================== conds ======================== */
 static tsk_bool_t _fsm_cond_is_resp2INVITE(tsip_transac_ist_t* self, tsip_message_t* message)
@@ -665,7 +665,7 @@ int tsip_transac_ist_Any_2_Terminated_X_transportError(va_list *app)
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, tsk_null);
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, tsk_null);
 }
 
 /* Any -> (Error) -> Terminated
@@ -738,8 +738,6 @@ static tsk_object_t* tsip_transac_ist_ctor(tsk_object_t * self, va_list * app)
 
 		/* Initialize ICT object */
 		tsip_transac_ist_init(transac);
-
-		TSK_DEBUG_INFO("*** IST destroyed ***");
 	}
 	return self;
 }

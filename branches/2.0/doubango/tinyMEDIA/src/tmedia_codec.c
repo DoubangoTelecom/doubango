@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tmedia_codec.c
  * @brief Base codec object.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -83,14 +83,43 @@ int tmedia_codec_init(tmedia_codec_t* self, tmedia_type_t type, const char* name
 	// according to the CFLAGS: 'FLIP_ENCODED_PICT' and 'FLIP_DECODED_PICT'. At any time you
 	// can update thse values (e.g. when the device switch from landscape to portrait) using video_session->set();
 	if(type & tmedia_video){
+		tmedia_codec_video_t* video = TMEDIA_CODEC_VIDEO(self);
 #if FLIP_ENCODED_PICT
-		TMEDIA_CODEC_VIDEO(self)->out.flip = tsk_true;
+		video->out.flip = tsk_true;
 #endif
 #if FLIP_DECODED_PICT
-		TMEDIA_CODEC_VIDEO(self)->in.flip = tsk_true;
+		video->in.flip = tsk_true;
 #endif
+		if(!video->in.fps) video->in.fps = video->out.fps = self->plugin->video.fps;
+		if(video->in.chroma == tmedia_chroma_none) video->in.chroma = tmedia_chroma_yuv420p;
+		if(video->out.chroma == tmedia_chroma_none) video->out.chroma = tmedia_chroma_yuv420p;
+
+		if(0){ // @deprecated
+			if(!video->in.width) video->in.width = video->out.width = self->plugin->video.width;
+			if(!video->in.height) video->in.height = video->out.height = self->plugin->video.height;
+		}
+		else{
+			int ret;
+			unsigned width, height;
+			video->pref_size = tmedia_defaults_get_pref_video_size();
+			if((ret = tmedia_video_get_size(video->pref_size, &width, &height)) != 0){
+				width = self->plugin->video.width;
+				height = self->plugin->video.height;
+			}
+			if(!video->in.width) video->in.width = video->out.width = width;
+			if(!video->in.height) video->in.height = video->out.height = height;
+		}
+		
 	}
 
+	return 0;
+}
+
+int tmedia_codec_set(tmedia_codec_t* self, const struct tmedia_param_s* param)
+{
+	if(self && self->plugin && self->plugin->set && param){
+		return self->plugin->set(self, param);
+	}
 	return 0;
 }
 
@@ -141,7 +170,6 @@ int tmedia_codec_close(tmedia_codec_t* self)
 		return -1;
 	}
 	if(!self->opened){
-		TSK_DEBUG_WARN("Codec not opened");
 		return 0;
 	}
 
@@ -335,11 +363,6 @@ tmedia_codec_t* tmedia_codec_create(const char* format)
 						{ /* Video codec */
 							tmedia_codec_video_t* video = TMEDIA_CODEC_VIDEO(codec);
 							tmedia_codec_video_init(TMEDIA_CODEC(video), plugin->name, plugin->desc, plugin->format);
-							if(!video->in.width)video->in.width = video->out.width = plugin->video.width;
-							if(!video->in.height)video->in.height = video->out.height = plugin->video.height;
-							if(!video->in.fps)video->in.fps = video->out.fps = plugin->video.fps;
-							if(video->in.chroma==tmedia_chroma_none)video->in.chroma = tmedia_chroma_yuv420p;
-							if(video->out.chroma==tmedia_chroma_none)video->out.chroma = tmedia_chroma_yuv420p;
 							break;
 						}
 					case tmedia_msrp:
@@ -409,70 +432,47 @@ char* tmedia_codec_get_rtpmap(const tmedia_codec_t* self)
 }
 
 /**@ingroup tmedia_codec_group
-* Gets the codec's fmtp attribute value.
-* @param self the codec for which to get the fmtp attribute. Should be created using @ref tmedia_codec_create().
-* @retval fmtp attribute string (e.g. "mode-set=0,2,5,7; mode-change-period=2; mode-change-neighbor=1"). It's up to the caller to free the
-* returned string.
-*/
-char* tmedia_codec_get_fmtp(const tmedia_codec_t* self)
-{
-	char* fmtp = tsk_null;
-
-	if(!self || !self->plugin){
-		TSK_DEBUG_ERROR("invalid parameter");
-		return tsk_null;
-	}
-
-	if(self->plugin->fmtp_get){ /* some codecs, like G711, won't produce fmtp */
-		fmtp = self->plugin->fmtp_get(self);
-	}
-
-	return fmtp;
-}
-
-/**@ingroup tmedia_codec_group
-* Indicates whether the codec can handle this fmtp.
+* Indicates whether the codec can handle this sdp attribute.
 * @param self the codec to match aginst to.
-* @param fmtp the fmtp to match
+* @param att_name the name of the sdp attribute to match e.g. 'fmtp' or 'imageattr'
 * @retval @a tsk_true if the codec can handle this fmtp and @a tsk_false otherwise
 */
-tsk_bool_t tmedia_codec_match_fmtp(const tmedia_codec_t* self, const char* fmtp)
+tsk_bool_t tmedia_codec_sdp_att_match(const tmedia_codec_t* self, const char* att_name, const char* att_value)
 {
 	/* checks */
-	if(!self || !self->plugin || !self->plugin->fmtp_match){
+	if(!self || !self->plugin || !self->plugin->sdp_att_match || !att_name){
 		TSK_DEBUG_ERROR("invalid parameter");
 		return tsk_false;
 	}
 
-	/* if fmtp is null or empty -> always match */
-	if(tsk_strnullORempty(fmtp)){
+	/* if attribute value is null or empty -> always match */
+	if(tsk_strnullORempty(att_value)){
 		return tsk_true;
 	}
 	else{
-		return self->plugin->fmtp_match(self, fmtp);
+		return self->plugin->sdp_att_match(self, att_name, att_value);
 	}
 }
 
 /**@ingroup tmedia_codec_group
-* Sets remote fmtp.
-* @param self codec for which to set the remote fmtp.
-* @param fmtp fmtp received from remote party (e.g. "mode-set=0,2,5,7; mode-change-period=2; mode-change-neighbor=1").
-* @retval Zero if succeed and non-zero error code otherwise.
+* Gets the codec's sdp attribute value
+* @att_name the name of the attribute to get e.g. 'fmtp' or 'imageattr'
+* @param self the codec for which to get the fmtp attribute. Should be created using @ref tmedia_codec_create().
+* @retval sdp attribute attribute string (e.g. "mode-set=0,2,5,7; mode-change-period=2; mode-change-neighbor=1"). It's up to the caller to free the
+* returned string.
 */
-int tmedia_codec_set_remote_fmtp(tmedia_codec_t* self, const char* fmtp)
+char* tmedia_codec_sdp_att_get(const tmedia_codec_t* self, const char* att_name)
 {
-	if(!self || !self->plugin){
+	if(!self || !self->plugin || !att_name){
 		TSK_DEBUG_ERROR("invalid parameter");
-		return -1;
+		return tsk_null;
 	}
-
-	if(self->plugin->fmtp_set){
-		return self->plugin->fmtp_set(self, fmtp);
+	if(self->plugin->sdp_att_get){ /* some codecs, like G711, won't produce fmtp */
+		return self->plugin->sdp_att_get(self, att_name);
 	}
-	else{ /* some codecs, like G711, could ignore remote fmtp attribute */
-		return 0;
-	}
+	return tsk_null;
 }
+
 
 /**@ingroup tmedia_codec_group
 * Remove all codecs except the specified ones.
@@ -508,7 +508,7 @@ int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 {
 	const tsk_list_item_t* item;
 	const tmedia_codec_t* codec;
-	char *fmtp, *rtpmap;
+	char *fmtp, *rtpmap, *imageattr;
 	int ret;
 
 	if(!m){
@@ -537,8 +537,17 @@ int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 				tsk_null);
 				TSK_FREE(rtpmap);
 			}
+			/* add 'imageattr' attributes */
+			if((imageattr = tmedia_codec_sdp_att_get(codec, "imageattr"))){
+				tsk_sprintf(&temp, "%s %s",  neg_format, imageattr);
+				tsdp_header_M_add_headers(m,
+					TSDP_HEADER_A_VA_ARGS("imageattr", temp),
+				tsk_null);
+				TSK_FREE(temp);
+				TSK_FREE(imageattr);
+			}
 			/* add fmtp attributes */
-			if((fmtp = tmedia_codec_get_fmtp(codec))){
+			if((fmtp = tmedia_codec_sdp_att_get(codec, "fmtp"))){
 				if(is_video && tmedia_defaults_get_screen_x() > 0 && tmedia_defaults_get_screen_y() > 0){
 					tsk_sprintf(&temp, "%s %s;sx=%d;sy=%d",  neg_format, fmtp, tmedia_defaults_get_screen_x(), tmedia_defaults_get_screen_y());//doubango clients
 				}
@@ -672,15 +681,24 @@ int tmedia_codec_deinit(tmedia_codec_t* self)
 	return 0;
 }
 
-int tmedia_codec_video_set_callback(tmedia_codec_video_t *self, tmedia_codec_video_rtpcb_f callback, const void* callback_data)
+int tmedia_codec_video_set_enc_callback(tmedia_codec_video_t *self, tmedia_codec_video_enc_cb_f callback, const void* callback_data)
 {
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+	self->out.callback = callback;
+	self->out.result.usr_data = callback_data;
+	return 0;
+}
 
-	self->callback = callback;
-	self->callback_data = callback_data;
-
+int tmedia_codec_video_set_dec_callback(tmedia_codec_video_t *self, tmedia_codec_video_dec_cb_f callback, const void* callback_data)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->in.callback = callback;
+	self->in.result.usr_data = callback_data;
 	return 0;
 }

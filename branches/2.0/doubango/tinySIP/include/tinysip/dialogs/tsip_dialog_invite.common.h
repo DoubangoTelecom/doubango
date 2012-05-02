@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_dialog_invite.common.h
  * @brief SIP dialog INVITE (common variables).
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -36,6 +36,8 @@
 #define TSIP_DIALOG_INVITE_SIGNAL(self, type, code, phrase, message)	\
 	tsip_invite_event_signal(type, TSIP_DIALOG(self)->ss, code, phrase, message)
 #define TSIP_DIALOG_INVITE_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(invite, TX)
+
+#define TSIP_DIALOG_INVITE_ICE_CONNCHECK_TIMEOUT	6000
 
 /* ======================== actions ======================== */
 typedef enum _fsm_action_e

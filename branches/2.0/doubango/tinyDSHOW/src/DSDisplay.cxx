@@ -61,7 +61,7 @@ static int __pred_find_display_by_hwnd(const tsk_list_item_t *item, const void *
 }
 
 // C Callback that dispatch event to the right display
-LRESULT CALLBACK __directshow__WndProcWindow(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK __directshow__WndProcWindow(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	LRESULT result = FALSE;
 	
@@ -78,7 +78,6 @@ LRESULT CALLBACK __directshow__WndProcWindow(HWND hWnd, UINT uMsg, WPARAM wParam
 
 	return result;
 }
-
 
 
 DSDisplay::DSDisplay(HRESULT *hr)
@@ -434,7 +433,10 @@ void DSDisplay::hook()
 	}
 	this->hooked = TRUE;
 
-	tsk_list_lock(__directshow__Displays);
+	bool lock = (__directshow__Displays != NULL);
+
+	if(lock)
+		tsk_list_lock(__directshow__Displays);
 	{
 		// Gets the parent Window procedure
 #if defined(_WIN32_WCE)
@@ -448,7 +450,8 @@ void DSDisplay::hook()
 		tsk_object_new(tdshow_display_def_t, this->window, this);
 #endif
 	}
-	tsk_list_unlock(__directshow__Displays);
+	if(lock)
+		tsk_list_unlock(__directshow__Displays);
 
 	RECT rect;
 	GetWindowRect(this->window, &rect);
@@ -501,8 +504,9 @@ void DSDisplay::unhook()
 	hr = this->graph->getVideoWindow()->put_AutoShow(OAFALSE);
 #endif
 
-	
-	tsk_list_lock(__directshow__Displays);
+	bool lock = (__directshow__Displays != NULL);
+	if(lock)
+		tsk_list_lock(__directshow__Displays);
 	{
 		// Remove this instance from the callback map
 		tsk_list_remove_item_by_pred(__directshow__Displays, __pred_find_display_by_hwnd, &this->window);
@@ -515,13 +519,11 @@ void DSDisplay::unhook()
 		SetWindowLongPtr(this->window, GWL_WNDPROC, (LONG) this->parentWindowProc);
 #endif
 	}
-	tsk_list_unlock(__directshow__Displays);
+	if(lock)
+		tsk_list_unlock(__directshow__Displays);
 
 	this->hooked = FALSE;
 }
-
-
-
 
 
 
@@ -559,9 +561,9 @@ static tsk_object_t* tdshow_display_dtor(tsk_object_t * self)
 	if(display){
 		if(__directshow__Displays){
 			tsk_list_remove_item_by_data(__directshow__Displays, display);
-			if(TSK_LIST_IS_EMPTY(__directshow__Displays)){
-				TSK_OBJECT_SAFE_FREE(__directshow__Displays);
-			}
+			//if(TSK_LIST_IS_EMPTY(__directshow__Displays)){
+			//	TSK_OBJECT_SAFE_FREE(__directshow__Displays);
+			//}
 		}
 	}
 

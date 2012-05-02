@@ -25,7 +25,6 @@
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
-
  */
 #ifndef TINYDAV_CODEC_G711_H
 #define TINYDAV_CODEC_G711_H

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tmedia_jitterbuffer.h
  * @brief Audio/Video JitterBuffer Plugin
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  */
 #ifndef TINYMEDIA_JITTER_BUFFER_H
 #define TINYMEDIA_JITTER_BUFFER_H

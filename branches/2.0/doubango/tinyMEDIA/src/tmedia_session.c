@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tmedia_session.h
  * @brief Base session object.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -122,6 +122,34 @@ int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type)
 		ret = _tmedia_session_load_codecs(self);
 	}
 
+	return 0;
+}
+
+int tmedia_session_set(tmedia_session_t* self, ...)
+{
+	va_list ap;
+	tmedia_params_L_t* params;
+
+	if(!self || !self->plugin || !self->plugin->set){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	va_start(ap, self);
+	if((params = tmedia_params_create_2(&ap))){
+		const tsk_list_item_t *item;
+		const tmedia_param_t* param;
+		tsk_list_foreach(item, params){
+			if(!(param = item->data)){
+				continue;
+			}
+			if((self->type & param->media_type)){
+				self->plugin->set(self, param);
+			}
+		}
+		TSK_OBJECT_SAFE_FREE(params);
+	}
+	va_end(ap);
 	return 0;
 }
 
@@ -321,7 +349,7 @@ const tsdp_header_M_t* tmedia_session_get_lo(tmedia_session_t* self)
 tmedia_codecs_L_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M)
 {
 	const tmedia_codec_t *codec;
-	char *rtpmap = tsk_null, *fmtp = tsk_null, *name = tsk_null;
+	char *rtpmap = tsk_null, *fmtp = tsk_null, *image_attr = tsk_null, *name = tsk_null;
 	const tsdp_fmt_t* fmt;
 	const tsk_list_item_t *it1, *it2;
 	tsk_bool_t found = tsk_false;
@@ -357,7 +385,7 @@ tmedia_codecs_L_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp
 					goto next;
 				}
 				
-				/* compare name and rate. what about channels? */
+				/* compare name and rate... what about channels? */
 				if(tsk_striequals(name, codec->name) && (!rate || (codec->plugin->rate == rate))){
 					goto compare_fmtp;
 				}
@@ -374,19 +402,33 @@ tmedia_codecs_L_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp
 
 compare_fmtp:
 			if((fmtp = tsdp_header_M_get_fmtp(M, fmt->value))){ /* remote have fmtp? */
-				if(tmedia_codec_match_fmtp(codec, fmtp)){ /* fmtp matches? */
-					tsk_strupdate((char**)&codec->neg_format, fmt->value);
-					found = tsk_true;
+				if(tmedia_codec_sdp_att_match(codec, "fmtp", fmtp)){ /* fmtp matches? */
+					if(codec->type & tmedia_video) goto compare_imageattr;
+					else found = tsk_true;
 				}
+				else goto next;
 			}
 			else{ /* no fmtp -> always match */
-				tsk_strupdate((char**)&codec->neg_format, fmt->value);
-				found = tsk_true;
+				if(codec->type & tmedia_video) goto compare_imageattr;
+				else found = tsk_true;
 			}
+
+compare_imageattr:
+			if(codec->type & tmedia_video){
+				if((image_attr = tsdp_header_M_get_imageattr(M, fmt->value))){
+					if(tmedia_codec_sdp_att_match(codec, "imageattr", image_attr)) found = tsk_true;
+				}
+				else found = tsk_true;
+			}
+
+			// update neg. format
+			if(found) tsk_strupdate((char**)&codec->neg_format, fmt->value);
+			
 next:
 			TSK_FREE(name);
 			TSK_FREE(fmtp);
 			TSK_FREE(rtpmap);
+			TSK_FREE(image_attr);
 			if(found){
 				tmedia_codec_t * copy;
 				if(!matchingCodecs){
@@ -553,6 +595,34 @@ int tmedia_session_mgr_set_natt_ctx(tmedia_session_mgr_t* self, tnet_nat_context
 	return 0;
 }
 
+int tmedia_session_mgr_set_ice_ctx(tmedia_session_mgr_t* self, struct tnet_ice_ctx_s* ctx_audio, struct tnet_ice_ctx_s* ctx_video)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	TSK_OBJECT_SAFE_FREE(self->ice.ctx_audio);
+	TSK_OBJECT_SAFE_FREE(self->ice.ctx_video);
+	
+	self->ice.ctx_audio = tsk_object_ref(ctx_audio);
+	self->ice.ctx_video = tsk_object_ref(ctx_video);
+	
+	if(self->type & tmedia_audio){
+		tmedia_session_mgr_set(self,
+			TMEDIA_SESSION_SET_POBJECT(tmedia_audio, "ice-ctx", self->ice.ctx_audio),
+			TMEDIA_SESSION_SET_NULL());
+	}
+
+	if(self->type & tmedia_video){
+		tmedia_session_mgr_set(self,
+			TMEDIA_SESSION_SET_POBJECT(tmedia_video, "ice-ctx", self->ice.ctx_video),
+			TMEDIA_SESSION_SET_NULL());
+	}
+
+	return 0;
+}
+
 /**@ingroup tmedia_session_group
 * Starts the session manager by starting all underlying sessions.
 * You should set both remote and local offers before calling this function.
@@ -563,7 +633,7 @@ int tmedia_session_mgr_set_natt_ctx(tmedia_session_mgr_t* self, tnet_nat_context
 */
 int tmedia_session_mgr_start(tmedia_session_mgr_t* self)
 {
-	int ret;
+	int ret = 0;
 	tsk_list_item_t* item;
 	tmedia_session_t* session;
 
@@ -571,16 +641,18 @@ int tmedia_session_mgr_start(tmedia_session_mgr_t* self)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+
+	tsk_safeobj_lock(self);
     
 	if(self->started){
-		TSK_DEBUG_WARN("Session manager already started");
-		return 0;
+		goto bail;
 	}
 
 	tsk_list_foreach(item, self->sessions){
 		if(!(session = item->data) || !session->plugin || !session->plugin->start){
 			TSK_DEBUG_ERROR("Invalid session");
-			return -2;
+			ret = -2;
+			goto bail;
 		}
 		if((ret = session->plugin->start(session))){
 			TSK_DEBUG_ERROR("Failed to start %s session", session->plugin->media);
@@ -589,7 +661,10 @@ int tmedia_session_mgr_start(tmedia_session_mgr_t* self)
 	}
 
 	self->started = tsk_true;
-	return 0;
+
+bail:
+	tsk_safeobj_unlock(self);
+	return ret;
 }
 
 /**@ingroup tmedia_session_group
@@ -720,7 +795,7 @@ int tmedia_session_mgr_get(tmedia_session_mgr_t* self, ...)
 */
 int tmedia_session_mgr_stop(tmedia_session_mgr_t* self)
 {
-	int ret;
+	int ret = 0;
 	tsk_list_item_t* item;
 	tmedia_session_t* session;
 
@@ -728,24 +803,28 @@ int tmedia_session_mgr_stop(tmedia_session_mgr_t* self)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+	tsk_safeobj_lock(self);
 
 	if(!self->started){
-		TSK_DEBUG_WARN("Session manager not started");
-		return 0;
+		goto bail;
 	}
 
 	tsk_list_foreach(item, self->sessions){
 		if(!(session = item->data) || !session->plugin || !session->plugin->stop){
 			TSK_DEBUG_ERROR("Invalid session");
-			return -2;
+			ret = -2;
+			goto bail;
 		}
 		if((ret = session->plugin->stop(session))){
 			TSK_DEBUG_ERROR("Failed to stop session");
-			return ret;
+			continue;
 		}
 	}
 	self->started = tsk_false;
-	return 0;
+
+bail:
+	tsk_safeobj_unlock(self);
+	return ret;
 }
 
 /**@ingroup tmedia_session_group
@@ -756,17 +835,20 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 	const tsk_list_item_t* item;
 	const tmedia_session_t* ms;
 	const tsdp_header_M_t* m;
+	const tsdp_message_t* ret = tsk_null;
 	
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
+
+	tsk_safeobj_lock(self);
 	
 	/* prepare the session manager if not already done (create all sessions) */
 	if(TSK_LIST_IS_EMPTY(self->sessions)){
 		if(_tmedia_session_mgr_load_sessions(self)){
 			TSK_DEBUG_ERROR("Failed to prepare the session manager");
-			return tsk_null;
+			goto bail;
 		}
 	}
 	
@@ -783,17 +865,18 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 	}
 
 	if(self->sdp.lo){
-		return self->sdp.lo;
+		ret = self->sdp.lo;
+		goto bail;
 	}
 	else if((self->sdp.lo = tsdp_message_create_empty(self->public_addr ? self->public_addr : self->addr, self->ipv6, self->sdp.lo_ver++))){
 		/* Set connection "c=" */
 		tsdp_message_add_headers(self->sdp.lo,
-			TSDP_HEADER_C_VA_ARGS("IN", self->ipv6 ? "IP6" : "IP4", self->public_addr ? self->public_addr : self->addr),
+			TSDP_HEADER_C_VA_ARGS("IN", self->ipv6 ? "IP6" : "IP4", self->public_addr ? self->public_addr : self->addr),//FIXME
 			tsk_null);
 	}else{
 		self->sdp.lo_ver--;
 		TSK_DEBUG_ERROR("Failed to create empty SDP message");
-		return tsk_null;
+		goto bail;
 	}
 
 	/* gets each "m=" line from the sessions and add them to the local sdp */
@@ -822,7 +905,11 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 		}
 	}
 	
-	return self->sdp.lo;
+	ret = self->sdp.lo;
+
+bail:
+	tsk_safeobj_unlock(self);
+	return ret;
 }
 
 
@@ -836,6 +923,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	const tsdp_header_C_t* C; /* global "c=" line */
 	const tsdp_header_O_t* O;
 	tsk_size_t index = 0;
+	tsk_size_t active_sessions_count = 0;
 	int ret = 0;
 	tsk_bool_t found;
 	tsk_bool_t stopped_to_reconf = tsk_false;
@@ -851,6 +939,8 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		return -1;
 	}
 
+	tsk_safeobj_lock(self);
+
 	had_ro_sdp = (self->sdp.ro != tsk_null);
 
 	/*	RFC 3264 subcaluse 8
@@ -862,13 +952,15 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	if((O = (const tsdp_header_O_t*)tsdp_message_get_header(sdp, tsdp_htype_O))){
 		if(self->sdp.ro_ver == (int32_t)O->sess_version){
 			TSK_DEBUG_INFO("Remote offer has not changed");
-			return 0;
+			ret = 0;
+			goto bail;
 		}
 		self->sdp.ro_ver = (int32_t)O->sess_version;
 	}
 	else{
 		TSK_DEBUG_ERROR("o= line is missing");
-		return -2;
+		ret = -2;
+		goto bail;
 	}
 	
 	/* This is to hack fake forking from ZTE => ignore SDP with loopback address in order to not start/stop the camera several
@@ -903,7 +995,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	if(self->started && ((!is_hold_resume && !is_loopback_address) || is_mediatype_changed)){
 		if((ret = tmedia_session_mgr_stop(self))){
 			TSK_DEBUG_ERROR("Failed to stop session manager");
-			return ret;
+			goto bail;
 		}
 		stopped_to_reconf = tsk_true;
 	}
@@ -916,7 +1008,8 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	* if network-initiated: think about tmedia_type_from_sdp() before creating the manager */
 	if(_tmedia_session_mgr_load_sessions(self)){
 		TSK_DEBUG_ERROR("Failed to prepare the session manager");
-		return -3;
+		ret = -3;
+		goto bail;
 	}
 	
 	/* get global connection line (common to all sessions) 
@@ -936,11 +1029,12 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 			/* set remote ro at session-level */
 			if((ret = _tmedia_session_set_ro(TMEDIA_SESSION(ms), M)) == 0){
 				found = tsk_true;
+				++active_sessions_count;
 			}
 			else{
 				// will send 488 Not Acceptable
 				TSK_DEBUG_WARN("_tmedia_session_set_ro() failed");
-				return ret;
+				goto bail;
 			}
 			/* set QoS type (only if we are not the offerer) */
 			if(/*!self->offerer ==> we suppose that the remote party respected our demand &&*/ (qos_type == tmedia_qos_stype_none)){
@@ -981,11 +1075,16 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		(tmedia_session_mgr_get_lo(self));
 		if((ret = tmedia_session_mgr_start(self))){
 			TSK_DEBUG_ERROR("Failed to re-start session manager");
-			return ret;
+			goto bail;
 		}
 	}
 
-	return 0;
+	// will send [488 Not Acceptable] / [BYE] if no active session
+	ret = (active_sessions_count > 0) ? 0 : -0xFF;
+
+bail:
+	tsk_safeobj_unlock(self);
+	return ret;
 }
 
 /**@ingroup tmedia_session_group
@@ -1339,7 +1438,12 @@ int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 		while((i < TMED_SESSION_MAX_PLUGINS) && (plugin = __tmedia_session_plugins[i++])){
 			if((plugin->type & self->type) == plugin->type && !has_media(plugin->type)){// we don't have a session with this media type yet
 				if((session = tmedia_session_create(plugin->type))){
+					struct tnet_ice_ctx_s * ctx_ice = (plugin->type == tmedia_audio ? self->ice.ctx_audio : (plugin->type == tmedia_video ? self->ice.ctx_video : tsk_null));
 					tsk_list_push_back_data(self->sessions, (void**)(&session));
+					// set ICE context for the new session
+					tmedia_session_mgr_set(self,
+						TMEDIA_SESSION_SET_POBJECT(plugin->type, "ice-ctx", ctx_ice),
+						TMEDIA_SESSION_SET_NULL());
 				}
 			}
 			else if(!(plugin->type & self->type) && has_media(plugin->type)){// we have media session from previous call (before update)
@@ -1351,7 +1455,7 @@ int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 				TMEDIA_SESSION_SET_STR(self->type, "local-ip", self->addr),
 				TMEDIA_SESSION_SET_STR(self->type, "local-ipver", self->ipv6 ? "ipv6" : "ipv4"),
 				TMEDIA_SESSION_SET_INT32(self->type, "bandwidth-level", self->bl),
-				TMEDIA_SESSION_SET_NULL());		
+				TMEDIA_SESSION_SET_NULL());
 
 		/* load params */
 		_tmedia_session_mgr_apply_params(self);
@@ -1403,7 +1507,7 @@ int _tmedia_session_mgr_apply_params(tmedia_session_mgr_t* self)
 			if(!(session = it2->data) || !session->plugin){
 				continue;
 			}
-			if((session->type & param->media_type) == session->type && session->plugin->set){
+			if(session->plugin->set && (session->type & param->media_type) == session->type){
 				session->plugin->set(session, param);
 			}
 		}
@@ -1432,6 +1536,8 @@ static tsk_object_t* tmedia_session_mgr_ctor(tsk_object_t * self, va_list * app)
 		mgr->qos.type = tmedia_qos_stype_none;
 		mgr->qos.strength = tmedia_qos_strength_optional;
 		mgr->bl = tmedia_defaults_get_bl();
+
+		tsk_safeobj_init(mgr);
 	}
 	return self;
 }
@@ -1450,7 +1556,12 @@ static tsk_object_t* tmedia_session_mgr_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(mgr->natt_ctx);
 		TSK_FREE(mgr->public_addr);
 
+		TSK_OBJECT_SAFE_FREE(mgr->ice.ctx_audio);
+		TSK_OBJECT_SAFE_FREE(mgr->ice.ctx_video);
+
 		TSK_FREE(mgr->addr);
+
+		tsk_safeobj_deinit(mgr);
 	}
 
 	return self;

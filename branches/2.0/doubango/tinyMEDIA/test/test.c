@@ -26,6 +26,7 @@
 
 #include "test_codecs.h"
 #include "test_sessions.h"
+#include "test_image_attr.h"
 #include "test_qos.h"
 #include "test_contents.h"
 
@@ -35,10 +36,13 @@
 #define RUN_TEST_CODECS		0
 #define RUN_TEST_SESSIONS	0
 #define RUN_TEST_QOS		0
-#define RUN_TEST_CONTENTS	1
+#define RUN_TEST_IMAGEATTR	1
+#define RUN_TEST_CONTENTS	0
+
 
 static void test_register_dummy_plugins();
 static void test_register_contents_plugins();
+
 
 #ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
@@ -63,6 +67,10 @@ int main()
 
 #if RUN_TEST_ALL  || RUN_TEST_QOS
 		test_qos();
+#endif
+
+#if RUN_TEST_ALL  || RUN_TEST_IMAGEATTR
+		test_qos_imageattr();
 #endif
 
 #if RUN_TEST_ALL  || RUN_TEST_CONTENTS

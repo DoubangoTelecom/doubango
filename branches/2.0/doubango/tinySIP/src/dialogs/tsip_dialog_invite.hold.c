@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,7 +25,7 @@
  * The Communication Hold supplementary service enables a user to suspend the reception of media stream(s) of an established IP multimedia session, 
  * and resume the media stream(s) at a later time.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -108,9 +108,6 @@ int x0100_Connected_2_Holding_X_oHold(va_list *app)
 	/* put on hold */
 	ret = tmedia_session_mgr_hold(self->msession_mgr, action->media.type);
 
-	/* update current action */
-	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
-
 	/* send the request */
 	if((ret = send_INVITE(self, tsk_false))){
 		// FIXME: signal error without breaking the state machine
@@ -174,9 +171,6 @@ int x0102_Connected_2_Resuming_X_oResume(va_list *app)
 	/* Resume both */
 	ret = tmedia_session_mgr_resume(self->msession_mgr, action->media.type, tsk_true);
 	ret = tmedia_session_mgr_resume(self->msession_mgr, action->media.type, tsk_false);
-
-	/* update current action */
-	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
 	/* send the request */
 	if((ret = send_INVITE(self, tsk_false))){

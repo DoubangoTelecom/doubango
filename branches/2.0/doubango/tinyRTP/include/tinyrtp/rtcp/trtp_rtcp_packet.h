@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -24,13 +24,17 @@
 
 #include "tinyrtp_config.h"
 
+#include "tsk_buffer.h"
 #include "tsk_list.h"
 
 TRTP_BEGIN_DECLS
 
 #define TRTP_RTCP_PACKET(self)	((trtp_rtcp_packet_t*)(self))
+#define TRTP_DECLARE_RTCP_PACKET trtp_rtcp_packet_t __packet__
 
 // RFC 3550 12.1 RTCP Packet Types
+// RFC 4585
+// RFC 5104 (FIXME: not supported yet!)
 typedef enum trtp_rtcp_packet_type_e
 {
 	trtp_rtcp_packet_type_sr = 200,
@@ -38,6 +42,8 @@ typedef enum trtp_rtcp_packet_type_e
 	trtp_rtcp_packet_type_sdes = 202,
 	trtp_rtcp_packet_type_bye = 203,
 	trtp_rtcp_packet_type_app = 204,
+	trtp_rtcp_packet_type_rtpfb = 205,
+	trtp_rtcp_packet_type_psfb = 206
 }
 trtp_rtcp_packet_type_t;
 
@@ -49,15 +55,19 @@ typedef struct trtp_rtcp_packet_s
 }
 trtp_rtcp_packet_t;
 
-#define TRTP_DECLARE_RTCP_PACKET trtp_rtcp_packet_t __packet__
 typedef tsk_list_t trtp_rtcp_packets_L_t; /**< List of @ref trtp_rtcp_packet_t elements */
 
-TINYRTP_API int trtp_rtcp_packet_init(trtp_rtcp_packet_t* self, uint8_t version, uint8_t padding, uint8_t rc, trtp_rtcp_packet_type_t type, uint16_t length);
-int trtp_rtcp_packet_init_header(trtp_rtcp_packet_t* self, const void* data, tsk_size_t size);
-TINYRTP_API trtp_rtcp_packet_t* trtp_rtcp_packet_deserialize(const void* data, tsk_size_t size);
-TINYRTP_API int trtp_rtcp_packet_set_length(trtp_rtcp_packet_t* self, uint16_t length);
-tsk_size_t trtp_rtcp_packet_get_size(trtp_rtcp_packet_t* self);
-TINYRTP_API int trtp_rtcp_packet_deinit(trtp_rtcp_packet_t* self);
+trtp_rtcp_packet_t* trtp_rtcp_packet_create(struct trtp_rtcp_header_s* header);
+int trtp_rtcp_packet_init(trtp_rtcp_packet_t* self, uint8_t version, uint8_t padding, uint8_t rc, trtp_rtcp_packet_type_t type, uint16_t length_in_bytes);
+trtp_rtcp_packet_t* trtp_rtcp_packet_deserialize(const void* data, tsk_size_t size);
+int trtp_rtcp_packet_serialize_to(const trtp_rtcp_packet_t* self, void* data, tsk_size_t size);
+tsk_buffer_t* trtp_rtcp_packet_serialize(const trtp_rtcp_packet_t* self, tsk_size_t num_bytes_pad);
+int trtp_rtcp_packet_add_packet(trtp_rtcp_packet_t* self, trtp_rtcp_packet_t* packet, tsk_bool_t front);
+TINYRTP_API const trtp_rtcp_packet_t* trtp_rtcp_packet_get_at(const trtp_rtcp_packet_t* self, trtp_rtcp_packet_type_t type, tsk_size_t index);
+TINYRTP_API const trtp_rtcp_packet_t* trtp_rtcp_packet_get(const trtp_rtcp_packet_t* self, trtp_rtcp_packet_type_t type);
+tsk_size_t trtp_rtcp_packet_get_size(const trtp_rtcp_packet_t* self);
+
+int trtp_rtcp_packet_deinit(trtp_rtcp_packet_t* self);
 
 TRTP_END_DECLS
 

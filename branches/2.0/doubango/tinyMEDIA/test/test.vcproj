@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(SolutionDir)\include&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinySDP\include&quot;"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;&quot;$(SolutionDir)\include&quot;;..\..\tinyNET\src;..\..\tinySAK\src;..\..\tinySDP\include"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -196,6 +196,10 @@
 			</File>
 			<File
 				RelativePath=".\test_contents.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test_image_attr.h"
 				>
 			</File>
 			<File

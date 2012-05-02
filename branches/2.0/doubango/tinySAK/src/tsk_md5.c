@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,7 +24,7 @@
  * @brief Implements Message-Digest algorithm 5 (RFC 1321).
  *
  * @author Colin Plumb
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -37,7 +37,7 @@
 /**@defgroup tsk_md5_group MD5 (RFC 1321) utility functions.
  *	The code in this file is a modified version of an implementation placed in the public domain by the following persons: 
  *	@author Colin Plumb
- *	@author Mamadou Diop <diopmamadou(at)doubango.org>
+ *	@author Mamadou Diop <diopmamadou(at)doubango[dot]org>
 */
 
 /**@ingroup tsk_md5_group

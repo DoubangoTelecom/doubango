@@ -111,6 +111,7 @@ public: /* Public functions */
 	bool callVideo(const SipUri* remoteUri, ActionConfig* config=tsk_null);
 	bool setSessionTimer(unsigned timeout, const char* refresher);
 	bool set100rel(bool enabled);
+	bool setICE(bool enabled);
 	bool setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength);
 	bool hold(ActionConfig* config=tsk_null);
 	bool resume(ActionConfig* config=tsk_null);

@@ -3,7 +3,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,7 +25,7 @@
 /**@file tsip_parser_header.c
  * @brief SIP headers parser.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -5569,7 +5569,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Accept NOT IMPLEMENTED. Will be added as Dummy header.");
+		// //TSK_DEBUG_WARN("parse_header_Accept NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 1:
@@ -5577,7 +5577,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Accept_Contact NOT IMPLEMENTED. Will be added as Dummy header.");
+		// //TSK_DEBUG_WARN("parse_header_Accept_Contact NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 2:
@@ -5585,7 +5585,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Accept_Encoding NOT IMPLEMENTED. Will be added as Dummy header.");
+		// //TSK_DEBUG_WARN("parse_header_Accept_Encoding NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 3:
@@ -5593,7 +5593,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Accept_Language NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Accept_Language NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 4:
@@ -5601,7 +5601,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Accept_Resource_Priority NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Accept_Resource_Priority NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 5:
@@ -5609,7 +5609,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Alert_Info NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Alert_Info NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 6:
@@ -5631,7 +5631,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Authentication_Info NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Authentication_Info NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 9:
@@ -5659,7 +5659,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Call_Info NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Call_Info NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 12:
@@ -5689,7 +5689,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Content_Disposition NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Content_Disposition NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 14:
@@ -5697,7 +5697,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("PARSE_HEADER_ACCEPT NOT IMPLEMENTED. Will be added as Dummy header.");
+		// TSK_DEBUG_WARN("PARSE_HEADER_ACCEPT NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 15:
@@ -5705,7 +5705,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Content_Language NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Content_Language NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 16:
@@ -5759,7 +5759,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Error_Info NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Error_Info NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 21:
@@ -5800,7 +5800,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_History_Info NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_History_Info NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 25:
@@ -5808,7 +5808,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Identity NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Identity NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 26:
@@ -5816,7 +5816,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Identity_Info NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Identity_Info NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 27:
@@ -5824,7 +5824,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_In_Reply_To NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_In_Reply_To NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 28:
@@ -5832,7 +5832,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Join NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Join NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 29:
@@ -5847,7 +5847,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_MIME_Version NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_MIME_Version NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 31:
@@ -5869,7 +5869,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Organization NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Organization NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 34:
@@ -5884,7 +5884,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_P_Answer_State NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_P_Answer_State NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 36:
@@ -5906,7 +5906,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_P_Called_Party_ID NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_P_Called_Party_ID NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 39:
@@ -5921,7 +5921,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_P_Charging_Vector NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_P_Charging_Vector NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 41:
@@ -5929,7 +5929,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_P_DCS_Billing_Info NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_P_DCS_Billing_Info NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 42:
@@ -5937,7 +5937,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_P_DCS_LAES NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_P_DCS_LAES NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 43:
@@ -5945,7 +5945,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_P_DCS_OSPS NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_P_DCS_OSPS NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 44:
@@ -5953,7 +5953,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_P_DCS_Redirect NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_P_DCS_Redirect NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 45:
@@ -5961,7 +5961,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_P_DCS_Trace_Party_ID NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_P_DCS_Trace_Party_ID NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 46:
@@ -5969,7 +5969,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_P_Early_Media NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_P_Early_Media NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 47:
@@ -5977,7 +5977,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_P_Media_Authorization NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_P_Media_Authorization NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 48:
@@ -5992,7 +5992,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_P_Profile_Key NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_P_Profile_Key NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 50:
@@ -6000,7 +6000,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_P_User_Database NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_P_User_Database NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 51:
@@ -6008,7 +6008,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_P_Visited_Network_ID NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_P_Visited_Network_ID NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 52:
@@ -6023,7 +6023,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Priority NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Priority NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 54:
@@ -6066,7 +6066,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Reason NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Reason NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 60:
@@ -6102,7 +6102,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Reject_Contact NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Reject_Contact NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 65:
@@ -6110,7 +6110,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Replaces NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Replaces NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 66:
@@ -6118,7 +6118,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Reply_To NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Reply_To NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 67:
@@ -6126,7 +6126,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Request_Disposition NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Request_Disposition NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 68:
@@ -6141,7 +6141,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Resource_Priority NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Resource_Priority NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 70:
@@ -6149,7 +6149,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Retry_After NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Retry_After NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 71:
@@ -6227,7 +6227,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Subject NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Subject NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 82:
@@ -6249,7 +6249,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Target_Dialog NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Target_Dialog NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 85:
@@ -6257,7 +6257,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Timestamp NOT IMPLEMENTED. Will be added as Dummy header.");
+		////TSK_DEBUG_WARN("parse_header_Timestamp NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 86:
@@ -6278,7 +6278,7 @@ _match:
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Unsupported NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Unsupported NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
 	case 88:

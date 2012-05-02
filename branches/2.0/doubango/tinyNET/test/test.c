@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -32,18 +32,20 @@
 #include "test_nat.h"
 #include "test_ifaces.h"
 #include "test_dns.h"
+#include "test_ice.h"
 #include "test_dhcp.h"
 #include "test_dhcp6.h"
 #include "test_tls.h"
 
-#define RUN_TEST_LOOP		1
+#define RUN_TEST_LOOP		0
 
 #define RUN_TEST_ALL		0
 #define RUN_TEST_SOCKETS	0 /* FIXME: Android */
 #define RUN_TEST_TRANSPORT	0
 #define RUN_TEST_AUTH		0
 #define RUN_TEST_STUN		0
-#define RUN_TEST_NAT		1
+#define RUN_TEST_ICE		1
+#define RUN_TEST_NAT		0
 #define RUN_TEST_IFACES		0
 #define RUN_TEST_DNS		0
 #define RUN_TEST_DHCP		0
@@ -80,6 +82,10 @@ int main()
 
 #if RUN_TEST_ALL || RUN_TEST_STUN
 		test_stun();
+#endif
+
+#if RUN_TEST_ALL || RUN_TEST_ICE
+		test_ice();
 #endif
 
 #if RUN_TEST_ALL || RUN_TEST_NAT

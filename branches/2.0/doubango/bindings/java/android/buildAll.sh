@@ -2,7 +2,7 @@
 # Build tinyWRAP for Google Android Systems
 
 for project in tinySAK tinyNET tinyHTTP tinyXCAP tinyIPSec tinySMS tinySIGCOMP tinySDP tinyRTP tinyMSRP tinyMEDIA tinyDAV tinySIP
-#for project in tinyRTP
+#for project in tinyNET
 do
 	echo -e building "$project with parameters=$@\n"
 	make PROJECT=$project clean

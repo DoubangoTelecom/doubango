@@ -23,7 +23,7 @@
 /**@file tsip_api_info.c
  * @brief Public short messaging (MESSAGE) functions.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */

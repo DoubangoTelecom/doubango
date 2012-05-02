@@ -210,33 +210,6 @@ typedef enum tsip_invite_event_type_e
 tsip_invite_event_type_t;
 
 
-
-/* ====== From "tinymedia/tmedia_common.h"  ====== */
-// used by tinyWRAP
-typedef enum tmedia_chroma_e
-{
-	tmedia_chroma_none=0,
-	tmedia_chroma_rgb24,		// will be stored as bgr24 on x86 (little endians) machines; e.g. WindowsPhone7
-	tmedia_chroma_bgr24,		// used by windows consumer (DirectShow) - 
-	tmedia_chroma_rgb32,       // used by iOS4 consumer (iPhone and iPod touch)
-	tmedia_chroma_rgb565le,	// (used by both android and wince consumers)
-	tmedia_chroma_rgb565be,
-	tmedia_chroma_nv12, // used by iOS4 producer (iPhone and iPod Touch 3GS and 4)
-	tmedia_chroma_nv21, // Yuv420 SP (used by android producer)
-	tmedia_chroma_yuv422p,
-	tmedia_chroma_uyvy422, // used by iOS4 producer (iPhone and iPod Touch 3G)
-	tmedia_chroma_yuv420p, // Default
-}
-tmedia_chroma_t;
-
-typedef enum tmedia_srtp_mode_e
-{
-	tmedia_srtp_mode_none,
-	tmedia_srtp_mode_optional,
-	tmedia_srtp_mode_mandatory
-}
-tmedia_srtp_mode_t;
-
 /* ====== From "tinymedia/tmedia_qos.h"  ====== */
 typedef enum tmedia_qos_stype_e
 {
@@ -259,7 +232,44 @@ typedef enum tmedia_qos_strength_e
 }
 tmedia_qos_strength_t;
 
+
 /* ====== From "tinymedia/tmedia_common.h"  ====== */
+// used by tinyWRAP
+typedef enum tmedia_chroma_e
+{
+	tmedia_chroma_none=0,
+	tmedia_chroma_rgb24,		// will be stored as bgr24 on x86 (little endians) machines; e.g. WindowsPhone7
+	tmedia_chroma_bgr24,		// used by windows consumer (DirectShow) - 
+	tmedia_chroma_rgb32,       // used by iOS4 consumer (iPhone and iPod touch)
+	tmedia_chroma_rgb565le,	// (used by both android and wince consumers)
+	tmedia_chroma_rgb565be,
+	tmedia_chroma_nv12, // used by iOS4 producer (iPhone and iPod Touch 3GS and 4)
+	tmedia_chroma_nv21, // Yuv420 SP (used by android producer)
+	tmedia_chroma_yuv422p,
+	tmedia_chroma_uyvy422, // used by iOS4 producer (iPhone and iPod Touch 3G)
+	tmedia_chroma_yuv420p, // Default
+}
+tmedia_chroma_t;
+
+/* ====== From "tinymedia/tmedia_common.h"  ====== */
+typedef enum tmedia_srtp_mode_e
+{
+	tmedia_srtp_mode_none,
+	tmedia_srtp_mode_optional,
+	tmedia_srtp_mode_mandatory
+}
+tmedia_srtp_mode_t;
+
+/* ====== From "tinymedia/tmedia_common.h"  ====== */
+typedef enum tmedia_profile_e
+{
+	tmedia_profile_default,
+	tmedia_profile_rtcweb
+}
+tmedia_profile_t;
+
+/* ====== From "tinymedia/tmedia_common.h"  ====== */
+// @deprecated
 typedef enum tmedia_bandwidth_level_e
 {
 	tmedia_bl_low,
@@ -268,6 +278,24 @@ typedef enum tmedia_bandwidth_level_e
 	tmedia_bl_unrestricted
 }
 tmedia_bandwidth_level_t;
+
+/* ====== From "tinymedia/tmedia_common.h"  ====== */
+typedef enum tmedia_pref_video_size_s
+{ /* must be sorted like this */
+	tmedia_pref_video_size_sqcif, // 128 x 98
+	tmedia_pref_video_size_qcif, // 176 x 144
+	tmedia_pref_video_size_qvga, // 320 x 240
+	tmedia_pref_video_size_cif, // 352 x 288
+	tmedia_pref_video_size_hvga, // 480 x 320
+	tmedia_pref_video_size_vga, // 640 x 480
+	tmedia_pref_video_size_4cif, // 704 x 576
+	tmedia_pref_video_size_svga, // 800 x 600
+	tmedia_pref_video_size_480p, // 852 x 480
+	tmedia_pref_video_size_720p, // 1280 x 720
+	tmedia_pref_video_size_16cif, // 1408 x 1152
+	tmedia_pref_video_size_1080p, // 1920 x 1080
+}
+tmedia_pref_video_size_t;
 
 
 /* ====== From "tinydav/tdav.h"  ====== */
@@ -298,9 +326,12 @@ typedef enum tdav_codec_id_e
 	tdav_codec_id_h263 = 0x00010000<<1,
 	tdav_codec_id_h263p = 0x00010000<<2,
 	tdav_codec_id_h263pp = 0x00010000<<3,
-	tdav_codec_id_h264_bp10 = 0x00010000<<4,
-	tdav_codec_id_h264_bp20 = 0x00010000<<5,
-	tdav_codec_id_h264_bp30 = 0x00010000<<6,
+	tdav_codec_id_h264_bp = 0x00010000<<4,
+	tdav_codec_id_h264_mp = 0x00010000<<5,
+	tdav_codec_id_h264_hp = 0x00010000<<6,
+	tdav_codec_id_h264_bp10 = tdav_codec_id_h264_bp, // @deprecated
+	tdav_codec_id_h264_bp20 = tdav_codec_id_h264_bp, // @deprecated
+	tdav_codec_id_h264_bp30 = tdav_codec_id_h264_bp, // @deprecated
 	tdav_codec_id_h264_svc = 0x00010000<<7,
 	tdav_codec_id_theora = 0x00010000<<8,
 	tdav_codec_id_mp4ves_es = 0x00010000<<9,

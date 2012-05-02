@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\thirdparties\win32\include;&quot;$(PSDK_DIR)include&quot;;&quot;$(DXSDK_DIR)include&quot;;..\thirdparties\win32\include\directshow;include;..\tinySAK\src;..\tinyMEDIA\include;..\tinySDP\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYDSHOW_EXPORTS;_WIN32_WINNT=0x0501"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYDSHOW_EXPORTS;_WIN32_WINNT=0x0501;DEBUG_LEVEL=DEBUG_LEVEL_INFO"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"

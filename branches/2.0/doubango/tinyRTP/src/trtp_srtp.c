@@ -69,7 +69,7 @@ int trtp_srtp_ctx_init(trtp_srtp_ctx_xt* ctx, int32_t tag, trtp_srtp_crypto_type
 	}
 	
 	ctx->policy.key = (unsigned char*)ctx->key_bin;
-	ctx->policy.ssrc.type = ssrc_any_inbound;
+	ctx->policy.ssrc.type = ssrc_any_outbound;
 	ctx->policy.ssrc.value = ssrc;
 	if((srtp_err = srtp_create(&ctx->session, &ctx->policy)) != err_status_ok){
 		TSK_DEBUG_ERROR("srtp_create() failed");
@@ -230,7 +230,6 @@ int trtp_srtp_set_remote(trtp_manager_t* rtp_mgr, const char* crypto_line)
 tsk_bool_t trtp_srtp_is_initialized(trtp_manager_t* rtp_mgr)
 {
 	if(!rtp_mgr){
-		TSK_DEBUG_ERROR("Invalid argument");
 		return tsk_false;
 	}
 	return ((rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][0].initialized || rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][1].initialized) 

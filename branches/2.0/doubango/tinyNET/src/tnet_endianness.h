@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet_endianness.h
  * @brief Byte Ordering.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -47,7 +47,7 @@ TINYNET_API TNET_INLINE tsk_bool_t tnet_is_BE();
 #define tnet_ntohl(x) tnet_htonl(x)
 #define tnet_ntohl_2(px) tnet_htonl_2(px)
 
-TNET_BEGIN_DECLS
+TNET_END_DECLS
 
 #endif /*TNET_ENDIANNESS_H*/
 

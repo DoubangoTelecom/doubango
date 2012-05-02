@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -27,7 +27,7 @@
  * A transport layer always has a master socket which determine what kind of network traffic we expect (stream or dgram). 
  * Stream transport can manage TCP, TLS and SCTP sockets. Datagram socket can only manage UDP sockets. <br>
  * A transport can hold both IPv4 and IPv6 sockets.
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -50,8 +50,49 @@ static void *run(void* self);
 
 
 tnet_transport_t* tnet_transport_create(const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description)
+{		
+	tnet_transport_t* transport;
+
+	if((transport = tsk_object_new(tnet_transport_def_t))){
+		transport->description = tsk_strdup(description);
+		transport->local_host = tsk_strdup(host);
+		transport->req_local_port = port;
+		transport->type = type;
+		transport->context = tnet_transport_context_create();
+		
+		if((transport->master = tnet_socket_create(transport->local_host, transport->req_local_port, transport->type))){
+			transport->local_ip = tsk_strdup(transport->master->ip);
+			transport->bind_local_port = transport->master->port;
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to create master socket");
+			TSK_OBJECT_SAFE_FREE(transport);
+		}
+	}
+	return transport;
+}
+
+tnet_transport_t* tnet_transport_create_2(tnet_socket_t *master, const char* description)
 {
-	return tsk_object_new(tnet_transport_def_t, host, port, type, description);
+	tnet_transport_t* transport;
+	if(!master){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	if((transport = tsk_object_new(tnet_transport_def_t))){
+		transport->description = tsk_strdup(description);
+		transport->local_host = tsk_strdup(master->ip);
+		transport->req_local_port = master->port;
+		transport->type = master->type;
+		
+		transport->master = tsk_object_ref(master);
+		transport->local_ip = tsk_strdup(transport->master->ip);
+		transport->bind_local_port = transport->master->port;
+
+		transport->context = tnet_transport_context_create();
+	}
+	return transport;
 }
 
 tnet_transport_event_t* tnet_transport_event_create(tnet_transport_event_type_t type, const void* callback_data, tnet_fd_t fd)
@@ -172,9 +213,6 @@ int tnet_transport_get_public_ip_n_port(const tnet_transport_handle_t *handle, t
 		tnet_stun_binding_id_t bind_id = TNET_STUN_INVALID_BINDING_ID;
 		// if the socket is already monitored by the transport we should pause because both the transport and
 		// NAT binder will try to read from it
-
-		// FIXME: change when ICE will be fully implemented
-		TSK_DEBUG_INFO("Getting public address");
 		
 		// Pause the soket
 		tnet_transport_pause_socket(transport, fd, tsk_true);
@@ -394,29 +432,6 @@ static tsk_object_t* tnet_transport_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_transport_t *transport = self;
 	if(transport){
-		const char *local_host = va_arg(*app, const char*);
-#if defined(__GNUC__)
-		tnet_port_t req_local_port = (uint16_t)va_arg(*app, unsigned);
-#else
-		tnet_port_t req_local_port = (tnet_port_t)va_arg(*app, tnet_port_t);
-#endif
-		tnet_socket_type_t type = va_arg(*app, tnet_socket_type_t);
-		const char *description = va_arg(*app, const char*);
-		
-		transport->description = tsk_strdup(description);
-		transport->local_host = tsk_strdup(local_host);
-		transport->req_local_port = req_local_port;
-		transport->type = type;
-		transport->context = tnet_transport_context_create();
-		
-		if((transport->master = tnet_socket_create(local_host, req_local_port, type))){
-			transport->local_ip = tsk_strdup(transport->master->ip);
-			transport->bind_local_port = transport->master->port;
-		}
-		else{
-			TSK_DEBUG_ERROR("Failed to create master socket");
-			return tsk_null;
-		}
 	}
 	return self;
 }
@@ -425,6 +440,7 @@ static tsk_object_t* tnet_transport_dtor(tsk_object_t * self)
 { 
 	tnet_transport_t *transport = self;
 	if(transport){
+		tnet_transport_set_callback(transport, tsk_null, tsk_null);
 		tnet_transport_shutdown(transport);
 		TSK_OBJECT_SAFE_FREE(transport->master);
 		TSK_OBJECT_SAFE_FREE(transport->context);

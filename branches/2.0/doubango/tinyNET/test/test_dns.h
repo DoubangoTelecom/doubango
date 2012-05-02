@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -215,10 +215,10 @@ void test_resolvconf()
 
 void test_dns()
 {
-	//test_dns_naptr_srv();
+	test_dns_naptr_srv();
 	//test_dns_srv();
 	//test_dns_query();
-	test_enum();
+	//test_enum();
 	//test_regex();
 	//test_resolvconf();
 }

@@ -135,10 +135,10 @@ static tsk_size_t tdav_speex_jitterbuffer_get(tmedia_jitterbuffer_t* self, void*
 			case JITTER_BUFFER_INSERTION: /*TSK_DEBUG_INFO("JITTER_BUFFER_INSERTION - %d", ret);*/ break;
 			default: TSK_DEBUG_INFO("jitter_buffer_get() failed - %d", ret);
 		}
-		// jitter_buffer_update_delay(jitterbuffer->state, &jb_packet, NULL);
+		jitter_buffer_update_delay(jitterbuffer->state, &jb_packet, NULL);
 		return 0;
 	}
-	jitter_buffer_update_delay(jitterbuffer->state, &jb_packet, NULL);
+	// jitter_buffer_update_delay(jitterbuffer->state, &jb_packet, NULL);
 
 	return out_size;
 }

@@ -126,6 +126,30 @@ int tdav_codec_h264_parse_profile(const char* profile_level_id, profile_idc_t *p
 			case level_idc_3_0:
 				*l_idc = level_idc_3_0;
 				break;
+			case level_idc_3_1:
+				*l_idc = level_idc_3_1;
+				break;
+			case level_idc_3_2:
+				*l_idc = level_idc_3_2;
+				break;
+			case level_idc_4_0:
+				*l_idc = level_idc_4_0;
+				break;
+			case level_idc_4_1:
+				*l_idc = level_idc_4_1;
+				break;
+			case level_idc_4_2:
+				*l_idc = level_idc_4_2;
+				break;
+			case level_idc_5_0:
+				*l_idc = level_idc_5_0;
+				break;
+			case level_idc_5_1:
+				*l_idc = level_idc_5_1;
+				break;
+			case level_idc_5_2:
+				*l_idc = level_idc_5_2;
+				break;
 			default:
 				*l_idc = level_idc_none;
 				break;
@@ -295,8 +319,12 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_common_s *self, const v
 	if(size < H264_RTP_PAYLOAD_SIZE){
 		/* Can be packet in a Single Nal Unit */
 		// Send data over the network
-		if(TMEDIA_CODEC_VIDEO(self)->callback){
-			TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, pdata, size, (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps)), marker);
+		if(TMEDIA_CODEC_VIDEO(self)->out.callback){
+			TMEDIA_CODEC_VIDEO(self)->out.result.buffer.ptr = pdata;
+			TMEDIA_CODEC_VIDEO(self)->out.result.buffer.size = size;
+			TMEDIA_CODEC_VIDEO(self)->out.result.duration = (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps));
+			TMEDIA_CODEC_VIDEO(self)->out.result.last_chunck = marker;
+			TMEDIA_CODEC_VIDEO(self)->out.callback(&TMEDIA_CODEC_VIDEO(self)->out.result);
 		}
 	}
 	else if(size > H264_NAL_UNIT_TYPE_HEADER_SIZE){
@@ -333,8 +361,12 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_common_s *self, const v
 			size -= packet_size;
 
 			// send data
-			if(TMEDIA_CODEC_VIDEO(self)->callback){
-				TMEDIA_CODEC_VIDEO(self)->callback(TMEDIA_CODEC_VIDEO(self)->callback_data, self->rtp.ptr, (packet_size + H264_FUA_HEADER_SIZE), (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps)), (size == 0));
+			if(TMEDIA_CODEC_VIDEO(self)->out.callback){
+				TMEDIA_CODEC_VIDEO(self)->out.result.buffer.ptr = self->rtp.ptr;
+				TMEDIA_CODEC_VIDEO(self)->out.result.buffer.size = (packet_size + H264_FUA_HEADER_SIZE);
+				TMEDIA_CODEC_VIDEO(self)->out.result.duration = (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps));
+				TMEDIA_CODEC_VIDEO(self)->out.result.last_chunck = (size == 0);
+				TMEDIA_CODEC_VIDEO(self)->out.callback(&TMEDIA_CODEC_VIDEO(self)->out.result);
 			}
 		}
 	}

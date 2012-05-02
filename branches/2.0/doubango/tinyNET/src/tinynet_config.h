@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -26,7 +26,7 @@
  * This file incude all your preferences or configuration. All specific configuration
  * must be defined in this file. You must include this file in all your header files.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -85,21 +85,20 @@
 
 /* whether to use poll() */
 #if TNET_UNDER_WINDOWS
-#	define TNET_USE_POLL		0 /* Do not use WSAPoll event if under Vista. */
-#else
-#	define TNET_USE_POLL		1
-#endif
-
-#if defined(__APPLE__)
-#	define HAVE_IFADDRS			1
-#   define HAVE_DNS_H			1
-#	define TNET_HAVE_SS_LEN		1
-#	define TNET_HAVE_SA_LEN		0
-#else
-#	define HAVE_IFADDRS			0
-#   define HAVE_DNS_H			0
-#	define TNET_HAVE_SS_LEN		0
-#	define TNET_HAVE_SA_LEN		0
+#	define TNET_USE_POLL		0 /* Do not use WSAPoll event if under Vista */
+#else // iOS, Android, Linux, OS X...
+#	define TNET_USE_POLL		1 // fallback to cfsocket implementation on iOS4+
+#	if defined(__APPLE__) || !ANDROID
+#		define HAVE_IFADDRS			1
+#		define HAVE_DNS_H			1
+#		define TNET_HAVE_SS_LEN		1
+#		define TNET_HAVE_SA_LEN		0
+#	else
+#		define HAVE_IFADDRS			0
+#		define HAVE_DNS_H			0
+#		define TNET_HAVE_SS_LEN		0
+#		define TNET_HAVE_SA_LEN		0
+#	endif
 #endif
 
 /* Used in TURN/STUN2 attributes. */

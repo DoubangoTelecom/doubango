@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -41,7 +41,8 @@ typedef struct trtp_rtcp_header_s
 	unsigned padding:1;
 	unsigned rc:5;
 	trtp_rtcp_packet_type_t type; /**< Packet Type on 8bits */
-	uint16_t length;
+	uint16_t length_in_words_minus1; /**< The length of this RTCP packet in 32-bit words minus one */
+	uint32_t length_in_bytes;
 }
 trtp_rtcp_header_t;
 
@@ -49,11 +50,10 @@ trtp_rtcp_header_t;
 typedef tsk_list_t trtp_rtcp_headers_L_t; /**< List of @ref trtp_rtcp_header_t elements */
 
 TINYRTP_API trtp_rtcp_header_t* trtp_rtcp_header_create_null();
-TINYRTP_API trtp_rtcp_header_t* trtp_rtcp_header_create(uint8_t version, uint8_t padding, uint8_t rc, trtp_rtcp_packet_type_t type, uint16_t length);
-TINYRTP_API tsk_buffer_t* trtp_rtcp_header_serialize(const trtp_rtcp_header_t *self);
-TINYRTP_API int trtp_rtcp_header_serialize_2(const trtp_rtcp_header_t *self, uint8_t output[TRTP_RTCP_HEADER_SIZE]);
+TINYRTP_API trtp_rtcp_header_t* trtp_rtcp_header_create(uint8_t version, uint8_t padding, uint8_t rc, trtp_rtcp_packet_type_t type, uint16_t length_in_bytes);
+TINYRTP_API int trtp_rtcp_header_serialize_to(const trtp_rtcp_header_t *self, void* data, tsk_size_t size);
 TINYRTP_API trtp_rtcp_header_t* trtp_rtcp_header_deserialize(const void *data, tsk_size_t size);
-TINYRTP_API int trtp_rtcp_header_deserialize_2(trtp_rtcp_header_t** self, const void *data, tsk_size_t size);
+TINYRTP_API int trtp_rtcp_header_deserialize_to(trtp_rtcp_header_t** self, const void *data, tsk_size_t size);
 
 TINYRTP_GEXTERN const tsk_object_def_t *trtp_rtcp_header_def_t;
 

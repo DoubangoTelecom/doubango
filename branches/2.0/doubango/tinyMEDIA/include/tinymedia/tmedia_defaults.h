@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2010-2011 Mamadou Diop.
  *
- * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+ * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *	
  * This file is part of Open Source Doubango Framework.
  *
@@ -28,15 +28,13 @@
 
 TMEDIA_BEGIN_DECLS
 
-//
-// Codecs: Bandwidth
-//
+
+TINYMEDIA_API int tmedia_defaults_set_profile(tmedia_profile_t profile);
+TINYMEDIA_API tmedia_profile_t tmedia_defaults_get_profile();
 TINYMEDIA_API int tmedia_defaults_set_bl(tmedia_bandwidth_level_t bl);
 TINYMEDIA_API tmedia_bandwidth_level_t tmedia_defaults_get_bl();
-
-//
-// Denoiser: Echo suppression, AEC, Noise redution, AGC, ...
-//
+TINYMEDIA_API int tmedia_defaults_set_pref_video_size(tmedia_pref_video_size_t pref_video_size);
+TINYMEDIA_API tmedia_pref_video_size_t tmedia_defaults_get_pref_video_size();
 TINYMEDIA_API int tmedia_defaults_set_jb_margin(int32_t jb_margin_ms);
 TINYMEDIA_API int32_t tmedia_defaults_get_jb_margin();
 TINYMEDIA_API int tmedia_defaults_set_jb_max_late_rate(int32_t jb_max_late_rate_percent);
@@ -78,6 +76,8 @@ TINYMEDIA_API const char* tmedia_defaults_get_inv_session_refresher();
 TINYMEDIA_API int tmedia_defaults_set_inv_session_refresher(const char* refresher);
 TINYMEDIA_API tmedia_srtp_mode_t tmedia_defaults_get_srtp_mode();
 TINYMEDIA_API int tmedia_defaults_set_srtp_mode(tmedia_srtp_mode_t mode);
+TINYMEDIA_API int tmedia_defaults_set_ice_enabled(tsk_bool_t ice_enabled);
+TINYMEDIA_API tsk_bool_t tmedia_defaults_get_ice_enabled();
 
 TMEDIA_END_DECLS
 

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet_transport_win32.c
  * @brief Network transport layer for WIN32(XP/Vista/7) and WINCE(5.0 or higher) systems.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -470,7 +470,9 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	}
 	
 	/* Add the master socket to the context. */
-	if((ret = addSocket(transport->master->fd, transport->master->type, transport, tsk_true, tsk_false))){
+	// don't take ownership: will be closed by the dctor()
+	// otherwise will be closed twice: dctor() and removeSocket()
+	if((ret = addSocket(transport->master->fd, transport->master->type, transport, tsk_false, tsk_false))){
 		TSK_DEBUG_ERROR("Failed to add master socket");
 		goto bail;
 	}

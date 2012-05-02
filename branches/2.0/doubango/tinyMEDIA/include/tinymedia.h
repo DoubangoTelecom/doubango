@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tinymedia.h
  * @brief tinyMEDIA API.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -37,6 +37,7 @@
 #include "tinymedia/tmedia_jitterbuffer.h"
 #include "tinymedia/tmedia_resampler.h"
 #include "tinymedia/tmedia_denoise.h"
+#include "tinymedia/tmedia_imageattr.h"
 
 #include "tinymedia/tmedia_common.h"
 #include "tinymedia/tmedia_qos.h"

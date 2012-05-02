@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2010-2011 Mamadou Diop.
  *
- * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+ * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *	
  * This file is part of Open Source Doubango Framework.
  *
@@ -23,28 +23,11 @@
 
 #include "tsk_debug.h"
 
-//
-// Codecs: Bandwidth
-//
+// /!\ These are global values shared by all sessions and stacks. Could be set (update) per session using "session_set()"
 
+static tmedia_profile_t __profile = tmedia_profile_rtcweb;
 static tmedia_bandwidth_level_t __bl = tmedia_bl_unrestricted;
-
-int tmedia_defaults_set_bl(tmedia_bandwidth_level_t bl)
-{
-	__bl = bl;
-	return 0;
-}
-
-tmedia_bandwidth_level_t tmedia_defaults_get_bl()
-{
-	return __bl;
-}
-
-
-
-//
-// Denoiser: Echo suppression, AEC, Noise redution, AGC, ...
-//
+static tmedia_pref_video_size_t __pref_video_size = tmedia_pref_video_size_cif; // 352 x 288: Android, iOS, WP7 
 static int32_t __jb_margin_ms = -1; // disable
 static int32_t __jb_max_late_rate_percent = -1; // -1: disable 4: default for speex
 static uint32_t __echo_tail = 20;
@@ -67,37 +50,58 @@ static int32_t __volume = 100;
 static int32_t __inv_session_expires = 0; // Session Timers: 0: disabled
 static char* __inv_session_refresher = tsk_null;
 static tmedia_srtp_mode_t __srtp_mode = tmedia_srtp_mode_none;
+static tsk_bool_t __ice_enabled = tsk_false;
 
-int tmedia_defaults_set_jb_margin(int32_t jb_margin_ms)
-{
+int tmedia_defaults_set_profile(tmedia_profile_t profile){
+	__profile = profile;
+	return 0;
+}
+tmedia_profile_t tmedia_defaults_get_profile(){
+	return __profile;
+}
+
+// @deprecated
+int tmedia_defaults_set_bl(tmedia_bandwidth_level_t bl){
+	__bl = bl;
+	return 0;
+}
+// @deprecated
+tmedia_bandwidth_level_t tmedia_defaults_get_bl(){
+	return __bl;
+}
+
+int tmedia_defaults_set_pref_video_size(tmedia_pref_video_size_t pref_video_size){
+	__pref_video_size = pref_video_size;
+	return 0;
+}
+tmedia_pref_video_size_t tmedia_defaults_get_pref_video_size(){
+	return __pref_video_size;
+}
+
+int tmedia_defaults_set_jb_margin(int32_t jb_margin_ms){
 	__jb_margin_ms = jb_margin_ms;
 	return __jb_margin_ms;
 }
 
-int32_t tmedia_defaults_get_jb_margin()
-{
+int32_t tmedia_defaults_get_jb_margin(){
 	return __jb_margin_ms;
 }
 
-int tmedia_defaults_set_jb_max_late_rate(int32_t jb_max_late_rate_percent)
-{
+int tmedia_defaults_set_jb_max_late_rate(int32_t jb_max_late_rate_percent){
 	__jb_max_late_rate_percent = jb_max_late_rate_percent;
 	return 0;
 }
 
-int32_t tmedia_defaults_get_jb_max_late_rate()
-{
+int32_t tmedia_defaults_get_jb_max_late_rate(){
 	return __jb_max_late_rate_percent;
 }
 
-int tmedia_defaults_set_echo_tail(uint32_t echo_tail)
-{
+int tmedia_defaults_set_echo_tail(uint32_t echo_tail){
 	__echo_tail = echo_tail;
 	return 0;
 }
 
-int tmedia_defaults_set_echo_skew(uint32_t echo_skew)
-{
+int tmedia_defaults_set_echo_skew(uint32_t echo_skew){
 	__echo_skew = echo_skew;
 	return 0;
 }
@@ -107,35 +111,29 @@ uint32_t tmedia_defaults_get_echo_tail()
 	return __echo_tail;
 }
 
-uint32_t tmedia_defaults_get_echo_skew()
-{
+uint32_t tmedia_defaults_get_echo_skew(){
 	return __echo_skew;
 }
 
-int tmedia_defaults_set_echo_supp_enabled(tsk_bool_t echo_supp_enabled)
-{
+int tmedia_defaults_set_echo_supp_enabled(tsk_bool_t echo_supp_enabled){
 	__echo_supp_enabled = echo_supp_enabled;
 	return 0;
 }
 
-tsk_bool_t tmedia_defaults_get_echo_supp_enabled()
-{
+tsk_bool_t tmedia_defaults_get_echo_supp_enabled(){
 	return __echo_supp_enabled;
 }
 
-int tmedia_defaults_set_agc_enabled(tsk_bool_t agc_enabled)
-{
+int tmedia_defaults_set_agc_enabled(tsk_bool_t agc_enabled){
 	__agc_enabled = agc_enabled;
 	return 0;
 }
 
-tsk_bool_t tmedia_defaults_get_agc_enabled()
-{
+tsk_bool_t tmedia_defaults_get_agc_enabled(){
 	return __agc_enabled;
 }
 
-int tmedia_defaults_set_agc_level(float agc_level)
-{
+int tmedia_defaults_set_agc_level(float agc_level){
 	__agc_level = agc_level;
 	return 0;
 }
@@ -145,36 +143,30 @@ float tmedia_defaults_get_agc_level()
 	return __agc_level;
 }
 
-int tmedia_defaults_set_vad_enabled(tsk_bool_t vad_enabled)
-{
+int tmedia_defaults_set_vad_enabled(tsk_bool_t vad_enabled){
 	__vad_enabled = vad_enabled;
 	return 0;
 }
 
-tsk_bool_t tmedia_defaults_get_vad_enabled()
-{
+tsk_bool_t tmedia_defaults_get_vad_enabled(){
 	return __vad_enabled;
 }
 
-int tmedia_defaults_set_noise_supp_enabled(tsk_bool_t noise_supp_enabled)
-{
+int tmedia_defaults_set_noise_supp_enabled(tsk_bool_t noise_supp_enabled){
 	__noise_supp_enabled = noise_supp_enabled;
 	return 0;
 }
 
-tsk_bool_t tmedia_defaults_get_noise_supp_enabled()
-{
+tsk_bool_t tmedia_defaults_get_noise_supp_enabled(){
 	return __noise_supp_enabled;
 }
 
-int tmedia_defaults_set_noise_supp_level(int32_t noise_supp_level)
-{
+int tmedia_defaults_set_noise_supp_level(int32_t noise_supp_level){
 	__noise_supp_level = noise_supp_level;
 	return 0;
 }
 
-int32_t tmedia_defaults_get_noise_supp_level()
-{
+int32_t tmedia_defaults_get_noise_supp_level(){
 	return __noise_supp_level;
 }
 
@@ -279,4 +271,12 @@ tmedia_srtp_mode_t tmedia_defaults_get_srtp_mode(){
 int tmedia_defaults_set_srtp_mode(tmedia_srtp_mode_t mode){
 	__srtp_mode = mode;
 	return 0;
+}
+
+int tmedia_defaults_set_ice_enabled(tsk_bool_t ice_enabled){
+	__ice_enabled = ice_enabled;
+	return 0;
+}
+tsk_bool_t tmedia_defaults_get_ice_enabled(){
+	return __ice_enabled;
 }

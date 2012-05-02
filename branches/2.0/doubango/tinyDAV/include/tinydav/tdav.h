@@ -35,6 +35,7 @@
 
 TDAV_BEGIN_DECLS
 
+// @tinyWRAP
 typedef enum tdav_codec_id_e
 {
 	tdav_codec_id_none = 0x00000000,
@@ -62,9 +63,12 @@ typedef enum tdav_codec_id_e
 	tdav_codec_id_h263 = 0x00010000<<1,
 	tdav_codec_id_h263p = 0x00010000<<2,
 	tdav_codec_id_h263pp = 0x00010000<<3,
-	tdav_codec_id_h264_bp10 = 0x00010000<<4,
-	tdav_codec_id_h264_bp20 = 0x00010000<<5,
-	tdav_codec_id_h264_bp30 = 0x00010000<<6,
+	tdav_codec_id_h264_bp = 0x00010000<<4,
+	tdav_codec_id_h264_mp = 0x00010000<<5,
+	tdav_codec_id_h264_hp = 0x00010000<<6,
+	tdav_codec_id_h264_bp10 = tdav_codec_id_h264_bp, // @deprecated
+	tdav_codec_id_h264_bp20 = tdav_codec_id_h264_bp, // @deprecated
+	tdav_codec_id_h264_bp30 = tdav_codec_id_h264_bp, // @deprecated
 	tdav_codec_id_h264_svc = 0x00010000<<7,
 	tdav_codec_id_theora = 0x00010000<<8,
 	tdav_codec_id_mp4ves_es = 0x00010000<<9,

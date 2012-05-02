@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsk_list.h
  * @brief Linked list. For more information about linked list you can visit http://en.wikipedia.org/wiki/Linked_list.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -46,6 +46,7 @@ TSK_BEGIN_DECLS
 #define TSK_LIST_IS_LAST(self, item)		((self) ? ((self)->tail == item) : tsk_false)
 
 #define TSK_LIST_FIRST_DATA(self)			(((self) && (self)->head) ? (self)->head->data : tsk_null)
+#define TSK_LIST_LAST_DATA(self)			(((self) && (self)->tail) ? (self)->tail->data : tsk_null)
 
 /**@ingroup tsk_list_group
 * Item for linked list. 
@@ -95,9 +96,11 @@ TINYSAK_API int tsk_list_lock(tsk_list_t* list);
 TINYSAK_API int tsk_list_unlock(tsk_list_t* list);
 
 TINYSAK_API void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item);
+#define tsk_list_remove_first_item(list) tsk_list_remove_item((list), (list) ? (list)->head : tsk_null)
+#define tsk_list_remove_last_item(list) tsk_list_remove_item((list), (list) ? (list)->tail : tsk_null)
 TINYSAK_API tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj);
-TINYSAK_API void tsk_list_remove_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj);
-TINYSAK_API void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
+TINYSAK_API tsk_bool_t tsk_list_remove_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj);
+TINYSAK_API tsk_bool_t tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
 TINYSAK_API tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
 TINYSAK_API void tsk_list_clear_items(tsk_list_t* list);
 
@@ -123,6 +126,9 @@ TINYSAK_API int tsk_list_push_filtered_data(tsk_list_t* list, void** data, tsk_b
 TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const tsk_object_t * tskobj);
 TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data);
 TINYSAK_API const tsk_object_t* tsk_list_find_object_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data);
+TINYSAK_API const tsk_object_t* tsk_list_find_object_by_pred_at_index(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data, tsk_size_t index);
+TINYSAK_API int tsk_list_find_index_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data);
+
 TINYSAK_API tsk_size_t tsk_list_count(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data);
 
 TINYSAK_GEXTERN const tsk_object_def_t *tsk_list_def_t;

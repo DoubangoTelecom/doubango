@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -29,24 +29,27 @@
 #define TRTP_RTCP_SDES_CHUNCK_MIN_SIZE			4
 #define TRTP_RTCP_SDES_CHUNCK_SSRC_OR_CSRC_SIZE 4
 
+#define TRTP_RTCP_SDES_CHUNCK(self) ((trtp_rtcp_sdes_chunck_t*)(self))
+
 TRTP_BEGIN_DECLS
 
 typedef struct trtp_rtcp_sdes_chunck_s
 {
 	TSK_DECLARE_OBJECT;
 
-	uint32_t ssrc_or_csrc;
+	uint32_t ssrc;
 	trtp_rtcp_sdes_items_L_t* items;
 }
 trtp_rtcp_sdes_chunck_t;
-#define TRTP_RTCP_SDES_CHUNCK(self) ((trtp_rtcp_sdes_chunck_t*)(self))
-TINYRTP_GEXTERN const tsk_object_def_t *trtp_rtcp_sdes_chunck_def_t;
+
 typedef tsk_list_t trtp_rtcp_sdes_chuncks_L_t; /**< List of @ref trtp_rtcp_sdes_item_t elements */
 
 trtp_rtcp_sdes_chunck_t* trtp_rtcp_sdes_chunck_create_null();
-trtp_rtcp_sdes_chunck_t* trtp_rtcp_sdes_chunck_create(uint32_t ssrc_or_csrc);
+trtp_rtcp_sdes_chunck_t* trtp_rtcp_sdes_chunck_create(uint32_t ssrc);
 trtp_rtcp_sdes_chunck_t* trtp_rtcp_sdes_chunck_deserialize(const void* data, tsk_size_t size);
-tsk_size_t trtp_rtcp_sdes_chunck_get_size(trtp_rtcp_sdes_chunck_t* self);
+int trtp_rtcp_sdes_chunck_serialize_to(const trtp_rtcp_sdes_chunck_t* self, void* data, tsk_size_t size);
+int trtp_rtcp_sdes_chunck_add_item(trtp_rtcp_sdes_chunck_t* self, trtp_rtcp_sdes_item_type_t type, const void* data, uint8_t length);
+tsk_size_t trtp_rtcp_sdes_chunck_get_size(const trtp_rtcp_sdes_chunck_t* self);
 
 TRTP_END_DECLS
 

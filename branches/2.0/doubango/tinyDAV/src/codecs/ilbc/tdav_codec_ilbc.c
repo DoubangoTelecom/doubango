@@ -38,7 +38,7 @@
 
 /* ============ iLBC Plugin interface ================= */
 
-#define tdav_codec_ilbc_fmtp_set tsk_null
+#define tdav_codec_ilbc_set tsk_null
 
 static int tdav_codec_ilbc_open(tmedia_codec_t* self)
 {
@@ -157,32 +157,39 @@ static tsk_size_t tdav_codec_ilbc_decode(tmedia_codec_t* self, const void* in_da
 	return out_size;
 }
 
-static char* tdav_codec_ilbc_fmtp_get(const tmedia_codec_t* codec)
+static char* tdav_codec_ilbc_sdp_att_get(const tmedia_codec_t* codec, const char* att_name)
 {
-	char* fmtp = tsk_null;
-	tsk_sprintf(&fmtp, "mode=%d", TDAV_ILBC_MODE);
-	return fmtp;
+	if(tsk_striequals(att_name, "fmtp")){
+		char* fmtp = tsk_null;
+		tsk_sprintf(&fmtp, "mode=%d", TDAV_ILBC_MODE);
+		return fmtp;
+	}
+	return tsk_null;
 }
 
-static tsk_bool_t tdav_codec_ilbc_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
-{	/*	RFC 3952 - 5. Mapping To SDP Parameters
-		
-		The offer contains the preferred mode of the offerer.  The answerer
-		may agree to that mode by including the same mode in the answer, or
-		may include a different mode.  The resulting mode used by both
-		parties SHALL be the lower of the bandwidth modes in the offer and
-		answer.
+static tsk_bool_t tdav_codec_ilbc_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
+{	
+	if(tsk_striequals(att_name, "fmtp")){
+		/*	RFC 3952 - 5. Mapping To SDP Parameters
+			
+			The offer contains the preferred mode of the offerer.  The answerer
+			may agree to that mode by including the same mode in the answer, or
+			may include a different mode.  The resulting mode used by both
+			parties SHALL be the lower of the bandwidth modes in the offer and
+			answer.
 
-		That is, an offer of "mode=20" receiving an answer of "mode=30" will
-		result in "mode=30" being used by both participants.  Similarly, an
-		offer of "mode=30" and an answer of "mode=20" will result in
-		"mode=30" being used by both participants.
+			That is, an offer of "mode=20" receiving an answer of "mode=30" will
+			result in "mode=30" being used by both participants.  Similarly, an
+			offer of "mode=30" and an answer of "mode=20" will result in
+			"mode=30" being used by both participants.
 
-		This is important when one end point utilizes a bandwidth constrained
-		link (e.g., 28.8k modem link or slower), where only the lower frame
-		size will work.
-	*/
-	return tsk_true; // FIXME
+			This is important when one end point utilizes a bandwidth constrained
+			link (e.g., 28.8k modem link or slower), where only the lower frame
+			size will work.
+		*/
+		return tsk_true; // FIXME
+	}
+	return tsk_true;
 }
 
 
@@ -242,13 +249,13 @@ static const tmedia_codec_plugin_def_t tdav_codec_ilbc_plugin_def_s =
 	/* video */
 	{0},
 
+	tdav_codec_ilbc_set,
 	tdav_codec_ilbc_open,
 	tdav_codec_ilbc_close,
 	tdav_codec_ilbc_encode,
 	tdav_codec_ilbc_decode,
-	tdav_codec_ilbc_fmtp_match,
-	tdav_codec_ilbc_fmtp_get,
-	tdav_codec_ilbc_fmtp_set
+	tdav_codec_ilbc_sdp_att_match,
+	tdav_codec_ilbc_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tdav_codec_ilbc_plugin_def_t = &tdav_codec_ilbc_plugin_def_s;
 

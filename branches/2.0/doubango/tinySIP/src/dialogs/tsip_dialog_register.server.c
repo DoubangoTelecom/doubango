@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -150,14 +150,8 @@ int s0000_Incoming_2_Connected_X_Accept(va_list *app)
 	int ret;
 
 	tsip_dialog_register_t *self;
-	const tsip_action_t* action;
 
 	self = va_arg(*app, tsip_dialog_register_t *);
-	va_arg(*app, const tsip_message_t *);
-	action = va_arg(*app, const tsip_action_t *);
-
-	/* update current action */
-	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);	
 
 	/* send 2xx OK */
 	if((ret = tsip_dialog_register_send_RESPONSE(self, self->last_iRegister, 200, "OK"))){

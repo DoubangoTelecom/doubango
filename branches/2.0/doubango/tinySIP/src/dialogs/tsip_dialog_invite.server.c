@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,7 +25,7 @@
  * The SOA machine is designed as per RFC 3264 and draft-ietf-sipping-sip-offeranswer-12.
  * MMTel services implementation follow 3GPP TS 24.173.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -46,12 +46,15 @@
 static const char* supported_options[] = { "100rel", "precondition", "timer" };
 
 /* ======================== external functions ======================== */
+extern int tsip_dialog_invite_msession_start(tsip_dialog_invite_t *self);
 extern int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase, tsk_bool_t force_sdp);
 extern int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message);
 extern int tsip_dialog_invite_stimers_schedule(tsip_dialog_invite_t* self, uint64_t timeout);
 extern int send_ERROR(tsip_dialog_invite_t* self, const tsip_request_t* request, short code, const char* phrase, const char* reason);
 
 extern int tsip_dialog_invite_timer_callback(const tsip_dialog_invite_t* self, tsk_timer_id_t timer_id);
+extern tsk_bool_t tsip_dialog_invite_ice_is_enabled(const tsip_dialog_invite_t * self);
+extern tsk_bool_t tsip_dialog_invite_ice_is_connected(const tsip_dialog_invite_t * self);
 
 /* ======================== internal functions ======================== */
 static int send_UNSUPPORTED(tsip_dialog_invite_t* self, const tsip_request_t* request, const char* option);
@@ -156,20 +159,24 @@ static tsk_bool_t _fsm_cond_toosmall(tsip_dialog_invite_t* self, tsip_message_t*
 	}
 	return tsk_false;
 }
-static tsk_bool_t _fsm_cond_supports_100rel(tsip_dialog_invite_t* self, tsip_message_t* message)
+
+// 100rel && (QoS or ICE)
+static tsk_bool_t _fsm_cond_use_early_media(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
 	if((tsip_message_supported(message, "100rel") && self->supported._100rel) || tsip_message_required(message, "100rel")){
+		if((tsip_message_supported(message, "precondition") && self->supported.precondition) || tsip_message_required(message, "precondition")){
+			return tsk_true;
+		}
+	}
+#if 0
+	if(tsip_dialog_invite_ice_is_enabled(self)){
 		return tsk_true;
 	}
+#endif
 	return tsk_false;
 }
-static tsk_bool_t _fsm_cond_supports_precondition(tsip_dialog_invite_t* self, tsip_message_t* message)
-{
-	if((tsip_message_supported(message, "precondition") && self->supported.precondition) || tsip_message_required(message, "precondition")){
-		return tsk_true;
-	}
-	return tsk_false;
-}
+
+
 static tsk_bool_t _fsm_cond_prack_match(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
 	const tsip_header_RAck_t* RAck;
@@ -224,8 +231,8 @@ int tsip_dialog_invite_server_init(tsip_dialog_invite_t *self)
 		TSK_FSM_ADD(_fsm_state_Started, _fsm_action_iINVITE, _fsm_cond_bad_content, _fsm_state_Terminated, s0000_Started_2_Terminated_X_iINVITE, "s0000_Started_2_Terminated_X_iINVITE"),
 		// Started -> (Session Interval Too Small) -> Started
 		TSK_FSM_ADD(_fsm_state_Started, _fsm_action_iINVITE, _fsm_cond_toosmall, _fsm_state_Started, s0000_Started_2_Started_X_iINVITE, "s0000_Started_2_Started_X_iINVITE"),
-		// Started -> (100rel or QoS, the later need the first) -> InProgress
-		TSK_FSM_ADD(_fsm_state_Started, _fsm_action_iINVITE, _fsm_cond_supports_precondition, _fsm_state_InProgress, s0000_Started_2_InProgress_X_iINVITE, "s0000_Started_2_InProgress_X_iINVITE"),
+		// Started -> (100rel && (QoS or ICE)) -> InProgress
+		TSK_FSM_ADD(_fsm_state_Started, _fsm_action_iINVITE, _fsm_cond_use_early_media, _fsm_state_InProgress, s0000_Started_2_InProgress_X_iINVITE, "s0000_Started_2_InProgress_X_iINVITE"),
 		// Started -> (non-100rel and non-QoS, referred to as "basic") -> Ringing
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_iINVITE, _fsm_state_Ringing, s0000_Started_2_Ringing_X_iINVITE, "s0000_Started_2_Ringing_X_iINVITE"),
 
@@ -577,9 +584,6 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 	va_arg(*app, const tsip_message_t *);
 	action = va_arg(*app, const tsip_action_t *);
 
-	/* Update current action */
-	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);	
-
 	/* Determine whether the remote party support UPDATE */
 	self->support_update = tsip_message_allowed(self->last_iInvite, "UPDATE");
 
@@ -593,7 +597,8 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 		if((self->msession_mgr->type & tmedia_msrp) == tmedia_msrp){
 			tmedia_session_mgr_set_msrp_cb(self->msession_mgr, TSIP_DIALOG_GET_SS(self)->userdata, TSIP_DIALOG_GET_SS(self)->media.msrp.callback);
 		}
-		ret = tmedia_session_mgr_start(self->msession_mgr);
+		// starts session manager
+		ret = tsip_dialog_invite_msession_start(self);
 	}
 
 	/* Cancel 100rel timer */
@@ -636,9 +641,6 @@ int s0000_Ringing_2_Terminated_X_Reject(va_list *app)
 	self = va_arg(*app, tsip_dialog_invite_t *);
 	va_arg(*app, const tsip_message_t *);
 	action = va_arg(*app, const tsip_action_t *);
-
-	/* Update current action */
-	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);	
 
 	/* Cancel 100rel timer */
 	TSIP_DIALOG_TIMER_CANCEL(100rel);

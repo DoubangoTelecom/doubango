@@ -26,6 +26,7 @@
 #include "tinydav/codecs/h264/tdav_codec_h264_rtp.h"
 
 #include "tinymedia/tmedia_codec.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tsk_memory.h"
 #include "tsk_string.h"
@@ -55,21 +56,12 @@ typedef enum packetization_mode_e{
 }
 packetization_mode_t;
 
-typedef enum tdav_codec_h264_profile_e
-{
-	tdav_codec_h264_bp99,
-
-	tdav_codec_h264_bp10,
-	tdav_codec_h264_bp20,
-	tdav_codec_h264_bp30,
-}
-tdav_codec_h264_profile_t;
-
 typedef struct tdav_codec_h264_common_s
 {
 	TMEDIA_DECLARE_CODEC_VIDEO;
 
-	tdav_codec_h264_profile_t profile;
+	profile_idc_t profile;
+	level_idc_t level;
 
 	packetization_mode_t pack_mode;
 
@@ -82,10 +74,73 @@ tdav_codec_h264_common_t;
 #define TDAV_CODEC_H264_COMMON(self)		((tdav_codec_h264_common_t*)(self))
 #define TDAV_DECLARE_CODEC_H264_COMMON tdav_codec_h264_common_t __video__
 
+typedef struct tdav_codec_h264_common_level_size_xs
+{
+	level_idc_t level;
+	unsigned width;
+	unsigned height;
+}
+tdav_codec_h264_common_level_size_xt;
+
+static const tdav_codec_h264_common_level_size_xt tdav_codec_h264_common_level_sizes [] =
+{
+	{level_idc_1_0, 128, 96},
+	{level_idc_1_b, 128, 96},
+	{level_idc_1_1, 176, 144},
+	{level_idc_1_2, 320, 240},
+	{level_idc_1_3, 352, 288},
+	{level_idc_2_0, 352, 288},
+	{level_idc_2_1, 352, 480},
+	{level_idc_2_2, 352, 480},
+	{level_idc_3_0, 720, 480},
+	{level_idc_3_1, 1280, 720},
+	{level_idc_3_2, 1280, 720},
+	{level_idc_4_0, 2048, 1024},
+	{level_idc_4_1, 2048, 1024},
+	{level_idc_4_2, 2048, 1080},
+	{level_idc_5_0, 20560, 1920},
+	{level_idc_5_1, 4096, 2048},
+	{level_idc_5_2, 4096, 2048}
+};
+
+static int tdav_codec_h264_common_size_from_level(level_idc_t level, unsigned *width, unsigned *height)
+{
+	tsk_size_t i;
+	for(i = 0; i < sizeof(tdav_codec_h264_common_level_sizes)/sizeof(tdav_codec_h264_common_level_sizes[0]); ++i){
+		if(tdav_codec_h264_common_level_sizes[i].level == level){
+			*width = tdav_codec_h264_common_level_sizes[i].width;
+			*height = tdav_codec_h264_common_level_sizes[i].height;
+			return 0;
+		}
+	}
+	return -1;
+}
+
+static int tdav_codec_h264_common_level_from_size(unsigned width, unsigned height, level_idc_t *level)
+{
+	tsk_size_t i;
+	for(i = 0; i < sizeof(tdav_codec_h264_common_level_sizes)/sizeof(tdav_codec_h264_common_level_sizes[0]); ++i){
+		if(tdav_codec_h264_common_level_sizes[i].width >= width && tdav_codec_h264_common_level_sizes[i].height >= height){
+			*level = tdav_codec_h264_common_level_sizes[i].level;
+			return 0;
+		}
+	}
+	return -1;
+}
+
+
 static int tdav_codec_h264_common_init(tdav_codec_h264_common_t * h264)
 {
 	if(h264){
-		
+		// because at this step 'tmedia_codec_init()' is not called yet and we need default size to compute the H.264 level
+		if(TMEDIA_CODEC_VIDEO(h264)->out.width == 0 || TMEDIA_CODEC_VIDEO(h264)->in.width == 0){
+			unsigned width, height;
+			tmedia_pref_video_size_t pref_size = tmedia_defaults_get_pref_video_size();
+			if(tmedia_video_get_size(pref_size, &width, &height) == 0){
+				TMEDIA_CODEC_VIDEO(h264)->out.width = TMEDIA_CODEC_VIDEO(h264)->in.width = width;
+				TMEDIA_CODEC_VIDEO(h264)->out.height = TMEDIA_CODEC_VIDEO(h264)->in.height = height;
+			}
+		}
 	}
 	return 0;
 }
@@ -100,11 +155,14 @@ static int tdav_codec_h264_common_deinit(tdav_codec_h264_common_t * h264)
 	return 0;
 }
 
-static tdav_codec_h264_profile_t tdav_codec_h264_common_get_profile(const char* fmtp)
+static int tdav_codec_h264_get_profile_and_level(const char* fmtp, profile_idc_t *profile, level_idc_t *level)
 {
-	tdav_codec_h264_profile_t profile = tdav_codec_h264_bp99;
 	tsk_size_t size = tsk_strlen(fmtp);
 	int start, end;
+	int ret = -1;
+
+	*profile = profile_idc_none;
+	*level = level_idc_none;
 	
 	if((start = tsk_strindexOf(fmtp, size, "profile-level-id")) !=-1){
 		tsk_param_t* param;
@@ -123,26 +181,12 @@ static tdav_codec_h264_profile_t tdav_codec_h264_common_get_profile(const char* 
 			
 			switch(p_idc){
 				case profile_idc_baseline:
-					switch(l_idc){
-						case level_idc_1_0:
-						case level_idc_1_b:
-						case level_idc_1_1:
-						case level_idc_1_2:
-						case level_idc_1_3:
-							profile = tdav_codec_h264_bp10;
-							break;
-						case level_idc_2_0:
-						case level_idc_2_1:
-						case level_idc_2_2:
-							profile = tdav_codec_h264_bp20;
-							break;
-						case level_idc_3_0:
-							profile = tdav_codec_h264_bp30;
-							break;
-					}
+				case profile_idc_main:
+					*profile = p_idc;
+					*level = l_idc;
+					ret = 0;
 					break;
 				case profile_idc_extended:
-				case profile_idc_main:
 				case profile_idc_high:
 				default:
 					/* Not supported */
@@ -152,7 +196,7 @@ static tdav_codec_h264_profile_t tdav_codec_h264_common_get_profile(const char* 
 			TSK_OBJECT_SAFE_FREE(param);
 		}
 	}
-	return profile;
+	return ret;
 }
 
 TDAV_END_DECLS

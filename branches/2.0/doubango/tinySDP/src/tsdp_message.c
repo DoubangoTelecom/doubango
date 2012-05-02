@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsdp_message.c
  * @brief SDP message.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -168,6 +168,35 @@ const tsdp_header_t *tsdp_message_get_header(const tsdp_message_t *self, tsdp_he
 	return tsdp_message_get_headerAt(self, type, 0);
 }
 
+const tsdp_header_A_t* tsdp_message_get_headerA_at(const tsdp_message_t* self, const char* field, tsk_size_t index)
+{
+
+	tsk_size_t pos = 0;
+	const tsk_list_item_t *item;
+	const tsdp_header_t *hdr;
+	const tsdp_header_A_t *hdrA;
+
+	if(!self || !self->headers){
+		return tsk_null;
+	}
+
+	tsk_list_foreach(item, self->headers){
+		hdr = item->data;
+		if((hdr->type == tsdp_htype_A) && (hdrA = (const tsdp_header_A_t *)hdr) && (tsk_striequals(hdrA->field, field))){
+			if(pos++ >= index){
+				return hdrA;
+			}
+		}
+	}
+	
+	return tsk_null;
+}
+
+const tsdp_header_A_t* tsdp_message_get_headerA(const tsdp_message_t* self, const char* field)
+{
+	return tsdp_message_get_headerA_at(self, field, 0);
+}
+
 const tsdp_header_t *tsdp_message_get_headerByName(const tsdp_message_t *self, char name)
 {
 	if(self){
@@ -308,16 +337,23 @@ int tsdp_message_add_media_2(tsdp_message_t *self, const char* media, uint32_t p
 
 int tsdp_message_remove_media(tsdp_message_t *self, const char* media)
 {
-	int ret = -1;
-
-	if(!self){
-		goto bail;
+	if(!self || !media){
+		return 0;
 	}
 
 	tsk_list_remove_item_by_pred(self->headers, __pred_find_media_by_name, media);
+	return 0;
+}
 
-bail:
-	return ret;
+const tsdp_header_M_t* tsdp_message_find_media(const tsdp_message_t *self, const char* media)
+{
+	if(self && media){
+		const tsk_list_item_t* item;
+		if((item = tsk_list_find_item_by_pred(self->headers, __pred_find_media_by_name, media))){
+			return TSDP_HEADER_M(item->data);
+		}
+	}	
+	return tsk_null;
 }
 
 

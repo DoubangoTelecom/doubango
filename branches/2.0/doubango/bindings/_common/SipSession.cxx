@@ -538,6 +538,26 @@ bool CallSession::set100rel(bool enabled)
 	}
 }
 
+bool CallSession::setICE(bool enabled)
+{
+	if(enabled){
+		return (tsip_ssession_set(m_pHandle,
+			TSIP_SSESSION_SET_MEDIA(
+				TSIP_MSESSION_SET_ICE(),
+				TSIP_MSESSION_SET_NULL()
+			),
+			TSIP_SSESSION_SET_NULL()) == 0);
+	}
+	else{
+		return (tsip_ssession_set(m_pHandle,
+			TSIP_SSESSION_SET_MEDIA(
+				TSIP_MSESSION_UNSET_ICE(),
+				TSIP_MSESSION_SET_NULL()
+			),
+			TSIP_SSESSION_SET_NULL()) == 0);
+	}
+}
+
 bool CallSession::setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength)
 {
 	return (tsip_ssession_set(m_pHandle,

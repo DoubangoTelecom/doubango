@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_dialog_options.c
  * @brief SIP dialog OPTIONS as per RFC 3261 section 11.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -223,14 +223,10 @@ int tsip_dialog_options_init(tsip_dialog_options_t *self)
 int tsip_dialog_options_Started_2_Sending_X_sendOPTIONS(va_list *app)
 {
 	tsip_dialog_options_t *self;
-	const tsip_action_t* action;
 
 	self = va_arg(*app, tsip_dialog_options_t *);
-	/*tsip_request_t *request =*/ va_arg(*app, tsip_request_t *);
-	action = va_arg(*app, const tsip_action_t *);
 
 	TSIP_DIALOG(self)->running = tsk_true;
-	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
 	/* alert the user */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connecting, "Dialog connecting");

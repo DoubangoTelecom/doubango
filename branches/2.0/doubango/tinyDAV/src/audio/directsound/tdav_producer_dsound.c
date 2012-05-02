@@ -44,7 +44,7 @@
 
 extern void tdav_win32_print_error(const char* func, HRESULT hr);
 
-static void *__playback_thread(void *param)
+static void *_tdav_producer_dsound_record_thread(void *param)
 {
 	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)param; 
 
@@ -89,6 +89,28 @@ static void *__playback_thread(void *param)
 	
 
 	return tsk_null;
+}
+
+static int _tdav_producer_dsound_unprepare(tdav_producer_dsound_t* dsound)
+{
+	if(dsound){
+		tsk_size_t i;
+		if(dsound->captureBuffer){
+			IDirectSoundCaptureBuffer_Release(dsound->captureBuffer);
+			dsound->captureBuffer = NULL;
+		}
+		if(dsound->device){
+			IDirectSoundCapture_Release(dsound->device);
+			dsound->device = NULL;
+		}
+		for(i = 0; i<sizeof(dsound->notifEvents)/sizeof(dsound->notifEvents[0]); i++){
+			if(dsound->notifEvents[i]){
+				CloseHandle(dsound->notifEvents[i]);
+				dsound->notifEvents[i] = NULL;
+			}
+		}
+	}
+	return 0;
 }
 
 
@@ -188,7 +210,6 @@ static int tdav_producer_dsound_start(tmedia_producer_t* self)
 	}
 
 	if(dsound->started){
-		TSK_DEBUG_WARN("Producer already started");
 		return 0;
 	}
 
@@ -221,7 +242,7 @@ static int tdav_producer_dsound_start(tmedia_producer_t* self)
 
 	/* start the reader thread */
 	dsound->started = tsk_true;
-	tsk_thread_create(&dsound->tid[0], __playback_thread, dsound);
+	tsk_thread_create(&dsound->tid[0], _tdav_producer_dsound_record_thread, dsound);
 
 	return 0;
 }
@@ -243,14 +264,13 @@ static int tdav_producer_dsound_stop(tmedia_producer_t* self)
 	}
 
 	if(!dsound->started){
-		TSK_DEBUG_WARN("Producer not started");
 		return 0;
 	}
 
-	/* should be done here */
+	// should be done here
 	dsound->started = tsk_false;
 
-	/* stop thread */
+	// stop thread
 	if(dsound->tid[0]){
 		tsk_thread_join(&(dsound->tid[0]));
 	}
@@ -258,6 +278,10 @@ static int tdav_producer_dsound_stop(tmedia_producer_t* self)
 	if((hr = IDirectSoundCaptureBuffer_Stop(dsound->captureBuffer)) != DS_OK){
 		tdav_win32_print_error("IDirectSoundCaptureBuffer_Stop", hr);
 	}
+
+	// unprepare
+	// will be prepared again before next start()
+	_tdav_producer_dsound_unprepare(dsound);
 
 	return 0;
 }
@@ -283,8 +307,6 @@ static tsk_object_t* tdav_producer_dsound_dtor(tsk_object_t * self)
 { 
 	tdav_producer_dsound_t *dsound = self;
 	if(dsound){
-		tsk_size_t i;
-
 		/* stop */
 		if(dsound->started){
 			tdav_producer_dsound_stop(self);
@@ -293,17 +315,7 @@ static tsk_object_t* tdav_producer_dsound_dtor(tsk_object_t * self)
 		/* deinit base */
 		tdav_producer_audio_deinit(TDAV_PRODUCER_AUDIO(dsound));
 		/* deinit self */
-		if(dsound->captureBuffer){
-			IDirectSoundCaptureBuffer_Release(dsound->captureBuffer);
-		}
-		if(dsound->device){
-			IDirectSoundCapture_Release(dsound->device);
-		}
-		for(i = 0; i<sizeof(dsound->notifEvents)/sizeof(HANDLE); i++){
-			if(dsound->notifEvents[i]){
-				CloseHandle(dsound->notifEvents[i]);
-			}
-		}
+		_tdav_producer_dsound_unprepare(dsound);
 	}
 
 	return self;
