@@ -173,7 +173,7 @@ int tmedia_imageattr_parse(tmedia_imageattr_xt* self, const void* in_data, tsk_s
 	%%write exec;
 
 	if( cs < %%{ write first_final; }%% ){
-		TSK_DEBUG_ERROR("Parsing failed to parse image-attr=%s", in_data);
+		TSK_DEBUG_ERROR("Parsing failed to parse image-attr=%s", (char*)in_data);
 		return -1;
 	}
 	

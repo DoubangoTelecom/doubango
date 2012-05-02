@@ -1045,7 +1045,8 @@ static int _tnet_ice_ctx_fsm_GatheringReflexiveCandidates_2_GatheringReflexiveCa
 // GatheringReflexiveCandidates -> (Failure) -> Terminated
 static int _tnet_ice_ctx_fsm_GatheringReflexiveCandidates_2_Terminated_X_Failure(va_list *app)
 {
-	return 0;
+	tnet_ice_ctx_t* self = va_arg(*app, tnet_ice_ctx_t *);
+	return _tnet_ice_ctx_signal_async(self, tnet_ice_event_type_gathering_reflexive_candidates_failed, "Gathering reflexive candidates failed");
 }
 
 // Any -> (Cancel) -> Started
