@@ -25,7 +25,7 @@
 
 // /!\ These are global values shared by all sessions and stacks. Could be set (update) per session using "session_set()"
 
-static tmedia_profile_t __profile = tmedia_profile_rtcweb;
+static tmedia_profile_t __profile = tmedia_profile_default;
 static tmedia_bandwidth_level_t __bl = tmedia_bl_unrestricted;
 static tmedia_pref_video_size_t __pref_video_size = tmedia_pref_video_size_cif; // 352 x 288: Android, iOS, WP7 
 static int32_t __jb_margin_ms = -1; // disable

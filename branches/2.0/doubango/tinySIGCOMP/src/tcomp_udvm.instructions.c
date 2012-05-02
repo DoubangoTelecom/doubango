@@ -580,7 +580,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint16_t position, ui
 		goto bail;
 	}
 
-	if( (err = tsk_sha1result(&sha, (char*)Message_Digest)) ){
+	if( (err = tsk_sha1result(&sha, (uint8_t*)Message_Digest)) ){
 		ok = tsk_false;
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
 		goto bail;

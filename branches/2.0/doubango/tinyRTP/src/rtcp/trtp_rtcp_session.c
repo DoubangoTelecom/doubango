@@ -849,7 +849,7 @@ static void _trtp_rtcp_session_set_cname(trtp_rtcp_session_t* self, const void* 
 		*((uint32_t*)&_cname[i]) ^= rand();
 	}
 
-	tsk_md5compute(_cname, sizeof(_cname), &self->cname);
+	tsk_md5compute((char*)_cname, sizeof(_cname), &self->cname);
 	self->is_cname_defined = tsk_true;
 }
 

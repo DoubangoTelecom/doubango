@@ -445,11 +445,11 @@ tsk_sha1_errcode_t tsk_sha1compute(const char* input, tsk_size_t size, tsk_sha1s
 	else if ( (ret = tsk_sha1input(&sha, (uint8_t*)input, size)) != shaSuccess ){
 		return ret;
 	}
-	else if( (ret = tsk_sha1result(&sha, (char*)digest)) != shaSuccess ){
+	else if( (ret = tsk_sha1result(&sha, digest)) != shaSuccess ){
 		return ret;
 	}
 
-	tsk_str_from_hex(digest, TSK_SHA1_DIGEST_SIZE, *result);
+	tsk_str_from_hex(digest, TSK_SHA1_DIGEST_SIZE, (char*)*result);
 
 	return shaSuccess;
 }

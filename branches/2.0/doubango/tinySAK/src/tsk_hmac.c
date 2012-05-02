@@ -68,7 +68,7 @@ int tsk_hmac_xxxcompute(const uint8_t* input, tsk_size_t input_size, const char*
 			TSK_MD5_DIGEST_CALC(key, key_size, (uint8_t*)hkey);
 		}
 		else if(type == sha1){
-			TSK_SHA1_DIGEST_CALC((uint8_t*)key, key_size, hkey);
+			TSK_SHA1_DIGEST_CALC((uint8_t*)key, key_size, (uint8_t*)hkey);
 		}
 		else return -3;
 		
@@ -101,7 +101,7 @@ digest_compute:
 			TSK_MD5_DIGEST_CALC(TSK_BUFFER_TO_U8(passx), TSK_BUFFER_SIZE(passx), digest);
 		}
 		else{
-			TSK_SHA1_DIGEST_CALC(TSK_BUFFER_TO_U8(passx), TSK_BUFFER_SIZE(passx), (char*)digest);
+			TSK_SHA1_DIGEST_CALC(TSK_BUFFER_TO_U8(passx), TSK_BUFFER_SIZE(passx), digest);
 		}
 
 		if(pass1_done){
@@ -198,7 +198,7 @@ int hmac_sha1_compute(const uint8_t* input, tsk_size_t input_size, const char* k
 	if((ret = hmac_sha1digest_compute(input, input_size, key, key_size, digest))){
 		return ret;
 	}
-	tsk_str_from_hex((uint8_t*)digest, TSK_SHA1_DIGEST_SIZE, *result);
+	tsk_str_from_hex((uint8_t*)digest, TSK_SHA1_DIGEST_SIZE, (char*)*result);
 	(*result)[TSK_SHA1_STRING_SIZE] = '\0';
 
 	return 0;

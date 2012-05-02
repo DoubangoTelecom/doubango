@@ -106,7 +106,7 @@ void tcomp_state_makeValid(tcomp_state_t* state)
 
 		tsk_sha1input(&sha, firstPart, 8);
 		tsk_sha1input(&sha, tcomp_buffer_getBuffer(state->value), tcomp_buffer_getSize(state->value));
-		err = tsk_sha1result(&sha, (char*)tcomp_buffer_getBuffer(state->identifier));
+		err = tsk_sha1result(&sha, (uint8_t*)tcomp_buffer_getBuffer(state->identifier));
 	}
 
 	/* unlock */

@@ -13,6 +13,9 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 static int __pred_find_by_pair(const tsk_list_item_t *item, const void *pair)
 {
 	if(item && item->data){
