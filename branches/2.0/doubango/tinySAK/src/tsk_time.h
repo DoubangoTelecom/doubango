@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsk_time.h
  * @brief Datetime functions.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -49,7 +49,8 @@ TINYSAK_API int tsk_gettimeofday(struct timeval *tv, struct timezone *tz);
 TINYSAK_API uint64_t tsk_time_get_ms(const struct timeval *tv);
 TINYSAK_API uint64_t tsk_time_epoch();
 TINYSAK_API uint64_t tsk_time_now();
-
+TINYSAK_API uint64_t tsk_time_ntp();
+TINYSAK_API uint64_t tsk_time_get_ntp_ms(const struct timeval *tv);
 
 TSK_END_DECLS
 

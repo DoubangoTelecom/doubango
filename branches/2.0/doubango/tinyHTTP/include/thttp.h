@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,7 +22,7 @@
 /**@file thttp.h
  * @brief HTTP (RFC 2616) and HTTP basic/digest authetication (RFC 2617) implementations.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */

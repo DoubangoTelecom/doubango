@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,7 +24,7 @@
  * @brief HMAC: Keyed-Hashing for Message Authentication (RFC 2104) / FIPS-198-1.
  * HMAC-MD5 and HMAC-SHA-1 are also implemented.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */

@@ -59,8 +59,11 @@ public:
 	uint64_t getSessionId(twrap_media_type_t media)const;
 	
 	// Defaults
-	static bool defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl);
-	static tmedia_bandwidth_level_t defaultsGetBandwidthLevel();
+	static bool defaultsSetProfile(tmedia_profile_t profile);
+	static tmedia_profile_t defaultsGetProfile();
+	static bool defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl); // @deprecated
+	static tmedia_bandwidth_level_t defaultsGetBandwidthLevel(); // @deprecated
+	static bool defaultsSetPrefVideoSize(tmedia_pref_video_size_t pref_video_size);
 	static bool defaultsSetJbMargin(uint32_t jb_margin_ms);
 	static bool defaultsSetJbMaxLateRate(uint32_t jb_late_rate_percent);
 	static bool defaultsSetEchoTail(uint32_t echo_tail);
@@ -88,6 +91,7 @@ public:
 	static int32_t defaultsGetVolume();
 	static bool defaultsSetInviteSessionTimers(int32_t timeout, const char* refresher);
 	static bool defaultsSetSRtpMode(tmedia_srtp_mode_t mode);
+	static bool defaultsSetIceEnabled(bool ice_enabled);
 
 private:
 	tmedia_session_mgr_t* m_pWrappedMgr;

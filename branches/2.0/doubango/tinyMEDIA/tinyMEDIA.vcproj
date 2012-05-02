@@ -216,6 +216,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\tinymedia\tmedia_imageattr.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\tinymedia\tmedia_jitterbuffer.h"
 				>
 			</File>
@@ -306,6 +310,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tmedia_imageattr.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tmedia_jitterbuffer.c"
 				>
 			</File>
@@ -367,6 +375,10 @@
 			>
 			<File
 				RelativePath=".\ragel\tmedia_content_cpim.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\tmedia_imageattr.rl"
 				>
 			</File>
 			<File

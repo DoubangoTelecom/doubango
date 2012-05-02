@@ -337,38 +337,34 @@ tsk_size_t tdav_codec_h261_decode(tmedia_codec_t* self, const void* in_data, tsk
 	return retsize;
 }
 
-tsk_bool_t tdav_codec_h261_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+tsk_bool_t tdav_codec_h261_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {	
 	int ret;
 	unsigned maxbr, fps, width, height;
 	tmedia_codec_video_t* h261 = (tmedia_codec_video_t*)codec;
 
-	if(!(ret = tmedia_codec_parse_fmtp(fmtp, &maxbr, &fps, &width, &height))){
-		h261->in.max_br = h261->out.max_br = maxbr * 1000;
-		h261->in.fps = h261->out.fps = fps;
-		h261->in.width = h261->out.width = width;
-		h261->in.height = h261->out.height = height;
-		return tsk_true;
+	if(tsk_striequals(att_value, "fmtp")){
+		if(!(ret = tmedia_codec_parse_fmtp(att_value, &maxbr, &fps, &width, &height))){
+			h261->in.max_br = h261->out.max_br = maxbr * 1000;
+			h261->in.fps = h261->out.fps = fps;
+			h261->in.width = h261->out.width = width;
+			h261->in.height = h261->out.height = height;
+			return tsk_true;
+		}
+		else{
+			TSK_DEBUG_WARN("Failed to match fmtp [%s]", att_value);
+		}
 	}
-	else{
-		TSK_DEBUG_WARN("Failed to match fmtp [%s]", fmtp);
-		return tsk_false;
-	}
+	return tsk_false;
 }
 
-char* tdav_codec_h261_fmtp_get(const tmedia_codec_t* self)
+char* tdav_codec_h261_sdp_att_get(const tmedia_codec_t* self, const char* att_name)
 {
 #if 0
 	return tsk_strdup("CIF=2/MaxBR=3840;QCIF=2/MaxBR=1920");
 #else
 	return tsk_strdup("QCIF=2");
 #endif
-}
-
-int tdav_codec_h261_fmtp_set(tmedia_codec_t* self, const char* fmtp)
-{
-	TSK_DEBUG_INFO("remote fmtp=%s", fmtp);
-	return 0;
 }
 
 /* constructor */
@@ -421,13 +417,13 @@ static const tmedia_codec_plugin_def_t tdav_codec_h261_plugin_def_s =
 	/* video */
 	{176, 144, 15},
 
+	tsk_null, // set()
 	tdav_codec_h261_open,
 	tdav_codec_h261_close,
 	tdav_codec_h261_encode,
 	tdav_codec_h261_decode,
-	tdav_codec_h261_fmtp_match,
-	tdav_codec_h261_fmtp_get,
-	tdav_codec_h261_fmtp_set
+	tdav_codec_h261_sdp_att_match,
+	tdav_codec_h261_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tdav_codec_h261_plugin_def_t = &tdav_codec_h261_plugin_def_s;
 

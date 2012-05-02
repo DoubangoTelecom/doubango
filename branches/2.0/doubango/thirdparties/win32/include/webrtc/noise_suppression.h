@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011 The WebRTC project authors. All Rights Reserved.
+ *  Copyright (c) 2012 The WebRTC project authors. All Rights Reserved.
  *
  *  Use of this source code is governed by a BSD-style license
  *  that can be found in the LICENSE file in the root of the source
@@ -8,8 +8,8 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-#ifndef WEBRTC_MODULES_AUDIO_PROCESSING_NS_MAIN_INTERFACE_NOISE_SUPPRESSION_H_
-#define WEBRTC_MODULES_AUDIO_PROCESSING_NS_MAIN_INTERFACE_NOISE_SUPPRESSION_H_
+#ifndef WEBRTC_MODULES_AUDIO_PROCESSING_NS_INCLUDE_NOISE_SUPPRESSION_H_
+#define WEBRTC_MODULES_AUDIO_PROCESSING_NS_INCLUDE_NOISE_SUPPRESSION_H_
 
 #include "typedefs.h"
 
@@ -18,20 +18,6 @@ typedef struct NsHandleT NsHandle;
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/*
- * This function returns the version number of the code.
- *
- * Input:
- *      - version       : Pointer to a character array where the version
- *                        info is stored.
- *      - length        : Length of version.
- *
- * Return value         :  0 - Ok
- *                        -1 - Error (probably length is not sufficient)
- */
-int WebRtcNs_get_version(char *version, short length);
-
 
 /*
  * This function creates an instance to the noise reduction structure
@@ -46,7 +32,7 @@ int WebRtcNs_get_version(char *version, short length);
  * Return value         :  0 - Ok
  *                        -1 - Error
  */
-int WebRtcNs_Create(NsHandle **NS_inst);
+int WebRtcNs_Create(NsHandle** NS_inst);
 
 
 /*
@@ -59,7 +45,7 @@ int WebRtcNs_Create(NsHandle **NS_inst);
  * Return value         :  0 - Ok
  *                        -1 - Error
  */
-int WebRtcNs_Free(NsHandle *NS_inst);
+int WebRtcNs_Free(NsHandle* NS_inst);
 
 
 /*
@@ -75,7 +61,7 @@ int WebRtcNs_Free(NsHandle *NS_inst);
  * Return value         :  0 - Ok
  *                        -1 - Error
  */
-int WebRtcNs_Init(NsHandle *NS_inst, WebRtc_UWord32 fs);
+int WebRtcNs_Init(NsHandle* NS_inst, WebRtc_UWord32 fs);
 
 /*
  * This changes the aggressiveness of the noise suppression method.
@@ -90,7 +76,7 @@ int WebRtcNs_Init(NsHandle *NS_inst, WebRtc_UWord32 fs);
  * Return value         :  0 - Ok
  *                        -1 - Error
  */
-int WebRtcNs_set_policy(NsHandle *NS_inst, int mode);
+int WebRtcNs_set_policy(NsHandle* NS_inst, int mode);
 
 
 /*
@@ -98,7 +84,7 @@ int WebRtcNs_set_policy(NsHandle *NS_inst, int mode);
  * input and output signals should always be 10ms (80 or 160 samples).
  *
  * Input
- *      - NS_inst       : VAD Instance. Needs to be initiated before call.
+ *      - NS_inst       : NS Instance. Needs to be initiated before call.
  *      - spframe       : Pointer to speech frame buffer for L band
  *      - spframe_H     : Pointer to speech frame buffer for H band
  *      - fs            : sampling frequency
@@ -111,14 +97,14 @@ int WebRtcNs_set_policy(NsHandle *NS_inst, int mode);
  * Return value         :  0 - OK
  *                        -1 - Error
  */
-int WebRtcNs_Process(NsHandle *NS_inst,
-                     short *spframe,
-                     short *spframe_H,
-                     short *outframe,
-                     short *outframe_H);
+int WebRtcNs_Process(NsHandle* NS_inst,
+                     short* spframe,
+                     short* spframe_H,
+                     short* outframe,
+                     short* outframe_H);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // WEBRTC_MODULES_AUDIO_PROCESSING_NS_MAIN_INTERFACE_NOISE_SUPPRESSION_H_
+#endif  // WEBRTC_MODULES_AUDIO_PROCESSING_NS_INCLUDE_NOISE_SUPPRESSION_H_

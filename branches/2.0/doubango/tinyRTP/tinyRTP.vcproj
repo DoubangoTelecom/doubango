@@ -227,6 +227,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\rtcp\trtp_rtcp_report_bye.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\rtcp\trtp_rtcp_report_fb.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\rtcp\trtp_rtcp_report_rr.c"
 					>
 				</File>
@@ -318,6 +326,14 @@
 				</File>
 				<File
 					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report_bye.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyrtp\rtcp\trtp_rtcp_report_fb.h"
 					>
 				</File>
 				<File

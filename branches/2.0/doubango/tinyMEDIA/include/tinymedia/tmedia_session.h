@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tmedia_session.h
  * @brief Base session object.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -120,6 +120,7 @@ tmedia_session_plugin_def_t;
 
 TINYMEDIA_API uint64_t tmedia_session_get_unique_id();
 TINYMEDIA_API int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type);
+TINYMEDIA_API int tmedia_session_set(tmedia_session_t* self, ...);
 TINYMEDIA_API int tmedia_session_cmp(const tsk_object_t* sess1, const tsk_object_t* sess2);
 TINYMEDIA_API int tmedia_session_plugin_register(const tmedia_session_plugin_def_t* plugin);
 TINYMEDIA_API const tmedia_session_plugin_def_t* tmedia_session_plugin_find_by_media(const char* media);
@@ -216,12 +217,18 @@ typedef struct tmedia_session_mgr_s
 
 	/* NAT Traversal context */
 	tnet_nat_context_handle_t* natt_ctx;
+	struct {
+		struct tnet_ice_ctx_s *ctx_audio;
+		struct tnet_ice_ctx_s *ctx_video;
+	} ice;
 
 	//! List of all sessions
 	tmedia_sessions_L_t* sessions;
 
 	//! User's parameters used to confugure plugins
 	tmedia_params_L_t* params;
+
+	TSK_DECLARE_SAFEOBJ;
 }
 tmedia_session_mgr_t;
 
@@ -372,6 +379,7 @@ TINYMEDIA_API tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type
 TINYMEDIA_API int tmedia_session_mgr_set_media_type(tmedia_session_mgr_t* self, tmedia_type_t type);
 TINYMEDIA_API tmedia_session_t* tmedia_session_mgr_find(tmedia_session_mgr_t* self, tmedia_type_t type);
 TINYMEDIA_API int tmedia_session_mgr_set_natt_ctx(tmedia_session_mgr_t* self, tnet_nat_context_handle_t* natt_ctx, const char* public_addr);
+TINYMEDIA_API int tmedia_session_mgr_set_ice_ctx(tmedia_session_mgr_t* self, struct tnet_ice_ctx_s* ctx_audio, struct tnet_ice_ctx_s* ctx_video);
 TINYMEDIA_API int tmedia_session_mgr_start(tmedia_session_mgr_t* self);
 TINYMEDIA_API int tmedia_session_mgr_set(tmedia_session_mgr_t* self, ...);
 TINYMEDIA_API int tmedia_session_mgr_set_2(tmedia_session_mgr_t* self, va_list *app);

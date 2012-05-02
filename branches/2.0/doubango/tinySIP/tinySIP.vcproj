@@ -637,6 +637,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\dialogs\tsip_dialog_invite.ice.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\dialogs\tsip_dialog_invite.qos.c"
 					>
 				</File>

@@ -38,8 +38,7 @@
 
 #define tdav_codec_g711u_open tsk_null
 #define tdav_codec_g711u_close tsk_null
-#define tdav_codec_g711u_fmtp_get tsk_null
-#define tdav_codec_g711u_fmtp_set tsk_null
+#define tdav_codec_g711u_sdp_att_get tsk_null
 
 static tsk_size_t tdav_codec_g711u_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
@@ -96,7 +95,7 @@ static tsk_size_t tdav_codec_g711u_decode(tmedia_codec_t* self, const void* in_d
 	return (in_size<<1);
 }
 
-static tsk_bool_t tdav_codec_g711u_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+static tsk_bool_t tdav_codec_g711u_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {	/* always match */
 	return tsk_true;
 }
@@ -156,13 +155,13 @@ static const tmedia_codec_plugin_def_t tdav_codec_g711u_plugin_def_s =
 	/* video */
 	{0},
 	
+	tsk_null, // set()
 	tdav_codec_g711u_open,
 	tdav_codec_g711u_close,
 	tdav_codec_g711u_encode,
 	tdav_codec_g711u_decode,
-	tdav_codec_g711u_fmtp_match,
-	tdav_codec_g711u_fmtp_get,
-	tdav_codec_g711u_fmtp_set
+	tdav_codec_g711u_sdp_att_match,
+	tdav_codec_g711u_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tdav_codec_g711u_plugin_def_t = &tdav_codec_g711u_plugin_def_s;
 
@@ -171,8 +170,7 @@ const tmedia_codec_plugin_def_t *tdav_codec_g711u_plugin_def_t = &tdav_codec_g71
 
 #define tdav_codec_g711a_open tsk_null
 #define tdav_codec_g711a_close tsk_null
-#define tdav_codec_g711a_fmtp_get tsk_null
-#define tdav_codec_g711a_fmtp_set tsk_null
+#define tdav_codec_g711a_sdp_att_get tsk_null
 
 static tsk_size_t tdav_codec_g711a_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
@@ -245,7 +243,7 @@ static tsk_size_t tdav_codec_g711a_decode(tmedia_codec_t* self, const void* in_d
 	return (in_size<<1);
 }
 
-static tsk_bool_t tdav_codec_g711a_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+static tsk_bool_t tdav_codec_g711a_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {	/* always match */
 	return tsk_true;
 }
@@ -305,12 +303,12 @@ static const tmedia_codec_plugin_def_t tdav_codec_g711a_plugin_def_s =
 	/* video */
 	{0},
 
+	tsk_null, // set()
 	tdav_codec_g711a_open,
 	tdav_codec_g711a_close,
 	tdav_codec_g711a_encode,
 	tdav_codec_g711a_decode,
-	tdav_codec_g711a_fmtp_match,
-	tdav_codec_g711a_fmtp_get,
-	tdav_codec_g711a_fmtp_set
+	tdav_codec_g711a_sdp_att_match,
+	tdav_codec_g711a_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tdav_codec_g711a_plugin_def_t = &tdav_codec_g711a_plugin_def_s;

@@ -3,7 +3,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,7 +25,7 @@
 /**@file tsip_header_Contact.c
  * @brief SIP Contact/m header.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */

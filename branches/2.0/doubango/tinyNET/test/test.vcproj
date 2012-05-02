@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(SolutionDir)\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;&quot;$(SolutionDir)\src&quot;;..\..\tinySAK\src"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -381,6 +381,10 @@
 			</File>
 			<File
 				RelativePath=".\test_dns.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test_ice.h"
 				>
 			</File>
 			<File

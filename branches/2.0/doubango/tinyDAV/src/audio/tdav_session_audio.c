@@ -28,7 +28,7 @@
 */
 #include "tinydav/audio/tdav_session_audio.h"
 
-#include "tinydav/codecs/dtmf/tdav_codec_dtmf.h"
+//#include "tinydav/codecs/dtmf/tdav_codec_dtmf.h"
 #include "tinydav/audio/tdav_consumer_audio.h"
 
 #include "tinymedia/tmedia_resampler.h"
@@ -44,11 +44,8 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-#define IS_DTMF_CODEC(codec) (TMEDIA_CODEC((codec))->plugin == tdav_codec_dtmf_plugin_def_t)
-
 static int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id);
 static struct tdav_session_audio_dtmfe_s* _tdav_session_audio_dtmfe_create(const tdav_session_audio_t* session, uint8_t event, uint16_t duration, uint32_t seq, uint32_t timestamp, uint8_t format, tsk_bool_t M, tsk_bool_t E);
-static const tmedia_codec_t* _tdav_session_audio_first_best_neg_codec(const tdav_session_audio_t* session);
 static void _tdav_session_audio_apply_gain(void* buffer, int len, int bps, int gain);
 
 /* DTMF event object */
@@ -68,38 +65,42 @@ extern const tsk_object_def_t *tdav_session_audio_dtmfe_def_t;
 static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trtp_rtp_packet_s* packet)
 {
 	tdav_session_audio_t* audio = (tdav_session_audio_t*)callback_data;
+	tdav_session_av_t* base = (tdav_session_av_t*)callback_data;
 
-	if(!audio || !packet){
+	if(!audio || !packet || !packet->header){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if(audio->consumer){
+	if(base->consumer){
 		tsk_size_t out_size = 0;
-		tmedia_codec_t* codec;
-		tsk_istr_t format;
 
 		// Find the codec to use to decode the RTP payload
-		tsk_itoa(packet->header->payload_type, &format);
-		if(!(codec = tmedia_codec_find_by_format(TMEDIA_SESSION(audio)->neg_codecs, format)) || !codec->plugin || !codec->plugin->decode){
-			TSK_DEBUG_ERROR("%s is not a valid payload for this session", format);
-			TSK_OBJECT_SAFE_FREE(codec);
-			return -2;
+		if(!audio->decoder.codec || audio->decoder.payload_type != packet->header->payload_type){
+			tsk_istr_t format;
+			TSK_OBJECT_SAFE_FREE(audio->decoder.codec);
+			tsk_itoa(packet->header->payload_type, &format);
+			if(!(audio->decoder.codec = tmedia_codec_find_by_format(TMEDIA_SESSION(audio)->neg_codecs, format)) || !audio->decoder.codec->plugin || !audio->decoder.codec->plugin->decode){
+				TSK_DEBUG_ERROR("%s is not a valid payload for this session", format);
+				return -2;
+			}
+			audio->decoder.payload_type = packet->header->payload_type;
 		}
+		
 		// Open codec if not already done
-		if(!TMEDIA_CODEC(codec)->opened){
+		if(!TMEDIA_CODEC(audio->decoder.codec)->opened){
 			int ret;
-			tsk_safeobj_lock(audio);
-			if((ret = tmedia_codec_open(codec))){
-				tsk_safeobj_unlock(audio);
-				TSK_OBJECT_SAFE_FREE(codec);
-				TSK_DEBUG_ERROR("Failed to open [%s] codec", codec->plugin->desc);
+			tsk_safeobj_lock(base);
+			if((ret = tmedia_codec_open(audio->decoder.codec))){
+				tsk_safeobj_unlock(base);
+				TSK_OBJECT_SAFE_FREE(audio->decoder.codec);
+				TSK_DEBUG_ERROR("Failed to open [%s] codec", audio->decoder.codec->plugin->desc);
 				return ret;
 			}
-			tsk_safeobj_unlock(audio);
+			tsk_safeobj_unlock(base);
 		}
 		// Decode data
-		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &audio->decoder.buffer, &audio->decoder.buffer_size, packet->header);
+		out_size = audio->decoder.codec->plugin->decode(audio->decoder.codec, packet->payload.data, packet->payload.size, &audio->decoder.buffer, &audio->decoder.buffer_size, packet->header);
 		if(out_size){
 			// Denoise (VAD, AGC, Noise suppression, ...)
 			// See tdav_consumer_audio.c::tdav_consumer_audio_get()
@@ -108,13 +109,12 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 			//}
 
 			// adjust the gain
-			if(audio->consumer->audio.gain){
-				_tdav_session_audio_apply_gain(audio->decoder.buffer, out_size, audio->consumer->audio.bits_per_sample, audio->consumer->audio.gain);
+			if(base->consumer->audio.gain){
+				_tdav_session_audio_apply_gain(audio->decoder.buffer, out_size, base->consumer->audio.bits_per_sample, base->consumer->audio.gain);
 			}
 			// consume the frame
-			tmedia_consumer_consume(audio->consumer, audio->decoder.buffer, out_size, packet->header);
+			tmedia_consumer_consume(base->consumer, audio->decoder.buffer, out_size, packet->header);
 		}
-		TSK_OBJECT_SAFE_FREE(codec);
 	}
 	return 0;
 }
@@ -122,9 +122,10 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 // Producer callback (From the producer to the network). Will encode() data before sending
 static int tdav_session_audio_producer_enc_cb(const void* callback_data, const void* buffer, tsk_size_t size)
 {
-	int ret;
+	int ret = 0;
 
 	tdav_session_audio_t* audio = (tdav_session_audio_t*)callback_data;
+	tdav_session_av_t* base = (tdav_session_av_t*)callback_data;
 
 	if(!audio){
 		TSK_DEBUG_ERROR("Null session");
@@ -137,53 +138,31 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		return 0;
 	}
 	
-	if(audio->rtp_manager){
+	if(base->rtp_manager && base->rtp_manager->is_started && audio->encoder.codec){
 		/* encode */
 		tsk_size_t out_size = 0;
 
-		ret = 0;
-
-		//
-		// Find Encoder (call one time)
-		//
-		if(!audio->encoder.codec){
-			tsk_list_item_t* item;
-			tsk_list_foreach(item, TMEDIA_SESSION(audio)->neg_codecs){
-				if(!tsk_striequals(TMEDIA_CODEC(item->data)->neg_format, TMEDIA_CODEC_FORMAT_DTMF) && 
-					!tsk_striequals(TMEDIA_CODEC(item->data)->format, TMEDIA_CODEC_FORMAT_DTMF)){
-						audio->encoder.codec = tsk_object_ref(item->data);
-						trtp_manager_set_payload_type(audio->rtp_manager, audio->encoder.codec->neg_format ? atoi(audio->encoder.codec->neg_format) : atoi(audio->encoder.codec->format));
-						/* Denoise */
-						if(audio->denoise && !audio->denoise->opened){
-							ret = tmedia_denoise_open(audio->denoise, 
-								TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), //160 (shorts) if 20ms at 8khz
-								TMEDIA_CODEC_RATE(audio->encoder.codec));
-						}
-						break;
-				}
-			}
-		}		
-		if(!audio->encoder.codec){
-			TSK_DEBUG_ERROR("Failed to find a valid codec");
-			return -3;
+		if(!base->rtp_manager->is_started){
+			TSK_DEBUG_ERROR("Not started");
+			return 0;
 		}
 
 		// Open codec if not already done
 		if(!audio->encoder.codec->opened){
-			tsk_safeobj_lock(audio);
+			tsk_safeobj_lock(base);
 			if((ret = tmedia_codec_open(audio->encoder.codec))){
-				tsk_safeobj_unlock(audio);
+				tsk_safeobj_unlock(base);
 				TSK_DEBUG_ERROR("Failed to open [%s] codec", audio->encoder.codec->plugin->desc);
 				return -4;
 			}
-			tsk_safeobj_unlock(audio);
+			tsk_safeobj_unlock(base);
 		}
 		
 		// resample if needed
-		if(audio->producer->audio.rate != audio->encoder.codec->plugin->rate){
+		if(base->producer->audio.rate != audio->encoder.codec->plugin->rate){
 			tsk_size_t resampler_result_size = 0;
 			if(!audio->decoder.resampler.instance){
-				uint32_t resampler_buff_size = ((audio->encoder.codec->plugin->rate * audio->producer->audio.ptime)/1000) * sizeof(int16_t);
+				uint32_t resampler_buff_size = ((audio->encoder.codec->plugin->rate * base->producer->audio.ptime)/1000) * sizeof(int16_t);
 				if(!(audio->decoder.resampler.instance = tmedia_resampler_create())){
 					TSK_DEBUG_ERROR("Failed to create audio resampler");
 					ret = -1;
@@ -191,7 +170,7 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 				}
 				else {
 #define TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY 5
-					if((ret = tmedia_resampler_open(audio->decoder.resampler.instance, audio->producer->audio.rate, audio->encoder.codec->plugin->rate, audio->producer->audio.ptime, audio->producer->audio.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY))){
+					if((ret = tmedia_resampler_open(audio->decoder.resampler.instance, base->producer->audio.rate, audio->encoder.codec->plugin->rate, base->producer->audio.ptime, base->producer->audio.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY))){
 						TSK_DEBUG_ERROR("Failed to open audio resampler (%d)", ret);
 						TSK_OBJECT_SAFE_FREE(audio->decoder.resampler.instance);
 						goto done;
@@ -229,15 +208,15 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		}
 		// adjust the gain
 		// Must be done after resampling
-		if(audio->producer->audio.gain){
-			_tdav_session_audio_apply_gain((void*)buffer, size, audio->producer->audio.bits_per_sample, audio->producer->audio.gain);
+		if(base->producer->audio.gain){
+			_tdav_session_audio_apply_gain((void*)buffer, size, base->producer->audio.bits_per_sample, base->producer->audio.gain);
 		}
 
 		// Encode data
 		if((audio->encoder.codec = tsk_object_ref(audio->encoder.codec))){ /* Thread safeness (SIP reINVITE or UPDATE could update the encoder) */
 			out_size = audio->encoder.codec->plugin->encode(audio->encoder.codec, buffer, size, &audio->encoder.buffer, &audio->encoder.buffer_size);
 			if(out_size){
-				ret = trtp_manager_send_rtp(audio->rtp_manager, audio->encoder.buffer, out_size, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), tsk_false/*Marker*/, tsk_true/*lastPacket*/);
+				trtp_manager_send_rtp(base->rtp_manager, audio->encoder.buffer, out_size, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), tsk_false/*Marker*/, tsk_true/*lastPacket*/);
 			}
 			tsk_object_unref(audio->encoder.codec);
 		}
@@ -263,49 +242,24 @@ static int tdav_session_audio_set(tmedia_session_t* self, const tmedia_param_t* 
 		return -1;
 	}
 
+	if(tdav_session_av_set(TDAV_SESSION_AV(self), param) == tsk_true){
+		return 0;
+	}
+
 	audio = (tdav_session_audio_t*)self;
 
 	if(param->plugin_type == tmedia_ppt_consumer){
-		return tmedia_consumer_set(audio->consumer, param);
+		TSK_DEBUG_ERROR("Not expected");
 	}
 	else if(param->plugin_type == tmedia_ppt_producer){
-		return tmedia_producer_set(audio->producer, param);
+		TSK_DEBUG_ERROR("Not expected");
 	}
 	else{
-		if(param->value_type == tmedia_pvt_pchar){
-			if(tsk_striequals(param->key, "remote-ip")){
-				if(param->value){
-					tsk_strupdate(&audio->remote_ip, param->value);
-				}
-			}
-			else if(tsk_striequals(param->key, "local-ip")){
-				tsk_strupdate(&audio->local_ip, param->value);
-			}
-			else if(tsk_striequals(param->key, "local-ipver")){
-				audio->useIPv6 = tsk_striequals(param->value, "ipv6");
-			}
-		}
-		else if(param->value_type == tmedia_pvt_int32){
+		if(param->value_type == tmedia_pvt_int32){
 			if(tsk_striequals(param->key, "echo-supp")){
 				if(audio->denoise){
 					audio->denoise->echo_supp_enabled = (TSK_TO_INT32((uint8_t*)param->value) != 0);
 				}
-			}
-			else if(tsk_striequals(param->key, "srtp-optional")){
-#if HAVE_SRTP
-				audio->srtp_mode = (TSK_TO_INT32((uint8_t*)param->value) != 0);
-#endif
-			}
-			else if(tsk_striequals(param->key, "srtp-mandatory")){
-#if HAVE_SRTP
-				audio->srtp_mode = (TSK_TO_INT32((uint8_t*)param->value) != 0);
-#endif
-			}
-		}
-		else if(param->value_type == tmedia_pvt_pobject){
-			if(tsk_striequals(param->key, "natt-ctx")){
-				TSK_OBJECT_SAFE_FREE(audio->natt_ctx);
-				audio->natt_ctx = tsk_object_ref(param->value);
 			}
 		}
 	}
@@ -316,73 +270,43 @@ static int tdav_session_audio_set(tmedia_session_t* self, const tmedia_param_t* 
 static int tdav_session_audio_get(tmedia_session_t* self, tmedia_param_t* param)
 {
 	int ret = 0;
-	tdav_session_audio_t* audio;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-
-	audio = (tdav_session_audio_t*)self;
-
-	if(param->plugin_type == tmedia_ppt_session){
-		if(param->value_type == tmedia_pvt_int32){
-			if(tsk_striequals(param->key, "srtp-enabled")){
-#if HAVE_SRTP
-				if(audio->rtp_manager){
-					((int8_t*)param->value)[0] = trtp_srtp_is_active(audio->rtp_manager);
-				}
-#endif
-			}
-		}
+	
+	if(tdav_session_av_get(TDAV_SESSION_AV(self), param) == tsk_true){
+		return 0;
 	}
 
-	return 0;
+	TSK_DEBUG_ERROR("Not expected");
+	return -2;
 }
 
 static int tdav_session_audio_prepare(tmedia_session_t* self)
 {
-	tdav_session_audio_t* audio;
-	int ret = 0;
+	tdav_session_av_t* base = (tdav_session_av_t*)(self);
+	int ret;
 
-	audio = (tdav_session_audio_t*)self;
-
-	/* set local port */
-	if(!audio->rtp_manager){
-		if((audio->rtp_manager = trtp_manager_create(audio->rtcp_enabled, audio->local_ip, audio->useIPv6))){
-
-			ret = trtp_manager_set_rtp_callback(audio->rtp_manager, tdav_session_audio_rtp_cb, audio);
-			ret = trtp_manager_set_port_range(audio->rtp_manager, tmedia_defaults_get_rtp_port_range_start(), tmedia_defaults_get_rtp_port_range_stop());
-			ret = trtp_manager_prepare(audio->rtp_manager);
-			if(audio->natt_ctx){
-				ret = trtp_manager_set_natt_ctx(audio->rtp_manager, audio->natt_ctx);
-			}
-		}
+	if((ret = tdav_session_av_prepare(base))){
+		TSK_DEBUG_ERROR("tdav_session_av_prepare(audio) failed");
+		return ret;
 	}
 
-	/* SRTP */
-#if HAVE_SRTP
-	{
-		if(audio->remote_srtp_neg.pending){
-			char* str = tsk_null;
-			audio->remote_srtp_neg.pending = tsk_false;
-			tsk_sprintf(&str, "%d %s inline:%s", audio->remote_srtp_neg.tag, trtp_srtp_crypto_type_strings[audio->remote_srtp_neg.crypto_type], audio->remote_srtp_neg.key);
-			trtp_srtp_set_remote(audio->rtp_manager, str);
-			TSK_FREE(str);
-		}
+	if(base->rtp_manager){
+		ret = trtp_manager_set_rtp_callback(base->rtp_manager, tdav_session_audio_rtp_cb, base);
 	}
-#endif
-
-	/* Consumer will be prepared in tdav_session_audio_start() */
-	/* Producer will be prepared in tdav_session_audio_start() */
 
 	return ret;
 }
 
 static int tdav_session_audio_start(tmedia_session_t* self)
 {
+	int ret;
 	tdav_session_audio_t* audio;
 	const tmedia_codec_t* codec;
+	tdav_session_av_t* base;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -390,83 +314,45 @@ static int tdav_session_audio_start(tmedia_session_t* self)
 	}
 
 	audio = (tdav_session_audio_t*)self;
+	base = (tdav_session_av_t*)self;
 
-	if(!(codec = _tdav_session_audio_first_best_neg_codec(audio))){
+	if(!(codec = tdav_session_av_get_best_neg_codec(base))){
 		TSK_DEBUG_ERROR("No codec matched");
 		return -2;
 	}
+	
+	TSK_OBJECT_SAFE_FREE(audio->encoder.codec);
+	audio->encoder.codec = tsk_object_ref((tsk_object_t*)codec);
 
-	if(audio->rtp_manager){
-		int ret;
-		/* RTP/RTCP manager: use latest information. */
-		ret = trtp_manager_set_rtp_remote(audio->rtp_manager, audio->remote_ip, audio->remote_port);
-		//trtp_manager_set_payload_type(audio->rtp_manager, codec->neg_format ? atoi(codec->neg_format) : atoi(codec->format));
-		ret = trtp_manager_start(audio->rtp_manager);
-
-		// because of AudioUnit under iOS => prepare both consumer and producer then start() at the same time
-		/* prepare consumer and producer */
-		if(audio->producer) tmedia_producer_prepare(audio->producer, codec);
-		if(audio->consumer) tmedia_consumer_prepare(audio->consumer, codec);
-		
-		/* start consumer and producer */
-		if(audio->consumer) tmedia_consumer_start(audio->consumer);
-		if(audio->producer) tmedia_producer_start(audio->producer);
-
-		/* Denoise (AEC, Noise Suppression, AGC) */
-		if(audio->denoise && audio->encoder.codec){
-			tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), TMEDIA_CODEC_RATE(audio->encoder.codec));
-		}
-
-		/* for test */
-		//trtp_manager_send_rtp(audio->rtp_manager, "test", 4, tsk_true);
+	if((ret = tdav_session_av_start(base, codec))){
+		TSK_DEBUG_ERROR("tdav_session_av_start(audio) failed");
 		return ret;
 	}
-	else{
-		TSK_DEBUG_ERROR("Invalid RTP/RTCP manager");
-		return -3;
+
+	if(base->rtp_manager){
+		trtp_manager_set_payload_type(base->rtp_manager, audio->encoder.codec->neg_format ? atoi(audio->encoder.codec->neg_format) : atoi(audio->encoder.codec->format));
+		/* Denoise (AEC, Noise Suppression, AGC) */
+		if(audio->denoise){
+			tmedia_denoise_close(audio->denoise);
+			tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), TMEDIA_CODEC_RATE(audio->encoder.codec));
+		}
 	}
 
-	return 0;
+	return ret;
 }
 
 static int tdav_session_audio_stop(tmedia_session_t* self)
 {
-	tdav_session_audio_t* audio;
-	tmedia_codec_t* codec = tsk_null;
-
-	if(!self){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-
-	audio = (tdav_session_audio_t*)self;
-
-	/* RTP/RTCP manager */
-	if(audio->rtp_manager){
-		trtp_manager_stop(audio->rtp_manager);
-	}
-
-	/* Consumer */
-	if(audio->consumer){
-		tmedia_consumer_stop(audio->consumer);
-	}
-	/* Producer */
-	if(audio->producer){
-		tmedia_producer_stop(audio->producer);
-	}
-
-	/* close codec to force open() for next start (e.g SIP UPDATE with SDP) */
-	if((codec = tsk_object_ref(TSK_LIST_FIRST_DATA(self->neg_codecs)))){
-		tmedia_codec_close(codec);
-		tsk_object_unref(codec);
-	}
-
-	return 0;
+	int ret = tdav_session_av_stop(TDAV_SESSION_AV(self));
+	TSK_OBJECT_SAFE_FREE(TDAV_SESSION_AUDIO(self)->encoder.codec);
+	TSK_OBJECT_SAFE_FREE(TDAV_SESSION_AUDIO(self)->decoder.codec);
+	return ret;
 }
 
 static int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 {
 	tdav_session_audio_t* audio;
+	tdav_session_av_t* base;
 	tmedia_codec_t* codec;
 	int ret, rate = 8000, ptime = 20;
 	uint16_t duration;
@@ -481,6 +367,7 @@ static int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 	}
 
 	audio = (tdav_session_audio_t*)self;
+	base = (tdav_session_av_t*)self;
 
 	// Find the DTMF codec to use to use the RTP payload
 	if((codec = tmedia_codec_find_by_format(TMEDIA_SESSION(audio)->codecs, TMEDIA_CODEC_FORMAT_DTMF))){
@@ -490,7 +377,7 @@ static int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 	}
 
 	/* do we have an RTP manager? */
-	if(!audio->rtp_manager){
+	if(!base->rtp_manager){
 		TSK_DEBUG_ERROR("No RTP manager associated to this session");
 		return -2;
 	}
@@ -593,271 +480,48 @@ static int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 
 static int tdav_session_audio_pause(tmedia_session_t* self)
 {
-	tdav_session_audio_t* audio;
-
-	audio = (tdav_session_audio_t*)self;
-
-	if(!self){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-
-	/* Consumer */
-	if(audio->consumer){
-		tmedia_consumer_pause(audio->consumer);
-	}
-	/* Producer */
-	if(audio->producer){
-		tmedia_producer_pause(audio->producer);
-	}
-
-	return 0;
+	return tdav_session_av_pause(TDAV_SESSION_AV(self));
 }
 
 static const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 {
-	tdav_session_audio_t* audio;
-	tsk_bool_t changed = tsk_false;
+	tsk_bool_t updated = tsk_false;
+	const tsdp_header_M_t* ret;
+	tdav_session_av_t* base = TDAV_SESSION_AV(self);
 
-	if(!self || !self->plugin){
-		TSK_DEBUG_ERROR("Invalid parameter");
+
+	if(!(ret = tdav_session_av_get_lo(base, &updated))){
+		TSK_DEBUG_ERROR("tdav_session_av_get_lo(audio) failed");
 		return tsk_null;
 	}
 
-	audio = (tdav_session_audio_t*)self;
-
-	if(!audio->rtp_manager || !audio->rtp_manager->transport){
-		TSK_DEBUG_ERROR("RTP/RTCP manager in invalid");
-		return tsk_null;
-	}
-
-	if(self->ro_changed && self->M.lo){
-		/* Codecs */
-		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "fmtp");
-		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "rtpmap");
-		tsk_list_clear_items(self->M.lo->FMTs);
-
-		/* QoS */
-		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "curr");
-		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "des");
-		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "conf");
-
-		/* SRTP */
-		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "crypto");
-	}
-
-	changed = (self->ro_changed || !self->M.lo);
-
-	if(!self->M.lo){
-		if((self->M.lo = tsdp_header_M_create(self->plugin->media, audio->rtp_manager->rtp.public_port, "RTP/AVP"))){
-			/* If NATT is active, do not rely on the global IP address Connection line */
-			if(audio->natt_ctx){
-				tsdp_header_M_add_headers(self->M.lo,
-					TSDP_HEADER_C_VA_ARGS("IN", audio->useIPv6 ? "IP6" : "IP4", audio->rtp_manager->rtp.public_ip),
-					tsk_null);
-			}
-			/* 3GPP TS 24.229 - 6.1.1 General
-			In order to support accurate bandwidth calculations, the UE may include the "a=ptime" attribute for all "audio" media
-			lines as described in RFC 4566 [39]. If a UE receives an "audio" media line with "a=ptime" specified, the UE should
-			transmit at the specified packetization rate. If a UE receives an "audio" media line which does not have "a=ptime"
-			specified or the UE does not support the "a=ptime" attribute, the UE should transmit at the default codec packetization
-			rate as defined in RFC 3551 [55A]. The UE will transmit consistent with the resources available from the network.
-
-			For "video" and "audio" media types that utilize the RTP/RTCP, the UE shall specify the proposed bandwidth for each
-			media stream utilizing the "b=" media descriptor and the "AS" bandwidth modifier in the SDP.
-
-			The UE shall include the MIME subtype "telephone-event" in the "m=" media descriptor in the SDP for audio media
-			flows that support both audio codec and DTMF payloads in RTP packets as described in RFC 4733 [23].
-			*/
-			tsdp_header_M_add_headers(self->M.lo,
-				TSDP_HEADER_A_VA_ARGS("ptime", "20"),
-				tsk_null);
-			// the "telephone-event" fmt/rtpmap is added below
-		}
-		else{
-			TSK_DEBUG_ERROR("Failed to create lo");
-			return tsk_null;
-		}
+	if(updated){
+		tsk_safeobj_lock(base);
+		TSK_OBJECT_SAFE_FREE(TDAV_SESSION_AUDIO(self)->encoder.codec);
+		tsk_safeobj_unlock(base);
 	}
 	
-	if(changed){
-		tmedia_codecs_L_t* neg_codecs = tsk_null;
-
-		if(self->M.ro){
-			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
-			/* update negociated codecs */
-			if((neg_codecs = tmedia_session_match_codec(self, self->M.ro))){
-				self->neg_codecs = neg_codecs;
-				tsk_safeobj_lock(audio);
-				TSK_OBJECT_SAFE_FREE(audio->encoder.codec);
-				tsk_safeobj_unlock(audio);
-			}
-			/* from codecs to sdp */
-			if(TSK_LIST_IS_EMPTY(self->neg_codecs) || ((self->neg_codecs->tail == self->neg_codecs->head) && IS_DTMF_CODEC(TSK_LIST_FIRST_DATA(self->neg_codecs)))){
-				self->M.lo->port = 0; /* Keep the RTP transport and reuse it when we receive a reINVITE or UPDATE request */
-				goto DONE;
-			}
-			else{
-				tmedia_codec_to_sdp(self->neg_codecs, self->M.lo);
-			}
-		}
-		else{
-			/* from codecs to sdp */
-			tmedia_codec_to_sdp(self->codecs, self->M.lo);
-		}
-
-		/* Hold/Resume */
-		tsdp_header_M_set_holdresume_att(self->M.lo, self->lo_held, self->ro_held);
-		
-		/* SRTP */
-#if HAVE_SRTP
-		{
-			tsk_bool_t is_srtp_remote_mandatory = (self->M.ro && (tsk_striequals(self->M.ro->proto, "RTP/SAVP") || tsk_striequals(self->M.ro->proto, "RTP/SAVPF")));
-			tsk_bool_t is_srtp_remote_optional = (self->M.ro && (tsdp_header_M_findA(self->M.ro, "crypto") != tsk_null));
-			if((audio->srtp_mode == tmedia_srtp_mode_optional && (is_srtp_remote_optional || is_srtp_remote_mandatory || !self->M.ro)) || audio->srtp_mode == tmedia_srtp_mode_mandatory){
-				const trtp_srtp_ctx_xt *ctx = tsk_null;
-				tsk_size_t ctx_count = 0, ctx_idx;
-				char* str = tsk_null;
-				// local
-				trtp_srtp_get_ctx_local(audio->rtp_manager, &ctx, &ctx_count);
-				for(ctx_idx = 0; ctx_idx < ctx_count; ++ctx_idx){
-					tsk_sprintf(&str, "%d %s inline:%s", ctx[ctx_idx].tag, trtp_srtp_crypto_type_strings[ctx[ctx_idx].crypto_type], ctx[ctx_idx].key_str);
-					tsdp_header_M_add_headers(self->M.lo,
-						TSDP_HEADER_A_VA_ARGS("crypto", str),
-						tsk_null);
-					TSK_FREE(str);
-				}
-			}
-			
-			if(is_srtp_remote_mandatory || (audio->srtp_mode == tmedia_srtp_mode_mandatory) || trtp_srtp_is_initialized(audio->rtp_manager)){
-				tsk_strupdate(&self->M.lo->proto, "RTP/SAVP");
-			}
-		}
-#endif
-
-		///* 3GPP TS 24.229 - 6.1.1 General
-		//	The UE shall include the MIME subtype "telephone-event" in the "m=" media descriptor in the SDP for audio media
-		//	flows that support both audio codec and DTMF payloads in RTP packets as described in RFC 4733 [23].
-		//*/
-		//tsdp_header_M_add_fmt(self->M.lo, TMEDIA_CODEC_FORMAT_DTMF);
-		//tsdp_header_M_add_headers(self->M.lo,
-		//			TSDP_HEADER_A_VA_ARGS("fmtp", TMEDIA_CODEC_FORMAT_DTMF" 0-15"),
-		//		tsk_null);
-		//tsdp_header_M_add_headers(self->M.lo,
-		//			TSDP_HEADER_A_VA_ARGS("rtpmap", TMEDIA_CODEC_FORMAT_DTMF" telephone-event/8000"),
-		//		tsk_null);
-		/* QoS */
-		if(self->qos){
-			tmedia_qos_tline_t* ro_tline;
-			if(self->M.ro && (ro_tline = tmedia_qos_tline_from_sdp(self->M.ro))){
-				tmedia_qos_tline_set_ro(self->qos, ro_tline);
-				TSK_OBJECT_SAFE_FREE(ro_tline);
-			}
-			tmedia_qos_tline_to_sdp(self->qos, self->M.lo);
-		}
-DONE:;
-	}
-
-	return self->M.lo;
+	return ret;
 }
 
 static int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
-	tdav_session_audio_t* audio;
-	tmedia_codecs_L_t* neg_codecs;
-	tsk_bool_t is_srtp_remote_mandatory;
-	tsk_bool_t crypto_matched = tsk_false;
+	int ret;
+	tsk_bool_t updated = tsk_false;
+	tdav_session_av_t* base = TDAV_SESSION_AV(self);
 
-	if(!self || !m){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
+	if((ret = tdav_session_av_set_ro(base, m, &updated))){
+		TSK_DEBUG_ERROR("tdav_session_av_set_ro(audio) failed");
+		return ret;
 	}
 
-	audio = (tdav_session_audio_t*)self;
+	if(updated){
+		tsk_safeobj_lock(base);
+		TSK_OBJECT_SAFE_FREE(TDAV_SESSION_AUDIO(self)->encoder.codec);
+		tsk_safeobj_unlock(base);
+	}	
 
-	/* update remote offer */
-	TSK_OBJECT_SAFE_FREE(self->M.ro);
-	self->M.ro = tsk_object_ref((void*)m);
-
-	is_srtp_remote_mandatory = (tsk_striequals(m->proto, "RTP/SAVP") || tsk_striequals(m->proto, "RTP/SAVPF"));
-
-	if(self->M.lo){
-		if((neg_codecs = tmedia_session_match_codec(self, m))){
-			/* update negociated codecs */
-			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
-			self->neg_codecs = neg_codecs;
-			TSK_OBJECT_SAFE_FREE(audio->encoder.codec);
-		}
-		else{
-			TSK_DEBUG_ERROR("None Match");
-			return -1;
-		}
-		/* QoS */
-		if(self->qos){
-			tmedia_qos_tline_t* ro_tline;
-			if(self->M.ro && (ro_tline = tmedia_qos_tline_from_sdp(self->M.ro))){
-				tmedia_qos_tline_set_ro(self->qos, ro_tline);
-				TSK_OBJECT_SAFE_FREE(ro_tline);
-			}
-		}
-	}
-
-	/* get connection associated to this media line
-	* If the connnection is global, then the manager will call tdav_session_audio_set() */
-	if(m->C && m->C->addr){
-		tsk_strupdate(&audio->remote_ip, m->C->addr);
-		audio->useIPv6 = tsk_striequals(m->C->addrtype, "IP6");
-	}
-	/* set remote port */
-	audio->remote_port = m->port;
-
-	/* SRTP */
-#if HAVE_SRTP
-	if(audio->srtp_mode == tmedia_srtp_mode_optional || audio->srtp_mode == tmedia_srtp_mode_mandatory){
-		tsk_size_t i = 0;
-		const tsdp_header_A_t* A;
-		int ret;
-		while((A = tsdp_header_M_findA_at(m, "crypto", i++))){
-			if(audio->rtp_manager){
-				if((ret = trtp_srtp_set_remote(audio->rtp_manager, A->value)) == 0){
-					crypto_matched = tsk_true;
-					break;
-				}
-			}
-			else{
-				if((ret = trtp_srtp_match_line(A->value, &audio->remote_srtp_neg.tag, (int32_t*)&audio->remote_srtp_neg.crypto_type, audio->remote_srtp_neg.key, (sizeof(audio->remote_srtp_neg.key) - 1))) == 0){
-					crypto_matched = tsk_true;
-					audio->remote_srtp_neg.pending = tsk_true;
-					break;
-				}
-			}
-		}
-		if((audio->srtp_mode == tmedia_srtp_mode_mandatory) && !crypto_matched){// local require but none match
-			TSK_DEBUG_ERROR("SRTP negotiation failed");
-			return -3;
-		}
-	}
-#endif
-	
-	if(is_srtp_remote_mandatory && !crypto_matched){// remote require but none match
-		TSK_DEBUG_ERROR("SRTP negotiation failed");
-		return -4;
-	}
-	
-
-	return 0;
-}
-
-/* first best negotiated codec (ignore dtmf) */
-const tmedia_codec_t* _tdav_session_audio_first_best_neg_codec(const tdav_session_audio_t* session)
-{
-	const tsk_list_item_t* item;
-	tsk_list_foreach(item, TMEDIA_SESSION(session)->neg_codecs){
-		if(!IS_DTMF_CODEC(item->data)){
-			return TMEDIA_CODEC(item->data);
-		}
-	}
-	return tsk_null;
+	return ret;
 }
 
 /* apply gain */
@@ -889,6 +553,7 @@ void _tdav_session_audio_apply_gain(void* buffer, int len, int bps, int gain)
 tdav_session_audio_dtmfe_t* _tdav_session_audio_dtmfe_create(const tdav_session_audio_t* session, uint8_t event, uint16_t duration, uint32_t seq, uint32_t timestamp, uint8_t format, tsk_bool_t M, tsk_bool_t E)
 {
 	tdav_session_audio_dtmfe_t* dtmfe;
+	const tdav_session_av_t* base = (const tdav_session_av_t*)session;
 	static uint8_t volume = 10;
 	static uint32_t ssrc = 0x5234A8;
 
@@ -908,7 +573,7 @@ tdav_session_audio_dtmfe_t* _tdav_session_audio_dtmfe_create(const tdav_session_
 	}
 	dtmfe->session = session;
 
-	if(!(dtmfe->packet = trtp_rtp_packet_create((session && session->rtp_manager) ? session->rtp_manager->rtp.ssrc : ssrc, seq, timestamp, format, M))){
+	if(!(dtmfe->packet = trtp_rtp_packet_create((session && base->rtp_manager) ? base->rtp_manager->rtp.ssrc : ssrc, seq, timestamp, format, M))){
 		TSK_DEBUG_ERROR("Failed to create DTMF RTP packet");
 		TSK_OBJECT_SAFE_FREE(dtmfe);
 		return tsk_null;
@@ -931,7 +596,6 @@ tdav_session_audio_dtmfe_t* _tdav_session_audio_dtmfe_create(const tdav_session_
 int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id)
 {
 	tdav_session_audio_dtmfe_t* dtmfe = (tdav_session_audio_dtmfe_t*)arg;
-	int ret;
 
 	if(!dtmfe || !dtmfe->session){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -940,12 +604,12 @@ int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id)
 
 	/* Send the data */
 	TSK_DEBUG_INFO("Sending DTMF event");
-	ret = trtp_manager_send_rtp_2(dtmfe->session->rtp_manager, dtmfe->packet);
+	trtp_manager_send_rtp_packet(TDAV_SESSION_AV(dtmfe->session)->rtp_manager, dtmfe->packet, tsk_false);
 
 	/* Remove and delete the event from the queue */
 	tsk_list_remove_item_by_data(dtmfe->session->dtmf_events, dtmfe);
 
-	return ret;
+	return 0;
 }
 
 //=================================================================================================
@@ -954,84 +618,72 @@ int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id)
 /* constructor */
 static tsk_object_t* tdav_session_audio_ctor(tsk_object_t * self, va_list * app)
 {
-	tdav_session_audio_t *session = self;
-	if(session){
-		/* init base: called by tmedia_session_create() */
-		/* init self */
-		uint64_t session_id = TMEDIA_SESSION(session)->id;
-		tsk_safeobj_init(session);
-		if(!session_id){ // set the session id if not already done
-			TMEDIA_SESSION(session)->id = session_id = tmedia_session_get_unique_id();
+	tdav_session_audio_t *audio = self;
+	if(audio){
+		int ret;
+		tdav_session_av_t *base = TDAV_SESSION_AV(self);
+		static const tsk_bool_t is_audio = tsk_true;
+
+		/* init() base */
+		if((ret = tdav_session_av_init(base, is_audio)) != 0){
+			TSK_DEBUG_ERROR("tdav_session_av_init(audio) failed");
+			return tsk_null;
 		}
-		if(!(session->consumer = tmedia_consumer_create(tdav_session_audio_plugin_def_t->type, session_id))){
-			TSK_DEBUG_ERROR("Failed to create Audio consumer");
+
+		/* init() self */
+		if(base->producer){
+			tmedia_producer_set_enc_callback(base->producer, tdav_session_audio_producer_enc_cb, audio);
 		}
-		if((session->producer = tmedia_producer_create(tdav_session_audio_plugin_def_t->type, session_id))){
-			tmedia_producer_set_enc_callback(session->producer, tdav_session_audio_producer_enc_cb, self);
+		if(base->consumer){
+			if(!(audio->denoise = tmedia_denoise_create())){
+				TSK_DEBUG_WARN("No Audio denoiser found");
+			}
+			else{
+				// IMPORTANT: This means that the consumer must be child of "tdav_consumer_audio_t" object
+				tdav_consumer_audio_set_denoise(TDAV_CONSUMER_AUDIO(base->consumer), audio->denoise);
+			}
 		}
-		else{
-			TSK_DEBUG_ERROR("Failed to create Audio producer");
-		}
-		if(!(session->denoise = tmedia_denoise_create())){
-			TSK_DEBUG_WARN("No Audio denoiser found");
-		}
-		else if(session->consumer){// IMPORTANT: This means that the consumer must be child of "tdav_consumer_audio_t" object.
-			tdav_consumer_audio_set_denoise(TDAV_CONSUMER_AUDIO(session->consumer), session->denoise);
-		}
-#if HAVE_SRTP
-		session->srtp_mode = tmedia_defaults_get_srtp_mode();
-#endif
 	}
 	return self;
 }
 /* destructor */
 static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 { 
-	tdav_session_audio_t *session = self;
-	if(session){
-
+	tdav_session_audio_t *audio = self;
+	if(audio){
+		tdav_session_audio_stop((tmedia_session_t*)audio);
 		// Do it in this order (deinit self first)
 
 		/* Timer manager */
-		if(session->timer.started){
-			if(session->dtmf_events){
+		if(audio->timer.started){
+			if(audio->dtmf_events){
 				/* Cancel all events */
 				tsk_list_item_t* item;
-				tsk_list_foreach(item, session->dtmf_events){
+				tsk_list_foreach(item, audio->dtmf_events){
 					tsk_timer_mgr_global_cancel(((tdav_session_audio_dtmfe_t*)item->data)->timer_id);
 				}
 			}
 			tsk_timer_mgr_global_stop();
 		}
-		if(session->timer.created){
+		if(audio->timer.created){
 			tsk_timer_mgr_global_unref();
 		}
 		/* CleanUp the DTMF events */
-		TSK_OBJECT_SAFE_FREE(session->dtmf_events);
+		TSK_OBJECT_SAFE_FREE(audio->dtmf_events);
+		
+		TSK_OBJECT_SAFE_FREE(audio->denoise);
 
-		/* deinit self (rtp manager should be destroyed after the producer) */
-		TSK_OBJECT_SAFE_FREE(session->consumer);
-		TSK_OBJECT_SAFE_FREE(session->producer);
-		TSK_OBJECT_SAFE_FREE(session->rtp_manager);
-		TSK_FREE(session->remote_ip);
-		TSK_FREE(session->local_ip);
-		TSK_OBJECT_SAFE_FREE(session->denoise);
-
-		TSK_OBJECT_SAFE_FREE(session->encoder.codec);
-		TSK_FREE(session->encoder.buffer);
-		TSK_FREE(session->decoder.buffer);
+		TSK_OBJECT_SAFE_FREE(audio->encoder.codec);
+		TSK_FREE(audio->encoder.buffer);
+		TSK_OBJECT_SAFE_FREE(audio->decoder.codec);
+		TSK_FREE(audio->decoder.buffer);
 		
 		// free resampler
-		TSK_FREE(session->decoder.resampler.buffer);
-		TSK_OBJECT_SAFE_FREE(session->decoder.resampler.instance);
-
-		/* NAT Traversal context */
-		TSK_OBJECT_SAFE_FREE(session->natt_ctx);
-
-		tsk_safeobj_deinit(session);
+		TSK_FREE(audio->decoder.resampler.buffer);
+		TSK_OBJECT_SAFE_FREE(audio->decoder.resampler.instance);		
 
 		/* deinit base */
-		tmedia_session_deinit(self);
+		tdav_session_av_deinit(TDAV_SESSION_AV(self));
 	}
 
 	return self;

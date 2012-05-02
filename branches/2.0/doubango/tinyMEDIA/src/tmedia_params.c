@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tmedia_params.c
  * @brief Media parameters used to configure any session or plugin.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -43,7 +43,7 @@ tmedia_param_t* tmedia_param_create(tmedia_param_access_type_t access_type,
 {
 	tmedia_param_t* param;
 	
-	if(!key ||!value){
+	if(!key || (!value && (value_type != tmedia_pvt_pobject && value_type != tmedia_pvt_pchar))){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
@@ -62,7 +62,6 @@ tmedia_param_t* tmedia_param_create(tmedia_param_access_type_t access_type,
 				case tmedia_pvt_int32:
 					if(param->value = tsk_calloc(1, sizeof(int32_t))){
 						memcpy(param->value, value, sizeof(int32_t));
-						//*((int32_t*)param->value) = *((int32_t*)value);
 					}
 					break;
 				case tmedia_pvt_pobject:
@@ -74,7 +73,6 @@ tmedia_param_t* tmedia_param_create(tmedia_param_access_type_t access_type,
 				case tmedia_pvt_int64:
 					if(param->value = tsk_calloc(1, sizeof(int64_t))){
 						memcpy(param->value, value, sizeof(int64_t));
-						//*((int64_t*)param->value) = *((int64_t*)value);
 					}
 					break;
 			}

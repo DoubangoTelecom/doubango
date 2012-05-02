@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsk_object.h
  * @brief Base object implementation.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -82,6 +82,14 @@ typedef void tsk_object_t;
 * Internal macro to get the definition of the object.
 */
 #define TSK_OBJECT_DEF(self)			((const tsk_object_def_t*)self)
+
+/** Object meta-data (definition) */
+typedef struct tsk_object_header_s{
+	const void* base; /**< Opaque data holding a pointer to the actual meta-data(size, constructor, destructor and comparator) */
+	int	refCount; /**< Reference counter. */
+}
+tsk_object_header_t;
+#define TSK_OBJECT_HEADER(object)	((tsk_object_header_t*)object)
 
 /**@ingroup tsk_object_group
 * Meta-data used of define an object.

@@ -60,7 +60,7 @@ static void pack_SID(const Word16 ituBits[], uint8_t bitstream[]);
 
 /* ============ G.729ab Plugin interface ================= */
 
-#define tdav_codec_g729ab_fmtp_set tsk_null
+#define tdav_codec_g729ab_set tsk_null
 
 static int tdav_codec_g729ab_open(tmedia_codec_t* self)
 {
@@ -234,34 +234,36 @@ static tsk_size_t tdav_codec_g729ab_decode(tmedia_codec_t* self, const void* in_
 	return out_size;
 }
 
-static tsk_bool_t tdav_codec_g729ab_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
-{
-	tsk_params_L_t* params = tsk_null;
-	const char* val_str;
-
+static tsk_bool_t tdav_codec_g729ab_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
+{	
 	tdav_codec_g729ab_t* g729a = (tdav_codec_g729ab_t*)codec;
 
-	if((params = tsk_params_fromstring(fmtp, ";", tsk_true))){
-		if((val_str = tsk_params_get_param_value(params, "annexb"))){
-			g729a->encoder.vad_enable = tsk_strequals(val_str, "yes");
+	if(tsk_striequals(att_name, "fmtp")){
+		tsk_params_L_t* params = tsk_null;
+		const char* val_str;
+		if((params = tsk_params_fromstring(att_value, ";", tsk_true))){
+			if((val_str = tsk_params_get_param_value(params, "annexb"))){
+				g729a->encoder.vad_enable = tsk_strequals(val_str, "yes");
+			}
+			TSK_OBJECT_SAFE_FREE(params);
 		}
-
-		TSK_OBJECT_SAFE_FREE(params);
 	}
-
 	return tsk_true;
 }
 
-static char* tdav_codec_g729ab_fmtp_get(const tmedia_codec_t* codec)
+static char* tdav_codec_g729ab_sdp_att_get(const tmedia_codec_t* codec, const char* att_name)
 {
 	tdav_codec_g729ab_t* g729a = (tdav_codec_g729ab_t*)codec;
 
-	if(g729a->encoder.vad_enable){
-		return tsk_strdup("annexb=yes");
+	if(tsk_striequals(att_name, "fmtp")){
+		if(g729a->encoder.vad_enable){
+			return tsk_strdup("annexb=yes");
+		}
+		else{
+			return tsk_strdup("annexb=no");
+		}
 	}
-	else{
-		return tsk_strdup("annexb=no");
-	}
+	return tsk_null;
 }
 
 
@@ -445,13 +447,13 @@ static const tmedia_codec_plugin_def_t tdav_codec_g729ab_plugin_def_s =
 	/* video */
 	{0},
 
+	tdav_codec_g729ab_set,
 	tdav_codec_g729ab_open,
 	tdav_codec_g729ab_close,
 	tdav_codec_g729ab_encode,
 	tdav_codec_g729ab_decode,
-	tdav_codec_g729ab_fmtp_match,
-	tdav_codec_g729ab_fmtp_get,
-	tdav_codec_g729ab_fmtp_set
+	tdav_codec_g729ab_sdp_att_match,
+	tdav_codec_g729ab_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tdav_codec_g729ab_plugin_def_t = &tdav_codec_g729ab_plugin_def_s;
 

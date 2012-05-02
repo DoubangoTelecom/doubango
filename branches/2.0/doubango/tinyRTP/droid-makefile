@@ -20,7 +20,19 @@ OBJS = \
 	src/trtp_srtp.o
 	
 ## RTCP
-OBJS += src/rtcp/trtp_rtcp_session.o 
+OBJS += src/rtcp/trtp_rtcp_header.o \
+	src/rtcp/trtp_rtcp_packet.o \
+	src/rtcp/trtp_rtcp_rblock.o \
+	src/rtcp/trtp_rtcp_report.o \
+	src/rtcp/trtp_rtcp_report_bye.o \
+	src/rtcp/trtp_rtcp_report_fb.o \
+	src/rtcp/trtp_rtcp_report_rr.o \
+	src/rtcp/trtp_rtcp_report_sdes.o \
+	src/rtcp/trtp_rtcp_report_sr.o \
+	src/rtcp/trtp_rtcp_report_xr.o \
+	src/rtcp/trtp_rtcp_sdes_chunck.o \
+	src/rtcp/trtp_rtcp_sdes_item.o \
+	src/rtcp/trtp_rtcp_session.o
 
 ## RTP
 OBJS += src/rtp/trtp_rtp_header.o \

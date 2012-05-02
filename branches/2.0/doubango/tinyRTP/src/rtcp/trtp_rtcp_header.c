@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -38,7 +38,7 @@ trtp_rtcp_header_t* trtp_rtcp_header_create_null()
 	return tsk_object_new(trtp_rtcp_header_def_t);
 }
 
-trtp_rtcp_header_t* trtp_rtcp_header_create(uint8_t version, uint8_t padding, uint8_t rc, trtp_rtcp_packet_type_t type, uint16_t length)
+trtp_rtcp_header_t* trtp_rtcp_header_create(uint8_t version, uint8_t padding, uint8_t rc, trtp_rtcp_packet_type_t type, uint16_t length_in_bytes)
 {
 	trtp_rtcp_header_t* header;
 	if((header = trtp_rtcp_header_create_null())){
@@ -46,88 +46,60 @@ trtp_rtcp_header_t* trtp_rtcp_header_create(uint8_t version, uint8_t padding, ui
 		header->padding = padding;
 		header->rc = rc;
 		header->type = type;
-		header->length = length;
+		header->length_in_words_minus1 = ((length_in_bytes >> 2) - 1);
+		header->length_in_bytes = length_in_bytes;
 	}
 
 	return header;
 }
 
-// for performance reasons you should use "trtp_rtcp_header_serialize_2()" which doesn't alloc() any buffer
-tsk_buffer_t* trtp_rtcp_header_serialize(const trtp_rtcp_header_t *self)
+int trtp_rtcp_header_serialize_to(const trtp_rtcp_header_t *self, void* data, tsk_size_t size)
 {
-	tsk_buffer_t* buffer = tsk_null;
-	uint8_t* bytes = tsk_null;
-	if(!self){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return tsk_null;
-	}
-	if((bytes = tsk_calloc(TRTP_RTCP_HEADER_SIZE, sizeof(uint8_t)))){
-		if(trtp_rtcp_header_serialize_2(self, bytes)){
-			TSK_DEBUG_ERROR("Failed to serialize rtcp header");
-			TSK_FREE(bytes);
-			return tsk_null;
-		}
-		if(!(buffer = tsk_buffer_create_null())){
-			TSK_DEBUG_ERROR("Failed to allocate new buffer");
-			TSK_FREE(bytes);
-			return tsk_null;
-		}
-		tsk_buffer_takeownership(buffer, (void**)&bytes, TRTP_RTCP_HEADER_SIZE);
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to allocate new buffer");
-		return tsk_null;
-	}
-	return buffer;
-}
-
-int trtp_rtcp_header_serialize_2(const trtp_rtcp_header_t *self, uint8_t output[TRTP_RTCP_HEADER_SIZE])
-{
-	if(!self){
+	uint8_t* pdata = (uint8_t*)data;
+	if(!self || !data || size < TRTP_RTCP_HEADER_SIZE){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	// Octet-0: version(2), Padding(1), RC(5)
-	output[0] = ((uint8_t)self->version)<<6 |
+	pdata[0] = ((uint8_t)self->version)<<6 |
 		((uint8_t)self->padding)<<5 |
 		((uint8_t)self->rc);
 	// Octet-1: PT(8)
-	output[1] = self->type;
+	pdata[1] = self->type;
 	// Octet-2 and Octet3: length (16)
-	*((uint16_t*)&output[2]) = tnet_htons(self->length);
+	pdata[2] = self->length_in_words_minus1 >> 8;
+	pdata[3] = self->length_in_words_minus1 & 0xFF;
 	return 0;
 }
 
 trtp_rtcp_header_t* trtp_rtcp_header_deserialize(const void *data, tsk_size_t size)
 {
 	trtp_rtcp_header_t* header = tsk_null;
-	if(trtp_rtcp_header_deserialize_2(&header, data, size)){
+	if(trtp_rtcp_header_deserialize_to(&header, data, size) != 0){
 		TSK_DEBUG_ERROR("Failed to deserialize the rtcp header");
 		TSK_OBJECT_SAFE_FREE(header);
 	}
 	return header;
 }
 
-int trtp_rtcp_header_deserialize_2(trtp_rtcp_header_t** self, const void *data, tsk_size_t size)
+int trtp_rtcp_header_deserialize_to(trtp_rtcp_header_t** self, const void *data, tsk_size_t size)
 {
 	const uint8_t* pdata = (uint8_t*)data;
-	if(!self || !data || !size){
+	if(!self || !data || size < TRTP_RTCP_HEADER_SIZE){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if(size<TRTP_RTCP_HEADER_SIZE){
-		TSK_DEBUG_ERROR("%u is too short", size);
-		return -2;
-	}
+	
 	if(!*self && !(*self = trtp_rtcp_header_create_null())){
 		TSK_DEBUG_ERROR("Failed to create new rtcp header");
 		return -3;
 	}
-	(*self)->version = pdata[0]>>6;
-	(*self)->padding = (pdata[0]>>5)&0x01;
-	(*self)->rc = pdata[0]&0x1f;
+	(*self)->version = pdata[0] >> 6;
+	(*self)->padding = (pdata[0] >> 5) & 0x01;
+	(*self)->rc = (pdata[0] & 0x1f);
 	(*self)->type = (enum trtp_rtcp_packet_type_e)pdata[1];
-	(*self)->length = tnet_ntohs_2(&pdata[2]);
+	(*self)->length_in_words_minus1 = tnet_ntohs_2(&pdata[2]);
+	(*self)->length_in_bytes = ((*self)->length_in_words_minus1 + 1) << 2;
 
 	return 0;
 }

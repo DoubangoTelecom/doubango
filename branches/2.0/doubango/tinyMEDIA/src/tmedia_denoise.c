@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tmedia_denoise.c
 * @brief Denoiser (Noise suppression, AGC, AEC, VAD) Plugin
 *
-* @author Mamadou Diop <diopmamadou(at)doubango.org>
+* @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *
 
 */
@@ -176,7 +176,6 @@ int tmedia_denoise_close(tmedia_denoise_t* self)
 		return -1;
 	}
 	if(!self->opened){
-		TSK_DEBUG_WARN("Denoiser not opened");
 		return 0;
 	}
 

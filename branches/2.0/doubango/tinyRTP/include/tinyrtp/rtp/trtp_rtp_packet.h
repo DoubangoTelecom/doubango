@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -45,7 +45,7 @@ typedef struct trtp_rtp_packet_s
 
 	struct{
 		void* data;
-		const void* data_const;
+		const void* data_const; // never free()d. an alternative to "data"
 		tsk_size_t size;
 	} payload;
 	
@@ -56,6 +56,7 @@ typedef struct trtp_rtp_packet_s
 	} extension;
 }
 trtp_rtp_packet_t;
+typedef tsk_list_t trtp_rtp_packets_L_t;
 
 TINYRTP_API trtp_rtp_packet_t* trtp_rtp_packet_create_null();
 TINYRTP_API trtp_rtp_packet_t* trtp_rtp_packet_create(uint32_t ssrc, uint16_t seq_num, uint32_t timestamp, uint8_t payload_type, tsk_bool_t marker);

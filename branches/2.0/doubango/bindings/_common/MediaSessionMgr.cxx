@@ -123,18 +123,18 @@ const ProxyPlugin* MediaSessionMgr::findProxyPlugin(twrap_media_type_t media, bo
 		if(session){
 			if(session->plugin == tdav_session_audio_plugin_def_t){
 				if(consumer){
-					plugin = manager->findPlugin(TDAV_SESSION_AUDIO(session)->consumer);
+					plugin = manager->findPlugin(TDAV_SESSION_AV(session)->consumer);
 				}
 				else{
-					plugin = manager->findPlugin(TDAV_SESSION_AUDIO(session)->producer);
+					plugin = manager->findPlugin(TDAV_SESSION_AV(session)->producer);
 				}
 			}
 			else if(session->plugin == tdav_session_video_plugin_def_t){
 				if(consumer){
-					plugin = manager->findPlugin(TDAV_SESSION_VIDEO(session)->consumer);
+					plugin = manager->findPlugin(TDAV_SESSION_AV(session)->consumer);
 				}
 				else{
-					plugin = manager->findPlugin(TDAV_SESSION_VIDEO(session)->producer);
+					plugin = manager->findPlugin(TDAV_SESSION_AV(session)->producer);
 				}
 			}
 			else{
@@ -176,6 +176,16 @@ uint64_t MediaSessionMgr::getSessionId(twrap_media_type_t media)const
 	return id;
 }
 
+bool MediaSessionMgr::defaultsSetProfile(tmedia_profile_t profile)
+{
+	return (tmedia_defaults_set_profile(profile) == 0);
+}
+
+tmedia_profile_t MediaSessionMgr::defaultsGetProfile()
+{
+	return tmedia_defaults_get_profile();
+}
+
 bool MediaSessionMgr::defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl)
 {
 	return tmedia_defaults_set_bl(bl) == 0;
@@ -184,6 +194,11 @@ bool MediaSessionMgr::defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl)
 tmedia_bandwidth_level_t MediaSessionMgr::defaultsGetBandwidthLevel()
 {
 	return tmedia_defaults_get_bl();
+}
+
+bool MediaSessionMgr::defaultsSetPrefVideoSize(tmedia_pref_video_size_t pref_video_size)
+{
+	return tmedia_defaults_set_pref_video_size(pref_video_size) == 0;
 }
 
 bool MediaSessionMgr::defaultsSetJbMargin(uint32_t jb_margin_ms)
@@ -315,4 +330,8 @@ bool MediaSessionMgr::defaultsSetInviteSessionTimers(int32_t timeout, const char
 
 bool MediaSessionMgr::defaultsSetSRtpMode(tmedia_srtp_mode_t mode){
 	return (tmedia_defaults_set_srtp_mode(mode) == 0);
+}
+
+bool MediaSessionMgr::defaultsSetIceEnabled(bool ice_enabled){
+	return (tmedia_defaults_set_ice_enabled(ice_enabled ? tsk_true : tsk_false) == 0);
 }

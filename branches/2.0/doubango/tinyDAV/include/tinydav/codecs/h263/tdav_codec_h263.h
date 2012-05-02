@@ -37,72 +37,8 @@
 
 #include "tinymedia/tmedia_codec.h"
 
-#include <libavcodec/avcodec.h>
-
 TDAV_BEGIN_DECLS
 
-#define TDAV_CODEC_H263(self) ((tdav_codec_h263_t*)(self))
-
-typedef enum tdav_codec_h263_type_e
-{
-	tdav_codec_h263_1996,
-	tdav_codec_h263_1998,
-	tdav_codec_h263_2000,
-}
-tdav_codec_h263_type_t;
-
-/** H.263-1996 codec */
-typedef struct tdav_codec_h263_s
-{
-	TMEDIA_DECLARE_CODEC_VIDEO;
-
-	tdav_codec_h263_type_t type;
-
-	struct{
-		uint8_t* ptr;
-		tsk_size_t size;
-	} rtp;
-
-	// Encoder
-	struct{
-		AVCodec* codec;
-		AVCodecContext* context;
-		AVFrame* picture;
-		void* buffer;
-	} encoder;
-	
-	// decoder
-	struct{
-		AVCodec* codec;
-		AVCodecContext* context;
-		AVFrame* picture;
-
-		void* accumulator;
-		uint8_t ebit;
-		tsk_size_t accumulator_pos;
-		uint16_t last_seq;
-	} decoder;
-}
-tdav_codec_h263_t;
-
-#define TDAV_DECLARE_CODEC_H263 tdav_codec_h263_t __codec_h263__
-
-int tdav_codec_h263_init(tdav_codec_h263_t* self, tdav_codec_h263_type_t type, enum CodecID encoder, enum CodecID decoder);
-int tdav_codec_h263_deinit(tdav_codec_h263_t* self);
-
-/** H.263-1998 codec */
-typedef struct tdav_codec_h263p_s
-{
-	TDAV_DECLARE_CODEC_H263;
-}
-tdav_codec_h263p_t;
-
-/** H.263-2000 codec */
-typedef struct tdav_codec_h263pp_s
-{
-	TDAV_DECLARE_CODEC_H263;
-}
-tdav_codec_h263pp_t;
 
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h263_plugin_def_t;
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h263p_plugin_def_t;

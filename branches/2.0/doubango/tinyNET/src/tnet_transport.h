@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet_transport.h
  * @brief Network transport layer.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -134,6 +134,7 @@ tnet_transport_t;
 
 tsk_object_t* tnet_transport_context_create();
 TINYNET_API tnet_transport_t* tnet_transport_create(const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description);
+TINYNET_API tnet_transport_t* tnet_transport_create_2(tnet_socket_t *master, const char* description);
 tnet_transport_event_t* tnet_transport_event_create(tnet_transport_event_type_t type, const void* callback_data, tnet_fd_t fd);
 
 TINYNET_GEXTERN const tsk_object_def_t *tnet_transport_def_t;

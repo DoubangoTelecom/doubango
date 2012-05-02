@@ -27,195 +27,244 @@
  *
  */
 #include "tinydav/video/tdav_session_video.h"
-
 #include "tinydav/video/tdav_converter_video.h"
+#include "tinydav/video/jb/tdav_video_jb.h"
+#include "tinydav/codecs/fec/tdav_codec_red.h"
+#include "tinydav/codecs/fec/tdav_codec_ulpfec.h"
+
 
 #include "tinymedia/tmedia_consumer.h"
 #include "tinymedia/tmedia_producer.h"
 #include "tinymedia/tmedia_defaults.h"
+#include "tinymedia/tmedia_params.h"
 
 #include "tinyrtp/trtp_manager.h"
+#include "tinyrtp/rtcp/trtp_rtcp_header.h"
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
+#include "tinyrtp/rtcp/trtp_rtcp_packet.h"
+#include "tinyrtp/rtcp/trtp_rtcp_report_rr.h"
+#include "tinyrtp/rtcp/trtp_rtcp_report_sr.h"
+#include "tinyrtp/rtcp/trtp_rtcp_report_fb.h"
 
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-// RTP/RTCP callback (From the network to the consumer)
-static int tdav_session_video_rtp_cb(const void* callback_data, const struct trtp_rtp_packet_s* packet)
-{
-	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
-	int ret = 0;
+#define TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MIN	15
+#define TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MAX	(TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MIN << 3)
+#define TDAV_SESSION_VIDEO_AVPF_FIR_INTERVAL_MIN	0//500 // millis: FIXME: RtcWeb
 
-	if(!session || !packet){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
+#define TDAV_SESSION_VIDEO_PKT_LOSS_PROB_BAD	2
+#define TDAV_SESSION_VIDEO_PKT_LOSS_PROB_GOOD	6
+#define TDAV_SESSION_VIDEO_PKT_LOSS_FACT_MIN	0
+#define TDAV_SESSION_VIDEO_PKT_LOSS_FACT_MAX	8
+#define TDAV_SESSION_VIDEO_PKT_LOSS_LOW			9
+#define TDAV_SESSION_VIDEO_PKT_LOSS_MEDIUM		22
+#define TDAV_SESSION_VIDEO_PKT_LOSS_HIGH		63
+
+static const tmedia_codec_action_t __action_encode_idr = tmedia_codec_action_encode_idr;
+static const tmedia_codec_action_t __action_encode_bw_up = tmedia_codec_action_bw_up;
+static const tmedia_codec_action_t __action_encode_bw_down = tmedia_codec_action_bw_down;
+
+// FIXME: lock
+#define _tdav_session_video_codec_set(__self, key, value) \
+	{ \
+		static tmedia_param_t* __param = tsk_null; \
+		if(!__param){ \
+			__param = tmedia_param_create(tmedia_pat_set,  \
+											tmedia_video,  \
+											tmedia_ppt_codec,  \
+											tmedia_pvt_int32, \
+											"action", \
+											(void*)&value); \
+		} \
+		if((__self)->encoder.codec && __param){ \
+			/*tsk_mutex_lock((__self)->encoder.h_mutex);*/ \
+			tmedia_codec_set((tmedia_codec_t*)(__self)->encoder.codec, __param); \
+			/*tsk_mutex_unlock((__self)->encoder.h_mutex);*/ \
+		} \
+		/* TSK_OBJECT_SAFE_FREE(param); */ \
 	}
 
-	if(session->consumer){
-		tmedia_codec_t* codec;
-		tsk_istr_t format;
-		tsk_size_t out_size;
+#define _tdav_session_video_request_idr(__self) { \
+	uint64_t __now = tsk_time_now(); \
+	if((__now - (__self)->avpf.last_fir_time) > TDAV_SESSION_VIDEO_AVPF_FIR_INTERVAL_MIN){ /* guard to avoid sending too many FIR */ \
+		_tdav_session_video_codec_set((__self), "action", __action_encode_idr); \
+	} \
+	(__self)->avpf.last_fir_time = __now; \
+}
+#define _tdav_session_video_bw_up(__self) _tdav_session_video_codec_set(__self, "action", __action_encode_bw_up)
+#define _tdav_session_video_bw_down(__self) _tdav_session_video_codec_set(__self, "action", __action_encode_bw_down)
 
-		// Find the codec to use to decode the RTP payload
-		tsk_itoa(packet->header->payload_type, &format);
-		if(!(codec = tmedia_codec_find_by_format(TMEDIA_SESSION(session)->neg_codecs, format)) || !codec->plugin || !codec->plugin->decode){
-			TSK_DEBUG_ERROR("%s is not a valid payload for this session", format);
-			ret = -2;
-			goto bail;
-		}
-		// Open codec if not already done
-		if(!TMEDIA_CODEC(codec)->opened){
-			tsk_safeobj_lock(session);
-			if((ret = tmedia_codec_open(codec))){
-				tsk_safeobj_unlock(session);
-				TSK_DEBUG_ERROR("Failed to open [%s] codec", codec->plugin->desc);
-				goto bail;
+#define _tdav_session_video_reset_loss_prob(__self) \
+{ \
+	(__self)->encoder.pkt_loss_level = tdav_session_video_pkt_loss_level_low; \
+	(__self)->encoder.pkt_loss_prob_bad = TDAV_SESSION_VIDEO_PKT_LOSS_PROB_BAD; \
+	(__self)->encoder.pkt_loss_prob_good = TDAV_SESSION_VIDEO_PKT_LOSS_PROB_GOOD; \
+}
+static int _tdav_session_video_jb_cb(const tdav_video_jb_cb_data_xt* data);
+static int _tdav_session_video_open_decoder(tdav_session_video_t* self, uint8_t payload_type);
+static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp_packet_t* packet);
+static int _tdav_session_video_set_callbacks(tmedia_session_t* self);
+
+// Codec callback (From codec to the network)
+// or Producer callback to send() data "as is"
+static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result)
+{
+	tdav_session_av_t* base = (tdav_session_av_t*)result->usr_data;
+	tdav_session_video_t* video = (tdav_session_video_t*)result->usr_data;
+	trtp_rtp_packet_t* packet = tsk_null;
+	int ret = 0;
+	tsk_size_t s;
+	
+	if(base->rtp_manager && base->rtp_manager->is_started){
+		if((packet = trtp_rtp_packet_create(base->rtp_manager->rtp.ssrc, base->rtp_manager->rtp.seq_num, base->rtp_manager->rtp.timestamp, base->rtp_manager->rtp.payload_type, result->last_chunck))){
+			tsk_size_t rtp_hdr_size;
+			if(result->last_chunck){
+				base->rtp_manager->rtp.timestamp += result->duration;
 			}
-			tsk_safeobj_unlock(session);
-		}
-		// Decode data
-		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &session->decoder.buffer, &session->decoder.buffer_size, packet->header);
-		// check
-		if(!out_size || !session->decoder.buffer){
-			goto bail;
-		}
 
-		// Convert decoded data to the consumer chroma and size
-#define CONSUMER_INSIZE_MISMATCH				((session->consumer->video.in.width * session->consumer->video.in.height * 3)>>1 != out_size)// we have good reasons not to use 1.5f
-#define CONSUMER_IN_N_DISPLAY_MISMATCH		(session->consumer->video.in.width != session->consumer->video.display.width || session->consumer->video.in.height != session->consumer->video.display.height)
-#define CONSUMER_DISPLAY_N_CODEC_MISMATCH		(session->consumer->video.display.width != TMEDIA_CODEC_VIDEO(codec)->in.width || session->consumer->video.display.height != TMEDIA_CODEC_VIDEO(codec)->in.height)
-#define CONSUMER_DISPLAY_N_CONVERTER_MISMATCH	( (session->conv.fromYUV420 && session->conv.fromYUV420->dstWidth != session->consumer->video.display.width) || (session->conv.fromYUV420 && session->conv.fromYUV420->dstHeight != session->consumer->video.display.height) )
-#define CONSUMER_CHROMA_MISMATCH	(session->consumer->video.display.chroma != TMEDIA_CODEC_VIDEO(codec)->in.chroma)
-#define DECODED_NEED_FLIP	(TMEDIA_CODEC_VIDEO(codec)->in.flip)
-
-		if((CONSUMER_CHROMA_MISMATCH || CONSUMER_DISPLAY_N_CODEC_MISMATCH || CONSUMER_IN_N_DISPLAY_MISMATCH || CONSUMER_INSIZE_MISMATCH || CONSUMER_DISPLAY_N_CONVERTER_MISMATCH || DECODED_NEED_FLIP)){
-
-			// Create video converter if not already done
-			if(!session->conv.fromYUV420 || CONSUMER_DISPLAY_N_CONVERTER_MISMATCH || CONSUMER_INSIZE_MISMATCH){
-				TSK_OBJECT_SAFE_FREE(session->conv.fromYUV420);
-				// update in (set by the codec)
-				session->consumer->video.in.width = TMEDIA_CODEC_VIDEO(codec)->in.width;//decoded width
-				session->consumer->video.in.height = TMEDIA_CODEC_VIDEO(codec)->in.height;//decoded height
-				
-				// important: do not override the display size (used by the end-user) unless requested
-				if(session->consumer->video.display.auto_resize){
-					session->consumer->video.display.width = session->consumer->video.in.width;
-					session->consumer->video.display.height = session->consumer->video.in.height;
-				}
-				// create converter
-				if(!(session->conv.fromYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(codec)->in.width, TMEDIA_CODEC_VIDEO(codec)->in.height, TMEDIA_CODEC_VIDEO(codec)->in.chroma, session->consumer->video.display.width, session->consumer->video.display.height,
-					session->consumer->video.display.chroma))){
-					TSK_DEBUG_ERROR("Failed to create video converter");
-					ret = -3;
+			packet->payload.data_const = result->buffer.ptr;
+			packet->payload.size = result->buffer.size;
+			s = trtp_manager_send_rtp_packet(base->rtp_manager, packet, tsk_false); // encrypt and send data
+			if(s < TRTP_RTP_HEADER_MIN_SIZE) { 
+				TSK_DEBUG_ERROR("Failed to send packet"); 
+				goto bail; 
+			}
+			++base->rtp_manager->rtp.seq_num;
+			rtp_hdr_size = TRTP_RTP_HEADER_MIN_SIZE + (packet->header->csrc_count << 2);
+			// Save packet
+			// FIXME: only if AVPF is enabled
+			if(1){
+				trtp_rtp_packet_t* packet_avpf = tsk_object_ref(packet);
+				// when SRTP is used, "serial_buffer" will contains the encoded buffer with both RTP header and payload
+				// Hack the RTP packet payload to point to the the SRTP data instead of unencrypted ptr
+				packet_avpf->payload.size = (s - rtp_hdr_size);
+				packet_avpf->payload.data_const = tsk_null;
+				if(!(packet_avpf->payload.data = tsk_malloc(packet_avpf->payload.size))){// FIXME: to be optimized (reuse memory address)
+					TSK_DEBUG_ERROR("failed to allocate buffer");
 					goto bail;
 				}
-			}
-		}
+				memcpy(packet_avpf->payload.data, (((const uint8_t*)base->rtp_manager->rtp.serial_buffer.ptr) + rtp_hdr_size), packet_avpf->payload.size);
+				tsk_list_lock(video->avpf.packets);
+				if(video->avpf.count > video->avpf.max){
+					tsk_list_remove_first_item(video->avpf.packets);
+				}
+				else{
+					++video->avpf.count;
+				}
 
-		if(session->conv.fromYUV420){
-			// update one-shot parameters
-			tdav_converter_video_init(session->conv.fromYUV420, 0/*rotation*/, TMEDIA_CODEC_VIDEO(codec)->in.flip);
-			// convert data to the consumer's chroma
-			out_size = tdav_converter_video_convert(session->conv.fromYUV420, session->decoder.buffer, &session->decoder.conv_buffer, &session->decoder.conv_buffer_size);
-			if(!out_size || !session->decoder.conv_buffer){
-				TSK_DEBUG_ERROR("Failed to convert YUV420 buffer to consumer's chroma");
-				ret = -4;
-				goto bail;
+				tsk_list_push_back_data(video->avpf.packets, (void**)&packet_avpf);
+				tsk_list_unlock(video->avpf.packets);
 			}
 
-			tmedia_consumer_consume(session->consumer, session->decoder.conv_buffer, out_size, packet->header);
-			if(!session->decoder.conv_buffer){
-				/* taken  by the consumer */
-				session->decoder.conv_buffer_size = 0;
+			// Send FEC packet
+			// FIXME: protect only Intra and Params packets
+			if(video->ulpfec.codec && (s > TRTP_RTP_HEADER_MIN_SIZE)){
+				packet->payload.data_const = (((const uint8_t*)base->rtp_manager->rtp.serial_buffer.ptr) + rtp_hdr_size);
+				packet->payload.size = (s - rtp_hdr_size);
+				ret = tdav_codec_ulpfec_enc_protect((struct tdav_codec_ulpfec_s*)video->ulpfec.codec, packet);
+				if(result->last_chunck){
+					trtp_rtp_packet_t* packet_fec;
+					if((packet_fec = trtp_rtp_packet_create(base->rtp_manager->rtp.ssrc, video->ulpfec.seq_num++, video->ulpfec.timestamp, video->ulpfec.payload_type, tsk_true))){
+						// serialize the FEC payload packet packet
+						s = tdav_codec_ulpfec_enc_serialize((const struct tdav_codec_ulpfec_s*)video->ulpfec.codec, &video->encoder.buffer, &video->encoder.buffer_size);
+						if(s > 0){
+							packet_fec->payload.data_const = video->encoder.buffer;
+							packet_fec->payload.size = s;
+							s = trtp_manager_send_rtp_packet(base->rtp_manager, packet_fec, tsk_true/* already encrypted */);
+						}
+						TSK_OBJECT_SAFE_FREE(packet_fec);
+					}
+					video->ulpfec.timestamp += result->duration;
+					ret = tdav_codec_ulpfec_enc_reset((struct tdav_codec_ulpfec_s*)video->ulpfec.codec);
+				}
 			}
-			
-		}
-		else{
-			tmedia_consumer_consume(session->consumer, session->decoder.buffer, out_size, packet->header);
-			if(!session->decoder.buffer){
-				/* taken  by the consumer */
-				session->decoder.buffer_size = 0;
+#if 0
+			// Send RED Packet
+			if(ret == 0 && video->red.codec){
+				// don't need to lock as the buffer is never used by other codecs
+				tsk_size_t red_pay_size = video->red.codec->plugin->encode(
+						video->red.codec, 
+						buffer, size, 
+						&video->encoder.buffer, &video->encoder.buffer_size
+					);
+				if(red_pay_size > 1){
+					packet->header->payload_type = video->red.payload_type;
+					((uint8_t*)video->encoder.buffer)[0] = packet->header->payload_type;
+					packet->payload.data_const = video->encoder.buffer;
+					packet->payload.size = red_pay_size;
+					trtp_manager_send_rtp_2(base->rtp_manager, packet);
+				}
 			}
+#endif
 		}
-
-bail:
-		TSK_OBJECT_SAFE_FREE(codec);
 	}
+	else{
+		TSK_DEBUG_ERROR("Failed to create packet");
+	}
+	
+bail:
+	TSK_OBJECT_SAFE_FREE(packet);
 	return ret;
 }
 
-// Codec callback (From codec/producer to the network) to send() data "as is"
-static int tdav_session_video_raw_cb(const void* callback_data, const void* buffer, tsk_size_t size, uint32_t duration, tsk_bool_t marker)
+// Codec Callback after decoding
+static int tdav_session_video_decode_cb(const tmedia_video_decode_result_xt* result)
 {
-	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
-	
-	if(session->rtp_manager && session->rtp_manager->started){
-		return trtp_manager_send_rtp(session->rtp_manager, buffer, size, duration, marker, marker);
-	}
+	tdav_session_video_t* video = (tdav_session_video_t*)result->usr_data;
+	tdav_session_av_t* base = (tdav_session_av_t*)result->usr_data;
 
+	switch(result->type){
+		case tmedia_video_decode_result_type_error:
+			{
+				TSK_DEBUG_INFO("Decoding failed -> send Full Intra Request (FIR)");
+				trtp_manager_signal_frame_corrupted(base->rtp_manager, ((const trtp_rtp_header_t*)result->proto_hdr)->ssrc);
+				break;
+			}
+	}
 	return 0;
 }
 
 // Producer callback (From the producer to the network) => encode data before send()
 static int tdav_session_video_producer_enc_cb(const void* callback_data, const void* buffer, tsk_size_t size)
 {
-	tdav_session_video_t* session = (tdav_session_video_t*)callback_data;
+	tdav_session_video_t* video = (tdav_session_video_t*)callback_data;
+	tdav_session_av_t* base = (tdav_session_av_t*)callback_data;
 	tsk_size_t yuv420p_size = 0;
 	int ret = 0;
 
-	if(!session){
+	if(!base){
 		TSK_DEBUG_ERROR("Null session");
 		return 0;
 	}
 
-	if(TMEDIA_SESSION(session)->lo_held){
+	if(TMEDIA_SESSION(base)->lo_held){
 		return 0;
 	}
 
-	if(session->rtp_manager){
+	if(base->rtp_manager && video->encoder.codec){
 		/* encode */
 		tsk_size_t out_size = 0;
-		tmedia_codec_t* codec = tsk_null;
 
-		// Use first codec to encode data
-		if((codec = tsk_object_ref(TSK_LIST_FIRST_DATA(TMEDIA_SESSION(session)->neg_codecs)))){
-			if(!codec->plugin || !codec->plugin->encode){
-				TSK_OBJECT_SAFE_FREE(codec);
-				TSK_DEBUG_ERROR("Invalid codec");
-				return -2;
-			}
-			// open the codec if not already done
-			if(!TMEDIA_CODEC(codec)->opened){
-				tsk_safeobj_lock(session);
-				if((ret = tmedia_codec_open(codec))){
-					tsk_safeobj_unlock(session);
-					TSK_DEBUG_ERROR("Failed to open [%s] codec", codec->plugin->desc);
-					TSK_OBJECT_SAFE_FREE(codec);
-					return ret;
-				}
-				tsk_safeobj_unlock(session);
-			}
+		if(!base->rtp_manager->is_started){
+			TSK_DEBUG_ERROR("Not started");
+			return 0;
 		}
-		else{
-			TSK_DEBUG_ERROR("Failed to find a valid codec");
-			return -4;
-		}
-
 	
-#define PRODUCER_SIZE_CHANGED (session->conv.producerWidth != session->producer->video.width) || (session->conv.producerHeight != session->producer->video.height) \
-|| (session->conv.xProducerSize != size)
-#define ENCODED_NEED_FLIP TMEDIA_CODEC_VIDEO(codec)->out.flip
+#define PRODUCER_SIZE_CHANGED (video->conv.producerWidth != base->producer->video.width) || (video->conv.producerHeight != base->producer->video.height) \
+|| (video->conv.xProducerSize != size)
+#define ENCODED_NEED_FLIP TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip
 		// Video codecs only accept YUV420P buffers ==> do conversion if needed or producer doesn't have the right size
-		if((session->producer->video.chroma != TMEDIA_CODEC_VIDEO(codec)->out.chroma) || PRODUCER_SIZE_CHANGED || ENCODED_NEED_FLIP){
+		if((base->producer->video.chroma != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.chroma) || PRODUCER_SIZE_CHANGED || ENCODED_NEED_FLIP){
 			// Create video converter if not already done or producer size has changed
-			if(!session->conv.toYUV420 || PRODUCER_SIZE_CHANGED){
-				TSK_OBJECT_SAFE_FREE(session->conv.toYUV420);
-				session->conv.producerWidth = session->producer->video.width;
-				session->conv.producerHeight = session->producer->video.height;
-				session->conv.xProducerSize = size;
+			if(!video->conv.toYUV420 || PRODUCER_SIZE_CHANGED){
+				TSK_OBJECT_SAFE_FREE(video->conv.toYUV420);
+				video->conv.producerWidth = base->producer->video.width;
+				video->conv.producerHeight = base->producer->video.height;
+				video->conv.xProducerSize = size;
 				
-				if(!(session->conv.toYUV420 = tdav_converter_video_create(session->producer->video.width, session->producer->video.height, session->producer->video.chroma, TMEDIA_CODEC_VIDEO(codec)->out.width, TMEDIA_CODEC_VIDEO(codec)->out.height,
-					TMEDIA_CODEC_VIDEO(codec)->out.chroma))){
+				if(!(video->conv.toYUV420 = tdav_converter_video_create(base->producer->video.width, base->producer->video.height, base->producer->video.chroma, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.width, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.height,
+					TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.chroma))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
 					ret = -5;
 					goto bail;
@@ -223,12 +272,12 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 			}
 		}
 
-		if(session->conv.toYUV420){
+		if(video->conv.toYUV420){
 			// update one-shot parameters
-			tdav_converter_video_init(session->conv.toYUV420, session->producer->video.rotation, TMEDIA_CODEC_VIDEO(codec)->out.flip);
+			tdav_converter_video_init(video->conv.toYUV420, base->producer->video.rotation, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip);
 			// convert data to yuv420p
-			yuv420p_size = tdav_converter_video_convert(session->conv.toYUV420, buffer, &session->encoder.conv_buffer, &session->encoder.conv_buffer_size);
-			if(!yuv420p_size || !session->encoder.conv_buffer){
+			yuv420p_size = tdav_converter_video_convert(video->conv.toYUV420, buffer, &video->encoder.conv_buffer, &video->encoder.conv_buffer_size);
+			if(!yuv420p_size || !video->encoder.conv_buffer){
 				TSK_DEBUG_ERROR("Failed to convert XXX buffer to YUV42P");
 				ret = -6;
 				goto bail;
@@ -236,26 +285,355 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 		}
 
 		// Encode data
-		if(session->encoder.conv_buffer && yuv420p_size){
+		tsk_mutex_lock(video->encoder.h_mutex);
+		if(video->encoder.conv_buffer && yuv420p_size){
 			/* producer doesn't support yuv42p */
-			out_size = codec->plugin->encode(codec, session->encoder.conv_buffer, yuv420p_size, &session->encoder.buffer, &session->encoder.buffer_size);
+			out_size = video->encoder.codec->plugin->encode(video->encoder.codec, video->encoder.conv_buffer, yuv420p_size, &video->encoder.buffer, &video->encoder.buffer_size);
 		}
 		else{
 			/* producer supports yuv42p */
-			out_size = codec->plugin->encode(codec, buffer, size,  &session->encoder.buffer, &session->encoder.buffer_size);
+			out_size = video->encoder.codec->plugin->encode(video->encoder.codec, buffer, size,  &video->encoder.buffer, &video->encoder.buffer_size);
 		}
+		tsk_mutex_unlock(video->encoder.h_mutex);
 
 		if(out_size){
 			/* Never called, see tdav_session_video_raw_cb() */
-			trtp_manager_send_rtp(session->rtp_manager, session->encoder.buffer, out_size, 6006, tsk_true, tsk_true);
+			trtp_manager_send_rtp(base->rtp_manager, video->encoder.buffer, out_size, 6006, tsk_true, tsk_true);
 		}
-bail:
-		TSK_OBJECT_SAFE_FREE(codec);
+bail: ;
 	}
 	else{
 		TSK_DEBUG_ERROR("Invalid parameter");
 		ret = -1;
 	}
+
+	return ret;
+}
+
+// RTP callback (Network -> Decoder -> Consumer)
+static int tdav_session_video_rtp_cb(const void* callback_data, const trtp_rtp_packet_t* packet)
+{
+	tdav_session_video_t* video = (tdav_session_video_t*)callback_data;
+	tdav_session_av_t* base = (tdav_session_av_t*)callback_data;
+
+	if(!video || !packet || !packet->header){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if(packet->header->payload_type == video->red.payload_type){
+		static void* __red_buffer_ptr = tsk_null; // Never used
+		static tsk_size_t __red_buffer_size = 0; // Never used
+		if(!video->red.codec){
+			TSK_DEBUG_ERROR("No RED codec could be found");
+			return -2;
+		}
+		// Decode RED data
+		video->red.codec->plugin->decode(
+				video->red.codec, 
+				(packet->payload.data ? packet->payload.data : packet->payload.data_const), packet->payload.size, 
+				&__red_buffer_ptr, &__red_buffer_size, 
+				packet->header
+			);
+		return 0;
+	}
+	else if(packet->header->payload_type == video->ulpfec.payload_type){
+		if(!video->ulpfec.codec){
+			TSK_DEBUG_ERROR("No ULPFEC codec could be found");
+			return -2;
+		}
+		// FIXME: do something
+		return 0;
+	}
+	else{
+		return tdav_video_jb_put(video->jb, (trtp_rtp_packet_t*)packet);
+	}
+}
+
+// RTCP callback (Network -> This)
+static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp_packet_t* packet)
+{
+	const trtp_rtcp_report_psfb_t* psfb;
+	const trtp_rtcp_report_rtpfb_t* rtpfb;
+	const trtp_rtcp_rblocks_L_t* blocks = tsk_null;
+	
+	tdav_session_video_t* video = (tdav_session_video_t*)callback_data;
+	tdav_session_av_t* base = (tdav_session_av_t*)callback_data;
+	tsk_size_t i;
+
+	if((blocks = (packet->header->type == trtp_rtcp_packet_type_rr) ? ((const trtp_rtcp_report_rr_t*)packet)->blocks : 
+		(packet->header->type == trtp_rtcp_packet_type_sr ? ((const trtp_rtcp_report_sr_t*)packet)->blocks : tsk_null))){
+		const tsk_list_item_t* item;
+		const trtp_rtcp_rblock_t* block;
+		tsk_list_foreach(item, blocks){
+			if(!(block = item->data)) continue;
+			if(base->rtp_manager->rtp.ssrc == block->ssrc){
+				tdav_session_video_pkt_loss_level_t pkt_loss_level = tdav_session_video_pkt_loss_level_low;
+				if(block->fraction > TDAV_SESSION_VIDEO_PKT_LOSS_HIGH)  pkt_loss_level = tdav_session_video_pkt_loss_level_high;
+				else if(block->fraction > TDAV_SESSION_VIDEO_PKT_LOSS_MEDIUM)  pkt_loss_level = tdav_session_video_pkt_loss_level_medium;
+				if(pkt_loss_level == tdav_session_video_pkt_loss_level_high || (pkt_loss_level > video->encoder.pkt_loss_level)){ // high or low -> medium
+					video->encoder.pkt_loss_level = pkt_loss_level;
+					if(video->encoder.pkt_loss_prob_bad-- <= 0){
+						int32_t new_pkt_loss_fact = TSK_CLAMP(TDAV_SESSION_VIDEO_PKT_LOSS_FACT_MIN, (video->encoder.pkt_loss_fact + 1), TDAV_SESSION_VIDEO_PKT_LOSS_FACT_MAX);
+						if(video->encoder.pkt_loss_fact != new_pkt_loss_fact){
+							TSK_DEBUG_INFO("Downgrade bandwidth %d->%d", video->encoder.pkt_loss_fact, new_pkt_loss_fact);
+							video->encoder.pkt_loss_fact = new_pkt_loss_fact;
+							_tdav_session_video_bw_down(video);
+						}
+						_tdav_session_video_reset_loss_prob(video);
+					}
+				}
+				else{
+					if(video->encoder.pkt_loss_prob_good-- <= 0){
+						int32_t new_pkt_loss_fact = TSK_CLAMP(TDAV_SESSION_VIDEO_PKT_LOSS_FACT_MIN, (video->encoder.pkt_loss_fact - 1), TDAV_SESSION_VIDEO_PKT_LOSS_FACT_MAX);
+						if(video->encoder.pkt_loss_fact != new_pkt_loss_fact){
+							TSK_DEBUG_INFO("Upgrade bandwidth %d->%d", video->encoder.pkt_loss_fact, new_pkt_loss_fact);
+							video->encoder.pkt_loss_fact = new_pkt_loss_fact;
+							_tdav_session_video_bw_up(video);
+						}
+						_tdav_session_video_reset_loss_prob(video);
+					}
+				}
+				break;
+			}
+		}
+	}
+
+	i = 0;
+	while((psfb = (const trtp_rtcp_report_psfb_t*)trtp_rtcp_packet_get_at(packet, trtp_rtcp_packet_type_psfb, i++))){
+		switch(psfb->fci_type){
+			case trtp_rtcp_psfb_fci_type_fir:
+				{
+					_tdav_session_video_request_idr(video);
+					break;
+				}
+			case trtp_rtcp_psfb_fci_type_pli:
+				{
+					uint64_t now = tsk_time_now();
+					if((now - video->avpf.last_pli_time) < 500){ // more than one PLI in 500ms
+						_tdav_session_video_request_idr(video);
+					}
+					video->avpf.last_pli_time = now;
+					break;
+				}
+			default: break;
+		}
+	}
+	i = 0;
+	while((rtpfb = (const trtp_rtcp_report_rtpfb_t*)trtp_rtcp_packet_get_at(packet, trtp_rtcp_packet_type_rtpfb, i++))){
+		switch(rtpfb->fci_type){
+			case trtp_rtcp_rtpfb_fci_type_nack:
+				{
+					if(rtpfb->nack.blp && rtpfb->nack.pid){
+						tsk_size_t i;
+						int32_t j;
+						uint16_t pid, blp;
+						const tsk_list_item_t* item;
+						const trtp_rtp_packet_t* pkt_rtp;
+						for(i = 0; i < rtpfb->nack.count; ++i){
+							static const int32_t __Pow2[16] = { 0x8000, 0x4000, 0x2000, 0x1000, 0x800, 0x400, 0x200, 0x100, 0x80, 0x40, 0x20, 0x10, 0x8, 0x4, 0x2, 0x1 };
+							int32_t blp_count;
+							blp = rtpfb->nack.blp[i];
+							blp_count = blp ? 16 : 0;
+							
+							for(j = -1; j < blp_count; ++j){
+								if(j == -1 || (blp & (1 << __Pow2[j]))){
+									pid = (rtpfb->nack.pid[i] + (j + 1));
+									tsk_list_lock(video->avpf.packets);
+									tsk_list_foreach(item, video->avpf.packets){
+										if(!(pkt_rtp = item->data)){
+											continue;
+										}										
+
+										if(pkt_rtp->header->seq_num > pid){
+											int32_t old_max = video->avpf.max;
+											int32_t len_drop = (pkt_rtp->header->seq_num - pid);
+											video->avpf.max = TSK_CLAMP(TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MIN, (old_max + len_drop), TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MAX);
+											TSK_DEBUG_INFO("**NACK requesting dropped frames [requested_frame=%d, len_drop=%d, new_buff_size=%d]. RTT is probably too high.", pid, len_drop, video->avpf.max);
+											tsk_list_clear_items(video->avpf.packets);
+											video->avpf.count = 0;
+											_tdav_session_video_request_idr(video);
+											goto done;
+										}
+										if(pkt_rtp->header->seq_num == pid){
+											// TSK_DEBUG_INFO("NACK Found=%d", pid);
+											trtp_manager_send_rtp_packet(base->rtp_manager, pkt_rtp, tsk_true);
+											break;
+										}
+										if(item == video->avpf.packets->tail){
+											// must never be called
+											TSK_DEBUG_INFO("**NACK Not Found=%d", pid);
+										}
+									}
+done:
+									tsk_list_unlock(video->avpf.packets);
+								}
+							}
+						}
+					}
+					break;
+				}
+		}
+	}
+
+	return 0;
+}
+
+// From jitter buffer to codec
+static int _tdav_session_video_jb_cb(const tdav_video_jb_cb_data_xt* data)
+{
+	tdav_session_video_t* video = (tdav_session_video_t*)data->usr_data;
+	tdav_session_av_t* base = (tdav_session_av_t*)data->usr_data;
+
+	switch(data->type){
+		case tdav_video_jb_cb_data_type_rtp:
+			{
+				return _tdav_session_video_decode(video, data->rtp.pkt);
+			}
+		case tdav_video_jb_cb_data_type_tmfr:
+			{
+				return trtp_manager_signal_jb_error(base->rtp_manager, data->ssrc);
+			}
+		case tdav_video_jb_cb_data_type_fl:
+			{
+				tsk_size_t i, j, k;
+				uint16_t seq_nums[16];
+				for(i = 0; i < data->fl.count; i+=16){
+					for(j = 0, k = i; j < 16 && k < data->fl.count; ++j, ++k){
+						seq_nums[j] = (data->fl.seq_num + i + j);
+					}
+					trtp_manager_signal_pkt_loss(base->rtp_manager, data->ssrc, seq_nums, j);
+				}
+				break;
+			}
+	}
+
+	return 0;
+}
+
+int _tdav_session_video_open_decoder(tdav_session_video_t* self, uint8_t payload_type)
+{
+	int ret = 0;
+
+	if((self->decoder.payload_type != payload_type) || !self->decoder.codec){
+		tsk_istr_t format;
+		TSK_OBJECT_SAFE_FREE(self->decoder.codec);
+		tsk_itoa(payload_type, &format);
+		if(!(self->decoder.codec = tmedia_codec_find_by_format(TMEDIA_SESSION(self)->neg_codecs, format)) || !self->decoder.codec->plugin || !self->decoder.codec->plugin->decode){
+			TSK_DEBUG_ERROR("%s is not a valid payload for this session", format);
+			ret = -2;
+			goto bail;
+		}
+		self->decoder.payload_type = payload_type;
+	}
+	// Open codec if not already done
+	if(!TMEDIA_CODEC(self->decoder.codec)->opened){
+		if((ret = tmedia_codec_open(self->decoder.codec))){
+			TSK_DEBUG_ERROR("Failed to open [%s] codec", self->decoder.codec->plugin->desc);
+			goto bail;
+		}
+	}
+
+bail:
+	return ret;
+}
+
+static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp_packet_t* packet)
+{
+	tdav_session_av_t* base = (tdav_session_av_t*)self;
+	static const trtp_rtp_header_t* rtp_header = tsk_null;
+	int ret = 0;
+
+	if(!self || !packet || !packet->header){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tsk_safeobj_lock(base);
+
+	if(base->consumer){
+		tsk_size_t out_size;
+				
+		// Find the codec to use to decode the RTP payload
+		if(!self->decoder.codec || self->decoder.payload_type != packet->header->payload_type){
+			if((ret = _tdav_session_video_open_decoder(self, packet->header->payload_type))){
+				goto bail;
+			}
+		}		
+		
+		// Decode data
+		out_size = self->decoder.codec->plugin->decode(
+				self->decoder.codec, 
+				(packet->payload.data ? packet->payload.data : packet->payload.data_const), packet->payload.size, 
+				&self->decoder.buffer, &self->decoder.buffer_size,
+				packet->header
+			);
+		// check
+		if(!out_size || !self->decoder.buffer){
+			goto bail;
+		}
+
+		// Convert decoded data to the consumer chroma and size
+#define CONSUMER_INSIZE_MISMATCH				((base->consumer->video.in.width * base->consumer->video.in.height * 3)>>1 != out_size)// we have good reasons not to use 1.5f
+#define CONSUMER_IN_N_DISPLAY_MISMATCH		(base->consumer->video.in.width != base->consumer->video.display.width || base->consumer->video.in.height != base->consumer->video.display.height)
+#define CONSUMER_DISPLAY_N_CODEC_MISMATCH		(base->consumer->video.display.width != TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width || base->consumer->video.display.height != TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height)
+#define CONSUMER_DISPLAY_N_CONVERTER_MISMATCH	( (self->conv.fromYUV420 && self->conv.fromYUV420->dstWidth != base->consumer->video.display.width) || (self->conv.fromYUV420 && self->conv.fromYUV420->dstHeight != base->consumer->video.display.height) )
+#define CONSUMER_CHROMA_MISMATCH	(base->consumer->video.display.chroma != TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.chroma)
+#define DECODED_NEED_FLIP	(TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.flip)
+
+		if((CONSUMER_CHROMA_MISMATCH || CONSUMER_DISPLAY_N_CODEC_MISMATCH || CONSUMER_IN_N_DISPLAY_MISMATCH || CONSUMER_INSIZE_MISMATCH || CONSUMER_DISPLAY_N_CONVERTER_MISMATCH || DECODED_NEED_FLIP)){
+
+			// Create video converter if not already done
+			if(!self->conv.fromYUV420 || CONSUMER_DISPLAY_N_CONVERTER_MISMATCH || CONSUMER_INSIZE_MISMATCH){
+				TSK_OBJECT_SAFE_FREE(self->conv.fromYUV420);
+				// update in (set by the codec)
+				base->consumer->video.in.width = TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width;//decoded width
+				base->consumer->video.in.height = TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height;//decoded height
+				
+				// important: do not override the display size (used by the end-user) unless requested
+				if(base->consumer->video.display.auto_resize){
+					base->consumer->video.display.width = base->consumer->video.in.width;
+					base->consumer->video.display.height = base->consumer->video.in.height;
+				}
+				// create converter
+				if(!(self->conv.fromYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.chroma, base->consumer->video.display.width, base->consumer->video.display.height,
+					base->consumer->video.display.chroma))){
+					TSK_DEBUG_ERROR("Failed to create video converter");
+					ret = -3;
+					goto bail;
+				}
+			}
+		}
+
+		if(self->conv.fromYUV420){
+			// update one-shot parameters
+			tdav_converter_video_init(self->conv.fromYUV420, 0/*rotation*/, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.flip);
+			// convert data to the consumer's chroma
+			out_size = tdav_converter_video_convert(self->conv.fromYUV420, self->decoder.buffer, &self->decoder.conv_buffer, &self->decoder.conv_buffer_size);
+			if(!out_size || !self->decoder.conv_buffer){
+				TSK_DEBUG_ERROR("Failed to convert YUV420 buffer to consumer's chroma");
+				ret = -4;
+				goto bail;
+			}
+
+			tmedia_consumer_consume(base->consumer, self->decoder.conv_buffer, out_size, rtp_header);
+			if(!self->decoder.conv_buffer){
+				/* taken  by the consumer */
+				self->decoder.conv_buffer_size = 0;
+			}
+			
+		}
+		else{
+			tmedia_consumer_consume(base->consumer, self->decoder.buffer, out_size, rtp_header);
+			if(!self->decoder.buffer){
+				/* taken  by the consumer */
+				self->decoder.buffer_size = 0;
+			}
+		}		
+	}
+
+bail:
+	tsk_safeobj_unlock(base);
 
 	return ret;
 }
@@ -267,16 +645,27 @@ static int tdav_session_video_set(tmedia_session_t* self, const tmedia_param_t* 
 {
 	int ret = 0;
 	tdav_session_video_t* video;
+	tdav_session_av_t* base;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	video = (tdav_session_video_t*)self;
+	if(tdav_session_av_set(TDAV_SESSION_AV(self), param) == tsk_true){
+		return 0;
+	}
 
-	if(param->plugin_type == tmedia_ppt_consumer){
-		if(!video->consumer){
+	video = (tdav_session_video_t*)self;
+	base = (tdav_session_av_t*)self;
+
+	if(param->plugin_type == tmedia_ppt_codec){
+		tsk_mutex_lock(video->encoder.h_mutex);
+		ret = tmedia_codec_set((tmedia_codec_t*)video->encoder.codec, param);
+		tsk_mutex_unlock(video->encoder.h_mutex);
+	}
+	else if(param->plugin_type == tmedia_ppt_consumer){
+		if(!base->consumer){
 			TSK_DEBUG_ERROR("No consumer associated to this session");
 			return -1;
 		}
@@ -291,10 +680,10 @@ static int tdav_session_video_set(tmedia_session_t* self, const tmedia_param_t* 
 				tsk_object_unref(codecs);
 			}
 		}
-		ret = tmedia_consumer_set(video->consumer, param);
+		ret = tmedia_consumer_set(base->consumer, param);
 	}
 	else if(param->plugin_type == tmedia_ppt_producer){
-		if(!video->producer){
+		if(!base->producer){
 			TSK_DEBUG_ERROR("No producer associated to this session");
 			return -1;
 		}
@@ -309,23 +698,10 @@ static int tdav_session_video_set(tmedia_session_t* self, const tmedia_param_t* 
 				tsk_object_unref(codecs);
 			}
 		}
-		ret = tmedia_producer_set(video->producer, param);
+		ret = tmedia_producer_set(base->producer, param);
 	}
 	else{
-		if(param->value_type == tmedia_pvt_pchar){
-			if(tsk_striequals(param->key, "remote-ip")){
-				if(param->value){
-					tsk_strupdate(&video->remote_ip, param->value);
-				}
-			}
-			else if(tsk_striequals(param->key, "local-ip")){
-				tsk_strupdate(&video->local_ip, param->value);
-			}
-			else if(tsk_striequals(param->key, "local-ipver")){
-				video->useIPv6 = tsk_striequals(param->value, "ipv6");
-			}
-		}
-		else if(param->value_type == tmedia_pvt_int32){
+		if(param->value_type == tmedia_pvt_int32){
 			if(tsk_striequals(param->key, "bandwidth-level")){
 				tsk_list_item_t* item;
 				self->bl = (tmedia_bandwidth_level_t) TSK_TO_INT32((uint8_t*)param->value);
@@ -334,22 +710,6 @@ static int tdav_session_video_set(tmedia_session_t* self, const tmedia_param_t* 
 					((tmedia_codec_t*)item->data)->bl = self->bl;
 				}
 				tsk_object_unref(self->codecs);
-			}
-			else if(tsk_striequals(param->key, "srtp-optional")){
-#if HAVE_SRTP
-				video->srtp_mode = (TSK_TO_INT32((uint8_t*)param->value) != 0);
-#endif
-			}
-			else if(tsk_striequals(param->key, "srtp-mandatory")){
-#if HAVE_SRTP
-				video->srtp_mode = (TSK_TO_INT32((uint8_t*)param->value) != 0);
-#endif
-			}
-		}
-		else if(param->value_type == tmedia_pvt_pobject){
-			if(tsk_striequals(param->key, "natt-ctx")){
-				TSK_OBJECT_SAFE_FREE(video->natt_ctx);
-				video->natt_ctx = tsk_object_ref(param->value);
 			}
 		}
 	}
@@ -360,72 +720,44 @@ static int tdav_session_video_set(tmedia_session_t* self, const tmedia_param_t* 
 static int tdav_session_video_get(tmedia_session_t* self, tmedia_param_t* param)
 {
 	int ret = 0;
-	tdav_session_video_t* video;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-
-	video = (tdav_session_video_t*)self;
-
-	if(param->plugin_type == tmedia_ppt_session){
-		if(param->value_type == tmedia_pvt_int32){
-			if(tsk_striequals(param->key, "srtp-enabled")){
-#if HAVE_SRTP
-				if(video->rtp_manager){
-					((int8_t*)param->value)[0] = trtp_srtp_is_active(video->rtp_manager);
-				}
-#endif
-			}
-		}
+	
+	if(tdav_session_av_get(TDAV_SESSION_AV(self), param) == tsk_true){
+		return 0;
 	}
 
-	return 0;
+	TSK_DEBUG_ERROR("Not expected");
+	return -2;
 }
 
 static int tdav_session_video_prepare(tmedia_session_t* self)
 {
-	tdav_session_video_t* video;
-	int ret = 0;
+	tdav_session_av_t* base = (tdav_session_av_t*)(self);
+	int ret;
 
-	video = (tdav_session_video_t*)self;
-
-	/* set local port */
-	if(!video->rtp_manager){
-		if((video->rtp_manager = trtp_manager_create(video->rtcp_enabled, video->local_ip, video->useIPv6))){
-			
-			ret = trtp_manager_set_rtp_callback(video->rtp_manager, tdav_session_video_rtp_cb, video);
-			ret = trtp_manager_set_port_range(video->rtp_manager, tmedia_defaults_get_rtp_port_range_start(), tmedia_defaults_get_rtp_port_range_stop());
-			ret = trtp_manager_prepare(video->rtp_manager);
-			if(video->natt_ctx){
-				ret = trtp_manager_set_natt_ctx(video->rtp_manager, video->natt_ctx);
-			}
-		}
+	if((ret = tdav_session_av_prepare(base))){
+		TSK_DEBUG_ERROR("tdav_session_av_prepare(video) failed");
+		return ret;
 	}
 
-		/* SRTP */
-#if HAVE_SRTP
-	{
-		if(video->remote_srtp_neg.pending){
-			char* str = tsk_null;
-			video->remote_srtp_neg.pending = tsk_false;
-			tsk_sprintf(&str, "%d %s inline:%s", video->remote_srtp_neg.tag, trtp_srtp_crypto_type_strings[video->remote_srtp_neg.crypto_type], video->remote_srtp_neg.key);
-			trtp_srtp_set_remote(video->rtp_manager, str);
-			TSK_FREE(str);
-		}
+	if(base->rtp_manager){
+		ret = trtp_manager_set_rtp_callback(base->rtp_manager, tdav_session_video_rtp_cb, base);
+		ret = trtp_manager_set_rtcp_callback(base->rtp_manager, tdav_session_video_rtcp_cb, base);
 	}
-#endif
-
-	/* Consumer will be prepared in tdav_session_video_start() */
-	/* Producer will be prepared in tdav_session_video_start() */
 
 	return ret;
 }
 
 static int tdav_session_video_start(tmedia_session_t* self)
 {
+	int ret;
 	tdav_session_video_t* video;
+	const tmedia_codec_t* codec;
+	tdav_session_av_t* base;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -433,308 +765,134 @@ static int tdav_session_video_start(tmedia_session_t* self)
 	}
 
 	video = (tdav_session_video_t*)self;
+	base = (tdav_session_av_t*)self;
 
-	if(TSK_LIST_IS_EMPTY(self->neg_codecs)){
+	// ENCODER codec
+	if(!(codec = tdav_session_av_get_best_neg_codec(base))){
 		TSK_DEBUG_ERROR("No codec matched");
 		return -2;
 	}
-
-	if(video->rtp_manager){
-		int ret;
-		const tmedia_codec_t* codec = (const tmedia_codec_t*)TSK_LIST_FIRST_DATA(self->neg_codecs);
-		/* RTP/RTCP manager: use latest information. */
-		ret = trtp_manager_set_rtp_remote(video->rtp_manager, video->remote_ip, video->remote_port);
-		trtp_manager_set_payload_type(video->rtp_manager, codec->neg_format ? atoi(codec->neg_format) : atoi(codec->format));
-		ret = trtp_manager_start(video->rtp_manager);
-	
-		/* Consumer */
-		if(video->consumer){
-			tmedia_consumer_prepare(video->consumer, codec);
-			tmedia_consumer_start(video->consumer);
+	tsk_mutex_lock(video->encoder.h_mutex);
+	TSK_OBJECT_SAFE_FREE(video->encoder.codec);
+	video->encoder.codec = tsk_object_ref((tsk_object_t*)codec);
+	if(!TMEDIA_CODEC(video->encoder.codec)->opened){
+		if((ret = tmedia_codec_open(video->encoder.codec))){
+			TSK_DEBUG_ERROR("Failed to open [%s] codec", video->encoder.codec->plugin->desc);
+			return ret;
 		}
-		/* Producer */
-		if(video->producer){
-			tmedia_producer_prepare(video->producer, codec);
-			tmedia_producer_start(video->producer);
-		}
+	}
+	tsk_mutex_unlock(video->encoder.h_mutex);
 
-		/* for test */
-		//trtp_manager_send_rtp(video->rtp_manager, "test", 4, tsk_true);
+	// RED codec
+	TSK_OBJECT_SAFE_FREE(video->red.codec);
+	video->red.payload_type = 0;
+	if((video->red.codec = tsk_object_ref((tsk_object_t*)tdav_session_av_get_red_codec(base)))){
+		video->red.payload_type = atoi(video->red.codec->neg_format);
+		if(!TMEDIA_CODEC(video->red.codec)->opened){
+			if((ret = tmedia_codec_open(video->red.codec))){
+				TSK_DEBUG_ERROR("Failed to open [%s] codec", video->red.codec->plugin->desc);
+				return ret;
+			}
+		}
+	}
+
+	// ULPFEC
+	TSK_OBJECT_SAFE_FREE(video->ulpfec.codec);
+	video->ulpfec.payload_type = 0;
+	if((video->ulpfec.codec = tsk_object_ref((tsk_object_t*)tdav_session_av_get_ulpfec_codec(base)))){
+		video->ulpfec.payload_type = atoi(video->ulpfec.codec->neg_format);
+		if(!TMEDIA_CODEC(video->ulpfec.codec)->opened){
+			if((ret = tmedia_codec_open(video->ulpfec.codec))){
+				TSK_DEBUG_ERROR("Failed to open [%s] codec", video->ulpfec.codec->plugin->desc);
+				return ret;
+			}
+		}
+	}
+
+	if((ret = tdav_video_jb_start(video->jb))){
+		TSK_DEBUG_ERROR("Failed to start jitter buffer");
 		return ret;
 	}
-	else{
-		TSK_DEBUG_ERROR("Invalid RTP/RTCP manager or neg_codecs");
-		return -3;
-	}
+
+	if((ret = tdav_session_av_start(base, video->encoder.codec))){
+		TSK_DEBUG_ERROR("tdav_session_av_start(video) failed");
+		return ret;
+	}	
+
+	return ret;
 }
 
 static int tdav_session_video_stop(tmedia_session_t* self)
 {
-	tdav_session_video_t* video;
-	tmedia_codec_t* codec = tsk_null;
+	int ret;
 
-	if(!self){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-
-	video = (tdav_session_video_t*)self;
-
-	/* RTP/RTCP manager */
-	if(video->rtp_manager){
-		trtp_manager_stop(video->rtp_manager);
-	}
-
-	/* Consumer */
-	if(video->consumer){
-		tmedia_consumer_stop(video->consumer);
-	}
-	/* Producer */
-	if(video->producer){
-		tmedia_producer_stop(video->producer);
-	}
-
-	/* close codec to force open() for next start (e.g SIP UPDATE with SDP) */
-	if((codec = tsk_object_ref(TSK_LIST_FIRST_DATA(self->neg_codecs)))){
-		tmedia_codec_close(codec);
-		tsk_object_unref(codec);
-	}
-
-	return 0;
+	ret = tdav_video_jb_stop(TDAV_SESSION_VIDEO(self)->jb);
+	ret = tdav_session_av_stop(TDAV_SESSION_AV(self));
+	TSK_OBJECT_SAFE_FREE(TDAV_SESSION_VIDEO(self)->encoder.codec);
+	TSK_OBJECT_SAFE_FREE(TDAV_SESSION_VIDEO(self)->decoder.codec);
+	return ret;
 }
 
 static int tdav_session_video_pause(tmedia_session_t* self)
 {
-	tdav_session_video_t* video;
-
-	video = (tdav_session_video_t*)self;
-
-	if(!self){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-
-	/* Consumer */
-	if(video->consumer){
-		tmedia_consumer_pause(video->consumer);
-	}
-	/* Producer */
-	if(video->producer){
-		tmedia_producer_pause(video->producer);
-	}
-
-	return 0;
+	return tdav_session_av_pause(TDAV_SESSION_AV(self));
 }
 
 static const tsdp_header_M_t* tdav_session_video_get_lo(tmedia_session_t* self)
 {
-	tdav_session_video_t* video;
-	tsk_bool_t changed = tsk_false;
+	tsk_bool_t updated = tsk_false;
+	const tsdp_header_M_t* ret;
+	tdav_session_av_t* base = TDAV_SESSION_AV(self);
 
-	if(!self || !self->plugin){
-		TSK_DEBUG_ERROR("Invalid parameter");
+
+	if(!(ret = tdav_session_av_get_lo(base, &updated))){
+		TSK_DEBUG_ERROR("tdav_session_av_get_lo(video) failed");
 		return tsk_null;
 	}
 
-	video = (tdav_session_video_t*)self;
-
-	if(!video->rtp_manager || !video->rtp_manager->transport){
-		TSK_DEBUG_ERROR("RTP/RTCP manager in invalid");
-		return tsk_null;
+	if(updated){
+		// set callbacks
+		_tdav_session_video_set_callbacks(self);
 	}
-
-	if(self->ro_changed && self->M.lo){
-		/* Codecs */
-		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "fmtp");
-		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "rtpmap");
-		tsk_list_clear_items(self->M.lo->FMTs);
-		
-		/* QoS */
-		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "curr");
-		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "des");
-		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "conf");
-	}
-
-	changed = (self->ro_changed || !self->M.lo);
-
-	if(!self->M.lo){
-		if((self->M.lo = tsdp_header_M_create(self->plugin->media, video->rtp_manager->rtp.public_port, "RTP/AVP"))){
-			/* If NATT is active, do not rely on the global IP address Connection line */
-			if(video->natt_ctx){
-				tsdp_header_M_add_headers(self->M.lo,
-					TSDP_HEADER_C_VA_ARGS("IN", video->useIPv6 ? "IP6" : "IP4", video->rtp_manager->rtp.public_ip),
-					tsk_null);
-			}
-		}
-		else{
-			TSK_DEBUG_ERROR("Failed to create lo");
-			return tsk_null;
-		}
-	}
-
-	/* from codecs to sdp */
-	if(changed){
-		tmedia_codecs_L_t* neg_codecs = tsk_null;
-		
-		if(self->M.ro){
-			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
-			/* update negociated codecs */
-			if((neg_codecs = tmedia_session_match_codec(self, self->M.ro))){
-				self->neg_codecs = neg_codecs;
-				// set video codec callback
-				if(!TSK_LIST_IS_EMPTY(self->neg_codecs)){
-					tmedia_codec_video_set_callback((tmedia_codec_video_t*)TSK_LIST_FIRST_DATA(self->neg_codecs), tdav_session_video_raw_cb, self);
-				}
-			}
-			/* from codecs to sdp */
-			if(self->neg_codecs){
-				tmedia_codec_to_sdp(self->neg_codecs, self->M.lo);
-			}
-			else{
-				self->M.lo->port = 0; /* Keep the RTP transport and reuse it when we receive a reINVITE or UPDATE request */
-				goto DONE;
-			}
-		}
-		else{
-			/* from codecs to sdp */
-			tmedia_codec_to_sdp(self->codecs, self->M.lo);
-		}
-		
-		/* Hold/Resume */
-		tsdp_header_M_set_holdresume_att(self->M.lo, self->lo_held, self->ro_held);
-
-		/* SRTP */
-#if HAVE_SRTP
-		{
-			tsk_bool_t is_srtp_remote_mandatory = (self->M.ro && (tsk_striequals(self->M.ro->proto, "RTP/SAVP") || tsk_striequals(self->M.ro->proto, "RTP/SAVPF")));
-			tsk_bool_t is_srtp_remote_optional = (self->M.ro && (tsdp_header_M_findA(self->M.ro, "crypto") != tsk_null));
-			if((video->srtp_mode == tmedia_srtp_mode_optional && (is_srtp_remote_optional || is_srtp_remote_mandatory || !self->M.ro)) || video->srtp_mode == tmedia_srtp_mode_mandatory){
-				const trtp_srtp_ctx_xt *ctx = tsk_null;
-				tsk_size_t ctx_count = 0, ctx_idx;
-				char* str = tsk_null;
-				// local
-				trtp_srtp_get_ctx_local(video->rtp_manager, &ctx, &ctx_count);
-				for(ctx_idx = 0; ctx_idx < ctx_count; ++ctx_idx){
-					tsk_sprintf(&str, "%d %s inline:%s", ctx[ctx_idx].tag, trtp_srtp_crypto_type_strings[ctx[ctx_idx].crypto_type], ctx[ctx_idx].key_str);
-					tsdp_header_M_add_headers(self->M.lo,
-						TSDP_HEADER_A_VA_ARGS("crypto", str),
-						tsk_null);
-					TSK_FREE(str);
-				}
-			}
-			
-			if(is_srtp_remote_mandatory || (video->srtp_mode == tmedia_srtp_mode_mandatory) || trtp_srtp_is_initialized(video->rtp_manager)){
-				tsk_strupdate(&self->M.lo->proto, "RTP/SAVP");
-			}
-		}
-#endif
-		
-		/* QoS */
-		if(self->qos){
-			tmedia_qos_tline_t* ro_tline;
-			if(self->M.ro && (ro_tline = tmedia_qos_tline_from_sdp(self->M.ro))){
-				tmedia_qos_tline_set_ro(self->qos, ro_tline);
-				TSK_OBJECT_SAFE_FREE(ro_tline);
-			}
-			tmedia_qos_tline_to_sdp(self->qos, self->M.lo);
-		}
-DONE:;
-	}
-
-	return self->M.lo;
+	
+	return ret;
 }
 
 static int tdav_session_video_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
-	tdav_session_video_t* video;
-	tmedia_codecs_L_t* neg_codecs;
-	tsk_bool_t is_srtp_remote_mandatory;
-	tsk_bool_t crypto_matched = tsk_false;
+	int ret;
+	tsk_bool_t updated = tsk_false;
+	tdav_session_av_t* base = TDAV_SESSION_AV(self);
 
-	if(!self || !m){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
+	if((ret = tdav_session_av_set_ro(base, m, &updated))){
+		TSK_DEBUG_ERROR("tdav_session_av_set_ro(video) failed");
+		return ret;
 	}
 
-	video = (tdav_session_video_t*)self;
+	if(updated){
+		// set callbacks
+		ret = _tdav_session_video_set_callbacks(self);
+	}	
 
-	/* update remote offer */
-	TSK_OBJECT_SAFE_FREE(self->M.ro);
-	self->M.ro = tsk_object_ref((void*)m);
-
-	is_srtp_remote_mandatory = (tsk_striequals(m->proto, "RTP/SAVP") || tsk_striequals(m->proto, "RTP/SAVPF"));
-
-	if(self->M.lo){
-		if((neg_codecs = tmedia_session_match_codec(self, m))){
-			/* update negociated codecs */
-			TSK_OBJECT_SAFE_FREE(self->neg_codecs);
-			self->neg_codecs = neg_codecs;
-			// set codec callback
-			if(!TSK_LIST_IS_EMPTY(self->neg_codecs)){
-				tmedia_codec_video_set_callback((tmedia_codec_video_t*)TSK_LIST_FIRST_DATA(self->neg_codecs), tdav_session_video_raw_cb, self);
-			}
-		}
-		else{
-			return -1;
-		}
-
-		/* QoS */
-		if(self->qos){
-			tmedia_qos_tline_t* ro_tline;
-			if(self->M.ro && (ro_tline = tmedia_qos_tline_from_sdp(self->M.ro))){
-				tmedia_qos_tline_set_ro(self->qos, ro_tline);
-				TSK_OBJECT_SAFE_FREE(ro_tline);
-			}
-		}
-	}
-
-	/* get connection associated to this media line
-	* If the connnection is global, then the manager will call tdav_session_video_set() */
-	if(m->C && m->C->addr){
-		tsk_strupdate(&video->remote_ip, m->C->addr);
-		video->useIPv6 = tsk_striequals(m->C->addrtype, "IP6");
-	}
-	/* set remote port */
-	video->remote_port = m->port;
-	
-	/* SRTP */
-#if HAVE_SRTP
-	if(video->srtp_mode == tmedia_srtp_mode_optional || video->srtp_mode == tmedia_srtp_mode_mandatory){
-		tsk_size_t i = 0;
-		const tsdp_header_A_t* A;
-		int ret;
-		while((A = tsdp_header_M_findA_at(m, "crypto", i++))){
-			if(video->rtp_manager){
-				if((ret = trtp_srtp_set_remote(video->rtp_manager, A->value)) == 0){
-					crypto_matched = tsk_true;
-					break;
-				}
-			}
-			else{
-				int ret;
-				if((ret = trtp_srtp_match_line(A->value, &video->remote_srtp_neg.tag, (int32_t*)&video->remote_srtp_neg.crypto_type, video->remote_srtp_neg.key, (sizeof(video->remote_srtp_neg.key) - 1))) == 0){
-					crypto_matched = tsk_true;
-					video->remote_srtp_neg.pending = tsk_true;
-					break;
-				}
-			}
-		}
-		if((video->srtp_mode == tmedia_srtp_mode_mandatory) && !crypto_matched){// local require but none match
-			TSK_DEBUG_ERROR("SRTP negotiation failed");
-			return -3;
-		}
-	}
-#endif
-	
-	if(is_srtp_remote_mandatory && !crypto_matched){// remote require but none match
-		TSK_DEBUG_ERROR("SRTP negotiation failed");
-		return -4;
-	}
-
-	return 0;
+	return ret;
 }
 
-
+static int _tdav_session_video_set_callbacks(tmedia_session_t* self)
+{
+	if(self){
+		tsk_list_item_t* item;
+		tsk_list_foreach(item, TMEDIA_SESSION(self)->neg_codecs){
+			// set codec callbacks
+			tmedia_codec_video_set_enc_callback(TMEDIA_CODEC_VIDEO(item->data), tdav_session_video_raw_cb, self);
+			tmedia_codec_video_set_dec_callback(TMEDIA_CODEC_VIDEO(item->data), tdav_session_video_decode_cb, self);
+			// set RED callback: redundant data to decode and send to the consumer
+			if(TMEDIA_CODEC(item->data)->plugin == tdav_codec_red_plugin_def_t){
+				tdav_codec_red_set_callback((struct tdav_codec_red_s *)(item->data), tdav_session_video_rtp_cb, self);
+			}
+		}
+	}
+	return 0;
+}
 
 
 
@@ -744,57 +902,74 @@ static int tdav_session_video_set_ro(tmedia_session_t* self, const tsdp_header_M
 /* constructor */
 static tsk_object_t* tdav_session_video_ctor(tsk_object_t * self, va_list * app)
 {
-	tdav_session_video_t *session = self;
-	if(session){
-		/* init base: called by tmedia_session_create() */
-		/* init self */
-		tsk_safeobj_init(session);
-		if(!(session->consumer = tmedia_consumer_create(tdav_session_video_plugin_def_t->type, TMEDIA_SESSION(session)->id))){
-			TSK_DEBUG_ERROR("Failed to create Video consumer");
-		}
-		if((session->producer = tmedia_producer_create(tdav_session_video_plugin_def_t->type, TMEDIA_SESSION(session)->id))){
-			tmedia_producer_set_enc_callback(session->producer, tdav_session_video_producer_enc_cb, self);
-			tmedia_producer_set_raw_callback(session->producer, tdav_session_video_raw_cb, self);
-		}
-		else{
-			TSK_DEBUG_ERROR("Failed to create Video producer");
-		}
+	tdav_session_video_t *video = self;
+	if(video){
+		int ret;
+		tdav_session_av_t *base = TDAV_SESSION_AV(self);
+		static const tsk_bool_t is_audio = tsk_false;
 
-#if HAVE_SRTP
-		session->srtp_mode = tmedia_defaults_get_srtp_mode();
-#endif
+		/* init() base */
+		if((ret = tdav_session_av_init(base, is_audio)) != 0){
+			TSK_DEBUG_ERROR("tdav_session_av_init(video) failed");
+			return tsk_null;
+		}
+		
+		/* init() self */
+		if(!(video->encoder.h_mutex = tsk_mutex_create())){
+			TSK_DEBUG_ERROR("Failed to create encode mutex");
+			return tsk_null;
+		}
+		if(!(video->avpf.packets = tsk_list_create())){
+			TSK_DEBUG_ERROR("Failed to create list");
+			return tsk_null;
+		}
+		if(!(video->jb = tdav_video_jb_create())){
+			TSK_DEBUG_ERROR("Failed to create jitter buffer");
+			return tsk_null;
+		}
+		tdav_video_jb_set_callback(video->jb, _tdav_session_video_jb_cb, video);
+
+		if(base->producer){
+			tmedia_producer_set_enc_callback(base->producer, tdav_session_video_producer_enc_cb, self);
+			tmedia_producer_set_raw_callback(base->producer, tdav_session_video_raw_cb, self);
+		}
+		video->avpf.max = TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MIN;
+		video->encoder.pkt_loss_level = tdav_session_video_pkt_loss_level_low;
+		video->encoder.pkt_loss_prob_bad = 0; // honor first report
+		video->encoder.pkt_loss_prob_good = TDAV_SESSION_VIDEO_PKT_LOSS_PROB_GOOD;
 	}
 	return self;
 }
 /* destructor */
 static tsk_object_t* tdav_session_video_dtor(tsk_object_t * self)
 { 
-	tdav_session_video_t *session = self;
-	if(session){
-
-		// Do it in this order (deinit self first)
-		
+	tdav_session_video_t *video = self;
+	if(video){
+		tdav_session_video_stop((tmedia_session_t*)video);
 		// deinit self (rtp manager should be destroyed after the producer)
-		TSK_OBJECT_SAFE_FREE(session->consumer);
-		TSK_OBJECT_SAFE_FREE(session->producer);
-		TSK_OBJECT_SAFE_FREE(session->conv.toYUV420);
-		TSK_OBJECT_SAFE_FREE(session->conv.fromYUV420);
-		TSK_OBJECT_SAFE_FREE(session->rtp_manager);
-		TSK_FREE(session->remote_ip);
-		TSK_FREE(session->local_ip);
+		TSK_OBJECT_SAFE_FREE(video->conv.toYUV420);
+		TSK_OBJECT_SAFE_FREE(video->conv.fromYUV420);
 
-		TSK_FREE(session->encoder.buffer);
-		TSK_FREE(session->encoder.conv_buffer);
-		TSK_FREE(session->decoder.buffer);
-		TSK_FREE(session->decoder.conv_buffer);
+		TSK_FREE(video->encoder.buffer);
+		TSK_FREE(video->encoder.conv_buffer);
+		TSK_FREE(video->decoder.buffer);
+		TSK_FREE(video->decoder.conv_buffer);
 
-		// NAT Traversal context
-		TSK_OBJECT_SAFE_FREE(session->natt_ctx);
+		TSK_OBJECT_SAFE_FREE(video->encoder.codec);
+		TSK_OBJECT_SAFE_FREE(video->decoder.codec);
+		TSK_OBJECT_SAFE_FREE(video->red.codec);
+		TSK_OBJECT_SAFE_FREE(video->ulpfec.codec);
 
-		tsk_safeobj_deinit(session);
+		TSK_OBJECT_SAFE_FREE(video->avpf.packets);
 
-		// deinit base
-		tmedia_session_deinit(self);
+		TSK_OBJECT_SAFE_FREE(video->jb);
+
+		if(video->encoder.h_mutex){
+			tsk_mutex_destroy(&video->encoder.h_mutex);
+		}
+
+		/* deinit() base */
+		tdav_session_av_deinit(TDAV_SESSION_AV(video));
 	}
 
 	return self;

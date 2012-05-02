@@ -63,8 +63,11 @@ OBJS +=	src/dns/tnet_dns.o\
 	###################
 	## ICE
 	###################
-OBJS +=	src/ice/tnet_ice.o
-	
+OBJS +=	src/ice/tnet_ice_candidate.o \
+	src/ice/tnet_ice_ctx.o \
+	src/ice/tnet_ice_event.o \
+	src/ice/tnet_ice_pair.o \
+	src/ice/tnet_ice_utils.o
 	###################
 	## STUN
 	###################

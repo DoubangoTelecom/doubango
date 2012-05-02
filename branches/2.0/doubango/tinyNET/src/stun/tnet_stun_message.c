@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet_stun_message.c
  * @brief STUN2 (RFC 5389) message parser.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -42,6 +42,15 @@
 
 #include <string.h>
 
+static int __pred_find_attribute_by_type(const tsk_list_item_t *item, const void *att_type)
+{
+	if(item && item->data){
+		tnet_stun_attribute_t *att = item->data;
+		tnet_stun_attribute_type_t type = *((tnet_stun_attribute_type_t*)att_type);
+		return (att->type - type);
+	}
+	return -1;
+}
 
 /**@ingroup tnet_stun_group
 * Creates new STUN message.
@@ -110,7 +119,7 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 	
 	/* Message Length ==> Will be updated after attributes have been added. */
 	{
-		uint16_t length = 0;
+		static const uint16_t length = 0;
 		tsk_buffer_append(output, &(length), 2);
 	}
 
@@ -134,8 +143,7 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 		TSK_OBJECT_SAFE_FREE(attribute);
 	}
 
-	/*=== Attributes ===
-	*/
+	/*=== Attributes === */
 	{
 		tsk_list_item_t *item;
 		tsk_list_foreach(item, self->attributes)
@@ -147,21 +155,31 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 	}
 
 	/* AUTHENTICATION */
-	if(self->realm && self->nonce){
-		SERIALIZE_N_ADD_ATTRIBUTE(username, self->username, tsk_strlen(self->username));
+	if(self->realm && self->nonce){ // long term
 		SERIALIZE_N_ADD_ATTRIBUTE(realm, self->realm, tsk_strlen(self->realm));
 		SERIALIZE_N_ADD_ATTRIBUTE(nonce, self->nonce, tsk_strlen(self->nonce));
 		
-		compute_integrity = 1;
+		compute_integrity = !self->nointegrity;
+	}
+	else if(self->password){ // short term
+		compute_integrity = !self->nointegrity;
+	}
+
+	if(compute_integrity && self->username){
+		SERIALIZE_N_ADD_ATTRIBUTE(username, self->username, tsk_strlen(self->username));
 	}
 
 	/* Message Length: The message length MUST contain the size, in bytes, of the message
 						not including the 20-byte STUN header.
 	*/
 	{
+		// compute length for 'MESSAGE-INTEGRITY'
+		// will be computed again to store the correct value
 		uint16_t length = (output->size) - TNET_STUN_HEADER_SIZE;
+#if 0
 		if(self->fingerprint)
 			length += (2/* Type */ + 2 /* Length */+ 4 /* FINGERPRINT VALUE*/);
+#endif
 
 		if(compute_integrity)
 			length += (2/* Type */ + 2 /* Length */+ TSK_SHA1_DIGEST_SIZE /* INTEGRITY VALUE*/);
@@ -176,24 +194,28 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 
 		   For long-term credentials ==> key = MD5(username ":" realm ":" SASLprep(password))
 		   For short-term credentials ==> key = SASLprep(password)
-		   FIXME: what about short term credentials?
-		   FIXME: what about SASLprep
 		*/
-		char* keystr = 0;
+		
 		tsk_sha1digest_t hmac;
-		tsk_md5digest_t md5;		
+				
+		if(self->username && self->realm && self->password){ // long term
+			char* keystr = tsk_null;
+			tsk_md5digest_t md5;
+			tsk_sprintf(&keystr, "%s:%s:%s", self->username, self->realm, self->password);
+			TSK_MD5_DIGEST_CALC(keystr, tsk_strlen(keystr), md5);
+			hmac_sha1digest_compute(output->data, output->size, (const char*)md5, TSK_MD5_DIGEST_SIZE, hmac);
+			
+			TSK_FREE(keystr);
+		}
+		else{ // short term
+			hmac_sha1digest_compute(output->data, output->size, self->password, tsk_strlen(self->password), hmac);
+		}
 
-		tsk_sprintf(&keystr, "%s:%s:%s", self->username, self->realm, self->password);
-		TSK_MD5_DIGEST_CALC(keystr, tsk_strlen(keystr), md5);
-		hmac_sha1digest_compute(output->data, output->size, (const char*)md5, TSK_MD5_DIGEST_SIZE, hmac);
-		
 		SERIALIZE_N_ADD_ATTRIBUTE(integrity, hmac, TSK_SHA1_DIGEST_SIZE);
-		
-		TSK_FREE(keystr);
 	}
 
 	/* FINGERPRINT */
-	if(self->fingerprint){
+	if(self->fingerprint){//JINGLE_ICE
 		/*	RFC 5389 - 15.5.  FINGERPRINT
 			The FINGERPRINT attribute MAY be present in all STUN messages.  The
 			value of the attribute is computed as the CRC-32 of the STUN message
@@ -208,6 +230,9 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 		tnet_stun_attribute_serialize(attribute, output);
 		TSK_OBJECT_SAFE_FREE(attribute);
 	}
+
+	// LENGTH
+	*(((uint16_t*)output->data)+1)  = tnet_htons(((output->size) - TNET_STUN_HEADER_SIZE));
 
 bail:
 	return output;
@@ -229,8 +254,7 @@ tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, tsk_size
 	uint8_t* dataPtr, *dataEnd;
 
 	
-	if(!data || (size  < TNET_STUN_HEADER_SIZE) || !TNET_IS_STUN2(data))
-	{
+	if(!data || (size  < TNET_STUN_HEADER_SIZE) || !TNET_IS_STUN2_MSG(data, size)){
 		goto bail;
 	}
 
@@ -273,7 +297,7 @@ tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, tsk_size
 		tnet_stun_attribute_t *attribute = tnet_stun_attribute_deserialize(dataPtr, (dataEnd - dataPtr));
 		if(attribute){
 			tsk_size_t att_size = (attribute->length + 2 /* Type*/ + 2/* Length */);
-			att_size += (att_size%4) ? 4-(att_size%4) : 0; // Skip zero bytes used to pad the attribute.
+			att_size += (att_size & 0x03) ? 4-(att_size & 0x03) : 0; // Skip zero bytes used to pad the attribute.
 
 			dataPtr += att_size;
 			tsk_list_push_back_data(message->attributes, (void**)&attribute);
@@ -282,16 +306,18 @@ tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, tsk_size
 		}
 		else{
 			continue;
-		}
-
-		
-
-		
+		}	
 	}
-	
 
 bail:
 	return message;
+}
+
+/**@ingroup tnet_stun_group
+*/
+tsk_bool_t tnet_stun_message_has_attribute(const tnet_stun_message_t *self, tnet_stun_attribute_type_t type)
+{
+	return (tnet_stun_message_get_attribute(self, type) != tsk_null);
 }
 
 /**@ingroup tnet_stun_group
@@ -302,13 +328,23 @@ bail:
 */
 int tnet_stun_message_add_attribute(tnet_stun_message_t *self, tnet_stun_attribute_t** attribute)
 {
-	//if(self && attribute)
-	{
+	if(self && attribute && *attribute){
 		tsk_list_push_back_data(self->attributes, (void**)attribute);
 		return 0;
 	}
 	return -1;
 }
+
+/**@ingroup tnet_stun_group
+*/
+int tnet_stun_message_remove_attribute(tnet_stun_message_t *self, tnet_stun_attribute_type_t type)
+{
+	if(self && self->attributes){
+		tsk_list_remove_item_by_pred(self->attributes, __pred_find_attribute_by_type, &type);
+	}
+	return 0;
+}
+
 
 /**@ingroup tnet_stun_group
 * Gets a STUN attribute from a message.
@@ -387,8 +423,19 @@ int32_t tnet_stun_message_get_lifetime(const tnet_stun_message_t *self)
 	return -1;
 }
 
-
-
+/**@ingroup tnet_stun_group
+*/
+tsk_bool_t tnet_stun_message_transac_id_equals(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2)
+{
+	tsk_size_t i;
+	static const tsk_size_t size = sizeof(tnet_stun_transacid_t);
+	for(i = 0; i < size; i++){
+		if(id1[i] != id2[i]){
+			return tsk_false;
+		}
+	}
+	return tsk_true;
+}
 
 
 
@@ -410,6 +457,16 @@ static tsk_object_t* tnet_stun_message_ctor(tsk_object_t * self, va_list * app)
 
 		message->fingerprint = 1;
 		message->integrity = 0;
+
+		{	/* Create random transaction id */
+			tsk_istr_t random;
+			tsk_md5digest_t digest;
+
+			tsk_strrandom(&random);
+			TSK_MD5_DIGEST_CALC(random, sizeof(random), digest);
+
+			memcpy(message->transaction_id, digest, TNET_STUN_TRANSACID_SIZE);
+		}
 	}
 	return self;
 }

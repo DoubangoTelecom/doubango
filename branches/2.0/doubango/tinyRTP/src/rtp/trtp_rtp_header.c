@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -68,7 +68,7 @@ trtp_rtp_header_t* trtp_rtp_header_create(uint32_t ssrc, uint16_t seq_num, uint3
 	return header;
 }
 
-/* guess what is the minimum require size to serialize the header */
+/* guess what is the minimum required size to serialize the header */
 tsk_size_t trtp_rtp_header_guess_serialbuff_size(const trtp_rtp_header_t *self)
 {
 	if(!self){
@@ -207,12 +207,12 @@ trtp_rtp_header_t* trtp_rtp_header_deserialize(const void *data, tsk_size_t size
 	pdata += 2;
 
 	/* timestamp (32bits) */
-	header->timestamp = pdata[0] << 8 | pdata[1];
+	header->timestamp = pdata[0] << 24 | pdata[1] << 16 | pdata[2] << 8 | pdata[3];
 	// skip octets
 	pdata += 4;
 
 	/* synchronization source (SSRC) identifier (32bits) */
-	header->ssrc = pdata[0] << 8 | pdata[1];
+	header->ssrc = pdata[0] << 24 | pdata[1] << 16 | pdata[2] << 8 | pdata[3];
 	// skip octets
 	pdata += 4;
 

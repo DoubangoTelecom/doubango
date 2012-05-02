@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,7 +24,7 @@
  * @brief Finite-state machine (FSM) implementation.
  * @sa http://en.wikipedia.org/wiki/Finite-state_machine.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -141,7 +141,7 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 	tsk_list_foreach(item, self->entries)
 	{
 		tsk_fsm_entry_t* entry = item->data;
-		if((entry->from != tsk_fsm_state_any) && (entry->from != self->current)){
+		if(((entry->from != tsk_fsm_state_any) && (entry->from != tsk_fsm_state_current)) && (entry->from != self->current)){
 			continue;
 		}
 
@@ -156,7 +156,7 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 				TSK_DEBUG_INFO("State machine: %s", entry->desc);
 			}
 			
-			if(entry->to != tsk_fsm_state_any){ /* Stay at the current state if dest. state is Any */
+			if(entry->to != tsk_fsm_state_any && entry->to != tsk_fsm_state_current){ /* Stay at the current state if destination state is Any or Current */
 				self->current = entry->to;
 			}
 			
@@ -191,6 +191,25 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 	}
 	
 	return ret_exec;
+}
+
+tsk_fsm_state_id tsk_fsm_get_current_state(tsk_fsm_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_fsm_state_any;
+	}
+	return self->current;
+}
+
+int tsk_fsm_set_current_state(tsk_fsm_t* self, tsk_fsm_state_id new_state)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->current = new_state;
+	return 0;
 }
 
 tsk_bool_t tsk_fsm_terminated(tsk_fsm_t* self)
@@ -282,7 +301,7 @@ static int tsk_fsm_entry_cmp(const tsk_object_t *_entry1, const tsk_object_t *_e
 	const tsk_fsm_entry_t* entry1 = _entry1;
 	const tsk_fsm_entry_t* entry2 = _entry2;
 	if(entry1 && entry2){
-		/* Put "Any" states at the bottom. (Strong)*/
+		/* Put "Any" states at the bottom (Strong)*/
 		if(entry1->from == tsk_fsm_state_any){
 			return -20;
 		}
@@ -290,13 +309,15 @@ static int tsk_fsm_entry_cmp(const tsk_object_t *_entry1, const tsk_object_t *_e
 			return +20;
 		}
 
-		/* Put "Any" actions at the bottom. (Weak)*/
+		/* Put "Any" actions at the bottom (Weak)*/
 		if(entry1->action == tsk_fsm_action_any){
 			return -10;
 		}
 		else if(entry1->action == tsk_fsm_action_any){
 			return +10;
 		}
+		// put conditions first
+		return entry1->cond ? -1 : (entry2->cond ? 1 : 0);
 	}
 	return 0;
 }

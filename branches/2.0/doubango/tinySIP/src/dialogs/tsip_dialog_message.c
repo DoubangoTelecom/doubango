@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_dialog_message.c
  * @brief SIP dialog message (Client side).
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -226,14 +226,10 @@ int tsip_dialog_message_init(tsip_dialog_message_t *self)
 int tsip_dialog_message_Started_2_Sending_X_sendMESSAGE(va_list *app)
 {
 	tsip_dialog_message_t *self;
-	const tsip_action_t* action;
 
 	self = va_arg(*app, tsip_dialog_message_t *);
-	va_arg(*app, tsip_message_t *);
-	action = va_arg(*app, const tsip_action_t *);
 
 	TSIP_DIALOG(self)->running = tsk_true;
-	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
 	return send_MESSAGE(self);
 }

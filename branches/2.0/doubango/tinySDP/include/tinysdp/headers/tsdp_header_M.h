@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsdp_header_M.h
  * @brief SDP "m=" header (Media Descriptions).
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
  * 
  */
@@ -104,14 +104,17 @@ TINYSDP_API tsdp_header_M_t* tsdp_header_M_create(const char* media, uint32_t po
 TINYSDP_API tsdp_header_M_t* tsdp_header_M_create_null();
 
 TINYSDP_API tsdp_header_M_t *tsdp_header_M_parse(const char *data, tsk_size_t size);
+TINYSDP_API int tsdp_header_M_remove(tsdp_header_M_t* self, tsdp_header_type_t type);
 TINYSDP_API int tsdp_header_M_add(tsdp_header_M_t* self, const tsdp_header_t* header);
 TINYSDP_API int tsdp_header_M_add_headers(tsdp_header_M_t* self, ...);
 TINYSDP_API int tsdp_header_M_add_headers_2(tsdp_header_M_t* self, const tsdp_headers_L_t* headers);
 TINYSDP_API int tsdp_header_M_add_fmt(tsdp_header_M_t* self, const char* fmt);
 TINYSDP_API const tsdp_header_A_t* tsdp_header_M_findA_at(const tsdp_header_M_t* self, const char* field, tsk_size_t index);
 TINYSDP_API const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const char* field);
-TINYSDP_API char* tsdp_header_M_get_rtpmap(const tsdp_header_M_t* self, const char* fmt);
-TINYSDP_API char* tsdp_header_M_get_fmtp(const tsdp_header_M_t* self, const char* fmt);
+TINYSDP_API char* tsdp_header_M_getAValue(const tsdp_header_M_t* self, const char* field, const char* fmt);
+#define tsdp_header_M_get_rtpmap(self, fmt) tsdp_header_M_getAValue((self), "rtpmap", (fmt))
+#define tsdp_header_M_get_fmtp(self, fmt) tsdp_header_M_getAValue((self), "fmtp", (fmt))
+#define tsdp_header_M_get_imageattr(self, fmt) tsdp_header_M_getAValue((self), "imageattr", (fmt))
 TINYSDP_API int tsdp_header_M_hold(tsdp_header_M_t* self, tsk_bool_t local);
 TINYSDP_API tsk_bool_t tsdp_header_M_is_held(const tsdp_header_M_t* self, tsk_bool_t local);
 TINYSDP_API int tsdp_header_M_set_holdresume_att(tsdp_header_M_t* self, tsk_bool_t lo_held, tsk_bool_t ro_held);

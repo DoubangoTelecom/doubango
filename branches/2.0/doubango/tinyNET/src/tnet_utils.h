@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet_utils.h
  * @brief Network utility functions.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -77,7 +77,7 @@ TINYNET_API void tnet_getlasterror(tnet_error_t *error);
 TINYNET_API int tnet_geterrno();
 
 TINYNET_API tnet_interfaces_L_t* tnet_get_interfaces();
-TINYNET_API tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, unsigned anycast, unsigned multicast, unsigned dnsserver, long if_index);
+TINYNET_API tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, tsk_bool_t unicast, tsk_bool_t anycast, tsk_bool_t multicast, tsk_bool_t dnsserver, long if_index);
 #define tnet_get_addresses_all()			tnet_get_addresses(AF_UNSPEC, 1, 1, 1, 1, -1)
 #define tnet_get_addresses_all_unicast()	tnet_get_addresses(AF_UNSPEC, 1, 0, 0, 0, -1)
 #define tnet_get_addresses_unicast4()		tnet_get_addresses(AF_INET, 1, 0, 0, 0, -1)
@@ -99,7 +99,7 @@ TINYNET_API int tnet_get_sockaddr(tnet_fd_t fd, struct sockaddr_storage *result)
 TINYNET_API tnet_socket_type_t tnet_get_socket_type(tnet_fd_t fd);
 TINYNET_API tnet_family_t tnet_get_family(const char* host, tnet_port_t port);
 TINYNET_API int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port);
-TINYNET_API int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port);
+TINYNET_API int tnet_get_sockip_n_port(const struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port);
 TINYNET_API int tnet_get_peerip_n_port(tnet_fd_t localFD, tnet_ip_t *ip, tnet_port_t *port);
 #define tnet_get_ip(fd, ip) tnet_get_ip_n_port(fd, ip, 0)
 #define tnet_get_port(fd, port) tnet_get_ip_n_port(fd, 0, port)

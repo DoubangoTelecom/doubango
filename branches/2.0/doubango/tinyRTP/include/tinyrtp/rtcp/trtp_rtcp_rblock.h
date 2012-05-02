@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -28,6 +28,10 @@
 
 TRTP_BEGIN_DECLS
 
+#define TRTP_RTCP_RBLOCK_SIZE 24
+
+#define TRTP_RTCP_RBLOCK(self) ((trtp_rtcp_rblock_t*)(self))
+
 // RFC 3550 6.4.1 SR: Sender Report RTCP Packet => Report block part
 typedef struct trtp_rtcp_rblock_s
 {
@@ -42,14 +46,13 @@ typedef struct trtp_rtcp_rblock_s
 	uint32_t dlsr;				/* delay since last SR packet */
 }
 trtp_rtcp_rblock_t;
-#define TRTP_RTCP_RBLOCK(self) ((trtp_rtcp_rblock_t*)(self))
-TINYRTP_GEXTERN const tsk_object_def_t *trtp_rtcp_rblock_def_t;
+
 typedef tsk_list_t trtp_rtcp_rblocks_L_t; /**< List of @ref trtp_rtcp_rblock_t elements */
 
 trtp_rtcp_rblock_t* trtp_rtcp_rblock_create_null();
 trtp_rtcp_rblock_t* trtp_rtcp_rblock_deserialize(const void* data, tsk_size_t size);
-int trtp_rtcp_rblock_deserialize_payload(trtp_rtcp_rblock_t* self, const void* payload, tsk_size_t size);
-tsk_size_t trtp_rtcp_rblock_get_size(trtp_rtcp_rblock_t* self);
+int trtp_rtcp_rblock_deserialize_list(const void* data, tsk_size_t size, trtp_rtcp_rblocks_L_t* dest_list);
+int trtp_rtcp_rblock_serialize_to(const trtp_rtcp_rblock_t* self, void* data, tsk_size_t size);
 
 TRTP_END_DECLS
 

@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -29,6 +29,8 @@
 
 TRTP_BEGIN_DECLS
 
+#define TRTP_RTCP_REPORT_SDES(self) ((trtp_rtcp_report_sdes_t*)(self))
+
 /* RFC 3550 6.5 SDES: Source Description RTCP Packet */
 typedef struct trtp_rtcp_report_sdes_s
 {
@@ -36,13 +38,15 @@ typedef struct trtp_rtcp_report_sdes_s
 	trtp_rtcp_sdes_chuncks_L_t* chuncks;
 }
 trtp_rtcp_report_sdes_t;
-#define TRTP_RTCP_REPORT_SDES(self) ((trtp_rtcp_report_sdes_t*)(self))
-TINYRTP_GEXTERN const tsk_object_def_t *trtp_rtcp_report_sdes_def_t;
+
 typedef tsk_list_t trtp_rtcp_report_sdess_L_t; /**< List of @ref trtp_rtcp_report_sdes_t elements */
 
 trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_create_null();
+trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_create(struct trtp_rtcp_header_s* header);
 trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_deserialize(const void* data, tsk_size_t size);
-int trtp_rtcp_report_sdes_deserialize_payload(trtp_rtcp_report_sdes_t* self, const void* payload, tsk_size_t size);
+int trtp_rtcp_report_sdes_serialize_to(const trtp_rtcp_report_sdes_t* self, void* data, tsk_size_t size);
+int trtp_rtcp_report_sdes_add_chunck(trtp_rtcp_report_sdes_t* self, trtp_rtcp_sdes_chunck_t* chunck);
+tsk_size_t trtp_rtcp_report_sdes_get_size(const trtp_rtcp_report_sdes_t* self);
 
 TRTP_END_DECLS
 

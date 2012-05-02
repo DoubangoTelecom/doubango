@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet_stun_message.h
  * @brief STUN2 (RFC 5389) message parser.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -43,11 +43,11 @@ TNET_BEGIN_DECLS
 #define TNET_STUN_CLASS_ERROR_MASK			(0x0110)
 
 /**@ingroup tnet_stun_group
-* @def TNET_STUN_RESPONSE_IS_REQUEST
+* @def TNET_STUN_MESSAGE_IS_REQUEST
 * Checks whether the STUN message is a request or not.
 */
 /**@ingroup tnet_stun_group
-* @def TNET_STUN_RESPONSE_IS_INDICATION
+* @def TNET_STUN_MESSAGE_IS_INDICATION
 * Checks whether the STUN message is an indicaton message or not.
 */
 /**@ingroup tnet_stun_group
@@ -58,10 +58,11 @@ TNET_BEGIN_DECLS
 * @def TNET_STUN_RESPONSE_IS_ERROR
 * Checks whether the STUN message is an error response or not.
 */
-#define TNET_STUN_RESPONSE_IS_REQUEST(self)						((self->type & TNET_STUN_CLASS_REQUEST_MASK) == TNET_STUN_CLASS_REQUEST_MASK)
-#define TNET_STUN_RESPONSE_IS_INDICATION(self)					((self->type & TNET_STUN_CLASS_INDICATION_MASK) == TNET_STUN_CLASS_INDICATION_MASK)
-#define TNET_STUN_RESPONSE_IS_SUCCESS(self)						((self->type & TNET_STUN_CLASS_SUCCESS_MASK) == TNET_STUN_CLASS_SUCCESS_MASK)
-#define TNET_STUN_RESPONSE_IS_ERROR(self)						((self->type & TNET_STUN_CLASS_ERROR_MASK) == TNET_STUN_CLASS_ERROR_MASK)
+#define TNET_STUN_MESSAGE_IS_REQUEST(self)						((self) && (((self)->type & 0x0110) == TNET_STUN_CLASS_REQUEST_MASK))
+#define TNET_STUN_MESSAGE_IS_RESPONSE(self)						(TNET_STUN_RESPONSE_IS_SUCCESS((self)) || TNET_STUN_RESPONSE_IS_ERROR((self)))
+#define TNET_STUN_MESSAGE_IS_INDICATION(self)					((self) && (((self)->type & 0x0110) == TNET_STUN_CLASS_INDICATION_MASK))
+#define TNET_STUN_RESPONSE_IS_SUCCESS(self)						((self) && (((self)->type & 0x0110) == TNET_STUN_CLASS_SUCCESS_MASK))
+#define TNET_STUN_RESPONSE_IS_ERROR(self)						((self) && (((self)->type & 0x0110) == TNET_STUN_CLASS_ERROR_MASK))
 
 /**@ingroup tnet_stun_group
  * Checks if the pointer to the buffer hold a STUN header by checking that it starts with 0b00 and contain the magic cookie.
@@ -72,9 +73,14 @@ TNET_BEGIN_DECLS
  *
  * @param	PU8	The pointer to the buffer holding the STUN raw data.
 **/
-#define TNET_IS_STUN2(PU8)	\
-	(((PU8)[0] & 0xc0) == 0x00) && \
-	( (*(((uint32_t *)(PU8))+1)) == tnet_htonl(TNET_STUN_MAGIC_COOKIE) )
+#define TNET_IS_STUN2_MSG(PU8, SIZE)	\
+	( \
+		((PU8)) && \
+		((SIZE) >= TNET_STUN_HEADER_SIZE) && \
+		(((PU8)[0] & 0xc0) == 0x00) && \
+		( PU8[4] == 0x21 && PU8[5] == 0x12 && PU8[6] == 0xA4 && PU8[7] == 0x42 ) \
+	)
+#define TNET_IS_STUN2 TNET_IS_STUN2_MSG // for backward compatibility
 
 /**@ingroup tnet_stun_group
  * STUN trasactionn ID size (96bits = 12bytes).
@@ -204,6 +210,7 @@ typedef struct tnet_stun_message_s
 	unsigned fingerprint:1;
 	unsigned integrity:1;
 	unsigned dontfrag:1;
+	unsigned nointegrity:1;
 
 	char* username;
 	char* password;
@@ -219,12 +226,15 @@ typedef tnet_stun_message_t tnet_stun_request_t;
 
 tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *message);
 tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, tsk_size_t size);
+tsk_bool_t tnet_stun_message_has_attribute(const tnet_stun_message_t *self, tnet_stun_attribute_type_t type);
 int tnet_stun_message_add_attribute(tnet_stun_message_t *self, tnet_stun_attribute_t** attribute);
+int tnet_stun_message_remove_attribute(tnet_stun_message_t *self, tnet_stun_attribute_type_t type);
 const tnet_stun_attribute_t* tnet_stun_message_get_attribute(const tnet_stun_message_t *self, tnet_stun_attribute_type_t type);
 short tnet_stun_message_get_errorcode(const tnet_stun_message_t *self);
 const char* tnet_stun_message_get_realm(const tnet_stun_message_t *self);
 const char* tnet_stun_message_get_nonce(const tnet_stun_message_t *self);
 int32_t tnet_stun_message_get_lifetime(const tnet_stun_message_t *self);
+tsk_bool_t tnet_stun_message_transac_id_equals(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2);
 
 
 tnet_stun_message_t* tnet_stun_message_create(const char* username, const char* password);

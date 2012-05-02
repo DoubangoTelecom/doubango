@@ -57,7 +57,7 @@
 
 /* ============ BV16 Plugin interface ================= */
 
-#define tdav_codec_bv16_fmtp_get tsk_null
+#define tdav_codec_bv16_sdp_att_get tsk_null
 #define tdav_codec_bv16_fmtp_set tsk_null
 
 static int sizestate = sizeof(struct BV16_Encoder_State);
@@ -174,7 +174,7 @@ tsk_size_t tdav_codec_bv16_decode(tmedia_codec_t* self, const void* in_data, tsk
 	return out_size;
 }
 
-tsk_bool_t tdav_codec_bv16_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+tsk_bool_t tdav_codec_bv16_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {	/* always match */
 	return tsk_true;
 }
@@ -239,8 +239,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_bv16_plugin_def_s =
 	tdav_codec_bv16_close,
 	tdav_codec_bv16_encode,
 	tdav_codec_bv16_decode,
-	tdav_codec_bv16_fmtp_match,
-	tdav_codec_bv16_fmtp_get,
+	tdav_codec_bv16_sdp_att_match,
+	tdav_codec_bv16_sdp_att_get,
 	tdav_codec_bv16_fmtp_set
 };
 const tmedia_codec_plugin_def_t *tdav_codec_bv16_plugin_def_t = &tdav_codec_bv16_plugin_def_s;

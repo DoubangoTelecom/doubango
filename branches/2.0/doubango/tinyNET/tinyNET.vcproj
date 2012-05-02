@@ -206,6 +206,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tnet_transport_cfsocket.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tnet_transport_poll.c"
 				>
 			</File>
@@ -253,7 +257,23 @@
 				Name="ice"
 				>
 				<File
-					RelativePath=".\src\ice\tnet_ice.c"
+					RelativePath=".\src\ice\tnet_ice_candidate.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\ice\tnet_ice_ctx.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\ice\tnet_ice_event.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\ice\tnet_ice_pair.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\ice\tnet_ice_utils.c"
 					>
 				</File>
 			</Filter>
@@ -465,7 +485,23 @@
 				Name="ice"
 				>
 				<File
-					RelativePath=".\src\ice\tnet_ice.h"
+					RelativePath=".\src\ice\tnet_ice_candidate.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\ice\tnet_ice_ctx.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\ice\tnet_ice_event.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\ice\tnet_ice_pair.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\ice\tnet_ice_utils.h"
 					>
 				</File>
 			</Filter>

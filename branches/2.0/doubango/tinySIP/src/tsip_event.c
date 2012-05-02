@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_event.c
  * @brief SIP event.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -75,7 +75,7 @@ int tsip_event_signal_2(tsip_event_type_t type, tsip_ssession_t* ss, short code,
 {
 	tsip_event_t* e;
 	if((e = tsip_event_create(ss, code, phrase, sipmessage, type))){
-		TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(ss->stack), e);
+		TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(ss->stack), e);
 		return 0;
 	}
 	return -1;

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet.h
  * @brief Protocol agnostic socket.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -287,8 +287,11 @@ bail:
 		tnet_freeaddrinfo(result);
 
 		/* Close socket if failed. */
-		if(status && TNET_SOCKET_IS_VALID(sock)){
-			tnet_socket_close(sock);
+		if(status){
+			if(TNET_SOCKET_IS_VALID(sock)){
+				tnet_socket_close(sock);
+			}
+			return tsk_null;
 		}
 
 	}
@@ -301,7 +304,7 @@ static tsk_object_t* tnet_socket_dtor(tsk_object_t * self)
 	
 	if(sock){
 		/* Close the socket. */
-		if(sock->fd > 0){
+		if(TNET_SOCKET_IS_VALID(sock)){
 			tnet_socket_close(sock);
 		}
 		/* Clean up TLS handle*/

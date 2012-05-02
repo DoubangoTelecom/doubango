@@ -25,19 +25,13 @@
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
-
  */
 #ifndef TINYDAV_SESSION_AUDIO_H
 #define TINYDAV_SESSION_AUDIO_H
 
 #include "tinydav_config.h"
 
-#include "tinymedia/tmedia_session.h"
-#if HAVE_SRTP
-#	include "tinyrtp/trtp_srtp.h"
-#endif
-
-#include "tsk_safeobj.h"
+#include "tinydav/tdav_session_av.h"
 
 TDAV_BEGIN_DECLS
 
@@ -45,9 +39,7 @@ typedef tsk_list_t tdav_session_audio_dtmfe_L_t;
 
 typedef struct tdav_session_audio_s
 {
-	TMEDIA_DECLARE_SESSION_AUDIO;
-
-	tsk_bool_t useIPv6;
+	TDAV_DECLARE_SESSION_AV;
 
 	struct {
 		unsigned created;
@@ -55,12 +47,17 @@ typedef struct tdav_session_audio_s
 	} timer;
 
 	struct {
-		tmedia_codec_t* codec;
+		uint32_t payload_type;
+		struct tmedia_codec_s* codec;
+
 		void* buffer;
 		tsk_size_t buffer_size;
 	} encoder;
 
 	struct {
+		uint32_t payload_type;
+		struct tmedia_codec_s* codec;
+
 		void* buffer;
 		tsk_size_t buffer_size;
 		struct {
@@ -70,35 +67,9 @@ typedef struct tdav_session_audio_s
 		} resampler;
 	} decoder;
 
-	char* local_ip;
-
-	/* NAT Traversal context */
-	tnet_nat_context_handle_t* natt_ctx;
-
-	char* remote_ip;
-	uint16_t remote_port;
-
-	struct trtp_manager_s* rtp_manager;
-	
-	struct tmedia_consumer_s* consumer;
-	struct tmedia_producer_s* producer;
 	struct tmedia_denoise_s* denoise;
-	
-	tsk_bool_t rtcp_enabled;
 
 	tdav_session_audio_dtmfe_L_t* dtmf_events;
-
-	TSK_DECLARE_SAFEOBJ;
-
-#if HAVE_SRTP
-	struct {
-		int32_t tag;
-		trtp_srtp_crypto_type_t crypto_type;
-		char key[64];
-		tsk_bool_t pending;
-	}remote_srtp_neg;
-	tmedia_srtp_mode_t srtp_mode;
-#endif
 }
 tdav_session_audio_t;
 

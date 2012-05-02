@@ -185,7 +185,7 @@ void test_sessions_hold_resume()
 		);
 
 	/* resume */
-	tmedia_session_mgr_resume(mgr, type);
+	tmedia_session_mgr_resume(mgr, type, tsk_true);
 	sdp_lo = tmedia_session_mgr_get_lo(mgr);
 	if((temp = tsdp_message_tostring(sdp_lo))){
 		TSK_DEBUG_INFO("sdp_lo(resume)=%s", temp);

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_dialog.c
  * @brief SIP dialog base class as per RFC 3261 subclause 17.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -1053,6 +1053,8 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 			TSK_DEBUG_ERROR("Invalid SIP Session id.");
 		}
 
+		tsk_safeobj_init(self);
+
 		self->initialized = tsk_true;
 		return 0;
 	}
@@ -1061,11 +1063,18 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 
 int tsip_dialog_fsm_act(tsip_dialog_t* self, tsk_fsm_action_id action_id, const tsip_message_t* message, const tsip_action_handle_t* action)
 {
+	int ret;
 	if(!self || !self->fsm){
 		TSK_DEBUG_ERROR("Invalid parameter.");
 		return -1;
 	}
-	return tsk_fsm_act(self->fsm, action_id, self, message, self, message, action);
+
+	tsk_safeobj_lock(self);
+	ret = tsip_dialog_set_curr_action(self, action);
+	ret = tsk_fsm_act(self->fsm, action_id, self, message, self, message, action);
+	tsk_safeobj_unlock(self);
+
+	return ret;
 }
 
 int tsip_dialog_set_curr_action(tsip_dialog_t* self, const tsip_action_t* action)
@@ -1196,6 +1205,8 @@ int tsip_dialog_deinit(tsip_dialog_t *self)
 		
 		TSK_OBJECT_SAFE_FREE(self->fsm);
 		
+		tsk_safeobj_deinit(self);
+
 		self->initialized = 0;
 
 		return 0;

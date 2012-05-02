@@ -45,6 +45,8 @@
 
 // Codecs
 #include "tinydav/codecs/dtmf/tdav_codec_dtmf.h"
+#include "tinydav/codecs/fec/tdav_codec_ulpfec.h"
+#include "tinydav/codecs/fec/tdav_codec_red.h"
 #include "tinydav/codecs/msrp/tdav_codec_msrp.h"
 #include "tinydav/codecs/amr/tdav_codec_amr.h"
 #include "tinydav/codecs/bv/tdav_codec_bv16.h"
@@ -183,8 +185,10 @@ int tdav_init()
 #if HAVE_G729
 	tmedia_codec_plugin_register(tdav_codec_g729ab_plugin_def_t);
 #endif
-	// last: dtmf
+	// last: dtmf, ULPFEC and RED
 	tmedia_codec_plugin_register(tdav_codec_dtmf_plugin_def_t);
+	// tmedia_codec_plugin_register(tdav_codec_ulpfec_plugin_def_t);
+	// tmedia_codec_plugin_register(tdav_codec_red_plugin_def_t);
 
 #if HAVE_LIBVPX
 	tmedia_codec_plugin_register(tdav_codec_vp8_plugin_def_t);
@@ -199,9 +203,8 @@ int tdav_init()
 #if HAVE_FFMPEG
 	tmedia_codec_plugin_register(tdav_codec_mp4ves_plugin_def_t);
 #	if !defined(HAVE_H264) || HAVE_H264
-	tmedia_codec_plugin_register(tdav_codec_h264_bp10_plugin_def_t);
-	tmedia_codec_plugin_register(tdav_codec_h264_bp20_plugin_def_t);
-	tmedia_codec_plugin_register(tdav_codec_h264_bp30_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h264_base_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h264_main_plugin_def_t);
 #	endif
 	tmedia_codec_plugin_register(tdav_codec_h263p_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h263pp_plugin_def_t);
@@ -318,9 +321,8 @@ static tdav_codec_decl_t __codecs[] = {
 #endif
 #if HAVE_FFMPEG
 #	if (!defined(HAVE_H264) || HAVE_H264) || HAVE_CUDA
-	{ tdav_codec_id_h264_bp30, &tdav_codec_h264_bp30_plugin_def_t },
-	{ tdav_codec_id_h264_bp20, &tdav_codec_h264_bp20_plugin_def_t },
-	{ tdav_codec_id_h264_bp10, &tdav_codec_h264_bp10_plugin_def_t },		
+	{ tdav_codec_id_h264_bp, &tdav_codec_h264_base_plugin_def_t },
+	{ tdav_codec_id_h264_mp, &tdav_codec_h264_main_plugin_def_t },	
 #	endif
 	{ tdav_codec_id_mp4ves_es, &tdav_codec_mp4ves_plugin_def_t },
 	{ tdav_codec_id_h263p, &tdav_codec_h263p_plugin_def_t },
@@ -460,9 +462,8 @@ tsk_bool_t _tdav_codec_is_supported(tdav_codec_id_t codec, const tmedia_codec_pl
 			return tsk_false;
 #endif
 
-		case tdav_codec_id_h264_bp10:
-		case tdav_codec_id_h264_bp20:
-		case tdav_codec_id_h264_bp30:
+		case tdav_codec_id_h264_bp:
+		case tdav_codec_id_h264_mp:
 			{
 				if(plugin){
 #if HAVE_CUDA
@@ -523,6 +524,8 @@ int tdav_deinit()
 
 	/* === UnRegister codecs === */
 	tmedia_codec_plugin_unregister(tdav_codec_dtmf_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_ulpfec_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_red_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_msrp_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_g711u_plugin_def_t);
@@ -566,9 +569,8 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_h263p_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h263pp_plugin_def_t);
 #	if  !defined(HAVE_H264) || HAVE_H264
-	tmedia_codec_plugin_unregister(tdav_codec_h264_bp10_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_h264_bp20_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_h264_bp30_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_h264_base_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_h264_main_plugin_def_t);
 #	endif
 #	if !defined(HAVE_THEORA) || HAVE_THEORA
 	tmedia_codec_plugin_unregister(tdav_codec_theora_plugin_def_t);

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,7 +24,7 @@
  * @brief Finite-state machine (FSM) implementation.
  * @sa http://en.wikipedia.org/wiki/Finite-state_machine.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -56,7 +56,7 @@ TSK_BEGIN_DECLS
 * @def tsk_fsm_state_final
 */
 #define tsk_fsm_state_any -0xFFFF
-#define tsk_fsm_state_default -0xFFF0
+#define tsk_fsm_state_current -0xFFF0
 #define tsk_fsm_state_none -0xFF00
 #define tsk_fsm_state_final -0xF000
 
@@ -168,6 +168,8 @@ TINYSAK_API tsk_bool_t tsk_fsm_cond_always(const void*, const void*);
 TINYSAK_API int tsk_fsm_set(tsk_fsm_t* self, ...);
 TINYSAK_API int tsk_fsm_set_callback_terminated(tsk_fsm_t* self, tsk_fsm_onterminated_f callback, const void* callbackdata);
 TINYSAK_API int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data1, const void* cond_data2, ...);
+TINYSAK_API tsk_fsm_state_id tsk_fsm_get_current_state(tsk_fsm_t* self);
+TINYSAK_API int tsk_fsm_set_current_state(tsk_fsm_t* self, tsk_fsm_state_id new_state);
 TINYSAK_API tsk_bool_t tsk_fsm_terminated(tsk_fsm_t* self);
 
 TINYSAK_GEXTERN const tsk_object_def_t *tsk_fsm_def_t;

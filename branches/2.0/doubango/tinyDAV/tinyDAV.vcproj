@@ -188,6 +188,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\tinydav\tdav_session_av.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\tinydav\tdav_win32.h"
 				>
 			</File>
@@ -358,6 +362,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="fec"
+					>
+					<File
+						RelativePath=".\include\tinydav\codecs\fec\tdav_codec_red.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\tinydav\codecs\fec\tdav_codec_ulpfec.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="audio"
@@ -474,10 +490,6 @@
 					RelativePath=".\include\tinydav\video\tdav_session_video.h"
 					>
 				</File>
-				<File
-					RelativePath=".\include\tinydav\video\tdav_video_jitterbuffer.h"
-					>
-				</File>
 				<Filter
 					Name="android"
 					>
@@ -489,6 +501,18 @@
 				<Filter
 					Name="v4linux"
 					>
+				</Filter>
+				<Filter
+					Name="jb"
+					>
+					<File
+						RelativePath=".\include\tinydav\video\jb\tdav_video_frame.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\tinydav\video\jb\tdav_video_jb.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -513,6 +537,10 @@
 			>
 			<File
 				RelativePath=".\src\tdav.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tdav_session_av.c"
 				>
 			</File>
 			<File
@@ -678,6 +706,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="fec"
+					>
+					<File
+						RelativePath=".\src\codecs\fec\tdav_codec_red.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\codecs\fec\tdav_codec_ulpfec.c"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="audio"
@@ -794,10 +834,6 @@
 					RelativePath=".\src\video\tdav_session_video.c"
 					>
 				</File>
-				<File
-					RelativePath=".\src\video\tdav_video_jitterbuffer.c"
-					>
-				</File>
 				<Filter
 					Name="android"
 					>
@@ -809,6 +845,18 @@
 				<Filter
 					Name="v4linux"
 					>
+				</Filter>
+				<Filter
+					Name="jb"
+					>
+					<File
+						RelativePath=".\src\video\jb\tdav_video_frame.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\video\jb\tdav_video_jb.c"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter

@@ -79,8 +79,6 @@ static uint8_t tdav_codec_amr_bitbuffer_read(const void* bits, tsk_size_t size, 
 	[17], and the 12.2 kbps mode as GSM-EFR [16].
 */
 
-#define tdav_codec_amrnb_fmtp_set tsk_null
-
 int tdav_codec_amrnb_open(tmedia_codec_t* self)
 {
 	tdav_codec_amr_t* amrnb = (tdav_codec_amr_t*)self;
@@ -145,7 +143,7 @@ tsk_size_t tdav_codec_amrnb_decode(tmedia_codec_t* self, const void* in_data, ts
 	}
 }
 
-char* tdav_codec_amrnb_fmtp_get(const tmedia_codec_t* codec)
+char* tdav_codec_amrnb_sdp_att_get(const tmedia_codec_t* codec, const char* att_name)
 {
 	const tdav_codec_amr_t* amr = (const tdav_codec_amr_t*)codec;
 
@@ -161,19 +159,23 @@ char* tdav_codec_amrnb_fmtp_get(const tmedia_codec_t* codec)
 	return tsk_null;
 }
 
-tsk_bool_t tdav_codec_amrnb_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+tsk_bool_t tdav_codec_amrnb_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {	
-	tdav_codec_amr_t* amr = (tdav_codec_amr_t*)codec;
+	tdav_codec_amr_t* amr;
+	if(!(amr = (tdav_codec_amr_t*)codec) || !att_name){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_false;
+	}
 
-	if(amr){
+	if(amr && tsk_striequals(att_name, "fmtp")){
 		/* Match mode */
-		if(tdav_codec_amr_get_mode(fmtp) != amr->mode){
-			TSK_DEBUG_INFO("Failed to match [%s]", fmtp);
+		if(tdav_codec_amr_get_mode(att_value) != amr->mode){
+			TSK_DEBUG_INFO("Failed to match [%s]", att_value);
 			return tsk_false;
 		}
 		/* check parameters validity */
-		if(tdav_codec_amr_parse_fmtp(amr, fmtp)){
-			TSK_DEBUG_INFO("Failed to match [%s]", fmtp);
+		if(tdav_codec_amr_parse_fmtp(amr, att_value)){
+			TSK_DEBUG_INFO("Failed to match [%s]", att_value);
 			return tsk_false;
 		}
 
@@ -239,13 +241,13 @@ static const tmedia_codec_plugin_def_t tdav_codec_amrnb_oa_plugin_def_s =
 	/* video */
 	{0},
 
+	tsk_null, // set()
 	tdav_codec_amrnb_open,
 	tdav_codec_amrnb_close,
 	tdav_codec_amrnb_encode,
 	tdav_codec_amrnb_decode,
-	tdav_codec_amrnb_fmtp_match,
-	tdav_codec_amrnb_fmtp_get,
-	tdav_codec_amrnb_fmtp_set
+	tdav_codec_amrnb_sdp_att_match,
+	tdav_codec_amrnb_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tdav_codec_amrnb_oa_plugin_def_t = &tdav_codec_amrnb_oa_plugin_def_s;
 
@@ -305,13 +307,13 @@ static const tmedia_codec_plugin_def_t tdav_codec_amrnb_be_plugin_def_s =
 	/* video */
 	{0},
 
+	tsk_null, // set()
 	tdav_codec_amrnb_open,
 	tdav_codec_amrnb_close,
 	tdav_codec_amrnb_encode,
 	tdav_codec_amrnb_decode,
-	tdav_codec_amrnb_fmtp_match,
-	tdav_codec_amrnb_fmtp_get,
-	tdav_codec_amrnb_fmtp_set
+	tdav_codec_amrnb_sdp_att_match,
+	tdav_codec_amrnb_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tdav_codec_amrnb_be_plugin_def_t = &tdav_codec_amrnb_be_plugin_def_s;
 

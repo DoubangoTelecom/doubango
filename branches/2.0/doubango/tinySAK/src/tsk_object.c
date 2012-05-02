@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsk_object.c
  * @brief Base object implementation.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -43,15 +43,6 @@ static int tsk_objects_count = 0;
 #	define TSK_DEBUG_OBJECTS	0
 #endif
 
-/** Object meta-data (definition).
-*/
-typedef struct tsk_object_header_s{
-	const void* base; /**< Opaque data holding a pointer to the actual meta-data(size, constructor, destructor and comparator) */
-	int	refCount; /**< Reference counter. */
-}
-tsk_object_header_t;
-#define TSK_OBJECT_HEADER(object)	((tsk_object_header_t*)object)
-
 /**@ingroup tsk_object_group
 * Creates new object. The object MUST be declared using @ref TSK_DECLARE_OBJECT macro.
 * @param objdef The object meta-data (definition). For more infomation see @ref tsk_object_def_t.
@@ -68,9 +59,14 @@ tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...)
 		TSK_OBJECT_HEADER(newobj)->refCount = 1;
 		if(objdef->constructor){ 
 			va_list ap;
+			tsk_object_t * newobj_ = newobj;// save
 			va_start(ap, objdef);
-			newobj = objdef->constructor(newobj, &ap);
+			newobj = objdef->constructor(newobj, &ap); // must return new
 			va_end(ap);
+
+			if(!newobj){ // null if constructor failed to initialized the object
+				tsk_free(&newobj_);
+			}
 
 #if TSK_DEBUG_OBJECTS
 		TSK_DEBUG_INFO("N∞ objects:%d", ++tsk_objects_count);

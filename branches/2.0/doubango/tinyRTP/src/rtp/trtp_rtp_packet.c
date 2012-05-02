@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -50,7 +50,7 @@ trtp_rtp_packet_t* trtp_rtp_packet_create(uint32_t ssrc, uint16_t seq_num, uint3
 	return packet;
 }
 
-/* guess what is the minimum require size to serialize the header */
+/* guess what is the minimum required size to serialize the packet */
 tsk_size_t trtp_rtp_packet_guess_serialbuff_size(const trtp_rtp_packet_t *self)
 {	
 	tsk_size_t size = 0;
@@ -108,9 +108,8 @@ tsk_buffer_t* trtp_rtp_packet_serialize(const trtp_rtp_packet_t *self, tsk_size_
 	}
 
 	size = (trtp_rtp_packet_guess_serialbuff_size(self) + num_bytes_pad);
-	while(size % 4){
-		++size;
-	}
+	if(size & 0x03) size += (4 - (size & 0x03));
+	
 	if(!(buffer = tsk_buffer_create(tsk_null, size))){
 		TSK_DEBUG_ERROR("Failed to create buffer with size = %u", size);
 		return tsk_null;
@@ -214,7 +213,6 @@ static tsk_object_t* trtp_rtp_packet_ctor(tsk_object_t * self, va_list * app)
 	}
 	return self;
 }
-
 static tsk_object_t* trtp_rtp_packet_dtor(tsk_object_t * self)
 { 
 	trtp_rtp_packet_t *packet = self;
@@ -227,12 +225,24 @@ static tsk_object_t* trtp_rtp_packet_dtor(tsk_object_t * self)
 
 	return self;
 }
+// comparison must be by sequence number because of the jb
+static int trtp_rtp_packet_cmp(const tsk_object_t *_p1, const tsk_object_t *_p2)
+{
+	const trtp_rtp_packet_t *p1 = _p1;
+	const trtp_rtp_packet_t *p2 = _p2;
+
+	if(p1 && p1->header && p2 && p2->header){
+		return (int)(p1->header->seq_num - p2->header->seq_num);
+	}
+	else if(!p1 && !p2) return 0;
+	else return -1;
+}
 
 static const tsk_object_def_t trtp_rtp_packet_def_s = 
 {
 	sizeof(trtp_rtp_packet_t),
 	trtp_rtp_packet_ctor, 
 	trtp_rtp_packet_dtor,
-	tsk_null, 
+	trtp_rtp_packet_cmp, 
 };
 const tsk_object_def_t *trtp_rtp_packet_def_t = &trtp_rtp_packet_def_s;

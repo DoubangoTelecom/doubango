@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tmedia_producer.h
  * @brief Base producer object.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -49,7 +49,7 @@ TMEDIA_BEGIN_DECLS
 #define TMEDIA_PRODUCER(self)		((tmedia_producer_t*)(self))
 
 typedef int (*tmedia_producer_enc_cb_f)(const void* callback_data, const void* buffer, tsk_size_t size);
-typedef int (*tmedia_producer_raw_cb_f)(const void* callback_data, const void* buffer, tsk_size_t size, uint32_t duration, tsk_bool_t marker);
+typedef int (*tmedia_producer_raw_cb_f)(const tmedia_video_encode_result_xt* chunck);
 
 /**  Default Video chroma */
 #define TMEDIA_PRODUCER_CHROMA_DEFAULT tmedia_chroma_yuv420p
@@ -90,7 +90,7 @@ typedef struct tmedia_producer_s
 
 	struct{
 		tmedia_producer_raw_cb_f callback;
-		const void* callback_data;
+		tmedia_video_encode_result_xt chunck_curr;
 	} raw_cb;
 }
 tmedia_producer_t;

@@ -43,8 +43,6 @@ int tdav_codec_speex_deinit(tdav_codec_speex_t* self);
 
 /* ============ iLBC Plugin interface ================= */
 
-#define tdav_codec_speex_fmtp_set tsk_null
-
 int tdav_codec_speex_open(tmedia_codec_t* self)
 {
 	static int quality = SPEEX_DEFAULT_QUALITY;
@@ -69,18 +67,15 @@ int tdav_codec_speex_open(tmedia_codec_t* self)
 	}
 
 	speex_decoder_ctl(speex->decoder.state, SPEEX_GET_FRAME_SIZE, &speex->decoder.size);
-	speex->decoder.size = (speex->decoder.size ? speex->decoder.size : SPEEX_BUFFER_MAX_SIZE) * sizeof(spx_int16_t);
+	speex->decoder.size *= sizeof(spx_int16_t);
 	if(!(speex->decoder.buffer = tsk_calloc(speex->decoder.size, 1))){
-		speex->decoder.size = 0;
+		speex->decoder.size = speex->decoder.size = 0;
 		TSK_DEBUG_ERROR("Failed to allocate new buffer");
 		return -3;
 	}
 
 	speex_encoder_ctl(speex->encoder.state, SPEEX_SET_QUALITY, &quality);
 	speex_encoder_ctl(speex->encoder.state, SPEEX_GET_FRAME_SIZE, &speex->encoder.size);
-	if(!speex->encoder.size){
-		speex->encoder.size = SPEEX_BUFFER_MAX_SIZE;
-	}
 
 	speex_bits_init(&speex->encoder.bits);
 	speex_bits_init(&speex->decoder.bits);
@@ -122,7 +117,7 @@ tsk_size_t tdav_codec_speex_encode(tmedia_codec_t* self, const void* in_data, ts
 		}
 	}
 	
-	outsize = speex_bits_write(&speex->encoder.bits, *out_data, speex->encoder.size);
+	outsize = speex_bits_write(&speex->encoder.bits, *out_data, speex->encoder.size/2);
 
    return outsize;
 }
@@ -138,11 +133,11 @@ tsk_size_t tdav_codec_speex_decode(tmedia_codec_t* self, const void* in_data, ts
 		return 0;
 	}
 
-	/* initializes the bit-stream */
+	// initializes the bit-stream 
 	speex_bits_read_from(&speex->decoder.bits, (char*)in_data, in_size);
 
 	do{
-		/* performs decode() */
+		// performs decode() 
 		if((ret = speex_decode_int(speex->decoder.state, &speex->decoder.bits, speex->decoder.buffer))){
 			TSK_DEBUG_ERROR("Failed to decode the buffer. retcode=%d", ret);
 			break;
@@ -158,7 +153,7 @@ tsk_size_t tdav_codec_speex_decode(tmedia_codec_t* self, const void* in_data, ts
 			}
 		}
 
-		/* copy output buffer */
+		// copy output buffer 
 		memcpy(&((uint8_t*)*out_data)[out_size], speex->decoder.buffer, speex->decoder.size);
 		out_size += speex->decoder.size;
 	}
@@ -168,12 +163,12 @@ tsk_size_t tdav_codec_speex_decode(tmedia_codec_t* self, const void* in_data, ts
 	return out_size;
 }
 
-char* tdav_codec_speex_fmtp_get(const tmedia_codec_t* codec)
+char* tdav_codec_speex_sdp_att_get(const tmedia_codec_t* codec, const char* att_name)
 {
 	return tsk_null;
 }
 
-tsk_bool_t tdav_codec_speex_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+tsk_bool_t tdav_codec_speex_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {	
 	return tsk_true;
 }
@@ -229,13 +224,13 @@ tsk_bool_t tdav_codec_speex_fmtp_match(const tmedia_codec_t* codec, const char* 
 		/* video */ \
 		{0}, \
 	 \
+		tsk_null, /* set()*/ \
 		tdav_codec_speex_open, \
 		tdav_codec_speex_close, \
 		tdav_codec_speex_encode, \
 		tdav_codec_speex_decode, \
-		tdav_codec_speex_fmtp_match, \
-		tdav_codec_speex_fmtp_get, \
-		tdav_codec_speex_fmtp_set \
+		tdav_codec_speex_sdp_att_match, \
+		tdav_codec_speex_sdp_att_get \
 	}; \
 	const tmedia_codec_plugin_def_t *tdav_codec_speex_##mode##_plugin_def_t = &tdav_codec_speex_##mode##_plugin_def_s;
 

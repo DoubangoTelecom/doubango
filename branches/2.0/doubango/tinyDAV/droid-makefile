@@ -163,7 +163,8 @@ LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) -L$(THIRDPARTIES_MARCH_LIB) \
 all: $(APP)
 
 OBJS = \
-	src/tdav.o
+	src/tdav.o \
+	src/tdav_session_av.o
 	
 	### audio
 OBJS += src/audio/tdav_consumer_audio.o \
@@ -181,7 +182,8 @@ OBJS += src/video/tdav_consumer_video.o \
 	src/video/tdav_converter_video.o \
 	src/video/tdav_runnable_video.o \
 	src/video/tdav_session_video.o \
-	src/video/tdav_video_jitterbuffer.o
+	src/video/jb/tdav_video_frame.o \
+	src/video/jb/tdav_video_jb.o
 	
     ### msrp
 OBJS += src/msrp/tdav_consumer_msrp.o \
@@ -219,6 +221,10 @@ OBJS += src/codecs/speex/tdav_codec_speex.o
 
 	### codecs (DTMF)
 OBJS += src/codecs/dtmf/tdav_codec_dtmf.o
+
+	### codecs (FEC)
+OBJS += src/codecs/fec/tdav_codec_red.o \
+	src/codecs/fec/tdav_codec_ulpfec.o
 
 	### codecs (H.261)
 OBJS += src/codecs/h261/tdav_codec_h261.o

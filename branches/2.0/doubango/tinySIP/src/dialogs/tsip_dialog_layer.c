@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_dialog_layer.c
  * @brief SIP dialog layer.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -117,8 +117,10 @@ tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const cha
 			tsk_bool_t is_register = (type == tsip_REGISTER); // Incoming REGISTER
 			tsk_bool_t is_notify = (type == tsip_NOTIFY); // Incoming NOTIFY
 			*cid_matched = tsk_true;
-			/* CANCEL Request will have the same local tag than the INVITE request -> do not compare tags */
-			if((is_cancel || tsk_strequals(dialog->tag_local, from_tag)) && tsk_strequals(dialog->tag_remote, to_tag)){
+			/* CANCEL Request will have the same local tag than the INVITE request
+				the remote tag could be null if the CANCEL request is received immediately after a 100 Trying
+			*/
+			if((is_cancel || tsk_strequals(dialog->tag_local, from_tag)) && (!dialog->tag_remote || tsk_strequals(dialog->tag_remote, to_tag))){
 				ret = tsk_object_ref(dialog);
 				break;
 			}

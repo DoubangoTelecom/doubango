@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsk_timer.c
 * @brief Timer Manager.
 *
-* @author Mamadou Diop <diopmamadou(at)doubango.org>
+* @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *
 * @date Created: Sat Nov 8 16:54:58 2009 mdiop
 */
@@ -181,6 +181,7 @@ int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self)
 	}
 
 bail:
+	tsk_list_clear_items(manager->timers);
 	return ret;
 }
 
@@ -191,6 +192,7 @@ tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint
 	tsk_timer_id_t timer_id = TSK_INVALID_TIMER_ID;
 	tsk_timer_manager_t *manager = self;
 
+	//FIXME
 	if(manager && (TSK_RUNNABLE(manager)->running || TSK_RUNNABLE(manager)->started)){
 		tsk_timer_t *timer;
 
@@ -200,7 +202,7 @@ tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint
 		tsk_list_push_ascending_data(manager->timers, ((void**) &timer));
 		tsk_mutex_unlock(manager->mutex);
 		
-		//tsk_timer_manager_debug(self);
+		// tsk_timer_manager_debug(self);
 
 		tsk_condwait_signal(manager->condwait);
 		tsk_semaphore_increment(manager->sem);
@@ -228,6 +230,7 @@ int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id
 		if(item && item->data){
 			tsk_timer_t *timer = item->data;
 			timer->canceled = 1;
+			timer->callback = tsk_null;
 			
 			if(item == manager->timers->head){
 				/* The timer we are waiting on ? ==> remove it now. */
@@ -298,7 +301,7 @@ static void *__tsk_timer_manager_mainthread(void *param)
 {
 	int ret;
 	tsk_timer_t *curr;
-	uint64_t epoch;
+	uint64_t now;
 	tsk_timer_manager_t *manager = param;
 
 	TSK_DEBUG_INFO("TIMER MANAGER -- START");
@@ -316,18 +319,18 @@ peek_first:
 		tsk_mutex_unlock(manager->mutex);
 
 		if(curr && !curr->canceled) {
-			epoch = tsk_time_now();
-			if(epoch >= curr->timeout){
+			now = tsk_time_now();
+			if(now >= curr->timeout){
 				tsk_timer_t *timer = tsk_object_ref(curr);
 				//TSK_DEBUG_INFO("Timer raise %llu", timer->id);
 
-				tsk_mutex_lock(manager->mutex);
 				TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(manager), timer);
+				tsk_mutex_lock(manager->mutex);
 				tsk_list_remove_item_by_data(manager->timers, curr);
 				tsk_mutex_unlock(manager->mutex);
 			}
 			else{
-				if((ret = tsk_condwait_timedwait(manager->condwait, (curr->timeout - epoch)))){
+				if((ret = tsk_condwait_timedwait(manager->condwait, (curr->timeout - now)))){
 					TSK_DEBUG_ERROR("CONWAIT for timer manager failed [%d]", ret);
 					break;
 				}
@@ -381,7 +384,9 @@ int tsk_timer_mgr_global_start()
 			return ret;
 		}
 	}
+	tsk_mutex_lock(__timer_mgr->mutex);
 	__timer_mgr_start_count++;
+	tsk_mutex_unlock(__timer_mgr->mutex);
 	return ret;
 }
 
@@ -422,7 +427,9 @@ int tsk_timer_mgr_global_stop()
 				return ret;
 			}
 		}
+		tsk_mutex_lock(__timer_mgr->mutex);
 		__timer_mgr_start_count--;
+		tsk_mutex_unlock(__timer_mgr->mutex);
 	}
 	return 0;
 }

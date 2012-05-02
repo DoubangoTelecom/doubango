@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip.c
  * @brief SIP (RFC 3261) and 3GPP IMS/LTE (TS 24.229) implementation.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -633,7 +633,7 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 	/* === Runnable === */
 	TSK_RUNNABLE(stack)->run = run;
 	if((ret = tsk_runnable_start(TSK_RUNNABLE(stack), tsip_event_def_t))){
-		stack_error_desc = "Failed to start timer manager";
+		stack_error_desc = "Failed to start runnable";
 		TSK_DEBUG_ERROR("%s", stack_error_desc);
 		goto bail;
 	}

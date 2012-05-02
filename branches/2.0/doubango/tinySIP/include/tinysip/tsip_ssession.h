@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_ssession.h
  * @brief SIP ssession.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -103,8 +103,14 @@ typedef enum tsip_msession_param_type_e
 {
 	mstype_null = 0,
 	
+	mstype_set_profile,
+	mstype_set_srtp_mode,
+
 	mstype_set_100rel,
 	mstype_unset_100rel,
+
+	mstype_set_ice,
+	mstype_unset_ice,
 
 	mstype_set_qos,
 	mstype_unset_qos,
@@ -116,8 +122,12 @@ typedef enum tsip_msession_param_type_e
 }
 tsip_msession_param_type_t;
 
+#define TSIP_MSESSION_SET_SRTP_MODE(SRTP_MODE_ENUM)				mstype_set_profile, (tmedia_srtp_mode_t)SRTP_MODE_ENUM
+#define TSIP_MSESSION_SET_PROFILE(PROFILE_ENUM)					mstype_set_srtp_mode, (tmedia_profile_t)PROFILE_ENUM
 #define TSIP_MSESSION_SET_100rel()								mstype_set_100rel
 #define TSIP_MSESSION_UNSET_100rel()							mstype_unset_100rel
+#define TSIP_MSESSION_SET_ICE()									mstype_set_ice
+#define TSIP_MSESSION_UNSET_ICE()								mstype_unset_ice
 #define TSIP_MSESSION_SET_QOS(TYPE_ENUM, STRENGTH_ENUM)			mstype_set_qos, (tmedia_qos_stype_t)TYPE_ENUM, (tmedia_qos_strength_t)STRENGTH_ENUM
 #define TSIP_MSESSION_UNSET_QOS()								mstype_unset_qos
 #define TSIP_MSESSION_SET_TIMERS(TIMEOUT_UINT, REFRESHER_STR)	mstype_set_timers, (unsigned)TIMEOUT_UINT, (const char*)REFRESHER_STR
@@ -155,6 +165,9 @@ typedef struct tsip_ssession_s
 	//=======
 	struct{
 		tmedia_type_t type;
+		tmedia_profile_t profile;
+		tmedia_srtp_mode_t srtp_mode;
+
 		/* Session timers */
 		struct{
 			char* refresher;
@@ -172,6 +185,7 @@ typedef struct tsip_ssession_s
 
 		/* Features */
 		unsigned enable_100rel:1;
+		unsigned enable_ice:1;
 	} media;
 }
 tsip_ssession_t;

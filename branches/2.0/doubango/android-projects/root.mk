@@ -61,7 +61,7 @@ export CFLAGS_COMMON=$(CFLAGS) $(DEBUG_FLAGS) -I$(ANDROID_NDK_BASE)/$(ANDROID_PL
 -MMD \
 -MP \
 -fno-short-enums \
--DANDROID 
+-DANDROID=1
 
 ifeq ($(NEON), yes)
 export MARCH=armv7-a
@@ -76,9 +76,7 @@ export CFLAGS_LIB= $(CFLAGS_COMMON) \
 -Os \
 -fomit-frame-pointer \
 -fno-strict-aliasing \
--finline-limit=64 \
--DANDROID
-#-mthumb
+-finline-limit=64 
 
 export LDFLAGS_COMMON=$(LDFLAGS) -Wl,-rpath=/system/lib,-rpath-link=$(ANDROID_NDK_BASE)/$(ANDROID_PLATFORM)/arch-arm/usr/lib,-rpath-link=$(OUTPUT_DIR),-dynamic-linker=/system/bin/linker,-T,$(ANDROID_NDK_TOOL_BASE)/arm-eabi/lib/ldscripts/armelf.xsc -L$(ANDROID_NDK_BASE)/$(ANDROID_PLATFORM)/arch-arm/usr/lib
 export LDFLAGS_COMMON+=-nostdlib -lc -ldl -L$(OUTPUT_DIR)

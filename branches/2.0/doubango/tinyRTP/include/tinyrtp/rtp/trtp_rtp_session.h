@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -32,6 +32,10 @@
 #include "tinyrtp_config.h"
 
 TRTP_BEGIN_DECLS
+
+struct trtp_rtp_packet_s;
+
+typedef int (*trtp_rtp_cb_f)(const void* callback_data, const struct trtp_rtp_packet_s* packet);
 
 TRTP_END_DECLS
 

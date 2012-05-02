@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsk_list.c
  * @brief Linked list.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -110,7 +110,9 @@ int tsk_list_unlock(tsk_list_t* list)
 */
 void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item)
 {
-	tsk_list_remove_item_by_pred(list, tsk_list_find_by_item, (const void*)item);
+	if(item){
+		tsk_list_remove_item_by_pred(list, tsk_list_find_by_item, (const void*)item);
+	}
 }
 
 /**@ingroup tsk_list_group
@@ -163,13 +165,16 @@ tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t 
 * Removes an object from the @a list.
 * @param list The list from which to remove the object.
 * @param tskobj Any valid object(declared using @ref TSK_DECLARE_OBJECT) to remove.
+* @retval True if removed and false otherwise
 */
-void tsk_list_remove_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj)
+tsk_bool_t tsk_list_remove_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj)
 {
 	tsk_list_item_t* item;
 	if((item = tsk_list_pop_item_by_data(list, tskobj))){
 		tsk_object_unref(item);
+		return tsk_true;
 	}
+	return tsk_false;
 }
 
 /**@ingroup tsk_list_group
@@ -224,13 +229,16 @@ tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predi
 * @param list The list from which to remove the item.
 * @param predicate The predicate function used to match the item.
 * @param data Arbitrary data to pass to the predicate function.
+* @retval True if removed and false otherwise
 */
-void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
+tsk_bool_t tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
 {
 	tsk_list_item_t* item;
 	if((item = tsk_list_pop_item_by_pred(list, predicate, data))){
 		tsk_object_unref(item);
+		return tsk_true;
 	}
+	return tsk_false;
 }
 
 /**@ingroup tsk_list_group
@@ -440,7 +448,7 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 	if(predicate){
 		const tsk_list_item_t *item;
 		tsk_list_foreach(item, list){
-			if(!predicate(item, data)){
+			if(predicate(item, data) == 0){
 				return item;
 			}
 		}
@@ -461,8 +469,15 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 */
 const tsk_object_t* tsk_list_find_object_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
 {
+	return tsk_list_find_object_by_pred_at_index(list, predicate, data, 0);
+}
+
+/**@ingroup tsk_list_group */
+const tsk_object_t* tsk_list_find_object_by_pred_at_index(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data, tsk_size_t index)
+{
+	tsk_size_t pos = 0;
 	const tsk_list_item_t *item;
-	if((item = tsk_list_find_item_by_pred(list, predicate, data))){
+	if((item = tsk_list_find_item_by_pred(list, predicate, data)) && pos++ >= index){
 		return item->data;
 	}
 	else{
@@ -470,20 +485,36 @@ const tsk_object_t* tsk_list_find_object_by_pred(const tsk_list_t* list, tsk_lis
 	}
 }
 
+/**@ingroup tsk_list_group */
+int tsk_list_find_index_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
+{ 
+	if(list && predicate){
+		int index = 0;
+		const tsk_list_item_t *item;
+		tsk_list_foreach(item, list){
+			if(predicate(item, data) == 0){
+				return index;
+			}
+			++index;
+		}
+	}
+	return -1;
+}
+
 /**@ingroup tsk_list_group
 * Counts the number of item matching the predicate.
 * @param list The list containing the items to count
-* @param predicate The predicate to use to match the items
+* @param predicate The predicate to use to match the items. Set to null to count all items
 * @param data Data passed to the predicate function for comparaison
 * @retval The number of item matching the predicate
 */
 tsk_size_t tsk_list_count(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
 {
 	tsk_size_t count = 0;
-	if(predicate && list){
+	if(list){
 		const tsk_list_item_t *item;
 		tsk_list_foreach(item, list){
-			if(!predicate(item, data)){
+			if(!predicate || (predicate(item, data) == 0)){
 				++count;
 			}
 		}

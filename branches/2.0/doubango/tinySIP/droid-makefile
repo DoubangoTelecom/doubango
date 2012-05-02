@@ -38,6 +38,7 @@ OBJS += src/dialogs/tsip_dialog.o\
 	src/dialogs/tsip_dialog_invite.conf.o\
 	src/dialogs/tsip_dialog_invite.ect.o\
 	src/dialogs/tsip_dialog_invite.hold.o\
+	src/dialogs/tsip_dialog_invite.ice.o\
 	src/dialogs/tsip_dialog_invite.qos.o\
 	src/dialogs/tsip_dialog_invite.server.o\
 	src/dialogs/tsip_dialog_invite.timers.o\

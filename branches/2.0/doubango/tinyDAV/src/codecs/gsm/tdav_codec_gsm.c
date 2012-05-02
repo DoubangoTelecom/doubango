@@ -38,8 +38,7 @@
 
 /* ============ GSM Plugin interface ================= */
 
-#define tdav_codec_gsm_fmtp_get tsk_null
-#define tdav_codec_gsm_fmtp_set tsk_null
+#define tdav_codec_gsm_sdp_att_get tsk_null
 
 int tdav_codec_gsm_open(tmedia_codec_t* self)
 {
@@ -128,7 +127,7 @@ tsk_size_t tdav_codec_gsm_decode(tmedia_codec_t* self, const void* in_data, tsk_
 	return out_size;
 }
 
-tsk_bool_t tdav_codec_gsm_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+tsk_bool_t tdav_codec_gsm_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {	/* always match */
 	return tsk_true;
 }
@@ -194,13 +193,13 @@ static const tmedia_codec_plugin_def_t tdav_codec_gsm_plugin_def_s =
 	/* video */
 	{0},
 
+	tsk_null, // set()
 	tdav_codec_gsm_open,
 	tdav_codec_gsm_close,
 	tdav_codec_gsm_encode,
 	tdav_codec_gsm_decode,
-	tdav_codec_gsm_fmtp_match,
-	tdav_codec_gsm_fmtp_get,
-	tdav_codec_gsm_fmtp_set
+	tdav_codec_gsm_sdp_att_match,
+	tdav_codec_gsm_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tdav_codec_gsm_plugin_def_t = &tdav_codec_gsm_plugin_def_s;
 

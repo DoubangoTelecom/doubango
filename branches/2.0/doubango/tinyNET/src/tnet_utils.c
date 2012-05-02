@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,22 +23,32 @@
 /**@file tnet_utils.c
  * @brief Network utility functions.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
 
 #include "tnet_utils.h"
 
-#include "tsk_debug.h"
+#include "tsk_thread.h"
 #include "tsk_string.h"
 #include "tsk_memory.h"
+#include "tsk_debug.h"
 
 #include "tnet_socket.h"
 #include "tnet_endianness.h"
 #include "dns/tnet_dns_resolvconf.h"
 
 #include <string.h>
+
+#if defined(__APPLE__)
+#	include <net/if_dl.h>
+#	if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_3_2
+#		include "net/route.h"
+#	else
+#		include <net/route.h>
+#	endif
+#endif
 
 /**@defgroup tnet_utils_group Network utility functions.
 */
@@ -252,6 +262,15 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 		TSK_DEBUG_ERROR("ioctl(SIOCGIFCONF) failed and errno= [%d]", tnet_geterrno());
 		goto done;
 	}
+	if(!ifr || !ifc.ifc_req){
+		TSK_DEBUG_ERROR("ifr or ifc.ifc_req is null");
+		goto done;
+	}
+
+	if(!ifr->ifr_name){
+		TSK_DEBUG_ERROR("ifr->ifr_name is null");
+		goto done;
+	}
 
 	for(ifr = ifc.ifc_req; ifr && !tsk_strempty(ifr->ifr_name); ifr++){
 		sin = (struct sockaddr_in *)&(ifr->ifr_addr);
@@ -292,7 +311,7 @@ bail:
 * -1 mean all interfaces.
 * @retval List of all addresses.
 */
-tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, unsigned anycast, unsigned multicast, unsigned dnsserver, long if_index)
+tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, tsk_bool_t unicast, tsk_bool_t anycast, tsk_bool_t multicast, tsk_bool_t dnsserver, long if_index)
 {
 	tnet_addresses_L_t *addresses = tsk_list_create();
 
@@ -423,12 +442,12 @@ bail:
     
 #else	/* !TSK_UNDER_WINDOWS (MAC OS X, UNIX, ANDROID ...) */
 
+    tnet_ip_t ip;
 #if HAVE_IFADDRS /*=== Using getifaddrs ===*/
     
 	// see http://www.kernel.org/doc/man-pages/online/pages/man3/getifaddrs.3.html
-	struct ifaddrs *ifaddr = 0, *ifa = 0;
-    struct sockaddr *addr;
-    tnet_ip_t ip;
+	struct ifaddrs *ifaddr = tsk_null, *ifa = tsk_null;
+	struct sockaddr *addr;
     
 	/* Get interfaces */
 	if(getifaddrs(&ifaddr) == -1){
@@ -475,6 +494,60 @@ bail:
     if (ifaddr) {
         free(ifaddr);
     }
+
+#else /* ANDROID or any system without getifaddrs */
+
+	tnet_address_t *address;
+	tnet_fd_t fd = TNET_INVALID_FD;
+	struct ifconf ifc;
+	struct ifreq *ifr = 0;
+	memset(&ifc, 0, sizeof(ifc));
+
+	if((fd = socket(family, SOCK_DGRAM, IPPROTO_UDP)) < 0){
+		TSK_DEBUG_ERROR("Failed to create new DGRAM socket and errno= [%d]", tnet_geterrno());
+		goto done;
+	}
+
+	if(ioctl(fd, SIOCGIFCONF, &ifc) < 0){
+		TSK_DEBUG_ERROR("ioctl(SIOCGIFCONF) failed and errno= [%d]", tnet_geterrno());
+		goto done;
+	}
+	
+	if (!(ifr = (struct ifreq*) malloc(ifc.ifc_len))) {
+		TSK_DEBUG_ERROR("Could not malloc ifreq with size =%d", ifc.ifc_len);
+		goto done;
+	}
+
+	ifc.ifc_ifcu.ifcu_req = ifr;
+	if (ioctl(fd, SIOCGIFCONF, &ifc) < 0) {
+		TSK_DEBUG_ERROR("ioctl SIOCGIFCONF failed");
+		goto done;
+	}
+
+	int i;
+	for(i = 0; i < ifc.ifc_len / sizeof(struct ifreq); ++i){		
+		if (unicast) {
+
+		}
+		// Skip unwanted interface
+        if (if_index != -1 && ifr->ifr_ifindex != if_index) {
+            continue;
+        }
+
+		// Get the IP string
+		if(tnet_get_sockip(&ifr[i].ifr_addr, &ip) == 0){
+			// Push a new address
+			if((address = tnet_address_create(ip))){
+				address->family = family;
+				address->unicast = unicast;
+				tsk_list_push_ascending_data(addresses, (void **) &address);
+			}
+		}
+	}
+
+done:
+	TSK_FREE(ifr);
+	tnet_sockfd_close(&fd);
     
 #endif /* HAVE_IFADDRS */
     
@@ -494,17 +567,6 @@ bail:
 	return addresses;
 }
 
-#if defined(__APPLE__)
-
-#include <net/if_dl.h>
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_3_2
-#include "net/route.h"
-#else
-#include <net/route.h>
-#endif
-
-#endif
 
 /**@ingroup tnet_utils_group
 * Retrieves the @a source IP address that has the best route to the specified IPv4 or IPv6 @a destination.
@@ -821,25 +883,25 @@ done:
 * @param port [out] The port.
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port)
+int tnet_get_sockip_n_port(const struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port)
 {
 	int status = -1;
 
 	if(addr->sa_family == AF_INET){
-		struct sockaddr_in *sin = (struct sockaddr_in *)addr;
+		const struct sockaddr_in *sin = (const struct sockaddr_in *)addr;
 		if(port){
 			*port = tnet_ntohs(sin->sin_port);
 			status = 0;
 		}
 		if(ip){
-			if((status = tnet_getnameinfo((struct sockaddr*)sin, sizeof(*sin), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST))){
+			if((status = tnet_getnameinfo((const struct sockaddr*)sin, sizeof(*sin), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST))){
 				return status;
 			}
 		}
 	}
 	else if(addr->sa_family == AF_INET6)
 	{
-		struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)addr;
+		const struct sockaddr_in6 *sin6 = (const struct sockaddr_in6 *)addr;
 #if TNET_UNDER_WINDOWS
 		int index;
 #endif
@@ -848,7 +910,7 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 			status = 0;
 		}
 		if(ip){
-			if((status = tnet_getnameinfo((struct sockaddr*)sin6, sizeof(*sin6), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST))){
+			if((status = tnet_getnameinfo((const struct sockaddr*)sin6, sizeof(*sin6), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST))){
 				return status;
 			}
 
@@ -1242,17 +1304,28 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 	}
 
 	while(sent < size){
+		int try_guard = 6;
 #if TNET_UNDER_WINDOWS
 		WSABUF wsaBuffer;
 		DWORD numberOfBytesSent = 0;
 		wsaBuffer.buf = ((CHAR*)buf) + sent;
-		wsaBuffer.len = (size-sent);
+		wsaBuffer.len = (size - sent);
+try_again:
 		ret = WSASendTo(fd, &wsaBuffer, 1, &numberOfBytesSent, 0, to, tnet_get_sockaddr_size(to), 0, 0); // returns zero if succeed
 		if(ret == 0) ret = numberOfBytesSent;
 #else
+try_again:
 		ret = sendto(fd, (((const uint8_t*)buf)+sent), (size-sent), 0, to, tnet_get_sockaddr_size(to)); // returns number of sent bytes if succeed
 #endif
 		if(ret <= 0){
+			if(tnet_geterrno() == TNET_ERROR_WOULDBLOCK){
+				if(try_guard--){
+					TSK_DEBUG_INFO("WSAEWOULDBLOCK");
+					tsk_thread_sleep(5);
+					goto try_again;
+				}
+			}
+			TNET_PRINT_LAST_ERROR("sendto() failed");
 			goto bail;
 		}
 		else{

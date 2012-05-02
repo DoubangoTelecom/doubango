@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -42,62 +42,23 @@ chunk  |                          SSRC/CSRC_2                          |
        |                              ...                              |
        +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 */
-trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_create_null()
-{
-	return tsk_object_new(trtp_rtcp_report_sdes_def_t);
-}
 
-// @NotImplemented
-trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_deserialize(const void* data, tsk_size_t size)
-{
-	trtp_rtcp_report_sdes_t* packet = tsk_null;
-	//-- const uint8_t* pdata = (const uint8_t*)data;
-	if(!data || !size){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return tsk_null;
-	}
-	if(size<TRTP_RTCP_HEADER_SIZE){
-		TSK_DEBUG_ERROR("%u is too short", size);
-		return tsk_null;
-	}
-	TSK_DEBUG_ERROR("Not implemented");
-	return packet;
-}
-
-// @NotImplemented
-int trtp_rtcp_report_sdes_deserialize_payload(trtp_rtcp_report_sdes_t* self, const void* payload, tsk_size_t size)
-{
-	if(!self || !payload || !size){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-
-	return 0;
-}
-
-//
-// Object definition
-//
 static tsk_object_t* trtp_rtcp_report_sdes_ctor(tsk_object_t * self, va_list * app)
 {
-	trtp_rtcp_report_sdes_t *packet = self;
-	if(packet){
-		// init self
-		TRTP_RTCP_PACKET(packet)->header->type = trtp_rtcp_packet_type_sdes;
-		TRTP_RTCP_PACKET(packet)->header->version = TRTP_RTCP_HEADER_VERSION_DEFAULT;
-		packet->chuncks = tsk_list_create();
-		// init base
+	trtp_rtcp_report_sdes_t *sdes = self;
+	if(sdes){
+		sdes->chuncks = tsk_list_create();
 	}
 	return self;
 }
 static tsk_object_t* trtp_rtcp_report_sdes_dtor(tsk_object_t * self)
 { 
-	trtp_rtcp_report_sdes_t *packet = self;
-	if(packet){
+	trtp_rtcp_report_sdes_t *sdes = self;
+	if(sdes){
 		// deinit base
-		trtp_rtcp_packet_deinit(TRTP_RTCP_PACKET(packet));
+		trtp_rtcp_packet_deinit(TRTP_RTCP_PACKET(sdes));
 		// deinit self
-		TSK_OBJECT_SAFE_FREE(packet->chuncks);
+		TSK_OBJECT_SAFE_FREE(sdes->chuncks);
 	}
 
 	return self;
@@ -110,3 +71,144 @@ static const tsk_object_def_t trtp_rtcp_report_sdes_def_s =
 	tsk_null, 
 };
 const tsk_object_def_t *trtp_rtcp_report_sdes_def_t = &trtp_rtcp_report_sdes_def_s;
+
+
+trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_create_null()
+{
+	trtp_rtcp_report_sdes_t* sdes;
+	if((sdes = (trtp_rtcp_report_sdes_t*)tsk_object_new(trtp_rtcp_report_sdes_def_t))){
+		trtp_rtcp_packet_init(TRTP_RTCP_PACKET(sdes), TRTP_RTCP_HEADER_VERSION_DEFAULT, 0, 0, trtp_rtcp_packet_type_sdes, TRTP_RTCP_HEADER_SIZE);
+	}
+	return sdes;
+}
+
+trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_create(trtp_rtcp_header_t* header)
+{
+	trtp_rtcp_report_sdes_t* sdes;
+	if((sdes = (trtp_rtcp_report_sdes_t*)tsk_object_new(trtp_rtcp_report_sdes_def_t))){
+		TRTP_RTCP_PACKET(sdes)->header = tsk_object_ref(header);
+	}
+	return sdes;
+}
+
+trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_deserialize(const void* data, tsk_size_t _size)
+{
+	trtp_rtcp_report_sdes_t* sdes = tsk_null;
+	trtp_rtcp_header_t* header = tsk_null;
+	const uint8_t* pdata = (const uint8_t*)data;
+	int32_t size = _size;
+
+	if(!data || size < TRTP_RTCP_HEADER_SIZE){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+	
+	if(!(header = trtp_rtcp_header_deserialize(pdata, size))){
+		TSK_DEBUG_ERROR("Failed to deserialize the header");
+		goto bail;
+	}
+	if(header->length_in_bytes < (TRTP_RTCP_HEADER_SIZE + 4)){
+		TSK_DEBUG_ERROR("Too short");
+		goto bail;
+	}
+	
+	if(!(sdes = trtp_rtcp_report_sdes_create(header))){
+		TSK_DEBUG_ERROR("Failed to create object");
+		goto bail;
+	}
+
+	pdata += TRTP_RTCP_HEADER_SIZE;
+	size -= TRTP_RTCP_HEADER_SIZE;
+
+	// Chuncks
+	if(header->rc > 0){
+		tsk_size_t i = 0, chunck_size;
+		trtp_rtcp_sdes_chunck_t* chunck;
+		while(i++ < header->rc && size > TRTP_RTCP_SDES_CHUNCK_MIN_SIZE){
+			if((chunck = trtp_rtcp_sdes_chunck_deserialize(pdata, size))){
+				chunck_size = trtp_rtcp_sdes_chunck_get_size(chunck);
+				if((size -= chunck_size)){
+					pdata += chunck_size;
+				}
+				tsk_list_push_ascending_data(sdes->chuncks, (void**)&chunck);
+				continue;
+			}
+			break;
+		}
+	}
+
+bail:
+	TSK_OBJECT_SAFE_FREE(header);
+	return sdes;
+}
+
+int trtp_rtcp_report_sdes_serialize_to(const trtp_rtcp_report_sdes_t* self, void* data, tsk_size_t size)
+{
+	int ret;
+	uint8_t* pdata = (uint8_t*)data;
+	if(!self || !data || size < trtp_rtcp_report_sdes_get_size(self)){
+		return -1;
+	}
+
+	if((ret = trtp_rtcp_header_serialize_to(TRTP_RTCP_PACKET(self)->header, pdata, size))){
+		TSK_DEBUG_ERROR("Failed to serialize the header");
+		return ret;
+	}
+
+	pdata += (TRTP_RTCP_HEADER_SIZE);
+	size -= (TRTP_RTCP_HEADER_SIZE);
+
+	if(TRTP_RTCP_PACKET(self)->header->rc > 0){
+		const tsk_list_item_t* item;
+		tsk_size_t i = 0, chunck_size;
+		const trtp_rtcp_sdes_chunck_t* chunck;
+		tsk_list_foreach(item, self->chuncks){
+			if(!(chunck = item->data)){
+				continue;
+			}
+			if((ret = trtp_rtcp_sdes_chunck_serialize_to(chunck, pdata, size))){
+				TSK_DEBUG_ERROR("Failed to serialize SDES chunck");
+				goto bail;
+			}
+			chunck_size = trtp_rtcp_sdes_chunck_get_size(chunck);
+			pdata += chunck_size;
+			size -= chunck_size;
+		}
+	}
+
+bail:
+	return ret;
+}
+
+int trtp_rtcp_report_sdes_add_chunck(trtp_rtcp_report_sdes_t* self, trtp_rtcp_sdes_chunck_t* chunck)
+{
+	if(!self || !self->chuncks || !chunck){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	chunck = tsk_object_ref(chunck);
+	TRTP_RTCP_PACKET(self)->header->length_in_bytes += trtp_rtcp_sdes_chunck_get_size(chunck);
+	TRTP_RTCP_PACKET(self)->header->length_in_words_minus1 = ((TRTP_RTCP_PACKET(self)->header->length_in_bytes >> 2) - 1) 
+		+  ((TRTP_RTCP_PACKET(self)->header->length_in_bytes & 0x03) ? 1 : 0);
+	++TRTP_RTCP_PACKET(self)->header->rc;
+	tsk_list_push_back_data(self->chuncks, (void**)&chunck);
+	return 0;
+}
+
+tsk_size_t trtp_rtcp_report_sdes_get_size(const trtp_rtcp_report_sdes_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+	else{
+		tsk_size_t size = TRTP_RTCP_HEADER_SIZE;
+		const tsk_list_item_t* item;
+		tsk_list_foreach(item, self->chuncks){
+			size += trtp_rtcp_sdes_chunck_get_size(TRTP_RTCP_SDES_CHUNCK(item->data));
+		}
+		return size;
+	}
+}
+

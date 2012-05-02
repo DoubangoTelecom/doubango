@@ -77,7 +77,15 @@ typedef enum level_idc_e {
 	level_idc_2_0 = 20,
 	level_idc_2_1 = 21,
 	level_idc_2_2 = 22,
-	level_idc_3_0 = 30
+	level_idc_3_0 = 30,
+	level_idc_3_1 = 31,
+	level_idc_3_2 = 32,
+	level_idc_4_0 = 40,
+	level_idc_4_1 = 41,
+	level_idc_4_2 = 42,
+	level_idc_5_0 = 50,
+	level_idc_5_1 = 51,
+	level_idc_5_2 = 52,
 }
 level_idc_t;
 

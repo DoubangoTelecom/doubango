@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsk_sha1.h
  * @brief US Secure Hash Algorithm 1 (RFC 3174)
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -68,8 +68,8 @@ tsk_sha1_errcode_t;
 #define TSK_SHA1_BLOCK_SIZE				64
 
 #define TSK_SHA1_STRING_SIZE		(TSK_SHA1_DIGEST_SIZE*2)
-typedef char tsk_sha1string_t[TSK_SHA1_STRING_SIZE+1];
-typedef char tsk_sha1digest_t[TSK_SHA1_DIGEST_SIZE]; /**< SHA-1 digest bytes. */
+typedef uint8_t tsk_sha1string_t[TSK_SHA1_STRING_SIZE+1];
+typedef uint8_t tsk_sha1digest_t[TSK_SHA1_DIGEST_SIZE]; /**< SHA-1 digest bytes. */
 
 /**@ingroup tsk_sha1_group
 * Computes SHA-1 digest.

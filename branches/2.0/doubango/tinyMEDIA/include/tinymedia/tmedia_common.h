@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tmedia_common.h
  * @brief Common functions and definitions.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -37,6 +37,7 @@
 TMEDIA_BEGIN_DECLS
 
 /** List of all supported media types */
+// @tinyWRAP
 typedef enum tmedia_type_e
 {
 	tmedia_none = 0x00,
@@ -55,29 +56,7 @@ typedef enum tmedia_type_e
 }
 tmedia_type_t;
 
-typedef enum tmedia_video_size_type_e
-{
-	tmedia_vst_none,
-	tmedia_vst_sqcif,
-	tmedia_vst_qcif,
-	tmedia_vst_qvga,
-	tmedia_vst_cif,
-	tmedia_vst_vga,
-	tmedia_vst_4cif,
-	tmedia_vst_svga,
-	tmedia_vst_xga,
-	tmedia_vst_sxga,
-	tmedia_vst_16cif,
-	tmedia_vst_hd720p,
-	tmedia_vst_hd1080p,
-	
-	tmedia_vst_ios_low,
-	tmedia_vst_ios_medium,
-	tmedia_vst_ios_high
-}
-tmedia_video_size_type_t;
-
-// used by tinyWRAP
+// @tinyWRAP
 typedef enum tmedia_srtp_mode_e
 {
 	tmedia_srtp_mode_none,
@@ -86,16 +65,76 @@ typedef enum tmedia_srtp_mode_e
 }
 tmedia_srtp_mode_t;
 
-typedef struct tmedia_video_size_s
+// @tinyWRAP
+typedef enum tmedia_profile_e
 {
-	tmedia_video_size_type_t type;
-	tsk_size_t width;
-	tsk_size_t height;
+	tmedia_profile_default,
+	// Enable all RTCWeb specifications:
+	// ICE, DTLS-SRTP, RTP/AVPF, FEC, RED, SDPCapNeg, RTCP-MUX, imageattr...
+	tmedia_profile_rtcweb
 }
-tmedia_video_size_t;
+tmedia_profile_t;
+
+// @tinyWRAP
+typedef enum tmedia_pref_video_size_s
+{ /* must be sorted like this */
+	tmedia_pref_video_size_sqcif, // 128 x 98
+	tmedia_pref_video_size_qcif, // 176 x 144
+	tmedia_pref_video_size_qvga, // 320 x 240
+	tmedia_pref_video_size_cif, // 352 x 288
+	tmedia_pref_video_size_hvga, // 480 x 320
+	tmedia_pref_video_size_vga, // 640 x 480
+	tmedia_pref_video_size_4cif, // 704 x 576
+	tmedia_pref_video_size_svga, // 800 x 600
+	tmedia_pref_video_size_480p, // 852 x 480
+	tmedia_pref_video_size_720p, // 1280 x 720
+	tmedia_pref_video_size_16cif, // 1408 x 1152
+	tmedia_pref_video_size_1080p, // 1920 x 1080
+}
+tmedia_pref_video_size_t;
+
+typedef enum tmedia_video_encode_result_type_e
+{
+	tmedia_video_encode_result_type_none = 0x00,
+	tmedia_video_encode_result_type_parms = (0x01 << 0), // e.g. SPS or PPS, DCT coeff., Quant params....
+	tmedia_video_encode_result_type_intra = (0x01 << 1),
+	tmedia_video_encode_result_type_key = tmedia_video_encode_result_type_intra,
+	tmedia_video_encode_result_type_gold = tmedia_video_encode_result_type_intra,
+	tmedia_video_encode_result_type_predicted = (0x01 << 2),
+	tmedia_video_encode_result_type_bipredicted = (0x01 << 3)
+}
+tmedia_video_encode_result_type_t;
+
+typedef struct tmedia_video_encode_result_xs
+{
+	tmedia_video_encode_result_type_t type;
+	const void* usr_data;
+	struct{
+		const void* ptr;
+		tsk_size_t size;
+	} buffer;
+	uint32_t duration;
+	tsk_bool_t last_chunck;
+}
+tmedia_video_encode_result_xt;
+
+typedef enum tmedia_video_decode_result_type_e
+{
+	tmedia_video_decode_result_type_error,
+	tmedia_video_decode_result_type_success,
+}
+tmedia_video_decode_result_type_t;
+
+typedef struct tmedia_video_decode_result_xs
+{
+	tmedia_video_decode_result_type_t type;
+	const void* usr_data;
+	const tsk_object_t* proto_hdr; // RTP, RTSP....
+}
+tmedia_video_decode_result_xt;
 
 
-// used by tinyWRAP
+// @tinyWRAP
 typedef enum tmedia_chroma_e
 {
 	tmedia_chroma_none=0,
@@ -112,7 +151,8 @@ typedef enum tmedia_chroma_e
 }
 tmedia_chroma_t;
 
-// used by tinyWRAP
+// @tinyWRAP
+// @deprecated
 // keep order (low->unrestricted)
 typedef enum tmedia_bandwidth_level_e
 {
@@ -125,8 +165,12 @@ tmedia_bandwidth_level_t;
 
 TINYMEDIA_API tmedia_type_t tmedia_type_from_sdp(const tsdp_message_t* sdp);
 TINYMEDIA_API int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t* channels);
-TINYMEDIA_API int tmedia_parse_video_fmtp(const char* fmtp, tmedia_bandwidth_level_t bl, unsigned* width, unsigned* height, unsigned* fps);
-TINYMEDIA_API const tmedia_video_size_t* tmedia_get_video_size(tmedia_chroma_t chroma, tsk_size_t size);
+TINYMEDIA_API int tmedia_video_get_size(tmedia_pref_video_size_t pref_vs, unsigned *width, unsigned *height);
+TINYMEDIA_API int tmedia_video_get_closest_cif_size(tmedia_pref_video_size_t pref_vs, tmedia_pref_video_size_t *cif_vs);
+TINYMEDIA_API int tmedia_parse_video_fmtp(const char* fmtp, tmedia_pref_video_size_t pref_vs, unsigned* width, unsigned* height, unsigned* fps);
+TINYMEDIA_API int tmedia_parse_video_imageattr(const char* imageattr, tmedia_pref_video_size_t pref_vs, unsigned* in_width, unsigned* in_height, unsigned* out_width, unsigned* out_height);
+TINYMEDIA_API char* tmedia_get_video_fmtp(tmedia_pref_video_size_t pref_vs);
+TINYMEDIA_API char* tmedia_get_video_imageattr(tmedia_pref_video_size_t pref_vs, unsigned in_width, unsigned in_height, unsigned out_width, unsigned out_height);
 TINYMEDIA_API int tmedia_get_video_quality(tmedia_bandwidth_level_t bl);
 #define tmedia_get_video_qscale tmedia_get_video_quality
 

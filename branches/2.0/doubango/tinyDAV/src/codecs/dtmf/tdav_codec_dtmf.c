@@ -35,8 +35,6 @@
 
 /* ============ DTMF Plugin interface ================= */
 
-#define tdav_codec_dtmf_fmtp_set tsk_null
-
 tsk_size_t tdav_codec_dtmf_fmtp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	return 0;
@@ -47,12 +45,15 @@ tsk_size_t tdav_codec_dtmf_fmtp_decode(tmedia_codec_t* self, const void* in_data
 	return 0;
 }
 
-char* tdav_codec_dtmf_fmtp_get(const tmedia_codec_t* self)
+char* tdav_codec_dtmf_sdp_att_get(const tmedia_codec_t* self, const char* att_name)
 {
-	return tsk_strdup("0-15");
+	if(tsk_striequals(att_name, "fmtp")){
+		return tsk_strdup("0-15");
+	}
+	return tsk_null;
 }
 
-tsk_bool_t tdav_codec_dtmf_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+tsk_bool_t tdav_codec_dtmf_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {	/* always match */
 	return tsk_true;
 }
@@ -112,12 +113,12 @@ static const tmedia_codec_plugin_def_t tdav_codec_dtmf_plugin_def_s =
 	/* video */
 	{0},
 
+	tsk_null, // set()
 	tsk_null, // open
 	tsk_null, // close
 	tdav_codec_dtmf_fmtp_encode,
 	tdav_codec_dtmf_fmtp_decode,
-	tdav_codec_dtmf_fmtp_match,
-	tdav_codec_dtmf_fmtp_get,
-	tdav_codec_dtmf_fmtp_set
+	tdav_codec_dtmf_sdp_att_match,
+	tdav_codec_dtmf_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tdav_codec_dtmf_plugin_def_t = &tdav_codec_dtmf_plugin_def_s;

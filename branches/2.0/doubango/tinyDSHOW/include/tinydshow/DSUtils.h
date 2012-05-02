@@ -28,9 +28,9 @@
 
 // --------------------------------------------------------------------------------
 
-#define SAFE_RELEASE(x) if (x) { x->Release(); x = NULL; }
-#define SAFE_DELETE_PTR(x) if (x) { delete x; x = NULL; }
-#define SAFE_DELETE_ARRAY(x) if (x) { delete[] x; x = NULL; }
+#define SAFE_RELEASE(x) if ((x)) { (x)->Release(); (x) = NULL; }
+#define SAFE_DELETE_PTR(x) if ((x)) { delete (x); (x) = NULL; }
+#define SAFE_DELETE_ARRAY(x) if ((x)) { delete[] (x); (x) = NULL; }
 
 #define DS_NANOS_TO_100NS(NANOS) (((LONGLONG)(NANOS)) / 100ui64)
 #define DS_MICROS_TO_100NS(MICROS) (((LONGLONG)(MICROS)) * 10ui64)
@@ -63,6 +63,8 @@
 
 // --------------------------------------------------------------------------------
 
+HWND GetMainWindow();
+
 bool IsMainThread();
 
 IPin *GetPin(IBaseFilter *pFilter, PIN_DIRECTION dir);
@@ -74,5 +76,7 @@ HRESULT DisconnectFilters(IGraphBuilder *graphBuilder, IBaseFilter *source, IBas
 bool DisconnectAllFilters(IGraphBuilder *graphBuilder);
 
 bool RemoveAllFilters(IGraphBuilder *graphBuilder);
+
+int createOnUIThead(HWND hWnd, void** ppRet, bool display);
 
 #endif /* TINYDSHOW_DUTILS_H */

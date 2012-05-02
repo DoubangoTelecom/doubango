@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_ssession.c
  * @brief SIP session.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -247,11 +247,25 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 					//=========
 					while((mscurr = va_arg(*app, tsip_msession_param_type_t)) != mstype_null){
 						switch(mscurr){
+							case mstype_set_profile:
+								// (tmedia_profile_t)PROFILE_ENUM
+								self->media.profile = va_arg(*app, tmedia_profile_t);
+								break;
+							case mstype_set_srtp_mode:
+								// (tmedia_srtp_mode_t)SRTP_MODE_ENUM
+								self->media.srtp_mode = va_arg(*app, tmedia_srtp_mode_t);
+								break;
 							case mstype_set_100rel:
 								self->media.enable_100rel = tsk_true;
 								break;
 							case mstype_unset_100rel:
 								self->media.enable_100rel = tsk_false;
+								break;
+							case mstype_set_ice:
+								self->media.enable_ice = tsk_true;
+								break;
+							case mstype_unset_ice:
+								self->media.enable_ice = tsk_false;
 								break;
 							case mstype_set_qos:
 								{	/* (tmedia_qos_stype_t)TYPE_ENUM, (tmedia_qos_strength_t)STRENGTH_ENUM */
@@ -559,7 +573,10 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		// default parentid: not parent -> no pending transfer
 		ss->id_parent = TSIP_SSESSION_INVALID_ID;
 		// default media values
+		ss->media.profile = tmedia_defaults_get_profile();
+		ss->media.srtp_mode = tmedia_defaults_get_srtp_mode();
 		ss->media.enable_100rel = tmedia_defaults_get_100rel_enabled();
+		ss->media.enable_ice = tmedia_defaults_get_ice_enabled();
 		ss->media.type = tmedia_none;
 		ss->media.qos.type = tmedia_qos_stype_none;
 		ss->media.qos.strength = tmedia_qos_strength_none;

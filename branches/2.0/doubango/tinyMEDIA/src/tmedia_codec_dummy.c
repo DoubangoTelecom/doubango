@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tmedia_codec_dummy.c
  * @brief Dummy codecs used for test only.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -35,12 +35,11 @@
 //	Dummy G.711u object definition
 //
 
-#define tmedia_codec_dpcmu_fmtp_get tsk_null
-#define tmedia_codec_dpcmu_fmtp_set tsk_null
+#define tmedia_codec_dpcmu_sdp_att_get tsk_null
 #define tmedia_codec_dpcmu_fmtp_encode tsk_null
 #define tmedia_codec_dpcmu_fmtp_decode tsk_null
 
-tsk_bool_t tmedia_codec_dpcmu_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+tsk_bool_t tmedia_codec_dpcmu_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {	/* always match */
 	return tsk_true;
 }
@@ -95,13 +94,13 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcmu_plugin_def_s =
 	/* video */
 	{0},
 
+	tsk_null, // set()
 	tsk_null, // open
 	tsk_null, // close
 	tmedia_codec_dpcmu_fmtp_encode,
 	tmedia_codec_dpcmu_fmtp_decode,
-	tmedia_codec_dpcmu_fmtp_match,
-	tmedia_codec_dpcmu_fmtp_get,
-	tmedia_codec_dpcmu_fmtp_set
+	tmedia_codec_dpcmu_sdp_att_match,
+	tmedia_codec_dpcmu_sdp_att_get,
 };
 const tmedia_codec_plugin_def_t *tmedia_codec_dpcmu_plugin_def_t = &tmedia_codec_dpcmu_plugin_def_s;
 
@@ -109,12 +108,12 @@ const tmedia_codec_plugin_def_t *tmedia_codec_dpcmu_plugin_def_t = &tmedia_codec
 //	Dummy G.711a object definition
 //
 
-#define tmedia_codec_dpcma_fmtp_get tsk_null
+#define tmedia_codec_dpcma_sdp_att_get tsk_null
 #define tmedia_codec_dpcma_fmtp_set tsk_null
 #define tmedia_codec_dpcma_fmtp_encode tsk_null
 #define tmedia_codec_dpcma_fmtp_decode tsk_null
 
-tsk_bool_t tmedia_codec_dpcma_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+tsk_bool_t tmedia_codec_dpcma_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {	/* always match */
 	return tsk_true;
 }
@@ -169,13 +168,13 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcma_plugin_def_s =
 	/* video */
 	{0},
 
+	tsk_null, // set()
 	tsk_null, // open
 	tsk_null, // close
 	tmedia_codec_dpcma_fmtp_encode,
 	tmedia_codec_dpcma_fmtp_decode,
-	tmedia_codec_dpcma_fmtp_match,
-	tmedia_codec_dpcma_fmtp_get,
-	tmedia_codec_dpcma_fmtp_set
+	tmedia_codec_dpcma_sdp_att_match,
+	tmedia_codec_dpcma_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tmedia_codec_dpcma_plugin_def_t = &tmedia_codec_dpcma_plugin_def_s;
 
@@ -195,14 +194,14 @@ tsk_size_t tmedia_codec_dh263_fmtp_decode(tmedia_codec_t* self, const void* in_d
 	return 0;
 }
 
-tsk_bool_t tmedia_codec_dh263_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+tsk_bool_t tmedia_codec_dh263_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {	
 	/* check whether we can match this fmtp with our local
 	* check size, maxbr, fps ...*/
 	return tsk_true;
 }
 
-char* tmedia_codec_dh263_fmtp_get(const tmedia_codec_t* self)
+char* tmedia_codec_dh263_sdp_att_get(const tmedia_codec_t* codec, const char* att_name)
 {
 	return tsk_strdup("CIF=2/MaxBR=3840;QCIF=2/MaxBR=1920");
 }
@@ -261,13 +260,13 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dh263_plugin_def_s =
 	/* video */
 	{176, 144},
 
+	tsk_null, // set()
 	tsk_null, // open
 	tsk_null, // close
 	tmedia_codec_dh263_fmtp_encode,
 	tmedia_codec_dh263_fmtp_decode,
-	tmedia_codec_dh263_fmtp_match,
-	tmedia_codec_dh263_fmtp_get,
-	tmedia_codec_dh263_fmtp_set
+	tmedia_codec_dh263_sdp_att_match,
+	tmedia_codec_dh263_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tmedia_codec_dh263_plugin_def_t = &tmedia_codec_dh263_plugin_def_s;
 
@@ -288,14 +287,14 @@ tsk_size_t tmedia_codec_dh264_fmtp_decode(tmedia_codec_t* self, const void* in_d
 	return 0;
 }
 
-tsk_bool_t tmedia_codec_dh264_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+tsk_bool_t tmedia_codec_dh264_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {	
 	/* check whether we can match this fmtp with our local
 	* check size, maxbr, fps, profile-level-id, packetization-mode ...*/
 	return tsk_true;
 }
 
-char* tmedia_codec_dh264_fmtp_get(const tmedia_codec_t* self)
+char* tmedia_codec_dh264_sdp_att_get(const tmedia_codec_t* codec, const char* att_name)
 {
 	return tsk_strdup("profile-level-id=42A01E;sprop-parameter-sets=Z0IACpZTBYmI,aMljiA==");
 }
@@ -344,7 +343,7 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dh264_plugin_def_s =
 	tmedia_video,
 	"H264",
 	"Dummy H.264 (base profile 10) codec",
-	TMEDIA_CODEC_FORMAT_H264_BP10,
+	TMEDIA_CODEC_FORMAT_H264_BP,
 	tsk_true,
 	90000, // rate
 	
@@ -354,12 +353,12 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dh264_plugin_def_s =
 	/* video */
 	{176, 144},
 
+	tsk_null, // set()
 	tsk_null, // open
 	tsk_null, // close
 	tmedia_codec_dh264_fmtp_encode,
 	tmedia_codec_dh264_fmtp_decode,
-	tmedia_codec_dh264_fmtp_match,
-	tmedia_codec_dh264_fmtp_get,
-	tmedia_codec_dh264_fmtp_set
+	tmedia_codec_dh264_sdp_att_match,
+	tmedia_codec_dh264_sdp_att_get
 };
 const tmedia_codec_plugin_def_t *tmedia_codec_dh264_plugin_def_t = &tmedia_codec_dh264_plugin_def_s;

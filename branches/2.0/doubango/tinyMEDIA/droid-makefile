@@ -13,6 +13,7 @@ OBJS = \
 	src/tmedia_consumer.o \
 	src/tmedia_defaults.o \
 	src/tmedia_denoise.o \
+	src/tmedia_imageattr.o \
 	src/tmedia_jitterbuffer.o \
 	src/tmedia_params.o \
 	src/tmedia_producer.o \

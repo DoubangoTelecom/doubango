@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet_stun.c
  * @brief Session Traversal Utilities for NAT (STUN) implementation as per RFC 5389 and RFC 3489(Obsolete).
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -63,10 +63,11 @@ tnet_stun_binding_t* tnet_stun_binding_create(tnet_fd_t fd, tnet_socket_type_t s
 tnet_stun_message_t *tnet_stun_create_request(const tnet_stun_binding_t* binding)
 {
 	tnet_stun_message_t *message = tnet_stun_message_create(binding->username, binding->password);
-	message->realm = tsk_strdup(binding->realm);
-	message->nonce = tsk_strdup(binding->nonce);
 
 	if(message){
+		message->realm = tsk_strdup(binding->realm);
+		message->nonce = tsk_strdup(binding->nonce);
+
 		/* Set the request type (RFC 5389 defines only one type) */
 		message->type = stun_binding_request;
 
@@ -123,7 +124,7 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 	fd_set set;
 
 	tsk_buffer_t *buffer = tnet_stun_message_serialize(message);
-	tnet_stun_response_t *response = 0;
+	tnet_stun_response_t *response = tsk_null;
 	
 	if(!buffer)
 	{
@@ -403,7 +404,9 @@ static tsk_object_t* tnet_stun_binding_ctor(tsk_object_t * self, va_list * app)
 		binding->username = tsk_strdup(va_arg(*app, const char*));
 		binding->password = tsk_strdup(va_arg(*app, const char*));
 		
-		tnet_sockaddr_init(server_address, server_port, binding->socket_type, &binding->server);		
+		if(server_address){
+			tnet_sockaddr_init(server_address, server_port, binding->socket_type, &binding->server);
+		}
 
 		binding->software = tsk_strdup(TNET_SOFTWARE);
 	}

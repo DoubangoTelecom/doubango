@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,7 +22,7 @@
 /**@file tnet_dns_regexp.h
  * @brief DNS Regex parser for NAPTR RR.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -141,7 +141,7 @@ bail:
 ///*
 //* Copyright (C) 2010-2011 Mamadou Diop.
 //*
-//* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+//* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 //*	
 //* This file is part of Open Source Doubango Framework.
 //*
@@ -162,7 +162,7 @@ bail:
 ///**@file tnet_dns_regexp.h
 // * @brief DNS Regex parser for NAPTR RR.
 // *
-// * @author Mamadou Diop <diopmamadou(at)doubango.org>
+// * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
 // *
 //
 // */

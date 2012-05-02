@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet_stun_attribute.h
  * @brief STUN2(RFC 5389) attribute parser.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
 
  */
@@ -63,8 +63,7 @@ tnet_stun_addr_family_t;
 **/
 typedef enum tnet_stun_attribute_type_e
 {
-	/* === RFC 5389 - Comprehension-required range (0x0000-0x7FFF):
-	*/
+	/* === RFC 5389 - Comprehension-required range (0x0000-0x7FFF) */
 	 stun_reserved = 0x0000,				/**< (Reserved) */
      stun_mapped_address = 0x0001,			/**< http://tools.ietf.org/html/rfc5389#page-32 */
      stun_response_address = 0x0002,		/**< (Reserved; was RESPONSE-ADDRESS) */
@@ -81,14 +80,12 @@ typedef enum tnet_stun_attribute_type_e
      stun_nonce = 0x0015,					/**< http://tools.ietf.org/html/rfc5389#page-38 */
      stun_xor_mapped_address = 0x0020,		/**< http://tools.ietf.org/html/rfc5389#page-33 */
 
-	 /* === RFC 5389 - Comprehension-optional range (0x8000-0xFFFF)
-	 */
+	 /* === RFC 5389 - Comprehension-optional range (0x8000-0xFFFF) */
      stun_software = 0x8022,				/**< http://tools.ietf.org/html/rfc5389#page-39 */
      stun_alternate_server = 0x8023,		/**< http://tools.ietf.org/html/rfc5389#page-39 */
      stun_fingerprint = 0x8028,				/**< http://tools.ietf.org/html/rfc5389#page-36 */
 
-	/* === draft-ietf-behave-turn-16
-	*/
+	/* === draft-ietf-behave-turn-16 */
 	stun_channel_number = 0x000C,			/**< draft-ietf-behave-turn-16 -  CHANNEL-NUMBER */
 	stun_lifetime = 0x000D,					/**< draft-ietf-behave-turn-16 -  LIFETIME */
 	stun_reserved2 = 0x0010,				/**< draft-ietf-behave-turn-16 -  Reserved (was BANDWIDTH) */
@@ -100,6 +97,12 @@ typedef enum tnet_stun_attribute_type_e
 	stun_dont_fragment = 0x001A,			/**< draft-ietf-behave-turn-16 -  DONT-FRAGMENT */
 	stun_reserved3 = 0x0021,				/**< draft-ietf-behave-turn-16 -  Reserved (was TIMER-VAL) */
 	stun_reservation_token = 0x0022,		/**< draft-ietf-behave-turn-16 -  RESERVATION-TOKEN */
+
+	/* RFC 5245 */
+	stun_ice_priority = 0x0024, /**< 21.2. STUN Attributes */
+	stun_ice_use_candidate = 0x0025, /**< 21.2. STUN Attributes */
+	stun_ice_controlled = 0x8029, /**< 21.2. STUN Attributes */
+	stun_ice_controlling = 0x802A, /**< 21.2. STUN Attributes */
 }
 tnet_stun_attribute_type_t;
 
@@ -301,6 +304,44 @@ typedef struct tnet_stun_attribute_altserver_s
 tnet_stun_attribute_altserver_t;
 TINYNET_GEXTERN const tsk_object_def_t *tnet_stun_attribute_altserver_def_t;
 
+/**@ingroup tnet_stun_group
+* RFC 5245 - 19.1.  New Attributes */
+typedef struct tnet_stun_attribute_ice_priority_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+	uint32_t value;
+}
+tnet_stun_attribute_ice_priority_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_stun_attribute_ice_priority_def_t;
+
+/**@ingroup tnet_stun_group
+* RFC 5245 - 19.1.  New Attributes */
+typedef struct tnet_stun_attribute_ice_use_candidate_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+}
+tnet_stun_attribute_ice_use_candidate_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_stun_attribute_ice_use_candidate_def_t;
+
+/**@ingroup tnet_stun_group
+* RFC 5245 - 19.1.  New Attributes */
+typedef struct tnet_stun_attribute_ice_controlled_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+	uint64_t value;
+}
+tnet_stun_attribute_ice_controlled_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_stun_attribute_ice_controlled_def_t;
+
+/**@ingroup tnet_stun_group
+* RFC 5245 - 19.1.  New Attributes */
+typedef struct tnet_stun_attribute_ice_controlling_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+	uint64_t value;
+}
+tnet_stun_attribute_ice_controlling_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_stun_attribute_ice_controlling_def_t;
 
 tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, tsk_size_t size);
 int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_buffer_t *output);
@@ -321,6 +362,10 @@ tnet_stun_attribute_nonce_t* tnet_stun_attribute_nonce_create(const void* payloa
 tnet_stun_attribute_unknowns_t* tnet_stun_attribute_unknowns_create(const void* payload, tsk_size_t payload_size);
 tnet_stun_attribute_software_t* tnet_stun_attribute_software_create(const void* payload, tsk_size_t payload_size);
 tnet_stun_attribute_altserver_t* tnet_stun_attribute_altserver_create(const void* payload, tsk_size_t payload_size);
+tnet_stun_attribute_ice_priority_t* tnet_stun_attribute_ice_priority_create(uint32_t value);
+tnet_stun_attribute_ice_use_candidate_t* tnet_stun_attribute_ice_use_candidate_create();
+tnet_stun_attribute_ice_controlled_t* tnet_stun_attribute_ice_controlled_create(uint64_t value);
+tnet_stun_attribute_ice_controlling_t* tnet_stun_attribute_ice_controlling_create(uint64_t value);
 
 
 TNET_END_DECLS
