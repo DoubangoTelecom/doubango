@@ -51,7 +51,7 @@
 
 #define TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MIN	15
 #define TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MAX	(TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MIN << 3)
-#define TDAV_SESSION_VIDEO_AVPF_FIR_INTERVAL_MIN	0//500 // millis: FIXME: RtcWeb
+#define TDAV_SESSION_VIDEO_AVPF_FIR_INTERVAL_MIN	800 // millis
 
 #define TDAV_SESSION_VIDEO_PKT_LOSS_PROB_BAD	2
 #define TDAV_SESSION_VIDEO_PKT_LOSS_PROB_GOOD	6
@@ -825,7 +825,8 @@ static int tdav_session_video_start(tmedia_session_t* self)
 static int tdav_session_video_stop(tmedia_session_t* self)
 {
 	int ret;
-
+	tdav_session_video_t* video = (tdav_session_video_t*)self;
+		
 	ret = tdav_video_jb_stop(TDAV_SESSION_VIDEO(self)->jb);
 	ret = tdav_session_av_stop(TDAV_SESSION_AV(self));
 	TSK_OBJECT_SAFE_FREE(TDAV_SESSION_VIDEO(self)->encoder.codec);

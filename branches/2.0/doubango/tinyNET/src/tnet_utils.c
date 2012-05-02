@@ -1304,7 +1304,7 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 	}
 
 	while(sent < size){
-		int try_guard = 6;
+		int try_guard = 10;
 #if TNET_UNDER_WINDOWS
 		WSABUF wsaBuffer;
 		DWORD numberOfBytesSent = 0;
@@ -1320,8 +1320,7 @@ try_again:
 		if(ret <= 0){
 			if(tnet_geterrno() == TNET_ERROR_WOULDBLOCK){
 				if(try_guard--){
-					TSK_DEBUG_INFO("WSAEWOULDBLOCK");
-					tsk_thread_sleep(5);
+					tsk_thread_sleep(7);
 					goto try_again;
 				}
 			}

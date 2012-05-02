@@ -948,6 +948,7 @@ int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self)
 {
 	tmedia_srtp_mode_t srtp_mode;
 	tsk_bool_t is_rtcweb_enabled;
+	static const tsk_bool_t use_rtcp = tsk_true; // FIXME: For now we don't use 'dialog->use_rtcp' which is set to 'false' to disable RTCP in ICE and force using RTCP-MUX
 	
 	if(!self || !self->msession_mgr){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -960,7 +961,7 @@ int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self)
 	return tmedia_session_mgr_set(self->msession_mgr,
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "srtp-mode", srtp_mode),
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "avpf-enabled", is_rtcweb_enabled), // Otherwise will be negociated using SDPCapNeg (RFC 5939)
-			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "rtcp-enabled", is_rtcweb_enabled),
+			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "rtcp-enabled", use_rtcp),
 			tsk_null);
 }
 

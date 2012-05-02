@@ -447,7 +447,9 @@ static int tsip_dialog_invite_ice_callback(const tnet_ice_event_t *e)
 				}
 				break;
 			}
-		case tnet_ice_event_type_gathering_host_candidates_failed: // fatal error
+		// fatal errors which discard ICE process
+		case tnet_ice_event_type_gathering_host_candidates_failed:
+		case tnet_ice_event_type_gathering_reflexive_candidates_failed:
 			{
 				if(dialog->ice.last_action_id != tsk_fsm_state_none){
 					tsip_dialog_fsm_act(TSIP_DIALOG(dialog), dialog->ice.last_action_id, dialog->ice.last_message, dialog->ice.last_action);
