@@ -944,7 +944,7 @@ _again:
 325
 /* #line 175 "./ragel/tmedia_imageattr.rl" */
  ){
-		TSK_DEBUG_ERROR("Parsing failed to parse image-attr=%s", in_data);
+		TSK_DEBUG_ERROR("Parsing failed to parse image-attr=%s", (char*)in_data);
 		return -1;
 	}
 	

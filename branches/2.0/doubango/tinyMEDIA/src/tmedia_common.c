@@ -263,8 +263,8 @@ int tmedia_parse_video_imageattr(const char* imageattr, tmedia_pref_video_size_t
 	}
 	
 	
-	for(i = 0; i < attr.send.count; ++i) _imageattr_get_best_size(&attr.send.sets[i], out_width, out_height);
-	for(i = 0; i < attr.recv.count; ++i) _imageattr_get_best_size(&attr.recv.sets[i], in_width, in_height);
+	for(i = 0; i < attr.send.count; ++i) _imageattr_get_best_size(&attr.send.sets[i], (xyvalue_t*)out_width, (xyvalue_t*)out_height);
+	for(i = 0; i < attr.recv.count; ++i) _imageattr_get_best_size(&attr.recv.sets[i], (xyvalue_t*)in_width, (xyvalue_t*)in_height);
 
 	return 0;
 }

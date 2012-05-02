@@ -30,6 +30,9 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#include <string.h>
+#include <stdlib.h>
+
 static tsk_object_t* tdav_video_frame_ctor(tsk_object_t * self, va_list * app)
 {
 	tdav_video_frame_t *frame = self;

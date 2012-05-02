@@ -259,9 +259,9 @@ tsk_size_t thttp_auth_ws_response(const char* key, thttp_auth_ws_keystring_t* re
 		tsk_strcat_2(&tmp, "%s258EAFA5-E914-47DA-95CA-C5AB0DC85B11", key);
 
 		tsk_sha1compute(tmp, tsk_strlen(tmp), &sha1result);
-		size = tsk_strlen(sha1result);
+		size = tsk_strlen((char*)sha1result);
 		for(i = 0; i<size; i+=2){
-			if(sscanf(&sha1result[i], "%2x", (unsigned int *)&ret) != EOF){;
+			if(sscanf((const char*)&sha1result[i], "%2x", (unsigned int*)&ret) != EOF){;
 				result[i >> 1] = (char)ret;
 			}
 		}

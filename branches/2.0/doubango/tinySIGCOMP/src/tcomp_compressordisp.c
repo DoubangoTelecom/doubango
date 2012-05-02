@@ -128,7 +128,7 @@ tsk_bool_t tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uin
 
 		tsk_sha1reset(&sha);
 		tsk_sha1input(&sha, (const uint8_t*)output_ptr, *output_size);
-		tsk_sha1result(&sha, (char*)nackId);
+		tsk_sha1result(&sha, (uint8_t*)nackId);
 		tcomp_compartment_addNack(lpCompartment, nackId);
 	}
 

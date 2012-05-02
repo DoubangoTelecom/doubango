@@ -27,6 +27,9 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 #define TRTP_RTCP_PACKET_FB_MIN_SIZE	(TRTP_RTCP_HEADER_SIZE + 4 + 4)
 
 static int _trtp_rtcp_report_fb_deserialize(const void* data, tsk_size_t _size, trtp_rtcp_header_t** header, uint32_t* ssrc_sender, uint32_t* ssrc_media_src)

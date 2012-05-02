@@ -44,6 +44,9 @@
 #include "tsk_fsm.h"
 #include "tsk_debug.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 #ifndef LONG_MAX
 #	define LONG_MAX      2147483647L
 #endif

@@ -29,6 +29,10 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
 static int _tnet_ice_candidate_tostring(
 	uint8_t* foundation, 
 	uint32_t comp_id,
@@ -264,7 +268,7 @@ int tnet_ice_candidate_set_local_pref(tnet_ice_candidate_t* self, uint16_t local
 
 const char* tnet_ice_candidate_tostring(tnet_ice_candidate_t* self)
 {
-	char* _transport_str;
+	const char* _transport_str;
 	char __str[16]; // always allocated: bad idea :(
 
 	if(!self){

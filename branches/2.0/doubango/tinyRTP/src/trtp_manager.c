@@ -157,7 +157,7 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 		if(self->rtcp.session){
 			#if HAVE_SRTP
 			if(self->srtp_ctx_neg_remote){
-				if(srtp_unprotect_rtcp(self->srtp_ctx_neg_remote->session, (void*)data_ptr, &data_size) != err_status_ok){
+				if(srtp_unprotect_rtcp(self->srtp_ctx_neg_remote->session, (void*)data_ptr, (int*)&data_size) != err_status_ok){
 					TSK_DEBUG_ERROR("srtp_unprotect() failed");
 					return -1;
 				}
@@ -174,7 +174,7 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 			#if HAVE_SRTP
 			err_status_t status;
 			if(self->srtp_ctx_neg_remote){
-				if((status = srtp_unprotect(self->srtp_ctx_neg_remote->session, (void*)data_ptr, &data_size)) != err_status_ok){
+				if((status = srtp_unprotect(self->srtp_ctx_neg_remote->session, (void*)data_ptr, (int*)&data_size)) != err_status_ok){
 					TSK_DEBUG_ERROR("srtp_unprotect() failed with error code=%d", (int)status);
 					return -1;
 				}
