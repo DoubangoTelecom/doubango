@@ -874,6 +874,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 	uint16_t fds_count = 0;
 	tnet_fd_t fd_max = -1;
 	fd_set set;
+	tsk_size_t srflx_addr_count = 0, host_addr_count = 0;
 
 	self = va_arg(*app, tnet_ice_ctx_t *);
 
@@ -895,6 +896,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 			continue;
 		}
 		
+		++host_addr_count;
 		if((fds_count < sizeof(fds)/sizeof(fds[0])) && candidate->socket){
 			fds[fds_count++] = candidate->socket->fd;
 			if(candidate->socket->fd > fd_max){
@@ -911,7 +913,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 
 		e.g. 0 ms, 500 ms, 1500 ms, 3500 ms, 7500ms, 15500 ms, and 31500 ms
 	*/
-	for(i = 0; (i < rc && self->is_started); ++i){
+	for(i = 0; (i < rc && self->is_started && srflx_addr_count < host_addr_count); ++i){
 		tv.tv_sec += rto/1000;
 		tv.tv_usec += (rto % 1000) * 1000;
 		
@@ -979,6 +981,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 								if(!tsk_strnullORempty(candidate_curr->stun.srflx_addr)){
 									tnet_ice_candidate_t* new_cand = tnet_ice_candidate_create(tnet_ice_cand_type_srflx, candidate_curr->socket, candidate_curr->is_ice_jingle, candidate_curr->is_rtp, self->is_video, self->ufrag, self->pwd);
 									if(new_cand){
+										++srflx_addr_count;
 										tsk_list_lock(self->candidates_local);
 										tnet_ice_candidate_set_rflx_addr(new_cand, candidate_curr->stun.srflx_addr, candidate_curr->stun.srflx_port);
 										tsk_list_push_back_data(self->candidates_local, (void**)&new_cand);
@@ -1001,6 +1004,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 
 
 bail:
+	if(srflx_addr_count > 0) ret = 0; // Hack the returned value if we have at least one success (happens when timeouts)
 	if(self->is_started){
 		if(ret == 0){
 			ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_Success);
