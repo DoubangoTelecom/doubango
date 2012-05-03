@@ -48,6 +48,7 @@ typedef struct tsip_transac_ist
 	tsip_timer_t timerI;
 	tsip_timer_t timerG;
 	tsip_timer_t timerL;
+	tsip_timer_t timerX;
 }
 tsip_transac_ist_t;
 
