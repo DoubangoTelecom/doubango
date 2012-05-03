@@ -113,7 +113,7 @@ int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef)
 		else if(tsk_runnable_init(self, objdef)) return -4;
 
 		/* call run() function in new thread. */
-		if((ret = tsk_thread_create(&(self->tid[0]), self->run, self))){
+		if((ret = tsk_thread_create(&(self->h_thread[0]), self->run, self))){
 			TSK_DEBUG_ERROR("Failed to start new thread.");
 			return ret;
 		}
@@ -159,6 +159,7 @@ int tsk_runnable_stop(tsk_runnable_t *self)
 {
 	int ret = -1;
 	if(self){
+		tsk_thread_id_t id_curr_thread;
 		if(!self->initialized) {
 			if(!self->running){
 				/* already deinitialized */
@@ -191,8 +192,13 @@ int tsk_runnable_stop(tsk_runnable_t *self)
 stop:
 		self->running = tsk_false;
 		tsk_semaphore_increment(self->semaphore);
-
-		if((ret = tsk_thread_join(&(self->tid[0])))){
+		// To avoid deadlock we don't join() the thread if this funcion is called from the "run()" function
+		// setting "self::running" to false is enough to exit the thread after the call to "TSK_RUNNABLE_RUN_BEGIN(self)"
+		id_curr_thread = tsk_thread_get_id();
+		if(tsk_thread_id_equals(&self->id_thread, &id_curr_thread)){
+			ret = tsk_thread_destroy(&(self->h_thread[0]));
+		}
+		else if((ret = tsk_thread_join(&(self->h_thread[0])))){
 			self->running = tsk_true;
 			TSK_DEBUG_ERROR("Failed to join the thread.");
 			return ret;

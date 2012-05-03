@@ -1434,14 +1434,14 @@ static int _tnet_ice_ctx_signal_async(tnet_ice_ctx_t* self, tnet_ice_event_type_
 static void *_tnet_ice_ctx_run(void* self)
 {
 	tsk_list_item_t *curr;
-	tnet_ice_ctx_t *ctx = self;
+	tnet_ice_ctx_t *ctx = tsk_object_ref(self);
 	tnet_ice_event_t *e;
 
 	TSK_DEBUG_INFO("ICE CTX::run -- START");
 
 	TSK_RUNNABLE_RUN_BEGIN(ctx);
 	
-	if((curr = TSK_RUNNABLE_POP_FIRST(ctx))){
+	if(ctx->is_started && (curr = TSK_RUNNABLE_POP_FIRST(ctx))){
 		e = (tnet_ice_event_t*)curr->data;
 		switch(e->type){
 			case tnet_ice_event_type_action:
@@ -1470,5 +1470,7 @@ static void *_tnet_ice_ctx_run(void* self)
 	tsk_list_clear_items(ctx->candidates_remote);
 	tsk_list_clear_items(ctx->candidates_pairs);
 	
+	tsk_object_unref(self);
+
 	return 0;
 }

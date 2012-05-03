@@ -32,13 +32,24 @@
 
 #include "tinysak_config.h"
 
+typedef void tsk_thread_handle_t;
+#if TSK_UNDER_WINDOWS
+	typedef unsigned long tsk_thread_id_t;
+#else
+#	include <pthread.h>
+typedef pthread_t tsk_thread_id_t;
+#endif
+
 TSK_BEGIN_DECLS
 
 TINYSAK_API void tsk_thread_sleep(uint64_t ms);
-TINYSAK_API int tsk_thread_create(void** tid, void *(*start) (void *), void *arg);
-TINYSAK_API int tsk_thread_set_priority(void* tid, int32_t priority);
+TINYSAK_API int tsk_thread_create(tsk_thread_handle_t** handle, void *(*start) (void *), void *arg);
+TINYSAK_API int tsk_thread_set_priority(tsk_thread_handle_t* handle, int32_t priority);
 TINYSAK_API int tsk_thread_set_priority_2(int32_t priority);
-TINYSAK_API int tsk_thread_join(void** tid);
+TINYSAK_API tsk_thread_id_t tsk_thread_get_id();
+TINYSAK_API tsk_bool_t tsk_thread_id_equals(tsk_thread_id_t* id_1, tsk_thread_id_t *id_2);
+TINYSAK_API int tsk_thread_destroy(tsk_thread_handle_t** handle);
+TINYSAK_API int tsk_thread_join(tsk_thread_handle_t** handle);
 
 TSK_END_DECLS
 

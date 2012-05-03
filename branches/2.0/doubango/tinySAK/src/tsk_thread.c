@@ -33,8 +33,6 @@
 
 #if TSK_UNDER_WINDOWS
 #	include <windows.h>
-#else
-#	include <pthread.h>
 #endif
 
 #include <string.h>
@@ -59,39 +57,39 @@ void tsk_thread_sleep(uint64_t ms)
 
 /**@ingroup tsk_thread_group
 * Creates a new thread.
-* @param tid Handle id of the newly created thread. The returned handle should be destroyed using @ref tsk_thread_join()
+* @param handle Handle id of the newly created thread. The returned handle should be destroyed using @ref tsk_thread_join()
 * @param start The function to be run as the new thread's start routine 
 * @param arg An address for the argument for the thread's start routine 
 * @retval If successful, returns zero. Otherwise, an error number is returned to indicate the error
 */
-int tsk_thread_create(void** tid, void *(*start) (void *), void *arg)
+int tsk_thread_create(tsk_thread_handle_t** handle, void *(*start) (void *), void *arg)
 {
 #if TSK_UNDER_WINDOWS
 	DWORD ThreadId;
-	*((HANDLE*)tid) = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)start, arg, 0, &ThreadId);
-	return *((HANDLE*)tid) ? 0 : -1;
+	*((HANDLE*)handle) = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)start, arg, 0, &ThreadId);
+	return *((HANDLE*)handle) ? 0 : -1;
 #else
-	*tid = tsk_calloc(1, sizeof(pthread_t));
-	return pthread_create((pthread_t*)*tid, 0, start, arg);
+	*handle = tsk_calloc(1, sizeof(pthread_t));
+	return pthread_create((pthread_t*)*handle, 0, start, arg);
 #endif
 }
 
 /**@ingroup tsk_thread_group
  */
-int tsk_thread_set_priority(void* tid, int32_t priority)
+int tsk_thread_set_priority(tsk_thread_handle_t* handle, int32_t priority)
 {
-	if(!tid){
+	if(!handle){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 #if TSK_UNDER_WINDOWS
-	return SetThreadPriority(tid, priority) ? 0 : -1;
+	return SetThreadPriority(handle, priority) ? 0 : -1;
 #else
 	struct sched_param sp;
 	int ret;
     memset(&sp, 0, sizeof(struct sched_param));
     sp.sched_priority = priority;
-    if ((ret = pthread_setschedparam(*((pthread_t*)tid), SCHED_RR, &sp))) {
+    if ((ret = pthread_setschedparam(*((pthread_t*)handle), SCHED_RR, &sp))) {
         TSK_DEBUG_ERROR("Failed to change priority to %d with error code=%d", priority, ret);
         return ret;
     }
@@ -112,36 +110,70 @@ int tsk_thread_set_priority_2(int32_t priority)
 #endif
 }
 
+tsk_thread_id_t tsk_thread_get_id()
+{
+#if TSK_UNDER_WINDOWS
+	return GetCurrentThreadId();
+#else
+	return pthread_self();
+#endif
+}
+
+tsk_bool_t tsk_thread_id_equals(tsk_thread_id_t* id_1, tsk_thread_id_t *id_2)
+{
+	if(!id_1 || !id_2){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_false;
+	}
+#if TSK_UNDER_WINDOWS
+	return (*id_1 == *id_2);
+#else
+	return (pthread_equal(*id_1, *id_2) != 0);
+#endif
+}
+
 /**@ingroup tsk_thread_group
 * Join a thread.
-* @param tid Pthread handle to the target thread.
+* @param handle Pthread handle to the target thread.
 * @retval If successful, returns zero. Otherwise, an error number is returned to indicate the error. 
 */
-int tsk_thread_join(void** tid)
+int tsk_thread_join(tsk_thread_handle_t** handle)
 {
 	int ret;
 
-	if(!tid){
+	if(!handle){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if(!*tid){
-		TSK_DEBUG_WARN("Cannot join NULL tid");
+	if(!*handle){
+		TSK_DEBUG_WARN("Cannot join NULL handle");
 		return 0;
 	}
     
 #if TSK_UNDER_WINDOWS
-	ret = (WaitForSingleObject(*((HANDLE*)tid), INFINITE) == WAIT_FAILED) ? -1 : 0;
+	ret = (WaitForSingleObject(*((HANDLE*)handle), INFINITE) == WAIT_FAILED) ? -1 : 0;
 	if(ret == 0){
-		CloseHandle(*((HANDLE*)tid));
-		*tid = tsk_null;
+		ret = tsk_thread_destroy(handle);
 	}
 #else
-	if((ret = pthread_join(*((pthread_t*)*tid), 0)) == 0){
-		tsk_free(tid);
+	if((ret = pthread_join(*((pthread_t*)*handle), 0)) == 0){
+		ret = tsk_thread_destroy(handle);
 	}
 #endif
 
 	return ret;
+}
+
+int tsk_thread_destroy(tsk_thread_handle_t** handle)
+{
+	if(handle && *handle){
+#if TSK_UNDER_WINDOWS
+		CloseHandle(*((HANDLE*)handle));
+		*handle = tsk_null;
+#else
+		tsk_free(handle);
+#endif
+	}
+	return 0;
 }
 

@@ -34,6 +34,7 @@
 
 #include "tsk_object.h"
 #include "tsk_semaphore.h"
+#include "tsk_thread.h"
 #include "tsk_list.h"
 
 TSK_BEGIN_DECLS
@@ -55,8 +56,9 @@ typedef struct tsk_runnable_s
 	
 	const tsk_object_def_t *objdef;
 	
-	void* tid[1];
+	tsk_thread_handle_t* h_thread[1];
 	tsk_runnable_func_run run;
+	tsk_thread_id_t id_thread; // no way to get this value from "h_thread" on WINXP
 	tsk_semaphore_handle_t *semaphore;
 	
 	tsk_bool_t running;
@@ -94,6 +96,7 @@ TINYSAK_GEXTERN const tsk_object_def_t *tsk_runnable_def_t;
 */
 #define TSK_RUNNABLE_RUN_BEGIN(self) \
 	TSK_RUNNABLE(self)->running = tsk_true;	\
+	TSK_RUNNABLE(self)->id_thread = tsk_thread_get_id(); \
 	for(;;) { \
 		tsk_semaphore_decrement(TSK_RUNNABLE(self)->semaphore); \
 		if(!TSK_RUNNABLE(self)->running &&  \
