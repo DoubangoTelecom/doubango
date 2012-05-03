@@ -1438,27 +1438,23 @@ int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 		while((i < TMED_SESSION_MAX_PLUGINS) && (plugin = __tmedia_session_plugins[i++])){
 			if((plugin->type & self->type) == plugin->type && !has_media(plugin->type)){// we don't have a session with this media type yet
 				if((session = tmedia_session_create(plugin->type))){
-					struct tnet_ice_ctx_s * ctx_ice = (plugin->type == tmedia_audio ? self->ice.ctx_audio : (plugin->type == tmedia_video ? self->ice.ctx_video : tsk_null));
 					tsk_list_push_back_data(self->sessions, (void**)(&session));
-					// set ICE context for the new session
-					tmedia_session_mgr_set(self,
-						TMEDIA_SESSION_SET_POBJECT(plugin->type, "ice-ctx", ctx_ice),
-						TMEDIA_SESSION_SET_NULL());
+					// do not call "tmedia_session_mgr_set()" here to avoid applying parms before the creation of all session
 				}
 			}
 			else if(!(plugin->type & self->type) && has_media(plugin->type)){// we have media session from previous call (before update)
 				tsk_list_remove_item_by_pred(self->sessions, __pred_find_session_by_type, &(plugin->type));
 			}
 		}
-		/* set default values */
+		/* set default values and apply params*/
 		tmedia_session_mgr_set(self,
+				TMEDIA_SESSION_SET_POBJECT(tmedia_audio, "ice-ctx", self->ice.ctx_audio),
+				TMEDIA_SESSION_SET_POBJECT(tmedia_video, "ice-ctx", self->ice.ctx_video),
+
 				TMEDIA_SESSION_SET_STR(self->type, "local-ip", self->addr),
 				TMEDIA_SESSION_SET_STR(self->type, "local-ipver", self->ipv6 ? "ipv6" : "ipv4"),
 				TMEDIA_SESSION_SET_INT32(self->type, "bandwidth-level", self->bl),
 				TMEDIA_SESSION_SET_NULL());
-
-		/* load params */
-		_tmedia_session_mgr_apply_params(self);
 	}
 #undef has_media
 	return 0;

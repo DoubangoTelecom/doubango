@@ -1324,7 +1324,9 @@ try_again:
 					goto try_again;
 				}
 			}
-			TNET_PRINT_LAST_ERROR("sendto() failed");
+			else{
+				TNET_PRINT_LAST_ERROR("sendto() failed");
+			}
 			goto bail;
 		}
 		else{
