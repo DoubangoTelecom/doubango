@@ -94,8 +94,8 @@
 	}
 
 /* ======================== internal functions ======================== */
-int tsip_transac_ist_init(tsip_transac_ist_t *self);
-int tsip_transac_ist_OnTerminated(tsip_transac_ist_t *self);
+static int tsip_transac_ist_init(tsip_transac_ist_t *self);
+static int tsip_transac_ist_OnTerminated(tsip_transac_ist_t *self);
 
 /* ======================== transitions ======================== */
 static int tsip_transac_ist_Started_2_Proceeding_X_INVITE(va_list *app);
@@ -109,6 +109,7 @@ static int tsip_transac_ist_Completed_2_Terminated_timerH(va_list *app);
 static int tsip_transac_ist_Completed_2_Confirmed_ACK(va_list *app);
 static int tsip_transac_ist_Accepted_2_Accepted_INVITE(va_list *app);
 static int tsip_transac_ist_Accepted_2_Accepted_2xx(va_list *app);
+static int tsip_transac_ist_Accepted_2_Accepted_timerX(va_list *app);  /* doubango-specific */
 static int tsip_transac_ist_Accepted_2_Accepted_iACK(va_list *app);  /* doubango-specific */
 static int tsip_transac_ist_Accepted_2_Terminated_timerL(va_list *app);
 static int tsip_transac_ist_Confirmed_2_Terminated_timerI(va_list *app);
@@ -137,6 +138,7 @@ typedef enum _fsm_action_e
 	_fsm_action_timerI,
 	_fsm_action_timerG,
 	_fsm_action_timerL,
+	_fsm_action_timerX,
 	_fsm_action_transporterror,
 	_fsm_action_error,
 }
@@ -228,6 +230,9 @@ int tsip_transac_ist_timer_callback(const tsip_transac_ist_t* self, tsk_timer_id
 		else if(timer_id == self->timerL.id){
 			ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_timerL, tsk_null);
 		}
+		else if(timer_id == self->timerX.id){
+			ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_timerX, tsk_null);
+		}
 	}
 
 	return ret;
@@ -278,6 +283,8 @@ int tsip_transac_ist_init(tsip_transac_ist_t *self)
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Accepted, _fsm_action_recv_INVITE, _fsm_state_Accepted, tsip_transac_ist_Accepted_2_Accepted_INVITE, "tsip_transac_ist_Accepted_2_Accepted_INVITE"),
 			// Accepted -> (send 2xx) -> Accepted
 			TSK_FSM_ADD(_fsm_state_Accepted, _fsm_action_send_2xx, _fsm_cond_is_resp2INVITE, _fsm_state_Accepted, tsip_transac_ist_Accepted_2_Accepted_2xx, "tsip_transac_ist_Accepted_2_Accepted_2xx"),
+			// Accepted -> (timer X) -> Accepted
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Accepted, _fsm_action_timerX, _fsm_state_Accepted, tsip_transac_ist_Accepted_2_Accepted_timerX, "tsip_transac_ist_Accepted_2_Accepted_timerX"),
 			// Accepted -> (recv ACK) -> Accepted
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Accepted, _fsm_action_recv_ACK, _fsm_state_Accepted, tsip_transac_ist_Accepted_2_Accepted_iACK, "tsip_transac_ist_Accepted_2_Accepted_iACK"),
 			// Accepted -> (timerL) -> Terminated
@@ -316,6 +323,7 @@ int tsip_transac_ist_init(tsip_transac_ist_t *self)
 	self->timerI.timeout = TSIP_TRANSAC(self)->reliable ? 0 : TSIP_TIMER_GET(I);
 	self->timerG.timeout = TSIP_TIMER_GET(G);
 	self->timerL.timeout = TSIP_TIMER_GET(L);
+	self->timerX.timeout = TSIP_TIMER_GET(G);
 
 	return 0;
 }
@@ -470,6 +478,11 @@ int tsip_transac_ist_Proceeding_2_Accepted_X_2xx(va_list *app)
 	/* Update last response */
 	TRANSAC_IST_SET_LAST_RESPONSE(self, response);
 
+	if(!TSIP_TRANSAC(self)->reliable){
+		TRANSAC_IST_TIMER_SCHEDULE(X);
+		self->timerX.timeout <<= 1;
+	}
+
 	/*	draft-sparks-sip-invfix-03 - 8.7. Page 137
 		When the INVITE server transaction enters the "Accepted" state,
 		Timer L MUST be set to fire in 64*T1 for all transports.  This
@@ -616,6 +629,21 @@ int tsip_transac_ist_Accepted_2_Accepted_2xx(va_list *app)
 	return ret;
 }
 
+/*	Accepted --> (timer X) --> Accepted
+* Doubango specific
+*/
+static int tsip_transac_ist_Accepted_2_Accepted_timerX(va_list *app)
+{
+	tsip_transac_ist_t *self = va_arg(*app, tsip_transac_ist_t *);
+	if(self->lastResponse){
+		int ret;
+		ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, self->lastResponse);
+		self->timerX.timeout <<= 1;
+		TRANSAC_IST_TIMER_SCHEDULE(X);
+	}
+	return 0;
+}
+
 /*	Accepted --> (Recv ACK) --> Accepted
 * Doubango specific
 */
@@ -623,12 +651,13 @@ int tsip_transac_ist_Accepted_2_Accepted_iACK(va_list *app)
 {
 	tsip_transac_ist_t *self = va_arg(*app, tsip_transac_ist_t *);
 	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
+	TRANSAC_TIMER_CANCEL(X);
 	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, request);
 }
 
 /*	Accepted --> (timerL) --> Terminated
 */
-int tsip_transac_ist_Accepted_2_Terminated_timerL(va_list *app)
+static int tsip_transac_ist_Accepted_2_Terminated_timerL(va_list *app)
 {
 	//tsip_transac_ist_t *self = va_arg(*app, tsip_transac_ist_t *);
 	//const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
@@ -643,7 +672,7 @@ int tsip_transac_ist_Accepted_2_Terminated_timerL(va_list *app)
 
 /*	Confirmed --> (timerI) --> Terminated
 */
-int tsip_transac_ist_Confirmed_2_Terminated_timerI(va_list *app)
+static int tsip_transac_ist_Confirmed_2_Terminated_timerI(va_list *app)
 {
 	/*	RFC 3261 - 17.2.1 INVITE Server Transaction
 		Once timer I fires, the server MUST transition to the
@@ -658,7 +687,7 @@ int tsip_transac_ist_Confirmed_2_Terminated_timerI(va_list *app)
 
 /* Any -> (Transport Error) -> Terminated
 */
-int tsip_transac_ist_Any_2_Terminated_X_transportError(va_list *app)
+static int tsip_transac_ist_Any_2_Terminated_X_transportError(va_list *app)
 {
 	tsip_transac_ist_t *self = va_arg(*app, tsip_transac_ist_t *);
 	//const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
@@ -670,7 +699,7 @@ int tsip_transac_ist_Any_2_Terminated_X_transportError(va_list *app)
 
 /* Any -> (Error) -> Terminated
 */
-int tsip_transac_ist_Any_2_Terminated_X_Error(va_list *app)
+static int tsip_transac_ist_Any_2_Terminated_X_Error(va_list *app)
 {
 	tsip_transac_ist_t *self = va_arg(*app, tsip_transac_ist_t *);
 	//const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
@@ -682,7 +711,7 @@ int tsip_transac_ist_Any_2_Terminated_X_Error(va_list *app)
 
 /* Any -> (cancel) -> Terminated
 */
-int tsip_transac_ist_Any_2_Terminated_X_cancel(va_list *app)
+static int tsip_transac_ist_Any_2_Terminated_X_cancel(va_list *app)
 {
 	/* doubango-specific */
 	return 0;
@@ -696,7 +725,7 @@ int tsip_transac_ist_Any_2_Terminated_X_cancel(va_list *app)
 
 /*== Callback function called when the state machine enter in the "terminated" state.
 */
-int tsip_transac_ist_OnTerminated(tsip_transac_ist_t *self)
+static int tsip_transac_ist_OnTerminated(tsip_transac_ist_t *self)
 {
 	TSK_DEBUG_INFO("=== IST terminated ===");
 	
@@ -754,6 +783,7 @@ static tsk_object_t* tsip_transac_ist_dtor(tsk_object_t * _self)
 			TRANSAC_TIMER_CANCEL(G);
 		}
 		TRANSAC_TIMER_CANCEL(L);
+		TRANSAC_TIMER_CANCEL(X);
 
 		TSIP_TRANSAC(self)->running = tsk_false;
 		TSK_OBJECT_SAFE_FREE(self->lastResponse);
