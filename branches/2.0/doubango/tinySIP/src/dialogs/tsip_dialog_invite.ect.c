@@ -396,7 +396,7 @@ static int send_NOTIFY(tsip_dialog_invite_t *self, short code, const char* phras
 		ret = tsip_message_add_content(notify, "message/sipfrag", sipfrag, tsk_strlen(sipfrag));
 		ret = tsip_dialog_request_send(TSIP_DIALOG(self), notify);
 		if(ret == 0){
-			TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_ect_notify, code, phrase, notify);
+			TSIP_DIALOG_INVITE_SIGNAL(self, tsip_o_ect_notify, code, phrase, notify);
 		}
 		TSK_FREE(sipfrag);
 		TSK_OBJECT_SAFE_FREE(notify);		

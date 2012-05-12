@@ -232,7 +232,7 @@ static tsk_object_t* tnet_ice_ctx_ctor(tsk_object_t * self, va_list * app)
 		TSK_SAFE_FREE(ctx->ufrag);
 		TSK_SAFE_FREE(ctx->pwd);
 
-		tsk_runnable_set_important(TSK_RUNNABLE(self), tsk_true);
+		tsk_runnable_set_important(TSK_RUNNABLE(self), tsk_false);
 
 		/*	7.2.1.  Sending over UDP
 			In fixed-line access links, a value of 500 ms is RECOMMENDED.
@@ -650,6 +650,9 @@ int tnet_ice_ctx_recv_stun_message(tnet_ice_ctx_t* self, const void* data, tsk_s
 						}
 					}
 					ret = tnet_ice_pair_send_response((tnet_ice_pair_t *)pair, message, resp_code, resp_phrase, remote_addr);
+					if(self->is_ice_jingle && self->has_nominated_symetric){
+						ret = tnet_ice_pair_send_conncheck((tnet_ice_pair_t *)pair); // "keepalive"
+					}
 				}
 				TSK_FREE(resp_phrase);
 			}						
