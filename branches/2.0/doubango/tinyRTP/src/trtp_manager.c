@@ -405,6 +405,9 @@ int trtp_manager_set_natt_ctx(trtp_manager_t* self, tnet_nat_context_handle_t* n
 	int ret;
 
 	if(!self || !self->transport || !natt_ctx){
+		if(self && self->ice_ctx){
+			return 0; // Nat context is not needed when ICE is enabled
+		}
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}

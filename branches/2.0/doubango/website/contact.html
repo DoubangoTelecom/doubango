@@ -6,60 +6,89 @@
     <meta name="Keywords" content="doubango, 3GPP NGN/IMS framework, open source, SIP, RFC 3261, 3GPP TS 24.229, VoIP, MMTel, IPTV, 4G, LTE, XCAP, MSRP, IPSec, SigComp, One Voice " />
     <meta name="Description" content="cross-platform and open source 3GPP NGN/IMS framework for embedded devices such as Android, Symbian, iPhone, Windows Mobile or uLinux." />
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <link rel="stylesheet" type="text/css" href="css.css" />
-    <!-- Post in the Forum at http://www.donutey.frihost.net/forum with any questions about the code. -->
+    <!-- Le styles -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
     <style type="text/css">
-        /*<![CDATA[*/p.c1
+        body
         {
-            text-align: center;
+            padding-top: 50px;
+            padding-bottom: 40px;
         }
-        /*]]>*/</style>
+    </style>
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="./assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
 </head>
 <body>
-    <div id="center">
-        <div id="border">
-            <div id="logo">
-                <p class="companyname">
-                    doubango</p>
-            </div>
-            <div id="menu">
-                <a href="/index.html" title="Homepage">Home</a> <a href="/gettingstarted.html" title="Getting Started">
-                    Getting Started</a> <a href="http://code.google.com/p/doubango/source/checkout" title="Source Code">
-                        Source Code</a> <a href="http://code.google.com/p/doubango/issues/list" title="Feedback">
-                            Feedback</a> <a href="/contact.html" title="Contact" class="active">Contact</a>
-            </div>
-            <div id="main">
-                <p>
-                    For any information, <a href="javascript:location='mailto:\u0064\u0069\u006f\u0070\u006d\u0061\u006d\u0061\u0064\u006f\u0075\u0040\u0064\u006f\u0075\u0062\u0061\u006e\u0067\u006f\u002e\u006f\u0072\u0067';void 0">
-
-                        <script type="text/javascript">document.write('\u0064\u0069\u006f\u0070\u006d\u0061\u006d\u0061\u0064\u006f\u0075\u0040\u0064\u006f\u0075\u0062\u0061\u006e\u0067\u006f\u002e\u006f\u0072\u0067')</script>
-
-                    </a>
-                </p>
-                <table border="0" style="background-color: #fff; padding: 5px;" cellspacing="0">
-                    <tr>
-                        <td>
-                            <img src="http://groups.google.com/intl/en/images/logos/groups_logo_sm.gif" height="30"
-                                width="140" alt="Google Groups" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding-left: 5px">
-                            <b>Stay Tuned by subscribing to our mailing list</b>
-                        </td>
-                    </tr>
-                    <form action="http://groups.google.com/group/doubango/boxsubscribe">
-                    <tr>
-                        <td style="padding-left: 5px;">
-                            Email:
-                            <input type="text" name="email" />
-                            <input type="submit" name="sub" value="Subscribe" />
-                        </td>
-                    </tr>
-                    </form>
-                </table>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a><a class="brand" href="./index.html">Doubango Telecom</a>
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li><a href="./index.html">Home</a></li>
+                        <li><a href="./gettingstarted.html">Getting Started</a></li>
+                        <li><a href="http://code.google.com/p/doubango/" target="_blank">Source Code</a></li>
+                        <li class="active"><a href="./contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
             </div>
         </div>
     </div>
+    <p>
+        For non-technical questions, you can contact us at: <a href="javascript:location='mailto:\u0064\u0069\u006f\u0070\u006d\u0061\u006d\u0061\u0064\u006f\u0075\u0040\u0064\u006f\u0075\u0062\u0061\u006e\u0067\u006f\u002e\u006f\u0072\u0067';void 0">
+            <script type="text/javascript">                document.write('\u0064\u0069\u006f\u0070\u006d\u0061\u006d\u0061\u0064\u006f\u0075\u0040\u0064\u006f\u0075\u0062\u0061\u006e\u0067\u006f\u002e\u006f\u0072\u0067')</script>
+        </a>
+    </p>
+    <p>
+        For technical information questions, please subscribe to our developer's mailing
+        list:
+    </p>
+    <table border="0" style="background-color: #fff; padding: 5px;" cellspacing="0">
+        <tr>
+            <td>
+                <img src="http://groups.google.com/intl/en/images/logos/groups_logo_sm.gif" height="30"
+                    width="140" alt="Google Groups" />
+            </td>
+        </tr>
+        <form action="http://groups.google.com/group/doubango/boxsubscribe">
+        <tr>
+            <td style="padding-left: 5px;">
+                Email:
+                <input type="text" name="email" />
+                <input type="submit" name="sub" value="Subscribe" />
+            </td>
+        </tr>
+        </form>
+    </table>
+    <hr>
+    <footer>
+        <p>
+            &copy; Doubango Telecom 2011-2012</p>
+        <i>Inspiring the future</i>
+    </footer>
+    <!-- /container -->
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="assets/js/jquery.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-transition.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-alert.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-modal.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-dropdown.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-scrollspy.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-tab.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-tooltip.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-popover.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-button.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-collapse.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-carousel.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-typeahead.js"></script>
 </body>
 </html>
