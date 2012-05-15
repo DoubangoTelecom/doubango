@@ -214,7 +214,7 @@ tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const struct so
 
 tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t local_fd, const void* data, tsk_size_t size)
 {
-	static const uint8_t __ws_first_byte = 0x82;
+	/*static const uint8_t __ws_first_byte = 0x82;*/
 	const uint8_t* pdata = (const uint8_t*)data;
 	uint64_t data_size = 1 + 1 + size;
 	uint64_t lsize = (uint64_t)size;

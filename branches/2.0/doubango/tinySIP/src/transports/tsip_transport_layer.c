@@ -225,7 +225,7 @@ static int tsip_transport_layer_ws_cb(const tnet_transport_event_t* e)
 
 	switch(e->type){
 		case event_data: {
-				TSK_DEBUG_INFO("\n\n\nSIP Message:%s\n\n\n", e->data);
+				TSK_DEBUG_INFO("\n\n\nSIP Message:%s\n\n\n", (const char*)e->data);
 				break;
 			}
 		case event_closed:
@@ -339,7 +339,7 @@ parse_buffer:
 		/* WebSocket data */
 		else{
 			if((pdata[0] & 0x01)/* FIN */ && transport->buff_stream->size > 16){
-				const uint8_t opcode = pdata[0] & 0x0F;
+				/* const uint8_t opcode = pdata[0] & 0x0F; */
 				const uint8_t mask_flag = (pdata[1] >> 7); // Must be "1" for "client -> server"
 				uint8_t mask_key[4] = { 0x00 };
 				uint64_t pay_idx;
@@ -411,7 +411,7 @@ parse_buffer:
 		goto bail;
 	}
 	
-	TSK_DEBUG_INFO("%s", transport->ws_rcv_buffer);
+	TSK_DEBUG_INFO("%s", (const char*)transport->ws_rcv_buffer);
 	
 	// If we are there this mean that we have all SIP headers.
 	//	==> Parse the SIP message without the content.

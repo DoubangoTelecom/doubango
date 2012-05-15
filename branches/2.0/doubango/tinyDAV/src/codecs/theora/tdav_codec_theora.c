@@ -157,7 +157,6 @@ int tdav_codec_theora_open(tmedia_codec_t* self)
 {
 	int ret;
 	int size;
-	float bitRate = 64000.f;
 	
 	tdav_codec_theora_t* theora = (tdav_codec_theora_t*)self;
 
@@ -557,7 +556,6 @@ tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, t
 tsk_bool_t tdav_codec_theora_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
 {
 	tsk_bool_t ret = tsk_true; // accept decoding any size
-	tmedia_codec_video_t* theora = (tmedia_codec_video_t*)codec;
 
 	if(tsk_striequals(att_name, "fmtp")){
 		tsk_params_L_t* params;

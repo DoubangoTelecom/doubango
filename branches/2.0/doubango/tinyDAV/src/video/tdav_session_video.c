@@ -211,7 +211,6 @@ bail:
 // Codec Callback after decoding
 static int tdav_session_video_decode_cb(const tmedia_video_decode_result_xt* result)
 {
-	tdav_session_video_t* video = (tdav_session_video_t*)result->usr_data;
 	tdav_session_av_t* base = (tdav_session_av_t*)result->usr_data;
 
 	switch(result->type){
@@ -314,7 +313,6 @@ bail: ;
 static int tdav_session_video_rtp_cb(const void* callback_data, const trtp_rtp_packet_t* packet)
 {
 	tdav_session_video_t* video = (tdav_session_video_t*)callback_data;
-	tdav_session_av_t* base = (tdav_session_av_t*)callback_data;
 
 	if(!video || !packet || !packet->header){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -719,8 +717,6 @@ static int tdav_session_video_set(tmedia_session_t* self, const tmedia_param_t* 
 
 static int tdav_session_video_get(tmedia_session_t* self, tmedia_param_t* param)
 {
-	int ret = 0;
-
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
@@ -825,7 +821,6 @@ static int tdav_session_video_start(tmedia_session_t* self)
 static int tdav_session_video_stop(tmedia_session_t* self)
 {
 	int ret;
-	tdav_session_video_t* video = (tdav_session_video_t*)self;
 		
 	ret = tdav_video_jb_stop(TDAV_SESSION_VIDEO(self)->jb);
 	ret = tdav_session_av_stop(TDAV_SESSION_AV(self));

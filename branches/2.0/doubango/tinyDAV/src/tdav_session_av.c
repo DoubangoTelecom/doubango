@@ -519,7 +519,6 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			
 			// "a=ice-mismatch" if "C=" line is not included in the candidates
 			if((candidate = tnet_ice_ctx_get_local_candidate_at(self->ice_ctx, 0))){ // at least one candidate
-				char* str = tsk_null;
 				base->M.lo->port = candidate->socket->port;
 
 				tsdp_header_M_remove(base->M.lo, tsdp_htype_C);

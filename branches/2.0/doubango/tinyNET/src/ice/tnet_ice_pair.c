@@ -176,7 +176,7 @@ int tnet_ice_pair_send_conncheck(tnet_ice_pair_t *self)
 		tsk_buffer_t *req_buffer;
 		self->last_request->fingerprint = !self->is_ice_jingle;
 		if((req_buffer = tnet_stun_message_serialize(self->last_request))){
-			int sendBytes = tnet_sockfd_sendto(self->candidate_offer->socket->fd, (const struct sockaddr*)&remote_addr, req_buffer->data, req_buffer->size);
+			/*int sendBytes =*/ tnet_sockfd_sendto(self->candidate_offer->socket->fd, (const struct sockaddr*)&remote_addr, req_buffer->data, req_buffer->size);
 			TSK_OBJECT_SAFE_FREE(req_buffer);
 		}
 	}

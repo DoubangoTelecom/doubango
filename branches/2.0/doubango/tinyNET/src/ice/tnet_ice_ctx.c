@@ -1128,7 +1128,6 @@ static int _tnet_ice_ctx_fsm_GatheringComplet_2_ConnChecking_X_ConnCheck(va_list
 	const tnet_ice_pair_t *pair;
 	struct timeval tv;
 	static const long rto = 160; // milliseconds
-	tnet_stun_message_t *message = tsk_null;
 	struct sockaddr_storage remote_addr;
 	uint64_t time_start, time_curr, time_end, concheck_timeout;
 	tsk_bool_t role_conflict;
