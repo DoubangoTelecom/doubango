@@ -90,7 +90,6 @@ int trtp_rtcp_packet_init(trtp_rtcp_packet_t* self, uint8_t version, uint8_t pad
 trtp_rtcp_packet_t* trtp_rtcp_packet_deserialize(const void* data, tsk_size_t size)
 {
 	trtp_rtcp_packet_type_t type;
-	int ret = 0;
 
 	if(!data || size < TRTP_RTCP_HEADER_SIZE){
 		TSK_DEBUG_ERROR("Invalid parameter");

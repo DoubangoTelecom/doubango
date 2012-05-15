@@ -160,7 +160,7 @@ int trtp_rtcp_report_sdes_serialize_to(const trtp_rtcp_report_sdes_t* self, void
 
 	if(TRTP_RTCP_PACKET(self)->header->rc > 0){
 		const tsk_list_item_t* item;
-		tsk_size_t i = 0, chunck_size;
+		tsk_size_t chunck_size;
 		const trtp_rtcp_sdes_chunck_t* chunck;
 		tsk_list_foreach(item, self->chuncks){
 			if(!(chunck = item->data)){

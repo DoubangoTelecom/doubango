@@ -59,8 +59,6 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 /* ======================= Transport callback ========================== */
 static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 {
-	const trtp_manager_t *manager = e->callback_data;
-
 	switch(e->type){
 		case event_data: {
 			break;

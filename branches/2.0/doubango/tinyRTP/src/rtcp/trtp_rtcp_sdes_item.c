@@ -78,7 +78,6 @@ trtp_rtcp_sdes_item_t* trtp_rtcp_sdes_item_create(trtp_rtcp_sdes_item_type_t typ
 
 trtp_rtcp_sdes_item_t* trtp_rtcp_sdes_item_deserialize(const void* data, tsk_size_t size)
 {
-	trtp_rtcp_sdes_item_t* item = tsk_null;
 	const uint8_t* pdata = (const uint8_t*)data;
 	
 	if(!data || !size){

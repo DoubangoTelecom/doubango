@@ -571,7 +571,7 @@ int trtp_rtcp_session_process_rtp_in(trtp_rtcp_session_t* self, const trtp_rtp_p
 	if((source = _trtp_rtcp_session_find_source(self, packet_rtp->header->ssrc))){
 		if(_trtp_rtcp_source_update_seq(source, packet_rtp->header->seq_num, packet_rtp->header->timestamp)){
 			// RFC 3550 A.8 Estimating the Interarrival Jitter
-			uint32_t expected = (source->cycles + source->max_seq) - source->base_seq + 1;
+			/* uint32_t expected = (source->cycles + source->max_seq) - source->base_seq + 1; */
 			double arrival = (((double)(source->max_ts - source->base_ts) / (double)source->rate) * 1000);
 			int32_t transit = (int32_t)arrival - packet_rtp->header->timestamp;
 			int32_t d = (transit - source->transit);

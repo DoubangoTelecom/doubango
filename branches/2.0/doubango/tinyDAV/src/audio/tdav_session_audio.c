@@ -269,8 +269,6 @@ static int tdav_session_audio_set(tmedia_session_t* self, const tmedia_param_t* 
 
 static int tdav_session_audio_get(tmedia_session_t* self, tmedia_param_t* param)
 {
-	int ret = 0;
-
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;

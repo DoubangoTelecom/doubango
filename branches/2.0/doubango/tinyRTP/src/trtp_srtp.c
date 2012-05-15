@@ -85,7 +85,7 @@ int trtp_srtp_ctx_deinit(trtp_srtp_ctx_xt* ctx){
 		return -1;
 	}
 	if(ctx->initialized){
-		err_status_t srtp_err = srtp_dealloc(ctx->session);
+		/*err_status_t srtp_err =*/ srtp_dealloc(ctx->session);
 		ctx->initialized = tsk_false;
 	}
 	return 0;
@@ -187,7 +187,7 @@ int trtp_srtp_get_ctx_local(trtp_manager_t* rtp_mgr, const trtp_srtp_ctx_xt** ct
 int trtp_srtp_set_remote(trtp_manager_t* rtp_mgr, const char* crypto_line)
 {
 	//e.g. 2 F8_128_HMAC_SHA1_80 inline:MTIzNDU2Nzg5QUJDREUwMTIzNDU2Nzg5QUJjZGVm|2^20|1:4;inline:QUJjZGVmMTIzNDU2Nzg5QUJDREUwMTIzNDU2Nzg5|2^20|2:4"
-	tsk_bool_t matched = tsk_false;
+	/*tsk_bool_t matched = tsk_false;*/
 	trtp_srtp_ctx_xt* srtp_ctx = &rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_REMOTE][0];
 	int ret;
 	uint8_t *key_bin;
