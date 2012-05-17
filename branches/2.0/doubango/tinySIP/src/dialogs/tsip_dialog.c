@@ -752,7 +752,7 @@ int tsip_dialog_update_2(tsip_dialog_t *self, const tsip_request_t* invite)
 				self->record_routes = tsk_list_create();
 			}
 			if((route = tsk_object_ref((void*)recordRoute))){
-				tsk_list_push_front_data(self->record_routes, (void**)&route); /* Copy non-reversed. */
+				tsk_list_push_back_data(self->record_routes, (void**)&route); /* Copy non-reversed. */
 			}
 		}
 	}
