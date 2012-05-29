@@ -105,7 +105,7 @@ tnet_ice_candidate_t;
 typedef tsk_list_t tnet_ice_candidates_L_t;
 
 tnet_ice_candidate_t* tnet_ice_candidate_create(tnet_ice_cand_type_t type_e, struct tnet_socket_s* socket, tsk_bool_t is_ice_jingle, tsk_bool_t is_rtp, tsk_bool_t is_video, const char* ufrag, const char* pwd);
-tnet_ice_candidate_t* tnet_ice_candidate_parse(const char* str);
+TINYNET_API tnet_ice_candidate_t* tnet_ice_candidate_parse(const char* str);
 int tnet_ice_candidate_set_credential(tnet_ice_candidate_t* self, const char* ufrag, const char* pwd);
 int tnet_ice_candidate_set_rflx_addr(tnet_ice_candidate_t* self, const char* addr, tnet_port_t port);
 TINYNET_API const char* tnet_ice_candidate_get_att_value(const tnet_ice_candidate_t* self, const char* att_name);

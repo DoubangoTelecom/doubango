@@ -54,6 +54,7 @@ TINYNET_API int tnet_ice_ctx_start(struct tnet_ice_ctx_s* self);
 TINYNET_API int tnet_ice_ctx_rtp_callback(struct tnet_ice_ctx_s* self, tnet_ice_rtp_callback_f rtp_callback, const void* rtp_callback_data);
 TINYNET_API int tnet_ice_ctx_set_concheck_timeout(struct tnet_ice_ctx_s* self, int64_t timeout);
 TINYNET_API int tnet_ice_ctx_set_remote_candidates(struct tnet_ice_ctx_s* self, const char* candidates, const char* ufrag, const char* pwd, tsk_bool_t is_controlling, tsk_bool_t is_ice_jingle);
+TINYNET_API tsk_size_t tnet_ice_ctx_count_local_candidates(const struct tnet_ice_ctx_s* self);
 TINYNET_API tsk_bool_t tnet_ice_ctx_got_local_candidates(const struct tnet_ice_ctx_s* self);
 TINYNET_API const struct tnet_ice_candidate_s* tnet_ice_ctx_get_local_candidate_at(const struct tnet_ice_ctx_s* self, tsk_size_t index);
 TINYNET_API tsk_bool_t tnet_ice_ctx_is_started(const struct tnet_ice_ctx_s* self);
@@ -68,6 +69,9 @@ TINYNET_API int tnet_ice_ctx_get_nominated_symetric_candidates(const struct tnet
 										  const struct tnet_ice_candidate_s** candidate_answer_src,
 										  const struct tnet_ice_candidate_s** candidate_answer_dest);
 TINYNET_API int tnet_ice_ctx_recv_stun_message(struct tnet_ice_ctx_s* self, const void* data, tsk_size_t size, tnet_fd_t local_fd, const struct sockaddr_storage* remote_addr, tsk_bool_t *role_conflict);
+
+TINYNET_API const char* tnet_ice_ctx_get_ufrag(const struct tnet_ice_ctx_s* self);
+TINYNET_API const char* tnet_ice_ctx_get_pwd(const struct tnet_ice_ctx_s* self);
 
 TINYNET_API int tnet_ice_ctx_cancel(struct tnet_ice_ctx_s* self);
 TINYNET_API int tnet_ice_ctx_stop(struct tnet_ice_ctx_s* self);

@@ -37,6 +37,7 @@ typedef struct tdshow_consumer_s
 	INT64 window;
 	
 	tsk_bool_t started;
+	tsk_bool_t create_on_ui_thread;
 }
 tdshow_consumer_t;
 
@@ -70,6 +71,9 @@ int tdshow_consumer_set(tmedia_consumer_t *self, const tmedia_param_t* param)
 			if(DSCONSUMER(self)->display){
 				DSCONSUMER(self)->display->setFullscreen(*((int32_t*)param->value) != 0);
 			}
+		}
+		else if(tsk_striequals(param->key, "create-on-current-thead")){
+			DSCONSUMER(self)->create_on_ui_thread = *((int32_t*)param->value) ? tsk_false : tsk_true;
 		}
 	}
 
@@ -115,7 +119,9 @@ int tdshow_consumer_start(tmedia_consumer_t* self)
 
 	// create display on UI thread
 	if(!consumer->display){
-		createOnUIThead(reinterpret_cast<HWND>((void*)consumer->window), (void**)&consumer->display, true);
+		if(consumer->create_on_ui_thread) createOnUIThead(reinterpret_cast<HWND>((void*)consumer->window), (void**)&consumer->display, true);
+		else createOnCurrentThead(reinterpret_cast<HWND>((void*)consumer->window), (void**)&consumer->display, true);
+		
 		if(!consumer->display){
 			TSK_DEBUG_ERROR("Failed to create display");
 			return -2;
@@ -145,7 +151,7 @@ int tdshow_consumer_consume(tmedia_consumer_t* self, const void* buffer, tsk_siz
 		return 0;
 	}
 	else{
-		TSK_DEBUG_ERROR("Invlide parameter");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 }
@@ -211,6 +217,7 @@ static tsk_object_t* tdshow_consumer_ctor(tsk_object_t * self, va_list * app)
 		TMEDIA_CONSUMER(consumer)->video.display.chroma = tmedia_chroma_bgr24; // RGB24 on x86 (little endians) stored as BGR24
 
 		/* init self */
+		consumer->create_on_ui_thread = tsk_true;
 		TMEDIA_CONSUMER(consumer)->video.fps = 15;
 		TMEDIA_CONSUMER(consumer)->video.display.width = 352;
 		TMEDIA_CONSUMER(consumer)->video.display.height = 288;

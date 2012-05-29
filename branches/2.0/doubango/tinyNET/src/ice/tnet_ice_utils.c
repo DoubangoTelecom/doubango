@@ -78,7 +78,7 @@ int tnet_ice_utils_create_sockets(tnet_socket_type_t socket_type, const char* lo
 	/* Creates local rtp and rtcp sockets */
 	while(retry_count--){
 		/* random number in the range [start - stop] */
-		tnet_port_t local_port = (tnet_port_t)(((tsk_time_epoch() ^ ++counter) % (port_range_stop - port_range_start)) + port_range_start);
+		tnet_port_t local_port = (tnet_port_t)((((tsk_time_epoch() + rand() ) ^ ++counter) % (port_range_stop - port_range_start)) + port_range_start);
 		local_port = (local_port & 0xFFFE); /* turn to even number */
 		
 		/* beacuse failure will cause errors in the log, print a message to alert that there is

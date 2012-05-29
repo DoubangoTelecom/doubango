@@ -57,6 +57,7 @@ typedef struct tnet_ice_event_s
 	tnet_ice_event_type_t type;
 	char* phrase;
 	struct tnet_ice_action_s* action; 
+	const struct tnet_ice_ctx_s* ctx;
 
 	const void* userdata;
 }
@@ -64,7 +65,7 @@ tnet_ice_event_t;
 
 TINYNET_GEXTERN const tsk_object_def_t *tnet_ice_event_def_t;
 
-tnet_ice_event_t* tnet_ice_event_create(tnet_ice_event_type_t type, const char* phrase, const void* userdata);
+tnet_ice_event_t* tnet_ice_event_create(const struct tnet_ice_ctx_s* ctx, tnet_ice_event_type_t type, const char* phrase, const void* userdata);
 int tnet_ice_event_set_action(tnet_ice_event_t* self, struct tnet_ice_action_s* action);
 
 TNET_END_DECLS

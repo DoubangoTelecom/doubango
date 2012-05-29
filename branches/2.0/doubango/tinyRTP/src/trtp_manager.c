@@ -288,6 +288,17 @@ trtp_manager_t* trtp_manager_create_2(struct tnet_ice_ctx_s* ice_ctx)
 	return manager;
 }
 
+int trtp_manager_set_ice_ctx(trtp_manager_t* self, struct tnet_ice_ctx_s* ice_ctx)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid ICE context");
+		return -1;
+	}
+	TSK_OBJECT_SAFE_FREE(self->ice_ctx);
+	self->ice_ctx = tsk_object_ref(ice_ctx);
+	return 0;
+}
+
 /** Prepares the RTP/RTCP manager */
 int trtp_manager_prepare(trtp_manager_t* self)
 {

@@ -202,6 +202,19 @@ static LRESULT CALLBACK __create__WndProcWindow(HWND hWnd, UINT uMsg, WPARAM wPa
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
+int createOnCurrentThead(HWND hWnd, void** ppRet, bool display)
+{
+	HRESULT hr;
+	if(display) *ppRet = new DSDisplay(&hr);
+	else *ppRet = new DSGrabber(&hr);
+	if(FAILED(hr)){
+		TSK_DEBUG_ERROR("Failed to created DirectShow %s", display ? "Display" : "Grabber");
+		SAFE_DELETE_PTR(*ppRet);
+		return -2;
+	}
+	return 0;
+}
+
 int createOnUIThead(HWND hWnd, void** ppRet, bool display)
 {
 	if(!ppRet){
@@ -210,18 +223,10 @@ int createOnUIThead(HWND hWnd, void** ppRet, bool display)
 	}
 
 	if(IsMainThread()){
-		HRESULT hr;
-		if(display) *ppRet = new DSDisplay(&hr);
-		else *ppRet = new DSGrabber(&hr);
-		if(FAILED(hr)){
-			TSK_DEBUG_ERROR("Failed to created DirectShow %s", display ? "Display" : "Grabber");
-			SAFE_DELETE_PTR(*ppRet);
-			return -2;
-		}
-		return 0;
+		return createOnCurrentThead(hWnd, ppRet, display);
 	}
 	else{
-
+		TSK_DEBUG_INFO("Create DirectShow element on worker thread");
 		HANDLE event = NULL;
 		int ret = 0;
 		DWORD retWait, retryCount = 3;		
@@ -237,8 +242,8 @@ int createOnUIThead(HWND hWnd, void** ppRet, bool display)
 
 		WNDPROC wndProc = (WNDPROC) SetWindowLongPtr(hWnd, GWL_WNDPROC, (LONG) __create__WndProcWindow);
 		if(!wndProc){
-			TSK_DEBUG_ERROR("SetWindowLongPtr() failed");
-			return -3;
+			TSK_DEBUG_ERROR("SetWindowLongPtr() failed with errcode=%d", GetLastError());
+			return createOnCurrentThead(hWnd, ppRet, display);
 		}
 
 		if(!(event = CreateEvent(NULL, TRUE, FALSE, NULL))){

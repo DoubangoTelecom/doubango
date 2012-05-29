@@ -86,6 +86,8 @@ DSDisplay::DSDisplay(HRESULT *hr)
 	this->parentWindowProc = NULL;
 	this->hooked = FALSE;
 	this->fullscreen = FALSE;
+	this->top = 0;
+	this->left = 0;
 	this->width = 176;
 	this->height = 144;
 	this->fps = 15;
@@ -237,6 +239,8 @@ void DSDisplay::applyRatio(RECT rect)
 	// 2) w=h*ratio
 	this->width = (int)(w/ratio) > h ? (int)(h * ratio) : w;
 	this->height = (int)(this->width/ratio) > h ? h : (int)(this->width/ratio);
+	this->left = ((w - this->width) >> 1);
+	this->top = ((h - this->height) >> 1);
 }
 
 bool DSDisplay::isFullscreen()
@@ -260,6 +264,7 @@ bool DSDisplay::isFullscreen()
 void DSDisplay::setFullscreen(bool value)
 {
 	if(!this->canFullscreen()){
+		TSK_DEBUG_WARN("Cannot fullscreen");
 		return;
 	}
 
@@ -337,7 +342,7 @@ LRESULT DSDisplay::handleEvents(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 #if defined(VMR9_WINDOWLESS)
 			this->graph->getWindowlessControl()->SetVideoPosition(&rect, &rect);
 #else
-			this->graph->getVideoWindow()->SetWindowPosition(0, 0, this->width , this->height);
+			this->graph->getVideoWindow()->SetWindowPosition(this->left, this->top, this->width , this->height);
 #endif
 		}
 		break;
@@ -471,7 +476,7 @@ void DSDisplay::hook()
 	// TODO : Review the order
 	hr = this->graph->getVideoWindow()->put_Owner((OAHWND) this->window);
 	hr = this->graph->getVideoWindow()->put_WindowStyle(WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
-	hr = this->graph->getVideoWindow()->SetWindowPosition(0, 0, this->width, this->height);
+	hr = this->graph->getVideoWindow()->SetWindowPosition(this->left, this->top, this->width, this->height);
 	hr = this->graph->getVideoWindow()->put_MessageDrain((OAHWND) this->window);
 	hr = this->graph->getVideoWindow()->put_Visible(OATRUE);
 #endif
@@ -490,7 +495,7 @@ void DSDisplay::unhook()
 	if(!this->hooked){
 		return;
 	}
-
+	
 	hr = this->graph->getMediaEvent()->SetNotifyWindow(NULL, WM_GRAPHNOTIFY, 0);
 
 #if defined(VMR9_WINDOWLESS)
