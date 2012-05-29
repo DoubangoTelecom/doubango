@@ -55,11 +55,11 @@ typedef struct tsdp_header_s* (*tsdp_header_clone_f)(const struct tsdp_header_s*
 #define TSDP_HTYPE_P_RANK		6
 #define TSDP_HTYPE_C_RANK		7
 #define TSDP_HTYPE_B_RANK		8
-#define TSDP_HTYPE_Z_RANK		9
-#define TSDP_HTYPE_K_RANK		10
-#define TSDP_HTYPE_A_RANK		11
-#define TSDP_HTYPE_T_RANK		12
-#define TSDP_HTYPE_R_RANK		13
+#define TSDP_HTYPE_Z_RANK		11
+#define TSDP_HTYPE_K_RANK		12
+#define TSDP_HTYPE_A_RANK		13
+#define TSDP_HTYPE_T_RANK		9
+#define TSDP_HTYPE_R_RANK		10
 #define TSDP_HTYPE_M_RANK		14
 //#define TSDP_HTYPE_I_RANK		15
 //#define TSDP_HTYPE_C_RANK		16
