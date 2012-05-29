@@ -47,6 +47,7 @@
 int tdav_session_av_init(tdav_session_av_t* self, tsk_bool_t is_audio)
 {
 	uint64_t session_id;
+	tmedia_profile_t profile = tmedia_defaults_get_profile(); // default profile, will be updated by the SIP session
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -58,7 +59,7 @@ int tdav_session_av_init(tdav_session_av_t* self, tsk_bool_t is_audio)
 	self->media_type = is_audio ? tmedia_audio : tmedia_video;
 	self->use_rtcp = tsk_true; // FIXME: for now RTCP is always on, use "session_set('use-rtcp');"
 	self->use_rtcp_mux = tsk_true;
-	self->use_avpf = tsk_false; // negotiate
+	self->use_avpf = (profile == tmedia_profile_rtcweb); // negotiate if not RTCWeb profile
 	
 	tsk_safeobj_init(self);
 	
@@ -79,7 +80,7 @@ int tdav_session_av_init(tdav_session_av_t* self, tsk_bool_t is_audio)
 
 #if HAVE_SRTP
 		// This is the default value and can be updated by the user using "session_set('srtp-mode', mode_e)"
-		self->srtp_mode = tmedia_defaults_get_srtp_mode();
+		self->srtp_mode = (profile == tmedia_profile_rtcweb) ? tmedia_srtp_mode_mandatory : tmedia_defaults_get_srtp_mode();
 		self->use_srtp = (self->srtp_mode == tmedia_srtp_mode_mandatory); // if optional -> negotiate
 #endif
 	return 0;
@@ -140,6 +141,9 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 			else if(tsk_striequals(param->key, "ice-ctx")){
 				TSK_OBJECT_SAFE_FREE(self->ice_ctx);
 				self->ice_ctx = tsk_object_ref(param->value);
+				if(self->rtp_manager){
+					trtp_manager_set_ice_ctx(self->rtp_manager, self->ice_ctx);
+				}
 				return tsk_true;
 			}
 		}

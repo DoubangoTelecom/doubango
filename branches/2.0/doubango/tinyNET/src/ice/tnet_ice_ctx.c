@@ -504,6 +504,15 @@ int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candida
 	return ret;
 }
 
+tsk_size_t tnet_ice_ctx_count_local_candidates(const tnet_ice_ctx_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+	return tsk_list_count(self->candidates_local, tsk_null, tsk_null);
+}
+
 tsk_bool_t tnet_ice_ctx_got_local_candidates(const tnet_ice_ctx_t* self)
 {
 	tsk_fsm_state_id curr_state;
@@ -674,6 +683,16 @@ int tnet_ice_ctx_recv_stun_message(tnet_ice_ctx_t* self, const void* data, tsk_s
 	TSK_OBJECT_SAFE_FREE(message);
 
 	return ret;
+}
+
+const char* tnet_ice_ctx_get_ufrag(const struct tnet_ice_ctx_s* self)
+{
+	return (self && self->ufrag) ? self->ufrag : tsk_null;
+}
+
+const char* tnet_ice_ctx_get_pwd(const struct tnet_ice_ctx_s* self)
+{
+	return (self && self->pwd) ? self->pwd : tsk_null;
 }
 
 // cancels the ICE processing without stopping the process
@@ -1236,7 +1255,7 @@ start_conneck:
 					TSK_FREE(data);
 									
 					TNET_PRINT_LAST_ERROR("Receiving STUN dgrams failed with error code");
-					goto bail;
+					continue;
 				}				
 				// recv() STUN message (request / response)
 				ret = tnet_ice_ctx_recv_stun_message(self, data, (tsk_size_t)ret, fd, &remote_addr, &role_conflict);
@@ -1398,7 +1417,7 @@ static int _tnet_ice_ctx_fsm_act_async(tnet_ice_ctx_t* self, tsk_fsm_action_id a
 		return -2;
 	}
 
-	if((e = tnet_ice_event_create(tnet_ice_event_type_action, phrase, self->userdata))){
+	if((e = tnet_ice_event_create(self, tnet_ice_event_type_action, phrase, self->userdata))){
 		tnet_ice_event_set_action(e, action);
 		TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(self), e);
 		goto bail;
@@ -1423,7 +1442,7 @@ static int _tnet_ice_ctx_signal_async(tnet_ice_ctx_t* self, tnet_ice_event_type_
 		return -1;
 	}
 
-	if((e = tnet_ice_event_create(type, phrase, self->userdata))){
+	if((e = tnet_ice_event_create(self, type, phrase, self->userdata))){
 		TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(self), e);
 		return 0;
 	}

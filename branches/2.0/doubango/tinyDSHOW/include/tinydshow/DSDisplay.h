@@ -69,7 +69,7 @@ private:
 	DSDisplayOverlay *overlay;
 
 	int fps;
-	int width, height;
+	int left, top, width, height;
 
 	bool fullscreen;
 	HWND window;

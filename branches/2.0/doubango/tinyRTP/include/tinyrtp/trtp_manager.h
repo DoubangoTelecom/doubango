@@ -109,6 +109,7 @@ trtp_manager_t;
 
 TINYRTP_API trtp_manager_t* trtp_manager_create(tsk_bool_t use_rtcp, const char* local_ip, tsk_bool_t use_ipv6);
 TINYRTP_API trtp_manager_t* trtp_manager_create_2(struct tnet_ice_ctx_s* ice_ctx);
+TINYRTP_API int trtp_manager_set_ice_ctx(trtp_manager_t* self, struct tnet_ice_ctx_s* ice_ctx);
 TINYRTP_API int trtp_manager_prepare(trtp_manager_t* self);
 TINYRTP_API tsk_bool_t trtp_manager_is_ready(trtp_manager_t* self);
 TINYRTP_API int trtp_manager_set_natt_ctx(trtp_manager_t* self, tnet_nat_context_handle_t* natt_ctx);

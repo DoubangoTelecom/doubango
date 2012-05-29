@@ -39,6 +39,7 @@ static tsk_object_t* tnet_ice_event_dtor(tsk_object_t * self)
 	if(e){
 		TSK_SAFE_FREE(e->phrase);
 		TSK_OBJECT_SAFE_FREE(e->action);
+		e->ctx = tsk_null; // not the owner (const)
 	}
 
 	return self;
@@ -53,11 +54,12 @@ static const tsk_object_def_t tnet_ice_event_def_s =
 const tsk_object_def_t *tnet_ice_event_def_t = &tnet_ice_event_def_s;
 
 
-tnet_ice_event_t* tnet_ice_event_create(tnet_ice_event_type_t type, const char* phrase, const void* userdata)
+tnet_ice_event_t* tnet_ice_event_create(const struct tnet_ice_ctx_s* ctx, tnet_ice_event_type_t type, const char* phrase, const void* userdata)
 {
 	tnet_ice_event_t* e;
 
 	if((e = tsk_object_new(tnet_ice_event_def_t))){
+		e->ctx = ctx;
 		e->type = type;
 		e->phrase = tsk_strdup(phrase);
 		e->userdata = userdata;

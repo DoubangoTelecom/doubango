@@ -1087,6 +1087,15 @@ bail:
 	return ret;
 }
 
+const tsdp_message_t* tmedia_session_mgr_get_ro(tmedia_session_mgr_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+	return self->sdp.ro;
+}
+
 /**@ingroup tmedia_session_group
 * Holds the session as per 3GPP TS 34.610
 * @param self the session manager managing the session to hold.

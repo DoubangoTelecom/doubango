@@ -38,6 +38,7 @@ typedef struct tdshow_producer_s
 	
 	tsk_bool_t started;
 	tsk_bool_t mute;
+	tsk_bool_t create_on_ui_thread;
 }
 tdshow_producer_t;
 
@@ -85,6 +86,9 @@ static int tdshow_producer_set(tmedia_producer_t *self, const tmedia_param_t* pa
 				}
 			}
 		}
+		else if(tsk_striequals(param->key, "create-on-current-thead")){
+			producer->create_on_ui_thread = *((int32_t*)param->value) ? tsk_false : tsk_true;
+		}
 	}
 	
 	return ret;
@@ -121,7 +125,8 @@ static int tdshow_producer_start(tmedia_producer_t* self)
 
 	// create grabber on UI thread
 	if(!producer->grabber){
-		createOnUIThead(reinterpret_cast<HWND>((void*)DSPRODUCER(producer)->previewHwnd), (void**)&producer->grabber, false);
+		if(producer->create_on_ui_thread) createOnUIThead(reinterpret_cast<HWND>((void*)DSPRODUCER(producer)->previewHwnd), (void**)&producer->grabber, false);
+		else createOnCurrentThead(reinterpret_cast<HWND>((void*)DSPRODUCER(producer)->previewHwnd), (void**)&producer->grabber, false);
 		if(!producer->grabber){
 			TSK_DEBUG_ERROR("Failed to create grabber");
 			return -2;
@@ -212,6 +217,7 @@ static tsk_object_t* tdshow_producer_ctor(tsk_object_t * self, va_list * app)
 		tmedia_producer_init(TMEDIA_PRODUCER(producer));
 		TMEDIA_PRODUCER(producer)->video.chroma = tmedia_chroma_bgr24; // RGB24 on x86 (little endians) stored as BGR24
 		/* init self with default values*/
+		producer->create_on_ui_thread = tsk_true;
 		TMEDIA_PRODUCER(producer)->video.fps = 15;
 		TMEDIA_PRODUCER(producer)->video.width = 352;
 		TMEDIA_PRODUCER(producer)->video.height = 288;

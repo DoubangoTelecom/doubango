@@ -77,6 +77,8 @@ bool DisconnectAllFilters(IGraphBuilder *graphBuilder);
 
 bool RemoveAllFilters(IGraphBuilder *graphBuilder);
 
+int createOnCurrentThead(HWND hWnd, void** ppRet, bool display);
+
 int createOnUIThead(HWND hWnd, void** ppRet, bool display);
 
 #endif /* TINYDSHOW_DUTILS_H */
