@@ -333,8 +333,16 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 #endif
 
 	if(!self->rtp_manager || (!self->ice_ctx && !self->rtp_manager->transport)){
-		TSK_DEBUG_ERROR("RTP/RTCP manager in invalid");
-		return tsk_null;
+		if(self->rtp_manager && (!self->ice_ctx && !self->rtp_manager->transport)){ // reINVITE or UPDATE (manager was destroyed when stoppped)
+			if(trtp_manager_prepare(self->rtp_manager)){
+				TSK_DEBUG_ERROR("Failed to prepare transport");
+				return tsk_null;
+			}
+		}
+		else{
+			TSK_DEBUG_ERROR("RTP/RTCP manager in invalid");
+			return tsk_null;
+		}
 	}
 	
 	if(base->ro_changed && base->M.lo){
@@ -352,7 +360,6 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "crypto");
 
 		/* ICE */
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "candidate");
 		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "candidate");
 		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "ice-ufrag");
 		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "ice-pwd");
@@ -546,6 +553,13 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 				}
 			}
 		}
+		else{
+			if(base->M.lo->C){
+				tsk_strupdate(&base->M.lo->C->addr, self->rtp_manager->rtp.public_ip);
+				tsk_strupdate(&base->M.lo->C->addrtype, (self->use_ipv6 ? "IP6" : "IP4"));
+			}
+			base->M.lo->port = self->rtp_manager->rtp.public_port;
+		}
 
 		if(self->media_type == tmedia_audio){
 			///* 3GPP TS 24.229 - 6.1.1 General
@@ -571,7 +585,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			tmedia_qos_tline_to_sdp(base->qos, base->M.lo);
 		}
 DONE:;
-	}
+	} // updated
 
 	return base->M.lo;
 }
