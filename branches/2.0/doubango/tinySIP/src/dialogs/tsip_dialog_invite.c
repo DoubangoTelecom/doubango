@@ -116,7 +116,7 @@ static int x0000_Connected_2_Connected_X_oINVITE(va_list *app);
 static int x0000_Any_2_Any_X_i1xx(va_list *app);
 static int x0000_Any_2_Any_X_oINFO(va_list *app);
 static int x0000_Any_2_Any_X_iINFO(va_list *app);
-static int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app);
+static int x0000_Any_2_Any_X_i401_407_Challenge(va_list *app);
 static int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app);
 
 static int x0000_Any_2_Any_X_iPRACK(va_list *app);
@@ -344,6 +344,8 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_oBYE, _fsm_state_Trying, x0000_Any_2_Trying_X_oBYE, "x0000_Any_2_Trying_X_oBYE"),
 		// Any -> (iBYE) -> Terminated
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_iBYE, _fsm_state_Terminated, x0000_Any_2_Terminated_X_iBYE, "x0000_Any_2_Terminated_X_iBYE"),
+		// Any -> (i401/407 BYE) -> Any
+		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i401_i407, _fsm_cond_is_resp2BYE, tsk_fsm_state_any, x0000_Any_2_Any_X_i401_407_Challenge, "x0000_Any_2_Any_X_i401_407_Challenge"),
 		// Any -> (i3xx-i6xx BYE) -> Terminated
 		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i300_to_i699, _fsm_cond_is_resp2BYE, _fsm_state_Terminated, tsk_null, "x0000_Any_2_Terminated_X_i3xxTOi6xxBYE"),
 		// Any -> (i2xxx BYE) -> Terminated
@@ -374,9 +376,9 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		// Any -> (i2xx UPDATE) -> Any
 		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2UPDATE, tsk_fsm_state_any, x0000_Any_2_Any_X_i2xxINVITEorUPDATE, "x0000_Any_2_Any_X_i2xxUPDATE"),
 		// Any -> (i401/407 INVITE) -> Any
-		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i401_i407, _fsm_cond_is_resp2INVITE, tsk_fsm_state_any, x0000_Any_2_Any_X_i401_407_INVITEorUPDATE, "x0000_Any_2_Any_X_i401_407_INVITE"),
+		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i401_i407, _fsm_cond_is_resp2INVITE, tsk_fsm_state_any, x0000_Any_2_Any_X_i401_407_Challenge, "x0000_Any_2_Any_X_i401_407_Challenge"),
 		// Any -> (i401/407  UPDATE) -> Any
-		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i401_i407, _fsm_cond_is_resp2UPDATE, tsk_fsm_state_any, x0000_Any_2_Any_X_i401_407_INVITEorUPDATE, "x0000_Any_2_Any_X_i401_407_UPDATE"),
+		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i401_i407, _fsm_cond_is_resp2UPDATE, tsk_fsm_state_any, x0000_Any_2_Any_X_i401_407_Challenge, "x0000_Any_2_Any_X_i401_407_Challenge"),
 		// Any -> (i2xx PRACK) -> Any
 		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2PRACK, tsk_fsm_state_any, tsk_null, "x0000_Any_2_Any_X_i2xxPRACK"),
 		// Any -> (i2xx INFO) -> Any
@@ -713,7 +715,7 @@ int x0000_Any_2_Any_X_iOPTIONS(va_list *app)
 
 
 /*	Any --> (i401/407 INVITE or UPDATE) --> Any */
-int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app)
+int x0000_Any_2_Any_X_i401_407_Challenge(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
@@ -727,7 +729,16 @@ int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app)
 		return ret;
 	}
 	
-	return send_INVITEorUPDATE(self, TSIP_RESPONSE_IS_TO_INVITE(response), tsk_false);
+	if(TSIP_RESPONSE_IS_TO_INVITE(response) || TSIP_RESPONSE_IS_TO_UPDATE(response)){
+		return send_INVITEorUPDATE(self, TSIP_RESPONSE_IS_TO_INVITE(response), tsk_false);
+	}
+	else if(TSIP_RESPONSE_IS_TO_BYE(response)){
+		return send_BYE(self);
+	}
+	else{
+		TSK_DEBUG_ERROR("Unexpected code called");
+		return 0;
+	}
 }
 
 /*	Any --> (i2xx INVITE or i2xx UPDATE) --> Any */

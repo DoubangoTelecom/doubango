@@ -478,10 +478,14 @@ int tsip_transac_ist_Proceeding_2_Accepted_X_2xx(va_list *app)
 	/* Update last response */
 	TRANSAC_IST_SET_LAST_RESPONSE(self, response);
 
-	if(!TSIP_TRANSAC(self)->reliable){
-		TRANSAC_IST_TIMER_SCHEDULE(X);
-		self->timerX.timeout <<= 1;
-	}
+	/* RFC 3261 - 13.3.1.4 The INVITE is Accepted
+		Since 2xx is retransmitted end-to-end, there may be hops between
+		UAS and UAC that are UDP.  To ensure reliable delivery across
+		these hops, the response is retransmitted periodically even if the
+		transport at the UAS is reliable.
+	*/
+	TRANSAC_IST_TIMER_SCHEDULE(X);
+	self->timerX.timeout <<= 1;
 
 	/*	draft-sparks-sip-invfix-03 - 8.7. Page 137
 		When the INVITE server transaction enters the "Accepted" state,
