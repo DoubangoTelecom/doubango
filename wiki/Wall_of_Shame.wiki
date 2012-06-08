@@ -1,7 +1,7 @@
 #summary Wall of Shame
 #labels Featured
 
-This is the list of companies using our products in violation of GNU GPL terms
+This is the list of companies using our products in violation of GNU GPL terms and not willing to cooperate.
 
 || Name || Operating system ||
 || [http://www.adoresoftphone.com/ AdoreSoftphone] || Windows, OS X, Android and iOS ||
