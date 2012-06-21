@@ -157,31 +157,30 @@ int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, ts
 	{
 	case tsip_dialog_i_msg:
 		{
-			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
-			{
+			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg)){
 				//
 				//	RESPONSE
 				//
+				const tsip_action_t* action = tsip_dialog_keep_action(TSIP_DIALOG(self), msg) ? TSIP_DIALOG(self)->curr_action : tsk_null;
 				if(TSIP_RESPONSE_IS_1XX(msg)){
-					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_1xx, msg, tsk_null);
+					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_1xx, msg, action);
 				}
 				else if(TSIP_RESPONSE_IS_2XX(msg)){
-					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_2xx, msg, tsk_null);
+					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_2xx, msg, action);
 				}
 				else if(TSIP_RESPONSE_IS(msg,401) || TSIP_RESPONSE_IS(msg,407) || TSIP_RESPONSE_IS(msg,421) || TSIP_RESPONSE_IS(msg,494)){
-					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_401_407_421_494, msg, tsk_null);
+					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_401_407_421_494, msg, action);
 				}
 				else if(TSIP_RESPONSE_IS(msg,423)){
-					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_423, msg, tsk_null);
+					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_423, msg, action);
 				}
 				else{
 					// Alert User
-					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_error, msg, tsk_null);
+					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_error, msg, action);
 					/* TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg)); */
 				}
 			}
-			else
-			{
+			else{
 				//
 				//	REQUEST
 				//

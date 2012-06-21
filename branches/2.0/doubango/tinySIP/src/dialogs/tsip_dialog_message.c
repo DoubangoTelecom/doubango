@@ -102,24 +102,23 @@ static int tsip_dialog_message_event_callback(const tsip_dialog_message_t *self,
 	{
 	case tsip_dialog_i_msg:
 		{
-			if(msg)
-			{
-				if(TSIP_MESSAGE_IS_RESPONSE(msg))
-				{
+			if(msg){
+				if(TSIP_MESSAGE_IS_RESPONSE(msg)){
+					const tsip_action_t* action = tsip_dialog_keep_action(TSIP_DIALOG(self), msg) ? TSIP_DIALOG(self)->curr_action : tsk_null;
 					if(TSIP_RESPONSE_IS_1XX(msg)){
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_1xx, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_1xx, msg, action);
 					}
 					else if(TSIP_RESPONSE_IS_2XX(msg)){
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_2xx, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_2xx, msg, action);
 					}
 					else if(TSIP_RESPONSE_CODE(msg) == 401 || TSIP_RESPONSE_CODE(msg) == 407 || TSIP_RESPONSE_CODE(msg) == 421 || TSIP_RESPONSE_CODE(msg) == 494){
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_401_407_421_494, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_401_407_421_494, msg, action);
 					}
 					else if(TSIP_RESPONSE_IS_3456(msg)){
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_300_to_699, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_300_to_699, msg, action);
 					}
 					else{ /* Should never happen */
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_error, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_error, msg, action);
 					}
 				}
 				else if (TSIP_REQUEST_IS_MESSAGE(msg)){ /* have been checked by dialog layer...but */
@@ -246,8 +245,8 @@ int tsip_dialog_message_Started_2_Receiving_X_recvMESSAGE(va_list *app)
 			tsip_event_code_dialog_request_incoming, "Incoming Request.", request);
 
 	/* Update last incoming MESSAGE */
-	TSK_OBJECT_SAFE_FREE(self->last_iMessage);
-	self->last_iMessage = tsk_object_ref((void*)request);
+	TSK_OBJECT_SAFE_FREE(self->request);
+	self->request = tsk_object_ref((void*)request);
 	
 	return 0;
 }
@@ -346,7 +345,7 @@ int tsip_dialog_message_Receiving_2_Terminated_X_accept(va_list *app)
 	va_arg(*app, tsip_message_t *);
 	action = va_arg(*app, const tsip_action_t *);
 	
-	if(!self->last_iMessage){
+	if(!self->request){
 		TSK_DEBUG_ERROR("There is non MESSAGE to accept()");
 		/* Not an error ...but do not update current action */
 	}
@@ -358,7 +357,7 @@ int tsip_dialog_message_Receiving_2_Terminated_X_accept(va_list *app)
 		/* tsip_dialog_set_curr_action(TSIP_DIALOG(self), action); */
 
 		/* send 200 OK */
-		if((response = tsip_dialog_response_new(TSIP_DIALOG(self), 200, "OK", self->last_iMessage))){
+		if((response = tsip_dialog_response_new(TSIP_DIALOG(self), 200, "OK", self->request))){
 			tsip_dialog_apply_action(response, action); /* apply action params to "this" response */
 			if((ret = tsip_dialog_response_send(TSIP_DIALOG(self), response))){
 				TSK_DEBUG_ERROR("Failed to send SIP response.");
@@ -387,7 +386,7 @@ int tsip_dialog_message_Receiving_2_Terminated_X_reject(va_list *app)
 	va_arg(*app, tsip_message_t *);
 	action = va_arg(*app, const tsip_action_t *);
 	
-	if(!self->last_iMessage){
+	if(!self->request){
 		TSK_DEBUG_ERROR("There is non MESSAGE to reject()");
 		/* Not an error ...but do not update current action */
 	}
@@ -399,7 +398,7 @@ int tsip_dialog_message_Receiving_2_Terminated_X_reject(va_list *app)
 		/* tsip_dialog_set_curr_action(TSIP_DIALOG(self), action); */
 
 		/* send 486 Rejected */
-		if((response = tsip_dialog_response_new(TSIP_DIALOG(self), 486, "Rejected", self->last_iMessage))){
+		if((response = tsip_dialog_response_new(TSIP_DIALOG(self), 486, "Rejected", self->request))){
 			tsip_dialog_apply_action(response, action); /* apply action params to "this" response */
 			if((ret = tsip_dialog_response_send(TSIP_DIALOG(self), response))){
 				TSK_DEBUG_ERROR("Failed to send SIP response.");
@@ -529,7 +528,7 @@ static tsk_object_t* tsip_dialog_message_dtor(tsk_object_t * self)
 		tsip_dialog_deinit(TSIP_DIALOG(self));
 
 		/* DeInitialize self */
-		TSK_OBJECT_SAFE_FREE(dialog->last_iMessage);
+		TSK_OBJECT_SAFE_FREE(dialog->request);
 
 		TSK_DEBUG_INFO("*** MESSAGE Dialog destroyed ***");
 	}

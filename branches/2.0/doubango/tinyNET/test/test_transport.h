@@ -82,10 +82,8 @@ static int tnet_udp_cb(const tnet_transport_event_t* e)
 			}
 		case event_closed:
 		case event_connected:
-		default:
-			{
-				break;
-			}
+		default: break;
+			
 	}
 	return 0;
 }

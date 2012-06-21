@@ -6,6 +6,6 @@ export GPL_PARAMS="LICENSE=gpl NO_FREE=yes FFMPEG=yes VPX=yes H264=yes THEORA=ye
 
 for IS_NEON in no yes
 do
-../bindings/java/android/buildAll.sh $@ NEON=$IS_NEON $GPL_PARAMS HAVE_WEBRTC=$IS_NEON HAVE_WEBRTC_DENOISE=$IS_NEON
+../bindings/java/android/buildAll.sh $@ NEON=$IS_NEON $GPL_PARAMS WEBRTC=$IS_NEON WEBRTC_DENOISE=$IS_NEON
 done
 

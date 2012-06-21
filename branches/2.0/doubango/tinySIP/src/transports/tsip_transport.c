@@ -200,6 +200,8 @@ tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const struct so
 	tsk_size_t ret = 0;
 	const struct sockaddr* dest = to? to : (const struct sockaddr *)&self->pcscf_addr;
 
+	//--TSK_DEBUG_INFO("\n\nSEND SIP Message:%s\n\n\n", (const char*)data);
+
 	if(TNET_SOCKET_TYPE_IS_DGRAM(self->type)){
 		if(!(ret = tnet_transport_sendto(self->net_transport, self->connectedFD, dest, data, size))){
 			TSK_DEBUG_WARN("Send() returns zero");

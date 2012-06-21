@@ -43,8 +43,8 @@ struct tsip_message_s;
 typedef struct tsip_dialog_message
 {
 	TSIP_DECLARE_DIALOG;
-	/**< Last incoming message. */
-	struct tsip_message_s* last_iMessage;
+	/**< Last incoming or outgoing message. */
+	struct tsip_message_s* request;
 }
 tsip_dialog_message_t;
 

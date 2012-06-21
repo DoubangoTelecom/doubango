@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011 The WebRTC project authors. All Rights Reserved.
+ *  Copyright (c) 2012 The WebRTC project authors. All Rights Reserved.
  *
  *  Use of this source code is governed by a BSD-style license
  *  that can be found in the LICENSE file in the root of the source
@@ -8,8 +8,8 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-#ifndef WEBRTC_MODULES_AUDIO_PROCESSING_AEC_MAIN_INTERFACE_ECHO_CANCELLATION_H_
-#define WEBRTC_MODULES_AUDIO_PROCESSING_AEC_MAIN_INTERFACE_ECHO_CANCELLATION_H_
+#ifndef WEBRTC_MODULES_AUDIO_PROCESSING_AEC_INCLUDE_ECHO_CANCELLATION_H_
+#define WEBRTC_MODULES_AUDIO_PROCESSING_AEC_INCLUDE_ECHO_CANCELLATION_H_
 
 #include "typedefs.h"
 
@@ -38,6 +38,7 @@ typedef struct {
     WebRtc_Word16 nlpMode;        // default kAecNlpModerate
     WebRtc_Word16 skewMode;       // default kAecFalse
     WebRtc_Word16 metricsMode;    // default kAecFalse
+    int delay_logging;            // default kAecFalse
     //float realSkew;
 } AecConfig;
 
@@ -66,7 +67,7 @@ extern "C" {
  * Inputs                       Description
  * -------------------------------------------------------------------
  * void **aecInst               Pointer to the AEC instance to be created
- *                              and initilized
+ *                              and initialized
  *
  * Outputs                      Description
  * -------------------------------------------------------------------
@@ -226,6 +227,23 @@ WebRtc_Word32 WebRtcAec_get_echo_status(void *aecInst, WebRtc_Word16 *status);
 WebRtc_Word32 WebRtcAec_GetMetrics(void *aecInst, AecMetrics *metrics);
 
 /*
+ * Gets the current delay metrics for the session.
+ *
+ * Inputs                       Description
+ * -------------------------------------------------------------------
+ * void*      handle            Pointer to the AEC instance
+ *
+ * Outputs                      Description
+ * -------------------------------------------------------------------
+ * int*       median            Delay median value.
+ * int*       std               Delay standard deviation.
+ *
+ * int        return             0: OK
+ *                              -1: error
+ */
+int WebRtcAec_GetDelayMetrics(void* handle, int* median, int* std);
+
+/*
  * Gets the last error code.
  *
  * Inputs                       Description
@@ -238,23 +256,7 @@ WebRtc_Word32 WebRtcAec_GetMetrics(void *aecInst, AecMetrics *metrics);
  */
 WebRtc_Word32 WebRtcAec_get_error_code(void *aecInst);
 
-/*
- * Gets a version string.
- *
- * Inputs                       Description
- * -------------------------------------------------------------------
- * char           *versionStr   Pointer to a string array
- * WebRtc_Word16  len           The maximum length of the string
- *
- * Outputs                      Description
- * -------------------------------------------------------------------
- * WebRtc_Word8   *versionStr   Pointer to a string array
- * WebRtc_Word32  return         0: OK
- *                              -1: error
- */
-WebRtc_Word32 WebRtcAec_get_version(WebRtc_Word8 *versionStr, WebRtc_Word16 len);
-
 #ifdef __cplusplus
 }
 #endif
-#endif  /* WEBRTC_MODULES_AUDIO_PROCESSING_AEC_MAIN_INTERFACE_ECHO_CANCELLATION_H_ */
+#endif  // WEBRTC_MODULES_AUDIO_PROCESSING_AEC_INCLUDE_ECHO_CANCELLATION_H_
