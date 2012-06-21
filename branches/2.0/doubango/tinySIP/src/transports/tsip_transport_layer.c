@@ -461,6 +461,7 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 
 	switch(e->type){
 		case event_data: {
+				//--TSK_DEBUG_INFO("\n\nRECV SIP Message:%s\n\n\n", (const char*)e->data);
 				break;
 			}
 		case event_closed:

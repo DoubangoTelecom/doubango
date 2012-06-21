@@ -177,6 +177,7 @@ int tsip_dialog_getCKIK(tsip_dialog_t *self, AKA_CK_T *ck, AKA_IK_T *ik);
 
 int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* call_id, tsip_ssession_t* ss, tsk_fsm_state_id curr, tsk_fsm_state_id term);
 int tsip_dialog_fsm_act(tsip_dialog_t* self, tsk_fsm_action_id , const tsip_message_t* , const tsip_action_handle_t*);
+tsk_bool_t tsip_dialog_keep_action(const tsip_dialog_t* self, const tsip_response_t *response);
 int tsip_dialog_set_curr_action(tsip_dialog_t* self, const tsip_action_t* action);
 int tsip_dialog_set_lasterror(tsip_dialog_t* self, const char* phrase, short code);
 int tsip_dialog_set_lasterror_2(tsip_dialog_t* self, const char* phrase, short code, const tsip_message_t *message);

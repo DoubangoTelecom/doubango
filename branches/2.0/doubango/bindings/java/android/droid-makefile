@@ -46,8 +46,8 @@ ifeq ($(SPEEX), yes)
 	SPEEX_LDFLAGS := -lspeex
 endif
 
-ifeq ($(HAVE_WEBRTC), yes)
-	WEBRTC_LDFLAGS := -lwebrtc_aecm_$(MARCH) -lwebrtc_aec_$(MARCH) -lwebrtc_spl_$(MARCH) -lwebrtc_apm_utility_$(MARCH) -lwebrtc_ns_$(MARCH) -lwebrtc_system_wrappers_$(MARCH)
+ifeq ($(WEBRTC), yes)
+	WEBRTC_LDFLAGS := -lwebrtc_aecm_$(MARCH) -lwebrtc_spl_$(MARCH) -lwebrtc_apm_utility_$(MARCH) -lwebrtc_nsx_$(MARCH) -lwebrtc_system_wrappers_$(MARCH)
 endif
 
 ifeq ($(ILBC), yes)

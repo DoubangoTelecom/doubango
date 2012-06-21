@@ -1077,16 +1077,32 @@ int tsip_dialog_fsm_act(tsip_dialog_t* self, tsk_fsm_action_id action_id, const 
 	return ret;
 }
 
+/*
+This function is used to know if we need to keep the same action handle after receiving a response to our last action.
+*/
+tsk_bool_t tsip_dialog_keep_action(const tsip_dialog_t* self, const tsip_response_t *response)
+{
+	if(self && response){
+		const short code = TSIP_RESPONSE_CODE(response);
+		return 
+			TSIP_RESPONSE_IS_1XX(response) ||
+			(code == 401 || code == 407 || code == 421 || code == 494) ||
+			(code == 422 || code == 423);
+	}
+	return tsk_false;
+}
+
 int tsip_dialog_set_curr_action(tsip_dialog_t* self, const tsip_action_t* action)
 {
+	tsip_action_t* new_action;
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter.");
 		return -1;
 	}
+	
+	new_action = tsk_object_ref((void*)action);
 	TSK_OBJECT_SAFE_FREE(self->curr_action);
-	if(action){
-		self->curr_action = tsk_object_ref((void*)action);
-	}
+	self->curr_action = new_action;
 	return 0;
 }
 

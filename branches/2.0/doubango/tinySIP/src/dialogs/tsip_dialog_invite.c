@@ -181,20 +181,21 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 		{
 			if(msg){
 				if(TSIP_MESSAGE_IS_RESPONSE(msg)){ /* Response */
+					const tsip_action_t* action = tsip_dialog_keep_action(TSIP_DIALOG(self), msg) ? TSIP_DIALOG(self)->curr_action : tsk_null;
 					if(TSIP_RESPONSE_IS_1XX(msg)){ // 100-199
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i1xx, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i1xx, msg, action);
 					}
 					else if(TSIP_RESPONSE_IS_2XX(msg)){ // 200-299
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i2xx, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i2xx, msg, action);
 					}
 					else if(TSIP_RESPONSE_CODE(msg) == 401 || TSIP_RESPONSE_CODE(msg) == 407){ // 401,407
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i401_i407, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i401_i407, msg, action);
 					}
 					else if(TSIP_RESPONSE_CODE(msg) == 422){ // 422
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i422, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i422, msg, action);
 					}
 					else if(TSIP_RESPONSE_IS_3456(msg)){ // 300-699
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i300_to_i699, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i300_to_i699, msg, action);
 					}
 					else; // Ignore
 				}

@@ -115,6 +115,8 @@ void test_sessions_client()
 		TSK_FREE(temp);
 	}
 
+	tmedia_session_mgr_start(mgr);
+
 	canresume = tmedia_session_mgr_canresume(mgr);
 	
 	TSK_OBJECT_SAFE_FREE(mgr);

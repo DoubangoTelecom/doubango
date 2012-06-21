@@ -105,20 +105,21 @@ int tsip_dialog_options_event_callback(const tsip_dialog_options_t *self, tsip_d
 		{
 			if(msg){
 				if(TSIP_MESSAGE_IS_RESPONSE(msg)){
+					const tsip_action_t* action = tsip_dialog_keep_action(TSIP_DIALOG(self), msg) ? TSIP_DIALOG(self)->curr_action : tsk_null;
 					if(TSIP_RESPONSE_IS_1XX(msg)){
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_1xx, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_1xx, msg, action);
 					}
 					else if(TSIP_RESPONSE_IS_2XX(msg)){
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_2xx, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_2xx, msg, action);
 					}
 					else if(TSIP_RESPONSE_CODE(msg) == 401 || TSIP_RESPONSE_CODE(msg) == 407 || TSIP_RESPONSE_CODE(msg) == 421 || TSIP_RESPONSE_CODE(msg) == 494){
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_401_407_421_494, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_401_407_421_494, msg, action);
 					}
 					else if(TSIP_RESPONSE_IS_3456(msg)){
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_300_to_699, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_300_to_699, msg, action);
 					}
 					else{ /* should never happen  */
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_error, msg, tsk_null);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_error, msg, action);
 					}
 				}
 				else if (TSIP_REQUEST_IS_OPTIONS(msg)){ /* have been checked by dialog layer...but */

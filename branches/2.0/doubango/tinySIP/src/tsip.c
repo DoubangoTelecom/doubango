@@ -574,9 +574,10 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 
 	/* === Use DNS NAPTR+SRV for the P-CSCF discovery if we are in client mode === */
 	if(!stack->network.mode_server){
-		if(!stack->network.proxy_cscf || (stack->network.discovery_dhcp || stack->network.discovery_naptr)){
+		if(tsk_strnullORempty(stack->network.proxy_cscf) || (stack->network.discovery_dhcp || stack->network.discovery_naptr)){
 			if(stack->network.discovery_dhcp){ /* DHCP v4/v6 */
 				/* FIXME: */
+				TSK_DEBUG_ERROR("Unexpected code called");
 				ret = -2;
 			} /* DHCP */
 			else{ /* DNS NAPTR + SRV*/
@@ -612,7 +613,7 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 	}// !Server mode
 	
 	/* === Get Best source address ===  */
-	if(!stack->network.local_ip || tsk_striequals(stack->network.local_ip, "127.0.0.1")){ /* loacal-ip is missing? */
+	if(tsk_strnullORempty(stack->network.local_ip) || tsk_striequals(stack->network.local_ip, "127.0.0.1")){ /* loacal-ip is missing? */
 		if(stack->network.mode_server){
 			stack_error_desc = "In mode server you must provide a valid local ip";
 			ret = -1984;
