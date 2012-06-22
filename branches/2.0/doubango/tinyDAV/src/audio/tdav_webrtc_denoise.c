@@ -39,6 +39,7 @@
 #include <string.h>
 
 #define WEBRTC_MAX_ECHO_TAIL		500
+static const WebRtc_Word32 kSizeOfWord16 = sizeof(WebRtc_Word16);
 
 static int tdav_webrtc_denoise_set(tmedia_denoise_t* self, const tmedia_param_t* param)
 {
@@ -108,7 +109,7 @@ static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t frame_size,
 	}
 
 	// allocate temp buffer for record processing
-	if(!(denoiser->temp_rec_out = tsk_realloc(denoiser->temp_rec_out, denoiser->frame_size * sizeof(WebRtc_Word16)))){
+	if(!(denoiser->temp_rec_out = tsk_realloc(denoiser->temp_rec_out, denoiser->frame_size * kSizeOfWord16))){
 		TSK_DEBUG_ERROR("Failed to allocate new buffer");
 		return -3;
 	}
@@ -133,10 +134,10 @@ static int tdav_webrtc_denoise_echo_playback(tmedia_denoise_t* self, const void*
 					}
 					break;
 				}
-				// 32Hz and 16Khz work but produce very ugly results
 			case 16000:
 			case 32000:
 				{
+					// Split in several 160 samples
 					uint32_t i, k = (denoiser->sampling_rate == 16000 ? 1 : 2);
 					for(i = 0; i<denoiser->frame_size; i+=(denoiser->frame_size>>k)){
 						if((ret = TDAV_WebRtcAec_BufferFarend(denoiser->AEC_inst, &pEchoFrame[i], (denoiser->frame_size>>k)))){
@@ -188,6 +189,9 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 				return ret;
 			}
 		}
+		else{
+			memcpy(denoiser->temp_rec_out, pAudioFrame, (denoiser->frame_size * kSizeOfWord16));
+		}
 #endif
 
 		// AEC
@@ -204,6 +208,7 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 			case 16000:
 			case 3200:
 				{
+					// Split in several 160 samples
 					uint32_t i, k = (denoiser->sampling_rate == 16000 ? 1 : 2);
 					for(i = 0; i<denoiser->frame_size; i+=(denoiser->frame_size>>k)){
 						if((ret = TDAV_WebRtcAec_Process(denoiser->AEC_inst, &denoiser->temp_rec_out[i], tsk_null, &pAudioFrame[i], tsk_null, (denoiser->frame_size>>k), denoiser->sound_card_buffer_len, denoiser->echo_skew))){
