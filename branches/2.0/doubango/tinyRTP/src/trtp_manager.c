@@ -598,7 +598,7 @@ int trtp_manager_start(trtp_manager_t* self)
 	/* RTCP */
 	if(self->use_rtcp){
 		tnet_fd_t local_rtcp_fd = self->rtcp.local_socket ? self->rtcp.local_socket->fd : -1;
-		if(local_rtcp_fd < 0 && self->use_rtcp_mux){
+		if(local_rtcp_fd < 0 || self->use_rtcp_mux){ // use RTP local port to send RTCP packets
 			local_rtcp_fd = self->transport->master->fd;
 		}
 		
