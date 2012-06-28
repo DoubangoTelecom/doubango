@@ -47,6 +47,9 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 #ifdef _MSC_VER
 static double drand48() { return (((double)rand()) / RAND_MAX); }
 static void srand48(long sv) { srand((unsigned int) sv); }
