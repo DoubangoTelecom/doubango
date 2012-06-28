@@ -282,7 +282,7 @@ int tdav_video_jb_put(tdav_video_jb_t* self, trtp_rtp_packet_t* rtp_pkt)
 			// compute FPS
 			self->fps = TSK_CLAMP(TDAV_VIDEO_JB_FPS_MIN, ((3003 * 30) / self->avg_duration), TDAV_VIDEO_JB_FPS_MAX);
 			//self->fps = ((3003 * 30) / self->avg_duration);
-			self->tail_max = (self->fps >> 1); // maximum delay = half second
+			self->tail_max = (self->fps << 1); // maximum delay = 2 seconds
 			tdav_video_jb_reset_fps_prob(self);
 		}
 	}
@@ -385,7 +385,7 @@ static int _tdav_video_jb_timer_callback(const void* arg, tsk_timer_id_t timer_i
 		}
         else{
             //TSK_DEBUG_INFO("Not enought frames");
-            //next_timeout >>= 1;
+            next_timeout >>= 1;
         }
         
         jb->timer_decode = tsk_timer_manager_schedule(jb->h_timer, next_timeout, _tdav_video_jb_timer_callback, jb);
