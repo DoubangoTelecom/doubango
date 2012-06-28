@@ -74,11 +74,21 @@
 
 #include <stdint.h>
 #ifdef __SYMBIAN32__
-#include <stdlib.h>
+#   include <stdlib.h>
+#endif
+
+#if defined(__APPLE__)
+#   include <TargetConditionals.h>
 #endif
 
 #if HAVE_CONFIG_H
 	#include "../config.h"
+#endif
+
+// http://code.google.com/p/idoubs/issues/detail?id=111
+#if TARGET_IPHONE_SIMULATOR
+#   undef HAVE_SRTP
+#   define HAVE_SRTP 0
 #endif
 
 #endif // TINYRTP_CONFIG_H

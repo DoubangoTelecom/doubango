@@ -435,7 +435,7 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
 							blp_count = blp ? 16 : 0;
 							
 							for(j = -1; j < blp_count; ++j){
-								if(j == -1 || (blp & (1 << __Pow2[j]))){
+								if(j == -1 || (blp & __Pow2[j])){
 									pid = (rtpfb->nack.pid[i] + (j + 1));
 									tsk_list_lock(video->avpf.packets);
 									tsk_list_foreach(item, video->avpf.packets){

@@ -185,7 +185,7 @@ int tdav_codec_theora_open(tmedia_codec_t* self)
 	theora->encoder.context->mb_decision = FF_MB_DECISION_RD;
 	
 	// Theoraenc doesn't honor 'CODEC_FLAG_QSCALE'
-	theora->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(theora)->out.width * TMEDIA_CODEC_VIDEO(theora)->out.height * 128 / 320 / 240) * 1000);
+	theora->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(theora)->out.width * TMEDIA_CODEC_VIDEO(theora)->out.height * 256 / 320 / 240) * 1000);
 	theora->encoder.context->rc_lookahead = 0;
 	theora->encoder.context->global_quality = FF_QP2LAMBDA * theora->encoder.quality;
 

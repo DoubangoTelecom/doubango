@@ -170,13 +170,13 @@ static int tdav_codec_vp8_open(tmedia_codec_t* self)
 	}
 	vp8->encoder.cfg.g_timebase.num = 1;
 	vp8->encoder.cfg.g_timebase.den = TMEDIA_CODEC_VIDEO(vp8)->out.fps;
-	vp8->encoder.cfg.rc_target_bitrate = vp8->encoder.target_bitrate = (TMEDIA_CODEC_VIDEO(vp8)->out.width * TMEDIA_CODEC_VIDEO(vp8)->out.height * 128 / 320 / 240);
+	vp8->encoder.cfg.rc_target_bitrate = vp8->encoder.target_bitrate = (TMEDIA_CODEC_VIDEO(vp8)->out.width * TMEDIA_CODEC_VIDEO(vp8)->out.height * 256 / 320 / 240);
 	vp8->encoder.cfg.rc_end_usage = VPX_CBR;
 	vp8->encoder.cfg.g_w = TMEDIA_CODEC_VIDEO(vp8)->out.width;
 	vp8->encoder.cfg.g_h = TMEDIA_CODEC_VIDEO(vp8)->out.height;
 	vp8->encoder.cfg.kf_mode = VPX_KF_AUTO;
 	vp8->encoder.cfg.kf_min_dist = vp8->encoder.cfg.kf_max_dist = (TDAV_VP8_GOP_SIZE_IN_SECONDS * TMEDIA_CODEC_VIDEO(vp8)->out.fps);
-	//--vp8->encoder.cfg.g_error_resilient = VPX_ERROR_RESILIENT_DEFAULT;
+	vp8->encoder.cfg.g_error_resilient = 1;
 	vp8->encoder.cfg.g_lag_in_frames = 0;
 #if TDAV_UNDER_WINDOWS
 	{
@@ -184,8 +184,6 @@ static int tdav_codec_vp8_open(tmedia_codec_t* self)
 		GetSystemInfo(&SystemInfo);
 		vp8->encoder.cfg.g_threads = SystemInfo.dwNumberOfProcessors;
 	}
-#else
-	vp8->encoder.cfg.g_threads = TDAV_SYSTEM_CORES_COUNT;
 #endif
 	vp8->encoder.cfg.g_pass = VPX_RC_ONE_PASS;
 	vp8->encoder.cfg.rc_min_quantizer = 0;//TSK_CLAMP(vp8->encoder.cfg.rc_min_quantizer, 10, vp8->encoder.cfg.rc_max_quantizer);

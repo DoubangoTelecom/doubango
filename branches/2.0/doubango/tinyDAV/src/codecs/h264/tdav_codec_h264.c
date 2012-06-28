@@ -150,7 +150,7 @@ static int tdav_codec_h264_open(tmedia_codec_t* self)
 	h264->encoder.context->width = TMEDIA_CODEC_VIDEO(h264)->out.width;
 	h264->encoder.context->height = TMEDIA_CODEC_VIDEO(h264)->out.height;
 
-	h264->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(h264)->out.width * TMEDIA_CODEC_VIDEO(h264)->out.height * 128 / 320 / 240) * 1000);
+	h264->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(h264)->out.width * TMEDIA_CODEC_VIDEO(h264)->out.height * 256 / 320 / 240) * 1000);
 	h264->encoder.context->rc_lookahead = 0;
 	h264->encoder.context->global_quality = FF_QP2LAMBDA * h264->encoder.quality;
 	
