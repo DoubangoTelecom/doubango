@@ -350,7 +350,7 @@ static int _tdav_video_jb_timer_callback(const void* arg, tsk_timer_id_t timer_i
 	}
 	
 	if(jb->timer_decode == timer_id){
-        uint64_t next_timeout = (1000 / jb->fps);
+        uint64_t next_timeout = (1000 / jb->fps) - 15/*time spent for various tasks (mutexes, timer init, ...)*/;
         
 		if(jb->frames_count >= jb->tail_min){
 			tsk_list_item_t* item;
