@@ -261,7 +261,7 @@ static int tdav_codec_h263_open(tmedia_codec_t* self)
 	h263->encoder.context->mb_qmax = h263->encoder.context->qmax = 51;
 	h263->encoder.context->mb_decision = FF_MB_DECISION_RD;
 	
-	h263->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(h263)->out.width * TMEDIA_CODEC_VIDEO(h263)->out.height * 128 / 320 / 240) * 1000);
+	h263->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(h263)->out.width * TMEDIA_CODEC_VIDEO(h263)->out.height * 256 / 320 / 240) * 1000);
 	h263->encoder.context->rc_lookahead = 0;
 	h263->encoder.context->rtp_payload_size = RTP_PAYLOAD_SIZE;
 	h263->encoder.context->opaque = tsk_null;

@@ -223,7 +223,7 @@ int tdav_codec_mp4ves_open(tmedia_codec_t* self)
 	mp4v->encoder.context->flags |= CODEC_FLAG_QSCALE;
 	mp4v->encoder.context->global_quality = FF_QP2LAMBDA * mp4v->encoder.quality;
 
-	mp4v->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(mp4v)->out.width * TMEDIA_CODEC_VIDEO(mp4v)->out.height * 128 / 320 / 240) * 1000);
+	mp4v->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(mp4v)->out.width * TMEDIA_CODEC_VIDEO(mp4v)->out.height * 256 / 320 / 240) * 1000);
 	mp4v->encoder.context->rtp_payload_size = MP4V_RTP_PAYLOAD_SIZE;
 	mp4v->encoder.context->opaque = tsk_null;
 	mp4v->encoder.context->profile = mp4v->profile>>4;

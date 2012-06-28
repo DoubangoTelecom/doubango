@@ -30,6 +30,7 @@
 
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
 
+#import "tsk_time.h"
 #include "tsk_memory.h"
 #include "tsk_timer.h"
 #include "tsk_debug.h"
@@ -46,11 +47,13 @@
 // Min number of frames required before requesting a full decode
 // This is required because of the FEC and NACK functions
 // Will be updated using the RTT value from RTCP and probation
-#define TDAV_VIDEO_JB_TAIL_MIN_MIN	1
-#define TDAV_VIDEO_JB_TAIL_MIN_MAX	2
+#define TDAV_VIDEO_JB_TAIL_MIN_MIN	2
+#define TDAV_VIDEO_JB_TAIL_MIN_MAX	4
 #define TDAV_VIDEO_JB_TAIL_MIN_PROB	(TDAV_VIDEO_JB_FPS >> 2)
 
 #define TDAV_VIDEO_JB_MAX_DROPOUT		0xFD9B
+
+#define TDAV_VIDEO_JB_DISABLE           0
 
 static const tdav_video_frame_t* _tdav_video_jb_get_frame(struct tdav_video_jb_s* self, uint32_t timestamp, uint8_t pt, tsk_bool_t *pt_matched);
 static int _tdav_video_jb_timer_callback(const void* arg, tsk_timer_id_t timer_id);
@@ -192,6 +195,10 @@ int tdav_video_jb_start(tdav_video_jb_t* self)
 
 int tdav_video_jb_put(tdav_video_jb_t* self, trtp_rtp_packet_t* rtp_pkt)
 {
+#if TDAV_VIDEO_JB_DISABLE
+    self->cb_data_rtp.rtp.pkt = rtp_pkt;
+    self->callback(&self->cb_data_rtp);
+#else
 	const tdav_video_frame_t* old_frame;
 	tsk_bool_t pt_matched = tsk_false, is_frame_late_or_dup = tsk_false, is_restarted = tsk_false;
 	uint16_t* seq_num;
@@ -275,7 +282,7 @@ int tdav_video_jb_put(tdav_video_jb_t* self, trtp_rtp_packet_t* rtp_pkt)
 			// compute FPS
 			self->fps = TSK_CLAMP(TDAV_VIDEO_JB_FPS_MIN, ((3003 * 30) / self->avg_duration), TDAV_VIDEO_JB_FPS_MAX);
 			//self->fps = ((3003 * 30) / self->avg_duration);
-			self->tail_max = (self->fps << 1);
+			self->tail_max = (self->fps >> 1); // maximum delay = half second
 			tdav_video_jb_reset_fps_prob(self);
 		}
 	}
@@ -288,6 +295,7 @@ int tdav_video_jb_put(tdav_video_jb_t* self, trtp_rtp_packet_t* rtp_pkt)
 	if(!is_frame_late_or_dup || is_restarted){
 		*seq_num = rtp_pkt->header->seq_num;
 	}
+#endif
 
 	return 0;
 }
@@ -334,24 +342,27 @@ static const tdav_video_frame_t* _tdav_video_jb_get_frame(tdav_video_jb_t* self,
 
 static int _tdav_video_jb_timer_callback(const void* arg, tsk_timer_id_t timer_id)
 {
-	tdav_video_jb_t* jb = (tdav_video_jb_t*)arg;
-
+#if !TDAV_VIDEO_JB_DISABLE
+    tdav_video_jb_t* jb = (tdav_video_jb_t*)arg;
+    
 	if(!jb->started){
 		return 0;
 	}
 	
 	if(jb->timer_decode == timer_id){
-		jb->timer_decode = tsk_timer_manager_schedule(jb->h_timer, (1000 / jb->fps), _tdav_video_jb_timer_callback, jb);
+        uint64_t next_timeout = (1000 / jb->fps);
+        
 		if(jb->frames_count >= jb->tail_min){
 			tsk_list_item_t* item;
-
+            uint64_t decode_start = tsk_time_now(), decode_duration;
+            
 			tsk_safeobj_lock(jb); // against get_frame()
 			tsk_list_lock(jb->frames);
 			item = tsk_list_pop_first_item(jb->frames);
 			--jb->frames_count;				
 			tsk_list_unlock(jb->frames);
 			tsk_safeobj_unlock(jb);
-
+            
 			if(jb->callback){
 				trtp_rtp_packet_t* pkt;
 				const tsk_list_item_t* _item = item; // save memory address as "tsk_list_foreach() will change it for each loop"
@@ -366,10 +377,20 @@ static int _tdav_video_jb_timer_callback(const void* arg, tsk_timer_id_t timer_i
 					jb->callback(&jb->cb_data_rtp);
 				}
 			}
-
+            
 			TSK_OBJECT_SAFE_FREE(item);
+            decode_duration = (tsk_time_now() - decode_start);
+            next_timeout = (decode_duration > next_timeout) ? 0 : (next_timeout - decode_duration);
+            //if(!next_timeout)TSK_DEBUG_INFO("next_timeout=%llu", next_timeout);
 		}
+        else{
+            //TSK_DEBUG_INFO("Not enought frames");
+            //next_timeout >>= 1;
+        }
+        
+        jb->timer_decode = tsk_timer_manager_schedule(jb->h_timer, next_timeout, _tdav_video_jb_timer_callback, jb);
 	}
+#endif
 	
 	return 0;
 }
