@@ -30,7 +30,7 @@
 
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
 
-#import "tsk_time.h"
+#include "tsk_time.h"
 #include "tsk_memory.h"
 #include "tsk_timer.h"
 #include "tsk_debug.h"
