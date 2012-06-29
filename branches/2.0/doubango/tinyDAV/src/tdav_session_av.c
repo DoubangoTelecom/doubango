@@ -57,8 +57,8 @@ int tdav_session_av_init(tdav_session_av_t* self, tsk_bool_t is_audio)
 	/* base::init(): called by tmedia_session_create() */
 
 	self->media_type = is_audio ? tmedia_audio : tmedia_video;
-	self->use_rtcp = tsk_true; // FIXME: for now RTCP is always on, use "session_set('use-rtcp');"
-	self->use_rtcp_mux = tsk_true;
+	self->use_rtcp = tmedia_defaults_get_rtcp_enabled();
+	self->use_rtcpmux = tmedia_defaults_get_rtcpmux_enabled();
 	self->use_avpf = (profile == tmedia_profile_rtcweb); // negotiate if not RTCWeb profile
 	
 	tsk_safeobj_init(self);
@@ -125,6 +125,10 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 			}
 			else if(tsk_striequals(param->key, "rtcp-enabled")){
 				self->use_rtcp = (TSK_TO_INT32((uint8_t*)param->value) != 0);
+				return tsk_true;
+			}
+			else if(tsk_striequals(param->key, "rtcpmux-enabled")){
+				self->use_rtcpmux = (TSK_TO_INT32((uint8_t*)param->value) != 0);
 				return tsk_true;
 			}
 			else if(tsk_striequals(param->key, "avpf-enabled")){
@@ -231,7 +235,7 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 		// these information will be updated when the RTP manager starts if ICE is enabled
 		ret = trtp_manager_set_rtp_remote(self->rtp_manager, self->remote_ip, self->remote_port);
 		ret = trtp_manager_set_payload_type(self->rtp_manager, best_codec->neg_format ? atoi(best_codec->neg_format) : atoi(best_codec->format));
-		self->rtp_manager->use_rtcp_mux = self->use_rtcp_mux; //FIXME: use "set_rtcp_mux()"
+		self->rtp_manager->use_rtcpmux = self->use_rtcpmux;
 		ret = trtp_manager_start(self->rtp_manager);
 
 		// because of AudioUnit under iOS => prepare both consumer and producer then start() at the same time
@@ -505,7 +509,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 		);
 
 		// RFC 5761: RTCP/RTP muxing
-		if(self->use_rtcp_mux){
+		if(self->use_rtcpmux){
 			tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("rtcp-mux", tsk_null), tsk_null);
 		}
 
@@ -525,6 +529,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 		if(self->ice_ctx){
 			tsk_size_t index = 0;
 			const tnet_ice_candidate_t* candidate;
+			tsk_bool_t remote_use_rtcpmux = (base->M.ro && (tsdp_header_M_findA(base->M.ro, "rtcp-mux") != tsk_null));
 
 			// FIXME: for RTCP, use "RFC 3605"in addition to "rtcp-mux"
 			
@@ -543,10 +548,12 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 				// RTCWeb
 				tsdp_header_M_add_headers(base->M.lo,
 					TSDP_HEADER_A_VA_ARGS("mid", self->media_type == tmedia_audio ? "audio" : "video"),
-					TSDP_HEADER_A_VA_ARGS("rtcp-mux", tsk_null),
 						tsk_null);				
 				
 				while((candidate = tnet_ice_ctx_get_local_candidate_at(self->ice_ctx, index++))){
+					if(self->use_rtcpmux && remote_use_rtcpmux && candidate->comp_id == TNET_ICE_CANDIDATE_COMPID_RTCP){
+						continue; // do not add RTCP candidates if RTCP-MUX is activated (local + remote)
+					}
 					tsdp_header_M_add_headers(base->M.lo,
 							TSDP_HEADER_A_VA_ARGS("candidate", tnet_ice_candidate_tostring((tnet_ice_candidate_t*)candidate)),
 							tsk_null);
@@ -644,7 +651,7 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 	self->remote_port = m->port;
 
 	/* RTCP-MUX */
-	self->use_rtcp_mux = (tsdp_header_M_findA(m, "rtcp-mux") != tsk_null);
+	self->use_rtcpmux = (tsdp_header_M_findA(m, "rtcp-mux") != tsk_null);
 
 	/* SDPCapNeg: RFC 5939 */
 	{

@@ -387,6 +387,18 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetSRtpMode")]
   public static extern bool MediaSessionMgr_defaultsSetSRtpMode(int jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetRtcpEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetRtcpEnabled(bool jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetRtcpEnabled")]
+  public static extern bool MediaSessionMgr_defaultsGetRtcpEnabled();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetRtcpMuxEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetRtcpMuxEnabled(bool jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetRtcpMuxEnabled")]
+  public static extern bool MediaSessionMgr_defaultsGetRtcpMuxEnabled();
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetIceEnabled")]
   public static extern bool MediaSessionMgr_defaultsSetIceEnabled(bool jarg1);
 
@@ -752,6 +764,12 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_set100rel")]
   public static extern bool CallSession_set100rel(HandleRef jarg1, bool jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setRtcp")]
+  public static extern bool CallSession_setRtcp(HandleRef jarg1, bool jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setRtcpMux")]
+  public static extern bool CallSession_setRtcpMux(HandleRef jarg1, bool jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setICE")]
   public static extern bool CallSession_setICE(HandleRef jarg1, bool jarg2);

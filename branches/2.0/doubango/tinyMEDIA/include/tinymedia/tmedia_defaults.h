@@ -76,6 +76,10 @@ TINYMEDIA_API const char* tmedia_defaults_get_inv_session_refresher();
 TINYMEDIA_API int tmedia_defaults_set_inv_session_refresher(const char* refresher);
 TINYMEDIA_API tmedia_srtp_mode_t tmedia_defaults_get_srtp_mode();
 TINYMEDIA_API int tmedia_defaults_set_srtp_mode(tmedia_srtp_mode_t mode);
+TINYMEDIA_API tsk_bool_t tmedia_defaults_get_rtcp_enabled();
+TINYMEDIA_API int tmedia_defaults_set_rtcp_enabled(tsk_bool_t rtcp_enabled);
+TINYMEDIA_API tsk_bool_t tmedia_defaults_get_rtcpmux_enabled();
+TINYMEDIA_API int tmedia_defaults_set_rtcpmux_enabled(tsk_bool_t rtcpmux_enabled);
 TINYMEDIA_API int tmedia_defaults_set_ice_enabled(tsk_bool_t ice_enabled);
 TINYMEDIA_API tsk_bool_t tmedia_defaults_get_ice_enabled();
 

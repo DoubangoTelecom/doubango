@@ -64,6 +64,8 @@
 
 #define TNET_ICE_CONFLICT_ERROR_CODE	487
 
+static const char* foundation_default = tsk_null;
+
 static int _tnet_ice_ctx_fsm_act_async(struct tnet_ice_ctx_s* self, tsk_fsm_action_id action_id);
 static int _tnet_ice_ctx_signal_async(struct tnet_ice_ctx_s* self, tnet_ice_event_type_t type, const char* phrase);
 static int _tnet_ice_ctx_restart(struct tnet_ice_ctx_s* self);
@@ -96,6 +98,7 @@ typedef struct tnet_ice_ctx_s
 	const void* userdata;
 	tsk_bool_t use_ipv6;
 	tsk_bool_t use_rtcp;
+	tsk_bool_t use_rtcpmux;
 	tsk_bool_t is_video;
 	tsk_bool_t unicast;
 	tsk_bool_t anycast;
@@ -119,9 +122,9 @@ typedef struct tnet_ice_ctx_s
 	tnet_ice_candidates_L_t* candidates_local;
 	tnet_ice_candidates_L_t* candidates_remote;
 	tnet_ice_pairs_L_t* candidates_pairs;
-	tsk_bool_t has_nominated_offer;
-	tsk_bool_t has_nominated_answer;
-	tsk_bool_t has_nominated_symetric; /**< Whether symetic RTP has been negotiated */
+	tsk_bool_t have_nominated_offer;
+	tsk_bool_t have_nominated_answer;
+	tsk_bool_t have_nominated_symetric; /**< Whether symetic RTP has been negotiated */
 
 	uint16_t RTO; /**< Estimate of the round-trip time (RTT) in millisecond */
 	uint16_t Rc; /**< Number of retransmissions for UDP in millisecond */
@@ -504,6 +507,16 @@ int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candida
 	return ret;
 }
 
+int tnet_ice_ctx_set_rtcpmux(tnet_ice_ctx_t* self, tsk_bool_t use_rtcpmux)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->use_rtcpmux = use_rtcpmux;
+	return 0;
+}
+
 tsk_size_t tnet_ice_ctx_count_local_candidates(const tnet_ice_ctx_t* self)
 {
 	if(!self){
@@ -561,17 +574,17 @@ tsk_bool_t tnet_ice_ctx_is_active(const tnet_ice_ctx_t* self)
 // says if media can start in both direction
 tsk_bool_t tnet_ice_ctx_is_connected(const tnet_ice_ctx_t* self)
 {
-	return (self && self->has_nominated_symetric);
+	return (self && self->have_nominated_symetric);
 }
 
 tsk_bool_t tnet_ice_ctx_is_can_send(const tnet_ice_ctx_t* self)
 {
-	return (self && self->has_nominated_offer);
+	return (self && self->have_nominated_offer);
 }
 
 tsk_bool_t tnet_ice_ctx_is_can_recv(const tnet_ice_ctx_t* self)
 {
-	return (self && self->has_nominated_answer);
+	return (self && self->have_nominated_answer);
 }
 
 tsk_bool_t tnet_ice_ctx_use_ipv6(const tnet_ice_ctx_t* self)
@@ -612,7 +625,7 @@ int tnet_ice_ctx_recv_stun_message(tnet_ice_ctx_t* self, const void* data, tsk_s
 		if(self->rtp_callback){
 			return self->rtp_callback(self->rtp_callback_data, data, size, local_fd, remote_addr);
 		}
-		TSK_DEBUG_WARN("Not STUN message");
+		TSK_DEBUG_INFO("Not STUN message");
 		return 0;
 	}
 
@@ -659,7 +672,7 @@ int tnet_ice_ctx_recv_stun_message(tnet_ice_ctx_t* self, const void* data, tsk_s
 						}
 					}
 					ret = tnet_ice_pair_send_response((tnet_ice_pair_t *)pair, message, resp_code, resp_phrase, remote_addr);
-					if(self->is_ice_jingle && self->has_nominated_symetric){
+					if(self->is_ice_jingle && self->have_nominated_symetric){
 						ret = tnet_ice_pair_send_conncheck((tnet_ice_pair_t *)pair); // "keepalive"
 					}
 				}
@@ -709,9 +722,9 @@ int tnet_ice_ctx_cancel(tnet_ice_ctx_t* self)
 	}
 	
 	self->is_active = tsk_false;
-	self->has_nominated_symetric = tsk_false;
-	self->has_nominated_answer = tsk_false;
-	self->has_nominated_offer = tsk_false;
+	self->have_nominated_symetric = tsk_false;
+	self->have_nominated_answer = tsk_false;
+	self->have_nominated_offer = tsk_false;
 	return _tnet_ice_ctx_fsm_act_async(self, _fsm_action_Cancel);
 }
 
@@ -793,9 +806,11 @@ static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandi
 					address->ip, &socket_rtp,
 					self->use_rtcp ? &socket_rtcp : tsk_null);
 		if(ret == 0){
+			const char* foundation_rtp = foundation_default;
 			tsk_list_lock(self->candidates_local);
 			if(socket_rtp){
-				if((candidate = tnet_ice_candidate_create(tnet_ice_cand_type_host, socket_rtp, self->is_ice_jingle, tsk_true, self->is_video, self->ufrag, self->pwd))){
+				if((candidate = tnet_ice_candidate_create(tnet_ice_cand_type_host, socket_rtp, self->is_ice_jingle, tsk_true, self->is_video, self->ufrag, self->pwd, foundation_default))){
+					foundation_rtp = (const char*)candidate->foundation;
 					if(check_best_local_ip && (candidate->socket && (tsk_striequals(candidate->socket->ip, best_local_ip)))){
 						curr_local_pref = 0xFFFF;
 						check_best_local_ip = tsk_false;
@@ -810,7 +825,7 @@ static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandi
 				}
 			}
 			if(socket_rtcp){
-				if((candidate = tnet_ice_candidate_create(tnet_ice_cand_type_host, socket_rtcp, self->is_ice_jingle, tsk_false, self->is_video, self->ufrag, self->pwd))){
+				if((candidate = tnet_ice_candidate_create(tnet_ice_cand_type_host, socket_rtcp, self->is_ice_jingle, tsk_false, self->is_video, self->ufrag, self->pwd, foundation_rtp))){
 					tnet_ice_candidate_set_local_pref(candidate, curr_local_pref);
 					tsk_list_push_back_data(self->candidates_local, (void**)&candidate);
 				}
@@ -1001,7 +1016,11 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 							if(tsk_strnullORempty(candidate_curr->stun.srflx_addr)){
 								ret = tnet_ice_candidate_process_stun_response((tnet_ice_candidate_t*)candidate_curr, response, fd);
 								if(!tsk_strnullORempty(candidate_curr->stun.srflx_addr)){
-									tnet_ice_candidate_t* new_cand = tnet_ice_candidate_create(tnet_ice_cand_type_srflx, candidate_curr->socket, candidate_curr->is_ice_jingle, candidate_curr->is_rtp, self->is_video, self->ufrag, self->pwd);
+									char* foundation = tsk_strdup("srflx");
+									tnet_ice_candidate_t* new_cand;
+									tsk_strcat(&foundation, candidate_curr->foundation);
+									new_cand = tnet_ice_candidate_create(tnet_ice_cand_type_srflx, candidate_curr->socket, candidate_curr->is_ice_jingle, candidate_curr->is_rtp, self->is_video, self->ufrag, self->pwd, foundation);
+									TSK_FREE(foundation);
 									if(new_cand){
 										++srflx_addr_count;
 										tsk_list_lock(self->candidates_local);
@@ -1149,7 +1168,7 @@ static int _tnet_ice_ctx_fsm_GatheringComplet_2_ConnChecking_X_ConnCheck(va_list
 	static const long rto = 160; // milliseconds
 	struct sockaddr_storage remote_addr;
 	uint64_t time_start, time_curr, time_end, concheck_timeout;
-	tsk_bool_t role_conflict;
+	tsk_bool_t role_conflict, check_rtcp;
 	
 	self = va_arg(*app, tnet_ice_ctx_t *);
 
@@ -1183,7 +1202,7 @@ start_conneck:
 	time_start = time_curr = tsk_time_now();
 	time_end = (time_start + concheck_timeout);
 
-	while(self->is_started && self->is_active && (time_curr < time_end) && !self->has_nominated_symetric){
+	while(self->is_started && self->is_active && (time_curr < time_end) && !self->have_nominated_symetric){
 		tv.tv_sec = 0;
 		tv.tv_usec = (rto * 1000);
 		
@@ -1203,7 +1222,7 @@ start_conneck:
 		
 		// Send ConnCheck requests
 		// the pairs are already order by priority (from high to low)
-		if(!self->has_nominated_symetric){
+		if(!self->have_nominated_symetric){
 			tsk_list_foreach(item, self->candidates_pairs){
 				if(!(pair = item->data) || !pair->candidate_offer || !pair->candidate_offer->socket){
 					continue;
@@ -1267,21 +1286,22 @@ start_conneck:
 			TSK_FREE(data);
 		}
 
-		if(!self->has_nominated_offer){
-			self->has_nominated_offer = tnet_ice_pairs_has_nominated_offer(self->candidates_pairs);
+		check_rtcp = (self->use_rtcp && !self->use_rtcpmux);
+		if(!self->have_nominated_offer){
+			self->have_nominated_offer = tnet_ice_pairs_have_nominated_offer(self->candidates_pairs, check_rtcp);
 		}
-		if(!self->has_nominated_answer){
-			self->has_nominated_answer = tnet_ice_pairs_has_nominated_answer(self->candidates_pairs);
+		if(!self->have_nominated_answer){
+			self->have_nominated_answer = tnet_ice_pairs_have_nominated_answer(self->candidates_pairs, check_rtcp);
 		}
-		if(self->has_nominated_offer && self->has_nominated_answer){
-			self->has_nominated_symetric = tnet_ice_pairs_has_nominated_symetric(self->candidates_pairs, self->use_rtcp);
+		if(self->have_nominated_offer && self->have_nominated_answer){
+			self->have_nominated_symetric = tnet_ice_pairs_have_nominated_symetric(self->candidates_pairs, check_rtcp);
 		}
 	}
 
 bail:
 	// move to the next state depending on the conncheck result
 	if(self->is_started){
-		if(ret == 0 && self->has_nominated_symetric){
+		if(ret == 0 && self->have_nominated_symetric){
 			_tnet_ice_ctx_fsm_act_async(self, _fsm_action_Success);
 		}
 		else{

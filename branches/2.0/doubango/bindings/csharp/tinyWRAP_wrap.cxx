@@ -1952,6 +1952,50 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetSRtpMode(i
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetRtcpEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetRtcpEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetRtcpEnabled() {
+  unsigned int jresult ;
+  bool result;
+  
+  result = (bool)MediaSessionMgr::defaultsGetRtcpEnabled();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetRtcpMuxEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetRtcpMuxEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetRtcpMuxEnabled() {
+  unsigned int jresult ;
+  bool result;
+  
+  result = (bool)MediaSessionMgr::defaultsGetRtcpMuxEnabled();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetIceEnabled(unsigned int jarg1) {
   unsigned int jresult ;
   bool arg1 ;
@@ -3484,6 +3528,34 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_set100rel(void * jarg1, u
   arg1 = (CallSession *)jarg1; 
   arg2 = jarg2 ? true : false; 
   result = (bool)(arg1)->set100rel(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setRtcp(void * jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  bool arg2 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  result = (bool)(arg1)->setRtcp(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setRtcpMux(void * jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  bool arg2 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  result = (bool)(arg1)->setRtcpMux(arg2);
   jresult = result; 
   return jresult;
 }

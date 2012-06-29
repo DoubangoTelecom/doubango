@@ -65,9 +65,9 @@ int tnet_ice_pair_auth_conncheck(const tnet_ice_pair_t *self, const struct tnet_
 int tnet_ice_pair_recv_response(tnet_ice_pair_t *self, const struct tnet_stun_message_s* response);
 const tnet_ice_pair_t* tnet_ice_pairs_find_by_response(tnet_ice_pairs_L_t* pairs, const struct tnet_stun_message_s* response);
 const tnet_ice_pair_t* tnet_ice_pairs_find_by_fd_and_addr(tnet_ice_pairs_L_t* pairs, uint16_t local_fd, const struct sockaddr_storage *remote_addr);
-tsk_bool_t tnet_ice_pairs_has_nominated_offer(const tnet_ice_pairs_L_t* pairs);
-tsk_bool_t tnet_ice_pairs_has_nominated_answer(const tnet_ice_pairs_L_t* pairs);
-tsk_bool_t tnet_ice_pairs_has_nominated_symetric(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp);
+tsk_bool_t tnet_ice_pairs_have_nominated_offer(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp);
+tsk_bool_t tnet_ice_pairs_have_nominated_answer(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp);
+tsk_bool_t tnet_ice_pairs_have_nominated_symetric(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp);
 int tnet_ice_pairs_get_nominated_symetric(const tnet_ice_pairs_L_t* pairs, uint32_t comp_id,
 										  const struct tnet_ice_candidate_s** candidate_offer, 
 										  const struct tnet_ice_candidate_s** candidate_answer_src,

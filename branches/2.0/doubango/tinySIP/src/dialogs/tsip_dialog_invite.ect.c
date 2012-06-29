@@ -181,7 +181,7 @@ static int x0400_oECTing_2_oECTing_X_i2xx(va_list *app)
 		self->refersub = Refer_Sub->sub;
 	}
 	if(tsip_message_required(response, "norefersub")){
-		self->require.norefersub = tsk_true;
+		self->required.norefersub = tsk_true;
 	}
 
 	return TSIP_DIALOG_INVITE_SIGNAL(self, tsip_o_ect_accepted, 

@@ -50,6 +50,8 @@ static int32_t __volume = 100;
 static int32_t __inv_session_expires = 0; // Session Timers: 0: disabled
 static char* __inv_session_refresher = tsk_null;
 static tmedia_srtp_mode_t __srtp_mode = tmedia_srtp_mode_none;
+static tsk_bool_t __rtcp_enabled = tsk_true;
+static tsk_bool_t __rtcpmux_enabled = tsk_true;
 static tsk_bool_t __ice_enabled = tsk_false;
 
 int tmedia_defaults_set_profile(tmedia_profile_t profile){
@@ -270,6 +272,22 @@ tmedia_srtp_mode_t tmedia_defaults_get_srtp_mode(){
 }
 int tmedia_defaults_set_srtp_mode(tmedia_srtp_mode_t mode){
 	__srtp_mode = mode;
+	return 0;
+}
+
+tsk_bool_t tmedia_defaults_get_rtcp_enabled(){
+	return __rtcp_enabled;
+}
+int tmedia_defaults_set_rtcp_enabled(tsk_bool_t rtcp_enabled){
+	__rtcp_enabled = rtcp_enabled;
+	return 0;
+}
+
+tsk_bool_t tmedia_defaults_get_rtcpmux_enabled(){
+	return __rtcpmux_enabled;
+}
+int tmedia_defaults_set_rtcpmux_enabled(tsk_bool_t rtcpmux_enabled){
+	__rtcpmux_enabled = rtcpmux_enabled;
 	return 0;
 }
 

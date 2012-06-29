@@ -49,6 +49,7 @@ typedef struct tsip_dialog_invite
 	tsk_bool_t is_transf;
 	tsk_bool_t refersub;
 	tsk_bool_t use_rtcp;
+	tsk_bool_t use_rtcpmux;
 	uint32_t rseq;
 	
 	tsip_timer_t timershutdown;
@@ -107,7 +108,7 @@ typedef struct tsip_dialog_invite
 		unsigned timer:1;
 		unsigned norefersub;
 		unsigned ice:1;
-	} require;
+	} required;
 }
 tsip_dialog_invite_t;
 

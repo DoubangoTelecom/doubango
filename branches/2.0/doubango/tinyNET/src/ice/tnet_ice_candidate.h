@@ -48,13 +48,15 @@ TNET_BEGIN_DECLS
 #define TNET_ICE_CANDIDATE_PREF_PRFLX	110
 #define TNET_ICE_CANDIDATE_PREF_RELAY	0
 
-#define TNET_ICE_CANDIDATE_FOUNDATION_HOST	"00host00"
-#define TNET_ICE_CANDIDATE_FOUNDATION_SRFLX	"00srflx00"
-#define TNET_ICE_CANDIDATE_FOUNDATION_PRFLX	"00prflx00"
-#define TNET_ICE_CANDIDATE_FOUNDATION_RELAY	"00relay00"
+#define TNET_ICE_CANDIDATE_FOUNDATION_HOST	"fhost"
+#define TNET_ICE_CANDIDATE_FOUNDATION_SRFLX	"fsrflx"
+#define TNET_ICE_CANDIDATE_FOUNDATION_PRFLX	"fprflx"
+#define TNET_ICE_CANDIDATE_FOUNDATION_RELAY	"frelay"
 
 #define TNET_ICE_CANDIDATE_COMPID_RTP	1
 #define TNET_ICE_CANDIDATE_COMPID_RTCP	2
+
+#define TNET_ICE_CANDIDATE_FOUND_SIZE_PREF	8
 
 typedef enum tnet_ice_cand_type_e
 {
@@ -104,7 +106,7 @@ tnet_ice_candidate_t;
 
 typedef tsk_list_t tnet_ice_candidates_L_t;
 
-tnet_ice_candidate_t* tnet_ice_candidate_create(tnet_ice_cand_type_t type_e, struct tnet_socket_s* socket, tsk_bool_t is_ice_jingle, tsk_bool_t is_rtp, tsk_bool_t is_video, const char* ufrag, const char* pwd);
+tnet_ice_candidate_t* tnet_ice_candidate_create(tnet_ice_cand_type_t type_e, struct tnet_socket_s* socket, tsk_bool_t is_ice_jingle, tsk_bool_t is_rtp, tsk_bool_t is_video, const char* ufrag, const char* pwd, const char *foundation);
 TINYNET_API tnet_ice_candidate_t* tnet_ice_candidate_parse(const char* str);
 int tnet_ice_candidate_set_credential(tnet_ice_candidate_t* self, const char* ufrag, const char* pwd);
 int tnet_ice_candidate_set_rflx_addr(tnet_ice_candidate_t* self, const char* addr, tnet_port_t port);

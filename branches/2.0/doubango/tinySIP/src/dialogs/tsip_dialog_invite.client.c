@@ -179,7 +179,7 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 	self->qos.strength = TSIP_DIALOG_GET_SS(self)->media.qos.strength;
 	tmedia_session_mgr_set_qos(self->msession_mgr, self->qos.type, self->qos.strength);
 	self->supported.precondition = (self->qos.strength == tmedia_qos_strength_optional);
-	self->require.precondition = (self->qos.strength == tmedia_qos_strength_mandatory);
+	self->required.precondition = (self->qos.strength == tmedia_qos_strength_mandatory);
 
 	/* send the request */
 	ret = send_INVITE(self, tsk_false);
@@ -225,7 +225,7 @@ int c0000_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 
 	// starts ICE timers now that both parties received the "candidates"
 	if(tsip_dialog_invite_ice_is_enabled(self)){
-		tsip_dialog_invite_ice_timers_set(self, TSIP_DIALOG_INVITE_ICE_CONNCHECK_TIMEOUT);
+		tsip_dialog_invite_ice_timers_set(self, (self->required.ice ? -1 : TSIP_DIALOG_INVITE_ICE_CONNCHECK_TIMEOUT));
 	}
 	
 	/* Alert the user (session) */

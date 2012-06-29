@@ -95,6 +95,14 @@ public class CallSession extends InviteSession {
     return tinyWRAPJNI.CallSession_set100rel(swigCPtr, this, enabled);
   }
 
+  public boolean setRtcp(boolean enabled) {
+    return tinyWRAPJNI.CallSession_setRtcp(swigCPtr, this, enabled);
+  }
+
+  public boolean setRtcpMux(boolean enabled) {
+    return tinyWRAPJNI.CallSession_setRtcpMux(swigCPtr, this, enabled);
+  }
+
   public boolean setICE(boolean enabled) {
     return tinyWRAPJNI.CallSession_setICE(swigCPtr, this, enabled);
   }

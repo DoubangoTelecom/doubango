@@ -201,6 +201,22 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetSRtpMode(mode.swigValue());
   }
 
+  public static boolean defaultsSetRtcpEnabled(boolean enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetRtcpEnabled(enabled);
+  }
+
+  public static boolean defaultsGetRtcpEnabled() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetRtcpEnabled();
+  }
+
+  public static boolean defaultsSetRtcpMuxEnabled(boolean enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetRtcpMuxEnabled(enabled);
+  }
+
+  public static boolean defaultsGetRtcpMuxEnabled() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetRtcpMuxEnabled();
+  }
+
   public static boolean defaultsSetIceEnabled(boolean ice_enabled) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetIceEnabled(ice_enabled);
   }
