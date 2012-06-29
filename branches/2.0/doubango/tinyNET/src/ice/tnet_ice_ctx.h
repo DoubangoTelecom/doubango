@@ -54,6 +54,7 @@ TINYNET_API int tnet_ice_ctx_start(struct tnet_ice_ctx_s* self);
 TINYNET_API int tnet_ice_ctx_rtp_callback(struct tnet_ice_ctx_s* self, tnet_ice_rtp_callback_f rtp_callback, const void* rtp_callback_data);
 TINYNET_API int tnet_ice_ctx_set_concheck_timeout(struct tnet_ice_ctx_s* self, int64_t timeout);
 TINYNET_API int tnet_ice_ctx_set_remote_candidates(struct tnet_ice_ctx_s* self, const char* candidates, const char* ufrag, const char* pwd, tsk_bool_t is_controlling, tsk_bool_t is_ice_jingle);
+TINYNET_API int tnet_ice_ctx_set_rtcpmux(struct tnet_ice_ctx_s* self, tsk_bool_t use_rtcpmux);
 TINYNET_API tsk_size_t tnet_ice_ctx_count_local_candidates(const struct tnet_ice_ctx_s* self);
 TINYNET_API tsk_bool_t tnet_ice_ctx_got_local_candidates(const struct tnet_ice_ctx_s* self);
 TINYNET_API const struct tnet_ice_candidate_s* tnet_ice_ctx_get_local_candidate_at(const struct tnet_ice_ctx_s* self, tsk_size_t index);

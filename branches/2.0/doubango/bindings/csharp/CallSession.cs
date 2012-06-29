@@ -113,6 +113,16 @@ public class CallSession : InviteSession {
     return ret;
   }
 
+  public bool setRtcp(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.CallSession_setRtcp(swigCPtr, enabled);
+    return ret;
+  }
+
+  public bool setRtcpMux(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.CallSession_setRtcpMux(swigCPtr, enabled);
+    return ret;
+  }
+
   public bool setICE(bool enabled) {
     bool ret = tinyWRAPPINVOKE.CallSession_setICE(swigCPtr, enabled);
     return ret;

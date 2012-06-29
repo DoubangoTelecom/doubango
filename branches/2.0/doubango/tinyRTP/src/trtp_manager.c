@@ -598,7 +598,7 @@ int trtp_manager_start(trtp_manager_t* self)
 	/* RTCP */
 	if(self->use_rtcp){
 		tnet_fd_t local_rtcp_fd = self->rtcp.local_socket ? self->rtcp.local_socket->fd : -1;
-		if(local_rtcp_fd < 0 || self->use_rtcp_mux){ // use RTP local port to send RTCP packets
+		if(local_rtcp_fd < 0 || self->use_rtcpmux){ // use RTP local port to send RTCP packets
 			local_rtcp_fd = self->transport->master->fd;
 		}
 		
@@ -606,7 +606,7 @@ int trtp_manager_start(trtp_manager_t* self)
 			self->rtcp.remote_ip = tsk_strdup(self->rtcp.remote_ip ? self->rtcp.remote_ip : self->rtp.remote_ip);
 		}
 		if(!self->rtcp.remote_port){
-			self->rtcp.remote_port = self->rtcp.remote_port ? self->rtcp.remote_port : (self->use_rtcp_mux ? self->rtp.remote_port : (self->rtp.remote_port + 1));
+			self->rtcp.remote_port = self->rtcp.remote_port ? self->rtcp.remote_port : (self->use_rtcpmux ? self->rtp.remote_port : (self->rtp.remote_port + 1));
 		}
 
 		if((ret = tnet_sockaddr_init(self->rtcp.remote_ip, self->rtcp.remote_port, self->transport->master->type, &self->rtcp.remote_addr))){

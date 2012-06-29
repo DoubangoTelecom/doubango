@@ -520,42 +520,44 @@ bool CallSession::setSessionTimer(unsigned timeout, const char* refresher)
 
 bool CallSession::set100rel(bool enabled)
 {
-	if(enabled){
-		return (tsip_ssession_set(m_pHandle,
-			TSIP_SSESSION_SET_MEDIA(
-				TSIP_MSESSION_SET_100rel(),
-				TSIP_MSESSION_SET_NULL()
-			),
-			TSIP_SSESSION_SET_NULL()) == 0);
-	}
-	else{
-		return (tsip_ssession_set(m_pHandle,
-			TSIP_SSESSION_SET_MEDIA(
-				TSIP_MSESSION_UNSET_100rel(),
-				TSIP_MSESSION_SET_NULL()
-			),
-			TSIP_SSESSION_SET_NULL()) == 0);
-	}
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_MEDIA(
+		TSIP_MSESSION_SET_100rel(enabled ? tsk_true : tsk_false),
+			TSIP_MSESSION_SET_NULL()
+		),
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
+bool CallSession::setRtcp(bool enabled)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_MEDIA(
+		TSIP_MSESSION_SET_RTCP(enabled ? tsk_true : tsk_false),
+			TSIP_MSESSION_SET_NULL()
+		),
+		TSIP_SSESSION_SET_NULL()) == 0);
+	
+}
+
+bool CallSession::setRtcpMux(bool enabled)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_MEDIA(
+		TSIP_MSESSION_SET_RTCPMUX(enabled ? tsk_true : tsk_false),
+			TSIP_MSESSION_SET_NULL()
+		),
+		TSIP_SSESSION_SET_NULL()) == 0);
+	
 }
 
 bool CallSession::setICE(bool enabled)
 {
-	if(enabled){
-		return (tsip_ssession_set(m_pHandle,
-			TSIP_SSESSION_SET_MEDIA(
-				TSIP_MSESSION_SET_ICE(),
-				TSIP_MSESSION_SET_NULL()
-			),
-			TSIP_SSESSION_SET_NULL()) == 0);
-	}
-	else{
-		return (tsip_ssession_set(m_pHandle,
-			TSIP_SSESSION_SET_MEDIA(
-				TSIP_MSESSION_UNSET_ICE(),
-				TSIP_MSESSION_SET_NULL()
-			),
-			TSIP_SSESSION_SET_NULL()) == 0);
-	}
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_MEDIA(
+		TSIP_MSESSION_SET_ICE(enabled ? tsk_true : tsk_false),
+			TSIP_MSESSION_SET_NULL()
+		),
+		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool CallSession::setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength)

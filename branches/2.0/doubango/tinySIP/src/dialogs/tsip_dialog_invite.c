@@ -569,7 +569,7 @@ int x0000_Connected_2_Connected_X_iACK(va_list *app)
 
 	// starts ICE timers now that both parties receive the "candidates"
 	if(tsip_dialog_invite_ice_is_enabled(self)){
-		tsip_dialog_invite_ice_timers_set(self, TSIP_DIALOG_INVITE_ICE_CONNCHECK_TIMEOUT);
+		tsip_dialog_invite_ice_timers_set(self, (self->required.ice ? -1 : TSIP_DIALOG_INVITE_ICE_CONNCHECK_TIMEOUT));
 	}
 
 	/* alert the user */
@@ -772,7 +772,7 @@ int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app)
 
 	// starts ICE timers now that both parties received the "candidates"
 	if(tsip_dialog_invite_ice_is_enabled(self)){
-		tsip_dialog_invite_ice_timers_set(self, TSIP_DIALOG_INVITE_ICE_CONNCHECK_TIMEOUT);
+		tsip_dialog_invite_ice_timers_set(self, (self->required.ice ? -1 : TSIP_DIALOG_INVITE_ICE_CONNCHECK_TIMEOUT));
 	}
 	
 	return ret;
@@ -960,7 +960,6 @@ int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self)
 {
 	tmedia_srtp_mode_t srtp_mode;
 	tsk_bool_t is_rtcweb_enabled;
-	static const tsk_bool_t use_rtcp = tsk_true; // FIXME: For now we don't use 'dialog->use_rtcp' which is set to 'false' to disable RTCP in ICE and force using RTCP-MUX
 	
 	if(!self || !self->msession_mgr){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -970,10 +969,13 @@ int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self)
 	is_rtcweb_enabled = (((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.profile == tmedia_profile_rtcweb);
 	srtp_mode = is_rtcweb_enabled ? tmedia_srtp_mode_mandatory : ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.srtp_mode;
 
+	
+
 	return tmedia_session_mgr_set(self->msession_mgr,
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "srtp-mode", srtp_mode),
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "avpf-enabled", is_rtcweb_enabled), // Otherwise will be negociated using SDPCapNeg (RFC 5939)
-			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "rtcp-enabled", use_rtcp),
+			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "rtcp-enabled", self->use_rtcp),
+			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "rtcpmux-enabled", self->use_rtcpmux),
 			tsk_null);
 }
 
@@ -1038,7 +1040,7 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bo
 
 		/* Session timers */
 		if(self->stimers.timer.timeout){
-			if(self->require.timer){
+			if(self->required.timer){
 				tsip_message_add_headers(request,
 						TSIP_HEADER_SESSION_EXPIRES_VA_ARGS(self->stimers.timer.timeout, !self->stimers.is_refresher),
 						TSIP_HEADER_REQUIRE_VA_ARGS("timer"),
@@ -1063,7 +1065,7 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bo
 		}
 		
 		/* 100rel */
-		if(self->require._100rel){
+		if(self->required._100rel){
 			tsip_message_add_headers(request,
 					TSIP_HEADER_REQUIRE_VA_ARGS("100rel"),
 					tsk_null
@@ -1077,7 +1079,7 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bo
 		}
 
 		/* QoS */
-		if(self->require.precondition){
+		if(self->required.precondition){
 			tsip_message_add_headers(request,
 				TSIP_HEADER_REQUIRE_VA_ARGS("precondition"),
 				tsk_null
@@ -1434,7 +1436,7 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 	if((response = tsip_dialog_response_new(TSIP_DIALOG(self), code, phrase, request))){
 		if(TSIP_REQUEST_IS_INVITE(request) || TSIP_REQUEST_IS_UPDATE(request)){
 			/* Session timers (for 2xx to INVITE or UPDATE) */
-			if(self->require.timer){
+			if(self->required.timer){
 				tsip_message_add_headers(response,
 						TSIP_HEADER_REQUIRE_VA_ARGS("timer"),
 						TSIP_HEADER_SESSION_EXPIRES_VA_ARGS(self->stimers.timer.timeout, tsk_striequals(self->stimers.refresher, "uas")),
@@ -1464,7 +1466,7 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 			/* 180 Ringing */
 			/* 183 Session in Progress */
 			if(code == 180 || code == 183){
-				if(self->require._100rel){
+				if(self->required._100rel){
 					if(self->rseq == 0){
 						self->rseq = TSK_ABS((rand() ^ rand()) + 1);
 					}
@@ -1486,7 +1488,7 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 
 			/* Precondition */
 			if(code == 180 || code == 183){
-				if(self->require.precondition){
+				if(self->required.precondition){
 					tsip_message_add_headers(response,
 						TSIP_HEADER_REQUIRE_VA_ARGS("precondition"),
 						tsk_null
@@ -1515,7 +1517,7 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 					);
 		}
 		else if(TSIP_REQUEST_IS_REFER(request)){
-			if(self->require.norefersub){
+			if(self->required.norefersub){
 					tsip_message_add_headers(response,
 						TSIP_HEADER_REQUIRE_VA_ARGS("norefersub"),
 						tsk_null
@@ -1634,9 +1636,12 @@ static tsk_object_t* tsip_dialog_invite_ctor(tsk_object_t * self, va_list * app)
 		/* default values */		
 		dialog->supported._100rel = ((tsip_ssession_t*)ss)->media.enable_100rel;
 		dialog->supported.norefersub = tsk_true;
-		dialog->supported.ice = (((tsip_ssession_t*)ss)->media.profile == tmedia_profile_rtcweb) ? tsk_true : ((tsip_ssession_t*)ss)->media.enable_ice;
+		dialog->required.ice = (((tsip_ssession_t*)ss)->media.profile == tmedia_profile_rtcweb);
+		dialog->supported.ice = (dialog->required.ice || ((tsip_ssession_t*)ss)->media.enable_ice);
 		dialog->ice.is_jingle = (((tsip_ssession_t*)ss)->media.profile == tmedia_profile_rtcweb);
-		dialog->use_rtcp = tsk_false; // FIXME: this is used for ICE neg. For now we always use "rtcp-mux"
+		dialog->use_rtcp = (((tsip_ssession_t*)ss)->media.profile == tmedia_profile_rtcweb) ? tsk_true : ((tsip_ssession_t*)ss)->media.enable_rtcp;
+		dialog->use_rtcpmux = (((tsip_ssession_t*)ss)->media.profile == tmedia_profile_rtcweb) ? tsk_true : ((tsip_ssession_t*)ss)->media.enable_rtcpmux;
+
 		dialog->ice.last_action_id = tsk_fsm_state_none;
 		dialog->refersub = tsk_true;
 		// ... do the same for preconditions, replaces, ....

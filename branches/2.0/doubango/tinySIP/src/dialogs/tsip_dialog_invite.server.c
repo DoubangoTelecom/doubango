@@ -318,7 +318,7 @@ int s0000_Started_2_Ringing_X_iINVITE(va_list *app)
 
 	// add "require:100rel" tag if the incoming INVITE contains "100rel" tag in "supported" header
 	if(self->last_iInvite && (tsip_message_supported(self->last_iInvite, "100rel") || tsip_message_required(self->last_iInvite, "100rel")) && self->supported._100rel){
-		self->require._100rel = tsk_true;
+		self->required._100rel = tsk_true;
 	}
 
 	// add "require:timer" tag if incoming INVITE contains "timer" tag in "supported" header and session timers is enabled
@@ -328,7 +328,7 @@ int s0000_Started_2_Ringing_X_iINVITE(va_list *app)
 			self->stimers.timer.timeout = hdr_SessionExpires->delta_seconds;
 			tsk_strupdate(&self->stimers.refresher, hdr_SessionExpires->refresher_uas ? "uas" : "uac");
 			self->stimers.is_refresher = tsk_striequals(self->stimers.refresher, "uas");
-			self->require.timer = tsk_true;
+			self->required.timer = tsk_true;
 		}
 	}
 
@@ -372,8 +372,8 @@ int s0000_Started_2_InProgress_X_iINVITE(va_list *app)
 		transaction MUST be between 1 and 2**31 - 1.
 	*/
 	self->rseq = (rand() ^ rand()) % (0x00000001 << 31);
-	self->require._100rel = tsk_true;
-	self->require.precondition = (tsip_message_supported(self->last_iInvite, "precondition") || tsip_message_required(self->last_iInvite, "precondition"));
+	self->required._100rel = tsk_true;
+	self->required.precondition = (tsip_message_supported(self->last_iInvite, "precondition") || tsip_message_required(self->last_iInvite, "precondition"));
 	send_RESPONSE(self, request, 183, "Session in Progress", tsk_true);
 
 	return 0;

@@ -31,7 +31,7 @@
 
 static const char ice_chars[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'k', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 
 									'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'K', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-									'0','1', '2', '3', '4', '5', '6', '7', '8', '9'}; // /!\do not add '/' and '+' because WebRTC password
+									'0','1', '2', '3', '4', '5', '6', '7', '8', '9'}; // /!\do not add '/' and '+' because of WebRTC password
 static const tsk_size_t ice_chars_count = sizeof(ice_chars);
 
 uint32_t tnet_ice_utils_get_priority(tnet_ice_cand_type_t type, uint16_t local_pref, tsk_bool_t is_rtp)

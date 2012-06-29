@@ -107,10 +107,9 @@ typedef enum tsip_msession_param_type_e
 	mstype_set_srtp_mode,
 
 	mstype_set_100rel,
-	mstype_unset_100rel,
-
+	mstype_set_rtcp,
+	mstype_set_rtcpmux,
 	mstype_set_ice,
-	mstype_unset_ice,
 
 	mstype_set_qos,
 	mstype_unset_qos,
@@ -124,10 +123,10 @@ tsip_msession_param_type_t;
 
 #define TSIP_MSESSION_SET_SRTP_MODE(SRTP_MODE_ENUM)				mstype_set_profile, (tmedia_srtp_mode_t)SRTP_MODE_ENUM
 #define TSIP_MSESSION_SET_PROFILE(PROFILE_ENUM)					mstype_set_srtp_mode, (tmedia_profile_t)PROFILE_ENUM
-#define TSIP_MSESSION_SET_100rel()								mstype_set_100rel
-#define TSIP_MSESSION_UNSET_100rel()							mstype_unset_100rel
-#define TSIP_MSESSION_SET_ICE()									mstype_set_ice
-#define TSIP_MSESSION_UNSET_ICE()								mstype_unset_ice
+#define TSIP_MSESSION_SET_100rel(ENABLED_BOOL)					mstype_set_100rel, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_MSESSION_SET_RTCP(ENABLED_BOOL)					mstype_set_rtcp, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_MSESSION_SET_RTCPMUX(ENABLED_BOOL)					mstype_set_rtcpmux, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_MSESSION_SET_ICE(ENABLED_BOOL)						mstype_set_ice, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_MSESSION_SET_QOS(TYPE_ENUM, STRENGTH_ENUM)			mstype_set_qos, (tmedia_qos_stype_t)TYPE_ENUM, (tmedia_qos_strength_t)STRENGTH_ENUM
 #define TSIP_MSESSION_UNSET_QOS()								mstype_unset_qos
 #define TSIP_MSESSION_SET_TIMERS(TIMEOUT_UINT, REFRESHER_STR)	mstype_set_timers, (unsigned)TIMEOUT_UINT, (const char*)REFRESHER_STR
@@ -186,6 +185,8 @@ typedef struct tsip_ssession_s
 		/* Features */
 		unsigned enable_100rel:1;
 		unsigned enable_ice:1;
+		unsigned enable_rtcp:1;
+		unsigned enable_rtcpmux:1;
 	} media;
 }
 tsip_ssession_t;

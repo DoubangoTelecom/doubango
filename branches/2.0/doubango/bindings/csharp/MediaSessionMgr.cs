@@ -248,6 +248,26 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetRtcpEnabled(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetRtcpEnabled(enabled);
+    return ret;
+  }
+
+  public static bool defaultsGetRtcpEnabled() {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetRtcpEnabled();
+    return ret;
+  }
+
+  public static bool defaultsSetRtcpMuxEnabled(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetRtcpMuxEnabled(enabled);
+    return ret;
+  }
+
+  public static bool defaultsGetRtcpMuxEnabled() {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetRtcpMuxEnabled();
+    return ret;
+  }
+
   public static bool defaultsSetIceEnabled(bool ice_enabled) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetIceEnabled(ice_enabled);
     return ret;

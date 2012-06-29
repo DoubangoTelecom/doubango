@@ -518,7 +518,9 @@ const tnet_ice_pair_t* tnet_ice_pairs_find_by_fd_and_addr(tnet_ice_pairs_L_t* pa
 }
 
 // both RTP and RTCP have succeeded
-#define _tnet_ice_pairs_get_nominated_at(pairs, dir, index, ret) \
+#define _tnet_ice_pairs_get_nominated_offer_at(pairs, index, comp_id, check_fullness, ret)	_tnet_ice_pairs_get_nominated_at((pairs), offer, answer, (index), (comp_id), (check_fullness), (ret))
+#define _tnet_ice_pairs_get_nominated_answer_at(pairs, index, comp_id, check_fullness, ret)	_tnet_ice_pairs_get_nominated_at((pairs), answer, offer, (index), (comp_id), (check_fullness), (ret))
+#define _tnet_ice_pairs_get_nominated_at(pairs, dir_1, dir_2, index, _comp_id, check_fullness, ret) \
 { \
 	ret = tsk_null; \
 	if(pairs){ \
@@ -530,21 +532,22 @@ const tnet_ice_pair_t* tnet_ice_pairs_find_by_fd_and_addr(tnet_ice_pairs_L_t* pa
 			if(!(pair = item->data)){ \
 				continue; \
 			} \
-			if(pair->state_##dir == tnet_ice_pair_state_succeed){ \
-				/* find another pair with same foundation (e.g. host) but different comp-id (e.g. RTCP) */ \
-				const tsk_list_item_t *item2; \
-				const tnet_ice_pair_t *pair2; \
+			if(pair->state_##dir_1 == tnet_ice_pair_state_succeed && pair->candidate_##dir_1->comp_id == _comp_id){ \
 				pos = 0; \
 				nominated = tsk_true; \
-				tsk_list_foreach(item2, pairs){ \
-					if(!(pair2 = item2->data)){ \
-						continue; \
-					} \
-					if((tsk_striequals(pair2->candidate_##dir->foundation, pair->candidate_##dir->foundation)) \
-						&& (pair2->candidate_##dir->comp_id != pair2->candidate_##dir->comp_id) \
-						&& (pair2->state_##dir != tnet_ice_pair_state_succeed)){ \
-							nominated = tsk_false; \
-							break; \
+				if(check_fullness){ \
+					/* find another pair with same foundation (e.g. 'host') but different comp-id (e.g. RTCP) */ \
+					const tsk_list_item_t *item2; \
+					const tnet_ice_pair_t *pair2; \
+					tsk_list_foreach(item2, pairs){ \
+						if(!(pair2 = item2->data)){ \
+							continue; \
+						} \
+						if((tsk_striequals(pair2->candidate_##dir_2->foundation, pair->candidate_##dir_2->foundation)) \
+							&& (pair2->candidate_##dir_2->comp_id != pair->candidate_##dir_2->comp_id)){ \
+								nominated = (pair2->state_##dir_2 == tnet_ice_pair_state_succeed); \
+								break; \
+						} \
 					} \
 				} \
  \
@@ -558,23 +561,33 @@ const tnet_ice_pair_t* tnet_ice_pairs_find_by_fd_and_addr(tnet_ice_pairs_L_t* pa
 } \
 
 // true only if both RTP and RTCP are nominated
-tsk_bool_t tnet_ice_pairs_has_nominated_offer(const tnet_ice_pairs_L_t* pairs)
+tsk_bool_t tnet_ice_pairs_have_nominated_offer(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp)
 {
 	const tnet_ice_pair_t *pair_ = tsk_null;
-	_tnet_ice_pairs_get_nominated_at((pairs), offer, 0, (pair_));
-	return (pair_ != tsk_null);
+	tsk_bool_t is_nominated_rtp, is_nominated_rtcp = tsk_true;
+	_tnet_ice_pairs_get_nominated_offer_at((pairs), 0, TNET_ICE_CANDIDATE_COMPID_RTP, check_rtcp, (pair_));
+	if((is_nominated_rtp = (pair_ != tsk_null)) && check_rtcp){
+		_tnet_ice_pairs_get_nominated_offer_at((pairs), 0, TNET_ICE_CANDIDATE_COMPID_RTCP, check_rtcp, (pair_));
+		is_nominated_rtcp =(pair_ != tsk_null);
+	}
+	return (is_nominated_rtp && is_nominated_rtcp);
 }
 
 // true only if both RTP and RTCP are nominated
-tsk_bool_t tnet_ice_pairs_has_nominated_answer(const tnet_ice_pairs_L_t* pairs)
+tsk_bool_t tnet_ice_pairs_have_nominated_answer(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp)
 {
 	const tnet_ice_pair_t *pair_ = tsk_null;
-	_tnet_ice_pairs_get_nominated_at((pairs), answer, 0, (pair_));
-	return (pair_ != tsk_null);
+	tsk_bool_t is_nominated_rtp, is_nominated_rtcp = tsk_true;
+	_tnet_ice_pairs_get_nominated_answer_at((pairs), 0, TNET_ICE_CANDIDATE_COMPID_RTP, check_rtcp, (pair_));
+	if((is_nominated_rtp = (pair_ != tsk_null)) && check_rtcp){
+		_tnet_ice_pairs_get_nominated_answer_at((pairs), 0, TNET_ICE_CANDIDATE_COMPID_RTCP, check_rtcp, (pair_));
+		is_nominated_rtcp =(pair_ != tsk_null);
+	}
+	return (is_nominated_rtp && is_nominated_rtcp);
 }
 
 // true only if both RTP and RTCP are nominated in symetric way
-tsk_bool_t tnet_ice_pairs_has_nominated_symetric(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp)
+tsk_bool_t tnet_ice_pairs_have_nominated_symetric(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp)
 {
 	const tnet_ice_candidate_t *candidate_offer, *candidate_answer_src, *candidate_answer_dest;
 	tsk_bool_t is_nominated_rtp, is_nominated_rtcp = tsk_true;
@@ -598,6 +611,7 @@ int tnet_ice_pairs_get_nominated_symetric(const tnet_ice_pairs_L_t* pairs, uint3
 	const tnet_ice_pair_t *pair_offer = tsk_null;
 	const tnet_ice_pair_t *pair_answer = tsk_null;
 	tsk_size_t i_offer, i_answer;
+	static const tsk_bool_t __check_fullness = tsk_false; // pairs will be checked seperatly
 
 	if(!pairs || !candidate_offer || !candidate_answer_src || !candidate_answer_dest){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -610,7 +624,7 @@ int tnet_ice_pairs_get_nominated_symetric(const tnet_ice_pairs_L_t* pairs, uint3
 
 	i_offer = 0;
 	while(1){
-		_tnet_ice_pairs_get_nominated_at((pairs), offer, i_offer, (pair_offer)); // pair with socket SO as sender
+		_tnet_ice_pairs_get_nominated_offer_at((pairs), i_offer, comp_id, __check_fullness, (pair_offer)); // pair with socket SO as sender
 		if(!pair_offer) return 0;
 		++i_offer;
 		if(pair_offer->candidate_offer->comp_id != comp_id) continue;
@@ -618,7 +632,7 @@ int tnet_ice_pairs_get_nominated_symetric(const tnet_ice_pairs_L_t* pairs, uint3
 
 		i_answer = 0;
 		while(1){
-			_tnet_ice_pairs_get_nominated_at((pairs), answer, i_answer, (pair_answer));
+			_tnet_ice_pairs_get_nominated_answer_at((pairs), i_answer, comp_id, __check_fullness, (pair_answer));
 			if(!pair_answer) break;
 			++i_answer;
 			if(pair_answer->candidate_offer->comp_id != comp_id) continue;

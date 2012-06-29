@@ -102,17 +102,14 @@ static const tsk_object_def_t tnet_ice_candidate_def_s =
 	tnet_ice_candidate_cmp, 
 };
 
-tnet_ice_candidate_t* tnet_ice_candidate_create(tnet_ice_cand_type_t type_e, tnet_socket_t* socket, tsk_bool_t is_ice_jingle, tsk_bool_t is_rtp, tsk_bool_t is_video, const char* ufrag, const char* pwd)
+tnet_ice_candidate_t* tnet_ice_candidate_create(tnet_ice_cand_type_t type_e, tnet_socket_t* socket, tsk_bool_t is_ice_jingle, tsk_bool_t is_rtp, tsk_bool_t is_video, const char* ufrag, const char* pwd, const char *foundation)
 {
 	tnet_ice_candidate_t* candidate;
-	const char *foundation;
 
 	if(!(candidate = tsk_object_new(&tnet_ice_candidate_def_s))){
 		TSK_DEBUG_ERROR("Failed to create candidate");
 		return tsk_null;
 	}
-
-	foundation = _tnet_ice_candidate_get_foundation(type_e);
 		
 	candidate->transport_e = socket->type;
 	candidate->type_e = type_e;
@@ -122,7 +119,12 @@ tnet_ice_candidate_t* tnet_ice_candidate_create(tnet_ice_cand_type_t type_e, tne
 	candidate->is_rtp = is_rtp;
 	candidate->is_video = is_video;
 	candidate->comp_id = is_rtp ? TNET_ICE_CANDIDATE_COMPID_RTP : TNET_ICE_CANDIDATE_COMPID_RTCP;
-	memcpy(candidate->foundation, foundation, TSK_MIN(sizeof(candidate->foundation), tsk_strlen(foundation)));
+	if(foundation){
+		memcpy(candidate->foundation, foundation, TSK_MIN(tsk_strlen(foundation), TNET_ICE_CANDIDATE_FOUND_SIZE_PREF));
+	}
+	else{
+		tnet_ice_utils_compute_foundation((char*)candidate->foundation, TSK_MIN(sizeof(candidate->foundation), TNET_ICE_CANDIDATE_FOUND_SIZE_PREF));
+	}
 	candidate->priority = tnet_ice_utils_get_priority(candidate->type_e, candidate->local_pref, candidate->is_rtp);
 	if(candidate->socket){
 		memcpy(candidate->connection_addr, candidate->socket->ip, sizeof(candidate->socket->ip));

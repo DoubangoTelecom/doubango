@@ -233,6 +233,10 @@ sub DESTROY {
 *defaultsGetVolume = *tinyWRAPc::MediaSessionMgr_defaultsGetVolume;
 *defaultsSetInviteSessionTimers = *tinyWRAPc::MediaSessionMgr_defaultsSetInviteSessionTimers;
 *defaultsSetSRtpMode = *tinyWRAPc::MediaSessionMgr_defaultsSetSRtpMode;
+*defaultsSetRtcpEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetRtcpEnabled;
+*defaultsGetRtcpEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGetRtcpEnabled;
+*defaultsSetRtcpMuxEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetRtcpMuxEnabled;
+*defaultsGetRtcpMuxEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGetRtcpMuxEnabled;
 *defaultsSetIceEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetIceEnabled;
 sub DISOWN {
     my $self = shift;
@@ -903,6 +907,8 @@ sub DESTROY {
 *callVideo = *tinyWRAPc::CallSession_callVideo;
 *setSessionTimer = *tinyWRAPc::CallSession_setSessionTimer;
 *set100rel = *tinyWRAPc::CallSession_set100rel;
+*setRtcp = *tinyWRAPc::CallSession_setRtcp;
+*setRtcpMux = *tinyWRAPc::CallSession_setRtcpMux;
 *setICE = *tinyWRAPc::CallSession_setICE;
 *setQoS = *tinyWRAPc::CallSession_setQoS;
 *hold = *tinyWRAPc::CallSession_hold;

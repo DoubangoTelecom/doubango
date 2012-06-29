@@ -91,6 +91,10 @@ public:
 	static int32_t defaultsGetVolume();
 	static bool defaultsSetInviteSessionTimers(int32_t timeout, const char* refresher);
 	static bool defaultsSetSRtpMode(tmedia_srtp_mode_t mode);
+	static bool defaultsSetRtcpEnabled(bool enabled);
+	static bool defaultsGetRtcpEnabled();
+	static bool defaultsSetRtcpMuxEnabled(bool enabled);
+	static bool defaultsGetRtcpMuxEnabled();
 	static bool defaultsSetIceEnabled(bool ice_enabled);
 
 private:

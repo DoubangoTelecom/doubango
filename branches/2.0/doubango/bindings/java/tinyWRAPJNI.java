@@ -76,6 +76,10 @@ public class tinyWRAPJNI {
   public final static native int MediaSessionMgr_defaultsGetVolume();
   public final static native boolean MediaSessionMgr_defaultsSetInviteSessionTimers(int jarg1, String jarg2);
   public final static native boolean MediaSessionMgr_defaultsSetSRtpMode(int jarg1);
+  public final static native boolean MediaSessionMgr_defaultsSetRtcpEnabled(boolean jarg1);
+  public final static native boolean MediaSessionMgr_defaultsGetRtcpEnabled();
+  public final static native boolean MediaSessionMgr_defaultsSetRtcpMuxEnabled(boolean jarg1);
+  public final static native boolean MediaSessionMgr_defaultsGetRtcpMuxEnabled();
   public final static native boolean MediaSessionMgr_defaultsSetIceEnabled(boolean jarg1);
   public final static native void delete_MediaContent(long jarg1);
   public final static native String MediaContent_getType(long jarg1, MediaContent jarg1_);
@@ -198,6 +202,8 @@ public class tinyWRAPJNI {
   public final static native boolean CallSession_callVideo__SWIG_3(long jarg1, CallSession jarg1_, long jarg2, SipUri jarg2_);
   public final static native boolean CallSession_setSessionTimer(long jarg1, CallSession jarg1_, long jarg2, String jarg3);
   public final static native boolean CallSession_set100rel(long jarg1, CallSession jarg1_, boolean jarg2);
+  public final static native boolean CallSession_setRtcp(long jarg1, CallSession jarg1_, boolean jarg2);
+  public final static native boolean CallSession_setRtcpMux(long jarg1, CallSession jarg1_, boolean jarg2);
   public final static native boolean CallSession_setICE(long jarg1, CallSession jarg1_, boolean jarg2);
   public final static native boolean CallSession_setQoS(long jarg1, CallSession jarg1_, int jarg2, int jarg3);
   public final static native boolean CallSession_hold__SWIG_0(long jarg1, CallSession jarg1_, long jarg2, ActionConfig jarg2_);

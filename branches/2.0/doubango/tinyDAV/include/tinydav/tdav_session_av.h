@@ -48,7 +48,7 @@ typedef struct tdav_session_av_s
 
 	tsk_bool_t use_ipv6;
 	tsk_bool_t use_rtcp;
-	tsk_bool_t use_rtcp_mux;
+	tsk_bool_t use_rtcpmux;
 	tmedia_type_t media_type;
 	tsk_bool_t use_avpf;
 	tsk_bool_t use_srtp;

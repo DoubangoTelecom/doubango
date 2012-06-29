@@ -89,7 +89,7 @@ typedef struct trtp_manager_s
 	tsk_bool_t use_ipv6;
 	tsk_bool_t is_started;
 	tsk_bool_t use_rtcp;
-	tsk_bool_t use_rtcp_mux;
+	tsk_bool_t use_rtcpmux;
 	tsk_bool_t socket_disabled;
 	tnet_transport_t* transport;
 	struct{

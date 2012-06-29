@@ -126,6 +126,7 @@ static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia
 			return -2;
 		}
 		tnet_ice_ctx_set_stun(self->ice.ctx_audio, "stun.l.google.com", 19302, "Doubango", "bossiel@yahoo.fr", "stun-password"); //FIXME
+		tnet_ice_ctx_set_rtcpmux(self->ice.ctx_audio, self->use_rtcpmux);
 	}
 	if(!self->ice.ctx_video && (media_type & tmedia_video)){
 		self->ice.ctx_video = tnet_ice_ctx_create(self->ice.is_jingle, TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type), 
@@ -135,6 +136,7 @@ static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia
 			return -2;
 		}
 		tnet_ice_ctx_set_stun(self->ice.ctx_video, "stun.l.google.com", 19302, "Doubango", "bossiel@yahoo.fr", "stun-password"); // FIXME
+		tnet_ice_ctx_set_rtcpmux(self->ice.ctx_video, self->use_rtcpmux);
 	}
 
 	// "none" comparison is used to exclude the "first call"
@@ -277,6 +279,7 @@ int tsip_dialog_invite_ice_process_ro(tsip_dialog_invite_t * self, const tsdp_me
 	const char* sess_ufrag = tsk_null;
 	const char* sess_pwd = tsk_null;
 	int ret = 0, i;
+	struct tnet_ice_ctx_s *ctx;
 
 	if(!self || !sdp_ro){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -307,6 +310,8 @@ int tsip_dialog_invite_ice_process_ro(tsip_dialog_invite_t * self, const tsdp_me
 	for(i = 0; i < 2; ++i){
 		if((M = tsdp_message_find_media(sdp_ro, i==0 ? "audio": "video"))){
 			const char *ufrag = sess_ufrag, *pwd = sess_pwd;
+			tsk_bool_t remote_use_rtcpmux = (tsdp_header_M_findA(M, "rtcp-mux") != tsk_null);
+			ctx = (i==0 ? self->ice.ctx_audio : self->ice.ctx_video);
 			ice_remote_candidates = tsk_null;
 			index = 0;
 			if((A = tsdp_header_M_findA(M, "ice-ufrag"))){
@@ -321,8 +326,10 @@ int tsip_dialog_invite_ice_process_ro(tsip_dialog_invite_t * self, const tsdp_me
 			}
 			// ICE processing will be automatically stopped if the remote candidates are not valid
 			// ICE-CONTROLLING role if we are the offerer
-			ret = tnet_ice_ctx_set_remote_candidates(i==0 ? self->ice.ctx_audio : self->ice.ctx_video, ice_remote_candidates, ufrag, pwd, !is_remote_offer, self->ice.is_jingle);
+			ret = tnet_ice_ctx_set_remote_candidates(ctx, ice_remote_candidates, ufrag, pwd, !is_remote_offer, self->ice.is_jingle);
 			TSK_SAFE_FREE(ice_remote_candidates);
+			// Now that 'rtcp-mux' option have been updated by the session pass the value to the ICE ctx
+			ret = tnet_ice_ctx_set_rtcpmux(ctx, (self->use_rtcpmux && remote_use_rtcpmux));
 		}
 	}
 

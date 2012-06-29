@@ -36,6 +36,8 @@
 #	pragma comment(lib, "dxguid.lib")
 #endif
 
+#define FIXME_SEND_SILENCE_ON_MUTE	0
+
 #include "tsk_thread.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
@@ -69,12 +71,17 @@ static void *_tdav_producer_dsound_record_thread(void *param)
 		}
 
 		if(TMEDIA_PRODUCER(dsound)->enc_cb.callback){
-			if(lpvAudio2){
-				TMEDIA_PRODUCER(dsound)->enc_cb.callback(TMEDIA_PRODUCER(dsound)->enc_cb.callback_data, lpvAudio1, dwBytesAudio1);
-				TMEDIA_PRODUCER(dsound)->enc_cb.callback(TMEDIA_PRODUCER(dsound)->enc_cb.callback_data, lpvAudio2, dwBytesAudio2);
+#if FIXME_SEND_SILENCE_ON_MUTE
+			if(dsound->mute){
+				memset(lpvAudio1, 0, dwBytesAudio1);
+				if(lpvAudio2){
+					memset(lpvAudio2, 0, dwBytesAudio2);
+				}
 			}
-			else{
-				TMEDIA_PRODUCER(dsound)->enc_cb.callback(TMEDIA_PRODUCER(dsound)->enc_cb.callback_data, lpvAudio1, dwBytesAudio1);
+#endif
+			TMEDIA_PRODUCER(dsound)->enc_cb.callback(TMEDIA_PRODUCER(dsound)->enc_cb.callback_data, lpvAudio1, dwBytesAudio1);
+			if(lpvAudio2){
+				TMEDIA_PRODUCER(dsound)->enc_cb.callback(TMEDIA_PRODUCER(dsound)->enc_cb.callback_data, lpvAudio2, dwBytesAudio2);
 			}
 		}
 
@@ -124,6 +131,7 @@ static int tdav_producer_dsound_set(tmedia_producer_t* self, const tmedia_param_
 		if(param->value_type == tmedia_pvt_int32){
 			if(tsk_striequals(param->key, "mute")){
 				dsound->mute = (TSK_TO_INT32((uint8_t*)param->value) != 0);
+#if !FIXME_SEND_SILENCE_ON_MUTE
 				if(dsound->started){
 					if(dsound->mute){
 						IDirectSoundCaptureBuffer_Stop(dsound->captureBuffer);
@@ -132,6 +140,7 @@ static int tdav_producer_dsound_set(tmedia_producer_t* self, const tmedia_param_
 						IDirectSoundCaptureBuffer_Start(dsound->captureBuffer, DSBPLAY_LOOPING);
 					}
 				}
+#endif
 				return 0;
 			}
 		}
@@ -269,6 +278,13 @@ static int tdav_producer_dsound_stop(tmedia_producer_t* self)
 
 	// should be done here
 	dsound->started = tsk_false;
+
+#if !FIXME_SEND_SILENCE_ON_MUTE
+	if(dsound->mute && dsound->notifEvents[0]){
+		// thread is paused -> raise event now that "started" is equal to false
+		SetEvent(dsound->notifEvents[0]);
+	}		
+#endif
 
 	// stop thread
 	if(dsound->tid[0]){

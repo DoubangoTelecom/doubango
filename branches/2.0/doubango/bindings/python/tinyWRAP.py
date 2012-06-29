@@ -227,6 +227,14 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetInviteSessionTimers = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetInviteSessionTimers)
     __swig_getmethods__["defaultsSetSRtpMode"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetSRtpMode
     if _newclass:defaultsSetSRtpMode = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetSRtpMode)
+    __swig_getmethods__["defaultsSetRtcpEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetRtcpEnabled
+    if _newclass:defaultsSetRtcpEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetRtcpEnabled)
+    __swig_getmethods__["defaultsGetRtcpEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetRtcpEnabled
+    if _newclass:defaultsGetRtcpEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetRtcpEnabled)
+    __swig_getmethods__["defaultsSetRtcpMuxEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetRtcpMuxEnabled
+    if _newclass:defaultsSetRtcpMuxEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetRtcpMuxEnabled)
+    __swig_getmethods__["defaultsGetRtcpMuxEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetRtcpMuxEnabled
+    if _newclass:defaultsGetRtcpMuxEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetRtcpMuxEnabled)
     __swig_getmethods__["defaultsSetIceEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetIceEnabled
     if _newclass:defaultsSetIceEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetIceEnabled)
 MediaSessionMgr_swigregister = _tinyWRAP.MediaSessionMgr_swigregister
@@ -359,6 +367,22 @@ MediaSessionMgr_defaultsSetInviteSessionTimers = _tinyWRAP.MediaSessionMgr_defau
 def MediaSessionMgr_defaultsSetSRtpMode(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetSRtpMode(*args)
 MediaSessionMgr_defaultsSetSRtpMode = _tinyWRAP.MediaSessionMgr_defaultsSetSRtpMode
+
+def MediaSessionMgr_defaultsSetRtcpEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetRtcpEnabled(*args)
+MediaSessionMgr_defaultsSetRtcpEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetRtcpEnabled
+
+def MediaSessionMgr_defaultsGetRtcpEnabled():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetRtcpEnabled()
+MediaSessionMgr_defaultsGetRtcpEnabled = _tinyWRAP.MediaSessionMgr_defaultsGetRtcpEnabled
+
+def MediaSessionMgr_defaultsSetRtcpMuxEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetRtcpMuxEnabled(*args)
+MediaSessionMgr_defaultsSetRtcpMuxEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetRtcpMuxEnabled
+
+def MediaSessionMgr_defaultsGetRtcpMuxEnabled():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetRtcpMuxEnabled()
+MediaSessionMgr_defaultsGetRtcpMuxEnabled = _tinyWRAP.MediaSessionMgr_defaultsGetRtcpMuxEnabled
 
 def MediaSessionMgr_defaultsSetIceEnabled(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetIceEnabled(*args)
@@ -699,6 +723,8 @@ class CallSession(InviteSession):
     def callVideo(self, *args): return _tinyWRAP.CallSession_callVideo(self, *args)
     def setSessionTimer(self, *args): return _tinyWRAP.CallSession_setSessionTimer(self, *args)
     def set100rel(self, *args): return _tinyWRAP.CallSession_set100rel(self, *args)
+    def setRtcp(self, *args): return _tinyWRAP.CallSession_setRtcp(self, *args)
+    def setRtcpMux(self, *args): return _tinyWRAP.CallSession_setRtcpMux(self, *args)
     def setICE(self, *args): return _tinyWRAP.CallSession_setICE(self, *args)
     def setQoS(self, *args): return _tinyWRAP.CallSession_setQoS(self, *args)
     def hold(self, *args): return _tinyWRAP.CallSession_hold(self, *args)

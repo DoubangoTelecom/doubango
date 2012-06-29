@@ -332,6 +332,20 @@ bool MediaSessionMgr::defaultsSetSRtpMode(tmedia_srtp_mode_t mode){
 	return (tmedia_defaults_set_srtp_mode(mode) == 0);
 }
 
+bool MediaSessionMgr::defaultsSetRtcpEnabled(bool enabled){
+	return (tmedia_defaults_set_rtcp_enabled(enabled ? tsk_true : tsk_false) == 0);
+}
+bool MediaSessionMgr::defaultsGetRtcpEnabled(){
+	return (tmedia_defaults_get_rtcp_enabled() == tsk_true);
+}
+
+bool MediaSessionMgr::defaultsSetRtcpMuxEnabled(bool enabled){
+	return (tmedia_defaults_set_rtcpmux_enabled(enabled ? tsk_true : tsk_false) == 0);
+}
+bool MediaSessionMgr::defaultsGetRtcpMuxEnabled(){
+	return (tmedia_defaults_get_rtcpmux_enabled() == tsk_true);
+}
+
 bool MediaSessionMgr::defaultsSetIceEnabled(bool ice_enabled){
 	return (tmedia_defaults_set_ice_enabled(ice_enabled ? tsk_true : tsk_false) == 0);
 }
