@@ -41,10 +41,12 @@
 
 #define TRTP_TRANSPORT_NAME "RTP/RTCP Manager"
 
-#define DISABLE_SOCKETS_BEFORE_START	0
-#define TINY_RCVBUF					(256>>1/*Will be doubled and min on linux is 256*/) /* tiny buffer used to disable receiving */
-#define BIG_RCVBUF					0x1FFFE
-#define BIG_SNDBUF					0x1FFFE
+#define TRTP_DISABLE_SOCKETS_BEFORE_START	0
+#define TRTP_TINY_RCVBUF					(256>>1/*Will be doubled and min on linux is 256*/) /* tiny buffer used to disable receiving */
+#define TRTP_BIG_RCVBUF					0x1FFFE
+#define TRTP_BIG_SNDBUF					0x1FFFE
+
+#define TRTP_DSCP_RTP_DEFAULT           0x2e
 
 
 #if !defined(TRTP_PORT_RANGE_START)
@@ -76,8 +78,8 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 #if 0
 static int _trtp_manager_enable_sockets(trtp_manager_t* self)
 {
-	int rcv_buf = BIG_RCVBUF;
-	int snd_buf = BIG_SNDBUF;
+	int rcv_buf = TRTP_BIG_RCVBUF;
+	int snd_buf = TRTP_BIG_SNDBUF;
 	int ret;
 
 	if(!self->socket_disabled){
@@ -376,9 +378,9 @@ int trtp_manager_prepare(trtp_manager_t* self)
 		/* set callback function */
 		tnet_transport_set_callback(self->transport, _trtp_transport_layer_cb, self);
 		/* Disable receiving until we start the transport (To avoid buffering) */
-#if DISABLE_SOCKETS_BEFORE_START
+#if TRTP_DISABLE_SOCKETS_BEFORE_START
 		if(!self->socket_disabled){
-			int err, optval = TINY_RCVBUF;
+			int err, optval = TRTP_TINY_RCVBUF;
 			if((err = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&optval, sizeof(optval)))){
 				TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", err);
 			}
@@ -485,6 +487,16 @@ int trtp_manager_set_payload_type(trtp_manager_t* self, uint8_t payload_type)
 	return 0;
 }
 
+int trtp_manager_set_rtp_dscp(trtp_manager_t* self, int32_t dscp)
+{
+    if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->rtp.dscp = dscp;
+	return 0;
+}
+
 /** Sets remote parameters for rtp session */
 int trtp_manager_set_rtp_remote(trtp_manager_t* self, const char* remote_ip, tnet_port_t remote_port)
 {
@@ -528,8 +540,9 @@ int trtp_manager_set_port_range(trtp_manager_t* self, uint16_t start, uint16_t s
 int trtp_manager_start(trtp_manager_t* self)
 {
 	int ret = 0;
-	int rcv_buf = BIG_RCVBUF;
-	int snd_buf = BIG_SNDBUF;
+	int rcv_buf = TRTP_BIG_RCVBUF;
+	int snd_buf = TRTP_BIG_SNDBUF;
+    int32_t dscp_rtp;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -558,7 +571,7 @@ int trtp_manager_start(trtp_manager_t* self)
 
 	/* Flush buffers and re-enable sockets */
 	if(self->transport->master && self->socket_disabled){
-		static char buff[BIG_RCVBUF];
+		static char buff[TRTP_BIG_RCVBUF];
 		tsk_size_t guard_count = 0;
 #if 0
 		// re-enable sockets
@@ -579,6 +592,10 @@ int trtp_manager_start(trtp_manager_t* self)
 		TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", ret);
 	}
 	if((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_SNDBUF, (char*)&snd_buf, sizeof(snd_buf)))){
+		TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", ret);
+	}
+    dscp_rtp = (self->rtp.dscp << 2);
+    if((ret = setsockopt(self->transport->master->fd, IPPROTO_IP, IP_TOS, (char*)&dscp_rtp, sizeof(dscp_rtp)))){
 		TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", ret);
 	}
 
@@ -846,6 +863,7 @@ static tsk_object_t* trtp_manager_ctor(tsk_object_t * self, va_list * app)
 		manager->rtp.timestamp = rand()^rand();
 		manager->rtp.seq_num = rand()^rand();
 		manager->rtp.ssrc = rand()^rand()^(int)tsk_time_epoch();
+        manager->rtp.dscp = TRTP_DSCP_RTP_DEFAULT;
 
 		/* rtcp */
 

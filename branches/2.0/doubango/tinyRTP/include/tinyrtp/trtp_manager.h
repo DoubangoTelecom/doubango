@@ -53,6 +53,7 @@ typedef struct trtp_manager_s
 		uint32_t timestamp;
 		uint32_t ssrc;
 		uint8_t payload_type;
+        int32_t dscp;
 
 		char* remote_ip;
 		tnet_port_t remote_port;
@@ -115,6 +116,7 @@ TINYRTP_API tsk_bool_t trtp_manager_is_ready(trtp_manager_t* self);
 TINYRTP_API int trtp_manager_set_natt_ctx(trtp_manager_t* self, tnet_nat_context_handle_t* natt_ctx);
 TINYRTP_API int trtp_manager_set_rtp_callback(trtp_manager_t* self, trtp_rtp_cb_f callback, const void* callback_data);
 TINYRTP_API int trtp_manager_set_rtcp_callback(trtp_manager_t* self, trtp_rtcp_cb_f callback, const void* callback_data);
+TINYRTP_API int trtp_manager_set_rtp_dscp(trtp_manager_t* self, int32_t dscp);
 TINYRTP_API int trtp_manager_set_payload_type(trtp_manager_t* self, uint8_t payload_type);
 TINYRTP_API int trtp_manager_set_rtp_remote(trtp_manager_t* self, const char* remote_ip, tnet_port_t remote_port);
 TINYRTP_API int trtp_manager_set_rtcp_remote(trtp_manager_t* self, const char* remote_ip, tnet_port_t remote_port);
