@@ -186,11 +186,12 @@ static void *__sender_thread(void *param)
 /* ============ Media Producer Interface ================= */
 int tdav_producer_audiounit_set(tmedia_producer_t* self, const tmedia_param_t* param)
 {	
+    tdav_producer_audiounit_t* producer = (tdav_producer_audiounit_t*)self;
 	if(param->plugin_type == tmedia_ppt_producer){
 		if(param->value_type == tmedia_pvt_int32){
 			if(tsk_striequals(param->key, "mute")){
-				int32_t mute = TSK_TO_INT32((uint8_t*)param->value);
-				return tdav_audiounit_handle_mute(((tdav_producer_audiounit_t*)self)->audioUnitHandle, mute ? tsk_true : tsk_false);
+				producer->muted = TSK_TO_INT32((uint8_t*)param->value);
+				return tdav_audiounit_handle_mute(((tdav_producer_audiounit_t*)self)->audioUnitHandle, producer->muted);
 			}
 		}
 	}
@@ -406,6 +407,9 @@ static int tdav_producer_audiounit_start(tmedia_producer_t* self)
 		}
 	}
 	producer->started = tsk_true;
+    
+    // apply parameters (because could be lost when the producer is restarted -handle recreated-)
+    ret = tdav_audiounit_handle_mute(producer->audioUnitHandle, producer->muted);
 	
 	// create conditional variable
 	if(!(producer->senderCondWait = tsk_condwait_create())){

@@ -203,7 +203,7 @@ int tdav_audiounit_handle_start(tdav_audiounit_handle_t* self)
 	if(!inst->started && (status = AudioOutputUnitStart(inst->audioUnit))){
 		TSK_DEBUG_ERROR("AudioOutputUnitStart failed with status=%ld", (signed long)status);
 	}
-    inst->started = status == 0 ? tsk_true : tsk_false;
+    inst->started = (status == noErr) ? tsk_true : tsk_false;
 	tsk_safeobj_unlock(inst);
 	return status ? -2 : 0;
 }
@@ -290,7 +290,7 @@ int tdav_audiounit_handle_mute(tdav_audiounit_handle_t* self, tsk_bool_t mute)
 	status = AudioUnitSetProperty(inst->audioUnit, kAUVoiceIOProperty_MuteOutput,
 								  kAudioUnitScope_Output, kOutputBus, mute ? &kOne : &kZero, mute ? sizeof(kOne) : sizeof(kZero));
 	
-	return status ? -2 : 0;
+	return (status == noErr) ? 0 : -2;
 #else
 	return 0;
 #endif
