@@ -29,9 +29,9 @@
 
 using namespace std;
 
-#define USE_OVERLAY		0
-#define OVERLAY_TIMEOUT	3
-#define WM_GRAPHNOTIFY  WM_APP + 1
+#define USE_OVERLAY				0
+#define OVERLAY_TIMEOUT			3
+#define WM_GRAPHNOTIFY			WM_APP + 1
 
 #define FSCREEN_MIN_IDEAL_WIDTH 352
 #define FSCREEN_MIN_IDEAL_HEIGHT 288
@@ -64,19 +64,20 @@ static int __pred_find_display_by_hwnd(const tsk_list_item_t *item, const void *
 static LRESULT CALLBACK __directshow__WndProcWindow(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	LRESULT result = FALSE;
+	BOOL resultSet = FALSE;
 	
 	if(__directshow__Displays){
 		tsk_list_lock(__directshow__Displays);
 
 		const tdshow_display_t *display =  (const tdshow_display_t *)tsk_list_find_object_by_pred(__directshow__Displays, __pred_find_display_by_hwnd, &hWnd);
-		if(display && display->display){
+		if((resultSet = (display && display->display))){
 			result = display->display->handleEvents(hWnd, uMsg, wParam, lParam);
 		}
 
 		tsk_list_unlock(__directshow__Displays);
 	}
 
-	return result;
+	return resultSet ? result : DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 
@@ -351,7 +352,12 @@ LRESULT DSDisplay::handleEvents(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		if(this->canFullscreen()){
 			this->setFullscreen(true);
 		}
-		
+		break;
+
+	case WM_FULLSCREEN_SET:
+		if(this->canFullscreen()){
+			this->setFullscreen(!this->isFullscreen());
+		}
 		break;
 
 	case WM_LBUTTONDOWN:
@@ -422,7 +428,7 @@ LRESULT DSDisplay::handleEvents(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 #endif
 	}
 
-	return CallWindowProc(this->parentWindowProc, hWnd, uMsg, wParam, lParam);
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 void DSDisplay::hook()

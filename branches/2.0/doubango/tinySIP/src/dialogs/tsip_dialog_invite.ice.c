@@ -125,7 +125,7 @@ static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia
 			TSK_DEBUG_ERROR("Failed to create ICE audio context");
 			return -2;
 		}
-		tnet_ice_ctx_set_stun(self->ice.ctx_audio, "stun.l.google.com", 19302, "Doubango", "bossiel@yahoo.fr", "stun-password"); //FIXME
+		tnet_ice_ctx_set_stun(self->ice.ctx_audio, "stun.l.google.com", 19302, "Doubango", "stun-user@doubango.org", "stun-password"); //FIXME
 		tnet_ice_ctx_set_rtcpmux(self->ice.ctx_audio, self->use_rtcpmux);
 	}
 	if(!self->ice.ctx_video && (media_type & tmedia_video)){
@@ -135,7 +135,7 @@ static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia
 			TSK_DEBUG_ERROR("Failed to create ICE video context");
 			return -2;
 		}
-		tnet_ice_ctx_set_stun(self->ice.ctx_video, "stun.l.google.com", 19302, "Doubango", "bossiel@yahoo.fr", "stun-password"); // FIXME
+		tnet_ice_ctx_set_stun(self->ice.ctx_video, "stun.l.google.com", 19302, "Doubango", "stun-user@doubango.org", "stun-password"); // FIXME
 		tnet_ice_ctx_set_rtcpmux(self->ice.ctx_video, self->use_rtcpmux);
 	}
 
