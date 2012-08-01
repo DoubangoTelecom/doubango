@@ -27,6 +27,7 @@
 #include <tinydshow/DSDisplayGraph.h>
 #include <tinydshow/DSDisplayOverlay.h>
 
+#define WM_FULLSCREEN_SET	(WM_USER + 401)
 
 class DSDisplay
 {
