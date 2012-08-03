@@ -85,8 +85,9 @@ DSDisplay::DSDisplay(HRESULT *hr)
 {
 	this->window = NULL;
 	this->parentWindowProc = NULL;
-	this->hooked = FALSE;
-	this->fullscreen = FALSE;
+	this->hooked = false;
+	this->fullscreen = false;
+	this->bPluginFirefox = false;
 	this->top = 0;
 	this->left = 0;
 	this->width = 176;
@@ -291,6 +292,11 @@ void DSDisplay::setFullscreen(bool value)
 #endif
 }
 
+void DSDisplay::setPluginFirefox(bool value)
+{
+	bPluginFirefox = value;
+}
+
 bool DSDisplay::canFullscreen()
 {
 #if defined(VMR9_WINDOWLESS)
@@ -428,7 +434,7 @@ LRESULT DSDisplay::handleEvents(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 #endif
 	}
 
-	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+	return bPluginFirefox ? DefWindowProc(hWnd, uMsg, wParam, lParam) : CallWindowProc(this->parentWindowProc, hWnd, uMsg, wParam, lParam);
 }
 
 void DSDisplay::hook()

@@ -51,6 +51,7 @@ public:
 
 	virtual bool isFullscreen();
 	virtual void setFullscreen(bool value);
+	virtual void setPluginFirefox(bool value);
 
 	virtual bool canFullscreen();
 
@@ -72,6 +73,7 @@ private:
 	int fps;
 	int left, top, width, height;
 
+	bool bPluginFirefox;
 	bool fullscreen;
 	HWND window;
 	WNDPROC parentWindowProc;

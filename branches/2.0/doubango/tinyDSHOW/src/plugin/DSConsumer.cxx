@@ -36,6 +36,7 @@ typedef struct tdshow_consumer_s
 	DSDisplay* display;
 	INT64 window;
 	
+	tsk_bool_t plugin_firefox;
 	tsk_bool_t started;
 	tsk_bool_t create_on_ui_thread;
 }
@@ -74,6 +75,12 @@ int tdshow_consumer_set(tmedia_consumer_t *self, const tmedia_param_t* param)
 		}
 		else if(tsk_striequals(param->key, "create-on-current-thead")){
 			DSCONSUMER(self)->create_on_ui_thread = *((int32_t*)param->value) ? tsk_false : tsk_true;
+		}
+		else if(tsk_striequals(param->key, "plugin-firefox")){
+			DSCONSUMER(self)->plugin_firefox = (*((int32_t*)param->value) != 0);
+			if(DSCONSUMER(self)->display){
+				DSCONSUMER(self)->display->setPluginFirefox((DSCONSUMER(self)->plugin_firefox == tsk_true));
+			}
 		}
 	}
 
@@ -129,6 +136,7 @@ int tdshow_consumer_start(tmedia_consumer_t* self)
 	}
 	
 	// Set parameters
+	consumer->display->setPluginFirefox((consumer->plugin_firefox == tsk_true));
 	consumer->display->setFps(TMEDIA_CONSUMER(consumer)->video.fps);
 	// do not change the display size: see hook()
 	// consumer->display->setSize(TMEDIA_CONSUMER(consumer)->video.display.width, TMEDIA_CONSUMER(consumer)->video.display.height);
