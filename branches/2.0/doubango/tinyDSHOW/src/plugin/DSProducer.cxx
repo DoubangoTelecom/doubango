@@ -36,6 +36,7 @@ typedef struct tdshow_producer_s
 	DSGrabber* grabber;
 	INT64 previewHwnd;
 	
+	tsk_bool_t plugin_firefox;
 	tsk_bool_t started;
 	tsk_bool_t mute;
 	tsk_bool_t create_on_ui_thread;
@@ -89,6 +90,12 @@ static int tdshow_producer_set(tmedia_producer_t *self, const tmedia_param_t* pa
 		else if(tsk_striequals(param->key, "create-on-current-thead")){
 			producer->create_on_ui_thread = *((int32_t*)param->value) ? tsk_false : tsk_true;
 		}
+		else if(tsk_striequals(param->key, "plugin-firefox")){
+			producer->plugin_firefox = (*((int32_t*)param->value) != 0);
+			if(producer->grabber){
+				producer->grabber->setPluginFirefox((producer->plugin_firefox == tsk_true));
+			}
+		}
 	}
 	
 	return ret;
@@ -132,6 +139,7 @@ static int tdshow_producer_start(tmedia_producer_t* self)
 			return -2;
 		}
 	}
+	producer->grabber->setPluginFirefox((producer->plugin_firefox == tsk_true));
 
 	//set Source device
 	producer->grabber->setCaptureDevice("Null");

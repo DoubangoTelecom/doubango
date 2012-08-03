@@ -169,6 +169,13 @@ bool DSGrabber::setCaptureParameters(int w, int h, int f)
 	return SUCCEEDED(hr);
 }
 
+void DSGrabber::setPluginFirefox(bool value)
+{
+	if(this->preview){
+		this->preview->setPluginFirefox(value);
+	}
+}
+
 bool DSGrabber::setCaptureParameters(int format, int f)
 {
 	int w, h;
