@@ -173,18 +173,16 @@ trtp_rtp_packet_t* trtp_rtp_packet_deserialize(const void *data, tsk_size_t size
 		   |                             ....                              |
 		*/
 		if(packet->header->extension && payload_size>=4 /* extension min-size */){
-			pdata += 2; /* skip "defined by profile" field */
-			packet->extension.size = 4 /* first two 16-bit fields */ + (tnet_ntohs(*((uint16_t*)pdata)) << 2/*words(32-bit)*/);
-			pdata += 2; /* skip "length" field */
+			packet->extension.size = 4 /* first two 16-bit fields */ + (tnet_ntohs(*((uint16_t*)&pdata[2])) << 2/*words(32-bit)*/);
 			if((packet->extension.data = tsk_calloc(packet->extension.size, sizeof(uint8_t)))){
-				memcpy(packet->extension.data, (pdata - 4), packet->extension.size);
+				memcpy(packet->extension.data, pdata, packet->extension.size);
 			}
 			payload_size -= packet->extension.size;
 		}
 
 		packet->payload.size = payload_size;
 		if(payload_size && (packet->payload.data = tsk_calloc(packet->payload.size, sizeof(uint8_t)))){
-			memcpy(packet->payload.data, pdata, packet->payload.size);
+			memcpy(packet->payload.data, (pdata + packet->extension.size), packet->payload.size);
 		}
 		else{
 			TSK_DEBUG_ERROR("Failed to allocate new buffer");
