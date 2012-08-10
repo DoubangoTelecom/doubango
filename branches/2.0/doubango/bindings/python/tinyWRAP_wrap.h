@@ -216,6 +216,7 @@ public:
     virtual int start();
     virtual int pause();
     virtual int stop();
+    virtual int fillPushBuffer();
 
 
 /* Internal Director utilities */
@@ -249,7 +250,7 @@ private:
       return method;
     }
 private:
-    mutable swig::SwigVar_PyObject vtable[4];
+    mutable swig::SwigVar_PyObject vtable[5];
 #endif
 
 };

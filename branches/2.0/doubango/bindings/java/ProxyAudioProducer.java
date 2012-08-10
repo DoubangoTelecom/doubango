@@ -35,8 +35,12 @@ public class ProxyAudioProducer extends ProxyPlugin {
     super.delete();
   }
 
+  public boolean setPushBuffer(java.nio.ByteBuffer pPushBufferPtr, long nPushBufferSize, boolean bUsePushCallback) {
+    return tinyWRAPJNI.ProxyAudioProducer_setPushBuffer__SWIG_0(swigCPtr, this, pPushBufferPtr, nPushBufferSize, bUsePushCallback);
+  }
+
   public boolean setPushBuffer(java.nio.ByteBuffer pPushBufferPtr, long nPushBufferSize) {
-    return tinyWRAPJNI.ProxyAudioProducer_setPushBuffer(swigCPtr, this, pPushBufferPtr, nPushBufferSize);
+    return tinyWRAPJNI.ProxyAudioProducer_setPushBuffer__SWIG_1(swigCPtr, this, pPushBufferPtr, nPushBufferSize);
   }
 
   public int push(java.nio.ByteBuffer pBuffer, long nSize) {

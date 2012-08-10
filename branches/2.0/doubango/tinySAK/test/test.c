@@ -144,6 +144,17 @@ int main()
 {
 	do
 	{
+		int y, x;
+
+		for(y = 0; y < 16; ++y){
+			printf("{");
+			for(x = 0; x < 16; ++x){
+				printf("%d, ", (2 * ( y / 8 ) + ( x / 8 )));
+			}
+			printf("}\n");
+		}
+
+
 		/* Print copyright information */
 		printf("Doubango Project\nCopyright (C) 2009 Mamadou Diop \n\n");
 

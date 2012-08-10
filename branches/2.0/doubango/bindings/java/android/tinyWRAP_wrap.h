@@ -93,12 +93,13 @@ public:
     virtual int start();
     virtual int pause();
     virtual int stop();
+    virtual int fillPushBuffer();
 public:
     bool swig_overrides(int n) {
-      return (n < 4 ? swig_override[n] : false);
+      return (n < 5 ? swig_override[n] : false);
     }
 protected:
-    bool swig_override[4];
+    bool swig_override[5];
 };
 
 class SwigDirector_ProxyVideoProducerCallback : public ProxyVideoProducerCallback, public Swig::Director {

@@ -359,10 +359,13 @@ public class tinyWRAPJNI {
   public final static native int ProxyAudioProducerCallback_pauseSwigExplicitProxyAudioProducerCallback(long jarg1, ProxyAudioProducerCallback jarg1_);
   public final static native int ProxyAudioProducerCallback_stop(long jarg1, ProxyAudioProducerCallback jarg1_);
   public final static native int ProxyAudioProducerCallback_stopSwigExplicitProxyAudioProducerCallback(long jarg1, ProxyAudioProducerCallback jarg1_);
+  public final static native int ProxyAudioProducerCallback_fillPushBuffer(long jarg1, ProxyAudioProducerCallback jarg1_);
+  public final static native int ProxyAudioProducerCallback_fillPushBufferSwigExplicitProxyAudioProducerCallback(long jarg1, ProxyAudioProducerCallback jarg1_);
   public final static native void ProxyAudioProducerCallback_director_connect(ProxyAudioProducerCallback obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void ProxyAudioProducerCallback_change_ownership(ProxyAudioProducerCallback obj, long cptr, boolean take_or_release);
   public final static native void delete_ProxyAudioProducer(long jarg1);
-  public final static native boolean ProxyAudioProducer_setPushBuffer(long jarg1, ProxyAudioProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native boolean ProxyAudioProducer_setPushBuffer__SWIG_0(long jarg1, ProxyAudioProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3, boolean jarg4);
+  public final static native boolean ProxyAudioProducer_setPushBuffer__SWIG_1(long jarg1, ProxyAudioProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native int ProxyAudioProducer_push__SWIG_0(long jarg1, ProxyAudioProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native int ProxyAudioProducer_push__SWIG_1(long jarg1, ProxyAudioProducer jarg1_, java.nio.ByteBuffer jarg2);
   public final static native int ProxyAudioProducer_push__SWIG_2(long jarg1, ProxyAudioProducer jarg1_);
@@ -638,6 +641,9 @@ public class tinyWRAPJNI {
   }
   public static int SwigDirector_ProxyAudioProducerCallback_stop(ProxyAudioProducerCallback self) {
     return self.stop();
+  }
+  public static int SwigDirector_ProxyAudioProducerCallback_fillPushBuffer(ProxyAudioProducerCallback self) {
+    return self.fillPushBuffer();
   }
   public static int SwigDirector_ProxyVideoProducerCallback_prepare(ProxyVideoProducerCallback self, int width, int height, int fps) {
     return self.prepare(width, height, fps);

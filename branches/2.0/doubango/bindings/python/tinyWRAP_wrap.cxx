@@ -4893,6 +4893,35 @@ int SwigDirector_ProxyAudioProducerCallback::stop() {
 }
 
 
+int SwigDirector_ProxyAudioProducerCallback::fillPushBuffer() {
+  int c_result;
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call ProxyAudioProducerCallback.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 4;
+  const char * const swig_method_name = "fillPushBuffer";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, NULL, NULL);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *) "fillPushBuffer", NULL);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'ProxyAudioProducerCallback.fillPushBuffer'");
+    }
+  }
+  int swig_val;
+  int swig_res = SWIG_AsVal_int(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""int""'");
+  }
+  c_result = static_cast< int >(swig_val);
+  return (int) c_result;
+}
+
+
 SwigDirector_ProxyVideoProducerCallback::SwigDirector_ProxyVideoProducerCallback(PyObject *self): ProxyVideoProducerCallback(), Swig::Director(self) {
   SWIG_DIRECTOR_RGTR((ProxyVideoProducerCallback *)this, this); 
 }
@@ -17050,6 +17079,40 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ProxyAudioProducerCallback_fillPushBuffer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ProxyAudioProducerCallback_fillPushBuffer",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducerCallback, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducerCallback_fillPushBuffer" "', argument " "1"" of type '" "ProxyAudioProducerCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyAudioProducerCallback * >(argp1);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (int)(arg1)->ProxyAudioProducerCallback::fillPushBuffer();
+    } else {
+      result = (int)(arg1)->fillPushBuffer();
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_disown_ProxyAudioProducerCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
@@ -17103,7 +17166,54 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ProxyAudioProducer_setPushBuffer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ProxyAudioProducer_setPushBuffer__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  bool arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  bool val4 ;
+  int ecode4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:ProxyAudioProducer_setPushBuffer",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_setPushBuffer" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyAudioProducer_setPushBuffer" "', argument " "2"" of type '" "void const *""'"); 
+  }
+  ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyAudioProducer_setPushBuffer" "', argument " "3"" of type '" "unsigned int""'");
+  } 
+  arg3 = static_cast< unsigned int >(val3);
+  ecode4 = SWIG_AsVal_bool(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyAudioProducer_setPushBuffer" "', argument " "4"" of type '" "bool""'");
+  } 
+  arg4 = static_cast< bool >(val4);
+  result = (bool)(arg1)->setPushBuffer((void const *)arg2,arg3,arg4);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyAudioProducer_setPushBuffer__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
   void *arg2 = (void *) 0 ;
@@ -17138,6 +17248,72 @@ SWIGINTERN PyObject *_wrap_ProxyAudioProducer_setPushBuffer(PyObject *SWIGUNUSED
   return resultobj;
 fail:
   return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ProxyAudioProducer_setPushBuffer(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[5];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = args ? (int)PyObject_Length(args) : 0;
+  for (ii = 0; (ii < 4) && (ii < argc); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ProxyAudioProducer, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *ptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &ptr, 0, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_ProxyAudioProducer_setPushBuffer__SWIG_1(self, args);
+        }
+      }
+    }
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ProxyAudioProducer, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *ptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &ptr, 0, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          {
+            int res = SWIG_AsVal_bool(argv[3], NULL);
+            _v = SWIG_CheckState(res);
+          }
+          if (_v) {
+            return _wrap_ProxyAudioProducer_setPushBuffer__SWIG_0(self, args);
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'ProxyAudioProducer_setPushBuffer'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    ProxyAudioProducer::setPushBuffer(void const *,unsigned int,bool)\n"
+    "    ProxyAudioProducer::setPushBuffer(void const *,unsigned int)\n");
+  return 0;
 }
 
 
@@ -23385,6 +23561,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"ProxyAudioProducerCallback_start", _wrap_ProxyAudioProducerCallback_start, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioProducerCallback_pause", _wrap_ProxyAudioProducerCallback_pause, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioProducerCallback_stop", _wrap_ProxyAudioProducerCallback_stop, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioProducerCallback_fillPushBuffer", _wrap_ProxyAudioProducerCallback_fillPushBuffer, METH_VARARGS, NULL},
 	 { (char *)"disown_ProxyAudioProducerCallback", _wrap_disown_ProxyAudioProducerCallback, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioProducerCallback_swigregister", ProxyAudioProducerCallback_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_ProxyAudioProducer", _wrap_delete_ProxyAudioProducer, METH_VARARGS, NULL},

@@ -29,6 +29,7 @@
  */
 #include "ProxyProducer.h"
 
+#include "tsk_timer.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -46,12 +47,12 @@ typedef struct twrap_producer_proxy_audio_s
 twrap_producer_proxy_audio_t;
 #define TWRAP_PRODUCER_PROXY_AUDIO(self) ((twrap_producer_proxy_audio_t*)(self))
 
-int twrap_producer_proxy_audio_set(tmedia_producer_t* self, const tmedia_param_t* params)
+static int twrap_producer_proxy_audio_set(tmedia_producer_t* self, const tmedia_param_t* params)
 {
 	return 0;
 }
 
-int twrap_producer_proxy_audio_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
+static int twrap_producer_proxy_audio_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
 {
 	ProxyPluginMgr* manager;
 	int ret = -1;
@@ -67,13 +68,14 @@ int twrap_producer_proxy_audio_prepare(tmedia_producer_t* self, const tmedia_cod
 	return ret;
 }
 
-int twrap_producer_proxy_audio_start(tmedia_producer_t* self)
+static int twrap_producer_proxy_audio_start(tmedia_producer_t* self)
 {
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
 		const ProxyAudioProducer* audioProducer;
 		if((audioProducer = manager->findAudioProducer(TWRAP_PRODUCER_PROXY_AUDIO(self)->id)) && audioProducer->getCallback()){
+			const_cast<ProxyAudioProducer*>(audioProducer)->startPushCallback();
 			ret = audioProducer->getCallback()->start();
 		}
 	}
@@ -82,7 +84,7 @@ int twrap_producer_proxy_audio_start(tmedia_producer_t* self)
 	return ret;
 }
 
-int twrap_producer_proxy_audio_pause(tmedia_producer_t* self)
+static int twrap_producer_proxy_audio_pause(tmedia_producer_t* self)
 {
 	ProxyPluginMgr* manager;
 	int ret = -1;
@@ -95,13 +97,14 @@ int twrap_producer_proxy_audio_pause(tmedia_producer_t* self)
 	return ret;
 }
 
-int twrap_producer_proxy_audio_stop(tmedia_producer_t* self)
+static int twrap_producer_proxy_audio_stop(tmedia_producer_t* self)
 {
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if((manager = ProxyPluginMgr::getInstance())){
 		const ProxyAudioProducer* audioProducer;
 		if((audioProducer = manager->findAudioProducer(TWRAP_PRODUCER_PROXY_AUDIO(self)->id)) && audioProducer->getCallback()){
+			const_cast<ProxyAudioProducer*>(audioProducer)->stopPushCallback();
 			ret = audioProducer->getCallback()->stop();
 		}
 	}
@@ -187,7 +190,7 @@ TINYWRAP_GEXTERN const tmedia_producer_plugin_def_t *twrap_producer_proxy_audio_
 
 /* ============ ProxyAudioProducer Class ================= */
 ProxyAudioProducer::ProxyAudioProducer(twrap_producer_proxy_audio_t* pProducer)
-:m_pCallback(tsk_null), m_pWrappedPlugin(pProducer), ProxyPlugin(twrap_proxy_plugin_audio_producer)
+:m_pCallback(tsk_null), m_pWrappedPlugin(pProducer), m_bUsePushCallback(false), m_hPushTimerMgr(tsk_null), ProxyPlugin(twrap_proxy_plugin_audio_producer)
 {
 	m_pWrappedPlugin->id = this->getId();
 	m_PushBuffer.pPushBufferPtr = tsk_null;
@@ -196,12 +199,21 @@ ProxyAudioProducer::ProxyAudioProducer(twrap_producer_proxy_audio_t* pProducer)
 
 ProxyAudioProducer::~ProxyAudioProducer()
 {
+	stopPushCallback();
 }
 
-bool ProxyAudioProducer::setPushBuffer(const void* pPushBufferPtr, unsigned nPushBufferSize)
+bool ProxyAudioProducer::setPushBuffer(const void* pPushBufferPtr, unsigned nPushBufferSize, bool bUsePushCallback/*=false*/)
 {
 	m_PushBuffer.pPushBufferPtr = pPushBufferPtr;
 	m_PushBuffer.nPushBufferSize = nPushBufferSize;
+	m_bUsePushCallback = bUsePushCallback;
+
+	if(!pPushBufferPtr || !nPushBufferSize){
+		return stopPushCallback();
+	}
+	else if(m_bUsePushCallback && m_pWrappedPlugin && m_pWrappedPlugin->started){
+		return startPushCallback();
+	}
 	return true;
 }
 
@@ -239,6 +251,58 @@ unsigned ProxyAudioProducer::getGain()
 	return 0;
 }
 
+bool ProxyAudioProducer::startPushCallback()
+{
+	if(!m_bUsePushCallback){
+		return true;
+	}
+
+	if(!m_pWrappedPlugin){
+		TSK_DEBUG_ERROR("Not wrapping plugin");
+		return false;
+	}
+
+	if(!m_hPushTimerMgr){
+		if(!(m_hPushTimerMgr = tsk_timer_manager_create())){
+			TSK_DEBUG_ERROR("Failed to create timer manager");
+			return false;
+		}
+	}
+
+	if(!TSK_RUNNABLE(m_hPushTimerMgr)->started){
+		if((tsk_timer_manager_start(m_hPushTimerMgr)) == 0){
+			m_uPushTimer = tsk_timer_manager_schedule(m_hPushTimerMgr, TMEDIA_PRODUCER(m_pWrappedPlugin)->audio.ptime, &ProxyAudioProducer::pushTimerCallback, this);
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to start timer");
+			return false;
+		}
+	}
+	return true;
+}
+
+bool ProxyAudioProducer::stopPushCallback()
+{
+	if(m_hPushTimerMgr){
+		tsk_timer_manager_destroy(&m_hPushTimerMgr);
+	}
+	return true;
+}
+
+int ProxyAudioProducer::pushTimerCallback(const void* arg, tsk_timer_id_t timer_id)
+{
+	ProxyAudioProducer* This = (ProxyAudioProducer*)arg;
+
+	This->m_uPushTimer = tsk_timer_manager_schedule(This->m_hPushTimerMgr, TMEDIA_PRODUCER(This->m_pWrappedPlugin)->audio.ptime, &ProxyAudioProducer::pushTimerCallback, This);
+
+	if(This->m_pCallback){
+		if(This->m_pCallback->fillPushBuffer() == 0){
+			return This->push();
+		}
+	}
+	return 0;
+}
+
 bool ProxyAudioProducer::registerPlugin()
 {
 	/* HACK: Unregister all other audio plugins */
@@ -246,9 +310,6 @@ bool ProxyAudioProducer::registerPlugin()
 	/* Register our proxy plugin */
 	return (tmedia_producer_plugin_register(twrap_producer_proxy_audio_plugin_def_t) == 0);
 }
-
-
-
 
 
 

@@ -48,6 +48,8 @@ public:
 	virtual int start() { return -1; }
 	virtual int pause() { return -1; }
 	virtual int stop() { return -1; }
+	// this function is called to signal that it's time to copy push data
+	virtual int fillPushBuffer(){ return -1; }
 };
 
 
@@ -60,12 +62,13 @@ public:
 #endif
 	virtual ~ProxyAudioProducer();
 
-	bool setPushBuffer(const void* pPushBufferPtr, unsigned nPushBufferSize);
+	bool setPushBuffer(const void* pPushBufferPtr, unsigned nPushBufferSize, bool bUsePushCallback=false);
 	int push(const void* pBuffer=tsk_null, unsigned nSize=0);
 	bool setGain(unsigned nGain);
 	unsigned getGain();
 	void setCallback(ProxyAudioProducerCallback* pCallback) { m_pCallback = pCallback; }
 #if !defined(SWIG)
+	inline bool usePushCallback(){ return m_bUsePushCallback; }
 	inline ProxyAudioProducerCallback* getCallback()const { return m_pCallback; }
 	virtual inline bool isWrapping(tsk_object_t* pWrappedPlugin){
 		return m_pWrappedPlugin == pWrappedPlugin;
@@ -74,6 +77,14 @@ public:
 	virtual inline uint64_t getMediaSessionId(){
 		return m_pWrappedPlugin ? TMEDIA_PRODUCER(m_pWrappedPlugin)->session_id : 0;
 	}
+
+#if !defined(SWIG)
+public:
+	bool startPushCallback();
+	bool stopPushCallback();
+private:
+	static int pushTimerCallback(const void* arg, tsk_timer_id_t timer_id);
+#endif
 
 public:
 	static bool registerPlugin();
@@ -85,6 +96,9 @@ private:
 		const void* pPushBufferPtr;
 		unsigned nPushBufferSize;
 	} m_PushBuffer;
+	bool m_bUsePushCallback;
+	void* m_hPushTimerMgr;
+	uint64_t m_uPushTimer;
 };
 
 /* ============ ProxyVideoProducerCallback Class ================= */

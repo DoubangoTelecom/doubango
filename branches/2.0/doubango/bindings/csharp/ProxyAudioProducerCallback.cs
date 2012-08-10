@@ -65,6 +65,11 @@ public class ProxyAudioProducerCallback : IDisposable {
     return ret;
   }
 
+  public virtual int fillPushBuffer() {
+    int ret = (SwigDerivedClassHasMethod("fillPushBuffer", swigMethodTypes4) ? tinyWRAPPINVOKE.ProxyAudioProducerCallback_fillPushBufferSwigExplicitProxyAudioProducerCallback(swigCPtr) : tinyWRAPPINVOKE.ProxyAudioProducerCallback_fillPushBuffer(swigCPtr));
+    return ret;
+  }
+
   private void SwigDirectorConnect() {
     if (SwigDerivedClassHasMethod("prepare", swigMethodTypes0))
       swigDelegate0 = new SwigDelegateProxyAudioProducerCallback_0(SwigDirectorprepare);
@@ -74,7 +79,9 @@ public class ProxyAudioProducerCallback : IDisposable {
       swigDelegate2 = new SwigDelegateProxyAudioProducerCallback_2(SwigDirectorpause);
     if (SwigDerivedClassHasMethod("stop", swigMethodTypes3))
       swigDelegate3 = new SwigDelegateProxyAudioProducerCallback_3(SwigDirectorstop);
-    tinyWRAPPINVOKE.ProxyAudioProducerCallback_director_connect(swigCPtr, swigDelegate0, swigDelegate1, swigDelegate2, swigDelegate3);
+    if (SwigDerivedClassHasMethod("fillPushBuffer", swigMethodTypes4))
+      swigDelegate4 = new SwigDelegateProxyAudioProducerCallback_4(SwigDirectorfillPushBuffer);
+    tinyWRAPPINVOKE.ProxyAudioProducerCallback_director_connect(swigCPtr, swigDelegate0, swigDelegate1, swigDelegate2, swigDelegate3, swigDelegate4);
   }
 
   private bool SwigDerivedClassHasMethod(string methodName, Type[] methodTypes) {
@@ -99,20 +106,27 @@ public class ProxyAudioProducerCallback : IDisposable {
     return stop();
   }
 
+  private int SwigDirectorfillPushBuffer() {
+    return fillPushBuffer();
+  }
+
   public delegate int SwigDelegateProxyAudioProducerCallback_0(int ptime, int rate, int channels);
   public delegate int SwigDelegateProxyAudioProducerCallback_1();
   public delegate int SwigDelegateProxyAudioProducerCallback_2();
   public delegate int SwigDelegateProxyAudioProducerCallback_3();
+  public delegate int SwigDelegateProxyAudioProducerCallback_4();
 
   private SwigDelegateProxyAudioProducerCallback_0 swigDelegate0;
   private SwigDelegateProxyAudioProducerCallback_1 swigDelegate1;
   private SwigDelegateProxyAudioProducerCallback_2 swigDelegate2;
   private SwigDelegateProxyAudioProducerCallback_3 swigDelegate3;
+  private SwigDelegateProxyAudioProducerCallback_4 swigDelegate4;
 
   private static Type[] swigMethodTypes0 = new Type[] { typeof(int), typeof(int), typeof(int) };
   private static Type[] swigMethodTypes1 = new Type[] {  };
   private static Type[] swigMethodTypes2 = new Type[] {  };
   private static Type[] swigMethodTypes3 = new Type[] {  };
+  private static Type[] swigMethodTypes4 = new Type[] {  };
 }
 
 }

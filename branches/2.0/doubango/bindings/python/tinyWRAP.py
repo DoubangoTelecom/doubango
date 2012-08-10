@@ -1109,6 +1109,7 @@ class ProxyAudioProducerCallback(_object):
     def start(self): return _tinyWRAP.ProxyAudioProducerCallback_start(self)
     def pause(self): return _tinyWRAP.ProxyAudioProducerCallback_pause(self)
     def stop(self): return _tinyWRAP.ProxyAudioProducerCallback_stop(self)
+    def fillPushBuffer(self): return _tinyWRAP.ProxyAudioProducerCallback_fillPushBuffer(self)
     def __disown__(self):
         self.this.disown()
         _tinyWRAP.disown_ProxyAudioProducerCallback(self)

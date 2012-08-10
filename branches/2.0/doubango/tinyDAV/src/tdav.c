@@ -101,9 +101,6 @@
 #else 
 #	include "tinydav/audio/tdav_speakup_jitterbuffer.h"
 #endif
-#if TELEPRESENCE
-#	include "tinydav/video/tdav_video_jitterbuffer.h"
-#endif
 
 #if HAVE_FFMPEG
 #	include <libavcodec/avcodec.h>
@@ -270,9 +267,6 @@ int tdav_init()
 	tmedia_jitterbuffer_plugin_register(tdav_speex_jitterbuffer_plugin_def_t);
 #else
 	tmedia_jitterbuffer_plugin_register(tdav_speakup_jitterbuffer_plugin_def_t);
-#endif
-#if TELEPRESENCE
-	tmedia_jitterbuffer_plugin_register(tdav_video_jitterbuffer_plugin_def_t);
 #endif
 
 	return ret;
@@ -631,9 +625,6 @@ int tdav_deinit()
 	tmedia_jitterbuffer_plugin_unregister(tdav_speex_jitterbuffer_plugin_def_t);
 #else
 	tmedia_jitterbuffer_plugin_unregister(tdav_speakup_jitterbuffer_plugin_def_t);
-#endif
-#if TELEPRESENCE
-	tmedia_jitterbuffer_plugin_unregister(tdav_video_jitterbuffer_plugin_def_t);
 #endif
 
 	return ret;

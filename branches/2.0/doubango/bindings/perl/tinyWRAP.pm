@@ -1550,6 +1550,7 @@ sub DESTROY {
 *start = *tinyWRAPc::ProxyAudioProducerCallback_start;
 *pause = *tinyWRAPc::ProxyAudioProducerCallback_pause;
 *stop = *tinyWRAPc::ProxyAudioProducerCallback_stop;
+*fillPushBuffer = *tinyWRAPc::ProxyAudioProducerCallback_fillPushBuffer;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
