@@ -208,7 +208,7 @@ bool ProxyAudioProducer::setPushBuffer(const void* pPushBufferPtr, unsigned nPus
 	m_PushBuffer.nPushBufferSize = nPushBufferSize;
 	m_bUsePushCallback = bUsePushCallback;
 
-	if(!pPushBufferPtr || !nPushBufferSize){
+	if(!pPushBufferPtr || !nPushBufferSize || !bUsePushCallback){
 		return stopPushCallback();
 	}
 	else if(m_bUsePushCallback && m_pWrappedPlugin && m_pWrappedPlugin->started){
