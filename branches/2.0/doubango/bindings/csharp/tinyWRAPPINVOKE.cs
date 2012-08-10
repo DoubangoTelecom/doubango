@@ -1227,14 +1227,23 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducerCallback_stopSwigExplicitProxyAudioProducerCallback")]
   public static extern int ProxyAudioProducerCallback_stopSwigExplicitProxyAudioProducerCallback(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducerCallback_fillPushBuffer")]
+  public static extern int ProxyAudioProducerCallback_fillPushBuffer(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducerCallback_fillPushBufferSwigExplicitProxyAudioProducerCallback")]
+  public static extern int ProxyAudioProducerCallback_fillPushBufferSwigExplicitProxyAudioProducerCallback(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducerCallback_director_connect")]
-  public static extern void ProxyAudioProducerCallback_director_connect(HandleRef jarg1, ProxyAudioProducerCallback.SwigDelegateProxyAudioProducerCallback_0 delegate0, ProxyAudioProducerCallback.SwigDelegateProxyAudioProducerCallback_1 delegate1, ProxyAudioProducerCallback.SwigDelegateProxyAudioProducerCallback_2 delegate2, ProxyAudioProducerCallback.SwigDelegateProxyAudioProducerCallback_3 delegate3);
+  public static extern void ProxyAudioProducerCallback_director_connect(HandleRef jarg1, ProxyAudioProducerCallback.SwigDelegateProxyAudioProducerCallback_0 delegate0, ProxyAudioProducerCallback.SwigDelegateProxyAudioProducerCallback_1 delegate1, ProxyAudioProducerCallback.SwigDelegateProxyAudioProducerCallback_2 delegate2, ProxyAudioProducerCallback.SwigDelegateProxyAudioProducerCallback_3 delegate3, ProxyAudioProducerCallback.SwigDelegateProxyAudioProducerCallback_4 delegate4);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyAudioProducer")]
   public static extern void delete_ProxyAudioProducer(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_setPushBuffer")]
-  public static extern bool ProxyAudioProducer_setPushBuffer(HandleRef jarg1, byte[] jarg2, uint jarg3);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_setPushBuffer__SWIG_0")]
+  public static extern bool ProxyAudioProducer_setPushBuffer__SWIG_0(HandleRef jarg1, byte[] jarg2, uint jarg3, bool jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_setPushBuffer__SWIG_1")]
+  public static extern bool ProxyAudioProducer_setPushBuffer__SWIG_1(HandleRef jarg1, byte[] jarg2, uint jarg3);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_push__SWIG_0")]
   public static extern int ProxyAudioProducer_push__SWIG_0(HandleRef jarg1, byte[] jarg2, uint jarg3);

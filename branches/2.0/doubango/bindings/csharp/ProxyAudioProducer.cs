@@ -40,8 +40,13 @@ public class ProxyAudioProducer : ProxyPlugin {
     }
   }
 
+  public bool setPushBuffer(byte[] pPushBufferPtr, uint nPushBufferSize, bool bUsePushCallback) {
+    bool ret = tinyWRAPPINVOKE.ProxyAudioProducer_setPushBuffer__SWIG_0(swigCPtr, pPushBufferPtr, nPushBufferSize, bUsePushCallback);
+    return ret;
+  }
+
   public bool setPushBuffer(byte[] pPushBufferPtr, uint nPushBufferSize) {
-    bool ret = tinyWRAPPINVOKE.ProxyAudioProducer_setPushBuffer(swigCPtr, pPushBufferPtr, nPushBufferSize);
+    bool ret = tinyWRAPPINVOKE.ProxyAudioProducer_setPushBuffer__SWIG_1(swigCPtr, pPushBufferPtr, nPushBufferSize);
     return ret;
   }
 

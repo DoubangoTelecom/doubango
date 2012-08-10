@@ -71,4 +71,8 @@ public class ProxyAudioProducerCallback {
     return (getClass() == ProxyAudioProducerCallback.class) ? tinyWRAPJNI.ProxyAudioProducerCallback_stop(swigCPtr, this) : tinyWRAPJNI.ProxyAudioProducerCallback_stopSwigExplicitProxyAudioProducerCallback(swigCPtr, this);
   }
 
+  public int fillPushBuffer() {
+    return (getClass() == ProxyAudioProducerCallback.class) ? tinyWRAPJNI.ProxyAudioProducerCallback_fillPushBuffer(swigCPtr, this) : tinyWRAPJNI.ProxyAudioProducerCallback_fillPushBufferSwigExplicitProxyAudioProducerCallback(swigCPtr, this);
+  }
+
 }

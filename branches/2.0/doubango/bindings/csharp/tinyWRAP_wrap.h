@@ -116,18 +116,21 @@ public:
     virtual int start();
     virtual int pause();
     virtual int stop();
+    virtual int fillPushBuffer();
 
     typedef int (SWIGSTDCALL* SWIG_Callback0_t)(int, int, int);
     typedef int (SWIGSTDCALL* SWIG_Callback1_t)();
     typedef int (SWIGSTDCALL* SWIG_Callback2_t)();
     typedef int (SWIGSTDCALL* SWIG_Callback3_t)();
-    void swig_connect_director(SWIG_Callback0_t callbackprepare, SWIG_Callback1_t callbackstart, SWIG_Callback2_t callbackpause, SWIG_Callback3_t callbackstop);
+    typedef int (SWIGSTDCALL* SWIG_Callback4_t)();
+    void swig_connect_director(SWIG_Callback0_t callbackprepare, SWIG_Callback1_t callbackstart, SWIG_Callback2_t callbackpause, SWIG_Callback3_t callbackstop, SWIG_Callback4_t callbackfillPushBuffer);
 
 private:
     SWIG_Callback0_t swig_callbackprepare;
     SWIG_Callback1_t swig_callbackstart;
     SWIG_Callback2_t swig_callbackpause;
     SWIG_Callback3_t swig_callbackstop;
+    SWIG_Callback4_t swig_callbackfillPushBuffer;
     void swig_init_callbacks();
 };
 

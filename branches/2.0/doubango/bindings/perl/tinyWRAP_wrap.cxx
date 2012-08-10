@@ -16790,6 +16790,34 @@ XS(_wrap_ProxyAudioProducerCallback_stop) {
 }
 
 
+XS(_wrap_ProxyAudioProducerCallback_fillPushBuffer) {
+  {
+    ProxyAudioProducerCallback *arg1 = (ProxyAudioProducerCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyAudioProducerCallback_fillPushBuffer(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioProducerCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducerCallback_fillPushBuffer" "', argument " "1"" of type '" "ProxyAudioProducerCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioProducerCallback * >(argp1);
+    result = (int)(arg1)->fillPushBuffer();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_delete_ProxyAudioProducer) {
   {
     ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
@@ -16817,7 +16845,63 @@ XS(_wrap_delete_ProxyAudioProducer) {
 }
 
 
-XS(_wrap_ProxyAudioProducer_setPushBuffer) {
+XS(_wrap_ProxyAudioProducer_setPushBuffer__SWIG_0) {
+  {
+    ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+    void *arg2 = (void *) 0 ;
+    unsigned int arg3 ;
+    bool arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    unsigned int val3 ;
+    int ecode3 = 0 ;
+    bool val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: ProxyAudioProducer_setPushBuffer(self,pPushBufferPtr,nPushBufferSize,bUsePushCallback);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_setPushBuffer" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
+    res2 = SWIG_ConvertPtr(ST(1),SWIG_as_voidptrptr(&arg2), 0, 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyAudioProducer_setPushBuffer" "', argument " "2"" of type '" "void const *""'"); 
+    }
+    ecode3 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyAudioProducer_setPushBuffer" "', argument " "3"" of type '" "unsigned int""'");
+    } 
+    arg3 = static_cast< unsigned int >(val3);
+    ecode4 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyAudioProducer_setPushBuffer" "', argument " "4"" of type '" "bool""'");
+    } 
+    arg4 = static_cast< bool >(val4);
+    result = (bool)(arg1)->setPushBuffer((void const *)arg2,arg3,arg4);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyAudioProducer_setPushBuffer__SWIG_1) {
   {
     ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
     void *arg2 = (void *) 0 ;
@@ -16860,6 +16944,116 @@ XS(_wrap_ProxyAudioProducer_setPushBuffer) {
     
     SWIG_croak_null();
   }
+}
+
+
+XS(_wrap_ProxyAudioProducer_setPushBuffer) {
+  dXSARGS;
+  
+  {
+    unsigned long _index = 0;
+    SWIG_TypeRank _rank = 0; 
+    if (items == 3) {
+      SWIG_TypeRank _ranki = 0;
+      SWIG_TypeRank _rankm = 0;
+      SWIG_TypeRank _pi = 1;
+      int _v = 0;
+      {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(ST(0), &vptr, SWIGTYPE_p_ProxyAudioProducer, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_1;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        void *ptr = 0;
+        int res = SWIG_ConvertPtr(ST(1), &ptr, 0, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_1;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(2), NULL);
+          _v = SWIG_CheckState(res);
+        }
+      }
+      if (!_v) goto check_1;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      if (!_index || (_ranki < _rank)) {
+        _rank = _ranki; _index = 1;
+        if (_rank == _rankm) goto dispatch;
+      }
+    }
+  check_1:
+    
+    if (items == 4) {
+      SWIG_TypeRank _ranki = 0;
+      SWIG_TypeRank _rankm = 0;
+      SWIG_TypeRank _pi = 1;
+      int _v = 0;
+      {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(ST(0), &vptr, SWIGTYPE_p_ProxyAudioProducer, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        void *ptr = 0;
+        int res = SWIG_ConvertPtr(ST(1), &ptr, 0, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(2), NULL);
+          _v = SWIG_CheckState(res);
+        }
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        {
+          int res = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(3), NULL);
+          _v = SWIG_CheckState(res);
+        }
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      if (!_index || (_ranki < _rank)) {
+        _rank = _ranki; _index = 2;
+        if (_rank == _rankm) goto dispatch;
+      }
+    }
+  check_2:
+    
+  dispatch:
+    switch(_index) {
+    case 1:
+      ++PL_markstack_ptr; SWIG_CALLXS(_wrap_ProxyAudioProducer_setPushBuffer__SWIG_1); return;
+    case 2:
+      ++PL_markstack_ptr; SWIG_CALLXS(_wrap_ProxyAudioProducer_setPushBuffer__SWIG_0); return;
+    }
+  }
+  
+  croak("No matching function for overloaded 'ProxyAudioProducer_setPushBuffer'");
+  XSRETURN(0);
 }
 
 
@@ -24201,6 +24395,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::ProxyAudioProducerCallback_start", _wrap_ProxyAudioProducerCallback_start},
 {"tinyWRAPc::ProxyAudioProducerCallback_pause", _wrap_ProxyAudioProducerCallback_pause},
 {"tinyWRAPc::ProxyAudioProducerCallback_stop", _wrap_ProxyAudioProducerCallback_stop},
+{"tinyWRAPc::ProxyAudioProducerCallback_fillPushBuffer", _wrap_ProxyAudioProducerCallback_fillPushBuffer},
 {"tinyWRAPc::delete_ProxyAudioProducer", _wrap_delete_ProxyAudioProducer},
 {"tinyWRAPc::ProxyAudioProducer_setPushBuffer", _wrap_ProxyAudioProducer_setPushBuffer},
 {"tinyWRAPc::ProxyAudioProducer_push", _wrap_ProxyAudioProducer_push},
