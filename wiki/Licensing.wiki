@@ -3,9 +3,8 @@
 
 <p>
 The framework is <b>dual licensed (GPL / commercial)</b> and contains third-parties libraries compatible with commercial and closed-source applications.<br />
-        The framework depends on:
-</p>
-        
+        The framework depends on:</p>
+
     <table border="1" style="background-color: #fff; padding: 5px;" cellspacing="0">
         <tr style="background-color: #f0b;">
             <td>Name</td>
