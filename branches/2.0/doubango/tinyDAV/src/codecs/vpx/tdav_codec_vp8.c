@@ -285,12 +285,6 @@ static tsk_size_t tdav_codec_vp8_encode(tmedia_codec_t* self, const void* in_dat
 		return 0;
 	}
 
-#if !HAVE_FFMPEG// convert flip use FFmpeg
-	if(TMEDIA_CODEC_VIDEO(self)->out.flip){
-		vpx_img_flip(&image);
-	}
-#endif
-
 	// encode data
 	++vp8->encoder.pts;
 	if(vp8->encoder.force_idr){
@@ -477,12 +471,6 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 				}
 				*out_max_size = xsize;
 			}
-
-#if !HAVE_FFMPEG// convert flip use FFmpeg
-			if(TMEDIA_CODEC_VIDEO(vp8)->in.flip){
-				vpx_img_flip(img);
-			}
-#endif
 
 			// layout picture
 			for(plane=0; plane < 3; plane++) {

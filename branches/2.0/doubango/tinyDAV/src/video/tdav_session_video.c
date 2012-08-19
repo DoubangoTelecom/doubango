@@ -32,7 +32,7 @@
 #include "tinydav/codecs/fec/tdav_codec_red.h"
 #include "tinydav/codecs/fec/tdav_codec_ulpfec.h"
 
-
+#include "tinymedia/tmedia_converter_video.h"
 #include "tinymedia/tmedia_consumer.h"
 #include "tinymedia/tmedia_producer.h"
 #include "tinymedia/tmedia_defaults.h"
@@ -262,7 +262,7 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 				video->conv.producerHeight = base->producer->video.height;
 				video->conv.xProducerSize = size;
 				
-				if(!(video->conv.toYUV420 = tdav_converter_video_create(base->producer->video.width, base->producer->video.height, base->producer->video.chroma, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.width, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.height,
+				if(!(video->conv.toYUV420 = tmedia_converter_video_create(base->producer->video.width, base->producer->video.height, base->producer->video.chroma, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.width, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.height,
 					TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.chroma))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
 					ret = -5;
@@ -273,9 +273,9 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 
 		if(video->conv.toYUV420){
 			// update one-shot parameters
-			tdav_converter_video_init(video->conv.toYUV420, base->producer->video.rotation, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip);
+			tmedia_converter_video_set(video->conv.toYUV420, base->producer->video.rotation, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip);
 			// convert data to yuv420p
-			yuv420p_size = tdav_converter_video_convert(video->conv.toYUV420, buffer, &video->encoder.conv_buffer, &video->encoder.conv_buffer_size);
+			yuv420p_size = tmedia_converter_video_process(video->conv.toYUV420, buffer, &video->encoder.conv_buffer, &video->encoder.conv_buffer_size);
 			if(!yuv420p_size || !video->encoder.conv_buffer){
 				TSK_DEBUG_ERROR("Failed to convert XXX buffer to YUV42P");
 				ret = -6;
@@ -594,7 +594,7 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 					base->consumer->video.display.height = base->consumer->video.in.height;
 				}
 				// create converter
-				if(!(self->conv.fromYUV420 = tdav_converter_video_create(TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.chroma, base->consumer->video.display.width, base->consumer->video.display.height,
+				if(!(self->conv.fromYUV420 = tmedia_converter_video_create(TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.chroma, base->consumer->video.display.width, base->consumer->video.display.height,
 					base->consumer->video.display.chroma))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
 					ret = -3;
@@ -605,9 +605,9 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 
 		if(self->conv.fromYUV420){
 			// update one-shot parameters
-			tdav_converter_video_init(self->conv.fromYUV420, 0/*rotation*/, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.flip);
+			tmedia_converter_video_set(self->conv.fromYUV420, 0/*rotation*/, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.flip);
 			// convert data to the consumer's chroma
-			out_size = tdav_converter_video_convert(self->conv.fromYUV420, self->decoder.buffer, &self->decoder.conv_buffer, &self->decoder.conv_buffer_size);
+			out_size = tmedia_converter_video_process(self->conv.fromYUV420, self->decoder.buffer, &self->decoder.conv_buffer, &self->decoder.conv_buffer_size);
 			if(!out_size || !self->decoder.conv_buffer){
 				TSK_DEBUG_ERROR("Failed to convert YUV420 buffer to consumer's chroma");
 				ret = -4;
