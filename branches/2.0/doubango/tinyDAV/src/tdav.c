@@ -37,6 +37,12 @@
 // Media Contents, ...
 #include "tinymedia.h"
 
+// Converters
+#include "tinymedia/tmedia_converter_video.h"
+// Converters
+#include "tinymedia/tmedia_converter_video.h"
+#include "tinydav/video/tdav_converter_video.h"
+
 // Sessions
 #include "tinymedia/tmedia_session_ghost.h"
 #include "tinydav/audio/tdav_session_audio.h"
@@ -212,6 +218,12 @@ int tdav_init()
 	tmedia_codec_plugin_register(tdav_codec_h261_plugin_def_t);
 #endif
 	
+	/* === Register converters === */
+#if HAVE_LIBYUV
+	tmedia_converter_video_plugin_register(tdav_converter_video_libyuv_plugin_def_t);
+#elif HAVE_FFMPEG || HAVE_SWSSCALE
+	tmedia_converter_video_plugin_register(tdav_converter_video_ffmpeg_plugin_def_t);
+#endif
 
 	/* === Register consumers === */
 #if HAVE_DSOUND_H
@@ -570,6 +582,13 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_theora_plugin_def_t);
 #	endif
 
+#endif
+
+	/* === unRegister converters === */
+#if HAVE_LIBYUV
+	tmedia_converter_video_plugin_unregister(tdav_converter_video_libyuv_plugin_def_t);
+#elif HAVE_FFMPEG || HAVE_SWSSCALE
+	tmedia_converter_video_plugin_unregister(tdav_converter_video_ffmpeg_plugin_def_t);
 #endif
 
 	/* === unRegister consumers === */

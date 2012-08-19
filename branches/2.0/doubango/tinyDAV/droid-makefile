@@ -1,6 +1,7 @@
 APP := lib$(PROJECT)_$(MARCH).$(EXT)
 
 THIRDPARTIES_INC := ../thirdparties/android/include
+THIRDPARTIES_INC_COMMON := ../thirdparties/common/include
 THIRDPARTIES_LIB := ../thirdparties/android/lib
 THIRDPARTIES_MARCH_LIB := ../thirdparties/android/lib/$(MARCH)
 
@@ -24,6 +25,11 @@ ifeq ($(FFMPEG), no)
 else
 	FFMPEG_CFLAGS := -DHAVE_FFMPEG=1
 	FFMPEG_LDFLAGS := -lavutil-$(LICENSE) -lswscale-$(LICENSE) -lavcore-$(LICENSE) -lavcodec-$(LICENSE)
+endif
+# LibYUV (Default: disabled)
+ifeq ($(LIBYUV), yes)
+	LIBYUV_CFLAGS := -DHAVE_LIBYUV=1 -I$(THIRDPARTIES_INC_COMMON)/libyuv
+	LIBYUV_LDFLAGS := -lyuv_$(MARCH)
 endif
 # H264 (Default: enabled)
 ifeq ($(H264),no) # TODO: should depend on FFMPEG
@@ -149,14 +155,14 @@ endif
 
 ################################
 
-CFLAGS := $(CFLAGS_LIB) -I$(THIRDPARTIES_INC) $(ILBC_CFLAGS) $(LIBGSM_CFLAGS) \
-	$(FFMPEG_CFLAGS) $(VPX_CFLAGS) $(SPEEX_CFLAGS) $(SPEEX_DSP_CFLAGS) $(WEBRTC_CFLAGS) $(OPENCORE_AMR_CFLAGS) $(BV16_CFLAGS) $(G729_CFLAGS) \
+CFLAGS := $(CFLAGS_LIB) -I$(THIRDPARTIES_INC) -I$(THIRDPARTIES_INC_COMMON) $(ILBC_CFLAGS) $(LIBGSM_CFLAGS) \
+	$(FFMPEG_CFLAGS) $(LIBYUV_CFLAGS) $(VPX_CFLAGS) $(SPEEX_CFLAGS) $(SPEEX_DSP_CFLAGS) $(WEBRTC_CFLAGS) $(OPENCORE_AMR_CFLAGS) $(BV16_CFLAGS) $(G729_CFLAGS) \
 	$(LIBSRTP_CFLAGS) \
 	-I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I../tinyRTP/include -I../tinyMEDIA/include -I../tinyMSRP/include -I./include \
 	-DJB_HISTORY_SIZE=500
 	
 LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) -L$(THIRDPARTIES_MARCH_LIB) \
-	 $(FFMPEG_LDFLAGS) $(VPX_LDFLAGS) $(SPEEX_LDFLAGS) $(SPEEX_DSP_LDFLAGS) $(WEBRTC_LDFLAGS) $(OPENCORE_AMR_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) $(BV16_LDFLAGS) $(G729_LDFLAGS) \
+	 $(FFMPEG_LDFLAGS) $(LIBYUV_LDFLAGS) $(VPX_LDFLAGS) $(SPEEX_LDFLAGS) $(SPEEX_DSP_LDFLAGS) $(WEBRTC_LDFLAGS) $(OPENCORE_AMR_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) $(BV16_LDFLAGS) $(G729_LDFLAGS) \
 	  $(LIBSRTP_LDFLAGS) \
 	 -ltinySAK_$(MARCH) -ltinyNET_$(MARCH) -ltinySDP_$(MARCH) -ltinyRTP_$(MARCH) -ltinyMEDIA_$(MARCH) -ltinyMSRP_$(MARCH) -lm -lgcc
 
@@ -258,6 +264,9 @@ endif
 
 %.o: %.c
 	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+%.o: %.cxx
+	$(CPP) -c $(INCLUDE) $(CFLAGS) $< -o $@
 	
 install: $(APP)
 	$(ANDROID_SDK_ROOT)/tools/adb remount

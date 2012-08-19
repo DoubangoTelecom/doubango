@@ -208,6 +208,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\tinymedia\tmedia_converter_video.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\tinymedia\tmedia_defaults.h"
 				>
 			</File>
@@ -299,6 +303,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tmedia_consumer.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tmedia_converter_video.c"
 				>
 			</File>
 			<File
