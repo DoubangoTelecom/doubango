@@ -101,7 +101,7 @@ static inline enum FourCC _tdav_converter_video_libyuv_get_pixfmt(tmedia_chroma_
 		case tmedia_chroma_rgb565le:
 			return FOURCC_RGBP;
 		case tmedia_chroma_rgb32:
-			return FOURCC_RAW;
+			return FOURCC_ARGB;
 		case tmedia_chroma_nv21:
 			return FOURCC_NV21;
 		case tmedia_chroma_nv12:
@@ -155,7 +155,7 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 	int ret;
 	tdav_converter_video_libyuv_t* self = TDAV_CONVERTER_VIDEO_LIBYUV(_self);
 	tsk_bool_t scale = ((_self->dstWidth != _self->srcWidth) || (_self->dstHeight != _self->srcHeight));
-	int s, src_y_stride, src_u_stride, src_v_stride, dst_y_stride, dst_u_stride, dst_v_stride;
+	int s, ls, src_y_stride, src_u_stride, src_v_stride, dst_y_stride, dst_u_stride, dst_v_stride;
 	int src_w, src_h, dst_w, dst_h;
 	uint8 *dst_y, *dst_u, *dst_v, *src_y, *src_u, *src_v;
 
@@ -177,7 +177,8 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 	
 	if(self->toI420){
 		dst_w = src_w, dst_h = src_h; // because no scaling when converting to I420
-		s = ((src_w * src_h * 3) >> 1);
+        ls = src_w * src_h;
+		s = ((ls * 3) >> 1);
 		if(scale || rotation != kRotate0){
 			RESIZE_BUFFER(self->chroma.ptr, self->chroma.size, s);
 			dst_y = self->chroma.ptr;
@@ -186,14 +187,14 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 			RESIZE_BUFFER((*output), (*output_max_size), s);
 			dst_y = (uint8*)*output;
 		}
-		dst_u = (dst_y + (src_w * src_h));
-		dst_v = dst_u + (((src_w * src_h)) >> 2);
+		dst_u = (dst_y + ls);
+		dst_v = dst_u + (ls >> 2);
 		src_y_stride = dst_y_stride = src_w;
 		src_u_stride = src_v_stride = dst_u_stride = dst_v_stride = ((dst_y_stride + 1) >> 1);
 		
 		// convert to I420 without scaling or rotation
 		ret = ConvertToI420(
-					(const uint8*)buffer, ((src_w * src_h * 3) >> 1),
+					(const uint8*)buffer, _tdav_converter_video_libyuv_get_size(_self->srcChroma, src_w, src_h),
 					dst_y, dst_y_stride,
 					dst_u, dst_u_stride,
 					dst_v, dst_v_stride,
@@ -225,8 +226,8 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 				RESIZE_BUFFER((*output), (*output_max_size), s);
 				dst_y = (uint8*)*output;
 			}
-			dst_u = (dst_y + (src_w * src_h));
-			dst_v = dst_u + (((src_w * src_h)) >> 2);
+			dst_u = (dst_y + ls);
+			dst_v = dst_u + (ls >> 2);
 			ret = I420Rotate(
 					src_y, src_y_stride,
 					src_u, src_u_stride,
@@ -242,79 +243,62 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 			
 			// scale to fit ratio, pad, crop then copy
 			if((rotation == kRotate90 || rotation == kRotate270)){
-				static const int y_shift = 1;
-                static const int x_shift = 1;
-                int left_band, top_band;
-                int pad = ((int)_self->dstWidth - dst_w) > ((int)_self->dstHeight - dst_h) ?((int)_self->dstWidth - dst_w) : ((int)_self->dstHeight - dst_h);
-                if(pad < 0) pad = 0;
+                int iwidth = _self->srcHeight;
+                int iheight = _self->srcWidth;
                 
-				src_y = dst_y, src_u = dst_u, src_v = dst_v;
-				src_w = dst_w, src_h = dst_h;
-				src_y_stride = dst_y_stride, src_u_stride = dst_u_stride, src_v_stride = dst_v_stride;
-
-                dst_w += pad;
-                dst_h += pad;
-                left_band = (dst_w - _self->dstWidth) >> 1;
-                top_band = (dst_h - _self->dstHeight) / 3;
-				
-				// pad
-				s = (dst_w * dst_h * 3) >> 1;
-				
-				RESIZE_BUFFER(self->scale.ptr, self->scale.size, s);
-				dst_y = self->scale.ptr;
-				dst_u = (dst_y + (dst_w * dst_h));
-				dst_v = dst_u + (((dst_w * dst_h)) >> 2);
-				dst_y_stride = dst_w;
-				dst_u_stride = dst_v_stride = ((dst_y_stride + 1) >> 1);
-				
-				ret = I420Scale(
-					src_y, src_y_stride,
-					src_u, src_u_stride,
-					src_v, src_v_stride,
-					src_w, src_h,
-					dst_y, dst_y_stride,
-					dst_u, dst_u_stride,
-					dst_v, dst_v_stride,
-					dst_w, dst_h,
-					kFilterBox);
-				if(ret){
-					TSK_DEBUG_ERROR("I420Rotate failed with error code = %d", ret);
-					return 0;
-				}
-				
-				// crop
-				src_y = dst_y + (top_band * dst_y_stride) + left_band;
-                src_u = dst_u + ((top_band >> y_shift) * dst_u_stride) + (left_band >> x_shift);
-                src_v = dst_v + ((top_band >> y_shift) * dst_v_stride) + (left_band >> x_shift);
-				src_y_stride = dst_w;
-				src_u_stride = src_v_stride = ((src_y_stride + 1) >> 1);
-
-				// copy
-				dst_w = _self->dstWidth;
-				dst_h = _self->dstHeight;
-				s = ((dst_w * dst_h * 3) >> 1);
-				RESIZE_BUFFER((*output), (*output_max_size), s);
-				dst_y_stride = dst_w;
-				dst_u_stride = dst_v_stride = ((dst_y_stride + 1) >> 1);
-				uint8* dst_y = (uint8*)*output;
-				uint8* dst_u = (dst_y + (dst_w * dst_h));
-				uint8* dst_v = dst_u + (((dst_w * dst_h)) >> 2);
-				ret = I420Copy(
-					src_y, src_y_stride,
-					src_u, src_u_stride,
-					src_v, src_v_stride,
-					dst_y, dst_y_stride,
-					dst_u, dst_u_stride,
-					dst_v, dst_v_stride,
-					dst_w, dst_h);
-
-				if(ret){
-					TSK_DEBUG_ERROR("I420Copy failed with error code = %d", ret);
-					return 0;
-				}
-				return s;
-			}
-		}
+                src_y = dst_y, src_u = dst_u, src_v = dst_v;
+                src_w = dst_w, src_h = dst_h;
+                src_y_stride = dst_y_stride, src_u_stride = dst_u_stride, src_v_stride = dst_v_stride;
+                
+                if (_self->dstWidth != _self->dstHeight) {
+                    if (iwidth * _self->srcHeight > iheight * _self->srcWidth) {
+                        iwidth = (iheight * _self->srcWidth / _self->srcHeight) & ~1;
+                        int iwidth_offset = (_self->srcHeight - iwidth) >> 1;
+                        src_y += iwidth_offset;
+                        src_u += iwidth_offset >> 1;
+                        src_v += iwidth_offset >> 1;
+                    } else if (iwidth * _self->srcHeight < iheight * _self->srcWidth) {
+                        iheight = iwidth * _self->srcHeight / _self->srcWidth;
+                        int iheight_offset = (_self->srcWidth - iheight) >> 2;
+                        iheight_offset <<= 1;
+                        src_y += iheight_offset * src_y_stride;
+                        src_u += (iheight_offset >> 1) * src_u_stride;
+                        src_v += (iheight_offset >> 1) * src_v_stride;
+                    }
+                    
+                    src_w = iwidth, src_h = iheight;
+                    src_y_stride = src_w;
+                    src_u_stride = src_v_stride = ((src_y_stride + 1) >> 1);
+                    
+                    dst_w = _self->dstWidth;
+                    dst_h = _self->dstHeight;
+                    ls = dst_w * dst_h;
+                    s = ((ls * 3) >> 1);
+                    RESIZE_BUFFER((*output), (*output_max_size), s);
+                    dst_y_stride = dst_w;
+                    dst_u_stride = dst_v_stride = ((dst_y_stride + 1) >> 1);
+                    uint8* dst_y = (uint8*)*output;
+                    uint8* dst_u = (dst_y + ls);
+                    uint8* dst_v = dst_u + (ls >> 2);
+                    
+                    ret = I420Scale(
+                                    src_y, src_y_stride,
+                                    src_u, src_u_stride,
+                                    src_v, src_v_stride,
+                                    src_w, src_h,
+                                    dst_y, dst_y_stride,
+                                    dst_u, dst_u_stride,
+                                    dst_v, dst_v_stride,
+                                    dst_w, dst_h,
+                                    kFilterBox);
+                    if(ret){
+                        TSK_DEBUG_ERROR("I420Scale failed with error code = %d", ret);
+                        return 0;
+                    }
+                    return s;
+                }
+            }
+        }
 
 		// scale
 		if(scale){
@@ -324,11 +308,12 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 			dst_y_stride = dst_w;
 			dst_u_stride = dst_v_stride = ((dst_y_stride + 1) >> 1);
 			
-			s = ((dst_w * dst_h * 3) >> 1);
+            ls = dst_w * dst_h;
+			s = ((ls * 3) >> 1);
 			RESIZE_BUFFER((*output), (*output_max_size), s);
 			dst_y = (uint8*)*output;
-			dst_u = (dst_y + (dst_w * dst_h));
-			dst_v = dst_u + (((dst_w * dst_h)) >> 2);
+			dst_u = (dst_y + ls);
+			dst_v = dst_u + (ls >> 2);
 			
 			ret = I420Scale(
 					src_y, src_y_stride,
@@ -359,7 +344,8 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 		src_u_stride = src_v_stride = ((src_y_stride + 1) >> 1);
 
 		if(scale){
-			s = ((dst_w * dst_h * 3) >> 1);
+            ls = dst_w * dst_h;
+			s = ((ls * 3) >> 1);
 			RESIZE_BUFFER(self->scale.ptr, self->scale.size, s);
 			dst_y = self->scale.ptr;
 			dst_u = (dst_y + (dst_w * dst_h));
@@ -384,8 +370,8 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 			}
 			
 			src_y = dst_y;
-			src_u = (dst_y + (dst_w * dst_h));
-			src_v = (dst_u + ((dst_w * dst_h) >> 2));
+			src_u = (dst_y + ls);
+			src_v = (dst_u + (ls >> 2));
 			src_y_stride = dst_y_stride;
 			src_u_stride = src_v_stride = ((src_y_stride + 1) >> 1);
 		}
