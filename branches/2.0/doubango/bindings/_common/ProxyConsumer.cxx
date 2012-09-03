@@ -50,9 +50,13 @@ typedef struct twrap_consumer_proxy_audio_s
 twrap_consumer_proxy_audio_t;
 #define TWRAP_CONSUMER_PROXY_AUDIO(self) ((twrap_consumer_proxy_audio_t*)(self))
 
-int twrap_consumer_proxy_audio_set(tmedia_consumer_t* self, const tmedia_param_t* params)
+int twrap_consumer_proxy_audio_set(tmedia_consumer_t* _self, const tmedia_param_t* param)
 {
-	return 0;
+	twrap_consumer_proxy_audio_t* self = (twrap_consumer_proxy_audio_t*)_self;
+	if(param->plugin_type == tmedia_ppt_consumer){
+		// specific proxy consumer
+	}
+	return tdav_consumer_audio_set(TDAV_CONSUMER_AUDIO(self), param);
 }
 
 int twrap_consumer_proxy_audio_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)

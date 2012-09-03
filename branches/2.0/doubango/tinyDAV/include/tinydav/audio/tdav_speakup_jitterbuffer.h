@@ -30,6 +30,8 @@
 
 #include "tinydav_config.h"
 
+#if !(HAVE_SPEEX_DSP && HAVE_SPEEX_JB)
+
 #include "tinymedia/tmedia_jitterbuffer.h"
 
 #include "tinydav/audio/tdav_jitterbuffer.h"
@@ -53,5 +55,7 @@ tdav_speakup_jitterbuffer_t;
 const tmedia_jitterbuffer_plugin_def_t *tdav_speakup_jitterbuffer_plugin_def_t;
 
 TDAV_END_DECLS
+
+#endif /* !(HAVE_SPEEX_DSP && HAVE_SPEEX_JB) */
 
 #endif /* TINYDAV_SPEAKUP_JITTER_BUFFER_H */

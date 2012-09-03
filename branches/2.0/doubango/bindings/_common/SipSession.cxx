@@ -35,7 +35,6 @@ twrap_async_action_t;
 
 
 
-
 /* ======================== SipSession ========================*/
 SipSession::SipSession(SipStack* stack)
 {

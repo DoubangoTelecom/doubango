@@ -61,10 +61,6 @@ int tmedia_denoise_set(tmedia_denoise_t* self, const tmedia_param_t* param)
 	}
 
 	if(self->plugin->set){
-
-		// FIXME: to be implemnted
-		TSK_DEBUG_ERROR("Not implemented");
-
 		return self->plugin->set(self, param);
 	}
 	return 0;

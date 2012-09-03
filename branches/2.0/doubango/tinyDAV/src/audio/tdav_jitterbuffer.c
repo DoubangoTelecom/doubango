@@ -28,6 +28,8 @@
 */
 #include "tinydav/audio/tdav_jitterbuffer.h"
 
+#if !(HAVE_SPEEX_DSP && HAVE_SPEEX_JB)
+
 #include "tsk_memory.h"
 
 #include <stdlib.h>
@@ -1031,4 +1033,4 @@ static jb_frame *get_all_frames(jitterbuffer *jb)
 }
 
 
-//EOF
+#endif // !(HAVE_SPEEX_DSP && HAVE_SPEEX_JB)

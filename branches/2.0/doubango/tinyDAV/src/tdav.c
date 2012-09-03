@@ -102,7 +102,7 @@
 #endif
 
 // Audio/Video JitterBuffer
-#if HAVE_SPEEX_DSP &&  HAVE_SPEEX_JB
+#if HAVE_SPEEX_DSP && HAVE_SPEEX_JB
 #	include "tinydav/audio/tdav_speex_jitterbuffer.h"
 #else 
 #	include "tinydav/audio/tdav_speakup_jitterbuffer.h"

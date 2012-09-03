@@ -1441,6 +1441,98 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_ActionConfig_setMediaInt(void * jarg1, int 
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_Codec(void * jarg1) {
+  Codec *arg1 = (Codec *) 0 ;
+  
+  arg1 = (Codec *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_Codec_getMediaType(void * jarg1) {
+  int jresult ;
+  Codec *arg1 = (Codec *) 0 ;
+  twrap_media_type_t result;
+  
+  arg1 = (Codec *)jarg1; 
+  result = (twrap_media_type_t)(arg1)->getMediaType();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_Codec_getName(void * jarg1) {
+  char * jresult ;
+  Codec *arg1 = (Codec *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (Codec *)jarg1; 
+  result = (char *)(arg1)->getName();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_Codec_getDescription(void * jarg1) {
+  char * jresult ;
+  Codec *arg1 = (Codec *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (Codec *)jarg1; 
+  result = (char *)(arg1)->getDescription();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_Codec_getNegFormat(void * jarg1) {
+  char * jresult ;
+  Codec *arg1 = (Codec *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (Codec *)jarg1; 
+  result = (char *)(arg1)->getNegFormat();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_Codec_getAudioSamplingRate(void * jarg1) {
+  int jresult ;
+  Codec *arg1 = (Codec *) 0 ;
+  int result;
+  
+  arg1 = (Codec *)jarg1; 
+  result = (int)(arg1)->getAudioSamplingRate();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_Codec_getAudioChannels(void * jarg1) {
+  int jresult ;
+  Codec *arg1 = (Codec *) 0 ;
+  int result;
+  
+  arg1 = (Codec *)jarg1; 
+  result = (int)(arg1)->getAudioChannels();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_Codec_getAudioPTime(void * jarg1) {
+  int jresult ;
+  Codec *arg1 = (Codec *) 0 ;
+  int result;
+  
+  arg1 = (Codec *)jarg1; 
+  result = (int)(arg1)->getAudioPTime();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_MediaSessionMgr(void * jarg1) {
   MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
   
@@ -1555,6 +1647,20 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_producerSetInt64(void
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_MediaSessionMgr_producerGetCodec(void * jarg1, int jarg2) {
+  void * jresult ;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  Codec *result = 0 ;
+  
+  arg1 = (MediaSessionMgr *)jarg1; 
+  arg2 = (twrap_media_type_t)jarg2; 
+  result = (Codec *)(arg1)->producerGetCodec(arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_MediaSessionMgr_findProxyPluginConsumer(void * jarg1, int jarg2) {
   void * jresult ;
   MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
@@ -1579,6 +1685,18 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_MediaSessionMgr_findProxyPluginProducer(voi
   arg2 = (twrap_media_type_t)jarg2; 
   result = (ProxyPlugin *)((MediaSessionMgr const *)arg1)->findProxyPluginProducer(arg2);
   jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_registerAudioPluginFromFile(char * jarg1) {
+  unsigned int jresult ;
+  char *arg1 = (char *) 0 ;
+  unsigned int result;
+  
+  arg1 = (char *)jarg1; 
+  result = (unsigned int)MediaSessionMgr::registerAudioPluginFromFile((char const *)arg1);
+  jresult = result; 
   return jresult;
 }
 

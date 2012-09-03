@@ -1527,94 +1527,95 @@ SWIG_Perl_SetModule(swig_module_info *module) {
 #define SWIGTYPE_p_ActionConfig swig_types[0]
 #define SWIGTYPE_p_AudioResampler swig_types[1]
 #define SWIGTYPE_p_CallSession swig_types[2]
-#define SWIGTYPE_p_DDebugCallback swig_types[3]
-#define SWIGTYPE_p_DialogEvent swig_types[4]
-#define SWIGTYPE_p_InfoEvent swig_types[5]
-#define SWIGTYPE_p_InfoSession swig_types[6]
-#define SWIGTYPE_p_InviteEvent swig_types[7]
-#define SWIGTYPE_p_InviteSession swig_types[8]
-#define SWIGTYPE_p_MediaContent swig_types[9]
-#define SWIGTYPE_p_MediaContentCPIM swig_types[10]
-#define SWIGTYPE_p_MediaSessionMgr swig_types[11]
-#define SWIGTYPE_p_MessagingEvent swig_types[12]
-#define SWIGTYPE_p_MessagingSession swig_types[13]
-#define SWIGTYPE_p_MsrpCallback swig_types[14]
-#define SWIGTYPE_p_MsrpEvent swig_types[15]
-#define SWIGTYPE_p_MsrpMessage swig_types[16]
-#define SWIGTYPE_p_MsrpSession swig_types[17]
-#define SWIGTYPE_p_OptionsEvent swig_types[18]
-#define SWIGTYPE_p_OptionsSession swig_types[19]
-#define SWIGTYPE_p_ProxyAudioConsumer swig_types[20]
-#define SWIGTYPE_p_ProxyAudioConsumerCallback swig_types[21]
-#define SWIGTYPE_p_ProxyAudioProducer swig_types[22]
-#define SWIGTYPE_p_ProxyAudioProducerCallback swig_types[23]
-#define SWIGTYPE_p_ProxyPlugin swig_types[24]
-#define SWIGTYPE_p_ProxyPluginMgr swig_types[25]
-#define SWIGTYPE_p_ProxyPluginMgrCallback swig_types[26]
-#define SWIGTYPE_p_ProxyVideoConsumer swig_types[27]
-#define SWIGTYPE_p_ProxyVideoConsumerCallback swig_types[28]
-#define SWIGTYPE_p_ProxyVideoFrame swig_types[29]
-#define SWIGTYPE_p_ProxyVideoProducer swig_types[30]
-#define SWIGTYPE_p_ProxyVideoProducerCallback swig_types[31]
-#define SWIGTYPE_p_PublicationEvent swig_types[32]
-#define SWIGTYPE_p_PublicationSession swig_types[33]
-#define SWIGTYPE_p_RPMessage swig_types[34]
-#define SWIGTYPE_p_RegistrationEvent swig_types[35]
-#define SWIGTYPE_p_RegistrationSession swig_types[36]
-#define SWIGTYPE_p_SMSData swig_types[37]
-#define SWIGTYPE_p_SMSEncoder swig_types[38]
-#define SWIGTYPE_p_SafeObject swig_types[39]
-#define SWIGTYPE_p_SdpMessage swig_types[40]
-#define SWIGTYPE_p_SipCallback swig_types[41]
-#define SWIGTYPE_p_SipEvent swig_types[42]
-#define SWIGTYPE_p_SipMessage swig_types[43]
-#define SWIGTYPE_p_SipSession swig_types[44]
-#define SWIGTYPE_p_SipStack swig_types[45]
-#define SWIGTYPE_p_SipUri swig_types[46]
-#define SWIGTYPE_p_StackEvent swig_types[47]
-#define SWIGTYPE_p_SubscriptionEvent swig_types[48]
-#define SWIGTYPE_p_SubscriptionSession swig_types[49]
-#define SWIGTYPE_p_XcapCallback swig_types[50]
-#define SWIGTYPE_p_XcapEvent swig_types[51]
-#define SWIGTYPE_p_XcapMessage swig_types[52]
-#define SWIGTYPE_p_XcapSelector swig_types[53]
-#define SWIGTYPE_p_XcapStack swig_types[54]
-#define SWIGTYPE_p_char swig_types[55]
-#define SWIGTYPE_p_int swig_types[56]
-#define SWIGTYPE_p_long_long swig_types[57]
-#define SWIGTYPE_p_short swig_types[58]
-#define SWIGTYPE_p_signed_char swig_types[59]
-#define SWIGTYPE_p_tdav_codec_id_e swig_types[60]
-#define SWIGTYPE_p_thttp_event_type_e swig_types[61]
-#define SWIGTYPE_p_tmedia_bandwidth_level_e swig_types[62]
-#define SWIGTYPE_p_tmedia_chroma_e swig_types[63]
-#define SWIGTYPE_p_tmedia_pref_video_size_s swig_types[64]
-#define SWIGTYPE_p_tmedia_profile_e swig_types[65]
-#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[66]
-#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[67]
-#define SWIGTYPE_p_tmedia_srtp_mode_e swig_types[68]
-#define SWIGTYPE_p_tmsrp_event_type_e swig_types[69]
-#define SWIGTYPE_p_tmsrp_request_type_e swig_types[70]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[71]
-#define SWIGTYPE_p_tsip_info_event_type_e swig_types[72]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[73]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[74]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[75]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[76]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[77]
-#define SWIGTYPE_p_tsip_request_type_e swig_types[78]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[79]
-#define SWIGTYPE_p_tsk_list_t swig_types[80]
-#define SWIGTYPE_p_twrap_media_type_e swig_types[81]
-#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[82]
-#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[83]
-#define SWIGTYPE_p_twrap_sms_type_e swig_types[84]
-#define SWIGTYPE_p_unsigned_char swig_types[85]
-#define SWIGTYPE_p_unsigned_int swig_types[86]
-#define SWIGTYPE_p_unsigned_long_long swig_types[87]
-#define SWIGTYPE_p_unsigned_short swig_types[88]
-static swig_type_info *swig_types[90];
-static swig_module_info swig_module = {swig_types, 89, 0, 0, 0, 0};
+#define SWIGTYPE_p_Codec swig_types[3]
+#define SWIGTYPE_p_DDebugCallback swig_types[4]
+#define SWIGTYPE_p_DialogEvent swig_types[5]
+#define SWIGTYPE_p_InfoEvent swig_types[6]
+#define SWIGTYPE_p_InfoSession swig_types[7]
+#define SWIGTYPE_p_InviteEvent swig_types[8]
+#define SWIGTYPE_p_InviteSession swig_types[9]
+#define SWIGTYPE_p_MediaContent swig_types[10]
+#define SWIGTYPE_p_MediaContentCPIM swig_types[11]
+#define SWIGTYPE_p_MediaSessionMgr swig_types[12]
+#define SWIGTYPE_p_MessagingEvent swig_types[13]
+#define SWIGTYPE_p_MessagingSession swig_types[14]
+#define SWIGTYPE_p_MsrpCallback swig_types[15]
+#define SWIGTYPE_p_MsrpEvent swig_types[16]
+#define SWIGTYPE_p_MsrpMessage swig_types[17]
+#define SWIGTYPE_p_MsrpSession swig_types[18]
+#define SWIGTYPE_p_OptionsEvent swig_types[19]
+#define SWIGTYPE_p_OptionsSession swig_types[20]
+#define SWIGTYPE_p_ProxyAudioConsumer swig_types[21]
+#define SWIGTYPE_p_ProxyAudioConsumerCallback swig_types[22]
+#define SWIGTYPE_p_ProxyAudioProducer swig_types[23]
+#define SWIGTYPE_p_ProxyAudioProducerCallback swig_types[24]
+#define SWIGTYPE_p_ProxyPlugin swig_types[25]
+#define SWIGTYPE_p_ProxyPluginMgr swig_types[26]
+#define SWIGTYPE_p_ProxyPluginMgrCallback swig_types[27]
+#define SWIGTYPE_p_ProxyVideoConsumer swig_types[28]
+#define SWIGTYPE_p_ProxyVideoConsumerCallback swig_types[29]
+#define SWIGTYPE_p_ProxyVideoFrame swig_types[30]
+#define SWIGTYPE_p_ProxyVideoProducer swig_types[31]
+#define SWIGTYPE_p_ProxyVideoProducerCallback swig_types[32]
+#define SWIGTYPE_p_PublicationEvent swig_types[33]
+#define SWIGTYPE_p_PublicationSession swig_types[34]
+#define SWIGTYPE_p_RPMessage swig_types[35]
+#define SWIGTYPE_p_RegistrationEvent swig_types[36]
+#define SWIGTYPE_p_RegistrationSession swig_types[37]
+#define SWIGTYPE_p_SMSData swig_types[38]
+#define SWIGTYPE_p_SMSEncoder swig_types[39]
+#define SWIGTYPE_p_SafeObject swig_types[40]
+#define SWIGTYPE_p_SdpMessage swig_types[41]
+#define SWIGTYPE_p_SipCallback swig_types[42]
+#define SWIGTYPE_p_SipEvent swig_types[43]
+#define SWIGTYPE_p_SipMessage swig_types[44]
+#define SWIGTYPE_p_SipSession swig_types[45]
+#define SWIGTYPE_p_SipStack swig_types[46]
+#define SWIGTYPE_p_SipUri swig_types[47]
+#define SWIGTYPE_p_StackEvent swig_types[48]
+#define SWIGTYPE_p_SubscriptionEvent swig_types[49]
+#define SWIGTYPE_p_SubscriptionSession swig_types[50]
+#define SWIGTYPE_p_XcapCallback swig_types[51]
+#define SWIGTYPE_p_XcapEvent swig_types[52]
+#define SWIGTYPE_p_XcapMessage swig_types[53]
+#define SWIGTYPE_p_XcapSelector swig_types[54]
+#define SWIGTYPE_p_XcapStack swig_types[55]
+#define SWIGTYPE_p_char swig_types[56]
+#define SWIGTYPE_p_int swig_types[57]
+#define SWIGTYPE_p_long_long swig_types[58]
+#define SWIGTYPE_p_short swig_types[59]
+#define SWIGTYPE_p_signed_char swig_types[60]
+#define SWIGTYPE_p_tdav_codec_id_e swig_types[61]
+#define SWIGTYPE_p_thttp_event_type_e swig_types[62]
+#define SWIGTYPE_p_tmedia_bandwidth_level_e swig_types[63]
+#define SWIGTYPE_p_tmedia_chroma_e swig_types[64]
+#define SWIGTYPE_p_tmedia_pref_video_size_s swig_types[65]
+#define SWIGTYPE_p_tmedia_profile_e swig_types[66]
+#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[67]
+#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[68]
+#define SWIGTYPE_p_tmedia_srtp_mode_e swig_types[69]
+#define SWIGTYPE_p_tmsrp_event_type_e swig_types[70]
+#define SWIGTYPE_p_tmsrp_request_type_e swig_types[71]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[72]
+#define SWIGTYPE_p_tsip_info_event_type_e swig_types[73]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[74]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[75]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[76]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[77]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[78]
+#define SWIGTYPE_p_tsip_request_type_e swig_types[79]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[80]
+#define SWIGTYPE_p_tsk_list_t swig_types[81]
+#define SWIGTYPE_p_twrap_media_type_e swig_types[82]
+#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[83]
+#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[84]
+#define SWIGTYPE_p_twrap_sms_type_e swig_types[85]
+#define SWIGTYPE_p_unsigned_char swig_types[86]
+#define SWIGTYPE_p_unsigned_int swig_types[87]
+#define SWIGTYPE_p_unsigned_long_long swig_types[88]
+#define SWIGTYPE_p_unsigned_short swig_types[89]
+static swig_type_info *swig_types[91];
+static swig_module_info swig_module = {swig_types, 90, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -1982,6 +1983,26 @@ SWIG_AsVal_int SWIG_PERL_DECL_ARGS_2(SV * obj, int *val)
 }
 
 
+SWIGINTERNINLINE SV *
+SWIG_FromCharPtrAndSize(const char* carray, size_t size)
+{
+  SV *obj = sv_newmortal();
+  if (carray) {
+    sv_setpvn(obj, carray, size);
+  } else {
+    sv_setsv(obj, &PL_sv_undef);
+  }
+  return obj;
+}
+
+
+SWIGINTERNINLINE SV * 
+SWIG_FromCharPtr(const char *cptr)
+{ 
+  return SWIG_FromCharPtrAndSize(cptr, (cptr ? strlen(cptr) : 0));
+}
+
+
 #include <stdlib.h>
 #ifdef _MSC_VER
 # ifndef strtoull
@@ -2133,26 +2154,6 @@ SWIG_AsVal_unsigned_SS_short SWIG_PERL_DECL_ARGS_2(SV * obj, unsigned short *val
     }
   }  
   return res;
-}
-
-
-SWIGINTERNINLINE SV *
-SWIG_FromCharPtrAndSize(const char* carray, size_t size)
-{
-  SV *obj = sv_newmortal();
-  if (carray) {
-    sv_setpvn(obj, carray, size);
-  } else {
-    sv_setsv(obj, &PL_sv_undef);
-  }
-  return obj;
-}
-
-
-SWIGINTERNINLINE SV * 
-SWIG_FromCharPtr(const char *cptr)
-{ 
-  return SWIG_FromCharPtrAndSize(cptr, (cptr ? strlen(cptr) : 0));
 }
 
 
@@ -3049,6 +3050,229 @@ XS(_wrap_ActionConfig_setMediaInt) {
 }
 
 
+XS(_wrap_delete_Codec) {
+  {
+    Codec *arg1 = (Codec *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: delete_Codec(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_Codec, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_Codec" "', argument " "1"" of type '" "Codec *""'"); 
+    }
+    arg1 = reinterpret_cast< Codec * >(argp1);
+    delete arg1;
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_Codec_getMediaType) {
+  {
+    Codec *arg1 = (Codec *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    twrap_media_type_t result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: Codec_getMediaType(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_Codec, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Codec_getMediaType" "', argument " "1"" of type '" "Codec *""'"); 
+    }
+    arg1 = reinterpret_cast< Codec * >(argp1);
+    result = (twrap_media_type_t)(arg1)->getMediaType();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_Codec_getName) {
+  {
+    Codec *arg1 = (Codec *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: Codec_getName(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_Codec, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Codec_getName" "', argument " "1"" of type '" "Codec *""'"); 
+    }
+    arg1 = reinterpret_cast< Codec * >(argp1);
+    result = (char *)(arg1)->getName();
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_Codec_getDescription) {
+  {
+    Codec *arg1 = (Codec *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: Codec_getDescription(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_Codec, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Codec_getDescription" "', argument " "1"" of type '" "Codec *""'"); 
+    }
+    arg1 = reinterpret_cast< Codec * >(argp1);
+    result = (char *)(arg1)->getDescription();
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_Codec_getNegFormat) {
+  {
+    Codec *arg1 = (Codec *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: Codec_getNegFormat(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_Codec, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Codec_getNegFormat" "', argument " "1"" of type '" "Codec *""'"); 
+    }
+    arg1 = reinterpret_cast< Codec * >(argp1);
+    result = (char *)(arg1)->getNegFormat();
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_Codec_getAudioSamplingRate) {
+  {
+    Codec *arg1 = (Codec *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: Codec_getAudioSamplingRate(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_Codec, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Codec_getAudioSamplingRate" "', argument " "1"" of type '" "Codec *""'"); 
+    }
+    arg1 = reinterpret_cast< Codec * >(argp1);
+    result = (int)(arg1)->getAudioSamplingRate();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_Codec_getAudioChannels) {
+  {
+    Codec *arg1 = (Codec *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: Codec_getAudioChannels(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_Codec, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Codec_getAudioChannels" "', argument " "1"" of type '" "Codec *""'"); 
+    }
+    arg1 = reinterpret_cast< Codec * >(argp1);
+    result = (int)(arg1)->getAudioChannels();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_Codec_getAudioPTime) {
+  {
+    Codec *arg1 = (Codec *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: Codec_getAudioPTime(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_Codec, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Codec_getAudioPTime" "', argument " "1"" of type '" "Codec *""'"); 
+    }
+    arg1 = reinterpret_cast< Codec * >(argp1);
+    result = (int)(arg1)->getAudioPTime();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_delete_MediaSessionMgr) {
   {
     MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
@@ -3420,6 +3644,44 @@ XS(_wrap_MediaSessionMgr_producerSetInt64) {
 }
 
 
+XS(_wrap_MediaSessionMgr_producerGetCodec) {
+  {
+    MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+    twrap_media_type_t arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    Codec *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: MediaSessionMgr_producerGetCodec(self,media);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MediaSessionMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_producerGetCodec" "', argument " "1"" of type '" "MediaSessionMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_producerGetCodec" "', argument " "2"" of type '" "twrap_media_type_t""'");
+    } 
+    arg2 = static_cast< twrap_media_type_t >(val2);
+    result = (Codec *)(arg1)->producerGetCodec(arg2);
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Codec, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_MediaSessionMgr_findProxyPluginConsumer) {
   {
     MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
@@ -3491,6 +3753,35 @@ XS(_wrap_MediaSessionMgr_findProxyPluginProducer) {
   fail:
     
     
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_registerAudioPluginFromFile) {
+  {
+    char *arg1 = (char *) 0 ;
+    int res1 ;
+    char *buf1 = 0 ;
+    int alloc1 = 0 ;
+    int argvi = 0;
+    unsigned int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_registerAudioPluginFromFile(path);");
+    }
+    res1 = SWIG_AsCharPtrAndSize(ST(0), &buf1, NULL, &alloc1);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_registerAudioPluginFromFile" "', argument " "1"" of type '" "char const *""'");
+    }
+    arg1 = reinterpret_cast< char * >(buf1);
+    result = (unsigned int)MediaSessionMgr::registerAudioPluginFromFile((char const *)arg1);
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
+    XSRETURN(argvi);
+  fail:
+    if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
     SWIG_croak_null();
   }
 }
@@ -23748,6 +24039,7 @@ static void *_p_MessagingEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemo
 static swig_type_info _swigt__p_ActionConfig = {"_p_ActionConfig", "ActionConfig *", 0, 0, (void*)"tinyWRAP::ActionConfig", 0};
 static swig_type_info _swigt__p_AudioResampler = {"_p_AudioResampler", "AudioResampler *", 0, 0, (void*)"tinyWRAP::AudioResampler", 0};
 static swig_type_info _swigt__p_CallSession = {"_p_CallSession", "CallSession *", 0, 0, (void*)"tinyWRAP::CallSession", 0};
+static swig_type_info _swigt__p_Codec = {"_p_Codec", "Codec *", 0, 0, (void*)"tinyWRAP::Codec", 0};
 static swig_type_info _swigt__p_DDebugCallback = {"_p_DDebugCallback", "DDebugCallback *", 0, 0, (void*)"tinyWRAP::DDebugCallback", 0};
 static swig_type_info _swigt__p_DialogEvent = {"_p_DialogEvent", "DialogEvent *", 0, 0, (void*)"tinyWRAP::DialogEvent", 0};
 static swig_type_info _swigt__p_InfoEvent = {"_p_InfoEvent", "InfoEvent *", 0, 0, (void*)"tinyWRAP::InfoEvent", 0};
@@ -23839,6 +24131,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_ActionConfig,
   &_swigt__p_AudioResampler,
   &_swigt__p_CallSession,
+  &_swigt__p_Codec,
   &_swigt__p_DDebugCallback,
   &_swigt__p_DialogEvent,
   &_swigt__p_InfoEvent,
@@ -23930,6 +24223,7 @@ static swig_type_info *swig_type_initial[] = {
 static swig_cast_info _swigc__p_ActionConfig[] = {  {&_swigt__p_ActionConfig, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_AudioResampler[] = {  {&_swigt__p_AudioResampler, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_CallSession[] = {  {&_swigt__p_CallSession, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Codec[] = {  {&_swigt__p_Codec, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DDebugCallback[] = {  {&_swigt__p_DDebugCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DialogEvent[] = {  {&_swigt__p_DialogEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_InfoEvent[] = {  {&_swigt__p_InfoEvent, 0, 0, 0},{0, 0, 0, 0}};
@@ -24021,6 +24315,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_ActionConfig,
   _swigc__p_AudioResampler,
   _swigc__p_CallSession,
+  _swigc__p_Codec,
   _swigc__p_DDebugCallback,
   _swigc__p_DialogEvent,
   _swigc__p_InfoEvent,
@@ -24141,6 +24436,14 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::ActionConfig_setResponseLine", _wrap_ActionConfig_setResponseLine},
 {"tinyWRAPc::ActionConfig_setMediaString", _wrap_ActionConfig_setMediaString},
 {"tinyWRAPc::ActionConfig_setMediaInt", _wrap_ActionConfig_setMediaInt},
+{"tinyWRAPc::delete_Codec", _wrap_delete_Codec},
+{"tinyWRAPc::Codec_getMediaType", _wrap_Codec_getMediaType},
+{"tinyWRAPc::Codec_getName", _wrap_Codec_getName},
+{"tinyWRAPc::Codec_getDescription", _wrap_Codec_getDescription},
+{"tinyWRAPc::Codec_getNegFormat", _wrap_Codec_getNegFormat},
+{"tinyWRAPc::Codec_getAudioSamplingRate", _wrap_Codec_getAudioSamplingRate},
+{"tinyWRAPc::Codec_getAudioChannels", _wrap_Codec_getAudioChannels},
+{"tinyWRAPc::Codec_getAudioPTime", _wrap_Codec_getAudioPTime},
 {"tinyWRAPc::delete_MediaSessionMgr", _wrap_delete_MediaSessionMgr},
 {"tinyWRAPc::MediaSessionMgr_sessionSetInt32", _wrap_MediaSessionMgr_sessionSetInt32},
 {"tinyWRAPc::MediaSessionMgr_sessionGetInt32", _wrap_MediaSessionMgr_sessionGetInt32},
@@ -24148,8 +24451,10 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_consumerSetInt64", _wrap_MediaSessionMgr_consumerSetInt64},
 {"tinyWRAPc::MediaSessionMgr_producerSetInt32", _wrap_MediaSessionMgr_producerSetInt32},
 {"tinyWRAPc::MediaSessionMgr_producerSetInt64", _wrap_MediaSessionMgr_producerSetInt64},
+{"tinyWRAPc::MediaSessionMgr_producerGetCodec", _wrap_MediaSessionMgr_producerGetCodec},
 {"tinyWRAPc::MediaSessionMgr_findProxyPluginConsumer", _wrap_MediaSessionMgr_findProxyPluginConsumer},
 {"tinyWRAPc::MediaSessionMgr_findProxyPluginProducer", _wrap_MediaSessionMgr_findProxyPluginProducer},
+{"tinyWRAPc::MediaSessionMgr_registerAudioPluginFromFile", _wrap_MediaSessionMgr_registerAudioPluginFromFile},
 {"tinyWRAPc::MediaSessionMgr_getSessionId", _wrap_MediaSessionMgr_getSessionId},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetProfile", _wrap_MediaSessionMgr_defaultsSetProfile},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetProfile", _wrap_MediaSessionMgr_defaultsGetProfile},
@@ -24884,6 +25189,7 @@ XS(SWIG_init) {
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   SWIG_TypeClientData(SWIGTYPE_p_ActionConfig, (void*) "tinyWRAP::ActionConfig");
+  SWIG_TypeClientData(SWIGTYPE_p_Codec, (void*) "tinyWRAP::Codec");
   SWIG_TypeClientData(SWIGTYPE_p_MediaSessionMgr, (void*) "tinyWRAP::MediaSessionMgr");
   SWIG_TypeClientData(SWIGTYPE_p_MediaContent, (void*) "tinyWRAP::MediaContent");
   SWIG_TypeClientData(SWIGTYPE_p_MediaContentCPIM, (void*) "tinyWRAP::MediaContentCPIM");

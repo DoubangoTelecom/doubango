@@ -31,7 +31,7 @@
 #endif
 
 /* Very Important ==> never call functions which could raise debug callbacks into callback functions
-*  Callbacks should not used with Android (JNI).
+*  Callbacks should not be used with Android (JNI).
 */
 
 enum cb_type{

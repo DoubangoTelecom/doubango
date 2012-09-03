@@ -71,6 +71,12 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public Codec producerGetCodec(twrap_media_type_t media) {
+    IntPtr cPtr = tinyWRAPPINVOKE.MediaSessionMgr_producerGetCodec(swigCPtr, (int)media);
+    Codec ret = (cPtr == IntPtr.Zero) ? null : new Codec(cPtr, true);
+    return ret;
+  }
+
   public ProxyPlugin findProxyPluginConsumer(twrap_media_type_t media) {
     IntPtr cPtr = tinyWRAPPINVOKE.MediaSessionMgr_findProxyPluginConsumer(swigCPtr, (int)media);
     ProxyPlugin ret = (cPtr == IntPtr.Zero) ? null : new ProxyPlugin(cPtr, false);
@@ -80,6 +86,11 @@ public class MediaSessionMgr : IDisposable {
   public ProxyPlugin findProxyPluginProducer(twrap_media_type_t media) {
     IntPtr cPtr = tinyWRAPPINVOKE.MediaSessionMgr_findProxyPluginProducer(swigCPtr, (int)media);
     ProxyPlugin ret = (cPtr == IntPtr.Zero) ? null : new ProxyPlugin(cPtr, false);
+    return ret;
+  }
+
+  public static uint registerAudioPluginFromFile(string path) {
+    uint ret = tinyWRAPPINVOKE.MediaSessionMgr_registerAudioPluginFromFile(path);
     return ret;
   }
 

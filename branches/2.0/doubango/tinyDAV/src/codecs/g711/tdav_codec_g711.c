@@ -45,54 +45,60 @@ static tsk_size_t tdav_codec_g711u_encode(tmedia_codec_t* self, const void* in_d
 	register tsk_size_t i;
 	register uint8_t* pout_data;
 	register int16_t* pin_data;
+	tsk_size_t out_size;
 	
 	if(!self || !in_data || !in_size || !out_data){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
+
+	out_size = (in_size >> 1);
 	
-	if(*out_max_size <in_size>>1){
-		if(!(*out_data = tsk_realloc(*out_data, in_size>>1))){
+	if(*out_max_size <out_size){
+		if(!(*out_data = tsk_realloc(*out_data, out_size))){
 			TSK_DEBUG_ERROR("Failed to allocate new buffer");
 			*out_max_size = 0;
 			return 0;
 		}
-		*out_max_size = in_size>>1;
+		*out_max_size = out_size;
 	}
 	
 	pout_data = *out_data;
 	pin_data = (int16_t*)in_data;
-	for(i = 0; i<(in_size>>1); i++){
+	for(i = 0; i<out_size; i++){
 		pout_data[i] = linear2ulaw(pin_data[i]);
 	}
 	
-	return (in_size>>1);
+	return out_size;
 }
 
 static tsk_size_t tdav_codec_g711u_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
 	tsk_size_t i;
+	tsk_size_t out_size;
 
 	if(!self || !in_data || !in_size || !out_data){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 
+	out_size = (in_size << 1);
+
 	/* allocate new buffer */
-	if(*out_max_size<(in_size<<1)){
-		if(!(*out_data = tsk_calloc(in_size, sizeof(int16_t)))){
+	if(*out_max_size<out_size){
+		if(!(*out_data = tsk_realloc(*out_data, out_size))){
 			TSK_DEBUG_ERROR("Failed to allocate new buffer");
 			*out_max_size = 0;
 			return 0;
 		}
-		*out_max_size = in_size<<1;
+		*out_max_size = out_size;
 	}
 
 	for(i = 0; i<in_size; i++){
 		((short*)*out_data)[i] = ulaw2linear(((uint8_t*)in_data)[i]);
 	}
 	
-	return (in_size<<1);
+	return out_size;
 }
 
 static tsk_bool_t tdav_codec_g711u_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
@@ -177,14 +183,17 @@ static tsk_size_t tdav_codec_g711a_encode(tmedia_codec_t* self, const void* in_d
 	register tsk_size_t i;
 	register uint8_t* pout_data;
 	register int16_t* pin_data;
+	tsk_size_t out_size;
 	
 	if(!self || !in_data || !in_size || !out_data){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
+
+	out_size = (in_size >> 1);
 	
-	if(*out_max_size <in_size>>1){
-		if(!(*out_data = tsk_realloc(*out_data, in_size>>1))){
+	if(*out_max_size <out_size){
+		if(!(*out_data = tsk_realloc(*out_data, out_size))){
 			TSK_DEBUG_ERROR("Failed to allocate new buffer");
 			*out_max_size = 0;
 			return 0;
@@ -194,11 +203,11 @@ static tsk_size_t tdav_codec_g711a_encode(tmedia_codec_t* self, const void* in_d
 	
 	pout_data = *out_data;
 	pin_data = (int16_t*)in_data;
-	for(i = 0; i<(in_size>>1); i++){
+	for(i = 0; i<out_size; i++){
 		pout_data[i] = linear2alaw(pin_data[i]);
 	}
 
-	return (in_size>>1);
+	return out_size;
 }
 
 #if 0
@@ -207,25 +216,26 @@ int count = 0;
 #endif
 static tsk_size_t tdav_codec_g711a_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 {
-	tsk_size_t i;
+	tsk_size_t i, out_size;
 	
 	if(!self || !in_data || !in_size || !out_data){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
+	out_size = (in_size << 1);
 #if 0
 	if(!file && count<=1000){
 		file = fopen("./g711a.pcm", "wb");
 	}
 #endif
 	/* allocate new buffer */
-	if(*out_max_size<(in_size<<1)){
-		if(!(*out_data = tsk_realloc(*out_data, in_size<<1))){
+	if(*out_max_size<out_size){
+		if(!(*out_data = tsk_realloc(*out_data, out_size))){
 			TSK_DEBUG_ERROR("Failed to allocate new buffer");
 			*out_max_size = 0;
 			return 0;
 		}
-		*out_max_size = in_size<<1;
+		*out_max_size = out_size;
 	}
 	
 	for(i = 0; i<in_size; i++){
@@ -240,7 +250,7 @@ static tsk_size_t tdav_codec_g711a_decode(tmedia_codec_t* self, const void* in_d
 		file = tsk_null;
 	}
 #endif
-	return (in_size<<1);
+	return out_size;
 }
 
 static tsk_bool_t tdav_codec_g711a_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)

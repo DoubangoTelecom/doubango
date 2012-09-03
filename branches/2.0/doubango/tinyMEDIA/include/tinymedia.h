@@ -39,6 +39,9 @@
 #include "tinymedia/tmedia_denoise.h"
 #include "tinymedia/tmedia_imageattr.h"
 
+#include "tinymedia/tmedia_consumer.h"
+#include "tinymedia/tmedia_producer.h"
+
 #include "tinymedia/tmedia_common.h"
 #include "tinymedia/tmedia_qos.h"
 #include "tinymedia/tmedia_defaults.h"

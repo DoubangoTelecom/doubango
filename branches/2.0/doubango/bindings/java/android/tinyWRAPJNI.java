@@ -34,6 +34,14 @@ public class tinyWRAPJNI {
   public final static native long ActionConfig_setResponseLine(long jarg1, ActionConfig jarg1_, short jarg2, String jarg3);
   public final static native long ActionConfig_setMediaString(long jarg1, ActionConfig jarg1_, int jarg2, String jarg3, String jarg4);
   public final static native long ActionConfig_setMediaInt(long jarg1, ActionConfig jarg1_, int jarg2, String jarg3, int jarg4);
+  public final static native void delete_Codec(long jarg1);
+  public final static native int Codec_getMediaType(long jarg1, Codec jarg1_);
+  public final static native String Codec_getName(long jarg1, Codec jarg1_);
+  public final static native String Codec_getDescription(long jarg1, Codec jarg1_);
+  public final static native String Codec_getNegFormat(long jarg1, Codec jarg1_);
+  public final static native int Codec_getAudioSamplingRate(long jarg1, Codec jarg1_);
+  public final static native int Codec_getAudioChannels(long jarg1, Codec jarg1_);
+  public final static native int Codec_getAudioPTime(long jarg1, Codec jarg1_);
   public final static native void delete_MediaSessionMgr(long jarg1);
   public final static native boolean MediaSessionMgr_sessionSetInt32(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, int jarg4);
   public final static native int MediaSessionMgr_sessionGetInt32(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3);
@@ -41,8 +49,10 @@ public class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_consumerSetInt64(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, long jarg4);
   public final static native boolean MediaSessionMgr_producerSetInt32(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, int jarg4);
   public final static native boolean MediaSessionMgr_producerSetInt64(long jarg1, MediaSessionMgr jarg1_, int jarg2, String jarg3, long jarg4);
+  public final static native long MediaSessionMgr_producerGetCodec(long jarg1, MediaSessionMgr jarg1_, int jarg2);
   public final static native long MediaSessionMgr_findProxyPluginConsumer(long jarg1, MediaSessionMgr jarg1_, int jarg2);
   public final static native long MediaSessionMgr_findProxyPluginProducer(long jarg1, MediaSessionMgr jarg1_, int jarg2);
+  public final static native long MediaSessionMgr_registerAudioPluginFromFile(String jarg1);
   public final static native java.math.BigInteger MediaSessionMgr_getSessionId(long jarg1, MediaSessionMgr jarg1_, int jarg2);
   public final static native boolean MediaSessionMgr_defaultsSetProfile(int jarg1);
   public final static native int MediaSessionMgr_defaultsGetProfile();

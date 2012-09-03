@@ -30,6 +30,7 @@
 %newobject SipStack::dnsSrv;
 %newobject SipStack::getPreferredIdentity;
 %newobject SipStack::getLocalIPnPort;
+%newobject MediaSessionMgr::producerGetCodec;
 
 %newobject MessagingEvent::takeSessionOwnership;
 %newobject InviteEvent::takeCallSessionOwnership;
