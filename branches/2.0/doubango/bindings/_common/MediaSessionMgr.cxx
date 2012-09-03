@@ -22,6 +22,7 @@
 #include "MediaSessionMgr.h"
 
 extern tmedia_type_t _get_media_type(twrap_media_type_t type);
+
 #if ANDROID
 static void *__droid_destroy_mgr(void *mgr){	
 	TSK_OBJECT_SAFE_FREE(mgr);
@@ -30,6 +31,82 @@ static void *__droid_destroy_mgr(void *mgr){
 #endif
 
 
+//
+//	Codec
+//
+Codec::Codec(struct tmedia_codec_s* pWrappedCodec)
+{
+	m_pWrappedCodec = (struct tmedia_codec_s*)tsk_object_ref(pWrappedCodec);
+}
+
+Codec::~Codec()
+{
+	TSK_OBJECT_SAFE_FREE(m_pWrappedCodec);
+}
+
+twrap_media_type_t Codec::getMediaType()
+{
+	if(m_pWrappedCodec){
+		switch(m_pWrappedCodec->type){
+			case tmedia_audio: return twrap_media_audio;
+			case tmedia_video: return twrap_media_video;
+			case tmedia_msrp: return twrap_media_msrp;
+		}
+	}
+	return twrap_media_none;
+}
+
+const char* Codec::getName()
+{
+	if(m_pWrappedCodec){
+		return m_pWrappedCodec->name;
+	}
+	return tsk_null;
+}
+
+const char* Codec::getDescription()
+{
+	if(m_pWrappedCodec){
+		return m_pWrappedCodec->desc;
+	}
+	return tsk_null;
+}
+
+const char* Codec::getNegFormat()
+{
+	if(m_pWrappedCodec){
+		return m_pWrappedCodec->neg_format ? m_pWrappedCodec->neg_format : m_pWrappedCodec->format;
+	}
+	return tsk_null;
+}
+
+int Codec::getAudioSamplingRate()
+{
+	if(m_pWrappedCodec && m_pWrappedCodec->plugin){
+		return m_pWrappedCodec->plugin->rate;
+	}
+	return 0;
+}
+
+int Codec::getAudioChannels()
+{
+	if(m_pWrappedCodec && (m_pWrappedCodec->type & tmedia_audio) && m_pWrappedCodec->plugin){
+		return m_pWrappedCodec->plugin->audio.channels;
+	}
+	return 0;
+}
+
+int Codec::getAudioPTime()
+{
+	if(m_pWrappedCodec && (m_pWrappedCodec->type & tmedia_audio) && m_pWrappedCodec->plugin){
+		return m_pWrappedCodec->plugin->audio.ptime;
+	}
+	return 0;
+}
+
+//
+//	MediaSessionMgr
+//
 MediaSessionMgr::MediaSessionMgr(tmedia_session_mgr_t* pWrappedMgr)
 {
 	m_pWrappedMgr = (tmedia_session_mgr_t*)tsk_object_ref(pWrappedMgr);
@@ -102,6 +179,22 @@ bool MediaSessionMgr::producerSetInt64(twrap_media_type_t media, const char* key
 		TMEDIA_SESSION_SET_NULL()) == 0);
 }
 
+Codec* MediaSessionMgr::producerGetCodec(twrap_media_type_t media)
+{
+	tmedia_codec_t* _codec = tsk_null;
+	tmedia_type_t _media = _get_media_type(media);
+	(tmedia_session_mgr_get(m_pWrappedMgr,
+		TMEDIA_SESSION_PRODUCER_GET_POBJECT(_media, "codec", &_codec),
+		TMEDIA_SESSION_GET_NULL()));
+
+	if(_codec){
+		Codec* pCodec = new Codec(_codec);
+		TSK_OBJECT_SAFE_FREE(_codec);
+		return pCodec;
+	}
+	return tsk_null;
+}
+
 #include "tinydav/audio/tdav_session_audio.h"
 #include "tinydav/video/tdav_session_video.h"
 #include "ProxyPluginMgr.h"
@@ -148,6 +241,33 @@ const ProxyPlugin* MediaSessionMgr::findProxyPlugin(twrap_media_type_t media, bo
 	}
 
 	return plugin;
+}
+
+// FIXME: create generic function to register any kind and number of plugin from a file
+unsigned int MediaSessionMgr::registerAudioPluginFromFile(const char* path)
+{
+	static struct tsk_plugin_s* __plugin = tsk_null;
+	if(__plugin){
+		TSK_DEBUG_ERROR("Audio plugin already registered");
+		return 0;
+	}
+	if(__plugin = tsk_plugin_create(path)){
+		unsigned int count = 0;
+		tsk_plugin_def_ptr_const_t plugin_def_ptr_const;
+		if((plugin_def_ptr_const = tsk_plugin_get_def(__plugin, tsk_plugin_def_type_consumer, tsk_plugin_def_media_type_audio))){
+			if(tmedia_consumer_plugin_register((const tmedia_consumer_plugin_def_t*)plugin_def_ptr_const) == 0){
+				++count;
+			}
+		}
+		if((plugin_def_ptr_const = tsk_plugin_get_def(__plugin, tsk_plugin_def_type_producer, tsk_plugin_def_media_type_audio))){
+			if(tmedia_producer_plugin_register((const tmedia_producer_plugin_def_t*)plugin_def_ptr_const) == 0){
+				++count;
+			}
+		}
+		return count;
+	}
+	TSK_DEBUG_ERROR("Failed to create plugin with path=%s", path);
+	return 0;
 }
 
 uint64_t MediaSessionMgr::getSessionId(twrap_media_type_t media)const

@@ -40,6 +40,8 @@
 
 #include "tinydav_config.h"
 
+#if !(HAVE_SPEEX_DSP && HAVE_SPEEX_JB)
+
 TDAV_BEGIN_DECLS
 
 /***********
@@ -324,6 +326,8 @@ void 			jb_setoutput(jb_output_function_t warn, jb_output_function_t err, jb_out
  */
 
 TDAV_END_DECLS
+
+#endif /* !(HAVE_SPEEX_DSP && HAVE_SPEEX_JB) */
 
 #endif /* TINYDAV_JITTERBUFFER_H_ */
 

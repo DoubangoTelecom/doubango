@@ -59,6 +59,11 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_producerSetInt64(swigCPtr, this, media.swigValue(), key, value);
   }
 
+  public Codec producerGetCodec(twrap_media_type_t media) {
+    long cPtr = tinyWRAPJNI.MediaSessionMgr_producerGetCodec(swigCPtr, this, media.swigValue());
+    return (cPtr == 0) ? null : new Codec(cPtr, true);
+  }
+
   public ProxyPlugin findProxyPluginConsumer(twrap_media_type_t media) {
     long cPtr = tinyWRAPJNI.MediaSessionMgr_findProxyPluginConsumer(swigCPtr, this, media.swigValue());
     return (cPtr == 0) ? null : new ProxyPlugin(cPtr, false);
@@ -67,6 +72,10 @@ public class MediaSessionMgr {
   public ProxyPlugin findProxyPluginProducer(twrap_media_type_t media) {
     long cPtr = tinyWRAPJNI.MediaSessionMgr_findProxyPluginProducer(swigCPtr, this, media.swigValue());
     return (cPtr == 0) ? null : new ProxyPlugin(cPtr, false);
+  }
+
+  public static long registerAudioPluginFromFile(String path) {
+    return tinyWRAPJNI.MediaSessionMgr_registerAudioPluginFromFile(path);
   }
 
   public java.math.BigInteger getSessionId(twrap_media_type_t media) {

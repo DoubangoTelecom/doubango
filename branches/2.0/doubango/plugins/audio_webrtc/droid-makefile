@@ -1,0 +1,49 @@
+APP := lib$(PROJECT)_$(MARCH).$(EXT)
+
+THIRDPARTIES_INC := ../../thirdparties/android/include
+THIRDPARTIES_INC_COMMON := ../../thirdparties/common/include
+THIRDPARTIES_LIB := ../../thirdparties/android/lib
+THIRDPARTIES_MARCH_LIB := ../../thirdparties/android/lib/$(MARCH)
+DOUBANGO_LIB := ../../android-projects/output
+
+WEBRTC_CFLAGS := -DHAVE_WEBRTC=1
+WEBRTC_LDFLAGS := -lwebrtc_spl_$(MARCH) -lwebrtc_audio_device_$(MARCH) -lwebrtc_system_wrappers_$(MARCH)
+
+################################
+
+CFLAGS := $(CFLAGS_LIB) -I$(THIRDPARTIES_INC) -I$(THIRDPARTIES_INC_COMMON) \
+	-I../../tinySAK/src -I../../tinyMEDIA/include -I../../tinySDP/include -I../../tinyRTP/include -I../../tinyDAV/include
+
+LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) -L$(THIRDPARTIES_LIB)/android-9 -L$(THIRDPARTIES_MARCH_LIB) -L$(DOUBANGO_LIB) \
+	 -ltinySAK_$(MARCH) -ltinyMEDIA_$(MARCH) -ltinySDP_$(MARCH) $(WEBRTC_LDFLAGS) -lm -ldl -llog -lgcc -lstdc++ -lOpenSLES -lgnustl_static
+
+all: $(APP)
+
+OBJS = \
+	audio_webrtc.o \
+	audio_webrtc_consumer.o \
+	audio_webrtc_producer.o \
+	audio_webrtc_transport.o \
+	../../tinyDAV/src/audio/tdav_consumer_audio.o \
+	../../tinyDAV/src/audio/tdav_producer_audio.o \
+
+$(APP): $(OBJS)
+ifeq ($(EXT), a)
+	$(AR) rcs $@ $^
+else
+	$(CC) $(LDFLAGS) -o $@ $^
+endif
+
+%.o: %.c
+	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+%.o: %.cxx
+	$(CPP) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+install: $(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb remount
+	$(ANDROID_SDK_ROOT)/tools/adb push $(APP) $(LIB_DIR)/$(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb shell chmod 777 $(LIB_DIR)/$(APP)
+	
+clean:
+	@rm -f $(OBJS) $(APP)

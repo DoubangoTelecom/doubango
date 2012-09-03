@@ -129,7 +129,10 @@ static int tdav_producer_dsound_set(tmedia_producer_t* self, const tmedia_param_
 	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)self;
 	if(param->plugin_type == tmedia_ppt_producer){
 		if(param->value_type == tmedia_pvt_int32){
-			if(tsk_striequals(param->key, "mute")){
+			if(tsk_striequals(param->key, "volume")){
+				return 0;
+			}
+			else if(tsk_striequals(param->key, "mute")){
 				dsound->mute = (TSK_TO_INT32((uint8_t*)param->value) != 0);
 #if !FIXME_SEND_SILENCE_ON_MUTE
 				if(dsound->started){

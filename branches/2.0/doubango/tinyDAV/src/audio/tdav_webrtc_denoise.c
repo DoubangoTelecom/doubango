@@ -38,13 +38,34 @@
 
 #include <string.h>
 
-#define WEBRTC_MAX_ECHO_TAIL		500
+#if !defined(WEBRTC_AEC_AGGRESSIVE)
+#	define WEBRTC_AEC_AGGRESSIVE		0
+#endif
+#if !defined(WEBRTC_MAX_ECHO_TAIL)
+#	define WEBRTC_MAX_ECHO_TAIL		500
+#endif
+#if !defined(WEBRTC_MIN_ECHO_TAIL)
+#	define WEBRTC_MIN_ECHO_TAIL		20 // 0 will cause random crashes
 static const WebRtc_Word32 kSizeOfWord16 = sizeof(WebRtc_Word16);
+#endif
 
-static int tdav_webrtc_denoise_set(tmedia_denoise_t* self, const tmedia_param_t* param)
+static int tdav_webrtc_denoise_set(tmedia_denoise_t* _self, const tmedia_param_t* param)
 {
-	/* tdav_webrtc_denoise_t *denoiser = (tdav_webrtc_denoise_t *)self; */
-	return tmedia_denoise_set(self, param);
+	tdav_webrtc_denoise_t *self = (tdav_webrtc_denoise_t *)_self;
+	if(!self || !param){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	if(param->value_type == tmedia_pvt_int32){
+		if(tsk_striequals(param->key, "echo-tail")){
+			int32_t echo_tail = *((int32_t*)param->value);
+			self->echo_tail = TSK_CLAMP(WEBRTC_MIN_ECHO_TAIL, echo_tail, WEBRTC_MAX_ECHO_TAIL);
+			TSK_DEBUG_INFO("set_echo_tail (%d->%d)", echo_tail, self->echo_tail);
+			return 0;
+		}
+	}
+	return tmedia_denoise_set(TMEDIA_DENOISE(self), param);
 }
 
 static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_t sampling_rate)
@@ -68,7 +89,8 @@ static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t frame_size,
 		return -2;
 	}
 	
-	denoiser->sound_card_buffer_len = TSK_MIN(TMEDIA_DENOISE(denoiser)->echo_tail, WEBRTC_MAX_ECHO_TAIL);
+	denoiser->echo_tail = TSK_CLAMP(WEBRTC_MIN_ECHO_TAIL, TMEDIA_DENOISE(denoiser)->echo_tail, WEBRTC_MAX_ECHO_TAIL);
+	TSK_DEBUG_INFO("echo_tail=%d", denoiser->echo_tail);
 	denoiser->echo_skew = TMEDIA_DENOISE(denoiser)->echo_skew;
 	denoiser->frame_size = frame_size;
 	denoiser->sampling_rate = sampling_rate;
@@ -84,6 +106,20 @@ static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t frame_size,
 		TSK_DEBUG_ERROR("WebRtcAec_Init failed with error code = %d", ret);
 		return ret;
 	}
+
+#if WEBRTC_AEC_AGGRESSIVE
+	{	
+		AecConfig aecConfig;
+		aecConfig.nlpMode = kAecNlpAggressive;
+		aecConfig.skewMode = kAecTrue;
+		aecConfig.metricsMode = kAecFalse;
+		aecConfig.delay_logging = kAecFalse;
+
+		if((ret = WebRtcAec_set_config(denoiser->AEC_inst, aecConfig))){
+			TSK_DEBUG_ERROR("WebRtcAec_set_config failed with error code = %d", ret);
+		}
+	}
+#endif
 	
 	//
 	//	Noise Suppression instance
@@ -162,11 +198,13 @@ static int tdav_webrtc_denoise_echo_playback(tmedia_denoise_t* self, const void*
 static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audio_frame, tsk_bool_t* silence_or_noise)
 {
 	tdav_webrtc_denoise_t *denoiser = (tdav_webrtc_denoise_t *)self;
+	int ret = 0;
 	
 	*silence_or_noise = tsk_false;
 
+	tsk_safeobj_lock(denoiser);
+
 	if(denoiser->AEC_inst){
-		int ret;
 		WebRtc_Word16 *pAudioFrame = audio_frame;
 		
 		// Noise suppression
@@ -186,7 +224,7 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 				)
 			{
 				TSK_DEBUG_ERROR("WebRtcNs_Process with error code = %d", ret);
-				return ret;
+				goto bail;
 			}
 		}
 		else{
@@ -198,36 +236,37 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 		switch(denoiser->sampling_rate){
 			case 8000:
 				{
-					if((ret = TDAV_WebRtcAec_Process(denoiser->AEC_inst, denoiser->temp_rec_out, tsk_null, pAudioFrame, tsk_null, denoiser->frame_size, denoiser->sound_card_buffer_len, denoiser->echo_skew))){
+					if((ret = TDAV_WebRtcAec_Process(denoiser->AEC_inst, denoiser->temp_rec_out, tsk_null, pAudioFrame, tsk_null, denoiser->frame_size, denoiser->echo_tail, denoiser->echo_skew))){
 						TSK_DEBUG_ERROR("WebRtcAec_Process with error code = %d", ret);
-						return ret;
+						goto bail;
 					}
 					break;
 				}
-				// 32Hz and 16Khz work but produce very ugly results
 			case 16000:
-			case 3200:
+			case 32000:
 				{
 					// Split in several 160 samples
 					uint32_t i, k = (denoiser->sampling_rate == 16000 ? 1 : 2);
 					for(i = 0; i<denoiser->frame_size; i+=(denoiser->frame_size>>k)){
-						if((ret = TDAV_WebRtcAec_Process(denoiser->AEC_inst, &denoiser->temp_rec_out[i], tsk_null, &pAudioFrame[i], tsk_null, (denoiser->frame_size>>k), denoiser->sound_card_buffer_len, denoiser->echo_skew))){
+						if((ret = TDAV_WebRtcAec_Process(denoiser->AEC_inst, &denoiser->temp_rec_out[i], tsk_null, &pAudioFrame[i], tsk_null, (denoiser->frame_size>>k), denoiser->echo_tail, denoiser->echo_skew))){
 							TSK_DEBUG_ERROR("WebRtcAec_Process with error code = %d", ret);
-							return ret;
+							goto bail;
 						}
-
 					}
 					break;
 				}
 			default:
 				{
 					TSK_DEBUG_ERROR("%d Hz not supported by WebRTC AEC", denoiser->sampling_rate);
-					return -2;
+					ret = -2;
+					goto bail;
 				}
 		}
 	}
 
-	return 0;
+bail:
+	tsk_safeobj_unlock(denoiser);
+	return ret;
 }
 
 static int tdav_webrtc_denoise_process_playback(tmedia_denoise_t* self, void* audio_frame)
@@ -245,6 +284,7 @@ static int tdav_webrtc_denoise_close(tmedia_denoise_t* self)
 {
 	tdav_webrtc_denoise_t *denoiser = (tdav_webrtc_denoise_t *)self;
 
+	tsk_safeobj_lock(denoiser);
 	if(denoiser->AEC_inst){
 		TDAV_WebRtcAec_Free(denoiser->AEC_inst);
 		denoiser->AEC_inst = tsk_null;
@@ -261,6 +301,7 @@ static int tdav_webrtc_denoise_close(tmedia_denoise_t* self)
 	}
 #endif
 	TSK_FREE(denoiser->temp_rec_out);
+	tsk_safeobj_unlock(denoiser);
 
 	return 0;
 }
@@ -271,41 +312,26 @@ static int tdav_webrtc_denoise_close(tmedia_denoise_t* self)
 //
 
 /* constructor */
-static tsk_object_t* tdav_webrtc_denoise_ctor(tsk_object_t * self, va_list * app)
+static tsk_object_t* tdav_webrtc_denoise_ctor(tsk_object_t * _self, va_list * app)
 {
-	tdav_webrtc_denoise_t *denoise = self;
-	if(denoise){
+	tdav_webrtc_denoise_t *self = _self;
+	if(self){
 		/* init base */
-		tmedia_denoise_init(TMEDIA_DENOISE(denoise));
+		tmedia_denoise_init(TMEDIA_DENOISE(self));
 		/* init self */
+		tsk_safeobj_init(self);
 	}
 	return self;
 }
 /* destructor */
-static tsk_object_t* tdav_webrtc_denoise_dtor(tsk_object_t * self)
+static tsk_object_t* tdav_webrtc_denoise_dtor(tsk_object_t * _self)
 { 
-	tdav_webrtc_denoise_t *denoise = self;
-	if(denoise){
-		/* deinit base */
-		tmedia_denoise_deinit(TMEDIA_DENOISE(denoise));
+	tdav_webrtc_denoise_t *self = _self;
+	if(self){
+		/* deinit base (will close the denoise if not done yet) */
+		tmedia_denoise_deinit(TMEDIA_DENOISE(self));
 		/* deinit self */
-		if(denoise->AEC_inst){
-			TDAV_WebRtcAec_Free(denoise->AEC_inst);
-			denoise->AEC_inst = tsk_null;
-		}
-		
-#if HAVE_SPEEX_DSP && PREFER_SPEEX_DENOISER
-		if(denoise->SpeexDenoiser_proc){
-			speex_preprocess_state_destroy(denoise->SpeexDenoiser_proc);
-			denoise->SpeexDenoiser_proc = tsk_null;
-		}
-#else
-		if(denoise->NS_inst){
-			TDAV_WebRtcNs_Free(denoise->NS_inst);
-			denoise->NS_inst = tsk_null;
-		}
-#endif
-		TSK_FREE(denoise->temp_rec_out);
+		tsk_safeobj_deinit(self);
 	}
 
 	return self;

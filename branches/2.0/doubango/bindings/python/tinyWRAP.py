@@ -145,6 +145,25 @@ class ActionConfig(_object):
 ActionConfig_swigregister = _tinyWRAP.ActionConfig_swigregister
 ActionConfig_swigregister(ActionConfig)
 
+class Codec(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, Codec, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, Codec, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_Codec
+    __del__ = lambda self : None;
+    def getMediaType(self): return _tinyWRAP.Codec_getMediaType(self)
+    def getName(self): return _tinyWRAP.Codec_getName(self)
+    def getDescription(self): return _tinyWRAP.Codec_getDescription(self)
+    def getNegFormat(self): return _tinyWRAP.Codec_getNegFormat(self)
+    def getAudioSamplingRate(self): return _tinyWRAP.Codec_getAudioSamplingRate(self)
+    def getAudioChannels(self): return _tinyWRAP.Codec_getAudioChannels(self)
+    def getAudioPTime(self): return _tinyWRAP.Codec_getAudioPTime(self)
+Codec_swigregister = _tinyWRAP.Codec_swigregister
+Codec_swigregister(Codec)
+
 class MediaSessionMgr(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, MediaSessionMgr, name, value)
@@ -160,8 +179,11 @@ class MediaSessionMgr(_object):
     def consumerSetInt64(self, *args): return _tinyWRAP.MediaSessionMgr_consumerSetInt64(self, *args)
     def producerSetInt32(self, *args): return _tinyWRAP.MediaSessionMgr_producerSetInt32(self, *args)
     def producerSetInt64(self, *args): return _tinyWRAP.MediaSessionMgr_producerSetInt64(self, *args)
+    def producerGetCodec(self, *args): return _tinyWRAP.MediaSessionMgr_producerGetCodec(self, *args)
     def findProxyPluginConsumer(self, *args): return _tinyWRAP.MediaSessionMgr_findProxyPluginConsumer(self, *args)
     def findProxyPluginProducer(self, *args): return _tinyWRAP.MediaSessionMgr_findProxyPluginProducer(self, *args)
+    __swig_getmethods__["registerAudioPluginFromFile"] = lambda x: _tinyWRAP.MediaSessionMgr_registerAudioPluginFromFile
+    if _newclass:registerAudioPluginFromFile = staticmethod(_tinyWRAP.MediaSessionMgr_registerAudioPluginFromFile)
     def getSessionId(self, *args): return _tinyWRAP.MediaSessionMgr_getSessionId(self, *args)
     __swig_getmethods__["defaultsSetProfile"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetProfile
     if _newclass:defaultsSetProfile = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetProfile)
@@ -239,6 +261,10 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetIceEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetIceEnabled)
 MediaSessionMgr_swigregister = _tinyWRAP.MediaSessionMgr_swigregister
 MediaSessionMgr_swigregister(MediaSessionMgr)
+
+def MediaSessionMgr_registerAudioPluginFromFile(*args):
+  return _tinyWRAP.MediaSessionMgr_registerAudioPluginFromFile(*args)
+MediaSessionMgr_registerAudioPluginFromFile = _tinyWRAP.MediaSessionMgr_registerAudioPluginFromFile
 
 def MediaSessionMgr_defaultsSetProfile(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetProfile(*args)

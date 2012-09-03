@@ -44,6 +44,20 @@
 #	define TNET_UNDER_WINDOWS	1
 #endif
 
+// OS X or iOS
+#if defined(__APPLE__)
+#	define TNET_UNDER_APPLE				1
+#endif
+#if TARGET_OS_MAC
+#	define TNET_UNDER_MAC				1
+#endif
+#if TARGET_OS_IPHONE
+#	define TNET_UNDER_IPHONE			1
+#endif
+#if TARGET_IPHONE_SIMULATOR
+#	define TNET_UNDER_IPHONE_SIMULATOR	1
+#endif
+
 /**@def  TINYNET_API
 * Used on Windows and Sysbian systems to export public functions.
 */

@@ -33,6 +33,7 @@
 
 #include "tinymedia/tmedia_resampler.h"
 #include "tinymedia/tmedia_denoise.h"
+#include "tinymedia/tmedia_jitterbuffer.h"
 #include "tinymedia/tmedia_consumer.h"
 #include "tinymedia/tmedia_producer.h"
 #include "tinymedia/tmedia_defaults.h"
@@ -44,9 +45,12 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#define TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY 5
+
 static int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id);
 static struct tdav_session_audio_dtmfe_s* _tdav_session_audio_dtmfe_create(const tdav_session_audio_t* session, uint8_t event, uint16_t duration, uint32_t seq, uint32_t timestamp, uint8_t format, tsk_bool_t M, tsk_bool_t E);
 static void _tdav_session_audio_apply_gain(void* buffer, int len, int bps, int gain);
+static tmedia_resampler_t* _tdav_session_audio_resampler_create(int32_t bytes_per_sample, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t channels, uint32_t quality, void** resampler_buffer, tsk_size_t *resampler_buffer_size);
 
 /* DTMF event object */
 typedef struct tdav_session_audio_dtmfe_s
@@ -72,7 +76,7 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 		return -1;
 	}
 
-	if(base->consumer){
+	if(audio->started && base->consumer){
 		tsk_size_t out_size = 0;
 
 		// Find the codec to use to decode the RTP payload
@@ -102,18 +106,36 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 		// Decode data
 		out_size = audio->decoder.codec->plugin->decode(audio->decoder.codec, packet->payload.data, packet->payload.size, &audio->decoder.buffer, &audio->decoder.buffer_size, packet->header);
 		if(out_size){
-			// Denoise (VAD, AGC, Noise suppression, ...)
-			// See tdav_consumer_audio.c::tdav_consumer_audio_get()
-			//if(audio->denoise && TMEDIA_DENOISE(audio->denoise)->opened){
-			//	tmedia_denoise_echo_playback(TMEDIA_DENOISE(audio->denoise), audio->decoder.buffer);
-			//}
+			void* buffer = audio->decoder.buffer;
+			tsk_size_t size = out_size;
+
+			// resample if needed
+			if(audio->encoder.codec->plugin->rate != base->consumer->audio.out.rate && base->consumer->audio.out.rate){
+				tsk_size_t resampler_result_size = 0;
+				int bytesPerSample = (base->consumer->audio.bits_per_sample >> 3);
+
+				if(!audio->decoder.resampler.instance){
+					audio->decoder.resampler.instance = _tdav_session_audio_resampler_create(bytesPerSample, audio->decoder.codec->plugin->rate, base->consumer->audio.out.rate, base->consumer->audio.ptime, base->consumer->audio.out.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, &audio->decoder.resampler.buffer, &audio->decoder.resampler.buffer_size);
+				}
+				if(!audio->decoder.resampler.instance){
+					TSK_DEBUG_ERROR("No resampler to handle data");
+					return -5;
+				}
+				if(!(resampler_result_size = tmedia_resampler_process(audio->decoder.resampler.instance, buffer, size/bytesPerSample, audio->decoder.resampler.buffer, audio->decoder.resampler.buffer_size/bytesPerSample))){
+					TSK_DEBUG_ERROR("Failed to process audio resampler input buffer");
+					return -6;
+				}
+				
+				buffer = audio->decoder.resampler.buffer;
+				size = audio->decoder.resampler.buffer_size;
+			}
 
 			// adjust the gain
 			if(base->consumer->audio.gain){
-				_tdav_session_audio_apply_gain(audio->decoder.buffer, out_size, base->consumer->audio.bits_per_sample, base->consumer->audio.gain);
+				_tdav_session_audio_apply_gain(buffer, size, base->consumer->audio.bits_per_sample, base->consumer->audio.gain);
 			}
 			// consume the frame
-			tmedia_consumer_consume(base->consumer, audio->decoder.buffer, out_size, packet->header);
+			tmedia_consumer_consume(base->consumer, buffer, size, packet->header);
 		}
 	}
 	return 0;
@@ -138,7 +160,7 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		return 0;
 	}
 	
-	if(base->rtp_manager && base->rtp_manager->is_started && audio->encoder.codec){
+	if(audio->started && base->rtp_manager && base->rtp_manager->is_started && audio->encoder.codec){
 		/* encode */
 		tsk_size_t out_size = 0;
 
@@ -161,41 +183,24 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		// resample if needed
 		if(base->producer->audio.rate != audio->encoder.codec->plugin->rate){
 			tsk_size_t resampler_result_size = 0;
-			if(!audio->decoder.resampler.instance){
-				uint32_t resampler_buff_size = ((audio->encoder.codec->plugin->rate * base->producer->audio.ptime)/1000) * sizeof(int16_t);
-				if(!(audio->decoder.resampler.instance = tmedia_resampler_create())){
-					TSK_DEBUG_ERROR("Failed to create audio resampler");
-					ret = -1;
-					goto done;
-				}
-				else {
-#define TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY 5
-					if((ret = tmedia_resampler_open(audio->decoder.resampler.instance, base->producer->audio.rate, audio->encoder.codec->plugin->rate, base->producer->audio.ptime, base->producer->audio.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY))){
-						TSK_DEBUG_ERROR("Failed to open audio resampler (%d)", ret);
-						TSK_OBJECT_SAFE_FREE(audio->decoder.resampler.instance);
-						goto done;
-					}
-				}
-				// create temp resampler buffer
-				if((audio->decoder.resampler.buffer = tsk_realloc(audio->decoder.resampler.buffer, resampler_buff_size))){
-					audio->decoder.resampler.buffer_size = resampler_buff_size;
-				}
-				else {
-					TSK_DEBUG_ERROR("Failed to allocate resampler buffer");
-					TSK_OBJECT_SAFE_FREE(audio->decoder.resampler.instance);
-					ret = -1;
-					goto done;
-				}
+			int bytesPerSample = (base->producer->audio.bits_per_sample >> 3);
+
+			if(!audio->encoder.resampler.instance){
+				audio->encoder.resampler.instance = _tdav_session_audio_resampler_create(bytesPerSample, base->producer->audio.rate, audio->encoder.codec->plugin->rate,base->producer->audio.ptime, base->producer->audio.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, &audio->encoder.resampler.buffer, &audio->encoder.resampler.buffer_size);
 			}
-			
-			if(!(resampler_result_size = tmedia_resampler_process(audio->decoder.resampler.instance, buffer, size/sizeof(int16_t), audio->decoder.resampler.buffer, audio->decoder.resampler.buffer_size/sizeof(int16_t)))){
+			if(!audio->encoder.resampler.instance){
+				TSK_DEBUG_ERROR("No resampler to handle data");
+				ret = -1;
+				goto done;
+			}
+			if(!(resampler_result_size = tmedia_resampler_process(audio->encoder.resampler.instance, buffer, size/bytesPerSample, audio->encoder.resampler.buffer, audio->encoder.resampler.buffer_size/bytesPerSample))){
 				TSK_DEBUG_ERROR("Failed to process audio resampler input buffer");
 				ret = -1;
 				goto done;
 			}
 			
-			buffer = audio->decoder.resampler.buffer;
-			size = audio->decoder.resampler.buffer_size;
+			buffer = audio->encoder.resampler.buffer;
+			size = audio->encoder.resampler.buffer_size;
 		}
 		
 		// Denoise (VAD, AGC, Noise suppression, ...)
@@ -249,16 +254,21 @@ static int tdav_session_audio_set(tmedia_session_t* self, const tmedia_param_t* 
 	audio = (tdav_session_audio_t*)self;
 
 	if(param->plugin_type == tmedia_ppt_consumer){
-		TSK_DEBUG_ERROR("Not expected");
+		TSK_DEBUG_ERROR("Not expected consumer(%s)", param->key);
 	}
 	else if(param->plugin_type == tmedia_ppt_producer){
-		TSK_DEBUG_ERROR("Not expected");
+		TSK_DEBUG_ERROR("Not expected producer_set(%s)", param->key);
 	}
 	else{
 		if(param->value_type == tmedia_pvt_int32){
 			if(tsk_striequals(param->key, "echo-supp")){
 				if(audio->denoise){
 					audio->denoise->echo_supp_enabled = (TSK_TO_INT32((uint8_t*)param->value) != 0);
+				}
+			}
+			else if(tsk_striequals(param->key, "echo-tail")){
+				if(audio->denoise){
+					return tmedia_denoise_set(audio->denoise, param);
 				}
 			}
 		}
@@ -269,7 +279,7 @@ static int tdav_session_audio_set(tmedia_session_t* self, const tmedia_param_t* 
 
 static int tdav_session_audio_get(tmedia_session_t* self, tmedia_param_t* param)
 {
-	if(!self){
+	if(!self || !param){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -278,7 +288,22 @@ static int tdav_session_audio_get(tmedia_session_t* self, tmedia_param_t* param)
 		return 0;
 	}
 
-	TSK_DEBUG_ERROR("Not expected");
+	// the codec information is held by the session even if the user is authorized to request it for the consumer/producer
+	if(tsk_striequals("codec", param->key) && param->value_type == tmedia_pvt_pobject){
+		if(param->plugin_type == tmedia_ppt_consumer){
+			TSK_DEBUG_ERROR("Not implemented");
+			return -4;
+		}
+		else if(param->plugin_type == tmedia_ppt_producer){
+			if(!TDAV_SESSION_AUDIO(self)->encoder.codec){
+				TSK_DEBUG_ERROR("No codec for the producer");
+			}
+			*((tsk_object_t**)param->value) = tsk_object_ref(TDAV_SESSION_AUDIO(self)->encoder.codec);
+			return 0;
+		}
+	}
+
+	TSK_DEBUG_ERROR("(%s) not expected param key for plugin_type=%d", param->key, param->plugin_type);
 	return -2;
 }
 
@@ -336,6 +361,8 @@ static int tdav_session_audio_start(tmedia_session_t* self)
 		}
 	}
 
+	audio->started = (ret == 0);
+
 	return ret;
 }
 
@@ -344,6 +371,7 @@ static int tdav_session_audio_stop(tmedia_session_t* self)
 	int ret = tdav_session_av_stop(TDAV_SESSION_AV(self));
 	TSK_OBJECT_SAFE_FREE(TDAV_SESSION_AUDIO(self)->encoder.codec);
 	TSK_OBJECT_SAFE_FREE(TDAV_SESSION_AUDIO(self)->decoder.codec);
+	TDAV_SESSION_AUDIO(self)->started = tsk_false;
 	return ret;
 }
 
@@ -523,7 +551,7 @@ static int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M
 }
 
 /* apply gain */
-void _tdav_session_audio_apply_gain(void* buffer, int len, int bps, int gain)
+static void _tdav_session_audio_apply_gain(void* buffer, int len, int bps, int gain)
 {
 	register int i;
 	int max_val;
@@ -548,7 +576,7 @@ void _tdav_session_audio_apply_gain(void* buffer, int len, int bps, int gain)
 
 
 /* Internal function used to create new DTMF event */
-tdav_session_audio_dtmfe_t* _tdav_session_audio_dtmfe_create(const tdav_session_audio_t* session, uint8_t event, uint16_t duration, uint32_t seq, uint32_t timestamp, uint8_t format, tsk_bool_t M, tsk_bool_t E)
+static tdav_session_audio_dtmfe_t* _tdav_session_audio_dtmfe_create(const tdav_session_audio_t* session, uint8_t event, uint16_t duration, uint32_t seq, uint32_t timestamp, uint8_t format, tsk_bool_t M, tsk_bool_t E)
 {
 	tdav_session_audio_dtmfe_t* dtmfe;
 	const tdav_session_av_t* base = (const tdav_session_av_t*)session;
@@ -591,7 +619,7 @@ tdav_session_audio_dtmfe_t* _tdav_session_audio_dtmfe_create(const tdav_session_
 	return dtmfe;
 }
 
-int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id)
+static int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id)
 {
 	tdav_session_audio_dtmfe_t* dtmfe = (tdav_session_audio_dtmfe_t*)arg;
 
@@ -608,6 +636,37 @@ int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id)
 	tsk_list_remove_item_by_data(dtmfe->session->dtmf_events, dtmfe);
 
 	return 0;
+}
+
+static tmedia_resampler_t* _tdav_session_audio_resampler_create(int32_t bytes_per_sample, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t channels, uint32_t quality, void** resampler_buffer, tsk_size_t *resampler_buffer_size)
+{
+	uint32_t resampler_buff_size = ((out_freq * frame_duration)/1000) * bytes_per_sample;
+	tmedia_resampler_t* resampler;
+	int ret;
+
+	if(!(resampler = tmedia_resampler_create())){
+		TSK_DEBUG_ERROR("Failed to create audio resampler");
+		return tsk_null;
+	}
+	else {
+		if((ret = tmedia_resampler_open(resampler, in_freq, out_freq, frame_duration, channels, quality))){
+			TSK_DEBUG_ERROR("Failed to open audio resampler (%d, %d, %d, %d, %d) with retcode=%d", in_freq, out_freq, frame_duration, channels, quality, ret);
+			TSK_OBJECT_SAFE_FREE(resampler);
+			goto done;
+		}
+	}
+	// create temp resampler buffer
+	if((*resampler_buffer = tsk_realloc(*resampler_buffer, resampler_buff_size))){
+		*resampler_buffer_size = resampler_buff_size;
+	}
+	else {
+		*resampler_buffer_size = 0;
+		TSK_DEBUG_ERROR("Failed to allocate resampler buffer with size = %d", resampler_buff_size);
+		TSK_OBJECT_SAFE_FREE(resampler);
+		goto done;
+	}
+done:
+	return resampler;
 }
 
 //=================================================================================================
@@ -633,12 +692,21 @@ static tsk_object_t* tdav_session_audio_ctor(tsk_object_t * self, va_list * app)
 			tmedia_producer_set_enc_callback(base->producer, tdav_session_audio_producer_enc_cb, audio);
 		}
 		if(base->consumer){
+			// It's important to create the denoiser and jitter buffer here as dynamic plugins (from shared libs) don't have access to the registry
 			if(!(audio->denoise = tmedia_denoise_create())){
 				TSK_DEBUG_WARN("No Audio denoiser found");
 			}
 			else{
 				// IMPORTANT: This means that the consumer must be child of "tdav_consumer_audio_t" object
 				tdav_consumer_audio_set_denoise(TDAV_CONSUMER_AUDIO(base->consumer), audio->denoise);
+			}
+			
+			if(!(audio->jitterbuffer = tmedia_jitterbuffer_create(tmedia_audio))){
+				TSK_DEBUG_ERROR("Failed to create jitter buffer");
+			}
+			else{
+				ret = tmedia_jitterbuffer_init(TMEDIA_JITTER_BUFFER(audio->jitterbuffer));
+				tdav_consumer_audio_set_jitterbuffer(TDAV_CONSUMER_AUDIO(base->consumer), audio->jitterbuffer);
 			}
 		}
 	}
@@ -670,15 +738,18 @@ static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(audio->dtmf_events);
 		
 		TSK_OBJECT_SAFE_FREE(audio->denoise);
+		TSK_OBJECT_SAFE_FREE(audio->jitterbuffer);
 
 		TSK_OBJECT_SAFE_FREE(audio->encoder.codec);
 		TSK_FREE(audio->encoder.buffer);
 		TSK_OBJECT_SAFE_FREE(audio->decoder.codec);
 		TSK_FREE(audio->decoder.buffer);
 		
-		// free resampler
+		// free resamplers
+		TSK_FREE(audio->encoder.resampler.buffer);
+		TSK_OBJECT_SAFE_FREE(audio->encoder.resampler.instance);
 		TSK_FREE(audio->decoder.resampler.buffer);
-		TSK_OBJECT_SAFE_FREE(audio->decoder.resampler.instance);		
+		TSK_OBJECT_SAFE_FREE(audio->decoder.resampler.instance);
 
 		/* deinit base */
 		tdav_session_av_deinit(TDAV_SESSION_AV(self));

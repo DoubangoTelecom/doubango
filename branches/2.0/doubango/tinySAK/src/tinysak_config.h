@@ -38,10 +38,23 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
-/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
-*/
+// Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define TSK_UNDER_WINDOWS	1
+#endif
+
+// OS X or iOS
+#if defined(__APPLE__)
+#	define TSK_UNDER_APPLE				1
+#endif
+#if TARGET_OS_MAC
+#	define TSK_UNDER_MAC				1
+#endif
+#if TARGET_OS_IPHONE
+#	define TSK_UNDER_IPHONE			1
+#endif
+#if TARGET_IPHONE_SIMULATOR
+#	define TSK_UNDER_IPHONE_SIMULATOR	1
 #endif
 
 /* Used on Windows and Symbian systems to export/import public functions and global variables.

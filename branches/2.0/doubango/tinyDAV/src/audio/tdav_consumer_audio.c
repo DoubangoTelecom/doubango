@@ -57,6 +57,8 @@ int tdav_consumer_audio_init(tdav_consumer_audio_t* self)
 {
 	int ret;
 
+	TSK_DEBUG_INFO("tdav_consumer_audio_init()");
+
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
@@ -72,13 +74,6 @@ int tdav_consumer_audio_init(tdav_consumer_audio_t* self)
 	TMEDIA_CONSUMER(self)->audio.in.channels = TDAV_CHANNELS_DEFAULT;
 	TMEDIA_CONSUMER(self)->audio.in.rate = TDAV_RATE_DEFAULT;
 	TMEDIA_CONSUMER(self)->audio.gain = TSK_MIN(tmedia_defaults_get_audio_consumer_gain(), TDAV_AUDIO_GAIN_MAX);
-
-	/* self:jitterbuffer */
-	if(!(self->jitterbuffer = tmedia_jitterbuffer_create(tmedia_audio))){
-		TSK_DEBUG_ERROR("Failed to create jitter buffer");
-		return -2;
-	}
-	tmedia_jitterbuffer_init(TMEDIA_JITTER_BUFFER(self->jitterbuffer));
 
 	tsk_safeobj_init(self);
 
@@ -132,10 +127,9 @@ int tdav_consumer_audio_set(tdav_consumer_audio_t* self, const tmedia_param_t* p
 /* put data (bytes not shorts) into the jitter buffer (consumers always have ptime of 20ms) */
 int tdav_consumer_audio_put(tdav_consumer_audio_t* self, const void* data, tsk_size_t data_size, const tsk_object_t* proto_hdr)
 {
-	const trtp_rtp_header_t* rtp_hdr = TRTP_RTP_HEADER(proto_hdr);
 	int ret;
 
-	if(!self || !data || !self->jitterbuffer || !rtp_hdr){
+	if(!self || !data || !self->jitterbuffer){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -143,24 +137,25 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, const void* data, tsk_s
 	tsk_safeobj_lock(self);
 
 	if(!TMEDIA_JITTER_BUFFER(self->jitterbuffer)->opened){
-		if((ret = tmedia_jitterbuffer_open(TMEDIA_JITTER_BUFFER(self->jitterbuffer), TMEDIA_CONSUMER(self)->audio.ptime, TMEDIA_CONSUMER(self)->audio.in.rate))){
+		if((ret = tmedia_jitterbuffer_open(self->jitterbuffer, TMEDIA_CONSUMER(self)->audio.ptime, TMEDIA_CONSUMER(self)->audio.in.rate))){
 			TSK_DEBUG_ERROR("Failed to open jitterbuffer (%d)", ret);
 			tsk_safeobj_unlock(self);
 			return ret;
 		}
 	}
-	ret = tmedia_jitterbuffer_put(TMEDIA_JITTER_BUFFER(self->jitterbuffer), (void*)data, data_size, proto_hdr);
+	
+	ret = tmedia_jitterbuffer_put(self->jitterbuffer, (void*)data, data_size, proto_hdr);
 
 	tsk_safeobj_unlock(self);
 
 	return ret;
 }
 
-/* get data drom the jitter buffer (consumers should always have ptime of 20ms) */
+/* get data from the jitter buffer (consumers should always have ptime of 20ms) */
 tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, tsk_size_t out_size)
 {
 	tsk_size_t ret_size = 0;
-	if(!self && self->jitterbuffer){
+	if(!self || !self->jitterbuffer){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
@@ -170,7 +165,7 @@ tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, 
 	if(!TMEDIA_JITTER_BUFFER(self->jitterbuffer)->opened){
 		int ret;
 		uint32_t frame_duration = TMEDIA_CONSUMER(self)->audio.ptime;
-		uint32_t rate = TMEDIA_CONSUMER(self)->audio.in.rate;
+		uint32_t rate = TMEDIA_CONSUMER(self)->audio.out.rate ? TMEDIA_CONSUMER(self)->audio.out.rate : TMEDIA_CONSUMER(self)->audio.in.rate;
 		if((ret = tmedia_jitterbuffer_open(TMEDIA_JITTER_BUFFER(self->jitterbuffer), frame_duration, rate))){
 			TSK_DEBUG_ERROR("Failed to open jitterbuffer (%d)", ret);
 			tsk_safeobj_unlock(self);
@@ -203,7 +198,7 @@ tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, 
 
 int tdav_consumer_audio_tick(tdav_consumer_audio_t* self)
 {
-	if(!self){
+	if(!self || !self->jitterbuffer){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
@@ -213,8 +208,18 @@ int tdav_consumer_audio_tick(tdav_consumer_audio_t* self)
 /* set denioiser */
 void tdav_consumer_audio_set_denoise(tdav_consumer_audio_t* self, struct tmedia_denoise_s* denoise)
 {
+	tsk_safeobj_lock(self);
 	TSK_OBJECT_SAFE_FREE(self->denoise);
 	self->denoise = tsk_object_ref(denoise);
+	tsk_safeobj_unlock(self);
+}
+
+void tdav_consumer_audio_set_jitterbuffer(tdav_consumer_audio_t* self, struct tmedia_jitterbuffer_s* jitterbuffer)
+{
+	tsk_safeobj_lock(self);
+	TSK_OBJECT_SAFE_FREE(self->jitterbuffer);
+	self->jitterbuffer = tsk_object_ref(jitterbuffer);
+	tsk_safeobj_unlock(self);
 }
 
 /** Reset jitterbuffer */

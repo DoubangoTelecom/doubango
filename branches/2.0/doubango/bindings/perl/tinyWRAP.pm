@@ -174,6 +174,44 @@ sub ACQUIRE {
 }
 
 
+############# Class : tinyWRAP::Codec ##############
+
+package tinyWRAP::Codec;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_Codec($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getMediaType = *tinyWRAPc::Codec_getMediaType;
+*getName = *tinyWRAPc::Codec_getName;
+*getDescription = *tinyWRAPc::Codec_getDescription;
+*getNegFormat = *tinyWRAPc::Codec_getNegFormat;
+*getAudioSamplingRate = *tinyWRAPc::Codec_getAudioSamplingRate;
+*getAudioChannels = *tinyWRAPc::Codec_getAudioChannels;
+*getAudioPTime = *tinyWRAPc::Codec_getAudioPTime;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
 ############# Class : tinyWRAP::MediaSessionMgr ##############
 
 package tinyWRAP::MediaSessionMgr;
@@ -198,8 +236,10 @@ sub DESTROY {
 *consumerSetInt64 = *tinyWRAPc::MediaSessionMgr_consumerSetInt64;
 *producerSetInt32 = *tinyWRAPc::MediaSessionMgr_producerSetInt32;
 *producerSetInt64 = *tinyWRAPc::MediaSessionMgr_producerSetInt64;
+*producerGetCodec = *tinyWRAPc::MediaSessionMgr_producerGetCodec;
 *findProxyPluginConsumer = *tinyWRAPc::MediaSessionMgr_findProxyPluginConsumer;
 *findProxyPluginProducer = *tinyWRAPc::MediaSessionMgr_findProxyPluginProducer;
+*registerAudioPluginFromFile = *tinyWRAPc::MediaSessionMgr_registerAudioPluginFromFile;
 *getSessionId = *tinyWRAPc::MediaSessionMgr_getSessionId;
 *defaultsSetProfile = *tinyWRAPc::MediaSessionMgr_defaultsSetProfile;
 *defaultsGetProfile = *tinyWRAPc::MediaSessionMgr_defaultsGetProfile;

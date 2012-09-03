@@ -41,6 +41,8 @@ typedef struct tdav_session_audio_s
 {
 	TDAV_DECLARE_SESSION_AV;
 
+	tsk_bool_t started;
+
 	struct {
 		unsigned created;
 		unsigned started:1;
@@ -52,6 +54,12 @@ typedef struct tdav_session_audio_s
 
 		void* buffer;
 		tsk_size_t buffer_size;
+
+		struct {
+			void* buffer;
+			tsk_size_t buffer_size;
+			struct tmedia_resampler_s* instance;
+		} resampler;
 	} encoder;
 
 	struct {
@@ -60,6 +68,7 @@ typedef struct tdav_session_audio_s
 
 		void* buffer;
 		tsk_size_t buffer_size;
+
 		struct {
 			void* buffer;
 			tsk_size_t buffer_size;
@@ -68,6 +77,7 @@ typedef struct tdav_session_audio_s
 	} decoder;
 
 	struct tmedia_denoise_s* denoise;
+	struct tmedia_jitterbuffer_s* jitterbuffer;
 
 	tdav_session_audio_dtmfe_L_t* dtmf_events;
 }

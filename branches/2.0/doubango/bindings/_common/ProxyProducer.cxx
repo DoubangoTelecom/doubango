@@ -47,9 +47,13 @@ typedef struct twrap_producer_proxy_audio_s
 twrap_producer_proxy_audio_t;
 #define TWRAP_PRODUCER_PROXY_AUDIO(self) ((twrap_producer_proxy_audio_t*)(self))
 
-static int twrap_producer_proxy_audio_set(tmedia_producer_t* self, const tmedia_param_t* params)
+static int twrap_producer_proxy_audio_set(tmedia_producer_t* _self, const tmedia_param_t* param)
 {
-	return 0;
+	twrap_producer_proxy_audio_t* self = (twrap_producer_proxy_audio_t*)_self;
+	if(param->plugin_type == tmedia_ppt_producer){
+		// specific proxy producer
+	}
+	return tdav_producer_audio_set(TDAV_PRODUCER_AUDIO(self), param);
 }
 
 static int twrap_producer_proxy_audio_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)

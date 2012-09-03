@@ -27,6 +27,27 @@
 
 class ProxyPlugin;
 
+class Codec
+{
+public:
+#if !defined(SWIG)
+	Codec(struct tmedia_codec_s* pWrappedCodec);
+#endif
+	virtual ~Codec();
+
+public:
+	twrap_media_type_t getMediaType();
+	const char* getName();
+	const char* getDescription();
+	const char* getNegFormat();
+	int getAudioSamplingRate();
+	int getAudioChannels();
+	int getAudioPTime();
+
+private:
+	struct tmedia_codec_s* m_pWrappedCodec;
+};
+
 class MediaSessionMgr
 {
 public:
@@ -44,6 +65,7 @@ public:
 
 	bool producerSetInt32(twrap_media_type_t media, const char* key, int32_t value);
 	bool producerSetInt64(twrap_media_type_t media, const char* key, int64_t value);
+	Codec* producerGetCodec(twrap_media_type_t media);
 
 #if !defined(SWIG)
 	const ProxyPlugin* findProxyPlugin(twrap_media_type_t media, bool consumer)const;
@@ -55,6 +77,8 @@ public:
 	const ProxyPlugin* findProxyPluginProducer(twrap_media_type_t media)const{
 		return this->findProxyPlugin(media, false);
 	}
+
+	static unsigned int registerAudioPluginFromFile(const char* path);
 
 	uint64_t getSessionId(twrap_media_type_t media)const;
 	

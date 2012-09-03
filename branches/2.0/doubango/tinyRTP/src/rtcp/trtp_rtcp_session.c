@@ -472,10 +472,10 @@ int trtp_rtcp_session_stop(trtp_rtcp_session_t* self)
 		return -1;
 	}
 
-	// send BYE synchronous way
-	SendBYEPacket(self, EVENT_REPORT);
-
 	if(self->timer.started){
+		// send BYE synchronous way
+		SendBYEPacket(self, EVENT_REPORT);
+		
 		// this is a global timer shared by many components -> stopping it won't remove
 		// all scheduled items as it could continue running if still used
 		tsk_safeobj_lock(self); // must

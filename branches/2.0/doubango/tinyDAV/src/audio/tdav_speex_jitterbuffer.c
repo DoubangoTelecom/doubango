@@ -172,6 +172,7 @@ static int tdav_speex_jitterbuffer_close(tmedia_jitterbuffer_t* self)
 static tsk_object_t* tdav_speex_jitterbuffer_ctor(tsk_object_t * self, va_list * app)
 {
 	tdav_speex_jitterbuffer_t *jitterbuffer = self;
+	TSK_DEBUG_INFO("Create SpeexDSP jitter buffer");
 	if(jitterbuffer){
 		/* init base */
 		tmedia_jitterbuffer_init(TMEDIA_JITTER_BUFFER(jitterbuffer));

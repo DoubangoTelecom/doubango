@@ -275,6 +275,16 @@ static tsk_object_t* tnet_socket_ctor(tsk_object_t * self, va_list * app)
 			}
 		}
 
+#if TNET_UNDER_IPHONE || TNET_UNDER_IPHONE_SIMULATOR
+		/* disable SIGPIPE signal */
+        {
+			int yes = 1;
+			if(setsockopt(sock->fd, SOL_SOCKET, SO_NOSIGPIPE, (char*)&yes, sizeof(int))){
+				TNET_PRINT_LAST_ERROR("setsockopt(SO_NOSIGPIPE) have failed.");
+			}
+        }
+#endif /* TNET_UNDER_IPHONE */
+
 		/* Sets the socket to nonblocking mode */
 		if(nonblocking){
 			if((status = tnet_sockfd_set_nonblocking(sock->fd))){

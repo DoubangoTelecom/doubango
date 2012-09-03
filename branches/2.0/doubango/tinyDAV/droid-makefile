@@ -99,7 +99,7 @@ endif
 # Google WebRTC (Default: enabled)
 ifeq ($(WEBRTC), yes)
 	WEBRTC_CFLAGS := -DHAVE_WEBRTC=1
-	WEBRTC_LDFLAGS := -lwebrtc_aecm_$(MARCH) -lwebrtc_spl_$(MARCH) -lwebrtc_apm_utility_$(MARCH) -lwebrtc_nsx_$(MARCH) -lwebrtc_system_wrappers_$(MARCH)
+	WEBRTC_LDFLAGS := -lwebrtc_aec_$(MARCH) -lwebrtc_spl_$(MARCH) -lwebrtc_apm_utility_$(MARCH) -lwebrtc_nsx_$(MARCH) -lwebrtc_system_wrappers_$(MARCH)
 else
 	WEBRTC_CFLAGS := -DHAVE_WEBRTC=0
 endif

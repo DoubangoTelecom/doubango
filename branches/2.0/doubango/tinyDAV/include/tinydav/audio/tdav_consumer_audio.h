@@ -62,6 +62,7 @@ TINYDAV_API int tdav_consumer_audio_put(tdav_consumer_audio_t* self, const void*
 TINYDAV_API tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, tsk_size_t out_size);
 TINYDAV_API int tdav_consumer_audio_tick(tdav_consumer_audio_t* self);
 void tdav_consumer_audio_set_denoise(tdav_consumer_audio_t* self, struct tmedia_denoise_s* denoise);
+void tdav_consumer_audio_set_jitterbuffer(tdav_consumer_audio_t* self, struct tmedia_jitterbuffer_s* jitterbuffer);
 TINYDAV_API int tdav_consumer_audio_reset(tdav_consumer_audio_t* self);
 TINYDAV_API int tdav_consumer_audio_deinit(tdav_consumer_audio_t* self);
 

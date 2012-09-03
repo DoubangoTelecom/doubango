@@ -51,7 +51,7 @@ ifeq ($(SPEEX), yes)
 endif
 
 ifeq ($(WEBRTC), yes)
-	WEBRTC_LDFLAGS := -lwebrtc_aecm_$(MARCH) -lwebrtc_spl_$(MARCH) -lwebrtc_apm_utility_$(MARCH) -lwebrtc_nsx_$(MARCH) -lwebrtc_system_wrappers_$(MARCH)
+	WEBRTC_LDFLAGS := -lwebrtc_aec_$(MARCH) -lwebrtc_spl_$(MARCH) -lwebrtc_apm_utility_$(MARCH) -lwebrtc_nsx_$(MARCH) -lwebrtc_system_wrappers_$(MARCH)
 endif
 
 ifeq ($(ILBC), yes)
@@ -90,7 +90,7 @@ endif
 
 LDFLAGS := $(LDFLAGS_LIB) -L$(THIRDPARTIES_LIB) -L$(THIRDPARTIES_MARCH_LIB) $(FFMPEG_LDFLAGS) $(LIBYUV_LDLAGS) $(VPX_LDLAGS) $(WEBRTC_LDFLAGS) $(SPEEX_DSP_LDFLAGS) $(SPEEX_LDFLAGS) $(OPENCORE_ARM_LDFLAGS) $(BV16_LDFLAGS) $(ILBC_LDFLAGS) $(LIBGSM_LDFLAGS) $(G729_LDFLAGS) \
 	 $(LIBSRTP_LDFLAGS) $(TLS_LDFLAGS) \
-	-Wl,-Bdynamic -lm -lstdc++ -lgcc -llog \
+	-Wl,-Bdynamic -lm -lstdc++ -lgnustl_static -lgcc -llog -ldl \
 	-Wl,-$(_LT) -ltinySAK_$(MARCH) -ltinyHTTP_$(MARCH) -ltinyXCAP_$(MARCH) -ltinyIPSec_$(MARCH) -ltinySIGCOMP_$(MARCH) -ltinySMS_$(MARCH) -ltinyNET_$(MARCH) -ltinySDP_$(MARCH) -ltinyRTP_$(MARCH) -ltinyMEDIA_$(MARCH) -ltinyMSRP_$(MARCH) -ltinyDAV_$(MARCH) -ltinySIP_$(MARCH)
 
 

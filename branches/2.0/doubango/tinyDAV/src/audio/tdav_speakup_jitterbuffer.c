@@ -27,6 +27,9 @@
 
  */
 #include "tinydav/audio/tdav_speakup_jitterbuffer.h"
+
+#if !(HAVE_SPEEX_DSP && HAVE_SPEEX_JB)
+
 #include "tinyrtp/rtp/trtp_rtp_header.h"
 
 #include "tsk_time.h"
@@ -225,6 +228,7 @@ static int tdav_speakup_jitterbuffer_close(tmedia_jitterbuffer_t* self)
 static tsk_object_t* tdav_speakup_jitterbuffer_ctor(tsk_object_t * self, va_list * app)
 {
 	tdav_speakup_jitterbuffer_t *jitterbuffer = self;
+	TSK_DEBUG_INFO("Create speekup jitter buffer");
 	if(jitterbuffer){
 		/* init base */
 		tmedia_jitterbuffer_init(TMEDIA_JITTER_BUFFER(jitterbuffer));
@@ -261,7 +265,7 @@ static const tmedia_jitterbuffer_plugin_def_t tdav_speakup_jitterbuffer_plugin_d
 {
 	&tdav_speakup_jitterbuffer_def_s,
 	tmedia_audio,
-	"Audio/video JitterBuffer based on Speex",
+	"Audio/video JitterBuffer based on Speakup",
 	
 	tdav_speakup_jitterbuffer_set,
 	tdav_speakup_jitterbuffer_open,
@@ -273,3 +277,4 @@ static const tmedia_jitterbuffer_plugin_def_t tdav_speakup_jitterbuffer_plugin_d
 };
 const tmedia_jitterbuffer_plugin_def_t *tdav_speakup_jitterbuffer_plugin_def_t = &tdav_speakup_jitterbuffer_plugin_def_s;
 
+#endif /* !(HAVE_SPEEX_DSP && HAVE_SPEEX_JB) */

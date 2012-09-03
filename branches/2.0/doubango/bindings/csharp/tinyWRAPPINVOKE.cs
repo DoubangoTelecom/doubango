@@ -261,6 +261,30 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ActionConfig_setMediaInt")]
   public static extern IntPtr ActionConfig_setMediaInt(HandleRef jarg1, int jarg2, string jarg3, int jarg4);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_Codec")]
+  public static extern void delete_Codec(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_Codec_getMediaType")]
+  public static extern int Codec_getMediaType(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_Codec_getName")]
+  public static extern string Codec_getName(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_Codec_getDescription")]
+  public static extern string Codec_getDescription(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_Codec_getNegFormat")]
+  public static extern string Codec_getNegFormat(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_Codec_getAudioSamplingRate")]
+  public static extern int Codec_getAudioSamplingRate(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_Codec_getAudioChannels")]
+  public static extern int Codec_getAudioChannels(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_Codec_getAudioPTime")]
+  public static extern int Codec_getAudioPTime(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_MediaSessionMgr")]
   public static extern void delete_MediaSessionMgr(HandleRef jarg1);
 
@@ -282,11 +306,17 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_producerSetInt64")]
   public static extern bool MediaSessionMgr_producerSetInt64(HandleRef jarg1, int jarg2, string jarg3, long jarg4);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_producerGetCodec")]
+  public static extern IntPtr MediaSessionMgr_producerGetCodec(HandleRef jarg1, int jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_findProxyPluginConsumer")]
   public static extern IntPtr MediaSessionMgr_findProxyPluginConsumer(HandleRef jarg1, int jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_findProxyPluginProducer")]
   public static extern IntPtr MediaSessionMgr_findProxyPluginProducer(HandleRef jarg1, int jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_registerAudioPluginFromFile")]
+  public static extern uint MediaSessionMgr_registerAudioPluginFromFile(string jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_getSessionId")]
   public static extern ulong MediaSessionMgr_getSessionId(HandleRef jarg1, int jarg2);

@@ -20,6 +20,7 @@ OBJS = src/tsk.o\
 	src/tsk_object.o\
 	src/tsk_options.o\
 	src/tsk_params.o\
+	src/tsk_plugin.o\
 	src/tsk_ppfcs16.o\
 	src/tsk_ppfcs32.o\
 	src/tsk_ragel_state.o\
