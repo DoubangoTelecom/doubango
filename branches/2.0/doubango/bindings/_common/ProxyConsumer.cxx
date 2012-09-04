@@ -628,6 +628,32 @@ unsigned ProxyVideoConsumer::getDisplayHeight()
 	return displayHeight;
 }
 
+unsigned ProxyVideoConsumer::getDecodedWidth()
+{
+	unsigned width = 0;
+	if((m_pWrappedPlugin = (twrap_consumer_proxy_video_t*)tsk_object_ref(m_pWrappedPlugin))){
+		width = TMEDIA_CONSUMER(m_pWrappedPlugin)->video.in.width;
+		m_pWrappedPlugin = (twrap_consumer_proxy_video_t*)tsk_object_unref(m_pWrappedPlugin);
+	}
+	else{
+		TSK_DEBUG_ERROR("This consumer doesn't wrap any plugin");
+	}
+	return width;
+}
+
+unsigned ProxyVideoConsumer::getDecodedHeight()
+{
+	unsigned height = 0;
+	if((m_pWrappedPlugin = (twrap_consumer_proxy_video_t*)tsk_object_ref(m_pWrappedPlugin))){
+		height = TMEDIA_CONSUMER(m_pWrappedPlugin)->video.in.height;
+		m_pWrappedPlugin = (twrap_consumer_proxy_video_t*)tsk_object_unref(m_pWrappedPlugin);
+	}
+	else{
+		TSK_DEBUG_ERROR("This consumer doesn't wrap any plugin");
+	}
+	return height;
+}
+
 tmedia_chroma_t ProxyVideoConsumer::getChroma()const
 {
 	return m_eChroma;

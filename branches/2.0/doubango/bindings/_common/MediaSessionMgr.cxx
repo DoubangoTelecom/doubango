@@ -251,7 +251,7 @@ unsigned int MediaSessionMgr::registerAudioPluginFromFile(const char* path)
 		TSK_DEBUG_ERROR("Audio plugin already registered");
 		return 0;
 	}
-	if(__plugin = tsk_plugin_create(path)){
+	if((__plugin = tsk_plugin_create(path))){
 		unsigned int count = 0;
 		tsk_plugin_def_ptr_const_t plugin_def_ptr_const;
 		if((plugin_def_ptr_const = tsk_plugin_get_def(__plugin, tsk_plugin_def_type_consumer, tsk_plugin_def_media_type_audio))){

@@ -44,6 +44,10 @@
 #	define TNET_UNDER_WINDOWS	1
 #endif
 
+#if defined(__APPLE__)
+#   include <TargetConditionals.h>
+#endif
+
 // OS X or iOS
 #if defined(__APPLE__)
 #	define TNET_UNDER_APPLE				1
@@ -122,7 +126,6 @@
 #define TNET_RESOLV_CONF_PATH "/etc/resolv.conf" /**< Path to "/resolv.conf". */
 
 #include <stdint.h>
-
 
 #ifdef HAVE_CONFIG_H
 #	include "../config.h"

@@ -448,7 +448,7 @@ static int tdav_producer_audiounit_stop(tmedia_producer_t* self)
 		return -1;
 	}
 	if(!producer->started){
-		TSK_DEBUG_WARN("Not started started");
+		TSK_DEBUG_INFO("Not started");
 		return 0;
 	}
 	else {

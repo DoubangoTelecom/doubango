@@ -570,6 +570,10 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 		if(!out_size || !self->decoder.buffer){
 			goto bail;
 		}
+        
+        // update in (set by the codec)
+        base->consumer->video.in.width = TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width;//decoded width
+        base->consumer->video.in.height = TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height;//decoded height
 
 		// Convert decoded data to the consumer chroma and size
 #define CONSUMER_INSIZE_MISMATCH				((base->consumer->video.in.width * base->consumer->video.in.height * 3)>>1 != out_size)// we have good reasons not to use 1.5f
@@ -584,9 +588,6 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 			// Create video converter if not already done
 			if(!self->conv.fromYUV420 || CONSUMER_DISPLAY_N_CONVERTER_MISMATCH || CONSUMER_INSIZE_MISMATCH){
 				TSK_OBJECT_SAFE_FREE(self->conv.fromYUV420);
-				// update in (set by the codec)
-				base->consumer->video.in.width = TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width;//decoded width
-				base->consumer->video.in.height = TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height;//decoded height
 				
 				// important: do not override the display size (used by the end-user) unless requested
 				if(base->consumer->video.display.auto_resize){
