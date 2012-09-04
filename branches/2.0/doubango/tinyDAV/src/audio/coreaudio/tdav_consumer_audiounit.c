@@ -334,7 +334,7 @@ static int tdav_consumer_audiounit_stop(tmedia_consumer_t* self)
 		return -1;
 	}
 	if(!consumer->started){
-		TSK_DEBUG_WARN("Not started started");
+		TSK_DEBUG_INFO("Not started");
 		return 0;
 	}
 	else {

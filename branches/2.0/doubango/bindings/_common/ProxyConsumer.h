@@ -124,6 +124,8 @@ public:
 	bool setDisplaySize(unsigned nWidth, unsigned nHeight);
 	unsigned getDisplayWidth();
 	unsigned getDisplayHeight();
+    unsigned getDecodedWidth();
+	unsigned getDecodedHeight();
 
 	void setCallback(ProxyVideoConsumerCallback* pCallback) { m_pCallback = pCallback; }
 	bool setAutoResizeDisplay(bool bAutoResizeDisplay);
