@@ -117,8 +117,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyDAV\include;..\..\tinyMEDIA\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;DOUBANGO_AUDIO_WEBRTC_EXPORTS"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyDAV\include;..\..\tinyMEDIA\include;..\..\tinySDP\include;..\..\tinyRTP\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;DOUBANGO_AUDIO_WEBRTC_EXPORTS;TINYDAV_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -137,7 +137,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Winmm.lib msdmo.lib dmoguids.lib wmcodecdspuuid.lib strmiids.lib uuid.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyDAV.lib $(OutDir)\tinyMEDIA.lib &quot;..\..\thirdparties\win32\lib\webrtc\audio_device.lib&quot; &quot;..\..\thirdparties\win32\lib\webrtc\system_wrappers.lib&quot; &quot;..\..\thirdparties\win32\lib\webrtc\spl.lib&quot;"
+				AdditionalDependencies="Winmm.lib msdmo.lib dmoguids.lib wmcodecdspuuid.lib strmiids.lib uuid.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyMEDIA.lib &quot;..\..\thirdparties\win32\lib\webrtc\audio_device.lib&quot; &quot;..\..\thirdparties\win32\lib\webrtc\system_wrappers.lib&quot; &quot;..\..\thirdparties\win32\lib\webrtc\spl.lib&quot;"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
