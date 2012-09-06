@@ -71,7 +71,7 @@ private:
 	DSDisplayOverlay *overlay;
 
 	int fps;
-	int left, top, width, height;
+	int left, top, width, height, imgWidth, imgHeight;
 
 	bool bPluginFirefox;
 	bool fullscreen;

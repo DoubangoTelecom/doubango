@@ -53,6 +53,8 @@ typedef struct tdav_session_video_s
 		void* buffer;
 		tsk_size_t buffer_size;
 
+		int rotation;
+
 		void* conv_buffer;
 		tsk_size_t conv_buffer_size;
 

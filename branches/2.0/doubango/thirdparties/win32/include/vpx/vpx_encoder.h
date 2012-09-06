@@ -32,6 +32,19 @@ extern "C" {
 #define VPX_ENCODER_H
 #include "vpx_codec.h"
 
+/*! Temporal Scalability: Maximum length of the sequence defining frame
+ * layer membership
+ */
+#define VPX_TS_MAX_PERIODICITY 16
+
+/*! Temporal Scalability: Maximum number of coding layers */
+#define VPX_TS_MAX_LAYERS       5
+
+/*!\deprecated Use #VPX_TS_MAX_PERIODICITY instead. */
+#define MAX_PERIODICITY VPX_TS_MAX_PERIODICITY
+
+/*!\deprecated Use #VPX_TS_MAX_LAYERS instead. */
+#define MAX_LAYERS      VPX_TS_MAX_LAYERS
 
     /*!\brief Current ABI version number
      *
@@ -41,7 +54,7 @@ extern "C" {
      * types, removing or reassigning enums, adding/removing/rearranging
      * fields to structures
      */
-#define VPX_ENCODER_ABI_VERSION (2 + VPX_CODEC_ABI_VERSION) /**<\hideinitializer*/
+#define VPX_ENCODER_ABI_VERSION (3 + VPX_CODEC_ABI_VERSION) /**<\hideinitializer*/
 
 
     /*! \brief Encoder capabilities bitfield
@@ -55,6 +68,13 @@ extern "C" {
      */
 #define VPX_CODEC_CAP_PSNR  0x10000 /**< Can issue PSNR packets */
 
+    /*! Can output one partition at a time. Each partition is returned in its
+     *  own VPX_CODEC_CX_FRAME_PKT, with the FRAME_IS_FRAGMENT flag set for
+     *  every partition but the last. In this mode all frames are always
+     *  returned partition by partition.
+     */
+#define VPX_CODEC_CAP_OUTPUT_PARTITION  0x20000
+
 
     /*! \brief Initialization-time Feature Enabling
      *
@@ -64,6 +84,8 @@ extern "C" {
      *  The available flags are specified by VPX_CODEC_USE_* defines.
      */
 #define VPX_CODEC_USE_PSNR  0x10000 /**< Calculate PSNR on each frame */
+#define VPX_CODEC_USE_OUTPUT_PARTITION  0x20000 /**< Make the encoder output one
+                                                     partition at a time. */
 
 
     /*!\brief Generic fixed size buffer structure
@@ -99,7 +121,26 @@ extern "C" {
                 this one) */
 #define VPX_FRAME_IS_INVISIBLE 0x4 /**< frame should be decoded but will not
     be shown */
+#define VPX_FRAME_IS_FRAGMENT  0x8 /**< this is a fragment of the encoded
+    frame */
 
+    /*!\brief Error Resilient flags
+     *
+     * These flags define which error resilient features to enable in the
+     * encoder. The flags are specified through the
+     * vpx_codec_enc_cfg::g_error_resilient variable.
+     */
+    typedef uint32_t vpx_codec_er_flags_t;
+#define VPX_ERROR_RESILIENT_DEFAULT     0x1 /**< Improve resiliency against
+                                                 losses of whole frames */
+#define VPX_ERROR_RESILIENT_PARTITIONS  0x2 /**< The frame partitions are
+                                                 independently decodable by the
+                                                 bool decoder, meaning that
+                                                 partitions can be decoded even
+                                                 though earlier partitions have
+                                                 been lost. Note that intra
+                                                 predicition is still done over
+                                                 the partition boundary. */
 
     /*!\brief Encoder output packet variants
      *
@@ -135,6 +176,13 @@ extern "C" {
                 unsigned long            duration; /**< duration to show frame
                                                     (in timebase units) */
                 vpx_codec_frame_flags_t  flags;    /**< flags for this frame */
+                int                      partition_id; /**< the partition id
+                                              defines the decoding order
+                                              of the partitions. Only
+                                              applicable when "output partition"
+                                              mode is enabled. First partition
+                                              has id 0.*/
+
             } frame;  /**< data for compressed frame packet */
             struct vpx_fixed_buf twopass_stats;  /**< data for two-pass packet */
             struct vpx_psnr_pkt
@@ -289,13 +337,13 @@ extern "C" {
         struct vpx_rational    g_timebase;
 
 
-        /*!\brief Enable error resilient mode.
+        /*!\brief Enable error resilient modes.
          *
-         * Error resilient mode indicates to the encoder that it should take
-         * measures appropriate for streaming over lossy or noisy links, if
-         * possible. Set to 1 to enable this feature, 0 to disable it.
+         * The error resilient bitfield indicates to the encoder which features
+         * it should enable to take measures for streaming over lossy or noisy
+         * links.
          */
-        unsigned int           g_error_resilient;
+        vpx_codec_er_flags_t   g_error_resilient;
 
 
         /*!\brief Multi-pass Encoding Mode
@@ -430,20 +478,28 @@ extern "C" {
          */
 
 
-        /*!\brief Rate control undershoot tolerance
+        /*!\brief Rate control adaptation undershoot control
          *
-         * This value, expressed as a percentage of the target bitrate, describes
-         * the target bitrate for easier frames, allowing bits to be saved for
-         * harder frames. Set to zero to use the codec default.
+         * This value, expressed as a percentage of the target bitrate,
+         * controls the maximum allowed adaptation speed of the codec.
+         * This factor controls the maximum amount of bits that can
+         * be subtracted from the target bitrate in order to compensate
+         * for prior overshoot.
+         *
+         * Valid values in the range 0-1000.
          */
         unsigned int           rc_undershoot_pct;
 
 
-        /*!\brief Rate control overshoot tolerance
+        /*!\brief Rate control adaptation overshoot control
          *
-         * This value, expressed as a percentage of the target bitrate, describes
-         * the maximum allowed bitrate for a given frame.  Set to zero to use the
-         * codec default.
+         * This value, expressed as a percentage of the target bitrate,
+         * controls the maximum allowed adaptation speed of the codec.
+         * This factor controls the maximum amount of bits that can
+         * be added to the target bitrate in order to compensate for
+         * prior undershoot.
+         *
+         * Valid values in the range 0-1000.
          */
         unsigned int           rc_overshoot_pct;
 
@@ -549,6 +605,46 @@ extern "C" {
          */
         unsigned int           kf_max_dist;
 
+        /*
+         * Temporal scalability settings (ts)
+         */
+
+        /*!\brief Number of coding layers
+         *
+         * This value specifies the number of coding layers to be used.
+         */
+        unsigned int           ts_number_layers;
+
+        /*!\brief Target bitrate for each layer
+         *
+         * These values specify the target coding bitrate for each coding layer.
+         */
+        unsigned int           ts_target_bitrate[VPX_TS_MAX_LAYERS];
+
+        /*!\brief Frame rate decimation factor for each layer
+         *
+         * These values specify the frame rate decimation factors to apply
+         * to each layer.
+         */
+        unsigned int           ts_rate_decimator[VPX_TS_MAX_LAYERS];
+
+        /*!\brief Length of the sequence defining frame layer membership
+         *
+         * This value specifies the length of the sequence that defines the
+         * membership of frames to layers. For example, if ts_periodicity=8 then
+         * frames are assigned to coding layers with a repeated sequence of
+         * length 8.
+         */
+        unsigned int           ts_periodicity;
+
+        /*!\brief Template defining the membership of frames to coding layers
+         *
+         * This array defines the membership of frames to coding layers. For a
+         * 2-layer encoding that assigns even numbered frames to one layer (0)
+         * and odd numbered frames to a second layer (1) with ts_periodicity=8,
+         * then ts_layer_id = (0,1,0,1,0,1,0,1).
+         */
+        unsigned int           ts_layer_id[VPX_TS_MAX_PERIODICITY];
     } vpx_codec_enc_cfg_t; /**< alias for struct vpx_codec_enc_cfg */
 
 
@@ -558,6 +654,10 @@ extern "C" {
      * should call the vpx_codec_enc_init convenience macro instead of this
      * function directly, to ensure that the ABI version number parameter
      * is properly initialized.
+     *
+     * If the library was configured with --disable-multithread, this call
+     * is not thread safe and should be guarded with a lock if being used
+     * in a multithreaded context.
      *
      * In XMA mode (activated by setting VPX_CODEC_USE_XMA in the flags
      * parameter), the storage pointed to by the cfg parameter must be
@@ -587,6 +687,48 @@ extern "C" {
      */
 #define vpx_codec_enc_init(ctx, iface, cfg, flags) \
     vpx_codec_enc_init_ver(ctx, iface, cfg, flags, VPX_ENCODER_ABI_VERSION)
+
+
+    /*!\brief Initialize multi-encoder instance
+     *
+     * Initializes multi-encoder context using the given interface.
+     * Applications should call the vpx_codec_enc_init_multi convenience macro
+     * instead of this function directly, to ensure that the ABI version number
+     * parameter is properly initialized.
+     *
+     * In XMA mode (activated by setting VPX_CODEC_USE_XMA in the flags
+     * parameter), the storage pointed to by the cfg parameter must be
+     * kept readable and stable until all memory maps have been set.
+     *
+     * \param[in]    ctx     Pointer to this instance's context.
+     * \param[in]    iface   Pointer to the algorithm interface to use.
+     * \param[in]    cfg     Configuration to use, if known. May be NULL.
+     * \param[in]    num_enc Total number of encoders.
+     * \param[in]    flags   Bitfield of VPX_CODEC_USE_* flags
+     * \param[in]    dsf     Pointer to down-sampling factors.
+     * \param[in]    ver     ABI version number. Must be set to
+     *                       VPX_ENCODER_ABI_VERSION
+     * \retval #VPX_CODEC_OK
+     *     The decoder algorithm initialized.
+     * \retval #VPX_CODEC_MEM_ERROR
+     *     Memory allocation failed.
+     */
+    vpx_codec_err_t vpx_codec_enc_init_multi_ver(vpx_codec_ctx_t      *ctx,
+                                                 vpx_codec_iface_t    *iface,
+                                                 vpx_codec_enc_cfg_t  *cfg,
+                                                 int                   num_enc,
+                                                 vpx_codec_flags_t     flags,
+                                                 vpx_rational_t       *dsf,
+                                                 int                   ver);
+
+
+    /*!\brief Convenience macro for vpx_codec_enc_init_multi_ver()
+     *
+     * Ensures the ABI version parameter is properly set.
+     */
+#define vpx_codec_enc_init_multi(ctx, iface, cfg, num_enc, flags, dsf) \
+    vpx_codec_enc_init_multi_ver(ctx, iface, cfg, num_enc, flags, dsf, \
+                                 VPX_ENCODER_ABI_VERSION)
 
 
     /*!\brief Get a default configuration
@@ -693,7 +835,6 @@ extern "C" {
                                       unsigned long               duration,
                                       vpx_enc_frame_flags_t       flags,
                                       unsigned long               deadline);
-
 
     /*!\brief Set compressed data output buffer
      *

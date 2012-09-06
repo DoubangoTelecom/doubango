@@ -38,10 +38,22 @@
 
 #include <string.h>
 
-static int tdav_speex_denoise_set(tmedia_denoise_t* self, const tmedia_param_t* param)
+static int tdav_speex_denoise_set(tmedia_denoise_t* _self, const tmedia_param_t* param)
 {
-	/* tdav_speex_denoise_t *denoiser = (tdav_speex_denoise_t *)self; */
-	return tmedia_denoise_set(self, param);
+	tdav_speex_denoise_t *self = (tdav_speex_denoise_t *)_self;
+	if(!self || !param){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	if(param->value_type == tmedia_pvt_int32){
+		if(tsk_striequals(param->key, "echo-tail")){
+			int32_t echo_tail = *((int32_t*)param->value);
+			TSK_DEBUG_INFO("speex_set_echo_tail(%d) ignore", echo_tail); // because Speex AEC just do not work (use WebRTC)
+			return 0;
+		}
+	}
+	return -1;
 }
 
 static int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_t sampling_rate)
@@ -89,6 +101,7 @@ static int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, 
 
 				// Noise suppression
 				if(TMEDIA_DENOISE(denoiser)->noise_supp_enabled){
+					TSK_DEBUG_INFO("SpeexDSP: Noise supp enabled");
 					i = 1;
 					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_DENOISE, &i);
 					speex_preprocess_ctl(denoiser->preprocess_state_playback, SPEEX_PREPROCESS_SET_DENOISE, &i);
@@ -105,6 +118,8 @@ static int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, 
 				// Automatic gain control
 				if(TMEDIA_DENOISE(denoiser)->agc_enabled){
 					float agc_level = TMEDIA_DENOISE(denoiser)->agc_level;
+					TSK_DEBUG_INFO("SpeexDSP: AGC enabled");
+					
 					i = 1;
 					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_AGC, &i);
 					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_AGC_LEVEL, &agc_level);

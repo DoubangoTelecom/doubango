@@ -90,8 +90,8 @@ DSDisplay::DSDisplay(HRESULT *hr)
 	this->bPluginFirefox = false;
 	this->top = 0;
 	this->left = 0;
-	this->width = 176;
-	this->height = 144;
+	this->width = this->imgWidth = 176;
+	this->height = this->imgHeight = 144;
 	this->fps = 15;
 
 	this->graph = new DSDisplayGraph(hr);
@@ -211,8 +211,8 @@ int DSDisplay::getHeight()
 
 void DSDisplay::setSize(int w, int h)
 {
-	this->width = w;
-	this->height = h;
+	//this->width = w;
+	//this->height = h;
 
 	if (!this->fullscreen){
 		this->graph->setImageFormat(w, h);
@@ -234,7 +234,7 @@ void DSDisplay::applyRatio(RECT rect)
 {
 	long w = rect.right - rect.left;
 	long h = rect.bottom - rect.top;
-	float ratio = ((float)176/(float)144);//FIXME
+	float ratio = ((float)this->imgWidth/(float)this->imgHeight);
 	// (w/h)=ratio => 
 	// 1) h=w/ratio 
 	// and 
@@ -328,6 +328,13 @@ void DSDisplay::handleVideoFrame(const void* data, int w, int h)
 		// The graph will take care of changing the source filter if needed
 		// in case of dimension change or anything else...
 		this->graph->handleFrame(data, w, h);
+		if(this->imgWidth != w || this->imgHeight != h){
+			this->imgWidth = w;
+			this->imgHeight = h;
+			if(this->window){
+				SendMessage(this->window, WM_SIZE, SIZE_RESTORED, MAKELPARAM(this->width , this->height));
+			}
+		}
 #if USE_OVERLAY
 		this->overlay->update();
 #endif
@@ -431,7 +438,8 @@ LRESULT DSDisplay::handleEvents(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 			EndPaint(hWnd, &ps); 
 		}
 		break;
-#endif
+#endif 
+
 	}
 
 	return bPluginFirefox ? DefWindowProc(hWnd, uMsg, wParam, lParam) : CallWindowProc(this->parentWindowProc, hWnd, uMsg, wParam, lParam);

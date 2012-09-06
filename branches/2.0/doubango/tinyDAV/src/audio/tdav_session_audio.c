@@ -110,7 +110,7 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 			tsk_size_t size = out_size;
 
 			// resample if needed
-			if(audio->encoder.codec->plugin->rate != base->consumer->audio.out.rate && base->consumer->audio.out.rate){
+			if(audio->decoder.codec->plugin->rate != base->consumer->audio.out.rate && base->consumer->audio.out.rate){
 				tsk_size_t resampler_result_size = 0;
 				int bytesPerSample = (base->consumer->audio.bits_per_sample >> 3);
 

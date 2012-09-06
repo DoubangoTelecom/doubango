@@ -65,7 +65,7 @@ static int tdav_webrtc_denoise_set(tmedia_denoise_t* _self, const tmedia_param_t
 			return 0;
 		}
 	}
-	return tmedia_denoise_set(TMEDIA_DENOISE(self), param);
+	return -1;
 }
 
 static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_t sampling_rate)
@@ -210,7 +210,7 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 		// Noise suppression
 #if HAVE_SPEEX_DSP && PREFER_SPEEX_DENOISER
 		if(denoiser->SpeexDenoiser_proc){
-			speex_preprocess_run(denoiser->SpeexDenoiser_proc, denoiser->temp_rec_out);
+			speex_preprocess_run(denoiser->SpeexDenoiser_proc, pAudioFrame);
 		}
 		memcpy(denoiser->temp_rec_out, pAudioFrame, denoiser->frame_size * sizeof(spx_int16_t));
 #else

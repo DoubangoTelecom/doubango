@@ -32,6 +32,8 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+// FIXME: FFmpeg implementation do not support "scale_rotated_frames" option
+
 #if HAVE_LIBYUV
 
 #include <libyuv/libyuv.h>
@@ -168,8 +170,8 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 	}
 	//rotation = kRotate0;
 	
-	// not square and rotaion=270/90 -> requires scaling
-	if(rotation == kRotate90 || rotation == kRotate270){
+	// not square and rotaion=270/90 -> requires scaling unless disabled
+	if((rotation == kRotate90 || rotation == kRotate270) && _self->scale_rotated_frames){
 		scale |= (_self->dstWidth != _self->dstHeight) && (rotation == kRotate90 || rotation == kRotate270);
 	}
 	
@@ -203,6 +205,7 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 					_self->srcWidth, _self->srcHeight,
 					kRotate0,
 					(uint32) self->srcFormat);
+		
 		if(ret){
 			TSK_DEBUG_ERROR("ConvertToI420 failed with error code = %d", ret);
 			return 0;
@@ -226,6 +229,7 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 				RESIZE_BUFFER((*output), (*output_max_size), s);
 				dst_y = (uint8*)*output;
 			}
+			
 			dst_u = (dst_y + ls);
 			dst_v = dst_u + (ls >> 2);
 			ret = I420Rotate(
@@ -242,7 +246,7 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 			}
 			
 			// scale to fit ratio, pad, crop then copy
-			if((rotation == kRotate90 || rotation == kRotate270)){
+			if((rotation == kRotate90 || rotation == kRotate270) && _self->scale_rotated_frames){
                 int iwidth = _self->srcHeight;
                 int iheight = _self->srcWidth;
                 
@@ -302,7 +306,9 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 
 		// scale
 		if(scale){
-			src_w = dst_w, src_h = dst_h, dst_w = _self->dstWidth, dst_h = _self->dstHeight;
+			src_w = dst_w, src_h = dst_h;
+			dst_w = ((rotation == kRotate90 || rotation == kRotate270) && !_self->scale_rotated_frames) ? _self->dstHeight : _self->dstWidth;
+			dst_h = ((rotation == kRotate90 || rotation == kRotate270) && !_self->scale_rotated_frames) ? _self->dstWidth : _self->dstHeight;
 			src_y = dst_y, src_u = dst_u, src_v = dst_v;
 			src_y_stride = dst_y_stride, src_u_stride = dst_u_stride, src_v_stride = dst_v_stride;
 			dst_y_stride = dst_w;
@@ -597,7 +603,8 @@ static tsk_size_t tdav_converter_video_ffmpeg_process(tmedia_converter_video_t* 
 		}
 	}
 
-	_rotate = _self->rotation && (PIX_FMT_YUV420P == self->dstFormat) && _self->rotation==90;/*FIXME: For now only 90° rotation is supported */
+	/*FIXME: For now only 90° rotation is supported this is why we always use libyuv on mobile devices */
+	_rotate = (PIX_FMT_YUV420P == self->dstFormat) && _self->rotation==90;
 
 	// if no rotation then, flip while scaling othersize do it after rotation
 	if(!_rotate && _self->flip){

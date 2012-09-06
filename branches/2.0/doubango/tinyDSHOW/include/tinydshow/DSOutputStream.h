@@ -68,7 +68,6 @@ protected: // Overrides
 	HRESULT FillBuffer(IMediaSample *pSample);
 
 private:
-	/*inline */void TransfertBuffer(void* src, void* dest, long lSize);
 	inline HRESULT DrawOverLay(void *pBuffer, long lSize);
 
 private:

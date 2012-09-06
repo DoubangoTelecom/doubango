@@ -70,6 +70,7 @@ typedef struct tdav_codec_vp8_s
 		uint64_t frame_count;
 		tsk_bool_t force_idr;
 		uint32_t target_bitrate;
+		int rotation;
 
 		struct{
 			uint8_t* ptr;
@@ -96,6 +97,11 @@ tdav_codec_vp8_t;
 #define vp8_interface_enc (vpx_codec_vp8_cx())
 #define vp8_interface_dec (vpx_codec_vp8_dx())
 
+static int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self);
+static int tdav_codec_vp8_open_decoder(tdav_codec_vp8_t* self);
+static int tdav_codec_vp8_close_encoder(tdav_codec_vp8_t* self);
+static int tdav_codec_vp8_close_decoder(tdav_codec_vp8_t* self);
+
 static void tdav_codec_vp8_encap(tdav_codec_vp8_t* self, const vpx_codec_cx_pkt_t *pkt);
 static void tdav_codec_vp8_rtp_callback(tdav_codec_vp8_t *self, const void *data, tsk_size_t size, uint32_t partID, tsk_bool_t part_start, tsk_bool_t non_ref, tsk_bool_t last);
 
@@ -104,6 +110,8 @@ static void tdav_codec_vp8_rtp_callback(tdav_codec_vp8_t *self, const void *data
 static int tdav_codec_vp8_set(tmedia_codec_t* self, const tmedia_param_t* param)
 {
 	tdav_codec_vp8_t* vp8 = (tdav_codec_vp8_t*)self;
+	vpx_codec_err_t vpx_ret;
+
 	if(!vp8->encoder.initialized){
 		TSK_DEBUG_ERROR("Codec not initialized");
 		return -1;
@@ -133,26 +141,45 @@ static int tdav_codec_vp8_set(tmedia_codec_t* self, const tmedia_param_t* param)
 			}
 
 			if(reconf){
-				vpx_codec_err_t vpx_ret = vpx_codec_enc_config_set(&vp8->encoder.context, &vp8->encoder.cfg);
-				if(vpx_ret != VPX_CODEC_OK){
+				if((vpx_ret = vpx_codec_enc_config_set(&vp8->encoder.context, &vp8->encoder.cfg)) != VPX_CODEC_OK){
 					TSK_DEBUG_ERROR("vpx_codec_enc_config_set failed with error =%s", vpx_codec_err_to_string(vpx_ret));
 				}
 			}
 		}
+		else if(tsk_striequals(param->key, "rotation")){
+			// IMPORTANT: changing resolution requires at least libvpx v1.1.0 "Eider"
+			int rotation = *((int32_t*)param->value);
+			if(vp8->encoder.rotation != rotation){
+				vp8->encoder.rotation = rotation;
+				if(vp8->encoder.initialized){
+#if 1
+					vp8->encoder.cfg.g_w = (rotation == 90 || rotation == 270) ? TMEDIA_CODEC_VIDEO(vp8)->out.height : TMEDIA_CODEC_VIDEO(vp8)->out.width;
+					vp8->encoder.cfg.g_h = (rotation == 90 || rotation == 270) ? TMEDIA_CODEC_VIDEO(vp8)->out.width : TMEDIA_CODEC_VIDEO(vp8)->out.height;
+					if((vpx_ret = vpx_codec_enc_config_set(&vp8->encoder.context, &vp8->encoder.cfg)) != VPX_CODEC_OK){
+						TSK_DEBUG_ERROR("vpx_codec_enc_config_set failed with error =%s", vpx_codec_err_to_string(vpx_ret));
+						return -1;
+					}
+#else
+					int ret;
+					if((ret = tdav_codec_vp8_close_encoder(vp8))){
+						return ret;
+					}
+					if((ret = tdav_codec_vp8_open_encoder(vp8))){
+						return ret;
+					}
+#endif
+				}
+				return 0;
+			}
+		}
 	}
-	return 0;
+	return -1;
 }
 
 static int tdav_codec_vp8_open(tmedia_codec_t* self)
 {
 	tdav_codec_vp8_t* vp8 = (tdav_codec_vp8_t*)self;
-
-	vpx_codec_caps_t dec_caps;
-	vpx_enc_frame_flags_t enc_flags;
-	vpx_codec_flags_t dec_flags = 0;
-	vpx_codec_err_t vpx_ret;
-	static vp8_postproc_cfg_t __pp = { VP8_DEBLOCK | VP8_DEMACROBLOCK, 4, 0};
-
+	int ret;
 
 	if(!vp8){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -161,83 +188,18 @@ static int tdav_codec_vp8_open(tmedia_codec_t* self)
 
 	/* the caller (base class) already checked that the codec is not opened */
 
-	//
+	
 	//	Encoder
-	//
-	if((vpx_ret = vpx_codec_enc_config_default(vp8_interface_enc, &vp8->encoder.cfg, 0)) != VPX_CODEC_OK){
-		TSK_DEBUG_ERROR("vpx_codec_enc_config_default failed with error =%s", vpx_codec_err_to_string(vpx_ret));
-		return -2;
+	if((ret = tdav_codec_vp8_open_encoder(vp8))){
+		return ret;
 	}
-	vp8->encoder.cfg.g_timebase.num = 1;
-	vp8->encoder.cfg.g_timebase.den = TMEDIA_CODEC_VIDEO(vp8)->out.fps;
-	vp8->encoder.cfg.rc_target_bitrate = vp8->encoder.target_bitrate = (TMEDIA_CODEC_VIDEO(vp8)->out.width * TMEDIA_CODEC_VIDEO(vp8)->out.height * 256 / 320 / 240);
-	vp8->encoder.cfg.rc_end_usage = VPX_CBR;
-	vp8->encoder.cfg.g_w = TMEDIA_CODEC_VIDEO(vp8)->out.width;
-	vp8->encoder.cfg.g_h = TMEDIA_CODEC_VIDEO(vp8)->out.height;
-	vp8->encoder.cfg.kf_mode = VPX_KF_AUTO;
-	vp8->encoder.cfg.kf_min_dist = vp8->encoder.cfg.kf_max_dist = (TDAV_VP8_GOP_SIZE_IN_SECONDS * TMEDIA_CODEC_VIDEO(vp8)->out.fps);
-	vp8->encoder.cfg.g_error_resilient = 1;
-	vp8->encoder.cfg.g_lag_in_frames = 0;
-#if TDAV_UNDER_WINDOWS
-	{
-		SYSTEM_INFO SystemInfo;
-		GetSystemInfo(&SystemInfo);
-		vp8->encoder.cfg.g_threads = SystemInfo.dwNumberOfProcessors;
-	}
-#endif
-	vp8->encoder.cfg.g_pass = VPX_RC_ONE_PASS;
-	vp8->encoder.cfg.rc_min_quantizer = 0;//TSK_CLAMP(vp8->encoder.cfg.rc_min_quantizer, 10, vp8->encoder.cfg.rc_max_quantizer);
-	vp8->encoder.cfg.rc_max_quantizer = 63;//TSK_CLAMP(vp8->encoder.cfg.rc_min_quantizer, 51, vp8->encoder.cfg.rc_max_quantizer);
-	//vp8->encoder.cfg.rc_resize_allowed = 0;
-	vp8->encoder.cfg.g_profile = 0;
-
-	enc_flags = 0; //VPX_EFLAG_XXX
-
-	if((vpx_ret = vpx_codec_enc_init(&vp8->encoder.context, vp8_interface_enc, &vp8->encoder.cfg, enc_flags)) != VPX_CODEC_OK){
-		TSK_DEBUG_ERROR("vpx_codec_enc_init failed with error =%s", vpx_codec_err_to_string(vpx_ret));
-		return -3;
-	}
-	vp8->encoder.pic_id = (rand() ^ rand()) % 0x7FFF;
-	vp8->encoder.initialized = tsk_true;
-
-	//vpx_codec_control(&vp8->encoder.context, VP8E_SET_CPUUSED, 0); 
-	//vpx_codec_control(&vp8->encoder.context, VP8E_SET_SHARPNESS, 7);
-	//vpx_codec_control(&vp8->encoder.context, VP8E_SET_ENABLEAUTOALTREF, 1);
 	
-
-
-	//
 	//	Decoder
-	//
-	vp8->decoder.cfg.w = TMEDIA_CODEC_VIDEO(vp8)->out.width;
-	vp8->decoder.cfg.h = TMEDIA_CODEC_VIDEO(vp8)->out.height;
-#if TDAV_UNDER_WINDOWS
-	{
-		SYSTEM_INFO SystemInfo;
-		GetSystemInfo(&SystemInfo);
-		vp8->decoder.cfg.threads = SystemInfo.dwNumberOfProcessors;
-	}
-#endif
-
-	dec_caps = vpx_codec_get_caps(&vpx_codec_vp8_dx_algo);
-	if(dec_caps & VPX_CODEC_CAP_POSTPROC){
-		dec_flags |= VPX_CODEC_USE_POSTPROC;
-	}
-	//--if(dec_caps & VPX_CODEC_CAP_ERROR_CONCEALMENT){
-	//--	dec_flags |= VPX_CODEC_USE_ERROR_CONCEALMENT;
-	//--}
-
-	if((vpx_ret = vpx_codec_dec_init(&vp8->decoder.context, vp8_interface_dec, &vp8->decoder.cfg, dec_flags)) != VPX_CODEC_OK){
-		TSK_DEBUG_ERROR("vpx_codec_dec_init failed with error =%s", vpx_codec_err_to_string(vpx_ret));
-		return -4;
+	if((ret = tdav_codec_vp8_open_decoder(vp8))){
+		return ret;
 	}
 	
-	if((vpx_ret = vpx_codec_control(&vp8->decoder.context, VP8_SET_POSTPROC, &__pp))){
-        TSK_DEBUG_WARN("vpx_codec_dec_init failed with error =%s", vpx_codec_err_to_string(vpx_ret));
-	}
-	vp8->decoder.initialized = tsk_true;	
-	
-	return 0;
+	return ret;
 }
 
 static int tdav_codec_vp8_close(tmedia_codec_t* self)
@@ -248,15 +210,10 @@ static int tdav_codec_vp8_close(tmedia_codec_t* self)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+
+	tdav_codec_vp8_close_encoder(vp8);
+	tdav_codec_vp8_close_decoder(vp8);
 	
-	if(vp8->encoder.initialized){
-		vpx_codec_destroy(&vp8->encoder.context);
-		vp8->encoder.initialized = tsk_false;
-	}
-	if(vp8->decoder.initialized){
-		vpx_codec_destroy(&vp8->decoder.context);
-		vp8->decoder.initialized = tsk_false;
-	}
 	return 0;
 }
 
@@ -442,7 +399,7 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 		vpx_ret = vpx_codec_decode(&vp8->decoder.context, pay_ptr, pay_size, tsk_null, 0);
 		
 		if(vpx_ret != VPX_CODEC_OK){
-			TSK_DEBUG_ERROR("vpx_codec_decode failed with error =%s", vpx_codec_err_to_string(vpx_ret));
+			TSK_DEBUG_WARN("vpx_codec_decode failed with error =%s", vpx_codec_err_to_string(vpx_ret));
 			if(TMEDIA_CODEC_VIDEO(self)->in.callback){
 				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
 				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
@@ -619,7 +576,125 @@ static const tmedia_codec_plugin_def_t tdav_codec_vp8_plugin_def_s =
 };
 const tmedia_codec_plugin_def_t *tdav_codec_vp8_plugin_def_t = &tdav_codec_vp8_plugin_def_s;
 
+/* ============ Internal functions ================= */
+
+int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
+{
+	vpx_codec_err_t vpx_ret;
+	vpx_enc_frame_flags_t enc_flags;
+
+	if(self->encoder.initialized){
+		TSK_DEBUG_ERROR("VP8 encoder already inialized");
+		return -1;
+	}
+
+	if((vpx_ret = vpx_codec_enc_config_default(vp8_interface_enc, &self->encoder.cfg, 0)) != VPX_CODEC_OK){
+		TSK_DEBUG_ERROR("vpx_codec_enc_config_default failed with error =%s", vpx_codec_err_to_string(vpx_ret));
+		return -2;
+	}
+	self->encoder.cfg.g_timebase.num = 1;
+	self->encoder.cfg.g_timebase.den = TMEDIA_CODEC_VIDEO(self)->out.fps;
+	self->encoder.cfg.rc_target_bitrate = self->encoder.target_bitrate = (TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 320 / 240);
+	self->encoder.cfg.rc_end_usage = VPX_CBR;
+	self->encoder.cfg.g_w = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.height : TMEDIA_CODEC_VIDEO(self)->out.width;
+	self->encoder.cfg.g_h = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
+	self->encoder.cfg.kf_mode = VPX_KF_AUTO;
+	self->encoder.cfg.kf_min_dist = self->encoder.cfg.kf_max_dist = (TDAV_VP8_GOP_SIZE_IN_SECONDS * TMEDIA_CODEC_VIDEO(self)->out.fps);
+	self->encoder.cfg.g_error_resilient = 1;
+	self->encoder.cfg.g_lag_in_frames = 0;
+#if TDAV_UNDER_WINDOWS
+	{
+		SYSTEM_INFO SystemInfo;
+		GetSystemInfo(&SystemInfo);
+		self->encoder.cfg.g_threads = SystemInfo.dwNumberOfProcessors;
+	}
+#endif
+	self->encoder.cfg.g_pass = VPX_RC_ONE_PASS;
+	self->encoder.cfg.rc_min_quantizer = 0;//TSK_CLAMP(self->encoder.cfg.rc_min_quantizer, 10, self->encoder.cfg.rc_max_quantizer);
+	self->encoder.cfg.rc_max_quantizer = 63;//TSK_CLAMP(self->encoder.cfg.rc_min_quantizer, 51, self->encoder.cfg.rc_max_quantizer);
+	//self->encoder.cfg.rc_resize_allowed = 0;
+	self->encoder.cfg.g_profile = 0;
+
+	enc_flags = 0; //VPX_EFLAG_XXX
+
+	if((vpx_ret = vpx_codec_enc_init(&self->encoder.context, vp8_interface_enc, &self->encoder.cfg, enc_flags)) != VPX_CODEC_OK){
+		TSK_DEBUG_ERROR("vpx_codec_enc_init failed with error =%s", vpx_codec_err_to_string(vpx_ret));
+		return -3;
+	}
+	self->encoder.pic_id = (rand() ^ rand()) % 0x7FFF;
+	self->encoder.initialized = tsk_true;
+
+	//vpx_codec_control(&self->encoder.context, VP8E_SET_CPUUSED, 0); 
+	//vpx_codec_control(&self->encoder.context, VP8E_SET_SHARPNESS, 7);
+	//vpx_codec_control(&self->encoder.context, VP8E_SET_ENABLEAUTOALTREF, 1);
+
+	return 0;
+}
+
+int tdav_codec_vp8_open_decoder(tdav_codec_vp8_t* self)
+{
+	vpx_codec_err_t vpx_ret;
+	vpx_codec_caps_t dec_caps;
+	vpx_codec_flags_t dec_flags = 0;
+	static vp8_postproc_cfg_t __pp = { VP8_DEBLOCK | VP8_DEMACROBLOCK, 4, 0};
+
+	if(self->decoder.initialized){
+		TSK_DEBUG_ERROR("VP8 decoder already initialized");
+		return -1;
+	}
+
+	self->decoder.cfg.w = TMEDIA_CODEC_VIDEO(self)->out.width;
+	self->decoder.cfg.h = TMEDIA_CODEC_VIDEO(self)->out.height;
+#if TDAV_UNDER_WINDOWS
+	{
+		SYSTEM_INFO SystemInfo;
+		GetSystemInfo(&SystemInfo);
+		self->decoder.cfg.threads = SystemInfo.dwNumberOfProcessors;
+	}
+#endif
+
+	dec_caps = vpx_codec_get_caps(&vpx_codec_vp8_dx_algo);
+	if(dec_caps & VPX_CODEC_CAP_POSTPROC){
+		dec_flags |= VPX_CODEC_USE_POSTPROC;
+	}
+	//--if(dec_caps & VPX_CODEC_CAP_ERROR_CONCEALMENT){
+	//--	dec_flags |= VPX_CODEC_USE_ERROR_CONCEALMENT;
+	//--}
+
+	if((vpx_ret = vpx_codec_dec_init(&self->decoder.context, vp8_interface_dec, &self->decoder.cfg, dec_flags)) != VPX_CODEC_OK){
+		TSK_DEBUG_ERROR("vpx_codec_dec_init failed with error =%s", vpx_codec_err_to_string(vpx_ret));
+		return -4;
+	}
+	
+	if((vpx_ret = vpx_codec_control(&self->decoder.context, VP8_SET_POSTPROC, &__pp))){
+        TSK_DEBUG_WARN("vpx_codec_dec_init failed with error =%s", vpx_codec_err_to_string(vpx_ret));
+	}
+	self->decoder.initialized = tsk_true;
+
+	return 0;
+}
+
+int tdav_codec_vp8_close_encoder(tdav_codec_vp8_t* self)
+{
+	if(self->encoder.initialized){
+		vpx_codec_destroy(&self->encoder.context);
+		self->encoder.initialized = tsk_false;
+	}
+	return 0;
+}
+
+int tdav_codec_vp8_close_decoder(tdav_codec_vp8_t* self)
+{
+	if(self->decoder.initialized){
+		vpx_codec_destroy(&self->decoder.context);
+		self->decoder.initialized = tsk_false;
+	}
+
+	return 0;
+}
+
 /* ============ VP8 RTP packetizer/depacketizer ================= */
+
 
 static void tdav_codec_vp8_encap(tdav_codec_vp8_t* self, const vpx_codec_cx_pkt_t *pkt)
 {
