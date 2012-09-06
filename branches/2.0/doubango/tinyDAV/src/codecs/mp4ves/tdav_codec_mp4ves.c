@@ -71,6 +71,7 @@ typedef struct tdav_codec_mp4ves_s
 		void* buffer;
 		tsk_bool_t force_idr;
 		int quality; // [1-31]
+		int rotation;
 	} encoder;
 	
 	// decoder
@@ -150,6 +151,11 @@ typedef enum mp4v_profiles_e
 }
 mp4v_profiles_t;
 
+static int tdav_codec_mp4ves_open_encoder(tdav_codec_mp4ves_t* self);
+static int tdav_codec_mp4ves_open_decoder(tdav_codec_mp4ves_t* self);
+static int tdav_codec_mp4ves_close_encoder(tdav_codec_mp4ves_t* self);
+static int tdav_codec_mp4ves_close_decoder(tdav_codec_mp4ves_t* self);
+
 static void tdav_codec_mp4ves_encap(tdav_codec_mp4ves_t* mp4v, const uint8_t* pdata, tsk_size_t size);
 static void tdav_codec_mp4ves_rtp_callback(tdav_codec_mp4ves_t *mp4v, const void *data, tsk_size_t size, tsk_bool_t marker);
 
@@ -185,14 +191,29 @@ static int tdav_codec_mp4ves_set(tmedia_codec_t* self, const tmedia_param_t* par
 					}
 			}
 		}
+		else if(tsk_striequals(param->key, "rotation")){
+			int rotation = *((int32_t*)param->value);
+			if(mp4ves->encoder.rotation != rotation){
+				if(self->opened){
+					int ret;
+					mp4ves->encoder.rotation = rotation;
+					if((ret = tdav_codec_mp4ves_close_encoder(mp4ves))){
+						return ret;
+					}
+					if((ret = tdav_codec_mp4ves_open_encoder(mp4ves))){
+						return ret;
+					}
+				}
+			}
+			return 0;
+		}
 	}
-	return 0;
+	return -1;
 }
 
 int tdav_codec_mp4ves_open(tmedia_codec_t* self)
 {
 	int ret;
-	int size;
 	
 	tdav_codec_mp4ves_t* mp4v = (tdav_codec_mp4ves_t*)self;
 
@@ -203,89 +224,14 @@ int tdav_codec_mp4ves_open(tmedia_codec_t* self)
 
 	/* the caller (base class) already checked that the codec is not opened */
 
-	//
+	
 	//	Encoder
-	//
-	if(!(mp4v->encoder.codec = avcodec_find_encoder(CODEC_ID_MPEG4))){
-		TSK_DEBUG_ERROR("Failed to find mp4v encoder");
-		return -2;
-	}
-	mp4v->encoder.context = avcodec_alloc_context();
-	avcodec_get_context_defaults(mp4v->encoder.context);
-	
-	mp4v->encoder.context->pix_fmt		= PIX_FMT_YUV420P;
-	mp4v->encoder.context->time_base.num  = 1;
-	mp4v->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(mp4v)->in.fps;
-	mp4v->encoder.context->width = TMEDIA_CODEC_VIDEO(mp4v)->in.width;
-	mp4v->encoder.context->height = TMEDIA_CODEC_VIDEO(mp4v)->in.height;
-	mp4v->encoder.context->mb_decision = FF_MB_DECISION_RD;
-	mp4v->encoder.context->noise_reduction = 250;
-	mp4v->encoder.context->flags |= CODEC_FLAG_QSCALE;
-	mp4v->encoder.context->global_quality = FF_QP2LAMBDA * mp4v->encoder.quality;
-
-	mp4v->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(mp4v)->out.width * TMEDIA_CODEC_VIDEO(mp4v)->out.height * 256 / 320 / 240) * 1000);
-	mp4v->encoder.context->rtp_payload_size = MP4V_RTP_PAYLOAD_SIZE;
-	mp4v->encoder.context->opaque = tsk_null;
-	mp4v->encoder.context->profile = mp4v->profile>>4;
-	mp4v->encoder.context->level = mp4v->profile & 0x0F;
-	mp4v->encoder.context->gop_size = (TMEDIA_CODEC_VIDEO(mp4v)->in.fps * MP4V_GOP_SIZE_IN_SECONDS);
-	mp4v->encoder.context->max_b_frames = 0;
-	mp4v->encoder.context->b_frame_strategy = 1;
-    mp4v->encoder.context->flags |= CODEC_FLAG_AC_PRED;
-
-	// Picture (YUV 420)
-	if(!(mp4v->encoder.picture = avcodec_alloc_frame())){
-		TSK_DEBUG_ERROR("Failed to create MP4V-ES encoder picture");
-		return -2;
-	}
-	avcodec_get_frame_defaults(mp4v->encoder.picture);
-	
-	size = avpicture_get_size(PIX_FMT_YUV420P, mp4v->encoder.context->width, mp4v->encoder.context->height);
-	if(!(mp4v->encoder.buffer = tsk_calloc(size, sizeof(uint8_t)))){
-		TSK_DEBUG_ERROR("Failed to allocate MP4V-ES encoder buffer");
-		return -2;
-	}
-	
-	// Open encoder
-	if((ret = avcodec_open(mp4v->encoder.context, mp4v->encoder.codec)) < 0){
-		TSK_DEBUG_ERROR("Failed to open MP4V-ES encoder");
+	if((ret = tdav_codec_mp4ves_open_encoder(mp4v))){
 		return ret;
 	}
 	
-	//
 	//	Decoder
-	//
-	if(!(mp4v->decoder.codec = avcodec_find_decoder(CODEC_ID_MPEG4))){
-		TSK_DEBUG_ERROR("Failed to find MP4V-ES decoder");
-	}
-	mp4v->decoder.context = avcodec_alloc_context();
-	avcodec_get_context_defaults(mp4v->decoder.context);
-	
-	mp4v->decoder.context->pix_fmt = PIX_FMT_YUV420P;
-	mp4v->decoder.context->width = TMEDIA_CODEC_VIDEO(mp4v)->out.width;
-	mp4v->decoder.context->height = TMEDIA_CODEC_VIDEO(mp4v)->out.height;
-
-	// Picture (YUV 420)
-	if(!(mp4v->decoder.picture = avcodec_alloc_frame())){
-		TSK_DEBUG_ERROR("Failed to create decoder picture");
-		return -2;
-	}
-	avcodec_get_frame_defaults(mp4v->decoder.picture);
-
-	size = avpicture_get_size(PIX_FMT_YUV420P, mp4v->decoder.context->width, mp4v->decoder.context->height);
-	if(!(mp4v->decoder.accumulator = tsk_calloc((size + FF_INPUT_BUFFER_PADDING_SIZE), sizeof(uint8_t)))){
-		TSK_DEBUG_ERROR("Failed to allocate decoder buffer");
-		return -2;
-	}
-
-	if(!(mp4v->decoder.accumulator = tsk_calloc((size + FF_INPUT_BUFFER_PADDING_SIZE), sizeof(uint8_t)))){
-		TSK_DEBUG_ERROR("Failed to allocate decoder buffer");
-		return -2;
-	}
-
-	// Open decoder
-	if((ret = avcodec_open(mp4v->decoder.context, mp4v->decoder.codec)) < 0){
-		TSK_DEBUG_ERROR("Failed to open MP4V-ES decoder");
+	if((ret = tdav_codec_mp4ves_open_decoder(mp4v))){
 		return ret;
 	}
 
@@ -303,40 +249,11 @@ int tdav_codec_mp4ves_close(tmedia_codec_t* self)
 
 	/* the caller (base class) already checked that the codec is opened */
 
-	//
 	//	Encoder
-	//
-	if(mp4v->encoder.context){
-		avcodec_close(mp4v->encoder.context);
-		av_free(mp4v->encoder.context);
-		mp4v->encoder.context = tsk_null;
-	}
-	if(mp4v->encoder.picture){
-		av_free(mp4v->encoder.picture);
-	}
-	if(mp4v->encoder.buffer){
-		TSK_FREE(mp4v->encoder.buffer);
-	}
-
-	//
+	tdav_codec_mp4ves_close_encoder(mp4v);
+	
 	//	Decoder
-	//
-	if(mp4v->decoder.context){
-		avcodec_close(mp4v->decoder.context);
-		if(mp4v->decoder.context->extradata){
-			TSK_FREE(mp4v->decoder.context->extradata);
-			mp4v->decoder.context->extradata_size = 0;
-		}
-		av_free(mp4v->decoder.context);
-		mp4v->decoder.context = tsk_null;
-	}
-	if(mp4v->decoder.picture){
-		av_free(mp4v->decoder.picture);
-		mp4v->decoder.picture = tsk_null;
-	}
-	if(mp4v->decoder.accumulator){
-		TSK_FREE(mp4v->decoder.accumulator);
-	}
+	tdav_codec_mp4ves_close_decoder(mp4v);
 
 	return 0;
 }
@@ -378,41 +295,41 @@ tsk_size_t tdav_codec_mp4ves_encode(tmedia_codec_t* self, const void* in_data, t
 	return 0;
 }
 
-tsk_size_t tdav_codec_mp4ves_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
+tsk_size_t tdav_codec_mp4ves_decode(tmedia_codec_t* _self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr)
 { 
-	tdav_codec_mp4ves_t* mp4v = (tdav_codec_mp4ves_t*)self;
+	tdav_codec_mp4ves_t* self = (tdav_codec_mp4ves_t*)_self;
 	const trtp_rtp_header_t* rtp_hdr = proto_hdr;
 
 	tsk_size_t xsize, retsize = 0;
 	int got_picture_ptr;
 	int ret;
 
-	if(!self || !in_data || !in_size || !out_data || !mp4v->decoder.context){
+	if(!self || !in_data || !in_size || !out_data || !self->decoder.context){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 
 	// get expected size
-	xsize = avpicture_get_size(mp4v->decoder.context->pix_fmt, mp4v->decoder.context->width, mp4v->decoder.context->height);
+	xsize = avpicture_get_size(self->decoder.context->pix_fmt, self->decoder.context->width, self->decoder.context->height);
 
 	/* Packet lost? */
-	if(mp4v->decoder.last_seq != (rtp_hdr->seq_num - 1) && mp4v->decoder.last_seq){
-		if(mp4v->decoder.last_seq == rtp_hdr->seq_num){
+	if(self->decoder.last_seq != (rtp_hdr->seq_num - 1) && self->decoder.last_seq){
+		if(self->decoder.last_seq == rtp_hdr->seq_num){
 			// Could happen on some stupid emulators
 			TSK_DEBUG_INFO("Packet duplicated, seq_num=%d", rtp_hdr->seq_num);
 			return 0;
 		}
 		TSK_DEBUG_INFO("Packet lost, seq_num=%d", rtp_hdr->seq_num);
 	}
-	mp4v->decoder.last_seq = rtp_hdr->seq_num;
+	self->decoder.last_seq = rtp_hdr->seq_num;
 
-	if((mp4v->decoder.accumulator_pos + in_size) <= xsize){
-		memcpy(&((uint8_t*)mp4v->decoder.accumulator)[mp4v->decoder.accumulator_pos], in_data, in_size);
-		mp4v->decoder.accumulator_pos += in_size;
+	if((self->decoder.accumulator_pos + in_size) <= xsize){
+		memcpy(&((uint8_t*)self->decoder.accumulator)[self->decoder.accumulator_pos], in_data, in_size);
+		self->decoder.accumulator_pos += in_size;
 	}
 	else{
 		TSK_DEBUG_WARN("Buffer overflow");
-		mp4v->decoder.accumulator_pos = 0;
+		self->decoder.accumulator_pos = 0;
 		return 0;
 	}
 
@@ -422,7 +339,7 @@ tsk_size_t tdav_codec_mp4ves_decode(tmedia_codec_t* self, const void* in_data, t
 		if(*out_max_size <xsize){
 			if(!(*out_data = tsk_realloc(*out_data, xsize))){
 				TSK_DEBUG_ERROR("Failed to allocate new buffer");
-				mp4v->decoder.accumulator_pos = 0;
+				self->decoder.accumulator_pos = 0;
 				*out_max_size = 0;
 				return 0;
 			}
@@ -430,9 +347,9 @@ tsk_size_t tdav_codec_mp4ves_decode(tmedia_codec_t* self, const void* in_data, t
 		}		
 
 		av_init_packet(&packet);
-		packet.size = mp4v->decoder.accumulator_pos;
-		packet.data = mp4v->decoder.accumulator;
-		ret = avcodec_decode_video2(mp4v->decoder.context, mp4v->decoder.picture, &got_picture_ptr, &packet);
+		packet.size = self->decoder.accumulator_pos;
+		packet.data = self->decoder.accumulator;
+		ret = avcodec_decode_video2(self->decoder.context, self->decoder.picture, &got_picture_ptr, &packet);
 
 		if(ret < 0){
 			TSK_DEBUG_WARN("Failed to decode the buffer with error code = %d", ret);
@@ -444,25 +361,25 @@ tsk_size_t tdav_codec_mp4ves_decode(tmedia_codec_t* self, const void* in_data, t
 		}
 		else if(got_picture_ptr){
 			retsize = xsize;
-			TMEDIA_CODEC_VIDEO(mp4v)->in.width = mp4v->decoder.context->width;
-			TMEDIA_CODEC_VIDEO(mp4v)->in.height = mp4v->decoder.context->height;
+			TMEDIA_CODEC_VIDEO(self)->in.width = self->decoder.context->width;
+			TMEDIA_CODEC_VIDEO(self)->in.height = self->decoder.context->height;
 
 			/* copy picture into a linear buffer */
-			avpicture_layout((AVPicture *)mp4v->decoder.picture, mp4v->decoder.context->pix_fmt, mp4v->decoder.context->width, mp4v->decoder.context->height,
+			avpicture_layout((AVPicture *)self->decoder.picture, self->decoder.context->pix_fmt, self->decoder.context->width, self->decoder.context->height,
 				*out_data, retsize);
 		}
 		/* in all cases: reset accumulator */
-		mp4v->decoder.accumulator_pos = 0;		
+		self->decoder.accumulator_pos = 0;		
 	}
 
 	return retsize;
 }
 
-tsk_bool_t tdav_codec_mp4ves_sdp_att_match(const tmedia_codec_t* codec, const char* att_name, const char* att_value)
+tsk_bool_t tdav_codec_mp4ves_sdp_att_match(const tmedia_codec_t* _self, const char* att_name, const char* att_value)
 {
-	tdav_codec_mp4ves_t *mp4v = (tdav_codec_mp4ves_t *)codec;
+	tdav_codec_mp4ves_t *self = (tdav_codec_mp4ves_t *)_self;
 
-	if(!mp4v){
+	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_false;
 	}
@@ -474,67 +391,210 @@ tsk_bool_t tdav_codec_mp4ves_sdp_att_match(const tmedia_codec_t* codec, const ch
 			int val_int;
 			if((val_int = tsk_params_get_param_value_as_int(params, "profile-level-id")) != -1){
 				TSK_DEBUG_INFO("Proposed profile-level-id=%d", val_int);
-				mp4v->profile = val_int; // FIXME: Take the remote profile-level-id even if the bandwidth level doesn't match
+				self->profile = val_int; // FIXME: Take the remote profile-level-id even if the bandwidth level doesn't match
 			}
 			TSK_OBJECT_SAFE_FREE(params);
 		}
 		
-		switch (mp4v->profile ) {
+		switch (self->profile ) {
 			case Simple_Profile_Level_1:
-				TMEDIA_CODEC_VIDEO(mp4v)->out.width = TMEDIA_CODEC_VIDEO(mp4v)->in.width = 176; TMEDIA_CODEC_VIDEO(mp4v)->in.height = TMEDIA_CODEC_VIDEO(mp4v)->out.height = 144;
+				TMEDIA_CODEC_VIDEO(self)->out.width = TMEDIA_CODEC_VIDEO(self)->in.width = 176; TMEDIA_CODEC_VIDEO(self)->in.height = TMEDIA_CODEC_VIDEO(self)->out.height = 144;
 				break;
 			case Simple_Profile_Level_2:
 			case Simple_Profile_Level_3:
 			default:
-				TMEDIA_CODEC_VIDEO(mp4v)->out.width = TMEDIA_CODEC_VIDEO(mp4v)->in.width = 352; TMEDIA_CODEC_VIDEO(mp4v)->in.height = TMEDIA_CODEC_VIDEO(mp4v)->out.height = 288;
+				TMEDIA_CODEC_VIDEO(self)->out.width = TMEDIA_CODEC_VIDEO(self)->in.width = 352; TMEDIA_CODEC_VIDEO(self)->in.height = TMEDIA_CODEC_VIDEO(self)->out.height = 288;
 				break;
 		}
 	}
 	else if(tsk_striequals(att_name, "imageattr")){
 		unsigned in_width, in_height, out_width, out_height;
-		if(tmedia_parse_video_imageattr(att_value, TMEDIA_CODEC_VIDEO(codec)->pref_size, &in_width, &in_height, &out_width, &out_height) != 0){
+		if(tmedia_parse_video_imageattr(att_value, TMEDIA_CODEC_VIDEO(self)->pref_size, &in_width, &in_height, &out_width, &out_height) != 0){
 			return tsk_false;
 		}
-		TMEDIA_CODEC_VIDEO(codec)->in.width = in_width;
-		TMEDIA_CODEC_VIDEO(codec)->in.height = in_height;
-		TMEDIA_CODEC_VIDEO(codec)->out.width = out_width;
-		TMEDIA_CODEC_VIDEO(codec)->out.height = out_height;
+		TMEDIA_CODEC_VIDEO(self)->in.width = in_width;
+		TMEDIA_CODEC_VIDEO(self)->in.height = in_height;
+		TMEDIA_CODEC_VIDEO(self)->out.width = out_width;
+		TMEDIA_CODEC_VIDEO(self)->out.height = out_height;
 	}
 
 	return tsk_true;
 }
 
-char* tdav_codec_mp4ves_sdp_att_get(const tmedia_codec_t* codec, const char* att_name)
+char* tdav_codec_mp4ves_sdp_att_get(const tmedia_codec_t* _self, const char* att_name)
 {
-	tdav_codec_mp4ves_t *mp4v = (tdav_codec_mp4ves_t *)codec;
+	tdav_codec_mp4ves_t *self = (tdav_codec_mp4ves_t *)_self;
 
 	if(tsk_striequals(att_name, "fmtp")){
 		char* fmtp = tsk_null;
-		switch(codec->bl){//FIXME: deprecated
+		switch(_self->bl){//FIXME: deprecated
 			case tmedia_bl_low:
 			default:
-				mp4v->profile = Simple_Profile_Level_1;
+				self->profile = Simple_Profile_Level_1;
 				break;
 			case tmedia_bl_medium:
-				mp4v->profile = Simple_Profile_Level_2;
+				self->profile = Simple_Profile_Level_2;
 				break;
 			case tmedia_bl_hight:
 			case tmedia_bl_unrestricted:
-				mp4v->profile = Simple_Profile_Level_3;
+				self->profile = Simple_Profile_Level_3;
 				break;
 		}
-		tsk_sprintf(&fmtp, "profile-level-id=%d", mp4v->profile);
+		tsk_sprintf(&fmtp, "profile-level-id=%d", self->profile);
 		return fmtp;
 	}
 	else if(tsk_striequals(att_name, "imageattr")){
-		return tmedia_get_video_imageattr(TMEDIA_CODEC_VIDEO(codec)->pref_size, 
-			TMEDIA_CODEC_VIDEO(codec)->in.width, TMEDIA_CODEC_VIDEO(codec)->in.height, TMEDIA_CODEC_VIDEO(codec)->out.width, TMEDIA_CODEC_VIDEO(codec)->out.height);
+		return tmedia_get_video_imageattr(TMEDIA_CODEC_VIDEO(self)->pref_size, 
+			TMEDIA_CODEC_VIDEO(self)->in.width, TMEDIA_CODEC_VIDEO(self)->in.height, TMEDIA_CODEC_VIDEO(self)->out.width, TMEDIA_CODEC_VIDEO(self)->out.height);
 	}
 	return tsk_null;
 }
 
 
 /* ============ Internal functions ================= */
+int tdav_codec_mp4ves_open_encoder(tdav_codec_mp4ves_t* self)
+{
+	int ret, size;
+	if(!self->encoder.codec && !(self->encoder.codec = avcodec_find_encoder(CODEC_ID_MPEG4))){
+		TSK_DEBUG_ERROR("Failed to find mp4v encoder");
+		return -1;
+	}
+
+	if(self->encoder.context){
+		TSK_DEBUG_ERROR("Encoder already opened");
+		return -1;
+	}
+	self->encoder.context = avcodec_alloc_context();
+	avcodec_get_context_defaults(self->encoder.context);
+	
+	self->encoder.context->pix_fmt		= PIX_FMT_YUV420P;
+	self->encoder.context->time_base.num  = 1;
+	self->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(self)->in.fps;
+	self->encoder.context->width = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.height : TMEDIA_CODEC_VIDEO(self)->out.width;
+	self->encoder.context->height = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
+	self->encoder.context->mb_decision = FF_MB_DECISION_RD;
+	self->encoder.context->noise_reduction = 250;
+	self->encoder.context->flags |= CODEC_FLAG_QSCALE;
+	self->encoder.context->global_quality = FF_QP2LAMBDA * self->encoder.quality;
+
+	self->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 320 / 240) * 1000);
+	self->encoder.context->rtp_payload_size = MP4V_RTP_PAYLOAD_SIZE;
+	self->encoder.context->opaque = tsk_null;
+	self->encoder.context->profile = self->profile>>4;
+	self->encoder.context->level = self->profile & 0x0F;
+	self->encoder.context->gop_size = (TMEDIA_CODEC_VIDEO(self)->in.fps * MP4V_GOP_SIZE_IN_SECONDS);
+	self->encoder.context->max_b_frames = 0;
+	self->encoder.context->b_frame_strategy = 1;
+    self->encoder.context->flags |= CODEC_FLAG_AC_PRED;
+
+	// Picture (YUV 420)
+	if(!(self->encoder.picture = avcodec_alloc_frame())){
+		TSK_DEBUG_ERROR("Failed to create MP4V-ES encoder picture");
+		return -2;
+	}
+	avcodec_get_frame_defaults(self->encoder.picture);
+	
+	size = avpicture_get_size(PIX_FMT_YUV420P, self->encoder.context->width, self->encoder.context->height);
+	if(!(self->encoder.buffer = tsk_calloc(size, sizeof(uint8_t)))){
+		TSK_DEBUG_ERROR("Failed to allocate MP4V-ES encoder buffer");
+		return -2;
+	}
+	
+	// Open encoder
+	if((ret = avcodec_open(self->encoder.context, self->encoder.codec)) < 0){
+		TSK_DEBUG_ERROR("Failed to open MP4V-ES encoder");
+		return ret;
+	}
+
+	return ret;
+}
+
+int tdav_codec_mp4ves_open_decoder(tdav_codec_mp4ves_t* self)
+{
+	int ret, size;
+
+	if(!self->decoder.codec  && !(self->decoder.codec = avcodec_find_decoder(CODEC_ID_MPEG4))){
+		TSK_DEBUG_ERROR("Failed to find MP4V-ES decoder");
+		return -1;
+	}
+
+	if(self->decoder.context){
+		TSK_DEBUG_ERROR("Decoder already opened");
+		return -1;
+	}
+
+	self->decoder.context = avcodec_alloc_context();
+	avcodec_get_context_defaults(self->decoder.context);
+	
+	self->decoder.context->pix_fmt = PIX_FMT_YUV420P;
+	self->decoder.context->width = TMEDIA_CODEC_VIDEO(self)->out.width;
+	self->decoder.context->height = TMEDIA_CODEC_VIDEO(self)->out.height;
+
+	// Picture (YUV 420)
+	if(!(self->decoder.picture = avcodec_alloc_frame())){
+		TSK_DEBUG_ERROR("Failed to create decoder picture");
+		return -2;
+	}
+	avcodec_get_frame_defaults(self->decoder.picture);
+
+	size = avpicture_get_size(PIX_FMT_YUV420P, self->decoder.context->width, self->decoder.context->height);
+	if(!(self->decoder.accumulator = tsk_calloc((size + FF_INPUT_BUFFER_PADDING_SIZE), sizeof(uint8_t)))){
+		TSK_DEBUG_ERROR("Failed to allocate decoder buffer");
+		return -2;
+	}
+
+	if(!(self->decoder.accumulator = tsk_calloc((size + FF_INPUT_BUFFER_PADDING_SIZE), sizeof(uint8_t)))){
+		TSK_DEBUG_ERROR("Failed to allocate decoder buffer");
+		return -2;
+	}
+
+	// Open decoder
+	if((ret = avcodec_open(self->decoder.context, self->decoder.codec)) < 0){
+		TSK_DEBUG_ERROR("Failed to open MP4V-ES decoder");
+		return ret;
+	}
+
+	return ret;
+}
+
+int tdav_codec_mp4ves_close_encoder(tdav_codec_mp4ves_t* self)
+{
+	if(self->encoder.context){
+		avcodec_close(self->encoder.context);
+		av_free(self->encoder.context);
+		self->encoder.context = tsk_null;
+	}
+	if(self->encoder.picture){
+		av_free(self->encoder.picture);
+	}
+	if(self->encoder.buffer){
+		TSK_FREE(self->encoder.buffer);
+	}
+	return 0;
+}
+
+int tdav_codec_mp4ves_close_decoder(tdav_codec_mp4ves_t* self)
+{
+	if(self->decoder.context){
+		avcodec_close(self->decoder.context);
+		if(self->decoder.context->extradata){
+			TSK_FREE(self->decoder.context->extradata);
+			self->decoder.context->extradata_size = 0;
+		}
+		av_free(self->decoder.context);
+		self->decoder.context = tsk_null;
+	}
+	if(self->decoder.picture){
+		av_free(self->decoder.picture);
+		self->decoder.picture = tsk_null;
+	}
+	if(self->decoder.accumulator){
+		TSK_FREE(self->decoder.accumulator);
+	}
+
+	return 0;
+}
+
 static void tdav_codec_mp4ves_encap(tdav_codec_mp4ves_t* mp4v, const uint8_t* pdata, tsk_size_t size)
 {
 	uint32_t scode; // start code
@@ -669,27 +729,27 @@ static void tdav_codec_mp4ves_rtp_callback(tdav_codec_mp4ves_t *mp4v, const void
 /* ============ MP4V-ES Plugin interface ================= */
 
 /* constructor */
-static tsk_object_t* tdav_codec_mp4ves_ctor(tsk_object_t * self, va_list * app)
+static tsk_object_t* tdav_codec_mp4ves_ctor(tsk_object_t * _self, va_list * app)
 {
-	tdav_codec_mp4ves_t *mp4v = self;
-	if(mp4v){
+	tdav_codec_mp4ves_t *self = _self;
+	if(self){
 		/* init base: called by tmedia_codec_create() */
 		/* init self */
-		mp4v->profile = DEFAULT_PROFILE_LEVEL_ID;
-		mp4v->encoder.quality = 1;
+		self->profile = DEFAULT_PROFILE_LEVEL_ID;
+		self->encoder.quality = 1;
 	}
 	return self;
 }
 /* destructor */
-static tsk_object_t* tdav_codec_mp4ves_dtor(tsk_object_t * self)
+static tsk_object_t* tdav_codec_mp4ves_dtor(tsk_object_t * _self)
 { 
-	tdav_codec_mp4ves_t *mp4v = self;
-	if(mp4v){
+	tdav_codec_mp4ves_t *self = _self;
+	if(self){
 		/* deinit base */
 		tmedia_codec_video_deinit(self); // will close the codec if opened
 		/* deinit self */
-		TSK_FREE(mp4v->rtp.ptr);
-		mp4v->rtp.size = 0;
+		TSK_FREE(self->rtp.ptr);
+		self->rtp.size = 0;
 	}
 
 	return self;

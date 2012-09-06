@@ -41,6 +41,8 @@ tmedia_converter_video_t* tmedia_converter_video_create(tsk_size_t srcWidth, tsk
 	while((i < TMED_CONVERTER_VIDEO_MAX_PLUGINS) && (plugin = __tmedia_converter_video_plugins[i++])){
 		if(plugin->objdef && (converter = tsk_object_new(plugin->objdef))){
 			converter->plugin = plugin;
+			converter->scale_rotated_frames = tsk_true;
+			// must not set other values beacause 'zero' is meaningful
 			if(converter->plugin->init){
 				if(converter->plugin->init(converter, srcWidth, srcHeight, srcChroma, dstWidth, dstHeight, dstChroma)){
 					TSK_DEBUG_ERROR("Failed to initialized the video converter");

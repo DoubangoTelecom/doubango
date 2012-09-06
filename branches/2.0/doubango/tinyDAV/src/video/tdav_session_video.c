@@ -242,6 +242,7 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 	}
 
 	if(base->rtp_manager && video->encoder.codec){
+		//static int __rotation_counter = 0;
 		/* encode */
 		tsk_size_t out_size = 0;
 
@@ -249,19 +250,24 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 			TSK_DEBUG_ERROR("Not started");
 			return 0;
 		}
+		
+		//base->producer->video.rotation = ((__rotation_counter++ % 150) < 75) ? 90 : 0;
 	
 #define PRODUCER_SIZE_CHANGED (video->conv.producerWidth != base->producer->video.width) || (video->conv.producerHeight != base->producer->video.height) \
 || (video->conv.xProducerSize != size)
 #define ENCODED_NEED_FLIP TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip
+#define PRODUCED_FRAME_NEED_ROTATION (base->producer->video.rotation != 0)
+#define PRODUCED_FRAME_NEED_CHROMA_CONVERSION (base->producer->video.chroma != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.chroma)
 		// Video codecs only accept YUV420P buffers ==> do conversion if needed or producer doesn't have the right size
-		if((base->producer->video.chroma != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.chroma) || PRODUCER_SIZE_CHANGED || ENCODED_NEED_FLIP){
-			// Create video converter if not already done or producer size has changed
+		if(PRODUCED_FRAME_NEED_CHROMA_CONVERSION || PRODUCER_SIZE_CHANGED || ENCODED_NEED_FLIP || PRODUCED_FRAME_NEED_ROTATION){
+			// Create video converter if not already done or producer size have changed
 			if(!video->conv.toYUV420 || PRODUCER_SIZE_CHANGED){
 				TSK_OBJECT_SAFE_FREE(video->conv.toYUV420);
 				video->conv.producerWidth = base->producer->video.width;
 				video->conv.producerHeight = base->producer->video.height;
 				video->conv.xProducerSize = size;
 				
+				TSK_DEBUG_INFO("producer size = (%d, %d)", base->producer->video.width, base->producer->video.height);
 				if(!(video->conv.toYUV420 = tmedia_converter_video_create(base->producer->video.width, base->producer->video.height, base->producer->video.chroma, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.width, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.height,
 					TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.chroma))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
@@ -272,9 +278,31 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 		}
 
 		if(video->conv.toYUV420){
+			tsk_bool_t scale_rotated_frames = video->conv.toYUV420->scale_rotated_frames;
+			// check if rotation have changed and alert the codec
+			// we avoid scalling the frame after rotation because it's CPU intensive and keeping the image ratio is difficult
+			// it's up to the encoder to swap (w,h) and to track the rotation value
+			if(video->encoder.rotation != base->producer->video.rotation){
+				tmedia_param_t* param = tmedia_param_create(tmedia_pat_set,
+												tmedia_video, 
+												tmedia_ppt_codec, 
+												tmedia_pvt_int32,
+												"rotation",
+												(void*)&base->producer->video.rotation);
+				if(!param){
+					TSK_DEBUG_ERROR("Failed to create a media parameter");
+					return -1;
+				}
+				video->encoder.rotation = base->producer->video.rotation; // update rotation to avoid calling the function several times
+				ret = tmedia_codec_set(video->encoder.codec, param);
+				TSK_OBJECT_SAFE_FREE(param);
+				// (ret != 0) -> not supported by the codec -> to be done by the converter
+				scale_rotated_frames = (ret != 0);
+			}
+
 			// update one-shot parameters
-			tmedia_converter_video_set(video->conv.toYUV420, base->producer->video.rotation, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip);
-			// convert data to yuv420p
+			tmedia_converter_video_set(video->conv.toYUV420, base->producer->video.rotation, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip, scale_rotated_frames);
+			
 			yuv420p_size = tmedia_converter_video_process(video->conv.toYUV420, buffer, &video->encoder.conv_buffer, &video->encoder.conv_buffer_size);
 			if(!yuv420p_size || !video->encoder.conv_buffer){
 				TSK_DEBUG_ERROR("Failed to convert XXX buffer to YUV42P");
@@ -550,7 +578,8 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 	tsk_safeobj_lock(base);
 
 	if(base->consumer){
-		tsk_size_t out_size;
+		tsk_size_t out_size, _size;
+		const void* _buffer;
 				
 		// Find the codec to use to decode the RTP payload
 		if(!self->decoder.codec || self->decoder.payload_type != packet->header->payload_type){
@@ -570,30 +599,26 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 		if(!out_size || !self->decoder.buffer){
 			goto bail;
 		}
-        
-        // update in (set by the codec)
-        base->consumer->video.in.width = TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width;//decoded width
-        base->consumer->video.in.height = TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height;//decoded height
+
+		// important: do not override the display size (used by the end-user) unless requested
+		if(base->consumer->video.display.auto_resize){
+			base->consumer->video.display.width = TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width;//decoded width
+			base->consumer->video.display.height = TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height;//decoded height
+		}
 
 		// Convert decoded data to the consumer chroma and size
-#define CONSUMER_INSIZE_MISMATCH				((base->consumer->video.in.width * base->consumer->video.in.height * 3)>>1 != out_size)// we have good reasons not to use 1.5f
 #define CONSUMER_IN_N_DISPLAY_MISMATCH		(base->consumer->video.in.width != base->consumer->video.display.width || base->consumer->video.in.height != base->consumer->video.display.height)
 #define CONSUMER_DISPLAY_N_CODEC_MISMATCH		(base->consumer->video.display.width != TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width || base->consumer->video.display.height != TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height)
 #define CONSUMER_DISPLAY_N_CONVERTER_MISMATCH	( (self->conv.fromYUV420 && self->conv.fromYUV420->dstWidth != base->consumer->video.display.width) || (self->conv.fromYUV420 && self->conv.fromYUV420->dstHeight != base->consumer->video.display.height) )
 #define CONSUMER_CHROMA_MISMATCH	(base->consumer->video.display.chroma != TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.chroma)
 #define DECODED_NEED_FLIP	(TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.flip)
 
-		if((CONSUMER_CHROMA_MISMATCH || CONSUMER_DISPLAY_N_CODEC_MISMATCH || CONSUMER_IN_N_DISPLAY_MISMATCH || CONSUMER_INSIZE_MISMATCH || CONSUMER_DISPLAY_N_CONVERTER_MISMATCH || DECODED_NEED_FLIP)){
+		if((CONSUMER_CHROMA_MISMATCH || CONSUMER_DISPLAY_N_CODEC_MISMATCH || CONSUMER_IN_N_DISPLAY_MISMATCH || CONSUMER_DISPLAY_N_CONVERTER_MISMATCH || DECODED_NEED_FLIP)){
 
 			// Create video converter if not already done
-			if(!self->conv.fromYUV420 || CONSUMER_DISPLAY_N_CONVERTER_MISMATCH || CONSUMER_INSIZE_MISMATCH){
+			if(!self->conv.fromYUV420 || CONSUMER_DISPLAY_N_CONVERTER_MISMATCH){
 				TSK_OBJECT_SAFE_FREE(self->conv.fromYUV420);
 				
-				// important: do not override the display size (used by the end-user) unless requested
-				if(base->consumer->video.display.auto_resize){
-					base->consumer->video.display.width = base->consumer->video.in.width;
-					base->consumer->video.display.height = base->consumer->video.in.height;
-				}
 				// create converter
 				if(!(self->conv.fromYUV420 = tmedia_converter_video_create(TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.chroma, base->consumer->video.display.width, base->consumer->video.display.height,
 					base->consumer->video.display.chroma))){
@@ -604,9 +629,14 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 			}
 		}
 
+		// update consumer size using the codec decoded values
+		// must be done here to avoid fooling "CONSUMER_INSIZE_MISMATCH"
+        base->consumer->video.in.width = TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width;//decoded width
+        base->consumer->video.in.height = TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height;//decoded height
+
 		if(self->conv.fromYUV420){
 			// update one-shot parameters
-			tmedia_converter_video_set(self->conv.fromYUV420, 0/*rotation*/, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.flip);
+			tmedia_converter_video_set_flip(self->conv.fromYUV420, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.flip);
 			// convert data to the consumer's chroma
 			out_size = tmedia_converter_video_process(self->conv.fromYUV420, self->decoder.buffer, &self->decoder.conv_buffer, &self->decoder.conv_buffer_size);
 			if(!out_size || !self->decoder.conv_buffer){
@@ -615,20 +645,15 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 				goto bail;
 			}
 
-			tmedia_consumer_consume(base->consumer, self->decoder.conv_buffer, out_size, rtp_header);
-			if(!self->decoder.conv_buffer){
-				/* taken  by the consumer */
-				self->decoder.conv_buffer_size = 0;
-			}
-			
+			_buffer = self->decoder.conv_buffer;
+			_size = out_size;
 		}
 		else{
-			tmedia_consumer_consume(base->consumer, self->decoder.buffer, out_size, rtp_header);
-			if(!self->decoder.buffer){
-				/* taken  by the consumer */
-				self->decoder.buffer_size = 0;
-			}
-		}		
+			_buffer = self->decoder.buffer;
+			_size = out_size;
+		}
+
+		ret = tmedia_consumer_consume(base->consumer, _buffer, _size, rtp_header);
 	}
 
 bail:

@@ -135,7 +135,7 @@ typedef enum tmedia_codec_action_e
 {
 	tmedia_codec_action_encode_idr,
 	tmedia_codec_action_bw_down,
-	tmedia_codec_action_bw_up
+	tmedia_codec_action_bw_up,
 }
 tmedia_codec_action_t;
 

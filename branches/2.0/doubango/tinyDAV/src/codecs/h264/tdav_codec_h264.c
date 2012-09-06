@@ -58,6 +58,7 @@ typedef struct tdav_codec_h264_s
 		int64_t frame_count;
 		tsk_bool_t force_idr;
 		int32_t quality; // [1-31]
+		int rotation;
 	} encoder;
 	
 	// decoder
@@ -78,6 +79,10 @@ tdav_codec_h264_t;
 
 static int tdav_codec_h264_init(tdav_codec_h264_t* self, profile_idc_t profile);
 static int tdav_codec_h264_deinit(tdav_codec_h264_t* self);
+static int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self);
+static int tdav_codec_h264_close_encoder(tdav_codec_h264_t* self);
+static int tdav_codec_h264_open_decoder(tdav_codec_h264_t* self);
+static int tdav_codec_h264_close_decoder(tdav_codec_h264_t* self);
 
 static void tdav_codec_h264_encap(const tdav_codec_h264_t* h264, const uint8_t* pdata, tsk_size_t size);
 
@@ -112,18 +117,45 @@ static int tdav_codec_h264_set(tmedia_codec_t* self, const tmedia_param_t* param
 						break;
 					}
 			}
+			return 0;
+		}
+		else if(tsk_striequals(param->key, "rotation")){
+			int rotation = *((int32_t*)param->value);
+			if(h264->encoder.rotation != rotation){
+				if(self->opened){
+					int ret;
+					h264->encoder.rotation = rotation;
+					if((ret = tdav_codec_h264_close_encoder(h264))){
+						return ret;
+					}
+					if((ret = tdav_codec_h264_open_encoder(h264))){
+						return ret;
+					}
+#if 0 // Not working
+					if((ret = avcodec_close(h264->encoder.context))){
+						TSK_DEBUG_ERROR("Failed to close [%s] codec", TMEDIA_CODEC(h264)->plugin->desc);
+						return ret;
+					}
+					h264->encoder.context->width = (rotation == 90 || rotation == 270) ? TMEDIA_CODEC_VIDEO(h264)->out.height : TMEDIA_CODEC_VIDEO(h264)->out.width;
+					h264->encoder.context->height = (rotation == 90 || rotation == 270) ? TMEDIA_CODEC_VIDEO(h264)->out.width : TMEDIA_CODEC_VIDEO(h264)->out.height;
+					if((ret = avcodec_open(h264->encoder.context, h264->encoder.codec)) < 0){
+						TSK_DEBUG_ERROR("Failed to open [%s] codec", TMEDIA_CODEC(h264)->plugin->desc);
+						return ret;
+					}
+					h264->encoder.force_idr = tsk_true;
+#endif
+				}
+			}
+			return 0;
 		}
 	}
-	return 0;
+	return -1;
 }
 
 
 static int tdav_codec_h264_open(tmedia_codec_t* self)
 {
 	int ret;
-	int size;
-
-
 	tdav_codec_h264_t* h264 = (tdav_codec_h264_t*)self;
 
 	if(!h264){
@@ -131,113 +163,15 @@ static int tdav_codec_h264_open(tmedia_codec_t* self)
 		return -1;
 	}
 	
-	/* the caller (base class) alreasy checked that the codec is not opened */
+	/* the caller (base class) already checked that the codec is not opened */
 
-
-	//
 	//	Encoder
-	//
-	h264->encoder.context = avcodec_alloc_context();
-	avcodec_get_context_defaults(h264->encoder.context);
-
-#if TDAV_UNDER_X86
-	h264->encoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
-#endif
-
-	h264->encoder.context->pix_fmt		= PIX_FMT_YUV420P;
-	h264->encoder.context->time_base.num  = 1;
-	h264->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(h264)->out.fps;
-	h264->encoder.context->width = TMEDIA_CODEC_VIDEO(h264)->out.width;
-	h264->encoder.context->height = TMEDIA_CODEC_VIDEO(h264)->out.height;
-
-	h264->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(h264)->out.width * TMEDIA_CODEC_VIDEO(h264)->out.height * 256 / 320 / 240) * 1000);
-	h264->encoder.context->rc_lookahead = 0;
-	h264->encoder.context->global_quality = FF_QP2LAMBDA * h264->encoder.quality;
-	
-	h264->encoder.context->scenechange_threshold = 0;
-    h264->encoder.context->me_subpel_quality = 0;
-    h264->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
-    h264->encoder.context->me_method = ME_EPZS;
-    h264->encoder.context->trellis = 0;
-
-	h264->encoder.context->me_range = 16;
-	h264->encoder.context->mb_qmin = h264->encoder.context->qmin = 10;
-	h264->encoder.context->mb_qmax = h264->encoder.context->qmax = 51;
-	h264->encoder.context->qcompress = 0.6f;
-	h264->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
-	h264->encoder.context->flags2 |= CODEC_FLAG2_FASTPSKIP;
-#if TDAV_UNDER_X86
-	//h264->encoder.context->flags2 &= ~CODEC_FLAG2_PSY;
-	//h264->encoder.context->flags2 |= CODEC_FLAG2_SSIM;
-#endif
-	h264->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
-	h264->encoder.context->flags |= CODEC_FLAG_GLOBAL_HEADER;
-	h264->encoder.context->max_b_frames = 0;
-	h264->encoder.context->b_frame_strategy = 1;
-	h264->encoder.context->chromaoffset = 0;
-
-	switch(TDAV_CODEC_H264_COMMON(h264)->profile){
-		case profile_idc_baseline:
-		default:
-			h264->encoder.context->profile = FF_PROFILE_H264_BASELINE;
-			h264->encoder.context->level = TDAV_CODEC_H264_COMMON(h264)->level;
-			break;
-		case profile_idc_main:
-			h264->encoder.context->profile = FF_PROFILE_H264_MAIN;
-			h264->encoder.context->level = TDAV_CODEC_H264_COMMON(h264)->level;
-			break;
-	}
-	
-	h264->encoder.context->rtp_payload_size = H264_RTP_PAYLOAD_SIZE;
-	h264->encoder.context->opaque = tsk_null;
-	h264->encoder.context->gop_size = (TMEDIA_CODEC_VIDEO(h264)->out.fps * TDAV_H264_GOP_SIZE_IN_SECONDS);
-	
-
-	// Picture (YUV 420)
-	if(!(h264->encoder.picture = avcodec_alloc_frame())){
-		TSK_DEBUG_ERROR("Failed to create encoder picture");
-		return -2;
-	}
-	avcodec_get_frame_defaults(h264->encoder.picture);
-	
-
-	size = avpicture_get_size(PIX_FMT_YUV420P, h264->encoder.context->width, h264->encoder.context->height);
-	if(!(h264->encoder.buffer = tsk_calloc(size, sizeof(uint8_t)))){
-		TSK_DEBUG_ERROR("Failed to allocate encoder buffer");
-		return -2;
-	}
-
-	// Open encoder
-	if((ret = avcodec_open(h264->encoder.context, h264->encoder.codec)) < 0){
-		TSK_DEBUG_ERROR("Failed to open [%s] codec", TMEDIA_CODEC(h264)->plugin->desc);
+	if((ret = tdav_codec_h264_open_encoder(h264))){
 		return ret;
 	}
 
-	//
 	//	Decoder
-	//
-	h264->decoder.context = avcodec_alloc_context();
-	avcodec_get_context_defaults(h264->decoder.context);
-	
-	h264->decoder.context->pix_fmt = PIX_FMT_YUV420P;
-	h264->decoder.context->flags2 |= CODEC_FLAG2_FAST;
-	h264->decoder.context->width = TMEDIA_CODEC_VIDEO(h264)->in.width;
-	h264->decoder.context->height = TMEDIA_CODEC_VIDEO(h264)->in.height;
-	
-#if TDAV_UNDER_WINDOWS
-	h264->decoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
-#endif
-
-	// Picture (YUV 420)
-	if(!(h264->decoder.picture = avcodec_alloc_frame())){
-		TSK_DEBUG_ERROR("Failed to create decoder picture");
-		return -2;
-	}
-	avcodec_get_frame_defaults(h264->decoder.picture);
-
-	// Open decoder
-	if((ret = avcodec_open(h264->decoder.context, h264->decoder.codec)) < 0){
-		TSK_DEBUG_ERROR("Failed to open [%s] codec", TMEDIA_CODEC(h264)->plugin->desc);
+	if((ret = tdav_codec_h264_open_decoder(h264))){
 		return ret;
 	}
 
@@ -255,36 +189,11 @@ static int tdav_codec_h264_close(tmedia_codec_t* self)
 
 	/* the caller (base class) alreasy checked that the codec is opened */
 
-	//
 	//	Encoder
-	//
-	if(h264->encoder.context){
-		avcodec_close(h264->encoder.context);
-		av_free(h264->encoder.context);
-		h264->encoder.context = tsk_null;
-	}
-	if(h264->encoder.picture){
-		av_free(h264->encoder.picture);
-		h264->encoder.picture = tsk_null;
-	}
-	if(h264->encoder.buffer){
-		TSK_FREE(h264->encoder.buffer);
-	}
+	tdav_codec_h264_close_encoder(h264);
 
-	//
 	//	Decoder
-	//
-	if(h264->decoder.context){
-		avcodec_close(h264->decoder.context);
-		av_free(h264->decoder.context);
-		h264->decoder.context = tsk_null;
-	}
-	if(h264->decoder.picture){
-		av_free(h264->decoder.picture);
-		h264->decoder.picture = tsk_null;
-	}
-	TSK_FREE(h264->decoder.accumulator);
-	h264->decoder.accumulator_pos = 0;
+	tdav_codec_h264_close_decoder(h264);
 
 	return 0;
 }
@@ -293,6 +202,7 @@ static tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_da
 {
 	int ret = 0;
 	int size;
+	tsk_bool_t send_idr, send_hdr;
 
 	tdav_codec_h264_t* h264 = (tdav_codec_h264_t*)self;
 
@@ -314,34 +224,37 @@ static tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_da
 		return 0;
 	}
 
-	// send keyframe for:
+	// send IDR for:
 	//	- the first frame
 	//  - remote peer requested an IDR
 	//	- every second within the first 4seconds
+	send_idr = (
+		h264->encoder.frame_count++ == 0
+		|| h264 ->encoder.force_idr
+		|| ( (h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->out.fps * 4) && ((h264->encoder.frame_count % TMEDIA_CODEC_VIDEO(h264)->out.fps)==0) )
+	   );
+
+	// send SPS and PPS headers for:
+	//  - IDR frames (not required but it's the easiest way to deal with pakt loss)
 	//  - every 5 seconds after the first 4seconds
-	if(h264->encoder.frame_count++ == 0
-	   || h264 ->encoder.force_idr
-	   || ( (h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->out.fps * 4) && ((h264->encoder.frame_count % TMEDIA_CODEC_VIDEO(h264)->out.fps)==0) )
-	   || ( (h264->encoder.frame_count % (TMEDIA_CODEC_VIDEO(h264)->out.fps * 5))==0 )
-	   )
-	{
-		
-		// You must patch FFmpeg to switch from X264_TYPE_AUTO to X264_TYPE_IDR or use r26402+
-		h264->encoder.picture->pict_type = FF_I_TYPE;
+	send_hdr = (
+		send_idr
+		|| ( (h264->encoder.frame_count % (TMEDIA_CODEC_VIDEO(h264)->out.fps * 5))==0 )
+		);
+	if(send_hdr){
 		tdav_codec_h264_encap(h264, h264->encoder.context->extradata, (tsk_size_t)h264->encoder.context->extradata_size);
-		h264 ->encoder.force_idr = tsk_false;
 	}
-	else{
-		// Encode data
-		h264->encoder.picture->pts = AV_NOPTS_VALUE;
-		h264->encoder.picture->quality = h264->encoder.context->global_quality;
-		// h264->encoder.picture->pts = h264->encoder.frame_count; MUST NOT
-		ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);	
-		if(ret >0){
-			tdav_codec_h264_encap(h264, h264->encoder.buffer, (tsk_size_t)ret);
-		}
-		h264->encoder.picture->pict_type = 0;//reset
+	
+	// Encode data
+	h264->encoder.picture->pict_type = send_idr ? FF_I_TYPE : 0;
+	h264->encoder.picture->pts = AV_NOPTS_VALUE;
+	h264->encoder.picture->quality = h264->encoder.context->global_quality;
+	// h264->encoder.picture->pts = h264->encoder.frame_count; MUST NOT
+	ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);	
+	if(ret > 0){
+		tdav_codec_h264_encap(h264, h264->encoder.buffer, (tsk_size_t)ret);
 	}
+	h264 ->encoder.force_idr = tsk_false;
 
 	return 0;
 }
@@ -442,7 +355,7 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 		ret = avcodec_decode_video2(h264->decoder.context, h264->decoder.picture, &got_picture_ptr, &packet);	
 
 		if(ret <0){
-			TSK_DEBUG_ERROR("Failed to decode the buffer with error code =%d", ret);
+			TSK_DEBUG_WARN("Failed to decode the buffer with error code =%d", ret);
 			if(TMEDIA_CODEC_VIDEO(self)->in.callback){
 				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
 				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
@@ -763,6 +676,168 @@ const tmedia_codec_plugin_def_t *tdav_codec_h264_main_plugin_def_t = &tdav_codec
 
 
 /* ============ Common To all H264 codecs ================= */
+
+int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
+{
+	int ret;
+	tsk_size_t size;
+
+	if(self->encoder.context){
+		TSK_DEBUG_ERROR("Encoder already opened");
+		return -1;
+	}
+
+	self->encoder.context = avcodec_alloc_context();
+	avcodec_get_context_defaults(self->encoder.context);
+
+#if TDAV_UNDER_X86
+	self->encoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
+#endif
+
+	self->encoder.context->pix_fmt		= PIX_FMT_YUV420P;
+	self->encoder.context->time_base.num  = 1;
+	self->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(self)->out.fps;
+	self->encoder.context->width = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.height : TMEDIA_CODEC_VIDEO(self)->out.width;
+	self->encoder.context->height = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
+
+	self->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 320 / 240) * 1000);
+	self->encoder.context->rc_lookahead = 0;
+	self->encoder.context->global_quality = FF_QP2LAMBDA * self->encoder.quality;
+	
+	self->encoder.context->scenechange_threshold = 0;
+    self->encoder.context->me_subpel_quality = 0;
+    self->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
+    self->encoder.context->me_method = ME_EPZS;
+    self->encoder.context->trellis = 0;
+
+	self->encoder.context->me_range = 16;
+	self->encoder.context->mb_qmin = self->encoder.context->qmin = 10;
+	self->encoder.context->mb_qmax = self->encoder.context->qmax = 51;
+	self->encoder.context->qcompress = 0.6f;
+	self->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
+	self->encoder.context->flags2 |= CODEC_FLAG2_FASTPSKIP;
+#if TDAV_UNDER_X86
+	//self->encoder.context->flags2 &= ~CODEC_FLAG2_PSY;
+	//self->encoder.context->flags2 |= CODEC_FLAG2_SSIM;
+#endif
+	self->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
+	self->encoder.context->flags |= CODEC_FLAG_GLOBAL_HEADER;
+	self->encoder.context->max_b_frames = 0;
+	self->encoder.context->b_frame_strategy = 1;
+	self->encoder.context->chromaoffset = 0;
+
+	switch(TDAV_CODEC_H264_COMMON(self)->profile){
+		case profile_idc_baseline:
+		default:
+			self->encoder.context->profile = FF_PROFILE_H264_BASELINE;
+			self->encoder.context->level = TDAV_CODEC_H264_COMMON(self)->level;
+			break;
+		case profile_idc_main:
+			self->encoder.context->profile = FF_PROFILE_H264_MAIN;
+			self->encoder.context->level = TDAV_CODEC_H264_COMMON(self)->level;
+			break;
+	}
+	
+	self->encoder.context->rtp_payload_size = H264_RTP_PAYLOAD_SIZE;
+	self->encoder.context->opaque = tsk_null;
+	self->encoder.context->gop_size = (TMEDIA_CODEC_VIDEO(self)->out.fps * TDAV_H264_GOP_SIZE_IN_SECONDS);
+	
+
+	// Picture (YUV 420)
+	if(!(self->encoder.picture = avcodec_alloc_frame())){
+		TSK_DEBUG_ERROR("Failed to create encoder picture");
+		return -2;
+	}
+	avcodec_get_frame_defaults(self->encoder.picture);
+	
+
+	size = avpicture_get_size(PIX_FMT_YUV420P, self->encoder.context->width, self->encoder.context->height);
+	if(!(self->encoder.buffer = tsk_calloc(size, sizeof(uint8_t)))){
+		TSK_DEBUG_ERROR("Failed to allocate encoder buffer");
+		return -2;
+	}
+
+	// Open encoder
+	if((ret = avcodec_open(self->encoder.context, self->encoder.codec)) < 0){
+		TSK_DEBUG_ERROR("Failed to open [%s] codec", TMEDIA_CODEC(self)->plugin->desc);
+		return ret;
+	}
+
+	return ret;
+}
+
+int tdav_codec_h264_close_encoder(tdav_codec_h264_t* self)
+{
+	if(self->encoder.context){
+		avcodec_close(self->encoder.context);
+		av_free(self->encoder.context);
+		self->encoder.context = tsk_null;
+	}
+	if(self->encoder.picture){
+		av_free(self->encoder.picture);
+		self->encoder.picture = tsk_null;
+	}
+	if(self->encoder.buffer){
+		TSK_FREE(self->encoder.buffer);
+	}
+	self->encoder.frame_count = 0;
+
+	return 0;
+}
+
+int tdav_codec_h264_open_decoder(tdav_codec_h264_t* self)
+{
+	int ret;
+
+	if(self->decoder.context){
+		TSK_DEBUG_ERROR("Decoder already opened");
+		return -1;
+	}
+
+	self->decoder.context = avcodec_alloc_context();
+	avcodec_get_context_defaults(self->decoder.context);
+	
+	self->decoder.context->pix_fmt = PIX_FMT_YUV420P;
+	self->decoder.context->flags2 |= CODEC_FLAG2_FAST;
+	self->decoder.context->width = TMEDIA_CODEC_VIDEO(self)->in.width;
+	self->decoder.context->height = TMEDIA_CODEC_VIDEO(self)->in.height;
+	
+#if TDAV_UNDER_WINDOWS
+	self->decoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
+#endif
+
+	// Picture (YUV 420)
+	if(!(self->decoder.picture = avcodec_alloc_frame())){
+		TSK_DEBUG_ERROR("Failed to create decoder picture");
+		return -2;
+	}
+	avcodec_get_frame_defaults(self->decoder.picture);
+
+	// Open decoder
+	if((ret = avcodec_open(self->decoder.context, self->decoder.codec)) < 0){
+		TSK_DEBUG_ERROR("Failed to open [%s] codec", TMEDIA_CODEC(self)->plugin->desc);
+		return ret;
+	}
+
+	return ret;
+}
+
+int tdav_codec_h264_close_decoder(tdav_codec_h264_t* self)
+{
+	if(self->decoder.context){
+		avcodec_close(self->decoder.context);
+		av_free(self->decoder.context);
+		self->decoder.context = tsk_null;
+	}
+	if(self->decoder.picture){
+		av_free(self->decoder.picture);
+		self->decoder.picture = tsk_null;
+	}
+	TSK_FREE(self->decoder.accumulator);
+	self->decoder.accumulator_pos = 0;
+
+	return 0;
+}
 
 int tdav_codec_h264_init(tdav_codec_h264_t* self, profile_idc_t profile)
 {

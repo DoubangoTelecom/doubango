@@ -226,7 +226,7 @@ inline HRESULT DSOutputStream::DrawOverLay(void *pBuffer, long lSize)
 	return S_OK;
 }
 
-/*inline*/ void DSOutputStream::TransfertBuffer(void* src, void* dest, long lSize)
+static __inline void TransfertBuffer(void* src, void* dest, long lSize)
 {
 	__try
 	{
@@ -260,12 +260,12 @@ HRESULT DSOutputStream::FillBuffer(IMediaSample *pSample)
 
 	HRESULT hr;
 	BYTE *pBuffer = NULL;
-	long lSize;
+	long lSize, lDataSize;
 
 	hr = pSample->GetPointer(&pBuffer);
 	if (SUCCEEDED(hr))
 	{
-		lSize = pSample->GetSize();
+		lDataSize = lSize = pSample->GetSize();
 
 		// Check that we're still using video
 		//ASSERT(m_mt.formattype == FORMAT_VideoInfo);
@@ -280,12 +280,13 @@ HRESULT DSOutputStream::FillBuffer(IMediaSample *pSample)
 #endif
 			// Why try do not work, see: http://msdn2.microsoft.com/en-us/library/xwtb73ad(vs.80).aspx
 			this->lockBuffer();
-			this->TransfertBuffer(this->buffer, (void*)pBuffer, TSK_MIN(lSize, this->buffer_size));
+			lDataSize = TSK_MIN(lSize, this->buffer_size);
+			TransfertBuffer(this->buffer, (void*)pBuffer, lDataSize);
 			this->unlockBuffer();
 		}
 		else
 		{
-			// Avoid catching last image
+			// Avoid caching last image
 			memset((void*)pBuffer, NULL, lSize);
 		}
 
@@ -296,7 +297,7 @@ HRESULT DSOutputStream::FillBuffer(IMediaSample *pSample)
 
 		pSample->SetTime(&rtStart, &rtStop);
 		//pSample->SetMediaTime(&rtStart, &rtStop);
- 		pSample->SetActualDataLength(lSize);
+ 		pSample->SetActualDataLength(lDataSize);
  		pSample->SetPreroll(FALSE);
  		pSample->SetDiscontinuity(FALSE);
 	}

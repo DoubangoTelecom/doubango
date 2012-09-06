@@ -26,8 +26,11 @@ else
 	FFMPEG_CFLAGS := -DHAVE_FFMPEG=1
 	FFMPEG_LDFLAGS := -lavutil-$(LICENSE) -lswscale-$(LICENSE) -lavcore-$(LICENSE) -lavcodec-$(LICENSE)
 endif
-# LibYUV (Default: disabled)
-ifeq ($(LIBYUV), yes)
+# LibYUV (Default: enabled)
+ifeq ($(LIBYUV), no)
+	LIBYUV_CFLAGS := -DHAVE_LIBYUV=0
+	LIBYUV_LDFLAGS := 
+else
 	LIBYUV_CFLAGS := -DHAVE_LIBYUV=1 -I$(THIRDPARTIES_INC_COMMON)/libyuv
 	LIBYUV_LDFLAGS := -lyuv_$(MARCH)
 endif

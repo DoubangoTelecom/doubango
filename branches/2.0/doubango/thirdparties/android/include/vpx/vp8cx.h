@@ -22,7 +22,7 @@
  */
 #ifndef VP8CX_H
 #define VP8CX_H
-#include "vpx/vpx_codec_impl_top.h"
+#include "vpx_codec_impl_top.h"
 
 /*!\name Algorithm interface for VP8
  *
@@ -138,7 +138,7 @@ enum vp8e_enc_control_id
      * onyx_if.c:vp8_set_speed_features().
      * \todo List highlights of the changes at various levels.
      *
-     * \note Valid range: -16..16 or {-16..-4, 4..16} w/CONFIG_REALTIME_ONLY
+     * \note Valid range: -16..16
      */
     VP8E_SET_CPUUSED           = 13,
     VP8E_SET_ENABLEAUTOALTREF,       /**< control function to enable vp8 to automatic set and use altref frame */
@@ -164,6 +164,20 @@ enum vp8e_enc_control_id
      * \note Valid range: 0..63
      */
     VP8E_SET_CQ_LEVEL,
+
+    /*!\brief Max data rate for Intra frames
+     *
+     * This value controls additional clamping on the maximum size of a
+     * keyframe. It is expressed as a percentage of the average
+     * per-frame bitrate, with the special (and default) value 0 meaning
+     * unlimited, or no additional clamping beyond the codec's built-in
+     * algorithm.
+     *
+     * For example, to allocate no more than 4.5 frames worth of bitrate
+     * to a keyframe, set this to 450.
+     *
+     */
+    VP8E_SET_MAX_INTRA_BITRATE_PCT
 };
 
 /*!\brief vpx 1-D scaling mode
@@ -190,8 +204,8 @@ typedef struct vpx_roi_map
     unsigned char *roi_map;      /**< specify an id between 0 and 3 for each 16x16 region within a frame */
     unsigned int   rows;         /**< number of rows */
     unsigned int   cols;         /**< number of cols */
-    int     delta_q[4];          /**< quantizer delta [-64, 64] off baseline for regions with id between 0 and 3*/
-    int     delta_lf[4];         /**< loop filter strength delta [-32, 32] for regions with id between 0 and 3 */
+    int     delta_q[4];          /**< quantizer delta [-63, 63] off baseline for regions with id between 0 and 3*/
+    int     delta_lf[4];         /**< loop filter strength delta [-63, 63] for regions with id between 0 and 3 */
     unsigned int   static_threshold[4];/**< threshold for region to be treated as static */
 } vpx_roi_map_t;
 
@@ -220,18 +234,6 @@ typedef struct vpx_scaling_mode
     VPX_SCALING_MODE    v_scaling_mode;  /**< vertical scaling mode   */
 } vpx_scaling_mode_t;
 
-/*!\brief VP8 encoding mode
- *
- * This defines VP8 encoding mode
- *
- */
-typedef enum
-{
-    VP8_BEST_QUALITY_ENCODING,
-    VP8_GOOD_QUALITY_ENCODING,
-    VP8_REAL_TIME_ENCODING
-} vp8e_encoding_mode;
-
 /*!\brief VP8 token partition mode
  *
  * This defines VP8 partitioning mode for compressed data, i.e., the number of
@@ -244,7 +246,7 @@ typedef enum
     VP8_ONE_TOKENPARTITION   = 0,
     VP8_TWO_TOKENPARTITION   = 1,
     VP8_FOUR_TOKENPARTITION  = 2,
-    VP8_EIGHT_TOKENPARTITION = 3,
+    VP8_EIGHT_TOKENPARTITION = 3
 } vp8e_token_partitions;
 
 
@@ -284,17 +286,20 @@ VPX_CTRL_USE_TYPE(VP8E_SET_ENABLEAUTOALTREF,   unsigned int)
 VPX_CTRL_USE_TYPE(VP8E_SET_NOISE_SENSITIVITY,  unsigned int)
 VPX_CTRL_USE_TYPE(VP8E_SET_SHARPNESS,          unsigned int)
 VPX_CTRL_USE_TYPE(VP8E_SET_STATIC_THRESHOLD,   unsigned int)
-VPX_CTRL_USE_TYPE(VP8E_SET_TOKEN_PARTITIONS,   vp8e_token_partitions)
+VPX_CTRL_USE_TYPE(VP8E_SET_TOKEN_PARTITIONS,   int) /* vp8e_token_partitions */
 
 VPX_CTRL_USE_TYPE(VP8E_SET_ARNR_MAXFRAMES,     unsigned int)
 VPX_CTRL_USE_TYPE(VP8E_SET_ARNR_STRENGTH ,     unsigned int)
 VPX_CTRL_USE_TYPE(VP8E_SET_ARNR_TYPE     ,     unsigned int)
-VPX_CTRL_USE_TYPE(VP8E_SET_TUNING,             vp8e_tuning)
+VPX_CTRL_USE_TYPE(VP8E_SET_TUNING,             int) /* vp8e_tuning */
 VPX_CTRL_USE_TYPE(VP8E_SET_CQ_LEVEL     ,      unsigned int)
 
 VPX_CTRL_USE_TYPE(VP8E_GET_LAST_QUANTIZER,     int *)
 VPX_CTRL_USE_TYPE(VP8E_GET_LAST_QUANTIZER_64,  int *)
 
+VPX_CTRL_USE_TYPE(VP8E_SET_MAX_INTRA_BITRATE_PCT, unsigned int)
+
+
 /*! @} - end defgroup vp8_encoder */
-#include "vpx/vpx_codec_impl_bottom.h"
+#include "vpx_codec_impl_bottom.h"
 #endif

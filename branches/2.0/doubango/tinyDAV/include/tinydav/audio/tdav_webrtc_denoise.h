@@ -38,6 +38,11 @@
 
 #include "tsk_safeobj.h"
 
+/* Speex denoiser works better than WebRTC's denoiser. This is flagrant on Android. */
+#if !defined(PREFER_SPEEX_DENOISER)
+#	define PREFER_SPEEX_DENOISER	1
+#endif
+
 #if TDAV_UNDER_MOBILE && !defined(ANDROID) // AECM not working on Android
 #	include <webrtc/echo_control_mobile.h>
 #	define	TDAV_WebRtcAec_Create(aecInst)	WebRtcAecm_Create(aecInst)
@@ -54,24 +59,24 @@
 #	define	TDAV_WebRtcAec_Process(aecInst, nearend, nearendH, out, outH, nrOfSamples, msInSndCardBuf, skew)	WebRtcAec_Process(aecInst, nearend, nearendH, out, outH, nrOfSamples, msInSndCardBuf, skew)
 #endif
 
-#if TDAV_UNDER_MOBILE // Use fixed implementation for Noise Suppression
-#	include <webrtc/noise_suppression_x.h>
-#	define	TDAV_WebRtcNs_Process(NS_inst, spframe, spframe_H, outframe, outframe_H) WebRtcNsx_Process(NS_inst, spframe, spframe_H, outframe, outframe_H)
-#	define	TDAV_WebRtcNs_Init(NS_inst, fs) WebRtcNsx_Init(NS_inst, fs)
-#	define	TDAV_WebRtcNs_Free(NS_inst) WebRtcNsx_Free(NS_inst)
-#	define	TDAV_WebRtcNs_Create(NS_inst) WebRtcNsx_Create(NS_inst)
-#	define  TDAV_NsHandle NsxHandle
-#else
-#	include <webrtc/noise_suppression.h>
-#	define	TDAV_WebRtcNs_Process(NS_inst, spframe, spframe_H, outframe, outframe_H) WebRtcNs_Process(NS_inst, spframe, spframe_H, outframe, outframe_H)
-#	define	TDAV_WebRtcNs_Init(NS_inst, fs) WebRtcNs_Init(NS_inst, fs)
-#	define	TDAV_WebRtcNs_Free(NS_inst) WebRtcNs_Free(NS_inst)
-#	define	TDAV_WebRtcNs_Create(NS_inst) WebRtcNs_Create(NS_inst)
-#	define  TDAV_NsHandle NsHandle
-#endif
-
-#if HAVE_SPEEX_DSP && PREFER_SPEEX_DENOISER /* Speex denoiser works better than WebRTC's denoiser */
+#if HAVE_SPEEX_DSP && PREFER_SPEEX_DENOISER
 #	include <speex/speex_preprocess.h>
+#else
+#	if TDAV_UNDER_MOBILE // Use fixed implementation for Noise Suppression
+#		include <webrtc/noise_suppression_x.h>
+#		define	TDAV_WebRtcNs_Process(NS_inst, spframe, spframe_H, outframe, outframe_H) WebRtcNsx_Process(NS_inst, spframe, spframe_H, outframe, outframe_H)
+#		define	TDAV_WebRtcNs_Init(NS_inst, fs) WebRtcNsx_Init(NS_inst, fs)
+#		define	TDAV_WebRtcNs_Free(NS_inst) WebRtcNsx_Free(NS_inst)
+#		define	TDAV_WebRtcNs_Create(NS_inst) WebRtcNsx_Create(NS_inst)
+#		define  TDAV_NsHandle NsxHandle
+#	else
+#		include <webrtc/noise_suppression.h>
+#		define	TDAV_WebRtcNs_Process(NS_inst, spframe, spframe_H, outframe, outframe_H) WebRtcNs_Process(NS_inst, spframe, spframe_H, outframe, outframe_H)
+#		define	TDAV_WebRtcNs_Init(NS_inst, fs) WebRtcNs_Init(NS_inst, fs)
+#		define	TDAV_WebRtcNs_Free(NS_inst) WebRtcNs_Free(NS_inst)
+#		define	TDAV_WebRtcNs_Create(NS_inst) WebRtcNs_Create(NS_inst)
+#		define  TDAV_NsHandle NsHandle
+#	endif
 #endif
 
 TDAV_BEGIN_DECLS
