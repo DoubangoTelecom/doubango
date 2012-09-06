@@ -274,11 +274,13 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 					ret = -5;
 					goto bail;
 				}
+                // restore/set rotation scaling info because producer size could change
+                tmedia_converter_video_set_scale_rotated_frames(video->conv.toYUV420, video->encoder.scale_rotated_frames);
 			}
 		}
 
 		if(video->conv.toYUV420){
-			tsk_bool_t scale_rotated_frames = video->conv.toYUV420->scale_rotated_frames;
+			video->encoder.scale_rotated_frames = video->conv.toYUV420->scale_rotated_frames;
 			// check if rotation have changed and alert the codec
 			// we avoid scalling the frame after rotation because it's CPU intensive and keeping the image ratio is difficult
 			// it's up to the encoder to swap (w,h) and to track the rotation value
@@ -297,11 +299,11 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 				ret = tmedia_codec_set(video->encoder.codec, param);
 				TSK_OBJECT_SAFE_FREE(param);
 				// (ret != 0) -> not supported by the codec -> to be done by the converter
-				scale_rotated_frames = (ret != 0);
+				video->encoder.scale_rotated_frames = (ret != 0);
 			}
 
 			// update one-shot parameters
-			tmedia_converter_video_set(video->conv.toYUV420, base->producer->video.rotation, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip, scale_rotated_frames);
+			tmedia_converter_video_set(video->conv.toYUV420, base->producer->video.rotation, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip, video->encoder.scale_rotated_frames);
 			
 			yuv420p_size = tmedia_converter_video_process(video->conv.toYUV420, buffer, &video->encoder.conv_buffer, &video->encoder.conv_buffer_size);
 			if(!yuv420p_size || !video->encoder.conv_buffer){
