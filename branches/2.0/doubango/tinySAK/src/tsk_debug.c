@@ -36,11 +36,12 @@
 // Nothing to do --> all is up to the end-user application
 #else
 
-const void* tsk_debug_arg_data = tsk_null;
-tsk_debug_f tsk_debug_info_cb = tsk_null;
-tsk_debug_f tsk_debug_warn_cb = tsk_null;
-tsk_debug_f tsk_debug_error_cb = tsk_null;
-tsk_debug_f tsk_debug_fatal_cb = tsk_null;
+static const void* tsk_debug_arg_data = tsk_null;
+static tsk_debug_f tsk_debug_info_cb = tsk_null;
+static tsk_debug_f tsk_debug_warn_cb = tsk_null;
+static tsk_debug_f tsk_debug_error_cb = tsk_null;
+static tsk_debug_f tsk_debug_fatal_cb = tsk_null;
+static tsk_bool_t tsk_debug_enabled = tsk_true;
 
 void tsk_debug_set_arg_data(const void* arg_data){
 	tsk_debug_arg_data = arg_data;
@@ -71,6 +72,12 @@ void tsk_debug_set_fatal_cb(tsk_debug_f cb){
 }
 tsk_debug_f tsk_debug_get_fatal_cb(){
 	return tsk_debug_fatal_cb;
+}
+void tsk_debug_set_enabled(tsk_bool_t enabled){
+	tsk_debug_enabled = enabled;
+}
+tsk_bool_t tsk_debug_get_enabled(){
+	return tsk_debug_enabled;
 }
 
 #endif /* TSK_HAVE_DEBUG_H */
