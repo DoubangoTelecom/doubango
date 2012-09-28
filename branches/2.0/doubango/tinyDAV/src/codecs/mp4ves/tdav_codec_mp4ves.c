@@ -279,7 +279,11 @@ tsk_size_t tdav_codec_mp4ves_encode(tmedia_codec_t* self, const void* in_data, t
 	}
 
 	if(mp4v->encoder.force_idr){
-		mp4v->encoder.picture->pict_type = FF_I_TYPE;
+#if LIBAVCODEC_VERSION_MAJOR <= 53
+        mp4v->encoder.picture->pict_type = FF_I_TYPE;
+#else
+        mp4v->encoder.picture->pict_type = AV_PICTURE_TYPE_I;
+#endif
 		mp4v->encoder.force_idr = tsk_false;
 	}
 	else{

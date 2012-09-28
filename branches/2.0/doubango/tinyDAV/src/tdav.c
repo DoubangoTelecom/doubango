@@ -131,7 +131,9 @@ int tdav_init()
 	
 	/* === Initialize ffmpeg === */
 #if HAVE_FFMPEG
+#   if LIBAVCODEC_VERSION_MAJOR <= 53
 	avcodec_init();
+#   endif
 #endif
 
 	/* === SRTP === */
