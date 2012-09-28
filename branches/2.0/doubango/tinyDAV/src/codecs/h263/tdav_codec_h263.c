@@ -300,8 +300,11 @@ static tsk_size_t tdav_codec_h263_encode(tmedia_codec_t* self, const void* in_da
 		TSK_DEBUG_ERROR("Invalid size");
 		return 0;
 	}
-	
+#if LIBAVCODEC_VERSION_MAJOR <= 53
 	h263->encoder.picture->pict_type = h263->encoder.force_idr ? FF_I_TYPE : 0;
+#else
+    h263->encoder.picture->pict_type = h263->encoder.force_idr ? AV_PICTURE_TYPE_I : AV_PICTURE_TYPE_NONE;
+#endif
 	h263->encoder.picture->pts = AV_NOPTS_VALUE;
 	h263->encoder.picture->quality = h263->encoder.context->global_quality;
 	ret = avcodec_encode_video(h263->encoder.context, h263->encoder.buffer, size, h263->encoder.picture);
@@ -898,12 +901,16 @@ int tdav_codec_h263_open_encoder(tdav_codec_h263_t* self)
 	self->encoder.context->width = TMEDIA_CODEC_VIDEO(self)->out.width;
 	self->encoder.context->height = TMEDIA_CODEC_VIDEO(self)->out.height;
 
-	self->encoder.context->mb_qmin = self->encoder.context->qmin = 10;
-	self->encoder.context->mb_qmax = self->encoder.context->qmax = 51;
+	self->encoder.context->qmin = 10;
+	self->encoder.context->qmax = 51;
+#if LIBAVCODEC_VERSION_MAJOR <= 53
+    self->encoder.context->mb_qmin = self->encoder.context->qmin;
+	self->encoder.context->mb_qmax = self->encoder.context->qmax;
+#endif
 	self->encoder.context->mb_decision = FF_MB_DECISION_RD;
 	
 	self->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 320 / 240) * 1000);
-	self->encoder.context->rc_lookahead = 0;
+	//self->encoder.context->rc_lookahead = 0;
 	self->encoder.context->rtp_payload_size = RTP_PAYLOAD_SIZE;
 	self->encoder.context->opaque = tsk_null;
 	self->encoder.context->gop_size = (TMEDIA_CODEC_VIDEO(self)->out.fps * TDAV_H263_GOP_SIZE_IN_SECONDS);
@@ -936,21 +943,33 @@ int tdav_codec_h263_open_encoder(tdav_codec_h263_t* self)
 				break;
 			}
 		case tdav_codec_h263_1998:
-			{	// H263 - 1998 
-				self->encoder.context->flags |= CODEC_FLAG_H263P_UMV;		// Annex D+ 
-				self->encoder.context->flags |= CODEC_FLAG_AC_PRED;			// Annex I and T 
-				self->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;		// Annex J 
-				self->encoder.context->flags |= CODEC_FLAG_H263P_SLICE_STRUCT;	// Annex K 
-				self->encoder.context->flags |= CODEC_FLAG_H263P_AIV;			// Annex S 
+			{	// H263 - 1998
+#if defined(CODEC_FLAG_H263P_UMV)
+				self->encoder.context->flags |= CODEC_FLAG_H263P_UMV;		// Annex D+
+#endif
+				self->encoder.context->flags |= CODEC_FLAG_AC_PRED;			// Annex I and T
+				self->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;		// Annex J
+#if defined(CODEC_FLAG_H263P_SLICE_STRUCT)
+				self->encoder.context->flags |= CODEC_FLAG_H263P_SLICE_STRUCT;	// Annex K
+#endif
+#if defined(CODEC_FLAG_H263P_AIV)
+				self->encoder.context->flags |= CODEC_FLAG_H263P_AIV;			// Annex S
+#endif
 				break;
 			}
 		case tdav_codec_h263_2000:
-			{	// H263 - 2000 
-				self->encoder.context->flags |= CODEC_FLAG_H263P_UMV;		// Annex D+ 
-				self->encoder.context->flags |= CODEC_FLAG_AC_PRED;			// Annex I and T 
-				self->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;		// Annex J 
-				self->encoder.context->flags |= CODEC_FLAG_H263P_SLICE_STRUCT;	// Annex K 
-				self->encoder.context->flags |= CODEC_FLAG_H263P_AIV;			// Annex S 
+			{	// H263 - 2000
+#if defined(CODEC_FLAG_H263P_UMV)
+				self->encoder.context->flags |= CODEC_FLAG_H263P_UMV;		// Annex D+
+#endif
+				self->encoder.context->flags |= CODEC_FLAG_AC_PRED;			// Annex I and T
+				self->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;		// Annex J
+#if defined(CODEC_FLAG_H263P_SLICE_STRUCT)
+				self->encoder.context->flags |= CODEC_FLAG_H263P_SLICE_STRUCT;	// Annex K
+#endif
+#if defined(CODEC_FLAG_H263P_AIV)
+				self->encoder.context->flags |= CODEC_FLAG_H263P_AIV;			// Annex S
+#endif
 				break;
 			}
 	}

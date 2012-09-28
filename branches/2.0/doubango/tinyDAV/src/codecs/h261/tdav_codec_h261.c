@@ -84,8 +84,8 @@ int tdav_codec_h261_open(tmedia_codec_t* self)
 	h261->encoder.context->width = TMEDIA_CODEC_VIDEO(h261)->out.width;
 	h261->encoder.context->height = TMEDIA_CODEC_VIDEO(h261)->out.height;
 
-	h261->encoder.context->mb_qmin = h261->encoder.context->qmin = 4;
-	h261->encoder.context->mb_qmax = h261->encoder.context->qmax = 31;
+	/*h261->encoder.context->mb_qmin =*/ h261->encoder.context->qmin = 4;
+	/*h261->encoder.context->mb_qmax =*/ h261->encoder.context->qmax = 31;
 	h261->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
 
 	h261->encoder.context->thread_count = 1;

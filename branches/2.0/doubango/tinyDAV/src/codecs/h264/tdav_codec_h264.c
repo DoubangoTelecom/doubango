@@ -246,8 +246,12 @@ static tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_da
 	}
 	
 	// Encode data
+#if LIBAVCODEC_VERSION_MAJOR <= 53
 	h264->encoder.picture->pict_type = send_idr ? FF_I_TYPE : 0;
-	h264->encoder.picture->pts = AV_NOPTS_VALUE;
+#else
+    h264->encoder.picture->pict_type = send_idr ? AV_PICTURE_TYPE_I : AV_PICTURE_TYPE_NONE;
+#endif
+	h264->encoder.picture->pts = h264->encoder.frame_count;
 	h264->encoder.picture->quality = h264->encoder.context->global_quality;
 	// h264->encoder.picture->pts = h264->encoder.frame_count; MUST NOT
 	ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);	
@@ -690,7 +694,7 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 	self->encoder.context = avcodec_alloc_context();
 	avcodec_get_context_defaults(self->encoder.context);
 
-#if TDAV_UNDER_X86
+#if TDAV_UNDER_X86 && LIBAVCODEC_VERSION_MAJOR <= 53
 	self->encoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
 #endif
 
@@ -701,27 +705,40 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 	self->encoder.context->height = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
 
 	self->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 320 / 240) * 1000);
+#if LIBAVCODEC_VERSION_MAJOR <= 53
 	self->encoder.context->rc_lookahead = 0;
+#endif
 	self->encoder.context->global_quality = FF_QP2LAMBDA * self->encoder.quality;
 	
 	self->encoder.context->scenechange_threshold = 0;
     self->encoder.context->me_subpel_quality = 0;
+#if LIBAVCODEC_VERSION_MAJOR <= 53
     self->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
+#endif
     self->encoder.context->me_method = ME_EPZS;
     self->encoder.context->trellis = 0;
 
 	self->encoder.context->me_range = 16;
-	self->encoder.context->mb_qmin = self->encoder.context->qmin = 10;
-	self->encoder.context->mb_qmax = self->encoder.context->qmax = 51;
+	self->encoder.context->qmin = 10;
+	self->encoder.context->qmax = 51;
+#if LIBAVCODEC_VERSION_MAJOR <= 53
+    self->encoder.context->mb_qmin = self->encoder.context->qmin;
+	self->encoder.context->mb_qmax = self->encoder.context->qmax;
+#endif
 	self->encoder.context->qcompress = 0.6f;
 	self->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
+#if LIBAVCODEC_VERSION_MAJOR <= 53
 	self->encoder.context->flags2 |= CODEC_FLAG2_FASTPSKIP;
+#else 
+    self->encoder.context->flags2 |= CODEC_FLAG2_FAST;
+#endif
 #if TDAV_UNDER_X86
 	//self->encoder.context->flags2 &= ~CODEC_FLAG2_PSY;
 	//self->encoder.context->flags2 |= CODEC_FLAG2_SSIM;
 #endif
 	self->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
 	self->encoder.context->flags |= CODEC_FLAG_GLOBAL_HEADER;
+    self->encoder.context->flags |= CODEC_FLAG_LOW_DELAY;
 	self->encoder.context->max_b_frames = 0;
 	self->encoder.context->b_frame_strategy = 1;
 	self->encoder.context->chromaoffset = 0;

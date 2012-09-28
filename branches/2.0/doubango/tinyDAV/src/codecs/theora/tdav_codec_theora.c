@@ -246,7 +246,11 @@ tsk_size_t tdav_codec_theora_encode(tmedia_codec_t* self, const void* in_data, t
 	}
 	
 	// Encode data
+#if LIBAVCODEC_VERSION_MAJOR <= 53
 	theora->encoder.picture->pict_type = theora->encoder.force_idr ? FF_I_TYPE : 0;
+#else
+    theora->encoder.picture->pict_type = theora->encoder.force_idr ? AV_PICTURE_TYPE_I : AV_PICTURE_TYPE_NONE;
+#endif
 	theora->encoder.picture->pts = AV_NOPTS_VALUE;
 	theora->encoder.picture->quality = theora->encoder.context->global_quality;
 	ret = avcodec_encode_video(theora->encoder.context, theora->encoder.buffer, size, theora->encoder.picture);
@@ -607,7 +611,9 @@ int tdav_codec_theora_open_encoder(tdav_codec_theora_t* self)
 	
 	// Theoraenc doesn't honor 'CODEC_FLAG_QSCALE'
 	self->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 320 / 240) * 1000);
+#if LIBAVCODEC_VERSION_MAJOR <= 53
 	self->encoder.context->rc_lookahead = 0;
+#endif
 	self->encoder.context->global_quality = FF_QP2LAMBDA * self->encoder.quality;
 
 	self->encoder.context->thread_count = 0;
