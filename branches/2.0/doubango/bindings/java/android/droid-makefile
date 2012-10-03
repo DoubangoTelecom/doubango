@@ -30,7 +30,7 @@ FFMPEG_LDFLAGS := -lavutil-$(LICENSE) -lswscale-$(LICENSE) -lavcore-$(LICENSE) -
 	endif
 endif
 
-ifeq ($(LIBYUV),yes)
+ifneq ($(LIBYUV),no)
 	LIBYUV_LDLAGS := -lyuv_$(MARCH)
 endif
 
