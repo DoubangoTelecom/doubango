@@ -491,10 +491,10 @@ static int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*3, _tdav_session_audio_dtmfe_timercb, copy);
-	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*4, _tdav_session_audio_dtmfe_timercb, copy);
-	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*5, _tdav_session_audio_dtmfe_timercb, copy);
 
