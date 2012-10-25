@@ -870,7 +870,7 @@ tnet_family_t tnet_get_family(const char* host, tnet_port_t port)
 			goto done;
 		}
 done:
-		freeaddrinfo(result);
+		tnet_freeaddrinfo(result);
 	}
 
 	return ret;

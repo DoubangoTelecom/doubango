@@ -65,6 +65,7 @@ tsip_dialog_layer_t* tsip_dialog_layer_create(tsip_stack_t* stack);
 
 TINYSIP_API tsip_dialog_t* tsip_dialog_layer_find_by_ss(tsip_dialog_layer_t *self, const tsip_ssession_handle_t *ss);
 tsip_dialog_t* tsip_dialog_layer_find_by_ssid(tsip_dialog_layer_t *self, tsip_ssession_id_t ssid);
+tsip_dialog_t* tsip_dialog_layer_find_by_callid(tsip_dialog_layer_t *self, const char* callid);
 
 TINYSIP_API int tsip_dialog_layer_shutdownAll(tsip_dialog_layer_t *self);
 tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type_t type, const tsip_ssession_t *ss);

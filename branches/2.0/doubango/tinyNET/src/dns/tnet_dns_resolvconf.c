@@ -267,6 +267,7 @@ _match:
 			memcpy(ip, tag_start, len);
 			
 			address = tnet_address_create(ip);
+			TSK_DEBUG_INFO("New DNS entry = %s", ip);
 			address->family = tnet_get_family(ip, TNET_DNS_SERVER_PORT_DEFAULT);
 			address->dnsserver = 1;
 			tsk_list_push_ascending_data(servers, (void**)&address);
