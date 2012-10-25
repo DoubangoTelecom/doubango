@@ -361,7 +361,14 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 				}
 				else{
 					// always send to the Proxy-CSCF
-					ret = tsip_transport_send_raw(self, tsk_null/* Use P-CSCF addr */, buffer->data, buffer->size);
+					const struct sockaddr_storage* to = tsk_null;
+					struct sockaddr_storage destAddr;
+					if(destIP && destPort){
+						if(tnet_sockaddr_init(destIP, destPort, self->type, &destAddr) == 0){
+							to = &destAddr;
+						}
+					}
+					ret = tsip_transport_send_raw(self, (const struct sockaddr*)to, buffer->data, buffer->size);
 				}
 			}
 

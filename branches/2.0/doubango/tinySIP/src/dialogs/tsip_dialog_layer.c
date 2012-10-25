@@ -100,6 +100,28 @@ tsip_dialog_t* tsip_dialog_layer_find_by_ssid(tsip_dialog_layer_t *self, tsip_ss
 }
 
 // it's up to the caller to release the returned object
+tsip_dialog_t* tsip_dialog_layer_find_by_callid(tsip_dialog_layer_t *self, const char* callid)
+{
+	if(!self || !callid){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+	else{
+		tsip_dialog_t *dialog = tsk_null;
+		tsk_list_item_t *item;
+		tsk_safeobj_lock(self);
+		tsk_list_foreach(item, self->dialogs){
+			if(tsk_striequals(TSIP_DIALOG(item->data)->callid, callid)){
+				dialog = tsk_object_ref(item->data);
+				break;
+			}
+		}
+		tsk_safeobj_unlock(self);
+		return dialog;
+	}
+}
+
+// it's up to the caller to release the returned object
 tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const char* callid, const char* to_tag, const char* from_tag, tsip_request_type_t type, tsk_bool_t *cid_matched)
 {
 	tsip_dialog_t *ret = tsk_null;

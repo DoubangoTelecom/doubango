@@ -515,7 +515,7 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 	return ret;
 }
 
-const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, const tsip_message_t *msg, const char** destIP, int32_t *destPort)
+static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, const tsip_message_t *msg, char** destIP, int32_t *destPort)
 {
 	tsip_transport_t* transport = tsk_null;
 
@@ -524,17 +524,43 @@ const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* 
 		return tsk_null;
 	}
 
-	*destIP = self->stack->network.proxy_cscf;
+	*destIP = tsk_strdup(self->stack->network.proxy_cscf);
 	*destPort = self->stack->network.proxy_cscf_port;
 
 	/* =========== Sending Request =========
 	*
 	*/
 	if(TSIP_MESSAGE_IS_REQUEST(msg)){
-		/* Request are always sent to the Proxy-CSCF 
-		*/
+		tsip_dialog_t* dialog;
 		tsk_list_item_t *item;
 		tsip_transport_t *curr;
+		
+		/* Sends request to the first route or remote target */
+		dialog = tsip_dialog_layer_find_by_callid(self->stack->layer_dialog, msg->Call_ID->value);
+		if(dialog){
+			const tsip_header_Record_Route_t* route;
+			tsk_bool_t b_using_route = tsk_false;
+			tsk_list_foreach(item, dialog->record_routes){
+				if(!(route = item->data)){
+					continue;
+				}
+				if(route->uri && route->uri->host){
+					*destIP = tsk_strdup(route->uri->host);
+					*destPort = route->uri->port > 0 ? route->uri->port : 5060;
+					b_using_route = tsk_true;
+					break;
+				}
+			}
+			if(!b_using_route){
+				if(dialog->uri_remote_target && dialog->uri_remote_target->host && dialog->uri_remote_target->port){
+					*destIP = tsk_strdup(dialog->uri_remote_target->host);
+					*destPort = dialog->uri_remote_target->port;
+				}
+			}
+			TSK_OBJECT_SAFE_FREE(dialog);
+		}
+
+		/* Find the right transport */
 		tsk_list_foreach(item, self->transports){
 			curr = item->data;
 			if(curr->type == self->stack->network.proxy_cscf_type){
@@ -600,7 +626,7 @@ const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* 
 							This effectively adds a new processing step between bullets two and
 							three in Section 18.2.2 of SIP [1].
 						*/
-						*destIP = msg->firstVia->received;
+						*destIP = tsk_strdup(msg->firstVia->received);
 						*destPort = msg->firstVia->rport;
 					}
 					else
@@ -614,7 +640,7 @@ const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* 
 							unreachable" response, the procedures of Section 5 of [4]
 							SHOULD be used to determine where to send the response.
 						*/
-						*destIP = msg->firstVia->received;
+						*destIP = tsk_strdup(msg->firstVia->received);
 						*destPort = msg->firstVia->port ? msg->firstVia->port : 5060;
 					}
 				}
@@ -625,7 +651,7 @@ const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* 
 						sent to the address indicated by the "sent-by" value, using the
 						procedures in Section 5 of [4].
 					*/
-					*destIP = msg->firstVia->host;
+					*destIP = tsk_strdup(msg->firstVia->host);
 					if(msg->firstVia->port >0)
 					{
 						*destPort = msg->firstVia->port;
@@ -684,20 +710,23 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 int tsip_transport_layer_send(const tsip_transport_layer_t* self, const char *branch, const tsip_message_t *msg)
 {
 	if(msg && self && self->stack){
-		const char* destIP = tsk_null;
+		char* destIP = tsk_null;
 		int32_t destPort = 5060;
 		const tsip_transport_t *transport = tsip_transport_layer_find(self, msg, &destIP, &destPort);
+		int ret;
 		if(transport){
-			if(tsip_transport_send(transport, branch, TSIP_MESSAGE(msg), destIP, destPort)){
-				return 0;
+			if(tsip_transport_send(transport, branch, TSIP_MESSAGE(msg), destIP, destPort) > 0/* returns number of send bytes */){
+				ret = 0;
 			}
 			else{
-				return -3;
+				ret = -3;
 			}
 		}
 		else{
-			return -2;
+			ret = -2;
 		}
+		TSK_FREE(destIP);
+		return ret;
 	}
 	else{
 		TSK_DEBUG_ERROR("Invalid Parameter");
