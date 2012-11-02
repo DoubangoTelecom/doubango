@@ -35,6 +35,8 @@
 
 #include "tsk_debug.h"
 
+#include <limits.h>
+
 #define T140_BLOCKS_MAX_COUNT			20 /* number of blocks to buffer for packet loss detection and reordering */
 #define T140_BLOCK_MAX_TRANSMIT_COUNT	4 /* maximum number of times to retransmit a bloc when RED is ON */	
 
