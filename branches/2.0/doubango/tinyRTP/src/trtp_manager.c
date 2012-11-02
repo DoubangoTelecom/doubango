@@ -141,7 +141,7 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 			case 64: case 65: 
 			case 72: case 73: case 74: case 75: case 76:
 			case 77: case 78:
-			case 79: is_rtcp = tsk_true;
+			case 79: is_rtcp = tsk_true; break;
 		}
 	}
 	is_stun = !is_rtcp && TNET_IS_STUN2_MSG(((uint8_t*)data_ptr), data_size);

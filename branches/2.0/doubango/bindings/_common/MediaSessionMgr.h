@@ -81,6 +81,10 @@ public:
 	static unsigned int registerAudioPluginFromFile(const char* path);
 
 	uint64_t getSessionId(twrap_media_type_t media)const;
+
+#if !defined(SWIG)
+	inline const tmedia_session_mgr_t* getWrappedMgr()const { return m_pWrappedMgr; }
+#endif
 	
 	// Defaults
 	static bool defaultsSetProfile(tmedia_profile_t profile);

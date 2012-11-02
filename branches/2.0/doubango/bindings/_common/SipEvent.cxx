@@ -117,14 +117,11 @@ twrap_media_type_t InviteEvent::getMediaType() const
 			return twrap_media_msrp;
 		}
 		else{
-			switch(type){
-				case tmedia_audio:
-					return twrap_media_audio;
-				case tmedia_video:
-					return twrap_media_video;
-				case tmedia_audiovideo:
-					return twrap_media_audiovideo;
-			}
+			twrap_media_type_t ret = twrap_media_none;
+			if(type & tmedia_audio) ret = (twrap_media_type_t)(ret | twrap_media_audio);
+			if(type & tmedia_video) ret = (twrap_media_type_t)(ret | twrap_media_video);
+			if(type & tmedia_t140) ret = (twrap_media_type_t)(ret | twrap_media_t140);
+			return ret;
 		}
 	}
 	return twrap_media_none;

@@ -21,15 +21,12 @@
 */
 #include "MediaSessionMgr.h"
 
-extern tmedia_type_t _get_media_type(twrap_media_type_t type);
-
 #if ANDROID
 static void *__droid_destroy_mgr(void *mgr){	
 	TSK_OBJECT_SAFE_FREE(mgr);
 	return tsk_null;
 }
 #endif
-
 
 //
 //	Codec
@@ -131,7 +128,7 @@ MediaSessionMgr::~MediaSessionMgr()
 
 bool MediaSessionMgr::sessionSetInt32(twrap_media_type_t media, const char* key, int32_t value)
 {
-	tmedia_type_t _media = _get_media_type(media);
+	tmedia_type_t _media = twrap_get_media_type(media);
 	return (tmedia_session_mgr_set(m_pWrappedMgr,
 		TMEDIA_SESSION_SET_INT32(_media, key, value),
 		TMEDIA_SESSION_SET_NULL()) == 0);
@@ -140,7 +137,7 @@ bool MediaSessionMgr::sessionSetInt32(twrap_media_type_t media, const char* key,
 int32_t MediaSessionMgr::sessionGetInt32(twrap_media_type_t media, const char* key)
 {
 	int32_t value = 0;
-	tmedia_type_t _media = _get_media_type(media);
+	tmedia_type_t _media = twrap_get_media_type(media);
 	(tmedia_session_mgr_get(m_pWrappedMgr,
 		TMEDIA_SESSION_GET_INT32(_media, key, &value),
 		TMEDIA_SESSION_GET_NULL()));
@@ -149,7 +146,7 @@ int32_t MediaSessionMgr::sessionGetInt32(twrap_media_type_t media, const char* k
 
 bool MediaSessionMgr::consumerSetInt32(twrap_media_type_t media, const char* key, int32_t value)
 {
-	tmedia_type_t _media = _get_media_type(media);
+	tmedia_type_t _media = twrap_get_media_type(media);
 	return (tmedia_session_mgr_set(m_pWrappedMgr,
 		TMEDIA_SESSION_CONSUMER_SET_INT32(_media, key, value),
 		TMEDIA_SESSION_SET_NULL()) == 0);
@@ -157,7 +154,7 @@ bool MediaSessionMgr::consumerSetInt32(twrap_media_type_t media, const char* key
 
 bool MediaSessionMgr::consumerSetInt64(twrap_media_type_t media, const char* key, int64_t value)
 {
-	tmedia_type_t _media = _get_media_type(media);
+	tmedia_type_t _media = twrap_get_media_type(media);
 	return (tmedia_session_mgr_set(m_pWrappedMgr,
 		TMEDIA_SESSION_CONSUMER_SET_INT64(_media, key, value),
 		TMEDIA_SESSION_SET_NULL()) == 0);
@@ -165,7 +162,7 @@ bool MediaSessionMgr::consumerSetInt64(twrap_media_type_t media, const char* key
 
 bool MediaSessionMgr::producerSetInt32(twrap_media_type_t media, const char* key, int32_t value)
 {
-	tmedia_type_t _media = _get_media_type(media);
+	tmedia_type_t _media = twrap_get_media_type(media);
 	return (tmedia_session_mgr_set(m_pWrappedMgr,
 		TMEDIA_SESSION_PRODUCER_SET_INT32(_media, key, value),
 		TMEDIA_SESSION_SET_NULL()) == 0);
@@ -173,7 +170,7 @@ bool MediaSessionMgr::producerSetInt32(twrap_media_type_t media, const char* key
 
 bool MediaSessionMgr::producerSetInt64(twrap_media_type_t media, const char* key, int64_t value)
 {
-	tmedia_type_t _media = _get_media_type(media);
+	tmedia_type_t _media = twrap_get_media_type(media);
 	return (tmedia_session_mgr_set(m_pWrappedMgr,
 		TMEDIA_SESSION_PRODUCER_SET_INT64(_media, key, value),
 		TMEDIA_SESSION_SET_NULL()) == 0);
@@ -182,7 +179,7 @@ bool MediaSessionMgr::producerSetInt64(twrap_media_type_t media, const char* key
 Codec* MediaSessionMgr::producerGetCodec(twrap_media_type_t media)
 {
 	tmedia_codec_t* _codec = tsk_null;
-	tmedia_type_t _media = _get_media_type(media);
+	tmedia_type_t _media = twrap_get_media_type(media);
 	(tmedia_session_mgr_get(m_pWrappedMgr,
 		TMEDIA_SESSION_PRODUCER_GET_POBJECT(_media, "codec", &_codec),
 		TMEDIA_SESSION_GET_NULL()));
@@ -211,7 +208,7 @@ const ProxyPlugin* MediaSessionMgr::findProxyPlugin(twrap_media_type_t media, bo
 	}
 
 	if(manager && m_pWrappedMgr){
-		tmedia_type_t _media = _get_media_type(media);
+		tmedia_type_t _media = twrap_get_media_type(media);
 		tmedia_session_t* session = tmedia_session_mgr_find(m_pWrappedMgr, _media);
 		if(session){
 			if(session->plugin == tdav_session_audio_plugin_def_t){
@@ -282,7 +279,7 @@ uint64_t MediaSessionMgr::getSessionId(twrap_media_type_t media)const
 	}
 
 	if(manager && m_pWrappedMgr){
-		tmedia_type_t _media = _get_media_type(media);
+		tmedia_type_t _media = twrap_get_media_type(media);
 		tmedia_session_t* session = tmedia_session_mgr_find(m_pWrappedMgr, _media);
 		if(session){
 			id = session->id;
@@ -428,7 +425,7 @@ bool MediaSessionMgr::defaultsSetRtpPortRange(uint16_t range_start, uint16_t ran
 
 bool MediaSessionMgr::defaultsSetMediaType(twrap_media_type_t media_type)
 {
-	return (tmedia_defaults_set_media_type(_get_media_type(media_type)) == 0);
+	return (tmedia_defaults_set_media_type(twrap_get_media_type(media_type)) == 0);
 }
 
 bool MediaSessionMgr::defaultsSetVolume(int32_t volume)

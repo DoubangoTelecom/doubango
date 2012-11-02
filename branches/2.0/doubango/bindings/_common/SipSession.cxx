@@ -367,6 +367,7 @@ CallSession::CallSession(SipStack* Stack)
 
 CallSession::CallSession(SipStack* Stack, tsip_ssession_handle_t* handle)
 : InviteSession(Stack, handle)
+, m_pT140Callback(tsk_null)
 {
 }
 
@@ -417,67 +418,54 @@ static bool __droid_call(tsip_ssession_handle_t * session_handle, tmedia_type_t 
 }
 #endif
 
+/* @deprecated */
 bool CallSession::callAudio(const SipUri* remoteUri, ActionConfig* config/*=tsk_null*/)
 {
-	if(!remoteUri){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return false;
-	}
-	tsip_ssession_set(m_pHandle,
-		TSIP_SSESSION_SET_TO_OBJ(remoteUri->getWrappedUri()),
-		TSIP_SSESSION_SET_NULL());
-#if ANDROID
-	__droid_call(m_pHandle, tmedia_audio, config);
-	return true;
-#else
-	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-	return (tsip_api_invite_send_invite(m_pHandle, tmedia_audio,
-		TSIP_ACTION_SET_CONFIG(action_cfg),
-		TSIP_ACTION_SET_NULL()) == 0);
-#endif
+	return call(remoteUri, twrap_media_audio, config);
 }
 
+/* @deprecated */
 bool CallSession::callAudio(const char* remoteUriString, ActionConfig* config/*=tsk_null*/)
 {
-	SipUri sipUri(remoteUriString);
-	if(sipUri.isValid()){
-		return callAudio(&sipUri, config);
-	}
-	TSK_DEBUG_ERROR("Failed to parse sip uri=%s", remoteUriString);
-	return false;
+	return call(remoteUriString, twrap_media_audio, config);
 }
 
+/* @deprecated */
 bool CallSession::callAudioVideo(const SipUri* remoteUri, ActionConfig* config/*=tsk_null*/)
 {
-	if(!remoteUri){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return false;
-	}
-	tsip_ssession_set(m_pHandle,
-		TSIP_SSESSION_SET_TO_OBJ(remoteUri->getWrappedUri()),
-		TSIP_SSESSION_SET_NULL());
-#if ANDROID
-	__droid_call(m_pHandle, (tmedia_type_t)(tmedia_audio | tmedia_video), config);
-	return true;
-#else
-	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-	return (tsip_api_invite_send_invite(m_pHandle, (tmedia_type_t)(tmedia_audio | tmedia_video),
-		TSIP_ACTION_SET_CONFIG(action_cfg),
-		TSIP_ACTION_SET_NULL()) == 0);
-#endif
+	return call(remoteUri, twrap_media_audio_video, config);
 }
 
+/* @deprecated */
 bool CallSession::callAudioVideo(const char* remoteUriString, ActionConfig* config/*=tsk_null*/)
 {
+	return call(remoteUriString, twrap_media_audio_video, config);
+}
+
+/* @deprecated */
+bool CallSession::callVideo(const SipUri* remoteUri, ActionConfig* config/*=tsk_null*/)
+{
+	return call(remoteUri, twrap_media_video, config);
+}
+
+/* @deprecated */
+bool CallSession::callVideo(const char* remoteUriString, ActionConfig* config/*=tsk_null*/)
+{
+	return call(remoteUriString, twrap_media_video, config);
+}
+
+bool CallSession::call(const char* remoteUriString, twrap_media_type_t media, ActionConfig* config/*=tsk_null*/)
+{
+	
 	SipUri sipUri(remoteUriString);
 	if(sipUri.isValid()){
-		return callAudioVideo(&sipUri, config);
+		return call(&sipUri, media, config);
 	}
 	TSK_DEBUG_ERROR("Failed to parse sip uri=%s", remoteUriString);
 	return false;
 }
 
-bool CallSession::callVideo(const SipUri* remoteUri, ActionConfig* config/*=tsk_null*/)
+bool CallSession::call(const SipUri* remoteUri, twrap_media_type_t media, ActionConfig* config/*=tsk_null*/)
 {
 	if(!remoteUri){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -487,24 +475,14 @@ bool CallSession::callVideo(const SipUri* remoteUri, ActionConfig* config/*=tsk_
 		TSIP_SSESSION_SET_TO_OBJ(remoteUri->getWrappedUri()),
 		TSIP_SSESSION_SET_NULL());
 #if ANDROID
-	__droid_call(m_pHandle, tmedia_video, config);
+	__droid_call(m_pHandle, twrap_get_media_type(media), config);
 	return true;
 #else
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-	return (tsip_api_invite_send_invite(m_pHandle, tmedia_video,
+	return (tsip_api_invite_send_invite(m_pHandle, twrap_get_media_type(media),
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 #endif
-}
-
-bool CallSession::callVideo(const char* remoteUriString, ActionConfig* config/*=tsk_null*/)
-{
-	SipUri sipUri(remoteUriString);
-	if(sipUri.isValid()){
-		return callVideo(&sipUri, config);
-	}
-	TSK_DEBUG_ERROR("Failed to parse sip uri=%s", remoteUriString);
-	return false;
 }
 
 bool CallSession::setSessionTimer(unsigned timeout, const char* refresher)
@@ -627,6 +605,49 @@ unsigned CallSession::getSessionTransferId()
 	return (unsigned)tsip_ssession_get_id_parent(m_pHandle);
 }
 
+bool CallSession::sendT140Data(enum tmedia_t140_data_type_e data_type, const void* data_ptr /*= NULL*/, unsigned data_size /*= 0*/)
+{
+	const tmedia_session_mgr_t* pWrappedMgr;
+	const MediaSessionMgr* pMgr;
+	if((pMgr = getMediaMgr()) && (pWrappedMgr = pMgr->getWrappedMgr())){
+		return (tmedia_session_mgr_send_t140_data((tmedia_session_mgr_t*)pWrappedMgr, data_type, data_ptr, data_size) == 0);		
+	}
+	return false;
+}
+
+bool CallSession::setT140Callback(const T140Callback* pT140Callback)
+{
+	const tmedia_session_mgr_t* pWrappedMgr;
+	const MediaSessionMgr* pMgr;
+	if((pMgr = getMediaMgr()) && (pWrappedMgr = pMgr->getWrappedMgr())){
+		if((m_pT140Callback = pT140Callback)){
+			return (tmedia_session_mgr_set_t140_ondata_cb((tmedia_session_mgr_t*)pWrappedMgr, this, &CallSession::t140OnDataCallback) == 0);
+		}
+		else{
+			return (tmedia_session_mgr_set_t140_ondata_cb((tmedia_session_mgr_t*)pWrappedMgr, this, tsk_null) == 0);
+		}
+	}
+	return false;
+}
+
+const T140Callback* CallSession::getT140Callback() const
+{
+	return m_pT140Callback;
+}
+
+int CallSession::t140OnDataCallback(const void* context, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size)
+{
+	const CallSession* session = dyn_cast<const CallSession*>((const CallSession*)context);
+	if(session && session->getT140Callback()){
+		T140CallbackData* dataObj = new T140CallbackData(data_type, data_ptr, data_size);
+		if(dataObj){
+			int ret = const_cast<T140Callback*>(session->getT140Callback())->ondata(dataObj);
+			delete dataObj;
+			return ret;
+		}
+	}
+	return 0;
+}
 
 /* ======================== MsrpSession ========================*/
 

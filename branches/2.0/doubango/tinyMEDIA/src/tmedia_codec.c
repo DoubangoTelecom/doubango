@@ -398,34 +398,37 @@ char* tmedia_codec_get_rtpmap(const tmedia_codec_t* self)
 		TSK_DEBUG_ERROR("invalid parameter");
 		return tsk_null;
 	}
-	switch(self->type){
-		case tmedia_audio:
-			{	/* audio codecs */
-				/* const tmedia_codec_audio_t* audioCodec = (const tmedia_codec_audio_t*)self; */
+	if(self->type & tmedia_video){
+		/* const tmedia_codec_video_t* videoCodec = (const tmedia_codec_video_t*)self; */
+		tsk_sprintf(&rtpmap, "%s %s", self->neg_format? self->neg_format : self->format, self->name);
+		if(self->plugin->rate){
+			tsk_strcat_2(&rtpmap, "/%d", self->plugin->rate);
+		}
+	}
+	else if(self->type & tmedia_audio){
+		/* const tmedia_codec_audio_t* audioCodec = (const tmedia_codec_audio_t*)self; */
 
-				// special case for G.722 which has fake rate
-				if(tsk_strequals(self->plugin->format,TMEDIA_CODEC_FORMAT_G722)){
-					tsk_sprintf(&rtpmap, "%s %s/8000/%d", self->neg_format? self->neg_format : self->format, self->name, self->plugin->audio.channels);
-				}
-				else{
-					if(self->plugin->audio.channels > 0){
-						tsk_sprintf(&rtpmap, "%s %s/%d/%d", self->neg_format? self->neg_format : self->format, self->name, self->plugin->rate, self->plugin->audio.channels);
-					}
-					else{
-						tsk_sprintf(&rtpmap, "%s %s/%d", self->neg_format? self->neg_format : self->format, self->name, self->plugin->audio);
-					}
-				}
+		// special case for G.722 which has fake rate
+		if(tsk_strequals(self->plugin->format,TMEDIA_CODEC_FORMAT_G722)){
+			tsk_sprintf(&rtpmap, "%s %s/8000/%d", self->neg_format? self->neg_format : self->format, self->name, self->plugin->audio.channels);
+		}
+		else{
+			tsk_sprintf(&rtpmap, "%s %s", self->neg_format? self->neg_format : self->format, self->name);
+			if(self->plugin->rate){
+				tsk_strcat_2(&rtpmap, "/%d", self->plugin->rate);
 			}
-			break;
-		case tmedia_video:
-			{	/* video codecs */
-				/* const tmedia_codec_video_t* videoCodec = (const tmedia_codec_video_t*)self; */
-				tsk_sprintf(&rtpmap, "%s %s/%d", self->neg_format? self->neg_format : self->format, self->name, self->plugin->rate);
-				break;
+			if(self->plugin->audio.channels > 0){
+				tsk_strcat_2(&rtpmap, "/%d", self->plugin->audio.channels);
 			}
-		/* all others */
-		default:
-			break;
+		}
+	}
+	else if(self->type & tmedia_t140){
+		tsk_sprintf(&rtpmap, "%s %s", self->neg_format? self->neg_format : self->format, self->name);
+		if(self->plugin->rate){
+			tsk_strcat_2(&rtpmap, "/%d", self->plugin->rate);
+		}
+	}
+	else{
 	}
 
 	return rtpmap;
@@ -509,6 +512,7 @@ int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 	const tsk_list_item_t* item;
 	const tmedia_codec_t* codec;
 	char *fmtp, *rtpmap, *imageattr;
+	tsk_bool_t is_audio, is_video, is_text;
 	int ret;
 
 	if(!m){
@@ -516,8 +520,11 @@ int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 		return -1;
 	}
 
+	is_audio = tsk_striequals(m->media, "audio");
+	is_video = tsk_striequals(m->media, "video");
+	is_text = tsk_striequals(m->media, "text");
+
 	tsk_list_foreach(item, codecs){
-		tsk_bool_t is_audio, is_video;
 		const char *neg_format;
 		codec = item->data;
 		/* add fmt */
@@ -526,9 +533,8 @@ int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 			TSK_DEBUG_ERROR("Failed to add format");
 			return ret;
 		}
-		is_audio = tsk_striequals(m->media, "audio");
-		is_video = tsk_striequals(m->media, "video");
-		if(is_audio || is_video){
+		
+		if(is_audio || is_video || is_text){
 			char* temp = tsk_null;
 			/* add rtpmap attributes */
 			if((rtpmap = tmedia_codec_get_rtpmap(codec))){
@@ -559,6 +565,18 @@ int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 				tsk_null);
 				TSK_FREE(temp);
 				TSK_FREE(fmtp);
+			}
+			/* special case for T.140 + red */
+			if(is_text && tsk_striequals(codec->format, TMEDIA_CODEC_FORMAT_RED)){
+				const tmedia_codec_t* codec_t140 = tsk_list_find_object_by_pred(codecs, __pred_find_codec_by_format, TMEDIA_CODEC_FORMAT_T140);
+				if(codec_t140){
+					const char* neg_format_t140 = codec_t140->neg_format?  codec_t140->neg_format : codec_t140->format;
+					tsk_sprintf(&temp, "%s %s/%s/%s/%s", neg_format, neg_format_t140, neg_format_t140, neg_format_t140, neg_format_t140);
+					tsdp_header_M_add_headers(m,
+						TSDP_HEADER_A_VA_ARGS("fmtp", temp),
+					tsk_null);
+					TSK_FREE(temp);
+				}
 			}
 		}
 	}

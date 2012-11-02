@@ -374,6 +374,14 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="t140"
+					>
+					<File
+						RelativePath=".\include\tinydav\codecs\t140\tdav_codec_t140.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="audio"
@@ -528,6 +536,22 @@
 				</File>
 				<File
 					RelativePath=".\include\tinydav\msrp\tdav_session_msrp.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="t140"
+				>
+				<File
+					RelativePath=".\include\tinydav\t140\tdav_consumer_t140.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinydav\t140\tdav_producer_t140.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinydav\t140\tdav_session_t140.h"
 					>
 				</File>
 			</Filter>
@@ -718,6 +742,14 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="t140"
+					>
+					<File
+						RelativePath=".\src\codecs\t140\tdav_codec_t140.c"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="audio"
@@ -872,6 +904,22 @@
 				</File>
 				<File
 					RelativePath=".\src\msrp\tdav_session_msrp.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="t140"
+				>
+				<File
+					RelativePath=".\src\t140\tdav_consumer_t140.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\t140\tdav_producer_t140.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\t140\tdav_session_t140.c"
 					>
 				</File>
 			</Filter>

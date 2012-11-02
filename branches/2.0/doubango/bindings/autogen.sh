@@ -14,17 +14,12 @@ echo "Java(Google Dalvik)..."
 echo "Google Android special tasks"
 swig -c++ -java -package org.doubango.tinyWRAP -outdir java/android -o java/android/tinyWRAP_wrap.cxx java/java.i
 sed -i 's/dynamic_cast/static_cast/g' java/android/tinyWRAP_wrap.cxx
-sed -i 's/AttachCurrentThread((void \*\*)/AttachCurrentThread((JNIEnv \*\*)/g' java/android/tinyWRAP_wrap.cxx
-sed -i 's/AttachCurrentThreadAsDaemon((void \*\*)/AttachCurrentThreadAsDaemon((JNIEnv \*\*)/g' java/android/tinyWRAP_wrap.cxx
-sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/SipCallback.java
-sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/DDebugCallback.java
-sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/ProxyPluginMgrCallback.java
-sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/ProxyAudioConsumerCallback.java
-sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/ProxyAudioProducerCallback.java
-sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/ProxyVideoProducerCallback.java
-sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/ProxyVideoConsumerCallback.java
-sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/XcapCallback.java
-sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/MsrpCallback.java
+#sed -i 's/AttachCurrentThread((void \*\*)/AttachCurrentThread((JNIEnv \*\*)/g' java/android/tinyWRAP_wrap.cxx
+#sed -i 's/AttachCurrentThreadAsDaemon((void \*\*)/AttachCurrentThreadAsDaemon((JNIEnv \*\*)/g' java/android/tinyWRAP_wrap.cxx
+#for f in SipCallback DDebugCallback ProxyPluginMgrCallback ProxyAudioConsumerCallback ProxyAudioProducerCallback ProxyVideoProducerCallback ProxyVideoConsumerCallback XcapCallback  MsrpCallback T140Callback
+#do
+#	sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/$f.java
+#done
 
 ##### Python
 echo "--->Python...<---"

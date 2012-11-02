@@ -31,8 +31,6 @@
 #include "tsk_time.h"
 #include "tsk_debug.h"
 
-#define TDAV_CODEC_RED_MIN_PKT_SIZE	4
-
 typedef struct tdav_codec_red_s
 {
 	TMEDIA_DECLARE_CODEC_VIDEO;
@@ -112,13 +110,13 @@ static tsk_size_t tdav_codec_red_decode(tmedia_codec_t* self, const void* in_dat
 		return 0;
 	}
 
-	if((F = (pdata[0] >> 7)) == 0){
+	if((F = (pdata[0] & 0x80)) == 0){
 		i = 1;
 		red_hdrs_count = 1;
 	}
 	else{
 		for(i = 0, red_hdrs_count = 0; i < in_size; i+= 4, ++red_hdrs_count){
-			if((F = (pdata[i] >> 7)) == 0){ ++i; ++red_hdrs_count;  break; }
+			if((F = (pdata[i] & 0x80)) == 0){ ++i; ++red_hdrs_count;  break; }
 		}
 	}
 
@@ -143,10 +141,10 @@ static tsk_size_t tdav_codec_red_decode(tmedia_codec_t* self, const void* in_dat
 
 		// Must create an RTP packet for each RED chunck as they will be saved in the JB
 		last = (i == (red_hdrs_count - 1));
-		F = (red_hdr[0] >> 7);
+		F = (red_hdr[0] & 0x80);
 		red_rtp_pkt->header->payload_type = (red_hdr[0] & 0x7F);
 		
-		if(last){
+		if(last || !F){
 			/*
 			 0 1 2 3 4 5 6 7
              +-+-+-+-+-+-+-+-+
@@ -240,12 +238,12 @@ static const tmedia_codec_plugin_def_t tdav_codec_red_plugin_def_s =
 {
 	&tdav_codec_red_def_s,
 
-	tmedia_video,
+	(/* tmedia_video | tmedia_audio | */tmedia_t140), // FIXME: for now is only supported with T.140
 	"red",
 	"red codec",
 	TMEDIA_CODEC_FORMAT_RED,
 	tsk_true,
-	90000, // rate
+	1000, // rate: FIXME: for now it's only for T.140
 	
 	/* audio */
 	{ 0 },

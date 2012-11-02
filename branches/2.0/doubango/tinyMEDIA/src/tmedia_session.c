@@ -386,7 +386,7 @@ tmedia_codecs_L_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp
 				}
 				
 				/* compare name and rate... what about channels? */
-				if(tsk_striequals(name, codec->name) && (!rate || (codec->plugin->rate == rate))){
+				if(tsk_striequals(name, codec->name) && (!rate || !codec->plugin->rate || (codec->plugin->rate == rate))){
 					goto compare_fmtp;
 				}
 			}
@@ -489,6 +489,22 @@ int tmedia_session_audio_send_dtmf(tmedia_session_audio_t* self, uint8_t event)
 	return TMEDIA_SESSION(self)->plugin->audio.send_dtmf(TMEDIA_SESSION(self), event);
 }
 
+int tmedia_session_t140_set_ondata_cb(tmedia_session_t* self, const void* context, tmedia_session_t140_ondata_cb_f func)
+{
+	if(self && self->plugin && self->plugin->t140.set_ondata_cb){
+		return self->plugin->t140.set_ondata_cb(self, context, func);
+	}
+	return -1;
+}
+
+int tmedia_session_t140_send_data(tmedia_session_t* self, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size)
+{
+	if(self && self->plugin && self->plugin->t140.send_data){
+		return self->plugin->t140.send_data(self, data_type, data_ptr, data_size);
+	}
+	return -1;
+}
+
 /* internal function used to prepare a session */
 int _tmedia_session_load_codecs(tmedia_session_t* self)
 {
@@ -506,7 +522,7 @@ int _tmedia_session_load_codecs(tmedia_session_t* self)
 
 	/* for each registered plugin create a session instance */
 	while((i < TMED_CODEC_MAX_PLUGINS) && (plugin = __tmedia_codec_plugins[i++])){
-		if((plugin->type & self->type) == plugin->type){
+		if((plugin->type & self->type)){
 			if((codec = tmedia_codec_create(plugin->format))){
 				if(!self->codecs){
 					self->codecs = tsk_list_create();
@@ -1340,7 +1356,7 @@ tsk_bool_t tmedia_session_mgr_has_active_session(tmedia_session_mgr_t* self)
 int tmedia_session_mgr_send_dtmf(tmedia_session_mgr_t* self, uint8_t event)
 {
 	tmedia_session_audio_t* session;
-	tmedia_type_t audio_type = tmedia_audio;
+	static const tmedia_type_t audio_type = tmedia_audio;
 	int ret = -3;
 
 	if(!self){
@@ -1358,6 +1374,28 @@ int tmedia_session_mgr_send_dtmf(tmedia_session_mgr_t* self, uint8_t event)
 		TSK_DEBUG_ERROR("No audio session associated to this manager");
 	}
 
+	return ret;
+}
+
+int tmedia_session_mgr_set_t140_ondata_cb(tmedia_session_mgr_t* self, const void* context, tmedia_session_t140_ondata_cb_f func)
+{
+	tmedia_session_t* session;
+	int ret = -1;
+	if((session = tmedia_session_mgr_find(self, tmedia_t140))){
+		ret = tmedia_session_t140_set_ondata_cb(session, context, func);
+		TSK_OBJECT_SAFE_FREE(session);
+	}
+	return ret;
+}
+
+int tmedia_session_mgr_send_t140_data(tmedia_session_mgr_t* self, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size)
+{
+	tmedia_session_t* session;
+	int ret = -1;
+	if((session = tmedia_session_mgr_find(self, tmedia_t140))){
+		ret = tmedia_session_t140_send_data(session, data_type, data_ptr, data_size);
+		TSK_OBJECT_SAFE_FREE(session);
+	}
 	return ret;
 }
 

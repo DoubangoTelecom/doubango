@@ -92,18 +92,6 @@ typedef struct tdav_session_video_s
 	} conv;
 
 	struct{
-		uint8_t payload_type;
-		struct tmedia_codec_s* codec;
-		uint16_t seq_num;
-		uint32_t timestamp;
-	} ulpfec;
-
-	struct{
-		uint8_t payload_type;
-		struct tmedia_codec_s* codec;
-	} red;
-
-	struct{
 		tsk_list_t* packets;
 		int32_t count;
 		int32_t max;

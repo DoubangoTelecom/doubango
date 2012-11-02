@@ -21,25 +21,6 @@
 
 #include "ActionConfig.h"
 
-tmedia_type_t _get_media_type(twrap_media_type_t type){
-	int media_type = tmedia_none; // Use int because | operator not defined for enumerators
-	switch(type){
-		case twrap_media_msrp:
-			media_type |= tmedia_msrp;
-			break;
-		case twrap_media_audio:
-			media_type |= tmedia_audio;
-			break;
-		case twrap_media_video:
-			media_type |= tmedia_video;
-			break;
-		case twrap_media_audiovideo:
-			media_type |= tmedia_audiovideo;
-			break;
-	}
-	return (tmedia_type_t)media_type;
-}
-
 ActionConfig::ActionConfig()
 {
 	m_pHandle = tsip_action_create(tsip_atype_config,
@@ -76,7 +57,7 @@ ActionConfig* ActionConfig::setResponseLine(short code, const char* phrase)
 
 ActionConfig* ActionConfig::setMediaString(twrap_media_type_t type, const char* key, const char* value)
 {
-	tmedia_type_t media_type = _get_media_type(type);
+	tmedia_type_t media_type = twrap_get_media_type(type);
 	tsip_action_set(m_pHandle,
 			TSIP_ACTION_SET_MEDIA(
 				TMEDIA_SESSION_SET_STR(media_type, key, value),
@@ -88,7 +69,7 @@ ActionConfig* ActionConfig::setMediaString(twrap_media_type_t type, const char* 
 
 ActionConfig* ActionConfig::setMediaInt(twrap_media_type_t type, const char* key, int value)
 {
-	tmedia_type_t media_type = _get_media_type(type);
+	tmedia_type_t media_type = twrap_get_media_type(type);
 	tsip_action_set(m_pHandle,
 			TSIP_ACTION_SET_MEDIA(
 				TMEDIA_SESSION_SET_INT32(media_type, key, value),

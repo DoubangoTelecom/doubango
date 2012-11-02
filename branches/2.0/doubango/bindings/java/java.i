@@ -76,4 +76,18 @@
   }
 %}
 
+%typemap(javacode) T140CallbackData %{
+  public byte[] getData() {
+    final int size = (int)this.getSize();
+    if(size > 0){
+		final java.nio.ByteBuffer buffer = java.nio.ByteBuffer.allocateDirect(size);
+        final int read = (int)this.getData(buffer, size);
+        final byte[] bytes = new byte[read];
+        buffer.get(bytes, 0, read);
+        return bytes;
+    }
+    return null;
+  }
+%}
+
 %include ../_common/tinyWRAP.i

@@ -42,17 +42,18 @@ typedef enum tmedia_type_e
 {
 	tmedia_none = 0x00,
 	tmedia_ghost = (0x01 << 0),
-
+	
 	tmedia_audio = (0x01 << 1),
 	tmedia_video = (0x01 << 2),
 	tmedia_chat = (0x01 << 3),
 	tmedia_file = (0x01 << 4),
 	tmedia_t38 = (0x01 << 5),
+	tmedia_t140 = (0x01 << 6),
 
 	tmedia_msrp = (tmedia_chat | tmedia_file),
 	tmedia_audiovideo = (tmedia_audio | tmedia_video),
 
-	tmedia_all = (tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38)
+	tmedia_all = 0xff
 }
 tmedia_type_t;
 
@@ -64,6 +65,26 @@ typedef enum tmedia_srtp_mode_e
 	tmedia_srtp_mode_mandatory
 }
 tmedia_srtp_mode_t;
+
+// @tinyWRAP
+typedef enum tmedia_t140_data_type_e
+{
+	tmedia_t140_data_type_utf8,
+	tmedia_t140_data_type_zero_width_no_break_space = 0xefbbbf,
+	tmedia_t140_data_type_backspace = 0x08,
+	tmedia_t140_data_type_esc = 0x1b,
+	tmedia_t140_data_type_cr = 0x0d,
+	tmedia_t140_data_type_lf = 0x0a,
+	tmedia_t140_data_type_cr_lf = 0x0d0a,
+	tmedia_t140_data_type_bell = 0x07,
+	tmedia_t140_data_type_sos = 0x98,
+	tmedia_t140_data_type_string_term = 0x9c,
+	tmedia_t140_data_type_graphic_start = 0x9b,
+	tmedia_t140_data_type_graphic_end = 0x6d,
+	tmedia_t140_data_type_loss_char_char = 0xfffd,
+	tmedia_t140_data_type_loss_utf8 = 0xefbfbd,
+}
+tmedia_t140_data_type_t;
 
 // @tinyWRAP
 typedef enum tmedia_profile_e

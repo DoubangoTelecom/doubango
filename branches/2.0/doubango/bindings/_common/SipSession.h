@@ -31,6 +31,45 @@ class SipStack;
 class MsrpCallback;
 class MediaSessionMgr;
 
+/* ======================== T140Callback ========================*/
+class T140CallbackData{
+	public:
+#if !defined(SWIG)
+	T140CallbackData(enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size){
+		m_eType = data_type;
+		m_pPtr = data_ptr;
+		m_nSize = data_size;
+	}
+#endif
+	virtual ~T140CallbackData(){}
+
+	enum tmedia_t140_data_type_e getType(){ return m_eType; }
+	unsigned getSize(){ return m_nSize; }
+	unsigned getData(void* pOutput, unsigned nMaxsize){
+		unsigned nRetsize = 0;
+		if(pOutput && nMaxsize && m_pPtr){
+			nRetsize = (m_nSize > nMaxsize) ? nMaxsize : m_nSize;
+			memcpy(pOutput, m_pPtr, nRetsize);
+		}
+		return nRetsize;
+	}
+
+	private:
+		enum tmedia_t140_data_type_e m_eType;
+		const void* m_pPtr;
+		unsigned m_nSize;
+};
+
+class T140Callback
+{
+public:
+	T140Callback() {}
+	virtual ~T140Callback(){}
+	virtual int ondata(const T140CallbackData* pData){ return 0; }
+};
+
+
+
 /* ======================== SipSession ========================*/
 class SipSession
 {
@@ -103,12 +142,16 @@ public: /* ctor() and dtor() */
 	virtual ~CallSession();
 
 public: /* Public functions */
-	bool callAudio(const char* remoteUriString, ActionConfig* config=tsk_null);
-	bool callAudio(const SipUri* remoteUri, ActionConfig* config=tsk_null);
-	bool callAudioVideo(const char* remoteUriString, ActionConfig* config=tsk_null);
-	bool callAudioVideo(const SipUri* remoteUri, ActionConfig* config=tsk_null);
-	bool callVideo(const char* remoteUriString, ActionConfig* config=tsk_null);
-	bool callVideo(const SipUri* remoteUri, ActionConfig* config=tsk_null);
+	bool callAudio(const char* remoteUriString, ActionConfig* config=tsk_null); /* @deprecated */
+	bool callAudio(const SipUri* remoteUri, ActionConfig* config=tsk_null); /* @deprecated */
+	bool callAudioVideo(const char* remoteUriString, ActionConfig* config=tsk_null); /* @deprecated */
+	bool callAudioVideo(const SipUri* remoteUri, ActionConfig* config=tsk_null); /* @deprecated */
+	bool callVideo(const char* remoteUriString, ActionConfig* config=tsk_null); /* @deprecated */
+	bool callVideo(const SipUri* remoteUri, ActionConfig* config=tsk_null); /* @deprecated */
+
+	bool call(const char* remoteUriString, twrap_media_type_t media, ActionConfig* config=tsk_null);
+	bool call(const SipUri* remoteUri, twrap_media_type_t media, ActionConfig* config=tsk_null);
+
 	bool setSessionTimer(unsigned timeout, const char* refresher);
 	bool set100rel(bool enabled);
 	bool setRtcp(bool enabled);
@@ -122,6 +165,15 @@ public: /* Public functions */
 	bool rejectTransfer(ActionConfig* config=tsk_null);
 	bool sendDTMF(int number);
 	unsigned getSessionTransferId();
+	bool sendT140Data(enum tmedia_t140_data_type_e data_type, const void* data_ptr = NULL, unsigned data_size = 0);
+	bool setT140Callback(const T140Callback* pT140Callback);
+#if !defined(SWIG)
+	const T140Callback* getT140Callback() const;
+	static int t140OnDataCallback(const void* context, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);
+#endif
+
+private:
+	const T140Callback* m_pT140Callback;
 };
 
 /* ======================== MsrpSession ========================*/
