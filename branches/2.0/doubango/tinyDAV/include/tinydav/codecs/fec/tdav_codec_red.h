@@ -32,6 +32,8 @@
 
 TDAV_BEGIN_DECLS
 
+#define TDAV_CODEC_RED_MIN_PKT_SIZE	4
+
 struct trtp_rtp_packet_s;
 struct tdav_codec_red_s;
 

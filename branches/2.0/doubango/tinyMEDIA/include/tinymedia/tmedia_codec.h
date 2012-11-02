@@ -80,7 +80,7 @@ Must starts at 96 to be conform to RFC 5761 (rtcp-mux)
 #define TMEDIA_CODEC_FORMAT_SPEEX_NB					"97"
 #define TMEDIA_CODEC_FORMAT_SPEEX_WB					"98"
 #define TMEDIA_CODEC_FORMAT_SPEEX_UWB					"99"
-
+#define TMEDIA_CODEC_FORMAT_VP8							"100" /* Must to ease neg. with chrome and Asterisk */
 #define TMEDIA_CODEC_FORMAT_DTMF						"101"
 
 #define TMEDIA_CODEC_FORMAT_H263_2000					"102"
@@ -88,7 +88,6 @@ Must starts at 96 to be conform to RFC 5761 (rtcp-mux)
 #define TMEDIA_CODEC_FORMAT_H264_BP						"104"
 #define TMEDIA_CODEC_FORMAT_H264_MP						"105"
 #define TMEDIA_CODEC_FORMAT_H264_HP						"106"
-
 
 #define TMEDIA_CODEC_FORMAT_AMR_WBP_BE					"107"
 #define TMEDIA_CODEC_FORMAT_AMR_WBP_OA					"108"
@@ -106,10 +105,9 @@ Must starts at 96 to be conform to RFC 5761 (rtcp-mux)
 
 #define TMEDIA_CODEC_FORMAT_ULPFEC						"122"
 #define TMEDIA_CODEC_FORMAT_RED							"123"
-// #define TMEDIA_CODEC_FORMAT_HUFFYUV					"124"
+#define TMEDIA_CODEC_FORMAT_T140						"124"
 
-#define TMEDIA_CODEC_FORMAT_VP8							"125"
-#define TMEDIA_CODEC_FORMAT_THEORA						"126"
+#define TMEDIA_CODEC_FORMAT_THEORA						"125"
 
 
 #define TMEDIA_CODEC_FORMAT_MSRP						"*"

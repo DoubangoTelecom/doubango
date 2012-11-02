@@ -254,7 +254,7 @@ static int tdav_session_audio_set(tmedia_session_t* self, const tmedia_param_t* 
 	audio = (tdav_session_audio_t*)self;
 
 	if(param->plugin_type == tmedia_ppt_consumer){
-		TSK_DEBUG_ERROR("Not expected consumer(%s)", param->key);
+		TSK_DEBUG_ERROR("Not expected consumer_set(%s)", param->key);
 	}
 	else if(param->plugin_type == tmedia_ppt_producer){
 		TSK_DEBUG_ERROR("Not expected producer_set(%s)", param->key);
@@ -679,10 +679,9 @@ static tsk_object_t* tdav_session_audio_ctor(tsk_object_t * self, va_list * app)
 	if(audio){
 		int ret;
 		tdav_session_av_t *base = TDAV_SESSION_AV(self);
-		static const tsk_bool_t is_audio = tsk_true;
 
 		/* init() base */
-		if((ret = tdav_session_av_init(base, is_audio)) != 0){
+		if((ret = tdav_session_av_init(base, tmedia_audio)) != 0){
 			TSK_DEBUG_ERROR("tdav_session_av_init(audio) failed");
 			return tsk_null;
 		}

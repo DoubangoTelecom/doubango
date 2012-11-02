@@ -194,6 +194,11 @@ OBJS += src/video/tdav_consumer_video.o \
 	src/video/jb/tdav_video_frame.o \
 	src/video/jb/tdav_video_jb.o
 	
+	### T.140
+OBJS += src/t140/tdav_consumer_t140.o \
+	src/t140/tdav_producer_t140.o \
+	src/t140/tdav_session_t140.o
+	
     ### msrp
 OBJS += src/msrp/tdav_consumer_msrp.o \
 	src/msrp/tdav_producer_msrp.o \
@@ -256,7 +261,9 @@ OBJS += src/codecs/mp4ves/tdav_codec_mp4ves.o
 	
 	### codecs (MSRP)
 OBJS += src/codecs/msrp/tdav_codec_msrp.o
-	
+
+	### T.140
+OBJS += src/codecs/t140/tdav_codec_t140.o
 
 $(APP): $(OBJS)
 ifeq ($(EXT), a)

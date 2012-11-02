@@ -49,6 +49,8 @@ TMEDIA_BEGIN_DECLS
 #define TMEDIA_SESSION_VIDEO(self)	((tmedia_session_video_t*)(self))
 #define TMEDIA_SESSION_MSRP(self)	((tmedia_session_msrp_t*)(self))
 
+typedef int (*tmedia_session_t140_ondata_cb_f)(const void* context, tmedia_t140_data_type_t data_type, const void* data_ptr, unsigned data_size);
+
 /**Max number of plugins (session types) we can create */
 #define TMED_SESSION_MAX_PLUGINS			0x0F
 
@@ -115,6 +117,11 @@ typedef struct tmedia_session_plugin_def_s
 	const tsdp_header_M_t* (* get_local_offer) (tmedia_session_t* );
 	/* return zero if can handle the ro and non-zero otherwise */
 	int (* set_remote_offer) (tmedia_session_t* , const tsdp_header_M_t* );
+
+	struct{ /* Special case */
+		int (* set_ondata_cb) (tmedia_session_t*, const void* context, tmedia_session_t140_ondata_cb_f func);
+		int (* send_data) (tmedia_session_t*, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);
+	} t140;
 }
 tmedia_session_plugin_def_t;
 
@@ -137,7 +144,7 @@ typedef struct tmedia_session_audio_s
 	TMEDIA_DECLARE_SESSION;
 }
 tmedia_session_audio_t;
-#define tmedia_session_audio_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmed_sess_type_audio)
+#define tmedia_session_audio_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmedia_audio)
 TINYMEDIA_API int tmedia_session_audio_send_dtmf(tmedia_session_audio_t* self, uint8_t event);
 #define tmedia_session_audio_deinit(self) tmedia_session_deinit(TMEDIA_SESSION(self))
 #define tmedia_session_audio_create() tmedia_session_create(tmed_sess_type_audio)
@@ -149,7 +156,7 @@ typedef struct tmedia_session_video_s
 	TMEDIA_DECLARE_SESSION;
 }
 tmedia_session_video_t;
-#define tmedia_session_video_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmed_sess_type_video)
+#define tmedia_session_video_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmedia_video)
 #define tmedia_session_video_deinit(self) tmedia_session_deinit(TMEDIA_SESSION(self))
 #define tmedia_session_video_create() tmedia_session_create(tmed_sess_type_video)
 #define TMEDIA_DECLARE_SESSION_VIDEO tmedia_session_video_t __session_video__
@@ -172,10 +179,14 @@ typedef struct tmedia_session_msrp_s
 	int (* send_message) (struct tmedia_session_msrp_s*, const void* data, tsk_size_t size, const tmedia_params_L_t *params);
 }
 tmedia_session_msrp_t;
-#define tmedia_session_msrp_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmed_sess_type_msrp)
+#define tmedia_session_msrp_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmedia_msrp)
 #define tmedia_session_msrp_deinit(self) tmedia_session_deinit(TMEDIA_SESSION(self))
 #define tmedia_session_msrp_create() tmedia_session_create(tmed_sess_type_msrp)
 #define TMEDIA_DECLARE_SESSION_MSRP tmedia_session_msrp_t __session_msrp__
+
+/** T.140 session */
+int tmedia_session_t140_set_ondata_cb(tmedia_session_t* self, const void* context, tmedia_session_t140_ondata_cb_f func);
+int tmedia_session_t140_send_data(tmedia_session_t* self, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);
 
 /** Session manager */
 typedef struct tmedia_session_mgr_s
@@ -399,6 +410,8 @@ TINYMEDIA_API int tmedia_session_mgr_set_qos(tmedia_session_mgr_t* self, tmedia_
 TINYMEDIA_API tsk_bool_t tmedia_session_mgr_canresume(tmedia_session_mgr_t* self);
 TINYMEDIA_API tsk_bool_t tmedia_session_mgr_has_active_session(tmedia_session_mgr_t* self);
 TINYMEDIA_API int tmedia_session_mgr_send_dtmf(tmedia_session_mgr_t* self, uint8_t event);
+TINYMEDIA_API int tmedia_session_mgr_set_t140_ondata_cb(tmedia_session_mgr_t* self, const void* context, tmedia_session_t140_ondata_cb_f);
+TINYMEDIA_API int tmedia_session_mgr_send_t140_data(tmedia_session_mgr_t* self, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);
 TINYMEDIA_API int tmedia_session_mgr_send_file(tmedia_session_mgr_t* self, const char* path, ...);
 TINYMEDIA_API int tmedia_session_mgr_send_message(tmedia_session_mgr_t* self, const void* data, tsk_size_t size, const tmedia_params_L_t *params);
 TINYMEDIA_API int tmedia_session_mgr_set_msrp_cb(tmedia_session_mgr_t* self, const void* callback_data, tmedia_session_msrp_cb_f func);

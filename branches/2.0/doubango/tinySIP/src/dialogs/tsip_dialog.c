@@ -652,9 +652,9 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 
 			/* 1xx */
 			if(code <= 199){
-				if(tsk_strempty(response->To->tag)){
-					TSK_DEBUG_ERROR("Invalid tag  parameter");
-					return -1;
+				if(tsk_strnullORempty(response->To->tag)){
+					TSK_DEBUG_WARN("Invalid tag  parameter");
+					return 0;
 				}
 				state = tsip_early;
 			}

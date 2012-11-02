@@ -74,9 +74,21 @@ typedef struct tdav_session_av_s
 		} remote_best_pcfg;
 	}sdp_neg;
 
+	struct{
+		uint8_t payload_type;
+		struct tmedia_codec_s* codec;
+		uint16_t seq_num;
+		uint32_t timestamp;
+	} ulpfec;
+
+	struct{
+		uint8_t payload_type;
+		struct tmedia_codec_s* codec;
+	} red;
+
 	TSK_DECLARE_SAFEOBJ;
 
-#if HAVE_SRTP
+#if HAVE_SRTP /* Must be here (last) */
 	struct {
 		int32_t tag;
 		trtp_srtp_crypto_type_t crypto_type;
@@ -90,7 +102,7 @@ tdav_session_av_t;
 
 #define TDAV_DECLARE_SESSION_AV tdav_session_av_t __session_av__
 
-int tdav_session_av_init(tdav_session_av_t* self, tsk_bool_t is_audio);
+int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type);
 tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const struct tmedia_param_s* param);
 tsk_bool_t tdav_session_av_get(tdav_session_av_t* self, struct tmedia_param_s* param);
 int tdav_session_av_prepare(tdav_session_av_t* self);

@@ -44,7 +44,9 @@
 #define TDAV_IS_ULPFEC_CODEC(codec) (TMEDIA_CODEC((codec))->plugin == tdav_codec_ulpfec_plugin_def_t)
 #define TDAV_IS_RED_CODEC(codec) (TMEDIA_CODEC((codec))->plugin == tdav_codec_red_plugin_def_t)
 
-int tdav_session_av_init(tdav_session_av_t* self, tsk_bool_t is_audio)
+static int _tdav_session_av_red_cb(const void* callback_data, const struct trtp_rtp_packet_s* packet);
+
+int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 {
 	uint64_t session_id;
 	tmedia_profile_t profile = tmedia_defaults_get_profile(); // default profile, will be updated by the SIP session
@@ -56,7 +58,7 @@ int tdav_session_av_init(tdav_session_av_t* self, tsk_bool_t is_audio)
 
 	/* base::init(): called by tmedia_session_create() */
 
-	self->media_type = is_audio ? tmedia_audio : tmedia_video;
+	self->media_type = media_type;
 	self->use_rtcp = tmedia_defaults_get_rtcp_enabled();
 	self->use_rtcpmux = tmedia_defaults_get_rtcpmux_enabled();
 	self->use_avpf = (profile == tmedia_profile_rtcweb); // negotiate if not RTCWeb profile
@@ -70,12 +72,12 @@ int tdav_session_av_init(tdav_session_av_t* self, tsk_bool_t is_audio)
 	// consumer
 	TSK_OBJECT_SAFE_FREE(self->consumer);
 	if(!(self->consumer = tmedia_consumer_create(self->media_type, session_id))){
-		TSK_DEBUG_ERROR("Failed to create %s consumer", is_audio ? "audio" : "video");
+		TSK_DEBUG_ERROR("Failed to create consumer for media type = %d", self->media_type);
 	}
 	// producer
 	TSK_OBJECT_SAFE_FREE(self->producer);
 	if(!(self->producer = tmedia_producer_create(self->media_type, session_id))){
-		TSK_DEBUG_ERROR("Failed to create %s producer", is_audio ? "audio" : "video");
+		TSK_DEBUG_ERROR("Failed to create producer for media type = %d", self->media_type);
 	}
 
 #if HAVE_SRTP
@@ -223,10 +225,39 @@ int tdav_session_av_prepare(tdav_session_av_t* self)
 
 int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_codec)
 {
+	int ret;
 	if(!self || !best_codec){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
-	}	
+	}
+
+	// RED codec
+	TSK_OBJECT_SAFE_FREE(self->red.codec);
+	self->red.payload_type = 0;
+	if((self->red.codec = tsk_object_ref((tsk_object_t*)tdav_session_av_get_red_codec(self)))){
+		self->red.payload_type = atoi(self->red.codec->neg_format);
+		if(!TMEDIA_CODEC(self->red.codec)->opened){
+			if((ret = tmedia_codec_open(self->red.codec))){
+				TSK_DEBUG_ERROR("Failed to open [%s] codec", self->red.codec->plugin->desc);
+				return ret;
+			}
+		}
+		// set RED callback (unencapsulated data)
+		ret = tdav_codec_red_set_callback((struct tdav_codec_red_s*)self->red.codec, _tdav_session_av_red_cb, self);
+	}
+
+	// ULPFEC
+	TSK_OBJECT_SAFE_FREE(self->ulpfec.codec);
+	self->ulpfec.payload_type = 0;
+	if((self->ulpfec.codec = tsk_object_ref((tsk_object_t*)tdav_session_av_get_ulpfec_codec(self)))){
+		self->ulpfec.payload_type = atoi(self->ulpfec.codec->neg_format);
+		if(!TMEDIA_CODEC(self->ulpfec.codec)->opened){
+			if((ret = tmedia_codec_open(self->ulpfec.codec))){
+				TSK_DEBUG_ERROR("Failed to open [%s] codec", self->ulpfec.codec->plugin->desc);
+				return ret;
+			}
+		}
+	}
 
 	if(self->rtp_manager){
 		int ret;
@@ -514,7 +545,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 		}
 
 		// draft-lennox-mmusic-sdp-source-attributes-01
-		{
+		if(self->media_type == tmedia_audio || self->media_type == tmedia_video){
 			char* str = tsk_null;
 			tsk_sprintf(&str, "%u cname:%s", self->rtp_manager->rtp.ssrc, "ldjWoB60jbyQlR6e");
 			tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("ssrc", str), tsk_null);
@@ -756,11 +787,21 @@ const tmedia_codec_t* tdav_session_av_get_red_codec(const tdav_session_av_t* sel
 	}
 	
 	tsk_list_foreach(item, TMEDIA_SESSION(self)->neg_codecs){
-		if(TDAV_IS_RED_CODEC(item->data)){
+		const tmedia_codec_t* codec = (const tmedia_codec_t*)item->data;
+		if(TDAV_IS_RED_CODEC(codec)){
 			return TMEDIA_CODEC(item->data);
 		}
 	}
 	return tsk_null;
+}
+
+static int _tdav_session_av_red_cb(const void* callback_data, const struct trtp_rtp_packet_s* packet)
+{
+	tdav_session_av_t* self = (tdav_session_av_t*)callback_data;
+	if(self->rtp_manager && self->rtp_manager->rtp.callback){
+		return self->rtp_manager->rtp.callback(self->rtp_manager->rtp.callback_data, packet);
+	}
+	return 0;
 }
 
 const tmedia_codec_t* tdav_session_av_get_ulpfec_codec(const tdav_session_av_t* self)
@@ -793,6 +834,10 @@ int tdav_session_av_deinit(tdav_session_av_t* self)
 	TSK_FREE(self->sdp_neg.remote_best_pcfg.t_proto);
 	TSK_FREE(self->remote_ip);
 	TSK_FREE(self->local_ip);
+
+	/* RED and ULPFEC codecs */
+	TSK_OBJECT_SAFE_FREE(self->red.codec);
+	TSK_OBJECT_SAFE_FREE(self->ulpfec.codec);
 
 	/* NAT Traversal context */
 	TSK_OBJECT_SAFE_FREE(self->natt_ctx);

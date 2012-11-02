@@ -159,15 +159,15 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 
 			// Send FEC packet
 			// FIXME: protect only Intra and Params packets
-			if(video->ulpfec.codec && (s > TRTP_RTP_HEADER_MIN_SIZE)){
+			if(base->ulpfec.codec && (s > TRTP_RTP_HEADER_MIN_SIZE)){
 				packet->payload.data_const = (((const uint8_t*)base->rtp_manager->rtp.serial_buffer.ptr) + rtp_hdr_size);
 				packet->payload.size = (s - rtp_hdr_size);
-				ret = tdav_codec_ulpfec_enc_protect((struct tdav_codec_ulpfec_s*)video->ulpfec.codec, packet);
+				ret = tdav_codec_ulpfec_enc_protect((struct tdav_codec_ulpfec_s*)base->ulpfec.codec, packet);
 				if(result->last_chunck){
 					trtp_rtp_packet_t* packet_fec;
-					if((packet_fec = trtp_rtp_packet_create(base->rtp_manager->rtp.ssrc, video->ulpfec.seq_num++, video->ulpfec.timestamp, video->ulpfec.payload_type, tsk_true))){
+					if((packet_fec = trtp_rtp_packet_create(base->rtp_manager->rtp.ssrc, base->ulpfec.seq_num++, base->ulpfec.timestamp, base->ulpfec.payload_type, tsk_true))){
 						// serialize the FEC payload packet packet
-						s = tdav_codec_ulpfec_enc_serialize((const struct tdav_codec_ulpfec_s*)video->ulpfec.codec, &video->encoder.buffer, &video->encoder.buffer_size);
+						s = tdav_codec_ulpfec_enc_serialize((const struct tdav_codec_ulpfec_s*)base->ulpfec.codec, &video->encoder.buffer, &video->encoder.buffer_size);
 						if(s > 0){
 							packet_fec->payload.data_const = video->encoder.buffer;
 							packet_fec->payload.size = s;
@@ -175,8 +175,8 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 						}
 						TSK_OBJECT_SAFE_FREE(packet_fec);
 					}
-					video->ulpfec.timestamp += result->duration;
-					ret = tdav_codec_ulpfec_enc_reset((struct tdav_codec_ulpfec_s*)video->ulpfec.codec);
+					base->ulpfec.timestamp += result->duration;
+					ret = tdav_codec_ulpfec_enc_reset((struct tdav_codec_ulpfec_s*)base->ulpfec.codec);
 				}
 			}
 #if 0
@@ -343,30 +343,31 @@ bail: ;
 static int tdav_session_video_rtp_cb(const void* callback_data, const trtp_rtp_packet_t* packet)
 {
 	tdav_session_video_t* video = (tdav_session_video_t*)callback_data;
+	tdav_session_av_t* base = (tdav_session_av_t*)callback_data;
 
 	if(!video || !packet || !packet->header){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if(packet->header->payload_type == video->red.payload_type){
+	if(packet->header->payload_type == base->red.payload_type){
 		static void* __red_buffer_ptr = tsk_null; // Never used
 		static tsk_size_t __red_buffer_size = 0; // Never used
-		if(!video->red.codec){
+		if(!base->red.codec){
 			TSK_DEBUG_ERROR("No RED codec could be found");
 			return -2;
 		}
 		// Decode RED data
-		video->red.codec->plugin->decode(
-				video->red.codec, 
+		base->red.codec->plugin->decode(
+				base->red.codec, 
 				(packet->payload.data ? packet->payload.data : packet->payload.data_const), packet->payload.size, 
 				&__red_buffer_ptr, &__red_buffer_size, 
 				packet->header
 			);
 		return 0;
 	}
-	else if(packet->header->payload_type == video->ulpfec.payload_type){
-		if(!video->ulpfec.codec){
+	else if(packet->header->payload_type == base->ulpfec.payload_type){
+		if(!base->ulpfec.codec){
 			TSK_DEBUG_ERROR("No ULPFEC codec could be found");
 			return -2;
 		}
@@ -484,7 +485,7 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
 											goto done;
 										}
 										if(pkt_rtp->header->seq_num == pid){
-											// TSK_DEBUG_INFO("NACK Found=%d", pid);
+											TSK_DEBUG_INFO("NACK Found=%d", pid);
 											trtp_manager_send_rtp_packet(base->rtp_manager, pkt_rtp, tsk_true);
 											break;
 										}
@@ -807,32 +808,6 @@ static int tdav_session_video_start(tmedia_session_t* self)
 	}
 	tsk_mutex_unlock(video->encoder.h_mutex);
 
-	// RED codec
-	TSK_OBJECT_SAFE_FREE(video->red.codec);
-	video->red.payload_type = 0;
-	if((video->red.codec = tsk_object_ref((tsk_object_t*)tdav_session_av_get_red_codec(base)))){
-		video->red.payload_type = atoi(video->red.codec->neg_format);
-		if(!TMEDIA_CODEC(video->red.codec)->opened){
-			if((ret = tmedia_codec_open(video->red.codec))){
-				TSK_DEBUG_ERROR("Failed to open [%s] codec", video->red.codec->plugin->desc);
-				return ret;
-			}
-		}
-	}
-
-	// ULPFEC
-	TSK_OBJECT_SAFE_FREE(video->ulpfec.codec);
-	video->ulpfec.payload_type = 0;
-	if((video->ulpfec.codec = tsk_object_ref((tsk_object_t*)tdav_session_av_get_ulpfec_codec(base)))){
-		video->ulpfec.payload_type = atoi(video->ulpfec.codec->neg_format);
-		if(!TMEDIA_CODEC(video->ulpfec.codec)->opened){
-			if((ret = tmedia_codec_open(video->ulpfec.codec))){
-				TSK_DEBUG_ERROR("Failed to open [%s] codec", video->ulpfec.codec->plugin->desc);
-				return ret;
-			}
-		}
-	}
-
 	if((ret = tdav_video_jb_start(video->jb))){
 		TSK_DEBUG_ERROR("Failed to start jitter buffer");
 		return ret;
@@ -930,10 +905,9 @@ static tsk_object_t* tdav_session_video_ctor(tsk_object_t * self, va_list * app)
 	if(video){
 		int ret;
 		tdav_session_av_t *base = TDAV_SESSION_AV(self);
-		static const tsk_bool_t is_audio = tsk_false;
 
 		/* init() base */
-		if((ret = tdav_session_av_init(base, is_audio)) != 0){
+		if((ret = tdav_session_av_init(base, tmedia_video)) != 0){
 			TSK_DEBUG_ERROR("tdav_session_av_init(video) failed");
 			return tsk_null;
 		}
@@ -981,8 +955,6 @@ static tsk_object_t* tdav_session_video_dtor(tsk_object_t * self)
 
 		TSK_OBJECT_SAFE_FREE(video->encoder.codec);
 		TSK_OBJECT_SAFE_FREE(video->decoder.codec);
-		TSK_OBJECT_SAFE_FREE(video->red.codec);
-		TSK_OBJECT_SAFE_FREE(video->ulpfec.codec);
 
 		TSK_OBJECT_SAFE_FREE(video->avpf.packets);
 

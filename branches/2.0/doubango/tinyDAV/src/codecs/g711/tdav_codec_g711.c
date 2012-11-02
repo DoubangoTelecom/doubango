@@ -192,13 +192,13 @@ static tsk_size_t tdav_codec_g711a_encode(tmedia_codec_t* self, const void* in_d
 
 	out_size = (in_size >> 1);
 	
-	if(*out_max_size <out_size){
+	if(*out_max_size < out_size){
 		if(!(*out_data = tsk_realloc(*out_data, out_size))){
 			TSK_DEBUG_ERROR("Failed to allocate new buffer");
 			*out_max_size = 0;
 			return 0;
 		}
-		*out_max_size = in_size>>1;
+		*out_max_size = out_size;
 	}
 	
 	pout_data = *out_data;
@@ -229,7 +229,7 @@ static tsk_size_t tdav_codec_g711a_decode(tmedia_codec_t* self, const void* in_d
 	}
 #endif
 	/* allocate new buffer */
-	if(*out_max_size<out_size){
+	if(*out_max_size < out_size){
 		if(!(*out_data = tsk_realloc(*out_data, out_size))){
 			TSK_DEBUG_ERROR("Failed to allocate new buffer");
 			*out_max_size = 0;

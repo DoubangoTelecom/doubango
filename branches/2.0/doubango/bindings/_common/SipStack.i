@@ -24,6 +24,7 @@
 %feature("director") ProxyVideoConsumerCallback;
 %feature("director") ProxyAudioProducerCallback;
 %feature("director") ProxyVideoProducerCallback;
+%feature("director") T140Callback;
 
 %nodefaultctor;
 %include "ActionConfig.h"
@@ -261,6 +262,27 @@ typedef enum tmedia_srtp_mode_e
 tmedia_srtp_mode_t;
 
 /* ====== From "tinymedia/tmedia_common.h"  ====== */
+typedef enum tmedia_t140_data_type_e
+{
+	tmedia_t140_data_type_utf8,
+	tmedia_t140_data_type_zero_width_no_break_space = 0xefbbbf,
+	tmedia_t140_data_type_backspace = 0x08,
+	tmedia_t140_data_type_esc = 0x1b,
+	tmedia_t140_data_type_cr = 0x0d,
+	tmedia_t140_data_type_lf = 0x0a,
+	tmedia_t140_data_type_cr_lf = 0x0d0a,
+	tmedia_t140_data_type_interrupt2 = 0x61,
+	tmedia_t140_data_type_bell = 0x07,
+	tmedia_t140_data_type_sos = 0x98,
+	tmedia_t140_data_type_string_term = 0x9c,
+	tmedia_t140_data_type_graphic_start = 0x9b,
+	tmedia_t140_data_type_graphic_end = 0x6d,
+	tmedia_t140_data_type_loss_char_char = 0xfffd,
+	tmedia_t140_data_type_loss_utf8 = 0xefbfbd,
+}
+tmedia_t140_data_type_t;
+
+/* ====== From "tinymedia/tmedia_common.h"  ====== */
 typedef enum tmedia_profile_e
 {
 	tmedia_profile_default,
@@ -316,7 +338,7 @@ typedef enum tdav_codec_id_e
 	tdav_codec_id_speex_uwb = 0x00000001<<10,
 	tdav_codec_id_bv16 = 0x00000001<<11,
 	tdav_codec_id_bv32 = 0x00000001<<12,
-	tdav_codec_id_evrc = 0x00000001<<13,
+	tdav_codec_id_opus = 0x00000001<<13,
 	tdav_codec_id_g729ab = 0x00000001<<14,
 	tdav_codec_id_g722 = 0x00000001<<15,
 	
@@ -336,5 +358,10 @@ typedef enum tdav_codec_id_e
 	tdav_codec_id_theora = 0x00010000<<8,
 	tdav_codec_id_mp4ves_es = 0x00010000<<9,
 	tdav_codec_id_vp8 = 0x00010000<<10,
+
+	/* room for new Video codecs */
+
+	tdav_codec_id_t140 = 0x00010000<<14,
+	tdav_codec_id_red = 0x00010000<<15,
 }
 tdav_codec_id_t;
