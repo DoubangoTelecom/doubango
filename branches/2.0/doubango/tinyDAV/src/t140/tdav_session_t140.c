@@ -54,8 +54,8 @@
 #define T140_LOSS_CHAR_CHAR 0xFFFD
 #define T140_LOSS_UTF8		0xEFBFBD
 
-#define T140_WAIT_FOR_MISSING_PKT_RED_OFF	500  /*Time to wait for missing pkts in RED is OFF (in ms) */
-#define T140_WAIT_FOR_MISSING_PKT_RED_ON	3000  /*Time to wait for missing pkts in RED is ON (in ms) */
+#define T140_WAIT_FOR_MISSING_PKT_RED_OFF	500  /*Time to wait for missing pkts when RED is OFF (in ms) */
+#define T140_WAIT_FOR_MISSING_PKT_RED_ON	3000  /*Time to wait for missing pkts when RED is ON (in ms) */
 #define T140_WAIT_FOR_BUFFERING				300		/* Time to wait for buffering (T.140 blocks forming) */
 #define T140_WAIT_FOR_IDLE					10000 /* Time to wait before entering in IDLE state */
 
@@ -568,7 +568,7 @@ static tsk_size_t _tdav_session_t140_encap_red(tdav_session_t140_t* self, void**
 		pout_data_ptr8 += block_curr->data.size;
 	}
 
-	if((*last_data = red_blocks_hdrs_size == red_blocks_size)){
+	if((*last_data = (red_blocks_hdrs_size == red_blocks_size))){
 		// no data available -> clear items, send empty block, schedule idle timer, cancel buffering timer
 		if(TSK_TIMER_ID_IS_VALID(self->encoder.timer_buffering.id)){
 			tsk_timer_manager_cancel(self->h_timer, self->encoder.timer_buffering.id);

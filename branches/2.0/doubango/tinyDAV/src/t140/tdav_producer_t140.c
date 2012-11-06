@@ -82,7 +82,7 @@ int tdav_producer_send_data(tdav_producer_t140_t* self, enum tmedia_t140_data_ty
 }
 
 //
-//	WaveAPI producer object definition
+//	T.140 producer object definition
 //
 /* constructor */
 static tsk_object_t* tdav_producer_t140_ctor(tsk_object_t * self, va_list * app)

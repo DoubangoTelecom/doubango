@@ -80,7 +80,7 @@ int tdav_consumer_t140_set_ondata_cb(tdav_consumer_t140_t* self, const void* con
 }
 
 //
-//	WaveAPI consumer object definition
+//	T.140 consumer object definition
 //
 /* constructor */
 static tsk_object_t* tdav_consumer_t140_ctor(tsk_object_t * self, va_list * app)

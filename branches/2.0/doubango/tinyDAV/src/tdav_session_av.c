@@ -492,15 +492,17 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			}
 			else{
 				if(!self->use_avpf){ // only negotiate if not already using AVPF
+					tsk_bool_t enable_srtp = tsk_true;
 					#if HAVE_SRTP
-					tsk_bool_t enable_srtp = (have_libsrtp && (self->srtp_mode == tmedia_srtp_mode_mandatory || self->srtp_mode == tmedia_srtp_mode_optional));
+					enable_srtp = (have_libsrtp && (self->srtp_mode == tmedia_srtp_mode_mandatory || self->srtp_mode == tmedia_srtp_mode_optional));
+					#endif
 					// "a=acap:1 crypto" is not included because most of SIP client don't support RFC 5939
 					// "a=crypto" is always used to indicate optional support for SRTP
 					tsdp_header_M_add_headers(base->M.lo,
 						TSDP_HEADER_A_VA_ARGS("tcap", enable_srtp ? "1 RTP/SAVPF" : "1 RTP/AVPF"),
 						TSDP_HEADER_A_VA_ARGS("pcfg", "1 t=1"),
 						tsk_null);
-					#endif
+					
 				}
 			}
 		}
