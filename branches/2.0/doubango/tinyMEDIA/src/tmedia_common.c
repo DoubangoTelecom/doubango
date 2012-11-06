@@ -207,11 +207,13 @@ int tmedia_parse_video_fmtp(const char* fmtp, tmedia_pref_video_size_t pref_vs, 
 					*fps = atoi(param->value);
 					*fps = *fps ? 30/(*fps) : 15;
 					ret = 0;
-					goto done;
+					// rfc 4629 section 8.2.1: Parameters offered first are the most preferred picture mode to be received.
+					// /!\ asterisk do not respect this :)
+					/* goto done */;
 				}
 			}
 		}
-done:
+/* done: */
 		TSK_OBJECT_SAFE_FREE(params);
 	}
 
