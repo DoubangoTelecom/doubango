@@ -422,11 +422,12 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 			goto bail;
 		}
 		else{
-			transac = tsip_transac_layer_new(layer_transac, tsk_false, message, TSIP_DIALOG(dialog));
+			static const tsk_bool_t isCT = tsk_false;
+			transac = tsip_transac_layer_new(layer_transac, isCT, message, TSIP_DIALOG(dialog));
 			tsk_object_unref(dialog);
 		}
 	}
-	else{		
+	else{
 		if(TSIP_MESSAGE_IS_REQUEST(message)){
 			tsip_ssession_t* ss = tsk_null;
 			tsip_dialog_t* newdialog = tsk_null;
@@ -478,7 +479,8 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 
 			// for new dialog, create a new transac and start it later
 			if(newdialog){
-				transac = tsip_transac_layer_new(layer_transac, tsk_false, message, newdialog);
+				static const tsk_bool_t isCT = tsk_false;
+				transac = tsip_transac_layer_new(layer_transac, isCT, message, newdialog);
 				tsk_list_push_back_data(self->dialogs, (void**)&newdialog); /* add new dialog to the layer */
 			}
 

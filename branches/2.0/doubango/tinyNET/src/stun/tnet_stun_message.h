@@ -224,10 +224,10 @@ tnet_stun_message_t;
 typedef tnet_stun_message_t tnet_stun_response_t;
 typedef tnet_stun_message_t tnet_stun_request_t;
 
-tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *message);
+TINYNET_API tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *message);
 tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, tsk_size_t size);
 tsk_bool_t tnet_stun_message_has_attribute(const tnet_stun_message_t *self, tnet_stun_attribute_type_t type);
-int tnet_stun_message_add_attribute(tnet_stun_message_t *self, tnet_stun_attribute_t** attribute);
+TINYNET_API int tnet_stun_message_add_attribute(tnet_stun_message_t *self, tnet_stun_attribute_t** attribute);
 int tnet_stun_message_remove_attribute(tnet_stun_message_t *self, tnet_stun_attribute_type_t type);
 const tnet_stun_attribute_t* tnet_stun_message_get_attribute(const tnet_stun_message_t *self, tnet_stun_attribute_type_t type);
 short tnet_stun_message_get_errorcode(const tnet_stun_message_t *self);
@@ -237,8 +237,8 @@ int32_t tnet_stun_message_get_lifetime(const tnet_stun_message_t *self);
 tsk_bool_t tnet_stun_message_transac_id_equals(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2);
 
 
-tnet_stun_message_t* tnet_stun_message_create(const char* username, const char* password);
-tnet_stun_message_t* tnet_stun_message_create_null();
+TINYNET_API tnet_stun_message_t* tnet_stun_message_create(const char* username, const char* password);
+TINYNET_API tnet_stun_message_t* tnet_stun_message_create_null();
 
 TINYNET_GEXTERN const tsk_object_def_t *tnet_stun_message_def_t;
 

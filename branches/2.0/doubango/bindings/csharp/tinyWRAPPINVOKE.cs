@@ -537,6 +537,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipMessage_getResponseCode")]
   public static extern short SipMessage_getResponseCode(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipMessage_getResponsePhrase")]
+  public static extern string SipMessage_getResponsePhrase(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipMessage_getSipHeaderValue__SWIG_0")]
   public static extern string SipMessage_getSipHeaderValue__SWIG_0(HandleRef jarg1, string jarg2, uint jarg3);
 
@@ -1284,6 +1287,12 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoFrame_getContent")]
   public static extern uint ProxyVideoFrame_getContent(HandleRef jarg1, IntPtr jarg2, uint jarg3);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoFrame_getFrameWidth")]
+  public static extern uint ProxyVideoFrame_getFrameWidth(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoFrame_getFrameHeight")]
+  public static extern uint ProxyVideoFrame_getFrameHeight(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_ProxyAudioProducerCallback")]
   public static extern IntPtr new_ProxyAudioProducerCallback();
 
@@ -1403,9 +1412,6 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_push")]
   public static extern int ProxyVideoProducer_push(HandleRef jarg1, IntPtr jarg2, uint jarg3);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_send")]
-  public static extern int ProxyVideoProducer_send(HandleRef jarg1, IntPtr jarg2, uint jarg3, uint jarg4, bool jarg5);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_setCallback")]
   public static extern void ProxyVideoProducer_setCallback(HandleRef jarg1, HandleRef jarg2);

@@ -474,6 +474,7 @@ sub DESTROY {
 *isResponse = *tinyWRAPc::SipMessage_isResponse;
 *getRequestType = *tinyWRAPc::SipMessage_getRequestType;
 *getResponseCode = *tinyWRAPc::SipMessage_getResponseCode;
+*getResponsePhrase = *tinyWRAPc::SipMessage_getResponsePhrase;
 *getSipHeaderValue = *tinyWRAPc::SipMessage_getSipHeaderValue;
 *getSipHeaderParamValue = *tinyWRAPc::SipMessage_getSipHeaderParamValue;
 *getSipContentLength = *tinyWRAPc::SipMessage_getSipContentLength;
@@ -1626,6 +1627,8 @@ sub DESTROY {
 
 *getSize = *tinyWRAPc::ProxyVideoFrame_getSize;
 *getContent = *tinyWRAPc::ProxyVideoFrame_getContent;
+*getFrameWidth = *tinyWRAPc::ProxyVideoFrame_getFrameWidth;
+*getFrameHeight = *tinyWRAPc::ProxyVideoFrame_getFrameHeight;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1782,7 +1785,6 @@ sub DESTROY {
 *setRotation = *tinyWRAPc::ProxyVideoProducer_setRotation;
 *setActualCameraOutputSize = *tinyWRAPc::ProxyVideoProducer_setActualCameraOutputSize;
 *push = *tinyWRAPc::ProxyVideoProducer_push;
-*send = *tinyWRAPc::ProxyVideoProducer_send;
 *setCallback = *tinyWRAPc::ProxyVideoProducer_setCallback;
 *getMediaSessionId = *tinyWRAPc::ProxyVideoProducer_getMediaSessionId;
 *registerPlugin = *tinyWRAPc::ProxyVideoProducer_registerPlugin;
@@ -2435,6 +2437,10 @@ package tinyWRAP;
 *twrap_proxy_plugin_video_producer = *tinyWRAPc::twrap_proxy_plugin_video_producer;
 *twrap_proxy_plugin_audio_consumer = *tinyWRAPc::twrap_proxy_plugin_audio_consumer;
 *twrap_proxy_plugin_video_consumer = *tinyWRAPc::twrap_proxy_plugin_video_consumer;
+*tsip_stack_mode_ua = *tinyWRAPc::tsip_stack_mode_ua;
+*tsip_stack_mode_p2p = *tinyWRAPc::tsip_stack_mode_p2p;
+*tsip_stack_mode_mediaproxy = *tinyWRAPc::tsip_stack_mode_mediaproxy;
+*tsip_stack_mode_mcu = *tinyWRAPc::tsip_stack_mode_mcu;
 *tsip_NONE = *tinyWRAPc::tsip_NONE;
 *tsip_ACK = *tinyWRAPc::tsip_ACK;
 *tsip_BYE = *tinyWRAPc::tsip_BYE;

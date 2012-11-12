@@ -48,7 +48,7 @@ tsk_size_t tdav_codec_dtmf_fmtp_decode(tmedia_codec_t* self, const void* in_data
 char* tdav_codec_dtmf_sdp_att_get(const tmedia_codec_t* self, const char* att_name)
 {
 	if(tsk_striequals(att_name, "fmtp")){
-		return tsk_strdup("0-15");
+		return tsk_strdup("0-16");
 	}
 	return tsk_null;
 }

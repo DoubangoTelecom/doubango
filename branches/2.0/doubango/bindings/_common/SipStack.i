@@ -45,6 +45,15 @@
 %clearnodefaultctor;
 
 
+/* ====== From "tinySIP\include\tsip.h"  ====== */
+typedef enum tsip_stack_mode_e
+{
+	tsip_stack_mode_ua,
+	tsip_stack_mode_p2p,
+	tsip_stack_mode_mediaproxy,
+	tsip_stack_mode_mcu
+}
+tsip_stack_mode_t;
 
 /* ====== From "tinySIP\include\tinysip\tsip_messag_common.h"  ====== */
 typedef enum tsip_request_type_e

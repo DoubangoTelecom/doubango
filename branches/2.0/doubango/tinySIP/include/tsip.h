@@ -35,6 +35,7 @@
 #include "tinysip/tsip_ssession.h"
 #include "tinysip/tsip_timers.h"
 #include "tinysip/tsip_event.h"
+#include "tinysip/transports/tsip_transport.h"
 
 #include "tinysip/tsip_uri.h"
 
@@ -56,6 +57,17 @@ TSIP_BEGIN_DECLS
 typedef uint8_t amf_t[2];
 typedef uint8_t operator_id_t[16];
 
+// @tinyWRAP
+typedef enum tsip_stack_mode_e
+{
+	tsip_stack_mode_ua,
+	tsip_stack_mode_p2p,
+	tsip_stack_mode_mediaproxy,
+	tsip_stack_mode_mcu
+}
+tsip_stack_mode_t;
+#define TSIP_STACK_MODE_IS_SERVER(stack) ((stack)->network.mode == tsip_stack_mode_mediaproxy || (stack)->network.mode == tsip_stack_mode_mcu)
+#define TSIP_STACK_MODE_IS_CLIENT(stack) (!TSIP_STACK_MODE_IS_SERVER((stack)))
 
 typedef enum tsip_stack_param_type_e
 {
@@ -82,7 +94,7 @@ typedef enum tsip_stack_param_type_e
 	tsip_pname_discovery_dhcp,
 	tsip_pname_proxy_cscf,
 	tsip_pname_dnsserver,
-	tsip_pname_mode_server,
+	tsip_pname_mode,
 
 	
 	/* === Security === */
@@ -332,15 +344,18 @@ int ret = tsip_stack_set(stack,
               TSIP_STACK_SET_NULL());
 * @endcode
 */
-#define TSIP_STACK_SET_REALM(URI_STR)					tsip_pname_realm, (const char*)URI_STR
-#define TSIP_STACK_SET_LOCAL_IP(IP_STR)					tsip_pname_local_ip, (const char*)IP_STR
-#define TSIP_STACK_SET_LOCAL_PORT(PORT_UINT)			tsip_pname_local_port, (unsigned)PORT_UINT
-#define TSIP_STACK_SET_AOR(IP_STR, PORT_UINT)			tsip_pname_aor, (const char*)IP_STR, (unsigned)PORT_UINT
-#define TSIP_STACK_SET_DISCOVERY_NAPTR(ENABLED_BOOL)	tsip_pname_discovery_naptr, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_STACK_SET_DISCOVERY_DHCP(ENABLED_BOOL)		tsip_pname_discovery_dhcp, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_REALM(URI_STR)															tsip_pname_realm, (const char*)URI_STR
+#define TSIP_STACK_SET_LOCAL_IP_2(TRANSPORT_STR, IP_STR)										tsip_pname_local_ip, (const char*)TRANSPORT_STR, (const char*)IP_STR
+#define TSIP_STACK_SET_LOCAL_PORT_2(TRANSPORT_STR, PORT_UINT)									tsip_pname_local_port, (const char*)TRANSPORT_STR, (unsigned)PORT_UINT
+#define TSIP_STACK_SET_LOCAL_IP(IP_STR)															TSIP_STACK_SET_LOCAL_IP_2(tsk_null, IP_STR)// @deprecated
+#define TSIP_STACK_SET_LOCAL_PORT(PORT_UINT)													TSIP_STACK_SET_LOCAL_PORT_2(tsk_null, PORT_UINT)// @deprecated
+#define TSIP_STACK_SET_AOR_2(TRANSPORT_STR, IP_STR, PORT_UINT)									tsip_pname_aor, (const char*)TRANSPORT_STR, (const char*)IP_STR, (unsigned)PORT_UINT
+#define TSIP_STACK_SET_AOR(IP_STR, PORT_UINT)													TSIP_STACK_SET_AOR_2(tsk_null, IP_STR, PORT_UINT)// @deprecated
+#define TSIP_STACK_SET_DISCOVERY_NAPTR(ENABLED_BOOL)											tsip_pname_discovery_naptr, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_DISCOVERY_DHCP(ENABLED_BOOL)												tsip_pname_discovery_dhcp, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR, PORT_UINT, TRANSPORT_STR, IP_VERSION_STR)			tsip_pname_proxy_cscf, (const char*)FQDN_STR, (unsigned)PORT_UINT, (const char*)TRANSPORT_STR, (const char*)IP_VERSION_STR
-#define TSIP_STACK_SET_DNS_SERVER(IP_STR)				tsip_pname_dnsserver, (const char*)IP_STR
-#define TSIP_STACK_SET_MODE_SERVER()					tsip_pname_mode_server
+#define TSIP_STACK_SET_DNS_SERVER(IP_STR)														tsip_pname_dnsserver, (const char*)IP_STR
+#define TSIP_STACK_SET_MODE(MODE_ENUM)															tsip_pname_mode, (tsip_stack_mode_t)MODE_ENUM
 
 /* === Security === */
 /**@ingroup tsip_stack_group
@@ -432,13 +447,14 @@ int ret = tsip_stack_set(stack,
 *
 * @sa @ref TSIP_STACK_SET_IPSEC_PARAMS()
 */
-#define TSIP_STACK_SET_EARLY_IMS(ENABLED_BOOL)				tsip_pname_early_ims, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_STACK_SET_SECAGREE_IPSEC(ENABLED_BOOL)			tsip_pname_secagree_ipsec, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_STACK_SET_SECAGREE_TLS(ENABLED_BOOL)			tsip_pname_secagree_tls, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_STACK_SET_IMS_AKA_AMF(AMF_UINT16)				tsip_pname_amf, (uint16_t)AMF_UINT16
-#define TSIP_STACK_SET_IMS_AKA_OPERATOR_ID(OPID_HEX_STR)	tsip_pname_operator_id, (const char*)OPID_HEX_STR
+#define TSIP_STACK_SET_EARLY_IMS(ENABLED_BOOL)									tsip_pname_early_ims, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_SECAGREE_IPSEC_2(TRANSPORT_STR, ENABLED_BOOL)			tsip_pname_secagree_ipsec, (const char*)TRANSPORT_STR, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_SECAGREE_IPSEC(ENABLED_BOOL)								TSIP_STACK_SET_SECAGREE_IPSEC_2(tsk_null, ENABLED_BOOL) // @deprecated
+#define TSIP_STACK_SET_SECAGREE_TLS(ENABLED_BOOL)								tsip_pname_secagree_tls, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_IMS_AKA_AMF(AMF_UINT16)									tsip_pname_amf, (uint16_t)AMF_UINT16
+#define TSIP_STACK_SET_IMS_AKA_OPERATOR_ID(OPID_HEX_STR)						tsip_pname_operator_id, (const char*)OPID_HEX_STR
 #define TSIP_STACK_SET_IPSEC_PARAMS(ALG_STR, EALG_STR, MODE_STR, PROTOCOL_STR)	tsip_pname_ipsec_params, (const char*)ALG_STR, (const char*)EALG_STR, (const char*)MODE_STR, (const char*)PROTOCOL_STR
-#define TSIP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)			tsip_pname_tls_certs, (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR
+#define TSIP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)		tsip_pname_tls_certs, (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR
 
 
 /* === Headers === */
@@ -524,6 +540,7 @@ int ret = tsip_stack_set(stack,
 typedef struct tsip_stack_s
 {
 	TSK_DECLARE_RUNNABLE;
+	TSK_DECLARE_SAFEOBJ;
 	
 	tsk_bool_t timer_mgr_started;
 	tsk_bool_t started;
@@ -551,24 +568,26 @@ typedef struct tsip_stack_s
 
 	/* === Network === */
 	struct{
-		char *local_ip;
-		tnet_port_t local_port;
+		tsip_stack_mode_t mode;
 
-		char *proxy_cscf;
-		tnet_port_t proxy_cscf_port;
-		tnet_socket_type_t proxy_cscf_type;
+		char *local_ip_[TSIP_TRANSPORT_IDX_MAX];
+		tnet_port_t local_port_[TSIP_TRANSPORT_IDX_MAX];
+
+		char *proxy_cscf_[TSIP_TRANSPORT_IDX_MAX];
+		tnet_port_t proxy_cscf_port_[TSIP_TRANSPORT_IDX_MAX];
+		tnet_socket_type_t proxy_cscf_type_[TSIP_TRANSPORT_IDX_MAX];
+		int32_t transport_idx_default;
 		
 		tsip_uri_t *realm;
 		
 		//! IP adddress and port to use as AOR (user-defined)
 		struct{
-			char* ip;
-			tnet_port_t port;
+			char* ip_[TSIP_TRANSPORT_IDX_MAX];
+			tnet_port_t port_[TSIP_TRANSPORT_IDX_MAX];
 		} aor;
-
+		
 		tsk_bool_t discovery_naptr;
 		tsk_bool_t discovery_dhcp;
-		tsk_bool_t mode_server;
 	} network;
 
 	/* === Security === */

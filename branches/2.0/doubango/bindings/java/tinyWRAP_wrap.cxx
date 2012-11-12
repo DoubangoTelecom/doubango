@@ -3872,6 +3872,21 @@ SWIGEXPORT jshort JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipMessage_1get
 }
 
 
+SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipMessage_1getResponsePhrase(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipMessage **)&jarg1; 
+  result = (char *)(arg1)->getResponsePhrase();
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
 SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipMessage_1getSipHeaderValue_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jlong jarg3) {
   jstring jresult = 0 ;
   SipMessage *arg1 = (SipMessage *) 0 ;
@@ -8292,6 +8307,36 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoFrame_
 }
 
 
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoFrame_1getFrameWidth(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  ProxyVideoFrame *arg1 = (ProxyVideoFrame *) 0 ;
+  unsigned int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoFrame **)&jarg1; 
+  result = (unsigned int)((ProxyVideoFrame const *)arg1)->getFrameWidth();
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoFrame_1getFrameHeight(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  ProxyVideoFrame *arg1 = (ProxyVideoFrame *) 0 ;
+  unsigned int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoFrame **)&jarg1; 
+  result = (unsigned int)((ProxyVideoFrame const *)arg1)->getFrameHeight();
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1ProxyAudioProducerCallback(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   ProxyAudioProducerCallback *result = 0 ;
@@ -8945,31 +8990,6 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoProduce
   
   arg3 = (unsigned int)jarg3; 
   result = (int)(arg1)->push((void const *)arg2,arg3);
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoProducer_1send(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbyteArray jarg2, jlong jarg3, jlong jarg4, jboolean jarg5) {
-  jint jresult = 0 ;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
-  void *arg2 = (void *) 0 ;
-  unsigned int arg3 ;
-  unsigned int arg4 ;
-  bool arg5 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(ProxyVideoProducer **)&jarg1; 
-  
-  arg2 = jenv->GetDirectBufferAddress(jarg2); 
-  
-  arg3 = (unsigned int)jarg3; 
-  arg4 = (unsigned int)jarg4; 
-  arg5 = jarg5 ? true : false; 
-  result = (int)(arg1)->send((void const *)arg2,arg3,arg4,arg5);
   jresult = (jint)result; 
   return jresult;
 }

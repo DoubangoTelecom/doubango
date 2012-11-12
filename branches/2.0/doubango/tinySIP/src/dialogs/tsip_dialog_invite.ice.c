@@ -113,13 +113,14 @@ int tsip_dialog_invite_ice_timers_set(tsip_dialog_invite_t *self, int64_t timeou
 
 static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia_type_t media_type)
 {
+	int32_t transport_idx;
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-
+	transport_idx = TSIP_DIALOG_GET_STACK(self)->network.transport_idx_default;
 	if(!self->ice.ctx_audio && (media_type & tmedia_audio)){
-		self->ice.ctx_audio = tnet_ice_ctx_create(self->ice.is_jingle, TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type), 
+		self->ice.ctx_audio = tnet_ice_ctx_create(self->ice.is_jingle, TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type_[transport_idx]), 
 					self->use_rtcp, tsk_false, tsip_dialog_invite_ice_audio_callback, self);
 		if(!self->ice.ctx_audio){
 			TSK_DEBUG_ERROR("Failed to create ICE audio context");
@@ -129,7 +130,7 @@ static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia
 		tnet_ice_ctx_set_rtcpmux(self->ice.ctx_audio, self->use_rtcpmux);
 	}
 	if(!self->ice.ctx_video && (media_type & tmedia_video)){
-		self->ice.ctx_video = tnet_ice_ctx_create(self->ice.is_jingle, TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type), 
+		self->ice.ctx_video = tnet_ice_ctx_create(self->ice.is_jingle, TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type_[transport_idx]), 
 					self->use_rtcp, tsk_true, tsip_dialog_invite_ice_video_callback, self);
 		if(!self->ice.ctx_video){
 			TSK_DEBUG_ERROR("Failed to create ICE video context");

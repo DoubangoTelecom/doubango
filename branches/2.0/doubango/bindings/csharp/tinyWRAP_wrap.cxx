@@ -2608,6 +2608,18 @@ SWIGEXPORT short SWIGSTDCALL CSharp_SipMessage_getResponseCode(void * jarg1) {
 }
 
 
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipMessage_getResponsePhrase(void * jarg1) {
+  char * jresult ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SipMessage *)jarg1; 
+  result = (char *)(arg1)->getResponsePhrase();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
 SWIGEXPORT char * SWIGSTDCALL CSharp_SipMessage_getSipHeaderValue__SWIG_0(void * jarg1, char * jarg2, unsigned int jarg3) {
   char * jresult ;
   SipMessage *arg1 = (SipMessage *) 0 ;
@@ -5800,6 +5812,30 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoFrame_getContent(void * jar
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoFrame_getFrameWidth(void * jarg1) {
+  unsigned int jresult ;
+  ProxyVideoFrame *arg1 = (ProxyVideoFrame *) 0 ;
+  unsigned int result;
+  
+  arg1 = (ProxyVideoFrame *)jarg1; 
+  result = (unsigned int)((ProxyVideoFrame const *)arg1)->getFrameWidth();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoFrame_getFrameHeight(void * jarg1) {
+  unsigned int jresult ;
+  ProxyVideoFrame *arg1 = (ProxyVideoFrame *) 0 ;
+  unsigned int result;
+  
+  arg1 = (ProxyVideoFrame *)jarg1; 
+  result = (unsigned int)((ProxyVideoFrame const *)arg1)->getFrameHeight();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_ProxyAudioProducerCallback() {
   void * jresult ;
   ProxyAudioProducerCallback *result = 0 ;
@@ -6297,26 +6333,6 @@ SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_push(void * jarg1, void * j
   arg2 = jarg2; 
   arg3 = (unsigned int)jarg3; 
   result = (int)(arg1)->push((void const *)arg2,arg3);
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT int SWIGSTDCALL CSharp_ProxyVideoProducer_send(void * jarg1, void * jarg2, unsigned int jarg3, unsigned int jarg4, unsigned int jarg5) {
-  int jresult ;
-  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
-  void *arg2 = (void *) 0 ;
-  unsigned int arg3 ;
-  unsigned int arg4 ;
-  bool arg5 ;
-  int result;
-  
-  arg1 = (ProxyVideoProducer *)jarg1; 
-  arg2 = jarg2; 
-  arg3 = (unsigned int)jarg3; 
-  arg4 = (unsigned int)jarg4; 
-  arg5 = jarg5 ? true : false; 
-  result = (int)(arg1)->send((void const *)arg2,arg3,arg4,arg5);
   jresult = result; 
   return jresult;
 }

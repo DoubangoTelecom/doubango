@@ -72,6 +72,11 @@ public class SipMessage : IDisposable {
     return ret;
   }
 
+  public string getResponsePhrase() {
+    string ret = tinyWRAPPINVOKE.SipMessage_getResponsePhrase(swigCPtr);
+    return ret;
+  }
+
   public string getSipHeaderValue(string name, uint index) {
     string ret = tinyWRAPPINVOKE.SipMessage_getSipHeaderValue__SWIG_0(swigCPtr, name, index);
     return ret;

@@ -207,6 +207,8 @@ int tsip_transac_nist_init(tsip_transac_nist_t *self)
 			/*=======================
 			* === Trying === 
 			*/
+			// Trying -> (receive request retransmission) -> Trying
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_request, _fsm_state_Trying, tsk_null, "tsip_transac_nist_Trying_2_Trying_X_request"),
 			// Trying -> (send 1xx) -> Proceeding
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_send_1xx, _fsm_state_Proceeding, tsip_transac_nist_Trying_2_Proceeding_X_send_1xx, "tsip_transac_nist_Trying_2_Proceeding_X_send_1xx"),
 			// Trying -> (send 200 to 699) -> Completed

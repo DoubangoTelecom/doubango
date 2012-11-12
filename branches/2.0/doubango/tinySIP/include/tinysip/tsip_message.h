@@ -146,6 +146,7 @@ typedef struct tsip_message_s
 	tnet_fd_t local_fd;
 	struct sockaddr_storage remote_addr; // Only valid for Dgram
 	tsk_bool_t update;
+	tsk_bool_t reliable;
 }
 tsip_message_t;
 

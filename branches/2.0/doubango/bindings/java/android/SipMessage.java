@@ -63,6 +63,10 @@ public class SipMessage {
     return tinyWRAPJNI.SipMessage_getResponseCode(swigCPtr, this);
   }
 
+  public String getResponsePhrase() {
+    return tinyWRAPJNI.SipMessage_getResponsePhrase(swigCPtr, this);
+  }
+
   public String getSipHeaderValue(String name, long index) {
     return tinyWRAPJNI.SipMessage_getSipHeaderValue__SWIG_0(swigCPtr, this, name, index);
   }

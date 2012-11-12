@@ -51,6 +51,16 @@ public class ProxyVideoFrame : IDisposable {
     return ret;
   }
 
+  public uint getFrameWidth() {
+    uint ret = tinyWRAPPINVOKE.ProxyVideoFrame_getFrameWidth(swigCPtr);
+    return ret;
+  }
+
+  public uint getFrameHeight() {
+    uint ret = tinyWRAPPINVOKE.ProxyVideoFrame_getFrameHeight(swigCPtr);
+    return ret;
+  }
+
 }
 
 }

@@ -83,7 +83,7 @@ int tnet_ice_utils_create_sockets(tnet_socket_type_t socket_type, const char* lo
 		
 		/* beacuse failure will cause errors in the log, print a message to alert that there is
 		* nothing to worry about */
-		TSK_DEBUG_INFO("RTP/RTCP manager[Begin]: Trying to bind to random ports");
+		TSK_DEBUG_INFO("RTP/RTCP manager[Begin]: Trying to bind to random ports [%s:%d]", local_ip, local_port);
 		
 		if(look4_rtp){
 			if(!(*socket_rtp = tnet_socket_create(local_ip, local_port, socket_type))){

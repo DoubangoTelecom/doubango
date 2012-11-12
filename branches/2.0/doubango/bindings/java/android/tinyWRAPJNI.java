@@ -126,6 +126,7 @@ public class tinyWRAPJNI {
   public final static native boolean SipMessage_isResponse(long jarg1, SipMessage jarg1_);
   public final static native int SipMessage_getRequestType(long jarg1, SipMessage jarg1_);
   public final static native short SipMessage_getResponseCode(long jarg1, SipMessage jarg1_);
+  public final static native String SipMessage_getResponsePhrase(long jarg1, SipMessage jarg1_);
   public final static native String SipMessage_getSipHeaderValue__SWIG_0(long jarg1, SipMessage jarg1_, String jarg2, long jarg3);
   public final static native String SipMessage_getSipHeaderValue__SWIG_1(long jarg1, SipMessage jarg1_, String jarg2);
   public final static native String SipMessage_getSipHeaderParamValue__SWIG_0(long jarg1, SipMessage jarg1_, String jarg2, String jarg3, long jarg4);
@@ -379,6 +380,8 @@ public class tinyWRAPJNI {
   public final static native void delete_ProxyVideoFrame(long jarg1);
   public final static native long ProxyVideoFrame_getSize(long jarg1, ProxyVideoFrame jarg1_);
   public final static native long ProxyVideoFrame_getContent(long jarg1, ProxyVideoFrame jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native long ProxyVideoFrame_getFrameWidth(long jarg1, ProxyVideoFrame jarg1_);
+  public final static native long ProxyVideoFrame_getFrameHeight(long jarg1, ProxyVideoFrame jarg1_);
   public final static native long new_ProxyAudioProducerCallback();
   public final static native void delete_ProxyAudioProducerCallback(long jarg1);
   public final static native int ProxyAudioProducerCallback_prepare(long jarg1, ProxyAudioProducerCallback jarg1_, int jarg2, int jarg3, int jarg4);
@@ -421,7 +424,6 @@ public class tinyWRAPJNI {
   public final static native boolean ProxyVideoProducer_setRotation(long jarg1, ProxyVideoProducer jarg1_, int jarg2);
   public final static native boolean ProxyVideoProducer_setActualCameraOutputSize(long jarg1, ProxyVideoProducer jarg1_, long jarg2, long jarg3);
   public final static native int ProxyVideoProducer_push(long jarg1, ProxyVideoProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
-  public final static native int ProxyVideoProducer_send(long jarg1, ProxyVideoProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3, long jarg4, boolean jarg5);
   public final static native void ProxyVideoProducer_setCallback(long jarg1, ProxyVideoProducer jarg1_, long jarg2, ProxyVideoProducerCallback jarg2_);
   public final static native java.math.BigInteger ProxyVideoProducer_getMediaSessionId(long jarg1, ProxyVideoProducer jarg1_);
   public final static native boolean ProxyVideoProducer_registerPlugin();

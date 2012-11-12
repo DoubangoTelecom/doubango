@@ -66,7 +66,7 @@ typedef struct tsip_transport_ipsec_s
 }
 tsip_transport_ipsec_t;
 
-tsip_transport_ipsec_t* tsip_transport_ipsec_create(tsip_stack_t* stack, const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description);
+tsip_transport_ipsec_t* tsip_transport_ipsec_create(struct tsip_stack_s* stack, const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description);
 
 int tsip_transport_ipsec_createTempSAs(tsip_transport_ipsec_t* self);
 int tsip_transport_ipsec_ensureTempSAs(tsip_transport_ipsec_t* self, const tsip_response_t *r401_407, int64_t expires);

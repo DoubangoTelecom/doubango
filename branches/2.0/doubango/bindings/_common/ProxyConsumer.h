@@ -48,6 +48,12 @@ public:
 	virtual int start() { return -1; }
 	virtual int pause() { return -1; }
 	virtual int stop() { return -1; }
+#if !defined(SWIG)
+	// whether the audio buffer have to be stored in the JB then pulled using "ProxyAudioConsumer::pull()" or not
+	virtual bool putInJitterBuffer(){ return true; }
+	// only called if "putInJitterBuffer()" return "true"
+	virtual int consume(const void* buffer_ptr, tsk_size_t buffer_size, const tsk_object_t* proto_hdr){ return -1; }
+#endif
 };
 
 /* ============ ProxyAudioConsumer Class ================= */
@@ -176,23 +182,25 @@ class ProxyVideoFrame
 {
 public:
 #if !defined(SWIG)
-	ProxyVideoFrame(const void* pBuffer, unsigned nSize);
+	ProxyVideoFrame(const void* pBufferPtr, unsigned nBufferSize, unsigned nFrameWidth, unsigned nFrameHeight);
 #endif
 	virtual ~ProxyVideoFrame();
 
 public: /* For Java/C# applications */
 	unsigned getSize();
 	unsigned getContent(void* pOutput, unsigned nMaxsize);
+	inline unsigned getFrameWidth()const{ return m_nFrameWidth; }
+	inline unsigned getFrameHeight()const{ return m_nFrameHeight; }
 
 #if !defined(SWIG) /* For C/C++ applications */
 public:
-	inline unsigned fastGetSize()const{ return m_nSize; }
-	inline const void* fastGetContent()const{ return m_pBuffer; }
+	inline unsigned getBufferSize()const{ return m_nBufferSize; }
+	inline const void* getBufferPtr()const{ return m_pBufferPtr; }
 #endif
 
 private:
-	const void* m_pBuffer;
-	unsigned m_nSize;
+	const void* m_pBufferPtr;
+	unsigned m_nBufferSize, m_nFrameWidth, m_nFrameHeight;
 };
 
 

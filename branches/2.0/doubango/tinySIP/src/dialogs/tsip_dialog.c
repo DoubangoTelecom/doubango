@@ -31,6 +31,7 @@
 
 #include "tinysip/dialogs/tsip_dialog_layer.h"
 #include "tinysip/transactions/tsip_transac_layer.h"
+#include "tinysip/transports/tsip_transport_layer.h"
 
 #include "tinysip/transactions/tsip_transac_nict.h"
 
@@ -54,7 +55,7 @@
 int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response, tsk_bool_t acceptNewVector);
 int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* request);
 
-extern tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_t *self, tsk_bool_t lr);
+extern tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_t *self, tnet_socket_type_t type, tsk_bool_t lr);
 extern tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_t *self, const char* protocol);
 
 tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* method)
@@ -351,7 +352,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 				*/
 #if _DEBUG && defined(SDS_HACK)/* FIXME: remove this */
 				/* Ericsson SDS hack (INVITE with Proxy-CSCF as First route fail) */
-#else
+#elif 0
 				tsip_uri_t *uri = tsip_stack_get_pcscf_uri(TSIP_DIALOG_GET_STACK(self), tsk_true);
 				// Proxy-CSCF as first route
 				if(uri){
@@ -421,20 +422,41 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 				As this is an outgoing request ==> It shall be a client transaction (NICT or ICT).
 				For server transactions creation see @ref tsip_dialog_response_send.
 			*/
-			tsip_transac_t *transac = tsip_transac_layer_new(layer, tsk_true, request, TSIP_DIALOG(self));
+			const tsk_bool_t isCT = tsk_true;
+			tsip_transac_t *transac;
+			const tsk_param_t *ws_src_ip, *ws_src_port;
 
-			/* Set the transaction's dialog. All events comming from the transaction (timeouts, errors ...) will be signaled to this dialog.
-			*/
+			// TSK_DEBUG_ERROR("Code not checked");
+			if(self->uri_remote_target 
+				&& (ws_src_ip = tsk_params_get_param_by_name(self->uri_remote_target->params, "ws-src-ip")) 
+				&& (ws_src_port = tsk_params_get_param_by_name(self->uri_remote_target->params, "ws-src-port")))
+			{
+				// request->reliable
+			}
+			else{
+				// FIXME: not correct but for now it's correct as we always use ONE transport for "ua" mode
+				const tsip_transport_t* transport = tsip_transport_layer_find_by_idx(TSIP_DIALOG_GET_STACK(self)->layer_transport, TSIP_DIALOG_GET_STACK(self)->network.transport_idx_default);
+				if(!transport){
+					TSK_DEBUG_ERROR("Failed to find a valid default transport [%d]", TSIP_DIALOG_GET_STACK(self)->network.transport_idx_default);
+				}
+				else{
+					request->reliable = TNET_SOCKET_TYPE_IS_STREAM(transport->type);
+				}
+			}
+			
+			transac = tsip_transac_layer_new(layer, isCT, request, TSIP_DIALOG(self));
+
+			/* Set the transaction's dialog. All events comming from the transaction (timeouts, errors ...) will be signaled to this dialog */
 			if(transac){
 				switch(transac->type)
 				{
-				case tsip_ict:
-				case tsip_nict:
-					{
-						/* Start the newly create IC/NIC transaction */
-						ret = tsip_transac_start(transac, request);
-						break;
-					}
+					case tsip_ict:
+					case tsip_nict:
+						{
+							/* Start the newly create IC/NIC transaction */
+							ret = tsip_transac_start(transac, request);
+							break;
+						}
 				}
 				tsk_object_unref(transac);
 			}

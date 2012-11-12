@@ -460,11 +460,12 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 
 	/* Create session Manager if not already done */
 	if(!self->msession_mgr){
+		int32_t transport_idx = TSIP_DIALOG_GET_STACK(self)->network.transport_idx_default;
 		TSIP_DIALOG_GET_SS(self)->media.type = new_media_type;
-		self->msession_mgr = tmedia_session_mgr_create(TSIP_DIALOG_GET_SS(self)->media.type, TSIP_DIALOG_GET_STACK(self)->network.local_ip, 
-			TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type), (sdp_ro == tsk_null));
+		self->msession_mgr = tmedia_session_mgr_create(TSIP_DIALOG_GET_SS(self)->media.type, TSIP_DIALOG_GET_STACK(self)->network.local_ip_[transport_idx], 
+			TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type_[transport_idx]), (sdp_ro == tsk_null));
 		if(TSIP_DIALOG_GET_STACK(self)->natt.ctx){
-			tmedia_session_mgr_set_natt_ctx(self->msession_mgr, TSIP_DIALOG_GET_STACK(self)->natt.ctx, TSIP_DIALOG_GET_STACK(self)->network.aor.ip);
+			tmedia_session_mgr_set_natt_ctx(self->msession_mgr, TSIP_DIALOG_GET_STACK(self)->natt.ctx, TSIP_DIALOG_GET_STACK(self)->network.aor.ip_[transport_idx]);
 		}
 		ret = tmedia_session_mgr_set_ice_ctx(self->msession_mgr, self->ice.ctx_audio, self->ice.ctx_video);
 	}
@@ -1638,7 +1639,11 @@ static tsk_object_t* tsip_dialog_invite_ctor(tsk_object_t * self, va_list * app)
 		dialog->supported.norefersub = tsk_true;
 		dialog->required.ice = (((tsip_ssession_t*)ss)->media.profile == tmedia_profile_rtcweb);
 		dialog->supported.ice = (dialog->required.ice || ((tsip_ssession_t*)ss)->media.enable_ice);
+#if 0 /* This was a patch for chrome but no longer needed when using version 23.0.1271.64 or later */
 		dialog->ice.is_jingle = (((tsip_ssession_t*)ss)->media.profile == tmedia_profile_rtcweb);
+#else
+		dialog->ice.is_jingle = tsk_false;
+#endif
 		dialog->use_rtcp = (((tsip_ssession_t*)ss)->media.profile == tmedia_profile_rtcweb) ? tsk_true : ((tsip_ssession_t*)ss)->media.enable_rtcp;
 		dialog->use_rtcpmux = (((tsip_ssession_t*)ss)->media.profile == tmedia_profile_rtcweb) ? tsk_true : ((tsip_ssession_t*)ss)->media.enable_rtcpmux;
 

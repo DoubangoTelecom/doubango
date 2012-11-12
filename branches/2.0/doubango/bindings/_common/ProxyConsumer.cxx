@@ -98,7 +98,12 @@ int twrap_consumer_proxy_audio_consume(tmedia_consumer_t* self, const void* buff
 	if((manager = ProxyPluginMgr::getInstance())){
 		const ProxyAudioConsumer* audioConsumer;
 		if((audioConsumer = manager->findAudioConsumer(TWRAP_CONSUMER_PROXY_AUDIO(self)->id)) && audioConsumer->getCallback()){
-			ret = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(self), buffer, size, proto_hdr);
+			if(audioConsumer->getCallback()->putInJitterBuffer()){
+				ret = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(self), buffer, size, proto_hdr);
+			}
+			else{
+				ret = audioConsumer->getCallback()->consume(buffer, size, proto_hdr);
+			}
 		}
 	}
 	
@@ -450,7 +455,7 @@ int twrap_consumer_proxy_video_consume(tmedia_consumer_t* self, const void* buff
 					ret = videoConsumer->getCallback()->bufferCopied(nCopiedSize, size);
 				}
 				else{
-					ProxyVideoFrame* frame = new ProxyVideoFrame(buffer, size);
+					ProxyVideoFrame* frame = new ProxyVideoFrame(buffer, size, const_cast<ProxyVideoConsumer*>(videoConsumer)->getDecodedWidth(), const_cast<ProxyVideoConsumer*>(videoConsumer)->getDecodedHeight());
 					ret = videoConsumer->getCallback()->consume(frame);
 					delete frame, frame = tsk_null;
 				}
@@ -740,10 +745,12 @@ bool ProxyVideoConsumer::registerPlugin()
 
 
 
-ProxyVideoFrame::ProxyVideoFrame(const void* pBuffer, unsigned nSize)
+ProxyVideoFrame::ProxyVideoFrame(const void* pBufferPtr, unsigned nSize, unsigned nFrameWidth, unsigned nFrameHeight)
 {
-	m_pBuffer = pBuffer;
-	m_nSize = nSize;
+	m_pBufferPtr = pBufferPtr;
+	m_nBufferSize = nSize;
+	m_nFrameWidth = nFrameWidth;
+	m_nFrameHeight = nFrameHeight;
 }
 
 ProxyVideoFrame::~ProxyVideoFrame()
@@ -752,15 +759,15 @@ ProxyVideoFrame::~ProxyVideoFrame()
 
 unsigned ProxyVideoFrame::getSize()
 {
-	return m_nSize;
+	return m_nBufferSize;
 }
 
 unsigned ProxyVideoFrame::getContent(void* pOutput, unsigned nMaxsize)
 {
 	unsigned nRetsize = 0;
-	if(pOutput && nMaxsize && m_pBuffer){
-		nRetsize = (m_nSize > nMaxsize) ? nMaxsize : m_nSize;
-		memcpy(pOutput, m_pBuffer, nRetsize);
+	if(pOutput && nMaxsize && m_pBufferPtr){
+		nRetsize = (m_nBufferSize > nMaxsize) ? nMaxsize : m_nBufferSize;
+		memcpy(pOutput, m_pBufferPtr, nRetsize);
 	}
 	return nRetsize;
 }

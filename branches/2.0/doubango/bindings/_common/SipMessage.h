@@ -52,6 +52,7 @@ public:
 	bool isResponse();
 	tsip_request_type_t getRequestType();
 	short getResponseCode();
+	const char* getResponsePhrase();
 	char* getSipHeaderValue(const char* name, unsigned index = 0);
 	char* getSipHeaderParamValue(const char* name, const char* param, unsigned index = 0);
 	unsigned getSipContentLength();

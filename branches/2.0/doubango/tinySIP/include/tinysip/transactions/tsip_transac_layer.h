@@ -46,8 +46,6 @@ typedef struct tsip_transac_layer_s
 
 	const tsip_stack_handle_t *stack;
 
-	tsk_bool_t reliable;
-
 	tsip_transacs_L_t *transactions;
 
 	TSK_DECLARE_SAFEOBJ;

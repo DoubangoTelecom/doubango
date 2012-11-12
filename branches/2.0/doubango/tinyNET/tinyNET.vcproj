@@ -119,7 +119,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="src;&quot;..\thirdparties\win32\include&quot;;&quot;..\tinySAK\src&quot;"
-				PreprocessorDefinitions="TNET_HAVE_OPENSSL_H=1;WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYNET_EXPORTS"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_ERROR;TNET_HAVE_OPENSSL_H=1;WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYNET_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="false"
 				UsePrecompiledHeader="0"

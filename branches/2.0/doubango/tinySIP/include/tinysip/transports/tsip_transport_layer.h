@@ -52,6 +52,8 @@ typedef struct tsip_transport_layer_s
 tsip_transport_layer_t;
 
 tsip_transport_layer_t* tsip_transport_layer_create(tsip_stack_t *stack);
+const tsip_transport_t* tsip_transport_layer_find_by_type(const tsip_transport_layer_t* self, tnet_socket_type_t type);
+const tsip_transport_t* tsip_transport_layer_find_by_idx(const tsip_transport_layer_t* self, int32_t idx);
 
 int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_host, tnet_port_t local_port, tnet_socket_type_t type, const char* description);
 int tsip_transport_layer_remove(tsip_transport_layer_t* self, const char* description);

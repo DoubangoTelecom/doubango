@@ -32,8 +32,6 @@
 
 #include "tinysip_config.h"
 
-#include "tsip.h"
-
 #include "tinysip/tsip_message.h"
 
 #include "tnet_transport.h"
@@ -44,8 +42,29 @@
 
 TSIP_BEGIN_DECLS
 
-//#define TSIP_TRANSPORT_IS_SECURE(self)								(self && )
 #define TSIP_TRANSPORT(self)											((tsip_transport_t*)(self))
+
+enum {
+	TSIP_TRANSPORT_IDX_UDP,
+	TSIP_TRANSPORT_IDX_TCP,
+	TSIP_TRANSPORT_IDX_TLS,
+	TSIP_TRANSPORT_IDX_WS,
+	TSIP_TRANSPORT_IDX_WSS,
+
+	TSIP_TRANSPORT_IDX_MAX
+};
+
+typedef struct tsip_transport_idx_xs 
+{ 
+	int idx; 
+	const char* name;
+	enum tnet_socket_type_e type;
+} 
+tsip_transport_idx_xt;
+
+const tsip_transport_idx_xt* tsip_transport_get_by_name(const char* name);
+int tsip_transport_get_idx_by_name(const char* name);
+
 
 typedef struct tsip_transport_s
 {
@@ -53,7 +72,9 @@ typedef struct tsip_transport_s
 
 	tsk_bool_t initialized;
 
-	const tsip_stack_t *stack;
+	int32_t idx;
+
+	const struct tsip_stack_s *stack;
 
 	tnet_socket_type_t type;
 	struct sockaddr_storage pcscf_addr;
@@ -73,10 +94,10 @@ typedef struct tsip_transport_s
 }
 tsip_transport_t;
 
-#define TSIP_DECLARE_TRANSPORT tsip_transport_t transport
+#define TSIP_DECLARE_TRANSPORT tsip_transport_t __transport__
 typedef tsk_list_t tsip_transports_L_t; /**< List of @ref tsip_transport_t elements. */
 
-int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const tsip_stack_handle_t *stack, const char *host, tnet_port_t port, const char* description);
+int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const struct tsip_stack_s *stack, const char *host, tnet_port_t port, const char* description);
 int tsip_transport_deinit(tsip_transport_t* self);
 
 int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const char* pbk, const char* pvk);
@@ -106,7 +127,7 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
 
 #define tsip_transport_shutdown(transport)												(transport ? tnet_transport_shutdown(transport->net_transport) : -1)
 
-tsip_transport_t* tsip_transport_create(tsip_stack_t* stack, const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description);
+tsip_transport_t* tsip_transport_create(struct tsip_stack_s* stack, const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_transport_def_t;
 
