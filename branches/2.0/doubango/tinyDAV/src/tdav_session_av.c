@@ -685,7 +685,10 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 	self->remote_port = m->port;
 
 	/* RTCP-MUX */
-	self->use_rtcpmux = (tsdp_header_M_findA(m, "rtcp-mux") != tsk_null);
+	self->use_rtcpmux &= (tsdp_header_M_findA(m, "rtcp-mux") != tsk_null);
+	if(self->ice_ctx){
+		tnet_ice_ctx_set_rtcpmux(self->ice_ctx, self->use_rtcpmux);
+	}
 
 	/* SDPCapNeg: RFC 5939 */
 	{
