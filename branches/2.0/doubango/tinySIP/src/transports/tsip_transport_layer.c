@@ -54,6 +54,54 @@ tsip_transport_layer_t* tsip_transport_layer_create(tsip_stack_t *stack)
 	return tsk_object_new(tsip_transport_layer_def_t, stack);
 }
 
+const tsip_transport_t* tsip_transport_layer_find_by_type(const tsip_transport_layer_t* self, tnet_socket_type_t type)
+{
+	const tsk_list_item_t *item;
+	const tsip_transport_t* transport = tsk_null;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	tsk_list_lock(self->transports);
+
+	tsk_list_foreach(item, self->transports){
+		if(((const tsip_transport_t*)item->data)->type == type){
+			transport = ((const tsip_transport_t*)item->data);
+			break;
+		}
+	}
+
+	tsk_list_unlock(self->transports);
+
+	return transport;
+}
+
+const tsip_transport_t* tsip_transport_layer_find_by_idx(const tsip_transport_layer_t* self, int32_t idx)
+{
+	const tsk_list_item_t *item;
+	const tsip_transport_t* transport = tsk_null;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	tsk_list_lock(self->transports);
+
+	tsk_list_foreach(item, self->transports){
+		if(((const tsip_transport_t*)item->data)->idx == idx){
+			transport = ((const tsip_transport_t*)item->data);
+			break;
+		}
+	}
+
+	tsk_list_unlock(self->transports);
+
+	return transport;
+}
+
 int tsip_transport_layer_handle_incoming_msg(const tsip_transport_t *transport, tsip_message_t *message)
 {
 	int ret = -1;
@@ -190,6 +238,7 @@ parse_buffer:
 	if(message && message->firstVia && message->Call_ID && message->CSeq && message->From && message->To){
 		/* Set fd */
 		message->local_fd = e->local_fd;
+		message->reliable = tsk_true;
 		/* Alert transaction/dialog layer */
 		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
 		/* Parse next chunck */
@@ -428,6 +477,7 @@ parse_buffer:
 	if(message && message->firstVia && message->Call_ID && message->CSeq && message->From && message->To){
 		/* Set fd */
 		message->local_fd = e->local_fd;
+		message->reliable = tsk_true;
 		/* Alert transaction/dialog layer */
 		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
 		/* Parse next chunck */
@@ -506,6 +556,7 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 		/* Set local fd used to receive the message and the address of the remote peer */
 		message->local_fd = e->local_fd;
 		message->remote_addr = e->remote_addr;
+		message->reliable = tsk_false;
 
 		/* Alert transaction/dialog layer */
 		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
@@ -524,8 +575,8 @@ static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_la
 		return tsk_null;
 	}
 
-	*destIP = tsk_strdup(self->stack->network.proxy_cscf);
-	*destPort = self->stack->network.proxy_cscf_port;
+	tsk_strupdate(destIP, self->stack->network.proxy_cscf_[self->stack->network.transport_idx_default]);
+	*destPort = self->stack->network.proxy_cscf_port_[self->stack->network.transport_idx_default];
 
 	/* =========== Sending Request =========
 	*
@@ -545,7 +596,7 @@ static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_la
 					continue;
 				}
 				if(route->uri && route->uri->host){
-					*destIP = tsk_strdup(route->uri->host);
+					tsk_strupdate(destIP, route->uri->host);
 					*destPort = route->uri->port > 0 ? route->uri->port : 5060;
 					b_using_route = tsk_true;
 					break;
@@ -553,7 +604,7 @@ static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_la
 			}
 			if(!b_using_route){
 				if(dialog->uri_remote_target && dialog->uri_remote_target->host && dialog->uri_remote_target->port){
-					*destIP = tsk_strdup(dialog->uri_remote_target->host);
+					tsk_strupdate(destIP, dialog->uri_remote_target->host);
 					*destPort = dialog->uri_remote_target->port;
 				}
 			}
@@ -563,9 +614,21 @@ static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_la
 		/* Find the right transport */
 		tsk_list_foreach(item, self->transports){
 			curr = item->data;
-			if(curr->type == self->stack->network.proxy_cscf_type){
+			if(curr->type == self->stack->network.proxy_cscf_type_[self->stack->network.transport_idx_default]){
 				transport = curr;
 				break;
+			}
+		}
+
+		/* DNS NAPTR + SRV if the Proxy-CSCF is not defined and route set is empty */
+		if(transport && !(*destIP) && !self->stack->network.proxy_cscf_[self->stack->network.transport_idx_default]){
+			tnet_port_t dstPort;
+			if(tnet_dns_query_naptr_srv(self->stack->dns_ctx, msg->To->uri->host, transport->service, destIP, &dstPort) == 0){
+				*destPort = dstPort;
+			}
+			else{
+				tsk_strupdate(destIP, msg->To->uri->host);
+				*destPort = 5060;
 			}
 		}
 	}
@@ -626,7 +689,7 @@ static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_la
 							This effectively adds a new processing step between bullets two and
 							three in Section 18.2.2 of SIP [1].
 						*/
-						*destIP = tsk_strdup(msg->firstVia->received);
+						tsk_strupdate(destIP, msg->firstVia->received);
 						*destPort = msg->firstVia->rport;
 					}
 					else
@@ -640,7 +703,7 @@ static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_la
 							unreachable" response, the procedures of Section 5 of [4]
 							SHOULD be used to determine where to send the response.
 						*/
-						*destIP = tsk_strdup(msg->firstVia->received);
+						tsk_strupdate(destIP, msg->firstVia->received);
 						*destPort = msg->firstVia->port ? msg->firstVia->port : 5060;
 					}
 				}
@@ -651,7 +714,7 @@ static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_la
 						sent to the address indicated by the "sent-by" value, using the
 						procedures in Section 5 of [4].
 					*/
-					*destIP = tsk_strdup(msg->firstVia->host);
+					tsk_strupdate(destIP, msg->firstVia->host);
 					if(msg->firstVia->port >0)
 					{
 						*destPort = msg->firstVia->port;
@@ -838,6 +901,7 @@ int tsip_transport_layer_start(tsip_transport_layer_t* self)
 			int ret = 0;
 			tsk_list_item_t *item;
 			tsip_transport_t* transport;
+			int32_t transport_idx = self->stack->network.transport_idx_default;
 
 			/* start() */
 			tsk_list_foreach(item, self->transports){
@@ -863,20 +927,22 @@ int tsip_transport_layer_start(tsip_transport_layer_t* self)
 					tsip_transport_set_callback(transport, TNET_TRANSPORT_CB_F(tsip_transport_layer_stream_cb), transport);
 				}
 
-				if((ret = tnet_sockaddr_init(self->stack->network.proxy_cscf, self->stack->network.proxy_cscf_port, transport->type, &transport->pcscf_addr))){
-					TSK_DEBUG_ERROR("[%s:%u] is invalid address", self->stack->network.proxy_cscf, self->stack->network.proxy_cscf_port);
+				if((ret = tnet_sockaddr_init(self->stack->network.proxy_cscf_[transport_idx], self->stack->network.proxy_cscf_port_[transport_idx], transport->type, &transport->pcscf_addr))){
+					TSK_DEBUG_ERROR("[%s:%u] is invalid address", self->stack->network.proxy_cscf_[transport_idx], self->stack->network.proxy_cscf_port_[transport_idx]);
 					return ret;
 				}
 
 				if(TNET_SOCKET_TYPE_IS_STREAM(transport->type)){
-					if((fd = tsip_transport_connectto_2(transport, self->stack->network.proxy_cscf, self->stack->network.proxy_cscf_port)) == TNET_INVALID_FD){
-						TSK_DEBUG_ERROR("Failed to connect the SIP transport");
-						return ret;
-					}
-					if((ret = tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT))){
-						TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
-						tnet_transport_remove_socket(transport->net_transport, &fd);
-						return ret;
+					if(!TSIP_STACK_MODE_IS_SERVER(transport->stack)){
+						if((fd = tsip_transport_connectto_2(transport, self->stack->network.proxy_cscf_[transport_idx], self->stack->network.proxy_cscf_port_[transport_idx])) == TNET_INVALID_FD){
+							TSK_DEBUG_ERROR("Failed to connect the SIP transport");
+							return ret;
+						}
+						if((ret = tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT))){
+							TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
+							tnet_transport_remove_socket(transport->net_transport, &fd);
+							return ret;
+						}
 					}
 				}
 				else{

@@ -37,6 +37,8 @@
 
 TSK_BEGIN_DECLS
 
+#define TSK_OBJECT(self) ((tsk_object_t*)(self))
+
 /**@ingroup tsk_object_group
 * Plain object.
 */
@@ -51,6 +53,13 @@ typedef void tsk_object_t;
  * @param	self	The object to free or unref. 
 **/
 #define TSK_OBJECT_SAFE_FREE(self)		if(self) tsk_object_unref(self), self = tsk_null
+
+#define TSK_OBJECT_SAFE_FREE_ARRAY(self, count) { \
+	int __i; \
+	for(__i = 0; __i < (count); ++__i) \
+		TSK_OBJECT_SAFE_FREE((self)[__i]); \
+}
+#define TSK_OBJECT_SAFE_FREE_TABLE(self) TSK_OBJECT_SAFE_FREE_ARRAY((self), (sizeof((self))/sizeof((self)[0])))
 
 /**@ingroup tsk_object_group
 * tag a structure as an object. If this macro is used then you MUST

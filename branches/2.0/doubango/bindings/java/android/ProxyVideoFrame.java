@@ -43,4 +43,12 @@ public class ProxyVideoFrame {
     return tinyWRAPJNI.ProxyVideoFrame_getContent(swigCPtr, this, pOutput, nMaxsize);
   }
 
+  public long getFrameWidth() {
+    return tinyWRAPJNI.ProxyVideoFrame_getFrameWidth(swigCPtr, this);
+  }
+
+  public long getFrameHeight() {
+    return tinyWRAPJNI.ProxyVideoFrame_getFrameHeight(swigCPtr, this);
+  }
+
 }

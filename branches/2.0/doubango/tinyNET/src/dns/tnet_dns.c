@@ -741,11 +741,11 @@ int tnet_dns_query_naptr_srv(tnet_dns_ctx_t *ctx, const char* domain, const char
 				*port = 5060;
 			}
 			else{
-				TSK_DEBUG_ERROR("DNS NAPTR query returned invalid falgs.");
+				TSK_DEBUG_ERROR("DNS NAPTR query returned invalid flags");
 			}
 		}
 		else{
-			TSK_DEBUG_ERROR("DNS NAPTR query returned zero result.");
+			TSK_DEBUG_INFO("DNS NAPTR (%s) query returned zero result", domain);
 		}
 
 		TSK_FREE(flags);

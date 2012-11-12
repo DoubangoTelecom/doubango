@@ -35,15 +35,6 @@ bool SipStack::g_bInitialized = false;
 static int stack_callback(const tsip_event_t *sipevent);
 static int session_handle_event(const tsip_event_t *sipevent);
 
-/* === default values === */
-#ifndef DEFAULT_LOCAL_IP
-//#	ifdef ANDROID /* On the emulator */
-//#		define DEFAULT_LOCAL_IP	"10.0.2.15"
-//#	else
-#		define DEFAULT_LOCAL_IP	TNET_SOCKET_HOST_ANY
-//#	endif
-#endif
-
 SipStack::SipStack(SipCallback* pCallback, const char* realm_uri, const char* impi_uri, const char* impu_uri)
 :SafeObject()
 {
@@ -57,7 +48,6 @@ SipStack::SipStack(SipCallback* pCallback, const char* realm_uri, const char* im
 
 	/* Creates stack handle */
 	m_pHandle = tsip_stack_create(stack_callback, realm_uri, impi_uri, impu_uri,
-			TSIP_STACK_SET_LOCAL_IP(DEFAULT_LOCAL_IP),
 			TSIP_STACK_SET_USERDATA(this), /* used as context (useful for server-initiated requests) */
 			TSIP_STACK_SET_NULL());
 }
@@ -207,10 +197,10 @@ bool SipStack::setAoR(const char* ip, int port)
 		TSIP_STACK_SET_NULL()) == 0);
 }
 
-bool SipStack::setModeServer()
+bool SipStack::setMode(enum tsip_stack_mode_e mode)
 {
 	return (tsip_stack_set(m_pHandle,
-		TSIP_STACK_SET_MODE_SERVER(),
+		TSIP_STACK_SET_MODE(mode),
 		TSIP_STACK_SET_NULL()) == 0); 
 }
 

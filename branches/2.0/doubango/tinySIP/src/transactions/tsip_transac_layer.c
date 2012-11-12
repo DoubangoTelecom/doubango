@@ -57,22 +57,22 @@ tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_boo
 			{
 				if(TSIP_REQUEST_IS_INVITE(msg)){
 					// INVITE Client transaction (ICT)
-					transac = (tsip_transac_t *)tsip_transac_ict_create(self->reliable, msg->CSeq->seq, msg->Call_ID->value, dialog);
+					transac = (tsip_transac_t *)tsip_transac_ict_create(msg->reliable, msg->CSeq->seq, msg->Call_ID->value, dialog);
 				}
 				else{
 					// NON-INVITE Client transaction (NICT)
-					transac = (tsip_transac_t *)tsip_transac_nict_create(self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value, dialog);
+					transac = (tsip_transac_t *)tsip_transac_nict_create(msg->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value, dialog);
 				}
 			}
 			else	/* Server transaction */
 			{
 				if(TSIP_REQUEST_IS_INVITE(msg)){
 					// INVITE Server transaction (IST)
-					transac = (tsip_transac_t *)tsip_transac_ist_create(self->reliable, msg->CSeq->seq, msg->Call_ID->value, dialog);
+					transac = (tsip_transac_t *)tsip_transac_ist_create(msg->reliable, msg->CSeq->seq, msg->Call_ID->value, dialog);
 				}
 				else{
 					// NON-INVITE Server transaction (NIST)
-					transac = (tsip_transac_t *)tsip_transac_nist_create(self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value, dialog);
+					transac = (tsip_transac_t *)tsip_transac_nist_create(msg->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value, dialog);
 				}
 				
 				if(transac){ /* Copy branch from the message */

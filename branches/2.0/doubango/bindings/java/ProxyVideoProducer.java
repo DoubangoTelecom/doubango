@@ -51,10 +51,6 @@ public class ProxyVideoProducer extends ProxyPlugin {
     return tinyWRAPJNI.ProxyVideoProducer_push(swigCPtr, this, pBuffer, nSize);
   }
 
-  public int send(java.nio.ByteBuffer pBuffer, long nSize, long nDuration, boolean bMarker) {
-    return tinyWRAPJNI.ProxyVideoProducer_send(swigCPtr, this, pBuffer, nSize, nDuration, bMarker);
-  }
-
   public void setCallback(ProxyVideoProducerCallback pCallback) {
     tinyWRAPJNI.ProxyVideoProducer_setCallback(swigCPtr, this, ProxyVideoProducerCallback.getCPtr(pCallback), pCallback);
   }

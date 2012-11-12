@@ -73,7 +73,7 @@ int tsip_transac_deinit(tsip_transac_t *self)
 		TSK_OBJECT_SAFE_FREE(self->dialog);
 
 		self->initialized = tsk_false;
-
+		
 		return 0;
 	}
 	return -1;
@@ -129,14 +129,29 @@ int tsip_transac_cmp(const tsip_transac_t *t1, const tsip_transac_t *t2)
 
 int tsip_transac_remove(const tsip_transac_t* self)
 {
-	return tsip_transac_layer_remove(TSIP_TRANSAC_GET_STACK(self)->layer_transac, TSIP_TRANSAC(self));
+	int ret;
+	tsip_transac_t* safe_copy;
+	
+	safe_copy = (tsip_transac_t*)tsk_object_ref(TSK_OBJECT(self));
+	ret = tsip_transac_layer_remove(TSIP_TRANSAC_GET_STACK(self)->layer_transac, safe_copy);
+	tsk_object_unref(safe_copy);
+	
+	return ret;
 }
 
 int tsip_transac_fsm_act(tsip_transac_t* self, tsk_fsm_action_id action_id, const tsip_message_t* message)
 {
+	int ret;
+	tsip_transac_t* safe_copy;
+
 	if(!self || !self->fsm){
 		TSK_DEBUG_WARN("Invalid parameter.");
 		return -1;
 	}
-	return tsk_fsm_act(self->fsm, action_id, self, message, self, message);
+
+	safe_copy = tsk_object_ref(TSK_OBJECT(self));
+	ret = tsk_fsm_act(self->fsm, action_id, safe_copy, message, self, message);
+	tsk_object_unref(safe_copy);
+
+	return ret;
 }

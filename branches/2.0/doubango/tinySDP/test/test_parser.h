@@ -65,8 +65,29 @@
 #define SDP_MSG2 \
 	"v=0\r\n"
 
+#define SDP_MSG3 \
+	"v=0\r\n" \
+	"o=lgevcs 1 1 IN IP4 192.168.1.115\r\n" \
+	"s=-\r\n" \
+	"c=IN IP4 192.168.1.115\r\n" \
+	"b=AS:512\r\n" \
+	"t=0 0\r\n" \
+	"m=audio 2000 RTP/AVP 9 8 0 101\r\n" \
+	"a=rtpmap:9 G722/8000\r\n" \
+	"a=rtpmap:8 PCMA/8000\r\n" \
+	"a=rtpmap:0 PCMU/8000\r\n" \
+	"a=rtpmap:101 telephone-event/8000\r\n" \
+	"a=fmtp:101 0-11,16\r\n" \
+	"a=sendrecv\r\n" \
+	"m=video 2002 RTP/AVP 34\r\n" \
+	"b=TIAS:512000\r\n" \
+	"a=content:main\r\n" \
+	"a=rtpmap:34 H263/90000\r\n" \
+	"a=fmtp:34 CIF=2\r\n" \
+	"a=sendrecv\r\n"
 
-#define SDP_MSG_TO_TEST SDP_MSG1
+
+#define SDP_MSG_TO_TEST SDP_MSG3
 
 void test_caps();
 void test_holdresume();
@@ -101,7 +122,7 @@ void test_parser()
 	//
 	// create empty message
 	//
-	if((message = tsdp_message_create_empty("127.0.0.1", tsk_false))){
+	if((message = tsdp_message_create_empty("127.0.0.1", tsk_false, 1))){
 
 		/* add media */
 		tsdp_message_add_media(message, "audio", 8956, "RTP/AVP",
@@ -146,7 +167,7 @@ void test_caps()
 	tsdp_message_t *message = tsk_null;
 	char* str;
 	
-	if((message = tsdp_message_create_empty("100.3.6.6", tsk_false))){
+	if((message = tsdp_message_create_empty("100.3.6.6", tsk_false, 1))){
 
 		tsdp_message_add_headers(message,
 			TSDP_HEADER_C_VA_ARGS("IN", "IP4", "192.0.2.4"),

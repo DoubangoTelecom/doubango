@@ -515,6 +515,7 @@ class SipMessage(_object):
     def isResponse(self): return _tinyWRAP.SipMessage_isResponse(self)
     def getRequestType(self): return _tinyWRAP.SipMessage_getRequestType(self)
     def getResponseCode(self): return _tinyWRAP.SipMessage_getResponseCode(self)
+    def getResponsePhrase(self): return _tinyWRAP.SipMessage_getResponsePhrase(self)
     def getSipHeaderValue(self, *args): return _tinyWRAP.SipMessage_getSipHeaderValue(self, *args)
     def getSipHeaderParamValue(self, *args): return _tinyWRAP.SipMessage_getSipHeaderParamValue(self, *args)
     def getSipContentLength(self): return _tinyWRAP.SipMessage_getSipContentLength(self)
@@ -1161,6 +1162,8 @@ class ProxyVideoFrame(_object):
     __del__ = lambda self : None;
     def getSize(self): return _tinyWRAP.ProxyVideoFrame_getSize(self)
     def getContent(self, *args): return _tinyWRAP.ProxyVideoFrame_getContent(self, *args)
+    def getFrameWidth(self): return _tinyWRAP.ProxyVideoFrame_getFrameWidth(self)
+    def getFrameHeight(self): return _tinyWRAP.ProxyVideoFrame_getFrameHeight(self)
 ProxyVideoFrame_swigregister = _tinyWRAP.ProxyVideoFrame_swigregister
 ProxyVideoFrame_swigregister(ProxyVideoFrame)
 
@@ -1260,7 +1263,6 @@ class ProxyVideoProducer(ProxyPlugin):
     def setRotation(self, *args): return _tinyWRAP.ProxyVideoProducer_setRotation(self, *args)
     def setActualCameraOutputSize(self, *args): return _tinyWRAP.ProxyVideoProducer_setActualCameraOutputSize(self, *args)
     def push(self, *args): return _tinyWRAP.ProxyVideoProducer_push(self, *args)
-    def send(self, *args): return _tinyWRAP.ProxyVideoProducer_send(self, *args)
     def setCallback(self, *args): return _tinyWRAP.ProxyVideoProducer_setCallback(self, *args)
     def getMediaSessionId(self): return _tinyWRAP.ProxyVideoProducer_getMediaSessionId(self)
     __swig_getmethods__["registerPlugin"] = lambda x: _tinyWRAP.ProxyVideoProducer_registerPlugin
@@ -1419,6 +1421,10 @@ def SipStack_isCodecSupported(*args):
   return _tinyWRAP.SipStack_isCodecSupported(*args)
 SipStack_isCodecSupported = _tinyWRAP.SipStack_isCodecSupported
 
+tsip_stack_mode_ua = _tinyWRAP.tsip_stack_mode_ua
+tsip_stack_mode_p2p = _tinyWRAP.tsip_stack_mode_p2p
+tsip_stack_mode_mediaproxy = _tinyWRAP.tsip_stack_mode_mediaproxy
+tsip_stack_mode_mcu = _tinyWRAP.tsip_stack_mode_mcu
 tsip_NONE = _tinyWRAP.tsip_NONE
 tsip_ACK = _tinyWRAP.tsip_ACK
 tsip_BYE = _tinyWRAP.tsip_BYE

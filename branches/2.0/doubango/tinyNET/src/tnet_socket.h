@@ -102,7 +102,8 @@ tnet_socket_type_t;
 /**@def TNET_SOCKET_IS_VALID
 * Checks the socket validity.
 */
-#define TNET_SOCKET_IS_VALID(socket)		((socket) && (socket->type !=tnet_socket_type_invalid) && (socket)->fd >0)
+#define TNET_SOCKET_IS_VALID(socket)		((socket) && TNET_SOCKET_TYPE_IS_VALID((socket)->type) && (socket)->fd >0)
+#define TNET_SOCKET_TYPE_IS_VALID(type)		((type) !=tnet_socket_type_invalid)
 
 #define TNET_SOCKET_TYPE_IS_STREAM(type)	( ((type & TNET_SOCKET_TYPE_UDP) !=  TNET_SOCKET_TYPE_UDP) )
 #define TNET_SOCKET_TYPE_IS_DGRAM(type)		( ((type & TNET_SOCKET_TYPE_UDP) ==  TNET_SOCKET_TYPE_UDP) )
@@ -152,7 +153,7 @@ tnet_socket_type_t;
 * @def TNET_SOCKET_PORT_ANY
 * Any port.
 */
-#define TNET_SOCKET_HOST_ANY 0
+#define TNET_SOCKET_HOST_ANY tsk_null
 #define TNET_SOCKET_PORT_ANY 0
 
 /**

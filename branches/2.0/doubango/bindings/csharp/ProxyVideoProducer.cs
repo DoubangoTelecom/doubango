@@ -60,11 +60,6 @@ public class ProxyVideoProducer : ProxyPlugin {
     return ret;
   }
 
-  public int send(IntPtr pBuffer, uint nSize, uint nDuration, bool bMarker) {
-    int ret = tinyWRAPPINVOKE.ProxyVideoProducer_send(swigCPtr, pBuffer, nSize, nDuration, bMarker);
-    return ret;
-  }
-
   public void setCallback(ProxyVideoProducerCallback pCallback) {
     tinyWRAPPINVOKE.ProxyVideoProducer_setCallback(swigCPtr, ProxyVideoProducerCallback.getCPtr(pCallback));
   }

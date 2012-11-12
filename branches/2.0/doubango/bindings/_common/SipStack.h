@@ -55,7 +55,7 @@ public: /* API functions */
 	bool setDnsDiscovery(bool enabled);
 	bool setAoR(const char* ip, int port);
 #if !defined(SWIG)
-	bool setModeServer();
+	bool setMode(enum tsip_stack_mode_e mode);
 #endif
 
 	bool setSigCompParams(unsigned dms, unsigned sms, unsigned cpb, bool enablePresDict);

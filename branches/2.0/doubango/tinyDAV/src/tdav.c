@@ -308,12 +308,13 @@ static tdav_codec_decl_t __codecs[] = {
 #if HAVE_BV16
 	{ tdav_codec_id_bv16, &tdav_codec_bv16_plugin_def_t },
 #endif
+	{ tdav_codec_id_pcmu, &tdav_codec_g711u_plugin_def_t },
 #if HAVE_LIBGSM
 	{ tdav_codec_id_gsm, &tdav_codec_gsm_plugin_def_t },
 #endif
 	{ tdav_codec_id_pcma, &tdav_codec_g711a_plugin_def_t },
-	{ tdav_codec_id_pcmu, &tdav_codec_g711u_plugin_def_t },
 	{ tdav_codec_id_g722, &tdav_codec_g722_plugin_def_t },
+
 #if HAVE_ILBC
 	{ tdav_codec_id_ilbc, &tdav_codec_ilbc_plugin_def_t },
 #endif

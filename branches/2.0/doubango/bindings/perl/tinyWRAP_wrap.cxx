@@ -1597,18 +1597,19 @@ SWIG_Perl_SetModule(swig_module_info *module) {
 #define SWIGTYPE_p_tsip_publish_event_type_e swig_types[80]
 #define SWIGTYPE_p_tsip_register_event_type_e swig_types[81]
 #define SWIGTYPE_p_tsip_request_type_e swig_types[82]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[83]
-#define SWIGTYPE_p_tsk_list_t swig_types[84]
-#define SWIGTYPE_p_twrap_media_type_e swig_types[85]
-#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[86]
-#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[87]
-#define SWIGTYPE_p_twrap_sms_type_e swig_types[88]
-#define SWIGTYPE_p_unsigned_char swig_types[89]
-#define SWIGTYPE_p_unsigned_int swig_types[90]
-#define SWIGTYPE_p_unsigned_long_long swig_types[91]
-#define SWIGTYPE_p_unsigned_short swig_types[92]
-static swig_type_info *swig_types[94];
-static swig_module_info swig_module = {swig_types, 93, 0, 0, 0, 0};
+#define SWIGTYPE_p_tsip_stack_mode_e swig_types[83]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[84]
+#define SWIGTYPE_p_tsk_list_t swig_types[85]
+#define SWIGTYPE_p_twrap_media_type_e swig_types[86]
+#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[87]
+#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[88]
+#define SWIGTYPE_p_twrap_sms_type_e swig_types[89]
+#define SWIGTYPE_p_unsigned_char swig_types[90]
+#define SWIGTYPE_p_unsigned_int swig_types[91]
+#define SWIGTYPE_p_unsigned_long_long swig_types[92]
+#define SWIGTYPE_p_unsigned_short swig_types[93]
+static swig_type_info *swig_types[95];
+static swig_module_info swig_module = {swig_types, 94, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -6266,6 +6267,34 @@ XS(_wrap_SipMessage_getResponseCode) {
     arg1 = reinterpret_cast< SipMessage * >(argp1);
     result = (short)(arg1)->getResponseCode();
     ST(argvi) = SWIG_From_short  SWIG_PERL_CALL_ARGS_1(static_cast< short >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipMessage_getResponsePhrase) {
+  {
+    SipMessage *arg1 = (SipMessage *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: SipMessage_getResponsePhrase(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipMessage, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipMessage_getResponsePhrase" "', argument " "1"" of type '" "SipMessage *""'"); 
+    }
+    arg1 = reinterpret_cast< SipMessage * >(argp1);
+    result = (char *)(arg1)->getResponsePhrase();
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
     
     XSRETURN(argvi);
   fail:
@@ -17914,6 +17943,62 @@ XS(_wrap_ProxyVideoFrame_getContent) {
 }
 
 
+XS(_wrap_ProxyVideoFrame_getFrameWidth) {
+  {
+    ProxyVideoFrame *arg1 = (ProxyVideoFrame *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    unsigned int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoFrame_getFrameWidth(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoFrame, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoFrame_getFrameWidth" "', argument " "1"" of type '" "ProxyVideoFrame const *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoFrame * >(argp1);
+    result = (unsigned int)((ProxyVideoFrame const *)arg1)->getFrameWidth();
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoFrame_getFrameHeight) {
+  {
+    ProxyVideoFrame *arg1 = (ProxyVideoFrame *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    unsigned int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoFrame_getFrameHeight(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoFrame, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoFrame_getFrameHeight" "', argument " "1"" of type '" "ProxyVideoFrame const *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoFrame * >(argp1);
+    result = (unsigned int)((ProxyVideoFrame const *)arg1)->getFrameHeight();
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_new_ProxyAudioProducerCallback) {
   {
     int argvi = 0;
@@ -19106,72 +19191,6 @@ XS(_wrap_ProxyVideoProducer_push) {
     
     XSRETURN(argvi);
   fail:
-    
-    
-    
-    SWIG_croak_null();
-  }
-}
-
-
-XS(_wrap_ProxyVideoProducer_send) {
-  {
-    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
-    void *arg2 = (void *) 0 ;
-    unsigned int arg3 ;
-    unsigned int arg4 ;
-    bool arg5 ;
-    void *argp1 = 0 ;
-    int res1 = 0 ;
-    int res2 ;
-    unsigned int val3 ;
-    int ecode3 = 0 ;
-    unsigned int val4 ;
-    int ecode4 = 0 ;
-    bool val5 ;
-    int ecode5 = 0 ;
-    int argvi = 0;
-    int result;
-    dXSARGS;
-    
-    if ((items < 5) || (items > 5)) {
-      SWIG_croak("Usage: ProxyVideoProducer_send(self,pBuffer,nSize,nDuration,bMarker);");
-    }
-    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_send" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
-    }
-    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
-    res2 = SWIG_ConvertPtr(ST(1),SWIG_as_voidptrptr(&arg2), 0, 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ProxyVideoProducer_send" "', argument " "2"" of type '" "void const *""'"); 
-    }
-    ecode3 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
-    if (!SWIG_IsOK(ecode3)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyVideoProducer_send" "', argument " "3"" of type '" "unsigned int""'");
-    } 
-    arg3 = static_cast< unsigned int >(val3);
-    ecode4 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
-    if (!SWIG_IsOK(ecode4)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyVideoProducer_send" "', argument " "4"" of type '" "unsigned int""'");
-    } 
-    arg4 = static_cast< unsigned int >(val4);
-    ecode5 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(4), &val5);
-    if (!SWIG_IsOK(ecode5)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "ProxyVideoProducer_send" "', argument " "5"" of type '" "bool""'");
-    } 
-    arg5 = static_cast< bool >(val5);
-    result = (int)(arg1)->send((void const *)arg2,arg3,arg4,arg5);
-    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
-    
-    
-    
-    
-    
-    XSRETURN(argvi);
-  fail:
-    
-    
     
     
     
@@ -25139,6 +25158,7 @@ static swig_type_info _swigt__p_tsip_options_event_type_e = {"_p_tsip_options_ev
 static swig_type_info _swigt__p_tsip_publish_event_type_e = {"_p_tsip_publish_event_type_e", "enum tsip_publish_event_type_e *|tsip_publish_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_register_event_type_e = {"_p_tsip_register_event_type_e", "enum tsip_register_event_type_e *|tsip_register_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_request_type_e = {"_p_tsip_request_type_e", "enum tsip_request_type_e *|tsip_request_type_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_tsip_stack_mode_e = {"_p_tsip_stack_mode_e", "enum tsip_stack_mode_e *|tsip_stack_mode_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_subscribe_event_type_e = {"_p_tsip_subscribe_event_type_e", "enum tsip_subscribe_event_type_e *|tsip_subscribe_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsk_list_t = {"_p_tsk_list_t", "twrap_xcap_steps_L_t *|twrap_proxy_plungins_L_t *|tsk_list_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_twrap_media_type_e = {"_p_twrap_media_type_e", "enum twrap_media_type_e *|twrap_media_type_t *", 0, 0, (void*)0, 0};
@@ -25234,6 +25254,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_tsip_publish_event_type_e,
   &_swigt__p_tsip_register_event_type_e,
   &_swigt__p_tsip_request_type_e,
+  &_swigt__p_tsip_stack_mode_e,
   &_swigt__p_tsip_subscribe_event_type_e,
   &_swigt__p_tsk_list_t,
   &_swigt__p_twrap_media_type_e,
@@ -25329,6 +25350,7 @@ static swig_cast_info _swigc__p_tsip_options_event_type_e[] = {  {&_swigt__p_tsi
 static swig_cast_info _swigc__p_tsip_publish_event_type_e[] = {  {&_swigt__p_tsip_publish_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_register_event_type_e[] = {  {&_swigt__p_tsip_register_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_request_type_e[] = {  {&_swigt__p_tsip_request_type_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_tsip_stack_mode_e[] = {  {&_swigt__p_tsip_stack_mode_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_subscribe_event_type_e[] = {  {&_swigt__p_tsip_subscribe_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsk_list_t[] = {  {&_swigt__p_tsk_list_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_twrap_media_type_e[] = {  {&_swigt__p_twrap_media_type_e, 0, 0, 0},{0, 0, 0, 0}};
@@ -25424,6 +25446,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_tsip_publish_event_type_e,
   _swigc__p_tsip_register_event_type_e,
   _swigc__p_tsip_request_type_e,
+  _swigc__p_tsip_stack_mode_e,
   _swigc__p_tsip_subscribe_event_type_e,
   _swigc__p_tsk_list_t,
   _swigc__p_twrap_media_type_e,
@@ -25556,6 +25579,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SipMessage_isResponse", _wrap_SipMessage_isResponse},
 {"tinyWRAPc::SipMessage_getRequestType", _wrap_SipMessage_getRequestType},
 {"tinyWRAPc::SipMessage_getResponseCode", _wrap_SipMessage_getResponseCode},
+{"tinyWRAPc::SipMessage_getResponsePhrase", _wrap_SipMessage_getResponsePhrase},
 {"tinyWRAPc::SipMessage_getSipHeaderValue", _wrap_SipMessage_getSipHeaderValue},
 {"tinyWRAPc::SipMessage_getSipHeaderParamValue", _wrap_SipMessage_getSipHeaderParamValue},
 {"tinyWRAPc::SipMessage_getSipContentLength", _wrap_SipMessage_getSipContentLength},
@@ -25738,6 +25762,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::delete_ProxyVideoFrame", _wrap_delete_ProxyVideoFrame},
 {"tinyWRAPc::ProxyVideoFrame_getSize", _wrap_ProxyVideoFrame_getSize},
 {"tinyWRAPc::ProxyVideoFrame_getContent", _wrap_ProxyVideoFrame_getContent},
+{"tinyWRAPc::ProxyVideoFrame_getFrameWidth", _wrap_ProxyVideoFrame_getFrameWidth},
+{"tinyWRAPc::ProxyVideoFrame_getFrameHeight", _wrap_ProxyVideoFrame_getFrameHeight},
 {"tinyWRAPc::new_ProxyAudioProducerCallback", _wrap_new_ProxyAudioProducerCallback},
 {"tinyWRAPc::delete_ProxyAudioProducerCallback", _wrap_delete_ProxyAudioProducerCallback},
 {"tinyWRAPc::ProxyAudioProducerCallback_prepare", _wrap_ProxyAudioProducerCallback_prepare},
@@ -25764,7 +25790,6 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::ProxyVideoProducer_setRotation", _wrap_ProxyVideoProducer_setRotation},
 {"tinyWRAPc::ProxyVideoProducer_setActualCameraOutputSize", _wrap_ProxyVideoProducer_setActualCameraOutputSize},
 {"tinyWRAPc::ProxyVideoProducer_push", _wrap_ProxyVideoProducer_push},
-{"tinyWRAPc::ProxyVideoProducer_send", _wrap_ProxyVideoProducer_send},
 {"tinyWRAPc::ProxyVideoProducer_setCallback", _wrap_ProxyVideoProducer_setCallback},
 {"tinyWRAPc::ProxyVideoProducer_getMediaSessionId", _wrap_ProxyVideoProducer_getMediaSessionId},
 {"tinyWRAPc::ProxyVideoProducer_registerPlugin", _wrap_ProxyVideoProducer_registerPlugin},
@@ -26326,6 +26351,26 @@ XS(SWIG_init) {
   SWIG_TypeClientData(SWIGTYPE_p_SipCallback, (void*) "tinyWRAP::SipCallback");
   SWIG_TypeClientData(SWIGTYPE_p_SafeObject, (void*) "tinyWRAP::SafeObject");
   SWIG_TypeClientData(SWIGTYPE_p_SipStack, (void*) "tinyWRAP::SipStack");
+  /*@SWIG:/usr/local/share/swig/2.0.8/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tsip_stack_mode_ua", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_stack_mode_ua)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.8/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tsip_stack_mode_p2p", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_stack_mode_p2p)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.8/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tsip_stack_mode_mediaproxy", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_stack_mode_mediaproxy)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.8/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tsip_stack_mode_mcu", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_stack_mode_mcu)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/2.0.8/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_NONE", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_NONE)));

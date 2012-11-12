@@ -39,7 +39,7 @@
 
 #include "tnet_poll.h"
 
-#define TNET_MAX_FDS		64
+#define TNET_MAX_FDS		1024
 
 /*== Socket description ==*/
 typedef struct transport_socket_s

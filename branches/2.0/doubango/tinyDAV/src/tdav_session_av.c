@@ -436,6 +436,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			if(self->media_type == tmedia_audio){
 				tsdp_header_M_add_headers(base->M.lo,
 					TSDP_HEADER_A_VA_ARGS("ptime", "20"),
+					TSDP_HEADER_A_VA_ARGS("silenceSupp", "off - - - -"),
 					tsk_null);
 				// the "telephone-event" fmt/rtpmap is added below
 			}
@@ -581,7 +582,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 				// RTCWeb
 				tsdp_header_M_add_headers(base->M.lo,
 					TSDP_HEADER_A_VA_ARGS("mid", self->media_type == tmedia_audio ? "audio" : "video"),
-						tsk_null);				
+						tsk_null);	
 				
 				while((candidate = tnet_ice_ctx_get_local_candidate_at(self->ice_ctx, index++))){
 					if(self->use_rtcpmux && remote_use_rtcpmux && candidate->comp_id == TNET_ICE_CANDIDATE_COMPID_RTCP){

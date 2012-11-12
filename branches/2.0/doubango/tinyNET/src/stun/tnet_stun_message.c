@@ -143,17 +143,6 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 		TSK_OBJECT_SAFE_FREE(attribute);
 	}
 
-	/*=== Attributes === */
-	{
-		tsk_list_item_t *item;
-		tsk_list_foreach(item, self->attributes)
-		{
-			attribute = item->data;
-			tnet_stun_attribute_serialize(attribute, output);
-			tnet_stun_attribute_pad(attribute, output);
-		}
-	}
-
 	/* AUTHENTICATION */
 	if(self->realm && self->nonce){ // long term
 		SERIALIZE_N_ADD_ATTRIBUTE(realm, self->realm, tsk_strlen(self->realm));
@@ -167,6 +156,17 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 
 	if(compute_integrity && self->username){
 		SERIALIZE_N_ADD_ATTRIBUTE(username, self->username, tsk_strlen(self->username));
+	}
+
+	/*=== Attributes === */
+	{
+		tsk_list_item_t *item;
+		tsk_list_foreach(item, self->attributes)
+		{
+			attribute = item->data;
+			tnet_stun_attribute_serialize(attribute, output);
+			tnet_stun_attribute_pad(attribute, output);
+		}
 	}
 
 	/* Message Length: The message length MUST contain the size, in bytes, of the message
@@ -214,6 +214,9 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 		SERIALIZE_N_ADD_ATTRIBUTE(integrity, hmac, TSK_SHA1_DIGEST_SIZE);
 	}
 
+	// LENGTH
+	*(((uint16_t*)output->data) + 1)  = tnet_htons((output->size - TNET_STUN_HEADER_SIZE + (self->fingerprint ? 8 : 0)));
+
 	/* FINGERPRINT */
 	if(self->fingerprint){//JINGLE_ICE
 		/*	RFC 5389 - 15.5.  FINGERPRINT
@@ -230,9 +233,6 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 		tnet_stun_attribute_serialize(attribute, output);
 		TSK_OBJECT_SAFE_FREE(attribute);
 	}
-
-	// LENGTH
-	*(((uint16_t*)output->data)+1)  = tnet_htons(((output->size) - TNET_STUN_HEADER_SIZE));
 
 bail:
 	return output;
@@ -457,14 +457,14 @@ static tsk_object_t* tnet_stun_message_ctor(tsk_object_t * self, va_list * app)
 
 		message->fingerprint = 1;
 		message->integrity = 0;
-
+		
 		{	/* Create random transaction id */
 			tsk_istr_t random;
 			tsk_md5digest_t digest;
 
 			tsk_strrandom(&random);
 			TSK_MD5_DIGEST_CALC(random, sizeof(random), digest);
-
+			
 			memcpy(message->transaction_id, digest, TNET_STUN_TRANSACID_SIZE);
 		}
 	}

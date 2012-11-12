@@ -224,7 +224,7 @@ static tsk_object_t* tnet_socket_ctor(tsk_object_t * self, va_list * app)
 			if(bindsocket){
 				/* Bind the socket */
 				if((status = bind(sock->fd, ptr->ai_addr, ptr->ai_addrlen))){
-					TNET_PRINT_LAST_ERROR("bind have failed.");
+					TNET_PRINT_LAST_ERROR("bind to [%s:%s]have failed", local_hostname, port);
 					tnet_socket_close(sock);
 					continue;
 				}

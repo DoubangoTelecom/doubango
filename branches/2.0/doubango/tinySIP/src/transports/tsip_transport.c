@@ -1,8 +1,7 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2012 Doubango Telecom
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
@@ -23,9 +22,6 @@
 /**@file tsip_transport.c
  * @brief SIP transport.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinysip/transports/tsip_transport.h"
 
@@ -39,10 +35,48 @@
 #include "tsk_buffer.h"
 #include "tsk_debug.h"
 
+
+static const tsip_transport_idx_xt _tsip_transport_idxs_xs[TSIP_TRANSPORT_IDX_MAX] =
+{
+	{ TSIP_TRANSPORT_IDX_UDP, "UDP", TNET_SOCKET_TYPE_UDP },
+	{ TSIP_TRANSPORT_IDX_TCP, "TCP", TNET_SOCKET_TYPE_TCP },
+	{ TSIP_TRANSPORT_IDX_TLS, "TLS", TNET_SOCKET_TYPE_TLS },
+	{ TSIP_TRANSPORT_IDX_WS, "WS", TNET_SOCKET_TYPE_WS },
+	{ TSIP_TRANSPORT_IDX_WSS, "WSS", TNET_SOCKET_TYPE_WSS },
+};
+
+const tsip_transport_idx_xt* tsip_transport_get_by_name(const char* name)
+{
+	int i;
+	for(i = 0; i < TSIP_TRANSPORT_IDX_MAX; ++i){
+		if(tsk_striequals(_tsip_transport_idxs_xs[i].name, name)){
+			return &_tsip_transport_idxs_xs[i];
+		}
+	}
+	return tsk_null;
+}
+
+// returns -1 if not exist
+int tsip_transport_get_idx_by_name(const char* name)
+{
+	const tsip_transport_idx_xt* t_idx = tsip_transport_get_by_name(name);
+	return t_idx? t_idx->idx : -1;
+}
+
 /* creates new SIP transport */
 tsip_transport_t* tsip_transport_create(tsip_stack_t* stack, const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description)
 {
-	return tsk_object_new(tsip_transport_def_t, stack, host, port, type, description);
+	tsip_transport_t* transport;
+	if((transport = tsk_object_new(tsip_transport_def_t, stack, host, port, type, description))){
+		int i;
+		for(i = 0; i < sizeof(_tsip_transport_idxs_xs)/sizeof(_tsip_transport_idxs_xs[0]); ++i){
+			if(_tsip_transport_idxs_xs[i].type & type){
+				transport->idx = _tsip_transport_idxs_xs[i].idx;
+				break;
+			}
+		}
+	}
+	return transport;
 }
 
 /* add Via header using the transport config */
@@ -107,14 +141,17 @@ int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip
 int tsip_transport_msg_update_aor(tsip_transport_t* self, tsip_message_t *msg)
 {
 	int ret = 0;
+	int32_t transport_idx;
 
 	/* already updtated (e.g. retrans)? */
 	if(!msg->update){
 		return 0;
 	}
-	
+
+	transport_idx = self->stack->network.transport_idx_default;
+
 	/* retrieves the transport ip address and port */
-	if(!self->stack->network.aor.ip && !self->stack->network.aor.port){
+	if(!self->stack->network.aor.ip_[0] && !self->stack->network.aor.port_[transport_idx]){
 		tnet_ip_t ip = {0};
 		tnet_port_t port = 0;
 		
@@ -123,16 +160,16 @@ int tsip_transport_msg_update_aor(tsip_transport_t* self, tsip_message_t *msg)
 			return ret;
 		}
 		else{
-			((tsip_stack_t*)self->stack)->network.aor.ip = tsk_strdup(ip);
-			((tsip_stack_t*)self->stack)->network.aor.port = port;
+			((tsip_stack_t*)self->stack)->network.aor.ip_[transport_idx] = tsk_strdup(ip);
+			((tsip_stack_t*)self->stack)->network.aor.port_[transport_idx] = port;
 		}
 	}
 
 	/* === Host and port === */
 	if(msg->Contact && msg->Contact->uri){
 		tsk_strupdate(&(msg->Contact->uri->scheme), self->scheme);
-		tsk_strupdate(&(msg->Contact->uri->host), self->stack->network.aor.ip);
-		msg->Contact->uri->port = self->stack->network.aor.port;
+		tsk_strupdate(&(msg->Contact->uri->host), self->stack->network.aor.ip_[transport_idx]);
+		msg->Contact->uri->port = self->stack->network.aor.port_[transport_idx];
 		
 		msg->Contact->uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(self->type) ? host_ipv6 : host_ipv4; /* for serializer ...who know? */
 		tsk_params_add_param(&msg->Contact->uri->params, "transport", self->protocol);
@@ -340,7 +377,10 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 			}
 
 			/* === Send the message === */
-			if(TNET_SOCKET_TYPE_IS_IPSEC(self->type)){
+			if(TNET_SOCKET_TYPE_IS_WS(self->type) || TNET_SOCKET_TYPE_IS_WSS(self->type)){
+				ret = tsip_transport_send_raw_ws(self, msg->local_fd, buffer->data, buffer->size);
+			}
+			else if(TNET_SOCKET_TYPE_IS_IPSEC(self->type)){
 				tnet_fd_t fd = tsip_transport_ipsec_getFD(TSIP_TRANSPORT_IPSEC(self), TSIP_MESSAGE_IS_REQUEST(msg));
 				if(fd != TNET_INVALID_FD){
 					//struct sockaddr_storage to;
@@ -351,25 +391,14 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 				}
 			}
 			else{
-				if(self->stack->network.mode_server){
-					if(TNET_SOCKET_TYPE_IS_WS(self->type) || TNET_SOCKET_TYPE_IS_WSS(self->type)){
-						ret = tsip_transport_send_raw_ws(self, msg->local_fd, buffer->data, buffer->size);
-					}
-					else{
-						ret = tsip_transport_send_raw(self, (const struct sockaddr*)&msg->remote_addr, buffer->data, buffer->size);
+				const struct sockaddr_storage* to = tsk_null;
+				struct sockaddr_storage destAddr;
+				if(destIP && destPort){
+					if(tnet_sockaddr_init(destIP, destPort, self->type, &destAddr) == 0){
+						to = &destAddr;
 					}
 				}
-				else{
-					// always send to the Proxy-CSCF
-					const struct sockaddr_storage* to = tsk_null;
-					struct sockaddr_storage destAddr;
-					if(destIP && destPort){
-						if(tnet_sockaddr_init(destIP, destPort, self->type, &destAddr) == 0){
-							to = &destAddr;
-						}
-					}
-					ret = tsip_transport_send_raw(self, (const struct sockaddr*)to, buffer->data, buffer->size);
-				}
+				ret = tsip_transport_send_raw(self, (const struct sockaddr*)to, buffer->data, buffer->size);
 			}
 
 //bail:
@@ -395,9 +424,9 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, tsk_bool_t lr)
 			tsk_sprintf(&uristring, "%s:%s%s%s:%d;%s;transport=%s",
 				self->scheme,
 				ipv6 ? "[" : "",
-				((tsip_stack_t*)self->stack)->network.aor.ip,
+				((tsip_stack_t*)self->stack)->network.aor.ip_[self->idx],
 				ipv6 ? "]" : "",
-				((tsip_stack_t*)self->stack)->network.aor.port,
+				((tsip_stack_t*)self->stack)->network.aor.port_[self->idx],
 				lr ? "lr" : "",
 				self->protocol);
 			if(uristring){
@@ -413,7 +442,7 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, tsk_bool_t lr)
 }
 
 
-int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const tsip_stack_handle_t *stack, const char *host, tnet_port_t port, const char* description)
+int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const struct tsip_stack_s *stack, const char *host, tnet_port_t port, const char* description)
 {
 	if(!self || self->initialized){
 		return -1;

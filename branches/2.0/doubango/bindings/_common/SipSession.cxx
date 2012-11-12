@@ -239,7 +239,10 @@ bool InviteSession::hangup(ActionConfig* config/*=tsk_null*/)
 #else
 bool InviteSession::hangup(ActionConfig* config/*=tsk_null*/)
 {
+	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
+
 	return (tsip_api_invite_send_bye(m_pHandle,
+		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 #endif

@@ -52,13 +52,14 @@ void test_ice()
 	int ret;
 	static const tsk_bool_t use_ipv6 = tsk_false;
 	static const tsk_bool_t use_rtcp = tsk_true;
-
+	static const tsk_bool_t use_ice_jingle = tsk_false;
+	static const tsk_bool_t use_video = tsk_false;
 	
 	long a = tnet_htonl(0x6b0c76a7);
 	long b = tnet_htonl(0x034aa76b);
 	long c = tnet_htonl(0x510da598);
-
-	ctx = tnet_ice_ctx_create(use_ipv6, use_rtcp, tsk_false, tnet_ice_callback, tsk_null);
+	
+	ctx = tnet_ice_ctx_create(use_ice_jingle, use_ipv6, use_rtcp, use_video, tnet_ice_callback, tsk_null);
 	tnet_ice_ctx_set_userdata(ctx, ctx);
 	ret = tnet_ice_ctx_set_stun(ctx, "numb.viagenie.ca", 3478, "Doubango", "bossiel@yahoo.fr", "stun-password");
 	ret = tnet_ice_ctx_start(ctx);

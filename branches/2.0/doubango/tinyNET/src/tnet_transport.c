@@ -237,7 +237,14 @@ int tnet_transport_get_public_ip_n_port(const tnet_transport_handle_t *handle, t
 	}
 
 	if(!stun_ok){
-		return tnet_transport_get_ip_n_port(handle, fd, ip, port);
+		if(fd == TNET_INVALID_FD && transport->local_ip){
+			memcpy(*ip, transport->local_ip, TSK_MIN(sizeof(tnet_ip_t), tsk_strlen(transport->local_ip)));
+			*port = transport->bind_local_port;
+			return 0;
+		}
+		else{
+			return tnet_transport_get_ip_n_port(handle, fd, ip, port);
+		}
 	}
 	
 	return 0;

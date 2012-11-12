@@ -106,10 +106,11 @@ static uint32_t fcstab_32[256] =
 */
 uint32_t tsk_pppfcs32(register uint32_t fcs, register const uint8_t* cp, register int32_t len)
 {
-	while (len--){
-		fcs = (((fcs) >> 8) ^ fcstab_32[((fcs) ^ (*cp++)) & 0xff]);
+	int32_t n;
+	for(n = 0; n < len; ++n){
+		fcs = (fcs >> 8) ^ (fcstab_32[(fcs & 0xff) ^ cp[n]]);
 	}
 
-	return (fcs);
+	return (fcs ^0xffffffff);
 }
 

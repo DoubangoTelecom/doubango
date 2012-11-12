@@ -629,6 +629,11 @@ int tnet_ice_ctx_recv_stun_message(tnet_ice_ctx_t* self, const void* data, tsk_s
 		return 0;
 	}
 
+	if(!self->is_active){
+		TSK_DEBUG_INFO("ICE context not active");
+		return 0;
+	}
+
 	if((message = tnet_stun_message_deserialize(data, size))){
 		if(message->type == stun_binding_request){
 			// check controlling flag

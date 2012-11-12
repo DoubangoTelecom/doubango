@@ -367,12 +367,16 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, tsk_bool_t unicast,
 			if((if_index != -1) && (pCurrAddresses->IfIndex != if_index && pCurrAddresses->Ipv6IfIndex != if_index)){
 				goto next;
 			}
+			if(pCurrAddresses->OperStatus != IfOperStatusUp){
+				goto next;
+			}
 
 			/* == UNICAST addresses == */
 			pUnicast = pCurrAddresses->FirstUnicastAddress;
             while(unicast && pUnicast){
 				//memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pUnicast->Address.lpSockaddr, &ip);
+				TSK_DEBUG_INFO("Found local IP address = AdapterName=%s Ip=%s", pCurrAddresses->AdapterName, ip);
 				{
 					tnet_address_t *address = tnet_address_create(ip);
 					address->family = pUnicast->Address.lpSockaddr->sa_family;
