@@ -829,8 +829,8 @@ int trtp_manager_stop(trtp_manager_t* self)
 		return -1;
 	}
 
-	if(!self->is_started){
-		return 0;
+	if(self->ice_ctx){
+		ret = tnet_ice_ctx_stop(self->ice_ctx);
 	}
 
 	// Stop the RTCP session first (will send BYE)
