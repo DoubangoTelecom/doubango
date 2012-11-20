@@ -186,6 +186,23 @@ int tcomp_manager_setDecompression_Memory_Size(tcomp_manager_handle_t *handle, u
 }
 
 /**@ingroup tcomp_manager_group
+* Gets the decompression memory size (RFC 3320 section 3.3).
+* @param handle The SigComp manager.
+* @retval The current decompression memory size value.
+*/
+uint32_t tcomp_manager_getDecompression_Memory_Size(tcomp_manager_handle_t *handle)
+{
+	tcomp_manager_t *manager = handle;
+	if(!manager){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+	return (manager->stateHandler && manager->stateHandler->sigcomp_parameters)
+		? manager->stateHandler->sigcomp_parameters->dmsValue
+		: 0;
+}
+
+/**@ingroup tcomp_manager_group
 * Sets the state memory size (RFC 3320 section 3.3).
 * @param handle The SigComp manager.
 * @param sms The new state memory size value.

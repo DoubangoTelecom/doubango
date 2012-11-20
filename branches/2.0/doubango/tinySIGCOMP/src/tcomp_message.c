@@ -167,6 +167,7 @@ void initStateless(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_p
 
 		/* check that remaining sigcomp message is valide */
 		if( !(message->isOK &= ( remaining_SigComp_message<=end_ptr )) ){
+			TSK_DEBUG_ERROR("INVALID_CODE_LOCATION");
 			return;
 		}
 
@@ -208,7 +209,8 @@ void initNack(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 
 	uint8_t* dummy_ptr;
 	message->isNack = 1;
-	if( (end_ptr-*start_ptr)<25 ){
+	if( (end_ptr - *start_ptr)<25 ){
+		TSK_DEBUG_ERROR("MESSAGE_TOO_SHORT");
 		message->isOK = 0;
 		return;
 	}
@@ -256,7 +258,7 @@ static tsk_object_t* tcomp_message_ctor(tsk_object_t *self, va_list * app)
 		uint8_t state_len;
 		
 		if(input_size < MIN_LEN){
-			TSK_DEBUG_ERROR("SigComp Message too short.");
+			TSK_DEBUG_ERROR("MESSAGE_TOO_SHORT");
 			message->isOK = 0;
 			goto bail;
 		}
@@ -282,6 +284,7 @@ static tsk_object_t* tcomp_message_ctor(tsk_object_t *self, va_list * app)
 		/* Check message validity --> magic code (11111)? */
 		message->isOK = HEADER_IS_VALID(message);
 		if(!message->isOK){
+			TSK_DEBUG_ERROR("SigComp Message not valid (magic code mismatch)");
 			goto bail;
 		}
 		
@@ -325,7 +328,6 @@ static tsk_object_t* tcomp_message_ctor(tsk_object_t *self, va_list * app)
 
 bail:
 	if(message && !message->isOK){
-		TSK_OBJECT_SAFE_FREE(message);
 		return tsk_null;
 	}
 

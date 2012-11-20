@@ -1,7 +1,6 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2012 Doubango Telecom <http://doubango.org>.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +22,10 @@
 #include "stdafx.h"
 #include "tcomp_manager.h" /* TinySIGCOMP API functions. */
 
+#include "tsk_string.h"
 #include "tsk_debug.h"
 
-#define TORTURES					0
+#define TORTURES					1
 
 #if TORTURES
 
@@ -749,6 +749,15 @@ int startsWith(const char* buffer1, size_t size1, const char* buffer2, size_t si
 	return 1;
 }
 
+static const int16_t wordForEndianess = 0x4321;
+static tsk_bool_t isBigEndian;
+
+static TCOMP_INLINE uint16_t HostToNetworkShort(uint16_t x)
+{
+	return isBigEndian ? (x) : ((((uint16_t)(x) & 0xff00) >> 8) |
+						(((uint16_t)(x) & 0x00ff) << 8));
+}
+
 #ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
 #else
@@ -758,8 +767,10 @@ int main()
 	size_t i, start, end;
 	size_t res_size = 0;
 	char buffer[OUTPUT_BUFFER_SIZE];
-	tcomp_manager_handle_t *manager = TCOMP_MANAGER_CREATE();
-	tcomp_result_t *result = TCOMP_RESULT_CREATE();
+	tcomp_manager_handle_t *manager = tcomp_manager_create();
+	tcomp_result_t *result = tcomp_result_create();
+
+	isBigEndian = ((*(int8_t *)&wordForEndianess) != 0x21);
 
 	/* Add SIP dictionary. */
 	tcomp_manager_addSipSdpDictionary(manager);
@@ -775,7 +786,7 @@ int main()
 #endif
 	{
 #if RUN_TEST_ALL
-		start = 0, end = 72;
+		start = 0, end = sizeof(tests)/sizeof(tests[0]);
 #else
 		start = RUN_TEST_NO, end = RUN_TEST_NO + 1;
 #endif
@@ -828,8 +839,13 @@ int main()
 					}
 				}
 			}
-
-			printf("xoutpout: %s\n", startsWith(buffer, OUTPUT_BUFFER_SIZE, tests[i].xoutput, strlen(tests[i].xoutput)) ? "YES" : "NO");
+			
+			if(tsk_striequals(tests[i].xoutput, "decompression_memory_size")){
+				printf("xoutpout (decompression_memory_size): %s\n", (HostToNetworkShort(tcomp_manager_getDecompression_Memory_Size(manager)) == *((uint16_t*)buffer)) ? "YES" : "NO");
+			}
+			else{
+				printf("xoutpout: %s\n", startsWith(buffer, OUTPUT_BUFFER_SIZE, tests[i].xoutput, strlen(tests[i].xoutput)) ? "YES" : "NO");
+			}
 			printf("xcycles: %s\n", (result->consumed_cycles == tests[i].xcycles) ? "YES" : "NO");
 			printf("output size: %u\n", res_size);
 		}
@@ -837,8 +853,8 @@ int main()
 	}/* LOOP */
 
 	/* Free previously allocated resources. */
-	TCOMP_RESULT_SAFE_FREE(result);
-	TCOMP_MANAGER_SAFE_FREE(manager);
+	TSK_OBJECT_SAFE_FREE(result);
+	TSK_OBJECT_SAFE_FREE(manager);
 
 	return 0;
 }

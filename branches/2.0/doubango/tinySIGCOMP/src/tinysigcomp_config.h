@@ -84,6 +84,14 @@
 #	define _CRT_SECURE_NO_WARNINGS
 #endif
 
+#if defined(_MSC_VER)
+#	define TCOMP_INLINE	__forceinline
+#elif defined(__GNUC__) && !defined(__APPLE__)
+#	define TCOMP_INLINE	__inline
+#else
+#	define TCOMP_INLINE	
+#endif
+
 #include <stdint.h>
 
 #endif // TINYSIGCOMP_CONFIG_H
