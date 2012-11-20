@@ -2,8 +2,15 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinySIGCOMP", "tinySIGCOMP.vcproj", "{76261DC8-25B3-43F4-9FB5-112C4AC0880E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA} = {6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcproj", "{0FC0B98C-E5BE-4AB4-A382-CBBEA5F09AFE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA} = {6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}
+		{76261DC8-25B3-43F4-9FB5-112C4AC0880E} = {76261DC8-25B3-43F4-9FB5-112C4AC0880E}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinySAK", "..\tinySAK\tinySAK.vcproj", "{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}"
 EndProject

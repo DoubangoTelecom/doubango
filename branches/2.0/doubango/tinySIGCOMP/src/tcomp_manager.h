@@ -62,6 +62,7 @@ TINYSIGCOMP_API void tcomp_manager_closeCompartment(tcomp_manager_handle_t *hand
 *	SigComp Parameters
 */
 TINYSIGCOMP_API int tcomp_manager_setDecompression_Memory_Size(tcomp_manager_handle_t *handle, uint32_t dms);
+TINYSIGCOMP_API uint32_t tcomp_manager_getDecompression_Memory_Size(tcomp_manager_handle_t *handle);
 TINYSIGCOMP_API int tcomp_manager_setState_Memory_Size(tcomp_manager_handle_t *handle, uint32_t sms);
 TINYSIGCOMP_API int tcomp_manager_setCycles_Per_Bit(tcomp_manager_handle_t *handle, uint8_t cpb);
 TINYSIGCOMP_API int tcomp_manager_setSigComp_Version(tcomp_manager_handle_t *handle, uint8_t version);
