@@ -65,6 +65,9 @@ tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...)
 			va_end(ap);
 
 			if(!newobj){ // null if constructor failed to initialized the object
+				if(objdef->destructor){
+					objdef->destructor(newobj_);
+				}
 				tsk_free(&newobj_);
 			}
 
@@ -147,7 +150,7 @@ int tsk_object_cmp(const tsk_object_t *object1, const tsk_object_t *object2)
 	if(objdef && *objdef && (*objdef)->comparator){
 		return (*objdef)->comparator(object1, object2);
 	}
-	return -1;
+	return ((int*)object1 - (int*)object2);
 }
 
 /**@ingroup tsk_object_group
