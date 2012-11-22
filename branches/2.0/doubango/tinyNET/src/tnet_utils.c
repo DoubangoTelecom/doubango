@@ -42,12 +42,24 @@
 #include <string.h>
 
 #if defined(__APPLE__)
-#	include <net/if_dl.h>
 #	if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_3_2
 #		include "net/route.h"
 #	else
 #		include <net/route.h>
 #	endif
+#endif
+
+#ifdef AF_LINK
+# 	include <net/if_dl.h>
+# 	include <net/if_types.h>
+#endif
+
+#ifdef AF_PACKET
+# 	include <netpacket/packet.h>
+#endif
+
+#ifndef AF_LINK
+#	define AF_LINK AF_PACKET
 #endif
 
 /**@defgroup tnet_utils_group Network utility functions.
@@ -204,7 +216,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 			continue;
 		}
 		
-#if defined(__linux__)
+#if defined(__linux__) && 0 /* FIXME */
 		{
 			struct ifreq ifr;
 			tnet_fd_t fd = TNET_INVALID_FD;
@@ -1362,12 +1374,7 @@ int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, tsk_size_t size, int flags, st
 		return -1;
 	}
 
-#if TNET_HAVE_SA_LEN
-	fromlen = from->sa_len;
-#else
-	fromlen = sizeof(*from);
-#endif
-
+	fromlen = tnet_get_sockaddr_size(from);
 	return recvfrom(fd, buf, size, flags, from, &fromlen);
 }
 

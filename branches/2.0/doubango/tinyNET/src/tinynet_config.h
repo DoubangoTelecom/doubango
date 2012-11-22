@@ -127,8 +127,8 @@
 
 #include <stdint.h>
 
-#ifdef HAVE_CONFIG_H
-#	include "../config.h"
+#if HAVE_CONFIG_H
+#	include "config.h"
 #endif
 
 #endif /* _TINYNET_H_ */
