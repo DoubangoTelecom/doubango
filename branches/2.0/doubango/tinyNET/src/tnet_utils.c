@@ -42,7 +42,7 @@
 #include <string.h>
 
 #if HAVE_NET_ROUTE_H
-#	if defined(__APPLE__) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_3_2
+#	if defined(__APPLE__) && __IPHONE_OS_VERSION_MIN_REQUIRED <= __IPHONE_3_2
 #		include "net/route.h" // from Doubango 3rd parties folder beacuse the one from iOS SDK is incomplete
 #	else
 #		include <net/route.h>
@@ -640,7 +640,7 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
 		}
 		TSK_OBJECT_SAFE_FREE(addresses);
 	}
-#elif HAVE_ROUTE_H && HAVE_IFADDRS_H && HAVE_GETIFADDRS /* Mac OS X, iPhone, iPod Touch, iPad and Linux familly exept Android */
+#elif HAVE_NET_ROUTE_H && HAVE_IFADDRS_H && HAVE_GETIFADDRS /* Mac OS X, iPhone, iPod Touch, iPad and Linux familly exept Android */
 	/* Thanks to Laurent Etiemble */
     
     int sdl_index = -1;
@@ -770,8 +770,11 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
     
         
 #else /* All other systems (Google Android, Unix-Like systems, uLinux, ....) */    
-    
-    
+    TSK_DEBUG_ERROR("getbestroute() not supported on this OS");
+    memcpy(*source,
+           TNET_SOCKET_TYPE_IS_IPV6(type) ? "::" : "0.0.0.0",
+           TNET_SOCKET_TYPE_IS_IPV6(type) ? 2 : 7
+           );
 #endif
 
 bail:
