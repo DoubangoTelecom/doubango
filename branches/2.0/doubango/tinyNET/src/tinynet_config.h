@@ -103,18 +103,18 @@
 
 /* whether to use poll() */
 #if TNET_UNDER_WINDOWS
-#	define TNET_USE_POLL		0 /* Do not use WSAPoll event if under Vista */
+#	define TNET_USE_POLL		0 /* Do not use WSAPoll event if it's supported under Vista */
 #else // iOS, Android, Linux, OS X...
 #	define TNET_USE_POLL		1 // fallback to cfsocket implementation on iOS4+
-#	if defined(__APPLE__) || !ANDROID
-#		define HAVE_IFADDRS			1
+#	if defined(__APPLE__)
+#		define HAVE_GETIFADDRS		1
+#		define HAVE_IFADDRS_H		1
 #		define HAVE_DNS_H			1
+#		define HAVE_NET_ROUTE_H		1
+#		define HAVE_NET_IF_DL_H		1
+#		define HAVE_STRUCT_RT_METRICS	1
+#		define HAVE_STRUCT_SOCKADDR_DL	1
 #		define TNET_HAVE_SS_LEN		1
-#		define TNET_HAVE_SA_LEN		0
-#	else
-#		define HAVE_IFADDRS			0
-#		define HAVE_DNS_H			0
-#		define TNET_HAVE_SS_LEN		0
 #		define TNET_HAVE_SA_LEN		0
 #	endif
 #endif

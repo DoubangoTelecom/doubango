@@ -74,8 +74,37 @@ AC_ARG_WITH(debug-level,
 ])
 
 
-## checks string functions
 AC_CHECK_FUNCS([stricmp strnicmp])
+
+AC_CHECK_HEADERS([net/if_types.h net/if_dl.h])
+
+AC_CHECK_FUNC(getifaddrs, AC_DEFINE(HAVE_GETIFADDRS, 1 ,[Define to 1 if you have the 'getifaddrs' function]))
+AH_TEMPLATE([HAVE_IFADDRS_H], [Define if <ifaddrs.h> header exist])
+AC_CHECK_HEADER([ifaddrs.h], AC_DEFINE(HAVE_IFADDRS_H, 1), AC_DEFINE(HAVE_IFADDRS_H, 0), [])
+
+AH_TEMPLATE([HAVE_NET_IF_DL_H], [Define if <net/if_dl.h> header exist])
+AC_CHECK_HEADER([net/if_dl.h], AC_DEFINE(HAVE_NET_IF_DL_H, 1), AC_DEFINE(HAVE_NET_IF_DL_H, 0), [])
+
+AH_TEMPLATE([HAVE_NET_IF_TYPES_H], [Define if <net/if_types> header exist])
+AC_CHECK_HEADER([net/if_types.h], AC_DEFINE(HAVE_NET_IF_TYPES_H, 1), AC_DEFINE(HAVE_NET_IF_TYPES_H, 0), [])
+
+AH_TEMPLATE([HAVE_NETPACKET_PACKET_H], [Define if <netpacket/packet.h> header exist])
+AC_CHECK_HEADER([netpacket/packet.h], AC_DEFINE(HAVE_NETPACKET_PACKET_H, 1), AC_DEFINE(HAVE_NETPACKET_PACKET_H, 0), [])
+
+AH_TEMPLATE([HAVE_NET_ROUTE_H], [Define if <net/route.h> header exist])
+AC_CHECK_HEADER([net/route.h], AC_DEFINE(HAVE_NET_ROUTE_H, 1), AC_DEFINE(HAVE_NET_ROUTE_H, 0), [])
+AC_CHECK_TYPES([struct rt_metrics], [], [],
+[
+#if HAVE_NET_ROUTE_H
+# include <net/route.h>
+#endif
+])
+AC_CHECK_TYPES([struct sockaddr_dl], [], [],
+[
+#if HAVE_NET_IF_DL_H
+# include <net/if_dl.h>
+#endif
+])
 
 AH_TEMPLATE([HAVE_DNS_H], [Define if <dns.h> header exist])
 AC_CHECK_HEADER([dns.h], AC_DEFINE(HAVE_DNS_H, 1), AC_DEFINE(HAVE_DNS_H, 0), [])

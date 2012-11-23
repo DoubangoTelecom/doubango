@@ -41,20 +41,23 @@
 
 #include <string.h>
 
-#if defined(__APPLE__)
-#	if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_3_2
-#		include "net/route.h"
+#if HAVE_NET_ROUTE_H
+#	if defined(__APPLE__) && __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_3_2
+#		include "net/route.h" // from Doubango 3rd parties folder beacuse the one from iOS SDK is incomplete
 #	else
 #		include <net/route.h>
 #	endif
 #endif
 
-#ifdef AF_LINK
-# 	include <net/if_dl.h>
+#if HAVE_NET_IF_TYPES_H
 # 	include <net/if_types.h>
 #endif
 
-#ifdef AF_PACKET
+#if HAVE_NET_IF_DL_H
+# 	include <net/if_dl.h>
+#endif
+
+#ifdef HAVE_NETPACKET_PACKET_H
 # 	include <netpacket/packet.h>
 #endif
 
@@ -196,7 +199,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 #undef FREE
 
 
-#elif HAVE_IFADDRS /*=== Using getifaddrs ===*/
+#elif HAVE_IFADDRS_H && HAVE_GETIFADDRS /*=== Using getifaddrs ===*/
 
 	// see http://www.kernel.org/doc/man-pages/online/pages/man3/getifaddrs.3.html
 	struct ifaddrs *ifaddr = tsk_null, *ifa = tsk_null;
@@ -459,7 +462,7 @@ bail:
 #else	/* !TSK_UNDER_WINDOWS (MAC OS X, UNIX, ANDROID ...) */
 
     tnet_ip_t ip;
-#if HAVE_IFADDRS /*=== Using getifaddrs ===*/
+#if HAVE_IFADDRS_H && HAVE_GETIFADDRS /*=== Using getifaddrs ===*/
     
 	// see http://www.kernel.org/doc/man-pages/online/pages/man3/getifaddrs.3.html
 	struct ifaddrs *ifaddr = tsk_null, *ifa = tsk_null;
@@ -565,7 +568,7 @@ done:
 	TSK_FREE(ifr);
 	tnet_sockfd_close(&fd);
     
-#endif /* HAVE_IFADDRS */
+#endif /* HAVE_IFADDRS_H && HAVE_GETIFADDRS */
     
 bail:
     
@@ -637,24 +640,30 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
 		}
 		TSK_OBJECT_SAFE_FREE(addresses);
 	}
-#elif defined(__APPLE__) /* Mac OS X, iPhone, iPod Touch and iPad */
+#elif HAVE_ROUTE_H && HAVE_IFADDRS_H && HAVE_GETIFADDRS /* Mac OS X, iPhone, iPod Touch, iPad and Linux familly exept Android */
 	/* Thanks to Laurent Etiemble */
     
+    int sdl_index = -1;
+    
+    #if HAVE_STRUCT_RT_METRICS && HAVE_STRUCT_SOCKADDR_DL
     static int seq = 1234;
     char buf[1024];
-	char *cp;
+    char *cp;
     int s, i, l, rlen;
     int pid = getpid();
     u_long rtm_inits;
     struct rt_metrics rt_metrics;
-    struct sockaddr_storage so_dst = destAddr;
-    struct sockaddr_dl so_ifp;
-    struct sockaddr *sa = NULL;
     struct sockaddr_dl *ifp = NULL;
     struct rt_msghdr *rtm = (struct	rt_msghdr *)buf;
-    struct ifaddrs *ifaddr = 0, *ifa = 0;
+    struct sockaddr_dl so_ifp;
+    #endif /* HAVE_STRUCT_RT_METRICS && HAVE_STRUCT_SOCKADDR_DL */
+
+    struct sockaddr_storage so_dst = destAddr;
+    struct sockaddr *sa = NULL;  
+    struct ifaddrs *ifaddr = 0, *ifa = tsk_null;
     tnet_ip_t ip;
     
+    #if HAVE_STRUCT_RT_METRICS && HAVE_STRUCT_SOCKADDR_DL
     bzero(rtm, 1024);
     cp = (char *)(rtm + 1);
 
@@ -716,48 +725,49 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
             }
         }
     }
-    
-    if (ifp) {
-        printf(" interface: %.*s\n", ifp->sdl_nlen, ifp->sdl_data);
-        
-        /* Get interfaces */
-        if(getifaddrs(&ifaddr) == -1){
-			TNET_PRINT_LAST_ERROR("getifaddrs() failed.");
-            goto bail;
-        }
-        
-        for(ifa = ifaddr; ifa; ifa = ifa->ifa_next){
-            if (ifa->ifa_flags & IFF_LOOPBACK) {
-                continue;
-            }
-            
-            if (if_nametoindex(ifa->ifa_name) != ifp->sdl_index) {
-                continue;
-            }
-            
-            if (ifa->ifa_addr->sa_family != destAddr.ss_family) {
-                continue;
-            }
-            
-            if (destAddr.ss_family == AF_INET6) {
-                if (IN6_IS_ADDR_LINKLOCAL(&((struct sockaddr_in6 *) ifa->ifa_addr)->sin6_addr) ^ 
-                    IN6_IS_ADDR_LINKLOCAL(&((struct sockaddr_in6 *) &destAddr)->sin6_addr)) {
-                    continue;
-                }
-                if (IN6_IS_ADDR_SITELOCAL(&((struct sockaddr_in6 *) ifa->ifa_addr)->sin6_addr) ^ 
-                    IN6_IS_ADDR_SITELOCAL(&((struct sockaddr_in6 *) &destAddr)->sin6_addr)) {
-                    continue;
-                }
-            }
-            
-            tnet_get_sockip((struct sockaddr *) ifa->ifa_addr, &ip);
-            
-            memset(*source, '\0', sizeof(*source));
-            memcpy(*source, ip, tsk_strlen(ip) > sizeof(*source) ? sizeof(*source) : tsk_strlen(ip));
-            ret = 0;
-            goto bail; // First is good for us.
-        }
+    if(ifp){ 
+      sdl_index = ifp->sdl_index;
     }
+    #endif /* HAVE_STRUCT_RT_METRICS && HAVE_STRUCT_SOCKADDR_DL */
+        
+    /* Get interfaces */
+    if(getifaddrs(&ifaddr) == -1){
+	 TNET_PRINT_LAST_ERROR("getifaddrs() failed.");
+        goto bail;
+    }
+        
+    for(ifa = ifaddr; ifa; ifa = ifa->ifa_next){
+        if (ifa->ifa_flags & IFF_LOOPBACK) {
+            continue;
+        }
+            
+        if (sdl_index != -1 && if_nametoindex(ifa->ifa_name) != sdl_index) {
+            continue;
+        }
+            
+        if (ifa->ifa_addr->sa_family != destAddr.ss_family) {
+            continue;
+        }
+            
+        if (destAddr.ss_family == AF_INET6) {
+            if (IN6_IS_ADDR_LINKLOCAL(&((struct sockaddr_in6 *) ifa->ifa_addr)->sin6_addr) ^ 
+                IN6_IS_ADDR_LINKLOCAL(&((struct sockaddr_in6 *) &destAddr)->sin6_addr)) {
+                continue;
+            }
+            if (IN6_IS_ADDR_SITELOCAL(&((struct sockaddr_in6 *) ifa->ifa_addr)->sin6_addr) ^ 
+                IN6_IS_ADDR_SITELOCAL(&((struct sockaddr_in6 *) &destAddr)->sin6_addr)) {
+                continue;
+            }
+        }
+            
+        tnet_get_sockip((struct sockaddr *) ifa->ifa_addr, &ip);
+            
+        memset(*source, '\0', sizeof(*source));
+        memcpy(*source, ip, tsk_strlen(ip) > sizeof(*source) ? sizeof(*source) : tsk_strlen(ip));
+        ret = 0;
+        goto bail; // First is good for us.
+    }
+    
         
 #else /* All other systems (Google Android, Unix-Like systems, uLinux, ....) */    
     
