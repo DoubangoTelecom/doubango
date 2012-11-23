@@ -47,7 +47,7 @@
 #	include <sys/ioctl.h>
 #	include <unistd.h>
 #	include <net/if.h>
-#	if HAVE_IFADDRS
+#	if HAVE_IFADDRS_H
 #		include <ifaddrs.h>
 #	endif
 #	if TNET_HAVE_POLL
