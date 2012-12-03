@@ -57,7 +57,7 @@
 # 	include <net/if_dl.h>
 #endif
 
-#ifdef HAVE_NETPACKET_PACKET_H
+#if HAVE_NETPACKET_PACKET_H
 # 	include <netpacket/packet.h>
 #endif
 
