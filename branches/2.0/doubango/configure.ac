@@ -105,6 +105,12 @@ AC_CHECK_TYPES([struct sockaddr_dl], [], [],
 
 AH_TEMPLATE([HAVE_DNS_H], [Define if <dns.h> header exist])
 AC_CHECK_HEADER([dns.h], AC_DEFINE(HAVE_DNS_H, 1), AC_DEFINE(HAVE_DNS_H, 0), [])
+AM_CONDITIONAL(USE_RESOLV, false)
+AC_CHECK_LIB([resolv], [dns_search], 
+    AC_SUBST(LIBRESOLV_LIBADD, "-lresolv")
+    AM_CONDITIONAL(USE_RESOLV, true), 
+    AC_SUBST(LIBRESOLV_LIBADD, "")
+    )
 
 AH_TEMPLATE([TNET_HAVE_SS_LEN], [Define if sockaddr_storage.ss_len exists])
 AC_CHECK_MEMBER([struct sockaddr_storage.ss_len], AC_DEFINE(TNET_HAVE_SS_LEN, 1), AC_DEFINE(TNET_HAVE_SS_LEN,0), [#include <sys/socket.h>])
@@ -125,7 +131,7 @@ AM_CONDITIONAL(USE_SSL, false)
 AC_ARG_WITH(ssl,
 [  --with-ssl            Link against OpenSSL libraries],
  [AC_DEFINE_UNQUOTED(HAVE_OPENSSL, 1, HAVE_OPENSSL)
- AC_SUBST(LIBSSL_LIBADD, "-lssl")
+ AC_SUBST(LIBSSL_LIBADD, "-lssl -lcrypto")
  AM_CONDITIONAL(USE_SSL, true)], 
  [ AC_SUBST(LIBSSL_LIBADD, "")])
 
