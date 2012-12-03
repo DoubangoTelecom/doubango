@@ -129,12 +129,12 @@ int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip
 				tsip_transport_stream_peer_t* peer = tsip_transport_find_stream_peer_by_local_fd(TSIP_TRANSPORT(ws_transport), msg->local_fd);
 				if(peer){
 					// hack the first Via as many servers fail to parse "WS" or "WSS" as valid transpors
-					if(tsk_striequals(msg->firstVia->transport, "WS") || tsk_striequals(msg->firstVia->transport, "WSS")){
-						TSIP_HEADER_ADD_PARAM(TSIP_HEADER(msg->firstVia), "ws-hacked", msg->firstVia->transport);
+					//if(tsk_striequals(msg->firstVia->transport, "WS") || tsk_striequals(msg->firstVia->transport, "WSS")){
+						TSIP_HEADER_ADD_PARAM(TSIP_HEADER(msg->firstVia), "ws-hacked", TNET_SOCKET_TYPE_IS_WSS(msg->src_net_type) ? "WSS" : "WS");
 						tsk_strupdate(&msg->firstVia->transport, "TCP");
 						tsk_strupdate(&msg->firstVia->host, peer->remote_ip);
 						msg->firstVia->port = peer->remote_port;
-					}
+					//}
 					TSK_OBJECT_SAFE_FREE(peer);
 
 					// replace first Via with ours

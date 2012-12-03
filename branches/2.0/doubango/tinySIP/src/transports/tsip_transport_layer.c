@@ -501,8 +501,6 @@ parse_buffer:
 		goto bail;
 	}
 	
-	TSK_DEBUG_INFO("%s", (const char*)peer->ws_rcv_buffer);
-	
 	// If we are there this mean that we have all SIP headers.
 	//	==> Parse the SIP message without the content.
 	tsk_ragel_state_init(&state, peer->ws_rcv_buffer, (tsk_size_t)pay_len);
