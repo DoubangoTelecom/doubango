@@ -21,6 +21,7 @@
  */
 #include "tinydav/audio/coreaudio/tdav_audiounit.h"
 
+#include "tsk_string.h"
 #include "tsk_list.h"
 #include "tsk_safeobj.h"
 #include "tsk_debug.h"

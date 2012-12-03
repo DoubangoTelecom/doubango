@@ -35,6 +35,7 @@
 // http://developer.apple.com/library/mac/#documentation/MusicAudio/Reference/AudioQueueReference/Reference/reference.html
 #if HAVE_COREAUDIO_AUDIO_QUEUE
 
+#include "tsk_string.h"
 #include "tsk_thread.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
