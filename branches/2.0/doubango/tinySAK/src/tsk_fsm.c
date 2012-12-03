@@ -187,7 +187,7 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 		}
 	}
 	if(!found){
-		TSK_DEBUG_WARN("State machine: No matching state found.");
+		TSK_DEBUG_INFO("State machine: No matching state found.");
 	}
 	
 	return ret_exec;

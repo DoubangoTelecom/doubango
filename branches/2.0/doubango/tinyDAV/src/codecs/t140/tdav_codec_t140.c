@@ -23,6 +23,7 @@
  */
 #include "tinydav/codecs/t140/tdav_codec_t140.h"
 
+#include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -150,6 +151,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_t140_plugin_def_s =
 	&tdav_codec_t140_def_s,
 	
 	tmedia_t140,
+	tmedia_codec_id_t140,
 	"t140",
 	"T140 codec (From tinyDAV)",
 	TMEDIA_CODEC_FORMAT_T140,

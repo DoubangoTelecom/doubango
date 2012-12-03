@@ -395,8 +395,10 @@ done:
 */
 void tsk_strupdate(char** str, const char* newval)
 {
-	tsk_free((void**)str);
-	*str = tsk_strdup(newval);
+	if(str && *str != newval){ // do nothing if same memory address
+		tsk_free((void**)str);
+		*str = tsk_strdup(newval);
+	}
 }
 
 
@@ -410,7 +412,9 @@ void tsk_strtrim_left(char **str)
 		tsk_size_t count = 0;
 		while(isspace(*((*str)+count))) count++;
 		if(count){
-			strcpy((*str), (*str)+count);
+			int len = tsk_strlen((*str));
+			memmove((*str), (*str)+count, (len - count));
+			(*str)[len - count] = '\0';
 		}
 	}
 }
@@ -489,7 +493,7 @@ void tsk_strunquote_2(char **str, char lquote, char rquote)
 	if(str && *str){
 		tsk_size_t size = tsk_strlen(*str);
 		if(size>=2 && **str == lquote && *((*str)+size-1) == rquote){
-			strcpy((*str), (*str)+1);
+			memmove((*str), (*str)+1, (size-2));
 			*((*str)+size-2) = '\0';
 		}
 	}

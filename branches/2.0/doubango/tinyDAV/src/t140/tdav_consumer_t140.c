@@ -68,7 +68,7 @@ static int tdav_consumer_t140_stop(tmedia_consumer_t* self)
 	return 0;
 }
 
-int tdav_consumer_t140_set_ondata_cb(tdav_consumer_t140_t* self, const void* context, tmedia_session_t140_ondata_cb_f func)
+int tdav_consumer_t140_set_ondata_cbfn(tdav_consumer_t140_t* self, const void* context, tmedia_session_t140_ondata_cb_f func)
 {
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");

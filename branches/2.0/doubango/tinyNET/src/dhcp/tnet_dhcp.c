@@ -135,7 +135,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 			/* ciaddr */
 			if(request->type == dhcp_type_inform){
 				struct sockaddr_storage ss;
-				if(!tnet_get_sockaddr(localsocket4->fd, &ss)){
+				if(!tnet_getsockname(localsocket4->fd, &ss)){
 					uint32_t addr = tnet_htonl_2(&((struct sockaddr_in*)&ss)->sin_addr);
 					memcpy(&request->ciaddr, &addr, 4);
 				}

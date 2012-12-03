@@ -70,30 +70,45 @@ int tnet_ice_utils_create_sockets(tnet_socket_type_t socket_type, const char* lo
 {
 	tsk_bool_t look4_rtp = (socket_rtp != tsk_null);
 	tsk_bool_t look4_rtcp = (socket_rtcp != tsk_null);
-	uint8_t retry_count = 4;
+	uint8_t retry_count = 10;
+	tnet_port_t local_port;
 	static const uint64_t port_range_start = 1024;
-	static const uint64_t port_range_stop = 65535;
+	static const uint64_t port_range_stop = (65535 - 1/* to be sure rtcp port will be valid */);
 	static uint64_t counter = 0;
 
 	/* Creates local rtp and rtcp sockets */
 	while(retry_count--){
-		/* random number in the range [start - stop] */
-		tnet_port_t local_port = (tnet_port_t)((((tsk_time_epoch() + rand() ) ^ ++counter) % (port_range_stop - port_range_start)) + port_range_start);
-		local_port = (local_port & 0xFFFE); /* turn to even number */
+		if(look4_rtp && look4_rtcp){
+			tnet_socket_t* socket_fake = tnet_socket_create(local_ip, TNET_SOCKET_PORT_ANY, socket_type);
+			if(!socket_fake){
+				continue;
+			}
+			if(!(socket_fake->port & 0x01)){ // even number ?
+				*socket_rtp = socket_fake;
+			}
+			else{
+				*socket_rtcp = socket_fake;
+			}
+			local_port = (socket_fake->port & ~1);
+		}
+		else{
+			local_port = (tnet_port_t)((((tsk_time_epoch() + rand() ) ^ ++counter) % (port_range_stop - port_range_start)) + port_range_start);
+			local_port = (local_port & 0xFFFE); /* turn to even number */
+		}
 		
 		/* beacuse failure will cause errors in the log, print a message to alert that there is
 		* nothing to worry about */
 		TSK_DEBUG_INFO("RTP/RTCP manager[Begin]: Trying to bind to random ports [%s:%d]", local_ip, local_port);
 		
 		if(look4_rtp){
-			if(!(*socket_rtp = tnet_socket_create(local_ip, local_port, socket_type))){
+			if(!*socket_rtp && !(*socket_rtp = tnet_socket_create(local_ip, local_port, socket_type))){
 				TSK_DEBUG_INFO("Failed to bind to %d", local_port);
 				continue;
 			}
 		}
 
 		if(look4_rtcp){
-			if(!(*socket_rtcp = tnet_socket_create(local_ip, (local_port + 1), socket_type))){
+			if(!*socket_rtcp && !(*socket_rtcp = tnet_socket_create(local_ip, (local_port + 1), socket_type))){
 				TSK_DEBUG_INFO("Failed to bind to %d", (local_port + 1));
 				if(look4_rtp){
 					TSK_OBJECT_SAFE_FREE((*socket_rtp));

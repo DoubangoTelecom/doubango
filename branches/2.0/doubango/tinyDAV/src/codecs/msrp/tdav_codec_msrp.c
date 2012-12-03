@@ -86,6 +86,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_msrp_plugin_def_s =
 	&tdav_codec_msrp_def_s,
 
 	tmedia_msrp,
+	tmedia_codec_id_none, // fake codec without real id
 	"message",
 	"MSRP fake codec",
 	TMEDIA_CODEC_FORMAT_MSRP,

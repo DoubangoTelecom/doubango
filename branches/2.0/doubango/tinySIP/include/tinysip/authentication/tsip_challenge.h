@@ -56,12 +56,15 @@ typedef struct tsip_challenge_s
 
 	tsk_bool_t isproxy;
 
+	char* username;
 	char* scheme;
 	char* realm;
 	char* nonce;
 	char* opaque;
 	char* algorithm;
 	const char* qop;
+
+	char* ha1_hexstr;
 
 	AKA_CK_T ck;
 	AKA_IK_T ik;
@@ -76,6 +79,7 @@ typedef tsk_list_t tsip_challenges_L_t;
 TINYSIP_API tsip_challenge_t* tsip_challenge_create(tsip_stack_t* stack, tsk_bool_t isproxy, const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop);
 tsip_challenge_t* tsip_challenge_create_null(tsip_stack_t* stack);
 
+int tsip_challenge_set_cred(tsip_challenge_t *self, const char* username, const char* ha1_hexstr);
 int tsip_challenge_update(tsip_challenge_t *self, const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop);
 TINYSIP_API tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self, const tsip_request_t *request);
 tsip_header_t *tsip_challenge_create_empty_header_authorization(const char* username, const char* realm, const char* uristring);

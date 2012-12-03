@@ -50,9 +50,9 @@
 #	if HAVE_IFADDRS_H
 #		include <ifaddrs.h>
 #	endif
-#	if TNET_HAVE_POLL
+#	if HAVE_POLL_H
 #		include <poll.h>
-#	endif /* TNET_HAVE_POLL */
+#	endif /* HAVE_POLL_H */
 #endif
 
 #if defined(TNET_HAVE_SCTP)

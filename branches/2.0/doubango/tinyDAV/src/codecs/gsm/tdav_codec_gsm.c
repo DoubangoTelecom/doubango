@@ -31,6 +31,7 @@
 
 #if HAVE_LIBGSM
 
+#include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -179,6 +180,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_gsm_plugin_def_s =
 	&tdav_codec_gsm_def_s,
 
 	tmedia_audio,
+	tmedia_codec_id_gsm,
 	"GSM",
 	"GSM Full Rate",
 	TMEDIA_CODEC_FORMAT_GSM,

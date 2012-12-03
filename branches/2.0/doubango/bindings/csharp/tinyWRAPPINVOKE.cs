@@ -432,6 +432,33 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetIceEnabled")]
   public static extern bool MediaSessionMgr_defaultsSetIceEnabled(bool jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetByPassEncoding")]
+  public static extern bool MediaSessionMgr_defaultsSetByPassEncoding(bool jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetByPassEncoding")]
+  public static extern bool MediaSessionMgr_defaultsGetByPassEncoding();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetByPassDecoding")]
+  public static extern bool MediaSessionMgr_defaultsSetByPassDecoding(bool jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetByPassDecoding")]
+  public static extern bool MediaSessionMgr_defaultsGetByPassDecoding();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetVideoJbEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetVideoJbEnabled(bool jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetVideoJbEnabled")]
+  public static extern bool MediaSessionMgr_defaultsGetVideoJbEnabled(bool jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetRtpBuffSize")]
+  public static extern bool MediaSessionMgr_defaultsSetRtpBuffSize(uint jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetRtpBuffSize")]
+  public static extern uint MediaSessionMgr_defaultsGetRtpBuffSize();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetAvpfTail")]
+  public static extern bool MediaSessionMgr_defaultsSetAvpfTail(uint jarg1, uint jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_MediaContent")]
   public static extern void delete_MediaContent(HandleRef jarg1);
 
@@ -1533,11 +1560,17 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setProxyCSCF")]
   public static extern bool SipStack_setProxyCSCF(HandleRef jarg1, string jarg2, ushort jarg3, string jarg4, string jarg5);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setLocalIP")]
-  public static extern bool SipStack_setLocalIP(HandleRef jarg1, string jarg2);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setLocalIP__SWIG_0")]
+  public static extern bool SipStack_setLocalIP__SWIG_0(HandleRef jarg1, string jarg2, string jarg3);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setLocalPort")]
-  public static extern bool SipStack_setLocalPort(HandleRef jarg1, ushort jarg2);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setLocalIP__SWIG_1")]
+  public static extern bool SipStack_setLocalIP__SWIG_1(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setLocalPort__SWIG_0")]
+  public static extern bool SipStack_setLocalPort__SWIG_0(HandleRef jarg1, ushort jarg2, string jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setLocalPort__SWIG_1")]
+  public static extern bool SipStack_setLocalPort__SWIG_1(HandleRef jarg1, ushort jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setEarlyIMS")]
   public static extern bool SipStack_setEarlyIMS(HandleRef jarg1, bool jarg2);
@@ -1615,7 +1648,7 @@ class tinyWRAPPINVOKE {
   public static extern void SipStack_setCodecs(int jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setCodecs_2")]
-  public static extern void SipStack_setCodecs_2(int jarg1);
+  public static extern void SipStack_setCodecs_2(long jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setCodecPriority")]
   public static extern bool SipStack_setCodecPriority(int jarg1, int jarg2);

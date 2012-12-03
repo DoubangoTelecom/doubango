@@ -137,4 +137,11 @@ public bool send(byte[] buffer, ActionConfig config) {
   }
 %}
 
+
+//======== Deprecated ========//
+// @deprecated: to be replaced by "tmedia_codec_id_t" in Doubango 3.0
+%typemap(csattributes) tdav_codec_id_e "[System.Obsolete(\"Deprecated and replaced by 'tmedia_codec_id_t'. Will be removed in Doubango 3.0.\", false)]"
+
+
+
 %include ../_common/tinyWRAP.i

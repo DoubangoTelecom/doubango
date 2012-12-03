@@ -30,6 +30,7 @@
  */
 #include "tinymedia/tmedia_imageattr.h"
 
+#include "tsk_string.h"
 #include "tsk_debug.h"
 
 #include <stdlib.h>

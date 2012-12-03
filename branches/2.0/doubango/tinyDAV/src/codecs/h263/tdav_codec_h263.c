@@ -40,6 +40,7 @@
 
 #include "tinymedia/tmedia_params.h"
 
+#include "tsk_string.h"
 #include "tsk_time.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
@@ -556,6 +557,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_h263_plugin_def_s =
 	&tdav_codec_h263_def_s,
 
 	tmedia_video,
+	tmedia_codec_id_h263,
 	"H263",
 	"H263-1996 codec",
 	TMEDIA_CODEC_FORMAT_H263,
@@ -780,6 +782,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_h263p_plugin_def_s =
 	&tdav_codec_h263p_def_s,
 
 	tmedia_video,
+	tmedia_codec_id_h263p,
 	"H263-1998",
 	"H263-1998 codec",
 	TMEDIA_CODEC_FORMAT_H263_1998,
@@ -859,6 +862,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_h263pp_plugin_def_s =
 	&tdav_codec_h263pp_def_s,
 
 	tmedia_video,
+	tmedia_codec_id_h263pp,
 	"H263-2000",
 	"H263-2000 codec",
 	TMEDIA_CODEC_FORMAT_H263_2000,

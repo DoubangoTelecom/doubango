@@ -2173,6 +2173,110 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetIceEnabled
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetByPassEncoding(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetByPassEncoding(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetByPassEncoding() {
+  unsigned int jresult ;
+  bool result;
+  
+  result = (bool)MediaSessionMgr::defaultsGetByPassEncoding();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetByPassDecoding(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetByPassDecoding(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetByPassDecoding() {
+  unsigned int jresult ;
+  bool result;
+  
+  result = (bool)MediaSessionMgr::defaultsGetByPassDecoding();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetVideoJbEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetVideoJbEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetVideoJbEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsGetVideoJbEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetRtpBuffSize(unsigned int jarg1) {
+  unsigned int jresult ;
+  unsigned int arg1 ;
+  bool result;
+  
+  arg1 = (unsigned int)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetRtpBuffSize(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetRtpBuffSize() {
+  unsigned int jresult ;
+  unsigned int result;
+  
+  result = (unsigned int)MediaSessionMgr::defaultsGetRtpBuffSize();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetAvpfTail(unsigned int jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  unsigned int arg1 ;
+  unsigned int arg2 ;
+  bool result;
+  
+  arg1 = (unsigned int)jarg1; 
+  arg2 = (unsigned int)jarg2; 
+  result = (bool)MediaSessionMgr::defaultsSetAvpfTail(arg1,arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_MediaContent(void * jarg1) {
   MediaContent *arg1 = (MediaContent *) 0 ;
   
@@ -3122,7 +3226,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_T140CallbackData_getType(void * jarg1) {
   enum tmedia_t140_data_type_e result;
   
   arg1 = (T140CallbackData *)jarg1; 
-  result = (enum tmedia_t140_data_type_e)(arg1)->getType();
+  result = (enum tmedia_t140_data_type_e)((T140CallbackData const *)arg1)->getType();
   jresult = result; 
   return jresult;
 }
@@ -3134,7 +3238,7 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_T140CallbackData_getSize(void * jarg1
   unsigned int result;
   
   arg1 = (T140CallbackData *)jarg1; 
-  result = (unsigned int)(arg1)->getSize();
+  result = (unsigned int)((T140CallbackData const *)arg1)->getSize();
   jresult = result; 
   return jresult;
 }
@@ -3150,7 +3254,7 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_T140CallbackData_getData(void * jarg1
   arg1 = (T140CallbackData *)jarg1; 
   arg2 = jarg2; 
   arg3 = (unsigned int)jarg3; 
-  result = (unsigned int)(arg1)->getData(arg2,arg3);
+  result = (unsigned int)((T140CallbackData const *)arg1)->getData(arg2,arg3);
   jresult = result; 
   return jresult;
 }
@@ -6855,7 +6959,23 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setProxyCSCF(void * jarg1, c
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setLocalIP(void * jarg1, char * jarg2) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setLocalIP__SWIG_0(void * jarg1, char * jarg2, char * jarg3) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (bool)(arg1)->setLocalIP((char const *)arg2,(char const *)arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setLocalIP__SWIG_1(void * jarg1, char * jarg2) {
   unsigned int jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -6869,7 +6989,23 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setLocalIP(void * jarg1, cha
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setLocalPort(void * jarg1, unsigned short jarg2) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setLocalPort__SWIG_0(void * jarg1, unsigned short jarg2, char * jarg3) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  unsigned short arg2 ;
+  char *arg3 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (unsigned short)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (bool)(arg1)->setLocalPort(arg2,(char const *)arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setLocalPort__SWIG_1(void * jarg1, unsigned short jarg2) {
   unsigned int jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
   unsigned short arg2 ;
@@ -7254,10 +7390,10 @@ SWIGEXPORT void SWIGSTDCALL CSharp_SipStack_setCodecs(int jarg1) {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_SipStack_setCodecs_2(int jarg1) {
-  int arg1 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_SipStack_setCodecs_2(long long jarg1) {
+  int64_t arg1 ;
   
-  arg1 = (int)jarg1; 
+  arg1 = (int64_t)jarg1; 
   SipStack::setCodecs_2(arg1);
 }
 

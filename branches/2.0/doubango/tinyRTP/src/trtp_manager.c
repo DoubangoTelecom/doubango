@@ -32,6 +32,8 @@
 #include "tinyrtp/rtcp/trtp_rtcp_packet.h"
 #include "tinyrtp/rtcp/trtp_rtcp_session.h"
 
+#include "tinymedia/tmedia_defaults.h"
+
 #include "ice/tnet_ice_candidate.h"
 
 #include "tsk_string.h"
@@ -39,15 +41,20 @@
 #include "tsk_base64.h"
 #include "tsk_debug.h"
 
-#define TRTP_TRANSPORT_NAME "RTP/RTCP Manager"
+#if !defined(TRTP_TRANSPORT_NAME)
+#	define TRTP_TRANSPORT_NAME "RTP/RTCP Manager"
+#endif
 
-#define TRTP_DISABLE_SOCKETS_BEFORE_START	0
-#define TRTP_TINY_RCVBUF					(256>>1/*Will be doubled and min on linux is 256*/) /* tiny buffer used to disable receiving */
-#define TRTP_BIG_RCVBUF					0x1FFFE
-#define TRTP_BIG_SNDBUF					0x1FFFE
+#if !defined(TRTP_DISABLE_SOCKETS_BEFORE_START)
+#	define TRTP_DISABLE_SOCKETS_BEFORE_START	0
+#endif
+#if !defined(TRTP_TINY_RCVBUF)
+#	define TRTP_TINY_RCVBUF					(256>>1/*Will be doubled and min on linux is 256*/) /* tiny buffer used to disable receiving */
+#endif
 
-#define TRTP_DSCP_RTP_DEFAULT           0x2e
-
+#if !defined(TRTP_DSCP_RTP_DEFAULT)
+#	define TRTP_DSCP_RTP_DEFAULT           0x2e
+#endif
 
 #if !defined(TRTP_PORT_RANGE_START)
 #	define TRTP_PORT_RANGE_START 1024
@@ -78,8 +85,8 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 #if 0
 static int _trtp_manager_enable_sockets(trtp_manager_t* self)
 {
-	int rcv_buf = TRTP_BIG_RCVBUF;
-	int snd_buf = TRTP_BIG_SNDBUF;
+	int rcv_buf = tmedia_defaults_get_rtpbuff_size();
+	int snd_buf = tmedia_defaults_get_rtpbuff_size();
 	int ret;
 
 	if(!self->socket_disabled){
@@ -540,8 +547,8 @@ int trtp_manager_set_port_range(trtp_manager_t* self, uint16_t start, uint16_t s
 int trtp_manager_start(trtp_manager_t* self)
 {
 	int ret = 0;
-	int rcv_buf = TRTP_BIG_RCVBUF;
-	int snd_buf = TRTP_BIG_SNDBUF;
+	int rcv_buf = tmedia_defaults_get_rtpbuff_size();
+	int snd_buf = tmedia_defaults_get_rtpbuff_size();
     int32_t dscp_rtp;
 
 	if(!self){
@@ -571,7 +578,7 @@ int trtp_manager_start(trtp_manager_t* self)
 
 	/* Flush buffers and re-enable sockets */
 	if(self->transport->master && self->socket_disabled){
-		static char buff[TRTP_BIG_RCVBUF];
+		static char buff[1024];
 		tsk_size_t guard_count = 0;
 #if 0
 		// re-enable sockets
@@ -588,11 +595,12 @@ int trtp_manager_start(trtp_manager_t* self)
 	}
 
 	/* enlarge socket buffer */
+	TSK_DEBUG_INFO("SO_RCVBUF = %d, SO_SNDBUF = %d", rcv_buf, snd_buf);
 	if((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&rcv_buf, sizeof(rcv_buf)))){
-		TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", ret);
+		TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF, %d) has failed with error code %d", rcv_buf, ret);
 	}
 	if((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_SNDBUF, (char*)&snd_buf, sizeof(snd_buf)))){
-		TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", ret);
+		TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_SNDBUF, %d) has failed with error code %d", snd_buf, ret);
 	}
     dscp_rtp = (self->rtp.dscp << 2);
     if((ret = setsockopt(self->transport->master->fd, IPPROTO_IP, IP_TOS, (char*)&dscp_rtp, sizeof(dscp_rtp)))){
@@ -734,7 +742,7 @@ tsk_size_t trtp_manager_send_rtp_packet(trtp_manager_t* self, const struct trtp_
 	}
 #endif
 
-	if(!self || !packet){
+	if(!self || !packet || !self->transport){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}

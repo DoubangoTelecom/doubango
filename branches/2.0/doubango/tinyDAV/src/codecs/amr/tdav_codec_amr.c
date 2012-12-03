@@ -30,6 +30,8 @@
  */
 #include "tinydav/codecs/amr/tdav_codec_amr.h"
 
+#include "tsk_params.h"
+#include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -227,6 +229,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_amrnb_oa_plugin_def_s =
 	&tdav_codec_amrnb_oa_def_s,
 
 	tmedia_audio,
+	tmedia_codec_id_amr_nb_oa,
 	"AMR",
 	"AMR Narrow Band - Octet Aligned",
 	TMEDIA_CODEC_FORMAT_AMR_NB_OA,
@@ -293,6 +296,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_amrnb_be_plugin_def_s =
 	&tdav_codec_amrnb_be_def_s,
 
 	tmedia_audio,
+	tmedia_codec_id_amr_nb_be,
 	"AMR",
 	"AMR Narrow Band - Bandwidth-Efficient",
 	TMEDIA_CODEC_FORMAT_AMR_NB_BE,

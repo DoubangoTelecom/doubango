@@ -46,8 +46,8 @@ public: /* API functions */
 	bool setAMF(const char* amf);
 	bool setOperatorId(const char* opid);
 	bool setProxyCSCF(const char* fqdn, unsigned short port, const char* transport, const char* ipversion);
-	bool setLocalIP(const char* ip);
-	bool setLocalPort(unsigned short port);
+	bool setLocalIP(const char* ip, const char* transport=tsk_null);
+	bool setLocalPort(unsigned short port, const char* transport=tsk_null);
 	bool setEarlyIMS(bool enabled);
 	bool addHeader(const char* name, const char* value);
 	bool removeHeader(const char* name);
@@ -84,7 +84,7 @@ public: /* API functions */
 	static bool initialize();
 	static bool deInitialize();
 	static void setCodecs(tdav_codec_id_t codecs);
-	static void setCodecs_2(int codecs); // For stupid languages
+	static void setCodecs_2(int64_t codecs); // For stupid languages
 	static bool setCodecPriority(tdav_codec_id_t codec_id, int priority);
 	static bool setCodecPriority_2(int codec, int priority);// For stupid languages
 	static bool isCodecSupported(tdav_codec_id_t codec_id);

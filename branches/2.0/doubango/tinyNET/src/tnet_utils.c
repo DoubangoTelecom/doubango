@@ -574,6 +574,7 @@ bail:
     
 	/* == DNS servers == */
 	if(dnsserver){
+		TSK_DEBUG_INFO("Calling 'tnet_dns_resolvconf_parse()' to load DNS servers");
 		tnet_addresses_L_t * dns_servers;
 		if((dns_servers = tnet_dns_resolvconf_parse("/etc/resolv.conf"))){
 			tsk_list_pushback_list(addresses, dns_servers);
@@ -770,7 +771,7 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
     
         
 #else /* All other systems (Google Android, Unix-Like systems, uLinux, ....) */    
-    TSK_DEBUG_ERROR("getbestroute() not supported on this OS");
+    TSK_DEBUG_WARN("getbestroute() not supported on this OS");
     memcpy(*source,
            TNET_SOCKET_TYPE_IS_IPV6(type) ? "::" : "0.0.0.0",
            TNET_SOCKET_TYPE_IS_IPV6(type) ? 2 : 7
@@ -822,11 +823,20 @@ void tnet_freeaddrinfo(struct addrinfo *ai)
 * @param result @b sockaddr_storage structre representing the desciptor.
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tnet_get_sockaddr(tnet_fd_t fd, struct sockaddr_storage *result)
+int tnet_getsockname(tnet_fd_t fd, struct sockaddr_storage *result)
 {
-	if(fd >0){
+	if(fd > 0 && result){
 		socklen_t namelen = sizeof(*result);
 		return getsockname(fd, (struct sockaddr*)result, &namelen);
+	}
+	return -1;
+}
+
+int tnet_getpeername(tnet_fd_t fd, struct sockaddr_storage *result)
+{
+	if(fd > 0 && result){
+		socklen_t namelen = sizeof(*result);
+		return getpeername(fd, (struct sockaddr*)result, &namelen);
 	}
 	return -1;
 }
@@ -992,13 +1002,15 @@ int tnet_get_peerip_n_port(tnet_fd_t localFD, tnet_ip_t *ip, tnet_port_t *port)
 }
 
 /**@ingroup tnet_utils_group
-* Gets the IP address and the Port of a local socket (File descriptor).
+* Gets the IP address and the Port of a socket (File descriptor).
 * @param fd The decriptor for which to retrive the IP address and port.
+* @param getlocal Whether to get local or remote ip and port
 * @param ip [out] The IP address of the local socket.
 * @param port [out] The port of the local socket.
+
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
+int tnet_get_ip_n_port(tnet_fd_t fd, tsk_bool_t getlocal, tnet_ip_t *ip, tnet_port_t *port)
 {
 	if(port){
 		*port = 0;
@@ -1007,8 +1019,9 @@ int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 	if(fd > 0){
 		int status;
 		struct sockaddr_storage ss;
-		if((status = tnet_get_sockaddr(fd, &ss))){
-			TSK_DEBUG_ERROR("TNET_GET_SOCKADDR has failed with status code: %d", status);
+		status = getlocal ? tnet_getsockname(fd, &ss) : tnet_getpeername(fd, &ss);
+		if(status){
+			TNET_PRINT_LAST_ERROR("TNET_GET_SOCKADDR has failed with status code: %d", status);
 			return -1;
 		}
 

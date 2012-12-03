@@ -1,4 +1,5 @@
 lib_LTLIBRARIES         = libiLBC.la
+libiLBC_la_CPPFLAGS = -fPIC
 
 libiLBC_la_SOURCES  = \
  anaFilter.c\

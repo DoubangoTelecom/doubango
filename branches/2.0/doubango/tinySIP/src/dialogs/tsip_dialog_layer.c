@@ -395,7 +395,7 @@ int tsip_dialog_layer_remove(tsip_dialog_layer_t *self, const tsip_dialog_t *dia
 
 // this function is only called if no transaction match
 // for responses, the transaction will always match
-int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const tsip_message_t* message)
+int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, tsip_message_t* message)
 {
 	int ret = -1;
 	tsk_bool_t cid_matched;
@@ -422,12 +422,67 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 			goto bail;
 		}
 		else{
-			static const tsk_bool_t isCT = tsk_false;
-			transac = tsip_transac_layer_new(layer_transac, isCT, message, TSIP_DIALOG(dialog));
-			tsk_object_unref(dialog);
+			static tsk_bool_t isCT = tsk_false;
+			tsip_transac_dst_t* dst = tsip_transac_dst_dialog_create(dialog);
+			transac = tsip_transac_layer_new(
+				layer_transac, 
+				isCT,
+				message, 
+				dst
+			);
+			TSK_OBJECT_SAFE_FREE(dst);
+			TSK_OBJECT_SAFE_FREE(dialog);
 		}
 	}
 	else{
+		/* MediaProxyMode : forward all non-INVITE messages */
+		if(self->stack->network.mode == tsip_stack_mode_webrtc2sip){
+			tsk_bool_t b2bua;
+			
+			if(TSIP_MESSAGE_IS_REQUEST(message)){
+				// requests received over TCP/TLS/UDP must contain "ws-src-ip" and "ws-src-port" parameters
+				if(!TNET_SOCKET_TYPE_IS_WS(message->src_net_type) && !TNET_SOCKET_TYPE_IS_WSS(message->src_net_type)){
+					const char* ws_src_ip = tsk_params_get_param_value(message->line.request.uri->params, "ws-src-ip");
+					const tnet_port_t ws_src_port = (tnet_port_t)tsk_params_get_param_value_as_int(message->line.request.uri->params, "ws-src-port");
+					if(!tsip_transport_layer_have_stream_peer_with_remote_address(self->stack->layer_transport, ws_src_ip, ws_src_port)){
+						if(!TSIP_REQUEST_IS_ACK(message)){ // ACK do not expect response
+#if 0 // code commented because when using mjserver, rejecting the forked INVITE terminate all dialogs: have to check if it's conform to RFC 3261 or not
+							tsip_response_t* response = tsip_response_new(488, "WebSocket Peer not connected", message);
+							ret = tsip_transport_layer_send(self->stack->layer_transport, "no-branch", response);
+							TSK_OBJECT_SAFE_FREE(response);
+							return ret;
+#else
+							TSK_DEBUG_INFO("Request for peer at %s:%d cannot be delivered", ws_src_ip, ws_src_port);
+#endif
+						}
+						return 0;
+					}
+				}
+			}
+
+			// "rtcweb-breaker" parameter will be in the Contact header for outgoing request and in the request-uri for incoming requests
+			b2bua = TSIP_REQUEST_IS_INVITE(message) &&
+					(tsk_striequals(tsk_params_get_param_value(message->Contact->uri->params, "rtcweb-breaker"), "yes")
+					|| tsk_striequals(tsk_params_get_param_value(message->line.request.uri->params, "rtcweb-breaker"), "yes"));
+			
+			if(!b2bua){
+				// forward the message
+				static tsk_bool_t isCT = tsk_true;
+				tsip_transac_dst_t* dst;
+				tsip_transac_t* transac;
+
+				TSIP_MESSAGE(message)->update = tsk_true; // update AoR and Via
+				if((dst = tsip_transac_dst_net_create(TSIP_STACK(self->stack)))){
+					if((transac = tsip_transac_layer_new(self->stack->layer_transac, isCT, message, dst))){
+						ret = tsip_transac_start(transac, message);
+						TSK_OBJECT_SAFE_FREE(transac);
+					}
+					TSK_OBJECT_SAFE_FREE(dst);
+				}
+				return ret;
+			}
+		}
+
 		if(TSIP_MESSAGE_IS_REQUEST(message)){
 			tsip_ssession_t* ss = tsk_null;
 			tsip_dialog_t* newdialog = tsk_null;
@@ -480,8 +535,15 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 			// for new dialog, create a new transac and start it later
 			if(newdialog){
 				static const tsk_bool_t isCT = tsk_false;
-				transac = tsip_transac_layer_new(layer_transac, isCT, message, newdialog);
+				tsip_transac_dst_t* dst = tsip_transac_dst_dialog_create(newdialog);
+				transac = tsip_transac_layer_new(
+					layer_transac, 
+					isCT,
+					message, 
+					dst
+				);
 				tsk_list_push_back_data(self->dialogs, (void**)&newdialog); /* add new dialog to the layer */
+				TSK_OBJECT_SAFE_FREE(dst);
 			}
 
 			/* The dialog will become the owner of the SIP session

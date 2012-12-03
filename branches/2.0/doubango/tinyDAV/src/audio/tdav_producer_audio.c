@@ -37,6 +37,7 @@
 #define TDAV_PTIME_DEFAULT				20
 #define TDAV_AUDIO_GAIN_MAX				15
 
+#include "tsk_string.h"
 #include "tsk_debug.h"
 
 /** Initialize Audio producer

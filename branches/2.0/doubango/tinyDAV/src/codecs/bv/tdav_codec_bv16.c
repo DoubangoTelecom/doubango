@@ -221,6 +221,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_bv16_plugin_def_s =
 	&tdav_codec_bv16_def_s,
 
 	tmedia_audio,
+	tmedia_codec_id_bv16,
 	"BV16",
 	"BroadVoice16 Rate",
 	TMEDIA_CODEC_FORMAT_BV16,

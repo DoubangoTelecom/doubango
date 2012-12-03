@@ -21,6 +21,7 @@
  */
 #include "tinymedia/tmedia_defaults.h"
 
+#include "tsk_string.h"
 #include "tsk_debug.h"
 
 // /!\ These are global values shared by all sessions and stacks. Could be set (update) per session using "session_set()"
@@ -53,6 +54,12 @@ static tmedia_srtp_mode_t __srtp_mode = tmedia_srtp_mode_none;
 static tsk_bool_t __rtcp_enabled = tsk_true;
 static tsk_bool_t __rtcpmux_enabled = tsk_true;
 static tsk_bool_t __ice_enabled = tsk_false;
+static tsk_bool_t __bypass_encoding_enabled = tsk_false;
+static tsk_bool_t __bypass_decoding_enabled = tsk_false;
+static tsk_bool_t __videojb_enabled = tsk_true;
+static tsk_size_t __rtpbuff_size = 0x1FFFE; // Network buffer size use for RTP (SO_RCVBUF, SO_SNDBUF)
+static tsk_size_t __avpf_tail_min = 20; // Min size for tail used to honor RTCP-NACK requests
+static tsk_size_t __avpf_tail_max = 160; // Max size for tail used to honor RTCP-NACK requests
 
 int tmedia_defaults_set_profile(tmedia_profile_t profile){
 	__profile = profile;
@@ -297,4 +304,48 @@ int tmedia_defaults_set_ice_enabled(tsk_bool_t ice_enabled){
 }
 tsk_bool_t tmedia_defaults_get_ice_enabled(){
 	return __ice_enabled;
+}
+
+int tmedia_defaults_set_bypass_encoding(tsk_bool_t enabled){
+	__bypass_encoding_enabled = enabled;
+	return 0;
+}
+tsk_bool_t tmedia_defaults_get_bypass_encoding(){
+	return __bypass_encoding_enabled;
+}
+
+int tmedia_defaults_set_bypass_decoding(tsk_bool_t enabled){
+	__bypass_decoding_enabled = enabled;
+	return 0;
+}
+tsk_bool_t tmedia_defaults_get_bypass_decoding(){
+	return __bypass_decoding_enabled;
+}
+
+int tmedia_defaults_set_videojb_enabled(tsk_bool_t enabled){
+	__videojb_enabled = enabled;
+	return 0;
+}
+tsk_bool_t tmedia_defaults_get_videojb_enabled(){
+	return __videojb_enabled;
+}
+
+int tmedia_defaults_set_rtpbuff_size(tsk_size_t rtpbuff_size){
+	__rtpbuff_size = rtpbuff_size;
+	return 0;
+}
+tsk_size_t tmedia_defaults_get_rtpbuff_size(){
+	return __rtpbuff_size;
+}
+
+int tmedia_defaults_set_avpf_tail(tsk_size_t tail_min, tsk_size_t tail_max){
+	__avpf_tail_min = tail_min;
+	__avpf_tail_max = tail_max;
+	return 0;
+}
+tsk_size_t tmedia_defaults_get_avpf_tail_min(){
+	return __avpf_tail_min;
+}
+tsk_size_t tmedia_defaults_get_avpf_tail_max(){
+	return __avpf_tail_max;
 }

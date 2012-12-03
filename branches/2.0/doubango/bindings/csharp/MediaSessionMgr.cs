@@ -284,6 +284,51 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetByPassEncoding(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetByPassEncoding(enabled);
+    return ret;
+  }
+
+  public static bool defaultsGetByPassEncoding() {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetByPassEncoding();
+    return ret;
+  }
+
+  public static bool defaultsSetByPassDecoding(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetByPassDecoding(enabled);
+    return ret;
+  }
+
+  public static bool defaultsGetByPassDecoding() {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetByPassDecoding();
+    return ret;
+  }
+
+  public static bool defaultsSetVideoJbEnabled(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetVideoJbEnabled(enabled);
+    return ret;
+  }
+
+  public static bool defaultsGetVideoJbEnabled(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetVideoJbEnabled(enabled);
+    return ret;
+  }
+
+  public static bool defaultsSetRtpBuffSize(uint buffSize) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetRtpBuffSize(buffSize);
+    return ret;
+  }
+
+  public static uint defaultsGetRtpBuffSize() {
+    uint ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetRtpBuffSize();
+    return ret;
+  }
+
+  public static bool defaultsSetAvpfTail(uint tail_min, uint tail_max) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetAvpfTail(tail_min, tail_max);
+    return ret;
+  }
+
 }
 
 }

@@ -32,9 +32,11 @@
 
 #include "tinymedia_config.h"
 
-#include "tinysdp/tsdp_message.h"
+#include "tsk_object.h"
 
 TMEDIA_BEGIN_DECLS
+
+struct tsdp_message_s;
 
 /** List of all supported media types */
 // @tinyWRAP
@@ -87,6 +89,13 @@ typedef enum tmedia_t140_data_type_e
 tmedia_t140_data_type_t;
 
 // @tinyWRAP
+typedef enum tmedia_rtcp_event_type_e
+{
+	tmedia_rtcp_event_type_fir, // Full Intra Refresh
+}
+tmedia_rtcp_event_type_t;
+
+// @tinyWRAP
 typedef enum tmedia_profile_e
 {
 	tmedia_profile_default,
@@ -117,7 +126,7 @@ tmedia_pref_video_size_t;
 typedef enum tmedia_video_encode_result_type_e
 {
 	tmedia_video_encode_result_type_none = 0x00,
-	tmedia_video_encode_result_type_parms = (0x01 << 0), // e.g. SPS or PPS, DCT coeff., Quant params....
+	tmedia_video_encode_result_type_params = (0x01 << 0), // e.g. SPS or PPS, DCT coeff., Quant params....
 	tmedia_video_encode_result_type_intra = (0x01 << 1),
 	tmedia_video_encode_result_type_key = tmedia_video_encode_result_type_intra,
 	tmedia_video_encode_result_type_gold = tmedia_video_encode_result_type_intra,
@@ -136,11 +145,24 @@ typedef struct tmedia_video_encode_result_xs
 	} buffer;
 	uint32_t duration;
 	tsk_bool_t last_chunck;
+	const tsk_object_t* proto_hdr;
 }
 tmedia_video_encode_result_xt;
 
+#define tmedia_video_encode_result_reset(result) \
+	(result)->type = tmedia_video_encode_result_type_none; \
+	(result)->usr_data = tsk_null; \
+	(result)->proto_hdr = tsk_null; \
+	(result)->buffer.ptr = tsk_null; \
+	(result)->buffer.size = 0; \
+	(result)->duration = 0; \
+	(result)->last_chunck = tsk_false; \
+	(result)->proto_hdr = tsk_null; \
+
 typedef enum tmedia_video_decode_result_type_e
 {
+	tmedia_video_decode_result_type_none,
+
 	tmedia_video_decode_result_type_error,
 	tmedia_video_decode_result_type_success,
 }
@@ -153,6 +175,11 @@ typedef struct tmedia_video_decode_result_xs
 	const tsk_object_t* proto_hdr; // RTP, RTSP....
 }
 tmedia_video_decode_result_xt;
+
+#define tmedia_video_decode_result_reset(result) \
+	(result)->type = tmedia_video_decode_result_type_none; \
+	(result)->usr_data = tsk_null; \
+	(result)->proto_hdr = tsk_null; \
 
 
 // @tinyWRAP
@@ -184,7 +211,7 @@ typedef enum tmedia_bandwidth_level_e
 }
 tmedia_bandwidth_level_t;
 
-TINYMEDIA_API tmedia_type_t tmedia_type_from_sdp(const tsdp_message_t* sdp);
+TINYMEDIA_API tmedia_type_t tmedia_type_from_sdp(const struct tsdp_message_s* sdp);
 TINYMEDIA_API int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t* channels);
 TINYMEDIA_API int tmedia_video_get_size(tmedia_pref_video_size_t pref_vs, unsigned *width, unsigned *height);
 TINYMEDIA_API int tmedia_video_get_closest_cif_size(tmedia_pref_video_size_t pref_vs, tmedia_pref_video_size_t *cif_vs);

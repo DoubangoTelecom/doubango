@@ -200,7 +200,7 @@ int tnet_ice_pair_send_response(tnet_ice_pair_t *self, const tnet_stun_request_t
 	struct sockaddr_storage dest_addr;
 	tsk_bool_t is_error = ((code / 100) != 2);
 
-	if(!self || !phrase || !request){
+	if(!self || !phrase || !request || !self->candidate_offer || !self->candidate_answer){
 		TSK_DEBUG_ERROR("Invalid paramter");
 		return -1;
 	}
@@ -504,7 +504,7 @@ const tnet_ice_pair_t* tnet_ice_pairs_find_by_fd_and_addr(tnet_ice_pairs_L_t* pa
 	}
 
 	tsk_list_foreach(item, pairs){
-		if(!(pair = item->data) || !pair->candidate_offer->socket || pair->candidate_offer->socket->fd != local_fd){
+		if(!(pair = item->data) || !pair->candidate_offer || !pair->candidate_offer->socket || pair->candidate_offer->socket->fd != local_fd){
 			continue;
 		}
 		if(!tsk_striequals(pair->candidate_answer->connection_addr, remote_ip) || pair->candidate_answer->port != remote_port){

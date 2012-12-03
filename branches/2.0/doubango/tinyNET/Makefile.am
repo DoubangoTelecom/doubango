@@ -2,6 +2,11 @@ lib_LTLIBRARIES         = libtinyNET.la
 libtinyNET_la_LIBADD = ../tinySAK/libtinySAK.la
 libtinyNET_la_CPPFLAGS = -I../tinySAK/src -I./src
 
+if USE_SSL
+libtinyNET_la_LIBADD += ${LIBSSL_LIBADD}
+libtinyNET_la_CPPFLAGS += -DHAVE_OPENSSL=1
+endif
+
 libtinyNET_la_SOURCES  = \
 	src/tnet.c\
 	src/tnet_auth.c\

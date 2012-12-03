@@ -44,7 +44,7 @@
 
 /* ===	Ragel state machine === */
 
-/* #line 80 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 81 "./ragel/tnet_dns_resolvconf.rl" */
 
 
 /** Gets list of DNS servers from a conf file.
@@ -61,7 +61,7 @@ tnet_addresses_L_t * tnet_dns_resolvconf_parse(const char* path)
 	const char* fullpath = path;
 	const char* tag_start;
 	FILE* fd;
-	char buf[4092];
+	char* buf = tsk_null;
 	
 	// Ragel
 	int cs = 0;
@@ -76,26 +76,26 @@ static const char _tdns_machine_resolvconf_actions[] = {
 };
 
 static const char _tdns_machine_resolvconf_key_offsets[] = {
-	0, 6, 7, 8, 11, 14, 14, 20, 
-	22, 25, 28, 31, 34, 37, 40, 43, 
-	46, 49, 50, 51, 54
+	0, 7, 8, 9, 12, 15, 15, 22, 
+	24, 27, 30, 33, 36, 39, 42, 45, 
+	48, 51, 52, 53, 56
 };
 
 static const char _tdns_machine_resolvconf_trans_keys[] = {
-	10, 13, 32, 35, 78, 110, 32, 32, 
-	10, 13, 32, 10, 13, 32, 10, 13, 
-	32, 35, 78, 110, 10, 13, 32, 65, 
-	97, 32, 77, 109, 32, 69, 101, 32, 
-	83, 115, 32, 69, 101, 32, 82, 114, 
-	32, 86, 118, 32, 69, 101, 32, 82, 
-	114, 32, 32, 10, 13, 32, 32, 35, 
-	78, 110, 0
+	10, 13, 32, 35, 59, 78, 110, 32, 
+	32, 10, 13, 32, 10, 13, 32, 10, 
+	13, 32, 35, 59, 78, 110, 10, 13, 
+	32, 65, 97, 32, 77, 109, 32, 69, 
+	101, 32, 83, 115, 32, 69, 101, 32, 
+	82, 114, 32, 86, 118, 32, 69, 101, 
+	32, 82, 114, 32, 32, 10, 13, 32, 
+	32, 35, 59, 78, 110, 0
 };
 
 static const char _tdns_machine_resolvconf_single_lengths[] = {
-	6, 1, 1, 3, 3, 0, 6, 2, 
+	7, 1, 1, 3, 3, 0, 7, 2, 
 	3, 3, 3, 3, 3, 3, 3, 3, 
-	3, 1, 1, 3, 4
+	3, 1, 1, 3, 5
 };
 
 static const char _tdns_machine_resolvconf_range_lengths[] = {
@@ -105,22 +105,23 @@ static const char _tdns_machine_resolvconf_range_lengths[] = {
 };
 
 static const char _tdns_machine_resolvconf_index_offsets[] = {
-	0, 7, 9, 11, 15, 19, 20, 27, 
-	30, 34, 38, 42, 46, 50, 54, 58, 
-	62, 66, 68, 70, 74
+	0, 8, 10, 12, 16, 20, 21, 29, 
+	32, 36, 40, 44, 48, 52, 56, 60, 
+	64, 68, 70, 72, 76
 };
 
 static const char _tdns_machine_resolvconf_indicies[] = {
-	1, 1, 2, 3, 4, 4, 0, 5, 
-	0, 5, 6, 7, 7, 8, 6, 7, 
-	7, 8, 9, 9, 1, 1, 5, 3, 
-	4, 4, 0, 7, 7, 3, 5, 10, 
-	10, 0, 5, 11, 11, 0, 5, 12, 
-	12, 0, 5, 13, 13, 0, 5, 14, 
-	14, 0, 5, 15, 15, 0, 5, 16, 
-	16, 0, 5, 17, 17, 0, 5, 18, 
-	18, 0, 19, 0, 19, 20, 22, 22, 
-	23, 21, 2, 3, 4, 4, 0, 0
+	1, 1, 2, 3, 3, 4, 4, 0, 
+	5, 0, 5, 6, 7, 7, 8, 6, 
+	7, 7, 8, 9, 9, 1, 1, 5, 
+	3, 3, 4, 4, 0, 7, 7, 3, 
+	5, 10, 10, 0, 5, 11, 11, 0, 
+	5, 12, 12, 0, 5, 13, 13, 0, 
+	5, 14, 14, 0, 5, 15, 15, 0, 
+	5, 16, 16, 0, 5, 17, 17, 0, 
+	5, 18, 18, 0, 19, 0, 19, 20, 
+	22, 22, 23, 21, 2, 3, 3, 4, 
+	4, 0, 0
 };
 
 static const char _tdns_machine_resolvconf_trans_targs[] = {
@@ -142,7 +143,7 @@ static const int tdns_machine_resolvconf_error = -1;
 static const int tdns_machine_resolvconf_en_main = 0;
 
 
-/* #line 105 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 106 "./ragel/tnet_dns_resolvconf.rl" */
 
 	if(tsk_strnullORempty(fullpath)){
 		fullpath = TNET_RESOLV_CONF_PATH;
@@ -150,7 +151,15 @@ static const int tdns_machine_resolvconf_en_main = 0;
 
 	/* Open the file and read all data */
 	if((fd = fopen(fullpath, "r"))){
-		int len = fread(buf, sizeof(uint8_t), sizeof(buf)-2, fd);
+		long len;
+		fseek(fd, 0L, SEEK_END);
+		len = ftell(fd);
+		fseek(fd, 0L, SEEK_SET);
+		if(!(buf = (char*)tsk_calloc(len + 1, 1))){
+			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %d", (len + 1));
+			goto bail;
+		}
+		fread(buf, 1, len, fd);
 		p = &buf[0];
 		pe = p + len + 1/*hack*/;
 		eof = pe;
@@ -172,14 +181,14 @@ static const int tdns_machine_resolvconf_en_main = 0;
 	}
 
 	
-/* #line 176 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 185 "./src/dns/tnet_dns_resolvconf.c" */
 	{
 	cs = tdns_machine_resolvconf_start;
 	}
 
-/* #line 134 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 143 "./ragel/tnet_dns_resolvconf.rl" */
 	
-/* #line 183 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 192 "./src/dns/tnet_dns_resolvconf.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -265,16 +274,16 @@ _match:
 			tnet_address_t *address;
 			memset(ip, '\0', sizeof(ip));
 			memcpy(ip, tag_start, len);
+			TSK_DEBUG_INFO("Adding DNS server = %s:%d", ip, TNET_DNS_SERVER_PORT_DEFAULT);
 			
 			address = tnet_address_create(ip);
-			TSK_DEBUG_INFO("New DNS entry = %s", ip);
 			address->family = tnet_get_family(ip, TNET_DNS_SERVER_PORT_DEFAULT);
 			address->dnsserver = 1;
 			tsk_list_push_ascending_data(servers, (void**)&address);
 		}
 	}
 	break;
-/* #line 277 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 287 "./src/dns/tnet_dns_resolvconf.c" */
 		}
 	}
 
@@ -284,18 +293,19 @@ _again:
 	_test_eof: {}
 	}
 
-/* #line 135 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 144 "./ragel/tnet_dns_resolvconf.rl" */
 	
 	if( cs < 
-/* #line 290 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 300 "./src/dns/tnet_dns_resolvconf.c" */
 0
-/* #line 136 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 145 "./ragel/tnet_dns_resolvconf.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse %s.", fullpath);
 		TSK_OBJECT_SAFE_FREE(servers);
 	}
 
 bail:
+	TSK_FREE(buf);
 	return servers;
 }
 

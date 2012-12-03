@@ -60,6 +60,7 @@ tmedia_param_plugin_type_t;
 typedef enum tmedia_param_value_type_e
 {
 	tmedia_pvt_int32,
+	tmedia_pvt_bool = tmedia_pvt_int32,
 	tmedia_pvt_pobject,
 	tmedia_pvt_pchar,
 	tmedia_pvt_int64,

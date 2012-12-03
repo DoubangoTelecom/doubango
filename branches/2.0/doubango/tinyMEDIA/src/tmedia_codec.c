@@ -30,6 +30,8 @@
 #include "tinymedia/tmedia_codec.h"
 #include "tinymedia/tmedia_defaults.h"
 
+#include "tinysdp/headers/tsdp_header_M.h"
+
 #include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
@@ -349,6 +351,7 @@ tmedia_codec_t* tmedia_codec_create(const char* format)
 		if(plugin->objdef && tsk_striequals(plugin->format, format)){
 			if((codec = tsk_object_new(plugin->objdef))){
 				/* initialize the newly created codec */
+				codec->id = plugin->codec_id;
 				codec->dyn = plugin->dyn;
 				codec->plugin = plugin;
 				codec->bl = tmedia_bl_medium;

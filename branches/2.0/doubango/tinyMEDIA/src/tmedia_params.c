@@ -31,6 +31,7 @@
 
 #include "tinymedia/tmedia_session.h"
 
+#include "tsk_params.h"
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 

@@ -190,6 +190,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_g722_plugin_def_s =
 	&tdav_codec_g722_def_s,
 
 	tmedia_audio,
+	tmedia_codec_id_g722,
 	"G722",
 	"g722 Codec",
 	TMEDIA_CODEC_FORMAT_G722,

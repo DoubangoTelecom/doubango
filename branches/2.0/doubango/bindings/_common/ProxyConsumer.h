@@ -182,7 +182,7 @@ class ProxyVideoFrame
 {
 public:
 #if !defined(SWIG)
-	ProxyVideoFrame(const void* pBufferPtr, unsigned nBufferSize, unsigned nFrameWidth, unsigned nFrameHeight);
+	ProxyVideoFrame(const void* pBufferPtr, unsigned nBufferSize, unsigned nFrameWidth, unsigned nFrameHeight, const tsk_object_t* pProtoHdr);
 #endif
 	virtual ~ProxyVideoFrame();
 
@@ -196,11 +196,13 @@ public: /* For Java/C# applications */
 public:
 	inline unsigned getBufferSize()const{ return m_nBufferSize; }
 	inline const void* getBufferPtr()const{ return m_pBufferPtr; }
+	inline const tsk_object_t* getProtoHdr()const{ return m_pProtoHdr; }
 #endif
 
 private:
 	const void* m_pBufferPtr;
 	unsigned m_nBufferSize, m_nFrameWidth, m_nFrameHeight;
+	const tsk_object_t* m_pProtoHdr;
 };
 
 

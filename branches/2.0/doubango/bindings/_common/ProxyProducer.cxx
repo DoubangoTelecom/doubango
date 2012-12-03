@@ -558,13 +558,28 @@ int ProxyVideoProducer::push(const void* pBuffer, unsigned nSize)
 
 // send() "as is"
 // only used by telepresence system with a H.264 SVC hardaware encoder
-int ProxyVideoProducer::send(const void* pBuffer, unsigned nSize, unsigned nDuration, bool bMarker)
+int ProxyVideoProducer::sendRaw(const void* pBuffer, unsigned nSize, unsigned nDuration, bool bMarker)
 {
 	if(m_pWrappedPlugin && TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.callback){
+		//tmedia_video_encode_result_reset(&TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.chunck_curr);
+
 		TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.chunck_curr.buffer.ptr = pBuffer;
 		TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.chunck_curr.buffer.size = nSize;
 		TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.chunck_curr.duration = nDuration;
 		TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.chunck_curr.last_chunck = (bMarker == true);
+		return TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.callback(&TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.chunck_curr);
+	}
+	return 0;
+}
+
+int ProxyVideoProducer::sendRaw(const void* pBuffer, unsigned nSize, const void* proto_hdr)
+{
+	if(m_pWrappedPlugin && TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.callback){
+		//tmedia_video_encode_result_reset(&TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.chunck_curr);
+
+		TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.chunck_curr.buffer.ptr = pBuffer;
+		TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.chunck_curr.buffer.size = nSize;
+		TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.chunck_curr.proto_hdr = proto_hdr;
 		return TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.callback(&TMEDIA_PRODUCER(m_pWrappedPlugin)->raw_cb.chunck_curr);
 	}
 	return 0;

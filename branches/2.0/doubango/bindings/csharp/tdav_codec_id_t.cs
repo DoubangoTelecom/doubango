@@ -8,6 +8,7 @@
 
 namespace org.doubango.tinyWRAP {
 
+[System.Obsolete("Deprecated and replaced by 'tmedia_codec_id_t'. Will be removed in Doubango 3.0.", false)]
 public enum tdav_codec_id_t {
   tdav_codec_id_none = 0x00000000,
   tdav_codec_id_amr_nb_oa = 0x00000001 << 0,

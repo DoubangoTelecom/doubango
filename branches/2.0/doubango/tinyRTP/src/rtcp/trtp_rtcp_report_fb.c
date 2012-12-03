@@ -77,10 +77,10 @@ static int _trtp_rtcp_report_fb_serialize_to(const trtp_rtcp_report_fb_t* self, 
 	pdata[TRTP_RTCP_HEADER_SIZE + 1] = (self->ssrc_sender >> 16) & 0xFF;
 	pdata[TRTP_RTCP_HEADER_SIZE + 2] = (self->ssrc_sender >> 8) & 0xFF;
 	pdata[TRTP_RTCP_HEADER_SIZE + 3] = (self->ssrc_sender & 0xFF);
-	pdata[TRTP_RTCP_HEADER_SIZE + 4] = self->ssrc_media_src >> 24;
-	pdata[TRTP_RTCP_HEADER_SIZE + 5] = (self->ssrc_media_src >> 16) & 0xFF;
-	pdata[TRTP_RTCP_HEADER_SIZE + 6] = (self->ssrc_media_src >> 8) & 0xFF;
-	pdata[TRTP_RTCP_HEADER_SIZE + 7] = (self->ssrc_media_src & 0xFF);
+	pdata[TRTP_RTCP_HEADER_SIZE + 4] = self->ssrc_media >> 24;
+	pdata[TRTP_RTCP_HEADER_SIZE + 5] = (self->ssrc_media >> 16) & 0xFF;
+	pdata[TRTP_RTCP_HEADER_SIZE + 6] = (self->ssrc_media >> 8) & 0xFF;
+	pdata[TRTP_RTCP_HEADER_SIZE + 7] = (self->ssrc_media & 0xFF);
 	
 	return 0;
 }
@@ -155,7 +155,7 @@ trtp_rtcp_report_rtpfb_t* trtp_rtcp_report_rtpfb_create_2(trtp_rtcp_rtpfb_fci_ty
 	if((rtpfb = trtp_rtcp_report_rtpfb_create_null())){
 		rtpfb->fci_type = TRTP_RTCP_PACKET(rtpfb)->header->rc = fci_type;
 		TRTP_RTCP_REPORT_FB(rtpfb)->ssrc_sender = ssrc_sender;
-		TRTP_RTCP_REPORT_FB(rtpfb)->ssrc_media_src = ssrc_media_src;
+		TRTP_RTCP_REPORT_FB(rtpfb)->ssrc_media = ssrc_media_src;
 	}
 	return rtpfb;
 }
@@ -203,7 +203,7 @@ trtp_rtcp_report_rtpfb_t* trtp_rtcp_report_rtpfb_deserialize(const void* data, t
 			tsk_size_t size = (header->length_in_bytes - TRTP_RTCP_PACKET_FB_MIN_SIZE), i;
 			
 			TRTP_RTCP_REPORT_FB(rtpfb)->ssrc_sender = ssrc_sender;
-			TRTP_RTCP_REPORT_FB(rtpfb)->ssrc_media_src = ssrc_media_src;
+			TRTP_RTCP_REPORT_FB(rtpfb)->ssrc_media = ssrc_media_src;
 
 			switch(rtpfb->fci_type = (trtp_rtcp_rtpfb_fci_type_t)header->rc){
 				case trtp_rtcp_rtpfb_fci_type_nack:
@@ -380,7 +380,7 @@ trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_2(trtp_rtcp_psfb_fci_type_
 	if((psfb = trtp_rtcp_report_psfb_create_null())){
 		TRTP_RTCP_PACKET(psfb)->header->rc = psfb->fci_type = fci_type;
 		TRTP_RTCP_REPORT_FB(psfb)->ssrc_sender = ssrc_sender;
-		TRTP_RTCP_REPORT_FB(psfb)->ssrc_media_src = ssrc_media_src;
+		TRTP_RTCP_REPORT_FB(psfb)->ssrc_media = ssrc_media_src;
 	}
 	return psfb;
 }
@@ -421,7 +421,7 @@ trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_deserialize(const void* data, tsk
 			tsk_size_t size = (header->length_in_bytes - TRTP_RTCP_PACKET_FB_MIN_SIZE);
 
 			TRTP_RTCP_REPORT_FB(psfb)->ssrc_sender = ssrc_sender;
-			TRTP_RTCP_REPORT_FB(psfb)->ssrc_media_src = ssrc_media_src;
+			TRTP_RTCP_REPORT_FB(psfb)->ssrc_media = ssrc_media_src;
 
 			switch((psfb->fci_type = header->rc)/* FMT for RTCP-FB messages */){
 				case trtp_rtcp_psfb_fci_type_pli:

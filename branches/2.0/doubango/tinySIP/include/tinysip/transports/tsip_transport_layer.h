@@ -58,12 +58,14 @@ const tsip_transport_t* tsip_transport_layer_find_by_idx(const tsip_transport_la
 int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_host, tnet_port_t local_port, tnet_socket_type_t type, const char* description);
 int tsip_transport_layer_remove(tsip_transport_layer_t* self, const char* description);
 
-int tsip_transport_layer_send(const tsip_transport_layer_t* self, const char *branch, const tsip_message_t *msg);
+int tsip_transport_layer_send(const tsip_transport_layer_t* self, const char *branch, tsip_message_t *msg);
 
 int tsip_transport_createTempSAs(const tsip_transport_layer_t *self);
 int tsip_transport_ensureTempSAs(const tsip_transport_layer_t *self, const tsip_response_t *r401_407, int64_t expires);
 int tsip_transport_startSAs(const tsip_transport_layer_t* self, const void* ik, const void* ck);
 int tsip_transport_cleanupSAs(const tsip_transport_layer_t *self);
+
+tsk_bool_t tsip_transport_layer_have_stream_peer_with_remote_address(const tsip_transport_layer_t *self, const char* remote_ip, tnet_port_t remote_port);
 
 int tsip_transport_layer_start(tsip_transport_layer_t* self);
 int tsip_transport_layer_shutdown(tsip_transport_layer_t* self);

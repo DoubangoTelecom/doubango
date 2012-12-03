@@ -38,6 +38,7 @@
 
 #define FIXME_SEND_SILENCE_ON_MUTE	0
 
+#include "tsk_string.h"
 #include "tsk_thread.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"

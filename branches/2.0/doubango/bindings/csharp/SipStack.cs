@@ -88,13 +88,23 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public bool setLocalIP(string ip, string transport) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setLocalIP__SWIG_0(swigCPtr, ip, transport);
+    return ret;
+  }
+
   public bool setLocalIP(string ip) {
-    bool ret = tinyWRAPPINVOKE.SipStack_setLocalIP(swigCPtr, ip);
+    bool ret = tinyWRAPPINVOKE.SipStack_setLocalIP__SWIG_1(swigCPtr, ip);
+    return ret;
+  }
+
+  public bool setLocalPort(ushort port, string transport) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setLocalPort__SWIG_0(swigCPtr, port, transport);
     return ret;
   }
 
   public bool setLocalPort(ushort port) {
-    bool ret = tinyWRAPPINVOKE.SipStack_setLocalPort(swigCPtr, port);
+    bool ret = tinyWRAPPINVOKE.SipStack_setLocalPort__SWIG_1(swigCPtr, port);
     return ret;
   }
 
@@ -222,7 +232,7 @@ public class SipStack : SafeObject {
     tinyWRAPPINVOKE.SipStack_setCodecs((int)codecs);
   }
 
-  public static void setCodecs_2(int codecs) {
+  public static void setCodecs_2(long codecs) {
     tinyWRAPPINVOKE.SipStack_setCodecs_2(codecs);
   }
 

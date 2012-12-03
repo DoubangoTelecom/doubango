@@ -97,12 +97,12 @@ typedef struct tnet_dns_ctx_s
 
 	tnet_dns_cache_t *cache;
 	tnet_addresses_L_t *servers;
+    
+	TSK_DECLARE_SAFEOBJ;
 
 #if HAVE_DNS_H
     dns_handle_t resolv_handle;
 #endif
-    
-	TSK_DECLARE_SAFEOBJ;
 }
 tnet_dns_ctx_t;
 

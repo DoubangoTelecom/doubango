@@ -24,6 +24,7 @@
 #include <tinydshow/DSDisplay.h>
 #include <tinydshow/DSUtils.h>
 
+#include "tsk_string.h"
 #include "tsk_debug.h"
 
 

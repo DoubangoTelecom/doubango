@@ -41,15 +41,119 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-int tsip_transac_init(tsip_transac_t *self, tsip_transac_type_t type, tsk_bool_t reliable, int32_t cseq_value, const char* cseq_method, const char* callid, tsip_dialog_t* dialog, tsk_fsm_state_id curr, tsk_fsm_state_id term)
+static tsk_object_t* tsip_transac_dst_ctor(tsk_object_t * _self, va_list * app)
+{
+	tsip_transac_dst_t *dst = _self;
+	if(dst){
+		
+	}
+	return _self;
+}
+static tsk_object_t* tsip_transac_dst_dtor(tsk_object_t * _self)
+{ 
+	tsip_transac_dst_t *dst = _self;
+	if(dst){
+		TSK_OBJECT_SAFE_FREE(dst->stack);
+		switch(dst->type){
+			case tsip_transac_dst_type_dialog:
+				{
+					TSK_OBJECT_SAFE_FREE(dst->dialog.dlg);
+					break;
+				}
+			case tsip_transac_dst_type_net:
+				{
+					break;
+				}
+		}
+	}
+	return _self;
+}
+static const tsk_object_def_t tsip_transac_dst_def_s = 
+{
+	sizeof(tsip_transac_dst_t),
+	tsip_transac_dst_ctor, 
+	tsip_transac_dst_dtor,
+	tsk_null, 
+};
+const tsk_object_def_t *tsip_transac_dst_def_t = &tsip_transac_dst_def_s;
+
+static struct tsip_transac_dst_s* tsip_transac_dst_create(tsip_transac_dst_type_t type, struct tsip_stack_s* stack)
+{
+	struct tsip_transac_dst_s* dst = tsk_object_new(tsip_transac_dst_def_t);
+	if(dst){
+		dst->type = type;
+		dst->stack = tsk_object_ref(stack);
+	}
+	return dst;
+}
+
+struct tsip_transac_dst_s* tsip_transac_dst_dialog_create(tsip_dialog_t *dlg)
+{
+	struct tsip_transac_dst_s* dst;
+	if((dst =  tsip_transac_dst_create(tsip_transac_dst_type_dialog, TSIP_DIALOG_GET_STACK(dlg)))){
+		dst->dialog.dlg = tsk_object_ref(dlg);
+	}
+	return dst;
+}
+
+struct tsip_transac_dst_s* tsip_transac_dst_net_create(struct tsip_stack_s* stack)
+{
+	struct tsip_transac_dst_s* dst;
+	if((dst =  tsip_transac_dst_create(tsip_transac_dst_type_net, stack))){
+	}
+	return dst;
+}
+
+static int tsip_transac_dst_deliver(struct tsip_transac_dst_s* self, tsip_dialog_event_type_t event_type, const tsip_message_t *msg)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	switch(self->type){
+		case tsip_transac_dst_type_dialog:
+			{
+				return self->dialog.dlg->callback(
+					self->dialog.dlg, 
+					event_type, 
+					msg
+				);
+			}
+		case tsip_transac_dst_type_net:
+			{
+				if(!msg){
+					TSK_DEBUG_ERROR("Message is null");
+					return -1;
+				}
+				
+				// all messages coming from WebSocket transport have to be updated (AoR, Via...) before network delivering
+				// all other messages MUST not unless specified from the dialog layer
+				TSIP_MESSAGE(msg)->update |= (TNET_SOCKET_TYPE_IS_WS(msg->src_net_type) || TNET_SOCKET_TYPE_IS_WSS(msg->src_net_type));
+
+				return tsip_transport_layer_send(
+					self->stack->layer_transport, 
+					msg->firstVia ? msg->firstVia->branch : tsk_null, 
+					TSIP_MESSAGE(msg)
+				);
+			}
+		default:
+			{
+				TSK_DEBUG_ERROR("Unexpected code called");
+				return -2;
+			}
+	}
+}
+
+
+int tsip_transac_init(tsip_transac_t *self, tsip_transac_type_t type, int32_t cseq_value, const char* cseq_method, const char* callid, struct tsip_transac_dst_s* dst, tsk_fsm_state_id curr, tsk_fsm_state_id term)
 {
 	if(self && !self->initialized){
 		self->type = type;
-		self->reliable = reliable;
 		self->cseq_value = cseq_value;
-		self->cseq_method = tsk_strdup(cseq_method);
-		self->callid = tsk_strdup(callid);
-		self->dialog = tsk_object_ref(dialog);
+		tsk_strupdate(&self->cseq_method, cseq_method);
+		tsk_strupdate(&self->callid, callid);
+		self->dst = tsk_object_ref(dst);
 
 		/* FSM */
 		self->fsm = tsk_fsm_create(curr, term);
@@ -70,7 +174,7 @@ int tsip_transac_deinit(tsip_transac_t *self)
 		TSK_FREE(self->branch);
 		TSK_FREE(self->cseq_method);
 		TSK_FREE(self->callid);
-		TSK_OBJECT_SAFE_FREE(self->dialog);
+		TSK_OBJECT_SAFE_FREE(self->dst);
 
 		self->initialized = tsk_false;
 		
@@ -82,38 +186,47 @@ int tsip_transac_deinit(tsip_transac_t *self)
 int tsip_transac_start(tsip_transac_t *self, const tsip_request_t* request)
 {
 	int ret = -1;
-	if(self){
-		switch(self->type){
-			case tsip_nist:{
-					ret = tsip_transac_nist_start(TSIP_TRANSAC_NIST(self), request);
-					break;
-				}
-			case tsip_ist:{
-					ret = tsip_transac_ist_start(TSIP_TRANSAC_IST(self), request);
-					break;
-				}
-			case tsip_nict:{
-					ret = tsip_transac_nict_start(TSIP_TRANSAC_NICT(self), request);
-					break;
-				}
-			case tsip_ict:{
-					ret = tsip_transac_ict_start(TSIP_TRANSAC_ICT(self), request);
-					break;
-				}
-		}
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
 	}
-
-	return ret;
+	
+	switch(self->type){
+		case tsip_transac_type_nist:{
+				return tsip_transac_nist_start(TSIP_TRANSAC_NIST(self), request);
+			}
+		case tsip_transac_type_ist:{
+				return tsip_transac_ist_start(TSIP_TRANSAC_IST(self), request);
+			}
+		case tsip_transac_type_nict:{
+				return tsip_transac_nict_start(TSIP_TRANSAC_NICT(self), request);
+			}
+		case tsip_transac_type_ict:{
+				return tsip_transac_ict_start(TSIP_TRANSAC_ICT(self), request);
+			}
+	}
+	
+	TSK_DEBUG_ERROR("Unexpected code called");
+	return -2;
 }
 
+// deliver the message to the destination (e.g. local dialog)
+int tsip_transac_deliver(tsip_transac_t* self, tsip_dialog_event_type_t event_type, const tsip_message_t *msg)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return tsip_transac_dst_deliver(self->dst, event_type, msg);
+}
+
+// send the message over the network
 int tsip_transac_send(tsip_transac_t *self, const char *branch, const tsip_message_t *msg)
 {
-	if(self && TSIP_TRANSAC_GET_STACK(self)){
-		const tsip_transport_layer_t *layer = TSIP_TRANSAC_GET_STACK(self)->layer_transport;
-		if(layer){
-			return tsip_transport_layer_send(layer, branch, msg);
-		}
+	if(self && TSIP_TRANSAC_GET_STACK(self)->layer_transport && msg){
+		return tsip_transport_layer_send(TSIP_TRANSAC_GET_STACK(self)->layer_transport, branch, TSIP_MESSAGE(msg));
 	}
+	TSK_DEBUG_ERROR("Invalid parameter");
 	return -1;
 }
 

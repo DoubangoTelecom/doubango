@@ -131,7 +131,7 @@ int tnet_socket_set_tlsfiles(tnet_socket_tls_t* socket, int isClient, const char
 		return -1;
 	}
 	
-	if(!TNET_SOCKET_TYPE_IS_TLS(socket->type)){
+	if(!TNET_SOCKET_TYPE_IS_TLS(socket->type) && !TNET_SOCKET_TYPE_IS_WSS(socket->type)){
 		TSK_DEBUG_ERROR("Not TLS socket.");
 		return -2;
 	}
@@ -230,7 +230,7 @@ static tsk_object_t* tnet_socket_ctor(tsk_object_t * self, va_list * app)
 				}
 
 				/* Get local IP string. */
-				if((status = tnet_get_ip_n_port(sock->fd , &sock->ip, &sock->port))) /* % */
+				if((status = tnet_get_ip_n_port(sock->fd , tsk_true/*local*/, &sock->ip, &sock->port))) /* % */
 				//if((status = tnet_getnameinfo(ptr->ai_addr, ptr->ai_addrlen, sock->ip, sizeof(sock->ip), 0, 0, NI_NUMERICHOST)))
 				{
 					TNET_PRINT_LAST_ERROR("Failed to get local IP and port.");

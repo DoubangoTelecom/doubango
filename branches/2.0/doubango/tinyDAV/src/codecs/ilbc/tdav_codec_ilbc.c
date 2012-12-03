@@ -31,6 +31,7 @@
 
 #if HAVE_ILBC
 
+#include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -235,6 +236,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_ilbc_plugin_def_s =
 	&tdav_codec_ilbc_def_s,
 
 	tmedia_audio,
+	tmedia_codec_id_ilbc,
 	"iLBC",
 	"iLBC codec",
 	TMEDIA_CODEC_FORMAT_ILBC,

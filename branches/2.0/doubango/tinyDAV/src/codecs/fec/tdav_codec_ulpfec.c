@@ -27,6 +27,7 @@
 
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
 
+#include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -401,6 +402,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_ulpfec_plugin_def_s =
 	&tdav_codec_ulpfec_def_s,
 
 	tmedia_video,
+	tmedia_codec_id_none, // fake codec
 	"ulpfec",
 	"ulpfec codec",
 	TMEDIA_CODEC_FORMAT_ULPFEC,

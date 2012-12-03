@@ -556,6 +556,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_h264_base_plugin_def_s =
 	&tdav_codec_h264_base_def_s,
 
 	tmedia_video,
+	tmedia_codec_id_h264_bp,
 	"H264",
 	"H264 Base Profile",
 	TMEDIA_CODEC_FORMAT_H264_BP,
@@ -621,6 +622,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_h264_main_plugin_def_s =
 	&tdav_codec_h264_main_def_s,
 
 	tmedia_video,
+	tmedia_codec_id_h264_mp,
 	"H264",
 	"H264 Main Profile",
 	TMEDIA_CODEC_FORMAT_H264_MP,

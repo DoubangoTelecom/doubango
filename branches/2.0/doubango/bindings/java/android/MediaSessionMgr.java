@@ -230,4 +230,40 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetIceEnabled(ice_enabled);
   }
 
+  public static boolean defaultsSetByPassEncoding(boolean enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetByPassEncoding(enabled);
+  }
+
+  public static boolean defaultsGetByPassEncoding() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetByPassEncoding();
+  }
+
+  public static boolean defaultsSetByPassDecoding(boolean enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetByPassDecoding(enabled);
+  }
+
+  public static boolean defaultsGetByPassDecoding() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetByPassDecoding();
+  }
+
+  public static boolean defaultsSetVideoJbEnabled(boolean enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetVideoJbEnabled(enabled);
+  }
+
+  public static boolean defaultsGetVideoJbEnabled(boolean enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetVideoJbEnabled(enabled);
+  }
+
+  public static boolean defaultsSetRtpBuffSize(long buffSize) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetRtpBuffSize(buffSize);
+  }
+
+  public static long defaultsGetRtpBuffSize() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetRtpBuffSize();
+  }
+
+  public static boolean defaultsSetAvpfTail(long tail_min, long tail_max) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetAvpfTail(tail_min, tail_max);
+  }
+
 }

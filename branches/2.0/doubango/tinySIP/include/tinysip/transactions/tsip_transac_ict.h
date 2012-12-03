@@ -52,7 +52,7 @@ typedef struct tsip_transac_ict
 }
 tsip_transac_ict_t;
 
-tsip_transac_ict_t* tsip_transac_ict_create(tsk_bool_t reliable, int32_t cseq_value, const char* callid, tsip_dialog_t* dialog);
+tsip_transac_ict_t* tsip_transac_ict_create(int32_t cseq_value, const char* callid, tsip_transac_dst_t* dst);
 int tsip_transac_ict_start(tsip_transac_ict_t *self, const tsip_request_t* request);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_transac_ict_def_t;
