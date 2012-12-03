@@ -31,6 +31,7 @@
 #include "tinymedia_config.h"
 #include "tinymedia/tmedia_params.h"
 
+#include "tsk_buffer.h"
 #include "tsk_object.h"
 
 TMEDIA_BEGIN_DECLS

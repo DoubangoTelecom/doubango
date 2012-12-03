@@ -50,6 +50,20 @@ trtp_rtp_packet_t* trtp_rtp_packet_create(uint32_t ssrc, uint16_t seq_num, uint3
 	return packet;
 }
 
+trtp_rtp_packet_t* trtp_rtp_packet_create_2(const trtp_rtp_header_t* header)
+{
+	trtp_rtp_packet_t* packet;
+
+	if(!header){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+	if((packet = tsk_object_new(trtp_rtp_packet_def_t))){
+		packet->header = tsk_object_ref(TSK_OBJECT(header));
+	}
+	return packet;
+}
+
 /* guess what is the minimum required size to serialize the packet */
 tsk_size_t trtp_rtp_packet_guess_serialbuff_size(const trtp_rtp_packet_t *self)
 {	

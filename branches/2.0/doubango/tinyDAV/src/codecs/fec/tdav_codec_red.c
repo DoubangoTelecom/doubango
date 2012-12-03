@@ -239,6 +239,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_red_plugin_def_s =
 	&tdav_codec_red_def_s,
 
 	(/* tmedia_video | tmedia_audio | */tmedia_t140), // FIXME: for now is only supported with T.140
+	tmedia_codec_id_red,
 	"red",
 	"red codec",
 	TMEDIA_CODEC_FORMAT_RED,

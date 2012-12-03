@@ -91,6 +91,15 @@ public class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_defaultsSetRtcpMuxEnabled(boolean jarg1);
   public final static native boolean MediaSessionMgr_defaultsGetRtcpMuxEnabled();
   public final static native boolean MediaSessionMgr_defaultsSetIceEnabled(boolean jarg1);
+  public final static native boolean MediaSessionMgr_defaultsSetByPassEncoding(boolean jarg1);
+  public final static native boolean MediaSessionMgr_defaultsGetByPassEncoding();
+  public final static native boolean MediaSessionMgr_defaultsSetByPassDecoding(boolean jarg1);
+  public final static native boolean MediaSessionMgr_defaultsGetByPassDecoding();
+  public final static native boolean MediaSessionMgr_defaultsSetVideoJbEnabled(boolean jarg1);
+  public final static native boolean MediaSessionMgr_defaultsGetVideoJbEnabled(boolean jarg1);
+  public final static native boolean MediaSessionMgr_defaultsSetRtpBuffSize(long jarg1);
+  public final static native long MediaSessionMgr_defaultsGetRtpBuffSize();
+  public final static native boolean MediaSessionMgr_defaultsSetAvpfTail(long jarg1, long jarg2);
   public final static native void delete_MediaContent(long jarg1);
   public final static native String MediaContent_getType(long jarg1, MediaContent jarg1_);
   public final static native long MediaContent_getDataLength(long jarg1, MediaContent jarg1_);
@@ -465,8 +474,10 @@ public class tinyWRAPJNI {
   public final static native boolean SipStack_setAMF(long jarg1, SipStack jarg1_, String jarg2);
   public final static native boolean SipStack_setOperatorId(long jarg1, SipStack jarg1_, String jarg2);
   public final static native boolean SipStack_setProxyCSCF(long jarg1, SipStack jarg1_, String jarg2, int jarg3, String jarg4, String jarg5);
-  public final static native boolean SipStack_setLocalIP(long jarg1, SipStack jarg1_, String jarg2);
-  public final static native boolean SipStack_setLocalPort(long jarg1, SipStack jarg1_, int jarg2);
+  public final static native boolean SipStack_setLocalIP__SWIG_0(long jarg1, SipStack jarg1_, String jarg2, String jarg3);
+  public final static native boolean SipStack_setLocalIP__SWIG_1(long jarg1, SipStack jarg1_, String jarg2);
+  public final static native boolean SipStack_setLocalPort__SWIG_0(long jarg1, SipStack jarg1_, int jarg2, String jarg3);
+  public final static native boolean SipStack_setLocalPort__SWIG_1(long jarg1, SipStack jarg1_, int jarg2);
   public final static native boolean SipStack_setEarlyIMS(long jarg1, SipStack jarg1_, boolean jarg2);
   public final static native boolean SipStack_addHeader(long jarg1, SipStack jarg1_, String jarg2, String jarg3);
   public final static native boolean SipStack_removeHeader(long jarg1, SipStack jarg1_, String jarg2);
@@ -492,7 +503,7 @@ public class tinyWRAPJNI {
   public final static native boolean SipStack_initialize();
   public final static native boolean SipStack_deInitialize();
   public final static native void SipStack_setCodecs(int jarg1);
-  public final static native void SipStack_setCodecs_2(int jarg1);
+  public final static native void SipStack_setCodecs_2(long jarg1);
   public final static native boolean SipStack_setCodecPriority(int jarg1, int jarg2);
   public final static native boolean SipStack_setCodecPriority_2(int jarg1, int jarg2);
   public final static native boolean SipStack_isCodecSupported(int jarg1);

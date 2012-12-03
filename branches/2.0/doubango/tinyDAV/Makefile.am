@@ -14,7 +14,48 @@ libtinyDAV_la_CPPFLAGS = -I../tinySAK/src\
 	-I../tinyMEDIA/include\
 	-I../tinyMSRP/include\
 	-Iinclude
+
+if USE_FFMPEG
+libtinyDAV_la_LIBADD += ${LIBFFMPEG_LIBADD}
+endif
+
+if USE_H264
+libtinyDAV_la_LIBADD += ${LIBH264_LIBADD}
+endif
+
+if USE_VPX
+libtinyDAV_la_LIBADD += ${LIBVPX_LIBADD}
+endif
+
+if USE_YUV
+libtinyDAV_la_LIBADD += ${LIBYUV_LIBADD}
+libtinyDAV_la_CPPFLAGS += -Ilibyuv/libyuv
+endif
+
+if USE_AMR
+libtinyDAV_la_LIBADD += ${LIBAMR_LIBADD}
+endif
+
+if USE_SPEEX
+libtinyDAV_la_LIBADD += ${LIBSPEEX_LIBADD}
+endif
+
+if USE_SPEEXDSP
+libtinyDAV_la_LIBADD += ${LIBSPEEXDSP_LIBADD}
+endif
 	
+if USE_GSM
+libtinyDAV_la_LIBADD += ${LIBGSM_LIBADD}
+endif
+
+if USE_G729
+libtinyDAV_la_LIBADD += ${LIBG729_LIBADD}
+endif
+
+if USE_ILBC
+libtinyDAV_la_LIBADD += ${LIBILBC_LIBADD}
+endif
+
 libtinyDAV_la_SOURCES = \
 	src/tdav.c \
 	src/tdav_session_av.c

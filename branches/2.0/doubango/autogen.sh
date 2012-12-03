@@ -1,5 +1,10 @@
 echo libtoolize
-libtoolize --copy --force
+if [ `(uname -s) 2>/dev/null` == 'Darwin' ]
+then
+	glibtoolize --copy --force
+else
+	libtoolize --copy --force
+fi
 
 echo "aclocal"
 aclocal

@@ -36,6 +36,8 @@
 
 #include "tinysip/parsers/tsip_parser_message.h"
 
+#include "tinysip/headers/tsip_header_Route.h"
+
 #include "tinyhttp.h"
 
 #include "tsk_thread.h"
@@ -47,6 +49,7 @@
 * (Request/Response)-Line, Via, From, To, Call-Id, CSeq and Content-Length
 * Tests have been done with both compact and full headers */
 #define TSIP_MIN_STREAM_CHUNCK_SIZE 0xA0
+
 
 
 tsip_transport_layer_t* tsip_transport_layer_create(tsip_stack_t *stack)
@@ -125,7 +128,8 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	tsk_ragel_state_t state;
 	tsip_message_t *message = tsk_null;
 	int endOfheaders = -1;
-	const tsip_transport_t *transport = e->callback_data;
+	tsip_transport_t *transport = (tsip_transport_t *)e->callback_data;
+	tsip_transport_stream_peer_t* peer;
 	
 	switch(e->type){
 		case event_data: {
@@ -133,10 +137,24 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 				break;
 			}
 		case event_closed:
+			{
+				TSK_DEBUG_INFO("Stream Peer closed - %d", e->local_fd);
+				return tsip_transport_remove_stream_peer_by_local_fd(transport, e->local_fd);
+			}
 		case event_connected:
+		case event_accepted:
+			{
+				TSK_DEBUG_INFO("Stream Peer accepted/connected - %d", e->local_fd);
+				return tsip_transport_add_stream_peer(transport, e->local_fd);
+			}
 		default:{
 				return 0;
 			}
+	}
+
+	if(!(peer = tsip_transport_find_stream_peer_by_local_fd(transport, e->local_fd))){
+		TSK_DEBUG_ERROR("Failed to find peer with local fd equal to %d", e->local_fd);
+		return -1;
 	}
 
 	/* RFC 3261 - 7.5 Framing SIP Messages
@@ -156,9 +174,9 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	*/
 
 	/* Check if buffer is too big to be valid (have we missed some chuncks?) */
-	if(TSK_BUFFER_SIZE(transport->buff_stream) >= TSIP_MAX_STREAM_CHUNCK_SIZE){
+	if(TSK_BUFFER_SIZE(peer->buff_stream) >= TSIP_MAX_STREAM_CHUNCK_SIZE){
 		TSK_DEBUG_ERROR("TCP Buffer is too big to be valid");
-		tsk_buffer_cleanup(transport->buff_stream);
+		tsk_buffer_cleanup(peer->buff_stream);
 	}
 
 	/* === SigComp === */
@@ -180,7 +198,7 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			}
 			else{
 				// append result
-				tsk_buffer_append(transport->buff_stream, SigCompBuffer, data_size);
+				tsk_buffer_append(peer->buff_stream, SigCompBuffer, data_size);
 			}
 		}
 		else{ /* Partial message? */
@@ -195,19 +213,19 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			}
 			else{
 				// append result
-				tsk_buffer_append(transport->buff_stream, SigCompBuffer, (next_size - data_size));
+				tsk_buffer_append(peer->buff_stream, SigCompBuffer, (next_size - data_size));
 				data_size = next_size;
 			}
 		}
 	}
 	else{
 		/* Append new content. */
-		tsk_buffer_append(transport->buff_stream, e->data, e->size);
+		tsk_buffer_append(peer->buff_stream, e->data, e->size);
 	}
 
 	/* Check if we have all SIP/WS headers. */
 parse_buffer:
-	if((endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(transport->buff_stream),TSK_BUFFER_SIZE(transport->buff_stream), "\r\n\r\n"/*2CRLF*/)) < 0){
+	if((endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(peer->buff_stream),TSK_BUFFER_SIZE(peer->buff_stream), "\r\n\r\n"/*2CRLF*/)) < 0){
 		TSK_DEBUG_INFO("No all SIP headers in the TCP buffer.");
 		goto bail;
 	}
@@ -215,22 +233,22 @@ parse_buffer:
 	/* If we are there this mean that we have all SIP headers.
 	*	==> Parse the SIP message without the content.
 	*/
-	tsk_ragel_state_init(&state, TSK_BUFFER_DATA(transport->buff_stream), endOfheaders + 4/*2CRLF*/);
+	tsk_ragel_state_init(&state, TSK_BUFFER_DATA(peer->buff_stream), endOfheaders + 4/*2CRLF*/);
 	if(tsip_message_parse(&state, &message, tsk_false/* do not extract the content */) == tsk_true){
 		tsk_size_t clen = TSIP_MESSAGE_CONTENT_LENGTH(message); /* MUST have content-length header (see RFC 3261 - 7.5). If no CL header then the macro return zero. */
 		if(clen == 0){ /* No content */
-			tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove SIP headers and CRLF */
+			tsk_buffer_remove(peer->buff_stream, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove SIP headers and CRLF */
 		}
 		else{ /* There is a content */
-			if((endOfheaders + 4/*2CRLF*/ + clen) > TSK_BUFFER_SIZE(transport->buff_stream)){ /* There is content but not all the content. */
+			if((endOfheaders + 4/*2CRLF*/ + clen) > TSK_BUFFER_SIZE(peer->buff_stream)){ /* There is content but not all the content. */
 				TSK_DEBUG_INFO("No all SIP content in the TCP buffer.");
 				goto bail;
 			}
 			else{
 				/* Add the content to the message. */
-				tsip_message_add_content(message, tsk_null, TSK_BUFFER_TO_U8(transport->buff_stream) + endOfheaders + 4/*2CRLF*/, clen);
+				tsip_message_add_content(message, tsk_null, TSK_BUFFER_TO_U8(peer->buff_stream) + endOfheaders + 4/*2CRLF*/, clen);
 				/* Remove SIP headers, CRLF and the content. */
-				tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/ + clen));
+				tsk_buffer_remove(peer->buff_stream, 0, (endOfheaders + 4/*2CRLF*/ + clen));
 			}
 		}
 	}
@@ -238,11 +256,11 @@ parse_buffer:
 	if(message && message->firstVia && message->Call_ID && message->CSeq && message->From && message->To){
 		/* Set fd */
 		message->local_fd = e->local_fd;
-		message->reliable = tsk_true;
+		message->src_net_type = transport->type;
 		/* Alert transaction/dialog layer */
 		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
 		/* Parse next chunck */
-		if(TSK_BUFFER_SIZE(transport->buff_stream) >= TSIP_MIN_STREAM_CHUNCK_SIZE){
+		if(TSK_BUFFER_SIZE(peer->buff_stream) >= TSIP_MIN_STREAM_CHUNCK_SIZE){
 			/* message already passed to the dialog/transac layers */
 			TSK_OBJECT_SAFE_FREE(message);
 			goto parse_buffer;
@@ -255,6 +273,7 @@ parse_buffer:
 
 bail:
 	TSK_OBJECT_SAFE_FREE(message);
+	TSK_OBJECT_SAFE_FREE(peer);
 
 	return ret;
 }
@@ -271,6 +290,7 @@ static int tsip_transport_layer_ws_cb(const tnet_transport_event_t* e)
 	tsk_bool_t go_message = tsk_false;
 	uint64_t data_len = 0;
 	uint64_t pay_len = 0;
+	tsip_transport_stream_peer_t* peer;
 
 	switch(e->type){
 		case event_data: {
@@ -278,24 +298,38 @@ static int tsip_transport_layer_ws_cb(const tnet_transport_event_t* e)
 				break;
 			}
 		case event_closed:
+			{
+				TSK_DEBUG_INFO("WebSocket Peer closed with fd = %d", e->local_fd);
+				return tsip_transport_remove_stream_peer_by_local_fd(transport, e->local_fd);
+			}
+		case event_accepted:
 		case event_connected:
+			{
+				TSK_DEBUG_INFO("WebSocket Peer accepted/connected with fd = %d", e->local_fd);
+				return tsip_transport_add_stream_peer(transport, e->local_fd);
+			}
 		default:{
 				return 0;
 			}
 	}
 
+	if(!(peer = tsip_transport_find_stream_peer_by_local_fd(transport, e->local_fd))){
+		TSK_DEBUG_ERROR("Failed to find peer with local fd equal to %d", e->local_fd);
+		return -1;
+	}
+
 	/* Check if buffer is too big to be valid (have we missed some chuncks?) */
-	if(TSK_BUFFER_SIZE(transport->buff_stream) >= TSIP_MAX_STREAM_CHUNCK_SIZE){
+	if(TSK_BUFFER_SIZE(peer->buff_stream) >= TSIP_MAX_STREAM_CHUNCK_SIZE){
 		TSK_DEBUG_ERROR("TCP Buffer is too big to be valid");
-		tsk_buffer_cleanup(transport->buff_stream);
+		tsk_buffer_cleanup(peer->buff_stream);
 	}
 
 	// Append new content
-	tsk_buffer_append(transport->buff_stream, e->data, e->size);
+	tsk_buffer_append(peer->buff_stream, e->data, e->size);
 
 	/* check if WebSocket data */
-	if(transport->buff_stream->size > 4){
-		const uint8_t* pdata = (const uint8_t*)transport->buff_stream->data;
+	if(peer->buff_stream->size > 4){
+		const uint8_t* pdata = (const uint8_t*)peer->buff_stream->data;
 		if(pdata[0] != 'G' || pdata[1] != 'E' || pdata[2] != 'T'){
 			check_end_of_hdrs = tsk_false;
 		}
@@ -303,14 +337,14 @@ static int tsip_transport_layer_ws_cb(const tnet_transport_event_t* e)
 
 	/* Check if we have all HTTP/SIP/WS headers. */
 parse_buffer:
-	if(check_end_of_hdrs && (endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(transport->buff_stream),TSK_BUFFER_SIZE(transport->buff_stream), "\r\n\r\n"/*2CRLF*/)) < 0){
+	if(check_end_of_hdrs && (endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(peer->buff_stream),TSK_BUFFER_SIZE(peer->buff_stream), "\r\n\r\n"/*2CRLF*/)) < 0){
 		TSK_DEBUG_INFO("No all headers in the WS buffer");
 		goto bail;
 	}
 
 	/* WebSocket handling*/
-	if(transport->buff_stream->size > 4){
-		const uint8_t* pdata = (const uint8_t*)transport->buff_stream->data;
+	if(peer->buff_stream->size > 4){
+		const uint8_t* pdata = (const uint8_t*)peer->buff_stream->data;
 
 		/* WebSocket Handshake */
 		if(pdata[0] == 'G' && pdata[1] == 'E' && pdata[2] == 'T'){
@@ -319,8 +353,8 @@ parse_buffer:
 			tsk_buffer_t *http_buff = tsk_null;
 			const thttp_header_Sec_WebSocket_Protocol_t* http_hdr_proto;
 			const thttp_header_Sec_WebSocket_Key_t* http_hdr_key;
-			const char* msg_start = (const char*)transport->buff_stream->data;
-			const char* msg_end = (msg_start + transport->buff_stream->size);
+			const char* msg_start = (const char*)peer->buff_stream->data;
+			const char* msg_end = (msg_start + peer->buff_stream->size);
 			int32_t idx;
 
 			if((idx = tsk_strindexOf(msg_start, (msg_end - msg_start), "\r\n")) > 2){
@@ -365,7 +399,7 @@ parse_buffer:
 							thttp_message_serialize(http_resp, http_buff);
 							// TSK_DEBUG_INFO("WS response=%s", http_buff->data);
 							// send response
-							if((tnet_sockfd_send(e->local_fd, http_buff->data, http_buff->size, 0)) != http_buff->size){
+							if((tnet_transport_send(transport->net_transport, e->local_fd, http_buff->data, http_buff->size)) != http_buff->size){
 								TSK_DEBUG_ERROR("Failed to send reponse");
 							}
 						}
@@ -379,7 +413,7 @@ parse_buffer:
 				TSK_DEBUG_ERROR("No 'Sec-WebSocket-Protocol' header");
 			}
 			
-			tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove HTTP headers and CRLF */
+			tsk_buffer_remove(peer->buff_stream, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove HTTP headers and CRLF */
 			TSK_OBJECT_SAFE_FREE(http_req);
 			TSK_OBJECT_SAFE_FREE(http_resp);
 			TSK_OBJECT_SAFE_FREE(http_buff);
@@ -387,8 +421,8 @@ parse_buffer:
 
 		/* WebSocket data */
 		else{
-			if((pdata[0] & 0x01)/* FIN */ && transport->buff_stream->size > 16){
-				/* const uint8_t opcode = pdata[0] & 0x0F; */
+			const uint8_t opcode = pdata[0] & 0x0F;
+			if((pdata[0] & 0x01)/* FIN */){
 				const uint8_t mask_flag = (pdata[1] >> 7); // Must be "1" for "client -> server"
 				uint8_t mask_key[4] = { 0x00 };
 				uint64_t pay_idx;
@@ -396,7 +430,7 @@ parse_buffer:
 
 				if(pdata[0] & 0x40 || pdata[0] & 0x20 || pdata[0] & 0x10){
 					TSK_DEBUG_ERROR("Unknown extension: %d", (pdata[0] >> 4) & 0x07);
-					tsk_buffer_cleanup(transport->buff_stream);
+					tsk_buffer_cleanup(peer->buff_stream);
 					goto bail;
 				}
 
@@ -404,11 +438,13 @@ parse_buffer:
 				data_len = 2;
 				
 				if(pay_len == 126){
+					if(peer->buff_stream->size < 4) { TSK_DEBUG_WARN("Too short"); goto bail; }
 					pay_len = (pdata[2] << 8 | pdata[3]);
 					pdata = &pdata[4];
 					data_len += 2;
 				}
 				else if(pay_len == 127){
+					if((peer->buff_stream->size - data_len) < 8) { TSK_DEBUG_WARN("Too short"); goto bail; }
 					pay_len = (((uint64_t)pdata[2]) << 56 | ((uint64_t)pdata[3]) << 48 | ((uint64_t)pdata[4]) << 40 | ((uint64_t)pdata[5]) << 32 | ((uint64_t)pdata[6]) << 24 | ((uint64_t)pdata[7]) << 16 | ((uint64_t)pdata[8]) << 8 || ((uint64_t)pdata[9]));
 					pdata = &pdata[10];
 					data_len += 8;
@@ -418,6 +454,7 @@ parse_buffer:
 				}
 
 				if(mask_flag){ // must be "true"
+					if((peer->buff_stream->size - data_len) < 4) { TSK_DEBUG_WARN("Too short"); goto bail; }
 					mask_key[0] = pdata[0];
 					mask_key[1] = pdata[1];
 					mask_key[2] = pdata[2];
@@ -426,22 +463,22 @@ parse_buffer:
 					data_len += 4;
 				}
 				
-				if((transport->buff_stream->size - data_len) < pay_len){
+				if((peer->buff_stream->size - data_len) < pay_len){
 					TSK_DEBUG_INFO("No all data in the WS buffer");
 					goto bail;
 				}
 
 				// create ws buffer tohold unmasked data
-				if(transport->ws_rcv_buffer_size < pay_len){
-					if(!(transport->ws_rcv_buffer = tsk_realloc(transport->ws_rcv_buffer, (tsk_size_t)pay_len))){
+				if(peer->ws_rcv_buffer_size < pay_len){
+					if(!(peer->ws_rcv_buffer = tsk_realloc(peer->ws_rcv_buffer, (tsk_size_t)pay_len))){
 						TSK_DEBUG_ERROR("Failed to allocate buffer of size %lld", pay_len);
-						transport->ws_rcv_buffer_size = 0;
+						peer->ws_rcv_buffer_size = 0;
 						goto bail;
 					}
-					transport->ws_rcv_buffer_size = (tsk_size_t)pay_len;
+					peer->ws_rcv_buffer_size = (tsk_size_t)pay_len;
 				}
 
-				pws_rcv_buffer = (uint8_t*)transport->ws_rcv_buffer;
+				pws_rcv_buffer = (uint8_t*)peer->ws_rcv_buffer;
 				data_len += pay_len;
 
 				// unmasking the payload
@@ -450,6 +487,10 @@ parse_buffer:
 				}
 				
 				go_message = tsk_true;
+			}
+			else if(opcode == 0x08){ // RFC6455 - 5.5.1.  Close
+				TSK_DEBUG_INFO("WebSocket opcode 0x8 (Close)");
+				tsip_transport_remove_socket(transport, (tnet_fd_t *)&e->local_fd);
 			}
 		}
 	}/* end-of WebSocket handling */
@@ -460,28 +501,29 @@ parse_buffer:
 		goto bail;
 	}
 	
-	TSK_DEBUG_INFO("%s", (const char*)transport->ws_rcv_buffer);
+	TSK_DEBUG_INFO("%s", (const char*)peer->ws_rcv_buffer);
 	
 	// If we are there this mean that we have all SIP headers.
 	//	==> Parse the SIP message without the content.
-	tsk_ragel_state_init(&state, transport->ws_rcv_buffer, (tsk_size_t)pay_len);
+	tsk_ragel_state_init(&state, peer->ws_rcv_buffer, (tsk_size_t)pay_len);
 	if(tsip_message_parse(&state, &message, tsk_false/* do not extract the content */) == tsk_true){
-		tsk_size_t clen = TSIP_MESSAGE_CONTENT_LENGTH(message); /* MUST have content-length header (see RFC 3261 - 7.5). If no CL header then the macro return zero. */
-		if(clen){
+		const uint8_t* body_start = (const uint8_t*)state.eoh;
+		int64_t clen = (pay_len - (int64_t)(body_start - ((const uint8_t*)peer->ws_rcv_buffer)));
+		if(clen > 0){
 			// Add the content to the message. */
-			tsip_message_add_content(message, tsk_null, (((uint8_t*)transport->ws_rcv_buffer) + (pay_len - clen - 1)), clen);
+			tsip_message_add_content(message, tsk_null, body_start, (tsk_size_t)clen);
 		}
-		tsk_buffer_remove(transport->buff_stream, 0, (tsk_size_t)data_len);
+		tsk_buffer_remove(peer->buff_stream, 0, (tsk_size_t)data_len);
 	}
 
 	if(message && message->firstVia && message->Call_ID && message->CSeq && message->From && message->To){
 		/* Set fd */
 		message->local_fd = e->local_fd;
-		message->reliable = tsk_true;
+		message->src_net_type = transport->type;
 		/* Alert transaction/dialog layer */
 		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
 		/* Parse next chunck */
-		if(TSK_BUFFER_SIZE(transport->buff_stream) >= TSIP_MIN_STREAM_CHUNCK_SIZE){
+		if(TSK_BUFFER_SIZE(peer->buff_stream) >= TSIP_MIN_STREAM_CHUNCK_SIZE){
 			/* message already passed to the dialog/transac layers */
 			TSK_OBJECT_SAFE_FREE(message);
 			goto parse_buffer;
@@ -494,6 +536,7 @@ parse_buffer:
 
 bail:
 	TSK_OBJECT_SAFE_FREE(message);
+	TSK_OBJECT_SAFE_FREE(peer);
 
 	return ret;
 }
@@ -556,7 +599,7 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 		/* Set local fd used to receive the message and the address of the remote peer */
 		message->local_fd = e->local_fd;
 		message->remote_addr = e->remote_addr;
-		message->reliable = tsk_false;
+		message->src_net_type = transport->type;
 
 		/* Alert transaction/dialog layer */
 		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
@@ -566,17 +609,31 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 	return ret;
 }
 
-static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, const tsip_message_t *msg, char** destIP, int32_t *destPort)
+static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, tsip_message_t *msg, char** destIP, int32_t *destPort)
 {
-	tsip_transport_t* transport = tsk_null;
+	const tsip_transport_t* transport = tsk_null;
 
 	if(!self || !destIP){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
 
-	tsk_strupdate(destIP, self->stack->network.proxy_cscf_[self->stack->network.transport_idx_default]);
-	*destPort = self->stack->network.proxy_cscf_port_[self->stack->network.transport_idx_default];
+	// check whether the message already contains destination address (most likely retransmitted)
+	if(!tsk_strnullORempty(msg->dst_address) && msg->dst_port && TNET_SOCKET_TYPE_IS_VALID(msg->dst_net_type)){
+		const tsk_list_item_t *item;
+		tsk_strupdate(destIP, msg->dst_address);
+		*destPort = msg->dst_port;
+		tsk_list_foreach(item, self->transports){
+			if(((const tsip_transport_t*)item->data)->type == msg->dst_net_type){
+				transport = ((const tsip_transport_t*)item->data);
+				goto bail;
+			}
+		}
+	}
+
+	// use default values
+	tsk_strupdate(destIP, self->stack->network.proxy_cscf[self->stack->network.transport_idx_default]);
+	*destPort = self->stack->network.proxy_cscf_port[self->stack->network.transport_idx_default];
 
 	/* =========== Sending Request =========
 	*
@@ -585,43 +642,74 @@ static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_la
 		tsip_dialog_t* dialog;
 		tsk_list_item_t *item;
 		tsip_transport_t *curr;
+		tnet_socket_type_t destNetType = self->stack->network.transport_types[self->stack->network.transport_idx_default];
 		
-		/* Sends request to the first route or remote target */
-		dialog = tsip_dialog_layer_find_by_callid(self->stack->layer_dialog, msg->Call_ID->value);
-		if(dialog){
-			const tsip_header_Record_Route_t* route;
-			tsk_bool_t b_using_route = tsk_false;
-			tsk_list_foreach(item, dialog->record_routes){
-				if(!(route = item->data)){
-					continue;
+		/* If message received over WebSocket transport and stack is running in w2s mode then forward to the first route if available */
+		if((self->stack->network.mode == tsip_stack_mode_webrtc2sip)){
+			const tsip_header_Route_t* route;
+			if((route = (const tsip_header_Route_t*)tsip_message_get_header(msg, tsip_htype_Route)) && route->uri && !tsk_strnullORempty(route->uri->host)){
+				const char* transport_str = tsk_params_get_param_value(route->uri->params, "transport");
+				if(!tsk_strnullORempty(transport_str)){
+					int t_idx = tsip_transport_get_idx_by_name(transport_str);
+					if(t_idx != -1){
+						destNetType = self->stack->network.transport_types[t_idx];
+					}
 				}
-				if(route->uri && route->uri->host){
-					tsk_strupdate(destIP, route->uri->host);
-					*destPort = route->uri->port > 0 ? route->uri->port : 5060;
-					b_using_route = tsk_true;
-					break;
-				}
-			}
-			if(!b_using_route){
-				if(dialog->uri_remote_target && dialog->uri_remote_target->host && dialog->uri_remote_target->port){
-					tsk_strupdate(destIP, dialog->uri_remote_target->host);
-					*destPort = dialog->uri_remote_target->port;
+				tsk_strupdate(destIP, route->uri->host);
+				*destPort = (route->uri->port ? route->uri->port : 5060);
+				if(tsk_params_have_param(route->uri->params, "lr")){
+					tsk_list_remove_item_by_data(msg->headers, route);
 				}
 			}
-			TSK_OBJECT_SAFE_FREE(dialog);
+			else if(!TNET_SOCKET_TYPE_IS_WS(msg->src_net_type) && !TNET_SOCKET_TYPE_IS_WS(msg->src_net_type)){
+				const char* ws_src_ip = tsk_params_get_param_value(msg->line.request.uri->params, "ws-src-ip");
+				if(ws_src_ip){
+					const char* ws_src_port = tsk_params_get_param_value(msg->line.request.uri->params, "ws-src-port");
+					const char* ws_src_proto = tsk_params_get_param_value(msg->line.request.uri->params, "ws-src-proto");
+					tsk_strupdate(destIP, ws_src_ip);
+					*destPort = atoi(ws_src_port);
+					destNetType = self->stack->network.transport_types[tsip_transport_get_idx_by_name(ws_src_proto)];
+				}
+			}
+		}
+		else{
+			/* Sends request to the first route or remote target */
+			dialog = tsip_dialog_layer_find_by_callid(self->stack->layer_dialog, msg->Call_ID->value);
+			if(dialog){
+				const tsip_header_Record_Route_t* route;
+				tsk_bool_t b_using_route = tsk_false;
+				tsk_list_foreach(item, dialog->record_routes){
+					if(!(route = item->data)){
+						continue;
+					}
+					if(route->uri && route->uri->host){
+						tsk_strupdate(destIP, route->uri->host);
+						*destPort = route->uri->port > 0 ? route->uri->port : 5060;
+						b_using_route = tsk_true;
+						break;
+					}
+				}
+				if(!b_using_route){
+					if(dialog->uri_remote_target && dialog->uri_remote_target->host && dialog->uri_remote_target->port){
+						tsk_strupdate(destIP, dialog->uri_remote_target->host);
+						*destPort = dialog->uri_remote_target->port;
+					}
+				}
+				TSK_OBJECT_SAFE_FREE(dialog);
+			}
 		}
 
 		/* Find the right transport */
 		tsk_list_foreach(item, self->transports){
 			curr = item->data;
-			if(curr->type == self->stack->network.proxy_cscf_type_[self->stack->network.transport_idx_default]){
+			if(curr->type == destNetType){
 				transport = curr;
 				break;
 			}
 		}
 
 		/* DNS NAPTR + SRV if the Proxy-CSCF is not defined and route set is empty */
-		if(transport && !(*destIP) && !self->stack->network.proxy_cscf_[self->stack->network.transport_idx_default]){
+		if(transport && !(*destIP) && !self->stack->network.proxy_cscf[self->stack->network.transport_idx_default]){
 			tnet_port_t dstPort;
 			if(tnet_dns_query_naptr_srv(self->stack->dns_ctx, msg->To->uri->host, transport->service, destIP, &dstPort) == 0){
 				*destPort = dstPort;
@@ -640,6 +728,41 @@ static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_la
 	*/
 	else if(msg->firstVia)
 	{
+		/* webrtc2sip mode */
+		if(self->stack->network.mode == tsip_stack_mode_webrtc2sip){
+			if(TNET_SOCKET_TYPE_IS_WSS(msg->src_net_type) || TNET_SOCKET_TYPE_IS_WS(msg->src_net_type)){ // response over WS or WSS
+				transport = tsip_transport_layer_find_by_idx(self, tsip_transport_get_idx_by_name(msg->firstVia->transport));
+				if(transport){
+					tsk_strupdate(destIP, msg->firstVia->host);
+					*destPort = msg->firstVia->port;
+					msg->dst_net_type = transport->type;
+				}
+				return transport;
+			}
+			else{ // response over UDP, TCP or TLS
+				const tsip_header_Via_t* via_2nd = (const tsip_header_Via_t*)tsip_message_get_headerAt(msg, tsip_htype_Via, 1);
+				tsk_bool_t via_ws_transport = via_2nd && (tsk_striequals(via_2nd->transport, "WS") || tsk_striequals(via_2nd->transport, "WSS"));
+				tsk_bool_t via_ws_hacked = via_2nd && TSIP_HEADER_HAVE_PARAM(via_2nd, "ws-hacked");
+				if(via_2nd && (via_ws_transport || via_ws_hacked)){
+					int t_idx = tsip_transport_get_idx_by_name(via_ws_transport ? via_2nd->transport : TSIP_HEADER_GET_PARAM_VALUE(via_2nd, "ws-hacked"));
+					const tsip_transport_t* ws_transport = tsip_transport_layer_find_by_idx(self, t_idx);
+					if(ws_transport){
+						tsip_transport_stream_peer_t* peer = tsip_transport_find_stream_peer_by_remote_address(TSIP_TRANSPORT(ws_transport), via_2nd->host, via_2nd->port);
+						if(peer){
+							tsk_strupdate(destIP, peer->remote_ip);
+							*destPort = peer->remote_port;
+							msg->dst_net_type = ws_transport->type;
+							TSK_OBJECT_SAFE_FREE(peer);
+							return ws_transport;
+						}
+					}
+
+					TSK_DEBUG_ERROR("Failed to match response expected to be forwarded via WebSocket transport");
+					return tsk_null;
+				}
+			}
+		}
+
 		if(TSIP_HEADER_VIA_RELIABLE_TRANS(msg->firstVia)) /*== RELIABLE ===*/
 		{
 			/*	RFC 3261 - 18.2.2 Sending Responses
@@ -737,7 +860,15 @@ static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_la
 			}
 		}
 	}
+
+	// update message to avoid destination address to avoid running the same algo for retransmissions
+	tsk_strupdate(&msg->dst_address, *destIP);
+	msg->dst_port = *destPort;
+	if(!TNET_SOCKET_TYPE_IS_VALID(msg->dst_net_type) && transport){
+		msg->dst_net_type = transport->type;
+	}
 	
+bail:
 	return transport;
 }
 
@@ -770,7 +901,7 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 	return -1;
 }
 
-int tsip_transport_layer_send(const tsip_transport_layer_t* self, const char *branch, const tsip_message_t *msg)
+int tsip_transport_layer_send(const tsip_transport_layer_t* self, const char *branch, tsip_message_t *msg)
 {
 	if(msg && self && self->stack){
 		char* destIP = tsk_null;
@@ -786,6 +917,7 @@ int tsip_transport_layer_send(const tsip_transport_layer_t* self, const char *br
 			}
 		}
 		else{
+			TSK_DEBUG_ERROR("Failed to find valid transport");
 			ret = -2;
 		}
 		TSK_FREE(destIP);
@@ -890,6 +1022,27 @@ bail:
 	return ret;
 }
 
+tsk_bool_t tsip_transport_layer_have_stream_peer_with_remote_address(const tsip_transport_layer_t *self, const char* remote_ip, tnet_port_t remote_port)
+{
+	if(self && remote_ip){
+		const tsk_list_item_t* item;
+		tsk_bool_t found = tsk_false;
+		tsip_transport_t* transport;
+		tsk_list_lock(self->transports);
+		tsk_list_foreach(item, self->transports){
+			if(!(transport = TSIP_TRANSPORT(item->data)) || !TNET_SOCKET_TYPE_IS_STREAM(transport->type)){
+				continue;
+			}
+			if(tsip_transport_have_stream_peer_with_remote_address(transport, remote_ip, remote_port)){
+				found = tsk_true;
+				break;
+			}
+		}
+		tsk_list_unlock(self->transports);
+		return found;
+	}
+	return tsk_false;
+}
 
 
 
@@ -913,7 +1066,7 @@ int tsip_transport_layer_start(tsip_transport_layer_t* self)
 			
 			/* connect() */
 			tsk_list_foreach(item, self->transports){
-				tnet_fd_t fd;
+				tnet_fd_t fd = TNET_INVALID_FD;
 				transport = item->data;
 				
 				// set callback
@@ -927,14 +1080,14 @@ int tsip_transport_layer_start(tsip_transport_layer_t* self)
 					tsip_transport_set_callback(transport, TNET_TRANSPORT_CB_F(tsip_transport_layer_stream_cb), transport);
 				}
 
-				if((ret = tnet_sockaddr_init(self->stack->network.proxy_cscf_[transport_idx], self->stack->network.proxy_cscf_port_[transport_idx], transport->type, &transport->pcscf_addr))){
-					TSK_DEBUG_ERROR("[%s:%u] is invalid address", self->stack->network.proxy_cscf_[transport_idx], self->stack->network.proxy_cscf_port_[transport_idx]);
+				if((ret = tnet_sockaddr_init(self->stack->network.proxy_cscf[transport_idx], self->stack->network.proxy_cscf_port[transport_idx], transport->type, &transport->pcscf_addr))){
+					TSK_DEBUG_ERROR("[%s:%u] is invalid address", self->stack->network.proxy_cscf[transport_idx], self->stack->network.proxy_cscf_port[transport_idx]);
 					return ret;
 				}
 
 				if(TNET_SOCKET_TYPE_IS_STREAM(transport->type)){
 					if(!TSIP_STACK_MODE_IS_SERVER(transport->stack)){
-						if((fd = tsip_transport_connectto_2(transport, self->stack->network.proxy_cscf_[transport_idx], self->stack->network.proxy_cscf_port_[transport_idx])) == TNET_INVALID_FD){
+						if((fd = tsip_transport_connectto_2(transport, self->stack->network.proxy_cscf[transport_idx], self->stack->network.proxy_cscf_port[transport_idx])) == TNET_INVALID_FD){
 							TSK_DEBUG_ERROR("Failed to connect the SIP transport");
 							return ret;
 						}
@@ -944,8 +1097,10 @@ int tsip_transport_layer_start(tsip_transport_layer_t* self)
 							return ret;
 						}
 					}
+					transport->connectedFD = fd;
 				}
-				else{
+				
+				if(transport->connectedFD == TNET_INVALID_FD){
 					transport->connectedFD = tnet_transport_get_master_fd(transport->net_transport);
 				}
 			}

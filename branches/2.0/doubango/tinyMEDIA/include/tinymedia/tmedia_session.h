@@ -50,6 +50,7 @@ TMEDIA_BEGIN_DECLS
 #define TMEDIA_SESSION_MSRP(self)	((tmedia_session_msrp_t*)(self))
 
 typedef int (*tmedia_session_t140_ondata_cb_f)(const void* context, tmedia_t140_data_type_t data_type, const void* data_ptr, unsigned data_size);
+typedef int (*tmedia_session_rtcp_onevent_cb_f)(const void* context, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media);
 
 /**Max number of plugins (session types) we can create */
 #define TMED_SESSION_MAX_PLUGINS			0x0F
@@ -63,7 +64,9 @@ typedef struct tmedia_session_s
 	uint64_t id;
 	//! session type
 	tmedia_type_t type;
-	//! list of codecs managed by this session
+	//! list of codec ids used as filter on the enabled codecs
+	tmedia_codec_id_t codecs_allowed;
+	//! list of codecs managed by this session (enabled)
 	tmedia_codecs_L_t* codecs;
 	//! negociated codec
 	tmedia_codecs_L_t* neg_codecs;
@@ -81,6 +84,9 @@ typedef struct tmedia_session_s
 	tmedia_qos_tline_t* qos;
 	//! bandwidth level
 	tmedia_bandwidth_level_t bl;
+	
+	tsk_bool_t bypass_encoding;
+	tsk_bool_t bypass_decoding;
 
 	struct{
 		tsdp_header_M_t* lo;
@@ -119,21 +125,30 @@ typedef struct tmedia_session_plugin_def_s
 	int (* set_remote_offer) (tmedia_session_t* , const tsdp_header_M_t* );
 
 	struct{ /* Special case */
-		int (* set_ondata_cb) (tmedia_session_t*, const void* context, tmedia_session_t140_ondata_cb_f func);
+		int (* set_ondata_cbfn) (tmedia_session_t*, const void* context, tmedia_session_t140_ondata_cb_f func);
 		int (* send_data) (tmedia_session_t*, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);
 	} t140;
+
+	struct{ /* Handles both SIP INFO and RTCP-FB: should be called by end-user only when transcoding is disabled */
+		int (* set_onevent_cbfn) (tmedia_session_t*, const void* context, tmedia_session_rtcp_onevent_cb_f func);
+		int (* send_event) (tmedia_session_t*, enum tmedia_rtcp_event_type_e event_type, uint32_t ssrc_media);
+	} rtcp;
 }
 tmedia_session_plugin_def_t;
 
 TINYMEDIA_API uint64_t tmedia_session_get_unique_id();
 TINYMEDIA_API int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type);
 TINYMEDIA_API int tmedia_session_set(tmedia_session_t* self, ...);
+TINYMEDIA_API tsk_bool_t tmedia_session_set_2(tmedia_session_t* self, const tmedia_param_t* param);
+TINYMEDIA_API tsk_bool_t tmedia_session_get(tmedia_session_t* self, tmedia_param_t* param);
 TINYMEDIA_API int tmedia_session_cmp(const tsk_object_t* sess1, const tsk_object_t* sess2);
 TINYMEDIA_API int tmedia_session_plugin_register(const tmedia_session_plugin_def_t* plugin);
 TINYMEDIA_API const tmedia_session_plugin_def_t* tmedia_session_plugin_find_by_media(const char* media);
 TINYMEDIA_API int tmedia_session_plugin_unregister(const tmedia_session_plugin_def_t* plugin);
 TINYMEDIA_API tmedia_session_t* tmedia_session_create(tmedia_type_t type);
 TINYMEDIA_API tmedia_codecs_L_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M);
+TINYMEDIA_API int tmedia_session_set_onrtcp_cbfn(tmedia_session_t* self, const void* context, tmedia_session_rtcp_onevent_cb_f fun);
+TINYMEDIA_API int tmedia_session_send_rtcp_event(tmedia_session_t* self, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media);
 TINYMEDIA_API int tmedia_session_deinit(tmedia_session_t* self);
 typedef tsk_list_t tmedia_sessions_L_t; /**< List of @ref tmedia_session_t objects */
 #define TMEDIA_DECLARE_SESSION tmedia_session_t __session__
@@ -185,7 +200,7 @@ tmedia_session_msrp_t;
 #define TMEDIA_DECLARE_SESSION_MSRP tmedia_session_msrp_t __session_msrp__
 
 /** T.140 session */
-int tmedia_session_t140_set_ondata_cb(tmedia_session_t* self, const void* context, tmedia_session_t140_ondata_cb_f func);
+int tmedia_session_t140_set_ondata_cbfn(tmedia_session_t* self, const void* context, tmedia_session_t140_ondata_cb_f func);
 int tmedia_session_t140_send_data(tmedia_session_t* self, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);
 
 /** Session manager */
@@ -410,8 +425,10 @@ TINYMEDIA_API int tmedia_session_mgr_set_qos(tmedia_session_mgr_t* self, tmedia_
 TINYMEDIA_API tsk_bool_t tmedia_session_mgr_canresume(tmedia_session_mgr_t* self);
 TINYMEDIA_API tsk_bool_t tmedia_session_mgr_has_active_session(tmedia_session_mgr_t* self);
 TINYMEDIA_API int tmedia_session_mgr_send_dtmf(tmedia_session_mgr_t* self, uint8_t event);
-TINYMEDIA_API int tmedia_session_mgr_set_t140_ondata_cb(tmedia_session_mgr_t* self, const void* context, tmedia_session_t140_ondata_cb_f);
+TINYMEDIA_API int tmedia_session_mgr_set_t140_ondata_cbfn(tmedia_session_mgr_t* self, const void* context, tmedia_session_t140_ondata_cb_f fun);
 TINYMEDIA_API int tmedia_session_mgr_send_t140_data(tmedia_session_mgr_t* self, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);
+TINYMEDIA_API int tmedia_session_mgr_set_onrtcp_cbfn(tmedia_session_mgr_t* self, tmedia_type_t media_type, const void* context, tmedia_session_rtcp_onevent_cb_f fun);
+TINYMEDIA_API int tmedia_session_mgr_send_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t media_type, enum tmedia_rtcp_event_type_e event_type, uint32_t ssrc_media);
 TINYMEDIA_API int tmedia_session_mgr_send_file(tmedia_session_mgr_t* self, const char* path, ...);
 TINYMEDIA_API int tmedia_session_mgr_send_message(tmedia_session_mgr_t* self, const void* data, tsk_size_t size, const tmedia_params_L_t *params);
 TINYMEDIA_API int tmedia_session_mgr_set_msrp_cb(tmedia_session_mgr_t* self, const void* callback_data, tmedia_session_msrp_cb_f func);

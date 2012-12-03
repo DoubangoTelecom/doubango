@@ -466,3 +466,33 @@ bool MediaSessionMgr::defaultsGetRtcpMuxEnabled(){
 bool MediaSessionMgr::defaultsSetIceEnabled(bool ice_enabled){
 	return (tmedia_defaults_set_ice_enabled(ice_enabled ? tsk_true : tsk_false) == 0);
 }
+
+bool MediaSessionMgr::defaultsSetByPassEncoding(bool enabled){
+	return (tmedia_defaults_set_bypass_encoding(enabled ? tsk_true : tsk_false) == 0);
+}
+bool MediaSessionMgr::defaultsGetByPassEncoding(){
+	return (tmedia_defaults_get_bypass_encoding() == tsk_true);
+}
+bool MediaSessionMgr::defaultsSetByPassDecoding(bool enabled){
+	return (tmedia_defaults_set_bypass_decoding(enabled ? tsk_true : tsk_false) == 0);
+}
+bool MediaSessionMgr::defaultsGetByPassDecoding(){
+	return (tmedia_defaults_get_bypass_decoding() == tsk_true);
+}
+
+bool MediaSessionMgr::defaultsSetVideoJbEnabled(bool enabled){
+	return (tmedia_defaults_set_videojb_enabled(enabled ? tsk_true : tsk_false) == 0);
+}
+bool MediaSessionMgr::defaultsGetVideoJbEnabled(bool enabled){
+	return (tmedia_defaults_get_videojb_enabled() == tsk_true);
+}
+bool MediaSessionMgr::defaultsSetRtpBuffSize(unsigned buffSize){
+	return (tmedia_defaults_set_rtpbuff_size(buffSize) == 0);
+}
+unsigned MediaSessionMgr::defaultsGetRtpBuffSize(){
+	return tmedia_defaults_get_rtpbuff_size();
+}
+
+bool MediaSessionMgr::defaultsSetAvpfTail(unsigned tail_min, unsigned tail_max){
+	return (tmedia_defaults_set_avpf_tail(tail_min, tail_max) == 0);
+}

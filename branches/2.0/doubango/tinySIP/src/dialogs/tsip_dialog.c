@@ -53,10 +53,37 @@
 #include "tsk_time.h"
 
 int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response, tsk_bool_t acceptNewVector);
+int tsip_dialog_add_session_headers(const tsip_dialog_t *self, tsip_request_t* request);
 int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* request);
 
 extern tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_t *self, tnet_socket_type_t type, tsk_bool_t lr);
 extern tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_t *self, const char* protocol);
+
+#define TSIP_DIALOG_ADD_HEADERS(headers) {\
+		const tsk_list_item_t* item;\
+		tsk_list_foreach(item, headers){ \
+			if(!TSK_PARAM(item->data)->tag){ \
+				/* 'Route' is special header as it's used to find next destination address */ \
+				if(tsk_striequals(TSK_PARAM(item->data)->name, "route")){ \
+					tsip_uri_t* route_uri; \
+					char* route_uri_str = tsk_strdup(TSK_PARAM(item->data)->value); \
+					tsk_strunquote_2(&route_uri_str, '<', '>'); \
+					route_uri = tsip_uri_parse(route_uri_str, tsk_strlen(route_uri_str)); \
+					if(route_uri){ \
+						tsip_message_add_headers(request, \
+							TSIP_HEADER_ROUTE_VA_ARGS(route_uri), \
+							tsk_null); \
+						TSK_OBJECT_SAFE_FREE(route_uri); \
+					} \
+					TSK_FREE(route_uri_str); \
+				} \
+				else{ \
+					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value)); \
+				} \
+			} \
+		}\
+	}
+
 
 tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* method)
 {
@@ -206,7 +233,13 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 					request->line.request.request_type == tsip_PUBLISH || 
 					request->line.request.request_type == tsip_REGISTER){
 					/**** with expires */
-					tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d\r\n", "sip", from_uri->user_name, "127.0.0.1", 5060, TSK_TIME_MS_2_S(self->expires));
+					tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d\r\n", 
+						"sip", 
+						from_uri->user_name,
+						"127.0.0.1", 
+						5060,
+						
+						TSK_TIME_MS_2_S(self->expires));
 				}
 				else{
 					/**** without expires */
@@ -217,7 +250,22 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 						*/
 						TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_EXPIRES_VA_ARGS(TSK_TIME_MS_2_S(self->expires)));
 					}
-					tsk_sprintf(&contact, "m: <%s:%s@%s:%d>\r\n", "sip", from_uri->user_name, "127.0.0.1", 5060);
+					tsk_sprintf(&contact, "m: <%s:%s@%s:%d%s%s%s%s%s%s%s%s%s>\r\n", 
+							"sip", 
+							from_uri->user_name, 
+							"127.0.0.1", 
+							5060,
+
+							self->ss->ws.src.host ? ";" : "",
+							self->ss->ws.src.host ? "ws-src-ip=" : "",
+							self->ss->ws.src.host ? self->ss->ws.src.host : "",
+							self->ss->ws.src.port[0] ? ";" : "",
+							self->ss->ws.src.port[0] ? "ws-src-port=" : "",
+							self->ss->ws.src.port[0] ? self->ss->ws.src.port : "",
+							self->ss->ws.src.proto ? ";" : "",
+							self->ss->ws.src.proto ? "ws-src-proto=" : "",
+							self->ss->ws.src.proto ? self->ss->ws.src.proto : ""
+						);
 				}
 				hdr_contacts = tsip_header_Contact_parse(contact, tsk_strlen(contact));
 				if(!TSK_LIST_IS_EMPTY(hdr_contacts)){
@@ -368,19 +416,11 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		}
 	}
 
-	/* Add headers associated to the dialog's session */
-	tsk_list_foreach(item, self->ss->headers){
-		if(!TSK_PARAM(item->data)->tag){
-			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value));
-		}
-	}
+	/* Add headers associated to the session */
+	tsip_dialog_add_session_headers(self, request);
 
 	/* Add headers associated to the dialog's stack */
-	tsk_list_foreach(item, self->ss->stack->headers){
-		if(!TSK_PARAM(item->data)->tag){
-			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value));
-		}
-	}
+	TSIP_DIALOG_ADD_HEADERS(self->ss->stack->headers);
 
 	/* Add common headers */
 	tsip_dialog_add_common_headers(self, request);
@@ -422,43 +462,42 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 				As this is an outgoing request ==> It shall be a client transaction (NICT or ICT).
 				For server transactions creation see @ref tsip_dialog_response_send.
 			*/
-			const tsk_bool_t isCT = tsk_true;
-			tsip_transac_t *transac;
-			const tsk_param_t *ws_src_ip, *ws_src_port;
+			static const tsk_bool_t isCT = tsk_true;
+			tsip_transac_t* transac;
+			tsip_transac_dst_t* dst;
+			
 
-			// TSK_DEBUG_ERROR("Code not checked");
-			if(self->uri_remote_target 
-				&& (ws_src_ip = tsk_params_get_param_by_name(self->uri_remote_target->params, "ws-src-ip")) 
-				&& (ws_src_port = tsk_params_get_param_by_name(self->uri_remote_target->params, "ws-src-port")))
-			{
-				// request->reliable
-			}
-			else{
-				// FIXME: not correct but for now it's correct as we always use ONE transport for "ua" mode
+			if(TSIP_STACK_MODE_IS_CLIENT(TSIP_DIALOG_GET_STACK(self))){
 				const tsip_transport_t* transport = tsip_transport_layer_find_by_idx(TSIP_DIALOG_GET_STACK(self)->layer_transport, TSIP_DIALOG_GET_STACK(self)->network.transport_idx_default);
 				if(!transport){
 					TSK_DEBUG_ERROR("Failed to find a valid default transport [%d]", TSIP_DIALOG_GET_STACK(self)->network.transport_idx_default);
 				}
 				else{
-					request->reliable = TNET_SOCKET_TYPE_IS_STREAM(transport->type);
+					request->dst_net_type = transport->type;
 				}
 			}
-			
-			transac = tsip_transac_layer_new(layer, isCT, request, TSIP_DIALOG(self));
+			dst = tsip_transac_dst_dialog_create(TSIP_DIALOG(self));
+			transac = tsip_transac_layer_new(
+				layer, 
+				isCT,
+				request, 
+				dst
+			);
+			TSK_OBJECT_SAFE_FREE(dst);
 
 			/* Set the transaction's dialog. All events comming from the transaction (timeouts, errors ...) will be signaled to this dialog */
 			if(transac){
 				switch(transac->type)
 				{
-					case tsip_ict:
-					case tsip_nict:
+					case tsip_transac_type_ict:
+					case tsip_transac_type_nict:
 						{
 							/* Start the newly create IC/NIC transaction */
 							ret = tsip_transac_start(transac, request);
 							break;
 						}
 				}
-				tsk_object_unref(transac);
+				TSK_OBJECT_SAFE_FREE(transac);
 			}
 		}
 	}
@@ -876,6 +915,9 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 					WWW_Authenticate->algorithm, 
 					WWW_Authenticate->qop)))
 			{
+				if(TSIP_DIALOG_GET_SS(self)->auth_ha1 && TSIP_DIALOG_GET_SS(self)->auth_impi){
+					tsip_challenge_set_cred(challenge, TSIP_DIALOG_GET_SS(self)->auth_impi, TSIP_DIALOG_GET_SS(self)->auth_ha1);
+				}
 				tsk_list_push_back_data(self->challenges, (void**)&challenge);
 			}
 			else{
@@ -927,6 +969,9 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 					Proxy_Authenticate->algorithm, 
 					Proxy_Authenticate->qop)))
 			{
+				if(TSIP_DIALOG_GET_SS(self)->auth_ha1 && TSIP_DIALOG_GET_SS(self)->auth_impi){
+					tsip_challenge_set_cred(challenge, TSIP_DIALOG_GET_SS(self)->auth_impi, TSIP_DIALOG_GET_SS(self)->auth_ha1);
+				}
 				tsk_list_push_back_data(self->challenges, (void**)&challenge);
 			}
 			else{
@@ -936,7 +981,17 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 		}
 	}	
 	return 0;
+}
 
+int tsip_dialog_add_session_headers(const tsip_dialog_t *self, tsip_request_t* request)
+{
+	if(!self || !request){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	TSIP_DIALOG_ADD_HEADERS(self->ss->headers);
+	return 0;
 }
 
 int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* request)
@@ -946,6 +1001,7 @@ int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* re
 	const char* netinfo = tsk_null;
 
 	if(!self || !request){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 

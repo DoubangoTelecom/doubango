@@ -264,6 +264,24 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsGetRtcpMuxEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetRtcpMuxEnabled)
     __swig_getmethods__["defaultsSetIceEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetIceEnabled
     if _newclass:defaultsSetIceEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetIceEnabled)
+    __swig_getmethods__["defaultsSetByPassEncoding"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetByPassEncoding
+    if _newclass:defaultsSetByPassEncoding = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetByPassEncoding)
+    __swig_getmethods__["defaultsGetByPassEncoding"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetByPassEncoding
+    if _newclass:defaultsGetByPassEncoding = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetByPassEncoding)
+    __swig_getmethods__["defaultsSetByPassDecoding"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetByPassDecoding
+    if _newclass:defaultsSetByPassDecoding = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetByPassDecoding)
+    __swig_getmethods__["defaultsGetByPassDecoding"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetByPassDecoding
+    if _newclass:defaultsGetByPassDecoding = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetByPassDecoding)
+    __swig_getmethods__["defaultsSetVideoJbEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetVideoJbEnabled
+    if _newclass:defaultsSetVideoJbEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetVideoJbEnabled)
+    __swig_getmethods__["defaultsGetVideoJbEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetVideoJbEnabled
+    if _newclass:defaultsGetVideoJbEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetVideoJbEnabled)
+    __swig_getmethods__["defaultsSetRtpBuffSize"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetRtpBuffSize
+    if _newclass:defaultsSetRtpBuffSize = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetRtpBuffSize)
+    __swig_getmethods__["defaultsGetRtpBuffSize"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetRtpBuffSize
+    if _newclass:defaultsGetRtpBuffSize = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetRtpBuffSize)
+    __swig_getmethods__["defaultsSetAvpfTail"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail
+    if _newclass:defaultsSetAvpfTail = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail)
 MediaSessionMgr_swigregister = _tinyWRAP.MediaSessionMgr_swigregister
 MediaSessionMgr_swigregister(MediaSessionMgr)
 
@@ -418,6 +436,42 @@ MediaSessionMgr_defaultsGetRtcpMuxEnabled = _tinyWRAP.MediaSessionMgr_defaultsGe
 def MediaSessionMgr_defaultsSetIceEnabled(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetIceEnabled(*args)
 MediaSessionMgr_defaultsSetIceEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetIceEnabled
+
+def MediaSessionMgr_defaultsSetByPassEncoding(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetByPassEncoding(*args)
+MediaSessionMgr_defaultsSetByPassEncoding = _tinyWRAP.MediaSessionMgr_defaultsSetByPassEncoding
+
+def MediaSessionMgr_defaultsGetByPassEncoding():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetByPassEncoding()
+MediaSessionMgr_defaultsGetByPassEncoding = _tinyWRAP.MediaSessionMgr_defaultsGetByPassEncoding
+
+def MediaSessionMgr_defaultsSetByPassDecoding(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetByPassDecoding(*args)
+MediaSessionMgr_defaultsSetByPassDecoding = _tinyWRAP.MediaSessionMgr_defaultsSetByPassDecoding
+
+def MediaSessionMgr_defaultsGetByPassDecoding():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetByPassDecoding()
+MediaSessionMgr_defaultsGetByPassDecoding = _tinyWRAP.MediaSessionMgr_defaultsGetByPassDecoding
+
+def MediaSessionMgr_defaultsSetVideoJbEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetVideoJbEnabled(*args)
+MediaSessionMgr_defaultsSetVideoJbEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetVideoJbEnabled
+
+def MediaSessionMgr_defaultsGetVideoJbEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsGetVideoJbEnabled(*args)
+MediaSessionMgr_defaultsGetVideoJbEnabled = _tinyWRAP.MediaSessionMgr_defaultsGetVideoJbEnabled
+
+def MediaSessionMgr_defaultsSetRtpBuffSize(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetRtpBuffSize(*args)
+MediaSessionMgr_defaultsSetRtpBuffSize = _tinyWRAP.MediaSessionMgr_defaultsSetRtpBuffSize
+
+def MediaSessionMgr_defaultsGetRtpBuffSize():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetRtpBuffSize()
+MediaSessionMgr_defaultsGetRtpBuffSize = _tinyWRAP.MediaSessionMgr_defaultsGetRtpBuffSize
+
+def MediaSessionMgr_defaultsSetAvpfTail(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail(*args)
+MediaSessionMgr_defaultsSetAvpfTail = _tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail
 
 class MediaContent(_object):
     __swig_setmethods__ = {}
@@ -1561,6 +1615,39 @@ tmedia_pref_video_size_480p = _tinyWRAP.tmedia_pref_video_size_480p
 tmedia_pref_video_size_720p = _tinyWRAP.tmedia_pref_video_size_720p
 tmedia_pref_video_size_16cif = _tinyWRAP.tmedia_pref_video_size_16cif
 tmedia_pref_video_size_1080p = _tinyWRAP.tmedia_pref_video_size_1080p
+tmedia_codec_id_none = _tinyWRAP.tmedia_codec_id_none
+tmedia_codec_id_amr_nb_oa = _tinyWRAP.tmedia_codec_id_amr_nb_oa
+tmedia_codec_id_amr_nb_be = _tinyWRAP.tmedia_codec_id_amr_nb_be
+tmedia_codec_id_amr_wb_oa = _tinyWRAP.tmedia_codec_id_amr_wb_oa
+tmedia_codec_id_amr_wb_be = _tinyWRAP.tmedia_codec_id_amr_wb_be
+tmedia_codec_id_gsm = _tinyWRAP.tmedia_codec_id_gsm
+tmedia_codec_id_pcma = _tinyWRAP.tmedia_codec_id_pcma
+tmedia_codec_id_pcmu = _tinyWRAP.tmedia_codec_id_pcmu
+tmedia_codec_id_ilbc = _tinyWRAP.tmedia_codec_id_ilbc
+tmedia_codec_id_speex_nb = _tinyWRAP.tmedia_codec_id_speex_nb
+tmedia_codec_id_speex_wb = _tinyWRAP.tmedia_codec_id_speex_wb
+tmedia_codec_id_speex_uwb = _tinyWRAP.tmedia_codec_id_speex_uwb
+tmedia_codec_id_bv16 = _tinyWRAP.tmedia_codec_id_bv16
+tmedia_codec_id_bv32 = _tinyWRAP.tmedia_codec_id_bv32
+tmedia_codec_id_opus = _tinyWRAP.tmedia_codec_id_opus
+tmedia_codec_id_g729ab = _tinyWRAP.tmedia_codec_id_g729ab
+tmedia_codec_id_g722 = _tinyWRAP.tmedia_codec_id_g722
+tmedia_codec_id_h261 = _tinyWRAP.tmedia_codec_id_h261
+tmedia_codec_id_h263 = _tinyWRAP.tmedia_codec_id_h263
+tmedia_codec_id_h263p = _tinyWRAP.tmedia_codec_id_h263p
+tmedia_codec_id_h263pp = _tinyWRAP.tmedia_codec_id_h263pp
+tmedia_codec_id_h264_bp = _tinyWRAP.tmedia_codec_id_h264_bp
+tmedia_codec_id_h264_mp = _tinyWRAP.tmedia_codec_id_h264_mp
+tmedia_codec_id_h264_hp = _tinyWRAP.tmedia_codec_id_h264_hp
+tmedia_codec_id_h264_bp10 = _tinyWRAP.tmedia_codec_id_h264_bp10
+tmedia_codec_id_h264_bp20 = _tinyWRAP.tmedia_codec_id_h264_bp20
+tmedia_codec_id_h264_bp30 = _tinyWRAP.tmedia_codec_id_h264_bp30
+tmedia_codec_id_h264_svc = _tinyWRAP.tmedia_codec_id_h264_svc
+tmedia_codec_id_theora = _tinyWRAP.tmedia_codec_id_theora
+tmedia_codec_id_mp4ves_es = _tinyWRAP.tmedia_codec_id_mp4ves_es
+tmedia_codec_id_vp8 = _tinyWRAP.tmedia_codec_id_vp8
+tmedia_codec_id_t140 = _tinyWRAP.tmedia_codec_id_t140
+tmedia_codec_id_red = _tinyWRAP.tmedia_codec_id_red
 tdav_codec_id_none = _tinyWRAP.tdav_codec_id_none
 tdav_codec_id_amr_nb_oa = _tinyWRAP.tdav_codec_id_amr_nb_oa
 tdav_codec_id_amr_nb_be = _tinyWRAP.tdav_codec_id_amr_nb_be

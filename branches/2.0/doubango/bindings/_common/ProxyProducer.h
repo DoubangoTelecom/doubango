@@ -129,7 +129,8 @@ public:
 	int push(const void* pBuffer, unsigned nSize);
 	void setCallback(ProxyVideoProducerCallback* pCallback) { m_pCallback = pCallback; }
 #if !defined(SWIG)
-	int send(const void* pBuffer, unsigned nSize, unsigned nDuration, bool bMarker);
+	int sendRaw(const void* pBuffer, unsigned nSize, unsigned nDuration, bool bMarker);
+	int sendRaw(const void* pBuffer, unsigned nSize, const void* proto_hdr);
 	inline ProxyVideoProducerCallback* getCallback()const { return m_pCallback; }
 	virtual inline bool isWrapping(tsk_object_t* wrapped_plugin){
 		return m_pWrappedPlugin == wrapped_plugin;

@@ -35,14 +35,14 @@
 #include "tsk_buffer.h"
 #include "tsk_safeobj.h"
 
-#if TNET_USE_POLL && !(__IPHONE_OS_VERSION_MIN_REQUIRED >= 40000)
+#if USE_POLL && !(__IPHONE_OS_VERSION_MIN_REQUIRED >= 40000)
 
 #include "tnet_poll.h"
 
 #define TNET_MAX_FDS		1024
 
 /*== Socket description ==*/
-typedef struct transport_socket_s
+typedef struct transport_socket_xs
 {
 	tnet_fd_t fd;
 	tsk_bool_t owner;
@@ -52,7 +52,7 @@ typedef struct transport_socket_s
 	tnet_socket_type_t type;
 	tnet_tls_socket_handle_t* tlshandle;
 }
-transport_socket_t;
+transport_socket_xt;
 
 /*== Transport context structure definition ==*/
 typedef struct transport_context_s
@@ -64,13 +64,13 @@ typedef struct transport_context_s
 	tnet_fd_t pipeW;
 	tnet_fd_t pipeR;
 	tnet_pollfd_t ufds[TNET_MAX_FDS];
-	transport_socket_t* sockets[TNET_MAX_FDS];
+	transport_socket_xt* sockets[TNET_MAX_FDS];
 
 	TSK_DECLARE_SAFEOBJ;
 }
 transport_context_t;
 
-static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd);
+static transport_socket_xt* getSocket(transport_context_t *context, tnet_fd_t fd);
 static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client);
 static int removeSocket(int index, transport_context_t *context);
 
@@ -92,7 +92,7 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 		return -2;
 	}
 
-	if(TNET_SOCKET_TYPE_IS_TLS(type)){
+	if(TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)){
 		transport->tls.have_tls = 1;
 	}
 	
@@ -121,7 +121,7 @@ int tnet_transport_pause_socket(const tnet_transport_handle_t *handle, tnet_fd_t
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
-	transport_socket_t* socket;
+	transport_socket_xt* socket;
 
 	if(!transport || !(context = (transport_context_t*)transport->context)){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -191,7 +191,7 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
 	}
 
 	if(transport->tls.have_tls){
-		const transport_socket_t* socket = getSocket(transport->context, from);
+		const transport_socket_xt* socket = getSocket(transport->context, from);
 		if(socket && socket->tlshandle){
 			if(!tnet_tls_socket_send(socket->tlshandle, buf, size)){
 				numberOfBytesSent = size;
@@ -252,7 +252,7 @@ int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t 
 const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transport_handle_t *handle, tnet_fd_t fd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
-	const transport_socket_t *socket;
+	const transport_socket_xt *socket;
 	
 	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
@@ -267,10 +267,10 @@ const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transpor
 
 
 /*== Get socket ==*/
-static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
+static transport_socket_xt* getSocket(transport_context_t *context, tnet_fd_t fd)
 {
 	tsk_size_t i;
-	transport_socket_t* ret = 0;
+	transport_socket_xt* ret = 0;
 
 	if(context){
 		tsk_safeobj_lock(context);
@@ -291,12 +291,12 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 {
 	transport_context_t *context = transport?transport->context:0;
 	if(context){
-		transport_socket_t *sock = tsk_calloc(1, sizeof(transport_socket_t));
+		transport_socket_xt *sock = tsk_calloc(1, sizeof(transport_socket_xt));
 		sock->fd = fd;
 		sock->type = type;
 		sock->owner = take_ownership;
 
-		if(TNET_SOCKET_TYPE_IS_TLS(sock->type)){
+		if(TNET_SOCKET_TYPE_IS_TLS(sock->type) || TNET_SOCKET_TYPE_IS_WSS(sock->type)){
 			sock->tlshandle = tnet_sockfd_set_tlsfiles(sock->fd, is_client, transport->tls.ca, transport->tls.pvk, transport->tls.pbk);
 		}
 		
@@ -311,7 +311,7 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 		
 		tsk_safeobj_unlock(context);
 		
-		TSK_DEBUG_INFO("Socket added %d", fd);
+		TSK_DEBUG_INFO("Socket added: fd=%d, tail.count=%d", fd, context->count);
 		
 		return 0;
 	}
@@ -345,6 +345,7 @@ int removeSocket(int index, transport_context_t *context)
 
 	if(index < (int)context->count){
 		/* Close the socket if we are the owner. */
+		TSK_DEBUG_INFO("Socket to remove: fd=%d, tail.count=%d", context->sockets[index]->fd, context->count);
 		if(context->sockets[index]->owner){
 			tnet_sockfd_close(&(context->sockets[index]->fd));
 		}
@@ -361,12 +362,11 @@ int removeSocket(int index, transport_context_t *context)
 		}
 		
 		context->sockets[context->count-1] = tsk_null;
-		context->ufds[context->count-1].fd = 0;
+		context->ufds[context->count-1].fd = TNET_INVALID_FD;
 		context->ufds[context->count-1].events = 0;
 		context->ufds[context->count-1].revents = 0;
 		
 		context->count--;
-		TSK_DEBUG_INFO("Socket removed");
 	}
 
 	tsk_safeobj_unlock(context);
@@ -528,7 +528,7 @@ void *tnet_transport_mainthread(void *param)
 	tsk_bool_t is_stream;
 
 	struct sockaddr_storage remote_addr = {0};
-	transport_socket_t* active_socket;
+	transport_socket_xt* active_socket;
 
 	/* check whether the transport is already prepared */
 	if(!transport->prepared){
@@ -538,7 +538,12 @@ void *tnet_transport_mainthread(void *param)
 	
 	is_stream = TNET_SOCKET_TYPE_IS_STREAM(transport->master->type);
 	
-	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
+	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d} using fd {%d} with type {%d}...", 
+			transport->description, 
+			transport->master->ip, 
+			transport->master->port,
+			transport->master->fd,
+			transport->master->type);
 
 	while(TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started){
 		if((ret = tnet_poll(context->ufds, context->count, -1)) < 0){
@@ -547,7 +552,7 @@ void *tnet_transport_mainthread(void *param)
 		}
 
 		if(!TSK_RUNNABLE(transport)->running && !TSK_RUNNABLE(transport)->started){
-			TSK_DEBUG_INFO("Stopping [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
+			TSK_DEBUG_INFO("Stopping [%s] server with IP {%s} on port {%d} with type {%d}...", transport->description, transport->master->ip, transport->master->port, transport->master->type);
 			goto bail;
 		}
 		
@@ -564,8 +569,8 @@ void *tnet_transport_mainthread(void *param)
 			if(context->ufds[i].fd == context->pipeR){
 				TSK_DEBUG_INFO("PipeR event %d", context->ufds[i].revents);
 				if(context->ufds[i].revents & TNET_POLLIN){
-					static char __buffer[64];
-					if(read(context->pipeR, __buffer, sizeof(__buffer))<0){
+					static char __buffer[1024];
+					if(read(context->pipeR, __buffer, sizeof(__buffer)) < 0){
 						TNET_PRINT_LAST_ERROR("Failed to read from the Pipe");
 					}
 				}
@@ -587,12 +592,7 @@ void *tnet_transport_mainthread(void *param)
 				void* buffer = tsk_null;
 				tnet_transport_event_t* e;
 				
-				//--TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description);
-
-				//
-				// FIXME: check if accept() is needed or not
-				//
-
+				/* TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description); */
 				
 				/* check whether the socket is paused or not */
 				if(active_socket->paused){
@@ -608,28 +608,52 @@ void *tnet_transport_mainthread(void *param)
 				if((tnet_ioctlt(active_socket->fd, FIONREAD, &len) < 0 || !len) && is_stream){
 					/* It's probably an incoming connection --> try to accept() it */
 					tnet_fd_t fd;
-					if((fd = accept(active_socket->fd, tsk_null, 0)) != TNET_INVALID_SOCKET){
-						TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_ACCEPT(fd=%d)", transport->description, fd);
-						addSocket(fd, transport->master->type, transport, tsk_true, tsk_false);
-						TSK_RUNNABLE_ENQUEUE(transport, event_accepted, transport->callback_data, fd);
+					int listening, remove_socket = 0;
+					socklen_t socklen = sizeof(listening);
+					
+					TSK_DEBUG_INFO("ioctlt() returned zero or failed");
+					
+					// check if socket is listening
+					if(getsockopt(active_socket->fd, SOL_SOCKET, SO_ACCEPTCONN, &listening, &socklen) == -1){
+   						TSK_DEBUG_WARN("getsockopt(SO_ACCEPTCONN, %d) failed\n", active_socket->fd);
+						remove_socket = 1;
+					}
+					else if (listening){
+						if((fd = accept(active_socket->fd, tsk_null, 0)) != TNET_INVALID_SOCKET){
+							TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_ACCEPT(fd=%d)", transport->description, fd);
+							addSocket(fd, transport->master->type, transport, tsk_true, tsk_false);
+							TSK_RUNNABLE_ENQUEUE(transport, event_accepted, transport->callback_data, fd);
+							if(active_socket->tlshandle){
+								transport_socket_xt* tls_socket;
+								if((tls_socket = getSocket(context, fd))){
+									if(tnet_tls_socket_accept(tls_socket->tlshandle)){
+										tnet_transport_remove_socket(transport, &fd);
+										TNET_PRINT_LAST_ERROR("SSL_accept() failed");
+										goto TNET_POLLIN_DONE;
+									}
+								}
+							}
+						}
+						else{
+							TNET_PRINT_LAST_ERROR("accept(%d) failed", active_socket->fd);
+							remove_socket = 1;
+						}
 					}
 					else{
-						TNET_PRINT_LAST_ERROR("IOCTLT FAILED.");
-						tnet_transport_remove_socket(transport, &active_socket->fd);
-						continue;
+						TSK_DEBUG_INFO("Closing socket with fd = %d because ioctlt() returned zero or failed", active_socket->fd);
+						remove_socket = 1;
 					}
+					
+					if(remove_socket){
+						fd = active_socket->fd;
+						tnet_transport_remove_socket(transport, &active_socket->fd);
+						TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, fd);
+					}
+					continue;
 				}
 				
-				if(!len){
-					TSK_DEBUG_WARN("IOCTLT returned zero for fd=%d", active_socket->fd);
-#if !defined(ANDROID) && !defined(__APPLE__) /* FIXME: On Android/MAC OS X this mean that the socket has been closed? For sure this is not true for Android and iOS */
-					TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, active_socket->fd);
-					removeSocket(i, context);
-#else
-					recv(active_socket->fd, 0, 0, 0);
-#endif
+				if(len <= 0){
 					continue;
-
 				}
 				
 				if(!(buffer = tsk_calloc(len, sizeof(uint8_t)))){

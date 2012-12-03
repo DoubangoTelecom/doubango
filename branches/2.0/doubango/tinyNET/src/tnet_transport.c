@@ -59,6 +59,7 @@ tnet_transport_t* tnet_transport_create(const char* host, tnet_port_t port, tnet
 		transport->req_local_port = port;
 		transport->type = type;
 		transport->context = tnet_transport_context_create();
+		transport->tls.have_tls = (TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type));
 		
 		if((transport->master = tnet_socket_create(transport->local_host, transport->req_local_port, transport->type))){
 			transport->local_ip = tsk_strdup(transport->master->ip);
@@ -157,7 +158,7 @@ const char* tnet_transport_get_description(const tnet_transport_handle_t *handle
 int tnet_transport_get_ip_n_port(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 {
 	if(handle){
-		return tnet_get_ip_n_port(fd, ip, port);
+		return tnet_get_ip_n_port(fd, tsk_true/*local*/, ip, port);
 	}
 	else{
 		TSK_DEBUG_ERROR("NULL transport object.");
@@ -266,7 +267,7 @@ tnet_fd_t tnet_transport_get_master_fd(const tnet_transport_handle_t *handle)
 {
 	if(handle){
 		const tnet_transport_t *transport = handle;
-		return transport->master->fd;
+		return transport->master ? transport->master->fd : TNET_INVALID_FD;
 	}
 	else{
 		TSK_DEBUG_ERROR("NULL transport object.");
@@ -347,8 +348,8 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 		goto bail;
 	}
 	else{
-		if(TNET_SOCKET_TYPE_IS_TLS(type)){
-			transport->tls.have_tls = tsk_true;
+		if(TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)){
+			transport->tls.have_tls = 1;
 			/*transport->connected = !*/tnet_tls_socket_connect((tnet_tls_socket_handle_t*)tnet_transport_get_tlshandle(handle, fd));
 		}
 		else{
@@ -424,7 +425,7 @@ static void *run(void* self)
 	
 	TSK_RUNNABLE_RUN_END(transport);
 
-	TSK_DEBUG_INFO("Transport::run() - exit");
+	TSK_DEBUG_INFO("Transport::run(%s) - exit", transport->description);
 
 	return tsk_null;
 }

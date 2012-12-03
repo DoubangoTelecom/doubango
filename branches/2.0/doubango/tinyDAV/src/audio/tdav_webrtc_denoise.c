@@ -31,6 +31,7 @@
 
 #if HAVE_WEBRTC && (!defined(HAVE_WEBRTC_DENOISE) || HAVE_WEBRTC_DENOISE)
 
+#include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 

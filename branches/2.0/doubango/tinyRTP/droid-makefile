@@ -9,8 +9,8 @@ else
 endif
 
 THIRDPARTIES_INC := ../thirdparties/android/include
-CFLAGS := $(CFLAGS_LIB) -I$(THIRDPARTIES_INC) $(LIBSRTP_CFLAGS) -I../tinySAK/src -I../tinyNET/src -I./include
-LDFLAGS := $(LDFLAGS_LIB) $(LIBSRTP_LDFLAGS) -ltinySAK_$(MARCH) -ltinyNET_$(MARCH)
+CFLAGS := $(CFLAGS_LIB) -I$(THIRDPARTIES_INC) $(LIBSRTP_CFLAGS) -I../tinySAK/src -I../tinyNET/src -I./include -I../tinyMEDIA/include
+LDFLAGS := $(LDFLAGS_LIB) $(LIBSRTP_LDFLAGS) -ltinySAK_$(MARCH) -ltinyNET_$(MARCH) -ltinyMEDIA_$(MARCH)
 
 all: $(APP)
 

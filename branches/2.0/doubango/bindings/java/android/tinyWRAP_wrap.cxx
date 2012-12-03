@@ -3276,6 +3276,128 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionM
 }
 
 
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetByPassEncoding(JNIEnv *jenv, jclass jcls, jboolean jarg1) {
+  jboolean jresult = 0 ;
+  bool arg1 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetByPassEncoding(arg1);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsGetByPassEncoding(JNIEnv *jenv, jclass jcls) {
+  jboolean jresult = 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (bool)MediaSessionMgr::defaultsGetByPassEncoding();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetByPassDecoding(JNIEnv *jenv, jclass jcls, jboolean jarg1) {
+  jboolean jresult = 0 ;
+  bool arg1 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetByPassDecoding(arg1);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsGetByPassDecoding(JNIEnv *jenv, jclass jcls) {
+  jboolean jresult = 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (bool)MediaSessionMgr::defaultsGetByPassDecoding();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetVideoJbEnabled(JNIEnv *jenv, jclass jcls, jboolean jarg1) {
+  jboolean jresult = 0 ;
+  bool arg1 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetVideoJbEnabled(arg1);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsGetVideoJbEnabled(JNIEnv *jenv, jclass jcls, jboolean jarg1) {
+  jboolean jresult = 0 ;
+  bool arg1 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsGetVideoJbEnabled(arg1);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetRtpBuffSize(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jboolean jresult = 0 ;
+  unsigned int arg1 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (unsigned int)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetRtpBuffSize(arg1);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsGetRtpBuffSize(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  unsigned int result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (unsigned int)MediaSessionMgr::defaultsGetRtpBuffSize();
+  jresult = (jlong)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetAvpfTail(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2) {
+  jboolean jresult = 0 ;
+  unsigned int arg1 ;
+  unsigned int arg2 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (unsigned int)jarg1; 
+  arg2 = (unsigned int)jarg2; 
+  result = (bool)MediaSessionMgr::defaultsSetAvpfTail(arg1,arg2);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1MediaContent(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   MediaContent *arg1 = (MediaContent *) 0 ;
   
@@ -4544,7 +4666,7 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_T140CallbackData_
   (void)jcls;
   (void)jarg1_;
   arg1 = *(T140CallbackData **)&jarg1; 
-  result = (enum tmedia_t140_data_type_e)(arg1)->getType();
+  result = (enum tmedia_t140_data_type_e)((T140CallbackData const *)arg1)->getType();
   jresult = (jint)result; 
   return jresult;
 }
@@ -4559,7 +4681,7 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_T140CallbackData
   (void)jcls;
   (void)jarg1_;
   arg1 = *(T140CallbackData **)&jarg1; 
-  result = (unsigned int)(arg1)->getSize();
+  result = (unsigned int)((T140CallbackData const *)arg1)->getSize();
   jresult = (jlong)result; 
   return jresult;
 }
@@ -4580,7 +4702,7 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_T140CallbackData
   arg2 = jenv->GetDirectBufferAddress(jarg2); 
   
   arg3 = (unsigned int)jarg3; 
-  result = (unsigned int)(arg1)->getData(arg2,arg3);
+  result = (unsigned int)((T140CallbackData const *)arg1)->getData(arg2,arg3);
   jresult = (jlong)result; 
   return jresult;
 }
@@ -9731,7 +9853,36 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1set
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1setLocalIP(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1setLocalIP_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jstring jarg3) {
+  jboolean jresult = 0 ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipStack **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  result = (bool)(arg1)->setLocalIP((char const *)arg2,(char const *)arg3);
+  jresult = (jboolean)result; 
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1setLocalIP_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
   jboolean jresult = 0 ;
   SipStack *arg1 = (SipStack *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -9753,7 +9904,31 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1set
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1setLocalPort(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1setLocalPort_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jstring jarg3) {
+  jboolean jresult = 0 ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  unsigned short arg2 ;
+  char *arg3 = (char *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipStack **)&jarg1; 
+  arg2 = (unsigned short)jarg2; 
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  result = (bool)(arg1)->setLocalPort(arg2,(char const *)arg3);
+  jresult = (jboolean)result; 
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1setLocalPort_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   jboolean jresult = 0 ;
   SipStack *arg1 = (SipStack *) 0 ;
   unsigned short arg2 ;
@@ -10384,12 +10559,12 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1setCode
 }
 
 
-SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1setCodecs_12(JNIEnv *jenv, jclass jcls, jint jarg1) {
-  int arg1 ;
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1setCodecs_12(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  int64_t arg1 ;
   
   (void)jenv;
   (void)jcls;
-  arg1 = (int)jarg1; 
+  arg1 = (int64_t)jarg1; 
   SipStack::setCodecs_2(arg1);
 }
 

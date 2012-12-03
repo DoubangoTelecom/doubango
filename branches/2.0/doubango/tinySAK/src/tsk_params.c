@@ -156,6 +156,13 @@ int tsk_params_add_param_2(tsk_params_L_t **self, const tsk_param_t* param)
 	return tsk_params_add_param(self, param->name, param->value);
 }
 
+int tsk_params_add_param_3(tsk_params_L_t **self, const char* name, int64_t value)
+{
+	tsk_istr_t value_str;
+	tsk_itoa(value, &value_str);
+	return tsk_params_add_param(self, name, value_str);
+}
+
 /**@ingroup tsk_params_group
 * Removes a parameter from the list of parameters.
 * @param self The list from which to remove the parameter.

@@ -47,12 +47,12 @@
 #include "tinysip/headers/tsip_header_Via.h"
 
 #include "tnet_types.h"
+#include "tnet_socket.h"
 
 #include "tsk_object.h"
 #include "tsk_buffer.h"
 
 TSIP_BEGIN_DECLS
-
 
 ///**
 // * @struct	tsip_request_line_t
@@ -146,7 +146,10 @@ typedef struct tsip_message_s
 	tnet_fd_t local_fd;
 	struct sockaddr_storage remote_addr; // Only valid for Dgram
 	tsk_bool_t update;
-	tsk_bool_t reliable;
+	enum tnet_socket_type_e src_net_type;
+	enum tnet_socket_type_e dst_net_type;
+	char* dst_address;
+	tnet_port_t dst_port;
 }
 tsip_message_t;
 

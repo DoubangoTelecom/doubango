@@ -210,6 +210,7 @@ tsk_bool_t tdav_codec_speex_sdp_att_match(const tmedia_codec_t* codec, const cha
 	&tdav_codec_speex_##mode##_def_s, \
 	 \
 		tmedia_audio, \
+		tmedia_codec_id_speex_##mode, \
 		name, \
 		description, \
 		format, \

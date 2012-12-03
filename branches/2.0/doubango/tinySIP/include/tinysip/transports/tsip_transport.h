@@ -64,7 +64,26 @@ tsip_transport_idx_xt;
 
 const tsip_transport_idx_xt* tsip_transport_get_by_name(const char* name);
 int tsip_transport_get_idx_by_name(const char* name);
+enum tnet_socket_type_e tsip_transport_get_type_by_name(const char* name);
 
+typedef struct tsip_transport_stream_peer_s
+{
+	TSK_DECLARE_OBJECT;
+
+	tnet_fd_t local_fd;  // not owner
+
+	tsk_buffer_t *buff_stream;
+	void* ws_rcv_buffer;
+	uint64_t ws_rcv_buffer_size;
+	void* ws_snd_buffer;
+	uint64_t ws_snd_buffer_size;
+
+	tnet_ip_t remote_ip;
+	tnet_port_t remote_port;
+}
+tsip_transport_stream_peer_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_transport_stream_peer_def_t;
+typedef tsk_list_t tsip_transport_stream_peers_L_t;
 
 typedef struct tsip_transport_s
 {
@@ -86,11 +105,7 @@ typedef struct tsip_transport_s
 	const char *via_protocol;
 	const char *service; /**< NAPTR service name */
 
-	tsk_buffer_t *buff_stream;
-	void* ws_rcv_buffer;
-	uint64_t ws_rcv_buffer_size;
-	void* ws_snd_buffer;
-	uint64_t ws_snd_buffer_size;
+	tsip_transport_stream_peers_L_t* stream_peers;
 }
 tsip_transport_t;
 
@@ -105,6 +120,12 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const struct sockaddr * to, const void* data, tsk_size_t size);
 tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t local_fd, const void* data, tsk_size_t size);
 tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
+int tsip_transport_add_stream_peer(tsip_transport_t *self, tnet_fd_t local_fd);
+tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_local_fd(tsip_transport_t *self, tnet_fd_t local_fd);
+tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_remote_address(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port);
+tsk_bool_t tsip_transport_have_stream_peer_with_remote_address(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port);
+tsk_bool_t tsip_transport_have_stream_peer_with_local_fd(tsip_transport_t *self, tnet_fd_t local_fd);
+int tsip_transport_remove_stream_peer_by_local_fd(tsip_transport_t *self, tnet_fd_t local_fd);
 
 #define tsip_transport_start(transport)													(transport ? tnet_transport_start(transport->net_transport) : -1)
 #define tsip_transport_isready(transport)												(transport ? tnet_transport_isready(transport->net_transport) : -1)

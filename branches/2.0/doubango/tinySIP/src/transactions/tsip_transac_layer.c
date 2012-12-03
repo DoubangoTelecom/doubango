@@ -42,7 +42,7 @@ tsip_transac_layer_t* tsip_transac_layer_create(tsip_stack_t* stack)
 	return tsk_object_new(tsip_transac_layer_def_t, stack);
 }
 
-tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_bool_t isCT, const tsip_message_t* msg, tsip_dialog_t* dialog)
+tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_bool_t isCT, const tsip_message_t* msg, tsip_transac_dst_t* dst)
 {
 	tsip_transac_t *ret = tsk_null;
 	tsip_transac_t *transac = tsk_null;
@@ -57,22 +57,22 @@ tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_boo
 			{
 				if(TSIP_REQUEST_IS_INVITE(msg)){
 					// INVITE Client transaction (ICT)
-					transac = (tsip_transac_t *)tsip_transac_ict_create(msg->reliable, msg->CSeq->seq, msg->Call_ID->value, dialog);
+					transac = (tsip_transac_t *)tsip_transac_ict_create(msg->CSeq->seq, msg->Call_ID->value, dst);
 				}
 				else{
 					// NON-INVITE Client transaction (NICT)
-					transac = (tsip_transac_t *)tsip_transac_nict_create(msg->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value, dialog);
+					transac = (tsip_transac_t *)tsip_transac_nict_create(msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value, dst);
 				}
 			}
 			else	/* Server transaction */
 			{
 				if(TSIP_REQUEST_IS_INVITE(msg)){
 					// INVITE Server transaction (IST)
-					transac = (tsip_transac_t *)tsip_transac_ist_create(msg->reliable, msg->CSeq->seq, msg->Call_ID->value, dialog);
+					transac = (tsip_transac_t *)tsip_transac_ist_create(msg->CSeq->seq, msg->Call_ID->value, dst);
 				}
 				else{
 					// NON-INVITE Server transaction (NIST)
-					transac = (tsip_transac_t *)tsip_transac_nist_create(msg->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value, dialog);
+					transac = (tsip_transac_t *)tsip_transac_nist_create(msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value, dst);
 				}
 				
 				if(transac){ /* Copy branch from the message */
@@ -121,7 +121,7 @@ int tsip_transac_layer_cancel_by_dialog(tsip_transac_layer_t *self, const struct
 	tsk_safeobj_lock(self);
 again:
 	tsk_list_foreach(item, self->transactions){
-		if(tsk_object_cmp(dialog, TSIP_TRANSAC(item->data)->dialog) == 0){
+		if(tsk_object_cmp(dialog, TSIP_TRANSAC_GET_DIALOG(item->data)) == 0){
 			if((ret = tsip_transac_fsm_act(TSIP_TRANSAC(item->data), tsip_atype_cancel, tsk_null))){ /* will call tsip_transac_layer_remove() if succeed */
 				/* break; */
 			}
@@ -271,6 +271,11 @@ int tsip_transac_layer_handle_incoming_msg(const tsip_transac_layer_t *self, con
 {
 	int ret = -1;
 	tsip_transac_t *transac = tsk_null;
+
+	if(!message){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 
 	//tsk_safeobj_lock(self);
 

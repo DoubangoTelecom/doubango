@@ -168,6 +168,14 @@ bool SipSession::addSigCompCompartment(const char* compId)
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
+bool SipSession::setAuth(const char* authHa1, const char* authIMPI)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_AUTH_HA1(authHa1),
+		TSIP_SSESSION_SET_AUTH_IMPI(authIMPI),
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
 bool SipSession::removeSigCompCompartment()
 {
 	return (tsip_ssession_set(m_pHandle,
@@ -179,6 +187,13 @@ bool SipSession::removeSigCompCompartment()
 unsigned SipSession::getId()const
 {
 	return (unsigned)tsip_ssession_get_id(m_pHandle);
+}
+
+bool SipSession::setWebSocketSrc(const char* host, int32_t port, const char* proto)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_WEBSOCKET_SRC(host, port, proto),
+		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 const SipStack* SipSession::getStack()const
@@ -371,6 +386,7 @@ CallSession::CallSession(SipStack* Stack)
 CallSession::CallSession(SipStack* Stack, tsip_ssession_handle_t* handle)
 : InviteSession(Stack, handle)
 , m_pT140Callback(tsk_null)
+, m_pRtcpCallback(tsk_null)
 {
 }
 
@@ -486,6 +502,32 @@ bool CallSession::call(const SipUri* remoteUri, twrap_media_type_t media, Action
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 #endif
+}
+
+bool CallSession::setSupportedCodecs(int32_t codecs)
+{
+	return (tsip_ssession_set(m_pHandle,
+			TSIP_SSESSION_SET_MEDIA(
+				TSIP_MSESSION_SET_CODECS(codecs),
+				TSIP_MSESSION_SET_NULL()
+			),
+			TSIP_SSESSION_SET_NULL()) == 0);
+}
+
+
+int32_t CallSession::getNegotiatedCodecs()
+{
+	return (int32_t) tsip_ssession_get_codecs_neg(m_pHandle);
+}
+
+bool CallSession::setMediaSSRC(twrap_media_type_t media, uint32_t ssrc)
+{
+	return (tsip_ssession_set(m_pHandle,
+			TSIP_SSESSION_SET_MEDIA(
+				TSIP_MSESSION_SET_RTP_SSRC(twrap_get_media_type(media), ssrc),
+				TSIP_MSESSION_SET_NULL()
+			),
+			TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool CallSession::setSessionTimer(unsigned timeout, const char* refresher)
@@ -624,10 +666,35 @@ bool CallSession::setT140Callback(const T140Callback* pT140Callback)
 	const MediaSessionMgr* pMgr;
 	if((pMgr = getMediaMgr()) && (pWrappedMgr = pMgr->getWrappedMgr())){
 		if((m_pT140Callback = pT140Callback)){
-			return (tmedia_session_mgr_set_t140_ondata_cb((tmedia_session_mgr_t*)pWrappedMgr, this, &CallSession::t140OnDataCallback) == 0);
+			return (tmedia_session_mgr_set_t140_ondata_cbfn((tmedia_session_mgr_t*)pWrappedMgr, this, &CallSession::t140OnDataCallback) == 0);
 		}
 		else{
-			return (tmedia_session_mgr_set_t140_ondata_cb((tmedia_session_mgr_t*)pWrappedMgr, this, tsk_null) == 0);
+			return (tmedia_session_mgr_set_t140_ondata_cbfn((tmedia_session_mgr_t*)pWrappedMgr, this, tsk_null) == 0);
+		}
+	}
+	return false;
+}
+
+bool CallSession::sendRtcpEvent(enum tmedia_rtcp_event_type_e event_type, twrap_media_type_t media_type, uint32_t ssrc_media)
+{
+	const tmedia_session_mgr_t* pWrappedMgr;
+	const MediaSessionMgr* pMgr;
+	if((pMgr = getMediaMgr()) && (pWrappedMgr = pMgr->getWrappedMgr())){
+		return (tmedia_session_mgr_send_rtcp_event((tmedia_session_mgr_t*)pWrappedMgr, twrap_get_media_type(media_type), event_type, ssrc_media) == 0);		
+	}
+	return false;
+}
+
+bool CallSession::setRtcpCallback(const RtcpCallback* pRtcpCallback, twrap_media_type_t media_type)
+{
+	const tmedia_session_mgr_t* pWrappedMgr;
+	const MediaSessionMgr* pMgr;
+	if((pMgr = getMediaMgr()) && (pWrappedMgr = pMgr->getWrappedMgr())){
+		if((m_pRtcpCallback = pRtcpCallback)){
+			return (tmedia_session_mgr_set_onrtcp_cbfn((tmedia_session_mgr_t*)pWrappedMgr, twrap_get_media_type(media_type), this, &CallSession::rtcpOnCallback) == 0);
+		}
+		else{
+			return (tmedia_session_mgr_set_onrtcp_cbfn((tmedia_session_mgr_t*)pWrappedMgr, twrap_get_media_type(media_type), this, tsk_null) == 0);
 		}
 	}
 	return false;
@@ -645,6 +712,25 @@ int CallSession::t140OnDataCallback(const void* context, enum tmedia_t140_data_t
 		T140CallbackData* dataObj = new T140CallbackData(data_type, data_ptr, data_size);
 		if(dataObj){
 			int ret = const_cast<T140Callback*>(session->getT140Callback())->ondata(dataObj);
+			delete dataObj;
+			return ret;
+		}
+	}
+	return 0;
+}
+
+const RtcpCallback* CallSession::getRtcpCallback() const
+{
+	return m_pRtcpCallback;
+}
+
+int CallSession::rtcpOnCallback(const void* context, enum tmedia_rtcp_event_type_e event_type, uint32_t ssrc_media)
+{
+	const CallSession* session = dyn_cast<const CallSession*>((const CallSession*)context);
+	if(session && session->getRtcpCallback()){
+		RtcpCallbackData* dataObj = new RtcpCallbackData(event_type, ssrc_media);
+		if(dataObj){
+			int ret = const_cast<RtcpCallback*>(session->getRtcpCallback())->onevent(dataObj);
 			delete dataObj;
 			return ret;
 		}

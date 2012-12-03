@@ -29,6 +29,7 @@
 */
 #include "tinysip/tsip_action.h"
 
+#include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 

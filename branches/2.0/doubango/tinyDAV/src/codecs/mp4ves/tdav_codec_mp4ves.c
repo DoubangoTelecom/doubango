@@ -41,6 +41,7 @@
 
 #include "tinymedia/tmedia_params.h"
 
+#include "tsk_string.h"
 #include "tsk_params.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
@@ -772,6 +773,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_mp4ves_plugin_def_s =
 	&tdav_codec_mp4ves_def_s,
 
 	tmedia_video,
+	tmedia_codec_id_mp4ves_es,
 	"MP4V-ES",
 	"MP4V-ES Codec",
 	TMEDIA_CODEC_FORMAT_MP4V_ES,

@@ -137,6 +137,7 @@ export CFLAGS_COMMON=$(CFLAGS) $(DEBUG_FLAGS) -I$(ANDROID_NDK_BASE)/$(ANDROID_PL
 -fno-short-enums \
 -DWEBRTC_ANDROID \
 -DWEBRTC_ARCH_ARM \
+-D__ANDROID__ \
 -DANDROID=1 \
 
 # Size reduction: use separate sections ("-ffunction-sections -fdata-sections") then link executable/shared lib using "-Wl,-gc-sections,-u,main"

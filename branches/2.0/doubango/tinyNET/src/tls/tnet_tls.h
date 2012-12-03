@@ -42,6 +42,7 @@ typedef void tnet_tls_socket_handle_t;
 
 int tnet_tls_socket_isok(const tnet_tls_socket_handle_t* self);
 int tnet_tls_socket_connect(tnet_tls_socket_handle_t* self);
+int tnet_tls_socket_accept(tnet_tls_socket_handle_t* self);
 int tnet_tls_socket_write(tnet_tls_socket_handle_t* self, const void* data, tsk_size_t size);
 #define tnet_tls_socket_send(self, data, size) tnet_tls_socket_write(self, data, size)
 int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void** data, tsk_size_t *size, int *isEncrypted);

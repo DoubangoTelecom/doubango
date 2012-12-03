@@ -62,11 +62,11 @@ typedef enum tsip_stack_mode_e
 {
 	tsip_stack_mode_ua,
 	tsip_stack_mode_p2p,
-	tsip_stack_mode_mediaproxy,
+	tsip_stack_mode_webrtc2sip,
 	tsip_stack_mode_mcu
 }
 tsip_stack_mode_t;
-#define TSIP_STACK_MODE_IS_SERVER(stack) ((stack)->network.mode == tsip_stack_mode_mediaproxy || (stack)->network.mode == tsip_stack_mode_mcu)
+#define TSIP_STACK_MODE_IS_SERVER(stack) ((stack)->network.mode == tsip_stack_mode_webrtc2sip || (stack)->network.mode == tsip_stack_mode_mcu)
 #define TSIP_STACK_MODE_IS_CLIENT(stack) (!TSIP_STACK_MODE_IS_SERVER((stack)))
 
 typedef enum tsip_stack_param_type_e
@@ -570,20 +570,21 @@ typedef struct tsip_stack_s
 	struct{
 		tsip_stack_mode_t mode;
 
-		char *local_ip_[TSIP_TRANSPORT_IDX_MAX];
-		tnet_port_t local_port_[TSIP_TRANSPORT_IDX_MAX];
+		char *local_ip[TSIP_TRANSPORT_IDX_MAX];
+		tnet_port_t local_port[TSIP_TRANSPORT_IDX_MAX];
 
-		char *proxy_cscf_[TSIP_TRANSPORT_IDX_MAX];
-		tnet_port_t proxy_cscf_port_[TSIP_TRANSPORT_IDX_MAX];
-		tnet_socket_type_t proxy_cscf_type_[TSIP_TRANSPORT_IDX_MAX];
+		char *proxy_cscf[TSIP_TRANSPORT_IDX_MAX];
+		tnet_port_t proxy_cscf_port[TSIP_TRANSPORT_IDX_MAX];
+		tnet_socket_type_t proxy_cscf_type[TSIP_TRANSPORT_IDX_MAX];
+		tnet_socket_type_t transport_types[TSIP_TRANSPORT_IDX_MAX];
 		int32_t transport_idx_default;
 		
 		tsip_uri_t *realm;
 		
 		//! IP adddress and port to use as AOR (user-defined)
 		struct{
-			char* ip_[TSIP_TRANSPORT_IDX_MAX];
-			tnet_port_t port_[TSIP_TRANSPORT_IDX_MAX];
+			char* ip[TSIP_TRANSPORT_IDX_MAX];
+			tnet_port_t port[TSIP_TRANSPORT_IDX_MAX];
 		} aor;
 		
 		tsk_bool_t discovery_naptr;

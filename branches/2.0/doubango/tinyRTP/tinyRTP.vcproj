@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="include;..\tinySAK\src;..\tinyNET\src;..\thirdparties\win32\include"
+				AdditionalIncludeDirectories="include;..\tinySAK\src;..\tinyNET\src;..\tinyMEDIA\include;..\thirdparties\win32\include"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;HAVE_SRTP=1;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYRTP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib &quot;..\thirdparties\win32\lib\srtp\libsrtp.a&quot; ..\thirdparties\win32\lib\libgcc.a"
+				AdditionalDependencies="ws2_32.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyMEDIA.lib &quot;..\thirdparties\win32\lib\srtp\libsrtp.a&quot; ..\thirdparties\win32\lib\libgcc.a"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -118,7 +118,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="..\thirdparties\win32\include;include;..\tinySAK\src;..\tinyNET\src"
+				AdditionalIncludeDirectories="..\thirdparties\win32\include;include;..\tinySAK\src;..\tinyNET\src;..\tinyMEDIA\include"
 				PreprocessorDefinitions="HAVE_SRTP=1;WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYRTP_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="false"
@@ -139,7 +139,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib &quot;..\thirdparties\win32\lib\srtp\libsrtp.a&quot; &quot;..\thirdparties\win32\lib\libgcc.a&quot;"
+				AdditionalDependencies="ws2_32.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyMEDIA.lib &quot;..\thirdparties\win32\lib\srtp\libsrtp.a&quot; &quot;..\thirdparties\win32\lib\libgcc.a&quot;"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="MSVCRTD"
 				GenerateDebugInformation="false"

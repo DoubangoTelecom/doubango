@@ -117,12 +117,16 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 {
 	tsip_ssession_param_type_t sscurr;
 	tsip_msession_param_type_t mscurr;
+	tmedia_session_mgr_t* mgr;
 
-	int ret;
+	int ret = 0;
 
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+
+	mgr = tsip_session_get_mediamgr(self); 
 
 	while((sscurr = va_arg(*app, tsip_ssession_param_type_t)) != sstype_null){
 		switch(sscurr){
@@ -145,13 +149,13 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 						/* From */
 						if(value && tsk_striequals(name, "From")){
 							if((ret = __tsip_ssession_set_From(self, value))){
-								return ret;
+								goto bail;
 							}
 						}
 						/* To */
 						else if(value && tsk_striequals(name, "To")){
 							if((ret = __tsip_ssession_set_To(self, value))){
-								return ret;
+								goto bail;
 							}
 						}
 						/* Expires */
@@ -180,14 +184,14 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 			case sstype_to_str:
 				{	/* (const char*)URI_STR */
 					if((ret = __tsip_ssession_set_To(self, va_arg(*app, const char *)))){
-						return ret;
+						goto bail;
 					}
 					break;
 				}
 			case sstype_from_str:
 				{	/* (const char*)URI_STR*/
 					if((ret = __tsip_ssession_set_From(self, va_arg(*app, const char *)))){
-						return ret;
+						goto bail;
 					}
 					break;
 				}
@@ -235,9 +239,31 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 					}
 					break;
 				}
+			case sstype_auth_ha1:
+				{ /* (const char*)AUTH_HA1_STR */
+					const char* AUTH_HA1_STR = va_arg(*app, const char*);
+					tsk_strupdate(&self->auth_ha1, AUTH_HA1_STR);
+					break;
+				}
+			case sstype_auth_impi:
+				{ /* (const char*)AUTH_IMPI_STR */
+					const char* AUTH_IMPI_STR = va_arg(*app, const char*);
+					tsk_strupdate(&self->auth_impi, AUTH_IMPI_STR);
+					break;
+				}
 			case sstype_parent_id:
-				{	/* sstype_parent_id, ((tsip_ssession_id_t)PARENT_ID_SSID) */
+				{	/* ((tsip_ssession_id_t)PARENT_ID_SSID) */
 					self->id_parent = va_arg(*app, tsip_ssession_id_t);
+					break;
+				}
+			case sstype_ws_src:
+				{	/* (const char*)SRC_HOST_STR, (int32_t)SRC_PORT_INT, (const char*)SRC_PROTO_STR */
+					const char* SRC_HOST_STR = va_arg(*app, const char*); 
+					int32_t SRC_PORT_INT = va_arg(*app, int32_t);  
+					const char* SRC_PROTO_STR = va_arg(*app, const char*); 
+					tsk_strupdate(&self->ws.src.host, SRC_HOST_STR);
+					tsk_itoa(SRC_PORT_INT, &self->ws.src.port);
+					tsk_strupdate(&self->ws.src.proto, SRC_PROTO_STR);
 					break;
 				}
 			case sstype_media:
@@ -285,6 +311,31 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 									TSK_FREE(self->media.timers.refresher);
 									break;
 								}
+							case mstype_set_codecs:
+								{/* (signed)CODECS_INT */
+									self->media.codecs = va_arg(*app, signed);
+									break;
+								}
+							case mstype_set_bypass_encoding:
+								{/* (tsk_bool_t)ENABLED_BOOL */
+									self->media.bypass_encoding = va_arg(*app, tsk_bool_t);
+									break;
+								}
+							case mstype_set_bypass_decoding:
+								{/* (tsk_bool_t)ENABLED_BOOL */
+									self->media.bypass_decoding = va_arg(*app, tsk_bool_t);
+									break;
+								}
+							case mstype_set_rtp_ssrc:
+								{/* (tmedia_type_t)MEDIA_ENUM, (uint32_t)SSRC_UINT */
+									tmedia_type_t MEDIA_ENUM = va_arg(*app, tmedia_type_t);
+									uint32_t SSRC_UINT = va_arg(*app, uint32_t);
+									switch(MEDIA_ENUM){
+										case tmedia_audio: self->media.rtp.ssrc.audio = SSRC_UINT; break;
+										case tmedia_video: self->media.rtp.ssrc.video = SSRC_UINT; break;
+									}
+									break;
+								}
 							case mstype_set_msrp_cb:
 								{	/* (tmedia_session_msrp_cb_f)TMEDIA_SESSION_MSRP_CB_F */
 									self->media.msrp.callback = va_arg(*app, tmedia_session_msrp_cb_f);
@@ -298,7 +349,7 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 					} /* while */
 					
 					break;
-				}
+				} /* case */
 
 			default:{
 				/* va_list will be unsafe => exit */
@@ -307,10 +358,11 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 				
 		} /* switch */
 	} /* while */
-	return 0;
 
 bail:
-	return -2;
+	TSK_OBJECT_SAFE_FREE(mgr);
+
+	return ret;
 }
 
 
@@ -506,6 +558,21 @@ const tsip_stack_handle_t* tsip_ssession_get_stack(const tsip_ssession_handle_t 
 	}
 }
 
+tmedia_codec_id_t tsip_ssession_get_codecs_neg(tsip_ssession_handle_t *self)
+{
+	int32_t codecs_neg = (int32_t)tmedia_codec_id_none;
+	if(self){
+		tmedia_session_mgr_t* mgr = tsip_session_get_mediamgr(self);
+		if(mgr){
+			(tmedia_session_mgr_get(mgr,
+				TMEDIA_SESSION_GET_INT32(mgr->type, "codecs-negotiated", &codecs_neg),
+				TMEDIA_SESSION_GET_NULL()));
+			TSK_OBJECT_SAFE_FREE(mgr);
+		}
+	}
+	return (tmedia_codec_id_t)codecs_neg;
+}
+
 int tsip_ssession_handle(const tsip_ssession_t *self, const struct tsip_action_s* action)
 {
 	int ret = -1;
@@ -576,6 +643,9 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		ss->media.qos.strength = tmedia_qos_strength_none;
 		ss->media.timers.refresher = tsk_strdup(tmedia_defaults_get_inv_session_refresher());
 		ss->media.timers.timeout = tmedia_defaults_get_inv_session_expires();
+		ss->media.codecs = tmedia_codec_id_all;
+		ss->media.bypass_encoding = tmedia_defaults_get_bypass_encoding();
+		ss->media.bypass_decoding = tmedia_defaults_get_bypass_decoding();
 
 		/* add the session to the stack */
 		if(ss->stack){
@@ -605,11 +675,19 @@ static tsk_object_t* tsip_ssession_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(ss->to);
 
 		TSK_FREE(ss->sigcomp_id);
+		TSK_FREE(ss->auth_ha1);
+		TSK_FREE(ss->auth_impi);
 
 		//=======
 		// Media
 		//=======
 		TSK_FREE(ss->media.timers.refresher);
+
+		//=======
+		// WebSocket
+		//=======
+		TSK_FREE(ss->ws.src.host);
+		TSK_FREE(ss->ws.src.proto);
 
 		TSK_DEBUG_INFO("*** SIP Session destroyed ***");
 	}

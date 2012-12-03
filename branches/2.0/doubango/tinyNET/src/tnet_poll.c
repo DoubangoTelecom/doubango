@@ -21,7 +21,7 @@
 */
 #include "tnet_poll.h"
 
-#if TNET_USE_POLL && !TNET_HAVE_POLL
+#if USE_POLL && (!HAVE_POLL || !HAVE_POLL_H)
 
 /**
  *

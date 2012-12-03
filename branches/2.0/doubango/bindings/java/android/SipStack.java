@@ -75,12 +75,20 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_setProxyCSCF(swigCPtr, this, fqdn, port, transport, ipversion);
   }
 
+  public boolean setLocalIP(String ip, String transport) {
+    return tinyWRAPJNI.SipStack_setLocalIP__SWIG_0(swigCPtr, this, ip, transport);
+  }
+
   public boolean setLocalIP(String ip) {
-    return tinyWRAPJNI.SipStack_setLocalIP(swigCPtr, this, ip);
+    return tinyWRAPJNI.SipStack_setLocalIP__SWIG_1(swigCPtr, this, ip);
+  }
+
+  public boolean setLocalPort(int port, String transport) {
+    return tinyWRAPJNI.SipStack_setLocalPort__SWIG_0(swigCPtr, this, port, transport);
   }
 
   public boolean setLocalPort(int port) {
-    return tinyWRAPJNI.SipStack_setLocalPort(swigCPtr, this, port);
+    return tinyWRAPJNI.SipStack_setLocalPort__SWIG_1(swigCPtr, this, port);
   }
 
   public boolean setEarlyIMS(boolean enabled) {
@@ -183,7 +191,7 @@ public class SipStack extends SafeObject {
     tinyWRAPJNI.SipStack_setCodecs(codecs.swigValue());
   }
 
-  public static void setCodecs_2(int codecs) {
+  public static void setCodecs_2(long codecs) {
     tinyWRAPJNI.SipStack_setCodecs_2(codecs);
   }
 

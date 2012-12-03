@@ -29,9 +29,6 @@ AC_PROG_MAKE_SET
 #		;;
 #esac
 
-# CFLAGS
-CFLAGS="${CFLAGS=}"
-
 #echo Setting up build environment for ${target_cpu}${target_os}
 
 ### ENABLE-DEBUG
@@ -48,8 +45,7 @@ AC_ARG_ENABLE(debug,
 	AC_MSG_RESULT(no)
   fi
 ],
-[CFLAGS="$CFLAGS -O0 -g3 -DDEBUG"
-	AC_MSG_RESULT(yes)])
+[])
 
 ### DEBUG-LEVEL
 AC_ARG_WITH(debug-level, 
@@ -73,10 +69,11 @@ AC_ARG_WITH(debug-level,
   fi
 ])
 
-
 AC_CHECK_FUNCS([stricmp strnicmp])
+AC_DEFINE(USE_POLL, 1, [Setting USE_POLL to 1 for backward compatibility])
+AC_CHECK_FUNCS([poll])
 
-AC_CHECK_HEADERS([net/if_types.h net/if_dl.h])
+AC_CHECK_HEADERS([net/if_types.h net/if_dl.h poll.h])
 
 AC_CHECK_FUNC(getifaddrs, AC_DEFINE(HAVE_GETIFADDRS, 1 ,[Define to 1 if you have the 'getifaddrs' function]))
 AH_TEMPLATE([HAVE_IFADDRS_H], [Define if <ifaddrs.h> header exist])
@@ -116,13 +113,113 @@ AH_TEMPLATE([TNET_HAVE_SA_LEN], [Define if sockaddr.sa_len exists])
 AC_CHECK_MEMBER([struct sockaddr.sa_len], AC_DEFINE(TNET_HAVE_SA_LEN, 1), AC_DEFINE(TNET_HAVE_SA_LEN, 0), [#include <netinet/in.h>])
 
 
-AM_CONDITIONAL(USE_LIBSRTP, false)
-AC_ARG_WITH(libsrtp,
-[  --with-libsrtp            Link against libsrtp library],
- [AC_DEFINE_UNQUOTED(USE_LIBSRTP, , USE_LIBSRTP)
+AM_CONDITIONAL(USE_SRTP, false)
+AC_ARG_WITH(srtp,
+[  --with-srtp            Link against libsrtp library],
+ [AC_DEFINE_UNQUOTED(HAVE_SRTP, 1, HAVE_SRTP)
  AC_SUBST(LIBSRTP_LIBADD, "-lsrtp")
- AM_CONDITIONAL(USE_LIBSRTP, true)], 
+ AM_CONDITIONAL(USE_SRTP, true)], 
  [ AC_SUBST(LIBSRTP_LIBADD, "")])
+
+AM_CONDITIONAL(USE_SSL, false)
+AC_ARG_WITH(ssl,
+[  --with-ssl            Link against OpenSSL libraries],
+ [AC_DEFINE_UNQUOTED(HAVE_OPENSSL, 1, HAVE_OPENSSL)
+ AC_SUBST(LIBSSL_LIBADD, "-lssl")
+ AM_CONDITIONAL(USE_SSL, true)], 
+ [ AC_SUBST(LIBSSL_LIBADD, "")])
+
+
+AM_CONDITIONAL(USE_FFMPEG, false)
+AC_ARG_WITH(ffmpeg,
+[  --with-ffmpeg            Link against ffmpeg libraries with H.263 and MP4V-ES enabled],
+ [AC_DEFINE_UNQUOTED(HAVE_FFMPEG, 1, HAVE_FFMPEG)
+ AC_SUBST(LIBFFMPEG_LIBADD, "-lavutil -lswscale -lavcodec")
+ AM_CONDITIONAL(USE_FFMPEG, true)], 
+ [ AC_SUBST(LIBFFMPEG_LIBADD, "")])
+
+AM_CONDITIONAL(USE_H264, false)
+AC_ARG_WITH(h264,
+[  --with-h264            Link against x264. Requires ffmpeg libraries with H.264 enabled],
+ [AC_DEFINE_UNQUOTED(HAVE_H264, 1, HAVE_H264)
+ AC_SUBST(LIBH264_LIBADD, "-lx264")
+ AM_CONDITIONAL(USE_H264, true)], 
+ [ AC_SUBST(LIBH264_LIBADD, "")])
+
+AM_CONDITIONAL(USE_VPX, false)
+AC_ARG_WITH(vpx,
+[  --with-vpx            Link against libvpx library],
+ [AC_DEFINE_UNQUOTED(HAVE_LIBVPX, 1, HAVE_LIBVPX)
+ AC_SUBST(LIBVPX_LIBADD, "-lvpx")
+ AM_CONDITIONAL(USE_VPX, true)], 
+ [ AC_SUBST(LIBVPX_LIBADD, "")])
+
+AM_CONDITIONAL(USE_YUV, false)
+AC_ARG_WITH(yuv,
+[  --with-yuv            Link against libyuv library],
+ [AC_DEFINE_UNQUOTED(HAVE_LIBYUV, 1, HAVE_LIBYUV)
+ AC_SUBST(LIBYUV_LIBADD, "-lyuv")
+ AM_CONDITIONAL(USE_YUV, true)], 
+ [ AC_SUBST(LIBYUV_LIBADD, "")])
+
+AM_CONDITIONAL(USE_AMR, false)
+AC_ARG_WITH(amr,
+[  --with-amr            Link against libopencore-amrnb library],
+ [AC_DEFINE_UNQUOTED(HAVE_OPENCORE_AMR, 1, HAVE_OPENCORE_AMR)
+ AC_SUBST(LIBAMR_LIBADD, "-lopencore-amrnb")
+ AM_CONDITIONAL(USE_AMR, true)], 
+ [ AC_SUBST(LIBAMR_LIBADD, "")])
+
+AM_CONDITIONAL(USE_SPEEX, false)
+AC_ARG_WITH(speex,
+[  --with-speex            Link against libspeex library],
+ [AC_DEFINE_UNQUOTED(HAVE_LIB_SPEEX, 1, HAVE_LIB_SPEEX)
+ AC_SUBST(LIBSPEEX_LIBADD, "-lspeex")
+ AM_CONDITIONAL(USE_SPEEX, true)], 
+ [ AC_SUBST(LIBSPEEX_LIBADD, "")])
+
+AM_CONDITIONAL(USE_SPEEXDSP, false)
+AC_ARG_WITH(speexdsp,
+[  --with-speexdsp            Link against libspeexdsp library],
+ [AC_DEFINE_UNQUOTED(HAVE_LIB_SPEEXDSP, 1, HAVE_LIB_SPEEXDSP)
+ AC_SUBST(LIBSPEEXDSP_LIBADD, "-lspeexdsp")
+ AM_CONDITIONAL(USE_SPEEXDSP, true)], 
+ [ AC_SUBST(LIBSPEEXDSP_LIBADD, "")])
+AC_ARG_ENABLE(speexresampler,
+[  --enable-speexresampler           Enable SPEEX RESAMPLER support (requires libspeexdsp)],
+ [AC_DEFINE_UNQUOTED(HAVE_SPEEX_RESAMPLER, 1, HAVE_SPEEX_RESAMPLER)],  )
+AC_ARG_ENABLE(speexjb,
+[  --enable-speexjb           Enable SPEEX JB support (requires libspeexdsp)],
+ [AC_DEFINE_UNQUOTED(HAVE_SPEEX_JB, 1, HAVE_SPEEX_JB)],  )
+AC_ARG_ENABLE(speexdenoiser,
+[  --enable-speexdenoiser           Enable SPEEX DENOISER support (requires libspeexdsp)],
+ [AC_DEFINE_UNQUOTED(HAVE_SPEEX_DENOISE, 1, HAVE_SPEEX_DENOISE)],  )
+
+
+AM_CONDITIONAL(USE_GSM, false)
+AC_ARG_WITH(gsm,
+[  --with-gsm            Link against libgsm library],
+ [AC_DEFINE_UNQUOTED(HAVE_LIBGSM, 1, HAVE_LIBGSM)
+ AC_SUBST(LIBGSM_LIBADD, "-lgsm")
+ AM_CONDITIONAL(USE_GSM, true)], 
+ [ AC_SUBST(LIBGSM_LIBADD, "")])
+
+
+AM_CONDITIONAL(USE_G729, false)
+AC_ARG_WITH(g729,
+[  --with-g729            Link against libg729b library],
+ [AC_DEFINE_UNQUOTED(HAVE_G729, 1, HAVE_G729)
+ AC_SUBST(LIBG729_LIBADD, "-lg729b")
+ AM_CONDITIONAL(USE_G729, true)], 
+ [ AC_SUBST(LIBG729_LIBADD, "")])
+
+AM_CONDITIONAL(USE_ILBC, false)
+AC_ARG_WITH(ilbc,
+[  --with-ilbc            Link against libiLBC library],
+ [AC_DEFINE_UNQUOTED(HAVE_ILBC, 1, HAVE_ILBC)
+ AC_SUBST(LIBILBC_LIBADD, "-liLBC")
+ AM_CONDITIONAL(USE_ILBC, true)], 
+ [ AC_SUBST(LIBILBC_LIBADD, "")])
 
 AC_OUTPUT(
 Makefile

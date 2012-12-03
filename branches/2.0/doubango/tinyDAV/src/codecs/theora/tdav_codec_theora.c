@@ -38,6 +38,7 @@
 
 #include "tinymedia/tmedia_params.h"
 
+#include "tsk_string.h"
 #include "tsk_buffer.h"
 #include "tsk_time.h"
 #include "tsk_params.h"
@@ -564,6 +565,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_theora_plugin_def_s =
 	&tdav_codec_theora_def_s,
 
 	tmedia_video,
+	tmedia_codec_id_theora,
 	"theora",
 	"Theora Codec",
 	TMEDIA_CODEC_FORMAT_THEORA,

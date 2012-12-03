@@ -71,7 +71,7 @@ TINYSIP_API int tsip_dialog_layer_shutdownAll(tsip_dialog_layer_t *self);
 tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type_t type, const tsip_ssession_t *ss);
 int tsip_dialog_layer_remove(tsip_dialog_layer_t *self, const tsip_dialog_t *dialog);
 
-int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const tsip_message_t* message);
+int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, tsip_message_t* message);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_dialog_layer_def_t;
 

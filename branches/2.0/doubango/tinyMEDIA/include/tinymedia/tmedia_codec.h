@@ -35,6 +35,7 @@
 
 #include "tsk_list.h"
 
+
 TMEDIA_BEGIN_DECLS
 
 /* =====
@@ -112,6 +113,59 @@ Must starts at 96 to be conform to RFC 5761 (rtcp-mux)
 
 #define TMEDIA_CODEC_FORMAT_MSRP						"*"
 
+
+
+// @tinyWRAP
+typedef enum tmedia_codec_id_e
+{
+	tmedia_codec_id_none = 0x00000000,
+	
+	tmedia_codec_id_amr_nb_oa = 0x00000001<<0,
+	tmedia_codec_id_amr_nb_be = 0x00000001<<1,
+	tmedia_codec_id_amr_wb_oa = 0x00000001<<2,
+	tmedia_codec_id_amr_wb_be = 0x00000001<<3,
+	tmedia_codec_id_gsm = 0x00000001<<4,
+	tmedia_codec_id_pcma = 0x00000001<<5,
+	tmedia_codec_id_pcmu = 0x00000001<<6,
+	tmedia_codec_id_ilbc = 0x00000001<<7,
+	tmedia_codec_id_speex_nb = 0x00000001<<8,
+	tmedia_codec_id_speex_wb = 0x00000001<<9,
+	tmedia_codec_id_speex_uwb = 0x00000001<<10,
+	tmedia_codec_id_bv16 = 0x00000001<<11,
+	tmedia_codec_id_bv32 = 0x00000001<<12,
+	tmedia_codec_id_opus = 0x00000001<<13,
+	tmedia_codec_id_g729ab = 0x00000001<<14,
+	tmedia_codec_id_g722 = 0x00000001<<15,
+	
+	/* room for new Audio codecs */
+	
+	tmedia_codec_id_h261 = 0x00010000<<0,
+	tmedia_codec_id_h263 = 0x00010000<<1,
+	tmedia_codec_id_h263p = 0x00010000<<2,
+	tmedia_codec_id_h263pp = 0x00010000<<3,
+	tmedia_codec_id_h264_bp = 0x00010000<<4,
+	tmedia_codec_id_h264_mp = 0x00010000<<5,
+	tmedia_codec_id_h264_hp = 0x00010000<<6,
+	tmedia_codec_id_h264_bp10 = tmedia_codec_id_h264_bp, // @deprecated
+	tmedia_codec_id_h264_bp20 = tmedia_codec_id_h264_bp, // @deprecated
+	tmedia_codec_id_h264_bp30 = tmedia_codec_id_h264_bp, // @deprecated
+	tmedia_codec_id_h264_svc = 0x00010000<<7,
+	tmedia_codec_id_theora = 0x00010000<<8,
+	tmedia_codec_id_mp4ves_es = 0x00010000<<9,
+	tmedia_codec_id_vp8 = 0x00010000<<10,
+
+	/* room for new Video codecs */
+
+	tmedia_codec_id_t140 = 0x00010000<<14,
+	tmedia_codec_id_red = 0x00010000<<15,
+
+
+	tmedia_codec_id_all = 0xffffffff,
+}
+tmedia_codec_id_t;
+
+
+
 /**Max number of plugins (codec types) we can create */
 #define TMED_CODEC_MAX_PLUGINS			0xFF
 
@@ -128,6 +182,7 @@ typedef int (*tmedia_codec_video_dec_cb_f)(const tmedia_video_decode_result_xt* 
 
 
 struct tmedia_param_s;
+struct tsdp_header_M_s;
 
 typedef enum tmedia_codec_action_e
 {
@@ -144,6 +199,8 @@ typedef struct tmedia_codec_s
 
 	//! the type of the codec
 	tmedia_type_t type;
+	//! the codec identifier
+	tmedia_codec_id_t id;
 	//! whether the codec is opened
 	tsk_bool_t opened;
 	//! whether the pay. type is dyn. or not
@@ -172,6 +229,8 @@ typedef struct tmedia_codec_plugin_def_s
 
 	//! the type of the codec
 	tmedia_type_t type;
+	//! the codec identifier
+	tmedia_codec_id_t codec_id;
 	//! the name of the codec. e.g. "G.711U" or "G.711A" etc using in the sdp.
 	const char* name;
 	//! full description
@@ -234,7 +293,7 @@ TINYMEDIA_API char* tmedia_codec_get_rtpmap(const tmedia_codec_t* self);
 TINYMEDIA_API tsk_bool_t tmedia_codec_sdp_att_match(const tmedia_codec_t* self, const char* att_name, const char* att_value);
 TINYMEDIA_API char* tmedia_codec_sdp_att_get(const tmedia_codec_t* self, const char* att_name);
 TINYMEDIA_API int tmedia_codec_removeAll_exceptThese(tmedia_codecs_L_t* codecs, const tmedia_codecs_L_t * codecs2keep);
-TINYMEDIA_API int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m);
+TINYMEDIA_API int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, struct tsdp_header_M_s* m);
 TINYMEDIA_API tmedia_codec_t* tmedia_codec_find_by_format(tmedia_codecs_L_t* codecs, const char* format);
 TINYMEDIA_API int tmedia_codec_parse_fmtp(const char* fmtp, unsigned* maxbr, unsigned* fps, unsigned *width, unsigned *height);
 TINYMEDIA_API int tmedia_codec_deinit(tmedia_codec_t* self);

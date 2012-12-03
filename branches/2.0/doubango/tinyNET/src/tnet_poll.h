@@ -34,13 +34,13 @@
 
 TNET_BEGIN_DECLS
 
-#if TNET_USE_POLL
+#if USE_POLL
 
 #include "tnet_types.h"
 
 typedef unsigned long tnet_nfds_t;
 
-#if TNET_HAVE_POLL
+#if HAVE_POLL
 
 typedef struct pollfd tnet_pollfd_t;
 
@@ -82,7 +82,7 @@ tnet_pollfd_t;
 
 int tnet_poll(tnet_pollfd_t fds[ ], tnet_nfds_t nfds, int timeout);
 
-#endif /* TNET_HAVE_POLL */
+#endif /* HAVE_POLL */
 
 #endif /* TNET_USE_POLL */
 

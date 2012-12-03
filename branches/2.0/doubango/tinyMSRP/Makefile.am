@@ -24,7 +24,7 @@ libtinyMSRP_la_SOURCES += src/headers/tmsrp_header.c\
 		src/headers/tmsrp_header_Success-Report.c\
 		src/headers/tmsrp_header_To-Path.c\
 		src/headers/tmsrp_header_Use-Path.c\
-		src/headers/tmsrp_header_WWW-Authenticate.o
+		src/headers/tmsrp_header_WWW-Authenticate.c
 	
 libtinyMSRP_la_SOURCES += src/parsers/tmsrp_parser_message.c\
 	src/parsers/tmsrp_parser_uri.c

@@ -52,6 +52,7 @@ typedef struct tdav_session_av_s
 	tmedia_type_t media_type;
 	tsk_bool_t use_avpf;
 	tsk_bool_t use_srtp;
+	uint32_t rtp_ssrc;
 
 	/* NAT Traversal context */
 	tnet_nat_context_handle_t* natt_ctx;

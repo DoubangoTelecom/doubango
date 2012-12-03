@@ -118,6 +118,9 @@ int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type)
 		self->type = type;
 		self->initialized = tsk_true;
 		self->bl = tmedia_defaults_get_bl();
+		self->codecs_allowed = tmedia_codec_id_all;
+		self->bypass_encoding = tmedia_defaults_get_bypass_encoding();
+		self->bypass_decoding = tmedia_defaults_get_bypass_decoding();
 		/* load associated codecs */
 		ret = _tmedia_session_load_codecs(self);
 	}
@@ -151,6 +154,65 @@ int tmedia_session_set(tmedia_session_t* self, ...)
 	}
 	va_end(ap);
 	return 0;
+}
+
+tsk_bool_t tmedia_session_set_2(tmedia_session_t* self, const tmedia_param_t* param)
+{
+	if(!self || !param){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_false;
+	}
+
+	if(param->plugin_type == tmedia_ppt_session){
+		if(param->value_type == tmedia_pvt_int32){
+			if(tsk_striequals(param->key, "codecs-supported")){
+				//if(self->M.lo){
+				//	TSK_DEBUG_WARN("Cannot change codec values at this stage");
+				//}
+				//else{
+					self->codecs_allowed = *((int32_t*)param->value);
+					return (_tmedia_session_load_codecs(self) == 0);
+				//}
+				return tsk_true;
+			}
+			else if(tsk_striequals(param->key, "bypass-encoding")){
+				self->bypass_encoding = *((int32_t*)param->value);
+				return tsk_true;
+			}
+			else if(tsk_striequals(param->key, "bypass-decoding")){
+				self->bypass_decoding = *((int32_t*)param->value);
+				return tsk_true;
+			}
+		}
+	}
+
+	return tsk_false;
+}
+
+tsk_bool_t tmedia_session_get(tmedia_session_t* self, tmedia_param_t* param)
+{
+	if(!self || !param){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_false;
+	}
+
+	if(param->plugin_type == tmedia_ppt_session){
+		if(param->value_type == tmedia_pvt_int32){
+			if(tsk_striequals(param->key, "codecs-negotiated")){ // negotiated codecs
+				tmedia_codecs_L_t* neg_codecs = tsk_object_ref(self->neg_codecs);
+				if(neg_codecs){
+					const tsk_list_item_t* item;
+					tsk_list_foreach(item, neg_codecs){
+						((int32_t*)param->value)[0] |= TMEDIA_CODEC(item->data)->id;
+					}
+					TSK_OBJECT_SAFE_FREE(neg_codecs);
+				}
+				return tsk_true;
+			}
+		}
+	}
+
+	return tsk_false;
 }
 
 /**@ingroup tmedia_session_group
@@ -367,12 +429,12 @@ tmedia_codecs_L_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp
 		
 		/* foreach codec */
 		tsk_list_foreach(it2, self->codecs){
-			if(!(codec = it2->data) || !codec->plugin){
+			if(!(codec = it2->data) || !codec->plugin || !(codec->id & self->codecs_allowed)){
 				continue;
 			}
 			
 			// Guard to avoid matching a codec more than once
-			// For example, H.264 codecs without profiles (Jetsi,Tiscali PC client) to distinguish them could match more than once
+			// For example, H.264 codecs without profiles (Jitsi, Tiscali PC client) to distinguish them could match more than once
 			if(matchingCodecs && tsk_list_find_object_by_pred(matchingCodecs, __pred_find_codec_by_format, codec)){
 				continue;
 			}
@@ -447,6 +509,22 @@ next:
 	return matchingCodecs;
 }
 
+int tmedia_session_set_onrtcp_cbfn(tmedia_session_t* self, const void* context, tmedia_session_rtcp_onevent_cb_f func)
+{
+	if(self && self->plugin && self->plugin->rtcp.set_onevent_cbfn){
+		return self->plugin->rtcp.set_onevent_cbfn(self, context, func);
+	}
+	return -1;
+}
+
+int tmedia_session_send_rtcp_event(tmedia_session_t* self, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media)
+{
+	if(self && self->plugin && self->plugin->rtcp.send_event){
+		return self->plugin->rtcp.send_event(self, event_type, ssrc_media);
+	}
+	return -1;
+}
+
 
 /**@ingroup tmedia_session_group
 * DeInitializes a media session.
@@ -489,10 +567,10 @@ int tmedia_session_audio_send_dtmf(tmedia_session_audio_t* self, uint8_t event)
 	return TMEDIA_SESSION(self)->plugin->audio.send_dtmf(TMEDIA_SESSION(self), event);
 }
 
-int tmedia_session_t140_set_ondata_cb(tmedia_session_t* self, const void* context, tmedia_session_t140_ondata_cb_f func)
+int tmedia_session_t140_set_ondata_cbfn(tmedia_session_t* self, const void* context, tmedia_session_t140_ondata_cb_f func)
 {
-	if(self && self->plugin && self->plugin->t140.set_ondata_cb){
-		return self->plugin->t140.set_ondata_cb(self, context, func);
+	if(self && self->plugin && self->plugin->t140.set_ondata_cbfn){
+		return self->plugin->t140.set_ondata_cbfn(self, context, func);
 	}
 	return -1;
 }
@@ -517,12 +595,20 @@ int _tmedia_session_load_codecs(tmedia_session_t* self)
 		return -1;
 	}
 
+	if(!self->codecs && !(self->codecs = tsk_list_create())){
+		TSK_DEBUG_ERROR("Failed to create new list");
+		return -1;
+	}
+
+	tsk_list_lock(self->codecs);
+
 	/* remove old codecs */
-	TSK_OBJECT_SAFE_FREE(self->codecs);
+	tsk_list_clear_items(self->codecs);
 
 	/* for each registered plugin create a session instance */
 	while((i < TMED_CODEC_MAX_PLUGINS) && (plugin = __tmedia_codec_plugins[i++])){
-		if((plugin->type & self->type)){
+		/* 'tmedia_codec_id_none' is used for fake codecs (e.g. dtmf or msrp) and should not be filtered beacuse of backward compatibility*/
+		if((plugin->type & self->type) && (plugin->codec_id == tmedia_codec_id_none || (plugin->codec_id & self->codecs_allowed))){
 			if((codec = tmedia_codec_create(plugin->format))){
 				if(!self->codecs){
 					self->codecs = tsk_list_create();
@@ -531,6 +617,9 @@ int _tmedia_session_load_codecs(tmedia_session_t* self)
 			}
 		}
 	}
+
+	tsk_list_unlock(self->codecs);
+
 	return 0;
 }
 
@@ -561,10 +650,10 @@ tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* 
 	/* load sessions (will allow us to generate lo) */
 	if(offerer){
 		mgr->offerer = tsk_true;
-		if(_tmedia_session_mgr_load_sessions(mgr)){
+		//if(_tmedia_session_mgr_load_sessions(mgr)){
 			/* Do nothing */
-			TSK_DEBUG_ERROR("Failed to load sessions");
-		}
+		//	TSK_DEBUG_ERROR("Failed to load sessions");
+		//}
 	}
 
 	return mgr;
@@ -589,7 +678,12 @@ int tmedia_session_mgr_set_media_type(tmedia_session_mgr_t* self, tmedia_type_t 
 */
 tmedia_session_t* tmedia_session_mgr_find(tmedia_session_mgr_t* self, tmedia_type_t type)
 {	
-	tmedia_session_t* session = (tmedia_session_t*)tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_type, &type);
+	tmedia_session_t* session;
+
+	tsk_list_lock(self->sessions);
+	session = (tmedia_session_t*)tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_type, &type);
+	tsk_list_unlock(self->sessions);
+
 	return tsk_object_ref(session);
 }
 
@@ -1377,12 +1471,12 @@ int tmedia_session_mgr_send_dtmf(tmedia_session_mgr_t* self, uint8_t event)
 	return ret;
 }
 
-int tmedia_session_mgr_set_t140_ondata_cb(tmedia_session_mgr_t* self, const void* context, tmedia_session_t140_ondata_cb_f func)
+int tmedia_session_mgr_set_t140_ondata_cbfn(tmedia_session_mgr_t* self, const void* context, tmedia_session_t140_ondata_cb_f func)
 {
 	tmedia_session_t* session;
 	int ret = -1;
 	if((session = tmedia_session_mgr_find(self, tmedia_t140))){
-		ret = tmedia_session_t140_set_ondata_cb(session, context, func);
+		ret = tmedia_session_t140_set_ondata_cbfn(session, context, func);
 		TSK_OBJECT_SAFE_FREE(session);
 	}
 	return ret;
@@ -1397,6 +1491,50 @@ int tmedia_session_mgr_send_t140_data(tmedia_session_mgr_t* self, enum tmedia_t1
 		TSK_OBJECT_SAFE_FREE(session);
 	}
 	return ret;
+}
+
+int tmedia_session_mgr_set_onrtcp_cbfn(tmedia_session_mgr_t* self, tmedia_type_t media_type, const void* context, tmedia_session_rtcp_onevent_cb_f fun)
+{
+	tmedia_session_t* session;
+	tsk_list_item_t *item;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invlid parameter");
+		return -1;
+	}
+
+	tsk_list_lock(self->sessions);
+	tsk_list_foreach(item, self->sessions){
+		if(!(session = item->data) || !(session->type & media_type)){
+			continue;
+		}
+		tmedia_session_set_onrtcp_cbfn(session, context, fun);
+	}
+	tsk_list_unlock(self->sessions);
+
+	return 0;
+}
+
+int tmedia_session_mgr_send_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t media_type, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media)
+{
+	tmedia_session_t* session;
+	tsk_list_item_t *item;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invlid parameter");
+		return -1;
+	}
+
+	tsk_list_lock(self->sessions);
+	tsk_list_foreach(item, self->sessions){
+		if(!(session = item->data) || !(session->type & media_type)){
+			continue;
+		}
+		tmedia_session_send_rtcp_event(session, event_type, ssrc_media);
+	}
+	tsk_list_unlock(self->sessions);
+
+	return 0;
 }
 
 int tmedia_session_mgr_send_file(tmedia_session_mgr_t* self, const char* path, ...)

@@ -455,7 +455,7 @@ int twrap_consumer_proxy_video_consume(tmedia_consumer_t* self, const void* buff
 					ret = videoConsumer->getCallback()->bufferCopied(nCopiedSize, size);
 				}
 				else{
-					ProxyVideoFrame* frame = new ProxyVideoFrame(buffer, size, const_cast<ProxyVideoConsumer*>(videoConsumer)->getDecodedWidth(), const_cast<ProxyVideoConsumer*>(videoConsumer)->getDecodedHeight());
+					ProxyVideoFrame* frame = new ProxyVideoFrame(buffer, size, const_cast<ProxyVideoConsumer*>(videoConsumer)->getDecodedWidth(), const_cast<ProxyVideoConsumer*>(videoConsumer)->getDecodedHeight(), proto_hdr);
 					ret = videoConsumer->getCallback()->consume(frame);
 					delete frame, frame = tsk_null;
 				}
@@ -745,12 +745,13 @@ bool ProxyVideoConsumer::registerPlugin()
 
 
 
-ProxyVideoFrame::ProxyVideoFrame(const void* pBufferPtr, unsigned nSize, unsigned nFrameWidth, unsigned nFrameHeight)
+ProxyVideoFrame::ProxyVideoFrame(const void* pBufferPtr, unsigned nSize, unsigned nFrameWidth, unsigned nFrameHeight, const tsk_object_t* pProtoHdr)
 {
 	m_pBufferPtr = pBufferPtr;
 	m_nBufferSize = nSize;
 	m_nFrameWidth = nFrameWidth;
 	m_nFrameHeight = nFrameHeight;
+	m_pProtoHdr = pProtoHdr;
 }
 
 ProxyVideoFrame::~ProxyVideoFrame()

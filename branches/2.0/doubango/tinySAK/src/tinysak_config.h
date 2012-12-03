@@ -105,6 +105,7 @@
 #	define HAVE_CLOCK_GETTIME				1
 #endif
 
+#include <string.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <stdarg.h>

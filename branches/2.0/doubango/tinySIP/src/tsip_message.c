@@ -536,6 +536,8 @@ static tsk_object_t* tsip_message_ctor(tsk_object_t *self, va_list * app)
 				/* Copy network information */
 				message->local_fd = request->local_fd;
 				message->remote_addr = request->remote_addr;
+				message->src_net_type = request->src_net_type;
+				message->dst_net_type = request->dst_net_type;
 
 				/*
 				RFC 3261 - 8.2.6.2 Headers and Tags
@@ -623,6 +625,8 @@ static tsk_object_t* tsip_message_dtor(tsk_object_t *self)
 		TSK_OBJECT_SAFE_FREE(message->headers);
 
 		TSK_FREE(message->sigcomp_id);
+
+		TSK_FREE(message->dst_address);
 	}
 	else TSK_DEBUG_ERROR("Null SIP message.");
 

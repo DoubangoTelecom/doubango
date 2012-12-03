@@ -289,7 +289,7 @@ static int tdav_session_t140_set_ro(tmedia_session_t* self, const tsdp_header_M_
 	return ret;
 }
 
-static int tdav_session_t140_set_ondata_cb(tmedia_session_t* self, const void* context, tmedia_session_t140_ondata_cb_f func)
+static int tdav_session_t140_set_ondata_cbfn(tmedia_session_t* self, const void* context, tmedia_session_t140_ondata_cb_f func)
 {
 	tdav_session_t140_t* t140 = (tdav_session_t140_t*)self;
 	tdav_session_av_t* base = (tdav_session_av_t*)self;
@@ -302,7 +302,7 @@ static int tdav_session_t140_set_ondata_cb(tmedia_session_t* self, const void* c
 	t140->cb_ondata.func = func;
 
 	if(base->consumer){
-		return tdav_consumer_t140_set_ondata_cb(TDAV_CONSUMER_T140(base->consumer), context, func);
+		return tdav_consumer_t140_set_ondata_cbfn(TDAV_CONSUMER_T140(base->consumer), context, func);
 	}
 	return -2;
 }
@@ -1035,7 +1035,7 @@ static const tmedia_session_plugin_def_t tdav_session_t140_plugin_def_s =
 
 	/* T.140 part */
 	{
-		tdav_session_t140_set_ondata_cb,
+		tdav_session_t140_set_ondata_cbfn,
 		tdav_session_t140_send_data
 	}
 };

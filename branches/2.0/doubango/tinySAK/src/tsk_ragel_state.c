@@ -42,7 +42,6 @@ void tsk_ragel_state_init(tsk_ragel_state_t *state, const char *data, tsk_size_t
 {
 	state->cs = 0;
 	state->tag_start = state->p = data;
-	state->tag_end = state->pe = state->p + size;
-	state->eof = 0;
+	state->eoh = state->eof = state->tag_end = state->pe = state->p + size;
 }
 

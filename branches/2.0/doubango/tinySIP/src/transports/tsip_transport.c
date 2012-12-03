@@ -24,8 +24,9 @@
  *
  */
 #include "tinysip/transports/tsip_transport.h"
-
 #include "tinysip/transports/tsip_transport_ipsec.h"
+
+#include "tinysip/transports/tsip_transport_layer.h"
 
 #include "tinysip/transactions/tsip_transac.h" /* TSIP_TRANSAC_MAGIC_COOKIE */
 
@@ -60,8 +61,25 @@ const tsip_transport_idx_xt* tsip_transport_get_by_name(const char* name)
 int tsip_transport_get_idx_by_name(const char* name)
 {
 	const tsip_transport_idx_xt* t_idx = tsip_transport_get_by_name(name);
-	return t_idx? t_idx->idx : -1;
+	return t_idx ? t_idx->idx : -1;
 }
+
+enum tnet_socket_type_e tsip_transport_get_type_by_name(const char* name)
+{
+	const tsip_transport_idx_xt* t_idx = tsip_transport_get_by_name(name);
+	return t_idx ? t_idx->type : tnet_socket_type_invalid;
+}
+
+/*== Predicate function to find a compartment by id */
+static int _pred_find_stream_peer_by_local_fd(const tsk_list_item_t *item, const void *local_fd)
+{
+	if(item && item->data){
+		const tsip_transport_stream_peer_t *peer = (const tsip_transport_stream_peer_t*)item->data;
+		return (peer->local_fd - *((tnet_fd_t*)local_fd));
+	}
+	return -1;
+}
+
 
 /* creates new SIP transport */
 tsip_transport_t* tsip_transport_create(tsip_stack_t* stack, const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description)
@@ -101,9 +119,32 @@ int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip
 			value depends on the transport.  It is 5060 for UDP, TCP and SCTP,
 			5061 for TLS.
 		*/
-		msg->firstVia = tsip_header_Via_create(TSIP_HEADER_VIA_PROTO_NAME_DEFAULT, TSIP_HEADER_VIA_PROTO_VERSION_DEFAULT,
-			self->via_protocol, ip, port);
+		msg->firstVia = tsip_header_Via_create(TSIP_HEADER_VIA_PROTO_NAME_DEFAULT, TSIP_HEADER_VIA_PROTO_VERSION_DEFAULT, self->via_protocol, ip, port);
 		TSIP_HEADER_ADD_PARAM(TSIP_HEADER(msg->firstVia), "rport", tsk_null);
+	}
+	else if(msg->update && self->stack->network.mode == tsip_stack_mode_webrtc2sip){
+		if(TNET_SOCKET_TYPE_IS_WS(msg->src_net_type) || TNET_SOCKET_TYPE_IS_WSS(msg->src_net_type)){
+			const tsip_transport_t* ws_transport = tsip_transport_layer_find_by_type(self->stack->layer_transport, msg->src_net_type);
+			if(ws_transport){
+				tsip_transport_stream_peer_t* peer = tsip_transport_find_stream_peer_by_local_fd(TSIP_TRANSPORT(ws_transport), msg->local_fd);
+				if(peer){
+					// hack the first Via as many servers fail to parse "WS" or "WSS" as valid transpors
+					if(tsk_striequals(msg->firstVia->transport, "WS") || tsk_striequals(msg->firstVia->transport, "WSS")){
+						TSIP_HEADER_ADD_PARAM(TSIP_HEADER(msg->firstVia), "ws-hacked", msg->firstVia->transport);
+						tsk_strupdate(&msg->firstVia->transport, "TCP");
+						tsk_strupdate(&msg->firstVia->host, peer->remote_ip);
+						msg->firstVia->port = peer->remote_port;
+					}
+					TSK_OBJECT_SAFE_FREE(peer);
+
+					// replace first Via with ours
+					tsip_message_add_header(msg, (const tsip_header_t *)msg->firstVia);
+					TSK_OBJECT_SAFE_FREE(msg->firstVia);
+					msg->firstVia = tsip_header_Via_create(TSIP_HEADER_VIA_PROTO_NAME_DEFAULT, TSIP_HEADER_VIA_PROTO_VERSION_DEFAULT, self->via_protocol, ip, port);
+					TSIP_HEADER_ADD_PARAM(TSIP_HEADER(msg->firstVia), "rport", tsk_null);
+				}
+			}
+		}
 	}
 	
 	/* updates the branch */
@@ -151,7 +192,7 @@ int tsip_transport_msg_update_aor(tsip_transport_t* self, tsip_message_t *msg)
 	transport_idx = self->stack->network.transport_idx_default;
 
 	/* retrieves the transport ip address and port */
-	if(!self->stack->network.aor.ip_[0] && !self->stack->network.aor.port_[transport_idx]){
+	if(!self->stack->network.aor.ip[0] && !self->stack->network.aor.port[transport_idx]){
 		tnet_ip_t ip = {0};
 		tnet_port_t port = 0;
 		
@@ -160,19 +201,30 @@ int tsip_transport_msg_update_aor(tsip_transport_t* self, tsip_message_t *msg)
 			return ret;
 		}
 		else{
-			((tsip_stack_t*)self->stack)->network.aor.ip_[transport_idx] = tsk_strdup(ip);
-			((tsip_stack_t*)self->stack)->network.aor.port_[transport_idx] = port;
+			((tsip_stack_t*)self->stack)->network.aor.ip[transport_idx] = tsk_strdup(ip);
+			((tsip_stack_t*)self->stack)->network.aor.port[transport_idx] = port;
 		}
 	}
 
 	/* === Host and port === */
 	if(msg->Contact && msg->Contact->uri){
 		tsk_strupdate(&(msg->Contact->uri->scheme), self->scheme);
-		tsk_strupdate(&(msg->Contact->uri->host), self->stack->network.aor.ip_[transport_idx]);
-		msg->Contact->uri->port = self->stack->network.aor.port_[transport_idx];
+		tsk_strupdate(&(msg->Contact->uri->host), self->stack->network.aor.ip[transport_idx]);
+		msg->Contact->uri->port = self->stack->network.aor.port[transport_idx];
 		
 		msg->Contact->uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(self->type) ? host_ipv6 : host_ipv4; /* for serializer ...who know? */
 		tsk_params_add_param(&msg->Contact->uri->params, "transport", self->protocol);
+
+		/* Add extra params for message received over WebSocket transport */
+		if((TNET_SOCKET_TYPE_IS_WS(msg->src_net_type) || TNET_SOCKET_TYPE_IS_WSS(msg->src_net_type)) && msg->local_fd > 0){
+			tnet_ip_t ws_src_ip;
+			tnet_port_t ws_src_port;
+			if(tnet_get_ip_n_port(msg->local_fd, tsk_false/*remote*/, &ws_src_ip, &ws_src_port) == 0){
+				tsk_params_add_param(&msg->Contact->uri->params, "ws-src-ip", ws_src_ip);
+				tsk_params_add_param_3(&msg->Contact->uri->params, "ws-src-port", (int64_t)ws_src_port);
+				tsk_params_add_param(&msg->Contact->uri->params, "ws-src-proto", TNET_SOCKET_TYPE_IS_WS(msg->src_net_type) ? "ws" : "wss");
+			}
+		}
 	}
 
 	return 0;
@@ -258,21 +310,30 @@ tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t lo
 	uint64_t data_size = 1 + 1 + size;
 	uint64_t lsize = (uint64_t)size;
 	uint8_t* pws_snd_buffer;
+	tsip_transport_stream_peer_t* peer;
+	tsk_size_t ret;
+
+	if(!(peer = tsip_transport_find_stream_peer_by_local_fd(TSIP_TRANSPORT(self), local_fd))){
+		TSK_DEBUG_ERROR("Failed to find peer with local fd equal to %d", local_fd);
+		return 0;
+	}
+
 	if(lsize > 0x7D && lsize <= 0xFFFF){
 		data_size += 2;
 	}
 	else if(lsize > 0xFFFF){
 		data_size += 8;
 	}
-	if(self->ws_snd_buffer_size < data_size){
-		if(!(TSIP_TRANSPORT(self)->ws_snd_buffer = tsk_realloc(TSIP_TRANSPORT(self)->ws_snd_buffer, (tsk_size_t)data_size))){
+	if(peer->ws_snd_buffer_size < data_size){
+		if(!(peer->ws_snd_buffer = tsk_realloc(peer->ws_snd_buffer, (tsk_size_t)data_size))){
 			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %llu", data_size);
-			TSIP_TRANSPORT(self)->ws_snd_buffer_size = 0;
+			peer->ws_snd_buffer_size = 0;
+			TSK_OBJECT_SAFE_FREE(peer);
 			return 0;
 		}
-		TSIP_TRANSPORT(self)->ws_snd_buffer_size = data_size;
+		peer->ws_snd_buffer_size = data_size;
 	}
-	pws_snd_buffer = (uint8_t*)TSIP_TRANSPORT(self)->ws_snd_buffer;
+	pws_snd_buffer = (uint8_t*)peer->ws_snd_buffer;
 
 	pws_snd_buffer[0] = 0x82;
 	if(lsize <= 0x7D){
@@ -300,7 +361,11 @@ tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t lo
 	
 	memcpy(pws_snd_buffer, pdata, (size_t)lsize);
 
-	return tnet_transport_send(self->net_transport, local_fd, self->ws_snd_buffer, (tsk_size_t)data_size);
+	ret = tnet_transport_send(self->net_transport, local_fd, peer->ws_snd_buffer, (tsk_size_t)data_size);
+
+	TSK_OBJECT_SAFE_FREE(peer);
+
+	return ret;
 }
 
 /* sends a request 
@@ -314,11 +379,17 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 
 		/* Add Via and update AOR, IPSec headers, SigComp ...
 		* ACK sent from the transaction layer will contains a Via header and should not be updated 
-		* CANCEL will have the same Via and Contact headers as the request it cancel */
-		if(TSIP_MESSAGE_IS_REQUEST(msg) && (!TSIP_REQUEST_IS_ACK(msg) || (TSIP_REQUEST_IS_ACK(msg) && !msg->firstVia)) && !TSIP_REQUEST_IS_CANCEL(msg)){
-			tsip_transport_addvia(self, branch, msg); /* should be done before tsip_transport_msg_update() which could use the Via header */
-			tsip_transport_msg_update_aor((tsip_transport_t*)self, msg); /* AoR */
-			tsip_transport_msg_update(self, msg); /* IPSec, SigComp, ... */
+		* CANCEL will have the same Via and Contact headers as the request it cancel
+		* Any request received from WS/WSS transport layer have to be updated regardless above rules
+		*/
+		if(TSIP_MESSAGE_IS_REQUEST(msg)){
+			const tsk_bool_t update = ( (!TSIP_REQUEST_IS_ACK(msg) || (TSIP_REQUEST_IS_ACK(msg) && !msg->firstVia)) && !TSIP_REQUEST_IS_CANCEL(msg) )
+				|| ( TNET_SOCKET_TYPE_IS_WS(msg->src_net_type) || TNET_SOCKET_TYPE_IS_WSS(msg->src_net_type) );
+			if(update){
+				tsip_transport_addvia(self, branch, msg); /* should be done before tsip_transport_msg_update() which could use the Via header */
+				tsip_transport_msg_update_aor((tsip_transport_t*)self, msg); /* AoR */
+				tsip_transport_msg_update(self, msg); /* IPSec, SigComp, ... */
+			}
 		}
 		else if(TSIP_MESSAGE_IS_RESPONSE(msg)){
 			/* AoR for responses which have a contact header (e.g. 183/200 INVITE) */
@@ -378,7 +449,18 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 
 			/* === Send the message === */
 			if(TNET_SOCKET_TYPE_IS_WS(self->type) || TNET_SOCKET_TYPE_IS_WSS(self->type)){
-				ret = tsip_transport_send_raw_ws(self, msg->local_fd, buffer->data, buffer->size);
+				//if(!TNET_SOCKET_TYPE_IS_WS(msg->net_type) && !TNET_SOCKET_TYPE_IS_WSS(msg->net_type)){
+					// message not received over WS/WS tranport but have to be sent over WS/WS
+					tsip_transport_stream_peer_t* peer = tsip_transport_find_stream_peer_by_remote_address(TSIP_TRANSPORT(self), destIP, destPort);
+					if(peer){
+						ret = tsip_transport_send_raw_ws(self, peer->local_fd, buffer->data, buffer->size);
+						TSK_OBJECT_SAFE_FREE(peer);
+					}
+					else if(msg->local_fd > 0)
+				//}
+				//else{
+					ret = tsip_transport_send_raw_ws(self, msg->local_fd, buffer->data, buffer->size);
+				//}
 			}
 			else if(TNET_SOCKET_TYPE_IS_IPSEC(self->type)){
 				tnet_fd_t fd = tsip_transport_ipsec_getFD(TSIP_TRANSPORT_IPSEC(self), TSIP_MESSAGE_IS_REQUEST(msg));
@@ -424,9 +506,9 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, tsk_bool_t lr)
 			tsk_sprintf(&uristring, "%s:%s%s%s:%d;%s;transport=%s",
 				self->scheme,
 				ipv6 ? "[" : "",
-				((tsip_stack_t*)self->stack)->network.aor.ip_[self->idx],
+				((tsip_stack_t*)self->stack)->network.aor.ip[self->idx],
 				ipv6 ? "]" : "",
-				((tsip_stack_t*)self->stack)->network.aor.port_[self->idx],
+				((tsip_stack_t*)self->stack)->network.aor.port[self->idx],
 				lr ? "lr" : "",
 				self->protocol);
 			if(uristring){
@@ -441,6 +523,117 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, tsk_bool_t lr)
 	return tsk_null;
 }
 
+int tsip_transport_add_stream_peer(tsip_transport_t *self, tnet_fd_t local_fd)
+{
+	tsip_transport_stream_peer_t* peer = tsk_null;
+
+	if(!self || local_fd < 0){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	if(tsip_transport_have_stream_peer_with_local_fd(self, local_fd)){
+		// could happen if the closed socket haven't raise "close event" yet and new own added : Windows only
+		tsip_transport_remove_stream_peer_by_local_fd(self, local_fd);
+	}
+
+	if(!(peer = tsk_object_new(tsip_transport_stream_peer_def_t))){
+		TSK_DEBUG_ERROR("Failed to create network stream peer");
+		return -1;
+	}
+
+	peer->local_fd = local_fd;
+
+	// remote ip and port only required when running in server mode to simulate SIP outbound
+	if(TSIP_STACK_MODE_IS_SERVER(self->stack)){
+		if(tnet_get_ip_n_port(local_fd, tsk_false/*remote*/, &peer->remote_ip, &peer->remote_port) != 0){
+			TSK_DEBUG_ERROR("Failed to get peer ip and address");
+		}
+	}
+	
+	tsk_list_lock(self->stream_peers);
+	tsk_list_push_back_data(self->stream_peers, &peer);
+	tsk_list_unlock(self->stream_peers);
+
+	TSK_OBJECT_SAFE_FREE(peer);
+	return 0;
+}
+
+// up to the caller to release the returned object
+tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_local_fd(tsip_transport_t *self, tnet_fd_t local_fd)
+{
+	tsip_transport_stream_peer_t* peer = tsk_null;
+	tsk_list_item_t* item;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	tsk_list_lock(self->stream_peers);
+	tsk_list_foreach(item, self->stream_peers){
+		if(((tsip_transport_stream_peer_t*)item->data)->local_fd == local_fd){
+			peer = tsk_object_ref(item->data);
+			break;
+		}
+	}
+	tsk_list_unlock(self->stream_peers);
+	return peer;
+}
+
+// up to the caller to release the returned object
+tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_remote_address(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port)
+{
+	tsip_transport_stream_peer_t* peer = tsk_null;
+	tsk_list_item_t* item;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	tsk_list_lock(self->stream_peers);
+	tsk_list_foreach(item, self->stream_peers){
+		if(((tsip_transport_stream_peer_t*)item->data)->remote_port == remote_port && tsk_striequals(((tsip_transport_stream_peer_t*)item->data)->remote_ip, remote_ip)){
+			peer = tsk_object_ref(item->data);
+			break;
+		}
+	}
+	tsk_list_unlock(self->stream_peers);
+	return peer;
+}
+
+tsk_bool_t tsip_transport_have_stream_peer_with_remote_address(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port)
+{
+	if(self && remote_ip){
+		tsip_transport_stream_peer_t* peer = tsip_transport_find_stream_peer_by_remote_address(self, remote_ip, remote_port);
+		if(peer){
+			TSK_OBJECT_SAFE_FREE(peer);
+			return tsk_true;
+		}
+	}
+	return tsk_false;
+}
+
+tsk_bool_t tsip_transport_have_stream_peer_with_local_fd(tsip_transport_t *self, tnet_fd_t local_fd)
+{
+	tsip_transport_stream_peer_t* peer =  tsip_transport_find_stream_peer_by_local_fd(self, local_fd);
+	tsk_bool_t ret = (peer != tsk_null);
+	TSK_OBJECT_SAFE_FREE(peer);
+	return ret;
+}
+
+int tsip_transport_remove_stream_peer_by_local_fd(tsip_transport_t *self, tnet_fd_t local_fd)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	tsk_list_lock(self->stream_peers);
+	tsk_list_remove_item_by_pred(self->stream_peers, _pred_find_stream_peer_by_local_fd, &local_fd);
+	tsk_list_unlock(self->stream_peers);
+
+	return 0;
+}
 
 int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const struct tsip_stack_s *stack, const char *host, tnet_port_t port, const char* description)
 {
@@ -479,7 +672,7 @@ int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const s
 		}
 
 		/* Stream buffer */
-		self->buff_stream = tsk_buffer_create_null();
+		self->stream_peers = tsk_list_create();
 	}
 	else{
 		self->protocol = "udp";
@@ -499,11 +692,7 @@ int tsip_transport_deinit(tsip_transport_t* self)
 	}
 
 	TSK_OBJECT_SAFE_FREE(self->net_transport);
-	TSK_OBJECT_SAFE_FREE(self->buff_stream);
-	TSK_SAFE_FREE(self->ws_rcv_buffer);
-	self->ws_rcv_buffer_size = 0;
-	TSK_SAFE_FREE(self->ws_snd_buffer);
-	self->ws_snd_buffer_size = 0;
+	TSK_OBJECT_SAFE_FREE(self->stream_peers);
 
 	self->initialized = 0;
 	return 0;
@@ -530,7 +719,8 @@ static tsk_object_t* tsip_transport_ctor(tsk_object_t * self, va_list * app)
 		const char *description = va_arg(*app, const char*);
 		
 		if(tsip_transport_init(transport, type, stack, host, port, description)){
-			// Print error?
+			TSK_DEBUG_ERROR("Failed to initialize transport");
+			return tsk_null;
 		}
 	}
 	return self;
@@ -566,3 +756,49 @@ static const tsk_object_def_t tsip_transport_def_s =
 };
 const tsk_object_def_t *tsip_transport_def_t = &tsip_transport_def_s;
 
+
+
+
+//========================================================
+//	SIP transport stream peer object definition
+//
+static tsk_object_t* tsip_transport_stream_peer_ctor(tsk_object_t * self, va_list * app)
+{
+	tsip_transport_stream_peer_t *peer = self;
+	if(peer){
+		peer->buff_stream = tsk_buffer_create_null();
+	}
+	return self;
+}
+
+static tsk_object_t* tsip_transport_stream_peer_dtor(tsk_object_t * self)
+{ 
+	tsip_transport_stream_peer_t *peer = self;
+	if(peer){
+		TSK_OBJECT_SAFE_FREE(peer->buff_stream);
+		TSK_SAFE_FREE(peer->ws_rcv_buffer);
+		peer->ws_rcv_buffer_size = 0;
+		TSK_SAFE_FREE(peer->ws_snd_buffer);
+		peer->ws_snd_buffer_size = 0;
+	}
+	return self;
+}
+
+static int tsip_transport_stream_peer_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
+{
+	const tsip_transport_stream_peer_t *peer1 = obj1;
+	const tsip_transport_stream_peer_t *peer2 = obj2;
+	if(peer1 && peer2){
+		return (peer1->local_fd - peer2->local_fd);
+	}
+	return -1;
+}
+
+static const tsk_object_def_t tsip_transport_stream_peer_def_s = 
+{
+	sizeof(tsip_transport_stream_peer_t),
+	tsip_transport_stream_peer_ctor, 
+	tsip_transport_stream_peer_dtor,
+	tsip_transport_stream_peer_cmp, 
+};
+const tsk_object_def_t *tsip_transport_stream_peer_def_t = &tsip_transport_stream_peer_def_s;

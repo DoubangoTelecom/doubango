@@ -120,7 +120,7 @@ static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia
 	}
 	transport_idx = TSIP_DIALOG_GET_STACK(self)->network.transport_idx_default;
 	if(!self->ice.ctx_audio && (media_type & tmedia_audio)){
-		self->ice.ctx_audio = tnet_ice_ctx_create(self->ice.is_jingle, TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type_[transport_idx]), 
+		self->ice.ctx_audio = tnet_ice_ctx_create(self->ice.is_jingle, TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type[transport_idx]), 
 					self->use_rtcp, tsk_false, tsip_dialog_invite_ice_audio_callback, self);
 		if(!self->ice.ctx_audio){
 			TSK_DEBUG_ERROR("Failed to create ICE audio context");
@@ -130,7 +130,7 @@ static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia
 		tnet_ice_ctx_set_rtcpmux(self->ice.ctx_audio, self->use_rtcpmux);
 	}
 	if(!self->ice.ctx_video && (media_type & tmedia_video)){
-		self->ice.ctx_video = tnet_ice_ctx_create(self->ice.is_jingle, TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type_[transport_idx]), 
+		self->ice.ctx_video = tnet_ice_ctx_create(self->ice.is_jingle, TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type[transport_idx]), 
 					self->use_rtcp, tsk_true, tsip_dialog_invite_ice_video_callback, self);
 		if(!self->ice.ctx_video){
 			TSK_DEBUG_ERROR("Failed to create ICE video context");
@@ -434,7 +434,7 @@ static int tsip_dialog_invite_ice_callback(const tnet_ice_event_t *e)
 
 	TSK_DEBUG_INFO("ICE callback: %s", e->phrase);
 
-	dialog = (tsip_dialog_invite_t *)e->userdata;
+	dialog = tsk_object_ref(TSK_OBJECT(e->userdata));
 
 	// Do not lock: caller is thread safe
 
@@ -466,6 +466,8 @@ static int tsip_dialog_invite_ice_callback(const tnet_ice_event_t *e)
 				break;
 			}
 	}
+
+	TSK_OBJECT_SAFE_FREE(dialog);
 
 	return ret;
 }

@@ -1,8 +1,8 @@
 lib_LTLIBRARIES         = libtinyRTP.la
-libtinyRTP_la_LIBADD = ../tinySAK/libtinySAK.la ../tinyNET/libtinyNET.la 
-libtinyRTP_la_CPPFLAGS = -I../tinySAK/src -I../tinyNET/src -Iinclude
+libtinyRTP_la_LIBADD = ../tinySAK/libtinySAK.la ../tinyNET/libtinyNET.la ../tinyMEDIA/libtinyMEDIA.la
+libtinyRTP_la_CPPFLAGS = -I../tinySAK/src -I../tinyNET/src -I../tinyMEDIA/include -Iinclude
 
-if USE_LIBSRTP
+if USE_SRTP
 libtinyRTP_la_LIBADD += ${LIBSRTP_LIBADD}
 libtinyRTP_la_CPPFLAGS += -DHAVE_SRTP=1
 endif

@@ -129,9 +129,9 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 	if(!self->msession_mgr){
 		int32_t transport_idx = TSIP_DIALOG_GET_STACK(self)->network.transport_idx_default;
 		self->msession_mgr = tmedia_session_mgr_create(action ? action->media.type : tmedia_all,
-			TSIP_DIALOG_GET_STACK(self)->network.local_ip_[transport_idx], TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type_[transport_idx]), tsk_true);
+			TSIP_DIALOG_GET_STACK(self)->network.local_ip[transport_idx], TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type[transport_idx]), tsk_true);
 		if(TSIP_DIALOG_GET_STACK(self)->natt.ctx){
-			ret = tmedia_session_mgr_set_natt_ctx(self->msession_mgr, TSIP_DIALOG_GET_STACK(self)->natt.ctx, TSIP_DIALOG_GET_STACK(self)->network.aor.ip_[transport_idx]);
+			ret = tmedia_session_mgr_set_natt_ctx(self->msession_mgr, TSIP_DIALOG_GET_STACK(self)->natt.ctx, TSIP_DIALOG_GET_STACK(self)->network.aor.ip[transport_idx]);
 		}
 		
 		ret = tmedia_session_mgr_set_ice_ctx(self->msession_mgr, self->ice.ctx_audio, self->ice.ctx_video);

@@ -48,7 +48,7 @@ typedef struct tsip_transac_nist
 }
 tsip_transac_nist_t;
 
-tsip_transac_nist_t* tsip_transac_nist_create(tsk_bool_t reliable, int32_t cseq_value, const char* cseq_method, const char* callid, tsip_dialog_t* dialog);
+tsip_transac_nist_t* tsip_transac_nist_create(int32_t cseq_value, const char* cseq_method, const char* callid, tsip_transac_dst_t* dst);
 int tsip_transac_nist_start(tsip_transac_nist_t *self, const tsip_request_t* request);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_transac_nist_def_t;

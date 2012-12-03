@@ -35,7 +35,7 @@ typedef struct trtp_rtcp_report_fb_s
 	TRTP_DECLARE_RTCP_PACKET;
 
 	uint32_t ssrc_sender; /* SSRC of packet sender */
-	uint32_t ssrc_media_src; /* SSRC of media source */
+	uint32_t ssrc_media; /* SSRC of media source */
 }
 trtp_rtcp_report_fb_t;
 

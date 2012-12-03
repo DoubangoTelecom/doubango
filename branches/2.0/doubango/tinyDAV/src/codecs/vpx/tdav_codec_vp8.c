@@ -40,6 +40,7 @@
 
 #include "tinymedia/tmedia_params.h"
 
+#include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_time.h"
 #include "tsk_debug.h"
@@ -554,6 +555,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_vp8_plugin_def_s =
 	&tdav_codec_vp8_def_s,
 
 	tmedia_video,
+	tmedia_codec_id_vp8,
 	"VP8",
 	"VP8 codec",
 	TMEDIA_CODEC_FORMAT_VP8,

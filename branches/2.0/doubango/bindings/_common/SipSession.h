@@ -43,9 +43,9 @@ class T140CallbackData{
 #endif
 	virtual ~T140CallbackData(){}
 
-	enum tmedia_t140_data_type_e getType(){ return m_eType; }
-	unsigned getSize(){ return m_nSize; }
-	unsigned getData(void* pOutput, unsigned nMaxsize){
+	inline enum tmedia_t140_data_type_e getType()const{ return m_eType; }
+	inline unsigned getSize()const{ return m_nSize; }
+	inline unsigned getData(void* pOutput, unsigned nMaxsize)const{
 		unsigned nRetsize = 0;
 		if(pOutput && nMaxsize && m_pPtr){
 			nRetsize = (m_nSize > nMaxsize) ? nMaxsize : m_nSize;
@@ -67,6 +67,30 @@ public:
 	virtual ~T140Callback(){}
 	virtual int ondata(const T140CallbackData* pData){ return 0; }
 };
+
+#if !defined(SWIG)
+class RtcpCallbackData{
+	public:
+	RtcpCallbackData(enum tmedia_rtcp_event_type_e event_type, uint32_t ssrc_media){
+		m_eType = event_type;
+		m_nSSRC = ssrc_media;
+	}
+	virtual ~RtcpCallbackData(){}
+	inline enum tmedia_rtcp_event_type_e getType()const{ return m_eType; }
+	inline uint32_t getSSRC()const{ return m_nSSRC; }
+	private:
+		enum tmedia_rtcp_event_type_e m_eType;
+		uint32_t m_nSSRC;
+};
+
+class RtcpCallback
+{
+public:
+	RtcpCallback() {}
+	virtual ~RtcpCallback(){}
+	virtual int onevent(const RtcpCallbackData* e){ return 0; }
+};
+#endif /* #if !defined(SWIG) */
 
 
 
@@ -95,9 +119,13 @@ public:
 	bool setSilentHangup(bool silent);
 	bool addSigCompCompartment(const char* compId);
 	bool removeSigCompCompartment();
+#if !defined(SWIG)
+	bool setAuth(const char* authHa1, const char* authIMPI);
+#endif
 	unsigned getId()const;
 
 #if !defined(SWIG)
+	bool setWebSocketSrc(const char* host, int32_t port, const char* proto);
 	const SipStack* getStack() const;
 #endif
 	
@@ -151,7 +179,11 @@ public: /* Public functions */
 
 	bool call(const char* remoteUriString, twrap_media_type_t media, ActionConfig* config=tsk_null);
 	bool call(const SipUri* remoteUri, twrap_media_type_t media, ActionConfig* config=tsk_null);
-	
+#if !defined(SWIG)
+	bool setSupportedCodecs(int32_t codecs);
+	int32_t getNegotiatedCodecs();
+	bool setMediaSSRC(twrap_media_type_t media, uint32_t ssrc);
+#endif
 	bool setSessionTimer(unsigned timeout, const char* refresher);
 	bool set100rel(bool enabled);
 	bool setRtcp(bool enabled);
@@ -168,12 +200,17 @@ public: /* Public functions */
 	bool sendT140Data(enum tmedia_t140_data_type_e data_type, const void* data_ptr = NULL, unsigned data_size = 0);
 	bool setT140Callback(const T140Callback* pT140Callback);
 #if !defined(SWIG)
+	bool sendRtcpEvent(enum tmedia_rtcp_event_type_e event_type, twrap_media_type_t media_type, uint32_t ssrc_media);
+	bool setRtcpCallback(const RtcpCallback* pRtcpCallback, twrap_media_type_t media_type);
 	const T140Callback* getT140Callback() const;
 	static int t140OnDataCallback(const void* context, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);
-#endif
+	const RtcpCallback* getRtcpCallback() const;
+	static int rtcpOnCallback(const void* context, enum tmedia_rtcp_event_type_e event_type, uint32_t ssrc_media);
+#endif /* #if !defined(SWIG) */
 
 private:
 	const T140Callback* m_pT140Callback;
+	const RtcpCallback* m_pRtcpCallback;
 };
 
 /* ======================== MsrpSession ========================*/

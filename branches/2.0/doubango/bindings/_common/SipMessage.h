@@ -59,6 +59,7 @@ public:
 	unsigned getSipContent(void* output, unsigned maxsize);
 #if !defined(SWIG)
 	const void* getSipContentPtr();
+	const tsip_message_t* getWrappedSipMessage(){ return m_pSipMessage; }
 #endif
 	const SdpMessage* getSdpMessage();
 

@@ -33,6 +33,7 @@
 #include "tinymedia/tmedia_jitterbuffer.h"
 #include "tinyrtp/rtp/trtp_rtp_header.h"
 
+#include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_time.h"
 #include "tsk_debug.h"

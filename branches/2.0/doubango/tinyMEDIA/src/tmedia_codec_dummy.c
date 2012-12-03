@@ -29,6 +29,7 @@
  */
 #include "tinymedia/tmedia_codec_dummy.h"
 
+#include "tsk_string.h"
 #include "tsk_debug.h"
 
 //=================================================================================================
@@ -80,6 +81,7 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcmu_plugin_def_s =
 	&tmedia_codec_dpcmu_def_s,
 
 	tmedia_audio,
+	tmedia_codec_id_pcmu,
 	"G.711u",
 	"Dummy G.711u codec",
 	TMEDIA_CODEC_FORMAT_G711u,
@@ -154,6 +156,7 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcma_plugin_def_s =
 	&tmedia_codec_dpcma_def_s,
 
 	tmedia_audio,
+	tmedia_codec_id_pcma,
 	"G.711a",
 	"Dummy G.711a codec",
 	TMEDIA_CODEC_FORMAT_G711a,
@@ -248,6 +251,7 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dh263_plugin_def_s =
 	&tmedia_codec_dh263_def_s,
 
 	tmedia_video,
+	tmedia_codec_id_h263,
 	"H263",
 	"Dummy H.263-1996 codec",
 	TMEDIA_CODEC_FORMAT_H263,
@@ -341,6 +345,7 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dh264_plugin_def_s =
 	&tmedia_codec_dh264_def_s,
 
 	tmedia_video,
+	tmedia_codec_id_h264_bp,
 	"H264",
 	"Dummy H.264 (base profile 10) codec",
 	TMEDIA_CODEC_FORMAT_H264_BP,

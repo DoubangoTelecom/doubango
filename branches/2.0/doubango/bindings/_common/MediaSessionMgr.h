@@ -124,6 +124,15 @@ public:
 	static bool defaultsSetRtcpMuxEnabled(bool enabled);
 	static bool defaultsGetRtcpMuxEnabled();
 	static bool defaultsSetIceEnabled(bool ice_enabled);
+	static bool defaultsSetByPassEncoding(bool enabled);
+	static bool defaultsGetByPassEncoding();
+	static bool defaultsSetByPassDecoding(bool enabled);
+	static bool defaultsGetByPassDecoding();
+	static bool defaultsSetVideoJbEnabled(bool enabled);
+	static bool defaultsGetVideoJbEnabled(bool enabled);
+	static bool defaultsSetRtpBuffSize(unsigned buffSize);
+	static unsigned defaultsGetRtpBuffSize();
+	static bool defaultsSetAvpfTail(unsigned tail_min, unsigned tail_max);
 
 private:
 	tmedia_session_mgr_t* m_pWrappedMgr;

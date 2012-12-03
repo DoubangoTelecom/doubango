@@ -38,15 +38,17 @@
 #include "tsk_thread.h"
 
 #ifndef TNET_CIPHER_LIST
-#	define TNET_CIPHER_LIST "AES128-SHA"
+#	define TNET_CIPHER_LIST "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH"
 #endif
 
-#if TNET_HAVE_OPENSSL_H || HAVE_OPENSSL_H
+#if HAVE_OPENSSL
 #	include <openssl/ssl.h>
 #endif
 
 #define TNET_TLS_TIMEOUT		2000
 #define TNET_TLS_RETRY_COUNT	5
+
+SSL_CTX *ssl_ctx = tsk_null;
 
 typedef struct tnet_tls_socket_s
 {
@@ -61,7 +63,7 @@ typedef struct tnet_tls_socket_s
 	char* tlsfile_pbk;
 	char* password; /* password for the private vkey */
 
-#if TNET_HAVE_OPENSSL_H || HAVE_OPENSSL_H
+#if HAVE_OPENSSL
 	/* SSL */
 	SSL_METHOD *ssl_meth;
 	SSL_CTX *ssl_ctx;
@@ -103,21 +105,20 @@ int tnet_tls_socket_isok(const tnet_tls_socket_handle_t* self)
 
 int tnet_tls_socket_connect(tnet_tls_socket_handle_t* self)
 {
-#if !TNET_HAVE_OPENSSL_H && !HAVE_OPENSSL_H
+#if !HAVE_OPENSSL
 	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
 	int ret = -1;
-	tnet_tls_socket_t* socket;
+	tnet_tls_socket_t* socket = self;
 #if defined(DEBUG) || defined(_DEBUG)
 	X509* svr_cert;
 #endif
 
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	
-	socket = self;
 
 	if(!socket->initialized){
 		TSK_DEBUG_ERROR("TLS socket not properly initialized.");
@@ -152,21 +153,83 @@ int tnet_tls_socket_connect(tnet_tls_socket_handle_t* self)
 #endif
 }
 
-int tnet_tls_socket_write(tnet_tls_socket_handle_t* self, const void* data, tsk_size_t size)
+int tnet_tls_socket_accept(tnet_tls_socket_handle_t* self)
 {
-#if !TNET_HAVE_OPENSSL_H && !HAVE_OPENSSL_H
+#if !HAVE_OPENSSL
 	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
 	int ret = -1;
 	int rcount = TNET_TLS_RETRY_COUNT;
-	tnet_tls_socket_t* socket;
-	
+	tnet_tls_socket_t* socket = self;
+
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+
+	if(!socket->initialized){
+		TSK_DEBUG_ERROR("TLS socket not properly initialized.");
+		return -2;
+	}
 	
-	socket = self;
+	if((ret = SSL_accept(socket->ssl)) != 1){
+		ret = SSL_get_error(socket->ssl, ret);
+		if(ret == SSL_ERROR_WANT_READ){
+			int retval;
+			fd_set rfds;
+			while (1)
+			{
+				FD_ZERO(&rfds);
+				FD_SET(socket->fd, &rfds);
+				retval = select(socket->fd + 1, &rfds, NULL, NULL, NULL);
+				if (retval == -1){
+					TNET_PRINT_LAST_ERROR("select() failed");
+				}
+				else if (retval)
+				{
+					if (FD_ISSET(socket->fd, &rfds)){
+						ret = SSL_accept(socket->ssl);
+						ret = SSL_get_error(socket->ssl, ret);
+						if (ret == SSL_ERROR_WANT_READ){
+							continue;
+						}
+						else{
+							if(ret == SSL_ERROR_NONE){
+								return 0;
+							}
+							break;
+						}
+					}
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+		TSK_DEBUG_ERROR("SSL_accept() failed with error code = %d", ret);
+		return -3;
+	}
+
+	return 0;
+#endif
+}
+
+int tnet_tls_socket_write(tnet_tls_socket_handle_t* self, const void* data, tsk_size_t size)
+{
+#if !HAVE_OPENSSL
+	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
+	return -200;
+#else
+	int ret = -1;
+	int rcount = TNET_TLS_RETRY_COUNT;
+	tnet_tls_socket_t* socket = self;
+	
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 
 	if(!socket->initialized){
 		TSK_DEBUG_ERROR("TLS socket not properly initialized.");
@@ -191,30 +254,6 @@ ssl_write:
 				}
 				goto ssl_write;
 			}
-
-			//if(ret == SSL_ERROR_WANT_READ){
-			//	if(!SSL_is_init_finished(socket->ssl)){
-			//		tsk_size_t size = 1024;
-			//		char* buffer = tsk_calloc(size, sizeof(uint8_t));
-			//		int isEncrypted = 1;
-			//		
-			//		// read()
-			//		tsk_safeobj_unlock(socket);
-			//		tnet_tls_socket_recv(socket, &buffer, &size, &isEncrypted);
-			//		TSK_FREE(buffer);
-			//		tsk_safeobj_lock(socket);
-			//	}
-			//	rcount--;
-			//	goto ssl_write;
-			//}
-			//else{
-			//	if(!(ret = tnet_sockfd_waitUntilWritable(socket->fd, TNET_TLS_TIMEOUT))){
-			//		rcount--;
-			//		goto ssl_write;
-			//	}
-			//	else goto bail;
-			//}
-			
 		}
 		else{
 			TSK_DEBUG_ERROR("SSL_write failed [%d].", ret);
@@ -231,7 +270,7 @@ ssl_write:
 
 int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void** data, tsk_size_t *size, int *isEncrypted)
 {
-#if !TNET_HAVE_OPENSSL_H && !HAVE_OPENSSL_H
+#if !HAVE_OPENSSL
 	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
@@ -239,13 +278,12 @@ int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void** data, tsk_size_t
 	tsk_size_t read = 0;
 	tsk_size_t to_read = *size;
 	int rcount = TNET_TLS_RETRY_COUNT;
-	tnet_tls_socket_t* socket;
+	tnet_tls_socket_t* socket = self;
 
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	
-	socket = self;
 
 	if(!socket->initialized){
 		TSK_DEBUG_ERROR("TLS socket not properly initialized.");
@@ -259,7 +297,7 @@ int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void** data, tsk_size_t
 	/* SSL handshake has completed? */
 	if(*isEncrypted){
 		char* buffer[1024];
-		if((ret = SSL_read(socket->ssl, buffer, 1024)) <= 0){
+		if((ret = SSL_read(socket->ssl, buffer, sizeof(buffer))) <= 0){
 			ret = SSL_get_error(socket->ssl, ret);
 			if(ret == SSL_ERROR_WANT_WRITE || ret == SSL_ERROR_WANT_READ){
 				ret = 0;
@@ -285,7 +323,7 @@ ssl_read:
 			}
 		}
 		else if(SSL_ERROR_ZERO_RETURN){ /* connection closed: do nothing, the transport layer will be alerted. */
-			*size = ret;
+			*size = 0;
 			ret = 0;
 			TSK_DEBUG_INFO("TLS connection closed.");
 		}
@@ -322,13 +360,14 @@ bail:
 
 int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 {
-#if !TNET_HAVE_OPENSSL_H && !HAVE_OPENSSL_H
+#if !HAVE_OPENSSL
 	TSK_DEBUG_ERROR("You MUST enable OpenSSL");
 	return -200;
 #else
 	int ret = -1;
 
 	if(!socket){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return ret;
 	}
 
@@ -339,46 +378,47 @@ int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 	if(!(socket->ssl_ctx = SSL_CTX_new(socket->ssl_meth))){
 		return -3;
 	}
-	else{
-		SSL_CTX_set_mode(socket->ssl_ctx, SSL_MODE_AUTO_RETRY);
-	}
+	
+	SSL_CTX_set_mode(socket->ssl_ctx, SSL_MODE_AUTO_RETRY);
 
 	/*Set cipher list*/
 	if((ret = SSL_CTX_set_cipher_list(socket->ssl_ctx, TNET_CIPHER_LIST)) <= 0){
 		TSK_DEBUG_ERROR("SSL_CTX_set_cipher_list failed [%d]", ret);
 		return -4;
 	}
-  
-	/* CLIENT */
-	if(socket->isClient){
-		if(socket->mutual_auth){ /* Mutual authentication */
-			/* Sets Public key (cert) */
-			if((ret = SSL_CTX_use_certificate_file(socket->ssl_ctx, socket->tlsfile_pbk, SSL_FILETYPE_PEM)) <= 0) {
-				TSK_DEBUG_ERROR("SSL_CTX_use_certificate_file failed [%d].", ret);
-				return -3;
-			}
-			/*Sets the password of the private key*/
-			SSL_CTX_set_default_passwd_cb_userdata(socket->ssl_ctx, socket->password);
 
-			/* Sets Private key (cert) */
-			if ((ret = SSL_CTX_use_PrivateKey_file(socket->ssl_ctx, socket->tlsfile_pvk, SSL_FILETYPE_PEM)) <= 0) {
-				TSK_DEBUG_ERROR("SSL_CTX_use_PrivateKey_file failed [%d].", ret);
-				return -4;
-			}
-			/* Checks private key */
-			if(SSL_CTX_check_private_key(socket->ssl_ctx) == 0) {
-				TSK_DEBUG_ERROR("SSL_CTX_check_private_key failed.");
-				return -5;
-			}
-			/* Sets trusted CAs and CA file */
-			if((ret = SSL_CTX_load_verify_locations(socket->ssl_ctx, socket->tlsfile_ca, socket->tlsdir_cas)) < 1) {
-			   TSK_DEBUG_ERROR("SSL_CTX_load_verify_locations failed [%d].", ret);
-			   return -5;
-			}
-			/* Server verification */
-			SSL_CTX_set_verify(socket->ssl_ctx, SSL_VERIFY_PEER, 0);
-		} /* Mutual authentication */
-	} /* Client */
+	ret = SSL_CTX_set_options(socket->ssl_ctx, SSL_OP_ALL | SSL_OP_NO_SSLv2 | SSL_OP_SINGLE_DH_USE);
+
+	/* Server verification */
+	SSL_CTX_set_verify(socket->ssl_ctx, socket->isClient ? SSL_VERIFY_PEER : SSL_VERIFY_NONE, 0);
+	
+	if(socket->mutual_auth){ /* Mutual authentication */
+		/* Sets Public key (cert) */
+		if(socket->tlsfile_pbk && (ret = SSL_CTX_use_certificate_file(socket->ssl_ctx, socket->tlsfile_pbk, SSL_FILETYPE_PEM)) != 1) {
+			TSK_DEBUG_ERROR("SSL_CTX_use_certificate_file failed [%d].", ret);
+			return -3;
+		}
+		/*Sets the password of the private key*/
+		if(socket->password){
+			SSL_CTX_set_default_passwd_cb_userdata(socket->ssl_ctx, socket->password);
+		}
+
+		/* Sets Private key (cert) */
+		if (socket->tlsfile_pvk && (ret = SSL_CTX_use_PrivateKey_file(socket->ssl_ctx, socket->tlsfile_pvk, SSL_FILETYPE_PEM)) != 1) {
+			TSK_DEBUG_ERROR("SSL_CTX_use_PrivateKey_file failed [%d].", ret);
+			return -4;
+		}
+		/* Checks private key */
+		if(socket->tlsfile_pvk && SSL_CTX_check_private_key(socket->ssl_ctx) == 0) {
+			TSK_DEBUG_ERROR("SSL_CTX_check_private_key failed.");
+			return -5;
+		}
+		/* Sets trusted CAs and CA file */
+		if(socket->tlsfile_ca && (ret = SSL_CTX_load_verify_locations(socket->ssl_ctx, socket->tlsfile_ca, socket->tlsdir_cas)) != 1) {
+		   TSK_DEBUG_ERROR("SSL_CTX_load_verify_locations failed [%d].", ret);
+		   return -5;
+		}		
+	} /* Mutual authentication */
 
 	/* SSL object. */
 	if(!(socket->ssl = SSL_new(socket->ssl_ctx))){
@@ -392,6 +432,7 @@ int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 		return -16;
 	}
 	
+	socket->initialized = tsk_true;
 	return 0;
 #endif
 }
@@ -404,7 +445,7 @@ int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 //
 static tsk_object_t* tnet_tls_socket_ctor(tsk_object_t * self, va_list * app)
 {
-#if TNET_HAVE_OPENSSL_H || HAVE_OPENSSL_H
+#if HAVE_OPENSSL
 	static tsk_bool_t __ssl_initialized = tsk_false;
 #endif
 	tnet_tls_socket_t *socket = self;
@@ -423,28 +464,21 @@ static tsk_object_t* tnet_tls_socket_ctor(tsk_object_t * self, va_list * app)
 		socket->tlsfile_pbk = tsk_strdup(va_arg(*app, const char *));
 		socket->isClient = va_arg(*app, tsk_bool_t);
 
-		/* Mutual authentication requires that the TLS client-side also hold a certificate. */
-		if(!tsk_strnullORempty(socket->tlsfile_pvk) && !tsk_strnullORempty(socket->tlsfile_pbk) && !tsk_strnullORempty(socket->tlsfile_ca)){
-			socket->mutual_auth = tsk_true;
-		}
-		else{
-			socket->mutual_auth = tsk_false;
-		}
+		/* Mutual authentication requires that the TLS client-side also hold certificates */
+		socket->mutual_auth = (!tsk_strnullORempty(socket->tlsfile_pvk) || !tsk_strnullORempty(socket->tlsfile_pbk) || !tsk_strnullORempty(socket->tlsfile_ca));
 
 		/* Initialize SSL: http://www.openssl.org/docs/ssl/SSL_library_init.html */
-#if TNET_HAVE_OPENSSL_H || HAVE_OPENSSL_H
+#if HAVE_OPENSSL
 		if(!__ssl_initialized){
 			__ssl_initialized = tsk_true;
 			SSL_library_init();
+			OpenSSL_add_all_algorithms();
 			SSL_load_error_strings();
 		}
 #endif
 		/* Initialize the socket itself: CTX, method, ... */
 		if((ret = tnet_tls_socket_init(socket))){
 			TSK_DEBUG_ERROR("Failed to initialize SSL socket [%d].", ret);
-		}
-		else{
-			socket->initialized = tsk_true;
 		}
 	}
 	return self;
@@ -463,9 +497,9 @@ static tsk_object_t* tnet_tls_socket_dtor(tsk_object_t * self)
 		TSK_FREE(socket->tlsfile_pbk);
 		TSK_FREE(socket->password);
 
-#if TNET_HAVE_OPENSSL_H || HAVE_OPENSSL_H
+#if HAVE_OPENSSL
 		if(socket->ssl){
-			//SSL_shutdown(socket->ssl);
+			SSL_shutdown(socket->ssl);
 			SSL_free(socket->ssl);
 		}
 		if(socket->ssl_ctx){

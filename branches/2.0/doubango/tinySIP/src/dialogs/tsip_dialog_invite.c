@@ -78,6 +78,8 @@
 3GPP TS 24.605 : Ad-Hoc Multi Party Conference
 */
 
+extern int tsip_dialog_add_session_headers(const tsip_dialog_t *self, tsip_request_t* request);
+
 /* ======================== internal functions ======================== */
 /*static*/ int tsip_dialog_invite_msession_start(tsip_dialog_invite_t *self);
 /*static*/ int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self);
@@ -432,7 +434,7 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 	if(TSIP_MESSAGE_HAS_CONTENT(message)){
 		if(tsk_striequals("application/sdp", TSIP_MESSAGE_CONTENT_TYPE(message))){
 			if(!(sdp_ro = tsdp_message_parse(TSIP_MESSAGE_CONTENT_DATA(message), TSIP_MESSAGE_CONTENT_DATA_LENGTH(message)))){
-				TSK_DEBUG_ERROR("Failed to parse remote sdp message");
+				TSK_DEBUG_ERROR("Failed to parse remote sdp message:\n [%s]", TSIP_MESSAGE_CONTENT_DATA(message));
 				return -2;
 			}
 			// ICE processing
@@ -462,10 +464,10 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 	if(!self->msession_mgr){
 		int32_t transport_idx = TSIP_DIALOG_GET_STACK(self)->network.transport_idx_default;
 		TSIP_DIALOG_GET_SS(self)->media.type = new_media_type;
-		self->msession_mgr = tmedia_session_mgr_create(TSIP_DIALOG_GET_SS(self)->media.type, TSIP_DIALOG_GET_STACK(self)->network.local_ip_[transport_idx], 
-			TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type_[transport_idx]), (sdp_ro == tsk_null));
+		self->msession_mgr = tmedia_session_mgr_create(TSIP_DIALOG_GET_SS(self)->media.type, TSIP_DIALOG_GET_STACK(self)->network.local_ip[transport_idx], 
+			TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type[transport_idx]), (sdp_ro == tsk_null));
 		if(TSIP_DIALOG_GET_STACK(self)->natt.ctx){
-			tmedia_session_mgr_set_natt_ctx(self->msession_mgr, TSIP_DIALOG_GET_STACK(self)->natt.ctx, TSIP_DIALOG_GET_STACK(self)->network.aor.ip_[transport_idx]);
+			tmedia_session_mgr_set_natt_ctx(self->msession_mgr, TSIP_DIALOG_GET_STACK(self)->natt.ctx, TSIP_DIALOG_GET_STACK(self)->network.aor.ip[transport_idx]);
 		}
 		ret = tmedia_session_mgr_set_ice_ctx(self->msession_mgr, self->ice.ctx_audio, self->ice.ctx_video);
 	}
@@ -969,7 +971,6 @@ int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self)
 
 	is_rtcweb_enabled = (((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.profile == tmedia_profile_rtcweb);
 	srtp_mode = is_rtcweb_enabled ? tmedia_srtp_mode_mandatory : ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.srtp_mode;
-
 	
 
 	return tmedia_session_mgr_set(self->msession_mgr,
@@ -977,6 +978,14 @@ int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self)
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "avpf-enabled", is_rtcweb_enabled), // Otherwise will be negociated using SDPCapNeg (RFC 5939)
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "rtcp-enabled", self->use_rtcp),
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "rtcpmux-enabled", self->use_rtcpmux),
+			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "codecs-supported", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.codecs),
+
+			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "bypass-encoding", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.bypass_encoding),
+			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "bypass-decoding", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.bypass_decoding),
+
+			TMEDIA_SESSION_SET_INT32(tmedia_audio, "rtp-ssrc", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.rtp.ssrc.audio),
+			TMEDIA_SESSION_SET_INT32(tmedia_video, "rtp-ssrc", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.rtp.ssrc.video),
+
 			tsk_null);
 }
 
@@ -1183,7 +1192,7 @@ int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx)
 			TSK_FREE(sdp);
 		}
 	}
-
+	
 	// Send request
 	ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
 	
@@ -1269,7 +1278,8 @@ int send_CANCEL(tsip_dialog_invite_t *self)
 						break;
 				}
 			}
-
+			
+			ret = tsip_dialog_add_session_headers(TSIP_DIALOG(self), cancel);
 			ret = tsip_dialog_request_send(TSIP_DIALOG(self), cancel);
 			TSK_OBJECT_SAFE_FREE(cancel);
 		}

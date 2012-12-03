@@ -3508,35 +3508,36 @@ namespace Swig {
 #define SWIGTYPE_p_thttp_event_type_e swig_types[64]
 #define SWIGTYPE_p_tmedia_bandwidth_level_e swig_types[65]
 #define SWIGTYPE_p_tmedia_chroma_e swig_types[66]
-#define SWIGTYPE_p_tmedia_pref_video_size_s swig_types[67]
-#define SWIGTYPE_p_tmedia_profile_e swig_types[68]
-#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[69]
-#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[70]
-#define SWIGTYPE_p_tmedia_srtp_mode_e swig_types[71]
-#define SWIGTYPE_p_tmedia_t140_data_type_e swig_types[72]
-#define SWIGTYPE_p_tmsrp_event_type_e swig_types[73]
-#define SWIGTYPE_p_tmsrp_request_type_e swig_types[74]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[75]
-#define SWIGTYPE_p_tsip_info_event_type_e swig_types[76]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[77]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[78]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[79]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[80]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[81]
-#define SWIGTYPE_p_tsip_request_type_e swig_types[82]
-#define SWIGTYPE_p_tsip_stack_mode_e swig_types[83]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[84]
-#define SWIGTYPE_p_tsk_list_t swig_types[85]
-#define SWIGTYPE_p_twrap_media_type_e swig_types[86]
-#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[87]
-#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[88]
-#define SWIGTYPE_p_twrap_sms_type_e swig_types[89]
-#define SWIGTYPE_p_unsigned_char swig_types[90]
-#define SWIGTYPE_p_unsigned_int swig_types[91]
-#define SWIGTYPE_p_unsigned_long_long swig_types[92]
-#define SWIGTYPE_p_unsigned_short swig_types[93]
-static swig_type_info *swig_types[95];
-static swig_module_info swig_module = {swig_types, 94, 0, 0, 0, 0};
+#define SWIGTYPE_p_tmedia_codec_id_e swig_types[67]
+#define SWIGTYPE_p_tmedia_pref_video_size_s swig_types[68]
+#define SWIGTYPE_p_tmedia_profile_e swig_types[69]
+#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[70]
+#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[71]
+#define SWIGTYPE_p_tmedia_srtp_mode_e swig_types[72]
+#define SWIGTYPE_p_tmedia_t140_data_type_e swig_types[73]
+#define SWIGTYPE_p_tmsrp_event_type_e swig_types[74]
+#define SWIGTYPE_p_tmsrp_request_type_e swig_types[75]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[76]
+#define SWIGTYPE_p_tsip_info_event_type_e swig_types[77]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[78]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[79]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[80]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[81]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[82]
+#define SWIGTYPE_p_tsip_request_type_e swig_types[83]
+#define SWIGTYPE_p_tsip_stack_mode_e swig_types[84]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[85]
+#define SWIGTYPE_p_tsk_list_t swig_types[86]
+#define SWIGTYPE_p_twrap_media_type_e swig_types[87]
+#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[88]
+#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[89]
+#define SWIGTYPE_p_twrap_sms_type_e swig_types[90]
+#define SWIGTYPE_p_unsigned_char swig_types[91]
+#define SWIGTYPE_p_unsigned_int swig_types[92]
+#define SWIGTYPE_p_unsigned_long_long swig_types[93]
+#define SWIGTYPE_p_unsigned_short swig_types[94]
+static swig_type_info *swig_types[96];
+static swig_module_info swig_module = {swig_types, 95, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -7625,6 +7626,186 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetByPassEncoding(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool arg1 ;
+  bool val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetByPassEncoding",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_bool(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetByPassEncoding" "', argument " "1"" of type '" "bool""'");
+  } 
+  arg1 = static_cast< bool >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetByPassEncoding(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetByPassEncoding(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetByPassEncoding")) SWIG_fail;
+  result = (bool)MediaSessionMgr::defaultsGetByPassEncoding();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetByPassDecoding(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool arg1 ;
+  bool val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetByPassDecoding",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_bool(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetByPassDecoding" "', argument " "1"" of type '" "bool""'");
+  } 
+  arg1 = static_cast< bool >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetByPassDecoding(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetByPassDecoding(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetByPassDecoding")) SWIG_fail;
+  result = (bool)MediaSessionMgr::defaultsGetByPassDecoding();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetVideoJbEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool arg1 ;
+  bool val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetVideoJbEnabled",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_bool(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetVideoJbEnabled" "', argument " "1"" of type '" "bool""'");
+  } 
+  arg1 = static_cast< bool >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetVideoJbEnabled(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetVideoJbEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool arg1 ;
+  bool val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsGetVideoJbEnabled",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_bool(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsGetVideoJbEnabled" "', argument " "1"" of type '" "bool""'");
+  } 
+  arg1 = static_cast< bool >(val1);
+  result = (bool)MediaSessionMgr::defaultsGetVideoJbEnabled(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetRtpBuffSize(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  unsigned int arg1 ;
+  unsigned int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetRtpBuffSize",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_unsigned_SS_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetRtpBuffSize" "', argument " "1"" of type '" "unsigned int""'");
+  } 
+  arg1 = static_cast< unsigned int >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetRtpBuffSize(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetRtpBuffSize(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  unsigned int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetRtpBuffSize")) SWIG_fail;
+  result = (unsigned int)MediaSessionMgr::defaultsGetRtpBuffSize();
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetAvpfTail(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  unsigned int arg1 ;
+  unsigned int arg2 ;
+  unsigned int val1 ;
+  int ecode1 = 0 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MediaSessionMgr_defaultsSetAvpfTail",&obj0,&obj1)) SWIG_fail;
+  ecode1 = SWIG_AsVal_unsigned_SS_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetAvpfTail" "', argument " "1"" of type '" "unsigned int""'");
+  } 
+  arg1 = static_cast< unsigned int >(val1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_defaultsSetAvpfTail" "', argument " "2"" of type '" "unsigned int""'");
+  } 
+  arg2 = static_cast< unsigned int >(val2);
+  result = (bool)MediaSessionMgr::defaultsSetAvpfTail(arg1,arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *MediaSessionMgr_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -10077,10 +10258,10 @@ SWIGINTERN PyObject *_wrap_T140CallbackData_getType(PyObject *SWIGUNUSEDPARM(sel
   if (!PyArg_ParseTuple(args,(char *)"O:T140CallbackData_getType",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_T140CallbackData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "T140CallbackData_getType" "', argument " "1"" of type '" "T140CallbackData *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "T140CallbackData_getType" "', argument " "1"" of type '" "T140CallbackData const *""'"); 
   }
   arg1 = reinterpret_cast< T140CallbackData * >(argp1);
-  result = (enum tmedia_t140_data_type_e)(arg1)->getType();
+  result = (enum tmedia_t140_data_type_e)((T140CallbackData const *)arg1)->getType();
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -10099,10 +10280,10 @@ SWIGINTERN PyObject *_wrap_T140CallbackData_getSize(PyObject *SWIGUNUSEDPARM(sel
   if (!PyArg_ParseTuple(args,(char *)"O:T140CallbackData_getSize",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_T140CallbackData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "T140CallbackData_getSize" "', argument " "1"" of type '" "T140CallbackData *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "T140CallbackData_getSize" "', argument " "1"" of type '" "T140CallbackData const *""'"); 
   }
   arg1 = reinterpret_cast< T140CallbackData * >(argp1);
-  result = (unsigned int)(arg1)->getSize();
+  result = (unsigned int)((T140CallbackData const *)arg1)->getSize();
   resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return resultobj;
 fail:
@@ -10128,7 +10309,7 @@ SWIGINTERN PyObject *_wrap_T140CallbackData_getData(PyObject *SWIGUNUSEDPARM(sel
   if (!PyArg_ParseTuple(args,(char *)"OOO:T140CallbackData_getData",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_T140CallbackData, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "T140CallbackData_getData" "', argument " "1"" of type '" "T140CallbackData *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "T140CallbackData_getData" "', argument " "1"" of type '" "T140CallbackData const *""'"); 
   }
   arg1 = reinterpret_cast< T140CallbackData * >(argp1);
   res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
@@ -10140,7 +10321,7 @@ SWIGINTERN PyObject *_wrap_T140CallbackData_getData(PyObject *SWIGUNUSEDPARM(sel
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "T140CallbackData_getData" "', argument " "3"" of type '" "unsigned int""'");
   } 
   arg3 = static_cast< unsigned int >(val3);
-  result = (unsigned int)(arg1)->getData(arg2,arg3);
+  result = (unsigned int)((T140CallbackData const *)arg1)->getData(arg2,arg3);
   resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
   return resultobj;
 fail:
@@ -20193,7 +20374,53 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SipStack_setLocalIP(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_SipStack_setLocalIP__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:SipStack_setLocalIP",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setLocalIP" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setLocalIP" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_setLocalIP" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  result = (bool)(arg1)->setLocalIP((char const *)arg2,(char const *)arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setLocalIP__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -20227,7 +20454,100 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SipStack_setLocalPort(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_SipStack_setLocalIP(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[4];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = args ? (int)PyObject_Length(args) : 0;
+  for (ii = 0; (ii < 3) && (ii < argc); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SipStack, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_SipStack_setLocalIP__SWIG_1(self, args);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SipStack, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsCharPtrAndSize(argv[2], 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_SipStack_setLocalIP__SWIG_0(self, args);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'SipStack_setLocalIP'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    SipStack::setLocalIP(char const *,char const *)\n"
+    "    SipStack::setLocalIP(char const *)\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setLocalPort__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  unsigned short arg2 ;
+  char *arg3 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned short val2 ;
+  int ecode2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:SipStack_setLocalPort",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setLocalPort" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_short(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SipStack_setLocalPort" "', argument " "2"" of type '" "unsigned short""'");
+  } 
+  arg2 = static_cast< unsigned short >(val2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_setLocalPort" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  result = (bool)(arg1)->setLocalPort(arg2,(char const *)arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return resultobj;
+fail:
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setLocalPort__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
   unsigned short arg2 ;
@@ -20255,6 +20575,60 @@ SWIGINTERN PyObject *_wrap_SipStack_setLocalPort(PyObject *SWIGUNUSEDPARM(self),
   return resultobj;
 fail:
   return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setLocalPort(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[4];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = args ? (int)PyObject_Length(args) : 0;
+  for (ii = 0; (ii < 3) && (ii < argc); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SipStack, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_short(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_SipStack_setLocalPort__SWIG_1(self, args);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SipStack, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_unsigned_SS_short(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        int res = SWIG_AsCharPtrAndSize(argv[2], 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_SipStack_setLocalPort__SWIG_0(self, args);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'SipStack_setLocalPort'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    SipStack::setLocalPort(unsigned short,char const *)\n"
+    "    SipStack::setLocalPort(unsigned short)\n");
+  return 0;
 }
 
 
@@ -21204,17 +21578,17 @@ fail:
 
 SWIGINTERN PyObject *_wrap_SipStack_setCodecs_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  int arg1 ;
-  int val1 ;
+  int64_t arg1 ;
+  long long val1 ;
   int ecode1 = 0 ;
   PyObject * obj0 = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:SipStack_setCodecs_2",&obj0)) SWIG_fail;
-  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  ecode1 = SWIG_AsVal_long_SS_long(obj0, &val1);
   if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "SipStack_setCodecs_2" "', argument " "1"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "SipStack_setCodecs_2" "', argument " "1"" of type '" "int64_t""'");
   } 
-  arg1 = static_cast< int >(val1);
+  arg1 = static_cast< int64_t >(val1);
   SipStack::setCodecs_2(arg1);
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -24437,6 +24811,15 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_defaultsSetRtcpMuxEnabled", _wrap_MediaSessionMgr_defaultsSetRtcpMuxEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetRtcpMuxEnabled", _wrap_MediaSessionMgr_defaultsGetRtcpMuxEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetIceEnabled", _wrap_MediaSessionMgr_defaultsSetIceEnabled, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetByPassEncoding", _wrap_MediaSessionMgr_defaultsSetByPassEncoding, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetByPassEncoding", _wrap_MediaSessionMgr_defaultsGetByPassEncoding, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetByPassDecoding", _wrap_MediaSessionMgr_defaultsSetByPassDecoding, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetByPassDecoding", _wrap_MediaSessionMgr_defaultsGetByPassDecoding, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetVideoJbEnabled", _wrap_MediaSessionMgr_defaultsSetVideoJbEnabled, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetVideoJbEnabled", _wrap_MediaSessionMgr_defaultsGetVideoJbEnabled, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetRtpBuffSize", _wrap_MediaSessionMgr_defaultsSetRtpBuffSize, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetRtpBuffSize", _wrap_MediaSessionMgr_defaultsGetRtpBuffSize, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetAvpfTail", _wrap_MediaSessionMgr_defaultsSetAvpfTail, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_swigregister", MediaSessionMgr_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_MediaContent", _wrap_delete_MediaContent, METH_VARARGS, NULL},
 	 { (char *)"MediaContent_getType", _wrap_MediaContent_getType, METH_VARARGS, NULL},
@@ -25039,6 +25422,7 @@ static swig_type_info _swigt__p_tdav_codec_id_e = {"_p_tdav_codec_id_e", "enum t
 static swig_type_info _swigt__p_thttp_event_type_e = {"_p_thttp_event_type_e", "enum thttp_event_type_e *|thttp_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_bandwidth_level_e = {"_p_tmedia_bandwidth_level_e", "enum tmedia_bandwidth_level_e *|tmedia_bandwidth_level_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_chroma_e = {"_p_tmedia_chroma_e", "tmedia_chroma_t *|enum tmedia_chroma_e *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_tmedia_codec_id_e = {"_p_tmedia_codec_id_e", "enum tmedia_codec_id_e *|tmedia_codec_id_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_pref_video_size_s = {"_p_tmedia_pref_video_size_s", "tmedia_pref_video_size_t *|enum tmedia_pref_video_size_s *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_profile_e = {"_p_tmedia_profile_e", "tmedia_profile_t *|enum tmedia_profile_e *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_qos_strength_e = {"_p_tmedia_qos_strength_e", "tmedia_qos_strength_t *|enum tmedia_qos_strength_e *", 0, 0, (void*)0, 0};
@@ -25135,6 +25519,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_thttp_event_type_e,
   &_swigt__p_tmedia_bandwidth_level_e,
   &_swigt__p_tmedia_chroma_e,
+  &_swigt__p_tmedia_codec_id_e,
   &_swigt__p_tmedia_pref_video_size_s,
   &_swigt__p_tmedia_profile_e,
   &_swigt__p_tmedia_qos_strength_e,
@@ -25231,6 +25616,7 @@ static swig_cast_info _swigc__p_tdav_codec_id_e[] = {  {&_swigt__p_tdav_codec_id
 static swig_cast_info _swigc__p_thttp_event_type_e[] = {  {&_swigt__p_thttp_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_bandwidth_level_e[] = {  {&_swigt__p_tmedia_bandwidth_level_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_chroma_e[] = {  {&_swigt__p_tmedia_chroma_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_tmedia_codec_id_e[] = {  {&_swigt__p_tmedia_codec_id_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_pref_video_size_s[] = {  {&_swigt__p_tmedia_pref_video_size_s, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_profile_e[] = {  {&_swigt__p_tmedia_profile_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_qos_strength_e[] = {  {&_swigt__p_tmedia_qos_strength_e, 0, 0, 0},{0, 0, 0, 0}};
@@ -25327,6 +25713,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_thttp_event_type_e,
   _swigc__p_tmedia_bandwidth_level_e,
   _swigc__p_tmedia_chroma_e,
+  _swigc__p_tmedia_codec_id_e,
   _swigc__p_tmedia_pref_video_size_s,
   _swigc__p_tmedia_profile_e,
   _swigc__p_tmedia_qos_strength_e,
@@ -26192,6 +26579,39 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tmedia_pref_video_size_720p",SWIG_From_int(static_cast< int >(tmedia_pref_video_size_720p)));
   SWIG_Python_SetConstant(d, "tmedia_pref_video_size_16cif",SWIG_From_int(static_cast< int >(tmedia_pref_video_size_16cif)));
   SWIG_Python_SetConstant(d, "tmedia_pref_video_size_1080p",SWIG_From_int(static_cast< int >(tmedia_pref_video_size_1080p)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_none",SWIG_From_int(static_cast< int >(tmedia_codec_id_none)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_amr_nb_oa",SWIG_From_int(static_cast< int >(tmedia_codec_id_amr_nb_oa)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_amr_nb_be",SWIG_From_int(static_cast< int >(tmedia_codec_id_amr_nb_be)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_amr_wb_oa",SWIG_From_int(static_cast< int >(tmedia_codec_id_amr_wb_oa)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_amr_wb_be",SWIG_From_int(static_cast< int >(tmedia_codec_id_amr_wb_be)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_gsm",SWIG_From_int(static_cast< int >(tmedia_codec_id_gsm)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_pcma",SWIG_From_int(static_cast< int >(tmedia_codec_id_pcma)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_pcmu",SWIG_From_int(static_cast< int >(tmedia_codec_id_pcmu)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_ilbc",SWIG_From_int(static_cast< int >(tmedia_codec_id_ilbc)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_speex_nb",SWIG_From_int(static_cast< int >(tmedia_codec_id_speex_nb)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_speex_wb",SWIG_From_int(static_cast< int >(tmedia_codec_id_speex_wb)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_speex_uwb",SWIG_From_int(static_cast< int >(tmedia_codec_id_speex_uwb)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_bv16",SWIG_From_int(static_cast< int >(tmedia_codec_id_bv16)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_bv32",SWIG_From_int(static_cast< int >(tmedia_codec_id_bv32)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_opus",SWIG_From_int(static_cast< int >(tmedia_codec_id_opus)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_g729ab",SWIG_From_int(static_cast< int >(tmedia_codec_id_g729ab)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_g722",SWIG_From_int(static_cast< int >(tmedia_codec_id_g722)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_h261",SWIG_From_int(static_cast< int >(tmedia_codec_id_h261)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_h263",SWIG_From_int(static_cast< int >(tmedia_codec_id_h263)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_h263p",SWIG_From_int(static_cast< int >(tmedia_codec_id_h263p)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_h263pp",SWIG_From_int(static_cast< int >(tmedia_codec_id_h263pp)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_h264_bp",SWIG_From_int(static_cast< int >(tmedia_codec_id_h264_bp)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_h264_mp",SWIG_From_int(static_cast< int >(tmedia_codec_id_h264_mp)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_h264_hp",SWIG_From_int(static_cast< int >(tmedia_codec_id_h264_hp)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_h264_bp10",SWIG_From_int(static_cast< int >(tmedia_codec_id_h264_bp10)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_h264_bp20",SWIG_From_int(static_cast< int >(tmedia_codec_id_h264_bp20)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_h264_bp30",SWIG_From_int(static_cast< int >(tmedia_codec_id_h264_bp30)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_h264_svc",SWIG_From_int(static_cast< int >(tmedia_codec_id_h264_svc)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_theora",SWIG_From_int(static_cast< int >(tmedia_codec_id_theora)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_mp4ves_es",SWIG_From_int(static_cast< int >(tmedia_codec_id_mp4ves_es)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_vp8",SWIG_From_int(static_cast< int >(tmedia_codec_id_vp8)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_t140",SWIG_From_int(static_cast< int >(tmedia_codec_id_t140)));
+  SWIG_Python_SetConstant(d, "tmedia_codec_id_red",SWIG_From_int(static_cast< int >(tmedia_codec_id_red)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_none",SWIG_From_int(static_cast< int >(tdav_codec_id_none)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_amr_nb_oa",SWIG_From_int(static_cast< int >(tdav_codec_id_amr_nb_oa)));
   SWIG_Python_SetConstant(d, "tdav_codec_id_amr_nb_be",SWIG_From_int(static_cast< int >(tdav_codec_id_amr_nb_be)));

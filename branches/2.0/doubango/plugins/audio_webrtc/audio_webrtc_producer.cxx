@@ -20,6 +20,7 @@
 
 #include "tinydav/audio/tdav_producer_audio.h"
 
+#include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 

@@ -48,6 +48,12 @@ typedef struct tdav_session_video_s
 	TDAV_DECLARE_SESSION_AV;
 
 	struct tdav_video_jb_s* jb;
+	tsk_bool_t jb_enabled;
+
+	struct{
+		const void* context;
+		tmedia_session_rtcp_onevent_cb_f func;
+	} cb_rtcpevent;
 
 	struct{
 		void* buffer;
@@ -93,8 +99,8 @@ typedef struct tdav_session_video_s
 
 	struct{
 		tsk_list_t* packets;
-		int32_t count;
-		int32_t max;
+		tsk_size_t count;
+		tsk_size_t max;
 		uint64_t last_fir_time;
 		uint64_t last_pli_time;
 	} avpf;

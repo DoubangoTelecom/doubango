@@ -140,18 +140,18 @@ bool SipStack::setProxyCSCF(const char* fqdn, unsigned short port, const char* t
 			TSIP_STACK_SET_NULL()) == 0);
 }
 
-bool SipStack::setLocalIP(const char* ip)
+bool SipStack::setLocalIP(const char* ip, const char* transport/*=tsk_null*/)
 {
 	return (tsip_stack_set(m_pHandle,
-		TSIP_STACK_SET_LOCAL_IP(ip),
+		TSIP_STACK_SET_LOCAL_IP_2(transport, ip),
 		TSIP_STACK_SET_NULL()) == 0);
 }
 
-bool SipStack::setLocalPort(unsigned short port)
+bool SipStack::setLocalPort(unsigned short port, const char* transport/*=tsk_null*/)
 {
 	unsigned _port = port;//promote
 	return (tsip_stack_set(m_pHandle,
-		TSIP_STACK_SET_LOCAL_PORT(_port),
+		TSIP_STACK_SET_LOCAL_PORT_2(transport, _port),
 		TSIP_STACK_SET_NULL()) == 0);
 }
 
@@ -406,7 +406,7 @@ void SipStack::setCodecs(tdav_codec_id_t codecs)
 	tdav_set_codecs(codecs);
 }
 
-void SipStack::setCodecs_2(int codecs) // For stupid languages
+void SipStack::setCodecs_2(int64_t codecs) // For stupid languages
 {
 	SipStack::setCodecs((tdav_codec_id_t)codecs);
 }

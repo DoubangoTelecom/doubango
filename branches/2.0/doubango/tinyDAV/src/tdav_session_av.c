@@ -95,6 +95,11 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 		return tsk_false;
 	}
 
+	// try with base class first
+	if(tmedia_session_set_2(TMEDIA_SESSION(self), param)){
+		return tsk_true;
+	}
+
 	if(param->plugin_type == tmedia_ppt_consumer && self->consumer){
 		return (tmedia_consumer_set(self->consumer, param) == 0);
 	}
@@ -124,6 +129,13 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 				self->srtp_mode = (tmedia_srtp_mode_t)TSK_TO_INT32((uint8_t*)param->value);
 				return tsk_true;
 #endif
+			}
+			else if(tsk_striequals(param->key, "rtp-ssrc")){
+				self->rtp_ssrc = *((uint32_t*)param->value);
+				if(self->rtp_manager && self->rtp_ssrc){
+					self->rtp_manager->rtp.ssrc = self->rtp_ssrc;
+				}
+				return tsk_true;
 			}
 			else if(tsk_striequals(param->key, "rtcp-enabled")){
 				self->use_rtcp = (TSK_TO_INT32((uint8_t*)param->value) != 0);
@@ -160,9 +172,14 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 
 tsk_bool_t tdav_session_av_get(tdav_session_av_t* self, tmedia_param_t* param)
 {
-	if(!self){
+	if(!self || !param){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_false;
+	}
+
+	// try with the base class to see if this option is supported or not
+	if(tmedia_session_get(TMEDIA_SESSION(self), param)){
+		return tsk_true;
 	}
 
 	if(param->plugin_type == tmedia_ppt_session){
@@ -200,6 +217,9 @@ int tdav_session_av_prepare(tdav_session_av_t* self)
 			ret = trtp_manager_prepare(self->rtp_manager);
 			if(self->natt_ctx){
 				ret = trtp_manager_set_natt_ctx(self->rtp_manager, self->natt_ctx);
+			}
+			if(self->rtp_ssrc){
+				self->rtp_manager->rtp.ssrc = self->rtp_ssrc;
 			}
 		}
 	}
@@ -459,6 +479,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			/* from codecs to sdp */
 			if(TSK_LIST_IS_EMPTY(base->neg_codecs) || ((base->neg_codecs->tail == base->neg_codecs->head) && TDAV_IS_DTMF_CODEC(TSK_LIST_FIRST_DATA(base->neg_codecs)))){
 				base->M.lo->port = 0; /* Keep the RTP transport and reuse it when we receive a reINVITE or UPDATE request */
+				TSK_DEBUG_INFO("No codec matching for media type = %d", (int32_t)self->media_type);
 				goto DONE;
 			}
 			else{

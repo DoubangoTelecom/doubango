@@ -136,6 +136,8 @@ typedef struct tnet_ice_ctx_s
 		char* server_addr; /**< STUN server address (could be FQDN or IP) */
 		tnet_port_t server_port; /**< STUN server port */
 	} stun;
+
+	TSK_DECLARE_SAFEOBJ;
 }
 tnet_ice_ctx_t;
 
@@ -211,6 +213,8 @@ static tsk_object_t* tnet_ice_ctx_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_ice_ctx_t *ctx = self;
 	if(ctx){
+		tsk_safeobj_init(ctx);
+
 		if(!(ctx->h_timer_mgr = tsk_timer_manager_create())){
 			TSK_DEBUG_ERROR("Failed to create timer manager");
 			return tsk_null;
@@ -272,6 +276,8 @@ static tsk_object_t* tnet_ice_ctx_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(ctx->candidates_local);
 		TSK_OBJECT_SAFE_FREE(ctx->candidates_remote);
 		TSK_OBJECT_SAFE_FREE(ctx->candidates_pairs);
+
+		tsk_safeobj_deinit(ctx);
 	}
 	return self;
 }
@@ -384,13 +390,17 @@ int tnet_ice_ctx_start(tnet_ice_ctx_t* self)
 		return -1;
 	}
 
+	tsk_safeobj_lock(self);
+
 	if(self->is_started){
+		ret = 0;
 		if(!self->is_active){
 			TSK_DEBUG_INFO("ICE restart");
-			return _tnet_ice_ctx_restart(self);
+			ret = _tnet_ice_ctx_restart(self);
 		}
-		TSK_DEBUG_INFO("Already started");
-		return 0;
+		TSK_DEBUG_INFO("ICE already started");
+		tsk_safeobj_unlock(self);
+		return ret;
 	}
 
 	/* === Timer manager === */
@@ -420,6 +430,7 @@ int tnet_ice_ctx_start(tnet_ice_ctx_t* self)
 	self->is_active = tsk_true;
 	
 bail:
+	tsk_safeobj_unlock(self);
 
 	if(ret){
 		_tnet_ice_ctx_signal_async(self, tnet_ice_event_type_start_failed, err);
@@ -716,21 +727,29 @@ const char* tnet_ice_ctx_get_pwd(const struct tnet_ice_ctx_s* self)
 // cancels the ICE processing without stopping the process
 int tnet_ice_ctx_cancel(tnet_ice_ctx_t* self)
 {
+	int ret;
+
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	
+	tsk_safeobj_lock(self);
 	if(tsk_fsm_get_current_state(self->fsm) == _fsm_state_Started){
 		// Do nothing if already in the "started" state
-		return 0;
+		ret = 0;
+		goto bail;
 	}
 	
 	self->is_active = tsk_false;
 	self->have_nominated_symetric = tsk_false;
 	self->have_nominated_answer = tsk_false;
 	self->have_nominated_offer = tsk_false;
-	return _tnet_ice_ctx_fsm_act_async(self, _fsm_action_Cancel);
+	ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_Cancel);
+
+bail:
+	tsk_safeobj_unlock(self);
+	return ret;
 }
 
 int tnet_ice_ctx_stop(tnet_ice_ctx_t* self)
@@ -742,8 +761,10 @@ int tnet_ice_ctx_stop(tnet_ice_ctx_t* self)
 		return -1;
 	}
 
+	tsk_safeobj_lock(self);
 	if(!self->is_started){
-		return 0;
+		ret = 0;
+		goto bail;
 	}
 
 	self->is_started = tsk_false;
@@ -751,6 +772,8 @@ int tnet_ice_ctx_stop(tnet_ice_ctx_t* self)
 	ret = tsk_timer_manager_stop(self->h_timer_mgr);
 	ret = tsk_runnable_stop(TSK_RUNNABLE(self));
 
+bail:
+	tsk_safeobj_unlock(self);
 	return ret;
 }
 

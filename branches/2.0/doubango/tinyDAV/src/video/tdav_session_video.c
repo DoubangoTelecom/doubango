@@ -49,8 +49,6 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-#define TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MIN	20
-#define TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MAX	(TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MIN << 3)
 #define TDAV_SESSION_VIDEO_AVPF_FIR_INTERVAL_MIN	800 // millis
 
 #define TDAV_SESSION_VIDEO_PKT_LOSS_PROB_BAD	2
@@ -85,10 +83,13 @@ static const tmedia_codec_action_t __action_encode_bw_down = tmedia_codec_action
 		/* TSK_OBJECT_SAFE_FREE(param); */ \
 	}
 
-#define _tdav_session_video_request_idr(__self) { \
+#define _tdav_session_video_remote_requested_idr(__self, __ssrc_media) { \
 	uint64_t __now = tsk_time_now(); \
 	if((__now - (__self)->avpf.last_fir_time) > TDAV_SESSION_VIDEO_AVPF_FIR_INTERVAL_MIN){ /* guard to avoid sending too many FIR */ \
 		_tdav_session_video_codec_set((__self), "action", __action_encode_idr); \
+		if((__self)->cb_rtcpevent.func){ \
+			(__self)->cb_rtcpevent.func((__self)->cb_rtcpevent.context, tmedia_rtcp_event_type_fir, (__ssrc_media)); \
+		} \
 	} \
 	(__self)->avpf.last_fir_time = __now; \
 }
@@ -107,17 +108,25 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 static int _tdav_session_video_set_callbacks(tmedia_session_t* self);
 
 // Codec callback (From codec to the network)
-// or Producer callback to send() data "as is"
+// or Producer callback to sendRaw() data "as is"
 static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result)
 {
 	tdav_session_av_t* base = (tdav_session_av_t*)result->usr_data;
 	tdav_session_video_t* video = (tdav_session_video_t*)result->usr_data;
+	trtp_rtp_header_t* rtp_header = (trtp_rtp_header_t*)result->proto_hdr;
 	trtp_rtp_packet_t* packet = tsk_null;
 	int ret = 0;
 	tsk_size_t s;
 	
 	if(base->rtp_manager && base->rtp_manager->is_started){
-		if((packet = trtp_rtp_packet_create(base->rtp_manager->rtp.ssrc, base->rtp_manager->rtp.seq_num, base->rtp_manager->rtp.timestamp, base->rtp_manager->rtp.payload_type, result->last_chunck))){
+		if(rtp_header){
+			rtp_header->ssrc = base->rtp_manager->rtp.ssrc; // uses negotiated SSRC (SDP)
+		}
+		packet = rtp_header 
+			? trtp_rtp_packet_create_2(rtp_header)
+			: trtp_rtp_packet_create(base->rtp_manager->rtp.ssrc, base->rtp_manager->rtp.seq_num, base->rtp_manager->rtp.timestamp, base->rtp_manager->rtp.payload_type, result->last_chunck);
+
+		if(packet ){
 			tsk_size_t rtp_hdr_size;
 			if(result->last_chunck){
 				base->rtp_manager->rtp.timestamp += result->duration;
@@ -127,7 +136,7 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 			packet->payload.size = result->buffer.size;
 			s = trtp_manager_send_rtp_packet(base->rtp_manager, packet, tsk_false); // encrypt and send data
 			if(s < TRTP_RTP_HEADER_MIN_SIZE) { 
-				TSK_DEBUG_ERROR("Failed to send packet"); 
+				TSK_DEBUG_ERROR("Failed to send packet. %u expected but only %s sent", packet->payload.size, s); 
 				goto bail; 
 			}
 			++base->rtp_manager->rtp.seq_num;
@@ -153,7 +162,7 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 					++video->avpf.count;
 				}
 
-				tsk_list_push_back_data(video->avpf.packets, (void**)&packet_avpf);
+				tsk_list_push_ascending_data(video->avpf.packets, (void**)&packet_avpf); // filtered per seqnum
 				tsk_list_unlock(video->avpf.packets);
 			}
 
@@ -198,9 +207,12 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 			}
 #endif
 		}
+		else{
+			TSK_DEBUG_ERROR("Failed to create packet");
+		}
 	}
 	else{
-		TSK_DEBUG_ERROR("Failed to create packet");
+		TSK_DEBUG_WARN("Session not ready yet");
 	}
 	
 bail:
@@ -216,7 +228,7 @@ static int tdav_session_video_decode_cb(const tmedia_video_decode_result_xt* res
 	switch(result->type){
 		case tmedia_video_decode_result_type_error:
 			{
-				TSK_DEBUG_INFO("Decoding failed -> send Full Intra Request (FIR)");
+				TSK_DEBUG_INFO("Decoding failed -> send Full Intra Refresh (FIR)");
 				trtp_manager_signal_frame_corrupted(base->rtp_manager, ((const trtp_rtp_header_t*)result->proto_hdr)->ssrc);
 				break;
 			}
@@ -375,7 +387,9 @@ static int tdav_session_video_rtp_cb(const void* callback_data, const trtp_rtp_p
 		return 0;
 	}
 	else{
-		return tdav_video_jb_put(video->jb, (trtp_rtp_packet_t*)packet);
+		return video->jb
+			? tdav_video_jb_put(video->jb, (trtp_rtp_packet_t*)packet)
+			: _tdav_session_video_decode(video, packet);
 	}
 }
 
@@ -433,14 +447,14 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
 		switch(psfb->fci_type){
 			case trtp_rtcp_psfb_fci_type_fir:
 				{
-					_tdav_session_video_request_idr(video);
+					_tdav_session_video_remote_requested_idr(video, ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media);
 					break;
 				}
 			case trtp_rtcp_psfb_fci_type_pli:
 				{
 					uint64_t now = tsk_time_now();
 					if((now - video->avpf.last_pli_time) < 500){ // more than one PLI in 500ms
-						_tdav_session_video_request_idr(video);
+						_tdav_session_video_remote_requested_idr(video, ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media);
 					}
 					video->avpf.last_pli_time = now;
 					break;
@@ -477,11 +491,17 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
 										if(pkt_rtp->header->seq_num > pid){
 											int32_t old_max = video->avpf.max;
 											int32_t len_drop = (pkt_rtp->header->seq_num - pid);
-											video->avpf.max = TSK_CLAMP(TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MIN, (old_max + len_drop), TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MAX);
-											TSK_DEBUG_INFO("**NACK requesting dropped frames [requested_frame=%d, len_drop=%d, new_buff_size=%d]. RTT is probably too high.", pid, len_drop, video->avpf.max);
+											video->avpf.max = TSK_CLAMP((int32_t)tmedia_defaults_get_avpf_tail_min(), (old_max + len_drop), (int32_t)tmedia_defaults_get_avpf_tail_max());
+											TSK_DEBUG_INFO("**NACK requesting dropped frames. List=[%d-%d], requested=%d, List.Max=%d, List.Count=%d. RTT is probably too high.", 
+												((const trtp_rtp_packet_t*)TSK_LIST_FIRST_DATA(video->avpf.packets))->header->seq_num,
+												((const trtp_rtp_packet_t*)TSK_LIST_LAST_DATA(video->avpf.packets))->header->seq_num,
+												pid, 
+												video->avpf.max,
+												video->avpf.count);
+											// FIR not really requested but needed
+											/*_tdav_session_video_remote_requested_idr(video, ((const trtp_rtcp_report_fb_t*)rtpfb)->ssrc_media);
 											tsk_list_clear_items(video->avpf.packets);
-											video->avpf.count = 0;
-											_tdav_session_video_request_idr(video);
+											video->avpf.count = 0;*/
 											goto done;
 										}
 										if(pkt_rtp->header->seq_num == pid){
@@ -583,6 +603,11 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 	if(base->consumer){
 		tsk_size_t out_size, _size;
 		const void* _buffer;
+
+		if(TMEDIA_SESSION(self)->bypass_decoding){
+			ret = tmedia_consumer_consume(base->consumer, (packet->payload.data ? packet->payload.data : packet->payload.data_const), packet->payload.size, packet->header);
+			goto bail;
+		}
 				
 		// Find the codec to use to decode the RTP payload
 		if(!self->decoder.codec || self->decoder.payload_type != packet->header->payload_type){
@@ -808,9 +833,11 @@ static int tdav_session_video_start(tmedia_session_t* self)
 	}
 	tsk_mutex_unlock(video->encoder.h_mutex);
 
-	if((ret = tdav_video_jb_start(video->jb))){
-		TSK_DEBUG_ERROR("Failed to start jitter buffer");
-		return ret;
+	if(video->jb){
+		if((ret = tdav_video_jb_start(video->jb))){
+			TSK_DEBUG_ERROR("Failed to start jitter buffer");
+			return ret;
+		}
 	}
 
 	if((ret = tdav_session_av_start(base, video->encoder.codec))){
@@ -824,11 +851,23 @@ static int tdav_session_video_start(tmedia_session_t* self)
 static int tdav_session_video_stop(tmedia_session_t* self)
 {
 	int ret;
-		
-	ret = tdav_video_jb_stop(TDAV_SESSION_VIDEO(self)->jb);
-	ret = tdav_session_av_stop(TDAV_SESSION_AV(self));
-	TSK_OBJECT_SAFE_FREE(TDAV_SESSION_VIDEO(self)->encoder.codec);
-	TSK_OBJECT_SAFE_FREE(TDAV_SESSION_VIDEO(self)->decoder.codec);
+	tdav_session_video_t* video;
+	tdav_session_av_t* base;
+
+	video = (tdav_session_video_t*)self;
+	base = (tdav_session_av_t*)self;
+	
+	if(video->jb){
+		ret = tdav_video_jb_stop(video->jb);
+	}
+	// clear AVPF packets and wait for the dtor() before destroying the list
+	tsk_list_lock(video->avpf.packets);
+	tsk_list_clear_items(video->avpf.packets);
+	tsk_list_unlock(video->avpf.packets);
+
+	ret = tdav_session_av_stop(base);
+	TSK_OBJECT_SAFE_FREE(video->encoder.codec);
+	TSK_OBJECT_SAFE_FREE(video->decoder.codec);
 	return ret;
 }
 
@@ -876,6 +915,59 @@ static int tdav_session_video_set_ro(tmedia_session_t* self, const tsdp_header_M
 	return ret;
 }
 
+// Plugin interface: callback from the end-user to set rtcp event callback (should be called only when encoding is bypassed)
+static int tdav_session_video_rtcp_set_onevent_cbfn(tmedia_session_t* self, const void* context, tmedia_session_rtcp_onevent_cb_f func)
+{
+	tdav_session_video_t* video;
+	tdav_session_av_t* base;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	video = (tdav_session_video_t*)self;
+	base = (tdav_session_av_t*)self;
+
+	tsk_safeobj_lock(base);
+	video->cb_rtcpevent.context = context;
+	video->cb_rtcpevent.func = func;
+	tsk_safeobj_unlock(base);
+
+	return 0;
+}
+
+// Plugin interface: called by the end-user to send rtcp event (should be called only when encoding is bypassed)
+static int tdav_session_video_rtcp_send_event(tmedia_session_t* self, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media)
+{
+	tdav_session_video_t* video;
+	tdav_session_av_t* base;
+	int ret = -1;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	video = (tdav_session_video_t*)self;
+	base = (tdav_session_av_t*)self;
+
+	tsk_safeobj_lock(base);
+	switch(event_type){
+		case tmedia_rtcp_event_type_fir:
+			{
+				TSK_DEBUG_INFO("User requested Full Intra Refresh (FIR)");
+				if(base->rtp_manager && base->rtp_manager->is_started){
+					ret = trtp_manager_signal_frame_corrupted(base->rtp_manager, ssrc_media);
+				}
+				break;
+			}
+	}
+	tsk_safeobj_unlock(base);
+
+	return ret;
+}
+
 static int _tdav_session_video_set_callbacks(tmedia_session_t* self)
 {
 	if(self){
@@ -913,6 +1005,7 @@ static tsk_object_t* tdav_session_video_ctor(tsk_object_t * self, va_list * app)
 		}
 		
 		/* init() self */
+		video->jb_enabled = tmedia_defaults_get_videojb_enabled();
 		if(!(video->encoder.h_mutex = tsk_mutex_create())){
 			TSK_DEBUG_ERROR("Failed to create encode mutex");
 			return tsk_null;
@@ -921,17 +1014,19 @@ static tsk_object_t* tdav_session_video_ctor(tsk_object_t * self, va_list * app)
 			TSK_DEBUG_ERROR("Failed to create list");
 			return tsk_null;
 		}
-		if(!(video->jb = tdav_video_jb_create())){
-			TSK_DEBUG_ERROR("Failed to create jitter buffer");
-			return tsk_null;
+		if(video->jb_enabled){
+			if(!(video->jb = tdav_video_jb_create())){
+				TSK_DEBUG_ERROR("Failed to create jitter buffer");
+				return tsk_null;
+			}
+			tdav_video_jb_set_callback(video->jb, _tdav_session_video_jb_cb, video);
 		}
-		tdav_video_jb_set_callback(video->jb, _tdav_session_video_jb_cb, video);
 
 		if(base->producer){
 			tmedia_producer_set_enc_callback(base->producer, tdav_session_video_producer_enc_cb, self);
 			tmedia_producer_set_raw_callback(base->producer, tdav_session_video_raw_cb, self);
 		}
-		video->avpf.max = TDAV_SESSION_VIDEO_AVPF_PACKETS_MAX_MIN;
+		video->avpf.max = tmedia_defaults_get_avpf_tail_min();
 		video->encoder.pkt_loss_level = tdav_session_video_pkt_loss_level_low;
 		video->encoder.pkt_loss_prob_bad = 0; // honor first report
 		video->encoder.pkt_loss_prob_good = TDAV_SESSION_VIDEO_PKT_LOSS_PROB_GOOD;
@@ -997,6 +1092,15 @@ static const tmedia_session_plugin_def_t tdav_session_video_plugin_def_s =
 	{ tsk_null },
 
 	tdav_session_video_get_lo,
-	tdav_session_video_set_ro
+	tdav_session_video_set_ro,
+
+	/* T.140 */
+	{ tsk_null },
+
+	/* Rtcp */
+	{
+		tdav_session_video_rtcp_set_onevent_cbfn,
+		tdav_session_video_rtcp_send_event
+	}
 };
 const tmedia_session_plugin_def_t *tdav_session_video_plugin_def_t = &tdav_session_video_plugin_def_s;

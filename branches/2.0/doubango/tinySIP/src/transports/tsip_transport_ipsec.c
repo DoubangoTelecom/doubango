@@ -478,7 +478,7 @@ static tsk_object_t* tsip_ipsec_association_ctor(tsk_object_t * self, va_list * 
 		else{
 			tipsec_set_local(association->ctx, 
 				ip_local, 
-				transport->stack->network.proxy_cscf_[transport->stack->network.transport_idx_default], 
+				transport->stack->network.proxy_cscf[transport->stack->network.transport_idx_default], 
 				association->socket_uc->port, 
 				association->socket_us->port);
 		}

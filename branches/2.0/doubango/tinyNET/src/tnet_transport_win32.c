@@ -38,7 +38,7 @@
 #if TNET_UNDER_WINDOWS && !TNET_USE_POLL
 
 /*== Socket description ==*/
-typedef struct transport_socket_s
+typedef struct transport_socket_xs
 {
 	tnet_fd_t fd;
 	unsigned owner:1;
@@ -48,7 +48,7 @@ typedef struct transport_socket_s
 	tnet_socket_type_t type;
 	tnet_tls_socket_handle_t* tlshandle;
 }
-transport_socket_t;
+transport_socket_xt;
 
 /*== Transport context structure definition ==*/
 typedef struct transport_context_s
@@ -57,13 +57,13 @@ typedef struct transport_context_s
 	
 	tsk_size_t count;
 	WSAEVENT events[WSA_MAXIMUM_WAIT_EVENTS];
-	transport_socket_t* sockets[WSA_MAXIMUM_WAIT_EVENTS];
+	transport_socket_xt* sockets[WSA_MAXIMUM_WAIT_EVENTS];
 
 	TSK_DECLARE_SAFEOBJ;
 }
 transport_context_t;
 
-static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd);
+static transport_socket_xt* getSocket(transport_context_t *context, tnet_fd_t fd);
 static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client);
 static int removeSocket(int index, transport_context_t *context);
 
@@ -83,7 +83,7 @@ int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t 
 	context = (transport_context_t*)transport->context;
 	for(i=0; i<context->count; i++)
 	{
-		const transport_socket_t* socket = context->sockets[i];
+		const transport_socket_xt* socket = context->sockets[i];
 		if(socket->fd == fd){
 			return socket->connected;
 		}
@@ -107,7 +107,7 @@ int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t 
 const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transport_handle_t *handle, tnet_fd_t fd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
-	transport_socket_t *socket;
+	transport_socket_xt *socket;
 	
 	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
@@ -139,7 +139,7 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 		return -2;
 	}
 
-	if(TNET_SOCKET_TYPE_IS_TLS(type)){
+	if(TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)){
 		transport->tls.have_tls = 1;
 	}
 
@@ -165,7 +165,7 @@ int tnet_transport_pause_socket(const tnet_transport_handle_t *handle, tnet_fd_t
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
-	transport_socket_t* socket;
+	transport_socket_xt* socket;
 
 	if(!transport || !(context = (transport_context_t*)transport->context)){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -233,12 +233,13 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
 	}
 
 	if(transport->tls.have_tls){
-		transport_socket_t* socket = getSocket(transport->context, from);
+		transport_socket_xt* socket = getSocket(transport->context, from);
 		if(socket && socket->tlshandle){
 			if(!tnet_tls_socket_send(socket->tlshandle, buf, size)){
 				numberOfBytesSent = size;
 			}
 			else{
+				TSK_DEBUG_ERROR("Tring to use a socket without TLS handle to send data");
 				numberOfBytesSent = 0;
 			}
 			goto bail;
@@ -322,10 +323,10 @@ int CALLBACK AcceptCondFunc(LPWSABUF lpCallerId, LPWSABUF lpCallerData, LPQOS lp
 }
 
 /*== Get socket ==*/
-static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
+static transport_socket_xt* getSocket(transport_context_t *context, tnet_fd_t fd)
 {
 	tsk_size_t i;
-	transport_socket_t* ret = 0;
+	transport_socket_xt* ret = 0;
 
 	if(context){
 		tsk_safeobj_lock(context);
@@ -347,12 +348,12 @@ static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *tr
 	transport_context_t *context = transport?transport->context:0;
 
 	if(context){
-		transport_socket_t *sock = tsk_calloc(1, sizeof(transport_socket_t));
+		transport_socket_xt *sock = tsk_calloc(1, sizeof(transport_socket_xt));
 		sock->fd = fd;
 		sock->type = type;
 		sock->owner = take_ownership ? 1 : 0;
 
-		if(TNET_SOCKET_TYPE_IS_TLS(sock->type)){
+		if(TNET_SOCKET_TYPE_IS_TLS(sock->type) || TNET_SOCKET_TYPE_IS_WSS(sock->type)){
 			sock->tlshandle = tnet_sockfd_set_tlsfiles(sock->fd, is_client, transport->tls.ca, transport->tls.pvk, transport->tls.pbk);
 		}
 		
@@ -529,10 +530,10 @@ void *tnet_transport_mainthread(void *param)
 
 	struct sockaddr_storage remote_addr = {0};
 	WSAEVENT active_event;
-	transport_socket_t* active_socket;
+	transport_socket_xt* active_socket;
 	int index;
 
-	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
+	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d} with type {%d}...", transport->description, transport->master->ip, transport->master->port, transport->master->type);
 	
 	while(TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started)
 	{
@@ -582,9 +583,19 @@ void *tnet_transport_mainthread(void *param)
 			if((fd = WSAAccept(active_socket->fd, NULL, NULL, AcceptCondFunc, (DWORD_PTR)context)) != INVALID_SOCKET){
 				/* Add the new fd to the server context */
 				addSocket(fd, transport->master->type, transport, tsk_true, tsk_false);
+				if(active_socket->tlshandle){
+					transport_socket_xt* tls_socket;
+					if((tls_socket = getSocket(context, fd))){
+						if(tnet_tls_socket_accept(tls_socket->tlshandle)){
+							tnet_transport_remove_socket(transport, &fd);
+							TNET_PRINT_LAST_ERROR("SSL_accept() failed");
+							goto done;
+						}
+					}
+				}
 				if(WSAEventSelect(fd, context->events[context->count - 1], FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR){
-					removeSocket((context->count - 1), context);
-					TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
+					tnet_transport_remove_socket(transport, &fd);
+					TNET_PRINT_LAST_ERROR("WSAEventSelect() have failed.");
 					goto done;
 				}
 				TSK_RUNNABLE_ENQUEUE(transport, event_accepted, transport->callback_data, fd);
@@ -751,9 +762,8 @@ done:
 	
 
 bail:
-
-
-	TSK_DEBUG_INFO("Stopped [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
+	
+	TSK_DEBUG_INFO("Stopped [%s] server with IP {%s} on port {%d} with type {%d}...", transport->description, transport->master->ip, transport->master->port, transport->master->type);
 	return tsk_null;
 }
 

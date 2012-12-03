@@ -45,7 +45,7 @@
 #define TSIP_CHALLENGE_IS_AKAv2(self)	((self) ? tsk_striequals((self)->algorithm, "AKAv2-MD5") : 0)
 
 #define TSIP_CHALLENGE_STACK(self)		(TSIP_STACK((self)->stack))
-#define TSIP_CHALLENGE_USERNAME(self)	TSIP_CHALLENGE_STACK(self)->identity.impi
+#define TSIP_CHALLENGE_USERNAME(self)	(self)->username
 #define TSIP_CHALLENGE_PASSWORD(self)	TSIP_CHALLENGE_STACK(self)->identity.password
 
 
@@ -238,7 +238,14 @@ int tsip_challenge_get_response(tsip_challenge_t *self, const char* method, cons
 			TSK_FREE(akaresult);
 		}
 		else{
-			thttp_auth_digest_HA1(TSIP_CHALLENGE_USERNAME(self), self->realm, TSIP_CHALLENGE_STACK(self)->identity.password, &ha1);
+			if(!tsk_strnullORempty(self->ha1_hexstr)){
+				// use HA1 provide be the user (e.g. webrtc2sip server will need this to authenticate INVITEs when acting as b2bua)
+				memset(ha1, 0, sizeof(tsk_md5string_t));
+				memcpy(ha1, self->ha1_hexstr, (TSK_MD5_DIGEST_SIZE << 1));
+			}
+			else{
+				thttp_auth_digest_HA1(TSIP_CHALLENGE_USERNAME(self), self->realm, TSIP_CHALLENGE_STACK(self)->identity.password, &ha1);
+			}
 		}
 
 		/* ===
@@ -292,6 +299,17 @@ int tsip_challenge_update(tsip_challenge_t *self, const char* scheme, const char
 		return 0;
 	}
 	return -1;
+}
+
+int tsip_challenge_set_cred(tsip_challenge_t *self, const char* username, const char* ha1_hexstr)
+{
+	if(!self || tsk_strlen(ha1_hexstr) != (TSK_MD5_DIGEST_SIZE << 1)){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	tsk_strupdate(&self->username, username);
+	tsk_strupdate(&self->ha1_hexstr, ha1_hexstr);
+	return 0;
 }
 
 tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self, const tsip_request_t *request)
@@ -407,6 +425,7 @@ static tsk_object_t* tsip_challenge_ctor(tsk_object_t *self, va_list * app)
 
 		challenge->stack = va_arg(*app, const tsip_stack_handle_t *);
 		challenge->isproxy = va_arg(*app, tsk_bool_t);
+		challenge->username = tsk_strdup(((const struct tsip_stack_s*)challenge->stack)->identity.impi);
 		challenge->scheme = tsk_strdup(va_arg(*app, const char*));
 		challenge->realm = tsk_strdup(va_arg(*app, const char*));
 		challenge->nonce = tsk_strdup(va_arg(*app, const char*));
@@ -433,13 +452,13 @@ static tsk_object_t* tsip_challenge_dtor(tsk_object_t *self)
 {
 	tsip_challenge_t *challenge = self;
 	if(challenge){
+		TSK_FREE(challenge->username);
 		TSK_FREE(challenge->scheme);
 		TSK_FREE(challenge->realm);
 		TSK_FREE(challenge->nonce);
 		TSK_FREE(challenge->opaque);
 		TSK_FREE(challenge->algorithm);
-		
-		//TSK_FREE(challenge->qop);
+		TSK_FREE(challenge->ha1_hexstr);
 	}
 	else{
 		TSK_DEBUG_ERROR("Null SIP challenge object.");

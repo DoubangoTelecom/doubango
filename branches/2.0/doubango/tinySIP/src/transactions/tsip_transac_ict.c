@@ -153,52 +153,55 @@ _fsm_state_t;
 **/
 int tsip_transac_ict_event_callback(const tsip_transac_ict_t *self, tsip_transac_event_type_t type, const tsip_message_t *msg)
 {	
-	int ret = 0;
-
 	/*	draft-sparks-sip-invfix-03 - 7.2. UAC Impacts
 		Any response received which does not match an existing client transaction state machine is simply dropped.
 	*/
 	switch(type){
 
-	case tsip_transac_incoming_msg:
-		{
-			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
+		case tsip_transac_incoming_msg:
 			{
-				if(TSIP_RESPONSE_IS_1XX(msg)){
-					ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_1xx, msg);
+				if(msg)
+				{
+					if(TSIP_MESSAGE_IS_RESPONSE(msg)){
+						if(TSIP_RESPONSE_IS_1XX(msg)){
+							return tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_1xx, msg);
+						}
+						else if(TSIP_RESPONSE_IS_2XX(msg)){
+							return tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_2xx, msg);
+						}
+						else if(TSIP_RESPONSE_IS_3456(msg)){
+							return tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_300_to_699, msg);
+						}
+						else{
+							TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg));
+							return 0;
+						}
+					}
+					// any other response have to be delivered if dst_type is 'network'
+					if(TSIP_TRANSAC(self)->dst->type == tsip_transac_dst_type_net){
+						return tsip_transac_deliver(TSIP_TRANSAC(self), tsip_transac_incoming_msg, msg);
+					}
 				}
-				else if(TSIP_RESPONSE_IS_2XX(msg)){
-					ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_2xx, msg);
-				}
-				else if(TSIP_RESPONSE_IS_3456(msg)){
-					ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_300_to_699, msg);
-				}
-				else{
-					TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg));
-				}
+				break;
 			}
-			break;
-		}
 
-	case tsip_transac_canceled:
-	case tsip_transac_terminated:
-	case tsip_transac_timedout:
-		break;
-
-	case tsip_transac_error:
-		{
-			ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_error, msg);
+		case tsip_transac_canceled:
+		case tsip_transac_terminated:
+		case tsip_transac_timedout:
 			break;
-		}
 
-	case tsip_transac_transport_error:
-		{
-			ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_transporterror, msg);
-			break;
-		}
+		case tsip_transac_error:
+			{
+				return tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_error, msg);
+			}
+
+		case tsip_transac_transport_error:
+			{
+				return tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_transporterror, msg);
+			}
 	}
 
-	return ret;
+	return 0;
 }
 
 int tsip_transac_ict_timer_callback(const tsip_transac_ict_t* self, tsk_timer_id_t timer_id)
@@ -311,15 +314,26 @@ int tsip_transac_ict_init(tsip_transac_ict_t *self)
 
 	self->timerA.timeout = TSIP_TIMER_GET(A);
 	self->timerB.timeout = TSIP_TIMER_GET(B);
-	self->timerD.timeout = TSIP_TRANSAC(self)->reliable ? 0 : TSIP_TIMER_GET(D);
 	self->timerM.timeout = TSIP_TIMER_GET(M);
 
 	return 0;
 }
 
-tsip_transac_ict_t* tsip_transac_ict_create(tsk_bool_t reliable, int32_t cseq_value, const char* callid, tsip_dialog_t* dialog)
+tsip_transac_ict_t* tsip_transac_ict_create(int32_t cseq_value, const char* callid, tsip_transac_dst_t* dst)
 {
-	return tsk_object_new(tsip_transac_ict_def_t, reliable, cseq_value, callid, dialog);
+	tsip_transac_ict_t* transac = tsk_object_new(tsip_transac_ict_def_t);
+	if(transac){
+		// initialize base class
+		tsip_transac_init(TSIP_TRANSAC(transac), tsip_transac_type_ict, cseq_value, "INVITE", callid, dst, _fsm_state_Started, _fsm_state_Terminated);
+
+		// init FSM
+		TSIP_TRANSAC_GET_FSM(transac)->debug = DEBUG_STATE_MACHINE;
+		tsk_fsm_set_callback_terminated(TSIP_TRANSAC_GET_FSM(transac), TSK_FSM_ONTERMINATED_F(tsip_transac_ict_OnTerminated), (const void*)transac);
+
+		// initialize ICT object
+		tsip_transac_ict_init(transac);
+	}
+	return transac;
 }
 
 /**
@@ -334,8 +348,13 @@ int tsip_transac_ict_start(tsip_transac_ict_t *self, const tsip_request_t* reque
 {
 	int ret = -1;
 	if(self && request && !TSIP_TRANSAC(self)->running){
-		/* Add branch to the new client transaction. */
-		if((TSIP_TRANSAC(self)->branch = tsk_strdup(TSIP_TRANSAC_MAGIC_COOKIE))){
+		/* Add branch to the new client transaction
+		* - Transac will use request branch if exit (e.g. when request received over websocket)
+		*/
+		if((request->firstVia && !tsk_strnullORempty(request->firstVia->branch))){
+			tsk_strupdate(&TSIP_TRANSAC(self)->branch, (request->firstVia ? request->firstVia->branch : "doubango"));
+		}
+		else if((TSIP_TRANSAC(self)->branch = tsk_strdup(TSIP_TRANSAC_MAGIC_COOKIE))){
 			tsk_istr_t branch;
 			tsk_strrandom(&branch);
 			tsk_strcat(&(TSIP_TRANSAC(self)->branch), branch);
@@ -366,6 +385,12 @@ int tsip_transac_ict_Started_2_Calling_X_send(va_list *app)
 
 	//== Send the request
 	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, TSIP_MESSAGE(self->request));
+
+	// Now that the first request is sent using the best transport mean we know if it's reliable or not
+	if(TNET_SOCKET_TYPE_IS_VALID(self->request->dst_net_type)){
+		TSIP_TRANSAC(self)->reliable = TNET_SOCKET_TYPE_IS_STREAM(self->request->dst_net_type);
+		self->timerD.timeout = TSIP_TRANSAC(self)->reliable ? 0 : TSIP_TIMER_GET(D);
+	}
 
 	/* RFC 3261 - 17.1.1.2 Formal Description
 		If an unreliable transport is being used, the client transaction MUST 
@@ -430,7 +455,7 @@ int tsip_transac_ict_Calling_2_Terminated_X_timerB(va_list *app)
 		value of 64*T1 is equal to the amount of time required to send seven
 		requests in the case of an unreliable transport.
 	*/
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_timedout, tsk_null);
+	tsip_transac_deliver(TSIP_TRANSAC(self), tsip_dialog_timedout, tsk_null);
 	
 	return 0;
 }
@@ -477,7 +502,7 @@ int tsip_transac_ict_Calling_2_Completed_X_300_to_699(va_list *app)
 	}
 
 	/* Pass the response to the dialog. */
-	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
+	return tsip_transac_deliver(TSIP_TRANSAC(self), tsip_dialog_i_msg, response);
 }
 
 /* Calling -> (1xx) -> Proceeding
@@ -503,7 +528,7 @@ int tsip_transac_ict_Calling_2_Proceeding_X_1xx(va_list *app)
 	TRANSAC_TIMER_CANCEL(B); /* Now it's up to the UAS to update the FSM. */
 	
 	/* Pass the provisional response to the dialog. */
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
+	tsip_transac_deliver(TSIP_TRANSAC(self), tsip_dialog_i_msg, response);
 
 	return 0;
 }
@@ -534,7 +559,7 @@ int tsip_transac_ict_Calling_2_Accepted_X_2xx(va_list *app)
 	TRANSAC_ICT_TIMER_SCHEDULE(B);
 
 	/* pass the response to the TU (dialog) */
-	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
+	return tsip_transac_deliver(TSIP_TRANSAC(self), tsip_dialog_i_msg, response);
 }
 
 /* Proceeding -> (1xx) -> Proceeding
@@ -545,7 +570,7 @@ int tsip_transac_ict_Proceeding_2_Proceeding_X_1xx(va_list *app)
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
 	/* pass the response to the TU (dialog) */
-	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
+	return tsip_transac_deliver(TSIP_TRANSAC(self), tsip_dialog_i_msg, response);
 }
 
 /* Proceeding -> (300-699) -> Completed
@@ -590,7 +615,7 @@ int tsip_transac_ict_Proceeding_2_Completed_X_300_to_699(va_list *app)
 	}
 
 	/* Pass the response to the dialog. */
-	ret = TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
+	ret = tsip_transac_deliver(TSIP_TRANSAC(self), tsip_dialog_i_msg, response);
 
 	return ret;
 }
@@ -621,7 +646,7 @@ int tsip_transac_ict_Proceeding_2_Accepted_X_2xx(va_list *app)
 	TRANSAC_ICT_TIMER_SCHEDULE(B);
 
 	/* pass the response to the TU (dialog) */
-	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
+	return tsip_transac_deliver(TSIP_TRANSAC(self), tsip_dialog_i_msg, response);
 }
 
 /* Completed -> (300-699) -> Completed
@@ -670,7 +695,7 @@ int tsip_transac_ict_Accepted_2_Accepted_X_2xx(va_list *app)
 	*/
 	
 	/* Pass the response to the TU. */
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
+	tsip_transac_deliver(TSIP_TRANSAC(self), tsip_dialog_i_msg, response);
 	
 	return 0;
 }
@@ -695,7 +720,7 @@ int tsip_transac_ict_Any_2_Terminated_X_transportError(va_list *app)
 
 	/* Timers will be canceled by "tsip_transac_ict_OnTerminated" */
 
-	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, tsk_null);
+	return tsip_transac_deliver(TSIP_TRANSAC(self), tsip_dialog_transport_error, tsk_null);
 }
 
 /* Any -> (Error) -> Terminated
@@ -707,7 +732,7 @@ int tsip_transac_ict_Any_2_Terminated_X_Error(va_list *app)
 
 	/* Timers will be canceled by "tsip_transac_ict_OnTerminated" */
 
-	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_error, tsk_null);
+	return tsip_transac_deliver(TSIP_TRANSAC(self), tsip_dialog_error, tsk_null);
 }
 
 /* Any -> (cancel) -> Terminated
@@ -797,11 +822,9 @@ int tsip_transac_ict_send_ACK(tsip_transac_ict_t *self, const tsip_response_t* r
 				tsip_message_add_header(request, curr);
 			}
 		}
-		// sockfd: 
-		//request->sockfd = response->sockfd;
 
 		// SigComp
-		if(TSIP_TRANSAC_GET_SESSION(self)->sigcomp_id){
+		if(TSIP_TRANSAC_GET_SESSION(self) && TSIP_TRANSAC_GET_SESSION(self)->sigcomp_id){
 			request->sigcomp_id = tsk_strdup(TSIP_TRANSAC_GET_SESSION(self)->sigcomp_id);
 		}
 
@@ -860,21 +883,6 @@ static tsk_object_t* tsip_transac_ict_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_transac_ict_t *transac = self;
 	if(transac){
-		tsk_bool_t reliable = va_arg(*app, tsk_bool_t);
-		int32_t cseq_value = va_arg(*app, int32_t);
-		const char *cseq_method = "INVITE";
-		const char *callid = va_arg(*app, const char *);
-		tsip_dialog_t* dialog = va_arg(*app, tsip_dialog_t*);
-
-		/* Initialize base class */
-		tsip_transac_init(TSIP_TRANSAC(transac), tsip_ict, reliable, cseq_value, cseq_method, callid, dialog, _fsm_state_Started, _fsm_state_Terminated);
-
-		/* init FSM */
-		TSIP_TRANSAC_GET_FSM(transac)->debug = DEBUG_STATE_MACHINE;
-		tsk_fsm_set_callback_terminated(TSIP_TRANSAC_GET_FSM(transac), TSK_FSM_ONTERMINATED_F(tsip_transac_ict_OnTerminated), (const void*)transac);
-
-		/* Initialize ICT object */
-		tsip_transac_ict_init(transac);
 	}
 	return self;
 }
