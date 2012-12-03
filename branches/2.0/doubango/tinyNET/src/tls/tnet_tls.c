@@ -48,8 +48,6 @@
 #define TNET_TLS_TIMEOUT		2000
 #define TNET_TLS_RETRY_COUNT	5
 
-SSL_CTX *ssl_ctx = tsk_null;
-
 typedef struct tnet_tls_socket_s
 {
 	TSK_DECLARE_OBJECT;

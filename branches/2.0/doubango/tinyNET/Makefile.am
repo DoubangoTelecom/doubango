@@ -7,6 +7,10 @@ libtinyNET_la_LIBADD += ${LIBSSL_LIBADD}
 libtinyNET_la_CPPFLAGS += -DHAVE_OPENSSL=1
 endif
 
+if USE_RESOLV
+libtinyNET_la_LIBADD += ${LIBRESOLV_LIBADD}
+endif
+
 libtinyNET_la_SOURCES  = \
 	src/tnet.c\
 	src/tnet_auth.c\
