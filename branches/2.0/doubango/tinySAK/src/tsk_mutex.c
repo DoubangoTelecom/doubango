@@ -42,6 +42,13 @@
 #	define MUTEX_S pthread_mutex_t
 	typedef MUTEX_S* MUTEX_T;
 #	define TSK_ERROR_NOT_OWNER EPERM
+#   if !defined(TSK_RECURSIVE_MUTEXATTR)
+#       if defined(PTHREAD_MUTEX_RECURSIVE)
+#           define TSK_RECURSIVE_MUTEXATTR PTHREAD_MUTEX_RECURSIVE
+#       else
+#           define TSK_RECURSIVE_MUTEXATTR PTHREAD_MUTEX_RECURSIVE_NP
+#       endif
+#   endif /* TSK_RECURSIVE_MUTEXATTR */
 #endif
 
 #if defined(__GNUC__) || defined(__SYMBIAN32__)
@@ -83,7 +90,7 @@ tsk_mutex_handle_t* tsk_mutex_create_2(tsk_bool_t recursive)
 		TSK_DEBUG_ERROR("pthread_mutexattr_init failed with error code %d", ret);
 		return tsk_null;
 	}
-	if(recursive && (ret = pthread_mutexattr_settype(&mta, PTHREAD_MUTEX_RECURSIVE))){
+	if(recursive && (ret = pthread_mutexattr_settype(&mta, TSK_RECURSIVE_MUTEXATTR))){
 		TSK_DEBUG_ERROR("pthread_mutexattr_settype failed with error code %d", ret);
 		pthread_mutexattr_destroy(&mta);
 		return tsk_null;
@@ -117,7 +124,7 @@ int tsk_mutex_lock(tsk_mutex_handle_t* handle)
 #if TSK_UNDER_WINDOWS
 		if((ret = WaitForSingleObject((MUTEX_T)handle , INFINITE)) == WAIT_FAILED)
 #else
-		if(ret = pthread_mutex_lock((MUTEX_T)handle))
+		if((ret = pthread_mutex_lock((MUTEX_T)handle)))
 #endif
 		{
 			TSK_DEBUG_ERROR("Failed to lock the mutex: %d", ret);
@@ -141,7 +148,7 @@ int tsk_mutex_unlock(tsk_mutex_handle_t* handle)
 		if((ret = ReleaseMutex((MUTEX_T)handle) ? 0 : -1)){
 			ret = GetLastError();
 #else
-		if(ret = pthread_mutex_unlock((MUTEX_T)handle))
+		if((ret = pthread_mutex_unlock((MUTEX_T)handle)))
 		{
 #endif
 			if(ret == TSK_ERROR_NOT_OWNER){
