@@ -70,6 +70,17 @@ AC_ARG_WITH(debug-level,
 ])
 
 AC_CHECK_FUNCS([stricmp strnicmp])
+
+AC_TRY_COMPILE([#include <pthread.h>],
+    [static int k = PTHREAD_MUTEX_RECURSIVE;],
+    [AC_DEFINE(TSK_RECURSIVE_MUTEXATTR, PTHREAD_MUTEX_RECURSIVE,
+        [Check whether PTHREAD_MUTEX_RECURSIVE is defined])],
+[AC_TRY_COMPILE([#include <pthread.h>],
+    [static int k = PTHREAD_MUTEX_RECURSIVE_NP;],
+        [AC_DEFINE(TSK_RECURSIVE_MUTEXATTR, PTHREAD_MUTEX_RECURSIVE_NP,
+            [Check whether PTHREAD_MUTEX_RECURSIVE_NP is defined])])])
+
+
 AC_DEFINE(USE_POLL, 1, [Setting USE_POLL to 1 for backward compatibility])
 AC_CHECK_FUNCS([poll])
 
