@@ -6701,15 +6701,20 @@ static const int thttp_machine_parser_header_Authorization_en_main = 1;
 
 
 /* #line 226 "./ragel/thttp_parser_header_Authorization.rl" */
+	(void)(eof);
+	(void)(thttp_machine_parser_header_Authorization_first_final);
+	(void)(thttp_machine_parser_header_Authorization_error);
+	(void)(thttp_machine_parser_header_Authorization_en_main);
+
 	
-/* #line 6706 "./src/headers/thttp_header_Authorization.c" */
+/* #line 6711 "./src/headers/thttp_header_Authorization.c" */
 	{
 	cs = thttp_machine_parser_header_Authorization_start;
 	}
 
-/* #line 227 "./ragel/thttp_parser_header_Authorization.rl" */
+/* #line 232 "./ragel/thttp_parser_header_Authorization.rl" */
 	
-/* #line 6713 "./src/headers/thttp_header_Authorization.c" */
+/* #line 6718 "./src/headers/thttp_header_Authorization.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -6891,7 +6896,7 @@ _match:
 	{
 	}
 	break;
-/* #line 6895 "./src/headers/thttp_header_Authorization.c" */
+/* #line 6900 "./src/headers/thttp_header_Authorization.c" */
 		}
 	}
 
@@ -6904,12 +6909,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 228 "./ragel/thttp_parser_header_Authorization.rl" */
+/* #line 233 "./ragel/thttp_parser_header_Authorization.rl" */
 	
 	if( cs < 
-/* #line 6911 "./src/headers/thttp_header_Authorization.c" */
+/* #line 6916 "./src/headers/thttp_header_Authorization.c" */
 1351
-/* #line 229 "./ragel/thttp_parser_header_Authorization.rl" */
+/* #line 234 "./ragel/thttp_parser_header_Authorization.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse Authorization header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Authorization);

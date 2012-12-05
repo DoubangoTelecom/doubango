@@ -95,6 +95,10 @@ tmsrp_header_Expires_t *tmsrp_header_Expires_parse(const char *data, tsk_size_t 
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tmsrp_machine_parser_header_Expires_first_final);
+	(void)(tmsrp_machine_parser_header_Expires_error);
+	(void)(tmsrp_machine_parser_header_Expires_en_main);
 	%%write init;
 	%%write exec;
 	

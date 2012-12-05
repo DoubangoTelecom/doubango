@@ -40,7 +40,7 @@
 	machine thttp_machine_parser_url;
 
 	# Includes
-	include thttp_machine_utils "./thttp_machine_utils.rl";
+	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
 			
 	action tag{
 		tag_start = p;
@@ -116,6 +116,10 @@ thttp_url_t *thttp_url_parse(const char *urlstring, tsk_size_t length)
 	const char *tag_start = 0;
 	
 	%%write data;
+	(void)(eof);
+	(void)(thttp_machine_parser_url_first_final);
+	(void)(thttp_machine_parser_url_error);
+	(void)(thttp_machine_parser_url_en_main);
 	%%write init;
 	%%write exec;
 	

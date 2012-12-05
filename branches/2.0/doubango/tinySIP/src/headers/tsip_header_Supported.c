@@ -176,15 +176,19 @@ static const int tsip_machine_parser_header_Supported_en_main = 1;
 
 
 /* #line 113 "./ragel/tsip_parser_header_Supported.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Supported_first_final);
+	(void)(tsip_machine_parser_header_Supported_error);
+	(void)(tsip_machine_parser_header_Supported_en_main);
 	
-/* #line 181 "./src/headers/tsip_header_Supported.c" */
+/* #line 185 "./src/headers/tsip_header_Supported.c" */
 	{
 	cs = tsip_machine_parser_header_Supported_start;
 	}
 
-/* #line 114 "./ragel/tsip_parser_header_Supported.rl" */
+/* #line 118 "./ragel/tsip_parser_header_Supported.rl" */
 	
-/* #line 188 "./src/headers/tsip_header_Supported.c" */
+/* #line 192 "./src/headers/tsip_header_Supported.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -275,7 +279,7 @@ _match:
 	{
 	}
 	break;
-/* #line 279 "./src/headers/tsip_header_Supported.c" */
+/* #line 283 "./src/headers/tsip_header_Supported.c" */
 		}
 	}
 
@@ -288,12 +292,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 115 "./ragel/tsip_parser_header_Supported.rl" */
+/* #line 119 "./ragel/tsip_parser_header_Supported.rl" */
 	
 	if( cs < 
-/* #line 295 "./src/headers/tsip_header_Supported.c" */
+/* #line 299 "./src/headers/tsip_header_Supported.c" */
 22
-/* #line 116 "./ragel/tsip_parser_header_Supported.rl" */
+/* #line 120 "./ragel/tsip_parser_header_Supported.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Supported' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_supported);

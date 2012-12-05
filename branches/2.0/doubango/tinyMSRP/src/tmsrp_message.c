@@ -58,7 +58,25 @@ static int pred_find_header_by_name(const tsk_list_item_t *item, const void *nam
 
 tmsrp_message_t* tmsrp_message_create(tmsrp_message_type_t type, const char* tid, const char* method, short status, const char* comment)
 {
-	return tsk_object_new(tmsrp_message_def_t, type, tid, method, status, comment);
+	tmsrp_message_t* message;
+	if((message = tsk_object_new(tmsrp_message_def_t))){
+		message->type = type;
+		message->tid = tsk_strdup(tid);
+		if(message->type == tmsrp_response){
+			message->line.response.status = status;
+			message->line.response.comment = tsk_strdup(comment);
+		}
+		else{ 
+			message->line.request.method = tsk_strdup(method);
+			message->line.request.type = tmsrp_request_get_type(method);
+		}
+		
+		message->headers = tsk_list_create();
+
+		message->end_line.tid = tsk_strdup(message->tid);
+		message->end_line.cflag = '$';
+	}
+	return message;
 }
 
 tmsrp_message_t* tmsrp_request_create(const char* tid, const char* method)
@@ -389,28 +407,6 @@ static void* tmsrp_message_ctor(tsk_object_t * self, va_list * app)
 {
 	tmsrp_message_t *message = self;
 	if(message){
-		const char* method;
-
-		message->type = va_arg(*app, const tmsrp_message_type_t);
-		message->tid = tsk_strdup( va_arg(*app, const char*) );
-		method = va_arg(*app, const char*);
-		if(message->type == tmsrp_response){
-#if defined(__GNUC__)
-			message->line.response.status = (short)va_arg(*app, int);
-#else
-			message->line.response.status = va_arg(*app, short);
-#endif
-			message->line.response.comment = tsk_strdup( va_arg(*app, const char*) );
-		}
-		else{ 
-			message->line.request.method = tsk_strdup(method);
-			message->line.request.type = tmsrp_request_get_type(method);
-		}
-		
-		message->headers = tsk_list_create();
-
-		message->end_line.tid = tsk_strdup(message->tid);
-		message->end_line.cflag = '$';
 	}
 	return self;
 }

@@ -90,6 +90,10 @@ tmsrp_header_Success_Report_t *tmsrp_header_Success_Report_parse(const char *dat
 	tmsrp_header_Success_Report_t *hdr_Success_Report = tmsrp_header_Success_Report_create_null();
 
 	%%write data;
+	(void)(eof);
+	(void)(tmsrp_machine_parser_header_Success_Report_first_final);
+	(void)(tmsrp_machine_parser_header_Success_Report_error);
+	(void)(tmsrp_machine_parser_header_Success_Report_en_main);
 	%%write init;
 	%%write exec;
 	

@@ -100,6 +100,10 @@ tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, tsk_size_t si
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Call_ID_first_final);
+	(void)(tsip_machine_parser_header_Call_ID_error);
+	(void)(tsip_machine_parser_header_Call_ID_en_main);
 	%%write init;
 	%%write exec;
 	

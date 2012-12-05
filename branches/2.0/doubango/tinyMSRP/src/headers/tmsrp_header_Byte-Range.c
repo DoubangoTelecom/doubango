@@ -169,15 +169,19 @@ static const int tmsrp_machine_parser_header_Byte_Range_en_main = 1;
 
 
 /* #line 131 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+	(void)(eof);
+	(void)(tmsrp_machine_parser_header_Byte_Range_first_final);
+	(void)(tmsrp_machine_parser_header_Byte_Range_error);
+	(void)(tmsrp_machine_parser_header_Byte_Range_en_main);
 	
-/* #line 174 "./src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 178 "./src/headers/tmsrp_header_Byte-Range.c" */
 	{
 	cs = tmsrp_machine_parser_header_Byte_Range_start;
 	}
 
-/* #line 132 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+/* #line 136 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	
-/* #line 181 "./src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 185 "./src/headers/tmsrp_header_Byte-Range.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -285,7 +289,7 @@ _match:
 		}
 	}
 	break;
-/* #line 289 "./src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 293 "./src/headers/tmsrp_header_Byte-Range.c" */
 		}
 	}
 
@@ -312,7 +316,7 @@ _again:
 		}
 	}
 	break;
-/* #line 316 "./src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 320 "./src/headers/tmsrp_header_Byte-Range.c" */
 		}
 	}
 	}
@@ -320,12 +324,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 133 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+/* #line 137 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	
 	if( cs < 
-/* #line 327 "./src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 331 "./src/headers/tmsrp_header_Byte-Range.c" */
 20
-/* #line 134 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+/* #line 138 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Byte-Range' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Byte_Range);

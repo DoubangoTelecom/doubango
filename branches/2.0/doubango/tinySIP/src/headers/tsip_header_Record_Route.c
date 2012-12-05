@@ -330,15 +330,19 @@ static const int tsip_machine_parser_header_Record_Route_en_main = 1;
 
 
 /* #line 145 "./ragel/tsip_parser_header_Record_Route.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Record_Route_first_final);
+	(void)(tsip_machine_parser_header_Record_Route_error);
+	(void)(tsip_machine_parser_header_Record_Route_en_main);
 	
-/* #line 335 "./src/headers/tsip_header_Record_Route.c" */
+/* #line 339 "./src/headers/tsip_header_Record_Route.c" */
 	{
 	cs = tsip_machine_parser_header_Record_Route_start;
 	}
 
-/* #line 146 "./ragel/tsip_parser_header_Record_Route.rl" */
+/* #line 150 "./ragel/tsip_parser_header_Record_Route.rl" */
 	
-/* #line 342 "./src/headers/tsip_header_Record_Route.c" */
+/* #line 346 "./src/headers/tsip_header_Record_Route.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -469,7 +473,7 @@ _match:
 	{
 	}
 	break;
-/* #line 473 "./src/headers/tsip_header_Record_Route.c" */
+/* #line 477 "./src/headers/tsip_header_Record_Route.c" */
 		}
 	}
 
@@ -482,12 +486,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 147 "./ragel/tsip_parser_header_Record_Route.rl" */
+/* #line 151 "./ragel/tsip_parser_header_Record_Route.rl" */
 	
 	if( cs < 
-/* #line 489 "./src/headers/tsip_header_Record_Route.c" */
+/* #line 493 "./src/headers/tsip_header_Record_Route.c" */
 99
-/* #line 148 "./ragel/tsip_parser_header_Record_Route.rl" */
+/* #line 152 "./ragel/tsip_parser_header_Record_Route.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Record-Route' header.");
 		TSK_OBJECT_SAFE_FREE(curr_route);

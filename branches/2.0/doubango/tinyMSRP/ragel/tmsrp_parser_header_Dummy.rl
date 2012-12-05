@@ -99,6 +99,10 @@ tmsrp_header_Dummy_t *tmsrp_header_Dummy_parse(const char *data, tsk_size_t size
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tmsrp_machine_parser_header_Dummy_first_final);
+	(void)(tmsrp_machine_parser_header_Dummy_error);
+	(void)(tmsrp_machine_parser_header_Dummy_en_main);
 	%%write init;
 	%%write exec;
 	

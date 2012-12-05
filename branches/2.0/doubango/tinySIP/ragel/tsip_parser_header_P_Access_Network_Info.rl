@@ -108,6 +108,10 @@ tsip_header_P_Access_Network_Info_t *tsip_header_P_Access_Network_Info_parse(con
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_P_Access_Network_Info_first_final);
+	(void)(tsip_machine_parser_header_P_Access_Network_Info_error);
+	(void)(tsip_machine_parser_header_P_Access_Network_Info_en_main);
 	%%write init;
 	%%write exec;
 	

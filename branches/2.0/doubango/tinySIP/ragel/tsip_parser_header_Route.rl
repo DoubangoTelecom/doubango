@@ -149,6 +149,10 @@ tsip_header_Routes_L_t *tsip_header_Route_parse(const char *data, tsk_size_t siz
 	tsip_header_Route_t *curr_route = tsk_null;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Route_first_final);
+	(void)(tsip_machine_parser_header_Route_error);
+	(void)(tsip_machine_parser_header_Route_en_main);
 	%%write init;
 	%%write exec;
 	

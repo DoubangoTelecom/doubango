@@ -340,15 +340,19 @@ static const int tsip_machine_parser_header_Warning_en_main = 1;
 
 
 /* #line 128 "./ragel/tsip_parser_header_Warning.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Warning_first_final);
+	(void)(tsip_machine_parser_header_Warning_error);
+	(void)(tsip_machine_parser_header_Warning_en_main);
 	
-/* #line 345 "./src/headers/tsip_header_Warning.c" */
+/* #line 349 "./src/headers/tsip_header_Warning.c" */
 	{
 	cs = tsip_machine_parser_header_Warning_start;
 	}
 
-/* #line 129 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 133 "./ragel/tsip_parser_header_Warning.rl" */
 	
-/* #line 352 "./src/headers/tsip_header_Warning.c" */
+/* #line 356 "./src/headers/tsip_header_Warning.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -473,7 +477,7 @@ _match:
 	{
 	}
 	break;
-/* #line 477 "./src/headers/tsip_header_Warning.c" */
+/* #line 481 "./src/headers/tsip_header_Warning.c" */
 		}
 	}
 
@@ -486,12 +490,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 130 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 134 "./ragel/tsip_parser_header_Warning.rl" */
 	
 	if( cs < 
-/* #line 493 "./src/headers/tsip_header_Warning.c" */
+/* #line 497 "./src/headers/tsip_header_Warning.c" */
 92
-/* #line 131 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 135 "./ragel/tsip_parser_header_Warning.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Warning' header.");
 		TSK_OBJECT_SAFE_FREE(curr_warning);

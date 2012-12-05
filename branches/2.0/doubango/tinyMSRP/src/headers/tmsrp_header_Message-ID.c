@@ -253,15 +253,19 @@ static const int tmsrp_machine_parser_header_Message_Id_en_main = 1;
 
 
 /* #line 100 "./ragel/tmsrp_parser_header_Message-ID.rl" */
+	(void)(eof);
+	(void)(tmsrp_machine_parser_header_Message_Id_first_final);
+	(void)(tmsrp_machine_parser_header_Message_Id_error);
+	(void)(tmsrp_machine_parser_header_Message_Id_en_main);
 	
-/* #line 258 "./src/headers/tmsrp_header_Message-ID.c" */
+/* #line 262 "./src/headers/tmsrp_header_Message-ID.c" */
 	{
 	cs = tmsrp_machine_parser_header_Message_Id_start;
 	}
 
-/* #line 101 "./ragel/tmsrp_parser_header_Message-ID.rl" */
+/* #line 105 "./ragel/tmsrp_parser_header_Message-ID.rl" */
 	
-/* #line 265 "./src/headers/tmsrp_header_Message-ID.c" */
+/* #line 269 "./src/headers/tmsrp_header_Message-ID.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -347,7 +351,7 @@ _match:
 		TSK_PARSER_SET_STRING(hdr_Message_Id->value);
 	}
 	break;
-/* #line 351 "./src/headers/tmsrp_header_Message-ID.c" */
+/* #line 355 "./src/headers/tmsrp_header_Message-ID.c" */
 		}
 	}
 
@@ -369,7 +373,7 @@ _again:
 		TSK_PARSER_SET_STRING(hdr_Message_Id->value);
 	}
 	break;
-/* #line 373 "./src/headers/tmsrp_header_Message-ID.c" */
+/* #line 377 "./src/headers/tmsrp_header_Message-ID.c" */
 		}
 	}
 	}
@@ -377,12 +381,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 102 "./ragel/tmsrp_parser_header_Message-ID.rl" */
+/* #line 106 "./ragel/tmsrp_parser_header_Message-ID.rl" */
 	
 	if( cs < 
-/* #line 384 "./src/headers/tmsrp_header_Message-ID.c" */
+/* #line 388 "./src/headers/tmsrp_header_Message-ID.c" */
 18
-/* #line 103 "./ragel/tmsrp_parser_header_Message-ID.rl" */
+/* #line 107 "./ragel/tmsrp_parser_header_Message-ID.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Message-Id' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Message_Id);

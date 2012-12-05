@@ -39,7 +39,7 @@
 	machine tmedia_machine_imageattr;
 
 	# Includes
-	include tmedia_machine_utils "./tmedia_machine_utils.rl";
+	include tmedia_machine_utils "./ragel/tmedia_machine_utils.rl";
 
 	action tag{
 		tag_start = p;
@@ -168,6 +168,10 @@ int tmedia_imageattr_parse(tmedia_imageattr_xt* self, const void* in_data, tsk_s
 	tmedia_imageattr_srange_xt* srange;
 
 	%%write data;
+	(void)(eof);
+	(void)(tmedia_machine_imageattr_first_final);
+	(void)(tmedia_machine_imageattr_error);
+	(void)(tmedia_machine_imageattr_en_main);
 	%%write init;
 	tmedia_imageattr_reset(self);
 	%%write exec;

@@ -93,6 +93,10 @@ tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data,
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Content_Length_first_final);
+	(void)(tsip_machine_parser_header_Content_Length_error);
+	(void)(tsip_machine_parser_header_Content_Length_en_main);
 	%%write init;
 	%%write exec;
 	

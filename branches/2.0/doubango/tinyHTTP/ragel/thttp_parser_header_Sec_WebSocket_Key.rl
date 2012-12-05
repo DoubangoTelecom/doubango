@@ -36,8 +36,8 @@
 	machine thttp_machine_parser_header_Sec_WebSocket_Key;
 
 	# Includes
-	include thttp_machine_utils "./thttp_machine_utils.rl";
-	include thttp_machine_ws "./thttp_machine_ws.rl";
+	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
+	include thttp_machine_ws "./ragel/thttp_machine_ws.rl";
 
 	action tag { tag_start = p; }
 	action eob { }
@@ -85,6 +85,10 @@ thttp_header_Sec_WebSocket_Key_t *thttp_header_Sec_WebSocket_Key_parse(const cha
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(thttp_machine_parser_header_Sec_WebSocket_Key_first_final);
+	(void)(thttp_machine_parser_header_Sec_WebSocket_Key_error);
+	(void)(thttp_machine_parser_header_Sec_WebSocket_Key_en_main);
 	%%write init;
 	%%write exec;
 	

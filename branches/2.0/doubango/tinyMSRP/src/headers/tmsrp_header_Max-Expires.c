@@ -150,15 +150,19 @@ static const int tmsrp_machine_parser_header_Max_Expires_en_main = 1;
 
 
 /* #line 98 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
+	(void)(eof);
+	(void)(tmsrp_machine_parser_header_Max_Expires_first_final);
+	(void)(tmsrp_machine_parser_header_Max_Expires_error);
+	(void)(tmsrp_machine_parser_header_Max_Expires_en_main);
 	
-/* #line 155 "./src/headers/tmsrp_header_Max-Expires.c" */
+/* #line 159 "./src/headers/tmsrp_header_Max-Expires.c" */
 	{
 	cs = tmsrp_machine_parser_header_Max_Expires_start;
 	}
 
-/* #line 99 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
+/* #line 103 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
 	
-/* #line 162 "./src/headers/tmsrp_header_Max-Expires.c" */
+/* #line 166 "./src/headers/tmsrp_header_Max-Expires.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -244,7 +248,7 @@ _match:
 		TSK_PARSER_SET_INTEGER_EX(hdr_Max_Expires->value, int64_t, atoi64)
 	}
 	break;
-/* #line 248 "./src/headers/tmsrp_header_Max-Expires.c" */
+/* #line 252 "./src/headers/tmsrp_header_Max-Expires.c" */
 		}
 	}
 
@@ -266,7 +270,7 @@ _again:
 		TSK_PARSER_SET_INTEGER_EX(hdr_Max_Expires->value, int64_t, atoi64)
 	}
 	break;
-/* #line 270 "./src/headers/tmsrp_header_Max-Expires.c" */
+/* #line 274 "./src/headers/tmsrp_header_Max-Expires.c" */
 		}
 	}
 	}
@@ -274,12 +278,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 100 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
+/* #line 104 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
 	
 	if( cs < 
-/* #line 281 "./src/headers/tmsrp_header_Max-Expires.c" */
+/* #line 285 "./src/headers/tmsrp_header_Max-Expires.c" */
 16
-/* #line 101 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
+/* #line 105 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Max-Expires' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Max_Expires);

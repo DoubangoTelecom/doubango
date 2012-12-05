@@ -135,15 +135,19 @@ static const int tsip_machine_parser_header_RSeq_en_main = 1;
 
 
 /* #line 98 "./ragel/tsip_parser_header_RSeq.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_RSeq_first_final);
+	(void)(tsip_machine_parser_header_RSeq_error);
+	(void)(tsip_machine_parser_header_RSeq_en_main);
 	
-/* #line 140 "./src/headers/tsip_header_RSeq.c" */
+/* #line 144 "./src/headers/tsip_header_RSeq.c" */
 	{
 	cs = tsip_machine_parser_header_RSeq_start;
 	}
 
-/* #line 99 "./ragel/tsip_parser_header_RSeq.rl" */
+/* #line 103 "./ragel/tsip_parser_header_RSeq.rl" */
 	
-/* #line 147 "./src/headers/tsip_header_RSeq.c" */
+/* #line 151 "./src/headers/tsip_header_RSeq.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -234,7 +238,7 @@ _match:
 	{
 	}
 	break;
-/* #line 238 "./src/headers/tsip_header_RSeq.c" */
+/* #line 242 "./src/headers/tsip_header_RSeq.c" */
 		}
 	}
 
@@ -247,12 +251,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 100 "./ragel/tsip_parser_header_RSeq.rl" */
+/* #line 104 "./ragel/tsip_parser_header_RSeq.rl" */
 	
 	if( cs < 
-/* #line 254 "./src/headers/tsip_header_RSeq.c" */
+/* #line 258 "./src/headers/tsip_header_RSeq.c" */
 12
-/* #line 101 "./ragel/tsip_parser_header_RSeq.rl" */
+/* #line 105 "./ragel/tsip_parser_header_RSeq.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'RSeq' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_rseq);

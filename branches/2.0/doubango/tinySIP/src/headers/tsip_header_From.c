@@ -368,15 +368,19 @@ static const int tsip_machine_parser_header_From_en_main = 1;
 
 
 /* #line 125 "./ragel/tsip_parser_header_From.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_From_first_final);
+	(void)(tsip_machine_parser_header_From_error);
+	(void)(tsip_machine_parser_header_From_en_main);
 	
-/* #line 373 "./src/headers/tsip_header_From.c" */
+/* #line 377 "./src/headers/tsip_header_From.c" */
 	{
 	cs = tsip_machine_parser_header_From_start;
 	}
 
-/* #line 126 "./ragel/tsip_parser_header_From.rl" */
+/* #line 130 "./ragel/tsip_parser_header_From.rl" */
 	
-/* #line 380 "./src/headers/tsip_header_From.c" */
+/* #line 384 "./src/headers/tsip_header_From.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -491,7 +495,7 @@ _match:
 	{
 	}
 	break;
-/* #line 495 "./src/headers/tsip_header_From.c" */
+/* #line 499 "./src/headers/tsip_header_From.c" */
 		}
 	}
 
@@ -504,12 +508,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 127 "./ragel/tsip_parser_header_From.rl" */
+/* #line 131 "./ragel/tsip_parser_header_From.rl" */
 	
 	if( cs < 
-/* #line 511 "./src/headers/tsip_header_From.c" */
+/* #line 515 "./src/headers/tsip_header_From.c" */
 108
-/* #line 128 "./ragel/tsip_parser_header_From.rl" */
+/* #line 132 "./ragel/tsip_parser_header_From.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'From' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_from);

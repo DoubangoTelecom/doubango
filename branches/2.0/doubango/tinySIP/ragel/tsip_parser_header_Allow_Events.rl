@@ -108,6 +108,10 @@ tsip_header_Allow_Events_t *tsip_header_Allow_Events_parse(const char *data, tsk
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Allow_events_first_final);
+	(void)(tsip_machine_parser_header_Allow_events_error);
+	(void)(tsip_machine_parser_header_Allow_events_en_main);
 	%%write init;
 	%%write exec;
 	

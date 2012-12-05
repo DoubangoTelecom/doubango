@@ -104,6 +104,10 @@ tsip_header_Server_t *tsip_header_Server_parse(const char *data, tsk_size_t size
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Server_first_final);
+	(void)(tsip_machine_parser_header_Server_error);
+	(void)(tsip_machine_parser_header_Server_en_main);
 	%%write init;
 	%%write exec;
 	

@@ -93,6 +93,10 @@ tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, tsk
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Max_Forwards_first_final);
+	(void)(tsip_machine_parser_header_Max_Forwards_error);
+	(void)(tsip_machine_parser_header_Max_Forwards_en_main);
 	%%write init;
 	%%write exec;
 	

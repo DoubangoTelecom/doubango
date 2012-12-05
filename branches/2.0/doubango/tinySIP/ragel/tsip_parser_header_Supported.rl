@@ -110,6 +110,10 @@ tsip_header_Supported_t *tsip_header_Supported_parse(const char *data, tsk_size_
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Supported_first_final);
+	(void)(tsip_machine_parser_header_Supported_error);
+	(void)(tsip_machine_parser_header_Supported_en_main);
 	%%write init;
 	%%write exec;
 	

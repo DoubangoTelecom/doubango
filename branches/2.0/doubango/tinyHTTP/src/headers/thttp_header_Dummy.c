@@ -144,15 +144,19 @@ static const int thttp_machine_parser_header_Dummy_en_main = 1;
 
 
 /* #line 107 "./ragel/thttp_parser_header_Dummy.rl" */
+	(void)(eof);
+	(void)(thttp_machine_parser_header_Dummy_first_final);
+	(void)(thttp_machine_parser_header_Dummy_error);
+	(void)(thttp_machine_parser_header_Dummy_en_main);
 	
-/* #line 149 "./src/headers/thttp_header_Dummy.c" */
+/* #line 153 "./src/headers/thttp_header_Dummy.c" */
 	{
 	cs = thttp_machine_parser_header_Dummy_start;
 	}
 
-/* #line 108 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 112 "./ragel/thttp_parser_header_Dummy.rl" */
 	
-/* #line 156 "./src/headers/thttp_header_Dummy.c" */
+/* #line 160 "./src/headers/thttp_header_Dummy.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -249,7 +253,7 @@ _match:
 	{
 	}
 	break;
-/* #line 253 "./src/headers/thttp_header_Dummy.c" */
+/* #line 257 "./src/headers/thttp_header_Dummy.c" */
 		}
 	}
 
@@ -262,12 +266,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 109 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 113 "./ragel/thttp_parser_header_Dummy.rl" */
 	
 	if( cs < 
-/* #line 269 "./src/headers/thttp_header_Dummy.c" */
+/* #line 273 "./src/headers/thttp_header_Dummy.c" */
 10
-/* #line 110 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 114 "./ragel/thttp_parser_header_Dummy.rl" */
  ){
 		TSK_OBJECT_SAFE_FREE(hdr_Dummy);
 	}

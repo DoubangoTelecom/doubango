@@ -500,8 +500,8 @@
 
 
 	# Includes
-	include thttp_machine_utils "./thttp_machine_utils.rl";
-	include thttp_machine_header "./thttp_machine_header.rl";
+	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
+	include thttp_machine_header "./ragel/thttp_machine_header.rl";
 
 	# Entry point
 	main := HEADER;
@@ -515,6 +515,10 @@ int thttp_header_parse(tsk_ragel_state_t *state, thttp_message_t *message)
 	const char *eof = pe;
 
 	%%write data;
+	(void)(eof);
+	(void)(thttp_machine_parser_headers_first_final);
+	(void)(thttp_machine_parser_headers_error);
+	(void)(thttp_machine_parser_headers_en_main);
 	%%write init;
 	%%write exec;
 

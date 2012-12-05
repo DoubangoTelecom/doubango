@@ -290,6 +290,11 @@ tmsrp_message_t* tmsrp_message_parse_2(const void *input, tsk_size_t size, tsk_s
 	const char* pe = p + size;
 	const char* eof = tsk_null;
 
+	(void)(eof);
+	(void)(tmsrp_machine_message_first_final);
+	(void)(tmsrp_machine_message_error);
+	(void)(tmsrp_machine_message_en_main);
+
 	*msg_size = 0;
 
 	if(!input || !size){

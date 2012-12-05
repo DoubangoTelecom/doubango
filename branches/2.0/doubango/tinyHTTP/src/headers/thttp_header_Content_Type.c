@@ -233,15 +233,19 @@ static const int thttp_machine_parser_header_Content_Type_en_main = 1;
 
 
 /* #line 114 "./ragel/thttp_parser_header_Content_Type.rl" */
+	(void)(eof);
+	(void)(thttp_machine_parser_header_Content_Type_first_final);
+	(void)(thttp_machine_parser_header_Content_Type_error);
+	(void)(thttp_machine_parser_header_Content_Type_en_main);
 	
-/* #line 238 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 242 "./src/headers/thttp_header_Content_Type.c" */
 	{
 	cs = thttp_machine_parser_header_Content_Type_start;
 	}
 
-/* #line 115 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 119 "./ragel/thttp_parser_header_Content_Type.rl" */
 	
-/* #line 245 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 249 "./src/headers/thttp_header_Content_Type.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -338,7 +342,7 @@ _match:
 	{
 	}
 	break;
-/* #line 342 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 346 "./src/headers/thttp_header_Content_Type.c" */
 		}
 	}
 
@@ -351,12 +355,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 116 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 120 "./ragel/thttp_parser_header_Content_Type.rl" */
 	
 	if( cs < 
-/* #line 358 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 362 "./src/headers/thttp_header_Content_Type.c" */
 55
-/* #line 117 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 121 "./ragel/thttp_parser_header_Content_Type.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse Content-Type header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ctype);

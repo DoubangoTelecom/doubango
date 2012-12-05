@@ -268,15 +268,18 @@ static const int tsdp_machine_parser_header_M_en_main = 1;
 
 
 /* #line 224 "./ragel/tsdp_parser_header_M.rl" */
+	(void)(tsdp_machine_parser_header_M_first_final);
+	(void)(tsdp_machine_parser_header_M_error);
+	(void)(tsdp_machine_parser_header_M_en_main);
 	
-/* #line 273 "./src/headers/tsdp_header_M.c" */
+/* #line 276 "./src/headers/tsdp_header_M.c" */
 	{
 	cs = tsdp_machine_parser_header_M_start;
 	}
 
-/* #line 225 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 228 "./ragel/tsdp_parser_header_M.rl" */
 	
-/* #line 280 "./src/headers/tsdp_header_M.c" */
+/* #line 283 "./src/headers/tsdp_header_M.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -380,7 +383,7 @@ _match:
 		TSK_PARSER_ADD_STRING(hdr_M->FMTs);
 	}
 	break;
-/* #line 384 "./src/headers/tsdp_header_M.c" */
+/* #line 387 "./src/headers/tsdp_header_M.c" */
 		}
 	}
 
@@ -408,7 +411,7 @@ _again:
 		TSK_PARSER_ADD_STRING(hdr_M->FMTs);
 	}
 	break;
-/* #line 412 "./src/headers/tsdp_header_M.c" */
+/* #line 415 "./src/headers/tsdp_header_M.c" */
 		}
 	}
 	}
@@ -416,12 +419,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 226 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 229 "./ragel/tsdp_parser_header_M.rl" */
 	
 	if( cs < 
-/* #line 423 "./src/headers/tsdp_header_M.c" */
+/* #line 426 "./src/headers/tsdp_header_M.c" */
 13
-/* #line 227 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 230 "./ragel/tsdp_parser_header_M.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"m=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_M);
@@ -647,10 +650,6 @@ int tsdp_header_M_hold(tsdp_header_M_t* self, tsk_bool_t local)
 	else if((a = tsdp_header_M_findA(self, "sendrecv"))){
 		// a "sendonly" SDP attribute if the stream was previously set to "sendrecv" media stream
 		tsk_strupdate(&(TSDP_HEADER_A(a)->field), local ? "sendonly" : "recvonly");
-	}
-	else if((a = tsdp_header_M_findA(self, "inactive"))){
-		// a "inactive" SDP attribute if the stream was previously set to "inactive" media stream
-		tsk_strupdate(&(TSDP_HEADER_A(a)->field), "inactive");
 	}
 	else{
 		// default value is sendrecv. hold on default --> sendonly

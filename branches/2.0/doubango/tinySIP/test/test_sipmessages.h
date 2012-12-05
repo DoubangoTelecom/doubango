@@ -152,15 +152,21 @@
 
 #define SIP_OPTIONS \
 "SIP/2.0 200 OK\r\n" \
-"Via: SIP/2.0/TCP 192.168.1.113:41999;received=10.19.3.201;received=10.19.3.201;branch=z9hG4bK1219523924;rport=41999;keep\r\n" \
-"From: <sip:bob@open-ims.test>;tag=2061842192\r\n" \
-"To: <sip:1111111111@open-ims.test>;tag=2139418197\r\n" \
-"Contact: <sip:bob@192.168.1.110:49512;transport=udp>\r\n" \
-"Call-ID: 98fb7f98-f8fc-f999-7c74-5e12613ce8ff\r\n" \
-"CSeq: 1624154729 OPTIONS\r\n" \
+"Via: SIP/2.0/TCP 192.168.1.110:49144;received=10.19.3.223;received=10.19.3.223;branch=z9hG4bK580365294;rport=49144\r\n" \
+"From: <sip:bob@open-ims.test>;tag=912385275\r\n" \
+"To: <sip:1947@open-ims.test>;tag=131610378\r\n" \
+"Contact: <sip:bob@192.168.1.135:46716;transport=tcp>\r\n" \
+"Call-ID: cbfac0bb-9426-c8cf-fbd9-96bc91ec8acb\r\n" \
+"CSeq: 756765417 OPTIONS\r\n" \
 "Content-Length: 0\r\n" \
-"P-Asserted-Identity: <sip:1111111111@open-ims.test>\r\n" \
-"\r\n" \
+"Accept-Contact: \r\n" \
+"Accept: application/sdp\r\n" \
+"Accept-Encoding: *\r\n" \
+"Accept-Language: en\r\n" \
+"Allow: INVITE, ACK, CANCEL, BYE, PRACK, UPDATE, REFER, MESSAGE,OPTIONS\r\n" \
+"Supported: gruu\r\n" \
+"P-Asserted-Identity: <sip:1947@open-ims.test>\r\n" \
+"\r\n"
 
 #define SIP_COMPACT \
 "SIP/2.0 200 OK\r\n" \
@@ -174,7 +180,9 @@
 "Expires: 3600\r\n" \
 "\r\n"
 
-#define SIP_MSG_2_TEST SIP_COMPACT
+
+
+#define SIP_MSG_2_TEST SIP_OPTIONS
 
 void test_parser()
 {

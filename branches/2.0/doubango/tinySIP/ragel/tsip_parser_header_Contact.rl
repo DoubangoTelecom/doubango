@@ -148,6 +148,10 @@ tsip_header_Contacts_L_t *tsip_header_Contact_parse(const char *data, tsk_size_t
 	tsip_header_Contact_t *curr_contact = 0;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Contact_first_final);
+	(void)(tsip_machine_parser_header_Contact_error);
+	(void)(tsip_machine_parser_header_Contact_en_main);
 	%%write init;
 	%%write exec;
 	

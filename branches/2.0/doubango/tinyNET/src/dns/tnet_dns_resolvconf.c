@@ -144,6 +144,10 @@ static const int tdns_machine_resolvconf_en_main = 0;
 
 
 /* #line 106 "./ragel/tnet_dns_resolvconf.rl" */
+	(void)(eof);
+	(void)(tdns_machine_resolvconf_first_final);
+	(void)(tdns_machine_resolvconf_error);
+	(void)(tdns_machine_resolvconf_en_main);
 
 	if(tsk_strnullORempty(fullpath)){
 		fullpath = TNET_RESOLV_CONF_PATH;
@@ -156,7 +160,7 @@ static const int tdns_machine_resolvconf_en_main = 0;
 		len = ftell(fd);
 		fseek(fd, 0L, SEEK_SET);
 		if(!(buf = (char*)tsk_calloc(len + 1, 1))){
-			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %d", (len + 1));
+			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %ld", (len + 1));
 			goto bail;
 		}
 		fread(buf, 1, len, fd);
@@ -181,14 +185,14 @@ static const int tdns_machine_resolvconf_en_main = 0;
 	}
 
 	
-/* #line 185 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 189 "./src/dns/tnet_dns_resolvconf.c" */
 	{
 	cs = tdns_machine_resolvconf_start;
 	}
 
-/* #line 143 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 147 "./ragel/tnet_dns_resolvconf.rl" */
 	
-/* #line 192 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 196 "./src/dns/tnet_dns_resolvconf.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -283,7 +287,7 @@ _match:
 		}
 	}
 	break;
-/* #line 287 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 291 "./src/dns/tnet_dns_resolvconf.c" */
 		}
 	}
 
@@ -293,12 +297,12 @@ _again:
 	_test_eof: {}
 	}
 
-/* #line 144 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 148 "./ragel/tnet_dns_resolvconf.rl" */
 	
 	if( cs < 
-/* #line 300 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 304 "./src/dns/tnet_dns_resolvconf.c" */
 0
-/* #line 145 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 149 "./ragel/tnet_dns_resolvconf.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse %s.", fullpath);
 		TSK_OBJECT_SAFE_FREE(servers);

@@ -97,6 +97,10 @@ tmsrp_header_Message_ID_t *tmsrp_header_Message_ID_parse(const char *data, tsk_s
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tmsrp_machine_parser_header_Message_Id_first_final);
+	(void)(tmsrp_machine_parser_header_Message_Id_error);
+	(void)(tmsrp_machine_parser_header_Message_Id_en_main);
 	%%write init;
 	%%write exec;
 	

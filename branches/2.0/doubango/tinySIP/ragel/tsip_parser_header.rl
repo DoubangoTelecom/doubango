@@ -848,9 +848,13 @@ tsk_bool_t tsip_header_parse(tsk_ragel_state_t *state, tsip_message_t *message)
 	int cs = 0;
 	const char *p = state->tag_start;
 	const char *pe = state->tag_end;
-	const char *eof = pe;
+	const char *eof = pe;	
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_headers_first_final);
+	(void)(tsip_machine_parser_headers_error);
+	(void)(tsip_machine_parser_headers_en_main);
 	%%write init;
 	%%write exec;
 	

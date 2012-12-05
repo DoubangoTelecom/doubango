@@ -260,6 +260,8 @@ tsdp_message_t* tsdp_message_parse(const void *input, tsk_size_t size)
 	const char* pe = p + size;
 	const char* eof = tsk_null;
 
+	(void)(eof);
+
 	if(!input || !size){
 		TSK_DEBUG_ERROR("Null or empty buffer.");
 		goto bail;
