@@ -502,7 +502,7 @@ static tsk_object_t* tcomp_udvm_ctor(tsk_object_t * self, va_list * app)
 		}
 
 		/* RFC 3320-Section_8.6.  UDVM Cycles
-		/*
+		*
 		* To ensure that a SigComp message cannot consume excessive processing
 		* resources, SigComp limits the number of "UDVM cycles" allocated to
 		* each message.  The number of available UDVM cycles is initialized to

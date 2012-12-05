@@ -177,6 +177,8 @@ int tsip_transac_nict_event_callback(const tsip_transac_nict_t *self, tsip_trans
 			ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_transporterror, msg);
 			break;
 		}
+            
+        default: break;
 	}
 
 	return ret;

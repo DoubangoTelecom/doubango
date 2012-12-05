@@ -1147,7 +1147,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 				goto bail;
 			}
 			/* set QoS type (only if we are not the offerer) */
-			if(/*!self->offerer ==> we suppose that the remote party respected our demand &&*/ (qos_type == tmedia_qos_stype_none)){
+			if(/*!self->offerer ==> we suppose that the remote party respected our demand &&*/ qos_type == tmedia_qos_stype_none){
 				tmedia_qos_tline_t* tline = tmedia_qos_tline_from_sdp(M);
 				if(tline){
 					qos_type = tline->type;

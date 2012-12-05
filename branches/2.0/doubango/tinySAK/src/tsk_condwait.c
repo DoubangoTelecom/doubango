@@ -151,7 +151,7 @@ int tsk_condwait_wait(tsk_condwait_handle_t* handle)
 #else
 	if(condwait && condwait->mutex){
 		tsk_mutex_lock(condwait->mutex);
-		if(ret = pthread_cond_wait(condwait->pcond, (pthread_mutex_t*)condwait->mutex))
+		if((ret = pthread_cond_wait(condwait->pcond, (pthread_mutex_t*)condwait->mutex)))
 		{
 			TSK_DEBUG_ERROR("pthread_cond_wait function failed: %d", ret);
 		}
@@ -198,7 +198,7 @@ int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
 		if(ts.tv_nsec > 999999999) ts.tv_sec+=1, ts.tv_nsec = ts.tv_nsec % 1000000000;
 		
 		tsk_mutex_lock(condwait->mutex);
-		if(ret = pthread_cond_timedwait(condwait->pcond, (pthread_mutex_t*)condwait->mutex, &ts)){
+		if((ret = pthread_cond_timedwait(condwait->pcond, (pthread_mutex_t*)condwait->mutex, &ts))){
 			if(ret == TIMED_OUT){
 				/* TSK_DEBUG_INFO("pthread_cond_timedwait function timedout: %d", ret); */
 			}
@@ -240,7 +240,7 @@ int tsk_condwait_signal(tsk_condwait_handle_t* handle)
 	if(condwait && condwait->mutex){
 		tsk_mutex_lock(condwait->mutex);
 
-		if(ret = pthread_cond_signal(condwait->pcond)){
+		if((ret = pthread_cond_signal(condwait->pcond))){
 			TSK_DEBUG_ERROR("pthread_cond_signal function failed: %d", ret);
 		}
 		tsk_mutex_unlock(condwait->mutex);
@@ -273,7 +273,7 @@ int tsk_condwait_broadcast(tsk_condwait_handle_t* handle)
 #else
 	if(condwait && condwait->mutex){
 		tsk_mutex_lock(condwait->mutex);
-		if(ret = pthread_cond_broadcast(condwait->pcond)){
+		if((ret = pthread_cond_broadcast(condwait->pcond))){
 			TSK_DEBUG_ERROR("pthread_cond_broadcast function failed: %d", ret);
 		}
 		tsk_mutex_unlock(condwait->mutex);

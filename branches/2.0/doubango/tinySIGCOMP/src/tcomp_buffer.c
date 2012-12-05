@@ -155,7 +155,7 @@ tsk_size_t tcomp_buffer_getRemainingBits(const tcomp_buffer_handle_t* handle) /*
 {
 	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
-		tsk_size_t result = ((buffer->size * 8) - ((buffer->index_bytes * 8) + buffer->index_bits));
+		tsk_ssize_t result = ((buffer->size * 8) - ((buffer->index_bytes * 8) + buffer->index_bits));
 		return (result < 0) ? 0: result;
 	}
 	else{

@@ -105,7 +105,7 @@ int tdav_consumer_audio_set(tdav_consumer_audio_t* self, const tmedia_param_t* p
 	if(param->plugin_type == tmedia_ppt_consumer){
 		if(param->value_type == tmedia_pvt_int32){
 			if(tsk_striequals(param->key, "gain")){
-				uint32_t gain = TSK_TO_UINT32((uint8_t*)param->value);
+				int32_t gain = *((int32_t*)param->value);
 				if(gain<TDAV_AUDIO_GAIN_MAX && gain>=0){
 					TMEDIA_CONSUMER(self)->audio.gain = (uint8_t)gain;
 					TSK_DEBUG_INFO("audio consumer gain=%u", gain);

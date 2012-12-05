@@ -158,7 +158,6 @@ int tnet_tls_socket_accept(tnet_tls_socket_handle_t* self)
 	return -200;
 #else
 	int ret = -1;
-	int rcount = TNET_TLS_RETRY_COUNT;
 	tnet_tls_socket_t* socket = self;
 
 	if(!self){

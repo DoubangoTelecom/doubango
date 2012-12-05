@@ -162,6 +162,8 @@ static const int tsip_machine_parser_header_Allow_error = 0;
 
 static const int tsip_machine_parser_header_Allow_en_main = 1;
 
+    
+    (void)(tsip_machine_parser_header_Allow_first_final);
 
 /* #line 109 "./ragel/tsip_parser_header_Allow.rl" */
 	(void)(eof);

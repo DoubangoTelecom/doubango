@@ -312,7 +312,7 @@ int tnet_turn_send_request(const tnet_nat_context_t* context, tnet_turn_allocati
 				}
 				else /* Any (allocate, permission, channel binding ...) success response */
 				{
-					if(response->type = stun_allocate_success_response) /* Allocate success response */
+					if(response->type == stun_allocate_success_response) /* Allocate success response */
 					{
 						/* LifeTime */
 						{

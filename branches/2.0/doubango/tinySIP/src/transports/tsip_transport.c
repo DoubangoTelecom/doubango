@@ -551,7 +551,7 @@ int tsip_transport_add_stream_peer(tsip_transport_t *self, tnet_fd_t local_fd)
 	}
 	
 	tsk_list_lock(self->stream_peers);
-	tsk_list_push_back_data(self->stream_peers, &peer);
+	tsk_list_push_back_data(self->stream_peers, (void**)&peer);
 	tsk_list_unlock(self->stream_peers);
 
 	TSK_OBJECT_SAFE_FREE(peer);

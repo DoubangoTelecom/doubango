@@ -100,7 +100,7 @@ int tnet_ice_pair_send_conncheck(tnet_ice_pair_t *self)
 		return -1;
 	}		
 	
-	if(ret = tnet_sockaddr_init(self->candidate_answer->connection_addr, self->candidate_answer->port, self->candidate_offer->socket->type, &remote_addr)){
+	if((ret = tnet_sockaddr_init(self->candidate_answer->connection_addr, self->candidate_answer->port, self->candidate_offer->socket->type, &remote_addr))){
 		TNET_PRINT_LAST_ERROR("tnet_sockaddr_init(%s:%d) failed", self->candidate_answer->connection_addr, self->candidate_answer->port);
 		goto bail;
 	}
@@ -205,7 +205,7 @@ int tnet_ice_pair_send_response(tnet_ice_pair_t *self, const tnet_stun_request_t
 		return -1;
 	}
 
-	if(ret = tnet_sockaddr_init(self->candidate_answer->connection_addr, self->candidate_answer->port, self->candidate_offer->socket->type, &dest_addr)){
+	if((ret = tnet_sockaddr_init(self->candidate_answer->connection_addr, self->candidate_answer->port, self->candidate_offer->socket->type, &dest_addr))){
 		TNET_PRINT_LAST_ERROR("tnet_sockaddr_init(%s:%d) failed", self->candidate_answer->connection_addr, self->candidate_answer->port);
 		return ret;
 	}
@@ -383,6 +383,7 @@ int tnet_ice_pair_auth_conncheck(const tnet_ice_pair_t *self, const tnet_stun_re
 					stun_att_integrity = (const tnet_stun_attribute_integrity_t *)stun_att;
 					break;
 				}
+            default: break;
 		}
 		
 		if(!stun_att_integrity){

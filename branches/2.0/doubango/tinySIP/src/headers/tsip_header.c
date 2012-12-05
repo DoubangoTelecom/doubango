@@ -268,7 +268,7 @@ int tsip_header_serialize(const tsip_header_t *self, tsk_buffer_t *output)
 		tsk_list_foreach(item, self->params){
 			tsk_param_t* param = item->data;
 			separator = tsip_header_get_param_separator(self);
-			if(ret = tsk_buffer_append_2(output, param->value?"%c%s=%s":"%c%s", separator, param->name, param->value)){
+			if((ret = tsk_buffer_append_2(output, param->value?"%c%s=%s":"%c%s", separator, param->name, param->value))){
 				return ret;
 			}
 		}

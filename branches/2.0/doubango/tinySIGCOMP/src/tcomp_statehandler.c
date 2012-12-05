@@ -40,7 +40,7 @@ static int pred_find_compartment_by_id(const tsk_list_item_t *item, const void *
 {
 	if(item && item->data){
 		tcomp_compartment_t *compartment = item->data;
-		uint64_t res = (compartment->identifier - *((uint64_t*)id));
+		int64_t res = (compartment->identifier - *((int64_t*)id));
 		return res > 0 ? (int)1 : (res < 0 ? (int)-1 : (int)0);
 	}
 	return -1;
@@ -184,7 +184,7 @@ void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_r
 	/*
 	* Find corresponding compartment (only if !S)
 	*/
-	if(lpCompartment = tcomp_statehandler_getCompartment(statehandler, (*lpResult)->compartmentId)){
+	if((lpCompartment = tcomp_statehandler_getCompartment(statehandler, (*lpResult)->compartmentId))){
 		compartment_total_size = lpCompartment->total_memory_size;
 	}
 	else{

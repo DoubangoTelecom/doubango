@@ -255,7 +255,7 @@ tsk_bool_t tsip_message_allowed(const tsip_message_t *self, const char* method)
 	tsip_header_Allow_t *hdr_allow;
 
 	if(self){
-		while( hdr_allow = (tsip_header_Allow_t*)tsip_message_get_headerAt(self, tsip_htype_Allow, index++) ){
+		while( (hdr_allow = (tsip_header_Allow_t*)tsip_message_get_headerAt(self, tsip_htype_Allow, index++)) ){
 			if(tsk_list_find_item_by_pred(hdr_allow->methods, __pred_find_string_by_value, method)){
 				return tsk_true;
 			}
@@ -270,7 +270,7 @@ tsk_bool_t tsip_message_supported(const tsip_message_t *self, const char* option
 	tsip_header_Supported_t *hdr_supported;
 
 	if(self){
-		while( hdr_supported = (tsip_header_Supported_t*)tsip_message_get_headerAt(self, tsip_htype_Supported, index++) ){
+		while( (hdr_supported = (tsip_header_Supported_t*)tsip_message_get_headerAt(self, tsip_htype_Supported, index++)) ){
 			if(tsk_list_find_item_by_pred(hdr_supported->options, __pred_find_string_by_value, option)){
 				return tsk_true;
 			}
@@ -286,7 +286,7 @@ tsk_bool_t tsip_message_required(const tsip_message_t *self, const char* option)
 	tsip_header_Require_t *hdr_require;
 
 	if(self){
-		while( hdr_require = (tsip_header_Require_t*)tsip_message_get_headerAt(self, tsip_htype_Require, index++) ){
+		while( (hdr_require = (tsip_header_Require_t*)tsip_message_get_headerAt(self, tsip_htype_Require, index++)) ){
 			if(tsk_list_find_item_by_pred(hdr_require->options, __pred_find_string_by_value, option)){
 				return tsk_true;
 			}

@@ -459,6 +459,7 @@ int tsdp_header_M_remove(tsdp_header_M_t* self, tsdp_header_type_t type)
 				TSK_OBJECT_SAFE_FREE(self->K);
 				break;
 			}
+        default: break;
 	}
 	return 0;
 }
@@ -506,6 +507,7 @@ int tsdp_header_M_add(tsdp_header_M_t* self, const tsdp_header_t* header)
 				tsk_list_push_back_data(self->Attributes, (void**)&A);
 				break;
 			}
+        default: break;
 	}
 	
 	return 0;

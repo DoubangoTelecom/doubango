@@ -76,7 +76,7 @@ static int tdav_codec_g722_close(tmedia_codec_t* self)
 {
 	tdav_codec_g722_t* g722 = (tdav_codec_g722_t*)self;	
 
-	(g722);
+	(void)(g722);
 	
 	/* resources will be freed by the dctor() */
 	

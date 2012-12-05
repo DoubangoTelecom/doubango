@@ -678,6 +678,7 @@ const tsdp_header_M_t* tdav_session_msrp_get_lo(tmedia_session_t* self)
 						case msrp_setup_active:
 							msrp->setup = msrp_setup_passive;
 							break;
+                    default: break;
 				}
 				tsdp_header_M_add_headers(self->M.lo,
 						TSDP_HEADER_A_VA_ARGS("connection", "new"),
@@ -768,6 +769,7 @@ int tdav_session_msrp_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 			case msrp_setup_active:
 				msrp->setup = msrp_setup_passive;
 				break;
+            default: break;
 		}
 	}
 	

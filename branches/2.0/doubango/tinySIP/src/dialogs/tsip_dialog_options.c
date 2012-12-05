@@ -144,6 +144,8 @@ int tsip_dialog_options_event_callback(const tsip_dialog_options_t *self, tsip_d
 			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_transporterror, msg, tsk_null);
 			break;
 		}
+        
+    default: break;
 	}
 
 	return ret;

@@ -274,6 +274,9 @@ static const int thttp_machine_parser_url_en_main = 1;
 
 
 /* #line 119 "./ragel/thttp_parser_url.rl" */
+    (void)(ts);
+    (void)(te);
+    (void)(act);
 	(void)(eof);
 	(void)(thttp_machine_parser_url_first_final);
 	(void)(thttp_machine_parser_url_error);

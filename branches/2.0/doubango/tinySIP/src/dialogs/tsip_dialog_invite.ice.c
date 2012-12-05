@@ -465,6 +465,7 @@ static int tsip_dialog_invite_ice_callback(const tnet_ice_event_t *e)
 				}
 				break;
 			}
+        default: break;
 	}
 
 	TSK_OBJECT_SAFE_FREE(dialog);

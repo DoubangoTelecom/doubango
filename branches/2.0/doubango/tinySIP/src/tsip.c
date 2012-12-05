@@ -886,7 +886,6 @@ int tsip_stack_get_local_ip_n_port(const tsip_stack_handle_t *self, const char* 
 int tsip_stack_stop(tsip_stack_handle_t *self)
 {
 	tsip_stack_t *stack = self;
-	int ret = 0;
 	
 	if(stack){
 		tsk_bool_t one_failed = tsk_false;

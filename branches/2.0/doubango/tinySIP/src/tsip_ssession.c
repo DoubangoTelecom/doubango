@@ -333,6 +333,7 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 									switch(MEDIA_ENUM){
 										case tmedia_audio: self->media.rtp.ssrc.audio = SSRC_UINT; break;
 										case tmedia_video: self->media.rtp.ssrc.video = SSRC_UINT; break;
+                                        default: break;
 									}
 									break;
 								}

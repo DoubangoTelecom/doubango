@@ -305,6 +305,8 @@ int tsip_transport_ipsec_updateMSG(tsip_transport_ipsec_t* self, tsip_message_t 
 				TSIP_MESSAGE_ADD_HEADER(msg, TSIP_HEADER_PROXY_REQUIRE_VA_ARGS("sec-agree"));
 				break;
 			}
+            
+        default: break;
 	}
 
 	ret = 0;
