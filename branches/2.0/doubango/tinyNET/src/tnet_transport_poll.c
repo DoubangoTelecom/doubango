@@ -39,6 +39,10 @@
 
 #include "tnet_poll.h"
 
+#if HAVE_SYS_PARAM_H
+#   include <sys/param.h> /* http://www.freebsd.org/doc/en/books/porters-handbook/porting-versions.html */
+#endif
+
 #define TNET_MAX_FDS		1024
 
 /*== Socket description ==*/
@@ -138,15 +142,16 @@ int tnet_transport_pause_socket(const tnet_transport_handle_t *handle, tnet_fd_t
 }
 
 /* Remove socket */
-int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t *fd)
+int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t *pfd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
 	int ret = -1;
 	tsk_size_t i;
 	tsk_bool_t found = tsk_false;
+    tnet_fd_t fd = *pfd;
 	
-	TSK_DEBUG_INFO("Removing socket %d", *fd);
+	TSK_DEBUG_INFO("Removing socket %d", fd);
 
 	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
@@ -159,10 +164,10 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 	}
 	
 	for(i=0; i<context->count; i++){
-		if(context->sockets[i]->fd == *fd){
+		if(context->sockets[i]->fd == fd){
 			removeSocket(i, context);
 			found = tsk_true;
-			*fd = TNET_INVALID_FD;
+			*pfd = TNET_INVALID_FD;
 			break;
 		}
 	}
@@ -526,6 +531,7 @@ void *tnet_transport_mainthread(void *param)
 	int ret;
 	tsk_size_t i;
 	tsk_bool_t is_stream;
+    tnet_fd_t fd;
 
 	struct sockaddr_storage remote_addr = {0};
 	transport_socket_xt* active_socket;
@@ -584,6 +590,39 @@ void *tnet_transport_mainthread(void *param)
 
 			/* Get active event and socket */
 			active_socket = context->sockets[i];
+            
+            /*================== TNET_POLLHUP ==================*/
+			if(context->ufds[i].revents & (TNET_POLLHUP)){
+                fd = active_socket->fd;
+				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLHUP(%d)", transport->description, fd);
+#if defined(ANDROID)
+				/* FIXME */
+#else
+                tnet_transport_remove_socket(transport, &active_socket->fd);
+				TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, fd);
+                continue;
+#endif
+			}
+            
+			/*================== TNET_POLLERR ==================*/
+			if(context->ufds[i].revents & (TNET_POLLERR)){
+                fd = active_socket->fd;
+				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLERR(%d)", transport->description, fd);
+                
+                tnet_transport_remove_socket(transport, &active_socket->fd);
+				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, fd);
+				continue;
+			}
+			
+			/*================== TNET_POLLNVAL ==================*/
+			if(context->ufds[i].revents & (TNET_POLLNVAL)){
+                fd = active_socket->fd;
+				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLNVAL(%d)", transport->description, fd);
+				
+                tnet_transport_remove_socket(transport, &active_socket->fd);
+				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, fd);
+				continue;
+			}
 			
 			/*================== POLLIN ==================*/
 			if(context->ufds[i].revents & TNET_POLLIN)
@@ -607,18 +646,22 @@ void *tnet_transport_mainthread(void *param)
 				 */
 				if((tnet_ioctlt(active_socket->fd, FIONREAD, &len) < 0 || !len) && is_stream){
 					/* It's probably an incoming connection --> try to accept() it */
-					tnet_fd_t fd;
-					int listening, remove_socket = 0;
+					int listening = 0, remove_socket = 0;
 					socklen_t socklen = sizeof(listening);
 					
-					TSK_DEBUG_INFO("ioctlt() returned zero or failed");
+					TSK_DEBUG_INFO("ioctlt(%d) returned zero or failed", active_socket->fd);
 					
 					// check if socket is listening
-					if(getsockopt(active_socket->fd, SOL_SOCKET, SO_ACCEPTCONN, &listening, &socklen) == -1){
-   						TSK_DEBUG_WARN("getsockopt(SO_ACCEPTCONN, %d) failed\n", active_socket->fd);
-						remove_socket = 1;
+					if(getsockopt(active_socket->fd, SOL_SOCKET, SO_ACCEPTCONN, &listening, &socklen) != 0){
+#if defined(BSD) /* old FreeBSD versions (and OSX up to Lion) do not support SO_ACCEPTCONN */
+                        listening = 1;
+#else
+   						TNET_PRINT_LAST_ERROR("getsockopt(SO_ACCEPTCONN, %d) failed\n", active_socket->fd);
+                        /* not socket accepted -> no socket to remove */
+                        goto TNET_POLLIN_DONE;
+#endif
 					}
-					else if (listening){
+                    if (listening){
 						if((fd = accept(active_socket->fd, tsk_null, 0)) != TNET_INVALID_SOCKET){
 							TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_ACCEPT(fd=%d)", transport->description, fd);
 							addSocket(fd, transport->master->type, transport, tsk_true, tsk_false);
@@ -626,7 +669,8 @@ void *tnet_transport_mainthread(void *param)
 							if(active_socket->tlshandle){
 								transport_socket_xt* tls_socket;
 								if((tls_socket = getSocket(context, fd))){
-									if(tnet_tls_socket_accept(tls_socket->tlshandle)){
+									if(tnet_tls_socket_accept(tls_socket->tlshandle) != 0){
+                                        TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, fd);
 										tnet_transport_remove_socket(transport, &fd);
 										TNET_PRINT_LAST_ERROR("SSL_accept() failed");
 										goto TNET_POLLIN_DONE;
@@ -649,16 +693,17 @@ void *tnet_transport_mainthread(void *param)
 						tnet_transport_remove_socket(transport, &active_socket->fd);
 						TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, fd);
 					}
-					continue;
+					goto TNET_POLLIN_DONE;
 				}
 				
 				if(len <= 0){
-					continue;
+                    context->ufds[i].revents &= ~TNET_POLLIN;
+					goto TNET_POLLIN_DONE;
 				}
 				
 				if(!(buffer = tsk_calloc(len, sizeof(uint8_t)))){
-					TSK_DEBUG_ERROR("TSK_CALLOC FAILED.");
-					continue;
+					TSK_DEBUG_ERROR("TSK_CALLOC FAILED");
+					goto TNET_POLLIN_DONE;
 				}
 				
 				
@@ -669,7 +714,7 @@ void *tnet_transport_mainthread(void *param)
 					if((ret = tnet_tls_socket_recv(active_socket->tlshandle, &buffer, &tlslen, &isEncrypted)) == 0){
 						if(isEncrypted){
 							TSK_FREE(buffer);
-							continue;
+							goto TNET_POLLIN_DONE;
 						}
 						if(ret == 0){
 							len = ret = tlslen;
@@ -690,7 +735,7 @@ void *tnet_transport_mainthread(void *param)
 					
 					removeSocket(i, context);
 					TNET_PRINT_LAST_ERROR("recv/recvfrom have failed.");
-					continue;
+					goto TNET_POLLIN_DONE;
 				}
 				
 				if((len != (tsk_size_t)ret) && len){
@@ -705,7 +750,8 @@ void *tnet_transport_mainthread(void *param)
 				
 				TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(transport), e);
 
-TNET_POLLIN_DONE:;
+TNET_POLLIN_DONE:
+                context->ufds[i].revents &= ~TNET_POLLIN;
 			}
 
 
@@ -724,39 +770,11 @@ TNET_POLLIN_DONE:;
 			if(context->ufds[i].revents & TNET_POLLPRI){
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLPRI", transport->description);
 			}
-			
-			/*================== TNET_POLLHUP ==================*/
-			if(context->ufds[i].revents & (TNET_POLLHUP)){
-				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLHUP", transport->description);
-#if defined(ANDROID)
-				/* FIXME */
-#else
-				TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, active_socket->fd);
-				removeSocket(i, context);
-#endif
-			}
 
-			/*================== TNET_POLLERR ==================*/
-			if(context->ufds[i].revents & (TNET_POLLERR)){
-				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLERR", transport->description);
-
-				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
-				removeSocket(i, context);
-			}
-			
-			/*================== TNET_POLLNVAL ==================*/
-			if(context->ufds[i].revents & (TNET_POLLNVAL)){
-				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLNVAL", transport->description);
-				
-				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
-				removeSocket(i, context);
-			}
-
-
+            context->ufds[i].revents = 0;
 		}/* for */
 
 done:
-		context->ufds[i].revents = 0;
 		/* unlock context */
 		tsk_safeobj_unlock(context);
 

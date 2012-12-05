@@ -338,8 +338,8 @@ static int _tdav_session_t140_rtp_cb(const void* callback_data, const struct trt
 	}
 
 	if(packet->header->payload_type == base->red.payload_type){
-		static void* __red_buffer_ptr = tsk_null; // Never used
-		static tsk_size_t __red_buffer_size = 0; // Never used
+		//static void* __red_buffer_ptr = tsk_null; // Never used
+		//static tsk_size_t __red_buffer_size = 0; // Never used
 		if(!base->red.codec){
 			TSK_DEBUG_ERROR("No RED codec could be found");
 			return -2;
@@ -406,7 +406,7 @@ static int _tdav_session_t140_producer_enc_cb(const void* callback_data, const v
 	
 	if(t140->started && base->rtp_manager && base->rtp_manager->is_started && t140->encoder.codec){
 		/* encode */
-		tsk_size_t out_size = 0;
+		//tsk_size_t out_size = 0;
 
 		if(!base->rtp_manager->is_started){
 			TSK_DEBUG_ERROR("Not started");
@@ -605,7 +605,6 @@ static int _tdav_session_t140_recv_red(tdav_session_t140_t* self, const struct t
 	uint8_t F, pt;
 	int32_t pkt_loss_start = -1, pkt_loss_count, seq_num;
 	uint16_t timestamp_offset, block_length;
-	tdav_session_av_t* base = (tdav_session_av_t*)self;
 
 	if(!self || !packet || !packet->header || !(packet->payload.data || packet->payload.data_const) || (packet->payload.size < TDAV_CODEC_RED_MIN_PKT_SIZE)){
 		TSK_DEBUG_ERROR("Invalid parameter");

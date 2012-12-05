@@ -258,6 +258,8 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_transporterror, msg, tsk_null);
 			break;
 		}
+            
+        default: break;
 	}
 
 	return ret;
@@ -1276,6 +1278,7 @@ int send_CANCEL(tsip_dialog_invite_t *self)
 						}
 						tsk_list_push_back_data(cancel->headers, (void**)&header);
 						break;
+                    default: break;
 				}
 			}
 			

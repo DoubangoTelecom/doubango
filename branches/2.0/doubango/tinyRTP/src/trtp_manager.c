@@ -261,7 +261,7 @@ static int _trtp_manager_ice_init(trtp_manager_t* self)
 
 	// set callback functions
 	ret = tnet_transport_set_callback(self->transport, _trtp_transport_layer_cb, self); // NetTransport to RtpManager
-	ret = tnet_ice_ctx_rtp_callback(self->ice_ctx, _trtp_manager_recv_data, self); // ICE 2 RtpManager
+	ret = tnet_ice_ctx_rtp_callback(self->ice_ctx, (tnet_ice_rtp_callback_f)_trtp_manager_recv_data, self); // ICE 2 RtpManager
 
 	return ret;
 }

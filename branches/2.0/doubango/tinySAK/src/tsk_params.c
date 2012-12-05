@@ -265,12 +265,12 @@ int tsk_params_tostring(const tsk_params_L_t *self, const char separator, tsk_bu
 			tsk_param_t* param = item->data;
 			//tsk_params_param_tostring(param, output);
 			if(TSK_LIST_IS_FIRST(self, item)){
-				if(ret = tsk_buffer_append_2(output, param->value?"%s=%s":"%s", param->name, param->value)){
+				if((ret = tsk_buffer_append_2(output, param->value?"%s=%s":"%s", param->name, param->value))){
 					goto bail;
 				}
 			}
 			else{
-				if(ret = tsk_buffer_append_2(output, param->value?"%c%s=%s":"%c%s", separator, param->name, param->value)){
+				if((ret = tsk_buffer_append_2(output, param->value?"%c%s=%s":"%c%s", separator, param->name, param->value))){
 					goto bail;
 				}
 			}

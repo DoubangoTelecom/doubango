@@ -47,7 +47,7 @@ static int pred_find_streambuffer_by_id(const tsk_list_item_t *item, const void 
 	if(item && item->data)
 	{
 		tcomp_stream_buffer_t *streambuffer = item->data;
-		uint64_t res = (streambuffer->id - *((uint64_t*)id));
+		int64_t res = (streambuffer->id - *((int64_t*)id));
 		return res > 0 ? (int)1 : (res < 0 ? (int)-1 : (int)0);
 	}
 	return -1;

@@ -376,6 +376,8 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 {
 	tmedia_session_t* base = TMEDIA_SESSION(self);
 	tsk_bool_t have_libsrtp = tsk_false;
+    
+    (void)(have_libsrtp);
 
 	if(!base || !base->plugin || !updated){
 		TSK_DEBUG_ERROR("Invalid parameter");

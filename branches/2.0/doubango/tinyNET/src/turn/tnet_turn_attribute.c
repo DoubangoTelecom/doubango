@@ -296,6 +296,8 @@ int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 			TSK_DEBUG_ERROR("SERIALIZE:TOKEN ==> NOT IMPLEMENTED");
 			return -3;
 		}
+            
+        default: break;
 	}
 
 	return 0;

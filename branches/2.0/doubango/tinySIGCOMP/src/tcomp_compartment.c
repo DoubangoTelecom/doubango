@@ -517,7 +517,7 @@ static int tcomp_compartment_cmp(const tsk_object_t *obj1, const tsk_object_t *o
 {
 	const tcomp_compartment_t *compartment1 = obj1;
 	const tcomp_compartment_t *compartment2 = obj2;
-	uint64_t res = (compartment1->identifier - compartment2->identifier);
+	int64_t res = (compartment1->identifier - compartment2->identifier);
 	return res > 0 ? (int)1 : (res < 0 ? (int)-1 : (int)0);
 }
 

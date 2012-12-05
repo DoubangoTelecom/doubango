@@ -205,6 +205,7 @@ const trtp_rtcp_packet_t* trtp_rtcp_packet_get_at(const trtp_rtcp_packet_t* self
 		case trtp_rtcp_packet_type_rr: packets = ((const trtp_rtcp_report_rr_t*)self)->packets; break;
 		case trtp_rtcp_packet_type_sr: packets = ((const trtp_rtcp_report_sr_t*)self)->packets; break;
 		case trtp_rtcp_packet_type_bye: packets = ((const trtp_rtcp_report_bye_t*)self)->packets; break;
+        default: break;
 	}
 
 	i = 0;

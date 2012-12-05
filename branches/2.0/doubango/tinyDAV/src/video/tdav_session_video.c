@@ -136,7 +136,7 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 			packet->payload.size = result->buffer.size;
 			s = trtp_manager_send_rtp_packet(base->rtp_manager, packet, tsk_false); // encrypt and send data
 			if(s < TRTP_RTP_HEADER_MIN_SIZE) { 
-				TSK_DEBUG_ERROR("Failed to send packet. %u expected but only %s sent", packet->payload.size, s); 
+				TSK_DEBUG_ERROR("Failed to send packet. %u expected but only %u sent", packet->payload.size, s); 
 				goto bail; 
 			}
 			++base->rtp_manager->rtp.seq_num;
@@ -232,6 +232,7 @@ static int tdav_session_video_decode_cb(const tmedia_video_decode_result_xt* res
 				trtp_manager_signal_frame_corrupted(base->rtp_manager, ((const trtp_rtp_header_t*)result->proto_hdr)->ssrc);
 				break;
 			}
+        default: break;
 	}
 	return 0;
 }
@@ -465,6 +466,7 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
 	i = 0;
 	while((rtpfb = (const trtp_rtcp_report_rtpfb_t*)trtp_rtcp_packet_get_at(packet, trtp_rtcp_packet_type_rtpfb, i++))){
 		switch(rtpfb->fci_type){
+            default: break;
 			case trtp_rtcp_rtpfb_fci_type_nack:
 				{
 					if(rtpfb->nack.blp && rtpfb->nack.pid){
@@ -535,6 +537,7 @@ static int _tdav_session_video_jb_cb(const tdav_video_jb_cb_data_xt* data)
 	tdav_session_av_t* base = (tdav_session_av_t*)data->usr_data;
 
 	switch(data->type){
+        default: break;
 		case tdav_video_jb_cb_data_type_rtp:
 			{
 				return _tdav_session_video_decode(video, data->rtp.pkt);

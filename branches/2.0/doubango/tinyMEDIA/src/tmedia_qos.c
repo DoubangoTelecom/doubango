@@ -95,6 +95,7 @@ tmedia_qos_tline_t* tmedia_qos_tline_create(tmedia_qos_stype_t type, tmedia_qos_
 			return (tmedia_qos_tline_t*)tmedia_qos_tline_e2e_create(strength);
 		case tmedia_qos_stype_segmented:
 			return (tmedia_qos_tline_t*)tmedia_qos_tline_segmented_create(strength);
+        default: break;
 	}
 	return tsk_null;
 }

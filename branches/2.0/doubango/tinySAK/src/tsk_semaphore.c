@@ -137,7 +137,7 @@ int tsk_semaphore_increment(tsk_semaphore_handle_t* handle)
 #if TSK_UNDER_WINDOWS
 		if((ret = ReleaseSemaphore((SEMAPHORE_T)handle, 1L, 0L) ? 0 : -1))
 #else
-		if(ret = sem_post((SEMAPHORE_T)GET_SEM(handle)))
+		if((ret = sem_post((SEMAPHORE_T)GET_SEM(handle))))
 #endif
 		{
 			TSK_DEBUG_ERROR("sem_post function failed: %d", ret);

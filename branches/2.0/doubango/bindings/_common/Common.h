@@ -80,6 +80,8 @@ static tmedia_type_t twrap_get_media_type(twrap_media_type_t type)
 		case twrap_media_audio_video_t140:
 			media_type |= (tmedia_audio | tmedia_video | tmedia_t140);
 			break;
+        default:
+            break;
 	}
 	return (tmedia_type_t)media_type;
 }

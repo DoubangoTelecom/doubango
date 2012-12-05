@@ -956,6 +956,10 @@ static tsk_size_t AddMemberUsingRTCPPacket(trtp_rtcp_session_t* session, const t
 				blocks = sr->blocks;
 				break;
 			}
+        default:
+            {
+                break;
+            }
 	}
 
 	if(!sender){
@@ -1028,6 +1032,10 @@ static tsk_size_t RemoveMemberUsingRTCPPacket(trtp_rtcp_session_t* session, cons
 				blocks = sr->blocks;
 				break;
 			}
+        default:
+            {
+                break;
+            }
 	}
 	
 	if(packets){
@@ -1260,7 +1268,7 @@ static double rtcp_interval(int32_t members,
 	#define RTCP_SENDER_BW_FRACTION 0.25
 	#define RTCP_RCVR_BW_FRACTION (1 - RTCP_SENDER_BW_FRACTION)
 	/*
-	/* To compensate for "timer reconsideration" converging to a
+	* To compensate for "timer reconsideration" converging to a
 	* value below the intended average.
 	*/
 	#define COMPENSATION  (2.71828 - 1.5)

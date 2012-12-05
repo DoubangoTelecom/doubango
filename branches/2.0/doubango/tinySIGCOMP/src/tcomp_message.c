@@ -70,7 +70,7 @@ void initFeedbackItem(tcomp_message_t *message, uint8_t** start_ptr)
 	*/
 	if((**start_ptr) <= 128){
 		tcomp_buffer_referenceBuff(message->ret_feedback_buffer, *start_ptr, 1);
-		*start_ptr++;
+		(void)(*start_ptr++);
 	}
 	else{
 		tcomp_buffer_referenceBuff(message->ret_feedback_buffer, *start_ptr, 1+(**start_ptr&0x7f));

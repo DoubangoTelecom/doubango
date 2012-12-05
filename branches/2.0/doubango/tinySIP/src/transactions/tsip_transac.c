@@ -185,7 +185,6 @@ int tsip_transac_deinit(tsip_transac_t *self)
 
 int tsip_transac_start(tsip_transac_t *self, const tsip_request_t* request)
 {
-	int ret = -1;
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;

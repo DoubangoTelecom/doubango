@@ -49,7 +49,7 @@ TNET_BEGIN_DECLS
 #define TNET_NAT_DEFAULT_RTO			500
 /**@ingroup tnet_nat_group
 * Number of retransmission for UDP retransmission in millisecond.
-/*	7.2.1.  Sending over UDP
+*	7.2.1.  Sending over UDP
 	Rc SHOULD be configurable and SHOULD have a default of 7.
 */
 #define TNET_NAT_DEFAULT_RC				/*7*/3/* 7 is too hight */

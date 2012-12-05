@@ -147,7 +147,7 @@ void tsk_md5final(tsk_md5digest_t digest, tsk_md5context_t *ctx)
 
     tsk_byteReverse(ctx->buf, 4);
     memcpy(digest, ctx->buf, 16);
-    memset(ctx, 0, sizeof(ctx)); 	/* In case it's sensitive */
+    memset(ctx, 0, sizeof(*ctx)); 	/* In case it's sensitive */
 }
 
 /* The four core functions - F1 is optimized somewhat */

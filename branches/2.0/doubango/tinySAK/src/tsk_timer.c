@@ -112,7 +112,7 @@ int tsk_timer_manager_start(tsk_timer_manager_handle_t *self)
 
 	if(!TSK_RUNNABLE(manager)->running && !TSK_RUNNABLE(manager)->started){				
 		TSK_RUNNABLE(manager)->run = run;
-		if(err = tsk_runnable_start(TSK_RUNNABLE(manager), tsk_timer_def_t)){
+		if((err = tsk_runnable_start(TSK_RUNNABLE(manager), tsk_timer_def_t))){
 			//TSK_OBJECT_SAFE_FREE(manager);
 			goto bail;
 		}
@@ -165,7 +165,7 @@ int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self)
 	// "mainthread" uses manager->mutex and runs in a separate thread ==> deadlock
 
 	if(TSK_RUNNABLE(manager)->running){
-		if(ret = tsk_runnable_stop(TSK_RUNNABLE(manager))){
+		if((ret = tsk_runnable_stop(TSK_RUNNABLE(manager)))){
 			goto bail;
 		}
 		
@@ -272,7 +272,7 @@ static void *run(void* self)
 
 	TSK_RUNNABLE_RUN_BEGIN(manager);
 
-	if(curr = TSK_RUNNABLE_POP_FIRST_SAFE(TSK_RUNNABLE(manager))){
+	if((curr = TSK_RUNNABLE_POP_FIRST_SAFE(TSK_RUNNABLE(manager)))){
 		tsk_timer_t *timer = (tsk_timer_t *)curr->data;
 		if(timer->callback){
 			timer->callback(timer->arg, timer->id);

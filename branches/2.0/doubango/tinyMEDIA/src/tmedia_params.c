@@ -61,7 +61,7 @@ tmedia_param_t* tmedia_param_create(tmedia_param_access_type_t access_type,
 		else if(access_type == tmedia_pat_set){
 			switch(value_type){
 				case tmedia_pvt_int32:
-					if(param->value = tsk_calloc(1, sizeof(int32_t))){
+					if((param->value = tsk_calloc(1, sizeof(int32_t)))){
 						memcpy(param->value, value, sizeof(int32_t));
 					}
 					break;
@@ -72,7 +72,7 @@ tmedia_param_t* tmedia_param_create(tmedia_param_access_type_t access_type,
 					param->value = tsk_strdup(value);
 					break;
 				case tmedia_pvt_int64:
-					if(param->value = tsk_calloc(1, sizeof(int64_t))){
+					if((param->value = tsk_calloc(1, sizeof(int64_t)))){
 						memcpy(param->value, value, sizeof(int64_t));
 					}
 					break;

@@ -48,6 +48,7 @@ twrap_media_type_t Codec::getMediaType()
 			case tmedia_audio: return twrap_media_audio;
 			case tmedia_video: return twrap_media_video;
 			case tmedia_msrp: return twrap_media_msrp;
+            default: break;
 		}
 	}
 	return twrap_media_none;

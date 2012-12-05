@@ -496,6 +496,7 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 							ret = tsip_transac_start(transac, request);
 							break;
 						}
+                    default: break;
 				}
 				TSK_OBJECT_SAFE_FREE(transac);
 			}
@@ -1032,6 +1033,7 @@ int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* re
 					}
 					break;
 				}
+            default:break;
 		}
 	}
 
@@ -1057,6 +1059,7 @@ int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* re
 					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_P_ACCESS_NETWORK_INFO_VA_ARGS(netinfo));
 					break;
 				}
+            default: break;
 		}
 	}
 

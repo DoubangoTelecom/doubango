@@ -57,7 +57,7 @@
 #define TNET_ICE_DEFAULT_RTO			500
 /**@ingroup tnet_nat_group
 * Number of retransmission for UDP retransmission in millisecond.
-/*	7.2.1.  Sending over UDP
+*	7.2.1.  Sending over UDP
 	Rc SHOULD be configurable and SHOULD have a default of 7.
 */
 #define TNET_ICE_DEFAULT_RC				4 //7
@@ -1046,7 +1046,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 								if(!tsk_strnullORempty(candidate_curr->stun.srflx_addr)){
 									char* foundation = tsk_strdup("srflx");
 									tnet_ice_candidate_t* new_cand;
-									tsk_strcat(&foundation, candidate_curr->foundation);
+									tsk_strcat(&foundation, (const char*)candidate_curr->foundation);
 									new_cand = tnet_ice_candidate_create(tnet_ice_cand_type_srflx, candidate_curr->socket, candidate_curr->is_ice_jingle, candidate_curr->is_rtp, self->is_video, self->ufrag, self->pwd, foundation);
 									TSK_FREE(foundation);
 									if(new_cand){
@@ -1259,6 +1259,7 @@ start_conneck:
 					case tnet_ice_pair_state_failed:
 					case tnet_ice_pair_state_succeed:
 						continue;
+                    default: break;
 				}
 				
 				ret = tnet_ice_pair_send_conncheck((tnet_ice_pair_t *)pair);
