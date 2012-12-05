@@ -1,0 +1,165 @@
+#summary Building Source v2.0
+#labels Featured,Phase-Deploy
+
+This section explains how to build the project using *CentOS 64* but could be easily adapted for any _Linux_, _Windows_ or _OS X_.<br />
+
+<wiki:toc max_depth="3" />
+
+
+==Preparing the system==
+{{{
+sudo yum update
+sudo yum install make libtool autoconf subversion git wget
+}}}
+
+The first step is to checkout Doubango 2.0 source code:
+{{{
+svn checkout http://doubango.googlecode.com/svn/branches/2.0/doubango doubango
+}}}
+
+===Building libsrtp===
+libsrtp is required.
+{{{
+wget http://srtp.sourceforge.net/srtp-1.4.2.tgz
+tar -xvzf srtp-1.4.2.tgz
+cd srtp
+./configure --enable-pic && make && make install
+}}}
+
+===Installing openssl===
+*openssl* is required if you want to use the RTCWeb Breaker module or Secure WebSocket transport (WSS).
+{{{
+yum install openssl-devel
+}}}
+
+===Building libspeex and libspeexdsp===
+*libspeex* (audio codec) an *libspeexdsp* (audio processing and jitter buffer) are optional. It’s highly recommended to enable libspeexdsp.
+{{{
+wget http://downloads.xiph.org/releases/speex/speex-1.2beta3.tar.gz
+tar -xvzf speex-1.2beta3.tar.gz
+cd speex-1.2beta3
+./configure --disable-oggtest && make && make install
+}}}
+
+===Building YASM===
+*YASM* is only required if you want to enable *VPX* (VP8 video codec) or *x264* (H.264 codec).
+{{{
+wget http://www.tortall.net/projects/yasm/releases/yasm-1.2.0.tar.gz
+tar -xvzf yasm-1.2.0.tar.gz
+cd yasm-1.2.0
+./configure && make && make install
+}}}
+
+===Building libvpx===
+_Date: December 1, 2012_ <br />
+*libvpx* adds support for *VP8* and is optional but highly recommended if you want support for video when using Google Chrome or Mozilla Firefox.
+{{{
+git clone http://git.chromium.org/webm/libvpx.git
+cd libvpx
+./configure --enable-realtime-only --enable-error-concealment --disable-examples --enable-vp8 --enable-pic --enable-shared --as=yasm
+}}}
+
+===Building libyuv===
+*libyuv* is optional. Adds support for video scaling and chroma conversion.
+{{{
+mkdir libyuv && cd libyuv
+svn co http://src.chromium.org/svn/trunk/tools/depot_tools . 
+./gclient config http://libyuv.googlecode.com/svn/trunk
+./gclient sync && cd trunk
+make -j6 V=1 -r libyuv BUILDTYPE=Release
+#cp out/Release/obj.target/libyuv.a /usr/local/lib
+#mkdir /usr/local/include/libyuv && cp -r include/* /usr/local/include/libyuv
+}}}
+
+===Building opencore-amr===
+*opencore-amr* is optional. Adds support for *AMR* audio codec.
+{{{
+git clone git://opencore-amr.git.sourceforge.net/gitroot/opencore-amr/opencore-amr
+autoreconf --install && ./configure && make && make install
+}}}
+
+===Building libgsm===
+*libgsm* is optional. Adds support for *GSM* audio codec.
+{{{
+wget http://www.quut.com/gsm/gsm-1.0.13.tar.gz
+tar -xvzf gsm-1.0.13.tar.gz
+cd gsm-1.0-pl13 && make && make install
+#cp -rf ./inc/* /usr/local/include
+#cp -rf ./lib/* /usr/local/lib
+}}}
+
+===Building g729===
+*G729* is optional. Adds support for *G.729* audio codec.
+{{{
+svn co http://g729.googlecode.com/svn/trunk/ g729b
+cd g729b
+./autogen.sh && ./configure --enable-static --disable-shared && make && make install
+}}}
+
+===Building iLBC===
+*iLBC* is optional. Adds support for *iLBC* audio codec.
+{{{
+svn co http://doubango.googlecode.com/svn/branches/2.0/doubango/thirdparties/scripts/ilbc
+cd ilbc
+wget http://www.ietf.org/rfc/rfc3951.txt
+awk -f extract.awk rfc3951.txt
+./autogen.sh && ./configure
+make && make install
+}}}
+
+===Building x264===
+_Date: December 2, 2012_ <br />
+*x264* is optional and adds support for *H.264* video codec (requires FFmpeg).
+{{{
+wget ftp://ftp.videolan.org/pub/x264/snapshots/last_x264.tar.bz2
+tar -xvjf last_x264.tar.bz2
+# the output directory may be difference depending on the version and date
+cd x264-snapshot-20121201-2245
+./configure --enable-static --enable-pic && make && make install
+}}}
+
+===Building FFmpeg===
+_Date: December 2, 2012_ <br />
+*FFmpeg* is optional and adds support for *H.263*, *H.264* (requires *x264*) and *MP4V-ES* video codecs.
+{{{
+git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg
+cd ffmpeg
+./configure \
+--extra-cflags="-fPIC" \
+--extra-ldflags="-lpthread" \
+\
+--enable-pic --enable-memalign-hack \
+--enable-shared --disable-static \
+--disable-network --disable-protocols --disable-pthreads \
+--disable-devices --disable-filters --disable-bsfs --disable-muxers --disable-demuxers --disable-parsers --disable-hwaccels \
+--disable-ffmpeg --disable-ffplay --disable-ffserver \
+--disable-encoders --disable-decoders \
+--disable-zlib \
+\
+--enable-gpl \
+\
+--disable-debug \
+\
+--enable-encoder=h263 --enable-encoder=h263p --enable-decoder=h263 \
+\
+--enable-encoder=mpeg4 --enable-decoder=mpeg4 \
+\
+--enable-libx264 --enable-encoder=libx264 --enable-decoder=h264
+}}}
+
+===Building Doubango===
+ * Minimal build
+{{{
+cd doubango && ./autogen.sh && ./configure --with-ssl --with-srtp
+}}}
+ * Recommended build
+{{{
+cd doubango && ./autogen.sh && ./configure --with-ssl --with-srtp --with-speexdsp --enable-speexjb --with-ffmpeg --with-h264
+}}}
+ * Full build
+{{{
+cd doubango && ./autogen.sh && ./configure --with-ssl --with-srtp --with-vpx --with-yuv --with-amr --with-speex --with-speexdsp --enable-speexresampler --enable-speexjb --enable-speexdenoiser --with-gsm --with-ilbc --with-g729 --with-ffmpeg --with-h264
+}}}
+
+<br />
+Et voilà
