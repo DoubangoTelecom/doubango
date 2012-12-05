@@ -116,6 +116,9 @@ thttp_url_t *thttp_url_parse(const char *urlstring, tsk_size_t length)
 	const char *tag_start = 0;
 	
 	%%write data;
+	(void)(ts);
+	(void)(te);
+	(void)(act);
 	(void)(eof);
 	(void)(thttp_machine_parser_url_first_final);
 	(void)(thttp_machine_parser_url_error);
