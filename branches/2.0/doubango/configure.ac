@@ -1,5 +1,5 @@
 AC_PREREQ([2.0])
-AC_INIT(libdoubango, 0.1, diopmamadou(at)doubango(DOT)org)
+AC_INIT(libdoubango, 0.1, doubango(at)googlegroups(dot)com)
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])
@@ -84,7 +84,7 @@ AC_TRY_COMPILE([#include <pthread.h>],
 AC_DEFINE(USE_POLL, 1, [Setting USE_POLL to 1 for backward compatibility])
 AC_CHECK_FUNCS([poll])
 
-AC_CHECK_HEADERS([net/if_types.h net/if_dl.h poll.h])
+AC_CHECK_HEADERS([net/if_types.h net/if_dl.h poll.h sys/param.h])
 
 AC_CHECK_FUNC(getifaddrs, AC_DEFINE(HAVE_GETIFADDRS, 1 ,[Define to 1 if you have the 'getifaddrs' function]))
 AH_TEMPLATE([HAVE_IFADDRS_H], [Define if <ifaddrs.h> header exist])

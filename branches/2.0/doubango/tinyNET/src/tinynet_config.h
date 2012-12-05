@@ -96,22 +96,12 @@
 
 /* have poll()? */
 /* Do not use WSAPoll event if it's supported under Vista */
-#if ANDROID || defined(__APPLE__)
-#	define USE_POLL	1
-#	define HAVE_POLL	1
-#	define HAVE_POLL_H	1
-#endif
-
-#if defined(__APPLE__)
-#	define HAVE_GETIFADDRS		1
-#	define HAVE_IFADDRS_H		1
-#	define HAVE_DNS_H			1
-#	define HAVE_NET_ROUTE_H		1
-#	define HAVE_NET_IF_DL_H		1
-#	define HAVE_STRUCT_RT_METRICS	1
-#	define HAVE_STRUCT_SOCKADDR_DL	1
-#	define TNET_HAVE_SS_LEN		1
-#	define TNET_HAVE_SA_LEN		0
+#if !HAVE_CONFIG_H
+#	if ANDROID || defined(__APPLE__)
+#		define USE_POLL	1
+#		define HAVE_POLL	1
+#		define HAVE_POLL_H	1
+#	endif
 #endif
 
 /* Used in TURN/STUN2 attributes. */
@@ -124,6 +114,17 @@
 
 #if HAVE_CONFIG_H
 #	include "config.h"
+#elif defined(__APPLE__)
+#	define HAVE_GETIFADDRS		1
+#	define HAVE_IFADDRS_H		1
+#	define HAVE_DNS_H			1
+#	define HAVE_NET_ROUTE_H		1
+#	define HAVE_NET_IF_DL_H		1
+#	define HAVE_STRUCT_RT_METRICS	1
+#	define HAVE_STRUCT_SOCKADDR_DL	1
+#	define HAVE_SYS_PARAM_H		1
+#	define TNET_HAVE_SS_LEN		1
+#	define TNET_HAVE_SA_LEN		0
 #endif
 
 #endif /* _TINYNET_H_ */
