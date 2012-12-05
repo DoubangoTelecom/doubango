@@ -210,6 +210,10 @@ tsip_header_Security_Clients_L_t *tsip_header_Security_Client_parse(const char *
 	tsip_header_Security_Client_t *curr_securityclient = tsk_null;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Security_Client_first_final);
+	(void)(tsip_machine_parser_header_Security_Client_error);
+	(void)(tsip_machine_parser_header_Security_Client_en_main);
 	%%write init;
 	%%write exec;
 	

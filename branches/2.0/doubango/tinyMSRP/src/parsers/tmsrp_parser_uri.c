@@ -435,15 +435,19 @@ static const int tmsrp_machine_parser_uri_en_main = 1;
 
 
 /* #line 125 "./ragel/tmsrp_parser_uri.rl" */
+	(void)(eof);
+	(void)(tmsrp_machine_parser_uri_first_final);
+	(void)(tmsrp_machine_parser_uri_error);
+	(void)(tmsrp_machine_parser_uri_en_main);
 	
-/* #line 440 "./src/parsers/tmsrp_parser_uri.c" */
+/* #line 444 "./src/parsers/tmsrp_parser_uri.c" */
 	{
 	cs = tmsrp_machine_parser_uri_start;
 	}
 
-/* #line 126 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 130 "./ragel/tmsrp_parser_uri.rl" */
 	
-/* #line 447 "./src/parsers/tmsrp_parser_uri.c" */
+/* #line 451 "./src/parsers/tmsrp_parser_uri.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -580,7 +584,7 @@ _match:
 		TSK_PARSER_ADD_PARAM(uri->params);
 	}
 	break;
-/* #line 584 "./src/parsers/tmsrp_parser_uri.c" */
+/* #line 588 "./src/parsers/tmsrp_parser_uri.c" */
 		}
 	}
 
@@ -614,7 +618,7 @@ _again:
 		TSK_PARSER_ADD_PARAM(uri->params);
 	}
 	break;
-/* #line 618 "./src/parsers/tmsrp_parser_uri.c" */
+/* #line 622 "./src/parsers/tmsrp_parser_uri.c" */
 		}
 	}
 	}
@@ -622,12 +626,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 127 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 131 "./ragel/tmsrp_parser_uri.rl" */
 	
 	if( cs < 
-/* #line 629 "./src/parsers/tmsrp_parser_uri.c" */
+/* #line 633 "./src/parsers/tmsrp_parser_uri.c" */
 101
-/* #line 128 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 132 "./ragel/tmsrp_parser_uri.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse MSRP/MSRPS header.");
 		TSK_OBJECT_SAFE_FREE(uri);

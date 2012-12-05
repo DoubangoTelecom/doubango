@@ -145,6 +145,10 @@ tsip_header_Service_Routes_L_t *tsip_header_Service_Route_parse(const char *data
 	tsip_header_Service_Route_t *curr_service = tsk_null;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Service_Route_first_final);
+	(void)(tsip_machine_parser_header_Service_Route_error);
+	(void)(tsip_machine_parser_header_Service_Route_en_main);
 	%%write init;
 	%%write exec;
 	

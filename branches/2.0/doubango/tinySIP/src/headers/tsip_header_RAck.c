@@ -161,15 +161,19 @@ static const int tsip_machine_parser_header_RAck_en_main = 1;
 
 
 /* #line 106 "./ragel/tsip_parser_header_RAck.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_RAck_first_final);
+	(void)(tsip_machine_parser_header_RAck_error);
+	(void)(tsip_machine_parser_header_RAck_en_main);
 	
-/* #line 166 "./src/headers/tsip_header_RAck.c" */
+/* #line 170 "./src/headers/tsip_header_RAck.c" */
 	{
 	cs = tsip_machine_parser_header_RAck_start;
 	}
 
-/* #line 107 "./ragel/tsip_parser_header_RAck.rl" */
+/* #line 111 "./ragel/tsip_parser_header_RAck.rl" */
 	
-/* #line 173 "./src/headers/tsip_header_RAck.c" */
+/* #line 177 "./src/headers/tsip_header_RAck.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -272,7 +276,7 @@ _match:
 	{
 	}
 	break;
-/* #line 276 "./src/headers/tsip_header_RAck.c" */
+/* #line 280 "./src/headers/tsip_header_RAck.c" */
 		}
 	}
 
@@ -285,12 +289,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 108 "./ragel/tsip_parser_header_RAck.rl" */
+/* #line 112 "./ragel/tsip_parser_header_RAck.rl" */
 	
 	if( cs < 
-/* #line 292 "./src/headers/tsip_header_RAck.c" */
+/* #line 296 "./src/headers/tsip_header_RAck.c" */
 22
-/* #line 109 "./ragel/tsip_parser_header_RAck.rl" */
+/* #line 113 "./ragel/tsip_parser_header_RAck.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'RAck' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_rack);

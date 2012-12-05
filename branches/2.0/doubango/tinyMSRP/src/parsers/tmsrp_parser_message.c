@@ -3420,6 +3420,11 @@ tmsrp_message_t* tmsrp_message_parse_2(const void *input, tsk_size_t size, tsk_s
 	const char* pe = p + size;
 	const char* eof = tsk_null;
 
+	(void)(eof);
+	(void)(tmsrp_machine_message_first_final);
+	(void)(tmsrp_machine_message_error);
+	(void)(tmsrp_machine_message_en_main);
+
 	*msg_size = 0;
 
 	if(!input || !size){
@@ -3433,16 +3438,16 @@ tmsrp_message_t* tmsrp_message_parse_2(const void *input, tsk_size_t size, tsk_s
 
 	/* Ragel init */
 	
-/* #line 3437 "./src/parsers/tmsrp_parser_message.c" */
+/* #line 3442 "./src/parsers/tmsrp_parser_message.c" */
 	{
 	cs = tmsrp_machine_message_start;
 	}
 
-/* #line 306 "./ragel/tmsrp_parser_message.rl" */
+/* #line 311 "./ragel/tmsrp_parser_message.rl" */
 
 	/* Ragel execute */
 	
-/* #line 3446 "./src/parsers/tmsrp_parser_message.c" */
+/* #line 3451 "./src/parsers/tmsrp_parser_message.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -3741,7 +3746,7 @@ _match:
 		into_endline = tsk_true;
 	}
 	break;
-/* #line 3745 "./src/parsers/tmsrp_parser_message.c" */
+/* #line 3750 "./src/parsers/tmsrp_parser_message.c" */
 		}
 	}
 
@@ -3754,13 +3759,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 309 "./ragel/tmsrp_parser_message.rl" */
+/* #line 314 "./ragel/tmsrp_parser_message.rl" */
 
 	/* Check result */
 	if( cs < 
-/* #line 3762 "./src/parsers/tmsrp_parser_message.c" */
+/* #line 3767 "./src/parsers/tmsrp_parser_message.c" */
 701
-/* #line 311 "./ragel/tmsrp_parser_message.rl" */
+/* #line 316 "./ragel/tmsrp_parser_message.rl" */
  ){
 		//TSK_DEBUG_ERROR("Failed to parse MSRP message."); --> very common case(stream): do not bother us...
 		TSK_OBJECT_SAFE_FREE(msrp_msg);

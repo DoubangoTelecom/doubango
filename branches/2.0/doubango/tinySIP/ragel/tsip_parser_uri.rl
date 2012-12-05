@@ -163,6 +163,11 @@ tsip_uri_t *tsip_uri_parse(const char *data, tsk_size_t size)
 	const char *tag_start = tsk_null;
 	
 	%%write data;
+	(void)(eof);
+	(void)(void)(tsip_machine_parser_uri_first_final);
+	(void)(void)(tsip_machine_parser_uri_error);
+	(void)(void)(tsip_machine_parser_uri_en_sip_usrinfo);
+	(void)(void)(tsip_machine_parser_uri_en_main);
 	%%write init;
 	%%write exec;
 	

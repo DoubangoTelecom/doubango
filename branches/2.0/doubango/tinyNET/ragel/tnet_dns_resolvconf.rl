@@ -103,6 +103,10 @@ tnet_addresses_L_t * tnet_dns_resolvconf_parse(const char* path)
 	const char *eof;
 
 	%%write data;
+	(void)(eof);
+	(void)(tdns_machine_resolvconf_first_final);
+	(void)(tdns_machine_resolvconf_error);
+	(void)(tdns_machine_resolvconf_en_main);
 
 	if(tsk_strnullORempty(fullpath)){
 		fullpath = TNET_RESOLV_CONF_PATH;
@@ -115,7 +119,7 @@ tnet_addresses_L_t * tnet_dns_resolvconf_parse(const char* path)
 		len = ftell(fd);
 		fseek(fd, 0L, SEEK_SET);
 		if(!(buf = (char*)tsk_calloc(len + 1, 1))){
-			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %d", (len + 1));
+			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %ld", (len + 1));
 			goto bail;
 		}
 		fread(buf, 1, len, fd);

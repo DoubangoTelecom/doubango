@@ -175,15 +175,19 @@ static const int tmedia_machine_content_cpim_en_main = 1;
 
 
 /* #line 146 "./ragel/tmedia_content_cpim.rl" */
+	(void)(eof);
+	(void)(tmedia_machine_content_cpim_first_final);
+	(void)(tmedia_machine_content_cpim_error);
+	(void)(tmedia_machine_content_cpim_en_main);
 	
-/* #line 180 "./src/content/tmedia_content_cpim.c" */
+/* #line 184 "./src/content/tmedia_content_cpim.c" */
 	{
 	cs = tmedia_machine_content_cpim_start;
 	}
 
-/* #line 147 "./ragel/tmedia_content_cpim.rl" */
+/* #line 151 "./ragel/tmedia_content_cpim.rl" */
 	
-/* #line 187 "./src/content/tmedia_content_cpim.c" */
+/* #line 191 "./src/content/tmedia_content_cpim.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -303,7 +307,7 @@ _match:
 		}
 	}
 	break;
-/* #line 307 "./src/content/tmedia_content_cpim.c" */
+/* #line 311 "./src/content/tmedia_content_cpim.c" */
 		}
 	}
 
@@ -337,7 +341,7 @@ _again:
 		}
 	}
 	break;
-/* #line 341 "./src/content/tmedia_content_cpim.c" */
+/* #line 345 "./src/content/tmedia_content_cpim.c" */
 		}
 	}
 	}
@@ -345,15 +349,15 @@ _again:
 	_out: {}
 	}
 
-/* #line 148 "./ragel/tmedia_content_cpim.rl" */
+/* #line 152 "./ragel/tmedia_content_cpim.rl" */
 	
 	TSK_FREE(hname);
 	TSK_FREE(hvalue);
 
 	if( cs < 
-/* #line 355 "./src/content/tmedia_content_cpim.c" */
+/* #line 359 "./src/content/tmedia_content_cpim.c" */
 17
-/* #line 152 "./ragel/tmedia_content_cpim.rl" */
+/* #line 156 "./ragel/tmedia_content_cpim.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse CPIM content");
 		return -1;

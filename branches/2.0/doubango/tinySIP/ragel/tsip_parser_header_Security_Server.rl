@@ -211,6 +211,10 @@ tsip_header_Security_Servers_L_t *tsip_header_Security_Server_parse(const char *
 	tsip_header_Security_Server_t *curr_securityserver = tsk_null;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Security_Server_first_final);
+	(void)(tsip_machine_parser_header_Security_Server_error);
+	(void)(tsip_machine_parser_header_Security_Server_en_main);
 	%%write init;
 	%%write exec;
 	

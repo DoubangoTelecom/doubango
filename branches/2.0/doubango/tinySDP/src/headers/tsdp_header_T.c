@@ -41,7 +41,7 @@
 *	Ragel state machine.
 */
 
-/* #line 82 "./ragel/tsdp_parser_header_T.rl" */
+/* #line 78 "./ragel/tsdp_parser_header_T.rl" */
 
 
 
@@ -179,16 +179,19 @@ static const int tsdp_machine_parser_header_T_error = 0;
 static const int tsdp_machine_parser_header_T_en_main = 1;
 
 
-/* #line 165 "./ragel/tsdp_parser_header_T.rl" */
+/* #line 161 "./ragel/tsdp_parser_header_T.rl" */
+	(void)(tsdp_machine_parser_header_T_first_final);
+	(void)(tsdp_machine_parser_header_T_error);
+	(void)(tsdp_machine_parser_header_T_en_main);
 	
-/* #line 185 "./src/headers/tsdp_header_T.c" */
+/* #line 188 "./src/headers/tsdp_header_T.c" */
 	{
 	cs = tsdp_machine_parser_header_T_start;
 	}
 
-/* #line 166 "./ragel/tsdp_parser_header_T.rl" */
+/* #line 165 "./ragel/tsdp_parser_header_T.rl" */
 	
-/* #line 192 "./src/headers/tsdp_header_T.c" */
+/* #line 195 "./src/headers/tsdp_header_T.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -268,18 +271,18 @@ _match:
 	}
 	break;
 	case 1:
-/* #line 55 "./ragel/tsdp_parser_header_T.rl" */
+/* #line 51 "./ragel/tsdp_parser_header_T.rl" */
 	{
 		TSK_PARSER_SET_INTEGER_EX(hdr_T->start, uint64_t, atoi64);
 	}
 	break;
 	case 2:
-/* #line 59 "./ragel/tsdp_parser_header_T.rl" */
+/* #line 55 "./ragel/tsdp_parser_header_T.rl" */
 	{
 		TSK_PARSER_SET_INTEGER_EX(hdr_T->stop, uint64_t, atoi64);
 	}
 	break;
-/* #line 283 "./src/headers/tsdp_header_T.c" */
+/* #line 286 "./src/headers/tsdp_header_T.c" */
 		}
 	}
 
@@ -296,12 +299,12 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 2:
-/* #line 59 "./ragel/tsdp_parser_header_T.rl" */
+/* #line 55 "./ragel/tsdp_parser_header_T.rl" */
 	{
 		TSK_PARSER_SET_INTEGER_EX(hdr_T->stop, uint64_t, atoi64);
 	}
 	break;
-/* #line 305 "./src/headers/tsdp_header_T.c" */
+/* #line 308 "./src/headers/tsdp_header_T.c" */
 		}
 	}
 	}
@@ -309,12 +312,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 167 "./ragel/tsdp_parser_header_T.rl" */
+/* #line 166 "./ragel/tsdp_parser_header_T.rl" */
 	
 	if( cs < 
-/* #line 316 "./src/headers/tsdp_header_T.c" */
+/* #line 319 "./src/headers/tsdp_header_T.c" */
 7
-/* #line 168 "./ragel/tsdp_parser_header_T.rl" */
+/* #line 167 "./ragel/tsdp_parser_header_T.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"t=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_T);

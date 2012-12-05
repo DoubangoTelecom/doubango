@@ -122,6 +122,10 @@ tmsrp_uri_t *tmsrp_uri_parse(const char *data, tsk_size_t size)
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tmsrp_machine_parser_uri_first_final);
+	(void)(tmsrp_machine_parser_uri_error);
+	(void)(tmsrp_machine_parser_uri_en_main);
 	%%write init;
 	%%write exec;
 	

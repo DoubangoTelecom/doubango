@@ -2335,15 +2335,19 @@ static const int thttp_machine_parser_headers_en_main = 1;
 
 
 /* #line 518 "./ragel/thttp_parser_header.rl" */
+	(void)(eof);
+	(void)(thttp_machine_parser_headers_first_final);
+	(void)(thttp_machine_parser_headers_error);
+	(void)(thttp_machine_parser_headers_en_main);
 	
-/* #line 2340 "./src/parsers/thttp_parser_header.c" */
+/* #line 2344 "./src/parsers/thttp_parser_header.c" */
 	{
 	cs = thttp_machine_parser_headers_start;
 	}
 
-/* #line 519 "./ragel/thttp_parser_header.rl" */
+/* #line 523 "./ragel/thttp_parser_header.rl" */
 	
-/* #line 2347 "./src/parsers/thttp_parser_header.c" */
+/* #line 2351 "./src/parsers/thttp_parser_header.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -2823,7 +2827,7 @@ _match:
 		//TSK_DEBUG_WARN("parse_header_extension_header NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
-/* #line 2827 "./src/parsers/thttp_parser_header.c" */
+/* #line 2831 "./src/parsers/thttp_parser_header.c" */
 		}
 	}
 
@@ -2836,11 +2840,11 @@ _again:
 	_out: {}
 	}
 
-/* #line 520 "./ragel/thttp_parser_header.rl" */
+/* #line 524 "./ragel/thttp_parser_header.rl" */
 
 	return ( cs >= 
-/* #line 2843 "./src/parsers/thttp_parser_header.c" */
+/* #line 2847 "./src/parsers/thttp_parser_header.c" */
 639
-/* #line 521 "./ragel/thttp_parser_header.rl" */
+/* #line 525 "./ragel/thttp_parser_header.rl" */
  ) ? 0 : -1;
 }

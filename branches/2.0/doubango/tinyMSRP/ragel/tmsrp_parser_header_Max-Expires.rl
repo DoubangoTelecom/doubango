@@ -95,6 +95,10 @@ tmsrp_header_Max_Expires_t *tmsrp_header_Max_Expires_parse(const char *data, tsk
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tmsrp_machine_parser_header_Max_Expires_first_final);
+	(void)(tmsrp_machine_parser_header_Max_Expires_error);
+	(void)(tmsrp_machine_parser_header_Max_Expires_en_main);
 	%%write init;
 	%%write exec;
 	

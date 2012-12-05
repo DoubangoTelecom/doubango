@@ -143,15 +143,19 @@ static const int tsip_machine_parser_header_Dummy_en_main = 1;
 
 
 /* #line 106 "./ragel/tsip_parser_header_Dummy.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Dummy_first_final);
+	(void)(tsip_machine_parser_header_Dummy_error);
+	(void)(tsip_machine_parser_header_Dummy_en_main);
 	
-/* #line 148 "./src/headers/tsip_header_Dummy.c" */
+/* #line 152 "./src/headers/tsip_header_Dummy.c" */
 	{
 	cs = tsip_machine_parser_header_Dummy_start;
 	}
 
-/* #line 107 "./ragel/tsip_parser_header_Dummy.rl" */
+/* #line 111 "./ragel/tsip_parser_header_Dummy.rl" */
 	
-/* #line 155 "./src/headers/tsip_header_Dummy.c" */
+/* #line 159 "./src/headers/tsip_header_Dummy.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -248,7 +252,7 @@ _match:
 	{
 	}
 	break;
-/* #line 252 "./src/headers/tsip_header_Dummy.c" */
+/* #line 256 "./src/headers/tsip_header_Dummy.c" */
 		}
 	}
 
@@ -261,12 +265,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 108 "./ragel/tsip_parser_header_Dummy.rl" */
+/* #line 112 "./ragel/tsip_parser_header_Dummy.rl" */
 	
 	if( cs < 
-/* #line 268 "./src/headers/tsip_header_Dummy.c" */
+/* #line 272 "./src/headers/tsip_header_Dummy.c" */
 10
-/* #line 109 "./ragel/tsip_parser_header_Dummy.rl" */
+/* #line 113 "./ragel/tsip_parser_header_Dummy.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Dummy' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Dummy);

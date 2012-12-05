@@ -250,6 +250,10 @@ tsip_header_Vias_L_t *tsip_header_Via_parse(const char *data, tsk_size_t size)
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Via_first_final);
+	(void)(tsip_machine_parser_header_Via_error);
+	(void)(tsip_machine_parser_header_Via_en_main);
 	%%write init;
 	%%write exec;
 	

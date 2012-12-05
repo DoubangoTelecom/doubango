@@ -179,15 +179,19 @@ static const int tsip_machine_parser_header_Proxy_Require_en_main = 1;
 
 
 /* #line 114 "./ragel/tsip_parser_header_Proxy_Require.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Proxy_Require_first_final);
+	(void)(tsip_machine_parser_header_Proxy_Require_error);
+	(void)(tsip_machine_parser_header_Proxy_Require_en_main);
 	
-/* #line 184 "./src/headers/tsip_header_Proxy_Require.c" */
+/* #line 188 "./src/headers/tsip_header_Proxy_Require.c" */
 	{
 	cs = tsip_machine_parser_header_Proxy_Require_start;
 	}
 
-/* #line 115 "./ragel/tsip_parser_header_Proxy_Require.rl" */
+/* #line 119 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 	
-/* #line 191 "./src/headers/tsip_header_Proxy_Require.c" */
+/* #line 195 "./src/headers/tsip_header_Proxy_Require.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -278,7 +282,7 @@ _match:
 	{
 	}
 	break;
-/* #line 282 "./src/headers/tsip_header_Proxy_Require.c" */
+/* #line 286 "./src/headers/tsip_header_Proxy_Require.c" */
 		}
 	}
 
@@ -291,12 +295,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 116 "./ragel/tsip_parser_header_Proxy_Require.rl" */
+/* #line 120 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 	
 	if( cs < 
-/* #line 298 "./src/headers/tsip_header_Proxy_Require.c" */
+/* #line 302 "./src/headers/tsip_header_Proxy_Require.c" */
 25
-/* #line 117 "./ragel/tsip_parser_header_Proxy_Require.rl" */
+/* #line 121 "./ragel/tsip_parser_header_Proxy_Require.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Privacy' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_proxyrequire);

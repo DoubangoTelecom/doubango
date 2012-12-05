@@ -674,15 +674,19 @@ static const int tsip_machine_parser_header_Security_Client_en_main = 1;
 
 
 /* #line 213 "./ragel/tsip_parser_header_Security_Client.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Security_Client_first_final);
+	(void)(tsip_machine_parser_header_Security_Client_error);
+	(void)(tsip_machine_parser_header_Security_Client_en_main);
 	
-/* #line 679 "./src/headers/tsip_header_Security_Client.c" */
+/* #line 683 "./src/headers/tsip_header_Security_Client.c" */
 	{
 	cs = tsip_machine_parser_header_Security_Client_start;
 	}
 
-/* #line 214 "./ragel/tsip_parser_header_Security_Client.rl" */
+/* #line 218 "./ragel/tsip_parser_header_Security_Client.rl" */
 	
-/* #line 686 "./src/headers/tsip_header_Security_Client.c" */
+/* #line 690 "./src/headers/tsip_header_Security_Client.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -863,7 +867,7 @@ _match:
 	{
 	}
 	break;
-/* #line 867 "./src/headers/tsip_header_Security_Client.c" */
+/* #line 871 "./src/headers/tsip_header_Security_Client.c" */
 		}
 	}
 
@@ -876,12 +880,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 215 "./ragel/tsip_parser_header_Security_Client.rl" */
+/* #line 219 "./ragel/tsip_parser_header_Security_Client.rl" */
 	
 	if( cs < 
-/* #line 883 "./src/headers/tsip_header_Security_Client.c" */
+/* #line 887 "./src/headers/tsip_header_Security_Client.c" */
 188
-/* #line 216 "./ragel/tsip_parser_header_Security_Client.rl" */
+/* #line 220 "./ragel/tsip_parser_header_Security_Client.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Security-Client' header.");
 		TSK_OBJECT_SAFE_FREE(curr_securityclient);

@@ -433,15 +433,19 @@ static const int tsip_machine_parser_header_Contact_en_main = 1;
 
 
 /* #line 151 "./ragel/tsip_parser_header_Contact.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Contact_first_final);
+	(void)(tsip_machine_parser_header_Contact_error);
+	(void)(tsip_machine_parser_header_Contact_en_main);
 	
-/* #line 438 "./src/headers/tsip_header_Contact.c" */
+/* #line 442 "./src/headers/tsip_header_Contact.c" */
 	{
 	cs = tsip_machine_parser_header_Contact_start;
 	}
 
-/* #line 152 "./ragel/tsip_parser_header_Contact.rl" */
+/* #line 156 "./ragel/tsip_parser_header_Contact.rl" */
 	
-/* #line 445 "./src/headers/tsip_header_Contact.c" */
+/* #line 449 "./src/headers/tsip_header_Contact.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -578,7 +582,7 @@ _match:
 	{
 	}
 	break;
-/* #line 582 "./src/headers/tsip_header_Contact.c" */
+/* #line 586 "./src/headers/tsip_header_Contact.c" */
 		}
 	}
 
@@ -591,12 +595,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 153 "./ragel/tsip_parser_header_Contact.rl" */
+/* #line 157 "./ragel/tsip_parser_header_Contact.rl" */
 	
 	if( cs < 
-/* #line 598 "./src/headers/tsip_header_Contact.c" */
+/* #line 602 "./src/headers/tsip_header_Contact.c" */
 126
-/* #line 154 "./ragel/tsip_parser_header_Contact.rl" */
+/* #line 158 "./ragel/tsip_parser_header_Contact.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse SIP 'Contact' header.");
 		TSK_OBJECT_SAFE_FREE(curr_contact);

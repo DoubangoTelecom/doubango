@@ -100,6 +100,10 @@ tsip_header_SIP_ETag_t *tsip_header_SIP_ETag_parse(const char *data, tsk_size_t 
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_SIP_ETag_first_final);
+	(void)(tsip_machine_parser_header_SIP_ETag_error);
+	(void)(tsip_machine_parser_header_SIP_ETag_en_main);
 	%%write init;
 	%%write exec;
 	

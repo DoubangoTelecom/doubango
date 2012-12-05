@@ -97,6 +97,10 @@ tsip_header_Min_Expires_t *tsip_header_Min_Expires_parse(const char *data, tsk_s
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Min_Expires_first_final);
+	(void)(tsip_machine_parser_header_Min_Expires_error);
+	(void)(tsip_machine_parser_header_Min_Expires_en_main);
 	%%write init;
 	%%write exec;
 	

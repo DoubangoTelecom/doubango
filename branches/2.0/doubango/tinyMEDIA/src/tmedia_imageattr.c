@@ -30,7 +30,6 @@
  */
 #include "tinymedia/tmedia_imageattr.h"
 
-#include "tsk_string.h"
 #include "tsk_debug.h"
 
 #include <stdlib.h>
@@ -690,16 +689,20 @@ static const int tmedia_machine_imageattr_en_main = 1;
 
 
 /* #line 171 "./ragel/tmedia_imageattr.rl" */
+	(void)(eof);
+	(void)(tmedia_machine_imageattr_first_final);
+	(void)(tmedia_machine_imageattr_error);
+	(void)(tmedia_machine_imageattr_en_main);
 	
-/* #line 694 "./src/tmedia_imageattr.c" */
+/* #line 698 "./src/tmedia_imageattr.c" */
 	{
 	cs = tmedia_machine_imageattr_start;
 	}
 
-/* #line 172 "./ragel/tmedia_imageattr.rl" */
+/* #line 176 "./ragel/tmedia_imageattr.rl" */
 	tmedia_imageattr_reset(self);
 	
-/* #line 702 "./src/tmedia_imageattr.c" */
+/* #line 706 "./src/tmedia_imageattr.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -908,7 +911,7 @@ _match:
 		if(*sets_count < TMEDIA_imageattr_ARRAY_MAX_SIZE) sets[*sets_count].prange.end = atof(tag_start), sets[*sets_count].prange.is_present = 1;
 	}
 	break;
-/* #line 911 "./src/tmedia_imageattr.c" */
+/* #line 915 "./src/tmedia_imageattr.c" */
 		}
 	}
 
@@ -930,7 +933,7 @@ _again:
 		if(*sets_count < TMEDIA_imageattr_ARRAY_MAX_SIZE) (*sets_count)++;
 	}
 	break;
-/* #line 933 "./src/tmedia_imageattr.c" */
+/* #line 937 "./src/tmedia_imageattr.c" */
 		}
 	}
 	}
@@ -938,12 +941,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 174 "./ragel/tmedia_imageattr.rl" */
+/* #line 178 "./ragel/tmedia_imageattr.rl" */
 
 	if( cs < 
-/* #line 944 "./src/tmedia_imageattr.c" */
+/* #line 948 "./src/tmedia_imageattr.c" */
 325
-/* #line 175 "./ragel/tmedia_imageattr.rl" */
+/* #line 179 "./ragel/tmedia_imageattr.rl" */
  ){
 		TSK_DEBUG_ERROR("Parsing failed to parse image-attr=%s", (char*)in_data);
 		return -1;

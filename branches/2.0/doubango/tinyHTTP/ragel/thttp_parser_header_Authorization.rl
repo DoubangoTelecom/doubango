@@ -44,7 +44,7 @@
 	machine thttp_machine_parser_header_Authorization;
 
 	# Includes
-	include thttp_machine_utils "./thttp_machine_utils.rl";
+	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -223,6 +223,11 @@ thttp_header_Authorization_t *thttp_header_Authorization_parse(const char *data,
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(thttp_machine_parser_header_Authorization_first_final);
+	(void)(thttp_machine_parser_header_Authorization_error);
+	(void)(thttp_machine_parser_header_Authorization_en_main);
+
 	%%write init;
 	%%write exec;
 	

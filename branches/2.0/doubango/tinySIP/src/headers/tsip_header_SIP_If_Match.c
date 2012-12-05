@@ -159,15 +159,19 @@ static const int tsip_machine_parser_header_SIP_If_Match_en_main = 1;
 
 
 /* #line 104 "./ragel/tsip_parser_header_SIP_If_Match.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_SIP_If_Match_first_final);
+	(void)(tsip_machine_parser_header_SIP_If_Match_error);
+	(void)(tsip_machine_parser_header_SIP_If_Match_en_main);
 	
-/* #line 164 "./src/headers/tsip_header_SIP_If_Match.c" */
+/* #line 168 "./src/headers/tsip_header_SIP_If_Match.c" */
 	{
 	cs = tsip_machine_parser_header_SIP_If_Match_start;
 	}
 
-/* #line 105 "./ragel/tsip_parser_header_SIP_If_Match.rl" */
+/* #line 109 "./ragel/tsip_parser_header_SIP_If_Match.rl" */
 	
-/* #line 171 "./src/headers/tsip_header_SIP_If_Match.c" */
+/* #line 175 "./src/headers/tsip_header_SIP_If_Match.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -258,7 +262,7 @@ _match:
 	{
 	}
 	break;
-/* #line 262 "./src/headers/tsip_header_SIP_If_Match.c" */
+/* #line 266 "./src/headers/tsip_header_SIP_If_Match.c" */
 		}
 	}
 
@@ -271,12 +275,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 106 "./ragel/tsip_parser_header_SIP_If_Match.rl" */
+/* #line 110 "./ragel/tsip_parser_header_SIP_If_Match.rl" */
 	
 	if( cs < 
-/* #line 278 "./src/headers/tsip_header_SIP_If_Match.c" */
+/* #line 282 "./src/headers/tsip_header_SIP_If_Match.c" */
 20
-/* #line 107 "./ragel/tsip_parser_header_SIP_If_Match.rl" */
+/* #line 111 "./ragel/tsip_parser_header_SIP_If_Match.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'SIP-If-Match' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ifmatch);

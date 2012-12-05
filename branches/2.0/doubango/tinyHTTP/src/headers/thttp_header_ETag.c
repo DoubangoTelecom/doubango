@@ -160,15 +160,19 @@ static const int thttp_machine_parser_header_ETag_en_main = 1;
 
 
 /* #line 114 "./ragel/thttp_parser_header_ETag.rl" */
+	(void)(eof);
+	(void)(thttp_machine_parser_header_ETag_first_final);
+	(void)(thttp_machine_parser_header_ETag_error);
+	(void)(thttp_machine_parser_header_ETag_en_main);
 	
-/* #line 165 "./src/headers/thttp_header_ETag.c" */
+/* #line 169 "./src/headers/thttp_header_ETag.c" */
 	{
 	cs = thttp_machine_parser_header_ETag_start;
 	}
 
-/* #line 115 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 119 "./ragel/thttp_parser_header_ETag.rl" */
 	
-/* #line 172 "./src/headers/thttp_header_ETag.c" */
+/* #line 176 "./src/headers/thttp_header_ETag.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -266,7 +270,7 @@ _match:
 	{
 	}
 	break;
-/* #line 270 "./src/headers/thttp_header_ETag.c" */
+/* #line 274 "./src/headers/thttp_header_ETag.c" */
 		}
 	}
 
@@ -279,12 +283,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 116 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 120 "./ragel/thttp_parser_header_ETag.rl" */
 	
 	if( cs < 
-/* #line 286 "./src/headers/thttp_header_ETag.c" */
+/* #line 290 "./src/headers/thttp_header_ETag.c" */
 22
-/* #line 117 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 121 "./ragel/thttp_parser_header_ETag.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse ETag header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ETag);

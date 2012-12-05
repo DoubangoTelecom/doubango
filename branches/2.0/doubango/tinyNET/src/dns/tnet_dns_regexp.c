@@ -128,6 +128,10 @@ static const int tdns_machine_regexp_en_main = 1;
 
 
 /* #line 101 "./ragel/tnet_dns_regexp.rl" */
+	(void)(eof);
+	(void)(tdns_machine_regexp_first_final);
+	(void)(tdns_machine_regexp_error);
+	(void)(tdns_machine_regexp_en_main);
 	
 	if(!e164num){
 		goto bail;
@@ -143,14 +147,14 @@ static const int tdns_machine_regexp_en_main = 1;
 	eof = pe;
 	
 	
-/* #line 147 "./src/dns/tnet_dns_regexp.c" */
+/* #line 151 "./src/dns/tnet_dns_regexp.c" */
 	{
 	cs = tdns_machine_regexp_start;
 	}
 
-/* #line 116 "./ragel/tnet_dns_regexp.rl" */
+/* #line 120 "./ragel/tnet_dns_regexp.rl" */
 	
-/* #line 154 "./src/dns/tnet_dns_regexp.c" */
+/* #line 158 "./src/dns/tnet_dns_regexp.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -253,7 +257,7 @@ _match:
 		}
 	}
 	break;
-/* #line 257 "./src/dns/tnet_dns_regexp.c" */
+/* #line 261 "./src/dns/tnet_dns_regexp.c" */
 		}
 	}
 
@@ -266,12 +270,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 117 "./ragel/tnet_dns_regexp.rl" */
+/* #line 121 "./ragel/tnet_dns_regexp.rl" */
 	
 	if( cs < 
-/* #line 273 "./src/dns/tnet_dns_regexp.c" */
+/* #line 277 "./src/dns/tnet_dns_regexp.c" */
 18
-/* #line 118 "./ragel/tnet_dns_regexp.rl" */
+/* #line 122 "./ragel/tnet_dns_regexp.rl" */
  ){
 		TSK_DEBUG_ERROR("regexp substitition failed.");
 		TSK_FREE(ret);

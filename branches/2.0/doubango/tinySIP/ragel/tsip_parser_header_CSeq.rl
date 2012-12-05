@@ -93,6 +93,10 @@ tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, tsk_size_t size)
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_CSeq_first_final);
+	(void)(tsip_machine_parser_header_CSeq_error);
+	(void)(tsip_machine_parser_header_CSeq_en_main);
 	%%write init;
 	%%write exec;
 	

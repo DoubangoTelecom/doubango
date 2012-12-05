@@ -117,6 +117,9 @@ tsdp_header_A_t *tsdp_header_A_parse(const char *data, tsk_size_t size)
 
 	%%write data;
 	%%write init;
+	(void)(tsdp_machine_parser_header_A_first_final);
+	(void)(tsdp_machine_parser_header_A_error);
+	(void)(tsdp_machine_parser_header_A_en_main);
 	%%write exec;
 	
 	if( cs < %%{ write first_final; }%% ){

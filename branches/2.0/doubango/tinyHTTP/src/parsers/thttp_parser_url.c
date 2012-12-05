@@ -274,15 +274,19 @@ static const int thttp_machine_parser_url_en_main = 1;
 
 
 /* #line 119 "./ragel/thttp_parser_url.rl" */
+	(void)(eof);
+	(void)(thttp_machine_parser_url_first_final);
+	(void)(thttp_machine_parser_url_error);
+	(void)(thttp_machine_parser_url_en_main);
 	
-/* #line 279 "./src/parsers/thttp_parser_url.c" */
+/* #line 283 "./src/parsers/thttp_parser_url.c" */
 	{
 	cs = thttp_machine_parser_url_start;
 	}
 
-/* #line 120 "./ragel/thttp_parser_url.rl" */
+/* #line 124 "./ragel/thttp_parser_url.rl" */
 	
-/* #line 286 "./src/parsers/thttp_parser_url.c" */
+/* #line 290 "./src/parsers/thttp_parser_url.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -406,7 +410,7 @@ _match:
 	{
 	}
 	break;
-/* #line 410 "./src/parsers/thttp_parser_url.c" */
+/* #line 414 "./src/parsers/thttp_parser_url.c" */
 		}
 	}
 
@@ -453,7 +457,7 @@ _again:
 		TSK_PARSER_SET_STRING(url->search);
 	}
 	break;
-/* #line 457 "./src/parsers/thttp_parser_url.c" */
+/* #line 461 "./src/parsers/thttp_parser_url.c" */
 		}
 	}
 	}
@@ -461,12 +465,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 121 "./ragel/thttp_parser_url.rl" */
+/* #line 125 "./ragel/thttp_parser_url.rl" */
 	
 	if( cs < 
-/* #line 468 "./src/parsers/thttp_parser_url.c" */
+/* #line 472 "./src/parsers/thttp_parser_url.c" */
 63
-/* #line 122 "./ragel/thttp_parser_url.rl" */
+/* #line 126 "./ragel/thttp_parser_url.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse HTTP/HTTPS URL.");
 		TSK_OBJECT_SAFE_FREE(url);

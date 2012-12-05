@@ -135,6 +135,10 @@ tsip_header_Referred_By_t *tsip_header_Referred_By_parse(const char *data, tsk_s
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Referred_By_first_final);
+	(void)(tsip_machine_parser_header_Referred_By_error);
+	(void)(tsip_machine_parser_header_Referred_By_en_main);
 	%%write init;
 	%%write exec;
 	

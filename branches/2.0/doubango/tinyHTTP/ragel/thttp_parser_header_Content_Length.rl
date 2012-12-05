@@ -39,7 +39,7 @@
 	machine thttp_machine_parser_header_Content_Length;
 
 	# Includes
-	include thttp_machine_utils "./thttp_machine_utils.rl";
+	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -87,6 +87,10 @@ thttp_header_Content_Length_t *thttp_header_Content_Length_parse(const char *dat
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(thttp_machine_parser_header_Content_Length_first_final);
+	(void)(thttp_machine_parser_header_Content_Length_error);
+	(void)(thttp_machine_parser_header_Content_Length_en_main);
 	%%write init;
 	%%write exec;
 	

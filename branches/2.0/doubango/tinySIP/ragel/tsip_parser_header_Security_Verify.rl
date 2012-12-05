@@ -209,6 +209,10 @@ tsip_header_Security_Verifies_L_t *tsip_header_Security_Verify_parse(const char 
 	tsip_header_Security_Verify_t *curr_securityverify = tsk_null;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Security_Verify_first_final);
+	(void)(tsip_machine_parser_header_Security_Verify_error);
+	(void)(tsip_machine_parser_header_Security_Verify_en_main);
 	%%write init;
 	%%write exec;
 	

@@ -98,6 +98,10 @@ char* tnet_dns_regex_parse(const char* e164num, const char* regexp)
 	const char *eof;
 	
 	%%write data;
+	(void)(eof);
+	(void)(tdns_machine_regexp_first_final);
+	(void)(tdns_machine_regexp_error);
+	(void)(tdns_machine_regexp_en_main);
 	
 	if(!e164num){
 		goto bail;

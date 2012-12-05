@@ -1157,15 +1157,19 @@ static const int tsip_machine_parser_header_Referred_By_en_main = 1;
 
 
 /* #line 138 "./ragel/tsip_parser_header_Referred_By.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Referred_By_first_final);
+	(void)(tsip_machine_parser_header_Referred_By_error);
+	(void)(tsip_machine_parser_header_Referred_By_en_main);
 	
-/* #line 1162 "./src/headers/tsip_header_Referred_By.c" */
+/* #line 1166 "./src/headers/tsip_header_Referred_By.c" */
 	{
 	cs = tsip_machine_parser_header_Referred_By_start;
 	}
 
-/* #line 139 "./ragel/tsip_parser_header_Referred_By.rl" */
+/* #line 143 "./ragel/tsip_parser_header_Referred_By.rl" */
 	
-/* #line 1169 "./src/headers/tsip_header_Referred_By.c" */
+/* #line 1173 "./src/headers/tsip_header_Referred_By.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -1284,7 +1288,7 @@ _match:
 	{
 	}
 	break;
-/* #line 1288 "./src/headers/tsip_header_Referred_By.c" */
+/* #line 1292 "./src/headers/tsip_header_Referred_By.c" */
 		}
 	}
 
@@ -1297,12 +1301,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 140 "./ragel/tsip_parser_header_Referred_By.rl" */
+/* #line 144 "./ragel/tsip_parser_header_Referred_By.rl" */
 	
 	if( cs < 
-/* #line 1304 "./src/headers/tsip_header_Referred_By.c" */
+/* #line 1308 "./src/headers/tsip_header_Referred_By.c" */
 309
-/* #line 141 "./ragel/tsip_parser_header_Referred_By.rl" */
+/* #line 145 "./ragel/tsip_parser_header_Referred_By.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Referred-By' header.");
 		TSK_OBJECT_SAFE_FREE(r_by);

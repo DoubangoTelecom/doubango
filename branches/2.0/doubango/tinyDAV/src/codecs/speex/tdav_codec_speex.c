@@ -89,7 +89,7 @@ int tdav_codec_speex_close(tmedia_codec_t* self)
 {
 	tdav_codec_speex_t* speex = (tdav_codec_speex_t*)self;
 
-	(speex);
+	(void)(speex);
 
 	return 0;
 }

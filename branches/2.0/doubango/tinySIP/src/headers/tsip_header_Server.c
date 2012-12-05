@@ -138,15 +138,19 @@ static const int tsip_machine_parser_header_Server_en_main = 1;
 
 
 /* #line 107 "./ragel/tsip_parser_header_Server.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Server_first_final);
+	(void)(tsip_machine_parser_header_Server_error);
+	(void)(tsip_machine_parser_header_Server_en_main);
 	
-/* #line 143 "./src/headers/tsip_header_Server.c" */
+/* #line 147 "./src/headers/tsip_header_Server.c" */
 	{
 	cs = tsip_machine_parser_header_Server_start;
 	}
 
-/* #line 108 "./ragel/tsip_parser_header_Server.rl" */
+/* #line 112 "./ragel/tsip_parser_header_Server.rl" */
 	
-/* #line 150 "./src/headers/tsip_header_Server.c" */
+/* #line 154 "./src/headers/tsip_header_Server.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -237,7 +241,7 @@ _match:
 	{
 	}
 	break;
-/* #line 241 "./src/headers/tsip_header_Server.c" */
+/* #line 245 "./src/headers/tsip_header_Server.c" */
 		}
 	}
 
@@ -250,12 +254,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 109 "./ragel/tsip_parser_header_Server.rl" */
+/* #line 113 "./ragel/tsip_parser_header_Server.rl" */
 	
 	if( cs < 
-/* #line 257 "./src/headers/tsip_header_Server.c" */
+/* #line 261 "./src/headers/tsip_header_Server.c" */
 11
-/* #line 110 "./ragel/tsip_parser_header_Server.rl" */
+/* #line 114 "./ragel/tsip_parser_header_Server.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Server' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_server);

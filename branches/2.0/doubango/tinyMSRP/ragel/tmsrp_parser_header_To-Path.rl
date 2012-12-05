@@ -113,6 +113,10 @@ tmsrp_header_To_Path_t *tmsrp_header_To_Path_parse(const char *data, tsk_size_t 
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tmsrp_machine_parser_header_To_Path_first_final);
+	(void)(tmsrp_machine_parser_header_To_Path_error);
+	(void)(tmsrp_machine_parser_header_To_Path_en_main);
 	%%write init;
 	%%write exec;
 	

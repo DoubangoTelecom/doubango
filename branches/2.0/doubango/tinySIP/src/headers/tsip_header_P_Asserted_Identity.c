@@ -1216,15 +1216,19 @@ static const int tsip_machine_parser_header_P_Asserted_Identity_en_main = 1;
 
 
 /* #line 136 "./ragel/tsip_parser_header_P_Asserted_Identity.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_P_Asserted_Identity_first_final);
+	(void)(tsip_machine_parser_header_P_Asserted_Identity_error);
+	(void)(tsip_machine_parser_header_P_Asserted_Identity_en_main);
 	
-/* #line 1221 "./src/headers/tsip_header_P_Asserted_Identity.c" */
+/* #line 1225 "./src/headers/tsip_header_P_Asserted_Identity.c" */
 	{
 	cs = tsip_machine_parser_header_P_Asserted_Identity_start;
 	}
 
-/* #line 137 "./ragel/tsip_parser_header_P_Asserted_Identity.rl" */
+/* #line 141 "./ragel/tsip_parser_header_P_Asserted_Identity.rl" */
 	
-/* #line 1228 "./src/headers/tsip_header_P_Asserted_Identity.c" */
+/* #line 1232 "./src/headers/tsip_header_P_Asserted_Identity.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -1346,7 +1350,7 @@ _match:
 	{
 	}
 	break;
-/* #line 1350 "./src/headers/tsip_header_P_Asserted_Identity.c" */
+/* #line 1354 "./src/headers/tsip_header_P_Asserted_Identity.c" */
 		}
 	}
 
@@ -1359,12 +1363,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 138 "./ragel/tsip_parser_header_P_Asserted_Identity.rl" */
+/* #line 142 "./ragel/tsip_parser_header_P_Asserted_Identity.rl" */
 	
 	if( cs < 
-/* #line 1366 "./src/headers/tsip_header_P_Asserted_Identity.c" */
+/* #line 1370 "./src/headers/tsip_header_P_Asserted_Identity.c" */
 230
-/* #line 139 "./ragel/tsip_parser_header_P_Asserted_Identity.rl" */
+/* #line 143 "./ragel/tsip_parser_header_P_Asserted_Identity.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'P-Asserted-Identity' header.");
 		TSK_OBJECT_SAFE_FREE(curr_p_asserted_identity);

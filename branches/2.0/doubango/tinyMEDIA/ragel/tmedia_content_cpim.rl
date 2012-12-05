@@ -67,7 +67,7 @@ A complete message looks something like this:
 	machine tmedia_machine_content_cpim;
 
 	# Includes
-	include tmedia_machine_utils "./tmedia_machine_utils.rl";
+	include tmedia_machine_utils "./ragel/tmedia_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -143,6 +143,10 @@ static int tmedia_content_cpim_parse(tmedia_content_t* self, const void* in_data
 	tsk_bool_t parsing_mime_headers = tsk_true;
 
 	%%write data;
+	(void)(eof);
+	(void)(tmedia_machine_content_cpim_first_final);
+	(void)(tmedia_machine_content_cpim_error);
+	(void)(tmedia_machine_content_cpim_en_main);
 	%%write init;
 	%%write exec;
 	

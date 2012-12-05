@@ -108,6 +108,10 @@ tsip_header_Session_Expires_t *tsip_header_Session_Expires_parse(const char *dat
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Session_Expires_first_final);
+	(void)(tsip_machine_parser_header_Session_Expires_error);
+	(void)(tsip_machine_parser_header_Session_Expires_en_main);
 	%%write init;
 	%%write exec;
 	

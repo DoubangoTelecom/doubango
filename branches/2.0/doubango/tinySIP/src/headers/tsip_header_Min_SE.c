@@ -265,15 +265,19 @@ static const int tsip_machine_parser_header_Min_SE_en_main = 1;
 
 
 /* #line 100 "./ragel/tsip_parser_header_Min_SE.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Min_SE_first_final);
+	(void)(tsip_machine_parser_header_Min_SE_error);
+	(void)(tsip_machine_parser_header_Min_SE_en_main);
 	
-/* #line 270 "./src/headers/tsip_header_Min_SE.c" */
+/* #line 274 "./src/headers/tsip_header_Min_SE.c" */
 	{
 	cs = tsip_machine_parser_header_Min_SE_start;
 	}
 
-/* #line 101 "./ragel/tsip_parser_header_Min_SE.rl" */
+/* #line 105 "./ragel/tsip_parser_header_Min_SE.rl" */
 	
-/* #line 277 "./src/headers/tsip_header_Min_SE.c" */
+/* #line 281 "./src/headers/tsip_header_Min_SE.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -370,7 +374,7 @@ _match:
 	{
 	}
 	break;
-/* #line 374 "./src/headers/tsip_header_Min_SE.c" */
+/* #line 378 "./src/headers/tsip_header_Min_SE.c" */
 		}
 	}
 
@@ -383,12 +387,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 102 "./ragel/tsip_parser_header_Min_SE.rl" */
+/* #line 106 "./ragel/tsip_parser_header_Min_SE.rl" */
 	
 	if( cs < 
-/* #line 390 "./src/headers/tsip_header_Min_SE.c" */
+/* #line 394 "./src/headers/tsip_header_Min_SE.c" */
 75
-/* #line 103 "./ragel/tsip_parser_header_Min_SE.rl" */
+/* #line 107 "./ragel/tsip_parser_header_Min_SE.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Min-SE' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_minse);

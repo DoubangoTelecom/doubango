@@ -175,15 +175,19 @@ static const int tsip_machine_parser_header_Allow_events_en_main = 1;
 
 
 /* #line 111 "./ragel/tsip_parser_header_Allow_Events.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Allow_events_first_final);
+	(void)(tsip_machine_parser_header_Allow_events_error);
+	(void)(tsip_machine_parser_header_Allow_events_en_main);
 	
-/* #line 180 "./src/headers/tsip_header_Allow_Events.c" */
+/* #line 184 "./src/headers/tsip_header_Allow_Events.c" */
 	{
 	cs = tsip_machine_parser_header_Allow_events_start;
 	}
 
-/* #line 112 "./ragel/tsip_parser_header_Allow_Events.rl" */
+/* #line 116 "./ragel/tsip_parser_header_Allow_Events.rl" */
 	
-/* #line 187 "./src/headers/tsip_header_Allow_Events.c" */
+/* #line 191 "./src/headers/tsip_header_Allow_Events.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -274,7 +278,7 @@ _match:
 	{
 	}
 	break;
-/* #line 278 "./src/headers/tsip_header_Allow_Events.c" */
+/* #line 282 "./src/headers/tsip_header_Allow_Events.c" */
 		}
 	}
 
@@ -287,12 +291,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 113 "./ragel/tsip_parser_header_Allow_Events.rl" */
+/* #line 117 "./ragel/tsip_parser_header_Allow_Events.rl" */
 	
 	if( cs < 
-/* #line 294 "./src/headers/tsip_header_Allow_Events.c" */
+/* #line 298 "./src/headers/tsip_header_Allow_Events.c" */
 25
-/* #line 114 "./ragel/tsip_parser_header_Allow_Events.rl" */
+/* #line 118 "./ragel/tsip_parser_header_Allow_Events.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse SIP 'Allow-Events' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_allow_events);

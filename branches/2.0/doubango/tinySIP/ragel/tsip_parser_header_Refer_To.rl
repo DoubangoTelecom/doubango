@@ -125,6 +125,10 @@ tsip_header_Refer_To_t *tsip_header_Refer_To_parse(const char *data, tsk_size_t 
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Refer_To_first_final);
+	(void)(tsip_machine_parser_header_Refer_To_error);
+	(void)(tsip_machine_parser_header_Refer_To_en_main);
 	%%write init;
 	%%write exec;
 	

@@ -177,15 +177,19 @@ static const int thttp_machine_parser_header_Sec_WebSocket_Protocol_en_main = 1;
 
 
 /* #line 96 "./ragel/thttp_parser_header_Sec_WebSocket_Protocol.rl" */
+	(void)(eof);
+	(void)(thttp_machine_parser_header_Sec_WebSocket_Protocol_first_final);
+	(void)(thttp_machine_parser_header_Sec_WebSocket_Protocol_error);
+	(void)(thttp_machine_parser_header_Sec_WebSocket_Protocol_en_main);
 	
-/* #line 182 "./src/headers/thttp_header_Sec_WebSocket_Protocol.c" */
+/* #line 186 "./src/headers/thttp_header_Sec_WebSocket_Protocol.c" */
 	{
 	cs = thttp_machine_parser_header_Sec_WebSocket_Protocol_start;
 	}
 
-/* #line 97 "./ragel/thttp_parser_header_Sec_WebSocket_Protocol.rl" */
+/* #line 101 "./ragel/thttp_parser_header_Sec_WebSocket_Protocol.rl" */
 	
-/* #line 189 "./src/headers/thttp_header_Sec_WebSocket_Protocol.c" */
+/* #line 193 "./src/headers/thttp_header_Sec_WebSocket_Protocol.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -273,7 +277,7 @@ _match:
 		TSK_PARSER_ADD_STRING(hdr_Sec_WebSocket_Protocol->values);
 	}
 	break;
-/* #line 277 "./src/headers/thttp_header_Sec_WebSocket_Protocol.c" */
+/* #line 281 "./src/headers/thttp_header_Sec_WebSocket_Protocol.c" */
 		}
 	}
 
@@ -286,12 +290,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 98 "./ragel/thttp_parser_header_Sec_WebSocket_Protocol.rl" */
+/* #line 102 "./ragel/thttp_parser_header_Sec_WebSocket_Protocol.rl" */
 	
 	if( cs < 
-/* #line 293 "./src/headers/thttp_header_Sec_WebSocket_Protocol.c" */
+/* #line 297 "./src/headers/thttp_header_Sec_WebSocket_Protocol.c" */
 34
-/* #line 99 "./ragel/thttp_parser_header_Sec_WebSocket_Protocol.rl" */
+/* #line 103 "./ragel/thttp_parser_header_Sec_WebSocket_Protocol.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse Sec-WebSocket-Protocol header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Sec_WebSocket_Protocol);

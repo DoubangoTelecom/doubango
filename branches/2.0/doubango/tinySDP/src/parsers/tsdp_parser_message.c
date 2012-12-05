@@ -169,6 +169,8 @@ tsdp_message_t* tsdp_message_parse(const void *input, tsk_size_t size)
 	const char* pe = p + size;
 	const char* eof = tsk_null;
 
+	(void)(eof);
+
 	if(!input || !size){
 		TSK_DEBUG_ERROR("Null or empty buffer.");
 		goto bail;
@@ -180,16 +182,16 @@ tsdp_message_t* tsdp_message_parse(const void *input, tsk_size_t size)
 
 	/* Ragel init */
 	
-/* #line 184 "./src/parsers/tsdp_parser_message.c" */
+/* #line 186 "./src/parsers/tsdp_parser_message.c" */
 	{
 	cs = tsdp_machine_message_start;
 	}
 
-/* #line 274 "./ragel/tsdp_parser_message.rl" */
+/* #line 276 "./ragel/tsdp_parser_message.rl" */
 
 	/* Ragel execute */
 	
-/* #line 193 "./src/parsers/tsdp_parser_message.c" */
+/* #line 195 "./src/parsers/tsdp_parser_message.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -445,7 +447,7 @@ _match:
 		}
 	}
 	break;
-/* #line 449 "./src/parsers/tsdp_parser_message.c" */
+/* #line 451 "./src/parsers/tsdp_parser_message.c" */
 		}
 	}
 
@@ -458,13 +460,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 277 "./ragel/tsdp_parser_message.rl" */
+/* #line 279 "./ragel/tsdp_parser_message.rl" */
 
 	/* Check result */
 	if( cs < 
-/* #line 466 "./src/parsers/tsdp_parser_message.c" */
+/* #line 468 "./src/parsers/tsdp_parser_message.c" */
 34
-/* #line 279 "./ragel/tsdp_parser_message.rl" */
+/* #line 281 "./ragel/tsdp_parser_message.rl" */
  )
 	{
 		TSK_DEBUG_ERROR("Failed to parse SDP message.");

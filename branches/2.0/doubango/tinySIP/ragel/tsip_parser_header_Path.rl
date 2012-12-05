@@ -146,6 +146,10 @@ tsip_header_Paths_L_t *tsip_header_Path_parse(const char *data, tsk_size_t size)
 	tsip_header_Path_t *curr_path = tsk_null;
 
 	%%write data;
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Path_first_final);
+	(void)(tsip_machine_parser_header_Path_error);
+	(void)(tsip_machine_parser_header_Path_en_main);
 	%%write init;
 	%%write exec;
 	

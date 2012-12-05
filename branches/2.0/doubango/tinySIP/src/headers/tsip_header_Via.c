@@ -1113,15 +1113,19 @@ static const int tsip_machine_parser_header_Via_en_main = 1;
 
 
 /* #line 253 "./ragel/tsip_parser_header_Via.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Via_first_final);
+	(void)(tsip_machine_parser_header_Via_error);
+	(void)(tsip_machine_parser_header_Via_en_main);
 	
-/* #line 1118 "./src/headers/tsip_header_Via.c" */
+/* #line 1122 "./src/headers/tsip_header_Via.c" */
 	{
 	cs = tsip_machine_parser_header_Via_start;
 	}
 
-/* #line 254 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 258 "./ragel/tsip_parser_header_Via.rl" */
 	
-/* #line 1125 "./src/headers/tsip_header_Via.c" */
+/* #line 1129 "./src/headers/tsip_header_Via.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -1306,7 +1310,7 @@ _match:
 		
 	}
 	break;
-/* #line 1310 "./src/headers/tsip_header_Via.c" */
+/* #line 1314 "./src/headers/tsip_header_Via.c" */
 		}
 	}
 
@@ -1319,12 +1323,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 255 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 259 "./ragel/tsip_parser_header_Via.rl" */
 	
 	if( cs < 
-/* #line 1326 "./src/headers/tsip_header_Via.c" */
+/* #line 1330 "./src/headers/tsip_header_Via.c" */
 338
-/* #line 256 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 260 "./ragel/tsip_parser_header_Via.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Via' header.");
 		TSK_OBJECT_SAFE_FREE(curr_via);

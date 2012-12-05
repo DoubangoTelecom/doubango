@@ -119,6 +119,9 @@ tsdp_header_C_t *tsdp_header_C_parse(const char *data, tsk_size_t size)
 	const char *tag_start;
 
 	%%write data;
+	(void)(tsdp_machine_parser_header_C_first_final);
+	(void)(tsdp_machine_parser_header_C_error);
+	(void)(tsdp_machine_parser_header_C_en_main);
 	%%write init;
 	%%write exec;
 	

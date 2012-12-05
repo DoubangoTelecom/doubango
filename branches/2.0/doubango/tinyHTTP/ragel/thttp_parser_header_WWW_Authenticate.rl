@@ -49,7 +49,7 @@
 	machine thttp_machine_parser_header_WWW_Authenticate;
 
 	# Includes
-	include thttp_machine_utils "./thttp_machine_utils.rl";
+	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -191,6 +191,10 @@ thttp_header_WWW_Authenticate_t *thttp_header_WWW_Authenticate_parse(const char 
 	const char *tag_start;
 
 	%%write data;
+	(void)(eof);
+	(void)(thttp_machine_parser_header_WWW_Authenticate_first_final);
+	(void)(thttp_machine_parser_header_WWW_Authenticate_error);
+	(void)(thttp_machine_parser_header_WWW_Authenticate_en_main);
 	%%write init;
 	%%write exec;
 	

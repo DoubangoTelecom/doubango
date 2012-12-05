@@ -313,15 +313,19 @@ static const int tsip_machine_parser_header_Privacy_en_main = 1;
 
 
 /* #line 118 "./ragel/tsip_parser_header_Privacy.rl" */
+	(void)(eof);
+	(void)(tsip_machine_parser_header_Privacy_first_final);
+	(void)(tsip_machine_parser_header_Privacy_error);
+	(void)(tsip_machine_parser_header_Privacy_en_main);
 	
-/* #line 318 "./src/headers/tsip_header_Privacy.c" */
+/* #line 322 "./src/headers/tsip_header_Privacy.c" */
 	{
 	cs = tsip_machine_parser_header_Privacy_start;
 	}
 
-/* #line 119 "./ragel/tsip_parser_header_Privacy.rl" */
+/* #line 123 "./ragel/tsip_parser_header_Privacy.rl" */
 	
-/* #line 325 "./src/headers/tsip_header_Privacy.c" */
+/* #line 329 "./src/headers/tsip_header_Privacy.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -412,7 +416,7 @@ _match:
 	{
 	}
 	break;
-/* #line 416 "./src/headers/tsip_header_Privacy.c" */
+/* #line 420 "./src/headers/tsip_header_Privacy.c" */
 		}
 	}
 
@@ -425,12 +429,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 120 "./ragel/tsip_parser_header_Privacy.rl" */
+/* #line 124 "./ragel/tsip_parser_header_Privacy.rl" */
 	
 	if( cs < 
-/* #line 432 "./src/headers/tsip_header_Privacy.c" */
+/* #line 436 "./src/headers/tsip_header_Privacy.c" */
 45
-/* #line 121 "./ragel/tsip_parser_header_Privacy.rl" */
+/* #line 125 "./ragel/tsip_parser_header_Privacy.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Privacy' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_privacy);
