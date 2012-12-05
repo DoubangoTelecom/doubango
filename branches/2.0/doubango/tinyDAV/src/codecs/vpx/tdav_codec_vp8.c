@@ -596,7 +596,7 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 	}
 	self->encoder.cfg.g_timebase.num = 1;
 	self->encoder.cfg.g_timebase.den = TMEDIA_CODEC_VIDEO(self)->out.fps;
-	self->encoder.cfg.rc_target_bitrate = self->encoder.target_bitrate = (TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 320 / 240);
+	self->encoder.cfg.rc_target_bitrate = self->encoder.target_bitrate = (TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 352 / 288);
 	self->encoder.cfg.rc_end_usage = VPX_CBR;
 	self->encoder.cfg.g_w = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.height : TMEDIA_CODEC_VIDEO(self)->out.width;
 	self->encoder.cfg.g_h = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;

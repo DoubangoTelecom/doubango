@@ -184,6 +184,7 @@ int tmedia_parse_video_fmtp(const char* fmtp, tmedia_pref_video_size_t pref_vs, 
 	const tsk_param_t* param = tsk_null;
 	const tsk_list_item_t* item;
 	int i;
+	tmedia_pref_video_size_t best_vs;
 
 	if(!fmtp || !width || !height || !fps){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -191,6 +192,7 @@ int tmedia_parse_video_fmtp(const char* fmtp, tmedia_pref_video_size_t pref_vs, 
 	}
 
 	// set default values
+	best_vs = fmtp_sizes[(sizeof(fmtp_sizes)/sizeof(fmtp_sizes[0])) - 1].pref_vs /* last = lowest resolution */;
 	ret = tmedia_video_get_size(pref_vs, width, height);
 	*fps = 15;
 
@@ -201,12 +203,13 @@ int tmedia_parse_video_fmtp(const char* fmtp, tmedia_pref_video_size_t pref_vs, 
 				continue;
 			}
 			for(i=0; i<sizeof(fmtp_sizes)/sizeof(fmtp_sizes[0]); i++){
-				if((int)pref_vs >= (int)fmtp_sizes[i].pref_vs && tsk_striequals(fmtp_sizes[i].name, param->name)){
+				if((int)pref_vs >= (int)fmtp_sizes[i].pref_vs && tsk_striequals(fmtp_sizes[i].name, param->name) && ((int)best_vs <= (int)fmtp_sizes[i].pref_vs)){
 					*width= fmtp_sizes[i].width; 
 					*height = fmtp_sizes[i].height;
 					*fps = atoi(param->value);
 					*fps = *fps ? 30/(*fps) : 15;
 					ret = 0;
+					best_vs = fmtp_sizes[i].pref_vs;
 					// rfc 4629 section 8.2.1: Parameters offered first are the most preferred picture mode to be received.
 					// /!\ asterisk do not respect this :)
 					/* goto done */;

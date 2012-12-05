@@ -706,7 +706,10 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 	self->encoder.context->width = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.height : TMEDIA_CODEC_VIDEO(self)->out.width;
 	self->encoder.context->height = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
 
-	self->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 320 / 240) * 1000);
+	self->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 352 / 288) * 1000);
+	self->encoder.context->rc_min_rate = (self->encoder.context->bit_rate >> 3);
+	self->encoder.context->rc_max_rate = self->encoder.context->bit_rate;
+
 #if LIBAVCODEC_VERSION_MAJOR <= 53
 	self->encoder.context->rc_lookahead = 0;
 #endif
