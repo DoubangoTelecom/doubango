@@ -1,7 +1,6 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2011 Mamadou Diop
+* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +22,6 @@
 /**@file tnet_transport_poll.c
  * @brief Network transport layer using polling.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tnet_transport.h"
 #include "tsk_memory.h"
@@ -149,7 +145,7 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 	int ret = -1;
 	tsk_size_t i;
 	tsk_bool_t found = tsk_false;
-    tnet_fd_t fd = *pfd;
+    	tnet_fd_t fd = *pfd;
 	
 	TSK_DEBUG_INFO("Removing socket %d", fd);
 
@@ -163,14 +159,21 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 		return -2;
 	}
 	
+	tsk_safeobj_lock(context);
+
 	for(i=0; i<context->count; i++){
 		if(context->sockets[i]->fd == fd){
-			removeSocket(i, context);
+			tsk_bool_t self_ref = (&context->sockets[i]->fd == pfd);
+			removeSocket(i, context); // sockets[i] will be destroyed
 			found = tsk_true;
-			*pfd = TNET_INVALID_FD;
+			if(!self_ref){ // if self_ref then, pfd no longer valid after removeSocket()
+				*pfd = TNET_INVALID_FD;
+			}
 			break;
 		}
 	}
+
+	tsk_safeobj_unlock(context);
 	
 	if(found){
 		/* Signal */
@@ -350,7 +353,7 @@ int removeSocket(int index, transport_context_t *context)
 
 	if(index < (int)context->count){
 		/* Close the socket if we are the owner. */
-		TSK_DEBUG_INFO("Socket to remove: fd=%d, tail.count=%d", context->sockets[index]->fd, context->count);
+		TSK_DEBUG_INFO("Socket to remove: fd=%d, index=%d, tail.count=%d", context->sockets[index]->fd, index, context->count);
 		if(context->sockets[index]->owner){
 			tnet_sockfd_close(&(context->sockets[index]->fd));
 		}
@@ -571,9 +574,11 @@ void *tnet_transport_mainthread(void *param)
 			if(!context->ufds[i].revents){
 				continue;
 			}
+			
+			TSK_DEBUG_INFO("REVENTS(i=%d) = %d", i, context->ufds[i].revents);
 
 			if(context->ufds[i].fd == context->pipeR){
-				TSK_DEBUG_INFO("PipeR event %d", context->ufds[i].revents);
+				TSK_DEBUG_INFO("PipeR event = %d", context->ufds[i].revents);
 				if(context->ufds[i].revents & TNET_POLLIN){
 					static char __buffer[1024];
 					if(read(context->pipeR, __buffer, sizeof(__buffer)) < 0){
@@ -593,12 +598,12 @@ void *tnet_transport_mainthread(void *param)
             
             /*================== TNET_POLLHUP ==================*/
 			if(context->ufds[i].revents & (TNET_POLLHUP)){
-                fd = active_socket->fd;
+                		fd = active_socket->fd;
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLHUP(%d)", transport->description, fd);
 #if defined(ANDROID)
 				/* FIXME */
 #else
-                tnet_transport_remove_socket(transport, &active_socket->fd);
+                		tnet_transport_remove_socket(transport, &active_socket->fd);
 				TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, fd);
                 continue;
 #endif
@@ -606,20 +611,20 @@ void *tnet_transport_mainthread(void *param)
             
 			/*================== TNET_POLLERR ==================*/
 			if(context->ufds[i].revents & (TNET_POLLERR)){
-                fd = active_socket->fd;
+                		fd = active_socket->fd;
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLERR(%d)", transport->description, fd);
                 
-                tnet_transport_remove_socket(transport, &active_socket->fd);
+                		tnet_transport_remove_socket(transport, &active_socket->fd);
 				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, fd);
 				continue;
 			}
 			
 			/*================== TNET_POLLNVAL ==================*/
 			if(context->ufds[i].revents & (TNET_POLLNVAL)){
-                fd = active_socket->fd;
+                		fd = active_socket->fd;
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLNVAL(%d)", transport->description, fd);
 				
-                tnet_transport_remove_socket(transport, &active_socket->fd);
+                		tnet_transport_remove_socket(transport, &active_socket->fd);
 				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, fd);
 				continue;
 			}
@@ -631,7 +636,7 @@ void *tnet_transport_mainthread(void *param)
 				void* buffer = tsk_null;
 				tnet_transport_event_t* e;
 				
-				/* TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description); */
+				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN(%d)", transport->description, active_socket->fd);
 				
 				/* check whether the socket is paused or not */
 				if(active_socket->paused){
@@ -649,7 +654,7 @@ void *tnet_transport_mainthread(void *param)
 					int listening = 0, remove_socket = 0;
 					socklen_t socklen = sizeof(listening);
 					
-					TSK_DEBUG_INFO("ioctlt(%d) returned zero or failed", active_socket->fd);
+					TSK_DEBUG_INFO("ioctlt(%d), len=%u returned zero or failed", active_socket->fd, len);
 					
 					// check if socket is listening
 					if(getsockopt(active_socket->fd, SOL_SOCKET, SO_ACCEPTCONN, &listening, &socklen) != 0){
@@ -670,10 +675,10 @@ void *tnet_transport_mainthread(void *param)
 								transport_socket_xt* tls_socket;
 								if((tls_socket = getSocket(context, fd))){
 									if(tnet_tls_socket_accept(tls_socket->tlshandle) != 0){
-                                        TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, fd);
+                                        					TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, fd);
 										tnet_transport_remove_socket(transport, &fd);
 										TNET_PRINT_LAST_ERROR("SSL_accept() failed");
-										goto TNET_POLLIN_DONE;
+										continue;
 									}
 								}
 							}
@@ -692,12 +697,13 @@ void *tnet_transport_mainthread(void *param)
 						fd = active_socket->fd;
 						tnet_transport_remove_socket(transport, &active_socket->fd);
 						TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, fd);
+						continue;
 					}
 					goto TNET_POLLIN_DONE;
 				}
 				
 				if(len <= 0){
-                    context->ufds[i].revents &= ~TNET_POLLIN;
+                    			context->ufds[i].revents &= ~TNET_POLLIN;
 					goto TNET_POLLIN_DONE;
 				}
 				
