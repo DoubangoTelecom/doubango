@@ -271,14 +271,19 @@ bail: ;
 
 tsk_bool_t tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, const tcomp_nackinfo_t * nackinfo)
 {
-	tcomp_buffer_handle_t *sha_id;
+	tcomp_buffer_handle_t* sha_id;
 	tsk_list_item_t *item;
 	if(!statehandler){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_false;
 	}
 
-	tcomp_buffer_referenceBuff(&sha_id, ((tcomp_nackinfo_t*)nackinfo)->sha1, TSK_SHA1_DIGEST_SIZE);
+	if(!(sha_id = tcomp_buffer_create_null())){
+		TSK_DEBUG_ERROR("Failed to create buffer handle");
+		return tsk_false;
+	}
+
+	tcomp_buffer_referenceBuff(sha_id, ((tcomp_nackinfo_t*)nackinfo)->sha1, TSK_SHA1_DIGEST_SIZE);
 
 	tsk_list_foreach(item, statehandler->compartments)
 	{
@@ -310,6 +315,9 @@ tsk_bool_t tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, con
 			}
 		}
 	}
+
+	TSK_OBJECT_SAFE_FREE(sha_id);
+
 	return tsk_true;
 }
 

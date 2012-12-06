@@ -59,7 +59,8 @@
 
 void test_parser()
 {
-	tmsrp_message_t *message = 0;
+	tmsrp_message_t *message;
+	const tmsrp_header_Dummy_t* header;
 	size_t msg_size;
 	char* str;
 	
@@ -69,6 +70,21 @@ void test_parser()
 	/* deserialize the message */
 	if((message = tmsrp_message_parse_2(MSRP_MSG_TO_TEST, strlen(MSRP_MSG_TO_TEST), &msg_size))){
 		
+		tmsrp_message_add_headers(message,
+			TMSRP_HEADER_DUMMY_VA_ARGS("NS", "imdn <urn:ietf:params:imdn>"),
+			TMSRP_HEADER_DUMMY_VA_ARGS("imdn.Message-ID", "MsgiQqFZqTYAA"),
+			TMSRP_HEADER_DUMMY_VA_ARGS("DateTime", "2012-10-25T18:02:08.000Z"),
+			TMSRP_HEADER_DUMMY_VA_ARGS("imdn.Disposition-Notification", "positive-delivery, display"),
+			
+			tsk_null);
+
+		if((header = (const tmsrp_header_Dummy_t*)tmsrp_message_get_headerByName(message, "NS"))){
+			TSK_DEBUG_INFO("NS=%s\n", header->value);
+		}
+		if((header = (const tmsrp_header_Dummy_t*)tmsrp_message_get_headerByName(message, "imdn.Message-ID"))){
+			TSK_DEBUG_INFO("imdn.Message-ID=%s\n", header->value);
+		}
+
 		/* serialize the message */
 		if((str = tmsrp_message_tostring(message))){
 			TSK_DEBUG_INFO("\nMSRP Message=\n%s\n\n", str);
