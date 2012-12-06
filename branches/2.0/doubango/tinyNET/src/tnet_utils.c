@@ -211,7 +211,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 	}
 	
 	for(ifa = ifaddr; ifa; ifa = ifa->ifa_next){
-        if(ifa->ifa_flags & IFF_LOOPBACK) {
+        if((ifa->ifa_flags & IFF_LOOPBACK) || !(ifa->ifa_flags & IFF_UP)) {
             continue;
         }
         
@@ -291,7 +291,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 		sin = (struct sockaddr_in *)&(ifr->ifr_addr);
 		// TODO: IPAddress if needed
 		if(/*ioctl(fd, SIOCGIFFLAGS, &ifr) == 0*/1){
-			if (!(ifr->ifr_flags & IFF_LOOPBACK)){
+			if (!(ifr->ifr_flags & IFF_LOOPBACK) && (ifr->ifr_flags & IFF_UP)){
 				if(/*ioctl(fd, SIOCGIFHWADDR, &ifr) == 0*/1){
 					tnet_interface_t *iface = tnet_interface_create(ifr->ifr_name, ifr->ifr_hwaddr.sa_data, 6);
 					tsk_list_push_back_data(ifaces, (void**)&(iface));
@@ -477,7 +477,7 @@ bail:
 	/* == Unicast addresses == */
 	for(ifa = ifaddr; ifa; ifa = ifa->ifa_next){
         // Skip loopback
-        if (ifa->ifa_flags & IFF_LOOPBACK) {
+        if ((ifa->ifa_flags & IFF_LOOPBACK) || !(ifa->ifa_flags & IFF_UP)) {
             continue;
         }
         
@@ -738,7 +738,7 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
     }
         
     for(ifa = ifaddr; ifa; ifa = ifa->ifa_next){
-        if (ifa->ifa_flags & IFF_LOOPBACK) {
+        if ((ifa->ifa_flags & IFF_LOOPBACK) || !(ifa->ifa_flags & IFF_UP)) {
             continue;
         }
             
