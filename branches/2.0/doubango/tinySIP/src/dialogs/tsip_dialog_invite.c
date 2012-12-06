@@ -436,7 +436,7 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 	if(TSIP_MESSAGE_HAS_CONTENT(message)){
 		if(tsk_striequals("application/sdp", TSIP_MESSAGE_CONTENT_TYPE(message))){
 			if(!(sdp_ro = tsdp_message_parse(TSIP_MESSAGE_CONTENT_DATA(message), TSIP_MESSAGE_CONTENT_DATA_LENGTH(message)))){
-				TSK_DEBUG_ERROR("Failed to parse remote sdp message:\n [%s]", TSIP_MESSAGE_CONTENT_DATA(message));
+				TSK_DEBUG_ERROR("Failed to parse remote sdp message:\n [%s]", (const char*)TSIP_MESSAGE_CONTENT_DATA(message));
 				return -2;
 			}
 			// ICE processing
