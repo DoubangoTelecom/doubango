@@ -6,7 +6,6 @@ This is the list of companies using our products in violation of GNU GPL terms a
 || Name || Operating system ||
 || [http://www.adoresoftphone.com/ AdoreSoftphone] || Windows, OS X, Android and iOS ||
 || [http://www.ark-sol.com/ ARK Solutions] || iOS and Android ||
-|| [http://www.foize.nl/index.php Foize Telecom] || iOS ||
 || [http://www.abtosoftware.com/ ABTO Software] || Android and iOS at least ||
 
 More coming soon...
