@@ -28,8 +28,8 @@ libtinyDAV_la_LIBADD += ${LIBVPX_LIBADD}
 endif
 
 if USE_YUV
-libtinyDAV_la_LIBADD += ${LIBYUV_LIBADD}
-libtinyDAV_la_CPPFLAGS += -Ilibyuv/libyuv
+libtinyDAV_la_LIBADD += -lyuv
+libtinyDAV_la_CPPFLAGS += -I${LIBYUV_INCLUDE} -I${LIBYUV_INCLUDE}/libvpx
 endif
 
 if USE_AMR
