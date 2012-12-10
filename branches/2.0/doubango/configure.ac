@@ -174,10 +174,16 @@ AC_ARG_WITH(vpx,
 AM_CONDITIONAL(USE_YUV, false)
 AC_ARG_WITH(yuv,
 [  --with-yuv            Link against libyuv library],
- [AC_DEFINE_UNQUOTED(HAVE_LIBYUV, 1, HAVE_LIBYUV)
- AC_SUBST(LIBYUV_LIBADD, "-lyuv")
- AM_CONDITIONAL(USE_YUV, true)], 
- [ AC_SUBST(LIBYUV_LIBADD, "")])
+[AC_DEFINE_UNQUOTED(HAVE_LIBYUV, 1, HAVE_LIBYUV)
+AM_CONDITIONAL(USE_YUV, true)
+if test "x$withval" = xyes; then
+  LIBYUV_INCLUDE="/usr/local/include"
+  LIBYUV_LIB="/usr/local/lib"
+else
+  LIBYUV_INCLUDE="${withval}/include"
+  LIBYUV_LIB="${withval}/lib"
+fi
+])
 
 AM_CONDITIONAL(USE_AMR, false)
 AC_ARG_WITH(amr,
