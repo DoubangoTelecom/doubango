@@ -29,7 +29,7 @@ endif
 
 if USE_YUV
 libtinyDAV_la_LIBADD += -lyuv
-libtinyDAV_la_CPPFLAGS += -I${LIBYUV_INCLUDE} -I${LIBYUV_INCLUDE}/libvpx
+libtinyDAV_la_CPPFLAGS += -I${LIBYUV_INCLUDE} -I${LIBYUV_INCLUDE}/libyuv
 endif
 
 if USE_AMR
