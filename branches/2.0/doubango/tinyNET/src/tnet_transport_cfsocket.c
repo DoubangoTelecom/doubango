@@ -608,6 +608,7 @@ void __CFReadStreamClientCallBack(CFReadStreamRef stream, CFStreamEventType even
         case kCFStreamEventOpenCompleted:
         {
             TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> kCFStreamEventOpenCompleted");
+            TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, sock->fd);
             break;
         }
         case kCFStreamEventHasBytesAvailable:
@@ -671,9 +672,9 @@ void __CFWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventType ev
                 data = CFWriteStreamCopyProperty(stream, kCFStreamPropertySocketSSLContext);
                 CFDataGetBytes(data, CFRangeMake(0, sizeof(SSLContextRef)), (UInt8*) &sslContext);
                 CFRelease(data);
-                
                 // TODO: Set the client certificates
 #endif
+                TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, sock->fd);
             }
             
             break;
