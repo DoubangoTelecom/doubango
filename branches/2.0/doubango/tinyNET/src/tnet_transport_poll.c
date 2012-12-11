@@ -636,7 +636,7 @@ void *tnet_transport_mainthread(void *param)
 				void* buffer = tsk_null;
 				tnet_transport_event_t* e;
 				
-				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN(%d)", transport->description, active_socket->fd);
+				// TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN(%d)", transport->description, active_socket->fd);
 				
 				/* check whether the socket is paused or not */
 				if(active_socket->paused){
