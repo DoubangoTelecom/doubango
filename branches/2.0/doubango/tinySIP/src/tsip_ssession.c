@@ -537,7 +537,9 @@ tmedia_session_mgr_t* tsip_session_get_mediamgr(const tsip_ssession_handle_t *se
 		tsip_dialog_t* dialog;
 
 		if((dialog = tsip_dialog_layer_find_by_ss(ss->stack->layer_dialog, self))){
-			mgr = tsk_object_ref(TSIP_DIALOG_INVITE(dialog)->msession_mgr);
+            if(dialog->type == tsip_dialog_INVITE){
+                mgr = tsk_object_ref(TSIP_DIALOG_INVITE(dialog)->msession_mgr);
+            }
 			tsk_object_unref(dialog);
 		}
 	}
