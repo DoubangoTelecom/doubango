@@ -556,7 +556,10 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, tsip_
 		ret = tsip_transac_start(transac, message);
 		tsk_object_unref(transac);
 	}
-	else if(TSIP_MESSAGE_IS_REQUEST(message)){ /* No transaction match for the SIP request */
+	/* - No transaction match for the SIP request
+	   - ACK do not expect any response (http://code.google.com/p/imsdroid/issues/detail?id=420)
+	*/
+	else if(TSIP_MESSAGE_IS_REQUEST(message) && !TSIP_REQUEST_IS_ACK(message)){
 		const tsip_transport_layer_t *layer;
 		tsip_response_t* response = tsk_null;
 
