@@ -591,14 +591,10 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 	if(!TSK_LIST_IS_EMPTY(action->media.params)){
 		tmedia_session_mgr_set_3(self->msession_mgr, action->media.params);
 	}
-	/* start session manager */
-	if(self->msession_mgr && !self->msession_mgr->started && (self->msession_mgr->sdp.lo && self->msession_mgr->sdp.ro)){
-		/* Set MSRP Callback */
-		if((self->msession_mgr->type & tmedia_msrp) == tmedia_msrp){
-			tmedia_session_mgr_set_msrp_cb(self->msession_mgr, TSIP_DIALOG_GET_SS(self)->userdata, TSIP_DIALOG_GET_SS(self)->media.msrp.callback);
-		}
-		// starts session manager
-		ret = tsip_dialog_invite_msession_start(self);
+
+	/* set MSRP callback */
+	if((self->msession_mgr->type & tmedia_msrp) == tmedia_msrp){
+		tmedia_session_mgr_set_msrp_cb(self->msession_mgr, TSIP_DIALOG_GET_SS(self)->userdata, TSIP_DIALOG_GET_SS(self)->media.msrp.callback);
 	}
 
 	/* Cancel 100rel timer */
@@ -606,6 +602,10 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 
 	/* send 2xx OK */
 	ret = send_RESPONSE(self, self->last_iInvite, 200, "OK", tsk_true);
+
+	/* do not start the session until we get the ACK message
+	* http://code.google.com/p/doubango/issues/detail?id=157
+	*/
 
 	/* Session Timers */
 	if(self->stimers.timer.timeout){

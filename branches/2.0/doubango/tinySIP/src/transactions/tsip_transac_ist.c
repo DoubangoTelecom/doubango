@@ -673,6 +673,7 @@ int tsip_transac_ist_Accepted_2_Accepted_iACK(va_list *app)
 {
 	tsip_transac_ist_t *self = va_arg(*app, tsip_transac_ist_t *);
 	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
+	self->acked = tsk_true;
 	TRANSAC_TIMER_CANCEL(X);
 	return tsip_transac_deliver(TSIP_TRANSAC(self), tsip_dialog_i_msg, request);
 }
@@ -681,7 +682,7 @@ int tsip_transac_ist_Accepted_2_Accepted_iACK(va_list *app)
 */
 static int tsip_transac_ist_Accepted_2_Terminated_timerL(va_list *app)
 {
-	//tsip_transac_ist_t *self = va_arg(*app, tsip_transac_ist_t *);
+	tsip_transac_ist_t *self = va_arg(*app, tsip_transac_ist_t *);
 	//const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
 	/*	draft-sparks-sip-invfix-03 - 8.7. Page 137
@@ -689,6 +690,10 @@ static int tsip_transac_ist_Accepted_2_Terminated_timerL(va_list *app)
 		MUST transition to the "Terminated" state. Once the transaction is in the "Terminated" state, it MUST be
 		destroyed immediately.
 	*/
+	if(!self->acked){
+		TSK_DEBUG_ERROR("ACK not received");
+		return tsip_transac_deliver(TSIP_TRANSAC(self), tsip_dialog_transport_error, tsk_null);
+	}
 	return 0;
 }
 

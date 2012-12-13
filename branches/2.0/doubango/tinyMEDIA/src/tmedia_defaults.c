@@ -266,12 +266,8 @@ const char* tmedia_defaults_get_inv_session_refresher(){
 	return __inv_session_refresher;
 }
 int tmedia_defaults_set_inv_session_refresher(const char* refresher){
-	if(refresher){
-		tsk_strupdate(&__inv_session_refresher, refresher);
-		return 0;
-	}
-	TSK_DEBUG_ERROR("Invalid parameter");
-	return -1;
+	tsk_strupdate(&__inv_session_refresher, refresher);
+	return 0;
 }
 
 tmedia_srtp_mode_t tmedia_defaults_get_srtp_mode(){
