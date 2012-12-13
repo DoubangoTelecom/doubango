@@ -127,7 +127,7 @@ static int x0000_Any_2_Trying_X_oBYE(va_list *app); /* If not Connected => Cance
 static int x0000_Any_2_Terminated_X_iBYE(va_list *app);
 static int x0000_Any_2_Trying_X_shutdown(va_list *app);
 
-static int x9998_Any_2_Any_X_transportError(va_list *app);
+static int x9998_Any_2_Terminated_X_transportError(va_list *app);
 static int x9999_Any_2_Any_X_Error(va_list *app);
 
 /* ======================== conds ======================== */
@@ -389,7 +389,7 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		// Any -> (i2xx INFO) -> Any
 		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2INFO, tsk_fsm_state_any, tsk_null, "x0000_Any_2_Any_X_i2xxINFO"),
 		// Any -> (transport error) -> Terminated
-		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, x9998_Any_2_Any_X_transportError, "x9998_Any_2_Any_X_transportError"),
+		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, x9998_Any_2_Terminated_X_transportError, "x9998_Any_2_Terminated_X_transportError"),
 		// Any -> (transport error) -> Terminated
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_error, _fsm_state_Terminated, x9999_Any_2_Any_X_Error, "x9999_Any_2_Any_X_Error"),
 
@@ -570,6 +570,11 @@ int x0000_Connected_2_Connected_X_iACK(va_list *app)
 	if((ret = tsip_dialog_invite_process_ro(self, rACK))){
 		/* Send error */
 		return ret;
+	}
+
+	/* Starts media session if not already done */
+	if(!self->msession_mgr->started && (self->msession_mgr->sdp.lo && self->msession_mgr->sdp.ro)){
+		ret = tsip_dialog_invite_msession_start(self);
 	}
 
 	// starts ICE timers now that both parties receive the "candidates"
@@ -941,7 +946,7 @@ int x0000_Any_2_Any_X_iINFO(va_list *app)
 	return 0;
 }
 
-int x9998_Any_2_Any_X_transportError(va_list *app)
+int x9998_Any_2_Terminated_X_transportError(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 

@@ -43,6 +43,7 @@ typedef struct tsip_transac_ist
 	TSIP_DECLARE_TRANSAC;
 
 	tsip_response_t* lastResponse;
+	tsk_bool_t acked;
 
 	tsip_timer_t timerH;
 	tsip_timer_t timerI;
