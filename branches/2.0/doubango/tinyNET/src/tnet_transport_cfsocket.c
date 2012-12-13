@@ -201,11 +201,9 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	if (context->cf_run_loop) {
 		// Signal the run-loop
         CFRunLoopWakeUp(context->cf_run_loop);
-        return 0;
-	} else {
-		TSK_DEBUG_WARN("run_loop not initialized yet.");
-		return 0; //Will be taken when mainthead is started
-	}
+    }
+    
+    return 0;
 }
 
 int tnet_transport_pause_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tsk_bool_t pause){
