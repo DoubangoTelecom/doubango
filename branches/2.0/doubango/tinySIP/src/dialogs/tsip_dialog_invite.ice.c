@@ -57,20 +57,28 @@ static tsk_bool_t _fsm_cond_get_local_candidates(tsip_dialog_invite_t* self, tsi
 			// only gets the candidates if ICE is enabled and the remote peer supports ICE
 			tsdp_message_t* sdp_ro;
 			const tsdp_header_M_t* M;
+			int index;
 			if(!(sdp_ro = tsdp_message_parse(TSIP_MESSAGE_CONTENT_DATA(message), TSIP_MESSAGE_CONTENT_DATA_LENGTH(message)))){
 				TSK_DEBUG_ERROR("Failed to parse remote sdp message");
 				return tsk_false;
 			}
-			// For now do not use ICE one of the media is ICE-less
-			use_ice = !(((M = tsdp_message_find_media(sdp_ro, "audio")) && !tsdp_header_M_findA(M, "candidate"))
-				|| ((M = tsdp_message_find_media(sdp_ro, "video")) && !tsdp_header_M_findA(M, "candidate")));
+			
+			index = 0;
+			while((M = (const tsdp_header_M_t*)tsdp_message_get_headerAt(sdp_ro, tsdp_htype_M, index++))){
+				if(!tsdp_header_M_findA(M, "candidate")){
+					use_ice = tsk_false; // do not use ICE is at least on media is ICE-less (e.g. MSRP)
+					break;
+				}
+				use_ice = tsk_true; // only use ICE if there is a least one media line
+			}
+			
 			new_media = tmedia_type_from_sdp(sdp_ro);
 
 			TSK_OBJECT_SAFE_FREE(sdp_ro);
 		}
 		else if(!message){
-			// we are the "offerer"
-			use_ice = tsk_true;
+			// we are the "offerer" -> use ICE only for audio or video medias (ignore ice for MSRP)
+			use_ice = (new_media & tmedia_audio) || (new_media & tmedia_video);
 		}
 
 		if(use_ice){
