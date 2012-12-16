@@ -7,6 +7,6 @@ This is the list of companies using our products in violation of GNU GPL terms a
 || [http://www.adoresoftphone.com/ AdoreSoftphone] || Windows, OS X, Android and iOS ||
 || [http://www.ark-sol.com/ ARK Solutions] || iOS and Android ||
 || [http://www.abtosoftware.com/ ABTO Software] || Android and iOS at least ||
-|| [http://www.rounds.com/ rounds.com] || Android and iOS at least ||
+|| [http://www.rounds.com/ Rounds Entertainment, Inc] || Android and iOS at least ||
 
 More coming soon...
