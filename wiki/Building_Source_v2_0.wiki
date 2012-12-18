@@ -151,14 +151,17 @@ cd ffmpeg
  * Minimal build
 {{{
 cd doubango && ./autogen.sh && ./configure --with-ssl --with-srtp
+make && make install
 }}}
  * Recommended build
 {{{
 cd doubango && ./autogen.sh && ./configure --with-ssl --with-srtp --with-speexdsp --enable-speexjb --with-ffmpeg --with-h264
+make && make install
 }}}
  * Full build
 {{{
 cd doubango && ./autogen.sh && ./configure --with-ssl --with-srtp --with-vpx --with-yuv --with-amr --with-speex --with-speexdsp --enable-speexresampler --enable-speexjb --enable-speexdenoiser --with-gsm --with-ilbc --with-g729 --with-ffmpeg --with-h264
+make && make install
 }}}
 
 <br />
