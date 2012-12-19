@@ -130,12 +130,14 @@ static int tdav_codec_vp8_set(tmedia_codec_t* self, const tmedia_param_t* param)
 				case tmedia_codec_action_bw_down:
 					{
 						vp8->encoder.cfg.rc_target_bitrate = ((vp8->encoder.cfg.rc_target_bitrate << 1) / 3);
+						TSK_DEBUG_INFO("New target bitrate = %d kbps", vp8->encoder.cfg.rc_target_bitrate);
 						reconf = tsk_true;
 						break;
 					}
 				case tmedia_codec_action_bw_up:
 					{
 						vp8->encoder.cfg.rc_target_bitrate = ((vp8->encoder.cfg.rc_target_bitrate * 3) >> 1);
+						TSK_DEBUG_INFO("New target bitrate = %d kbps", vp8->encoder.cfg.rc_target_bitrate);
 						reconf = tsk_true;
 						break;
 					}
