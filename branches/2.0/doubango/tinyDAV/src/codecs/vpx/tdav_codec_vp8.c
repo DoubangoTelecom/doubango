@@ -45,15 +45,23 @@
 #include "tsk_time.h"
 #include "tsk_debug.h"
 
-#define TDAV_VP8_PAY_DESC_SIZE				4
+#if !defined(TDAV_VP8_DISABLE_EXTENSION)
+#   define TDAV_VP8_DISABLE_EXTENSION       0 /* Set X fied value to zero */
+#endif
+
+#if TDAV_VP8_DISABLE_EXTENSION
+#   define TDAV_VP8_PAY_DESC_SIZE			1
+#else
+#   define TDAV_VP8_PAY_DESC_SIZE			4
+#endif
 #define TDAV_SYSTEM_CORES_COUNT				0
 #define TDAV_VP8_GOP_SIZE_IN_SECONDS		25
 #define TDAV_VP8_RTP_PAYLOAD_MAX_SIZE		1050
 #if !defined(TDAV_VP8_MAX_BANDWIDTH_KB)
-#	define TDAV_VP8_MAX_BANDWIDTH_KB			6000
+#	define TDAV_VP8_MAX_BANDWIDTH_KB		6000
 #endif
 #if !defined(TDAV_VP8_MIN_BANDWIDTH_KB)
-#	define TDAV_VP8_MIN_BANDWIDTH_KB			100
+#	define TDAV_VP8_MIN_BANDWIDTH_KB		100
 #endif
 
 /* VP8 codec */
@@ -836,13 +844,20 @@ static void tdav_codec_vp8_rtp_callback(tdav_codec_vp8_t *self, const void *data
 		| ((part_start << 4) & 0x10)// S
 		| ((non_ref << 5) & 0x20) // N
 		// R = 0
+#if TDAV_VP8_DISABLE_EXTENSION
+        | (0x00) // X=0
+#else
 		| (0x80) // X=1
+#endif
 		;
+    
+#if !TDAV_VP8_DISABLE_EXTENSION
 	// X:   |I|L|T|K| RSV   |
 	self->encoder.rtp.ptr[1] = 0x80; // I = 1, L = 0, T = 0, K = 0, RSV = 0
 	// I:   |M| PictureID   |
 	self->encoder.rtp.ptr[2] = (0x80 | (self->encoder.pic_id >> 9)); // M = 1 (PictureID on 15 bits)
 	self->encoder.rtp.ptr[3] = (self->encoder.pic_id & 0xFF);
+#endif
 
 	/* 4.2. VP8 Payload Header */
 	if(has_hdr){
