@@ -606,7 +606,7 @@ int tsip_dialog_apply_action(tsip_message_t* message, const tsip_action_t* actio
  *
  * @return	Zero if succeed and no-zero error code otherwise. 
 **/
-int64_t tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* response)
+int64_t tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_message_t* message)
 {
 	int64_t expires = self->expires;
 	int64_t newdelay = expires;	/* default value */
@@ -615,9 +615,9 @@ int64_t tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* res
 
 	/*== NOTIFY with subscription-state header with expires parameter. 
 	*/
-	if(TSIP_RESPONSE_IS_TO_NOTIFY(response)){
+	if(TSIP_REQUEST_IS_NOTIFY(message)){
 		const tsip_header_Subscription_State_t *hdr_state;
-		if((hdr_state = (const tsip_header_Subscription_State_t*)tsip_message_get_header(response, tsip_htype_Subscription_State))){
+		if((hdr_state = (const tsip_header_Subscription_State_t*)tsip_message_get_header(message, tsip_htype_Subscription_State))){
 			if(hdr_state->expires >0){
 				expires = TSK_TIME_S_2_MS(hdr_state->expires);
 				goto compute;
@@ -627,14 +627,14 @@ int64_t tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* res
 
 	/*== Expires header.
 	*/
-	if((hdr = tsip_message_get_header(response, tsip_htype_Expires))){
+	if((hdr = tsip_message_get_header(message, tsip_htype_Expires))){
 		expires = TSK_TIME_S_2_MS(((const tsip_header_Expires_t*)hdr)->delta_seconds);
 		goto compute;
 	}
 
 	/*== Contact header.
 	*/
-	for(i=0; (hdr = tsip_message_get_headerAt(response, tsip_htype_Contact, i)); i++){
+	for(i=0; (hdr = tsip_message_get_headerAt(message, tsip_htype_Contact, i)); i++){
 		const tsip_header_Contact_t* contact = (const tsip_header_Contact_t*)hdr;
 		if(contact && contact->uri)
 		{

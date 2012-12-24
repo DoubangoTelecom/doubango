@@ -1692,8 +1692,14 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_terminated_get")]
   public static extern int tsip_event_code_dialog_terminated_get();
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_stack_starting_get")]
+  public static extern int tsip_event_code_stack_starting_get();
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_stack_started_get")]
   public static extern int tsip_event_code_stack_started_get();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_stack_stopping_get")]
+  public static extern int tsip_event_code_stack_stopping_get();
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_stack_stopped_get")]
   public static extern int tsip_event_code_stack_stopped_get();

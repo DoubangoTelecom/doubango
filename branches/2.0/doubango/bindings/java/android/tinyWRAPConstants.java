@@ -20,8 +20,10 @@ public interface tinyWRAPConstants {
   public final static int tsip_event_code_dialog_connected = 901;
   public final static int tsip_event_code_dialog_terminating = 902;
   public final static int tsip_event_code_dialog_terminated = 903;
-  public final static int tsip_event_code_stack_started = 950;
-  public final static int tsip_event_code_stack_stopped = 951;
-  public final static int tsip_event_code_stack_failed_to_start = 952;
-  public final static int tsip_event_code_stack_failed_to_stop = 953;
+  public final static int tsip_event_code_stack_starting = 950;
+  public final static int tsip_event_code_stack_started = 951;
+  public final static int tsip_event_code_stack_stopping = 952;
+  public final static int tsip_event_code_stack_stopped = 953;
+  public final static int tsip_event_code_stack_failed_to_start = 954;
+  public final static int tsip_event_code_stack_failed_to_stop = 955;
 }

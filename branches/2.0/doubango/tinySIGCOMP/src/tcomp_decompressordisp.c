@@ -94,7 +94,7 @@ tsk_bool_t tcomp_decompressordisp_decompress(tcomp_decompressordisp_t *dispatche
 	
 	if(lpResult->isStreamBased){
 		tsk_size_t size = 0;
-		uint16_t discard_count = 0;
+		uint32_t discard_count = 0;
 		tcomp_stream_buffer_t *lpBuffer;
 
 		item_const = tsk_list_find_item_by_pred(dispatcher->streamBuffers, pred_find_streambuffer_by_id, &streamId);
@@ -130,7 +130,7 @@ tsk_bool_t tcomp_decompressordisp_getNextMessage(tcomp_decompressordisp_t *dispa
 {
 	tsk_bool_t ret = tsk_true;
 	tsk_size_t size=0;
-	uint16_t discard_count = 0;
+	uint32_t discard_count = 0;
 	uint64_t streamId;
 	tcomp_stream_buffer_t *lpBuffer;
 	const tsk_list_item_t *item_const;
@@ -258,7 +258,7 @@ tsk_bool_t tcomp_decompressordisp_appendStream(tcomp_decompressordisp_t *dispatc
 
 /**Gets the next message from the queue.
 */
-tsk_bool_t tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, tsk_size_t *size)
+tsk_bool_t tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint32_t *discard_count, tsk_size_t *size)
 {
 	tcomp_stream_buffer_t *lpBuffer;
 	const tsk_list_item_t *item_const;

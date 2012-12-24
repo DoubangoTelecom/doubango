@@ -60,10 +60,10 @@ TINYSIGCOMP_API tsk_size_t tcomp_buffer_getSize(const tcomp_buffer_handle_t* han
 tsk_size_t tcomp_buffer_getRemainingBits(const tcomp_buffer_handle_t* handle) /*const*/;
 
 uint8_t* tcomp_buffer_readBytes(tcomp_buffer_handle_t* handle, tsk_size_t size);
-uint16_t tcomp_buffer_readLsbToMsb(tcomp_buffer_handle_t* handle, tsk_size_t length);
-uint16_t tcomp_buffer_readMsbToLsb(tcomp_buffer_handle_t* handle, tsk_size_t length);
+uint32_t tcomp_buffer_readLsbToMsb(tcomp_buffer_handle_t* handle, tsk_size_t length);
+uint32_t tcomp_buffer_readMsbToLsb(tcomp_buffer_handle_t* handle, tsk_size_t length);
 void tcomp_buffer_discardBits(tcomp_buffer_handle_t* handle);
-void tcomp_buffer_discardLastBytes(tcomp_buffer_handle_t* handle, uint16_t count);
+void tcomp_buffer_discardLastBytes(tcomp_buffer_handle_t* handle, uint32_t count);
 
 void tcomp_buffer_allocBuff(tcomp_buffer_handle_t* handle, tsk_size_t size);
 void tcomp_buffer_referenceBuff(tcomp_buffer_handle_t* handle, uint8_t* externalBuff, tsk_size_t size);
@@ -78,7 +78,7 @@ uint8_t* tcomp_buffer_getP_BIT(const tcomp_buffer_handle_t* handle);
 
 uint64_t tcomp_buffer_createHash(const void *data, tsk_size_t len);
 
-void tcomp_buffer_nprint(tcomp_buffer_handle_t* handle, tsk_size_t size);
+void tcomp_buffer_nprint(const tcomp_buffer_handle_t* handle, tsk_ssize_t size);
 #define tcomp_buffer_print(handle) tcomp_buffer_nprint(handle, -1)
 
 void tcomp_buffer_reset(tcomp_buffer_handle_t* handle);

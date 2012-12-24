@@ -197,7 +197,7 @@ uint8_t* tcomp_buffer_readBytes(tcomp_buffer_handle_t* handle, tsk_size_t length
 * @param length The length of the buffer to read.
 * @retval All bits as a 2-bytes integer value
 */
-uint16_t tcomp_buffer_readLsbToMsb(tcomp_buffer_handle_t* handle, tsk_size_t length)
+uint32_t tcomp_buffer_readLsbToMsb(tcomp_buffer_handle_t* handle, tsk_size_t length)
 {
 	// UDV Memory is always MSB first
 	// MSB  <-- LSB
@@ -207,7 +207,7 @@ uint16_t tcomp_buffer_readLsbToMsb(tcomp_buffer_handle_t* handle, tsk_size_t len
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
 		uint8_t pos = 0;
 		char* end;
-		uint16_t result_val = 0;
+		uint32_t result_val = 0;
 		char result_str[16]; memset(result_str, 0, 16);
 		while(pos < length){
 			result_str[pos++] = (buffer->lpbuffer[buffer->index_bytes]
@@ -219,7 +219,7 @@ uint16_t tcomp_buffer_readLsbToMsb(tcomp_buffer_handle_t* handle, tsk_size_t len
 		}
 		
 		end = (result_str+length);
-		result_val = (uint16_t)strtol(result_str, &end, 2);
+		result_val = (uint32_t)strtol(result_str, &end, 2);
 
 		return result_val;
 	}
@@ -235,7 +235,7 @@ uint16_t tcomp_buffer_readLsbToMsb(tcomp_buffer_handle_t* handle, tsk_size_t len
 * @param length The length of the buffer to read.
 * @retval All bits as a 2-bytes integer value
 */
-uint16_t tcomp_buffer_readMsbToLsb(tcomp_buffer_handle_t* handle, tsk_size_t length)
+uint32_t tcomp_buffer_readMsbToLsb(tcomp_buffer_handle_t* handle, tsk_size_t length)
 {
 	// UDV Memory is always MSB first
 	// MSB  --> LSB
@@ -244,7 +244,7 @@ uint16_t tcomp_buffer_readMsbToLsb(tcomp_buffer_handle_t* handle, tsk_size_t len
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
 		uint8_t pos = 0;
 		char* end;
-		uint16_t result_val = 0;
+		uint32_t result_val = 0;
 		char result_str[16]; memset(result_str, 0, 16);
 
 		while(pos < length){
@@ -257,7 +257,7 @@ uint16_t tcomp_buffer_readMsbToLsb(tcomp_buffer_handle_t* handle, tsk_size_t len
 		}
 		
 		end = (result_str + length);
-		result_val = (uint16_t)strtol(result_str, &end, 2);
+		result_val = (uint32_t)strtol(result_str, &end, 2);
 		
 		return result_val;
 	}
@@ -289,7 +289,7 @@ void tcomp_buffer_discardBits(tcomp_buffer_handle_t* handle)
 * @param handle SigComp handle holding the internal buffer.
 * @param count The number of bytes to discard.
 */
-void tcomp_buffer_discardLastBytes(tcomp_buffer_handle_t* handle, uint16_t count)
+void tcomp_buffer_discardLastBytes(tcomp_buffer_handle_t* handle, uint32_t count)
 {
 	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
@@ -541,7 +541,7 @@ uint64_t tcomp_buffer_createHash(const void *data, tsk_size_t len)
 * @param handle SigComp handle holding the internal buffer to print.
 * @param size The number of bytes to print.
 */
-void tcomp_buffer_nprint(tcomp_buffer_handle_t* handle, tsk_size_t size)
+void tcomp_buffer_nprint(const tcomp_buffer_handle_t* handle, tsk_ssize_t size)
 {
 #if defined(_DEBUG) || defined(DEBUG)
 
@@ -554,7 +554,7 @@ void tcomp_buffer_nprint(tcomp_buffer_handle_t* handle, tsk_size_t size)
 
 		for(i = 0; i < tsk_size_to_print; i+=2){
 			char s[10]; 
-			uint16_t value;
+			uint32_t value;
 			memset(s, 0, 10);
 			
 			if((i+1) == tsk_size_to_print){
@@ -577,7 +577,7 @@ void tcomp_buffer_nprint(tcomp_buffer_handle_t* handle, tsk_size_t size)
 			}
 			printf("%s ", s);
 		}
-		printf("\n\n");
+		printf("\n");
 	}
 	else{
 		TSK_DEBUG_ERROR("Null SigComp handle");

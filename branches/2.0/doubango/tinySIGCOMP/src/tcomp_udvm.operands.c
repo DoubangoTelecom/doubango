@@ -42,9 +42,9 @@ literal (#)<br>
 <tr> <td>11000000 nnnnnnnn nnnnnnnn</td>      <td>N</td>                  <td>0 - 65535</td></tr>
 </table>
 */
-uint16_t tcomp_udvm_opget_literal_param(tcomp_udvm_t *udvm)
+uint32_t tcomp_udvm_opget_literal_param(tcomp_udvm_t *udvm)
 {
-	uint16_t result = 0;
+	uint32_t result = 0;
 	const uint8_t* memory_ptr = TCOMP_UDVM_GET_BUFFER_AT(udvm->executionPointer);
 
 	switch( *memory_ptr & 0xc0) // 2 first bits
@@ -90,10 +90,10 @@ reference ($)<br>
 <tr><td>11000000 nnnnnnnn nnnnnnnn</td>      <td>memory[N]</td>           <td>0 - 65535</td></tr>
 </table>
 */
-uint16_t tcomp_udvm_opget_reference_param(tcomp_udvm_t *udvm)
+uint32_t tcomp_udvm_opget_reference_param(tcomp_udvm_t *udvm)
 {
 	const uint8_t* memory_ptr = TCOMP_UDVM_GET_BUFFER_AT(udvm->executionPointer);
-	uint16_t result = 0;
+	uint32_t result = 0;
 	
 	switch( *memory_ptr & 0xc0) // 2 first bits
 	{
@@ -108,7 +108,7 @@ uint16_t tcomp_udvm_opget_reference_param(tcomp_udvm_t *udvm)
 
 	case 0x80: // 10nnnnnn nnnnnnnn               memory[2 * N]       0 - 65535
 		{
-			uint16_t N = (TSK_BINARY_GET_2BYTES(memory_ptr) & 0x3fff);
+			uint32_t N = (TSK_BINARY_GET_2BYTES(memory_ptr) & 0x3fff);
 			result = 2*N;
 			udvm->executionPointer+=2;
 		}
@@ -116,7 +116,7 @@ uint16_t tcomp_udvm_opget_reference_param(tcomp_udvm_t *udvm)
 	
 	case 0xc0: // 11000000 nnnnnnnn nnnnnnnn      memory[N]           0 - 65535
 		{
-			uint16_t N = TSK_BINARY_GET_2BYTES(memory_ptr+1);
+			uint32_t N = TSK_BINARY_GET_2BYTES(memory_ptr+1);
 			result = N;
 			udvm->executionPointer+=3;
 		}
@@ -149,11 +149,11 @@ multitype(%)<br>
 <tr><td>10000001 nnnnnnnn nnnnnnnn</td>      <td>memory[N]</td>           <td>0 - 65535</td></tr>
 </table>
 */
-uint16_t tcomp_udvm_opget_multitype_param(tcomp_udvm_t *udvm)
+uint32_t tcomp_udvm_opget_multitype_param(tcomp_udvm_t *udvm)
 {
 	const uint8_t* memory_ptr = TCOMP_UDVM_GET_BUFFER_AT(udvm->executionPointer);
 	int8_t index = operand_multitype_indexes[*memory_ptr];
-	uint16_t result = 0;
+	uint32_t result = 0;
 
 	switch(index)
 	{
@@ -175,7 +175,7 @@ uint16_t tcomp_udvm_opget_multitype_param(tcomp_udvm_t *udvm)
 	case 3: // 1000011n                        2 ^ (N + 6)        64 , 128
 		{
 			uint8_t N = (*(memory_ptr) & 0x01);
-			result = (uint16_t)pow( (double)2, (N + 6) );
+			result = (uint32_t)pow( (double)2, (N + 6) );
 			udvm->executionPointer++;
 		}
 		break;
@@ -183,7 +183,7 @@ uint16_t tcomp_udvm_opget_multitype_param(tcomp_udvm_t *udvm)
 	case 4: // 10001nnn                        2 ^ (N + 8)    256 , ... , 32768
 		{
 			uint8_t N = (*(memory_ptr) & 0x07);
-			result = (uint16_t)pow( (double)2, (N + 8) );
+			result = (uint32_t)pow( (double)2, (N + 8) );
 			udvm->executionPointer++;
 		}
 		break;
@@ -211,7 +211,7 @@ uint16_t tcomp_udvm_opget_multitype_param(tcomp_udvm_t *udvm)
 
 	case 8: // 110nnnnn nnnnnnnn               memory[N]           0 - 65535
 		{
-			uint16_t N = TSK_BINARY_GET_2BYTES(memory_ptr) & 0x1fff;
+			uint32_t N = TSK_BINARY_GET_2BYTES(memory_ptr) & 0x1fff;
 			result = TSK_BINARY_GET_2BYTES( TCOMP_UDVM_GET_BUFFER_AT(N) );
 			udvm->executionPointer+=2;
 		}
@@ -226,7 +226,7 @@ uint16_t tcomp_udvm_opget_multitype_param(tcomp_udvm_t *udvm)
 
 	case 10: // 10000001 nnnnnnnn nnnnnnnn      memory[N]           0 - 65535
 		{
-			uint16_t N = TSK_BINARY_GET_2BYTES(memory_ptr+1);
+			uint32_t N = TSK_BINARY_GET_2BYTES(memory_ptr+1);
 			result = TSK_BINARY_GET_2BYTES( TCOMP_UDVM_GET_BUFFER_AT(N) );
 			udvm->executionPointer+=3;
 		}
@@ -253,9 +253,9 @@ calculated as follows:
 
    operand_value = (memory_address_of_instruction + D) modulo 2^16
 */
-uint16_t tcomp_udvm_opget_address_param(tcomp_udvm_t *udvm, uint16_t memory_address_of_instruction)
+uint32_t tcomp_udvm_opget_address_param(tcomp_udvm_t *udvm, uint32_t memory_address_of_instruction)
 {
-	uint16_t D = tcomp_udvm_opget_multitype_param(udvm); 
+	uint32_t D = tcomp_udvm_opget_multitype_param(udvm); 
 	// (2^16) => 65536;
 	return ( (memory_address_of_instruction + D)%65536 );
 }

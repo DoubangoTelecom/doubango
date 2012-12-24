@@ -36,14 +36,128 @@
 
 tcomp_udvm_t* tcomp_udvm_create(tcomp_message_t* _sigCompMessage, tcomp_statehandler_t*  stateHandler, tcomp_result_t* lpResult)
 {
-	return tsk_object_new(tcomp_udvm_def_t, _sigCompMessage, stateHandler, lpResult);
+	tcomp_udvm_t *udvm;
+	if((udvm = tsk_object_new(tcomp_udvm_def_t))){
+		/* RFC 3320 - 7.  SigComp Message Format */
+		udvm->sigCompMessage = tsk_object_ref(_sigCompMessage);
+		udvm->stateHandler = tsk_object_ref(stateHandler);
+		udvm->lpResult = tsk_object_ref(lpResult);
+		
+		udvm->isOK = tsk_true;
+		udvm->maximum_UDVM_cycles = 0; /* RFC 3320 subclause 8.6 */
+		udvm->consumed_cycles = 0;
+		udvm->memory = tcomp_buffer_create_null();
+
+		/* Alloc UDVM memory */
+		if(udvm->sigCompMessage->stream_based){
+			/*
+			* If the transport is stream-based however, then a fixed-size input buffer is required to accommodate the stream, independently of the
+			* size of each SigComp message. So, for simplicity, the UDVM memory size is set to (decompression_memory_size / 2).
+			*/
+
+			tcomp_buffer_allocBuff(udvm->memory, udvm->stateHandler->sigcomp_parameters->dmsValue/2);
+		}
+		else{
+			/*
+			* If the transport is message-based then sufficient memory must be available
+			* to buffer the entire SigComp message before it is passed to the UDVM. So if the message is n bytes long, then the UDVM memory size is set
+			* to (decompression_memory_size - n), up to a maximum of 65536 bytes.
+			*/
+			tcomp_buffer_allocBuff(udvm->memory, (udvm->stateHandler->sigcomp_parameters->dmsValue-udvm->sigCompMessage->totalSize));
+		}
+
+		/*
+		* Has feedback with my state id?
+		*/
+		if(tcomp_buffer_getSize(udvm->sigCompMessage->ret_feedback_buffer)){
+			tsk_size_t size = tcomp_buffer_getSize(udvm->sigCompMessage->ret_feedback_buffer);
+			tcomp_buffer_allocBuff(udvm->lpResult->ret_feedback, size);
+			memcpy(tcomp_buffer_getBuffer(udvm->lpResult->ret_feedback), tcomp_buffer_getBuffer(udvm->sigCompMessage->ret_feedback_buffer), size);
+		}
+		
+		/*
+		*	Has state?
+		*/
+		if(tcomp_buffer_getSize(udvm->sigCompMessage->stateId)){
+			/* Find the provided state */
+			tcomp_state_t* lpState = NULL;
+			uint32_t match_count = tcomp_statehandler_findState(udvm->stateHandler, udvm->sigCompMessage->stateId, &lpState);
+			if( (!match_count || match_count>1 || !lpState)
+				|| (lpState->minimum_access_length > tcomp_buffer_getSize(udvm->sigCompMessage->stateId))
+				|| ((tsk_size_t)(lpState->address + lpState->length) > TCOMP_UDVM_GET_SIZE()) )
+			{
+				TSK_DEBUG_INFO("NACK_STATE_NOT_FOUND for id = ");
+				tcomp_buffer_print(udvm->sigCompMessage->stateId);
+				tcomp_udvm_createNackInfo(udvm, NACK_STATE_NOT_FOUND, udvm->sigCompMessage->stateId, 0);
+				udvm->isOK = tsk_false;
+				goto bail;
+			}
+			//this->sigCompMessage->stateId.print();//FIXME
+			/*
+			* Copy bytecodes to UDVM memory
+			*/
+			if( (tsk_size_t)(lpState->address + lpState->length) >= TCOMP_UDVM_GET_SIZE() ){
+				tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
+				udvm->isOK = tsk_false;
+				goto bail;
+			}
+			memcpy( TCOMP_UDVM_GET_BUFFER_AT(lpState->address), 
+				tcomp_buffer_getBuffer(lpState->value), 
+				tcomp_buffer_getSize(lpState->value) );
+			
+			//RFC 3320 - 7.2.  Accessing Stored State (Useful values)
+			TCOMP_UDVM_SET_2BYTES_VAL(TCOMP_UDVM_HEADER_PARTIAL_STATE_ID_LENGTH_INDEX, tcomp_buffer_getSize(udvm->sigCompMessage->stateId));
+			TCOMP_UDVM_SET_2BYTES_VAL(TCOMP_UDVM_HEADER_STATE_LENGTH_INDEX, tcomp_buffer_getSize(lpState->value));
+			
+			udvm->executionPointer = lpState->instruction;
+		}
+		else // DON'T HAVE STATE
+		{
+			/*
+			* Copy bytecodes to UDVM memory
+			*/
+			tsk_size_t bytecodes_destination = udvm->sigCompMessage->bytecodes_destination;
+			if( (bytecodes_destination + tcomp_buffer_getSize(udvm->sigCompMessage->uploaded_UDVM_buffer)) >= TCOMP_UDVM_GET_SIZE() ){
+				tcomp_udvm_createNackInfo2(udvm, NACK_BYTECODES_TOO_LARGE);
+				udvm->isOK = tsk_false;
+				goto bail;
+			}
+			memcpy( TCOMP_UDVM_GET_BUFFER_AT(bytecodes_destination),
+				tcomp_buffer_getBuffer(udvm->sigCompMessage->uploaded_UDVM_buffer),
+				tcomp_buffer_getSize(udvm->sigCompMessage->uploaded_UDVM_buffer));
+
+			// Set pointer indicating execution index
+			udvm->executionPointer = bytecodes_destination;
+		}
+
+		/* RFC 3320-Section_8.6.  UDVM Cycles
+		*
+		* the maximum number of UDVM cycles available for processing an n-byte SigComp message is given by the formula
+		* maximum_UDVM_cycles = (8 * n + 1000) * cycles_per_bit
+		*/
+		udvm->maximum_UDVM_cycles = ( (8 * udvm->sigCompMessage->totalSize + 1000) * udvm->stateHandler->sigcomp_parameters->cpbValue );
+		
+		//
+		//	RFC 3320 - 7.2.  Useful values
+		//
+		TCOMP_UDVM_SET_2BYTES_VAL(TCOMP_UDVM_HEADER_UDVM_MEMORY_SIZE_INDEX, TCOMP_UDVM_GET_SIZE());
+		TCOMP_UDVM_SET_2BYTES_VAL(TCOMP_UDVM_HEADER_CYCLES_PER_BIT_INDEX, udvm->stateHandler->sigcomp_parameters->cpbValue);
+		TCOMP_UDVM_SET_2BYTES_VAL(TCOMP_UDVM_HEADER_SIGCOMP_VERSION_INDEX, udvm->stateHandler->sigcomp_parameters->SigComp_version);
+		memset(TCOMP_UDVM_GET_BUFFER_AT(TCOMP_UDVM_HEADER_RESERVED_INDEX), 0, TCOMP_UDVM_HEADER_RESERVED_SIZE);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to create new udvm machine.");
+	}
+
+bail:
+	return udvm;
 }
 
 /**Executes the bytecode.
 */
 static tsk_bool_t tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 {
-	uint16_t operand_1, operand_2, operand_3, operand_4, operand_5, operand_6, operand_7;
+	uint32_t operand_1, operand_2, operand_3, operand_4, operand_5, operand_6, operand_7;
 	tsk_bool_t excution_failed = tsk_false, end_message = tsk_false;
 	if(!udvm->isOK) {
 		TSK_DEBUG_ERROR("Cannot run()/execute() invalid bytecode");
@@ -370,6 +484,9 @@ static tsk_bool_t tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			goto bail;
 		}
 
+		if(excution_failed){
+			TSK_DEBUG_ERROR("Execution failed for instruction = %d", udvm_instruction);
+		}
 		//TCOMP_UDVM_DEBUG_PRINT(200);
 	}
 
@@ -411,119 +528,8 @@ static tsk_object_t* tcomp_udvm_ctor(tsk_object_t * self, va_list * app)
 {
 	tcomp_udvm_t *udvm = self;
 	if(udvm){
-		/* RFC 3320 - 7.  SigComp Message Format */
-		udvm->sigCompMessage = va_arg(*app, tcomp_message_t *);
-		udvm->stateHandler = va_arg(*app, tcomp_statehandler_t *);
-		udvm->lpResult = va_arg(*app, tcomp_result_t *);
-		
-		udvm->isOK = tsk_true;
-		udvm->maximum_UDVM_cycles = 0; /* RFC 3320 subclause 8.6 */
-		udvm->consumed_cycles = 0;
-		udvm->memory = tcomp_buffer_create_null();
 
-		/* Alloc UDVM memory */
-		if(udvm->sigCompMessage->stream_based){
-			/*
-			* If the transport is stream-based however, then a fixed-size input buffer is required to accommodate the stream, independently of the
-			* size of each SigComp message. So, for simplicity, the UDVM memory size is set to (decompression_memory_size / 2).
-			*/
-
-			tcomp_buffer_allocBuff(udvm->memory, udvm->stateHandler->sigcomp_parameters->dmsValue/2);
-		}
-		else{
-			/*
-			* If the transport is message-based then sufficient memory must be available
-			* to buffer the entire SigComp message before it is passed to the UDVM. So if the message is n bytes long, then the UDVM memory size is set
-			* to (decompression_memory_size - n), up to a maximum of 65536 bytes.
-			*/
-			tcomp_buffer_allocBuff(udvm->memory, (udvm->stateHandler->sigcomp_parameters->dmsValue-udvm->sigCompMessage->totalSize));
-		}
-
-		/*
-		* Has feedback with my state id?
-		*/
-		if(tcomp_buffer_getSize(udvm->sigCompMessage->ret_feedback_buffer)){
-			tsk_size_t size = tcomp_buffer_getSize(udvm->sigCompMessage->ret_feedback_buffer);
-			tcomp_buffer_allocBuff(udvm->lpResult->ret_feedback, size);
-			memcpy(tcomp_buffer_getBuffer(udvm->lpResult->ret_feedback), tcomp_buffer_getBuffer(udvm->sigCompMessage->ret_feedback_buffer), size);
-		}
-		
-		/*
-		*	Has state?
-		*/
-		if(tcomp_buffer_getSize(udvm->sigCompMessage->stateId)){
-			/* Find the provided state */
-			tcomp_state_t* lpState = NULL;
-			uint16_t match_count = tcomp_statehandler_findState(udvm->stateHandler, udvm->sigCompMessage->stateId, &lpState);
-			if( (!match_count || match_count>1 || !lpState)
-				|| (lpState->minimum_access_length > tcomp_buffer_getSize(udvm->sigCompMessage->stateId))
-				|| ((tsk_size_t)(lpState->address + lpState->length) > TCOMP_UDVM_GET_SIZE()) )
-			{
-				tcomp_udvm_createNackInfo(udvm, NACK_STATE_NOT_FOUND, udvm->sigCompMessage->stateId, 0);
-				udvm->isOK = tsk_false;
-				return self;
-			}
-			//this->sigCompMessage->stateId.print();//FIXME
-			/*
-			* Copy bytecodes to UDVM memory
-			*/
-			if( (tsk_size_t)(lpState->address + lpState->length) >= TCOMP_UDVM_GET_SIZE() ){
-				tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-				udvm->isOK = tsk_false;
-				return self;
-			}
-			memcpy( TCOMP_UDVM_GET_BUFFER_AT(lpState->address), 
-				tcomp_buffer_getBuffer(lpState->value), 
-				tcomp_buffer_getSize(lpState->value) );
-			
-			//RFC 3320 - 7.2.  Accessing Stored State (Useful values)
-			TCOMP_UDVM_SET_2BYTES_VAL(TCOMP_UDVM_HEADER_PARTIAL_STATE_ID_LENGTH_INDEX, tcomp_buffer_getSize(udvm->sigCompMessage->stateId));
-			TCOMP_UDVM_SET_2BYTES_VAL(TCOMP_UDVM_HEADER_STATE_LENGTH_INDEX, tcomp_buffer_getSize(lpState->value));
-			
-			udvm->executionPointer = lpState->instruction;
-		}
-		else // DON'T HAVE STATE
-		{
-			/*
-			* Copy bytecodes to UDVM memory
-			*/
-			tsk_size_t bytecodes_destination = udvm->sigCompMessage->bytecodes_destination;
-			if( (bytecodes_destination + tcomp_buffer_getSize(udvm->sigCompMessage->uploaded_UDVM_buffer)) >= TCOMP_UDVM_GET_SIZE() ){
-				tcomp_udvm_createNackInfo2(udvm, NACK_BYTECODES_TOO_LARGE);
-				udvm->isOK = tsk_false;
-				return self;
-			}
-			memcpy( TCOMP_UDVM_GET_BUFFER_AT(bytecodes_destination),
-				tcomp_buffer_getBuffer(udvm->sigCompMessage->uploaded_UDVM_buffer),
-				tcomp_buffer_getSize(udvm->sigCompMessage->uploaded_UDVM_buffer));
-
-			// Set pointer indicating execution index
-			udvm->executionPointer = bytecodes_destination;
-		}
-
-		/* RFC 3320-Section_8.6.  UDVM Cycles
-		*
-		* To ensure that a SigComp message cannot consume excessive processing
-		* resources, SigComp limits the number of "UDVM cycles" allocated to
-		* each message.  The number of available UDVM cycles is initialized to
-		* 1000 plus the number of bits in the SigComp header (as described in
-		* Section 7); this sum is then multiplied by cycles_per_bit.
-		*/
-		/*maximum_UDVM_cycles = (8 * n + 1000) * cycles_per_bit*///FIXME:header_size
-		udvm->maximum_UDVM_cycles = ( (8 * udvm->sigCompMessage->header_size + 1000)* udvm->stateHandler->sigcomp_parameters->cpbValue );
-		
-		//
-		//	RFC 3320 - 7.2.  Useful values
-		//
-		TCOMP_UDVM_SET_2BYTES_VAL(TCOMP_UDVM_HEADER_UDVM_MEMORY_SIZE_INDEX, TCOMP_UDVM_GET_SIZE());
-		TCOMP_UDVM_SET_2BYTES_VAL(TCOMP_UDVM_HEADER_CYCLES_PER_BIT_INDEX, udvm->stateHandler->sigcomp_parameters->cpbValue);
-		TCOMP_UDVM_SET_2BYTES_VAL(TCOMP_UDVM_HEADER_SIGCOMP_VERSION_INDEX, udvm->stateHandler->sigcomp_parameters->SigComp_version);
-		memset(TCOMP_UDVM_GET_BUFFER_AT(TCOMP_UDVM_HEADER_RESERVED_INDEX), 0, TCOMP_UDVM_HEADER_RESERVED_SIZE);
 	}
-	else{
-		TSK_DEBUG_ERROR("Failed to create new udvm machine.");
-	}
-	
 	return self;
 }
 
@@ -532,6 +538,9 @@ static tsk_object_t* tcomp_udvm_dtor(tsk_object_t *self)
 	tcomp_udvm_t *udvm = self;
 	if(udvm){
 		TSK_OBJECT_SAFE_FREE(udvm->memory);
+		TSK_OBJECT_SAFE_FREE(udvm->sigCompMessage);
+		TSK_OBJECT_SAFE_FREE(udvm->stateHandler);
+		TSK_OBJECT_SAFE_FREE(udvm->lpResult);
 	}
 	else{
 		TSK_DEBUG_ERROR("Null udvm machine.");

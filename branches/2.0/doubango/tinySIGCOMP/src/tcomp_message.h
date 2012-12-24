@@ -56,7 +56,7 @@ typedef struct tcomp_message_s
 	
 	tcomp_buffer_handle_t* stateId; /**< */
 	
-	uint16_t bytecodes_destination; /**< */
+	uint32_t bytecodes_destination; /**< */
 	tcomp_buffer_handle_t* remaining_sigcomp_buffer; /**< */
 	tcomp_buffer_handle_t* uploaded_UDVM_buffer; /**< */
 	tcomp_buffer_handle_t* ret_feedback_buffer; /**< */

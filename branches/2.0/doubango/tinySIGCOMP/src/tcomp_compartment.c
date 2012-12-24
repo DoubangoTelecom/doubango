@@ -36,9 +36,47 @@
 
 #include <assert.h>
 
-tcomp_compartment_t* tcomp_compartment_create(uint64_t id, uint16_t sigCompParameters)
+tcomp_compartment_t* tcomp_compartment_create(uint64_t id, uint32_t sigCompParameters)
 {
-	return tsk_object_new(tcomp_compartment_def_t, id, sigCompParameters);
+	tcomp_compartment_t *compartment;
+	if((compartment = tsk_object_new(tcomp_compartment_def_t))){
+		
+
+		/*
+		  +---+---+---+---+---+---+---+---+
+		  |  cpb  |    dms    |    sms    |
+		  +---+---+---+---+---+---+---+---+
+		  |        SigComp_version        |
+		  +---+---+---+---+---+---+---+---+
+		*/
+
+		// I always assume that remote params are equal to local params
+
+		/* Identifier */
+		compartment->identifier = id;
+
+		/* Remote parameters */
+		compartment->remote_parameters = tcomp_params_create();
+		tcomp_params_setParameters(compartment->remote_parameters, sigCompParameters);
+
+		/* Local parameters */
+		compartment->local_parameters = tcomp_params_create();
+		tcomp_params_setParameters(compartment->local_parameters, sigCompParameters);
+
+		/* Total size */
+		compartment->total_memory_size = compartment->total_memory_left = compartment->local_parameters->smsValue;
+
+		/* Empty list. */
+		compartment->nacks = tsk_list_create();
+		
+		/* Empty list. */
+		compartment->local_states = tsk_list_create();
+	}
+	else{
+		TSK_DEBUG_ERROR("Null Compartment");
+	}
+
+	return compartment;
 }
 
 /**Sets remote parameters
@@ -171,12 +209,6 @@ void tcomp_compartment_freeStateByPriority(tcomp_compartment_t *compartment)
 		if(!curr){
 			continue;
 		}
-
-		/* First --> always ok */
-		if(item == compartment->local_states->head){
-			lpState = curr;
-			continue;
-		}
 		
 		/* Local state ? */
 		if(curr->retention_priority == 65535){
@@ -185,7 +217,7 @@ void tcomp_compartment_freeStateByPriority(tcomp_compartment_t *compartment)
 		}
 
 		/* Lower priority? */
-		if(curr->retention_priority < lpState->retention_priority){
+		if(!lpState || curr->retention_priority < lpState->retention_priority){
 			lpState = curr;
 			continue;
 		}
@@ -212,8 +244,7 @@ void tcomp_compartment_freeState(tcomp_compartment_t *compartment, tcomp_state_t
 
 	compartment->total_memory_left += TCOMP_GET_STATE_SIZE(*lpState);
 	tsk_list_remove_item_by_data(compartment->local_states, *lpState);
-	*lpState = 0;
-	TSK_DEBUG_INFO("SigComp - Free state.");
+	*lpState = tsk_null;
 
 	tsk_safeobj_unlock(compartment);
 }
@@ -283,9 +314,10 @@ void tcomp_compartment_addState(tcomp_compartment_t *compartment, tcomp_state_t 
 
 	tcomp_state_makeValid(*lpState);
 	compartment->total_memory_left -= TCOMP_GET_STATE_SIZE(*lpState);
+	TSK_DEBUG_INFO("SigComp - Add new state with id=");
+	tcomp_buffer_print((*lpState)->identifier);
 	tsk_list_push_back_data(compartment->local_states, ((void**) lpState));
 	
-	TSK_DEBUG_INFO("SigComp - Add new state.");
 	*lpState = tsk_null;
 
 	tsk_safeobj_unlock(compartment);
@@ -293,9 +325,9 @@ void tcomp_compartment_addState(tcomp_compartment_t *compartment, tcomp_state_t 
 
 /**Finds a state.
 */
-uint16_t tcomp_compartment_findState(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t **lpState)
+uint32_t tcomp_compartment_findState(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t **lpState)
 {
-	uint16_t count = 0;
+	uint32_t count = 0;
 	tsk_list_item_t *item;
 
 	if(!compartment){
@@ -427,48 +459,8 @@ static tsk_object_t* tcomp_compartment_ctor(tsk_object_t* self, va_list * app)
 {
 	tcomp_compartment_t *compartment = self;
 	if(compartment){
-		uint64_t id = va_arg(*app, uint64_t);
-#if defined (__GNUC__)
-		uint16_t sigCompParameters = (uint16_t)va_arg(*app, unsigned);
-#else
-		uint16_t sigCompParameters = va_arg(*app, uint16_t);
-#endif
-
 		/* Initialize safeobject */
 		tsk_safeobj_init(compartment);
-
-		/*
-		  +---+---+---+---+---+---+---+---+
-		  |  cpb  |    dms    |    sms    |
-		  +---+---+---+---+---+---+---+---+
-		  |        SigComp_version        |
-		  +---+---+---+---+---+---+---+---+
-		*/
-
-		// I always assume that remote params are equal to local params
-
-		/* Identifier */
-		compartment->identifier = id;
-
-		/* Remote parameters */
-		compartment->remote_parameters = tcomp_params_create();
-		tcomp_params_setParameters(compartment->remote_parameters, sigCompParameters);
-
-		/* Local parameters */
-		compartment->local_parameters = tcomp_params_create();
-		tcomp_params_setParameters(compartment->local_parameters, sigCompParameters);
-
-		/* Total size */
-		compartment->total_memory_size = compartment->total_memory_left = compartment->local_parameters->smsValue;
-
-		/* Empty list. */
-		compartment->nacks = tsk_list_create();
-		
-		/* Empty list. */
-		compartment->local_states = tsk_list_create();
-	}
-	else{
-		TSK_DEBUG_ERROR("Null Compartment");
 	}
 
 	return self;

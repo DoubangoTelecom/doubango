@@ -55,6 +55,7 @@
 	udvm->consumed_cycles += (uint64_t)(cycles);					\
 	if( udvm->consumed_cycles > udvm->maximum_UDVM_cycles )			\
 	{																\
+		TSK_DEBUG_INFO("NACK_CYCLES_EXHAUSTED");					\
 		tcomp_udvm_createNackInfo2(udvm, NACK_CYCLES_EXHAUSTED);	\
 		return tsk_false;													\
 	}
@@ -64,8 +65,8 @@
 */
 typedef struct IndexValuePair_s
 {
-	uint16_t index;
-	uint16_t value;
+	uint32_t index;
+	uint32_t value;
 }
 IndexValuePair_t;
 
@@ -147,7 +148,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE(tcomp_udvm_t *udvm)
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tsk_bool_t TCOMP_UDVM_EXEC_INST__AND(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__AND(tcomp_udvm_t *udvm, uint32_t operand_1, uint32_t operand_2)
 {
 	CONSUME_CYCLES(1);
 	
@@ -172,7 +173,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__AND(tcomp_udvm_t *udvm, uint16_t operand_1, uin
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tsk_bool_t TCOMP_UDVM_EXEC_INST__OR(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__OR(tcomp_udvm_t *udvm, uint32_t operand_1, uint32_t operand_2)
 {
 	CONSUME_CYCLES(1);
 
@@ -196,7 +197,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__OR(tcomp_udvm_t *udvm, uint16_t operand_1, uint
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tsk_bool_t TCOMP_UDVM_EXEC_INST__NOT(tcomp_udvm_t *udvm, uint16_t operand_1)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__NOT(tcomp_udvm_t *udvm, uint32_t operand_1)
 {
 	CONSUME_CYCLES(1);
 
@@ -221,7 +222,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__NOT(tcomp_udvm_t *udvm, uint16_t operand_1)
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tsk_bool_t TCOMP_UDVM_EXEC_INST__LSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__LSHIFT(tcomp_udvm_t *udvm, uint32_t operand_1, uint32_t operand_2)
 {
 	CONSUME_CYCLES(1);
 
@@ -248,7 +249,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__LSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, 
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tsk_bool_t TCOMP_UDVM_EXEC_INST__RSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__RSHIFT(tcomp_udvm_t *udvm, uint32_t operand_1, uint32_t operand_2)
 {
 	CONSUME_CYCLES(1);
 	
@@ -274,7 +275,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__RSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, 
 ///
 /// @retval	True if succeed, otherwise return false.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__ADD(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__ADD(tcomp_udvm_t *udvm, uint32_t operand_1, uint32_t operand_2)
 {
 	CONSUME_CYCLES(1);
 
@@ -298,7 +299,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__ADD(tcomp_udvm_t *udvm, uint16_t operand_1, uin
 ///
 /// @retval	1 if succeed, otherwise returns 0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__SUBTRACT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SUBTRACT(tcomp_udvm_t *udvm, uint32_t operand_1, uint32_t operand_2)
 {
 	CONSUME_CYCLES(1);
 	
@@ -322,7 +323,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__SUBTRACT(tcomp_udvm_t *udvm, uint16_t operand_1
 ///
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__MULTIPLY(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__MULTIPLY(tcomp_udvm_t *udvm, uint32_t operand_1, uint32_t operand_2)
 {
 	CONSUME_CYCLES(1);
 	
@@ -347,7 +348,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__MULTIPLY(tcomp_udvm_t *udvm, uint16_t operand_1
 ///
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__DIVIDE(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__DIVIDE(tcomp_udvm_t *udvm, uint32_t operand_1, uint32_t operand_2)
 {
 	CONSUME_CYCLES(1);
 
@@ -377,7 +378,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__DIVIDE(tcomp_udvm_t *udvm, uint16_t operand_1, 
 ///
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__REMAINDER(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__REMAINDER(tcomp_udvm_t *udvm, uint32_t operand_1, uint32_t operand_2)
 {
 	CONSUME_CYCLES(1);
 
@@ -407,13 +408,13 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__REMAINDER(tcomp_udvm_t *udvm, uint16_t operand_
 ///
 /// @retval	True if succeed, otherwise return false.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(tcomp_udvm_t *udvm, uint32_t start, uint32_t n, uint32_t k)
 {
 	int segfault = 0;
-	uint16_t* list_temp = 0;
+	uint32_t* list_temp = 0;
 	IndexValuePair_t *list1_values = 0;
-	uint16_t list_index, list_el;
-	int j, pos;
+	uint32_t list_index, list_el;
+	uint32_t j, pos;
 	
 	CONSUME_CYCLES(( 1 + k *(CEILLINGLOG2(k) + n) )); /* 1 + k * (ceiling(log2(k)) + n) */
 
@@ -429,7 +430,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(tcomp_udvm_t *udvm, uint16_t sta
 	if(!list1_values) { segfault = 1; goto __SEGFAULT; };
 	for(j=0, pos=0; pos<k; j+=2,pos++){
 		list1_values[pos].index = pos;
-		list1_values[pos].value = *((uint16_t*)TCOMP_UDVM_GET_BUFFER_AT(start+j));
+		list1_values[pos].value = *((uint32_t*)TCOMP_UDVM_GET_BUFFER_AT(start+j));
 	}
 
 	/*
@@ -438,10 +439,10 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(tcomp_udvm_t *udvm, uint16_t sta
 	qsort(list1_values, k, sizeof(IndexValuePair_t), SortAscendingPredicate); 
 
 	/* Sort all lists */
-	list_temp = tsk_calloc(k, sizeof(uint16_t));
+	list_temp = tsk_calloc(k, sizeof(uint32_t));
 	if(!list1_values) { segfault = 1; goto __SEGFAULT; };
 	for(list_index = 0; list_index < n; list_index++){
-		uint16_t* list_start = (uint16_t*)TCOMP_UDVM_GET_BUFFER_AT( start + (list_index*k*2) );
+		uint32_t* list_start = (uint32_t*)TCOMP_UDVM_GET_BUFFER_AT( start + (list_index*k*2) );
 		memcpy(list_temp, list_start, k*2);
 		for(list_el=0; list_el<k; list_el++){
 			list_start[(list_el)] = list_temp[ list1_values[list_el].index ];
@@ -476,13 +477,13 @@ __SEGFAULT:
 ///
 /// @retval	True if succeed, otherwise return false.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(tcomp_udvm_t *udvm, uint32_t start, uint32_t n, uint32_t k)
 {
 	int segfault = 0;
-	uint16_t* list_temp = 0;
+	uint32_t* list_temp = 0;
 	IndexValuePair_t *list1_values = 0;
-	uint16_t list_index, list_el;
-	int j, pos;
+	uint32_t list_index, list_el;
+	uint32_t j, pos;
 	
 	CONSUME_CYCLES(( 1 + k *(CEILLINGLOG2(k) + n) )); /* 1 + k * (ceiling(log2(k)) + n) */
 
@@ -495,7 +496,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(tcomp_udvm_t *udvm, uint16_t st
 	if(!list1_values) { segfault = 1; goto __SEGFAULT; };
 	for(j=0, pos=0; pos<k; j+=2,pos++){
 		list1_values[pos].index = pos;
-		list1_values[pos].value = *((uint16_t*)TCOMP_UDVM_GET_BUFFER_AT(start+j));
+		list1_values[pos].value = *((uint32_t*)TCOMP_UDVM_GET_BUFFER_AT(start+j));
 	}
 
 	/*
@@ -505,10 +506,10 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(tcomp_udvm_t *udvm, uint16_t st
 	
 
 	/* Sort all lists. */
-	list_temp = tsk_calloc(k, sizeof(uint16_t));
+	list_temp = tsk_calloc(k, sizeof(uint32_t));
 	if(!list1_values) { segfault = 1; goto __SEGFAULT; };
 	for(list_index = 0; list_index < n; list_index++){
-		uint16_t* list_start = (uint16_t*)TCOMP_UDVM_GET_BUFFER_AT(start + (list_index*k*2));
+		uint32_t* list_start = (uint32_t*)TCOMP_UDVM_GET_BUFFER_AT(start + (list_index*k*2));
 		memcpy(list_temp, list_start, k*2);
 		for(list_el=0; list_el<k; list_el++){
 			list_start[(list_el)] = list_temp[ list1_values[list_el].index ];
@@ -541,7 +542,7 @@ __SEGFAULT:
 ///
 /// @retval	True if succeed, otherwise return false.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint32_t position, uint32_t length, uint32_t destination)
 {
 	tsk_bool_t ok = tsk_true;
 	uint8_t *data = 0;
@@ -611,7 +612,7 @@ bail:
 ///
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__LOAD(tcomp_udvm_t *udvm, uint16_t address, uint16_t value)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__LOAD(tcomp_udvm_t *udvm, uint32_t address, uint32_t value)
 {
 	CONSUME_CYCLES(1);
 
@@ -640,9 +641,9 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__LOAD(tcomp_udvm_t *udvm, uint16_t address, uint
 ///
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__MULTILOAD(tcomp_udvm_t *udvm, uint16_t address, uint16_t n)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__MULTILOAD(tcomp_udvm_t *udvm, uint32_t address, uint32_t n)
 {
-	uint16_t index, _address;
+	uint32_t index, _address;
 
 	CONSUME_CYCLES(1+n);
 
@@ -653,7 +654,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__MULTILOAD(tcomp_udvm_t *udvm, uint16_t address,
 
 	/* FIXME: check for overwritten ==> see Torture test "2.5.  LOAD and MULTILOAD" */
 	for(index = 0, _address = address; index < n; index++ , _address += 2){
-		uint16_t value_n = tcomp_udvm_opget_multitype_param(udvm);
+		uint32_t value_n = tcomp_udvm_opget_multitype_param(udvm);
 		TCOMP_UDVM_SET_2BYTES_VAL(_address, value_n);
 	}
 
@@ -678,7 +679,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__MULTILOAD(tcomp_udvm_t *udvm, uint16_t address,
 tsk_bool_t TCOMP_UDVM_EXEC_INST__PUSH(tcomp_udvm_t *udvm, int16_t value)
 {
 	tsk_bool_t callback = (value>=0);
-	uint16_t stack_location, stack_fill;
+	uint32_t stack_location, stack_fill;
 	if(!callback){
 		value = tcomp_udvm_opget_multitype_param(udvm);
 	}
@@ -712,10 +713,10 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__PUSH(tcomp_udvm_t *udvm, int16_t value)
 ///
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__POP(tcomp_udvm_t *udvm, uint16_t* value)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__POP(tcomp_udvm_t *udvm, uint32_t* value)
 {
-	uint16_t address;
-	uint16_t stack_location, stack_fill, _value = 0;
+	uint32_t address;
+	uint32_t stack_location, stack_fill, _value = 0;
 
 	tsk_bool_t callback = (value != 0);
 
@@ -771,7 +772,7 @@ end:
 ///
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY(tcomp_udvm_t *udvm, uint32_t position, uint32_t length, uint32_t destination)
 {
 	tsk_bool_t ok = tsk_true;
 
@@ -807,10 +808,10 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY(tcomp_udvm_t *udvm, uint16_t position, uin
 ///
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY_LITERAL(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY_LITERAL(tcomp_udvm_t *udvm, uint32_t position, uint32_t length, uint32_t destination)
 {
 	tsk_bool_t ok;
-	uint16_t destination_index;
+	uint32_t destination_index;
 	
 	CONSUME_CYCLES(1+length);
 	
@@ -839,14 +840,14 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY_LITERAL(tcomp_udvm_t *udvm, uint16_t posit
 ///
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY_OFFSET(tcomp_udvm_t *udvm, uint16_t offset, uint16_t length, uint16_t destination)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY_OFFSET(tcomp_udvm_t *udvm, uint32_t offset, uint32_t length, uint32_t destination)
 {
-	uint16_t DEST, LEFT, RIGTH;
+	uint32_t DEST, LEFT, RIGTH;
 	int32_t position = -1;
-	uint16_t destination_index;
+	uint32_t destination_index;
 
-	int16_t D, T;
-	uint16_t O;
+	int32_t D, T;
+	int32_t O;
 
 	CONSUME_CYCLES(1+length);
 
@@ -931,10 +932,10 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY_OFFSET(tcomp_udvm_t *udvm, uint16_t offset
 ///
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__MEMSET(tcomp_udvm_t *udvm, uint16_t address, uint16_t length, uint16_t start_value, uint16_t offset)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__MEMSET(tcomp_udvm_t *udvm, uint32_t address, uint32_t length, uint32_t start_value, uint32_t offset)
 {
 	uint8_t* seqs_temp;
-	uint16_t n;
+	uint32_t n;
 	tsk_bool_t ok;
 
 	CONSUME_CYCLES(1+length);
@@ -1014,7 +1015,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__JUMP(tcomp_udvm_t *udvm, int16_t address)
  * @param	address_3		address to jump to if (value_1 > value_2). 
  * @retval	1	if succeed, otherwise returns 0.
 **/
-tsk_bool_t TCOMP_UDVM_EXEC_INST__COMPARE(tcomp_udvm_t *udvm, uint16_t value_1, uint16_t value_2, uint16_t address_1, uint16_t address_2, uint16_t address_3)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__COMPARE(tcomp_udvm_t *udvm, uint32_t value_1, uint32_t value_2, uint32_t address_1, uint32_t address_2, uint32_t address_3)
 {
 	tsk_bool_t ok = 1;
 
@@ -1053,7 +1054,7 @@ end:
 ///
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__CALL(tcomp_udvm_t *udvm, uint16_t address)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__CALL(tcomp_udvm_t *udvm, uint32_t address)
 {
 	CONSUME_CYCLES(1);
 	
@@ -1075,7 +1076,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__CALL(tcomp_udvm_t *udvm, uint16_t address)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 tsk_bool_t TCOMP_UDVM_EXEC_INST__RETURN(tcomp_udvm_t *udvm)
 {
-	uint16_t value = 0;
+	uint32_t value = 0;
 	tsk_bool_t ok = tsk_true;
 
 	CONSUME_CYCLES(1);	
@@ -1102,9 +1103,9 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__RETURN(tcomp_udvm_t *udvm)
 ///
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__SWITCH(tcomp_udvm_t *udvm, uint16_t n, uint16_t j)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SWITCH(tcomp_udvm_t *udvm, uint32_t n, uint32_t j)
 {
-	uint16_t next = 0;
+	uint32_t next = 0;
 	tsk_bool_t ok = tsk_true;
 
 	CONSUME_CYCLES(1+n);
@@ -1145,11 +1146,11 @@ end:
 ///
 /// @retval	True if succeed, otherwise return false.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__CRC(tcomp_udvm_t *udvm, uint16_t value, uint16_t position, uint16_t length, uint16_t address)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__CRC(tcomp_udvm_t *udvm, uint32_t value, uint32_t position, uint32_t length, uint32_t address)
 {
 	tsk_bool_t ok = tsk_true;
 	uint8_t* data;
-	uint16_t crc_value;
+	uint32_t crc_value;
 
 	CONSUME_CYCLES(1+length);
 
@@ -1198,7 +1199,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__CRC(tcomp_udvm_t *udvm, uint16_t value, uint16_
 ///
 /// @retval	True if succeed, otherwise return false.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_BYTES(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_BYTES(tcomp_udvm_t *udvm, uint32_t length, uint32_t destination, uint32_t address)
 {
 	tsk_bool_t ok = tsk_true;
 	const uint8_t* compressedDataAddress;
@@ -1257,10 +1258,10 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_BYTES(tcomp_udvm_t *udvm, uint16_t length
  *
  * @retval	1 if succeed, otherwise returns 0. 
 **/
-tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint32_t length, uint32_t destination, uint32_t address)
 {
 	tsk_bool_t ok = tsk_true;
-	uint16_t input_bit_order, reserved;
+	uint32_t input_bit_order, reserved;
 	uint8_t F_BIT, P_BIT;
 	uint8_t* old_P_BIT;
 
@@ -1335,7 +1336,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint16_t length,
 	*/
 	if(P_BIT == TCOMP_P_BIT_MSB_TO_LSB){
 		/* MSB_TO_LSB */
-		uint16_t value = tcomp_buffer_readMsbToLsb(udvm->sigCompMessage->remaining_sigcomp_buffer, length);
+		uint32_t value = tcomp_buffer_readMsbToLsb(udvm->sigCompMessage->remaining_sigcomp_buffer, length);
 		if(F_BIT == F_BIT_LSB_TO_MSB){
 			value = (TSK_BINARY_REVERSE_2BYTE(value)>>(16-length));
 		}
@@ -1343,7 +1344,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint16_t length,
 	}
 	else{
 		/* LSB_TO_MSB */
-		uint16_t value = tcomp_buffer_readLsbToMsb(udvm->sigCompMessage->remaining_sigcomp_buffer, length);
+		uint32_t value = tcomp_buffer_readLsbToMsb(udvm->sigCompMessage->remaining_sigcomp_buffer, length);
 		if(F_BIT == F_BIT_LSB_TO_MSB) {
 			value = (TSK_BINARY_REVERSE_2BYTE(value)>>(16-length));
 		}
@@ -1373,7 +1374,7 @@ end:
 ///
 /// @retval	 True if succeed, otherwise return false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t destination, uint16_t address, uint16_t n)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint32_t destination, uint32_t address, uint32_t n)
 {
 	/* 
 	The input_bit_order register contains the following three flags:
@@ -1383,11 +1384,11 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t dest
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	*/
 	tsk_bool_t ok = tsk_true;
-	uint16_t input_bit_order, reserved;
+	uint32_t input_bit_order, reserved;
 	uint8_t H_BIT, P_BIT, *old_P_BIT;
 
-	uint16_t bits_j, lower_bound_j, upper_bound_j, uncompressed_j;
-	uint16_t bits_total = 0, k = 0, H, J;
+	uint32_t bits_j, lower_bound_j, upper_bound_j, uncompressed_j;
+	uint32_t bits_total = 0, k = 0, H, J;
 	tsk_bool_t criterion_ok = tsk_false;
 
 	CONSUME_CYCLES(1+n);
@@ -1490,7 +1491,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t dest
 		}
 //==step_3:
 		/* 3. Set H := H * 2^bits_j + k */
-		H = H * (uint16_t)pow(2.0, bits_j) + k;
+		H = H * (uint32_t)pow(2.0, bits_j) + k;
 
 //==step_5:
 		/*
@@ -1542,11 +1543,11 @@ end:
 ///
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length, uint16_t state_begin, uint16_t state_length, uint16_t state_address, uint16_t state_instruction)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint32_t partial_identifier_start, uint32_t partial_identifier_length, uint32_t state_begin, uint32_t state_length, uint32_t state_address, uint32_t state_instruction)
 {
 	tcomp_state_t* lpState = NULL;
 	tcomp_buffer_handle_t* partial_id;
-	uint16_t match_count;
+	uint32_t match_count;
 
 	/*
 	* Decompression failure occurs if partial_identifier_length does not
@@ -1653,7 +1654,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t parti
 ///
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_CREATE(tcomp_udvm_t *udvm, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_CREATE(tcomp_udvm_t *udvm, uint32_t state_length, uint32_t state_address, uint32_t state_instruction, uint32_t minimum_access_length, uint32_t state_retention_priority)
 {
 	CONSUME_CYCLES(1 + state_length);
 
@@ -1681,7 +1682,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_CREATE(tcomp_udvm_t *udvm, uint16_t state
 ///
 /// @retval	True if succeed, otherwise return false . 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint32_t partial_identifier_start, uint32_t partial_identifier_length)
 {
 	tcomp_tempstate_to_free_t *lpDesc;
 
@@ -1724,7 +1725,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint16_t partial
 * @param output_length defines the length of the byte string to be provided to the dispatcher
 * @retval 1 if succeed, otherwise returns 0
 */
-tsk_bool_t TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint16_t output_start, uint16_t output_length)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint32_t output_start, uint32_t output_length)
 {
 	tsk_bool_t ok;
 	tsk_size_t *outputbuffer_size;
@@ -1771,7 +1772,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint16_t output_star
 /// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tsk_bool_t TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_feedback_location, uint16_t returned_parameters_location, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint32_t requested_feedback_location, uint32_t returned_parameters_location, uint32_t state_length, uint32_t state_address, uint32_t state_instruction, uint32_t minimum_access_length, uint32_t state_retention_priority)
 {
 	tsk_size_t udvm_size;
 
@@ -1845,7 +1846,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t reques
 	//
 	if(returned_parameters_location){
 		uint8_t r_p_l, SigComp_version;
-		uint16_t index;
+		uint32_t index;
 		tcomp_buffer_handle_t *partial_id;
 
 		/*
@@ -1897,7 +1898,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t reques
 				break;
 			}
 			index++;
-			if((index+length) >= (uint16_t)udvm_size){
+			if((index+length) >= (uint32_t)udvm_size){
 				tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 				return tsk_false;
 			}

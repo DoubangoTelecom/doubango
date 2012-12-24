@@ -107,7 +107,7 @@ static const char* DeflateData_deflate_bytecode1_ghost =
 
 /**Creates a Ghost state.
 */
-void tcomp_deflatedata_createGhost(tcomp_deflatedata_t *deflatedata, uint16_t state_length, tcomp_params_t *params)
+void tcomp_deflatedata_createGhost(tcomp_deflatedata_t *deflatedata, uint32_t state_length, tcomp_params_t *params)
 {
 	uint8_t *ghostvalue_ptr = 0;
 #define GHOSTVALUE_AT(position) (ghostvalue_ptr + position)
@@ -190,6 +190,8 @@ void tcomp_deflatedata_ackGhost(tcomp_compressordata_t *data, const tcomp_buffer
 			tcomp_deflateStream_copy(&(deflatedata->stream_acked), &(deflatedata->stream_1));
 			deflatedata->stream_acked.stateful = 1;
 			deflatedata->stream_acked.dataWaitingAck = 0;
+			TSK_DEBUG_INFO("SigComp - ACKed State id=");
+			tcomp_buffer_print(stateid);
 		}
 	}
 #endif
@@ -235,10 +237,13 @@ void tcomp_deflatedata_updateGhost(tcomp_deflatedata_t *deflatedata, const uint8
 	
 	/* Compute State Identifier (20 bytes) */
 	tcomp_state_makeValid(deflatedata->ghostState);
-	
-	/*printf("GHOST\n");
-	tcomp_buffer_nprint(deflatedata->ghostState->value);
-	tcomp_buffer_nprint(deflatedata->ghostState->identifier);*/
+	// new state identifer not acked yet 
+#if USE_ONLY_ACKED_STATES
+	deflatedata->stream_acked.stateful = 0;
+	deflatedata->stream_acked.dataWaitingAck = 1;
+#endif
+	TSK_DEBUG_INFO("SigComp - Making Ghost state valid with id = ");
+	tcomp_buffer_print(deflatedata->ghostState->identifier);
 	
 	tsk_safeobj_unlock(deflatedata);
 

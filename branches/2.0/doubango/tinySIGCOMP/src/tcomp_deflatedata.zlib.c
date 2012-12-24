@@ -146,7 +146,7 @@ tsk_bool_t tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const v
 		updateGhost([1])
 */
 	if(!deflatedata){
-		TSK_DEBUG_ERROR("NULL defalte data.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_false;
 	}
 
@@ -198,7 +198,7 @@ tsk_bool_t tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const v
 int tcomp_deflatedata_zGetWindowBits(tcomp_deflatedata_t *deflatedata)
 {
 	if(!deflatedata){
-		TSK_DEBUG_ERROR("NULL defalte data.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 
@@ -208,9 +208,10 @@ int tcomp_deflatedata_zGetWindowBits(tcomp_deflatedata_t *deflatedata)
 void tcomp_deflatedata_zSetWindowBits(tcomp_deflatedata_t *deflatedata, int windowSize)
 {
 	if(!deflatedata){
-		TSK_DEBUG_ERROR("NULL defalte data.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return;
 	}
 
 	deflatedata->zWindowBits = windowSize;
 }
+

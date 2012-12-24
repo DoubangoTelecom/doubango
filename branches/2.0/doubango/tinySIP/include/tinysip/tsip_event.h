@@ -56,26 +56,28 @@ tsip_event_type_t;
 /* SIP codes associated to an internal event */
 // 100-699 are reserved codes
 
-// 7xx ==> errors
+// 7xx ==> errors @tinyWRAP
 #define tsip_event_code_dialog_transport_error		702
 #define tsip_event_code_dialog_global_error			703
 #define tsip_event_code_dialog_message_error		704
 
-// 8xx ==> success
+// 8xx ==> success @tinyWRAP
 #define tsip_event_code_dialog_request_incoming		800
 #define tsip_event_code_dialog_request_outgoing		802
 #define tsip_event_code_dialog_request_cancelled	803
 #define tsip_event_code_dialog_request_sent			804
 
-// 9xx ==> Informational
+// 9xx ==> Informational @tinyWRAP
 #define tsip_event_code_dialog_connecting			900
 #define tsip_event_code_dialog_connected			901
 #define tsip_event_code_dialog_terminating			902
 #define tsip_event_code_dialog_terminated			903
-#define tsip_event_code_stack_started				950
-#define tsip_event_code_stack_stopped				951
-#define tsip_event_code_stack_failed_to_start		952
-#define tsip_event_code_stack_failed_to_stop		953
+#define tsip_event_code_stack_starting				950
+#define tsip_event_code_stack_started				951
+#define tsip_event_code_stack_stopping				952
+#define tsip_event_code_stack_stopped				953
+#define tsip_event_code_stack_failed_to_start		954
+#define tsip_event_code_stack_failed_to_stop		955
 
 
 typedef struct tsip_event_s

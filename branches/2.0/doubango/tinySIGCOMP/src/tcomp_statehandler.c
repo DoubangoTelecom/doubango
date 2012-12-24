@@ -117,9 +117,9 @@ tsk_bool_t tcomp_statehandler_compartmentExist(tcomp_statehandler_t *statehandle
 }
 
 
-uint16_t tcomp_statehandler_findState(tcomp_statehandler_t *statehandler, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t** lpState)
+uint32_t tcomp_statehandler_findState(tcomp_statehandler_t *statehandler, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t** lpState)
 {
-	uint16_t count = 0;
+	uint32_t count = 0;
 	tsk_list_item_t *item;
 
 	if(!statehandler){
@@ -160,7 +160,7 @@ bail:
 void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_result_t **lpResult)
 {
 	tcomp_compartment_t *lpCompartment;
-	uint16_t compartment_total_size;
+	uint32_t compartment_total_size;
 	uint8_t i;
 
 	if(!statehandler){
