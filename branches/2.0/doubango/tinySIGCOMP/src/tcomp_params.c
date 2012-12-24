@@ -187,7 +187,7 @@ int tcomp_params_setSmsValue(tcomp_params_t* params, uint32_t smsValue)
 * @retval CPB||DMS||SMS as 2-bytes value.
 * @sa @ref tcomp_params_setParameters
 */
-uint16_t tcomp_params_getParameters(tcomp_params_t* params)
+uint32_t tcomp_params_getParameters(tcomp_params_t* params)
 {
 	if(params){
 		/*
@@ -197,7 +197,7 @@ uint16_t tcomp_params_getParameters(tcomp_params_t* params)
 		|        SigComp_version        |
 		+---+---+---+---+---+---+---+---+
 		*/
-		uint16_t result = ((params->cpbCode<<6)|(params->dmsCode<<3)|params->smsCode);
+		uint32_t result = ((params->cpbCode<<6)|(params->dmsCode<<3)|params->smsCode);
 		result <<=8;
 		return (result | params->SigComp_version);
 	}
@@ -214,7 +214,7 @@ uint16_t tcomp_params_getParameters(tcomp_params_t* params)
 * @param sigCompParameters New values as 2-bytes value.
 * @sa @ref tcomp_params_getParameters.
 */
-void tcomp_params_setParameters(tcomp_params_t* params, uint16_t sigCompParameters)
+void tcomp_params_setParameters(tcomp_params_t* params, uint32_t sigCompParameters)
 {
 	if(params){
 		/*

@@ -71,7 +71,7 @@ tsk_bool_t tcomp_decompressordisp_getNextMessage(tcomp_decompressordisp_t *dispa
 
 tsk_bool_t tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, const tsk_size_t input_size, tcomp_result_t **lpResult);
 tsk_bool_t tcomp_decompressordisp_appendStream(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, tsk_size_t input_size, uint64_t streamId);
-tsk_bool_t tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, tsk_size_t *size);
+tsk_bool_t tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint32_t *discard_count, tsk_size_t *size);
 
 TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_stream_buffer_def_t;
 TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_decompressordisp_def_t;

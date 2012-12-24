@@ -26477,10 +26477,12 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_connected",SWIG_From_int(static_cast< int >(901)));
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_terminating",SWIG_From_int(static_cast< int >(902)));
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_terminated",SWIG_From_int(static_cast< int >(903)));
-  SWIG_Python_SetConstant(d, "tsip_event_code_stack_started",SWIG_From_int(static_cast< int >(950)));
-  SWIG_Python_SetConstant(d, "tsip_event_code_stack_stopped",SWIG_From_int(static_cast< int >(951)));
-  SWIG_Python_SetConstant(d, "tsip_event_code_stack_failed_to_start",SWIG_From_int(static_cast< int >(952)));
-  SWIG_Python_SetConstant(d, "tsip_event_code_stack_failed_to_stop",SWIG_From_int(static_cast< int >(953)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_stack_starting",SWIG_From_int(static_cast< int >(950)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_stack_started",SWIG_From_int(static_cast< int >(951)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_stack_stopping",SWIG_From_int(static_cast< int >(952)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_stack_stopped",SWIG_From_int(static_cast< int >(953)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_stack_failed_to_start",SWIG_From_int(static_cast< int >(954)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_stack_failed_to_stop",SWIG_From_int(static_cast< int >(955)));
   SWIG_Python_SetConstant(d, "tsip_i_newreg",SWIG_From_int(static_cast< int >(tsip_i_newreg)));
   SWIG_Python_SetConstant(d, "tsip_i_register",SWIG_From_int(static_cast< int >(tsip_i_register)));
   SWIG_Python_SetConstant(d, "tsip_ao_register",SWIG_From_int(static_cast< int >(tsip_ao_register)));

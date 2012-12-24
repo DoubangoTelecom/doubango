@@ -31,8 +31,4 @@
 
 #include <string.h>
 
-
-//#define TINYSAK_IMPORTS
-//#define TINYSIGCOMP_IMPORTS
-
 #endif /* TEST_TINYSIGCOMP_STDAFX_H */

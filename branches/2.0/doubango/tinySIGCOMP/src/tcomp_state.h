@@ -34,7 +34,7 @@
 
 #include "tcomp_buffer.h"
 #include "tsk_safeobj.h"
-#include "tsk_object.h"
+#include "tsk_list.h"
 
 TCOMP_BEGIN_DECLS
 
@@ -54,19 +54,21 @@ typedef struct tcomp_state_s
 	tcomp_buffer_handle_t *value;		/**< State's value. */
 	tcomp_buffer_handle_t *identifier;	/**< State's identifier. */
 	
-	uint16_t length;					/**< State's length. */
-	uint16_t address;					/**< State's address. */
-	uint16_t instruction;				/**< State's instruction. */
-	uint16_t minimum_access_length;		/**< State's minimum access length. */
-	uint16_t retention_priority;		/**< State's retention priority. */
+	uint32_t length;					/**< State's length. */
+	uint32_t address;					/**< State's address. */
+	uint32_t instruction;				/**< State's instruction. */
+	uint32_t minimum_access_length;		/**< State's minimum access length. */
+	uint32_t retention_priority;		/**< State's retention priority. */
 
 	TSK_DECLARE_SAFEOBJ;
 }
 tcomp_state_t;
 
+typedef tsk_list_t tcomp_states_L_t;
+
 typedef tcomp_state_t tcomp_dictionary_t; /**< Ad dictionary is  a @ref tcomp_state_t. */
 
-tcomp_state_t* tcomp_state_create(uint16_t length, uint16_t address, uint16_t instruction, uint16_t minimum_access_length, uint16_t retention_priority);
+tcomp_state_t* tcomp_state_create(uint32_t length, uint32_t address, uint32_t instruction, uint32_t minimum_access_length, uint32_t retention_priority);
 
 int tcomp_state_equals(const tcomp_state_t *state1, const tcomp_state_t *state2);
 void tcomp_state_makeValid(tcomp_state_t*);

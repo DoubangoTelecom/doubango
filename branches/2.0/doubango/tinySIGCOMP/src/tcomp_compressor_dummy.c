@@ -59,7 +59,7 @@ tsk_bool_t tcomp_compressor_dummy_compress(tcomp_compartment_t *lpCompartment, c
 	tcomp_buffer_handle_t *output_buffer = tcomp_buffer_create_null();
 	tsk_size_t pointer = 0;
 	uint8_t *header;
-	uint16_t codeLen;
+	uint32_t codeLen;
 
 	tcomp_buffer_referenceBuff(output_buffer, (uint8_t*)output_ptr, *output_size);
 	header = tcomp_buffer_getBufferAtPos(output_buffer, pointer++);

@@ -583,6 +583,8 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 
 	tsk_safeobj_lock(stack);
 
+	TSIP_STACK_SIGNAL(self, tsip_event_code_stack_starting, "Stack starting");
+
 	// transports
 	if(TSIP_STACK_MODE_IS_SERVER(stack)){
 		TSK_DEBUG_INFO("Stack running in SERVER mode");
@@ -897,6 +899,8 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 			TSK_DEBUG_INFO("Stack already stopped");
 			goto bail;
 		}
+
+		TSIP_STACK_SIGNAL(self, tsip_event_code_stack_stopping, "Stack stopping");
 
 		/* Hangup all dialogs starting by REGISTER */	
 		if((ret = tsip_dialog_layer_shutdownAll(stack->layer_dialog))){

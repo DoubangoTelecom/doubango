@@ -1266,6 +1266,7 @@ int send_CANCEL(tsip_dialog_invite_t *self)
 			cancel->To = tsk_object_ref(last_oInvite->To);
 			cancel->From = tsk_object_ref(last_oInvite->From);
 			cancel->firstVia = tsk_object_ref(last_oInvite->firstVia);
+			cancel->sigcomp_id = tsk_strdup(TSIP_DIALOG_GET_SS(self)->sigcomp_id);
 
 			// Copy Authorizations, Routes and Proxy-Auth
 			tsk_list_foreach(item, last_oInvite->headers){

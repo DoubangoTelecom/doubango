@@ -71,8 +71,8 @@ int tcomp_params_setDmsValue(tcomp_params_t*, uint32_t _dmsValue);
 void tcomp_params_setSmsCode(tcomp_params_t*, uint8_t _smsCode);
 int tcomp_params_setSmsValue(tcomp_params_t*, uint32_t _smsValue);
 
-uint16_t tcomp_params_getParameters(tcomp_params_t*);
-void tcomp_params_setParameters(tcomp_params_t*, uint16_t sigCompParameters);
+uint32_t tcomp_params_getParameters(tcomp_params_t*);
+void tcomp_params_setParameters(tcomp_params_t*, uint32_t sigCompParameters);
 
 void tcomp_params_reset(tcomp_params_t*);
 

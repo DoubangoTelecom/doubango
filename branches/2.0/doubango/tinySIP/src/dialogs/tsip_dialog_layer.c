@@ -274,6 +274,7 @@ phase3_loop:
 		}
 
 done:
+		TSK_DEBUG_INFO("== Shutting down - Terminated ==");
 		return 0;
 	}
 	return -1;

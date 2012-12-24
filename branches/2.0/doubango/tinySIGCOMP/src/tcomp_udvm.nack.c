@@ -69,7 +69,7 @@ void tcomp_udvm_createNackInfo(tcomp_udvm_t *udvm, uint8_t reasonCode, tcomp_buf
         +---+---+---+---+---+---+---+---+
 	*/
 
-	uint16_t mem_add_instruction = (memory_address_of_instruction >=0) ? memory_address_of_instruction : udvm->last_memory_address_of_instruction;
+	uint32_t mem_add_instruction = (memory_address_of_instruction >=0) ? memory_address_of_instruction : udvm->last_memory_address_of_instruction;
 	tsk_sha1context_t sha;
 	uint8_t *nackbuffer_ptr;
 
@@ -99,7 +99,7 @@ void tcomp_udvm_createNackInfo(tcomp_udvm_t *udvm, uint8_t reasonCode, tcomp_buf
 	}
 	else if(reasonCode == NACK_BYTECODES_TOO_LARGE)
 	{
-		uint16_t memorySize = TCOMP_UDVM_GET_SIZE();
+		uint32_t memorySize = TCOMP_UDVM_GET_SIZE();
 		tcomp_buffer_appendBuff(udvm->lpResult->nack_info, &memorySize, 2);
 	}
 	else if(reasonCode == NACK_CYCLES_EXHAUSTED)

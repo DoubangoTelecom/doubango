@@ -80,8 +80,8 @@ int tcomp_udvm_byteCopy_TempStates(tcomp_udvm_t *udvm)
 /// @return	1 if succeed an zero otherwise.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int tcomp_udvm_createTempState(tcomp_udvm_t *udvm, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, 
-	uint16_t minimum_access_length, uint16_t state_retention_priority, int end_msg)
+int tcomp_udvm_createTempState(tcomp_udvm_t *udvm, uint32_t state_length, uint32_t state_address, uint32_t state_instruction, 
+	uint32_t minimum_access_length, uint32_t state_retention_priority, int end_msg)
 {
 	/*
 	* If the specified minimum_access_length does not lie between 6 and 20 inclusive, or if

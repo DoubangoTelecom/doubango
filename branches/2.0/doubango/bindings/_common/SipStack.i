@@ -109,10 +109,12 @@ tsip_event_type_t;
 #define tsip_event_code_dialog_connected			901
 #define tsip_event_code_dialog_terminating			902
 #define tsip_event_code_dialog_terminated			903
-#define tsip_event_code_stack_started				950
-#define tsip_event_code_stack_stopped				951
-#define tsip_event_code_stack_failed_to_start		952
-#define tsip_event_code_stack_failed_to_stop		953
+#define tsip_event_code_stack_starting				950
+#define tsip_event_code_stack_started				951
+#define tsip_event_code_stack_stopping				952
+#define tsip_event_code_stack_stopped				953
+#define tsip_event_code_stack_failed_to_start		954
+#define tsip_event_code_stack_failed_to_stop		955
 
 /* ====== From "tinySIP\include\tinysip\tsip_api_register.h"  ====== */
 typedef enum tsip_register_event_type_e

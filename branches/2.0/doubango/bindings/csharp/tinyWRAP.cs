@@ -23,7 +23,9 @@ public class tinyWRAP {
   public static readonly int tsip_event_code_dialog_connected = tinyWRAPPINVOKE.tsip_event_code_dialog_connected_get();
   public static readonly int tsip_event_code_dialog_terminating = tinyWRAPPINVOKE.tsip_event_code_dialog_terminating_get();
   public static readonly int tsip_event_code_dialog_terminated = tinyWRAPPINVOKE.tsip_event_code_dialog_terminated_get();
+  public static readonly int tsip_event_code_stack_starting = tinyWRAPPINVOKE.tsip_event_code_stack_starting_get();
   public static readonly int tsip_event_code_stack_started = tinyWRAPPINVOKE.tsip_event_code_stack_started_get();
+  public static readonly int tsip_event_code_stack_stopping = tinyWRAPPINVOKE.tsip_event_code_stack_stopping_get();
   public static readonly int tsip_event_code_stack_stopped = tinyWRAPPINVOKE.tsip_event_code_stack_stopped_get();
   public static readonly int tsip_event_code_stack_failed_to_start = tinyWRAPPINVOKE.tsip_event_code_stack_failed_to_start_get();
   public static readonly int tsip_event_code_stack_failed_to_stop = tinyWRAPPINVOKE.tsip_event_code_stack_failed_to_stop_get();

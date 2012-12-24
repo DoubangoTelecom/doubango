@@ -170,7 +170,7 @@ tsip_response_t *tsip_dialog_response_new(tsip_dialog_t *self, short status, con
 int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* response);
 int tsip_dialog_apply_action(tsip_message_t* message, const tsip_action_t* action);
 
-int64_t tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* response);
+int64_t tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_message_t* message);
 int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response);
 int tsip_dialog_update_2(tsip_dialog_t *self, const tsip_request_t* invite);
 int tsip_dialog_getCKIK(tsip_dialog_t *self, AKA_CK_T *ck, AKA_IK_T *ik);

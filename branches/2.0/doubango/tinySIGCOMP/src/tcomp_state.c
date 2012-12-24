@@ -34,9 +34,23 @@
 
 /** Creates new SigComp state.
 */
-tcomp_state_t* tcomp_state_create(uint16_t length, uint16_t address, uint16_t instruction, uint16_t minimum_access_length, uint16_t retention_priority)
+tcomp_state_t* tcomp_state_create(uint32_t length, uint32_t address, uint32_t instruction, uint32_t minimum_access_length, uint32_t retention_priority)
 {
-	return tsk_object_new(tcomp_state_def_t, length, address, instruction, minimum_access_length, retention_priority);
+	tcomp_state_t *state;
+	if((state = tsk_object_new(tcomp_state_def_t))){
+		state->length = length;
+		state->address = address;
+		state->instruction = instruction;
+		state->minimum_access_length = minimum_access_length;
+		state->retention_priority = retention_priority;
+
+		state->value = tcomp_buffer_create_null();
+		state->identifier = tcomp_buffer_create_null();
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to create new state.");
+	}
+	return state;
 }
 
 /** Compares two sigomp states.
@@ -83,14 +97,14 @@ void tcomp_state_makeValid(tcomp_state_t* state)
 		uint8_t firstPart[8];
 		
 #ifdef __SYMBIAN32__
-		uint16_t values[4];
+		uint32_t values[4];
 		values[0] = state->length,
 		values[1] = state->address,
 		values[2] = state->instruction,
 		values[3] = state->minimum_access_length;
 		
 #else
-		uint16_t values[4] = { state->length, state->address, state->instruction, state->minimum_access_length };
+		uint32_t values[4] = { state->length, state->address, state->instruction, state->minimum_access_length };
 #endif
 				
 		for(i=0; i<4; i++)
@@ -124,23 +138,6 @@ static tsk_object_t* tcomp_state_ctor(tsk_object_t * self, va_list * app)
 {
 	tcomp_state_t *state = self;
 	if(state){
-#if defined(__GNUC__)
-		state->length = (uint16_t)va_arg(*app, unsigned);
-		state->address = (uint16_t)va_arg(*app, unsigned);
-		state->instruction = (uint16_t)va_arg(*app, unsigned);
-		state->minimum_access_length = (uint16_t)va_arg(*app, unsigned);
-		state->retention_priority = (uint16_t)va_arg(*app, unsigned);
-#else
-		state->length = va_arg(*app, uint16_t);
-		state->address = va_arg(*app, uint16_t);
-		state->instruction = va_arg(*app, uint16_t);
-		state->minimum_access_length = va_arg(*app, uint16_t);
-		state->retention_priority = va_arg(*app, uint16_t);
-#endif
-
-		state->value = tcomp_buffer_create_null();
-		state->identifier = tcomp_buffer_create_null();
-		
 		/* Initialize safeobject */
 		tsk_safeobj_init(state);
 	}
@@ -154,6 +151,9 @@ static tsk_object_t* tcomp_state_dtor(tsk_object_t *self)
 {
 	tcomp_state_t *state = self;
 	if(state){
+		TSK_DEBUG_INFO("==SigComp - Free state with id=");
+		tcomp_buffer_print(state->identifier);
+
 		/* Deinitialize safeobject */
 		tsk_safeobj_deinit(state);
 

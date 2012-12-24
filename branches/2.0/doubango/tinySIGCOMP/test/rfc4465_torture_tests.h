@@ -27,7 +27,7 @@ typedef struct rfc4465_struct_torture_test
 	const char* bytecode;
 	size_t bytecode_size;
 	const char* xoutput; // Excepted output
-	size_t xcycles; // Excepted cycles
+	signed xcycles; // Excepted cycles
 	int stream;
 	int xfail;
 }
@@ -611,6 +611,5 @@ struct_torture_test, *lpstruct_torture_test;
 #define RFC4465_A_3_5__Bytecode_State_Creation_5\
 	   "\xf9\xde\x81\x26\x11\x99\x1f"\
 	   ""
-
 
 #endif /* _RFC4465_TORTURE_TESTS_H_ */

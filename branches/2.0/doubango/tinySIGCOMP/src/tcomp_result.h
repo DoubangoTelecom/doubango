@@ -48,8 +48,8 @@ typedef struct tcomp_tempstate_to_free_s
 	TSK_DECLARE_OBJECT;
 
 	// Operands
-	uint16_t partial_identifier_start;
-	uint16_t partial_identifier_length;
+	uint32_t partial_identifier_start;
+	uint32_t partial_identifier_length;
 	// identifier
 	tcomp_buffer_handle_t *identifier;
 }

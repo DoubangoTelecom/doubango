@@ -7548,7 +7548,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_terminated_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_started_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_starting_get() {
   int jresult ;
   int result;
   
@@ -7558,7 +7558,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_started_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_stopped_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_started_get() {
   int jresult ;
   int result;
   
@@ -7568,7 +7568,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_stopped_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_failed_to_start_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_stopping_get() {
   int jresult ;
   int result;
   
@@ -7578,11 +7578,31 @@ SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_failed_to_start_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_failed_to_stop_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_stopped_get() {
   int jresult ;
   int result;
   
   result = (int)(953);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_failed_to_start_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(954);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_failed_to_stop_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(955);
   jresult = result; 
   return jresult;
 }
