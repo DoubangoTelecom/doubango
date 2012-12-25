@@ -23,8 +23,8 @@
 
 #define COMPARTMENT_ID1		"urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a474"	// My first compartment id
 #define COMPARTMENT_ID2		"urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a475"	// My second compartment id
-#define SIGCOMP_DMS			65536//4096//8192//65536
-#define SIGCOMP_SMS			65536//4096//8192//65536
+#define SIGCOMP_DMS			8192//4096//8192//65536
+#define SIGCOMP_SMS			8192//4096//8192//65536
 #define SIGCOMP_CPB			64
 #define SIGCOMP_LOOP_COUNT	10
 

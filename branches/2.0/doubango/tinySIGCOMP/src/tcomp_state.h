@@ -64,8 +64,6 @@ typedef struct tcomp_state_s
 }
 tcomp_state_t;
 
-typedef tsk_list_t tcomp_states_L_t;
-
 typedef tcomp_state_t tcomp_dictionary_t; /**< Ad dictionary is  a @ref tcomp_state_t. */
 
 tcomp_state_t* tcomp_state_create(uint32_t length, uint32_t address, uint32_t instruction, uint32_t minimum_access_length, uint32_t retention_priority);
