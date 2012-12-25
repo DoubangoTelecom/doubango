@@ -581,9 +581,7 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 		return 0;
 	}
 
-	tsk_safeobj_lock(stack);
-
-	TSIP_STACK_SIGNAL(self, tsip_event_code_stack_starting, "Stack starting");
+	tsk_safeobj_lock(stack);	
 
 	// transports
 	if(TSIP_STACK_MODE_IS_SERVER(stack)){
@@ -688,6 +686,9 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 		TSK_DEBUG_ERROR("%s", stack_error_desc);
 		goto bail;
 	}
+
+	// must be here because the runnable object is only valid after start()
+	TSIP_STACK_SIGNAL(self, tsip_event_code_stack_starting, "Stack starting");
 	
 	/* === Nat Traversal === */
 	// delete previous context
