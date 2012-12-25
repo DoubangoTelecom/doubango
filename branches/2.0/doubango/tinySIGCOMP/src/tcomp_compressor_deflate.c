@@ -109,6 +109,8 @@ tsk_bool_t tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment,
 		}
 	}
 
+	stateful &= !!deflatedata->ghostState;
+
 	/*
 	*	SigComp headers
 	*/
