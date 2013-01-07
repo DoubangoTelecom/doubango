@@ -26,10 +26,19 @@ cd srtp
 ./configure --enable-pic && make && make install
 }}}
 
-===Installing openssl===
-*openssl* is required if you want to use the RTCWeb Breaker module or Secure WebSocket transport (WSS).
+===Building OpenSSL===
+*OpenSSL* is required if you want to use the _RTCWeb Breaker_ module or Secure WebSocket transport (WSS). *OpenSSL version _1.0.1_ is required if you want support for _DTLS-SRTP_*.<br />
+This section is only required if you don’t have _OpenSSL_ installed on your system or using version prior to _1.0.1_ and want to enable _DTLS-SRTP_.<br />
+A quick way to have _OpenSSL_ may be installing *openssl-devel* package but this version will most likely be outdated (prior to _1.0.1_). Anyway, you can check the version like this: 
+{{{ 
+openssl version 
+}}}
+To build OpenSSL:
 {{{
-yum install openssl-devel
+wget http://www.openssl.org/source/openssl-1.0.1c.tar.gz
+tar -xvzf openssl-1.0.1c.tar.gz
+cd openssl-1.0.1c
+./config shared --prefix=/usr/local --openssldir=/usr/local/openssl && make && make install
 }}}
 
 ===Building libspeex and libspeexdsp===
