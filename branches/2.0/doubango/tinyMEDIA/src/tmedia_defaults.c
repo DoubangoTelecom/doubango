@@ -46,11 +46,13 @@ static int32_t __audio_producer_gain = 0;
 static int32_t __audio_consumer_gain = 0;
 static uint16_t __rtp_port_range_start = 1024;
 static uint16_t __rtp_port_range_stop = 65535;
+static tsk_bool_t __rtp_symetric_enabled = tsk_false; // This option is force symetric RTP for remote size. Local: always ON
 static tmedia_type_t __media_type = tmedia_audio;
 static int32_t __volume = 100;
 static int32_t __inv_session_expires = 0; // Session Timers: 0: disabled
 static char* __inv_session_refresher = tsk_null;
 static tmedia_srtp_mode_t __srtp_mode = tmedia_srtp_mode_none;
+static tmedia_srtp_type_t __srtp_type = tmedia_srtp_type_sdes;
 static tsk_bool_t __rtcp_enabled = tsk_true;
 static tsk_bool_t __rtcpmux_enabled = tsk_true;
 static tsk_bool_t __ice_enabled = tsk_false;
@@ -180,9 +182,9 @@ int32_t tmedia_defaults_get_noise_supp_level(){
 }
 
 int tmedia_defaults_set_100rel_enabled(tsk_bool_t _100rel_enabled){
-	return __100rel_enabled = _100rel_enabled;
+	__100rel_enabled = _100rel_enabled;
+	return 0;
 }
-
 tsk_bool_t tmedia_defaults_get_100rel_enabled(){
 	return __100rel_enabled;
 }
@@ -222,7 +224,6 @@ uint16_t tmedia_defaults_get_rtp_port_range_start(){
 uint16_t tmedia_defaults_get_rtp_port_range_stop(){
 	return __rtp_port_range_stop;
 }
-
 int tmedia_defaults_set_rtp_port_range(uint16_t start, uint16_t stop){
 	if(start < 1024 || stop < 1024 || start >= stop){
 		TSK_DEBUG_ERROR("Invalid parameter: (%u < 1024 || %u < 1024 || %u >= %u)", start, stop, start, stop);
@@ -231,6 +232,14 @@ int tmedia_defaults_set_rtp_port_range(uint16_t start, uint16_t stop){
 	__rtp_port_range_start = start;
 	__rtp_port_range_stop = stop;
 	return 0;
+}
+
+int tmedia_defaults_set_rtp_symetric_enabled(tsk_bool_t enabled){
+	__rtp_symetric_enabled = enabled;
+	return 0;
+}
+tsk_bool_t tmedia_defaults_get_rtp_symetric_enabled(){
+	return __rtp_symetric_enabled;
 }
 
 tmedia_type_t tmedia_defaults_get_media_type(){
@@ -275,6 +284,14 @@ tmedia_srtp_mode_t tmedia_defaults_get_srtp_mode(){
 }
 int tmedia_defaults_set_srtp_mode(tmedia_srtp_mode_t mode){
 	__srtp_mode = mode;
+	return 0;
+}
+
+tmedia_srtp_type_t tmedia_defaults_get_srtp_type(){
+	return __srtp_type;
+}
+int tmedia_defaults_set_srtp_type(tmedia_srtp_type_t srtp_type){
+	__srtp_type = srtp_type;
 	return 0;
 }
 

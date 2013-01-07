@@ -75,9 +75,10 @@ OBJS +=	src/stun/tnet_stun.o\
 	src/stun/tnet_stun_attribute.o\
 	src/stun/tnet_stun_message.o
 	###################
-	## TLS
+	## TLS / DTLS
 	###################
-OBJS +=	src/tls/tnet_tls.o
+OBJS +=	src/tls/tnet_tls.o\
+	src/tls/tnet_dtls.o
 	###################
 	## TURN
 	###################

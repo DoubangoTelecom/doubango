@@ -2057,6 +2057,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetRtpPortRan
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetRtpSymetricEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetRtpSymetricEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetMediaType(int jarg1) {
   unsigned int jresult ;
   twrap_media_type_t arg1 ;
@@ -2112,6 +2124,38 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetSRtpMode(i
   
   arg1 = (tmedia_srtp_mode_t)jarg1; 
   result = (bool)MediaSessionMgr::defaultsSetSRtpMode(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetSRtpMode() {
+  int jresult ;
+  tmedia_srtp_mode_t result;
+  
+  result = (tmedia_srtp_mode_t)MediaSessionMgr::defaultsGetSRtpMode();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetSRtpType(int jarg1) {
+  unsigned int jresult ;
+  tmedia_srtp_type_t arg1 ;
+  bool result;
+  
+  arg1 = (tmedia_srtp_type_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetSRtpType(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetSRtpType() {
+  int jresult ;
+  tmedia_srtp_type_t result;
+  
+  result = (tmedia_srtp_type_t)MediaSessionMgr::defaultsGetSRtpType();
   jresult = result; 
   return jresult;
 }
@@ -7201,7 +7245,65 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setTLSSecAgree(void * jarg1,
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setSSLCretificates(void * jarg1, char * jarg2, char * jarg3, char * jarg4) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setSSLCertificates__SWIG_0(void * jarg1, char * jarg2, char * jarg3, char * jarg4, unsigned int jarg5) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  bool arg5 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (char *)jarg4; 
+  arg5 = jarg5 ? true : false; 
+  result = (bool)(arg1)->setSSLCertificates((char const *)arg2,(char const *)arg3,(char const *)arg4,arg5);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setSSLCertificates__SWIG_1(void * jarg1, char * jarg2, char * jarg3, char * jarg4) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (char *)jarg4; 
+  result = (bool)(arg1)->setSSLCertificates((char const *)arg2,(char const *)arg3,(char const *)arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setSSLCretificates__SWIG_0(void * jarg1, char * jarg2, char * jarg3, char * jarg4, unsigned int jarg5) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  bool arg5 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (char *)jarg4; 
+  arg5 = jarg5 ? true : false; 
+  result = (bool)(arg1)->setSSLCretificates((char const *)arg2,(char const *)arg3,(char const *)arg4,arg5);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setSSLCretificates__SWIG_1(void * jarg1, char * jarg2, char * jarg3, char * jarg4) {
   unsigned int jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
   char *arg2 = (char *) 0 ;

@@ -92,6 +92,7 @@ extern int tsip_dialog_add_session_headers(const tsip_dialog_t *self, tsip_reque
 /*static*/ int send_CANCEL(tsip_dialog_invite_t *self);
 /*static*/ int tsip_dialog_invite_notify_parent(tsip_dialog_invite_t *self, const tsip_response_t* response);
 static int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self);
+static int tsip_dialog_invite_msession_onerror_cb(const void* usrdata, const struct tmedia_session_s* session, const char* reason, tsk_bool_t is_fatal);
 
 /* ======================== external functions ======================== */
 extern int tsip_dialog_invite_ice_process_ro(tsip_dialog_invite_t * self, const tsdp_message_t* sdp_ro, tsk_bool_t is_remote_offer);
@@ -980,18 +981,27 @@ int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self)
 	srtp_mode = is_rtcweb_enabled ? tmedia_srtp_mode_mandatory : ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.srtp_mode;
 	
 
+	// set callback functions
+	tmedia_session_mgr_set_onerror_cbfn(self->msession_mgr, self, tsip_dialog_invite_msession_onerror_cb);
+
+	// set params
 	return tmedia_session_mgr_set(self->msession_mgr,
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "srtp-mode", srtp_mode),
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "avpf-enabled", is_rtcweb_enabled), // Otherwise will be negociated using SDPCapNeg (RFC 5939)
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "rtcp-enabled", self->use_rtcp),
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "rtcpmux-enabled", self->use_rtcpmux),
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "codecs-supported", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.codecs),
-
+			
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "bypass-encoding", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.bypass_encoding),
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "bypass-decoding", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.bypass_decoding),
 
 			TMEDIA_SESSION_SET_INT32(tmedia_audio, "rtp-ssrc", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.rtp.ssrc.audio),
 			TMEDIA_SESSION_SET_INT32(tmedia_video, "rtp-ssrc", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.rtp.ssrc.video),
+			
+			TMEDIA_SESSION_SET_STR(self->msession_mgr->type, "dtls-file-ca", TSIP_DIALOG_GET_STACK(self)->security.tls.ca),
+			TMEDIA_SESSION_SET_STR(self->msession_mgr->type, "dtls-file-pbk", TSIP_DIALOG_GET_STACK(self)->security.tls.pbk),
+			TMEDIA_SESSION_SET_STR(self->msession_mgr->type, "dtls-file-pvk", TSIP_DIALOG_GET_STACK(self)->security.tls.pvk),
+			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "dtls-cert-verify", TSIP_DIALOG_GET_STACK(self)->security.tls.verify),
 
 			tsk_null);
 }
@@ -1032,7 +1042,6 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bo
 	}
 
 	if((request = tsip_dialog_request_new(TSIP_DIALOG(self), is_INVITE ? "INVITE" : "UPDATE"))){
-
 		/* apply action params to the request (will add a content if the action contains one) */
 		if(TSIP_DIALOG(self)->curr_action){
 			tsip_dialog_apply_action(request, TSIP_DIALOG(self)->curr_action);
@@ -1357,6 +1366,9 @@ int send_BYE(tsip_dialog_invite_t *self)
 		session and the dialog terminated.
 	*/
 	if((bye = tsip_dialog_request_new(TSIP_DIALOG(self), "BYE"))){
+		if(TSIP_DIALOG(self)->curr_action){
+			tsip_dialog_apply_action(bye, TSIP_DIALOG(self)->curr_action);
+		}
 		ret = tsip_dialog_request_send(TSIP_DIALOG(self), bye);
 		TSK_OBJECT_SAFE_FREE(bye);
 	}
@@ -1615,6 +1627,26 @@ int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self)
 	return tsip_dialog_remove(TSIP_DIALOG(self));
 }
 
+// callback function called when media session error occures asynchronously
+static int tsip_dialog_invite_msession_onerror_cb(const void* usrdata, const struct tmedia_session_s* session, const char* reason, tsk_bool_t is_fatal)
+{
+	tsip_dialog_t *self = (tsip_dialog_t*)usrdata;
+
+	if(self && is_fatal){
+		char* str = tsk_null;
+		tsip_action_t* action;
+		tsk_sprintf(&str, "SIP; cause=488; text=\"%s\"", (reason ? reason : "Internal error"));
+		action = tsip_action_create(tsip_atype_hangup,
+           TSIP_ACTION_SET_HEADER("Reason", str),
+           TSIP_ACTION_SET_NULL());
+		TSK_FREE(str);
+		
+		tsip_dialog_hangup(self, action);
+		TSK_OBJECT_SAFE_FREE(action);
+	}
+
+	return 0;
+}
 
 
 

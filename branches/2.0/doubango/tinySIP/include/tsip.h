@@ -447,15 +447,15 @@ int ret = tsip_stack_set(stack,
 *
 * @sa @ref TSIP_STACK_SET_IPSEC_PARAMS()
 */
-#define TSIP_STACK_SET_EARLY_IMS(ENABLED_BOOL)									tsip_pname_early_ims, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_STACK_SET_SECAGREE_IPSEC_2(TRANSPORT_STR, ENABLED_BOOL)			tsip_pname_secagree_ipsec, (const char*)TRANSPORT_STR, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_STACK_SET_SECAGREE_IPSEC(ENABLED_BOOL)								TSIP_STACK_SET_SECAGREE_IPSEC_2(tsk_null, ENABLED_BOOL) // @deprecated
-#define TSIP_STACK_SET_SECAGREE_TLS(ENABLED_BOOL)								tsip_pname_secagree_tls, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_STACK_SET_IMS_AKA_AMF(AMF_UINT16)									tsip_pname_amf, (uint16_t)AMF_UINT16
-#define TSIP_STACK_SET_IMS_AKA_OPERATOR_ID(OPID_HEX_STR)						tsip_pname_operator_id, (const char*)OPID_HEX_STR
-#define TSIP_STACK_SET_IPSEC_PARAMS(ALG_STR, EALG_STR, MODE_STR, PROTOCOL_STR)	tsip_pname_ipsec_params, (const char*)ALG_STR, (const char*)EALG_STR, (const char*)MODE_STR, (const char*)PROTOCOL_STR
-#define TSIP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)		tsip_pname_tls_certs, (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR
-
+#define TSIP_STACK_SET_EARLY_IMS(ENABLED_BOOL)												tsip_pname_early_ims, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_SECAGREE_IPSEC_2(TRANSPORT_STR, ENABLED_BOOL)						tsip_pname_secagree_ipsec, (const char*)TRANSPORT_STR, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_SECAGREE_IPSEC(ENABLED_BOOL)											TSIP_STACK_SET_SECAGREE_IPSEC_2(tsk_null, ENABLED_BOOL) // @deprecated
+#define TSIP_STACK_SET_SECAGREE_TLS(ENABLED_BOOL)											tsip_pname_secagree_tls, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_IMS_AKA_AMF(AMF_UINT16)												tsip_pname_amf, (uint16_t)AMF_UINT16
+#define TSIP_STACK_SET_IMS_AKA_OPERATOR_ID(OPID_HEX_STR)									tsip_pname_operator_id, (const char*)OPID_HEX_STR
+#define TSIP_STACK_SET_IPSEC_PARAMS(ALG_STR, EALG_STR, MODE_STR, PROTOCOL_STR)				tsip_pname_ipsec_params, (const char*)ALG_STR, (const char*)EALG_STR, (const char*)MODE_STR, (const char*)PROTOCOL_STR
+#define TSIP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)					TSIP_STACK_SET_TLS_CERTS_2(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR, tsk_false)
+#define TSIP_STACK_SET_TLS_CERTS_2(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR, VERIF_BOOL)	tsip_pname_tls_certs, (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR, (tsk_bool_t)VERIF_BOOL
 
 /* === Headers === */
 /**@ingroup tsip_stack_group
@@ -612,6 +612,7 @@ typedef struct tsip_stack_s
 			char* ca;
 			char* pbk;
 			char* pvk;
+			tsk_bool_t verify;
 		}tls;
 		tsk_bool_t enable_secagree_tls;
 	} security;

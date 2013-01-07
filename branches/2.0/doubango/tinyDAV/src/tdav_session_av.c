@@ -1,7 +1,6 @@
 /*
-* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2012-2013 Doubango Telecom <http://www.doubango.org>
+* Copyright (C) 2012 Diop Mamadou Ibrahima
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -21,10 +20,10 @@
 */
 
 /**@file tdav_session_av.c
- * @brief Audio/Video base Session plugin
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
+ * @brief Audio/Video/T.140 base Session plugin
  */
+// http://c-faq.com/ansi/constmismatch.html: to be checked for warnings
+
 #include "tinydav/tdav_session_av.h"
 #include "tinydav/codecs/dtmf/tdav_codec_dtmf.h"
 #include "tinydav/codecs/fec/tdav_codec_red.h"
@@ -40,11 +39,159 @@
 #include "tinymedia/tmedia_producer.h"
 #include "tinymedia/tmedia_defaults.h"
 
+#include "tls/tnet_tls.h"
+#include "tls/tnet_dtls.h"
+
+#include <math.h> /* log10 */
+
+
+#if HAVE_SRTP
+static const tsk_bool_t __have_libsrtp = tsk_true;
+#else
+static const tsk_bool_t __have_libsrtp = tsk_false;
+#endif
+
 #define TDAV_IS_DTMF_CODEC(codec) (TMEDIA_CODEC((codec))->plugin == tdav_codec_dtmf_plugin_def_t)
 #define TDAV_IS_ULPFEC_CODEC(codec) (TMEDIA_CODEC((codec))->plugin == tdav_codec_ulpfec_plugin_def_t)
 #define TDAV_IS_RED_CODEC(codec) (TMEDIA_CODEC((codec))->plugin == tdav_codec_red_plugin_def_t)
 
-static int _tdav_session_av_red_cb(const void* callback_data, const struct trtp_rtp_packet_s* packet);
+#if !defined(TDAV_DFAULT_FP_HASH)
+#define TDAV_DFAULT_FP_HASH		tnet_dtls_hash_type_sha1
+#endif /* TDAV_DFAULT_FP_HASH */
+#if !defined(TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT)
+#define TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT		0
+#endif /* TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT */
+
+static void* _tdav_session_av_error_async_thread(void* usrdata);
+static int _tdav_session_av_raise_error_async(struct tdav_session_av_s* self, tsk_bool_t is_fatal, const char* reason);
+#if HAVE_SRTP
+static int _tdav_session_av_srtp_dtls_cb(const void* usrdata, enum trtp_srtp_dtls_event_type_e type, const char* reason);
+#endif /* HAVE_SRTP */
+static int _tdav_session_av_red_cb(const void* usrdata, const struct trtp_rtp_packet_s* packet);
+static int _tdav_session_av_dtls_set_remote_setup(struct tdav_session_av_s* self, tnet_dtls_setup_t setup, tsk_bool_t connection_new);
+
+#define SDP_CAPS_COUNT_MAX		0x1F
+#define SDP_DECLARE_TAG int32_t tag // [1 - *]
+#define SDP_TAG(self) ((self) ? *((int32_t*)(self)) : 0)
+
+typedef enum RTP_PROFILE_E
+{
+	RTP_PROFILE_NONE = 0x00,
+
+	RTP_PROFILE_AVP = (1 << 0),
+	RTP_PROFILE_AVPF = (1 << 1),
+
+	RTP_PROFILE_SECURE = (1 << 2),
+	RTP_PROFILE_SECURE_SDES = (RTP_PROFILE_SECURE | (1 << 3)),
+	RTP_PROFILE_SECURE_DTLS = (RTP_PROFILE_SECURE | (1 << 4)),
+
+	RTP_PROFILE_SAVP = (RTP_PROFILE_AVP | RTP_PROFILE_SECURE_SDES),
+	RTP_PROFILE_SAVPF = (RTP_PROFILE_AVPF | RTP_PROFILE_SECURE_SDES),
+
+	RTP_PROFILE_UDP_TLS_RTP_SAVP = (RTP_PROFILE_AVP | RTP_PROFILE_SECURE_DTLS),
+	RTP_PROFILE_UDP_TLS_RTP_SAVPF = (RTP_PROFILE_AVPF | RTP_PROFILE_SECURE_DTLS)
+}
+RTP_PROFILE_T;
+
+typedef struct RTP_PROFILE_XS
+{
+	enum RTP_PROFILE_E type;
+	const char* name;
+}
+RTP_PROFILE_XT;
+
+static const RTP_PROFILE_XT RTP_PROFILES[] =
+{
+	{ RTP_PROFILE_AVP, "RTP/AVP" },
+	{ RTP_PROFILE_AVPF, "RTP/AVPF" },
+	{ RTP_PROFILE_SAVP, "RTP/SAVP" },
+	{ RTP_PROFILE_SAVPF, "RTP/SAVPF" },
+	{ RTP_PROFILE_UDP_TLS_RTP_SAVP, "UDP/TLS/RTP/SAVP" },
+	{ RTP_PROFILE_UDP_TLS_RTP_SAVPF, "UDP/TLS/RTP/SAVPF" },
+};
+#define RTP_PROFILES_COUNT (sizeof(RTP_PROFILES) / sizeof(RTP_PROFILES[0]))
+
+typedef struct sdp_acap_xs
+{
+	SDP_DECLARE_TAG;
+	unsigned optional:1; // "e.g. [2]"
+	unsigned or:1; // "e.g.|2"
+	const char* value;
+}
+sdp_acap_xt;
+typedef sdp_acap_xt sdp_acaps_xt[SDP_CAPS_COUNT_MAX];
+
+typedef struct sdp_tcap_xs
+{
+	SDP_DECLARE_TAG;
+	RTP_PROFILE_T profile;
+}
+sdp_tcap_xt;
+typedef sdp_tcap_xt sdp_tcaps_xt[SDP_CAPS_COUNT_MAX];
+
+typedef struct sdp_pcfg_xs
+{
+	SDP_DECLARE_TAG;
+	sdp_tcap_xt tcap;
+	sdp_acaps_xt acaps;
+}
+sdp_pcfg_xt;
+typedef sdp_pcfg_xt sdp_acfg_xt;
+typedef sdp_pcfg_xt sdp_pcfgs_xt[SDP_CAPS_COUNT_MAX];
+typedef tsk_object_t sdp_headerM_Or_Message; /* tsdp_header_M_t or tsdp_message_t */
+
+#define _sdp_reset(self) if((self)) memset((self), 0, sizeof(*(self)));
+#define _sdp_pcfgs_reset(self) _sdp_reset((self))
+#define _sdp_acfgs_reset(self) _sdp_reset((self))
+#define _sdp_pcfg_reset(self) _sdp_reset((self))
+#define _sdp_acfg_reset(self) _sdp_reset((self))
+#define _sdp_tcaps_reset(self) _sdp_reset((self))
+#define _sdp_acaps_reset(self) _sdp_reset((self))
+#define _sdp_integer_length(self) ((self) ? ((int32_t)log10(abs(self)) + 1) : 1)
+#define _sdp_str_index_of(str, sub_str) tsk_strindexOf((str), tsk_strlen((str)), sub_str)
+#define _sdp_str_starts_with(str, sub_str) (_sdp_str_index_of((str), (sub_str)) == 0)
+#define _sdp_str_contains(str, sub_str) (_sdp_str_index_of((str), (sub_str)) != -1)
+#define _SDP_DECLARE_INDEX_OF(name) \
+	static int32_t _sdp_##name##s_indexof(const sdp_##name##_xt (*name##s)[SDP_CAPS_COUNT_MAX], int32_t tag) \
+	{ \
+		if(name##s){ \
+			int32_t i; \
+			for(i = 0; i < SDP_CAPS_COUNT_MAX; ++i){ \
+				if((*name##s)[i].tag == tag){ \
+					return i; \
+				} \
+			} \
+		} \
+		return -1; \
+	}
+
+typedef struct tdav_sdp_caps_s
+{
+	TSK_DECLARE_OBJECT;
+
+	sdp_pcfgs_xt local;
+	sdp_pcfgs_xt remote;
+	sdp_acfg_xt acfg;
+}
+tdav_sdp_caps_t;
+
+static tdav_sdp_caps_t* tdav_sdp_caps_create();
+
+static const tsdp_header_A_t* _sdp_findA_at(const sdp_headerM_Or_Message* sdp, const char* field, tsk_size_t index);
+static int _sdp_add_headerA(sdp_headerM_Or_Message* sdp, const char* field, const char* value);
+static RTP_PROFILE_T _sdp_profile_from_string(const char* profile);
+static const char* _sdp_profile_to_string(RTP_PROFILE_T profile);
+static int32_t _sdp_acaps_indexof(const sdp_acap_xt (*acaps)[SDP_CAPS_COUNT_MAX], int32_t tag);
+static const sdp_acap_xt* _sdp_acaps_find_by_field(const sdp_acap_xt (*acaps)[SDP_CAPS_COUNT_MAX], const char* field, int32_t index);
+static int _sdp_acaps_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_acap_xt (*acaps)[SDP_CAPS_COUNT_MAX], tsk_bool_t reset);
+static int32_t _sdp_tcaps_indexof(const sdp_tcap_xt (*tcaps)[SDP_CAPS_COUNT_MAX], int32_t tag);
+static int _sdp_tcaps_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_tcap_xt (*tcaps)[SDP_CAPS_COUNT_MAX], tsk_bool_t reset);
+static int _sdp_acfg_to_sdp(sdp_headerM_Or_Message* sdp, const sdp_acfg_xt *acfg);
+static int _sdp_pcfgs_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_acap_xt (*acaps)[SDP_CAPS_COUNT_MAX], sdp_tcap_xt (*tcaps)[SDP_CAPS_COUNT_MAX], sdp_pcfg_xt (*pcfgs)[SDP_CAPS_COUNT_MAX], tsk_bool_t reset);
+static int _sdp_pcfgs_to_sdp(sdp_headerM_Or_Message* sdp, const sdp_pcfg_xt (*pcfg)[SDP_CAPS_COUNT_MAX]);
+static int _sdp_pcfg_ensure(sdp_headerM_Or_Message* sdp, const sdp_pcfg_xt* pcfg);
+static int _sdp_pcfgs_cat(const sdp_pcfg_xt (*pcfgs_src)[SDP_CAPS_COUNT_MAX], sdp_pcfg_xt (*pcfgs_dst)[SDP_CAPS_COUNT_MAX]);
+
 
 int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 {
@@ -61,7 +208,23 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 	self->media_type = media_type;
 	self->use_rtcp = tmedia_defaults_get_rtcp_enabled();
 	self->use_rtcpmux = tmedia_defaults_get_rtcpmux_enabled();
-	self->use_avpf = (profile == tmedia_profile_rtcweb); // negotiate if not RTCWeb profile
+	self->use_avpf = (profile == tmedia_profile_rtcweb); // negotiate if not RTCWeb profile or RFC5939 is in action
+#if HAVE_SRTP
+		// this is the default value and can be updated by the user using "session_set('srtp-mode', mode_e)"
+		self->srtp_type = (profile == tmedia_profile_rtcweb) ? tmedia_srtp_type_sdes_dtls : tmedia_defaults_get_srtp_type(); // FIXME: RTCWeb: Chrome uses SDES and Firefox DTLS
+		self->srtp_mode = (profile == tmedia_profile_rtcweb) ? tmedia_srtp_mode_mandatory : tmedia_defaults_get_srtp_mode();
+		self->use_srtp = (self->srtp_mode == tmedia_srtp_mode_mandatory); // if optional -> negotiate
+		// remove DTLS-SRTP option if not supported
+		if((self->srtp_type & tmedia_srtp_type_dtls) && !tnet_dtls_is_srtp_supported()){
+			TSK_DEBUG_ERROR("DTLS-SRTP enabled but not supported. Please rebuild the code with this option enabled (requires OpenSSL 1.0.1+)");
+			if(!(self->srtp_type &= ~tmedia_srtp_type_dtls)){
+				// only DTLS-SRTP was enabled
+				self->srtp_mode = tmedia_srtp_mode_none;
+				self->use_srtp = tsk_false;
+			}
+		}
+		//!\ DTLS-SRTP requires certificates but do not check right now as it could be defined later
+#endif
 	
 	tsk_safeobj_init(self);
 	
@@ -80,11 +243,13 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 		TSK_DEBUG_ERROR("Failed to create producer for media type = %d", self->media_type);
 	}
 
-#if HAVE_SRTP
-		// This is the default value and can be updated by the user using "session_set('srtp-mode', mode_e)"
-		self->srtp_mode = (profile == tmedia_profile_rtcweb) ? tmedia_srtp_mode_mandatory : tmedia_defaults_get_srtp_mode();
-		self->use_srtp = (self->srtp_mode == tmedia_srtp_mode_mandatory); // if optional -> negotiate
-#endif
+	// sdp caps
+	TSK_OBJECT_SAFE_FREE(self->sdp_caps);
+	if(!(self->sdp_caps = tdav_sdp_caps_create())){
+		TSK_DEBUG_ERROR("Failed to create SDP caps");
+		return -1;
+	}
+	
 	return 0;
 }
 
@@ -127,8 +292,13 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 			if(tsk_striequals(param->key, "srtp-mode")){
 #if HAVE_SRTP
 				self->srtp_mode = (tmedia_srtp_mode_t)TSK_TO_INT32((uint8_t*)param->value);
+				if(self->rtp_manager){
+					trtp_manager_set_srtp_type_local(self->rtp_manager, self->srtp_type, self->srtp_mode);
+				}
+#else
+				TSK_DEBUG_INFO("'srtp-mode' param ignored beacuse SRTP not enabled. Please rebuild the source code with this option.");
+#endif /* HAVE_SRTP */
 				return tsk_true;
-#endif
 			}
 			else if(tsk_striequals(param->key, "rtp-ssrc")){
 				self->rtp_ssrc = *((uint32_t*)param->value);
@@ -164,6 +334,16 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 				}
 				return tsk_true;
 			}
+			else if(tsk_striequals(param->key, "remote-sdp-message")){
+				TSK_OBJECT_SAFE_FREE(self->remote_sdp);
+				self->remote_sdp = tsk_object_ref(param->value);
+				return tsk_true;
+			}
+			else if(tsk_striequals(param->key, "local-sdp-message")){
+				TSK_OBJECT_SAFE_FREE(self->local_sdp);
+				self->local_sdp = tsk_object_ref(param->value);
+				return tsk_true;
+			}
 		}
 	}
 
@@ -190,7 +370,11 @@ tsk_bool_t tdav_session_av_get(tdav_session_av_t* self, tmedia_param_t* param)
 					((int8_t*)param->value)[0] = self->use_srtp ? 1 : 0;
 					return tsk_true;
 				}
-#endif
+#else
+				((int8_t*)param->value)[0] = 0;
+				TSK_DEBUG_INFO("Ignoring parameter 'srtp-enabled' because SRTP not supported. Please rebuild the source code with this option enabled.");
+				return tsk_true;
+#endif /* HAVE_SRTP */
 			}
 		}
 	}
@@ -209,14 +393,39 @@ int tdav_session_av_prepare(tdav_session_av_t* self)
 
 	/* set local port */
 	if(!self->rtp_manager){
-		self->rtp_manager = self->ice_ctx ? trtp_manager_create_2(self->ice_ctx)
-			: trtp_manager_create(self->use_rtcp, self->local_ip, self->use_ipv6);
+		self->rtp_manager = self->ice_ctx ? trtp_manager_create_2(self->ice_ctx, self->srtp_type, self->srtp_mode)
+			: trtp_manager_create(self->use_rtcp, self->local_ip, self->use_ipv6, self->srtp_type, self->srtp_mode);
 		if(self->rtp_manager){
-			ret = trtp_manager_set_port_range(self->rtp_manager, tmedia_defaults_get_rtp_port_range_start(), tmedia_defaults_get_rtp_port_range_stop());
-			self->rtp_manager->use_rtcp = self->use_rtcp;
-			ret = trtp_manager_prepare(self->rtp_manager);
+			if((ret = trtp_manager_set_port_range(self->rtp_manager, tmedia_defaults_get_rtp_port_range_start(), tmedia_defaults_get_rtp_port_range_stop()))){
+				return ret;
+			}
+#if HAVE_SRTP
+			if(tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_ca)){
+				// DTLS-SRTP requires certificates
+				if(self->srtp_type & tmedia_srtp_type_dtls){
+					TSK_DEBUG_WARN("DTLS-SRTP requested but not certificate provided, disabling this option :(");
+					if(!(self->srtp_type &= ~tmedia_srtp_type_dtls)){
+						// only DTLS-SRTP was enabled
+						self->srtp_mode = tmedia_srtp_mode_none;
+						self->use_srtp = tsk_false;
+						// update rtpmanager
+						ret = trtp_manager_set_srtp_type_local(self->rtp_manager, self->srtp_type, self->srtp_mode);
+					}
+				}
+			}
+			if((self->srtp_type & tmedia_srtp_type_dtls) && (self->srtp_mode == tmedia_srtp_mode_optional || self->srtp_mode == tmedia_srtp_mode_mandatory)){
+				if((ret = trtp_manager_set_dtls_certs(self->rtp_manager, TMEDIA_SESSION(self)->dtls.file_ca, TMEDIA_SESSION(self)->dtls.file_pbk, TMEDIA_SESSION(self)->dtls.file_pvk, TMEDIA_SESSION(self)->dtls.verify))){
+					return ret;
+				}
+			}
+#endif /* HAVE_SRTP */
+			if((ret = trtp_manager_prepare(self->rtp_manager))){
+				return ret;
+			}
 			if(self->natt_ctx){
-				ret = trtp_manager_set_natt_ctx(self->rtp_manager, self->natt_ctx);
+				if((ret = trtp_manager_set_natt_ctx(self->rtp_manager, self->natt_ctx))){
+					return ret;
+				}
 			}
 			if(self->rtp_ssrc){
 				self->rtp_manager->rtp.ssrc = self->rtp_ssrc;
@@ -227,13 +436,7 @@ int tdav_session_av_prepare(tdav_session_av_t* self)
 	/* SRTP */
 #if HAVE_SRTP
 	{
-		if(self->remote_srtp_neg.pending){
-			char* str = tsk_null;
-			self->remote_srtp_neg.pending = tsk_false;
-			tsk_sprintf(&str, "%d %s inline:%s", self->remote_srtp_neg.tag, trtp_srtp_crypto_type_strings[self->remote_srtp_neg.crypto_type], self->remote_srtp_neg.key);
-			trtp_srtp_set_remote(self->rtp_manager, str);
-			TSK_FREE(str);
-		}
+		
 	}
 #endif
 
@@ -283,6 +486,11 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 		int ret;
 		/* RTP/RTCP manager: use latest information. */
 
+		// set callbacks
+#if HAVE_SRTP
+		ret = trtp_manager_set_dtls_callback(self->rtp_manager, self, _tdav_session_av_srtp_dtls_cb);
+#endif /* HAVE_SRTP */
+
 		// these information will be updated when the RTP manager starts if ICE is enabled
 		ret = trtp_manager_set_rtp_remote(self->rtp_manager, self->remote_ip, self->remote_port);
 		ret = trtp_manager_set_payload_type(self->rtp_manager, best_codec->neg_format ? atoi(best_codec->neg_format) : atoi(best_codec->format));
@@ -294,15 +502,22 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 		if(self->producer) ret = tmedia_producer_prepare(self->producer, best_codec);
 		if(self->consumer) ret = tmedia_consumer_prepare(self->consumer, best_codec);
 		
-		/* start consumer and producer */
-		if(self->consumer) ret = tmedia_consumer_start(self->consumer);
-		if(self->producer) ret = tmedia_producer_start(self->producer);
-
-		// not that the RTP manager is activated check that SRTP is correctly activated
 #if HAVE_SRTP
-		self->use_srtp = trtp_srtp_is_active(self->rtp_manager);
-#endif
-		
+		self->use_srtp = trtp_manager_is_srtp_activated(self->rtp_manager);
+
+		/* start consumer and producer */
+		if(trtp_manager_is_dtls_activated(self->rtp_manager) && !trtp_manager_is_dtls_started(self->rtp_manager)){
+			// delay starting util DTLS-SRTP negotiation terminates (handshaking succeed)
+			TSK_DEBUG_INFO("Delaying consumer/producer starting until DTLS-SRTP negotiation complete");
+		}
+		else{
+#endif /* HAVE_SRTP */
+			if(self->consumer) ret = tmedia_consumer_start(self->consumer);
+			if(self->producer) ret = tmedia_producer_start(self->producer);
+#if HAVE_SRTP
+		}
+#endif /* HAVE_SRTP */
+				
 		return ret;
 	}
 	else{
@@ -323,19 +538,20 @@ int tdav_session_av_stop(tdav_session_av_t* self)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-
-	/* Consumer */
-	if(self->consumer){
-		ret = tmedia_consumer_stop(self->consumer);
-	}
-	/* Producer */
+	
+	/* stop Producer */
 	if(self->producer){
 		ret = tmedia_producer_stop(self->producer);
 	}
 
-	/* RTP/RTCP manager */
+	/* stop RTP/RTCP manager */
 	if(self->rtp_manager){
 		ret = trtp_manager_stop(self->rtp_manager);
+	}
+
+	/* stop Consumer (after RTP manager to silently discard in coming packets) */
+	if(self->consumer){
+		ret = tmedia_consumer_stop(self->consumer);
 	}
 
 	/* close codecs to force open() for next start (e.g SIP UPDATE with SDP) */
@@ -375,9 +591,17 @@ int tdav_session_av_pause(tdav_session_av_t* self)
 const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_t *updated)
 {
 	tmedia_session_t* base = TMEDIA_SESSION(self);
-	tsk_bool_t have_libsrtp = tsk_false;
-    
-    (void)(have_libsrtp);
+#if HAVE_SRTP
+	static const tsk_bool_t have_lib_srtp = tsk_true;        
+#else
+	static const tsk_bool_t have_lib_srtp = tsk_false;
+#endif
+	const tsk_bool_t have_lib_srtp_dtls = tnet_dtls_is_srtp_supported();
+	tsk_bool_t is_srtp_enable = (self->srtp_type != tmedia_srtp_type_none) && (self->srtp_mode == tmedia_srtp_mode_optional || self->srtp_mode == tmedia_srtp_mode_mandatory);
+	tsk_bool_t is_srtp_dtls_enabled = is_srtp_enable && !!(self->srtp_type & tmedia_srtp_type_dtls);
+	tsk_bool_t is_srtp_sdes_enabled = is_srtp_enable && !!(self->srtp_type & tmedia_srtp_type_sdes);
+	tsk_bool_t is_srtp_local_mandatory = is_srtp_enable && (self->srtp_mode == tmedia_srtp_mode_mandatory);
+	tsk_bool_t is_first_media;
 
 	if(!base || !base->plugin || !updated){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -385,9 +609,6 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 	}
 	
 	*updated = tsk_false;
-#if HAVE_SRTP
-	have_libsrtp = tsk_true;
-#endif
 
 	if(!self->rtp_manager || (!self->ice_ctx && !self->rtp_manager->transport)){
 		if(self->rtp_manager && (!self->ice_ctx && !self->rtp_manager->transport)){ // reINVITE or UPDATE (manager was destroyed when stoppped)
@@ -401,35 +622,41 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			return tsk_null;
 		}
 	}
+
+	// only first media will add session-level attributes (e.g. DTLS setup and fingerprint)
+	if((is_first_media = !!self->local_sdp)){
+		const tsdp_header_M_t* firstM = (const tsdp_header_M_t*)tsdp_message_get_headerAt(self->local_sdp, tsdp_htype_M, 0);
+		if(!(is_first_media = !firstM)){
+			is_first_media = tsk_striequals(TMEDIA_SESSION(self)->plugin->media, firstM->media);
+		}
+	}
 	
 	if(base->ro_changed && base->M.lo){
-		/* Codecs */
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "fmtp");
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "rtpmap");
+		static const char* __fields[] = 
+		{
+			/* Codecs */
+			"fmtp", "rtpmap", "imageattr",
+			/* QoS */
+			"curr", "des", "conf",
+			/* SRTP */
+			"crypto",
+			/* DTLS */
+			"setup", "fingerprint",
+			/* ICE */
+			"candidate", "ice-ufrag", "ice-pwd",
+			/* SDPCapNeg */
+			"tcap", "acap", "pcfg",
+			/* Others */
+			"mid", "rtcp-mux", "ssrc"
+		};
+		// remove media-level attributes
+		tsdp_header_A_removeAll_by_fields(base->M.lo->Attributes, __fields, sizeof(__fields)/sizeof(__fields[0]));
 		tsk_list_clear_items(base->M.lo->FMTs);
-
-		/* QoS */
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "curr");
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "des");
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "conf");
-
-		/* SRTP */
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "crypto");
-
-		/* ICE */
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "candidate");
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "ice-ufrag");
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "ice-pwd");
-
-		/* SDPCapNeg */
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "tcap");
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "acap");
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "pcfg");
-		
-		// Others
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "mid");
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "rtcp-mux");
-		tsdp_header_A_removeAll_by_field(base->M.lo->Attributes, "ssrc");
+		// remove session-level attributes
+		if(is_first_media){
+			// headers: contains all kind of headers but this is a smart function :)
+			tsdp_header_A_removeAll_by_fields((tsdp_headers_A_L_t*)self->local_sdp->headers, __fields, sizeof(__fields)/sizeof(__fields[0]));
+		}
 	}
 
 	*updated = (base->ro_changed || !base->M.lo);
@@ -493,76 +720,282 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			tmedia_codec_to_sdp(base->codecs, base->M.lo);
 		}
 
-		/* SDPCapNeg: RFC 5939 */
-		{
-			if(base->M.ro){
-				self->use_avpf = (tsk_striequals(base->M.ro->proto, "RTP/AVPF") || tsk_striequals(base->M.ro->proto, "RTP/SAVPF"));
-				if(!self->use_avpf){
-					if(self->sdp_neg.remote_best_pcfg.t_proto){
-						self->use_avpf = (tsk_striequals(self->sdp_neg.remote_best_pcfg.t_proto, "RTP/AVPF") || tsk_striequals(self->sdp_neg.remote_best_pcfg.t_proto, "RTP/SAVPF"));
-					}
+		/* SRTP */
+#if HAVE_SRTP
+		{ //start-of-HAVE_SRTP
+			if(!base->M.ro){
+				const trtp_srtp_ctx_xt *ctx = tsk_null;
+				tsk_size_t ctx_count = 0, ctx_idx, acap_tag = 1;
+				tsk_size_t acap_tag_fp_sha1 = 0, acap_tag_fp_sha256 = 0, acap_tag_setup = 0, acap_tag_connection = 0, acap_tag_crypro_start = 0;
+				char* str = tsk_null;
+				tsdp_header_A_t* cryptoA = tsk_null;
+				tsk_bool_t negotiate_srtp = (self->srtp_mode == tmedia_srtp_mode_optional && !base->M.ro);
+				tsk_bool_t negotiate_avpf = !self->use_avpf;
+				tsk_bool_t is_srtp_remote_mandatory = (base->M.ro && _sdp_str_contains(base->M.ro->proto, "SAVP"));
+				tsk_size_t profiles_index = 0;
+				RTP_PROFILE_T profiles[RTP_PROFILES_COUNT] = { RTP_PROFILE_NONE };
+
+				/* DTLS-SRTP default values */
+				if(is_srtp_dtls_enabled){
+					/* "setup" and "connection" */
+					/* looks like useless call but it's not: used to initialze default local values */
+					_tdav_session_av_dtls_set_remote_setup(self, self->dtls.remote.setup, self->dtls.remote.connection_new);
 				}
-				if(self->sdp_neg.remote_best_pcfg.t_proto){
-					// Any supported proto -> response with "a=acfg"
-					if(self->use_avpf/* AVPF,SAVPF */ || tsk_striequals(self->sdp_neg.remote_best_pcfg.t_proto, "RTP/AVP") || tsk_striequals(self->sdp_neg.remote_best_pcfg.t_proto, "RTP/SAVP")){
-						char *str_acfg = tsk_null;
-						tsk_sprintf(&str_acfg, "%d t=%d", self->sdp_neg.remote_best_pcfg.tag, self->sdp_neg.remote_best_pcfg.t_tag);
-						tsdp_header_M_add_headers(base->M.lo,
-							TSDP_HEADER_A_VA_ARGS("acfg", str_acfg),
-							tsk_null);
-						TSK_FREE(str_acfg);
-					}
+
+				// get local SRTP context
+				if(is_srtp_sdes_enabled){
+					trtp_srtp_get_ctx_local(self->rtp_manager, &ctx, &ctx_count);
 				}
-			}
-			else{
-				if(!self->use_avpf){ // only negotiate if not already using AVPF
-					tsk_bool_t enable_srtp = tsk_true;
-					#if HAVE_SRTP
-					enable_srtp = (have_libsrtp && (self->srtp_mode == tmedia_srtp_mode_mandatory || self->srtp_mode == tmedia_srtp_mode_optional));
-					#endif
-					// "a=acap:1 crypto" is not included because most of SIP client don't support RFC 5939
-					// "a=crypto" is always used to indicate optional support for SRTP
-					tsdp_header_M_add_headers(base->M.lo,
-						TSDP_HEADER_A_VA_ARGS("tcap", enable_srtp ? "1 RTP/SAVPF" : "1 RTP/AVPF"),
-						TSDP_HEADER_A_VA_ARGS("pcfg", "1 t=1"),
-						tsk_null);
+
+				// a=tcap:
+				if((negotiate_srtp || negotiate_avpf)){
+					static const int32_t __tcap_tag = 1;
+					char* tcap = tsk_null;
+					const char* fp_sha1 = tsk_null;
+					const char* fp_sha256 = tsk_null;
+					#define _first_media_add_header()
+					#define _first_media_strcat(ppstr, format, ...) if(is_first_media) tsk_strcat_2((ppstr), (format), ##__VA_ARGS__)
+					#define _first_media_sprintf(ppstr, format, ...) if(is_first_media) tsk_sprintf((ppstr), (format), ##__VA_ARGS__)
+					#define _first_media_add_headers(sdp, ...) if(is_first_media) tsdp_message_add_headers((sdp), ##__VA_ARGS__)
 					
+					_first_media_strcat(&tcap, "%d", __tcap_tag);
+
+					if(is_srtp_dtls_enabled){
+						if(!tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_ca)){
+							fp_sha1 = trtp_manager_get_dtls_local_fingerprint(self->rtp_manager, tnet_dtls_hash_type_sha1);
+							fp_sha256 = trtp_manager_get_dtls_local_fingerprint(self->rtp_manager, tnet_dtls_hash_type_sha256);
+						}
+						_first_media_strcat(&tcap, negotiate_avpf ? " UDP/TLS/RTP/SAVPF UDP/TLS/RTP/SAVP" : "UDP/TLS/RTP/SAVP");
+						if(negotiate_avpf){
+							profiles[profiles_index++] = RTP_PROFILE_UDP_TLS_RTP_SAVPF;
+						}
+						profiles[profiles_index++] = RTP_PROFILE_UDP_TLS_RTP_SAVP;
+					}
+					if(is_srtp_sdes_enabled){
+						_first_media_strcat(&tcap, negotiate_avpf ? " RTP/SAVPF RTP/SAVP" : "RTP/SAVP");
+						if(negotiate_avpf){
+							profiles[profiles_index++] = RTP_PROFILE_SAVPF;
+						}
+						profiles[profiles_index++] = RTP_PROFILE_SAVP;
+					}
+					
+					if(!is_srtp_local_mandatory){
+						_first_media_strcat(&tcap, " RTP/AVPF");
+						profiles[profiles_index++] = RTP_PROFILE_AVPF;
+					}
+					
+					// DTLS "setup" and "fringerprint"s
+					if((fp_sha1 || fp_sha256) && negotiate_srtp){
+						char* acap_fp = tsk_null;
+						acap_tag_setup = 1, acap_tag_connection = 2;
+						_first_media_sprintf(&str, "%d setup:%s", acap_tag_setup, TNET_DTLS_SETUP_NAMES[self->dtls.local.setup]);
+						_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("acap", str), tsk_null);
+						_first_media_sprintf(&str, "%d connection:%s", acap_tag_connection, self->dtls.local.connection_new ? "new" : "existing");
+						_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("acap", str), tsk_null);
+						if(fp_sha1){
+							_first_media_sprintf(&acap_fp, "3 fingerprint: %s %s", TNET_DTLS_HASH_NAMES[tnet_dtls_hash_type_sha1], fp_sha1);
+							acap_tag_fp_sha1 = 3;
+							_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("acap", acap_fp), tsk_null);
+						}
+						if(fp_sha256){
+							_first_media_sprintf(&acap_fp, "%d fingerprint: %s %s", fp_sha1 ? 4 : 3, TNET_DTLS_HASH_NAMES[tnet_dtls_hash_type_sha256], fp_sha256);
+							acap_tag_fp_sha256 = (fp_sha1 ? 4 : 3);
+							_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("acap", acap_fp), tsk_null);
+						}
+						TSK_FREE(acap_fp);
+					}
+					
+					// "tcap"
+					_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("tcap", tcap), tsk_null);
+					TSK_FREE(tcap);
+
+					acap_tag = TSK_MAX(acap_tag, acap_tag_connection);
+					acap_tag = TSK_MAX(acap_tag, acap_tag_fp_sha1);
+					acap_tag = TSK_MAX(acap_tag, acap_tag_fp_sha256);
 				}
-			}
+				if(is_first_media && !negotiate_srtp && is_srtp_dtls_enabled){
+					// add DTLS-SRTP fingerprint and setup at session-level
+					const char* fp_sha1 = trtp_manager_get_dtls_local_fingerprint(self->rtp_manager, TDAV_DFAULT_FP_HASH);
+					if(fp_sha1){
+						tsk_sprintf(&str, "%s %s", TNET_DTLS_HASH_NAMES[tnet_dtls_hash_type_sha1], fp_sha1);
+#if TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT
+						tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("fingerprint", str), tsk_null);
+						tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("setup", "active"), tsk_null);
+						tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("connection", "new"), tsk_null);
+#else
+						_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("fingerprint", str), tsk_null);
+						_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("setup", TNET_DTLS_SETUP_NAMES[self->dtls.local.setup]), tsk_null);
+						_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("connection", self->dtls.local.connection_new ? "new" : "existing"), tsk_null);
+#endif
+					}
+				}
+
+				// "a=acap:crypto" or "a=crypto"
+				for(ctx_idx = 0; ctx_idx < ctx_count; ++ctx_idx){
+					if(acap_tag_crypro_start == 0){
+						acap_tag_crypro_start = (acap_tag == 1 ? acap_tag : ++acap_tag);
+					}
+					if(negotiate_srtp){
+						tsk_sprintf(&str, "%d crypto:%d %s inline:%s", acap_tag++, ctx[ctx_idx].tag, trtp_srtp_crypto_type_strings[ctx[ctx_idx].crypto_type], ctx[ctx_idx].key_str);
+						cryptoA = tsdp_header_A_create("acap", str);
+					}
+					else{
+						tsk_sprintf(&str, "%d %s inline:%s", ctx[ctx_idx].tag, trtp_srtp_crypto_type_strings[ctx[ctx_idx].crypto_type], ctx[ctx_idx].key_str);
+						cryptoA = tsdp_header_A_create("crypto", str);
+					}
+
+					tsdp_header_M_add(base->M.lo, (const tsdp_header_t*)cryptoA);
+
+					TSK_OBJECT_SAFE_FREE(cryptoA);
+				}
+
+				// a=pcfg:
+				if(negotiate_srtp || negotiate_avpf){
+					tsk_size_t pcfg_tag, pcfg_idx;
+					char *acap_crypto = tsk_null, *acap_dtls = tsk_null;
+					
+					// crypto
+					for(ctx_idx = 0; ctx_idx < ctx_count; ++ctx_idx){
+						tsk_strcat_2(&acap_crypto, "%s%d", 
+								acap_crypto ? "," : "",
+								(acap_tag_crypro_start + ctx_idx)
+							);
+					}
+					
+					// dtls setup and fingerprints
+					if(acap_tag_setup > 0 && acap_tag_connection > 0 && (acap_tag_fp_sha1 > 0 || acap_tag_fp_sha256 > 0)){
+						tsk_sprintf(&acap_dtls, "%d,%d", acap_tag_setup, acap_tag_connection);
+						if(acap_tag_fp_sha1 > 0){
+							tsk_strcat_2(&acap_dtls, ",%d", acap_tag_fp_sha1);
+						}
+						if(acap_tag_fp_sha256 > 0){
+							tsk_strcat_2(&acap_dtls, "%s%d", acap_tag_fp_sha1 > 0 ? "|" : ",", acap_tag_fp_sha256);
+						}
+					}
+
+					for(pcfg_tag = 1, pcfg_idx = 0; pcfg_idx < profiles_index; ++pcfg_tag, ++pcfg_idx){
+						if(((profiles[pcfg_idx] & RTP_PROFILE_SECURE_SDES) == RTP_PROFILE_SECURE_SDES) && acap_crypto){
+							tsk_sprintf(&str, "%d t=%d a=%s", pcfg_tag, pcfg_tag, acap_crypto);
+						}
+						else if(((profiles[pcfg_idx] & RTP_PROFILE_SECURE_DTLS) == RTP_PROFILE_SECURE_DTLS) && acap_dtls){
+							tsk_sprintf(&str, "%d t=%d a=%s", pcfg_tag, pcfg_tag, acap_dtls);
+						}
+						else{
+							tsk_sprintf(&str, "%d t=%d", pcfg_tag, pcfg_tag);
+						}
+						tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("pcfg", str), tsk_null);
+					}
+					
+					TSK_FREE(acap_crypto);
+					TSK_FREE(acap_dtls);
+				}
+				
+				if(is_srtp_remote_mandatory || is_srtp_local_mandatory || trtp_srtp_is_initialized(self->rtp_manager)){
+					self->use_srtp = tsk_true;
+				}
+
+				/* RFC 5939 - Session Description Protocol (SDP) Capability Negotiation */
+				{ 
+					sdp_acaps_xt acaps;
+					sdp_tcaps_xt tcaps;
+
+					_sdp_acaps_reset(&acaps);
+					_sdp_tcaps_reset(&tcaps);
+					_sdp_pcfgs_reset(&self->sdp_caps->local);
+					// session-level attributes
+					if(self->local_sdp){
+						_sdp_pcfgs_from_sdp(self->local_sdp, &acaps, &tcaps, &self->sdp_caps->local, tsk_false);
+					}
+					// media-level attributes
+					_sdp_pcfgs_from_sdp(base->M.lo, &acaps, &tcaps, &self->sdp_caps->local, tsk_false);
+				}
+
+				TSK_FREE(str);
+			} //end-of-if(!base->M.ro)
+			else{
+				// RO IS NOT NULL
+				// the ro validity has been checked in "set_ro()"
+				RTP_PROFILE_T profile_remote = (self->sdp_caps->acfg.tag > 0 && self->sdp_caps->acfg.tcap.tag > 0)
+					? self->sdp_caps->acfg.tcap.profile
+					: _sdp_profile_from_string(base->M.ro->proto);
+				tsk_bool_t is_srtp_sdes_activated = tsk_false, is_srtp_dtls_activated = tsk_false;
+
+				// intersect remote and local SRTP options
+				self->use_avpf |= ((profile_remote & RTP_PROFILE_AVPF) == RTP_PROFILE_AVPF);
+				is_srtp_sdes_enabled &= ((profile_remote & RTP_PROFILE_SECURE_SDES) == RTP_PROFILE_SECURE_SDES);
+				is_srtp_dtls_enabled &= ((profile_remote & RTP_PROFILE_SECURE_DTLS) == RTP_PROFILE_SECURE_DTLS);
+				
+				
+				// SDES-SRTP
+				if(is_srtp_sdes_enabled){
+					const trtp_srtp_ctx_xt *ctx = tsk_null;
+					tsk_size_t ctx_count = 0, ctx_idx;
+					// get local SRTP context
+					if(trtp_srtp_get_ctx_local(self->rtp_manager, &ctx, &ctx_count) == 0){
+						char* str = tsk_null;
+						for(ctx_idx = 0; ctx_idx < ctx_count; ++ctx_idx){
+							is_srtp_sdes_activated = tsk_true;
+                            tsk_sprintf(&str, "%d %s inline:%s", ctx[ctx_idx].tag, trtp_srtp_crypto_type_strings[ctx[ctx_idx].crypto_type], ctx[ctx_idx].key_str);
+                            tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("crypto", str), tsk_null);
+                        }
+						TSK_FREE(str);
+					}
+				}
+
+				// DTLS-SRTP
+				if(!is_srtp_sdes_activated && is_srtp_dtls_enabled){
+					// get "fingerprint", "setup" and "connection" attributes
+					if(!tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_ca)){
+						tnet_dtls_hash_type_t fp_hash_remote;
+						char* str = tsk_null;
+						if((fp_hash_remote = trtp_manager_get_dtls_remote_fingerprint_hash(self->rtp_manager)) == tnet_dtls_hash_type_none){
+							fp_hash_remote = TDAV_DFAULT_FP_HASH;
+						}
+						tsk_sprintf(&str, "%s %s", TNET_DTLS_HASH_NAMES[fp_hash_remote], trtp_manager_get_dtls_local_fingerprint(self->rtp_manager, fp_hash_remote));
+#if TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT
+						tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("fingerprint", str), tsk_null);
+#else
+						_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("fingerprint", str), tsk_null);
+#endif
+						TSK_FREE(str);
+					}
+#if TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT
+					tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("setup", TNET_DTLS_SETUP_NAMES[self->dtls.local.setup]), tsk_null);
+					tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("connection", self->dtls.local.connection_new ? "new" : "existing"), tsk_null);
+#else
+					_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("setup", TNET_DTLS_SETUP_NAMES[self->dtls.local.setup]), tsk_null);
+					_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("connection", self->dtls.local.connection_new ? "new" : "existing"), tsk_null);
+#endif
+
+					is_srtp_dtls_activated = tsk_true;
+				}
+
+				// activate the right SRTP type and disable others
+				trtp_manager_set_srtp_type_remote(self->rtp_manager, 
+					is_srtp_sdes_activated ? tmedia_srtp_type_sdes : (is_srtp_dtls_activated ? tmedia_srtp_type_dtls : tmedia_srtp_type_none));
+				
+				self->use_srtp |= (is_srtp_sdes_activated || is_srtp_dtls_activated);
+				is_srtp_sdes_enabled &= is_srtp_sdes_activated;
+				is_srtp_dtls_enabled &= is_srtp_dtls_activated;
+
+			}//end-of-else
+		}//end-of-HAVE_SRTP
+#endif /* HAVE_SRTP */
+		
+
+		/* RFC 5939: acfg */
+		if(self->sdp_caps->acfg.tag > 0){
+			_sdp_acfg_to_sdp(base->M.lo, &self->sdp_caps->acfg);
 		}
 
 		/* Hold/Resume */
-		tsdp_header_M_set_holdresume_att(base->M.lo, base->lo_held, base->ro_held);
-		
-		/* SRTP */
-#if HAVE_SRTP
-		{
-			tsk_bool_t is_srtp_remote_mandatory = (base->M.ro && (tsk_striequals(base->M.ro->proto, "RTP/SAVP") || tsk_striequals(base->M.ro->proto, "RTP/SAVPF")));
-			tsk_bool_t is_srtp_remote_optional = (base->M.ro && (tsdp_header_M_findA(base->M.ro, "crypto") != tsk_null));
-			if((self->srtp_mode == tmedia_srtp_mode_optional && (is_srtp_remote_optional || is_srtp_remote_mandatory || !base->M.ro)) || self->srtp_mode == tmedia_srtp_mode_mandatory){
-				const trtp_srtp_ctx_xt *ctx = tsk_null;
-				tsk_size_t ctx_count = 0, ctx_idx;
-				char* str = tsk_null;
-				// local
-				trtp_srtp_get_ctx_local(self->rtp_manager, &ctx, &ctx_count);
-				for(ctx_idx = 0; ctx_idx < ctx_count; ++ctx_idx){
-					tsk_sprintf(&str, "%d %s inline:%s", ctx[ctx_idx].tag, trtp_srtp_crypto_type_strings[ctx[ctx_idx].crypto_type], ctx[ctx_idx].key_str);
-					tsdp_header_M_add_headers(base->M.lo,
-						TSDP_HEADER_A_VA_ARGS("crypto", str),
-						tsk_null);
-					TSK_FREE(str);
-				}
-			}
-			
-			if(is_srtp_remote_mandatory || (self->srtp_mode == tmedia_srtp_mode_mandatory) || trtp_srtp_is_initialized(self->rtp_manager)){
-				self->use_srtp = tsk_true;
-			}
-		}
-#endif
+		tsdp_header_M_set_holdresume_att(base->M.lo, base->lo_held, base->ro_held);		
 
 		/* Update Proto*/
 		tsk_strupdate(&base->M.lo->proto, 
-			self->use_srtp ? (self->use_avpf ? "RTP/SAVPF" : "RTP/SAVP") : (self->use_avpf ? "RTP/AVPF" : "RTP/AVP")
+			self->use_srtp 
+			? (self->use_avpf ? (is_srtp_dtls_enabled ? "UDP/TLS/RTP/SAVPF" : "RTP/SAVPF") : (is_srtp_dtls_enabled ? "UDP/TLS/RTP/SAVP" : "RTP/SAVP")) 
+			: (self->use_avpf ? "RTP/AVPF" : "RTP/AVP")
 		);
 
 		// RFC 5761: RTCP/RTP muxing
@@ -603,9 +1036,10 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 							TSDP_HEADER_A_VA_ARGS("ice-pwd", candidate->pwd),
 							tsk_null);
 				// RTCWeb
-				tsdp_header_M_add_headers(base->M.lo,
-					TSDP_HEADER_A_VA_ARGS("mid", self->media_type == tmedia_audio ? "audio" : "video"),
-						tsk_null);	
+				// "mid:" must not added without BUNDLE
+				// tsdp_header_M_add_headers(base->M.lo,
+				//	TSDP_HEADER_A_VA_ARGS("mid", self->media_type == tmedia_audio ? "audio" : "video"),
+				//		tsk_null);	
 				
 				while((candidate = tnet_ice_ctx_get_local_candidate_at(self->ice_ctx, index++))){
 					if(self->use_rtcpmux && remote_use_rtcpmux && candidate->comp_id == TNET_ICE_CANDIDATE_COMPID_RTCP){
@@ -649,7 +1083,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			tmedia_qos_tline_to_sdp(base->qos, base->M.lo);
 		}
 DONE:;
-	} // updated
+	} // end-of-if(*updated)
 
 	return base->M.lo;
 }
@@ -657,12 +1091,19 @@ DONE:;
 int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s* m, tsk_bool_t *updated)
 {
 	tmedia_codecs_L_t* neg_codecs;
-	tsk_bool_t is_srtp_remote_mandatory;
-	tsk_bool_t crypto_matched = tsk_false;
+	tsk_bool_t srtp_sdes_neg_ok = tsk_false, srtp_dtls_neg_ok = tsk_false;
+	tsk_bool_t is_srtp_remote_mandatory, is_srtp_dtls_remote_mandatory, is_srtp_sdes_remote_mandatory;
+	tsk_bool_t is_srtp_local_mandatory, is_srtp_dtls_local_enabled, is_srtp_sdes_local_enabled;
 	tmedia_session_t* base = TMEDIA_SESSION(self);
+	RTP_PROFILE_T profile_remote;
+	int32_t acfg_idx = -1;
 
 	if(!base || !m || !updated){
 		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	if(!self->rtp_manager){
+		TSK_DEBUG_ERROR("RTP manager is null. Did you forget to prepare the session?");
 		return -1;
 	}
 
@@ -671,7 +1112,28 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 	base->M.ro = tsk_object_ref((void*)m);
 
 	*updated = tsk_false;
-	is_srtp_remote_mandatory = (tsk_striequals(m->proto, "RTP/SAVP") || tsk_striequals(m->proto, "RTP/SAVPF"));
+
+	// check if the RTP profile from remote party is supported or not
+	if((profile_remote = _sdp_profile_from_string(m->proto)) == RTP_PROFILE_NONE){
+		TSK_DEBUG_ERROR("%s not supported as RTP profile");
+		return -2;
+	}
+	// check that all options in the profile are supported
+	if((is_srtp_remote_mandatory = (profile_remote & RTP_PROFILE_SECURE))  && (self->srtp_mode == tmedia_srtp_mode_none)){
+		TSK_DEBUG_ERROR("Remote party requesting secure transport (%s) but this option is not enabled", m->proto);
+		return -2;
+	}
+	if((is_srtp_sdes_remote_mandatory = (profile_remote & RTP_PROFILE_SECURE_SDES) == RTP_PROFILE_SECURE_SDES) && !(self->srtp_type & tmedia_srtp_type_sdes)){
+		TSK_DEBUG_ERROR("Remote party requesting SRTP-SDES (%s) but this option is not enabled", m->proto);
+		return -2;
+	}
+	if((is_srtp_dtls_remote_mandatory = (profile_remote & RTP_PROFILE_SECURE_DTLS) == RTP_PROFILE_SECURE_DTLS) && !(self->srtp_type & tmedia_srtp_type_dtls)){
+		TSK_DEBUG_ERROR("Remote party requesting DTLS-DTLS (%s) but this option is not enabled", m->proto);
+		return -2;
+	}
+	is_srtp_local_mandatory = (self->srtp_mode == tmedia_srtp_mode_mandatory) && (self->srtp_type != tmedia_srtp_type_none);
+	is_srtp_dtls_local_enabled = (self->srtp_mode != tmedia_srtp_mode_none) && (self->srtp_type & tmedia_srtp_type_dtls);
+	is_srtp_sdes_local_enabled = (self->srtp_mode != tmedia_srtp_mode_none) && (self->srtp_type & tmedia_srtp_type_sdes); 
 
 	if(base->M.lo){
 		if((neg_codecs = tmedia_session_match_codec(base, m))){
@@ -693,9 +1155,28 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 			}
 		}
 		/* AVPF */
-		if(tsk_striequals(base->M.lo->proto, "RTP/AVPF") || tsk_striequals(base->M.lo->proto, "RTP/SAVPF")){
+		if(_sdp_str_contains(base->M.lo->proto, "AVPF")){
 			self->use_avpf = tsk_true;
 		}
+	}
+
+	/* RFC 5939 - Session Description Protocol (SDP) Capability Negotiation */
+	{ 
+		sdp_acaps_xt acaps;
+		sdp_tcaps_xt tcaps;
+
+		_sdp_acfg_reset(&self->sdp_caps->acfg);
+
+		_sdp_acaps_reset(&acaps);
+		_sdp_tcaps_reset(&tcaps);
+		_sdp_pcfgs_reset(&self->sdp_caps->remote);
+
+		// session-level attributes
+		if(self->remote_sdp){
+			_sdp_pcfgs_from_sdp(self->remote_sdp, &acaps, &tcaps, &self->sdp_caps->remote, tsk_false);
+		}
+		// media-level attributes
+		_sdp_pcfgs_from_sdp(base->M.ro, &acaps, &tcaps, &self->sdp_caps->remote, tsk_false);
 	}
 
 	/* get connection associated to this media line
@@ -713,75 +1194,207 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 		tnet_ice_ctx_set_rtcpmux(self->ice_ctx, self->use_rtcpmux);
 	}
 
-	/* SDPCapNeg: RFC 5939 */
-	{
-		const tsdp_header_A_t *A_pcfg, *A_tcap;
+	/* SRTP */
+#if HAVE_SRTP
+	// this is SRTP negotiation -> do not trust the remote profile
+	if(is_srtp_dtls_local_enabled || is_srtp_sdes_local_enabled){
 		tsk_size_t i, j;
-		char c_pcfg;
-		int tag_pcfg, tag_pcfg_t;
-		i = 0;
-		TSK_FREE(self->sdp_neg.remote_best_pcfg.t_proto);
-		while((A_pcfg = tsdp_header_M_findA_at(base->M.ro, "pcfg", i++))){
-			char* v_pcfg = strtok((char*)A_pcfg->value, " ");
-			tag_pcfg = atoi(v_pcfg);
-			if(v_pcfg && (v_pcfg = strtok(tsk_null, " "))){
-				do{
-					if(sscanf(v_pcfg, "%c=%d", &c_pcfg, &tag_pcfg_t) >= 2){
-						j = 0;
-						if(c_pcfg == 't'){
-							while((A_tcap = tsdp_header_M_findA_at(base->M.ro, "tcap", j++))){
-								char* v_tcap = strtok((char*)A_tcap->value, " ");
-								if((v_tcap && atoi(v_tcap) == tag_pcfg_t)){
-									if((v_tcap = strtok(tsk_null, " "))){
-										// for now only get the best proto
-										self->sdp_neg.remote_best_pcfg.tag = tag_pcfg; 
-										self->sdp_neg.remote_best_pcfg.t_tag = tag_pcfg_t;
-										tsk_strupdate(&self->sdp_neg.remote_best_pcfg.t_proto, v_tcap);
-										goto SDPCapNegDone;
-									}
-								}
+		const sdp_acap_xt *acap;
+		int ret;
+		if(is_srtp_sdes_local_enabled){
+			const tsdp_header_A_t* A;
+			const char* cryptos[2] = { tsk_null };
+
+			/* 1. check crypto lines from the SDP */
+			i = 0;
+			while((A = tsdp_header_M_findA_at(m, "crypto", i))){
+				cryptos[i++] = A->value;
+				if(i >= (sizeof(cryptos)/sizeof(cryptos[0]))){
+					break;
+				}
+			}
+
+			/* 2. check crypto lines from the caps (RFC 5939)*/
+			if(!cryptos[0]){
+				tsk_size_t k = 0;
+				for(i = 0; (i < SDP_CAPS_COUNT_MAX && self->sdp_caps->remote[i].tag > 0); ++i){
+					j = 0;
+					while((acap = _sdp_acaps_find_by_field(&self->sdp_caps->remote[i].acaps, "crypto", j++))){
+						if(k < (sizeof(cryptos)/sizeof(cryptos[0]))){
+							// remove "crypto: "
+							if((cryptos[k] = strstr(acap->value, ":")) && ++cryptos[k]){
+								while(isspace(*cryptos[k])) ++cryptos[k];
+								++k;
 							}
 						}
 					}
+					if(k != 0){ // do not mix crypto lines from different pcfgs
+						acfg_idx = i;
+						break;
+					}
 				}
-				while((v_pcfg = strtok(tsk_null, " ")));
 			}
-		}
-SDPCapNegDone:;
-	}
+			
+			/* 3. match cryptos */
+			for(i = 0; i< sizeof(cryptos)/sizeof(cryptos[0]); ++i){
+				if(!cryptos[i]){
+					break;
+				}
+				if((ret = trtp_srtp_set_crypto_remote(self->rtp_manager, cryptos[i])) == 0){
+					srtp_sdes_neg_ok = tsk_true;
+					break;
+				}
+			}			
+		} // end-of-sdes
 
-	/* SRTP */
-#if HAVE_SRTP
-	if(self->srtp_mode == tmedia_srtp_mode_optional || self->srtp_mode == tmedia_srtp_mode_mandatory){
-		tsk_size_t i = 0;
-		const tsdp_header_A_t* A;
-		int ret;
-		while((A = tsdp_header_M_findA_at(m, "crypto", i++))){
-			if(self->rtp_manager){
-				if((ret = trtp_srtp_set_remote(self->rtp_manager, A->value)) == 0){
-					crypto_matched = tsk_true;
-					break;
+		if(!srtp_sdes_neg_ok && is_srtp_dtls_local_enabled){
+			int ret;
+			const tsdp_header_A_t *setupA = tsk_null, *fpA = tsk_null, *connectionA = tsk_null;
+			const char* fingerprints[4] = { tsk_null };
+			const char* setups[4] = { tsk_null };
+			const char* connections[4] = { tsk_null };
+			const char* connection = tsk_null;
+			const char* setup = tsk_null;
+
+			/* 1. check DTLS attributes from the SDP */
+
+			if(self->remote_sdp){
+				setupA = tsdp_message_get_headerA(self->remote_sdp, "setup");
+				fpA = tsdp_message_get_headerA(self->remote_sdp, "fingerprint");
+				connectionA = tsdp_message_get_headerA(self->remote_sdp, "connection");
+			}
+			if(!setupA) setupA = tsdp_header_M_findA(m, "setup");
+			if(!fpA) fpA = tsdp_header_M_findA(m, "fingerprint");
+			if(!connectionA) connectionA = tsdp_header_M_findA(m, "connection");
+			
+			if(setupA) setups[0] = setupA->value;
+			if(fpA) fingerprints[0] = fpA->value;
+			if(connectionA) connections[0] = connectionA->value;
+
+			/* 2. check DTLS attributes from from the caps (RFC 5939) */
+			if(!srtp_dtls_neg_ok && !fingerprints[0]){
+				tsk_size_t k_fp = 0, k_st = 0, k_conn = 0;
+				for(i = 0; (i < SDP_CAPS_COUNT_MAX && self->sdp_caps->remote[i].tag > 0); ++i){
+					// "fingerprint"
+					j = 0;
+					while((acap = _sdp_acaps_find_by_field(&self->sdp_caps->remote[i].acaps, "fingerprint", j++))){
+						if(k_fp < (sizeof(fingerprints)/sizeof(fingerprints[0]))){
+							if((fingerprints[k_fp] = strstr(acap->value, ":")) && ++fingerprints[k_fp]){
+								while(isspace(*fingerprints[k_fp])) ++fingerprints[k_fp];
+								++k_fp;
+							}
+						}
+					}
+					// "setup"
+					j = 0;
+					while((acap = _sdp_acaps_find_by_field(&self->sdp_caps->remote[i].acaps, "setup", j++))){
+						if(k_st < (sizeof(setups)/sizeof(setups[0]))){
+							if((setups[k_st] = strstr(acap->value, ":")) && ++setups[k_st]){
+								while(isspace(*setups[k_st])) ++setups[k_st];
+								++k_st;
+							}
+						}
+					}
+					// "connection"
+					j = 0;
+					while((acap = _sdp_acaps_find_by_field(&self->sdp_caps->remote[i].acaps, "connection", j++))){
+						if(k_conn < (sizeof(connections)/sizeof(connections[0]))){
+							if((connections[k_conn] = strstr(acap->value, ":")) && ++connections[k_conn]){
+								while(isspace(*connections[k_conn])) ++connections[k_conn];
+								++k_conn;
+							}
+						}
+					}
+
+					if(k_fp || k_st || k_conn){ // do not mix crypto lines from different pcfgs
+						acfg_idx = i;
+						break;
+					}
 				}
 			}
-			else{
-				if((ret = trtp_srtp_match_line(A->value, &self->remote_srtp_neg.tag, (int32_t*)&self->remote_srtp_neg.crypto_type, self->remote_srtp_neg.key, (sizeof(self->remote_srtp_neg.key) - 1))) == 0){
-					crypto_matched = tsk_true;
-					self->remote_srtp_neg.pending = tsk_true;
-					break;
+
+			/* 3. setup DTLS connection using negotiated attributes */
+			
+			if(!srtp_dtls_neg_ok && fingerprints[0]){
+				tnet_fingerprint_t fingerprint;
+				char hash[16];
+				for(i = 0; i < sizeof(fingerprints)/sizeof(fingerprints[0]) && !srtp_dtls_neg_ok; ++i){
+					if(!fingerprints[i]){
+						break;
+					}
+					if(sscanf(fingerprints[i], "%15s %255s", hash, fingerprint) >= 2){
+						if((ret = trtp_manager_set_dtls_remote_fingerprint(self->rtp_manager, &fingerprint, hash)) == 0){
+							acfg_idx = i;
+							srtp_dtls_neg_ok = tsk_true;
+							break;
+						}
+					}
 				}
 			}
-		}
-		if((self->srtp_mode == tmedia_srtp_mode_mandatory) && !crypto_matched){// local require but none match
-			TSK_DEBUG_ERROR("SRTP negotiation failed");
-			return -3;
-		}
-	}
+
+			// only accept sdp without fingerprints if certificate verification is OFF
+			if(!srtp_dtls_neg_ok && !fingerprints[0] && !TMEDIA_SESSION(self)->dtls.verify){
+				for(i = 0; (i < SDP_CAPS_COUNT_MAX && self->sdp_caps->remote[i].tag > 0); ++i){
+					if(self->sdp_caps->remote[i].tcap.tag > 0 && (self->sdp_caps->remote[i].tcap.profile & RTP_PROFILE_SECURE_DTLS) == RTP_PROFILE_SECURE_DTLS){
+						acfg_idx = i;
+						break;
+					}
+				}
+			}
+
+			// defaults
+			if(!connection) connection = connections[acfg_idx != -1 ? acfg_idx : 0];
+			if(!setup) setup = setups[acfg_idx != -1 ? acfg_idx : 0];
+
+			if((!connection || !setup) && (is_srtp_dtls_remote_mandatory || is_srtp_local_mandatory || (acfg_idx != -1 && (self->sdp_caps->remote[acfg_idx].tcap.profile & RTP_PROFILE_SECURE_DTLS) == RTP_PROFILE_SECURE_DTLS))){
+				if(!connection) connection = (self->dtls.local.connection_new ? "existing" : "new");
+				if(!setup) setup = (self->dtls.local.setup == tnet_dtls_setup_active 
+					? "passive" 
+					: (self->dtls.local.setup == tnet_dtls_setup_passive ? "active" : (base->M.lo ? "passive" : "active")));
+			}
+
+			if(connection && setup){
+				// update local setup according to remote setup
+				ret = _tdav_session_av_dtls_set_remote_setup(self, 
+					tnet_dtls_get_setup_from_string(setup),
+					!tsk_striequals(connection, "existing")
+					);
+				if(ret == 0){
+					// pass new local values to the RTP manager
+					ret = trtp_manager_set_dtls_local_setup(self->rtp_manager, self->dtls.local.setup, self->dtls.local.connection_new);
+					srtp_dtls_neg_ok = (ret == 0);
+				}
+			}
+
+		}// end-of-dtls
+	}//end-of-if(srtp=optional|mandatory)
 	
 	self->use_srtp = trtp_srtp_is_initialized(self->rtp_manager);
+
+	// activate the right SRTP type and disable others
+	trtp_manager_set_srtp_type_remote(self->rtp_manager, 
+		srtp_sdes_neg_ok ? tmedia_srtp_type_sdes : (srtp_dtls_neg_ok ? tmedia_srtp_type_dtls : tmedia_srtp_type_none));
 	
 #endif
+
+	// set actual config
+	if(acfg_idx == -1){
+		// none matched (means SRTP negotiation failed or not enabled -> try to negotiate AVP(F))
+		int32_t i;
+		for(i = 0; (i < SDP_CAPS_COUNT_MAX && self->sdp_caps->remote[i].tag > 0); ++i){
+			if(self->sdp_caps->remote[i].tcap.tag > 0){
+				if(self->sdp_caps->remote[i].tcap.profile == RTP_PROFILE_AVPF){
+					 acfg_idx = i;
+					 break;
+				}
+			}
+		}
+	}
+	if(acfg_idx != -1){
+		self->sdp_caps->acfg = self->sdp_caps->remote[acfg_idx];
+	}
 	
-	if(is_srtp_remote_mandatory && !crypto_matched){// remote require but none match
+	if(!srtp_sdes_neg_ok && !srtp_dtls_neg_ok && (is_srtp_remote_mandatory || is_srtp_local_mandatory)){
 		TSK_DEBUG_ERROR("SRTP negotiation failed");
 		return -4;
 	}
@@ -824,11 +1437,120 @@ const tmedia_codec_t* tdav_session_av_get_red_codec(const tdav_session_av_t* sel
 	return tsk_null;
 }
 
-static int _tdav_session_av_red_cb(const void* callback_data, const struct trtp_rtp_packet_s* packet)
+static void* _tdav_session_av_error_async_thread(void* usrdata)
 {
-	tdav_session_av_t* self = (tdav_session_av_t*)callback_data;
-	if(self->rtp_manager && self->rtp_manager->rtp.callback){
-		return self->rtp_manager->rtp.callback(self->rtp_manager->rtp.callback_data, packet);
+	if(usrdata){
+		tdav_session_av_t* self = (tdav_session_av_t*)usrdata;
+		tsk_safeobj_lock(self);
+		if(TMEDIA_SESSION(self)->onerror_cb.fun){
+			TMEDIA_SESSION(self)->onerror_cb.fun(TMEDIA_SESSION(self)->onerror_cb.usrdata, TMEDIA_SESSION(self), self->last_error.reason, self->last_error.is_fatal);
+		}
+		tsk_safeobj_unlock(self);
+		tsk_object_unref(self); // see _tdav_session_av_raise_error_async()
+	}
+	return tsk_null;
+}
+
+static int _tdav_session_av_raise_error_async(struct tdav_session_av_s* self, tsk_bool_t is_fatal, const char* reason)
+{
+	int ret;
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tsk_safeobj_lock(self);
+
+	tsk_object_ref(self); // see _tdav_session_av_error_async_thread()
+
+	if(self->last_error.tid[0]){
+		tsk_thread_join(self->last_error.tid);
+	}
+
+	self->last_error.is_fatal = is_fatal;
+	tsk_strupdate(&self->last_error.reason, reason);
+	if((ret = tsk_thread_create(self->last_error.tid, _tdav_session_av_error_async_thread, self)) != 0){
+		tsk_object_unref(self);
+		goto bail;
+	}
+
+bail:
+	tsk_safeobj_unlock(self);
+
+	return ret;
+}
+
+#if HAVE_SRTP
+static int _tdav_session_av_srtp_dtls_cb(const void* usrdata, enum trtp_srtp_dtls_event_type_e type, const char* reason)
+{
+	tdav_session_av_t* self = (tdav_session_av_t*)usrdata;
+
+	tsk_safeobj_lock(self);
+	switch(type){
+		case trtp_srtp_dtls_event_type_handshake_failed:
+		case trtp_srtp_dtls_event_type_fatal_error:
+			{
+				if(TMEDIA_SESSION(self)->onerror_cb.fun){
+					static const tsk_bool_t __is_fatal = tsk_true;
+					_tdav_session_av_raise_error_async(self, __is_fatal, reason);
+				}
+				break;
+			}
+		case trtp_srtp_dtls_event_type_handshake_succeed:
+			{
+				break;
+			}
+		case trtp_srtp_dtls_event_type_started:
+			{
+				// start producer and consumer
+				if(self->rtp_manager && self->rtp_manager->is_started){
+					if(self->consumer) tmedia_consumer_start(self->consumer);
+					if(self->producer) tmedia_producer_start(self->producer);
+				}
+				break;
+			}
+	}
+	tsk_safeobj_unlock(self);
+
+	return 0;
+}
+#endif /* HAVE_SRTP */
+
+static int _tdav_session_av_red_cb(const void* usrdata, const struct trtp_rtp_packet_s* packet)
+{
+	tdav_session_av_t* self = (tdav_session_av_t*)usrdata;
+	if(self->rtp_manager && self->rtp_manager->rtp.cb.fun){
+		return self->rtp_manager->rtp.cb.fun(self->rtp_manager->rtp.cb.usrdata, packet);
+	}
+	return 0;
+}
+
+int _tdav_session_av_dtls_set_remote_setup(struct tdav_session_av_s* self, tnet_dtls_setup_t setup, tsk_bool_t connection_new)
+{
+	if(self){
+		self->dtls.remote.setup = setup;
+		self->dtls.remote.connection_new = connection_new;
+		switch(self->dtls.remote.setup){
+			case tnet_dtls_setup_none:
+			default:
+				self->dtls.local.setup = tnet_dtls_setup_actpass;
+				self->dtls.local.connection_new = tsk_true; // RTP transport always unprepared for reINVITE/UPDATE -> new connection
+				break;
+			case tnet_dtls_setup_active:
+				self->dtls.local.setup = tnet_dtls_setup_passive;
+				self->dtls.local.connection_new = tsk_true;
+				break;
+			case tnet_dtls_setup_passive:
+				self->dtls.local.setup = tnet_dtls_setup_active;
+				self->dtls.local.connection_new = tsk_true;
+				break;
+			case tnet_dtls_setup_actpass:
+				self->dtls.local.setup = (self->dtls.local.setup == tnet_dtls_setup_actpass || self->dtls.local.setup == tnet_dtls_setup_active) 
+					? tnet_dtls_setup_active
+					: tnet_dtls_setup_passive;
+				self->dtls.local.connection_new = tsk_true;
+				break;
+		}
 	}
 	return 0;
 }
@@ -860,7 +1582,9 @@ int tdav_session_av_deinit(tdav_session_av_t* self)
 	TSK_OBJECT_SAFE_FREE(self->consumer);
 	TSK_OBJECT_SAFE_FREE(self->producer);
 	TSK_OBJECT_SAFE_FREE(self->rtp_manager);
-	TSK_FREE(self->sdp_neg.remote_best_pcfg.t_proto);
+	TSK_OBJECT_SAFE_FREE(self->sdp_caps);
+	TSK_OBJECT_SAFE_FREE(self->remote_sdp);
+	TSK_OBJECT_SAFE_FREE(self->local_sdp);
 	TSK_FREE(self->remote_ip);
 	TSK_FREE(self->local_ip);
 
@@ -872,10 +1596,537 @@ int tdav_session_av_deinit(tdav_session_av_t* self)
 	TSK_OBJECT_SAFE_FREE(self->natt_ctx);
 	TSK_OBJECT_SAFE_FREE(self->ice_ctx);
 
+	/* Last error */
+	if(self->last_error.tid[0]){
+		tsk_thread_join(self->last_error.tid);
+	}
+	TSK_FREE(self->last_error.reason);
+
 	tsk_safeobj_deinit(self);
 
 	/* deinit base */
 	tmedia_session_deinit(TMEDIA_SESSION(self));
 
 	return 0;
+}
+
+
+
+
+
+
+
+
+
+static const tsdp_header_A_t* _sdp_findA_at(const sdp_headerM_Or_Message* sdp, const char* field, tsk_size_t index)
+{
+	if(sdp){
+		if(TSK_OBJECT_HEADER(sdp)->__def__ == tsdp_message_def_t){
+			return tsdp_message_get_headerA_at((const tsdp_message_t*)sdp, field, index);
+		}
+		else if(TSK_OBJECT_HEADER(sdp)->__def__ == tsdp_header_M_def_t){
+			return tsdp_header_M_findA_at((const tsdp_header_M_t*)sdp, field, index);
+		}
+	}
+		
+	TSK_DEBUG_ERROR("Invalid parameter");
+	return tsk_null;
+}
+
+static int _sdp_add_headerA(sdp_headerM_Or_Message* sdp, const char* field, const char* value)
+{
+	if(sdp && field){
+		if(TSK_OBJECT_HEADER(sdp)->__def__ == tsdp_message_def_t){
+			return tsdp_message_add_headers((tsdp_message_t*)sdp,
+						TSDP_HEADER_A_VA_ARGS(field, value),
+						tsk_null);
+		}
+		else if(TSK_OBJECT_HEADER(sdp)->__def__ == tsdp_header_M_def_t){
+			return tsdp_header_M_add_headers((tsdp_header_M_t*)sdp,
+						TSDP_HEADER_A_VA_ARGS(field, value),
+						tsk_null);
+		}
+	}
+
+	TSK_DEBUG_ERROR("Invalid parameter");
+	return -1;
+}
+
+static RTP_PROFILE_T _sdp_profile_from_string(const char* profile)
+{
+	int32_t i;
+	for(i = 0; i < RTP_PROFILES_COUNT; ++i){
+		if(tsk_striequals(RTP_PROFILES[i].name, profile)){
+			return RTP_PROFILES[i].type;
+		}
+	}
+	return RTP_PROFILE_NONE;
+}
+
+static const char* _sdp_profile_to_string(RTP_PROFILE_T profile)
+{
+	int32_t i;
+	for(i = 0; i < RTP_PROFILES_COUNT; ++i){
+		if(RTP_PROFILES[i].type == profile){
+			return RTP_PROFILES[i].name;
+		}
+	}
+	return tsk_null;
+}
+
+_SDP_DECLARE_INDEX_OF(acap);
+
+static const sdp_acap_xt* _sdp_acaps_find_by_field(const sdp_acap_xt (*acaps)[SDP_CAPS_COUNT_MAX], const char* field, int32_t index)
+{
+	int32_t i, j, k, size;
+
+	if(!acaps || !field){
+		TSK_DEBUG_ERROR("Invalid paramter");
+		return tsk_null;
+	}
+
+	i = 0, j = 0;
+	size = tsk_strlen(field);
+	while((*acaps)[j].tag && j < SDP_CAPS_COUNT_MAX){
+		k = _sdp_str_index_of((*acaps)[j].value, field);
+		if(k == 0 && (*acaps)[j].value[size] == ':'){
+			if(i == index){
+				return &(*acaps)[j];
+			}
+			++i;
+		}
+		++j;
+	}
+	return tsk_null;
+}
+
+static int _sdp_acaps_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_acap_xt (*acaps)[SDP_CAPS_COUNT_MAX], tsk_bool_t reset)
+{
+	tsk_size_t acaps_count, acaps_idx;
+	const tsdp_header_A_t* A;
+	int32_t tag, index, size;
+
+	if(!sdp || !acaps){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	
+	if(reset){
+		_sdp_acaps_reset(acaps);
+		acaps_count = 0;
+	}
+	else{
+		if((acaps_count = _sdp_acaps_indexof(acaps, 0)) == -1){
+			TSK_DEBUG_ERROR("No room to append items");
+			return -1;
+		}
+	}
+	
+	acaps_idx = 0;
+	while((A = _sdp_findA_at(sdp, "acap", acaps_idx++))){
+		if(!(size = tsk_strlen(A->value))){
+			goto next;
+		}
+		if(sscanf(A->value, "%d", &tag) == EOF){
+			TSK_DEBUG_ERROR("sscanf(%s) failed", A->value);
+			break;
+		}
+		if(tag <= 0 || (tag + 1) > SDP_CAPS_COUNT_MAX){
+			TSK_DEBUG_WARN("Ignoring tag with value = %d");
+			goto next;
+		}
+
+		index = _sdp_integer_length(tag) + 1;/*SPACE*/
+		if(index >= size){
+			TSK_DEBUG_WARN("a=%s is empty", A->value);
+			goto next;
+		}
+		
+		(*acaps)[acaps_count].tag = tag;
+		(*acaps)[acaps_count].value = &A->value[index];
+next:
+		if(++acaps_count >= SDP_CAPS_COUNT_MAX){
+			break;
+		}
+	}
+
+	return 0;
+}
+
+_SDP_DECLARE_INDEX_OF(tcap);
+
+static int _sdp_tcaps_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_tcap_xt (*tcaps)[SDP_CAPS_COUNT_MAX], tsk_bool_t reset)
+{
+	tsk_size_t tcaps_count, tcaps_idx, profiles_count;
+	const tsdp_header_A_t* A;
+	int32_t tag, index, size, tag_fake;
+	char tcap[256];
+
+	if(!sdp || !tcaps){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if(reset){
+		_sdp_tcaps_reset(tcaps);
+		tcaps_count = 0;
+	}
+	else{
+		if((tcaps_count = _sdp_tcaps_indexof(tcaps, 0)) == -1){
+			TSK_DEBUG_ERROR("No room to append items");
+			return -1;
+		}
+	}	
+
+	profiles_count = 0;
+	index = 0;
+	tcaps_idx = 0;
+	while((A = _sdp_findA_at(sdp, "tcap", tcaps_idx++))){
+		if(!(size = tsk_strlen(A->value))){
+			goto next;
+		}
+		if(sscanf(&A->value[index], "%d", &tag) == EOF || (_sdp_integer_length(tag) + 1 >= size)){
+			TSK_DEBUG_ERROR("sscanf(%s) failed", A->value);
+			break;
+		}
+		if(tag <= 0 || (tag + 1) > SDP_CAPS_COUNT_MAX){
+			TSK_DEBUG_WARN("Ignoring tag with value = %d");
+			goto next;
+		}
+
+		index += _sdp_integer_length(tag) + 1/*SPACE*/;
+		
+		profiles_count = 0;
+		tag_fake = tag;
+		while(sscanf(&A->value[index], "%255s", &tcap) != EOF){
+			if(tag_fake < SDP_CAPS_COUNT_MAX){
+				(*tcaps)[tcaps_count + profiles_count].tag = tag_fake;
+				(*tcaps)[tcaps_count + profiles_count].profile = _sdp_profile_from_string(tcap); // split profiles
+			}
+			if((index += tsk_strlen(tcap) + 1/*SPACE*/) >= size){
+				break;
+			}
+			++tag_fake;
+			++profiles_count;
+		}
+next:
+		if(++tcaps_count >= SDP_CAPS_COUNT_MAX){
+			break;
+		}
+	}
+
+	return 0;
+}
+
+static int _sdp_acfg_to_sdp(sdp_headerM_Or_Message* sdp, const sdp_acfg_xt *acfg)
+{
+	int32_t i_a_caps;
+	char *acfg_str = tsk_null;
+
+	if(!sdp || !acfg || acfg->tag <= 0){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	// acfg: tag
+	tsk_strcat_2(&acfg_str, "%d", acfg->tag);
+	// acfg: t=
+	if(acfg_str && acfg->tcap.tag > 0){
+		tsk_strcat_2(&acfg_str, " t=%d", acfg->tcap.tag);
+	}
+	// acfg: a=
+	for (i_a_caps = 0; acfg_str && i_a_caps < SDP_CAPS_COUNT_MAX; ++i_a_caps){
+		if(acfg->acaps[i_a_caps].tag <= 0){
+			break;
+		}
+		if(i_a_caps == 0){
+			tsk_strcat_2(&acfg_str, " a=%d", acfg->acaps[i_a_caps].tag);
+		}
+		else{
+			tsk_strcat_2(&acfg_str, "%s%s%d%s", // e.g. |2 or ,6 or ,[2]
+					acfg->acaps[i_a_caps].or ? "|" : ",",
+					acfg->acaps[i_a_caps].optional ? "[" : "",
+					acfg->acaps[i_a_caps].tag,
+					acfg->acaps[i_a_caps].optional ? "]" : ""
+				);
+		}
+	}
+
+	// a=acfg:
+	if(acfg_str){
+		_sdp_add_headerA(sdp, "acfg", acfg_str);
+		TSK_FREE(acfg_str);
+	}
+
+	return 0;
+}
+
+_SDP_DECLARE_INDEX_OF(pcfg);
+
+static int _sdp_pcfgs_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_acap_xt (*acaps)[SDP_CAPS_COUNT_MAX], sdp_tcap_xt (*tcaps)[SDP_CAPS_COUNT_MAX], sdp_pcfg_xt (*pcfgs)[SDP_CAPS_COUNT_MAX], tsk_bool_t reset)
+{
+	tsk_size_t pcfgs_count, pcfgs_idx;
+	const tsdp_header_A_t* A;
+	int32_t tag, index = 0, size, t, a_tag, indexof;
+	sdp_tcap_xt* tcap_curr;
+	int ret;
+	char pcfg[256], a[256];
+
+	if(!sdp || !acaps || !tcaps || !pcfgs){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if((ret = _sdp_tcaps_from_sdp(sdp, tcaps, reset))){
+		return ret;
+	}
+	if((ret = _sdp_acaps_from_sdp(sdp, acaps, reset))){
+		return ret;
+	}
+
+	if(reset){
+		_sdp_pcfgs_reset(pcfgs);
+		pcfgs_count = 0;
+	}
+	else{
+		if((pcfgs_count = _sdp_pcfgs_indexof(pcfgs, 0)) == -1){
+			TSK_DEBUG_ERROR("No room to append items");
+			return -1;
+		}
+	}
+
+	pcfgs_idx = 0;
+	tcap_curr = tsk_null;
+	while((A = _sdp_findA_at(sdp, "pcfg", pcfgs_idx++))){
+		if(!(size = tsk_strlen(A->value))){
+			goto next_A;
+		}
+		if(sscanf(A->value, "%d", &tag) == EOF || (_sdp_integer_length(tag) + 1 >= size)){
+			TSK_DEBUG_ERROR("sscanf(%s) failed", A->value);
+			break;
+		}
+		if(tag <= 0 || (tag + 1) > SDP_CAPS_COUNT_MAX){
+			TSK_DEBUG_WARN("Ignoring tag with value = %d");
+			goto next_A;
+		}
+		
+		(*pcfgs)[pcfgs_count].tag = tag;
+
+		index = _sdp_integer_length(tag) + 1/*SPACE*/;
+
+		while(sscanf(&A->value[index], "%255s", &pcfg) != EOF){
+			if(_sdp_str_starts_with(&A->value[index], "t=") && sscanf(pcfg, "t=%d", &t) != EOF){
+				if(t <= 0 || t + 1 >= SDP_CAPS_COUNT_MAX){
+					TSK_DEBUG_ERROR("t = %d ignored", t);
+					goto next_pcfg;
+				}
+				// tcap is something like a=tcap:1 RTP/SAVPF RTP/SAVP RTP/AVPF
+				// tcap [2] is "RTP/SAVP" -> not indexed by tag
+				tcap_curr = &(*pcfgs)[pcfgs_count].tcap;
+				if((indexof = _sdp_tcaps_indexof(tcaps, t)) == -1){
+					TSK_DEBUG_ERROR("Failed to find 'tcap' with tag=%d", t);
+					goto next_pcfg;
+				}
+				*tcap_curr = (*tcaps)[indexof];
+			}
+			else{
+				if(_sdp_str_starts_with(&A->value[index], "a=") && sscanf(pcfg, "a=%255s", a) != EOF){
+					char a_copy[sizeof(a)], *pch;
+					tsk_size_t pcfg_acfgs_count = 0;
+					sdp_acap_xt* acap;
+					memcpy(a_copy, a, sizeof(a));
+
+					pch = strtok (a, ",[]|");
+					while(pch){
+						a_tag = atoi(pch);
+						if(a_tag <= 0 || a_tag + 1 >= SDP_CAPS_COUNT_MAX){
+							TSK_DEBUG_ERROR("a = %d ignored", a_tag);
+							goto next_a;
+						}
+						if((indexof = _sdp_acaps_indexof(acaps, a_tag)) == -1){
+							TSK_DEBUG_ERROR("Failed to find 'acap' with tag=%d", a_tag);
+							goto next_a;
+						}
+						acap = &(*pcfgs)[pcfgs_count].acaps[pcfg_acfgs_count++];
+						*acap = (*acaps)[indexof];
+						acap->optional = (pch != a && a_copy[pch - a - 1] == '[') ? 1 : 0;
+						acap->or = (pch != a && a_copy[pch - a - 1] == '|') ? 1 : 0;
+next_a:
+						pch = strtok (NULL, ",[]|");
+					}
+				}
+				tcap_curr = tsk_null;
+			}
+next_pcfg:
+			if((index += tsk_strlen(pcfg) + 1/*SPACE*/) >= size){
+				break;
+			}
+		}
+next_A:
+		if(++pcfgs_count >= SDP_CAPS_COUNT_MAX){
+			break;
+		}
+	}
+
+	return ret;
+}
+
+static int _sdp_pcfgs_to_sdp(sdp_headerM_Or_Message* sdp, const sdp_pcfg_xt (*pcfgs)[SDP_CAPS_COUNT_MAX])
+{
+	int32_t i_pcfgs, i_a_caps, i_serialized_acaps;
+	char *pcfg = tsk_null, *acap = tsk_null, *tcap = tsk_null;
+	sdp_acaps_xt serialized_acaps; /* to avoid duplication */
+
+	if(!sdp || !pcfgs){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	// compact(a=tcap:)
+	// tcap:1 RTP/AVP
+	// tcap:2 RTP/SAVP
+	// tcap:3 RTP/SAVPF
+	// will be compacted as
+	// tcap:1 RTP/AVP RTP/SAVP RTP/SAVPF
+	for (i_pcfgs = 0; i_pcfgs < SDP_CAPS_COUNT_MAX; ++i_pcfgs){
+		if((*pcfgs)[i_pcfgs].tag <= 0 || (*pcfgs)[i_pcfgs].tcap.tag <= 0){
+			break;
+		}
+		if(!tcap){
+			tsk_sprintf(&tcap, "1 %s", _sdp_profile_to_string((*pcfgs)[i_pcfgs].tcap.profile));
+		}
+		else{
+			tsk_strcat_2(&tcap, " %s", _sdp_profile_to_string((*pcfgs)[i_pcfgs].tcap.profile));
+		}
+	}
+	if(tcap){
+		_sdp_add_headerA(sdp, "tcap", tcap);
+		TSK_FREE(tcap);
+	}
+
+	_sdp_acaps_reset(&serialized_acaps);
+	i_serialized_acaps = 0;
+
+	for (i_pcfgs = 0; i_pcfgs < SDP_CAPS_COUNT_MAX; ++i_pcfgs){
+		if((*pcfgs)[i_pcfgs].tag <= 0){
+			break;
+		}
+		// pcfg: tag
+		tsk_strcat_2(&pcfg, "%d", (*pcfgs)[i_pcfgs].tag);
+		// pcfg: t=
+		if((*pcfgs)[i_pcfgs].tcap.tag > 0){
+			tsk_strcat_2(&pcfg, " t=%d", (*pcfgs)[i_pcfgs].tcap.tag);
+		}
+
+		// pcfg: a=
+		for (i_a_caps = 0; i_a_caps < SDP_CAPS_COUNT_MAX; ++i_a_caps){
+			if((*pcfgs)[i_pcfgs].acaps[i_a_caps].tag <= 0){
+				break;
+			}
+			if(i_a_caps == 0){
+				tsk_strcat_2(&pcfg, " a=%d", (*pcfgs)[i_pcfgs].acaps[i_a_caps].tag);
+			}
+			else{
+				tsk_strcat_2(&pcfg, "%s%s%d%s", // e.g. |2 or ,6 or ,[2]
+						(*pcfgs)[i_pcfgs].acaps[i_a_caps].or ? "|" : ",",
+						(*pcfgs)[i_pcfgs].acaps[i_a_caps].optional ? "[" : "",
+						(*pcfgs)[i_pcfgs].acaps[i_a_caps].tag,
+						(*pcfgs)[i_pcfgs].acaps[i_a_caps].optional ? "]" : ""
+					);
+			}
+			// a=acap:
+			if(_sdp_acaps_indexof(&serialized_acaps, (*pcfgs)[i_pcfgs].acaps[i_a_caps].tag) == -1){
+				tsk_sprintf(&acap, "%d %s", (*pcfgs)[i_pcfgs].acaps[i_a_caps].tag, (*pcfgs)[i_pcfgs].acaps[i_a_caps].value);
+				if(acap){
+					_sdp_add_headerA(sdp, "acap", acap);
+					TSK_FREE(acap);
+					serialized_acaps[i_serialized_acaps++].tag = (*pcfgs)[i_pcfgs].acaps[i_a_caps].tag;
+				}
+			}
+		}
+
+		// a=pcfg:
+		if(pcfg){
+			_sdp_add_headerA(sdp, "pcfg", pcfg);
+			TSK_FREE(pcfg);
+		}
+	}
+	return 0;
+}
+
+static int _sdp_pcfg_ensure(sdp_headerM_Or_Message* sdp, const sdp_pcfg_xt* pcfg)
+{
+	int32_t i, n;
+	char field[256];
+
+	if(!sdp || !pcfg || pcfg->tag <=0){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if(TSK_OBJECT_HEADER(sdp)->__def__ == tsdp_header_M_def_t && pcfg->tcap.profile != RTP_PROFILE_NONE){
+		tsk_strupdate(&((tsdp_header_M_t*)sdp)->proto, _sdp_profile_to_string(pcfg->tcap.profile));
+	}
+
+	for(i = 0; i < SDP_CAPS_COUNT_MAX && pcfg->acaps[i].tag > 0; ++i){
+		if(sscanf(pcfg->acaps[i].value, "%255s%*s", field) != EOF && (n = tsk_strlen(field)) > 2){
+			field[n - 2] = '\0';
+			_sdp_add_headerA(sdp, field, &pcfg->acaps[i].value[n + 1/*SPACE*/]);
+		}
+	}
+
+	return 0;
+}
+
+static int _sdp_pcfgs_cat(const sdp_pcfg_xt (*pcfgs_src)[SDP_CAPS_COUNT_MAX], sdp_pcfg_xt (*pcfgs_dst)[SDP_CAPS_COUNT_MAX])
+{
+	int32_t i, j;
+	if(!pcfgs_src || !pcfgs_dst){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	for(i = 0; i < SDP_CAPS_COUNT_MAX && (*pcfgs_dst)[i].tag > 0; ++i);
+
+	j = 0;
+	while (i < SDP_CAPS_COUNT_MAX && j < SDP_CAPS_COUNT_MAX){
+		if((*pcfgs_src)[j].tag > 0){
+			(*pcfgs_dst)[i++] = (*pcfgs_src)[j++];
+		}
+		else break;
+	}
+
+	return 0;
+}
+
+
+
+
+
+static tsk_object_t* tdav_sdp_caps_ctor(tsk_object_t * self, va_list * app)
+{
+	tdav_sdp_caps_t *caps = self;
+	if(caps){
+	}
+	return self;
+}
+static tsk_object_t* tdav_sdp_caps_dtor(tsk_object_t * self)
+{ 
+	tdav_sdp_caps_t *caps = self;
+	if(caps){
+	}
+	return self;
+}
+static const tsk_object_def_t tdav_sdp_caps_def_s = 
+{
+	sizeof(tdav_sdp_caps_t),
+	tdav_sdp_caps_ctor, 
+	tdav_sdp_caps_dtor,
+	tsk_null, 
+};
+
+static tdav_sdp_caps_t* tdav_sdp_caps_create()
+{
+	return tsk_object_new(&tdav_sdp_caps_def_s);
 }

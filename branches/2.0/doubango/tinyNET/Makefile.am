@@ -59,7 +59,8 @@ libtinyNET_la_SOURCES +=	src/stun/tnet_stun.c\
 	src/stun/tnet_stun_attribute.c\
 	src/stun/tnet_stun_message.c
 	
-libtinyNET_la_SOURCES +=	src/tls/tnet_tls.c
+libtinyNET_la_SOURCES +=	src/tls/tnet_tls.c\
+	src/tls/tnet_dtls.c
 	
 libtinyNET_la_SOURCES +=	src/turn/tnet_turn.c\
 	src/turn/tnet_turn_attribute.c\

@@ -33,7 +33,7 @@ AC_PROG_MAKE_SET
 
 ### ENABLE-DEBUG
 AC_MSG_CHECKING(whether to enable debugging)
-debug_default="yes"
+debug_default="no"
 AC_ARG_ENABLE(debug, 
 [  --enable-debug[=no/yes] turn on/off debugging 
                        [[default=$debug_default]]],
@@ -130,11 +130,17 @@ AH_TEMPLATE([TNET_HAVE_SA_LEN], [Define if sockaddr.sa_len exists])
 AC_CHECK_MEMBER([struct sockaddr.sa_len], AC_DEFINE(TNET_HAVE_SA_LEN, 1), AC_DEFINE(TNET_HAVE_SA_LEN, 0), [#include <netinet/in.h>])
 
 
+AH_TEMPLATE([HAVE_APPEND_SALT_TO_KEY], [Checks if the installed libsrtp version support append_salt_to_key() function])
+AH_TEMPLATE([HAVE_SRTP_PROFILE_GET_MASTER_KEY_LENGTH], [Checks if the installed libsrtp version support srtp_profile_get_master_key_length() function])
+AH_TEMPLATE([HAVE_SRTP_PROFILE_GET_MASTER_SALT_LENGTH], [Checks if the installed libsrtp version support srtp_profile_get_master_salt_length() function])
 AM_CONDITIONAL(USE_SRTP, false)
 AC_ARG_WITH(srtp,
 [  --with-srtp            Link against libsrtp library],
  [AC_DEFINE_UNQUOTED(HAVE_SRTP, 1, HAVE_SRTP)
  AC_SUBST(LIBSRTP_LIBADD, "-lsrtp")
+ AC_CHECK_LIB(srtp, append_salt_to_key, AC_DEFINE(HAVE_APPEND_SALT_TO_KEY, 1), AC_DEFINE(HAVE_APPEND_SALT_TO_KEY, 0))
+ AC_CHECK_LIB(srtp, srtp_profile_get_master_key_length, AC_DEFINE(HAVE_SRTP_PROFILE_GET_MASTER_KEY_LENGTH, 1), AC_DEFINE(HAVE_SRTP_PROFILE_GET_MASTER_KEY_LENGTH, 0))
+ AC_CHECK_LIB(srtp, srtp_profile_get_master_salt_length, AC_DEFINE(HAVE_SRTP_PROFILE_GET_MASTER_SALT_LENGTH, 1), AC_DEFINE(HAVE_SRTP_PROFILE_GET_MASTER_SALT_LENGTH, 0))
  AM_CONDITIONAL(USE_SRTP, true)], 
  [ AC_SUBST(LIBSRTP_LIBADD, "")])
 
@@ -143,6 +149,8 @@ AC_ARG_WITH(ssl,
 [  --with-ssl            Link against OpenSSL libraries],
  [AC_DEFINE_UNQUOTED(HAVE_OPENSSL, 1, HAVE_OPENSSL)
  AC_SUBST(LIBSSL_LIBADD, "-lssl -lcrypto")
+ AC_CHECK_LIB(ssl, SSL_CTX_set_tlsext_use_srtp, AC_DEFINE_UNQUOTED(HAVE_OPENSSL_DTLS_SRTP, 1, HAVE_OPENSSL_DTLS_SRTP))
+ AC_CHECK_LIB(ssl, DTLSv1_method, AC_DEFINE_UNQUOTED(HAVE_OPENSSL_DTLS, 1, HAVE_OPENSSL_DTLS))
  AM_CONDITIONAL(USE_SSL, true)], 
  [ AC_SUBST(LIBSSL_LIBADD, "")])
 

@@ -1,7 +1,6 @@
 /*
-* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2012 Mamadou Diop
+* Copyright (C) 2012-2013 Doubango Telecom <http://www.doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -21,10 +20,6 @@
 */
 /**@file trtp_manager.h
  * @brief RTP/RTCP manager.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #ifndef TINYRTP_MANAGER_H
 #define TINYRTP_MANAGER_H
@@ -34,6 +29,8 @@
 #include "tinyrtp/rtp/trtp_rtp_session.h"
 #include "tinyrtp/rtcp/trtp_rtcp_session.h"
 #include "tinyrtp/trtp_srtp.h"
+
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tinynet.h"
 
@@ -46,7 +43,25 @@ typedef struct trtp_manager_s
 {
 	TSK_DECLARE_OBJECT;
 
+	char* local_ip;
+	tsk_bool_t use_ipv6;
+	tsk_bool_t is_started;
+	tsk_bool_t use_rtcp;
+	tsk_bool_t use_rtcpmux;
+	tsk_bool_t is_socket_disabled;
+	tsk_bool_t is_ice_neg_ok;
+	tsk_bool_t is_force_symetric_rtp;
+	tsk_bool_t is_symetric_rtp_checked;
+	tsk_bool_t is_symetric_rtcp_checked;
+
+	tnet_transport_t* transport;
+
 	struct tnet_ice_ctx_s* ice_ctx;
+
+	struct{
+		uint16_t start;
+		uint16_t stop;
+	} port_range;
 
 	struct{
 		uint16_t seq_num;
@@ -62,8 +77,10 @@ typedef struct trtp_manager_s
 		char* public_ip;
 		tnet_port_t public_port;
 
-		const void* callback_data;
-		trtp_rtp_cb_f callback;
+		struct{
+			const void* usrdata;
+			trtp_rtp_cb_f fun;
+		} cb;
 
 		struct{
 			void* ptr;
@@ -80,42 +97,80 @@ typedef struct trtp_manager_s
 		char* public_ip;
 		tnet_port_t public_port;
 
-		const void* callback_data;
-		trtp_rtcp_cb_f callback;
+		struct{
+			const void* usrdata;
+			trtp_rtcp_cb_f fun;
+		} cb;
 
 		struct trtp_rtcp_session_s* session;
 	} rtcp;
-	
-	char* local_ip;
-	tsk_bool_t use_ipv6;
-	tsk_bool_t is_started;
-	tsk_bool_t use_rtcp;
-	tsk_bool_t use_rtcpmux;
-	tsk_bool_t socket_disabled;
-	tnet_transport_t* transport;
-	struct{
-		uint16_t start;
-		uint16_t stop;
-	} port_range;
 
 	TSK_DECLARE_SAFEOBJ;
 
-#if HAVE_SRTP
+#if HAVE_SRTP	
+	enum tmedia_srtp_type_e srtp_type;
+	enum tmedia_srtp_mode_e srtp_mode;
+	trtp_srtp_state_t srtp_state;
 	trtp_srtp_ctx_xt srtp_contexts[2][2];
 	const struct trtp_srtp_ctx_xs* srtp_ctx_neg_local;
 	const struct trtp_srtp_ctx_xs* srtp_ctx_neg_remote;
+
+	struct{
+		char* file_ca;
+		char* file_pbk;
+		char* file_pvk;
+		tsk_bool_t cert_verif;
+		
+		trtp_srtp_state_t state;
+		// enable() could be postponed if net transport not ready yet (e.g. when ICE is ON)
+		tsk_bool_t enable_postponed;
+
+		tsk_bool_t rtp_connected;
+		tsk_bool_t rtcp_connected;
+
+		trtp_srtp_crypto_type_t crypto_selected;
+
+		struct{
+			const void* usrdata;
+			trtp_srtp_dtls_cb_f fun;
+		} cb;
+
+		struct{
+			tnet_fingerprint_t fp;
+			tnet_dtls_hash_type_t fp_hash;
+		} remote;
+		struct{
+			tnet_dtls_setup_t setup;
+			tsk_bool_t connection_new;
+		}local;
+	} dtls;
 #endif
 }
 trtp_manager_t;
 
-TINYRTP_API trtp_manager_t* trtp_manager_create(tsk_bool_t use_rtcp, const char* local_ip, tsk_bool_t use_ipv6);
-TINYRTP_API trtp_manager_t* trtp_manager_create_2(struct tnet_ice_ctx_s* ice_ctx);
+TINYRTP_API trtp_manager_t* trtp_manager_create(tsk_bool_t use_rtcp, const char* local_ip, tsk_bool_t use_ipv6, enum tmedia_srtp_type_e srtp_type, enum tmedia_srtp_mode_e srtp_mode);
+TINYRTP_API trtp_manager_t* trtp_manager_create_2(struct tnet_ice_ctx_s* ice_ctx, enum tmedia_srtp_type_e srtp_type, enum tmedia_srtp_mode_e srtp_mode);
 TINYRTP_API int trtp_manager_set_ice_ctx(trtp_manager_t* self, struct tnet_ice_ctx_s* ice_ctx);
 TINYRTP_API int trtp_manager_prepare(trtp_manager_t* self);
+#if HAVE_SRTP
+TINYRTP_API int trtp_manager_set_dtls_certs(trtp_manager_t* self, const char* ca, const char* pbk, const char* pvk, tsk_bool_t verify);
+TINYRTP_API int trtp_manager_set_dtls_remote_fingerprint(trtp_manager_t* self, const tnet_fingerprint_t* fp, const char* hash);
+TINYRTP_API enum tnet_dtls_hash_type_e trtp_manager_get_dtls_remote_fingerprint_hash(trtp_manager_t* self);
+TINYRTP_API int trtp_manager_set_dtls_local_setup(trtp_manager_t* self, tnet_dtls_setup_t setup, tsk_bool_t connection_new);
+TINYRTP_API int trtp_manager_set_dtls_callback(trtp_manager_t* self, const void* usrdata, trtp_srtp_dtls_cb_f fun);
+TINYRTP_API const char* trtp_manager_get_dtls_local_fingerprint(trtp_manager_t* self, enum tnet_dtls_hash_type_e hash);
+TINYRTP_API tsk_bool_t trtp_manager_is_dtls_enabled(trtp_manager_t* self);
+TINYRTP_API tsk_bool_t trtp_manager_is_dtls_activated(trtp_manager_t* self);
+TINYRTP_API tsk_bool_t trtp_manager_is_dtls_started(trtp_manager_t* self);
+TINYRTP_API tsk_bool_t trtp_manager_is_srtp_activated(trtp_manager_t* self);
+TINYRTP_API tsk_bool_t trtp_manager_is_srtp_started(trtp_manager_t* self);
+TINYRTP_API int trtp_manager_set_srtp_type_remote(trtp_manager_t* self, enum tmedia_srtp_type_e srtp_type);
+TINYRTP_API int trtp_manager_set_srtp_type_local(trtp_manager_t* self, enum tmedia_srtp_type_e srtp_type, enum tmedia_srtp_mode_e srtp_mode);
+#endif /* HAVE_SRTP */
 TINYRTP_API tsk_bool_t trtp_manager_is_ready(trtp_manager_t* self);
 TINYRTP_API int trtp_manager_set_natt_ctx(trtp_manager_t* self, tnet_nat_context_handle_t* natt_ctx);
-TINYRTP_API int trtp_manager_set_rtp_callback(trtp_manager_t* self, trtp_rtp_cb_f callback, const void* callback_data);
-TINYRTP_API int trtp_manager_set_rtcp_callback(trtp_manager_t* self, trtp_rtcp_cb_f callback, const void* callback_data);
+TINYRTP_API int trtp_manager_set_rtp_callback(trtp_manager_t* self, trtp_rtp_cb_f fun, const void* usrdata);
+TINYRTP_API int trtp_manager_set_rtcp_callback(trtp_manager_t* self, trtp_rtcp_cb_f fun, const void* usrdata);
 TINYRTP_API int trtp_manager_set_rtp_dscp(trtp_manager_t* self, int32_t dscp);
 TINYRTP_API int trtp_manager_set_payload_type(trtp_manager_t* self, uint8_t payload_type);
 TINYRTP_API int trtp_manager_set_rtp_remote(trtp_manager_t* self, const char* remote_ip, tnet_port_t remote_port);

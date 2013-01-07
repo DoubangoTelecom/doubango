@@ -249,10 +249,16 @@ bool SipStack::setTLSSecAgree(bool enabled)
 		TSIP_STACK_SET_NULL()) == 0);
 }
 
-bool SipStack::setSSLCretificates(const char* privKey, const char* pubKey, const char* caKey)
+/*@deprecated: typo  */
+bool SipStack::setSSLCretificates(const char* privKey, const char* pubKey, const char* caKey, bool verify/* = false*/)
+{
+	return setSSLCertificates(privKey, pubKey, caKey, verify);
+}
+
+bool SipStack::setSSLCertificates(const char* privKey, const char* pubKey, const char* caKey, bool verify/* = false*/)
 {
 	return (tsip_stack_set(m_pHandle,
-		TSIP_STACK_SET_TLS_CERTS(caKey, pubKey, privKey),
+		TSIP_STACK_SET_TLS_CERTS_2(caKey, pubKey, privKey, (verify ? tsk_true : tsk_false)),
 		TSIP_STACK_SET_NULL()) == 0);
 }
 

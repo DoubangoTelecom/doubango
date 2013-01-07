@@ -209,6 +209,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_rfc5939.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_soa.h"
 				>
 			</File>

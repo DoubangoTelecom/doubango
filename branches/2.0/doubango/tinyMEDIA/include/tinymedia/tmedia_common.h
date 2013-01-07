@@ -69,6 +69,16 @@ typedef enum tmedia_srtp_mode_e
 tmedia_srtp_mode_t;
 
 // @tinyWRAP
+typedef enum tmedia_srtp_type_e
+{
+	tmedia_srtp_type_none = 0x00,
+	tmedia_srtp_type_sdes = 0x01,
+	tmedia_srtp_type_dtls = 0x02,
+	tmedia_srtp_type_sdes_dtls = (tmedia_srtp_type_sdes | tmedia_srtp_type_dtls)
+}
+tmedia_srtp_type_t;
+
+// @tinyWRAP
 typedef enum tmedia_t140_data_type_e
 {
 	tmedia_t140_data_type_utf8,

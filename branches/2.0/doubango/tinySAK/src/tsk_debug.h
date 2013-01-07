@@ -67,7 +67,6 @@ TSK_BEGIN_DECLS
 	typedef int (*tsk_debug_f)(const void* arg, const char* fmt, ...);
 
 	/* INFO */
-
 #define TSK_DEBUG_INFO(FMT, ...)		\
 	if(tsk_debug_get_level() >= DEBUG_LEVEL_INFO){ \
 		if(tsk_debug_get_info_cb()) \

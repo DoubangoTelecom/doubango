@@ -40,6 +40,7 @@
 static const tsip_transport_idx_xt _tsip_transport_idxs_xs[TSIP_TRANSPORT_IDX_MAX] =
 {
 	{ TSIP_TRANSPORT_IDX_UDP, "UDP", TNET_SOCKET_TYPE_UDP },
+	{ TSIP_TRANSPORT_IDX_DTLS, "DTLS", TNET_SOCKET_TYPE_DTLS },
 	{ TSIP_TRANSPORT_IDX_TCP, "TCP", TNET_SOCKET_TYPE_TCP },
 	{ TSIP_TRANSPORT_IDX_TLS, "TLS", TNET_SOCKET_TYPE_TLS },
 	{ TSIP_TRANSPORT_IDX_WS, "WS", TNET_SOCKET_TYPE_WS },
@@ -265,23 +266,6 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 	msg->update = tsk_false; /* To avoid to update retrans. */
 	
 	return ret;
-}
-
-/* sets TLS certificates */
-int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const char* pbk, const char* pvk)
-{
-	tnet_transport_t *transport = self->net_transport;
-
-	if(!self || !transport){
-		TSK_DEBUG_ERROR("invalid parameter");
-		return -1;
-	}
-	
-	tsk_strupdate(&transport->tls.ca, ca);
-	tsk_strupdate(&transport->tls.pvk, pvk);
-	tsk_strupdate(&transport->tls.pbk, pbk);
-
-	return 0;
 }
 
 tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const struct sockaddr* to, const void* data, tsk_size_t size)
@@ -675,9 +659,17 @@ int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const s
 		self->stream_peers = tsk_list_create();
 	}
 	else{
-		self->protocol = "udp";
-		self->via_protocol = "UDP";
-		self->service = "SIP+D2U";
+		if(TNET_SOCKET_TYPE_IS_DTLS(type)){
+			self->scheme = "sips";
+			self->protocol = "dtls-udp";
+			self->via_protocol = "DTLS-UDP";
+			self->service = "SIPS+D2U";
+		}
+		else{
+			self->protocol = "udp";
+			self->via_protocol = "UDP";
+			self->service = "SIP+D2U";
+		}
 	}
 	self->connectedFD = TNET_INVALID_FD;
 	self->initialized = 1;

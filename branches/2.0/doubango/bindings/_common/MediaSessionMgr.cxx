@@ -424,6 +424,10 @@ bool MediaSessionMgr::defaultsSetRtpPortRange(uint16_t range_start, uint16_t ran
 	return tmedia_defaults_set_rtp_port_range(range_start, range_stop) == 0;
 }
 
+bool MediaSessionMgr::defaultsSetRtpSymetricEnabled(bool enabled){
+	return tmedia_defaults_set_rtp_symetric_enabled(enabled ? tsk_true : tsk_false) == 0;
+}
+
 bool MediaSessionMgr::defaultsSetMediaType(twrap_media_type_t media_type)
 {
 	return (tmedia_defaults_set_media_type(twrap_get_media_type(media_type)) == 0);
@@ -448,6 +452,16 @@ bool MediaSessionMgr::defaultsSetInviteSessionTimers(int32_t timeout, const char
 
 bool MediaSessionMgr::defaultsSetSRtpMode(tmedia_srtp_mode_t mode){
 	return (tmedia_defaults_set_srtp_mode(mode) == 0);
+}
+tmedia_srtp_mode_t MediaSessionMgr::defaultsGetSRtpMode(){
+	return tmedia_defaults_get_srtp_mode();
+}
+
+bool MediaSessionMgr::defaultsSetSRtpType(tmedia_srtp_type_t srtp_type){
+	return (tmedia_defaults_set_srtp_type(srtp_type) == 0);
+}
+tmedia_srtp_type_t MediaSessionMgr::defaultsGetSRtpType(){
+	return tmedia_defaults_get_srtp_type();
 }
 
 bool MediaSessionMgr::defaultsSetRtcpEnabled(bool enabled){

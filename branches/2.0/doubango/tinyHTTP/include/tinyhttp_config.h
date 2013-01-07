@@ -23,10 +23,6 @@
 #ifndef TINYHTTP_CONFIG_H
 #define TINYHTTP_CONFIG_H
 
-#if HAVE_CONFIG_H
-	#include "config.h"
-#endif
-
 #ifdef __SYMBIAN32__
 #undef _WIN32 /* Because of WINSCW */
 #endif
@@ -76,7 +72,7 @@
 #endif
 
 #if HAVE_CONFIG_H
-	#include "../config.h"
+	#include <config.h>
 #endif
 
 #endif // TINYHTTP_CONFIG_H

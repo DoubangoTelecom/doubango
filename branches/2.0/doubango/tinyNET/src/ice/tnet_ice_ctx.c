@@ -1303,7 +1303,7 @@ start_conneck:
 					TSK_FREE(data);
 									
 					TNET_PRINT_LAST_ERROR("Receiving STUN dgrams failed with error code");
-					continue;
+					goto bail;
 				}				
 				// recv() STUN message (request / response)
 				ret = tnet_ice_ctx_recv_stun_message(self, data, (tsk_size_t)ret, fd, &remote_addr, &role_conflict);

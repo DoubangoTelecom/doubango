@@ -294,7 +294,6 @@ static int tsip_transport_layer_ws_cb(const tnet_transport_event_t* e)
 
 	switch(e->type){
 		case event_data: {
-				TSK_DEBUG_INFO("\n\n\nSIP Message:%s\n\n\n", (const char*)e->data);
 				break;
 			}
 		case event_closed:
@@ -358,6 +357,7 @@ parse_buffer:
 			int32_t idx;
 
 			if((idx = tsk_strindexOf(msg_start, (msg_end - msg_start), "\r\n")) > 2){
+				TSK_DEBUG_INFO("WebSocket handshake message: %s", msg_start);
 				msg_start += (idx + 2); // skip request header
 				while(msg_start < msg_end){
 					if((idx = tsk_strindexOf(msg_start, (msg_end - msg_start), "\r\n")) <= 2){
@@ -503,6 +503,7 @@ parse_buffer:
 	
 	// If we are there this mean that we have all SIP headers.
 	//	==> Parse the SIP message without the content.
+	TSK_DEBUG_INFO("Receiving SIP o/ WebSocket message: %s", peer->ws_rcv_buffer);
 	tsk_ragel_state_init(&state, peer->ws_rcv_buffer, (tsk_size_t)pay_len);
 	if(tsip_message_parse(&state, &message, tsk_false/* do not extract the content */) == tsk_true){
 		const uint8_t* body_start = (const uint8_t*)state.eoh;
@@ -882,8 +883,8 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 			
 		if(transport && transport->net_transport && self->stack){
 			/* Set TLS certs */
-			if(TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type) || self->stack->security.enable_secagree_tls){
-				tsip_transport_set_tlscerts(transport, self->stack->security.tls.ca, self->stack->security.tls.pbk, self->stack->security.tls.pvk);
+			if(TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type) || TNET_SOCKET_TYPE_IS_DTLS(type) || self->stack->security.enable_secagree_tls){
+				tsip_transport_tls_set_certs(transport, self->stack->security.tls.ca, self->stack->security.tls.pbk, self->stack->security.tls.pvk, self->stack->security.tls.verify);
 			}
 			/* Nat Traversal context */
 			if(self->stack->natt.ctx){

@@ -66,7 +66,8 @@ public: /* API functions */
 	bool setSTUNCred(const char* login, const char* password);
 
 	bool setTLSSecAgree(bool enabled);
-	bool setSSLCretificates(const char* privKey, const char* pubKey, const char* caKey);
+	bool setSSLCertificates(const char* privKey, const char* pubKey, const char* caKey, bool verify = false);
+	bool setSSLCretificates(const char* privKey, const char* pubKey, const char* caKey, bool verify = false); /*@deprecated: typo */
 	bool setIPSecSecAgree(bool enabled);
 	bool setIPSecParameters(const char* algo, const char* ealgo, const char* mode, const char* proto);
 	

@@ -1,6 +1,6 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop
-* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
+* Copyright (C) 2012-2013 Doubango Telecom <http://www.doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -93,7 +93,7 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	}
 
 	if(TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)){
-		transport->tls.have_tls = 1;
+		transport->tls.enabled = 1;
 	}
 	
 	if((ret = addSocket(fd, type, transport, take_ownership, isClient))){
@@ -198,7 +198,7 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
 		goto bail;
 	}
 
-	if(transport->tls.have_tls){
+	if(transport->tls.enabled){
 		const transport_socket_xt* socket = getSocket(transport->context, from);
 		if(socket && socket->tlshandle){
 			if(!tnet_tls_socket_send(socket->tlshandle, buf, size)){
@@ -304,8 +304,10 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 		sock->type = type;
 		sock->owner = take_ownership;
 
-		if(TNET_SOCKET_TYPE_IS_TLS(sock->type) || TNET_SOCKET_TYPE_IS_WSS(sock->type)){
-			sock->tlshandle = tnet_sockfd_set_tlsfiles(sock->fd, is_client, transport->tls.ca, transport->tls.pvk, transport->tls.pbk);
+		if((TNET_SOCKET_TYPE_IS_TLS(sock->type) || TNET_SOCKET_TYPE_IS_WSS(sock->type)) && transport->tls.enabled){
+#if HAVE_OPENSSL
+			sock->tlshandle = tnet_tls_socket_create(sock->fd, is_client ? transport->tls.ctx_client : transport->tls.ctx_server);       
+#endif
 		}
 		
 		tsk_safeobj_lock(context);
@@ -575,7 +577,7 @@ void *tnet_transport_mainthread(void *param)
 				continue;
 			}
 			
-			TSK_DEBUG_INFO("REVENTS(i=%d) = %d", i, context->ufds[i].revents);
+			// TSK_DEBUG_INFO("REVENTS(i=%d) = %d", i, context->ufds[i].revents);
 
 			if(context->ufds[i].fd == context->pipeR){
 				TSK_DEBUG_INFO("PipeR event = %d", context->ufds[i].revents);

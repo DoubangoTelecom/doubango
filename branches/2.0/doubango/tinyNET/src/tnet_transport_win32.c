@@ -140,7 +140,7 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	}
 
 	if(TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)){
-		transport->tls.have_tls = 1;
+		transport->tls.enabled = tsk_true;
 	}
 
 	addSocket(fd, type, transport, take_ownership, isClient);
@@ -232,7 +232,7 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
 		goto bail;
 	}
 
-	if(transport->tls.have_tls){
+	if(transport->tls.enabled){
 		transport_socket_xt* socket = getSocket(transport->context, from);
 		if(socket && socket->tlshandle){
 			if(!tnet_tls_socket_send(socket->tlshandle, buf, size)){
@@ -345,16 +345,25 @@ static transport_socket_xt* getSocket(transport_context_t *context, tnet_fd_t fd
 /*== Add new socket ==*/
 static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client)
 {
-	transport_context_t *context = transport?transport->context:0;
+	transport_context_t *context;
 
-	if(context){
+	if(TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)){
+#if !HAVE_OPENSSL
+		TSK_DEBUG_ERROR("Cannot create TLS socket: OpenSSL missing");
+		return -2;
+#endif
+	}
+
+	if((context = transport ? transport->context : tsk_null)){
 		transport_socket_xt *sock = tsk_calloc(1, sizeof(transport_socket_xt));
 		sock->fd = fd;
 		sock->type = type;
 		sock->owner = take_ownership ? 1 : 0;
 
-		if(TNET_SOCKET_TYPE_IS_TLS(sock->type) || TNET_SOCKET_TYPE_IS_WSS(sock->type)){
-			sock->tlshandle = tnet_sockfd_set_tlsfiles(sock->fd, is_client, transport->tls.ca, transport->tls.pvk, transport->tls.pbk);
+		if((TNET_SOCKET_TYPE_IS_TLS(sock->type) || TNET_SOCKET_TYPE_IS_WSS(sock->type)) && transport->tls.enabled){
+#if HAVE_OPENSSL
+			sock->tlshandle = tnet_tls_socket_create(sock->fd, is_client ? transport->tls.ctx_client : transport->tls.ctx_server);       
+#endif
 		}
 		
 		tsk_safeobj_lock(context);
@@ -479,7 +488,7 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	}
 	
 	/* set events on master socket */
-	if((ret = WSAEventSelect(transport->master->fd, context->events[context->count - 1], TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? FD_READ : FD_ALL_EVENTS/*FD_ACCEPT | FD_READ | FD_CONNECT | FD_CLOSE*/) == SOCKET_ERROR)){
+	if((ret = WSAEventSelect(transport->master->fd, context->events[context->count - 1], FD_ALL_EVENTS) == SOCKET_ERROR)){
 		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
 		goto bail;
 	}
@@ -613,8 +622,6 @@ void *tnet_transport_mainthread(void *param)
 		/*================== FD_CONNECT ==================*/
 		if(networkEvents.lNetworkEvents & FD_CONNECT)
 		{
-			//tnet_fd_t fd;
-
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_CONNECT", transport->description);
 
 			if(networkEvents.iErrorCode[FD_CONNECT_BIT]){

@@ -83,6 +83,8 @@ tnet_socket_t* socket = tnet_socket_create(
 * 
 */
 
+static int tnet_socket_close(tnet_socket_t *sock);
+
 /**@ingroup tnet_socket_group
 * Creates a new socket.
 * To check that the returned socket is valid use @ref TNET_SOCKET_IS_VALID function.
@@ -94,87 +96,20 @@ tnet_socket_t* socket = tnet_socket_create(
 * @retval @ref tnet_socket_t object.
 * @sa @ref tnet_socket_create.
 */
-tnet_socket_t* tnet_socket_create_2(const char*host, tnet_port_t port, tnet_socket_type_t type, tsk_bool_t nonblocking, tsk_bool_t bindsocket)
+tnet_socket_t* tnet_socket_create_2(const char* host, tnet_port_t port_, tnet_socket_type_t type, tsk_bool_t nonblocking, tsk_bool_t bindsocket)
 {
-	return tsk_object_new(tnet_socket_def_t, host, port, type, nonblocking, bindsocket);
-}
-
-/**@ingroup tnet_socket_group
-* Creates a non-blocking socket and bind it.
-* To check that the returned socket is valid use @ref TNET_SOCKET_IS_VALID function.
-* @param host FQDN (e.g. www.doubango.org) or IPv4/IPv6 IP string.
-* @param port The local/remote port used to receive/send data. Set the port value to @ref TNET_SOCKET_PORT_ANY to bind to a random port.
-* @param type The type of the socket. See @ref tnet_socket_type_t.
-* @retval @ref tnet_socket_t object.
-*/
-tnet_socket_t* tnet_socket_create(const char* host, tnet_port_t port, tnet_socket_type_t type)
-{
-	return tnet_socket_create_2(host, port, type, tsk_true, tsk_true);
-}
-
-
-
-
-/**@ingroup tnet_socket_group
- * 	Closes a socket.
- * @param sock The socket to close. 
- * @retval	Zero if succeed and nonzero error code otherwise. 
-**/
-int tnet_socket_close(tnet_socket_t *sock)
-{
-	return tnet_sockfd_close(&(sock->fd));	
-}
-
-int tnet_socket_set_tlsfiles(tnet_socket_tls_t* socket, int isClient, const char* tlsfile_ca, const char* tlsfile_pvk, const char* tlsfile_pbk)
-{
-	if(socket){
-		return -1;
-	}
-	
-	if(!TNET_SOCKET_TYPE_IS_TLS(socket->type) && !TNET_SOCKET_TYPE_IS_WSS(socket->type)){
-		TSK_DEBUG_ERROR("Not TLS socket.");
-		return -2;
-	}
-
-	if(socket->tlshandle){
-		TSK_DEBUG_ERROR("TLS files already set.");
-		return -3;
-	}
-	
-	if((socket->tlshandle = tnet_sockfd_set_tlsfiles(socket->fd, isClient, tlsfile_ca, tlsfile_pvk, tlsfile_pbk))){
-		return 0;
-	}
-	else{
-		return -4;
-	}
-}
-
-//=================================================================================================
-//	SOCKET object definition
-//
-static tsk_object_t* tnet_socket_ctor(tsk_object_t * self, va_list * app)
-{
-	tnet_socket_t *sock = self;
-	if(sock){
+	tnet_socket_t *sock;
+	if((sock = tsk_object_new(tnet_socket_def_t))){
 		int status;
-		tsk_bool_t nonblocking;
-		tsk_bool_t bindsocket;
 		tsk_istr_t port;
-		struct addrinfo *result = 0;
-		struct addrinfo *ptr = 0;
+		struct addrinfo *result = tsk_null;
+		struct addrinfo *ptr = tsk_null;
 		struct addrinfo hints;
 		tnet_host_t local_hostname;
 
-		const char *host = va_arg(*app, const char*);
-#if defined(__GNUC__)
-		sock->port = (tnet_port_t)va_arg(*app, unsigned);
-#else
-		sock->port = va_arg(*app, tnet_port_t);
-#endif
+		sock->port = port_;
 		tsk_itoa(sock->port, &port);
-		sock->type = va_arg(*app, tnet_socket_type_t);
-		nonblocking = va_arg(*app, tsk_bool_t);
-		bindsocket = va_arg(*app, tsk_bool_t);
+		sock->type = type;
 
 		memset(local_hostname, 0, sizeof(local_hostname));
 
@@ -189,11 +124,6 @@ static tsk_object_t* tnet_socket_ctor(tsk_object_t * self, va_list * app)
 			else{
 				memcpy(local_hostname, "0.0.0.0", 7);
 			}
-			//if((status = tnet_gethostname(&local_hostname)))
-			//{
-			//	TNET_PRINT_LAST_ERROR("gethostname have failed.");
-			//	goto bail;
-			//}
 		}
 
 		/* hints address info structure */
@@ -237,14 +167,6 @@ static tsk_object_t* tnet_socket_ctor(tsk_object_t * self, va_list * app)
 					tnet_socket_close(sock);
 					continue;
 				}
-//				else{
-//#if TNET_UNDER_WINDOWS
-//					int index;
-//					if((index = tsk_strindexOf(sock->ip, tsk_strlen(sock->ip), "%")) > 0){
-//						*(sock->ip + index) = '\0';
-//					}
-//#endif
-//				}
 			}
 
 			/* sets the real socket type (if ipv46) */
@@ -266,13 +188,18 @@ static tsk_object_t* tnet_socket_ctor(tsk_object_t * self, va_list * app)
 		/* To avoid "Address already in use" error */
 		{
 #if defined(SOLARIS)
-			char yes = '1';
+			static const char yes = '1';
 #else
-			int yes = 1;
+			static const int yes = 1;
 #endif
-			if(setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, (char*)&yes, sizeof(int))){
-				TNET_PRINT_LAST_ERROR("setsockopt(SO_REUSEADDR) have failed.");
+			if(setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(int)) == -1){
+				TNET_PRINT_LAST_ERROR("setsockopt(SO_REUSEADDR) have failed");
 			}
+#if defined(SO_REUSEPORT)
+			if(setsockopt(sock->fd, SOL_SOCKET, SO_REUSEPORT, (char*)&yes, sizeof(int)) == -1){
+				TNET_PRINT_LAST_ERROR("setsockopt(SO_REUSEPORT) have failed");
+			}
+#endif
 		}
 
 #if TNET_UNDER_IPHONE || TNET_UNDER_IPHONE_SIMULATOR
@@ -303,7 +230,41 @@ bail:
 			}
 			return tsk_null;
 		}
+	}
 
+	return sock;
+}
+
+/**@ingroup tnet_socket_group
+* Creates a non-blocking socket and bind it.
+* To check that the returned socket is valid use @ref TNET_SOCKET_IS_VALID function.
+* @param host FQDN (e.g. www.doubango.org) or IPv4/IPv6 IP string.
+* @param port The local/remote port used to receive/send data. Set the port value to @ref TNET_SOCKET_PORT_ANY to bind to a random port.
+* @param type The type of the socket. See @ref tnet_socket_type_t.
+* @retval @ref tnet_socket_t object.
+*/
+tnet_socket_t* tnet_socket_create(const char* host, tnet_port_t port, tnet_socket_type_t type)
+{
+	return tnet_socket_create_2(host, port, type, tsk_true, tsk_true);
+}
+
+/**@ingroup tnet_socket_group
+ * 	Closes a socket.
+ * @param sock The socket to close. 
+ * @retval	Zero if succeed and nonzero error code otherwise. 
+**/
+static int tnet_socket_close(tnet_socket_t *sock)
+{
+	return tnet_sockfd_close(&(sock->fd));	
+}
+
+//=================================================================================================
+//	SOCKET object definition
+//
+static tsk_object_t* tnet_socket_ctor(tsk_object_t * self, va_list * app)
+{
+	tnet_socket_t *sock = self;
+	if(sock){
 	}
 	return self;
 }
@@ -313,16 +274,16 @@ static tsk_object_t* tnet_socket_dtor(tsk_object_t * self)
 	tnet_socket_t *sock = self;
 	
 	if(sock){
-		/* Close the socket. */
+		/* Close the socket */
 		if(TNET_SOCKET_IS_VALID(sock)){
 			tnet_socket_close(sock);
 		}
-		/* Clean up TLS handle*/
-		if(sock->tlshandle){
-			TSK_OBJECT_SAFE_FREE(sock->tlshandle);
-		}
+		/* Clean up TLS handle */
+		TSK_OBJECT_SAFE_FREE(sock->tlshandle);
+		
+		/* Clean up DTLS handle */
+		TSK_OBJECT_SAFE_FREE(sock->dtlshandle);
 	}
-
 
 	return self;
 }

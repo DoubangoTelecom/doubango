@@ -331,7 +331,7 @@ int tsdp_header_A_removeAll_by_field(tsdp_headers_A_L_t *attributes, const char*
 
 again:
 	tsk_list_foreach(item, attributes){
-		if(!(A = item->data)){
+		if(!(A = item->data) || TSDP_HEADER(A)->type != tsdp_htype_A){
 			continue;
 		}
 		if(tsk_striequals(field, A->field)){
@@ -340,6 +340,24 @@ again:
 		}
 	}
 
+	return 0;
+}
+
+int tsdp_header_A_removeAll_by_fields(tsdp_headers_A_L_t *attributes, const char** fields, tsk_size_t fields_count)
+{
+	tsk_size_t i;
+
+	if(!attributes || !fields){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	for(i = 0; i < fields_count; ++i){
+		if(!fields[i]){
+			continue;
+		}
+		tsdp_header_A_removeAll_by_field(attributes, fields[i]);
+	}
 	return 0;
 }
 

@@ -41,7 +41,7 @@ typedef struct tdav_session_audio_s
 {
 	TDAV_DECLARE_SESSION_AV;
 
-	tsk_bool_t started;
+	tsk_bool_t is_started;
 
 	struct {
 		unsigned created;

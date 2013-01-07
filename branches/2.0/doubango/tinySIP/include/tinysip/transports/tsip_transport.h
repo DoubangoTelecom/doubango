@@ -46,6 +46,7 @@ TSIP_BEGIN_DECLS
 
 enum {
 	TSIP_TRANSPORT_IDX_UDP,
+	TSIP_TRANSPORT_IDX_DTLS,
 	TSIP_TRANSPORT_IDX_TCP,
 	TSIP_TRANSPORT_IDX_TLS,
 	TSIP_TRANSPORT_IDX_WS,
@@ -115,7 +116,7 @@ typedef tsk_list_t tsip_transports_L_t; /**< List of @ref tsip_transport_t eleme
 int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const struct tsip_stack_s *stack, const char *host, tnet_port_t port, const char* description);
 int tsip_transport_deinit(tsip_transport_t* self);
 
-int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const char* pbk, const char* pvk);
+int tsip_transport_tls_set_certs(tsip_transport_t *self, const char* ca, const char* pbk, const char* pvk);
 tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort);
 tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const struct sockaddr * to, const void* data, tsk_size_t size);
 tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t local_fd, const void* data, tsk_size_t size);
@@ -127,6 +128,7 @@ tsk_bool_t tsip_transport_have_stream_peer_with_remote_address(tsip_transport_t 
 tsk_bool_t tsip_transport_have_stream_peer_with_local_fd(tsip_transport_t *self, tnet_fd_t local_fd);
 int tsip_transport_remove_stream_peer_by_local_fd(tsip_transport_t *self, tnet_fd_t local_fd);
 
+#define tsip_transport_tls_set_certs(transport, ca, pbk, pvk, verify)					(transport ? tnet_transport_tls_set_certs(transport->net_transport, ca, pbk, pvk, verify) : -1)
 #define tsip_transport_start(transport)													(transport ? tnet_transport_start(transport->net_transport) : -1)
 #define tsip_transport_isready(transport)												(transport ? tnet_transport_isready(transport->net_transport) : -1)
 #define tsip_transport_issecure(transport)												(transport ? tnet_transport_issecure(transport->net_transport) : 0)

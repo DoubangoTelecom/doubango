@@ -234,6 +234,11 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetRtpSymetricEnabled(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetRtpSymetricEnabled(enabled);
+    return ret;
+  }
+
   public static bool defaultsSetMediaType(twrap_media_type_t media_type) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetMediaType((int)media_type);
     return ret;
@@ -256,6 +261,21 @@ public class MediaSessionMgr : IDisposable {
 
   public static bool defaultsSetSRtpMode(tmedia_srtp_mode_t mode) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetSRtpMode((int)mode);
+    return ret;
+  }
+
+  public static tmedia_srtp_mode_t defaultsGetSRtpMode() {
+    tmedia_srtp_mode_t ret = (tmedia_srtp_mode_t)tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetSRtpMode();
+    return ret;
+  }
+
+  public static bool defaultsSetSRtpType(tmedia_srtp_type_t srtp_type) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetSRtpType((int)srtp_type);
+    return ret;
+  }
+
+  public static tmedia_srtp_type_t defaultsGetSRtpType() {
+    tmedia_srtp_type_t ret = (tmedia_srtp_type_t)tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetSRtpType();
     return ret;
   }
 

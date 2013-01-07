@@ -2,10 +2,17 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinySDP", "tinySDP.vcproj", "{E45DB518-6562-4033-80E8-60030F0B169F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA} = {6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinySAK", "..\tinySAK\tinySAK.vcproj", "{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcproj", "{4555F4A7-6DC7-4844-9F3F-6AAB4443D4E9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E45DB518-6562-4033-80E8-60030F0B169F} = {E45DB518-6562-4033-80E8-60030F0B169F}
+		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA} = {6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

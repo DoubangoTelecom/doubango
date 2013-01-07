@@ -51,12 +51,12 @@ extern const tmedia_codec_plugin_def_t* __tmedia_codec_plugins[TMED_CODEC_MAX_PL
 const tmedia_session_plugin_def_t* __tmedia_session_plugins[TMED_SESSION_MAX_PLUGINS] = {0};
 
 /* === local functions === */
-int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self);
-int _tmedia_session_mgr_clear_sessions(tmedia_session_mgr_t* self);
-int _tmedia_session_mgr_apply_params(tmedia_session_mgr_t* self);
-int _tmedia_session_prepare_lo(tmedia_session_t* self);
-int _tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m);
-int _tmedia_session_load_codecs(tmedia_session_t* self);
+static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self);
+static int _tmedia_session_mgr_clear_sessions(tmedia_session_mgr_t* self);
+static int _tmedia_session_mgr_apply_params(tmedia_session_mgr_t* self);
+static int _tmedia_session_prepare(tmedia_session_t* self);
+static int _tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m);
+static int _tmedia_session_load_codecs(tmedia_session_t* self);
 
 const char* tmedia_session_get_media(const tmedia_session_t* self);
 const tsdp_header_M_t* tmedia_session_get_lo(tmedia_session_t* self);
@@ -183,9 +183,27 @@ tsk_bool_t tmedia_session_set_2(tmedia_session_t* self, const tmedia_param_t* pa
 				self->bypass_decoding = *((int32_t*)param->value);
 				return tsk_true;
 			}
+			else if(tsk_striequals(param->key, "dtls-cert-verify")){
+				self->dtls.verify = *((int32_t*)param->value) ? tsk_true : tsk_false;
+				return tsk_true;
+			}
+		}
+		else if(param->value_type == tmedia_pvt_pchar){
+			if(tsk_striequals(param->key, "dtls-file-ca")){
+				tsk_strupdate(&self->dtls.file_ca, param->value);
+				return tsk_true;
+			}
+			else if(tsk_striequals(param->key, "dtls-file-pbk")){
+				tsk_strupdate(&self->dtls.file_pbk, param->value);
+				return tsk_true;
+			}
+			else if(tsk_striequals(param->key, "dtls-file-pvk")){
+				tsk_strupdate(&self->dtls.file_pvk, param->value);
+				return tsk_true;
+			}
 		}
 	}
-
+	
 	return tsk_false;
 }
 
@@ -340,7 +358,7 @@ tmedia_session_t* tmedia_session_create(tmedia_type_t type)
 }
 
 /* internal funtion: prepare lo */
-int _tmedia_session_prepare_lo(tmedia_session_t* self)
+static int _tmedia_session_prepare(tmedia_session_t* self)
 {
 	int ret;
 	if(!self || !self->plugin || !self->plugin->prepare){
@@ -525,6 +543,16 @@ int tmedia_session_send_rtcp_event(tmedia_session_t* self, tmedia_rtcp_event_typ
 	return -1;
 }
 
+int tmedia_session_set_onerror_cbfn(tmedia_session_t* self, const void* usrdata, tmedia_session_onerror_cb_f fun)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->onerror_cb.fun = fun;
+	self->onerror_cb.usrdata = usrdata;
+	return 0;
+}
 
 /**@ingroup tmedia_session_group
 * DeInitializes a media session.
@@ -548,6 +576,11 @@ int tmedia_session_deinit(tmedia_session_t* self)
 
 	/* QoS */
 	TSK_OBJECT_SAFE_FREE(self->qos);
+
+	/* DTLS */
+	TSK_FREE(self->dtls.file_ca);
+	TSK_FREE(self->dtls.file_pbk);
+	TSK_FREE(self->dtls.file_pvk);
 	
 	return 0;
 }
@@ -989,6 +1022,12 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 		goto bail;
 	}
 
+	/*	pass complete local sdp to the sessions to allow them to use session-level attributes
+	*/
+	tmedia_session_mgr_set(self,
+			TMEDIA_SESSION_SET_POBJECT(self->type, "local-sdp-message", self->sdp.lo),
+			TMEDIA_SESSION_SET_NULL());
+
 	/* gets each "m=" line from the sessions and add them to the local sdp */
 	tsk_list_foreach(item, self->sessions){
 		if(!(ms = item->data) || !ms->plugin){
@@ -996,7 +1035,7 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 			continue;
 		}
 		/* prepare the media session */
-		if(!ms->prepared && (_tmedia_session_prepare_lo(TMEDIA_SESSION(ms)))){
+		if(!ms->prepared && (_tmedia_session_prepare(TMEDIA_SESSION(ms)))){
 			TSK_DEBUG_ERROR("Failed to prepare session"); /* should never happen */
 			continue;
 		}
@@ -1124,6 +1163,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	
 	/* get global connection line (common to all sessions) 
 	* Each session should override this info if it has a different one in its "m=" line
+	* /!\ "remote-ip" is deprecated by "remote-sdp-message" and pending before complete remove
 	*/
 	if(C && C->addr){
 		tmedia_session_mgr_set(self,
@@ -1131,11 +1171,22 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 			TMEDIA_SESSION_SET_NULL());
 	}
 
+	/*	pass complete remote sdp to the sessions to allow them to use session-level attributes
+	*/
+	tmedia_session_mgr_set(self,
+			TMEDIA_SESSION_SET_POBJECT(self->type, "remote-sdp-message", self->sdp.ro),
+			TMEDIA_SESSION_SET_NULL());
+
 	/* foreach "m=" line in the remote offer create a session*/
 	while((M = (const tsdp_header_M_t*)tsdp_message_get_headerAt(sdp, tsdp_htype_M, index++))){
 		found = tsk_false;
 		/* Find session by media */
 		if((ms = tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_media, M->media))){
+			/* prepare the media session */
+			if(!ms->prepared && (_tmedia_session_prepare(TMEDIA_SESSION(ms)))){
+				TSK_DEBUG_ERROR("Failed to prepare session"); /* should never happen */
+				goto bail;
+			}
 			/* set remote ro at session-level */
 			if((ret = _tmedia_session_set_ro(TMEDIA_SESSION(ms), M)) == 0){
 				found = tsk_true;
@@ -1333,7 +1384,7 @@ int tmedia_session_mgr_add_media(tmedia_session_mgr_t* self, tmedia_type_t type)
 				}
 				else{
 					/* exist but unprepared(port=0) */
-					_tmedia_session_prepare_lo(session);
+					_tmedia_session_prepare(session);
 					if(self->started && session->plugin->start){
 						session->plugin->start(session);
 					}
@@ -1609,8 +1660,32 @@ int tmedia_session_mgr_set_msrp_cb(tmedia_session_mgr_t* self, const void* callb
 	}
 }
 
+int tmedia_session_mgr_set_onerror_cbfn(tmedia_session_mgr_t* self, const void* usrdata, tmedia_session_onerror_cb_f fun)
+{
+	tmedia_session_t* session;
+	tsk_list_item_t *item;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->onerror_cb.fun = fun;
+	self->onerror_cb.usrdata = usrdata;
+
+	tsk_list_lock(self->sessions);
+	tsk_list_foreach(item, self->sessions){
+		if(!(session = item->data)){
+			continue;
+		}
+		tmedia_session_set_onerror_cbfn(session, usrdata, fun);
+	}
+	tsk_list_unlock(self->sessions);
+
+	return 0;
+}
+
 /** internal function used to load sessions */
-int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
+static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 {
 	tsk_size_t i = 0;
 	tmedia_session_t* session;
@@ -1623,8 +1698,15 @@ int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 		while((i < TMED_SESSION_MAX_PLUGINS) && (plugin = __tmedia_session_plugins[i++])){
 			if((plugin->type & self->type) == plugin->type && !has_media(plugin->type)){// we don't have a session with this media type yet
 				if((session = tmedia_session_create(plugin->type))){
+					/* do not call "tmedia_session_mgr_set()" here to avoid applying parms before the creation of all session */
+
+					/* set other default values */
+
+					// set callback functions
+					tmedia_session_set_onerror_cbfn(session, self->onerror_cb.usrdata, self->onerror_cb.fun);
+					
+					/* push session */
 					tsk_list_push_back_data(self->sessions, (void**)(&session));
-					// do not call "tmedia_session_mgr_set()" here to avoid applying parms before the creation of all session
 				}
 			}
 			else if(!(plugin->type & self->type) && has_media(plugin->type)){// we have media session from previous call (before update)
@@ -1646,7 +1728,7 @@ int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 }
 
 /* internal function */
-int _tmedia_session_mgr_clear_sessions(tmedia_session_mgr_t* self)
+static int _tmedia_session_mgr_clear_sessions(tmedia_session_mgr_t* self)
 {
 	if(self && self->sessions){
 		tsk_list_clear_items(self->sessions);
@@ -1655,7 +1737,7 @@ int _tmedia_session_mgr_clear_sessions(tmedia_session_mgr_t* self)
 }
 
 /* internal function */
-int _tmedia_session_mgr_apply_params(tmedia_session_mgr_t* self)
+static int _tmedia_session_mgr_apply_params(tmedia_session_mgr_t* self)
 {
 	tsk_list_item_t *it1, *it2;
 	tmedia_param_t* param;
