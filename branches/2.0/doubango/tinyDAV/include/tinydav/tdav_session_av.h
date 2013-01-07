@@ -33,6 +33,8 @@
 #	include "tinyrtp/trtp_srtp.h"
 #endif
 
+#include "tnet_nat.h"
+
 #include "tsk_safeobj.h"
 
 TDAV_BEGIN_DECLS
