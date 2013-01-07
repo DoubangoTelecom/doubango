@@ -38,9 +38,12 @@
 
 #include "tinysdp/tsdp_message.h"
 
-#include "tinynet.h"
+#include "tnet_nat.h"
+#include "tnet_types.h"
 
 #include "tsk_list.h"
+#include "tsk_debug.h"
+#include "tsk_safeobj.h"
 
 TMEDIA_BEGIN_DECLS
 

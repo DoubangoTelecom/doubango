@@ -190,7 +190,7 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	}
     
 	if (TNET_SOCKET_TYPE_IS_TLS(type)) {
-		transport->tls.have_tls = tsk_true;
+		transport->tls.enabled = tsk_true;
 	}
 	
 	if ((ret = addSocket(fd, type, transport, take_ownership, isClient))) {

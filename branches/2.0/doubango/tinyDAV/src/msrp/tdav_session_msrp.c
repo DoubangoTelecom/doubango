@@ -30,6 +30,8 @@
  */
 #include "tinydav/msrp/tdav_session_msrp.h"
 
+#include "tsk_memory.h" /* TSK_FREE */
+
 #include <string.h> /* strtok() */
 
 #define TDAV_MSRP_CONNECT_TIMEOUT	2000

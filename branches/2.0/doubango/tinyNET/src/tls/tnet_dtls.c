@@ -124,7 +124,7 @@ static int _tnet_dtls_get_fingerprint(X509* cert, const EVP_MD *evp, tnet_finger
 			return -2;
 		}
 		for(i = 0, j = 0; i < len; ++i, j += 3){
-			sprintf(&(*fingerprint)[j], (i == (len - 1)) ? "%.2X" : "%.2X:", fp[i]);
+			sprintf((char*)&(*fingerprint)[j], (i == (len - 1)) ? "%.2X" : "%.2X:", fp[i]);
 		}
 		(*fingerprint)[len * 3] = '\0';
 		return 0;
@@ -471,20 +471,20 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 			_tnet_dtls_socket_raise_event_dataless(socket, tnet_dtls_socket_event_type_fingerprint_mismatch);
 			return -2;
 		}
-		if(socket->use_srtp){
 #if HAVE_OPENSSL_DTLS_SRTP
+		if(socket->use_srtp){
 #if !defined(SRTP_MAX_KEY_LEN)
 #	define cipher_key_length (128 >> 3) // rfc5764 4.1.2.  SRTP Protection Profiles
 #	define cipher_salt_length (112 >> 3) // rfc5764 4.1.2.  SRTP Protection Profiles
 	// "cipher_key_length" is also equal to srtp_profile_get_master_key_length(srtp_profile_aes128_cm_sha1_80)
 	// "cipher_salt_length" is also srtp_profile_get_master_salt_length(srtp_profile_aes128_cm_sha1_80)
 #	define SRTP_MAX_KEY_LEN (cipher_key_length + cipher_salt_length)
-#endif
+#endif /* SRTP_MAX_KEY_LEN */
 #define EXTRACTOR_dtls_srtp_text "EXTRACTOR-dtls_srtp"
 #define EXTRACTOR_dtls_srtp_text_len 19
 			uint8_t keying_material[SRTP_MAX_KEY_LEN << 1];
 			static const tsk_size_t keying_material_size = sizeof(keying_material);
-			if(socket->use_srtp){
+			/*if(socket->use_srtp)*/{
 				SRTP_PROTECTION_PROFILE *p = SSL_get_selected_srtp_profile(socket->ssl);
 				if(!p){
 					TSK_DEBUG_ERROR("SSL_get_selected_srtp_profile() returned null [%s]", ERR_error_string(ERR_get_error(), tsk_null));

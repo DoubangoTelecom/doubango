@@ -30,20 +30,6 @@
 #	include <srtp/srtp.h>
 
 struct trtp_manager_s;
-enum trtp_srtp_dtls_event_type_e;
-
-typedef int (*trtp_srtp_dtls_cb_f)(const void* usrdata,  enum trtp_srtp_dtls_event_type_e type, const char* reason);
-
-#define TRTP_SRTP_AES_CM_128_HMAC_SHA1_80 "AES_CM_128_HMAC_SHA1_80"
-#define TRTP_SRTP_AES_CM_128_HMAC_SHA1_32 "AES_CM_128_HMAC_SHA1_32"
-
-#define TRTP_SRTP_LINE_IDX_LOCAL	0
-#define TRTP_SRTP_LINE_IDX_REMOTE	1
-
-static const char* trtp_srtp_crypto_type_strings[2] =
-{
-	TRTP_SRTP_AES_CM_128_HMAC_SHA1_80, TRTP_SRTP_AES_CM_128_HMAC_SHA1_32
-};
 
 typedef enum trtp_srtp_dtls_event_type_e
 {
@@ -62,6 +48,42 @@ typedef enum trtp_srtp_crypto_type_e
 }
 trtp_srtp_crypto_type_t;
 
+typedef enum trtp_srtp_state_e
+{
+	trtp_srtp_state_none,
+	/* at this state we're able to generated DTLS "fingerprints" and SDES "crypro" attributes
+     but neither encrypt() nor decrypt() is possible.
+     it's possible to move backward and disable SRTP (e.g. because of negotiation error)
+     it's required to move to this state in order to be able to negotiate SRTP when mode is "optional" or "mandatory"
+     */
+	trtp_srtp_state_enabled,
+	/* at this state both required parameters (e.g. "crypto" attributes) have been successfuly proceeded
+     it's not possible to move backward and disable SRTP
+     if type="SDES": start()ing the engine means we'll be imediately able to encrypt()/decrypt() data
+     if type="DTLS": start()ing the engine doesn't mean we will be able to encrypt()/decrypt() data unless handshaking process successfuly completed
+     */
+	trtp_srtp_state_activated,
+	/* at this state we're able to encrypt()/decrypt() SRTP data
+     */
+	trtp_srtp_state_started
+}
+trtp_srtp_state_t;
+
+typedef int (*trtp_srtp_dtls_cb_f)(const void* usrdata,  enum trtp_srtp_dtls_event_type_e type, const char* reason);
+
+#define TRTP_SRTP_AES_CM_128_HMAC_SHA1_80 "AES_CM_128_HMAC_SHA1_80"
+#define TRTP_SRTP_AES_CM_128_HMAC_SHA1_32 "AES_CM_128_HMAC_SHA1_32"
+
+#define TRTP_SRTP_LINE_IDX_LOCAL	0
+#define TRTP_SRTP_LINE_IDX_REMOTE	1
+
+static const char* trtp_srtp_crypto_type_strings[2] =
+{
+	TRTP_SRTP_AES_CM_128_HMAC_SHA1_80, TRTP_SRTP_AES_CM_128_HMAC_SHA1_32
+};
+
+
+
 typedef struct trtp_srtp_ctx_xs
 {
 	int32_t tag;
@@ -74,27 +96,6 @@ typedef struct trtp_srtp_ctx_xs
 	tsk_bool_t initialized;
 }
 trtp_srtp_ctx_xt;
-
-typedef enum trtp_srtp_state_e
-{
-	trtp_srtp_state_none,
-	/* at this state we're able to generated DTLS "fingerprints" and SDES "crypro" attributes
-	but neither encrypt() nor decrypt() is possible.
-	it's possible to move backward and disable SRTP (e.g. because of negotiation error)
-	it's required to move to this state in order to be able to negotiate SRTP when mode is "optional" or "mandatory"
-	*/
-	trtp_srtp_state_enabled,
-	/* at this state both required parameters (e.g. "crypto" attributes) have been successfuly proceeded
-	it's not possible to move backward and disable SRTP
-	if type="SDES": start()ing the engine means we'll be imediately able to encrypt()/decrypt() data
-	if type="DTLS": start()ing the engine doesn't mean we will be able to encrypt()/decrypt() data unless handshaking process successfuly completed
-	*/
-	trtp_srtp_state_activated,
-	/* at this state we're able to encrypt()/decrypt() SRTP data
-	*/
-	trtp_srtp_state_started
-}
-trtp_srtp_state_t;
 
 int trtp_srtp_ctx_init(struct trtp_srtp_ctx_xs* ctx, int32_t tag, trtp_srtp_crypto_type_t type, uint32_t ssrc);
 int trtp_srtp_ctx_deinit(struct trtp_srtp_ctx_xs* ctx);
