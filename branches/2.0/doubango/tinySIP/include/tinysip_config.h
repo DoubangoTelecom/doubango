@@ -74,7 +74,7 @@
 #endif
 
 #if HAVE_CONFIG_H
-	#include "../config.h"
+	#include <config.h>
 #endif
 
 #endif // TINYSIP_CONFIG_H

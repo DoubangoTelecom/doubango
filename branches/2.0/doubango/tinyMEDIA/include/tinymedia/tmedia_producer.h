@@ -81,6 +81,8 @@ typedef struct tmedia_producer_s
 
 	const struct tmedia_producer_plugin_def_s* plugin;
 
+	tsk_bool_t is_prepared;
+	tsk_bool_t is_started;
 	uint64_t session_id;
 
 	struct{

@@ -23,10 +23,6 @@
 #ifndef TINYRTP_CONFIG_H
 #define TINYRTP_CONFIG_H
 
-#if HAVE_CONFIG_H
-	#include "config.h"
-#endif
-
 #ifdef __SYMBIAN32__
 #undef _WIN32 /* Because of WINSCW */
 #endif
@@ -81,14 +77,14 @@
 #   include <TargetConditionals.h>
 #endif
 
-#if HAVE_CONFIG_H
-	#include "../config.h"
-#endif
-
 // http://code.google.com/p/idoubs/issues/detail?id=111
 #if TARGET_IPHONE_SIMULATOR
 #   undef HAVE_SRTP
 #   define HAVE_SRTP 0
+#endif
+
+#if HAVE_CONFIG_H
+	#include <config.h>
 #endif
 
 #endif // TINYRTP_CONFIG_H

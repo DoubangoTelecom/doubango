@@ -139,8 +139,20 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_setTLSSecAgree(swigCPtr, this, enabled);
   }
 
+  public boolean setSSLCertificates(String privKey, String pubKey, String caKey, boolean verify) {
+    return tinyWRAPJNI.SipStack_setSSLCertificates__SWIG_0(swigCPtr, this, privKey, pubKey, caKey, verify);
+  }
+
+  public boolean setSSLCertificates(String privKey, String pubKey, String caKey) {
+    return tinyWRAPJNI.SipStack_setSSLCertificates__SWIG_1(swigCPtr, this, privKey, pubKey, caKey);
+  }
+
+  public boolean setSSLCretificates(String privKey, String pubKey, String caKey, boolean verify) {
+    return tinyWRAPJNI.SipStack_setSSLCretificates__SWIG_0(swigCPtr, this, privKey, pubKey, caKey, verify);
+  }
+
   public boolean setSSLCretificates(String privKey, String pubKey, String caKey) {
-    return tinyWRAPJNI.SipStack_setSSLCretificates(swigCPtr, this, privKey, pubKey, caKey);
+    return tinyWRAPJNI.SipStack_setSSLCretificates__SWIG_1(swigCPtr, this, privKey, pubKey, caKey);
   }
 
   public boolean setIPSecSecAgree(boolean enabled) {

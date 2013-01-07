@@ -79,7 +79,7 @@
 
 
 #if HAVE_CONFIG_H
-	#include "../config.h"
+	#include <config.h>
 #endif
 
 #endif /* _TINYMSRP_H_ */

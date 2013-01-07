@@ -1,7 +1,6 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2012 Mamadou Diop.
+* Copyright (C) 2013 Doubango Telecom <http://www.doubango.org>
 *
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +22,6 @@
 /**@file tnet_transport.h
  * @brief Network transport layer.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #ifndef TNET_SERVER_H
 #define TNET_SERVER_H
@@ -53,7 +49,15 @@ typedef enum tnet_transport_event_type_e
 	event_closed,
 	event_error,
 	event_connected,
-	event_accepted
+	event_accepted,
+
+	event_dtls_handshake_started,
+	event_dtls_handshake_succeed,
+	event_dtls_handshake_failed,
+	event_dtls_fingerprint_mismatch,
+	event_dtls_srtp_data,
+	event_dtls_srtp_profile_selected,
+	event_dtls_error
 }
 tnet_transport_event_type_t;
 
@@ -74,6 +78,7 @@ tnet_transport_event_t;
 
 typedef int (*tnet_transport_cb_f)(const tnet_transport_event_t* e);
 
+TINYNET_API int tnet_transport_tls_set_certs(tnet_transport_handle_t *self, const char* ca, const char* pbk, const char* pvk, tsk_bool_t verify);
 TINYNET_API int tnet_transport_start(tnet_transport_handle_t* transport);
 TINYNET_API int tnet_transport_issecure(const tnet_transport_handle_t *handle);
 TINYNET_API const char* tnet_transport_get_description(const tnet_transport_handle_t *handle);
@@ -94,6 +99,16 @@ TINYNET_API tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle
 TINYNET_API tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, tsk_size_t size);
 
 TINYNET_API int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_transport_cb_f callback, const void* callback_data);
+
+TINYNET_API const char* tnet_transport_dtls_get_local_fingerprint(const tnet_transport_handle_t *handle, tnet_dtls_hash_type_t hash);
+#define tnet_transport_dtls_set_certs(self, ca, pbk, pvk, verify) tnet_transport_tls_set_certs((self), (ca), (pbk), (pvk), (verify))
+#define tnet_transport_dtls_srtp_set_certs(self, ca, pbk, pvk, verify) tnet_transport_dtls_set_certs((self), (ca), (pbk), (pvk), (verify))
+TINYNET_API int tnet_transport_dtls_use_srtp(tnet_transport_handle_t *handle, const char* srtp_profiles, struct tnet_socket_s** sockets, tsk_size_t sockets_count);
+TINYNET_API int tnet_transport_dtls_set_remote_fingerprint(tnet_transport_handle_t *handle, const tnet_fingerprint_t* fingerprint, tnet_dtls_hash_type_t hash, struct tnet_socket_s** sockets, tsk_size_t sockets_count);
+TINYNET_API tsk_bool_t tnet_transport_dtls_is_enabled(const tnet_transport_handle_t *handle);
+TINYNET_API int tnet_transport_dtls_set_enabled(tnet_transport_handle_t *handle, tsk_bool_t enabled, struct tnet_socket_s** sockets, tsk_size_t sockets_count);
+TINYNET_API int tnet_transport_dtls_set_setup(tnet_transport_handle_t* handle, tnet_dtls_setup_t setup, struct tnet_socket_s** sockets, tsk_size_t sockets_count);
+TINYNET_API int tnet_transport_dtls_do_handshake(tnet_transport_handle_t *handle, struct tnet_socket_s** sockets, tsk_size_t sockets_count, const struct sockaddr_storage** remote_addrs, tsk_size_t remote_addrs_count);
 
 TINYNET_API tnet_socket_type_t tnet_transport_get_type(const tnet_transport_handle_t *handle);
 TINYNET_API tnet_fd_t tnet_transport_get_master_fd(const tnet_transport_handle_t *handle);
@@ -127,8 +142,19 @@ typedef struct tnet_transport_s
 		char* ca;
 		char* pvk;
 		char* pbk;
-		tsk_bool_t have_tls;
+		tsk_bool_t enabled;
+		tsk_bool_t verify; // whether to verify client/server certificate
+		struct ssl_ctx_st *ctx_client;
+		struct ssl_ctx_st *ctx_server;
 	}tls;
+
+	/* DTLS */
+	struct{
+		tsk_bool_t enabled;
+		tsk_bool_t use_srtp;
+		struct ssl_ctx_st *ctx;
+		tnet_fingerprint_t fingerprints[TNET_DTLS_HASH_TYPE_MAX];
+	}dtls;
 }
 tnet_transport_t;
 

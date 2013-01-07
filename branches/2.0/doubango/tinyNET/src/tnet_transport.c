@@ -32,6 +32,8 @@
 
  */
 #include "tnet_transport.h"
+#include "tls/tnet_tls.h"
+#include "tls/tnet_dtls.h"
 
 #include "tsk_memory.h"
 #include "tsk_string.h"
@@ -41,13 +43,98 @@
 
 #include <string.h> /* memcpy, ...(<#void * #>, <#const void * #>, <#tsk_size_t #>) */
 
+#ifndef TNET_CIPHER_LIST
+#	define TNET_CIPHER_LIST "ALL:!ADH:!LOW:!EXP:@STRENGTH"
+#endif
+
 extern int tnet_transport_prepare(tnet_transport_t *transport);
 extern int tnet_transport_unprepare(tnet_transport_t *transport);
 extern void *tnet_transport_mainthread(void *param);
 extern int tnet_transport_stop(tnet_transport_t *transport);
 
 static void *run(void* self);
+static int _tnet_transport_dtls_cb(const void* usrdata, tnet_dtls_socket_event_type_t e, const tnet_dtls_socket_handle_t* handle, const void* data, tsk_size_t size);
 
+static int _tnet_transport_ssl_init(tnet_transport_t* transport)
+{
+	if(!transport){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+#if HAVE_OPENSSL
+	{
+		tnet_socket_type_t type = tnet_transport_get_type(transport);
+		tsk_bool_t is_tls = (TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type));
+		tsk_bool_t is_dtls = TNET_SOCKET_TYPE_IS_DTLS(type);
+		if(is_dtls && !tnet_dtls_is_supported()){
+			TSK_DEBUG_ERROR("Requesting to create DTLS transport but source code not built with support for this feature");
+			return -1;
+		}
+		if(is_tls && !tnet_tls_is_supported()){
+			TSK_DEBUG_ERROR("Requesting to create TLS transport but source code not built with support for this feature");
+			return -1;
+		}
+		if((transport->tls.enabled = is_tls)){
+			if(!transport->tls.ctx_client && !(transport->tls.ctx_client = SSL_CTX_new(SSLv23_client_method()))){
+				TSK_DEBUG_ERROR("Failed to create SSL client context");
+				return -2;
+			}
+			if(!transport->tls.ctx_server && !(transport->tls.ctx_server = SSL_CTX_new(SSLv23_server_method()))){
+				TSK_DEBUG_ERROR("Failed to create SSL server context");
+				return -3;
+			}
+			SSL_CTX_set_mode(transport->tls.ctx_client, SSL_MODE_AUTO_RETRY);
+			SSL_CTX_set_mode(transport->tls.ctx_server, SSL_MODE_AUTO_RETRY);
+			SSL_CTX_set_verify(transport->tls.ctx_server, SSL_VERIFY_NONE, tsk_null); // to be updated by tnet_transport_tls_set_certs()
+			SSL_CTX_set_verify(transport->tls.ctx_client, SSL_VERIFY_NONE, tsk_null); // to be updated by tnet_transport_tls_set_certs()
+			if(SSL_CTX_set_cipher_list(transport->tls.ctx_client, TNET_CIPHER_LIST) <= 0 || SSL_CTX_set_cipher_list(transport->tls.ctx_server, TNET_CIPHER_LIST) <= 0){
+				TSK_DEBUG_ERROR("SSL_CTX_set_cipher_list failed [%s]", ERR_error_string(ERR_get_error(), tsk_null));
+				return -4;
+			}
+		}
+#if HAVE_OPENSSL_DTLS
+		if((transport->dtls.enabled = is_dtls)){
+			if(!transport->dtls.ctx && !(transport->dtls.ctx = SSL_CTX_new(DTLSv1_method()))){
+				TSK_DEBUG_ERROR("Failed to create DTLSv1 context");
+				TSK_OBJECT_SAFE_FREE(transport);
+				return -5;
+			}
+			SSL_CTX_set_mode(transport->dtls.ctx, SSL_MODE_AUTO_RETRY);
+			SSL_CTX_set_verify(transport->dtls.ctx, SSL_VERIFY_NONE, tsk_null); // to be updated by tnet_transport_tls_set_certs()
+			if(SSL_CTX_set_cipher_list(transport->dtls.ctx, TNET_CIPHER_LIST) <= 0){
+				TSK_DEBUG_ERROR("SSL_CTX_set_cipher_list failed [%s]", ERR_error_string(ERR_get_error(), tsk_null));
+				return -6;
+			}
+		}
+#endif /* HAVE_OPENSSL_DTLS */
+	}
+#endif /* HAVE_OPENSSL */
+
+	return 0;
+}
+
+static int _tnet_transport_ssl_deinit(tnet_transport_t* transport)
+{
+	if(!transport){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+#if HAVE_OPENSSL
+	if(transport->tls.ctx_client){
+		SSL_CTX_free(transport->tls.ctx_client);
+		transport->tls.ctx_client = tsk_null;
+	}
+	if(transport->tls.ctx_server){
+		SSL_CTX_free(transport->tls.ctx_server);
+		transport->tls.ctx_server = tsk_null;
+	}
+	if(transport->dtls.ctx){
+		SSL_CTX_free(transport->dtls.ctx);
+		transport->dtls.ctx = tsk_null;
+	}
+#endif /* HAVE_OPENSSL */
+	return 0;
+}
 
 tnet_transport_t* tnet_transport_create(const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description)
 {		
@@ -59,7 +146,6 @@ tnet_transport_t* tnet_transport_create(const char* host, tnet_port_t port, tnet
 		transport->req_local_port = port;
 		transport->type = type;
 		transport->context = tnet_transport_context_create();
-		transport->tls.have_tls = (TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type));
 		
 		if((transport->master = tnet_socket_create(transport->local_host, transport->req_local_port, transport->type))){
 			transport->local_ip = tsk_strdup(transport->master->ip);
@@ -69,7 +155,13 @@ tnet_transport_t* tnet_transport_create(const char* host, tnet_port_t port, tnet
 			TSK_DEBUG_ERROR("Failed to create master socket");
 			TSK_OBJECT_SAFE_FREE(transport);
 		}
+
+		if(_tnet_transport_ssl_init(transport) != 0){
+			TSK_DEBUG_ERROR("Failed to initialize TLS and/or DTLS caps");
+			TSK_OBJECT_SAFE_FREE(transport);
+		}
 	}
+
 	return transport;
 }
 
@@ -92,13 +184,93 @@ tnet_transport_t* tnet_transport_create_2(tnet_socket_t *master, const char* des
 		transport->bind_local_port = transport->master->port;
 
 		transport->context = tnet_transport_context_create();
+
+		if(_tnet_transport_ssl_init(transport) != 0){
+			TSK_DEBUG_ERROR("Failed to initialize TLS and/or DTLS caps");
+			TSK_OBJECT_SAFE_FREE(transport);
+		}
 	}
+
 	return transport;
 }
 
 tnet_transport_event_t* tnet_transport_event_create(tnet_transport_event_type_t type, const void* callback_data, tnet_fd_t fd)
 {
 	return tsk_object_new(tnet_transport_event_def_t, type, callback_data, fd);
+}
+
+int tnet_transport_tls_set_certs(tnet_transport_handle_t *handle, const char* ca, const char* pbk, const char* pvk, tsk_bool_t verify)
+{
+	tnet_transport_t *transport = handle;
+	static const char* ssl_password = tsk_null;
+	
+	if(!transport){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tsk_strupdate(&transport->tls.ca, ca);
+	tsk_strupdate(&transport->tls.pvk, pvk);
+	tsk_strupdate(&transport->tls.pbk, pbk);
+	transport->tls.verify = verify;
+
+#if HAVE_OPENSSL
+	{
+		int32_t i, ret;
+		SSL_CTX* contexts[3] = { tsk_null };
+
+		/* init DTLS/TLS contexts */
+		if((ret = _tnet_transport_ssl_init(transport))){
+			return ret;
+		}
+
+		if(transport->tls.enabled){
+			contexts[0] = transport->tls.ctx_client;
+			contexts[1] = transport->tls.ctx_server;
+		}
+		if(transport->dtls.enabled){
+			contexts[2] = transport->dtls.ctx;
+			/* Reset fingerprints */
+			memset(transport->dtls.fingerprints, 0, sizeof(transport->dtls.fingerprints));
+		}
+
+		for(i = 0; i < sizeof(contexts)/sizeof(contexts[0]); ++i){
+			if(!contexts[i]){
+				continue;
+			}
+			SSL_CTX_set_verify(contexts[i], transport->tls.verify ? (SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT) : SSL_VERIFY_NONE, tsk_null);
+			if(!tsk_strnullORempty(transport->tls.ca) || !tsk_strnullORempty(transport->tls.pvk) || !tsk_strnullORempty(transport->tls.ca)){
+				/* Sets Public key (cert) */
+				if(!tsk_strnullORempty(transport->tls.pbk) && (ret = SSL_CTX_use_certificate_file(contexts[i], transport->tls.pbk, SSL_FILETYPE_PEM)) != 1) {
+					TSK_DEBUG_ERROR("SSL_CTX_use_certificate_file failed [%d,%s]", ret, ERR_error_string(ERR_get_error(), tsk_null));
+					return -3;
+				}
+				/*Sets the password of the private key*/
+				if(!tsk_strnullORempty(ssl_password)){
+					SSL_CTX_set_default_passwd_cb_userdata(contexts[i], (void*)ssl_password);
+				}
+
+				/* Sets Private key (cert) */
+				if (!tsk_strnullORempty(transport->tls.pvk) && (ret = SSL_CTX_use_PrivateKey_file(contexts[i], transport->tls.pvk, SSL_FILETYPE_PEM)) != 1) {
+					TSK_DEBUG_ERROR("SSL_CTX_use_PrivateKey_file failed [%d,%s]", ret, ERR_error_string(ERR_get_error(), tsk_null));
+					return -4;
+				}
+				/* Checks private key */
+				if(!tsk_strnullORempty(transport->tls.pvk) && SSL_CTX_check_private_key(contexts[i]) == 0) {
+					TSK_DEBUG_ERROR("SSL_CTX_check_private_key failed [%d,%s]", ret, ERR_error_string(ERR_get_error(), tsk_null));
+					return -5;
+				}
+				/* Sets trusted CAs and CA file */
+				if(!tsk_strnullORempty(transport->tls.ca) && (ret = SSL_CTX_load_verify_locations(contexts[i], transport->tls.ca, /*tlsdir_cas*/tsk_null)) != 1) {
+				   TSK_DEBUG_ERROR("SSL_CTX_load_verify_locations failed [%d, %s]", ret, ERR_error_string(ERR_get_error(), tsk_null));
+				   return -5;
+				}
+			}
+		}
+	}
+#endif /* HAVE_OPENSSL */
+
+	return 0;
 }
 
 int tnet_transport_start(tnet_transport_handle_t* handle)
@@ -251,28 +423,247 @@ int tnet_transport_get_public_ip_n_port(const tnet_transport_handle_t *handle, t
 	return 0;
 }
 
-tnet_socket_type_t tnet_transport_get_type(const tnet_transport_handle_t *handle)
+const char* tnet_transport_dtls_get_local_fingerprint(const tnet_transport_handle_t *handle, tnet_dtls_hash_type_t hash)
 {
-	if(handle){
-		const tnet_transport_t *transport = handle;
-		return transport->type;
+	const tnet_transport_t *transport = handle;
+
+	if(!transport){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	if(!transport->dtls.enabled){
+		TSK_DEBUG_ERROR("DTLS not enabled on this transport");
+		return tsk_null;
+	}
+	if(hash > sizeof(transport->dtls.fingerprints)/sizeof(transport->dtls.fingerprints[0])){
+		TSK_DEBUG_ERROR("%d not valid for fingerprint hash", hash);
+		return tsk_null;
+	}
+	if(tsk_strnullORempty(transport->tls.pbk)){
+		TSK_DEBUG_ERROR("No certificate for which to get fingerprint");
+		return tsk_null;
+	}
+
+	if(tnet_dtls_get_fingerprint(transport->tls.pbk, &((tnet_transport_t *)transport)->dtls.fingerprints[hash], hash) == 0){
+		return transport->dtls.fingerprints[hash];
+	}
+	return tsk_null;
+}
+
+/*
+rfc5764: 4.1.  The use_srtp Extension
+*/
+int tnet_transport_dtls_use_srtp(tnet_transport_handle_t *handle, const char* srtp_profiles, struct tnet_socket_s** sockets, tsk_size_t sockets_count)
+{
+	tnet_transport_t *transport = handle;
+
+	if(!transport || !srtp_profiles){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	if(!transport->dtls.enabled){
+		TSK_DEBUG_ERROR("DTLS not enabled on this transport");
+		return -2;
+	}
+#if HAVE_OPENSSL_DTLS_SRTP
+	{
+		tsk_size_t i;
+		transport->dtls.use_srtp = tsk_true;
+		SSL_CTX_set_tlsext_use_srtp(transport->dtls.ctx, srtp_profiles);
+		if(sockets){
+			for(i = 0; i < sockets_count; ++i){
+				if(sockets[i] && sockets[i]->dtlshandle){
+					tnet_dtls_socket_use_srtp(sockets[i]->dtlshandle);
+				}
+			}
+		}
+		return 0;
+	}
+#else
+	TSK_DEBUG_ERROR("Your OpenSSL version do not support DTLS-SRTP");
+	return -2;
+#endif
+}
+
+int tnet_transport_dtls_set_remote_fingerprint(tnet_transport_handle_t *handle, const tnet_fingerprint_t* fingerprint, tnet_dtls_hash_type_t hash, struct tnet_socket_s** sockets, tsk_size_t sockets_count)
+{
+	const tnet_transport_t *transport = handle;
+
+	if(!transport || !fingerprint){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	if(!transport->dtls.enabled){
+		TSK_DEBUG_ERROR("DTLS not enabled on this transport");
+		return -2;
+	}
+#if HAVE_OPENSSL_DTLS
+	if(sockets){
+		tsk_size_t i;
+		for(i = 0; i < sockets_count; ++i){
+			if(sockets[i] && sockets[i]->dtlshandle){
+				tnet_dtls_socket_set_remote_fingerprint(sockets[i]->dtlshandle, fingerprint, hash);
+			}
+		}
+	}
+	return 0;
+#else
+	TSK_DEBUG_ERROR("Your OpenSSL version do not support DTLS");
+	return -2;
+#endif
+}
+
+tsk_bool_t tnet_transport_dtls_is_enabled(const tnet_transport_handle_t *handle)
+{
+	const tnet_transport_t *transport = handle;
+	if(!transport){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return transport->dtls.enabled;
+}
+
+/*
+Enable or disable DTLS on the transport and all coresponding sockets
+*@param handle The transport for which to enable or disable DTLS
+*@param enabled Whether to enable or disable DTLS
+*@param sockets List of all sockets for which to enable or disable DLS could be null. You should include the master socket in this list.
+*@param sockets_count The number of sockets
+*@return 0 if succeed, otherwise non-zero error code
+*/
+int tnet_transport_dtls_set_enabled(tnet_transport_handle_t *handle, tsk_bool_t enabled, struct tnet_socket_s** sockets, tsk_size_t sockets_count)
+{
+	tnet_transport_t *transport = handle;
+	tnet_socket_type_t type;
+	int ret;
+
+	if(!transport){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	type = tnet_transport_get_type(transport);
+
+	if(!TNET_SOCKET_TYPE_IS_DTLS(type) && !TNET_SOCKET_TYPE_IS_UDP(type)){
+		TSK_DEBUG_ERROR("Trying to enable/disable DTLS on invalid transport type: %d", type);
+		return -3;
+	}
+
+	if(enabled & !tnet_dtls_is_supported()){
+		TSK_DEBUG_ERROR("Trying to enable DTLS but code source not built with this feature");
+		return -1;
+	}
+
+	if((transport->dtls.enabled = enabled)){
+		TNET_SOCKET_TYPE_SET_DTLS(transport->type);
+		if((ret = _tnet_transport_ssl_init(transport))){
+			return ret;
+		}
 	}
 	else{
-		TSK_DEBUG_ERROR("NULL transport object.");
+		TNET_SOCKET_TYPE_SET_UDP(transport->type);
+		ret = _tnet_transport_ssl_deinit(transport);
 	}
-	return tnet_socket_type_invalid;
+
+	if(sockets && sockets_count){
+		tsk_size_t i;
+		for(i = 0; i < sockets_count; ++i){
+			if(!sockets[i]){
+				continue;
+			}
+			if(enabled){
+				if(!sockets[i]->dtlshandle){
+					if(!(sockets[i]->dtlshandle = tnet_dtls_socket_create(sockets[i]->fd, transport->dtls.ctx))){
+						return -4;
+					}
+				}
+				if(transport->dtls.use_srtp){
+					tnet_dtls_socket_use_srtp(sockets[i]->dtlshandle);
+				}
+				TNET_SOCKET_TYPE_SET_DTLS(sockets[i]->type);
+				tnet_dtls_socket_set_callback(sockets[i]->dtlshandle, transport, _tnet_transport_dtls_cb);
+			}
+			else{
+				TSK_OBJECT_SAFE_FREE(sockets[i]->dtlshandle);
+				TNET_SOCKET_TYPE_SET_UDP(sockets[i]->type);
+			}
+		}
+	}
+	
+	return ret;
+}
+
+int tnet_transport_dtls_set_setup(tnet_transport_handle_t* handle, tnet_dtls_setup_t setup, struct tnet_socket_s** sockets, tsk_size_t sockets_count)
+{
+	tnet_transport_t *transport = handle;
+
+	if(!transport){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if(!transport->dtls.enabled){
+		TSK_DEBUG_ERROR("DTLS not enabled on this transport");
+		return -2;
+	}
+	if(sockets && sockets_count){
+		tsk_size_t i;
+		for(i = 0; i < sockets_count; ++i){
+			if(!sockets[i] || !sockets[i]->dtlshandle){
+				continue;
+			}
+			tnet_dtls_socket_set_setup(sockets[i]->dtlshandle, setup);
+		}
+	}
+	return 0;
+}
+
+int tnet_transport_dtls_do_handshake(tnet_transport_handle_t *handle, struct tnet_socket_s** sockets, tsk_size_t sockets_count, const struct sockaddr_storage** remote_addrs, tsk_size_t remote_addrs_count)
+{
+	tnet_transport_t *transport = handle;
+	tsk_size_t i;
+
+	if(!transport || !sockets){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if(!transport->dtls.enabled){
+		TSK_DEBUG_ERROR("DTLS not enabled on this transport");
+		return -2;
+	}
+
+	if(sockets){
+		int ret;
+		for(i = 0; i < sockets_count; ++i){
+			if(sockets[i] && sockets[i]->dtlshandle){
+				if((ret = tnet_dtls_socket_do_handshake(sockets[i]->dtlshandle, 
+					(remote_addrs && i < remote_addrs_count) ? remote_addrs[i] : tsk_null)) != 0){
+						return ret;
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
+tnet_socket_type_t tnet_transport_get_type(const tnet_transport_handle_t *handle)
+{
+	if(!handle){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tnet_socket_type_invalid;
+	}
+	return ((const tnet_transport_t *)handle)->type;
 }
 
 tnet_fd_t tnet_transport_get_master_fd(const tnet_transport_handle_t *handle)
 {
-	if(handle){
-		const tnet_transport_t *transport = handle;
-		return transport->master ? transport->master->fd : TNET_INVALID_FD;
+	if(!handle){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return TNET_INVALID_FD;
 	}
-	else{
-		TSK_DEBUG_ERROR("NULL transport object.");
-	}
-	return TNET_INVALID_FD;
+	return ((const tnet_transport_t *)handle)->master ? ((const tnet_transport_t *)handle)->master->fd : TNET_INVALID_FD;
 }
 
 /**
@@ -293,7 +684,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	tnet_fd_t fd = TNET_INVALID_FD;
 	
 	if(!transport || !transport->master){
-		TSK_DEBUG_ERROR("Invalid transport handle.");
+		TSK_DEBUG_ERROR("Invalid transport handle");
 		goto bail;
 	}
 	
@@ -349,7 +740,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	}
 	else{
 		if(TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)){
-			transport->tls.have_tls = 1;
+			transport->tls.enabled = tsk_true;
 			/*transport->connected = !*/tnet_tls_socket_connect((tnet_tls_socket_handle_t*)tnet_transport_get_tlshandle(handle, fd));
 		}
 		else{
@@ -392,6 +783,42 @@ int tnet_transport_shutdown(tnet_transport_handle_t* handle)
 	}
 }
 
+
+static int _tnet_transport_dtls_cb(const void* usrdata, tnet_dtls_socket_event_type_t dtls_e, const tnet_dtls_socket_handle_t* handle, const void* data, tsk_size_t size)
+{
+	tnet_transport_t *transport = (tnet_transport_t*)usrdata;
+	if(transport){
+		tnet_transport_event_type_t t_e;
+		const struct sockaddr_storage* remote_addr;
+		tnet_fd_t fd;
+		tnet_transport_event_t* e;
+
+		switch(dtls_e){
+			case tnet_dtls_socket_event_type_handshake_started: t_e = event_dtls_handshake_started; break;
+			case tnet_dtls_socket_event_type_handshake_succeed: t_e = event_dtls_handshake_succeed; break;
+			case tnet_dtls_socket_event_type_handshake_failed: t_e = event_dtls_handshake_failed; break;
+			case tnet_dtls_socket_event_type_fingerprint_mismatch: t_e = event_dtls_fingerprint_mismatch; break;
+			case tnet_dtls_socket_event_type_dtls_srtp_profile_selected: t_e = event_dtls_srtp_profile_selected; break;
+			case tnet_dtls_socket_event_type_dtls_srtp_data: t_e = event_dtls_srtp_data; break;
+			case tnet_dtls_socket_event_type_error: t_e = event_dtls_error; break;
+			default: TSK_DEBUG_ERROR("DTLS event = %d ignored", dtls_e); return -1;
+		}	
+		remote_addr = tnet_dtls_socket_get_remote_addr(handle);
+		fd = tnet_dtls_socket_get_fd(handle);
+		if((e = tnet_transport_event_create(t_e, transport->callback_data, fd))){
+			if(data && size && (e ->data = tsk_malloc(size))){
+				memcpy(e ->data, data, size);
+				e->size = size;
+			}
+			if(remote_addr){
+				e->remote_addr = *remote_addr;
+			}
+			TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(transport), e);
+			return 0;
+		}
+	}
+	return -1;
+}
 
 
 /*
@@ -457,10 +884,11 @@ static tsk_object_t* tnet_transport_dtor(tsk_object_t * self)
 		TSK_FREE(transport->local_ip);
 		TSK_FREE(transport->local_host);
 
-		// tls
+		// (tls and dtls) = ssl
 		TSK_FREE(transport->tls.ca);
 		TSK_FREE(transport->tls.pbk);
 		TSK_FREE(transport->tls.pvk);
+		_tnet_transport_ssl_deinit(transport); // openssl contexts
 	}
 
 	return self;

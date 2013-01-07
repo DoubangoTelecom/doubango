@@ -874,7 +874,7 @@ static int _trtp_rtcp_session_timer_callback(const void* arg, tsk_timer_id_t tim
 
 static tsk_bool_t IsRtpPacket(const packet_ p)
 {
-	return (TSK_OBJECT_HEADER(p)->base == trtp_rtp_packet_def_t);
+	return (TSK_OBJECT_HEADER(p)->__def__ == trtp_rtp_packet_def_t);
 }
 
 static PacketType_ PacketType(const packet_ p)

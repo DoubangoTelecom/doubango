@@ -35,13 +35,17 @@
 
 #include <stdlib.h> /* srand */
 
+#if HAVE_OPENSSL
+#	include <openssl/ssl.h>
+#endif
+
 /** @mainpage tinyNET API Overview
 *
 * <h1>10 Sockets and Network Functions</h1>
 *
 * All network functions are part of tinyNET projects.<br>
 * You MUST call @ref tnet_startup() before using any network function (tnet_*). tnet_cleanup() is used to terminate use of network functions. <br>
-* The startup function will determine whether the host is a ìlittle-endianî machine or not (at runtime).
+* The startup function will determine whether the host is a Ã¬little-endianÃ® machine or not (at runtime).
 *
 * ======
 *
@@ -95,24 +99,35 @@ int tnet_startup()
 
 		err = WSAStartup(wVersionRequested, &wsaData);
 		if (err != 0) {
-			TSK_DEBUG_FATAL("WSAStartup failed with error: %d\n", err);
+			fprintf(stderr, "WSAStartup failed with error: %d\n", err);
 			return -1;
 		}
 
 		if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2){
-			TSK_DEBUG_FATAL("Could not find a usable version of Winsock.dll\n");
+			fprintf(stderr, "Could not find a usable version of Winsock.dll\n");
 			tnet_cleanup();
 			return -2;
 		}
 		else{
-			__tnet_started = tsk_true;
-			TSK_DEBUG_INFO("The Winsock 2.2 dll was found okay\n");
+			fprintf(stdout, "The Winsock 2.2 dll was found okay\n");
 		}
 	}
-#else
-	__tnet_started = tsk_true;
 #endif /* TNET_UNDER_WINDOWS */
+
+#if HAVE_OPENSSL
+	fprintf(stdout, "SSL is enabled :)\n");
+	SSL_library_init();
+	OpenSSL_add_all_algorithms();
+	SSL_load_error_strings();
+
+	fprintf(stdout, "DTLS supported: %s\n", tnet_dtls_is_supported() ? "yes" : "no");
+	fprintf(stdout, "DTLS-SRTP supported: %s\n", tnet_dtls_is_srtp_supported() ? "yes" : "no");
+#else
+	fprintf(stderr, "SSL is disabled :(\n");
+#endif
 	
+	__tnet_started = tsk_true;
+
 bail:
 	return err;
 }

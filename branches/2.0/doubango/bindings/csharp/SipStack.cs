@@ -168,8 +168,23 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public bool setSSLCertificates(string privKey, string pubKey, string caKey, bool verify) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setSSLCertificates__SWIG_0(swigCPtr, privKey, pubKey, caKey, verify);
+    return ret;
+  }
+
+  public bool setSSLCertificates(string privKey, string pubKey, string caKey) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setSSLCertificates__SWIG_1(swigCPtr, privKey, pubKey, caKey);
+    return ret;
+  }
+
+  public bool setSSLCretificates(string privKey, string pubKey, string caKey, bool verify) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setSSLCretificates__SWIG_0(swigCPtr, privKey, pubKey, caKey, verify);
+    return ret;
+  }
+
   public bool setSSLCretificates(string privKey, string pubKey, string caKey) {
-    bool ret = tinyWRAPPINVOKE.SipStack_setSSLCretificates(swigCPtr, privKey, pubKey, caKey);
+    bool ret = tinyWRAPPINVOKE.SipStack_setSSLCretificates__SWIG_1(swigCPtr, privKey, pubKey, caKey);
     return ret;
   }
 

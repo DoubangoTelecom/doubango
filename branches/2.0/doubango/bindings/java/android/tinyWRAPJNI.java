@@ -81,11 +81,15 @@ public class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_defaultsSetScreenSize(int jarg1, int jarg2);
   public final static native boolean MediaSessionMgr_defaultsSetAudioGain(int jarg1, int jarg2);
   public final static native boolean MediaSessionMgr_defaultsSetRtpPortRange(int jarg1, int jarg2);
+  public final static native boolean MediaSessionMgr_defaultsSetRtpSymetricEnabled(boolean jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetMediaType(int jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetVolume(int jarg1);
   public final static native int MediaSessionMgr_defaultsGetVolume();
   public final static native boolean MediaSessionMgr_defaultsSetInviteSessionTimers(int jarg1, String jarg2);
   public final static native boolean MediaSessionMgr_defaultsSetSRtpMode(int jarg1);
+  public final static native int MediaSessionMgr_defaultsGetSRtpMode();
+  public final static native boolean MediaSessionMgr_defaultsSetSRtpType(int jarg1);
+  public final static native int MediaSessionMgr_defaultsGetSRtpType();
   public final static native boolean MediaSessionMgr_defaultsSetRtcpEnabled(boolean jarg1);
   public final static native boolean MediaSessionMgr_defaultsGetRtcpEnabled();
   public final static native boolean MediaSessionMgr_defaultsSetRtcpMuxEnabled(boolean jarg1);
@@ -490,7 +494,10 @@ public class tinyWRAPJNI {
   public final static native boolean SipStack_setSTUNServer(long jarg1, SipStack jarg1_, String jarg2, int jarg3);
   public final static native boolean SipStack_setSTUNCred(long jarg1, SipStack jarg1_, String jarg2, String jarg3);
   public final static native boolean SipStack_setTLSSecAgree(long jarg1, SipStack jarg1_, boolean jarg2);
-  public final static native boolean SipStack_setSSLCretificates(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4);
+  public final static native boolean SipStack_setSSLCertificates__SWIG_0(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4, boolean jarg5);
+  public final static native boolean SipStack_setSSLCertificates__SWIG_1(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4);
+  public final static native boolean SipStack_setSSLCretificates__SWIG_0(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4, boolean jarg5);
+  public final static native boolean SipStack_setSSLCretificates__SWIG_1(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4);
   public final static native boolean SipStack_setIPSecSecAgree(long jarg1, SipStack jarg1_, boolean jarg2);
   public final static native boolean SipStack_setIPSecParameters(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4, String jarg5);
   public final static native String SipStack_dnsENUM(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4);

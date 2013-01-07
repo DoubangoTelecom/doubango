@@ -359,7 +359,7 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 		ret = avcodec_decode_video2(h264->decoder.context, h264->decoder.picture, &got_picture_ptr, &packet);	
 
 		if(ret <0){
-			TSK_DEBUG_WARN("Failed to decode the buffer with error code =%d", ret);
+			TSK_DEBUG_INFO("Failed to decode the buffer with error code =%d", ret);
 			if(TMEDIA_CODEC_VIDEO(self)->in.callback){
 				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
 				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;

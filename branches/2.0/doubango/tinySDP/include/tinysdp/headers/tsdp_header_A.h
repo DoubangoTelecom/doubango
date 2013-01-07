@@ -66,6 +66,7 @@ TINYSDP_API tsdp_header_A_t* tsdp_header_A_create_null();
 
 TINYSDP_API tsdp_header_A_t *tsdp_header_A_parse(const char *data, tsk_size_t size);
 TINYSDP_API int tsdp_header_A_removeAll_by_field(tsdp_headers_A_L_t *attributes, const char* field);
+TINYSDP_API int tsdp_header_A_removeAll_by_fields(tsdp_headers_A_L_t *attributes, const char** fields, tsk_size_t fields_count);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_A_def_t;
 

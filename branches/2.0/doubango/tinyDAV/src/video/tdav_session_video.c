@@ -212,7 +212,7 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 		}
 	}
 	else{
-		TSK_DEBUG_WARN("Session not ready yet");
+		//--TSK_DEBUG_WARN("Session not ready yet");
 	}
 	
 bail:
@@ -603,7 +603,7 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 
 	tsk_safeobj_lock(base);
 
-	if(base->consumer){
+	if(base->consumer && base->consumer->is_started){
 		tsk_size_t out_size, _size;
 		const void* _buffer;
 
@@ -685,6 +685,9 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 		}
 
 		ret = tmedia_consumer_consume(base->consumer, _buffer, _size, rtp_header);
+	}
+	else if(!base->consumer->is_started){
+		TSK_DEBUG_INFO("Consumer not started");
 	}
 
 bail:
@@ -1064,6 +1067,8 @@ static tsk_object_t* tdav_session_video_dtor(tsk_object_t * self)
 
 		/* deinit() base */
 		tdav_session_av_deinit(TDAV_SESSION_AV(video));
+
+		TSK_DEBUG_INFO("*** Video session destroyed ***");
 	}
 
 	return self;

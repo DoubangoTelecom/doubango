@@ -84,8 +84,8 @@ typedef void tsk_object_t;
 * @endcode
 */
 #define TSK_DECLARE_OBJECT \
-	const void* __base__; \
-	tsk_size_t	refCount
+	const void* __def__;  /**< Opaque data holding a pointer to the actual meta-data(size, constructor, destructor and comparator) */ \
+	tsk_size_t	refCount /**< Reference counter. */
 
 /**@ingroup tsk_object_group
 * Internal macro to get the definition of the object.
@@ -94,8 +94,7 @@ typedef void tsk_object_t;
 
 /** Object meta-data (definition) */
 typedef struct tsk_object_header_s{
-	const void* base; /**< Opaque data holding a pointer to the actual meta-data(size, constructor, destructor and comparator) */
-	int	refCount; /**< Reference counter. */
+	TSK_DECLARE_OBJECT;
 }
 tsk_object_header_t;
 #define TSK_OBJECT_HEADER(object)	((tsk_object_header_t*)object)

@@ -93,6 +93,8 @@ typedef struct tmedia_consumer_s
 		int32_t volume;
 	} audio;
 
+	tsk_bool_t is_started;
+	tsk_bool_t is_prepared;
 	uint64_t session_id;
 	const struct tmedia_consumer_plugin_def_s* plugin;
 }

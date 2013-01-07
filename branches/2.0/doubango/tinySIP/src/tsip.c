@@ -261,6 +261,9 @@ static int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 				if(tsk_strnullORempty(TRANSPORT_STR) || tsk_striequals(TRANSPORT_STR, "UDP")){
 					TNET_SOCKET_TYPE_SET_UDP(self->network.proxy_cscf_type[t_idx]);
 				}
+				else if(tsk_striequals(TRANSPORT_STR, "DTLS")){
+					TNET_SOCKET_TYPE_SET_DTLS(self->network.proxy_cscf_type[t_idx]);
+				}
 				else if(tsk_striequals(TRANSPORT_STR, "TCP")){
 					TNET_SOCKET_TYPE_SET_TCP(self->network.proxy_cscf_type[t_idx]);
 				}
@@ -382,10 +385,11 @@ static int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 					break;
 				}
 			case tsip_pname_tls_certs:
-				{	/* (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR */
+				{	/* (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR, (tsk_bool_t)VERIF_BOOL */
 					tsk_strupdate(&self->security.tls.ca, va_arg(*app, const char*));
 					tsk_strupdate(&self->security.tls.pbk, va_arg(*app, const char*));
 					tsk_strupdate(&self->security.tls.pvk, va_arg(*app, const char*));
+					self->security.tls.verify = va_arg(*app, tsk_bool_t);
 					break;
 				}
 			
@@ -550,9 +554,21 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const cha
 	}
 
 	/* ===	Layers === */
-	stack->layer_dialog = tsip_dialog_layer_create(stack);
-	stack->layer_transac = tsip_transac_layer_create(stack);
-	stack->layer_transport = tsip_transport_layer_create(stack);
+	if(!(stack->layer_dialog = tsip_dialog_layer_create(stack))){
+		TSK_DEBUG_ERROR("Failed to create Dialog layer");
+		TSK_OBJECT_SAFE_FREE(stack);
+		goto bail;
+	}
+	if(!(stack->layer_transac = tsip_transac_layer_create(stack))){
+		TSK_DEBUG_ERROR("Failed to create Transac layer");
+		TSK_OBJECT_SAFE_FREE(stack);
+		goto bail;
+	}
+	if(!(stack->layer_transport = tsip_transport_layer_create(stack))){
+		TSK_DEBUG_ERROR("Failed to create Transport layer");
+		TSK_OBJECT_SAFE_FREE(stack);
+		goto bail;
+	}
 
 bail:
 	return stack;

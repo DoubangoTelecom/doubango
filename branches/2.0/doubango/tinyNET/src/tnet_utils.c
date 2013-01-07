@@ -1298,29 +1298,6 @@ int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking)
 	return 0;
 }
 
-tnet_tls_socket_handle_t* tnet_sockfd_set_tlsfiles(tnet_fd_t fd, int isClient, const char* tlsfile_ca, const char* tlsfile_pvk, const char* tlsfile_pbk)
-{
-	tnet_tls_socket_handle_t* tlshandle = 0;
-	if(fd == TNET_INVALID_FD){
-		return 0;
-	}
-
-	if(isClient){
-		tlshandle = tnet_tls_socket_client_create(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk);
-	}
-	else{
-		tlshandle = tnet_tls_socket_server_create(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk);
-	}
-
-	if(tnet_tls_socket_isok(tlshandle)){
-		return tlshandle;
-	}
-	else{
-		TSK_OBJECT_SAFE_FREE(tlshandle);
-		return 0;
-	}
-}
-
 /**@ingroup tnet_utils_group
 * Sends data to a specific destination.
 * @param fd The source socket.

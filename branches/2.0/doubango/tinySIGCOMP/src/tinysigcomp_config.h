@@ -23,10 +23,6 @@
 #ifndef TINYSIGCOMP_CONFIG_H
 #define TINYSIGCOMP_CONFIG_H
 
-#if HAVE_CONFIG_H
-	#include "config.h"
-#endif
-
 #ifdef __SYMBIAN32__
 #undef _WIN32 /* Because of WINSCW */
 #endif
@@ -93,6 +89,10 @@
 #endif
 
 #include <stdint.h>
+
+#if HAVE_CONFIG_H
+	#include <config.h>
+#endif
 
 #endif // TINYSIGCOMP_CONFIG_H
 

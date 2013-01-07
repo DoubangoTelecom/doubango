@@ -1,7 +1,6 @@
 /*
-* Copyright (C) 2012 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango(dot)org>
+* Copyright (C) 2012 Mamadou Diop
+* Copyright (C) 2012-2013 Doubango Telecom <http://www.doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -19,9 +18,7 @@
 * along with DOUBANGO.
 *
 */
-/**@file trtp_srtp.h
- *
- * @author Mamadou Diop <diopmamadou(at)doubango(dot)org>
+/**@file trtp_srtp.c
  */
 #include "tinyrtp/trtp_srtp.h"
 #include "tinyrtp/trtp_manager.h"
@@ -184,11 +181,10 @@ int trtp_srtp_get_ctx_local(trtp_manager_t* rtp_mgr, const trtp_srtp_ctx_xt** ct
 	return 0;
 }
 
-int trtp_srtp_set_remote(trtp_manager_t* rtp_mgr, const char* crypto_line)
+trtp_srtp_set_crypto(struct trtp_manager_s* rtp_mgr, const char* crypto_line, int32_t idx)
 {
 	//e.g. 2 F8_128_HMAC_SHA1_80 inline:MTIzNDU2Nzg5QUJDREUwMTIzNDU2Nzg5QUJjZGVm|2^20|1:4;inline:QUJjZGVmMTIzNDU2Nzg5QUJDREUwMTIzNDU2Nzg5|2^20|2:4"
-	/*tsk_bool_t matched = tsk_false;*/
-	trtp_srtp_ctx_xt* srtp_ctx = &rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_REMOTE][0];
+	trtp_srtp_ctx_xt* srtp_ctx = &rtp_mgr->srtp_contexts[idx][0];
 	int ret;
 	uint8_t *key_bin;
 	err_status_t srtp_err;
@@ -198,16 +194,16 @@ int trtp_srtp_set_remote(trtp_manager_t* rtp_mgr, const char* crypto_line)
 	if(ret != 0){
 		return ret;
 	}
-
+	
 	switch(srtp_ctx->crypto_type){
 		case HMAC_SHA1_80:
+		default:
 			{
 				crypto_policy_set_aes_cm_128_hmac_sha1_80(&srtp_ctx->policy.rtp);
 				crypto_policy_set_aes_cm_128_hmac_sha1_80(&srtp_ctx->policy.rtcp);
 				break;
 			}
 		case HMAC_SHA1_32:
-		default:
 			{
 				crypto_policy_set_aes_cm_128_hmac_sha1_32(&srtp_ctx->policy.rtp);
 				crypto_policy_set_aes_cm_128_hmac_sha1_32(&srtp_ctx->policy.rtcp);
@@ -218,9 +214,61 @@ int trtp_srtp_set_remote(trtp_manager_t* rtp_mgr, const char* crypto_line)
 	key_bin = (unsigned char*)srtp_ctx->key_bin;
 	tsk_base64_decode((const uint8_t*)srtp_ctx->key_str, tsk_strlen(srtp_ctx->key_str), (char**)&key_bin);
 	srtp_ctx->policy.key = key_bin;
-	srtp_ctx->policy.ssrc.type = ssrc_any_inbound;
+	srtp_ctx->policy.ssrc.type = idx == TRTP_SRTP_LINE_IDX_REMOTE ? ssrc_any_inbound : ssrc_any_outbound;
 	if((srtp_err = srtp_create(&srtp_ctx->session, &srtp_ctx->policy)) != err_status_ok){
-		TSK_DEBUG_ERROR("srtp_create() failed");
+		TSK_DEBUG_ERROR("srtp_create() failed: %d", srtp_err);
+		return -3;
+	}
+	srtp_ctx->initialized = tsk_true;
+	return 0;
+}
+
+int trtp_srtp_set_key_and_salt(trtp_manager_t* rtp_mgr, trtp_srtp_crypto_type_t crypto_type, const void* key, tsk_size_t key_size, const void* salt, tsk_size_t salt_size, int32_t idx)
+{
+	int ret;
+	trtp_srtp_ctx_xt* srtp_ctx;
+	err_status_t srtp_err;
+	if(!rtp_mgr || !key || !key_size || !salt || !salt_size){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if((key_size + salt_size) > sizeof(srtp_ctx->key_bin)){
+		TSK_DEBUG_ERROR("Invalid [key||salt].len [%u||%u]", key_size, salt_size);
+	}
+
+	srtp_ctx = &rtp_mgr->srtp_contexts[idx][0];
+	if((ret = trtp_srtp_ctx_deinit(srtp_ctx))){
+		return ret;
+	}
+		
+	switch((srtp_ctx->crypto_type = crypto_type)){
+		case HMAC_SHA1_80:
+		default:
+			{
+				crypto_policy_set_aes_cm_128_hmac_sha1_80(&srtp_ctx->policy.rtp);
+				crypto_policy_set_aes_cm_128_hmac_sha1_80(&srtp_ctx->policy.rtcp);
+				break;
+			}
+		case HMAC_SHA1_32:
+			{
+				crypto_policy_set_aes_cm_128_hmac_sha1_32(&srtp_ctx->policy.rtp);
+				crypto_policy_set_aes_cm_128_hmac_sha1_32(&srtp_ctx->policy.rtcp);
+				break;
+			}
+	}
+
+	memcpy(srtp_ctx->key_bin, key, key_size);
+#if HAVE_APPEND_SALT_TO_KEY
+	append_salt_to_key(srtp_ctx->key_bin, key_size, (void*)salt, salt_size);
+#else
+	memcpy(&srtp_ctx->key_bin[key_size], salt, salt_size);
+#endif
+	
+	srtp_ctx->policy.key = srtp_ctx->key_bin;
+	srtp_ctx->policy.ssrc.type = idx == TRTP_SRTP_LINE_IDX_REMOTE ? ssrc_any_inbound : ssrc_any_outbound;
+	if((srtp_err = srtp_create(&srtp_ctx->session, &srtp_ctx->policy)) != err_status_ok){
+		TSK_DEBUG_ERROR("srtp_create() failed: %d", srtp_err);
 		return -3;
 	}
 	srtp_ctx->initialized = tsk_true;
@@ -236,7 +284,7 @@ tsk_bool_t trtp_srtp_is_initialized(trtp_manager_t* rtp_mgr)
 		&& rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_REMOTE][0].initialized);
 }
 
-tsk_bool_t trtp_srtp_is_active(trtp_manager_t* rtp_mgr)
+tsk_bool_t trtp_srtp_is_started(trtp_manager_t* rtp_mgr)
 {
 	if(!rtp_mgr){
 		TSK_DEBUG_ERROR("Invalid argument");

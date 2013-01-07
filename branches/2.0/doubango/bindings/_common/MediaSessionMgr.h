@@ -114,11 +114,15 @@ public:
 	static bool defaultsSetScreenSize(int32_t sx, int32_t sy);
 	static bool defaultsSetAudioGain(int32_t producer_gain, int32_t consumer_gain);
 	static bool defaultsSetRtpPortRange(uint16_t range_start, uint16_t range_stop);
+	static bool defaultsSetRtpSymetricEnabled(bool enabled);
 	static bool defaultsSetMediaType(twrap_media_type_t media_type);
 	static bool defaultsSetVolume(int32_t volume);
 	static int32_t defaultsGetVolume();
 	static bool defaultsSetInviteSessionTimers(int32_t timeout, const char* refresher);
 	static bool defaultsSetSRtpMode(tmedia_srtp_mode_t mode);
+	static tmedia_srtp_mode_t defaultsGetSRtpMode();
+	static bool defaultsSetSRtpType(tmedia_srtp_type_t srtp_type);
+	static tmedia_srtp_type_t defaultsGetSRtpType();
 	static bool defaultsSetRtcpEnabled(bool enabled);
 	static bool defaultsGetRtcpEnabled();
 	static bool defaultsSetRtcpMuxEnabled(bool enabled);

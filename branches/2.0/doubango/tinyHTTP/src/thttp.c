@@ -547,13 +547,12 @@ int thttp_stack_start(thttp_stack_handle_t *self)
 		tnet_transport_set_callback(stack->transport, TNET_TRANSPORT_CB_F(thttp_transport_layer_stream_cb), self);
 	}
 
+	// Sets TLS certificates
+	tsk_strupdate(&stack->transport->tls.ca, stack->tls.ca);
+	tsk_strupdate(&stack->transport->tls.pvk, stack->tls.pvk);
+	tsk_strupdate(&stack->transport->tls.pbk, stack->tls.pbk);
+
 	if(!(ret = tnet_transport_start(stack->transport))){
-		// Sets TLS certificates
-		if(stack->tls.ca){
-			tsk_strupdate(&stack->transport->tls.ca, stack->tls.ca);
-			tsk_strupdate(&stack->transport->tls.pvk, stack->tls.pvk);
-			tsk_strupdate(&stack->transport->tls.pbk, stack->tls.pbk);
-		}
 		stack->started = tsk_true;
 	}
 	else{

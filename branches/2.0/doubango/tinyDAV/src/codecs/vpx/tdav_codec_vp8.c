@@ -410,7 +410,7 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 		vpx_ret = vpx_codec_decode(&vp8->decoder.context, pay_ptr, pay_size, tsk_null, 0);
 		
 		if(vpx_ret != VPX_CODEC_OK){
-			TSK_DEBUG_WARN("vpx_codec_decode failed with error =%s", vpx_codec_err_to_string(vpx_ret));
+			TSK_DEBUG_INFO("vpx_codec_decode failed with error =%s", vpx_codec_err_to_string(vpx_ret));
 			if(TMEDIA_CODEC_VIDEO(self)->in.callback){
 				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
 				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;

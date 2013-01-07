@@ -3514,30 +3514,31 @@ namespace Swig {
 #define SWIGTYPE_p_tmedia_qos_strength_e swig_types[70]
 #define SWIGTYPE_p_tmedia_qos_stype_e swig_types[71]
 #define SWIGTYPE_p_tmedia_srtp_mode_e swig_types[72]
-#define SWIGTYPE_p_tmedia_t140_data_type_e swig_types[73]
-#define SWIGTYPE_p_tmsrp_event_type_e swig_types[74]
-#define SWIGTYPE_p_tmsrp_request_type_e swig_types[75]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[76]
-#define SWIGTYPE_p_tsip_info_event_type_e swig_types[77]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[78]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[79]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[80]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[81]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[82]
-#define SWIGTYPE_p_tsip_request_type_e swig_types[83]
-#define SWIGTYPE_p_tsip_stack_mode_e swig_types[84]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[85]
-#define SWIGTYPE_p_tsk_list_t swig_types[86]
-#define SWIGTYPE_p_twrap_media_type_e swig_types[87]
-#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[88]
-#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[89]
-#define SWIGTYPE_p_twrap_sms_type_e swig_types[90]
-#define SWIGTYPE_p_unsigned_char swig_types[91]
-#define SWIGTYPE_p_unsigned_int swig_types[92]
-#define SWIGTYPE_p_unsigned_long_long swig_types[93]
-#define SWIGTYPE_p_unsigned_short swig_types[94]
-static swig_type_info *swig_types[96];
-static swig_module_info swig_module = {swig_types, 95, 0, 0, 0, 0};
+#define SWIGTYPE_p_tmedia_srtp_type_e swig_types[73]
+#define SWIGTYPE_p_tmedia_t140_data_type_e swig_types[74]
+#define SWIGTYPE_p_tmsrp_event_type_e swig_types[75]
+#define SWIGTYPE_p_tmsrp_request_type_e swig_types[76]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[77]
+#define SWIGTYPE_p_tsip_info_event_type_e swig_types[78]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[79]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[80]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[81]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[82]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[83]
+#define SWIGTYPE_p_tsip_request_type_e swig_types[84]
+#define SWIGTYPE_p_tsip_stack_mode_e swig_types[85]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[86]
+#define SWIGTYPE_p_tsk_list_t swig_types[87]
+#define SWIGTYPE_p_twrap_media_type_e swig_types[88]
+#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[89]
+#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[90]
+#define SWIGTYPE_p_twrap_sms_type_e swig_types[91]
+#define SWIGTYPE_p_unsigned_char swig_types[92]
+#define SWIGTYPE_p_unsigned_int swig_types[93]
+#define SWIGTYPE_p_unsigned_long_long swig_types[94]
+#define SWIGTYPE_p_unsigned_short swig_types[95]
+static swig_type_info *swig_types[97];
+static swig_module_info swig_module = {swig_types, 96, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -7421,6 +7422,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetRtpSymetricEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool arg1 ;
+  bool val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetRtpSymetricEnabled",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_bool(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetRtpSymetricEnabled" "', argument " "1"" of type '" "bool""'");
+  } 
+  arg1 = static_cast< bool >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetRtpSymetricEnabled(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetMediaType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   twrap_media_type_t arg1 ;
@@ -7528,6 +7551,54 @@ SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetSRtpMode(PyObject *SWIGUNU
   arg1 = static_cast< tmedia_srtp_mode_t >(val1);
   result = (bool)MediaSessionMgr::defaultsSetSRtpMode(arg1);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetSRtpMode(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  tmedia_srtp_mode_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetSRtpMode")) SWIG_fail;
+  result = (tmedia_srtp_mode_t)MediaSessionMgr::defaultsGetSRtpMode();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetSRtpType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  tmedia_srtp_type_t arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetSRtpType",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetSRtpType" "', argument " "1"" of type '" "tmedia_srtp_type_t""'");
+  } 
+  arg1 = static_cast< tmedia_srtp_type_t >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetSRtpType(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetSRtpType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  tmedia_srtp_type_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetSRtpType")) SWIG_fail;
+  result = (tmedia_srtp_type_t)MediaSessionMgr::defaultsGetSRtpType();
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -21097,7 +21168,267 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SipStack_setSSLCretificates(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_SipStack_setSSLCertificates__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  bool arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  int res4 ;
+  char *buf4 = 0 ;
+  int alloc4 = 0 ;
+  bool val5 ;
+  int ecode5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:SipStack_setSSLCertificates",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setSSLCertificates" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setSSLCertificates" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_setSSLCertificates" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  res4 = SWIG_AsCharPtrAndSize(obj3, &buf4, NULL, &alloc4);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SipStack_setSSLCertificates" "', argument " "4"" of type '" "char const *""'");
+  }
+  arg4 = reinterpret_cast< char * >(buf4);
+  ecode5 = SWIG_AsVal_bool(obj4, &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "SipStack_setSSLCertificates" "', argument " "5"" of type '" "bool""'");
+  } 
+  arg5 = static_cast< bool >(val5);
+  result = (bool)(arg1)->setSSLCertificates((char const *)arg2,(char const *)arg3,(char const *)arg4,arg5);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setSSLCertificates__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  int res4 ;
+  char *buf4 = 0 ;
+  int alloc4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:SipStack_setSSLCertificates",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setSSLCertificates" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setSSLCertificates" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_setSSLCertificates" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  res4 = SWIG_AsCharPtrAndSize(obj3, &buf4, NULL, &alloc4);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SipStack_setSSLCertificates" "', argument " "4"" of type '" "char const *""'");
+  }
+  arg4 = reinterpret_cast< char * >(buf4);
+  result = (bool)(arg1)->setSSLCertificates((char const *)arg2,(char const *)arg3,(char const *)arg4);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setSSLCertificates(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[6];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = args ? (int)PyObject_Length(args) : 0;
+  for (ii = 0; (ii < 5) && (ii < argc); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SipStack, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsCharPtrAndSize(argv[2], 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          int res = SWIG_AsCharPtrAndSize(argv[3], 0, NULL, 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            return _wrap_SipStack_setSSLCertificates__SWIG_1(self, args);
+          }
+        }
+      }
+    }
+  }
+  if (argc == 5) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SipStack, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsCharPtrAndSize(argv[2], 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          int res = SWIG_AsCharPtrAndSize(argv[3], 0, NULL, 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            {
+              int res = SWIG_AsVal_bool(argv[4], NULL);
+              _v = SWIG_CheckState(res);
+            }
+            if (_v) {
+              return _wrap_SipStack_setSSLCertificates__SWIG_0(self, args);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'SipStack_setSSLCertificates'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    SipStack::setSSLCertificates(char const *,char const *,char const *,bool)\n"
+    "    SipStack::setSSLCertificates(char const *,char const *,char const *)\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setSSLCretificates__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  bool arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  int res4 ;
+  char *buf4 = 0 ;
+  int alloc4 = 0 ;
+  bool val5 ;
+  int ecode5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:SipStack_setSSLCretificates",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setSSLCretificates" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setSSLCretificates" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_setSSLCretificates" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  res4 = SWIG_AsCharPtrAndSize(obj3, &buf4, NULL, &alloc4);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SipStack_setSSLCretificates" "', argument " "4"" of type '" "char const *""'");
+  }
+  arg4 = reinterpret_cast< char * >(buf4);
+  ecode5 = SWIG_AsVal_bool(obj4, &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "SipStack_setSSLCretificates" "', argument " "5"" of type '" "bool""'");
+  } 
+  arg5 = static_cast< bool >(val5);
+  result = (bool)(arg1)->setSSLCretificates((char const *)arg2,(char const *)arg3,(char const *)arg4,arg5);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setSSLCretificates__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -21152,6 +21483,74 @@ fail:
   if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
   if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
   return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setSSLCretificates(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[6];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = args ? (int)PyObject_Length(args) : 0;
+  for (ii = 0; (ii < 5) && (ii < argc); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SipStack, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsCharPtrAndSize(argv[2], 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          int res = SWIG_AsCharPtrAndSize(argv[3], 0, NULL, 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            return _wrap_SipStack_setSSLCretificates__SWIG_1(self, args);
+          }
+        }
+      }
+    }
+  }
+  if (argc == 5) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SipStack, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsCharPtrAndSize(argv[2], 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          int res = SWIG_AsCharPtrAndSize(argv[3], 0, NULL, 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            {
+              int res = SWIG_AsVal_bool(argv[4], NULL);
+              _v = SWIG_CheckState(res);
+            }
+            if (_v) {
+              return _wrap_SipStack_setSSLCretificates__SWIG_0(self, args);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'SipStack_setSSLCretificates'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    SipStack::setSSLCretificates(char const *,char const *,char const *,bool)\n"
+    "    SipStack::setSSLCretificates(char const *,char const *,char const *)\n");
+  return 0;
 }
 
 
@@ -24801,11 +25200,15 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_defaultsSetScreenSize", _wrap_MediaSessionMgr_defaultsSetScreenSize, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetAudioGain", _wrap_MediaSessionMgr_defaultsSetAudioGain, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetRtpPortRange", _wrap_MediaSessionMgr_defaultsSetRtpPortRange, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetRtpSymetricEnabled", _wrap_MediaSessionMgr_defaultsSetRtpSymetricEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetMediaType", _wrap_MediaSessionMgr_defaultsSetMediaType, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetVolume", _wrap_MediaSessionMgr_defaultsSetVolume, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetVolume", _wrap_MediaSessionMgr_defaultsGetVolume, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetInviteSessionTimers", _wrap_MediaSessionMgr_defaultsSetInviteSessionTimers, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetSRtpMode", _wrap_MediaSessionMgr_defaultsSetSRtpMode, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetSRtpMode", _wrap_MediaSessionMgr_defaultsGetSRtpMode, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetSRtpType", _wrap_MediaSessionMgr_defaultsSetSRtpType, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetSRtpType", _wrap_MediaSessionMgr_defaultsGetSRtpType, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetRtcpEnabled", _wrap_MediaSessionMgr_defaultsSetRtcpEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetRtcpEnabled", _wrap_MediaSessionMgr_defaultsGetRtcpEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetRtcpMuxEnabled", _wrap_MediaSessionMgr_defaultsSetRtcpMuxEnabled, METH_VARARGS, NULL},
@@ -25155,6 +25558,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipStack_setSTUNServer", _wrap_SipStack_setSTUNServer, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setSTUNCred", _wrap_SipStack_setSTUNCred, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setTLSSecAgree", _wrap_SipStack_setTLSSecAgree, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setSSLCertificates", _wrap_SipStack_setSSLCertificates, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setSSLCretificates", _wrap_SipStack_setSSLCretificates, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setIPSecSecAgree", _wrap_SipStack_setIPSecSecAgree, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setIPSecParameters", _wrap_SipStack_setIPSecParameters, METH_VARARGS, NULL},
@@ -25428,6 +25832,7 @@ static swig_type_info _swigt__p_tmedia_profile_e = {"_p_tmedia_profile_e", "tmed
 static swig_type_info _swigt__p_tmedia_qos_strength_e = {"_p_tmedia_qos_strength_e", "tmedia_qos_strength_t *|enum tmedia_qos_strength_e *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_qos_stype_e = {"_p_tmedia_qos_stype_e", "enum tmedia_qos_stype_e *|tmedia_qos_stype_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_srtp_mode_e = {"_p_tmedia_srtp_mode_e", "enum tmedia_srtp_mode_e *|tmedia_srtp_mode_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_tmedia_srtp_type_e = {"_p_tmedia_srtp_type_e", "enum tmedia_srtp_type_e *|tmedia_srtp_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_t140_data_type_e = {"_p_tmedia_t140_data_type_e", "enum tmedia_t140_data_type_e *|tmedia_t140_data_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmsrp_event_type_e = {"_p_tmsrp_event_type_e", "enum tmsrp_event_type_e *|tmsrp_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmsrp_request_type_e = {"_p_tmsrp_request_type_e", "enum tmsrp_request_type_e *|tmsrp_request_type_t *", 0, 0, (void*)0, 0};
@@ -25525,6 +25930,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_tmedia_qos_strength_e,
   &_swigt__p_tmedia_qos_stype_e,
   &_swigt__p_tmedia_srtp_mode_e,
+  &_swigt__p_tmedia_srtp_type_e,
   &_swigt__p_tmedia_t140_data_type_e,
   &_swigt__p_tmsrp_event_type_e,
   &_swigt__p_tmsrp_request_type_e,
@@ -25622,6 +26028,7 @@ static swig_cast_info _swigc__p_tmedia_profile_e[] = {  {&_swigt__p_tmedia_profi
 static swig_cast_info _swigc__p_tmedia_qos_strength_e[] = {  {&_swigt__p_tmedia_qos_strength_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_qos_stype_e[] = {  {&_swigt__p_tmedia_qos_stype_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_srtp_mode_e[] = {  {&_swigt__p_tmedia_srtp_mode_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_tmedia_srtp_type_e[] = {  {&_swigt__p_tmedia_srtp_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_t140_data_type_e[] = {  {&_swigt__p_tmedia_t140_data_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmsrp_event_type_e[] = {  {&_swigt__p_tmsrp_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmsrp_request_type_e[] = {  {&_swigt__p_tmsrp_request_type_e, 0, 0, 0},{0, 0, 0, 0}};
@@ -25719,6 +26126,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_tmedia_qos_strength_e,
   _swigc__p_tmedia_qos_stype_e,
   _swigc__p_tmedia_srtp_mode_e,
+  _swigc__p_tmedia_srtp_type_e,
   _swigc__p_tmedia_t140_data_type_e,
   _swigc__p_tmsrp_event_type_e,
   _swigc__p_tmsrp_request_type_e,
@@ -26548,6 +26956,10 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tmedia_srtp_mode_none",SWIG_From_int(static_cast< int >(tmedia_srtp_mode_none)));
   SWIG_Python_SetConstant(d, "tmedia_srtp_mode_optional",SWIG_From_int(static_cast< int >(tmedia_srtp_mode_optional)));
   SWIG_Python_SetConstant(d, "tmedia_srtp_mode_mandatory",SWIG_From_int(static_cast< int >(tmedia_srtp_mode_mandatory)));
+  SWIG_Python_SetConstant(d, "tmedia_srtp_type_none",SWIG_From_int(static_cast< int >(tmedia_srtp_type_none)));
+  SWIG_Python_SetConstant(d, "tmedia_srtp_type_sdes",SWIG_From_int(static_cast< int >(tmedia_srtp_type_sdes)));
+  SWIG_Python_SetConstant(d, "tmedia_srtp_type_dtls",SWIG_From_int(static_cast< int >(tmedia_srtp_type_dtls)));
+  SWIG_Python_SetConstant(d, "tmedia_srtp_type_sdes_dtls",SWIG_From_int(static_cast< int >(tmedia_srtp_type_sdes_dtls)));
   SWIG_Python_SetConstant(d, "tmedia_t140_data_type_utf8",SWIG_From_int(static_cast< int >(tmedia_t140_data_type_utf8)));
   SWIG_Python_SetConstant(d, "tmedia_t140_data_type_zero_width_no_break_space",SWIG_From_int(static_cast< int >(tmedia_t140_data_type_zero_width_no_break_space)));
   SWIG_Python_SetConstant(d, "tmedia_t140_data_type_backspace",SWIG_From_int(static_cast< int >(tmedia_t140_data_type_backspace)));

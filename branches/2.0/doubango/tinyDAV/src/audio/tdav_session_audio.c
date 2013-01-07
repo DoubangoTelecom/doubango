@@ -76,7 +76,7 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 		return -1;
 	}
 
-	if(audio->started && base->consumer){
+	if(audio->is_started && base->consumer && base->consumer->is_started){
 		tsk_size_t out_size = 0;
 
 		// Find the codec to use to decode the RTP payload
@@ -138,6 +138,9 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 			tmedia_consumer_consume(base->consumer, buffer, size, packet->header);
 		}
 	}
+	else{
+		TSK_DEBUG_INFO("Session audio not ready");
+	}
 	return 0;
 }
 
@@ -160,14 +163,9 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		return 0;
 	}
 	
-	if(audio->started && base->rtp_manager && base->rtp_manager->is_started && audio->encoder.codec){
+	if(audio->is_started && base->rtp_manager && base->rtp_manager->is_started && audio->encoder.codec){
 		/* encode */
 		tsk_size_t out_size = 0;
-
-		if(!base->rtp_manager->is_started){
-			TSK_DEBUG_ERROR("Not started");
-			return 0;
-		}
 
 		// Open codec if not already done
 		if(!audio->encoder.codec->opened){
@@ -361,7 +359,7 @@ static int tdav_session_audio_start(tmedia_session_t* self)
 		}
 	}
 
-	audio->started = (ret == 0);
+	audio->is_started = (ret == 0);
 
 	return ret;
 }
@@ -371,7 +369,7 @@ static int tdav_session_audio_stop(tmedia_session_t* self)
 	int ret = tdav_session_av_stop(TDAV_SESSION_AV(self));
 	TSK_OBJECT_SAFE_FREE(TDAV_SESSION_AUDIO(self)->encoder.codec);
 	TSK_OBJECT_SAFE_FREE(TDAV_SESSION_AUDIO(self)->decoder.codec);
-	TDAV_SESSION_AUDIO(self)->started = tsk_false;
+	TDAV_SESSION_AUDIO(self)->is_started = tsk_false;
 	return ret;
 }
 
@@ -752,6 +750,8 @@ static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 
 		/* deinit base */
 		tdav_session_av_deinit(TDAV_SESSION_AV(self));
+
+		TSK_DEBUG_INFO("*** Audio session destroyed ***");
 	}
 
 	return self;

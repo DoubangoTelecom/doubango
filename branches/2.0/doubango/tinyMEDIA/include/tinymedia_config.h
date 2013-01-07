@@ -72,7 +72,7 @@
 #endif
 
 #if HAVE_CONFIG_H
-	#include "../config.h"
+	#include <config.h>
 #endif
 
 #endif // TINYMEDIA_CONFIG_H

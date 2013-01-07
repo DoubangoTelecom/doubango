@@ -190,6 +190,10 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetRtpPortRange(range_start, range_stop);
   }
 
+  public static boolean defaultsSetRtpSymetricEnabled(boolean enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetRtpSymetricEnabled(enabled);
+  }
+
   public static boolean defaultsSetMediaType(twrap_media_type_t media_type) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetMediaType(media_type.swigValue());
   }
@@ -208,6 +212,18 @@ public class MediaSessionMgr {
 
   public static boolean defaultsSetSRtpMode(tmedia_srtp_mode_t mode) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetSRtpMode(mode.swigValue());
+  }
+
+  public static tmedia_srtp_mode_t defaultsGetSRtpMode() {
+    return tmedia_srtp_mode_t.swigToEnum(tinyWRAPJNI.MediaSessionMgr_defaultsGetSRtpMode());
+  }
+
+  public static boolean defaultsSetSRtpType(tmedia_srtp_type_t srtp_type) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetSRtpType(srtp_type.swigValue());
+  }
+
+  public static tmedia_srtp_type_t defaultsGetSRtpType() {
+    return tmedia_srtp_type_t.swigToEnum(tinyWRAPJNI.MediaSessionMgr_defaultsGetSRtpType());
   }
 
   public static boolean defaultsSetRtcpEnabled(boolean enabled) {

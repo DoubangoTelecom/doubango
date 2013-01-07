@@ -402,6 +402,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetRtpPortRange")]
   public static extern bool MediaSessionMgr_defaultsSetRtpPortRange(ushort jarg1, ushort jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetRtpSymetricEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetRtpSymetricEnabled(bool jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetMediaType")]
   public static extern bool MediaSessionMgr_defaultsSetMediaType(int jarg1);
 
@@ -416,6 +419,15 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetSRtpMode")]
   public static extern bool MediaSessionMgr_defaultsSetSRtpMode(int jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetSRtpMode")]
+  public static extern int MediaSessionMgr_defaultsGetSRtpMode();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetSRtpType")]
+  public static extern bool MediaSessionMgr_defaultsSetSRtpType(int jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetSRtpType")]
+  public static extern int MediaSessionMgr_defaultsGetSRtpType();
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetRtcpEnabled")]
   public static extern bool MediaSessionMgr_defaultsSetRtcpEnabled(bool jarg1);
@@ -1608,8 +1620,17 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setTLSSecAgree")]
   public static extern bool SipStack_setTLSSecAgree(HandleRef jarg1, bool jarg2);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSSLCretificates")]
-  public static extern bool SipStack_setSSLCretificates(HandleRef jarg1, string jarg2, string jarg3, string jarg4);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSSLCertificates__SWIG_0")]
+  public static extern bool SipStack_setSSLCertificates__SWIG_0(HandleRef jarg1, string jarg2, string jarg3, string jarg4, bool jarg5);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSSLCertificates__SWIG_1")]
+  public static extern bool SipStack_setSSLCertificates__SWIG_1(HandleRef jarg1, string jarg2, string jarg3, string jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSSLCretificates__SWIG_0")]
+  public static extern bool SipStack_setSSLCretificates__SWIG_0(HandleRef jarg1, string jarg2, string jarg3, string jarg4, bool jarg5);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSSLCretificates__SWIG_1")]
+  public static extern bool SipStack_setSSLCretificates__SWIG_1(HandleRef jarg1, string jarg2, string jarg3, string jarg4);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setIPSecSecAgree")]
   public static extern bool SipStack_setIPSecSecAgree(HandleRef jarg1, bool jarg2);

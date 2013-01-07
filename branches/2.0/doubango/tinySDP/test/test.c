@@ -1,7 +1,6 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -29,13 +28,15 @@
 
 #include "test_parser.h"
 #include "test_soa.h"
+#include "test_rfc5939.h"
 
 
 #define RUN_TEST_LOOP		1
 
 #define RUN_TEST_ALL		0
-#define RUN_TEST_PARSER		1
+#define RUN_TEST_PARSER		0
 #define RUN_TEST_SOA		0
+#define RUN_TEST_RFC5939	1
 
 
 #ifdef _WIN32_WCE
@@ -55,6 +56,10 @@ int main()
 
 #if RUN_TEST_ALL  || RUN_TEST_SOA
 		test_soa();
+#endif
+
+#if RUN_TEST_ALL  || RUN_TEST_RFC5939
+		test_rfc5939();
 #endif
 
 	} while(RUN_TEST_LOOP);

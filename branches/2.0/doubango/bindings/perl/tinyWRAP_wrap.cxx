@@ -1587,30 +1587,31 @@ SWIG_Perl_SetModule(swig_module_info *module) {
 #define SWIGTYPE_p_tmedia_qos_strength_e swig_types[70]
 #define SWIGTYPE_p_tmedia_qos_stype_e swig_types[71]
 #define SWIGTYPE_p_tmedia_srtp_mode_e swig_types[72]
-#define SWIGTYPE_p_tmedia_t140_data_type_e swig_types[73]
-#define SWIGTYPE_p_tmsrp_event_type_e swig_types[74]
-#define SWIGTYPE_p_tmsrp_request_type_e swig_types[75]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[76]
-#define SWIGTYPE_p_tsip_info_event_type_e swig_types[77]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[78]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[79]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[80]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[81]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[82]
-#define SWIGTYPE_p_tsip_request_type_e swig_types[83]
-#define SWIGTYPE_p_tsip_stack_mode_e swig_types[84]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[85]
-#define SWIGTYPE_p_tsk_list_t swig_types[86]
-#define SWIGTYPE_p_twrap_media_type_e swig_types[87]
-#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[88]
-#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[89]
-#define SWIGTYPE_p_twrap_sms_type_e swig_types[90]
-#define SWIGTYPE_p_unsigned_char swig_types[91]
-#define SWIGTYPE_p_unsigned_int swig_types[92]
-#define SWIGTYPE_p_unsigned_long_long swig_types[93]
-#define SWIGTYPE_p_unsigned_short swig_types[94]
-static swig_type_info *swig_types[96];
-static swig_module_info swig_module = {swig_types, 95, 0, 0, 0, 0};
+#define SWIGTYPE_p_tmedia_srtp_type_e swig_types[73]
+#define SWIGTYPE_p_tmedia_t140_data_type_e swig_types[74]
+#define SWIGTYPE_p_tmsrp_event_type_e swig_types[75]
+#define SWIGTYPE_p_tmsrp_request_type_e swig_types[76]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[77]
+#define SWIGTYPE_p_tsip_info_event_type_e swig_types[78]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[79]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[80]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[81]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[82]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[83]
+#define SWIGTYPE_p_tsip_request_type_e swig_types[84]
+#define SWIGTYPE_p_tsip_stack_mode_e swig_types[85]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[86]
+#define SWIGTYPE_p_tsk_list_t swig_types[87]
+#define SWIGTYPE_p_twrap_media_type_e swig_types[88]
+#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[89]
+#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[90]
+#define SWIGTYPE_p_twrap_sms_type_e swig_types[91]
+#define SWIGTYPE_p_unsigned_char swig_types[92]
+#define SWIGTYPE_p_unsigned_int swig_types[93]
+#define SWIGTYPE_p_unsigned_long_long swig_types[94]
+#define SWIGTYPE_p_unsigned_short swig_types[95]
+static swig_type_info *swig_types[97];
+static swig_module_info swig_module = {swig_types, 96, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -4530,6 +4531,34 @@ XS(_wrap_MediaSessionMgr_defaultsSetRtpPortRange) {
 }
 
 
+XS(_wrap_MediaSessionMgr_defaultsSetRtpSymetricEnabled) {
+  {
+    bool arg1 ;
+    bool val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetRtpSymetricEnabled(enabled);");
+    }
+    ecode1 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetRtpSymetricEnabled" "', argument " "1"" of type '" "bool""'");
+    } 
+    arg1 = static_cast< bool >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetRtpSymetricEnabled(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_MediaSessionMgr_defaultsSetMediaType) {
   {
     twrap_media_type_t arg1 ;
@@ -4666,6 +4695,70 @@ XS(_wrap_MediaSessionMgr_defaultsSetSRtpMode) {
     XSRETURN(argvi);
   fail:
     
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsGetSRtpMode) {
+  {
+    int argvi = 0;
+    tmedia_srtp_mode_t result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsGetSRtpMode();");
+    }
+    result = (tmedia_srtp_mode_t)MediaSessionMgr::defaultsGetSRtpMode();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetSRtpType) {
+  {
+    tmedia_srtp_type_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetSRtpType(srtp_type);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetSRtpType" "', argument " "1"" of type '" "tmedia_srtp_type_t""'");
+    } 
+    arg1 = static_cast< tmedia_srtp_type_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetSRtpType(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsGetSRtpType) {
+  {
+    int argvi = 0;
+    tmedia_srtp_type_t result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsGetSRtpType();");
+    }
+    result = (tmedia_srtp_type_t)MediaSessionMgr::defaultsGetSRtpType();
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
     SWIG_croak_null();
   }
 }
@@ -21377,7 +21470,330 @@ XS(_wrap_SipStack_setTLSSecAgree) {
 }
 
 
-XS(_wrap_SipStack_setSSLCretificates) {
+XS(_wrap_SipStack_setSSLCertificates__SWIG_0) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    char *arg3 = (char *) 0 ;
+    char *arg4 = (char *) 0 ;
+    bool arg5 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    int res4 ;
+    char *buf4 = 0 ;
+    int alloc4 = 0 ;
+    bool val5 ;
+    int ecode5 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 5) || (items > 5)) {
+      SWIG_croak("Usage: SipStack_setSSLCertificates(self,privKey,pubKey,caKey,verify);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setSSLCertificates" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setSSLCertificates" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_setSSLCertificates" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = reinterpret_cast< char * >(buf3);
+    res4 = SWIG_AsCharPtrAndSize(ST(3), &buf4, NULL, &alloc4);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SipStack_setSSLCertificates" "', argument " "4"" of type '" "char const *""'");
+    }
+    arg4 = reinterpret_cast< char * >(buf4);
+    ecode5 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(4), &val5);
+    if (!SWIG_IsOK(ecode5)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "SipStack_setSSLCertificates" "', argument " "5"" of type '" "bool""'");
+    } 
+    arg5 = static_cast< bool >(val5);
+    result = (bool)(arg1)->setSSLCertificates((char const *)arg2,(char const *)arg3,(char const *)arg4,arg5);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipStack_setSSLCertificates__SWIG_1) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    char *arg3 = (char *) 0 ;
+    char *arg4 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    int res4 ;
+    char *buf4 = 0 ;
+    int alloc4 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: SipStack_setSSLCertificates(self,privKey,pubKey,caKey);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setSSLCertificates" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setSSLCertificates" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_setSSLCertificates" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = reinterpret_cast< char * >(buf3);
+    res4 = SWIG_AsCharPtrAndSize(ST(3), &buf4, NULL, &alloc4);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SipStack_setSSLCertificates" "', argument " "4"" of type '" "char const *""'");
+    }
+    arg4 = reinterpret_cast< char * >(buf4);
+    result = (bool)(arg1)->setSSLCertificates((char const *)arg2,(char const *)arg3,(char const *)arg4);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipStack_setSSLCertificates) {
+  dXSARGS;
+  
+  {
+    unsigned long _index = 0;
+    SWIG_TypeRank _rank = 0; 
+    if (items == 4) {
+      SWIG_TypeRank _ranki = 0;
+      SWIG_TypeRank _rankm = 0;
+      SWIG_TypeRank _pi = 1;
+      int _v = 0;
+      {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(ST(0), &vptr, SWIGTYPE_p_SipStack, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_1;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        int res = SWIG_AsCharPtrAndSize(ST(1), 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_1;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        int res = SWIG_AsCharPtrAndSize(ST(2), 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_1;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        int res = SWIG_AsCharPtrAndSize(ST(3), 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_1;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      if (!_index || (_ranki < _rank)) {
+        _rank = _ranki; _index = 1;
+        if (_rank == _rankm) goto dispatch;
+      }
+    }
+  check_1:
+    
+    if (items == 5) {
+      SWIG_TypeRank _ranki = 0;
+      SWIG_TypeRank _rankm = 0;
+      SWIG_TypeRank _pi = 1;
+      int _v = 0;
+      {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(ST(0), &vptr, SWIGTYPE_p_SipStack, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        int res = SWIG_AsCharPtrAndSize(ST(1), 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        int res = SWIG_AsCharPtrAndSize(ST(2), 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        int res = SWIG_AsCharPtrAndSize(ST(3), 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        {
+          int res = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(4), NULL);
+          _v = SWIG_CheckState(res);
+        }
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      if (!_index || (_ranki < _rank)) {
+        _rank = _ranki; _index = 2;
+        if (_rank == _rankm) goto dispatch;
+      }
+    }
+  check_2:
+    
+  dispatch:
+    switch(_index) {
+    case 1:
+      PUSHMARK(MARK); SWIG_CALLXS(_wrap_SipStack_setSSLCertificates__SWIG_1); return;
+    case 2:
+      PUSHMARK(MARK); SWIG_CALLXS(_wrap_SipStack_setSSLCertificates__SWIG_0); return;
+    }
+  }
+  
+  croak("No matching function for overloaded 'SipStack_setSSLCertificates'");
+  XSRETURN(0);
+}
+
+
+XS(_wrap_SipStack_setSSLCretificates__SWIG_0) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    char *arg3 = (char *) 0 ;
+    char *arg4 = (char *) 0 ;
+    bool arg5 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    int res4 ;
+    char *buf4 = 0 ;
+    int alloc4 = 0 ;
+    bool val5 ;
+    int ecode5 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 5) || (items > 5)) {
+      SWIG_croak("Usage: SipStack_setSSLCretificates(self,privKey,pubKey,caKey,verify);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setSSLCretificates" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setSSLCretificates" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipStack_setSSLCretificates" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = reinterpret_cast< char * >(buf3);
+    res4 = SWIG_AsCharPtrAndSize(ST(3), &buf4, NULL, &alloc4);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SipStack_setSSLCretificates" "', argument " "4"" of type '" "char const *""'");
+    }
+    arg4 = reinterpret_cast< char * >(buf4);
+    ecode5 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(4), &val5);
+    if (!SWIG_IsOK(ecode5)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "SipStack_setSSLCretificates" "', argument " "5"" of type '" "bool""'");
+    } 
+    arg5 = static_cast< bool >(val5);
+    result = (bool)(arg1)->setSSLCretificates((char const *)arg2,(char const *)arg3,(char const *)arg4,arg5);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipStack_setSSLCretificates__SWIG_1) {
   {
     SipStack *arg1 = (SipStack *) 0 ;
     char *arg2 = (char *) 0 ;
@@ -21435,6 +21851,126 @@ XS(_wrap_SipStack_setSSLCretificates) {
     if (alloc4 == SWIG_NEWOBJ) delete[] buf4;
     SWIG_croak_null();
   }
+}
+
+
+XS(_wrap_SipStack_setSSLCretificates) {
+  dXSARGS;
+  
+  {
+    unsigned long _index = 0;
+    SWIG_TypeRank _rank = 0; 
+    if (items == 4) {
+      SWIG_TypeRank _ranki = 0;
+      SWIG_TypeRank _rankm = 0;
+      SWIG_TypeRank _pi = 1;
+      int _v = 0;
+      {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(ST(0), &vptr, SWIGTYPE_p_SipStack, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_1;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        int res = SWIG_AsCharPtrAndSize(ST(1), 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_1;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        int res = SWIG_AsCharPtrAndSize(ST(2), 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_1;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        int res = SWIG_AsCharPtrAndSize(ST(3), 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_1;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      if (!_index || (_ranki < _rank)) {
+        _rank = _ranki; _index = 1;
+        if (_rank == _rankm) goto dispatch;
+      }
+    }
+  check_1:
+    
+    if (items == 5) {
+      SWIG_TypeRank _ranki = 0;
+      SWIG_TypeRank _rankm = 0;
+      SWIG_TypeRank _pi = 1;
+      int _v = 0;
+      {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(ST(0), &vptr, SWIGTYPE_p_SipStack, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        int res = SWIG_AsCharPtrAndSize(ST(1), 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        int res = SWIG_AsCharPtrAndSize(ST(2), 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        int res = SWIG_AsCharPtrAndSize(ST(3), 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      {
+        {
+          int res = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(4), NULL);
+          _v = SWIG_CheckState(res);
+        }
+      }
+      if (!_v) goto check_2;
+      _ranki += _v*_pi;
+      _rankm += _pi;
+      _pi *= SWIG_MAXCASTRANK;
+      if (!_index || (_ranki < _rank)) {
+        _rank = _ranki; _index = 2;
+        if (_rank == _rankm) goto dispatch;
+      }
+    }
+  check_2:
+    
+  dispatch:
+    switch(_index) {
+    case 1:
+      PUSHMARK(MARK); SWIG_CALLXS(_wrap_SipStack_setSSLCretificates__SWIG_1); return;
+    case 2:
+      PUSHMARK(MARK); SWIG_CALLXS(_wrap_SipStack_setSSLCretificates__SWIG_0); return;
+    }
+  }
+  
+  croak("No matching function for overloaded 'SipStack_setSSLCretificates'");
+  XSRETURN(0);
 }
 
 
@@ -25656,6 +26192,7 @@ static swig_type_info _swigt__p_tmedia_profile_e = {"_p_tmedia_profile_e", "tmed
 static swig_type_info _swigt__p_tmedia_qos_strength_e = {"_p_tmedia_qos_strength_e", "tmedia_qos_strength_t *|enum tmedia_qos_strength_e *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_qos_stype_e = {"_p_tmedia_qos_stype_e", "enum tmedia_qos_stype_e *|tmedia_qos_stype_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_srtp_mode_e = {"_p_tmedia_srtp_mode_e", "enum tmedia_srtp_mode_e *|tmedia_srtp_mode_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_tmedia_srtp_type_e = {"_p_tmedia_srtp_type_e", "enum tmedia_srtp_type_e *|tmedia_srtp_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_t140_data_type_e = {"_p_tmedia_t140_data_type_e", "enum tmedia_t140_data_type_e *|tmedia_t140_data_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmsrp_event_type_e = {"_p_tmsrp_event_type_e", "enum tmsrp_event_type_e *|tmsrp_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmsrp_request_type_e = {"_p_tmsrp_request_type_e", "enum tmsrp_request_type_e *|tmsrp_request_type_t *", 0, 0, (void*)0, 0};
@@ -25753,6 +26290,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_tmedia_qos_strength_e,
   &_swigt__p_tmedia_qos_stype_e,
   &_swigt__p_tmedia_srtp_mode_e,
+  &_swigt__p_tmedia_srtp_type_e,
   &_swigt__p_tmedia_t140_data_type_e,
   &_swigt__p_tmsrp_event_type_e,
   &_swigt__p_tmsrp_request_type_e,
@@ -25850,6 +26388,7 @@ static swig_cast_info _swigc__p_tmedia_profile_e[] = {  {&_swigt__p_tmedia_profi
 static swig_cast_info _swigc__p_tmedia_qos_strength_e[] = {  {&_swigt__p_tmedia_qos_strength_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_qos_stype_e[] = {  {&_swigt__p_tmedia_qos_stype_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_srtp_mode_e[] = {  {&_swigt__p_tmedia_srtp_mode_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_tmedia_srtp_type_e[] = {  {&_swigt__p_tmedia_srtp_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_t140_data_type_e[] = {  {&_swigt__p_tmedia_t140_data_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmsrp_event_type_e[] = {  {&_swigt__p_tmsrp_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmsrp_request_type_e[] = {  {&_swigt__p_tmsrp_request_type_e, 0, 0, 0},{0, 0, 0, 0}};
@@ -25947,6 +26486,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_tmedia_qos_strength_e,
   _swigc__p_tmedia_qos_stype_e,
   _swigc__p_tmedia_srtp_mode_e,
+  _swigc__p_tmedia_srtp_type_e,
   _swigc__p_tmedia_t140_data_type_e,
   _swigc__p_tmsrp_event_type_e,
   _swigc__p_tmsrp_request_type_e,
@@ -26050,11 +26590,15 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsSetScreenSize", _wrap_MediaSessionMgr_defaultsSetScreenSize},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetAudioGain", _wrap_MediaSessionMgr_defaultsSetAudioGain},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetRtpPortRange", _wrap_MediaSessionMgr_defaultsSetRtpPortRange},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetRtpSymetricEnabled", _wrap_MediaSessionMgr_defaultsSetRtpSymetricEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetMediaType", _wrap_MediaSessionMgr_defaultsSetMediaType},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetVolume", _wrap_MediaSessionMgr_defaultsSetVolume},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetVolume", _wrap_MediaSessionMgr_defaultsGetVolume},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetInviteSessionTimers", _wrap_MediaSessionMgr_defaultsSetInviteSessionTimers},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetSRtpMode", _wrap_MediaSessionMgr_defaultsSetSRtpMode},
+{"tinyWRAPc::MediaSessionMgr_defaultsGetSRtpMode", _wrap_MediaSessionMgr_defaultsGetSRtpMode},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetSRtpType", _wrap_MediaSessionMgr_defaultsSetSRtpType},
+{"tinyWRAPc::MediaSessionMgr_defaultsGetSRtpType", _wrap_MediaSessionMgr_defaultsGetSRtpType},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetRtcpEnabled", _wrap_MediaSessionMgr_defaultsSetRtcpEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetRtcpEnabled", _wrap_MediaSessionMgr_defaultsGetRtcpEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetRtcpMuxEnabled", _wrap_MediaSessionMgr_defaultsSetRtcpMuxEnabled},
@@ -26355,6 +26899,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SipStack_setSTUNServer", _wrap_SipStack_setSTUNServer},
 {"tinyWRAPc::SipStack_setSTUNCred", _wrap_SipStack_setSTUNCred},
 {"tinyWRAPc::SipStack_setTLSSecAgree", _wrap_SipStack_setTLSSecAgree},
+{"tinyWRAPc::SipStack_setSSLCertificates", _wrap_SipStack_setSSLCertificates},
 {"tinyWRAPc::SipStack_setSSLCretificates", _wrap_SipStack_setSSLCretificates},
 {"tinyWRAPc::SipStack_setIPSecSecAgree", _wrap_SipStack_setIPSecSecAgree},
 {"tinyWRAPc::SipStack_setIPSecParameters", _wrap_SipStack_setIPSecParameters},
@@ -27414,6 +27959,26 @@ XS(SWIG_init) {
   /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tmedia_srtp_mode_mandatory", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_srtp_mode_mandatory)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_srtp_type_none", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_srtp_type_none)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_srtp_type_sdes", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_srtp_type_sdes)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_srtp_type_dtls", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_srtp_type_dtls)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_srtp_type_sdes_dtls", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_srtp_type_sdes_dtls)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {

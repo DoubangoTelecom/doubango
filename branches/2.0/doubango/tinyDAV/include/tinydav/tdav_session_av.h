@@ -1,7 +1,6 @@
 /*
-* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2012-2013 Doubango Telecom <http://www.doubango.org>
+* Copyright (C) 2012 Diop Mamadou Ibrahima
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -21,9 +20,7 @@
 */
 
 /**@file tdav_session_av.h
- * @brief Audio/Video base Session plugin
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
+ * @brief Audio/Video/T.140 base Session plugin
  */
 
 #ifndef TINYDAV_SESSION_AV_H
@@ -54,6 +51,12 @@ typedef struct tdav_session_av_s
 	tsk_bool_t use_srtp;
 	uint32_t rtp_ssrc;
 
+	tmedia_srtp_type_t srtp_type;
+	tmedia_srtp_mode_t srtp_mode;
+
+	/* sdp capabilities (RFC 5939) */
+	struct tdav_sdp_caps_s* sdp_caps;
+
 	/* NAT Traversal context */
 	tnet_nat_context_handle_t* natt_ctx;
 	struct tnet_ice_ctx_s* ice_ctx;
@@ -61,6 +64,8 @@ typedef struct tdav_session_av_s
 	char* local_ip;
 	char* remote_ip;
 	uint16_t remote_port;
+	struct tsdp_message_s* remote_sdp;
+	struct tsdp_message_s* local_sdp;
 
 	struct trtp_manager_s* rtp_manager;
 
@@ -69,11 +74,14 @@ typedef struct tdav_session_av_s
 
 	struct{
 		struct{
-			char* t_proto;
-			int t_tag;
-			int tag;
-		} remote_best_pcfg;
-	}sdp_neg;
+			tnet_dtls_setup_t setup;
+			tsk_bool_t connection_new; // "new | existing"
+		} local;
+		struct{
+			tnet_dtls_setup_t setup;
+			tsk_bool_t connection_new; // "new | existing"
+		} remote;
+	} dtls;
 
 	struct{
 		uint8_t payload_type;
@@ -87,17 +95,13 @@ typedef struct tdav_session_av_s
 		struct tmedia_codec_s* codec;
 	} red;
 
-	TSK_DECLARE_SAFEOBJ;
+	struct{
+		char* reason;
+		tsk_bool_t is_fatal;
+		void* tid[1];
+	} last_error;
 
-#if HAVE_SRTP /* Must be here (last) */
-	struct {
-		int32_t tag;
-		trtp_srtp_crypto_type_t crypto_type;
-		char key[64];
-		tsk_bool_t pending;
-	}remote_srtp_neg;
-	tmedia_srtp_mode_t srtp_mode;
-#endif
+	TSK_DECLARE_SAFEOBJ;
 }
 tdav_session_av_t;
 

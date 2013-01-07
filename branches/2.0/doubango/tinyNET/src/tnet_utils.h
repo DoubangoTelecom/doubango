@@ -140,8 +140,6 @@ TINYNET_API int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking);
 #define tnet_sockfd_set_nonblocking(fd)	tnet_sockfd_set_mode(fd, 1)
 #define tnet_sockfd_set_blocking(fd)	tnet_sockfd_set_mode(fd, 0)
 
-TINYNET_API tnet_tls_socket_handle_t* tnet_sockfd_set_tlsfiles(tnet_fd_t fd, int isClient, const char* tlsfile_ca, const char* tlsfile_pvk, const char* tlsfile_pbk);
-
 TINYNET_API int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf, tsk_size_t size);
 TINYNET_API int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, tsk_size_t size, int flags, struct sockaddr *from);
 TINYNET_API tsk_size_t tnet_sockfd_send(tnet_fd_t fd, const void* buf, tsk_size_t size, int flags);

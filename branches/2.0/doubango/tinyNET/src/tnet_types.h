@@ -64,14 +64,50 @@
 
 TNET_BEGIN_DECLS
 
+#define TNET_FINGERPRINT_MAX	256
+
 typedef int32_t tnet_fd_t;
 typedef uint16_t tnet_port_t;
 typedef int32_t tnet_family_t;
 typedef char tnet_host_t[NI_MAXHOST];
 typedef char tnet_ip_t[INET6_ADDRSTRLEN];
+typedef unsigned char tnet_fingerprint_t[TNET_FINGERPRINT_MAX + 1];
 
-typedef tsk_list_t tnet_interfaces_L_t; /**< List of @ref tnet_interface_t elements.*/
-typedef tsk_list_t tnet_addresses_L_t; /**< List of @ref tnet_address_t elements.*/
+typedef tsk_list_t tnet_interfaces_L_t; /**< List of @ref tnet_interface_t elements*/
+typedef tsk_list_t tnet_addresses_L_t; /**< List of @ref tnet_address_t elements*/
+
+typedef enum tnet_dtls_setup_e
+{
+	tnet_dtls_setup_none,
+	tnet_dtls_setup_actpass,
+	tnet_dtls_setup_active,
+	tnet_dtls_setup_passive,
+
+	TNET_DTLS_SETUP_MAX
+}
+tnet_dtls_setup_t;
+
+static const char* TNET_DTLS_SETUP_NAMES[TNET_DTLS_SETUP_MAX] =
+{
+	"UNKNOWN", "actpass", "active", "passive"
+};
+
+typedef enum tnet_dtls_hash_type_e
+{
+	tnet_dtls_hash_type_none,
+	tnet_dtls_hash_type_md5,
+	tnet_dtls_hash_type_sha1,
+	tnet_dtls_hash_type_sha256,
+	tnet_dtls_hash_type_sha512,
+
+	TNET_DTLS_HASH_TYPE_MAX
+}
+tnet_dtls_hash_type_t;
+
+static const char* TNET_DTLS_HASH_NAMES[TNET_DTLS_HASH_TYPE_MAX] =
+{
+	"UNKNOWN", "MD5", "SHA-1", "SHA-256", "SHA-512"
+};
 
 #if TNET_UNDER_WINDOWS
 #	define TNET_INVALID_SOCKET				INVALID_SOCKET

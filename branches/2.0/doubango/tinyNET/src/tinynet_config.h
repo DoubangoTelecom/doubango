@@ -113,7 +113,7 @@
 #include <stdint.h>
 
 #if HAVE_CONFIG_H
-#	include "config.h"
+#	include <config.h>
 #elif defined(__APPLE__)
 #	define HAVE_GETIFADDRS		1
 #	define HAVE_IFADDRS_H		1

@@ -244,6 +244,8 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetAudioGain = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetAudioGain)
     __swig_getmethods__["defaultsSetRtpPortRange"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange
     if _newclass:defaultsSetRtpPortRange = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange)
+    __swig_getmethods__["defaultsSetRtpSymetricEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetRtpSymetricEnabled
+    if _newclass:defaultsSetRtpSymetricEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetRtpSymetricEnabled)
     __swig_getmethods__["defaultsSetMediaType"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetMediaType
     if _newclass:defaultsSetMediaType = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetMediaType)
     __swig_getmethods__["defaultsSetVolume"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetVolume
@@ -254,6 +256,12 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetInviteSessionTimers = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetInviteSessionTimers)
     __swig_getmethods__["defaultsSetSRtpMode"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetSRtpMode
     if _newclass:defaultsSetSRtpMode = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetSRtpMode)
+    __swig_getmethods__["defaultsGetSRtpMode"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetSRtpMode
+    if _newclass:defaultsGetSRtpMode = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetSRtpMode)
+    __swig_getmethods__["defaultsSetSRtpType"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetSRtpType
+    if _newclass:defaultsSetSRtpType = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetSRtpType)
+    __swig_getmethods__["defaultsGetSRtpType"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetSRtpType
+    if _newclass:defaultsGetSRtpType = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetSRtpType)
     __swig_getmethods__["defaultsSetRtcpEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetRtcpEnabled
     if _newclass:defaultsSetRtcpEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetRtcpEnabled)
     __swig_getmethods__["defaultsGetRtcpEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetRtcpEnabled
@@ -397,6 +405,10 @@ def MediaSessionMgr_defaultsSetRtpPortRange(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange(*args)
 MediaSessionMgr_defaultsSetRtpPortRange = _tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange
 
+def MediaSessionMgr_defaultsSetRtpSymetricEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetRtpSymetricEnabled(*args)
+MediaSessionMgr_defaultsSetRtpSymetricEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetRtpSymetricEnabled
+
 def MediaSessionMgr_defaultsSetMediaType(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetMediaType(*args)
 MediaSessionMgr_defaultsSetMediaType = _tinyWRAP.MediaSessionMgr_defaultsSetMediaType
@@ -416,6 +428,18 @@ MediaSessionMgr_defaultsSetInviteSessionTimers = _tinyWRAP.MediaSessionMgr_defau
 def MediaSessionMgr_defaultsSetSRtpMode(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetSRtpMode(*args)
 MediaSessionMgr_defaultsSetSRtpMode = _tinyWRAP.MediaSessionMgr_defaultsSetSRtpMode
+
+def MediaSessionMgr_defaultsGetSRtpMode():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetSRtpMode()
+MediaSessionMgr_defaultsGetSRtpMode = _tinyWRAP.MediaSessionMgr_defaultsGetSRtpMode
+
+def MediaSessionMgr_defaultsSetSRtpType(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetSRtpType(*args)
+MediaSessionMgr_defaultsSetSRtpType = _tinyWRAP.MediaSessionMgr_defaultsSetSRtpType
+
+def MediaSessionMgr_defaultsGetSRtpType():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetSRtpType()
+MediaSessionMgr_defaultsGetSRtpType = _tinyWRAP.MediaSessionMgr_defaultsGetSRtpType
 
 def MediaSessionMgr_defaultsSetRtcpEnabled(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetRtcpEnabled(*args)
@@ -1420,6 +1444,7 @@ class SipStack(SafeObject):
     def setSTUNServer(self, *args): return _tinyWRAP.SipStack_setSTUNServer(self, *args)
     def setSTUNCred(self, *args): return _tinyWRAP.SipStack_setSTUNCred(self, *args)
     def setTLSSecAgree(self, *args): return _tinyWRAP.SipStack_setTLSSecAgree(self, *args)
+    def setSSLCertificates(self, *args): return _tinyWRAP.SipStack_setSSLCertificates(self, *args)
     def setSSLCretificates(self, *args): return _tinyWRAP.SipStack_setSSLCretificates(self, *args)
     def setIPSecSecAgree(self, *args): return _tinyWRAP.SipStack_setIPSecSecAgree(self, *args)
     def setIPSecParameters(self, *args): return _tinyWRAP.SipStack_setIPSecParameters(self, *args)
@@ -1584,6 +1609,10 @@ tmedia_chroma_yuv420p = _tinyWRAP.tmedia_chroma_yuv420p
 tmedia_srtp_mode_none = _tinyWRAP.tmedia_srtp_mode_none
 tmedia_srtp_mode_optional = _tinyWRAP.tmedia_srtp_mode_optional
 tmedia_srtp_mode_mandatory = _tinyWRAP.tmedia_srtp_mode_mandatory
+tmedia_srtp_type_none = _tinyWRAP.tmedia_srtp_type_none
+tmedia_srtp_type_sdes = _tinyWRAP.tmedia_srtp_type_sdes
+tmedia_srtp_type_dtls = _tinyWRAP.tmedia_srtp_type_dtls
+tmedia_srtp_type_sdes_dtls = _tinyWRAP.tmedia_srtp_type_sdes_dtls
 tmedia_t140_data_type_utf8 = _tinyWRAP.tmedia_t140_data_type_utf8
 tmedia_t140_data_type_zero_width_no_break_space = _tinyWRAP.tmedia_t140_data_type_zero_width_no_break_space
 tmedia_t140_data_type_backspace = _tinyWRAP.tmedia_t140_data_type_backspace
