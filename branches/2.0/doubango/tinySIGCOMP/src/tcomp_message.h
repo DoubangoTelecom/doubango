@@ -65,7 +65,7 @@ typedef struct tcomp_message_s
 }
 tcomp_message_t;
 
-tcomp_message_t* tcomp_message_create(const void* input_ptr, tsk_size_t input_size, tsk_bool_t stream);
+tcomp_message_t* tcomp_message_create(const void* input_ptr, tsk_size_t input_size, tsk_bool_t stream, int32_t *nack_code);
 
 TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_message_def_t;
 

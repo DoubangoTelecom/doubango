@@ -76,6 +76,11 @@ typedef struct tcomp_udvm_s
 	
 	uint32_t executionPointer;
 	uint32_t last_memory_address_of_instruction;
+
+	struct{
+		void* ptr;
+		tsk_size_t size;
+	} tmp_buff;
 }
 tcomp_udvm_t;
 
@@ -108,7 +113,7 @@ int tcomp_udvm_createTempState(tcomp_udvm_t *udvm, uint32_t state_length, uint32
 /*
 * Nack creation
 */
-void tcomp_udvm_createNackInfo(tcomp_udvm_t *udvm, uint8_t reasonCode, tcomp_buffer_handle_t* lpDetails, int16_t memory_address_of_instruction);
+int tcomp_udvm_createNackInfo(tcomp_udvm_t *udvm, uint8_t reasonCode, tcomp_buffer_handle_t* lpDetails, int16_t memory_address_of_instruction);
 #define tcomp_udvm_createNackInfo2(udvm, reasonCode) tcomp_udvm_createNackInfo(udvm, reasonCode, 0, -1)
 #define tcomp_udvm_createNackInfo3(udvm, reasonCode, lpDetails) tcomp_udvm_createNackInfo(udvm, reasonCode, lpDetails, -1)
 

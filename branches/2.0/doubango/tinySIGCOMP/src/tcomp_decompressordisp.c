@@ -172,15 +172,21 @@ tsk_bool_t tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *d
 	tcomp_message_t *sigCompMessage = tsk_null;
 	tcomp_udvm_t *sigCompUDVM = tsk_null;
 	tsk_bool_t ret = tsk_false;
+	int32_t nack_code = NACK_NONE;
 
 	if(!dispatcher){
 		TSK_DEBUG_ERROR("Invalid parameter.");
 		goto bail;
 	}		
 
-	sigCompMessage = tcomp_message_create(input_ptr, input_size, (*lpResult)->isStreamBased);
+	sigCompMessage = tcomp_message_create(input_ptr, input_size, (*lpResult)->isStreamBased, &nack_code);
 	if(!sigCompMessage || !sigCompMessage->isOK){
-		TSK_DEBUG_ERROR("Failed to create new sigcomp message.");
+		TSK_DEBUG_ERROR("Failed to create new sigcomp message");
+		if(nack_code != NACK_NONE && ((*lpResult)->isNack = TCOMP_NACK_SUPPORTED(dispatcher))){
+			tcomp_nackinfo_write_3((*lpResult)->nack_info, 
+						 nack_code, 
+						 input_ptr, input_size);
+		}
 		goto bail;
 	}
 	else if(sigCompMessage->isNack && TCOMP_NACK_SUPPORTED(dispatcher)){

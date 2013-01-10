@@ -29,6 +29,8 @@
  */
 #include "tcomp_udvm.h"
 
+#include "tsk_debug.h"
+
 
 #define TCOMP_UDVM_MEMORY_REGISTERS_PTR TCOMP_UDVM_GET_BUFFER_AT(UDVM_REGISTERS_START)
 
@@ -105,9 +107,8 @@ int tcomp_udvm_bytecopy_from(tcomp_udvm_t *udvm, uint8_t* destination, uint32_t 
 {
 	uint32_t byte_copy_left, byte_copy_right;
 
-	if(source == TCOMP_UDVM_GET_SIZE())
-	{
-		/* SEGFAULT */
+	if(source >= TCOMP_UDVM_GET_SIZE()){
+		TSK_DEBUG_ERROR("SEGFAULT");
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 		return 0;
 	}
@@ -121,10 +122,8 @@ int tcomp_udvm_bytecopy_from(tcomp_udvm_t *udvm, uint8_t* destination, uint32_t 
 
 
 	// string of bytes is copied one byte at a time
-	while((tsk_size_tocopy--))
-	{
+	while((tsk_size_tocopy--)){
 		*(destination++) = *TCOMP_UDVM_GET_BUFFER_AT(source++);
-
 		source = (source == byte_copy_right)? byte_copy_left : source;
 	}
 

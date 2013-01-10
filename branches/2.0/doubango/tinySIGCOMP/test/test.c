@@ -33,8 +33,8 @@
 #include "test_osc.h"
 #include "test_tortures.h"
 
-#define TEST_TORTURES	0
-#define TEST_MANAGER	1
+#define TEST_TORTURES	1
+#define TEST_MANAGER	0
 #define TEST_OSC		0
 
 #ifdef _WIN32_WCE
