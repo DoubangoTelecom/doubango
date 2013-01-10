@@ -129,6 +129,7 @@ static int SortDescendingPredicate(const void *a, const void *b)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 tsk_bool_t TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE(tcomp_udvm_t *udvm)
 {
+	TSK_DEBUG_ERROR("USER_REQUESTED");
 	tcomp_udvm_createNackInfo2(udvm, NACK_USER_REQUESTED);
 	return tsk_false; 
 }
@@ -353,6 +354,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__DIVIDE(tcomp_udvm_t *udvm, uint32_t operand_1, 
 	CONSUME_CYCLES(1);
 
 	if(!operand_2){
+		TSK_DEBUG_ERROR("DIV_BY_ZERO");
 		tcomp_udvm_createNackInfo2(udvm, NACK_DIV_BY_ZERO);
 		return tsk_false;
 	}
@@ -383,6 +385,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__REMAINDER(tcomp_udvm_t *udvm, uint32_t operand_
 	CONSUME_CYCLES(1);
 
 	if(!operand_2){
+		TSK_DEBUG_ERROR("DIV_BY_ZERO");
 		tcomp_udvm_createNackInfo2(udvm, NACK_DIV_BY_ZERO);
 		return tsk_false;
 	}
@@ -544,58 +547,56 @@ __SEGFAULT:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 tsk_bool_t TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint32_t position, uint32_t length, uint32_t destination)
 {
-	tsk_bool_t ok = tsk_true;
-	uint8_t *data = 0;
-
+	tsk_bool_t ok = tsk_false;
 	tsk_sha1context_t sha;
 	int32_t err;
 	uint8_t Message_Digest[TSK_SHA1_DIGEST_SIZE];
 
-	CONSUME_CYCLES(1+length);
-
-	if(!length || ((destination+length) > (int32_t)TCOMP_UDVM_GET_SIZE())){
-		ok = tsk_false;
+	// only check length
+	// (destination + length) could be > sizeof(udvm_memory) as copying is done byte by byte and could wrap
+	if(!length){
+		TSK_DEBUG_ERROR("SEGFAULT");
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 		goto bail;
 	}
 
-	/*
-	* The SHA-1 instruction calculates a 20-byte SHA-1 hash [RFC-3174] over
-	* the specified area of UDVM memory.
-	*/
+	CONSUME_CYCLES(1 + length);
+
+	// The SHA-1 instruction calculates a 20-byte SHA-1 hash [RFC-3174] over  the specified area of UDVM memory
+	if(udvm->tmp_buff.size < length){
+		if(!(udvm->tmp_buff.ptr = tsk_realloc(udvm->tmp_buff.ptr, length))){
+			udvm->tmp_buff.size = 0;
+			goto bail;
+		}
+		udvm->tmp_buff.size = length;
+	}
 	
-	data = tsk_calloc(length, sizeof(uint8_t));
-	ok &= tcomp_udvm_bytecopy_from(udvm, data, position, length);
-
-	/*
-	* Compute SHA-1
-	*/
-	if( (err = tsk_sha1reset(&sha)) ){
-		ok = tsk_false;
-		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
-		goto bail;
-	}
-	if ( (err = tsk_sha1input(&sha, data, length)) ){
-		ok = tsk_false;
-		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
+	if(!(ok = tcomp_udvm_bytecopy_from(udvm, udvm->tmp_buff.ptr, position, length))){
 		goto bail;
 	}
 
-	if( (err = tsk_sha1result(&sha, (uint8_t*)Message_Digest)) ){
-		ok = tsk_false;
+	// Compute SHA-1
+	if(!(ok = ((err = tsk_sha1reset(&sha)) == 0))){
+		TSK_DEBUG_ERROR("INTERNAL_ERROR: %d", err);
+		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
+		goto bail;
+	}
+	if(!(ok = ((err = tsk_sha1input(&sha, udvm->tmp_buff.ptr, length)) == 0))){
+		TSK_DEBUG_ERROR("INTERNAL_ERROR: %d", err);
+		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
+		goto bail;
+	}
+	if(!(ok = ((err = tsk_sha1result(&sha, (uint8_t*)Message_Digest)) == 0))){
+		TSK_DEBUG_ERROR("INTERNAL_ERROR: %d", ok);
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
 		goto bail;
 	}
 
-	/*
-	* Copy sha1 result to udvm memory
-	*/
+	//Copy sha1 result to udvm memory
 	ok &= tcomp_udvm_bytecopy_to(udvm, destination, Message_Digest, TSK_SHA1_DIGEST_SIZE);
 
 bail:
-	TSK_FREE(data);
-
-	return ok; 
+	return ok;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -644,17 +645,28 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__LOAD(tcomp_udvm_t *udvm, uint32_t address, uint
 tsk_bool_t TCOMP_UDVM_EXEC_INST__MULTILOAD(tcomp_udvm_t *udvm, uint32_t address, uint32_t n)
 {
 	uint32_t index, _address;
+	uint32_t overlap_start = udvm->last_memory_address_of_instruction;
+	#define overlap_end  udvm->executionPointer
+	uint32_t write_start = address;
+	uint32_t write_end = (address + (n << 1));
 
-	CONSUME_CYCLES(1+n);
+	CONSUME_CYCLES(1 + n);
 
-	if( (address + (2*n)) > udvm->executionPointer && (udvm->executionPointer >= address) ){
-		tcomp_udvm_createNackInfo2(udvm, NACK_MULTILOAD_OVERWRITTEN);
-		return tsk_false;
-	}
+#define CHECK_MULTILOAD_OVERWRITTEN(__start, __address, __end) \
+		if(( (__start) <= (__address) && (__address) <= (__end) ) || ( (__start) <= ((__address) + 1) && ((__address) + 1) <= (__end) )){ \
+			TSK_DEBUG_ERROR("MULTILOAD_OVERWRITTEN"); \
+			tcomp_udvm_createNackInfo2(udvm, NACK_MULTILOAD_OVERWRITTEN); \
+			return tsk_false; \
+		}
 
-	/* FIXME: check for overwritten ==> see Torture test "2.5.  LOAD and MULTILOAD" */
+	// tcomp_udvm_opget_multitype_param() will move the execPtr => make the test before the for loop
+	CHECK_MULTILOAD_OVERWRITTEN(overlap_start, address, overlap_end);
+	CHECK_MULTILOAD_OVERWRITTEN(write_start, udvm->executionPointer, write_end);
+	
 	for(index = 0, _address = address; index < n; index++ , _address += 2){
 		uint32_t value_n = tcomp_udvm_opget_multitype_param(udvm);
+		CHECK_MULTILOAD_OVERWRITTEN(overlap_start, _address, overlap_end);
+		CHECK_MULTILOAD_OVERWRITTEN(write_start, udvm->executionPointer, write_end);
 		TCOMP_UDVM_SET_2BYTES_VAL(_address, value_n);
 	}
 
@@ -1148,29 +1160,30 @@ end:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 tsk_bool_t TCOMP_UDVM_EXEC_INST__CRC(tcomp_udvm_t *udvm, uint32_t value, uint32_t position, uint32_t length, uint32_t address)
 {
-	tsk_bool_t ok = tsk_true;
-	uint8_t* data;
 	uint32_t crc_value;
+	
+	CONSUME_CYCLES(1 + length);
 
-	CONSUME_CYCLES(1+length);
-
-	data = tsk_calloc(length, sizeof(uint8_t));
-	if(!data){
-		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
-		return tsk_false;
+	if(udvm->tmp_buff.size < length){
+		if(!(udvm->tmp_buff.ptr = tsk_realloc(udvm->tmp_buff.ptr, length))){
+			udvm->tmp_buff.size = 0;
+			tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
+			TSK_DEBUG_ERROR("INTERNAL_ERROR");
+			return tsk_false;
+		}
+		udvm->tmp_buff.size = length;
 	}
 
 	/* copy data */
-	ok &= tcomp_udvm_bytecopy_from(udvm, data, position, length);
+	if(!tcomp_udvm_bytecopy_from(udvm, udvm->tmp_buff.ptr, position, length)){
+		return tsk_false;
+	}
 	
 	/*
 	* The CRC value is computed exactly as defined for the 16-bit FCS
 	* calculation in [RFC-1662]
 	*/
-	crc_value = tsk_pppfcs16(TSK_PPPINITFCS16, data, length);
-	
-	/* delete data */
-	TSK_FREE(data);
+	crc_value = tsk_pppfcs16(TSK_PPPINITFCS16, udvm->tmp_buff.ptr, length);
 	
 	/* 
 	* If the calculated CRC matches the expected value then the UDVM
@@ -1182,7 +1195,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__CRC(tcomp_udvm_t *udvm, uint32_t value, uint32_
 		TCOMP_UDVM_EXEC_INST__JUMP(udvm, address);
 	}
 
-	return ok; 
+	return tsk_true; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,6 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2011 Mamadou Diop
+* Copyright (C) 2011-2013 Doubango Telecom <http://www.doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,12 +21,10 @@
 
 /**@file tcomp_udvm.c
  * @brief  SigComp UDVM machine.
- *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
- *
-
  */
 #include "tcomp_udvm.h"
+
+#include "tsk_memory.h"
 #include "tsk_debug.h"
 
 #include <string.h>
@@ -86,7 +83,7 @@ tcomp_udvm_t* tcomp_udvm_create(tcomp_message_t* _sigCompMessage, tcomp_statehan
 				|| (lpState->minimum_access_length > tcomp_buffer_getSize(udvm->sigCompMessage->stateId))
 				|| ((tsk_size_t)(lpState->address + lpState->length) > TCOMP_UDVM_GET_SIZE()) )
 			{
-				TSK_DEBUG_INFO("NACK_STATE_NOT_FOUND for id = ");
+				TSK_DEBUG_ERROR("NACK_STATE_NOT_FOUND for id = ");
 				tcomp_buffer_print(udvm->sigCompMessage->stateId);
 				tcomp_udvm_createNackInfo(udvm, NACK_STATE_NOT_FOUND, udvm->sigCompMessage->stateId, 0);
 				udvm->isOK = tsk_false;
@@ -541,6 +538,8 @@ static tsk_object_t* tcomp_udvm_dtor(tsk_object_t *self)
 		TSK_OBJECT_SAFE_FREE(udvm->sigCompMessage);
 		TSK_OBJECT_SAFE_FREE(udvm->stateHandler);
 		TSK_OBJECT_SAFE_FREE(udvm->lpResult);
+
+		TSK_FREE(udvm->tmp_buff.ptr);
 	}
 	else{
 		TSK_DEBUG_ERROR("Null udvm machine.");

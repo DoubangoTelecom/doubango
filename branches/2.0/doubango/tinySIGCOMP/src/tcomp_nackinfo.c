@@ -22,21 +22,135 @@
 
 /**@file tcomp_nackinfo.c
  * @brief  RFC 4077 - A Negative Acknowledgement Mechanism for Signaling Compression (NACK).
- *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
- *
-
  */
 #include "tcomp_nackinfo.h"
+#include "tcomp_message.h"
+#include "tcomp_nack_codes.h"
+
+#include "tsk_sha1.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-/** Creates new NACK object.
+/* "OPCODE of failed instruction" is a one-byte field that includes
+the opcode to which the PC was pointing when the failure occurred.
+If failure occurred before the UDVM began executing any code, this
+field is set to 0.
 */
+#define OPCODE_UNKNOWN	0
+/* "PC of failed instruction" is a two-byte field containing the
+      value of the program counter when failure occurred (i.e., the
+      memory address of the failed UDVM instruction).  The field is
+      encoded with the most significant byte of the PC first (i.e., in
+      network or big endian order).  If failure occurred before the UDVM
+      began executing any code, this field is set to 0.
+*/
+#define PC_UNKNOWN		0
+
+/** Creates new NACK object */
 tcomp_nackinfo_t* tcomp_nackinfo_create()
 {
-	return tsk_object_new(tcomp_nackinfo_def_t);
+	tcomp_nackinfo_t *nackinfo;
+	if((nackinfo = tsk_object_new(tcomp_nackinfo_def_t))){
+		nackinfo->version = NACK_VERSION;
+		nackinfo->details = tcomp_buffer_create_null();
+	}
+	return nackinfo;
 }
+
+int tcomp_nackinfo_write(tcomp_buffer_handle_t* buffer, 
+						 uint8_t reasonCode, 
+						 uint8_t opCode, 
+						 int16_t memory_address_of_instruction, 
+						 const void* sigCompMessagePtr, tsk_size_t sigCompMessageSize, 
+						 tcomp_buffer_handle_t* lpDetails,
+						 uint16_t udvm_size,
+						 uint8_t cpbValue)
+{
+	tsk_sha1context_t sha;
+	uint8_t *nackbuffer_ptr;
+
+	if(!buffer || !sigCompMessagePtr || !sigCompMessageSize){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tcomp_buffer_allocBuff(buffer, INDEX_NACK_SHA1 + TSK_SHA1_DIGEST_SIZE);
+	nackbuffer_ptr = tcomp_buffer_getBuffer(buffer);
+	
+	nackbuffer_ptr[INDEX_NACK_HEADER] = 0xf8;
+	nackbuffer_ptr[INDEX_NACK_VERSION] = NACK_VERSION;
+	nackbuffer_ptr[INDEX_NACK_REASON_CODE] = reasonCode;
+	nackbuffer_ptr[INDEX_NACK_OPCODE] = opCode;
+	nackbuffer_ptr[INDEX_NACK_PC] = (memory_address_of_instruction >> 8);
+	nackbuffer_ptr[INDEX_NACK_PC + 1] = (memory_address_of_instruction & 0x00ff);
+	
+	// SHA-1(message) computation
+	tsk_sha1reset(&sha);
+	tsk_sha1input(&sha, sigCompMessagePtr, sigCompMessageSize);
+	tsk_sha1result(&sha, (uint8_t*)(nackbuffer_ptr + INDEX_NACK_SHA1));
+	
+	// Details
+	if(lpDetails && tcomp_buffer_getSize(lpDetails)){
+		tcomp_buffer_appendBuff(buffer, tcomp_buffer_getBuffer(lpDetails), tcomp_buffer_getSize(lpDetails));
+	}
+	else if(reasonCode == NACK_BYTECODES_TOO_LARGE){
+		tcomp_buffer_appendBuff(buffer, &udvm_size, 2);
+	}
+	else if(reasonCode == NACK_CYCLES_EXHAUSTED){
+		tcomp_buffer_appendBuff(buffer, &cpbValue, 1);
+	}
+
+	return 0;
+
+}
+
+int tcomp_nackinfo_write_2(tcomp_buffer_handle_t* buffer, 
+						 uint8_t reasonCode, 
+						 uint8_t opCode, 
+						 int16_t memory_address_of_instruction, 
+						 const tcomp_message_t* sigCompMessage, 
+						 tcomp_buffer_handle_t* lpDetails,
+						 uint16_t udvm_size,
+						 uint8_t cpbValue)
+{
+	return tcomp_nackinfo_write(buffer, 
+						 reasonCode, 
+						 opCode, 
+						 memory_address_of_instruction, 
+						 sigCompMessage->startPtr, sigCompMessage->totalSize, 
+						 lpDetails,
+						 udvm_size,
+						 cpbValue);
+}
+
+int tcomp_nackinfo_write_3(tcomp_buffer_handle_t* buffer, 
+						 uint8_t reasonCode, 
+						 const void* sigCompMessagePtr, tsk_size_t sigCompMessageSize)
+{
+	return tcomp_nackinfo_write(buffer,
+								reasonCode,
+								OPCODE_UNKNOWN,
+								PC_UNKNOWN,
+								sigCompMessagePtr, sigCompMessageSize,
+								tsk_null,
+								0,
+								0);
+}
+
+int tcomp_nackinfo_write_4(tcomp_buffer_handle_t* buffer, 
+						 uint8_t reasonCode, 
+						 const tcomp_message_t* sigCompMessage)
+{
+	return tcomp_nackinfo_write_2(buffer,
+								reasonCode,
+								OPCODE_UNKNOWN,
+								PC_UNKNOWN,
+								sigCompMessage,
+								tsk_null,
+								0,
+								0);
+}
+
 
 //========================================================
 //	NackInfo object definition
@@ -51,11 +165,6 @@ static tsk_object_t* tcomp_nackinfo_ctor(tsk_object_t *self, va_list* app)
 {
 	tcomp_nackinfo_t *nackinfo = self;
 	if(nackinfo){
-		nackinfo->version = NACK_VERSION;
-		nackinfo->details = tcomp_buffer_create_null();
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to create new nackinfo.");
 	}
 	return self;
 }

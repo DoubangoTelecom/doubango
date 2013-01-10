@@ -49,7 +49,9 @@ int tcomp_udvm_byteCopy_TempStates(tcomp_udvm_t *udvm)
 		* This is the state_value.
 		*/
 		tcomp_state_t* lpState = udvm->lpResult->statesToCreate[i];
-		tcomp_buffer_allocBuff(lpState->value, lpState->length);
+		if(lpState->length){
+			tcomp_buffer_allocBuff(lpState->value, lpState->length);
+		}
 		ok &= tcomp_udvm_bytecopy_from(udvm, tcomp_buffer_getBuffer(lpState->value), lpState->address, lpState->length);
 	}
 	

@@ -76,6 +76,29 @@ typedef struct tcomp_nackinfo_s
 tcomp_nackinfo_t;
 
 tcomp_nackinfo_t* tcomp_nackinfo_create();
+int tcomp_nackinfo_write(tcomp_buffer_handle_t* buffer, 
+						 uint8_t reasonCode, 
+						 uint8_t opCode, 
+						 int16_t memory_address_of_instruction, 
+						 const void* sigCompMessagePtr, tsk_size_t sigCompMessageSize, 
+						 tcomp_buffer_handle_t* lpDetails,
+						 uint16_t udvm_size,
+						 uint8_t cpbValue);
+int tcomp_nackinfo_write_2(tcomp_buffer_handle_t* buffer, 
+						 uint8_t reasonCode, 
+						 uint8_t opCode, 
+						 int16_t memory_address_of_instruction, 
+						 const struct tcomp_message_s* sigCompMessage, 
+						 tcomp_buffer_handle_t* lpDetails,
+						 uint16_t udvm_size,
+						 uint8_t cpbValue);
+int tcomp_nackinfo_write_3(tcomp_buffer_handle_t* buffer, 
+						 uint8_t reasonCode, 
+						 const void* sigCompMessagePtr, tsk_size_t sigCompMessageSize);
+int tcomp_nackinfo_write_4(tcomp_buffer_handle_t* buffer, 
+						 uint8_t reasonCode, 
+						 const struct tcomp_message_s* sigCompMessage);
+
 
 TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_nackinfo_def_t;
 

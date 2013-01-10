@@ -23,17 +23,51 @@
 /**@file tcomp_nack_codes.h
  * @brief List of NACK codes as per RFC 4077 subclause 3.2.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
- *
-
  */
 
 #ifndef TCOMP_NACKCODES_H
 #define TCOMP_NACKCODES_H
 
+/*  0   1   2   3   4   5   6   7
+    +---+---+---+---+---+---+---+---+
+    | 1   1   1   1   1 | T |   0   |
+    +---+---+---+---+---+---+---+---+
+    |                               |
+    :    returned feedback item     :
+    |                               |
+    +---+---+---+---+---+---+---+---+
+    |         code_len = 0          |
+    +---+---+---+---+---+---+---+---+
+    | code_len = 0  |  version = 1  |
+    +---+---+---+---+---+---+---+---+
+    |          Reason Code          |
+    +---+---+---+---+---+---+---+---+
+    |  OPCODE of failed instruction |
+    +---+---+---+---+---+---+---+---+
+    |   PC of failed instruction    |
+    |                               |
+    +---+---+---+---+---+---+---+---+
+    |                               |
+    : SHA-1 Hash of failed message  :
+    |                               |
+    +---+---+---+---+---+---+---+---+
+    |                               |
+    :         Error Details         :
+    |                               |
+    +---+---+---+---+---+---+---+---+
+*/
+#define INDEX_NACK_HEADER		0
+#define INDEX_NACK_VERSION		(INDEX_NACK_HEADER+ 2)
+#define INDEX_NACK_REASON_CODE	(INDEX_NACK_VERSION + 1)
+#define INDEX_NACK_OPCODE		(INDEX_NACK_REASON_CODE + 1)
+#define INDEX_NACK_PC			(INDEX_NACK_OPCODE + 1)
+#define INDEX_NACK_SHA1			(INDEX_NACK_PC + 2)
+#define INDEX_NACK_DETAILS		(INDEX_NACK_PC + SHA1HashSize)
+
 /************************************************************************************
 * Error								       code							details
 *************************************************************************************/
+#define NACK_NONE							0				// For internal use only
 #define NACK_STATE_NOT_FOUND				1				// State ID (6 - 20 bytes)
 #define NACK_CYCLES_EXHAUSTED			    2				// Cycles Per Bit (1 byte)
 #define NACK_USER_REQUESTED					3
