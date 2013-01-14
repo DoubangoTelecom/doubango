@@ -144,21 +144,25 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	}
 
 	addSocket(fd, type, transport, take_ownership, isClient);
+	
 	if(WSAEventSelect(fd, context->events[context->count - 1], FD_ALL_EVENTS) == SOCKET_ERROR){
 		removeSocket((context->count - 1), context);
 		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
 		return -1;
 	}
 
-	/* Signal */
-	if(WSASetEvent(context->events[0])){
-		TSK_DEBUG_INFO("New socket added to the network transport.");
-		return 0;
+	/* Signal if transport is running */
+	if(TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started){
+		if(WSASetEvent(context->events[0])){
+			TSK_DEBUG_INFO("New socket added to the network transport.");
+			return 0;
+		}
+		TSK_DEBUG_ERROR("Transport not started yet");
+		return -1;
 	}
 
-	// ...
-	
-	return -1;
+	TSK_DEBUG_INFO("Adding socket delayed");
+	return 0;
 }
 
 int tnet_transport_pause_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tsk_bool_t pause)

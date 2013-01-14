@@ -64,7 +64,7 @@ static const tsdp_header_M_t* tmedia_session_ghost_get_lo(tmedia_session_t* self
 	if(self->M.lo){
 		return self->M.lo;
 	}
-	else if(!(self->M.lo = tsdp_header_M_create(ghost->media, 0, "RTP/AVP"))){
+	else if(!(self->M.lo = tsdp_header_M_create(ghost->media, 0, ghost->proto ? ghost->proto: "RTP/AVP"))){
 		TSK_DEBUG_ERROR("Failed to create lo");
 		return tsk_null;
 	}
@@ -106,6 +106,7 @@ static tsk_object_t* tmedia_session_ghost_dtor(tsk_object_t * self)
 		tmedia_session_deinit(TMEDIA_SESSION(session));
 		/* deinit self */
 		TSK_FREE(session->media);
+		TSK_FREE(session->proto);
 	}
 
 	return self;

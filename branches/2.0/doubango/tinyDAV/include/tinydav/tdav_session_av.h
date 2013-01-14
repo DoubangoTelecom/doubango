@@ -51,6 +51,7 @@ typedef struct tdav_session_av_s
 	tmedia_type_t media_type;
 	tsk_bool_t use_avpf;
 	tsk_bool_t use_srtp;
+	tsk_bool_t is_webrtc2sip_mode_enabled;
 	uint32_t rtp_ssrc;
 
 	tmedia_srtp_type_t srtp_type;

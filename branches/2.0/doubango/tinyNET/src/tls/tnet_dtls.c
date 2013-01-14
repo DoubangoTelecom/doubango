@@ -92,9 +92,25 @@ tsk_bool_t tnet_dtls_is_supported()
 
 #if HAVE_OPENSSL
 
-static int _tnet_dtls_verify_cert(int ok, X509_STORE_CTX *ctx)
+static tsk_bool_t _tnet_dtls_is_fingerprint_matching(X509* cert, tnet_fingerprint_t* fingerprint, tnet_dtls_hash_type_t hash);
+
+static int _tnet_dtls_verify_cert(int preverify_ok, X509_STORE_CTX *ctx)
 {
+	SSL *ssl;
+	tnet_dtls_socket_t* socket;
+
 	TSK_DEBUG_INFO("_tnet_dtls_verify_cert");
+
+	ssl = X509_STORE_CTX_get_app_data(ctx);
+	socket = (tnet_dtls_socket_t*)SSL_get_app_data(ssl);
+	if(!ssl || !socket){
+		TSK_DEBUG_ERROR("Not expected");
+		return 0;
+	}
+	if(_tnet_dtls_is_fingerprint_matching(ctx->cert, &socket->remote.fp, socket->remote.hash) == tsk_false){
+		TSK_DEBUG_ERROR("Failed to match fingerprint");
+		return 0;
+	}
 	return 1;
 }
 
@@ -129,7 +145,30 @@ static int _tnet_dtls_get_fingerprint(X509* cert, const EVP_MD *evp, tnet_finger
 		(*fingerprint)[len * 3] = '\0';
 		return 0;
 	}
-	return 0;
+}
+
+static tsk_bool_t _tnet_dtls_is_fingerprint_matching(X509* cert, tnet_fingerprint_t* fingerprint, tnet_dtls_hash_type_t hash)
+{
+	const EVP_MD* evp;
+	tnet_fingerprint_t fp;
+	int ret;
+
+	if(!cert || !fingerprint){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_false;
+	}
+	
+	if(!(evp = _tnet_dtls_get_hash_evp(hash))){
+		return tsk_false;
+	}
+	if((ret = _tnet_dtls_get_fingerprint(cert, evp, &fp))){
+		return tsk_false;
+	}
+	if(!tsk_striequals(fp, fingerprint)){
+		TSK_DEBUG_ERROR("DTLS certificate fingerprints mismatch: [%s]#[%s]", fp, *fingerprint);
+		return tsk_false;
+	}
+	return tsk_true;
 }
 
 static tsk_bool_t _tnet_dtls_socket_is_remote_cert_fp_match(tnet_dtls_socket_t* socket)
@@ -140,42 +179,19 @@ static tsk_bool_t _tnet_dtls_socket_is_remote_cert_fp_match(tnet_dtls_socket_t* 
 	}
 	else if(socket->verify_peer){
 		X509* cert;
-		const EVP_MD* evp;
-		tnet_fingerprint_t fp;
-		int ret;
-
-		if(!socket->remote.fp[0]){
-			if(socket->verify_peer){
-				TSK_DEBUG_ERROR("Remote DTLS certificate fingerprint is missing");
-			}
-			return tsk_false;
-		}
-		if(socket->remote.hash == tnet_dtls_hash_type_none){
-			if(socket->verify_peer){
-				TSK_DEBUG_ERROR("None not valid as certificate hash type");
-			}
-			return tsk_false;
-		}
-		if(!(evp = _tnet_dtls_get_hash_evp(socket->remote.hash))){
-			return tsk_false;
-		}
+		
 		if(!(cert = SSL_get_peer_certificate(socket->ssl))){
 			if(socket->verify_peer){ // print error only if verify certs is enabled
 				TSK_DEBUG_ERROR("Failed to get peer certificate [%s]", ERR_error_string(ERR_get_error(), tsk_null));
 			}
 			return tsk_false;
 		}
-		if((ret = _tnet_dtls_get_fingerprint(cert, evp, &fp))){
+		if(!_tnet_dtls_is_fingerprint_matching(cert, &socket->remote.fp, socket->remote.hash)){
 			X509_free(cert);
 			return tsk_false;
 		}
 		X509_free(cert);
-
-		if(!tsk_striequals(fp, socket->remote.fp)){
-			TSK_DEBUG_ERROR("DTLS certificate fingerprints mismatch: [%s]#[%s]", fp, socket->remote.fp);
-			return tsk_false;
-		}
-
+		
 		if(SSL_get_verify_result(socket->ssl) != X509_V_OK){
 			TSK_DEBUG_ERROR("SSL_get_verify_result()#X509_V_OK [%s]", ERR_error_string(ERR_get_error(), tsk_null));
 			return tsk_false;
@@ -306,6 +322,8 @@ tnet_dtls_socket_handle_t* tnet_dtls_socket_create(tnet_fd_t fd, struct ssl_ctx_
 			socket->verify_peer = tsk_true;
 			SSL_set_verify(socket->ssl, (SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT), _tnet_dtls_verify_cert);
 		}
+
+		SSL_set_app_data(socket->ssl, socket);
 	}
 	return socket;
 #endif
@@ -466,11 +484,6 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 	if((socket->handshake_completed = SSL_is_init_finished(socket->ssl))){
 		TSK_DEBUG_INFO("DTLS handshake completed");
 		
-		if(!_tnet_dtls_socket_is_remote_cert_fp_match(socket) && socket->verify_peer){
-			// alert listener
-			_tnet_dtls_socket_raise_event_dataless(socket, tnet_dtls_socket_event_type_fingerprint_mismatch);
-			return -2;
-		}
 #if HAVE_OPENSSL_DTLS_SRTP
 		if(socket->use_srtp){
 #if !defined(SRTP_MAX_KEY_LEN)

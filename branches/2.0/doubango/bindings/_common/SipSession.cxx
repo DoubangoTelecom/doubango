@@ -675,13 +675,14 @@ bool CallSession::setT140Callback(const T140Callback* pT140Callback)
 	return false;
 }
 
-bool CallSession::sendRtcpEvent(enum tmedia_rtcp_event_type_e event_type, twrap_media_type_t media_type, uint32_t ssrc_media)
+bool CallSession::sendRtcpEvent(enum tmedia_rtcp_event_type_e event_type, twrap_media_type_t media_type, uint32_t ssrc_media /*= 0*/)
 {
 	const tmedia_session_mgr_t* pWrappedMgr;
 	const MediaSessionMgr* pMgr;
 	if((pMgr = getMediaMgr()) && (pWrappedMgr = pMgr->getWrappedMgr())){
 		return (tmedia_session_mgr_send_rtcp_event((tmedia_session_mgr_t*)pWrappedMgr, twrap_get_media_type(media_type), event_type, ssrc_media) == 0);		
 	}
+	TSK_DEBUG_ERROR("No media manager");
 	return false;
 }
 
@@ -735,6 +736,7 @@ int CallSession::rtcpOnCallback(const void* context, enum tmedia_rtcp_event_type
 			return ret;
 		}
 	}
+	TSK_DEBUG_INFO("Not Sending RTCP packet (no callback)");
 	return 0;
 }
 

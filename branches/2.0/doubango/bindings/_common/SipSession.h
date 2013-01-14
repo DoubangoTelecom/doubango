@@ -200,7 +200,7 @@ public: /* Public functions */
 	bool sendT140Data(enum tmedia_t140_data_type_e data_type, const void* data_ptr = NULL, unsigned data_size = 0);
 	bool setT140Callback(const T140Callback* pT140Callback);
 #if !defined(SWIG)
-	bool sendRtcpEvent(enum tmedia_rtcp_event_type_e event_type, twrap_media_type_t media_type, uint32_t ssrc_media);
+	bool sendRtcpEvent(enum tmedia_rtcp_event_type_e event_type, twrap_media_type_t media_type, uint32_t ssrc_media = 0);
 	bool setRtcpCallback(const RtcpCallback* pRtcpCallback, twrap_media_type_t media_type);
 	const T140Callback* getT140Callback() const;
 	static int t140OnDataCallback(const void* context, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);

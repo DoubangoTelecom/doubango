@@ -60,7 +60,7 @@ int trtp_srtp_ctx_init(trtp_srtp_ctx_xt* ctx, int32_t tag, trtp_srtp_crypto_type
 		default:
 			{
 				crypto_policy_set_aes_cm_128_hmac_sha1_32(&ctx->policy.rtp);
-				crypto_policy_set_aes_cm_128_hmac_sha1_32(&ctx->policy.rtcp);
+				crypto_policy_set_aes_cm_128_hmac_sha1_80(&ctx->policy.rtcp); // RTCP always 80
 				break;
 			}
 	}
@@ -83,6 +83,7 @@ int trtp_srtp_ctx_deinit(trtp_srtp_ctx_xt* ctx){
 	}
 	if(ctx->initialized){
 		/*err_status_t srtp_err =*/ srtp_dealloc(ctx->session);
+		memset(&ctx->policy, 0, sizeof(ctx->policy));
 		ctx->initialized = tsk_false;
 	}
 	return 0;
@@ -141,72 +142,65 @@ int trtp_srtp_match_line(const char* crypto_line, int32_t* tag, int32_t* crypto_
 	return -0xF0;
 }
 
-
-int trtp_srtp_get_ctx_local(trtp_manager_t* rtp_mgr, const trtp_srtp_ctx_xt** ctx, tsk_size_t *count)
+tsk_size_t trtp_srtp_get_local_contexts(trtp_manager_t* rtp_mgr, const struct trtp_srtp_ctx_xs ** contexts, tsk_size_t contexts_count)
 {
-	trtp_srtp_ctx_xt* ctx_local;
-	const trtp_srtp_ctx_xt* ctx_remote;
-
-	if(!rtp_mgr || !ctx || !count){
+	tsk_size_t ret = 0;
+	if(!rtp_mgr || !contexts){
 		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
+		return 0;
 	}
-	
-	*count = 0;
-	*ctx = tsk_null;
 
-	ctx_remote = &rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_REMOTE][0];
-	ctx_local = &rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][0];
-	
-	if(ctx_remote->initialized){
-		int index = -1;
-		if(ctx_local[0].crypto_type == ctx_remote->crypto_type){
-			index = 0;
-		}
-		else if(ctx_local[1].crypto_type == ctx_remote->crypto_type){
-			index = 1;
-		}
-		
-		if(index != -1){
-			*count = 1;
-			*ctx = &ctx_local[index];
-			ctx_local[index].tag = ctx_remote->tag;
-		}
+	if(contexts_count > ret && rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_80].initialized){
+		contexts[ret++] = &rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_80];
 	}
-	else{
-		*count = 2;
-		*ctx = &ctx_local[0];
-	}	
-
-	return 0;
+	if(contexts_count > ret && rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_32].initialized){
+		contexts[ret++] = &rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_32];
+	}
+	return ret;
 }
 
 trtp_srtp_set_crypto(struct trtp_manager_s* rtp_mgr, const char* crypto_line, int32_t idx)
 {
 	//e.g. 2 F8_128_HMAC_SHA1_80 inline:MTIzNDU2Nzg5QUJDREUwMTIzNDU2Nzg5QUJjZGVm|2^20|1:4;inline:QUJjZGVmMTIzNDU2Nzg5QUJDREUwMTIzNDU2Nzg5|2^20|2:4"
-	trtp_srtp_ctx_xt* srtp_ctx = &rtp_mgr->srtp_contexts[idx][0];
+	trtp_srtp_ctx_xt* srtp_ctx;
 	int ret;
 	uint8_t *key_bin;
 	err_status_t srtp_err;
+	int32_t tag, crypto_type;
+	char key_str[SRTP_MAX_KEY_LEN + 1];
 	
-	ret = trtp_srtp_ctx_deinit(srtp_ctx);
-	ret = trtp_srtp_match_line(crypto_line, &srtp_ctx->tag, (int32_t*)&srtp_ctx->crypto_type, srtp_ctx->key_str, (sizeof(srtp_ctx->key_str) - 1));
-	if(ret != 0){
+	memset(key_str, 0, sizeof(key_str));
+
+	if((ret = trtp_srtp_match_line(crypto_line, &tag, &crypto_type, key_str, sizeof(key_str) - 1))){
 		return ret;
 	}
+
+	srtp_ctx = &rtp_mgr->srtp_contexts[idx][crypto_type];
+	ret = trtp_srtp_ctx_deinit(srtp_ctx);
+
+	srtp_ctx->tag = tag;
+	srtp_ctx->crypto_type = (trtp_srtp_crypto_type_t)crypto_type;
+	memcpy(srtp_ctx->key_str, key_str, sizeof(srtp_ctx->key_str));
 	
 	switch(srtp_ctx->crypto_type){
 		case HMAC_SHA1_80:
-		default:
 			{
 				crypto_policy_set_aes_cm_128_hmac_sha1_80(&srtp_ctx->policy.rtp);
 				crypto_policy_set_aes_cm_128_hmac_sha1_80(&srtp_ctx->policy.rtcp);
+				if(idx == TRTP_SRTP_LINE_IDX_REMOTE){
+					trtp_srtp_ctx_deinit(&rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_32]);
+					rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_80].tag = srtp_ctx->tag;
+				}
 				break;
 			}
 		case HMAC_SHA1_32:
 			{
 				crypto_policy_set_aes_cm_128_hmac_sha1_32(&srtp_ctx->policy.rtp);
-				crypto_policy_set_aes_cm_128_hmac_sha1_32(&srtp_ctx->policy.rtcp);
+				crypto_policy_set_aes_cm_128_hmac_sha1_80(&srtp_ctx->policy.rtcp); // RTCP always 80
+				if(idx == TRTP_SRTP_LINE_IDX_REMOTE){
+					trtp_srtp_ctx_deinit(&rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_80]);
+					rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_32].tag = srtp_ctx->tag;
+				}
 				break;
 			}
 	}
@@ -253,7 +247,7 @@ int trtp_srtp_set_key_and_salt(trtp_manager_t* rtp_mgr, trtp_srtp_crypto_type_t 
 		case HMAC_SHA1_32:
 			{
 				crypto_policy_set_aes_cm_128_hmac_sha1_32(&srtp_ctx->policy.rtp);
-				crypto_policy_set_aes_cm_128_hmac_sha1_32(&srtp_ctx->policy.rtcp);
+				crypto_policy_set_aes_cm_128_hmac_sha1_80(&srtp_ctx->policy.rtcp); // always 80
 				break;
 			}
 	}

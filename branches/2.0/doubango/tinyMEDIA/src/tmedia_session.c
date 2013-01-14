@@ -540,6 +540,7 @@ int tmedia_session_send_rtcp_event(tmedia_session_t* self, tmedia_rtcp_event_typ
 	if(self && self->plugin && self->plugin->rtcp.send_event){
 		return self->plugin->rtcp.send_event(self, event_type, ssrc_media);
 	}
+	TSK_DEBUG_INFO("Not sending RTCP event with SSRC = %u because no callback function found", ssrc_media);
 	return -1;
 }
 
@@ -1212,6 +1213,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 			tmedia_session_ghost_t* ghost;
 			if((ghost = (tmedia_session_ghost_t*)tmedia_session_create(tmedia_ghost))){
 				tsk_strupdate(&ghost->media, M->media); /* copy media */
+				tsk_strupdate(&ghost->proto, M->proto); /* copy proto */
 				tsk_list_push_back_data(self->sessions, (void**)&ghost);
 			}
 			else{

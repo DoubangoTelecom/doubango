@@ -597,7 +597,7 @@ static tdav_session_audio_dtmfe_t* _tdav_session_audio_dtmfe_create(const tdav_s
 	}
 	dtmfe->session = session;
 
-	if(!(dtmfe->packet = trtp_rtp_packet_create((session && base->rtp_manager) ? base->rtp_manager->rtp.ssrc : ssrc, seq, timestamp, format, M))){
+	if(!(dtmfe->packet = trtp_rtp_packet_create((session && base->rtp_manager) ? base->rtp_manager->rtp.ssrc.local : ssrc, seq, timestamp, format, M))){
 		TSK_DEBUG_ERROR("Failed to create DTMF RTP packet");
 		TSK_OBJECT_SAFE_FREE(dtmfe);
 		return tsk_null;
