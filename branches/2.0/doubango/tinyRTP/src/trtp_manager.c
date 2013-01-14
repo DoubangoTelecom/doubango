@@ -264,7 +264,7 @@ static trtp_manager_t* _trtp_manager_create(tsk_bool_t use_rtcp, const char* loc
 
 static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* data_ptr, tsk_size_t data_size, tnet_fd_t local_fd, const struct sockaddr_storage* remote_addr)
 {
-	tsk_bool_t is_rtp_rtcp, is_rtcp = tsk_false, is_stun, is_dtls;
+	tsk_bool_t is_rtp_rtcp, is_rtcp = tsk_false, is_rtp = tsk_false, is_stun, is_dtls;
 
 	// defined when RTCP-MUX is disabled and RTCP port is equal to "RTP Port + 1"
 
@@ -285,10 +285,11 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 				}
 			}
 		}
+		is_rtp = !is_rtcp;
 	}
 	else{
 		is_dtls = !is_rtp_rtcp && (19 < *data_ptr && *data_ptr < 64);
-		is_stun = (*data_ptr < 2);
+		is_stun = TNET_IS_STUN2_MSG(data_ptr, data_size); /* MUST NOT USE: "(*data_ptr < 2)" beacause of "Old VAT" which starts with "0x00" */;
 	}
 
 	if(is_dtls){
@@ -305,7 +306,7 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 		}
 		return 0;
 	}
-	else if(is_rtcp){
+	if(is_rtcp){
 		if(!self->is_symetric_rtcp_checked && self->is_force_symetric_rtp){
 			((trtp_manager_t*)self)->is_symetric_rtcp_checked = tsk_true;
 			if(!self->is_ice_neg_ok && remote_addr){ // do not force symetric RTCP is ICE negotiation succeed
@@ -341,7 +342,7 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 		TSK_DEBUG_WARN("No RTCP session");
 		return 0;
 	}
-	else{
+	if(is_rtp){
 		if(!self->is_symetric_rtp_checked && self->is_force_symetric_rtp){
 			((trtp_manager_t*)self)->is_symetric_rtp_checked = tsk_true;
 			if(!self->is_ice_neg_ok && remote_addr){ // do not force symetric RTP is ICE negotiation succeed
@@ -380,6 +381,9 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 		}
 		return 0;
 	}
+
+	TSK_DEBUG_INFO("Received unknown packet type");
+	return 0;
 }
 
 #if HAVE_SRTP
