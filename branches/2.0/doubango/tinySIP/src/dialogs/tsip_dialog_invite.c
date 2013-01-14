@@ -971,12 +971,14 @@ int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self)
 {
 	tmedia_srtp_mode_t srtp_mode;
 	tsk_bool_t is_rtcweb_enabled;
+	tsk_bool_t is_webrtc2sip_mode_enabled;
 	
 	if(!self || !self->msession_mgr){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
+	is_webrtc2sip_mode_enabled = (TSIP_DIALOG_GET_STACK(self)->network.mode == tsip_stack_mode_webrtc2sip);
 	is_rtcweb_enabled = (((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.profile == tmedia_profile_rtcweb);
 	srtp_mode = is_rtcweb_enabled ? tmedia_srtp_mode_mandatory : ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.srtp_mode;
 	
@@ -988,6 +990,7 @@ int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self)
 	return tmedia_session_mgr_set(self->msession_mgr,
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "srtp-mode", srtp_mode),
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "avpf-enabled", is_rtcweb_enabled), // Otherwise will be negociated using SDPCapNeg (RFC 5939)
+			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "webrtc2sip-mode-enabled", is_webrtc2sip_mode_enabled), // hack the media stack
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "rtcp-enabled", self->use_rtcp),
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "rtcpmux-enabled", self->use_rtcpmux),
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "codecs-supported", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.codecs),

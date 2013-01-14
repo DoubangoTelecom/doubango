@@ -104,9 +104,10 @@ typedef enum tnet_dtls_hash_type_e
 }
 tnet_dtls_hash_type_t;
 
+// Hash names are case-insensitive but use lower case values because of https://bugzilla.mozilla.org/show_bug.cgi?id=828027
 static const char* TNET_DTLS_HASH_NAMES[TNET_DTLS_HASH_TYPE_MAX] =
 {
-	"UNKNOWN", "MD5", "SHA-1", "SHA-256", "SHA-512"
+	"UNKNOWN", "md5", "sha-1", "sha-256", "sha-512"
 };
 
 #if TNET_UNDER_WINDOWS

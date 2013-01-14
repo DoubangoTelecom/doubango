@@ -44,7 +44,9 @@ typedef enum trtp_srtp_crypto_type_e
 {
 	NONE = -1,
 	HMAC_SHA1_80,
-	HMAC_SHA1_32
+	HMAC_SHA1_32,
+
+	SRTP_CRYPTO_TYPES_MAX
 }
 trtp_srtp_crypto_type_t;
 
@@ -107,7 +109,7 @@ TINYRTP_API int trtp_srtp_set_crypto(struct trtp_manager_s* rtp_mgr, const char*
 TINYRTP_API int trtp_srtp_set_key_and_salt(struct trtp_manager_s* rtp_mgr, trtp_srtp_crypto_type_t crypto_type, const void* key, tsk_size_t key_size, const void* salt, tsk_size_t salt_size, int32_t idx);
 #define trtp_srtp_set_key_and_salt_local(rtp_mgr, crypto_type, key, key_size, salt, salt_size) trtp_srtp_set_key_and_salt((rtp_mgr), (crypto_type), (key), (key_size), (salt), (salt_size), TRTP_SRTP_LINE_IDX_LOCAL)
 #define trtp_srtp_set_key_and_salt_remote(rtp_mgr, crypto_type, key, key_size, salt, salt_size) trtp_srtp_set_key_and_salt((rtp_mgr), (crypto_type), (key), (key_size), (salt), (salt_size), TRTP_SRTP_LINE_IDX_REMOTE)
-TINYRTP_API int trtp_srtp_get_ctx_local(struct trtp_manager_s* rtp_mgr, const struct trtp_srtp_ctx_xs** ctx, tsk_size_t *count);
+TINYRTP_API tsk_size_t trtp_srtp_get_local_contexts(struct trtp_manager_s* rtp_mgr, const struct trtp_srtp_ctx_xs ** contexts, tsk_size_t contexts_count);
 TINYRTP_API tsk_bool_t trtp_srtp_is_initialized(struct trtp_manager_s* rtp_mgr);
 TINYRTP_API tsk_bool_t trtp_srtp_is_started(struct trtp_manager_s* rtp_mgr);
 

@@ -299,6 +299,20 @@ const char* tnet_ice_candidate_tostring(tnet_ice_candidate_t* self)
 		self->extension_att_list,
 		&self->tostring);
 
+	/* <rel-addr> and <rel-port>:  convey transport addresses related to the
+      candidate, useful for diagnostics and other purposes. <rel-addr>
+      and <rel-port> MUST be present for server reflexive, peer
+      reflexive, and relayed candidates. */
+	switch(self->type_e){
+		case tnet_ice_cand_type_srflx:
+		case tnet_ice_cand_type_prflx:
+		case tnet_ice_cand_type_relay:
+			{
+				tsk_strcat_2(&self->tostring, " raddr %s rport %d", self->socket->ip, self->socket->port);
+				break;
+			}
+	}
+
 	// WebRTC (Chrome) specific
 	if(self->is_ice_jingle){
 		if(!tsk_params_have_param(self->extension_att_list, "name")){

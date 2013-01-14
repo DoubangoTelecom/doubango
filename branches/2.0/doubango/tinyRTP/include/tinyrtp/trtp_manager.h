@@ -59,6 +59,11 @@ typedef struct trtp_manager_s
 	struct tnet_ice_ctx_s* ice_ctx;
 
 	struct{
+		tmedia_rtcweb_type_t local;
+		tmedia_rtcweb_type_t remote;
+	} rtcweb_type;
+
+	struct{
 		uint16_t start;
 		uint16_t stop;
 	} port_range;
@@ -66,7 +71,6 @@ typedef struct trtp_manager_s
 	struct{
 		uint16_t seq_num;
 		uint32_t timestamp;
-		uint32_t ssrc;
 		uint8_t payload_type;
         int32_t dscp;
 
@@ -76,6 +80,11 @@ typedef struct trtp_manager_s
 
 		char* public_ip;
 		tnet_port_t public_port;
+
+		struct{
+			uint32_t local;
+			uint32_t remote;
+		} ssrc;
 
 		struct{
 			const void* usrdata;
@@ -111,7 +120,7 @@ typedef struct trtp_manager_s
 	enum tmedia_srtp_type_e srtp_type;
 	enum tmedia_srtp_mode_e srtp_mode;
 	trtp_srtp_state_t srtp_state;
-	trtp_srtp_ctx_xt srtp_contexts[2][2];
+	trtp_srtp_ctx_xt srtp_contexts[2/*LINE_IDX*/][2/*CRYPTO_TYPE*/];
 	const struct trtp_srtp_ctx_xs* srtp_ctx_neg_local;
 	const struct trtp_srtp_ctx_xs* srtp_ctx_neg_remote;
 
@@ -176,6 +185,7 @@ TINYRTP_API int trtp_manager_set_payload_type(trtp_manager_t* self, uint8_t payl
 TINYRTP_API int trtp_manager_set_rtp_remote(trtp_manager_t* self, const char* remote_ip, tnet_port_t remote_port);
 TINYRTP_API int trtp_manager_set_rtcp_remote(trtp_manager_t* self, const char* remote_ip, tnet_port_t remote_port);
 TINYRTP_API int trtp_manager_set_port_range(trtp_manager_t* self, uint16_t start, uint16_t stop);
+TINYRTP_API int trtp_manager_set_rtcweb_type_remote(trtp_manager_t* self, tmedia_rtcweb_type_t rtcweb_type);
 TINYRTP_API int trtp_manager_start(trtp_manager_t* self);
 TINYRTP_API tsk_size_t trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t size, uint32_t duration, tsk_bool_t marker, tsk_bool_t last_packet);
 TINYRTP_API tsk_size_t trtp_manager_send_rtp_packet(trtp_manager_t* self, const struct trtp_rtp_packet_s* packet, tsk_bool_t bypass_encrypt);

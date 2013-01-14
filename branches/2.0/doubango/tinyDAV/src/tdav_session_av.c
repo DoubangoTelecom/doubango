@@ -29,6 +29,8 @@
 #include "tinydav/codecs/fec/tdav_codec_red.h"
 #include "tinydav/codecs/fec/tdav_codec_ulpfec.h"
 
+#include "tinysdp/headers/tsdp_header_S.h"
+
 #include "tinyrtp/trtp_manager.h"
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
 
@@ -56,7 +58,7 @@ static const tsk_bool_t __have_libsrtp = tsk_false;
 #define TDAV_IS_RED_CODEC(codec) (TMEDIA_CODEC((codec))->plugin == tdav_codec_red_plugin_def_t)
 
 #if !defined(TDAV_DFAULT_FP_HASH)
-#define TDAV_DFAULT_FP_HASH		tnet_dtls_hash_type_sha1
+#define TDAV_DFAULT_FP_HASH		tnet_dtls_hash_type_sha256
 #endif /* TDAV_DFAULT_FP_HASH */
 #if !defined(TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT)
 #define TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT		0
@@ -303,7 +305,7 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 			else if(tsk_striequals(param->key, "rtp-ssrc")){
 				self->rtp_ssrc = *((uint32_t*)param->value);
 				if(self->rtp_manager && self->rtp_ssrc){
-					self->rtp_manager->rtp.ssrc = self->rtp_ssrc;
+					self->rtp_manager->rtp.ssrc.local = self->rtp_ssrc;
 				}
 				return tsk_true;
 			}
@@ -317,6 +319,10 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 			}
 			else if(tsk_striequals(param->key, "avpf-enabled")){
 				self->use_avpf = (TSK_TO_INT32((uint8_t*)param->value) != 0);
+				return tsk_true;
+			}
+			else if(tsk_striequals(param->key, "webrtc2sip-mode-enabled")){
+				self->is_webrtc2sip_mode_enabled = (TSK_TO_INT32((uint8_t*)param->value) != 0);
 				return tsk_true;
 			}
 		}
@@ -400,7 +406,7 @@ int tdav_session_av_prepare(tdav_session_av_t* self)
 				return ret;
 			}
 #if HAVE_SRTP
-			if(tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_ca)){
+			if(tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_pbk)){
 				// DTLS-SRTP requires certificates
 				if(self->srtp_type & tmedia_srtp_type_dtls){
 					TSK_DEBUG_WARN("DTLS-SRTP requested but not certificate provided, disabling this option :(");
@@ -428,7 +434,7 @@ int tdav_session_av_prepare(tdav_session_av_t* self)
 				}
 			}
 			if(self->rtp_ssrc){
-				self->rtp_manager->rtp.ssrc = self->rtp_ssrc;
+				self->rtp_manager->rtp.ssrc.local = self->rtp_ssrc;
 			}
 		}
 	}
@@ -724,7 +730,8 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 #if HAVE_SRTP
 		{ //start-of-HAVE_SRTP
 			if(!base->M.ro){
-				const trtp_srtp_ctx_xt *ctx = tsk_null;
+				// === RO IS NULL ===
+				const trtp_srtp_ctx_xt *srtp_ctxs[SRTP_CRYPTO_TYPES_MAX] = { tsk_null };
 				tsk_size_t ctx_count = 0, ctx_idx, acap_tag = 1;
 				tsk_size_t acap_tag_fp_sha1 = 0, acap_tag_fp_sha256 = 0, acap_tag_setup = 0, acap_tag_connection = 0, acap_tag_crypro_start = 0;
 				char* str = tsk_null;
@@ -744,7 +751,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 
 				// get local SRTP context
 				if(is_srtp_sdes_enabled){
-					trtp_srtp_get_ctx_local(self->rtp_manager, &ctx, &ctx_count);
+					ctx_count = trtp_srtp_get_local_contexts(self->rtp_manager, (const trtp_srtp_ctx_xt **)&srtp_ctxs, sizeof(srtp_ctxs)/sizeof(srtp_ctxs[0]));
 				}
 
 				// a=tcap:
@@ -761,7 +768,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 					_first_media_strcat(&tcap, "%d", __tcap_tag);
 
 					if(is_srtp_dtls_enabled){
-						if(!tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_ca)){
+						if(!tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_pbk)){
 							fp_sha1 = trtp_manager_get_dtls_local_fingerprint(self->rtp_manager, tnet_dtls_hash_type_sha1);
 							fp_sha256 = trtp_manager_get_dtls_local_fingerprint(self->rtp_manager, tnet_dtls_hash_type_sha256);
 						}
@@ -815,9 +822,9 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 				}
 				if(is_first_media && !negotiate_srtp && is_srtp_dtls_enabled){
 					// add DTLS-SRTP fingerprint and setup at session-level
-					const char* fp_sha1 = trtp_manager_get_dtls_local_fingerprint(self->rtp_manager, TDAV_DFAULT_FP_HASH);
-					if(fp_sha1){
-						tsk_sprintf(&str, "%s %s", TNET_DTLS_HASH_NAMES[tnet_dtls_hash_type_sha1], fp_sha1);
+					const char* fp_str = trtp_manager_get_dtls_local_fingerprint(self->rtp_manager, TDAV_DFAULT_FP_HASH);
+					if(fp_str){
+						tsk_sprintf(&str, "%s %s", TNET_DTLS_HASH_NAMES[TDAV_DFAULT_FP_HASH], fp_str);
 #if TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT
 						tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("fingerprint", str), tsk_null);
 						tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("setup", "active"), tsk_null);
@@ -836,11 +843,11 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 						acap_tag_crypro_start = (acap_tag == 1 ? acap_tag : ++acap_tag);
 					}
 					if(negotiate_srtp){
-						tsk_sprintf(&str, "%d crypto:%d %s inline:%s", acap_tag++, ctx[ctx_idx].tag, trtp_srtp_crypto_type_strings[ctx[ctx_idx].crypto_type], ctx[ctx_idx].key_str);
+						tsk_sprintf(&str, "%d crypto:%d %s inline:%s", acap_tag++, srtp_ctxs[ctx_idx]->tag, trtp_srtp_crypto_type_strings[srtp_ctxs[ctx_idx]->crypto_type], srtp_ctxs[ctx_idx]->key_str);
 						cryptoA = tsdp_header_A_create("acap", str);
 					}
 					else{
-						tsk_sprintf(&str, "%d %s inline:%s", ctx[ctx_idx].tag, trtp_srtp_crypto_type_strings[ctx[ctx_idx].crypto_type], ctx[ctx_idx].key_str);
+						tsk_sprintf(&str, "%d %s inline:%s", srtp_ctxs[ctx_idx]->tag, trtp_srtp_crypto_type_strings[srtp_ctxs[ctx_idx]->crypto_type], srtp_ctxs[ctx_idx]->key_str);
 						cryptoA = tsdp_header_A_create("crypto", str);
 					}
 
@@ -913,7 +920,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 				TSK_FREE(str);
 			} //end-of-if(!base->M.ro)
 			else{
-				// RO IS NOT NULL
+				// === RO IS NOT NULL ===
 				// the ro validity has been checked in "set_ro()"
 				RTP_PROFILE_T profile_remote = (self->sdp_caps->acfg.tag > 0 && self->sdp_caps->acfg.tcap.tag > 0)
 					? self->sdp_caps->acfg.tcap.profile
@@ -928,14 +935,14 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 				
 				// SDES-SRTP
 				if(is_srtp_sdes_enabled){
-					const trtp_srtp_ctx_xt *ctx = tsk_null;
+					const trtp_srtp_ctx_xt *srtp_ctxs[SRTP_CRYPTO_TYPES_MAX] = { tsk_null };
 					tsk_size_t ctx_count = 0, ctx_idx;
 					// get local SRTP context
-					if(trtp_srtp_get_ctx_local(self->rtp_manager, &ctx, &ctx_count) == 0){
+					if((ctx_count = trtp_srtp_get_local_contexts(self->rtp_manager, (const trtp_srtp_ctx_xt **)&srtp_ctxs, sizeof(srtp_ctxs)/sizeof(srtp_ctxs[0]))) > 0){
 						char* str = tsk_null;
 						for(ctx_idx = 0; ctx_idx < ctx_count; ++ctx_idx){
 							is_srtp_sdes_activated = tsk_true;
-                            tsk_sprintf(&str, "%d %s inline:%s", ctx[ctx_idx].tag, trtp_srtp_crypto_type_strings[ctx[ctx_idx].crypto_type], ctx[ctx_idx].key_str);
+                            tsk_sprintf(&str, "%d %s inline:%s", srtp_ctxs[ctx_idx]->tag, trtp_srtp_crypto_type_strings[srtp_ctxs[ctx_idx]->crypto_type], srtp_ctxs[ctx_idx]->key_str);
                             tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("crypto", str), tsk_null);
                         }
 						TSK_FREE(str);
@@ -945,7 +952,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 				// DTLS-SRTP
 				if(!is_srtp_sdes_activated && is_srtp_dtls_enabled){
 					// get "fingerprint", "setup" and "connection" attributes
-					if(!tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_ca)){
+					if(!tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_pbk)){
 						tnet_dtls_hash_type_t fp_hash_remote;
 						char* str = tsk_null;
 						if((fp_hash_remote = trtp_manager_get_dtls_remote_fingerprint_hash(self->rtp_manager)) == tnet_dtls_hash_type_none){
@@ -1005,12 +1012,12 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 
 		// draft-lennox-mmusic-sdp-source-attributes-01
 		if(self->media_type == tmedia_audio || self->media_type == tmedia_video){
-			char* str = tsk_null;
-			tsk_sprintf(&str, "%u cname:%s", self->rtp_manager->rtp.ssrc, "ldjWoB60jbyQlR6e");
+			char* str = tsk_null;			
+			tsk_sprintf(&str, "%u cname:%s", self->rtp_manager->rtp.ssrc.local, "ldjWoB60jbyQlR6e");
 			tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("ssrc", str), tsk_null);
-			tsk_sprintf(&str, "%u mslabel:%s", self->rtp_manager->rtp.ssrc, "6994f7d1-6ce9-4fbd-acfd-84e5131ca2e2");
+			tsk_sprintf(&str, "%u mslabel:%s", self->rtp_manager->rtp.ssrc.local, "6994f7d1-6ce9-4fbd-acfd-84e5131ca2e2");
 			tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("ssrc", str), tsk_null);
-			tsk_sprintf(&str, "%u label:%s", self->rtp_manager->rtp.ssrc, "Doubango");
+			tsk_sprintf(&str, "%u label:%s", self->rtp_manager->rtp.ssrc.local, "Doubango");
 			tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("ssrc", str), tsk_null);
 			TSK_FREE(str);
 		}
@@ -1192,6 +1199,40 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 	self->use_rtcpmux &= (tsdp_header_M_findA(m, "rtcp-mux") != tsk_null);
 	if(self->ice_ctx){
 		tnet_ice_ctx_set_rtcpmux(self->ice_ctx, self->use_rtcpmux);
+	}
+
+	/* Remote SSRC */
+	{
+		// will be also updated based on received RTP packets
+		const tsdp_header_A_t* ssrcA = tsdp_header_M_findA(m, "ssrc");
+		if(ssrcA && ssrcA->value){
+			if(sscanf(ssrcA->value, "%u %*s", &self->rtp_manager->rtp.ssrc.remote) != EOF){
+				TSK_DEBUG_INFO("Remote SSRC = %u", self->rtp_manager->rtp.ssrc.remote);
+			}
+		}
+	}
+
+	/* RTCWeb Type */
+	if(self->remote_sdp){
+		const tsdp_header_S_t* S = (const tsdp_header_S_t*)tsdp_message_get_header(self->remote_sdp, tsdp_htype_S);
+		if(S && !tsk_strnullORempty(S->value)){
+			struct rtcweb_type { const char* name; tmedia_rtcweb_type_t type; };
+			static const struct rtcweb_type rtcweb_types[] =
+			{
+				{ "firefox", tmedia_rtcweb_type_firefox },
+				{ "chrome", tmedia_rtcweb_type_chrome },
+				{ "bowser", tmedia_rtcweb_type_ericsson },
+				{ "doubango", tmedia_rtcweb_type_doubango },
+			};
+			static const int32_t rtcweb_types_count = sizeof(rtcweb_types)/sizeof(rtcweb_types[0]);
+			int32_t i;
+			for(i = 0; i < rtcweb_types_count; ++i){
+				if(_sdp_str_contains(S->value, rtcweb_types[i].name)){
+					trtp_manager_set_rtcweb_type_remote(self->rtp_manager, rtcweb_types[i].type);
+					break;
+				}
+			}
+		}
 	}
 
 	/* SRTP */

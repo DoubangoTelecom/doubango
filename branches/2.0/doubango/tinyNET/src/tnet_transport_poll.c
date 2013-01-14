@@ -102,7 +102,7 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	}
 
 	// signal
-	if(context->pipeW){
+	if(context->pipeW && (TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started)){
 		if((ret = write(context->pipeW, &c, 1)) > 0){
 			TSK_DEBUG_INFO("Socket added (external call) %d", fd);
 			return 0;
@@ -111,8 +111,8 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 			TSK_DEBUG_ERROR("Failed to add new Socket.");
 			return ret;
 		}
-	}else{
-		TSK_DEBUG_WARN("pipeW (write site) not initialized yet.");
+	} else {
+		TSK_DEBUG_INFO("pipeW (write site) not initialized yet.");
 		return 0; //Will be taken when mainthead start
 	}
 }
@@ -521,6 +521,10 @@ int tnet_transport_unprepare(tnet_transport_t *transport)
 	while(context->count){
 		removeSocket(0, context); // safe
 	}
+
+	/* reset both R and W sides */
+	context->pipeR = 0;
+	context->pipeW = 0;
 
 	// destroy master as it has been closed by removeSocket()
 	TSK_OBJECT_SAFE_FREE(transport->master);

@@ -87,9 +87,9 @@ static const tmedia_codec_action_t __action_encode_bw_down = tmedia_codec_action
 	uint64_t __now = tsk_time_now(); \
 	if((__now - (__self)->avpf.last_fir_time) > TDAV_SESSION_VIDEO_AVPF_FIR_INTERVAL_MIN){ /* guard to avoid sending too many FIR */ \
 		_tdav_session_video_codec_set((__self), "action", __action_encode_idr); \
-		if((__self)->cb_rtcpevent.func){ \
-			(__self)->cb_rtcpevent.func((__self)->cb_rtcpevent.context, tmedia_rtcp_event_type_fir, (__ssrc_media)); \
-		} \
+	} \
+	if((__self)->cb_rtcpevent.func){ \
+		(__self)->cb_rtcpevent.func((__self)->cb_rtcpevent.context, tmedia_rtcp_event_type_fir, (__ssrc_media)); \
 	} \
 	(__self)->avpf.last_fir_time = __now; \
 }
@@ -120,11 +120,11 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 	
 	if(base->rtp_manager && base->rtp_manager->is_started){
 		if(rtp_header){
-			rtp_header->ssrc = base->rtp_manager->rtp.ssrc; // uses negotiated SSRC (SDP)
+			rtp_header->ssrc = base->rtp_manager->rtp.ssrc.local; // uses negotiated SSRC (SDP)
 		}
 		packet = rtp_header 
 			? trtp_rtp_packet_create_2(rtp_header)
-			: trtp_rtp_packet_create(base->rtp_manager->rtp.ssrc, base->rtp_manager->rtp.seq_num, base->rtp_manager->rtp.timestamp, base->rtp_manager->rtp.payload_type, result->last_chunck);
+			: trtp_rtp_packet_create(base->rtp_manager->rtp.ssrc.local, base->rtp_manager->rtp.seq_num, base->rtp_manager->rtp.timestamp, base->rtp_manager->rtp.payload_type, result->last_chunck);
 
 		if(packet ){
 			tsk_size_t rtp_hdr_size;
@@ -174,7 +174,7 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 				ret = tdav_codec_ulpfec_enc_protect((struct tdav_codec_ulpfec_s*)base->ulpfec.codec, packet);
 				if(result->last_chunck){
 					trtp_rtp_packet_t* packet_fec;
-					if((packet_fec = trtp_rtp_packet_create(base->rtp_manager->rtp.ssrc, base->ulpfec.seq_num++, base->ulpfec.timestamp, base->ulpfec.payload_type, tsk_true))){
+					if((packet_fec = trtp_rtp_packet_create(base->rtp_manager->rtp.ssrc.local, base->ulpfec.seq_num++, base->ulpfec.timestamp, base->ulpfec.payload_type, tsk_true))){
 						// serialize the FEC payload packet packet
 						s = tdav_codec_ulpfec_enc_serialize((const struct tdav_codec_ulpfec_s*)base->ulpfec.codec, &video->encoder.buffer, &video->encoder.buffer_size);
 						if(s > 0){
@@ -411,7 +411,7 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
 		const trtp_rtcp_rblock_t* block;
 		tsk_list_foreach(item, blocks){
 			if(!(block = item->data)) continue;
-			if(base->rtp_manager->rtp.ssrc == block->ssrc){
+			if(base->rtp_manager->rtp.ssrc.local == block->ssrc){
 				tdav_session_video_pkt_loss_level_t pkt_loss_level = tdav_session_video_pkt_loss_level_low;
 				if(block->fraction > TDAV_SESSION_VIDEO_PKT_LOSS_HIGH)  pkt_loss_level = tdav_session_video_pkt_loss_level_high;
 				else if(block->fraction > TDAV_SESSION_VIDEO_PKT_LOSS_MEDIUM)  pkt_loss_level = tdav_session_video_pkt_loss_level_medium;
@@ -448,12 +448,15 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
 		switch(psfb->fci_type){
 			case trtp_rtcp_psfb_fci_type_fir:
 				{
+					TSK_DEBUG_INFO("Receving RTCP-FIR (%u)", ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media);
 					_tdav_session_video_remote_requested_idr(video, ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media);
 					break;
 				}
 			case trtp_rtcp_psfb_fci_type_pli:
 				{
-					uint64_t now = tsk_time_now();
+					uint64_t now;
+					TSK_DEBUG_INFO("Receving RTCP-PLI (%u)", ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media);
+					now = tsk_time_now();
 					if((now - video->avpf.last_pli_time) < 500){ // more than one PLI in 500ms
 						_tdav_session_video_remote_requested_idr(video, ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media);
 					}
@@ -962,8 +965,11 @@ static int tdav_session_video_rtcp_send_event(tmedia_session_t* self, tmedia_rtc
 	switch(event_type){
 		case tmedia_rtcp_event_type_fir:
 			{
-				TSK_DEBUG_INFO("User requested Full Intra Refresh (FIR)");
 				if(base->rtp_manager && base->rtp_manager->is_started){
+					if(!ssrc_media){ // when called from C++/Java/C# bindings "ssrc_media" is a default parameter with value=0
+						ssrc_media = base->rtp_manager->rtp.ssrc.remote;
+					}
+					TSK_DEBUG_INFO("Send FIR(%u)", ssrc_media);
 					ret = trtp_manager_signal_frame_corrupted(base->rtp_manager, ssrc_media);
 				}
 				break;

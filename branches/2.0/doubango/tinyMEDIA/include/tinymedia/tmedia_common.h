@@ -133,6 +133,19 @@ typedef enum tmedia_pref_video_size_s
 }
 tmedia_pref_video_size_t;
 
+typedef enum tmedia_rtcweb_type_e
+{
+	tmedia_rtcweb_type_none,
+	tmedia_rtcweb_type_firefox,
+	tmedia_rtcweb_type_chrome,
+	tmedia_rtcweb_type_ie,
+	tmedia_rtcweb_type_safari,
+	tmedia_rtcweb_type_opera,
+	tmedia_rtcweb_type_ericsson,
+	tmedia_rtcweb_type_doubango
+}
+tmedia_rtcweb_type_t;
+
 typedef enum tmedia_video_encode_result_type_e
 {
 	tmedia_video_encode_result_type_none = 0x00,

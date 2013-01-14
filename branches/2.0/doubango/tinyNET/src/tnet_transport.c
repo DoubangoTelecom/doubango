@@ -44,7 +44,7 @@
 #include <string.h> /* memcpy, ...(<#void * #>, <#const void * #>, <#tsk_size_t #>) */
 
 #ifndef TNET_CIPHER_LIST
-#	define TNET_CIPHER_LIST "ALL:!ADH:!LOW:!EXP:@STRENGTH"
+#	define TNET_CIPHER_LIST "ALL"
 #endif
 
 extern int tnet_transport_prepare(tnet_transport_t *transport);

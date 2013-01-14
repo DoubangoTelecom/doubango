@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib IPHLPAPI.lib &quot;$(OutDir)\tinySAK.lib&quot; &quot;..\thirdparties\win32\lib\openssl\libcrypto.a&quot; &quot;..\thirdparties\win32\lib\openssl\libssl.a&quot; &quot;..\thirdparties\win32\lib\libgcc.a&quot;"
+				AdditionalDependencies="ws2_32.lib IPHLPAPI.lib &quot;$(OutDir)\tinySAK.lib&quot; &quot;..\thirdparties\win32\lib\openssl\libeay32.lib&quot; &quot;..\thirdparties\win32\lib\openssl\ssleay32.lib&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
