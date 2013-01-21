@@ -89,7 +89,6 @@ tcomp_udvm_t* tcomp_udvm_create(tcomp_message_t* _sigCompMessage, tcomp_statehan
 				udvm->isOK = tsk_false;
 				goto bail;
 			}
-			//this->sigCompMessage->stateId.print();//FIXME
 			/*
 			* Copy bytecodes to UDVM memory
 			*/
@@ -132,7 +131,7 @@ tcomp_udvm_t* tcomp_udvm_create(tcomp_message_t* _sigCompMessage, tcomp_statehan
 		* the maximum number of UDVM cycles available for processing an n-byte SigComp message is given by the formula
 		* maximum_UDVM_cycles = (8 * n + 1000) * cycles_per_bit
 		*/
-		udvm->maximum_UDVM_cycles = ( (8 * udvm->sigCompMessage->totalSize + 1000) * udvm->stateHandler->sigcomp_parameters->cpbValue );
+		udvm->maximum_UDVM_cycles = ( (8 * udvm->sigCompMessage->header_size + 1000) * udvm->stateHandler->sigcomp_parameters->cpbValue );
 		
 		//
 		//	RFC 3320 - 7.2.  Useful values
@@ -482,7 +481,7 @@ static tsk_bool_t tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 		}
 
 		if(excution_failed){
-			TSK_DEBUG_ERROR("Execution failed for instruction = %d", udvm_instruction);
+			TSK_DEBUG_ERROR("Execution failed for instruction = %s", TCOMP_INST_DESCRIPTIONS[udvm_instruction].desc);
 		}
 		//TCOMP_UDVM_DEBUG_PRINT(200);
 	}

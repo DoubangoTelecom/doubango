@@ -22,9 +22,15 @@
 #define TEST_TINYSIGCOMP_TORTURES_H
 
 #define COMPARTMENT_ID				"urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a473"
+#define COMPARTMENT_ID_0			"urn:uuid:0"
+#define COMPARTMENT_ID_1			"urn:uuid:1"
+#define COMPARTMENT_ID_2			"urn:uuid:2"
+
 #define OUTPUT_BUFFER_SIZE			2000
-#define DMS	8192 //4096//8192//65536
-#define CPB	64 // 16//32//64//128
+// Be careful before changing these values as not all tests accept any
+#define DMS	16384 //2048//4096//8192//65536
+#define SMS 2048 //2048//4096//8192//65536
+#define CPB	16 // 16//32//64//128
 
 #define RUN_TEST_LOOP	1
 
@@ -39,6 +45,8 @@
 
 #include "rfc4465_torture_tests.h"
 
+#include <assert.h>
+
 struct_torture_test tests[] = 
 {
 	{	//*** 0***
@@ -48,7 +56,8 @@ struct_torture_test tests[] =
 		{8, "\x01\x50\x00\x00\xfe\xbf\x00\x00"}, 
 		22,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{	//*** 1***
@@ -58,7 +67,8 @@ struct_torture_test tests[] =
 		{8, "\x00\x00\x00\x00\x00\x00\x00\x04"},
 		25,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{	//*** 1.1***
@@ -68,7 +78,8 @@ struct_torture_test tests[] =
 		{11, "DIV_BY_ZERO"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{	//*** 1.2***
@@ -78,7 +89,8 @@ struct_torture_test tests[] =
 		{11, "DIV_BY_ZERO"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -91,7 +103,8 @@ struct_torture_test tests[] =
 		"\x70\x20\x69\x74\x2e"},
 		371,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -105,7 +118,8 @@ struct_torture_test tests[] =
 		"\x4f\x46\x04\x52\xeb\xb5\x63\x93\x4f\x46\x04\x52\xeb\xb5\x63\x93\x4f\x46\x04\x52"},
 		17176,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -116,7 +130,8 @@ struct_torture_test tests[] =
 		{16, "\x00\x84\x00\x84\x00\x86\x00\x86\x00\x2a\x00\x80\x00\x2a\x00\x2a"},
 		36,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -127,7 +142,8 @@ struct_torture_test tests[] =
 		{21, "MULTILOAD_OVERWRITTEN"},
 		36,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -138,7 +154,8 @@ struct_torture_test tests[] =
 		{21, "MULTILOAD_OVERWRITTEN"},
 		36,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -155,7 +172,8 @@ struct_torture_test tests[] =
 		"\x42\x43\x44\x43\x44"},
 		365,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -167,7 +185,8 @@ struct_torture_test tests[] =
 		"\x00\x4a\x00\x4e\x47\x48\x48\x45\x46\x47\x47\x48\x45\x46"},
 		216,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -178,7 +197,8 @@ struct_torture_test tests[] =
 		{16, "\x80\x40\x4f\x5e\x6d\x7c\x8b\x9a\xa9\xb8\xc7\xd6\xe5\xf4\x03\x12"},
 		166,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -189,7 +209,8 @@ struct_torture_test tests[] =
 		{0, ""},
 		95,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -200,7 +221,8 @@ struct_torture_test tests[] =
 		{14, "USER_REQUESTED"},
 		95,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -211,7 +233,8 @@ struct_torture_test tests[] =
 		{16, "\x00\x00\x00\x02\x00\x02\x00\x13\x00\x00\x00\x03\x00\x1a\x00\x38"},
 		66,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -222,7 +245,8 @@ struct_torture_test tests[] =
 		{16, "\x00\x00\x00\x03\x00\x08\x04\xd7\x00\x02\x00\x03\x03\x99\x30\xfe"},
 		84,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -234,7 +258,8 @@ struct_torture_test tests[] =
 		"\x00\x07\x00\x01\x33\x87\x4e\x00\x08\xdc\x96\x51\xb5\xdc\x96\x00\x59\x9d\x6a"},
 		130,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -245,7 +270,8 @@ struct_torture_test tests[] =
 		{16, "\x00\x03\x00\x02\x00\x01\x00\x42\x00\x42\x00\x00\x00\x01\x00\x01"},
 		40,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -256,7 +282,8 @@ struct_torture_test tests[] =
 		{20, "\x00\x01\x01\x02\x02\x03\x03\x04\x04\x05\x05\x06\x07\x07\x07\x08\x08\x08\x09\x09"},
 		131,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -267,194 +294,214 @@ struct_torture_test tests[] =
 		{0, ""},
 		23,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
-		//** 15**
+		//** 15 (requires previsous test)**
 		"A.1.15.  State Creation_2",
 		RFC4465_A_1_15__State_Creation_2,
 		152,
 		{0, ""},
 		14,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
-		//** 16**
+		//** 16 (requires previsous test)**
 		"A.1.15.  State Creation_3",
 		RFC4465_A_1_15__State_Creation_3,
 		152,
 		{0, ""},
 		24,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
-		//** 17**
+		//** 17 (requires previsous test)**
 		"A.1.15.  State Creation_4", // FAIL
 		RFC4465_A_1_15__State_Creation_4,
 		153,
-		{0, ""},
+		{23, "INVALID_STATE_ID_LENGTH"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
-		//** 18**
+		//** 18 (requires previsous test)**
 		"A.1.15.  State Creation_5", // FAIL
 		RFC4465_A_1_15__State_Creation_5,
 		153,
-		{0, ""},
+		{23, "INVALID_STATE_ID_LENGTH"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
-		//** 19**
+		//** 19 (requires previsous test)**
 		"A.1.15.  State Creation_6",
 		RFC4465_A_1_15__State_Creation_6,
 		153,
 		{0, ""},
 		23,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
-		//** 20**
+		//** 20 (requires previsous test)**
 		"A.1.15.  State Creation_7",
 		RFC4465_A_1_15__State_Creation_7,
 		152,
 		{0, ""},
 		34,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
-		//** 21**
+		//** 21 (requires previsous test)**
 		"A.1.15.  State Creation_8",
 		RFC4465_A_1_15__State_Creation_8,
 		153,
 		{0, ""},
 		46,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
-		//** 22**
+		//** 22 (requires previsous test)**
 		"A.1.15.  State Creation_9",
 		RFC4465_A_1_15__State_Creation_9,
 		153,
 		{0, ""},
 		47,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
+#if 0 // FIXME: http://code.google.com/p/doubango/issues/detail?id=181
 	,
 	{
-		//** 23**
+		//** 23 (requires previsous test)**
 		"A.1.15.  State Creation_10",
 		RFC4465_A_1_15__State_Creation_10,
 		153,
 		{0, ""},
 		60,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
+#endif
 	,
 	{
 		//** 24**
-		"A.1.16.  STATE-ACCESS {Set up bytecode}",
+		"A.1.16.  STATE-ACCESS_0 {Set up bytecode}",
 		RFC4465_A_1_16__STATE_ACCESS__SETUP,
 		403,
 		{0, ""},
 		17,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
-		//** 25**
+		//** 25 (requires previous test)**
 		"A.1.16.  STATE-ACCESS_1",
 		RFC4465_A_1_16__STATE_ACCESS_1,
 		408,
 		{4, "\x74\x65\x73\x74"},
 		26,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
-		//** 26**
+		//** 26 (requires previous test)**
 		"A.1.16.  STATE-ACCESS_2",
 		RFC4465_A_1_16__STATE_ACCESS_2,
 		408,
 		{4, "\x74\x65\x73\x74"},
 		15,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
-		//** 27**
+		//** 27 (requires previous test)**
 		"A.1.16.  STATE-ACCESS_3",
 		RFC4465_A_1_16__STATE_ACCESS_3,
 		408,
-		{0, ""},
+		{15, "STATE_NOT_FOUND"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
-		//** 28**
+		//** 28 (requires previous test)**
 		"A.1.16.  STATE-ACCESS_4",
 		RFC4465_A_1_16__STATE_ACCESS_4,
 		408,
-		{0, ""},
+		{15, "STATE_NOT_FOUND"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
-		//** 29**
+		//** 29 (requires previous test)**
 		"A.1.16.  STATE-ACCESS_5",
 		RFC4465_A_1_16__STATE_ACCESS_5,
 		408,
-		{0, ""},
+		{15, "STATE_TOO_SHORT"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
 		//** 30**
 		"A.2.1.(1)  Useful Values_1",
 		RFC4465_A_2_1__Useful_Values_1,
-		99,
+		93,
 		{0, ""},
-		968,
+		966,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
 		//** 31 (Requires previous test)**
 		"A.2.1.(2)  Useful Values_2",
 		RFC4465_A_2_1__Useful_Values_2,
-		10,
+		9,
 		{0, ""},
-		(CPB * 1080),
+		(1072 << 4),
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -465,7 +512,8 @@ struct_torture_test tests[] =
 		{16, "CYCLES_EXHAUSTED"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -476,7 +524,8 @@ struct_torture_test tests[] =
 		{8, "SEGFAULT"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -484,10 +533,11 @@ struct_torture_test tests[] =
 		"A.2.2.  Cycles Checking",
 		RFC4465_A_2_2__Cycles_Checking,
 		29,
-		{0, ""},
+		{16, "CYCLES_EXHAUSTED"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -498,7 +548,8 @@ struct_torture_test tests[] =
 		{17, "MESSAGE_TOO_SHORT"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -509,7 +560,8 @@ struct_torture_test tests[] =
 		{17, "MESSAGE_TOO_SHORT"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -520,7 +572,8 @@ struct_torture_test tests[] =
 		{25, "decompression_memory_size"},
 		5,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -531,7 +584,8 @@ struct_torture_test tests[] =
 		{17, "MESSAGE_TOO_SHORT"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -542,7 +596,8 @@ struct_torture_test tests[] =
 		{21, "INVALID_CODE_LOCATION"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -553,7 +608,8 @@ struct_torture_test tests[] =
 		{25, "decompression_memory_size"},
 		5,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -564,7 +620,8 @@ struct_torture_test tests[] =
 		{25, "decompression_memory_size"},
 		11,
 		IS_STREAM_YES,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -575,7 +632,8 @@ struct_torture_test tests[] =
 		{17, "MESSAGE_TOO_SHORT"},
 		0,
 		IS_STREAM_YES,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -586,7 +644,8 @@ struct_torture_test tests[] =
 		{17, "MESSAGE_TOO_SHORT"},
 		0,
 		IS_STREAM_YES,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -597,7 +656,20 @@ struct_torture_test tests[] =
 		{17, "MESSAGE_TOO_SHORT"},
 		0,
 		IS_STREAM_YES,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
+	}
+	,
+	{
+		//** 45**
+		"A.2.4.  Stream-based Transport_5.1 (cleanup)",
+		"\xff\xff",
+		2,
+		{14, "INTERNAL_ERROR"},
+		0,
+		IS_STREAM_YES,
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -608,7 +680,20 @@ struct_torture_test tests[] =
 		{21, "INVALID_CODE_LOCATION"},
 		0,
 		IS_STREAM_YES,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
+	}
+	,
+	{
+		//** 46**
+		"A.2.4.  Stream-based Transport_6.1 (cleanup)",
+		"\xff\xff",
+		2,
+		{14, "INTERNAL_ERROR"},
+		0,
+		IS_STREAM_YES,
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -619,7 +704,8 @@ struct_torture_test tests[] =
 		{3, "\x68\x69\x21"},
 		23,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -630,7 +716,8 @@ struct_torture_test tests[] =
 		{14, "USER_REQUESTED"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -641,7 +728,8 @@ struct_torture_test tests[] =
 		{0, ""},
 		52,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -652,18 +740,20 @@ struct_torture_test tests[] =
 		{0, ""},
 		179,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
-		//** 51**
+		//** 51 (SMS MUST be 2048)**
 		"A.3.2.  State Memory Management_1",
 		RFC4465_A_3_2__State_Memory_Management_1,
 		446,
 		{0, ""},
 		811,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -674,7 +764,8 @@ struct_torture_test tests[] =
 		{0, ""},
 		2603,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -685,7 +776,8 @@ struct_torture_test tests[] =
 		{0, ""},
 		811,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -696,7 +788,8 @@ struct_torture_test tests[] =
 		{0, ""},
 		1805,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -707,7 +800,8 @@ struct_torture_test tests[] =
 		{15, "STATE_NOT_FOUND"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -718,7 +812,8 @@ struct_torture_test tests[] =
 		{0, ""},
 		2057,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -729,7 +824,8 @@ struct_torture_test tests[] =
 		{0, ""},
 		1993,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -739,95 +835,105 @@ struct_torture_test tests[] =
 		437,
 		{0, ""},
 		1809,
-		IS_STREAM_NO
+		IS_STREAM_NO,
+		XFAIL_NO,
+		COMPARTMENT_ID_0
 	}
 	,
 	{
-		//** 59**
+		//** 59 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_2",
 		RFC4465_A_3_3__Multiple_Compartments_2,
 		437,
 		{0, ""},
 		1809,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID_1
 	}
 	,
 	{
-		//** 60**
+		//** 60 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_3",
 		RFC4465_A_3_3__Multiple_Compartments_3,
 		437,
 		{0, ""},
 		1809,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID_2
 	}
 	,
 	{
-		//** 61**
+		//** 61 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_4",
 		RFC4465_A_3_3__Multiple_Compartments_4,
 		437,
 		{0, ""},
 		1993,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID_0
 	}
 	,
 	{
-		//** 62**
+		//** 62 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_5",
 		RFC4465_A_3_3__Multiple_Compartments_5,
 		437,
 		{0, ""},
 		1994,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID_1
 	}
 	,
 	{
-		//** 63**
+		//** 63 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_6",
 		RFC4465_A_3_3__Multiple_Compartments_6,
 		437,
 		{0, ""},
 		1804,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID_2
 	}
 	,
 	{
-		//** 64**
+		//** 64 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_7",
 		RFC4465_A_3_3__Multiple_Compartments_7,
 		437,
 		{15, "STATE_NOT_FOUND"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID_0
 	}
 	,
 	{
-		//** 65**
+		//** 65 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_8",
 		RFC4465_A_3_3__Multiple_Compartments_8,
 		437,
 		{15, "STATE_NOT_FOUND"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID_1
 	}
 	,
 	{
-		//** 66**
+		//** 66 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_9",
 		RFC4465_A_3_3__Multiple_Compartments_9,
 		437,
 		{15, "STATE_NOT_FOUND"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		COMPARTMENT_ID_2
 	}
 	,
 	{
@@ -838,7 +944,8 @@ struct_torture_test tests[] =
 		{3, "\x53\x49\x50"},
 		11,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		COMPARTMENT_ID
 	}
 	,
 	{
@@ -849,7 +956,8 @@ struct_torture_test tests[] =
 		{2, "\x4f\x4b"},
 		66,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		"Comp-id:A.3.5.  Bytecode State Creation"
 	}
 	,
 	{
@@ -860,7 +968,8 @@ struct_torture_test tests[] =
 		{3, "\x4f\x4b\x31"},
 		7,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		"Comp-id:A.3.5.  Bytecode State Creation"
 	}
 	,
 	{
@@ -871,7 +980,8 @@ struct_torture_test tests[] =
 		{3, "\x4f\x4b\x32"},
 		5,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		"Comp-id:A.3.5.  Bytecode State Creation"
 	}
 	,
 	{
@@ -882,7 +992,8 @@ struct_torture_test tests[] =
 		{3, "\x00\x00\x32"},
 		5,
 		IS_STREAM_NO,
-		XFAIL_NO
+		XFAIL_NO,
+		"Comp-id:A.3.5.  Bytecode State Creation"
 	}
 	,
 	{
@@ -893,7 +1004,8 @@ struct_torture_test tests[] =
 		{15, "STATE_NOT_FOUND"},
 		0,
 		IS_STREAM_NO,
-		XFAIL_YES
+		XFAIL_YES,
+		"Comp-id:A.3.5.  Bytecode State Creation"
 	}
 };
 
@@ -925,13 +1037,21 @@ static TCOMP_INLINE uint16_t HostToNetworkShort(uint16_t x)
 
 static void checkResult(const struct_torture_test* test, const tcomp_result_t *result, const void* output_ptr, tsk_size_t output_size)
 {
+	tsk_bool_t ok_cycles = (result->consumed_cycles == test->xcycles);
+	tsk_bool_t ok_output = tsk_true;
+
 	if(tsk_striequals(test->xoutput.ptr, "decompression_memory_size")){
 		printf("xoutput (decompression_memory_size): %s\n", (HostToNetworkShort(DMS) == *((uint16_t*)output_ptr)) ? "YES" : "NO");
 	}
 	else{
-		printf("xoutput: %s\n", startsWith(output_ptr, output_size, test->xoutput.ptr, test->xoutput.size) ? "YES" : "NO");
+		ok_output = startsWith(output_ptr, output_size, test->xoutput.ptr, test->xoutput.size);
+		printf("xoutput: %s\n", ok_output ? "YES" : "NO");
 	}
-	printf("xcycles: %s\n", (result->consumed_cycles == test->xcycles) ? "YES" : "NO");
+	printf("xcycles: %s\n", ok_cycles ? "YES" : "NO");
+	if(!ok_cycles || !ok_output){
+		assert(test->xfail && result->isNack); // failure must be expected and NACK have to be present
+		assert(tsk_strequals(test->xoutput.ptr, tcomp_nackinfo_get_description(result->nack_info))); // returned NACK and expected one must be equal
+	}
 }
 
 static int test_tortures()
@@ -939,26 +1059,29 @@ static int test_tortures()
 	size_t i, start, end;
 	size_t res_size = 0;
 	char buffer[OUTPUT_BUFFER_SIZE];
-	tcomp_manager_handle_t *manager = tcomp_manager_create();
-	tcomp_result_t *result = tcomp_result_create();
 
-	isBigEndian = ((*(int8_t *)&wordForEndianess) != 0x21);
-
-	/* Add SIP dictionary. */
-	tcomp_manager_addSipSdpDictionary(manager);
-
-	/* Add Presence dictionary. */
-	tcomp_manager_addPresenceDictionary(manager);
-
-	/* Set decompression size. */
-	tcomp_manager_setDecompression_Memory_Size(manager, DMS);
-	/* Set Cycles Per Bit */
-	tcomp_manager_setCycles_Per_Bit(manager, CPB);
-	
 #if RUN_TEST_LOOP
 	for(;;)
 #endif
 	{
+		tcomp_manager_handle_t *manager = tcomp_manager_create();
+		tcomp_result_t *result = tcomp_result_create();
+
+		isBigEndian = ((*(int8_t *)&wordForEndianess) != 0x21);
+
+		/* Add SIP dictionary. */
+		tcomp_manager_addSipSdpDictionary(manager);
+
+		/* Add Presence dictionary. */
+		tcomp_manager_addPresenceDictionary(manager);
+
+		/* Set decompression size. */
+		tcomp_manager_setDecompression_Memory_Size(manager, DMS);
+		/* Set state memory size. */
+		tcomp_manager_setState_Memory_Size(manager, SMS);
+		/* Set Cycles Per Bit */
+		tcomp_manager_setCycles_Per_Bit(manager, CPB);
+
 #if RUN_TEST_ALL
 		start = 0, end = sizeof(tests)/sizeof(tests[0]);
 #else
@@ -982,7 +1105,7 @@ static int test_tortures()
 				//sendto(tcomp_buffer_getBuffer(result->nack_info), tcomp_buffer_getSize(result->nack_info));
 			}
 			else{
-				tcomp_result_setCompartmentId(result, COMPARTMENT_ID, strlen(COMPARTMENT_ID));
+				tcomp_result_setCompartmentId(result, tests[i].comp_id, strlen(tests[i].comp_id));
 				tcomp_manager_provideCompartmentId(manager, result);
 			}
 
@@ -998,7 +1121,7 @@ static int test_tortures()
 						break;
 					}
 					else if(res_size){
-						tcomp_result_setCompartmentId(result, COMPARTMENT_ID, strlen(COMPARTMENT_ID));
+						tcomp_result_setCompartmentId(result, tests[i].comp_id, strlen(tests[i].comp_id));
 						tcomp_manager_provideCompartmentId(manager, result);
 					}
 					else{
@@ -1011,11 +1134,11 @@ static int test_tortures()
 			}
 		}
 
-	}/* LOOP */
+		/* Free previously allocated resources. */
+		TSK_OBJECT_SAFE_FREE(result);
+		TSK_OBJECT_SAFE_FREE(manager);
 
-	/* Free previously allocated resources. */
-	TSK_OBJECT_SAFE_FREE(result);
-	TSK_OBJECT_SAFE_FREE(manager);
+	}/* LOOP */
 
 	return 0;
 }

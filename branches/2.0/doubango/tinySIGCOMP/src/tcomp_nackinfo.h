@@ -101,6 +101,7 @@ int tcomp_nackinfo_write_3(tcomp_buffer_handle_t* buffer,
 int tcomp_nackinfo_write_4(tcomp_buffer_handle_t* buffer, 
 						 uint8_t reasonCode, 
 						 const struct tcomp_message_s* sigCompMessage);
+TINYSIGCOMP_API const char* tcomp_nackinfo_get_description(const tcomp_buffer_handle_t* buffer);
 
 
 TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_nackinfo_def_t;

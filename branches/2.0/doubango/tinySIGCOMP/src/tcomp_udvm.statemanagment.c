@@ -52,14 +52,14 @@ int tcomp_udvm_byteCopy_TempStates(tcomp_udvm_t *udvm)
 		if(lpState->length){
 			tcomp_buffer_allocBuff(lpState->value, lpState->length);
 		}
+
 		ok &= tcomp_udvm_bytecopy_from(udvm, tcomp_buffer_getBuffer(lpState->value), lpState->address, lpState->length);
 	}
 	
 	/*
 	* State Free
 	*/
-	for(i = 0; i<tofree_size; i++)
-	{
+	for(i = 0; i<tofree_size; i++){
 		tcomp_tempstate_to_free_t *lpDesc = udvm->lpResult->statesToFree[i];
 		tcomp_buffer_allocBuff(lpDesc->identifier, lpDesc->partial_identifier_length);
 		ok &= tcomp_udvm_bytecopy_from(udvm, tcomp_buffer_getBuffer(lpDesc->identifier), lpDesc->partial_identifier_start, lpDesc->partial_identifier_length);

@@ -321,11 +321,11 @@ void tcomp_buffer_allocBuff(tcomp_buffer_handle_t* handle, tsk_size_t size)
 			TSK_DEBUG_WARN("Cannot allocate zero bytes.");
 			return;
 		}
-		tsk_free((void**)&(buffer->lpbuffer));
-
 		buffer->index_bits = buffer->index_bytes = 0;
-		buffer->lpbuffer = (uint8_t*) tsk_calloc(1, size );
-		buffer->size = size;
+		buffer->size = 0;
+		if((buffer->lpbuffer = tsk_realloc(buffer->lpbuffer, size))){
+			buffer->size = size;
+		}
 	}
 	else{
 		TSK_DEBUG_ERROR("Null SigComp handle");

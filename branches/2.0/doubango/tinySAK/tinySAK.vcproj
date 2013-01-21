@@ -316,6 +316,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tinysak_config.h"
 				>
 			</File>
@@ -575,6 +579,14 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_xml.c"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="resources(*.rc)"
+			>
+			<File
+				RelativePath=".\version.rc"
 				>
 			</File>
 		</Filter>

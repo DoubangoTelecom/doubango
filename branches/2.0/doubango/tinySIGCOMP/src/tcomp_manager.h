@@ -34,6 +34,7 @@
 
 #include "tcomp_result.h"
 #include "tcomp_compressor.h"
+#include "tcomp_nackinfo.h"
 
 TCOMP_BEGIN_DECLS
 
