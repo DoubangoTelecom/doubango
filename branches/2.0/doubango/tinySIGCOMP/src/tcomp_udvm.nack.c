@@ -30,19 +30,17 @@
 int tcomp_udvm_createNackInfo(tcomp_udvm_t *udvm, uint8_t reasonCode, tcomp_buffer_handle_t* lpDetails, int16_t memory_address_of_instruction)
 {
 	uint32_t mem_add_instruction;
-	uint8_t *nackbuffer_ptr;
 	int ret;
-
+	
 	if(!udvm){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
 	tcomp_buffer_allocBuff(udvm->lpResult->nack_info, INDEX_NACK_SHA1 + TSK_SHA1_DIGEST_SIZE);
-	nackbuffer_ptr = tcomp_buffer_getBuffer(udvm->lpResult->nack_info);
 	mem_add_instruction = (memory_address_of_instruction >=0) ? memory_address_of_instruction : udvm->last_memory_address_of_instruction;
 
-	if((ret = tcomp_nackinfo_write_2(nackbuffer_ptr,
+	if((ret = tcomp_nackinfo_write_2(udvm->lpResult->nack_info,
 								reasonCode,
 								*TCOMP_UDVM_GET_BUFFER_AT(mem_add_instruction),
 								mem_add_instruction,

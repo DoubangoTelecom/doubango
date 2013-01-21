@@ -55,7 +55,7 @@
 	udvm->consumed_cycles += (uint64_t)(cycles);					\
 	if( udvm->consumed_cycles > udvm->maximum_UDVM_cycles )			\
 	{																\
-		TSK_DEBUG_INFO("NACK_CYCLES_EXHAUSTED");					\
+		TSK_DEBUG_ERROR("%s (%llu > %llu)", TCOMP_NACK_DESCRIPTIONS[NACK_CYCLES_EXHAUSTED].desc, udvm->consumed_cycles, udvm->maximum_UDVM_cycles);					\
 		tcomp_udvm_createNackInfo2(udvm, NACK_CYCLES_EXHAUSTED);	\
 		return tsk_false;													\
 	}
@@ -65,8 +65,8 @@
 */
 typedef struct IndexValuePair_s
 {
-	uint32_t index;
-	uint32_t value;
+	uint16_t index;
+	uint16_t value;
 }
 IndexValuePair_t;
 
@@ -129,7 +129,7 @@ static int SortDescendingPredicate(const void *a, const void *b)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 tsk_bool_t TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE(tcomp_udvm_t *udvm)
 {
-	TSK_DEBUG_ERROR("USER_REQUESTED");
+	TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_USER_REQUESTED].desc);
 	tcomp_udvm_createNackInfo2(udvm, NACK_USER_REQUESTED);
 	return tsk_false; 
 }
@@ -354,7 +354,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__DIVIDE(tcomp_udvm_t *udvm, uint32_t operand_1, 
 	CONSUME_CYCLES(1);
 
 	if(!operand_2){
-		TSK_DEBUG_ERROR("DIV_BY_ZERO");
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_DIV_BY_ZERO].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_DIV_BY_ZERO);
 		return tsk_false;
 	}
@@ -385,7 +385,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__REMAINDER(tcomp_udvm_t *udvm, uint32_t operand_
 	CONSUME_CYCLES(1);
 
 	if(!operand_2){
-		TSK_DEBUG_ERROR("DIV_BY_ZERO");
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_DIV_BY_ZERO].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_DIV_BY_ZERO);
 		return tsk_false;
 	}
@@ -413,16 +413,16 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__REMAINDER(tcomp_udvm_t *udvm, uint32_t operand_
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(tcomp_udvm_t *udvm, uint32_t start, uint32_t n, uint32_t k)
 {
-	int segfault = 0;
-	uint32_t* list_temp = 0;
-	IndexValuePair_t *list1_values = 0;
+	tsk_bool_t segfault = tsk_false;
+	uint16_t* list_temp = tsk_null;
+	IndexValuePair_t *list1_values = tsk_null;
 	uint32_t list_index, list_el;
 	uint32_t j, pos;
 	
 	CONSUME_CYCLES(( 1 + k *(CEILLINGLOG2(k) + n) )); /* 1 + k * (ceiling(log2(k)) + n) */
 
 	if(TCOMP_UDVM_GET_SIZE() <= (tsk_size_t)(start+(n*k*2)) ){ 
-		segfault = 1; 
+		segfault = tsk_true; 
 		goto __SEGFAULT; 
 	};
 
@@ -430,10 +430,10 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(tcomp_udvm_t *udvm, uint32_t sta
 	// Create FirstList with key-value pairs
 	//
 	list1_values = (IndexValuePair_t*)tsk_calloc(k, sizeof(IndexValuePair_t));
-	if(!list1_values) { segfault = 1; goto __SEGFAULT; };
+	if(!list1_values) { segfault = tsk_true; goto __SEGFAULT; };
 	for(j=0, pos=0; pos<k; j+=2,pos++){
 		list1_values[pos].index = pos;
-		list1_values[pos].value = *((uint32_t*)TCOMP_UDVM_GET_BUFFER_AT(start+j));
+		list1_values[pos].value = TCOMP_UDVM_GET_2BYTES_VAL(start+j);
 	}
 
 	/*
@@ -443,9 +443,9 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(tcomp_udvm_t *udvm, uint32_t sta
 
 	/* Sort all lists */
 	list_temp = tsk_calloc(k, sizeof(uint32_t));
-	if(!list1_values) { segfault = 1; goto __SEGFAULT; };
+	if(!list1_values) { segfault = tsk_true; goto __SEGFAULT; };
 	for(list_index = 0; list_index < n; list_index++){
-		uint32_t* list_start = (uint32_t*)TCOMP_UDVM_GET_BUFFER_AT( start + (list_index*k*2) );
+		uint16_t* list_start = (uint16_t*)TCOMP_UDVM_GET_BUFFER_AT( start + (list_index*k*2) );
 		memcpy(list_temp, list_start, k*2);
 		for(list_el=0; list_el<k; list_el++){
 			list_start[(list_el)] = list_temp[ list1_values[list_el].index ];
@@ -458,6 +458,7 @@ __SEGFAULT:
 	
 	if(segfault)
 	{
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_SEGFAULT].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 		return tsk_false;
 	}
@@ -482,37 +483,35 @@ __SEGFAULT:
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(tcomp_udvm_t *udvm, uint32_t start, uint32_t n, uint32_t k)
 {
-	int segfault = 0;
-	uint32_t* list_temp = 0;
-	IndexValuePair_t *list1_values = 0;
+	tsk_bool_t segfault = tsk_false;
+	uint16_t* list_temp = tsk_null;
+	IndexValuePair_t *list1_values = tsk_null;
 	uint32_t list_index, list_el;
 	uint32_t j, pos;
 	
-	CONSUME_CYCLES(( 1 + k *(CEILLINGLOG2(k) + n) )); /* 1 + k * (ceiling(log2(k)) + n) */
+	CONSUME_CYCLES(( 1 + k *(CEILLINGLOG2(k) + n) )); // 1 + k * (ceiling(log2(k)) + n)
 
-	if(TCOMP_UDVM_GET_SIZE() <= (tsk_size_t)(start+(n*k*2)) ){ segfault = 1; goto __SEGFAULT; };
+	if(TCOMP_UDVM_GET_SIZE() <= (tsk_size_t)(start+(n*k*2)) ){ segfault = tsk_true; goto __SEGFAULT; };
 
 	//
 	// Create FirstList with key-value pairs.
 	//
 	list1_values = (IndexValuePair_t*)tsk_calloc(k, sizeof(IndexValuePair_t));
-	if(!list1_values) { segfault = 1; goto __SEGFAULT; };
+	if(!list1_values) { segfault = tsk_true; goto __SEGFAULT; };
 	for(j=0, pos=0; pos<k; j+=2,pos++){
 		list1_values[pos].index = pos;
-		list1_values[pos].value = *((uint32_t*)TCOMP_UDVM_GET_BUFFER_AT(start+j));
+		list1_values[pos].value = TCOMP_UDVM_GET_2BYTES_VAL(start+j);
 	}
 
-	/*
-	* Sort Fisrt List Values.
-	*/
+	// Sort Fisrt List Values.
 	qsort(list1_values, k, sizeof(IndexValuePair_t), SortDescendingPredicate); 
 	
 
-	/* Sort all lists. */
-	list_temp = tsk_calloc(k, sizeof(uint32_t));
-	if(!list1_values) { segfault = 1; goto __SEGFAULT; };
+	// Sort all lists
+	list_temp = tsk_calloc(k, sizeof(uint16_t));
+	if(!list1_values) { segfault = tsk_true; goto __SEGFAULT; };
 	for(list_index = 0; list_index < n; list_index++){
-		uint32_t* list_start = (uint32_t*)TCOMP_UDVM_GET_BUFFER_AT(start + (list_index*k*2));
+		uint16_t* list_start = (uint16_t*)TCOMP_UDVM_GET_BUFFER_AT(start + (list_index*k*2));
 		memcpy(list_temp, list_start, k*2);
 		for(list_el=0; list_el<k; list_el++){
 			list_start[(list_el)] = list_temp[ list1_values[list_el].index ];
@@ -524,6 +523,7 @@ __SEGFAULT:
 	TSK_FREE(list1_values);
 
 	if(segfault){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_SEGFAULT].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 		return tsk_false;
 	}
@@ -555,7 +555,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint32_t position, ui
 	// only check length
 	// (destination + length) could be > sizeof(udvm_memory) as copying is done byte by byte and could wrap
 	if(!length){
-		TSK_DEBUG_ERROR("SEGFAULT");
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_SEGFAULT].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 		goto bail;
 	}
@@ -577,17 +577,17 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint32_t position, ui
 
 	// Compute SHA-1
 	if(!(ok = ((err = tsk_sha1reset(&sha)) == 0))){
-		TSK_DEBUG_ERROR("INTERNAL_ERROR: %d", err);
+		TSK_DEBUG_ERROR("%s: %d", TCOMP_NACK_DESCRIPTIONS[NACK_INTERNAL_ERROR], err);
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
 		goto bail;
 	}
 	if(!(ok = ((err = tsk_sha1input(&sha, udvm->tmp_buff.ptr, length)) == 0))){
-		TSK_DEBUG_ERROR("INTERNAL_ERROR: %d", err);
+		TSK_DEBUG_ERROR("%s : %d", TCOMP_NACK_DESCRIPTIONS[NACK_INTERNAL_ERROR], err);
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
 		goto bail;
 	}
 	if(!(ok = ((err = tsk_sha1result(&sha, (uint8_t*)Message_Digest)) == 0))){
-		TSK_DEBUG_ERROR("INTERNAL_ERROR: %d", ok);
+		TSK_DEBUG_ERROR("%s : %d", TCOMP_NACK_DESCRIPTIONS[NACK_INTERNAL_ERROR], ok);
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
 		goto bail;
 	}
@@ -618,6 +618,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__LOAD(tcomp_udvm_t *udvm, uint32_t address, uint
 	CONSUME_CYCLES(1);
 
 	if( address >= TCOMP_UDVM_GET_SIZE() ){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_SEGFAULT].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 		return tsk_false;
 	}
@@ -654,7 +655,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__MULTILOAD(tcomp_udvm_t *udvm, uint32_t address,
 
 #define CHECK_MULTILOAD_OVERWRITTEN(__start, __address, __end) \
 		if(( (__start) <= (__address) && (__address) <= (__end) ) || ( (__start) <= ((__address) + 1) && ((__address) + 1) <= (__end) )){ \
-			TSK_DEBUG_ERROR("MULTILOAD_OVERWRITTEN"); \
+			TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_MULTILOAD_OVERWRITTEN].desc); \
 			tcomp_udvm_createNackInfo2(udvm, NACK_MULTILOAD_OVERWRITTEN); \
 			return tsk_false; \
 		}
@@ -745,6 +746,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__POP(tcomp_udvm_t *udvm, uint32_t* value)
 	* values from the stack.
 	*/
 	if(stack_fill == 0){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_SEGFAULT].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 		_value = 0;
 		goto end;
@@ -791,6 +793,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY(tcomp_udvm_t *udvm, uint32_t position, uin
 	CONSUME_CYCLES(1+length);
 	
 	if( (position + length) > (int32_t)TCOMP_UDVM_GET_SIZE() || (destination + length) > (int32_t)TCOMP_UDVM_GET_SIZE() ){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_SEGFAULT].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 		return tsk_false;
 	}
@@ -912,6 +915,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY_OFFSET(tcomp_udvm_t *udvm, uint32_t offset
 
 	/* Check position */
 	if(position<0){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_SEGFAULT].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 		return tsk_false;
 	}
@@ -998,6 +1002,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__JUMP(tcomp_udvm_t *udvm, int16_t address)
 	}
 	
 	if(address > (int32_t)TCOMP_UDVM_GET_SIZE()){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_SEGFAULT].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 		return tsk_false;
 	}
@@ -1124,6 +1129,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__SWITCH(tcomp_udvm_t *udvm, uint32_t n, uint32_t
 
 	/* Decompression failure occurs if j specifies a value of n or more. */
 	if(j >= n){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_SWITCH_VALUE_TOO_HIGH].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_SWITCH_VALUE_TOO_HIGH);
 		ok = tsk_false;
 		goto end;
@@ -1168,7 +1174,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__CRC(tcomp_udvm_t *udvm, uint32_t value, uint32_
 		if(!(udvm->tmp_buff.ptr = tsk_realloc(udvm->tmp_buff.ptr, length))){
 			udvm->tmp_buff.size = 0;
 			tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
-			TSK_DEBUG_ERROR("INTERNAL_ERROR");
+			TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_INTERNAL_ERROR].desc);
 			return tsk_false;
 		}
 		udvm->tmp_buff.size = length;
@@ -1234,8 +1240,8 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_BYTES(tcomp_udvm_t *udvm, uint32_t length
 	if(compressedDataAddress){
 		ok &= tcomp_udvm_bytecopy_to(udvm, destination, compressedDataAddress, length);
 		if(ok){
-			/* (8 * n + 1000) * cycles_per_bit */
-			udvm->maximum_UDVM_cycles += ((8*length+1000) * udvm->stateHandler->sigcomp_parameters->cpbCode);
+			/* FIXME: (8 * n + 1000) * cycles_per_bit */
+			udvm->maximum_UDVM_cycles += ((8 * length /*+ 1000*/) * udvm->stateHandler->sigcomp_parameters->cpbValue);
 		}
 	}
 	else{
@@ -1297,6 +1303,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint32_t length,
 	*/
 	if(reserved){
 		/* MUST BE ZEROS --> Only 3bits --> [0-7] */
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_BAD_INPUT_BITORDER].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_BAD_INPUT_BITORDER);
 		return tsk_false;
 	}
@@ -1310,6 +1317,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint32_t length,
 	* and 16 inclusive.
 	*/
 	if(/*length<0 ||*/ length>16){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_INVALID_OPERAND].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_INVALID_OPERAND);
 		return tsk_false;
 	}
@@ -1422,6 +1430,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint32_t dest
 	*/
 	if(reserved){
 		/* MUST BE ZEROS --> Only 3bits --> [0-7] */
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_BAD_INPUT_BITORDER].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_BAD_INPUT_BITORDER);
 		return tsk_false;
 	}
@@ -1527,6 +1536,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint32_t dest
 	}
 
 	if(!criterion_ok){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_HUFFMAN_NO_MATCH].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_HUFFMAN_NO_MATCH);
 		ok = tsk_false;
 		goto end;
@@ -1567,6 +1577,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint32_t parti
 	* lie between 6 and 20 inclusive.
 	*/
 	if(partial_identifier_length<6 || partial_identifier_length>20){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_INVALID_STATE_ID_LENGTH].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_INVALID_STATE_ID_LENGTH);
 		return tsk_false;
 	}
@@ -1575,6 +1586,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint32_t parti
 	* is set to 0 but the state_begin operand is non-zero.
 	*/
 	if(!state_length && state_begin){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_INVALID_STATE_PROBE].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_INVALID_STATE_PROBE);
 		return tsk_false;
 	}
@@ -1591,7 +1603,9 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint32_t parti
 	* more than one state item matches the partial identifier.
 	*/
 	if(!lpState || !match_count || match_count>1){
-		tcomp_udvm_createNackInfo3(udvm, (match_count>1) ? NACK_ID_NOT_UNIQUE : NACK_STATE_NOT_FOUND, partial_id);
+		int32_t nack_code = (match_count > 1) ? NACK_ID_NOT_UNIQUE : NACK_STATE_NOT_FOUND;
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[nack_code].desc);
+		tcomp_udvm_createNackInfo3(udvm, nack_code, partial_id);
 		TSK_OBJECT_SAFE_FREE(partial_id);
 		return tsk_false;
 	}
@@ -1600,6 +1614,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint32_t parti
 		* Decompression failure occurs if partial_identifier_length is less than the minimum_access_length of
 		* the matched state item.
 		*/
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_STATE_NOT_FOUND].desc);
 		tcomp_udvm_createNackInfo3(udvm, NACK_STATE_NOT_FOUND, partial_id);
 		TSK_OBJECT_SAFE_FREE(partial_id);
 		return tsk_false;
@@ -1625,6 +1640,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint32_t parti
 
 	/* Decompression failure occurs if bytes are copied from beyond the end of the state_value. */
 	if((tsk_size_t)(state_begin + state_length) > tcomp_buffer_getSize(lpState->value)){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_STATE_TOO_SHORT].desc);
 		tcomp_udvm_createNackInfo3(udvm, NACK_STATE_TOO_SHORT, partial_id);
 		return tsk_false;
 	}
@@ -1706,6 +1722,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint32_t partial
 	* requests are made before the END-MESSAGE instruction is encountered.
 	*/
 	if(tcomp_result_getTempStatesToFreeSize(udvm->lpResult) >=4){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_TOO_MANY_STATE_REQUESTS].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_TOO_MANY_STATE_REQUESTS);
 		return tsk_false;
 	}
@@ -1715,6 +1732,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint32_t partial
 	* not lie between 6 and 20 inclusive.
 	*/
 	if(partial_identifier_length<6 || partial_identifier_length>20){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_INVALID_STATE_ID_LENGTH].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_INVALID_STATE_ID_LENGTH);
 		return tsk_false;
 	}
@@ -1751,6 +1769,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint32_t output_star
 		* Decompression failure occurs if the cumulative number of bytes
 		* provided to the dispatcher exceeds 65536 bytes.
 		*/
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_OUTPUT_OVERFLOW].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_OUTPUT_OVERFLOW);
 		return tsk_false;
 	}
@@ -1804,6 +1823,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint32_t reques
 	* Byte copy all waiting STATE-FREE/STATE-CREATE/END-MESSAGE states
 	*/
 	if(!tcomp_udvm_byteCopy_TempStates(udvm)){
+		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_INTERNAL_ERROR].desc);
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
 		return tsk_false;
 	}
@@ -1814,6 +1834,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint32_t reques
 	if(requested_feedback_location){
 		uint8_t r_f_l;
 		if(requested_feedback_location >= udvm_size){
+			TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_SEGFAULT].desc);
 			tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 			return tsk_false;
 		}
@@ -1843,6 +1864,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint32_t reques
 			}
 
 			if(requested_feedback_location >= TCOMP_UDVM_GET_SIZE()){
+				TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_SEGFAULT].desc);
 				tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 				return tsk_false;
 			}
@@ -1886,6 +1908,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint32_t reques
 		*/
 
 		if(returned_parameters_location >= udvm_size){
+			TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_SEGFAULT].desc);
 			tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 			return tsk_false;
 		}
@@ -1912,6 +1935,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint32_t reques
 			}
 			index++;
 			if((index+length) >= (uint32_t)udvm_size){
+				TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[NACK_SEGFAULT].desc);
 				tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 				return tsk_false;
 			}

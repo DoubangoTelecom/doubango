@@ -68,7 +68,7 @@ typedef struct tcomp_udvm_s
 	tcomp_statehandler_t *stateHandler;
 	tcomp_result_t *lpResult;
 
-	uint32_t maximum_UDVM_cycles; // RFC3320-Section_8.6
+	uint64_t maximum_UDVM_cycles; // RFC3320-Section_8.6
 	uint64_t consumed_cycles;
 	
 	tcomp_buffer_handle_t *memory;

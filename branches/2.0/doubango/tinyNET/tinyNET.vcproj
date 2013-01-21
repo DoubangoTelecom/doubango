@@ -642,6 +642,14 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="resources(*.rc)"
+			>
+			<File
+				RelativePath=".\version.rc"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

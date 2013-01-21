@@ -151,6 +151,24 @@ int tcomp_nackinfo_write_4(tcomp_buffer_handle_t* buffer,
 								0);
 }
 
+const char* tcomp_nackinfo_get_description(const tcomp_buffer_handle_t* buffer)
+{
+	uint8_t reasonCode;
+	if(!buffer){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+	if(tcomp_buffer_getSize(buffer) < 3){
+		TSK_DEBUG_ERROR("Too short");
+		return tsk_null;
+	}
+	reasonCode = *((const uint8_t*)tcomp_buffer_getBufferAtPos(buffer, 3));
+	if(reasonCode >= (sizeof(TCOMP_NACK_DESCRIPTIONS)/sizeof(TCOMP_NACK_DESCRIPTIONS[0]))){
+		TSK_DEBUG_ERROR("%d not valid as reasonCode");
+		return tsk_null;
+	}
+	return TCOMP_NACK_DESCRIPTIONS[reasonCode].desc;
+}
 
 //========================================================
 //	NackInfo object definition

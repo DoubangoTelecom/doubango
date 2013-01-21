@@ -379,7 +379,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="ragel"
+			Name="ragel(.*rl)"
 			>
 			<File
 				RelativePath=".\ragel\tmedia_content_cpim.rl"
@@ -391,6 +391,14 @@
 			</File>
 			<File
 				RelativePath=".\ragel\tmedia_machine_utils.rl"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="resources(*.rc)"
+			>
+			<File
+				RelativePath=".\version.rc"
 				>
 			</File>
 		</Filter>

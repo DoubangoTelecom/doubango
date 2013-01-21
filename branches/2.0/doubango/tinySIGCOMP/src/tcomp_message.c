@@ -82,6 +82,7 @@ tcomp_message_t* tcomp_message_create(const void* input_ptr, tsk_size_t input_si
 		uint8_t *dummy_ptr, *end_ptr;
 		uint8_t state_len;
 
+		message->startPtr = input_ptr;
 		message->stateId = tcomp_buffer_create_null();
 		message->remaining_sigcomp_buffer = tcomp_buffer_create_null();
 		message->uploaded_UDVM_buffer = tcomp_buffer_create_null();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="tinyWRAP"
 	ProjectGUID="{6B60DF14-D5D7-4654-B8F9-1CBC8892CFC8}"
 	RootNamespace="tinyWRAP"
@@ -173,7 +173,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="source"
+			Name="source(*.cxx)"
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
@@ -255,7 +255,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="headers"
+			Name="headers(*.h)"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
@@ -345,7 +345,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="interfaces"
+			Name="interfaces(*.i)"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
@@ -397,6 +397,14 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="resources(*.rc)"
+			>
+			<File
+				RelativePath="..\version.rc"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
