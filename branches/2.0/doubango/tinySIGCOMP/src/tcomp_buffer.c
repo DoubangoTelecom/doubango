@@ -52,7 +52,16 @@ tcomp_buffer_t;
 
 tcomp_buffer_handle_t* tcomp_buffer_create(const void* data, tsk_size_t len)
 {
-	return tsk_object_new(tcomp_buffer_def_t, data, len);
+	tcomp_buffer_t* buffer;
+	if((buffer = tsk_object_new(tcomp_buffer_def_t))){
+		buffer->owner = tsk_true;
+		// The P-bit controls the order in which bits are passed from the dispatcher to the INPUT instructions.
+		buffer->P_BIT = TCOMP_P_BIT_MSB_TO_LSB;
+		if(data && len){
+			tcomp_buffer_appendBuff(buffer, data, len);
+		}
+	}
+	return buffer;
 }
 
 tcomp_buffer_handle_t* tcomp_buffer_create_null()
@@ -619,25 +628,8 @@ void tcomp_buffer_reset(tcomp_buffer_handle_t* handle)
 static tsk_object_t* tcomp_buffer_ctor(tsk_object_t *self, va_list * app)
 {
 	tcomp_buffer_t* buffer = self;
-	const void* data = va_arg(*app, const void *);
-	tsk_size_t len = va_arg(*app, tsk_size_t);
-
 	if(buffer){
-		buffer->owner = 1;
-
-		/*
-		* The P-bit controls the order in which bits are passed from the dispatcher to the INPUT instructions.
-		*/
-		buffer->P_BIT = TCOMP_P_BIT_MSB_TO_LSB;
-
-		if(data && len){
-			tcomp_buffer_appendBuff(buffer, data, len);
-		}
 	}
-	else{
-		TSK_DEBUG_ERROR("Cannot create new SigComp handle");
-	}
-	
 	return self;
 }
 

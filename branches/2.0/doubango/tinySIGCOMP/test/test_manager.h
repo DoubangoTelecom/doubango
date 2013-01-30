@@ -372,7 +372,8 @@ static int test_manager()
 				if(!outLen)
 				{
 					TSK_DEBUG_ERROR("Failed to decompress %s message", test->description);
-					if(handle_nack(server_decompress ? result_server : result_client, server_decompress ? server : client) != 0){
+					// pass NACK to remote peer (sendto())
+					if(handle_nack(server_decompress ? result_server : result_client, server_decompress ? client : server) != 0){
 						goto bail;
 					}
 				}

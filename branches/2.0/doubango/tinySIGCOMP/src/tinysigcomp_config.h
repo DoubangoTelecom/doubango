@@ -66,8 +66,12 @@
 //
 //	Nack - RFC 4077
 //
-#define NACK_VERSION			0x01
-#define NACK_MAX_HISTORY_SIZE	0x0A
+#if !defined(NACK_VERSION)
+#	define NACK_VERSION				0x01
+#endif
+#if !defined(NACK_MAX_HISTORY_SIZE)
+#	define NACK_MAX_HISTORY_SIZE	0x14
+#endif
 
 //
 //	Feedbacks

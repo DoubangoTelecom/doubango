@@ -313,6 +313,7 @@ tsk_bool_t tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, con
 {
 	tcomp_buffer_handle_t* sha_id;
 	tsk_list_item_t *item;
+	tsk_bool_t found = tsk_false;
 	if(!statehandler){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_false;
@@ -328,37 +329,47 @@ tsk_bool_t tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, con
 	tsk_list_foreach(item, statehandler->compartments)
 	{
 		tcomp_compartment_t* lpCompartement = item->data;
-		if(tcomp_compartment_hasNack(lpCompartement, &sha_id))
+		if(tcomp_compartment_hasNack(lpCompartement, sha_id))
 		{
 			// this compartment is responsible for this nack
 			switch(nackinfo->reasonCode)
 			{
-			case NACK_STATE_NOT_FOUND:
-				{
-					// Next commented because in this version remote state ids are never saved.
-					// Only the ghost has information on last partial state id to use --> reset the ghost
-					/*SigCompState* lpState = NULL;
-					lpCompartement->findState(&nack_info->details, &lpState);
-					if(lpState)
+				case NACK_STATE_NOT_FOUND:
 					{
-						lpCompartement->freeState(lpState);
-					}*/
-					tcomp_compartment_freeGhostState(lpCompartement);
-				}
-				break;
+						// Next commented because in this version remote state ids are never saved.
+						// Only the ghost has information on last partial state id to use --> reset the ghost
+						//SigCompState* lpState = NULL;
+						//lpCompartement->findState(&nack_info->details, &lpState);
+						//if(lpState)
+						//{
+						//	lpCompartement->freeState(lpState);
+						//}
+						tcomp_compartment_freeGhostState(lpCompartement);
+					}
+					break;
 
-			default:
-				{
-					tcomp_compartment_clearStates(lpCompartement);
-				}
-				break;
+				default:
+					{
+						tcomp_compartment_freeGhostState(lpCompartement);
+						tcomp_compartment_clearStates(lpCompartement);
+					}
+					break;
 			}
+			TSK_DEBUG_INFO("Compartment has NACK :)");
+			tcomp_buffer_print(sha_id);
+			found = tsk_true;
 		}
+	}
+
+	if(!found)
+	{
+		TSK_DEBUG_ERROR("Compartments do not have NACK with id=");
+		tcomp_buffer_print(sha_id);
 	}
 
 	TSK_OBJECT_SAFE_FREE(sha_id);
 
-	return tsk_true;
+	return found;
 }
 
 int tcomp_statehandler_addSipSdpDictionary(tcomp_statehandler_t *statehandler)

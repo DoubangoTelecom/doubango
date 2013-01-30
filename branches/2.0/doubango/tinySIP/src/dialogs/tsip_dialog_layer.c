@@ -563,6 +563,9 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, tsip_
 	else if(TSIP_MESSAGE_IS_REQUEST(message) && !TSIP_REQUEST_IS_ACK(message)){
 		const tsip_transport_layer_t *layer;
 		tsip_response_t* response = tsk_null;
+		if(!dialog && cid_matched){
+			dialog = tsip_dialog_layer_find_by_callid((tsip_dialog_layer_t *)self, message->Call_ID->value);
+		}
 
 		if((layer = self->stack->layer_transport)){	
 			if(cid_matched){ /* We are receiving our own message. */
@@ -583,10 +586,15 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, tsip_
 				}
 			}
 			if(response){
+				if(dialog && TSIP_DIALOG_GET_SS(dialog)){
+					tsk_strupdate(&response->sigcomp_id, TSIP_DIALOG_GET_SS(dialog)->sigcomp_id);
+				}
 				ret = tsip_transport_layer_send(layer, response->firstVia ? response->firstVia->branch : "no-branch", response);
 				TSK_OBJECT_SAFE_FREE(response);
 			}
 		}
+
+		TSK_OBJECT_SAFE_FREE(dialog);
 	}
 	
 bail:

@@ -396,24 +396,23 @@ void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t n
 		return;
 	}
 
+#if 0
+	{
+		int i;
+		TSK_DEBUG_INFO("Save NACK with id:");
+		for(i = 0; i < TSK_SHA1_DIGEST_SIZE; ++i){
+			printf("%x ", nackId[i]);
+		}
+		printf("\n");
+	}
+#endif
+
 	tsk_safeobj_lock(compartment);
 
-	// FIXME: very bad
 	if(compartment->nacks_history_count >= NACK_MAX_HISTORY_SIZE){
-		//tsk_list_item_t *item;
-		tsk_list_item_t *item2delete = 0;
-
-		/*tsk_list_foreach(item, compartment->nacks)
-		{
-			item2delete = item;
-		}*/
-		
-		item2delete = compartment->nacks->tail;
-
-		tsk_list_remove_item(compartment->nacks, item2delete);
+		tsk_list_remove_last_item(compartment->nacks);
 		compartment->nacks_history_count--;
 	}
-
 
 	id = tcomp_buffer_create(nackId, TSK_SHA1_DIGEST_SIZE);
 	tsk_list_push_back_data(compartment->nacks, ((void**) &id));
