@@ -66,6 +66,17 @@ tcomp_manager_handle_t* tcomp_manager_create()
 	return tsk_object_new(tcomp_manager_def_t);
 }
 
+/** Defines whether the compressor must only use ACKed states (should be false)
+*/
+int tcomp_manager_setUseOnlyACKedStates(tcomp_manager_handle_t* self, tsk_bool_t useOnlyACKedStates)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return tcomp_statehandler_setUseOnlyACKedStates(((tcomp_manager_t*)self)->stateHandler, useOnlyACKedStates);
+}
+
 /**@ingroup tcomp_manager_group
 */
 tsk_size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, const void* compartmentId, tsk_size_t compartmentIdSize, const void* input_ptr, tsk_size_t input_size, void* output_ptr, tsk_size_t output_size, tsk_bool_t stream)

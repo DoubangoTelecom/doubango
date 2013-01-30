@@ -41,6 +41,7 @@ TCOMP_BEGIN_DECLS
 typedef void tcomp_manager_handle_t;
 
 TINYSIGCOMP_API tcomp_manager_handle_t* tcomp_manager_create();
+TINYSIGCOMP_API int tcomp_manager_setUseOnlyACKedStates(tcomp_manager_handle_t* self, tsk_bool_t useOnlyACKedStates);
 
 //
 //	Compression / Decompression

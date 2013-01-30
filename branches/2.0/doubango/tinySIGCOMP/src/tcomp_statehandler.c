@@ -50,7 +50,47 @@ static int pred_find_compartment_by_id(const tsk_list_item_t *item, const void *
 */
 tcomp_statehandler_t* tcomp_statehandler_create()
 {
-	return tsk_object_new(tcomp_statehandler_def_t);
+	tcomp_statehandler_t* statehandler;
+	if((statehandler = tsk_object_new(tcomp_statehandler_def_t))){
+		/* RFC 3320 - 3.3.  SigComp Parameters */
+		statehandler->sigcomp_parameters = tcomp_params_create();
+		tcomp_params_setDmsValue(statehandler->sigcomp_parameters, SIP_RFC5049_DECOMPRESSION_MEMORY_SIZE);
+		tcomp_params_setSmsValue(statehandler->sigcomp_parameters, SIP_RFC5049_STATE_MEMORY_SIZE);
+		tcomp_params_setCpbValue(statehandler->sigcomp_parameters, SIP_RFC5049_CYCLES_PER_BIT);
+
+		if(!(statehandler->dictionaries = tsk_list_create())){
+			TSK_OBJECT_SAFE_FREE(statehandler);
+			goto bail;
+		}
+		if(!(statehandler->compartments = tsk_list_create())){
+			TSK_OBJECT_SAFE_FREE(statehandler);
+			goto bail;
+		}
+		statehandler->sigcomp_parameters->SigComp_version = SIP_RFC5049_SIGCOMP_VERSION;
+#if TCOMP_USE_ONLY_ACKED_STATES
+		statehandler->useOnlyACKedStates = tsk_true;
+#endif
+	}
+bail:
+	return statehandler;
+}
+
+int tcomp_statehandler_setUseOnlyACKedStates(tcomp_statehandler_t* self, tsk_bool_t useOnlyACKedStates)
+{
+	tsk_list_item_t* item;
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->useOnlyACKedStates = useOnlyACKedStates;
+
+	tsk_safeobj_lock(self);
+	tsk_list_foreach(item, self->compartments){
+		tcomp_compartment_setUseOnlyACKedStates((tcomp_compartment_t*)item->data, self->useOnlyACKedStates);
+	}
+	tsk_safeobj_unlock(self);
+
+	return 0;
 }
 
 tcomp_compartment_t *tcomp_statehandler_getCompartment(const tcomp_statehandler_t *statehandler, uint64_t id)
@@ -68,7 +108,7 @@ tcomp_compartment_t *tcomp_statehandler_getCompartment(const tcomp_statehandler_
 
 	item_const = tsk_list_find_item_by_pred(statehandler->compartments, pred_find_compartment_by_id, &id);
 	if(!item_const || !(result = item_const->data)){
-		newcomp = tcomp_compartment_create(id, tcomp_params_getParameters(statehandler->sigcomp_parameters));
+		newcomp = tcomp_compartment_create(id, tcomp_params_getParameters(statehandler->sigcomp_parameters), statehandler->useOnlyACKedStates);
 		result = newcomp;
 		tsk_list_push_back_data(statehandler->compartments, ((void**) &newcomp));
 	}
@@ -375,17 +415,6 @@ static tsk_object_t* tcomp_statehandler_ctor(tsk_object_t * self, va_list * app)
 	if(statehandler){
 		/* Initialize safeobject */
 		tsk_safeobj_init(statehandler);
-		
-		/* RFC 3320 - 3.3.  SigComp Parameters */
-		statehandler->sigcomp_parameters = tcomp_params_create();
-		tcomp_params_setDmsValue(statehandler->sigcomp_parameters, SIP_RFC5049_DECOMPRESSION_MEMORY_SIZE);
-		tcomp_params_setSmsValue(statehandler->sigcomp_parameters, SIP_RFC5049_STATE_MEMORY_SIZE);
-		tcomp_params_setCpbValue(statehandler->sigcomp_parameters, SIP_RFC5049_CYCLES_PER_BIT);
-	
-		statehandler->dictionaries = tsk_list_create();
-		statehandler->compartments = tsk_list_create();
-
-		statehandler->sigcomp_parameters->SigComp_version = SIP_RFC5049_SIGCOMP_VERSION;
 	}
 	else{
 		TSK_DEBUG_ERROR("Null SigComp state handler.");

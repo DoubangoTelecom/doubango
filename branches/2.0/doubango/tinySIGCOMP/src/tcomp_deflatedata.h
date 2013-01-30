@@ -137,18 +137,20 @@ typedef struct tcomp_deflatedata_s
 	int zLevel;
 	int zWindowBits;
 	
-	unsigned initialized:1;
+	tsk_bool_t isInitialized;
 	
 	uint32_t ghost_copy_offset;
 	tcomp_state_t *ghostState;
 
-	unsigned stream:1;
+	tsk_bool_t isStream;
+
+	tsk_bool_t useOnlyACKedStates;
 
 	TSK_DECLARE_SAFEOBJ;
 }
 tcomp_deflatedata_t;
 
-tcomp_deflatedata_t* tcomp_deflatedata_create(tsk_bool_t isStream);
+tcomp_deflatedata_t* tcomp_deflatedata_create(tsk_bool_t isStream, tsk_bool_t useOnlyACKedStates);
 
 void tcomp_deflatedata_freeGhostState(tcomp_compressordata_t *deflatedata);
 void tcomp_deflatedata_ackGhost(tcomp_compressordata_t *deflatedata, const tcomp_buffer_handle_t *stateid);

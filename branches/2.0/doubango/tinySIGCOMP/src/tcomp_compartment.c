@@ -36,7 +36,7 @@
 
 #include <assert.h>
 
-tcomp_compartment_t* tcomp_compartment_create(uint64_t id, uint32_t sigCompParameters)
+tcomp_compartment_t* tcomp_compartment_create(uint64_t id, uint32_t sigCompParameters, tsk_bool_t useOnlyACKedStates)
 {
 	tcomp_compartment_t *compartment;
 	if((compartment = tsk_object_new(tcomp_compartment_def_t))){
@@ -71,12 +71,25 @@ tcomp_compartment_t* tcomp_compartment_create(uint64_t id, uint32_t sigCompParam
 		
 		/* Empty list. */
 		compartment->local_states = tsk_list_create();
+
+		/* Whether to use only ACKed states */
+		compartment->useOnlyACKedStates = useOnlyACKedStates;
 	}
 	else{
 		TSK_DEBUG_ERROR("Null Compartment");
 	}
 
 	return compartment;
+}
+
+int tcomp_compartment_setUseOnlyACKedStates(tcomp_compartment_t* self, tsk_bool_t useOnlyACKedStates)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->useOnlyACKedStates = useOnlyACKedStates;
+	return 0;
 }
 
 /**Sets remote parameters
@@ -149,16 +162,14 @@ void tcomp_compartment_setRetFeedback(tcomp_compartment_t *compartment, tcomp_bu
 	
 	compartment->lpRetFeedback = tcomp_buffer_create(tcomp_buffer_getBuffer(feedback), tcomp_buffer_getSize(feedback));
 
-#if USE_ONLY_ACKED_STATES
 	/*
 	* ACK STATE ==> Returned feedback contains the partial state-id.
 	*/
-	if(compartment->compressorData && !compartment->compressorData_isStream){
+	if(compartment->compressorData/* && !compartment->compressorData_isStream*/){
 		tcomp_buffer_handle_t *stateid = tcomp_buffer_create(tcomp_buffer_getBufferAtPos(feedback, 1), tcomp_buffer_getSize(feedback)-1);
 		compartment->ackGhost(compartment->compressorData, stateid);
 		TSK_OBJECT_SAFE_FREE(stateid);
 	}
-#endif
 	
 	tsk_safeobj_unlock(compartment);
 }

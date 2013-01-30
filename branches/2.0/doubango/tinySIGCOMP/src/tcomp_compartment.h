@@ -66,11 +66,14 @@ typedef struct tcomp_compartment_s
 	tcomp_buffers_L_t* nacks;
 	uint8_t nacks_history_count;
 
+	tsk_bool_t useOnlyACKedStates;
+
 	TSK_DECLARE_SAFEOBJ;
 }
 tcomp_compartment_t;
 
-tcomp_compartment_t* tcomp_compartment_create(uint64_t id, uint32_t sigCompParameters);
+tcomp_compartment_t* tcomp_compartment_create(uint64_t id, uint32_t sigCompParameters, tsk_bool_t useOnlyACKedStates);
+int tcomp_compartment_setUseOnlyACKedStates(tcomp_compartment_t* self, tsk_bool_t useOnlyACKedStates);
 
 //
 //	SigComp Parameters
