@@ -72,7 +72,9 @@
 //
 //	Feedbacks
 //
-#define USE_ONLY_ACKED_STATES	1
+#if !defined(TCOMP_USE_ONLY_ACKED_STATES)
+#	define TCOMP_USE_ONLY_ACKED_STATES	0
+#endif
 
 /* Disable some well-known warnings
 */

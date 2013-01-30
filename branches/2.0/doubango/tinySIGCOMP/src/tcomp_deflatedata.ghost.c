@@ -181,7 +181,6 @@ void tcomp_deflatedata_ackGhost(tcomp_compressordata_t *data, const tcomp_buffer
 
 	tsk_safeobj_lock(deflatedata);
 	
-#if USE_ONLY_ACKED_STATES
 	if(deflatedata->ghostState){
 		/* Update ghost */
 		if(tcomp_buffer_startsWith(deflatedata->ghostState->identifier, stateid)){
@@ -194,7 +193,6 @@ void tcomp_deflatedata_ackGhost(tcomp_compressordata_t *data, const tcomp_buffer
 			tcomp_buffer_print(stateid);
 		}
 	}
-#endif
 
 	tsk_safeobj_unlock(deflatedata);
 }
@@ -238,10 +236,11 @@ void tcomp_deflatedata_updateGhost(tcomp_deflatedata_t *deflatedata, const uint8
 	/* Compute State Identifier (20 bytes) */
 	tcomp_state_makeValid(deflatedata->ghostState);
 	// new state identifer not acked yet 
-#if USE_ONLY_ACKED_STATES
-	deflatedata->stream_acked.stateful = 0;
-	deflatedata->stream_acked.dataWaitingAck = 1;
-#endif
+	if(deflatedata->useOnlyACKedStates){
+		deflatedata->stream_acked.stateful = 0;
+		deflatedata->stream_acked.dataWaitingAck = 1;
+	}
+
 	TSK_DEBUG_INFO("SigComp - Making Ghost state valid with id = ");
 	tcomp_buffer_print(deflatedata->ghostState->identifier);
 	

@@ -35,7 +35,7 @@ tcomp_deflatedata_t* tcomp_deflatedata_create_2(tsk_bool_t isStream, int z_level
 {
 	tcomp_deflatedata_t *deflatedata;
 	if((deflatedata = tsk_object_new(tcomp_deflatedata_def_t))){		
-		deflatedata->stream = isStream;
+		deflatedata->isStream = isStream;
 		deflatedata->zLevel = z_level;
 		deflatedata->zWindowBits = z_windowBits;
 	}
@@ -46,9 +46,13 @@ tcomp_deflatedata_t* tcomp_deflatedata_create_2(tsk_bool_t isStream, int z_level
 	return deflatedata;
 }
 
-tcomp_deflatedata_t* tcomp_deflatedata_create(tsk_bool_t isStream)
+tcomp_deflatedata_t* tcomp_deflatedata_create(tsk_bool_t isStream, tsk_bool_t useOnlyACKedStates)
 {
-	return tcomp_deflatedata_create_2(isStream, Z_BEST_COMPRESSION, Z_DEFAULT_WINDOW_BITS);
+	tcomp_deflatedata_t* deflatedata;
+	if((deflatedata = tcomp_deflatedata_create_2(isStream, Z_BEST_COMPRESSION, Z_DEFAULT_WINDOW_BITS))){
+		deflatedata->useOnlyACKedStates = useOnlyACKedStates;
+	}
+	return deflatedata;
 }
 
 tsk_bool_t tcomp_deflatedata_isStateful(tcomp_deflatedata_t *deflatedata)

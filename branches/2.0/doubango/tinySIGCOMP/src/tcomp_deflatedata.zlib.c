@@ -59,7 +59,7 @@ tsk_bool_t tcomp_deflatedata_zInit(tcomp_deflatedata_t *deflatedata)
 	}
 
 	/* Already initialized? */
-	if(deflatedata->initialized) {
+	if(deflatedata->isInitialized) {
 		return tsk_true;
 	}
 
@@ -87,7 +87,7 @@ tsk_bool_t tcomp_deflatedata_zInit(tcomp_deflatedata_t *deflatedata)
 
 	deflatedata->stream_1.stateful = deflatedata->stream_acked.stateful = 0;
 	deflatedata->stream_1.dataWaitingAck = deflatedata->stream_acked.dataWaitingAck = 0;
-	deflatedata->initialized = 1;
+	deflatedata->isInitialized = tsk_true;
 
 	return tsk_true;
 }
@@ -99,8 +99,8 @@ tsk_bool_t tcomp_deflatedata_zUnInit(tcomp_deflatedata_t *deflatedata)
 		return tsk_false;
 	}
 
-	if(deflatedata->initialized){
-		deflatedata->initialized = 0;
+	if(deflatedata->isInitialized){
+		deflatedata->isInitialized = tsk_false;
 		
 		deflatedata->stream_1.dataWaitingAck = deflatedata->stream_acked.dataWaitingAck = 0;
 		deflatedata->stream_1.stateful = deflatedata->stream_acked.stateful = 0;
@@ -119,7 +119,7 @@ tsk_bool_t tcomp_deflatedata_zReset(tcomp_deflatedata_t *deflatedata)
 		return tsk_false;
 	}
 
-	ret = deflatedata->initialized ? tcomp_deflatedata_zUnInit(deflatedata) : tsk_true; 
+	ret = deflatedata->isInitialized ? tcomp_deflatedata_zUnInit(deflatedata) : tsk_true; 
 	ret &= tcomp_deflatedata_zInit(deflatedata);
 	
 	return ret;
@@ -153,7 +153,7 @@ tsk_bool_t tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const v
 	tsk_safeobj_lock(deflatedata);
 	
 	/* Initialized? */
-	if(!deflatedata->initialized){
+	if(!deflatedata->isInitialized){
 		if(!tcomp_deflatedata_zInit(deflatedata)){
 			TSK_DEBUG_ERROR("Failed to initialize zlib resources..");
 			tsk_safeobj_unlock(deflatedata);
@@ -161,22 +161,22 @@ tsk_bool_t tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const v
 		}
 	}
 	
-#if USE_ONLY_ACKED_STATES
-	if(!deflatedata->stream_acked.dataWaitingAck){
-		deflatedata->stream_acked.dataWaitingAck = 1;
-		*stateChanged = tsk_true;
+	if(deflatedata->useOnlyACKedStates){
+		if(!deflatedata->stream_acked.dataWaitingAck){
+			deflatedata->stream_acked.dataWaitingAck = 1;
+			*stateChanged = tsk_true;
+		}
+		else{
+			*stateChanged = tsk_false;
+		}
+
+		/* END() + COPY() ==> use acked state */
+		tcomp_deflateStream_end(&(deflatedata->stream_1));
+		tcomp_deflateStream_copy(&(deflatedata->stream_1), &(deflatedata->stream_acked));
 	}
 	else{
-		*stateChanged = tsk_false;
+		*stateChanged = tsk_true;
 	}
-
-	/* END() + COPY() ==> use acked state */
-	tcomp_deflateStream_end(&(deflatedata->stream_1));
-	tcomp_deflateStream_copy(&(deflatedata->stream_1), &(deflatedata->stream_acked));
-	
-#else
-	*stateChanged = tsk_true;
-#endif
 	
 	// IN
 	deflatedata->stream_1.zs.next_in = (Bytef*)in;

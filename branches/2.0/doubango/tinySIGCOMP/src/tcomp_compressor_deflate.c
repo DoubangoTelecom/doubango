@@ -64,7 +64,7 @@ tsk_bool_t tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment,
 	
 	/* Compression Data */
 	if(!lpCompartment->compressorData){
-		lpCompartment->compressorData = tcomp_deflatedata_create(stream);
+		lpCompartment->compressorData = tcomp_deflatedata_create(stream, lpCompartment->useOnlyACKedStates);
 		if(!lpCompartment->compressorData){
 			TSK_DEBUG_ERROR("Failed to create deflate compressor data.");
 			result = tsk_false;
@@ -81,11 +81,12 @@ tsk_bool_t tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment,
 
 	/* State memory size code */
 	smsCode = TCOMP_MIN(lpCompartment->remote_parameters->smsCode, lpCompartment->remote_parameters->dmsCode);
-#if USE_ONLY_ACKED_STATES
-	stateful = (deflatedata->ghostState && tcomp_deflatedata_isStateful(deflatedata));
-#else
-	stateful = (deflatedata->ghostState != 0);
-#endif
+	if(lpCompartment->useOnlyACKedStates){
+		stateful = (deflatedata->ghostState && tcomp_deflatedata_isStateful(deflatedata));
+	}
+	else{
+		stateful = !!deflatedata->ghostState;
+	}
 
 	/*
 	*	Init zLIB
@@ -201,9 +202,7 @@ tsk_bool_t tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment,
 			tcomp_deflatedata_createGhost(deflatedata, state_len, lpCompartment->local_parameters);
 		}
 	}
-#if USE_ONLY_ACKED_STATES
-	if(stateChanged)
-#endif
+	if(!lpCompartment->useOnlyACKedStates || (lpCompartment->useOnlyACKedStates && stateChanged))
 	{
 		tcomp_deflatedata_updateGhost(deflatedata, (const uint8_t*)input_ptr, input_size);
 	}
