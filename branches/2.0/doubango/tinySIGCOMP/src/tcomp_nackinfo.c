@@ -87,8 +87,19 @@ int tcomp_nackinfo_write(tcomp_buffer_handle_t* buffer,
 	// SHA-1(message) computation
 	tsk_sha1reset(&sha);
 	tsk_sha1input(&sha, sigCompMessagePtr, sigCompMessageSize);
-	tsk_sha1result(&sha, (uint8_t*)(nackbuffer_ptr + INDEX_NACK_SHA1));
+	tsk_sha1result(&sha, &nackbuffer_ptr[INDEX_NACK_SHA1]);
 	
+#if 0
+	{
+		int i;
+		TSK_DEBUG_INFO("Create NACK with id:");
+		for(i = 0; i < TSK_SHA1_DIGEST_SIZE; ++i){
+			printf("%x ", nackbuffer_ptr[INDEX_NACK_SHA1 + i]);
+		}
+		printf("\n");
+	}
+#endif
+
 	// Details
 	if(lpDetails && tcomp_buffer_getSize(lpDetails)){
 		tcomp_buffer_appendBuff(buffer, tcomp_buffer_getBuffer(lpDetails), tcomp_buffer_getSize(lpDetails));
