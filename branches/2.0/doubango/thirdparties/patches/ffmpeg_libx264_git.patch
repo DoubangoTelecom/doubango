@@ -1,0 +1,23 @@
+diff --git a/libavcodec/libx264.c b/libavcodec/libx264.c
+old mode 100644
+new mode 100755
+index a2d64d1..7a2905f
+--- a/libavcodec/libx264.c
++++ b/libavcodec/libx264.c
+@@ -282,14 +282,14 @@ static av_cold int X264_init(AVCodecContext *avctx)
+     int sw,sh;
+ 
+     x264_param_default(&x4->params);
+-
+     x4->params.b_deblocking_filter         = avctx->flags & CODEC_FLAG_LOOP_FILTER;
+ 
+     x4->params.rc.f_ip_factor             = 1 / fabs(avctx->i_quant_factor);
+     x4->params.rc.f_pb_factor             = avctx->b_quant_factor;
+     x4->params.analyse.i_chroma_qp_offset = avctx->chromaoffset;
+     if (x4->preset || x4->tune)
+-        if (x264_param_default_preset(&x4->params, x4->preset, x4->tune) < 0) {
++        if (/*x264_param_default_preset(&x4->params, x4->preset, x4->tune)*/
++            x264_param_default_preset(&x4->params, "superfast", "zerolatency") < 0) {
+             int i;
+             av_log(avctx, AV_LOG_ERROR, "Error setting preset/tune %s/%s.\n", x4->preset, x4->tune);
+             av_log(avctx, AV_LOG_INFO, "Possible presets:");
