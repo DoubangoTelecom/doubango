@@ -174,7 +174,7 @@ uint32_t tcomp_statehandler_findState(tcomp_statehandler_t *statehandler, const 
 	//
 	tsk_list_foreach(item, statehandler->compartments){
 		tcomp_compartment_t *compartment = item->data;
-		count = tcomp_compartment_findState(compartment, partial_identifier, lpState);
+		count += tcomp_compartment_findState(compartment, partial_identifier, lpState);
 	}
 	
 	if(count){

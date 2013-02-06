@@ -334,7 +334,7 @@ int tsip_transac_nist_Trying_2_Proceeding_X_send_1xx(va_list *app)
 		"Proceeding" state.  The response MUST be passed to the transport
 		layer for transmission.
 	*/
-	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
+	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, TSIP_MESSAGE(response));
 
 	/* Update last response */
 	TRANSAC_NIST_SET_LAST_RESPONSE(self, response);
@@ -350,7 +350,7 @@ int tsip_transac_nist_Trying_2_Completed_X_send_200_to_699(va_list *app)
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 	int ret;
 
-	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
+	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, TSIP_MESSAGE(response));
 
 	/*	RFC 3261 - 17.2.2
 		When the server transaction enters the "Completed" state, it MUST set
@@ -377,7 +377,7 @@ int tsip_transac_nist_Proceeding_2_Proceeding_X_send_1xx(va_list *app)
 		received from the TU while in the "Proceeding" state MUST be passed
 		to the transport layer for transmission.
 	*/
-	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
+	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, TSIP_MESSAGE(response));
 
 	/* Update last response */
 	TRANSAC_NIST_SET_LAST_RESPONSE(self, response);
@@ -418,7 +418,7 @@ int tsip_transac_nist_Proceeding_2_Completed_X_send_200_to_699(va_list *app)
 		transaction MUST enter the "Completed" state, and the response MUST
 		be passed to the transport layer for transmission.
 	*/
-	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
+	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, TSIP_MESSAGE(response));
 
 	/*	RFC 3261 - 17.2.2
 		When the server transaction enters the "Completed" state, it MUST set

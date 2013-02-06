@@ -163,7 +163,7 @@ int tsip_transac_init(tsip_transac_t *self, tsip_transac_type_t type, int32_t cs
 int tsip_transac_deinit(tsip_transac_t *self);
 int tsip_transac_start(tsip_transac_t *self, const tsip_request_t* request);
 int tsip_transac_deliver(tsip_transac_t* self, tsip_dialog_event_type_t event_type, const tsip_message_t *msg);
-int tsip_transac_send(tsip_transac_t *self, const char *branch, const tsip_message_t *msg);
+int tsip_transac_send(tsip_transac_t *self, const char *branch, tsip_message_t *msg);
 int tsip_transac_cmp(const tsip_transac_t *t1, const tsip_transac_t *t2);
 int tsip_transac_remove(const tsip_transac_t* self);
 int tsip_transac_fsm_act(tsip_transac_t* self, tsk_fsm_action_id , const tsip_message_t*);

@@ -433,7 +433,7 @@ int tsip_transac_ist_Proceeding_2_Proceeding_X_1xx(va_list *app)
 	int ret;
 
 	/* Send to the transport layer */
-	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
+	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, TSIP_MESSAGE(response));
 
 	/* Update last response */
 	TRANSAC_IST_SET_LAST_RESPONSE(self, response);
@@ -461,7 +461,7 @@ int tsip_transac_ist_Proceeding_2_Completed_X_300_to_699(va_list *app)
 	}
 
 	/* Send to the transport layer */
-	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
+	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, TSIP_MESSAGE(response));
 
 	/* Update last response */
 	TRANSAC_IST_SET_LAST_RESPONSE(self, response);
@@ -491,7 +491,7 @@ int tsip_transac_ist_Proceeding_2_Accepted_X_2xx(va_list *app)
 		responses are handled by the TU.  The server transaction MUST then
 		transition to the "Accepted" state.
 	*/
-	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
+	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, TSIP_MESSAGE(response));
 
 	/* Update last response */
 	TRANSAC_IST_SET_LAST_RESPONSE(self, response);
@@ -643,7 +643,7 @@ int tsip_transac_ist_Accepted_2_Accepted_2xx(va_list *app)
 		the server transaction MUST pass the response to the transport
 		layer for transmission.
 	*/
-	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
+	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, TSIP_MESSAGE(response));
 
 	/* Update last response */
 	TRANSAC_IST_SET_LAST_RESPONSE(self, response);
