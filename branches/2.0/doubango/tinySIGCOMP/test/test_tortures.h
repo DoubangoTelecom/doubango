@@ -71,7 +71,7 @@ struct_torture_test tests[] =
 		COMPARTMENT_ID
 	}
 	,
-	{	//*** 1.1***
+	{	//*** 2***
 		"A.1.2(.2)  Arithmetic",
 		RFC4465_A_1_2__Arithmetic_2,
 		174,
@@ -82,7 +82,7 @@ struct_torture_test tests[] =
 		COMPARTMENT_ID
 	}
 	,
-	{	//*** 1.2***
+	{	//*** 3***
 		"A.1.2(.3)  Arithmetic",
 		RFC4465_A_1_2__Arithmetic_3,
 		174,
@@ -94,7 +94,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//*** 2***
+		//*** 4***
 		"A.1.3.  Sorting",
 		RFC4465_A_1_3__Sorting,
 		223,
@@ -108,7 +108,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//*** 3**
+		//*** 5**
 		"A.1.4.  SHA-1",
 		RFC4465_A_1_4__SHA1,
 		138,
@@ -123,7 +123,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//*** 4**
+		//*** 6**
 		"A.1.5.(1)  LOAD and MULTILOAD",
 		RFC4465_A_1_5__LOAD_and_MULTILOAD_1,
 		58,
@@ -135,7 +135,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//*** 4**
+		//*** 7**
 		"A.1.5.(2)  LOAD and MULTILOAD",
 		RFC4465_A_1_5__LOAD_and_MULTILOAD_2,
 		58,
@@ -147,7 +147,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//*** 4**
+		//*** 8**
 		"A.1.5.(3)  LOAD and MULTILOAD",
 		RFC4465_A_1_5__LOAD_and_MULTILOAD_3,
 		58,
@@ -159,7 +159,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 5**
+		//** 9**
 		"A.1.6.  COPY",
 		RFC4465_A_1_6__COPY,
 		60,
@@ -177,7 +177,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 6**
+		//** 10**
 		"A.1.7.  COPY-LITERAL and COPY-OFFSET",
 		RFC4465_A_1_7__COPY_LITERAL_and_COPY_OFFSET,
 		100,
@@ -190,7 +190,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 7**
+		//** 11**
 		"A.1.8.  MEMSET",
 		RFC4465_A_1_8__MEMSET,
 		27,
@@ -202,7 +202,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 8**
+		//** 12**
 		"A.1.9.(1)  CRC",
 		RFC4465_A_1_9__CRC_1,
 		29,
@@ -214,7 +214,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 8**
+		//** 13**
 		"A.1.9.(2)  CRC",
 		RFC4465_A_1_9__CRC_2,
 		29,
@@ -226,7 +226,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 9**
+		//** 14**
 		"A.1.10.  INPUT-BITS",
 		RFC4465_A_1_10__INPUT_BITS,
 		28,
@@ -238,7 +238,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 10**
+		//** 15**
 		"A.1.11.  INPUT-HUFFMAN",
 		RFC4465_A_1_11__INPUT_HUFFMAN,
 		39,
@@ -250,7 +250,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 11**
+		//** 16**
 		"A.1.12.  INPUT-BYTES",
 		RFC4465_A_1_12__INPUT_BYTES,
 		72,
@@ -263,7 +263,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 12**
+		//** 17**
 		"A.1.13.  Stack Manipulation",
 		RFC4465_A_1_13__Stack_Manipulation,
 		324,
@@ -275,7 +275,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 13**
+		//** 18**
 		"A.1.14.  Program Flow",
 		RFC4465_A_1_14__Program_Flow,
 		66,
@@ -287,7 +287,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 14**
+		//** 19**
 		"A.1.15.  State Creation_1",
 		RFC4465_A_1_15__State_Creation_1,
 		152,
@@ -299,7 +299,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 15 (requires previsous test)**
+		//** 20 (requires previsous test)**
 		"A.1.15.  State Creation_2",
 		RFC4465_A_1_15__State_Creation_2,
 		152,
@@ -311,7 +311,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 16 (requires previsous test)**
+		//** 21 (requires previsous test)**
 		"A.1.15.  State Creation_3",
 		RFC4465_A_1_15__State_Creation_3,
 		152,
@@ -323,7 +323,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 17 (requires previsous test)**
+		//** 22 (requires previsous test)**
 		"A.1.15.  State Creation_4", // FAIL
 		RFC4465_A_1_15__State_Creation_4,
 		153,
@@ -335,7 +335,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 18 (requires previsous test)**
+		//** 23 (requires previsous test)**
 		"A.1.15.  State Creation_5", // FAIL
 		RFC4465_A_1_15__State_Creation_5,
 		153,
@@ -347,7 +347,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 19 (requires previsous test)**
+		//** 24 (requires previsous test)**
 		"A.1.15.  State Creation_6",
 		RFC4465_A_1_15__State_Creation_6,
 		153,
@@ -359,7 +359,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 20 (requires previsous test)**
+		//** 25 (requires previsous test)**
 		"A.1.15.  State Creation_7",
 		RFC4465_A_1_15__State_Creation_7,
 		152,
@@ -371,7 +371,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 21 (requires previsous test)**
+		//** 26 (requires previsous test)**
 		"A.1.15.  State Creation_8",
 		RFC4465_A_1_15__State_Creation_8,
 		153,
@@ -383,7 +383,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 22 (requires previsous test)**
+		//** 27 (requires previsous test)**
 		"A.1.15.  State Creation_9",
 		RFC4465_A_1_15__State_Creation_9,
 		153,
@@ -409,7 +409,7 @@ struct_torture_test tests[] =
 #endif
 	,
 	{
-		//** 24**
+		//** 28**
 		"A.1.16.  STATE-ACCESS_0 {Set up bytecode}",
 		RFC4465_A_1_16__STATE_ACCESS__SETUP,
 		403,
@@ -421,7 +421,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 25 (requires previous test)**
+		//** 29 (requires previous test)**
 		"A.1.16.  STATE-ACCESS_1",
 		RFC4465_A_1_16__STATE_ACCESS_1,
 		408,
@@ -433,7 +433,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 26 (requires previous test)**
+		//** 30 (requires previous test)**
 		"A.1.16.  STATE-ACCESS_2",
 		RFC4465_A_1_16__STATE_ACCESS_2,
 		408,
@@ -445,7 +445,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 27 (requires previous test)**
+		//** 31 (requires previous test)**
 		"A.1.16.  STATE-ACCESS_3",
 		RFC4465_A_1_16__STATE_ACCESS_3,
 		408,
@@ -457,7 +457,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 28 (requires previous test)**
+		//** 32 (requires previous test)**
 		"A.1.16.  STATE-ACCESS_4",
 		RFC4465_A_1_16__STATE_ACCESS_4,
 		408,
@@ -469,7 +469,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 29 (requires previous test)**
+		//** 33 (requires previous test)**
 		"A.1.16.  STATE-ACCESS_5",
 		RFC4465_A_1_16__STATE_ACCESS_5,
 		408,
@@ -481,7 +481,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 30**
+		//** 34**
 		"A.2.1.(1)  Useful Values_1",
 		RFC4465_A_2_1__Useful_Values_1,
 		93,
@@ -493,7 +493,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 31 (Requires previous test)**
+		//** 35 (Requires previous test)**
 		"A.2.1.(2)  Useful Values_2",
 		RFC4465_A_2_1__Useful_Values_2,
 		9,
@@ -505,7 +505,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 32 (Requires previous test)**
+		//** 36 (Requires previous test)**
 		"A.2.1.(3)  Useful Values_3",
 		RFC4465_A_2_1__Useful_Values_3,
 		9,
@@ -517,7 +517,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 33 (Requires previous test)**
+		//** 37 (Requires previous test)**
 		"A.2.1.(4)  Useful Values_4",
 		RFC4465_A_2_1__Useful_Values_4,
 		9,
@@ -529,7 +529,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 34**
+		//** 38**
 		"A.2.2.  Cycles Checking",
 		RFC4465_A_2_2__Cycles_Checking,
 		29,
@@ -541,7 +541,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 35**
+		//** 39**
 		"A.2.3.  Message-based Transport_1",
 		RFC4465_A_2_3_Message_based_Transport_1,
 		1,
@@ -553,7 +553,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 36**
+		//** 40**
 		"A.2.3.  Message-based Transport_2",
 		RFC4465_A_2_3_Message_based_Transport_2,
 		2,
@@ -565,7 +565,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 37**
+		//** 41**
 		"A.2.3.  Message-based Transport_3",
 		RFC4465_A_2_3_Message_based_Transport_3,
 		17,
@@ -577,7 +577,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 38**
+		//** 42**
 		"A.2.3.  Message-based Transport_4",
 		RFC4465_A_2_3_Message_based_Transport_4,
 		17,
@@ -589,7 +589,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 39**
+		//** 43**
 		"A.2.3.  Message-based Transport_5",
 		RFC4465_A_2_3_Message_based_Transport_5,
 		17,
@@ -601,7 +601,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 40**
+		//** 44**
 		"A.2.3.  Message-based Transport_6",
 		RFC4465_A_2_3_Message_based_Transport_6,
 		17,
@@ -613,7 +613,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 41**
+		//** 45**
 		"A.2.4.  Stream-based Transport_1",
 		RFC4465_A_2_4_Stream_based_Transport_1,
 		67,
@@ -625,7 +625,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 43**
+		//** 46**
 		"A.2.4.  Stream-based Transport_3",
 		RFC4465_A_2_4_Stream_based_Transport_3,
 		3,
@@ -637,7 +637,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 44**
+		//** 47**
 		"A.2.4.  Stream-based Transport_4",
 		RFC4465_A_2_4_Stream_based_Transport_4,
 		4,
@@ -649,7 +649,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 45**
+		//** 48**
 		"A.2.4.  Stream-based Transport_5",
 		RFC4465_A_2_4_Stream_based_Transport_5,
 		30,
@@ -661,7 +661,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 45**
+		//** 49**
 		"A.2.4.  Stream-based Transport_5.1 (cleanup)",
 		"\xff\xff",
 		2,
@@ -673,7 +673,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 46**
+		//** 50**
 		"A.2.4.  Stream-based Transport_6",
 		RFC4465_A_2_4_Stream_based_Transport_6,
 		29,
@@ -685,7 +685,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 46**
+		//** 51**
 		"A.2.4.  Stream-based Transport_6.1 (cleanup)",
 		"\xff\xff",
 		2,
@@ -697,7 +697,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 47**
+		//** 52**
 		"A.2.5.  Input Past the End of a Message_1",
 		RFC4465_A_2_5__Input_Past_the_End_of_a_Message_1,
 		59,
@@ -709,7 +709,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 48**
+		//** 53**
 		"A.2.5.  Input Past the End of a Message_2",
 		RFC4465_A_2_5__Input_Past_the_End_of_a_Message_2,
 		58,
@@ -721,7 +721,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 49**
+		//** 54**
 		"A.3.1.  SigComp Feedback Mechanism_1",
 		RFC4465_A_3_1__SigComp_Feedback_Mechanism_1,
 		84,
@@ -733,7 +733,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 50**
+		//** 55**
 		"A.3.1.  SigComp Feedback Mechanism_2",
 		RFC4465_A_3_1__SigComp_Feedback_Mechanism_2,
 		84,
@@ -745,7 +745,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 51 (SMS MUST be 2048)**
+		//** 56 (SMS MUST be 2048)**
 		"A.3.2.  State Memory Management_1",
 		RFC4465_A_3_2__State_Memory_Management_1,
 		446,
@@ -757,7 +757,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 52 (Requires previous test)**
+		//** 57 (Requires previous test)**
 		"A.3.2.  State Memory Management_2",
 		RFC4465_A_3_2__State_Memory_Management_2,
 		446,
@@ -769,7 +769,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 53 (Requires previous test)**
+		//** 58 (Requires previous test)**
 		"A.3.2.  State Memory Management_3",
 		RFC4465_A_3_2__State_Memory_Management_3,
 		446,
@@ -781,7 +781,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 54 (Requires previous test)**
+		//** 59 (Requires previous test)**
 		"A.3.2.  State Memory Management_4",
 		RFC4465_A_3_2__State_Memory_Management_4,
 		446,
@@ -793,7 +793,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 55 (Requires previous test)**
+		//** 60 (Requires previous test)**
 		"A.3.2.  State Memory Management_5",
 		RFC4465_A_3_2__State_Memory_Management_5,
 		446,
@@ -805,7 +805,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 56 (Requires previous test)**
+		//** 61 (Requires previous test)**
 		"A.3.2.  State Memory Management_6",
 		RFC4465_A_3_2__State_Memory_Management_6,
 		446,
@@ -817,7 +817,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 57 (Requires previous test)**
+		//** 62 (Requires previous test)**
 		"A.3.2.  State Memory Management_7",
 		RFC4465_A_3_2__State_Memory_Management_7,
 		446,
@@ -829,7 +829,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 58**
+		//** 63**
 		"A.3.3.  Multiple Compartments_1",
 		RFC4465_A_3_3__Multiple_Compartments_1,
 		437,
@@ -841,7 +841,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 59 (requires previsous test)**
+		//** 64 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_2",
 		RFC4465_A_3_3__Multiple_Compartments_2,
 		437,
@@ -853,7 +853,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 60 (requires previsous test)**
+		//** 65 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_3",
 		RFC4465_A_3_3__Multiple_Compartments_3,
 		437,
@@ -865,7 +865,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 61 (requires previsous test)**
+		//** 66 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_4",
 		RFC4465_A_3_3__Multiple_Compartments_4,
 		437,
@@ -877,7 +877,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 62 (requires previsous test)**
+		//** 67 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_5",
 		RFC4465_A_3_3__Multiple_Compartments_5,
 		437,
@@ -889,7 +889,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 63 (requires previsous test)**
+		//** 68 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_6",
 		RFC4465_A_3_3__Multiple_Compartments_6,
 		437,
@@ -901,7 +901,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 64 (requires previsous test)**
+		//** 69 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_7",
 		RFC4465_A_3_3__Multiple_Compartments_7,
 		437,
@@ -913,7 +913,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 65 (requires previsous test)**
+		//** 70 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_8",
 		RFC4465_A_3_3__Multiple_Compartments_8,
 		437,
@@ -925,7 +925,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 66 (requires previsous test)**
+		//** 71 (requires previsous test)**
 		"A.3.3.  Multiple Compartments_9",
 		RFC4465_A_3_3__Multiple_Compartments_9,
 		437,
@@ -937,7 +937,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 67**
+		//** 72**
 		"A.3.4.  Accessing RFC 3485 State",
 		RFC4465_A_3_4__Accessing_RFC_3485_State,
 		61,
@@ -949,7 +949,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 68**
+		//** 73**
 		"A.3.5.  Bytecode State Creation_1",
 		RFC4465_A_3_5__Bytecode_State_Creation_1,
 		74,
@@ -961,7 +961,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 69**
+		//** 74**
 		"A.3.5.  Bytecode State Creation_2",
 		RFC4465_A_3_5__Bytecode_State_Creation_2,
 		8,
@@ -973,7 +973,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 70**
+		//** 75**
 		"A.3.5.  Bytecode State Creation_3",
 		RFC4465_A_3_5__Bytecode_State_Creation_3,
 		13,
@@ -985,7 +985,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 71**
+		//** 76**
 		"A.3.5.  Bytecode State Creation_4",
 		RFC4465_A_3_5__Bytecode_State_Creation_4,
 		7,
@@ -997,7 +997,7 @@ struct_torture_test tests[] =
 	}
 	,
 	{
-		//** 72**
+		//** 77**
 		"A.3.5.  Bytecode State Creation_5",
 		RFC4465_A_3_5__Bytecode_State_Creation_5,
 		7,

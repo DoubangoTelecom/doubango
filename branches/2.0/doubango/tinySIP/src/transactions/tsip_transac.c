@@ -220,9 +220,11 @@ int tsip_transac_deliver(tsip_transac_t* self, tsip_dialog_event_type_t event_ty
 }
 
 // send the message over the network
-int tsip_transac_send(tsip_transac_t *self, const char *branch, const tsip_message_t *msg)
+int tsip_transac_send(tsip_transac_t *self, const char *branch, tsip_message_t *msg)
 {
 	if(self && TSIP_TRANSAC_GET_STACK(self)->layer_transport && msg){
+		// set SigComp identifier as the message is directly sent to the transport layer
+		tsk_strupdate(&msg->sigcomp_id, TSIP_TRANSAC_GET_SESSION(self)->sigcomp_id);
 		return tsip_transport_layer_send(TSIP_TRANSAC_GET_STACK(self)->layer_transport, branch, TSIP_MESSAGE(msg));
 	}
 	TSK_DEBUG_ERROR("Invalid parameter");

@@ -634,6 +634,10 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		ss->expires = TSIP_SSESSION_EXPIRES_DEFAULT;
 		// default parentid: not parent -> no pending transfer
 		ss->id_parent = TSIP_SSESSION_INVALID_ID;
+		// default SigComp compId (will be updated by session_set())
+		if(ss->stack->sigcomp.handle){
+			ss->sigcomp_id = tsk_strdup(tsip_sigcomp_handler_fixme_getcompid(ss->stack->sigcomp.handle));
+		}
 		// default media values
 		ss->media.profile = tmedia_defaults_get_profile();
 		ss->media.srtp_mode = tmedia_defaults_get_srtp_mode();
