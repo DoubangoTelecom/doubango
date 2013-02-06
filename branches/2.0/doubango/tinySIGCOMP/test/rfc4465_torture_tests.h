@@ -370,7 +370,7 @@ struct_torture_test, *lpstruct_torture_test;
 	
 
 /*************************************************************
-*** A.2.4.  Stream-based Transport_1 (Out puts 2 messages. This why "RFC4465_A_2_4_Stream_based_Transport_2" is missing)
+*** A.2.4.  Stream-based Transport_1 (Outputs 2 messages. This why "RFC4465_A_2_4_Stream_based_Transport_2" is missing)
 */
 #define RFC4465_A_2_4_Stream_based_Transport_1\
 	   "\xff\xff\xf8\x01\x71\x08\x00\x02\x22\x00\x02\x22\xa0\x92\x05\x23\x00\x00\x00\x00\x00\x00\x00\xff\x00\xff\x03\xff\xff\xff\xff\xff\xff\xff\xf8\x01\x7e\x08\x00\x02\x22\x00\x02\x22\xa3\xd2\x05\x23\x00\x00\x00\x00\x00\x00\x00\xff\x04\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff"\
