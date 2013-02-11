@@ -427,6 +427,7 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 	tmedia_type_t new_media_type;
 	tsk_bool_t media_session_was_null;
 	int ret = 0;
+	tmedia_ro_type_t ro_type = tmedia_ro_type_none;
 
 	if(!self || !message){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -459,6 +460,9 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 		}
 	}
 	
+	ro_type = (TSIP_REQUEST_IS_INVITE(message) || TSIP_REQUEST_IS_UPDATE(message)) // ACK/PRACK can only contain a response if the initial INVITE was bodiless
+			? tmedia_ro_type_offer
+			:(TSIP_RESPONSE_IS_1XX(message) ? tmedia_ro_type_provisional : tmedia_ro_type_answer);
 	media_session_was_null = (self->msession_mgr == tsk_null);
 	old_media_type = TSIP_DIALOG_GET_SS(self)->media.type;
 	new_media_type = sdp_ro ? tmedia_type_from_sdp(sdp_ro) : old_media_type;
@@ -477,7 +481,7 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 	ret = tsip_dialog_invite_msession_configure(self);
 	
 	if(sdp_ro){
-		if((ret = tmedia_session_mgr_set_ro(self->msession_mgr, sdp_ro))){
+		if((ret = tmedia_session_mgr_set_ro(self->msession_mgr, sdp_ro, ro_type))){
 			TSK_DEBUG_ERROR("Failed to set remote offer");
 			goto bail;
 		}

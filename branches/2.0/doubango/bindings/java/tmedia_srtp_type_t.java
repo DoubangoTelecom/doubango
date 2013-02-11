@@ -12,7 +12,7 @@ public enum tmedia_srtp_type_t {
   tmedia_srtp_type_none(0x00),
   tmedia_srtp_type_sdes(0x01),
   tmedia_srtp_type_dtls(0x02),
-  tmedia_srtp_type_sdes_dtls((tmedia_srtp_type_sdes|tmedia_srtp_type_dtls));
+  tmedia_srtp_type_sdes_dtls((0x01|0x02));
 
   public final int swigValue() {
     return swigValue;

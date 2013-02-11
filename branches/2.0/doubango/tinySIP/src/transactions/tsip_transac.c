@@ -223,7 +223,7 @@ int tsip_transac_deliver(tsip_transac_t* self, tsip_dialog_event_type_t event_ty
 int tsip_transac_send(tsip_transac_t *self, const char *branch, tsip_message_t *msg)
 {
 	if(self && TSIP_TRANSAC_GET_STACK(self)->layer_transport && msg){
-		struct tsip_ssession_s* ss = TSIP_TRANSAC_GET_SESSION(self);
+		const struct tsip_ssession_s* ss = TSIP_TRANSAC_GET_SESSION(self);
 		if(ss){
 			// set SigComp identifier as the message is directly sent to the transport layer
 			tsk_strupdate(&msg->sigcomp_id, ss->sigcomp_id);
