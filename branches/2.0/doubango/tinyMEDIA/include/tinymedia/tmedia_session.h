@@ -246,6 +246,7 @@ typedef struct tmedia_session_mgr_s
 
 	tsk_bool_t started;
 	tsk_bool_t ro_changed;
+	tsk_bool_t ro_provisional;
 	tsk_bool_t state_changed;
 	tsk_bool_t mediaType_changed;
 
@@ -439,7 +440,7 @@ TINYMEDIA_API int tmedia_session_mgr_set_3(tmedia_session_mgr_t* self, const tme
 TINYMEDIA_API int tmedia_session_mgr_get(tmedia_session_mgr_t* self, ...);
 TINYMEDIA_API int tmedia_session_mgr_stop(tmedia_session_mgr_t* self);
 TINYMEDIA_API const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self);
-TINYMEDIA_API int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* sdp);
+TINYMEDIA_API int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* sdp, tmedia_ro_type_t ro_type);
 TINYMEDIA_API const tsdp_message_t* tmedia_session_mgr_get_ro(tmedia_session_mgr_t* self);
 TINYMEDIA_API int tmedia_session_mgr_hold(tmedia_session_mgr_t* self, tmedia_type_t type);
 TINYMEDIA_API tsk_bool_t tmedia_session_mgr_is_held(tmedia_session_mgr_t* self, tmedia_type_t type, tsk_bool_t local);

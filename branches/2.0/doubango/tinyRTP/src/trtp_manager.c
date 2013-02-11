@@ -706,7 +706,9 @@ int trtp_manager_prepare(trtp_manager_t* self)
 		rtp_local_ip = rtcp_local_ip = self->use_ipv6 ? "::1" : "127.0.0.1";
 	}
 	else{
-		uint8_t retry_count = 4;
+		#define __retry_count_max 5
+		#define __retry_count_max_minus1 (__retry_count_max - 1)
+		uint8_t retry_count = __retry_count_max;
 		tnet_socket_type_t socket_type = self->use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4;
 
 		/* Creates local rtp and rtcp sockets */
@@ -716,7 +718,10 @@ int trtp_manager_prepare(trtp_manager_t* self)
 #if 0
 			tnet_port_t local_port = 6060;
 #else
-			tnet_port_t local_port = (((rand() ^ ++counter) % (self->port_range.stop - self->port_range.start)) + self->port_range.start);
+			// first check => try to use port from latest active session if exist
+			tnet_port_t local_port = (retry_count == __retry_count_max_minus1 && (self->port_range.start <= self->rtp.public_port && self->rtp.public_port <= self->port_range.stop))
+				? self->rtp.public_port
+				: (((rand() ^ ++counter) % (self->port_range.stop - self->port_range.start)) + self->port_range.start);
 #endif
 			local_port = (local_port & 0xFFFE); /* turn to even number */
 
@@ -1433,6 +1438,8 @@ int trtp_manager_stop(trtp_manager_t* self)
 #endif /* HAVE_SRTP */
 		TSK_OBJECT_SAFE_FREE(self->transport);
 	}
+	// Free RTCP socket
+	TSK_OBJECT_SAFE_FREE(self->rtcp.local_socket);
 
 	// reset default values
 	self->is_symetric_rtp_checked = self->is_symetric_rtcp_checked = tsk_false;

@@ -213,7 +213,7 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 	self->use_avpf = (profile == tmedia_profile_rtcweb); // negotiate if not RTCWeb profile or RFC5939 is in action
 #if HAVE_SRTP
 		// this is the default value and can be updated by the user using "session_set('srtp-mode', mode_e)"
-		self->srtp_type = (profile == tmedia_profile_rtcweb) ? tmedia_srtp_type_sdes_dtls : tmedia_defaults_get_srtp_type(); // FIXME: RTCWeb: Chrome uses SDES and Firefox DTLS
+		self->srtp_type = (profile == tmedia_profile_rtcweb) ? tmedia_srtp_type_sdes : tmedia_defaults_get_srtp_type();
 		self->srtp_mode = (profile == tmedia_profile_rtcweb) ? tmedia_srtp_mode_mandatory : tmedia_defaults_get_srtp_mode();
 		self->use_srtp = (self->srtp_mode == tmedia_srtp_mode_mandatory); // if optional -> negotiate
 		// remove DTLS-SRTP option if not supported

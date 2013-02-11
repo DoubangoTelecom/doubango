@@ -234,6 +234,15 @@ typedef enum tmedia_bandwidth_level_e
 }
 tmedia_bandwidth_level_t;
 
+typedef enum tmedia_ro_type_e
+{
+	tmedia_ro_type_none = 0x00,
+	tmedia_ro_type_offer = (0x01 << 0),
+	tmedia_ro_type_answer = (0x01 << 1),
+	tmedia_ro_type_provisional = tmedia_ro_type_answer | (0x01 << 2),
+}
+tmedia_ro_type_t;
+
 TINYMEDIA_API tmedia_type_t tmedia_type_from_sdp(const struct tsdp_message_s* sdp);
 TINYMEDIA_API int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t* channels);
 TINYMEDIA_API int tmedia_video_get_size(tmedia_pref_video_size_t pref_vs, unsigned *width, unsigned *height);
