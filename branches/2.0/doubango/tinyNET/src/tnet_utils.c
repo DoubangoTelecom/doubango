@@ -476,6 +476,9 @@ bail:
 	
 	/* == Unicast addresses == */
 	for(ifa = ifaddr; ifa; ifa = ifa->ifa_next){
+		if(!ifa->ifa_addr){
+			continue;
+		}
         // Skip loopback
         if ((ifa->ifa_flags & IFF_LOOPBACK) || !(ifa->ifa_flags & IFF_UP)) {
             continue;
@@ -746,7 +749,7 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
             continue;
         }
             
-        if (ifa->ifa_addr->sa_family != destAddr.ss_family) {
+        if (!ifa->ifa_addr || ifa->ifa_addr->sa_family != destAddr.ss_family) {
             continue;
         }
             

@@ -186,6 +186,7 @@ static void TSIP_MESSAGE_ADD_HEADER(tsip_message_t *self, ...)
 #endif
 
 TINYSIP_API const tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *self, tsip_header_type_t type, tsk_size_t index);
+TINYSIP_API const tsip_header_t *tsip_message_get_headerLast(const tsip_message_t *self, tsip_header_type_t type);
 TINYSIP_API const tsip_header_t *tsip_message_get_header(const tsip_message_t *self, tsip_header_type_t type);
 TINYSIP_API tsk_bool_t tsip_message_allowed(const tsip_message_t *self, const char* method);
 TINYSIP_API tsk_bool_t tsip_message_supported(const tsip_message_t *self, const char* option);
