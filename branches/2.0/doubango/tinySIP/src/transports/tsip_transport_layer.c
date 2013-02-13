@@ -645,19 +645,20 @@ static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_la
 		
 		/* If message received over WebSocket transport and stack is running in w2s mode then forward to the first route if available */
 		if((self->stack->network.mode == tsip_stack_mode_webrtc2sip)){
-			const tsip_header_Route_t* route;
-			if((route = (const tsip_header_Route_t*)tsip_message_get_header(msg, tsip_htype_Route)) && route->uri && !tsk_strnullORempty(route->uri->host)){
-				const char* transport_str = tsk_params_get_param_value(route->uri->params, "transport");
+			const tsip_header_Route_t *route_first;
+			if((route_first = (const tsip_header_Route_t*)tsip_message_get_header(msg, tsip_htype_Route)) && route_first->uri && !tsk_strnullORempty(route_first->uri->host)){
+				const char* transport_str = tsk_params_get_param_value(route_first->uri->params, "transport");
+				const tsip_header_Route_t *route_last = (const tsip_header_Route_t*)tsip_message_get_headerLast(msg, tsip_htype_Route);
 				if(!tsk_strnullORempty(transport_str)){
 					int t_idx = tsip_transport_get_idx_by_name(transport_str);
 					if(t_idx != -1){
 						destNetType = self->stack->network.transport_types[t_idx];
 					}
 				}
-				tsk_strupdate(destIP, route->uri->host);
-				*destPort = (route->uri->port ? route->uri->port : 5060);
-				if(tsk_params_have_param(route->uri->params, "lr")){
-					tsk_list_remove_item_by_data(msg->headers, route);
+				tsk_strupdate(destIP, route_first->uri->host);
+				*destPort = (route_first->uri->port ? route_first->uri->port : 5060);
+				if(route_last && tsk_params_have_param(route_last->uri->params, "sipml5-outbound")){
+					tsk_list_remove_item_by_data(msg->headers, route_last);
 				}
 			}
 			else if(!TNET_SOCKET_TYPE_IS_WS(msg->src_net_type) && !TNET_SOCKET_TYPE_IS_WS(msg->src_net_type)){

@@ -236,6 +236,16 @@ bail:
 	return hdr;
 }
 
+const tsip_header_t *tsip_message_get_headerLast(const tsip_message_t *self, tsip_header_type_t type)
+{
+	const tsip_header_t *hdr, *last = tsk_null;
+	tsk_size_t index = 0;
+	while((hdr = tsip_message_get_headerAt(self, type, index++))){
+		last = hdr;
+	}
+	return last;
+}
+
 const tsip_header_t *tsip_message_get_header(const tsip_message_t *self, tsip_header_type_t type)
 {
 	return tsip_message_get_headerAt(self, type, 0);
