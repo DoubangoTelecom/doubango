@@ -1012,7 +1012,7 @@ int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* re
 	//
 	//	P-Preferred-Identity
 	//
-	if(preferred_identity){
+	if(preferred_identity && TSIP_STACK_MODE_IS_CLIENT(TSIP_DIALOG_GET_STACK(self))){
 		/*	3GPP TS 33.978 6.2.3.1 Procedures at the UE
 			The UE shall use the temporary public user identity (IMSI-derived IMPU, cf. section 6.1.2) only in registration
 			messages (i.e. initial registration, re-registration or de-registration), but not in any other type of SIP requests.
