@@ -657,8 +657,12 @@ static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_la
 				}
 				tsk_strupdate(destIP, route_first->uri->host);
 				*destPort = (route_first->uri->port ? route_first->uri->port : 5060);
-				if(route_last && tsk_params_have_param(route_last->uri->params, "sipml5-outbound")){
-					tsk_list_remove_item_by_data(msg->headers, route_last);
+				if(route_last && route_last->uri){
+					const char *local_ip = self->stack->network.local_ip[self->stack->network.transport_idx_default];
+					tnet_port_t local_port = self->stack->network.local_port[self->stack->network.transport_idx_default];
+					if(tsk_params_have_param(route_last->uri->params, "sipml5-outbound") || (tsk_strequals(local_ip, route_last->uri->host) && local_port == route_last->uri->port)){
+						tsk_list_remove_item_by_data(msg->headers, route_last);
+					}
 				}
 			}
 			else if(!TNET_SOCKET_TYPE_IS_WS(msg->src_net_type) && !TNET_SOCKET_TYPE_IS_WS(msg->src_net_type)){
