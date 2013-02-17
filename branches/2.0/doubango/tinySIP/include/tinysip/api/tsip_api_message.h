@@ -38,6 +38,7 @@ TSIP_BEGIN_DECLS
 
 #define TSIP_MESSAGE_EVENT(self)		((tsip_message_event_t*)(self))
 
+//@tinyWRAP
 typedef enum tsip_message_event_type_e
 {
 	tsip_i_message,

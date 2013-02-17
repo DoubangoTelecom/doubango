@@ -215,6 +215,8 @@ typedef struct tmedia_codec_s
 	tmedia_bandwidth_level_t bl; // @deprecated
 	//! the negociated format (only useful for codecs with dyn. payload type)
 	char* neg_format;
+	//! whether this is a passthrough codec
+	tsk_bool_t passthrough;
 	
 	//! plugin used to create the codec
 	const struct tmedia_codec_plugin_def_s* plugin;

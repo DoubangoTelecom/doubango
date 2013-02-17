@@ -82,7 +82,7 @@ thttp_header_Sec_WebSocket_Accept_t *thttp_header_Sec_WebSocket_Accept_parse(con
 	const char *eof = pe;
 	thttp_header_Sec_WebSocket_Accept_t *hdr_Sec_WebSocket_Accept = thttp_header_Sec_WebSocket_Accept_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

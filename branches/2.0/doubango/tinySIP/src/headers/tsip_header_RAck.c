@@ -74,7 +74,7 @@ tsip_header_RAck_t *tsip_header_RAck_parse(const char *data, tsk_size_t size)
 	const char *eof = pe;
 	tsip_header_RAck_t *hdr_rack = tsip_header_RAck_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 81 "./src/headers/tsip_header_RAck.c" */

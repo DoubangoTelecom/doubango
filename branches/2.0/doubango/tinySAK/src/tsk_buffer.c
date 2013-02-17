@@ -56,7 +56,7 @@
 */
 tsk_buffer_t* tsk_buffer_create(const void* data, tsk_size_t size)
 {
-	return tsk_object_new(tsk_buffer_def_t, data, size);
+	return (tsk_buffer_t*)tsk_object_new(tsk_buffer_def_t, data, size);
 }
 
 /**@ingroup tsk_buffer_group
@@ -126,7 +126,7 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 	}
 #else
     len = vsnprintf(tsk_null, 0, format, ap);
-    buffer = tsk_realloc(buffer, oldsize+len+1);
+    buffer = (char*)tsk_realloc(buffer, oldsize+len+1);
     vsnprintf((buffer + oldsize), len
 #if !defined(_MSC_VER) || defined(__GNUC__)
 		+1
@@ -349,7 +349,7 @@ int tsk_buffer_takeownership(tsk_buffer_t* self, void** data, tsk_size_t size)
 //
 static tsk_object_t* tsk_buffer_ctor(tsk_object_t * self, va_list * app)
 {
-	tsk_buffer_t *buffer = self;
+	tsk_buffer_t *buffer = (tsk_buffer_t *)self;
 	const void *data = va_arg(*app, const void *);
 	tsk_size_t size = va_arg(*app, tsk_size_t);
 	
@@ -365,7 +365,7 @@ static tsk_object_t* tsk_buffer_ctor(tsk_object_t * self, va_list * app)
 
 static tsk_object_t* tsk_buffer_dtor(tsk_object_t * self)
 { 
-	tsk_buffer_t *buffer = self;
+	tsk_buffer_t *buffer = (tsk_buffer_t *)self;
 	if(buffer){
 		TSK_FREE(buffer->data);
 		buffer->size = 0;

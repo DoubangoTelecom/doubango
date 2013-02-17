@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="tinyDSHOW"
 	ProjectGUID="{0CCC02F1-4233-424F-AD5E-A021456E6E8D}"
 	RootNamespace="tinyDSHOW"
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\thirdparties\win32\include;&quot;$(PSDK_DIR)include&quot;;&quot;$(DXSDK_DIR)include&quot;;..\thirdparties\win32\include\directshow;include;..\tinySAK\src;..\tinyMEDIA\include;..\tinySDP\include"
+				AdditionalIncludeDirectories="..\thirdparties\win32\include;..\thirdparties\win32\include\directshow;include;..\tinySAK\src;..\tinyMEDIA\include;..\tinySDP\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYDSHOW_EXPORTS;_WIN32_WINNT=0x0501;DEBUG_LEVEL=DEBUG_LEVEL_INFO"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -119,7 +119,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="false"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\thirdparties\win32\include;&quot;$(PSDK_DIR)include&quot;;&quot;$(DXSDK_DIR)include&quot;;..\thirdparties\win32\include\directshow;include;..\tinySAK\src;..\tinyMEDIA\include;..\tinySDP\include"
+				AdditionalIncludeDirectories="..\thirdparties\win32\include;..\thirdparties\win32\include\directshow;include;..\tinySAK\src;..\tinyMEDIA\include;..\tinySDP\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT=0x0501;TINYDSHOW_EXPORTS"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"

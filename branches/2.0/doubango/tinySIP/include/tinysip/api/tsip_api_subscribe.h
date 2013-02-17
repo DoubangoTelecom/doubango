@@ -38,6 +38,7 @@ TSIP_BEGIN_DECLS
 
 #define TSIP_SUBSCRIBE_EVENT(self)		((tsip_subscribe_event_t*)(self))
 
+//@tinyWRAP
 typedef enum tsip_subscribe_event_type_e
 {
 	tsip_i_subscribe,

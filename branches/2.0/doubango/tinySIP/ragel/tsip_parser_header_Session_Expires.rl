@@ -105,7 +105,7 @@ tsip_header_Session_Expires_t *tsip_header_Session_Expires_parse(const char *dat
 	const char *eof = pe;
 	tsip_header_Session_Expires_t *hdr_session_expires = tsip_header_Session_Expires_create(TSIP_SESSION_EXPIRES_DEFAULT_VALUE, tsk_false);
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

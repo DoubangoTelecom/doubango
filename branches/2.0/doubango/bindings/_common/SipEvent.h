@@ -22,6 +22,8 @@
 #ifndef TINYWRAP_SIPEVENT_H
 #define TINYWRAP_SIPEVENT_H
 
+#include "tinyWRAP_config.h"
+
 #include "tinysip.h"
 #include "Common.h"
 
@@ -42,7 +44,7 @@ class SipMessage;
 
 
 /* ======================== SipEvent ========================*/
-class SipEvent
+class TINYWRAP_API SipEvent
 {
 public:
 #if !defined(SWIG)
@@ -55,8 +57,9 @@ public:
 	const char* getPhrase() const;
 	const SipSession* getBaseSession() const;
 	const SipMessage* getSipMessage() const;
-
-protected:
+#if !defined(SWIG)
+	const tsip_event_t * getWrappedEvent(){ return sipevent; }
+#endif
 #if !defined(SWIG)
 	SipStack* getStack()const;
 #endif
@@ -68,7 +71,7 @@ protected:
 
 
 /* ======================== DialogEvent ========================*/
-class DialogEvent: public SipEvent
+class TINYWRAP_API DialogEvent: public SipEvent
 {
 public:
 #if !defined(SWIG)
@@ -80,7 +83,7 @@ public: /* Public API functions */
 };
 
 /* ======================== StackEvent ========================*/
-class StackEvent: public SipEvent
+class TINYWRAP_API StackEvent: public SipEvent
 {
 public:
 #if !defined(SWIG)
@@ -94,7 +97,7 @@ public: /* Public API functions */
 
 
 /* ======================== InviteEvent ========================*/
-class InviteEvent: public SipEvent
+class TINYWRAP_API InviteEvent: public SipEvent
 {
 public:
 #if !defined(SWIG)
@@ -113,7 +116,7 @@ public: /* Public API functions */
 
 
 /* ======================== MessagingEvent ========================*/
-class MessagingEvent: public SipEvent
+class TINYWRAP_API MessagingEvent: public SipEvent
 {
 public:
 #if !defined(SWIG)
@@ -128,7 +131,7 @@ public: /* Public API functions */
 };
 
 /* ======================== InfoEvent ========================*/
-class InfoEvent: public SipEvent
+class TINYWRAP_API InfoEvent: public SipEvent
 {
 public:
 #if !defined(SWIG)
@@ -145,7 +148,7 @@ public: /* Public API functions */
 
 
 /* ======================== OptionsEvent ========================*/
-class OptionsEvent: public SipEvent
+class TINYWRAP_API OptionsEvent: public SipEvent
 {
 public:
 #if !defined(SWIG)
@@ -162,7 +165,7 @@ public: /* Public API functions */
 
 
 /* ======================== PublicationEvent ========================*/
-class PublicationEvent: public SipEvent
+class TINYWRAP_API PublicationEvent: public SipEvent
 {
 public:
 #if !defined(SWIG)
@@ -173,12 +176,13 @@ public:
 public: /* Public API functions */
 	tsip_publish_event_type_t getType() const;
 	const PublicationSession* getSession() const;
+	PublicationSession* takeSessionOwnership() const;
 };
 
 
 
 /* ======================== RegistrationEvent ========================*/
-class RegistrationEvent: public SipEvent
+class TINYWRAP_API RegistrationEvent: public SipEvent
 {
 public:
 #if !defined(SWIG)
@@ -195,7 +199,7 @@ public: /* Public API functions */
 
 
 /* ======================== SubscriptionEvent ========================*/
-class SubscriptionEvent: public SipEvent
+class TINYWRAP_API SubscriptionEvent: public SipEvent
 {
 public:
 #if !defined(SWIG)
@@ -206,6 +210,7 @@ public:
 public: /* Public API functions */
 	tsip_subscribe_event_type_t getType() const;
 	const SubscriptionSession* getSession() const;
+	SubscriptionSession* takeSessionOwnership() const;
 };
 
 #endif /* TINYWRAP_SIPEVENT_H */

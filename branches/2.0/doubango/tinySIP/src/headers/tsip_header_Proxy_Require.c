@@ -90,7 +90,7 @@ tsip_header_Proxy_Require_t *tsip_header_Proxy_Require_parse(const char *data, t
 	const char *eof = pe;
 	tsip_header_Proxy_Require_t *hdr_proxyrequire = tsip_header_Proxy_Require_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 97 "./src/headers/tsip_header_Proxy_Require.c" */

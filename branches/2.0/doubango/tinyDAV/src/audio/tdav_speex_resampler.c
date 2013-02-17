@@ -35,19 +35,37 @@
 
 #define TDAV_SPEEX_RESAMPLER_MAX_QUALITY 10
 
-int tdav_speex_resampler_open(tmedia_resampler_t* self, uint32_t in_freq, uint32_t out_freq, tsk_size_t frame_duration, int8_t _channels, uint32_t quality)
+int tdav_speex_resampler_open(tmedia_resampler_t* self, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t in_channels, uint32_t out_channels, uint32_t quality)
 {
 	tdav_speex_resampler_t *resampler = (tdav_speex_resampler_t *)self;
 	int ret = 0;
 
-	if(!(resampler->state = speex_resampler_init(_channels, in_freq, out_freq, quality>10 ? TDAV_SPEEX_RESAMPLER_MAX_QUALITY : quality, &ret))){
+	if(in_channels != 1 && in_channels != 2){
+		TSK_DEBUG_ERROR("%d not valid as input channel", in_channels);
+		return -1;
+	}
+	if(out_channels != 1 && out_channels != 2){
+		TSK_DEBUG_ERROR("%d not valid as output channel", out_channels);
+		return -1;
+	}
+
+	if(!(resampler->state = speex_resampler_init(in_channels, in_freq, out_freq, quality>10 ? TDAV_SPEEX_RESAMPLER_MAX_QUALITY : quality, &ret))){
 		TSK_DEBUG_ERROR("speex_resampler_init() returned %d", ret);
 		return -2;
 	}
 
 	resampler->in_size  = (in_freq * frame_duration)/1000;
-	resampler->out_size = (out_freq * frame_duration) / 1000;
-	resampler->channels = _channels;
+	resampler->out_size = ((out_freq * frame_duration) / 1000) * (out_channels / in_channels);
+	resampler->in_channels = in_channels;
+	resampler->out_channels = out_channels;
+
+	if(in_channels != out_channels){
+		resampler->tmp_buffer.size_in_samples = TSK_MAX(resampler->out_size, resampler->in_size);
+		if(!(resampler->tmp_buffer.ptr = (spx_int16_t*)tsk_realloc(resampler->tmp_buffer.ptr, resampler->tmp_buffer.size_in_samples * sizeof(spx_int16_t)))){
+			resampler->tmp_buffer.size_in_samples = 0;
+			return -2;
+		}
+	}
 
 	return 0;
 }
@@ -72,7 +90,31 @@ tsk_size_t tdav_speex_resampler_process(tmedia_resampler_t* self, const uint16_t
 		return 0;
 	}
 
-	err = speex_resampler_process_int(resampler->state, 0, (const spx_int16_t *)in_data, (spx_uint32_t *)&in_size, (spx_int16_t *)out_data, &out_len);
+	if(resampler->out_channels != resampler->in_channels){
+		spx_uint32_t i, j;
+		spx_int16_t* pout_data = (spx_int16_t*)(out_data);
+		out_len = resampler->tmp_buffer.size_in_samples;
+		err = speex_resampler_process_int(resampler->state, 0, (const spx_int16_t *)in_data, (spx_uint32_t *)&in_size, resampler->tmp_buffer.ptr, &out_len);
+
+		if(err == RESAMPLER_ERR_SUCCESS){
+			if(resampler->in_channels == 1){
+				// in_channels = 1, out_channels = 2
+				for(i = 0, j = 0; i < out_len; ++i, j+=2){
+					pout_data[j] = pout_data[j + 1] = resampler->tmp_buffer.ptr[i];
+				}
+			}
+			else{
+				// in_channels = 2, out_channels = 1
+				for(i = 0, j = 0; i < out_len; ++i, j+=2){
+					pout_data[i] = resampler->tmp_buffer.ptr[j];
+				}
+			}
+		}
+	}
+	else{
+		err = speex_resampler_process_int(resampler->state, 0, (const spx_int16_t *)in_data, (spx_uint32_t *)&in_size, (spx_int16_t *)out_data, &out_len);
+	}
+	
 	if(err != RESAMPLER_ERR_SUCCESS){
 		TSK_DEBUG_ERROR("speex_resampler_process_int() failed with error code %d", err);
 		return 0;
@@ -100,7 +142,7 @@ int tdav_speex_resampler_close(tmedia_resampler_t* self)
 /* constructor */
 static tsk_object_t* tdav_speex_resampler_ctor(tsk_object_t * self, va_list * app)
 {
-	tdav_speex_resampler_t *resampler = self;
+	tdav_speex_resampler_t *resampler = (tdav_speex_resampler_t *)self;
 	if(resampler){
 		/* init base */
 		tmedia_resampler_init(TMEDIA_RESAMPLER(resampler));
@@ -111,7 +153,7 @@ static tsk_object_t* tdav_speex_resampler_ctor(tsk_object_t * self, va_list * ap
 /* destructor */
 static tsk_object_t* tdav_speex_resampler_dtor(tsk_object_t * self)
 { 
-	tdav_speex_resampler_t *resampler = self;
+	tdav_speex_resampler_t *resampler = (tdav_speex_resampler_t *)self;
 	if(resampler){
 		/* deinit base */
 		tmedia_resampler_deinit(TMEDIA_RESAMPLER(resampler));
@@ -120,6 +162,7 @@ static tsk_object_t* tdav_speex_resampler_dtor(tsk_object_t * self)
 			speex_resampler_destroy(resampler->state);
 			resampler->state = tsk_null;
 		}
+		TSK_FREE(resampler->tmp_buffer.ptr);
 	}
 
 	return self;

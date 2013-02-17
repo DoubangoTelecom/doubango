@@ -41,7 +41,7 @@ TSK_BEGIN_DECLS
 
 /**@ingroup tsk_runnable_group
 */
-typedef void * (*tsk_runnable_func_run)(void* self);
+typedef void* (TSK_STDCALL *tsk_runnable_func_run)(void* self);
 
 /**@ingroup tsk_runnable_group
 */

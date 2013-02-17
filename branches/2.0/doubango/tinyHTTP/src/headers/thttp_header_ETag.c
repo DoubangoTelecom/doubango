@@ -81,7 +81,7 @@ thttp_header_ETag_t *thttp_header_ETag_parse(const char *data, tsk_size_t size)
 	const char *eof = pe;
 	thttp_header_ETag_t *hdr_ETag = thttp_header_etag_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 88 "./src/headers/thttp_header_ETag.c" */

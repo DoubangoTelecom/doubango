@@ -38,6 +38,7 @@ TSIP_BEGIN_DECLS
 
 #define TSIP_OPTIONS_EVENT(self)		((tsip_options_event_t*)(self))
 
+//@tinyWRAP
 typedef enum tsip_options_event_type_e
 {
 	tsip_i_options,

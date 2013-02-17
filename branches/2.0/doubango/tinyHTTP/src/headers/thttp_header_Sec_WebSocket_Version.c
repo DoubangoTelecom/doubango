@@ -76,7 +76,7 @@ thttp_header_Sec_WebSocket_Version_t *thttp_header_Sec_WebSocket_Version_parse(c
 	const char *eof = pe;
 	thttp_header_Sec_WebSocket_Version_t *hdr_Sec_WebSocket_Version = thttp_header_Sec_WebSocket_Version_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 83 "./src/headers/thttp_header_Sec_WebSocket_Version.c" */

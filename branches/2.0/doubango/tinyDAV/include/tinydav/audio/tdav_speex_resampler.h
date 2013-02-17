@@ -45,7 +45,13 @@ typedef struct tdav_speex_resampler_s
 
 	tsk_size_t in_size;
 	tsk_size_t out_size;
-	int8_t channels;
+	uint32_t in_channels;
+	uint32_t out_channels;
+
+	struct{
+		spx_int16_t* ptr;
+		tsk_size_t size_in_samples;
+	} tmp_buffer;
 
 	SpeexResamplerState *state;
 }

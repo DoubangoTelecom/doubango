@@ -22,6 +22,8 @@
 #ifndef TINYWRAP_SIPSTACK_H
 #define TINYWRAP_SIPSTACK_H
 
+#include "tinyWRAP_config.h"
+
 #include "SipCallback.h"
 #include "SafeObject.h"
 
@@ -30,7 +32,7 @@
 
 class DDebugCallback;
 
-class SipStack: public SafeObject
+class TINYWRAP_API SipStack: public SafeObject
 {
 public: /* ctor() and dtor() */
 	SipStack(SipCallback* pCallback, const char* realm_uri, const char* impi_uri, const char* impu_uri);
@@ -39,6 +41,7 @@ public: /* ctor() and dtor() */
 public: /* API functions */
 	bool start();
 	bool setDebugCallback(DDebugCallback* pCallback);
+	bool setDisplayName(const char* display_name);
 	bool setRealm(const char* realm_uri);
 	bool setIMPI(const char* impi);
 	bool setIMPU(const char* impu_uri);

@@ -52,7 +52,7 @@ tmsrp_uri_t *tmsrp_uri_parse(const char *data, tsk_size_t size)
 	const char *eof = pe;
 	tmsrp_uri_t *uri = tmsrp_uri_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 59 "./src/parsers/tmsrp_parser_uri.c" */

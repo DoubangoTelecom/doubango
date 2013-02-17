@@ -27,16 +27,18 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
-/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
-*/
+// Windows (XP/Vista/7/CE and Windows Mobile) macro definition
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define THTTP_UNDER_WINDOWS	1
+#	if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP || WINAPI_FAMILY == WINAPI_FAMILY_APP)
+#		define THTTP_UNDER_WINDOWS_RT		1
+#	endif
 #endif
 
 #if (THTTP_UNDER_WINDOWS || defined(__SYMBIAN32__)) && defined(TINYHTTP_EXPORTS)
 # 	define TINYHTTP_API		__declspec(dllexport)
-# 	define TINYHTTP_GEXTERN __declspec(dllexport)
-#elif (THTTP_UNDER_WINDOWS || defined(__SYMBIAN32__)) /*&& defined(TINYHTTP_IMPORTS)*/
+# 	define TINYHTTP_GEXTERN extern __declspec(dllexport)
+#elif (THTTP_UNDER_WINDOWS || defined(__SYMBIAN32__)) && !defined(TINYHTTP_IMPORTS_IGNORE)
 # 	define TINYHTTP_API __declspec(dllimport)
 # 	define TINYHTTP_GEXTERN __declspec(dllimport)
 #else

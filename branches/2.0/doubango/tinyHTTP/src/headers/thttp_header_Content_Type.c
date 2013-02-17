@@ -73,7 +73,7 @@ thttp_header_Content_Type_t *thttp_header_Content_Type_parse(const char *data, t
 	const char *eof = pe;
 	thttp_header_Content_Type_t *hdr_ctype = thttp_header_content_type_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 80 "./src/headers/thttp_header_Content_Type.c" */

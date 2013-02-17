@@ -82,7 +82,7 @@ tmsrp_header_Use_Path_t *tmsrp_header_Use_Path_parse(const char *data, tsk_size_
 	const char *eof = pe;
 	tmsrp_header_Use_Path_t *header = tmsrp_header_Use_Path_create_null();
 
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 89 "./src/headers/tmsrp_header_Use-Path.c" */

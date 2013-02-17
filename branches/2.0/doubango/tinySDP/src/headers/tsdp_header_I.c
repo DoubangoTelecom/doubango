@@ -87,7 +87,7 @@ tsdp_header_I_t *tsdp_header_I_parse(const char *data, tsk_size_t size)
 	const char *eof = pe;
 	tsdp_header_I_t *hdr_I = tsdp_header_I_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 94 "./src/headers/tsdp_header_I.c" */

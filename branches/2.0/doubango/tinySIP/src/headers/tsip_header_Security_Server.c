@@ -109,7 +109,7 @@ tsip_header_Security_Servers_L_t *tsip_header_Security_Server_parse(const char *
 	const char *eof = pe;
 	tsip_header_Security_Servers_L_t *hdr_securityservers = tsk_list_create();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 	tsip_header_Security_Server_t *curr_securityserver = tsk_null;
 
 	

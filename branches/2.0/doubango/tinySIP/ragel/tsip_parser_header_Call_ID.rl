@@ -97,7 +97,7 @@ tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, tsk_size_t si
 	const char *eof = pe;
 	tsip_header_Call_ID_t *hdr_call_id = tsip_header_Call_ID_create(0);
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

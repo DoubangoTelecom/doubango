@@ -532,10 +532,10 @@ int tnet_transport_unprepare(tnet_transport_t *transport)
 }
 
 /*=== Main thread */
-void *tnet_transport_mainthread(void *param)
+void* TSK_STDCALL tnet_transport_mainthread(void *param)
 {
-	tnet_transport_t *transport = param;
-	transport_context_t *context = transport->context;
+	tnet_transport_t *transport = (tnet_transport_t*)param;
+	transport_context_t *context = (transport_context_t*)transport->context;
 	DWORD evt;
 	WSANETWORKEVENTS networkEvents;
 	DWORD flags = 0;

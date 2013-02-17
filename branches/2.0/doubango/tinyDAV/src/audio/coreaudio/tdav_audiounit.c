@@ -21,6 +21,8 @@
  */
 #include "tinydav/audio/coreaudio/tdav_audiounit.h"
 
+#if HAVE_COREAUDIO_AUDIO_UNIT
+
 #include "tsk_string.h"
 #include "tsk_list.h"
 #include "tsk_safeobj.h"
@@ -31,18 +33,17 @@ static UInt32 kOne = 1;
 static UInt32 kZero = 0;
 #endif /* TARGET_OS_IPHONE */
 
-#if HAVE_COREAUDIO_AUDIO_UNIT
-	#if TARGET_OS_IPHONE
-		#if TARGET_IPHONE_SIMULATOR // VoiceProcessingIO will give unexpected result on the simulator when using iOS 5
-			#define kDoubangoAudioUnitSubType	kAudioUnitSubType_RemoteIO
-		#else // Echo cancellation, AGC, ...
-			#define kDoubangoAudioUnitSubType	kAudioUnitSubType_VoiceProcessingIO
-		#endif
-	#elif TARGET_OS_MAC
-		#define kDoubangoAudioUnitSubType	kAudioUnitSubType_HALOutput
-	#else
-		#error "Unknown target"
+#if TARGET_OS_IPHONE
+	#if TARGET_IPHONE_SIMULATOR // VoiceProcessingIO will give unexpected result on the simulator when using iOS 5
+		#define kDoubangoAudioUnitSubType	kAudioUnitSubType_RemoteIO
+	#else // Echo cancellation, AGC, ...
+		#define kDoubangoAudioUnitSubType	kAudioUnitSubType_VoiceProcessingIO
 	#endif
+#elif TARGET_OS_MAC
+	#define kDoubangoAudioUnitSubType	kAudioUnitSubType_HALOutput
+#else
+	#error "Unknown target"
+#endif
 
 #undef kInputBus
 #define kInputBus 1

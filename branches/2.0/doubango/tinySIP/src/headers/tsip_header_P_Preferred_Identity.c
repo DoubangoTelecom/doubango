@@ -87,7 +87,7 @@ tsip_header_P_Preferred_Identity_t *tsip_header_P_Preferred_Identity_parse(const
 	const char *eof = pe;
 	tsip_header_P_Preferred_Identity_t *hdr_pi = tsip_header_P_Preferred_Identity_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 94 "./src/headers/tsip_header_P_Preferred_Identity.c" */

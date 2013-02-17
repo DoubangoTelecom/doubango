@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{5215a6e5-180a-4ff9-8578-a8f5a3a026da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{acc14f20-428c-4461-8098-c72dcb784449}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinysms">
+      <UniqueIdentifier>{73a0f76a-e417-4556-bb2c-62e99793a905}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinysms\rpdu">
+      <UniqueIdentifier>{ae0dc84b-3812-4a01-9904-dbae4eb1f7f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinysms\tpdu">
+      <UniqueIdentifier>{a1b2fbd8-d455-43c2-85c1-e125737cac05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\rpdu">
+      <UniqueIdentifier>{6f4767dd-5fbf-4aae-83c7-621c3592c1cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tpdu">
+      <UniqueIdentifier>{e70fa535-4e7d-4c46-bd91-ed76b9c0d140}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\tinysms.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms_config.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tsms.h">
+      <Filter>include\tinysms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tsms_address.h">
+      <Filter>include\tinysms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tsms_common.h">
+      <Filter>include\tinysms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tsms_etsi_gsm_03_38.h">
+      <Filter>include\tinysms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tsms_packing.h">
+      <Filter>include\tinysms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\rpdu\tsms_rpdu.h">
+      <Filter>include\tinysms\tpdu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tpdu\tsms_tpdu_command.h">
+      <Filter>include\tinysms\rpdu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tpdu\tsms_tpdu_deliver.h">
+      <Filter>include\tinysms\rpdu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tpdu\tsms_tpdu_report.h">
+      <Filter>include\tinysms\rpdu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tpdu\tsms_tpdu_status_report.h">
+      <Filter>include\tinysms\rpdu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tpdu\tsms_tpdu_submit.h">
+      <Filter>include\tinysms\rpdu</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\tsms.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsms_address.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsms_common.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsms_packing.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tpdu\tsms_tpdu_command.c">
+      <Filter>src\tpdu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tpdu\tsms_tpdu_deliver.c">
+      <Filter>src\tpdu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tpdu\tsms_tpdu_report.c">
+      <Filter>src\tpdu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tpdu\tsms_tpdu_status_report.c">
+      <Filter>src\tpdu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tpdu\tsms_tpdu_submit.c">
+      <Filter>src\tpdu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\rpdu\tsms_rpdu.c">
+      <Filter>src\rpdu</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

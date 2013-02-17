@@ -116,7 +116,7 @@ tsdp_header_C_t *tsdp_header_C_parse(const char *data, tsk_size_t size)
 	const char *eof = pe;
 	tsdp_header_C_t *hdr_C = tsdp_header_c_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(tsdp_machine_parser_header_C_first_final);

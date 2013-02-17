@@ -211,7 +211,7 @@ tsk_size_t tsk_object_get_refcount(tsk_object_t *self)
 */
 void tsk_object_delete(tsk_object_t *self)
 {
-	const tsk_object_def_t ** objdef = self;
+	const tsk_object_def_t ** objdef = (const tsk_object_def_t **)self;
 	if(self && *objdef){
 		if((*objdef)->destructor){
 			self = (*objdef)->destructor(self);

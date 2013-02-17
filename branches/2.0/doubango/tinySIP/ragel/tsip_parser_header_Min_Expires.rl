@@ -94,7 +94,7 @@ tsip_header_Min_Expires_t *tsip_header_Min_Expires_parse(const char *data, tsk_s
 	const char *eof = pe;
 	tsip_header_Min_Expires_t *hdr_minE = tsip_header_Min_Expires_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

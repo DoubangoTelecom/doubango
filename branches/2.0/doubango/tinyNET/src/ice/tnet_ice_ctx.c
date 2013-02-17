@@ -70,7 +70,7 @@ static int _tnet_ice_ctx_fsm_act_async(struct tnet_ice_ctx_s* self, tsk_fsm_acti
 static int _tnet_ice_ctx_signal_async(struct tnet_ice_ctx_s* self, tnet_ice_event_type_t type, const char* phrase);
 static int _tnet_ice_ctx_restart(struct tnet_ice_ctx_s* self);
 static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, tnet_ice_candidates_L_t* remote_candidates, tnet_ice_pairs_L_t* result_pairs, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle);
-static void *_tnet_ice_ctx_run(void* self);
+static void* TSK_STDCALL _tnet_ice_ctx_run(void* self);
 
 static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandidates(va_list *app);
 static int _tnet_ice_ctx_fsm_GatheringHostCandidates_2_GatheringHostCandidatesDone_X_Success(va_list *app);
@@ -1501,7 +1501,7 @@ static int _tnet_ice_ctx_signal_async(tnet_ice_ctx_t* self, tnet_ice_event_type_
 	}
 }
 
-static void *_tnet_ice_ctx_run(void* self)
+static void* TSK_STDCALL _tnet_ice_ctx_run(void* self)
 {
 	tsk_list_item_t *curr;
 	tnet_ice_ctx_t *ctx = tsk_object_ref(self);

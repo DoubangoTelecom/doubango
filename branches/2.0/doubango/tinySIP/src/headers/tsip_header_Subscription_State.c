@@ -84,7 +84,7 @@ tsip_header_Subscription_State_t *tsip_header_Subscription_State_parse(const cha
 	const char *eof = pe;
 	tsip_header_Subscription_State_t *hdr_Subscription_State = tsip_header_Subscription_State_create();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 91 "./src/headers/tsip_header_Subscription_State.c" */

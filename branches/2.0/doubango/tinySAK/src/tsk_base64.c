@@ -97,7 +97,7 @@ tsk_size_t tsk_base64_encode(const uint8_t* input, tsk_size_t input_size, char *
 
 	/* Caller provided his own buffer? */
 	if(!*output){
-		*output = tsk_calloc(1, (TSK_BASE64_ENCODE_LEN(input_size)+1));
+		*output = (char*)tsk_calloc(1, (TSK_BASE64_ENCODE_LEN(input_size)+1));
 	}
 
 	/* Too short? */
@@ -187,7 +187,7 @@ tsk_size_t tsk_base64_decode(const uint8_t* input, tsk_size_t input_size, char *
 
 	/* Caller provided his own buffer? */
 	if(!*output){
-		*output = tsk_calloc(1, (TSK_BASE64_DECODE_LEN(input_size)+1));
+		*output = (char*)tsk_calloc(1, (TSK_BASE64_DECODE_LEN(input_size)+1));
 	}
 	
 	/* Count pads and remove them from the base64 string */

@@ -90,7 +90,7 @@ thttp_header_Sec_WebSocket_Protocol_t *thttp_header_Sec_WebSocket_Protocol_parse
 	const char *eof = pe;
 	thttp_header_Sec_WebSocket_Protocol_t *hdr_Sec_WebSocket_Protocol = thttp_header_Sec_WebSocket_Protocol_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

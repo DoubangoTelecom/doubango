@@ -59,7 +59,10 @@ void SipSession::init(SipStack* pStack, tsip_ssession_handle_t* pHandle/*=tsk_nu
 {
 	if(pHandle){
 		/* "server-side-session" */
-		if(tsip_ssession_take_ownership(pHandle)){ /* should never happen */
+		if(tsip_ssession_have_ownership(pHandle)){
+			tsk_object_ref(pHandle);
+		}
+		else if(tsip_ssession_take_ownership(pHandle) != 0){ /* should never happen */
 			TSK_DEBUG_ERROR("Failed to take ownership");
 			return;
 		}
@@ -965,6 +968,12 @@ PublicationSession::PublicationSession(SipStack* Stack)
 {
 }
 
+PublicationSession::PublicationSession(SipStack* pStack, tsip_ssession_handle_t* pHandle)
+: SipSession(pStack, pHandle)
+{
+
+}
+
 PublicationSession::~PublicationSession()
 {
 }
@@ -1052,6 +1061,13 @@ SubscriptionSession::SubscriptionSession(SipStack* pStack)
 : SipSession(pStack)
 {
 }
+
+SubscriptionSession::SubscriptionSession(SipStack* pStack, tsip_ssession_handle_t* pHandle)
+: SipSession(pStack, pHandle)
+{
+
+}
+
 
 SubscriptionSession::~SubscriptionSession()
 {

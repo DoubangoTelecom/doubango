@@ -212,7 +212,7 @@
 //	const char *eof = pe;
 //	tsip_header_Authorization_t *hdr_Authorization = tsip_header_Authorization_create();
 //	
-//	const char *tag_start;
+//	const char *tag_start = tsk_null;
 //
 //	%%write data;
 //	%%write init;

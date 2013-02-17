@@ -83,7 +83,7 @@ tsip_header_Allow_Events_t *tsip_header_Allow_Events_parse(const char *data, tsk
 	const char *eof = pe;
 	tsip_header_Allow_Events_t *hdr_allow_events = tsip_header_Allow_Events_create();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 90 "./src/headers/tsip_header_Allow_Events.c" */

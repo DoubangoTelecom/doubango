@@ -25,6 +25,20 @@
 
 #include "SipStack.h"
 
+
+#define takeOwnership_Implement(cls, name, session) \
+name##Session* cls##Event::take##session##Ownership() const \
+{ \
+	if(this->sipevent && this->sipevent->ss /*&& !tsip_ssession_have_ownership(this->sipevent->ss)*/){ \
+		SipStack* stack = this->getStack(); \
+		if(stack){ \
+			/* The constructor will call take_ownerhip() */ \
+			return new name##Session(stack, this->sipevent->ss); \
+		} \
+	} \
+	return tsk_null; \
+} \
+
 /* ======================== SipEvent ========================*/
 SipEvent::SipEvent(const tsip_event_t *_sipevent)
 {
@@ -132,31 +146,8 @@ const InviteSession* InviteEvent::getSession() const
 	return dyn_cast<const InviteSession*>(this->getBaseSession());
 }
 
-CallSession* InviteEvent::takeCallSessionOwnership() const
-{
-	// TODO: Factor all takeSessionOwnership() functions
-	if(this->sipevent && this->sipevent->ss && !tsip_ssession_have_ownership(this->sipevent->ss)){
-		SipStack* stack = this->getStack();
-		if(stack){
-			/* The constructor will call take_ownerhip() */
-			return new CallSession(stack, this->sipevent->ss);
-		}
-	}
-	return tsk_null;
-}
-
-MsrpSession* InviteEvent::takeMsrpSessionOwnership() const
-{
-	// TODO: Factor all takeSessionOwnership() functions
-	if(this->sipevent && this->sipevent->ss && !tsip_ssession_have_ownership(this->sipevent->ss)){
-		SipStack* stack = this->getStack();
-		if(stack){
-			/* The constructor will call take_ownerhip() */
-			return new MsrpSession(stack, this->sipevent->ss);
-		}
-	}
-	return tsk_null;
-}
+takeOwnership_Implement(Invite, Call, CallSession);
+takeOwnership_Implement(Invite, Msrp, MsrpSession);
 
 /* ======================== MessagingEvent ========================*/
 MessagingEvent::MessagingEvent(const tsip_event_t *_sipevent)
@@ -178,18 +169,7 @@ const MessagingSession* MessagingEvent::getSession() const
 	return dyn_cast<const MessagingSession*>(this->getBaseSession());
 }
 
-MessagingSession* MessagingEvent::takeSessionOwnership() const
-{
-	if(this->sipevent && this->sipevent->ss && !tsip_ssession_have_ownership(this->sipevent->ss)){
-		SipStack* stack = this->getStack();
-		if(stack){
-			/* The constructor will call take_ownerhip() */
-			return new MessagingSession(stack, this->sipevent->ss);
-		}
-	}
-	return tsk_null;
-}
-
+takeOwnership_Implement(Messaging, Messaging, Session);
 
 
 /* ======================== InfoEvent ========================*/
@@ -212,17 +192,7 @@ const InfoSession* InfoEvent::getSession() const
 	return dyn_cast<const InfoSession*>(this->getBaseSession());
 }
 
-InfoSession* InfoEvent::takeSessionOwnership() const
-{
-	if(this->sipevent && this->sipevent->ss && !tsip_ssession_have_ownership(this->sipevent->ss)){
-		SipStack* stack = this->getStack();
-		if(stack){
-			/* The constructor will call take_ownerhip() */
-			return new InfoSession(stack, this->sipevent->ss);
-		}
-	}
-	return tsk_null;
-}
+takeOwnership_Implement(Info, Info, Session);
 
 
 
@@ -246,17 +216,7 @@ const OptionsSession* OptionsEvent::getSession() const
 	return dyn_cast<const OptionsSession*>(this->getBaseSession());
 }
 
-OptionsSession* OptionsEvent::takeSessionOwnership() const
-{
-	if(this->sipevent && this->sipevent->ss && !tsip_ssession_have_ownership(this->sipevent->ss)){
-		SipStack* stack = this->getStack();
-		if(stack){
-			/* The constructor will call take_ownerhip() */
-			return new OptionsSession(stack, this->sipevent->ss);
-		}
-	}
-	return tsk_null;
-}
+takeOwnership_Implement(Options, Options, Session);
 
 
 /* ======================== PublicationEvent ========================*/
@@ -279,6 +239,7 @@ const PublicationSession* PublicationEvent::getSession() const
 	return dyn_cast<const PublicationSession*>(this->getBaseSession());
 }
 
+takeOwnership_Implement(Publication, Publication, Session);
 
 
 /* ======================== RegistrationEvent ========================*/
@@ -301,18 +262,7 @@ const RegistrationSession* RegistrationEvent::getSession() const
 	return dyn_cast<const RegistrationSession*>(this->getBaseSession());
 }
 
-RegistrationSession* RegistrationEvent::takeSessionOwnership() const
-{
-	// TODO: Factor all takeSessionOwnership() functions
-	if(this->sipevent && this->sipevent->ss && !tsip_ssession_have_ownership(this->sipevent->ss)){
-		SipStack* stack = this->getStack();
-		if(stack){
-			/* The constructor will call take_ownerhip() */
-			return new RegistrationSession(stack, this->sipevent->ss);
-		}
-	}
-	return tsk_null;
-}
+takeOwnership_Implement(Registration, Registration, Session);
 
 
 /* ======================== SubscriptionEvent ========================*/
@@ -334,3 +284,5 @@ const SubscriptionSession* SubscriptionEvent::getSession() const
 {
 	return dyn_cast<const SubscriptionSession*>(this->getBaseSession());
 }
+
+takeOwnership_Implement(Subscription, Subscription, Session);

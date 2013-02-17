@@ -94,7 +94,7 @@ tmsrp_header_Message_ID_t *tmsrp_header_Message_ID_parse(const char *data, tsk_s
 	const char *eof = pe;
 	tmsrp_header_Message_ID_t *hdr_Message_Id = tmsrp_header_Message_ID_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

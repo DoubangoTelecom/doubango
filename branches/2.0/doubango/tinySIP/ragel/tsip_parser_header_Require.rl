@@ -107,7 +107,7 @@ tsip_header_Require_t *tsip_header_Require_parse(const char *data, tsk_size_t si
 	const char *eof = pe;
 	tsip_header_Require_t *hdr_require = tsip_header_Require_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

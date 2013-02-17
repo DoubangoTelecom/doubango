@@ -119,7 +119,7 @@ tmsrp_uri_t *tmsrp_uri_parse(const char *data, tsk_size_t size)
 	const char *eof = pe;
 	tmsrp_uri_t *uri = tmsrp_uri_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

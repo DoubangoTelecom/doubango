@@ -47,7 +47,7 @@
 
 extern void tdav_win32_print_error(const char* func, HRESULT hr);
 
-static void *_tdav_producer_dsound_record_thread(void *param)
+static void* TSK_STDCALL _tdav_producer_dsound_record_thread(void *param)
 {
 	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)param; 
 

@@ -27,16 +27,18 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
-/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
-*/
+// Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define TSMS_UNDER_WINDOWS	1
+#	if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP || WINAPI_FAMILY == WINAPI_FAMILY_APP)
+#		define TSMS_UNDER_WINDOWS_RT		1
+#	endif
 #endif
 
 #if (TSMS_UNDER_WINDOWS || defined(__SYMBIAN32__)) && defined(TINYSMS_EXPORTS)
 # 	define TINYSMS_API		__declspec(dllexport)
-# 	define TINYSMS_GEXTERN __declspec(dllexport)
-#elif (TSMS_UNDER_WINDOWS || defined(__SYMBIAN32__)) /*&& defined(TINYSMS_IMPORTS)*/
+# 	define TINYSMS_GEXTERN extern __declspec(dllexport)
+#elif (TSMS_UNDER_WINDOWS || defined(__SYMBIAN32__)) && !defined(TINYSMS_IMPORTS_IGNORE)
 # 	define TINYSMS_API __declspec(dllimport)
 # 	define TINYSMS_GEXTERN __declspec(dllimport)
 #else

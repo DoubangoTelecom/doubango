@@ -72,7 +72,7 @@ tsip_header_Warnings_L_t *tsip_header_Warning_parse(const char *data, tsk_size_t
 	const char *eof = pe;
 	tsip_header_Warnings_L_t *hdr_warnings = tsk_list_create();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 	tsip_header_Warning_t *curr_warning = 0;
 
 	

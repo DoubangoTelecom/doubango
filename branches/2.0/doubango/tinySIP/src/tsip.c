@@ -45,7 +45,7 @@
 #include <stdarg.h>
 #include <string.h>
 
-static void *run(void* self);
+static void* TSK_STDCALL run(void* self);
 
 /* For tests:
 * http://www.voip-info.org/wiki/view/PROTOS+Test-Suite
@@ -593,7 +593,7 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 	}
 
 	if(stack->started){
-		TSK_DEBUG_WARN("Stack Already started");
+		TSK_DEBUG_INFO("Stack Already started");
 		return 0;
 	}
 
@@ -747,7 +747,7 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 			
 			if(transport){
 				tnet_ip_t ip;
-				if(!tnet_transport_get_ip_n_port_2(transport, &ip, tsk_null)){
+				if(!tnet_transport_get_ip_n_port_2(transport->net_transport, &ip, tsk_null)){
 					tsk_strupdate(&stack->network.local_ip[t_idx], ip);
 				}
 				else{
@@ -1058,7 +1058,7 @@ tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_t *stack, tnet_socket_type
 
 
 
-static void *run(void* self)
+static void* TSK_STDCALL run(void* self)
 {
 	tsk_list_item_t *curr;
 	tsip_stack_t *stack = self;

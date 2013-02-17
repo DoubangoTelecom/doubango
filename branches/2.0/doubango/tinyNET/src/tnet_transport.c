@@ -49,10 +49,10 @@
 
 extern int tnet_transport_prepare(tnet_transport_t *transport);
 extern int tnet_transport_unprepare(tnet_transport_t *transport);
-extern void *tnet_transport_mainthread(void *param);
+extern void* TSK_STDCALL tnet_transport_mainthread(void *param);
 extern int tnet_transport_stop(tnet_transport_t *transport);
 
-static void *run(void* self);
+static void* TSK_STDCALL run(void* self);
 static int _tnet_transport_dtls_cb(const void* usrdata, tnet_dtls_socket_event_type_t e, const tnet_dtls_socket_handle_t* handle, const void* data, tsk_size_t size);
 
 static int _tnet_transport_ssl_init(tnet_transport_t* transport)
@@ -824,7 +824,7 @@ static int _tnet_transport_dtls_cb(const void* usrdata, tnet_dtls_socket_event_t
 /*
 * Runnable interface implementation.
 */
-static void *run(void* self)
+static void* TSK_STDCALL run(void* self)
 {
 	int ret = 0;
 	tsk_list_item_t *curr;

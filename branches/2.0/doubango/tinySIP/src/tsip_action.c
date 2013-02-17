@@ -148,6 +148,8 @@ int _tsip_action_set(tsip_action_handle_t* self, va_list* app)
 							/* Copy resp line */
 							action->line_resp.code = handle->line_resp.code;
 							tsk_strupdate(&action->line_resp.phrase, handle->line_resp.phrase);
+							/* Copy media type */
+							action->media.type = handle->media.type;
 							/* Copy media params */
 							if(!TSK_LIST_IS_EMPTY(handle->media.params)){ 
 								if(!action->media.params){
@@ -179,6 +181,12 @@ int _tsip_action_set(tsip_action_handle_t* self, va_list* app)
 						const char* phrase = va_arg(*app, const void *);
 						action->line_resp.code = (short)code;
 						tsk_strupdate(&action->line_resp.phrase, phrase);
+						break;
+					}
+
+				case aptype_media_type:
+					{ /* (enum tmedia_type_e)TYPE_ENUM */
+						action->media.type = va_arg(*app, tmedia_type_t);
 						break;
 					}
 

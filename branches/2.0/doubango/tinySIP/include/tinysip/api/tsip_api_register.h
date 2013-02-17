@@ -38,6 +38,7 @@ TSIP_BEGIN_DECLS
 
 #define TSIP_REGISTER_EVENT(self)		((tsip_register_event_t*)(self))
 
+//@tinyWRAP
 typedef enum tsip_register_event_type_e
 {
 	tsip_i_newreg,

@@ -38,18 +38,20 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
-/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
-*/
+// Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define TMSRP_UNDER_WINDOWS	1
+#	if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP || WINAPI_FAMILY == WINAPI_FAMILY_APP)
+#		define TMSRP_UNDER_WINDOWS_RT		1
+#	endif
 #endif
 
 /* Used on Windows and Symbian systems to export/import public functions and global variables.
 */
 #if !defined(__GNUC__) && defined(TINYMSRP_EXPORTS)
 # 	define TINYMSRP_API		__declspec(dllexport)
-#	define TINYMSRP_GEXTERN	__declspec(dllexport)
-#elif !defined(__GNUC__) /*&& defined(TINYMSRP_IMPORTS)*/
+#	define TINYMSRP_GEXTERN	extern __declspec(dllexport)
+#elif !defined(__GNUC__) && !defined(TINYMSRP_IMPORTS_IGNORE)
 # 	define TINYMSRP_API		__declspec(dllimport)
 #	define TINYMSRP_GEXTERN	__declspec(dllimport)
 #else

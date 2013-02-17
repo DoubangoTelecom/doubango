@@ -41,29 +41,36 @@
 
 #include <string.h>
 
+#if TSK_UNDER_WINDOWS_RT
+#include <vector>
+extern std::vector<char> rt_tsk_str_to_native(Platform::String^ str);
+extern Platform::String^  rt_tsk_str_to_managed(char const* str);
+
+#endif /* TSK_UNDER_WINDOWS_RT */
+
 #if HAVE_NET_ROUTE_H
 #	if defined(__APPLE__) && __IPHONE_OS_VERSION_MIN_REQUIRED <= __IPHONE_3_2
 #		include "net/route.h" // from Doubango 3rd parties folder beacuse the one from iOS SDK is incomplete
 #	else
 #		include <net/route.h>
 #	endif
-#endif
+#endif /* HAVE_NET_ROUTE_H */
 
 #if HAVE_NET_IF_TYPES_H
 # 	include <net/if_types.h>
-#endif
+#endif /* HAVE_NET_IF_TYPES_H */
 
 #if HAVE_NET_IF_DL_H
 # 	include <net/if_dl.h>
-#endif
+#endif /* HAVE_NET_IF_DL_H */
 
 #if HAVE_NETPACKET_PACKET_H
 # 	include <netpacket/packet.h>
-#endif
+#endif /* HAVE_NETPACKET_PACKET_H */
 
 #ifndef AF_LINK
 #	define AF_LINK AF_PACKET
-#endif
+#endif /* AF_LINK */
 
 /**@defgroup tnet_utils_group Network utility functions.
 */
@@ -74,7 +81,7 @@
 */
 tnet_interface_t* tnet_interface_create(const char* description, const void* mac_address, tsk_size_t mac_address_length)
 {
-	return tsk_object_new(tnet_interface_def_t, description, mac_address, mac_address_length);
+	return (tnet_interface_t*)tsk_object_new(tnet_interface_def_t, description, mac_address, mac_address_length);
 }
 
 /**@ingroup tnet_utils_group
@@ -82,7 +89,7 @@ tnet_interface_t* tnet_interface_create(const char* description, const void* mac
 */
 tnet_address_t* tnet_address_create(const char* ip)
 {
-	return tsk_object_new(tnet_address_def_t, ip);
+	return (tnet_address_t*)tsk_object_new(tnet_address_def_t, ip);
 }
 
 /**@ingroup tnet_utils_group
@@ -96,7 +103,19 @@ void tnet_getlasterror(tnet_error_t *error)
 	int err  = tnet_geterrno();
 	memset(*error, 0, sizeof(*error));
 
-#if TNET_UNDER_WINDOWS
+#if TNET_UNDER_WINDOWS_RT
+	// FormatMessageA Not allowed on Market
+	static WCHAR wBuff[1024] = {0};
+	FormatMessageW(
+		  FORMAT_MESSAGE_FROM_SYSTEM, 
+		  tsk_null,
+		  err,
+		  0,
+		  wBuff, 
+		  sizeof(wBuff)-1,
+		  tsk_null);
+	WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, wBuff, wcslen(wBuff), *error, sizeof(*error) - 1, NULL, NULL);
+#elif TNET_UNDER_WINDOWS
 	{
 #ifdef _WIN32_WCE
 		FormatMessage
@@ -142,8 +161,11 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 {
 	tnet_interfaces_L_t * ifaces = tsk_list_create();
 
-#if TNET_UNDER_WINDOWS /*=== WINDOWS XP/VISTA/7/CE===*/
-
+#if TNET_UNDER_WINDOWS/*=== WINDOWS XP/VISTA/7/CE===*/
+#if TNET_UNDER_WINDOWS_RT
+	TSK_DEBUG_ERROR("Not implemented on your OS");
+	goto bail;
+#else /* !TNET_UNDER_WINDOWS_RT */
 #define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
 #define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
 
@@ -197,7 +219,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 
 #undef MALLOC
 #undef FREE
-
+#endif /* !TNET_UNDER_WINDOWS_RT */
 
 #elif HAVE_IFADDRS_H && HAVE_GETIFADDRS /*=== Using getifaddrs ===*/
 
@@ -331,6 +353,9 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, tsk_bool_t unicast,
 	tnet_addresses_L_t *addresses = tsk_list_create();
 
 #if TSK_UNDER_WINDOWS
+#if TSK_UNDER_WINDOWS_RT
+	TSK_DEBUG_ERROR("Not implemented on your OS");
+#else /* !TSK_UNDER_WINDOWS_RT */
 	
 #define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
 #define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
@@ -458,6 +483,8 @@ next:
 #undef FREE
 
 bail:
+
+#endif /* !TSK_UNDER_WINDOWS_RT */
     
 #else	/* !TSK_UNDER_WINDOWS (MAC OS X, UNIX, ANDROID ...) */
 
@@ -607,17 +634,95 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
 #if TNET_UNDER_WINDOWS
 	long dwBestIfIndex = -1;
 #endif
+#if TNET_UNDER_WINDOWS_RT
+	Windows::Networking::Connectivity::ConnectionProfile^ profile;
+#endif
 
 	if(!destination || !source){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		goto bail;
 	}
 
+	memset(*source, '\0', sizeof(*source));
+
+	// special cases for Windows Phone device and emulator
+#if TNET_UNDER_WINDOWS_PHONE
+	if(tsk_strequals(destination, "127.0.0.1")){
+		memcpy(*source, "127.0.0.1", 9);
+		ret = 0; goto bail;
+	}
+	if(tsk_strequals(destination, "::1")){
+		memcpy(*source, "::1", 3);
+		ret = 0; goto bail;
+	}
+#endif
+
 	if((ret = tnet_sockaddr_init(destination, port, type, &destAddr))){
 		goto bail;
 	}
 
-#if TNET_UNDER_WINDOWS /* Windows XP/Vista/7 and Windows Mobile */
+#if TNET_UNDER_WINDOWS_RT /* Windows Phone 8, Surface or any RT */
+	profile = Windows::Networking::Connectivity::NetworkInformation::GetInternetConnectionProfile();
+		
+	if (profile != nullptr && profile->NetworkAdapter != nullptr){
+		TSK_DEBUG_INFO("Network profile IanaInterfaceType = %d", profile->NetworkAdapter->IanaInterfaceType);
+		Windows::Foundation::Collections::IVectorView<Windows::Networking::HostName^>^ HostNames = Windows::Networking::Connectivity::NetworkInformation::GetHostNames();		
+
+		if(HostNames->Size > 0)
+		{
+			Windows::Foundation::Collections::IIterator<Windows::Networking::HostName^>^ HostName = HostNames->First();
+			do
+			{			
+				std::vector<char> CanonicalName = rt_tsk_str_to_native(HostName->Current->CanonicalName);
+				TSK_DEBUG_INFO("Checking IP address = %s", CanonicalName.data());
+				if((TNET_SOCKET_TYPE_IS_IPV4(type) && HostName->Current->IPInformation->PrefixLength->Value > 32) || (TNET_SOCKET_TYPE_IS_IPV6(type) && HostName->Current->IPInformation->PrefixLength->Value > 128))
+				{
+					TSK_DEBUG_INFO("Type mismatch - Skiping IP address=%s, IanaInterfaceType=%d, PrefixLength=%d", CanonicalName.data(), HostName->Current->IPInformation->NetworkAdapter->IanaInterfaceType, HostName->Current->IPInformation->PrefixLength->Value);
+					continue;
+				}
+
+				
+				if(HostName->Current->IPInformation != nullptr)
+				{
+					// http://msdn.microsoft.com/en-us/library/windows/apps/windows.networking.connectivity.networkadapter.networkadapterid.aspx
+					// HostName->Current->IPInformation->NetworkAdapter->NetworkAdapterId not implemented on WP8
+					#if WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP
+					tnet_socket_t* ss = tnet_socket_create(CanonicalName.data(), TNET_SOCKET_PORT_ANY, type);
+					if(ss)
+					{
+						ret = connect(ss->fd, (const sockaddr*)&destAddr, tnet_get_sockaddr_size((const sockaddr*)&destAddr));
+						if(ret && tnet_geterrno() == TNET_ERROR_EAGAIN)
+						{
+							ret = tnet_sockfd_waitUntilWritable(ss->fd, 500);
+						}
+						TSK_OBJECT_SAFE_FREE(ss);
+					}
+					# else
+					if(HostName->Current->IPInformation->NetworkAdapter->IanaInterfaceType == profile->NetworkAdapter->IanaInterfaceType)
+					{
+						ret = 0;
+					}
+					#endif /*  */
+
+					if(ret == 0)
+					{
+						TSK_DEBUG_INFO("Using best IP address = %s :)", CanonicalName.data());
+						memcpy(*source, CanonicalName.data(), TSK_MIN(tsk_strlen(CanonicalName.data()), sizeof(*source)));
+						ret = 0;
+						goto bail;
+					}
+					TSK_DEBUG_INFO("Connection check - Skiping IP address = %s", CanonicalName.data());
+				}
+			} 
+			while(HostName->MoveNext());
+		}
+    }
+	else
+	{
+		TSK_DEBUG_ERROR("No network connection available");
+	}
+	
+#elif TNET_UNDER_WINDOWS /* Windows XP/Vista/7 and Windows Mobile */
 	if(GetBestInterfaceEx((struct sockaddr*)&destAddr, &dwBestIfIndex) != NO_ERROR){
 		ret = tnet_geterrno();
 		TNET_PRINT_LAST_ERROR("GetBestInterfaceEx() failed.");
@@ -636,7 +741,6 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
 		tsk_list_foreach(item, addresses){
 			const tnet_address_t* address = item->data;
 			if(address && address->ip){
-				memset(*source, '\0', sizeof(*source));
 				memcpy(*source, address->ip, tsk_strlen(address->ip) > sizeof(*source) ? sizeof(*source) : tsk_strlen(address->ip));
 				ret = 0;
 				break; // First is good for us.
@@ -766,7 +870,6 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
             
         tnet_get_sockip((struct sockaddr *) ifa->ifa_addr, &ip);
             
-        memset(*source, '\0', sizeof(*source));
         memcpy(*source, ip, tsk_strlen(ip) > sizeof(*source) ? sizeof(*source) : tsk_strlen(ip));
         ret = 0;
         goto bail; // First is good for us.
@@ -1381,7 +1484,7 @@ int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, tsk_size_t size, int flags, st
 	}
 
 	fromlen = tnet_get_sockaddr_size(from);
-	return recvfrom(fd, buf, size, flags, from, &fromlen);
+	return recvfrom(fd, (char*)buf, size, flags, from, &fromlen);
 }
 
 /**@ingroup tnet_utils_group
@@ -1404,7 +1507,7 @@ tsk_size_t tnet_sockfd_send(tnet_fd_t fd, const void* buf, tsk_size_t size, int 
 	}
 
 	while(sent < size){
-		if((ret = send(fd, (((const uint8_t*)buf)+sent), (size-sent), flags)) <= 0){
+		if((ret = send(fd, (((const char*)buf)+sent), (size-sent), flags)) <= 0){
 			if(tnet_geterrno() == TNET_ERROR_WOULDBLOCK){
 				// FIXME: HORRIBLE HACK
 				if((ret = tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT))){
@@ -1448,7 +1551,7 @@ int tnet_sockfd_recv(tnet_fd_t fd, void* buf, tsk_size_t size, int flags)
 		goto bail;
 	}
 
-	if((ret = recv(fd, buf, size, flags)) <= 0){
+	if((ret = recv(fd, (char*)buf, size, flags)) <= 0){
 		TNET_PRINT_LAST_ERROR("recv failed.");
 		goto bail;
 	}
@@ -1592,14 +1695,14 @@ int tnet_sockfd_close(tnet_fd_t *fd)
 //
 static tsk_object_t* tnet_interface_ctor(tsk_object_t * self, va_list * app)
 {
-	tnet_interface_t *iface = self;
+	tnet_interface_t *iface = (tnet_interface_t *)self;
 	if(iface){
 		const char* description = va_arg(*app, const char*);
 		const void* mac_address = va_arg(*app, const void*);
 		tsk_size_t mac_address_length = va_arg(*app, tsk_size_t);
 
 		iface->description = tsk_strdup(description);
-		if((iface->mac_address = tsk_calloc(mac_address_length, sizeof(uint8_t)))){
+		if((iface->mac_address = (uint8_t*)tsk_calloc(mac_address_length, sizeof(uint8_t)))){
 			memcpy(iface->mac_address, mac_address, mac_address_length);
 		}
 		iface->mac_address_length = mac_address_length;
@@ -1609,7 +1712,7 @@ static tsk_object_t* tnet_interface_ctor(tsk_object_t * self, va_list * app)
 
 static tsk_object_t* tnet_interface_dtor(tsk_object_t * self)
 { 
-	tnet_interface_t *iface = self;
+	tnet_interface_t *iface = (tnet_interface_t *)self;
 	if(iface){
 		TSK_FREE(iface->description);
 		TSK_FREE(iface->mac_address);
@@ -1620,8 +1723,8 @@ static tsk_object_t* tnet_interface_dtor(tsk_object_t * self)
 
 static int tnet_interface_cmp(const tsk_object_t *if1, const tsk_object_t *if2)
 {
-	const tnet_interface_t *iface1 = if1;
-	const tnet_interface_t *iface2 = if2;
+	const tnet_interface_t *iface1 = (const tnet_interface_t *)if1;
+	const tnet_interface_t *iface2 = (const tnet_interface_t *)if2;
 	
 	if(iface1 && iface2){
 		return tsk_stricmp(iface1->description, iface1->description);
@@ -1647,7 +1750,7 @@ const tsk_object_def_t *tnet_interface_def_t = &tnet_interface_def_s;
 //
 static tsk_object_t* tnet_address_ctor(tsk_object_t * self, va_list * app)
 {
-	tnet_address_t *address = self;
+	tnet_address_t *address = (tnet_address_t *)self;
 	if(address){
 		address->ip = tsk_strdup(va_arg(*app, const char*));
 	}
@@ -1656,7 +1759,7 @@ static tsk_object_t* tnet_address_ctor(tsk_object_t * self, va_list * app)
 
 static tsk_object_t* tnet_address_dtor(tsk_object_t * self)
 { 
-	tnet_address_t *address = self;
+	tnet_address_t *address = (tnet_address_t *)self;
 	if(address){
 		TSK_FREE(address->ip);
 	}
@@ -1666,8 +1769,8 @@ static tsk_object_t* tnet_address_dtor(tsk_object_t * self)
 
 static int tnet_address_cmp(const tsk_object_t *_a1, const tsk_object_t *_a2)
 {
-	const tnet_address_t *a1 = _a1;
-	const tnet_address_t *a2 = _a2;
+	const tnet_address_t *a1 = (const tnet_address_t *)_a1;
+	const tnet_address_t *a2 = (const tnet_address_t *)_a2;
 	
 	if(a1 && a2){
 		// to have AF_UNSPEC, AF_UNIX, AF_INET, ... first

@@ -74,7 +74,7 @@ tsip_header_Event_t *tsip_header_Event_parse(const char *data, tsk_size_t size)
 	const char *eof = pe;
 	tsip_header_Event_t *hdr_event = tsip_header_Event_create(tsk_null);
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 81 "./src/headers/tsip_header_Event.c" */

@@ -213,7 +213,7 @@
 //	const char *eof = pe;
 //	tsip_header_Proxy_Authorization_t *hdr_Proxy_Authorization = TSIP_HEADER_PROXY_AUTHORIZATION_CREATE();
 //	
-//	const char *tag_start;
+//	const char *tag_start = tsk_null;
 //
 //	%%write data;
 //	%%write init;

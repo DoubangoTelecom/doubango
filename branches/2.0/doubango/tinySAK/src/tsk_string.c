@@ -38,6 +38,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if TSK_UNDER_WINDOWS_RT
+#include <Windows.h> /* MultiByteToWideChar */
+#include <vector>
+#endif
+
 
 #if defined(_MSC_VER)
 #	define snprintf		_snprintf
@@ -59,13 +64,13 @@
 */
 tsk_string_t* tsk_string_create(const char* str)
 {
-	return tsk_object_new(tsk_string_def_t, str);
+	return (tsk_string_t*)tsk_object_new(tsk_string_def_t, str);
 }
 
 int tsk_string_pred_icmp(const tsk_list_item_t* item, const void* str)
 {
 	if(item && str){
-		return tsk_stricmp(TSK_STRING_STR(item->data), str);
+		return tsk_stricmp(TSK_STRING_STR(item->data), (const char*)str);
 	}
 	return -1;
 }
@@ -73,7 +78,7 @@ int tsk_string_pred_icmp(const tsk_list_item_t* item, const void* str)
 int tsk_string_pred_cmp(const tsk_list_item_t* item, const void* str)
 {
 	if(item && str){
-		return tsk_strcmp(TSK_STRING_STR(item->data), str);
+		return tsk_strcmp(TSK_STRING_STR(item->data), (const char*)str);
 	}
 	return -1;
 }
@@ -194,7 +199,7 @@ char* tsk_strndup(const char *s1, tsk_size_t n)
 		tsk_size_t len = tsk_strlen(s1);
 		tsk_size_t nret = (n > len) ? (len) : (n);
 
-		if((ret = tsk_calloc((nret+1), sizeof(uint8_t)))){
+		if((ret = (char*)tsk_calloc((nret+1), sizeof(uint8_t)))){
 			memcpy(ret, s1, nret);
 		}
 	}
@@ -305,7 +310,7 @@ void tsk_strncat(char** destination, const char* source, tsk_size_t n)
 		strncpy(*destination, source, tsk_size_to_cat+1);
 	}else{
 		index = tsk_strlen(*destination);
-		*destination = tsk_realloc(*destination, index + tsk_size_to_cat+1);
+		*destination = (char*)tsk_realloc(*destination, index + tsk_size_to_cat+1);
 		strncpy(((*destination)+index), source, tsk_size_to_cat+1);
 	}
 	(*destination)[index + tsk_size_to_cat] = '\0';
@@ -585,7 +590,43 @@ void tsk_str_to_hex(const char *str, tsk_size_t size, uint8_t* hex)
 
 
 
+#if TSK_UNDER_WINDOWS_RT
 
+TINYSAK_API std::vector<char> rt_tsk_str_to_native(Platform::String^ str)
+{
+	if(str != nullptr && !str->IsEmpty())
+	 {
+		int len = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, str->Data(), str->Length(), nullptr, 0, nullptr, nullptr);
+		if (len > 0)
+		{
+			std::vector<char> vec(len + 1);
+			if (WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, str->Data(), str->Length(), vec.data(), len, nullptr, nullptr) == len)
+			{
+				return std::move(vec);
+			}
+		}
+	 }
+    return std::move(std::vector<char>(0));
+}
+
+TINYSAK_API Platform::String^  rt_tsk_str_to_managed(char const* str)
+{
+	if(str)
+	{
+		int len = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, str, -1, nullptr, 0);
+		if (len > 0)
+		{
+			std::vector<wchar_t> vec(len);
+			if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, str, -1, vec.data(), len) == len)
+			{
+				return ref new Platform::String(vec.data());
+			}
+		}
+	}
+	return nullptr;
+}
+
+#endif /* TSK_UNDER_WINDOWS_RT */
 
 
 
@@ -597,7 +638,7 @@ void tsk_str_to_hex(const char *str, tsk_size_t size, uint8_t* hex)
 //
 static tsk_object_t* tsk_string_ctor(tsk_object_t * self, va_list * app)
 {
-	tsk_string_t *string = self;
+	tsk_string_t *string = (tsk_string_t*)self;
 	const char *value = va_arg(*app, const char *);
 	if(value){
 		string->value = tsk_strdup(value);
@@ -607,7 +648,7 @@ static tsk_object_t* tsk_string_ctor(tsk_object_t * self, va_list * app)
 
 static tsk_object_t* tsk_string_dtor(tsk_object_t * self)
 { 
-	tsk_string_t *string = self;
+	tsk_string_t *string = (tsk_string_t*)self;
 	if(string){
 		TSK_FREE(string->value);
 	}
@@ -617,8 +658,8 @@ static tsk_object_t* tsk_string_dtor(tsk_object_t * self)
 
 static int tsk_string_cmp(const tsk_object_t *_s1, const tsk_object_t *_s2)
 {
-	const tsk_string_t *s1 = _s1;
-	const tsk_string_t *s2 = _s2;
+	const tsk_string_t *s1 = (const tsk_string_t *)_s1;
+	const tsk_string_t *s2 = (const tsk_string_t *)_s2;
 
 	if(s1 && s2){
 		return tsk_stricmp(s1->value, s2->value);

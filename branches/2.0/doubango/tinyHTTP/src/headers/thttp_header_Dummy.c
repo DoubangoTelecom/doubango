@@ -79,7 +79,7 @@ thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, tsk_size_t size
 	const char *eof = pe;
 	thttp_header_Dummy_t *hdr_Dummy = thttp_header_dummy_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 86 "./src/headers/thttp_header_Dummy.c" */

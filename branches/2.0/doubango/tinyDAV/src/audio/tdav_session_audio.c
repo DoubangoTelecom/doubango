@@ -50,7 +50,7 @@
 static int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id);
 static struct tdav_session_audio_dtmfe_s* _tdav_session_audio_dtmfe_create(const tdav_session_audio_t* session, uint8_t event, uint16_t duration, uint32_t seq, uint32_t timestamp, uint8_t format, tsk_bool_t M, tsk_bool_t E);
 static void _tdav_session_audio_apply_gain(void* buffer, int len, int bps, int gain);
-static tmedia_resampler_t* _tdav_session_audio_resampler_create(int32_t bytes_per_sample, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t channels, uint32_t quality, void** resampler_buffer, tsk_size_t *resampler_buffer_size);
+static tmedia_resampler_t* _tdav_session_audio_resampler_create(int32_t bytes_per_sample, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t in_channels, uint32_t out_channels, uint32_t quality, void** resampler_buffer, tsk_size_t *resampler_buffer_size);
 
 /* DTMF event object */
 typedef struct tdav_session_audio_dtmfe_s
@@ -115,7 +115,7 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 				int bytesPerSample = (base->consumer->audio.bits_per_sample >> 3);
 
 				if(!audio->decoder.resampler.instance){
-					audio->decoder.resampler.instance = _tdav_session_audio_resampler_create(bytesPerSample, audio->decoder.codec->plugin->rate, base->consumer->audio.out.rate, base->consumer->audio.ptime, base->consumer->audio.out.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, &audio->decoder.resampler.buffer, &audio->decoder.resampler.buffer_size);
+					audio->decoder.resampler.instance = _tdav_session_audio_resampler_create(bytesPerSample, audio->decoder.codec->plugin->rate, base->consumer->audio.out.rate, base->consumer->audio.ptime, base->consumer->audio.in.channels, base->consumer->audio.out.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, &audio->decoder.resampler.buffer, &audio->decoder.resampler.buffer_size);
 				}
 				if(!audio->decoder.resampler.instance){
 					TSK_DEBUG_ERROR("No resampler to handle data");
@@ -184,7 +184,7 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 			int bytesPerSample = (base->producer->audio.bits_per_sample >> 3);
 
 			if(!audio->encoder.resampler.instance){
-				audio->encoder.resampler.instance = _tdav_session_audio_resampler_create(bytesPerSample, base->producer->audio.rate, audio->encoder.codec->plugin->rate,base->producer->audio.ptime, base->producer->audio.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, &audio->encoder.resampler.buffer, &audio->encoder.resampler.buffer_size);
+				audio->encoder.resampler.instance = _tdav_session_audio_resampler_create(bytesPerSample, base->producer->audio.rate, audio->encoder.codec->plugin->rate,base->producer->audio.ptime, base->producer->audio.channels, base->producer->audio.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, &audio->encoder.resampler.buffer, &audio->encoder.resampler.buffer_size);
 			}
 			if(!audio->encoder.resampler.instance){
 				TSK_DEBUG_ERROR("No resampler to handle data");
@@ -636,9 +636,9 @@ static int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t tim
 	return 0;
 }
 
-static tmedia_resampler_t* _tdav_session_audio_resampler_create(int32_t bytes_per_sample, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t channels, uint32_t quality, void** resampler_buffer, tsk_size_t *resampler_buffer_size)
+static tmedia_resampler_t* _tdav_session_audio_resampler_create(int32_t bytes_per_sample, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t in_channels, uint32_t out_channels, uint32_t quality, void** resampler_buffer, tsk_size_t *resampler_buffer_size)
 {
-	uint32_t resampler_buff_size = ((out_freq * frame_duration)/1000) * bytes_per_sample;
+	uint32_t resampler_buff_size = (((out_freq * frame_duration)/1000) * bytes_per_sample) * (out_channels / in_channels);
 	tmedia_resampler_t* resampler;
 	int ret;
 
@@ -647,8 +647,8 @@ static tmedia_resampler_t* _tdav_session_audio_resampler_create(int32_t bytes_pe
 		return tsk_null;
 	}
 	else {
-		if((ret = tmedia_resampler_open(resampler, in_freq, out_freq, frame_duration, channels, quality))){
-			TSK_DEBUG_ERROR("Failed to open audio resampler (%d, %d, %d, %d, %d) with retcode=%d", in_freq, out_freq, frame_duration, channels, quality, ret);
+		if((ret = tmedia_resampler_open(resampler, in_freq, out_freq, frame_duration, in_channels, out_channels, quality))){
+			TSK_DEBUG_ERROR("Failed to open audio resampler (%d, %d, %d, %d, %d,%d) with retcode=%d", in_freq, out_freq, frame_duration, in_channels, out_channels, quality, ret);
 			TSK_OBJECT_SAFE_FREE(resampler);
 			goto done;
 		}

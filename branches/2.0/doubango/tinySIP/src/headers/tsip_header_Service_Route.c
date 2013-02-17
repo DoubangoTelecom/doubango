@@ -83,7 +83,7 @@ tsip_header_Service_Routes_L_t *tsip_header_Service_Route_parse(const char *data
 	const char *eof = pe;
 	tsip_header_Service_Routes_L_t *hdr_services = tsk_list_create();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 	tsip_header_Service_Route_t *curr_service = tsk_null;
 
 	

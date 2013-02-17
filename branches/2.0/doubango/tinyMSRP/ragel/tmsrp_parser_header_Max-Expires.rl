@@ -92,7 +92,7 @@ tmsrp_header_Max_Expires_t *tmsrp_header_Max_Expires_parse(const char *data, tsk
 	const char *eof = pe;
 	tmsrp_header_Max_Expires_t *hdr_Max_Expires = tmsrp_header_Max_Expires_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);
