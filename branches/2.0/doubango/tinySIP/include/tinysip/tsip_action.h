@@ -111,6 +111,7 @@ typedef enum tsip_action_param_type_e
 	aptype_config,
 	aptype_payload,
 	aptype_resp_line,
+	aptype_media_type,
 	aptype_media,
 }
 tsip_action_param_type_t;
@@ -119,6 +120,7 @@ tsip_action_param_type_t;
 #define TSIP_ACTION_SET_PAYLOAD(PAY_PTR, PAY_SIZE)			aptype_payload, (const void*)PAY_PTR, (tsk_size_t)PAY_SIZE
 #define TSIP_ACTION_SET_RESP_LINE(CODE_INT, PHRASE_STR)		aptype_resp_line, (int32_t)CODE_INT, (const char*)PHRASE_STR
 #define TSIP_ACTION_SET_CONFIG(ACTION_CONFIG_HANDLE)		aptype_config, (const tsip_action_handle_t*)ACTION_CONFIG_HANDLE
+#define TSIP_ACTION_SET_MEDIA_TYPE(TYPE_ENUM)				aptype_media_type, (enum tmedia_type_e)TYPE_ENUM
 #define TSIP_ACTION_SET_MEDIA(...)							aptype_media, ##__VA_ARGS__
 #define TSIP_ACTION_SET_NULL()								aptype_null
 

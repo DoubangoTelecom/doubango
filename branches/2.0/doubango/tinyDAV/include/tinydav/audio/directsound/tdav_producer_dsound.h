@@ -25,14 +25,13 @@
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
-
- */
+  */
 #ifndef TINYDAV_PRODUCER_DSOUND_H
 #define TINYDAV_PRODUCER_DSOUND_H
 
 #include "tinydav_config.h"
 
-#if HAVE_DSOUND_H
+#if HAVE_DSOUND_H || HAVE_DSOUND
 
 #include "tinydav/audio/tdav_producer_audio.h"
 
@@ -62,6 +61,6 @@ TINYDAV_GEXTERN const tmedia_producer_plugin_def_t *tdav_producer_dsound_plugin_
 
 TDAV_END_DECLS
 
-#endif /* HAVE_DSOUND_H */
+#endif /* HAVE_DSOUND_H || HAVE_DSOUND */
 
 #endif /* TINYDAV_PRODUCER_DSOUND_H */

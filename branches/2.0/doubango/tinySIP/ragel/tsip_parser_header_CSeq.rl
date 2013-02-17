@@ -90,7 +90,7 @@ tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, tsk_size_t size)
 	const char *eof = pe;
 	tsip_header_CSeq_t *hdr_cseq = tsip_header_CSeq_create(TSIP_HEADER_CSEQ_NONE, tsk_null);
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

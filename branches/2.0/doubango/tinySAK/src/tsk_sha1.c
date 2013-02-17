@@ -170,7 +170,7 @@ tsk_sha1_errcode_t tsk_sha1result( tsk_sha1context_t *context, tsk_sha1digest_t 
     }
 
     if (context->Corrupted){
-        return context->Corrupted;
+        return (tsk_sha1_errcode_t)context->Corrupted;
     }
 
     if (!context->Computed){
@@ -221,7 +221,7 @@ tsk_sha1_errcode_t tsk_sha1input(tsk_sha1context_t    *context,
     }
 
     if (context->Corrupted){
-         return context->Corrupted;
+         return (tsk_sha1_errcode_t)context->Corrupted;
     }
     while(length-- && !context->Corrupted)
     {

@@ -49,7 +49,7 @@ static _inline int32_t __convert_volume(int32_t volume)
 	return (volume * __step) + DSBVOLUME_MIN;
 }
 
-static void *_tdav_consumer_dsound_playback_thread(void *param)
+static void* TSK_STDCALL _tdav_consumer_dsound_playback_thread(void *param)
 {
 	tdav_consumer_dsound_t* dsound = (tdav_consumer_dsound_t*)param; 
 

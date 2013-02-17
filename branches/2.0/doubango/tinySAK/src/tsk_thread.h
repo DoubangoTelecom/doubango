@@ -43,7 +43,7 @@ typedef pthread_t tsk_thread_id_t;
 TSK_BEGIN_DECLS
 
 TINYSAK_API void tsk_thread_sleep(uint64_t ms);
-TINYSAK_API int tsk_thread_create(tsk_thread_handle_t** handle, void *(*start) (void *), void *arg);
+TINYSAK_API int tsk_thread_create(tsk_thread_handle_t** handle, void *(TSK_STDCALL *start) (void *), void *arg);
 TINYSAK_API int tsk_thread_set_priority(tsk_thread_handle_t* handle, int32_t priority);
 TINYSAK_API int tsk_thread_set_priority_2(int32_t priority);
 TINYSAK_API tsk_thread_id_t tsk_thread_get_id();

@@ -247,7 +247,7 @@ tsip_header_Vias_L_t *tsip_header_Via_parse(const char *data, tsk_size_t size)
 	tsip_header_Vias_L_t *hdr_vias = tsk_list_create();
 	tsip_header_Via_t *curr_via = tsk_null;
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

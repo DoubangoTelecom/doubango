@@ -40,7 +40,7 @@ m_nQuality(nQuality)
 {
 	if((m_pWrappedResampler = tmedia_resampler_create())){
 		int ret;
-		if((ret = tmedia_resampler_open(m_pWrappedResampler, nInFreq, nOutFreq, nFrameDuration, nChannels, m_nQuality))){
+		if((ret = tmedia_resampler_open(m_pWrappedResampler, nInFreq, nOutFreq, nFrameDuration, nChannels, nChannels, m_nQuality))){
 			TSK_DEBUG_ERROR("Failed to open audio resampler (%d)", ret);
 			TSK_OBJECT_SAFE_FREE(m_pWrappedResampler);
 		}

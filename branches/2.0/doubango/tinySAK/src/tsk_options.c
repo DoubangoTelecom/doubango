@@ -42,7 +42,7 @@
 static int pred_find_option_by_id(const tsk_list_item_t *item, const void *id)
 {
 	if(item && item->data){
-		tsk_option_t *option = item->data;
+		tsk_option_t *option = (tsk_option_t*)item->data;
 		return (option->id - *((int*)id));
 	}
 	return -1;
@@ -52,7 +52,7 @@ static int pred_find_option_by_id(const tsk_list_item_t *item, const void *id)
 */
 tsk_option_t* tsk_option_create(int id, const char* value)
 {
-	return tsk_object_new(TSK_OPTION_VA_ARGS(id, value));
+	return (tsk_option_t*)tsk_object_new(TSK_OPTION_VA_ARGS(id, value));
 }
 
 /**@ingroup tsk_options_group
@@ -146,7 +146,7 @@ const tsk_option_t *tsk_options_get_option_by_id(const tsk_options_L_t *self, in
 	if(self){
 		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(self, pred_find_option_by_id, &id);
 		if(item_const){
-			return item_const->data;
+			return (const tsk_option_t*)item_const->data;
 		}
 	}
 	return 0;
@@ -207,7 +207,7 @@ int tsk_options_get_option_value_as_int(const tsk_options_L_t *self, int id)
 //
 static tsk_object_t* tsk_option_ctor(tsk_object_t * self, va_list * app)
 {
-	tsk_option_t *option = self;
+	tsk_option_t *option = (tsk_option_t*)self;
 	if(option){
 		int id = va_arg(*app, int);
 		const char* value = va_arg(*app, const char *);
@@ -223,7 +223,7 @@ static tsk_object_t* tsk_option_ctor(tsk_object_t * self, va_list * app)
 
 static tsk_object_t* tsk_option_dtor(tsk_object_t * self)
 { 
-	tsk_option_t *option = self;
+	tsk_option_t *option = (tsk_option_t*)self;
 	if(option){
 		TSK_FREE(option->value);
 	}

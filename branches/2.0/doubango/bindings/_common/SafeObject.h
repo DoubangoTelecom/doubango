@@ -22,9 +22,11 @@
 #ifndef TINYWRAP_SAFEOBJECT_H
 #define TINYWRAP_SAFEOBJECT_H
 
+#include "tinyWRAP_config.h"
+
 #include "tsk_mutex.h"
 
-class SafeObject
+class TINYWRAP_API SafeObject
 {
 public:
 	SafeObject();

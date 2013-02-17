@@ -27,16 +27,19 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
-/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
-*/
+// Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define TSDP_UNDER_WINDOWS	1
+#	if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP || WINAPI_FAMILY == WINAPI_FAMILY_APP)
+#		define TSDP_UNDER_WINDOWS_RT		1
+#	endif
 #endif
+
 
 #if (TSDP_UNDER_WINDOWS || defined(__SYMBIAN32__)) && defined(TINYSDP_EXPORTS)
 # 	define TINYSDP_API		__declspec(dllexport)
-# 	define TINYSDP_GEXTERN __declspec(dllexport)
-#elif (TSDP_UNDER_WINDOWS || defined(__SYMBIAN32__)) /*&& defined(TINYSDP_IMPORTS)*/
+# 	define TINYSDP_GEXTERN extern __declspec(dllexport)
+#elif (TSDP_UNDER_WINDOWS || defined(__SYMBIAN32__)) && !defined(TINYSDP_IMPORTS_IGNORE)
 # 	define TINYSDP_API __declspec(dllimport)
 # 	define TINYSDP_GEXTERN __declspec(dllimport)
 #else

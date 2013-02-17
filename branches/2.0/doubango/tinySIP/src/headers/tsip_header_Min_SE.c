@@ -72,7 +72,7 @@ tsip_header_Min_SE_t *tsip_header_Min_SE_parse(const char *data, tsk_size_t size
 	const char *eof = pe;
 	tsip_header_Min_SE_t *hdr_minse = tsip_header_Min_SE_create(TSIP_SESSION_EXPIRES_MIN_VALUE);
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 79 "./src/headers/tsip_header_Min_SE.c" */

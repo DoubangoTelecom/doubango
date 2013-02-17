@@ -22,12 +22,14 @@
 #ifndef TINYWRAP_MEDIA_SESSIONMGR_H
 #define TINYWRAP_MEDIA_SESSIONMGR_H
 
+#include "tinyWRAP_config.h"
+
 #include "tinymedia.h"
 #include "Common.h"
 
 class ProxyPlugin;
 
-class Codec
+class TINYWRAP_API Codec
 {
 public:
 #if !defined(SWIG)
@@ -36,6 +38,7 @@ public:
 	virtual ~Codec();
 
 public:
+	const struct tmedia_codec_s* getWrappedCodec(){ return m_pWrappedCodec; }
 	twrap_media_type_t getMediaType();
 	const char* getName();
 	const char* getDescription();
@@ -48,7 +51,7 @@ private:
 	struct tmedia_codec_s* m_pWrappedCodec;
 };
 
-class MediaSessionMgr
+class TINYWRAP_API MediaSessionMgr
 {
 public:
 #if !defined(SWIG)

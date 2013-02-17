@@ -78,7 +78,7 @@ tsip_header_Dummy_t *tsip_header_Dummy_parse(const char *data, tsk_size_t size)
 	const char *eof = pe;
 	tsip_header_Dummy_t *hdr_Dummy = tsip_header_Dummy_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 85 "./src/headers/tsip_header_Dummy.c" */

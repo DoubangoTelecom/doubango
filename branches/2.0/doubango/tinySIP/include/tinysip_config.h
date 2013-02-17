@@ -34,10 +34,20 @@
 #	define TSIP_UNDER_APPLE		1
 #endif
 
+// Windows (XP/Vista/7/CE and Windows Mobile) macro definition
+#if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
+#	define TSIP_UNDER_WINDOWS	1
+#	if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP || WINAPI_FAMILY == WINAPI_FAMILY_APP)
+#		define TSIP_UNDER_WINDOWS_RT		1
+#	endif
+#elif __APPLE__
+#	define TSIP_UNDER_APPLE		1
+#endif
+
 #if !defined(__GNUC__) && defined(TINYSIP_EXPORTS)
 # 	define TINYSIP_API		__declspec(dllexport)
-# 	define TINYSIP_GEXTERN	__declspec(dllexport)
-#elif !defined(__GNUC__) /*&& defined(TINYSIP_IMPORTS)*/
+# 	define TINYSIP_GEXTERN	extern __declspec(dllexport)
+#elif !defined(__GNUC__) && !defined(TINYSIP_IMPORTS_IGNORE)
 # 	define TINYSIP_API		__declspec(dllimport)
 # 	define TINYSIP_GEXTERN	__declspec(dllimport)
 #else

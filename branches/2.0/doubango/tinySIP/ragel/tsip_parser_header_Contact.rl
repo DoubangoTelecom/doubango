@@ -144,7 +144,7 @@ tsip_header_Contacts_L_t *tsip_header_Contact_parse(const char *data, tsk_size_t
 	const char *eof = pe;
 	tsip_header_Contacts_L_t *hdr_contacts = tsk_list_create();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 	tsip_header_Contact_t *curr_contact = 0;
 
 	%%write data;

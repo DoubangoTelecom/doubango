@@ -95,12 +95,16 @@ tsk_condwait_t;
 */
 tsk_condwait_handle_t* tsk_condwait_create()
 {
-	tsk_condwait_t *condwait = tsk_calloc(1, sizeof(tsk_condwait_t));
+	tsk_condwait_t *condwait = (tsk_condwait_t*)tsk_calloc(1, sizeof(tsk_condwait_t));
 
 	if(condwait)
 	{
 #if TSK_UNDER_WINDOWS
+#	if TSK_UNDER_WINDOWS_RT
+		condwait->pcond = CreateEventEx(NULL, NULL, CREATE_EVENT_MANUAL_RESET, EVENT_ALL_ACCESS);
+	#else
 		condwait->pcond = CreateEvent(NULL, TRUE, FALSE, NULL);
+#	endif
 		if(!condwait->pcond)
 		{
 			TSK_FREE(condwait);
@@ -145,7 +149,11 @@ int tsk_condwait_wait(tsk_condwait_handle_t* handle)
 	}
 
 #if TSK_UNDER_WINDOWS
+#	if TSK_UNDER_WINDOWS_RT
+	if((ret = (WaitForSingleObjectEx(condwait->pcond, INFINITE, TRUE) == WAIT_FAILED) ? -1 : 0)){
+#	else
 	if((ret = (WaitForSingleObject(condwait->pcond, INFINITE) == WAIT_FAILED) ? -1 : 0)){
+#endif
 		TSK_DEBUG_ERROR("WaitForSingleObject function failed: %d", ret);
 	}
 #else
@@ -178,7 +186,11 @@ int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
 	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
 
 #if TSK_UNDER_WINDOWS
-	if((ret = WaitForSingleObject(condwait->pcond, (DWORD)ms)) != WAIT_OBJECT_0){
+#	   if TSK_UNDER_WINDOWS_RT
+	   if((ret = WaitForSingleObjectEx(condwait->pcond, (DWORD)ms, TRUE)) != WAIT_OBJECT_0){
+#	   else
+	   if((ret = WaitForSingleObject(condwait->pcond, (DWORD)ms)) != WAIT_OBJECT_0){
+#endif
 		if(ret == TIMED_OUT){
 			/* TSK_DEBUG_INFO("WaitForSingleObject function timedout: %d", ret); */
 		}

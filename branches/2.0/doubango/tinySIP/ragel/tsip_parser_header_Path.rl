@@ -142,7 +142,7 @@ tsip_header_Paths_L_t *tsip_header_Path_parse(const char *data, tsk_size_t size)
 	const char *eof = pe;
 	tsip_header_Paths_L_t *hdr_paths = tsk_list_create();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 	tsip_header_Path_t *curr_path = tsk_null;
 
 	%%write data;

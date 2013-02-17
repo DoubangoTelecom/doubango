@@ -113,7 +113,7 @@ tsip_header_Content_Type_t *tsip_header_Content_Type_parse(const char *data, tsk
 	const char *eof = pe;
 	tsip_header_Content_Type_t *hdr_ctype = tsip_header_Content_Type_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

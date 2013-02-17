@@ -22,9 +22,11 @@
 #ifndef TINYWRAP_SIPURI_H
 #define TINYWRAP_SIPURI_H
 
+#include "tinyWRAP_config.h"
+
 #include "tinysip.h"
 
-class SipUri
+class TINYWRAP_API SipUri
 {
 public:
 	SipUri(const char* uriString, const char* displayName=tsk_null);

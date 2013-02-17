@@ -82,7 +82,7 @@ tsip_header_Allow_t *tsip_header_Allow_parse(const char *data, tsk_size_t size)
 	const char *eof = pe;
 	tsip_header_Allow_t *hdr_allow = tsip_header_Allow_create();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 89 "./src/headers/tsip_header_Allow.c" */

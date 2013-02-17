@@ -205,7 +205,7 @@ tsip_header_Security_Verifies_L_t *tsip_header_Security_Verify_parse(const char 
 	const char *eof = pe;
 	tsip_header_Security_Verifies_L_t *hdr_securityverifies = tsk_list_create();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 	tsip_header_Security_Verify_t *curr_securityverify = tsk_null;
 
 	%%write data;

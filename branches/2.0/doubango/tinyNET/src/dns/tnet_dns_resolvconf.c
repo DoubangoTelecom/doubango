@@ -59,7 +59,7 @@ tnet_addresses_L_t * tnet_dns_resolvconf_parse(const char* path)
 	tnet_addresses_L_t* servers = tsk_null;
 	tnet_ip_t ip;
 	const char* fullpath = path;
-	const char* tag_start;
+	const char* tag_start = tsk_null;
 	FILE* fd;
 	char* buf = tsk_null;
 	

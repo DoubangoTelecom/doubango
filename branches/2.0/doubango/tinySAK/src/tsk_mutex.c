@@ -81,7 +81,11 @@ tsk_mutex_handle_t* tsk_mutex_create_2(tsk_bool_t recursive)
 	MUTEX_T handle = tsk_null;
 	
 #if TSK_UNDER_WINDOWS
+#	if TSK_UNDER_WINDOWS_RT
+	handle = CreateMutexEx(NULL, NULL, 0x00000000, MUTEX_ALL_ACCESS);
+#	else
 	handle = CreateMutex(NULL, FALSE, NULL);
+#	endif
 #else
 	int ret;
 	pthread_mutexattr_t   mta;
@@ -121,8 +125,13 @@ int tsk_mutex_lock(tsk_mutex_handle_t* handle)
 	int ret = EINVAL;
 	if(handle)
 	{
+
 #if TSK_UNDER_WINDOWS
-		if((ret = WaitForSingleObject((MUTEX_T)handle , INFINITE)) == WAIT_FAILED)
+#	if TSK_UNDER_WINDOWS_RT
+	if((ret = WaitForSingleObjectEx((MUTEX_T)handle, INFINITE, TRUE)) == WAIT_FAILED)
+#	else
+	if((ret = WaitForSingleObject((MUTEX_T)handle, INFINITE)) == WAIT_FAILED)
+#endif
 #else
 		if((ret = pthread_mutex_lock((MUTEX_T)handle)))
 #endif

@@ -579,6 +579,7 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 
 	tsip_dialog_invite_t *self;
 	const tsip_action_t* action;
+	tsk_bool_t mediaType_changed;
 
 	self = va_arg(*app, tsip_dialog_invite_t *);
 	va_arg(*app, const tsip_message_t *);
@@ -587,14 +588,20 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 	/* Determine whether the remote party support UPDATE */
 	self->support_update = tsip_message_allowed(self->last_iInvite, "UPDATE");
 
+	/* Get Media type from the action */
+	mediaType_changed = (TSIP_DIALOG_GET_SS(self)->media.type != action->media.type && action->media.type != tmedia_none);
+	if(self->msession_mgr && mediaType_changed){
+		ret = tmedia_session_mgr_set_media_type(self->msession_mgr, action->media.type);
+	}
+
 	/* Appy media params received from the user */
 	if(!TSK_LIST_IS_EMPTY(action->media.params)){
-		tmedia_session_mgr_set_3(self->msession_mgr, action->media.params);
+		ret = tmedia_session_mgr_set_3(self->msession_mgr, action->media.params);
 	}
 
 	/* set MSRP callback */
 	if((self->msession_mgr->type & tmedia_msrp) == tmedia_msrp){
-		tmedia_session_mgr_set_msrp_cb(self->msession_mgr, TSIP_DIALOG_GET_SS(self)->userdata, TSIP_DIALOG_GET_SS(self)->media.msrp.callback);
+		ret = tmedia_session_mgr_set_msrp_cb(self->msession_mgr, TSIP_DIALOG_GET_SS(self)->userdata, TSIP_DIALOG_GET_SS(self)->media.msrp.callback);
 	}
 
 	/* Cancel 100rel timer */

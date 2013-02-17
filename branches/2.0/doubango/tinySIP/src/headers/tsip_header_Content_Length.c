@@ -72,7 +72,7 @@ tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data,
 	const char *eof = pe;
 	tsip_header_Content_Length_t *hdr_clength = tsip_header_Content_Length_create(0);
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 79 "./src/headers/tsip_header_Content_Length.c" */

@@ -122,7 +122,7 @@ tsip_header_Refer_To_t *tsip_header_Refer_To_parse(const char *data, tsk_size_t 
 	const char *eof = pe;
 	tsip_header_Refer_To_t *r_to = tsip_header_Refer_To_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

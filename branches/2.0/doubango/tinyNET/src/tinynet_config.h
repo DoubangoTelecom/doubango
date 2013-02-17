@@ -38,10 +38,15 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
-/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
-*/
+// Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define TNET_UNDER_WINDOWS	1
+#	if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP || WINAPI_FAMILY == WINAPI_FAMILY_APP)
+#		define TNET_UNDER_WINDOWS_RT		1
+#		if WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP
+#			define TNET_UNDER_WINDOWS_PHONE		1
+#		endif
+#	endif
 #endif
 
 #if defined(__APPLE__)
@@ -67,8 +72,8 @@
 */
 #if !defined(__GNUC__) && defined(TINYNET_EXPORTS)
 # 	define TINYNET_API __declspec(dllexport)
-# 	define TINYNET_GEXTERN __declspec(dllexport)
-#elif !defined(__GNUC__) /*&& defined(TINYNET_IMPORTS)*/
+# 	define TINYNET_GEXTERN extern __declspec(dllexport)
+#elif !defined(__GNUC__) && !defined(TINYNET_IMPORTS_IGNORE)
 # 	define TINYNET_API __declspec(dllimport)
 # 	define TINYNET_GEXTERN __declspec(dllimport)
 #else

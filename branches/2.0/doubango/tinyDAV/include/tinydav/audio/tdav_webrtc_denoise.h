@@ -38,7 +38,7 @@
 
 #include "tsk_safeobj.h"
 
-/* Speex denoiser works better than WebRTC's denoiser. This is flagrant on Android. */
+/* Speex denoiser works better than WebRTC's denoiser. This is obvious on Android. */
 #if !defined(PREFER_SPEEX_DENOISER)
 #	define PREFER_SPEEX_DENOISER	1
 #endif

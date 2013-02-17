@@ -27,16 +27,18 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
-/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
-*/
+// Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define TMEDIA_UNDER_WINDOWS	1
+#	if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP || WINAPI_FAMILY == WINAPI_FAMILY_APP)
+#		define TMEDIA_UNDER_WINDOWS_RT		1
+#	endif
 #endif
 
 #if (TMEDIA_UNDER_WINDOWS || defined(__SYMBIAN32__)) && defined(TINYMEDIA_EXPORTS)
 # 	define TINYMEDIA_API		__declspec(dllexport)
-# 	define TINYMEDIA_GEXTERN __declspec(dllexport)
-#elif (TMEDIA_UNDER_WINDOWS || defined(__SYMBIAN32__)) /*&& defined(TINYMEDIA_IMPORTS)*/
+# 	define TINYMEDIA_GEXTERN extern __declspec(dllexport)
+#elif (TMEDIA_UNDER_WINDOWS || defined(__SYMBIAN32__)) && !defined(TINYMEDIA_IMPORTS_IGNORE)
 # 	define TINYMEDIA_API __declspec(dllimport)
 # 	define TINYMEDIA_GEXTERN __declspec(dllimport)
 #else

@@ -30,11 +30,15 @@
 
 #if TDAV_UNDER_WINDOWS
 
+#include "tsk_string.h"
+#include "tsk_memory.h"
 #include "tsk_debug.h"
+
 #include <windows.h> 
 
 int tdav_win32_init()
 {
+#if !TDAV_UNDER_WINDOWS_RT
 	MMRESULT result;
 
 	// Timers accuracy
@@ -42,34 +46,52 @@ int tdav_win32_init()
 	if(result){
 		TSK_DEBUG_ERROR("timeBeginPeriod(1) returned result=%u", result);
 	}
+#endif
 
 	return 0;
 }
 
-void tdav_win32_print_error(const char* func, HRESULT hr)
+TINYDAV_API void tdav_win32_print_error(const char* func, HRESULT hr)
 {
-	CHAR* message = tsk_null;
+	CHAR message[1024] = {0};
+
+#if TDAV_UNDER_WINDOWS_RT
+	// FormatMessageA not allowed on the Store
+	static WCHAR wBuff[1024] = {0};
+	FormatMessageW(
+		  FORMAT_MESSAGE_FROM_SYSTEM, 
+		  tsk_null,
+		  hr,
+		  0,
+		  wBuff, 
+		  sizeof(wBuff)-1,
+		  tsk_null);
+	WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, wBuff, wcslen(wBuff), message, sizeof(message) - 1, NULL, NULL);
+#else
 #ifdef _WIN32_WCE
 	FormatMessage
 #else
 	FormatMessageA
 #endif
 	(
-	  FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, 
+#if !TDAV_UNDER_WINDOWS_RT
+	  FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+#endif
+	  FORMAT_MESSAGE_FROM_SYSTEM, 
 	  tsk_null,
 	  hr,
 	  0,
 	  message, 
-	  0,
+	  sizeof(message) - 1,
 	  tsk_null);
+#endif
 
-	TSK_DEBUG_ERROR("%s():", message);
-
-	LocalFree(message);
+	TSK_DEBUG_ERROR("%s(): %s", func, message);
 }
 
 int tdav_win32_deinit()
 {
+#if !TDAV_UNDER_WINDOWS_RT
 	MMRESULT result;
 
 	// Timers accuracy
@@ -77,6 +99,8 @@ int tdav_win32_deinit()
 	if(result){
 		TSK_DEBUG_ERROR("timeEndPeriod(1) returned result=%u", result);
 	}
+#endif
+
 	return 0;
 }
 

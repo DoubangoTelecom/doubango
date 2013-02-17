@@ -79,7 +79,7 @@ tsip_header_SIP_ETag_t *tsip_header_SIP_ETag_parse(const char *data, tsk_size_t 
 	const char *eof = pe;
 	tsip_header_SIP_ETag_t *hdr_etag = tsip_header_SIP_ETag_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 86 "./src/headers/tsip_header_SIP_ETag.c" */

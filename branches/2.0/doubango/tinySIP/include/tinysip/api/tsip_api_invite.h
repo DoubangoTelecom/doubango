@@ -40,6 +40,7 @@ TSIP_BEGIN_DECLS
 
 #define TSIP_INVITE_EVENT(self)		((tsip_invite_event_t*)(self))
 
+//@tinyWRAP
 typedef enum tsip_invite_event_type_e
 {
 	// ============================

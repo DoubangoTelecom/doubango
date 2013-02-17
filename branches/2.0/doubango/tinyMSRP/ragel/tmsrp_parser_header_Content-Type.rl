@@ -111,7 +111,7 @@ tmsrp_header_Content_Type_t *tmsrp_header_Content_Type_parse(const char *data, t
 	const char *eof = pe;
 	tmsrp_header_Content_Type_t *hdr_ctype = tmsrp_header_Content_Type_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

@@ -78,7 +78,7 @@ tsip_header_Server_t *tsip_header_Server_parse(const char *data, tsk_size_t size
 	const char *eof = pe;
 	tsip_header_Server_t *hdr_server = tsip_header_server_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 85 "./src/headers/tsip_header_Server.c" */

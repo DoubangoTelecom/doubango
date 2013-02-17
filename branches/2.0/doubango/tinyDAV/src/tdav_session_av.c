@@ -64,7 +64,7 @@ static const tsk_bool_t __have_libsrtp = tsk_false;
 #define TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT		0
 #endif /* TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT */
 
-static void* _tdav_session_av_error_async_thread(void* usrdata);
+static void* TSK_STDCALL _tdav_session_av_error_async_thread(void* usrdata);
 static int _tdav_session_av_raise_error_async(struct tdav_session_av_s* self, tsk_bool_t is_fatal, const char* reason);
 #if HAVE_SRTP
 static int _tdav_session_av_srtp_dtls_cb(const void* usrdata, enum trtp_srtp_dtls_event_type_e type, const char* reason);
@@ -277,12 +277,12 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 		if(param->value_type == tmedia_pvt_pchar){
 			if(tsk_striequals(param->key, "remote-ip")){
 				if(param->value){
-					tsk_strupdate(&self->remote_ip, param->value);
+					tsk_strupdate(&self->remote_ip, (const char*)param->value);
 					return tsk_true;
 				}
 			}
 			else if(tsk_striequals(param->key, "local-ip")){
-				tsk_strupdate(&self->local_ip, param->value);
+				tsk_strupdate(&self->local_ip, (const char*)param->value);
 				return tsk_true;
 			}
 			else if(tsk_striequals(param->key, "local-ipver")){
@@ -342,12 +342,12 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 			}
 			else if(tsk_striequals(param->key, "remote-sdp-message")){
 				TSK_OBJECT_SAFE_FREE(self->remote_sdp);
-				self->remote_sdp = tsk_object_ref(param->value);
+				self->remote_sdp = (struct tsdp_message_s*)tsk_object_ref(param->value);
 				return tsk_true;
 			}
 			else if(tsk_striequals(param->key, "local-sdp-message")){
 				TSK_OBJECT_SAFE_FREE(self->local_sdp);
-				self->local_sdp = tsk_object_ref(param->value);
+				self->local_sdp = (struct tsdp_message_s*)tsk_object_ref(param->value);
 				return tsk_true;
 			}
 		}
@@ -1478,7 +1478,7 @@ const tmedia_codec_t* tdav_session_av_get_red_codec(const tdav_session_av_t* sel
 	return tsk_null;
 }
 
-static void* _tdav_session_av_error_async_thread(void* usrdata)
+static void* TSK_STDCALL _tdav_session_av_error_async_thread(void* usrdata)
 {
 	if(usrdata){
 		tdav_session_av_t* self = (tdav_session_av_t*)usrdata;

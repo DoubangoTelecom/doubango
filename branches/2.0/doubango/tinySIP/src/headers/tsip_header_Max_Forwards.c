@@ -72,7 +72,7 @@ tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, tsk
 	const char *eof = pe;
 	tsip_header_Max_Forwards_t *hdr_maxf = tsip_header_Max_Forwards_create(TSIP_HEADER_MAX_FORWARDS_NONE);
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 79 "./src/headers/tsip_header_Max_Forwards.c" */

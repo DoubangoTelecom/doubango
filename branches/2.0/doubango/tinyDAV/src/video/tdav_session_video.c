@@ -266,13 +266,14 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 		
 		//base->producer->video.rotation = ((__rotation_counter++ % 150) < 75) ? 90 : 0;
 	
+#define PRODUCER_NEED_ENCODER (base->producer->encoder.codec_id == tmedia_codec_id_none) // Otherwise, frames from the producer are already encoded
 #define PRODUCER_SIZE_CHANGED (video->conv.producerWidth != base->producer->video.width) || (video->conv.producerHeight != base->producer->video.height) \
 || (video->conv.xProducerSize != size)
 #define ENCODED_NEED_FLIP TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip
 #define PRODUCED_FRAME_NEED_ROTATION (base->producer->video.rotation != 0)
 #define PRODUCED_FRAME_NEED_CHROMA_CONVERSION (base->producer->video.chroma != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.chroma)
 		// Video codecs only accept YUV420P buffers ==> do conversion if needed or producer doesn't have the right size
-		if(PRODUCED_FRAME_NEED_CHROMA_CONVERSION || PRODUCER_SIZE_CHANGED || ENCODED_NEED_FLIP || PRODUCED_FRAME_NEED_ROTATION){
+		if(PRODUCER_NEED_ENCODER && (PRODUCED_FRAME_NEED_CHROMA_CONVERSION || PRODUCER_SIZE_CHANGED || ENCODED_NEED_FLIP || PRODUCED_FRAME_NEED_ROTATION)){
 			// Create video converter if not already done or producer size have changed
 			if(!video->conv.toYUV420 || PRODUCER_SIZE_CHANGED){
 				TSK_OBJECT_SAFE_FREE(video->conv.toYUV420);
@@ -641,13 +642,14 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 		}
 
 		// Convert decoded data to the consumer chroma and size
+#define CONSUMER_NEED_DECODER (base->consumer->decoder.codec_id == tmedia_codec_id_none) // Otherwise, the consumer requires encoded frames
 #define CONSUMER_IN_N_DISPLAY_MISMATCH		(base->consumer->video.in.width != base->consumer->video.display.width || base->consumer->video.in.height != base->consumer->video.display.height)
 #define CONSUMER_DISPLAY_N_CODEC_MISMATCH		(base->consumer->video.display.width != TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width || base->consumer->video.display.height != TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height)
 #define CONSUMER_DISPLAY_N_CONVERTER_MISMATCH	( (self->conv.fromYUV420 && self->conv.fromYUV420->dstWidth != base->consumer->video.display.width) || (self->conv.fromYUV420 && self->conv.fromYUV420->dstHeight != base->consumer->video.display.height) )
 #define CONSUMER_CHROMA_MISMATCH	(base->consumer->video.display.chroma != TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.chroma)
 #define DECODED_NEED_FLIP	(TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.flip)
 
-		if((CONSUMER_CHROMA_MISMATCH || CONSUMER_DISPLAY_N_CODEC_MISMATCH || CONSUMER_IN_N_DISPLAY_MISMATCH || CONSUMER_DISPLAY_N_CONVERTER_MISMATCH || DECODED_NEED_FLIP)){
+		if(CONSUMER_NEED_DECODER && (CONSUMER_CHROMA_MISMATCH || CONSUMER_DISPLAY_N_CODEC_MISMATCH || CONSUMER_IN_N_DISPLAY_MISMATCH || CONSUMER_DISPLAY_N_CONVERTER_MISMATCH || DECODED_NEED_FLIP)){
 
 			// Create video converter if not already done
 			if(!self->conv.fromYUV420 || CONSUMER_DISPLAY_N_CONVERTER_MISMATCH){

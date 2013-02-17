@@ -77,7 +77,7 @@ thttp_header_Transfer_Encoding_t *thttp_header_Transfer_Encoding_parse(const cha
 	const char *eof = pe;
 	thttp_header_Transfer_Encoding_t *hdr_tencoding = thttp_header_transfer_encoding_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 84 "./src/headers/thttp_header_Transfer_Encoding.c" */

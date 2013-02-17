@@ -507,8 +507,9 @@ bail:
 
 const void* tsip_ssession_get_userdata(const tsip_ssession_handle_t *self)
 {
-	if(self){
-		return ((const tsip_ssession_t*)self)->userdata;
+	const tsip_ssession_t* ss = (const tsip_ssession_t*)self;
+	if(ss){
+		return ss->userdata;
 	}
 	else{
 		TSK_DEBUG_ERROR("Invalid parameter");

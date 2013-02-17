@@ -42,14 +42,14 @@ tsk_bool_t tsk_fsm_cond_always(const void* data1, const void* data2) { return ts
 */
 tsk_fsm_t* tsk_fsm_create(tsk_fsm_state_id state_curr, tsk_fsm_state_id state_term)
 {
-	return tsk_object_new(tsk_fsm_def_t, state_curr, state_term);
+	return (tsk_fsm_t*)tsk_object_new(tsk_fsm_def_t, state_curr, state_term);
 }
 
 /**@ingroup tsk_fsm_group
 */
 tsk_fsm_entry_t* tsk_fsm_entry_create()
 {
-	return tsk_object_new(tsk_fsm_entry_def_t);
+	return (tsk_fsm_entry_t*)tsk_object_new(tsk_fsm_entry_def_t);
 }
 
 /**@ingroup tsk_fsm_group
@@ -140,7 +140,7 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 	va_start(ap, cond_data2);
 	tsk_list_foreach(item, self->entries)
 	{
-		tsk_fsm_entry_t* entry = item->data;
+		tsk_fsm_entry_t* entry = (tsk_fsm_entry_t*)item->data;
 		if(((entry->from != tsk_fsm_state_any) && (entry->from != tsk_fsm_state_current)) && (entry->from != self->current)){
 			continue;
 		}
@@ -229,7 +229,7 @@ tsk_bool_t tsk_fsm_terminated(tsk_fsm_t* self)
 //
 static tsk_object_t* tsk_fsm_ctor(tsk_object_t * self, va_list * app)
 {
-	tsk_fsm_t *fsm = self;
+	tsk_fsm_t *fsm = (tsk_fsm_t*)self;
 	if(fsm){
 		fsm->current = va_arg(*app, tsk_fsm_state_id);
 		fsm->term = va_arg(*app, tsk_fsm_state_id);
@@ -247,7 +247,7 @@ static tsk_object_t* tsk_fsm_ctor(tsk_object_t * self, va_list * app)
 
 static tsk_object_t* tsk_fsm_dtor(tsk_object_t * self)
 { 
-	tsk_fsm_t *fsm = self;
+	tsk_fsm_t *fsm = (tsk_fsm_t*)self;
 	if(fsm){
 		/* If not in the terminal state ==>do it */
 		/*if(fsm->current != fsm->term){
@@ -279,7 +279,7 @@ const tsk_object_def_t *tsk_fsm_def_t = &tsk_fsm_def_s;
 //
 static tsk_object_t* tsk_fsm_entry_ctor(tsk_object_t * self, va_list * app)
 {
-	tsk_fsm_entry_t *fsm_entry = self;
+	tsk_fsm_entry_t *fsm_entry = (tsk_fsm_entry_t*)self;
 	if(fsm_entry){
 	}
 
@@ -288,7 +288,7 @@ static tsk_object_t* tsk_fsm_entry_ctor(tsk_object_t * self, va_list * app)
 
 static tsk_object_t* tsk_fsm_entry_dtor(tsk_object_t * self)
 { 
-	tsk_fsm_entry_t *fsm_entry = self;
+	tsk_fsm_entry_t *fsm_entry = (tsk_fsm_entry_t*)self;
 	if(fsm_entry){
 		/* desc is "const char*" => should not be deleted */
 		/* TSK_FREE(fsm_entry->desc); */
@@ -298,8 +298,8 @@ static tsk_object_t* tsk_fsm_entry_dtor(tsk_object_t * self)
 }
 static int tsk_fsm_entry_cmp(const tsk_object_t *_entry1, const tsk_object_t *_entry2)
 {
-	const tsk_fsm_entry_t* entry1 = _entry1;
-	const tsk_fsm_entry_t* entry2 = _entry2;
+	const tsk_fsm_entry_t* entry1 = (const tsk_fsm_entry_t*)_entry1;
+	const tsk_fsm_entry_t* entry2 = (const tsk_fsm_entry_t*)_entry2;
 	if(entry1 && entry2){
 		/* Put "Any" states at the bottom (Strong)*/
 		if(entry1->from == tsk_fsm_state_any){

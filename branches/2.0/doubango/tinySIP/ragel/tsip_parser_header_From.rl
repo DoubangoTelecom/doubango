@@ -119,7 +119,7 @@ tsip_header_From_t *tsip_header_From_parse(const char *data, tsk_size_t size)
 	const char *eof = pe;
 	tsip_header_From_t *hdr_from = tsip_header_From_create(tsk_null, tsk_null, tsk_null);
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

@@ -82,7 +82,7 @@ thttp_header_Sec_WebSocket_Key_t *thttp_header_Sec_WebSocket_Key_parse(const cha
 	const char *eof = pe;
 	thttp_header_Sec_WebSocket_Key_t *hdr_Sec_WebSocket_Key = thttp_header_Sec_WebSocket_Key_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

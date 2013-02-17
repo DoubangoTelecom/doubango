@@ -1,7 +1,4 @@
-/*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+/* Copyright (C) 2010-2011 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -17,15 +14,16 @@
 *	
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
-*
 */
 #ifndef TINYWRAP_ACTIONCONFIG_H
 #define TINYWRAP_ACTIONCONFIG_H
 
+#include "tinyWRAP_config.h"
+
 #include "tinysip.h"
 #include "Common.h"
 
-class ActionConfig
+class TINYWRAP_API ActionConfig
 {
 public:
 	ActionConfig();
@@ -33,6 +31,7 @@ public:
 	
 	bool addHeader(const char* name, const char* value);
 	bool addPayload(const void* payload, unsigned len);
+	bool setActiveMedia(twrap_media_type_t type);
 	
 	ActionConfig* setResponseLine(short code, const char* phrase);
 	ActionConfig* setMediaString(twrap_media_type_t type, const char* key, const char* value);

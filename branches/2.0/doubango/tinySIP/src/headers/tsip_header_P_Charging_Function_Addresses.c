@@ -80,7 +80,7 @@ tsip_header_P_Charging_Function_Addressess_L_t *tsip_header_P_Charging_Function_
 	const char *eof = pe;
 	tsip_header_P_Charging_Function_Addressess_L_t *hdr_p_charging_function_addressess = tsk_list_create();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 	tsip_header_P_Charging_Function_Addresses_t *curr_p_charging_function_addresses = 0;
 
 	

@@ -43,8 +43,8 @@
 static int pred_find_param_by_name(const tsk_list_item_t *item, const void *name)
 {
 	if(item && item->data){
-		tsk_param_t *param = item->data;
-		return tsk_stricmp(param->name, name);
+		tsk_param_t *param = (tsk_param_t*)item->data;
+		return tsk_stricmp(param->name, (const char*)name);
 	}
 	return -1;
 }
@@ -53,7 +53,7 @@ static int pred_find_param_by_name(const tsk_list_item_t *item, const void *name
 */
 tsk_param_t* tsk_param_create(const char* name, const char* value)
 {
-	return tsk_object_new(TSK_PARAM_VA_ARGS(name, value));
+	return (tsk_param_t*)tsk_object_new(TSK_PARAM_VA_ARGS(name, value));
 }
 
 /**@ingroup tsk_params_group
@@ -78,16 +78,16 @@ tsk_param_t *tsk_params_parse_param(const char* line, tsk_size_t size)
 		tsk_param_t *param = tsk_param_create_null();
 
 		if(param && equal && equal<end){
-			if((param->name = tsk_calloc((equal-start)+1, sizeof(const char)))){
+			if((param->name = (char*)tsk_calloc((equal-start)+1, sizeof(const char)))){
 				memcpy(param->name, start, (equal-start));
 			}
 
-			if((param->value = tsk_calloc((end-equal-1)+1, sizeof(const char)))){
+			if((param->value = (char*)tsk_calloc((end-equal-1)+1, sizeof(const char)))){
 				memcpy(param->value, equal+1, (end-equal-1));
 			}
 		}
 		else if(param){
-			if((param->name = tsk_calloc((end-start)+1, sizeof(const char)))){
+			if((param->name = (char*)tsk_calloc((end-start)+1, sizeof(const char)))){
 				memcpy(param->name, start, (end-start));
 			}
 		}
@@ -192,7 +192,7 @@ const tsk_param_t *tsk_params_get_param_by_name(const tsk_params_L_t *self, cons
 	if(self){
 		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(self, pred_find_param_by_name, name);
 		if(item_const){
-			return item_const->data;
+			return (const tsk_param_t*)item_const->data;
 		}
 	}
 	else{
@@ -262,7 +262,7 @@ int tsk_params_tostring(const tsk_params_L_t *self, const char separator, tsk_bu
 		tsk_list_item_t *item;
 		ret = 0; // for empty lists
 		tsk_list_foreach(item, self){
-			tsk_param_t* param = item->data;
+			tsk_param_t* param = (tsk_param_t*)item->data;
 			//tsk_params_param_tostring(param, output);
 			if(TSK_LIST_IS_FIRST(self, item)){
 				if((ret = tsk_buffer_append_2(output, param->value?"%s=%s":"%s", param->name, param->value))){
@@ -347,7 +347,7 @@ tsk_params_L_t* tsk_params_fromstring(const char* string, const char* separator,
 //
 static tsk_object_t* tsk_param_ctor(tsk_object_t* self, va_list * app)
 {
-	tsk_param_t *param = self;
+	tsk_param_t *param = (tsk_param_t*)self;
 	if(param){
 		const char* name = va_arg(*app, const char *);
 		const char* value = va_arg(*app, const char *);
@@ -365,7 +365,7 @@ static tsk_object_t* tsk_param_ctor(tsk_object_t* self, va_list * app)
 
 static tsk_object_t* tsk_param_dtor(tsk_object_t* self)
 { 
-	tsk_param_t *param = self;
+	tsk_param_t *param = (tsk_param_t*)self;
 	if(param){
 		TSK_FREE(param->name);
 		TSK_FREE(param->value);

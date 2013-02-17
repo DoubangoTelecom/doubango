@@ -22,6 +22,8 @@
 #ifndef TINYWRAP_SIPSESSION_H
 #define TINYWRAP_SIPSESSION_H
 
+#include "tinyWRAP_config.h"
+
 #include "tinysip.h"
 #include "tinymedia/tmedia_qos.h"
 #include "ActionConfig.h"
@@ -32,7 +34,7 @@ class MsrpCallback;
 class MediaSessionMgr;
 
 /* ======================== T140Callback ========================*/
-class T140CallbackData{
+class TINYWRAP_API T140CallbackData{
 	public:
 #if !defined(SWIG)
 	T140CallbackData(enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size){
@@ -60,7 +62,7 @@ class T140CallbackData{
 		unsigned m_nSize;
 };
 
-class T140Callback
+class TINYWRAP_API T140Callback
 {
 public:
 	T140Callback() {}
@@ -83,7 +85,7 @@ class RtcpCallbackData{
 		uint32_t m_nSSRC;
 };
 
-class RtcpCallback
+class TINYWRAP_API RtcpCallback
 {
 public:
 	RtcpCallback() {}
@@ -95,7 +97,7 @@ public:
 
 
 /* ======================== SipSession ========================*/
-class SipSession
+class TINYWRAP_API SipSession
 {
 public:
 	SipSession(SipStack* stack);
@@ -127,6 +129,7 @@ public:
 #if !defined(SWIG)
 	bool setWebSocketSrc(const char* host, int32_t port, const char* proto);
 	const SipStack* getStack() const;
+	const tsip_ssession_handle_t* getWrappedSession() { return m_pHandle; }
 #endif
 	
 private:
@@ -138,7 +141,7 @@ protected:
 };
 
 /* ======================== InviteSession ========================*/
-class InviteSession : public SipSession
+class TINYWRAP_API InviteSession : public SipSession
 {
 public: /* ctor() and dtor() */
 	InviteSession(SipStack* Stack);
@@ -160,7 +163,7 @@ private:
 
 
 /* ======================== CallSession ========================*/
-class CallSession : public InviteSession
+class TINYWRAP_API CallSession : public InviteSession
 {
 public: /* ctor() and dtor() */
 	CallSession(SipStack* pStack);
@@ -214,7 +217,7 @@ private:
 };
 
 /* ======================== MsrpSession ========================*/
-class MsrpSession : public InviteSession
+class TINYWRAP_API MsrpSession : public InviteSession
 {
 public: /* ctor() and dtor() */
 	MsrpSession(SipStack* pStack, MsrpCallback* pCallback);
@@ -244,7 +247,7 @@ private:
 
 
 /* ======================== MessagingSession ========================*/
-class MessagingSession : public SipSession
+class TINYWRAP_API MessagingSession : public SipSession
 {
 public: /* ctor() and dtor() */
 	MessagingSession(SipStack* pStack);
@@ -260,7 +263,7 @@ public: /* Public functions */
 };
 
 /* ======================== InfoSession ========================*/
-class InfoSession : public SipSession
+class TINYWRAP_API InfoSession : public SipSession
 {
 public: /* ctor() and dtor() */
 	InfoSession(SipStack* pStack);
@@ -276,7 +279,7 @@ public: /* Public functions */
 };
 
 /* ======================== OptionsSession ========================*/
-class OptionsSession : public SipSession
+class TINYWRAP_API OptionsSession : public SipSession
 {
 public: /* ctor() and dtor() */
 	OptionsSession(SipStack* pStack);
@@ -294,10 +297,13 @@ public: /* Public functions */
 
 
 /* ======================== PublicationSession ========================*/
-class PublicationSession : public SipSession
+class TINYWRAP_API PublicationSession : public SipSession
 {
 public: /* ctor() and dtor() */
 	PublicationSession(SipStack* pStack);
+#if !defined(SWIG)
+	PublicationSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
+#endif
 	virtual ~PublicationSession();
 
 public: /* Public functions */
@@ -307,7 +313,7 @@ public: /* Public functions */
 
 
 /* ======================== RegistrationSession ========================*/
-class RegistrationSession : public SipSession
+class TINYWRAP_API RegistrationSession : public SipSession
 {
 public: /* ctor() and dtor() */
 	RegistrationSession(SipStack* pStack);
@@ -325,10 +331,13 @@ public: /* Public functions */
 
 
 /* ======================== SubscriptionSession ========================*/
-class SubscriptionSession : public SipSession
+class TINYWRAP_API SubscriptionSession : public SipSession
 {
 public: /* ctor() and dtor() */
 	SubscriptionSession(SipStack* pStack);
+#if !defined(SWIG)
+	SubscriptionSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
+#endif
 	virtual ~SubscriptionSession();
 
 public: /* Public functions */

@@ -38,12 +38,12 @@
 #include "tsk_debug.h"
 
 
-static void *run(void* self);
+static void* TSK_STDCALL run(void* self);
 
 
 tmsrp_sender_t* tmsrp_sender_create(tmsrp_config_t* config, tnet_fd_t fd)
 {
-	return tsk_object_new(tmsrp_sender_def_t, config, fd);
+	return (tmsrp_sender_t*)tsk_object_new(tmsrp_sender_def_t, config, fd);
 }
 
 int tmsrp_sender_set_fd(tmsrp_sender_t* self, tnet_fd_t fd)
@@ -138,10 +138,10 @@ bail:
 
 
 
-void *run(void* self)
+static void* TSK_STDCALL run(void* self)
 {
 	tsk_list_item_t *curr;
-	tmsrp_sender_t *sender = self;
+	tmsrp_sender_t *sender = (tmsrp_sender_t*)self;
 	tmsrp_data_out_t *data_out;
 	tsk_buffer_t* chunck, *message = tsk_buffer_create_null();
 	tsk_size_t start;
@@ -252,9 +252,9 @@ void *run(void* self)
 //
 static void* tmsrp_sender_ctor(tsk_object_t * self, va_list *app)
 {
-	tmsrp_sender_t *sender = self;
+	tmsrp_sender_t *sender = (tmsrp_sender_t*)self;
 	if(sender){
-		sender->config = tsk_object_ref(va_arg(*app, tmsrp_config_t*));
+		sender->config = (tmsrp_config_t*)tsk_object_ref(va_arg(*app, tmsrp_config_t*));
 		sender->fd = va_arg(*app, tnet_fd_t);	
 
 		sender->outgoingList = tsk_list_create();

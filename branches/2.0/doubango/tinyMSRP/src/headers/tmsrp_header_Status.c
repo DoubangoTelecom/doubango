@@ -82,7 +82,7 @@ tmsrp_header_Status_t *tmsrp_header_Status_parse(const char *data, tsk_size_t si
 	const char *eof = pe;
 	tmsrp_header_Status_t *hdr_Status = tmsrp_header_Status_create_null();
 
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 89 "./src/headers/tmsrp_header_Status.c" */

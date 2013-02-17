@@ -84,7 +84,7 @@ thttp_header_Content_Length_t *thttp_header_Content_Length_parse(const char *dat
 	const char *eof = pe;
 	thttp_header_Content_Length_t *hdr_clength = thttp_header_content_length_create(0);
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

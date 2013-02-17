@@ -119,7 +119,7 @@ thttp_header_Authorization_t *thttp_header_Authorization_parse(const char *data,
 	const char *eof = pe;
 	thttp_header_Authorization_t *hdr_Authorization = thttp_header_authorization_create();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 126 "./src/headers/thttp_header_Authorization.c" */

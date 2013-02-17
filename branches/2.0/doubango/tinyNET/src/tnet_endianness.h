@@ -36,6 +36,11 @@
 
 TNET_BEGIN_DECLS
 
+#if	defined(TINYNET_IMPORTS_IGNORE)
+#undef TNET_INLINE
+#define TNET_INLINE
+#endif
+
 TINYNET_API TNET_INLINE unsigned short tnet_htons(unsigned short x);
 TINYNET_API TNET_INLINE unsigned short tnet_htons_2(const void* px);
 TINYNET_API TNET_INLINE unsigned long tnet_htonl(unsigned long x);

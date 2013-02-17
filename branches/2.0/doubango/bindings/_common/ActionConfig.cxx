@@ -46,6 +46,14 @@ bool ActionConfig::addPayload(const void* payload, unsigned len)
 		TSIP_ACTION_SET_NULL()) == 0);
 }
 
+bool ActionConfig::setActiveMedia(twrap_media_type_t type)
+{
+	tmedia_type_t media_type = twrap_get_media_type(type);
+	return (tsip_action_set(m_pHandle, 
+		TSIP_ACTION_SET_MEDIA_TYPE(media_type),
+		TSIP_ACTION_SET_NULL()) == 0);
+}
+
 ActionConfig* ActionConfig::setResponseLine(short code, const char* phrase)
 {
 	int32_t _code = code;

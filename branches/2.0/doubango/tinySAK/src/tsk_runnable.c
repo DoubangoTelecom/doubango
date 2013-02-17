@@ -40,7 +40,7 @@
 */
 tsk_runnable_t* tsk_runnable_create()
 {
-	return tsk_object_new(tsk_runnable_def_t);
+	return (tsk_runnable_t*)tsk_object_new(tsk_runnable_def_t);
 }
 
 /**@ingroup tsk_runnable_group
@@ -215,7 +215,7 @@ stop:
 //
 static tsk_object_t* tsk_runnable_ctor(tsk_object_t * self, va_list * app)
 {
-	tsk_runnable_t* runnable = self;
+	tsk_runnable_t* runnable = (tsk_runnable_t*)self;
 	if(runnable){
 	}
 	return self;
@@ -223,7 +223,7 @@ static tsk_object_t* tsk_runnable_ctor(tsk_object_t * self, va_list * app)
 
 static tsk_object_t* tsk_runnable_dtor(tsk_object_t * self)
 { 
-	tsk_runnable_t* runnable = self;
+	tsk_runnable_t* runnable = (tsk_runnable_t*)self;
 	if(runnable){
 		/* stops runnable object (if running or started) */
 		tsk_runnable_stop(runnable);

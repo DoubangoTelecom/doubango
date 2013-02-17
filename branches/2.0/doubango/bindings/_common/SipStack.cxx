@@ -88,6 +88,14 @@ bool SipStack::setDebugCallback(DDebugCallback* pCallback)
 	return true;
 }
 
+bool SipStack::setDisplayName(const char* display_name)
+{
+	int ret = tsip_stack_set(m_pHandle,
+		TSIP_STACK_SET_DISPLAY_NAME(display_name),
+		TSIP_STACK_SET_NULL());
+	return (ret == 0);
+}
+
 bool SipStack::setRealm(const char* realm_uri)
 {
 	int ret = tsip_stack_set(m_pHandle,

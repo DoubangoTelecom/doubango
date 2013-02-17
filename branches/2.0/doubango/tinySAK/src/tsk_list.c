@@ -53,7 +53,7 @@ static int tsk_list_find_by_item(const tsk_list_item_t* item, const void* _item)
 */
 tsk_list_t* tsk_list_create()
 {
-	return tsk_object_new(tsk_list_def_t);
+	return (tsk_list_t*)tsk_object_new(tsk_list_def_t);
 }
 
 /**@ingroup tsk_list_group
@@ -62,7 +62,7 @@ tsk_list_t* tsk_list_create()
 */
 tsk_list_item_t* tsk_list_item_create()
 {
-	return tsk_object_new(tsk_list_item_def_t);
+	return (tsk_list_item_t*)tsk_object_new(tsk_list_item_def_t);
 }
 
 /**@ingroup tsk_list_group
@@ -541,7 +541,7 @@ tsk_size_t tsk_list_count(const tsk_list_t* list, tsk_list_func_predicate predic
 //
 static tsk_object_t* tsk_list_item_ctor(tsk_object_t * self, va_list * app)
 {
-	tsk_list_item_t *item = self;
+	tsk_list_item_t *item = (tsk_list_item_t*)self;
 	if(item){
 	}
 	return self;
@@ -549,7 +549,7 @@ static tsk_object_t* tsk_list_item_ctor(tsk_object_t * self, va_list * app)
 
 static tsk_object_t* tsk_list_item_dtor(tsk_object_t *self)
 {
-	tsk_list_item_t *item = self;
+	tsk_list_item_t *item = (tsk_list_item_t*)self;
 	if(item){
 		item->data = tsk_object_unref(item->data);
 	}
@@ -561,8 +561,8 @@ static tsk_object_t* tsk_list_item_dtor(tsk_object_t *self)
 
 static int tsk_list_item_cmp(const tsk_object_t *_item1, const tsk_object_t *_item2)
 {	
-	const tsk_list_item_t* item1 = _item1;
-	const tsk_list_item_t* item2 = _item2;
+	const tsk_list_item_t* item1 = (const tsk_list_item_t*)_item1;
+	const tsk_list_item_t* item2 = (const tsk_list_item_t*)_item2;
 	
 	if(item1 && item2){
 		return tsk_object_cmp(item1->data, item2->data);
@@ -584,7 +584,7 @@ const tsk_object_def_t *tsk_list_item_def_t = &tsk_list_item_def_s;
 //
 static tsk_object_t* tsk_list_ctor(tsk_object_t *self, va_list *app)
 {
-	tsk_list_t *list = self;
+	tsk_list_t *list = (tsk_list_t *)self;
 	if(list){
 	}
 
@@ -593,7 +593,7 @@ static tsk_object_t* tsk_list_ctor(tsk_object_t *self, va_list *app)
 
 static tsk_object_t* tsk_list_dtor(tsk_object_t *self)
 { 
-	tsk_list_t *list = self;
+	tsk_list_t *list = (tsk_list_t *)self;
 	if(list){
 #if 0
 		/* Not thread-safe */

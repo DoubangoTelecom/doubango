@@ -77,7 +77,7 @@ static int tmedia_content_cpim_parse(tmedia_content_t* self, const void* in_data
 	const char *pe = p + in_size;
 	const char *eof = pe;
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	char* hname = tsk_null;
 	char* hvalue = tsk_null;

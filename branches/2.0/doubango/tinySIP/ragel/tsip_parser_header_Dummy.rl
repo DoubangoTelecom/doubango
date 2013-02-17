@@ -100,7 +100,7 @@ tsip_header_Dummy_t *tsip_header_Dummy_parse(const char *data, tsk_size_t size)
 	const char *eof = pe;
 	tsip_header_Dummy_t *hdr_Dummy = tsip_header_Dummy_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	%%write data;
 	(void)(eof);

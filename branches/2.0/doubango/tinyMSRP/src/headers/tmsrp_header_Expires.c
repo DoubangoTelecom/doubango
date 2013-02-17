@@ -76,7 +76,7 @@ tmsrp_header_Expires_t *tmsrp_header_Expires_parse(const char *data, tsk_size_t 
 	const char *eof = pe;
 	tmsrp_header_Expires_t *hdr_Expires = tmsrp_header_Expires_create_null();
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 
 	
 /* #line 83 "./src/headers/tmsrp_header_Expires.c" */
