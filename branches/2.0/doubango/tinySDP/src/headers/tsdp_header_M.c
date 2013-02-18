@@ -192,7 +192,7 @@ static const char _tsdp_machine_parser_header_M_actions[] = {
 
 static const char _tsdp_machine_parser_header_M_key_offsets[] = {
 	0, 0, 1, 3, 18, 33, 35, 39, 
-	53, 54, 68, 82, 84, 87, 102, 102
+	53, 54, 68, 70, 73, 88, 88, 103
 };
 
 static const char _tsdp_machine_parser_header_M_trans_keys[] = {
@@ -204,28 +204,28 @@ static const char _tsdp_machine_parser_header_M_trans_keys[] = {
 	37, 39, 126, 42, 43, 45, 46, 48, 
 	57, 65, 90, 95, 122, 10, 33, 37, 
 	39, 126, 42, 43, 45, 46, 48, 57, 
-	65, 90, 95, 122, 33, 37, 39, 126, 
-	42, 43, 45, 46, 48, 57, 65, 90, 
-	95, 122, 48, 57, 32, 48, 57, 13, 
-	32, 33, 37, 39, 47, 126, 42, 43, 
-	45, 57, 65, 90, 95, 122, 13, 32, 
-	33, 37, 39, 126, 42, 43, 45, 46, 
-	48, 57, 65, 90, 95, 122, 0
+	65, 90, 95, 122, 48, 57, 32, 48, 
+	57, 13, 32, 33, 37, 39, 47, 126, 
+	42, 43, 45, 57, 65, 90, 95, 122, 
+	13, 33, 37, 39, 126, 42, 43, 45, 
+	46, 48, 57, 65, 90, 95, 122, 13, 
+	32, 33, 37, 39, 126, 42, 43, 45, 
+	46, 48, 57, 65, 90, 95, 122, 0
 };
 
 static const char _tsdp_machine_parser_header_M_single_lengths[] = {
 	0, 1, 2, 5, 5, 0, 2, 4, 
-	1, 4, 4, 0, 1, 7, 0, 6
+	1, 4, 0, 1, 7, 0, 5, 6
 };
 
 static const char _tsdp_machine_parser_header_M_range_lengths[] = {
 	0, 0, 0, 5, 5, 1, 1, 5, 
-	0, 5, 5, 1, 1, 4, 0, 5
+	0, 5, 1, 1, 4, 0, 5, 5
 };
 
 static const char _tsdp_machine_parser_header_M_index_offsets[] = {
 	0, 0, 2, 5, 16, 27, 29, 33, 
-	43, 45, 55, 65, 67, 70, 82, 83
+	43, 45, 55, 57, 60, 72, 73, 84
 };
 
 static const char _tsdp_machine_parser_header_M_indicies[] = {
@@ -236,32 +236,33 @@ static const char _tsdp_machine_parser_header_M_indicies[] = {
 	1, 10, 10, 10, 10, 10, 10, 10, 
 	10, 10, 1, 11, 1, 12, 12, 12, 
 	12, 12, 12, 12, 12, 12, 1, 13, 
-	13, 13, 13, 13, 13, 13, 13, 13, 
-	1, 14, 1, 7, 15, 1, 16, 17, 
-	13, 13, 13, 18, 13, 13, 13, 13, 
-	13, 1, 1, 19, 20, 21, 21, 21, 
-	21, 21, 21, 21, 21, 21, 1, 0
+	1, 7, 14, 1, 15, 16, 12, 12, 
+	12, 17, 12, 12, 12, 12, 12, 1, 
+	1, 18, 19, 19, 19, 19, 19, 19, 
+	19, 19, 19, 1, 20, 21, 22, 22, 
+	22, 22, 22, 22, 22, 22, 22, 1, 
+	0
 };
 
 static const char _tsdp_machine_parser_header_M_trans_targs[] = {
 	2, 0, 3, 4, 5, 4, 6, 7, 
-	11, 6, 13, 14, 15, 13, 12, 12, 
-	8, 9, 10, 8, 9, 15
+	10, 6, 12, 13, 12, 11, 11, 8, 
+	14, 9, 8, 15, 8, 14, 15
 };
 
 static const char _tsdp_machine_parser_header_M_trans_actions[] = {
 	0, 0, 0, 1, 3, 0, 1, 5, 
-	5, 0, 1, 0, 1, 0, 1, 0, 
-	7, 7, 0, 9, 9, 0
+	5, 0, 1, 0, 0, 1, 0, 7, 
+	7, 0, 0, 1, 9, 9, 0
 };
 
 static const char _tsdp_machine_parser_header_M_eof_actions[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 7, 0, 9
+	0, 0, 0, 0, 7, 0, 0, 9
 };
 
 static const int tsdp_machine_parser_header_M_start = 1;
-static const int tsdp_machine_parser_header_M_first_final = 13;
+static const int tsdp_machine_parser_header_M_first_final = 12;
 static const int tsdp_machine_parser_header_M_error = 0;
 
 static const int tsdp_machine_parser_header_M_en_main = 1;
@@ -272,14 +273,14 @@ static const int tsdp_machine_parser_header_M_en_main = 1;
 	(void)(tsdp_machine_parser_header_M_error);
 	(void)(tsdp_machine_parser_header_M_en_main);
 	
-/* #line 276 "./src/headers/tsdp_header_M.c" */
+/* #line 277 "./src/headers/tsdp_header_M.c" */
 	{
 	cs = tsdp_machine_parser_header_M_start;
 	}
 
 /* #line 228 "./ragel/tsdp_parser_header_M.rl" */
 	
-/* #line 283 "./src/headers/tsdp_header_M.c" */
+/* #line 284 "./src/headers/tsdp_header_M.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -383,7 +384,7 @@ _match:
 		TSK_PARSER_ADD_STRING(hdr_M->FMTs);
 	}
 	break;
-/* #line 387 "./src/headers/tsdp_header_M.c" */
+/* #line 388 "./src/headers/tsdp_header_M.c" */
 		}
 	}
 
@@ -411,7 +412,7 @@ _again:
 		TSK_PARSER_ADD_STRING(hdr_M->FMTs);
 	}
 	break;
-/* #line 415 "./src/headers/tsdp_header_M.c" */
+/* #line 416 "./src/headers/tsdp_header_M.c" */
 		}
 	}
 	}
@@ -422,8 +423,8 @@ _again:
 /* #line 229 "./ragel/tsdp_parser_header_M.rl" */
 	
 	if( cs < 
-/* #line 426 "./src/headers/tsdp_header_M.c" */
-13
+/* #line 427 "./src/headers/tsdp_header_M.c" */
+12
 /* #line 230 "./ragel/tsdp_parser_header_M.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"m=\" header.");
@@ -459,7 +460,6 @@ int tsdp_header_M_remove(tsdp_header_M_t* self, tsdp_header_type_t type)
 				TSK_OBJECT_SAFE_FREE(self->K);
 				break;
 			}
-        default: break;
 	}
 	return 0;
 }
@@ -507,7 +507,6 @@ int tsdp_header_M_add(tsdp_header_M_t* self, const tsdp_header_t* header)
 				tsk_list_push_back_data(self->Attributes, (void**)&A);
 				break;
 			}
-        default: break;
 	}
 	
 	return 0;
