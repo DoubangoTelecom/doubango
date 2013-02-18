@@ -76,7 +76,7 @@
 	fmt = token>tag %parse_fmt;
 	
 	#// media SP port ["/" integer] SP proto 1*(SP fmt)
-	M = 'm' SP* "=" SP*<: media SP port ("/" nports)? SP proto (SP fmt)*;
+	M = 'm' SP* "=" SP*<: media SP port ("/" nports)? SP proto (SP fmt)* (SP{1})?; # The last SP is for buggy browsers (e.g. Nightly 20.0a1 => "m=application 51713 SCTP/DTLS 5000 \r\n")
 	
 	# Entry point
 	main := M :>CRLF?;
