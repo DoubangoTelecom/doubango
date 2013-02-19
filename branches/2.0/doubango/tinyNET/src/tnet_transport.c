@@ -446,7 +446,7 @@ const char* tnet_transport_dtls_get_local_fingerprint(const tnet_transport_handl
 	}
 
 	if(tnet_dtls_get_fingerprint(transport->tls.pbk, &((tnet_transport_t *)transport)->dtls.fingerprints[hash], hash) == 0){
-		return transport->dtls.fingerprints[hash];
+		return (const char*)transport->dtls.fingerprints[hash];
 	}
 	return tsk_null;
 }
@@ -740,8 +740,11 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	}
 	else{
 		if(TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)){
+            const tnet_tls_socket_handle_t* tls_handle = tnet_transport_get_tlshandle(handle, fd);
 			transport->tls.enabled = tsk_true;
-			/*transport->connected = !*/tnet_tls_socket_connect((tnet_tls_socket_handle_t*)tnet_transport_get_tlshandle(handle, fd));
+            if(tls_handle){
+                /*transport->connected = !*/tnet_tls_socket_connect((tnet_tls_socket_handle_t*)tls_handle);
+            }
 		}
 		else{
 			//transport->connected = tsk_true;

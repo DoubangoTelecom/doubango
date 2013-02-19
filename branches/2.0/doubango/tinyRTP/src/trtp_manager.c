@@ -182,7 +182,7 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 			{
 				if(manager->transport->master && manager->transport->master->fd == e->local_fd){
 					/* Only (SRTP_AES128_CM_SHA1_80 | SRTP_AES128_CM_SHA1_32) because of tnet_transport_dtls_use_srtp() */
-					TSK_DEBUG_INFO("event_dtls_srtp_profile_selected: %.*s", 22, e->data);
+					TSK_DEBUG_INFO("event_dtls_srtp_profile_selected: %.*s", 22, (const char*)e->data);
 					manager->dtls.crypto_selected = HMAC_SHA1_80;
 					if(tsk_strnequals(e->data, "SRTP_AES128_CM_SHA1_32", 22)){
 						manager->dtls.crypto_selected = HMAC_SHA1_32;
@@ -871,7 +871,7 @@ const char* trtp_manager_get_dtls_local_fingerprint(trtp_manager_t* self, enum t
 	if(!self->transport && self->dtls.file_pbk){
 		static tnet_fingerprint_t fingerprint[TNET_DTLS_HASH_TYPE_MAX];
 		if(tnet_dtls_get_fingerprint(self->dtls.file_pbk, &fingerprint[hash], hash) == 0){
-			return fingerprint[hash];
+			return (const char*)fingerprint[hash];
 		}
 	}
 	return tnet_transport_dtls_get_local_fingerprint(self->transport, hash);

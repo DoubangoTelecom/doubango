@@ -577,17 +577,17 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint32_t position, ui
 
 	// Compute SHA-1
 	if(!(ok = ((err = tsk_sha1reset(&sha)) == 0))){
-		TSK_DEBUG_ERROR("%s: %d", TCOMP_NACK_DESCRIPTIONS[NACK_INTERNAL_ERROR], err);
+		TSK_DEBUG_ERROR("%s: %d", TCOMP_NACK_DESCRIPTIONS[NACK_INTERNAL_ERROR].desc, err);
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
 		goto bail;
 	}
 	if(!(ok = ((err = tsk_sha1input(&sha, udvm->tmp_buff.ptr, length)) == 0))){
-		TSK_DEBUG_ERROR("%s : %d", TCOMP_NACK_DESCRIPTIONS[NACK_INTERNAL_ERROR], err);
+		TSK_DEBUG_ERROR("%s : %d", TCOMP_NACK_DESCRIPTIONS[NACK_INTERNAL_ERROR].desc, err);
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
 		goto bail;
 	}
 	if(!(ok = ((err = tsk_sha1result(&sha, (uint8_t*)Message_Digest)) == 0))){
-		TSK_DEBUG_ERROR("%s : %d", TCOMP_NACK_DESCRIPTIONS[NACK_INTERNAL_ERROR], ok);
+		TSK_DEBUG_ERROR("%s : %d", TCOMP_NACK_DESCRIPTIONS[NACK_INTERNAL_ERROR].desc, ok);
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
 		goto bail;
 	}

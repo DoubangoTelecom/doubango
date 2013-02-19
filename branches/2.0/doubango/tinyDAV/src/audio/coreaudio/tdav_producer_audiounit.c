@@ -89,7 +89,7 @@ static int __sender_thread_set_realtime(uint32_t ptime) {
 	size_t size = sizeof (freq_ns);
 	if((ret = sysctl (params, 2, &freq_ns, &size, NULL, 0))){
 		// check errno for more information
-		TSK_DEBUG_ERROR("sysctl() failed with error code=%d", ret);
+		TSK_DEBUG_INFO("sysctl() failed with error code=%d", ret);
 		return ret;
 	}
 	freq_ms = freq_ns/1000;
