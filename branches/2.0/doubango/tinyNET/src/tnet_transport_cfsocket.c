@@ -40,25 +40,20 @@
 
 #import <CoreFoundation/CoreFoundation.h>
 #import <Security/Security.h>
+#import <Security/SecureTransport.h>
+#import <CFNetwork/CFNetwork.h>
 
-#if TARGET_OS_IPHONE
-#   import <CFNetwork/CFNetwork.h>
-#else
-#   import <CoreServices/CoreServices.h>
-#endif
-
-#define TNET_MAX_FDS		64
-#define TNET_BUFFER_MAX_SIZE    0x1964
-
-const extern CFStringRef kCFStreamPropertySocketSSLContext;
+#define TNET_MAX_FDS                    64
+#define TNET_BUFFER_STREAM_MIN_SIZE    1024
 
 /*== Socket description ==*/
-typedef struct transport_socket_s
+typedef struct transport_socket_xs
 {
 	tnet_fd_t fd;
 	tsk_bool_t owner;
 	tsk_bool_t connected;
 	tsk_bool_t paused;
+    tsk_bool_t is_client;
     
 	tnet_socket_type_t type;
     
@@ -67,7 +62,7 @@ typedef struct transport_socket_s
     CFWriteStreamRef cf_write_stream;
     CFRunLoopSourceRef cf_run_loop_source;
 }
-transport_socket_t;
+transport_socket_xt;
 
 /*== Transport context structure definition ==*/
 typedef struct transport_context_s
@@ -75,7 +70,7 @@ typedef struct transport_context_s
 	TSK_DECLARE_OBJECT;
 	
 	tsk_size_t count;
-	transport_socket_t* sockets[TNET_MAX_FDS];
+	transport_socket_xt* sockets[TNET_MAX_FDS];
     
     CFRunLoopRef cf_run_loop;
     
@@ -83,15 +78,15 @@ typedef struct transport_context_s
 }
 transport_context_t;
 
-static int recvData(tnet_transport_t *transport, transport_socket_t* active_socket);
-static const transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd);
-int removeSocket(transport_socket_t *value, transport_context_t *context);
+static int recvData(tnet_transport_t *transport, transport_socket_xt* active_socket);
+static const transport_socket_xt* getSocket(transport_context_t *context, tnet_fd_t fd);
+int removeSocket(transport_socket_xt *value, transport_context_t *context);
 static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client);
 static int removeSocketAtIndex(int index, transport_context_t *context);
-static int wrapSocket(tnet_transport_t *transport, transport_socket_t *sock);
+static int wrapSocket(tnet_transport_t *transport, transport_socket_xt *sock);
 
 
-int recvData(tnet_transport_t *transport, transport_socket_t* active_socket)
+int recvData(tnet_transport_t *transport, transport_socket_xt* active_socket)
 {
 	transport_context_t *context;
 	int ret;
@@ -99,6 +94,11 @@ int recvData(tnet_transport_t *transport, transport_socket_t* active_socket)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+    
+    void* buffer = tsk_null;
+    tsk_size_t len = 0;
+    int isEncrypted = 0;
+    struct sockaddr_storage remote_addr = {0};
 	
 	/* check whether the socket is paused or not */
 	if(active_socket->paused){
@@ -106,53 +106,59 @@ int recvData(tnet_transport_t *transport, transport_socket_t* active_socket)
 		goto bail;
 	}
 	
-	tsk_size_t len = 0;
 	tsk_bool_t is_stream = TNET_SOCKET_TYPE_IS_STREAM(active_socket->type);
 	
 	if(tnet_ioctlt(active_socket->fd, FIONREAD, &len) < 0){
-		TNET_PRINT_LAST_ERROR("IOCTLT failed");
+		TNET_PRINT_LAST_ERROR("ioctl() failed");
 		goto bail;
 	}
 	
 	if(!len){
 		// probably incoming connection
-		if(is_stream){
+		if(is_stream && !active_socket->is_client){
 			tnet_fd_t fd;
-			if((fd = accept(active_socket->fd, tsk_null, tsk_null)) > 0){
-				if(addSocket(fd, active_socket->type, transport, tsk_true, tsk_false) == 0){
-					goto bail; // read() data next time
-				}
-			}
+            if((fd = accept(active_socket->fd, tsk_null, tsk_null)) != TNET_INVALID_SOCKET){
+                TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_ACCEPT(fd=%d)", transport->description, fd);
+                addSocket(fd, transport->master->type, transport, tsk_true, tsk_false);
+                TSK_RUNNABLE_ENQUEUE(transport, event_accepted, transport->callback_data, fd);
+                goto bail;
+            }
 		}
-		TSK_DEBUG_WARN("IOCTLT returned zero for fd=%d", active_socket->fd);
-		recv(active_socket->fd, 0, 0, 0);
-		goto bail;
+        
+        if(is_stream && CFReadStreamHasBytesAvailable(active_socket->cf_read_stream)){
+            if((buffer = tsk_calloc(TNET_BUFFER_STREAM_MIN_SIZE, sizeof(uint8_t)))){
+                ret = len = CFReadStreamRead(active_socket->cf_read_stream, buffer, (CFIndex)TNET_BUFFER_STREAM_MIN_SIZE);
+            }
+        }
+        
+        if(ret <= 0){
+            TSK_DEBUG_WARN("ioctl() returned zero for fd=%d", active_socket->fd);
+            goto bail;
+        }
 	}
 	
-	
-	void* buffer = tsk_null;
-	if(!(buffer = tsk_calloc(len, sizeof(uint8_t)))){
-		TSK_DEBUG_ERROR("TSK_CALLOC FAILED.");
-		goto bail;
-	}
-	
-	struct sockaddr_storage remote_addr = {0};
-	
-	if(is_stream){
-		if(active_socket->cf_read_stream){
-			ret = CFReadStreamRead(active_socket->cf_read_stream, buffer, (CFIndex)len);
-		}
-		else {
-			ret = tnet_sockfd_recv(active_socket->fd, buffer, len, 0);
-		}
-	}
-	else {
-		ret = tnet_sockfd_recvfrom(active_socket->fd, buffer, len, 0, (struct sockaddr*)&remote_addr);
-	}
+    if(len && !buffer){
+        if(!(buffer = tsk_calloc(len, sizeof(uint8_t)))){
+            TSK_DEBUG_ERROR("calloc(%d) failed", len);
+            goto bail;
+        }
+        
+        // Receive the waiting data
+        if(is_stream){
+            if(active_socket->cf_read_stream){
+                ret = CFReadStreamRead(active_socket->cf_read_stream, buffer, (CFIndex)len);
+            }
+            else {
+                ret = tnet_sockfd_recv(active_socket->fd, buffer, len, 0);
+            }
+        }
+        else {
+            ret = tnet_sockfd_recvfrom(active_socket->fd, buffer, len, 0, (struct sockaddr*)&remote_addr);
+        }
+    }
 	
 	
 	if(ret < 0){
-		TSK_FREE(buffer);
 		removeSocket(active_socket, transport->context);
 		TNET_PRINT_LAST_ERROR("recv/recvfrom have failed.");
 		goto bail;
@@ -163,13 +169,16 @@ int recvData(tnet_transport_t *transport, transport_socket_t* active_socket)
 	}
 	
 	tnet_transport_event_t* e = tnet_transport_event_create(event_data, transport->callback_data, active_socket->fd);
-	e->data = buffer;
-	e->size = len;
-	e->remote_addr = remote_addr;
+	if(e){
+        e->data = buffer; buffer = NULL;
+        e->size = len;
+        e->remote_addr = remote_addr;
 	
-	TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(transport), e);
+        TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(transport), e);
+    }
 	
 bail:
+    TSK_FREE(buffer);
 	return 0;
 }
 
@@ -189,8 +198,8 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 		return -2;
 	}
     
-	if (TNET_SOCKET_TYPE_IS_TLS(type)) {
-		transport->tls.enabled = tsk_true;
+	if(TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)){
+		transport->tls.enabled = 1;
 	}
 	
 	if ((ret = addSocket(fd, type, transport, take_ownership, isClient))) {
@@ -209,14 +218,14 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 int tnet_transport_pause_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tsk_bool_t pause){
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
-	transport_socket_t* socket;
+	transport_socket_xt* socket;
 	
 	if(!transport || !(context = (transport_context_t *)transport->context)){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	
-	if((socket = (transport_socket_t*)getSocket(context, fd))){
+	if((socket = (transport_socket_xt*)getSocket(context, fd))){
 		socket->paused = pause;
 	}
 	else {
@@ -277,12 +286,26 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
 		goto bail;
 	}
 
-    const transport_socket_t* sock = getSocket(transport->context, from);
+    const transport_socket_xt* sock = getSocket(transport->context, from);
     if (TNET_SOCKET_TYPE_IS_STREAM(sock->type) && sock->cf_write_stream) {
+        int sent = 0, to_send;
+        const uint8_t* buff_ptr = (const uint8_t*)buf;
+        // on iOS when TLS is enabled sending more than 1024 bytes could fails
+        static const int max_size_to_send = 1024;
+        
+        to_send = TSK_MIN(max_size_to_send, size);
+        
         if (CFWriteStreamGetStatus(sock->cf_write_stream) == kCFStreamStatusNotOpen) {
             CFWriteStreamOpen(sock->cf_write_stream);
         }
-        if ((numberOfBytesSent = CFWriteStreamWrite(sock->cf_write_stream, buf, (CFIndex) size)) < size) {
+        if (CFReadStreamGetStatus(sock->cf_read_stream) == kCFStreamStatusNotOpen) {
+            CFReadStreamOpen(sock->cf_read_stream);
+        }
+        while (to_send > 0 && (sent = CFWriteStreamWrite(sock->cf_write_stream, &buff_ptr[numberOfBytesSent], (CFIndex) to_send)) > 0) {
+            numberOfBytesSent += sent;
+            to_send = TSK_MIN(max_size_to_send, (size - numberOfBytesSent));
+        }
+        if(sent < 0){
             TNET_PRINT_LAST_ERROR("Send have failed");
             goto bail;
         }
@@ -336,24 +359,21 @@ int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t 
 const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transport_handle_t *handle, tnet_fd_t fd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
-	const transport_socket_t *socket;
+	const transport_socket_xt *socket;
 	
 	if(!transport){
-		TSK_DEBUG_ERROR("Invalid server handle.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
-	
-	if((socket = getSocket((transport_context_t*)transport->context, fd))){
-//		return socket->tlshandle;
-	}
+    // not using openssl
 	return tsk_null;
 }
 
 /*== Get socket ==*/
-static const transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
+static const transport_socket_xt* getSocket(transport_context_t *context, tnet_fd_t fd)
 {
 	tsk_size_t i;
-	transport_socket_t* ret = tsk_null;
+	transport_socket_xt* ret = tsk_null;
     
 	if (context) {
 		tsk_safeobj_lock(context);
@@ -374,20 +394,16 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 {
 	transport_context_t *context = transport?transport->context:0;
 	if (context) {
-		transport_socket_t *sock = tsk_calloc(1, sizeof(transport_socket_t));
+		transport_socket_xt *sock = tsk_calloc(1, sizeof(transport_socket_xt));
 		sock->fd = fd;
 		sock->type = type;
 		sock->owner = take_ownership;
+        sock->is_client = is_client;
 		
 		if(!sock){
 			TSK_DEBUG_ERROR("Failed to allocate socket");
 			return -1;
 		}
-
-        // FIXME: TLS keys
-		//if (TNET_SOCKET_TYPE_IS_TLS(sock->type)) {
-		//	sock->tlshandle = tnet_sockfd_set_tlsfiles(sock->fd, is_client, transport->tls.ca, transport->tls.pvk, transport->tls.pbk);
-		//}
 		
 		tsk_safeobj_lock(context);
         wrapSocket(transport, sock);
@@ -414,10 +430,7 @@ int removeSocketAtIndex(int index, transport_context_t *context)
 	tsk_safeobj_lock(context);
     
 	if (index < (int)context->count) {
-        transport_socket_t *sock = context->sockets[index];
-        
-		// Free tls context
-		//TSK_OBJECT_SAFE_FREE(sock->tlshandle);
+        transport_socket_xt *sock = context->sockets[index];
 		
 		// Invalidate CFSocket
         if (sock->cf_socket) {
@@ -426,21 +439,23 @@ int removeSocketAtIndex(int index, transport_context_t *context)
             }
             CFRelease(sock->cf_socket);
         }
+        
 		// Close and free read stream
         if (sock->cf_read_stream) {
-            // TODO: Investigate if we really need to do that
-            //if (CFReadStreamGetStatus(sock->cf_read_stream) == kCFStreamStatusOpen) {
-            //    CFReadStreamClose(sock->cf_read_stream);
-            //}
+            if (CFReadStreamGetStatus(sock->cf_read_stream) == kCFStreamStatusOpen) {
+                CFReadStreamClose(sock->cf_read_stream);
+            }
             CFRelease(sock->cf_read_stream);
+            sock->cf_read_stream = NULL;
         }
+        
 		// Close and free write stream
         if (sock->cf_write_stream) {
-            // TODO: Investigate if we really need to do that
-            //if (CFWriteStreamGetStatus(sock->cf_write_stream) == kCFStreamStatusOpen) {
-            //    CFWriteStreamClose(sock->cf_write_stream);
-            //}
+            if (CFWriteStreamGetStatus(sock->cf_write_stream) == kCFStreamStatusOpen) {
+                CFWriteStreamClose(sock->cf_write_stream);
+            }
             CFRelease(sock->cf_write_stream);
+            sock->cf_write_stream = NULL;
         }
         
 		// Close the socket if we are the owner.
@@ -465,14 +480,14 @@ int removeSocketAtIndex(int index, transport_context_t *context)
 	return 0;
 }
 
-int removeSocket(transport_socket_t *value, transport_context_t *context)
+int removeSocket(transport_socket_xt *value, transport_context_t *context)
 {
 	int i;
 	
 	tsk_safeobj_lock(context);
     
     for(i = 0; i < context->count; i++) {
-        transport_socket_t *sock = context->sockets[i];
+        transport_socket_xt *sock = context->sockets[i];
         if (sock == value) {
             removeSocketAtIndex(i, context);
             break;
@@ -599,7 +614,7 @@ void __CFReadStreamClientCallBack(CFReadStreamRef stream, CFStreamEventType even
     CFSocketNativeHandle fd;
     CFDataGetBytes(data, CFRangeMake(0, sizeof(CFSocketNativeHandle)), (UInt8*) &fd);
     CFRelease(data);
-    transport_socket_t *sock = (transport_socket_t *) getSocket(context, fd);
+    transport_socket_xt *sock = (transport_socket_xt *) getSocket(context, fd);
 	if(!sock) goto bail;
     
     switch(eventType) {
@@ -609,20 +624,26 @@ void __CFReadStreamClientCallBack(CFReadStreamRef stream, CFStreamEventType even
             TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, sock->fd);
             break;
         }
-        case kCFStreamEventHasBytesAvailable:
+        case kCFStreamEventEndEncountered:
         {
-			recvData(transport, sock);            
+            TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> kCFStreamEventEndEncountered");
             break;
         }
-        case kCFStreamEventEndEncountered:
+        case kCFStreamEventHasBytesAvailable:
+        {
+			recvData(transport, sock);
+            break;
+        }
         case kCFStreamEventErrorOccurred:
         {
             // Get the error code
             CFErrorRef error = CFReadStreamCopyError(stream);
-            CFIndex index = CFErrorGetCode(error);
-            CFRelease(error);
-                        
-            TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> Error %lu", index);
+            if(error){
+                CFIndex index = CFErrorGetCode(error);
+                CFRelease(error);
+                
+                TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> Error %lu", index);
+            }
             
             TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, sock->fd);
             removeSocket(sock, context);
@@ -655,7 +676,7 @@ void __CFWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventType ev
     CFSocketNativeHandle fd;
     CFDataGetBytes(data, CFRangeMake(0, sizeof(CFSocketNativeHandle)), (UInt8*) &fd);
     CFRelease(data);
-    transport_socket_t *sock = (transport_socket_t *) getSocket(context, fd);
+    transport_socket_xt *sock = (transport_socket_xt *) getSocket(context, fd);
 	if(!sock) goto bail;
     
     switch(eventType) {
@@ -663,29 +684,30 @@ void __CFWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventType ev
         {
             TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> kCFStreamEventOpenCompleted");
             
-            if (TNET_SOCKET_TYPE_IS_TLS(sock->type)) {
-				sock->connected = tsk_true;
-#if !TARGET_OS_IPHONE
-                SSLContextRef sslContext = NULL;
-                data = CFWriteStreamCopyProperty(stream, kCFStreamPropertySocketSSLContext);
-                CFDataGetBytes(data, CFRangeMake(0, sizeof(SSLContextRef)), (UInt8*) &sslContext);
-                CFRelease(data);
-                // TODO: Set the client certificates
-#endif
-                TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, sock->fd);
-            }
-            
+            sock->connected = tsk_true;
+            TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, sock->fd);
+            break;
+        }
+        case kCFStreamEventCanAcceptBytes:
+        {
+            TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> kCFStreamEventCanAcceptBytes");
             break;
         }
         case kCFStreamEventEndEncountered:
+        {
+            TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> kCFStreamEventEndEncountered");
+            break;
+        }
         case kCFStreamEventErrorOccurred:
         {
             // Get the error code
             CFErrorRef error = CFWriteStreamCopyError(stream);
-            CFIndex index = CFErrorGetCode(error);
-            CFRelease(error);
-            
-            TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> Error %lu", index);
+            if(error){
+                CFIndex index = CFErrorGetCode(error);
+                CFRelease(error);
+                
+                TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> Error %lu", index);
+            }
             
             TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, sock->fd);
             removeSocket(sock, context);
@@ -711,7 +733,7 @@ void __CFSocketCallBack(CFSocketRef s, CFSocketCallBackType callbackType, CFData
     
     // Extract the native socket
     int fd = CFSocketGetNative(s);
-    transport_socket_t *sock = (transport_socket_t *) getSocket(context, fd);
+    transport_socket_xt *sock = (transport_socket_xt *) getSocket(context, fd);
 	if(!sock) goto bail;
 
     /* lock context */
@@ -740,7 +762,9 @@ bail:
     tsk_safeobj_unlock(context);
 }
 
-int wrapSocket(tnet_transport_t *transport, transport_socket_t *sock) 
+#import <Foundation/Foundation.h>
+
+int wrapSocket(tnet_transport_t *transport, transport_socket_xt *sock) 
 {
 	transport_context_t *context;
 	if(!transport || !(context = transport->context) || !sock){
@@ -786,16 +810,40 @@ int wrapSocket(tnet_transport_t *transport, transport_socket_t *sock)
         CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanFalse);
         
         if (TNET_SOCKET_TYPE_IS_TLS(sock->type)) {
+            CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
+            CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
+            
             CFMutableDictionaryRef settings = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
             CFDictionaryAddValue(settings, kCFStreamSSLAllowsExpiredCertificates, kCFBooleanTrue);
             CFDictionaryAddValue(settings, kCFStreamSSLAllowsAnyRoot, kCFBooleanTrue);
-            CFDictionaryAddValue(settings, kCFStreamSSLValidatesCertificateChain, kCFBooleanFalse);
+            CFDictionaryAddValue(settings, kCFStreamSSLValidatesCertificateChain, transport->tls.verify ?kCFBooleanTrue : kCFBooleanFalse);
+            CFDictionaryAddValue(settings, kCFStreamSSLIsServer, sock->is_client ? kCFBooleanFalse : kCFBooleanTrue);
             CFDictionaryAddValue(settings, kCFStreamSSLPeerName, kCFNull);
             
+            
+            // Set certificates (DER format)
+            if(!tsk_strnullORempty(transport->tls.ca)){
+                NSString *ca = [NSString stringWithCString:transport->tls.ca encoding: NSUTF8StringEncoding];
+                NSString *certPath = [[NSBundle mainBundle] pathForResource:ca ofType:@"cer"];
+                NSData *certData = [[NSData alloc] initWithContentsOfFile:certPath];
+                if(certData){
+                    CFDataRef certDataRef = (CFDataRef)certData;
+                    SecCertificateRef cert = SecCertificateCreateWithData(NULL, certDataRef);
+                    [certData release];
+                    
+                    SecCertificateRef certArray[1] = { cert };
+                    CFArrayRef certs = CFArrayCreate(
+                                                     NULL, (void *)certArray,
+                                                     1, NULL);
+                    if(certs){
+                        CFDictionaryAddValue(settings, kCFStreamSSLCertificates, certs);
+                        CFRelease(certs);
+                    }
+                }
+            }
+            
             // Set the SSL settings
-            CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
             CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamPropertySSLSettings, settings);
-            CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
             CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamPropertySSLSettings, settings);
             
             CFRelease(settings);
@@ -822,12 +870,12 @@ int wrapSocket(tnet_transport_t *transport, transport_socket_t *sock)
         CFReadStreamScheduleWithRunLoop(sock->cf_read_stream, context->cf_run_loop, kCFRunLoopDefaultMode);
         CFWriteStreamScheduleWithRunLoop(sock->cf_write_stream, context->cf_run_loop, kCFRunLoopDefaultMode);
         
+        CFReadStreamOpen(sock->cf_read_stream);
+        CFWriteStreamOpen(sock->cf_write_stream);
+        
         // Release references
         CFRelease(sock->cf_read_stream);
         CFRelease(sock->cf_write_stream);
-        
-        CFReadStreamOpen(sock->cf_read_stream);
-        CFWriteStreamOpen(sock->cf_write_stream);
     }
     
     return 0;
@@ -871,7 +919,7 @@ void *tnet_transport_mainthread(void *param)
 	tsk_safeobj_lock(context);
     for(i = 0; i < context->count; i++) {
         transport_context_t *context = transport->context;
-        transport_socket_t *sock = context->sockets[i];
+        transport_socket_xt *sock = context->sockets[i];
         
         if (!sock) {
             continue;

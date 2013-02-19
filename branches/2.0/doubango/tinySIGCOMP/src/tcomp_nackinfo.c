@@ -175,7 +175,7 @@ const char* tcomp_nackinfo_get_description(const tcomp_buffer_handle_t* buffer)
 	}
 	reasonCode = *((const uint8_t*)tcomp_buffer_getBufferAtPos(buffer, 3));
 	if(reasonCode >= (sizeof(TCOMP_NACK_DESCRIPTIONS)/sizeof(TCOMP_NACK_DESCRIPTIONS[0]))){
-		TSK_DEBUG_ERROR("%d not valid as reasonCode");
+		TSK_DEBUG_ERROR("%d not valid as reasonCode", (int32_t)reasonCode);
 		return tsk_null;
 	}
 	return TCOMP_NACK_DESCRIPTIONS[reasonCode].desc;

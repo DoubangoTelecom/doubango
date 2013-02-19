@@ -159,7 +159,7 @@ tsk_size_t trtp_srtp_get_local_contexts(trtp_manager_t* rtp_mgr, const struct tr
 	return ret;
 }
 
-trtp_srtp_set_crypto(struct trtp_manager_s* rtp_mgr, const char* crypto_line, int32_t idx)
+int trtp_srtp_set_crypto(struct trtp_manager_s* rtp_mgr, const char* crypto_line, int32_t idx)
 {
 	//e.g. 2 F8_128_HMAC_SHA1_80 inline:MTIzNDU2Nzg5QUJDREUwMTIzNDU2Nzg5QUJjZGVm|2^20|1:4;inline:QUJjZGVmMTIzNDU2Nzg5QUJDREUwMTIzNDU2Nzg5|2^20|2:4"
 	trtp_srtp_ctx_xt* srtp_ctx;
@@ -259,7 +259,7 @@ int trtp_srtp_set_key_and_salt(trtp_manager_t* rtp_mgr, trtp_srtp_crypto_type_t 
 	memcpy(&srtp_ctx->key_bin[key_size], salt, salt_size);
 #endif
 	
-	srtp_ctx->policy.key = srtp_ctx->key_bin;
+	srtp_ctx->policy.key = (unsigned char *)srtp_ctx->key_bin;
 	srtp_ctx->policy.ssrc.type = idx == TRTP_SRTP_LINE_IDX_REMOTE ? ssrc_any_inbound : ssrc_any_outbound;
 	if((srtp_err = srtp_create(&srtp_ctx->session, &srtp_ctx->policy)) != err_status_ok){
 		TSK_DEBUG_ERROR("srtp_create() failed: %d", srtp_err);

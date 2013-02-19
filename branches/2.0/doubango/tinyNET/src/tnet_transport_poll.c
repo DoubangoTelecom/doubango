@@ -263,7 +263,7 @@ const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transpor
 	const transport_socket_xt *socket;
 	
 	if(!transport){
-		TSK_DEBUG_ERROR("Invalid server handle.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 	
@@ -304,7 +304,7 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 		sock->type = type;
 		sock->owner = take_ownership;
 
-		if((TNET_SOCKET_TYPE_IS_TLS(sock->type) || TNET_SOCKET_TYPE_IS_WSS(sock->type)) && transport->tls.enabled){
+		if(!sock->tlshandle && (TNET_SOCKET_TYPE_IS_TLS(sock->type) || TNET_SOCKET_TYPE_IS_WSS(sock->type)) && transport->tls.enabled){
 #if HAVE_OPENSSL
 			sock->tlshandle = tnet_tls_socket_create(sock->fd, is_client ? transport->tls.ctx_client : transport->tls.ctx_server);       
 #endif
@@ -673,7 +673,7 @@ void *tnet_transport_mainthread(void *param)
 #endif
 					}
                     if (listening){
-						if((fd = accept(active_socket->fd, tsk_null, 0)) != TNET_INVALID_SOCKET){
+						if((fd = accept(active_socket->fd, tsk_null, tsk_null)) != TNET_INVALID_SOCKET){
 							TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_ACCEPT(fd=%d)", transport->description, fd);
 							addSocket(fd, transport->master->type, transport, tsk_true, tsk_false);
 							TSK_RUNNABLE_ENQUEUE(transport, event_accepted, transport->callback_data, fd);
