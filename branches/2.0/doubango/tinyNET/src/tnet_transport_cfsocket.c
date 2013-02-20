@@ -38,7 +38,10 @@
 
 #if (__IPHONE_OS_VERSION_MIN_REQUIRED >= 40000)
 
-#import <CoreFoundation/CoreFoundation.h>
+
+#ifdef __OBJC__
+#import <Foundation/Foundation.h>
+#endif /* __OBJC__ */
 #import <Security/Security.h>
 #import <Security/SecureTransport.h>
 #import <CFNetwork/CFNetwork.h>
@@ -762,7 +765,7 @@ bail:
     tsk_safeobj_unlock(context);
 }
 
-#import <Foundation/Foundation.h>
+
 
 int wrapSocket(tnet_transport_t *transport, transport_socket_xt *sock) 
 {
@@ -821,6 +824,7 @@ int wrapSocket(tnet_transport_t *transport, transport_socket_xt *sock)
             CFDictionaryAddValue(settings, kCFStreamSSLPeerName, kCFNull);
             
             
+#ifdef __OBJC__
             // Set certificates (DER format)
             if(!tsk_strnullORempty(transport->tls.ca)){
                 NSString *ca = [NSString stringWithCString:transport->tls.ca encoding: NSUTF8StringEncoding];
@@ -841,6 +845,7 @@ int wrapSocket(tnet_transport_t *transport, transport_socket_xt *sock)
                     }
                 }
             }
+#endif /* __OBJC__ */
             
             // Set the SSL settings
             CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamPropertySSLSettings, settings);
