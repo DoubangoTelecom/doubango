@@ -450,6 +450,16 @@ int __thttp_stack_set(thttp_stack_t *self, va_list* app)
 			//
 			// TLS
 			//
+		case thttp_pname_tls_enabled:
+			{	/* (tsk_bool_t)ENABLED_BOOL */
+				self->tls.enabled = va_arg(*app, tsk_bool_t);
+				break;
+			}
+		case thttp_pname_tls_certs_verify:
+			{	/* (tsk_bool_t)CERTS_VERIFY_BOOL */
+				self->tls.verify = va_arg(*app, tsk_bool_t);
+				break;
+			}
 		case thttp_pname_tls_certs:
 			{	/* A_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR */
 				tsk_strupdate(&self->tls.ca, va_arg(*app, const char*));
@@ -543,19 +553,25 @@ int thttp_stack_start(thttp_stack_handle_t *self)
 	}
 
 	if(!stack->transport){
-		stack->transport = tnet_transport_create(stack->local_ip, stack->local_port, tnet_socket_type_tcp_ipv46, "HTTP/HTTPS transport");
+		const char* transport_desc = stack->tls.enabled ? "HTTPS transport" : "HTTP transport";
+		tnet_socket_type_t transport_type = stack->tls.enabled ? tnet_socket_type_tls_ipv46 : tnet_socket_type_tcp_ipv46;
+		stack->transport = tnet_transport_create(stack->local_ip, stack->local_port, transport_type, transport_desc);
 		tnet_transport_set_callback(stack->transport, TNET_TRANSPORT_CB_F(thttp_transport_layer_stream_cb), self);
 	}
 
 	// Sets TLS certificates
-	tsk_strupdate(&stack->transport->tls.ca, stack->tls.ca);
-	tsk_strupdate(&stack->transport->tls.pvk, stack->tls.pvk);
-	tsk_strupdate(&stack->transport->tls.pbk, stack->tls.pbk);
-
-	if(!(ret = tnet_transport_start(stack->transport))){
-		stack->started = tsk_true;
+	if((ret = tnet_transport_tls_set_certs(stack->transport, stack->tls.ca, stack->tls.pbk, stack->tls.pvk, stack->tls.verify))){
+		goto bail;
 	}
-	else{
+
+	if((ret = tnet_transport_start(stack->transport))){
+		goto bail;
+	}
+
+	stack->started = tsk_true;
+	
+bail:
+	if(ret){
 		TSK_OBJECT_SAFE_FREE(stack->transport);
 	}
 

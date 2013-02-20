@@ -95,6 +95,10 @@ typedef enum thttp_stack_param_type_e
 #define THTTP_STACK_SET_LOCAL_PORT(PORT_INT)													thttp_pname_local_port, (int)PORT_INT
 
 	/* TLS */
+	thttp_pname_tls_enabled,
+#define THTTP_STACK_SET_TLS_ENABLED(ENABLED_BOOL)									thttp_pname_tls_enabled, (tsk_bool_t)ENABLED_BOOL
+	thttp_pname_tls_certs_verify,
+#define THTTP_STACK_SET_TLS_CERTS_VERIFY(CERTS_VERIFY_BOOL)							thttp_pname_tls_certs_verify, (tsk_bool_t)CERTS_VERIFY_BOOL
 	thttp_pname_tls_certs,
 #define THTTP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)			thttp_pname_tls_certs, (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR
 
@@ -121,6 +125,8 @@ typedef struct thttp_stack_s
 
 	/* TLS */
 	struct {
+		tsk_bool_t enabled;
+		tsk_bool_t verify;
 		char* ca;
 		char* pbk;
 		char* pvk;

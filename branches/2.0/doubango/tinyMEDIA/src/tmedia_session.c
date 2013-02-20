@@ -1302,10 +1302,21 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		
 		if(!found && (self->sdp.lo == tsk_null)){
 			/* Session not supported and we are not the initial offerer ==> add ghost session */
+			/*
+				An offered stream MAY be rejected in the answer, for any reason.  If
+			   a stream is rejected, the offerer and answerer MUST NOT generate
+			   media (or RTCP packets) for that stream.  To reject an offered
+			   stream, the port number in the corresponding stream in the answer
+			   MUST be set to zero.  Any media formats listed are ignored.  AT LEAST
+			   ONE MUST BE PRESENT, AS SPECIFIED BY SDP.
+			*/
 			tmedia_session_ghost_t* ghost;
 			if((ghost = (tmedia_session_ghost_t*)tmedia_session_create(tmedia_ghost))){
 				tsk_strupdate(&ghost->media, M->media); /* copy media */
 				tsk_strupdate(&ghost->proto, M->proto); /* copy proto */
+				if(!TSK_LIST_IS_EMPTY(M->FMTs)){
+					tsk_strupdate(&ghost->first_format, ((const tsdp_fmt_t*)TSK_LIST_FIRST_DATA(M->FMTs))->value); /* copy format */
+				}
 				tsk_list_push_back_data(self->sessions, (void**)&ghost);
 			}
 			else{
