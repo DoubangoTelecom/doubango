@@ -655,7 +655,8 @@ void *tnet_transport_mainthread(void *param)
 				 * This apply whatever you are using the 3rd or 5th edition.
 				 * Download link: http://wiki.forum.nokia.com/index.php/Open_C/C%2B%2B_Release_History
 				 */
-				if((tnet_ioctlt(active_socket->fd, FIONREAD, &len) < 0 || !len) && is_stream){
+				ret = tnet_ioctlt(active_socket->fd, FIONREAD, &len);
+				if((ret < 0 || !len) && is_stream){
 					/* It's probably an incoming connection --> try to accept() it */
 					int listening = 0, remove_socket = 0;
 					socklen_t socklen = sizeof(listening);
@@ -709,7 +710,14 @@ void *tnet_transport_mainthread(void *param)
 				}
 				
 				if(len <= 0){
-                    			context->ufds[i].revents &= ~TNET_POLLIN;
+#if ANDROID
+					// workaround for indoona OSX which sends bodiless UDP packets
+					// vand Android requires to call recv() even if len is equal to zero
+					if(len == 0 && ret == 0){
+						static char __fake_buff[1];
+						ret = recv(active_socket->fd, __fake_buff, len, 0);
+					}
+#endif
 					goto TNET_POLLIN_DONE;
 				}
 				

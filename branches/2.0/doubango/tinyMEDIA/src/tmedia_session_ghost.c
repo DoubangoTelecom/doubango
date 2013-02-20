@@ -69,6 +69,16 @@ static const tsdp_header_M_t* tmedia_session_ghost_get_lo(tmedia_session_t* self
 		return tsk_null;
 	}
 
+	// add format
+	if(!tsk_strnullORempty(ghost->first_format)){
+		tsk_string_t* fmt = tsk_string_create(ghost->first_format);
+		if(!self->M.lo->FMTs){
+			self->M.lo->FMTs = tsk_list_create();
+		}
+		tsk_list_push_back_data(self->M.lo->FMTs, (void**)&fmt);
+		TSK_OBJECT_SAFE_FREE(fmt);
+	}
+
 	return self->M.lo;
 }
 
@@ -107,6 +117,7 @@ static tsk_object_t* tmedia_session_ghost_dtor(tsk_object_t * self)
 		/* deinit self */
 		TSK_FREE(session->media);
 		TSK_FREE(session->proto);
+		TSK_FREE(session->first_format);
 	}
 
 	return self;

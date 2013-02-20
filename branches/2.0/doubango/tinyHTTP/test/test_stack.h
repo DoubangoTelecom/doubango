@@ -77,9 +77,11 @@ void test_stack()
 	int ret;
 
 	thttp_stack_handle_t* stack = thttp_stack_create(test_stack_callback,
-#if defined(ANDROID)
-		THTTP_STACK_SET_LOCAL_IP("10.0.2.15"),
-#endif
+		//THTTP_STACK_SET_TLS_ENABLED(tsk_false),
+		//THTTP_STACK_SET_TLS_CERTS_VERIFY(tsk_false),
+		//THTTP_STACK_SET_LOCAL_IP("0.0.0.0"),
+		//THTTP_STACK_SET_LOCAL_PORT(8080),
+
 		THTTP_STACK_SET_NULL());
 
 	if((ret = thttp_stack_start(stack))){
@@ -129,8 +131,21 @@ void test_stack()
 
 	//getchar();
 
+	// HTTPS
+	thttp_action_GET(session, "https://msp.f-secure.com/web-test/common/test.html",
+		// action-level options
+		THTTP_ACTION_SET_OPTION(THTTP_ACTION_OPTION_TIMEOUT, "2500"),
+		
+		// action-level headers
+		THTTP_ACTION_SET_HEADER("User-Agent", "Doubango"),
+		THTTP_ACTION_SET_HEADER("Connection", "Keep-Alive"),
+		
+		THTTP_ACTION_SET_NULL());
+	getchar();
+	
 
-	thttp_action_GET(session, "http://ipv6.google.com",
+	// IPv6
+	/*thttp_action_GET(session, "http://ipv6.google.com",
 		// action-level options
 		THTTP_ACTION_SET_OPTION(THTTP_ACTION_OPTION_TIMEOUT, "2500"),
 		
@@ -139,14 +154,15 @@ void test_stack()
 		THTTP_ACTION_SET_HEADER("Connection", "Keep-Alive"),
 		
 		THTTP_ACTION_SET_NULL());
-	getchar();
-	ret = thttp_action_GET(session, "http://doubango.org",
+	getchar();*/
+
+	/*ret = thttp_action_GET(session, "http://doubango.org",
 			// action-level options
 			THTTP_ACTION_SET_OPTION(THTTP_ACTION_OPTION_TIMEOUT, "2500"),
 			
 			THTTP_ACTION_SET_NULL());
 
-	getchar();
+	getchar();*/
 
 	//thttp_action_GET(session, "http://www.google.com",
 		//THTTP_ACTION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
@@ -158,31 +174,31 @@ void test_stack()
 	//	THTTP_ACTION_SET_NULL());	
 
 	/* Gets resource-lists document */
-	thttp_action_GET(session, "http://siptest.doubango.org:8080/services/resource-lists/users/sip:mercuro1@doubango.org/index",
+	/*thttp_action_GET(session, "http://siptest.doubango.org:8080/services/resource-lists/users/sip:mercuro1@doubango.org/index",
 		THTTP_ACTION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
 		
 		tsk_null);
 
-	getchar();
+	getchar();*/
 
 	//TSK_OBJECT_SAFE_FREE(session);
 
 	//getchar();
 
 	/* Gets xcap-caps document */
-	thttp_action_GET(session, "http://siptest.doubango.org:8080/services/xcap-caps/global/index",
+	/*thttp_action_GET(session, "http://siptest.doubango.org:8080/services/xcap-caps/global/index",
 		THTTP_ACTION_SET_HEADER("Content-Type", "application/xcap-caps+xml"),
 		
 		tsk_null);
 
-	getchar();
+	getchar();*/
 
-	thttp_action_GET(session, "http://siptest.doubango.org:8080/services/resource-lists/users/sip:mercuro1@doubango.org/properties-resource-list.xml",
+	/*thttp_action_GET(session, "http://siptest.doubango.org:8080/services/resource-lists/users/sip:mercuro1@doubango.org/properties-resource-list.xml",
 		THTTP_ACTION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
 		
 		tsk_null);
 
-	getchar();
+	getchar();*/
 
 	//thttp_operation_perform(op);
 

@@ -357,7 +357,7 @@ parse_buffer:
 			int32_t idx;
 
 			if((idx = tsk_strindexOf(msg_start, (msg_end - msg_start), "\r\n")) > 2){
-				TSK_DEBUG_INFO("WebSocket handshake message: %s", msg_start);
+				TSK_DEBUG_INFO("WebSocket handshake message: %.*s", (msg_end - msg_start), msg_start);
 				msg_start += (idx + 2); // skip request header
 				while(msg_start < msg_end){
 					if((idx = tsk_strindexOf(msg_start, (msg_end - msg_start), "\r\n")) <= 2){
@@ -503,7 +503,7 @@ parse_buffer:
 	
 	// If we are there this mean that we have all SIP headers.
 	//	==> Parse the SIP message without the content.
-	TSK_DEBUG_INFO("Receiving SIP o/ WebSocket message: %s", (const char*)peer->ws_rcv_buffer);
+	TSK_DEBUG_INFO("Receiving SIP o/ WebSocket message: %.*s", pay_len, (const char*)peer->ws_rcv_buffer);
 	tsk_ragel_state_init(&state, peer->ws_rcv_buffer, (tsk_size_t)pay_len);
 	if(tsip_message_parse(&state, &message, tsk_false/* do not extract the content */) == tsk_true){
 		const uint8_t* body_start = (const uint8_t*)state.eoh;
