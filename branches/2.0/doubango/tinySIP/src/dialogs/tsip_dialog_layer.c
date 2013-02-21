@@ -462,7 +462,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, tsip_
 			}
 
 			// "rtcweb-breaker" parameter will be in the Contact header for outgoing request and in the request-uri for incoming requests
-			b2bua = TSIP_REQUEST_IS_INVITE(message) &&
+			b2bua = TSIP_REQUEST_IS_INVITE(message) && message->Contact && message->Contact->uri &&
 					(tsk_striequals(tsk_params_get_param_value(message->Contact->uri->params, "rtcweb-breaker"), "yes")
 					|| tsk_striequals(tsk_params_get_param_value(message->line.request.uri->params, "rtcweb-breaker"), "yes"));
 			
