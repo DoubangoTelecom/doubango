@@ -33,6 +33,8 @@
 
 #include "tinydav/tdav_session_av.h"
 
+#include "tsk_timer.h"
+
 TDAV_BEGIN_DECLS
 
 typedef tsk_list_t tdav_session_audio_dtmfe_L_t;
@@ -44,8 +46,8 @@ typedef struct tdav_session_audio_s
 	tsk_bool_t is_started;
 
 	struct {
-		unsigned created;
 		unsigned started:1;
+		tsk_timer_manager_handle_t* handle_mgr_global;
 	} timer;
 
 	struct {
@@ -78,7 +80,7 @@ typedef struct tdav_session_audio_s
 
 	struct tmedia_denoise_s* denoise;
 	struct tmedia_jitterbuffer_s* jitterbuffer;
-
+	
 	tdav_session_audio_dtmfe_L_t* dtmf_events;
 }
 tdav_session_audio_t;

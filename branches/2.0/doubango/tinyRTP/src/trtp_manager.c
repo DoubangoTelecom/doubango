@@ -57,6 +57,13 @@
 #	define TRTP_PORT_RANGE_STOP 65535
 #endif
 
+#if !defined(TRTP_DTLS_HANDSHAKING_TIMEOUT)
+#	define TRTP_DTLS_HANDSHAKING_TIMEOUT 1000
+#endif
+#if !defined(TRTP_DTLS_HANDSHAKING_TIMEOUT_MAX)
+#	define TRTP_DTLS_HANDSHAKING_TIMEOUT_MAX (TRTP_DTLS_HANDSHAKING_TIMEOUT << 4)
+#endif
+
 static const tmedia_srtp_type_t __srtp_types[] = { tmedia_srtp_type_sdes, tmedia_srtp_type_dtls };
 
 static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* data_ptr, tsk_size_t data_size, tnet_fd_t local_fd, const struct sockaddr_storage* remote_addr);
@@ -84,6 +91,14 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 				const tnet_socket_t* socket = manager->transport->master && (manager->transport->master->fd == e->local_fd)
 					? manager->transport->master
 					: ((manager->rtcp.local_socket && manager->rtcp.local_socket->fd == e->local_fd) ? manager->rtcp.local_socket : tsk_null);
+				// cancel handshaking timer
+				tsk_safeobj_lock(manager);
+				if(manager->dtls.timer_hanshaking.id != TSK_INVALID_TIMER_ID){
+					tsk_timer_manager_cancel(manager->timer_mgr_global, manager->dtls.timer_hanshaking.id);
+					manager->dtls.timer_hanshaking.id = TSK_INVALID_TIMER_ID; // invalidate timer id (not required but should be done by good citizen)
+					manager->dtls.timer_hanshaking.timeout = TRTP_DTLS_HANDSHAKING_TIMEOUT; // reset timeout
+				}
+				tsk_safeobj_unlock(manager);
 				TSK_DEBUG_INFO("RTP/RTCP socket %s", "connected");
 				if(socket && TNET_SOCKET_TYPE_IS_DTLS(socket->type)){
 					TSK_DEBUG_INFO("DTLS-SRTP socket %s: [%s]:%d", "connected", socket->ip, socket->port);
@@ -201,6 +216,32 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 		default:
 			break;
 	}
+	return 0;
+}
+
+static int _trtp_transport_dtls_handshaking_timer_cb(const void* arg, tsk_timer_id_t timer_id)
+{
+#if HAVE_SRTP
+	trtp_manager_t* manager = (trtp_manager_t*)arg;
+
+	tsk_safeobj_lock(manager);
+	if(manager->is_started && manager->dtls.timer_hanshaking.id == timer_id && manager->srtp_state == trtp_srtp_state_activated && manager->srtp_type == tmedia_srtp_type_dtls){
+		// retry DTLS-SRTP handshaking if srtp-type is DTLS-SRTP and the engine is activated
+		struct tnet_socket_s* sockets[] = { manager->transport->master , manager->rtcp.local_socket };
+		const struct sockaddr_storage* remote_addrs[] = { &manager->rtp.remote_addr, &manager->rtcp.remote_addr };
+		TSK_DEBUG_INFO("_trtp_transport_dtls_handshaking_timer_cb(timeout=%llu)", manager->dtls.timer_hanshaking.timeout);
+		tnet_transport_dtls_do_handshake(manager->transport, sockets, 2, remote_addrs, 2);
+		// increase timeout
+		manager->dtls.timer_hanshaking.timeout <<= 1;
+		if(manager->dtls.timer_hanshaking.timeout < TRTP_DTLS_HANDSHAKING_TIMEOUT_MAX){
+			manager->dtls.timer_hanshaking.id = tsk_timer_manager_schedule(manager->timer_mgr_global, manager->dtls.timer_hanshaking.timeout, _trtp_transport_dtls_handshaking_timer_cb, manager);
+		}
+		else{
+			manager->dtls.timer_hanshaking.id = TSK_INVALID_TIMER_ID; // not required but we're good citizen
+		}
+	}
+	tsk_safeobj_unlock(manager);
+#endif
 	return 0;
 }
 
@@ -1230,6 +1271,15 @@ int trtp_manager_start(trtp_manager_t* self)
 		if((ret = _trtp_manager_srtp_activate(self, self->srtp_type))){
 			goto bail;
 		}
+
+		/* DTLS handshaking Timer */
+		if(self->timer_mgr_global && self->srtp_state == trtp_srtp_state_activated && (self->srtp_type & tmedia_srtp_type_dtls) == tmedia_srtp_type_dtls){
+			ret = tsk_timer_manager_start(self->timer_mgr_global);
+			self->dtls.timer_hanshaking.timeout = TRTP_DTLS_HANDSHAKING_TIMEOUT;
+			// start handshaking timer
+			// never mind if net work transport not started yet: the DTLS sockets will send the handshaking data by themself
+			self->dtls.timer_hanshaking.id = tsk_timer_manager_schedule(self->timer_mgr_global, self->dtls.timer_hanshaking.timeout, _trtp_transport_dtls_handshaking_timer_cb, self);
+		}
 	}
 #endif /* HAVE_SRTP */
 
@@ -1433,6 +1483,12 @@ int trtp_manager_stop(trtp_manager_t* self)
 	if(self->transport){
 		tnet_transport_shutdown(self->transport);
 #if HAVE_SRTP
+		// cancel DTLS handshaking timer
+		if(self->timer_mgr_global && self->dtls.timer_hanshaking.id != TSK_INVALID_TIMER_ID){
+			tsk_timer_manager_cancel(self->timer_mgr_global, self->dtls.timer_hanshaking.id);
+			self->dtls.timer_hanshaking.id = TSK_INVALID_TIMER_ID; // invalidate timer id
+			self->dtls.timer_hanshaking.timeout = TRTP_DTLS_HANDSHAKING_TIMEOUT; // reset timeout
+		}
 		// destroy all SRTP contexts
 		_trtp_manager_srtp_set_enabled(self, self->srtp_type, tsk_false);
 #endif /* HAVE_SRTP */
@@ -1481,6 +1537,11 @@ static tsk_object_t* trtp_manager_ctor(tsk_object_t * self, va_list * app)
 
 		/* rtcp */
 
+		/* timer */
+		manager->timer_mgr_global = tsk_timer_mgr_global_ref();
+		manager->dtls.timer_hanshaking.id = TSK_INVALID_TIMER_ID;
+		manager->dtls.timer_hanshaking.timeout = TRTP_DTLS_HANDSHAKING_TIMEOUT;
+
 		tsk_safeobj_init(manager);
 	}
 	return self;
@@ -1514,6 +1575,14 @@ static tsk_object_t* trtp_manager_dtor(tsk_object_t * self)
 #if HAVE_SRTP
 		{
 			int i;
+			
+			/* Timer */
+			// cancel DTLS handshaking timer
+			if(manager->timer_mgr_global && manager->dtls.timer_hanshaking.id != TSK_INVALID_TIMER_ID){
+				tsk_timer_manager_cancel(manager->timer_mgr_global, manager->dtls.timer_hanshaking.id);
+				manager->dtls.timer_hanshaking.id = TSK_INVALID_TIMER_ID;
+			}
+
 			for(i = 0; i < 2; ++i){
 				trtp_srtp_ctx_deinit(&manager->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][i]);
 				trtp_srtp_ctx_deinit(&manager->srtp_contexts[TRTP_SRTP_LINE_IDX_REMOTE][i]);
@@ -1525,6 +1594,11 @@ static tsk_object_t* trtp_manager_dtor(tsk_object_t * self)
 			TSK_FREE(manager->dtls.file_pvk);
 		}
 #endif /* HAVE_SRTP */
+
+		/* Timer manager */
+		if(manager->timer_mgr_global){
+			tsk_timer_mgr_global_unref(&manager->timer_mgr_global);
+		}
 
 		/* ICE */
 		if(manager->ice_ctx){

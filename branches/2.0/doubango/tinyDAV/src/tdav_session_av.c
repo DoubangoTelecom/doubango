@@ -271,7 +271,7 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 		return (tmedia_consumer_set(self->consumer, param) == 0);
 	}
 	else if(param->plugin_type == tmedia_ppt_producer && self->producer){
-		return tmedia_producer_set(self->producer, param);
+		return (tmedia_producer_set(self->producer, param) == 0);
 	}
 	else if(param->plugin_type == tmedia_ppt_session){
 		if(param->value_type == tmedia_pvt_pchar){
@@ -729,6 +729,20 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 		/* SRTP */
 #if HAVE_SRTP
 		{ //start-of-HAVE_SRTP
+
+			/* DTLS-SRTP default values */
+			if(is_srtp_dtls_enabled){
+				/* "setup" and "connection" */
+				// rfc5763: the caller is server by default
+				//if(self->dtls.local.setup == tnet_dtls_setup_none || self->dtls.local.setup == tnet_dtls_setup_actpass){
+					self->dtls.remote.setup = (!base->M.ro) ? tnet_dtls_setup_active : tnet_dtls_setup_passive;
+				//}
+				_tdav_session_av_dtls_set_remote_setup(self, self->dtls.remote.setup, self->dtls.remote.connection_new);
+				if(self->rtp_manager){
+					trtp_manager_set_dtls_local_setup(self->rtp_manager, self->dtls.local.setup, self->dtls.local.connection_new);
+				}
+			}
+
 			if(!base->M.ro){
 				// === RO IS NULL ===
 				const trtp_srtp_ctx_xt *srtp_ctxs[SRTP_CRYPTO_TYPES_MAX] = { tsk_null };
@@ -741,13 +755,6 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 				tsk_bool_t is_srtp_remote_mandatory = (base->M.ro && _sdp_str_contains(base->M.ro->proto, "SAVP"));
 				tsk_size_t profiles_index = 0;
 				RTP_PROFILE_T profiles[RTP_PROFILES_COUNT] = { RTP_PROFILE_NONE };
-
-				/* DTLS-SRTP default values */
-				if(is_srtp_dtls_enabled){
-					/* "setup" and "connection" */
-					/* looks like useless call but it's not: used to initialze default local values */
-					_tdav_session_av_dtls_set_remote_setup(self, self->dtls.remote.setup, self->dtls.remote.connection_new);
-				}
 
 				// get local SRTP context
 				if(is_srtp_sdes_enabled){
@@ -799,16 +806,19 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 						_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("acap", str), tsk_null);
 						_first_media_sprintf(&str, "%d connection:%s", acap_tag_connection, self->dtls.local.connection_new ? "new" : "existing");
 						_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("acap", str), tsk_null);
-						if(fp_sha1){
-							_first_media_sprintf(&acap_fp, "3 fingerprint: %s %s", TNET_DTLS_HASH_NAMES[tnet_dtls_hash_type_sha1], fp_sha1);
-							acap_tag_fp_sha1 = 3;
-							_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("acap", acap_fp), tsk_null);
-						}
+						// New Firefox Nightly repspond with SHA-256 when offered SHA-1 -> It's a bug in FF
+						// Just use SHA-256 as first choice						
 						if(fp_sha256){
-							_first_media_sprintf(&acap_fp, "%d fingerprint: %s %s", fp_sha1 ? 4 : 3, TNET_DTLS_HASH_NAMES[tnet_dtls_hash_type_sha256], fp_sha256);
-							acap_tag_fp_sha256 = (fp_sha1 ? 4 : 3);
+							_first_media_sprintf(&acap_fp, "3 fingerprint:%s %s", TNET_DTLS_HASH_NAMES[tnet_dtls_hash_type_sha256], fp_sha256);
+							acap_tag_fp_sha256 = 3;
 							_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("acap", acap_fp), tsk_null);
 						}
+						if(fp_sha1){
+							_first_media_sprintf(&acap_fp, "%d fingerprint:%s %s", fp_sha256 ? 4 : 3, TNET_DTLS_HASH_NAMES[tnet_dtls_hash_type_sha1], fp_sha1);
+							acap_tag_fp_sha1 = (fp_sha256 ? 4 : 3);
+							_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("acap", acap_fp), tsk_null);
+						}
+
 						TSK_FREE(acap_fp);
 					}
 					
@@ -1569,6 +1579,7 @@ static int _tdav_session_av_red_cb(const void* usrdata, const struct trtp_rtp_pa
 int _tdav_session_av_dtls_set_remote_setup(struct tdav_session_av_s* self, tnet_dtls_setup_t setup, tsk_bool_t connection_new)
 {
 	if(self){
+		TSK_DEBUG_INFO("dtls.remote.setup=%s", TNET_DTLS_SETUP_NAMES[(int)setup]);
 		self->dtls.remote.setup = setup;
 		self->dtls.remote.connection_new = connection_new;
 		switch(self->dtls.remote.setup){

@@ -489,11 +489,24 @@ int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candida
 		// remote party is ICE-lite or doesn't support ICE
 		return tnet_ice_ctx_cancel(self);
 	}
+
+	TSK_DEBUG_INFO("tnet_ice_ctx_set_remote_candidates");
+
+	tsk_list_lock(self->candidates_pairs);
+	if(!TSK_LIST_IS_EMPTY(self->candidates_pairs)){
+		TSK_DEBUG_WARN("Adding Remote ICE candidates after pairs building");
+	}
+	tsk_list_unlock(self->candidates_pairs);
 	
 	// active if remote is full-ICE
 	// in all case we are always full-ICE
 	// self->is_active = tsk_true;
 	
+	tsk_list_lock(self->candidates_remote);
+
+	// clear old candidates
+	tsk_list_clear_items(self->candidates_remote);
+
 	copy = tsk_strdup(candidates);
 	size = tsk_strlen(copy);
 	do{
@@ -503,12 +516,12 @@ int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candida
 			if(ufrag && pwd){
 				tnet_ice_candidate_set_credential(candidate, ufrag, pwd);
 			}
-			tsk_list_lock(self->candidates_remote);
 			tsk_list_push_back_data(self->candidates_remote, (void**)&candidate);
-			tsk_list_unlock(self->candidates_remote);
 		}
 	}
 	while(v && (idx < size));
+
+	tsk_list_unlock(self->candidates_remote);
 
 	TSK_FREE(copy);
 
@@ -693,7 +706,10 @@ int tnet_ice_ctx_recv_stun_message(tnet_ice_ctx_t* self, const void* data, tsk_s
 					}
 				}
 				TSK_FREE(resp_phrase);
-			}						
+			}
+			else{
+				TSK_DEBUG_ERROR("Cannot find ICE pair with local fd = %d", local_fd);
+			}
 		}
 		else if(TNET_STUN_MESSAGE_IS_RESPONSE(message)){
 			if((pair = tnet_ice_pairs_find_by_response(self->candidates_pairs, message))){
@@ -1044,17 +1060,32 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 							if(tsk_strnullORempty(candidate_curr->stun.srflx_addr)){
 								ret = tnet_ice_candidate_process_stun_response((tnet_ice_candidate_t*)candidate_curr, response, fd);
 								if(!tsk_strnullORempty(candidate_curr->stun.srflx_addr)){
-									char* foundation = tsk_strdup("srflx");
-									tnet_ice_candidate_t* new_cand;
-									tsk_strcat(&foundation, (const char*)candidate_curr->foundation);
-									new_cand = tnet_ice_candidate_create(tnet_ice_cand_type_srflx, candidate_curr->socket, candidate_curr->is_ice_jingle, candidate_curr->is_rtp, self->is_video, self->ufrag, self->pwd, foundation);
-									TSK_FREE(foundation);
-									if(new_cand){
-										++srflx_addr_count;
-										tsk_list_lock(self->candidates_local);
-										tnet_ice_candidate_set_rflx_addr(new_cand, candidate_curr->stun.srflx_addr, candidate_curr->stun.srflx_port);
-										tsk_list_push_back_data(self->candidates_local, (void**)&new_cand);
-										tsk_list_unlock(self->candidates_local);
+									if(tsk_striequals(candidate_curr->connection_addr, candidate_curr->stun.srflx_addr) && candidate_curr->port == candidate_curr->stun.srflx_port){
+										/* refc 5245- 4.1.3.  Eliminating Redundant Candidates
+
+										   Next, the agent eliminates redundant candidates.  A candidate is
+										   redundant if its transport address equals another candidate, and its
+										   base equals the base of that other candidate.  Note that two
+										   candidates can have the same transport address yet have different
+										   bases, and these would not be considered redundant.  Frequently, a
+										   server reflexive candidate and a host candidate will be redundant
+										   when the agent is not behind a NAT.  The agent SHOULD eliminate the
+										   redundant candidate with the lower priority. */
+										TSK_DEBUG_INFO("Skipping redundant candidate address=%s and port=%d", candidate_curr->stun.srflx_addr, candidate_curr->stun.srflx_port);
+									}
+									else{
+										char* foundation = tsk_strdup("srflx");
+										tnet_ice_candidate_t* new_cand;
+										tsk_strcat(&foundation, (const char*)candidate_curr->foundation);
+										new_cand = tnet_ice_candidate_create(tnet_ice_cand_type_srflx, candidate_curr->socket, candidate_curr->is_ice_jingle, candidate_curr->is_rtp, self->is_video, self->ufrag, self->pwd, foundation);
+										TSK_FREE(foundation);
+										if(new_cand){
+											++srflx_addr_count;
+											tsk_list_lock(self->candidates_local);
+											tnet_ice_candidate_set_rflx_addr(new_cand, candidate_curr->stun.srflx_addr, candidate_curr->stun.srflx_port);
+											tsk_list_push_back_data(self->candidates_local, (void**)&new_cand);
+											tsk_list_unlock(self->candidates_local);
+										}
 									}
 								}
 							}
@@ -1196,12 +1227,13 @@ static int _tnet_ice_ctx_fsm_GatheringComplet_2_ConnChecking_X_ConnCheck(va_list
 	static const long rto = 160; // milliseconds
 	struct sockaddr_storage remote_addr;
 	uint64_t time_start, time_curr, time_end, concheck_timeout;
-	tsk_bool_t role_conflict, check_rtcp;
+	tsk_bool_t role_conflict, restart_conneck, check_rtcp;
 	
 	self = va_arg(*app, tnet_ice_ctx_t *);
 
 start_conneck:
 	role_conflict = tsk_false;
+	restart_conneck = tsk_false;
 	
 	tsk_list_lock(self->candidates_pairs);
 	tsk_list_clear_items(self->candidates_pairs);
@@ -1281,6 +1313,7 @@ start_conneck:
 			for(k = 0; k < fds_count; ++k){
 				tnet_fd_t fd = fds[k];
 				tsk_size_t len = 0;
+				tsk_size_t read = 0;
 
 				if(!FD_ISSET(fd, &set)){
 					continue;
@@ -1299,20 +1332,32 @@ start_conneck:
 				// Receive pending data
 				TSK_FREE(data);
 				data = tsk_calloc(len, sizeof(uint8_t));
-				if((ret = tnet_sockfd_recvfrom(fd, data, len, 0, (struct sockaddr *)&remote_addr))<0){
-					TSK_FREE(data);
-									
-					TNET_PRINT_LAST_ERROR("Receiving STUN dgrams failed with error code");
-					goto bail;
-				}				
-				// recv() STUN message (request / response)
-				ret = tnet_ice_ctx_recv_stun_message(self, data, (tsk_size_t)ret, fd, &remote_addr, &role_conflict);
-				if(ret == 0 && role_conflict){
-					// A change in roles will require to recompute pair priorities
-					goto start_conneck;
+				// receive all messages
+				while(self->is_started && self->is_active && read < len && ret == 0){
+					if((ret = tnet_sockfd_recvfrom(fd, data, len, 0, (struct sockaddr *)&remote_addr)) < 0){
+						TSK_FREE(data);
+										
+						TNET_PRINT_LAST_ERROR("Receiving STUN dgrams failed with error code");
+						goto bail;
+					}
+
+					read += ret;
+					
+					// recv() STUN message (request / response)
+					ret = tnet_ice_ctx_recv_stun_message(self, data, (tsk_size_t)ret, fd, &remote_addr, &role_conflict);
+					if(ret == 0 && role_conflict){
+						// A change in roles will require to recompute pair priorities
+						restart_conneck = tsk_true;
+						// do not break the loop -> read/process all pending STUN messages
+					}
 				}
 			}
 			TSK_FREE(data);
+		}
+
+		// check whether we need to re-start connection checking
+		if(restart_conneck){
+			goto start_conneck;
 		}
 
 		check_rtcp = (self->use_rtcp && !self->use_rtcpmux);
@@ -1335,7 +1380,7 @@ bail:
 		}
 		else{
 			if(time_curr >= time_end){
-				TSK_DEBUG_ERROR("ConnCheck timedout");
+				TSK_DEBUG_ERROR("ConnCheck timedout, have_nominated_answer=%s, have_nominated_offer=%s", self->have_nominated_answer?"yes":"false", self->have_nominated_offer?"yes":"false");
 			}
 			_tnet_ice_ctx_fsm_act_async(self, _fsm_action_Failure);
 		}
@@ -1436,6 +1481,17 @@ int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, tnet_ic
 			if((cand_remote->comp_id != cand_local->comp_id) || (cand_remote->transport_e != cand_local->transport_e)){
 				continue;
 			}
+
+			TSK_DEBUG_INFO("ICE Pair: [%s %u %s %d] -> [%s %u %s %d]",
+				cand_local->foundation,
+				cand_local->comp_id,
+				cand_local->connection_addr,
+				cand_local->port,
+
+				cand_remote->foundation,
+				cand_remote->comp_id,
+				cand_remote->connection_addr,
+				cand_remote->port);
 			
 			if((pair = tnet_ice_pair_create(cand_local, cand_remote, is_controlling, tie_breaker, is_ice_jingle))){
 				tsk_list_push_descending_data(result_pairs, (void**)&pair);

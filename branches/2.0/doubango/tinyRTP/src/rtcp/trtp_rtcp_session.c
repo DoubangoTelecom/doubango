@@ -262,6 +262,7 @@ typedef struct trtp_rtcp_session_s
 {
 	TSK_DECLARE_OBJECT;
 	
+	tsk_bool_t started;
 	tnet_fd_t local_fd;
 	const struct sockaddr * remote_addr;
 
@@ -269,7 +270,7 @@ typedef struct trtp_rtcp_session_s
 	trtp_rtcp_cb_f callback;
 
 	struct{
-		tsk_bool_t started;
+		tsk_timer_manager_handle_t* handle_global;
 		tsk_timer_id_t id_report;
 		tsk_timer_id_t id_bye;
 	} timer;
@@ -329,9 +330,9 @@ static tsk_object_t* trtp_rtcp_session_ctor(tsk_object_t * self, va_list * app)
 		session->timer.id_report = TSK_INVALID_TIMER_ID;
 		session->timer.id_bye = TSK_INVALID_TIMER_ID;
 		session->tc = _trtp_rtcp_session_tc;
+		// get a handle for the global timer manager
+		session->timer.handle_global = tsk_timer_mgr_global_ref();
 		tsk_safeobj_init(session);
-
-		tsk_timer_mgr_global_ref();
 	}
 	return self;
 }
@@ -344,10 +345,10 @@ static tsk_object_t* trtp_rtcp_session_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(session->sources);
 		TSK_OBJECT_SAFE_FREE(session->source_local);
 		TSK_OBJECT_SAFE_FREE(session->sdes);
+		// release the handle for the global timer manager
+		tsk_timer_mgr_global_unref(&session->timer.handle_global);
 
 		tsk_safeobj_deinit(session);
-		
-		tsk_timer_mgr_global_unref();
 	}
 	return self;
 }
@@ -439,17 +440,16 @@ int trtp_rtcp_session_start(trtp_rtcp_session_t* self, tnet_fd_t local_fd, const
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if(self->timer.started){
+	if(self->started){
 		TSK_DEBUG_WARN("Already started");
 		return 0;
 	}
 	
 	// start global timer manager
-	if((ret = tsk_timer_mgr_global_start())){
+	if((ret = tsk_timer_manager_start(self->timer.handle_global))){
 		TSK_DEBUG_ERROR("Failed to start timer");
 		return ret;
 	}
-	self->timer.started = tsk_true;
 
 	self->local_fd = local_fd;
 	self->remote_addr = remote_addr;
@@ -459,6 +459,8 @@ int trtp_rtcp_session_start(trtp_rtcp_session_t* self, tnet_fd_t local_fd, const
 
 	// set start time
 	self->time_start = tsk_time_now();
+
+	self->started = tsk_true;
 
 	return ret;
 }
@@ -472,7 +474,7 @@ int trtp_rtcp_session_stop(trtp_rtcp_session_t* self)
 		return -1;
 	}
 
-	if(self->timer.started){
+	if(self->started){
 		// send BYE synchronous way
 		SendBYEPacket(self, EVENT_REPORT);
 		
@@ -480,16 +482,15 @@ int trtp_rtcp_session_stop(trtp_rtcp_session_t* self)
 		// all scheduled items as it could continue running if still used
 		tsk_safeobj_lock(self); // must
 		if(TSK_TIMER_ID_IS_VALID(self->timer.id_bye)){
-			tsk_timer_mgr_global_cancel(self->timer.id_bye);
+			tsk_timer_manager_cancel(self->timer.handle_global, self->timer.id_bye);
 			self->timer.id_bye = TSK_INVALID_TIMER_ID;
 		}
 		if(TSK_TIMER_ID_IS_VALID(self->timer.id_report)){
-			tsk_timer_mgr_global_cancel(self->timer.id_report);
+			tsk_timer_manager_cancel(self->timer.handle_global, self->timer.id_report);
 			self->timer.id_report = TSK_INVALID_TIMER_ID;
 		}
 		tsk_safeobj_unlock(self);
-		ret = tsk_timer_mgr_global_stop();
-		self->timer.started = tsk_false;
+		self->started = tsk_false;
 	}
 
 	return ret;
@@ -504,7 +505,7 @@ int trtp_rtcp_session_process_rtp_out(trtp_rtcp_session_t* self, const trtp_rtp_
 		return -1;
 	}
 
-	if(!self->timer.started){
+	if(!self->started){
 		TSK_DEBUG_ERROR("Not started");
 		return -2;
 	}
@@ -564,7 +565,7 @@ int trtp_rtcp_session_process_rtp_in(trtp_rtcp_session_t* self, const trtp_rtp_p
 		return -1;
 	}
 
-	if(!self->timer.started){
+	if(!self->started){
 		TSK_DEBUG_ERROR("Not started");
 		return -2;
 	}
@@ -600,7 +601,7 @@ int trtp_rtcp_session_process_rtcp_in(trtp_rtcp_session_t* self, const void* buf
 		return -1;
 	}
 
-	if(!self->timer.started){
+	if(!self->started){
 		TSK_DEBUG_ERROR("Not started");
 		return -2;
 	}

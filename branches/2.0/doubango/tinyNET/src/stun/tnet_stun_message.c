@@ -458,14 +458,11 @@ static tsk_object_t* tnet_stun_message_ctor(tsk_object_t * self, va_list * app)
 		message->fingerprint = 1;
 		message->integrity = 0;
 		
-		{	/* Create random transaction id */
-			tsk_istr_t random;
-			tsk_md5digest_t digest;
-
-			tsk_strrandom(&random);
-			TSK_MD5_DIGEST_CALC(random, sizeof(random), digest);
-			
-			memcpy(message->transaction_id, digest, TNET_STUN_TRANSACID_SIZE);
+		{	// Create random transaction id
+			int i;
+			for(i = 0; i < sizeof(message->transaction_id)/sizeof(message->transaction_id[0]); ++i){
+				message->transaction_id[i] = rand();
+			}
 		}
 	}
 	return self;

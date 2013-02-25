@@ -39,7 +39,7 @@
 #   include <sys/param.h> /* http://www.freebsd.org/doc/en/books/porters-handbook/porting-versions.html */
 #endif
 
-#define TNET_MAX_FDS		1024
+#define TNET_MAX_FDS		0xFFFF
 
 /*== Socket description ==*/
 typedef struct transport_socket_xs

@@ -16,6 +16,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if !defined(TNET_ICE_PAIR_FULL_DEBUG)
+#	define TNET_ICE_PAIR_FULL_DEBUG 0
+#endif /* TNET_ICE_PAIR_FULL_DEBUG */
+
+#if TNET_ICE_PAIR_FULL_DEBUG
+#define TNET_ICE_PAIR_DEBUG_INFO TSK_DEBUG_INFO
+#else
+#define TNET_ICE_PAIR_DEBUG_INFO(...) ((void)0)
+#endif
+
 static int __pred_find_by_pair(const tsk_list_item_t *item, const void *pair)
 {
 	if(item && item->data){
@@ -313,6 +323,9 @@ int tnet_ice_pair_send_response(tnet_ice_pair_t *self, const tnet_stun_request_t
 			int sendBytes = tnet_sockfd_sendto(self->candidate_offer->socket->fd, (const struct sockaddr*)&dest_addr, req_buffer->data, req_buffer->size);
 			TSK_OBJECT_SAFE_FREE(req_buffer);
 			ret = (sendBytes > 0) ? 0 : -2;
+			if(ret != 0){
+				TSK_DEBUG_ERROR("ICE pair-answer: failed to send response");
+			}
 		}
 
 		TSK_OBJECT_SAFE_FREE(message);
@@ -324,6 +337,12 @@ int tnet_ice_pair_send_response(tnet_ice_pair_t *self, const tnet_stun_request_t
 			(!self->is_controlling && tnet_stun_message_has_attribute(request, stun_ice_use_candidate)) || // Sender is controlling and uses "ICE-USE-CANDIDATE" attribute
 			(self->is_controlling) // We always use agressive nomination and final check-list will have high-priority pairs on the top
 			;
+		TNET_ICE_PAIR_DEBUG_INFO("ICE pair-answer changing state to 'succeed' ? %s, comp-id=%d, found=%s, addr=%s", 
+				change_state?"yes":"no",
+				self->candidate_answer->comp_id,
+				self->candidate_answer->foundation,
+				self->candidate_answer->connection_addr
+			);
 		if(change_state){
 			self->state_answer = tnet_ice_pair_state_succeed;
 		}
@@ -404,7 +423,7 @@ int tnet_ice_pair_auth_conncheck(const tnet_ice_pair_t *self, const tnet_stun_re
 	if(!stun_att_integrity){
 		if(self->is_ice_jingle){ // Bug introduced in Chrome 20.0.1120.0
 			*resp_code = 200;
-			tsk_strupdate(resp_phrase, "MESSAGE-INTEGRITY is missing by accepted");
+			tsk_strupdate(resp_phrase, "MESSAGE-INTEGRITY is missing but accepted");
 			return 0;
 		}
 		else{
@@ -463,6 +482,11 @@ int tnet_ice_pair_recv_response(tnet_ice_pair_t *self, const tnet_stun_response_
 			// ignore errors (e.g. STALE-CREDENTIALS) which could happen in some special cases before success
 			if(TNET_STUN_RESPONSE_IS_SUCCESS(response)){
 				self->state_offer = tnet_ice_pair_state_succeed;
+				TNET_ICE_PAIR_DEBUG_INFO("ICE pair-offer changing state to 'succeed', comp-id=%d, found=%s, addr=%s", 
+					self->candidate_offer->comp_id,
+					self->candidate_offer->foundation,
+					self->candidate_offer->connection_addr
+				);
 			}
 		}
 	}
@@ -518,6 +542,30 @@ const tnet_ice_pair_t* tnet_ice_pairs_find_by_fd_and_addr(tnet_ice_pairs_L_t* pa
 	return tsk_null;
 }
 
+static tsk_bool_t _tnet_ice_pairs_none_succeed(const tnet_ice_pairs_L_t* pairs, uint32_t comp_id, const char* foundation, tsk_bool_t answer){
+	if(pairs && foundation){
+		const tsk_list_item_t *item;
+		const tnet_ice_pair_t *pair;
+		const tnet_ice_candidate_t* candidate;
+		tsk_list_foreach(item, pairs){
+			if(!(pair = item->data) || !(candidate = (answer ? pair->candidate_answer : pair->candidate_offer))){
+				continue;
+			}
+			if(candidate->comp_id != comp_id || !tsk_striequals(candidate->foundation, foundation)){
+				continue;
+			}
+			if((answer ? pair->state_answer : pair->state_offer) == tnet_ice_pair_state_succeed){
+				TNET_ICE_PAIR_DEBUG_INFO("_tnet_ice_pairs_none_succeed_%s(%u, %s):false", answer?"anwser":"offer", comp_id, foundation);
+				return tsk_false;
+			}
+		}
+	}
+	TNET_ICE_PAIR_DEBUG_INFO("_tnet_ice_pairs_none_succeed_%s(%u, %s):true", answer?"anwser":"offer", comp_id, foundation);
+	return tsk_true;
+}
+#define _tnet_ice_pairs_none_succeed_answer(pairs, comp_id, foundation) _tnet_ice_pairs_none_succeed((pairs), (comp_id), (foundation), tsk_true)
+#define _tnet_ice_pairs_none_succeed_offer(pairs, comp_id, foundation) _tnet_ice_pairs_none_succeed((pairs), (comp_id), (foundation), tsk_false)
+
 // both RTP and RTCP have succeeded
 #define _tnet_ice_pairs_get_nominated_offer_at(pairs, index, comp_id, check_fullness, ret)	_tnet_ice_pairs_get_nominated_at((pairs), offer, answer, (index), (comp_id), (check_fullness), (ret))
 #define _tnet_ice_pairs_get_nominated_answer_at(pairs, index, comp_id, check_fullness, ret)	_tnet_ice_pairs_get_nominated_at((pairs), answer, offer, (index), (comp_id), (check_fullness), (ret))
@@ -533,20 +581,25 @@ const tnet_ice_pair_t* tnet_ice_pairs_find_by_fd_and_addr(tnet_ice_pairs_L_t* pa
 			if(!(pair = item->data)){ \
 				continue; \
 			} \
+			TNET_ICE_PAIR_DEBUG_INFO("ICE pair(%d,dir_1) state=%d, compid=%d, found=%s, addr=%s", _comp_id, pair->state_##dir_1, pair->candidate_##dir_1->comp_id, pair->candidate_##dir_1->foundation, pair->candidate_##dir_1->connection_addr); \
+			TNET_ICE_PAIR_DEBUG_INFO("ICE pair(%d,dir_2) state=%d, compid=%d, found=%s, addr=%s", _comp_id, pair->state_##dir_2, pair->candidate_##dir_2->comp_id, pair->candidate_##dir_2->foundation, pair->candidate_##dir_2->connection_addr); \
 			if(pair->state_##dir_1 == tnet_ice_pair_state_succeed && pair->candidate_##dir_1->comp_id == _comp_id){ \
 				pos = 0; \
 				nominated = tsk_true; \
 				if(check_fullness){ \
-					/* find another pair with same foundation (e.g. 'host') but different comp-id (e.g. RTCP) */ \
+					/* find another pair with same foundation but different comp-id (e.g. RTCP) */ \
 					const tsk_list_item_t *item2; \
 					const tnet_ice_pair_t *pair2; \
 					tsk_list_foreach(item2, pairs){ \
 						if(!(pair2 = item2->data)){ \
 							continue; \
 						} \
+						TNET_ICE_PAIR_DEBUG_INFO("ICE pair2(dir_1) state=%d, compid=%d, found=%s, addr=%s", pair2->state_##dir_1, pair2->candidate_##dir_1->comp_id, pair2->candidate_##dir_1->foundation, pair2->candidate_##dir_1->connection_addr); \
+						TNET_ICE_PAIR_DEBUG_INFO("ICE pair2(dir_2) state=%d, compid=%d, found=%s, addr=%s", pair2->state_##dir_2, pair2->candidate_##dir_2->comp_id, pair2->candidate_##dir_2->foundation, pair2->candidate_##dir_2->connection_addr); \
 						if((tsk_striequals(pair2->candidate_##dir_2->foundation, pair->candidate_##dir_2->foundation)) \
 							&& (pair2->candidate_##dir_2->comp_id != pair->candidate_##dir_2->comp_id)){ \
-								nominated = (pair2->state_##dir_2 == tnet_ice_pair_state_succeed); \
+								/* nominated = (pair2->state_##dir_2 == tnet_ice_pair_state_succeed); */  \
+								nominated = !_tnet_ice_pairs_none_succeed_##dir_2(pairs, pair2->candidate_##dir_2->comp_id, pair2->candidate_##dir_2->foundation); \
 								break; \
 						} \
 					} \
@@ -566,11 +619,13 @@ tsk_bool_t tnet_ice_pairs_have_nominated_offer(const tnet_ice_pairs_L_t* pairs, 
 {
 	const tnet_ice_pair_t *pair_ = tsk_null;
 	tsk_bool_t is_nominated_rtp, is_nominated_rtcp = tsk_true;
+	TNET_ICE_PAIR_DEBUG_INFO("tnet_ice_pairs_have_nominated_offer()");
 	_tnet_ice_pairs_get_nominated_offer_at((pairs), 0, TNET_ICE_CANDIDATE_COMPID_RTP, check_rtcp, (pair_));
 	if((is_nominated_rtp = (pair_ != tsk_null)) && check_rtcp){
 		_tnet_ice_pairs_get_nominated_offer_at((pairs), 0, TNET_ICE_CANDIDATE_COMPID_RTCP, check_rtcp, (pair_));
 		is_nominated_rtcp =(pair_ != tsk_null);
 	}
+	TNET_ICE_PAIR_DEBUG_INFO("is_nominated_rtp_offer=%s, is_nominated_rtcp_offer=%s", is_nominated_rtp?"yes":"no", is_nominated_rtcp?"yes":"no");
 	return (is_nominated_rtp && is_nominated_rtcp);
 }
 
@@ -579,11 +634,13 @@ tsk_bool_t tnet_ice_pairs_have_nominated_answer(const tnet_ice_pairs_L_t* pairs,
 {
 	const tnet_ice_pair_t *pair_ = tsk_null;
 	tsk_bool_t is_nominated_rtp, is_nominated_rtcp = tsk_true;
+	TNET_ICE_PAIR_DEBUG_INFO("tnet_ice_pairs_have_nominated_answer()");
 	_tnet_ice_pairs_get_nominated_answer_at((pairs), 0, TNET_ICE_CANDIDATE_COMPID_RTP, check_rtcp, (pair_));
 	if((is_nominated_rtp = (pair_ != tsk_null)) && check_rtcp){
 		_tnet_ice_pairs_get_nominated_answer_at((pairs), 0, TNET_ICE_CANDIDATE_COMPID_RTCP, check_rtcp, (pair_));
 		is_nominated_rtcp =(pair_ != tsk_null);
 	}
+	TNET_ICE_PAIR_DEBUG_INFO("is_nominated_rtp_answer=%s, is_nominated_rtcp_answer=%s", is_nominated_rtp?"yes":"no", is_nominated_rtcp?"yes":"no");
 	return (is_nominated_rtp && is_nominated_rtcp);
 }
 

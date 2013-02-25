@@ -434,11 +434,14 @@ tsk_bool_t tnet_dtls_socket_is_remote_cert_fp_match(tnet_dtls_socket_handle_t* h
 #endif
 }
 
+
+
 int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struct sockaddr_storage* remote_addr)
 {
 #if !HAVE_OPENSSL || !HAVE_OPENSSL_DTLS
 	TSK_DEBUG_ERROR("OpenSSL or DTLS not enabled");
 	return -1;
+	
 #else
 	tnet_dtls_socket_t *socket = handle;
 	int ret, len;
@@ -473,7 +476,10 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 	}
 
 	if((len = BIO_get_mem_data(socket->wbio, &out_data)) && out_data){
-		TSK_DEBUG_INFO("DTLS data handshake to send with len = %d", len);
+		tnet_port_t port;
+		tnet_ip_t ip;
+		tnet_get_sockip_n_port((const struct sockaddr *)&socket->remote.addr, &ip, &port);
+		TSK_DEBUG_INFO("DTLS data handshake to send with len = %d, ip = %.*s and port = %d", len, sizeof(ip), ip, port);
 		len = tnet_sockfd_sendto(socket->fd, (const struct sockaddr *)&socket->remote.addr, out_data, len);
 		TSK_DEBUG_INFO("DTLS data handshake sent len = %d", len);
 	}
@@ -554,6 +560,8 @@ int tnet_dtls_socket_handle_incoming_data(tnet_dtls_socket_handle_t* handle, con
 		return -1;
 	}
 
+	TSK_DEBUG_INFO("Receive DTLS data: %u", size);
+
 	ret = _tnet_dtls_socket_do_handshake(socket);
 	
 	if((ret = BIO_write(socket->rbio, data, size)) != size){
@@ -561,8 +569,39 @@ int tnet_dtls_socket_handle_incoming_data(tnet_dtls_socket_handle_t* handle, con
 		TSK_DEBUG_ERROR("BIO_write(rbio, %u) failed [%s]", size, ERR_error_string(ERR_get_error(), tsk_null));
 		return -1;
 	}
-
-	ret = SSL_read(socket->ssl, (void*)data, size);
+	
+	/*if((ret = SSL_read(socket->ssl, (void*)data, size)) <= 0){
+		switch((ret = SSL_get_error(socket->ssl, ret))){
+			case SSL_ERROR_WANT_READ:
+			case SSL_ERROR_WANT_WRITE:
+			case SSL_ERROR_NONE:
+				break;
+			default:
+				{
+					unsigned long sslErr = ERR_get_error();
+					const uint8_t* pData = (const uint8_t*)data;
+					TSK_DEBUG_ERROR("%lu = SSL_read(rbio, %u) failed [%s]", sslErr, size, ERR_error_string(ret, tsk_null));
+					// try to understand what's going on
+					// rfc6347 - 4.1.  Record Layer
+					// rfc6347 - 4.2.2.  Handshake Message Format
+					// rfc6347 - 4.3.2.  Handshake Protocol
+					if(size > 14 && pData[0] == 0x16){ // content-type=='Handshake'
+						if(pData[13] == 0x01 && (socket->setup == tnet_dtls_setup_active || socket->setup == tnet_dtls_setup_actpass)){ // Handshake Type=='client Hello'
+							TSK_DEBUG_INFO("DTLS engine was in client mode but we are receiving 'Client Hello' messages. This is a bug in the remote peer: Re-negotiating!");
+							tnet_dtls_socket_set_setup(socket, tnet_dtls_setup_passive);
+							break;
+						}
+						else if(pData[13] == 0x02 && (socket->setup == tnet_dtls_setup_passive || socket->setup == tnet_dtls_setup_actpass)){ // Handshake Type=='server Hello'
+							TSK_DEBUG_INFO("DTLS engine was in server mode but we are receiving 'Server Hello' messages. This is a bug in the remote peer: Re-negotiating!");
+							tnet_dtls_socket_set_setup(socket, tnet_dtls_setup_active);
+							break;
+						}
+					}
+					//return -1;
+					break;
+				}
+		}
+	}*/
 
 	return _tnet_dtls_socket_do_handshake(socket);
 #endif

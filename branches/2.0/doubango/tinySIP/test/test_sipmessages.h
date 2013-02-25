@@ -155,7 +155,7 @@
 "Via: SIP/2.0/TCP 192.168.1.110:49144;received=10.19.3.223;received=10.19.3.223;branch=z9hG4bK580365294;rport=49144\r\n" \
 "From: <sip:bob@open-ims.test>;tag=912385275\r\n" \
 "To: <sip:1947@open-ims.test>;tag=131610378\r\n" \
-"Contact: <sip:bob@192.168.1.135:46716;transport=tcp>\r\n" \
+"Contact: <sip:bob@192.168.1.135:46716;transport=tcp>;impi=a@example.com\r\n" \
 "Call-ID: cbfac0bb-9426-c8cf-fbd9-96bc91ec8acb\r\n" \
 "CSeq: 756765417 OPTIONS\r\n" \
 "Content-Length: 0\r\n" \

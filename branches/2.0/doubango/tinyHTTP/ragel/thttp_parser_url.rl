@@ -83,7 +83,8 @@
 	port = DIGIT+ >tag %parse_port;
 	myhost = ((IPv6reference >is_ipv6) | (IPv4address >is_ipv4) | (hostname >is_hostname)) >tag %parse_host;
 	hostport = myhost ( ":" port )?;
-	main := (("http:"i>tag %is_http | "https:"i>tag %is_https) "//" hostport :>("/" hpath :>("?" search)?)? ) @eob;
+	main := ( (("http:"i>tag %is_http | "https:"i>tag %is_https) "//")? hostport? :>("/" hpath :>("?" search)?)? ) @eob;
+	#main := ( hostport? :>("/" hpath :>("?" search)?)? ) @eob;
 	
 }%%
 
@@ -127,7 +128,7 @@ thttp_url_t *thttp_url_parse(const char *urlstring, tsk_size_t length)
 	%%write exec;
 	
 	if( cs < %%{ write first_final; }%% ){
-		TSK_DEBUG_ERROR("Failed to parse HTTP/HTTPS URL.");
+		TSK_DEBUG_ERROR("Failed to parse HTTP/HTTPS URL: '%.*s'", length, urlstring);
 		TSK_OBJECT_SAFE_FREE(url);
 	}
 	else if(!have_port){
