@@ -1334,8 +1334,15 @@ start_conneck:
 				data = tsk_calloc(len, sizeof(uint8_t));
 				// receive all messages
 				while(self->is_started && self->is_active && read < len && ret == 0){
-					if((ret = tnet_sockfd_recvfrom(fd, data, len, 0, (struct sockaddr *)&remote_addr)) < 0){
+					if((ret = tnet_sockfd_recvfrom(fd, data, (len - read), 0, (struct sockaddr *)&remote_addr)) < 0){
 						TSK_FREE(data);
+                        
+                        // "EAGAIN" means no data to read
+                        // we must trust "EAGAIN" instead of "read" because pending data could be removed by the system
+                        if(tnet_geterrno() == TNET_ERROR_EAGAIN){
+                            len = 0;
+                            continue;
+                        }
 										
 						TNET_PRINT_LAST_ERROR("Receiving STUN dgrams failed with error code");
 						goto bail;
