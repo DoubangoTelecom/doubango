@@ -547,8 +547,12 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const cha
 
 	/* === Internals === */
 	stack->callback = callback;
-	tsk_timer_mgr_global_ref();
-	stack->ssessions = tsk_list_create();
+	if(!stack->timer_mgr_global){
+		stack->timer_mgr_global = tsk_timer_mgr_global_ref();
+	}
+	if(!stack->ssessions){
+		stack->ssessions = tsk_list_create();
+	}
 	if(!stack->headers){ /* could be created by tsk_params_add_param() */
 		stack->headers = tsk_list_create();
 	}
@@ -612,11 +616,8 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 	}
 	
 	/* === Timer manager === */
-	if((ret = tsk_timer_mgr_global_start())){
+	if((ret = tsk_timer_manager_start(stack->timer_mgr_global))){
 		goto bail;
-	}
-	else{
-		stack->timer_mgr_started = tsk_true;
 	}
 
 	/* === Set P-Preferred-Identity === */
@@ -776,11 +777,6 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 bail:
 	TSIP_STACK_SIGNAL(self, tsip_event_code_stack_failed_to_start, stack_error_desc);
 	/* stop all running instances */
-	if(stack->timer_mgr_started){
-		if(tsk_timer_mgr_global_stop() == 0){
-			stack->timer_mgr_started = tsk_false;
-		}
-	}
 	if(stack->layer_transport){
 		tsip_transport_layer_shutdown(stack->layer_transport);
 	}
@@ -929,15 +925,7 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 		* see tsip_dialog_deinit() which call tsip_transac_layer_cancel_by_dialog() */
 
 		/* Stop the timer manager */
-		if(stack->timer_mgr_started){
-			if((ret = tsk_timer_mgr_global_stop())){
-				TSK_DEBUG_WARN("Failed to stop the timer manager");
-				one_failed = tsk_true;
-			}
-			else{
-				stack->timer_mgr_started = tsk_false;
-			}
-		}
+		// not done as it's global (shared). Will be done when all instance are destoyed
 		
 		/* Stop the transport layer */
 		if((ret = tsip_transport_layer_shutdown(stack->layer_transport))){
@@ -1123,7 +1111,7 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(stack->layer_transport);
 
 		/* Internals(1/2) */
-		tsk_timer_mgr_global_unref();
+		tsk_timer_mgr_global_unref(&stack->timer_mgr_global);
 
 		/* Identity */
 		TSK_FREE(stack->identity.display_name);

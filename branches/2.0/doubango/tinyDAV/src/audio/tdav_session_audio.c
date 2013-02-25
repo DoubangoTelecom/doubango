@@ -412,17 +412,16 @@ static int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 	}
 
 	/* Create global reference to the timer manager */
-	if(!audio->timer.created){
-		if((ret = tsk_timer_mgr_global_ref())){
+	if(!audio->timer.handle_mgr_global){
+		if(!(audio->timer.handle_mgr_global = tsk_timer_mgr_global_ref())){
 			TSK_DEBUG_ERROR("Failed to create Global Timer Manager");
-			return ret;
+			return -3;
 		}
-		audio->timer.created = tsk_true;
 	}
 
 	/* Start the timer manager */
 	if(!audio->timer.started){
-		if((ret = tsk_timer_mgr_global_start())){
+		if((ret = tsk_timer_manager_start(audio->timer.handle_mgr_global))){
 			TSK_DEBUG_ERROR("Failed to start Global Timer Manager");
 			return ret;
 		}
@@ -726,11 +725,10 @@ static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 					tsk_timer_mgr_global_cancel(((tdav_session_audio_dtmfe_t*)item->data)->timer_id);
 				}
 			}
-			tsk_timer_mgr_global_stop();
 		}
-		if(audio->timer.created){
-			tsk_timer_mgr_global_unref();
-		}
+		
+		tsk_timer_mgr_global_unref(&audio->timer.handle_mgr_global);
+		
 		/* CleanUp the DTMF events */
 		TSK_OBJECT_SAFE_FREE(audio->dtmf_events);
 		

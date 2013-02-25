@@ -40,7 +40,7 @@
 	Response = Status_Line (message_header* :>CRLF);
 	
 	# HTTP REQUEST
-	URI = (scheme HCOLON any+)>tag %parse_requesturl;
+	URI = (any+)>tag %parse_requesturl;
 	Request_URI = URI;
 	Request_Line = Method>tag %parse_method :>SP Request_URI :>SP HTTP_Version :>CRLF;
 	Request = Request_Line (message_header* :>CRLF);

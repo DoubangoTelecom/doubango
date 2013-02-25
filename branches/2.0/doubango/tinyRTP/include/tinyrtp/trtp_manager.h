@@ -58,6 +58,8 @@ typedef struct trtp_manager_s
 
 	struct tnet_ice_ctx_s* ice_ctx;
 
+	tsk_timer_manager_handle_t* timer_mgr_global;
+
 	struct{
 		tmedia_rtcweb_type_t local;
 		tmedia_rtcweb_type_t remote;
@@ -138,6 +140,11 @@ typedef struct trtp_manager_s
 		tsk_bool_t rtcp_connected;
 
 		trtp_srtp_crypto_type_t crypto_selected;
+
+		struct{
+			uint64_t timeout;
+			tsk_timer_id_t id;
+		} timer_hanshaking;
 
 		struct{
 			const void* usrdata;

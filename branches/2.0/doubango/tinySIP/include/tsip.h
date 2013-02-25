@@ -542,7 +542,7 @@ typedef struct tsip_stack_s
 	TSK_DECLARE_RUNNABLE;
 	TSK_DECLARE_SAFEOBJ;
 	
-	tsk_bool_t timer_mgr_started;
+	tsk_timer_manager_handle_t* timer_mgr_global;
 	tsk_bool_t started;
 	tsip_stack_callback_f callback;
 

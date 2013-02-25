@@ -118,7 +118,8 @@ int tsk_timer_manager_start(tsk_timer_manager_handle_t *self)
 		}
 	}
 	else{
-		TSK_DEBUG_WARN("Timer manager already running");
+		TSK_DEBUG_INFO("Timer manager already running");
+		err = 0;
 	}
 
 bail:
@@ -359,9 +360,8 @@ peek_first:
 /* ================= Global Timer Manager ================= */
 
 static tsk_timer_manager_t* __timer_mgr = tsk_null;
-static int __timer_mgr_start_count = 0;
 
-int tsk_timer_mgr_global_ref()
+tsk_timer_manager_handle_t* tsk_timer_mgr_global_ref()
 {
 	if(!__timer_mgr){
 		__timer_mgr = (tsk_timer_manager_t*)tsk_timer_manager_create();
@@ -369,80 +369,55 @@ int tsk_timer_mgr_global_ref()
 	else{
 		__timer_mgr = (tsk_timer_manager_t*)tsk_object_ref(__timer_mgr);
 	}
-	return 0;
+	return __timer_mgr;
 }
 
 int tsk_timer_mgr_global_start()
 {
-	int ret = 0;
-	if(!__timer_mgr){
-		TSK_DEBUG_ERROR("No global Timer manager could be found");
-		return -1;
-	}
-	if(!TSK_RUNNABLE(__timer_mgr)->running && !TSK_RUNNABLE(__timer_mgr)->started){
-		if((ret = tsk_timer_manager_start(__timer_mgr))){
-			return ret;
-		}
-	}
-	tsk_mutex_lock(__timer_mgr->mutex);
-	__timer_mgr_start_count++;
-	tsk_mutex_unlock(__timer_mgr->mutex);
-	return ret;
+    int ret = 0;
+    if(!__timer_mgr){
+            TSK_DEBUG_ERROR("No global Timer manager could be found");
+            return -1;
+    }
+    if(!TSK_RUNNABLE(__timer_mgr)->running && !TSK_RUNNABLE(__timer_mgr)->started){
+            if((ret = tsk_timer_manager_start(__timer_mgr))){
+                    return ret;
+            }
+    }
+    tsk_mutex_lock(__timer_mgr->mutex);
+    tsk_mutex_unlock(__timer_mgr->mutex);
+    return ret;
 }
 
 tsk_timer_id_t tsk_timer_mgr_global_schedule(uint64_t timeout, tsk_timer_callback_f callback, const void *arg)
 {
-	if(!__timer_mgr){
-		TSK_DEBUG_ERROR("No global Timer manager could be found");
-		return TSK_INVALID_TIMER_ID;
-	}
-	return tsk_timer_manager_schedule(__timer_mgr, timeout, callback, arg);
+    if(!__timer_mgr){
+            TSK_DEBUG_ERROR("No global Timer manager could be found");
+            return TSK_INVALID_TIMER_ID;
+    }
+    return tsk_timer_manager_schedule(__timer_mgr, timeout, callback, arg);
 }
 
 int tsk_timer_mgr_global_cancel(tsk_timer_id_t id)
 {
-	if(!__timer_mgr){
-		TSK_DEBUG_ERROR("No global Timer manager could be found");
-		return -1;
-	}
-	return tsk_timer_manager_cancel(__timer_mgr, id);
+    if(!__timer_mgr){
+            TSK_DEBUG_ERROR("No global Timer manager could be found");
+            return -1;
+    }
+    return tsk_timer_manager_cancel(__timer_mgr, id);
 }
 
-int tsk_timer_mgr_global_stop()
+int tsk_timer_mgr_global_unref(tsk_timer_manager_handle_t** mgr_global)
 {
-	int ret = 0;
-	if(!__timer_mgr){
-		TSK_DEBUG_ERROR("No global Timer manager could be found");
+	if(!mgr_global || !*mgr_global){
+		return 0;
+	}
+	if((*mgr_global != __timer_mgr)){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-
-	if(__timer_mgr_start_count <= 0){
-		TSK_DEBUG_ERROR("Global Timer is in an invalid state");
-		return -2;
-	}
-
-	if(TSK_RUNNABLE(__timer_mgr)->running){
-		if(__timer_mgr_start_count == 1){
-			if((ret = tsk_timer_manager_stop(__timer_mgr))){
-				return ret;
-			}
-		}
-		tsk_mutex_lock(__timer_mgr->mutex);
-		__timer_mgr_start_count--;
-		tsk_mutex_unlock(__timer_mgr->mutex);
-	}
-	return 0;
-}
-
-int tsk_timer_mgr_global_unref()
-{
-	if(!__timer_mgr){
-		TSK_DEBUG_ERROR("No global Timer manager could be found");
-		return -1;
-	}
-
-	__timer_mgr = (tsk_timer_manager_t*)tsk_object_unref(__timer_mgr);
-
+	tsk_object_unref(TSK_OBJECT(*mgr_global));
+	*mgr_global = tsk_null;
 	return 0;
 }
 

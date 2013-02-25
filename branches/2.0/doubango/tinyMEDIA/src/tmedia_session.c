@@ -447,7 +447,8 @@ tmedia_codecs_L_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp
 		
 		/* foreach codec */
 		tsk_list_foreach(it2, self->codecs){
-			if(!(codec = it2->data) || !codec->plugin || !(codec->id & self->codecs_allowed)){
+			/* 'tmedia_codec_id_none' is used for fake codecs (e.g. dtmf or msrp) and should not be filtered beacuse of backward compatibility*/
+			if(!(codec = it2->data) || !codec->plugin || !(codec->id == tmedia_codec_id_none || (codec->id & self->codecs_allowed))){
 				continue;
 			}
 			

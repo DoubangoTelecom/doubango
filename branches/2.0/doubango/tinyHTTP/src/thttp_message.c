@@ -342,15 +342,19 @@ int thttp_message_serialize(const thttp_message_t *self, tsk_buffer_t *output)
 		/* Method */
 		tsk_buffer_append_2(output, "%s ", self->line.request.method);
 		/* Request URI: hpath?search */
-		tsk_buffer_append_2(output, "/%s%s%s ", 
-			self->line.request.url->hpath ? self->line.request.url->hpath : "",
-			self->line.request.url->search ? "?" : "",
-			self->line.request.url->search ? self->line.request.url->search : ""
-			);
+		if(self->line.request.url){
+			tsk_buffer_append_2(output, "/%s%s%s ", 
+				self->line.request.url->hpath ? self->line.request.url->hpath : "",
+				self->line.request.url->search ? "?" : "",
+				self->line.request.url->search ? self->line.request.url->search : ""
+				);
+		}
 		/* HTTP VERSION */
 		tsk_buffer_append_2(output, "%s\r\n", THTTP_MESSAGE_VERSION_DEFAULT);
 		/* HOST */
-		tsk_buffer_append_2(output, "Host: %s:%u\r\n", self->line.request.url->host, self->line.request.url->port);
+		if(self->line.request.url && self->line.request.url->host && self->line.request.url->port){
+			tsk_buffer_append_2(output, "Host: %s:%u\r\n", self->line.request.url->host, self->line.request.url->port);
+		}
 	}
 	else{
 		/*HTTP-Version SP Status-Code SP Reason-Phrase CRLF*/

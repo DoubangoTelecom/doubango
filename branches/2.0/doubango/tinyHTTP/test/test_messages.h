@@ -57,8 +57,21 @@
 	"Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\n" \
 	"\r\n"
 
+#define TEST_MSG_OPTIONS \
+	"OPTIONS /85 HTTP/1.1\r\n" \
+	"Host: 192.168.0.37:10063\r\n" \
+	"Connection: keep-alive\r\n" \
+	"Access-Control-Request-Method: POST\r\n" \
+	"Origin: null\r\n" \
+	"User-Agent: Mozilla/5.0 (Windows NT 6.0) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.57 Safari/537.17\r\n" \
+	"Access-Control-Request-Headers: connection, origin, content-type\r\n" \
+	"Accept: */*\r\n" \
+	"Accept-Encoding: gzip,deflate,sdch\r\n" \
+	"Accept-Language: en-US,en;q=0.8\r\n" \
+	"Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3\r\n" \
+	"\r\n"
 
-#define TEST_MSG TEST_MSG_WS
+#define TEST_MSG TEST_MSG_OPTIONS
 
 
 void test_messages()
@@ -74,7 +87,7 @@ void test_messages()
 	const thttp_header_Sec_WebSocket_Accept_t* ws_hdr_accept;
 	message = thttp_message_create();
 
-	while(msg_start < msg_end){
+	/*while(msg_start < msg_end){
 		if((idx = tsk_strindexOf(msg_start, (msg_end - msg_start), "\r\n")) <= 2){
 			break;
 		}
@@ -99,9 +112,7 @@ void test_messages()
 		tsk_list_foreach(item, ws_hdr_version->values){
 			TSK_DEBUG_INFO("Sec-WebSocket-Version: %s", TSK_STRING_STR(item->data));
 		}
-	}
-
-	tsk_ragel_state_init(&state, TEST_MSG, strlen(TEST_MSG));
+	}*/
 
 
 	/* deserialize the message */
