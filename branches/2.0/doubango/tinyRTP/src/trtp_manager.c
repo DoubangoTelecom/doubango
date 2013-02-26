@@ -1517,7 +1517,7 @@ int trtp_manager_stop(trtp_manager_t* self)
 //
 static tsk_object_t* trtp_manager_ctor(tsk_object_t * self, va_list * app)
 {
-	trtp_manager_t *manager = self;
+	trtp_manager_t *manager = (trtp_manager_t*)self;
 	if(manager){
 		manager->port_range.start = tmedia_defaults_get_rtp_port_range_start();
 		manager->port_range.stop = tmedia_defaults_get_rtp_port_range_stop();
@@ -1527,6 +1527,8 @@ static tsk_object_t* trtp_manager_ctor(tsk_object_t * self, va_list * app)
 #if HAVE_SRTP
 		manager->srtp_type = tmedia_defaults_get_srtp_type();
 		manager->srtp_mode = tmedia_defaults_get_srtp_mode();
+		manager->dtls.timer_hanshaking.id = TSK_INVALID_TIMER_ID;
+		manager->dtls.timer_hanshaking.timeout = TRTP_DTLS_HANDSHAKING_TIMEOUT;
 #endif /* HAVE_SRTP */
 
 		/* rtp */
@@ -1539,8 +1541,6 @@ static tsk_object_t* trtp_manager_ctor(tsk_object_t * self, va_list * app)
 
 		/* timer */
 		manager->timer_mgr_global = tsk_timer_mgr_global_ref();
-		manager->dtls.timer_hanshaking.id = TSK_INVALID_TIMER_ID;
-		manager->dtls.timer_hanshaking.timeout = TRTP_DTLS_HANDSHAKING_TIMEOUT;
 
 		tsk_safeobj_init(manager);
 	}
