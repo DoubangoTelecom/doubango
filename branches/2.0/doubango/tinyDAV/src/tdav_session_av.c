@@ -1027,7 +1027,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("ssrc", str), tsk_null);
 			tsk_sprintf(&str, "%u mslabel:%s", self->rtp_manager->rtp.ssrc.local, "6994f7d1-6ce9-4fbd-acfd-84e5131ca2e2");
 			tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("ssrc", str), tsk_null);
-			tsk_sprintf(&str, "%u label:%s", self->rtp_manager->rtp.ssrc.local, "Doubango");
+			tsk_sprintf(&str, "%u label:%s", self->rtp_manager->rtp.ssrc.local, (self->media_type == tmedia_audio) ? "Doubango.Audio" : "Doubango.Video"); /* https://groups.google.com/group/discuss-webrtc/browse_thread/thread/6c44106c8ce7d6dc */
 			tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("ssrc", str), tsk_null);
 			TSK_FREE(str);
 		}
