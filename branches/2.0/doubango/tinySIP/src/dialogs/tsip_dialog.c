@@ -1145,15 +1145,18 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 int tsip_dialog_fsm_act(tsip_dialog_t* self, tsk_fsm_action_id action_id, const tsip_message_t* message, const tsip_action_handle_t* action)
 {
 	int ret;
+	tsip_dialog_t* copy;
 	if(!self || !self->fsm){
 		TSK_DEBUG_ERROR("Invalid parameter.");
 		return -1;
 	}
 
 	tsk_safeobj_lock(self);
-	ret = tsip_dialog_set_curr_action(self, action);
-	ret = tsk_fsm_act(self->fsm, action_id, self, message, self, message, action);
-	tsk_safeobj_unlock(self);
+	copy = tsk_object_ref(self); /* keep a copy because tsk_fsm_act() could destroy the dialog */
+	ret = tsip_dialog_set_curr_action(copy, action);
+	ret = tsk_fsm_act(copy->fsm, action_id, copy, message, copy, message, action);
+	tsk_safeobj_unlock(copy);
+	tsk_object_unref(copy);
 
 	return ret;
 }
@@ -1239,6 +1242,7 @@ int tsip_dialog_hangup(tsip_dialog_t *self, const tsip_action_t* action)
 			return tsip_dialog_fsm_act(self, tsip_atype_cancel, tsk_null, action);
 		}
 	}
+	TSK_DEBUG_ERROR("Invalid parameter");
 	return -1;
 }
 
@@ -1247,6 +1251,16 @@ int tsip_dialog_shutdown(tsip_dialog_t *self, const tsip_action_t* action)
 	if(self){
 		return tsip_dialog_fsm_act(self, tsip_atype_shutdown, tsk_null, action);
 	}
+	TSK_DEBUG_ERROR("Invalid parameter");
+	return -1;
+}
+
+int tsip_dialog_signal_transport_error(tsip_dialog_t *self)
+{
+	if(self){
+		return tsip_dialog_fsm_act(self, tsip_atype_transport_error, tsk_null, tsk_null);
+	}
+	TSK_DEBUG_ERROR("Invalid parameter");
 	return -1;
 }
 

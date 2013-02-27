@@ -57,6 +57,7 @@ typedef enum _fsm_action_e
 	_fsm_action_oINFO = tsip_atype_info_send,
 	_fsm_action_oBYE = tsip_atype_hangup,
 	_fsm_action_oShutdown = tsip_atype_shutdown,
+	_fsm_action_transporterror = tsip_atype_transport_error,
 
 	_fsm_action_iINVITE = 0xFF,
 	_fsm_action_oUPDATE,
@@ -84,7 +85,6 @@ typedef enum _fsm_action_e
 	_fsm_action_i422,
 
 	_fsm_action_shutdown_timedout, /* Any -> Terminated */
-	_fsm_action_transporterror,
 	_fsm_action_error,
 }
 _fsm_action_t;

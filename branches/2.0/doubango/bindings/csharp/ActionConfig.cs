@@ -54,6 +54,11 @@ public class ActionConfig : IDisposable {
     return ret;
   }
 
+  public bool setActiveMedia(twrap_media_type_t type) {
+    bool ret = tinyWRAPPINVOKE.ActionConfig_setActiveMedia(swigCPtr, (int)type);
+    return ret;
+  }
+
   public ActionConfig setResponseLine(short code, string phrase) {
     IntPtr cPtr = tinyWRAPPINVOKE.ActionConfig_setResponseLine(swigCPtr, code, phrase);
     ActionConfig ret = (cPtr == IntPtr.Zero) ? null : new ActionConfig(cPtr, false);

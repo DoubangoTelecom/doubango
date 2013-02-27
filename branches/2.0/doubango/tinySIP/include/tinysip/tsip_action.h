@@ -99,6 +99,8 @@ typedef enum tsip_action_type_e
 	tsip_atype_hangup,
 	//! Shutdown a SIP dialog. Should only be called by the stack.
 	tsip_atype_shutdown,
+	//! Signal transport error. Should only be called by the stack.
+	tsip_atype_transport_error,
 }
 tsip_action_type_t;
 

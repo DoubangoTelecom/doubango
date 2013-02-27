@@ -158,6 +158,7 @@ sub DESTROY {
 
 *addHeader = *tinyWRAPc::ActionConfig_addHeader;
 *addPayload = *tinyWRAPc::ActionConfig_addPayload;
+*setActiveMedia = *tinyWRAPc::ActionConfig_setActiveMedia;
 *setResponseLine = *tinyWRAPc::ActionConfig_setResponseLine;
 *setMediaString = *tinyWRAPc::ActionConfig_setMediaString;
 *setMediaInt = *tinyWRAPc::ActionConfig_setMediaInt;
@@ -761,6 +762,7 @@ sub DESTROY {
 
 *getType = *tinyWRAPc::PublicationEvent_getType;
 *getSession = *tinyWRAPc::PublicationEvent_getSession;
+*takeSessionOwnership = *tinyWRAPc::PublicationEvent_takeSessionOwnership;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -828,6 +830,7 @@ sub DESTROY {
 
 *getType = *tinyWRAPc::SubscriptionEvent_getType;
 *getSession = *tinyWRAPc::SubscriptionEvent_getSession;
+*takeSessionOwnership = *tinyWRAPc::SubscriptionEvent_takeSessionOwnership;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1926,6 +1929,7 @@ sub DESTROY {
 
 *start = *tinyWRAPc::SipStack_start;
 *setDebugCallback = *tinyWRAPc::SipStack_setDebugCallback;
+*setDisplayName = *tinyWRAPc::SipStack_setDisplayName;
 *setRealm = *tinyWRAPc::SipStack_setRealm;
 *setIMPI = *tinyWRAPc::SipStack_setIMPI;
 *setIMPU = *tinyWRAPc::SipStack_setIMPU;
@@ -2495,6 +2499,7 @@ package tinyWRAP;
 *tsip_event_code_stack_stopped = *tinyWRAPc::tsip_event_code_stack_stopped;
 *tsip_event_code_stack_failed_to_start = *tinyWRAPc::tsip_event_code_stack_failed_to_start;
 *tsip_event_code_stack_failed_to_stop = *tinyWRAPc::tsip_event_code_stack_failed_to_stop;
+*tsip_event_code_stack_disconnected = *tinyWRAPc::tsip_event_code_stack_disconnected;
 *tsip_i_newreg = *tinyWRAPc::tsip_i_newreg;
 *tsip_i_register = *tinyWRAPc::tsip_i_register;
 *tsip_ao_register = *tinyWRAPc::tsip_ao_register;

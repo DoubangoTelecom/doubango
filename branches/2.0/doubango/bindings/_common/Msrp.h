@@ -53,8 +53,9 @@ public:
 	char* getMsrpHeaderParamValue(const char* name, const char* param);
 	unsigned getMsrpContentLength();
 	unsigned getMsrpContent(void* output, unsigned maxsize);
-
+#if !defined(SWIG)
 	const tmsrp_message_t* getWrappedMsrpMessage() { return m_pMessage; }
+#endif
 
 private:
 	const tmsrp_header_t* getMsrpHeader(const char* name, unsigned index = 0);

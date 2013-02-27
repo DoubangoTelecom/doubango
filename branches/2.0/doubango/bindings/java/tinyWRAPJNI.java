@@ -31,6 +31,7 @@ public class tinyWRAPJNI {
   public final static native void delete_ActionConfig(long jarg1);
   public final static native boolean ActionConfig_addHeader(long jarg1, ActionConfig jarg1_, String jarg2, String jarg3);
   public final static native boolean ActionConfig_addPayload(long jarg1, ActionConfig jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native boolean ActionConfig_setActiveMedia(long jarg1, ActionConfig jarg1_, int jarg2);
   public final static native long ActionConfig_setResponseLine(long jarg1, ActionConfig jarg1_, short jarg2, String jarg3);
   public final static native long ActionConfig_setMediaString(long jarg1, ActionConfig jarg1_, int jarg2, String jarg3, String jarg4);
   public final static native long ActionConfig_setMediaInt(long jarg1, ActionConfig jarg1_, int jarg2, String jarg3, int jarg4);
@@ -175,6 +176,7 @@ public class tinyWRAPJNI {
   public final static native void delete_PublicationEvent(long jarg1);
   public final static native int PublicationEvent_getType(long jarg1, PublicationEvent jarg1_);
   public final static native long PublicationEvent_getSession(long jarg1, PublicationEvent jarg1_);
+  public final static native long PublicationEvent_takeSessionOwnership(long jarg1, PublicationEvent jarg1_);
   public final static native void delete_RegistrationEvent(long jarg1);
   public final static native int RegistrationEvent_getType(long jarg1, RegistrationEvent jarg1_);
   public final static native long RegistrationEvent_getSession(long jarg1, RegistrationEvent jarg1_);
@@ -182,6 +184,7 @@ public class tinyWRAPJNI {
   public final static native void delete_SubscriptionEvent(long jarg1);
   public final static native int SubscriptionEvent_getType(long jarg1, SubscriptionEvent jarg1_);
   public final static native long SubscriptionEvent_getSession(long jarg1, SubscriptionEvent jarg1_);
+  public final static native long SubscriptionEvent_takeSessionOwnership(long jarg1, SubscriptionEvent jarg1_);
   public final static native void delete_T140CallbackData(long jarg1);
   public final static native int T140CallbackData_getType(long jarg1, T140CallbackData jarg1_);
   public final static native long T140CallbackData_getSize(long jarg1, T140CallbackData jarg1_);
@@ -471,6 +474,7 @@ public class tinyWRAPJNI {
   public final static native void delete_SipStack(long jarg1);
   public final static native boolean SipStack_start(long jarg1, SipStack jarg1_);
   public final static native boolean SipStack_setDebugCallback(long jarg1, SipStack jarg1_, long jarg2, DDebugCallback jarg2_);
+  public final static native boolean SipStack_setDisplayName(long jarg1, SipStack jarg1_, String jarg2);
   public final static native boolean SipStack_setRealm(long jarg1, SipStack jarg1_, String jarg2);
   public final static native boolean SipStack_setIMPI(long jarg1, SipStack jarg1_, String jarg2);
   public final static native boolean SipStack_setIMPU(long jarg1, SipStack jarg1_, String jarg2);

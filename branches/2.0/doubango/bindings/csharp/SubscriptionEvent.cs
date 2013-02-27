@@ -51,6 +51,12 @@ public class SubscriptionEvent : SipEvent {
     return ret;
   }
 
+  public SubscriptionSession takeSessionOwnership() {
+    IntPtr cPtr = tinyWRAPPINVOKE.SubscriptionEvent_takeSessionOwnership(swigCPtr);
+    SubscriptionSession ret = (cPtr == IntPtr.Zero) ? null : new SubscriptionSession(cPtr, false);
+    return ret;
+  }
+
 }
 
 }

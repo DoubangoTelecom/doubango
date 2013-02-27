@@ -44,4 +44,9 @@ public class SubscriptionEvent extends SipEvent {
     return (cPtr == 0) ? null : new SubscriptionSession(cPtr, false);
   }
 
+  public SubscriptionSession takeSessionOwnership() {
+    long cPtr = tinyWRAPJNI.SubscriptionEvent_takeSessionOwnership(swigCPtr, this);
+    return (cPtr == 0) ? null : new SubscriptionSession(cPtr, false);
+  }
+
 }

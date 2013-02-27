@@ -4,6 +4,7 @@
 %include <stdint.i>
 
 %{
+#include "tinyWRAP_config.h"
 #include "DDebug.h"
 #include "AudioResampler.h"
 %}
@@ -11,6 +12,7 @@
 %feature("director") DDebugCallback;
 
 %nodefaultctor;
+%include "tinyWRAP_config.h"
 %include "DDebug.h"
 %include "AudioResampler.h"
 %include "Common.h"

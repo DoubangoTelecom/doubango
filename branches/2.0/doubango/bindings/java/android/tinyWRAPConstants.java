@@ -26,4 +26,5 @@ public interface tinyWRAPConstants {
   public final static int tsip_event_code_stack_stopped = 953;
   public final static int tsip_event_code_stack_failed_to_start = 954;
   public final static int tsip_event_code_stack_failed_to_stop = 955;
+  public final static int tsip_event_code_stack_disconnected = 956;
 }

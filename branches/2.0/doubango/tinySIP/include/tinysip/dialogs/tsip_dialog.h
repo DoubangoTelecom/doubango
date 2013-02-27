@@ -184,6 +184,7 @@ int tsip_dialog_set_lasterror_2(tsip_dialog_t* self, const char* phrase, short c
 int tsip_dialog_get_lasterror(const tsip_dialog_t* self, short *code, const char** phrase, const tsip_message_t **message);
 int tsip_dialog_hangup(tsip_dialog_t *self, const tsip_action_t* action);
 int tsip_dialog_shutdown(tsip_dialog_t *self, const tsip_action_t* action);
+int tsip_dialog_signal_transport_error(tsip_dialog_t *self);
 int tsip_dialog_remove(const tsip_dialog_t* self);
 int tsip_dialog_cmp(const tsip_dialog_t *d1, const tsip_dialog_t *d2);
 int tsip_dialog_deinit(tsip_dialog_t *self);

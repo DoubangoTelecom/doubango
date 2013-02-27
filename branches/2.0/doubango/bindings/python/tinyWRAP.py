@@ -144,6 +144,7 @@ class ActionConfig(_object):
     __del__ = lambda self : None;
     def addHeader(self, *args): return _tinyWRAP.ActionConfig_addHeader(self, *args)
     def addPayload(self, *args): return _tinyWRAP.ActionConfig_addPayload(self, *args)
+    def setActiveMedia(self, *args): return _tinyWRAP.ActionConfig_setActiveMedia(self, *args)
     def setResponseLine(self, *args): return _tinyWRAP.ActionConfig_setResponseLine(self, *args)
     def setMediaString(self, *args): return _tinyWRAP.ActionConfig_setMediaString(self, *args)
     def setMediaInt(self, *args): return _tinyWRAP.ActionConfig_setMediaInt(self, *args)
@@ -729,6 +730,7 @@ class PublicationEvent(SipEvent):
     __del__ = lambda self : None;
     def getType(self): return _tinyWRAP.PublicationEvent_getType(self)
     def getSession(self): return _tinyWRAP.PublicationEvent_getSession(self)
+    def takeSessionOwnership(self): return _tinyWRAP.PublicationEvent_takeSessionOwnership(self)
 PublicationEvent_swigregister = _tinyWRAP.PublicationEvent_swigregister
 PublicationEvent_swigregister(PublicationEvent)
 
@@ -762,6 +764,7 @@ class SubscriptionEvent(SipEvent):
     __del__ = lambda self : None;
     def getType(self): return _tinyWRAP.SubscriptionEvent_getType(self)
     def getSession(self): return _tinyWRAP.SubscriptionEvent_getSession(self)
+    def takeSessionOwnership(self): return _tinyWRAP.SubscriptionEvent_takeSessionOwnership(self)
 SubscriptionEvent_swigregister = _tinyWRAP.SubscriptionEvent_swigregister
 SubscriptionEvent_swigregister(SubscriptionEvent)
 
@@ -1423,6 +1426,7 @@ class SipStack(SafeObject):
     __del__ = lambda self : None;
     def start(self): return _tinyWRAP.SipStack_start(self)
     def setDebugCallback(self, *args): return _tinyWRAP.SipStack_setDebugCallback(self, *args)
+    def setDisplayName(self, *args): return _tinyWRAP.SipStack_setDisplayName(self, *args)
     def setRealm(self, *args): return _tinyWRAP.SipStack_setRealm(self, *args)
     def setIMPI(self, *args): return _tinyWRAP.SipStack_setIMPI(self, *args)
     def setIMPU(self, *args): return _tinyWRAP.SipStack_setIMPU(self, *args)
@@ -1544,6 +1548,7 @@ tsip_event_code_stack_stopping = _tinyWRAP.tsip_event_code_stack_stopping
 tsip_event_code_stack_stopped = _tinyWRAP.tsip_event_code_stack_stopped
 tsip_event_code_stack_failed_to_start = _tinyWRAP.tsip_event_code_stack_failed_to_start
 tsip_event_code_stack_failed_to_stop = _tinyWRAP.tsip_event_code_stack_failed_to_stop
+tsip_event_code_stack_disconnected = _tinyWRAP.tsip_event_code_stack_disconnected
 tsip_i_newreg = _tinyWRAP.tsip_i_newreg
 tsip_i_register = _tinyWRAP.tsip_i_register
 tsip_ao_register = _tinyWRAP.tsip_ao_register

@@ -44,4 +44,9 @@ public class PublicationEvent extends SipEvent {
     return (cPtr == 0) ? null : new PublicationSession(cPtr, false);
   }
 
+  public PublicationSession takeSessionOwnership() {
+    long cPtr = tinyWRAPJNI.PublicationEvent_takeSessionOwnership(swigCPtr, this);
+    return (cPtr == 0) ? null : new PublicationSession(cPtr, false);
+  }
+
 }

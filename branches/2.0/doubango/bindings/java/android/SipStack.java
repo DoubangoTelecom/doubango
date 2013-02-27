@@ -47,6 +47,10 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_setDebugCallback(swigCPtr, this, DDebugCallback.getCPtr(pCallback), pCallback);
   }
 
+  public boolean setDisplayName(String display_name) {
+    return tinyWRAPJNI.SipStack_setDisplayName(swigCPtr, this, display_name);
+  }
+
   public boolean setRealm(String realm_uri) {
     return tinyWRAPJNI.SipStack_setRealm(swigCPtr, this, realm_uri);
   }

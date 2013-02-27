@@ -419,6 +419,7 @@ namespace Swig {
 #include <stdint.h>		// Use the C99 official header
 
 
+#include "tinyWRAP_config.h"
 #include "DDebug.h"
 #include "AudioResampler.h"
 
@@ -2303,6 +2304,23 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ActionConfig_
   
   arg3 = (unsigned int)jarg3; 
   result = (bool)(arg1)->addPayload((void const *)arg2,arg3);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ActionConfig_1setActiveMedia(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jboolean jresult = 0 ;
+  ActionConfig *arg1 = (ActionConfig *) 0 ;
+  twrap_media_type_t arg2 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ActionConfig **)&jarg1; 
+  arg2 = (twrap_media_type_t)jarg2; 
+  result = (bool)(arg1)->setActiveMedia(arg2);
   jresult = (jboolean)result; 
   return jresult;
 }
@@ -4604,6 +4622,21 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_PublicationEvent
 }
 
 
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_PublicationEvent_1takeSessionOwnership(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
+  PublicationSession *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(PublicationEvent **)&jarg1; 
+  result = (PublicationSession *)((PublicationEvent const *)arg1)->takeSessionOwnership();
+  *(PublicationSession **)&jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1RegistrationEvent(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
   
@@ -4694,6 +4727,21 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SubscriptionEven
   (void)jarg1_;
   arg1 = *(SubscriptionEvent **)&jarg1; 
   result = (SubscriptionSession *)((SubscriptionEvent const *)arg1)->getSession();
+  *(SubscriptionSession **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SubscriptionEvent_1takeSessionOwnership(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
+  SubscriptionSession *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SubscriptionEvent **)&jarg1; 
+  result = (SubscriptionSession *)((SubscriptionEvent const *)arg1)->takeSessionOwnership();
   *(SubscriptionSession **)&jresult = result; 
   return jresult;
 }
@@ -9731,6 +9779,28 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1set
   arg2 = *(DDebugCallback **)&jarg2; 
   result = (bool)(arg1)->setDebugCallback(arg2);
   jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1setDisplayName(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  jboolean jresult = 0 ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipStack **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  result = (bool)(arg1)->setDisplayName((char const *)arg2);
+  jresult = (jboolean)result; 
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
   return jresult;
 }
 
