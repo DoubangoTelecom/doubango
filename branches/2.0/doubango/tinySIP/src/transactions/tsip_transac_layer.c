@@ -228,7 +228,10 @@ tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self,
 	tsk_list_foreach(item, self->transactions){
 		transac = item->data;
 		if(TSIP_REQUEST_IS_ACK(message) && tsk_strequals(transac->callid, message->Call_ID->value)){ /* 1. ACK branch won't match INVITE's but they MUST have the same CSeq/CallId values */
-			if(tsk_striequals(transac->cseq_method, "INVITE") && message->CSeq->seq == transac->cseq_value){
+			// [transac->type == tsip_transac_type_ist] is used to avoid looping in webrtc2sip mode (e.g. browser <->(breaker)<->browser)
+			// (browser-1) -> INVITE -> (breaker) -> INVITE - (server) -> INVITE -> (breaker) -> (browser-2)
+			// the breaker will have two transactions (IST and ICT) with same cseq value and call-id (if not changed by the server)
+			if(transac->type == tsip_transac_type_ist && tsk_striequals(transac->cseq_method, "INVITE") && message->CSeq->seq == transac->cseq_value){
 				ret = tsk_object_ref(transac);
 				break;
 			}

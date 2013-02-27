@@ -53,6 +53,9 @@ TSIP_BEGIN_DECLS
 #define TSIP_TRANSAC_GET_STACK(self)			TSIP_TRANSAC_GET_DST((self))->stack
 #define TSIP_TRANSAC_GET_TIMER_MGR(self)		TSIP_TRANSAC_GET_STACK((self))->timer_mgr
 
+#define TSIP_TRANSAC_IS_CLIENT(self)			((self) && ((self)->type == tsip_transac_type_ict || (self)->type == tsip_transac_type_nict))
+#define TSIP_TRANSAC_IS_SERVER(self)			!TSIP_TRANSAC_IS_CLIENT((self))
+
 #define TSIP_TRANSAC_MAGIC_COOKIE				"z9hG4bK"
 
 #define TSIP_TRANSAC_SYNC_BEGIN(self)			tsk_safeobj_lock(TSIP_TRANSAC(self))
