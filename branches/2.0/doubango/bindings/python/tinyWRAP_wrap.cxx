@@ -3638,6 +3638,7 @@ namespace swig {
 #include <stdint.h>		// Use the C99 official header
 
 
+#include "tinyWRAP_config.h"
 #include "DDebug.h"
 #include "AudioResampler.h"
 
@@ -6072,6 +6073,37 @@ SWIGINTERN PyObject *_wrap_ActionConfig_addPayload(PyObject *SWIGUNUSEDPARM(self
   } 
   arg3 = static_cast< unsigned int >(val3);
   result = (bool)(arg1)->addPayload((void const *)arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ActionConfig_setActiveMedia(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ActionConfig *arg1 = (ActionConfig *) 0 ;
+  twrap_media_type_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ActionConfig_setActiveMedia",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ActionConfig, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ActionConfig_setActiveMedia" "', argument " "1"" of type '" "ActionConfig *""'"); 
+  }
+  arg1 = reinterpret_cast< ActionConfig * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ActionConfig_setActiveMedia" "', argument " "2"" of type '" "twrap_media_type_t""'");
+  } 
+  arg2 = static_cast< twrap_media_type_t >(val2);
+  result = (bool)(arg1)->setActiveMedia(arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -10124,6 +10156,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_PublicationEvent_takeSessionOwnership(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  PublicationSession *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:PublicationEvent_takeSessionOwnership",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_PublicationEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PublicationEvent_takeSessionOwnership" "', argument " "1"" of type '" "PublicationEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< PublicationEvent * >(argp1);
+  result = (PublicationSession *)((PublicationEvent const *)arg1)->takeSessionOwnership();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_PublicationSession, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *PublicationEvent_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -10283,6 +10337,28 @@ SWIGINTERN PyObject *_wrap_SubscriptionEvent_getSession(PyObject *SWIGUNUSEDPARM
   }
   arg1 = reinterpret_cast< SubscriptionEvent * >(argp1);
   result = (SubscriptionSession *)((SubscriptionEvent const *)arg1)->getSession();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SubscriptionSession, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SubscriptionEvent_takeSessionOwnership(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  SubscriptionSession *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SubscriptionEvent_takeSessionOwnership",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SubscriptionEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SubscriptionEvent_takeSessionOwnership" "', argument " "1"" of type '" "SubscriptionEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< SubscriptionEvent * >(argp1);
+  result = (SubscriptionSession *)((SubscriptionEvent const *)arg1)->takeSessionOwnership();
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SubscriptionSession, 0 |  0 );
   return resultobj;
 fail:
@@ -20174,6 +20250,40 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SipStack_setDisplayName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipStack_setDisplayName",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setDisplayName" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setDisplayName" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  result = (bool)(arg1)->setDisplayName((char const *)arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_SipStack_setRealm(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -25148,6 +25258,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_ActionConfig", _wrap_delete_ActionConfig, METH_VARARGS, NULL},
 	 { (char *)"ActionConfig_addHeader", _wrap_ActionConfig_addHeader, METH_VARARGS, NULL},
 	 { (char *)"ActionConfig_addPayload", _wrap_ActionConfig_addPayload, METH_VARARGS, NULL},
+	 { (char *)"ActionConfig_setActiveMedia", _wrap_ActionConfig_setActiveMedia, METH_VARARGS, NULL},
 	 { (char *)"ActionConfig_setResponseLine", _wrap_ActionConfig_setResponseLine, METH_VARARGS, NULL},
 	 { (char *)"ActionConfig_setMediaString", _wrap_ActionConfig_setMediaString, METH_VARARGS, NULL},
 	 { (char *)"ActionConfig_setMediaInt", _wrap_ActionConfig_setMediaInt, METH_VARARGS, NULL},
@@ -25301,6 +25412,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_PublicationEvent", _wrap_delete_PublicationEvent, METH_VARARGS, NULL},
 	 { (char *)"PublicationEvent_getType", _wrap_PublicationEvent_getType, METH_VARARGS, NULL},
 	 { (char *)"PublicationEvent_getSession", _wrap_PublicationEvent_getSession, METH_VARARGS, NULL},
+	 { (char *)"PublicationEvent_takeSessionOwnership", _wrap_PublicationEvent_takeSessionOwnership, METH_VARARGS, NULL},
 	 { (char *)"PublicationEvent_swigregister", PublicationEvent_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_RegistrationEvent", _wrap_delete_RegistrationEvent, METH_VARARGS, NULL},
 	 { (char *)"RegistrationEvent_getType", _wrap_RegistrationEvent_getType, METH_VARARGS, NULL},
@@ -25310,6 +25422,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_SubscriptionEvent", _wrap_delete_SubscriptionEvent, METH_VARARGS, NULL},
 	 { (char *)"SubscriptionEvent_getType", _wrap_SubscriptionEvent_getType, METH_VARARGS, NULL},
 	 { (char *)"SubscriptionEvent_getSession", _wrap_SubscriptionEvent_getSession, METH_VARARGS, NULL},
+	 { (char *)"SubscriptionEvent_takeSessionOwnership", _wrap_SubscriptionEvent_takeSessionOwnership, METH_VARARGS, NULL},
 	 { (char *)"SubscriptionEvent_swigregister", SubscriptionEvent_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_T140CallbackData", _wrap_delete_T140CallbackData, METH_VARARGS, NULL},
 	 { (char *)"T140CallbackData_getType", _wrap_T140CallbackData_getType, METH_VARARGS, NULL},
@@ -25537,6 +25650,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_SipStack", _wrap_delete_SipStack, METH_VARARGS, NULL},
 	 { (char *)"SipStack_start", _wrap_SipStack_start, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setDebugCallback", _wrap_SipStack_setDebugCallback, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setDisplayName", _wrap_SipStack_setDisplayName, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setRealm", _wrap_SipStack_setRealm, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setIMPI", _wrap_SipStack_setIMPI, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setIMPU", _wrap_SipStack_setIMPU, METH_VARARGS, NULL},
@@ -26891,6 +27005,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tsip_event_code_stack_stopped",SWIG_From_int(static_cast< int >(953)));
   SWIG_Python_SetConstant(d, "tsip_event_code_stack_failed_to_start",SWIG_From_int(static_cast< int >(954)));
   SWIG_Python_SetConstant(d, "tsip_event_code_stack_failed_to_stop",SWIG_From_int(static_cast< int >(955)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_stack_disconnected",SWIG_From_int(static_cast< int >(956)));
   SWIG_Python_SetConstant(d, "tsip_i_newreg",SWIG_From_int(static_cast< int >(tsip_i_newreg)));
   SWIG_Python_SetConstant(d, "tsip_i_register",SWIG_From_int(static_cast< int >(tsip_i_register)));
   SWIG_Python_SetConstant(d, "tsip_ao_register",SWIG_From_int(static_cast< int >(tsip_ao_register)));

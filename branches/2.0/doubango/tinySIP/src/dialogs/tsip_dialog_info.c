@@ -72,13 +72,13 @@ typedef enum _fsm_action_e
 	_fsm_action_reject = tsip_atype_reject,
 	_fsm_action_cancel = tsip_atype_cancel,
 	_fsm_action_shutdown = tsip_atype_shutdown,
+	_fsm_action_transporterror = tsip_atype_transport_error,
 
 	_fsm_action_receiveINFO = 0xFF,
 	_fsm_action_1xx,
 	_fsm_action_2xx,
 	_fsm_action_401_407_421_494,
 	_fsm_action_300_to_699,
-	_fsm_action_transporterror,
 	_fsm_action_error,
 }
 _fsm_action_t;

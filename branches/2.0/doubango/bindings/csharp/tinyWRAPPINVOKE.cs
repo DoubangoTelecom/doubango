@@ -252,6 +252,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ActionConfig_addPayload")]
   public static extern bool ActionConfig_addPayload(HandleRef jarg1, IntPtr jarg2, uint jarg3);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ActionConfig_setActiveMedia")]
+  public static extern bool ActionConfig_setActiveMedia(HandleRef jarg1, int jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_ActionConfig_setResponseLine")]
   public static extern IntPtr ActionConfig_setResponseLine(HandleRef jarg1, short jarg2, string jarg3);
 
@@ -684,6 +687,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_PublicationEvent_getSession")]
   public static extern IntPtr PublicationEvent_getSession(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_PublicationEvent_takeSessionOwnership")]
+  public static extern IntPtr PublicationEvent_takeSessionOwnership(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_RegistrationEvent")]
   public static extern void delete_RegistrationEvent(HandleRef jarg1);
 
@@ -704,6 +710,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SubscriptionEvent_getSession")]
   public static extern IntPtr SubscriptionEvent_getSession(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SubscriptionEvent_takeSessionOwnership")]
+  public static extern IntPtr SubscriptionEvent_takeSessionOwnership(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_T140CallbackData")]
   public static extern void delete_T140CallbackData(HandleRef jarg1);
@@ -1551,6 +1560,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setDebugCallback")]
   public static extern bool SipStack_setDebugCallback(HandleRef jarg1, HandleRef jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setDisplayName")]
+  public static extern bool SipStack_setDisplayName(HandleRef jarg1, string jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setRealm")]
   public static extern bool SipStack_setRealm(HandleRef jarg1, string jarg2);
 
@@ -1730,6 +1742,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_stack_failed_to_stop_get")]
   public static extern int tsip_event_code_stack_failed_to_stop_get();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_stack_disconnected_get")]
+  public static extern int tsip_event_code_stack_disconnected_get();
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_XcapSelector")]
   public static extern IntPtr new_XcapSelector(HandleRef jarg1);

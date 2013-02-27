@@ -38,7 +38,9 @@ public:
 	virtual ~Codec();
 
 public:
+#if !defined(SWIG)
 	const struct tmedia_codec_s* getWrappedCodec(){ return m_pWrappedCodec; }
+#endif
 	twrap_media_type_t getMediaType();
 	const char* getName();
 	const char* getDescription();

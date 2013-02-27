@@ -78,6 +78,7 @@ tsip_event_type_t;
 #define tsip_event_code_stack_stopped				953
 #define tsip_event_code_stack_failed_to_start		954
 #define tsip_event_code_stack_failed_to_stop		955
+#define tsip_event_code_stack_disconnected			956
 
 
 typedef struct tsip_event_s

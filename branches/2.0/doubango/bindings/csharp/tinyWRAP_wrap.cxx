@@ -331,6 +331,7 @@ namespace Swig {
 #include <stdint.h>		// Use the C99 official header
 
 
+#include "tinyWRAP_config.h"
 #include "DDebug.h"
 #include "AudioResampler.h"
 
@@ -1416,6 +1417,20 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ActionConfig_addPayload(void * jarg1,
   arg2 = jarg2; 
   arg3 = (unsigned int)jarg3; 
   result = (bool)(arg1)->addPayload((void const *)arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ActionConfig_setActiveMedia(void * jarg1, int jarg2) {
+  unsigned int jresult ;
+  ActionConfig *arg1 = (ActionConfig *) 0 ;
+  twrap_media_type_t arg2 ;
+  bool result;
+  
+  arg1 = (ActionConfig *)jarg1; 
+  arg2 = (twrap_media_type_t)jarg2; 
+  result = (bool)(arg1)->setActiveMedia(arg2);
   jresult = result; 
   return jresult;
 }
@@ -3180,6 +3195,18 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_PublicationEvent_getSession(void * jarg1) {
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_PublicationEvent_takeSessionOwnership(void * jarg1) {
+  void * jresult ;
+  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
+  PublicationSession *result = 0 ;
+  
+  arg1 = (PublicationEvent *)jarg1; 
+  result = (PublicationSession *)((PublicationEvent const *)arg1)->takeSessionOwnership();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_RegistrationEvent(void * jarg1) {
   RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
   
@@ -3251,6 +3278,18 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_SubscriptionEvent_getSession(void * jarg1) 
   
   arg1 = (SubscriptionEvent *)jarg1; 
   result = (SubscriptionSession *)((SubscriptionEvent const *)arg1)->getSession();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SubscriptionEvent_takeSessionOwnership(void * jarg1) {
+  void * jresult ;
+  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
+  SubscriptionSession *result = 0 ;
+  
+  arg1 = (SubscriptionEvent *)jarg1; 
+  result = (SubscriptionSession *)((SubscriptionEvent const *)arg1)->takeSessionOwnership();
   jresult = (void *)result; 
   return jresult;
 }
@@ -6899,6 +6938,20 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setDebugCallback(void * jarg
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setDisplayName(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->setDisplayName((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setRealm(void * jarg1, char * jarg2) {
   unsigned int jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -7705,6 +7758,16 @@ SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_failed_to_stop_get() {
   int result;
   
   result = (int)(955);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_stack_disconnected_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(956);
   jresult = result; 
   return jresult;
 }

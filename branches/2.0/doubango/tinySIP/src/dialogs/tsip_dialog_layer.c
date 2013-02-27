@@ -280,6 +280,35 @@ done:
 	return -1;
 }
 
+int tsip_dialog_layer_signal_transport_error(tsip_dialog_layer_t *self)
+{
+	tsk_list_item_t *item;
+	int dialogs_count;
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tsk_safeobj_lock(self);
+	dialogs_count = tsk_list_count(self->dialogs, tsk_null, tsk_null);
+again:
+	tsk_list_foreach(item, self->dialogs){
+		if(item->data){
+			// if "tsip_dialog_signal_transport_error()" remove the dialog, then
+			// "self->dialogs" will became unsafe while looping
+			tsip_dialog_signal_transport_error(TSIP_DIALOG(item->data));
+			if(--dialogs_count <= 0){ // guard against endless loops
+				break;
+			}
+			goto again;
+		}
+	}
+
+	tsk_safeobj_unlock(self);
+
+	return 0;
+}
+
 /* the caller of this function must unref() the returned object */
 tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type_t type, const tsip_ssession_t *ss)
 {

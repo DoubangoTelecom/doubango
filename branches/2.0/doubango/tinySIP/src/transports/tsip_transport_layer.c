@@ -50,7 +50,7 @@
 * Tests have been done with both compact and full headers */
 #define TSIP_MIN_STREAM_CHUNCK_SIZE 0xA0
 
-
+extern tsip_event_t* tsip_event_create(tsip_ssession_t* ss, short code, const char* phrase, const tsip_message_t* sipmessage, tsip_event_type_t type);
 
 tsip_transport_layer_t* tsip_transport_layer_create(tsip_stack_t *stack)
 {
@@ -133,12 +133,25 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	
 	switch(e->type){
 		case event_data: {
-				TSK_DEBUG_INFO("\n\n\nSIP Message:%.*s\n\n\n", e->size, (const char*)e->data);
+				TSK_DEBUG_INFO("\n\nRECV:%.*s\n\n", e->size, (const char*)e->data);
 				break;
 			}
 		case event_closed:
+		case event_error:
 			{
 				TSK_DEBUG_INFO("Stream Peer closed - %d", e->local_fd);
+				if(transport->connectedFD == e->local_fd){
+					TSK_DEBUG_INFO("SIP socket closed");
+					if(transport->stack){
+						tsip_event_t* e;
+						// signal to all dialogs that transport error raised
+						tsip_dialog_layer_signal_transport_error(TSIP_STACK(transport->stack)->layer_dialog);
+						// signal to the end-user that the stack is disconnected
+						if((e = tsip_event_create(tsk_null, tsip_event_code_stack_disconnected, "Stack disconnected", tsk_null, tsip_event_stack))){
+							TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(transport->stack), e);
+						}
+					}
+				}
 				return tsip_transport_remove_stream_peer_by_local_fd(transport, e->local_fd);
 			}
 		case event_connected:
@@ -553,7 +566,7 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 
 	switch(e->type){
 		case event_data: {
-				//--TSK_DEBUG_INFO("\n\nRECV SIP Message:%s\n\n\n", (const char*)e->data);
+				TSK_DEBUG_INFO("\n\nRECV:%.*s\n\n", e->size, (const char*)e->data);
 				break;
 			}
 		case event_closed:

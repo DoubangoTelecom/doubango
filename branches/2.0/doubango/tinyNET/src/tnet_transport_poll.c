@@ -604,33 +604,30 @@ void *tnet_transport_mainthread(void *param)
             
             /*================== TNET_POLLHUP ==================*/
 			if(context->ufds[i].revents & (TNET_POLLHUP)){
-                		fd = active_socket->fd;
+                fd = active_socket->fd;
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLHUP(%d)", transport->description, fd);
-#if defined(ANDROID)
-				/* FIXME */
-#else
-                		tnet_transport_remove_socket(transport, &active_socket->fd);
+
+                tnet_transport_remove_socket(transport, &active_socket->fd);
 				TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, fd);
                 continue;
-#endif
 			}
             
 			/*================== TNET_POLLERR ==================*/
 			if(context->ufds[i].revents & (TNET_POLLERR)){
-                		fd = active_socket->fd;
+                fd = active_socket->fd;
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLERR(%d)", transport->description, fd);
                 
-                		tnet_transport_remove_socket(transport, &active_socket->fd);
+                tnet_transport_remove_socket(transport, &active_socket->fd);
 				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, fd);
 				continue;
 			}
 			
 			/*================== TNET_POLLNVAL ==================*/
 			if(context->ufds[i].revents & (TNET_POLLNVAL)){
-                		fd = active_socket->fd;
+                fd = active_socket->fd;
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLNVAL(%d)", transport->description, fd);
 				
-                		tnet_transport_remove_socket(transport, &active_socket->fd);
+                tnet_transport_remove_socket(transport, &active_socket->fd);
 				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, fd);
 				continue;
 			}

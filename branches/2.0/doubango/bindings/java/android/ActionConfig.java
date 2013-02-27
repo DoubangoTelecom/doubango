@@ -47,6 +47,10 @@ public class ActionConfig {
     return tinyWRAPJNI.ActionConfig_addPayload(swigCPtr, this, payload, len);
   }
 
+  public boolean setActiveMedia(twrap_media_type_t type) {
+    return tinyWRAPJNI.ActionConfig_setActiveMedia(swigCPtr, this, type.swigValue());
+  }
+
   public ActionConfig setResponseLine(short code, String phrase) {
     long cPtr = tinyWRAPJNI.ActionConfig_setResponseLine(swigCPtr, this, code, phrase);
     return (cPtr == 0) ? null : new ActionConfig(cPtr, false);

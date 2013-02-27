@@ -1650,6 +1650,7 @@ SWIGEXPORT void SWIG_init (CV *cv, CPerlObj *);
 #include <stdint.h>		// Use the C99 official header
 
 
+#include "tinyWRAP_config.h"
 #include "DDebug.h"
 #include "AudioResampler.h"
 
@@ -1962,22 +1963,6 @@ SWIG_AsVal_long SWIG_PERL_DECL_ARGS_2(SV *obj, long* val)
 
 
 SWIGINTERN int
-SWIG_AsVal_short SWIG_PERL_DECL_ARGS_2(SV * obj, short *val)
-{
-  long v;
-  int res = SWIG_AsVal_long SWIG_PERL_CALL_ARGS_2(obj, &v);
-  if (SWIG_IsOK(res)) {
-    if ((v < SHRT_MIN || v > SHRT_MAX)) {
-      return SWIG_OverflowError;
-    } else {
-      if (val) *val = static_cast< short >(v);
-    }
-  }  
-  return res;
-}
-
-
-SWIGINTERN int
 SWIG_AsVal_int SWIG_PERL_DECL_ARGS_2(SV * obj, int *val)
 {
   long v;
@@ -1987,6 +1972,22 @@ SWIG_AsVal_int SWIG_PERL_DECL_ARGS_2(SV * obj, int *val)
       return SWIG_OverflowError;
     } else {
       if (val) *val = static_cast< int >(v);
+    }
+  }  
+  return res;
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_short SWIG_PERL_DECL_ARGS_2(SV * obj, short *val)
+{
+  long v;
+  int res = SWIG_AsVal_long SWIG_PERL_CALL_ARGS_2(obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v < SHRT_MIN || v > SHRT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< short >(v);
     }
   }  
   return res;
@@ -2895,6 +2896,44 @@ XS(_wrap_ActionConfig_addPayload) {
     XSRETURN(argvi);
   fail:
     
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ActionConfig_setActiveMedia) {
+  {
+    ActionConfig *arg1 = (ActionConfig *) 0 ;
+    twrap_media_type_t arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: ActionConfig_setActiveMedia(self,type);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ActionConfig, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ActionConfig_setActiveMedia" "', argument " "1"" of type '" "ActionConfig *""'"); 
+    }
+    arg1 = reinterpret_cast< ActionConfig * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ActionConfig_setActiveMedia" "', argument " "2"" of type '" "twrap_media_type_t""'");
+    } 
+    arg2 = static_cast< twrap_media_type_t >(val2);
+    result = (bool)(arg1)->setActiveMedia(arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
     
     
     SWIG_croak_null();
@@ -7902,6 +7941,34 @@ XS(_wrap_PublicationEvent_getSession) {
 }
 
 
+XS(_wrap_PublicationEvent_takeSessionOwnership) {
+  {
+    PublicationEvent *arg1 = (PublicationEvent *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    PublicationSession *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: PublicationEvent_takeSessionOwnership(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_PublicationEvent, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PublicationEvent_takeSessionOwnership" "', argument " "1"" of type '" "PublicationEvent const *""'"); 
+    }
+    arg1 = reinterpret_cast< PublicationEvent * >(argp1);
+    result = (PublicationSession *)((PublicationEvent const *)arg1)->takeSessionOwnership();
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_PublicationSession, 0 | SWIG_SHADOW); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_delete_RegistrationEvent) {
   {
     RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
@@ -8086,6 +8153,34 @@ XS(_wrap_SubscriptionEvent_getSession) {
     }
     arg1 = reinterpret_cast< SubscriptionEvent * >(argp1);
     result = (SubscriptionSession *)((SubscriptionEvent const *)arg1)->getSession();
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SubscriptionSession, 0 | SWIG_SHADOW); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SubscriptionEvent_takeSessionOwnership) {
+  {
+    SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    SubscriptionSession *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: SubscriptionEvent_takeSessionOwnership(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SubscriptionEvent, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SubscriptionEvent_takeSessionOwnership" "', argument " "1"" of type '" "SubscriptionEvent const *""'"); 
+    }
+    arg1 = reinterpret_cast< SubscriptionEvent * >(argp1);
+    result = (SubscriptionSession *)((SubscriptionEvent const *)arg1)->takeSessionOwnership();
     ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SubscriptionSession, 0 | SWIG_SHADOW); argvi++ ;
     
     XSRETURN(argvi);
@@ -20277,6 +20372,45 @@ XS(_wrap_SipStack_setDebugCallback) {
 }
 
 
+XS(_wrap_SipStack_setDisplayName) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: SipStack_setDisplayName(self,display_name);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setDisplayName" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setDisplayName" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (bool)(arg1)->setDisplayName((char const *)arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_SipStack_setRealm) {
   {
     SipStack *arg1 = (SipStack *) 0 ;
@@ -26540,6 +26674,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::delete_ActionConfig", _wrap_delete_ActionConfig},
 {"tinyWRAPc::ActionConfig_addHeader", _wrap_ActionConfig_addHeader},
 {"tinyWRAPc::ActionConfig_addPayload", _wrap_ActionConfig_addPayload},
+{"tinyWRAPc::ActionConfig_setActiveMedia", _wrap_ActionConfig_setActiveMedia},
 {"tinyWRAPc::ActionConfig_setResponseLine", _wrap_ActionConfig_setResponseLine},
 {"tinyWRAPc::ActionConfig_setMediaString", _wrap_ActionConfig_setMediaString},
 {"tinyWRAPc::ActionConfig_setMediaInt", _wrap_ActionConfig_setMediaInt},
@@ -26678,6 +26813,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::delete_PublicationEvent", _wrap_delete_PublicationEvent},
 {"tinyWRAPc::PublicationEvent_getType", _wrap_PublicationEvent_getType},
 {"tinyWRAPc::PublicationEvent_getSession", _wrap_PublicationEvent_getSession},
+{"tinyWRAPc::PublicationEvent_takeSessionOwnership", _wrap_PublicationEvent_takeSessionOwnership},
 {"tinyWRAPc::delete_RegistrationEvent", _wrap_delete_RegistrationEvent},
 {"tinyWRAPc::RegistrationEvent_getType", _wrap_RegistrationEvent_getType},
 {"tinyWRAPc::RegistrationEvent_getSession", _wrap_RegistrationEvent_getSession},
@@ -26685,6 +26821,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::delete_SubscriptionEvent", _wrap_delete_SubscriptionEvent},
 {"tinyWRAPc::SubscriptionEvent_getType", _wrap_SubscriptionEvent_getType},
 {"tinyWRAPc::SubscriptionEvent_getSession", _wrap_SubscriptionEvent_getSession},
+{"tinyWRAPc::SubscriptionEvent_takeSessionOwnership", _wrap_SubscriptionEvent_takeSessionOwnership},
 {"tinyWRAPc::delete_T140CallbackData", _wrap_delete_T140CallbackData},
 {"tinyWRAPc::T140CallbackData_getType", _wrap_T140CallbackData_getType},
 {"tinyWRAPc::T140CallbackData_getSize", _wrap_T140CallbackData_getSize},
@@ -26878,6 +27015,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::delete_SipStack", _wrap_delete_SipStack},
 {"tinyWRAPc::SipStack_start", _wrap_SipStack_start},
 {"tinyWRAPc::SipStack_setDebugCallback", _wrap_SipStack_setDebugCallback},
+{"tinyWRAPc::SipStack_setDisplayName", _wrap_SipStack_setDisplayName},
 {"tinyWRAPc::SipStack_setRealm", _wrap_SipStack_setRealm},
 {"tinyWRAPc::SipStack_setIMPI", _wrap_SipStack_setIMPI},
 {"tinyWRAPc::SipStack_setIMPU", _wrap_SipStack_setIMPU},
@@ -27634,6 +27772,11 @@ XS(SWIG_init) {
   /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_event_code_stack_failed_to_stop", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(955)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tsip_event_code_stack_disconnected", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(956)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {

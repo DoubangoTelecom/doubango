@@ -53,6 +53,11 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public bool setDisplayName(string display_name) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setDisplayName(swigCPtr, display_name);
+    return ret;
+  }
+
   public bool setRealm(string realm_uri) {
     bool ret = tinyWRAPPINVOKE.SipStack_setRealm(swigCPtr, realm_uri);
     return ret;
