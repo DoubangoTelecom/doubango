@@ -1228,6 +1228,8 @@ static int _tnet_ice_ctx_fsm_GatheringComplet_2_ConnChecking_X_ConnCheck(va_list
 	struct sockaddr_storage remote_addr;
 	uint64_t time_start, time_curr, time_end, concheck_timeout;
 	tsk_bool_t role_conflict, restart_conneck, check_rtcp;
+	void* recvfrom_buff_ptr = tsk_null;
+	tsk_size_t recvfrom_buff_size = 0;
 	
 	self = va_arg(*app, tnet_ice_ctx_t *);
 
@@ -1308,7 +1310,6 @@ start_conneck:
 			continue;
 		}
 		else if(ret > 0){
-			void* data = tsk_null;
 			// there is data to read
 			for(k = 0; k < fds_count; ++k){
 				tnet_fd_t fd = fds[k];
@@ -1330,13 +1331,17 @@ start_conneck:
 				}
 
 				// Receive pending data
-				TSK_FREE(data);
-				data = tsk_calloc(len, sizeof(uint8_t));
+				if(recvfrom_buff_size < len){
+					if(!(recvfrom_buff_ptr = tsk_realloc(recvfrom_buff_ptr, len))){
+						recvfrom_buff_size = 0;
+						goto bail;
+					}
+					recvfrom_buff_size = len;
+				}
+				
 				// receive all messages
 				while(self->is_started && self->is_active && read < len && ret == 0){
-					if((ret = tnet_sockfd_recvfrom(fd, data, (len - read), 0, (struct sockaddr *)&remote_addr)) < 0){
-						TSK_FREE(data);
-                        
+					if((ret = tnet_sockfd_recvfrom(fd, recvfrom_buff_ptr, recvfrom_buff_size, 0, (struct sockaddr *)&remote_addr)) < 0){                        
                         // "EAGAIN" means no data to read
                         // we must trust "EAGAIN" instead of "read" because pending data could be removed by the system
                         if(tnet_geterrno() == TNET_ERROR_EAGAIN){
@@ -1351,7 +1356,7 @@ start_conneck:
 					read += ret;
 					
 					// recv() STUN message (request / response)
-					ret = tnet_ice_ctx_recv_stun_message(self, data, (tsk_size_t)ret, fd, &remote_addr, &role_conflict);
+					ret = tnet_ice_ctx_recv_stun_message(self, recvfrom_buff_ptr, (tsk_size_t)ret, fd, &remote_addr, &role_conflict);
 					if(ret == 0 && role_conflict){
 						// A change in roles will require to recompute pair priorities
 						restart_conneck = tsk_true;
@@ -1359,7 +1364,6 @@ start_conneck:
 					}
 				}
 			}
-			TSK_FREE(data);
 		}
 
 		// check whether we need to re-start connection checking
@@ -1392,6 +1396,8 @@ bail:
 			_tnet_ice_ctx_fsm_act_async(self, _fsm_action_Failure);
 		}
 	}
+
+	TSK_FREE(recvfrom_buff_ptr);
 
 	return ret;
 }
