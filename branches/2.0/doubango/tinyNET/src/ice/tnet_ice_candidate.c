@@ -308,7 +308,9 @@ const char* tnet_ice_candidate_tostring(tnet_ice_candidate_t* self)
 		case tnet_ice_cand_type_prflx:
 		case tnet_ice_cand_type_relay:
 			{
-				tsk_strcat_2(&self->tostring, " raddr %s rport %d", self->socket->ip, self->socket->port);
+				if(self->socket){ // when called from the browser(IE, Safari, Opera or Firefox) webrtc4all
+					tsk_strcat_2(&self->tostring, " raddr %s rport %d", self->socket->ip, self->socket->port);
+				}
 				break;
 			}
 	}
