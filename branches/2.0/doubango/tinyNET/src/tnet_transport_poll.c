@@ -71,11 +71,11 @@ typedef struct transport_context_s
 transport_context_t;
 
 static transport_socket_xt* getSocket(transport_context_t *context, tnet_fd_t fd);
-static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client);
+static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client, tnet_tls_socket_handle_t* tlsHandle);
 static int removeSocket(int index, transport_context_t *context);
 
 
-int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient)
+int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient, tnet_tls_socket_handle_t* tlsHandle)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t* context;
@@ -96,7 +96,7 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 		transport->tls.enabled = 1;
 	}
 	
-	if((ret = addSocket(fd, type, transport, take_ownership, isClient))){
+	if((ret = addSocket(fd, type, transport, take_ownership, isClient, tlsHandle))){
 		TSK_DEBUG_ERROR("Failed to add new Socket.");
 		return ret;
 	}
@@ -295,7 +295,7 @@ static transport_socket_xt* getSocket(transport_context_t *context, tnet_fd_t fd
 }
 
 /*== Add new socket ==*/
-int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client)
+int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client, tnet_tls_socket_handle_t* tlsHandle)
 {
 	transport_context_t *context = transport?transport->context:0;
 	if(context){
@@ -304,10 +304,15 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 		sock->type = type;
 		sock->owner = take_ownership;
 
-		if(!sock->tlshandle && (TNET_SOCKET_TYPE_IS_TLS(sock->type) || TNET_SOCKET_TYPE_IS_WSS(sock->type)) && transport->tls.enabled){
+		if((TNET_SOCKET_TYPE_IS_TLS(sock->type) || TNET_SOCKET_TYPE_IS_WSS(sock->type)) && transport->tls.enabled){
+			if(tlsHandle){
+				sock->tlshandle = tsk_object_ref(tlsHandle);
+			}
+			else{
 #if HAVE_OPENSSL
-			sock->tlshandle = tnet_tls_socket_create(sock->fd, is_client ? transport->tls.ctx_client : transport->tls.ctx_server);       
+				sock->tlshandle = tnet_tls_socket_create(sock->fd, is_client ? transport->tls.ctx_client : transport->tls.ctx_server);       
 #endif
+			}
 		}
 		
 		tsk_safeobj_lock(context);
@@ -480,7 +485,7 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	
 	/* add R side */
 	TSK_DEBUG_INFO("pipeR fd=%d", context->pipeR);
-	if((ret = addSocket(context->pipeR, transport->master->type, transport, tsk_true, tsk_false))){
+	if((ret = addSocket(context->pipeR, transport->master->type, transport, tsk_true, tsk_false, tsk_null))){
 		goto bail;
 	}
 	
@@ -488,7 +493,7 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	TSK_DEBUG_INFO("master fd=%d", transport->master->fd);
 	// don't take ownership: will be closed by the dctor()
 	// otherwise will be closed twice: dctor() and removeSocket()
-	if((ret = addSocket(transport->master->fd, transport->master->type, transport, tsk_false, tsk_false))){
+	if((ret = addSocket(transport->master->fd, transport->master->type, transport, tsk_false, tsk_false, tsk_null))){
 		TSK_DEBUG_ERROR("Failed to add master socket");
 		goto bail;
 	}
@@ -604,12 +609,17 @@ void *tnet_transport_mainthread(void *param)
             
             /*================== TNET_POLLHUP ==================*/
 			if(context->ufds[i].revents & (TNET_POLLHUP)){
-                fd = active_socket->fd;
-				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLHUP(%d)", transport->description, fd);
+				if(context->ufds[i].revents & TNET_POLLOUT){
+					TSK_DEBUG_INFO("POLLOUT and POLLHUP are exclusive");
+				}
+				else{
+					fd = active_socket->fd;
+					TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLHUP(%d)", transport->description, fd);
 
-                tnet_transport_remove_socket(transport, &active_socket->fd);
-				TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, fd);
-                continue;
+					tnet_transport_remove_socket(transport, &active_socket->fd);
+					TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, fd);
+					continue;
+				}
 			}
             
 			/*================== TNET_POLLERR ==================*/
@@ -673,7 +683,7 @@ void *tnet_transport_mainthread(void *param)
                     if (listening){
 						if((fd = accept(active_socket->fd, tsk_null, tsk_null)) != TNET_INVALID_SOCKET){
 							TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_ACCEPT(fd=%d)", transport->description, fd);
-							addSocket(fd, transport->master->type, transport, tsk_true, tsk_false);
+							addSocket(fd, transport->master->type, transport, tsk_true, tsk_false, tsk_null);
 							TSK_RUNNABLE_ENQUEUE(transport, event_accepted, transport->callback_data, fd);
 							if(active_socket->tlshandle){
 								transport_socket_xt* tls_socket;
@@ -760,15 +770,18 @@ void *tnet_transport_mainthread(void *param)
 					// buffer = tsk_realloc(buffer, len);
 				}
 					
-				e = tnet_transport_event_create(event_data, transport->callback_data, active_socket->fd);
-				e->data = buffer;
-				e->size = len;
-				e->remote_addr = remote_addr;
+				if(len > 0){
+					e = tnet_transport_event_create(event_data, transport->callback_data, active_socket->fd);
+					e->data = buffer, buffer = tsk_null;
+					e->size = len;
+					e->remote_addr = remote_addr;
 				
-				TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(transport), e);
+					TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(transport), e);
+				}
+				TSK_FREE(buffer);
 
 TNET_POLLIN_DONE:
-                context->ufds[i].revents &= ~TNET_POLLIN;
+                /*context->ufds[i].revents &= ~TNET_POLLIN*/;
 			}
 
 
@@ -779,7 +792,9 @@ TNET_POLLIN_DONE:
 					active_socket->connected = tsk_true;
 					TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, active_socket->fd);
 				}
-				context->ufds[i].events &= ~TNET_POLLOUT;
+				//else{
+					context->ufds[i].events &= ~TNET_POLLOUT;
+				//}
 			}
 
 

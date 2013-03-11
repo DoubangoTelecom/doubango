@@ -101,7 +101,7 @@ static int tdav_speex_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, 
 	
 	jb_packet.data = data;
 	jb_packet.len = data_size;
-	jb_packet.span = (data_size*500)/jitterbuffer->rate;
+	jb_packet.span = (data_size * 500)/jitterbuffer->rate;
 	jb_packet.timestamp = (rtp_hdr->seq_num * jb_packet.span);
 	
 	jb_packet.sequence = rtp_hdr->seq_num;

@@ -143,7 +143,7 @@ int tsip_transport_remove_stream_peer_by_local_fd(tsip_transport_t *self, tnet_f
 #define tsip_transport_set_callback(transport, callback, callback_data)					(transport ? tnet_transport_set_callback(transport->net_transport, callback, callback_data) : -1)
 
 #define tsip_transport_have_socket(transport, fd)										(transport ? tnet_transport_have_socket(transport->net_transport, fd) : 0)
-#define tsip_transport_add_socket(transport, fd, type, take_ownership, isClient)		(transport ? tnet_transport_add_socket(transport->net_transport, fd, type, take_ownership, isClient) : -1)
+#define tsip_transport_add_socket(transport, fd, type, take_ownership, isClient)		(transport ? tnet_transport_add_socket(transport->net_transport, fd, type, take_ownership, isClient, tsk_null) : -1)
 #define tsip_transport_remove_socket(transport, fd)										(transport ? tnet_transport_remove_socket(transport->net_transport, fd) : -1)
 
 //#define tsip_transport_get_socket_type(transport)										(transport ? tnet_transport_get_socket_type(transport->net_transport) : tnet_socket_type_invalid)
