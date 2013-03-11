@@ -270,7 +270,8 @@
         </div>
 
         <hr />
-        <g:plus href="https://plus.google.com/107177632824809995368" rel="author"></g:plus>     
+        <g:plus href="https://plus.google.com/107177632824809995368" rel="author"></g:plus> <br />
+        <a href="https://twitter.com/DoubangoTelecom" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @DoubangoTelecom</a>  
         <hr />
         <footer>
             <p>
@@ -307,18 +308,25 @@
             var pageTracker = _gat._getTracker("UA-6868621-8");
             pageTracker._trackPageview();
         } catch (err) { }
-    </script>    
+    </script>
+
+    <!-- click-to-call widget -->
+    <script type='text/javascript' src='http://click2dial.org/c2c-api.js'></script>
+    <script type='text/javascript'>
+	    c2c.from = 'ZGlvcG1hbWFkb3VAZG91YmFuZ28ub3Jn';
+	    c2c.text = 'call us &raquo;';
+	    c2c.cls = 'btn btn-large btn-success';
+        c2c.glass = true;
+	    c2c.config = {
+    		    http_service_url: null,
+    		    websocket_proxy_url: null,
+    		    sip_outbound_proxy_url: null
+	    };
+	    c2c.init();
+    </script>
     
     <!-- TWITTER -->
-    <script src='http://www.go2web20.net/twitterfollowbadge/1.0/badge.js' type='text/javascript'></script><script type='text/javascript' charset='utf-8'>
-        <!--
-        tfb.account = 'DoubangoTelecom';
-        tfb.label = 'follow-us';
-        tfb.color = '#35ccff';
-        tfb.side = 'r';
-        tfb.top = 136;
-        tfb.showbadge();
-        -->
-    </script>
+    <script type='text/javascript'>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
 </body>
 </html>

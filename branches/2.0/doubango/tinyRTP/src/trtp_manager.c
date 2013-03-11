@@ -1245,7 +1245,7 @@ int trtp_manager_start(trtp_manager_t* self)
 
 		/* add RTCP socket to the transport */
 		if(self->rtcp.local_socket){
-			if(ret == 0 && (ret = tnet_transport_add_socket(self->transport, self->rtcp.local_socket->fd, self->rtcp.local_socket->type, tsk_false, tsk_true/* only Meaningful for tls*/))){
+			if(ret == 0 && (ret = tnet_transport_add_socket(self->transport, self->rtcp.local_socket->fd, self->rtcp.local_socket->type, tsk_false, tsk_true/* only Meaningful for tls*/, tsk_null))){
 				TSK_DEBUG_ERROR("Failed to add RTCP socket");
 				/* do not exit */
 			}

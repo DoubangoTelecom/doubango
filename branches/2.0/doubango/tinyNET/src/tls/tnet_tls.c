@@ -242,6 +242,9 @@ int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void** data, tsk_size_t
 			if(ret == SSL_ERROR_WANT_WRITE || ret == SSL_ERROR_WANT_READ){
 				ret = 0;
 			}
+			else{
+				TSK_DEBUG_ERROR("SSL_read failed [%d, %s]", ret, ERR_error_string(ERR_get_error(), tsk_null));
+			}
 			*size = 0;
 		}
 		else{
