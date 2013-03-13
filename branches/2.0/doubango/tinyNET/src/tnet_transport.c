@@ -732,9 +732,9 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 		goto bail;
 	}
 	else{
+        static const tsk_bool_t __isClient = tsk_true;
+        static const tsk_bool_t __takeOwnership = tsk_true;
 		if(TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)){
-			static const tsk_bool_t __isClient = tsk_true;
-			static const tsk_bool_t __takeOwnership = tsk_true;
 #if HAVE_OPENSSL
 			tls_handle = tnet_tls_socket_create(fd, transport->tls.ctx_client);     
 			if((status = tnet_tls_socket_connect(tls_handle))){
@@ -742,14 +742,14 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 				goto bail;
 			}
 #endif
-			/* Add the socket */
-			// socket must be added after connect() otherwise many Linux systems when return POLLHUP as the fd is not active yet
-			if((status = tnet_transport_add_socket(handle, fd, type, __takeOwnership, __isClient, tls_handle))){
-				TNET_PRINT_LAST_ERROR("Failed to add new socket");
-				tnet_sockfd_close(&fd);
-				goto bail;
-			}
 		}
+        /* Add the socket */
+        // socket must be added after connect() otherwise many Linux systems when return POLLHUP as the fd is not active yet
+        if((status = tnet_transport_add_socket(handle, fd, type, __takeOwnership, __isClient, tls_handle))){
+            TNET_PRINT_LAST_ERROR("Failed to add new socket");
+            tnet_sockfd_close(&fd);
+            goto bail;
+        }
 	}
 	
 bail:
