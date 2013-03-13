@@ -139,7 +139,7 @@ cd ffmpeg
 \
 --enable-pic --enable-memalign-hack \
 --enable-shared --disable-static \
---disable-network --disable-protocols --disable-pthreads \
+--disable-network --disable-protocols \
 --disable-devices --disable-filters --disable-bsfs --disable-muxers --disable-demuxers --disable-parsers --disable-hwaccels \
 --disable-ffmpeg --disable-ffplay --disable-ffserver \
 --disable-encoders --disable-decoders \
