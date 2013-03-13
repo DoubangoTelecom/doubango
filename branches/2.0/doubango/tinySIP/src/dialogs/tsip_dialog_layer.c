@@ -474,7 +474,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, tsip_
 				if(!TNET_SOCKET_TYPE_IS_WS(message->src_net_type) && !TNET_SOCKET_TYPE_IS_WSS(message->src_net_type)){
 					const char* ws_src_ip = tsk_params_get_param_value(message->line.request.uri->params, "ws-src-ip");
 					const tnet_port_t ws_src_port = (tnet_port_t)tsk_params_get_param_value_as_int(message->line.request.uri->params, "ws-src-port");
-					if(!tsip_transport_layer_have_stream_peer_with_remote_address(self->stack->layer_transport, ws_src_ip, ws_src_port)){
+					if(!tsip_transport_layer_have_stream_peer_with_remote_ip(self->stack->layer_transport, ws_src_ip, ws_src_port)){
 						if(!TSIP_REQUEST_IS_ACK(message)){ // ACK do not expect response
 #if 0 // code commented because when using mjserver, rejecting the forked INVITE terminate all dialogs: have to check if it's conform to RFC 3261 or not
 							tsip_response_t* response = tsip_response_new(488, "WebSocket Peer not connected", message);
