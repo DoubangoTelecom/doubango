@@ -250,11 +250,27 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 		return 0;
 	}
 
+	// do nothing if session is held
+	// when the session is held the end user will get feedback he also has possibilities to put the consumer and producer on pause
 	if(TMEDIA_SESSION(base)->lo_held){
 		return 0;
 	}
 
-	if(base->rtp_manager && video->encoder.codec){
+	// get best negotiated codec if not already done
+	// the encoder codec could be null when session is renegotiated without re-starting (e.g. hold/resume)
+	if(!video->encoder.codec){
+		const tmedia_codec_t* codec;
+		tsk_safeobj_lock(base);
+		if(!(codec = tdav_session_av_get_best_neg_codec(base))){
+			TSK_DEBUG_ERROR("No codec matched");
+			tsk_safeobj_unlock(base);
+			return -2;
+		}
+		video->encoder.codec = tsk_object_ref(TSK_OBJECT(codec));
+		tsk_safeobj_unlock(base);
+	}
+
+	if(base->rtp_manager){
 		//static int __rotation_counter = 0;
 		/* encode */
 		tsk_size_t out_size = 0;

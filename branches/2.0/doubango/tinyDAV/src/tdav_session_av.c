@@ -1843,7 +1843,7 @@ static int _sdp_tcaps_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_tcap_xt (*
 			break;
 		}
 		if(tag <= 0 || (tag + 1) > SDP_CAPS_COUNT_MAX){
-			TSK_DEBUG_WARN("Ignoring tag with value = %d");
+			TSK_DEBUG_WARN("Ignoring tag with value = %d", tag);
 			goto next;
 		}
 
