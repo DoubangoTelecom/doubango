@@ -1242,6 +1242,19 @@ int tnet_sockfd_leavegroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_
 }
 
 /**@ingroup tnet_utils_group
+* Performs DNS A/AAAA to convert the FQDN to IP address.
+*/
+int tnet_resolve(const char *fqdn, tnet_port_t port, tnet_socket_type_t type, tnet_ip_t* out_ip, tnet_port_t* out_port)
+{
+	struct sockaddr_storage addr;
+	int ret = tnet_sockaddr_init(fqdn, port, type, &addr);
+	if(ret == 0){
+		return tnet_get_sockip_n_port((const struct sockaddr *)&addr, out_ip, out_port);
+	}
+	return ret;
+}
+
+/**@ingroup tnet_utils_group
 * Converts human-readable text strings representing hostnames or IP addresses into a dynamically allocated linked list of struct addrinfo structures.
 */
 int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, enum tnet_socket_type_e type, struct sockaddr_storage *ai_addr, int *ai_family, int *ai_socktype, int *ai_protocol)
@@ -1575,11 +1588,11 @@ int tnet_sockfd_connectto(tnet_fd_t fd, const struct sockaddr_storage *to)
 	if((status = WSAConnect(fd, (LPSOCKADDR)to, sizeof(*to), NULL, NULL, NULL, NULL)) == SOCKET_ERROR){
 		status = WSAGetLastError();
 		if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_ISCONN || status == TNET_ERROR_INTR || status == TNET_ERROR_INPROGRESS){
-			TSK_DEBUG_WARN("TNET_ERROR_WOULDBLOCK/TNET_ERROR_ISCONN/TNET_ERROR_INTR/TNET_ERROR_INPROGRESS  ==> use tnet_sockfd_waitUntilWritable.");
+			TSK_DEBUG_WARN("TNET_ERROR_WOULDBLOCK/TNET_ERROR_ISCONN/TNET_ERROR_INTR/TNET_ERROR_INPROGRESS  -> you should use tnet_sockfd_waitUntilWritable() before trying to send data");
 			status = 0;
 		}
 		else{
-			TNET_PRINT_LAST_ERROR("WSAConnect have failed.");
+			TNET_PRINT_LAST_ERROR("WSAConnect have failed");
 		}
 	}
 

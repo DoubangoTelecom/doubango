@@ -71,13 +71,20 @@ typedef struct tsip_transport_stream_peer_s
 {
 	TSK_DECLARE_OBJECT;
 
-	tnet_fd_t local_fd;  // not owner
+	tnet_fd_t local_fd;  // not owner: do not close
+	enum tnet_socket_type_e type;
+	tsk_bool_t connected;
+	
+	tsk_buffer_t *rcv_buff_stream;
+	tsk_buffer_t *snd_buff_stream;
 
-	tsk_buffer_t *buff_stream;
-	void* ws_rcv_buffer;
-	uint64_t ws_rcv_buffer_size;
-	void* ws_snd_buffer;
-	uint64_t ws_snd_buffer_size;
+	// temp buffers used to send/recv websocket data before (un)masking
+	struct{
+		void* rcv_buffer;
+		uint64_t rcv_buffer_size;
+		void* snd_buffer;
+		uint64_t snd_buffer_size;
+	} ws;
 
 	tnet_ip_t remote_ip;
 	tnet_port_t remote_port;
@@ -118,13 +125,15 @@ int tsip_transport_deinit(tsip_transport_t* self);
 
 int tsip_transport_tls_set_certs(tsip_transport_t *self, const char* ca, const char* pbk, const char* pvk);
 tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort);
-tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const struct sockaddr * to, const void* data, tsk_size_t size);
+tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const char* dst_host, tnet_port_t dst_port, const void* data, tsk_size_t size);
 tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t local_fd, const void* data, tsk_size_t size);
 tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
-int tsip_transport_add_stream_peer(tsip_transport_t *self, tnet_fd_t local_fd);
+
+int tsip_transport_add_stream_peer_2(tsip_transport_t *self, tnet_fd_t local_fd, enum tnet_socket_type_e type, tsk_bool_t connected, const char* remote_host, tnet_port_t remote_port);
+#define tsip_transport_add_stream_peer(self, local_fd, type, connected) tsip_transport_add_stream_peer_2((self), (local_fd), (type), (connected), tsk_null, 0)
 tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_local_fd(tsip_transport_t *self, tnet_fd_t local_fd);
-tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_remote_address(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port);
-tsk_bool_t tsip_transport_have_stream_peer_with_remote_address(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port);
+tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_remote_ip(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port, enum tnet_socket_type_e type);
+tsk_bool_t tsip_transport_have_stream_peer_with_remote_ip(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port, enum tnet_socket_type_e type);
 tsk_bool_t tsip_transport_have_stream_peer_with_local_fd(tsip_transport_t *self, tnet_fd_t local_fd);
 int tsip_transport_remove_stream_peer_by_local_fd(tsip_transport_t *self, tnet_fd_t local_fd);
 

@@ -268,25 +268,77 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 	return ret;
 }
 
-tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const struct sockaddr* to, const void* data, tsk_size_t size)
+// "udp", "tcp" or "tls"
+tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const char* dst_host, tnet_port_t dst_port, const void* data, tsk_size_t size)
 {
 	tsk_size_t ret = 0;
-	const struct sockaddr* dest = to? to : (const struct sockaddr *)&self->pcscf_addr;
 
-	//--TSK_DEBUG_INFO("\n\nSEND SIP Message:%s\n\n\n", (const char*)data);
+	TSK_DEBUG_INFO("\n\nSEND: %.*s\n\n", size, (const char*)data);
 
-	if(TNET_SOCKET_TYPE_IS_DGRAM(self->type)){
-		if(!(ret = tnet_transport_sendto(self->net_transport, self->connectedFD, dest, data, size))){
-			TSK_DEBUG_WARN("Send() returns zero");
+	if(TNET_SOCKET_TYPE_IS_DGRAM(self->type)){// "udp" or "dtls"
+		const struct sockaddr_storage* to = &self->pcscf_addr;
+		struct sockaddr_storage dst_addr; // must be local scope
+		if(!tsk_strnullORempty(dst_host) && dst_port){
+			if(tnet_sockaddr_init(dst_host, dst_port, self->type, &dst_addr) == 0){
+				to = &dst_addr;
+			}
+		}
+		if(!(ret = tnet_transport_sendto(self->net_transport, self->connectedFD, (const struct sockaddr*)to, data, size))){
+			TSK_DEBUG_ERROR("Send(%u) returns zero", size);
 		}
 	}
-	else{
-		ret = tnet_transport_send(self->net_transport, self->connectedFD, data, size);
+	else{// "sctp", "tcp" or "tls"
+		tsip_transport_stream_peer_t* peer = tsk_null;
+		tnet_ip_t dst_ip;
+
+		if(tsk_strnullORempty(dst_host) || !dst_port){
+			if(tnet_get_sockip_n_port((const struct sockaddr *)&self->pcscf_addr, &dst_ip, &dst_port) != 0){
+				TSK_DEBUG_ERROR("Failed to get Proxy-CSCF IP address and port");
+				return 0;
+			}
+		}
+		else{
+			// get IP address and port
+			// we use ip/port instead of fqdn because this what "tsip_transport_add_stream_peer()" requires it
+			if(tnet_resolve(dst_host, dst_port, self->type, &dst_ip, &dst_port) != 0){
+				TSK_DEBUG_ERROR("Failed to resolve(%s/%d)", dst_host, dst_port);
+				return 0;
+			}
+		}
+		
+		if(!(peer = tsip_transport_find_stream_peer_by_remote_ip(TSIP_TRANSPORT(self), dst_ip, dst_port, self->type))){
+			tnet_fd_t fd;
+			TSK_DEBUG_INFO("Cannot find peer with remote IP/Port=%s/%d, connecting to the destination...", dst_ip, dst_port);
+			// connect to the destination
+			if((fd = tsip_transport_connectto_2(TSIP_TRANSPORT(self), dst_ip, dst_port)) == TNET_INVALID_FD){
+				TSK_DEBUG_ERROR("Failed to connect to %s/%d", dst_ip, dst_port);
+				return 0;
+			}
+			if(tsip_transport_add_stream_peer_2(TSIP_TRANSPORT(self), fd, self->type, tsk_false, dst_ip, dst_port) != 0){
+				TSK_DEBUG_ERROR("Failed to add stream peer local fd = %d, remote IP/Port=%s/%d", fd, dst_ip, dst_port);
+				return 0;
+			}
+			// retrieve the peer
+			if(!(peer = tsip_transport_find_stream_peer_by_local_fd(TSIP_TRANSPORT(self), fd))){
+				TSK_DEBUG_INFO("Cannot find peer with remote IP/Port=%s/%d. Cancel data sending", dst_ip, dst_port);
+				return 0;
+			}
+		}
+		if(peer->connected){
+			ret = tnet_transport_send(self->net_transport, peer->local_fd, data, size);
+		}
+		else{
+			TSK_DEBUG_INFO("Data send requested but peer not connected yet...saving data");
+			tsk_buffer_append(peer->snd_buff_stream, data, size);
+			ret = 0; // nothing sent
+		}
+		TSK_OBJECT_SAFE_FREE(peer);
 	}
     
 	return ret;
 }
 
+// "ws" or "wss"
 tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t local_fd, const void* data, tsk_size_t size)
 {
 	/*static const uint8_t __ws_first_byte = 0x82;*/
@@ -308,16 +360,16 @@ tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t lo
 	else if(lsize > 0xFFFF){
 		data_size += 8;
 	}
-	if(peer->ws_snd_buffer_size < data_size){
-		if(!(peer->ws_snd_buffer = tsk_realloc(peer->ws_snd_buffer, (tsk_size_t)data_size))){
+	if(peer->ws.snd_buffer_size < data_size){
+		if(!(peer->ws.snd_buffer = tsk_realloc(peer->ws.snd_buffer, (tsk_size_t)data_size))){
 			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %llu", data_size);
-			peer->ws_snd_buffer_size = 0;
+			peer->ws.snd_buffer_size = 0;
 			TSK_OBJECT_SAFE_FREE(peer);
 			return 0;
 		}
-		peer->ws_snd_buffer_size = data_size;
+		peer->ws.snd_buffer_size = data_size;
 	}
-	pws_snd_buffer = (uint8_t*)peer->ws_snd_buffer;
+	pws_snd_buffer = (uint8_t*)peer->ws.snd_buffer;
 
 	pws_snd_buffer[0] = 0x82;
 	if(lsize <= 0x7D){
@@ -345,7 +397,7 @@ tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t lo
 	
 	memcpy(pws_snd_buffer, pdata, (size_t)lsize);
 
-	ret = tnet_transport_send(self->net_transport, local_fd, peer->ws_snd_buffer, (tsk_size_t)data_size);
+	ret = tnet_transport_send(self->net_transport, local_fd, peer->ws.snd_buffer, (tsk_size_t)data_size);
 
 	TSK_OBJECT_SAFE_FREE(peer);
 
@@ -435,7 +487,7 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 			if(TNET_SOCKET_TYPE_IS_WS(self->type) || TNET_SOCKET_TYPE_IS_WSS(self->type)){
 				//if(!TNET_SOCKET_TYPE_IS_WS(msg->net_type) && !TNET_SOCKET_TYPE_IS_WSS(msg->net_type)){
 					// message not received over WS/WS tranport but have to be sent over WS/WS
-					tsip_transport_stream_peer_t* peer = tsip_transport_find_stream_peer_by_remote_address(TSIP_TRANSPORT(self), destIP, destPort);
+					tsip_transport_stream_peer_t* peer = tsip_transport_find_stream_peer_by_remote_ip(TSIP_TRANSPORT(self), destIP, destPort, self->type);
 					if(peer){
 						ret = tsip_transport_send_raw_ws(self, peer->local_fd, buffer->data, buffer->size);
 						TSK_OBJECT_SAFE_FREE(peer);
@@ -457,14 +509,7 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 				}
 			}
 			else{
-				const struct sockaddr_storage* to = tsk_null;
-				struct sockaddr_storage destAddr;
-				if(destIP && destPort){
-					if(tnet_sockaddr_init(destIP, destPort, self->type, &destAddr) == 0){
-						to = &destAddr;
-					}
-				}
-				ret = tsip_transport_send_raw(self, (const struct sockaddr*)to, buffer->data, buffer->size);
+				ret = tsip_transport_send_raw(self, destIP, destPort, buffer->data, buffer->size);
 			}
 
 //bail:
@@ -507,38 +552,58 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, tsk_bool_t lr)
 	return tsk_null;
 }
 
-int tsip_transport_add_stream_peer(tsip_transport_t *self, tnet_fd_t local_fd)
+// remote ip should not be FQDN
+int tsip_transport_add_stream_peer_2(tsip_transport_t *self, tnet_fd_t local_fd, enum tnet_socket_type_e type, tsk_bool_t connected, const char* remote_host, tnet_port_t remote_port)
 {
-	tsip_transport_stream_peer_t* peer = tsk_null;
+	tsip_transport_stream_peer_t* peer;
+	tnet_ip_t remote_ip;
+	int ret;
 
 	if(!self || local_fd < 0){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+
+	tsk_list_lock(self->stream_peers);
+
 	if(tsip_transport_have_stream_peer_with_local_fd(self, local_fd)){
 		// could happen if the closed socket haven't raise "close event" yet and new own added : Windows only
 		tsip_transport_remove_stream_peer_by_local_fd(self, local_fd);
 	}
 
+	if(tsk_strnullORempty(remote_host) || !remote_port){
+		if(tnet_get_ip_n_port(local_fd, tsk_false/*remote*/, &remote_ip, &remote_port) != 0){
+			TSK_DEBUG_ERROR("Failed to get remote peer ip and address for local fd = %d", local_fd);
+			ret = -2;
+			goto bail;
+		}
+		remote_host = (const char*)remote_ip;
+	}
+	else if((ret = tnet_resolve(remote_host, remote_port, type, &remote_ip, &remote_port))){
+		TSK_DEBUG_ERROR("Failed to resolve(%s/%d)", remote_host, remote_port);
+		ret = -3;
+		goto bail;
+	}
+
 	if(!(peer = tsk_object_new(tsip_transport_stream_peer_def_t))){
 		TSK_DEBUG_ERROR("Failed to create network stream peer");
-		return -1;
+		ret = -4;
+		goto bail;
 	}
 
 	peer->local_fd = local_fd;
-
-	// remote ip and port only required when running in server mode to simulate SIP outbound
-	if(TSIP_STACK_MODE_IS_SERVER(self->stack)){
-		if(tnet_get_ip_n_port(local_fd, tsk_false/*remote*/, &peer->remote_ip, &peer->remote_port) != 0){
-			TSK_DEBUG_ERROR("Failed to get peer ip and address");
-		}
-	}
+	peer->type = type;
+	peer->connected = connected;
+	peer->remote_port = remote_port;
+	memcpy(peer->remote_ip, remote_ip, sizeof(remote_ip));
 	
 	tsk_list_lock(self->stream_peers);
 	tsk_list_push_back_data(self->stream_peers, (void**)&peer);
 	tsk_list_unlock(self->stream_peers);
 
+bail:
 	TSK_OBJECT_SAFE_FREE(peer);
+	tsk_list_unlock(self->stream_peers);
 	return 0;
 }
 
@@ -565,7 +630,7 @@ tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_local_fd(tsip_t
 }
 
 // up to the caller to release the returned object
-tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_remote_address(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port)
+tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_remote_ip(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port, enum tnet_socket_type_e type)
 {
 	tsip_transport_stream_peer_t* peer = tsk_null;
 	tsk_list_item_t* item;
@@ -577,7 +642,7 @@ tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_remote_address(
 
 	tsk_list_lock(self->stream_peers);
 	tsk_list_foreach(item, self->stream_peers){
-		if(((tsip_transport_stream_peer_t*)item->data)->remote_port == remote_port && tsk_striequals(((tsip_transport_stream_peer_t*)item->data)->remote_ip, remote_ip)){
+		if(((tsip_transport_stream_peer_t*)item->data)->type == type && ((tsip_transport_stream_peer_t*)item->data)->remote_port == remote_port && tsk_striequals(((tsip_transport_stream_peer_t*)item->data)->remote_ip, remote_ip)){
 			peer = tsk_object_ref(item->data);
 			break;
 		}
@@ -586,10 +651,10 @@ tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_remote_address(
 	return peer;
 }
 
-tsk_bool_t tsip_transport_have_stream_peer_with_remote_address(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port)
+tsk_bool_t tsip_transport_have_stream_peer_with_remote_ip(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port, enum tnet_socket_type_e type)
 {
-	if(self && remote_ip){
-		tsip_transport_stream_peer_t* peer = tsip_transport_find_stream_peer_by_remote_address(self, remote_ip, remote_port);
+	if(self && !tsk_strnullORempty(remote_ip) && remote_port){
+		tsip_transport_stream_peer_t* peer = tsip_transport_find_stream_peer_by_remote_ip(self, remote_ip, remote_port, type);
 		if(peer){
 			TSK_OBJECT_SAFE_FREE(peer);
 			return tsk_true;
@@ -758,7 +823,8 @@ static tsk_object_t* tsip_transport_stream_peer_ctor(tsk_object_t * self, va_lis
 {
 	tsip_transport_stream_peer_t *peer = self;
 	if(peer){
-		peer->buff_stream = tsk_buffer_create_null();
+		peer->rcv_buff_stream = tsk_buffer_create_null();
+		peer->snd_buff_stream = tsk_buffer_create_null();
 	}
 	return self;
 }
@@ -767,11 +833,13 @@ static tsk_object_t* tsip_transport_stream_peer_dtor(tsk_object_t * self)
 { 
 	tsip_transport_stream_peer_t *peer = self;
 	if(peer){
-		TSK_OBJECT_SAFE_FREE(peer->buff_stream);
-		TSK_SAFE_FREE(peer->ws_rcv_buffer);
-		peer->ws_rcv_buffer_size = 0;
-		TSK_SAFE_FREE(peer->ws_snd_buffer);
-		peer->ws_snd_buffer_size = 0;
+		TSK_OBJECT_SAFE_FREE(peer->rcv_buff_stream);
+		TSK_OBJECT_SAFE_FREE(peer->snd_buff_stream);
+		
+		TSK_SAFE_FREE(peer->ws.rcv_buffer);
+		peer->ws.rcv_buffer_size = 0;
+		TSK_SAFE_FREE(peer->ws.snd_buffer);
+		peer->ws.snd_buffer_size = 0;
 	}
 	return self;
 }

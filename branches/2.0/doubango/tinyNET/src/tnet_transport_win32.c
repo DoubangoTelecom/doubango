@@ -380,6 +380,9 @@ static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *tr
 		context->sockets[context->count] = sock;
 		
 		context->count++;
+
+		TSK_DEBUG_INFO("Transport sockets count = %u", context->count);
+
 		tsk_safeobj_unlock(context);
 
 		return 0;
@@ -423,6 +426,7 @@ static int removeSocket(int index, transport_context_t *context)
 		context->events[context->count-1] = 0;
 
 		context->count--;
+		TSK_DEBUG_INFO("Transport sockets count = %u", context->count);
 	}
 
 	tsk_safeobj_unlock(context);

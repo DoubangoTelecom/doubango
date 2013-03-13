@@ -132,6 +132,8 @@ TINYNET_API int tnet_sockfd_waitUntil(tnet_fd_t fd, long timeout, tsk_bool_t wri
 TINYNET_API int tnet_sockfd_joingroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_index);
 TINYNET_API int tnet_sockfd_leavegroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_index);
 
+TINYNET_API int tnet_resolve(const char *fqdn, tnet_port_t port, tnet_socket_type_t type, tnet_ip_t* out_ip, tnet_port_t* out_port);
+
 TINYNET_API int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, tnet_socket_type_t type, struct sockaddr_storage *ai_addr, int *ai_family, int *ai_socktype, int *ai_protocol);
 TINYNET_API int tnet_sockaddr_init(const char *host, tnet_port_t port, tnet_socket_type_t type, struct sockaddr_storage *addr);
 TINYNET_API int tnet_sockfd_init(const char *host, tnet_port_t port, tnet_socket_type_t type, tnet_fd_t *fd);
