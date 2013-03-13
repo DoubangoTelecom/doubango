@@ -650,11 +650,9 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 				else{ /* DNS NAPTR + SRV*/
 					char* hostname = tsk_null;
 					tnet_port_t port = 0;
-
-					if(!(ret = tnet_dns_query_naptr_srv(stack->dns_ctx, stack->network.realm->host, 
-						TNET_SOCKET_TYPE_IS_DGRAM(tx_values[t_idx]) ? "SIP+D2U" :
-						(TNET_SOCKET_TYPE_IS_TLS(tx_values[t_idx]) ? "SIPS+D2T" : "SIP+D2T"),
-						&hostname, &port))){
+					const char* service = TNET_SOCKET_TYPE_IS_DGRAM(tx_values[t_idx]) ? "SIP+D2U" : (TNET_SOCKET_TYPE_IS_TLS(tx_values[t_idx]) ? "SIPS+D2T" : "SIP+D2T");
+					if((ret = tnet_dns_query_naptr_srv(stack->dns_ctx, stack->network.realm->host, service, &hostname, &port)) == 0){
+						TSK_DEBUG_INFO("DNS SRV(NAPTR(%s, %s) = [%s / %d]", stack->network.realm->host, service, hostname, port);
 						tsk_strupdate(&stack->network.proxy_cscf[t_idx], hostname);
 						if(!stack->network.proxy_cscf_port[t_idx] || stack->network.proxy_cscf_port[t_idx]==5060){ /* Only if the Proxy-CSCF port is missing or default */
 							stack->network.proxy_cscf_port[t_idx] = port;

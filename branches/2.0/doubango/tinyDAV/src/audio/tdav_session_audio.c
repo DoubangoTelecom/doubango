@@ -163,7 +163,21 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		return 0;
 	}
 	
-	if(audio->is_started && base->rtp_manager && base->rtp_manager->is_started && audio->encoder.codec){
+	// get best negotiated codec if not already done
+	// the encoder codec could be null when session is renegotiated without re-starting (e.g. hold/resume)
+	if(!audio->encoder.codec){
+		const tmedia_codec_t* codec;
+		tsk_safeobj_lock(base);
+		if(!(codec = tdav_session_av_get_best_neg_codec(base))){
+			TSK_DEBUG_ERROR("No codec matched");
+			tsk_safeobj_unlock(base);
+			return -2;
+		}
+		audio->encoder.codec = tsk_object_ref(TSK_OBJECT(codec));
+		tsk_safeobj_unlock(base);
+	}
+
+	if(audio->is_started && base->rtp_manager && base->rtp_manager->is_started){
 		/* encode */
 		tsk_size_t out_size = 0;
 

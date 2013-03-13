@@ -1139,7 +1139,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 			}
 			
 			// hold/resume
-			is_ro_hold_resume_changed |= (tsdp_header_M_is_held(M0, tsk_false) != tsdp_header_M_is_held(M1, tsk_false));
+			is_ro_hold_resume_changed |= !tsk_striequals(tsdp_header_M_get_holdresume_att(M0), tsdp_header_M_get_holdresume_att(M1));
 			// media lines
 			if(!is_ro_media_lines_changed){
 				is_ro_media_lines_changed

@@ -693,6 +693,23 @@ int tsdp_header_M_set_holdresume_att(tsdp_header_M_t* self, tsk_bool_t lo_held, 
 	return 0;
 }
 
+const char* tsdp_header_M_get_holdresume_att(const tsdp_header_M_t* self)
+{
+	static const char* hold_resume_atts[4] = {"sendrecv"/*first because most likely to be present*/, "recvonly", "sendonly", "inactive"};
+	static tsk_size_t hold_resume_atts_count = sizeof(hold_resume_atts)/sizeof(hold_resume_atts[0]);
+	tsk_size_t i;
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return hold_resume_atts[0];
+	}
+	for(i = 0; i < hold_resume_atts_count; ++i){
+		if(tsdp_header_M_findA(self, hold_resume_atts[i])){
+			return hold_resume_atts[i];
+		}
+	}
+	return hold_resume_atts[0];
+}
+
 tsk_bool_t tsdp_header_M_is_held(const tsdp_header_M_t* self, tsk_bool_t local)
 {
 	if(!self){
