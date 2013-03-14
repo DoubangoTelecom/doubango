@@ -173,6 +173,14 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 					TSK_OBJECT_SAFE_FREE(peer);
 				}
 				else{
+                    // on iOS (cfsocket implementation) opening the master stream raise "connected" callback which is not correct.
+                    // Ignoring the socket is not a problem as we'll get a callback event ("accepted") when a client connects to the master.
+                    // The master cannot raise "connected" even as it's already in "listening" state
+#if (__IPHONE_OS_VERSION_MIN_REQUIRED >= 40000)
+                    if(tnet_transport_get_master_fd(transport->net_transport) == e->local_fd){
+                        return 0;
+                    }
+#endif
 					return tsip_transport_add_stream_peer(transport, e->local_fd, transport->type, tsk_true);
 				}
 			}

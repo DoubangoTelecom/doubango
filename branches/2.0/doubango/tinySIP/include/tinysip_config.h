@@ -76,11 +76,17 @@
 #endif
 
 /* Whether to use SIP Compact headers (RFC 3261 - 7.3.3 Compact Form) */
-#define TSIP_COMPACT_HEADERS 0
+#if !defined(TSIP_COMPACT_HEADERS)
+#   define TSIP_COMPACT_HEADERS 0
+#endif
 
 #include <stdint.h>
 #ifdef __SYMBIAN32__
 #include <stdlib.h>
+#endif
+
+#if defined(__APPLE__)
+#   include <TargetConditionals.h>
 #endif
 
 #if HAVE_CONFIG_H
