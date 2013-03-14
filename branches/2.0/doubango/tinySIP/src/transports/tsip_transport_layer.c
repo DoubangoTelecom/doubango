@@ -685,20 +685,29 @@ static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_la
 			const tsip_header_Route_t *route_first;
 			if((route_first = (const tsip_header_Route_t*)tsip_message_get_header(msg, tsip_htype_Route)) && route_first->uri && !tsk_strnullORempty(route_first->uri->host)){
 				const char* transport_str = tsk_params_get_param_value(route_first->uri->params, "transport");
-				const tsip_header_Route_t *route_last = (const tsip_header_Route_t*)tsip_message_get_headerLast(msg, tsip_htype_Route);
+				const tsip_header_Route_t *route;
+				tnet_port_t local_port;
+				const char *local_ip;
+				int t_idx = -1, route_i = 0;
 				if(!tsk_strnullORempty(transport_str)){
-					int t_idx = tsip_transport_get_idx_by_name(transport_str);
+					t_idx = tsip_transport_get_idx_by_name(transport_str);
 					if(t_idx != -1){
 						destNetType = self->stack->network.transport_types[t_idx];
 					}
 				}
 				tsk_strupdate(destIP, route_first->uri->host);
 				*destPort = (route_first->uri->port ? route_first->uri->port : 5060);
-				if(route_last && route_last->uri){
-					const char *local_ip = self->stack->network.local_ip[self->stack->network.transport_idx_default];
-					tnet_port_t local_port = self->stack->network.local_port[self->stack->network.transport_idx_default];
-					if(tsk_params_have_param(route_last->uri->params, "sipml5-outbound") || (tsk_strequals(local_ip, route_last->uri->host) && local_port == route_last->uri->port)){
-						tsk_list_remove_item_by_data(msg->headers, route_last);
+
+				local_ip = self->stack->network.local_ip[t_idx == -1 ? self->stack->network.transport_idx_default : t_idx];
+				local_port = self->stack->network.local_port[t_idx == -1 ? self->stack->network.transport_idx_default : t_idx];
+clean_routes:
+				route_i = 0;
+				while((route = (const tsip_header_Route_t *)tsip_message_get_headerAt(msg, tsip_htype_Route, route_i++))){
+					if(route && route->uri){
+						if(tsk_params_have_param(route->uri->params, "sipml5-outbound") || (tsk_strequals(local_ip, route->uri->host) && local_port == route->uri->port)){
+							tsk_list_remove_item_by_data(msg->headers, route);
+							goto clean_routes;
+						}
 					}
 				}
 			}
