@@ -137,7 +137,7 @@ cd ffmpeg
 --extra-cflags="-fPIC" \
 --extra-ldflags="-lpthread" \
 \
---enable-pic --enable-memalign-hack \
+--enable-pic --enable-memalign-hack  --enable-pthreads \
 --enable-shared --disable-static \
 --disable-network --disable-protocols \
 --disable-devices --disable-filters --disable-bsfs --disable-muxers --disable-demuxers --disable-parsers --disable-hwaccels \
