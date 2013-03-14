@@ -190,10 +190,12 @@ int tsip_transport_msg_update_aor(tsip_transport_t* self, tsip_message_t *msg)
 		return 0;
 	}
 
-	transport_idx = self->stack->network.transport_idx_default;
+	if((transport_idx = tsip_transport_get_idx_by_name(self->protocol)) == -1){
+		transport_idx = self->stack->network.transport_idx_default;
+	}
 
 	/* retrieves the transport ip address and port */
-	if(!self->stack->network.aor.ip[0] && !self->stack->network.aor.port[transport_idx]){
+	if(!self->stack->network.aor.ip[transport_idx] && !self->stack->network.aor.port[transport_idx]){
 		tnet_ip_t ip = {0};
 		tnet_port_t port = 0;
 		
