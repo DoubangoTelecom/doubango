@@ -190,7 +190,7 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t* context;
 	int ret = -1;
-	(tlsHandle);
+    (void)(tlsHandle);
     
 	if (!transport) {
 		TSK_DEBUG_ERROR("Invalid server handle.");
