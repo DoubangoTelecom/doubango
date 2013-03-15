@@ -121,7 +121,7 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 	if(base->rtp_manager && base->rtp_manager->is_started){
 		if(rtp_header){
 			rtp_header->ssrc = base->rtp_manager->rtp.ssrc.local; // uses negotiated SSRC (SDP)
-			rtp_header->payload_type = base->rtp_manager->rtp.payload_type; // uses negotiated payload type
+			// rtp_header->payload_type = base->rtp_manager->rtp.payload_type; // uses negotiated payload type
 		}
 		packet = rtp_header 
 			? trtp_rtp_packet_create_2(rtp_header)
