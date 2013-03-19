@@ -99,9 +99,9 @@ uint32_t tcomp_udvm_opget_address_param(tcomp_udvm_t *udvm, uint32_t memory_addr
 /*
 * ByteCopy
 */
-int tcomp_udvm_bytecopy_self(tcomp_udvm_t *udvm, uint32_t *destination, uint32_t source, uint32_t tsk_size_tocopy);
-int tcomp_udvm_bytecopy_to(tcomp_udvm_t *udvm, uint32_t destination, const uint8_t* source, uint32_t tsk_size_tocopy);
-int tcomp_udvm_bytecopy_from(tcomp_udvm_t *udvm, uint8_t* destination, uint32_t source, uint32_t tsk_size_tocopy);
+tsk_bool_t tcomp_udvm_bytecopy_self(tcomp_udvm_t *udvm, uint32_t *destination, uint32_t source, uint32_t tsk_size_tocopy);
+tsk_bool_t tcomp_udvm_bytecopy_to(tcomp_udvm_t *udvm, uint32_t destination, const uint8_t* source, uint32_t tsk_size_tocopy);
+tsk_bool_t tcomp_udvm_bytecopy_from(tcomp_udvm_t *udvm, uint8_t* destination, uint32_t source, uint32_t tsk_size_tocopy);
 
 /*
 * State Management
