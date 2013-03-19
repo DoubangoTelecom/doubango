@@ -75,7 +75,10 @@ int tcomp_nackinfo_write(tcomp_buffer_handle_t* buffer,
 	}
 
 	tcomp_buffer_allocBuff(buffer, INDEX_NACK_SHA1 + TSK_SHA1_DIGEST_SIZE);
-	nackbuffer_ptr = tcomp_buffer_getBuffer(buffer);
+	if(!(nackbuffer_ptr = tcomp_buffer_getBuffer(buffer))){
+		TSK_DEBUG_ERROR("NACK buffer is null");
+		return -2;
+	}
 	
 	nackbuffer_ptr[INDEX_NACK_HEADER] = 0xf8;
 	nackbuffer_ptr[INDEX_NACK_VERSION] = NACK_VERSION;

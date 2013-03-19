@@ -41,7 +41,7 @@ int tcomp_udvm_byteCopy_TempStates(tcomp_udvm_t *udvm)
 	/*
 	* State Create
 	*/
-	for(i = 0; i < tocreate_size; i++)
+	for(i = 0; i < tocreate_size && ok; i++)
 	{
 		/*
 		* The UDVM byte copies a string of state_length bytes from the UDVM
@@ -59,7 +59,7 @@ int tcomp_udvm_byteCopy_TempStates(tcomp_udvm_t *udvm)
 	/*
 	* State Free
 	*/
-	for(i = 0; i<tofree_size; i++){
+	for(i = 0; i<tofree_size && ok; i++){
 		tcomp_tempstate_to_free_t *lpDesc = udvm->lpResult->statesToFree[i];
 		tcomp_buffer_allocBuff(lpDesc->identifier, lpDesc->partial_identifier_length);
 		ok &= tcomp_udvm_bytecopy_from(udvm, tcomp_buffer_getBuffer(lpDesc->identifier), lpDesc->partial_identifier_start, lpDesc->partial_identifier_length);

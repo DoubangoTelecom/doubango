@@ -38,15 +38,17 @@
 /**RFC3320-Setction_8.4.  Byte copying
 From UDVM to UDVM
 */
-int tcomp_udvm_bytecopy_self(tcomp_udvm_t *udvm, uint32_t *destination, uint32_t source, uint32_t tsk_size_tocopy)
+tsk_bool_t tcomp_udvm_bytecopy_self(tcomp_udvm_t *udvm, uint32_t *destination, uint32_t source, uint32_t tsk_size_tocopy)
 {
 	uint32_t byte_copy_left, byte_copy_right;
+	uint8_t* destination_ptr;
+
 	//if (*destination == TCOMP_UDVM_GET_SIZE() || source == TCOMP_UDVM_GET_SIZE())
 	if (*destination >= TCOMP_UDVM_GET_SIZE() || source >= TCOMP_UDVM_GET_SIZE())
 	{
 		/* SEGFAULT */
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-		return 0;
+		return tsk_false;
 	}
 
 	/*
@@ -59,27 +61,31 @@ int tcomp_udvm_bytecopy_self(tcomp_udvm_t *udvm, uint32_t *destination, uint32_t
 	// string of bytes is copied one byte at a time
 	while((tsk_size_tocopy--))
 	{
-		*TCOMP_UDVM_GET_BUFFER_AT((*destination)++) = *TCOMP_UDVM_GET_BUFFER_AT(source++);
-		
+		if(!(destination_ptr = TCOMP_UDVM_GET_BUFFER_AT((*destination)++))){
+			tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
+			return tsk_false;
+		}
+		*destination_ptr = *TCOMP_UDVM_GET_BUFFER_AT(source++);
 		*destination = (*destination == byte_copy_right)? byte_copy_left : *destination;
 		source = (source == byte_copy_right)? byte_copy_left : source;
 	}
 
-	return 1;
+	return tsk_true;
 }
 
 /**RFC3320-Setction_8.4.  Byte copying
 From EXTERNAL to UDVM
 */
-int tcomp_udvm_bytecopy_to(tcomp_udvm_t *udvm, uint32_t destination, const uint8_t* source, uint32_t tsk_size_tocopy)
+tsk_bool_t tcomp_udvm_bytecopy_to(tcomp_udvm_t *udvm, uint32_t destination, const uint8_t* source, uint32_t tsk_size_tocopy)
 {
 	uint32_t byte_copy_left, byte_copy_right;
+	uint8_t* destination_ptr;
 
 	if(destination == TCOMP_UDVM_GET_SIZE())
 	{
 		/* SEGFAULT */
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-		return 0;
+		return tsk_false;
 	}
 
 	/*
@@ -92,25 +98,29 @@ int tcomp_udvm_bytecopy_to(tcomp_udvm_t *udvm, uint32_t destination, const uint8
 	// string of bytes is copied one byte at a time
 	while((tsk_size_tocopy--))
 	{
-		*TCOMP_UDVM_GET_BUFFER_AT(destination++) = *(source++);
-		
+		if(!(destination_ptr = TCOMP_UDVM_GET_BUFFER_AT(destination++))){
+			tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
+			return tsk_false;
+		}
+		*destination_ptr = *(source++);
 		destination = (destination == byte_copy_right)? byte_copy_left : destination;
 	}
 
-	return 1;
+	return tsk_true;
 }
 
 /**RFC3320-Setction_8.4.  Byte copying
 From UDVM to EXTERNAL
 */
-int tcomp_udvm_bytecopy_from(tcomp_udvm_t *udvm, uint8_t* destination, uint32_t source, uint32_t tsk_size_tocopy)
+tsk_bool_t tcomp_udvm_bytecopy_from(tcomp_udvm_t *udvm, uint8_t* destination, uint32_t source, uint32_t tsk_size_tocopy)
 {
 	uint32_t byte_copy_left, byte_copy_right;
+	uint8_t* source_ptr;
 
 	if(source >= TCOMP_UDVM_GET_SIZE()){
 		TSK_DEBUG_ERROR("SEGFAULT");
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-		return 0;
+		return tsk_false;
 	}
 
 	/*
@@ -123,9 +133,13 @@ int tcomp_udvm_bytecopy_from(tcomp_udvm_t *udvm, uint8_t* destination, uint32_t 
 
 	// string of bytes is copied one byte at a time
 	while((tsk_size_tocopy--)){
-		*(destination++) = *TCOMP_UDVM_GET_BUFFER_AT(source++);
+		if(!(source_ptr = TCOMP_UDVM_GET_BUFFER_AT(source++))){
+			tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
+			return tsk_false;
+		}
+		*(destination++) = *source_ptr;
 		source = (source == byte_copy_right)? byte_copy_left : source;
 	}
 
-	return 1;
+	return tsk_true;
 }
