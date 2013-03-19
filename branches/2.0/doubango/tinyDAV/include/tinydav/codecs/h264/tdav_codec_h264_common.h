@@ -31,6 +31,7 @@
 #include "tsk_memory.h"
 #include "tsk_string.h"
 #include "tsk_params.h"
+#include "tsk_debug.h"
 
 #include <string.h>
 
@@ -147,6 +148,7 @@ static int tdav_codec_h264_common_init(tdav_codec_h264_common_t * h264)
 
 static int tdav_codec_h264_common_deinit(tdav_codec_h264_common_t * h264)
 {
+	TSK_DEBUG_INFO("tdav_codec_h264_common_deinit");
 	if(h264){
 		tmedia_codec_video_deinit(TMEDIA_CODEC_VIDEO(h264));
 		TSK_FREE(h264->rtp.ptr);

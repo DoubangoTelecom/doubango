@@ -855,6 +855,7 @@ static int tdav_session_video_start(tmedia_session_t* self)
 	video->encoder.codec = tsk_object_ref((tsk_object_t*)codec);
 	if(!TMEDIA_CODEC(video->encoder.codec)->opened){
 		if((ret = tmedia_codec_open(video->encoder.codec))){
+			tsk_mutex_unlock(video->encoder.h_mutex);
 			TSK_DEBUG_ERROR("Failed to open [%s] codec", video->encoder.codec->plugin->desc);
 			return ret;
 		}
@@ -882,6 +883,8 @@ static int tdav_session_video_stop(tmedia_session_t* self)
 	tdav_session_video_t* video;
 	tdav_session_av_t* base;
 
+	TSK_DEBUG_INFO("tdav_session_video_stop");
+
 	video = (tdav_session_video_t*)self;
 	base = (tdav_session_av_t*)self;
 	
@@ -894,7 +897,9 @@ static int tdav_session_video_stop(tmedia_session_t* self)
 	tsk_list_unlock(video->avpf.packets);
 
 	ret = tdav_session_av_stop(base);
+	tsk_mutex_lock(video->encoder.h_mutex);
 	TSK_OBJECT_SAFE_FREE(video->encoder.codec);
+	tsk_mutex_unlock(video->encoder.h_mutex);
 	TSK_OBJECT_SAFE_FREE(video->decoder.codec);
 	return ret;
 }

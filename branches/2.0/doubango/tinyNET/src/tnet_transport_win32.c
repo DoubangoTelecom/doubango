@@ -381,7 +381,7 @@ static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *tr
 		
 		context->count++;
 
-		TSK_DEBUG_INFO("Transport sockets count = %u", context->count);
+		TSK_DEBUG_INFO("Transport[%s] sockets count = %u", transport->description, context->count);
 
 		tsk_safeobj_unlock(context);
 

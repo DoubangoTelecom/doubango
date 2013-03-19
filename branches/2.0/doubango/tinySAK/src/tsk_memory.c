@@ -81,7 +81,7 @@ void* tsk_realloc (void* ptr, tsk_size_t size)
 	}
 	else{
 		if(!(ret = calloc(size, 1))){
-			TSK_DEBUG_ERROR("Memory allocation failed");
+			TSK_DEBUG_ERROR("Memory allocation (%u) failed", size);
 		}
 	}
 
