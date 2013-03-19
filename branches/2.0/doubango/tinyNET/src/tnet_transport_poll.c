@@ -326,7 +326,7 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 		
 		tsk_safeobj_unlock(context);
 		
-		TSK_DEBUG_INFO("Socket added: fd=%d, tail.count=%d", fd, context->count);
+		TSK_DEBUG_INFO("Socket added[%s]: fd=%d, tail.count=%d", transport->description, fd, context->count);
 		
 		return 0;
 	}
