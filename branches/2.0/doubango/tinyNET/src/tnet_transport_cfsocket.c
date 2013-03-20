@@ -300,10 +300,16 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
         to_send = TSK_MIN(max_size_to_send, size);
         
         if (CFWriteStreamGetStatus(sock->cf_write_stream) == kCFStreamStatusNotOpen) {
-            CFWriteStreamOpen(sock->cf_write_stream);
+            if(!CFWriteStreamOpen(sock->cf_write_stream)){
+                TSK_DEBUG_ERROR("CFWriteStreamOpen() failed");
+                return numberOfBytesSent;
+            }
         }
         if (CFReadStreamGetStatus(sock->cf_read_stream) == kCFStreamStatusNotOpen) {
-            CFReadStreamOpen(sock->cf_read_stream);
+            if(!CFReadStreamOpen(sock->cf_read_stream)){
+                TSK_DEBUG_ERROR("CFReadStreamOpen() failed");
+                return numberOfBytesSent;
+            }
         }
         while (to_send > 0 && (sent = CFWriteStreamWrite(sock->cf_write_stream, &buff_ptr[numberOfBytesSent], (CFIndex) to_send)) > 0) {
             numberOfBytesSent += sent;
@@ -444,6 +450,15 @@ int removeSocketAtIndex(int index, transport_context_t *context)
             CFRelease(sock->cf_socket);
         }
         
+        // Close and free write stream
+        if (sock->cf_write_stream) {
+            if (CFWriteStreamGetStatus(sock->cf_write_stream) == kCFStreamStatusOpen) {
+                CFWriteStreamClose(sock->cf_write_stream);
+            }
+            CFRelease(sock->cf_write_stream);
+            sock->cf_write_stream = NULL;
+        }
+        
 		// Close and free read stream
         if (sock->cf_read_stream) {
             if (CFReadStreamGetStatus(sock->cf_read_stream) == kCFStreamStatusOpen) {
@@ -451,15 +466,6 @@ int removeSocketAtIndex(int index, transport_context_t *context)
             }
             CFRelease(sock->cf_read_stream);
             sock->cf_read_stream = NULL;
-        }
-        
-		// Close and free write stream
-        if (sock->cf_write_stream) {
-            if (CFWriteStreamGetStatus(sock->cf_write_stream) == kCFStreamStatusOpen) {
-                CFWriteStreamClose(sock->cf_write_stream);
-            }
-            CFRelease(sock->cf_write_stream);
-            sock->cf_write_stream = NULL;
         }
         
 		// Close the socket if we are the owner.
@@ -878,10 +884,6 @@ int wrapSocket(tnet_transport_t *transport, transport_socket_xt *sock)
         
         CFReadStreamOpen(sock->cf_read_stream);
         CFWriteStreamOpen(sock->cf_write_stream);
-        
-        // Release references
-        CFRelease(sock->cf_read_stream);
-        CFRelease(sock->cf_write_stream);
     }
     
     return 0;

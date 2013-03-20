@@ -547,9 +547,6 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const cha
 
 	/* === Internals === */
 	stack->callback = callback;
-	if(!stack->timer_mgr_global){
-		stack->timer_mgr_global = tsk_timer_mgr_global_ref();
-	}
 	if(!stack->ssessions){
 		stack->ssessions = tsk_list_create();
 	}
@@ -616,6 +613,9 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 	}
 	
 	/* === Timer manager === */
+    if(!stack->timer_mgr_global){
+		stack->timer_mgr_global = tsk_timer_mgr_global_ref();
+	}
 	if((ret = tsk_timer_manager_start(stack->timer_mgr_global))){
 		goto bail;
 	}
@@ -958,6 +958,11 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 		TSK_FREE_TABLE(stack->network.aor.ip);
 		memset(stack->network.aor.port, 0, sizeof(stack->network.aor.port));
 
+        /* stops timer manager */
+        if(stack->timer_mgr_global){
+            tsk_timer_mgr_global_unref(&stack->timer_mgr_global);
+        }
+        
 		if(!one_failed){
 			stack->started = tsk_false;
 		}
@@ -1109,7 +1114,9 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(stack->layer_transport);
 
 		/* Internals(1/2) */
-		tsk_timer_mgr_global_unref(&stack->timer_mgr_global);
+        if(stack->timer_mgr_global){
+            tsk_timer_mgr_global_unref(&stack->timer_mgr_global);
+        }
 
 		/* Identity */
 		TSK_FREE(stack->identity.display_name);
