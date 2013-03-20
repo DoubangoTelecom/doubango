@@ -1358,7 +1358,7 @@ int tnet_sockfd_init(const char *host, tnet_port_t port, enum tnet_socket_type_e
 		goto bail;
 	}
 
-#if TNET_USE_POLL /* For win32 WSA* function the socket is auto. set to nonblocking mode. */
+#if TNET_USE_POLL || USE_POLL /* For win32 WSA* function the socket is auto. set to nonblocking mode. */
 	if((status = tnet_sockfd_set_nonblocking(*fd))){
 		goto bail;
 	}
