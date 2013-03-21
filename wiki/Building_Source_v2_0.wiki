@@ -133,6 +133,8 @@ _Date: December 2, 2012_ <br />
 {{{
 git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg
 cd ffmpeg
+# grap a release branch
+git checkout n1.2
 ./configure \
 --extra-cflags="-fPIC" \
 --extra-ldflags="-lpthread" \
