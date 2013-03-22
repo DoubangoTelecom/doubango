@@ -138,6 +138,8 @@ typedef struct trtp_manager_s
 
 		tsk_bool_t srtp_connected;
 		tsk_bool_t srtcp_connected;
+		tsk_bool_t srtp_handshake_succeed;
+		tsk_bool_t srtcp_handshake_succeed;
 
 		trtp_srtp_crypto_type_t crypto_selected;
 

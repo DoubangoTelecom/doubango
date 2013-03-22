@@ -92,17 +92,32 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 				const tnet_socket_t* socket = manager->transport->master && (manager->transport->master->fd == e->local_fd)
 					? manager->transport->master
 					: ((manager->rtcp.local_socket && manager->rtcp.local_socket->fd == e->local_fd) ? manager->rtcp.local_socket : tsk_null);
-				// cancel handshaking timer
+				if(!socket){
+					TSK_DEBUG_ERROR("DTLS data from unknown socket");
+					break;
+				}
+				// cancel handshaking timer when both SRTP and SRTCP are connected
 				tsk_safeobj_lock(manager);
-				if(manager->dtls.timer_hanshaking.id != TSK_INVALID_TIMER_ID){
-					tsk_timer_manager_cancel(manager->timer_mgr_global, manager->dtls.timer_hanshaking.id);
-					manager->dtls.timer_hanshaking.id = TSK_INVALID_TIMER_ID; // invalidate timer id (not required but should be done by good citizen)
-					manager->dtls.timer_hanshaking.timeout = TRTP_DTLS_HANDSHAKING_TIMEOUT; // reset timeout
+				if(manager->dtls.srtp_connected && manager->dtls.srtcp_connected){
+					if(manager->dtls.timer_hanshaking.id != TSK_INVALID_TIMER_ID){
+						tsk_timer_manager_cancel(manager->timer_mgr_global, manager->dtls.timer_hanshaking.id);
+						manager->dtls.timer_hanshaking.id = TSK_INVALID_TIMER_ID; // invalidate timer id (not required but should be done by good citizen)
+						manager->dtls.timer_hanshaking.timeout = TRTP_DTLS_HANDSHAKING_TIMEOUT; // reset timeout
+					}
 				}
 				tsk_safeobj_unlock(manager);
-				TSK_DEBUG_INFO("RTP/RTCP socket %s", "connected");
-				if(socket && TNET_SOCKET_TYPE_IS_DTLS(socket->type)){
-					TSK_DEBUG_INFO("DTLS-SRTP socket %s: [%s]:%d", "connected", socket->ip, socket->port);
+				
+				if(!manager->dtls.srtp_handshake_succeed){
+					manager->dtls.srtp_handshake_succeed = (socket == manager->transport->master);
+				}
+				if(!manager->dtls.srtcp_handshake_succeed){
+					manager->dtls.srtcp_handshake_succeed = (socket == manager->rtcp.local_socket) || _trtp_manager_is_rtcpmux_active(manager);
+				}
+
+				TSK_DEBUG_INFO("dtls.srtp_handshake_succeed=%d, dtls.srtcp_handshake_succeed=%d", manager->dtls.srtp_handshake_succeed, manager->dtls.srtcp_handshake_succeed);
+				TSK_DEBUG_INFO("DTLS-DTLS-SRTP socket [%s]:%d handshake succeed", socket->ip, socket->port);
+
+				if(manager->dtls.srtp_handshake_succeed && manager->dtls.srtcp_handshake_succeed){
 					// alter listeners
 					if(manager->dtls.cb.fun){
 						manager->dtls.cb.fun(manager->dtls.cb.usrdata, trtp_srtp_dtls_event_type_handshake_succeed, "DTLS handshake succeed");
@@ -338,14 +353,18 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 	}
 	else{
 		is_dtls = !is_rtp_rtcp && (19 < *data_ptr && *data_ptr < 64);
-		is_stun = TNET_IS_STUN2_MSG(data_ptr, data_size); /* MUST NOT USE: "(*data_ptr < 2)" beacause of "Old VAT" which starts with "0x00" */;
+		is_stun = !is_dtls && TNET_IS_STUN2_MSG(data_ptr, data_size); /* MUST NOT USE: "(*data_ptr < 2)" beacause of "Old VAT" which starts with "0x00" */;
 	}
 
 	if(is_dtls){
 		tnet_socket_t* socket = (self->transport->master && self->transport->master->fd == local_fd)
 			? self->transport->master
 			: ((self->rtcp.local_socket && self->rtcp.local_socket->fd == local_fd) ? self->rtcp.local_socket : tsk_null);
-		return tnet_dtls_socket_handle_incoming_data(socket->dtlshandle, data_ptr, data_size);
+		if(socket){
+			TSK_DEBUG_INFO("Receive %s-DTLS data on ip=%s and port=%d", (socket == self->transport->master) ? "RTP" : "RTCP", socket->ip, socket->port);
+			return tnet_dtls_socket_handle_incoming_data(socket->dtlshandle, data_ptr, data_size);
+		}
+		return 0;
 	}
 
 	if(is_stun){
@@ -484,8 +503,8 @@ static int _trtp_manager_srtp_set_enabled(trtp_manager_t* self, tmedia_srtp_type
 				}
 				self->dtls.state = trtp_srtp_state_none;
 				self->dtls.enable_postponed = tsk_false;
-				self->dtls.srtp_connected = tsk_false;
-				self->dtls.srtcp_connected = tsk_false;
+				self->dtls.srtp_connected = self->dtls.srtp_handshake_succeed = tsk_false;
+				self->dtls.srtcp_connected = self->dtls.srtcp_handshake_succeed = tsk_false;
 			}
 
 			// SRTP context is used by both DTLS and SDES -> only destroy them if requested to be disabled on both
@@ -1245,6 +1264,7 @@ int trtp_manager_start(trtp_manager_t* self)
 			self->rtcp.remote_port = self->rtcp.remote_port ? self->rtcp.remote_port : (self->use_rtcpmux ? self->rtp.remote_port : (self->rtp.remote_port + 1));
 		}
 
+		TSK_DEBUG_INFO("rtcp.remote_ip=%s, rtcp.remote_port=%d, rtcp.local_fd=%d", self->rtcp.remote_ip, self->rtcp.remote_port, local_rtcp_fd);
 		if((ret = tnet_sockaddr_init(self->rtcp.remote_ip, self->rtcp.remote_port, self->transport->master->type, &self->rtcp.remote_addr))){
 			TSK_DEBUG_ERROR("Invalid RTCP host:port [%s:%u]", self->rtcp.remote_ip, self->rtcp.remote_port);
 			/* do not exit */
@@ -1252,7 +1272,8 @@ int trtp_manager_start(trtp_manager_t* self)
 
 		/* add RTCP socket to the transport */
 		if(self->rtcp.local_socket){
-			if(ret == 0 && (ret = tnet_transport_add_socket(self->transport, self->rtcp.local_socket->fd, self->rtcp.local_socket->type, tsk_false, tsk_true/* only Meaningful for tls*/, tsk_null))){
+			TSK_DEBUG_INFO("rtcp.local_ip=%s, rtcp.local_port=%d, rtcp.local_fd=%d", self->rtcp.local_socket->ip, self->rtcp.local_socket->port, self->rtcp.local_socket->fd);
+			if(ret == 0 && (ret = tnet_transport_add_socket(self->transport, self->rtcp.local_socket->fd, self->rtcp.local_socket->type, tsk_false/* do not take ownership */, tsk_true/* only Meaningful for tls*/, tsk_null))){
 				TSK_DEBUG_ERROR("Failed to add RTCP socket");
 				/* do not exit */
 			}
