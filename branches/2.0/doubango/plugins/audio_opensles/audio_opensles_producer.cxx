@@ -93,9 +93,12 @@ static int audio_producer_opensles_set(tmedia_producer_t* _self, const tmedia_pa
 	if(param->plugin_type == tmedia_ppt_producer){
 		if(param->value_type == tmedia_pvt_int32){
 			if(tsk_striequals(param->key, "mute")){
-				self->isMuted = (TSK_TO_INT32((uint8_t*)param->value) != 0);
+				self->isMuted = (*((int32_t*)param->value) != 0);
 				// Mute not supported on android -> send silence when needed
 				return 0;
+			}
+			else if(tsk_striequals(param->key, "volume")){
+				return audio_opensles_instance_set_microphone_volume(self->audioInstHandle, *((int32_t*)param->value));
 			}
 		}
 	}
@@ -126,6 +129,8 @@ static int audio_producer_opensles_prepare(tmedia_producer_t* _self, const tmedi
 	TMEDIA_PRODUCER(self)->audio.rate = codec->plugin->rate;
 	TMEDIA_PRODUCER(self)->audio.ptime = codec->plugin->audio.ptime;
 
+	AUDIO_OPENSLES_DEBUG_INFO("audio_producer_opensles_prepare(channels=%d, rate=%d, ptime=%d)", codec->plugin->audio.channels, codec->plugin->rate, codec->plugin->audio.ptime);
+
 	// prepare playout device and update output parameters
 	int ret;
 	ret = audio_opensles_instance_prepare_producer(self->audioInstHandle, &_self);
@@ -152,6 +157,7 @@ static int audio_producer_opensles_start(tmedia_producer_t* _self)
 		AUDIO_OPENSLES_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+	AUDIO_OPENSLES_DEBUG_INFO("audio_producer_opensles_start");
 
 	return audio_opensles_instance_start_producer(self->audioInstHandle);
 }

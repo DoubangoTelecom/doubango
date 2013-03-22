@@ -102,9 +102,9 @@
 
 #	define ANDROID_DEBUG_TAG "plugin_audio_opensles" // DDMS log tag when using eclise
 #	define AUDIO_OPENSLES_DEBUG_INFO(FMT, ...)  __android_log_print(ANDROID_LOG_INFO, ANDROID_DEBUG_TAG, FMT, ##__VA_ARGS__)
-#	define AUDIO_OPENSLES_DEBUG_WARN(FMT, ...)  __android_log_print(ANDROID_LOG_WARN, ANDROID_DEBUG_TAG, FMT, ##__VA_ARGS__)
-#	define AUDIO_OPENSLES_DEBUG_ERROR(FMT, ...)  __android_log_print(ANDROID_LOG_ERROR, ANDROID_DEBUG_TAG, FMT, ##__VA_ARGS__)
-#	define AUDIO_OPENSLES_DEBUG_FATAL(FMT, ...)  __android_log_print(ANDROID_LOG_FATAL, ANDROID_DEBUG_TAG, FMT, ##__VA_ARGS__)
+#	define AUDIO_OPENSLES_DEBUG_WARN(FMT, ...)  __android_log_print(ANDROID_LOG_WARN, ANDROID_DEBUG_TAG, "***WARN: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__)
+#	define AUDIO_OPENSLES_DEBUG_ERROR(FMT, ...)  __android_log_print(ANDROID_LOG_ERROR, ANDROID_DEBUG_TAG, "***ERROR: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__)
+#	define AUDIO_OPENSLES_DEBUG_FATAL(FMT, ...)  __android_log_print(ANDROID_LOG_FATAL, ANDROID_DEBUG_TAG, "***FATAL: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__)
 #else
 #	include "tsk_debug.h"
 #	define AUDIO_OPENSLES_DEBUG_INFO(FMT, ...) TSK_DEBUG_INFO(FMT, ##__VA_ARGS__)

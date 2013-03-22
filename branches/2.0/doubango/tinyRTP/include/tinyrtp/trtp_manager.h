@@ -136,8 +136,8 @@ typedef struct trtp_manager_s
 		// enable() could be postponed if net transport not ready yet (e.g. when ICE is ON)
 		tsk_bool_t enable_postponed;
 
-		tsk_bool_t rtp_connected;
-		tsk_bool_t rtcp_connected;
+		tsk_bool_t srtp_connected;
+		tsk_bool_t srtcp_connected;
 
 		trtp_srtp_crypto_type_t crypto_selected;
 

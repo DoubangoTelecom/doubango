@@ -853,11 +853,11 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 						acap_tag_crypro_start = (acap_tag == 1 ? acap_tag : ++acap_tag);
 					}
 					if(negotiate_srtp){
-						tsk_sprintf(&str, "%d crypto:%d %s inline:%s", acap_tag++, srtp_ctxs[ctx_idx]->tag, trtp_srtp_crypto_type_strings[srtp_ctxs[ctx_idx]->crypto_type], srtp_ctxs[ctx_idx]->key_str);
+						tsk_sprintf(&str, "%d crypto:%d %s inline:%s", acap_tag++, srtp_ctxs[ctx_idx]->rtp.tag, trtp_srtp_crypto_type_strings[srtp_ctxs[ctx_idx]->rtp.crypto_type], srtp_ctxs[ctx_idx]->rtp.key_str);
 						cryptoA = tsdp_header_A_create("acap", str);
 					}
 					else{
-						tsk_sprintf(&str, "%d %s inline:%s", srtp_ctxs[ctx_idx]->tag, trtp_srtp_crypto_type_strings[srtp_ctxs[ctx_idx]->crypto_type], srtp_ctxs[ctx_idx]->key_str);
+						tsk_sprintf(&str, "%d %s inline:%s", srtp_ctxs[ctx_idx]->rtp.tag, trtp_srtp_crypto_type_strings[srtp_ctxs[ctx_idx]->rtp.crypto_type], srtp_ctxs[ctx_idx]->rtp.key_str);
 						cryptoA = tsdp_header_A_create("crypto", str);
 					}
 
@@ -952,7 +952,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 						char* str = tsk_null;
 						for(ctx_idx = 0; ctx_idx < ctx_count; ++ctx_idx){
 							is_srtp_sdes_activated = tsk_true;
-                            tsk_sprintf(&str, "%d %s inline:%s", srtp_ctxs[ctx_idx]->tag, trtp_srtp_crypto_type_strings[srtp_ctxs[ctx_idx]->crypto_type], srtp_ctxs[ctx_idx]->key_str);
+                            tsk_sprintf(&str, "%d %s inline:%s", srtp_ctxs[ctx_idx]->rtp.tag, trtp_srtp_crypto_type_strings[srtp_ctxs[ctx_idx]->rtp.crypto_type], srtp_ctxs[ctx_idx]->rtp.key_str);
                             tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("crypto", str), tsk_null);
                         }
 						TSK_FREE(str);

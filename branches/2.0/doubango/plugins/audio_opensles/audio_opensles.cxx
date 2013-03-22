@@ -543,6 +543,16 @@ int audio_opensles_instance_set_speakerOn(audio_opensles_instance_handle_t* _sel
 	return self->device->SetSpeakerOn(speakerOn);
 }
 
+int audio_opensles_instance_set_microphone_volume(audio_opensles_instance_handle_t* _self, int32_t volume)
+{
+	audio_opensles_instance_t* self = (audio_opensles_instance_t*)_self;
+	if(!self || !self->device ){
+		AUDIO_OPENSLES_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return self->device->SetMicrophoneVolume(volume);
+}
+
 int audio_opensles_instance_destroy(audio_opensles_instance_handle_t** _self){
 	if(!_self || !*_self){
 		AUDIO_OPENSLES_DEBUG_ERROR("Invalid parameter");
