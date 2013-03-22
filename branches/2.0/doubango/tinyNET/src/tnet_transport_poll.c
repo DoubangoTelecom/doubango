@@ -60,11 +60,11 @@ typedef struct transport_context_s
 	TSK_DECLARE_OBJECT;
 	
 	tsk_size_t count;
-	short events;
 	tnet_fd_t pipeW;
 	tnet_fd_t pipeR;
 	tnet_pollfd_t ufds[TNET_MAX_FDS];
 	transport_socket_xt* sockets[TNET_MAX_FDS];
+	tsk_bool_t polling; // whether we are poll()ing
 
 	TSK_DECLARE_SAFEOBJ;
 }
@@ -318,7 +318,10 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 		tsk_safeobj_lock(context);
 		
 		context->ufds[context->count].fd = fd;
-		context->ufds[context->count].events = (fd == context->pipeR) ? TNET_POLLIN : context->events;
+		context->ufds[context->count].events = (fd == context->pipeR) ? TNET_POLLIN : (TNET_POLLIN | TNET_POLLNVAL | TNET_POLLERR);
+		if(TNET_SOCKET_TYPE_IS_STREAM(sock->type)){
+			context->ufds[context->count].events |= TNET_POLLOUT; // emulate WinSock2 FD_CONNECT event
+		}
 		context->ufds[context->count].revents = 0;
 		context->sockets[context->count] = sock;
 		
@@ -362,6 +365,15 @@ int removeSocket(int index, transport_context_t *context)
 		/* Close the socket if we are the owner. */
 		TSK_DEBUG_INFO("Socket to remove: fd=%d, index=%d, tail.count=%d", context->sockets[index]->fd, index, context->count);
 		if(context->sockets[index]->owner){
+			// do not close the socket while it's being poll()ed
+			// http://stackoverflow.com/questions/5039608/poll-cant-detect-event-when-socket-is-closed-locally
+			if(context->polling){
+				TSK_DEBUG_INFO("RemoveSocket(fd=%d) has been requested but we are poll()ing the socket. ShutdownSocket(fd) called on the socket and we deferred the request.", context->sockets[index]->fd);
+				TSK_DEBUG_INFO("ShutdownSocket(fd=%d)", context->sockets[index]->fd);
+				tnet_sockfd_shutdown(context->sockets[index]->fd);
+				goto done;
+			}
+			TSK_DEBUG_INFO("CloseSocket(fd=%d)", context->sockets[index]->fd);
 			tnet_sockfd_close(&(context->sockets[index]->fd));
 		}
 		
@@ -383,7 +395,7 @@ int removeSocket(int index, transport_context_t *context)
 		
 		context->count--;
 	}
-
+done:
 	tsk_safeobj_unlock(context);
 	
 	return 0;
@@ -429,6 +441,8 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	int ret = -1;
 	transport_context_t *context;
 	tnet_fd_t pipes[2];
+
+	TSK_DEBUG_INFO("tnet_transport_prepare()");
 	
 	if(!transport || !transport->context){
 		TSK_DEBUG_ERROR("Invalid parameter.");
@@ -453,16 +467,6 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 			TSK_DEBUG_ERROR("Failed to create master socket");
 			return -3;
 		}
-	}
-	
-	/* set events */
-	context->events = TNET_POLLIN | TNET_POLLNVAL | TNET_POLLERR;
-	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
-		context->events |= TNET_POLLOUT // emulate WinSock2 FD_CONNECT event
-//#if !defined(ANDROID)
-//			| TNET_POLLHUP /* FIXME: always present */
-//#endif
-			;
 	}
 	
 	/* Start listening */
@@ -566,8 +570,11 @@ void *tnet_transport_mainthread(void *param)
 			transport->master->type);
 
 	while(TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started){
-		if((ret = tnet_poll(context->ufds, context->count, -1)) < 0){
-			TNET_PRINT_LAST_ERROR("poll have failed.");
+		context->polling = tsk_true;
+		ret = tnet_poll(context->ufds, context->count, -1);
+		context->polling = tsk_false;
+		if(ret < 0){
+			TNET_PRINT_LAST_ERROR("poll() have failed.");
 			goto bail;
 		}
 

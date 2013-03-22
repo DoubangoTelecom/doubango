@@ -153,6 +153,7 @@ TINYNET_API tnet_fd_t tnet_sockfd_accept(tnet_fd_t fd, struct sockaddr *addr, so
 
 
 TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
+TINYNET_API int tnet_sockfd_shutdown(tnet_fd_t fd);
 
 /**Prints last network error to @b stderr.
 */

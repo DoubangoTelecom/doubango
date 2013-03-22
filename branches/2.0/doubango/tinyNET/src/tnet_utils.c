@@ -1663,6 +1663,17 @@ int tnet_sockfd_close(tnet_fd_t *fd)
 	return 0;
 }
 
+/**@ingroup tnet_utils_group
+* Disables both receiving and sending functions. Will raise POLLHUP event.
+* IMPORTANT: The socket still need to be closed.
+* @param fd A descriptor identifying the socket to shutdown.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
+int tnet_sockfd_shutdown(tnet_fd_t fd)
+{
+	return shutdown(fd, 2/*SD_BOTH*/);
+}
+
 
 
 
