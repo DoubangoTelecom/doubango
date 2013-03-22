@@ -39,6 +39,7 @@ int audio_opensles_instance_start_producer(audio_opensles_instance_handle_t* sel
 int audio_opensles_instance_stop_consumer(audio_opensles_instance_handle_t* self);
 int audio_opensles_instance_stop_producer(audio_opensles_instance_handle_t* self);
 int audio_opensles_instance_set_speakerOn(audio_opensles_instance_handle_t* self, bool speakerOn);
+int audio_opensles_instance_set_microphone_volume(audio_opensles_instance_handle_t* self, int32_t volume);
 int audio_opensles_instance_destroy(audio_opensles_instance_handle_t** self);
 
 AUDIO_OPENSLES_END_DECLS

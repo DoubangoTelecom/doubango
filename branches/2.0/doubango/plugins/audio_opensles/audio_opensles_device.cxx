@@ -103,6 +103,8 @@ int SLAudioDevice::Init()
 {
 	CHECK_FALSE(m_bInitialized, "Already initialized");
 
+	AUDIO_OPENSLES_DEBUG_INFO("SLAudioDevice::Init()");
+
 #if AUDIO_OPENSLES_UNDER_ANDROID
 	SLresult slResult;
 
@@ -149,6 +151,8 @@ int SLAudioDevice::SpeakerIsAvailable(bool *pAvailable)
 
 int SLAudioDevice::InitSpeaker()
 {
+	AUDIO_OPENSLES_DEBUG_INFO("SLAudioDevice::InitSpeaker()");
+
 	CHECK_TRUE(m_bInitialized, "Not initialized");
 	
 	if(m_bSpeakerInitialized){
@@ -162,6 +166,7 @@ int SLAudioDevice::InitSpeaker()
 int SLAudioDevice::SetMaxSpeakerVolume(int nMaxSpeakerVolume)
 {
 	CHECK_TRUE(m_bSpeakerInitialized, "Speaker not initialized");
+	AUDIO_OPENSLES_DEBUG_INFO("SetMaxSpeakerVolume(%d)", nMaxSpeakerVolume);
 	m_nMaxSpeakerVolume = nMaxSpeakerVolume;
 	return 0;
 }
@@ -169,6 +174,7 @@ int SLAudioDevice::SetMaxSpeakerVolume(int nMaxSpeakerVolume)
 int SLAudioDevice::SetMinSpeakerVolume(int nMinSpeakerVolume)
 {
 	CHECK_TRUE(m_bSpeakerInitialized, "Speaker not initialized");
+	AUDIO_OPENSLES_DEBUG_INFO("SetMinSpeakerVolume(%d)", nMinSpeakerVolume);
 	m_nMinSpeakerVolume = nMinSpeakerVolume;
 	return 0;
 }
@@ -176,6 +182,7 @@ int SLAudioDevice::SetMinSpeakerVolume(int nMinSpeakerVolume)
 int SLAudioDevice::SetSpeakerVolume(int nSpeakerVolume)
 {
 	CHECK_TRUE(m_bSpeakerInitialized, "Speaker not initialized");
+	AUDIO_OPENSLES_DEBUG_INFO("SetSpeakerVolume(%d)", nSpeakerVolume);
 	m_nSpeakerVolume = nSpeakerVolume;
 	return 0;
 }
@@ -240,6 +247,8 @@ int SLAudioDevice::SetPlayoutSampleRate(int nPlayoutSampleRate)
 	CHECK_TRUE(m_bInitialized, "Not initialized");
 	CHECK_PLAYOUT_NOT_INITIALIZED();
 
+	AUDIO_OPENSLES_DEBUG_INFO("SetPlayoutSampleRate(%d)", nPlayoutSampleRate);
+
 	switch(nPlayoutSampleRate){
 		case 8000: case 11025: case 16000: case 22050: case 24000: case 32000: case 44100: case 64000: case 88200: case 96000: case 192000:
 		 {
@@ -258,6 +267,8 @@ int SLAudioDevice::InitPlayout()
 {
 	CHECK_TRUE(m_bInitialized, "Not initialized");
 	
+	AUDIO_OPENSLES_DEBUG_INFO("SLAudioDevice::InitPlayout()");
+
 	if(m_bPlayoutInitialized){
 		return 0;
 	}
@@ -547,6 +558,8 @@ int SLAudioDevice::InitMicrophone()
 {
 	CHECK_TRUE(m_bInitialized, "Device not initialized");
 
+	AUDIO_OPENSLES_DEBUG_INFO("SLAudioDevice::InitMicrophone()");
+
 	if(m_bMicrophoneInitialized){
 		return 0;
 	}
@@ -558,6 +571,8 @@ int SLAudioDevice::InitMicrophone()
 int SLAudioDevice::SetMicrophoneVolume(int nMicrophoneVolume)
 {
 	CHECK_MICROPHONE_INITIALIZED();
+
+	AUDIO_OPENSLES_DEBUG_INFO("SetMicrophoneVolume(%d)", nMicrophoneVolume);
 
 #if AUDIO_OPENSLES_UNDER_ANDROID
     if (m_slMicVolume == NULL) {
@@ -595,6 +610,8 @@ int SLAudioDevice::SetRecordingSampleRate(int nRecordingSampleRate)
 	CHECK_TRUE(m_bInitialized, "Not initialized");
 	CHECK_RECORDING_NOT_INITIALIZED();
 
+	AUDIO_OPENSLES_DEBUG_INFO("SetRecordingSampleRate(%d)", nRecordingSampleRate);
+
 	switch(nRecordingSampleRate){
 		case 8000: case 11025: case 16000: case 22050: case 24000: case 32000: case 44100: case 64000: case 88200: case 96000: case 192000:
 		 {
@@ -612,6 +629,8 @@ int SLAudioDevice::SetRecordingSampleRate(int nRecordingSampleRate)
 int SLAudioDevice::InitRecording()
 {
 	CHECK_TRUE(m_bInitialized, "Not initialized");
+
+	AUDIO_OPENSLES_DEBUG_INFO("SLAudioDevice::InitRecording()");
 
     if (m_bRecording) {
         AUDIO_OPENSLES_DEBUG_ERROR("Recording already started");
@@ -885,6 +904,7 @@ int SLAudioDevice::Terminate()
 
 int SLAudioDevice::PlayoutApplyNewConfig()
 {
+	AUDIO_OPENSLES_DEBUG_INFO("SLAudioDevice::PlayoutApplyNewConfig()");
 #if AUDIO_OPENSLES_UNDER_ANDROID
 	if(m_slPlayer){
 		SLresult slResult;

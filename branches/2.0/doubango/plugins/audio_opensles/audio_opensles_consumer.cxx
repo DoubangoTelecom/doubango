@@ -132,6 +132,8 @@ static int audio_consumer_opensles_prepare(tmedia_consumer_t* _self, const tmedi
 	TMEDIA_CONSUMER(self)->audio.ptime = codec->plugin->audio.ptime;
 	TMEDIA_CONSUMER(self)->audio.in.channels = codec->plugin->audio.channels;
 	TMEDIA_CONSUMER(self)->audio.in.rate = codec->plugin->rate;
+
+	AUDIO_OPENSLES_DEBUG_INFO("audio_consumer_opensles_prepare(channels=%d, rate=%d, ptime=%d)", codec->plugin->audio.channels, codec->plugin->rate, codec->plugin->audio.ptime);
 	
 	// prepare playout device and update output parameters
 	int ret = audio_opensles_instance_prepare_consumer(self->audioInstHandle, &_self);

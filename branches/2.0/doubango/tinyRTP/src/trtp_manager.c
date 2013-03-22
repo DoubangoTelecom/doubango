@@ -67,6 +67,7 @@
 static const tmedia_srtp_type_t __srtp_types[] = { tmedia_srtp_type_sdes, tmedia_srtp_type_dtls };
 
 static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* data_ptr, tsk_size_t data_size, tnet_fd_t local_fd, const struct sockaddr_storage* remote_addr);
+#define _trtp_manager_is_rtcpmux_active(self) ( (self) && ( (self)->use_rtcpmux && (!(self)->rtcp.local_socket || ((self)->transport && (self)->transport->master && (self)->transport->master->fd == (self)->rtcp.local_socket->fd)) ) )
 #if HAVE_SRTP
 static int _trtp_manager_srtp_set_enabled(trtp_manager_t* self, tmedia_srtp_type_t srtp_type, tsk_bool_t enabled);
 static int _trtp_manager_srtp_activate(trtp_manager_t* self, tmedia_srtp_type_t srtp_type);
@@ -102,15 +103,6 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 				TSK_DEBUG_INFO("RTP/RTCP socket %s", "connected");
 				if(socket && TNET_SOCKET_TYPE_IS_DTLS(socket->type)){
 					TSK_DEBUG_INFO("DTLS-SRTP socket %s: [%s]:%d", "connected", socket->ip, socket->port);
-					if(socket == manager->transport->master){
-						manager->dtls.rtp_connected = tsk_true;
-						if(manager->use_rtcpmux || !manager->rtcp.local_socket){
-							manager->dtls.rtcp_connected = tsk_true;
-						}
-					}
-					else if(socket == manager->rtcp.local_socket){
-						manager->dtls.rtcp_connected = tsk_true;
-					}
 					// alter listeners
 					if(manager->dtls.cb.fun){
 						manager->dtls.cb.fun(manager->dtls.cb.usrdata, trtp_srtp_dtls_event_type_handshake_succeed, "DTLS handshake succeed");
@@ -135,7 +127,9 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 			{
 				/* KEY||SALT */
 				/* rfc 5764 - 4.2.  Key Derivation */
-				if(manager->transport->master && manager->transport->master->fd == e->local_fd){
+				tsk_bool_t is_rtp = (manager->transport->master && manager->transport->master->fd == e->local_fd);
+				tsk_bool_t is_rtcp = (manager->rtcp.local_socket && manager->rtcp.local_socket->fd == e->local_fd);
+				if(is_rtp || is_rtcp){
 					unsigned int master_salt_length, master_key_length;
 					
 #if HAVE_SRTP_PROFILE_GET_MASTER_KEY_LENGTH
@@ -168,25 +162,39 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 							rs = (ls + master_salt_length);
 						}
 						// set key||salt
-						if((ret = trtp_srtp_set_key_and_salt_remote(manager, manager->dtls.crypto_selected, rk, master_key_length, rs, master_salt_length))){
+						if((ret = trtp_srtp_set_key_and_salt_remote(manager, manager->dtls.crypto_selected, rk, master_key_length, rs, master_salt_length, is_rtp))){
 							if(manager->dtls.cb.fun) manager->dtls.cb.fun(manager->dtls.cb.usrdata, trtp_srtp_dtls_event_type_fatal_error, "Failed to set remote DTSL-SRTP key||salt");
 							return ret;
 						}
-						if((ret = trtp_srtp_set_key_and_salt_local(manager, manager->dtls.crypto_selected, lk, master_key_length, ls, master_salt_length))){
+						if((ret = trtp_srtp_set_key_and_salt_local(manager, manager->dtls.crypto_selected, lk, master_key_length, ls, master_salt_length, is_rtp))){
 							if(manager->dtls.cb.fun) manager->dtls.cb.fun(manager->dtls.cb.usrdata, trtp_srtp_dtls_event_type_fatal_error, "Failed to set local DTSL-SRTP key||salt");
 							return ret;
 						}
-						// start DTLS-SRTP
-						if((ret = _trtp_manager_srtp_start(manager, manager->srtp_type))){
-							if(manager->dtls.cb.fun) manager->dtls.cb.fun(manager->dtls.cb.usrdata, trtp_srtp_dtls_event_type_fatal_error, "Failed to set start DTSL-SRTP engine");
-							return ret;
+						
+						if(is_rtp){
+							manager->dtls.srtp_connected = manager->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][manager->dtls.crypto_selected].rtp.initialized;
+							if(_trtp_manager_is_rtcpmux_active(manager)){
+								manager->dtls.srtcp_connected = tsk_true;
+							}
 						}
+						else{ // rtcp
+							manager->dtls.srtcp_connected = manager->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][manager->dtls.crypto_selected].rtcp.initialized;
+						}
+						TSK_DEBUG_INFO("dtls.srtp_connected=%d, dtls.srtcp_connected=%d", manager->dtls.srtp_connected, manager->dtls.srtcp_connected);
 
-						TSK_DEBUG_INFO("!!DTLS-SRTP started!!");
+						if(manager->dtls.srtp_connected && manager->dtls.srtcp_connected){
+							// start DTLS-SRTP
+							if((ret = _trtp_manager_srtp_start(manager, manager->srtp_type))){
+								if(manager->dtls.cb.fun) manager->dtls.cb.fun(manager->dtls.cb.usrdata, trtp_srtp_dtls_event_type_fatal_error, "Failed to set start DTSL-SRTP engine");
+								return ret;
+							}
+							
+							TSK_DEBUG_INFO("!!DTLS-SRTP started!!");
 
-						// alter listeners
-						if(manager->dtls.cb.fun){
-							manager->dtls.cb.fun(manager->dtls.cb.usrdata, trtp_srtp_dtls_event_type_started, "DTLS started");
+							// alter listeners
+							if(manager->dtls.cb.fun){
+								manager->dtls.cb.fun(manager->dtls.cb.usrdata, trtp_srtp_dtls_event_type_started, "DTLS started");
+							}
 						}
 					}
 				}
@@ -196,7 +204,7 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 		case event_dtls_srtp_profile_selected:
 			{
 				if(manager->transport->master && manager->transport->master->fd == e->local_fd){
-					/* Only (SRTP_AES128_CM_SHA1_80 | SRTP_AES128_CM_SHA1_32) because of tnet_transport_dtls_use_srtp() */
+					/* Only (SRTP_AES128_CM_SHA1_80 | SRTP_AES128_CM_SHA1_32) because of _trtp_manager_srtp_activate() */
 					TSK_DEBUG_INFO("event_dtls_srtp_profile_selected: %.*s", 22, (const char*)e->data);
 					manager->dtls.crypto_selected = HMAC_SHA1_80;
 					if(tsk_strnequals(e->data, "SRTP_AES128_CM_SHA1_32", 22)){
@@ -360,20 +368,9 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 			#if HAVE_SRTP
 			err_status_t status;
 			if(self->srtp_ctx_neg_remote){
-				if((status = srtp_unprotect_rtcp(self->srtp_ctx_neg_remote->session, (void*)data_ptr, (int*)&data_size)) != err_status_ok){
-					if(status == err_status_auth_fail && self->rtcweb_type.remote == tmedia_rtcweb_type_firefox){
-						static int32_t __error_display_count = 0;
-						if(!__error_display_count){
-							TSK_DEBUG_ERROR("srtp_unprotect(RTCP) failed. We detected that you're using Firefox.\n"
-									"This is a known issue and we're working hard to fix it\n"
-									"More info at http://code.google.com/p/doubango/issues/detail?id=194"
-								);
-							++__error_display_count;
-						}
-					}
-					else{
-						TSK_DEBUG_ERROR("srtp_unprotect(RTCP) failed with error code=%d", (int)status);
-					}
+				srtp_t session = self->srtp_ctx_neg_remote->rtcp.initialized ? self->srtp_ctx_neg_remote->rtcp.session : self->srtp_ctx_neg_remote->rtp.session;
+				if((status = srtp_unprotect_rtcp(session, (void*)data_ptr, (int*)&data_size)) != err_status_ok){
+					TSK_DEBUG_ERROR("srtp_unprotect(RTCP) failed with error code=%d", (int)status);
 					return -1;
 				}
 			}
@@ -397,8 +394,8 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 			#if HAVE_SRTP
 			err_status_t status;
 			if(self->srtp_ctx_neg_remote){
-				if((status = srtp_unprotect(self->srtp_ctx_neg_remote->session, (void*)data_ptr, (int*)&data_size)) != err_status_ok){
-					TSK_DEBUG_ERROR("srtp_unprotect(RTCP) failed with error code=%d", (int)status);
+				if((status = srtp_unprotect(self->srtp_ctx_neg_remote->rtp.session, (void*)data_ptr, (int*)&data_size)) != err_status_ok){
+					TSK_DEBUG_ERROR("srtp_unprotect(RTP) failed with error code=%d", (int)status);
 					return -1;
 				}
 			}
@@ -487,6 +484,8 @@ static int _trtp_manager_srtp_set_enabled(trtp_manager_t* self, tmedia_srtp_type
 				}
 				self->dtls.state = trtp_srtp_state_none;
 				self->dtls.enable_postponed = tsk_false;
+				self->dtls.srtp_connected = tsk_false;
+				self->dtls.srtcp_connected = tsk_false;
 			}
 
 			// SRTP context is used by both DTLS and SDES -> only destroy them if requested to be disabled on both
@@ -575,6 +574,7 @@ static int _trtp_manager_srtp_activate(trtp_manager_t* self, tmedia_srtp_type_t 
 static int _trtp_manager_srtp_start(trtp_manager_t* self, tmedia_srtp_type_t srtp_type)
 {
 	const trtp_srtp_ctx_xt *ctx_remote, *ctx_local;
+	tsk_bool_t use_different_keys;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -586,18 +586,22 @@ static int _trtp_manager_srtp_start(trtp_manager_t* self, tmedia_srtp_type_t srt
 		return -2;
 	}
 	
-	ctx_remote = self->srtp_contexts[TRTP_SRTP_LINE_IDX_REMOTE][HMAC_SHA1_80].initialized
+	ctx_remote = self->srtp_contexts[TRTP_SRTP_LINE_IDX_REMOTE][HMAC_SHA1_80].rtp.initialized
 		? &self->srtp_contexts[TRTP_SRTP_LINE_IDX_REMOTE][HMAC_SHA1_80]
 		: &self->srtp_contexts[TRTP_SRTP_LINE_IDX_REMOTE][HMAC_SHA1_32];
 
-	if(!ctx_remote->initialized){
+	// dtls uses different keys for rtp and srtp which is not the case for sdes
+	use_different_keys = !_trtp_manager_is_rtcpmux_active(self) && ((srtp_type & tmedia_srtp_type_dtls) == tmedia_srtp_type_dtls);
+	TSK_DEBUG_INFO("srtp_use_different_keys=%s", use_different_keys ? "true" : "false");
+
+	if(!ctx_remote->rtp.initialized || (use_different_keys && !ctx_remote->rtcp.initialized)){
 		TSK_DEBUG_ERROR("SRTP remote context not initialized: Not expected at this state");
 		return -2;
 	}
 
 	// use same crypto type on both sides
-	ctx_local = &self->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][(int32_t)ctx_remote->crypto_type];
-	if(!ctx_local->initialized){
+	ctx_local = &self->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][(int32_t)ctx_remote->rtp.crypto_type];
+	if(!ctx_local->rtp.initialized || (use_different_keys && !ctx_local->rtcp.initialized)){
 		TSK_DEBUG_ERROR("SRTP local context not initialized: Not expected at this state");
 		return -2;
 	}
@@ -613,7 +617,10 @@ static int _trtp_manager_srtp_start(trtp_manager_t* self, tmedia_srtp_type_t srt
 	}
 
 	// Pass SRTP session to the RTCP session manager
-	trtp_rtcp_session_set_srtp_sess(self->rtcp.session, self->srtp_ctx_neg_local ? &self->srtp_ctx_neg_local->session : tsk_null);
+	trtp_rtcp_session_set_srtp_sess(
+			self->rtcp.session, 
+			self->srtp_ctx_neg_local ? (use_different_keys ? &self->srtp_ctx_neg_local->rtcp.session : &self->srtp_ctx_neg_local->rtp.session) : tsk_null
+		);
 
 	/* At this step we are able to encrypt()/decrypt() SRTP data */	
 
@@ -1397,7 +1404,7 @@ tsk_size_t trtp_manager_send_rtp_packet(trtp_manager_t* self, const struct trtp_
 #if HAVE_SRTP
 		err_status_t status;
 		if(self->srtp_ctx_neg_local && !bypass_encrypt){
-			if((status = srtp_protect(self->srtp_ctx_neg_local->session, data_ptr, &data_size)) != err_status_ok){
+			if((status = srtp_protect(self->srtp_ctx_neg_local->rtp.session, data_ptr, &data_size)) != err_status_ok){
 				TSK_DEBUG_ERROR("srtp_protect() failed with error code =%d", (int)status);
 				goto bail;
 			}

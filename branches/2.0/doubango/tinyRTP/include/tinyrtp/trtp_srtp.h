@@ -85,8 +85,7 @@ static const char* trtp_srtp_crypto_type_strings[2] =
 };
 
 
-
-typedef struct trtp_srtp_ctx_xs
+typedef struct trtp_srtp_ctx_internal_xs
 {
 	int32_t tag;
 	trtp_srtp_crypto_type_t crypto_type;
@@ -97,8 +96,18 @@ typedef struct trtp_srtp_ctx_xs
 	srtp_policy_t policy;
 	tsk_bool_t initialized;
 }
+trtp_srtp_ctx_internal_xt;
+
+typedef struct trtp_srtp_ctx_xs
+{
+	// (rtp == rtcp) for SDES but different for DTLS
+	struct trtp_srtp_ctx_internal_xs rtp;
+	struct trtp_srtp_ctx_internal_xs rtcp;
+}
 trtp_srtp_ctx_xt;
 
+int trtp_srtp_ctx_internal_init(struct trtp_srtp_ctx_internal_xs* ctx, int32_t tag, trtp_srtp_crypto_type_t type, uint32_t ssrc);
+int trtp_srtp_ctx_internal_deinit(struct trtp_srtp_ctx_internal_xs* ctx);
 int trtp_srtp_ctx_init(struct trtp_srtp_ctx_xs* ctx, int32_t tag, trtp_srtp_crypto_type_t type, uint32_t ssrc);
 int trtp_srtp_ctx_deinit(struct trtp_srtp_ctx_xs* ctx);
 TINYRTP_API int trtp_srtp_match_line(const char* crypto_line, int32_t* tag, int32_t* crypto_type, char* key, tsk_size_t key_size);
@@ -106,9 +115,9 @@ TINYRTP_API int trtp_srtp_match_line(const char* crypto_line, int32_t* tag, int3
 TINYRTP_API int trtp_srtp_set_crypto(struct trtp_manager_s* rtp_mgr, const char* crypto_line, int32_t idx);
 #define trtp_srtp_set_crypto_local(rtp_mgr, crypto_line) trtp_srtp_set_crypto((rtp_mgr), (crypto_line), TRTP_SRTP_LINE_IDX_LOCAL)
 #define trtp_srtp_set_crypto_remote(rtp_mgr, crypto_line) trtp_srtp_set_crypto((rtp_mgr), (crypto_line), TRTP_SRTP_LINE_IDX_REMOTE)
-TINYRTP_API int trtp_srtp_set_key_and_salt(struct trtp_manager_s* rtp_mgr, trtp_srtp_crypto_type_t crypto_type, const void* key, tsk_size_t key_size, const void* salt, tsk_size_t salt_size, int32_t idx);
-#define trtp_srtp_set_key_and_salt_local(rtp_mgr, crypto_type, key, key_size, salt, salt_size) trtp_srtp_set_key_and_salt((rtp_mgr), (crypto_type), (key), (key_size), (salt), (salt_size), TRTP_SRTP_LINE_IDX_LOCAL)
-#define trtp_srtp_set_key_and_salt_remote(rtp_mgr, crypto_type, key, key_size, salt, salt_size) trtp_srtp_set_key_and_salt((rtp_mgr), (crypto_type), (key), (key_size), (salt), (salt_size), TRTP_SRTP_LINE_IDX_REMOTE)
+TINYRTP_API int trtp_srtp_set_key_and_salt(struct trtp_manager_s* rtp_mgr, trtp_srtp_crypto_type_t crypto_type, const void* key, tsk_size_t key_size, const void* salt, tsk_size_t salt_size, int32_t idx, tsk_bool_t rtp);
+#define trtp_srtp_set_key_and_salt_local(rtp_mgr, crypto_type, key, key_size, salt, salt_size, is_rtp) trtp_srtp_set_key_and_salt((rtp_mgr), (crypto_type), (key), (key_size), (salt), (salt_size), TRTP_SRTP_LINE_IDX_LOCAL, (is_rtp))
+#define trtp_srtp_set_key_and_salt_remote(rtp_mgr, crypto_type, key, key_size, salt, salt_size, is_rtp) trtp_srtp_set_key_and_salt((rtp_mgr), (crypto_type), (key), (key_size), (salt), (salt_size), TRTP_SRTP_LINE_IDX_REMOTE, (is_rtp))
 TINYRTP_API tsk_size_t trtp_srtp_get_local_contexts(struct trtp_manager_s* rtp_mgr, const struct trtp_srtp_ctx_xs ** contexts, tsk_size_t contexts_count);
 TINYRTP_API tsk_bool_t trtp_srtp_is_initialized(struct trtp_manager_s* rtp_mgr);
 TINYRTP_API tsk_bool_t trtp_srtp_is_started(struct trtp_manager_s* rtp_mgr);
