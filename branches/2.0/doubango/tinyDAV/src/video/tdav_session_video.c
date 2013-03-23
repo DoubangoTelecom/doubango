@@ -374,15 +374,18 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 
 		// Encode data
 		tsk_mutex_lock(video->encoder.h_mutex);
-		if(video->encoder.conv_buffer && yuv420p_size){
-			/* producer doesn't support yuv42p */
-			out_size = video->encoder.codec->plugin->encode(video->encoder.codec, video->encoder.conv_buffer, yuv420p_size, &video->encoder.buffer, &video->encoder.buffer_size);
-		}
-		else{
-			/* producer supports yuv42p */
-			out_size = video->encoder.codec->plugin->encode(video->encoder.codec, buffer, size,  &video->encoder.buffer, &video->encoder.buffer_size);
+		if(video->encoder.codec){ // codec is destroyed by stop() which use same mutex
+			if(video->encoder.conv_buffer && yuv420p_size){
+				/* producer doesn't support yuv42p */
+				out_size = video->encoder.codec->plugin->encode(video->encoder.codec, video->encoder.conv_buffer, yuv420p_size, &video->encoder.buffer, &video->encoder.buffer_size);
+			}
+			else{
+				/* producer supports yuv42p */
+				out_size = video->encoder.codec->plugin->encode(video->encoder.codec, buffer, size,  &video->encoder.buffer, &video->encoder.buffer_size);
+			}
 		}
 		tsk_mutex_unlock(video->encoder.h_mutex);
+
 
 		if(out_size){
 			/* Never called, see tdav_session_video_raw_cb() */
@@ -929,11 +932,13 @@ static int tdav_session_video_stop(tmedia_session_t* self)
 	tsk_list_clear_items(video->avpf.packets);
 	tsk_list_unlock(video->avpf.packets);
 
-	ret = tdav_session_av_stop(base);
+	// the encoder must be locked before stopping the session as such action will close all codecs	
 	tsk_mutex_lock(video->encoder.h_mutex);
+	ret = tdav_session_av_stop(base);
 	TSK_OBJECT_SAFE_FREE(video->encoder.codec);
 	tsk_mutex_unlock(video->encoder.h_mutex);
 	TSK_OBJECT_SAFE_FREE(video->decoder.codec);
+
 	return ret;
 }
 
