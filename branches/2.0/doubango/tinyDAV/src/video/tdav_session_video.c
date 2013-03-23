@@ -120,8 +120,36 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 	
 	if(base->rtp_manager && base->rtp_manager->is_started){
 		if(rtp_header){
-			rtp_header->ssrc = base->rtp_manager->rtp.ssrc.local; // uses negotiated SSRC (SDP)
-			// rtp_header->payload_type = base->rtp_manager->rtp.payload_type; // uses negotiated payload type
+			// uses negotiated SSRC (SDP)
+			rtp_header->ssrc = base->rtp_manager->rtp.ssrc.local;
+			// uses negotiated payload type
+			if(base->pt_map.local != base->rtp_manager->rtp.payload_type || base->pt_map.remote != rtp_header->payload_type || base->pt_map.neg == -1){
+				if(rtp_header->codec_id == tmedia_codec_id_none){
+					TSK_DEBUG_WARN("Internal codec id is equal to none");
+				}
+				else{
+					const tsk_list_item_t* item;
+					tsk_bool_t found = tsk_false;
+					tsk_list_lock(TMEDIA_SESSION(base)->neg_codecs);
+					tsk_list_foreach(item, TMEDIA_SESSION(base)->neg_codecs){
+						if((item->data) && ((const tmedia_codec_t*)item->data)->id == rtp_header->codec_id){
+							base->pt_map.local = base->rtp_manager->rtp.payload_type;
+							base->pt_map.remote = rtp_header->payload_type;
+							base->pt_map.neg = atoi(((const tmedia_codec_t*)item->data)->neg_format);
+							found = tsk_true;
+							break;
+						}
+					}
+					tsk_list_unlock(TMEDIA_SESSION(base)->neg_codecs);
+					if(found){
+						TSK_DEBUG_INFO("Codec PT mapping: local=%d, remote=%d, neg=%d", base->pt_map.local, base->pt_map.remote, base->pt_map.neg);
+					}
+					else{
+						TSK_DEBUG_ERROR("Failed to map codec PT: local=%d, remote=%d", base->rtp_manager->rtp.payload_type, rtp_header->payload_type);
+					}
+				}
+			}
+			rtp_header->payload_type = base->pt_map.neg;
 		}
 		packet = rtp_header 
 			? trtp_rtp_packet_create_2(rtp_header)
@@ -628,17 +656,22 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 		tsk_size_t out_size, _size;
 		const void* _buffer;
 
-		if(TMEDIA_SESSION(self)->bypass_decoding){
-			ret = tmedia_consumer_consume(base->consumer, (packet->payload.data ? packet->payload.data : packet->payload.data_const), packet->payload.size, packet->header);
-			goto bail;
-		}
-				
 		// Find the codec to use to decode the RTP payload
 		if(!self->decoder.codec || self->decoder.payload_type != packet->header->payload_type){
 			if((ret = _tdav_session_video_open_decoder(self, packet->header->payload_type))){
 				goto bail;
 			}
-		}		
+		}
+
+		// check whether bypassing is enabled (e.g. rtcweb breaker ON and media coder OFF)
+		if(TMEDIA_SESSION(self)->bypass_decoding){
+			// set codec id for internal use (useful to find codec with dynamic payload type)
+			TRTP_RTP_HEADER(packet->header)->codec_id = self->decoder.codec->id;
+			// consume the frame
+			ret = tmedia_consumer_consume(base->consumer, (packet->payload.data ? packet->payload.data : packet->payload.data_const), packet->payload.size, packet->header);
+			goto bail;
+		}
+		
 		
 		// Decode data
 		out_size = self->decoder.codec->plugin->decode(

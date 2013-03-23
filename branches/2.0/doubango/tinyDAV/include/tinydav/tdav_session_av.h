@@ -103,6 +103,13 @@ typedef struct tdav_session_av_s
 		tsk_bool_t is_fatal;
 		void* tid[1];
 	} last_error;
+	
+	// codec's payload type mapping used when bypassing is enabled
+	struct{
+		int8_t local;
+		int8_t remote;
+		int8_t neg;
+	} pt_map;
 
 	TSK_DECLARE_SAFEOBJ;
 }

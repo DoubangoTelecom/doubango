@@ -64,6 +64,9 @@ typedef struct trtp_rtp_header_s
 	uint32_t timestamp;
 	uint32_t ssrc;
 	uint32_t csrc[15];
+
+	// for internal use
+	enum tmedia_codec_id_e codec_id;
 }
 trtp_rtp_header_t;
 
