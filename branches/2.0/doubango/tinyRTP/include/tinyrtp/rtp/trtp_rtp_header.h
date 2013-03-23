@@ -29,7 +29,7 @@
 #define TINYRTP_RTP_HEADER_H
 
 #include "tinyrtp_config.h"
-
+#include "tinymedia/tmedia_codec.h"
 #include "tsk_buffer.h"
 
 TRTP_BEGIN_DECLS
