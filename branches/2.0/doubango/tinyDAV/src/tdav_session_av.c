@@ -251,6 +251,9 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 		TSK_DEBUG_ERROR("Failed to create SDP caps");
 		return -1;
 	}
+
+	// pt mapping (when bypassing is enabled)
+	self->pt_map.local = self->pt_map.remote = self->pt_map.neg = -1;
 	
 	return 0;
 }

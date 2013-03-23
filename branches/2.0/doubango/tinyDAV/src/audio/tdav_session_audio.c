@@ -365,7 +365,6 @@ static int tdav_session_audio_start(tmedia_session_t* self)
 	}
 
 	if(base->rtp_manager){
-		trtp_manager_set_payload_type(base->rtp_manager, audio->encoder.codec->neg_format ? atoi(audio->encoder.codec->neg_format) : atoi(audio->encoder.codec->format));
 		/* Denoise (AEC, Noise Suppression, AGC) */
 		if(audio->denoise){
 			tmedia_denoise_close(audio->denoise);
