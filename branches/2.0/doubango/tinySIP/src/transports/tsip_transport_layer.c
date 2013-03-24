@@ -1145,7 +1145,7 @@ int tsip_transport_layer_start(tsip_transport_layer_t* self)
 						// store peer
 						tsip_transport_add_stream_peer_2(transport, fd, transport->type, tsk_false, self->stack->network.proxy_cscf[transport_idx], self->stack->network.proxy_cscf_port[transport_idx]);
 						// give the socket chance to connect
-						if((ret = tnet_sockfd_waitUntilWritable(fd, TSIP_CONNECT_TIMEOUT)) || (ret = tnet_sockfd_waitUntilWritable(fd, TSIP_CONNECT_TIMEOUT))){
+						if((ret = tnet_sockfd_waitUntilWritable(fd, TSIP_CONNECT_TIMEOUT)) || (ret = tnet_sockfd_waitUntilReadable(fd, TSIP_CONNECT_TIMEOUT))){
 							TSK_DEBUG_INFO("%d milliseconds elapsed and the socket is still not connected.", TSIP_CONNECT_TIMEOUT);
 							// dot not exit, store the outgoing data until connection succeed
 						}
