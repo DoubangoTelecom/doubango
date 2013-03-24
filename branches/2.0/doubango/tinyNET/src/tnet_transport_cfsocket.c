@@ -54,7 +54,8 @@ typedef struct transport_socket_xs
 {
 	tnet_fd_t fd;
 	tsk_bool_t owner;
-	tsk_bool_t connected;
+	tsk_bool_t readable;
+    tsk_bool_t writable;
 	tsk_bool_t paused;
     tsk_bool_t is_client;
     
@@ -630,13 +631,16 @@ void __CFReadStreamClientCallBack(CFReadStreamRef stream, CFStreamEventType even
     switch(eventType) {
         case kCFStreamEventOpenCompleted:
         {
-            TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> kCFStreamEventOpenCompleted");
-            TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, sock->fd);
+            TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> kCFStreamEventOpenCompleted(fd=%d)", fd);
+            sock->readable = tsk_true;
+            if(sock->writable){
+                TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, sock->fd);
+            }
             break;
         }
         case kCFStreamEventEndEncountered:
         {
-            TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> kCFStreamEventEndEncountered");
+            TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> kCFStreamEventEndEncountered(fd=%d)", fd);
             break;
         }
         case kCFStreamEventHasBytesAvailable:
@@ -652,7 +656,7 @@ void __CFReadStreamClientCallBack(CFReadStreamRef stream, CFStreamEventType even
                 CFIndex index = CFErrorGetCode(error);
                 CFRelease(error);
                 
-                TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> Error %lu", index);
+                TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> Error=%lu, fd=%d", index, fd);
             }
             
             TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, sock->fd);
@@ -692,20 +696,23 @@ void __CFWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventType ev
     switch(eventType) {
         case kCFStreamEventOpenCompleted:
         {
-            TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> kCFStreamEventOpenCompleted");
-            
-            sock->connected = tsk_true;
-            TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, sock->fd);
+            TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> kCFStreamEventOpenCompleted(fd=%d)", fd);
+            // still not connected, see kCFStreamEventCanAcceptBytes
             break;
         }
         case kCFStreamEventCanAcceptBytes:
         {
-            TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> kCFStreamEventCanAcceptBytes");
+            // To avoid blocking, call this function only if CFWriteStreamCanAcceptBytes returns true or after the stream’s client (set with CFWriteStreamSetClient) is notified of a kCFStreamEventCanAcceptBytes event.
+            TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> kCFStreamEventCanAcceptBytes(fd=%d)", fd);
+            sock->writable = tsk_true;
+            if(sock->readable){
+                TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, sock->fd);
+            }
             break;
         }
         case kCFStreamEventEndEncountered:
         {
-            TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> kCFStreamEventEndEncountered");
+            TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> kCFStreamEventEndEncountered(fd=%d)", fd);
             break;
         }
         case kCFStreamEventErrorOccurred:
@@ -716,7 +723,7 @@ void __CFWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventType ev
                 CFIndex index = CFErrorGetCode(error);
                 CFRelease(error);
                 
-                TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> Error %lu", index);
+                TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> Error=%lu, fd=%d", index, fd);
             }
             
             TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, sock->fd);
@@ -874,7 +881,7 @@ int wrapSocket(tnet_transport_t *transport, transport_socket_xt *sock)
                               &__CFReadStreamClientCallBack, 
                               &streamContext);
         CFWriteStreamSetClient(sock->cf_write_stream, 
-                               kCFStreamEventOpenCompleted | kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered, 
+                               kCFStreamEventOpenCompleted | kCFStreamEventErrorOccurred | kCFStreamEventCanAcceptBytes |kCFStreamEventEndEncountered,
                                &__CFWriteStreamClientCallBack, 
                                &streamContext);
         

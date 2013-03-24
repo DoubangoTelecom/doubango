@@ -51,7 +51,7 @@
 #define TSIP_MIN_STREAM_CHUNCK_SIZE 0xA0
 
 #if !defined(TSIP_CONNECT_TIMEOUT)
-#	define	TSIP_CONNECT_TIMEOUT 100
+#	define	TSIP_CONNECT_TIMEOUT 1000
 #endif
 
 extern tsip_event_t* tsip_event_create(tsip_ssession_t* ss, short code, const char* phrase, const tsip_message_t* sipmessage, tsip_event_type_t type);
@@ -1141,10 +1141,11 @@ int tsip_transport_layer_start(tsip_transport_layer_t* self)
 							TSK_DEBUG_ERROR("Failed to connect the SIP transport");
 							return -3;
 						}
+                        TSK_DEBUG_INFO("SIP transport fd=%d", fd);
 						// store peer
 						tsip_transport_add_stream_peer_2(transport, fd, transport->type, tsk_false, self->stack->network.proxy_cscf[transport_idx], self->stack->network.proxy_cscf_port[transport_idx]);
 						// give the socket chance to connect
-						if((ret = tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT))){
+						if((ret = tnet_sockfd_waitUntilWritable(fd, TSIP_CONNECT_TIMEOUT)) || (ret = tnet_sockfd_waitUntilWritable(fd, TSIP_CONNECT_TIMEOUT))){
 							TSK_DEBUG_INFO("%d milliseconds elapsed and the socket is still not connected.", TSIP_CONNECT_TIMEOUT);
 							// dot not exit, store the outgoing data until connection succeed
 						}
