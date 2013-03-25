@@ -196,7 +196,8 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		if(base->producer->audio.rate != audio->encoder.codec->plugin->rate){
 			tsk_size_t resampler_result_size = 0;
 			int bytesPerSample = (base->producer->audio.bits_per_sample >> 3);
-
+			TSK_DEBUG_INFO("Create audio resampler(%s): producer->audio.rate=%d, encoder.codec->plugin->rate=%d, bytesPerSample=%d", audio->encoder.codec->plugin->desc, base->producer->audio.rate, audio->encoder.codec->plugin->rate, bytesPerSample);
+			
 			if(!audio->encoder.resampler.instance){
 				audio->encoder.resampler.instance = _tdav_session_audio_resampler_create(bytesPerSample, base->producer->audio.rate, audio->encoder.codec->plugin->rate,base->producer->audio.ptime, base->producer->audio.channels, base->producer->audio.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, &audio->encoder.resampler.buffer, &audio->encoder.resampler.buffer_size);
 			}
@@ -307,10 +308,11 @@ static int tdav_session_audio_get(tmedia_session_t* self, tmedia_param_t* param)
 			return -4;
 		}
 		else if(param->plugin_type == tmedia_ppt_producer){
-			if(!TDAV_SESSION_AUDIO(self)->encoder.codec){
-				TSK_DEBUG_ERROR("No codec for the producer");
+			const tmedia_codec_t* codec;
+			if(!(codec = TDAV_SESSION_AUDIO(self)->encoder.codec)){
+				codec = tdav_session_av_get_best_neg_codec((const tdav_session_av_t*)self);
 			}
-			*((tsk_object_t**)param->value) = tsk_object_ref(TDAV_SESSION_AUDIO(self)->encoder.codec);
+			*((tsk_object_t**)param->value) = tsk_object_ref(TSK_OBJECT(codec));
 			return 0;
 		}
 	}

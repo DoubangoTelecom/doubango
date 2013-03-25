@@ -21,13 +21,6 @@
 */
 #include "MediaSessionMgr.h"
 
-#if ANDROID
-static void *__droid_destroy_mgr(void *mgr){	
-	TSK_OBJECT_SAFE_FREE(mgr);
-	return tsk_null;
-}
-#endif
-
 //
 //	Codec
 //
@@ -112,19 +105,7 @@ MediaSessionMgr::MediaSessionMgr(tmedia_session_mgr_t* pWrappedMgr)
 
 MediaSessionMgr::~MediaSessionMgr()
 {
-#if ANDROID
-	// On Android, deleting the manager from the managed code will trigger OnPluginDestroyed() event
-	// for each plugin associated to this manager (audio,video,...consumers/producers)
-	void* tid[1] = { tsk_null };
-	if(tsk_thread_create(tid, __droid_destroy_mgr, m_pWrappedMgr) == 0){
-		tsk_thread_join(tid);
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to start the thread");
-	}
-#else
 	TSK_OBJECT_SAFE_FREE(m_pWrappedMgr);
-#endif
 }
 
 bool MediaSessionMgr::sessionSetInt32(twrap_media_type_t media, const char* key, int32_t value)

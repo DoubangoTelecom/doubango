@@ -139,6 +139,7 @@ static int audio_producer_opensles_prepare(tmedia_producer_t* _self, const tmedi
 	if(ret == 0){
 		// allocate buffer
 		int xsize = ((TMEDIA_PRODUCER(self)->audio.ptime * TMEDIA_PRODUCER(self)->audio.rate) / 1000) * (TMEDIA_PRODUCER(self)->audio.bits_per_sample >> 3);
+		AUDIO_OPENSLES_DEBUG_INFO("producer buffer xsize = %d", xsize);
 		if(!(self->buffer.ptr = tsk_realloc(self->buffer.ptr, xsize))){
 			AUDIO_OPENSLES_DEBUG_ERROR("Failed to allocate buffer with size = %d", xsize);
 			self->buffer.size = 0;

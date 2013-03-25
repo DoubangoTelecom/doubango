@@ -360,6 +360,7 @@ int SLAudioDevice::InitPlayout()
 		else{
 			static SLint32 _playerStreamType = m_bSpeakerOn ? SL_ANDROID_STREAM_MEDIA : SL_ANDROID_STREAM_VOICE;
 			static SLint32 _playerStreamTypeSize = sizeof(SLint32);
+			AUDIO_OPENSLES_DEBUG_INFO("_playerStreamType=%d", _playerStreamType);
 			if((slResult = (*_playerStreamConfig)->SetConfiguration(_playerStreamConfig, SL_ANDROID_KEY_STREAM_TYPE, &_playerStreamType, _playerStreamTypeSize))){
 				AUDIO_OPENSLES_DEBUG_ERROR("Failed to set player stream type with error code = %d", slResult);
 				return -2;
@@ -601,6 +602,7 @@ int SLAudioDevice::SetStereoRecording(bool bEnabled)
 {
 	CHECK_TRUE(m_bInitialized, "Not initialized");
 	CHECK_RECORDING_NOT_INITIALIZED();
+	AUDIO_OPENSLES_DEBUG_INFO("SetStereoRecording(%s)", bEnabled ? "True" : "False");
 	m_bStereoRecording = bEnabled;
 	return 0;
 }
@@ -683,13 +685,29 @@ int SLAudioDevice::InitRecording()
     audioSink.pFormat = (void *) &pcm;
     audioSink.pLocator = (void *) &simpleBufferQueue;
 
-    const SLInterfaceID id[1] = { SL_IID_ANDROIDSIMPLEBUFFERQUEUE };
-    const SLboolean req[1] = { SL_BOOLEAN_TRUE };
-    slResult = (*m_slEngine)->CreateAudioRecorder(m_slEngine, &m_slRecorder, &audioSource, &audioSink, 1, id, req);
+    const SLInterfaceID id[2] = { SL_IID_ANDROIDSIMPLEBUFFERQUEUE, SL_IID_ANDROIDCONFIGURATION };
+    const SLboolean req[2] = { SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE };
+    slResult = (*m_slEngine)->CreateAudioRecorder(m_slEngine, &m_slRecorder, &audioSource, &audioSink, 2, id, req);
     if (slResult != SL_RESULT_SUCCESS) {
         AUDIO_OPENSLES_DEBUG_ERROR("Failed to create Recorder with error code = %d", slResult);
         return -1;
     }
+
+	// Set stream type
+	SLAndroidConfigurationItf slRecorderConfig;
+	SLint32 slStreamType = SL_ANDROID_RECORDING_PRESET_GENERIC;
+    slResult = (*m_slRecorder)->GetInterface(m_slRecorder, SL_IID_ANDROIDCONFIGURATION, &slRecorderConfig);
+    if(slResult != SL_RESULT_SUCCESS) {
+        AUDIO_OPENSLES_DEBUG_ERROR("GetInterface(SL_IID_ANDROIDCONFIGURATION) failed with error code = %d", slResult);
+        return -1;
+    }
+	AUDIO_OPENSLES_DEBUG_INFO("Recording stream type = %d", slStreamType);
+    slResult = (*slRecorderConfig)->SetConfiguration(slRecorderConfig, SL_ANDROID_KEY_RECORDING_PRESET, &slStreamType, sizeof(SLint32));
+	if(slResult != SL_RESULT_SUCCESS) {
+        AUDIO_OPENSLES_DEBUG_ERROR("SetConfiguration(SL_ANDROID_KEY_RECORDING_PRESET) failed with error code = %d", slResult);
+        return -1;
+    }
+	
 
     // Realizing the recorder in synchronous mode.
     slResult = (*m_slRecorder)->Realize(m_slRecorder, SL_BOOLEAN_FALSE);
@@ -1017,7 +1035,9 @@ void SLAudioDevice::RecorderSimpleBufferQueueCallback(SLAndroidSimpleBufferQueue
         const unsigned int noSamp10ms = This->m_nRecordingSampleRate / 100;
         
 #if 1 // not using async thread
-        // write the empty buffer to the queue
+		// push data
+		This->PushRecordingData(This->_recQueueBuffer[0], noSamp10ms);
+        // enqueue new buffer
         SLresult slResult = (*This->m_slRecorderSimpleBufferQueue)->Enqueue(
               This->m_slRecorderSimpleBufferQueue,
               (void*) This->_recQueueBuffer[0],
@@ -1026,8 +1046,6 @@ void SLAudioDevice::RecorderSimpleBufferQueueCallback(SLAndroidSimpleBufferQueue
 			AUDIO_OPENSLES_DEBUG_WARN("Failed to enqueue recording buffer with error code = %d", slResult);
             return;
         }
-		// push data
-		This->PushRecordingData(This->_recQueueBuffer[0], noSamp10ms);
 #else
         unsigned int dataPos = 0;
 		uint16_t bufPos = 0;

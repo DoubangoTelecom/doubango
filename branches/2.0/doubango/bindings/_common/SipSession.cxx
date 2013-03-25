@@ -225,36 +225,6 @@ InviteSession::~InviteSession()
 	}
 }
 
-#if ANDROID
-static void *__droid_hangup(void *param)
-{	
-	twrap_async_action_t* asyn_action = (twrap_async_action_t*)param;
-	const tsip_action_handle_t* action_cfg = asyn_action->config ? asyn_action->config->getHandle() : tsk_null;
-
-	tsip_action_BYE(asyn_action->session,
-		TSIP_ACTION_SET_CONFIG(action_cfg),
-		TSIP_ACTION_SET_NULL());
-
-	return tsk_null;
-}
-
-bool InviteSession::hangup(ActionConfig* config/*=tsk_null*/)
-{
-	void* tid[1] = {0};
-	tsip_ssession_handle_t *handle;
-	int ret;
-	twrap_async_action_t asyn_action = {0};
-	
-	handle = tsk_object_ref(m_pHandle);
-	asyn_action.config = config;
-	asyn_action.session = handle;
-	ret = tsk_thread_create(tid, __droid_hangup, &asyn_action);
-	tsk_thread_join(tid);
-	tsk_object_unref(handle);
-
-	return (ret == 0);
-}
-#else
 bool InviteSession::hangup(ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
@@ -263,38 +233,7 @@ bool InviteSession::hangup(ActionConfig* config/*=tsk_null*/)
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
-#endif
 
-#if ANDROID
-static void *__droid_reject(void *param)
-{	
-	twrap_async_action_t* asyn_action = (twrap_async_action_t*)param;
-	const tsip_action_handle_t* action_cfg = asyn_action->config ? asyn_action->config->getHandle() : tsk_null;
-
-	tsip_api_common_reject(asyn_action->session,
-		TSIP_ACTION_SET_CONFIG(action_cfg),
-		TSIP_ACTION_SET_NULL());
-
-	return tsk_null;
-}
-
-bool InviteSession::reject(ActionConfig* config/*=tsk_null*/)
-{
-	void* tid[1] = {0};
-	tsip_ssession_handle_t *handle;
-	int ret;
-	twrap_async_action_t asyn_action = {0};
-	
-	handle = tsk_object_ref(m_pHandle);
-	asyn_action.config = config;
-	asyn_action.session = handle;
-	ret = tsk_thread_create(tid, __droid_reject, &asyn_action);
-	tsk_thread_join(tid);
-	tsk_object_unref(handle);
-
-	return (ret == 0);
-}
-#else
 bool InviteSession::reject(ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
@@ -303,39 +242,7 @@ bool InviteSession::reject(ActionConfig* config/*=tsk_null*/)
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
-#endif
 
-#if ANDROID
-static void *__droid_accept(void *param)
-{	
-	twrap_async_action_t* asyn_action = (twrap_async_action_t*)param;
-	const tsip_action_handle_t* action_cfg = asyn_action->config ? asyn_action->config->getHandle() : tsk_null;
-
-	tsip_api_common_accept(asyn_action->session,
-		TSIP_ACTION_SET_CONFIG(action_cfg),
-		TSIP_ACTION_SET_NULL());
-
-	return tsk_null;
-}
-
-bool InviteSession::accept(ActionConfig* config/*=tsk_null*/)
-{
-	void* tid[1] = {0};
-	tsip_ssession_handle_t *handle;
-	int ret;
-	twrap_async_action_t asyn_action = {0};
-	
-	
-	handle = tsk_object_ref(m_pHandle);
-	asyn_action.config = config;
-	asyn_action.session = handle;
-	ret = tsk_thread_create(tid, __droid_accept, &asyn_action);
-	tsk_thread_join(tid);
-	tsk_object_unref(handle);
-
-	return (ret == 0);
-}
-#else
 bool InviteSession::accept(ActionConfig* config/*=tsk_null*/)
 {
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
@@ -344,7 +251,6 @@ bool InviteSession::accept(ActionConfig* config/*=tsk_null*/)
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
-#endif
 
 bool InviteSession::sendInfo(const void* payload, unsigned len, ActionConfig* config/*=tsk_null*/)
 {
@@ -396,49 +302,6 @@ CallSession::CallSession(SipStack* Stack, tsip_ssession_handle_t* handle)
 CallSession::~CallSession()
 {
 }
-
-#define ANDROID32 1
-
-#if ANDROID
-typedef struct twrap_async_action_call_s
-{
-	const tsip_ssession_handle_t *session;
-	const ActionConfig* config;
-	tmedia_type_t media_type;
-}
-twrap_async_action_call_t;
-
-static void *__droid_call_thread(void *param)
-{	
-	twrap_async_action_call_t* asyn_action = (twrap_async_action_call_t*)param;
-	const tsip_action_handle_t* action_cfg = asyn_action->config ? asyn_action->config->getHandle() : tsk_null;
-
-	tsip_action_INVITE(asyn_action->session, asyn_action->media_type,
-		TSIP_ACTION_SET_CONFIG(action_cfg),
-		TSIP_ACTION_SET_NULL());
-
-	return tsk_null;
-}
-
-static bool __droid_call(tsip_ssession_handle_t * session_handle, tmedia_type_t type, ActionConfig* config/*=tsk_null*/)
-{
-	void* tid[1] = {0};
-	tsip_ssession_handle_t *handle;
-	int ret;
-	twrap_async_action_call_t asyn_action = {0};
-	
-	handle = tsk_object_ref(session_handle);
-	asyn_action.config = config;
-	asyn_action.session = handle;
-	asyn_action.media_type = type;
-
-	ret = tsk_thread_create(tid, __droid_call_thread, &asyn_action);
-	tsk_thread_join(tid);
-	tsk_object_unref(handle);
-
-	return (ret == 0);
-}
-#endif
 
 /* @deprecated */
 bool CallSession::callAudio(const SipUri* remoteUri, ActionConfig* config/*=tsk_null*/)
@@ -496,15 +359,11 @@ bool CallSession::call(const SipUri* remoteUri, twrap_media_type_t media, Action
 	tsip_ssession_set(m_pHandle,
 		TSIP_SSESSION_SET_TO_OBJ(remoteUri->getWrappedUri()),
 		TSIP_SSESSION_SET_NULL());
-#if ANDROID
-	__droid_call(m_pHandle, twrap_get_media_type(media), config);
-	return true;
-#else
+
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
 	return (tsip_api_invite_send_invite(m_pHandle, twrap_get_media_type(media),
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
-#endif
 }
 
 bool CallSession::setSupportedCodecs(int32_t codecs)

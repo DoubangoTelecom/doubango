@@ -476,7 +476,6 @@ int audio_opensles_instance_start_producer(audio_opensles_instance_handle_t* _se
 done:
 	tsk_safeobj_unlock(self);
 	return (self->isProducerStarted ? 0 : -1);
-	return 0;
 }
 
 int audio_opensles_instance_stop_consumer(audio_opensles_instance_handle_t* _self)
