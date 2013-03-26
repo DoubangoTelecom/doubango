@@ -9,7 +9,7 @@ This section explains how to build the project using *CentOS 64* but could be ea
 ==Preparing the system==
 {{{
 sudo yum update
-sudo yum install make libtool autoconf subversion git wget
+sudo yum install make libtool autoconf subversion git wget libogg-devel
 }}}
 
 The first step is to checkout Doubango 2.0 source code:
