@@ -82,6 +82,7 @@ typedef struct tdav_session_audio_s
 	struct tmedia_jitterbuffer_s* jitterbuffer;
 	
 	tdav_session_audio_dtmfe_L_t* dtmf_events;
+	tsk_bool_t is_sending_dtmf_events;
 }
 tdav_session_audio_t;
 

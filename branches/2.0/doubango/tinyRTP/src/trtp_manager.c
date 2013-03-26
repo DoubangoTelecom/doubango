@@ -1352,7 +1352,7 @@ tsk_size_t trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_siz
 	}
 #endif
 	/* create packet with header */
-	if(!(packet = trtp_rtp_packet_create(self->rtp.ssrc.local, self->rtp.seq_num++, self->rtp.timestamp, self->rtp.payload_type, marker))){
+	if(!(packet = trtp_rtp_packet_create(self->rtp.ssrc.local, ++self->rtp.seq_num, self->rtp.timestamp, self->rtp.payload_type, marker))){
 		return 0;
 	}
 	if(last_packet){

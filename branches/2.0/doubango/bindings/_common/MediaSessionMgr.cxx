@@ -24,9 +24,9 @@
 //
 //	Codec
 //
-Codec::Codec(struct tmedia_codec_s* pWrappedCodec)
+Codec::Codec(const struct tmedia_codec_s* pWrappedCodec)
 {
-	m_pWrappedCodec = (struct tmedia_codec_s*)tsk_object_ref(pWrappedCodec);
+	m_pWrappedCodec = (struct tmedia_codec_s*)tsk_object_ref(TSK_OBJECT(pWrappedCodec));
 }
 
 Codec::~Codec()
