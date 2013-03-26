@@ -33,13 +33,14 @@ class TINYWRAP_API Codec
 {
 public:
 #if !defined(SWIG)
-	Codec(struct tmedia_codec_s* pWrappedCodec);
+	Codec(const struct tmedia_codec_s* pWrappedCodec);
 #endif
 	virtual ~Codec();
 
 public:
 #if !defined(SWIG)
 	const struct tmedia_codec_s* getWrappedCodec(){ return m_pWrappedCodec; }
+	inline bool isOpened(){ return (m_pWrappedCodec && (m_pWrappedCodec->opened == tsk_true)); }
 #endif
 	twrap_media_type_t getMediaType();
 	const char* getName();

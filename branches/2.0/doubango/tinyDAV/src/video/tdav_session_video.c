@@ -1111,6 +1111,7 @@ static tsk_object_t* tdav_session_video_ctor(tsk_object_t * self, va_list * app)
 static tsk_object_t* tdav_session_video_dtor(tsk_object_t * self)
 { 
 	tdav_session_video_t *video = self;
+	TSK_DEBUG_INFO("*** tdav_session_video_t destroyed ***");
 	if(video){
 		tdav_session_video_stop((tmedia_session_t*)video);
 		// deinit self (rtp manager should be destroyed after the producer)

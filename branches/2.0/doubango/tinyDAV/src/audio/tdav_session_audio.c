@@ -191,6 +191,15 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 			}
 			tsk_safeobj_unlock(base);
 		}
+		// check if we're sending DTMF or not
+		if(audio->is_sending_dtmf_events){
+			if(base->rtp_manager){
+				// increment the timestamp
+				base->rtp_manager->rtp.timestamp += TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec)/*duration*/;
+			}
+			TSK_DEBUG_INFO("Skiping audio frame as we're sending DTMF...");
+			return 0;
+		}
 		
 		// resample if needed
 		if(base->producer->audio.rate != audio->encoder.codec->plugin->rate){
@@ -397,7 +406,6 @@ static int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 	uint16_t duration;
 	tdav_session_audio_dtmfe_t *dtmfe, *copy;
 	static uint32_t timestamp = 0x3200;
-	static uint32_t seq_num =  0;
 	int format = 101;
 
 	if(!self){
@@ -486,33 +494,43 @@ static int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 	// ref()(thread safeness)
 	audio = tsk_object_ref(audio);
 
+	// says we're sending DTMF digits to avoid mixing with audio (SRTP won't let this happen because of senquence numbers)
+	// flag will be turned OFF when the list is empty
+	audio->is_sending_dtmf_events = tsk_true;
+
 	duration = (rate * ptime)/1000;
 	/* Not mandatory but elegant */
 	timestamp += duration;
 
-	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*1, ++seq_num, timestamp, (uint8_t)format, tsk_true, tsk_false);
+	// lock() list
+	tsk_list_lock(audio->dtmf_events);
+
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*1, ++base->rtp_manager->rtp.seq_num, timestamp, (uint8_t)format, tsk_true, tsk_false);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*0, _tdav_session_audio_dtmfe_timercb, copy);
-	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*2, ++seq_num, timestamp, (uint8_t)format, tsk_false, tsk_false);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*2, ++base->rtp_manager->rtp.seq_num, timestamp, (uint8_t)format, tsk_false, tsk_false);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*1, _tdav_session_audio_dtmfe_timercb, copy);
-	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*3, ++seq_num, timestamp, (uint8_t)format, tsk_false, tsk_false);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*3, ++base->rtp_manager->rtp.seq_num, timestamp, (uint8_t)format, tsk_false, tsk_false);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*2, _tdav_session_audio_dtmfe_timercb, copy);
 
-	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++base->rtp_manager->rtp.seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*3, _tdav_session_audio_dtmfe_timercb, copy);
-	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++base->rtp_manager->rtp.seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*4, _tdav_session_audio_dtmfe_timercb, copy);
-	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++base->rtp_manager->rtp.seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*5, _tdav_session_audio_dtmfe_timercb, copy);
 
+	// unlock() list
+	tsk_list_unlock(audio->dtmf_events);
+
 	// unref()(thread safeness)
 	audio = tsk_object_unref(audio);
-
+	
 	return 0;
 }
 
@@ -634,18 +652,26 @@ static tdav_session_audio_dtmfe_t* _tdav_session_audio_dtmfe_create(const tdav_s
 static int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t timer_id)
 {
 	tdav_session_audio_dtmfe_t* dtmfe = (tdav_session_audio_dtmfe_t*)arg;
+	tdav_session_audio_t *audio;
 
-	if(!dtmfe || !dtmfe->session){
+	if(!dtmfe || !dtmfe->session || !dtmfe->session->dtmf_events){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
 	/* Send the data */
-	TSK_DEBUG_INFO("Sending DTMF event");
+	TSK_DEBUG_INFO("Sending DTMF event...");
 	trtp_manager_send_rtp_packet(TDAV_SESSION_AV(dtmfe->session)->rtp_manager, dtmfe->packet, tsk_false);
 
+	
+	audio = tsk_object_ref(TSK_OBJECT(dtmfe->session));
+	tsk_list_lock(audio->dtmf_events);
 	/* Remove and delete the event from the queue */
-	tsk_list_remove_item_by_data(dtmfe->session->dtmf_events, dtmfe);
+	tsk_list_remove_item_by_data(audio->dtmf_events, dtmfe);
+	/* Check if there are pending events */
+	audio->is_sending_dtmf_events = !TSK_LIST_IS_EMPTY(audio->dtmf_events);
+	tsk_list_unlock(audio->dtmf_events);
+	tsk_object_unref(audio);
 
 	return 0;
 }
@@ -727,6 +753,7 @@ static tsk_object_t* tdav_session_audio_ctor(tsk_object_t * self, va_list * app)
 static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 { 
 	tdav_session_audio_t *audio = self;
+	TSK_DEBUG_INFO("*** tdav_session_audio_t destroyed ***");
 	if(audio){
 		tdav_session_audio_stop((tmedia_session_t*)audio);
 		// Do it in this order (deinit self first)
