@@ -431,6 +431,9 @@ int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
 	if(TSIP_DIALOG_GET_STACK(self)->security.secagree_mech && tsk_striequals(TSIP_DIALOG_GET_STACK(self)->security.secagree_mech, "ipsec-3gpp")){
 		tsip_transport_cleanupSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport);
 	}
+	/* Reset values to avoid issues when the session is reused */
+	self->unregistering = tsk_false;
+	TSK_OBJECT_SAFE_FREE(self->last_iRegister);
 
 	/* Alert the user */
 	TSIP_DIALOG_SIGNAL_2(self, tsip_event_code_dialog_terminated,
