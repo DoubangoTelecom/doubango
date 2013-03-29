@@ -557,7 +557,7 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, tsk_bool_t lr)
 // remote ip should not be FQDN
 int tsip_transport_add_stream_peer_2(tsip_transport_t *self, tnet_fd_t local_fd, enum tnet_socket_type_e type, tsk_bool_t connected, const char* remote_host, tnet_port_t remote_port)
 {
-	tsip_transport_stream_peer_t* peer;
+	tsip_transport_stream_peer_t* peer = tsk_null;
 	tnet_ip_t remote_ip;
 	int ret;
 
