@@ -20,8 +20,8 @@ svn checkout http://doubango.googlecode.com/svn/branches/2.0/doubango doubango
 ===Building libsrtp===
 libsrtp is required.
 {{{
-wget http://srtp.sourceforge.net/srtp-1.4.2.tgz
-tar -xvzf srtp-1.4.2.tgz
+wget http://downloads.sourceforge.net/project/srtp/srtp/1.4.4/srtp-1.4.4.tgz
+tar -xvzf srtp-1.4.4.tgz
 cd srtp
 ./configure --enable-pic && make && make install
 }}}
