@@ -22,7 +22,7 @@ libsrtp is required.
 {{{
 cvs -d:pserver:anonymous@srtp.cvs.sourceforge.net:/cvsroot/srtp co -P srtp
 cd srtp
-./configure --enable-pic && make && make install
+CFLAGS="-fPIC" ./configure --enable-pic && make && make install
 }}}
 
 ===Building OpenSSL===
