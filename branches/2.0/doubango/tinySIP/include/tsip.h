@@ -48,9 +48,9 @@
 TSIP_BEGIN_DECLS
 
 #define TSIP_IARI_GSMAIS				"urn%3Aurn-7%3A3gpp-application.ims.iari.gsma-is"
-#define TSIP_IARI_QUOTED_GSMAIS			"\""TSIP_IARI_GSMAIS"\""
+#define TSIP_IARI_QUOTED_GSMAIS			"\"" TSIP_IARI_GSMAIS "\""
 #define TSIP_ICSI_MMTEL_PSVOICE			"urn%3Aurn-7%3A3gpp-service.ims.icsi.mmtel"
-#define TSIP_ICSI_QUOTED_MMTEL_PSVOICE	"\""TSIP_ICSI_MMTEL_PSVOICE"\""
+#define TSIP_ICSI_QUOTED_MMTEL_PSVOICE	"\"" TSIP_ICSI_MMTEL_PSVOICE "\""
 
 #define TSIP_STACK(self)		((tsip_stack_t*)(self))
 
