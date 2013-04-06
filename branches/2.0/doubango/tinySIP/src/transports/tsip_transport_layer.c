@@ -848,7 +848,7 @@ clean_routes:
 			{
 				if(msg->firstVia->received)
 				{
-					if(msg->firstVia->rport>0)
+					if(msg->firstVia->rport > 0)
 					{
 						/*	RFC 3581 - 4.  Server Behavior
 							When a server attempts to send a response, it examines the topmost

@@ -98,14 +98,26 @@ tsip_transport_t* tsip_transport_create(tsip_stack_t* stack, const char* host, t
 	return transport;
 }
 
-/* add Via header using the transport config */
+/* add Via header using the transport config 
+must be called after update_aor()
+*/
 int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip_message_t *msg)
 {
-	tnet_ip_t ip;
+	tnet_ip_t ip = { '\0' };
 	tnet_port_t port;
 	int ret;
+	int32_t transport_idx;
 
-	if((ret = tsip_transport_get_ip_n_port(self, &ip, &port))){
+	if((transport_idx = tsip_transport_get_idx_by_name(self->protocol)) == -1){
+		transport_idx = self->stack->network.transport_idx_default;
+	}
+
+	/* we always use same port to send() and recv() msg which means Via and Contact headers are identical */
+	if(self->stack->network.aor.ip[transport_idx] && self->stack->network.aor.port[transport_idx]){
+		memcpy(ip, self->stack->network.aor.ip[transport_idx], TSK_MIN(tsk_strlen(self->stack->network.aor.ip[transport_idx]), sizeof(ip)));
+		port = self->stack->network.aor.port[transport_idx];
+	}
+	else if((ret = tsip_transport_get_ip_n_port(self, &ip, &port))){
 		return ret;
 	}
 	
@@ -424,8 +436,12 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 			const tsk_bool_t update = ( (!TSIP_REQUEST_IS_ACK(msg) || (TSIP_REQUEST_IS_ACK(msg) && !msg->firstVia)) && !TSIP_REQUEST_IS_CANCEL(msg) )
 				|| ( TNET_SOCKET_TYPE_IS_WS(msg->src_net_type) || TNET_SOCKET_TYPE_IS_WSS(msg->src_net_type) );
 			if(update){
-				tsip_transport_addvia(self, branch, msg); /* should be done before tsip_transport_msg_update() which could use the Via header */
-				tsip_transport_msg_update_aor((tsip_transport_t*)self, msg); /* AoR */
+				/* AoR: Contact header */
+				tsip_transport_msg_update_aor((tsip_transport_t*)self, msg);
+				/* should be done before tsip_transport_msg_update() which could use the Via header
+					must be done after update_aor()
+				*/
+				tsip_transport_addvia(self, branch, msg);
 				tsip_transport_msg_update(self, msg); /* IPSec, SigComp, ... */
 			}
 		}
