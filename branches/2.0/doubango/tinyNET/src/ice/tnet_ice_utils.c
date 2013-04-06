@@ -125,6 +125,23 @@ int tnet_ice_utils_create_sockets(tnet_socket_type_t socket_type, const char* lo
 	return -1;
 }
 
+int tnet_ice_utils_stun_address_tostring(const uint8_t in_ip[16], enum tnet_stun_addr_family_e family, char** out_ip)
+{
+	if(family == stun_ipv6){
+		tsk_sprintf(out_ip, "%x:%x:%x:%x:%x:%x:%x:%x",
+				TSK_TO_UINT16(&in_ip[0]), TSK_TO_UINT16(&in_ip[2]), TSK_TO_UINT16(&in_ip[4]), TSK_TO_UINT16(&in_ip[6]),
+				TSK_TO_UINT16(&in_ip[8]), TSK_TO_UINT16(&in_ip[10]), TSK_TO_UINT16(&in_ip[12]), TSK_TO_UINT16(&in_ip[14]));
+	}
+	else if(family == stun_ipv4){
+		tsk_sprintf(out_ip, "%u.%u.%u.%u", in_ip[0], in_ip[1], in_ip[2], in_ip[3]);
+		return 0;
+	}
+	else{
+		TSK_DEBUG_ERROR("Unsupported address family: %u.", family);
+	}
+	return -1;
+}
+
 int tnet_ice_utils_set_ufrag(char** ufrag)
 {
 	if(ufrag){
