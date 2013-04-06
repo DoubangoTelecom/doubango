@@ -637,6 +637,30 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 		message->remote_addr = e->remote_addr;
 		message->src_net_type = transport->type;
 
+		/* RFC 3581 - 4.  Server Behavior
+		 When a server compliant to this specification (which can be a proxy
+		   or UAS) receives a request, it examines the topmost Via header field
+		   value.  If this Via header field value contains an "rport" parameter
+		   with no value, it MUST set the value of the parameter to the source
+		   port of the request.  This is analogous to the way in which a server
+		   will insert the "received" parameter into the topmost Via header
+		   field value.  In fact, the server MUST insert a "received" parameter
+		   containing the source IP address that the request came from, even if
+		   it is identical to the value of the "sent-by" component.  Note that
+		   this processing takes place independent of the transport protocol.
+		*/
+		if(TSIP_MESSAGE_IS_REQUEST(message) && TSIP_STACK_MODE_IS_SERVER(transport->stack)){
+			if(message->firstVia->rport == 0){ // 0: exist with no value; -1: doesn't exist; other contains the rport value
+				tnet_ip_t ip;
+				tnet_port_t port;
+				if((ret = tnet_get_sockip_n_port((const struct sockaddr*)&e->remote_addr, &ip, &port)) == 0){
+					message->firstVia->rport = (int32_t)port;
+					tsk_strupdate(&message->firstVia->received, (const char*)ip);
+				}
+			}
+		}
+
+		
 		/* Alert transaction/dialog layer */
 		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
 	}
@@ -880,7 +904,7 @@ clean_routes:
 						*destPort = msg->firstVia->port ? msg->firstVia->port : 5060;
 					}
 				}
-				else if(!msg->firstVia->received)
+				else
 				{
 					/*	RFC 3261 - 18.2.2 Sending Responses
 						Otherwise, if it is not receiver-tagged, the response MUST be
@@ -888,7 +912,7 @@ clean_routes:
 						procedures in Section 5 of [4].
 					*/
 					tsk_strupdate(destIP, msg->firstVia->host);
-					if(msg->firstVia->port >0)
+					if(msg->firstVia->port > 0)
 					{
 						*destPort = msg->firstVia->port;
 					}
