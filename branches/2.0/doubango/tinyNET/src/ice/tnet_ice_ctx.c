@@ -956,6 +956,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 	tnet_fd_t fd_max = -1;
 	fd_set set;
 	tsk_size_t srflx_addr_count = 0, host_addr_count = 0;
+    long tv_sec, tv_usec; //very important to save these values as timeval could be modified by select() - happens on iOS -
 
 	self = va_arg(*app, tnet_ice_ctx_t *);
 
@@ -968,8 +969,8 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 
 	rto = self->RTO;
 	rc = self->Rc;
-	tv.tv_sec = 0;
-	tv.tv_usec = 0;
+	tv.tv_sec = tv_sec = 0;
+	tv.tv_usec = tv_usec = 0;
 
 	// load fds for both rtp and rtcp sockets
 	tsk_list_foreach(item, self->candidates_local){
@@ -995,8 +996,17 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 		e.g. 0 ms, 500 ms, 1500 ms, 3500 ms, 7500ms, 15500 ms, and 31500 ms
 	*/
 	for(i = 0; (i < rc && self->is_started && srflx_addr_count < host_addr_count); ++i){
-		tv.tv_sec += rto/1000;
-		tv.tv_usec += (rto % 1000) * 1000;
+		tv_sec += rto/1000;
+		tv_usec += (rto % 1000) * 1000;
+        if(tv_usec >= 1000000){ // > 1000000 is invalid and produce EINVAL when passed to select(iOS)
+            tv_usec -= 1000000;
+            tv_sec++;
+        }
+        // retore values for new select
+        tv.tv_sec = tv_sec;
+        tv.tv_usec = tv_usec;
+        
+        TSK_DEBUG_INFO("ICE reflexive candidates gathering ...%lu,%lu", tv_sec, tv_usec);
 		
 		FD_ZERO(&set);
 		for(k = 0; k < fds_count; ++k){
@@ -1014,11 +1024,12 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 		}
 
 		if((ret = select(fd_max+1, &set, NULL, NULL, &tv))<0){
+            TSK_DEBUG_ERROR("select() failed with error code = %d", tnet_geterrno());
 			goto bail;
 		}
 		else if(ret == 0){
 			// timeout
-			// TSK_DEBUG_INFO("STUN request timedout at %d", i);
+			TSK_DEBUG_INFO("STUN request timedout at %d", i);
 			rto <<= 1;
 			continue;
 		}
@@ -1033,17 +1044,18 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 
 					// Check how many bytes are pending
 					if((ret = tnet_ioctlt(fd, FIONREAD, &len))<0){
+                        TSK_DEBUG_ERROR("tnet_ioctlt() failed");
 						continue;
 					}
 					
 					if(len==0){
-						// TSK_DEBUG_INFO("tnet_ioctlt() returent zero bytes");
+						TSK_DEBUG_INFO("tnet_ioctlt() retured zero bytes");
 						continue;
 					}
 
 					// Receive pending data
 					data = tsk_calloc(len, sizeof(uint8_t));
-					if((ret = tnet_sockfd_recvfrom(fd, data, len, 0, (struct sockaddr *)&server_addr))<0){
+					if((ret = tnet_sockfd_recv(fd, data, len, 0)) < 0){
 						TSK_FREE(data);
 										
 						TSK_DEBUG_ERROR("Recving STUN dgrams failed with error code:%d", tnet_geterrno());
