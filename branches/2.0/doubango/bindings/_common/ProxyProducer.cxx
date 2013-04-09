@@ -451,7 +451,7 @@ static tsk_object_t* twrap_producer_proxy_video_dtor(tsk_object_t * self)
 { 
 	twrap_producer_proxy_video_t *producer = (twrap_producer_proxy_video_t *)self;
 	if(producer){
-
+		TSK_DEBUG_INFO("twrap_producer_proxy_video_dtor()");
 		/* stop */
 		if(producer->started){
 			twrap_producer_proxy_video_stop(TMEDIA_PRODUCER(producer));
@@ -512,6 +512,7 @@ ProxyVideoProducer::ProxyVideoProducer(tmedia_chroma_t eChroma, struct twrap_pro
 
 ProxyVideoProducer::~ProxyVideoProducer()
 {
+	TSK_DEBUG_INFO("~ProxyVideoProducer");
 }
 
 int ProxyVideoProducer::getRotation()const

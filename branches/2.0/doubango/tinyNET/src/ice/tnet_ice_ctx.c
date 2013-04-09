@@ -660,8 +660,17 @@ int tnet_ice_ctx_recv_stun_message(tnet_ice_ctx_t* self, const void* data, tsk_s
 
 	if((message = tnet_stun_message_deserialize(data, size))){
 		if(message->type == stun_binding_request){
-			// check controlling flag
-			if((pair = tnet_ice_pairs_find_by_fd_and_addr(self->candidates_pairs, local_fd, remote_addr))){
+			pair = tnet_ice_pairs_find_by_fd_and_addr(self->candidates_pairs, local_fd, remote_addr);
+			if(!pair && !self->have_nominated_symetric){ // pair not found and we're still negotiating
+				// rfc 5245 - 7.1.3.2.1.  Discovering Peer Reflexive Candidates
+				tnet_ice_pair_t* pair_peer = tnet_ice_pair_prflx_create(self->candidates_pairs, local_fd, remote_addr);
+				if(pair_peer){
+					pair = pair_peer; // copy
+					tsk_list_push_back_data(self->candidates_pairs, (void**)&pair_peer);
+					TSK_OBJECT_SAFE_FREE(pair_peer);
+				}
+			}
+			if(pair){
 				short resp_code = 0;
 				char* resp_phrase = tsk_null;
 				// authenticate the request

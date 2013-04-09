@@ -2288,13 +2288,33 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetVideoJbEna
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetVideoJbEnabled(unsigned int jarg1) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetVideoJbEnabled() {
+  unsigned int jresult ;
+  bool result;
+  
+  result = (bool)MediaSessionMgr::defaultsGetVideoJbEnabled();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled(unsigned int jarg1) {
   unsigned int jresult ;
   bool arg1 ;
   bool result;
   
   arg1 = jarg1 ? true : false; 
-  result = (bool)MediaSessionMgr::defaultsGetVideoJbEnabled(arg1);
+  result = (bool)MediaSessionMgr::defaultsSetVideoZeroArtifactsEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled() {
+  unsigned int jresult ;
+  bool result;
+  
+  result = (bool)MediaSessionMgr::defaultsGetVideoZeroArtifactsEnabled();
   jresult = result; 
   return jresult;
 }

@@ -69,6 +69,8 @@ typedef struct tsk_runnable_s
 	* default value: tsk_false
 	*/
 	tsk_bool_t important;
+
+	int32_t priority;
 	
 	tsk_list_t *objects;
 }
@@ -79,9 +81,11 @@ tsk_runnable_t;
 #define TSK_DECLARE_RUNNABLE tsk_runnable_t __runnable__
 
 TINYSAK_API tsk_runnable_t* tsk_runnable_create();
+TINYSAK_API tsk_runnable_t* tsk_runnable_create_2(int32_t priority);
 
 TINYSAK_API int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef);
 TINYSAK_API int tsk_runnable_set_important(tsk_runnable_t *self, tsk_bool_t important);
+TINYSAK_API int tsk_runnable_set_priority(tsk_runnable_t *self, int32_t priority);
 TINYSAK_API int tsk_runnable_enqueue(tsk_runnable_t *self, ...);
 TINYSAK_API int tsk_runnable_stop(tsk_runnable_t *self);
 

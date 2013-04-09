@@ -5045,6 +5045,24 @@ XS(_wrap_MediaSessionMgr_defaultsSetVideoJbEnabled) {
 
 XS(_wrap_MediaSessionMgr_defaultsGetVideoJbEnabled) {
   {
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsGetVideoJbEnabled();");
+    }
+    result = (bool)MediaSessionMgr::defaultsGetVideoJbEnabled();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled) {
+  {
     bool arg1 ;
     bool val1 ;
     int ecode1 = 0 ;
@@ -5053,19 +5071,37 @@ XS(_wrap_MediaSessionMgr_defaultsGetVideoJbEnabled) {
     dXSARGS;
     
     if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: MediaSessionMgr_defaultsGetVideoJbEnabled(enabled);");
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled(enabled);");
     }
     ecode1 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
     if (!SWIG_IsOK(ecode1)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsGetVideoJbEnabled" "', argument " "1"" of type '" "bool""'");
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled" "', argument " "1"" of type '" "bool""'");
     } 
     arg1 = static_cast< bool >(val1);
-    result = (bool)MediaSessionMgr::defaultsGetVideoJbEnabled(arg1);
+    result = (bool)MediaSessionMgr::defaultsSetVideoZeroArtifactsEnabled(arg1);
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     
     XSRETURN(argvi);
   fail:
     
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled) {
+  {
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled();");
+    }
+    result = (bool)MediaSessionMgr::defaultsGetVideoZeroArtifactsEnabled();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
     SWIG_croak_null();
   }
 }
@@ -26745,6 +26781,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsGetByPassDecoding", _wrap_MediaSessionMgr_defaultsGetByPassDecoding},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetVideoJbEnabled", _wrap_MediaSessionMgr_defaultsSetVideoJbEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetVideoJbEnabled", _wrap_MediaSessionMgr_defaultsGetVideoJbEnabled},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled", _wrap_MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled},
+{"tinyWRAPc::MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled", _wrap_MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetRtpBuffSize", _wrap_MediaSessionMgr_defaultsSetRtpBuffSize},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetRtpBuffSize", _wrap_MediaSessionMgr_defaultsGetRtpBuffSize},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetAvpfTail", _wrap_MediaSessionMgr_defaultsSetAvpfTail},

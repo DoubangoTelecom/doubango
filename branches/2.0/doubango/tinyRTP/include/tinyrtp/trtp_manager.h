@@ -100,6 +100,7 @@ typedef struct trtp_manager_s
 	} rtp;
 
 	struct{
+		char* cname;
 		char* remote_ip;
 		tnet_port_t remote_port;
 		struct sockaddr_storage remote_addr;

@@ -1,5 +1,9 @@
 lib_LTLIBRARIES         = libtinySAK.la
 
+if USE_RT
+libtinySAK_la_LIBADD = ${LIBRT_LIBADD}
+endif
+
 libtinySAK_la_SOURCES  = \
 	src/tsk.c\
 	src/tsk_base64.c\

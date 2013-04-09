@@ -414,7 +414,7 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 			err_status_t status;
 			if(self->srtp_ctx_neg_remote){
 				if((status = srtp_unprotect(self->srtp_ctx_neg_remote->rtp.session, (void*)data_ptr, (int*)&data_size)) != err_status_ok){
-					TSK_DEBUG_ERROR("srtp_unprotect(RTP) failed with error code=%d", (int)status);
+					TSK_DEBUG_ERROR("srtp_unprotect(RTP) failed with error code=%d, seq_num=%u", (int)status,  (data_size > 4 ? tnet_ntohs_2(&data_ptr[2]) : 0x0000));
 					return -1;
 				}
 			}
@@ -1280,7 +1280,7 @@ int trtp_manager_start(trtp_manager_t* self)
 		}
 		/* create and start RTCP session */
 		if(!self->rtcp.session && ret == 0){
-			self->rtcp.session = trtp_rtcp_session_create(self->rtp.ssrc.local);
+			self->rtcp.session = trtp_rtcp_session_create(self->rtp.ssrc.local, self->rtcp.cname);
 		}
 		if(self->rtcp.session){
 			ret = trtp_rtcp_session_set_callback(self->rtcp.session, self->rtcp.cb.fun, self->rtcp.cb.usrdata);
@@ -1566,6 +1566,7 @@ static tsk_object_t* trtp_manager_ctor(tsk_object_t * self, va_list * app)
         manager->rtp.dscp = TRTP_DSCP_RTP_DEFAULT;
 
 		/* rtcp */
+		tsk_sprintf(&manager->rtcp.cname, "doubango@%llu", (tsk_time_now() + rand()));
 
 		/* timer */
 		manager->timer_mgr_global = tsk_timer_mgr_global_ref();
@@ -1597,6 +1598,7 @@ static tsk_object_t* trtp_manager_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(manager->rtcp.session);
 		TSK_FREE(manager->rtcp.remote_ip);
 		TSK_FREE(manager->rtcp.public_ip);
+		TSK_FREE(manager->rtcp.cname);
 		TSK_OBJECT_SAFE_FREE(manager->rtcp.local_socket);
 
 		/* SRTP */

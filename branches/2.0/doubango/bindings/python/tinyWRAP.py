@@ -285,6 +285,10 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetVideoJbEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetVideoJbEnabled)
     __swig_getmethods__["defaultsGetVideoJbEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetVideoJbEnabled
     if _newclass:defaultsGetVideoJbEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetVideoJbEnabled)
+    __swig_getmethods__["defaultsSetVideoZeroArtifactsEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled
+    if _newclass:defaultsSetVideoZeroArtifactsEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled)
+    __swig_getmethods__["defaultsGetVideoZeroArtifactsEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled
+    if _newclass:defaultsGetVideoZeroArtifactsEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled)
     __swig_getmethods__["defaultsSetRtpBuffSize"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetRtpBuffSize
     if _newclass:defaultsSetRtpBuffSize = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetRtpBuffSize)
     __swig_getmethods__["defaultsGetRtpBuffSize"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetRtpBuffSize
@@ -482,9 +486,17 @@ def MediaSessionMgr_defaultsSetVideoJbEnabled(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetVideoJbEnabled(*args)
 MediaSessionMgr_defaultsSetVideoJbEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetVideoJbEnabled
 
-def MediaSessionMgr_defaultsGetVideoJbEnabled(*args):
-  return _tinyWRAP.MediaSessionMgr_defaultsGetVideoJbEnabled(*args)
+def MediaSessionMgr_defaultsGetVideoJbEnabled():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetVideoJbEnabled()
 MediaSessionMgr_defaultsGetVideoJbEnabled = _tinyWRAP.MediaSessionMgr_defaultsGetVideoJbEnabled
+
+def MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled(*args)
+MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled
+
+def MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled()
+MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled = _tinyWRAP.MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled
 
 def MediaSessionMgr_defaultsSetRtpBuffSize(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetRtpBuffSize(*args)

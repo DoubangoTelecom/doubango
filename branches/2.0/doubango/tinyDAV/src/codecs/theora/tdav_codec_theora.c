@@ -834,7 +834,7 @@ int tdav_codec_theora_send(tdav_codec_theora_t* self, const uint8_t* data, tsk_s
 		if(TMEDIA_CODEC_VIDEO(self)->out.callback){
 			TMEDIA_CODEC_VIDEO(self)->out.result.buffer.ptr = self->rtp.ptr;
 			TMEDIA_CODEC_VIDEO(self)->out.result.buffer.size = (pay_size + sizeof(pay_hdr));
-			TMEDIA_CODEC_VIDEO(self)->out.result.duration = (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps));
+			TMEDIA_CODEC_VIDEO(self)->out.result.duration =  (1./(double)TMEDIA_CODEC_VIDEO(self)->out.fps) * TMEDIA_CODEC(self)->plugin->rate;
 			TMEDIA_CODEC_VIDEO(self)->out.result.last_chunck = (size == 0);
 			TMEDIA_CODEC_VIDEO(self)->out.callback(&TMEDIA_CODEC_VIDEO(self)->out.result);			
 		}

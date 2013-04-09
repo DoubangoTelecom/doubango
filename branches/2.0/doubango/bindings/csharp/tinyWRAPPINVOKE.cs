@@ -463,7 +463,13 @@ class tinyWRAPPINVOKE {
   public static extern bool MediaSessionMgr_defaultsSetVideoJbEnabled(bool jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetVideoJbEnabled")]
-  public static extern bool MediaSessionMgr_defaultsGetVideoJbEnabled(bool jarg1);
+  public static extern bool MediaSessionMgr_defaultsGetVideoJbEnabled();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled(bool jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled")]
+  public static extern bool MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled();
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetRtpBuffSize")]
   public static extern bool MediaSessionMgr_defaultsSetRtpBuffSize(uint jarg1);

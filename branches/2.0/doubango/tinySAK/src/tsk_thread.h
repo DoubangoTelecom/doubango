@@ -35,9 +35,18 @@
 typedef void tsk_thread_handle_t;
 #if TSK_UNDER_WINDOWS
 	typedef unsigned long tsk_thread_id_t;
+#	define TSK_THREAD_PRIORITY_LOW				THREAD_PRIORITY_LOWEST
+#	define TSK_THREAD_PRIORITY_MEDIUM			THREAD_PRIORITY_NORMAL
+#	define TSK_THREAD_PRIORITY_HIGH				THREAD_PRIORITY_HIGHEST
+#	define TSK_THREAD_PRIORITY_TIME_CRITICAL	THREAD_PRIORITY_TIME_CRITICAL
 #else
 #	include <pthread.h>
-typedef pthread_t tsk_thread_id_t;
+#	include <sched.h>
+	typedef pthread_t tsk_thread_id_t;
+#	define TSK_THREAD_PRIORITY_LOW			sched_get_priority_min(SCHED_OTHER)
+#	define TSK_THREAD_PRIORITY_TIME_CRITICAL		sched_get_priority_max(SCHED_OTHER)
+#	define TSK_THREAD_PRIORITY_MEDIUM				((TSK_THREAD_PRIORITY_TIME_CRITICAL - TSK_THREAD_PRIORITY_LOW) >> 1)
+#	define TSK_THREAD_PRIORITY_HIGH					((TSK_THREAD_PRIORITY_MEDIUM * 3) >> 1)
 #endif
 
 TSK_BEGIN_DECLS

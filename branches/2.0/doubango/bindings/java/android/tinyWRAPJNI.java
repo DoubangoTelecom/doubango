@@ -101,7 +101,9 @@ public class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_defaultsSetByPassDecoding(boolean jarg1);
   public final static native boolean MediaSessionMgr_defaultsGetByPassDecoding();
   public final static native boolean MediaSessionMgr_defaultsSetVideoJbEnabled(boolean jarg1);
-  public final static native boolean MediaSessionMgr_defaultsGetVideoJbEnabled(boolean jarg1);
+  public final static native boolean MediaSessionMgr_defaultsGetVideoJbEnabled();
+  public final static native boolean MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled(boolean jarg1);
+  public final static native boolean MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled();
   public final static native boolean MediaSessionMgr_defaultsSetRtpBuffSize(long jarg1);
   public final static native long MediaSessionMgr_defaultsGetRtpBuffSize();
   public final static native boolean MediaSessionMgr_defaultsSetAvpfTail(long jarg1, long jarg2);

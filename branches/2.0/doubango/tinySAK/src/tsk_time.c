@@ -125,6 +125,15 @@ int tsk_gettimeofday(struct timeval *tv, struct timezone *tz)
 }
 
 /**@ingroup tsk_time_group
+*/
+uint64_t tsk_gettimeofday_ms()
+{
+	struct timeval tv;
+	tsk_gettimeofday(&tv, tsk_null);
+	return (((uint64_t)tv.tv_sec)*(uint64_t)1000) + (((uint64_t)tv.tv_usec)/(uint64_t)1000);
+}
+
+/**@ingroup tsk_time_group
 * Gets the number of milliseconds in @a tv
 * @retval The number of milliseconds
 */

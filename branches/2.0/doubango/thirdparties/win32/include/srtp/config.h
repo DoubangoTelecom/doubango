@@ -11,7 +11,7 @@
 /* #undef DEV_URANDOM */
 
 /* Define to compile in dynamic debugging system. */
-/* #undef ENABLE_DEBUGGING */
+#define ENABLE_DEBUGGING 1
 
 /* Report errors to this file. */
 /* #undef ERR_REPORTING_FILE */

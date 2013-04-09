@@ -47,7 +47,9 @@
 /* #undef HAVE_LIBSOCKET */
 
 /* Define to 1 if you have the <machine/types.h> header file. */
-/* #undef HAVE_MACHINE_TYPES_H */
+#if !defined(ANDROID)
+#define HAVE_MACHINE_TYPES_H 1
+#endif
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
@@ -110,10 +112,10 @@
 /* #undef HAVE_USLEEP */
 
 /* Define to 1 if you have the <windows.h> header file. */
-/* #undef HAVE_WINDOWS_H */
+#define HAVE_WINDOWS_H 1
 
 /* Define to 1 if you have the <winsock2.h> header file. */
-/* #undef HAVE_WINSOCK2_H */
+#define HAVE_WINSOCK2_H 1
 
 /* Define to use X86 inlined assembly code */
 /* #undef HAVE_X86 */
@@ -149,7 +151,7 @@
 /* #undef SRTP_KERNEL_LINUX */
 
 /* Define to 1 if you have the ANSI C header files. */
-/* #undef STDC_HEADERS */
+#define STDC_HEADERS 1
 
 /* Write errors to this file */
 /* #undef USE_ERR_REPORTING_FILE */

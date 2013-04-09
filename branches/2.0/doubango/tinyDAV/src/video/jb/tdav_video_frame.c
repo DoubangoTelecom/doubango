@@ -90,6 +90,7 @@ tdav_video_frame_t* tdav_video_frame_create(trtp_rtp_packet_t* rtp_pkt)
 		frame->payload_type = rtp_pkt->header->payload_type;
 		frame->timestamp = rtp_pkt->header->timestamp;
 		frame->highest_seq_num = rtp_pkt->header->seq_num;
+		frame->ssrc = rtp_pkt->header->ssrc;
 		tsk_list_push_ascending_data(frame->pkts, (void**)&rtp_pkt);
 	}
 	return frame;
@@ -109,6 +110,12 @@ int tdav_video_frame_put(tdav_video_frame_t* self, trtp_rtp_packet_t* rtp_pkt)
 		TSK_DEBUG_ERROR("Payload Type mismatch");
 		return -2;
 	}
+#if 0
+	if(self->ssrc != rtp_pkt->header->ssrc){
+		TSK_DEBUG_ERROR("SSRC mismatch");
+		return -2;
+	}
+#endif
 
 	rtp_pkt = tsk_object_ref(rtp_pkt);
 	self->highest_seq_num = TSK_MAX(self->highest_seq_num, rtp_pkt->header->seq_num);
@@ -184,4 +191,46 @@ bail:
 	tsk_list_unlock(self->pkts);
 
 	return ret_size;
+}
+
+
+/**
+Checks if the frame is complete (no gap/loss) or not.
+IMPORTANT: This function assume that the RTP packets use the marker bit to signal end of sequences.
+*@param self The frame with all rtp packets to check
+*@param last_seq_num_with_mark The last seq num value of the packet with the mark bit set. Use negative value to ignore.
+*@param missing_seq_num A missing seq num if any. This value is set only if the function returns False.
+*@return True if the frame is complete and False otherwise. If False is returned then, missing_seq_num is set.
+*/
+tsk_bool_t tdav_video_frame_is_complete(const tdav_video_frame_t* self, int32_t last_seq_num_with_mark, uint16_t* missing_seq_num)
+{
+	const trtp_rtp_packet_t* pkt;
+	const tsk_list_item_t *item;
+	uint16_t i;
+	tsk_bool_t is_complete = tsk_false;
+
+	if(!self || !missing_seq_num){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_false;
+	}
+
+	i = 0;
+	tsk_list_lock(self->pkts);
+	tsk_list_foreach(item, self->pkts){
+		if(!(pkt = item->data)){
+			continue;
+		}
+		if(last_seq_num_with_mark >= 0 && pkt->header->seq_num != (last_seq_num_with_mark + ++i)){
+			*missing_seq_num = (pkt->header->seq_num - 1);
+			break;
+		}
+		if(item == self->pkts->tail){
+			if(!(is_complete = (pkt->header->marker))){
+				*missing_seq_num = (pkt->header->seq_num + 1);
+			}
+		}
+	}
+	tsk_list_unlock(self->pkts);
+
+	return is_complete;
 }

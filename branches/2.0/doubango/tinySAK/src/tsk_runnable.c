@@ -31,6 +31,10 @@
 #include "tsk_thread.h"
 #include "tsk_debug.h"
 
+#if TSK_UNDER_WINDOWS
+#	include <windows.h>
+#endif
+
 /**@defgroup tsk_runnable_group Base class for runnable object.
 */
 
@@ -40,7 +44,22 @@
 */
 tsk_runnable_t* tsk_runnable_create()
 {
-	return (tsk_runnable_t*)tsk_object_new(tsk_runnable_def_t);
+	return tsk_runnable_create_2(TSK_THREAD_PRIORITY_MEDIUM);
+
+}
+
+/**@ingroup tsk_runnable_group
+* Creates new Runnable object.
+* @param priority Thread priority. Possible values: TSK_THREAD_PRIORITY_LOW, TSK_THREAD_PRIORITY_MEDIUM, TSK_THREAD_PRIORITY_HIGH or TSK_THREAD_PRIORITY_TIME_CRITICAL	
+* @retval @ref tsk_runnable_t.
+*/
+tsk_runnable_t* tsk_runnable_create_2(int32_t priority)
+{
+	tsk_runnable_t* runnable;
+	if((runnable = (tsk_runnable_t*)tsk_object_new(tsk_runnable_def_t))){
+		runnable->priority = priority;
+	}
+	return runnable;
 }
 
 /**@ingroup tsk_runnable_group
@@ -117,6 +136,10 @@ int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef)
 			TSK_DEBUG_ERROR("Failed to start new thread.");
 			return ret;
 		}
+		/* set priority now that the thread is created */
+		if(tsk_runnable_set_priority(self, self->priority)){
+			TSK_DEBUG_ERROR("Failed to set thread priority value to %d", self->priority);
+		}
 		// Do not set "running" to true here
 		// Problem: When you try to stop the thread before it start
 		// Will be done by "TSK_RUNNABLE_RUN_BEGIN" which is called into the thread
@@ -147,6 +170,21 @@ int tsk_runnable_set_important(tsk_runnable_t *self, tsk_bool_t important)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+}
+
+/**@ingroup tsk_runnable_group
+*/
+int tsk_runnable_set_priority(tsk_runnable_t *self, int32_t priority)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->priority = priority;
+	if(self->h_thread[0]){
+		return tsk_thread_set_priority(self->h_thread[0], priority);
+	}
+	return 0;
 }
 
 /**@ingroup tsk_runnable_group
@@ -217,6 +255,7 @@ static tsk_object_t* tsk_runnable_ctor(tsk_object_t * self, va_list * app)
 {
 	tsk_runnable_t* runnable = (tsk_runnable_t*)self;
 	if(runnable){
+		
 	}
 	return self;
 }

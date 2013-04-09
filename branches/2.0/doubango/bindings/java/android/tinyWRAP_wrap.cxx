@@ -3412,7 +3412,19 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionM
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsGetVideoJbEnabled(JNIEnv *jenv, jclass jcls, jboolean jarg1) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsGetVideoJbEnabled(JNIEnv *jenv, jclass jcls) {
+  jboolean jresult = 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (bool)MediaSessionMgr::defaultsGetVideoJbEnabled();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetVideoZeroArtifactsEnabled(JNIEnv *jenv, jclass jcls, jboolean jarg1) {
   jboolean jresult = 0 ;
   bool arg1 ;
   bool result;
@@ -3420,7 +3432,19 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionM
   (void)jenv;
   (void)jcls;
   arg1 = jarg1 ? true : false; 
-  result = (bool)MediaSessionMgr::defaultsGetVideoJbEnabled(arg1);
+  result = (bool)MediaSessionMgr::defaultsSetVideoZeroArtifactsEnabled(arg1);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsGetVideoZeroArtifactsEnabled(JNIEnv *jenv, jclass jcls) {
+  jboolean jresult = 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (bool)MediaSessionMgr::defaultsGetVideoZeroArtifactsEnabled();
   jresult = (jboolean)result; 
   return jresult;
 }

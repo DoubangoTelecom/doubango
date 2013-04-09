@@ -49,7 +49,12 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-#define TDAV_SESSION_VIDEO_AVPF_FIR_INTERVAL_MIN	800 // millis
+// Minimum time between two incoming FIR. If smaller, the request from the remote party will be ignored
+// Tell the encoder to send IDR frame if condition is met
+#define TDAV_SESSION_VIDEO_AVPF_FIR_HONOR_INTERVAL_MIN	1500 // millis
+// Minimum time between two outgoing FIR. If smaller, the request from the remote party will be ignored
+// Tell the RTCP session to request IDR if condition is met
+#define TDAV_SESSION_VIDEO_AVPF_FIR_REQUEST_INTERVAL_MIN	3000 // millis
 
 #define TDAV_SESSION_VIDEO_PKT_LOSS_PROB_BAD	2
 #define TDAV_SESSION_VIDEO_PKT_LOSS_PROB_GOOD	6
@@ -58,6 +63,9 @@
 #define TDAV_SESSION_VIDEO_PKT_LOSS_LOW			9
 #define TDAV_SESSION_VIDEO_PKT_LOSS_MEDIUM		22
 #define TDAV_SESSION_VIDEO_PKT_LOSS_HIGH		63
+
+// The maximum number of pakcet loss allowed
+#define TDAV_SESSION_VIDEO_PKT_LOSS_MAX_COUNT_TO_REQUEST_FIR	50
 
 static const tmedia_codec_action_t __action_encode_idr = tmedia_codec_action_encode_idr;
 static const tmedia_codec_action_t __action_encode_bw_up = tmedia_codec_action_bw_up;
@@ -85,7 +93,7 @@ static const tmedia_codec_action_t __action_encode_bw_down = tmedia_codec_action
 
 #define _tdav_session_video_remote_requested_idr(__self, __ssrc_media) { \
 	uint64_t __now = tsk_time_now(); \
-	if((__now - (__self)->avpf.last_fir_time) > TDAV_SESSION_VIDEO_AVPF_FIR_INTERVAL_MIN){ /* guard to avoid sending too many FIR */ \
+	if((__now - (__self)->avpf.last_fir_time) > TDAV_SESSION_VIDEO_AVPF_FIR_HONOR_INTERVAL_MIN){ /* guard to avoid sending too many FIR */ \
 		_tdav_session_video_codec_set((__self), "action", __action_encode_idr); \
 	} \
 	if((__self)->cb_rtcpevent.func){ \
@@ -154,21 +162,42 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 		packet = rtp_header 
 			? trtp_rtp_packet_create_2(rtp_header)
 			: trtp_rtp_packet_create(base->rtp_manager->rtp.ssrc.local, base->rtp_manager->rtp.seq_num, base->rtp_manager->rtp.timestamp, base->rtp_manager->rtp.payload_type, result->last_chunck);
-
+		
 		if(packet ){
 			tsk_size_t rtp_hdr_size;
+			if(!video->encoder.last_frame_time){
+				video->encoder.last_frame_time = tsk_time_now();
+			}
 			if(result->last_chunck){
+#if 0
+#if 0
+				/*	http://www.cs.columbia.edu/~hgs/rtp/faq.html#timestamp-computed
+					For video, time clock rate is fixed at 90 kHz. The timestamps generated depend on whether the application can determine the frame number or not. 
+					If it can or it can be sure that it is transmitting every frame with a fixed frame rate, the timestamp is governed by the nominal frame rate. Thus, for a 30 f/s video, timestamps would increase by 3,000 for each frame, for a 25 f/s video by 3,600 for each frame. 
+					If a frame is transmitted as several RTP packets, these packets would all bear the same timestamp. 
+					If the frame number cannot be determined or if frames are sampled aperiodically, as is typically the case for software codecs, the timestamp has to be computed from the system clock (e.g., gettimeofday())
+				*/
+				uint64_t now = tsk_time_now();
+				uint32_t duration = (uint32_t)(now - video->encoder.last_frame_time);
+				base->rtp_manager->rtp.timestamp += (duration * 90/* 90KHz */);
+				video->encoder.last_frame_time = now;
+#else
+				base->rtp_manager->rtp.timestamp = (uint32_t)(tsk_gettimeofday_ms() * 90/* 90KHz */);
+#endif
+#else
 				base->rtp_manager->rtp.timestamp += result->duration;
+#endif
+			
 			}
 
 			packet->payload.data_const = result->buffer.ptr;
 			packet->payload.size = result->buffer.size;
 			s = trtp_manager_send_rtp_packet(base->rtp_manager, packet, tsk_false); // encrypt and send data
+			++base->rtp_manager->rtp.seq_num; // seq_num must be incremented here (before the bail) because already used by SRTP context
 			if(s < TRTP_RTP_HEADER_MIN_SIZE) { 
-				TSK_DEBUG_ERROR("Failed to send packet. %u expected but only %u sent", packet->payload.size, s); 
-				goto bail; 
+				TSK_DEBUG_ERROR("Failed to send packet with seqnum=%u. %u expected but only %u sent", packet->header->seq_num, packet->payload.size, s);
+				goto bail;
 			}
-			++base->rtp_manager->rtp.seq_num;
 			rtp_hdr_size = TRTP_RTP_HEADER_MIN_SIZE + (packet->header->csrc_count << 2);
 			// Save packet
 			// FIXME: only if AVPF is enabled
@@ -191,7 +220,13 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 					++video->avpf.count;
 				}
 
-				tsk_list_push_ascending_data(video->avpf.packets, (void**)&packet_avpf); // filtered per seqnum
+				// The packet must not added 'ascending' but 'back' because the sequence number coult wrap
+				// For example:
+				//	- send(65533, 65534, 65535, 0, 1)
+				//  - will be stored as (if added 'ascending'): 0, 1, 65533, 65534, 65535
+				//  - this means there is no benefit (if added 'ascending') as we cannot make 'smart search' using seqnums
+				// tsk_list_push_ascending_data(video->avpf.packets, (void**)&packet_avpf); // filtered per seqnum
+				tsk_list_push_back_data(video->avpf.packets, (void**)&packet_avpf);
 				tsk_list_unlock(video->avpf.packets);
 			}
 
@@ -253,8 +288,20 @@ bail:
 static int tdav_session_video_decode_cb(const tmedia_video_decode_result_xt* result)
 {
 	tdav_session_av_t* base = (tdav_session_av_t*)result->usr_data;
+	tdav_session_video_t* video = (tdav_session_video_t*)base;
 
 	switch(result->type){
+		case tmedia_video_decode_result_type_idr:
+			{
+				if(video->decoder.last_corrupted_timestamp != ((const trtp_rtp_header_t*)result->proto_hdr)->timestamp){
+					TSK_DEBUG_INFO("IDR frame decoded");
+					video->decoder.stream_corrupted = tsk_false;
+				}
+				else{
+					TSK_DEBUG_INFO("IDR frame decoded but corrupted :(");
+				}
+				break;
+			}
 		case tmedia_video_decode_result_type_error:
 			{
 				TSK_DEBUG_INFO("Decoding failed -> send Full Intra Refresh (FIR)");
@@ -528,21 +575,29 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
 						const tsk_list_item_t* item;
 						const trtp_rtp_packet_t* pkt_rtp;
 						for(i = 0; i < rtpfb->nack.count; ++i){
-							static const int32_t __Pow2[16] = { 0x8000, 0x4000, 0x2000, 0x1000, 0x800, 0x400, 0x200, 0x100, 0x80, 0x40, 0x20, 0x10, 0x8, 0x4, 0x2, 0x1 };
+							static const int32_t __Pow2[16] = { 0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0x80, 0x100, 0x200, 0x400, 0x800, 0x1000, 0x2000, 0x4000, 0x8000 };
 							int32_t blp_count;
 							blp = rtpfb->nack.blp[i];
 							blp_count = blp ? 16 : 0;
 							
-							for(j = -1; j < blp_count; ++j){
+							for(j = -1/*Packet ID (PID)*/; j < blp_count; ++j){
 								if(j == -1 || (blp & __Pow2[j])){
 									pid = (rtpfb->nack.pid[i] + (j + 1));
 									tsk_list_lock(video->avpf.packets);
 									tsk_list_foreach(item, video->avpf.packets){
 										if(!(pkt_rtp = item->data)){
 											continue;
-										}										
-
-										if(pkt_rtp->header->seq_num > pid){
+										}
+										
+										// Very Important: the seq_nums are not consecutive because of wrapping. 
+										// For example, '65533, 65534, 65535, 0, 1' is a valid sequences which means we have to check all packets (probaly need somthing smarter)
+										if(pkt_rtp->header->seq_num == pid){
+											TSK_DEBUG_INFO("NACK Found, pid=%d, blp=%u", pid, blp);
+											trtp_manager_send_rtp_packet(base->rtp_manager, pkt_rtp, tsk_true);
+											break;
+										}
+										if(item == video->avpf.packets->tail){
+											// should never be called unless the tail is too small
 											int32_t old_max = video->avpf.max;
 											int32_t len_drop = (pkt_rtp->header->seq_num - pid);
 											video->avpf.max = TSK_CLAMP((int32_t)tmedia_defaults_get_avpf_tail_min(), (old_max + len_drop), (int32_t)tmedia_defaults_get_avpf_tail_max());
@@ -552,32 +607,21 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
 												pid, 
 												video->avpf.max,
 												video->avpf.count);
-											// FIR not really requested but needed
-											/*_tdav_session_video_remote_requested_idr(video, ((const trtp_rtcp_report_fb_t*)rtpfb)->ssrc_media);
-											tsk_list_clear_items(video->avpf.packets);
-											video->avpf.count = 0;*/
-											goto done;
-										}
-										if(pkt_rtp->header->seq_num == pid){
-											TSK_DEBUG_INFO("NACK Found=%d", pid);
-											trtp_manager_send_rtp_packet(base->rtp_manager, pkt_rtp, tsk_true);
-											break;
-										}
-										if(item == video->avpf.packets->tail){
-											// must never be called
-											TSK_DEBUG_INFO("**NACK Not Found=%d", pid);
-										}
-									}
-done:
+												// FIR not really requested but needed
+												/*_tdav_session_video_remote_requested_idr(video, ((const trtp_rtcp_report_fb_t*)rtpfb)->ssrc_media);
+												tsk_list_clear_items(video->avpf.packets);
+												video->avpf.count = 0;*/
+										} // if(last_item)
+									}// foreach(pkt)
 									tsk_list_unlock(video->avpf.packets);
-								}
-							}
-						}
-					}
+								}// if(BLP is set)
+							}// foreach(BIT in BLP)
+						}// foreach(nack)
+					}// if(nack-blp and nack-pid are set)
 					break;
-				}
-		}
-	}
+				}// case
+		}// switch
+	}// while(rtcp-pkt)
 
 	return 0;
 }
@@ -600,13 +644,20 @@ static int _tdav_session_video_jb_cb(const tdav_video_jb_cb_data_xt* data)
 			}
 		case tdav_video_jb_cb_data_type_fl:
 			{
-				tsk_size_t i, j, k;
-				uint16_t seq_nums[16];
-				for(i = 0; i < data->fl.count; i+=16){
-					for(j = 0, k = i; j < 16 && k < data->fl.count; ++j, ++k){
-						seq_nums[j] = (data->fl.seq_num + i + j);
+				if(data->fl.count > TDAV_SESSION_VIDEO_PKT_LOSS_MAX_COUNT_TO_REQUEST_FIR){
+					TSK_DEBUG_INFO("Packet loss too high (%u) -> Requesting FIR", data->fl.count);
+					trtp_manager_signal_frame_corrupted(base->rtp_manager, data->ssrc);
+				}
+				else{
+					tsk_size_t i, j, k;
+					uint16_t seq_nums[16];
+					for(i = 0; i < data->fl.count; i+=16){
+						for(j = 0, k = i; j < 16 && k < data->fl.count; ++j, ++k){
+							seq_nums[j] = (data->fl.seq_num + i + j);
+							TSK_DEBUG_INFO("Request re-send(%u)", seq_nums[j]);
+						}
+						trtp_manager_signal_pkt_loss(base->rtp_manager, data->ssrc, seq_nums, j);
 					}
-					trtp_manager_signal_pkt_loss(base->rtp_manager, data->ssrc, seq_nums, j);
 				}
 				break;
 			}
@@ -645,7 +696,8 @@ bail:
 static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp_packet_t* packet)
 {
 	tdav_session_av_t* base = (tdav_session_av_t*)self;
-	static const trtp_rtp_header_t* rtp_header = tsk_null;
+	static const trtp_rtp_header_t* __rtp_header = tsk_null;
+	static const tmedia_codec_id_t __codecs_supporting_zero_artifacts = (tmedia_codec_id_vp8 | tmedia_codec_id_h264_bp | tmedia_codec_id_h264_mp | tmedia_codec_id_h263);
 	int ret = 0;
 
 	if(!self || !packet || !packet->header){
@@ -658,6 +710,7 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 	if(base->consumer && base->consumer->is_started){
 		tsk_size_t out_size, _size;
 		const void* _buffer;
+		tdav_session_video_t* video = (tdav_session_video_t*)base;
 
 		// Find the codec to use to decode the RTP payload
 		if(!self->decoder.codec || self->decoder.payload_type != packet->header->payload_type){
@@ -675,7 +728,30 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 			goto bail;
 		}
 		
-		
+		// Check if stream is corrupted or not
+		if(video->decoder.last_seqnum && (video->decoder.last_seqnum + 1) != packet->header->seq_num){
+			TSK_DEBUG_INFO("/!\\Video stream corrupted because of packet loss [%u - %u]. Pause rendering if 'zero_artifacts' (supported = %s, enabled = %s).", 
+				video->decoder.last_seqnum, 
+				packet->header->seq_num,
+				(__codecs_supporting_zero_artifacts & self->decoder.codec->id) ? "yes" : "no",
+				self->zero_artifacts ? "yes" : "no"
+				);
+			if(!video->decoder.stream_corrupted){ // do not do the job twice
+				if(self->zero_artifacts && (__codecs_supporting_zero_artifacts & self->decoder.codec->id)){
+					// request IDR now and every time after 'TDAV_SESSION_VIDEO_AVPF_FIR_REQUEST_INTERVAL_MIN' ellapsed
+					// 'zero-artifacts' not enabled then, we'll request IDR when decoding fails
+					TSK_DEBUG_INFO("Sending FIR to request IDR...");
+					trtp_manager_signal_frame_corrupted(base->rtp_manager, packet->header->ssrc);
+				}
+				// value will be updated when we decode an IDR frame
+				video->decoder.stream_corrupted = tsk_true;
+				video->decoder.stream_corrupted_since = tsk_time_now();
+			}
+			// will be used as guard to avoid redering corrupted IDR
+			video->decoder.last_corrupted_timestamp = packet->header->timestamp;
+		}
+		video->decoder.last_seqnum = packet->header->seq_num; // update last seqnum
+
 		// Decode data
 		out_size = self->decoder.codec->plugin->decode(
 				self->decoder.codec, 
@@ -685,6 +761,16 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 			);
 		// check
 		if(!out_size || !self->decoder.buffer){
+			goto bail;
+		}
+		// check if stream is corrupted
+		// the above decoding process is required in order to reset stream corruption status when IDR frame is decoded
+		if(self->zero_artifacts && self->decoder.stream_corrupted && (__codecs_supporting_zero_artifacts & self->decoder.codec->id)){
+			TSK_DEBUG_INFO("Do not render video frame because stream is corrupted and 'zero-artifacts' is enabled. Last seqnum=%u", video->decoder.last_seqnum);
+			if(video->decoder.stream_corrupted && (tsk_time_now() - video->decoder.stream_corrupted_since) > TDAV_SESSION_VIDEO_AVPF_FIR_REQUEST_INTERVAL_MIN){
+				TSK_DEBUG_INFO("Sending FIR to request IDR because frame corrupted since %llu...", video->decoder.stream_corrupted_since);
+				trtp_manager_signal_frame_corrupted(base->rtp_manager, packet->header->ssrc);
+			}
 			goto bail;
 		}
 
@@ -742,7 +828,7 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 			_size = out_size;
 		}
 
-		ret = tmedia_consumer_consume(base->consumer, _buffer, _size, rtp_header);
+		ret = tmedia_consumer_consume(base->consumer, _buffer, _size, __rtp_header);
 	}
 	else if(!base->consumer->is_started){
 		TSK_DEBUG_INFO("Consumer not started");
@@ -1080,6 +1166,8 @@ static tsk_object_t* tdav_session_video_ctor(tsk_object_t * self, va_list * app)
 		
 		/* init() self */
 		video->jb_enabled = tmedia_defaults_get_videojb_enabled();
+		video->zero_artifacts = tmedia_defaults_get_video_zeroartifacts_enabled();
+		TSK_DEBUG_INFO("Video 'zero-artifacts' option = %s", video->zero_artifacts  ? "yes" : "no");
 		if(!(video->encoder.h_mutex = tsk_mutex_create())){
 			TSK_DEBUG_ERROR("Failed to create encode mutex");
 			return tsk_null;

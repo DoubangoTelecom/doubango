@@ -329,8 +329,18 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
-  public static bool defaultsGetVideoJbEnabled(bool enabled) {
-    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetVideoJbEnabled(enabled);
+  public static bool defaultsGetVideoJbEnabled() {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetVideoJbEnabled();
+    return ret;
+  }
+
+  public static bool defaultsSetVideoZeroArtifactsEnabled(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled(enabled);
+    return ret;
+  }
+
+  public static bool defaultsGetVideoZeroArtifactsEnabled() {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled();
     return ret;
   }
 

@@ -92,7 +92,7 @@ int tsk_thread_set_priority(tsk_thread_handle_t* handle, int32_t priority)
 	int ret;
     memset(&sp, 0, sizeof(struct sched_param));
     sp.sched_priority = priority;
-    if ((ret = pthread_setschedparam(*((pthread_t*)handle), SCHED_RR, &sp))) {
+    if ((ret = pthread_setschedparam(*((pthread_t*)handle), SCHED_OTHER, &sp))) {
         TSK_DEBUG_ERROR("Failed to change priority to %d with error code=%d", priority, ret);
         return ret;
     }

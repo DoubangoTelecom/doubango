@@ -123,6 +123,14 @@ AC_CHECK_LIB([resolv], [dns_search],
     AC_SUBST(LIBRESOLV_LIBADD, "")
     )
 
+AM_CONDITIONAL(USE_RT, false)
+AC_CHECK_LIB([rt], [clock_gettime], 
+    AC_SUBST(LIBRT_LIBADD, "-lrt")
+    AC_DEFINE(HAVE_CLOCK_GETTIME, 1, [Define to 1 if we have the `clock_gettime' function.])
+    AM_CONDITIONAL(USE_RT, true), 
+    AC_SUBST(LIBRT_LIBADD, "")
+    )
+
 AH_TEMPLATE([TNET_HAVE_SS_LEN], [Define if sockaddr_storage.ss_len exists])
 AC_CHECK_MEMBER([struct sockaddr_storage.ss_len], AC_DEFINE(TNET_HAVE_SS_LEN, 1), AC_DEFINE(TNET_HAVE_SS_LEN,0), [#include <sys/socket.h>])
 
