@@ -815,7 +815,7 @@ int wrapSocket(tnet_transport_t *transport, transport_socket_xt *sock)
         // Create a new RunLoopSource and register it with the main thread RunLoop
         sock->cf_run_loop_source = CFSocketCreateRunLoopSource(kCFAllocatorDefault, sock->cf_socket, 0);
         CFRunLoopAddSource(context->cf_run_loop, sock->cf_run_loop_source, kCFRunLoopDefaultMode);
-        CFRelease(sock->cf_run_loop_source);
+        CFRelease(sock->cf_run_loop_source), sock->cf_run_loop_source = NULL;
         
     } else if (TNET_SOCKET_TYPE_IS_STREAM(sock->type)) {
         
@@ -913,6 +913,7 @@ void *tnet_transport_mainthread(void *param)
     
     // Set the RunLoop of the context
     context->cf_run_loop = CFRunLoopGetCurrent();
+    CFRetain(context->cf_run_loop);
 	// Wrap sockets now that the runloop is defined
 	tsk_safeobj_lock(context);
 	for (i = 0; i < context->count; ++i) {
@@ -956,6 +957,10 @@ void *tnet_transport_mainthread(void *param)
     
 bail:
 	TSK_DEBUG_INFO("Stopped [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
+    if(context->cf_run_loop){
+        CFRelease(context->cf_run_loop);
+        context->cf_run_loop = NULL;
+    }
 	return 0;
 }
 
