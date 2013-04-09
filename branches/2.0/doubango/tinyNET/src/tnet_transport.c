@@ -848,8 +848,12 @@ static void* TSK_STDCALL run(void* self)
 		TSK_DEBUG_FATAL("Failed to create main thread [%d]", ret);
 		return tsk_null;
 	}
-	/* set thread priority */
+	/* set thread priority 
+     iOS: no incoming pkts (STUN, rtp, dtls...) when thread priority is changed -> to be checked
+     */
+#if !TNET_UNDER_IPHONE && !TNET_UNDER_IPHONE_SIMULATOR
 	ret = tsk_thread_set_priority(transport->mainThreadId[0], TSK_THREAD_PRIORITY_TIME_CRITICAL);
+#endif
 	
 	TSK_RUNNABLE_RUN_BEGIN(transport);
 	
