@@ -724,7 +724,7 @@ static void tdav_codec_mp4ves_rtp_callback(tdav_codec_mp4ves_t *mp4v, const void
 	if(TMEDIA_CODEC_VIDEO(mp4v)->out.callback){
 		TMEDIA_CODEC_VIDEO(mp4v)->out.result.buffer.ptr = data;
 		TMEDIA_CODEC_VIDEO(mp4v)->out.result.buffer.size = size;
-		TMEDIA_CODEC_VIDEO(mp4v)->out.result.duration = (3003* (30/TMEDIA_CODEC_VIDEO(mp4v)->out.fps));
+		TMEDIA_CODEC_VIDEO(mp4v)->out.result.duration =  (1./(double)TMEDIA_CODEC_VIDEO(mp4v)->out.fps) * TMEDIA_CODEC(mp4v)->plugin->rate;
 		TMEDIA_CODEC_VIDEO(mp4v)->out.result.last_chunck = marker;
 		TMEDIA_CODEC_VIDEO(mp4v)->out.callback(&TMEDIA_CODEC_VIDEO(mp4v)->out.result);
 	}

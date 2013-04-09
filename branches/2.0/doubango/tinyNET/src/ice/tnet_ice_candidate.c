@@ -46,7 +46,6 @@ static int _tnet_ice_candidate_tostring(
 static const char* _tnet_ice_candidate_get_foundation(tnet_ice_cand_type_t type);
 static tnet_stun_message_t * _tnet_ice_candidate_stun_create_bind_request(tnet_ice_candidate_t* self, const char* username, const char* password);
 static tsk_bool_t _tnet_ice_candidate_stun_transac_id_equals(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2);
-static int _tnet_ice_candidate_stun_address_tostring(const uint8_t in_ip[16], tnet_stun_addr_family_t family, char** out_ip);
 static const char* _tnet_ice_candidate_get_transport_str(tnet_socket_type_t transport_e);
 static tnet_socket_type_t _tnet_ice_candidate_get_transport_type(tsk_bool_t ipv6, const char* transport_str);
 static const char* _tnet_ice_candidate_get_candtype_str(tnet_ice_cand_type_t candtype_e);
@@ -110,8 +109,7 @@ tnet_ice_candidate_t* tnet_ice_candidate_create(tnet_ice_cand_type_t type_e, tne
 		TSK_DEBUG_ERROR("Failed to create candidate");
 		return tsk_null;
 	}
-		
-	candidate->transport_e = socket->type;
+	
 	candidate->type_e = type_e;
 	candidate->socket = tsk_object_ref(socket);
 	candidate->local_pref = 0xFFFF;
@@ -129,6 +127,7 @@ tnet_ice_candidate_t* tnet_ice_candidate_create(tnet_ice_cand_type_t type_e, tne
 	if(candidate->socket){
 		memcpy(candidate->connection_addr, candidate->socket->ip, sizeof(candidate->socket->ip));
 		candidate->port = candidate->socket->port;
+		candidate->transport_e = socket->type;
 	}
 	tnet_ice_candidate_set_credential(candidate, ufrag, pwd);
 	
@@ -420,12 +419,12 @@ int tnet_ice_candidate_process_stun_response(tnet_ice_candidate_t* self,  const 
 
 		if((attribute = tnet_stun_message_get_attribute(response, stun_xor_mapped_address))){
 			const tnet_stun_attribute_xmapped_addr_t *xmaddr = (const tnet_stun_attribute_xmapped_addr_t *)attribute;
-			_tnet_ice_candidate_stun_address_tostring(xmaddr->xaddress, xmaddr->family, &self->stun.srflx_addr);
+			tnet_ice_utils_stun_address_tostring(xmaddr->xaddress, xmaddr->family, &self->stun.srflx_addr);
 			self->stun.srflx_port = xmaddr->xport;
 		}
 		else if((attribute = tnet_stun_message_get_attribute(response, stun_mapped_address))){
 			const tnet_stun_attribute_mapped_addr_t *maddr = (const tnet_stun_attribute_mapped_addr_t *)attribute;
-			ret = _tnet_ice_candidate_stun_address_tostring(maddr->address, maddr->family, &self->stun.srflx_addr);
+			ret = tnet_ice_utils_stun_address_tostring(maddr->address, maddr->family, &self->stun.srflx_addr);
 			self->stun.srflx_port = maddr->port;
 		}
 	}
@@ -524,25 +523,6 @@ static tsk_bool_t _tnet_ice_candidate_stun_transac_id_equals(const tnet_stun_tra
 		}
 	}
 	return tsk_true;
-}
-
-static int _tnet_ice_candidate_stun_address_tostring(const uint8_t in_ip[16], tnet_stun_addr_family_t family, char** out_ip)
-{
-	if(family == stun_ipv6){
-		tsk_sprintf(out_ip, "%x:%x:%x:%x:%x:%x:%x:%x",
-				TSK_TO_UINT16(&in_ip[0]), TSK_TO_UINT16(&in_ip[2]), TSK_TO_UINT16(&in_ip[4]), TSK_TO_UINT16(&in_ip[6]),
-				TSK_TO_UINT16(&in_ip[8]), TSK_TO_UINT16(&in_ip[10]), TSK_TO_UINT16(&in_ip[12]), TSK_TO_UINT16(&in_ip[14]));
-	}
-	else if(family == stun_ipv4){
-		tsk_sprintf(out_ip, "%u.%u.%u.%u", in_ip[0], in_ip[1], in_ip[2], in_ip[3]);
-		
-		return 0;
-	}
-	else{
-		TSK_DEBUG_ERROR("Unsupported address family: %u.", family);
-	}
-
-	return -1;
 }
 
 static tnet_stun_message_t * _tnet_ice_candidate_stun_create_bind_request(tnet_ice_candidate_t* self, const char* username, const char* password)

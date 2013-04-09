@@ -41,6 +41,7 @@
 // OS X or iOS
 #if defined(__APPLE__)
 #	define TDAV_UNDER_APPLE				1
+#   include <TargetConditionals.h>
 #endif
 #if TARGET_OS_MAC
 #	define TDAV_UNDER_MAC				1
@@ -58,7 +59,7 @@
 #endif
 
 // Mobile
-#if defined(_WIN32_WCE) || defined(ANDROID) // iOS (not true)=> || defined(IOS)
+#if defined(_WIN32_WCE) || defined(ANDROID) || TDAV_UNDER_IPHONE || TDAV_UNDER_IPHONE_SIMULATOR
 #	define TDAV_UNDER_MOBILE	1
 #endif
 

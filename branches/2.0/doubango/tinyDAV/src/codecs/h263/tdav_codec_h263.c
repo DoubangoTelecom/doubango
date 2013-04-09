@@ -330,6 +330,7 @@ static tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_da
 
 	tdav_codec_h263_t* h263 = (tdav_codec_h263_t*)self;
 	const trtp_rtp_header_t* rtp_hdr = proto_hdr;
+	tsk_bool_t is_idr = tsk_false;
 
 	if(!self || !in_data || !in_size || !out_data || !h263->decoder.context){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -345,6 +346,10 @@ static tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_da
 		Optional PB-frames mode as defined by the H.263 [4]. "0" implies
 		normal I or P frame, "1" PB-frames. When F=1, P also indicates modes:
 		mode B if P=0, mode C if P=1.
+
+		I:  1 bit.
+	   Picture coding type, bit 9 in PTYPE defined by H.263[4], "0" is
+	   intra-coded, "1" is inter-coded.
 	*/
 	F = *pdata >> 7;
 	P = (*pdata >> 6) & 0x01;
@@ -362,6 +367,7 @@ static tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_da
 			+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 		*/
 		hdr_size = H263_HEADER_MODE_A_SIZE;
+		is_idr = (in_size >= 2) && !(pdata[1] & 0x10) /* I==1 */;
 	}
 	else if(P == 0){ // F=1 and P=0
 		/* MODE B
@@ -374,6 +380,7 @@ static tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_da
 			+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 		*/
 		hdr_size = H263_HEADER_MODE_B_SIZE;
+		is_idr = (in_size >= 5) && !(pdata[4] & 0x80) /* I==1 */;
 	}
 	else{ // F=1 and P=1
 		/* MODE C 
@@ -388,6 +395,7 @@ static tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_da
 			+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 		*/
 		hdr_size = H263_HEADER_MODE_C_SIZE;
+		is_idr = (in_size >= 5) && !(pdata[4] & 0x80) /* I==1 */;
 	}
 
 	/* Check size */
@@ -458,6 +466,13 @@ static tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_da
 		}
 		else if(got_picture_ptr){
 			retsize = xsize;
+			// Is it IDR frame?
+			if(is_idr && TMEDIA_CODEC_VIDEO(self)->in.callback){
+				TSK_DEBUG_INFO("Decoded H.263 IDR");
+				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_idr;
+				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
+				TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
+			}
 			TMEDIA_CODEC_VIDEO(h263)->in.width = h263->decoder.context->width;
 			TMEDIA_CODEC_VIDEO(h263)->in.height = h263->decoder.context->height;
 			/* copy picture into a linear buffer */
@@ -628,7 +643,7 @@ static tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_d
 	}
 
 /*
-	5.1.  General H.263+ Payload Header
+	rfc4629 - 5.1.  General H.263+ Payload Header
 
          0                   1
          0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
@@ -1175,7 +1190,7 @@ static void tdav_codec_h263_rtp_callback(tdav_codec_h263_t *self, const void *da
 	if(TMEDIA_CODEC_VIDEO(self)->out.callback){
 		TMEDIA_CODEC_VIDEO(self)->out.result.buffer.ptr = self->rtp.ptr;
 		TMEDIA_CODEC_VIDEO(self)->out.result.buffer.size = (size + H263_HEADER_MODE_A_SIZE);
-		TMEDIA_CODEC_VIDEO(self)->out.result.duration = (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps));
+		TMEDIA_CODEC_VIDEO(self)->out.result.duration =  (1./(double)TMEDIA_CODEC_VIDEO(self)->out.fps) * TMEDIA_CODEC(self)->plugin->rate;
 		TMEDIA_CODEC_VIDEO(self)->out.result.last_chunck = marker;
 		TMEDIA_CODEC_VIDEO(self)->out.callback(&TMEDIA_CODEC_VIDEO(self)->out.result);
 	}
@@ -1320,7 +1335,7 @@ static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *d
 	if(TMEDIA_CODEC_VIDEO(self)->out.callback){
 		TMEDIA_CODEC_VIDEO(self)->out.result.buffer.ptr = _ptr;
 		TMEDIA_CODEC_VIDEO(self)->out.result.buffer.size = _size;
-		TMEDIA_CODEC_VIDEO(self)->out.result.duration = (3003* (30/TMEDIA_CODEC_VIDEO(self)->out.fps));
+		TMEDIA_CODEC_VIDEO(self)->out.result.duration =  (1./(double)TMEDIA_CODEC_VIDEO(self)->out.fps) * TMEDIA_CODEC(self)->plugin->rate;
 		TMEDIA_CODEC_VIDEO(self)->out.result.last_chunck = marker;
 		TMEDIA_CODEC_VIDEO(self)->out.callback(&TMEDIA_CODEC_VIDEO(self)->out.result);
 	}

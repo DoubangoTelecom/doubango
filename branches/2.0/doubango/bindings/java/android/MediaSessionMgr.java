@@ -266,8 +266,16 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetVideoJbEnabled(enabled);
   }
 
-  public static boolean defaultsGetVideoJbEnabled(boolean enabled) {
-    return tinyWRAPJNI.MediaSessionMgr_defaultsGetVideoJbEnabled(enabled);
+  public static boolean defaultsGetVideoJbEnabled() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetVideoJbEnabled();
+  }
+
+  public static boolean defaultsSetVideoZeroArtifactsEnabled(boolean enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled(enabled);
+  }
+
+  public static boolean defaultsGetVideoZeroArtifactsEnabled() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled();
   }
 
   public static boolean defaultsSetRtpBuffSize(long buffSize) {

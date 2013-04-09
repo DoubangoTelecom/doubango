@@ -944,6 +944,8 @@ int tmedia_session_mgr_stop(tmedia_session_mgr_t* self)
 	tsk_list_item_t* item;
 	tmedia_session_t* session;
 
+	TSK_DEBUG_INFO("tmedia_session_mgr_stop()");
+
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;

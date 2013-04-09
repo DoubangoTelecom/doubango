@@ -96,6 +96,68 @@ tnet_ice_pair_t* tnet_ice_pair_create(const tnet_ice_candidate_t* candidate_offe
 	return pair;
 }
 
+// rfc 5245 - 7.1.3.2.1.  Discovering Peer Reflexive Candidates
+tnet_ice_pair_t* tnet_ice_pair_prflx_create(tnet_ice_pairs_L_t* pairs, uint16_t local_fd, const struct sockaddr_storage *remote_addr)
+{
+	int ret;
+	const tsk_list_item_t *item;
+	const tnet_ice_pair_t *pair_local = tsk_null, *pair;
+	tnet_ip_t remote_ip;
+	tnet_port_t remote_port;
+	
+	if(!pairs || !remote_addr){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	if((ret = tnet_get_sockip_n_port((const struct sockaddr*)remote_addr, &remote_ip, &remote_port))){
+		TNET_PRINT_LAST_ERROR("tnet_get_sockip_n_port() failed");
+		return tsk_null;
+	}
+
+	tsk_list_foreach(item, pairs){
+		if(!(pair = item->data) || !pair->candidate_offer || !pair->candidate_answer || !pair->candidate_offer->socket || pair->candidate_offer->socket->fd != local_fd){
+			continue;
+		}
+		pair_local = pair;
+		break;
+	}
+
+	if(!pair_local){
+		TSK_DEBUG_ERROR("Cannot create prflx candidate with remote ip = %s and remote port = %u", remote_ip, remote_port);
+		return tsk_null;
+	}
+	else{
+		tnet_ice_pair_t* pair_peer = tsk_null;
+		tnet_ice_candidate_t* cand_local = tnet_ice_candidate_create(tnet_ice_cand_type_prflx, pair_local->candidate_offer->socket, pair_local->is_ice_jingle, pair_local->candidate_offer->is_rtp, pair_local->candidate_offer->is_video, pair_local->candidate_offer->ufrag, pair_local->candidate_offer->pwd, pair_local->candidate_offer->foundation);
+		tnet_ice_candidate_t* cand_remote = tnet_ice_candidate_create(tnet_ice_cand_type_prflx, tsk_null, pair_local->is_ice_jingle, pair_local->candidate_answer->is_rtp, pair_local->candidate_answer->is_video, pair_local->candidate_answer->ufrag, pair_local->candidate_answer->pwd, pair_local->candidate_answer->foundation);
+		if(cand_local && cand_remote){
+			
+			tsk_strupdate(&cand_remote->transport_str, pair->candidate_offer->transport_str);
+			cand_remote->comp_id = pair->candidate_offer->comp_id;
+			memcpy(cand_remote->connection_addr, remote_ip, sizeof(tnet_ip_t));
+			cand_remote->port = remote_port;
+
+			TSK_DEBUG_INFO("ICE Pair (Peer Reflexive Candidate): [%s %u %s %d] -> [%s %u %s %d]",
+				cand_local->foundation,
+				cand_local->comp_id,
+				cand_local->connection_addr,
+				cand_local->port,
+
+				cand_remote->foundation,
+				cand_remote->comp_id,
+				cand_remote->connection_addr,
+				cand_remote->port);
+			pair_peer = tnet_ice_pair_create(cand_local, cand_remote, pair_local->is_controlling, pair_local->tie_breaker, pair_local->is_ice_jingle);
+		}
+		TSK_OBJECT_SAFE_FREE(cand_local);
+		TSK_OBJECT_SAFE_FREE(cand_remote);
+		return pair_peer;
+	}
+
+	return tsk_null;
+}
+
 int tnet_ice_pair_send_conncheck(tnet_ice_pair_t *self)
 {
 	char* username = tsk_null;
@@ -498,11 +560,55 @@ const tnet_ice_pair_t* tnet_ice_pairs_find_by_response(tnet_ice_pairs_L_t* pairs
 	if(pairs && response){
 		const tsk_list_item_t *item;
 		const tnet_ice_pair_t *pair;
+		tnet_port_t mapped_port;
+		char* mapped_addr_str = tsk_null;
 		tsk_list_foreach(item, pairs){
-			if(!(pair = item->data)){
+			if(!(pair = item->data) || !pair->candidate_answer || !pair->candidate_offer){
 				continue;
 			}
 			if(pair->last_request && tnet_stun_message_transac_id_equals(pair->last_request->transaction_id, response->transaction_id)){
+				// check that mapped/xmapped address match destination
+				const tnet_stun_attribute_xmapped_addr_t *xmapped_addr;
+				const tnet_stun_attribute_mapped_addr_t* mapped_addr = tsk_null;
+
+				if(!(xmapped_addr = (const tnet_stun_attribute_xmapped_addr_t *)tnet_stun_message_get_attribute(response, stun_xor_mapped_address))){
+					mapped_addr = (const tnet_stun_attribute_mapped_addr_t *)tnet_stun_message_get_attribute(response, stun_mapped_address);
+				}
+				if(!xmapped_addr && !mapped_addr){
+					return pair; // do nothing if the client doesn't return mapped address STUN attribute
+				}
+				/* rfc 5245 7.1.3.2.1.  Discovering Peer Reflexive Candidates
+
+				   The agent checks the mapped address from the STUN response.  If the
+				   transport address does not match any of the local candidates that the
+				   agent knows about, the mapped address represents a new candidate -- a
+				   peer reflexive candidate.  Like other candidates, it has a type,
+				   base, priority, and foundation.  They are computed as follows:
+
+				   o  Its type is equal to peer reflexive.
+
+				   o  Its base is set equal to the local candidate of the candidate pair
+					  from which the STUN check was sent.
+
+				   o  Its priority is set equal to the value of the PRIORITY attribute
+					  in the Binding request.
+
+				   o  Its foundation is selected as described in Section 4.1.1.3.
+
+				   This peer reflexive candidate is then added to the list of local
+				   candidates for the media stream.  Its username fragment and password
+				   are the same as all other local candidates for that media stream.
+				*/
+				tnet_ice_utils_stun_address_tostring(xmapped_addr ? xmapped_addr->xaddress : mapped_addr->address, xmapped_addr ? xmapped_addr->family : mapped_addr->family, &mapped_addr_str);
+				mapped_port = xmapped_addr ? xmapped_addr->xport : mapped_addr->port;
+				if((mapped_port != pair->candidate_offer->port || !tsk_striequals(mapped_addr_str, pair->candidate_offer->connection_addr))){
+					TSK_DEBUG_INFO("Mapped address different than local connection address...probably symetric NAT: %s#%s and %u#%u", 
+						pair->candidate_offer->connection_addr, mapped_addr_str,
+						pair->candidate_offer->port, mapped_port);
+					// do we really need to add new local candidate?
+					// continue;
+				}
+
 				return pair;
 			}
 		}
@@ -538,6 +644,8 @@ const tnet_ice_pair_t* tnet_ice_pairs_find_by_fd_and_addr(tnet_ice_pairs_L_t* pa
 
 		return pair;
 	}
+
+	TSK_DEBUG_INFO("No ICE candidate with remote ip = %s and port = %u could be found...probably symetric NAT", remote_ip, remote_port);
 
 	return tsk_null;
 }

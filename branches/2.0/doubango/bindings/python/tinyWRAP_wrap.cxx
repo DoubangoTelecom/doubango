@@ -7823,19 +7823,45 @@ fail:
 
 SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetVideoJbEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetVideoJbEnabled")) SWIG_fail;
+  result = (bool)MediaSessionMgr::defaultsGetVideoJbEnabled();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
   bool arg1 ;
   bool val1 ;
   int ecode1 = 0 ;
   PyObject * obj0 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsGetVideoJbEnabled",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled",&obj0)) SWIG_fail;
   ecode1 = SWIG_AsVal_bool(obj0, &val1);
   if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsGetVideoJbEnabled" "', argument " "1"" of type '" "bool""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled" "', argument " "1"" of type '" "bool""'");
   } 
   arg1 = static_cast< bool >(val1);
-  result = (bool)MediaSessionMgr::defaultsGetVideoJbEnabled(arg1);
+  result = (bool)MediaSessionMgr::defaultsSetVideoZeroArtifactsEnabled(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled")) SWIG_fail;
+  result = (bool)MediaSessionMgr::defaultsGetVideoZeroArtifactsEnabled();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -25331,6 +25357,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_defaultsGetByPassDecoding", _wrap_MediaSessionMgr_defaultsGetByPassDecoding, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetVideoJbEnabled", _wrap_MediaSessionMgr_defaultsSetVideoJbEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetVideoJbEnabled", _wrap_MediaSessionMgr_defaultsGetVideoJbEnabled, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled", _wrap_MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled", _wrap_MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetRtpBuffSize", _wrap_MediaSessionMgr_defaultsSetRtpBuffSize, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetRtpBuffSize", _wrap_MediaSessionMgr_defaultsGetRtpBuffSize, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetAvpfTail", _wrap_MediaSessionMgr_defaultsSetAvpfTail, METH_VARARGS, NULL},

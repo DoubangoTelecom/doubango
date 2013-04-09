@@ -187,7 +187,7 @@ typedef enum tmedia_video_decode_result_type_e
 	tmedia_video_decode_result_type_none,
 
 	tmedia_video_decode_result_type_error,
-	tmedia_video_decode_result_type_success,
+	tmedia_video_decode_result_type_idr,
 }
 tmedia_video_decode_result_type_t;
 

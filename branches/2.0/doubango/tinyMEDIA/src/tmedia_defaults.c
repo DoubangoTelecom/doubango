@@ -59,6 +59,7 @@ static tsk_bool_t __ice_enabled = tsk_false;
 static tsk_bool_t __bypass_encoding_enabled = tsk_false;
 static tsk_bool_t __bypass_decoding_enabled = tsk_false;
 static tsk_bool_t __videojb_enabled = tsk_true;
+static tsk_bool_t __video_zeroartifacts_enabled = tsk_false; // Requires from remote parties to support AVPF (RTCP-FIR/NACK/PLI)
 static tsk_size_t __rtpbuff_size = 0x1FFFE; // Network buffer size use for RTP (SO_RCVBUF, SO_SNDBUF)
 static tsk_size_t __avpf_tail_min = 20; // Min size for tail used to honor RTCP-NACK requests
 static tsk_size_t __avpf_tail_max = 160; // Max size for tail used to honor RTCP-NACK requests
@@ -341,6 +342,14 @@ int tmedia_defaults_set_videojb_enabled(tsk_bool_t enabled){
 }
 tsk_bool_t tmedia_defaults_get_videojb_enabled(){
 	return __videojb_enabled;
+}
+
+int tmedia_defaults_set_video_zeroartifacts_enabled(tsk_bool_t enabled){
+	__video_zeroartifacts_enabled = enabled;
+	return 0;
+}
+tsk_bool_t tmedia_defaults_get_video_zeroartifacts_enabled(){
+	return __video_zeroartifacts_enabled;
 }
 
 int tmedia_defaults_set_rtpbuff_size(tsk_size_t rtpbuff_size){

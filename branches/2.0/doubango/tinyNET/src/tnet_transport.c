@@ -160,6 +160,8 @@ tnet_transport_t* tnet_transport_create(const char* host, tnet_port_t port, tnet
 			TSK_DEBUG_ERROR("Failed to initialize TLS and/or DTLS caps");
 			TSK_OBJECT_SAFE_FREE(transport);
 		}
+		// set priority
+		tsk_runnable_set_priority(TSK_RUNNABLE(transport), TSK_THREAD_PRIORITY_TIME_CRITICAL);
 	}
 
 	return transport;
@@ -189,6 +191,9 @@ tnet_transport_t* tnet_transport_create_2(tnet_socket_t *master, const char* des
 			TSK_DEBUG_ERROR("Failed to initialize TLS and/or DTLS caps");
 			TSK_OBJECT_SAFE_FREE(transport);
 		}
+
+		// set priority
+		tsk_runnable_set_priority(TSK_RUNNABLE(transport), TSK_THREAD_PRIORITY_TIME_CRITICAL);
 	}
 
 	return transport;
@@ -843,6 +848,8 @@ static void* TSK_STDCALL run(void* self)
 		TSK_DEBUG_FATAL("Failed to create main thread [%d]", ret);
 		return tsk_null;
 	}
+	/* set thread priority */
+	ret = tsk_thread_set_priority(transport->mainThreadId[0], TSK_THREAD_PRIORITY_TIME_CRITICAL);
 	
 	TSK_RUNNABLE_RUN_BEGIN(transport);
 	

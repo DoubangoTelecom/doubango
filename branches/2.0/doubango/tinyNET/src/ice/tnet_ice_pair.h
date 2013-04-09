@@ -59,6 +59,7 @@ typedef struct tnet_ice_pair_s
 tnet_ice_pair_t;
 
 tnet_ice_pair_t* tnet_ice_pair_create(const struct tnet_ice_candidate_s* candidate_offer, const struct tnet_ice_candidate_s* candidate_answer, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle);
+tnet_ice_pair_t* tnet_ice_pair_prflx_create(tnet_ice_pairs_L_t* pairs, uint16_t local_fd, const struct sockaddr_storage *remote_addr);
 int tnet_ice_pair_send_conncheck(tnet_ice_pair_t *self);
 int tnet_ice_pair_send_response(tnet_ice_pair_t *self, const struct tnet_stun_message_s* request, const short code, const char* phrase, const struct sockaddr_storage *remote_addr);
 int tnet_ice_pair_auth_conncheck(const tnet_ice_pair_t *self, const struct tnet_stun_message_s* request, const void* request_buff, tsk_size_t request_buff_size, short* resp_code, char** resp_phrase);

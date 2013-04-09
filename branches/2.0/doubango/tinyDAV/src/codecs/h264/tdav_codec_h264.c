@@ -218,7 +218,7 @@ static tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_da
 
 	tdav_codec_h264_t* h264 = (tdav_codec_h264_t*)self;
 
-	if(!self || !in_data || !in_size || !out_data){
+	if(!self || !in_data || !in_size){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
@@ -265,7 +265,7 @@ static tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_da
 #else
     h264->encoder.picture->pict_type = send_idr ? AV_PICTURE_TYPE_I : AV_PICTURE_TYPE_NONE;
 #endif
-	h264->encoder.picture->pts = h264->encoder.frame_count;
+	h264->encoder.picture->pts = AV_NOPTS_VALUE;
 	h264->encoder.picture->quality = h264->encoder.context->global_quality;
 	// h264->encoder.picture->pts = h264->encoder.frame_count; MUST NOT
 	ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);	
@@ -292,6 +292,7 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 	tsk_size_t pay_size = 0;
 	int ret;
 	tsk_bool_t append_scp;
+	tsk_bool_t sps_or_pps;
 	tsk_size_t retsize = 0, size_to_copy = 0;
 	static tsk_size_t xmax_size = (1920 * 1080 * 3) >> 3;
 	static tsk_size_t start_code_prefix_size = sizeof(H264_START_CODE_PREFIX);
@@ -325,7 +326,7 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
       |F|NRI|  Type   |
       +---------------+
 	*/
-	if(*((uint8_t*)in_data) >> 7){
+	if(*((uint8_t*)in_data) & 0x80){
 		TSK_DEBUG_WARN("F=1");
 		/* reset accumulator */
 		h264->decoder.accumulator = 0;
@@ -339,6 +340,8 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 	}
 	//append_scp = tsk_true;
 	size_to_copy = pay_size + (append_scp ? start_code_prefix_size : 0);
+	// whether it's SPS or PPS
+	sps_or_pps = pay_ptr && ((pay_ptr[0] & 0x1F) == 7 || (pay_ptr[0] & 0x1F) == 8);
 	
 	// start-accumulator
 	if(!h264->decoder.accumulator){
@@ -375,19 +378,24 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 	h264->decoder.accumulator_pos += pay_size;
 	// end-accumulator
 
-	if(rtp_hdr->marker){
+	if(sps_or_pps){
+		// http://libav-users.943685.n4.nabble.com/Decode-H264-streams-how-to-fill-AVCodecContext-from-SPS-PPS-td2484472.html
+		// SPS and PPS should be bundled with IDR
+		TSK_DEBUG_INFO("Receiving SPS or PPS ...to be tied to an IDR");
+	}
+	else if(rtp_hdr->marker){
 #if HAVE_FFMPEG
 		AVPacket packet;
-		
 
 		/* decode the picture */
 		av_init_packet(&packet);
+		packet.dts = packet.pts = AV_NOPTS_VALUE;
 		packet.size = h264->decoder.accumulator_pos;
 		packet.data = h264->decoder.accumulator;
 		ret = avcodec_decode_video2(h264->decoder.context, h264->decoder.picture, &got_picture_ptr, &packet);
 
 		if(ret <0){
-			TSK_DEBUG_INFO("Failed to decode the buffer with error code =%d", ret);
+			TSK_DEBUG_INFO("Failed to decode the buffer with error code =%d, size=%u, append=%s", ret, h264->decoder.accumulator_pos, append_scp ? "yes" : "no");
 			if(TMEDIA_CODEC_VIDEO(self)->in.callback){
 				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
 				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
@@ -397,6 +405,13 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 		else if(got_picture_ptr){
 			tsk_size_t xsize;
 			
+			/* IDR ? */
+			if(((((int8_t*)in_data)[0] & 0x1F) == 0x05) && TMEDIA_CODEC_VIDEO(self)->in.callback){
+				TSK_DEBUG_INFO("Decoded H.264 IDR");
+				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_idr;
+				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
+				TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
+			}
 			/* fill out */
 			xsize = avpicture_get_size(h264->decoder.context->pix_fmt, h264->decoder.context->width, h264->decoder.context->height);
 			if(*out_max_size<xsize){
@@ -747,7 +762,7 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 	self->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(self)->out.fps;
 	self->encoder.context->width = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.height : TMEDIA_CODEC_VIDEO(self)->out.width;
 	self->encoder.context->height = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
-
+	
 	self->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 352 / 288) * 1000);
 	self->encoder.context->rc_min_rate = (self->encoder.context->bit_rate >> 3);
 	self->encoder.context->rc_max_rate = self->encoder.context->bit_rate;
@@ -876,7 +891,7 @@ int tdav_codec_h264_open_decoder(tdav_codec_h264_t* self)
 	self->decoder.context->height = TMEDIA_CODEC_VIDEO(self)->in.height;
 	
 #if TDAV_UNDER_WINDOWS
-	self->decoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
+//	self->decoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
 #endif
 
 	// Picture (YUV 420)
@@ -987,23 +1002,35 @@ int tdav_codec_h264_deinit(tdav_codec_h264_t* self)
 
 static void tdav_codec_h264_encap(const tdav_codec_h264_t* h264, const uint8_t* pdata, tsk_size_t size)
 {
-	register int32_t i;
-	int32_t last_scp, prev_scp;
-	static int32_t size_of_scp = sizeof(H264_START_CODE_PREFIX); /* we know it's equal to 4 ..but */
+	static const tsk_size_t size_of_scp = sizeof(H264_START_CODE_PREFIX); /* we know it's equal to 4 .. */
+	register tsk_size_t i;
+	tsk_size_t last_scp, prev_scp;
+	tsk_size_t _size;
 
-	if(!pdata || !size){
+	if(!pdata || size < size_of_scp){
 		return;
 	}
 
+	if(pdata[0] == 0 && pdata[1] == 0){
+		if(pdata[2] == 1){
+			pdata += 3, size -= 3;
+		}
+		else if(pdata[2] == 0 && pdata[3] == 1){
+			pdata += 4, size -= 4;
+		}
+	}
+
+	_size = (size - size_of_scp);
 	last_scp = 0, prev_scp = 0;
-	for(i = size_of_scp; i<(int32_t)(size - size_of_scp); i++){
-		if(pdata[i] == H264_START_CODE_PREFIX[0] && pdata[i+1] == H264_START_CODE_PREFIX[1] && pdata[i+2] == H264_START_CODE_PREFIX[2] && pdata[i+3] == H264_START_CODE_PREFIX[3]){  /* Found Start Code Prefix */
+	for(i = size_of_scp; i<_size; i++){
+		if(pdata[i] == 0 && pdata[i+1] == 0 && (pdata[i+2] == 1 || (pdata[i+2] == 0 && pdata[i+3] == 1))){  /* Find Start Code Prefix */
 			prev_scp = last_scp;
 			if((i - last_scp) >= H264_RTP_PAYLOAD_SIZE || 1){
 				tdav_codec_h264_rtp_callback(TDAV_CODEC_H264_COMMON(h264), pdata + prev_scp,
 					(i - prev_scp), (prev_scp == size));
 			}
 			last_scp = i;
+			i += (pdata[i+2] == 1) ? 3 : 4;
 		}
 	}
 

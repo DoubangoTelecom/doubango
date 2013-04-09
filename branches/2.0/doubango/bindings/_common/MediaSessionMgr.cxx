@@ -479,9 +479,17 @@ bool MediaSessionMgr::defaultsGetByPassDecoding(){
 bool MediaSessionMgr::defaultsSetVideoJbEnabled(bool enabled){
 	return (tmedia_defaults_set_videojb_enabled(enabled ? tsk_true : tsk_false) == 0);
 }
-bool MediaSessionMgr::defaultsGetVideoJbEnabled(bool enabled){
+bool MediaSessionMgr::defaultsGetVideoJbEnabled(){
 	return (tmedia_defaults_get_videojb_enabled() == tsk_true);
 }
+
+bool MediaSessionMgr::defaultsSetVideoZeroArtifactsEnabled(bool enabled){
+	return (tmedia_defaults_set_video_zeroartifacts_enabled(enabled ? tsk_true : tsk_false) == 0);
+}
+bool MediaSessionMgr::defaultsGetVideoZeroArtifactsEnabled(){
+	return (tmedia_defaults_get_video_zeroartifacts_enabled() == tsk_true);
+}
+
 bool MediaSessionMgr::defaultsSetRtpBuffSize(unsigned buffSize){
 	return (tmedia_defaults_set_rtpbuff_size(buffSize) == 0);
 }

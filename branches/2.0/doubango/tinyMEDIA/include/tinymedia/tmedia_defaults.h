@@ -90,8 +90,11 @@ TINYMEDIA_API int tmedia_defaults_set_bypass_encoding(tsk_bool_t enabled);
 TINYMEDIA_API tsk_bool_t tmedia_defaults_get_bypass_encoding();
 TINYMEDIA_API int tmedia_defaults_set_bypass_decoding(tsk_bool_t enabled);
 TINYMEDIA_API tsk_bool_t tmedia_defaults_get_bypass_decoding();
+
 TINYMEDIA_API int tmedia_defaults_set_videojb_enabled(tsk_bool_t enabled);
 TINYMEDIA_API tsk_bool_t tmedia_defaults_get_videojb_enabled();
+TINYMEDIA_API int tmedia_defaults_set_video_zeroartifacts_enabled(tsk_bool_t enabled);
+TINYMEDIA_API tsk_bool_t tmedia_defaults_get_video_zeroartifacts_enabled();
 TINYMEDIA_API int tmedia_defaults_set_rtpbuff_size(tsk_size_t rtpbuff_size);
 TINYMEDIA_API tsk_size_t tmedia_defaults_get_rtpbuff_size();
 TINYMEDIA_API int tmedia_defaults_set_avpf_tail(tsk_size_t tail_min, tsk_size_t tail_max);

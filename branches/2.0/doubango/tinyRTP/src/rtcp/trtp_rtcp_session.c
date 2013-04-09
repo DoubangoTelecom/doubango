@@ -284,8 +284,7 @@ typedef struct trtp_rtcp_session_s
 	// </RTCP-FB>
 
 	// <sender>
-	tsk_md5string_t cname;
-	tsk_bool_t is_cname_defined;
+	char* cname;
 	uint32_t packets_count;
 	uint32_t octets_count;
 	// </sender>
@@ -345,6 +344,7 @@ static tsk_object_t* trtp_rtcp_session_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(session->sources);
 		TSK_OBJECT_SAFE_FREE(session->source_local);
 		TSK_OBJECT_SAFE_FREE(session->sdes);
+		TSK_FREE(session->cname);
 		// release the handle for the global timer manager
 		tsk_timer_mgr_global_unref(&session->timer.handle_global);
 
@@ -362,7 +362,6 @@ static const tsk_object_def_t trtp_rtcp_session_def_s =
 const tsk_object_def_t *trtp_rtcp_session_def_t = &trtp_rtcp_session_def_s;
 
 
-static void _trtp_rtcp_session_set_cname(trtp_rtcp_session_t* self, const void* random_data, tsk_size_t size);
 static tsk_bool_t _trtp_rtcp_session_have_source(trtp_rtcp_session_t* self, uint32_t ssrc);
 static trtp_rtcp_source_t* _trtp_rtcp_session_find_source(trtp_rtcp_session_t* self, uint32_t ssrc);
 static trtp_rtcp_source_t* _trtp_rtcp_session_find_or_add_source(trtp_rtcp_session_t* self, uint32_t ssrc, uint16_t seq_if_add, uint32_t ts_id_add);
@@ -377,7 +376,7 @@ static void OnReceive(trtp_rtcp_session_t* session, const packet_ p, event_ e, t
 static void OnExpire(trtp_rtcp_session_t* session, event_ e);
 static void SendBYEPacket(trtp_rtcp_session_t* session, event_ e);
 
-trtp_rtcp_session_t* trtp_rtcp_session_create(uint32_t ssrc)
+trtp_rtcp_session_t* trtp_rtcp_session_create(uint32_t ssrc, const char* cname)
 {
 	trtp_rtcp_session_t* session;
 
@@ -398,6 +397,7 @@ trtp_rtcp_session_t* trtp_rtcp_session_create(uint32_t ssrc)
 	session->senders = 1;
 	session->members = 1;
 	session->rtcp_bw = RTCP_BW;//FIXME: as parameter from the code, Also added possiblities to update this value
+	session->cname = tsk_strdup(cname);
 	
 bail:
 	return session;
@@ -511,11 +511,6 @@ int trtp_rtcp_session_process_rtp_out(trtp_rtcp_session_t* self, const trtp_rtp_
 	}
 
 	tsk_safeobj_lock(self);
-
-	// initialize CNAME if not already done
-	if(!self->is_cname_defined){
-		_trtp_rtcp_session_set_cname(self, packet_rtp->payload.data, packet_rtp->payload.size);
-	}
 
 	// create local source if not already done
 	// first destroy it if the ssrc don't match
@@ -800,17 +795,12 @@ static tsk_size_t _trtp_rtcp_session_send_pkt(trtp_rtcp_session_t* self, trtp_rt
 	if(self->srtp.session) __num_bytes_pad = (SRTP_MAX_TRAILER_LEN + 0x4);
 #endif
 
-	if(!self->is_cname_defined){ // should not be true
-		uint64_t now = (tsk_time_now() ^ rand()); // not really random...but we hope it'll never called
-		_trtp_rtcp_session_set_cname(self, &now, sizeof(now));
-	}
-
 	// SDES
 	if(!self->sdes && (self->sdes = trtp_rtcp_report_sdes_create_null())){
 		trtp_rtcp_sdes_chunck_t* chunck = trtp_rtcp_sdes_chunck_create(self->source_local->ssrc);
 		if(chunck){
 			static const char* _name = "test@doubango.org";
-			trtp_rtcp_sdes_chunck_add_item(chunck, trtp_rtcp_sdes_item_type_cname, self->cname, TSK_MD5_STRING_SIZE);
+			trtp_rtcp_sdes_chunck_add_item(chunck, trtp_rtcp_sdes_item_type_cname, self->cname, tsk_strlen(self->cname));
 			trtp_rtcp_sdes_chunck_add_item(chunck, trtp_rtcp_sdes_item_type_name, _name, tsk_strlen(_name));
 			trtp_rtcp_report_sdes_add_chunck(self->sdes, chunck);
 			TSK_OBJECT_SAFE_FREE(chunck);
@@ -837,24 +827,6 @@ static tsk_size_t _trtp_rtcp_session_send_pkt(trtp_rtcp_session_t* self, trtp_rt
 	}
 
 	return ret;
-}
-
-// sets cname from rtp payload (sound or video) which is random xor'ed with some rand values
-static void _trtp_rtcp_session_set_cname(trtp_rtcp_session_t* self, const void* random_data, tsk_size_t size)
-{
-	tsk_size_t i;
-	uint8_t _cname[16] = { 'd', 'o', 'u', 'b', 'a', 'n', 'g', 'o', 'd', 'o', 'u', 'b', 'a', 'n', 'g', 'o' };
-
-	if(random_data && size){
-		memcpy(_cname, random_data, TSK_MIN(sizeof(_cname), size));
-	}
-	
-	for(i = 0; i < sizeof(_cname); i+= 4){
-		*((uint32_t*)&_cname[i]) ^= rand();
-	}
-
-	tsk_md5compute((char*)_cname, sizeof(_cname), &self->cname);
-	self->is_cname_defined = tsk_true;
 }
 
 static int _trtp_rtcp_session_timer_callback(const void* arg, tsk_timer_id_t timer_id)

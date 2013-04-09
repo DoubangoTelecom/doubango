@@ -181,7 +181,7 @@ trtp_rtcp_report_rtpfb_t* trtp_rtcp_report_rtpfb_create_nack(uint32_t ssrc_sende
 		rtpfb->nack.blp[0] = 0;
 		for(i = 1; i <= 16 && i < count; ++i){
 			j = seq_nums[i] - rtpfb->nack.pid[0];
-			rtpfb->nack.blp[0] |= (1 << (16 - j - 1));
+			rtpfb->nack.blp[0] |= (1 << (j - 1));
 		}
 
 		TRTP_RTCP_PACKET(rtpfb)->header->length_in_bytes += (rtpfb->nack.count << 2);

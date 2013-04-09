@@ -1450,20 +1450,24 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 		wsaBuffer.len = (size - sent);
 try_again:
 		ret = WSASendTo(fd, &wsaBuffer, 1, &numberOfBytesSent, 0, to, tnet_get_sockaddr_size(to), 0, 0); // returns zero if succeed
-		if(ret == 0) ret = numberOfBytesSent;
+		if(ret == 0){
+			ret = numberOfBytesSent;
+		}
 #else
 try_again:
 		ret = sendto(fd, (((const uint8_t*)buf)+sent), (size-sent), 0, to, tnet_get_sockaddr_size(to)); // returns number of sent bytes if succeed
 #endif
 		if(ret <= 0){
 			if(tnet_geterrno() == TNET_ERROR_WOULDBLOCK){
+				TSK_DEBUG_INFO("SendUdp() - WouldBlock. Retrying...");
 				if(try_guard--){
-					tsk_thread_sleep(7);
+					tsk_thread_sleep(10);
 					goto try_again;
 				}
 			}
 			else{
 				TNET_PRINT_LAST_ERROR("sendto() failed");
+
 			}
 			goto bail;
 		}
@@ -1522,14 +1526,13 @@ tsk_size_t tnet_sockfd_send(tnet_fd_t fd, const void* buf, tsk_size_t size, int 
 	while(sent < size){
 		if((ret = send(fd, (((const char*)buf)+sent), (size-sent), flags)) <= 0){
 			if(tnet_geterrno() == TNET_ERROR_WOULDBLOCK){
-				// FIXME: HORRIBLE HACK
 				if((ret = tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT))){
 					break;
 				}
 				else continue;
 			}
 			else{
-				TNET_PRINT_LAST_ERROR("send failed.");
+				TNET_PRINT_LAST_ERROR("send failed");
 				// Under Windows XP if WSAGetLastError()==WSAEINTR then try to disable both the ICS and the Firewall
 				// More info about How to disable the ISC: http://support.microsoft.com/?scid=kb%3Ben-us%3B230112&x=6&y=11
 				goto bail;

@@ -289,6 +289,8 @@ sub DESTROY {
 *defaultsGetByPassDecoding = *tinyWRAPc::MediaSessionMgr_defaultsGetByPassDecoding;
 *defaultsSetVideoJbEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetVideoJbEnabled;
 *defaultsGetVideoJbEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGetVideoJbEnabled;
+*defaultsSetVideoZeroArtifactsEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetVideoZeroArtifactsEnabled;
+*defaultsGetVideoZeroArtifactsEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGetVideoZeroArtifactsEnabled;
 *defaultsSetRtpBuffSize = *tinyWRAPc::MediaSessionMgr_defaultsSetRtpBuffSize;
 *defaultsGetRtpBuffSize = *tinyWRAPc::MediaSessionMgr_defaultsGetRtpBuffSize;
 *defaultsSetAvpfTail = *tinyWRAPc::MediaSessionMgr_defaultsSetAvpfTail;

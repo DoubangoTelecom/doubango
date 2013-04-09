@@ -52,7 +52,7 @@ typedef struct tdav_speakup_jitterBuffer_s
 }
 tdav_speakup_jitterbuffer_t;
 
-const tmedia_jitterbuffer_plugin_def_t *tdav_speakup_jitterbuffer_plugin_def_t;
+TINYDAV_GEXTERN const tmedia_jitterbuffer_plugin_def_t *tdav_speakup_jitterbuffer_plugin_def_t;
 
 TDAV_END_DECLS
 

@@ -498,6 +498,7 @@ int audio_opensles_instance_stop_consumer(audio_opensles_instance_handle_t* _sel
 	}
 	else{
 		self->isConsumerStarted = self->device->Playing();
+		self->isConsumerPrepared = false;
 	}
 
 done:
@@ -525,6 +526,7 @@ int audio_opensles_instance_stop_producer(audio_opensles_instance_handle_t* _sel
 	}
 	else{
 		self->isProducerStarted = self->device->Recording();
+		self->isProducerPrepared = false;
 	}
 
 done:

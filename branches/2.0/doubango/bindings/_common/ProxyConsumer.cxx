@@ -46,6 +46,7 @@ typedef struct twrap_consumer_proxy_audio_s
 
 	uint64_t id;
 	tsk_bool_t started;
+	const ProxyAudioConsumer* pcConsumer; // thread-safe and will be destroyed at the time as the "struct"
 }
 twrap_consumer_proxy_audio_t;
 #define TWRAP_CONSUMER_PROXY_AUDIO(self) ((twrap_consumer_proxy_audio_t*)(self))
@@ -61,15 +62,15 @@ int twrap_consumer_proxy_audio_set(tmedia_consumer_t* _self, const tmedia_param_
 
 int twrap_consumer_proxy_audio_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
+	twrap_consumer_proxy_audio_t* audio = TWRAP_CONSUMER_PROXY_AUDIO(self);
 	ProxyPluginMgr* manager;
 	int ret = -1;
 	if(codec && (manager = ProxyPluginMgr::getInstance())){
-		const ProxyAudioConsumer* audioConsumer;
-		if((audioConsumer = manager->findAudioConsumer(TWRAP_CONSUMER_PROXY_AUDIO(self)->id)) && audioConsumer->getCallback()){
+		if((audio->pcConsumer = manager->findAudioConsumer(audio->id)) && audio->pcConsumer->getCallback()){
 			self->audio.ptime = codec->plugin->audio.ptime;
 			self->audio.in.channels = codec->plugin->audio.channels;
 			self->audio.in.rate = codec->plugin->rate;
-			ret = audioConsumer->getCallback()->prepare((int)codec->plugin->audio.ptime, codec->plugin->rate, codec->plugin->audio.channels);
+			ret = audio->pcConsumer->getCallback()->prepare((int)codec->plugin->audio.ptime, codec->plugin->rate, codec->plugin->audio.channels);
 		}
 	}
 	
@@ -93,17 +94,23 @@ int twrap_consumer_proxy_audio_start(tmedia_consumer_t* self)
 
 int twrap_consumer_proxy_audio_consume(tmedia_consumer_t* self, const void* buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
 {
-	ProxyPluginMgr* manager;
+	twrap_consumer_proxy_audio_t* audio = TWRAP_CONSUMER_PROXY_AUDIO(self);
+
+	if(!audio->pcConsumer){
+		ProxyPluginMgr* manager;
+		if((manager = ProxyPluginMgr::getInstance())){
+			audio->pcConsumer = manager->findAudioConsumer(audio->id);
+		}
+	}
+
+	ProxyAudioConsumerCallback* callback;
 	int ret = -1;
-	if((manager = ProxyPluginMgr::getInstance())){
-		const ProxyAudioConsumer* audioConsumer;
-		if((audioConsumer = manager->findAudioConsumer(TWRAP_CONSUMER_PROXY_AUDIO(self)->id)) && audioConsumer->getCallback()){
-			if(audioConsumer->getCallback()->putInJitterBuffer()){
-				ret = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(self), buffer, size, proto_hdr);
-			}
-			else{
-				ret = audioConsumer->getCallback()->consume(buffer, size, proto_hdr);
-			}
+	if(audio->pcConsumer && (callback = audio->pcConsumer->getCallback())){
+		if(callback->putInJitterBuffer()){
+			ret = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(self), buffer, size, proto_hdr);
+		}
+		else{
+			ret = callback->consume(buffer, size, proto_hdr);
 		}
 	}
 	
@@ -381,6 +388,7 @@ typedef struct twrap_consumer_proxy_video_s
 
 	uint64_t id;
 	tsk_bool_t started;
+	const ProxyVideoConsumer* pcConsumer; // thread-safe and will be destroyed at the time as the "struct"
 }
 twrap_consumer_proxy_video_t;
 #define TWRAP_CONSUMER_PROXY_VIDEO(self) ((twrap_consumer_proxy_video_t*)(self))
@@ -393,25 +401,25 @@ int twrap_consumer_proxy_video_set(tmedia_consumer_t* self, const tmedia_param_t
 int twrap_consumer_proxy_video_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
 	ProxyPluginMgr* manager;
+	twrap_consumer_proxy_video_t* video = TWRAP_CONSUMER_PROXY_VIDEO(self);
 	int ret = -1;
 	if(codec && (manager = ProxyPluginMgr::getInstance())){
-		const ProxyVideoConsumer* videoConsumer;
-		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
+		if((video->pcConsumer = manager->findVideoConsumer(video->id)) && video->pcConsumer->getCallback()){
 			self->video.fps = TMEDIA_CODEC_VIDEO(codec)->in.fps;
 			// in
 			self->video.in.chroma = tmedia_chroma_yuv420p;
 			self->video.in.width = TMEDIA_CODEC_VIDEO(codec)->in.width;
 			self->video.in.height = TMEDIA_CODEC_VIDEO(codec)->in.height;
 			// display (out)
-			self->video.display.chroma = videoConsumer->getChroma();
-			self->video.display.auto_resize = videoConsumer->getAutoResizeDisplay();
+			self->video.display.chroma = video->pcConsumer->getChroma();
+			self->video.display.auto_resize = video->pcConsumer->getAutoResizeDisplay();
 			if(!self->video.display.width){
 				self->video.display.width = self->video.in.width;
 			}
 			if(!self->video.display.height){
 				self->video.display.height = self->video.in.height;
 			}
-			ret = videoConsumer->getCallback()->prepare(TMEDIA_CODEC_VIDEO(codec)->in.width, TMEDIA_CODEC_VIDEO(codec)->in.height, TMEDIA_CODEC_VIDEO(codec)->in.fps);
+			ret = video->pcConsumer->getCallback()->prepare(TMEDIA_CODEC_VIDEO(codec)->in.width, TMEDIA_CODEC_VIDEO(codec)->in.height, TMEDIA_CODEC_VIDEO(codec)->in.fps);
 		}
 	}
 	
@@ -435,36 +443,43 @@ int twrap_consumer_proxy_video_start(tmedia_consumer_t* self)
 
 int twrap_consumer_proxy_video_consume(tmedia_consumer_t* self, const void* buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
 {
-	ProxyPluginMgr* manager;
-	int ret = -1;
-
 	if(!self || !buffer || !size){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	
-	if((manager = ProxyPluginMgr::getInstance())){
-		const ProxyVideoConsumer* videoConsumer;
-		if((videoConsumer = manager->findVideoConsumer(TWRAP_CONSUMER_PROXY_VIDEO(self)->id)) && videoConsumer->getCallback()){
-			if(tdav_consumer_video_has_jb(TDAV_CONSUMER_VIDEO(self))){
-				ret = tdav_consumer_video_put(TDAV_CONSUMER_VIDEO(self), buffer, size, proto_hdr);
-			}
-			else{
-				if(videoConsumer->hasConsumeBuffer()){
-					unsigned nCopiedSize = videoConsumer->copyBuffer(buffer, size); 
-					ret = videoConsumer->getCallback()->bufferCopied(nCopiedSize, size);
-				}
-				else{
-					ProxyVideoFrame* frame = new ProxyVideoFrame(buffer, size, const_cast<ProxyVideoConsumer*>(videoConsumer)->getDecodedWidth(), const_cast<ProxyVideoConsumer*>(videoConsumer)->getDecodedHeight(), proto_hdr);
-					ret = videoConsumer->getCallback()->consume(frame);
-					delete frame, frame = tsk_null;
-				}
-			}
-		}
-		else{
-			TSK_DEBUG_ERROR("Cannot find consumer with id=%lld", TWRAP_CONSUMER_PROXY_VIDEO(self)->id);
+
+	twrap_consumer_proxy_video_t* video = TWRAP_CONSUMER_PROXY_VIDEO(self);
+
+	if(!video->pcConsumer){
+		ProxyPluginMgr* manager;
+		if((manager = ProxyPluginMgr::getInstance())){
+			video->pcConsumer = manager->findVideoConsumer(video->id);
 		}
 	}
+
+	int ret = -1;
+	ProxyVideoConsumerCallback* callback;
+	
+	if(video->pcConsumer && (callback = video->pcConsumer->getCallback())){
+		if(tdav_consumer_video_has_jb(TDAV_CONSUMER_VIDEO(self))){
+			ret = tdav_consumer_video_put(TDAV_CONSUMER_VIDEO(self), buffer, size, proto_hdr);
+		}
+		else{
+			if(video->pcConsumer->hasConsumeBuffer()){
+				unsigned nCopiedSize = video->pcConsumer->copyBuffer(buffer, size); 
+				ret = callback->bufferCopied(nCopiedSize, size);
+			}
+			else{
+				ProxyVideoFrame* frame = new ProxyVideoFrame(buffer, size, const_cast<ProxyVideoConsumer*>(video->pcConsumer)->getDecodedWidth(), const_cast<ProxyVideoConsumer*>(video->pcConsumer)->getDecodedHeight(), proto_hdr);
+				ret = callback->consume(frame);
+				delete frame, frame = tsk_null;
+			}
+		}
+	}
+	else if(!video->pcConsumer){
+		TSK_DEBUG_ERROR("Cannot find consumer with id=%lld", TWRAP_CONSUMER_PROXY_VIDEO(self)->id);
+	}
+	
 
 	return ret;
 }

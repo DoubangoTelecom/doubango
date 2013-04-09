@@ -49,6 +49,7 @@ typedef struct tdav_session_video_s
 
 	struct tdav_video_jb_s* jb;
 	tsk_bool_t jb_enabled;
+	tsk_bool_t zero_artifacts;
 
 	struct{
 		const void* context;
@@ -70,6 +71,8 @@ typedef struct tdav_session_video_s
 		int32_t pkt_loss_prob_good;
 		int32_t pkt_loss_prob_bad;
 
+		uint64_t last_frame_time;
+
 		uint8_t payload_type;
 		struct tmedia_codec_s* codec;
 		tsk_mutex_handle_t* h_mutex;
@@ -81,6 +84,13 @@ typedef struct tdav_session_video_s
 
 		void* conv_buffer;
 		tsk_size_t conv_buffer_size;
+
+		// latest decoded RTP seqnum
+		uint16_t last_seqnum;
+		// stream is corrupted if packets are lost
+		tsk_bool_t stream_corrupted;
+		uint64_t stream_corrupted_since;
+		uint32_t last_corrupted_timestamp;
 
 		uint8_t payload_type;
 		struct tmedia_codec_s* codec;		

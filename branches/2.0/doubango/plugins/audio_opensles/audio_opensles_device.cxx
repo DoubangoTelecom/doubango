@@ -15,12 +15,12 @@
 
 #define CHECK_TRUE(_bool, _text) { if(!_bool){ AUDIO_OPENSLES_DEBUG_ERROR(_text); return -1; } }
 #define CHECK_FALSE(_bool, _text) { if(_bool){ AUDIO_OPENSLES_DEBUG_ERROR(_text); return -1; } }
-#define CHECK_PLAYOUT_INITIALIZED() CHECK_TRUE(m_bPlayoutInitialized, "Playout already initialized")
-#define CHECK_PLAYOUT_NOT_INITIALIZED() CHECK_FALSE(m_bPlayoutInitialized, "Playout not initialized")
-#define CHECK_RECORDING_INITIALIZED() CHECK_TRUE(m_bRecordingInitialized, "Recording already initialized")
-#define CHECK_RECORDING_NOT_INITIALIZED() CHECK_FALSE(m_bRecordingInitialized, "Recording not initialized")
-#define CHECK_MICROPHONE_INITIALIZED() CHECK_TRUE(m_bMicrophoneInitialized, "Microphone already initialized")
-#define CHECK_MICROPHONE_NOT_INITIALIZED() CHECK_FALSE(m_bMicrophoneInitialized, "Microphone not initialized")
+#define CHECK_PLAYOUT_INITIALIZED() CHECK_TRUE(m_bPlayoutInitialized, "Playout not initialized")
+#define CHECK_PLAYOUT_NOT_INITIALIZED() CHECK_FALSE(m_bPlayoutInitialized, "Playout initialized")
+#define CHECK_RECORDING_INITIALIZED() CHECK_TRUE(m_bRecordingInitialized, "Recording not initialized")
+#define CHECK_RECORDING_NOT_INITIALIZED() CHECK_FALSE(m_bRecordingInitialized, "Recording initialized")
+#define CHECK_MICROPHONE_INITIALIZED() CHECK_TRUE(m_bMicrophoneInitialized, "Microphone not initialized")
+#define CHECK_MICROPHONE_NOT_INITIALIZED() CHECK_FALSE(m_bMicrophoneInitialized, "Microphone initialized")
 
 #if AUDIO_OPENSLES_UNDER_ANDROID
 static inline SLuint32 SL_SAMPLING_RATE(int RATE_INT){
@@ -427,6 +427,8 @@ int SLAudioDevice::PlayoutSampleRate(int *pPlayoutSampleRate)
 
 int SLAudioDevice::StartPlayout()
 {
+	AUDIO_OPENSLES_DEBUG_INFO("SLAudioDevice::StartPlayout()");
+
 	CHECK_TRUE(m_bInitialized, "Not initialized");
 	CHECK_PLAYOUT_INITIALIZED();
 
@@ -493,6 +495,8 @@ bool SLAudioDevice::Playing()
 
 int SLAudioDevice::StopPlayout()
 {
+	AUDIO_OPENSLES_DEBUG_INFO("SLAudioDevice::StopPlayout()");
+
 	if(!m_bPlaying){
 		return 0;
 	}
@@ -557,9 +561,8 @@ int SLAudioDevice::MicrophoneIsAvailable(bool *pAvailable)
 
 int SLAudioDevice::InitMicrophone()
 {
-	CHECK_TRUE(m_bInitialized, "Device not initialized");
-
 	AUDIO_OPENSLES_DEBUG_INFO("SLAudioDevice::InitMicrophone()");
+	CHECK_TRUE(m_bInitialized, "Device not initialized");
 
 	if(m_bMicrophoneInitialized){
 		return 0;
@@ -776,6 +779,8 @@ int SLAudioDevice::RecordingSampleRate(int *pRecordingSampleRate)
 
 int SLAudioDevice::StartRecording()
 {
+	AUDIO_OPENSLES_DEBUG_INFO("SLAudioDevice::StartRecording()");
+
 	CHECK_TRUE(m_bInitialized, "Not initialized");
 	CHECK_RECORDING_INITIALIZED();
 
@@ -840,6 +845,7 @@ bool SLAudioDevice::Recording()
 
 int SLAudioDevice::StopRecording()
 {
+	AUDIO_OPENSLES_DEBUG_INFO("SLAudioDevice::StopRecording()");
 	if (!m_bRecording) {
         return 0;
     }
@@ -866,6 +872,7 @@ int SLAudioDevice::StopRecording()
 
 	AUDIO_OPENSLES_DEBUG_INFO("Recording stopped");
 	m_bRecording = false;
+	m_bRecordingInitialized = false;
 	return 0;
 }
 

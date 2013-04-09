@@ -33,15 +33,7 @@
 #include "tsk_thread.h"
 #include "tsk_debug.h"
 
-#define kRingPacketCount				+10
-// If the "ptime" value is less than "kMaxPtimeBeforeUsingCondVars", then we can use nonosleep() function instead of conditional
-// variables for better performance. 
-// When the prodcuer's stop() function is called we will wait until the sender thread exist (using join()) this is
-// why "kMaxPtimeBeforeUsingCondVars" should be small. This problem will not happen when using conditional variables: thanks to braodcast().
-#define kMaxPtimeBeforeUsingCondVars	+500 /* milliseconds */
-
-static void *__sender_thread(void *param);
-static int __sender_thread_set_realtime(uint32_t ptime);
+#define kRingPacketCount 10
 
 static OSStatus __handle_input_buffer(void *inRefCon, 
                                   AudioUnitRenderActionFlags *ioActionFlags, 
@@ -71,117 +63,17 @@ static OSStatus __handle_input_buffer(void *inRefCon,
 							 inNumberFrames, 
 							 &buffers);
 	if(status == 0){
-		tsk_mutex_lock(producer->ring.mutex);
+        // must not be done on async thread: doing it gives bad audio quality when audio+video call is done with CPU consuming codec (e.g. speex or g729)
 		speex_buffer_write(producer->ring.buffer, buffers.mBuffers[0].mData, buffers.mBuffers[0].mDataByteSize);
-		tsk_mutex_unlock(producer->ring.mutex);
+        int avail = speex_buffer_get_available(producer->ring.buffer);
+        while (producer->started && avail >= producer->ring.chunck.size) {
+            avail -= speex_buffer_read(producer->ring.buffer, producer->ring.chunck.buffer, producer->ring.chunck.size);
+            TMEDIA_PRODUCER(producer)->enc_cb.callback(TMEDIA_PRODUCER(producer)->enc_cb.callback_data,
+                                                       producer->ring.chunck.buffer, producer->ring.chunck.size);
+        }
 	}
 	
     return status;
-}
-
-static int __sender_thread_set_realtime(uint32_t ptime) {
-    struct thread_time_constraint_policy policy;
-	int params [2] = {CTL_HW, HW_BUS_FREQ};
-	int ret;
-	
-	// get bus frequence
-	int freq_ns, freq_ms;
-	size_t size = sizeof (freq_ns);
-	if((ret = sysctl (params, 2, &freq_ns, &size, NULL, 0))){
-		// check errno for more information
-		TSK_DEBUG_INFO("sysctl() failed with error code=%d", ret);
-		return ret;
-	}
-	freq_ms = freq_ns/1000;
-	
-	/*
-	 * THREAD_TIME_CONSTRAINT_POLICY:
-	 *
-	 * This scheduling mode is for threads which have real time
-	 * constraints on their execution.
-	 *
-	 * Parameters:
-	 *
-	 * period: This is the nominal amount of time between separate
-	 * processing arrivals, specified in absolute time units.  A
-	 * value of 0 indicates that there is no inherent periodicity in
-	 * the computation.
-	 *
-	 * computation: This is the nominal amount of computation
-	 * time needed during a separate processing arrival, specified
-	 * in absolute time units.
-	 *
-	 * constraint: This is the maximum amount of real time that
-	 * may elapse from the start of a separate processing arrival
-	 * to the end of computation for logically correct functioning,
-	 * specified in absolute time units.  Must be (>= computation).
-	 * Note that latency = (constraint - computation).
-	 *
-	 * preemptible: This indicates that the computation may be
-	 * interrupted, subject to the constraint specified above.
-	 */
-	policy.period = (ptime/2) * freq_ms; // Half of the ptime
-	policy.computation = 2 * freq_ms;
-	policy.constraint = 3 * freq_ms;
-	policy.preemptible = true;
-	
-	if ((ret = thread_policy_set(mach_thread_self(),
-							   THREAD_TIME_CONSTRAINT_POLICY, (int *)&policy,
-							   THREAD_TIME_CONSTRAINT_POLICY_COUNT)) != KERN_SUCCESS) {
-		TSK_DEBUG_ERROR("thread_policy_set failed(period=%u,computation=%u,constraint=%u) failed with error code= %d",
-						policy.period, policy.computation, policy.constraint,
-						ret);
-		return ret;
-	}
-	return 0;
-}
-
-static void *__sender_thread(void *param)
-{
-	TSK_DEBUG_INFO("__sender_thread::ENTER");
-	
-	tdav_producer_audiounit_t* producer = (tdav_producer_audiounit_t*)param;
-	uint32_t ptime = TMEDIA_PRODUCER(producer)->audio.ptime;
-	tsk_ssize_t avail;
-	
-	// interval to sleep when using nonosleep() instead of conditional variable
-	struct timespec interval;
-	interval.tv_sec = (long)(ptime/1000); 
-	interval.tv_nsec = (long)(ptime%1000) * 1000000; 
-	
-	// change thread priority
-//#if TARGET_OS_IPHONE
-	__sender_thread_set_realtime(TMEDIA_PRODUCER(producer)->audio.ptime);
-//#endif
-	
-	// starts looping
-	for (;;) {
-		// wait for "ptime" milliseconds
-		if(ptime <= kMaxPtimeBeforeUsingCondVars){
-			nanosleep(&interval, 0);
-		}
-		else {
-			tsk_condwait_timedwait(producer->senderCondWait, (uint64_t)ptime);
-		}
-		// check state
-		if(!producer->started){
-			break;
-		}
-		// read data and send them
-		if(TMEDIA_PRODUCER(producer)->enc_cb.callback) {
-			tsk_mutex_lock(producer->ring.mutex);
-			avail = speex_buffer_get_available(producer->ring.buffer);
-			while (producer->started && avail >= producer->ring.chunck.size) {
-				avail -= speex_buffer_read(producer->ring.buffer, producer->ring.chunck.buffer, producer->ring.chunck.size);
-				TMEDIA_PRODUCER(producer)->enc_cb.callback(TMEDIA_PRODUCER(producer)->enc_cb.callback_data, 
-														   producer->ring.chunck.buffer, producer->ring.chunck.size);
-			}
-			tsk_mutex_unlock(producer->ring.mutex);
-		}
-		else;
-	}
-	TSK_DEBUG_INFO("__sender_thread::EXIT");
-	return tsk_null;
 }
 
 /* ============ Media Producer Interface ================= */
@@ -352,11 +244,6 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 					TSK_DEBUG_ERROR("Failed to allocate new buffer");
 					return -7;
 				}
-				// create mutex for ring buffer
-				if(!producer->ring.mutex && !(producer->ring.mutex = tsk_mutex_create_2(tsk_false))){
-					TSK_DEBUG_ERROR("Failed to create new mutex");
-					return -8;
-				}
 				// create ringbuffer
 				producer->ring.size = kRingPacketCount * producer->ring.chunck.size;
 				if(!producer->ring.buffer){
@@ -411,18 +298,6 @@ static int tdav_producer_audiounit_start(tmedia_producer_t* self)
     
     // apply parameters (because could be lost when the producer is restarted -handle recreated-)
     ret = tdav_audiounit_handle_mute(producer->audioUnitHandle, producer->muted);
-	
-	// create conditional variable
-	if(!(producer->senderCondWait = tsk_condwait_create())){
-		TSK_DEBUG_ERROR("Failed to create conditional variable");
-		return -2;
-	}
-	// start the reader thread
-	ret = tsk_thread_create(&producer->senderThreadId[0], __sender_thread, producer);
-	if(ret){
-		TSK_DEBUG_ERROR("Failed to start the sender thread. error code=%d", ret);
-		return ret;
-	}
 
 	TSK_DEBUG_INFO("AudioUnit producer started");
 	return 0;
@@ -466,14 +341,6 @@ static int tdav_producer_audiounit_stop(tmedia_producer_t* self)
 #endif
 	}	
 	producer->started = tsk_false;
-	// signal
-	if(producer->senderCondWait){
-		tsk_condwait_broadcast(producer->senderCondWait);
-	}
-	// stop thread
-	if(producer->senderThreadId[0]){
-		tsk_thread_join(&(producer->senderThreadId[0]));
-	}
 	TSK_DEBUG_INFO("AudioUnit producer stoppped");
 	return 0;	
 }
@@ -507,15 +374,9 @@ static tsk_object_t* tdav_producer_audiounit_dtor(tsk_object_t * self)
         if (producer->audioUnitHandle) {
 			tdav_audiounit_handle_destroy(&producer->audioUnitHandle);
         }
-		if(producer->ring.mutex){
-			tsk_mutex_destroy(&producer->ring.mutex);
-		}
         TSK_FREE(producer->ring.chunck.buffer);
 		if(producer->ring.buffer){
 			speex_buffer_destroy(producer->ring.buffer);
-		}
-		if(producer->senderCondWait){
-			tsk_condwait_destroy(&producer->senderCondWait);
 		}
 		/* deinit base */
 		tdav_producer_audio_deinit(TDAV_PRODUCER_AUDIO(producer));
