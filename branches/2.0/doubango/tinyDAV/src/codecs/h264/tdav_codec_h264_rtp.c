@@ -311,7 +311,7 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_common_s *self, const v
 		if(TMEDIA_CODEC_VIDEO(self)->out.callback){
 			TMEDIA_CODEC_VIDEO(self)->out.result.buffer.ptr = pdata;
 			TMEDIA_CODEC_VIDEO(self)->out.result.buffer.size = size;
-			TMEDIA_CODEC_VIDEO(self)->out.result.duration =  (1./(double)TMEDIA_CODEC_VIDEO(self)->out.fps) * TMEDIA_CODEC(self)->plugin->rate;
+			TMEDIA_CODEC_VIDEO(self)->out.result.duration =  (uint32_t)(1./(double)TMEDIA_CODEC_VIDEO(self)->out.fps) * TMEDIA_CODEC(self)->plugin->rate;
 			TMEDIA_CODEC_VIDEO(self)->out.result.last_chunck = marker;
 			TMEDIA_CODEC_VIDEO(self)->out.callback(&TMEDIA_CODEC_VIDEO(self)->out.result);
 		}
@@ -353,7 +353,7 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_common_s *self, const v
 			if(TMEDIA_CODEC_VIDEO(self)->out.callback){
 				TMEDIA_CODEC_VIDEO(self)->out.result.buffer.ptr = self->rtp.ptr;
 				TMEDIA_CODEC_VIDEO(self)->out.result.buffer.size = (packet_size + H264_FUA_HEADER_SIZE);
-				TMEDIA_CODEC_VIDEO(self)->out.result.duration =  (1./(double)TMEDIA_CODEC_VIDEO(self)->out.fps) * TMEDIA_CODEC(self)->plugin->rate;
+				TMEDIA_CODEC_VIDEO(self)->out.result.duration =  (uint32_t)(1./(double)TMEDIA_CODEC_VIDEO(self)->out.fps) * TMEDIA_CODEC(self)->plugin->rate;
 				TMEDIA_CODEC_VIDEO(self)->out.result.last_chunck = (size == 0);
 				TMEDIA_CODEC_VIDEO(self)->out.callback(&TMEDIA_CODEC_VIDEO(self)->out.result);
 			}

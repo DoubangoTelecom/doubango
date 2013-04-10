@@ -117,7 +117,7 @@ namespace doubango_rt
 			static bool defaultsSetByPassDecoding(bool enabled);
 			static bool defaultsGetByPassDecoding();
 			static bool defaultsSetVideoJbEnabled(bool enabled);
-			static bool defaultsGetVideoJbEnabled(bool enabled);
+			static bool defaultsGetVideoJbEnabled();
 			static bool defaultsSetRtpBuffSize(unsigned buffSize);
 			static unsigned defaultsGetRtpBuffSize();
 			static bool defaultsSetAvpfTail(unsigned tail_min, unsigned tail_max);
