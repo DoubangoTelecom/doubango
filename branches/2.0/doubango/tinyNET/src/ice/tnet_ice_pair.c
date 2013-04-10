@@ -101,7 +101,7 @@ tnet_ice_pair_t* tnet_ice_pair_prflx_create(tnet_ice_pairs_L_t* pairs, uint16_t 
 {
 	int ret;
 	const tsk_list_item_t *item;
-	const tnet_ice_pair_t *pair_local = tsk_null, *pair;
+	const tnet_ice_pair_t *pair_local = tsk_null, *pair = tsk_null;
 	tnet_ip_t remote_ip;
 	tnet_port_t remote_port;
 	
@@ -133,8 +133,8 @@ tnet_ice_pair_t* tnet_ice_pair_prflx_create(tnet_ice_pairs_L_t* pairs, uint16_t 
 		tnet_ice_candidate_t* cand_remote = tnet_ice_candidate_create(tnet_ice_cand_type_prflx, tsk_null, pair_local->is_ice_jingle, pair_local->candidate_answer->is_rtp, pair_local->candidate_answer->is_video, pair_local->candidate_answer->ufrag, pair_local->candidate_answer->pwd, pair_local->candidate_answer->foundation);
 		if(cand_local && cand_remote){
 			
-			tsk_strupdate(&cand_remote->transport_str, pair->candidate_offer->transport_str);
-			cand_remote->comp_id = pair->candidate_offer->comp_id;
+			tsk_strupdate(&cand_remote->transport_str, pair_local->candidate_offer->transport_str);
+			cand_remote->comp_id = pair_local->candidate_offer->comp_id;
 			memcpy(cand_remote->connection_addr, remote_ip, sizeof(tnet_ip_t));
 			cand_remote->port = remote_port;
 

@@ -353,9 +353,9 @@ bool rtMediaSessionMgr::defaultsSetVideoJbEnabled(bool enabled)
 	return MediaSessionMgr::defaultsSetVideoJbEnabled(enabled);
 }
 
-bool rtMediaSessionMgr::defaultsGetVideoJbEnabled(bool enabled)
+bool rtMediaSessionMgr::defaultsGetVideoJbEnabled()
 {
-	return MediaSessionMgr::defaultsGetVideoJbEnabled(enabled);
+	return MediaSessionMgr::defaultsGetVideoJbEnabled();
 }
 
 bool rtMediaSessionMgr::defaultsSetRtpBuffSize(unsigned buffSize)
