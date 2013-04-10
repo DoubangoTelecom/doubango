@@ -184,7 +184,6 @@ namespace ThreadEmulation
         if (threadInfo == pendingThreads.end())
         {
             // Can only set priority on threads while they are in CREATE_SUSPENDED state.
-            assert(false);
             return false;
         }
 
