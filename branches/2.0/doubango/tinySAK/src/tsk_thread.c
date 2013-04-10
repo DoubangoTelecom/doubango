@@ -86,7 +86,17 @@ int tsk_thread_set_priority(tsk_thread_handle_t* handle, int32_t priority)
 		return -1;
 	}
 #if TSK_UNDER_WINDOWS
-	return SetThreadPriority(handle, priority) ? 0 : -1;
+	{
+		int ret = SetThreadPriority(handle, priority) ? 0 : -1;
+#if TSK_UNDER_WINDOWS_RT
+		// It's not possible to set priority on WP8 when thread is not in suspended state -> do nothing and don't bother us
+		if(ret){
+			TSK_DEBUG_INFO("SetThreadPriority() failed but nothing to worry about");
+			ret = 0;
+		}
+#endif
+		return ret;
+	}
 #else
 	struct sched_param sp;
 	int ret;
