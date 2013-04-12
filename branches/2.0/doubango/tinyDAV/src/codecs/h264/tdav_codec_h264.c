@@ -841,7 +841,7 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
     if((ret = av_opt_set(self->encoder.context->priv_data, "preset", "veryfast", 0))){
 	    TSK_DEBUG_ERROR("Failed to set x264 preset to veryfast");
 	}
-    if((ret = av_opt_set(self->encoder.context->priv_data, "rc-lookahead", "0", 0)) && (ret = av_opt_set(self->encoder.context->priv_data, "rc_lookahead", "0", 0))){
+    if((ret = av_opt_set_int(self->encoder.context->priv_data, "rc-lookahead", 0, 0)) && (ret = av_opt_set_int(self->encoder.context->priv_data, "rc_lookahead", 0, 0))){
         TSK_DEBUG_ERROR("Failed to set x264 rc_lookahead=0");
     }
 	if((ret = av_opt_set(self->encoder.context->priv_data, "tune", "animation+zerolatency", 0))){
