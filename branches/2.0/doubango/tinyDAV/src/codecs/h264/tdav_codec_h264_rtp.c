@@ -237,8 +237,7 @@ int tdav_codec_h264_get_fua_pay(const uint8_t* in_data, tsk_size_t in_size, cons
       +---------------+
 	*/
 
-    uint8_t S = ((in_data[1] & 0x80) /*S*/);
-    if(S){
+    if(((in_data[1] & 0x80) /*S*/)){
         /* discard "FU indicator" */
         *out_data = (in_data + H264_NAL_UNIT_TYPE_HEADER_SIZE);
         *out_size = (in_size - H264_NAL_UNIT_TYPE_HEADER_SIZE);
