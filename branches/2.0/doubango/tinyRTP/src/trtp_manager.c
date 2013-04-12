@@ -33,6 +33,7 @@
 #include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_base64.h"
+#include "tsk_md5.h"
 #include "tsk_debug.h"
 
 #if !defined(TRTP_TRANSPORT_NAME)
@@ -1566,7 +1567,13 @@ static tsk_object_t* trtp_manager_ctor(tsk_object_t * self, va_list * app)
         manager->rtp.dscp = TRTP_DSCP_RTP_DEFAULT;
 
 		/* rtcp */
-		tsk_sprintf(&manager->rtcp.cname, "doubango@%llu", (tsk_time_now() + rand()));
+        {
+            // use MD5 string to avoid padding issues
+            tsk_md5string_t md5 = { 0 };
+            tsk_sprintf(&manager->rtcp.cname, "doubango.%llu", (tsk_time_now() + rand()));
+            tsk_md5compute(manager->rtcp.cname, tsk_strlen(manager->rtcp.cname), &md5);
+            tsk_strupdate(&manager->rtcp.cname, md5);
+        }
 
 		/* timer */
 		manager->timer_mgr_global = tsk_timer_mgr_global_ref();
