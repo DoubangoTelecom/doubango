@@ -44,7 +44,10 @@
 #include "tsk_debug.h"
 
 #if HAVE_FFMPEG
-#include <libavcodec/avcodec.h>
+#   include <libavcodec/avcodec.h>
+#   if (LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51, 35, 0))
+#       include <libavutil/opt.h>
+#   endif
 #endif
 
 typedef struct tdav_codec_h264_s
@@ -297,7 +300,7 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 	static tsk_size_t xmax_size = (1920 * 1080 * 3) >> 3;
 	static tsk_size_t start_code_prefix_size = sizeof(H264_START_CODE_PREFIX);
 #if HAVE_FFMPEG
-	int got_picture_ptr;
+	int got_picture_ptr = 0;
 #endif
 
 	if(!h264 || !in_data || !in_size || !out_data
@@ -340,8 +343,8 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 	}
 	//append_scp = tsk_true;
 	size_to_copy = pay_size + (append_scp ? start_code_prefix_size : 0);
-	// whether it's SPS or PPS
-	sps_or_pps = pay_ptr && ((pay_ptr[0] & 0x1F) == 7 || (pay_ptr[0] & 0x1F) == 8);
+	// whether it's SPS or PPS (append_scp is false for subsequent FUA chuncks)
+	sps_or_pps = append_scp && pay_ptr && ((pay_ptr[0] & 0x1F) == 7 || (pay_ptr[0] & 0x1F) == 8);
 	
 	// start-accumulator
 	if(!h264->decoder.accumulator){
@@ -406,7 +409,7 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 			tsk_size_t xsize;
 			
 			/* IDR ? */
-			if(((((int8_t*)in_data)[0] & 0x1F) == 0x05) && TMEDIA_CODEC_VIDEO(self)->in.callback){
+			if(((pay_ptr[0] & 0x1F) == 0x05) && TMEDIA_CODEC_VIDEO(self)->in.callback){
 				TSK_DEBUG_INFO("Decoded H.264 IDR");
 				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_idr;
 				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
@@ -749,9 +752,20 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 		TSK_DEBUG_ERROR("Encoder already opened");
 		return -1;
 	}
-
-	self->encoder.context = avcodec_alloc_context();
-	avcodec_get_context_defaults(self->encoder.context);
+    
+#if (LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51, 35, 0))
+    if((self->encoder.context = avcodec_alloc_context3(self->encoder.codec))){
+        avcodec_get_context_defaults3(self->encoder.context, self->encoder.codec);
+    }
+#else
+    if((self->encoder.context = avcodec_alloc_context())){
+        avcodec_get_context_defaults(self->encoder.context);
+    }
+#endif
+    
+    if(!self->encoder.context){
+        TSK_DEBUG_ERROR("Failed to allocate context");
+    }
 
 #if TDAV_UNDER_X86 && LIBAVCODEC_VERSION_MAJOR <= 53
 	self->encoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
@@ -794,10 +808,6 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 #else 
     self->encoder.context->flags2 |= CODEC_FLAG2_FAST;
 #endif
-#if TDAV_UNDER_X86
-	//self->encoder.context->flags2 &= ~CODEC_FLAG2_PSY;
-	//self->encoder.context->flags2 |= CODEC_FLAG2_SSIM;
-#endif
 	self->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
 	self->encoder.context->flags |= CODEC_FLAG_GLOBAL_HEADER;
     self->encoder.context->flags |= CODEC_FLAG_LOW_DELAY;
@@ -821,6 +831,23 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 	self->encoder.context->opaque = tsk_null;
 	self->encoder.context->gop_size = (TMEDIA_CODEC_VIDEO(self)->out.fps * TDAV_H264_GOP_SIZE_IN_SECONDS);
 	
+#if (LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51, 35, 0))
+    if((ret = av_opt_set_int(self->encoder.context->priv_data, "slice-max-size", H264_RTP_PAYLOAD_SIZE, 0))){
+	    TSK_DEBUG_ERROR("Failed to set x264 slice-max-size to %d", H264_RTP_PAYLOAD_SIZE);
+	}
+    if((ret = av_opt_set(self->encoder.context->priv_data, "profile", (self->encoder.context->profile == FF_PROFILE_H264_BASELINE ? "baseline" : "main"), 0))){
+	    TSK_DEBUG_ERROR("Failed to set x264 profile");
+	}
+    if((ret = av_opt_set(self->encoder.context->priv_data, "preset", "veryfast", 0))){
+	    TSK_DEBUG_ERROR("Failed to set x264 preset to veryfast");
+	}
+    if((ret = av_opt_set(self->encoder.context->priv_data, "rc-lookahead", "0", 0)) && (ret = av_opt_set(self->encoder.context->priv_data, "rc_lookahead", "0", 0))){
+        TSK_DEBUG_ERROR("Failed to set x264 rc_lookahead=0");
+    }
+	if((ret = av_opt_set(self->encoder.context->priv_data, "tune", "animation+zerolatency", 0))){
+	    TSK_DEBUG_ERROR("Failed to set x264 tune to zerolatency");
+	}
+#endif
 
 	// Picture (YUV 420)
 	if(!(self->encoder.picture = avcodec_alloc_frame())){
