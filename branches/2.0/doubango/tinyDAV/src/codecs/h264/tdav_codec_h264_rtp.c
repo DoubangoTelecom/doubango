@@ -202,7 +202,7 @@ int tdav_codec_h264_get_pay(const void* in_data, tsk_size_t in_size, const void*
 
 int tdav_codec_h264_get_fua_pay(const uint8_t* in_data, tsk_size_t in_size, const void** out_data, tsk_size_t *out_size, tsk_bool_t* append_scp)
 {
-	if(in_size <=2){
+	if(in_size <=H264_FUA_HEADER_SIZE){
 		TSK_DEBUG_ERROR("Too short");
 		return -1;
 	}
@@ -237,29 +237,27 @@ int tdav_codec_h264_get_fua_pay(const uint8_t* in_data, tsk_size_t in_size, cons
       +---------------+
 	*/
 
-	if((in_data[1] & 0x80) /*S*/){
-		/* discard "FU indicator" 
-		S: 1 bit
-			When set to one, the Start bit indicates the start of a fragmented
-			NAL unit.  When the following FU payload is not the start of a
-			fragmented NAL unit payload, the Start bit is set to zero.
-		*/
-		uint8_t hdr;
-		*out_data = (in_data + H264_NAL_UNIT_TYPE_HEADER_SIZE);
-		*out_size = (in_size - H264_NAL_UNIT_TYPE_HEADER_SIZE);
-
-		// F, NRI and Type
-		hdr = (in_data[0] & 0xe0) /* F,NRI from "FU indicator"*/ | (in_data[1] & 0x1f) /* type from "FU header" */;
-		*((uint8_t*)*out_data) = hdr;
-		// Need to append Start Code Prefix
-		*append_scp = tsk_true;
-}
-	else{
-		/* "FU indicator" and "FU header" */
-		*out_data = (in_data + H264_FUA_HEADER_SIZE);
-		*out_size = (in_size - H264_FUA_HEADER_SIZE);
-		*append_scp = tsk_false;
-	}
+    uint8_t S = ((in_data[1] & 0x80) /*S*/);
+    if(S){
+        /* discard "FU indicator" */
+        *out_data = (in_data + H264_NAL_UNIT_TYPE_HEADER_SIZE);
+        *out_size = (in_size - H264_NAL_UNIT_TYPE_HEADER_SIZE);
+        
+        // Do need to append Start Code Prefix ?
+        /* S: 1 bit
+         When set to one, the Start bit indicates the start of a fragmented
+         NAL unit.  When the following FU payload is not the start of a
+         fragmented NAL unit payload, the Start bit is set to zero.*/
+        *append_scp = tsk_true;
+        
+        // F, NRI and Type
+        *((uint8_t*)*out_data) = (in_data[0] & 0xe0) /* F,NRI from "FU indicator"*/ | (in_data[1] & 0x1f) /* type from "FU header" */;
+    }
+    else{
+        *append_scp = tsk_false;
+        *out_data = (in_data + H264_FUA_HEADER_SIZE);
+        *out_size = (in_size - H264_FUA_HEADER_SIZE);
+    }
 
 	return 0;
 }
