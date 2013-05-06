@@ -20,8 +20,8 @@ svn checkout http://doubango.googlecode.com/svn/branches/2.0/doubango doubango
 ===Building libsrtp===
 libsrtp is required.
 {{{
-cvs -d:pserver:anonymous@srtp.cvs.sourceforge.net:/cvsroot/srtp co -P srtp
-cd srtp
+git clone https://github.com/cisco/libsrtp/
+cd libsrtp
 CFLAGS="-fPIC" ./configure --enable-pic && make && make install
 }}}
 
