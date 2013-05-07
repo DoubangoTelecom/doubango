@@ -115,7 +115,7 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 				int bytesPerSample = (base->consumer->audio.bits_per_sample >> 3);
 
 				if(!audio->decoder.resampler.instance){
-					TSK_DEBUG_INFO("Create audio resampler(%s): consumer->audio.out.rate=%d, codec->in.rate=%d", base->consumer->audio.out.rate, audio->decoder.codec->in.rate);
+					TSK_DEBUG_INFO("Create audio resampler(%s): consumer->audio.out.rate=%d, codec->in.rate=%d", audio->decoder.codec->plugin->desc, base->consumer->audio.out.rate, audio->decoder.codec->in.rate);
 					audio->decoder.resampler.instance = _tdav_session_audio_resampler_create(bytesPerSample, audio->decoder.codec->in.rate, base->consumer->audio.out.rate, base->consumer->audio.ptime, base->consumer->audio.in.channels, base->consumer->audio.out.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, &audio->decoder.resampler.buffer, &audio->decoder.resampler.buffer_size);
 				}
 				if(!audio->decoder.resampler.instance){
