@@ -107,6 +107,8 @@ public class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_defaultsSetRtpBuffSize(long jarg1);
   public final static native long MediaSessionMgr_defaultsGetRtpBuffSize();
   public final static native boolean MediaSessionMgr_defaultsSetAvpfTail(long jarg1, long jarg2);
+  public final static native boolean MediaSessionMgr_defaultsSetOpusMaxCaptureRate(long jarg1);
+  public final static native boolean MediaSessionMgr_defaultsSetOpusMaxPlaybackRate(long jarg1);
   public final static native void delete_MediaContent(long jarg1);
   public final static native String MediaContent_getType(long jarg1, MediaContent jarg1_);
   public final static native long MediaContent_getDataLength(long jarg1, MediaContent jarg1_);
@@ -415,6 +417,7 @@ public class tinyWRAPJNI {
   public final static native void ProxyAudioProducerCallback_director_connect(ProxyAudioProducerCallback obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void ProxyAudioProducerCallback_change_ownership(ProxyAudioProducerCallback obj, long cptr, boolean take_or_release);
   public final static native void delete_ProxyAudioProducer(long jarg1);
+  public final static native boolean ProxyAudioProducer_setActualSndCardRecordParams(long jarg1, ProxyAudioProducer jarg1_, int jarg2, int jarg3, int jarg4);
   public final static native boolean ProxyAudioProducer_setPushBuffer__SWIG_0(long jarg1, ProxyAudioProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3, boolean jarg4);
   public final static native boolean ProxyAudioProducer_setPushBuffer__SWIG_1(long jarg1, ProxyAudioProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native int ProxyAudioProducer_push__SWIG_0(long jarg1, ProxyAudioProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);

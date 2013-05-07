@@ -68,8 +68,8 @@ int trtp_srtp_ctx_internal_init(struct trtp_srtp_ctx_internal_xs* ctx, int32_t t
 	ctx->policy.key = (unsigned char*)ctx->key_bin;
 	ctx->policy.ssrc.type = ssrc_any_outbound;
 	ctx->policy.ssrc.value = ssrc;
-	ctx->policy.window_size = 1024;
-	ctx->policy.allow_repeat_tx = 0;
+	ctx->policy.window_size = 2048;
+	ctx->policy.allow_repeat_tx = 1;
 	if((srtp_err = srtp_create(&ctx->session, &ctx->policy)) != err_status_ok){
 		TSK_DEBUG_ERROR("srtp_create() failed");
 		return -3;
@@ -238,8 +238,8 @@ int trtp_srtp_set_crypto(struct trtp_manager_s* rtp_mgr, const char* crypto_line
 	tsk_base64_decode((const uint8_t*)srtp_ctx->rtp.key_str, tsk_strlen(srtp_ctx->rtp.key_str), (char**)&key_bin);
 	srtp_ctx->rtp.policy.key = key_bin;
 	srtp_ctx->rtp.policy.ssrc.type = idx == TRTP_SRTP_LINE_IDX_REMOTE ? ssrc_any_inbound : ssrc_any_outbound;
-	srtp_ctx->rtp.policy.window_size = 1024;
-	srtp_ctx->rtp.policy.allow_repeat_tx = 0;
+	srtp_ctx->rtp.policy.window_size = 2048;
+	srtp_ctx->rtp.policy.allow_repeat_tx = 1;
 	if((srtp_err = srtp_create(&srtp_ctx->rtp.session, &srtp_ctx->rtp.policy)) != err_status_ok){
 		TSK_DEBUG_ERROR("srtp_create() failed: %d", srtp_err);
 		return -3;
@@ -288,8 +288,8 @@ int trtp_srtp_set_key_and_salt(trtp_manager_t* rtp_mgr, trtp_srtp_crypto_type_t 
 	
 	srtp_ctx->policy.key = (unsigned char *)srtp_ctx->key_bin;
 	srtp_ctx->policy.ssrc.type = idx == TRTP_SRTP_LINE_IDX_REMOTE ? ssrc_any_inbound : ssrc_any_outbound;
-	srtp_ctx->policy.window_size = 1024;
-	srtp_ctx->policy.allow_repeat_tx = 0;
+	srtp_ctx->policy.window_size = 2048;
+	srtp_ctx->policy.allow_repeat_tx = 1;
 	if((srtp_err = srtp_create(&srtp_ctx->session, &srtp_ctx->policy)) != err_status_ok){
 		TSK_DEBUG_ERROR("srtp_create() failed: %d", srtp_err);
 		return -3;

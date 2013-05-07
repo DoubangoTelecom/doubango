@@ -35,6 +35,10 @@ public class ProxyAudioProducer extends ProxyPlugin {
     super.delete();
   }
 
+  public boolean setActualSndCardRecordParams(int nPtime, int nRate, int nChannels) {
+    return tinyWRAPJNI.ProxyAudioProducer_setActualSndCardRecordParams(swigCPtr, this, nPtime, nRate, nChannels);
+  }
+
   public boolean setPushBuffer(java.nio.ByteBuffer pPushBufferPtr, long nPushBufferSize, boolean bUsePushCallback) {
     return tinyWRAPJNI.ProxyAudioProducer_setPushBuffer__SWIG_0(swigCPtr, this, pPushBufferPtr, nPushBufferSize, bUsePushCallback);
   }

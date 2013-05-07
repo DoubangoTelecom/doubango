@@ -2356,6 +2356,30 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetAvpfTail(u
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetOpusMaxCaptureRate(unsigned int jarg1) {
+  unsigned int jresult ;
+  uint32_t arg1 ;
+  bool result;
+  
+  arg1 = (uint32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetOpusMaxCaptureRate(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetOpusMaxPlaybackRate(unsigned int jarg1) {
+  unsigned int jresult ;
+  uint32_t arg1 ;
+  bool result;
+  
+  arg1 = (uint32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetOpusMaxPlaybackRate(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_MediaContent(void * jarg1) {
   MediaContent *arg1 = (MediaContent *) 0 ;
   
@@ -6207,6 +6231,24 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyAudioProducer(void * jarg1) {
   
   arg1 = (ProxyAudioProducer *)jarg1; 
   delete arg1;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyAudioProducer_setActualSndCardRecordParams(void * jarg1, int jarg2, int jarg3, int jarg4) {
+  unsigned int jresult ;
+  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  int arg4 ;
+  bool result;
+  
+  arg1 = (ProxyAudioProducer *)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  result = (bool)(arg1)->setActualSndCardRecordParams(arg2,arg3,arg4);
+  jresult = result; 
+  return jresult;
 }
 
 

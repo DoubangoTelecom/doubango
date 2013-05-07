@@ -31,6 +31,14 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+typedef struct tdav_codec_g722_s
+{
+	TMEDIA_DECLARE_CODEC_AUDIO;
+
+	g722_encode_state_t *enc_state;
+	g722_decode_state_t *dec_state;
+}
+tdav_codec_g722_t;
 
 static int tdav_codec_g722_open(tmedia_codec_t* self)
 {

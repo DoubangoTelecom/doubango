@@ -80,11 +80,22 @@ int tmedia_codec_init(tmedia_codec_t* self, tmedia_type_t type, const char* name
 	tsk_strupdate(&self->name, name);
 	tsk_strupdate(&self->desc,desc);
 	tsk_strupdate(&self->format, format);
-	
+	if(!self->in.rate) self->in.rate = self->plugin->rate;
+	if(!self->out.rate) self->out.rate = self->plugin->rate;
+
+	if(type & tmedia_audio){
+		tmedia_codec_audio_t* audio = TMEDIA_CODEC_AUDIO(self);
+		if(!audio->in.ptime) audio->in.ptime = self->plugin->audio.ptime;
+		if(!audio->out.ptime) audio->out.ptime = self->plugin->audio.ptime;
+		if(!audio->in.channels) audio->in.channels = self->plugin->audio.channels;
+		if(!audio->out.channels) audio->out.channels = self->plugin->audio.channels;
+		if(!audio->in.timestamp_multiplier) audio->in.timestamp_multiplier = tmedia_codec_audio_get_timestamp_multiplier(self->id, self->in.rate);
+		if(!audio->out.timestamp_multiplier) audio->out.timestamp_multiplier = tmedia_codec_audio_get_timestamp_multiplier(self->id, self->out.rate);
+	}
 	// Video flipping: For backward compatibility we have to initialize the default values
 	// according to the CFLAGS: 'FLIP_ENCODED_PICT' and 'FLIP_DECODED_PICT'. At any time you
 	// can update thse values (e.g. when the device switch from landscape to portrait) using video_session->set();
-	if(type & tmedia_video){
+	else if(type & tmedia_video){
 		tmedia_codec_video_t* video = TMEDIA_CODEC_VIDEO(self);
 #if FLIP_ENCODED_PICT
 		video->out.flip = tsk_true;
@@ -722,4 +733,26 @@ int tmedia_codec_video_set_dec_callback(tmedia_codec_video_t *self, tmedia_codec
 	self->in.callback = callback;
 	self->in.result.usr_data = callback_data;
 	return 0;
+}
+
+int8_t tmedia_codec_audio_get_timestamp_multiplier(tmedia_codec_id_t id, uint32_t sample_rate)
+{
+	switch(id){
+		case tmedia_codec_id_opus:
+			{
+				// draft-spittka-payload-rtp-opus-03 - 4.1.  RTP Header Usage
+				switch(sample_rate){
+					case 8000: return 6;
+					case 12000: return 4;
+					case 16000: return 3;
+					case 24000: return 2;
+					default: case 48000: return 1;
+				}
+				break;
+			}
+		default:
+			{
+				return 1;
+			}
+	}
 }

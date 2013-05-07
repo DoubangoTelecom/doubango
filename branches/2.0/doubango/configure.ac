@@ -208,6 +208,14 @@ AC_ARG_WITH(amr,
  AC_SUBST(LIBAMR_LIBADD, "-lopencore-amrnb")
  AM_CONDITIONAL(USE_AMR, true)], 
  [ AC_SUBST(LIBAMR_LIBADD, "")])
+ 
+AM_CONDITIONAL(USE_OPUS, false)
+AC_ARG_WITH(opus,
+[  --with-opus            Link against libopus library],
+ [AC_DEFINE_UNQUOTED(HAVE_LIBOPUS, 1, HAVE_LIBOPUS)
+ AC_SUBST(LIBAMR_LIBADD, "-lopus")
+ AM_CONDITIONAL(USE_OPUS, true)], 
+ [ AC_SUBST(LIBOPUS_LIBADD, "")])
 
 AM_CONDITIONAL(USE_SPEEX, false)
 AC_ARG_WITH(speex,

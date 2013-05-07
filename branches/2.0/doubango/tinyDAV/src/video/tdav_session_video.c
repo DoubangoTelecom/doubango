@@ -165,22 +165,28 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 		
 		if(packet ){
 			tsk_size_t rtp_hdr_size;
-			if(!video->encoder.last_frame_time){
-				video->encoder.last_frame_time = tsk_time_now();
-			}
 			if(result->last_chunck){
-#if 0
-#if 0
+#if 1
+#if 1
 				/*	http://www.cs.columbia.edu/~hgs/rtp/faq.html#timestamp-computed
 					For video, time clock rate is fixed at 90 kHz. The timestamps generated depend on whether the application can determine the frame number or not. 
 					If it can or it can be sure that it is transmitting every frame with a fixed frame rate, the timestamp is governed by the nominal frame rate. Thus, for a 30 f/s video, timestamps would increase by 3,000 for each frame, for a 25 f/s video by 3,600 for each frame. 
 					If a frame is transmitted as several RTP packets, these packets would all bear the same timestamp. 
 					If the frame number cannot be determined or if frames are sampled aperiodically, as is typically the case for software codecs, the timestamp has to be computed from the system clock (e.g., gettimeofday())
 				*/
-				uint64_t now = tsk_time_now();
-				uint32_t duration = (uint32_t)(now - video->encoder.last_frame_time);
-				base->rtp_manager->rtp.timestamp += (duration * 90/* 90KHz */);
-				video->encoder.last_frame_time = now;
+
+				if(!video->encoder.last_frame_time){
+					// For the first frame it's not possible to compute the duration as there is no previous one.
+					// In this case, we trust the duration from the result (computed based on the codec fps and rate).
+					video->encoder.last_frame_time = tsk_time_now();
+					base->rtp_manager->rtp.timestamp += result->duration;
+				}
+				else{
+					uint64_t now = tsk_time_now();
+					uint32_t duration = (uint32_t)(now - video->encoder.last_frame_time);
+					base->rtp_manager->rtp.timestamp += (duration * 90/* 90KHz */);
+					video->encoder.last_frame_time = now;
+				}
 #else
 				base->rtp_manager->rtp.timestamp = (uint32_t)(tsk_gettimeofday_ms() * 90/* 90KHz */);
 #endif
@@ -544,16 +550,18 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
 		switch(psfb->fci_type){
 			case trtp_rtcp_psfb_fci_type_fir:
 				{
-					TSK_DEBUG_INFO("Receving RTCP-FIR (%u)", ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media);
+					TSK_DEBUG_INFO("Receiving RTCP-FIR (%u)", ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media);
 					_tdav_session_video_remote_requested_idr(video, ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media);
 					break;
 				}
 			case trtp_rtcp_psfb_fci_type_pli:
 				{
 					uint64_t now;
-					TSK_DEBUG_INFO("Receving RTCP-PLI (%u)", ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media);
+					TSK_DEBUG_INFO("Receiving RTCP-PLI (%u)", ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media);
 					now = tsk_time_now();
-					if((now - video->avpf.last_pli_time) < 500){ // more than one PLI in 500ms
+					// more than one PLI in 500ms ?
+					// "if" removed because PLI really means codec prediction chain is broken
+					/*if((now - video->avpf.last_pli_time) < 500)*/{
 						_tdav_session_video_remote_requested_idr(video, ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media);
 					}
 					video->avpf.last_pli_time = now;
@@ -782,7 +790,7 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 
 		// Convert decoded data to the consumer chroma and size
 #define CONSUMER_NEED_DECODER (base->consumer->decoder.codec_id == tmedia_codec_id_none) // Otherwise, the consumer requires encoded frames
-#define CONSUMER_IN_N_DISPLAY_MISMATCH		(base->consumer->video.in.width != base->consumer->video.display.width || base->consumer->video.in.height != base->consumer->video.display.height)
+#define CONSUMER_IN_N_DISPLAY_MISMATCH		(!base->consumer->video.display.auto_resize && (base->consumer->video.in.width != base->consumer->video.display.width || base->consumer->video.in.height != base->consumer->video.display.height))
 #define CONSUMER_DISPLAY_N_CODEC_MISMATCH		(base->consumer->video.display.width != TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width || base->consumer->video.display.height != TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height)
 #define CONSUMER_DISPLAY_N_CONVERTER_MISMATCH	( (self->conv.fromYUV420 && self->conv.fromYUV420->dstWidth != base->consumer->video.display.width) || (self->conv.fromYUV420 && self->conv.fromYUV420->dstHeight != base->consumer->video.display.height) )
 #define CONSUMER_CHROMA_MISMATCH	(base->consumer->video.display.chroma != TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.chroma)
@@ -805,7 +813,7 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 		}
 
 		// update consumer size using the codec decoded values
-		// must be done here to avoid fooling "CONSUMER_INSIZE_MISMATCH"
+		// must be done here to avoid fooling "CONSUMER_IN_N_DISPLAY_MISMATCH" unless "auto_resize" option is enabled
         base->consumer->video.in.width = TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width;//decoded width
         base->consumer->video.in.height = TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height;//decoded height
 

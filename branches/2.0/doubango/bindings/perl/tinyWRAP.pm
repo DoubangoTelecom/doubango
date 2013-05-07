@@ -294,6 +294,8 @@ sub DESTROY {
 *defaultsSetRtpBuffSize = *tinyWRAPc::MediaSessionMgr_defaultsSetRtpBuffSize;
 *defaultsGetRtpBuffSize = *tinyWRAPc::MediaSessionMgr_defaultsGetRtpBuffSize;
 *defaultsSetAvpfTail = *tinyWRAPc::MediaSessionMgr_defaultsSetAvpfTail;
+*defaultsSetOpusMaxCaptureRate = *tinyWRAPc::MediaSessionMgr_defaultsSetOpusMaxCaptureRate;
+*defaultsSetOpusMaxPlaybackRate = *tinyWRAPc::MediaSessionMgr_defaultsSetOpusMaxPlaybackRate;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1720,6 +1722,7 @@ sub DESTROY {
     }
 }
 
+*setActualSndCardRecordParams = *tinyWRAPc::ProxyAudioProducer_setActualSndCardRecordParams;
 *setPushBuffer = *tinyWRAPc::ProxyAudioProducer_setPushBuffer;
 *push = *tinyWRAPc::ProxyAudioProducer_push;
 *setGain = *tinyWRAPc::ProxyAudioProducer_setGain;

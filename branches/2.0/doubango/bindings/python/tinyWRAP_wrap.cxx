@@ -7935,6 +7935,50 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetOpusMaxCaptureRate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  uint32_t arg1 ;
+  unsigned int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetOpusMaxCaptureRate",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_unsigned_SS_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetOpusMaxCaptureRate" "', argument " "1"" of type '" "uint32_t""'");
+  } 
+  arg1 = static_cast< uint32_t >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetOpusMaxCaptureRate(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetOpusMaxPlaybackRate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  uint32_t arg1 ;
+  unsigned int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetOpusMaxPlaybackRate",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_unsigned_SS_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetOpusMaxPlaybackRate" "', argument " "1"" of type '" "uint32_t""'");
+  } 
+  arg1 = static_cast< uint32_t >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetOpusMaxPlaybackRate(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *MediaSessionMgr_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -18685,6 +18729,55 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ProxyAudioProducer_setActualSndCardRecordParams(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  int arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:ProxyAudioProducer_setActualSndCardRecordParams",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioProducer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioProducer_setActualSndCardRecordParams" "', argument " "1"" of type '" "ProxyAudioProducer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyAudioProducer * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioProducer_setActualSndCardRecordParams" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  ecode3 = SWIG_AsVal_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyAudioProducer_setActualSndCardRecordParams" "', argument " "3"" of type '" "int""'");
+  } 
+  arg3 = static_cast< int >(val3);
+  ecode4 = SWIG_AsVal_int(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyAudioProducer_setActualSndCardRecordParams" "', argument " "4"" of type '" "int""'");
+  } 
+  arg4 = static_cast< int >(val4);
+  result = (bool)(arg1)->setActualSndCardRecordParams(arg2,arg3,arg4);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_ProxyAudioProducer_setPushBuffer__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ProxyAudioProducer *arg1 = (ProxyAudioProducer *) 0 ;
@@ -25362,6 +25455,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_defaultsSetRtpBuffSize", _wrap_MediaSessionMgr_defaultsSetRtpBuffSize, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetRtpBuffSize", _wrap_MediaSessionMgr_defaultsGetRtpBuffSize, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetAvpfTail", _wrap_MediaSessionMgr_defaultsSetAvpfTail, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetOpusMaxCaptureRate", _wrap_MediaSessionMgr_defaultsSetOpusMaxCaptureRate, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetOpusMaxPlaybackRate", _wrap_MediaSessionMgr_defaultsSetOpusMaxPlaybackRate, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_swigregister", MediaSessionMgr_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_MediaContent", _wrap_delete_MediaContent, METH_VARARGS, NULL},
 	 { (char *)"MediaContent_getType", _wrap_MediaContent_getType, METH_VARARGS, NULL},
@@ -25630,6 +25725,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"disown_ProxyAudioProducerCallback", _wrap_disown_ProxyAudioProducerCallback, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioProducerCallback_swigregister", ProxyAudioProducerCallback_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_ProxyAudioProducer", _wrap_delete_ProxyAudioProducer, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioProducer_setActualSndCardRecordParams", _wrap_ProxyAudioProducer_setActualSndCardRecordParams, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioProducer_setPushBuffer", _wrap_ProxyAudioProducer_setPushBuffer, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioProducer_push", _wrap_ProxyAudioProducer_push, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioProducer_setGain", _wrap_ProxyAudioProducer_setGain, METH_VARARGS, NULL},

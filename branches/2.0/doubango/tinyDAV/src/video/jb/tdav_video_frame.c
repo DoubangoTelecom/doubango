@@ -202,14 +202,14 @@ IMPORTANT: This function assume that the RTP packets use the marker bit to signa
 *@param missing_seq_num A missing seq num if any. This value is set only if the function returns False.
 *@return True if the frame is complete and False otherwise. If False is returned then, missing_seq_num is set.
 */
-tsk_bool_t tdav_video_frame_is_complete(const tdav_video_frame_t* self, int32_t last_seq_num_with_mark, uint16_t* missing_seq_num)
+tsk_bool_t tdav_video_frame_is_complete(const tdav_video_frame_t* self, int32_t last_seq_num_with_mark, uint16_t* missing_seq_num_start, tsk_size_t* missing_seq_num_count)
 {
 	const trtp_rtp_packet_t* pkt;
 	const tsk_list_item_t *item;
 	uint16_t i;
 	tsk_bool_t is_complete = tsk_false;
 
-	if(!self || !missing_seq_num){
+	if(!self || !missing_seq_num_start || !missing_seq_num_count){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_false;
 	}
@@ -221,12 +221,14 @@ tsk_bool_t tdav_video_frame_is_complete(const tdav_video_frame_t* self, int32_t 
 			continue;
 		}
 		if(last_seq_num_with_mark >= 0 && pkt->header->seq_num != (last_seq_num_with_mark + ++i)){
-			*missing_seq_num = (pkt->header->seq_num - 1);
+			*missing_seq_num_start = (last_seq_num_with_mark + i);
+			*missing_seq_num_count = pkt->header->seq_num - (*missing_seq_num_start);
 			break;
 		}
 		if(item == self->pkts->tail){
 			if(!(is_complete = (pkt->header->marker))){
-				*missing_seq_num = (pkt->header->seq_num + 1);
+				*missing_seq_num_start = (pkt->header->seq_num + 1);
+				*missing_seq_num_count = 1;
 			}
 		}
 	}

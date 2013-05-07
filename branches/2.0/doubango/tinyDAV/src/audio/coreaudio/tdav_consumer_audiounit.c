@@ -169,10 +169,10 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 		}
 		
 #endif
-		
-		TMEDIA_CONSUMER(consumer)->audio.ptime = codec->plugin->audio.ptime;
-		TMEDIA_CONSUMER(consumer)->audio.in.channels = codec->plugin->audio.channels;
-		TMEDIA_CONSUMER(consumer)->audio.in.rate = codec->plugin->rate;
+
+		TMEDIA_CONSUMER(consumer)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_DECODING(codec);
+		TMEDIA_CONSUMER(consumer)->audio.in.channels = TMEDIA_CODEC_CHANNELS_AUDIO_DECODING(codec);
+		TMEDIA_CONSUMER(consumer)->audio.in.rate = TMEDIA_CODEC_RATE_DECODING(codec);
 		
 		audioFormat.mSampleRate = TMEDIA_CONSUMER(consumer)->audio.out.rate ? TMEDIA_CONSUMER(consumer)->audio.out.rate : TMEDIA_CONSUMER(consumer)->audio.in.rate;
 		audioFormat.mFormatID = kAudioFormatLinearPCM;

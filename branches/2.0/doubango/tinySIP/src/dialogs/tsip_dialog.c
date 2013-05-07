@@ -1068,6 +1068,7 @@ int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* re
 
 int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* call_id, tsip_ssession_t* ss, tsk_fsm_state_id curr, tsk_fsm_state_id term)
 {
+	static tsip_dialog_id_t unique_id = 0;
 	if(self){
 		if(self->initialized){
 			TSK_DEBUG_WARN("Dialog already initialized.");
@@ -1076,6 +1077,8 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 
 		self->state = tsip_initial;
 		self->type = type;
+		self->id = ++unique_id;
+		self->connected_fd = TNET_INVALID_FD;
 		if(!self->record_routes){
 			self->record_routes = tsk_list_create();
 		}
@@ -1174,6 +1177,16 @@ tsk_bool_t tsip_dialog_keep_action(const tsip_dialog_t* self, const tsip_respons
 			(code == 422 || code == 423);
 	}
 	return tsk_false;
+}
+
+int tsip_dialog_set_connected_fd(tsip_dialog_t* self, tnet_fd_t fd)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->connected_fd = fd;
+	return 0;
 }
 
 int tsip_dialog_set_curr_action(tsip_dialog_t* self, const tsip_action_t* action)
@@ -1294,6 +1307,9 @@ int tsip_dialog_deinit(tsip_dialog_t *self)
 		
 		/* Cancel all transactions associated to this dialog (do it here before the dialog becomes unsafe) */
 		tsip_transac_layer_cancel_by_dialog(TSIP_DIALOG_GET_STACK(self)->layer_transac, self);
+
+		/* Remove the dialog from the Stream peers */
+		tsip_dialog_layer_remove_callid_from_stream_peers(TSIP_DIALOG_GET_STACK(self)->layer_dialog, self->callid);
 		
 		TSK_OBJECT_SAFE_FREE(self->ss);
 		TSK_OBJECT_SAFE_FREE(self->curr_action);

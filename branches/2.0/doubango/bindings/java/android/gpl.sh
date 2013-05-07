@@ -9,6 +9,7 @@ LIBYUV=yes  \
 VPX=yes  \
 H264=yes  \
 THEORA=yes  \
+OPUS=yes \
 OPENCORE_AMR=yes  \
 SPEEX_DSP=yes  \
 SPEEX_JB=yes  \

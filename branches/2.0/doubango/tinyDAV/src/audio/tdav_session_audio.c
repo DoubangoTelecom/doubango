@@ -97,8 +97,8 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 			tsk_safeobj_lock(base);
 			if((ret = tmedia_codec_open(audio->decoder.codec))){
 				tsk_safeobj_unlock(base);
-				TSK_OBJECT_SAFE_FREE(audio->decoder.codec);
 				TSK_DEBUG_ERROR("Failed to open [%s] codec", audio->decoder.codec->plugin->desc);
+				TSK_OBJECT_SAFE_FREE(audio->decoder.codec);
 				return ret;
 			}
 			tsk_safeobj_unlock(base);
@@ -110,12 +110,13 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 			tsk_size_t size = out_size;
 
 			// resample if needed
-			if(audio->decoder.codec->plugin->rate != base->consumer->audio.out.rate && base->consumer->audio.out.rate){
+			if(audio->decoder.codec->in.rate != base->consumer->audio.out.rate && base->consumer->audio.out.rate){
 				tsk_size_t resampler_result_size = 0;
 				int bytesPerSample = (base->consumer->audio.bits_per_sample >> 3);
 
 				if(!audio->decoder.resampler.instance){
-					audio->decoder.resampler.instance = _tdav_session_audio_resampler_create(bytesPerSample, audio->decoder.codec->plugin->rate, base->consumer->audio.out.rate, base->consumer->audio.ptime, base->consumer->audio.in.channels, base->consumer->audio.out.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, &audio->decoder.resampler.buffer, &audio->decoder.resampler.buffer_size);
+					TSK_DEBUG_INFO("Create audio resampler(%s): consumer->audio.out.rate=%d, codec->in.rate=%d", base->consumer->audio.out.rate, audio->decoder.codec->in.rate);
+					audio->decoder.resampler.instance = _tdav_session_audio_resampler_create(bytesPerSample, audio->decoder.codec->in.rate, base->consumer->audio.out.rate, base->consumer->audio.ptime, base->consumer->audio.in.channels, base->consumer->audio.out.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, &audio->decoder.resampler.buffer, &audio->decoder.resampler.buffer_size);
 				}
 				if(!audio->decoder.resampler.instance){
 					TSK_DEBUG_ERROR("No resampler to handle data");
@@ -195,20 +196,20 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		if(audio->is_sending_dtmf_events){
 			if(base->rtp_manager){
 				// increment the timestamp
-				base->rtp_manager->rtp.timestamp += TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec)/*duration*/;
+				base->rtp_manager->rtp.timestamp += TMEDIA_CODEC_PCM_FRAME_SIZE_AUDIO_ENCODING(audio->encoder.codec)/*duration*/;
 			}
 			TSK_DEBUG_INFO("Skiping audio frame as we're sending DTMF...");
 			return 0;
 		}
 		
 		// resample if needed
-		if(base->producer->audio.rate != audio->encoder.codec->plugin->rate){
+		if(base->producer->audio.rate != audio->encoder.codec->out.rate){
 			tsk_size_t resampler_result_size = 0;
 			int bytesPerSample = (base->producer->audio.bits_per_sample >> 3);
 			
 			if(!audio->encoder.resampler.instance){
-				TSK_DEBUG_INFO("Create audio resampler(%s): producer->audio.rate=%d, encoder.codec->plugin->rate=%d, bytesPerSample=%d", audio->encoder.codec->plugin->desc, base->producer->audio.rate, audio->encoder.codec->plugin->rate, bytesPerSample);
-				audio->encoder.resampler.instance = _tdav_session_audio_resampler_create(bytesPerSample, base->producer->audio.rate, audio->encoder.codec->plugin->rate,base->producer->audio.ptime, base->producer->audio.channels, base->producer->audio.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, &audio->encoder.resampler.buffer, &audio->encoder.resampler.buffer_size);
+				TSK_DEBUG_INFO("Create audio resampler(%s): producer->audio.rate=%d, encoder.codec->plugin->rate=%d, bytesPerSample=%d", audio->encoder.codec->plugin->desc, base->producer->audio.rate, audio->encoder.codec->out.rate, bytesPerSample);
+				audio->encoder.resampler.instance = _tdav_session_audio_resampler_create(bytesPerSample, base->producer->audio.rate, audio->encoder.codec->out.rate, base->producer->audio.ptime, base->producer->audio.channels, base->producer->audio.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, &audio->encoder.resampler.buffer, &audio->encoder.resampler.buffer_size);
 			}
 			if(!audio->encoder.resampler.instance){
 				TSK_DEBUG_ERROR("No resampler to handle data");
@@ -243,7 +244,7 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		if((audio->encoder.codec = tsk_object_ref(audio->encoder.codec))){ /* Thread safeness (SIP reINVITE or UPDATE could update the encoder) */
 			out_size = audio->encoder.codec->plugin->encode(audio->encoder.codec, buffer, size, &audio->encoder.buffer, &audio->encoder.buffer_size);
 			if(out_size){
-				trtp_manager_send_rtp(base->rtp_manager, audio->encoder.buffer, out_size, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), tsk_false/*Marker*/, tsk_true/*lastPacket*/);
+				trtp_manager_send_rtp(base->rtp_manager, audio->encoder.buffer, out_size, TMEDIA_CODEC_FRAME_DURATION_AUDIO_ENCODING(audio->encoder.codec), tsk_false/*Marker*/, tsk_true/*lastPacket*/);
 			}
 			tsk_object_unref(audio->encoder.codec);
 		}
@@ -379,7 +380,7 @@ static int tdav_session_audio_start(tmedia_session_t* self)
 		/* Denoise (AEC, Noise Suppression, AGC) */
 		if(audio->denoise){
 			tmedia_denoise_close(audio->denoise);
-			tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE(audio->encoder.codec), TMEDIA_CODEC_RATE(audio->encoder.codec));
+			tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE_AUDIO_ENCODING(audio->encoder.codec), TMEDIA_CODEC_RATE_ENCODING(audio->encoder.codec));
 		}
 	}
 
@@ -418,7 +419,7 @@ static int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 
 	// Find the DTMF codec to use to use the RTP payload
 	if((codec = tmedia_codec_find_by_format(TMEDIA_SESSION(audio)->codecs, TMEDIA_CODEC_FORMAT_DTMF))){
-		rate = (int)codec->plugin->rate;
+		rate = (int)codec->out.rate;
 		format = atoi(codec->neg_format ? codec->neg_format : codec->format);
 		TSK_OBJECT_SAFE_FREE(codec);
 	}

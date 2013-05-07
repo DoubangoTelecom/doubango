@@ -602,7 +602,7 @@ const tnet_ice_pair_t* tnet_ice_pairs_find_by_response(tnet_ice_pairs_L_t* pairs
 				tnet_ice_utils_stun_address_tostring(xmapped_addr ? xmapped_addr->xaddress : mapped_addr->address, xmapped_addr ? xmapped_addr->family : mapped_addr->family, &mapped_addr_str);
 				mapped_port = xmapped_addr ? xmapped_addr->xport : mapped_addr->port;
 				if((mapped_port != pair->candidate_offer->port || !tsk_striequals(mapped_addr_str, pair->candidate_offer->connection_addr))){
-					TSK_DEBUG_INFO("Mapped address different than local connection address...probably symetric NAT: %s#%s and %u#%u", 
+					TSK_DEBUG_INFO("Mapped address different than local connection address...probably symetric NAT: %s#%s or %u#%u", 
 						pair->candidate_offer->connection_addr, mapped_addr_str,
 						pair->candidate_offer->port, mapped_port);
 					// do we really need to add new local candidate?

@@ -295,6 +295,10 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsGetRtpBuffSize = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetRtpBuffSize)
     __swig_getmethods__["defaultsSetAvpfTail"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail
     if _newclass:defaultsSetAvpfTail = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail)
+    __swig_getmethods__["defaultsSetOpusMaxCaptureRate"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxCaptureRate
+    if _newclass:defaultsSetOpusMaxCaptureRate = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxCaptureRate)
+    __swig_getmethods__["defaultsSetOpusMaxPlaybackRate"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxPlaybackRate
+    if _newclass:defaultsSetOpusMaxPlaybackRate = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxPlaybackRate)
 MediaSessionMgr_swigregister = _tinyWRAP.MediaSessionMgr_swigregister
 MediaSessionMgr_swigregister(MediaSessionMgr)
 
@@ -509,6 +513,14 @@ MediaSessionMgr_defaultsGetRtpBuffSize = _tinyWRAP.MediaSessionMgr_defaultsGetRt
 def MediaSessionMgr_defaultsSetAvpfTail(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail(*args)
 MediaSessionMgr_defaultsSetAvpfTail = _tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail
+
+def MediaSessionMgr_defaultsSetOpusMaxCaptureRate(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxCaptureRate(*args)
+MediaSessionMgr_defaultsSetOpusMaxCaptureRate = _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxCaptureRate
+
+def MediaSessionMgr_defaultsSetOpusMaxPlaybackRate(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxPlaybackRate(*args)
+MediaSessionMgr_defaultsSetOpusMaxPlaybackRate = _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxPlaybackRate
 
 class MediaContent(_object):
     __swig_setmethods__ = {}
@@ -1299,6 +1311,7 @@ class ProxyAudioProducer(ProxyPlugin):
     __repr__ = _swig_repr
     __swig_destroy__ = _tinyWRAP.delete_ProxyAudioProducer
     __del__ = lambda self : None;
+    def setActualSndCardRecordParams(self, *args): return _tinyWRAP.ProxyAudioProducer_setActualSndCardRecordParams(self, *args)
     def setPushBuffer(self, *args): return _tinyWRAP.ProxyAudioProducer_setPushBuffer(self, *args)
     def push(self, *args): return _tinyWRAP.ProxyAudioProducer_push(self, *args)
     def setGain(self, *args): return _tinyWRAP.ProxyAudioProducer_setGain(self, *args)

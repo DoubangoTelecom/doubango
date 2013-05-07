@@ -145,7 +145,7 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 	int ret = -1;
 	tsk_size_t i;
 	tsk_bool_t found = tsk_false;
-    	tnet_fd_t fd = *pfd;
+    tnet_fd_t fd = *pfd;
 	
 	TSK_DEBUG_INFO("Removing socket %d", fd);
 
@@ -166,8 +166,9 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 			tsk_bool_t self_ref = (&context->sockets[i]->fd == pfd);
 			removeSocket(i, context); // sockets[i] will be destroyed
 			found = tsk_true;
+			TSK_RUNNABLE_ENQUEUE(transport, event_removed, transport->callback_data, fd);
 			if(!self_ref){ // if self_ref then, pfd no longer valid after removeSocket()
-				*pfd = TNET_INVALID_FD;
+				*pfd = TNET_INVALID_FD;				
 			}
 			break;
 		}

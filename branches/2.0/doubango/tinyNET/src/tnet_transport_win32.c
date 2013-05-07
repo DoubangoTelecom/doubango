@@ -204,6 +204,7 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 		if(context->sockets[i]->fd == *fd){
 			removeSocket(i, context);
 			found = tsk_true;
+			TSK_RUNNABLE_ENQUEUE(transport, event_removed, transport->callback_data, *fd);
 			*fd = TNET_INVALID_FD;
 			break;
 		}

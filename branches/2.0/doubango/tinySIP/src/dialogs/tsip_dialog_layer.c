@@ -66,6 +66,15 @@ static int pred_find_dialog_by_not_type(const tsk_list_item_t *item, const void 
 	return -1;
 }
 
+/*== Predicate function to find dialog by callid */
+static int pred_find_dialog_by_callid(const tsk_list_item_t *item, const void *callid)
+{
+	if(item && item->data && callid){
+		return tsk_strcmp(((tsip_dialog_t*)item->data)->callid, ((const char*)callid));
+	}
+	return -1;
+}
+
 tsip_dialog_layer_t* tsip_dialog_layer_create(tsip_stack_t* stack)
 {
 	return tsk_object_new(tsip_dialog_layer_def_t, stack);
@@ -119,6 +128,19 @@ tsip_dialog_t* tsip_dialog_layer_find_by_callid(tsip_dialog_layer_t *self, const
 		tsk_safeobj_unlock(self);
 		return dialog;
 	}
+}
+
+tsk_bool_t tsip_dialog_layer_have_dialog_with_callid(const tsip_dialog_layer_t *self, const char* callid)
+{
+	tsk_bool_t found = tsk_false;
+	if(self){
+		tsk_safeobj_lock(self);
+		if(tsk_list_find_item_by_pred(self->dialogs, pred_find_dialog_by_callid, callid) != tsk_null){
+			found = tsk_true;
+		}
+		tsk_safeobj_unlock(self);
+	}
+	return found;
 }
 
 // it's up to the caller to release the returned object
@@ -280,7 +302,7 @@ done:
 	return -1;
 }
 
-int tsip_dialog_layer_signal_transport_error(tsip_dialog_layer_t *self)
+int tsip_dialog_layer_signal_stack_disconnected(tsip_dialog_layer_t *self)
 {
 	tsk_list_item_t *item;
 	int dialogs_count;
@@ -294,7 +316,7 @@ int tsip_dialog_layer_signal_transport_error(tsip_dialog_layer_t *self)
 again:
 	tsk_list_foreach(item, self->dialogs){
 		if(item->data){
-			// if "tsip_dialog_signal_transport_error()" remove the dialog, then
+			// if "tsip_dialog_signal_transport_error()" removes the dialog, then
 			// "self->dialogs" will became unsafe while looping
 			tsip_dialog_signal_transport_error(TSIP_DIALOG(item->data));
 			if(--dialogs_count <= 0){ // guard against endless loops
@@ -307,6 +329,46 @@ again:
 	tsk_safeobj_unlock(self);
 
 	return 0;
+}
+
+int tsip_dialog_layer_signal_peer_disconnected(tsip_dialog_layer_t *self, const struct tsip_transport_stream_peer_s* peer)
+{
+	tsip_dialog_t *dialog;
+	const tsk_list_item_t *item;
+
+	if(!self || !peer){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tsk_safeobj_lock(self);
+
+	tsk_list_lock(peer->dialogs_cids);
+	tsk_list_foreach(item, peer->dialogs_cids){
+		if((dialog = tsip_dialog_layer_find_by_callid(self, TSK_STRING_STR(item->data)))){
+			tsip_dialog_signal_transport_error(dialog);
+			TSK_OBJECT_SAFE_FREE(dialog);
+		}
+		else{
+			// To avoid this WARN, you should call tsip_dialog_layer_have_dialog_with_callid() before adding a callid to a peer
+			TSK_DEBUG_WARN("Stream peer holds call-id='%s' but the dialog layer doesn't know it", TSK_STRING_STR(item->data));
+		}
+	}
+
+	tsk_list_unlock(peer->dialogs_cids);
+
+	tsk_safeobj_unlock(self);
+
+	return 0;
+}
+
+int tsip_dialog_layer_remove_callid_from_stream_peers(tsip_dialog_layer_t *self, const char* callid)
+{
+	if(self){
+		return tsip_transport_layer_remove_callid_from_stream_peers(self->stack->layer_transport, callid);
+	}
+	TSK_DEBUG_ERROR("Invalid parameter");
+	return -1;
 }
 
 /* the caller of this function must unref() the returned object */

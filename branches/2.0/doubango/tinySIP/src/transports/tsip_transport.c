@@ -26,6 +26,7 @@
 #include "tinysip/transports/tsip_transport.h"
 #include "tinysip/transports/tsip_transport_ipsec.h"
 
+#include "tinysip/dialogs/tsip_dialog_layer.h"
 #include "tinysip/transports/tsip_transport_layer.h"
 
 #include "tinysip/transactions/tsip_transac.h" /* TSIP_TRANSAC_MAGIC_COOKIE */
@@ -36,6 +37,7 @@
 #include "tsk_buffer.h"
 #include "tsk_debug.h"
 
+static const char* __null_callid = tsk_null;
 
 static const tsip_transport_idx_xt _tsip_transport_idxs_xs[TSIP_TRANSPORT_IDX_MAX] =
 {
@@ -71,7 +73,7 @@ enum tnet_socket_type_e tsip_transport_get_type_by_name(const char* name)
 	return t_idx ? t_idx->type : tnet_socket_type_invalid;
 }
 
-/*== Predicate function to find a compartment by id */
+/*== Predicate function to find a peer by local id */
 static int _pred_find_stream_peer_by_local_fd(const tsk_list_item_t *item, const void *local_fd)
 {
 	if(item && item->data){
@@ -283,7 +285,7 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 }
 
 // "udp", "tcp" or "tls"
-tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const char* dst_host, tnet_port_t dst_port, const void* data, tsk_size_t size)
+tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const char* dst_host, tnet_port_t dst_port, const void* data, tsk_size_t size, const char* callid)
 {
 	tsk_size_t ret = 0;
 
@@ -338,6 +340,11 @@ tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const char* dst
 				return 0;
 			}
 		}
+		// store call-id
+		if(callid != __null_callid && tsip_dialog_layer_have_dialog_with_callid(self->stack->layer_dialog, callid)){
+			ret = tsip_transport_stream_peer_add_callid(peer, callid);
+		}
+		// send() data
 		if(peer->connected){
 			ret = tnet_transport_send(self->net_transport, peer->local_fd, data, size);
 		}
@@ -353,7 +360,7 @@ tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const char* dst
 }
 
 // "ws" or "wss"
-tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t local_fd, const void* data, tsk_size_t size)
+tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t local_fd, const void* data, tsk_size_t size, const char* callid)
 {
 	/*static const uint8_t __ws_first_byte = 0x82;*/
 	const uint8_t* pdata = (const uint8_t*)data;
@@ -411,6 +418,11 @@ tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t lo
 	
 	memcpy(pws_snd_buffer, pdata, (size_t)lsize);
 
+	// store call-id
+	if(callid != __null_callid && tsip_dialog_layer_have_dialog_with_callid(self->stack->layer_dialog, callid)){
+		ret = tsip_transport_stream_peer_add_callid(peer, callid);
+	}
+	// send() data
 	ret = tnet_transport_send(self->net_transport, local_fd, peer->ws.snd_buffer, (tsk_size_t)data_size);
 
 	TSK_OBJECT_SAFE_FREE(peer);
@@ -426,6 +438,7 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 	tsk_size_t ret = 0;
 	if(self){
 		tsk_buffer_t *buffer = tsk_null;
+		const char* callid = msg->Call_ID ? msg->Call_ID->value : __null_callid;
 
 		/* Add Via and update AOR, IPSec headers, SigComp ...
 		* ACK sent from the transaction layer will contains a Via header and should not be updated 
@@ -507,13 +520,13 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 					// message not received over WS/WS tranport but have to be sent over WS/WS
 					tsip_transport_stream_peer_t* peer = tsip_transport_find_stream_peer_by_remote_ip(TSIP_TRANSPORT(self), destIP, destPort, self->type);
 					if(peer){
-						ret = tsip_transport_send_raw_ws(self, peer->local_fd, buffer->data, buffer->size);
+						ret = tsip_transport_send_raw_ws(self, peer->local_fd, buffer->data, buffer->size, callid);
 						TSK_OBJECT_SAFE_FREE(peer);
 					}
 					else if(msg->local_fd > 0)
 				//}
 				//else{
-					ret = tsip_transport_send_raw_ws(self, msg->local_fd, buffer->data, buffer->size);
+					ret = tsip_transport_send_raw_ws(self, msg->local_fd, buffer->data, buffer->size, callid);
 				//}
 			}
 			else if(TNET_SOCKET_TYPE_IS_IPSEC(self->type)){
@@ -527,7 +540,7 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 				}
 			}
 			else{
-				ret = tsip_transport_send_raw(self, destIP, destPort, buffer->data, buffer->size);
+				ret = tsip_transport_send_raw(self, destIP, destPort, buffer->data, buffer->size, callid);
 			}
 
 //bail:
@@ -648,6 +661,24 @@ tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_local_fd(tsip_t
 }
 
 // up to the caller to release the returned object
+// calling this function will remove the peer from the list
+tsip_transport_stream_peer_t* tsip_transport_pop_stream_peer_by_local_fd(tsip_transport_t *self, tnet_fd_t local_fd)
+{
+	if(self){
+		tsip_transport_stream_peer_t* peer = tsk_null;
+		tsk_list_item_t *item;
+		tsk_list_lock(self->stream_peers);
+		if((item = tsk_list_pop_item_by_pred(self->stream_peers, _pred_find_stream_peer_by_local_fd, &local_fd))){
+			peer = tsk_object_ref(item->data);
+			TSK_OBJECT_SAFE_FREE(item);
+		}
+		tsk_list_unlock(self->stream_peers);
+		return peer;
+	}
+	return tsk_null;
+}
+
+// up to the caller to release the returned object
 tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_remote_ip(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port, enum tnet_socket_type_e type)
 {
 	tsip_transport_stream_peer_t* peer = tsk_null;
@@ -700,6 +731,80 @@ int tsip_transport_remove_stream_peer_by_local_fd(tsip_transport_t *self, tnet_f
 	tsk_list_unlock(self->stream_peers);
 
 	return 0;
+}
+
+int tsip_transport_remove_callid_from_stream_peers(tsip_transport_t *self, const char* callid, tsk_bool_t* removed)
+{
+	if(!self || !removed){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	*removed = tsk_false;
+	if(TNET_SOCKET_TYPE_IS_STREAM(self->type)){
+		tsk_list_item_t *item;
+		tsk_list_lock(self->stream_peers);
+		tsk_list_foreach(item, self->stream_peers){
+			if(tsip_transport_stream_peer_remove_callid((tsip_transport_stream_peer_t*)item->data, callid, removed) == 0 && *removed){
+				TSK_DEBUG_INFO("[Transport] Removed call-id = '%s' from transport with type = %d", callid, self->type);
+				break;
+			}
+		}
+		tsk_list_unlock(self->stream_peers);
+	}
+	
+	return 0;
+}
+
+tsk_bool_t tsip_transport_stream_peer_have_callid(const tsip_transport_stream_peer_t* self, const char* callid)
+{
+	tsk_bool_t have_cid = tsk_false;
+	if(self){
+		const tsk_list_item_t* item;
+		
+		tsk_list_lock(self->dialogs_cids);
+		tsk_list_foreach(item, self->dialogs_cids){
+			if(tsk_strequals(TSK_STRING_STR(item->data), callid)){
+				have_cid = tsk_true;
+				break;
+			}
+		}
+		tsk_list_unlock(self->dialogs_cids);
+	}
+	return have_cid;
+}
+
+int tsip_transport_stream_peer_add_callid(tsip_transport_stream_peer_t* self, const char* callid)
+{
+	if(self && !tsk_strnullORempty(callid)){
+		tsk_list_lock(self->dialogs_cids);
+		if(!tsip_transport_stream_peer_have_callid(self, callid)){
+			tsk_string_t* cid = tsk_string_create(callid);
+			if(cid){
+				TSK_DEBUG_INFO("Add call-id = '%s' to peer with local fd = %d", callid, self->local_fd);
+				tsk_list_push_back_data(self->dialogs_cids, &cid);
+				TSK_OBJECT_SAFE_FREE(cid);
+			}
+		}
+		tsk_list_unlock(self->dialogs_cids);
+		return 0;
+	}
+	TSK_DEBUG_ERROR("Invalid parameter");
+	return -1;
+}
+
+int tsip_transport_stream_peer_remove_callid(tsip_transport_stream_peer_t* self, const char* callid, tsk_bool_t *removed)
+{
+	if(self && removed){
+		*removed = tsk_false;
+		tsk_list_lock(self->dialogs_cids);
+		if((*removed = tsk_list_remove_item_by_pred(self->dialogs_cids, tsk_string_pred_cmp, callid)) == tsk_true){
+			TSK_DEBUG_INFO("[Stream] Removed call-id = '%s' from peer with local fd = %d", callid, self->local_fd);
+		}
+		tsk_list_unlock(self->dialogs_cids);
+		return 0;
+	}
+	TSK_DEBUG_ERROR("Invalid parameter");
+	return -1;
 }
 
 int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const struct tsip_stack_s *stack, const char *host, tnet_port_t port, const char* description)
@@ -843,6 +948,7 @@ static tsk_object_t* tsip_transport_stream_peer_ctor(tsk_object_t * self, va_lis
 	if(peer){
 		peer->rcv_buff_stream = tsk_buffer_create_null();
 		peer->snd_buff_stream = tsk_buffer_create_null();
+		peer->dialogs_cids = tsk_list_create();
 	}
 	return self;
 }
@@ -851,6 +957,7 @@ static tsk_object_t* tsip_transport_stream_peer_dtor(tsk_object_t * self)
 { 
 	tsip_transport_stream_peer_t *peer = self;
 	if(peer){
+		TSK_DEBUG_INFO("*** Stream Peer destroyed ***");
 		TSK_OBJECT_SAFE_FREE(peer->rcv_buff_stream);
 		TSK_OBJECT_SAFE_FREE(peer->snd_buff_stream);
 		
@@ -858,6 +965,8 @@ static tsk_object_t* tsip_transport_stream_peer_dtor(tsk_object_t * self)
 		peer->ws.rcv_buffer_size = 0;
 		TSK_SAFE_FREE(peer->ws.snd_buffer);
 		peer->ws.snd_buffer_size = 0;
+
+		TSK_OBJECT_SAFE_FREE(peer->dialogs_cids);
 	}
 	return self;
 }
