@@ -72,6 +72,11 @@ int twrap_consumer_proxy_audio_prepare(tmedia_consumer_t* self, const tmedia_cod
 			self->audio.in.rate = TMEDIA_CODEC_RATE_DECODING(codec);
 
 			ret = audio->pcConsumer->getCallback()->prepare((int)self->audio.ptime, self->audio.in.rate, self->audio.in.channels);
+			if(ret == 0){
+				// say consumer can output these params
+				self->audio.out.rate = self->audio.in.rate;
+				self->audio.out.channels = self->audio.in.channels;
+			}
 		}
 	}
 	
