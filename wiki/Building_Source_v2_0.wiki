@@ -9,7 +9,7 @@ This section explains how to build the project using *CentOS 64* but could be ea
 ==Preparing the system==
 {{{
 sudo yum update
-sudo yum install make libtool autoconf subversion git wget cvs libogg-devel gcc gcc-c++
+sudo yum install make libtool autoconf subversion git wget libogg-devel gcc gcc-c++
 }}}
 
 The first step is to checkout Doubango 2.0 source code:
@@ -77,6 +77,15 @@ svn co http://src.chromium.org/svn/trunk/tools/depot_tools .
 make -j6 V=1 -r libyuv BUILDTYPE=Release
 #cp out/Release/obj.target/libyuv.a /usr/local/lib
 #mkdir /usr/local/include/libyuv && cp -r include/* /usr/local/include/libyuv
+}}}
+
+===Building libopus===
+*libopus* is optional but highly recommended as it’s an MTI codec for WebRTC. Adds support for [http://www.opus-codec.org/ Opus audio codec].
+{{{
+wget http://downloads.xiph.org/releases/opus/opus-1.0.2.tar.gz
+tar -xvzf opus-1.0.2.tar.gz
+cd opus-1.0.2
+./configure --with-pic --enable-float-approx && make && make install
 }}}
 
 ===Building opencore-amr===
