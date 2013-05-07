@@ -213,7 +213,7 @@ AM_CONDITIONAL(USE_OPUS, false)
 AC_ARG_WITH(opus,
 [  --with-opus            Link against libopus library],
  [AC_DEFINE_UNQUOTED(HAVE_LIBOPUS, 1, HAVE_LIBOPUS)
- AC_SUBST(LIBAMR_LIBADD, "-lopus")
+ AC_SUBST(LIBOPUS_LIBADD, "-lopus")
  AM_CONDITIONAL(USE_OPUS, true)], 
  [ AC_SUBST(LIBOPUS_LIBADD, "")])
 
