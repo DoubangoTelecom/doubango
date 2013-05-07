@@ -32,6 +32,10 @@ libtinyDAV_la_LIBADD += -lyuv
 libtinyDAV_la_CPPFLAGS += -I${LIBYUV_INCLUDE} -I${LIBYUV_INCLUDE}/libyuv
 endif
 
+if USE_OPUS
+libtinyDAV_la_LIBADD += ${LIBOPUS_LIBADD}
+endif
+
 if USE_AMR
 libtinyDAV_la_LIBADD += ${LIBAMR_LIBADD}
 endif
@@ -86,6 +90,8 @@ libtinyDAV_la_SOURCES += src/msrp/tdav_consumer_msrp.c \
 	src/msrp/tdav_session_msrp.c
 
 libtinyDAV_la_SOURCES += src/codecs/amr/tdav_codec_amr.c
+
+libtinyDAV_la_SOURCES += src/codecs/opus/tdav_codec_opus.c
 
 libtinyDAV_la_SOURCES += src/codecs/g711/g711.c \
 	src/codecs/g711/tdav_codec_g711.c

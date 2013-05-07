@@ -62,6 +62,7 @@ public:
 #endif
 	virtual ~ProxyAudioProducer();
 
+	bool setActualSndCardRecordParams(int nPtime, int nRate, int nChannels);
 	bool setPushBuffer(const void* pPushBufferPtr, unsigned nPushBufferSize, bool bUsePushCallback=false);
 	int push(const void* pBuffer=tsk_null, unsigned nSize=0);
 	bool setGain(unsigned nGain);

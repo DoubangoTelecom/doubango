@@ -359,6 +359,16 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetOpusMaxCaptureRate(uint opus_maxcapturerate) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetOpusMaxCaptureRate(opus_maxcapturerate);
+    return ret;
+  }
+
+  public static bool defaultsSetOpusMaxPlaybackRate(uint opus_maxplaybackrate) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetOpusMaxPlaybackRate(opus_maxplaybackrate);
+    return ret;
+  }
+
 }
 
 }

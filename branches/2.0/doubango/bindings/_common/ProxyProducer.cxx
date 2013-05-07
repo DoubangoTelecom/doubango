@@ -63,10 +63,10 @@ static int twrap_producer_proxy_audio_prepare(tmedia_producer_t* self, const tme
 	if(codec && (manager = ProxyPluginMgr::getInstance())){
 		const ProxyAudioProducer* audioProducer;
 		if((audioProducer = manager->findAudioProducer(TWRAP_PRODUCER_PROXY_AUDIO(self)->id)) && audioProducer->getCallback()){
-			self->audio.channels = codec->plugin->audio.channels;
-			self->audio.rate = codec->plugin->rate;
-			self->audio.ptime = codec->plugin->audio.ptime;
-			ret = audioProducer->getCallback()->prepare((int)codec->plugin->audio.ptime, codec->plugin->rate, codec->plugin->audio.channels);
+			self->audio.channels = TMEDIA_CODEC_CHANNELS_AUDIO_ENCODING(codec);
+			self->audio.rate = TMEDIA_CODEC_RATE_ENCODING(codec);
+			self->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_ENCODING(codec);
+			ret = audioProducer->getCallback()->prepare((int)self->audio.ptime, self->audio.rate, self->audio.channels);
 		}
 	}
 	return ret;
@@ -204,6 +204,19 @@ ProxyAudioProducer::ProxyAudioProducer(twrap_producer_proxy_audio_t* pProducer)
 ProxyAudioProducer::~ProxyAudioProducer()
 {
 	stopPushCallback();
+}
+
+// Use this function to request resampling when your sound card can't honor negotaited record parameters
+bool ProxyAudioProducer::setActualSndCardRecordParams(int nPtime, int nRate, int nChannels)
+{
+	TSK_DEBUG_INFO("setActualSndCardRecordParams(ptime=%d, rate=%d, channels=%d)", nPtime, nRate, nChannels);
+	if(m_pWrappedPlugin){
+		TMEDIA_PRODUCER(m_pWrappedPlugin)->audio.ptime = nPtime;
+		TMEDIA_PRODUCER(m_pWrappedPlugin)->audio.rate = nRate;
+		TMEDIA_PRODUCER(m_pWrappedPlugin)->audio.channels = nChannels;
+		return true;
+	}
+	return false;
 }
 
 bool ProxyAudioProducer::setPushBuffer(const void* pPushBufferPtr, unsigned nPushBufferSize, bool bUsePushCallback/*=false*/)

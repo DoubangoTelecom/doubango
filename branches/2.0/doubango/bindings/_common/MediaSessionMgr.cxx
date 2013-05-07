@@ -500,3 +500,10 @@ unsigned MediaSessionMgr::defaultsGetRtpBuffSize(){
 bool MediaSessionMgr::defaultsSetAvpfTail(unsigned tail_min, unsigned tail_max){
 	return (tmedia_defaults_set_avpf_tail(tail_min, tail_max) == 0);
 }
+
+bool MediaSessionMgr::defaultsSetOpusMaxCaptureRate(uint32_t opus_maxcapturerate){
+	return (tmedia_defaults_set_opus_maxcapturerate(opus_maxcapturerate) == 0);
+}
+bool MediaSessionMgr::defaultsSetOpusMaxPlaybackRate(uint32_t opus_maxplaybackrate){
+	return (tmedia_defaults_set_opus_maxplaybackrate(opus_maxplaybackrate) == 0);
+}

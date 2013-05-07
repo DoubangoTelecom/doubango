@@ -174,9 +174,9 @@ static int tdav_consumer_dsound_prepare(tmedia_consumer_t* self, const tmedia_co
 		return -2;
 	}
 
-	TMEDIA_CONSUMER(dsound)->audio.ptime = codec->plugin->audio.ptime;
-	TMEDIA_CONSUMER(dsound)->audio.in.channels = codec->plugin->audio.channels;
-	TMEDIA_CONSUMER(dsound)->audio.in.rate = codec->plugin->rate;
+	TMEDIA_CONSUMER(dsound)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_DECODING(codec);
+	TMEDIA_CONSUMER(dsound)->audio.in.channels = TMEDIA_CODEC_CHANNELS_AUDIO_DECODING(codec);
+	TMEDIA_CONSUMER(dsound)->audio.in.rate = TMEDIA_CODEC_RATE_DECODING(codec);
 
 	/* Create sound device */
 	if((hr = DirectSoundCreate(NULL, &dsound->device, NULL) != DS_OK)){

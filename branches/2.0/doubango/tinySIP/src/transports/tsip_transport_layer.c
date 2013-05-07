@@ -43,6 +43,8 @@
 #include "tsk_thread.h"
 #include "tsk_debug.h"
 
+static const char* __null_callid = tsk_null;
+
 /* max size of a chunck to form a valid SIP message */
 #define TSIP_MAX_STREAM_CHUNCK_SIZE 0xFFFF
 /* min size of a chunck to form a valid SIP message
@@ -142,21 +144,27 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			}
 		case event_closed:
 		case event_error:
+		case event_removed:
 			{
+				tsip_transport_stream_peer_t* peer;
 				TSK_DEBUG_INFO("Stream Peer closed - %d", e->local_fd);
 				if(transport->connectedFD == e->local_fd){
 					TSK_DEBUG_INFO("SIP socket closed");
 					if(transport->stack){
 						tsip_event_t* e;
 						// signal to all dialogs that transport error raised
-						tsip_dialog_layer_signal_transport_error(TSIP_STACK(transport->stack)->layer_dialog);
+						tsip_dialog_layer_signal_stack_disconnected(TSIP_STACK(transport->stack)->layer_dialog);
 						// signal to the end-user that the stack is disconnected
 						if((e = tsip_event_create(tsk_null, tsip_event_code_stack_disconnected, "Stack disconnected", tsk_null, tsip_event_stack))){
 							TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(transport->stack), e);
 						}
 					}
 				}
-				return tsip_transport_remove_stream_peer_by_local_fd(transport, e->local_fd);
+				if((peer = tsip_transport_pop_stream_peer_by_local_fd(transport, e->local_fd))){
+					tsip_dialog_layer_signal_peer_disconnected(TSIP_STACK(transport->stack)->layer_dialog, peer);
+					TSK_OBJECT_SAFE_FREE(peer);
+				}
+				return 0;
 			}
 		case event_connected:
 		case event_accepted:
@@ -231,7 +239,7 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 		
 		if(data_size){
 			if(is_nack){
-				tsip_transport_send_raw(transport, tsk_null, 0, SigCompBuffer, data_size);
+				tsip_transport_send_raw(transport, tsk_null, 0, SigCompBuffer, data_size, __null_callid);
 			}
 			else{
 				// append result
@@ -245,7 +253,7 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 		// Query for all other chuncks
 		while((next_size = tsip_sigcomp_handler_uncompress_next(transport->stack->sigcomp.handle, comp_id, &nack_data, &is_nack)) || nack_data){
 			if(is_nack){
-				tsip_transport_send_raw(transport, tsk_null, 0, nack_data, next_size);
+				tsip_transport_send_raw(transport, tsk_null, 0, nack_data, next_size, __null_callid);
 				TSK_FREE(nack_data);
 			}
 			else{
@@ -278,7 +286,7 @@ parse_buffer:
 		}
 		else{ /* There is a content */
 			if((endOfheaders + 4/*2CRLF*/ + clen) > TSK_BUFFER_SIZE(peer->rcv_buff_stream)){ /* There is content but not all the content. */
-				TSK_DEBUG_INFO("No all SIP content in the TCP buffer.");
+				TSK_DEBUG_INFO("No all SIP content in the TCP buffer (clen=%u and %u > %u).", clen, (endOfheaders + 4/*2CRLF*/ + clen), TSK_BUFFER_SIZE(peer->rcv_buff_stream));
 				goto bail;
 			}
 			else{
@@ -334,9 +342,16 @@ static int tsip_transport_layer_ws_cb(const tnet_transport_event_t* e)
 				break;
 			}
 		case event_closed:
+		case event_error:
+		case event_removed:
 			{
+				tsip_transport_stream_peer_t* peer;
 				TSK_DEBUG_INFO("WebSocket Peer closed with fd = %d", e->local_fd);
-				return tsip_transport_remove_stream_peer_by_local_fd(transport, e->local_fd);
+				if((peer = tsip_transport_pop_stream_peer_by_local_fd(transport, e->local_fd))){
+					tsip_dialog_layer_signal_peer_disconnected(TSIP_STACK(transport->stack)->layer_dialog, peer);
+					TSK_OBJECT_SAFE_FREE(peer);
+				}
+				return 0;
 			}
 		case event_accepted:
 		case event_connected:
@@ -614,7 +629,7 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 		data_ptr = SigCompBuffer;
 		if(data_size){
 			if(is_nack){
-				tsip_transport_send_raw(transport, tsk_null, 0, data_ptr, data_size);
+				tsip_transport_send_raw(transport, tsk_null, 0, data_ptr, data_size, __null_callid);
 				return 0;
 			}
 		}
@@ -1094,6 +1109,30 @@ int tsip_transport_cleanupSAs(const tsip_transport_layer_t *self)
 
 bail:
 	return ret;
+}
+
+int tsip_transport_layer_remove_callid_from_stream_peers(tsip_transport_layer_t *self, const char* callid)
+{
+	if(self && callid){
+		int ret = 0;
+		tsk_bool_t removed = tsk_false;
+		tsip_transport_t* transport;
+		tsk_list_item_t* item;
+		tsk_list_lock(self->transports);
+		tsk_list_foreach(item, self->transports){
+			if(!(transport = TSIP_TRANSPORT(item->data)) || !TNET_SOCKET_TYPE_IS_STREAM(transport->type)){
+				continue;
+			}
+			if((ret = tsip_transport_remove_callid_from_stream_peers(transport, callid, &removed)) == 0 && removed){
+				TSK_DEBUG_INFO("[Transport Layer] Removed call-id = '%s' from transport layer", callid);
+				break;
+			}
+		}
+		tsk_list_unlock(self->transports);
+		return ret;
+	}
+	TSK_DEBUG_ERROR("Invalid parameter");
+	return -1;
 }
 
 tsk_bool_t tsip_transport_layer_have_stream_peer_with_remote_ip(const tsip_transport_layer_t *self, const char* remote_ip, tnet_port_t remote_port)

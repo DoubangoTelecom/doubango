@@ -317,7 +317,7 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 
 	/* Packet lost? */
 	if((h264->decoder.last_seq + 1) != rtp_hdr->seq_num && h264->decoder.last_seq){
-		TSK_DEBUG_INFO("Packet lost, seq_num=%d", (h264->decoder.last_seq + 1));
+		TSK_DEBUG_INFO("[H.264] Packet loss, seq_num=%d", (h264->decoder.last_seq + 1));
 	}
 	h264->decoder.last_seq = rtp_hdr->seq_num;
 
@@ -461,7 +461,7 @@ static tsk_bool_t tdav_codec_h264_sdp_att_match(const tmedia_codec_t* codec, con
 		return tsk_false;
 	}
 
-	TSK_DEBUG_INFO("Trying to match [%s:%s]", att_name, att_value);
+	TSK_DEBUG_INFO("[H.264] Trying to match [%s:%s]", att_name, att_value);
 
 	if(tsk_striequals(att_name, "fmtp")){
 		int val_int;

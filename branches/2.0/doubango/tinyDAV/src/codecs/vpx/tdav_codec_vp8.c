@@ -397,7 +397,7 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 
 	// Packet lost?
 	if(vp8->decoder.last_seq && (vp8->decoder.last_seq + 1) != rtp_hdr->seq_num){
-		TSK_DEBUG_INFO("Packet lost, seq_num=%d", (vp8->decoder.last_seq + 1));
+		TSK_DEBUG_INFO("[VP8] Packet loss, seq_num=%d", (vp8->decoder.last_seq + 1));
 	}
 	vp8->decoder.last_seq = rtp_hdr->seq_num;
 
@@ -688,7 +688,7 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 	self->encoder.cfg.rc_end_usage = VPX_CBR;
 	self->encoder.cfg.g_pass = VPX_RC_ONE_PASS;
 	self->encoder.cfg.rc_resize_allowed = 0;
-	self->encoder.cfg.rc_min_quantizer = 8;
+	self->encoder.cfg.rc_min_quantizer = 2;
 	self->encoder.cfg.rc_max_quantizer = 56;
 	self->encoder.cfg.rc_undershoot_pct = 100;
 	self->encoder.cfg.rc_overshoot_pct = 15;

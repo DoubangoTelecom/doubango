@@ -51,6 +51,10 @@
 #	define LONG_MAX      2147483647L
 #endif
 
+#if !defined(TNET_ICE_DEBUG_STATE_MACHINE)
+#	define TNET_ICE_DEBUG_STATE_MACHINE 1
+#endif
+
 /**@ingroup tnet_nat_group
 * Estimate of the round-trip time (RTT) in millisecond.
 */
@@ -312,6 +316,7 @@ tnet_ice_ctx_t* tnet_ice_ctx_create(tsk_bool_t is_ice_jingle, tsk_bool_t use_ipv
 	tnet_ice_utils_set_ufrag(&ctx->ufrag);
 	tnet_ice_utils_set_pwd(&ctx->pwd);
 	
+	ctx->fsm->debug = TNET_ICE_DEBUG_STATE_MACHINE;
 	tsk_fsm_set_callback_terminated(ctx->fsm, TSK_FSM_ONTERMINATED_F(_tnet_ice_ctx_fsm_OnTerminated), (const void*)ctx);
 	tsk_fsm_set(ctx->fsm,
 			// (Started) -> (GatherHostCandidates) -> (GatheringHostCandidates)
@@ -960,11 +965,12 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 	tnet_stun_response_t *response = tsk_null;
 	const tsk_list_item_t *item;
 	tnet_ice_candidate_t* candidate;
-	tnet_fd_t fds[40] = { -1 };
+	tnet_fd_t fds[40] = { TNET_INVALID_FD }; // -1, then zeros
+	tnet_fd_t fds_skipped[40] = { TNET_INVALID_FD }; // -1, then zeros
 	uint16_t fds_count = 0;
 	tnet_fd_t fd_max = -1;
 	fd_set set;
-	tsk_size_t srflx_addr_count = 0, host_addr_count = 0;
+	tsk_size_t srflx_addr_count_added = 0, srflx_addr_count_skipped = 0, host_addr_count = 0;
     long tv_sec, tv_usec; //very important to save these values as timeval could be modified by select() - happens on iOS -
 
 	self = va_arg(*app, tnet_ice_ctx_t *);
@@ -975,6 +981,11 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 		TSK_DEBUG_ERROR("tnet_sockaddr_init(%s, %d) failed", self->stun.server_addr, self->stun.server_port);
 		goto bail;
 	}
+
+	// set all default values to -1
+	// = {{ -1 }} will only set the first element
+	for(i = 0; i < sizeof(fds)/sizeof(fds[0]); ++i) fds[i] = TNET_INVALID_FD;
+	for(i = 0; i < sizeof(fds_skipped)/sizeof(fds_skipped[0]); ++i) fds_skipped[i] = TNET_INVALID_FD;
 
 	rto = self->RTO;
 	rc = self->Rc;
@@ -1004,14 +1015,14 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 
 		e.g. 0 ms, 500 ms, 1500 ms, 3500 ms, 7500ms, 15500 ms, and 31500 ms
 	*/
-	for(i = 0; (i < rc && self->is_started && srflx_addr_count < host_addr_count); ++i){
+	for(i = 0; (i < rc && self->is_started && ((srflx_addr_count_added + srflx_addr_count_skipped) < host_addr_count)); ++i){
 		tv_sec += rto/1000;
 		tv_usec += (rto % 1000) * 1000;
         if(tv_usec >= 1000000){ // > 1000000 is invalid and produce EINVAL when passed to select(iOS)
             tv_usec -= 1000000;
             tv_sec++;
         }
-        // retore values for new select
+        // restore values for new select
         tv.tv_sec = tv_sec;
         tv.tv_usec = tv_usec;
         
@@ -1038,7 +1049,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 		}
 		else if(ret == 0){
 			// timeout
-			TSK_DEBUG_INFO("STUN request timedout at %d", i);
+			TSK_DEBUG_INFO("STUN request timedout at %d/%d", i, rc-1);
 			rto <<= 1;
 			continue;
 		}
@@ -1082,6 +1093,8 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 								ret = tnet_ice_candidate_process_stun_response((tnet_ice_candidate_t*)candidate_curr, response, fd);
 								if(!tsk_strnullORempty(candidate_curr->stun.srflx_addr)){
 									if(tsk_striequals(candidate_curr->connection_addr, candidate_curr->stun.srflx_addr) && candidate_curr->port == candidate_curr->stun.srflx_port){
+										tsk_size_t j;
+										tsk_bool_t already_skipped = tsk_false;
 										/* refc 5245- 4.1.3.  Eliminating Redundant Candidates
 
 										   Next, the agent eliminates redundant candidates.  A candidate is
@@ -1092,7 +1105,22 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 										   server reflexive candidate and a host candidate will be redundant
 										   when the agent is not behind a NAT.  The agent SHOULD eliminate the
 										   redundant candidate with the lower priority. */
-										TSK_DEBUG_INFO("Skipping redundant candidate address=%s and port=%d", candidate_curr->stun.srflx_addr, candidate_curr->stun.srflx_port);
+										for(j = 0; (fds_skipped[j] != TNET_INVALID_FD && j < (sizeof(fds_skipped)/sizeof(fds_skipped[0]))); ++j){
+											if(fds_skipped[j] == fd){
+												already_skipped = tsk_true;
+												break;
+											}
+										}
+
+										if(!already_skipped){
+											++srflx_addr_count_skipped;
+											fds_skipped[j] = fd;
+										}
+										TSK_DEBUG_INFO("Skipping redundant candidate address=%s and port=%d, fd=%d, already_skipped(%u)=%s", 
+											candidate_curr->stun.srflx_addr, 
+											candidate_curr->stun.srflx_port,
+											fd,
+											j, already_skipped ? "yes" : "no");
 									}
 									else{
 										char* foundation = tsk_strdup("srflx");
@@ -1101,7 +1129,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 										new_cand = tnet_ice_candidate_create(tnet_ice_cand_type_srflx, candidate_curr->socket, candidate_curr->is_ice_jingle, candidate_curr->is_rtp, self->is_video, self->ufrag, self->pwd, foundation);
 										TSK_FREE(foundation);
 										if(new_cand){
-											++srflx_addr_count;
+											++srflx_addr_count_added;
 											tsk_list_lock(self->candidates_local);
 											tnet_ice_candidate_set_rflx_addr(new_cand, candidate_curr->stun.srflx_addr, candidate_curr->stun.srflx_port);
 											tsk_list_push_back_data(self->candidates_local, (void**)&new_cand);
@@ -1125,7 +1153,8 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 
 
 bail:
-	if(srflx_addr_count > 0) ret = 0; // Hack the returned value if we have at least one success (happens when timeouts)
+	TSK_DEBUG_INFO("srflx_addr_count_added=%u, srflx_addr_count_skipped=%u", srflx_addr_count_added, srflx_addr_count_skipped);
+	if((srflx_addr_count_added + srflx_addr_count_skipped) > 0) ret = 0; // Hack the returned value if we have at least one success (happens when timeouts)
 	if(self->is_started){
 		if(ret == 0){
 			ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_Success);

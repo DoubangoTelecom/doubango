@@ -38,6 +38,7 @@
 
 #include "tsk_object.h"
 #include "tsk_list.h"
+#include "tsk_string.h"
 
 
 TSIP_BEGIN_DECLS
@@ -77,6 +78,9 @@ typedef struct tsip_transport_stream_peer_s
 	
 	tsk_buffer_t *rcv_buff_stream;
 	tsk_buffer_t *snd_buff_stream;
+
+	// list of dialogs managed by this peer
+	tsk_strings_L_t *dialogs_cids;
 
 	// temp buffers used to send/recv websocket data before (un)masking
 	struct{
@@ -125,17 +129,22 @@ int tsip_transport_deinit(tsip_transport_t* self);
 
 int tsip_transport_tls_set_certs(tsip_transport_t *self, const char* ca, const char* pbk, const char* pvk);
 tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort);
-tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const char* dst_host, tnet_port_t dst_port, const void* data, tsk_size_t size);
-tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t local_fd, const void* data, tsk_size_t size);
+tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const char* dst_host, tnet_port_t dst_port, const void* data, tsk_size_t size, const char* callid);
+tsk_size_t tsip_transport_send_raw_ws(const tsip_transport_t* self, tnet_fd_t local_fd, const void* data, tsk_size_t size, const char* callid);
 tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
 
 int tsip_transport_add_stream_peer_2(tsip_transport_t *self, tnet_fd_t local_fd, enum tnet_socket_type_e type, tsk_bool_t connected, const char* remote_host, tnet_port_t remote_port);
 #define tsip_transport_add_stream_peer(self, local_fd, type, connected) tsip_transport_add_stream_peer_2((self), (local_fd), (type), (connected), tsk_null, 0)
 tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_local_fd(tsip_transport_t *self, tnet_fd_t local_fd);
+tsip_transport_stream_peer_t* tsip_transport_pop_stream_peer_by_local_fd(tsip_transport_t *self, tnet_fd_t local_fd);
 tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_remote_ip(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port, enum tnet_socket_type_e type);
 tsk_bool_t tsip_transport_have_stream_peer_with_remote_ip(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port, enum tnet_socket_type_e type);
 tsk_bool_t tsip_transport_have_stream_peer_with_local_fd(tsip_transport_t *self, tnet_fd_t local_fd);
 int tsip_transport_remove_stream_peer_by_local_fd(tsip_transport_t *self, tnet_fd_t local_fd);
+int tsip_transport_remove_callid_from_stream_peers(tsip_transport_t *self, const char* callid, tsk_bool_t* removed);
+tsk_bool_t tsip_transport_stream_peer_have_callid(const tsip_transport_stream_peer_t* self, const char* callid);
+int tsip_transport_stream_peer_add_callid(tsip_transport_stream_peer_t* self, const char* callid);
+int tsip_transport_stream_peer_remove_callid(tsip_transport_stream_peer_t* self, const char* callid, tsk_bool_t *removed);
 
 #define tsip_transport_tls_set_certs(transport, ca, pbk, pvk, verify)					(transport ? tnet_transport_tls_set_certs(transport->net_transport, ca, pbk, pvk, verify) : -1)
 #define tsip_transport_start(transport)													(transport ? tnet_transport_start(transport->net_transport) : -1)

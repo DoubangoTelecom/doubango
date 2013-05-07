@@ -67,10 +67,11 @@ int twrap_consumer_proxy_audio_prepare(tmedia_consumer_t* self, const tmedia_cod
 	int ret = -1;
 	if(codec && (manager = ProxyPluginMgr::getInstance())){
 		if((audio->pcConsumer = manager->findAudioConsumer(audio->id)) && audio->pcConsumer->getCallback()){
-			self->audio.ptime = codec->plugin->audio.ptime;
-			self->audio.in.channels = codec->plugin->audio.channels;
-			self->audio.in.rate = codec->plugin->rate;
-			ret = audio->pcConsumer->getCallback()->prepare((int)codec->plugin->audio.ptime, codec->plugin->rate, codec->plugin->audio.channels);
+			self->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_DECODING(codec);
+			self->audio.in.channels = TMEDIA_CODEC_CHANNELS_AUDIO_DECODING(codec);
+			self->audio.in.rate = TMEDIA_CODEC_RATE_DECODING(codec);
+
+			ret = audio->pcConsumer->getCallback()->prepare((int)self->audio.ptime, self->audio.in.rate, self->audio.in.channels);
 		}
 	}
 	

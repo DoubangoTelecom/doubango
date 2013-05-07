@@ -415,7 +415,7 @@ static tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_da
 			//TSK_DEBUG_INFO("Packet duplicated, seq_num=%d", rtp_hdr->seq_num);
 			return 0;
 		}
-		TSK_DEBUG_INFO("Packet lost, seq_num=%d", rtp_hdr->seq_num);
+		TSK_DEBUG_INFO("[H.263] Packet loss, seq_num=%d", rtp_hdr->seq_num);
 	}
 	h263->decoder.last_seq = rtp_hdr->seq_num;
 	
@@ -707,7 +707,7 @@ static tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_d
 			//TSK_DEBUG_INFO("Packet duplicated, seq_num=%d", rtp_hdr->seq_num);
 			return 0;
 		}
-		TSK_DEBUG_INFO("Packet lost, seq_num=%d", rtp_hdr->seq_num);
+		TSK_DEBUG_INFO("[H.263+] Packet loss, seq_num=%d", rtp_hdr->seq_num);
 	}
 	h263->decoder.last_seq = rtp_hdr->seq_num;
 

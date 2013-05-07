@@ -125,9 +125,9 @@ static int audio_producer_opensles_prepare(tmedia_producer_t* _self, const tmedi
 	}
 
 	// init input parameters from the codec
-	TMEDIA_PRODUCER(self)->audio.channels = codec->plugin->audio.channels;
-	TMEDIA_PRODUCER(self)->audio.rate = codec->plugin->rate;
-	TMEDIA_PRODUCER(self)->audio.ptime = codec->plugin->audio.ptime;
+	TMEDIA_PRODUCER(self)->audio.channels = TMEDIA_CODEC_CHANNELS_AUDIO_ENCODING(codec);
+	TMEDIA_PRODUCER(self)->audio.rate = TMEDIA_CODEC_RATE_ENCODING(codec);
+	TMEDIA_PRODUCER(self)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_ENCODING(codec);
 
 	AUDIO_OPENSLES_DEBUG_INFO("audio_producer_opensles_prepare(channels=%d, rate=%d, ptime=%d)", codec->plugin->audio.channels, codec->plugin->rate, codec->plugin->audio.ptime);
 

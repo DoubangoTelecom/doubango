@@ -336,7 +336,9 @@ int s0000_Started_2_Ringing_X_iINVITE(va_list *app)
 	tsip_dialog_update_2(TSIP_DIALOG(self), request);
 
 	/* send Ringing */
-	send_RESPONSE(self, request, 180, "Ringing", tsk_false);
+	/*if(TSIP_DIALOG_GET_STACK(self)->network.mode != tsip_stack_mode_webrtc2sip)*/{
+		send_RESPONSE(self, request, 180, "Ringing", tsk_false);
+	}
 
 	/* alert the user (session) */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_newcall, 
@@ -455,7 +457,9 @@ int s0000_InProgress_2_Ringing_X_iPRACK(va_list *app)
 	}
 
 	/* Send Ringing */
-	ret = send_RESPONSE(self, self->last_iInvite, 180, "Ringing", tsk_false);
+	/*if(TSIP_DIALOG_GET_STACK(self)->network.mode != tsip_stack_mode_webrtc2sip)*/{
+		ret = send_RESPONSE(self, self->last_iInvite, 180, "Ringing", tsk_false);
+	}
 
 	/* Alert the user (session) */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_newcall, 
@@ -509,7 +513,9 @@ int s0000_InProgress_2_Ringing_X_iUPDATE(va_list *app)
 		(self->msession_mgr && (force_sdp || self->msession_mgr->ro_changed || self->msession_mgr->state_changed)));
 
 	/* Send Ringing */
-	ret = send_RESPONSE(self, self->last_iInvite, 180, "Ringing", tsk_false);
+	/*if(TSIP_DIALOG_GET_STACK(self)->network.mode != tsip_stack_mode_webrtc2sip)*/{
+		ret = send_RESPONSE(self, self->last_iInvite, 180, "Ringing", tsk_false);
+	}
 
 	/* alert the user */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_newcall, 
@@ -615,7 +621,7 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 	*/
 	// FIXME: (chrome) <-RTCWeb Breaker-> (chrome) do not work if media session is not started on i200
 	// http://code.google.com/p/webrtc2sip/issues/detail?id=45
-	if(TSIP_DIALOG_GET_STACK(self)->network.mode == tsip_stack_mode_webrtc2sip){
+	/*if(TSIP_DIALOG_GET_STACK(self)->network.mode == tsip_stack_mode_webrtc2sip)*/{
 		ret = tsip_dialog_invite_msession_start(self);
 	}
 

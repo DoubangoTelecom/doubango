@@ -40,37 +40,29 @@
 #	include <windows.h>
 #endif
 
+#define TDAV_VIDEO_JB_DISABLE           0
+
 // default frame rate
 // the corret fps will be computed using the RTP timestamps
 #define TDAV_VIDEO_JB_FPS		TDAV_VIDEO_JB_FPS_MAX
-#define TDAV_VIDEO_JB_FPS_MIN	15
+#define TDAV_VIDEO_JB_FPS_MIN	10
 #define TDAV_VIDEO_JB_FPS_MAX	60
-// Number of correct consecutive RTP packets to receive before computing the FPS
-#define TDAV_VIDEO_JB_FPS_PROB	(TDAV_VIDEO_JB_FPS >> 1)
-// Max number of frames to allow in jitter buffer
-//#define TDAV_VIDEO_JB_TAIL_MAX	/*FIXME:(TDAV_VIDEO_JB_FPS << 2)*/100
-// Min number of frames required before requesting a full decode
-// This is required because of the FEC and NACK functions
-// Will be updated using the RTT value from RTCP and probation
-#define TDAV_VIDEO_JB_TAIL_MIN_MIN	10
-#define TDAV_VIDEO_JB_TAIL_MIN_MAX	20
-#define TDAV_VIDEO_JB_TAIL_MIN_PROB	(TDAV_VIDEO_JB_FPS >> 2)
-
+// Number of correct consecutive video frames to receive before computing the FPS
+#define TDAV_VIDEO_JB_FPS_PROB	(TDAV_VIDEO_JB_FPS << 1)
+// Maximum gap allowed (used to detect seqnum wrpping)
 #define TDAV_VIDEO_JB_MAX_DROPOUT		0xFD9B
-
-#define TDAV_VIDEO_JB_DISABLE           0
 
 #define TDAV_VIDEO_JB_TAIL_MAX_LOG2		1
 #if TDAV_UNDER_MOBILE /* to avoid too high memory usage */
-#	define TDAV_VIDEO_JB_TAIL_MAX			(TDAV_VIDEO_JB_FPS_MIN << TDAV_VIDEO_JB_TAIL_MAX_LOG2)
+#	define TDAV_VIDEO_JB_TAIL_MAX		(TDAV_VIDEO_JB_FPS_MIN << TDAV_VIDEO_JB_TAIL_MAX_LOG2)
 #else
-#	define TDAV_VIDEO_JB_TAIL_MAX			(TDAV_VIDEO_JB_FPS_MAX << TDAV_VIDEO_JB_TAIL_MAX_LOG2)
+#	define TDAV_VIDEO_JB_TAIL_MAX		(TDAV_VIDEO_JB_FPS_MAX << TDAV_VIDEO_JB_TAIL_MAX_LOG2)
 #endif
 
 #define TDAV_VIDEO_JB_RATE				90 /* KHz */
 
 #define TDAV_VIDEO_JB_LATENCY_MIN		2 /* Must be > 0 */
-#define TDAV_VIDEO_JB_LATENCY_MAX		10
+#define TDAV_VIDEO_JB_LATENCY_MAX		15 /* Default, will be updated using fps */
 
 static const tdav_video_frame_t* _tdav_video_jb_get_frame(struct tdav_video_jb_s* self, uint32_t timestamp, uint8_t pt, tsk_bool_t *pt_matched);
 static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg);
@@ -87,8 +79,6 @@ typedef struct tdav_video_jb_s
 	uint32_t last_timestamp;
 	int32_t conseq_frame_drop;
 	int32_t tail_max;
-	int32_t tail_min;
-	int32_t tail_prob;
 	tdav_video_frames_L_t *frames;
 	int64_t frames_count;
 
@@ -181,8 +171,6 @@ tdav_video_jb_t* tdav_video_jb_create()
 		jb->fps = TDAV_VIDEO_JB_FPS;
 		jb->fps_prob = TDAV_VIDEO_JB_FPS_PROB;
 		jb->tail_max = TDAV_VIDEO_JB_TAIL_MAX;
-		jb->tail_min = TDAV_VIDEO_JB_TAIL_MIN_MIN;
-		jb->tail_prob = TDAV_VIDEO_JB_TAIL_MIN_PROB;
 	}
 	return jb;
 }
@@ -276,8 +264,7 @@ int tdav_video_jb_put(tdav_video_jb_t* self, trtp_rtp_packet_t* rtp_pkt)
 		is_restarted = (TSK_ABS(diff) > TDAV_VIDEO_JB_MAX_DROPOUT);
 		is_frame_late_or_dup = !is_frame_loss;
 		tdav_video_jb_reset_fps_prob(self);
-		tdav_video_jb_reset_tail_min_prob(self);
-		TSK_DEBUG_INFO("Packet %s (from JB) [%u - %u]", is_frame_loss ? "loss" : "late/duplicated/nack", *seq_num, rtp_pkt->header->seq_num);
+		TSK_DEBUG_INFO("Packet %s (from JB) [%hu - %hu]", is_frame_loss ? "loss" : "late/duplicated/nack", *seq_num, rtp_pkt->header->seq_num);
 		
 		if(is_frame_loss && !is_restarted){
 			if(self->callback){			
@@ -289,10 +276,6 @@ int tdav_video_jb_put(tdav_video_jb_t* self, trtp_rtp_packet_t* rtp_pkt)
 			}
 		}
 	}
-	else{
-		--self->tail_prob;
-	}
-	self->tail_min = self->tail_prob <= 0 ? TDAV_VIDEO_JB_TAIL_MIN_MIN : TDAV_VIDEO_JB_TAIL_MIN_MAX;
 
 	if(!old_frame){
 		tdav_video_frame_t* new_frame;
@@ -323,6 +306,7 @@ int tdav_video_jb_put(tdav_video_jb_t* self, trtp_rtp_packet_t* rtp_pkt)
 					}
 				}
 				else{
+					TSK_DEBUG_INFO("Dropping video frame because frames_count(%lld)>=tail_max(%d)", self->frames_count, self->tail_max);
 					tsk_list_remove_first_item(self->frames);
 				}
 				tdav_video_jb_reset_fps_prob(self);
@@ -338,7 +322,8 @@ int tdav_video_jb_put(tdav_video_jb_t* self, trtp_rtp_packet_t* rtp_pkt)
 			int32_t fps = (1000 / self->avg_duration);
 			self->fps = TSK_CLAMP(TDAV_VIDEO_JB_FPS_MIN, fps, TDAV_VIDEO_JB_FPS_MAX);
 			self->tail_max = (self->fps << TDAV_VIDEO_JB_TAIL_MAX_LOG2); // maximum delay = 2 seconds
-			TSK_DEBUG_INFO("According to rtp-timestamps ...FPS = %d (clipped to %d) and max jb tail will be = %d", fps, self->fps, self->tail_max);
+			self->latency_max = self->fps; // maximum = 1 second
+			TSK_DEBUG_INFO("According to rtp-timestamps ...FPS = %d (clipped to %d) tail_max=%d, latency_max=%u", fps, self->fps, self->tail_max, self->latency_max);
 			tdav_video_jb_reset_fps_prob(self);
 		}
 	}
@@ -407,7 +392,8 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
 {
 	tdav_video_jb_t* jb = (tdav_video_jb_t*)arg;
 	uint64_t delay;
-	uint16_t missing_seq_num;
+	uint16_t missing_seq_num_start = 0, prev_missing_seq_num_start = 0;
+	tsk_size_t missing_seq_num_count = 0, prev_lasted_missing_seq_num_count;
 	const tdav_video_frame_t* frame;
 	tsk_list_item_t* item;
 	uint64_t next_decode_duration = (1000 / jb->fps), now;
@@ -443,20 +429,24 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
 			// is it still acceptable to wait for missing packets?
 			if(jb->frames_count < jb->latency_max){
 				frame = (const tdav_video_frame_t*)jb->frames->head->data;
-				if(!tdav_video_frame_is_complete(frame, jb->decode_last_seq_num_with_mark, &missing_seq_num)){
-					TSK_DEBUG_INFO("Time to decode frame...but some RTP packets are missing (seqnum=%u). Postpone :(", missing_seq_num);
+				if(!tdav_video_frame_is_complete(frame, jb->decode_last_seq_num_with_mark, &missing_seq_num_start, &missing_seq_num_count)){
+					TSK_DEBUG_INFO("Time to decode frame...but some RTP packets are missing (missing_seq_num_start=%hu, missing_seq_num_count=%u, last_seq_num_with_mark=%d). Postpone :(", missing_seq_num_start, missing_seq_num_count, jb->decode_last_seq_num_with_mark);
 					// signal to the session that a sequence number is missing (will send a NACK)
-					if(jb->callback){	
-						jb->cb_data_any.type = tdav_video_jb_cb_data_type_fl;
-						jb->cb_data_any.ssrc = frame->ssrc;
-						jb->cb_data_any.fl.seq_num = missing_seq_num;
-						jb->cb_data_any.fl.count = 1;
-						jb->callback(&jb->cb_data_any);
+					// the missing seqnum has been already requested in jb_put() and here we request it again only ONE time
+					if(jb->callback){
+						if(prev_missing_seq_num_start != missing_seq_num_start || prev_lasted_missing_seq_num_count != missing_seq_num_count){ // guard to request it only once
+							jb->cb_data_any.type = tdav_video_jb_cb_data_type_fl;
+							jb->cb_data_any.ssrc = frame->ssrc;
+							jb->cb_data_any.fl.seq_num = prev_missing_seq_num_start = missing_seq_num_start;
+							jb->cb_data_any.fl.count = prev_lasted_missing_seq_num_count = missing_seq_num_count;
+							jb->callback(&jb->cb_data_any);
+						}
 						postpone = tsk_true;
 					}
 				}
 			}
 			else{
+				TSK_DEBUG_INFO("frames_count(%lld)>=latency_max(%u)...decoding video frame even if pkts are missing :(", jb->frames_count, jb->latency_max);
 				jb->decode_last_seq_num_with_mark = -1; // unset()
 			}
 			if(!postpone){
@@ -492,17 +482,28 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
 		
 #if 1
 		now = tsk_time_now();
-		// comparison used as guard against time wrapping
-		delay = (now - x_decode_time);//(now > x_decode_time) ? (now - x_decode_time) : x_decode_duration/* do not use zero to avoid endless loop when there is no frame to display */;
-		if(delay > __toomuch_delay_to_be_valid){
-			TSK_DEBUG_INFO("Too much delay (%llu) in video jb. Reseting...", delay);
+		if(jb->frames_count > jb->latency_max){
 			x_decode_time = now;
 			next_decode_duration = 0;
 		}
 		else{
+			delay = ( (now > x_decode_time) ? (now - x_decode_time) : (x_decode_duration >> 1)/* do not use zero to avoid endless loop when there is no frame to display */ );
 			next_decode_duration = (delay > x_decode_duration) ? 0 : (x_decode_duration - delay);
 			x_decode_duration = (1000 / jb->fps);
 			x_decode_time += x_decode_duration;
+		}
+		//delay = /*(now - x_decode_time);*/(now > x_decode_time) ? (now - x_decode_time) : ( (jb->frames_count >= jb->latency_max) ? 0 : (x_decode_duration >> 1) )/* do not use zero to avoid endless loop when there is no frame to display */;
+		// delay = (jb->frames_count > jb->latency_max) ? 0 : ( (now > x_decode_time) ? (now - x_decode_time) : (x_decode_duration >> 1)/* do not use zero to avoid endless loop when there is no frame to display */ );
+		// comparison used as guard against time wrapping
+		/*if(delay > __toomuch_delay_to_be_valid){
+			TSK_DEBUG_INFO("Too much delay (%llu) in video jb. Reseting...", delay);
+			x_decode_time = now;
+			next_decode_duration = 0;
+		}
+		else*/{
+			//next_decode_duration = (delay > x_decode_duration) ? 0 : (x_decode_duration - delay);
+			//x_decode_duration = (1000 / jb->fps);
+			//x_decode_time += x_decode_duration;
 		}
 		
 

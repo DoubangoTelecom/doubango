@@ -63,6 +63,8 @@ static tsk_bool_t __video_zeroartifacts_enabled = tsk_false; // Requires from re
 static tsk_size_t __rtpbuff_size = 0x1FFFE; // Network buffer size use for RTP (SO_RCVBUF, SO_SNDBUF)
 static tsk_size_t __avpf_tail_min = 20; // Min size for tail used to honor RTCP-NACK requests
 static tsk_size_t __avpf_tail_max = 160; // Max size for tail used to honor RTCP-NACK requests
+static uint32_t __opus_maxcapturerate = 16000; // supported: 8k,12k,16k,24k,48k. IMPORTANT: only 8k and 16k will work with WebRTC AEC
+static uint32_t __opus_maxplaybackrate = 48000; // supported: 8k,12k,16k,24k,48k
 
 int tmedia_defaults_set_profile(tmedia_profile_t profile){
 	__profile = profile;
@@ -370,4 +372,25 @@ tsk_size_t tmedia_defaults_get_avpf_tail_min(){
 }
 tsk_size_t tmedia_defaults_get_avpf_tail_max(){
 	return __avpf_tail_max;
+}
+
+
+int tmedia_defaults_set_opus_maxcapturerate(uint32_t opus_maxcapturerate){
+	switch(opus_maxcapturerate){
+		case 8000: case 12000: case 16000: case 24000: case 48000: __opus_maxcapturerate = opus_maxcapturerate; return 0;
+		default: TSK_DEBUG_ERROR("%u not valid for opus_maxcapturerate", opus_maxcapturerate); return -1;
+	}
+}
+uint32_t tmedia_defaults_get_opus_maxcapturerate(){
+	return __opus_maxcapturerate;
+}
+
+int tmedia_defaults_set_opus_maxplaybackrate(uint32_t opus_maxplaybackrate){
+	switch(opus_maxplaybackrate){
+		case 8000: case 12000: case 16000: case 24000: case 48000: __opus_maxplaybackrate = opus_maxplaybackrate; return 0;
+		default: TSK_DEBUG_ERROR("%u not valid for opus_maxplaybackrate", opus_maxplaybackrate); return -1;
+	}
+}
+uint32_t tmedia_defaults_get_opus_maxplaybackrate(){
+	return __opus_maxplaybackrate;
 }

@@ -69,7 +69,15 @@ TSIP_BEGIN_DECLS
 #define TSIP_DIALOG_SIGNAL_2(self, code, phrase, message)	\
 	tsip_event_signal_2(tsip_event_dialog, TSIP_DIALOG(self)->ss, code, phrase, message)
 
-#define TSIP_DIALOG_SHUTDOWN_TIMEOUT	2000 /* miliseconds. */
+#if !defined(TSIP_DIALOG_SHUTDOWN_TIMEOUT)
+#	define TSIP_DIALOG_SHUTDOWN_TIMEOUT	2000 /* miliseconds. */
+#endif
+
+#if !defined(TSIP_DIALOG_INVALID_ID)
+#	define TSIP_DIALOG_INVALID_ID 0
+#endif
+
+typedef uint64_t tsip_dialog_id_t;
 
 typedef enum tsip_dialog_state_e
 {
@@ -116,6 +124,7 @@ typedef struct tsip_dialog_s
 	TSK_DECLARE_OBJECT;
 	
 	tsip_dialog_type_t type;
+	tsip_dialog_id_t id;
 
 	tsk_fsm_t* fsm;
 	
@@ -126,6 +135,8 @@ typedef struct tsip_dialog_s
 	
 	tsk_bool_t initialized;
 	tsk_bool_t running;
+
+	tnet_fd_t connected_fd;
 
 	struct{
 		char* phrase;
@@ -178,6 +189,7 @@ int tsip_dialog_getCKIK(tsip_dialog_t *self, AKA_CK_T *ck, AKA_IK_T *ik);
 int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* call_id, tsip_ssession_t* ss, tsk_fsm_state_id curr, tsk_fsm_state_id term);
 int tsip_dialog_fsm_act(tsip_dialog_t* self, tsk_fsm_action_id , const tsip_message_t* , const tsip_action_handle_t*);
 tsk_bool_t tsip_dialog_keep_action(const tsip_dialog_t* self, const tsip_response_t *response);
+int tsip_dialog_set_connected_fd(tsip_dialog_t* self, tnet_fd_t fd);
 int tsip_dialog_set_curr_action(tsip_dialog_t* self, const tsip_action_t* action);
 int tsip_dialog_set_lasterror(tsip_dialog_t* self, const char* phrase, short code);
 int tsip_dialog_set_lasterror_2(tsip_dialog_t* self, const char* phrase, short code, const tsip_message_t *message);

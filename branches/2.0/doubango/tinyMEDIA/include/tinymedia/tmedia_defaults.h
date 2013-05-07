@@ -100,6 +100,10 @@ TINYMEDIA_API tsk_size_t tmedia_defaults_get_rtpbuff_size();
 TINYMEDIA_API int tmedia_defaults_set_avpf_tail(tsk_size_t tail_min, tsk_size_t tail_max);
 TINYMEDIA_API tsk_size_t tmedia_defaults_get_avpf_tail_min();
 TINYMEDIA_API tsk_size_t tmedia_defaults_get_avpf_tail_max();
+TINYMEDIA_API int tmedia_defaults_set_opus_maxcapturerate(uint32_t opus_maxcapturerate);
+TINYMEDIA_API uint32_t tmedia_defaults_get_opus_maxcapturerate();
+TINYMEDIA_API int tmedia_defaults_set_opus_maxplaybackrate(uint32_t opus_maxplaybackrate);
+TINYMEDIA_API uint32_t tmedia_defaults_get_opus_maxplaybackrate();
 
 TMEDIA_END_DECLS
 

@@ -64,6 +64,7 @@
 #include "tinydav/codecs/g729/tdav_codec_g729.h"
 #include "tinydav/codecs/g722/tdav_codec_g722.h"
 #include "tinydav/codecs/speex/tdav_codec_speex.h"
+#include "tinydav/codecs/opus/tdav_codec_opus.h"
 #include "tinydav/codecs/h261/tdav_codec_h261.h"
 #include "tinydav/codecs/h263/tdav_codec_h263.h"
 #include "tinydav/codecs/h264/tdav_codec_h264.h"
@@ -197,6 +198,9 @@ int tdav_init()
 	tmedia_codec_plugin_register(tdav_codec_speex_nb_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_speex_wb_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_speex_uwb_plugin_def_t);
+#endif
+#if HAVE_LIBOPUS
+	tmedia_codec_plugin_register(tdav_codec_opus_plugin_def_t);
 #endif
 #if HAVE_G729
 	tmedia_codec_plugin_register(tdav_codec_g729ab_plugin_def_t);
@@ -339,6 +343,9 @@ static tdav_codec_decl_t __codecs[] = {
 	{ tdav_codec_id_speex_wb, &tdav_codec_speex_wb_plugin_def_t },
 	{ tdav_codec_id_speex_uwb, &tdav_codec_speex_uwb_plugin_def_t },
 #endif
+#if HAVE_LIBOPUS
+	{ tdav_codec_id_opus, &tdav_codec_opus_plugin_def_t },
+#endif
 #if HAVE_G729
 	{ tdav_codec_id_g729ab, &tdav_codec_g729ab_plugin_def_t },
 #endif
@@ -460,6 +467,12 @@ tsk_bool_t _tdav_codec_is_supported(tdav_codec_id_t codec, const tmedia_codec_pl
 		case tdav_codec_id_speex_wb:
 		case tdav_codec_id_speex_uwb:
 #if HAVE_LIB_SPEEX
+			return tsk_true;
+#else
+			return tsk_false;
+#endif
+		case tdav_codec_id_opus:
+#if HAVE_LIBOPUS
 			return tsk_true;
 #else
 			return tsk_false;
@@ -592,6 +605,9 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_speex_nb_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_speex_wb_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_speex_uwb_plugin_def_t);
+#endif
+#if HAVE_LIBOPUS
+	tmedia_codec_plugin_unregister(tdav_codec_opus_plugin_def_t);
 #endif
 #if HAVE_G729
 	tmedia_codec_plugin_unregister(tdav_codec_g729ab_plugin_def_t);

@@ -480,6 +480,12 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetAvpfTail")]
   public static extern bool MediaSessionMgr_defaultsSetAvpfTail(uint jarg1, uint jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetOpusMaxCaptureRate")]
+  public static extern bool MediaSessionMgr_defaultsSetOpusMaxCaptureRate(uint jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetOpusMaxPlaybackRate")]
+  public static extern bool MediaSessionMgr_defaultsSetOpusMaxPlaybackRate(uint jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_MediaContent")]
   public static extern void delete_MediaContent(HandleRef jarg1);
 
@@ -1388,6 +1394,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyAudioProducer")]
   public static extern void delete_ProxyAudioProducer(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_setActualSndCardRecordParams")]
+  public static extern bool ProxyAudioProducer_setActualSndCardRecordParams(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioProducer_setPushBuffer__SWIG_0")]
   public static extern bool ProxyAudioProducer_setPushBuffer__SWIG_0(HandleRef jarg1, IntPtr jarg2, uint jarg3, bool jarg4);

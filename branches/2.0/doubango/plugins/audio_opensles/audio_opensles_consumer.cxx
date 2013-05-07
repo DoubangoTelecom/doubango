@@ -129,9 +129,9 @@ static int audio_consumer_opensles_prepare(tmedia_consumer_t* _self, const tmedi
 	}
 
 	// initialize input parameters from the codec information
-	TMEDIA_CONSUMER(self)->audio.ptime = codec->plugin->audio.ptime;
-	TMEDIA_CONSUMER(self)->audio.in.channels = codec->plugin->audio.channels;
-	TMEDIA_CONSUMER(self)->audio.in.rate = codec->plugin->rate;
+	TMEDIA_CONSUMER(self)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_DECODING(codec);
+	TMEDIA_CONSUMER(self)->audio.in.channels = TMEDIA_CODEC_CHANNELS_AUDIO_DECODING(codec);
+	TMEDIA_CONSUMER(self)->audio.in.rate = TMEDIA_CODEC_RATE_DECODING(codec);
 
 	AUDIO_OPENSLES_DEBUG_INFO("audio_consumer_opensles_prepare(channels=%d, rate=%d, ptime=%d)", codec->plugin->audio.channels, codec->plugin->rate, codec->plugin->audio.ptime);
 	

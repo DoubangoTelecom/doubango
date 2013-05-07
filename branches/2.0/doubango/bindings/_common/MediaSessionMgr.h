@@ -145,6 +145,9 @@ public:
 	static bool defaultsSetRtpBuffSize(unsigned buffSize);
 	static unsigned defaultsGetRtpBuffSize();
 	static bool defaultsSetAvpfTail(unsigned tail_min, unsigned tail_max);
+	static bool defaultsSetOpusMaxCaptureRate(uint32_t opus_maxcapturerate);
+	static bool defaultsSetOpusMaxPlaybackRate(uint32_t opus_maxplaybackrate);
+	
 
 private:
 	tmedia_session_mgr_t* m_pWrappedMgr;

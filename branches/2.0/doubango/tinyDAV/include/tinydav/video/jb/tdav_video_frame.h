@@ -60,7 +60,7 @@ struct tdav_video_frame_s* tdav_video_frame_create(struct trtp_rtp_packet_s* rtp
 int tdav_video_frame_put(struct tdav_video_frame_s* self, struct trtp_rtp_packet_s* rtp_pkt);
 const struct trtp_rtp_packet_s* tdav_video_frame_find_by_seq_num(const struct tdav_video_frame_s* self, uint16_t seq_num);
 tsk_size_t tdav_video_frame_write(struct tdav_video_frame_s* self, void** buffer_ptr, tsk_size_t* buffer_size);
-tsk_bool_t tdav_video_frame_is_complete(const struct tdav_video_frame_s* self, int32_t last_seq_num_with_mark, uint16_t* missing_seq_num);
+tsk_bool_t tdav_video_frame_is_complete(const struct tdav_video_frame_s* self, int32_t last_seq_num_with_mark, uint16_t* missing_seq_num_start, tsk_size_t* missing_seq_num_count);
 
 TDAV_END_DECLS
 
