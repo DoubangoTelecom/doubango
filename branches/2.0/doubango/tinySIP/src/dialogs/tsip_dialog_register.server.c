@@ -30,7 +30,7 @@ extern int tsip_dialog_register_send_RESPONSE(tsip_dialog_register_t *self, cons
 static int s0000_Started_2_Terminated_X_iREGISTER(va_list *app);
 static int s0000_Started_2_Incoming_X_iREGISTER(va_list *app);
 static int s0000_Incoming_2_Connected_X_Accept(va_list *app);
-static int s0000_Incoming_2_Terminated_X_Reject(va_list *app);
+static int s0000_Incoming_2_Terminated_X_Terminates(va_list *app);
 static int s0000_Connected_2_Connected_X_iREGISTER(va_list *app);
 static int s0000_Connected_2_Terminated_X_iREGISTER(va_list *app);
 
@@ -85,7 +85,9 @@ int tsip_dialog_register_server_init(tsip_dialog_register_t *self)
 		// Incoming -> (iRegister, expires=0) -> Terminated
 		TSK_FSM_ADD(_fsm_state_Incoming, _fsm_action_iREGISTER, _fsm_cond_server_unregistering, _fsm_state_Terminated, tsk_null, "s0000_Incoming_2_Terminated_X_iREGISTER"),
 		// Incoming -> (Reject) -> Terminated
-		TSK_FSM_ADD_ALWAYS(_fsm_state_Incoming, _fsm_action_reject, _fsm_state_Terminated, s0000_Incoming_2_Terminated_X_Reject, "s0000_Incoming_2_Terminated_X_Reject"),
+		TSK_FSM_ADD_ALWAYS(_fsm_state_Incoming, _fsm_action_reject, _fsm_state_Terminated, s0000_Incoming_2_Terminated_X_Terminates, "s0000_Incoming_2_Terminated_X_Terminates"),
+		// Incoming -> (Hangup) -> Terminated
+		TSK_FSM_ADD_ALWAYS(_fsm_state_Incoming, _fsm_action_hangup, _fsm_state_Terminated, s0000_Incoming_2_Terminated_X_Terminates, "s0000_Incoming_2_Terminated_X_Terminates"),
 
 		/*=======================
 		* === Connected === 
@@ -172,9 +174,28 @@ int s0000_Incoming_2_Connected_X_Accept(va_list *app)
 
 /* Incoming -> (Reject) -> Terminated
 */
-int s0000_Incoming_2_Terminated_X_Reject(va_list *app)
+int s0000_Incoming_2_Terminated_X_Terminates(va_list *app)
 {
-	return -1;
+	int ret;
+	short code;
+	const char* phrase;
+	char* reason = tsk_null;
+
+	tsip_dialog_register_t *self;
+	const tsip_action_t* action;
+
+	self = va_arg(*app, tsip_dialog_register_t *);
+	va_arg(*app, const tsip_message_t *);
+	action = va_arg(*app, const tsip_action_t *);
+
+	/* Send Reject */
+	code = action->line_resp.code>=300 ? action->line_resp.code : 600;
+	phrase = action->line_resp.phrase ? action->line_resp.phrase : "Not Supported";
+	tsk_sprintf(&reason, "SIP; cause=%hi; text=\"%s\"", code, phrase);
+	ret = tsip_dialog_register_send_RESPONSE(self, self->last_iRegister, code, phrase);
+	TSK_FREE(reason);
+
+	return ret;
 }
 
 /* Connected -> (register) -> Connected

@@ -1248,7 +1248,8 @@ int tsip_dialog_get_lasterror(const tsip_dialog_t* self, short *code, const char
 int tsip_dialog_hangup(tsip_dialog_t *self, const tsip_action_t* action)
 {
 	if(self){
-		if(self->state == tsip_established){
+		// CANCEL should only be send for INVITE dialog
+		if(self->type != tsip_dialog_INVITE || self->state == tsip_established){
 			return tsip_dialog_fsm_act(self, tsip_atype_hangup, tsk_null, action);
 		}
 		else{

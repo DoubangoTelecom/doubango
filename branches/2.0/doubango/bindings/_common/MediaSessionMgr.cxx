@@ -285,14 +285,18 @@ tmedia_profile_t MediaSessionMgr::defaultsGetProfile()
 	return tmedia_defaults_get_profile();
 }
 
-bool MediaSessionMgr::defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl)
+bool MediaSessionMgr::defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl) // @deprecated
 {
 	return tmedia_defaults_set_bl(bl) == 0;
 }
-
-tmedia_bandwidth_level_t MediaSessionMgr::defaultsGetBandwidthLevel()
+tmedia_bandwidth_level_t MediaSessionMgr::defaultsGetBandwidthLevel() // @deprecated
 {
 	return tmedia_defaults_get_bl();
+}
+
+bool MediaSessionMgr::defaultsSetBandwidthVideoUploadMax(int32_t bw_video_up_max_kbps)
+{
+	return (tmedia_defaults_set_bandwidth_video_upload_max(bw_video_up_max_kbps) == 0);
 }
 
 bool MediaSessionMgr::defaultsSetPrefVideoSize(tmedia_pref_video_size_t pref_video_size)

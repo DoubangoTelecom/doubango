@@ -412,7 +412,7 @@ int tdav_session_av_prepare(tdav_session_av_t* self)
 			if(tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_pbk)){
 				// DTLS-SRTP requires certificates
 				if(self->srtp_type & tmedia_srtp_type_dtls){
-					TSK_DEBUG_WARN("DTLS-SRTP requested but not certificate provided, disabling this option :(");
+					TSK_DEBUG_WARN("DTLS-SRTP requested but no SLL certificates provided, disabling this option :(");
 					if(!(self->srtp_type &= ~tmedia_srtp_type_dtls)){
 						// only DTLS-SRTP was enabled
 						self->srtp_mode = tmedia_srtp_mode_none;
@@ -693,6 +693,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			*/
 			if(self->media_type == tmedia_audio){
 				tsdp_header_M_add_headers(base->M.lo,
+					/* rfc3551 section 4.5 says the default ptime is 20 */
 					TSDP_HEADER_A_VA_ARGS("ptime", "20"),
 					TSDP_HEADER_A_VA_ARGS("minptime", "20"),
 					TSDP_HEADER_A_VA_ARGS("maxptime", "20"),
