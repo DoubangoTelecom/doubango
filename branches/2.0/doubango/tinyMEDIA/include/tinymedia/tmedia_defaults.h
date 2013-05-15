@@ -31,8 +31,10 @@ TMEDIA_BEGIN_DECLS
 
 TINYMEDIA_API int tmedia_defaults_set_profile(tmedia_profile_t profile);
 TINYMEDIA_API tmedia_profile_t tmedia_defaults_get_profile();
-TINYMEDIA_API int tmedia_defaults_set_bl(tmedia_bandwidth_level_t bl);
-TINYMEDIA_API tmedia_bandwidth_level_t tmedia_defaults_get_bl();
+TINYMEDIA_API int tmedia_defaults_set_bl(tmedia_bandwidth_level_t bl); // @deprecated
+TINYMEDIA_API tmedia_bandwidth_level_t tmedia_defaults_get_bl(); // @deprecated
+TINYMEDIA_API int tmedia_defaults_set_bandwidth_video_upload_max(int32_t bw_video_up_max_kbps);
+TINYMEDIA_API int32_t tmedia_defaults_get_bandwidth_video_upload_max();
 TINYMEDIA_API int tmedia_defaults_set_pref_video_size(tmedia_pref_video_size_t pref_video_size);
 TINYMEDIA_API tmedia_pref_video_size_t tmedia_defaults_get_pref_video_size();
 TINYMEDIA_API int tmedia_defaults_set_jb_margin(int32_t jb_margin_ms);

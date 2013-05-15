@@ -735,20 +735,31 @@ int tmedia_codec_video_set_dec_callback(tmedia_codec_video_t *self, tmedia_codec
 	return 0;
 }
 
-int8_t tmedia_codec_audio_get_timestamp_multiplier(tmedia_codec_id_t id, uint32_t sample_rate)
+float tmedia_codec_audio_get_timestamp_multiplier(tmedia_codec_id_t id, uint32_t sample_rate)
 {
 	switch(id){
 		case tmedia_codec_id_opus:
 			{
 				// draft-spittka-payload-rtp-opus-03 - 4.1.  RTP Header Usage
 				switch(sample_rate){
-					case 8000: return 6;
-					case 12000: return 4;
-					case 16000: return 3;
-					case 24000: return 2;
-					default: case 48000: return 1;
+					case 8000: return 6.f;
+					case 12000: return 4.f;
+					case 16000: return 3.f;
+					case 24000: return 2.f;
+					default: case 48000: return 1.f;
 				}
 				break;
+			}
+		case tmedia_codec_id_g722:
+			{
+				/* http://www.ietf.org/rfc/rfc3551.txt
+					 Even though the actual sampling rate for G.722 audio is 16,000 Hz,
+					   the RTP clock rate for the G722 payload format is 8,000 Hz because
+					   that value was erroneously assigned in RFC 1890 and must remain
+					   unchanged for backward compatibility.  The octet rate or sample-pair
+					   rate is 8,000 Hz.
+				*/
+				return .5f;
 			}
 		default:
 			{

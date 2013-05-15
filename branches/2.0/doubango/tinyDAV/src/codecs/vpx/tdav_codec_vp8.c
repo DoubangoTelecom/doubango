@@ -39,6 +39,7 @@
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
 
 #include "tinymedia/tmedia_params.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
@@ -80,6 +81,7 @@ typedef struct tdav_codec_vp8_s
 		tsk_bool_t force_idr;
 		uint32_t target_bitrate;
 		int rotation;
+		int32_t max_bw_kpbs;
 
 		struct{
 			uint8_t* ptr;
@@ -575,7 +577,7 @@ static tsk_object_t* tdav_codec_vp8_ctor(tsk_object_t * self, va_list * app)
 	if(vp8){
 		/* init base: called by tmedia_codec_create() */
 		/* init self */
-		
+		vp8->encoder.max_bw_kpbs = tmedia_defaults_get_bandwidth_video_upload_max();
 	}
 	return self;
 }
@@ -663,7 +665,7 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 	}
 	self->encoder.cfg.g_timebase.num = 1;
 	self->encoder.cfg.g_timebase.den = TMEDIA_CODEC_VIDEO(self)->out.fps;
-	self->encoder.cfg.rc_target_bitrate = self->encoder.target_bitrate = (TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 352 / 288);
+	self->encoder.cfg.rc_target_bitrate = self->encoder.target_bitrate = TSK_CLAMP(0, (int32_t)(TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 352 / 288), self->encoder.max_bw_kpbs);
 	self->encoder.cfg.g_w = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.height : TMEDIA_CODEC_VIDEO(self)->out.width;
 	self->encoder.cfg.g_h = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
 	self->encoder.cfg.kf_mode = VPX_KF_AUTO;
@@ -710,6 +712,8 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 	vpx_codec_control(&self->encoder.context, VP8E_SET_NOISE_SENSITIVITY, 2);
 #endif
 	/* vpx_codec_control(&self->encoder.context, VP8E_SET_CPUUSED, 0); */
+
+	TSK_DEBUG_INFO("[VP8] target_bitrate=%d kbps", self->encoder.target_bitrate);
 	
 	return 0;
 }

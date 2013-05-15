@@ -187,7 +187,7 @@ tmedia_codec_id_t;
 #define TMEDIA_CODEC_PCM_FRAME_SIZE_AUDIO_DECODING(self) ((TMEDIA_CODEC_PTIME_AUDIO_DECODING((self)) * TMEDIA_CODEC_RATE_DECODING((self)))/1000)
 #define TMEDIA_CODEC_PCM_FRAME_SIZE_AUDIO_ENCODING(self) ((TMEDIA_CODEC_PTIME_AUDIO_ENCODING((self)) * TMEDIA_CODEC_RATE_ENCODING((self)))/1000)
 
-#define TMEDIA_CODEC_FRAME_DURATION_AUDIO_ENCODING(self) (TMEDIA_CODEC_PCM_FRAME_SIZE_AUDIO_ENCODING(self) * TMEDIA_CODEC_AUDIO((self))->out.timestamp_multiplier)
+#define TMEDIA_CODEC_FRAME_DURATION_AUDIO_ENCODING(self) (int32_t)((float)TMEDIA_CODEC_PCM_FRAME_SIZE_AUDIO_ENCODING(self) * (float)TMEDIA_CODEC_AUDIO((self))->out.timestamp_multiplier)
 
 /** callbacks for video codecs */
 typedef int (*tmedia_codec_video_enc_cb_f)(const tmedia_video_encode_result_xt* result);
@@ -333,7 +333,7 @@ typedef struct tmedia_codec_audio_s
 		// !negotiated decoding channels
 		int8_t channels;
 		// ! timestamp multiplier
-		int8_t timestamp_multiplier;
+		float timestamp_multiplier;
 	} in; //decoding direction
 	struct{
 		// !negotiated decoding ptime
@@ -341,7 +341,7 @@ typedef struct tmedia_codec_audio_s
 		// !negotiated encoding channels
 		int8_t channels;
 		// ! timestamp multiplier
-		int8_t timestamp_multiplier;
+		float timestamp_multiplier;
 	} out; //encoding direction
 }
 tmedia_codec_audio_t;
@@ -362,7 +362,7 @@ tmedia_codec_audio_t;
 #define TMEDIA_CODEC_AUDIO(self)		((tmedia_codec_audio_t*)(self))
 #define tmedia_codec_audio_init(self, name, desc, format) tmedia_codec_init(TMEDIA_CODEC(self), tmedia_audio, name, desc, format)
 #define tmedia_codec_audio_deinit(self) tmedia_codec_deinit(TMEDIA_CODEC(self))
-TINYMEDIA_API int8_t tmedia_codec_audio_get_timestamp_multiplier(tmedia_codec_id_t id, uint32_t sample_rate);
+TINYMEDIA_API float tmedia_codec_audio_get_timestamp_multiplier(tmedia_codec_id_t id, uint32_t sample_rate);
 
 /** Video codec */
 typedef struct tmedia_codec_video_s
