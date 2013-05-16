@@ -24,6 +24,8 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
+#include <limits.h> /* INT_MAX */
+
 // /!\ These are global values shared by all sessions and stacks. Could be set (update) per session using "session_set()"
 
 static tmedia_profile_t __profile = tmedia_profile_default;
