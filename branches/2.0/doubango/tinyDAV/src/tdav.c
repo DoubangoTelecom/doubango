@@ -80,6 +80,7 @@
 #include "tinydav/audio/coreaudio/tdav_consumer_audiounit.h"
 #include "tinydav/audio/wasapi/tdav_consumer_wasapi.h"
 #include "tinydav/video/winm/tdav_consumer_winm.h"
+#include "tinydav/video/mf/tdav_consumer_video_mf.h"
 #include "tinydav/t140/tdav_consumer_t140.h"
 #if HAVE_TINYDSHOW // DirectShow
 #	include "tinydshow/plugin/DSConsumer.h"
@@ -92,6 +93,7 @@
 #include "tinydav/audio/coreaudio/tdav_producer_audiounit.h"
 #include "tinydav/audio/wasapi/tdav_producer_wasapi.h"
 #include "tinydav/video/winm/tdav_producer_winm.h"
+#include "tinydav/video/mf/tdav_producer_video_mf.h"
 #include "tinydav/t140/tdav_producer_t140.h"
 #if HAVE_TINYDSHOW // DirectShow
 #	include "tinydshow/plugin/DSProducer.h"
@@ -255,10 +257,12 @@ int tdav_init()
 #elif HAVE_WASAPI
 	tmedia_consumer_plugin_register(tdav_consumer_wasapi_plugin_def_t);
 #endif
-#if HAVE_TINYDSHOW // DirectShow
+#if HAVE_TINYDSHOW // DirectShow (Windows XP and later)
 	tmedia_consumer_plugin_register(tdshow_consumer_plugin_def_t);
-#elif HAVE_WINM
+#elif HAVE_WINM // Windows Media (WP8)
 	tmedia_consumer_plugin_register(tdav_consumer_winm_plugin_def_t);
+#elif HAVE_MF // Media Foundation (Windows 7 and later)
+	tmedia_consumer_plugin_register(tdav_consumer_video_mf_plugin_def_t);
 #endif
 
 #if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit
@@ -280,10 +284,12 @@ int tdav_init()
 #elif HAVE_WASAPI // WASAPI
 	tmedia_producer_plugin_register(tdav_producer_wasapi_plugin_def_t);
 #endif
-#if HAVE_TINYDSHOW // DirectShow
+#if HAVE_TINYDSHOW // DirectShow (Windows XP and later)
 	tmedia_producer_plugin_register(tdshow_producer_plugin_def_t);
-#elif HAVE_WINM
+#elif HAVE_WINM // Windows Media (WP8)
 	tmedia_producer_plugin_register(tdav_producer_winm_plugin_def_t);
+#elif HAVE_MF // Medi Foundation (Windows 7 and later)
+	tmedia_producer_plugin_register(tdav_producer_video_mf_plugin_def_t);
 #endif
 	
 #if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit
@@ -659,10 +665,12 @@ int tdav_deinit()
 #if HAVE_WASAPI
 	tmedia_consumer_plugin_unregister(tdav_consumer_wasapi_plugin_def_t);
 #endif
-#if HAVE_TINYDSHOW // DirectShow
+#if HAVE_TINYDSHOW // DirectShow (Windows XP and later)
 	tmedia_consumer_plugin_unregister(tdshow_consumer_plugin_def_t);
-#elif HAVE_WINM
+#elif HAVE_WINM // Windows Media (WP8)
 	tmedia_consumer_plugin_unregister(tdav_consumer_winm_plugin_def_t);
+#elif HAVE_MF // Media Foundation (Windows 7 or later)
+	tmedia_consumer_plugin_unregister(tdav_consumer_video_mf_plugin_def_t);
 #endif
 #if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit
 	tmedia_consumer_plugin_unregister(tdav_consumer_audiounit_plugin_def_t);
@@ -682,10 +690,12 @@ int tdav_deinit()
 #if HAVE_WASAPI // WASAPI
 	tmedia_producer_plugin_unregister(tdav_producer_wasapi_plugin_def_t);
 #endif
-#if HAVE_TINYDSHOW // DirectShow
+#if HAVE_TINYDSHOW // DirectShow (Windows XP or later)
 	tmedia_producer_plugin_unregister(tdshow_producer_plugin_def_t);
-#elif HAVE_WINM
+#elif HAVE_WINM // Windows Media (WP8)
 	tmedia_producer_plugin_unregister(tdav_producer_winm_plugin_def_t);
+#elif HAVE_MF // Media Foundation (Windows 7 or later)
+	tmedia_producer_plugin_unregister(tdav_producer_video_mf_plugin_def_t);
 #endif
 
 #if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit
