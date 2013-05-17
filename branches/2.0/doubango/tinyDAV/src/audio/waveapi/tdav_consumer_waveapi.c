@@ -154,7 +154,7 @@ static int play_wavehdr(tdav_consumer_waveapi_t* consumer, LPWAVEHDR lpHdr)
 	return 0;
 }
 
-static void *__playback_thread(void *param)
+static void* TSK_STDCALL __playback_thread(void *param)
 {
 	tdav_consumer_waveapi_t* consumer = (tdav_consumer_waveapi_t*)param;  
 	DWORD dwEvent;

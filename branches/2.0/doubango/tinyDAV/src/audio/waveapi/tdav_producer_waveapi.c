@@ -146,7 +146,7 @@ static int record_wavehdr(tdav_producer_waveapi_t* producer, LPWAVEHDR lpHdr)
 	return 0;
 }
 
-static void *__record_thread(void *param)
+static void* TSK_STDCALL __record_thread(void *param)
 {
 	tdav_producer_waveapi_t* producer = (tdav_producer_waveapi_t*)param;  
 	DWORD dwEvent;
