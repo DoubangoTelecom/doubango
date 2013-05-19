@@ -85,9 +85,16 @@ typedef enum trtp_rtcp_psfb_fci_type_e
 	trtp_rtcp_psfb_fci_type_rpsi = 3, /* rfc 4585: Reference Picture Selection Indication (RPSI) */
 	trtp_rtcp_psfb_fci_type_fir = 4, /* rfc 5104: Full Intra Request (FIR) Command*/
 	trtp_rtcp_psfb_fci_type_afb = 15, /* rfc 4585: Application layer FB (AFB) message */
-
 }
 trtp_rtcp_psfb_fci_type_t;
+
+/* rfc 4585: Application layer FB (AFB) message */
+typedef enum trtp_rtcp_psfb_afb_type_e
+{
+	trtp_rtcp_psfb_afb_type_none,
+	trtp_rtcp_psfb_afb_type_remb // draft-alvestrand-rmcat-remb-02
+}
+trtp_rtcp_psfb_afb_type_t;
 
 // Payload-specific FB message
 typedef struct trtp_rtcp_report_psfb_s
@@ -114,7 +121,19 @@ typedef struct trtp_rtcp_report_psfb_s
 			uint8_t* seq_num; // 8 bits
 		}fir;
 		struct{ // rfc 4585: 6.4
-			uint8_t* bytes;
+			trtp_rtcp_psfb_afb_type_t type;
+			union{
+				struct{ // draft-alvestrand-rmcat-remb-02: 2.2
+					// MxTBR = mantissa * 2^exp = (mantissa << exp) bps
+					uint8_t num_ssrc;
+					uint8_t exp; // 6bits
+					uint32_t mantissa; // 18bits
+					uint32_t* ssrc_feedbacks; // 'num_ssrc'nth SSRC entries
+				}remb;
+				struct{
+					uint8_t* bytes; // store bytes to allow reconstruction
+				}none; // unknown type
+			};
 		}afb;
 	};
 }
@@ -125,6 +144,7 @@ trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create(struct trtp_rtcp_header_s*
 trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_2(trtp_rtcp_psfb_fci_type_t fci_type, uint32_t ssrc_sender, uint32_t ssrc_media_src);
 trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_pli(uint32_t ssrc_sender, uint32_t ssrc_media_src);
 trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_fir(uint8_t seq_num, uint32_t ssrc_sender, uint32_t ssrc_media_src);
+trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_afb_remb(uint32_t ssrc_sender, uint32_t ssrc_media_src, uint32_t bitrate/*in bps*/);
 trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_deserialize(const void* data, tsk_size_t size);
 int trtp_rtcp_report_psfb_serialize_to(const trtp_rtcp_report_psfb_t* self, void* data, tsk_size_t size);
 tsk_size_t trtp_rtcp_report_psfb_get_size(const trtp_rtcp_report_psfb_t* self);

@@ -1183,6 +1183,17 @@ static tsk_size_t SendRTCPReport(trtp_rtcp_session_t* session, event_ e)
 #endif
 			}
 
+#if 0
+			// draft-alvestrand-rmcat-remb-02
+			{
+				trtp_rtcp_report_psfb_t* psfb_afb_remb = trtp_rtcp_report_psfb_create_afb_remb(session->source_local->ssrc, source->ssrc, 150000);
+				if(psfb_afb_remb){
+					trtp_rtcp_packet_add_packet((trtp_rtcp_packet_t*)sr, (trtp_rtcp_packet_t*)psfb_afb_remb, tsk_false);
+					TSK_OBJECT_SAFE_FREE(psfb_afb_remb);
+				}
+			}
+#endif
+
 			// serialize and send the packet
 			ret = _trtp_rtcp_session_send_pkt(session, (trtp_rtcp_packet_t*)sr);
 			TSK_OBJECT_SAFE_FREE(sr);
