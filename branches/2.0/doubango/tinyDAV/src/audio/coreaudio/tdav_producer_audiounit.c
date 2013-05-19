@@ -238,8 +238,7 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 				//							  &flagZero, 
 				//							  sizeof(flagZero));
 				
-				int packetperbuffer = (1000 / codec->plugin->audio.ptime);
-				producer->ring.chunck.size = audioFormat.mSampleRate * audioFormat.mBytesPerFrame / packetperbuffer;
+				producer->ring.chunck.size = (codec->plugin->audio.ptime * audioFormat.mSampleRate * audioFormat.mBytesPerFrame) / 1000;
 				// allocate our chunck buffer
 				if(!(producer->ring.chunck.buffer = tsk_realloc(producer->ring.chunck.buffer, producer->ring.chunck.size))){
 					TSK_DEBUG_ERROR("Failed to allocate new buffer");
