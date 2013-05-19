@@ -46,6 +46,13 @@ typedef struct tdav_speex_jitterBuffer_s
 	JitterBuffer* state;
 	uint32_t rate;
 	uint32_t frame_duration;
+	uint32_t x_data_size; // expected data size
+	uint16_t fake_seqnum; // if ptime mismatch then, reassembled pkt will have invalid seqnum
+	struct {
+		uint8_t* ptr;
+		tsk_size_t size;
+		tsk_size_t index;
+	} buff;
 }
 tdav_speex_jitterbuffer_t;
 
