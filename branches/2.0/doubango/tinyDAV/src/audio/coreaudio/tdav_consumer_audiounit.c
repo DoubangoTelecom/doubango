@@ -219,8 +219,7 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 	}
 	
 	// allocate the chunck buffer and create the ring
-	int packetperbuffer = (1000 / TMEDIA_CONSUMER(consumer)->audio.ptime);
-	consumer->ring.chunck.size = audioFormat.mSampleRate * audioFormat.mBytesPerFrame / packetperbuffer;
+	consumer->ring.chunck.size = (TMEDIA_CONSUMER(consumer)->audio.ptime * audioFormat.mSampleRate * audioFormat.mBytesPerFrame) / 1000;
 	consumer->ring.size = kRingPacketCount * consumer->ring.chunck.size;
 	if(!(consumer->ring.chunck.buffer = tsk_realloc(consumer->ring.chunck.buffer, consumer->ring.chunck.size))){
 		TSK_DEBUG_ERROR("Failed to allocate new buffer");
