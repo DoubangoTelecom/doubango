@@ -567,6 +567,13 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
 					video->avpf.last_pli_time = now;
 					break;
 				}
+			case trtp_rtcp_psfb_fci_type_afb:
+				{
+					if(psfb->afb.type == trtp_rtcp_psfb_afb_type_remb){
+						TSK_DEBUG_INFO("Receiving RTCP-AFB-REMB (%u), exp=%u, mantissa=%u", ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media, psfb->afb.remb.exp, psfb->afb.remb.mantissa);
+					}
+					break;
+				}
 			default: break;
 		}
 	}

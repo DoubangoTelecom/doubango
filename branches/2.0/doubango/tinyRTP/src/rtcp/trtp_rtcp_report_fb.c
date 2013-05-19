@@ -24,6 +24,7 @@
 
 #include "tnet_endianness.h"
 
+#include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -337,7 +338,14 @@ static tsk_object_t* trtp_rtcp_report_psfb_dtor(tsk_object_t * self)
 				TSK_FREE(psfb->fir.seq_num);
 				break;
 			case trtp_rtcp_psfb_fci_type_afb:
-				TSK_FREE(psfb->afb.bytes);
+				switch(psfb->afb.type){
+					case trtp_rtcp_psfb_afb_type_none:
+						TSK_FREE(psfb->afb.none.bytes);
+						break;
+					case trtp_rtcp_psfb_afb_type_remb:
+						TSK_FREE(psfb->afb.remb.ssrc_feedbacks);
+						break;
+				}
 				break;
 		}
 		// deinit base
@@ -404,6 +412,32 @@ trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_fir(uint8_t seq_num, uint3
 		psfb->fir.seq_num[0] = seq_num;
 		psfb->fir.ssrc[0] = ssrc_media_src;
 		TRTP_RTCP_PACKET(psfb)->header->length_in_bytes += (psfb->fir.count << 3);
+		TRTP_RTCP_PACKET(psfb)->header->length_in_words_minus1 = ((TRTP_RTCP_PACKET(psfb)->header->length_in_bytes >> 2) - 1);
+	}
+	return psfb;
+}
+
+trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_afb_remb(uint32_t ssrc_sender, uint32_t ssrc_media_src, uint32_t bitrate/*in bps*/)
+{
+	trtp_rtcp_report_psfb_t* psfb;
+	// draft-alvestrand-rmcat-remb-02 2.2: SSRC media source always equal to zero
+	if((psfb = trtp_rtcp_report_psfb_create_2(trtp_rtcp_psfb_fci_type_afb, ssrc_sender, 0))){
+		static const uint32_t __max_mantissa = 131072;
+		psfb->afb.type = trtp_rtcp_psfb_afb_type_remb;
+		psfb->afb.remb.exp = 0;
+		if(bitrate <= __max_mantissa){
+			psfb->afb.remb.mantissa = bitrate;
+		}
+		else{
+			while(bitrate >= (__max_mantissa << psfb->afb.remb.exp) && psfb->afb.remb.exp < 63) ++psfb->afb.remb.exp;
+			psfb->afb.remb.mantissa = (bitrate >> psfb->afb.remb.exp);
+		}
+		if((psfb->afb.remb.ssrc_feedbacks = tsk_malloc(4))){
+			psfb->afb.remb.num_ssrc = 1;
+			psfb->afb.remb.ssrc_feedbacks[0] = ssrc_media_src;
+		}
+		TRTP_RTCP_PACKET(psfb)->header->length_in_bytes += 8; /*'R' 'E' 'M' 'B', Num SSRC, BR Exp, BR Mantissa */
+		TRTP_RTCP_PACKET(psfb)->header->length_in_bytes += (psfb->afb.remb.num_ssrc << 2);
 		TRTP_RTCP_PACKET(psfb)->header->length_in_words_minus1 = ((TRTP_RTCP_PACKET(psfb)->header->length_in_bytes >> 2) - 1);
 	}
 	return psfb;
@@ -484,8 +518,36 @@ trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_deserialize(const void* data, tsk
 					}
 				case trtp_rtcp_psfb_fci_type_afb:
 					{
-						if(size > 0 && (psfb->afb.bytes = tsk_calloc(size, sizeof(uint8_t)))){
-							memcpy(psfb->afb.bytes, &pdata[0], size);
+						if(size > 0){
+							psfb->afb.type = trtp_rtcp_psfb_afb_type_none;
+							// REMB (http://tools.ietf.org/html/draft-alvestrand-rmcat-remb-02) ?
+							if(size > 4 && tsk_strniequals(pdata, "REMB", 4)){
+								uint32_t _u32;
+								if(size < 8){ // REMB, Num SSRC, BR Exp, BR Mantissa
+									TSK_DEBUG_ERROR("Too short");
+									goto bail;
+								}
+								psfb->afb.type = trtp_rtcp_psfb_afb_type_remb;
+								_u32 = tnet_ntohl_2(&pdata[4]);
+								psfb->afb.remb.num_ssrc = ((_u32 >> 24) & 0xFF);
+								if((psfb->afb.remb.num_ssrc << 2) != (size - 8)){
+									TSK_DEBUG_ERROR("Invalid size");
+									psfb->afb.remb.num_ssrc = 0;
+									goto bail;
+								}
+								psfb->afb.remb.exp = ((_u32 >> 18) & 0x3F);
+								psfb->afb.remb.mantissa = (_u32 & 0x3FFFF);
+								if((psfb->afb.remb.ssrc_feedbacks = tsk_malloc(psfb->afb.remb.num_ssrc << 2))){
+									for(_u32 = 0; _u32 < psfb->afb.remb.num_ssrc; ++_u32){
+										psfb->afb.remb.ssrc_feedbacks[_u32] = tnet_ntohl_2(&pdata[8 + (_u32 << 2)]);
+									}
+								}
+							}
+							else{
+								if((psfb->afb.none.bytes = tsk_calloc(size, sizeof(uint8_t)))){
+									memcpy(psfb->afb.none.bytes, &pdata[0], size);
+								}
+							}
 						}
 						break;
 					}
@@ -535,6 +597,34 @@ int trtp_rtcp_report_psfb_serialize_to(const trtp_rtcp_report_psfb_t* self, void
 					pdata[3] = (self->fir.ssrc[i] & 0xFF);
 					pdata[4] = self->fir.seq_num[i];
 					pdata += 8; // SSRC (4), Seq nr(1), Reserved(3)
+				}
+				break;
+			}
+		case trtp_rtcp_psfb_fci_type_afb:
+			{
+				if(self->afb.type == trtp_rtcp_psfb_afb_type_remb){
+					tsk_size_t i;
+					// 'R' 'E' 'M' 'B'
+					pdata[0] = 'R', pdata[1] = 'E', pdata[2] = 'M', pdata[3] = 'B';
+					// |  Num SSRC     | BR Exp    |  BR Mantissa
+					pdata[4] = self->afb.remb.num_ssrc; // 8bits
+					pdata[5] = (self->afb.remb.exp << 2) & 0xFC;// 6bits
+					// 18bits
+					pdata[5] |= (self->afb.remb.mantissa >> 16) & 0x3;
+					pdata[6] = (self->afb.remb.mantissa >> 8) & 0xFF;
+					pdata[7] = (self->afb.remb.mantissa & 0xFF);
+					if(self->afb.remb.ssrc_feedbacks){
+						for(i = 0; i < self->afb.remb.num_ssrc; ++i){
+							pdata[8 + (i<<2)] = self->afb.remb.ssrc_feedbacks[i] >> 24;
+							pdata[8 + (i<<2) + 1] = (self->afb.remb.ssrc_feedbacks[i] >> 16) & 0xFF;
+							pdata[8 + (i<<2) + 2] = (self->afb.remb.ssrc_feedbacks[i] >> 8) & 0xFF;
+							pdata[8 + (i<<2) + 3] = (self->afb.remb.ssrc_feedbacks[i] & 0xFF);
+						}
+					}
+				}
+				else{
+					TSK_DEBUG_ERROR("Not implemented yet");
+					return -1;
 				}
 				break;
 			}
