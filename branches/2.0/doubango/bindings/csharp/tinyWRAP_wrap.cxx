@@ -1806,6 +1806,18 @@ SWIGEXPORT int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetBandwidthLevel() {
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(int jarg1) {
+  unsigned int jresult ;
+  int32_t arg1 ;
+  bool result;
+  
+  arg1 = (int32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetBandwidthVideoUploadMax(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetPrefVideoSize(int jarg1) {
   unsigned int jresult ;
   tmedia_pref_video_size_t arg1 ;

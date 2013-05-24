@@ -314,6 +314,9 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 							case mstype_set_codecs:
 								{/* (signed)CODECS_INT */
 									self->media.codecs = va_arg(*app, signed);
+									if(mgr){ // apply now
+										tmedia_session_mgr_set_codecs_supported(mgr, self->media.codecs);
+									}
 									break;
 								}
 							case mstype_set_bypass_encoding:

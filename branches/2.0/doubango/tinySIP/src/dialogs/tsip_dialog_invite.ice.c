@@ -36,6 +36,7 @@ extern int tsip_dialog_invite_msession_start(tsip_dialog_invite_t *self);
 static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia_type_t media_type);
 static int tsip_dialog_invite_ice_audio_callback(const tnet_ice_event_t *e);
 static int tsip_dialog_invite_ice_video_callback(const tnet_ice_event_t *e);
+int tsip_dialog_invite_ice_set_media_type(tsip_dialog_invite_t * self, tmedia_type_t media_type);
 tsk_bool_t tsip_dialog_invite_ice_got_local_candidates(const tsip_dialog_invite_t * self);
 int tsip_dialog_invite_ice_process_ro(tsip_dialog_invite_t * self, const tsdp_message_t* sdp_ro, tsk_bool_t is_remote_offer);
 
@@ -148,27 +149,8 @@ static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia
 		tnet_ice_ctx_set_rtcpmux(self->ice.ctx_video, self->use_rtcpmux);
 	}
 
-	// "none" comparison is used to exclude the "first call"
-	if(self->ice.media_type != tmedia_none && self->ice.media_type != media_type){
-		// cancels contexts associated to old medias
-		if(self->ice.ctx_audio && !(media_type & tmedia_audio)){
-			tnet_ice_ctx_cancel(self->ice.ctx_audio);
-		}
-		if(self->ice.ctx_video && !(media_type & tmedia_video)){
-			tnet_ice_ctx_cancel(self->ice.ctx_video);
-		}
-		// cancels contexts associated to new medias (e.g. session "remove" then "add")
-		// cancel() on newly created contexts don't have any effect
-		if(self->ice.ctx_audio && (!(media_type & tmedia_audio) && (self->ice.media_type & tmedia_audio))){
-			//tnet_ice_ctx_cancel(self->ice.ctx_audio);
-		}
-		if(self->ice.ctx_video && (!(media_type & tmedia_video) && (self->ice.media_type & tmedia_video))){
-			//tnet_ice_ctx_cancel(self->ice.ctx_video);
-		}
-	}
-
-	self->ice.media_type = media_type;
-	
+	// set media type
+	tsip_dialog_invite_ice_set_media_type(self, media_type);
 
 	// For now disable timers until both parties get candidates
 	// (RECV ACK) or RECV (200 OK)
@@ -179,6 +161,33 @@ static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia
 		tmedia_session_mgr_set_ice_ctx(self->msession_mgr, self->ice.ctx_audio, self->ice.ctx_video);
 	}
 
+	return 0;
+}
+
+int tsip_dialog_invite_ice_set_media_type(tsip_dialog_invite_t * self, tmedia_type_t _media_type)
+{
+	if(self){
+		tmedia_type_t av_media_type = (_media_type & tmedia_audiovideo); // filter to keep audio and video only
+		// "none" comparison is used to exclude the "first call"
+		if(self->ice.media_type != tmedia_none && self->ice.media_type != av_media_type){
+			// cancels contexts associated to old medias
+			if(self->ice.ctx_audio && !(av_media_type & tmedia_audio)){
+				tnet_ice_ctx_cancel(self->ice.ctx_audio);
+			}
+			if(self->ice.ctx_video && !(av_media_type & tmedia_video)){
+				tnet_ice_ctx_cancel(self->ice.ctx_video);
+			}
+			// cancels contexts associated to new medias (e.g. session "remove" then "add")
+			// cancel() on newly created contexts don't have any effect
+			if(self->ice.ctx_audio && (!(av_media_type & tmedia_audio) && (self->ice.media_type & tmedia_audio))){
+				//tnet_ice_ctx_cancel(self->ice.ctx_audio);
+			}
+			if(self->ice.ctx_video && (!(av_media_type & tmedia_video) && (self->ice.media_type & tmedia_video))){
+				//tnet_ice_ctx_cancel(self->ice.ctx_video);
+			}
+		}
+		self->ice.media_type = av_media_type;
+	}
 	return 0;
 }
 

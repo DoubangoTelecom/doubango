@@ -81,11 +81,22 @@ static int __pred_find_session_by_type(const tsk_list_item_t *item, const void *
 	return -1;
 }
 
-/*== Predicate function to find codec object by address */
-int __pred_find_codec_by_format(const tsk_list_item_t *item, const void *codec)
+/*== Predicate function to find codec object by format */
+static int __pred_find_codec_by_format(const tsk_list_item_t *item, const void *codec)
 {
 	if(item && item->data && codec){
 		return tsk_stricmp(((const tmedia_codec_t*)item->data)->format, ((const tmedia_codec_t*)codec)->format);
+	}
+	return -1;
+}
+
+/*== Predicate function to find codec object by id */
+static int __pred_find_codec_by_id(const tsk_list_item_t *item, const void *id)
+{
+	if(item && item->data && id){
+		if(((const tmedia_codec_t*)item->data)->id == *((const tmedia_codec_id_t*)id)){
+			return 0;
+		}
 	}
 	return -1;
 }
@@ -170,8 +181,12 @@ tsk_bool_t tmedia_session_set_2(tmedia_session_t* self, const tmedia_param_t* pa
 				//	TSK_DEBUG_WARN("Cannot change codec values at this stage");
 				//}
 				//else{
-					self->codecs_allowed = *((int32_t*)param->value);
-					return (_tmedia_session_load_codecs(self) == 0);
+					int32_t codecs_allowed = *((int32_t*)param->value);
+					if(self->codecs_allowed != codecs_allowed){
+						self->codecs_allowed = codecs_allowed;
+						return (_tmedia_session_load_codecs(self) == 0);
+					}
+					return 0;
 				//}
 				return tsk_true;
 			}
@@ -624,6 +639,7 @@ int _tmedia_session_load_codecs(tmedia_session_t* self)
 	tsk_size_t i = 0;
 	tmedia_codec_t* codec;
 	const tmedia_codec_plugin_def_t* plugin;
+	const tsk_list_item_t* item;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -649,6 +665,34 @@ int _tmedia_session_load_codecs(tmedia_session_t* self)
 					self->codecs = tsk_list_create();
 				}
 				tsk_list_push_back_data(self->codecs, (void**)(&codec));
+			}
+		}
+	}
+
+	// filter negotiated codecs with the newly loaded codecs
+	if(1){ // code valid for all use-cases but for now it's not fully tested and not needed for the clients
+filter_neg_codecs:
+		tsk_list_foreach(item, self->neg_codecs){
+			if(!(codec = (item->data))){
+				continue;
+			}
+			if(!(tsk_list_find_item_by_pred(self->codecs, __pred_find_codec_by_id, &codec->id))){
+				const char* codec_name = codec->plugin ? codec->plugin->name : "unknown";
+				const char* neg_format = codec->neg_format ? codec->neg_format : codec->format;
+				TSK_DEBUG_INFO("Codec '%s' with format '%s' was negotiated but [supported codecs] updated without it -> removing", codec_name, neg_format);
+				// update sdp and remove the codec from the list
+				if(self->M.lo && !TSK_LIST_IS_EMPTY(self->M.lo->FMTs)){
+					if(self->M.lo->FMTs->head->next == tsk_null && tsdp_header_M_have_fmt(self->M.lo, neg_format)){ // single item?
+						// rejecting a media with port equal to zero requires at least one format
+						TSK_DEBUG_INFO("[supported codecs] updated but do not remove codec with name='%s' and format='%s' because it's the last one", codec_name, neg_format);
+						self->M.lo->port = 0;
+					}
+					else{
+						tsdp_header_M_remove_fmt(self->M.lo, neg_format);
+					}
+				}
+				tsk_list_remove_item_by_data(self->neg_codecs, codec);
+				goto filter_neg_codecs;
 			}
 		}
 	}
@@ -707,6 +751,30 @@ int tmedia_session_mgr_set_media_type(tmedia_session_mgr_t* self, tmedia_type_t 
 		self->type = type;
 	}
 	return 0;
+}
+
+// special set() case
+int tmedia_session_mgr_set_codecs_supported(tmedia_session_mgr_t* self, tmedia_codec_id_t codecs_supported)
+{
+	int ret = 0;
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	// calling set() could create zombies (media sessions with port equal to zero)
+	ret = tmedia_session_mgr_set(self,
+		TMEDIA_SESSION_SET_INT32(self->type, "codecs-supported", codecs_supported),
+		tsk_null);
+	if(ret == 0 && self->sdp.lo){
+		// update type (will discard zombies)
+		tmedia_type_t new_type = tmedia_type_from_sdp(self->sdp.lo);
+		if(new_type != self->type){
+			TSK_DEBUG_INFO("codecs-supported updated and media type changed from %d to %d", self->type, new_type);
+			self->type = new_type;
+		}
+	}
+	return ret;
 }
 
 /**@ingroup tmedia_session_group
@@ -778,7 +846,7 @@ int tmedia_session_mgr_set_ice_ctx(tmedia_session_mgr_t* self, struct tnet_ice_c
 */
 int tmedia_session_mgr_start(tmedia_session_mgr_t* self)
 {
-	int ret = 0;
+	int ret = 0, started_count = 0;
 	tsk_list_item_t* item;
 	tmedia_session_t* session;
 
@@ -803,13 +871,14 @@ int tmedia_session_mgr_start(tmedia_session_mgr_t* self)
 			TSK_DEBUG_ERROR("Failed to start %s session", session->plugin->media);
 			continue;
 		}
+		++started_count;
 	}
 
-	self->started = tsk_true;
+	self->started = (started_count > 0) ? tsk_true : tsk_false;
 
 bail:
 	tsk_safeobj_unlock(self);
-	return ret;
+	return (self->started ? 0 : -2);
 }
 
 /**@ingroup tmedia_session_group
@@ -1053,6 +1122,15 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 		/* add "m=" line from the session to the local sdp */
 		if((m = tmedia_session_get_lo(TMEDIA_SESSION(ms)))){
 			tsdp_message_add_header(self->sdp.lo, TSDP_HEADER(m));
+			// media session with port equal to zero (codec mismatch) is a zombie (zombie<>ghost)
+			if(ms->M.lo && ms->M.lo->port == 0){
+				const tmedia_session_plugin_def_t* plugin;
+				TSK_DEBUG_INFO("Media session with media type = '%s' is a zombie", ms->M.lo->media);
+				if((plugin = tmedia_session_plugin_find_by_media(ms->M.lo->media))){
+					self->type = (self->type & ~plugin->type);
+					// do not set 'mediaType_changed' as this is not an update
+				}
+			}
 		}
 		else{
 			TSK_DEBUG_ERROR("Failed to get m= line for [%s] media", ms->plugin->media);

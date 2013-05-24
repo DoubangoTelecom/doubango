@@ -119,6 +119,11 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetBandwidthVideoUploadMax(int bw_video_up_max_kbps) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(bw_video_up_max_kbps);
+    return ret;
+  }
+
   public static bool defaultsSetPrefVideoSize(tmedia_pref_video_size_t pref_video_size) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetPrefVideoSize((int)pref_video_size);
     return ret;

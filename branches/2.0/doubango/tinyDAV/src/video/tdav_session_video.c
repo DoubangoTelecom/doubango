@@ -1054,7 +1054,6 @@ static const tsdp_header_M_t* tdav_session_video_get_lo(tmedia_session_t* self)
 	const tsdp_header_M_t* ret;
 	tdav_session_av_t* base = TDAV_SESSION_AV(self);
 
-
 	if(!(ret = tdav_session_av_get_lo(base, &updated))){
 		TSK_DEBUG_ERROR("tdav_session_av_get_lo(video) failed");
 		return tsk_null;

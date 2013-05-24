@@ -96,6 +96,7 @@ static int tsip_dialog_invite_msession_onerror_cb(const void* usrdata, const str
 
 /* ======================== external functions ======================== */
 extern int tsip_dialog_invite_ice_process_ro(tsip_dialog_invite_t * self, const tsdp_message_t* sdp_ro, tsk_bool_t is_remote_offer);
+extern int tsip_dialog_invite_ice_set_media_type(tsip_dialog_invite_t * self, tmedia_type_t media_type);
 extern int tsip_dialog_invite_stimers_cancel(tsip_dialog_invite_t* self);
 extern int tsip_dialog_invite_qos_timer_cancel(tsip_dialog_invite_t* self);
 extern int tsip_dialog_invite_qos_timer_schedule(tsip_dialog_invite_t* self);
@@ -1021,6 +1022,11 @@ int tsip_dialog_invite_msession_start(tsip_dialog_invite_t *self)
 	}
 
 	if(tsip_dialog_invite_ice_is_enabled(self) && !tsip_dialog_invite_ice_is_connected(self)){
+		if(self->msession_mgr->type != self->ice.media_type){
+			TSK_DEBUG_INFO("Media session type(%d)<>ICE media type(%d)", self->msession_mgr->type, self->ice.media_type);
+			// make sure to use the right media types
+			tsip_dialog_invite_ice_set_media_type(self, self->msession_mgr->type);
+		}
 		self->ice.start_smgr = tsk_true;
 	}
 	else{

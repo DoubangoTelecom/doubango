@@ -246,6 +246,7 @@ sub DESTROY {
 *defaultsGetProfile = *tinyWRAPc::MediaSessionMgr_defaultsGetProfile;
 *defaultsSetBandwidthLevel = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthLevel;
 *defaultsGetBandwidthLevel = *tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel;
+*defaultsSetBandwidthVideoUploadMax = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoUploadMax;
 *defaultsSetPrefVideoSize = *tinyWRAPc::MediaSessionMgr_defaultsSetPrefVideoSize;
 *defaultsSetJbMargin = *tinyWRAPc::MediaSessionMgr_defaultsSetJbMargin;
 *defaultsSetJbMaxLateRate = *tinyWRAPc::MediaSessionMgr_defaultsSetJbMaxLateRate;
