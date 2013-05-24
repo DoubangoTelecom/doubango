@@ -727,6 +727,12 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			/* from codecs to sdp */
 			if(TSK_LIST_IS_EMPTY(base->neg_codecs) || ((base->neg_codecs->tail == base->neg_codecs->head) && TDAV_IS_DTMF_CODEC(TSK_LIST_FIRST_DATA(base->neg_codecs)))){
 				base->M.lo->port = 0; /* Keep the RTP transport and reuse it when we receive a reINVITE or UPDATE request */
+				// To reject an offered stream, the port number in the corresponding stream in the answer
+			    // MUST be set to zero.  Any media formats listed are ignored.  AT LEAST ONE MUST BE PRESENT, AS SPECIFIED BY SDP.
+				tsk_strupdate(&base->M.lo->proto, base->M.ro->proto);
+				if(base->M.ro->FMTs){
+					tsk_list_pushback_list(base->M.lo->FMTs, base->M.ro->FMTs);
+				}
 				TSK_DEBUG_INFO("No codec matching for media type = %d", (int32_t)self->media_type);
 				goto DONE;
 			}

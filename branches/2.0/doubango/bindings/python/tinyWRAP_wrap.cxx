@@ -6993,6 +6993,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int32_t arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetBandwidthVideoUploadMax",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetBandwidthVideoUploadMax" "', argument " "1"" of type '" "int32_t""'");
+  } 
+  arg1 = static_cast< int32_t >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetBandwidthVideoUploadMax(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetPrefVideoSize(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   tmedia_pref_video_size_t arg1 ;
@@ -25407,6 +25429,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_defaultsGetProfile", _wrap_MediaSessionMgr_defaultsGetProfile, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetBandwidthLevel", _wrap_MediaSessionMgr_defaultsSetBandwidthLevel, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetBandwidthLevel", _wrap_MediaSessionMgr_defaultsGetBandwidthLevel, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetBandwidthVideoUploadMax", _wrap_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetPrefVideoSize", _wrap_MediaSessionMgr_defaultsSetPrefVideoSize, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetJbMargin", _wrap_MediaSessionMgr_defaultsSetJbMargin, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetJbMaxLateRate", _wrap_MediaSessionMgr_defaultsSetJbMaxLateRate, METH_VARARGS, NULL},

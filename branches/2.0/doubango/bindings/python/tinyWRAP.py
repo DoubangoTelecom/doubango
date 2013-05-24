@@ -199,6 +199,8 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetBandwidthLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetBandwidthLevel)
     __swig_getmethods__["defaultsGetBandwidthLevel"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel
     if _newclass:defaultsGetBandwidthLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel)
+    __swig_getmethods__["defaultsSetBandwidthVideoUploadMax"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax
+    if _newclass:defaultsSetBandwidthVideoUploadMax = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax)
     __swig_getmethods__["defaultsSetPrefVideoSize"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetPrefVideoSize
     if _newclass:defaultsSetPrefVideoSize = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetPrefVideoSize)
     __swig_getmethods__["defaultsSetJbMargin"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetJbMargin
@@ -321,6 +323,10 @@ MediaSessionMgr_defaultsSetBandwidthLevel = _tinyWRAP.MediaSessionMgr_defaultsSe
 def MediaSessionMgr_defaultsGetBandwidthLevel():
   return _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel()
 MediaSessionMgr_defaultsGetBandwidthLevel = _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel
+
+def MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(*args)
+MediaSessionMgr_defaultsSetBandwidthVideoUploadMax = _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax
 
 def MediaSessionMgr_defaultsSetPrefVideoSize(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetPrefVideoSize(*args)

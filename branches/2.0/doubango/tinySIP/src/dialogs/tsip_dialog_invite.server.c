@@ -127,6 +127,8 @@ static tsk_bool_t _fsm_cond_bad_content(tsip_dialog_invite_t* self, tsip_message
 			ret = send_ERROR(self, message, 488, "Not Acceptable", "SIP; cause=488; text=\"No common codecs\"");
 			return tsk_true;
 		}
+		// media type could change if there are zombies (medias with port equal to zero)
+		TSIP_DIALOG_GET_SS(self)->media.type = self->msession_mgr->type;
 	}
 	else{
 		ret = send_ERROR(self, message, 488, "Not Acceptable", "SIP; cause=488; text=\"Bad content\"");

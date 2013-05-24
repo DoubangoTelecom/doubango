@@ -98,6 +98,10 @@ public class MediaSessionMgr {
     return tmedia_bandwidth_level_t.swigToEnum(tinyWRAPJNI.MediaSessionMgr_defaultsGetBandwidthLevel());
   }
 
+  public static boolean defaultsSetBandwidthVideoUploadMax(int bw_video_up_max_kbps) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(bw_video_up_max_kbps);
+  }
+
   public static boolean defaultsSetPrefVideoSize(tmedia_pref_video_size_t pref_video_size) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetPrefVideoSize(pref_video_size.swigValue());
   }
