@@ -249,9 +249,17 @@ bool SipStack::setSTUNCred(const char* login, const char* password)
 		TSIP_STACK_SET_NULL()) == 0);
 }
 
+bool SipStack::setSTUNEnabled(bool enabled)
+{
+	tsk_bool_t _enabled = enabled ? tsk_true : tsk_false;
+	return (tsip_stack_set(m_pHandle,
+		TSIP_STACK_SET_STUN_ENABLED(_enabled),
+		TSIP_STACK_SET_NULL()) == 0);
+}
+
 bool SipStack::setTLSSecAgree(bool enabled)
 {
-	tsk_bool_t _enable = enabled;
+	tsk_bool_t _enable = enabled ? tsk_true : tsk_false;
 	return (tsip_stack_set(m_pHandle,
 		TSIP_STACK_SET_SECAGREE_TLS(_enable),
 		TSIP_STACK_SET_NULL()) == 0);

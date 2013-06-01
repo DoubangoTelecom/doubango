@@ -48,7 +48,7 @@
 #endif
 
 #if !defined(TRTP_DSCP_RTP_DEFAULT)
-#	define TRTP_DSCP_RTP_DEFAULT           0x2e
+#	define TRTP_DSCP_RTP_DEFAULT           /* 0x2e */ 0x00
 #endif
 
 #if !defined(TRTP_PORT_RANGE_START)

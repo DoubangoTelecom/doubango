@@ -447,6 +447,21 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetRtcpMuxEnabled")]
   public static extern bool MediaSessionMgr_defaultsGetRtcpMuxEnabled();
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetStunEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetStunEnabled(bool jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetIceStunEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetIceStunEnabled(bool jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetStunServer__SWIG_0")]
+  public static extern bool MediaSessionMgr_defaultsSetStunServer__SWIG_0(string jarg1, ushort jarg2, string jarg3, string jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetStunServer__SWIG_1")]
+  public static extern bool MediaSessionMgr_defaultsSetStunServer__SWIG_1(string jarg1, ushort jarg2, string jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetStunServer__SWIG_2")]
+  public static extern bool MediaSessionMgr_defaultsSetStunServer__SWIG_2(string jarg1, ushort jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetIceEnabled")]
   public static extern bool MediaSessionMgr_defaultsSetIceEnabled(bool jarg1);
 
@@ -1646,6 +1661,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSTUNCred")]
   public static extern bool SipStack_setSTUNCred(HandleRef jarg1, string jarg2, string jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSTUNEnabled")]
+  public static extern bool SipStack_setSTUNEnabled(HandleRef jarg1, bool jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setTLSSecAgree")]
   public static extern bool SipStack_setTLSSecAgree(HandleRef jarg1, bool jarg2);

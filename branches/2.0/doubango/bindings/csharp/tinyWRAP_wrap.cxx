@@ -2232,6 +2232,78 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetRtcpMuxEna
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetStunEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetStunEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetIceStunEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetIceStunEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetStunServer__SWIG_0(char * jarg1, unsigned short jarg2, char * jarg3, char * jarg4) {
+  unsigned int jresult ;
+  char *arg1 = (char *) 0 ;
+  uint16_t arg2 ;
+  char *arg3 = (char *) 0 ;
+  char *arg4 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (char *)jarg1; 
+  arg2 = (uint16_t)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (char *)jarg4; 
+  result = (bool)MediaSessionMgr::defaultsSetStunServer((char const *)arg1,arg2,(char const *)arg3,(char const *)arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetStunServer__SWIG_1(char * jarg1, unsigned short jarg2, char * jarg3) {
+  unsigned int jresult ;
+  char *arg1 = (char *) 0 ;
+  uint16_t arg2 ;
+  char *arg3 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (char *)jarg1; 
+  arg2 = (uint16_t)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (bool)MediaSessionMgr::defaultsSetStunServer((char const *)arg1,arg2,(char const *)arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetStunServer__SWIG_2(char * jarg1, unsigned short jarg2) {
+  unsigned int jresult ;
+  char *arg1 = (char *) 0 ;
+  uint16_t arg2 ;
+  bool result;
+  
+  arg1 = (char *)jarg1; 
+  arg2 = (uint16_t)jarg2; 
+  result = (bool)MediaSessionMgr::defaultsSetStunServer((char const *)arg1,arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetIceEnabled(unsigned int jarg1) {
   unsigned int jresult ;
   bool arg1 ;
@@ -7353,6 +7425,20 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setSTUNCred(void * jarg1, ch
   arg2 = (char *)jarg2; 
   arg3 = (char *)jarg3; 
   result = (bool)(arg1)->setSTUNCred((char const *)arg2,(char const *)arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setSTUNEnabled(void * jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  bool arg2 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  result = (bool)(arg1)->setSTUNEnabled(arg2);
   jresult = result; 
   return jresult;
 }

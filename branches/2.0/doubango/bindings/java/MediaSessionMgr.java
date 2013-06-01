@@ -246,6 +246,26 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsGetRtcpMuxEnabled();
   }
 
+  public static boolean defaultsSetStunEnabled(boolean stun_enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetStunEnabled(stun_enabled);
+  }
+
+  public static boolean defaultsSetIceStunEnabled(boolean icestun_enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetIceStunEnabled(icestun_enabled);
+  }
+
+  public static boolean defaultsSetStunServer(String server_ip, int server_port, String usr_name, String usr_pwd) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetStunServer__SWIG_0(server_ip, server_port, usr_name, usr_pwd);
+  }
+
+  public static boolean defaultsSetStunServer(String server_ip, int server_port, String usr_name) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetStunServer__SWIG_1(server_ip, server_port, usr_name);
+  }
+
+  public static boolean defaultsSetStunServer(String server_ip, int server_port) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetStunServer__SWIG_2(server_ip, server_port);
+  }
+
   public static boolean defaultsSetIceEnabled(boolean ice_enabled) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetIceEnabled(ice_enabled);
   }

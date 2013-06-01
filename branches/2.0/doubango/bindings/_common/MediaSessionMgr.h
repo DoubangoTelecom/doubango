@@ -134,6 +134,9 @@ public:
 	static bool defaultsGetRtcpEnabled();
 	static bool defaultsSetRtcpMuxEnabled(bool enabled);
 	static bool defaultsGetRtcpMuxEnabled();
+	static bool defaultsSetStunEnabled(bool stun_enabled);
+	static bool defaultsSetIceStunEnabled(bool icestun_enabled);
+	static bool defaultsSetStunServer(const char* server_ip, uint16_t server_port, const char* usr_name = tsk_null, const char* usr_pwd = tsk_null);
 	static bool defaultsSetIceEnabled(bool ice_enabled);
 	static bool defaultsSetByPassEncoding(bool enabled);
 	static bool defaultsGetByPassEncoding();

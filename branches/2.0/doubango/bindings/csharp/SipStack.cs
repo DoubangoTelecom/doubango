@@ -168,6 +168,11 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public bool setSTUNEnabled(bool bEnabled) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setSTUNEnabled(swigCPtr, bEnabled);
+    return ret;
+  }
+
   public bool setTLSSecAgree(bool enabled) {
     bool ret = tinyWRAPPINVOKE.SipStack_setTLSSecAgree(swigCPtr, enabled);
     return ret;

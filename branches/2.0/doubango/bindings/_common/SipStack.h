@@ -67,6 +67,7 @@ public: /* API functions */
 	
 	bool setSTUNServer(const char* ip, unsigned short port);
 	bool setSTUNCred(const char* login, const char* password);
+	bool setSTUNEnabled(bool enabled);
 
 	bool setTLSSecAgree(bool enabled);
 	bool setSSLCertificates(const char* privKey, const char* pubKey, const char* caKey, bool verify = false);
