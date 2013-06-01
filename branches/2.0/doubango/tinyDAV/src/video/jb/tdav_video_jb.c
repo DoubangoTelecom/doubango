@@ -393,7 +393,7 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
 	tdav_video_jb_t* jb = (tdav_video_jb_t*)arg;
 	uint64_t delay;
 	uint16_t missing_seq_num_start = 0, prev_missing_seq_num_start = 0;
-	tsk_size_t missing_seq_num_count = 0, prev_lasted_missing_seq_num_count;
+	tsk_size_t missing_seq_num_count = 0, prev_lasted_missing_seq_num_count = 0;
 	const tdav_video_frame_t* frame;
 	tsk_list_item_t* item;
 	uint64_t next_decode_duration = (1000 / jb->fps), now;

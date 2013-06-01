@@ -463,6 +463,16 @@ bool MediaSessionMgr::defaultsGetRtcpMuxEnabled(){
 	return (tmedia_defaults_get_rtcpmux_enabled() == tsk_true);
 }
 
+
+bool MediaSessionMgr::defaultsSetStunEnabled(bool stun_enabled){
+	return (tmedia_defaults_set_stun_enabled(stun_enabled ? tsk_true : tsk_false) == 0);
+}
+bool MediaSessionMgr::defaultsSetIceStunEnabled(bool icestun_enabled){
+	return (tmedia_defaults_set_icestun_enabled(icestun_enabled ? tsk_true : tsk_false) == 0);
+}
+bool MediaSessionMgr::defaultsSetStunServer(const char* server_ip, uint16_t server_port, const char* usr_name /*= tsk_null*/, const char* usr_pwd /*= tsk_null*/){
+	return (tmedia_defaults_set_stun_server(server_ip, server_port, usr_name, usr_pwd) == 0);
+}
 bool MediaSessionMgr::defaultsSetIceEnabled(bool ice_enabled){
 	return (tmedia_defaults_set_ice_enabled(ice_enabled ? tsk_true : tsk_false) == 0);
 }

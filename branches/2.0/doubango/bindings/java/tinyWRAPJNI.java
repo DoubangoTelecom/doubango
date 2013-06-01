@@ -96,6 +96,11 @@ public class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_defaultsGetRtcpEnabled();
   public final static native boolean MediaSessionMgr_defaultsSetRtcpMuxEnabled(boolean jarg1);
   public final static native boolean MediaSessionMgr_defaultsGetRtcpMuxEnabled();
+  public final static native boolean MediaSessionMgr_defaultsSetStunEnabled(boolean jarg1);
+  public final static native boolean MediaSessionMgr_defaultsSetIceStunEnabled(boolean jarg1);
+  public final static native boolean MediaSessionMgr_defaultsSetStunServer__SWIG_0(String jarg1, int jarg2, String jarg3, String jarg4);
+  public final static native boolean MediaSessionMgr_defaultsSetStunServer__SWIG_1(String jarg1, int jarg2, String jarg3);
+  public final static native boolean MediaSessionMgr_defaultsSetStunServer__SWIG_2(String jarg1, int jarg2);
   public final static native boolean MediaSessionMgr_defaultsSetIceEnabled(boolean jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetByPassEncoding(boolean jarg1);
   public final static native boolean MediaSessionMgr_defaultsGetByPassEncoding();
@@ -503,6 +508,7 @@ public class tinyWRAPJNI {
   public final static native boolean SipStack_removeSigCompCompartment(long jarg1, SipStack jarg1_, String jarg2);
   public final static native boolean SipStack_setSTUNServer(long jarg1, SipStack jarg1_, String jarg2, int jarg3);
   public final static native boolean SipStack_setSTUNCred(long jarg1, SipStack jarg1_, String jarg2, String jarg3);
+  public final static native boolean SipStack_setSTUNEnabled(long jarg1, SipStack jarg1_, boolean jarg2);
   public final static native boolean SipStack_setTLSSecAgree(long jarg1, SipStack jarg1_, boolean jarg2);
   public final static native boolean SipStack_setSSLCertificates__SWIG_0(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4, boolean jarg5);
   public final static native boolean SipStack_setSSLCertificates__SWIG_1(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4);

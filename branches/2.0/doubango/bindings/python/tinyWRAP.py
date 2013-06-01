@@ -273,6 +273,12 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetRtcpMuxEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetRtcpMuxEnabled)
     __swig_getmethods__["defaultsGetRtcpMuxEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetRtcpMuxEnabled
     if _newclass:defaultsGetRtcpMuxEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetRtcpMuxEnabled)
+    __swig_getmethods__["defaultsSetStunEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetStunEnabled
+    if _newclass:defaultsSetStunEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetStunEnabled)
+    __swig_getmethods__["defaultsSetIceStunEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetIceStunEnabled
+    if _newclass:defaultsSetIceStunEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetIceStunEnabled)
+    __swig_getmethods__["defaultsSetStunServer"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetStunServer
+    if _newclass:defaultsSetStunServer = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetStunServer)
     __swig_getmethods__["defaultsSetIceEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetIceEnabled
     if _newclass:defaultsSetIceEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetIceEnabled)
     __swig_getmethods__["defaultsSetByPassEncoding"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetByPassEncoding
@@ -471,6 +477,18 @@ MediaSessionMgr_defaultsSetRtcpMuxEnabled = _tinyWRAP.MediaSessionMgr_defaultsSe
 def MediaSessionMgr_defaultsGetRtcpMuxEnabled():
   return _tinyWRAP.MediaSessionMgr_defaultsGetRtcpMuxEnabled()
 MediaSessionMgr_defaultsGetRtcpMuxEnabled = _tinyWRAP.MediaSessionMgr_defaultsGetRtcpMuxEnabled
+
+def MediaSessionMgr_defaultsSetStunEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetStunEnabled(*args)
+MediaSessionMgr_defaultsSetStunEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetStunEnabled
+
+def MediaSessionMgr_defaultsSetIceStunEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetIceStunEnabled(*args)
+MediaSessionMgr_defaultsSetIceStunEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetIceStunEnabled
+
+def MediaSessionMgr_defaultsSetStunServer(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetStunServer(*args)
+MediaSessionMgr_defaultsSetStunServer = _tinyWRAP.MediaSessionMgr_defaultsSetStunServer
 
 def MediaSessionMgr_defaultsSetIceEnabled(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetIceEnabled(*args)
@@ -1478,6 +1496,7 @@ class SipStack(SafeObject):
     def removeSigCompCompartment(self, *args): return _tinyWRAP.SipStack_removeSigCompCompartment(self, *args)
     def setSTUNServer(self, *args): return _tinyWRAP.SipStack_setSTUNServer(self, *args)
     def setSTUNCred(self, *args): return _tinyWRAP.SipStack_setSTUNCred(self, *args)
+    def setSTUNEnabled(self, *args): return _tinyWRAP.SipStack_setSTUNEnabled(self, *args)
     def setTLSSecAgree(self, *args): return _tinyWRAP.SipStack_setTLSSecAgree(self, *args)
     def setSSLCertificates(self, *args): return _tinyWRAP.SipStack_setSSLCertificates(self, *args)
     def setSSLCretificates(self, *args): return _tinyWRAP.SipStack_setSSLCretificates(self, *args)

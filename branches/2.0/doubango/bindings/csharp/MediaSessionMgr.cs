@@ -304,6 +304,31 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetStunEnabled(bool stun_enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetStunEnabled(stun_enabled);
+    return ret;
+  }
+
+  public static bool defaultsSetIceStunEnabled(bool icestun_enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetIceStunEnabled(icestun_enabled);
+    return ret;
+  }
+
+  public static bool defaultsSetStunServer(string server_ip, ushort server_port, string usr_name, string usr_pwd) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetStunServer__SWIG_0(server_ip, server_port, usr_name, usr_pwd);
+    return ret;
+  }
+
+  public static bool defaultsSetStunServer(string server_ip, ushort server_port, string usr_name) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetStunServer__SWIG_1(server_ip, server_port, usr_name);
+    return ret;
+  }
+
+  public static bool defaultsSetStunServer(string server_ip, ushort server_port) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetStunServer__SWIG_2(server_ip, server_port);
+    return ret;
+  }
+
   public static bool defaultsSetIceEnabled(bool ice_enabled) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetIceEnabled(ice_enabled);
     return ret;

@@ -139,6 +139,10 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_setSTUNCred(swigCPtr, this, login, password);
   }
 
+  public boolean setSTUNEnabled(boolean bEnabled) {
+    return tinyWRAPJNI.SipStack_setSTUNEnabled(swigCPtr, this, bEnabled);
+  }
+
   public boolean setTLSSecAgree(boolean enabled) {
     return tinyWRAPJNI.SipStack_setTLSSecAgree(swigCPtr, this, enabled);
   }

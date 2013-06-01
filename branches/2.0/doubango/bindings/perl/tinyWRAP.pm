@@ -283,6 +283,9 @@ sub DESTROY {
 *defaultsGetRtcpEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGetRtcpEnabled;
 *defaultsSetRtcpMuxEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetRtcpMuxEnabled;
 *defaultsGetRtcpMuxEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGetRtcpMuxEnabled;
+*defaultsSetStunEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetStunEnabled;
+*defaultsSetIceStunEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetIceStunEnabled;
+*defaultsSetStunServer = *tinyWRAPc::MediaSessionMgr_defaultsSetStunServer;
 *defaultsSetIceEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetIceEnabled;
 *defaultsSetByPassEncoding = *tinyWRAPc::MediaSessionMgr_defaultsSetByPassEncoding;
 *defaultsGetByPassEncoding = *tinyWRAPc::MediaSessionMgr_defaultsGetByPassEncoding;
@@ -1956,6 +1959,7 @@ sub DESTROY {
 *removeSigCompCompartment = *tinyWRAPc::SipStack_removeSigCompCompartment;
 *setSTUNServer = *tinyWRAPc::SipStack_setSTUNServer;
 *setSTUNCred = *tinyWRAPc::SipStack_setSTUNCred;
+*setSTUNEnabled = *tinyWRAPc::SipStack_setSTUNEnabled;
 *setTLSSecAgree = *tinyWRAPc::SipStack_setTLSSecAgree;
 *setSSLCertificates = *tinyWRAPc::SipStack_setSSLCertificates;
 *setSSLCretificates = *tinyWRAPc::SipStack_setSSLCretificates;

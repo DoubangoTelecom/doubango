@@ -929,10 +929,12 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidates_2_GatheringHostCandidatesDo
 	
 	ret = _tnet_ice_ctx_signal_async(self, tnet_ice_event_type_gathering_host_candidates_succeed, "Gathering host candidates succeed");
 	if(ret == 0){
-		if(self->stun.server_addr && self->stun.server_port){
+		if(!tsk_strnullORempty(self->stun.server_addr) && self->stun.server_port > 0){
+			TSK_DEBUG_INFO("ICE using STUN server: %s:%u", self->stun.server_addr, self->stun.server_port);
 			ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_GatherReflexiveCandidates);
 		}
 		else{
+			TSK_DEBUG_INFO("Do not gather reflexive candidates because ICE-STUN is disabled");
 			ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_GatheringComplet);
 		}
 	}
@@ -1568,6 +1570,7 @@ int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, tnet_ic
 	
 	return 0;
 }
+
 
 static int _tnet_ice_ctx_fsm_act_async(tnet_ice_ctx_t* self, tsk_fsm_action_id action_id)
 {

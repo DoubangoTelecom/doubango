@@ -110,6 +110,8 @@ typedef enum tsip_stack_param_type_e
 	tsip_pname_header,
 
 	/* Nat Traversal */
+	tsip_pname_icestun_enabled,
+	tsip_pname_stun_enabled,
 	tsip_pname_stun_server,
 	tsip_pname_stun_cred,
 
@@ -518,6 +520,8 @@ int ret = tsip_stack_set(stack,
 */
 #define TSIP_STACK_SET_STUN_SERVER(IP_STR, PORT_UINT)	tsip_pname_stun_server, (const char*)IP_STR, (unsigned)PORT_UINT
 #define TSIP_STACK_SET_STUN_CRED(USR_STR, PASSORD_STR)	tsip_pname_stun_cred, (const char*)USR_STR, (const char*)PASSORD_STR
+#define TSIP_STACK_SET_STUN_ENABLED(ENABLED_BOOL)		tsip_pname_stun_enabled, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_ICE_STUN_ENABLED(ENABLED_BOOL)	tsip_pname_icestun_enabled, (tsk_bool_t)ENABLED_BOOL
 
 /* === User Data === */
 /**@ingroup tsip_stack_group
@@ -639,7 +643,11 @@ typedef struct tsip_stack_s
 			tnet_port_t port;
 			char* login;
 			char* pwd;
+			tsk_bool_t enabled;
 		} stun;
+		struct{
+			tsk_bool_t stun_enabled;
+		} ice;
 		// TURN
 		// ICE
 		tnet_nat_context_handle_t* ctx;
