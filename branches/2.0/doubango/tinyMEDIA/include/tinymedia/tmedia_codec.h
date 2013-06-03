@@ -226,6 +226,10 @@ typedef struct tmedia_codec_s
 	char* format;
 	//! bandwidth level
 	tmedia_bandwidth_level_t bl; // @deprecated
+	//! maximum bandwidth to use for outgoing RTP (INT_MAX or <=0 means undefined)
+	int32_t bandwidth_max_upload;
+	//! maximum bandwidth to use for incoming RTP (INT_MAX or <=0 means undefined)
+	int32_t bandwidth_max_download;
 	//! the negociated format (only useful for codecs with dyn. payload type)
 	char* neg_format;
 	//! whether this is a passthrough codec

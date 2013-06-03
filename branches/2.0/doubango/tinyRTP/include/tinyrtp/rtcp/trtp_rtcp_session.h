@@ -48,6 +48,7 @@ int trtp_rtcp_session_set_callback(struct trtp_rtcp_session_s* self, trtp_rtcp_c
 #if HAVE_SRTP
 int trtp_rtcp_session_set_srtp_sess(struct trtp_rtcp_session_s* self, const srtp_t* session);
 #endif
+int trtp_rtcp_session_set_app_bandwidth_max(struct trtp_rtcp_session_s* self, int32_t bw_upload_kbps, int32_t bw_download_kbps);
 int trtp_rtcp_session_start(struct trtp_rtcp_session_s* self, tnet_fd_t local_fd, const struct sockaddr* remote_addr);
 int trtp_rtcp_session_stop(struct trtp_rtcp_session_s* self);
 int trtp_rtcp_session_process_rtp_out(struct trtp_rtcp_session_s* self, const struct trtp_rtp_packet_s* packet_rtp, tsk_size_t size);

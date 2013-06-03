@@ -293,10 +293,17 @@ tmedia_bandwidth_level_t MediaSessionMgr::defaultsGetBandwidthLevel() // @deprec
 {
 	return tmedia_defaults_get_bl();
 }
-
+bool MediaSessionMgr::defaultsSetVideoMotionRank(int32_t video_motion_rank)
+{
+	return (tmedia_defaults_set_video_motion_rank(video_motion_rank) == 0);
+}
 bool MediaSessionMgr::defaultsSetBandwidthVideoUploadMax(int32_t bw_video_up_max_kbps)
 {
 	return (tmedia_defaults_set_bandwidth_video_upload_max(bw_video_up_max_kbps) == 0);
+}
+bool MediaSessionMgr::defaultsSetBandwidthVideoDownloadMax(int32_t bw_video_down_max_kbps)
+{
+	return (tmedia_defaults_set_bandwidth_video_download_max(bw_video_down_max_kbps) == 0);
 }
 
 bool MediaSessionMgr::defaultsSetPrefVideoSize(tmedia_pref_video_size_t pref_video_size)

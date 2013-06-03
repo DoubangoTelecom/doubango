@@ -45,6 +45,7 @@
 #include "tls/tnet_dtls.h"
 
 #include <math.h> /* log10 */
+#include <limits.h> /* INT_MAX */
 
 
 #if HAVE_SRTP
@@ -211,6 +212,8 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 	self->use_rtcp = tmedia_defaults_get_rtcp_enabled();
 	self->use_rtcpmux = tmedia_defaults_get_rtcpmux_enabled();
 	self->use_avpf = (profile == tmedia_profile_rtcweb); // negotiate if not RTCWeb profile or RFC5939 is in action
+	self->bandwidth_max_upload = (media_type == tmedia_video ? tmedia_defaults_get_bandwidth_video_upload_max() : INT_MAX); // INT_MAX or <=0 means undefined
+	self->bandwidth_max_download = (media_type == tmedia_video ? tmedia_defaults_get_bandwidth_video_download_max() : INT_MAX); // INT_MAX or <=0 means undefined
 #if HAVE_SRTP
 		// this is the default value and can be updated by the user using "session_set('srtp-mode', mode_e)"
 		self->srtp_type = (profile == tmedia_profile_rtcweb) ? tmedia_srtp_type_sdes : tmedia_defaults_get_srtp_type();
@@ -500,10 +503,11 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 		ret = trtp_manager_set_dtls_callback(self->rtp_manager, self, _tdav_session_av_srtp_dtls_cb);
 #endif /* HAVE_SRTP */
 
-		// these information will be updated when the RTP manager starts if ICE is enabled
+		// network information will be updated when the RTP manager starts if ICE is enabled
 		ret = trtp_manager_set_rtp_remote(self->rtp_manager, self->remote_ip, self->remote_port);
-		ret = trtp_manager_set_payload_type(self->rtp_manager, best_codec->neg_format ? atoi(best_codec->neg_format) : atoi(best_codec->format));
 		self->rtp_manager->use_rtcpmux = self->use_rtcpmux;
+		ret = trtp_manager_set_payload_type(self->rtp_manager, best_codec->neg_format ? atoi(best_codec->neg_format) : atoi(best_codec->format));
+		ret = trtp_manager_set_app_bandwidth_max(self->rtp_manager, self->bandwidth_max_upload, self->bandwidth_max_download);
 		ret = trtp_manager_start(self->rtp_manager);
 
 		// because of AudioUnit under iOS => prepare both consumer and producer then start() at the same time
@@ -707,6 +711,12 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 					TSDP_HEADER_A_VA_ARGS("rtcp-fb", "* nack pli"),
 					TSDP_HEADER_A_VA_ARGS("rtcp-fb", "* ccm fir"),
 					tsk_null);
+				// http://tools.ietf.org/html/rfc3556
+				if(self->bandwidth_max_download > 0 && self->bandwidth_max_download != INT_MAX){ // INT_MAX or <=0 means undefined
+					tsdp_header_M_add_headers(base->M.lo,
+						TSDP_HEADER_B_VA_ARGS("AS", self->bandwidth_max_download),
+						tsk_null);
+				}
 			}
 		}
 		else{

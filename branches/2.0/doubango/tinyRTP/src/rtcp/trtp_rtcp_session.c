@@ -49,6 +49,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h> /* INT_MAX */
 
 #ifdef _MSC_VER
 static double drand48() { return (((double)rand()) / RAND_MAX); }
@@ -269,6 +270,9 @@ typedef struct trtp_rtcp_session_s
 	const void* callback_data;
 	trtp_rtcp_cb_f callback;
 
+	int32_t app_bw_max_upload; // application specific (kbps)
+	int32_t app_bw_max_download; // application specific (kbps)
+
 	struct{
 		tsk_timer_manager_handle_t* handle_global;
 		tsk_timer_id_t id_report;
@@ -325,6 +329,8 @@ static tsk_object_t* trtp_rtcp_session_ctor(tsk_object_t * self, va_list * app)
 {
 	trtp_rtcp_session_t *session = self;
 	if(session){
+		session->app_bw_max_upload = INT_MAX; // INT_MAX or <=0 means undefined
+		session->app_bw_max_download = INT_MAX; // INT_MAX or <=0 means undefined
 		session->sources = tsk_list_create();
 		session->timer.id_report = TSK_INVALID_TIMER_ID;
 		session->timer.id_bye = TSK_INVALID_TIMER_ID;
@@ -431,6 +437,17 @@ int trtp_rtcp_session_set_srtp_sess(trtp_rtcp_session_t* self, const srtp_t* ses
 	return 0;
 }
 #endif
+
+int trtp_rtcp_session_set_app_bandwidth_max(trtp_rtcp_session_t* self, int32_t bw_upload_kbps, int32_t bw_download_kbps)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->app_bw_max_upload = bw_upload_kbps;
+	self->app_bw_max_download = bw_download_kbps;
+	return 0;
+}
 
 int trtp_rtcp_session_start(trtp_rtcp_session_t* self, tnet_fd_t local_fd, const struct sockaddr * remote_addr)
 {
@@ -1167,32 +1184,15 @@ static tsk_size_t SendRTCPReport(trtp_rtcp_session_t* session, event_ e)
 				}
 			}
 
-			// RFC 4885 - 3.1. Compound RTCP Feedback Packets
-			// The FB message(s) MUST be placed in the compound packet after RR and
-			// SDES RTCP packets defined in [1].  The ordering with respect to other
-			// RTCP extensions is not defined.
-			// RFC 5104 Full Intra Request (FIR)
-			if(packet_lost){
-#if 0 // Will be managed by the jitter buffer
-				trtp_rtcp_report_psfb_t* psfb_fir = trtp_rtcp_report_psfb_create_fir(session->fir_seqnr++, session->source_local->ssrc, source->ssrc);
-				if(psfb_fir){
-					trtp_rtcp_packet_add_packet((trtp_rtcp_packet_t*)sr, (trtp_rtcp_packet_t*)psfb_fir, tsk_false);
-					TSK_OBJECT_SAFE_FREE(psfb_fir);
-				}
-				TSK_DEBUG_INFO("RTCP Packet Lost (Sending FIR)");
-#endif
-			}
-
-#if 0
 			// draft-alvestrand-rmcat-remb-02
-			{
-				trtp_rtcp_report_psfb_t* psfb_afb_remb = trtp_rtcp_report_psfb_create_afb_remb(session->source_local->ssrc, source->ssrc, 150000);
+			if(session->app_bw_max_download > 0 && session->app_bw_max_download != INT_MAX){ // INT_MAX or <=0 means undefined
+				// app_bw_max_download unit is kbps while create_afb_remb() expect bps
+				trtp_rtcp_report_psfb_t* psfb_afb_remb = trtp_rtcp_report_psfb_create_afb_remb(session->source_local->ssrc, source->ssrc, (session->app_bw_max_download * 1024));
 				if(psfb_afb_remb){
 					trtp_rtcp_packet_add_packet((trtp_rtcp_packet_t*)sr, (trtp_rtcp_packet_t*)psfb_afb_remb, tsk_false);
 					TSK_OBJECT_SAFE_FREE(psfb_afb_remb);
 				}
 			}
-#endif
 
 			// serialize and send the packet
 			ret = _trtp_rtcp_session_send_pkt(session, (trtp_rtcp_packet_t*)sr);

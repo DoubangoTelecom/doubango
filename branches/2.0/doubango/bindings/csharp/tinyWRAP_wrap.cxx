@@ -1806,6 +1806,18 @@ SWIGEXPORT int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetBandwidthLevel() {
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetVideoMotionRank(int jarg1) {
+  unsigned int jresult ;
+  int32_t arg1 ;
+  bool result;
+  
+  arg1 = (int32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetVideoMotionRank(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(int jarg1) {
   unsigned int jresult ;
   int32_t arg1 ;
@@ -1813,6 +1825,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetBandwidthV
   
   arg1 = (int32_t)jarg1; 
   result = (bool)MediaSessionMgr::defaultsSetBandwidthVideoUploadMax(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax(int jarg1) {
+  unsigned int jresult ;
+  int32_t arg1 ;
+  bool result;
+  
+  arg1 = (int32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetBandwidthVideoDownloadMax(arg1);
   jresult = result; 
   return jresult;
 }
@@ -7393,6 +7417,20 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_removeSigCompCompartment(voi
   arg1 = (SipStack *)jarg1; 
   arg2 = (char *)jarg2; 
   result = (bool)(arg1)->removeSigCompCompartment((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setSTUNEnabledForICE(void * jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  bool arg2 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  result = (bool)(arg1)->setSTUNEnabledForICE(arg2);
   jresult = result; 
   return jresult;
 }

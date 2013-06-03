@@ -36,6 +36,8 @@
 #include "tsk_md5.h"
 #include "tsk_debug.h"
 
+#include <limits.h> /* INT_MAX */
+
 #if !defined(TRTP_TRANSPORT_NAME)
 #	define TRTP_TRANSPORT_NAME "RTP/RTCP Manager"
 #endif
@@ -1285,6 +1287,7 @@ int trtp_manager_start(trtp_manager_t* self)
 		}
 		if(self->rtcp.session){
 			ret = trtp_rtcp_session_set_callback(self->rtcp.session, self->rtcp.cb.fun, self->rtcp.cb.usrdata);
+			ret = trtp_rtcp_session_set_app_bandwidth_max(self->rtcp.session, self->app_bw_max_upload, self->app_bw_max_download);
 			if((ret = trtp_rtcp_session_start(self->rtcp.session, local_rtcp_fd, (const struct sockaddr *)&self->rtcp.remote_addr))){
 				TSK_DEBUG_ERROR("Failed to start RTCP session");
 				goto bail;
@@ -1464,6 +1467,18 @@ tsk_size_t trtp_manager_send_rtp_raw(trtp_manager_t* self, const void* data, tsk
 	return 0;
 }
 
+int trtp_manager_set_app_bandwidth_max(trtp_manager_t* self, int32_t bw_upload_kbps, int32_t bw_download_kbps)
+{
+	if(self){
+		self->app_bw_max_upload = bw_upload_kbps;
+		self->app_bw_max_download = bw_download_kbps;
+		if(self->rtcp.session){
+			return trtp_rtcp_session_set_app_bandwidth_max(self->rtcp.session, bw_upload_kbps, bw_download_kbps);
+		}
+		return 0;
+	}
+	return -1;
+}
 int trtp_manager_signal_pkt_loss(trtp_manager_t* self, uint32_t ssrc_media, const uint16_t* seq_nums, tsk_size_t count)
 {
 	if(self && self->rtcp.session){
@@ -1551,6 +1566,8 @@ static tsk_object_t* trtp_manager_ctor(tsk_object_t * self, va_list * app)
 		manager->port_range.start = tmedia_defaults_get_rtp_port_range_start();
 		manager->port_range.stop = tmedia_defaults_get_rtp_port_range_stop();
 		manager->is_force_symetric_rtp = tmedia_defaults_get_rtp_symetric_enabled();
+		manager->app_bw_max_upload = INT_MAX; // INT_MAX or <=0 means undefined
+		manager->app_bw_max_download = INT_MAX; // INT_MAX or <=0 means undefined
 
 		/* srtp */
 #if HAVE_SRTP

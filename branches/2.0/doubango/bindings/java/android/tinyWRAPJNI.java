@@ -59,7 +59,9 @@ public class tinyWRAPJNI {
   public final static native int MediaSessionMgr_defaultsGetProfile();
   public final static native boolean MediaSessionMgr_defaultsSetBandwidthLevel(int jarg1);
   public final static native int MediaSessionMgr_defaultsGetBandwidthLevel();
+  public final static native boolean MediaSessionMgr_defaultsSetVideoMotionRank(int jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(int jarg1);
+  public final static native boolean MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax(int jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetPrefVideoSize(int jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetJbMargin(long jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetJbMaxLateRate(long jarg1);
@@ -506,6 +508,7 @@ public class tinyWRAPJNI {
   public final static native boolean SipStack_setSigCompParams(long jarg1, SipStack jarg1_, long jarg2, long jarg3, long jarg4, boolean jarg5);
   public final static native boolean SipStack_addSigCompCompartment(long jarg1, SipStack jarg1_, String jarg2);
   public final static native boolean SipStack_removeSigCompCompartment(long jarg1, SipStack jarg1_, String jarg2);
+  public final static native boolean SipStack_setSTUNEnabledForICE(long jarg1, SipStack jarg1_, boolean jarg2);
   public final static native boolean SipStack_setSTUNServer(long jarg1, SipStack jarg1_, String jarg2, int jarg3);
   public final static native boolean SipStack_setSTUNCred(long jarg1, SipStack jarg1_, String jarg2, String jarg3);
   public final static native boolean SipStack_setSTUNEnabled(long jarg1, SipStack jarg1_, boolean jarg2);

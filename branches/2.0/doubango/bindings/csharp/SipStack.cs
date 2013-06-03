@@ -158,6 +158,11 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public bool setSTUNEnabledForICE(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setSTUNEnabledForICE(swigCPtr, enabled);
+    return ret;
+  }
+
   public bool setSTUNServer(string ip, ushort port) {
     bool ret = tinyWRAPPINVOKE.SipStack_setSTUNServer(swigCPtr, ip, port);
     return ret;
@@ -168,8 +173,8 @@ public class SipStack : SafeObject {
     return ret;
   }
 
-  public bool setSTUNEnabled(bool bEnabled) {
-    bool ret = tinyWRAPPINVOKE.SipStack_setSTUNEnabled(swigCPtr, bEnabled);
+  public bool setSTUNEnabled(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setSTUNEnabled(swigCPtr, enabled);
     return ret;
   }
 

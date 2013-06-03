@@ -252,6 +252,8 @@ TINYMEDIA_API int tmedia_parse_video_imageattr(const char* imageattr, tmedia_pre
 TINYMEDIA_API char* tmedia_get_video_fmtp(tmedia_pref_video_size_t pref_vs);
 TINYMEDIA_API char* tmedia_get_video_imageattr(tmedia_pref_video_size_t pref_vs, unsigned in_width, unsigned in_height, unsigned out_width, unsigned out_height);
 TINYMEDIA_API int tmedia_get_video_quality(tmedia_bandwidth_level_t bl);
+TINYMEDIA_API int32_t tmedia_get_video_bandwidth_kbps(unsigned width, unsigned height, unsigned fps, unsigned motion_rank);
+TINYMEDIA_API int32_t tmedia_get_video_bandwidth_kbps_2(unsigned width, unsigned height, unsigned fps);
 #define tmedia_get_video_qscale tmedia_get_video_quality
 
 TMEDIA_END_DECLS

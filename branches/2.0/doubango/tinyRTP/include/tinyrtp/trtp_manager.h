@@ -53,6 +53,8 @@ typedef struct trtp_manager_s
 	tsk_bool_t is_force_symetric_rtp;
 	tsk_bool_t is_symetric_rtp_checked;
 	tsk_bool_t is_symetric_rtcp_checked;
+	int32_t app_bw_max_upload; // application specific (kbps)
+	int32_t app_bw_max_download; // application specific (kbps)
 
 	tnet_transport_t* transport;
 
@@ -200,6 +202,7 @@ TINYRTP_API int trtp_manager_start(trtp_manager_t* self);
 TINYRTP_API tsk_size_t trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t size, uint32_t duration, tsk_bool_t marker, tsk_bool_t last_packet);
 TINYRTP_API tsk_size_t trtp_manager_send_rtp_packet(trtp_manager_t* self, const struct trtp_rtp_packet_s* packet, tsk_bool_t bypass_encrypt);
 TINYRTP_API tsk_size_t trtp_manager_send_rtp_raw(trtp_manager_t* self, const void* data, tsk_size_t size);
+TINYRTP_API int trtp_manager_set_app_bandwidth_max(trtp_manager_t* self, int32_t bw_upload_kbps, int32_t bw_download_kbps);
 TINYRTP_API int trtp_manager_signal_pkt_loss(trtp_manager_t* self, uint32_t ssrc_media, const uint16_t* seq_nums, tsk_size_t count);
 TINYRTP_API int trtp_manager_signal_frame_corrupted(trtp_manager_t* self, uint32_t ssrc_media);
 TINYRTP_API int trtp_manager_signal_jb_error(trtp_manager_t* self, uint32_t ssrc_media);

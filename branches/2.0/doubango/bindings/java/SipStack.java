@@ -131,6 +131,10 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_removeSigCompCompartment(swigCPtr, this, compId);
   }
 
+  public boolean setSTUNEnabledForICE(boolean enabled) {
+    return tinyWRAPJNI.SipStack_setSTUNEnabledForICE(swigCPtr, this, enabled);
+  }
+
   public boolean setSTUNServer(String ip, int port) {
     return tinyWRAPJNI.SipStack_setSTUNServer(swigCPtr, this, ip, port);
   }
@@ -139,8 +143,8 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_setSTUNCred(swigCPtr, this, login, password);
   }
 
-  public boolean setSTUNEnabled(boolean bEnabled) {
-    return tinyWRAPJNI.SipStack_setSTUNEnabled(swigCPtr, this, bEnabled);
+  public boolean setSTUNEnabled(boolean enabled) {
+    return tinyWRAPJNI.SipStack_setSTUNEnabled(swigCPtr, this, enabled);
   }
 
   public boolean setTLSSecAgree(boolean enabled) {
