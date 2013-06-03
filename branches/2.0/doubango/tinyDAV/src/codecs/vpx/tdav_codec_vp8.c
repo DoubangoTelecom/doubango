@@ -120,7 +120,7 @@ static void tdav_codec_vp8_rtp_callback(tdav_codec_vp8_t *self, const void *data
 static int tdav_codec_vp8_set(tmedia_codec_t* self, const tmedia_param_t* param)
 {
 	tdav_codec_vp8_t* vp8 = (tdav_codec_vp8_t*)self;
-	vpx_codec_err_t vpx_ret;
+	vpx_codec_err_t vpx_ret = VPX_CODEC_OK;
 
 	if(!vp8->encoder.initialized){
 		TSK_DEBUG_ERROR("Codec not initialized");
@@ -138,14 +138,14 @@ static int tdav_codec_vp8_set(tmedia_codec_t* self, const tmedia_param_t* param)
 					}
 				case tmedia_codec_action_bw_down:
 					{
-						vp8->encoder.cfg.rc_target_bitrate = ((vp8->encoder.cfg.rc_target_bitrate << 1) / 3);
+						vp8->encoder.cfg.rc_target_bitrate = TSK_CLAMP(0, (int32_t)((vp8->encoder.cfg.rc_target_bitrate << 1) / 3), TMEDIA_CODEC(vp8)->bandwidth_max_upload);
 						TSK_DEBUG_INFO("New target bitrate = %d kbps", vp8->encoder.cfg.rc_target_bitrate);
 						reconf = tsk_true;
 						break;
 					}
 				case tmedia_codec_action_bw_up:
 					{
-						vp8->encoder.cfg.rc_target_bitrate = ((vp8->encoder.cfg.rc_target_bitrate * 3) >> 1);
+						vp8->encoder.cfg.rc_target_bitrate = TSK_CLAMP(0, (int32_t)((vp8->encoder.cfg.rc_target_bitrate * 3) >> 1), TMEDIA_CODEC(vp8)->bandwidth_max_upload);
 						TSK_DEBUG_INFO("New target bitrate = %d kbps", vp8->encoder.cfg.rc_target_bitrate);
 						reconf = tsk_true;
 						break;
@@ -157,10 +157,17 @@ static int tdav_codec_vp8_set(tmedia_codec_t* self, const tmedia_param_t* param)
 					TSK_DEBUG_ERROR("vpx_codec_enc_config_set failed with error =%s", vpx_codec_err_to_string(vpx_ret));
 				}
 			}
+			return (vpx_ret == VPX_CODEC_OK) ? 0 : -2;
+		}
+		else if(tsk_striequals(param->key, "bandwidth-max-upload")){
+			int32_t bw_max_upload = *((int32_t*)param->value);
+			TSK_DEBUG_INFO("VP8 codec: bandwidth-max-upload=%d", bw_max_upload);
+			TMEDIA_CODEC(vp8)->bandwidth_max_upload = bw_max_upload;
+			return 0;
 		}
 		else if(tsk_striequals(param->key, "rotation")){
 			// IMPORTANT: changing resolution requires at least libvpx v1.1.0 "Eider"
-			int rotation = *((int32_t*)param->value);
+			int32_t rotation = *((int32_t*)param->value);
 			if(vp8->encoder.rotation != rotation){
 				vp8->encoder.rotation = rotation;
 				if(vp8->encoder.initialized){
@@ -665,7 +672,11 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 	}
 	self->encoder.cfg.g_timebase.num = 1;
 	self->encoder.cfg.g_timebase.den = TMEDIA_CODEC_VIDEO(self)->out.fps;
-	self->encoder.cfg.rc_target_bitrate = self->encoder.target_bitrate = TSK_CLAMP(0, (int32_t)(TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 352 / 288), self->encoder.max_bw_kpbs);
+	self->encoder.cfg.rc_target_bitrate = self->encoder.target_bitrate = TSK_CLAMP(
+		0, 
+		tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(self)->out.width, TMEDIA_CODEC_VIDEO(self)->out.height, TMEDIA_CODEC_VIDEO(self)->out.fps),
+		self->encoder.max_bw_kpbs
+	);
 	self->encoder.cfg.g_w = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.height : TMEDIA_CODEC_VIDEO(self)->out.width;
 	self->encoder.cfg.g_h = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
 	self->encoder.cfg.kf_mode = VPX_KF_AUTO;

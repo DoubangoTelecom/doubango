@@ -97,7 +97,9 @@ public:
 	static tmedia_profile_t defaultsGetProfile();
 	static bool defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl); // @deprecated
 	static tmedia_bandwidth_level_t defaultsGetBandwidthLevel(); // @deprecated
+	static bool defaultsSetVideoMotionRank(int32_t video_motion_rank);
 	static bool defaultsSetBandwidthVideoUploadMax(int32_t bw_video_up_max_kbps);
+	static bool defaultsSetBandwidthVideoDownloadMax(int32_t bw_video_down_max_kbps);
 	static bool defaultsSetPrefVideoSize(tmedia_pref_video_size_t pref_video_size);
 	static bool defaultsSetJbMargin(uint32_t jb_margin_ms);
 	static bool defaultsSetJbMaxLateRate(uint32_t jb_late_rate_percent);

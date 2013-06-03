@@ -36,6 +36,8 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#include <limits.h> /* INT_MAX */
+
 /**@defgroup tmedia_codec_group Codecs
 */
 
@@ -80,6 +82,8 @@ int tmedia_codec_init(tmedia_codec_t* self, tmedia_type_t type, const char* name
 	tsk_strupdate(&self->name, name);
 	tsk_strupdate(&self->desc,desc);
 	tsk_strupdate(&self->format, format);
+	if(!self->bandwidth_max_upload) self->bandwidth_max_upload = (type == tmedia_video ? tmedia_defaults_get_bandwidth_video_upload_max() : INT_MAX); // INT_MAX or <=0 means undefined
+	if(!self->bandwidth_max_download) self->bandwidth_max_download = (type == tmedia_video ? tmedia_defaults_get_bandwidth_video_download_max() : INT_MAX); // INT_MAX or <=0 means undefined
 	if(!self->in.rate) self->in.rate = self->plugin->rate;
 	if(!self->out.rate) self->out.rate = self->plugin->rate;
 

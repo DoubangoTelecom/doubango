@@ -119,8 +119,18 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetVideoMotionRank(int video_motion_rank) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetVideoMotionRank(video_motion_rank);
+    return ret;
+  }
+
   public static bool defaultsSetBandwidthVideoUploadMax(int bw_video_up_max_kbps) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(bw_video_up_max_kbps);
+    return ret;
+  }
+
+  public static bool defaultsSetBandwidthVideoDownloadMax(int bw_video_down_max_kbps) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax(bw_video_down_max_kbps);
     return ret;
   }
 

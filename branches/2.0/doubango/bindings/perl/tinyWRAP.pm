@@ -246,7 +246,9 @@ sub DESTROY {
 *defaultsGetProfile = *tinyWRAPc::MediaSessionMgr_defaultsGetProfile;
 *defaultsSetBandwidthLevel = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthLevel;
 *defaultsGetBandwidthLevel = *tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel;
+*defaultsSetVideoMotionRank = *tinyWRAPc::MediaSessionMgr_defaultsSetVideoMotionRank;
 *defaultsSetBandwidthVideoUploadMax = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoUploadMax;
+*defaultsSetBandwidthVideoDownloadMax = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax;
 *defaultsSetPrefVideoSize = *tinyWRAPc::MediaSessionMgr_defaultsSetPrefVideoSize;
 *defaultsSetJbMargin = *tinyWRAPc::MediaSessionMgr_defaultsSetJbMargin;
 *defaultsSetJbMaxLateRate = *tinyWRAPc::MediaSessionMgr_defaultsSetJbMaxLateRate;
@@ -1957,6 +1959,7 @@ sub DESTROY {
 *setSigCompParams = *tinyWRAPc::SipStack_setSigCompParams;
 *addSigCompCompartment = *tinyWRAPc::SipStack_addSigCompCompartment;
 *removeSigCompCompartment = *tinyWRAPc::SipStack_removeSigCompCompartment;
+*setSTUNEnabledForICE = *tinyWRAPc::SipStack_setSTUNEnabledForICE;
 *setSTUNServer = *tinyWRAPc::SipStack_setSTUNServer;
 *setSTUNCred = *tinyWRAPc::SipStack_setSTUNCred;
 *setSTUNEnabled = *tinyWRAPc::SipStack_setSTUNEnabled;

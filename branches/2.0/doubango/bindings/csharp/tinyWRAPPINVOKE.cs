@@ -336,8 +336,14 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetBandwidthLevel")]
   public static extern int MediaSessionMgr_defaultsGetBandwidthLevel();
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetVideoMotionRank")]
+  public static extern bool MediaSessionMgr_defaultsSetVideoMotionRank(int jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax")]
   public static extern bool MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(int jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax")]
+  public static extern bool MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax(int jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetPrefVideoSize")]
   public static extern bool MediaSessionMgr_defaultsSetPrefVideoSize(int jarg1);
@@ -1655,6 +1661,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_removeSigCompCompartment")]
   public static extern bool SipStack_removeSigCompCompartment(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSTUNEnabledForICE")]
+  public static extern bool SipStack_setSTUNEnabledForICE(HandleRef jarg1, bool jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setSTUNServer")]
   public static extern bool SipStack_setSTUNServer(HandleRef jarg1, string jarg2, ushort jarg3);

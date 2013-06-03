@@ -199,8 +199,12 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetBandwidthLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetBandwidthLevel)
     __swig_getmethods__["defaultsGetBandwidthLevel"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel
     if _newclass:defaultsGetBandwidthLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel)
+    __swig_getmethods__["defaultsSetVideoMotionRank"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetVideoMotionRank
+    if _newclass:defaultsSetVideoMotionRank = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetVideoMotionRank)
     __swig_getmethods__["defaultsSetBandwidthVideoUploadMax"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax
     if _newclass:defaultsSetBandwidthVideoUploadMax = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax)
+    __swig_getmethods__["defaultsSetBandwidthVideoDownloadMax"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax
+    if _newclass:defaultsSetBandwidthVideoDownloadMax = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax)
     __swig_getmethods__["defaultsSetPrefVideoSize"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetPrefVideoSize
     if _newclass:defaultsSetPrefVideoSize = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetPrefVideoSize)
     __swig_getmethods__["defaultsSetJbMargin"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetJbMargin
@@ -330,9 +334,17 @@ def MediaSessionMgr_defaultsGetBandwidthLevel():
   return _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel()
 MediaSessionMgr_defaultsGetBandwidthLevel = _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel
 
+def MediaSessionMgr_defaultsSetVideoMotionRank(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetVideoMotionRank(*args)
+MediaSessionMgr_defaultsSetVideoMotionRank = _tinyWRAP.MediaSessionMgr_defaultsSetVideoMotionRank
+
 def MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(*args)
 MediaSessionMgr_defaultsSetBandwidthVideoUploadMax = _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax
+
+def MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax(*args)
+MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax = _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax
 
 def MediaSessionMgr_defaultsSetPrefVideoSize(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetPrefVideoSize(*args)
@@ -1494,6 +1506,7 @@ class SipStack(SafeObject):
     def setSigCompParams(self, *args): return _tinyWRAP.SipStack_setSigCompParams(self, *args)
     def addSigCompCompartment(self, *args): return _tinyWRAP.SipStack_addSigCompCompartment(self, *args)
     def removeSigCompCompartment(self, *args): return _tinyWRAP.SipStack_removeSigCompCompartment(self, *args)
+    def setSTUNEnabledForICE(self, *args): return _tinyWRAP.SipStack_setSTUNEnabledForICE(self, *args)
     def setSTUNServer(self, *args): return _tinyWRAP.SipStack_setSTUNServer(self, *args)
     def setSTUNCred(self, *args): return _tinyWRAP.SipStack_setSTUNCred(self, *args)
     def setSTUNEnabled(self, *args): return _tinyWRAP.SipStack_setSTUNEnabled(self, *args)

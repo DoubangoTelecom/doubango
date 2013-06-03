@@ -31,6 +31,7 @@
 
 #include "tinymedia/tmedia_session.h"
 #include "tinymedia/tmedia_imageattr.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tsk_params.h"
 #include "tsk_debug.h"
@@ -313,4 +314,14 @@ int tmedia_get_video_quality(tmedia_bandwidth_level_t bl)
 		case tmedia_bl_hight: return 5;
 		case tmedia_bl_unrestricted: return 1;
 	}
+}
+
+int32_t tmedia_get_video_bandwidth_kbps(unsigned width, unsigned height, unsigned fps, unsigned motion_rank)
+{
+	return (int32_t)((width * height * fps * motion_rank * 0.07) / 1024);
+}
+
+int32_t tmedia_get_video_bandwidth_kbps_2(unsigned width, unsigned height, unsigned fps)
+{
+	return tmedia_get_video_bandwidth_kbps(width, height, fps, tmedia_defaults_get_video_motion_rank());
 }

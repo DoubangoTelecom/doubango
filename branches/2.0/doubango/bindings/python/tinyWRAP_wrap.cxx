@@ -6993,6 +6993,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetVideoMotionRank(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int32_t arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetVideoMotionRank",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetVideoMotionRank" "', argument " "1"" of type '" "int32_t""'");
+  } 
+  arg1 = static_cast< int32_t >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetVideoMotionRank(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   int32_t arg1 ;
@@ -7008,6 +7030,28 @@ SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(Py
   } 
   arg1 = static_cast< int32_t >(val1);
   result = (bool)MediaSessionMgr::defaultsSetBandwidthVideoUploadMax(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int32_t arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax" "', argument " "1"" of type '" "int32_t""'");
+  } 
+  arg1 = static_cast< int32_t >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetBandwidthVideoDownloadMax(arg1);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -21556,6 +21600,37 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SipStack_setSTUNEnabledForICE(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipStack_setSTUNEnabledForICE",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setSTUNEnabledForICE" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  ecode2 = SWIG_AsVal_bool(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SipStack_setSTUNEnabledForICE" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = static_cast< bool >(val2);
+  result = (bool)(arg1)->setSTUNEnabledForICE(arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_SipStack_setSTUNServer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -25717,7 +25792,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_defaultsGetProfile", _wrap_MediaSessionMgr_defaultsGetProfile, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetBandwidthLevel", _wrap_MediaSessionMgr_defaultsSetBandwidthLevel, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetBandwidthLevel", _wrap_MediaSessionMgr_defaultsGetBandwidthLevel, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetVideoMotionRank", _wrap_MediaSessionMgr_defaultsSetVideoMotionRank, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetBandwidthVideoUploadMax", _wrap_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax", _wrap_MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetPrefVideoSize", _wrap_MediaSessionMgr_defaultsSetPrefVideoSize, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetJbMargin", _wrap_MediaSessionMgr_defaultsSetJbMargin, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetJbMaxLateRate", _wrap_MediaSessionMgr_defaultsSetJbMaxLateRate, METH_VARARGS, NULL},
@@ -26107,6 +26184,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipStack_setSigCompParams", _wrap_SipStack_setSigCompParams, METH_VARARGS, NULL},
 	 { (char *)"SipStack_addSigCompCompartment", _wrap_SipStack_addSigCompCompartment, METH_VARARGS, NULL},
 	 { (char *)"SipStack_removeSigCompCompartment", _wrap_SipStack_removeSigCompCompartment, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setSTUNEnabledForICE", _wrap_SipStack_setSTUNEnabledForICE, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setSTUNServer", _wrap_SipStack_setSTUNServer, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setSTUNCred", _wrap_SipStack_setSTUNCred, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setSTUNEnabled", _wrap_SipStack_setSTUNEnabled, METH_VARARGS, NULL},

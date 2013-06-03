@@ -30,7 +30,9 @@
 
 static tmedia_profile_t __profile = tmedia_profile_default;
 static tmedia_bandwidth_level_t __bl = tmedia_bl_unrestricted;
+static int32_t __video_motion_rank = 2; // allowed values: 1(low), 2(medium) or 4(high)
 static int32_t __bw_video_up_max_kbps = INT_MAX; // <= 0: unrestricted, Unit: kbps
+static int32_t __bw_video_down_max_kbps = INT_MAX; // <= 0: unrestricted, Unit: kbps
 static tmedia_pref_video_size_t __pref_video_size = tmedia_pref_video_size_cif; // 352 x 288: Android, iOS, WP7 
 static int32_t __jb_margin_ms = -1; // disable
 static int32_t __jb_max_late_rate_percent = -1; // -1: disable 4: default for speex
@@ -93,12 +95,30 @@ tmedia_bandwidth_level_t tmedia_defaults_get_bl(){
 	return __bl;
 }
 
+int tmedia_defaults_set_video_motion_rank(int32_t video_motion_rank){
+	switch(video_motion_rank){
+		case 1/*low*/: case 2/*medium*/: case 4/*high*/: __video_motion_rank = video_motion_rank; return 0;
+		default: TSK_DEBUG_ERROR("%d not valid for video motion rank. Must be 1, 2 or 4", video_motion_rank); return -1;
+	}
+}
+int32_t tmedia_defaults_get_video_motion_rank(){
+	return __video_motion_rank;
+}
+
 int tmedia_defaults_set_bandwidth_video_upload_max(int32_t bw_video_up_max_kbps){
 	__bw_video_up_max_kbps = bw_video_up_max_kbps > 0 ? bw_video_up_max_kbps : INT_MAX;
 	return 0;
 }
 int32_t tmedia_defaults_get_bandwidth_video_upload_max(){
 	return __bw_video_up_max_kbps;
+}
+
+int tmedia_defaults_set_bandwidth_video_download_max(int32_t bw_video_down_max_kbps){
+	__bw_video_down_max_kbps = bw_video_down_max_kbps > 0 ? bw_video_down_max_kbps : INT_MAX;
+	return 0;
+}
+int32_t tmedia_defaults_get_bandwidth_video_download_max(){
+	return __bw_video_down_max_kbps;
 }
 
 int tmedia_defaults_set_pref_video_size(tmedia_pref_video_size_t pref_video_size){

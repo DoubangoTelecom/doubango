@@ -234,6 +234,14 @@ bool SipStack::removeSigCompCompartment(const char* compId)
 		TSIP_STACK_SET_NULL()) == 0);
 }
 
+bool SipStack::setSTUNEnabledForICE(bool enabled)
+{
+	tsk_bool_t _enabled = enabled ? tsk_true : tsk_false;
+	return (tsip_stack_set(m_pHandle,
+		TSIP_STACK_SET_ICE_STUN_ENABLED(_enabled),
+		TSIP_STACK_SET_NULL()) == 0);
+}
+
 bool SipStack::setSTUNServer(const char* ip, unsigned short port)
 {
 	unsigned _port = port;//promote

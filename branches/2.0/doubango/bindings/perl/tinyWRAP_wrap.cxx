@@ -3976,6 +3976,34 @@ XS(_wrap_MediaSessionMgr_defaultsGetBandwidthLevel) {
 }
 
 
+XS(_wrap_MediaSessionMgr_defaultsSetVideoMotionRank) {
+  {
+    int32_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetVideoMotionRank(video_motion_rank);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetVideoMotionRank" "', argument " "1"" of type '" "int32_t""'");
+    } 
+    arg1 = static_cast< int32_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetVideoMotionRank(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax) {
   {
     int32_t arg1 ;
@@ -3994,6 +4022,34 @@ XS(_wrap_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax) {
     } 
     arg1 = static_cast< int32_t >(val1);
     result = (bool)MediaSessionMgr::defaultsSetBandwidthVideoUploadMax(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax) {
+  {
+    int32_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax(bw_video_down_max_kbps);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax" "', argument " "1"" of type '" "int32_t""'");
+    } 
+    arg1 = static_cast< int32_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetBandwidthVideoDownloadMax(arg1);
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     
     XSRETURN(argvi);
@@ -21987,6 +22043,44 @@ XS(_wrap_SipStack_removeSigCompCompartment) {
 }
 
 
+XS(_wrap_SipStack_setSTUNEnabledForICE) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    bool arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    bool val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: SipStack_setSTUNEnabledForICE(self,enabled);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setSTUNEnabledForICE" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    ecode2 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SipStack_setSTUNEnabledForICE" "', argument " "2"" of type '" "bool""'");
+    } 
+    arg2 = static_cast< bool >(val2);
+    result = (bool)(arg1)->setSTUNEnabledForICE(arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_SipStack_setSTUNServer) {
   {
     SipStack *arg1 = (SipStack *) 0 ;
@@ -22099,7 +22193,7 @@ XS(_wrap_SipStack_setSTUNEnabled) {
     dXSARGS;
     
     if ((items < 2) || (items > 2)) {
-      SWIG_croak("Usage: SipStack_setSTUNEnabled(self,bEnabled);");
+      SWIG_croak("Usage: SipStack_setSTUNEnabled(self,enabled);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
@@ -27260,7 +27354,9 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsGetProfile", _wrap_MediaSessionMgr_defaultsGetProfile},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthLevel", _wrap_MediaSessionMgr_defaultsSetBandwidthLevel},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel", _wrap_MediaSessionMgr_defaultsGetBandwidthLevel},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetVideoMotionRank", _wrap_MediaSessionMgr_defaultsSetVideoMotionRank},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoUploadMax", _wrap_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax", _wrap_MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetPrefVideoSize", _wrap_MediaSessionMgr_defaultsSetPrefVideoSize},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetJbMargin", _wrap_MediaSessionMgr_defaultsSetJbMargin},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetJbMaxLateRate", _wrap_MediaSessionMgr_defaultsSetJbMaxLateRate},
@@ -27601,6 +27697,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SipStack_setSigCompParams", _wrap_SipStack_setSigCompParams},
 {"tinyWRAPc::SipStack_addSigCompCompartment", _wrap_SipStack_addSigCompCompartment},
 {"tinyWRAPc::SipStack_removeSigCompCompartment", _wrap_SipStack_removeSigCompCompartment},
+{"tinyWRAPc::SipStack_setSTUNEnabledForICE", _wrap_SipStack_setSTUNEnabledForICE},
 {"tinyWRAPc::SipStack_setSTUNServer", _wrap_SipStack_setSTUNServer},
 {"tinyWRAPc::SipStack_setSTUNCred", _wrap_SipStack_setSTUNCred},
 {"tinyWRAPc::SipStack_setSTUNEnabled", _wrap_SipStack_setSTUNEnabled},
