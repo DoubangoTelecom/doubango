@@ -144,7 +144,7 @@ trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create(struct trtp_rtcp_header_s*
 trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_2(trtp_rtcp_psfb_fci_type_t fci_type, uint32_t ssrc_sender, uint32_t ssrc_media_src);
 trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_pli(uint32_t ssrc_sender, uint32_t ssrc_media_src);
 trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_fir(uint8_t seq_num, uint32_t ssrc_sender, uint32_t ssrc_media_src);
-trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_afb_remb(uint32_t ssrc_sender, uint32_t ssrc_media_src, uint32_t bitrate/*in bps*/);
+trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_afb_remb(uint32_t ssrc_sender, const uint32_t* ssrc_media_src_list, uint32_t ssrc_media_src_list_count, uint32_t bitrate/*in bps*/);
 trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_deserialize(const void* data, tsk_size_t size);
 int trtp_rtcp_report_psfb_serialize_to(const trtp_rtcp_report_psfb_t* self, void* data, tsk_size_t size);
 tsk_size_t trtp_rtcp_report_psfb_get_size(const trtp_rtcp_report_psfb_t* self);
