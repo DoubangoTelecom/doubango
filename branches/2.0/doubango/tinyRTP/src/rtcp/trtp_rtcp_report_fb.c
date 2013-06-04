@@ -417,7 +417,7 @@ trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_fir(uint8_t seq_num, uint3
 	return psfb;
 }
 
-trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_afb_remb(uint32_t ssrc_sender, uint32_t ssrc_media_src, uint32_t bitrate/*in bps*/)
+trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_afb_remb(uint32_t ssrc_sender, const uint32_t* ssrc_media_src_list, uint32_t ssrc_media_src_list_count, uint32_t bitrate/*in bps*/)
 {
 	trtp_rtcp_report_psfb_t* psfb;
 	// draft-alvestrand-rmcat-remb-02 2.2: SSRC media source always equal to zero
@@ -432,9 +432,12 @@ trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_afb_remb(uint32_t ssrc_sen
 			while(bitrate >= (__max_mantissa << psfb->afb.remb.exp) && psfb->afb.remb.exp < 63) ++psfb->afb.remb.exp;
 			psfb->afb.remb.mantissa = (bitrate >> psfb->afb.remb.exp);
 		}
-		if((psfb->afb.remb.ssrc_feedbacks = tsk_malloc(4))){
-			psfb->afb.remb.num_ssrc = 1;
-			psfb->afb.remb.ssrc_feedbacks[0] = ssrc_media_src;
+		if(ssrc_media_src_list && ssrc_media_src_list_count > 0 && (psfb->afb.remb.ssrc_feedbacks = (uint32_t*)tsk_malloc(ssrc_media_src_list_count << 2))){
+			uint32_t i;
+			psfb->afb.remb.num_ssrc = ssrc_media_src_list_count;
+			for(i = 0; i < ssrc_media_src_list_count; ++i){
+				psfb->afb.remb.ssrc_feedbacks[i] = ssrc_media_src_list[i];
+			}
 		}
 		TRTP_RTCP_PACKET(psfb)->header->length_in_bytes += 8; /*'R' 'E' 'M' 'B', Num SSRC, BR Exp, BR Mantissa */
 		TRTP_RTCP_PACKET(psfb)->header->length_in_bytes += (psfb->afb.remb.num_ssrc << 2);

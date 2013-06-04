@@ -1125,6 +1125,8 @@ static tsk_size_t SendRTCPReport(trtp_rtcp_session_t* session, event_ e)
 	}
 	else{
 		trtp_rtcp_report_sr_t* sr = trtp_rtcp_report_sr_create_null();
+		uint32_t media_ssrc_list[16] = {0};
+		uint32_t media_ssrc_list_count = 0;
 		if(sr){
 			uint64_t ntp_now = tsk_time_ntp();
 			uint64_t time_now = tsk_time_now();
@@ -1182,15 +1184,20 @@ static tsk_size_t SendRTCPReport(trtp_rtcp_session_t* session, event_ e)
 					trtp_rtcp_report_sr_add_block(sr, rblock);					
 					TSK_OBJECT_SAFE_FREE(rblock);
 				}
-			}
 
-			// draft-alvestrand-rmcat-remb-02
-			if(session->app_bw_max_download > 0 && session->app_bw_max_download != INT_MAX){ // INT_MAX or <=0 means undefined
-				// app_bw_max_download unit is kbps while create_afb_remb() expect bps
-				trtp_rtcp_report_psfb_t* psfb_afb_remb = trtp_rtcp_report_psfb_create_afb_remb(session->source_local->ssrc, source->ssrc, (session->app_bw_max_download * 1024));
-				if(psfb_afb_remb){
-					trtp_rtcp_packet_add_packet((trtp_rtcp_packet_t*)sr, (trtp_rtcp_packet_t*)psfb_afb_remb, tsk_false);
-					TSK_OBJECT_SAFE_FREE(psfb_afb_remb);
+				if((media_ssrc_list_count + 1) < sizeof(media_ssrc_list)/sizeof(media_ssrc_list[0])){
+					media_ssrc_list[media_ssrc_list_count++] = source->ssrc;
+				}			}
+
+			if(media_ssrc_list_count > 0){
+				// draft-alvestrand-rmcat-remb-02
+				if(session->app_bw_max_download > 0 && session->app_bw_max_download != INT_MAX){ // INT_MAX or <=0 means undefined
+					// app_bw_max_download unit is kbps while create_afb_remb() expect bps
+					trtp_rtcp_report_psfb_t* psfb_afb_remb = trtp_rtcp_report_psfb_create_afb_remb(session->source_local->ssrc/*sender SSRC*/, media_ssrc_list, media_ssrc_list_count, (session->app_bw_max_download * 1024));
+					if(psfb_afb_remb){
+						trtp_rtcp_packet_add_packet((trtp_rtcp_packet_t*)sr, (trtp_rtcp_packet_t*)psfb_afb_remb, tsk_false);
+						TSK_OBJECT_SAFE_FREE(psfb_afb_remb);
+					}
 				}
 			}
 
