@@ -65,6 +65,7 @@ _Date: December 1, 2012_ <br />
 git clone http://git.chromium.org/webm/libvpx.git
 cd libvpx
 ./configure --enable-realtime-only --enable-error-concealment --disable-examples --enable-vp8 --enable-pic --enable-shared --as=yasm
+make && make install
 }}}
 
 ===Building libyuv===
