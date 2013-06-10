@@ -171,7 +171,7 @@ int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip
 		if((msg->firstVia->branch = tsk_strdup(TSIP_TRANSAC_MAGIC_COOKIE))){
 			tsk_istr_t _branch;
 			tsk_strrandom(&_branch);
-			tsk_strcat(&msg->firstVia->branch, _branch);
+			tsk_strcat_2(&msg->firstVia->branch, "-%s", _branch);
 		}
 	}
 

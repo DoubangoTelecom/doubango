@@ -359,7 +359,7 @@ int tsip_transac_ict_start(tsip_transac_ict_t *self, const tsip_request_t* reque
 		else if((TSIP_TRANSAC(self)->branch = tsk_strdup(TSIP_TRANSAC_MAGIC_COOKIE))){
 			tsk_istr_t branch;
 			tsk_strrandom(&branch);
-			tsk_strcat(&(TSIP_TRANSAC(self)->branch), branch);
+			tsk_strcat_2(&(TSIP_TRANSAC(self)->branch), "-%s", branch);
 		}
 
 		TSIP_TRANSAC(self)->running = 1;

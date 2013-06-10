@@ -301,6 +301,10 @@ bool MediaSessionMgr::defaultsSetVideoMotionRank(int32_t video_motion_rank)
 {
 	return (tmedia_defaults_set_video_motion_rank(video_motion_rank) == 0);
 }
+bool MediaSessionMgr::defaultsSetVideoFps(int32_t video_fps)
+{
+	return (tmedia_defaults_set_video_fps(video_fps) == 0);
+}
 bool MediaSessionMgr::defaultsSetBandwidthVideoUploadMax(int32_t bw_video_up_max_kbps)
 {
 	return (tmedia_defaults_set_bandwidth_video_upload_max(bw_video_up_max_kbps) == 0);

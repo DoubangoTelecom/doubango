@@ -99,6 +99,7 @@ public:
 	static tmedia_bandwidth_level_t defaultsGetBandwidthLevel(); // @deprecated
 	static bool defaultsSetCongestionCtrlEnabled(bool enabled);
 	static bool defaultsSetVideoMotionRank(int32_t video_motion_rank);
+	static bool defaultsSetVideoFps(int32_t video_fps);
 	static bool defaultsSetBandwidthVideoUploadMax(int32_t bw_video_up_max_kbps);
 	static bool defaultsSetBandwidthVideoDownloadMax(int32_t bw_video_down_max_kbps);
 	static bool defaultsSetPrefVideoSize(tmedia_pref_video_size_t pref_video_size);

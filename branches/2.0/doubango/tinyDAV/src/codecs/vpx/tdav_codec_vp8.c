@@ -648,7 +648,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_vp8_plugin_def_s =
 	{ 0 },
 
 	/* video (defaul width,height,fps) */
-	{176, 144, 15},
+	{176, 144, 0}, // fps is @deprecated
 
 	tdav_codec_vp8_set,
 	tdav_codec_vp8_open,

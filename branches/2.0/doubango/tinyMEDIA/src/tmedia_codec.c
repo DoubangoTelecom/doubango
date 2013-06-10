@@ -107,7 +107,8 @@ int tmedia_codec_init(tmedia_codec_t* self, tmedia_type_t type, const char* name
 #if FLIP_DECODED_PICT
 		video->in.flip = tsk_true;
 #endif
-		if(!video->in.fps) video->in.fps = video->out.fps = self->plugin->video.fps;
+		if(!video->in.fps) video->in.fps = self->plugin->video.fps ? self->plugin->video.fps : tmedia_defaults_get_video_fps();
+		if(!video->out.fps) video->out.fps = self->plugin->video.fps ? self->plugin->video.fps : tmedia_defaults_get_video_fps();
 		if(video->in.chroma == tmedia_chroma_none) video->in.chroma = tmedia_chroma_yuv420p;
 		if(video->out.chroma == tmedia_chroma_none) video->out.chroma = tmedia_chroma_yuv420p;
 
