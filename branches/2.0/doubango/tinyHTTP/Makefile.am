@@ -43,3 +43,6 @@ headers_includedir = $(includedir)/tinyhttp/tinyhttp/headers
 headers_include_HEADERS = include/tinyhttp/headers/*.h
 parsers_includedir = $(includedir)/tinyhttp/tinyhttp/parsers
 parsers_include_HEADERS = include/tinyhttp/parsers/*.h
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = tinyHTTP.pc

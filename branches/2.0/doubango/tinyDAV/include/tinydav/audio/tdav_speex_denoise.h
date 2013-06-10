@@ -51,7 +51,7 @@ typedef struct tdav_speex_denoise_s
 	SpeexEchoState *echo_state;
 
 	spx_int16_t* echo_output_frame;
-	uint32_t frame_size;
+	uint32_t frame_size_samples, frame_size_bytes;
 }
 tdav_speex_denoise_t;
 

@@ -336,6 +336,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetBandwidthLevel")]
   public static extern int MediaSessionMgr_defaultsGetBandwidthLevel();
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetCongestionCtrlEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetCongestionCtrlEnabled(bool jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetVideoMotionRank")]
   public static extern bool MediaSessionMgr_defaultsSetVideoMotionRank(int jarg1);
 
@@ -410,6 +413,12 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetAudioGain")]
   public static extern bool MediaSessionMgr_defaultsSetAudioGain(int jarg1, int jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetAudioPtime")]
+  public static extern bool MediaSessionMgr_defaultsSetAudioPtime(int jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetAudioChannels")]
+  public static extern bool MediaSessionMgr_defaultsSetAudioChannels(int jarg1, int jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetRtpPortRange")]
   public static extern bool MediaSessionMgr_defaultsSetRtpPortRange(ushort jarg1, ushort jarg2);
@@ -1235,6 +1244,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_ProxyAudioConsumer")]
   public static extern void delete_ProxyAudioConsumer(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_setActualSndCardPlaybackParams")]
+  public static extern bool ProxyAudioConsumer_setActualSndCardPlaybackParams(HandleRef jarg1, int jarg2, int jarg3, int jarg4);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyAudioConsumer_queryForResampler")]
   public static extern bool ProxyAudioConsumer_queryForResampler(HandleRef jarg1, ushort jarg2, ushort jarg3, ushort jarg4, ushort jarg5, ushort jarg6);

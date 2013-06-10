@@ -26,3 +26,6 @@ rpdu_includedir = $(includedir)/tinysms/tinysms/rpdu
 rpdu_include_HEADERS = include/tinysms/rpdu/*.h
 tpdu_includedir = $(includedir)/tinysms/tinysms/tpdu
 tpdu_include_HEADERS = include/tinysms/tpdu/*.h
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = tinySMS.pc

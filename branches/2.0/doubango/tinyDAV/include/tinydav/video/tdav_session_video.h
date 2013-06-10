@@ -50,6 +50,7 @@ typedef struct tdav_session_video_s
 	struct tdav_video_jb_s* jb;
 	tsk_bool_t jb_enabled;
 	tsk_bool_t zero_artifacts;
+	tsk_bool_t fps_changed;
 
 	struct{
 		const void* context;
@@ -92,8 +93,9 @@ typedef struct tdav_session_video_s
 		uint64_t stream_corrupted_since;
 		uint32_t last_corrupted_timestamp;
 
-		uint8_t payload_type;
-		struct tmedia_codec_s* codec;		
+		uint8_t codec_payload_type;
+		struct tmedia_codec_s* codec;
+		uint64_t codec_decoded_frames_count;
 	} decoder;
 	
 	struct {

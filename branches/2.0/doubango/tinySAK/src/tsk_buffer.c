@@ -285,7 +285,7 @@ int tsk_buffer_copy(tsk_buffer_t* self, tsk_size_t start, const void* data, tsk_
 	}
 	
 	// realloc the buffer to match the overral size
-	if((ret = tsk_buffer_realloc(self, (start + size)))){
+	if(self->size != (start + size) && (ret = tsk_buffer_realloc(self, (start + size)))){
 		TSK_DEBUG_ERROR("failed to realloc the buffer");
 		return ret;
 	}

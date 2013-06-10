@@ -38,3 +38,6 @@ libtinySIGCOMP_la_SOURCES = \
 libtinySIGCOMP_la_LDFLAGS = $LDFLAGS -no-undefined
 libtinySIGCOMP_la_HEADERS = src/*.h
 libtinySIGCOMP_ladir = $(includedir)/tinysigcomp
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = tinySIGCOMP.pc

@@ -37,3 +37,6 @@ headers_includedir = $(includedir)/tinysdp/tinysdp/headers
 headers_include_HEADERS = include/tinysdp/headers/*.h
 parsers_includedir = $(includedir)/tinysdp/tinysdp/parsers
 parsers_include_HEADERS = include/tinysdp/parsers/*.h
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = tinySDP.pc

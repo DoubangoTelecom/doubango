@@ -99,8 +99,8 @@ static const tdav_codec_h264_common_level_size_xt tdav_codec_h264_common_level_s
 	{level_idc_4_0, 2048, 1024},
 	{level_idc_4_1, 2048, 1024},
 	{level_idc_4_2, 2048, 1080},
-	{level_idc_5_0, 20560, 1920},
-	{level_idc_5_1, 4096, 2048},
+	{level_idc_5_0, 2560, 1920},
+	{level_idc_5_1, 3840, 2160},
 	{level_idc_5_2, 4096, 2048}
 };
 

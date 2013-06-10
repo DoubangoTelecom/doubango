@@ -199,6 +199,8 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetBandwidthLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetBandwidthLevel)
     __swig_getmethods__["defaultsGetBandwidthLevel"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel
     if _newclass:defaultsGetBandwidthLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel)
+    __swig_getmethods__["defaultsSetCongestionCtrlEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetCongestionCtrlEnabled
+    if _newclass:defaultsSetCongestionCtrlEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetCongestionCtrlEnabled)
     __swig_getmethods__["defaultsSetVideoMotionRank"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetVideoMotionRank
     if _newclass:defaultsSetVideoMotionRank = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetVideoMotionRank)
     __swig_getmethods__["defaultsSetBandwidthVideoUploadMax"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax
@@ -249,6 +251,10 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetScreenSize = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetScreenSize)
     __swig_getmethods__["defaultsSetAudioGain"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetAudioGain
     if _newclass:defaultsSetAudioGain = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetAudioGain)
+    __swig_getmethods__["defaultsSetAudioPtime"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetAudioPtime
+    if _newclass:defaultsSetAudioPtime = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetAudioPtime)
+    __swig_getmethods__["defaultsSetAudioChannels"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetAudioChannels
+    if _newclass:defaultsSetAudioChannels = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetAudioChannels)
     __swig_getmethods__["defaultsSetRtpPortRange"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange
     if _newclass:defaultsSetRtpPortRange = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange)
     __swig_getmethods__["defaultsSetRtpSymetricEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetRtpSymetricEnabled
@@ -333,6 +339,10 @@ MediaSessionMgr_defaultsSetBandwidthLevel = _tinyWRAP.MediaSessionMgr_defaultsSe
 def MediaSessionMgr_defaultsGetBandwidthLevel():
   return _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel()
 MediaSessionMgr_defaultsGetBandwidthLevel = _tinyWRAP.MediaSessionMgr_defaultsGetBandwidthLevel
+
+def MediaSessionMgr_defaultsSetCongestionCtrlEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetCongestionCtrlEnabled(*args)
+MediaSessionMgr_defaultsSetCongestionCtrlEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetCongestionCtrlEnabled
 
 def MediaSessionMgr_defaultsSetVideoMotionRank(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetVideoMotionRank(*args)
@@ -433,6 +443,14 @@ MediaSessionMgr_defaultsSetScreenSize = _tinyWRAP.MediaSessionMgr_defaultsSetScr
 def MediaSessionMgr_defaultsSetAudioGain(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetAudioGain(*args)
 MediaSessionMgr_defaultsSetAudioGain = _tinyWRAP.MediaSessionMgr_defaultsSetAudioGain
+
+def MediaSessionMgr_defaultsSetAudioPtime(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetAudioPtime(*args)
+MediaSessionMgr_defaultsSetAudioPtime = _tinyWRAP.MediaSessionMgr_defaultsSetAudioPtime
+
+def MediaSessionMgr_defaultsSetAudioChannels(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetAudioChannels(*args)
+MediaSessionMgr_defaultsSetAudioChannels = _tinyWRAP.MediaSessionMgr_defaultsSetAudioChannels
 
 def MediaSessionMgr_defaultsSetRtpPortRange(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetRtpPortRange(*args)
@@ -1202,6 +1220,7 @@ class ProxyAudioConsumer(ProxyPlugin):
     __repr__ = _swig_repr
     __swig_destroy__ = _tinyWRAP.delete_ProxyAudioConsumer
     __del__ = lambda self : None;
+    def setActualSndCardPlaybackParams(self, *args): return _tinyWRAP.ProxyAudioConsumer_setActualSndCardPlaybackParams(self, *args)
     def queryForResampler(self, *args): return _tinyWRAP.ProxyAudioConsumer_queryForResampler(self, *args)
     def setPullBuffer(self, *args): return _tinyWRAP.ProxyAudioConsumer_setPullBuffer(self, *args)
     def pull(self, *args): return _tinyWRAP.ProxyAudioConsumer_pull(self, *args)
@@ -1714,6 +1733,7 @@ tmedia_pref_video_size_480p = _tinyWRAP.tmedia_pref_video_size_480p
 tmedia_pref_video_size_720p = _tinyWRAP.tmedia_pref_video_size_720p
 tmedia_pref_video_size_16cif = _tinyWRAP.tmedia_pref_video_size_16cif
 tmedia_pref_video_size_1080p = _tinyWRAP.tmedia_pref_video_size_1080p
+tmedia_pref_video_size_2160p = _tinyWRAP.tmedia_pref_video_size_2160p
 tmedia_codec_id_none = _tinyWRAP.tmedia_codec_id_none
 tmedia_codec_id_amr_nb_oa = _tinyWRAP.tmedia_codec_id_amr_nb_oa
 tmedia_codec_id_amr_nb_be = _tinyWRAP.tmedia_codec_id_amr_nb_be

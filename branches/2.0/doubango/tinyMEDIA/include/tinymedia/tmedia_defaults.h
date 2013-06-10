@@ -33,6 +33,10 @@ TINYMEDIA_API int tmedia_defaults_set_profile(tmedia_profile_t profile);
 TINYMEDIA_API tmedia_profile_t tmedia_defaults_get_profile();
 TINYMEDIA_API int tmedia_defaults_set_bl(tmedia_bandwidth_level_t bl); // @deprecated
 TINYMEDIA_API tmedia_bandwidth_level_t tmedia_defaults_get_bl(); // @deprecated
+TINYMEDIA_API int tmedia_defaults_set_congestion_ctrl_enabled(tsk_bool_t enabled);
+TINYMEDIA_API tsk_bool_t tmedia_defaults_get_congestion_ctrl_enabled();
+TINYMEDIA_API int tmedia_defaults_set_video_fps(int32_t video_fps);
+TINYMEDIA_API int32_t tmedia_defaults_get_video_fps();
 TINYMEDIA_API int tmedia_defaults_set_video_motion_rank(int32_t video_motion_rank);
 TINYMEDIA_API int32_t tmedia_defaults_get_video_motion_rank();
 TINYMEDIA_API int tmedia_defaults_set_bandwidth_video_upload_max(int32_t bw_video_up_max_kbps);
@@ -66,6 +70,11 @@ TINYMEDIA_API tsk_bool_t tmedia_defaults_get_100rel_enabled();
 TINYMEDIA_API int tmedia_defaults_set_screen_size(int32_t sx, int32_t sy);
 TINYMEDIA_API int32_t tmedia_defaults_get_screen_x();
 TINYMEDIA_API int32_t tmedia_defaults_get_screen_y();
+TINYMEDIA_API int tmedia_defaults_set_audio_ptime(int32_t audio_ptime);
+TINYMEDIA_API int32_t tmedia_defaults_get_audio_ptime();
+TINYMEDIA_API int tmedia_defaults_set_audio_channels(int32_t channels_playback, int32_t channels_record);
+TINYMEDIA_API int32_t tmedia_defaults_get_audio_channels_playback();
+TINYMEDIA_API int32_t tmedia_defaults_get_audio_channels_record();
 TINYMEDIA_API int tmedia_defaults_set_audio_gain(int32_t audio_producer_gain, int32_t audio_consumer_gain);
 TINYMEDIA_API int32_t tmedia_defaults_get_audio_producer_gain();
 TINYMEDIA_API int32_t tmedia_defaults_get_audio_consumer_gain();

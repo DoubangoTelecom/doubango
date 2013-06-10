@@ -1,0 +1,14 @@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+libdir = @libdir@
+includedir = @includedir@
+
+Name : libtinySMS
+Description : Doubango Telecom tinySMS (3GPP SMS) library
+Version : @PACKAGE_VERSION@
+Requires: 
+Requires.private: tinySAK = @PACKAGE_VERSION@
+Conflicts:
+Cflags : -I${includedir}/tinysms
+Libs : -L${libdir} -ltinySMS
+Libs.private: 

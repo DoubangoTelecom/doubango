@@ -119,6 +119,11 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetCongestionCtrlEnabled(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetCongestionCtrlEnabled(enabled);
+    return ret;
+  }
+
   public static bool defaultsSetVideoMotionRank(int video_motion_rank) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetVideoMotionRank(video_motion_rank);
     return ret;
@@ -241,6 +246,16 @@ public class MediaSessionMgr : IDisposable {
 
   public static bool defaultsSetAudioGain(int producer_gain, int consumer_gain) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetAudioGain(producer_gain, consumer_gain);
+    return ret;
+  }
+
+  public static bool defaultsSetAudioPtime(int ptime) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetAudioPtime(ptime);
+    return ret;
+  }
+
+  public static bool defaultsSetAudioChannels(int channel_playback, int channel_record) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetAudioChannels(channel_playback, channel_record);
     return ret;
   }
 

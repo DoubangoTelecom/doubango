@@ -76,6 +76,9 @@ typedef struct tdav_codec_h261_s
 tdav_codec_h261_t;
 
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h261_plugin_def_t;
+
+tsk_bool_t tdav_codec_ffmpeg_h261_is_supported();
+
 TDAV_END_DECLS
 
 

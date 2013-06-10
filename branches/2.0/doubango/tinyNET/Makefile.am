@@ -85,3 +85,7 @@ tls_includedir = $(includedir)/tinynet/tls
 tls_include_HEADERS = src/tls/*.h
 turn_includedir = $(includedir)/tinynet/turn
 turn_include_HEADERS = src/turn/*.h
+
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = tinyNET.pc

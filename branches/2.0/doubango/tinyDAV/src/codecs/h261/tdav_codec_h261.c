@@ -527,6 +527,10 @@ static void tdav_codec_h261_rtp_callback(tdav_codec_h261_t *self, const void *da
 	
 }
 
+tsk_bool_t tdav_codec_ffmpeg_h261_is_supported()
+{
+	return /*(avcodec_find_encoder(CODEC_ID_H261) && avcodec_find_decoder(CODEC_ID_H261))*/tsk_false /* @deprecated */;
+}
 
 
 #endif /* HAVE_FFMPEG */

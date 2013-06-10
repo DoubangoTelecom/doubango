@@ -6993,6 +6993,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetCongestionCtrlEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool arg1 ;
+  bool val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetCongestionCtrlEnabled",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_bool(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetCongestionCtrlEnabled" "', argument " "1"" of type '" "bool""'");
+  } 
+  arg1 = static_cast< bool >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetCongestionCtrlEnabled(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetVideoMotionRank(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   int32_t arg1 ;
@@ -7482,6 +7504,59 @@ SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetAudioGain(PyObject *SWIGUN
   } 
   arg2 = static_cast< int32_t >(val2);
   result = (bool)MediaSessionMgr::defaultsSetAudioGain(arg1,arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetAudioPtime(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int32_t arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetAudioPtime",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetAudioPtime" "', argument " "1"" of type '" "int32_t""'");
+  } 
+  arg1 = static_cast< int32_t >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetAudioPtime(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetAudioChannels(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int32_t arg1 ;
+  int32_t arg2 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MediaSessionMgr_defaultsSetAudioChannels",&obj0,&obj1)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetAudioChannels" "', argument " "1"" of type '" "int32_t""'");
+  } 
+  arg1 = static_cast< int32_t >(val1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_defaultsSetAudioChannels" "', argument " "2"" of type '" "int32_t""'");
+  } 
+  arg2 = static_cast< int32_t >(val2);
+  result = (bool)MediaSessionMgr::defaultsSetAudioChannels(arg1,arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -17475,6 +17550,55 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_setActualSndCardPlaybackParams(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  int arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:ProxyAudioConsumer_setActualSndCardPlaybackParams",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_setActualSndCardPlaybackParams" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
+  }
+  arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioConsumer_setActualSndCardPlaybackParams" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  ecode3 = SWIG_AsVal_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyAudioConsumer_setActualSndCardPlaybackParams" "', argument " "3"" of type '" "int""'");
+  } 
+  arg3 = static_cast< int >(val3);
+  ecode4 = SWIG_AsVal_int(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyAudioConsumer_setActualSndCardPlaybackParams" "', argument " "4"" of type '" "int""'");
+  } 
+  arg4 = static_cast< int >(val4);
+  result = (bool)(arg1)->setActualSndCardPlaybackParams(arg2,arg3,arg4);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_ProxyAudioConsumer_queryForResampler(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
@@ -25792,6 +25916,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_defaultsGetProfile", _wrap_MediaSessionMgr_defaultsGetProfile, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetBandwidthLevel", _wrap_MediaSessionMgr_defaultsSetBandwidthLevel, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetBandwidthLevel", _wrap_MediaSessionMgr_defaultsGetBandwidthLevel, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetCongestionCtrlEnabled", _wrap_MediaSessionMgr_defaultsSetCongestionCtrlEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetVideoMotionRank", _wrap_MediaSessionMgr_defaultsSetVideoMotionRank, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetBandwidthVideoUploadMax", _wrap_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax", _wrap_MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax, METH_VARARGS, NULL},
@@ -25817,6 +25942,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_defaultsGet100relEnabled", _wrap_MediaSessionMgr_defaultsGet100relEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetScreenSize", _wrap_MediaSessionMgr_defaultsSetScreenSize, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetAudioGain", _wrap_MediaSessionMgr_defaultsSetAudioGain, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetAudioPtime", _wrap_MediaSessionMgr_defaultsSetAudioPtime, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetAudioChannels", _wrap_MediaSessionMgr_defaultsSetAudioChannels, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetRtpPortRange", _wrap_MediaSessionMgr_defaultsSetRtpPortRange, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetRtpSymetricEnabled", _wrap_MediaSessionMgr_defaultsSetRtpSymetricEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetMediaType", _wrap_MediaSessionMgr_defaultsSetMediaType, METH_VARARGS, NULL},
@@ -26063,6 +26190,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"disown_ProxyAudioConsumerCallback", _wrap_disown_ProxyAudioConsumerCallback, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumerCallback_swigregister", ProxyAudioConsumerCallback_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_ProxyAudioConsumer", _wrap_delete_ProxyAudioConsumer, METH_VARARGS, NULL},
+	 { (char *)"ProxyAudioConsumer_setActualSndCardPlaybackParams", _wrap_ProxyAudioConsumer_setActualSndCardPlaybackParams, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_queryForResampler", _wrap_ProxyAudioConsumer_queryForResampler, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_setPullBuffer", _wrap_ProxyAudioConsumer_setPullBuffer, METH_VARARGS, NULL},
 	 { (char *)"ProxyAudioConsumer_pull", _wrap_ProxyAudioConsumer_pull, METH_VARARGS, NULL},
@@ -27625,6 +27753,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tmedia_pref_video_size_720p",SWIG_From_int(static_cast< int >(tmedia_pref_video_size_720p)));
   SWIG_Python_SetConstant(d, "tmedia_pref_video_size_16cif",SWIG_From_int(static_cast< int >(tmedia_pref_video_size_16cif)));
   SWIG_Python_SetConstant(d, "tmedia_pref_video_size_1080p",SWIG_From_int(static_cast< int >(tmedia_pref_video_size_1080p)));
+  SWIG_Python_SetConstant(d, "tmedia_pref_video_size_2160p",SWIG_From_int(static_cast< int >(tmedia_pref_video_size_2160p)));
   SWIG_Python_SetConstant(d, "tmedia_codec_id_none",SWIG_From_int(static_cast< int >(tmedia_codec_id_none)));
   SWIG_Python_SetConstant(d, "tmedia_codec_id_amr_nb_oa",SWIG_From_int(static_cast< int >(tmedia_codec_id_amr_nb_oa)));
   SWIG_Python_SetConstant(d, "tmedia_codec_id_amr_nb_be",SWIG_From_int(static_cast< int >(tmedia_codec_id_amr_nb_be)));

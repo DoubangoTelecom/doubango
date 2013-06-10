@@ -440,12 +440,47 @@ int trtp_rtcp_session_set_srtp_sess(trtp_rtcp_session_t* self, const srtp_t* ses
 
 int trtp_rtcp_session_set_app_bandwidth_max(trtp_rtcp_session_t* self, int32_t bw_upload_kbps, int32_t bw_download_kbps)
 {
+	trtp_rtcp_report_rr_t* rr;
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+
+	tsk_safeobj_lock(self);
+
 	self->app_bw_max_upload = bw_upload_kbps;
 	self->app_bw_max_download = bw_download_kbps;
+
+	if(self->started && self->source_local && self->app_bw_max_download > 0 && self->app_bw_max_download != INT_MAX){ // INT_MAX or <=0 means undefined
+		tsk_list_item_t* item;
+		uint32_t media_ssrc_list[256] = {0};
+		uint32_t media_ssrc_list_count = 0;
+		// retrieve sources as array
+		tsk_list_foreach(item, self->sources){
+			if(!item->data){ 
+				continue;
+			}
+			if((media_ssrc_list_count + 1) < sizeof(media_ssrc_list)/sizeof(media_ssrc_list[0])){
+				media_ssrc_list[media_ssrc_list_count++] = TRTP_RTCP_SOURCE(item->data)->ssrc;
+			}
+		}
+		// create RTCP-RR packet and send it over the network
+		if(media_ssrc_list_count > 0 && (rr = trtp_rtcp_report_rr_create_2(self->source_local->ssrc))){
+			// app_bw_max_download unit is kbps while create_afb_remb() expect bps
+			trtp_rtcp_report_psfb_t* psfb_afb_remb = trtp_rtcp_report_psfb_create_afb_remb(self->source_local->ssrc/*sender SSRC*/, media_ssrc_list, media_ssrc_list_count, (self->app_bw_max_download * 1024));
+			if(psfb_afb_remb){
+				TSK_DEBUG_INFO("Packing RTCP-AFB-REMB (bw_dwn=%d kbps) for outgoing RTCP-RR", self->app_bw_max_download);
+				if(trtp_rtcp_packet_add_packet((trtp_rtcp_packet_t*)rr, (trtp_rtcp_packet_t*)psfb_afb_remb, tsk_false) == 0){
+					_trtp_rtcp_session_send_pkt(self, (trtp_rtcp_packet_t*)rr);
+				}
+				TSK_OBJECT_SAFE_FREE(psfb_afb_remb);
+			}
+			TSK_OBJECT_SAFE_FREE(rr);
+		}
+	}
+
+	tsk_safeobj_unlock(self);
+	
 	return 0;
 }
 
@@ -655,7 +690,13 @@ int trtp_rtcp_session_signal_pkt_loss(trtp_rtcp_session_t* self, uint32_t ssrc_m
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	
+	if(!self->started){
+		TSK_DEBUG_ERROR("Not started");
+		return -1;
+	}
+
+	tsk_safeobj_lock(self);
+
 	if((rr = trtp_rtcp_report_rr_create_2(self->source_local->ssrc))){
 		trtp_rtcp_report_rtpfb_t* rtpfb;
 		if((rtpfb = trtp_rtcp_report_rtpfb_create_nack(self->source_local->ssrc, ssrc_media, seq_nums, count))){
@@ -665,6 +706,9 @@ int trtp_rtcp_session_signal_pkt_loss(trtp_rtcp_session_t* self, uint32_t ssrc_m
 		}
 		TSK_OBJECT_SAFE_FREE(rr);
 	}
+
+	tsk_safeobj_unlock(self);
+
 	return 0;
 }
 
@@ -676,6 +720,12 @@ int trtp_rtcp_session_signal_frame_corrupted(trtp_rtcp_session_t* self, uint32_t
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+	if(!self->started){
+		TSK_DEBUG_ERROR("Not started");
+		return -1;
+	}
+
+	tsk_safeobj_lock(self);
 	
 	if((rr = trtp_rtcp_report_rr_create_2(self->source_local->ssrc))){
 		trtp_rtcp_report_psfb_t* psfb_fir = trtp_rtcp_report_psfb_create_fir(self->fir_seqnr++, self->source_local->ssrc, ssrc_media);
@@ -686,6 +736,8 @@ int trtp_rtcp_session_signal_frame_corrupted(trtp_rtcp_session_t* self, uint32_t
 		}
 		TSK_OBJECT_SAFE_FREE(rr);
 	}
+
+	tsk_safeobj_unlock(self);
 	return 0;
 }
 
@@ -1187,7 +1239,8 @@ static tsk_size_t SendRTCPReport(trtp_rtcp_session_t* session, event_ e)
 
 				if((media_ssrc_list_count + 1) < sizeof(media_ssrc_list)/sizeof(media_ssrc_list[0])){
 					media_ssrc_list[media_ssrc_list_count++] = source->ssrc;
-				}			}
+				}		
+			}
 
 			if(media_ssrc_list_count > 0){
 				// draft-alvestrand-rmcat-remb-02
@@ -1195,6 +1248,7 @@ static tsk_size_t SendRTCPReport(trtp_rtcp_session_t* session, event_ e)
 					// app_bw_max_download unit is kbps while create_afb_remb() expect bps
 					trtp_rtcp_report_psfb_t* psfb_afb_remb = trtp_rtcp_report_psfb_create_afb_remb(session->source_local->ssrc/*sender SSRC*/, media_ssrc_list, media_ssrc_list_count, (session->app_bw_max_download * 1024));
 					if(psfb_afb_remb){
+						TSK_DEBUG_INFO("Packing RTCP-AFB-REMB (bw_dwn=%d kbps) for outgoing RTCP-SR", session->app_bw_max_download);
 						trtp_rtcp_packet_add_packet((trtp_rtcp_packet_t*)sr, (trtp_rtcp_packet_t*)psfb_afb_remb, tsk_false);
 						TSK_OBJECT_SAFE_FREE(psfb_afb_remb);
 					}

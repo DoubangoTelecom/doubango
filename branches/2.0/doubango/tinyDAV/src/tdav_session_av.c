@@ -54,9 +54,10 @@ static const tsk_bool_t __have_libsrtp = tsk_true;
 static const tsk_bool_t __have_libsrtp = tsk_false;
 #endif
 
-#define TDAV_IS_DTMF_CODEC(codec) (TMEDIA_CODEC((codec))->plugin == tdav_codec_dtmf_plugin_def_t)
-#define TDAV_IS_ULPFEC_CODEC(codec) (TMEDIA_CODEC((codec))->plugin == tdav_codec_ulpfec_plugin_def_t)
-#define TDAV_IS_RED_CODEC(codec) (TMEDIA_CODEC((codec))->plugin == tdav_codec_red_plugin_def_t)
+#define TDAV_IS_DTMF_CODEC(codec) (codec && TMEDIA_CODEC((codec))->plugin == tdav_codec_dtmf_plugin_def_t)
+#define TDAV_IS_ULPFEC_CODEC(codec) (codec && TMEDIA_CODEC((codec))->plugin == tdav_codec_ulpfec_plugin_def_t)
+#define TDAV_IS_RED_CODEC(codec) (codec && TMEDIA_CODEC((codec))->plugin == tdav_codec_red_plugin_def_t)
+#define TDAV_IS_VIDEO_CODEC(codec) (codec && TMEDIA_CODEC((codec))->plugin->type == tmedia_video)
 
 #if !defined(TDAV_DFAULT_FP_HASH)
 #define TDAV_DFAULT_FP_HASH		tnet_dtls_hash_type_sha256
@@ -212,8 +213,9 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 	self->use_rtcp = tmedia_defaults_get_rtcp_enabled();
 	self->use_rtcpmux = tmedia_defaults_get_rtcpmux_enabled();
 	self->use_avpf = (profile == tmedia_profile_rtcweb); // negotiate if not RTCWeb profile or RFC5939 is in action
-	self->bandwidth_max_upload = (media_type == tmedia_video ? tmedia_defaults_get_bandwidth_video_upload_max() : INT_MAX); // INT_MAX or <=0 means undefined
-	self->bandwidth_max_download = (media_type == tmedia_video ? tmedia_defaults_get_bandwidth_video_download_max() : INT_MAX); // INT_MAX or <=0 means undefined
+	self->bandwidth_max_upload_kbps = (media_type == tmedia_video ? tmedia_defaults_get_bandwidth_video_upload_max() : INT_MAX); // INT_MAX or <=0 means undefined
+	self->bandwidth_max_download_kbps = (media_type == tmedia_video ? tmedia_defaults_get_bandwidth_video_download_max() : INT_MAX); // INT_MAX or <=0 means undefined
+	self->congestion_ctrl_enabled = tmedia_defaults_get_congestion_ctrl_enabled(); // whether to enable draft-alvestrand-rtcweb-congestion-03 and draft-alvestrand-rmcat-remb-01
 #if HAVE_SRTP
 		// this is the default value and can be updated by the user using "session_set('srtp-mode', mode_e)"
 		self->srtp_type = (profile == tmedia_profile_rtcweb) ? tmedia_srtp_type_sdes : tmedia_defaults_get_srtp_type();
@@ -221,7 +223,7 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 		self->use_srtp = (self->srtp_mode == tmedia_srtp_mode_mandatory); // if optional -> negotiate
 		// remove DTLS-SRTP option if not supported
 		if((self->srtp_type & tmedia_srtp_type_dtls) && !tnet_dtls_is_srtp_supported()){
-			TSK_DEBUG_ERROR("DTLS-SRTP enabled but not supported. Please rebuild the code with this option enabled (requires OpenSSL 1.0.1+)");
+			TSK_DEBUG_WARN("DTLS-SRTP enabled but not supported. Please rebuild the code with this option enabled (requires OpenSSL 1.0.1+)");
 			if(!(self->srtp_type &= ~tmedia_srtp_type_dtls)){
 				// only DTLS-SRTP was enabled
 				self->srtp_mode = tmedia_srtp_mode_none;
@@ -507,7 +509,30 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 		ret = trtp_manager_set_rtp_remote(self->rtp_manager, self->remote_ip, self->remote_port);
 		self->rtp_manager->use_rtcpmux = self->use_rtcpmux;
 		ret = trtp_manager_set_payload_type(self->rtp_manager, best_codec->neg_format ? atoi(best_codec->neg_format) : atoi(best_codec->format));
-		ret = trtp_manager_set_app_bandwidth_max(self->rtp_manager, self->bandwidth_max_upload, self->bandwidth_max_download);
+		{	
+			int32_t bandwidth_max_upload_kbps = self->bandwidth_max_upload_kbps;
+			int32_t bandwidth_max_download_kbps = self->bandwidth_max_download_kbps;
+			if(self->media_type == tmedia_video){
+				if(self->congestion_ctrl_enabled){
+					const tmedia_codec_t* best_codec = tdav_session_av_get_best_neg_codec(self); // use for encoding for sure and probably for decoding
+					if(TDAV_IS_VIDEO_CODEC(best_codec)){
+						// the up bandwidth will be updated once the decode the first frame as the current values (width, height, fps) are not really correct and based on the SDP negotiation
+						bandwidth_max_download_kbps = TSK_MIN(
+							tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(best_codec)->in.width, TMEDIA_CODEC_VIDEO(best_codec)->in.height, TMEDIA_CODEC_VIDEO(best_codec)->in.fps),
+							bandwidth_max_download_kbps);
+						bandwidth_max_upload_kbps = TSK_MIN(
+							tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(best_codec)->out.width, TMEDIA_CODEC_VIDEO(best_codec)->out.height, TMEDIA_CODEC_VIDEO(best_codec)->out.fps),
+							bandwidth_max_upload_kbps);
+					}
+					else if(self->media_type == tmedia_video){
+						bandwidth_max_download_kbps = TSK_MIN(tmedia_get_video_bandwidth_kbps_3(), bandwidth_max_download_kbps);
+						bandwidth_max_upload_kbps = TSK_MIN(tmedia_get_video_bandwidth_kbps_3(), bandwidth_max_upload_kbps);
+					}
+				}
+			}
+			TSK_DEBUG_INFO("max_bw_up=%d kpbs, max_bw_down=%d kpbs, congestion_ctrl_enabled=%d, media_type=%d", bandwidth_max_upload_kbps, bandwidth_max_download_kbps, self->congestion_ctrl_enabled, self->media_type);
+			ret = trtp_manager_set_app_bandwidth_max(self->rtp_manager, bandwidth_max_upload_kbps, bandwidth_max_download_kbps);
+		}
 		ret = trtp_manager_start(self->rtp_manager);
 
 		// because of AudioUnit under iOS => prepare both consumer and producer then start() at the same time
@@ -696,11 +721,13 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			flows that support both audio codec and DTMF payloads in RTP packets as described in RFC 4733 [23].
 			*/
 			if(self->media_type == tmedia_audio){
+				tsk_istr_t ptime;
+				tsk_itoa(tmedia_defaults_get_audio_ptime(), &ptime);
 				tsdp_header_M_add_headers(base->M.lo,
 					/* rfc3551 section 4.5 says the default ptime is 20 */
-					TSDP_HEADER_A_VA_ARGS("ptime", "20"),
-					TSDP_HEADER_A_VA_ARGS("minptime", "20"),
-					TSDP_HEADER_A_VA_ARGS("maxptime", "20"),
+					TSDP_HEADER_A_VA_ARGS("ptime", ptime),
+					TSDP_HEADER_A_VA_ARGS("minptime", "1"),
+					TSDP_HEADER_A_VA_ARGS("maxptime", "255"),
 					TSDP_HEADER_A_VA_ARGS("silenceSupp", "off - - - -"),
 					tsk_null);
 				// the "telephone-event" fmt/rtpmap is added below
@@ -712,9 +739,9 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 					TSDP_HEADER_A_VA_ARGS("rtcp-fb", "* ccm fir"),
 					tsk_null);
 				// http://tools.ietf.org/html/rfc3556
-				if(self->bandwidth_max_download > 0 && self->bandwidth_max_download != INT_MAX){ // INT_MAX or <=0 means undefined
+				if(self->bandwidth_max_download_kbps > 0 && self->bandwidth_max_download_kbps != INT_MAX){ // INT_MAX or <=0 means undefined
 					tsdp_header_M_add_headers(base->M.lo,
-						TSDP_HEADER_B_VA_ARGS("AS", self->bandwidth_max_download),
+						TSDP_HEADER_B_VA_ARGS("AS", self->bandwidth_max_download_kbps),
 						tsk_null);
 				}
 			}

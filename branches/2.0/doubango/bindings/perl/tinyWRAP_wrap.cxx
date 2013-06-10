@@ -3976,6 +3976,34 @@ XS(_wrap_MediaSessionMgr_defaultsGetBandwidthLevel) {
 }
 
 
+XS(_wrap_MediaSessionMgr_defaultsSetCongestionCtrlEnabled) {
+  {
+    bool arg1 ;
+    bool val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetCongestionCtrlEnabled(enabled);");
+    }
+    ecode1 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetCongestionCtrlEnabled" "', argument " "1"" of type '" "bool""'");
+    } 
+    arg1 = static_cast< bool >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetCongestionCtrlEnabled(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_MediaSessionMgr_defaultsSetVideoMotionRank) {
   {
     int32_t arg1 ;
@@ -4604,6 +4632,72 @@ XS(_wrap_MediaSessionMgr_defaultsSetAudioGain) {
     } 
     arg2 = static_cast< int32_t >(val2);
     result = (bool)MediaSessionMgr::defaultsSetAudioGain(arg1,arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetAudioPtime) {
+  {
+    int32_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetAudioPtime(ptime);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetAudioPtime" "', argument " "1"" of type '" "int32_t""'");
+    } 
+    arg1 = static_cast< int32_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetAudioPtime(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetAudioChannels) {
+  {
+    int32_t arg1 ;
+    int32_t arg2 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetAudioChannels(channel_playback,channel_record);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetAudioChannels" "', argument " "1"" of type '" "int32_t""'");
+    } 
+    arg1 = static_cast< int32_t >(val1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_defaultsSetAudioChannels" "', argument " "2"" of type '" "int32_t""'");
+    } 
+    arg2 = static_cast< int32_t >(val2);
+    result = (bool)MediaSessionMgr::defaultsSetAudioChannels(arg1,arg2);
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     
     
@@ -17474,6 +17568,64 @@ XS(_wrap_delete_ProxyAudioConsumer) {
 }
 
 
+XS(_wrap_ProxyAudioConsumer_setActualSndCardPlaybackParams) {
+  {
+    ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+    int arg2 ;
+    int arg3 ;
+    int arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int val3 ;
+    int ecode3 = 0 ;
+    int val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: ProxyAudioConsumer_setActualSndCardPlaybackParams(self,nPtime,nRate,nChannels);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyAudioConsumer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyAudioConsumer_setActualSndCardPlaybackParams" "', argument " "1"" of type '" "ProxyAudioConsumer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyAudioConsumer * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyAudioConsumer_setActualSndCardPlaybackParams" "', argument " "2"" of type '" "int""'");
+    } 
+    arg2 = static_cast< int >(val2);
+    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ProxyAudioConsumer_setActualSndCardPlaybackParams" "', argument " "3"" of type '" "int""'");
+    } 
+    arg3 = static_cast< int >(val3);
+    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ProxyAudioConsumer_setActualSndCardPlaybackParams" "', argument " "4"" of type '" "int""'");
+    } 
+    arg4 = static_cast< int >(val4);
+    result = (bool)(arg1)->setActualSndCardPlaybackParams(arg2,arg3,arg4);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_ProxyAudioConsumer_queryForResampler) {
   {
     ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
@@ -27354,6 +27506,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsGetProfile", _wrap_MediaSessionMgr_defaultsGetProfile},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthLevel", _wrap_MediaSessionMgr_defaultsSetBandwidthLevel},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel", _wrap_MediaSessionMgr_defaultsGetBandwidthLevel},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetCongestionCtrlEnabled", _wrap_MediaSessionMgr_defaultsSetCongestionCtrlEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetVideoMotionRank", _wrap_MediaSessionMgr_defaultsSetVideoMotionRank},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoUploadMax", _wrap_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax", _wrap_MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax},
@@ -27379,6 +27532,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsGet100relEnabled", _wrap_MediaSessionMgr_defaultsGet100relEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetScreenSize", _wrap_MediaSessionMgr_defaultsSetScreenSize},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetAudioGain", _wrap_MediaSessionMgr_defaultsSetAudioGain},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetAudioPtime", _wrap_MediaSessionMgr_defaultsSetAudioPtime},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetAudioChannels", _wrap_MediaSessionMgr_defaultsSetAudioChannels},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetRtpPortRange", _wrap_MediaSessionMgr_defaultsSetRtpPortRange},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetRtpSymetricEnabled", _wrap_MediaSessionMgr_defaultsSetRtpSymetricEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetMediaType", _wrap_MediaSessionMgr_defaultsSetMediaType},
@@ -27590,6 +27745,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::ProxyAudioConsumerCallback_pause", _wrap_ProxyAudioConsumerCallback_pause},
 {"tinyWRAPc::ProxyAudioConsumerCallback_stop", _wrap_ProxyAudioConsumerCallback_stop},
 {"tinyWRAPc::delete_ProxyAudioConsumer", _wrap_delete_ProxyAudioConsumer},
+{"tinyWRAPc::ProxyAudioConsumer_setActualSndCardPlaybackParams", _wrap_ProxyAudioConsumer_setActualSndCardPlaybackParams},
 {"tinyWRAPc::ProxyAudioConsumer_queryForResampler", _wrap_ProxyAudioConsumer_queryForResampler},
 {"tinyWRAPc::ProxyAudioConsumer_setPullBuffer", _wrap_ProxyAudioConsumer_setPullBuffer},
 {"tinyWRAPc::ProxyAudioConsumer_pull", _wrap_ProxyAudioConsumer_pull},
@@ -28952,6 +29108,11 @@ XS(SWIG_init) {
   /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tmedia_pref_video_size_1080p", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_pref_video_size_1080p)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_pref_video_size_2160p", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_pref_video_size_2160p)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {

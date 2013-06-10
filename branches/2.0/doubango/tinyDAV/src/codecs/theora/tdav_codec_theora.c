@@ -30,13 +30,14 @@
  */
 #include "tinydav/codecs/theora/tdav_codec_theora.h"
 
-#if HAVE_FFMPEG && (!defined(HAVE_THEORA) || HAVE_THEORA)
+#if HAVE_FFMPEG
 
 #include "tinydav/video/tdav_converter_video.h"
 
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
 
 #include "tinymedia/tmedia_params.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tsk_string.h"
 #include "tsk_buffer.h"
@@ -75,6 +76,7 @@ typedef struct tdav_codec_theora_s
 		tsk_bool_t force_idr;
 		int quality;
 		int rotation;
+		int32_t max_bw_kpbs;
 	} encoder;
 	
 	// decoder
@@ -533,6 +535,7 @@ static tsk_object_t* tdav_codec_theora_ctor(tsk_object_t * self, va_list * app)
 		/* init base: called by tmedia_codec_create() */
 		/* init self */
 		theora->encoder.quality = 1;
+		theora->encoder.max_bw_kpbs = tmedia_defaults_get_bandwidth_video_upload_max();
 	}
 	return self;
 }
@@ -593,6 +596,7 @@ const tmedia_codec_plugin_def_t *tdav_codec_theora_plugin_def_t = &tdav_codec_th
 int tdav_codec_theora_open_encoder(tdav_codec_theora_t* self)
 {
 	int ret, size;
+	int32_t max_bw_kpbs;
 	if(!self->encoder.codec && !(self->encoder.codec = avcodec_find_encoder(CODEC_ID_THEORA))){
 		TSK_DEBUG_ERROR("Failed to find Theora encoder");
 		return -1;
@@ -612,7 +616,12 @@ int tdav_codec_theora_open_encoder(tdav_codec_theora_t* self)
 	self->encoder.context->mb_decision = FF_MB_DECISION_RD;
 	
 	// Theoraenc doesn't honor 'CODEC_FLAG_QSCALE'
-	self->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 320 / 240) * 1000);
+	max_bw_kpbs = TSK_CLAMP(
+		0,
+		tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(self)->out.width, TMEDIA_CODEC_VIDEO(self)->out.height, TMEDIA_CODEC_VIDEO(self)->out.fps), 
+		self->encoder.max_bw_kpbs
+	);
+	self->encoder.context->bit_rate = (max_bw_kpbs * 1024);// bps
 #if LIBAVCODEC_VERSION_MAJOR <= 53
 	self->encoder.context->rc_lookahead = 0;
 #endif
@@ -644,6 +653,8 @@ int tdav_codec_theora_open_encoder(tdav_codec_theora_t* self)
 
 	self->encoder.conf_last = 0;
 	self->encoder.conf_count = 0;
+
+	TSK_DEBUG_INFO("[THEORA] bitrate=%d bps", self->encoder.context->bit_rate);
 
 	return ret;
 }
@@ -841,6 +852,11 @@ int tdav_codec_theora_send(tdav_codec_theora_t* self, const uint8_t* data, tsk_s
 	}
 
 	return 0;
+}
+
+tsk_bool_t tdav_codec_ffmpeg_theora_is_supported()
+{
+	return (avcodec_find_encoder(CODEC_ID_THEORA) && avcodec_find_decoder(CODEC_ID_THEORA));
 }
 
 #endif /* HAVE_FFMPEG */

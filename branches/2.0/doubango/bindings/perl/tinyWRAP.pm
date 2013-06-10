@@ -246,6 +246,7 @@ sub DESTROY {
 *defaultsGetProfile = *tinyWRAPc::MediaSessionMgr_defaultsGetProfile;
 *defaultsSetBandwidthLevel = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthLevel;
 *defaultsGetBandwidthLevel = *tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel;
+*defaultsSetCongestionCtrlEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetCongestionCtrlEnabled;
 *defaultsSetVideoMotionRank = *tinyWRAPc::MediaSessionMgr_defaultsSetVideoMotionRank;
 *defaultsSetBandwidthVideoUploadMax = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoUploadMax;
 *defaultsSetBandwidthVideoDownloadMax = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax;
@@ -271,6 +272,8 @@ sub DESTROY {
 *defaultsGet100relEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGet100relEnabled;
 *defaultsSetScreenSize = *tinyWRAPc::MediaSessionMgr_defaultsSetScreenSize;
 *defaultsSetAudioGain = *tinyWRAPc::MediaSessionMgr_defaultsSetAudioGain;
+*defaultsSetAudioPtime = *tinyWRAPc::MediaSessionMgr_defaultsSetAudioPtime;
+*defaultsSetAudioChannels = *tinyWRAPc::MediaSessionMgr_defaultsSetAudioChannels;
 *defaultsSetRtpPortRange = *tinyWRAPc::MediaSessionMgr_defaultsSetRtpPortRange;
 *defaultsSetRtpSymetricEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetRtpSymetricEnabled;
 *defaultsSetMediaType = *tinyWRAPc::MediaSessionMgr_defaultsSetMediaType;
@@ -1522,6 +1525,7 @@ sub DESTROY {
     }
 }
 
+*setActualSndCardPlaybackParams = *tinyWRAPc::ProxyAudioConsumer_setActualSndCardPlaybackParams;
 *queryForResampler = *tinyWRAPc::ProxyAudioConsumer_queryForResampler;
 *setPullBuffer = *tinyWRAPc::ProxyAudioConsumer_setPullBuffer;
 *pull = *tinyWRAPc::ProxyAudioConsumer_pull;
@@ -2615,6 +2619,7 @@ package tinyWRAP;
 *tmedia_pref_video_size_720p = *tinyWRAPc::tmedia_pref_video_size_720p;
 *tmedia_pref_video_size_16cif = *tinyWRAPc::tmedia_pref_video_size_16cif;
 *tmedia_pref_video_size_1080p = *tinyWRAPc::tmedia_pref_video_size_1080p;
+*tmedia_pref_video_size_2160p = *tinyWRAPc::tmedia_pref_video_size_2160p;
 *tmedia_codec_id_none = *tinyWRAPc::tmedia_codec_id_none;
 *tmedia_codec_id_amr_nb_oa = *tinyWRAPc::tmedia_codec_id_amr_nb_oa;
 *tmedia_codec_id_amr_nb_be = *tinyWRAPc::tmedia_codec_id_amr_nb_be;

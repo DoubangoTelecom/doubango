@@ -14,3 +14,6 @@ SUBDIRS = tinySAK \
 	tinyRTP \
 	tinyDAV \
 	tinySIP
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = doubango.pc

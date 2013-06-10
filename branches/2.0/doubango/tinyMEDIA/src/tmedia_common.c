@@ -48,6 +48,7 @@ typedef struct fmtp_size_s{
 static const fmtp_size_t fmtp_sizes[] = 
 {
 	/* must be sorted like this */
+	{"2160P", tmedia_pref_video_size_2160p, tsk_false, 3840, 2160},
 	{"1080P", tmedia_pref_video_size_1080p, tsk_false, 1920, 1080},
 	{"16CIF", tmedia_pref_video_size_16cif, tsk_true, 1408, 1152},
 	{"720P", tmedia_pref_video_size_720p, tsk_false, 1280, 720},
@@ -324,4 +325,11 @@ int32_t tmedia_get_video_bandwidth_kbps(unsigned width, unsigned height, unsigne
 int32_t tmedia_get_video_bandwidth_kbps_2(unsigned width, unsigned height, unsigned fps)
 {
 	return tmedia_get_video_bandwidth_kbps(width, height, fps, tmedia_defaults_get_video_motion_rank());
+}
+int32_t tmedia_get_video_bandwidth_kbps_3()
+{
+	unsigned width = 3840;
+	unsigned height = 2160;
+	tmedia_video_get_size(tmedia_defaults_get_pref_video_size(), &width, &height);
+	return tmedia_get_video_bandwidth_kbps(width, height, tmedia_defaults_get_video_fps(), tmedia_defaults_get_video_motion_rank());
 }

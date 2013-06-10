@@ -209,14 +209,17 @@ ProxyAudioProducer::~ProxyAudioProducer()
 // Use this function to request resampling when your sound card can't honor negotaited record parameters
 bool ProxyAudioProducer::setActualSndCardRecordParams(int nPtime, int nRate, int nChannels)
 {
-	TSK_DEBUG_INFO("setActualSndCardRecordParams(ptime=%d, rate=%d, channels=%d)", nPtime, nRate, nChannels);
 	if(m_pWrappedPlugin){
+		TSK_DEBUG_INFO("setActualSndCardRecordParams(ptime=%d, rate=%d, channels=%d)", nPtime, nRate, nChannels);
 		TMEDIA_PRODUCER(m_pWrappedPlugin)->audio.ptime = nPtime;
 		TMEDIA_PRODUCER(m_pWrappedPlugin)->audio.rate = nRate;
 		TMEDIA_PRODUCER(m_pWrappedPlugin)->audio.channels = nChannels;
 		return true;
 	}
-	return false;
+	else{
+		TSK_DEBUG_ERROR("Invalid state");
+		return false;
+	}
 }
 
 bool ProxyAudioProducer::setPushBuffer(const void* pPushBufferPtr, unsigned nPushBufferSize, bool bUsePushCallback/*=false*/)

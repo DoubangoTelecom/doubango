@@ -42,6 +42,8 @@ TDAV_BEGIN_DECLS
 
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_mp4ves_plugin_def_t;
 
+tsk_bool_t tdav_codec_ffmpeg_mp4ves_is_supported();
+
 TDAV_END_DECLS
 
 #endif /* HAVE_FFMPEG */

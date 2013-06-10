@@ -30,7 +30,7 @@
  */
 #include "tinydav/codecs/h264/tdav_codec_h264.h"
 
-#if (HAVE_FFMPEG && (!defined(HAVE_H264) || HAVE_H264)) || HAVE_H264_PASSTHROUGH
+#if HAVE_FFMPEG || HAVE_H264_PASSTHROUGH
 
 #include "tinydav/codecs/h264/tdav_codec_h264_rtp.h"
 #include "tinydav/video/tdav_converter_video.h"
@@ -38,6 +38,7 @@
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
 
 #include "tinymedia/tmedia_params.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tsk_params.h"
 #include "tsk_memory.h"
@@ -66,6 +67,7 @@ typedef struct tdav_codec_h264_s
 		tsk_bool_t force_idr;
 		int32_t quality; // [1-31]
 		int rotation;
+		int32_t max_bw_kpbs;
 	} encoder;
 	
 	// decoder
@@ -297,7 +299,7 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 	tsk_bool_t append_scp;
 	tsk_bool_t sps_or_pps;
 	tsk_size_t retsize = 0, size_to_copy = 0;
-	static tsk_size_t xmax_size = (1920 * 1080 * 3) >> 3;
+	static const tsk_size_t xmax_size = (3840 * 2160 * 3) >> 3; // >>3 instead of >>1 (not an error)
 	static tsk_size_t start_code_prefix_size = sizeof(H264_START_CODE_PREFIX);
 #if HAVE_FFMPEG
 	int got_picture_ptr = 0;
@@ -747,6 +749,7 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 #if HAVE_FFMPEG
 	int ret;
 	tsk_size_t size;
+	int32_t max_bw_kpbs;
 
 	if(self->encoder.context){
 		TSK_DEBUG_ERROR("Encoder already opened");
@@ -776,8 +779,13 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 	self->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(self)->out.fps;
 	self->encoder.context->width = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.height : TMEDIA_CODEC_VIDEO(self)->out.width;
 	self->encoder.context->height = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
-	
-	self->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 352 / 288) * 1000);
+	max_bw_kpbs = TSK_CLAMP(
+		0,
+		tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(self)->out.width, TMEDIA_CODEC_VIDEO(self)->out.height, TMEDIA_CODEC_VIDEO(self)->out.fps), 
+		self->encoder.max_bw_kpbs
+	);
+	self->encoder.context->bit_rate = (max_bw_kpbs * 1024);// bps
+
 	self->encoder.context->rc_min_rate = (self->encoder.context->bit_rate >> 3);
 	self->encoder.context->rc_max_rate = self->encoder.context->bit_rate;
 
@@ -868,6 +876,8 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 		TSK_DEBUG_ERROR("Failed to open [%s] codec", TMEDIA_CODEC(self)->plugin->desc);
 		return ret;
 	}
+
+	TSK_DEBUG_INFO("[H.264] bitrate=%d bps", self->encoder.context->bit_rate);
 
 	return ret;
 #elif HAVE_H264_PASSTHROUGH
@@ -983,7 +993,8 @@ int tdav_codec_h264_init(tdav_codec_h264_t* self, profile_idc_t profile)
 		TSK_DEBUG_ERROR("Failed to find level for size=[%u, %u]", TMEDIA_CODEC_VIDEO(self)->out.width, TMEDIA_CODEC_VIDEO(self)->out.height);
 		return ret;
 	}
-	
+
+	(self)->encoder.max_bw_kpbs = tmedia_defaults_get_bandwidth_video_upload_max();
 	TDAV_CODEC_H264_COMMON(self)->pack_mode = H264_PACKETIZATION_MODE;
 	TDAV_CODEC_H264_COMMON(self)->profile = profile;
 	TDAV_CODEC_H264_COMMON(self)->level = level;
@@ -1067,4 +1078,13 @@ static void tdav_codec_h264_encap(const tdav_codec_h264_t* h264, const uint8_t* 
 	}
 }
 
-#endif /* HAVE_FFMPEG */
+tsk_bool_t tdav_codec_ffmpeg_h264_is_supported()
+{
+#if HAVE_FFMPEG
+	return (avcodec_find_encoder(CODEC_ID_H264) && avcodec_find_decoder(CODEC_ID_H264));
+#else
+	return tsk_false;
+#endif
+}
+
+#endif /* HAVE_FFMPEG || HAVE_H264_PASSTHROUGH */

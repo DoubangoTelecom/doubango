@@ -30,6 +30,8 @@
 
 static tmedia_profile_t __profile = tmedia_profile_default;
 static tmedia_bandwidth_level_t __bl = tmedia_bl_unrestricted;
+static tsk_bool_t __congestion_ctrl_enabled = tsk_false;
+static int32_t __video_fps = 15; // allowed values: ]0 - 120]
 static int32_t __video_motion_rank = 2; // allowed values: 1(low), 2(medium) or 4(high)
 static int32_t __bw_video_up_max_kbps = INT_MAX; // <= 0: unrestricted, Unit: kbps
 static int32_t __bw_video_down_max_kbps = INT_MAX; // <= 0: unrestricted, Unit: kbps
@@ -49,6 +51,9 @@ static int32_t __sx = -1;
 static int32_t __sy = -1;
 static int32_t __audio_producer_gain = 0;
 static int32_t __audio_consumer_gain = 0;
+static int32_t __audio_channels_playback = 1;
+static int32_t __audio_channels_record = 1;
+static int32_t __audio_ptime = 20;
 static uint16_t __rtp_port_range_start = 1024;
 static uint16_t __rtp_port_range_stop = 65535;
 static tsk_bool_t __rtp_symetric_enabled = tsk_false; // This option is force symetric RTP for remote size. Local: always ON
@@ -93,6 +98,26 @@ int tmedia_defaults_set_bl(tmedia_bandwidth_level_t bl){
 // @deprecated
 tmedia_bandwidth_level_t tmedia_defaults_get_bl(){
 	return __bl;
+}
+
+int tmedia_defaults_set_congestion_ctrl_enabled(tsk_bool_t enabled){
+	__congestion_ctrl_enabled = enabled;
+	return 0;
+}
+tsk_bool_t tmedia_defaults_get_congestion_ctrl_enabled(){
+	return __congestion_ctrl_enabled;
+}
+
+int tmedia_defaults_set_video_fps(int32_t video_fps){
+	if(video_fps > 0 && video_fps <= 120){
+		__video_fps = video_fps;
+		return 0;
+	}
+	TSK_DEBUG_ERROR("%d not valid for video fps", video_fps);
+	return -1;
+}
+int32_t tmedia_defaults_get_video_fps(){
+	return __video_fps;
 }
 
 int tmedia_defaults_set_video_motion_rank(int32_t video_motion_rank){
@@ -241,6 +266,31 @@ int32_t tmedia_defaults_get_screen_x(){
 
 int32_t tmedia_defaults_get_screen_y(){
 	return __sy;
+}
+
+int tmedia_defaults_set_audio_ptime(int32_t audio_ptime){
+	if(audio_ptime > 0){
+		__audio_ptime = audio_ptime;
+		return 0;
+	}
+	TSK_DEBUG_ERROR("Invalid parameter");
+	return -1;
+}
+int32_t tmedia_defaults_get_audio_ptime(){
+	return __audio_ptime;
+}
+int tmedia_defaults_set_audio_channels(int32_t channels_playback, int32_t channels_record){
+	if(channels_playback != 1 && channels_playback != 2) { TSK_DEBUG_ERROR("Invalid parameter"); return -1; }
+	if(channels_record != 1 && channels_record != 2) { TSK_DEBUG_ERROR("Invalid parameter"); return -1; }
+	__audio_channels_playback = channels_playback;
+	__audio_channels_record = channels_record;
+	return 0;
+}
+int32_t tmedia_defaults_get_audio_channels_playback(){
+	return __audio_channels_playback;
+}
+int32_t tmedia_defaults_get_audio_channels_record(){
+	return __audio_channels_record;
 }
 
 int tmedia_defaults_set_audio_gain(int32_t audio_producer_gain, int32_t audio_consumer_gain){

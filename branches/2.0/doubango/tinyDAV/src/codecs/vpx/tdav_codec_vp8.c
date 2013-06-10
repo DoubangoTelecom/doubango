@@ -46,6 +46,12 @@
 #include "tsk_time.h"
 #include "tsk_debug.h"
 
+#define VPX_CODEC_DISABLE_COMPAT 1 /* strict compliance with the latest SDK by disabling some backwards compatibility  */
+#include <vpx/vpx_encoder.h>
+#include <vpx/vpx_decoder.h>
+#include <vpx/vp8cx.h>
+#include <vpx/vp8dx.h>
+
 #if !defined(TDAV_VP8_DISABLE_EXTENSION)
 #   define TDAV_VP8_DISABLE_EXTENSION       0 /* Set X fied value to zero */
 #endif
@@ -305,7 +311,7 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 	const uint8_t* pdata = in_data;
 	const uint8_t* pdata_end = (pdata + in_size);
 	tsk_size_t ret = 0;
-	static const tsk_size_t xmax_size = (1920 * 1080 * 3) >> 3;
+	static const tsk_size_t xmax_size = (3840 * 2160 * 3) >> 3; // >>3 instead of >>1 (not an error)
 	uint8_t S, PartID;
 
 	if(!self || !in_data || in_size<1 || !out_data || !vp8->decoder.initialized){

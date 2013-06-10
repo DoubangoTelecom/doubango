@@ -35,11 +35,11 @@
 
 #define TDAV_SPEEX_RESAMPLER_MAX_QUALITY 10
 
-int tdav_speex_resampler_open(tmedia_resampler_t* self, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t in_channels, uint32_t out_channels, uint32_t quality)
+static int tdav_speex_resampler_open(tmedia_resampler_t* self, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t in_channels, uint32_t out_channels, uint32_t quality)
 {
 	tdav_speex_resampler_t *resampler = (tdav_speex_resampler_t *)self;
 	int ret = 0;
-
+	
 	if(in_channels != 1 && in_channels != 2){
 		TSK_DEBUG_ERROR("%d not valid as input channel", in_channels);
 		return -1;
@@ -70,7 +70,7 @@ int tdav_speex_resampler_open(tmedia_resampler_t* self, uint32_t in_freq, uint32
 	return 0;
 }
 
-tsk_size_t tdav_speex_resampler_process(tmedia_resampler_t* self, const uint16_t* in_data, tsk_size_t in_size, uint16_t* out_data, tsk_size_t out_size)
+static tsk_size_t tdav_speex_resampler_process(tmedia_resampler_t* self, const uint16_t* in_data, tsk_size_t in_size, uint16_t* out_data, tsk_size_t out_size)
 {
 	tdav_speex_resampler_t *resampler = (tdav_speex_resampler_t *)self;
 	spx_uint32_t out_len = (spx_uint32_t)out_size;
@@ -112,7 +112,10 @@ tsk_size_t tdav_speex_resampler_process(tmedia_resampler_t* self, const uint16_t
 		}
 	}
 	else{
-		err = speex_resampler_process_int(resampler->state, 0, (const spx_int16_t *)in_data, (spx_uint32_t *)&in_size, (spx_int16_t *)out_data, &out_len);
+		err = speex_resampler_process_interleaved_int(resampler->state,
+					    (const spx_int16_t *)in_data, (spx_uint32_t *)&in_size,
+					    (spx_int16_t *)out_data, &out_len);
+		// err = speex_resampler_process_int(resampler->state, 0, (const spx_int16_t *)in_data, (spx_uint32_t *)&in_size, (spx_int16_t *)out_data, &out_len);
 	}
 	
 	if(err != RESAMPLER_ERR_SUCCESS){
@@ -122,7 +125,7 @@ tsk_size_t tdav_speex_resampler_process(tmedia_resampler_t* self, const uint16_t
 	return (tsk_size_t)out_len;
 }
 
-int tdav_speex_resampler_close(tmedia_resampler_t* self)
+static int tdav_speex_resampler_close(tmedia_resampler_t* self)
 {
 	tdav_speex_resampler_t *resampler = (tdav_speex_resampler_t *)self;
 
@@ -163,6 +166,8 @@ static tsk_object_t* tdav_speex_resampler_dtor(tsk_object_t * self)
 			resampler->state = tsk_null;
 		}
 		TSK_FREE(resampler->tmp_buffer.ptr);
+
+		TSK_DEBUG_INFO("*** SpeexDSP resampler (plugin) destroyed ***");
 	}
 
 	return self;

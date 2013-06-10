@@ -35,6 +35,10 @@ public class ProxyAudioConsumer extends ProxyPlugin {
     super.delete();
   }
 
+  public boolean setActualSndCardPlaybackParams(int nPtime, int nRate, int nChannels) {
+    return tinyWRAPJNI.ProxyAudioConsumer_setActualSndCardPlaybackParams(swigCPtr, this, nPtime, nRate, nChannels);
+  }
+
   public boolean queryForResampler(int nInFreq, int nOutFreq, int nFrameDuration, int nChannels, int nResamplerQuality) {
     return tinyWRAPJNI.ProxyAudioConsumer_queryForResampler(swigCPtr, this, nInFreq, nOutFreq, nFrameDuration, nChannels, nResamplerQuality);
   }

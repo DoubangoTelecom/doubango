@@ -40,6 +40,7 @@
 #include "tnet_endianness.h"
 
 #include "tinymedia/tmedia_params.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tsk_string.h"
 #include "tsk_params.h"
@@ -73,6 +74,7 @@ typedef struct tdav_codec_mp4ves_s
 		tsk_bool_t force_idr;
 		int quality; // [1-31]
 		int rotation;
+		int32_t max_bw_kpbs;
 	} encoder;
 	
 	// decoder
@@ -460,6 +462,7 @@ char* tdav_codec_mp4ves_sdp_att_get(const tmedia_codec_t* _self, const char* att
 int tdav_codec_mp4ves_open_encoder(tdav_codec_mp4ves_t* self)
 {
 	int ret, size;
+	int32_t max_bw_kpbs;
 	if(!self->encoder.codec && !(self->encoder.codec = avcodec_find_encoder(CODEC_ID_MPEG4))){
 		TSK_DEBUG_ERROR("Failed to find mp4v encoder");
 		return -1;
@@ -481,8 +484,13 @@ int tdav_codec_mp4ves_open_encoder(tdav_codec_mp4ves_t* self)
 	self->encoder.context->noise_reduction = 250;
 	self->encoder.context->flags |= CODEC_FLAG_QSCALE;
 	self->encoder.context->global_quality = FF_QP2LAMBDA * self->encoder.quality;
-
-	self->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 320 / 240) * 1000);
+	
+	max_bw_kpbs = TSK_CLAMP(
+		0,
+		tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(self)->out.width, TMEDIA_CODEC_VIDEO(self)->out.height, TMEDIA_CODEC_VIDEO(self)->out.fps), 
+		self->encoder.max_bw_kpbs
+	);
+	self->encoder.context->bit_rate = (max_bw_kpbs * 1024);// bps
 	self->encoder.context->rtp_payload_size = MP4V_RTP_PAYLOAD_SIZE;
 	self->encoder.context->opaque = tsk_null;
 	self->encoder.context->profile = self->profile>>4;
@@ -510,6 +518,8 @@ int tdav_codec_mp4ves_open_encoder(tdav_codec_mp4ves_t* self)
 		TSK_DEBUG_ERROR("Failed to open MP4V-ES encoder");
 		return ret;
 	}
+
+	TSK_DEBUG_INFO("[MP4V-ES] bitrate=%d bps", self->encoder.context->bit_rate);
 
 	return ret;
 }
@@ -742,6 +752,7 @@ static tsk_object_t* tdav_codec_mp4ves_ctor(tsk_object_t * _self, va_list * app)
 		/* init self */
 		self->profile = DEFAULT_PROFILE_LEVEL_ID;
 		self->encoder.quality = 1;
+		self->encoder.max_bw_kpbs = tmedia_defaults_get_bandwidth_video_upload_max();
 	}
 	return self;
 }
@@ -796,6 +807,10 @@ static const tmedia_codec_plugin_def_t tdav_codec_mp4ves_plugin_def_s =
 };
 const tmedia_codec_plugin_def_t *tdav_codec_mp4ves_plugin_def_t = &tdav_codec_mp4ves_plugin_def_s;
 
+tsk_bool_t tdav_codec_ffmpeg_mp4ves_is_supported()
+{
+	return (avcodec_find_encoder(CODEC_ID_MPEG4) && avcodec_find_decoder(CODEC_ID_MPEG4));
+}
 
 #endif /* HAVE_FFMPEG */
 

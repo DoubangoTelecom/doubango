@@ -138,7 +138,8 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, const void* data, tsk_s
 	tsk_safeobj_lock(self);
 
 	if(!TMEDIA_JITTER_BUFFER(self->jitterbuffer)->opened){
-		if((ret = tmedia_jitterbuffer_open(self->jitterbuffer, TMEDIA_CONSUMER(self)->audio.ptime, TMEDIA_CONSUMER(self)->audio.in.rate))){
+		uint32_t rate = TMEDIA_CONSUMER(self)->audio.out.rate ? TMEDIA_CONSUMER(self)->audio.out.rate : TMEDIA_CONSUMER(self)->audio.in.rate;
+		if((ret = tmedia_jitterbuffer_open(self->jitterbuffer, TMEDIA_CONSUMER(self)->audio.ptime, rate))){
 			TSK_DEBUG_ERROR("Failed to open jitterbuffer (%d)", ret);
 			tsk_safeobj_unlock(self);
 			return ret;
@@ -175,22 +176,26 @@ tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, 
 	}
 	ret_size = tmedia_jitterbuffer_get(TMEDIA_JITTER_BUFFER(self->jitterbuffer), out_data, out_size);
 
-	tsk_safeobj_unlock(self);
-	// Echo process last frame 
-	if(self->denoise && self->denoise->opened && TSK_BUFFER_SIZE(self->denoise->last_frame)){
-		tmedia_denoise_echo_playback(self->denoise, TSK_BUFFER_DATA(self->denoise->last_frame));
-	}
+	tsk_safeobj_unlock(self);	
 
 	// denoiser
-	if(ret_size && self->denoise && self->denoise->opened){
+	if((self->denoise->echo_supp_enabled || self->denoise->noise_supp_enabled) && self->denoise && self->denoise->opened){
 		if(self->denoise->echo_supp_enabled){
-			// echo playback
-			tsk_buffer_copy(self->denoise->last_frame, 0, out_data, ret_size);
+			// Echo process last frame 
+			if(self->denoise->last_frame && self->denoise->last_frame->size){
+				tmedia_denoise_echo_playback(self->denoise, self->denoise->last_frame->data, self->denoise->last_frame->size);
+			}
+			if(ret_size){
+				// save
+				tsk_buffer_copy(self->denoise->last_frame, 0, out_data, ret_size);
+			}
 		}
 
 #if 1 // suppress noise if not supported by remote party's encoder
 		// suppress noise
-		tmedia_denoise_process_playback(self->denoise, out_data);
+		if(self->denoise->noise_supp_enabled){
+			tmedia_denoise_process_playback(self->denoise, out_data, out_size);
+		}
 #endif
 	}
 

@@ -32,7 +32,7 @@
 
 #include "tinydav_config.h"
 
-#if (HAVE_FFMPEG && (!defined(HAVE_H264) || HAVE_H264)) || HAVE_H264_PASSTHROUGH
+#if HAVE_FFMPEG || HAVE_H264_PASSTHROUGH
 
 #include "tinydav/codecs/h264/tdav_codec_h264_common.h"
 
@@ -40,6 +40,8 @@ TDAV_BEGIN_DECLS
 
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h264_base_plugin_def_t;
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h264_main_plugin_def_t;
+
+tsk_bool_t tdav_codec_ffmpeg_h264_is_supported();
 
 static inline tsk_bool_t tdav_codec_h264_is_ffmpeg_plugin(const tmedia_codec_plugin_def_t *plugin)
 {

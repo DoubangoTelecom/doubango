@@ -1,0 +1,14 @@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+libdir = @libdir@
+includedir = @includedir@
+
+Name : libtinySAK
+Description : Doubango Telecom tinySAK (Swiss Army Knife) library
+Version : @PACKAGE_VERSION@
+Requires: 
+Requires.private: 
+Conflicts:
+Cflags : -I${includedir}/tinysak
+Libs : -L${libdir} -ltinySAK
+Libs.private: 
