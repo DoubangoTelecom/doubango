@@ -167,6 +167,10 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 		TMEDIA_PRODUCER(producer)->audio.rate = TMEDIA_CODEC_RATE_ENCODING(codec);
 		TMEDIA_PRODUCER(producer)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_ENCODING(codec);
 
+        TSK_DEBUG_INFO("AudioUnit producer: channels=%d, rate=%d, ptime=%d",
+                       TMEDIA_PRODUCER(producer)->audio.channels,
+                       TMEDIA_PRODUCER(producer)->audio.rate,
+                       TMEDIA_PRODUCER(producer)->audio.ptime);
 		
 		// get device format
 		param = sizeof(AudioStreamBasicDescription);
@@ -238,7 +242,7 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 				//							  &flagZero, 
 				//							  sizeof(flagZero));
 				
-				producer->ring.chunck.size = (codec->plugin->audio.ptime * audioFormat.mSampleRate * audioFormat.mBytesPerFrame) / 1000;
+				producer->ring.chunck.size = (TMEDIA_PRODUCER(producer)->audio.ptime * audioFormat.mSampleRate * audioFormat.mBytesPerFrame) / 1000;
 				// allocate our chunck buffer
 				if(!(producer->ring.chunck.buffer = tsk_realloc(producer->ring.chunck.buffer, producer->ring.chunck.size))){
 					TSK_DEBUG_ERROR("Failed to allocate new buffer");
