@@ -811,8 +811,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_h263p_plugin_def_s =
 	/* audio */
 	{ 0 },
 
-	/* video */
-	{176, 144, 15},
+	/* video (width, height, fps) */
+	{176, 144, 0},// fps is @deprecated
 
 	tdav_codec_h263p_set,
 	tdav_codec_h263p_open,
@@ -891,8 +891,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_h263pp_plugin_def_s =
 	/* audio */
 	{ 0 },
 
-	/* video */
-	{176, 144, 15},
+	/* video (width, height, fps)*/
+	{176, 144, 0},// fps is @deprecated
 
 	tdav_codec_h263pp_set,
 	tdav_codec_h263pp_open,

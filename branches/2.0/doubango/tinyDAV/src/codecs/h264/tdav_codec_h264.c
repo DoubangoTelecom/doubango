@@ -627,8 +627,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_h264_base_plugin_def_s =
 	/* audio */
 	{ 0 },
 
-	/* video */
-	{176, 144, 15},
+	/* video (width, height, fps) */
+	{176, 144, 0}, // fps is @deprecated
 
 	tdav_codec_h264_set,
 	tdav_codec_h264_open,
@@ -693,8 +693,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_h264_main_plugin_def_s =
 	/* audio */
 	{ 0 },
 
-	/* video */
-	{176, 144, 15},
+	/* video (width, height, fps)*/
+	{176, 144, 0},// fps is @deprecated
 
 	tdav_codec_h264_set,
 	tdav_codec_h264_open,
