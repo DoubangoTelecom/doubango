@@ -18,7 +18,7 @@ svn checkout http://doubango.googlecode.com/svn/branches/2.0/doubango doubango
 }}}
 
 ===Building libsrtp===
-libsrtp is required.
+libsrtp is optional.
 {{{
 git clone https://github.com/cisco/libsrtp/
 cd libsrtp
