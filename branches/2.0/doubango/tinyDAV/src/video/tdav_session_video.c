@@ -678,6 +678,17 @@ static int _tdav_session_video_jb_cb(const tdav_video_jb_cb_data_xt* data)
 				}
 				break;
 			}
+		case tdav_video_jb_cb_data_type_fps_changed:
+			{
+				if(base->congestion_ctrl_enabled){
+					video->fps_changed = tsk_true;
+					if(video->decoder.codec){
+						TSK_DEBUG_INFO("Congestion control enabled and fps updated from %u to %u", data->fps.old, data->fps.new);
+						TMEDIA_CODEC_VIDEO(video->decoder.codec)->in.fps = data->fps.new;
+					}
+				}
+				break;
+			}
 	}
 
 	return 0;
@@ -687,7 +698,7 @@ int _tdav_session_video_open_decoder(tdav_session_video_t* self, uint8_t payload
 {
 	int ret = 0;
 
-	if((self->decoder.payload_type != payload_type) || !self->decoder.codec){
+	if((self->decoder.codec_payload_type != payload_type) || !self->decoder.codec){
 		tsk_istr_t format;
 		TSK_OBJECT_SAFE_FREE(self->decoder.codec);
 		tsk_itoa(payload_type, &format);
@@ -696,7 +707,8 @@ int _tdav_session_video_open_decoder(tdav_session_video_t* self, uint8_t payload
 			ret = -2;
 			goto bail;
 		}
-		self->decoder.payload_type = payload_type;
+		self->decoder.codec_payload_type = payload_type;
+		self->decoder.codec_decoded_frames_count = 0; // because we switched the codecs
 	}
 	// Open codec if not already done
 	if(!TMEDIA_CODEC(self->decoder.codec)->opened){
@@ -704,6 +716,7 @@ int _tdav_session_video_open_decoder(tdav_session_video_t* self, uint8_t payload
 			TSK_DEBUG_ERROR("Failed to open [%s] codec", self->decoder.codec->plugin->desc);
 			goto bail;
 		}
+		self->decoder.codec_decoded_frames_count = 0; // because first time to use
 	}
 
 bail:
@@ -730,7 +743,7 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 		tdav_session_video_t* video = (tdav_session_video_t*)base;
 
 		// Find the codec to use to decode the RTP payload
-		if(!self->decoder.codec || self->decoder.payload_type != packet->header->payload_type){
+		if(!self->decoder.codec || self->decoder.codec_payload_type != packet->header->payload_type){
 			if((ret = _tdav_session_video_open_decoder(self, packet->header->payload_type))){
 				goto bail;
 			}
@@ -845,6 +858,29 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 			_size = out_size;
 		}
 
+		// congetion control
+		// send RTCP-REMB if:
+		//  - fps changed
+		//	- first frame
+		//  - approximately every 5 minutes (300 = 60 * 5)
+		if(self->fps_changed || base->congestion_ctrl_enabled && base->rtp_manager && (self->decoder.codec_decoded_frames_count == 0 || ((self->decoder.codec_decoded_frames_count % (TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.fps * 300)) == 0))){
+			int32_t bandwidth_max_upload_kbps = base->bandwidth_max_upload_kbps;
+			int32_t bandwidth_max_download_kbps = base->bandwidth_max_download_kbps;
+			// bandwidth already computed in start() be the decoded video size was not correct and based on the SDP negotiation
+			bandwidth_max_download_kbps = TSK_MIN(
+							tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.fps),
+							bandwidth_max_download_kbps);
+			if(self->encoder.codec){
+				bandwidth_max_upload_kbps = TSK_MIN(
+							tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(self->encoder.codec)->out.width, TMEDIA_CODEC_VIDEO(self->encoder.codec)->out.height, TMEDIA_CODEC_VIDEO(self->encoder.codec)->out.fps),
+							bandwidth_max_upload_kbps);
+			}
+			self->fps_changed = tsk_false; // reset
+			TSK_DEBUG_INFO("video with congestion control enabled: max_bw_up=%d kpbs, max_bw_down=%d kpbs", bandwidth_max_upload_kbps, bandwidth_max_download_kbps);
+			ret = trtp_manager_set_app_bandwidth_max(base->rtp_manager, bandwidth_max_upload_kbps, bandwidth_max_download_kbps);
+		}
+		// inc() frame count and consume decoded video
+		++self->decoder.codec_decoded_frames_count;
 		ret = tmedia_consumer_consume(base->consumer, _buffer, _size, __rtp_header);
 	}
 	else if(!base->consumer->is_started){

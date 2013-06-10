@@ -64,7 +64,7 @@ public:
 	ProxyAudioConsumer(struct twrap_consumer_proxy_audio_s* pConsumer);
 #endif
 	virtual ~ProxyAudioConsumer();
-
+	bool setActualSndCardPlaybackParams(int nPtime, int nRate, int nChannels);
 	bool queryForResampler(uint16_t nInFreq, uint16_t nOutFreq, uint16_t nFrameDuration, uint16_t nChannels, uint16_t nResamplerQuality);
 	bool setPullBuffer(const void* pPullBufferPtr, unsigned nPullBufferSize);
 	unsigned pull(void* pOutput=tsk_null, unsigned nSize=0);

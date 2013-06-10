@@ -1,0 +1,15 @@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+libdir = @libdir@
+includedir = @includedir@
+
+Name : libtinyIPSec
+Description : Doubango Telecom tinyIPSec (IPSec) library
+Version : @PACKAGE_VERSION@
+Requires: 
+Requires.private: tinySAK = @PACKAGE_VERSION@
+Conflicts:
+Cflags : -I${includedir}/tinyipsec
+Libs : -L${libdir} -ltinyIPSec
+Libs.private: 
+

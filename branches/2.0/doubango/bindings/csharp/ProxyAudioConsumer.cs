@@ -40,6 +40,11 @@ public class ProxyAudioConsumer : ProxyPlugin {
     }
   }
 
+  public bool setActualSndCardPlaybackParams(int nPtime, int nRate, int nChannels) {
+    bool ret = tinyWRAPPINVOKE.ProxyAudioConsumer_setActualSndCardPlaybackParams(swigCPtr, nPtime, nRate, nChannels);
+    return ret;
+  }
+
   public bool queryForResampler(ushort nInFreq, ushort nOutFreq, ushort nFrameDuration, ushort nChannels, ushort nResamplerQuality) {
     bool ret = tinyWRAPPINVOKE.ProxyAudioConsumer_queryForResampler(swigCPtr, nInFreq, nOutFreq, nFrameDuration, nChannels, nResamplerQuality);
     return ret;

@@ -130,6 +130,7 @@ typedef enum tmedia_pref_video_size_s
 	tmedia_pref_video_size_720p, // 1280 x 720
 	tmedia_pref_video_size_16cif, // 1408 x 1152
 	tmedia_pref_video_size_1080p, // 1920 x 1080
+	tmedia_pref_video_size_2160p, // 3840 x 2160
 }
 tmedia_pref_video_size_t;
 
@@ -254,6 +255,7 @@ TINYMEDIA_API char* tmedia_get_video_imageattr(tmedia_pref_video_size_t pref_vs,
 TINYMEDIA_API int tmedia_get_video_quality(tmedia_bandwidth_level_t bl);
 TINYMEDIA_API int32_t tmedia_get_video_bandwidth_kbps(unsigned width, unsigned height, unsigned fps, unsigned motion_rank);
 TINYMEDIA_API int32_t tmedia_get_video_bandwidth_kbps_2(unsigned width, unsigned height, unsigned fps);
+TINYMEDIA_API int32_t tmedia_get_video_bandwidth_kbps_3();
 #define tmedia_get_video_qscale tmedia_get_video_quality
 
 TMEDIA_END_DECLS

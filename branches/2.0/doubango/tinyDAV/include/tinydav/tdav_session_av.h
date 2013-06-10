@@ -57,8 +57,9 @@ typedef struct tdav_session_av_s
 	tmedia_srtp_type_t srtp_type;
 	tmedia_srtp_mode_t srtp_mode;
 
-	int32_t bandwidth_max_upload;
-	int32_t bandwidth_max_download;
+	int32_t bandwidth_max_upload_kbps;
+	int32_t bandwidth_max_download_kbps;
+	tsk_bool_t congestion_ctrl_enabled;
 
 	/* sdp capabilities (RFC 5939) */
 	struct tdav_sdp_caps_s* sdp_caps;

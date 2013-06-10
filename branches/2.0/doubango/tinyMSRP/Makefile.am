@@ -46,3 +46,7 @@ parsers_includedir = $(includedir)/tinymsrp/tinymsrp/parsers
 parsers_include_HEADERS = include/tinymsrp/parsers/*.h
 session_includedir = $(includedir)/tinymsrp/tinymsrp/session
 session_include_HEADERS = include/tinymsrp/session/*.h
+
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = tinyMSRP.pc

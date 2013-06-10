@@ -40,3 +40,6 @@ libtinySAK_la_SOURCES  = \
 libtinySAK_la_LDFLAGS = $LDFLAGS -no-undefined
 libtinySAK_la_HEADERS = src/*.h
 libtinySAK_ladir = $(includedir)/tinysak
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = tinySAK.pc

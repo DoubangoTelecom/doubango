@@ -1806,6 +1806,18 @@ SWIGEXPORT int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetBandwidthLevel() {
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetCongestionCtrlEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetCongestionCtrlEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetVideoMotionRank(int jarg1) {
   unsigned int jresult ;
   int32_t arg1 ;
@@ -2089,6 +2101,32 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetAudioGain(
   arg1 = (int32_t)jarg1; 
   arg2 = (int32_t)jarg2; 
   result = (bool)MediaSessionMgr::defaultsSetAudioGain(arg1,arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetAudioPtime(int jarg1) {
+  unsigned int jresult ;
+  int32_t arg1 ;
+  bool result;
+  
+  arg1 = (int32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetAudioPtime(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetAudioChannels(int jarg1, int jarg2) {
+  unsigned int jresult ;
+  int32_t arg1 ;
+  int32_t arg2 ;
+  bool result;
+  
+  arg1 = (int32_t)jarg1; 
+  arg2 = (int32_t)jarg2; 
+  result = (bool)MediaSessionMgr::defaultsSetAudioChannels(arg1,arg2);
   jresult = result; 
   return jresult;
 }
@@ -5577,6 +5615,24 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_ProxyAudioConsumer(void * jarg1) {
   
   arg1 = (ProxyAudioConsumer *)jarg1; 
   delete arg1;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyAudioConsumer_setActualSndCardPlaybackParams(void * jarg1, int jarg2, int jarg3, int jarg4) {
+  unsigned int jresult ;
+  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  int arg4 ;
+  bool result;
+  
+  arg1 = (ProxyAudioConsumer *)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  result = (bool)(arg1)->setActualSndCardPlaybackParams(arg2,arg3,arg4);
+  jresult = result; 
+  return jresult;
 }
 
 

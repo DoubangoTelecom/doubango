@@ -39,6 +39,7 @@
 #include "tnet_endianness.h"
 
 #include "tinymedia/tmedia_params.h"
+#include "tinymedia/tmedia_defaults.h"
 
 #include "tsk_string.h"
 #include "tsk_time.h"
@@ -100,6 +101,7 @@ typedef struct tdav_codec_h263_s
 		void* buffer;
 		tsk_bool_t force_idr;
 		int32_t quality; // [1-31]
+		int32_t max_bw_kpbs;
 	} encoder;
 	
 	// decoder
@@ -204,6 +206,8 @@ int tdav_codec_h263_init(tdav_codec_h263_t* self, tdav_codec_h263_type_t type, e
 		TSK_DEBUG_ERROR("Failed to find [%d] decoder", decoder);
 		ret = -3;
 	}
+	
+	self->encoder.max_bw_kpbs = tmedia_defaults_get_bandwidth_video_upload_max();
 
 	/* allocations MUST be done by open() */
 	return ret;
@@ -906,6 +910,7 @@ int tdav_codec_h263_open_encoder(tdav_codec_h263_t* self)
 {
 	int ret;
 	int size;
+	int32_t max_bw_kpbs;
 	if(self->encoder.context){
 		TSK_DEBUG_ERROR("Encoder already opened");
 		return -1;
@@ -927,8 +932,12 @@ int tdav_codec_h263_open_encoder(tdav_codec_h263_t* self)
 	self->encoder.context->mb_qmax = self->encoder.context->qmax;
 #endif
 	self->encoder.context->mb_decision = FF_MB_DECISION_RD;
-	
-	self->encoder.context->bit_rate = ((TMEDIA_CODEC_VIDEO(self)->out.width * TMEDIA_CODEC_VIDEO(self)->out.height * 256 / 320 / 240) * 1000);
+	max_bw_kpbs = TSK_CLAMP(
+		0,
+		tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(self)->out.width, TMEDIA_CODEC_VIDEO(self)->out.height, TMEDIA_CODEC_VIDEO(self)->out.fps), 
+		self->encoder.max_bw_kpbs
+	);
+	self->encoder.context->bit_rate = (max_bw_kpbs * 1024);// bps
 	//self->encoder.context->rc_lookahead = 0;
 	self->encoder.context->rtp_payload_size = RTP_PAYLOAD_SIZE;
 	self->encoder.context->opaque = tsk_null;
@@ -997,6 +1006,8 @@ int tdav_codec_h263_open_encoder(tdav_codec_h263_t* self)
 		TSK_DEBUG_ERROR("Failed to open [%s] codec", TMEDIA_CODEC(self)->plugin->desc);
 		return ret;
 	}
+
+	TSK_DEBUG_INFO("[H.263] bitrate=%d bps", self->encoder.context->bit_rate);
 
 	return ret;
 }
@@ -1341,6 +1352,20 @@ static void tdav_codec_h263p_rtp_callback(tdav_codec_h263_t *self, const void *d
 	}
 }
 
+tsk_bool_t tdav_codec_ffmpeg_h263_is_supported()
+{
+	return (avcodec_find_encoder(CODEC_ID_H263) && avcodec_find_decoder(CODEC_ID_H263));
+}
+
+tsk_bool_t tdav_codec_ffmpeg_h263p_is_supported()
+{
+	return (avcodec_find_encoder(CODEC_ID_H263P) && avcodec_find_decoder(CODEC_ID_H263));
+}
+
+tsk_bool_t tdav_codec_ffmpeg_h263pp_is_supported()
+{
+	return tdav_codec_ffmpeg_h263p_is_supported();
+}
 
 
 #endif /* HAVE_FFMPEG */

@@ -35,12 +35,6 @@
 
 #include "tinymedia/tmedia_codec.h"
 
-#define VPX_CODEC_DISABLE_COMPAT 1 /* strict compliance with the latest SDK by disabling some backwards compatibility  */
-#include <vpx/vpx_encoder.h>
-#include <vpx/vpx_decoder.h>
-#include <vpx/vp8cx.h>
-#include <vpx/vp8dx.h>
-
 TDAV_BEGIN_DECLS
 
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_vp8_plugin_def_t;

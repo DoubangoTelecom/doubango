@@ -95,7 +95,7 @@ typedef struct tdav_webrtc_denoise_s
 	
 	uint32_t echo_tail;
 	uint32_t echo_skew;
-	uint32_t frame_size;
+	uint32_t frame_size_samples;
 	uint32_t sampling_rate;
 
 	WebRtc_Word16 *temp_rec_out;

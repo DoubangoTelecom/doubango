@@ -444,7 +444,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_g729ab_plugin_def_s =
 	
 	{ /* audio */
 		1, // channels
-		20 // ptime
+		0 // ptime @deprecated
 	},
 
 	/* video */

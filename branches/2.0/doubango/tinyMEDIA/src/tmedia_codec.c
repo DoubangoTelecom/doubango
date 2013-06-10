@@ -89,8 +89,8 @@ int tmedia_codec_init(tmedia_codec_t* self, tmedia_type_t type, const char* name
 
 	if(type & tmedia_audio){
 		tmedia_codec_audio_t* audio = TMEDIA_CODEC_AUDIO(self);
-		if(!audio->in.ptime) audio->in.ptime = self->plugin->audio.ptime;
-		if(!audio->out.ptime) audio->out.ptime = self->plugin->audio.ptime;
+		if(!audio->in.ptime) audio->in.ptime = (self->plugin->audio.ptime ? self->plugin->audio.ptime : tmedia_defaults_get_audio_ptime());
+		if(!audio->out.ptime) audio->out.ptime = (self->plugin->audio.ptime ? self->plugin->audio.ptime : tmedia_defaults_get_audio_ptime());
 		if(!audio->in.channels) audio->in.channels = self->plugin->audio.channels;
 		if(!audio->out.channels) audio->out.channels = self->plugin->audio.channels;
 		if(!audio->in.timestamp_multiplier) audio->in.timestamp_multiplier = tmedia_codec_audio_get_timestamp_multiplier(self->id, self->in.rate);

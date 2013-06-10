@@ -74,8 +74,8 @@ int twrap_consumer_proxy_audio_prepare(tmedia_consumer_t* self, const tmedia_cod
 			ret = audio->pcConsumer->getCallback()->prepare((int)self->audio.ptime, self->audio.in.rate, self->audio.in.channels);
 			if(ret == 0){
 				// say consumer can output these params
-				self->audio.out.rate = self->audio.in.rate;
-				self->audio.out.channels = self->audio.in.channels;
+				if(!self->audio.out.rate) self->audio.out.rate = self->audio.in.rate;
+				if(!self->audio.out.channels) self->audio.out.channels = self->audio.in.channels;
 			}
 		}
 	}
@@ -249,6 +249,22 @@ ProxyAudioConsumer::~ProxyAudioConsumer()
 	m_Resampler.nInBufferSizeInByte = 0;
 	if(m_Resampler.pResampler){
 		delete m_Resampler.pResampler, m_Resampler.pResampler = tsk_null;
+	}
+}
+
+// Use this function to request resampling when your sound card can't honor negotaited record parameters
+bool ProxyAudioConsumer::setActualSndCardPlaybackParams(int nPtime, int nRate, int nChannels)
+{
+	if(m_pWrappedPlugin){
+		TSK_DEBUG_INFO("ProxyAudioConsumer::setActualSndCardRecordParams(ptime=%d, rate=%d, channels=%d)", nPtime, nRate, nChannels);
+		TMEDIA_CONSUMER(m_pWrappedPlugin)->audio.ptime = nPtime;
+		TMEDIA_CONSUMER(m_pWrappedPlugin)->audio.out.rate = nRate;
+		TMEDIA_CONSUMER(m_pWrappedPlugin)->audio.out.channels = nChannels;
+		return true;
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid state");
+		return false;
 	}
 }
 

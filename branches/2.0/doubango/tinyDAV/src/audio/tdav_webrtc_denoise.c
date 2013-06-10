@@ -69,7 +69,7 @@ static int tdav_webrtc_denoise_set(tmedia_denoise_t* _self, const tmedia_param_t
 	return -1;
 }
 
-static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_t sampling_rate)
+static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t frame_size_samples, uint32_t sampling_rate)
 {
 	tdav_webrtc_denoise_t *denoiser = (tdav_webrtc_denoise_t *)self;
 	int ret;
@@ -93,7 +93,7 @@ static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t frame_size,
 	denoiser->echo_tail = TSK_CLAMP(WEBRTC_MIN_ECHO_TAIL, TMEDIA_DENOISE(denoiser)->echo_tail, WEBRTC_MAX_ECHO_TAIL);
 	TSK_DEBUG_INFO("echo_tail=%d", denoiser->echo_tail);
 	denoiser->echo_skew = TMEDIA_DENOISE(denoiser)->echo_skew;
-	denoiser->frame_size = frame_size;
+	denoiser->frame_size_samples = frame_size_samples;
 	denoiser->sampling_rate = sampling_rate;
 	
 	//
@@ -127,7 +127,7 @@ static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t frame_size,
 	//
 	if(TMEDIA_DENOISE(denoiser)->noise_supp_enabled){
 #if HAVE_SPEEX_DSP && PREFER_SPEEX_DENOISER
-		if((denoiser->SpeexDenoiser_proc = speex_preprocess_state_init(denoiser->frame_size, denoiser->sampling_rate))){
+		if((denoiser->SpeexDenoiser_proc = speex_preprocess_state_init(denoiser->frame_size_samples, denoiser->sampling_rate))){
 			int i = 1;
 			speex_preprocess_ctl(denoiser->SpeexDenoiser_proc, SPEEX_PREPROCESS_SET_DENOISE, &i);
 			i = TMEDIA_DENOISE(denoiser)->noise_supp_level;
@@ -146,7 +146,7 @@ static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t frame_size,
 	}
 
 	// allocate temp buffer for record processing
-	if(!(denoiser->temp_rec_out = tsk_realloc(denoiser->temp_rec_out, denoiser->frame_size * kSizeOfWord16))){
+	if(!(denoiser->temp_rec_out = tsk_realloc(denoiser->temp_rec_out, denoiser->frame_size_samples * kSizeOfWord16))){
 		TSK_DEBUG_ERROR("Failed to allocate new buffer");
 		return -3;
 	}
@@ -156,7 +156,7 @@ static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t frame_size,
 	return ret;
 }
 
-static int tdav_webrtc_denoise_echo_playback(tmedia_denoise_t* self, const void* echo_frame)
+static int tdav_webrtc_denoise_echo_playback(tmedia_denoise_t* self, const void* echo_frame, uint32_t echo_frame_size_bytes)
 {
 	tdav_webrtc_denoise_t *denoiser = (tdav_webrtc_denoise_t *)self;
 	if(denoiser->AEC_inst){
@@ -165,7 +165,7 @@ static int tdav_webrtc_denoise_echo_playback(tmedia_denoise_t* self, const void*
 		switch(denoiser->sampling_rate){
 			case 8000:
 				{
-					if((ret = TDAV_WebRtcAec_BufferFarend(denoiser->AEC_inst, pEchoFrame, denoiser->frame_size))){
+					if((ret = TDAV_WebRtcAec_BufferFarend(denoiser->AEC_inst, pEchoFrame, denoiser->frame_size_samples))){
 						TSK_DEBUG_ERROR("WebRtcAec_BufferFarend failed with error code = %d", ret);
 						return ret;
 					}
@@ -176,8 +176,8 @@ static int tdav_webrtc_denoise_echo_playback(tmedia_denoise_t* self, const void*
 				{
 					// Split in several 160 samples
 					uint32_t i, k = (denoiser->sampling_rate == 16000 ? 1 : 2);
-					for(i = 0; i<denoiser->frame_size; i+=(denoiser->frame_size>>k)){
-						if((ret = TDAV_WebRtcAec_BufferFarend(denoiser->AEC_inst, &pEchoFrame[i], (denoiser->frame_size>>k)))){
+					for(i = 0; i<denoiser->frame_size_samples; i+=(denoiser->frame_size_samples>>k)){
+						if((ret = TDAV_WebRtcAec_BufferFarend(denoiser->AEC_inst, &pEchoFrame[i], (denoiser->frame_size_samples>>k)))){
 							TSK_DEBUG_ERROR("WebRtcAec_BufferFarend failed with error code = %d", ret);
 							return ret;
 						}
@@ -196,7 +196,7 @@ static int tdav_webrtc_denoise_echo_playback(tmedia_denoise_t* self, const void*
 
 
 
-static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audio_frame, tsk_bool_t* silence_or_noise)
+static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audio_frame, uint32_t audio_frame_size_bytes, tsk_bool_t* silence_or_noise)
 {
 	tdav_webrtc_denoise_t *denoiser = (tdav_webrtc_denoise_t *)self;
 	int ret = 0;
@@ -213,7 +213,7 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 		if(denoiser->SpeexDenoiser_proc){
 			speex_preprocess_run(denoiser->SpeexDenoiser_proc, pAudioFrame);
 		}
-		memcpy(denoiser->temp_rec_out, pAudioFrame, denoiser->frame_size * sizeof(spx_int16_t));
+		memcpy(denoiser->temp_rec_out, pAudioFrame, denoiser->frame_size_samples * sizeof(spx_int16_t));
 #else
 
 		// WebRTC NoiseSupp only accept 10ms frames
@@ -237,7 +237,7 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 		switch(denoiser->sampling_rate){
 			case 8000:
 				{
-					if((ret = TDAV_WebRtcAec_Process(denoiser->AEC_inst, denoiser->temp_rec_out, tsk_null, pAudioFrame, tsk_null, denoiser->frame_size, denoiser->echo_tail, denoiser->echo_skew))){
+					if((ret = TDAV_WebRtcAec_Process(denoiser->AEC_inst, denoiser->temp_rec_out, tsk_null, pAudioFrame, tsk_null, denoiser->frame_size_samples, denoiser->echo_tail, denoiser->echo_skew))){
 						TSK_DEBUG_ERROR("WebRtcAec_Process with error code = %d", ret);
 						goto bail;
 					}
@@ -248,8 +248,8 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 				{
 					// Split in several 160 samples
 					uint32_t i, k = (denoiser->sampling_rate == 16000 ? 1 : 2);
-					for(i = 0; i<denoiser->frame_size; i+=(denoiser->frame_size>>k)){
-						if((ret = TDAV_WebRtcAec_Process(denoiser->AEC_inst, &denoiser->temp_rec_out[i], tsk_null, &pAudioFrame[i], tsk_null, (denoiser->frame_size>>k), denoiser->echo_tail, denoiser->echo_skew))){
+					for(i = 0; i<denoiser->frame_size_samples; i+=(denoiser->frame_size_samples>>k)){
+						if((ret = TDAV_WebRtcAec_Process(denoiser->AEC_inst, &denoiser->temp_rec_out[i], tsk_null, &pAudioFrame[i], tsk_null, (denoiser->frame_size_samples>>k), denoiser->echo_tail, denoiser->echo_skew))){
 							TSK_DEBUG_ERROR("WebRtcAec_Process with error code = %d", ret);
 							goto bail;
 						}
@@ -270,7 +270,7 @@ bail:
 	return ret;
 }
 
-static int tdav_webrtc_denoise_process_playback(tmedia_denoise_t* self, void* audio_frame)
+static int tdav_webrtc_denoise_process_playback(tmedia_denoise_t* self, void* audio_frame, uint32_t audio_frame_size_bytes)
 {
 	tdav_webrtc_denoise_t *denoiser = (tdav_webrtc_denoise_t *)self;
 	

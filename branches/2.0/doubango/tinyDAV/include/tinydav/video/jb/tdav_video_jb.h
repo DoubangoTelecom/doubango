@@ -45,6 +45,7 @@ typedef enum tdav_video_jb_cb_data_type_e
 	tdav_video_jb_cb_data_type_fl, // frame lost
 	tdav_video_jb_cb_data_type_tmfr, // too many frames removed
 	tdav_video_jb_cb_data_type_fdd, // average frame decoding duration
+	tdav_video_jb_cb_data_type_fps_changed, // fps changed, detection done using the timestamp
 }
 tdav_video_jb_cb_data_type_t;
 
@@ -65,6 +66,10 @@ typedef struct tdav_video_jb_cb_data_xs
 			uint32_t x_dur; // expected duration in milliseconds
 			uint32_t a_dur; // actual duration in milliseconds
 		}fdd;
+		struct{
+			uint32_t old;
+			uint32_t new;
+		}fps;
 	};
 }
 tdav_video_jb_cb_data_xt;

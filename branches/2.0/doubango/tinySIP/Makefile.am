@@ -200,7 +200,8 @@ transactions_include_HEADERS = include/tinysip/transactions/*.h
 transports_includedir = $(includedir)/tinysip/tinysip/transports
 transports_include_HEADERS = include/tinysip/transports/*.h
 
-
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = tinySIP.pc
 
 
 

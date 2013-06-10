@@ -98,6 +98,10 @@ public class MediaSessionMgr {
     return tmedia_bandwidth_level_t.swigToEnum(tinyWRAPJNI.MediaSessionMgr_defaultsGetBandwidthLevel());
   }
 
+  public static boolean defaultsSetCongestionCtrlEnabled(boolean enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetCongestionCtrlEnabled(enabled);
+  }
+
   public static boolean defaultsSetVideoMotionRank(int video_motion_rank) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetVideoMotionRank(video_motion_rank);
   }
@@ -196,6 +200,14 @@ public class MediaSessionMgr {
 
   public static boolean defaultsSetAudioGain(int producer_gain, int consumer_gain) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetAudioGain(producer_gain, consumer_gain);
+  }
+
+  public static boolean defaultsSetAudioPtime(int ptime) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetAudioPtime(ptime);
+  }
+
+  public static boolean defaultsSetAudioChannels(int channel_playback, int channel_record) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetAudioChannels(channel_playback, channel_record);
   }
 
   public static boolean defaultsSetRtpPortRange(int range_start, int range_stop) {

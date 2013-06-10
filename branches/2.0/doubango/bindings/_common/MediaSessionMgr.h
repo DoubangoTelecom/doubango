@@ -97,6 +97,7 @@ public:
 	static tmedia_profile_t defaultsGetProfile();
 	static bool defaultsSetBandwidthLevel(tmedia_bandwidth_level_t bl); // @deprecated
 	static tmedia_bandwidth_level_t defaultsGetBandwidthLevel(); // @deprecated
+	static bool defaultsSetCongestionCtrlEnabled(bool enabled);
 	static bool defaultsSetVideoMotionRank(int32_t video_motion_rank);
 	static bool defaultsSetBandwidthVideoUploadMax(int32_t bw_video_up_max_kbps);
 	static bool defaultsSetBandwidthVideoDownloadMax(int32_t bw_video_down_max_kbps);
@@ -122,6 +123,8 @@ public:
 	static bool defaultsGet100relEnabled();
 	static bool defaultsSetScreenSize(int32_t sx, int32_t sy);
 	static bool defaultsSetAudioGain(int32_t producer_gain, int32_t consumer_gain);
+	static bool defaultsSetAudioPtime(int32_t ptime);
+	static bool defaultsSetAudioChannels(int32_t channel_playback, int32_t channel_record);
 	static bool defaultsSetRtpPortRange(uint16_t range_start, uint16_t range_stop);
 	static bool defaultsSetRtpSymetricEnabled(bool enabled);
 	static bool defaultsSetMediaType(twrap_media_type_t media_type);

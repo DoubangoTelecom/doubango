@@ -35,3 +35,7 @@ __includedir = $(includedir)/tinymedia/tinymedia
 __include_HEADERS = include/tinymedia/*.h
 content_includedir = $(includedir)/tinymedia/tinymedia/content
 content_include_HEADERS = include/tinymedia/content/*.h
+
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = tinyMEDIA.pc

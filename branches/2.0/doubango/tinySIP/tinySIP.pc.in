@@ -1,0 +1,16 @@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+libdir = @libdir@
+includedir = @includedir@
+
+Name : libtinySIP
+Description : Doubango Telecom tinyIP (SIP protocol) library
+Version : @PACKAGE_VERSION@
+Requires: 
+Requires.private: tinySAK = @PACKAGE_VERSION@ tinyNET = @PACKAGE_VERSION@ tinyHTTP = @PACKAGE_VERSION@ tinyIPSec = @PACKAGE_VERSION@ tinySDP = @PACKAGE_VERSION@ tinyMEDIA = @PACKAGE_VERSION@ tinySIGCOMP = @PACKAGE_VERSION@
+Conflicts:
+Cflags : -I${includedir}/tinysip
+Libs : -L${libdir} -ltinySIP
+Libs.private: 
+
+

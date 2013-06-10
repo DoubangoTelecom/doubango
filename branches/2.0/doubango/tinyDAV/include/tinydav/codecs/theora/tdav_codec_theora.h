@@ -33,11 +33,13 @@
 
 #include "tinydav_config.h"
 
-#if HAVE_FFMPEG && (!defined(HAVE_THEORA) || HAVE_THEORA)
+#if HAVE_FFMPEG
 
 #include "tinymedia/tmedia_codec.h"
 
 TDAV_BEGIN_DECLS
+
+tsk_bool_t tdav_codec_ffmpeg_theora_is_supported();
 
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_theora_plugin_def_t;
 

@@ -1,0 +1,16 @@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+libdir = @libdir@
+includedir = @includedir@
+
+Name : libtinyNET
+Description : Doubango Telecom tinyNET (Networking) library
+Version : @PACKAGE_VERSION@
+Requires: 
+Requires.private: tinySAK = @PACKAGE_VERSION@
+Conflicts:
+Cflags : -I${includedir}/tinynet
+Libs : -L${libdir} -ltinyNET
+Libs.private: 
+
+

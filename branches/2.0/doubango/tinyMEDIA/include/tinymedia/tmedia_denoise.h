@@ -71,22 +71,22 @@ typedef struct tmedia_denoise_plugin_def_s
 	const char* desc;
 
 	int (*set) (tmedia_denoise_t* , const tmedia_param_t*);
-	int (* open) (tmedia_denoise_t*, uint32_t frame_size, uint32_t sampling_rate);
-	int (*echo_playback) (tmedia_denoise_t* self, const void* echo_frame);
+	int (* open) (tmedia_denoise_t*, uint32_t frame_size_samples, uint32_t sampling_rate);
+	int (*echo_playback) (tmedia_denoise_t* self, const void* echo_frame, uint32_t echo_frame_size_bytes);
 	//! aec, vad, noise suppression, echo cancellation before sending packet over network
-	int (* process_record) (tmedia_denoise_t*, void* audio_frame, tsk_bool_t* silence_or_noise);
+	int (* process_record) (tmedia_denoise_t*, void* audio_frame, uint32_t audio_frame_size_bytes, tsk_bool_t* silence_or_noise);
 	//! noise suppression before playing sound
-	int (* process_playback) (tmedia_denoise_t*, void* audio_frame);
+	int (* process_playback) (tmedia_denoise_t*, void* audio_frame, uint32_t audio_frame_size_bytes);
 	int (* close) (tmedia_denoise_t* );
 }
 tmedia_denoise_plugin_def_t;
 
 TINYMEDIA_API int tmedia_denoise_init(tmedia_denoise_t* self);
 TINYMEDIA_API int tmedia_denoise_set(tmedia_denoise_t* self, const tmedia_param_t* param);
-TINYMEDIA_API int tmedia_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_t sampling_rate);
-TINYMEDIA_API int tmedia_denoise_echo_playback(tmedia_denoise_t* self, const void* echo_frame);
-TINYMEDIA_API int tmedia_denoise_process_record(tmedia_denoise_t* self, void* audio_frame, tsk_bool_t* silence_or_noise);
-TINYMEDIA_API int tmedia_denoise_process_playback(tmedia_denoise_t* self, void* audio_frame);
+TINYMEDIA_API int tmedia_denoise_open(tmedia_denoise_t* self, uint32_t frame_size_samples, uint32_t sampling_rate);
+TINYMEDIA_API int tmedia_denoise_echo_playback(tmedia_denoise_t* self, const void* echo_frame, uint32_t echo_frame_size_bytes);
+TINYMEDIA_API int tmedia_denoise_process_record(tmedia_denoise_t* self, void* audio_frame, uint32_t audio_frame_size_bytes, tsk_bool_t* silence_or_noise);
+TINYMEDIA_API int tmedia_denoise_process_playback(tmedia_denoise_t* self, void* audio_frame, uint32_t audio_frame_size_bytes);
 TINYMEDIA_API int tmedia_denoise_close(tmedia_denoise_t* self);
 TINYMEDIA_API int tmedia_denoise_deinit(tmedia_denoise_t* self);
 

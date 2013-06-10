@@ -15,3 +15,6 @@ libtinyIPSec_la_LDFLAGS = $LDFLAGS -no-undefined
 # Headers file to install
 libtinyIPSec_la_HEADERS = src/*.h
 libtinyIPSec_ladir = $(includedir)/tinyipsec
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = tinyIPSec.pc

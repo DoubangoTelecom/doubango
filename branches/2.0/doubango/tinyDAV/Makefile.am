@@ -28,8 +28,8 @@ libtinyDAV_la_LIBADD += ${LIBVPX_LIBADD}
 endif
 
 if USE_YUV
-libtinyDAV_la_LIBADD += -lyuv
-libtinyDAV_la_CPPFLAGS += -I${LIBYUV_INCLUDE} -I${LIBYUV_INCLUDE}/libyuv
+libtinyDAV_la_LIBADD += ${LIBYUV_LIB}
+libtinyDAV_la_CPPFLAGS += ${LIBYUV_INCLUDE} ${LIBYUV_INCLUDE}/libyuv
 endif
 
 if USE_OPUS
@@ -144,3 +144,7 @@ audio_includedir = $(includedir)/tinydav/tinydav/audio
 audio_include_HEADERS = include/tinydav/audio/*.h
 video_includedir = $(includedir)/tinydav/tinydav/video
 video_include_HEADERS = include/tinydav/video/*.h
+
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = tinyDAV.pc

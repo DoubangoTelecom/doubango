@@ -57,7 +57,7 @@ int tmedia_consumer_init(tmedia_consumer_t* self)
 	self->video.display.chroma = TMEDIA_CONSUMER_CHROMA_DEFAULT;
 
 	self->audio.bits_per_sample = TMEDIA_CONSUMER_BITS_PER_SAMPLE_DEFAULT;
-	self->audio.ptime = TMEDIA_CONSUMER_PTIME_DEFAULT;
+	self->audio.ptime = tmedia_defaults_get_audio_ptime();
 	self->audio.volume = tmedia_defaults_get_volume();
 
 	return 0;

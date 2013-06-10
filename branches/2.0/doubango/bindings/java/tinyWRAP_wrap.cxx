@@ -2841,6 +2841,20 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1
 }
 
 
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetCongestionCtrlEnabled(JNIEnv *jenv, jclass jcls, jboolean jarg1) {
+  jboolean jresult = 0 ;
+  bool arg1 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetCongestionCtrlEnabled(arg1);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetVideoMotionRank(JNIEnv *jenv, jclass jcls, jint jarg1) {
   jboolean jresult = 0 ;
   int32_t arg1 ;
@@ -3174,6 +3188,36 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionM
   arg1 = (int32_t)jarg1; 
   arg2 = (int32_t)jarg2; 
   result = (bool)MediaSessionMgr::defaultsSetAudioGain(arg1,arg2);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetAudioPtime(JNIEnv *jenv, jclass jcls, jint jarg1) {
+  jboolean jresult = 0 ;
+  int32_t arg1 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetAudioPtime(arg1);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetAudioChannels(JNIEnv *jenv, jclass jcls, jint jarg1, jint jarg2) {
+  jboolean jresult = 0 ;
+  int32_t arg1 ;
+  int32_t arg2 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int32_t)jarg1; 
+  arg2 = (int32_t)jarg2; 
+  result = (bool)MediaSessionMgr::defaultsSetAudioChannels(arg1,arg2);
   jresult = (jboolean)result; 
   return jresult;
 }
@@ -7980,6 +8024,27 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1ProxyAudi
   (void)jcls;
   arg1 = *(ProxyAudioConsumer **)&jarg1; 
   delete arg1;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyAudioConsumer_1setActualSndCardPlaybackParams(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3, jint jarg4) {
+  jboolean jresult = 0 ;
+  ProxyAudioConsumer *arg1 = (ProxyAudioConsumer *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  int arg4 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyAudioConsumer **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  result = (bool)(arg1)->setActualSndCardPlaybackParams(arg2,arg3,arg4);
+  jresult = (jboolean)result; 
+  return jresult;
 }
 
 

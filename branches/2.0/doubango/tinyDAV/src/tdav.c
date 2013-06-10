@@ -223,16 +223,18 @@ int tdav_init()
 	}
 #endif
 #if HAVE_FFMPEG
-	tmedia_codec_plugin_register(tdav_codec_mp4ves_plugin_def_t);
-#	if !defined(HAVE_H264) || HAVE_H264
-	tmedia_codec_plugin_register(tdav_codec_h264_base_plugin_def_t);
-	tmedia_codec_plugin_register(tdav_codec_h264_main_plugin_def_t);
-#	endif
+	if(tdav_codec_ffmpeg_mp4ves_is_supported()){
+		tmedia_codec_plugin_register(tdav_codec_mp4ves_plugin_def_t);
+	}
+	if(tdav_codec_ffmpeg_h264_is_supported()){
+		tmedia_codec_plugin_register(tdav_codec_h264_base_plugin_def_t);
+		tmedia_codec_plugin_register(tdav_codec_h264_main_plugin_def_t);
+	}
 	tmedia_codec_plugin_register(tdav_codec_h263p_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h263pp_plugin_def_t);
-#	if !defined(HAVE_THEORA) || HAVE_THEORA
-	tmedia_codec_plugin_register(tdav_codec_theora_plugin_def_t);
-#	endif
+	if(tdav_codec_ffmpeg_theora_is_supported()){
+		tmedia_codec_plugin_register(tdav_codec_theora_plugin_def_t);
+	}
 	tmedia_codec_plugin_register(tdav_codec_h263_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h261_plugin_def_t);
 #elif HAVE_H264_PASSTHROUGH
@@ -367,16 +369,12 @@ static tdav_codec_decl_t __codecs[] = {
 	{ tdav_codec_id_h264_bp10, &tdav_codec_h264_cuda_bp10_plugin_def_t },
 #endif
 #if HAVE_FFMPEG
-#	if (!defined(HAVE_H264) || HAVE_H264) || HAVE_CUDA
 	{ tdav_codec_id_h264_bp, &tdav_codec_h264_base_plugin_def_t },
 	{ tdav_codec_id_h264_mp, &tdav_codec_h264_main_plugin_def_t },	
-#	endif
 	{ tdav_codec_id_mp4ves_es, &tdav_codec_mp4ves_plugin_def_t },
 	{ tdav_codec_id_h263p, &tdav_codec_h263p_plugin_def_t },
 	{ tdav_codec_id_h263pp, &tdav_codec_h263pp_plugin_def_t },
-#	if !defined(HAVE_THEORA) || HAVE_THEORA
 	{ tdav_codec_id_theora, &tdav_codec_theora_plugin_def_t },
-#	endif
 	{ tdav_codec_id_h263, &tdav_codec_h263_plugin_def_t },
 	{ tdav_codec_id_h261, &tdav_codec_h261_plugin_def_t },
 #elif HAVE_H264_PASSTHROUGH
@@ -505,20 +503,34 @@ tsk_bool_t _tdav_codec_is_supported(tdav_codec_id_t codec, const tmedia_codec_pl
 			return tsk_false;
 #endif
 
-		case tdav_codec_id_h261:
 		case tdav_codec_id_h263:
 		case tdav_codec_id_h263p:
 		case tdav_codec_id_h263pp:
+#if HAVE_FFMPEG
+			return (codec == tdav_codec_id_h263) 
+				? tdav_codec_ffmpeg_h263_is_supported()
+				: (codec == tdav_codec_id_h263p ? tdav_codec_ffmpeg_h263p_is_supported() : tdav_codec_ffmpeg_h263pp_is_supported());
+#else
+			return tsk_false;
+#endif
+
 		case tdav_codec_id_mp4ves_es:
 #if HAVE_FFMPEG
-			return tsk_true;
+			return tdav_codec_ffmpeg_mp4ves_is_supported();
+#else
+			return tsk_false;
+#endif
+
+		case tdav_codec_id_h261:
+#if HAVE_FFMPEG
+			return tdav_codec_ffmpeg_h261_is_supported();
 #else
 			return tsk_false;
 #endif
 		
 		case tdav_codec_id_theora:
-#if HAVE_FFMPEG && (!defined(HAVE_THEORA) || HAVE_THEORA)
-			return tsk_true;
+#if HAVE_FFMPEG
+			return tdav_codec_ffmpeg_theora_is_supported();
 #else
 			return tsk_false;
 #endif
@@ -530,8 +542,8 @@ tsk_bool_t _tdav_codec_is_supported(tdav_codec_id_t codec, const tmedia_codec_pl
 #if HAVE_CUDA
 					if(tdav_codec_h264_is_cuda_plugin(plugin) && tdav_codec_h264_cuda_is_supported()) return tsk_true;
 #endif
-#if HAVE_FFMPEG && (!defined(HAVE_H264) || HAVE_H264)
-					if(tdav_codec_h264_is_ffmpeg_plugin(plugin)) return tsk_true;
+#if HAVE_FFMPEG
+					if(tdav_codec_h264_is_ffmpeg_plugin(plugin) && tdav_codec_ffmpeg_h264_is_supported()) return tsk_true;
 #elif HAVE_H264_PASSTHROUGH
 					return tsk_true;
 #endif
@@ -540,8 +552,8 @@ tsk_bool_t _tdav_codec_is_supported(tdav_codec_id_t codec, const tmedia_codec_pl
 #if HAVE_CUDA
 				if(tdav_codec_h264_cuda_is_supported()) return tsk_true;
 #endif
-#if (HAVE_FFMPEG && (!defined(HAVE_H264) || HAVE_H264)) || HAVE_H264_PASSTHROUGH
-					return tsk_true;
+#if HAVE_FFMPEG || HAVE_H264_PASSTHROUGH
+					return tdav_codec_ffmpeg_h264_is_supported();
 #endif
 				}
 				return tsk_false;
@@ -633,15 +645,11 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_mp4ves_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h261_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h263_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_h263p_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_h263pp_plugin_def_t);
-#	if  !defined(HAVE_H264) || HAVE_H264
+	tmedia_codec_plugin_unregister(tdav_codec_h263p_plugin_def_t);	
+	tmedia_codec_plugin_unregister(tdav_codec_h263pp_plugin_def_t);	
 	tmedia_codec_plugin_unregister(tdav_codec_h264_base_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h264_main_plugin_def_t);
-#	endif
-#	if !defined(HAVE_THEORA) || HAVE_THEORA
 	tmedia_codec_plugin_unregister(tdav_codec_theora_plugin_def_t);
-#	endif
 #elif HAVE_H264_PASSTHROUGH
 	tmedia_codec_plugin_unregister(tdav_codec_h264_base_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_h264_main_plugin_def_t);

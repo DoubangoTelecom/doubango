@@ -17,3 +17,6 @@ _includedir = $(includedir)/tinyxcap
 _include_HEADERS = include/*.h
 __includedir = $(includedir)/tinyxcap/tinyxcap
 __include_HEADERS = include/tinyxcap/*.h
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = tinyXCAP.pc

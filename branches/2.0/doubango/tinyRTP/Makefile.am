@@ -41,3 +41,6 @@ rtcp_includedir = $(includedir)/tinyrtp/tinyrtp/rtcp
 rtcp_include_HEADERS = include/tinyrtp/rtcp/*.h
 rtp_includedir = $(includedir)/tinyrtp/tinyrtp/rtp
 rtp_include_HEADERS = include/tinyrtp/rtp/*.h
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = tinyRTP.pc

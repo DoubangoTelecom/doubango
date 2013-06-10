@@ -106,7 +106,7 @@ int tmedia_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_t sa
 	}
 }
 
-int tmedia_denoise_echo_playback(tmedia_denoise_t* self, const void* echo_frame)
+int tmedia_denoise_echo_playback(tmedia_denoise_t* self, const void* echo_frame, uint32_t echo_frame_size_bytes)
 {
 	if(!self || !self->plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -119,14 +119,14 @@ int tmedia_denoise_echo_playback(tmedia_denoise_t* self, const void* echo_frame)
 	}
 
 	if(self->plugin->echo_playback){
-		return self->plugin->echo_playback(self, echo_frame);
+		return self->plugin->echo_playback(self, echo_frame, echo_frame_size_bytes);
 	}
 	else{
 		return 0;
 	}
 }
 
-int tmedia_denoise_process_record(tmedia_denoise_t* self, void* audio_frame, tsk_bool_t* silence_or_noise)
+int tmedia_denoise_process_record(tmedia_denoise_t* self, void* audio_frame, uint32_t audio_frame_size_bytes, tsk_bool_t* silence_or_noise)
 {
 	if(!self || !self->plugin || !silence_or_noise){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -139,7 +139,7 @@ int tmedia_denoise_process_record(tmedia_denoise_t* self, void* audio_frame, tsk
 	}
 
 	if(self->plugin->process_record){
-		return self->plugin->process_record(self, audio_frame, silence_or_noise);
+		return self->plugin->process_record(self, audio_frame, audio_frame_size_bytes, silence_or_noise);
 	}
 	else{
 		*silence_or_noise = tsk_false;
@@ -147,7 +147,7 @@ int tmedia_denoise_process_record(tmedia_denoise_t* self, void* audio_frame, tsk
 	}
 }
 
-int tmedia_denoise_process_playback(tmedia_denoise_t* self, void* audio_frame)
+int tmedia_denoise_process_playback(tmedia_denoise_t* self, void* audio_frame, uint32_t audio_frame_size_bytes)
 {
 	if(!self || !self->plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -160,7 +160,7 @@ int tmedia_denoise_process_playback(tmedia_denoise_t* self, void* audio_frame)
 	}
 
 	if(self->plugin->process_playback){
-		return self->plugin->process_playback(self, audio_frame);
+		return self->plugin->process_playback(self, audio_frame, audio_frame_size_bytes);
 	}
 	return 0;
 }

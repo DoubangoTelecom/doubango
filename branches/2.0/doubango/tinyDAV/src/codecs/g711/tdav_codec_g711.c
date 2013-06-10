@@ -156,7 +156,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_g711u_plugin_def_s =
 	
 	{ /* audio */
 		1, // channels
-		20 // ptime
+		0 // ptime @deprecated
 	},
 	
 	/* video */
@@ -309,7 +309,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_g711a_plugin_def_s =
 	
 	{ /* audio */
 		1, // channels
-		20, // ptime
+		0 // ptime @deprecated
 	},
 
 	/* video */

@@ -293,6 +293,10 @@ tmedia_bandwidth_level_t MediaSessionMgr::defaultsGetBandwidthLevel() // @deprec
 {
 	return tmedia_defaults_get_bl();
 }
+bool MediaSessionMgr::defaultsSetCongestionCtrlEnabled(bool enabled)
+{
+	return tmedia_defaults_set_congestion_ctrl_enabled(enabled ? tsk_true : tsk_false) == 0;
+}
 bool MediaSessionMgr::defaultsSetVideoMotionRank(int32_t video_motion_rank)
 {
 	return (tmedia_defaults_set_video_motion_rank(video_motion_rank) == 0);
@@ -410,6 +414,13 @@ bool MediaSessionMgr::defaultsSetScreenSize(int32_t sx, int32_t sy){
 
 bool MediaSessionMgr::defaultsSetAudioGain(int32_t producer_gain, int32_t consumer_gain){
 	return tmedia_defaults_set_audio_gain(producer_gain, consumer_gain) == 0;
+}
+
+bool MediaSessionMgr::defaultsSetAudioPtime(int32_t ptime){
+	return tmedia_defaults_set_audio_ptime(ptime) == 0;
+}
+bool MediaSessionMgr::defaultsSetAudioChannels(int32_t channel_playback, int32_t channel_record){
+	return tmedia_defaults_set_audio_channels(channel_playback, channel_record) == 0;
 }
 
 bool MediaSessionMgr::defaultsSetRtpPortRange(uint16_t range_start, uint16_t range_stop){

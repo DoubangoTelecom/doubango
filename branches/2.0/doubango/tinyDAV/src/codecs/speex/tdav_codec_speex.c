@@ -219,7 +219,7 @@ tsk_bool_t tdav_codec_speex_sdp_att_match(const tmedia_codec_t* codec, const cha
 		 \
 		{ /* audio */ \
 			1, /* channels*/ \
-			20 /* ptime*/ \
+			0 /* ptime @deprecated*/ \
 		}, \
 	 \
 		/* video */ \

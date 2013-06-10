@@ -345,6 +345,7 @@ typedef enum tmedia_pref_video_size_s
 	tmedia_pref_video_size_720p, // 1280 x 720
 	tmedia_pref_video_size_16cif, // 1408 x 1152
 	tmedia_pref_video_size_1080p, // 1920 x 1080
+	tmedia_pref_video_size_2160p, // 3840 x 2160
 }
 tmedia_pref_video_size_t;
 

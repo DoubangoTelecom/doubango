@@ -231,7 +231,7 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		if(audio->denoise){
 			tsk_bool_t silence_or_noise = tsk_false;
 			if(audio->denoise->echo_supp_enabled ){
-				ret = tmedia_denoise_process_record(TMEDIA_DENOISE(audio->denoise), (void*)buffer, &silence_or_noise);
+				ret = tmedia_denoise_process_record(TMEDIA_DENOISE(audio->denoise), (void*)buffer, size, &silence_or_noise);
 			}
 		}
 		// adjust the gain

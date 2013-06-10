@@ -49,6 +49,8 @@ static int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t fr
 	tdav_speex_jitterbuffer_t *jitterbuffer = (tdav_speex_jitterbuffer_t *)self;
 	spx_int32_t tmp;
 
+	TSK_DEBUG_INFO("Open speex jb (ptime=%u, rate=%u)", frame_duration, rate);
+
 	if(!(jitterbuffer->state = jitter_buffer_init((int)frame_duration))){
 		TSK_DEBUG_ERROR("jitter_buffer_init() failed");
 		return -2;
@@ -237,6 +239,8 @@ static tsk_object_t* tdav_speex_jitterbuffer_dtor(tsk_object_t * self)
 			jb->state = tsk_null;
 		}
 		TSK_FREE(jb->buff.ptr);
+
+		TSK_DEBUG_INFO("*** SpeexDSP jb destroyed ***");
 	}
 
 	return self;

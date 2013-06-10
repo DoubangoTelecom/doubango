@@ -44,6 +44,10 @@ TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h263_plugin_def_t;
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h263p_plugin_def_t;
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h263pp_plugin_def_t;
 
+tsk_bool_t tdav_codec_ffmpeg_h263_is_supported();
+tsk_bool_t tdav_codec_ffmpeg_h263p_is_supported();
+tsk_bool_t tdav_codec_ffmpeg_h263pp_is_supported();
+
 TDAV_END_DECLS
 
 
