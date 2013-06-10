@@ -42,11 +42,17 @@ cd openssl-1.0.1c
 
 ===Building libspeex and libspeexdsp===
 *libspeex* (audio codec) an *libspeexdsp* (audio processing and jitter buffer) are optional. It’s highly recommended to enable libspeexdsp.
+
+You can install the devel packages:
+{{{
+sudo yum install speex-devel
+}}}
+Or build the source by yourself:
 {{{
 wget http://downloads.xiph.org/releases/speex/speex-1.2beta3.tar.gz
 tar -xvzf speex-1.2beta3.tar.gz
 cd speex-1.2beta3
-./configure --disable-oggtest && make && make install
+./configure --disable-oggtest --without-libogg && make && make install
 }}}
 
 ===Building YASM===
@@ -61,6 +67,12 @@ cd yasm-1.2.0
 ===Building libvpx===
 _Date: December 1, 2012_ <br />
 *libvpx* adds support for *VP8* and is optional but highly recommended if you want support for video when using Google Chrome or Mozilla Firefox.
+
+You can install the devel packages:
+{{{
+sudo yum install libvpx-devel
+}}}
+Or build the source by yourself:
 {{{
 git clone http://git.chromium.org/webm/libvpx.git
 cd libvpx
@@ -98,6 +110,12 @@ autoreconf --install && ./configure && make && make install
 
 ===Building libgsm===
 *libgsm* is optional. Adds support for *GSM* audio codec.
+
+You can install the devel packages (*recommended*):
+{{{
+sudo yum install gsm-devel
+}}}
+Or build the source by yourself:
 {{{
 wget http://www.quut.com/gsm/gsm-1.0.13.tar.gz
 tar -xvzf gsm-1.0.13.tar.gz
@@ -142,45 +160,42 @@ _Date: December 2, 2012_ <br />
 {{{
 git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg
 cd ffmpeg
+
 # grap a release branch
 git checkout n1.2
+
+# configure source code
 ./configure \
 --extra-cflags="-fPIC" \
 --extra-ldflags="-lpthread" \
 \
---enable-pic --enable-memalign-hack  --enable-pthreads \
+--enable-pic --enable-memalign-hack --enable-pthreads \
 --enable-shared --disable-static \
---disable-network --disable-protocols \
---disable-devices --disable-filters --disable-bsfs --disable-muxers --disable-demuxers --disable-parsers --disable-hwaccels \
---disable-ffmpeg --disable-ffplay --disable-ffserver \
---disable-encoders --disable-decoders \
---disable-zlib \
+--disable-network --enable-pthreads \
+--disable-ffmpeg --disable-ffplay --disable-ffserver --disable-ffprobe \
 \
 --enable-gpl \
 \
---disable-debug \
-\
---enable-encoder=h263 --enable-encoder=h263p --enable-decoder=h263 \
-\
---enable-encoder=mpeg4 --enable-decoder=mpeg4 \
-\
---enable-libx264 --enable-encoder=libx264 --enable-decoder=h264
+--disable-debug
+
+# build and install
+make && make install
 }}}
 
 ===Building Doubango===
  * Minimal build
 {{{
-cd doubango && ./autogen.sh && ./configure --with-ssl --with-srtp
+cd doubango && ./autogen.sh && ./configure --with-ssl --with-srtp --with-speexdsp
 make && make install
 }}}
  * Recommended build
 {{{
-cd doubango && ./autogen.sh && ./configure --with-ssl --with-srtp --with-speexdsp --enable-speexjb --with-ffmpeg --with-opus --with-h264
+cd doubango && ./autogen.sh && ./configure --with-ssl --with-srtp --with-speexdsp --with-ffmpeg --with-opus
 make && make install
 }}}
  * Full build
 {{{
-cd doubango && ./autogen.sh && ./configure --with-ssl --with-srtp --with-vpx --with-yuv --with-amr --with-speex --with-speexdsp --enable-speexresampler --enable-speexjb --enable-speexdenoiser --with-opus --with-gsm --with-ilbc --with-g729 --with-ffmpeg --with-h264
+cd doubango && ./autogen.sh && ./configure --with-ssl --with-srtp --with-vpx --with-yuv --with-amr --with-speex --with-speexdsp --enable-speexresampler --enable-speexdenoiser --with-opus --with-gsm --with-ilbc --with-g729 --with-ffmpeg
 make && make install
 }}}
 
