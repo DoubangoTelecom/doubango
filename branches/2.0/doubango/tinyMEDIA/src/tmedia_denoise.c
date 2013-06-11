@@ -66,7 +66,7 @@ int tmedia_denoise_set(tmedia_denoise_t* self, const tmedia_param_t* param)
 	return 0;
 }
 
-int tmedia_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_t sampling_rate)
+int tmedia_denoise_open(tmedia_denoise_t* self, uint32_t record_frame_size_samples, uint32_t record_sampling_rate, uint32_t playback_frame_size_samples, uint32_t playback_sampling_rate)
 {
 	if(!self || !self->plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -86,12 +86,12 @@ int tmedia_denoise_open(tmedia_denoise_t* self, uint32_t frame_size, uint32_t sa
 			return -2;
 		}
 		// resize the buffer
-		if((ret = tsk_buffer_realloc(self->last_frame, (frame_size * sizeof(int16_t))))){
+		if((ret = tsk_buffer_realloc(self->last_frame, (record_frame_size_samples * sizeof(int16_t))))){
 			TSK_DEBUG_ERROR("Failed to realloc the buffer");
 			return ret;
 		}
 
-		if((ret = self->plugin->open(self, frame_size, sampling_rate))){
+		if((ret = self->plugin->open(self, record_frame_size_samples, record_sampling_rate, playback_frame_size_samples, playback_sampling_rate))){
 			TSK_DEBUG_ERROR("Failed to open [%s] denoiser", self->plugin->desc);
 			return ret;
 		}
