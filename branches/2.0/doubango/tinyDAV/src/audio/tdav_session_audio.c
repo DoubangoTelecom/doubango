@@ -378,9 +378,29 @@ static int tdav_session_audio_start(tmedia_session_t* self)
 
 	if(base->rtp_manager){
 		/* Denoise (AEC, Noise Suppression, AGC) */
-		if(audio->denoise){
+		if(audio->denoise){			
+			uint32_t record_frame_size_samples = (base->producer && base->producer->audio.ptime && base->producer->audio.rate)
+				? ((base->producer->audio.ptime * base->producer->audio.rate) / 1000)
+				: TMEDIA_CODEC_PCM_FRAME_SIZE_AUDIO_ENCODING(audio->encoder.codec);
+			uint32_t record_sampling_rate = (base->producer && base->producer->audio.rate)
+				? base->producer->audio.rate
+				: TMEDIA_CODEC_RATE_ENCODING(audio->encoder.codec);
+
+			uint32_t playback_frame_size_samples = (base->consumer && base->consumer->audio.ptime && base->consumer->audio.out.rate)
+				? ((base->consumer->audio.ptime * base->consumer->audio.out.rate) / 1000)
+				: TMEDIA_CODEC_PCM_FRAME_SIZE_AUDIO_DECODING(audio->encoder.codec);
+			uint32_t playback_sampling_rate = (base->consumer && base->consumer->audio.out.rate)
+				? base->consumer->audio.out.rate
+				: TMEDIA_CODEC_RATE_DECODING(audio->encoder.codec);
+
+			TSK_DEBUG_INFO("Audio denoiser to be opened(record_frame_size_samples=%u, record_sampling_rate=%u, playback_frame_size_samples=%u, playback_sampling_rate=%u)", record_frame_size_samples, record_sampling_rate, playback_frame_size_samples, playback_sampling_rate);
+			
+			// close()
 			tmedia_denoise_close(audio->denoise);
-			tmedia_denoise_open(audio->denoise, TMEDIA_CODEC_PCM_FRAME_SIZE_AUDIO_ENCODING(audio->encoder.codec), TMEDIA_CODEC_RATE_ENCODING(audio->encoder.codec));
+			// open()
+			tmedia_denoise_open(audio->denoise, 
+				record_frame_size_samples, record_sampling_rate,
+				playback_frame_size_samples, playback_sampling_rate);
 		}
 	}
 

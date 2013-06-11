@@ -57,7 +57,7 @@ static int tdav_speex_denoise_set(tmedia_denoise_t* _self, const tmedia_param_t*
 	return -1;
 }
 
-static int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size_samples, uint32_t sampling_rate)
+static int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t record_frame_size_samples, uint32_t record_sampling_rate, uint32_t playback_frame_size_samples, uint32_t playback_sampling_rate)
 {
 	tdav_speex_denoise_t *denoiser = (tdav_speex_denoise_t *)self;
 	float f;
@@ -65,18 +65,20 @@ static int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size_s
 
 	if(!denoiser->echo_state && TMEDIA_DENOISE(denoiser)->echo_supp_enabled){
 		TSK_DEBUG_INFO("Init Aec frame_size[%u] filter_length[%u] SampleRate[%u]",
-			(uint32_t)(frame_size_samples),TMEDIA_DENOISE(denoiser)->echo_tail*frame_size_samples,sampling_rate);
-		if((denoiser->echo_state = speex_echo_state_init(frame_size_samples, TMEDIA_DENOISE(denoiser)->echo_tail))){
-			speex_echo_ctl(denoiser->echo_state, SPEEX_ECHO_SET_SAMPLING_RATE, &sampling_rate);
+			(uint32_t)(record_frame_size_samples),TMEDIA_DENOISE(denoiser)->echo_tail*record_frame_size_samples, record_sampling_rate);
+		if((denoiser->echo_state = speex_echo_state_init(record_frame_size_samples, TMEDIA_DENOISE(denoiser)->echo_tail))){
+			speex_echo_ctl(denoiser->echo_state, SPEEX_ECHO_SET_SAMPLING_RATE, &record_sampling_rate);
 		}
 	}
 
 	if(!denoiser->preprocess_state_record && !denoiser->preprocess_state_playback){
-		denoiser->frame_size_samples = frame_size_samples;
-		denoiser->frame_size_bytes = (frame_size_samples << 1);
+		denoiser->record_frame_size_samples = record_frame_size_samples;
+		denoiser->record_frame_size_bytes = (record_frame_size_samples << 1);
+		denoiser->playback_frame_size_samples = playback_frame_size_samples;
+		denoiser->playback_frame_size_bytes = (playback_frame_size_samples << 1);
 
-		if((denoiser->preprocess_state_record = speex_preprocess_state_init(frame_size_samples, sampling_rate))
-			&& (denoiser->preprocess_state_playback = speex_preprocess_state_init(frame_size_samples, sampling_rate))
+		if((denoiser->preprocess_state_record = speex_preprocess_state_init(record_frame_size_samples, record_sampling_rate))
+			&& (denoiser->preprocess_state_playback = speex_preprocess_state_init(playback_frame_size_samples, playback_sampling_rate))
 			){
 
 				// Echo suppression
@@ -86,7 +88,7 @@ static int tdav_speex_denoise_open(tmedia_denoise_t* self, uint32_t frame_size_s
 					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_SET_ECHO_STATE, denoiser->echo_state);
 
 					TSK_FREE(denoiser->echo_output_frame);
-					denoiser->echo_output_frame = tsk_calloc(denoiser->frame_size_samples, sizeof(spx_int16_t));
+					denoiser->echo_output_frame = tsk_calloc(denoiser->record_frame_size_samples, sizeof(spx_int16_t));
 
 					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_GET_ECHO_SUPPRESS , &echo_supp );
 					speex_preprocess_ctl(denoiser->preprocess_state_record, SPEEX_PREPROCESS_GET_ECHO_SUPPRESS_ACTIVE , &echo_supp_active );                             
@@ -151,8 +153,8 @@ static int tdav_speex_denoise_echo_playback(tmedia_denoise_t* self, const void* 
 {
 	tdav_speex_denoise_t *denoiser = (tdav_speex_denoise_t *)self;
 
-	if(denoiser->frame_size_bytes != echo_frame_size_bytes){
-		TSK_DEBUG_ERROR("Size mismatch: %u<>%u", denoiser->frame_size_bytes, echo_frame_size_bytes);
+	if(denoiser->record_frame_size_bytes != echo_frame_size_bytes){
+		TSK_DEBUG_ERROR("Size mismatch: %u<>%u", denoiser->record_frame_size_bytes, echo_frame_size_bytes);
 		return -1;
 	}
 
@@ -169,15 +171,15 @@ static int tdav_speex_denoise_process_record(tmedia_denoise_t* self, void* audio
 	tdav_speex_denoise_t *denoiser = (tdav_speex_denoise_t *)self;
 	int vad;
 
-	if(denoiser->frame_size_bytes != audio_frame_size_bytes){
-		TSK_DEBUG_ERROR("Size mismatch: %u<>%u", denoiser->frame_size_bytes, audio_frame_size_bytes);
+	if(denoiser->record_frame_size_bytes != audio_frame_size_bytes){
+		TSK_DEBUG_ERROR("Size mismatch: %u<>%u", denoiser->record_frame_size_bytes, audio_frame_size_bytes);
 		return -1;
 	}
 
 	if(denoiser->preprocess_state_record){
 		if(denoiser->echo_state && denoiser->echo_output_frame){
 			speex_echo_capture(denoiser->echo_state, audio_frame, denoiser->echo_output_frame);
-			memcpy(audio_frame, denoiser->echo_output_frame, denoiser->frame_size_bytes);
+			memcpy(audio_frame, denoiser->echo_output_frame, denoiser->record_frame_size_bytes);
 		}
 		vad = speex_preprocess_run(denoiser->preprocess_state_record, audio_frame);
 		if(!vad && TMEDIA_DENOISE(denoiser)->vad_enabled){
@@ -192,8 +194,8 @@ static int tdav_speex_denoise_process_playback(tmedia_denoise_t* self, void* aud
 {
 	tdav_speex_denoise_t *denoiser = (tdav_speex_denoise_t *)self;
 
-	if(denoiser->frame_size_bytes != audio_frame_size_bytes){
-		TSK_DEBUG_ERROR("Size mismatch: %u<>%u", denoiser->frame_size_bytes, audio_frame_size_bytes);
+	if(denoiser->playback_frame_size_bytes != audio_frame_size_bytes){
+		TSK_DEBUG_ERROR("Size mismatch: %u<>%u", denoiser->playback_frame_size_bytes, audio_frame_size_bytes);
 		return -1;
 	}
 
