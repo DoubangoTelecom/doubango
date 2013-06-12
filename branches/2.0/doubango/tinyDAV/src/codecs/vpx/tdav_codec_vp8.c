@@ -765,9 +765,11 @@ int tdav_codec_vp8_open_decoder(tdav_codec_vp8_t* self)
 		dec_flags |= VPX_CODEC_USE_POSTPROC;
 	}
 #endif
+#if defined(VPX_CODEC_CAP_ERROR_CONCEALMENT)
 	if(dec_caps & VPX_CODEC_CAP_ERROR_CONCEALMENT){
 		dec_flags |= VPX_CODEC_USE_ERROR_CONCEALMENT;
 	}
+#endif
 
 	if((vpx_ret = vpx_codec_dec_init(&self->decoder.context, vp8_interface_dec, &self->decoder.cfg, dec_flags)) != VPX_CODEC_OK){
 		TSK_DEBUG_ERROR("vpx_codec_dec_init failed with error =%s", vpx_codec_err_to_string(vpx_ret));
