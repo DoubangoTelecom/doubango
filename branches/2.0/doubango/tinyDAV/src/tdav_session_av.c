@@ -734,9 +734,12 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			}
 			else if(self->media_type == tmedia_video){
 				// https://code.google.com/p/webrtc2sip/issues/detail?id=81
+				// goog-remb: https://groups.google.com/group/discuss-webrtc/browse_thread/thread/c61ad3487e2acd52
+				// rfc5104 - 7.1.  Extension of the rtcp-fb Attribute
 				tsdp_header_M_add_headers(base->M.lo,
 					TSDP_HEADER_A_VA_ARGS("rtcp-fb", "* nack pli"),
 					TSDP_HEADER_A_VA_ARGS("rtcp-fb", "* ccm fir"),
+					TSDP_HEADER_A_VA_ARGS("rtcp-fb", "* goog-remb"),
 					tsk_null);
 				// http://tools.ietf.org/html/rfc3556
 				if(self->bandwidth_max_download_kbps > 0 && self->bandwidth_max_download_kbps != INT_MAX){ // INT_MAX or <=0 means undefined
