@@ -127,7 +127,23 @@ void tcomp_state_makeValid(tcomp_state_t* state)
 	tsk_safeobj_unlock(state);
 }
 
+int32_t tcomp_state_inc_usage_count(tcomp_state_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+	return ++self->usage_count;
+}
 
+int32_t tcomp_state_dec_usage_count(tcomp_state_t* self)
+{
+	if(!self || self->usage_count <= 0){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+	return --self->usage_count;
+}
 
 
 

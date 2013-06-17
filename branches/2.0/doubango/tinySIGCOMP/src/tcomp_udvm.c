@@ -79,7 +79,7 @@ tcomp_udvm_t* tcomp_udvm_create(tcomp_message_t* _sigCompMessage, tcomp_statehan
 			/* Find the provided state */
 			tcomp_state_t* lpState = NULL;
 			uint32_t match_count = tcomp_statehandler_findState(udvm->stateHandler, udvm->sigCompMessage->stateId, &lpState);
-			if( (!match_count || match_count>1 || !lpState)
+			if( (match_count != 1 || !lpState)
 				|| (lpState->minimum_access_length > tcomp_buffer_getSize(udvm->sigCompMessage->stateId))
 				|| ((tsk_size_t)(lpState->address + lpState->length) > TCOMP_UDVM_GET_SIZE()) )
 			{

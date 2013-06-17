@@ -112,9 +112,10 @@ void tcomp_result_addTempStateToCreate(tcomp_result_t *result, tcomp_state_t* lp
 {
 	if(result){
 		/*
-		* Note that there is a maximum limit of four state creation requestsper instance of the UDVM.
+		* Note that there is a maximum limit of four state creation requests per instance of the UDVM.
 		*/
 		if(result->statesToCreateIndex >= MAX_TEMP_SATES) {
+			TSK_DEBUG_ERROR("Maximum limit for %d state creation requests reached", MAX_TEMP_SATES);
 			return;
 		}
 					

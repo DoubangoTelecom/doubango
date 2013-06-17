@@ -236,16 +236,21 @@ void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_r
 	* Request state creation now we have the corresponding compartement.
 	*/
 	if(tcomp_result_getTempStatesToCreateSize(*lpResult)){
+		uint8_t count;
 		/* Check compartment allocated size*/
 		if(!compartment_total_size){
 			goto compartment_free_states;
 		}
+		
+		count = tcomp_result_getTempStatesToCreateSize(*lpResult);
 
 		// FIXME: lock
-		for (i = 0; i < tcomp_result_getTempStatesToCreateSize(*lpResult); i++)
+		for (i = 0; i < count; i++)
 		{
-			tcomp_state_t **lpState =  ((*lpResult)->statesToCreate + i);
-			if(!lpState || !*lpState) continue;
+			tcomp_state_t **lpState =  &((*lpResult)->statesToCreate[i]);
+			if(!lpState || !*lpState){
+				continue;
+			}
 
 			/*
 			* If the state creation request needs more state memory than the

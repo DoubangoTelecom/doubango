@@ -60,6 +60,8 @@ typedef struct tcomp_state_s
 	uint32_t minimum_access_length;		/**< State's minimum access length. */
 	uint32_t retention_priority;		/**< State's retention priority. */
 
+	int32_t usage_count;				/**< State's usage count (to avoid duplication). */
+
 	TSK_DECLARE_SAFEOBJ;
 }
 tcomp_state_t;
@@ -70,6 +72,8 @@ tcomp_state_t* tcomp_state_create(uint32_t length, uint32_t address, uint32_t in
 
 int tcomp_state_equals(const tcomp_state_t *state1, const tcomp_state_t *state2);
 void tcomp_state_makeValid(tcomp_state_t*);
+int32_t tcomp_state_inc_usage_count(tcomp_state_t*);
+int32_t tcomp_state_dec_usage_count(tcomp_state_t*);
 
 TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_state_def_t;
 

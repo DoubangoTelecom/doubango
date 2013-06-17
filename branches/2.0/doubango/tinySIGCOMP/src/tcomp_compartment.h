@@ -87,7 +87,6 @@ void tcomp_compartment_setRetFeedback(tcomp_compartment_t *compartment, tcomp_bu
 
 void tcomp_compartment_clearStates(tcomp_compartment_t *compartment);
 void tcomp_compartment_freeStateByPriority(tcomp_compartment_t *compartment);
-void tcomp_compartment_freeState(tcomp_compartment_t *compartment, tcomp_state_t **lpState);
 void tcomp_compartment_freeStates(tcomp_compartment_t *compartment, tcomp_tempstate_to_free_t **tempStates, uint8_t size);
 void tcomp_compartment_addState(tcomp_compartment_t *compartment, tcomp_state_t **lpState);
 uint32_t tcomp_compartment_findState(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t **lpState);

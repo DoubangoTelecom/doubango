@@ -36,6 +36,8 @@
 
 #include <assert.h>
 
+static void _tcomp_compartment_freeState(tcomp_compartment_t *compartment, tcomp_state_t **lpState);
+
 tcomp_compartment_t* tcomp_compartment_create(uint64_t id, uint32_t sigCompParameters, tsk_bool_t useOnlyACKedStates)
 {
 	tcomp_compartment_t *compartment;
@@ -244,7 +246,7 @@ void tcomp_compartment_freeStateByPriority(tcomp_compartment_t *compartment)
 
 /**Removes a state from the compartment.
 */
-void tcomp_compartment_freeState(tcomp_compartment_t *compartment, tcomp_state_t **lpState)
+static void _tcomp_compartment_freeState(tcomp_compartment_t *compartment, tcomp_state_t **lpState)
 {
 	if(!compartment){
 		TSK_DEBUG_ERROR("Invalid parameter.");
@@ -261,6 +263,7 @@ void tcomp_compartment_freeState(tcomp_compartment_t *compartment, tcomp_state_t
 }
 
 /**Remove states
+* Called by UDVM after STATE_FREE instruction
 */
 void tcomp_compartment_freeStates(tcomp_compartment_t *compartment, tcomp_tempstate_to_free_t **tempStates, uint8_t size)
 {
@@ -293,12 +296,15 @@ void tcomp_compartment_freeStates(tcomp_compartment_t *compartment, tcomp_tempst
 				* If more than one state item in the compartment matches the partial state identifier, 
 				* then the state free request is ignored.
 				*/
-				if(lpState){
-					lpState = 0;
-					break;
-				}
-				else{
-					lpState = curr;
+				TSK_DEBUG_INFO("Request to free state with usage_count=%d", curr->usage_count);
+				if(tcomp_state_dec_usage_count(curr) == 0){
+					if(lpState){
+						lpState = tsk_null;
+						break;
+					}
+					else{
+						lpState = curr;
+					}
 				}
 			}
 		}
@@ -307,7 +313,7 @@ void tcomp_compartment_freeStates(tcomp_compartment_t *compartment, tcomp_tempst
 		tsk_safeobj_unlock(compartment);
 
 		if(lpState){
-			tcomp_compartment_freeState(compartment, &lpState);
+			_tcomp_compartment_freeState(compartment, &lpState);
 		}
 	}	
 }
@@ -316,7 +322,10 @@ void tcomp_compartment_freeStates(tcomp_compartment_t *compartment, tcomp_tempst
 */
 void tcomp_compartment_addState(tcomp_compartment_t *compartment, tcomp_state_t **lpState)
 {
-	if(!compartment){
+	tsk_list_item_t *item;
+	int32_t usage_count = 0;
+	const tcomp_buffer_handle_t *identifier;
+	if(!compartment || !lpState || !*lpState){
 		TSK_DEBUG_ERROR("Invalid parameter.");
 		return;
 	}
@@ -324,10 +333,25 @@ void tcomp_compartment_addState(tcomp_compartment_t *compartment, tcomp_state_t 
 	tsk_safeobj_lock(compartment);
 
 	tcomp_state_makeValid(*lpState);
-	compartment->total_memory_left -= TCOMP_GET_STATE_SIZE(*lpState);
-	TSK_DEBUG_INFO("SigComp - Add new state with id=");
-	tcomp_buffer_print((*lpState)->identifier);
-	tsk_list_push_back_data(compartment->local_states, ((void**) lpState));
+	identifier = (*lpState)->identifier;
+
+	// check if the state exist
+	tsk_list_foreach(item, compartment->local_states){		
+		if(tcomp_buffer_startsWith(((tcomp_state_t*)item->data)->identifier, (*lpState)->identifier)){
+			*lpState = ((tcomp_state_t*)item->data); // override
+			usage_count = tcomp_state_inc_usage_count(*lpState);
+			break;
+		}
+	}
+
+	if(usage_count == 0){ // alread exist?
+		compartment->total_memory_left -= TCOMP_GET_STATE_SIZE(*lpState);
+		usage_count = tcomp_state_inc_usage_count(*lpState);
+		tsk_list_push_back_data(compartment->local_states, ((void**) lpState));
+	}
+
+	TSK_DEBUG_INFO("SigComp - Add new state with usage_count=%d and id=", usage_count);
+	tcomp_buffer_print(identifier);
 	
 	*lpState = tsk_null;
 
@@ -347,8 +371,6 @@ uint32_t tcomp_compartment_findState(tcomp_compartment_t *compartment, const tco
 	}
 	
 	tsk_safeobj_lock(compartment);
-
-	item = tsk_null;
 	
 	tsk_list_foreach(item, compartment->local_states){
 		tcomp_state_t *curr = item->data;
@@ -482,9 +504,6 @@ static tsk_object_t* tcomp_compartment_dtor(tsk_object_t* self)
 	if(compartment){
 		/* Deinitialize safeobject */
 		tsk_safeobj_deinit(compartment);
-
-		/* Delete all states */
-		TSK_OBJECT_SAFE_FREE(compartment->local_states);
 		
 		/* Delete feedbacks */
 		TSK_OBJECT_SAFE_FREE(compartment->lpReqFeedback);
@@ -495,8 +514,8 @@ static tsk_object_t* tcomp_compartment_dtor(tsk_object_t* self)
 		
 		/* Delete Compressor data */
 		TSK_OBJECT_SAFE_FREE(compartment->compressorData);
-		compartment->ackGhost = 0;
-		compartment->freeGhostState = 0;
+		compartment->ackGhost = tsk_null;
+		compartment->freeGhostState = tsk_null;
 		
 		/* Delete params */
 		TSK_OBJECT_SAFE_FREE(compartment->local_parameters);

@@ -1646,7 +1646,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint32_t parti
 	* Decompression failure occurs if no state item matching the partial state identifier can be found, if
 	* more than one state item matches the partial identifier.
 	*/
-	if(!lpState || !match_count || match_count>1){
+	if(!lpState || match_count != 1){
 		int32_t nack_code = (match_count > 1) ? NACK_ID_NOT_UNIQUE : NACK_STATE_NOT_FOUND;
 		TSK_DEBUG_ERROR("%s", TCOMP_NACK_DESCRIPTIONS[nack_code].desc);
 		tcomp_udvm_createNackInfo3(udvm, nack_code, partial_id);
