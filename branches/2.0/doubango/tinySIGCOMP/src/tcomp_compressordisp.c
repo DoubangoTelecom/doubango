@@ -199,10 +199,6 @@ static tsk_object_t* tcomp_compressordisp_ctor(tsk_object_t * self, va_list * ap
 
 		compressordisp->compressors[0] = tcomp_compressor_deflate_compress;	/* If you don't want deflate compressor then remove this line. */
 		compressordisp->compressors[1] = tcomp_compressor_dummy_compress;	/* RFC 4896 [11. Uncompressed Bytecode]. */
-		
-		for(i = 2; i < TCOMP_MAX_COMPRESSORS; i++){
-			compressordisp->compressors[i] = 0;
-		}
 
 		/* Initialize safeobject */
 		tsk_safeobj_init(compressordisp);
@@ -221,7 +217,8 @@ static tsk_object_t* tcomp_compressordisp_dtor(tsk_object_t *self)
 		/* Deinitialize safeobject */
 		tsk_safeobj_deinit(compressordisp);
 
-		// FIXME: clear compressors
+		memset(compressordisp->compressors, 0 , sizeof(compressordisp->compressors));
+		compressordisp->stateHandler = tsk_null; // not owner
 	}
 	else{
 		TSK_DEBUG_ERROR("Null dispatcher.");
