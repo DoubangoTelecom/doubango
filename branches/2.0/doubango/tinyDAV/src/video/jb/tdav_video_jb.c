@@ -413,8 +413,8 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
 	jb->decode_last_seq_num_with_mark = -1; // -1 -> unset
 	jb->decode_last_time = tsk_time_now();
 
-	(now);
-	(delay);
+	(void)(now);
+	(void)(delay);
 	
 	TSK_DEBUG_INFO("Video jitter buffer thread - ENTER");
 
