@@ -863,7 +863,7 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 		//  - fps changed
 		//	- first frame
 		//  - approximately every 5 minutes (300 = 60 * 5)
-		if(self->fps_changed || base->congestion_ctrl_enabled && base->rtp_manager && (self->decoder.codec_decoded_frames_count == 0 || ((self->decoder.codec_decoded_frames_count % (TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.fps * 300)) == 0))){
+		if(self->fps_changed && base->congestion_ctrl_enabled && base->rtp_manager && (self->decoder.codec_decoded_frames_count == 0 || ((self->decoder.codec_decoded_frames_count % (TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.fps * 300)) == 0))){
 			int32_t bandwidth_max_upload_kbps = base->bandwidth_max_upload_kbps;
 			int32_t bandwidth_max_download_kbps = base->bandwidth_max_download_kbps;
 			// bandwidth already computed in start() be the decoded video size was not correct and based on the SDP negotiation
