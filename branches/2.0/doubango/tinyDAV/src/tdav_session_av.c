@@ -46,6 +46,7 @@
 
 #include <math.h> /* log10 */
 #include <limits.h> /* INT_MAX */
+#include <ctype.h> /* isspace */
 
 
 #if HAVE_SRTP
@@ -1191,7 +1192,7 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 
 	// check if the RTP profile from remote party is supported or not
 	if((profile_remote = _sdp_profile_from_string(m->proto)) == RTP_PROFILE_NONE){
-		TSK_DEBUG_ERROR("%s not supported as RTP profile");
+		TSK_DEBUG_ERROR("%s not supported as RTP profile", m->proto);
 		return -2;
 	}
 	// check that all options in the profile are supported
@@ -1844,7 +1845,7 @@ static int _sdp_acaps_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_acap_xt (*
 			break;
 		}
 		if(tag <= 0 || (tag + 1) > SDP_CAPS_COUNT_MAX){
-			TSK_DEBUG_WARN("Ignoring tag with value = %d");
+			TSK_DEBUG_WARN("Ignoring tag with value = %d", tag);
 			goto next;
 		}
 
@@ -2018,7 +2019,7 @@ static int _sdp_pcfgs_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_acap_xt (*
 			break;
 		}
 		if(tag <= 0 || (tag + 1) > SDP_CAPS_COUNT_MAX){
-			TSK_DEBUG_WARN("Ignoring tag with value = %d");
+			TSK_DEBUG_WARN("Ignoring tag with value = %d", tag);
 			goto next_A;
 		}
 		

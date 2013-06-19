@@ -134,7 +134,7 @@ static int tdav_speex_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, 
 		if(jb->buff.index >= jb->x_data_size){
 			tsk_size_t copied = 0;
 			for(i = 0; (i + jb->x_data_size) <= jb->buff.index; i += jb->x_data_size){
-				jb_packet.data = &jb->buff.ptr[i];
+				jb_packet.data = (char*)&jb->buff.ptr[i];
 				jb_packet.timestamp = (++jb->fake_seqnum * jb_packet.span);// reassembled pkt will have fake seqnum
 				jitter_buffer_put(jb->state, &jb_packet);
 				copied += jb->x_data_size;
