@@ -203,6 +203,8 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetCongestionCtrlEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetCongestionCtrlEnabled)
     __swig_getmethods__["defaultsSetVideoMotionRank"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetVideoMotionRank
     if _newclass:defaultsSetVideoMotionRank = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetVideoMotionRank)
+    __swig_getmethods__["defaultsSetVideoFps"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetVideoFps
+    if _newclass:defaultsSetVideoFps = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetVideoFps)
     __swig_getmethods__["defaultsSetBandwidthVideoUploadMax"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax
     if _newclass:defaultsSetBandwidthVideoUploadMax = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax)
     __swig_getmethods__["defaultsSetBandwidthVideoDownloadMax"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax
@@ -347,6 +349,10 @@ MediaSessionMgr_defaultsSetCongestionCtrlEnabled = _tinyWRAP.MediaSessionMgr_def
 def MediaSessionMgr_defaultsSetVideoMotionRank(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetVideoMotionRank(*args)
 MediaSessionMgr_defaultsSetVideoMotionRank = _tinyWRAP.MediaSessionMgr_defaultsSetVideoMotionRank
+
+def MediaSessionMgr_defaultsSetVideoFps(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetVideoFps(*args)
+MediaSessionMgr_defaultsSetVideoFps = _tinyWRAP.MediaSessionMgr_defaultsSetVideoFps
 
 def MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(*args)

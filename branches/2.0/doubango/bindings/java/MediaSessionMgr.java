@@ -106,6 +106,10 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetVideoMotionRank(video_motion_rank);
   }
 
+  public static boolean defaultsSetVideoFps(int video_fps) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetVideoFps(video_fps);
+  }
+
   public static boolean defaultsSetBandwidthVideoUploadMax(int bw_video_up_max_kbps) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(bw_video_up_max_kbps);
   }

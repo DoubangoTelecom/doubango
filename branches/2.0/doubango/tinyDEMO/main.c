@@ -59,7 +59,7 @@ int main(int argc, char** argv)
 	int a = 32 | 1 | 2;
 
 	/* Copyright */
-	printf("Doubango Project (tinyDEMO)\nCopyright (C) 2009 - 2010 Mamadou Diop \n\n");
+	printf("Doubango Project (tinyDEMO)\nCopyright (C) 2009 - 2013 Mamadou Diop \n\n");
 
 	/* Initialize Network Layer ==> Mandatory */
 	tnet_startup();

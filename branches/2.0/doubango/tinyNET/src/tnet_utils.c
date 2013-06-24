@@ -748,7 +748,7 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
 		}
 		TSK_OBJECT_SAFE_FREE(addresses);
 	}
-#elif HAVE_NET_ROUTE_H && HAVE_IFADDRS_H && HAVE_GETIFADDRS /* Mac OS X, iPhone, iPod Touch, iPad and Linux familly exept Android */
+#elif HAVE_NET_ROUTE_H && HAVE_IFADDRS_H && HAVE_GETIFADDRS /* Mac OS X, iPhone, iPod Touch, iPad and Linux family except Android */
 	/* Thanks to Laurent Etiemble */
     
     int sdl_index = -1;
