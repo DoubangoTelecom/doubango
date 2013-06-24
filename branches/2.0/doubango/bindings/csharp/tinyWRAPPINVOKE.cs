@@ -342,6 +342,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetVideoMotionRank")]
   public static extern bool MediaSessionMgr_defaultsSetVideoMotionRank(int jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetVideoFps")]
+  public static extern bool MediaSessionMgr_defaultsSetVideoFps(int jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax")]
   public static extern bool MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(int jarg1);
 

@@ -4032,6 +4032,34 @@ XS(_wrap_MediaSessionMgr_defaultsSetVideoMotionRank) {
 }
 
 
+XS(_wrap_MediaSessionMgr_defaultsSetVideoFps) {
+  {
+    int32_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetVideoFps(video_fps);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetVideoFps" "', argument " "1"" of type '" "int32_t""'");
+    } 
+    arg1 = static_cast< int32_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetVideoFps(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax) {
   {
     int32_t arg1 ;
@@ -27508,6 +27536,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel", _wrap_MediaSessionMgr_defaultsGetBandwidthLevel},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetCongestionCtrlEnabled", _wrap_MediaSessionMgr_defaultsSetCongestionCtrlEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetVideoMotionRank", _wrap_MediaSessionMgr_defaultsSetVideoMotionRank},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetVideoFps", _wrap_MediaSessionMgr_defaultsSetVideoFps},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoUploadMax", _wrap_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax", _wrap_MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetPrefVideoSize", _wrap_MediaSessionMgr_defaultsSetPrefVideoSize},

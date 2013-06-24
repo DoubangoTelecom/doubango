@@ -465,7 +465,7 @@ session_t* session_create(session_type_t type, tsip_ssession_handle_t* handle)
 					/*=== MEDIA */
 					TSIP_SSESSION_SET_MEDIA(
 						// 100rel
-						TSIP_MSESSION_SET_100rel(),
+						TSIP_MSESSION_SET_100rel(tsk_false),
 						// Session timers
 						TSIP_MSESSION_SET_TIMERS(3600, "uac"),
 						// QoS

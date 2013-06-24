@@ -248,6 +248,7 @@ sub DESTROY {
 *defaultsGetBandwidthLevel = *tinyWRAPc::MediaSessionMgr_defaultsGetBandwidthLevel;
 *defaultsSetCongestionCtrlEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetCongestionCtrlEnabled;
 *defaultsSetVideoMotionRank = *tinyWRAPc::MediaSessionMgr_defaultsSetVideoMotionRank;
+*defaultsSetVideoFps = *tinyWRAPc::MediaSessionMgr_defaultsSetVideoFps;
 *defaultsSetBandwidthVideoUploadMax = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoUploadMax;
 *defaultsSetBandwidthVideoDownloadMax = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax;
 *defaultsSetPrefVideoSize = *tinyWRAPc::MediaSessionMgr_defaultsSetPrefVideoSize;

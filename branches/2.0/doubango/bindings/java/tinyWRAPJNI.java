@@ -61,6 +61,7 @@ public class tinyWRAPJNI {
   public final static native int MediaSessionMgr_defaultsGetBandwidthLevel();
   public final static native boolean MediaSessionMgr_defaultsSetCongestionCtrlEnabled(boolean jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetVideoMotionRank(int jarg1);
+  public final static native boolean MediaSessionMgr_defaultsSetVideoFps(int jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetBandwidthVideoUploadMax(int jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax(int jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetPrefVideoSize(int jarg1);

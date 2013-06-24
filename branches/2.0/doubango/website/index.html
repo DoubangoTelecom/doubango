@@ -22,8 +22,9 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
-    
+
     <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+
 </head>
 <body>
     <div class="navbar navbar-fixed-top">
@@ -36,7 +37,7 @@
                     <ul class="nav">
                         <li class="active"><a href="./index.html">Home</a></li>
                         <li><a href="./licensing.html">Licensing</a></li>
-                        <li><a href="./gettingstarted.html">Getting Started</a></li>
+                        <!--li><a href="./gettingstarted.html">Getting Started</a></li-->
                         <li><a href="http://code.google.com/p/doubango/" target="_blank">Source Code</a></li>
                         <li><a href="./contact.html">Contact</a></li>
                     </ul>
@@ -53,268 +54,208 @@
             <p>
                 Doubango Telecom is a young Telco company focused on open source projects. We are
                 specialized in <b>NGN</b> technologies (3GPP, TISPAN, Packet Cabel, WiMax, GSMA,
-                RCS-e, IETF...standards), audio/video coding and cloud computing.
+                RCS-e, IETF...standards), audio/video coding, cloud computing and WebRTC.
                 <br />
-                Our products include SIP/IMS (VoIP) clients/servers, MCUs, VNC stacks and audio/video
-                codecs. Most of our products are already open sourced.
+                Our products include SIP/IMS (VoIP) clients/servers/gateways, TelePresence and Telemedicine
+                systems, VNC stacks and audio/video codecs. Most of our products are already open
+                sourced.
             </p>
         </div>
-        <div class="row-fluid">
-            <div class="span6">
-                <h3>
-                    Products</h3>
-                <br />
-                <table border="1">
-                    <tr bgcolor="#99CCFF">
-                        <td colspan="2">
-                            Client-side components.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a style='width: 75px; margin: 1px' href="http://sipml5.org/index.html?svn=20"
-                                target="_blank">sipML5</a>
-                        </td>
-                        <td>
-                            HTML5 SIP client using <a href="http://www.webrtc2sip.org" target="_blank">
-                                webrtc2sip</a> Gateway.<br />
-                            <a style='margin: 1px' class="btn btn-small" href="http://sipml5.org/call.htm?svn=170" target="_blank">
-                                Enjoy our live demo &raquo;</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a style='width: 75px; margin: 1px' href="http://click2dial.org/index.html?svn=170"
-                                target="_blank">clik2dial</a>
-                        </td>
-                        <td>
-                            A complete Click-to-Call Solution using <a href="http://www.webrtc2sip.org" target="_blank">
-                                webrtc2sip</a> Gateway and <a href="http://sipml5.org/call.htm?svn=170" target="_blank">sipML5</a>.<br />
-                            <a style='margin: 1px' class="btn btn-small" href="http://click2dial.org?svn=170" target="_blank">
-                                Enjoy our live demo &raquo;</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a style='width: 75px; margin: 1px' href="http://code.google.com/p/webrtc4all/"
-                                target="_blank">webrtc4all</a>
-                        </td>
-                        <td>
-                            WebRTC extension for Safari, Opera, Firefox and IE.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a style='width: 75px; margin: 1px' href="http://code.google.com/p/boghe/"
-                                target="_blank">Boghe</a>
-                        </td>
-                        <td>
-                            <ul>
-                                <li>SIP video client for <b>Windows Phone 8</b> and <b>Surface Pro</b></li>
-                                <li>IMS/RCS Client for Windows XP, Vista, 7 and 8</li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a style='width: 75px; margin: 1px' href="http://code.google.com/p/idoubs/"
-                                target="_blank">iDoubs</a>
-                        </td>
-                        <td>
-                            SIP/IMS VideoPhone for iOS (iPhone, iPad and iPod Touch) and MAC OS X.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a style='width: 75px; margin: 1px' href="http://code.google.com/p/imsdroid/"
-                                target="_blank">IMSDroid</a>
-                        </td>
-                        <td>
-                            SIP/IMS Client for Android.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a style='width: 75px; margin: 1px' href="http://code.google.com/p/libsigcomp/"
-                                target="_blank">libSigComp</a>
-                        </td>
-                        <td>
-                            Signaling Compression (SigComp) library
-                        </td>
-                    </tr>
-                    
-                    <tr bgcolor="#99CCFF">
-                        <td colspan="2">
-                            Server-side components
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a style='width: 75px; margin: 1px' href="http://www.webrtc2sip.org"
-                                target="_blank">webrtc2sip</a>
-                        </td>
-                        <td>
-                            Smart SIP and Media Gateway to connect <a href="http://en.wikipedia.org/wiki/WebRTC">WebRTC</a> endpoints to any SIP-legacy network.<br />
-                            <a style='margin: 1px' class="btn btn-small" href="http://sipml5.org/call.htm?svn=15" target="_blank">
-                                Enjoy our live demo &raquo;</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a style='width: 75px; margin: 1px' href="http://code.google.com/p/openvcs/"
-                                target="_blank">OpenVCS</a>
-                        </td>
-                        <td>
-                            OpenVCS stands for Open Source Video Conferencing Server and is used to manage Multipoint
-                            Control Units (<a href="http://en.wikipedia.org/wiki/Multipoint_Control_Unit">MCU</a>).
-                            Each MCU (a.k.a Bridge) can handle <b>up to 64 participants</b>.
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <a style='width: 75px; margin: 1px' href="http://code.google.com/p/flash2ims/"
-                                target="_blank">Flash2IMS</a>
-                        </td>
-                        <td>
-                            Adobe® Flash® to SIP/IMS Gateway.
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="span6">
-                <h3>
-                    Doubango VoIP Features</h3>
-                <br />
-                <ul>
-                    <li>SIP (RFC 3261, 3GPP TS 24.229 Rel-9)</li>
-                    <li>IMS-AKA (RFC 3310, 3GPP TS 33.203, 35.205, 35.206, 35.207, 35.208 and 35.909)</li>
-                    <li>Private extension headers for 3GPP</li>
-                    <li>IPv4/IPv6 dual stack</li>
-                    <li>UDP, TCP and TLS</li>
-                    <li>Service-Route Discovery (RFC 3608)</li>
-                    <li>Proxy-CSCF discovery using DHCPv4/v6 or/and DNS NAPTR</li>
-                    <li>SigComp (RFC 3320, 3485, 4077, 4464, 4465, 4896, 5049, 5112 and 1951)</li>
-                    <li>IPSec</li>
-                    <li>Security Agreement (RFC 3329)</li>
-                    <li>NAT Traversal (STUN, TURN and ICE)</li>
-                    <li>Preconditions (RFC 3312, 4032 and 5027)</li>
-                    <li>SMS over IP (3GPP TS 23.038, 24.040, 24.011, 24.341 and 24.451)</li>
-                    <li>ENUM (RFC 3761)</li>
-                    <li>The tel URI for Telephone Numbers (RFC 3966)</li>
-                    <li>SIP SIMPLE (Presence Subscription/Publication and Pager Mode IM)</li>
-                    <li>MMTel (UNI)</li>
-                    <li>SDP (RFC 3264)</li>
-                    <li>(S)RTP and (S)RTCP</li>
-                    <li>(S)AVP, (S)AVP(F) and UDP/TLS/RTP/(S)AVP(F) profiles</li>
-                    <li>DTLS-SRTP (RFC 5763 and 5764)</li>
-                    <li>XCAP (RFC 4825)</li>
-                    <li>MSRP (RFC 4975 and 5547)</li>
-                    <li>Audio/Video (Opus, AMR, Speex, G.729, G.711, G.722, GSM, iLBC, VP8, H.264, H.263, Theora, MP4V-ES...)</li>
-                    <li>Full HD (1080p) video</li>
-                    <li>T.140: Text Over IP (<a href="http://en.wikipedia.org/wiki/Text_over_IP">http://en.wikipedia.org/wiki/Text_over_IP</a>)</li>
-                    <li>...and many other features</li>
-                </ul>
-            </div>
-        </div>
+        <!--div class="row-fluid"-->
+        <!--div class="span6"-->
+        <h1>
+            Products</h1>
         <br />
-        <div class="row-fluid">
-            <div class="span6">
-                <h3>
-                    The One Voice Profile (4G/LTE)</h3>
-                <br />
-                <p>
-                    Doubango IMS Framework supports both Voice and SMS over LTE as defined by the <b>One
-                        Voice initiative</b>.
-                    <br />
-                    For more information, please refer to <a href="http://news.vzw.com/OneVoiceProfile.pdf"
-                        target="_blank">Voice over IMS profile V1.0.0(2009-11)</a>.
-                </p>
-                <br />
-                <img src="./LTE_Architecture.png" alt="3GPP LTE Architecture" title="3GPP LTE Architecture" />
-            </div>
-            <div class="span6">
-                <h3>
-                    Multimedia Telephony (MMTel)</h3>
-                <br />
-                <ul>
-                    <li>MMTel Supplementary Services (3GPP TS 24.173, 24607, 24.608, 24.607, 24.604, 24.611,
-                        24.610, 24.606, 24.615 and 24.605)</li>
-                    <li>Supplementary Service Configuration (3GPP TS 24.623)</li>
-                    <li>Ad-Hoc Multi Party Conference (3GPP TS 24.605)</li>
-                    <li>Communication Waiting (3GPP TS 24.615)</li>
-                    <li>Message Waiting Indication (3GPP TS 24.606 and RFC 3842)</li>
-                    <li>Originating/Terminating Identification Restriction (3GPP TS 24.607/608)</li>
-                    <li>Communication Diversion (3GPP TS 24.604)</li>
-                    <li>Communication Barring (3GPP TS 24.611)</li>
-                </ul>
-            </div>
-        </div>
-        <br />
-        <div class="row-fluid">
-            <div class="span6">
-                <h3>
-                    Protocols</h3>
-                <br />
-                <ul>
-                    <li>SIP/SigComp</li>
-                    <li>SDP</li>
-                    <li>(S)RTP and (S)RTCP</li>
-                    <li>XCAP (RFC 4825)</li>
-                    <li>MSRP(S) (RFC 4975 and 5547)</li>
-                    <li>HTTP(S) (RFC 2616 and 2617)</li>
-                    <li>DHCPv4 (RFC 2131)</li>
-                    <li>DHCPv6 (RFC 3315)</li>
-                    <li>DNS (RFC 1034, 1035, 3401, 3402, 3403, 3404, 3596, 2035, 2671, and 2782)</li>
-                </ul>
-            </div>
-            <div class="span6">
-                <h3>
-                    OMA SIMPLE IM</h3>
-                <br />
-                <ul>
-                    <li>Pager Mode IM (MESSAGE)</li>
-                    <li>Session Mode Messaging (MSRP)</li>
-                    <li>Large Message IM (OMA)</li>
-                    <li>File Transfer(MSRP) and Image Sharing (GMSA IR.79)</li>
-                </ul>
-            </div>
-        </div>
-
+        <table border="1" width="100%">
+            <tr bgcolor="#FF0000">
+                <td colspan="2">
+                    <b>Born to Be a Star</b>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a style='width: 75px; margin: 1px' href="https://code.google.com/p/telepresence/"
+                        target="_blank">telepresence</a>
+                </td>
+                <td align="left">
+                    Open Source SIP TelePresence system with support for Full (1080p) and Ultra (2160p) HD video. <hr />
+                    <iframe id="ytplayer" type="text/html" width="480" height="312" src="http://www.youtube.com/embed/Yi3ufNso67U?autoplay=0&origin=http://doubango.org"
+                        frameborder="0"></iframe>
+                </td>
+            </tr>
+        </table>
         <hr />
-        <g:plus href="https://plus.google.com/107177632824809995368" rel="author"></g:plus> <br />
-        <a href="https://twitter.com/DoubangoTelecom" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @DoubangoTelecom</a>  
+        <table border="1" width=100%>
+            <tr bgcolor="#99CCFF">
+                <td colspan="2">
+                    Client-side components
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a style='width: 75px; margin: 1px' href="http://sipml5.org/index.html?svn=20" target="_blank">
+                        sipML5</a>
+                </td>
+                <td>
+                    HTML5 SIP client using <a href="http://www.webrtc2sip.org" target="_blank">webrtc2sip</a>
+                    Gateway.<br />
+                    <a style='margin: 1px' class="btn btn-small" href="http://sipml5.org/call.htm?svn=170"
+                        target="_blank">Enjoy our live demo &raquo;</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a style='width: 75px; margin: 1px' href="http://click2dial.org/index.html?svn=170"
+                        target="_blank">clik2dial</a>
+                </td>
+                <td>
+                    A complete Click-to-Call Solution using <a href="http://www.webrtc2sip.org" target="_blank">
+                        webrtc2sip</a> Gateway and <a href="http://sipml5.org/call.htm?svn=170" target="_blank">
+                            sipML5</a>.<br />
+                    <a style='margin: 1px' class="btn btn-small" href="http://click2dial.org?svn=170"
+                        target="_blank">Enjoy our live demo &raquo;</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a style='width: 75px; margin: 1px' href="http://code.google.com/p/webrtc4all/" target="_blank">
+                        webrtc4all</a>
+                </td>
+                <td>
+                    WebRTC extension for Safari, Opera, Firefox and IE.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a style='width: 75px; margin: 1px' href="http://code.google.com/p/boghe/" target="_blank">
+                        Boghe</a>
+                </td>
+                <td>
+                    <ul>
+                        <li>SIP video client for <b>Windows Phone 8</b> and <b>Surface Pro</b></li>
+                        <li>IMS/RCS Client for Windows XP, Vista, 7 and 8</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a style='width: 75px; margin: 1px' href="http://code.google.com/p/idoubs/" target="_blank">
+                        iDoubs</a>
+                </td>
+                <td>
+                    SIP/IMS VideoPhone for iOS (iPhone, iPad and iPod Touch) and MAC OS X.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a style='width: 75px; margin: 1px' href="http://code.google.com/p/imsdroid/" target="_blank">
+                        IMSDroid</a>
+                </td>
+                <td>
+                    SIP/IMS Client for Android.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a style='width: 75px; margin: 1px' href="http://code.google.com/p/libsigcomp/" target="_blank">
+                        libSigComp</a>
+                </td>
+                <td>
+                    Signaling Compression (SigComp) library
+                </td>
+            </tr>
+            <tr bgcolor="#99CCFF">
+                <td colspan="2">
+                    Server-side components
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a style='width: 75px; margin: 1px' href="http://www.webrtc2sip.org" target="_blank">
+                        webrtc2sip</a>
+                </td>
+                <td>
+                    Smart SIP and Media Gateway to connect <a href="http://en.wikipedia.org/wiki/WebRTC">
+                        WebRTC</a> endpoints to any SIP-legacy network.<br />
+                    <a style='margin: 1px' class="btn btn-small" href="http://sipml5.org/call.htm?svn=15"
+                        target="_blank">Enjoy our live demo &raquo;</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a style='width: 75px; margin: 1px' href="http://code.google.com/p/telepresence/"
+                        target="_blank">telepresence</a>
+                </td>
+                <td>
+                    Open Source <a target="_blank" href="http://en.wikipedia.org/wiki/Telepresence">TelePresence</a>
+                    system with a smart and powerful <a target="_blank" href="http://en.wikipedia.org/wiki/Multipoint_Control_Unit">
+                        MCU</a>.
+                    <br />
+                    <a style='margin: 1px' class="btn btn-small" href="http://conf-call.org?svn=15" target="_blank">
+                        Enjoy our live demo &raquo;</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a style='width: 75px; margin: 1px' href="http://code.google.com/p/flash2ims/" target="_blank">
+                        Flash2IMS</a>
+                </td>
+                <td>
+                    Adobe® Flash® to SIP/IMS Gateway.
+                </td>
+            </tr>
+        </table>
+        <!--/div-->
+        <hr />
+        <g:plus href="https://plus.google.com/107177632824809995368" rel="author"></g:plus>
+        <br />
+        <a href="https://twitter.com/DoubangoTelecom" class="twitter-follow-button" data-show-count="false"
+            data-size="large">Follow @DoubangoTelecom</a>
         <hr />
         <footer>
             <p>
                 &copy; Doubango Telecom 2011-2013</p>
             <i>Inspiring the future</i>
         </footer>
-
         <!-- /container -->
     </div>
-
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+
     <script type="text/javascript" src="assets/js/jquery.js"></script>
+
     <script type="text/javascript" src="assets/js/bootstrap-transition.js"></script>
+
     <script type="text/javascript" src="assets/js/bootstrap-alert.js"></script>
+
     <script type="text/javascript" src="assets/js/bootstrap-modal.js"></script>
+
     <script type="text/javascript" src="assets/js/bootstrap-dropdown.js"></script>
+
     <script type="text/javascript" src="assets/js/bootstrap-scrollspy.js"></script>
+
     <script type="text/javascript" src="assets/js/bootstrap-tab.js"></script>
+
     <script type="text/javascript" src="assets/js/bootstrap-tooltip.js"></script>
+
     <script type="text/javascript" src="assets/js/bootstrap-popover.js"></script>
+
     <script type="text/javascript" src="assets/js/bootstrap-button.js"></script>
+
     <script type="text/javascript" src="assets/js/bootstrap-collapse.js"></script>
+
     <script type="text/javascript" src="assets/js/bootstrap-carousel.js"></script>
+
     <script type="text/javascript" src="assets/js/bootstrap-typeahead.js"></script>
+
     <!-- GOOGLE ANALYTICS -->
+
     <script type="text/javascript">
         var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
         document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
     </script>
+
     <script type="text/javascript">
         try {
             var pageTracker = _gat._getTracker("UA-6868621-8");
@@ -323,7 +264,9 @@
     </script>
 
     <!-- click-to-call widget -->
+
     <script type='text/javascript' src='http://click2dial.org/c2c-api.js'></script>
+
     <script type='text/javascript'>
 	    c2c.from = 'ZGlvcG1hbWFkb3VAZG91YmFuZ28ub3Jn';
 	    c2c.text = 'call us &raquo;';
@@ -336,8 +279,9 @@
 	    };
 	    c2c.init();
     </script>
-    
+
     <!-- TWITTER -->
+
     <script type='text/javascript'>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
 </body>
