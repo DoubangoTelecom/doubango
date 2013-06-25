@@ -123,9 +123,16 @@ static int tdav_consumer_wasapi_prepare(tmedia_consumer_t* self, const tmedia_co
 		return -1;
 	}
 
-	TMEDIA_CONSUMER(wasapi)->audio.ptime = codec->plugin->audio.ptime;
-	TMEDIA_CONSUMER(wasapi)->audio.in.channels = TMEDIA_CONSUMER(wasapi)->audio.out.channels = codec->plugin->audio.channels;
-	TMEDIA_CONSUMER(wasapi)->audio.in.rate = TMEDIA_CONSUMER(wasapi)->audio.out.rate = codec->plugin->rate;
+	TMEDIA_CONSUMER(wasapi)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_DECODING(codec);
+    TMEDIA_CONSUMER(wasapi)->audio.in.channels = TMEDIA_CODEC_CHANNELS_AUDIO_DECODING(codec);
+    TMEDIA_CONSUMER(wasapi)->audio.in.rate = TMEDIA_CODEC_RATE_DECODING(codec);
+        
+    TSK_DEBUG_INFO("WASAPI consumer: in.channels=%d, out.channles=%d, in.rate=%d, out.rate=%d, ptime=%d",
+                    TMEDIA_CONSUMER(wasapi)->audio.in.channels,
+                    TMEDIA_CONSUMER(wasapi)->audio.out.channels,
+                    TMEDIA_CONSUMER(wasapi)->audio.in.rate,
+                    TMEDIA_CONSUMER(wasapi)->audio.out.rate,
+                    TMEDIA_CONSUMER(wasapi)->audio.ptime);
 
 	return wasapi->AudioRender->Prepare(wasapi, codec);
 }
