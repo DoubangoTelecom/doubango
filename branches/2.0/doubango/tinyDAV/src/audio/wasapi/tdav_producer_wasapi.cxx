@@ -144,9 +144,15 @@ static int tdav_producer_wasapi_prepare(tmedia_producer_t* self, const tmedia_co
 		return -1;
 	}
 
-	TMEDIA_PRODUCER(wasapi)->audio.channels = codec->plugin->audio.channels;
-	TMEDIA_PRODUCER(wasapi)->audio.rate = codec->plugin->rate;
-	TMEDIA_PRODUCER(wasapi)->audio.ptime = codec->plugin->audio.ptime;
+	/* codec should have ptime */
+    TMEDIA_PRODUCER(wasapi)->audio.channels = TMEDIA_CODEC_CHANNELS_AUDIO_ENCODING(codec);
+    TMEDIA_PRODUCER(wasapi)->audio.rate = TMEDIA_CODEC_RATE_ENCODING(codec);
+    TMEDIA_PRODUCER(wasapi)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_ENCODING(codec);
+
+	TSK_DEBUG_INFO("WASAPI producer: channels=%d, rate=%d, ptime=%d",
+                       TMEDIA_PRODUCER(wasapi)->audio.channels,
+                       TMEDIA_PRODUCER(wasapi)->audio.rate,
+                       TMEDIA_PRODUCER(wasapi)->audio.ptime);
 
 	return wasapi->audioCapture->Prepare(wasapi, codec);
 }
@@ -374,7 +380,7 @@ int Doubango::VoIP::AudioCapture::Prepare(tdav_producer_wasapi_t* wasapi, const 
 		WASAPI_SET_ERROR(-14);
 	}
     
-	int packetperbuffer = (1000 / codec->plugin->audio.ptime);
+	int packetperbuffer = (1000 / TMEDIA_PRODUCER(wasapi)->audio.ptime);
 	m_ring.chunck.size = wfx.nSamplesPerSec * (wfx.wBitsPerSample >> 3) / packetperbuffer;
 	TSK_DEBUG_INFO("#WASAPI: Audio producer ring chunk size = %u", m_ring.chunck.size);
 	// allocate our chunck buffer
