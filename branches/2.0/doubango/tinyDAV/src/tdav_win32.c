@@ -34,7 +34,18 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-#include <windows.h> 
+#include <windows.h>
+
+/*
+Version Number    Description
+6.1               Windows 7     / Windows 2008 R2
+6.0               Windows Vista / Windows 2008
+5.2               Windows 2003 
+5.1               Windows XP
+5.0               Windows 2000
+*/
+static DWORD dwMajorVersion = -1;
+static DWORD dwMinorVersion = -1;
 
 int tdav_win32_init()
 {
@@ -46,9 +57,49 @@ int tdav_win32_init()
 	if(result){
 		TSK_DEBUG_ERROR("timeBeginPeriod(1) returned result=%u", result);
 	}
+
+	// Get OS version
+	if(dwMajorVersion == -1 || dwMinorVersion == -1){
+		OSVERSIONINFO osvi;
+		ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+		GetVersionEx(&osvi);
+		dwMajorVersion = osvi.dwMajorVersion;
+		dwMinorVersion = osvi.dwMinorVersion;
+		TSK_DEBUG_INFO("Windows dwMajorVersion=%ld, dwMinorVersion=%ld", dwMajorVersion, dwMinorVersion);
+	}
 #endif
 
 	return 0;
+}
+
+int tdav_win32_get_osversion(unsigned long* version_major, unsigned long* version_minor)
+{
+	if(version_major){
+		*version_major = dwMajorVersion;
+	}
+	if(version_minor){
+		*version_minor = dwMinorVersion;
+	}
+	return 0;
+}
+
+tsk_bool_t tdav_win32_is_win7_or_later()
+{
+	if(dwMajorVersion == -1 || dwMinorVersion == -1){
+		TSK_DEBUG_ERROR("Version numbers are invalid");
+		return tsk_false;
+	}
+	return ( (dwMajorVersion > 6) || ( (dwMajorVersion == 6) && (dwMinorVersion >= 1) ) );
+}
+
+tsk_bool_t tdav_win32_is_winxp_or_later()
+{
+	if(dwMajorVersion == -1 || dwMinorVersion == -1){
+		TSK_DEBUG_ERROR("Version numbers are invalid");
+		return tsk_false;
+	}
+	return ( (dwMajorVersion > 5) || ( (dwMajorVersion == 5) && (dwMinorVersion >= 1) ) );
 }
 
 TINYDAV_API void tdav_win32_print_error(const char* func, HRESULT hr)

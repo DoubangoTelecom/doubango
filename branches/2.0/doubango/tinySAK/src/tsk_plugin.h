@@ -36,7 +36,7 @@ typedef enum tsk_plugin_def_type_e
 	tsk_plugin_def_type_jb = (1 << 5),
 	tsk_plugin_def_type_denoiser = (1 << 6),
 	tsk_plugin_def_type_converter = (1 << 7),
-	tsk_plugin_def_type_any = (~0)
+	tsk_plugin_def_type_all = (~0)
 }
 tsk_plugin_def_type_t;
 
@@ -45,7 +45,7 @@ typedef enum tsk_plugin_def_media_type_e
 	tsk_plugin_def_media_type_none = 0,
 	tsk_plugin_def_media_type_audio = (1 << 0),
 	tsk_plugin_def_media_type_video = (1 << 1),
-	tsk_plugin_def_media_type_any = (~0)
+	tsk_plugin_def_media_type_all = (~0)
 }
 tsk_plugin_def_media_type_t;
 

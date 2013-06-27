@@ -28,10 +28,21 @@
  */
 #include "tinydav/tdav.h"
 
+static tsk_bool_t __b_initialized = tsk_false;
+
 #if TDAV_UNDER_WINDOWS
 #	include "tinydav/tdav_win32.h"
 #elif TDAV_UNDER_APPLE
 #	include "tinydav/tdav_apple.h"
+#endif
+
+// Shared libraries not allowed on WP8 and iOS
+#if !TDAV_UNDER_WINDOWS_PHONE && !TDAV_UNDER_IPHONE
+#include "tsk_plugin.h"
+#	if TDAV_UNDER_WINDOWS
+		static struct tsk_plugin_s* __dll_plugin_dshow = tsk_null; /* DirectShow: Windows [XP - 8] */
+		static struct tsk_plugin_s* __dll_plugin_mf = tsk_null; /* Media Foundation and WASAPI : Windows [7 - 8] */
+#	endif /* TDAV_UNDER_WINDOWS */
 #endif
 
 // Media Contents, ...
@@ -82,9 +93,6 @@
 #include "tinydav/video/winm/tdav_consumer_winm.h"
 #include "tinydav/video/mf/tdav_consumer_video_mf.h"
 #include "tinydav/t140/tdav_consumer_t140.h"
-#if HAVE_TINYDSHOW // DirectShow
-#	include "tinydshow/plugin/DSConsumer.h"
-#endif
 
 // Producers
 #include "tinydav/audio/waveapi/tdav_producer_waveapi.h"
@@ -95,9 +103,6 @@
 #include "tinydav/video/winm/tdav_producer_winm.h"
 #include "tinydav/video/mf/tdav_producer_video_mf.h"
 #include "tinydav/t140/tdav_producer_t140.h"
-#if HAVE_TINYDSHOW // DirectShow
-#	include "tinydshow/plugin/DSProducer.h"
-#endif
 
 // Audio Denoise (AGC, Noise Suppression, VAD and AEC)
 #if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_DENOISE) || HAVE_SPEEX_DENOISE)
@@ -128,6 +133,11 @@ static inline tsk_bool_t _tdav_codec_is_supported(tdav_codec_id_t codec, const t
 int tdav_init()
 {
 	int ret = 0;
+
+	if(__b_initialized){
+		TSK_DEBUG_INFO("TINYDAV already initialized");
+		return 0;
+	}
 	
 	/* === OS specific === */
 #if TDAV_UNDER_WINDOWS
@@ -242,6 +252,24 @@ int tdav_init()
 	tmedia_codec_plugin_register(tdav_codec_h264_main_plugin_def_t);
 #endif
 
+	/* === stand-alone plugins === */
+#if TDAV_UNDER_WINDOWS && !TDAV_UNDER_WINDOWS_PHONE
+	{
+		tsk_size_t plugins_count = 0;
+		if(tdav_win32_is_win7_or_later()){
+			if((__dll_plugin_mf = tsk_plugin_create("pluginWinMF.dll"))){
+				plugins_count += tmedia_plugin_register(__dll_plugin_mf, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
+			}
+		}
+		if(tdav_win32_is_winxp_or_later()){
+			if((__dll_plugin_dshow = tsk_plugin_create("pluginDirectShow.dll"))){
+				plugins_count += tmedia_plugin_register(__dll_plugin_dshow, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
+			}
+		}
+		TSK_DEBUG_INFO("Windows stand-alone plugins loaded = %u", plugins_count);
+	}
+#endif
+
 	
 	/* === Register converters === */
 #if HAVE_LIBYUV
@@ -259,12 +287,8 @@ int tdav_init()
 #elif HAVE_WASAPI
 	tmedia_consumer_plugin_register(tdav_consumer_wasapi_plugin_def_t);
 #endif
-#if HAVE_TINYDSHOW // DirectShow (Windows XP and later)
-	tmedia_consumer_plugin_register(tdshow_consumer_plugin_def_t);
-#elif HAVE_WINM // Windows Media (WP8)
+#if HAVE_WINM // Windows Media (WP8)
 	tmedia_consumer_plugin_register(tdav_consumer_winm_plugin_def_t);
-#elif HAVE_MF // Media Foundation (Windows 7 and later)
-	tmedia_consumer_plugin_register(tdav_consumer_video_mf_plugin_def_t);
 #endif
 
 #if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit
@@ -286,12 +310,9 @@ int tdav_init()
 #elif HAVE_WASAPI // WASAPI
 	tmedia_producer_plugin_register(tdav_producer_wasapi_plugin_def_t);
 #endif
-#if HAVE_TINYDSHOW // DirectShow (Windows XP and later)
-	tmedia_producer_plugin_register(tdshow_producer_plugin_def_t);
-#elif HAVE_WINM // Windows Media (WP8)
+
+#if HAVE_WINM // Windows Media (WP8)
 	tmedia_producer_plugin_register(tdav_producer_winm_plugin_def_t);
-#elif HAVE_MF // Medi Foundation (Windows 7 and later)
-	tmedia_producer_plugin_register(tdav_producer_video_mf_plugin_def_t);
 #endif
 	
 #if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit
@@ -319,6 +340,8 @@ int tdav_init()
 #else
 	tmedia_jitterbuffer_plugin_register(tdav_speakup_jitterbuffer_plugin_def_t);
 #endif
+
+	__b_initialized = tsk_true;
 
 	return ret;
 }
@@ -575,6 +598,11 @@ tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec)
 int tdav_deinit()
 {
 	int ret = 0;
+
+	if(!__b_initialized){
+		TSK_DEBUG_INFO("TINYDAV not initialized");
+		return 0;
+	}
 	
 	/* === OS specific === */
 #if TDAV_UNDER_WINDOWS
@@ -655,6 +683,21 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_h264_main_plugin_def_t);
 #endif
 
+		/* === stand-alone plugins === */
+#if TDAV_UNDER_WINDOWS && !TDAV_UNDER_WINDOWS_PHONE
+	{
+		if(__dll_plugin_mf){
+			tmedia_plugin_unregister(__dll_plugin_mf, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
+			TSK_OBJECT_SAFE_FREE(__dll_plugin_mf);
+		}
+		if(__dll_plugin_dshow){
+			tmedia_plugin_unregister(__dll_plugin_dshow, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
+			TSK_OBJECT_SAFE_FREE(__dll_plugin_dshow);
+		}
+	}
+#endif
+
+
 	/* === unRegister converters === */
 #if HAVE_LIBYUV
 	tmedia_converter_video_plugin_unregister(tdav_converter_video_libyuv_plugin_def_t);
@@ -673,12 +716,8 @@ int tdav_deinit()
 #if HAVE_WASAPI
 	tmedia_consumer_plugin_unregister(tdav_consumer_wasapi_plugin_def_t);
 #endif
-#if HAVE_TINYDSHOW // DirectShow (Windows XP and later)
-	tmedia_consumer_plugin_unregister(tdshow_consumer_plugin_def_t);
-#elif HAVE_WINM // Windows Media (WP8)
+#if HAVE_WINM // Windows Media (WP8)
 	tmedia_consumer_plugin_unregister(tdav_consumer_winm_plugin_def_t);
-#elif HAVE_MF // Media Foundation (Windows 7 or later)
-	tmedia_consumer_plugin_unregister(tdav_consumer_video_mf_plugin_def_t);
 #endif
 #if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit
 	tmedia_consumer_plugin_unregister(tdav_consumer_audiounit_plugin_def_t);
@@ -698,12 +737,8 @@ int tdav_deinit()
 #if HAVE_WASAPI // WASAPI
 	tmedia_producer_plugin_unregister(tdav_producer_wasapi_plugin_def_t);
 #endif
-#if HAVE_TINYDSHOW // DirectShow (Windows XP or later)
-	tmedia_producer_plugin_unregister(tdshow_producer_plugin_def_t);
-#elif HAVE_WINM // Windows Media (WP8)
+#if HAVE_WINM // Windows Media (WP8)
 	tmedia_producer_plugin_unregister(tdav_producer_winm_plugin_def_t);
-#elif HAVE_MF // Media Foundation (Windows 7 or later)
-	tmedia_producer_plugin_unregister(tdav_producer_video_mf_plugin_def_t);
 #endif
 
 #if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit
@@ -735,6 +770,8 @@ int tdav_deinit()
 #else
 	tmedia_jitterbuffer_plugin_unregister(tdav_speakup_jitterbuffer_plugin_def_t);
 #endif
+
+	__b_initialized = tsk_false;
 
 	return ret;
 }
