@@ -29,6 +29,8 @@
  */
 #include "tinymedia/tmedia_common.h"
 
+#include "tinymedia/tmedia_consumer.h"
+#include "tinymedia/tmedia_producer.h"
 #include "tinymedia/tmedia_session.h"
 #include "tinymedia/tmedia_imageattr.h"
 #include "tinymedia/tmedia_defaults.h"
@@ -62,6 +64,70 @@ static const fmtp_size_t fmtp_sizes[] =
 	{"QCIF", tmedia_pref_video_size_qcif, tsk_true, 176, 144},
 	{"SQCIF", tmedia_pref_video_size_sqcif, tsk_true, 128, 96}
 };
+
+typedef int (*plugin_register)(const void* plugin_def);
+typedef int (*plugin_unregister)(const void* plugin_def);
+
+typedef struct plugin_decl_s
+{
+	tsk_plugin_def_type_t type;
+	plugin_register fn_register;
+	plugin_unregister fn_unregister;
+}
+plugin_decl_t;
+
+static const struct plugin_decl_s __plugin_def_types[] = 
+{
+	{tsk_plugin_def_type_consumer, tmedia_consumer_plugin_register, tmedia_consumer_plugin_unregister },
+	{tsk_plugin_def_type_producer, tmedia_producer_plugin_register, tmedia_producer_plugin_unregister },
+	{tsk_plugin_def_type_session, tmedia_session_plugin_register, tmedia_session_plugin_unregister },
+	{tsk_plugin_def_type_codec, tmedia_codec_plugin_register, tmedia_codec_plugin_unregister },
+	// tsk_plugin_def_type_resampler
+	// tsk_plugin_def_type_jb
+	// tsk_plugin_def_type_denoiser
+	// tsk_plugin_def_type_converter
+};
+static const tsk_size_t __plugin_def_types_count = sizeof(__plugin_def_types)/sizeof(__plugin_def_types[0]);
+static const tsk_plugin_def_media_type_t __plugin_def_media_types[] = 
+{
+	tsk_plugin_def_media_type_audio,
+	tsk_plugin_def_media_type_video
+};
+static const tsk_size_t __plugin_def_media_types_count = sizeof(__plugin_def_media_types)/sizeof(__plugin_def_media_types[0]);
+
+static tsk_size_t tmedia_plugin_register_or_unregister(struct tsk_plugin_s* plugin, enum tsk_plugin_def_type_e type, enum tsk_plugin_def_media_type_e media, tsk_bool_t _register)
+{
+	tsk_size_t ret = 0, i, j;
+	tsk_plugin_def_ptr_const_t plugin_def_ptr_const;
+	if(!plugin){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+
+	for(i = 0; i < __plugin_def_types_count; ++i){
+		for(j = 0; j < __plugin_def_media_types_count; ++j){
+			if((_register ? __plugin_def_types[i].fn_register : __plugin_def_types[i].fn_unregister) && (type & __plugin_def_types[i].type) == __plugin_def_types[i].type && (media & __plugin_def_media_types[j]) == __plugin_def_media_types[j]){
+				if((plugin_def_ptr_const = tsk_plugin_get_def(plugin, __plugin_def_types[i].type, __plugin_def_media_types[j]))){
+					if((_register ? __plugin_def_types[i].fn_register : __plugin_def_types[i].fn_unregister)(plugin_def_ptr_const) == 0){
+						++ret;
+					}
+				}
+			}
+		}
+	}
+
+	return ret;
+}
+
+tsk_size_t tmedia_plugin_register(struct tsk_plugin_s* plugin, enum tsk_plugin_def_type_e type, enum tsk_plugin_def_media_type_e media)
+{
+	return tmedia_plugin_register_or_unregister(plugin, type, media, tsk_true);
+}
+
+tsk_size_t tmedia_plugin_unregister(struct tsk_plugin_s* plugin, enum tsk_plugin_def_type_e type, enum tsk_plugin_def_media_type_e media)
+{
+	return tmedia_plugin_register_or_unregister(plugin, type, media, tsk_false);
+}
 
 tmedia_type_t tmedia_type_from_sdp(const tsdp_message_t* sdp)
 {

@@ -32,6 +32,7 @@
 
 #include "tinymedia_config.h"
 
+#include "tsk_plugin.h"
 #include "tsk_object.h"
 
 TMEDIA_BEGIN_DECLS
@@ -244,6 +245,8 @@ typedef enum tmedia_ro_type_e
 }
 tmedia_ro_type_t;
 
+TINYMEDIA_API tsk_size_t tmedia_plugin_register(struct tsk_plugin_s* plugin, enum tsk_plugin_def_type_e type, enum tsk_plugin_def_media_type_e media);
+TINYMEDIA_API tsk_size_t tmedia_plugin_unregister(struct tsk_plugin_s* plugin, enum tsk_plugin_def_type_e type, enum tsk_plugin_def_media_type_e media);
 TINYMEDIA_API tmedia_type_t tmedia_type_from_sdp(const struct tsdp_message_s* sdp);
 TINYMEDIA_API int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t* channels);
 TINYMEDIA_API int tmedia_video_get_size(tmedia_pref_video_size_t pref_vs, unsigned *width, unsigned *height);

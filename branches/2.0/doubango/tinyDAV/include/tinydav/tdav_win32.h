@@ -31,11 +31,16 @@
 
 #include "tinydav_config.h"
 
+#include "tsk_common.h" /* tsk_bool_t */
+
 #if TDAV_UNDER_WINDOWS
 
 TDAV_BEGIN_DECLS
 
 int tdav_win32_init();
+int tdav_win32_get_osversion(unsigned long* version_major, unsigned long* version_minor);
+tsk_bool_t tdav_win32_is_win7_or_later();
+tsk_bool_t tdav_win32_is_winxp_or_later();
 int tdav_win32_deinit();
 
 TDAV_END_DECLS
