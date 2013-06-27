@@ -198,9 +198,9 @@ int tdav_producer_waveapi_prepare(tmedia_producer_t* self, const tmedia_codec_t*
 		return -1;
 	}
 	
-	TMEDIA_PRODUCER(producer)->audio.channels = codec->plugin->audio.channels;
-	TMEDIA_PRODUCER(producer)->audio.rate = codec->plugin->rate;
-	TMEDIA_PRODUCER(producer)->audio.ptime = codec->plugin->audio.ptime;
+	TMEDIA_PRODUCER(producer)->audio.channels = TMEDIA_CODEC_CHANNELS_AUDIO_ENCODING(codec);
+	TMEDIA_PRODUCER(producer)->audio.rate = TMEDIA_CODEC_RATE_ENCODING(codec);
+	TMEDIA_PRODUCER(producer)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_ENCODING(codec);
 	/* codec should have ptime */
 	
 
