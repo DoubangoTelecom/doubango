@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="tinySAK"
 	ProjectGUID="{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}"
 	RootNamespace="tinySAK"
