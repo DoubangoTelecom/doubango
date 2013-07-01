@@ -817,6 +817,20 @@ clean_routes:
 	*/
 	else if(msg->firstVia)
 	{
+		{	/* Find the transport. */
+			tsk_list_item_t *item;
+			tsip_transport_t *curr;
+			tsk_list_foreach(item, self->transports)
+			{
+				curr = item->data;
+				if(tsip_transport_have_socket(curr, msg->local_fd))
+				{
+					transport = curr;
+					break;
+				}
+			}
+		}
+
 		/* webrtc2sip mode */
 		if(self->stack->network.mode == tsip_stack_mode_webrtc2sip){
 			if(TNET_SOCKET_TYPE_IS_WSS(msg->src_net_type) || TNET_SOCKET_TYPE_IS_WS(msg->src_net_type)){ // response over WS or WSS
@@ -868,7 +882,25 @@ clean_routes:
 				connection attempt fails, the server SHOULD use the procedures
 				in [4] for servers in order to determine the IP address and
 				port to open the connection and send the response to.
-			*/
+				*/
+			if(tsk_strnullORempty(*destIP)){
+				tnet_ip_t peer_ip;
+				tnet_port_t peer_port;
+				if(transport && tnet_get_peerip_n_port(msg->local_fd, &peer_ip, &peer_port) == 0){ // connection is still open ?
+					tsk_strupdate(destIP, peer_ip);
+					*destPort = peer_port;
+				}
+				else{
+					if(msg->firstVia->received){
+						tsk_strupdate(destIP, msg->firstVia->received);
+						*destPort = msg->firstVia->rport > 0 ? msg->firstVia->rport : msg->firstVia->port;
+					}
+					else{
+						tsk_strupdate(destIP, msg->firstVia->host);
+						*destPort = msg->firstVia->port;
+					}
+				}
+			}
 		}
 		else
 		{
@@ -931,20 +963,6 @@ clean_routes:
 					{
 						*destPort = msg->firstVia->port;
 					}
-				}
-			}
-		}
-		
-		{	/* Find the transport. */
-			tsk_list_item_t *item;
-			tsip_transport_t *curr;
-			tsk_list_foreach(item, self->transports)
-			{
-				curr = item->data;
-				if(tsip_transport_have_socket(curr, msg->local_fd))
-				{
-					transport = curr;
-					break;
 				}
 			}
 		}
