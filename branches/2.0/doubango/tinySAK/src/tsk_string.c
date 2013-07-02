@@ -406,7 +406,7 @@ void tsk_strupdate(char** str, const char* newval)
 		if(!length) {
 			tsk_free((void**)str);
 		}
-		else if((*str = tsk_realloc(*str, length + 1))){
+		else if((*str = (char*)tsk_realloc(*str, length + 1))){
 			memcpy(*str, newval, length);
 			(*str)[length] = '\0';
 		}
