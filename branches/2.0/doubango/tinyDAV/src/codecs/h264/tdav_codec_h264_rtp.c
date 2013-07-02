@@ -285,6 +285,46 @@ int tdav_codec_h264_get_nalunit_pay(const uint8_t* in_data, tsk_size_t in_size, 
 	return 0;
 }
 
+void tdav_codec_h264_rtp_encap(struct tdav_codec_h264_common_s* self, const uint8_t* pdata, tsk_size_t size)
+{
+	static const tsk_size_t size_of_scp = sizeof(H264_START_CODE_PREFIX); /* we know it's equal to 4 .. */
+	register tsk_size_t i;
+	tsk_size_t last_scp, prev_scp;
+	tsk_size_t _size;
+
+	if(!pdata || size < size_of_scp){
+		return;
+	}
+
+	if(pdata[0] == 0 && pdata[1] == 0){
+		if(pdata[2] == 1){
+			pdata += 3, size -= 3;
+		}
+		else if(pdata[2] == 0 && pdata[3] == 1){
+			pdata += 4, size -= 4;
+		}
+	}
+
+	_size = (size - size_of_scp);
+	last_scp = 0, prev_scp = 0;
+	for(i = size_of_scp; i<_size; i++){
+		if(pdata[i] == 0 && pdata[i+1] == 0 && (pdata[i+2] == 1 || (pdata[i+2] == 0 && pdata[i+3] == 1))){  /* Find Start Code Prefix */
+			prev_scp = last_scp;
+			if((i - last_scp) >= H264_RTP_PAYLOAD_SIZE || 1){
+				tdav_codec_h264_rtp_callback(self, pdata + prev_scp,
+					(i - prev_scp), (prev_scp == size));
+			}
+			last_scp = i;
+			i += (pdata[i+2] == 1) ? 3 : 4;
+		}
+	}
+
+	if(last_scp < (int32_t)size){
+			tdav_codec_h264_rtp_callback(self, pdata + last_scp,
+				(size - last_scp), tsk_true);
+	}
+}
+
 void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_common_s *self, const void *data, tsk_size_t size, tsk_bool_t marker)
 {
 	uint8_t* pdata = (uint8_t*)data;

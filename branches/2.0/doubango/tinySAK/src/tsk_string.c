@@ -401,8 +401,15 @@ done:
 void tsk_strupdate(char** str, const char* newval)
 {
 	if(str && *str != newval){ // do nothing if same memory address
-		tsk_free((void**)str);
-		*str = tsk_strdup(newval);
+		// use realloc() to keep same memory address
+		tsk_size_t length = tsk_strlen(newval);
+		if(!length) {
+			tsk_free((void**)str);
+		}
+		else if((*str = tsk_realloc(*str, length + 1))){
+			memcpy(*str, newval, length);
+			(*str)[length] = '\0';
+		}
 	}
 }
 
