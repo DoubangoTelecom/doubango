@@ -122,13 +122,14 @@ tsk_plugin_t* tsk_plugin_create(const char* path)
 	return plugin;
 }
 
-tsk_plugin_def_ptr_const_t tsk_plugin_get_def(tsk_plugin_t* self, tsk_plugin_def_type_t type, tsk_plugin_def_media_type_t media_type)
+tsk_plugin_def_ptr_const_t tsk_plugin_get_def_2(struct tsk_plugin_s* self, tsk_plugin_def_type_t type, tsk_plugin_def_media_type_t media_type, tsk_size_t index)
 {
 	tsk_plugin_def_ptr_const_t def_ptr_const;
 	symbol_get_def_type_at funcptr_get_def_type_at;
 	symbol_get_def_media_type_at funcptr_get_def_media_type_at;
 	symbol_get_def_at funcptr_get_def_at;
 	int i;
+	tsk_size_t _index = 0;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -151,11 +152,18 @@ tsk_plugin_def_ptr_const_t tsk_plugin_get_def(tsk_plugin_t* self, tsk_plugin_def
 	for(i = 0; i < self->def_count; ++i){
 		if((funcptr_get_def_type_at(i) & type) && (funcptr_get_def_media_type_at(i) & media_type)){
 			if((def_ptr_const = funcptr_get_def_at(i))){
-				return def_ptr_const;
+				if(_index++ == index){
+					return def_ptr_const;
+				}
 			}
 		}
 	}
 	return tsk_null;
+}
+
+tsk_plugin_def_ptr_const_t tsk_plugin_get_def(tsk_plugin_t* self, tsk_plugin_def_type_t type, tsk_plugin_def_media_type_t media_type)
+{
+	return tsk_plugin_get_def_2(self, type, media_type, 0);
 }
 
 tsk_plugin_symbol_t* tsk_plugin_get_symbol(tsk_plugin_t* self, const char* symbol_name)

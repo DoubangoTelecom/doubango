@@ -1247,6 +1247,20 @@ int trtp_manager_start(trtp_manager_t* self)
 	}
 
 	/* RTP */
+
+	// check remote IP address validity
+	if((tsk_striequals(self->rtp.remote_ip, "0.0.0.0") || tsk_striequals(self->rtp.remote_ip, "::"))) { // most likely loopback testing
+		tnet_ip_t source = {0};
+		tsk_bool_t updated = tsk_false;
+		if(self->transport && self->transport->master){
+			updated = (tnet_getbestsource(self->transport->master->ip, self->transport->master->port, self->transport->master->type, &source) == 0);
+		}
+		// Not allowed to send data to "0.0.0.0"
+		TSK_DEBUG_INFO("RTP remote IP contains not allowed value ...changing to '%s'", updated ? source : "oops");
+		if(updated){
+			tsk_strupdate(&self->rtp.remote_ip, source);
+		}
+	}
 	if((ret = tnet_sockaddr_init(self->rtp.remote_ip, self->rtp.remote_port, self->transport->master->type, &self->rtp.remote_addr))){
 		tnet_transport_shutdown(self->transport);
 		TSK_DEBUG_ERROR("Invalid RTP host:port [%s:%u]", self->rtp.remote_ip, self->rtp.remote_port);

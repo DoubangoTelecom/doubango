@@ -97,7 +97,7 @@ static const tsk_size_t __plugin_def_media_types_count = sizeof(__plugin_def_med
 
 static tsk_size_t tmedia_plugin_register_or_unregister(struct tsk_plugin_s* plugin, enum tsk_plugin_def_type_e type, enum tsk_plugin_def_media_type_e media, tsk_bool_t _register)
 {
-	tsk_size_t ret = 0, i, j;
+	tsk_size_t ret = 0, i, j, index;
 	tsk_plugin_def_ptr_const_t plugin_def_ptr_const;
 	if(!plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -107,7 +107,7 @@ static tsk_size_t tmedia_plugin_register_or_unregister(struct tsk_plugin_s* plug
 	for(i = 0; i < __plugin_def_types_count; ++i){
 		for(j = 0; j < __plugin_def_media_types_count; ++j){
 			if((_register ? __plugin_def_types[i].fn_register : __plugin_def_types[i].fn_unregister) && (type & __plugin_def_types[i].type) == __plugin_def_types[i].type && (media & __plugin_def_media_types[j]) == __plugin_def_media_types[j]){
-				if((plugin_def_ptr_const = tsk_plugin_get_def(plugin, __plugin_def_types[i].type, __plugin_def_media_types[j]))){
+				for(index = 0; (plugin_def_ptr_const = tsk_plugin_get_def_2(plugin, __plugin_def_types[i].type, __plugin_def_media_types[j], index)); ++index){
 					if((_register ? __plugin_def_types[i].fn_register : __plugin_def_types[i].fn_unregister)(plugin_def_ptr_const) == 0){
 						++ret;
 					}
