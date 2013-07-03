@@ -23,9 +23,6 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
-#include "tsk_string.h"
-#include "tsk_debug.h"
-
 
 #define DSCONSUMER(self)			((plugin_video_dshow_consumer_t*)(self))
 
@@ -44,7 +41,7 @@ plugin_video_dshow_consumer_t;
 
 
 
-/* ============ Media Producer Interface ================= */
+/* ============ Media Consumer Interface ================= */
 static int plugin_video_dshow_consumer_set(tmedia_consumer_t *self, const tmedia_param_t* param)
 {
 	int ret = 0;
@@ -211,7 +208,7 @@ static int plugin_video_dshow_consumer_stop(tmedia_consumer_t* self)
 
 
 //
-//	WaveAPI consumer object definition
+//	DirectShow consumer object definition
 //
 /* constructor */
 static tsk_object_t* plugin_video_dshow_consumer_ctor(tsk_object_t * self, va_list * app)
