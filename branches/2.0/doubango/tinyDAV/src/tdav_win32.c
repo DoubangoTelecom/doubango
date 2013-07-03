@@ -66,7 +66,7 @@ int tdav_win32_init()
 		GetVersionEx(&osvi);
 		dwMajorVersion = osvi.dwMajorVersion;
 		dwMinorVersion = osvi.dwMinorVersion;
-		TSK_DEBUG_INFO("Windows dwMajorVersion=%ld, dwMinorVersion=%ld", dwMajorVersion, dwMinorVersion);
+		fprintf(stdout, "Windows dwMajorVersion=%ld, dwMinorVersion=%ld", dwMajorVersion, dwMinorVersion);
 	}
 #endif
 

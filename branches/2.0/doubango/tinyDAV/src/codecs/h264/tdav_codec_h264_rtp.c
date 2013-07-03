@@ -25,7 +25,6 @@
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
-
  */
 #include "tinydav/codecs/h264/tdav_codec_h264_rtp.h"
 
