@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="pluginDirectShow"
-	ProjectGUID="{6A69773C-0C70-4BD4-8362-C274CAFD58F2}"
-	RootNamespace="pluginDirectShow"
+	Name="pluginWinMF"
+	ProjectGUID="{E8596446-CB3A-4AD5-83C3-6562EE426494}"
+	RootNamespace="pluginWinMF"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;..\..\thirdparties\win32\include;..\..\thirdparties\win32\include\directshow;..\..\tinySAK\src;..\..\tinyMEDIA\include;..\..\tinySDP\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_DSHOW_EXPORTS;_WIN32_WINNT=0x0501"
+				AdditionalIncludeDirectories=".;..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyMEDIA\include;..\..\tinySDP\include;..\..\tinyDAV\include;..\..\tinyRTP\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_WIN_MFP_EXPORTS;DEBUG_LEVEL=DEBUG_LEVEL_INFO;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\thirdparties\win32\lib\directshow\strmbasd.lib dmoguids.lib strmiids.lib uuid.lib Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyMEDIA.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyMEDIA.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -116,8 +116,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories=".;..\..\thirdparties\win32\include;..\..\thirdparties\win32\include\directshow;..\..\tinySAK\src;..\..\tinyMEDIA\include;..\..\tinySDP\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_DSHOW_EXPORTS;_WIN32_WINNT=0x0501"
+				AdditionalIncludeDirectories=".;..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyMEDIA\include;..\..\tinySDP\include;..\..\tinyDAV\include;..\..\tinyRTP\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_WIN_MFP_EXPORTS;DEBUG_LEVEL=DEBUG_LEVEL_ERROR;TINYDAV_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -135,7 +135,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\thirdparties\win32\lib\directshow\strmbase.lib dmoguids.lib strmiids.lib uuid.lib Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyMEDIA.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyMEDIA.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -175,82 +175,50 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\dllmain_dshow.cxx"
+				RelativePath=".\dllmain_mf.cxx"
 				>
 			</File>
 			<File
-				RelativePath=".\plugin_video_dshow_consumer.cxx"
+				RelativePath=".\plugin_win_mf_consumer_audio.cxx"
 				>
 			</File>
 			<File
-				RelativePath=".\plugin_video_dshow_producer.cxx"
+				RelativePath=".\plugin_win_mf_consumer_video.cxx"
+				>
+			</File>
+			<File
+				RelativePath=".\plugin_win_mf_producer_audio.cxx"
+				>
+			</File>
+			<File
+				RelativePath=".\plugin_win_mf_producer_video.cxx"
 				>
 			</File>
 			<Filter
 				Name="internals"
 				>
 				<File
-					RelativePath=".\internals\DSCaptureFormat.cxx"
+					RelativePath=".\internals\mf_codec.cxx"
 					>
 				</File>
 				<File
-					RelativePath=".\internals\DSCaptureGraph.cxx"
+					RelativePath=".\internals\mf_codec_h264.cxx"
 					>
 				</File>
 				<File
-					RelativePath=".\internals\DSCaptureUtils.cxx"
+					RelativePath=".\internals\mf_custom_src.cxx"
 					>
 				</File>
 				<File
-					RelativePath=".\internals\DSDisplay.cxx"
+					RelativePath=".\internals\mf_devices.cxx"
 					>
 				</File>
 				<File
-					RelativePath=".\internals\DSDisplayGraph.cxx"
+					RelativePath=".\internals\mf_sample_grabber.cxx"
 					>
 				</File>
 				<File
-					RelativePath=".\internals\DSDisplayOverlay.cxx"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\DSDisplayOverlay.VMR.cxx"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\DSDisplayOverlay.VMR9.cxx"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\DSFrameRateFilter.cxx"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\DSGrabber.cxx"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\DSOutputFilter.cxx"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\DSOutputStream.cxx"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\DSUtils.cxx"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\Resizer.cxx"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\VideoDisplayName.cxx"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\VideoGrabberName.cxx"
+					RelativePath=".\internals\mf_utils.cxx"
 					>
 				</File>
 			</Filter>
@@ -261,77 +229,63 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\plugin_dshow_config.h"
+				RelativePath=".\plugin_win_mf_config.h"
 				>
 			</File>
 			<Filter
 				Name="internals"
 				>
 				<File
-					RelativePath=".\internals\DSBufferWriter.h"
+					RelativePath=".\internals\mf_codec.h"
 					>
 				</File>
 				<File
-					RelativePath=".\internals\DSCaptureFormat.h"
+					RelativePath=".\internals\mf_custom_src.h"
 					>
 				</File>
 				<File
-					RelativePath=".\internals\DSCaptureGraph.h"
+					RelativePath=".\internals\mf_devices.h"
 					>
 				</File>
 				<File
-					RelativePath=".\internals\DSCaptureUtils.h"
+					RelativePath=".\internals\mf_sample_grabber.h"
 					>
 				</File>
 				<File
-					RelativePath=".\internals\DSDisplay.h"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\DSDisplayGraph.h"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\DSDisplayOverlay.h"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\DSFrameRateFilter.h"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\DSGrabber.h"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\DSOutputFilter.h"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\DSOutputStream.h"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\DSUtils.h"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\Resizer.h"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\VideoDisplayName.h"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\VideoFrame.h"
-					>
-				</File>
-				<File
-					RelativePath=".\internals\VideoGrabberName.h"
+					RelativePath=".\internals\mf_utils.h"
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
+		</Filter>
+		<Filter
+			Name="tdav"
+			>
+			<File
+				RelativePath="..\..\tinyDAV\include\tinydav\codecs\h264\tdav_codec_h264_common.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDAV\src\codecs\h264\tdav_codec_h264_rtp.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDAV\include\tinydav\codecs\h264\tdav_codec_h264_rtp.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDAV\src\audio\tdav_consumer_audio.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDAV\src\audio\tdav_producer_audio.c"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
