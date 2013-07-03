@@ -206,10 +206,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\internals\mf_codec_h264.cxx"
-					>
-				</File>
-				<File
 					RelativePath=".\internals\mf_custom_src.cxx"
 					>
 				</File>
