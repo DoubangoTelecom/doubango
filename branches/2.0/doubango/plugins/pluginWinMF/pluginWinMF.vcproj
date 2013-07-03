@@ -179,6 +179,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\plugin_win_mf_codec_h264.cxx"
+				>
+			</File>
+			<File
 				RelativePath=".\plugin_win_mf_consumer_audio.cxx"
 				>
 			</File>
