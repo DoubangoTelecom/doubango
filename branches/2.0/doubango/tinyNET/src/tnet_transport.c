@@ -849,9 +849,9 @@ static void* TSK_STDCALL run(void* self)
 		return tsk_null;
 	}
 	/* set thread priority 
-     iOS: no incoming pkts (STUN, rtp, dtls...) when thread priority is changed -> to be checked
+     iOS and OSX: no incoming pkts (STUN, rtp, dtls...) when thread priority is changed -> to be checked
      */
-#if !TNET_UNDER_IPHONE && !TNET_UNDER_IPHONE_SIMULATOR
+#if !TNET_UNDER_APPLE
 	ret = tsk_thread_set_priority(transport->mainThreadId[0], TSK_THREAD_PRIORITY_TIME_CRITICAL);
 #endif
 	
