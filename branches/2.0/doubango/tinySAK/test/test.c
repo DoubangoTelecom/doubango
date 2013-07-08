@@ -34,7 +34,7 @@
 #define LOOP						1
 
 #define RUN_TEST_ALL				0
-#define RUN_TEST_LISTS				0
+#define RUN_TEST_LISTS				1
 #define RUN_TEST_HEAP				0
 #define RUN_TEST_STRINGS			0
 #define RUN_TEST_URL				0
@@ -51,7 +51,7 @@
 #define RUN_TEST_BUFFER				0
 #define RUN_TEST_MD5				0
 #define RUN_TEST_SHA1				0
-#define RUN_TEST_BASE64				1
+#define RUN_TEST_BASE64				0
 #define RUN_TEST_UUID				0
 #define RUN_TEST_FSM				0
 

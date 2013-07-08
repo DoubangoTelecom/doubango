@@ -851,8 +851,10 @@ int trtp_manager_prepare(trtp_manager_t* self)
 	/* SRTP */
 #if HAVE_SRTP
 	{		
-		// enable SRTP to allow negotiation (nothting will be done if srtp_mode is # "optional/mandatory")
-		_trtp_manager_srtp_set_enabled(self, self->srtp_type, tsk_true);
+		// enable SRTP to allow negotiation
+		if(self->srtp_type != tmedia_srtp_mode_none){
+			_trtp_manager_srtp_set_enabled(self, self->srtp_type, tsk_true);
+		}
 	}
 #endif
 

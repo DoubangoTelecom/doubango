@@ -24,7 +24,8 @@
 */
 #include "tsk.h"
 
-/** @mainpage tinySAK API Overview
+/** @page _Page_TinySAK_Overview Swiss Army Knife
+
 *
 * This file is an overview of <b>tinySAK</b> API.
 *

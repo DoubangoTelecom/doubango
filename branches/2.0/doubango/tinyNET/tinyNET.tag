@@ -1,13 +1,8 @@
-<?xml version='1.0' encoding='ISO-8859-1' standalone='yes' ?>
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <tagfile>
-  <compound kind="page">
-    <name>index</name>
-    <title>tinyNET API Overview</title>
-    <filename>index</filename>
-  </compound>
   <compound kind="file">
     <name>tnet_dhcp.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp/</path>
     <filename>tnet__dhcp_8c</filename>
     <includes id="tnet__dhcp_8h" name="tnet_dhcp.h" local="yes" imported="no">tnet_dhcp.h</includes>
     <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
@@ -63,7 +58,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp/</path>
     <filename>tnet__dhcp_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dhcp__message_8h" name="tnet_dhcp_message.h" local="yes" imported="no">tnet_dhcp_message.h</includes>
@@ -206,11 +201,12 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp_message.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp/</path>
     <filename>tnet__dhcp__message_8c</filename>
     <includes id="tnet__dhcp__message_8h" name="tnet_dhcp_message.h" local="yes" imported="no">tnet_dhcp_message.h</includes>
     <includes id="tnet__dhcp_8h" name="tnet_dhcp.h" local="yes" imported="no">tnet_dhcp.h</includes>
     <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">../tnet_utils.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_dhcp_message_t *</type>
       <name>tnet_dhcp_message_create</name>
@@ -270,7 +266,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp_message.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp/</path>
     <filename>tnet__dhcp__message_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dhcp__option_8h" name="tnet_dhcp_option.h" local="yes" imported="no">tnet_dhcp_option.h</includes>
@@ -347,6 +343,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_dhcp_message_type_e</name>
       <anchorfile>tnet__dhcp__message_8h.html</anchorfile>
       <anchor>a9ad24c42adb00d70b28a7ed0b62fe905</anchor>
@@ -401,6 +398,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_dhcp_message_op_e</name>
       <anchorfile>tnet__dhcp__message_8h.html</anchorfile>
       <anchor>a1dc99290aacbbc3f78905c89a35a5e92</anchor>
@@ -477,10 +475,12 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp_option.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp/</path>
     <filename>tnet__dhcp__option_8c</filename>
     <includes id="tnet__dhcp__option_8h" name="tnet_dhcp_option.h" local="yes" imported="no">tnet_dhcp_option.h</includes>
     <includes id="tnet__dhcp__option__sip_8h" name="tnet_dhcp_option_sip.h" local="yes" imported="no">tnet_dhcp_option_sip.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_dhcp_option_t *</type>
       <name>tnet_dhcp_option_create</name>
@@ -568,7 +568,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp_option.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp/</path>
     <filename>tnet__dhcp__option_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <class kind="struct">tnet_dhcp_option_s</class>
@@ -624,6 +624,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_dhcp_option_code_e</name>
       <anchorfile>tnet__dhcp__option_8h.html</anchorfile>
       <anchor>ae8a9751325d4773a0a83f3b9acd1c267</anchor>
@@ -1587,10 +1588,12 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp_option_sip.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp/</path>
     <filename>tnet__dhcp__option__sip_8c</filename>
     <includes id="tnet__dhcp__option__sip_8h" name="tnet_dhcp_option_sip.h" local="yes" imported="no">tnet_dhcp_option_sip.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">dns/tnet_dns_rr.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_dhcp_option_sip_t *</type>
       <name>tnet_dhcp_option_sip_create</name>
@@ -1608,7 +1611,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp_option_sip.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp/</path>
     <filename>tnet__dhcp__option__sip_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dhcp__option_8h" name="tnet_dhcp_option.h" local="yes" imported="no">tnet_dhcp_option.h</includes>
@@ -1637,7 +1640,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp6.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp6/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp6/</path>
     <filename>tnet__dhcp6_8c</filename>
     <includes id="tnet__dhcp6_8h" name="tnet_dhcp6.h" local="yes" imported="no">tnet_dhcp6.h</includes>
     <member kind="function">
@@ -1671,7 +1674,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp6.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp6/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp6/</path>
     <filename>tnet__dhcp6_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dhcp6__message_8h" name="tnet_dhcp6_message.h" local="yes" imported="no">tnet_dhcp6_message.h</includes>
@@ -1918,9 +1921,11 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp6_duid.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp6/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp6/</path>
     <filename>tnet__dhcp6__duid_8c</filename>
     <includes id="tnet__dhcp6__duid_8h" name="tnet_dhcp6_duid.h" local="yes" imported="no">tnet_dhcp6_duid.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>int</type>
       <name>tnet_dhcp6_duid_llt_serialize</name>
@@ -2015,7 +2020,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp6_duid.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp6/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp6/</path>
     <filename>tnet__dhcp6__duid_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__hardwares_8h" name="tnet_hardwares.h" local="yes" imported="no">tnet_hardwares.h</includes>
@@ -2101,6 +2106,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_dhcp6_duid_type_e</name>
       <anchorfile>tnet__dhcp6__duid_8h.html</anchorfile>
       <anchor>ae4487e952ac42c84e59514abd6b42fca</anchor>
@@ -2197,10 +2203,11 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp6_message.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp6/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp6/</path>
     <filename>tnet__dhcp6__message_8c</filename>
     <includes id="tnet__dhcp6__message_8h" name="tnet_dhcp6_message.h" local="yes" imported="no">tnet_dhcp6_message.h</includes>
     <includes id="tnet__dhcp6_8h" name="tnet_dhcp6.h" local="yes" imported="no">tnet_dhcp6.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_dhcp6_message_t *</type>
       <name>tnet_dhcp6_message_create</name>
@@ -2239,7 +2246,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp6_message.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp6/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp6/</path>
     <filename>tnet__dhcp6__message_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dhcp6__option_8h" name="tnet_dhcp6_option.h" local="yes" imported="no">tnet_dhcp6_option.h</includes>
@@ -2280,6 +2287,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_dhcp6_message_type_e</name>
       <anchorfile>tnet__dhcp6__message_8h.html</anchorfile>
       <anchor>a08323bace5a61ab47ec9035230fd051f</anchor>
@@ -2401,9 +2409,11 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp6_option.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp6/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp6/</path>
     <filename>tnet__dhcp6__option_8c</filename>
     <includes id="tnet__dhcp6__option_8h" name="tnet_dhcp6_option.h" local="yes" imported="no">tnet_dhcp6_option.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_dhcp6_option_t *</type>
       <name>tnet_dhcp6_option_create</name>
@@ -2519,7 +2529,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dhcp6_option.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dhcp6/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp6/</path>
     <filename>tnet__dhcp6__option_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dhcp6__duid_8h" name="tnet_dhcp6_duid.h" local="yes" imported="no">tnet_dhcp6_duid.h</includes>
@@ -2620,6 +2630,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_dhcp6_option_code_e</name>
       <anchorfile>tnet__dhcp6__option_8h.html</anchorfile>
       <anchor>a6a18e26c5402e469dd0b563e74157755</anchor>
@@ -2740,6 +2751,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_dhcp6_statuscode_e</name>
       <anchorfile>tnet__dhcp6__option_8h.html</anchorfile>
       <anchor>a6a1e604c89f4b34f7c0aa133c0d9ec3a</anchor>
@@ -2896,7 +2908,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns_8c</filename>
     <includes id="tnet__dns_8h" name="tnet_dns.h" local="yes" imported="no">tnet_dns.h</includes>
     <includes id="tnet__dns__regexp_8h" name="tnet_dns_regexp.h" local="yes" imported="no">tnet_dns_regexp.h</includes>
@@ -3006,7 +3018,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__message_8h" name="tnet_dns_message.h" local="yes" imported="no">tnet_dns_message.h</includes>
@@ -3142,9 +3154,11 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_a.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__a_8c</filename>
     <includes id="tnet__dns__a_8h" name="tnet_dns_a.h" local="yes" imported="no">tnet_dns_a.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_dns_a_t *</type>
       <name>tnet_dns_a_create</name>
@@ -3162,7 +3176,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_a.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__a_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
@@ -3191,9 +3205,11 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_aaaa.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__aaaa_8c</filename>
     <includes id="tnet__dns__aaaa_8h" name="tnet_dns_aaaa.h" local="yes" imported="no">tnet_dns_aaaa.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_dns_aaaa_t *</type>
       <name>tnet_dns_aaaa_create</name>
@@ -3211,7 +3227,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_aaaa.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__aaaa_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
@@ -3240,9 +3256,10 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_cname.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__cname_8c</filename>
     <includes id="tnet__dns__cname_8h" name="tnet_dns_cname.h" local="yes" imported="no">tnet_dns_cname.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
     <member kind="function">
       <type>tnet_dns_cname_t *</type>
       <name>tnet_dns_cname_create</name>
@@ -3260,7 +3277,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_cname.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__cname_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
@@ -3289,9 +3306,11 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_message.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__message_8c</filename>
     <includes id="tnet__dns__message_8h" name="tnet_dns_message.h" local="yes" imported="no">tnet_dns_message.h</includes>
+    <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">../tnet_utils.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_dns_message_t *</type>
       <name>tnet_dns_message_create</name>
@@ -3344,7 +3363,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_message.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__message_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
@@ -3420,6 +3439,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_dns_rcode_e</name>
       <anchorfile>tnet__dns__message_8h.html</anchorfile>
       <anchor>a2d9be471d959638233c90adb121505fd</anchor>
@@ -3462,6 +3482,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_dns_opcode_e</name>
       <anchorfile>tnet__dns__message_8h.html</anchorfile>
       <anchor>ae948f57e10a3e473e1f37d13d7e571da</anchor>
@@ -3537,9 +3558,11 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_mx.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__mx_8c</filename>
     <includes id="tnet__dns__mx_8h" name="tnet_dns_mx.h" local="yes" imported="no">tnet_dns_mx.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_dns_mx_t *</type>
       <name>tnet_dns_mx_create</name>
@@ -3557,7 +3580,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_mx.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__mx_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
@@ -3586,9 +3609,10 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_naptr.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__naptr_8c</filename>
     <includes id="tnet__dns__naptr_8h" name="tnet_dns_naptr.h" local="yes" imported="no">tnet_dns_naptr.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
     <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">./tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_dns_naptr_t *</type>
@@ -3607,7 +3631,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_naptr.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__naptr_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
@@ -3636,7 +3660,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_ns.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__ns_8c</filename>
     <includes id="tnet__dns__ns_8h" name="tnet_dns_ns.h" local="yes" imported="no">tnet_dns_ns.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
@@ -3657,7 +3681,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_ns.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__ns_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
@@ -3686,7 +3710,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_opt.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__opt_8c</filename>
     <includes id="tnet__dns__opt_8h" name="tnet_dns_opt.h" local="yes" imported="no">tnet_dns_opt.h</includes>
     <member kind="function">
@@ -3706,7 +3730,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_opt.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__opt_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
@@ -3735,9 +3759,10 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_ptr.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__ptr_8c</filename>
     <includes id="tnet__dns__ptr_8h" name="tnet_dns_ptr.h" local="yes" imported="no">tnet_dns_ptr.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
     <member kind="function">
       <type>tnet_dns_ptr_t *</type>
       <name>tnet_dns_ptr_create</name>
@@ -3755,7 +3780,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_ptr.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__ptr_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
@@ -3784,7 +3809,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_regexp.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__regexp_8c</filename>
     <includes id="tnet__dns__regexp_8h" name="tnet_dns_regexp.h" local="yes" imported="no">tnet_dns_regexp.h</includes>
     <member kind="function">
@@ -3797,7 +3822,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_regexp.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__regexp_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <member kind="function">
@@ -3810,7 +3835,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_resolvconf.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__resolvconf_8c</filename>
     <includes id="tnet__dns__resolvconf_8h" name="tnet_dns_resolvconf.h" local="yes" imported="no">tnet_dns_resolvconf.h</includes>
     <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">tnet_utils.h</includes>
@@ -3825,7 +3850,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_resolvconf.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__resolvconf_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
@@ -3839,7 +3864,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_rr.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__rr_8c</filename>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
     <includes id="tnet__dns__a_8h" name="tnet_dns_a.h" local="yes" imported="no">tnet_dns_a.h</includes>
@@ -3853,6 +3878,8 @@
     <includes id="tnet__dns__soa_8h" name="tnet_dns_soa.h" local="yes" imported="no">tnet_dns_soa.h</includes>
     <includes id="tnet__dns__srv_8h" name="tnet_dns_srv.h" local="yes" imported="no">tnet_dns_srv.h</includes>
     <includes id="tnet__dns__txt_8h" name="tnet_dns_txt.h" local="yes" imported="no">tnet_dns_txt.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_dns_rr_t *</type>
       <name>tnet_dns_rr_create</name>
@@ -3919,7 +3946,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_rr.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__rr_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <class kind="struct">tnet_dns_rr_s</class>
@@ -3966,6 +3993,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_dns_qtype_e</name>
       <anchorfile>tnet__dns__rr_8h.html</anchorfile>
       <anchor>a6d7667bb60a37e3cac21f13a0d2af6ae</anchor>
@@ -4110,6 +4138,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_dns_qclass_e</name>
       <anchorfile>tnet__dns__rr_8h.html</anchorfile>
       <anchor>a39c6ee8ca1d8f814024a17cfc3a88b5c</anchor>
@@ -4204,9 +4233,11 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_soa.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__soa_8c</filename>
     <includes id="tnet__dns__soa_8h" name="tnet_dns_soa.h" local="yes" imported="no">tnet_dns_soa.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_dns_soa_t *</type>
       <name>tnet_dns_soa_create</name>
@@ -4224,7 +4255,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_soa.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__soa_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
@@ -4253,9 +4284,11 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_srv.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__srv_8c</filename>
     <includes id="tnet__dns__srv_8h" name="tnet_dns_srv.h" local="yes" imported="no">tnet_dns_srv.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_dns_srv_t *</type>
       <name>tnet_dns_srv_create</name>
@@ -4273,7 +4306,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_srv.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__srv_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
@@ -4302,9 +4335,10 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_txt.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__txt_8c</filename>
     <includes id="tnet__dns__txt_8h" name="tnet_dns_txt.h" local="yes" imported="no">tnet_dns_txt.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
     <member kind="function">
       <type>tnet_dns_txt_t *</type>
       <name>tnet_dns_txt_create</name>
@@ -4322,7 +4356,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_dns_txt.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/dns/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
     <filename>tnet__dns__txt_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__dns__rr_8h" name="tnet_dns_rr.h" local="yes" imported="no">tnet_dns_rr.h</includes>
@@ -4351,21 +4385,1526 @@
   </compound>
   <compound kind="file">
     <name>tnet_ice.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/ice/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice/</path>
     <filename>tnet__ice_8c</filename>
     <includes id="tnet__ice_8h" name="tnet_ice.h" local="yes" imported="no">tnet_ice.h</includes>
   </compound>
   <compound kind="file">
     <name>tnet_ice.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/ice/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice/</path>
     <filename>tnet__ice_8h</filename>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">../tinynet_config.h</includes>
+  </compound>
+  <compound kind="file">
+    <name>tnet_ice_candidate.c</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice/</path>
+    <filename>tnet__ice__candidate_8c</filename>
+    <includes id="tnet__ice__candidate_8h" name="tnet_ice_candidate.h" local="yes" imported="no">tnet_ice_candidate.h</includes>
+    <includes id="tnet__ice__utils_8h" name="tnet_ice_utils.h" local="yes" imported="no">tnet_ice_utils.h</includes>
+    <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">tnet_utils.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>TRANSPORT_GET</name>
+      <anchorfile>tnet__ice__candidate_8c.html</anchorfile>
+      <anchor>ac0c81284ba3210ccad9e97f32a6d361a</anchor>
+      <arglist>(STR)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TRANSPORT_GET</name>
+      <anchorfile>tnet__ice__candidate_8c.html</anchorfile>
+      <anchor>a2a343a55abad1a887708009d2249c052</anchor>
+      <arglist>(STR, str)</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_ice_candidate_t *</type>
+      <name>tnet_ice_candidate_create</name>
+      <anchorfile>tnet__ice__candidate_8c.html</anchorfile>
+      <anchor>a87afdc02b700ac02deef8f9db2e3b7d0</anchor>
+      <arglist>(tnet_ice_cand_type_t type_e, tnet_socket_t *socket, tsk_bool_t is_ice_jingle, tsk_bool_t is_rtp, tsk_bool_t is_video, const char *ufrag, const char *pwd, const char *foundation)</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_ice_candidate_t *</type>
+      <name>tnet_ice_candidate_parse</name>
+      <anchorfile>tnet__ice__candidate_8c.html</anchorfile>
+      <anchor>adcafd3c75b3a0567af1c2923bbd479e9</anchor>
+      <arglist>(const char *str)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_candidate_set_credential</name>
+      <anchorfile>tnet__ice__candidate_8c.html</anchorfile>
+      <anchor>a88081be58407f8a55fed19635683d17c</anchor>
+      <arglist>(tnet_ice_candidate_t *self, const char *ufrag, const char *pwd)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_candidate_set_rflx_addr</name>
+      <anchorfile>tnet__ice__candidate_8c.html</anchorfile>
+      <anchor>abfc9b2e65927ce5f84dd58f168dc93ba</anchor>
+      <arglist>(tnet_ice_candidate_t *self, const char *addr, tnet_port_t port)</arglist>
+    </member>
+    <member kind="function">
+      <type>const char *</type>
+      <name>tnet_ice_candidate_get_att_value</name>
+      <anchorfile>tnet__ice__candidate_8c.html</anchorfile>
+      <anchor>aec0c1278bea426308f7820a1a982bbb4</anchor>
+      <arglist>(const tnet_ice_candidate_t *self, const char *att_name)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_candidate_set_local_pref</name>
+      <anchorfile>tnet__ice__candidate_8c.html</anchorfile>
+      <anchor>ab2dbca1a8eb4356de3b660c9beb72540</anchor>
+      <arglist>(tnet_ice_candidate_t *self, uint16_t local_pref)</arglist>
+    </member>
+    <member kind="function">
+      <type>const char *</type>
+      <name>tnet_ice_candidate_tostring</name>
+      <anchorfile>tnet__ice__candidate_8c.html</anchorfile>
+      <anchor>ab93d6f47bf868773438e47f47e077d13</anchor>
+      <arglist>(tnet_ice_candidate_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_candidate_send_stun_bind_request</name>
+      <anchorfile>tnet__ice__candidate_8c.html</anchorfile>
+      <anchor>a5b8c31b3a03f88f22e610c77d1482da9</anchor>
+      <arglist>(tnet_ice_candidate_t *self, struct sockaddr_storage *server_addr, const char *username, const char *password)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_candidate_process_stun_response</name>
+      <anchorfile>tnet__ice__candidate_8c.html</anchorfile>
+      <anchor>a5b4466b24e0e536e9ac6413c23c0c6b2</anchor>
+      <arglist>(tnet_ice_candidate_t *self, const tnet_stun_response_t *response, tnet_fd_t fd)</arglist>
+    </member>
+    <member kind="function">
+      <type>const tnet_ice_candidate_t *</type>
+      <name>tnet_ice_candidate_find_by_fd</name>
+      <anchorfile>tnet__ice__candidate_8c.html</anchorfile>
+      <anchor>ad8cc71f1264c8dcc74cc690c468c1bbe</anchor>
+      <arglist>(tnet_ice_candidates_L_t *candidates, tnet_fd_t fd)</arglist>
+    </member>
+    <member kind="function">
+      <type>const char *</type>
+      <name>tnet_ice_candidate_get_ufrag</name>
+      <anchorfile>tnet__ice__candidate_8c.html</anchorfile>
+      <anchor>aa9bafda787d4b69a36fe1aa20c8af4d4</anchor>
+      <arglist>(const tnet_ice_candidate_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>const char *</type>
+      <name>tnet_ice_candidate_get_pwd</name>
+      <anchorfile>tnet__ice__candidate_8c.html</anchorfile>
+      <anchor>a0edc7f4dee8171abbb1e6fc678bc82f8</anchor>
+      <arglist>(const tnet_ice_candidate_t *self)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>tnet_ice_candidate.h</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice/</path>
+    <filename>tnet__ice__candidate_8h</filename>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
+    <includes id="tnet__stun__message_8h" name="tnet_stun_message.h" local="yes" imported="no">stun/tnet_stun_message.h</includes>
+    <includes id="tnet__socket_8h" name="tnet_socket.h" local="yes" imported="no">tnet_socket.h</includes>
+    <class kind="struct">tnet_ice_candidate_s</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_TRANSPORT_UDP</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>ae1b662d5e6b0d21c09fd3f838b786f9a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_TRANSPORT_TCP</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a41130d885b4b5aa83a5f38c67eb9c9fb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_TRANSPORT_TLS</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>abc5d9b200c226b93a2daae472636fa8f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_TRANSPORT_SCTP</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a377a94ab79d2f01490b544755f0ed41b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_TRANSPORT_WS</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>af5d81604b62ec33d25e36a67c1251b4d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_TRANSPORT_WSS</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>aefca7739c4338f6fd3862d7dbf3bd637</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_TYPE_HOST</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a0006a60bf22085ddc6c3d8678a1fff7b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_TYPE_SRFLX</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>afd3cbe41244f7e2269eebdf3eb634b95</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_TYPE_PRFLX</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>aacd9ce8fb4b3bc07a4f03dbe6a36a945</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_TYPE_RELAY</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a52affc7b42846807f024604827377f41</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_PREF_HOST</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>af2364751ec9aa5d325db99afd8c10818</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_PREF_SRFLX</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a222b836f5b110bfe3f37ceab60d618db</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_PREF_PRFLX</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>afb9ae2f89f8226dde22048fb5fb8354a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_PREF_RELAY</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a7ac1c6c32135a99d1ca552c3bd58c1c2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_FOUNDATION_HOST</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a4145345d2588a18b53cae5c2f2cfa27f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_FOUNDATION_SRFLX</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>ab506ffe464a7b1a294850cd06a3a00df</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_FOUNDATION_PRFLX</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a430eedeb2ce8ffa4d9c4c30d01dd85b3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_FOUNDATION_RELAY</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a585f8eab3dc73fd575467af9d930fce0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_COMPID_RTP</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a7d6a3ad5bb6bb0cfaa4e46a4c7882f6c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_COMPID_RTCP</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a13ac3d2da0fd98a4409861a222fceb40</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CANDIDATE_FOUND_SIZE_PREF</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a49640bfaea947b298170919d5e49cbba</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>enum tnet_ice_cand_type_e</type>
+      <name>tnet_ice_cand_type_t</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a6241699c76dc566092b4d7d5c29acc4f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tnet_ice_candidate_s</type>
+      <name>tnet_ice_candidate_t</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a3d658380df87bf28a24603119b2870cb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>tsk_list_t</type>
+      <name>tnet_ice_candidates_L_t</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>ad107252b8f7eb93e7561e7b664dffbaa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>tnet_ice_cand_type_e</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>ad04e165e02bc0661c9c16230e92f0cb8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_cand_type_unknown</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>ad04e165e02bc0661c9c16230e92f0cb8a76e2e17a49bd0bf350e301e80e126422</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_cand_type_host</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>ad04e165e02bc0661c9c16230e92f0cb8af95692833ce82ab03827bbb5e252807b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_cand_type_srflx</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>ad04e165e02bc0661c9c16230e92f0cb8a49074a8972e6db8227397ec318cb8b7e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_cand_type_prflx</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>ad04e165e02bc0661c9c16230e92f0cb8a05b142a102f38682b7edc9a2d1e6170d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_cand_type_relay</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>ad04e165e02bc0661c9c16230e92f0cb8a3d21db646212621771c99c69eccd9458</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_ice_candidate_t *</type>
+      <name>tnet_ice_candidate_create</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a50b8cad64e556dd901cee0b443192502</anchor>
+      <arglist>(tnet_ice_cand_type_t type_e, struct tnet_socket_s *socket, tsk_bool_t is_ice_jingle, tsk_bool_t is_rtp, tsk_bool_t is_video, const char *ufrag, const char *pwd, const char *foundation)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tnet_ice_candidate_t *</type>
+      <name>tnet_ice_candidate_parse</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a3c7cfe0e32560ddb9c95fff93102218f</anchor>
+      <arglist>(const char *str)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_candidate_set_credential</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a88081be58407f8a55fed19635683d17c</anchor>
+      <arglist>(tnet_ice_candidate_t *self, const char *ufrag, const char *pwd)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_candidate_set_rflx_addr</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>abfc9b2e65927ce5f84dd58f168dc93ba</anchor>
+      <arglist>(tnet_ice_candidate_t *self, const char *addr, tnet_port_t port)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API const char *</type>
+      <name>tnet_ice_candidate_get_att_value</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a521930480b15845f6c971415c077f41d</anchor>
+      <arglist>(const tnet_ice_candidate_t *self, const char *att_name)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_candidate_set_local_pref</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>ab2dbca1a8eb4356de3b660c9beb72540</anchor>
+      <arglist>(tnet_ice_candidate_t *self, uint16_t local_pref)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API const char *</type>
+      <name>tnet_ice_candidate_tostring</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a74f2f386a6a36578192cc54788bc3027</anchor>
+      <arglist>(tnet_ice_candidate_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_candidate_send_stun_bind_request</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a5b8c31b3a03f88f22e610c77d1482da9</anchor>
+      <arglist>(tnet_ice_candidate_t *self, struct sockaddr_storage *server_addr, const char *username, const char *password)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_candidate_process_stun_response</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a5b4466b24e0e536e9ac6413c23c0c6b2</anchor>
+      <arglist>(tnet_ice_candidate_t *self, const tnet_stun_response_t *response, tnet_fd_t fd)</arglist>
+    </member>
+    <member kind="function">
+      <type>const tnet_ice_candidate_t *</type>
+      <name>tnet_ice_candidate_find_by_fd</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>ad8cc71f1264c8dcc74cc690c468c1bbe</anchor>
+      <arglist>(tnet_ice_candidates_L_t *candidates, tnet_fd_t fd)</arglist>
+    </member>
+    <member kind="function">
+      <type>const char *</type>
+      <name>tnet_ice_candidate_get_ufrag</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>aa9bafda787d4b69a36fe1aa20c8af4d4</anchor>
+      <arglist>(const tnet_ice_candidate_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>const char *</type>
+      <name>tnet_ice_candidate_get_pwd</name>
+      <anchorfile>tnet__ice__candidate_8h.html</anchorfile>
+      <anchor>a0edc7f4dee8171abbb1e6fc678bc82f8</anchor>
+      <arglist>(const tnet_ice_candidate_t *self)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>tnet_ice_ctx.c</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice/</path>
+    <filename>tnet__ice__ctx_8c</filename>
+    <includes id="tnet__ice__ctx_8h" name="tnet_ice_ctx.h" local="yes" imported="no">tnet_ice_ctx.h</includes>
+    <includes id="tnet__ice__event_8h" name="tnet_ice_event.h" local="yes" imported="no">tnet_ice_event.h</includes>
+    <includes id="tnet__ice__candidate_8h" name="tnet_ice_candidate.h" local="yes" imported="no">tnet_ice_candidate.h</includes>
+    <includes id="tnet__ice__pair_8h" name="tnet_ice_pair.h" local="yes" imported="no">tnet_ice_pair.h</includes>
+    <includes id="tnet__ice__utils_8h" name="tnet_ice_utils.h" local="yes" imported="no">tnet_ice_utils.h</includes>
+    <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">tnet_utils.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">tnet_endianness.h</includes>
+    <includes id="tnet__stun_8h" name="tnet_stun.h" local="yes" imported="no">stun/tnet_stun.h</includes>
+    <includes id="tnet__stun__message_8h" name="tnet_stun_message.h" local="yes" imported="no">stun/tnet_stun_message.h</includes>
+    <class kind="struct">tnet_ice_ctx_s</class>
+    <class kind="struct">tnet_ice_action_s</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>LONG_MAX</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a50fece4db74f09568b2938db583c5655</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_DEBUG_STATE_MACHINE</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>ab2ab9ef5e0fd2ad07b778d4453c6a180</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_DEFAULT_RTO</name>
+      <anchorfile>group__tnet__nat__group.html</anchorfile>
+      <anchor>ga25beb3cb889e80636f91ed1e316ef083</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_DEFAULT_RC</name>
+      <anchorfile>group__tnet__nat__group.html</anchorfile>
+      <anchor>gaf2d937114195afa44a46b88b898a781b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_CONFLICT_ERROR_CODE</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a6fe14da13dbefeff267554a95245b0c3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tnet_ice_ctx_s</type>
+      <name>tnet_ice_ctx_t</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a5337006422b6a6d5410461f964d6e3a9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tnet_ice_action_s</type>
+      <name>tnet_ice_action_t</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a179dbc88e6e0fabf4f458f14aed80ea2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>enum _fsm_state_e</type>
+      <name>_fsm_state_t</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>ac06f5d03925a1287a4f89e0d57f347fe</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>enum _fsm_action_e</type>
+      <name>_fsm_action_t</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>afe20aca1bd90c447e89dfd4b30661acf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>_fsm_state_e</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a92913a3e734277dfa8b96cdd97a9cbcb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_state_Started</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a92913a3e734277dfa8b96cdd97a9cbcba76034bb262163ff2e14ebbdbe3b3b2ba</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_state_GatheringHostCandidates</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a92913a3e734277dfa8b96cdd97a9cbcbac7bf056c75335dcdf2b754e0093a6186</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_state_GatheringHostCandidatesDone</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a92913a3e734277dfa8b96cdd97a9cbcba1b0f1991b1b431c4648a29a649752404</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_state_GatheringReflexiveCandidates</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a92913a3e734277dfa8b96cdd97a9cbcba7e0c8e38780560c73698c8cdefb6e280</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_state_GatheringReflexiveCandidatesDone</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a92913a3e734277dfa8b96cdd97a9cbcba9eb9e11bb1eb0cae53360c13058e440e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_state_GatheringCompleted</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a92913a3e734277dfa8b96cdd97a9cbcba65194ba2f9bb66c268ad079b11414e73</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_state_ConnChecking</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a92913a3e734277dfa8b96cdd97a9cbcbaad6e69dd6419d0e8da9eb42f03aa5240</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_state_ConnCheckingCompleted</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a92913a3e734277dfa8b96cdd97a9cbcbabcb7f6f071eb6a6ef27ab368a153cdba</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_state_Terminated</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a92913a3e734277dfa8b96cdd97a9cbcbaeab8f5e66ccc9c9df9e4edd20400e037</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>_fsm_action_e</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>ad032147dfda9028e630a09a1c3bec61d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_action_Success</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>ad032147dfda9028e630a09a1c3bec61da5635821eb87b10ae2cc08e32aac16cb5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_action_Failure</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>ad032147dfda9028e630a09a1c3bec61da8a615bd3454c07df86bd9d900cc8ad76</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_action_GatherHostCandidates</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>ad032147dfda9028e630a09a1c3bec61da1959b1a775dfc61f4a91016e3e69ca42</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_action_GatherReflexiveCandidates</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>ad032147dfda9028e630a09a1c3bec61da161e59357719a7f611c796abc5b660b6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_action_GatheringComplet</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>ad032147dfda9028e630a09a1c3bec61da523af28f3ff1ed15f5b8ce50f62eb4ef</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_action_ConnCheck</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>ad032147dfda9028e630a09a1c3bec61da8e7bfe7f383fad3fc058d54eb52700de</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_action_Cancel</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>ad032147dfda9028e630a09a1c3bec61da82d57ea2cca20e4afe702353cca10b27</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>_fsm_action_Error</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>ad032147dfda9028e630a09a1c3bec61dac394d62ff536294f276acf0f0ba36dfe</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_ice_ctx_t *</type>
+      <name>tnet_ice_ctx_create</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a5ca9c2ad39aafb1c9134b3e70269399f</anchor>
+      <arglist>(tsk_bool_t is_ice_jingle, tsk_bool_t use_ipv6, tsk_bool_t use_rtcp, tsk_bool_t is_video, tnet_ice_callback_f callback, const void *userdata)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_ctx_set_userdata</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a5423751e16041a4ae2980a2e61fad527</anchor>
+      <arglist>(tnet_ice_ctx_t *self, const void *userdata)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_ctx_set_stun</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a56e2e0474a35f73d9ddf7d749bbed280</anchor>
+      <arglist>(tnet_ice_ctx_t *self, const char *server_addr, uint16_t server_port, const char *software, const char *username, const char *password)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_ctx_start</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>aed85886ca3d3f140810988d7ee43dac3</anchor>
+      <arglist>(tnet_ice_ctx_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_ctx_rtp_callback</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a5b542845608c288a53c97dd31ebc14db</anchor>
+      <arglist>(tnet_ice_ctx_t *self, tnet_ice_rtp_callback_f rtp_callback, const void *rtp_callback_data)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_ctx_set_concheck_timeout</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a1e715ce9adbcadcfe3695cc7441cf7f3</anchor>
+      <arglist>(tnet_ice_ctx_t *self, int64_t timeout)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_ctx_set_remote_candidates</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a63e833e5a438da0a2a50bcdbfa8f2240</anchor>
+      <arglist>(tnet_ice_ctx_t *self, const char *candidates, const char *ufrag, const char *pwd, tsk_bool_t is_controlling, tsk_bool_t is_ice_jingle)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_ctx_set_rtcpmux</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>aa9980c495bca6e6413fe8185742602e6</anchor>
+      <arglist>(tnet_ice_ctx_t *self, tsk_bool_t use_rtcpmux)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_size_t</type>
+      <name>tnet_ice_ctx_count_local_candidates</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a203a51c4d8c0f278dd17361df0ef2e53</anchor>
+      <arglist>(const tnet_ice_ctx_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_ice_ctx_got_local_candidates</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a55ef5867dee0b10bba1a0d98f89d37e4</anchor>
+      <arglist>(const tnet_ice_ctx_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>const tnet_ice_candidate_t *</type>
+      <name>tnet_ice_ctx_get_local_candidate_at</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a52868e342a03d64d13f7e2d98d1b6b6a</anchor>
+      <arglist>(const tnet_ice_ctx_t *self, tsk_size_t index)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_ice_ctx_is_started</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a7839820b10a59e1bd58a3fccb1e4b4a3</anchor>
+      <arglist>(const tnet_ice_ctx_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_ice_ctx_is_active</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>aa6432bc0167c9a5409e775e1bd119ccb</anchor>
+      <arglist>(const tnet_ice_ctx_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_ice_ctx_is_connected</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a47ba1e31a451454ad9039db323af98aa</anchor>
+      <arglist>(const tnet_ice_ctx_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_ice_ctx_is_can_send</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>ace07f467c6f2365594be25662d977de4</anchor>
+      <arglist>(const tnet_ice_ctx_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_ice_ctx_is_can_recv</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>aa54f36ec73b95f5df1de849d5bcdb322</anchor>
+      <arglist>(const tnet_ice_ctx_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_ice_ctx_use_ipv6</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>aa94d177fced068791fb4a8366985d7b4</anchor>
+      <arglist>(const tnet_ice_ctx_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_ice_ctx_use_rtcp</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a362a7747e13d2a43f453c4a8574f2714</anchor>
+      <arglist>(const tnet_ice_ctx_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_ctx_get_nominated_symetric_candidates</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>af8debc0978b4c0647fe939050e28e533</anchor>
+      <arglist>(const tnet_ice_ctx_t *self, uint32_t comp_id, const tnet_ice_candidate_t **candidate_offer, const tnet_ice_candidate_t **candidate_answer_src, const tnet_ice_candidate_t **candidate_answer_dest)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_ctx_recv_stun_message</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a8576bba1c6e679901ba50dd4196f68a2</anchor>
+      <arglist>(tnet_ice_ctx_t *self, const void *data, tsk_size_t size, tnet_fd_t local_fd, const struct sockaddr_storage *remote_addr, tsk_bool_t *role_conflict)</arglist>
+    </member>
+    <member kind="function">
+      <type>const char *</type>
+      <name>tnet_ice_ctx_get_ufrag</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>af4bb2eb46e5f830afa57bc3f205fda39</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>const char *</type>
+      <name>tnet_ice_ctx_get_pwd</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a3839f3ad301a60ed037d165ea96d0b8a</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_ctx_cancel</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a3f4609063f5e164bf179e9426147b268</anchor>
+      <arglist>(tnet_ice_ctx_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_ctx_stop</name>
+      <anchorfile>tnet__ice__ctx_8c.html</anchorfile>
+      <anchor>a408b03fe70b52c1956d5958ecd17a630</anchor>
+      <arglist>(tnet_ice_ctx_t *self)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>tnet_ice_ctx.h</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice/</path>
+    <filename>tnet__ice__ctx_8h</filename>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
+    <member kind="typedef">
+      <type>int(*</type>
+      <name>tnet_ice_callback_f</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a27ec12a843557e55a95a0fb1ecfa773b</anchor>
+      <arglist>)(const struct tnet_ice_event_s *e)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>int(*</type>
+      <name>tnet_ice_rtp_callback_f</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a5663852680900fb56fac193335da7e1d</anchor>
+      <arglist>)(const void *callback_data, const uint8_t *data_ptr, tsk_size_t data_size, tnet_fd_t local_fd, const struct sockaddr_storage *remote_addr)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API struct tnet_ice_ctx_s *</type>
+      <name>tnet_ice_ctx_create</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a12ee5c476bd9dbde49a91859c009acdc</anchor>
+      <arglist>(tsk_bool_t is_ice_jingle, tsk_bool_t use_ipv6, tsk_bool_t use_rtcp, tsk_bool_t is_video, tnet_ice_callback_f callback, const void *userdata)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_ice_ctx_set_userdata</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a755c575a5ed684bf9a8f725e723d7e9b</anchor>
+      <arglist>(struct tnet_ice_ctx_s *self, const void *userdata)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_ice_ctx_set_stun</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a9810feb9fc3f4b65cddcc0ae4f9cdf91</anchor>
+      <arglist>(struct tnet_ice_ctx_s *self, const char *server_addr, uint16_t server_port, const char *software, const char *username, const char *password)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_ice_ctx_start</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>ad22f9137c77b1ec27d3a2e113ebc24ab</anchor>
+      <arglist>(struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_ice_ctx_rtp_callback</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a483946fd722c8e7abb679842a9a9680f</anchor>
+      <arglist>(struct tnet_ice_ctx_s *self, tnet_ice_rtp_callback_f rtp_callback, const void *rtp_callback_data)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_ice_ctx_set_concheck_timeout</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a7c9ee53291152f8305b5286192a2e065</anchor>
+      <arglist>(struct tnet_ice_ctx_s *self, int64_t timeout)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_ice_ctx_set_remote_candidates</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a3898ece620d9e4b7aac8dd782c32192c</anchor>
+      <arglist>(struct tnet_ice_ctx_s *self, const char *candidates, const char *ufrag, const char *pwd, tsk_bool_t is_controlling, tsk_bool_t is_ice_jingle)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_ice_ctx_set_rtcpmux</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a40521555048afd300d4b25daa623f1cd</anchor>
+      <arglist>(struct tnet_ice_ctx_s *self, tsk_bool_t use_rtcpmux)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_size_t</type>
+      <name>tnet_ice_ctx_count_local_candidates</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a1df3093c5795ce6d3d53a8eb2080be5e</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_bool_t</type>
+      <name>tnet_ice_ctx_got_local_candidates</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a847a4b0980b025c73dacb6348896ae20</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API struct tnet_ice_candidate_s *</type>
+      <name>tnet_ice_ctx_get_local_candidate_at</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a911f1de5737af15363c06a1b461496a9</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self, tsk_size_t index)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_bool_t</type>
+      <name>tnet_ice_ctx_is_started</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a282bdc4713a8bc105ee5ab2674f62bc6</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_bool_t</type>
+      <name>tnet_ice_ctx_is_active</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>adcaaff8a00a20dfd5d189f2f7db558ef</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_bool_t</type>
+      <name>tnet_ice_ctx_is_connected</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>aea90d2adab4f24e325bca5d5d89cdfb6</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_bool_t</type>
+      <name>tnet_ice_ctx_is_can_send</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>aa648ed1192ae6efe86fc5f6cf3d5b612</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_bool_t</type>
+      <name>tnet_ice_ctx_is_can_recv</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>aa05115be04d05a7b9e691afa566d3fc3</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_bool_t</type>
+      <name>tnet_ice_ctx_use_ipv6</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>aa8e3918e531c841cd836d8adafea12c4</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_bool_t</type>
+      <name>tnet_ice_ctx_use_rtcp</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a07737c773d683cb497790a988cb1ebf9</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_ice_ctx_get_nominated_symetric_candidates</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>ace906c0ae2a2a54a1690ec7d3918d304</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self, uint32_t comp_id, const struct tnet_ice_candidate_s **candidate_offer, const struct tnet_ice_candidate_s **candidate_answer_src, const struct tnet_ice_candidate_s **candidate_answer_dest)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_ice_ctx_recv_stun_message</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>adb56901e00a28eed02082636b67799b8</anchor>
+      <arglist>(struct tnet_ice_ctx_s *self, const void *data, tsk_size_t size, tnet_fd_t local_fd, const struct sockaddr_storage *remote_addr, tsk_bool_t *role_conflict)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API const char *</type>
+      <name>tnet_ice_ctx_get_ufrag</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a6110b9ac7acef0309f2001017bc429eb</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API const char *</type>
+      <name>tnet_ice_ctx_get_pwd</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>a57e4ecac36e4347afdd7e8ec7ea293fb</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_ice_ctx_cancel</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>acfb50b643529ac2786ea877b8deb7bea</anchor>
+      <arglist>(struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_ice_ctx_stop</name>
+      <anchorfile>tnet__ice__ctx_8h.html</anchorfile>
+      <anchor>afa968e2e280b850087de96990ea6d2fd</anchor>
+      <arglist>(struct tnet_ice_ctx_s *self)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>tnet_ice_event.c</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice/</path>
+    <filename>tnet__ice__event_8c</filename>
+    <includes id="tnet__ice__event_8h" name="tnet_ice_event.h" local="yes" imported="no">tnet_ice_event.h</includes>
+    <member kind="function">
+      <type>tnet_ice_event_t *</type>
+      <name>tnet_ice_event_create</name>
+      <anchorfile>tnet__ice__event_8c.html</anchorfile>
+      <anchor>a77cbab4b4330794f85d9eb5273c058ec</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *ctx, tnet_ice_event_type_t type, const char *phrase, const void *userdata)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_event_set_action</name>
+      <anchorfile>tnet__ice__event_8c.html</anchorfile>
+      <anchor>aaa5b3edfeec0d647b25dc6acfd06ff6e</anchor>
+      <arglist>(tnet_ice_event_t *self, struct tnet_ice_action_s *action)</arglist>
+    </member>
+    <member kind="variable">
+      <type>const tsk_object_def_t *</type>
+      <name>tnet_ice_event_def_t</name>
+      <anchorfile>tnet__ice__event_8c.html</anchorfile>
+      <anchor>a25e7d74caa3ad2b9dcd4ae867e5df04d</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>tnet_ice_event.h</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice/</path>
+    <filename>tnet__ice__event_8h</filename>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
+    <class kind="struct">tnet_ice_event_s</class>
+    <member kind="typedef">
+      <type>TNET_BEGIN_DECLS enum tnet_ice_event_type_e</type>
+      <name>tnet_ice_event_type_t</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a975b8ce3f09b4e1472b0b14500f20f7e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tnet_ice_event_s</type>
+      <name>tnet_ice_event_t</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a0390cfd3c36181301f676cf6a78c5d62</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>tnet_ice_event_type_e</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a994d6e614c765273d8a18c4f2f25618c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_event_type_started</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a994d6e614c765273d8a18c4f2f25618caf2dea4d71ac8de9c60542876a4e36582</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_event_type_start_failed</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a994d6e614c765273d8a18c4f2f25618cacb800acde7ad4618439f914565fef7be</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_event_type_stopped</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a994d6e614c765273d8a18c4f2f25618ca51db6ab0e95e5de86c99df1411cfacaa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_event_type_stop_failed</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a994d6e614c765273d8a18c4f2f25618ca4575cdfcaa7d3d2361cc9f739ebe8afd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_event_type_gathering_host_candidates_failed</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a994d6e614c765273d8a18c4f2f25618ca0fb6cfc0f458b79541b161acda4c0821</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_event_type_gathering_host_candidates_succeed</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a994d6e614c765273d8a18c4f2f25618ca475effc574a2ffae5ab99ebcbb3feb09</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_event_type_gathering_reflexive_candidates_failed</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a994d6e614c765273d8a18c4f2f25618ca71124ba92e03873ec44f1536c89ae9a7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_event_type_gathering_reflexive_candidates_succeed</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a994d6e614c765273d8a18c4f2f25618ca5a2e9fc2e3f239d84e6182c15a4ad158</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_event_type_gathering_completed</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a994d6e614c765273d8a18c4f2f25618ca279c70a496fad0887bb6210b26b72ad3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_event_type_conncheck_succeed</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a994d6e614c765273d8a18c4f2f25618ca4e0d385966d85596916ae77d7c05d68e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_event_type_conncheck_failed</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a994d6e614c765273d8a18c4f2f25618ca0769a7f9355a5fdf3adb31227f86992a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_event_type_cancelled</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a994d6e614c765273d8a18c4f2f25618ca38cc53ca1eb9e56d1c1f50707648c7fe</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_event_type_action</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a994d6e614c765273d8a18c4f2f25618cab79c4a6d366909e30fd37f07705d3f7c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_ice_event_t *</type>
+      <name>tnet_ice_event_create</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>a77cbab4b4330794f85d9eb5273c058ec</anchor>
+      <arglist>(const struct tnet_ice_ctx_s *ctx, tnet_ice_event_type_t type, const char *phrase, const void *userdata)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_event_set_action</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>aaa5b3edfeec0d647b25dc6acfd06ff6e</anchor>
+      <arglist>(tnet_ice_event_t *self, struct tnet_ice_action_s *action)</arglist>
+    </member>
+    <member kind="variable">
+      <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
+      <name>tnet_ice_event_def_t</name>
+      <anchorfile>tnet__ice__event_8h.html</anchorfile>
+      <anchor>aa28619d31a504bbda6e2216cc753edd7</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>tnet_ice_pair.c</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice/</path>
+    <filename>tnet__ice__pair_8c</filename>
+    <includes id="tnet__ice__pair_8h" name="tnet_ice_pair.h" local="yes" imported="no">tnet_ice_pair.h</includes>
+    <includes id="tnet__ice__utils_8h" name="tnet_ice_utils.h" local="yes" imported="no">tnet_ice_utils.h</includes>
+    <includes id="tnet__ice__candidate_8h" name="tnet_ice_candidate.h" local="yes" imported="no">tnet_ice_candidate.h</includes>
+    <includes id="tnet__stun_8h" name="tnet_stun.h" local="yes" imported="no">stun/tnet_stun.h</includes>
+    <includes id="tnet__stun__message_8h" name="tnet_stun_message.h" local="yes" imported="no">stun/tnet_stun_message.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">tnet_endianness.h</includes>
+    <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">tnet_utils.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_PAIR_FULL_DEBUG</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>af56c18fe90446697a5fc4d3dc0141a31</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_PAIR_DEBUG_INFO</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>a4a20a7b0344e3395289e4d2a91df2871</anchor>
+      <arglist>(...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>_tnet_ice_pairs_none_succeed_answer</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>a91556bbcaf447b1a1def8f41ba42268b</anchor>
+      <arglist>(pairs, comp_id, foundation)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>_tnet_ice_pairs_none_succeed_offer</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>ad60742a24a92d792c2819155da19b8d9</anchor>
+      <arglist>(pairs, comp_id, foundation)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>_tnet_ice_pairs_get_nominated_offer_at</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>a94bbca3121738958a49e6548361185cb</anchor>
+      <arglist>(pairs, index, comp_id, check_fullness, ret)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>_tnet_ice_pairs_get_nominated_answer_at</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>af8bd4c48cf08abaf5c1411e548eb2327</anchor>
+      <arglist>(pairs, index, comp_id, check_fullness, ret)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>_tnet_ice_pairs_get_nominated_at</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>a7a7acb9867360b14dd28fb7778a367cd</anchor>
+      <arglist>(pairs, dir_1, dir_2, index, _comp_id, check_fullness, ret)</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_ice_pair_t *</type>
+      <name>tnet_ice_pair_create</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>a9954ff5858e695dc00daa4fedceef7bc</anchor>
+      <arglist>(const tnet_ice_candidate_t *candidate_offer, const tnet_ice_candidate_t *candidate_answer, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle)</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_ice_pair_t *</type>
+      <name>tnet_ice_pair_prflx_create</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>ab216201ed60c63e86ccdbac02bc25841</anchor>
+      <arglist>(tnet_ice_pairs_L_t *pairs, uint16_t local_fd, const struct sockaddr_storage *remote_addr)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_pair_send_conncheck</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>a85c6042e32b7b9cf53b7fa7e0bcc426f</anchor>
+      <arglist>(tnet_ice_pair_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_pair_send_response</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>a5df18532be4825241faefee37ee03225</anchor>
+      <arglist>(tnet_ice_pair_t *self, const tnet_stun_request_t *request, const short code, const char *phrase, const struct sockaddr_storage *remote_addr)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_pair_auth_conncheck</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>a66ac3130aa0e23a7afd19626cb672ae5</anchor>
+      <arglist>(const tnet_ice_pair_t *self, const tnet_stun_request_t *request, const void *request_buff, tsk_size_t request_buff_size, short *resp_code, char **resp_phrase)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_pair_recv_response</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>a677afd408bd9b486277f3b7565143b30</anchor>
+      <arglist>(tnet_ice_pair_t *self, const tnet_stun_response_t *response)</arglist>
+    </member>
+    <member kind="function">
+      <type>const tnet_ice_pair_t *</type>
+      <name>tnet_ice_pairs_find_by_response</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>a01153e3a78f12fcb8624b7bd220be109</anchor>
+      <arglist>(tnet_ice_pairs_L_t *pairs, const tnet_stun_message_t *response)</arglist>
+    </member>
+    <member kind="function">
+      <type>const tnet_ice_pair_t *</type>
+      <name>tnet_ice_pairs_find_by_fd_and_addr</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>ab4af64f71b6d5cb647bd1dfa06cd1f55</anchor>
+      <arglist>(tnet_ice_pairs_L_t *pairs, uint16_t local_fd, const struct sockaddr_storage *remote_addr)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_ice_pairs_have_nominated_offer</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>a7b1fe8483a52a82f8991df84072cb2d6</anchor>
+      <arglist>(const tnet_ice_pairs_L_t *pairs, tsk_bool_t check_rtcp)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_ice_pairs_have_nominated_answer</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>acb27f1ec09cbca2e5741bcf725dc0554</anchor>
+      <arglist>(const tnet_ice_pairs_L_t *pairs, tsk_bool_t check_rtcp)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_ice_pairs_have_nominated_symetric</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>a2a13d75cb4dbe073c33f39866522bc7b</anchor>
+      <arglist>(const tnet_ice_pairs_L_t *pairs, tsk_bool_t check_rtcp)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_pairs_get_nominated_symetric</name>
+      <anchorfile>tnet__ice__pair_8c.html</anchorfile>
+      <anchor>a66edabbbb2d10827fa8e5b1a016a757d</anchor>
+      <arglist>(const tnet_ice_pairs_L_t *pairs, uint32_t comp_id, const tnet_ice_candidate_t **candidate_offer, const tnet_ice_candidate_t **candidate_answer_src, const tnet_ice_candidate_t **candidate_answer_dest)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>tnet_ice_pair.h</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice/</path>
+    <filename>tnet__ice__pair_8h</filename>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
+    <class kind="struct">tnet_ice_pair_s</class>
+    <member kind="typedef">
+      <type>tsk_list_t</type>
+      <name>tnet_ice_pairs_L_t</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>ac830cf0356d199d5a0c4ef65b6f82271</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>enum tnet_ice_pair_state_e</type>
+      <name>tnet_ice_pair_state_t</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>a83c4d1c62e53329dacef0b1ad5248800</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tnet_ice_pair_s</type>
+      <name>tnet_ice_pair_t</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>af480f16d58e42c4530c35be2369071fe</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>tnet_ice_pair_state_e</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>a14944762848a13004196843f3247d4fa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_pair_state_frozen</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>a14944762848a13004196843f3247d4faa96505cd6b130519ff496ddead305f015</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_pair_state_waiting</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>a14944762848a13004196843f3247d4faaf0de95577da0434c3c14a34ae8784626</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_pair_state_in_progress</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>a14944762848a13004196843f3247d4faaf7210c9f40a6004b8ac784539b3cc33f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_pair_state_succeed</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>a14944762848a13004196843f3247d4faaa2fd1062153893d0cfe21af4c4ed7858</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_ice_pair_state_failed</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>a14944762848a13004196843f3247d4faa50dcec8ceca592e1b285319d481e5433</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_ice_pair_t *</type>
+      <name>tnet_ice_pair_create</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>ab5af472e9d0b64eccbd2c7ff6ae00569</anchor>
+      <arglist>(const struct tnet_ice_candidate_s *candidate_offer, const struct tnet_ice_candidate_s *candidate_answer, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle)</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_ice_pair_t *</type>
+      <name>tnet_ice_pair_prflx_create</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>ab216201ed60c63e86ccdbac02bc25841</anchor>
+      <arglist>(tnet_ice_pairs_L_t *pairs, uint16_t local_fd, const struct sockaddr_storage *remote_addr)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_pair_send_conncheck</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>a85c6042e32b7b9cf53b7fa7e0bcc426f</anchor>
+      <arglist>(tnet_ice_pair_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_pair_send_response</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>aab77228c7d44cc1d6fce074d87ec1d14</anchor>
+      <arglist>(tnet_ice_pair_t *self, const struct tnet_stun_message_s *request, const short code, const char *phrase, const struct sockaddr_storage *remote_addr)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_pair_auth_conncheck</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>adb20520b5d6265211ef5f50e68b5db67</anchor>
+      <arglist>(const tnet_ice_pair_t *self, const struct tnet_stun_message_s *request, const void *request_buff, tsk_size_t request_buff_size, short *resp_code, char **resp_phrase)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_pair_recv_response</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>a45bac2585f4e128e950b650e4178cce6</anchor>
+      <arglist>(tnet_ice_pair_t *self, const struct tnet_stun_message_s *response)</arglist>
+    </member>
+    <member kind="function">
+      <type>const tnet_ice_pair_t *</type>
+      <name>tnet_ice_pairs_find_by_response</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>a252eab33e96ac1a00b324c04f09f6302</anchor>
+      <arglist>(tnet_ice_pairs_L_t *pairs, const struct tnet_stun_message_s *response)</arglist>
+    </member>
+    <member kind="function">
+      <type>const tnet_ice_pair_t *</type>
+      <name>tnet_ice_pairs_find_by_fd_and_addr</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>ab4af64f71b6d5cb647bd1dfa06cd1f55</anchor>
+      <arglist>(tnet_ice_pairs_L_t *pairs, uint16_t local_fd, const struct sockaddr_storage *remote_addr)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_ice_pairs_have_nominated_offer</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>a7b1fe8483a52a82f8991df84072cb2d6</anchor>
+      <arglist>(const tnet_ice_pairs_L_t *pairs, tsk_bool_t check_rtcp)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_ice_pairs_have_nominated_answer</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>acb27f1ec09cbca2e5741bcf725dc0554</anchor>
+      <arglist>(const tnet_ice_pairs_L_t *pairs, tsk_bool_t check_rtcp)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_ice_pairs_have_nominated_symetric</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>a2a13d75cb4dbe073c33f39866522bc7b</anchor>
+      <arglist>(const tnet_ice_pairs_L_t *pairs, tsk_bool_t check_rtcp)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_pairs_get_nominated_symetric</name>
+      <anchorfile>tnet__ice__pair_8h.html</anchorfile>
+      <anchor>a511052e10a99af4091c493efafe89834</anchor>
+      <arglist>(const tnet_ice_pairs_L_t *pairs, uint32_t comp_id, const struct tnet_ice_candidate_s **candidate_offer, const struct tnet_ice_candidate_s **candidate_answer_src, const struct tnet_ice_candidate_s **candidate_answer_dest)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>tnet_ice_utils.c</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice/</path>
+    <filename>tnet__ice__utils_8c</filename>
+    <includes id="tnet__ice__utils_8h" name="tnet_ice_utils.h" local="yes" imported="no">tnet_ice_utils.h</includes>
+    <includes id="tnet__ice__candidate_8h" name="tnet_ice_candidate.h" local="yes" imported="no">tnet_ice_candidate.h</includes>
+    <includes id="tnet__socket_8h" name="tnet_socket.h" local="yes" imported="no">tnet_socket.h</includes>
+    <member kind="function">
+      <type>uint32_t</type>
+      <name>tnet_ice_utils_get_priority</name>
+      <anchorfile>tnet__ice__utils_8c.html</anchorfile>
+      <anchor>aa9f6decbe3be7f3e6e053ac5eccbc006</anchor>
+      <arglist>(tnet_ice_cand_type_t type, uint16_t local_pref, tsk_bool_t is_rtp)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_utils_compute_foundation</name>
+      <anchorfile>tnet__ice__utils_8c.html</anchorfile>
+      <anchor>a20aa1508b722706b3f79a66fd6cf1f53</anchor>
+      <arglist>(char *foundation, tsk_size_t size)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_utils_create_sockets</name>
+      <anchorfile>tnet__ice__utils_8c.html</anchorfile>
+      <anchor>a036f56c1171682aeaa8afe0b38c3e213</anchor>
+      <arglist>(tnet_socket_type_t socket_type, const char *local_ip, tnet_socket_t **socket_rtp, tnet_socket_t **socket_rtcp)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_utils_stun_address_tostring</name>
+      <anchorfile>tnet__ice__utils_8c.html</anchorfile>
+      <anchor>aa4b1d320ede078f895b468b654bb1547</anchor>
+      <arglist>(const uint8_t in_ip[16], enum tnet_stun_addr_family_e family, char **out_ip)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_utils_set_ufrag</name>
+      <anchorfile>tnet__ice__utils_8c.html</anchorfile>
+      <anchor>a3a67080a7126486eb3851b1b1ccdb13c</anchor>
+      <arglist>(char **ufrag)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_utils_set_pwd</name>
+      <anchorfile>tnet__ice__utils_8c.html</anchorfile>
+      <anchor>ae3494b188d4676184783f3431eefc91f</anchor>
+      <arglist>(char **pwd)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>tnet_ice_utils.h</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice/</path>
+    <filename>tnet__ice__utils_8h</filename>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
+    <member kind="function">
+      <type>uint32_t</type>
+      <name>tnet_ice_utils_get_priority</name>
+      <anchorfile>tnet__ice__utils_8h.html</anchorfile>
+      <anchor>a0a76443414a9f5fb9ca22e5b1efd0527</anchor>
+      <arglist>(enum tnet_ice_cand_type_e type, uint16_t local_pref, tsk_bool_t is_rtp)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_utils_compute_foundation</name>
+      <anchorfile>tnet__ice__utils_8h.html</anchorfile>
+      <anchor>a20aa1508b722706b3f79a66fd6cf1f53</anchor>
+      <arglist>(char *foundation, tsk_size_t size)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_utils_create_sockets</name>
+      <anchorfile>tnet__ice__utils_8h.html</anchorfile>
+      <anchor>aaea4db85c414e483888ad84b462fe128</anchor>
+      <arglist>(enum tnet_socket_type_e socket_type, const char *local_ip, struct tnet_socket_s **socket_rtp, struct tnet_socket_s **socket_rtcp)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_utils_stun_address_tostring</name>
+      <anchorfile>tnet__ice__utils_8h.html</anchorfile>
+      <anchor>aa4b1d320ede078f895b468b654bb1547</anchor>
+      <arglist>(const uint8_t in_ip[16], enum tnet_stun_addr_family_e family, char **out_ip)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_utils_set_ufrag</name>
+      <anchorfile>tnet__ice__utils_8h.html</anchorfile>
+      <anchor>a3a67080a7126486eb3851b1b1ccdb13c</anchor>
+      <arglist>(char **ufrag)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_ice_utils_set_pwd</name>
+      <anchorfile>tnet__ice__utils_8h.html</anchorfile>
+      <anchor>ae3494b188d4676184783f3431eefc91f</anchor>
+      <arglist>(char **pwd)</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>tnet_stun.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/stun/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/stun/</path>
     <filename>tnet__stun_8c</filename>
     <includes id="tnet__stun_8h" name="tnet_stun.h" local="yes" imported="no">tnet_stun.h</includes>
     <includes id="tnet__nat_8h" name="tnet_nat.h" local="yes" imported="no">../tnet_nat.h</includes>
+    <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">../tnet_utils.h</includes>
     <member kind="function">
       <type>tnet_stun_binding_t *</type>
       <name>tnet_stun_binding_create</name>
@@ -4425,7 +5964,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_stun.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/stun/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/stun/</path>
     <filename>tnet__stun_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__stun__message_8h" name="tnet_stun_message.h" local="yes" imported="no">stun/tnet_stun_message.h</includes>
@@ -4533,10 +6072,12 @@
   </compound>
   <compound kind="file">
     <name>tnet_stun_attribute.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/stun/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/stun/</path>
     <filename>tnet__stun__attribute_8c</filename>
     <includes id="tnet__stun__attribute_8h" name="tnet_stun_attribute.h" local="yes" imported="no">tnet_stun_attribute.h</includes>
     <includes id="tnet__stun_8h" name="tnet_stun.h" local="yes" imported="no">tnet_stun.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <includes id="tnet__turn__attribute_8h" name="tnet_turn_attribute.h" local="yes" imported="no">../turn/tnet_turn_attribute.h</includes>
     <member kind="function">
       <type>tnet_stun_attribute_t *</type>
@@ -4621,6 +6162,34 @@
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga586636541b8ebb9ea46d4df39a448121</anchor>
       <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_stun_attribute_ice_priority_t *</type>
+      <name>tnet_stun_attribute_ice_priority_create</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga7e2992cbcf5e4d93fce285c8fdad6018</anchor>
+      <arglist>(uint32_t value)</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_stun_attribute_ice_use_candidate_t *</type>
+      <name>tnet_stun_attribute_ice_use_candidate_create</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>gafc6efba58197cb3d697502bbad7378cf</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_stun_attribute_ice_controlled_t *</type>
+      <name>tnet_stun_attribute_ice_controlled_create</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>gaf2e4854c90f7c8c3abae9915e59ad12f</anchor>
+      <arglist>(uint64_t value)</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_stun_attribute_ice_controlling_t *</type>
+      <name>tnet_stun_attribute_ice_controlling_create</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga94da0e7a21d255c8647c190387229ba3</anchor>
+      <arglist>(uint64_t value)</arglist>
     </member>
     <member kind="function">
       <type>tnet_stun_attribute_t *</type>
@@ -4727,10 +6296,38 @@
       <anchor>ad40ed47dfee2cb3133324064dce05d37</anchor>
       <arglist></arglist>
     </member>
+    <member kind="variable">
+      <type>const tsk_object_def_t *</type>
+      <name>tnet_stun_attribute_ice_priority_def_t</name>
+      <anchorfile>tnet__stun__attribute_8c.html</anchorfile>
+      <anchor>a1c25a2b5a16a48e1c229f81e0f0cf1ed</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>const tsk_object_def_t *</type>
+      <name>tnet_stun_attribute_ice_use_candidate_def_t</name>
+      <anchorfile>tnet__stun__attribute_8c.html</anchorfile>
+      <anchor>aef82b09b0928979e9559be947d4a2f4b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>const tsk_object_def_t *</type>
+      <name>tnet_stun_attribute_ice_controlled_def_t</name>
+      <anchorfile>tnet__stun__attribute_8c.html</anchorfile>
+      <anchor>a975b2da5a481b51af116f5a3775f2889</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>const tsk_object_def_t *</type>
+      <name>tnet_stun_attribute_ice_controlling_def_t</name>
+      <anchorfile>tnet__stun__attribute_8c.html</anchorfile>
+      <anchor>a684b7fd78ca1f9002093ac01b5792600</anchor>
+      <arglist></arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>tnet_stun_attribute.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/stun/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/stun/</path>
     <filename>tnet__stun__attribute_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
@@ -4746,6 +6343,10 @@
     <class kind="struct">tnet_stun_attribute_unknowns_s</class>
     <class kind="struct">tnet_stun_attribute_software_s</class>
     <class kind="struct">tnet_stun_attribute_altserver_s</class>
+    <class kind="struct">tnet_stun_attribute_ice_priority_s</class>
+    <class kind="struct">tnet_stun_attribute_ice_use_candidate_s</class>
+    <class kind="struct">tnet_stun_attribute_ice_controlled_s</class>
+    <class kind="struct">tnet_stun_attribute_ice_controlling_s</class>
     <member kind="define">
       <type>#define</type>
       <name>TNET_STUN_ATTRIBUTE</name>
@@ -4865,7 +6466,36 @@
       <anchor>ga1912ae8bc9ea407a04f1d16aa570dbc9</anchor>
       <arglist></arglist>
     </member>
+    <member kind="typedef">
+      <type>struct tnet_stun_attribute_ice_priority_s</type>
+      <name>tnet_stun_attribute_ice_priority_t</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga782dcf37c6503a9287b479cef6fe0132</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tnet_stun_attribute_ice_use_candidate_s</type>
+      <name>tnet_stun_attribute_ice_use_candidate_t</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga47de3ced777b9c46f863e513b934ab23</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tnet_stun_attribute_ice_controlled_s</type>
+      <name>tnet_stun_attribute_ice_controlled_t</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>gab46c08e93d0c514a72fc8b3f73bc7a77</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tnet_stun_attribute_ice_controlling_s</type>
+      <name>tnet_stun_attribute_ice_controlling_t</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>gac4832ed589696b4a9ef6274b96333adf</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_stun_addr_family_e</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga3326fbcc063f264d3d359e922637e2e4</anchor>
@@ -4884,6 +6514,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_stun_attribute_type_e</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>gab696586b61219965987af1e017e6ffa6</anchor>
@@ -5063,6 +6694,30 @@
       <anchor>ggab696586b61219965987af1e017e6ffa6a88373f0f1635103b2091910a9584c58d</anchor>
       <arglist></arglist>
     </member>
+    <member kind="enumvalue">
+      <name>stun_ice_priority</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ggab696586b61219965987af1e017e6ffa6a99410d8e75f7ab0d4421fe71634604bb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>stun_ice_use_candidate</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ggab696586b61219965987af1e017e6ffa6a275c187aabe3a9d9bdc32a180c39b1d2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>stun_ice_controlled</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ggab696586b61219965987af1e017e6ffa6a4cfd4eab6287ed2b1126e6ba40ac5d4a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>stun_ice_controlling</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ggab696586b61219965987af1e017e6ffa6a21100a7a716c88ed5b5544cdb28549aa</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="function">
       <type>tnet_stun_attribute_t *</type>
       <name>tnet_stun_attribute_deserialize</name>
@@ -5092,81 +6747,109 @@
       <arglist>()</arglist>
     </member>
     <member kind="function">
-      <type>tnet_stun_attribute_mapped_addr_t *</type>
+      <type>TINYNET_API tnet_stun_attribute_mapped_addr_t *</type>
       <name>tnet_stun_attribute_mapped_address_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga28ffe32f830bbe0f5b32a207538eb8b6</anchor>
       <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
-      <type>tnet_stun_attribute_xmapped_addr_t *</type>
+      <type>TINYNET_API tnet_stun_attribute_xmapped_addr_t *</type>
       <name>tnet_stun_attribute_xmapped_address_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>gacd4af1df8c9e298a23d34df27e5dcc45</anchor>
       <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
-      <type>tnet_stun_attribute_username_t *</type>
+      <type>TINYNET_API tnet_stun_attribute_username_t *</type>
       <name>tnet_stun_attribute_username_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>gab92c8f62b2d188c9ac1528aa03da4b7e</anchor>
       <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
-      <type>tnet_stun_attribute_integrity_t *</type>
+      <type>TINYNET_API tnet_stun_attribute_integrity_t *</type>
       <name>tnet_stun_attribute_integrity_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga3c5f79313850ea8643132b093e11ef6a</anchor>
       <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
-      <type>tnet_stun_attribute_fingerprint_t *</type>
+      <type>TINYNET_API tnet_stun_attribute_fingerprint_t *</type>
       <name>tnet_stun_attribute_fingerprint_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga2432db4c4bb63da2327bb357361eef21</anchor>
       <arglist>(uint32_t fingerprint)</arglist>
     </member>
     <member kind="function">
-      <type>tnet_stun_attribute_errorcode_t *</type>
+      <type>TINYNET_API tnet_stun_attribute_errorcode_t *</type>
       <name>tnet_stun_attribute_errorcode_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>gaa51e8bc565195298fb3de24070f5614a</anchor>
       <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
-      <type>tnet_stun_attribute_realm_t *</type>
+      <type>TINYNET_API tnet_stun_attribute_realm_t *</type>
       <name>tnet_stun_attribute_realm_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga2d7ab50986b3af03951358ec4c2cfa8b</anchor>
       <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
-      <type>tnet_stun_attribute_nonce_t *</type>
+      <type>TINYNET_API tnet_stun_attribute_nonce_t *</type>
       <name>tnet_stun_attribute_nonce_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga0cf404a4977b95a47c252f8101b099ce</anchor>
       <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
-      <type>tnet_stun_attribute_unknowns_t *</type>
+      <type>TINYNET_API tnet_stun_attribute_unknowns_t *</type>
       <name>tnet_stun_attribute_unknowns_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga8a497b2b11b1a776ec37170ee14b6ac2</anchor>
       <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
-      <type>tnet_stun_attribute_software_t *</type>
+      <type>TINYNET_API tnet_stun_attribute_software_t *</type>
       <name>tnet_stun_attribute_software_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga719d8c3ac6588124533f03f70877e437</anchor>
       <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
-      <type>tnet_stun_attribute_altserver_t *</type>
+      <type>TINYNET_API tnet_stun_attribute_altserver_t *</type>
       <name>tnet_stun_attribute_altserver_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga586636541b8ebb9ea46d4df39a448121</anchor>
       <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tnet_stun_attribute_ice_priority_t *</type>
+      <name>tnet_stun_attribute_ice_priority_create</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga7e2992cbcf5e4d93fce285c8fdad6018</anchor>
+      <arglist>(uint32_t value)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tnet_stun_attribute_ice_use_candidate_t *</type>
+      <name>tnet_stun_attribute_ice_use_candidate_create</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>gafc6efba58197cb3d697502bbad7378cf</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tnet_stun_attribute_ice_controlled_t *</type>
+      <name>tnet_stun_attribute_ice_controlled_create</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>gaf2e4854c90f7c8c3abae9915e59ad12f</anchor>
+      <arglist>(uint64_t value)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tnet_stun_attribute_ice_controlling_t *</type>
+      <name>tnet_stun_attribute_ice_controlling_create</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga94da0e7a21d255c8647c190387229ba3</anchor>
+      <arglist>(uint64_t value)</arglist>
     </member>
     <member kind="variable">
       <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
@@ -5252,13 +6935,44 @@
       <anchor>a8d426ae80202c572513916de48cab014</anchor>
       <arglist></arglist>
     </member>
+    <member kind="variable">
+      <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
+      <name>tnet_stun_attribute_ice_priority_def_t</name>
+      <anchorfile>tnet__stun__attribute_8h.html</anchorfile>
+      <anchor>a2aa16d9877e44a873017f40ea3712fc6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
+      <name>tnet_stun_attribute_ice_use_candidate_def_t</name>
+      <anchorfile>tnet__stun__attribute_8h.html</anchorfile>
+      <anchor>aadbce41b24c9f38a157ca28baaf3a4c3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
+      <name>tnet_stun_attribute_ice_controlled_def_t</name>
+      <anchorfile>tnet__stun__attribute_8h.html</anchorfile>
+      <anchor>a2f8cbba757f3065b192603ea5648db71</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
+      <name>tnet_stun_attribute_ice_controlling_def_t</name>
+      <anchorfile>tnet__stun__attribute_8h.html</anchorfile>
+      <anchor>a0339fb43d3cc554b59bfec0fd41d89d5</anchor>
+      <arglist></arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>tnet_stun_message.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/stun/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/stun/</path>
     <filename>tnet__stun__message_8c</filename>
     <includes id="tnet__stun__message_8h" name="tnet_stun_message.h" local="yes" imported="no">tnet_stun_message.h</includes>
     <includes id="tnet__stun_8h" name="tnet_stun.h" local="yes" imported="no">tnet_stun.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
+    <includes id="tnet__turn__attribute_8h" name="tnet_turn_attribute.h" local="yes" imported="no">../turn/tnet_turn_attribute.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>SERIALIZE_N_ADD_ATTRIBUTE</name>
@@ -5295,11 +7009,25 @@
       <arglist>(const uint8_t *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_stun_message_has_attribute</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga250b97b6a26f99f9d545533e20d29acb</anchor>
+      <arglist>(const tnet_stun_message_t *self, tnet_stun_attribute_type_t type)</arglist>
+    </member>
+    <member kind="function">
       <type>int</type>
       <name>tnet_stun_message_add_attribute</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>gacb982af5ead9faf9e85b4e2f69e05d47</anchor>
       <arglist>(tnet_stun_message_t *self, tnet_stun_attribute_t **attribute)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_stun_message_remove_attribute</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga8c3cf4006d4c030e0114b8c00f2dc5ec</anchor>
+      <arglist>(tnet_stun_message_t *self, tnet_stun_attribute_type_t type)</arglist>
     </member>
     <member kind="function">
       <type>const tnet_stun_attribute_t *</type>
@@ -5336,6 +7064,13 @@
       <anchor>ga12380617e5a883d3c175216c48245839</anchor>
       <arglist>(const tnet_stun_message_t *self)</arglist>
     </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_stun_message_transac_id_equals</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga401b2a061923a11340da833dc248fa9d</anchor>
+      <arglist>(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2)</arglist>
+    </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
       <name>tnet_stun_message_def_t</name>
@@ -5346,7 +7081,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_stun_message.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/stun/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/stun/</path>
     <filename>tnet__stun__message_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__stun__attribute_8h" name="tnet_stun_attribute.h" local="yes" imported="no">stun/tnet_stun_attribute.h</includes>
@@ -5381,16 +7116,23 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>TNET_STUN_RESPONSE_IS_REQUEST</name>
+      <name>TNET_STUN_MESSAGE_IS_REQUEST</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga09a28b87a49c9242203c09d5fa56a1fe</anchor>
+      <anchor>ga50742ed21d77367f7d6d0b1ece487d94</anchor>
       <arglist>(self)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>TNET_STUN_RESPONSE_IS_INDICATION</name>
+      <name>TNET_STUN_MESSAGE_IS_RESPONSE</name>
+      <anchorfile>tnet__stun__message_8h.html</anchorfile>
+      <anchor>a67a78f2b21fdd0243800c240d2453fa3</anchor>
+      <arglist>(self)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_STUN_MESSAGE_IS_INDICATION</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gac1faf702ec0e6fafd112c3d2b80e1af8</anchor>
+      <anchor>ga05a95d304163ba125defae8444a28f73</anchor>
       <arglist>(self)</arglist>
     </member>
     <member kind="define">
@@ -5409,10 +7151,17 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>TNET_IS_STUN2</name>
+      <name>TNET_IS_STUN2_MSG</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga3b0b84dbb873d8c18c6e438bdf5053e8</anchor>
-      <arglist>(PU8)</arglist>
+      <anchor>ga3e9c76b717211f3d8c27d624a07e2353</anchor>
+      <arglist>(PU8, SIZE)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_IS_STUN2</name>
+      <anchorfile>tnet__stun__message_8h.html</anchorfile>
+      <anchor>a308ab872ed8673719c1d0cb120b2ba03</anchor>
+      <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -5471,6 +7220,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_stun_class_type_e</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga3faef946079e315842f5ad4d41aa0929</anchor>
@@ -5501,6 +7251,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_stun_method_type_e</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga4701a0e3395592a6d6a742901212801c</anchor>
@@ -5549,6 +7300,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_stun_message_type_e</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>gabf2f8d8b846fe491470941a7e237559c</anchor>
@@ -5687,7 +7439,7 @@
       <arglist></arglist>
     </member>
     <member kind="function">
-      <type>tsk_buffer_t *</type>
+      <type>TINYNET_API tsk_buffer_t *</type>
       <name>tnet_stun_message_serialize</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>gaefd2306ef33e3611a98394e5b274a069</anchor>
@@ -5701,11 +7453,25 @@
       <arglist>(const uint8_t *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
+      <name>tnet_stun_message_has_attribute</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga250b97b6a26f99f9d545533e20d29acb</anchor>
+      <arglist>(const tnet_stun_message_t *self, tnet_stun_attribute_type_t type)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
       <name>tnet_stun_message_add_attribute</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>gacb982af5ead9faf9e85b4e2f69e05d47</anchor>
       <arglist>(tnet_stun_message_t *self, tnet_stun_attribute_t **attribute)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_stun_message_remove_attribute</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga8c3cf4006d4c030e0114b8c00f2dc5ec</anchor>
+      <arglist>(tnet_stun_message_t *self, tnet_stun_attribute_type_t type)</arglist>
     </member>
     <member kind="function">
       <type>const tnet_stun_attribute_t *</type>
@@ -5743,14 +7509,21 @@
       <arglist>(const tnet_stun_message_t *self)</arglist>
     </member>
     <member kind="function">
-      <type>tnet_stun_message_t *</type>
+      <type>tsk_bool_t</type>
+      <name>tnet_stun_message_transac_id_equals</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga401b2a061923a11340da833dc248fa9d</anchor>
+      <arglist>(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tnet_stun_message_t *</type>
       <name>tnet_stun_message_create</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>gaaf1892e2a30f8b85e4e5b47622a6b9f3</anchor>
       <arglist>(const char *username, const char *password)</arglist>
     </member>
     <member kind="function">
-      <type>tnet_stun_message_t *</type>
+      <type>TINYNET_API tnet_stun_message_t *</type>
       <name>tnet_stun_message_create_null</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga938bc40f8bb818f87c94eb42352cd0f3</anchor>
@@ -5766,13 +7539,17 @@
   </compound>
   <compound kind="file">
     <name>tinynet.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tinynet_8h</filename>
     <includes id="tnet_8h" name="tnet.h" local="yes" imported="no">tnet.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">tnet_endianness.h</includes>
     <includes id="tnet__nat_8h" name="tnet_nat.h" local="yes" imported="no">tnet_nat.h</includes>
     <includes id="tnet__socket_8h" name="tnet_socket.h" local="yes" imported="no">tnet_socket.h</includes>
     <includes id="tnet__transport_8h" name="tnet_transport.h" local="yes" imported="no">tnet_transport.h</includes>
     <includes id="tnet__stun_8h" name="tnet_stun.h" local="yes" imported="no">stun/tnet_stun.h</includes>
+    <includes id="tnet__ice__event_8h" name="tnet_ice_event.h" local="yes" imported="no">ice/tnet_ice_event.h</includes>
+    <includes id="tnet__ice__candidate_8h" name="tnet_ice_candidate.h" local="yes" imported="no">ice/tnet_ice_candidate.h</includes>
+    <includes id="tnet__ice__ctx_8h" name="tnet_ice_ctx.h" local="yes" imported="no">ice/tnet_ice_ctx.h</includes>
     <includes id="tnet__dns_8h" name="tnet_dns.h" local="yes" imported="no">dns/tnet_dns.h</includes>
     <includes id="tnet__dns__naptr_8h" name="tnet_dns_naptr.h" local="yes" imported="no">dns/tnet_dns_naptr.h</includes>
     <includes id="tnet__dns__regexp_8h" name="tnet_dns_regexp.h" local="yes" imported="no">dns/tnet_dns_regexp.h</includes>
@@ -5784,7 +7561,7 @@
   </compound>
   <compound kind="file">
     <name>tinynet_config.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tinynet__config_8h</filename>
     <member kind="define">
       <type>#define</type>
@@ -5823,55 +7600,6 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>TNET_HAVE_POLL</name>
-      <anchorfile>tinynet__config_8h.html</anchorfile>
-      <anchor>a874ab0cf7c6c9b54f2f2358e572a8b13</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TNET_USE_POLL</name>
-      <anchorfile>tinynet__config_8h.html</anchorfile>
-      <anchor>a02b04ca7920cac27006f37fe6ce2b2b1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TNET_HAVE_OPENSSL_H</name>
-      <anchorfile>tinynet__config_8h.html</anchorfile>
-      <anchor>a3c43576dad07d045cd4c4c446f9c7d58</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>HAVE_IFADDRS</name>
-      <anchorfile>tinynet__config_8h.html</anchorfile>
-      <anchor>a8118f3716bf12d7ac91e1955a6d44815</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>HAVE_DNS_H</name>
-      <anchorfile>tinynet__config_8h.html</anchorfile>
-      <anchor>af7c63ec812cd1f5b370213ed28f4d7c8</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TNET_HAVE_SS_LEN</name>
-      <anchorfile>tinynet__config_8h.html</anchorfile>
-      <anchor>adb994877ac2c9fa8365b76bbe1c51df3</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TNET_HAVE_SA_LEN</name>
-      <anchorfile>tinynet__config_8h.html</anchorfile>
-      <anchor>ab912d02239aca3e7c941d670786cef33</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
       <name>TNET_SOFTWARE</name>
       <anchorfile>tinynet__config_8h.html</anchorfile>
       <anchor>ae2d04c0df9b8a96c09fde862ec6e4304</anchor>
@@ -5893,19 +7621,364 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>tnet_dtls.c</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/tls/</path>
+    <filename>tnet__dtls_8c</filename>
+    <includes id="tnet__dtls_8h" name="tnet_dtls.h" local="yes" imported="no">tnet_dtls.h</includes>
+    <includes id="tnet__tls_8h" name="tnet_tls.h" local="yes" imported="no">tnet_tls.h</includes>
+    <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">tnet_utils.h</includes>
+    <class kind="struct">tnet_dtls_socket_s</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>_tnet_dtls_socket_do_handshake</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>ace7d8b69e95ad5631aa022097c832d8a</anchor>
+      <arglist>(self)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>_tnet_dtls_socket_raise_event</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>afd9fe6841791319d91514235cb7a3395</anchor>
+      <arglist>(self, type, data, size)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>_tnet_dtls_socket_raise_event_dataless</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>a63e098461c2ff5c68fe8dea627634ce1</anchor>
+      <arglist>(self, type)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tnet_dtls_socket_s</type>
+      <name>tnet_dtls_socket_t</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>a24f671f502be206e1120cdff7a6a50a9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_dtls_is_srtp_supported</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>ad09a2debbb13fe5c0cc698a61df65dc7</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_dtls_is_supported</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>a25238311d78e2aca33c0d6c215896bae</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_dtls_hash_type_t</type>
+      <name>tnet_dtls_get_hash_from_string</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>aadd696d262808b42f37a1a2030d815c3</anchor>
+      <arglist>(const char *hash)</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_dtls_setup_t</type>
+      <name>tnet_dtls_get_setup_from_string</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>a40fb953e7deaaf95bd89ca1c1099a928</anchor>
+      <arglist>(const char *setup)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_dtls_get_fingerprint</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>afb717cd09e0f914acefc0a62f6ee68df</anchor>
+      <arglist>(const char *certfile, tnet_fingerprint_t *fingerprint, tnet_dtls_hash_type_t hash)</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_dtls_socket_handle_t *</type>
+      <name>tnet_dtls_socket_create</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>a44afb468495ae1cec8aea9457dc392d1</anchor>
+      <arglist>(tnet_fd_t fd, struct ssl_ctx_st *ssl_ctx)</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_fd_t</type>
+      <name>tnet_dtls_socket_get_fd</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>a16d3cdc446403a2aef45e3fb2d1cde40</anchor>
+      <arglist>(const tnet_dtls_socket_handle_t *handle)</arglist>
+    </member>
+    <member kind="function">
+      <type>struct sockaddr_storage *</type>
+      <name>tnet_dtls_socket_get_remote_addr</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>a8f9c9ffba8efe2f3acf1fbcb9f5eca87</anchor>
+      <arglist>(const tnet_dtls_socket_handle_t *handle)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_dtls_socket_set_callback</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>a99f946ceca66bc754ef1e0b0d5e4dc39</anchor>
+      <arglist>(tnet_dtls_socket_handle_t *handle, const void *usrdata, tnet_dtls_socket_cb_f func)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_dtls_socket_set_remote_fingerprint</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>a39f580983e0ad861df949c142ca785a2</anchor>
+      <arglist>(tnet_dtls_socket_handle_t *handle, const tnet_fingerprint_t *fingerprint, tnet_dtls_hash_type_t hash)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_dtls_socket_use_srtp</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>a50ad734fe046869215f1651013054d37</anchor>
+      <arglist>(tnet_dtls_socket_handle_t *handle)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_dtls_socket_set_setup</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>acaee108ca648f7c328c355081bfb70dc</anchor>
+      <arglist>(tnet_dtls_socket_handle_t *handle, tnet_dtls_setup_t setup)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_dtls_socket_is_remote_cert_fp_match</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>aa244e20933fc3301323cc3c28918964e</anchor>
+      <arglist>(tnet_dtls_socket_handle_t *handle)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_dtls_socket_do_handshake</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>a73d03cb325831285b68fd7c291fe2efc</anchor>
+      <arglist>(tnet_dtls_socket_handle_t *handle, const struct sockaddr_storage *remote_addr)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_dtls_socket_is_handshake_completed</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>a208edc774b7e0000f82a51144222a041</anchor>
+      <arglist>(const tnet_dtls_socket_handle_t *handle)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_dtls_socket_handle_incoming_data</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>af48bb9403a9bac2421f5914a20c36cff</anchor>
+      <arglist>(tnet_dtls_socket_handle_t *handle, const void *data, tsk_size_t size)</arglist>
+    </member>
+    <member kind="variable">
+      <type>const tsk_object_def_t *</type>
+      <name>tnet_dtls_socket_def_t</name>
+      <anchorfile>tnet__dtls_8c.html</anchorfile>
+      <anchor>a91eab3d9db44ae1e119a3d7c174e505c</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>tnet_dtls.h</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/tls/</path>
+    <filename>tnet__dtls_8h</filename>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
+    <member kind="typedef">
+      <type>void</type>
+      <name>tnet_dtls_socket_handle_t</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a31d0de4ae3dd651cffe744aa94d36f27</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>enum tnet_dtls_socket_event_type_e</type>
+      <name>tnet_dtls_socket_event_type_t</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>aa4e6c5e99dc54e204378391e54ad14d4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>int(*</type>
+      <name>tnet_dtls_socket_cb_f</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a3529a64ddc3fa5f07ed3c692bebc560a</anchor>
+      <arglist>)(const void *usrdata, tnet_dtls_socket_event_type_t e, const tnet_dtls_socket_handle_t *handle, const void *data, tsk_size_t size)</arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>tnet_dtls_socket_event_type_e</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a5161f0204780718c0b573c7970d4a0de</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_socket_event_type_handshake_started</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a5161f0204780718c0b573c7970d4a0dea43948921572953c4e898af4cf1c22702</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_socket_event_type_handshake_succeed</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a5161f0204780718c0b573c7970d4a0deafb14934d988f7708669f370b537a7def</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_socket_event_type_handshake_failed</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a5161f0204780718c0b573c7970d4a0dea114444f752950d9f75fcfcf74d1c51bc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_socket_event_type_fingerprint_mismatch</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a5161f0204780718c0b573c7970d4a0deadfc3a56addce201f9e50bdd655081828</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_socket_event_type_error</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a5161f0204780718c0b573c7970d4a0deaed3d12a2bc8ab5c18c15e3a92ec749c6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_socket_event_type_dtls_srtp_profile_selected</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a5161f0204780718c0b573c7970d4a0dea7dd0a2996205b1a37530f288f48a1089</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_socket_event_type_dtls_srtp_data</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a5161f0204780718c0b573c7970d4a0dea975c7bcd42f5cfd82262b79b0864ace2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_bool_t</type>
+      <name>tnet_dtls_is_srtp_supported</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a43e4fc390be71148720b2a191702ef8a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_bool_t</type>
+      <name>tnet_dtls_is_supported</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>ac6f9f9b863ff1105fbb27cfb37f9b53a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tnet_dtls_hash_type_t</type>
+      <name>tnet_dtls_get_hash_from_string</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>ac8028156e7807585a4c621821ca93564</anchor>
+      <arglist>(const char *hash)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tnet_dtls_setup_t</type>
+      <name>tnet_dtls_get_setup_from_string</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a1e8ae82dce1152a51863aa93ccf5a1c1</anchor>
+      <arglist>(const char *setup)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_dtls_get_fingerprint</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a624c230b834e6b4f6cc82bd4affd4b13</anchor>
+      <arglist>(const char *certfile, tnet_fingerprint_t *fingerprint, tnet_dtls_hash_type_t hash)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tnet_dtls_socket_handle_t *</type>
+      <name>tnet_dtls_socket_create</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>ad22dbfe69ef4b9aebe1a58ba6ac28df9</anchor>
+      <arglist>(tnet_fd_t fd, struct ssl_ctx_st *ssl_ctx)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tnet_fd_t</type>
+      <name>tnet_dtls_socket_get_fd</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>ad86275a4b6a016bb8abdff853d468aa5</anchor>
+      <arglist>(const tnet_dtls_socket_handle_t *handle)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API struct sockaddr_storage *</type>
+      <name>tnet_dtls_socket_get_remote_addr</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a4904903b026ee11936300d9ab68ff6a5</anchor>
+      <arglist>(const tnet_dtls_socket_handle_t *handle)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_dtls_socket_set_callback</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a20024a2fa68ba9bd25c931dfa7a57dab</anchor>
+      <arglist>(tnet_dtls_socket_handle_t *handle, const void *usrdata, tnet_dtls_socket_cb_f func)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_dtls_socket_set_remote_fingerprint</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a3cc5666b7c805601e87b39efc6e54c47</anchor>
+      <arglist>(tnet_dtls_socket_handle_t *handle, const tnet_fingerprint_t *fingerprint, tnet_dtls_hash_type_t hash)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_dtls_socket_use_srtp</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a3345ecf76fd86aeee8849291f8acde0f</anchor>
+      <arglist>(tnet_dtls_socket_handle_t *handle)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_dtls_socket_set_setup</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a4392b4e116b50e93986b71412f5745aa</anchor>
+      <arglist>(tnet_dtls_socket_handle_t *handle, tnet_dtls_setup_t setup)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_bool_t</type>
+      <name>tnet_dtls_socket_is_remote_cert_fp_match</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a1d12a561c9bfadae2047d57f1f7069c0</anchor>
+      <arglist>(tnet_dtls_socket_handle_t *handle)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_dtls_socket_do_handshake</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a396d2828d6a41bf9aa8b015234378913</anchor>
+      <arglist>(tnet_dtls_socket_handle_t *handle, const struct sockaddr_storage *remote_addr)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_bool_t</type>
+      <name>tnet_dtls_socket_is_handshake_completed</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a2c482e33bedc851800e9c52b257c4b73</anchor>
+      <arglist>(const tnet_dtls_socket_handle_t *handle)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_dtls_socket_handle_incoming_data</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>afb18054bdb7bff7c36c8ed83bd705e51</anchor>
+      <arglist>(tnet_dtls_socket_handle_t *handle, const void *data, tsk_size_t size)</arglist>
+    </member>
+    <member kind="variable">
+      <type>TINYNET_GEXTERN const tsk_object_def_t *</type>
+      <name>tnet_dtls_socket_def_t</name>
+      <anchorfile>tnet__dtls_8h.html</anchorfile>
+      <anchor>a935d64508e3f73649a7ccdbec9dcbf91</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>tnet_tls.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/tls/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/tls/</path>
     <filename>tnet__tls_8c</filename>
     <includes id="tnet__tls_8h" name="tnet_tls.h" local="yes" imported="no">tnet_tls.h</includes>
     <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">tnet_utils.h</includes>
     <class kind="struct">tnet_tls_socket_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TNET_CIPHER_LIST</name>
-      <anchorfile>tnet__tls_8c.html</anchorfile>
-      <anchor>a0272165dcd11efdaf43bac2d288a9a0e</anchor>
-      <arglist></arglist>
-    </member>
     <member kind="define">
       <type>#define</type>
       <name>TNET_TLS_TIMEOUT</name>
@@ -5928,38 +8001,31 @@
       <arglist></arglist>
     </member>
     <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_tls_is_supported</name>
+      <anchorfile>tnet__tls_8c.html</anchorfile>
+      <anchor>ad04214197a9e36d79b813a2c13de54e3</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
       <type>tnet_tls_socket_handle_t *</type>
       <name>tnet_tls_socket_create</name>
       <anchorfile>tnet__tls_8c.html</anchorfile>
-      <anchor>aa476446bdb416f8a15166aa970210c67</anchor>
-      <arglist>(tnet_fd_t fd, const char *tlsfile_ca, const char *tlsfile_pvk, const char *tlsfile_pbk, tsk_bool_t isClient)</arglist>
-    </member>
-    <member kind="function">
-      <type>tnet_tls_socket_handle_t *</type>
-      <name>tnet_tls_socket_client_create</name>
-      <anchorfile>tnet__tls_8c.html</anchorfile>
-      <anchor>a489d9a614ddd2601c24ad12d50563e90</anchor>
-      <arglist>(tnet_fd_t fd, const char *tlsfile_ca, const char *tlsfile_pvk, const char *tlsfile_pbk)</arglist>
-    </member>
-    <member kind="function">
-      <type>tnet_tls_socket_handle_t *</type>
-      <name>tnet_tls_socket_server_create</name>
-      <anchorfile>tnet__tls_8c.html</anchorfile>
-      <anchor>ae768e179e55c549c7bd083f1d071a2d0</anchor>
-      <arglist>(tnet_fd_t fd, const char *tlsfile_ca, const char *tlsfile_pvk, const char *tlsfile_pbk)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_tls_socket_isok</name>
-      <anchorfile>tnet__tls_8c.html</anchorfile>
-      <anchor>a73d773e2a5cf277245d76815916f421f</anchor>
-      <arglist>(const tnet_tls_socket_handle_t *self)</arglist>
+      <anchor>ac6938704c21f0790191b153e3e9ac593</anchor>
+      <arglist>(tnet_fd_t fd, struct ssl_ctx_st *ssl_ctx)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tnet_tls_socket_connect</name>
       <anchorfile>tnet__tls_8c.html</anchorfile>
       <anchor>a188bd068a96c3acc2f031cb6d04d4458</anchor>
+      <arglist>(tnet_tls_socket_handle_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_tls_socket_accept</name>
+      <anchorfile>tnet__tls_8c.html</anchorfile>
+      <anchor>a2bf506e70d5eb1b45ee6a9f8b5a6d690</anchor>
       <arglist>(tnet_tls_socket_handle_t *self)</arglist>
     </member>
     <member kind="function">
@@ -5973,15 +8039,8 @@
       <type>int</type>
       <name>tnet_tls_socket_recv</name>
       <anchorfile>tnet__tls_8c.html</anchorfile>
-      <anchor>ab488d9a8df546856d7becf958b9d0118</anchor>
-      <arglist>(tnet_tls_socket_handle_t *self, void **data, tsk_size_t *size, int *isEncrypted)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_tls_socket_init</name>
-      <anchorfile>tnet__tls_8c.html</anchorfile>
-      <anchor>ab596811e9f03aec6c3a8abd03ee2c236</anchor>
-      <arglist>(tnet_tls_socket_t *socket)</arglist>
+      <anchor>a989798393b8e30bc55f3904c0324da6f</anchor>
+      <arglist>(tnet_tls_socket_handle_t *self, void **data, tsk_size_t *size, tsk_bool_t *isEncrypted)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -5993,7 +8052,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_tls.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/tls/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/tls/</path>
     <filename>tnet__tls_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
@@ -6006,16 +8065,16 @@
     </member>
     <member kind="function">
       <type>int</type>
-      <name>tnet_tls_socket_isok</name>
-      <anchorfile>tnet__tls_8h.html</anchorfile>
-      <anchor>a73d773e2a5cf277245d76815916f421f</anchor>
-      <arglist>(const tnet_tls_socket_handle_t *self)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
       <name>tnet_tls_socket_connect</name>
       <anchorfile>tnet__tls_8h.html</anchorfile>
       <anchor>a188bd068a96c3acc2f031cb6d04d4458</anchor>
+      <arglist>(tnet_tls_socket_handle_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_tls_socket_accept</name>
+      <anchorfile>tnet__tls_8h.html</anchorfile>
+      <anchor>a2bf506e70d5eb1b45ee6a9f8b5a6d690</anchor>
       <arglist>(tnet_tls_socket_handle_t *self)</arglist>
     </member>
     <member kind="function">
@@ -6029,29 +8088,22 @@
       <type>int</type>
       <name>tnet_tls_socket_recv</name>
       <anchorfile>tnet__tls_8h.html</anchorfile>
-      <anchor>ab488d9a8df546856d7becf958b9d0118</anchor>
-      <arglist>(tnet_tls_socket_handle_t *self, void **data, tsk_size_t *size, int *isEncrypted)</arglist>
+      <anchor>a989798393b8e30bc55f3904c0324da6f</anchor>
+      <arglist>(tnet_tls_socket_handle_t *self, void **data, tsk_size_t *size, tsk_bool_t *isEncrypted)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_bool_t</type>
+      <name>tnet_tls_is_supported</name>
+      <anchorfile>tnet__tls_8h.html</anchorfile>
+      <anchor>a8adca95fbe88dc5bd5ab67632055bf6e</anchor>
+      <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API tnet_tls_socket_handle_t *</type>
       <name>tnet_tls_socket_create</name>
       <anchorfile>tnet__tls_8h.html</anchorfile>
-      <anchor>a0077588b0fbe21d67d69a5c143371886</anchor>
-      <arglist>(tnet_fd_t fd, const char *tlsfile_ca, const char *tlsfile_pvk, const char *tlsfile_pbk, tsk_bool_t isClient)</arglist>
-    </member>
-    <member kind="function">
-      <type>TINYNET_API tnet_tls_socket_handle_t *</type>
-      <name>tnet_tls_socket_client_create</name>
-      <anchorfile>tnet__tls_8h.html</anchorfile>
-      <anchor>a094399bed4701b4f5a9d1b98b86a6d6f</anchor>
-      <arglist>(tnet_fd_t fd, const char *tlsfile_ca, const char *tlsfile_pvk, const char *tlsfile_pbk)</arglist>
-    </member>
-    <member kind="function">
-      <type>TINYNET_API tnet_tls_socket_handle_t *</type>
-      <name>tnet_tls_socket_server_create</name>
-      <anchorfile>tnet__tls_8h.html</anchorfile>
-      <anchor>a30520b6f3ff7d662da176c5f6c9b2c05</anchor>
-      <arglist>(tnet_fd_t fd, const char *tlsfile_ca, const char *tlsfile_pvk, const char *tlsfile_pbk)</arglist>
+      <anchor>ae406f12f84152b4c6f735e6ae8b4df7d</anchor>
+      <arglist>(tnet_fd_t fd, struct ssl_ctx_st *ssl_ctx)</arglist>
     </member>
     <member kind="variable">
       <type>TNET_BEGIN_DECLS typedef void</type>
@@ -6070,7 +8122,7 @@
   </compound>
   <compound kind="file">
     <name>tnet.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet_8c</filename>
     <includes id="tnet_8h" name="tnet.h" local="yes" imported="no">tnet.h</includes>
     <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">tnet_utils.h</includes>
@@ -6098,7 +8150,7 @@
   </compound>
   <compound kind="file">
     <name>tnet.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <member kind="function">
@@ -6118,19 +8170,19 @@
   </compound>
   <compound kind="file">
     <name>tnet_auth.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__auth_8c</filename>
     <includes id="tnet__auth_8h" name="tnet_auth.h" local="yes" imported="no">tnet_auth.h</includes>
   </compound>
   <compound kind="file">
     <name>tnet_auth.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__auth_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
   </compound>
   <compound kind="file">
     <name>tnet_endianness.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__endianness_8c</filename>
     <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">tnet_endianness.h</includes>
     <includes id="tnet_8h" name="tnet.h" local="yes" imported="no">tnet.h</includes>
@@ -6179,7 +8231,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_endianness.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__endianness_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <member kind="define">
@@ -6248,7 +8300,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_hardwares.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__hardwares_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <member kind="typedef">
@@ -6259,6 +8311,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_hardware_type_e</name>
       <anchorfile>tnet__hardwares_8h.html</anchorfile>
       <anchor>a9707b4f020ac44c0ccd61ec6636a91cb</anchor>
@@ -6363,7 +8416,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_nat.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__nat_8c</filename>
     <includes id="tnet__nat_8h" name="tnet_nat.h" local="yes" imported="no">tnet_nat.h</includes>
     <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">tnet_endianness.h</includes>
@@ -6503,7 +8556,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_nat.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__nat_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__stun_8h" name="tnet_stun.h" local="yes" imported="no">stun/tnet_stun.h</includes>
@@ -6668,91 +8721,19 @@
   </compound>
   <compound kind="file">
     <name>tnet_poll.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__poll_8c</filename>
     <includes id="tnet__poll_8h" name="tnet_poll.h" local="yes" imported="no">tnet_poll.h</includes>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_poll</name>
-      <anchorfile>tnet__poll_8c.html</anchorfile>
-      <anchor>a147d061600de2ae7ccae4be7e684cd26</anchor>
-      <arglist>(tnet_pollfd_t fds[], tnet_nfds_t nfds, int timeout)</arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>tnet_poll.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__poll_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
-    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
-    <class kind="struct">tnet_pollfd_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TNET_POLLIN</name>
-      <anchorfile>tnet__poll_8h.html</anchorfile>
-      <anchor>a18775ebc9b7104b9f11a4a8fc55d3a35</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TNET_POLLPRI</name>
-      <anchorfile>tnet__poll_8h.html</anchorfile>
-      <anchor>abf4d35cf7bdf033582b3924fd52b8c12</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TNET_POLLOUT</name>
-      <anchorfile>tnet__poll_8h.html</anchorfile>
-      <anchor>a80781270d308060f4c60c6c2a060d220</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TNET_POLLERR</name>
-      <anchorfile>tnet__poll_8h.html</anchorfile>
-      <anchor>afd3b08fb6323bb630da2b505792dd5dc</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TNET_POLLHUP</name>
-      <anchorfile>tnet__poll_8h.html</anchorfile>
-      <anchor>a1a33190a36a7edfd9feef5cc649ad0e3</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TNET_POLLNVAL</name>
-      <anchorfile>tnet__poll_8h.html</anchorfile>
-      <anchor>a56b727a4ad4aae8a5a3c69d48704fb1b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tnet_pollfd_s</type>
-      <name>tnet_pollfd_t</name>
-      <anchorfile>tnet__poll_8h.html</anchorfile>
-      <anchor>a5d1c470f484862679cb042dece893771</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_poll</name>
-      <anchorfile>tnet__poll_8h.html</anchorfile>
-      <anchor>a147d061600de2ae7ccae4be7e684cd26</anchor>
-      <arglist>(tnet_pollfd_t fds[], tnet_nfds_t nfds, int timeout)</arglist>
-    </member>
-    <member kind="variable">
-      <type>TNET_BEGIN_DECLS typedef unsigned long</type>
-      <name>tnet_nfds_t</name>
-      <anchorfile>tnet__poll_8h.html</anchorfile>
-      <anchor>af96f099a93a4e28b49e802276e14b09b</anchor>
-      <arglist></arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>tnet_proto.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__proto_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <member kind="typedef">
@@ -6763,6 +8744,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_proto_e</name>
       <anchorfile>tnet__proto_8h.html</anchorfile>
       <anchor>a0a5a9fc22fd159c4a6c3ba14951133ae</anchor>
@@ -7635,7 +9617,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_socket.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__socket_8c</filename>
     <includes id="tnet__socket_8h" name="tnet_socket.h" local="yes" imported="no">tnet_socket.h</includes>
     <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">tnet_utils.h</includes>
@@ -7643,8 +9625,8 @@
       <type>tnet_socket_t *</type>
       <name>tnet_socket_create_2</name>
       <anchorfile>group__tnet__socket__group.html</anchorfile>
-      <anchor>ga8ef4f4ef1882fb31a2db42c4ff0f6b3f</anchor>
-      <arglist>(const char *host, tnet_port_t port, tnet_socket_type_t type, tsk_bool_t nonblocking, tsk_bool_t bindsocket)</arglist>
+      <anchor>gaa4d96c3d0bac908bd2d3413fbd19d30d</anchor>
+      <arglist>(const char *host, tnet_port_t port_, tnet_socket_type_t type, tsk_bool_t nonblocking, tsk_bool_t bindsocket)</arglist>
     </member>
     <member kind="function">
       <type>tnet_socket_t *</type>
@@ -7652,20 +9634,6 @@
       <anchorfile>group__tnet__socket__group.html</anchorfile>
       <anchor>ga44cfc3407bc375c5b932bfe45a9de849</anchor>
       <arglist>(const char *host, tnet_port_t port, tnet_socket_type_t type)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_socket_close</name>
-      <anchorfile>group__tnet__socket__group.html</anchorfile>
-      <anchor>gad66bdc608588cb77d2f6447ef39927f1</anchor>
-      <arglist>(tnet_socket_t *sock)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_socket_set_tlsfiles</name>
-      <anchorfile>tnet__socket_8c.html</anchorfile>
-      <anchor>ae5d76c52ce040fb833a5b5cfccf77dd2</anchor>
-      <arglist>(tnet_socket_tls_t *socket, int isClient, const char *tlsfile_ca, const char *tlsfile_pvk, const char *tlsfile_pbk)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -7677,11 +9645,12 @@
   </compound>
   <compound kind="file">
     <name>tnet_socket.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__socket_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">tnet_types.h</includes>
     <includes id="tnet__tls_8h" name="tnet_tls.h" local="yes" imported="no">tls/tnet_tls.h</includes>
+    <includes id="tnet__dtls_8h" name="tnet_dtls.h" local="yes" imported="no">tls/tnet_dtls.h</includes>
     <class kind="struct">tnet_socket_s</class>
     <member kind="define">
       <type>#define</type>
@@ -7695,6 +9664,13 @@
       <name>TNET_SOCKET_TYPE_UDP</name>
       <anchorfile>tnet__socket_8h.html</anchorfile>
       <anchor>a4a39d9f77a2c0f974f3a5ebb8a80992d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_SOCKET_TYPE_DTLS</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>abce7f796c5fca03a606ce218950650d2</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -7716,6 +9692,20 @@
       <name>TNET_SOCKET_TYPE_SCTP</name>
       <anchorfile>tnet__socket_8h.html</anchorfile>
       <anchor>a48fcfca9ecec785918601fd863ba10cf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_SOCKET_TYPE_WS</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>a542569e83b7300b1f231843e1c796d05</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_SOCKET_TYPE_WSS</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>a2ec694b5b9296070f6cfac1ab5344f38</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -7745,6 +9735,13 @@
       <anchorfile>tnet__socket_8h.html</anchorfile>
       <anchor>aaea09b2a77f6f12d48823836a8f44e3c</anchor>
       <arglist>(socket)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_SOCKET_TYPE_IS_VALID</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>abb72c89f5e4637106faf36e5dfa4c004</anchor>
+      <arglist>(type)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -7797,6 +9794,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>TNET_SOCKET_TYPE_IS_DTLS</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>a469601122019599b23d3abeba5b7aa94</anchor>
+      <arglist>(type)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>TNET_SOCKET_TYPE_IS_TCP</name>
       <anchorfile>tnet__socket_8h.html</anchorfile>
       <anchor>aeb0cd6fa3f1666aa122242e90d2a8983</anchor>
@@ -7814,6 +9818,20 @@
       <name>TNET_SOCKET_TYPE_IS_SCTP</name>
       <anchorfile>tnet__socket_8h.html</anchorfile>
       <anchor>a502f2a14d70745355c989c7d171ccc6d</anchor>
+      <arglist>(type)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_SOCKET_TYPE_IS_WS</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ac377ded5b93456ca31d670c9c6dbf5b9</anchor>
+      <arglist>(type)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_SOCKET_TYPE_IS_WSS</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>af4e55c1c5ec20c90ee19c4ac14cbd30d</anchor>
       <arglist>(type)</arglist>
     </member>
     <member kind="define">
@@ -7874,6 +9892,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>TNET_SOCKET_TYPE_SET_DTLS</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>a78be84fa580e6b474cf3d060b050e91f</anchor>
+      <arglist>(type)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>TNET_SOCKET_TYPE_SET_TCP</name>
       <anchorfile>tnet__socket_8h.html</anchorfile>
       <anchor>a901c93fdc876a6787bf71867318e3f80</anchor>
@@ -7891,6 +9916,20 @@
       <name>TNET_SOCKET_TYPE_SET_SCTP</name>
       <anchorfile>tnet__socket_8h.html</anchorfile>
       <anchor>a2520e87cbac118e7de1dc8062f534271</anchor>
+      <arglist>(type)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_SOCKET_TYPE_SET_WS</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>a8c4a5116f4ac9a8c3165233573aeb67b</anchor>
+      <arglist>(type)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_SOCKET_TYPE_SET_WSS</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>a21f939504f60fab74e3059a324c72fa0</anchor>
       <arglist>(type)</arglist>
     </member>
     <member kind="define">
@@ -7944,6 +9983,20 @@
     </member>
     <member kind="typedef">
       <type>tnet_socket_t</type>
+      <name>tnet_socket_ws_t</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>a9a1ca8a86fbfc3bf4dceb177506358c3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>tnet_socket_t</type>
+      <name>tnet_socket_wss_t</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>a3d437e9d3ee3d89d3587575816786f60</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>tnet_socket_t</type>
       <name>tnet_socket_ipsec_t</name>
       <anchorfile>tnet__socket_8h.html</anchorfile>
       <anchor>a02562d642430b5eee0000d90e96af005</anchor>
@@ -7957,6 +10010,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_socket_type_e</name>
       <anchorfile>tnet__socket_8h.html</anchorfile>
       <anchor>ab37bfdb5ac374384872091d48e3895bb</anchor>
@@ -7968,18 +10022,257 @@
       <anchor>ab37bfdb5ac374384872091d48e3895bba4867e88cadabdb296e11da6cd8374e81</anchor>
       <arglist></arglist>
     </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_socket_set_tlsfiles</name>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_udp_ipv4</name>
       <anchorfile>tnet__socket_8h.html</anchorfile>
-      <anchor>ae5d76c52ce040fb833a5b5cfccf77dd2</anchor>
-      <arglist>(tnet_socket_tls_t *socket, int isClient, const char *tlsfile_ca, const char *tlsfile_pvk, const char *tlsfile_pbk)</arglist>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba9878c017dac96d17dfb8ff6f90f7f119</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_dtls_ipv4</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bbad478122de9e6c0d8b5218c5c21cda411</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_tcp_ipv4</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba040c10bb67bd4ac2eaf26fb3548484bc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_tls_ipv4</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba06c82b0a6be847347a4f7bb7a4627df6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_sctp_ipv4</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba27609c62adde9edffb8a8c46d2df5f87</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_ws_ipv4</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba8c0daa338550cf5701428c1516cf5439</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_wss_ipv4</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bbac8516012b70312ab8d7c341e7e4deb64</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_udp_ipsec_ipv4</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bbacf582a552aa9901a7863f6d2e1e156fe</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_dtls_ipsec_ipv4</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bbaf0f8dd6e0fab9c10f61021035f056f0a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_tcp_ipsec_ipv4</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bbad65dcbd7cf453cfde4d4e855c912733e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_tls_ipsec_ipv4</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba578b670c64d83c907a4fca82b0bb308c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_sctp_ipsec_ipv4</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba7cc7206c5c80e58a1d29b8fac81d589c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_ws_ipsec_ipv4</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba751d905a4a5a4631b09f506859ccf918</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_wss_ipsec_ipv4</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba935a0985c07a4c49317ef88d80e78a11</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_udp_ipv6</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba12b789591e7ded6685e3809a2d63133b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_dtls_ipv6</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba90a963ee591fb48b0f520bab62a85c23</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_tcp_ipv6</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba6101c967b4d3ce42af97d9fc25334131</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_tls_ipv6</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba1d6b4fdddc80aa1b12e735e3235c939f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_sctp_ipv6</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bbaf8ce34f17339807de6fba014675c2cea</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_ws_ipv6</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba0121d29620c9bea409c293d1f44a53f0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_wss_ipv6</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba6b4f8a51b95f79db7b998038d0b17a47</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_udp_ipsec_ipv6</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba2af7612a9b8b9de23693a56f63fc3294</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_tcp_ipsec_ipv6</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba3fba0645a3ff38ace6a902c634c0735e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_tls_ipsec_ipv6</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bbadd2b59ff43c54857d0879ba551dc4d72</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_sctp_ipsec_ipv6</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bbaee18824f664be3a782685568110ebd7e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_ws_ipsec_ipv6</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba0528c055b394dfb54e98fb89b92bfeca</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_wss_ipsec_ipv6</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba75db9cfd6290a9b3825e4869a10e4207</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_udp_ipv46</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba63e7d80e87188729eab2445346144e73</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_dtls_ipv46</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba050969bd5ae7693d610006dfe3cdc8f6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_tcp_ipv46</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba229d0cef3abe327bbef97e8ba800bc6c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_tls_ipv46</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bbaef5605551def96072ef6a422f93f4d66</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_sctp_ipv46</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba21d71335634ff4fe2ec328560ee6f608</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_ws_ipv46</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba738eb76803f30691a46e91c62713302e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_wss_ipv46</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba9d0241d8fc72284aaf570fcc9828ffeb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_udp_ipsec_ipv46</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bbabca42b8ab7ee8f53bd5e7142eb683d38</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_dtls_ipsec_ipv46</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bbaf5d5d8170cd35b0b32c74d818e85233d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_tcp_ipsec_ipv46</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba9b1ab58092d574e6754634b1e673c62e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_tls_ipsec_ipv46</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bbabeef19aa4eb525b42ac2ef840239205e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_sctp_ipsec_ipv46</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba4d0c11246cdd62f0271b15e9ecf85e3d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_ws_ipsec_ipv46</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bba798031e7b87799cb4502d865950bc1c6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_socket_type_wss_ipsec_ipv46</name>
+      <anchorfile>tnet__socket_8h.html</anchorfile>
+      <anchor>ab37bfdb5ac374384872091d48e3895bbad3d316ccc36b63c9cd55da308846c9b9</anchor>
+      <arglist></arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API tnet_socket_t *</type>
       <name>tnet_socket_create_2</name>
       <anchorfile>group__tnet__socket__group.html</anchorfile>
-      <anchor>ga8ef4f4ef1882fb31a2db42c4ff0f6b3f</anchor>
+      <anchor>gaa4d96c3d0bac908bd2d3413fbd19d30d</anchor>
       <arglist>(const char *host, tnet_port_t port, tnet_socket_type_t type, tsk_bool_t nonblocking, tsk_bool_t bindsocket)</arglist>
     </member>
     <member kind="function">
@@ -7999,9 +10292,18 @@
   </compound>
   <compound kind="file">
     <name>tnet_transport.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__transport_8c</filename>
     <includes id="tnet__transport_8h" name="tnet_transport.h" local="yes" imported="no">tnet_transport.h</includes>
+    <includes id="tnet__tls_8h" name="tnet_tls.h" local="yes" imported="no">tls/tnet_tls.h</includes>
+    <includes id="tnet__dtls_8h" name="tnet_dtls.h" local="yes" imported="no">tls/tnet_dtls.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_CIPHER_LIST</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>a0272165dcd11efdaf43bac2d288a9a0e</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="function">
       <type>int</type>
       <name>tnet_transport_prepare</name>
@@ -8017,10 +10319,10 @@
       <arglist>(tnet_transport_t *transport)</arglist>
     </member>
     <member kind="function">
-      <type>void *</type>
+      <type>void *TSK_STDCALL</type>
       <name>tnet_transport_mainthread</name>
       <anchorfile>tnet__transport_8c.html</anchorfile>
-      <anchor>aa0f52495c58646abe52c80f94fac9fb5</anchor>
+      <anchor>a7fb95b1359ad08465766812b225cb579</anchor>
       <arglist>(void *param)</arglist>
     </member>
     <member kind="function">
@@ -8038,11 +10340,25 @@
       <arglist>(const char *host, tnet_port_t port, tnet_socket_type_t type, const char *description)</arglist>
     </member>
     <member kind="function">
+      <type>tnet_transport_t *</type>
+      <name>tnet_transport_create_2</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>aab38b03dc47731a7b0ccdae1937f3f46</anchor>
+      <arglist>(tnet_socket_t *master, const char *description)</arglist>
+    </member>
+    <member kind="function">
       <type>tnet_transport_event_t *</type>
       <name>tnet_transport_event_create</name>
       <anchorfile>tnet__transport_8c.html</anchorfile>
       <anchor>a14597eb136e537f1d4d4e5ce3b884b63</anchor>
       <arglist>(tnet_transport_event_type_t type, const void *callback_data, tnet_fd_t fd)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_transport_tls_set_certs</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>a894866de936b19458529ba4ca96bfaad</anchor>
+      <arglist>(tnet_transport_handle_t *handle, const char *ca, const char *pbk, const char *pvk, tsk_bool_t verify)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -8092,6 +10408,55 @@
       <anchorfile>tnet__transport_8c.html</anchorfile>
       <anchor>adaa653753ccbf3a5c9bfb0ea26cfb985</anchor>
       <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)</arglist>
+    </member>
+    <member kind="function">
+      <type>const char *</type>
+      <name>tnet_transport_dtls_get_local_fingerprint</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>ade804a4fc6cb8143eeaad0fd1f62c91f</anchor>
+      <arglist>(const tnet_transport_handle_t *handle, tnet_dtls_hash_type_t hash)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_transport_dtls_use_srtp</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>aa0647587ca32a91c1238351b0a423f36</anchor>
+      <arglist>(tnet_transport_handle_t *handle, const char *srtp_profiles, struct tnet_socket_s **sockets, tsk_size_t sockets_count)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_transport_dtls_set_remote_fingerprint</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>a4cc2b127f08b567b3f1b47b33d27d8b9</anchor>
+      <arglist>(tnet_transport_handle_t *handle, const tnet_fingerprint_t *fingerprint, tnet_dtls_hash_type_t hash, struct tnet_socket_s **sockets, tsk_size_t sockets_count)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_transport_dtls_is_enabled</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>aebb3e8611b3dec54cd65c2b41f9ea92d</anchor>
+      <arglist>(const tnet_transport_handle_t *handle)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_transport_dtls_set_enabled</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>acebacaf2c4236d879be5d3d94ef4a67b</anchor>
+      <arglist>(tnet_transport_handle_t *handle, tsk_bool_t enabled, struct tnet_socket_s **sockets, tsk_size_t sockets_count)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_transport_dtls_set_setup</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>acf4762d81cfd8832a80672f1d216e2ed</anchor>
+      <arglist>(tnet_transport_handle_t *handle, tnet_dtls_setup_t setup, struct tnet_socket_s **sockets, tsk_size_t sockets_count)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_transport_dtls_do_handshake</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>a7e7cbd1d1d1b4c8cdaa7d081141259a6</anchor>
+      <arglist>(tnet_transport_handle_t *handle, struct tnet_socket_s **sockets, tsk_size_t sockets_count, const struct sockaddr_storage **remote_addrs, tsk_size_t remote_addrs_count)</arglist>
     </member>
     <member kind="function">
       <type>tnet_socket_type_t</type>
@@ -8145,7 +10510,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_transport.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__transport_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__socket_8h" name="tnet_socket.h" local="yes" imported="no">tnet_socket.h</includes>
@@ -8180,6 +10545,20 @@
       <anchorfile>tnet__transport_8h.html</anchorfile>
       <anchor>aed1a2d620b05906167e9f59f20d249fd</anchor>
       <arglist>(handle, host, port)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tnet_transport_dtls_set_certs</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>ad735ab3e4ee5f9760226bd5e024fd2d6</anchor>
+      <arglist>(self, ca, pbk, pvk, verify)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tnet_transport_dtls_srtp_set_certs</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>a8bd4050682a0194cf1f9cd58cf4e63d0</anchor>
+      <arglist>(self, ca, pbk, pvk, verify)</arglist>
     </member>
     <member kind="typedef">
       <type>void</type>
@@ -8217,6 +10596,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_transport_event_type_e</name>
       <anchorfile>tnet__transport_8h.html</anchorfile>
       <anchor>abbf94f6cbb0048f5f737fb0fb850ab5b</anchor>
@@ -8241,6 +10621,12 @@
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
+      <name>event_removed</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>abbf94f6cbb0048f5f737fb0fb850ab5ba0cd9c3fadb25a5aa52a867c05798982b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
       <name>event_connected</name>
       <anchorfile>tnet__transport_8h.html</anchorfile>
       <anchor>abbf94f6cbb0048f5f737fb0fb850ab5ba56ba0a0c0f79ca66025f8a32c28a9b44</anchor>
@@ -8251,6 +10637,55 @@
       <anchorfile>tnet__transport_8h.html</anchorfile>
       <anchor>abbf94f6cbb0048f5f737fb0fb850ab5bad931ba02a9181775756c4e40d9e540bc</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>event_dtls_handshake_started</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>abbf94f6cbb0048f5f737fb0fb850ab5ba6bd61302adcb28659548f1855d6a7266</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>event_dtls_handshake_succeed</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>abbf94f6cbb0048f5f737fb0fb850ab5ba2a0f8e9915fa839e00dfcd35400ba7eb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>event_dtls_handshake_failed</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>abbf94f6cbb0048f5f737fb0fb850ab5ba299a1d91f87662ebfc331568cc68208f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>event_dtls_fingerprint_mismatch</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>abbf94f6cbb0048f5f737fb0fb850ab5ba9a5daf572cd52c02dc603296b914d3d9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>event_dtls_srtp_data</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>abbf94f6cbb0048f5f737fb0fb850ab5ba6ce922aa5ef586d6af2f6375bb0d7eb7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>event_dtls_srtp_profile_selected</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>abbf94f6cbb0048f5f737fb0fb850ab5baaa14922cdd57d1d3381630c443a39c2a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>event_dtls_error</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>abbf94f6cbb0048f5f737fb0fb850ab5ba7a5615d24a55510ce08dc51f25ee09df</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_transport_tls_set_certs</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>a13c127e8c4117a4b700ac5a491ea1a90</anchor>
+      <arglist>(tnet_transport_handle_t *self, const char *ca, const char *pbk, const char *pvk, tsk_bool_t verify)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
@@ -8326,8 +10761,8 @@
       <type>TINYNET_API int</type>
       <name>tnet_transport_add_socket</name>
       <anchorfile>tnet__transport_8h.html</anchorfile>
-      <anchor>a63ed1107c44c1301c0bb8b76e1a4f0f0</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient)</arglist>
+      <anchor>a4ddc0942b34eb9127fea1c811627f78a</anchor>
+      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient, tnet_tls_socket_handle_t *tlsHandle)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
@@ -8372,6 +10807,55 @@
       <arglist>(const tnet_transport_handle_t *handle, tnet_transport_cb_f callback, const void *callback_data)</arglist>
     </member>
     <member kind="function">
+      <type>TINYNET_API const char *</type>
+      <name>tnet_transport_dtls_get_local_fingerprint</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>a54db6ae9e13d34cbd08b5508a1a8d8aa</anchor>
+      <arglist>(const tnet_transport_handle_t *handle, tnet_dtls_hash_type_t hash)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_transport_dtls_use_srtp</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>a7716418ff59ea68f572db3a059993db7</anchor>
+      <arglist>(tnet_transport_handle_t *handle, const char *srtp_profiles, struct tnet_socket_s **sockets, tsk_size_t sockets_count)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_transport_dtls_set_remote_fingerprint</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>a6bea98bd13e69f696b5268e7f032504d</anchor>
+      <arglist>(tnet_transport_handle_t *handle, const tnet_fingerprint_t *fingerprint, tnet_dtls_hash_type_t hash, struct tnet_socket_s **sockets, tsk_size_t sockets_count)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API tsk_bool_t</type>
+      <name>tnet_transport_dtls_is_enabled</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>aaa6fca161f564e8586ba38b487cece20</anchor>
+      <arglist>(const tnet_transport_handle_t *handle)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_transport_dtls_set_enabled</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>ab4e5fe447eca34dbb555d96b4bfb1405</anchor>
+      <arglist>(tnet_transport_handle_t *handle, tsk_bool_t enabled, struct tnet_socket_s **sockets, tsk_size_t sockets_count)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_transport_dtls_set_setup</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>abb8f01a636827641262a8fcd9cb3d0bb</anchor>
+      <arglist>(tnet_transport_handle_t *handle, tnet_dtls_setup_t setup, struct tnet_socket_s **sockets, tsk_size_t sockets_count)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_transport_dtls_do_handshake</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>a6478aee395b8a66c7ac15a43840c3682</anchor>
+      <arglist>(tnet_transport_handle_t *handle, struct tnet_socket_s **sockets, tsk_size_t sockets_count, const struct sockaddr_storage **remote_addrs, tsk_size_t remote_addrs_count)</arglist>
+    </member>
+    <member kind="function">
       <type>TINYNET_API tnet_socket_type_t</type>
       <name>tnet_transport_get_type</name>
       <anchorfile>tnet__transport_8h.html</anchorfile>
@@ -8407,6 +10891,13 @@
       <arglist>(const char *host, tnet_port_t port, tnet_socket_type_t type, const char *description)</arglist>
     </member>
     <member kind="function">
+      <type>TINYNET_API tnet_transport_t *</type>
+      <name>tnet_transport_create_2</name>
+      <anchorfile>tnet__transport_8h.html</anchorfile>
+      <anchor>a55fde6bcc30dcd6ab80e9449c2ec6d88</anchor>
+      <arglist>(tnet_socket_t *master, const char *description)</arglist>
+    </member>
+    <member kind="function">
       <type>tnet_transport_event_t *</type>
       <name>tnet_transport_event_create</name>
       <anchorfile>tnet__transport_8h.html</anchorfile>
@@ -8436,137 +10927,35 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>tnet_transport_cfsocket.c</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
+    <filename>tnet__transport__cfsocket_8c</filename>
+    <includes id="tnet__transport_8h" name="tnet_transport.h" local="yes" imported="no">tnet_transport.h</includes>
+  </compound>
+  <compound kind="file">
     <name>tnet_transport_poll.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__transport__poll_8c</filename>
     <includes id="tnet__transport_8h" name="tnet_transport.h" local="yes" imported="no">tnet_transport.h</includes>
-    <includes id="tnet__poll_8h" name="tnet_poll.h" local="yes" imported="no">tnet_poll.h</includes>
-    <class kind="struct">transport_socket_s</class>
-    <class kind="struct">transport_context_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TNET_MAX_FDS</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>ab595569dcdfe305f64325ba97f281e0a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct transport_socket_s</type>
-      <name>transport_socket_t</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>a08a9ed901600f39b2f3328c467207d1d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct transport_context_s</type>
-      <name>transport_context_t</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>a10d522707b2ee648d4331063b8c28f8c</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_transport_add_socket</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>a0847dd024cdee818f9d37a379109173e</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_transport_pause_socket</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>abee7c4939d6d6a491a7e858bebb062f3</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd, tsk_bool_t pause)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_transport_remove_socket</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>a24be6b8d861a0393ee2ac260fb51b097</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t *fd)</arglist>
-    </member>
-    <member kind="function">
-      <type>tsk_size_t</type>
-      <name>tnet_transport_send</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>a43742bc0a130d55441289926632bf36b</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t from, const void *buf, tsk_size_t size)</arglist>
-    </member>
-    <member kind="function">
-      <type>tsk_size_t</type>
-      <name>tnet_transport_sendto</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>a1e30780dd04f1c416c54a108ae4d798b</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void *buf, tsk_size_t size)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_transport_have_socket</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>ac47b0cfa0ce85266af579858b378ba54</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd)</arglist>
-    </member>
-    <member kind="function">
-      <type>const tnet_tls_socket_handle_t *</type>
-      <name>tnet_transport_get_tlshandle</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>a9ba3e1ebd5a3cbd7738d797cbbca99ca</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_transport_stop</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>a4dc920abb12866b5154692fa31885d99</anchor>
-      <arglist>(tnet_transport_t *transport)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_transport_prepare</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>aafdc2431c02385e300c520ca985ed55b</anchor>
-      <arglist>(tnet_transport_t *transport)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_transport_unprepare</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>a9763a05c45da16d31e3c99a79fdf1761</anchor>
-      <arglist>(tnet_transport_t *transport)</arglist>
-    </member>
-    <member kind="function">
-      <type>void *</type>
-      <name>tnet_transport_mainthread</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>aa0f52495c58646abe52c80f94fac9fb5</anchor>
-      <arglist>(void *param)</arglist>
-    </member>
-    <member kind="function">
-      <type>void *</type>
-      <name>tnet_transport_context_create</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>af40659e3fb5b3f051cf897661b7dbe48</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="variable">
-      <type>const tsk_object_def_t *</type>
-      <name>tnet_transport_context_def_t</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>aae4fa389e5278f1952717f39121e1198</anchor>
-      <arglist></arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>tnet_transport_win32.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__transport__win32_8c</filename>
     <includes id="tnet__transport_8h" name="tnet_transport.h" local="yes" imported="no">tnet_transport.h</includes>
   </compound>
   <compound kind="file">
     <name>tnet_types.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__types_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_FINGERPRINT_MAX</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>afe5781b6502203e6d121aa86a998c72f</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="define">
       <type>#define</type>
       <name>TNET_INVALID_SOCKET</name>
@@ -8631,6 +11020,13 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
+      <type>int32_t</type>
+      <name>tnet_fd_t</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>ad310050a573244ca7810e0b11c2d2363</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
       <type>uint16_t</type>
       <name>tnet_port_t</name>
       <anchorfile>tnet__types_8h.html</anchorfile>
@@ -8659,6 +11055,13 @@
       <arglist>[INET6_ADDRSTRLEN]</arglist>
     </member>
     <member kind="typedef">
+      <type>unsigned char</type>
+      <name>tnet_fingerprint_t</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>ae170648503e4db4d27f097f59dc0bcd5</anchor>
+      <arglist>[TNET_FINGERPRINT_MAX+1]</arglist>
+    </member>
+    <member kind="typedef">
       <type>tsk_list_t</type>
       <name>tnet_interfaces_L_t</name>
       <anchorfile>tnet__types_8h.html</anchorfile>
@@ -8673,28 +11076,122 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
+      <type>enum tnet_dtls_setup_e</type>
+      <name>tnet_dtls_setup_t</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>a7a5ada4bc5b60674bf52c2fcd4cf354c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>enum tnet_dtls_hash_type_e</type>
+      <name>tnet_dtls_hash_type_t</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>a90e3b533ed21bcbf0c31113405c0bf14</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
       <type>char</type>
       <name>tnet_error_t</name>
       <anchorfile>tnet__types_8h.html</anchorfile>
       <anchor>a79e339c2bb6c0e841bce06c380c6d376</anchor>
       <arglist>[512]</arglist>
     </member>
-    <member kind="variable">
-      <type>TNET_BEGIN_DECLS typedef int32_t</type>
-      <name>tnet_fd_t</name>
+    <member kind="enumeration">
+      <type></type>
+      <name>tnet_dtls_setup_e</name>
       <anchorfile>tnet__types_8h.html</anchorfile>
-      <anchor>a5e5fc8afe000507a7161007cb7eed1f8</anchor>
+      <anchor>a7a2f346b4438e78d7096d08bcfd8ce51</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_setup_none</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>a7a2f346b4438e78d7096d08bcfd8ce51ada8cd208467a4f2e36638b997bd52ec5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_setup_actpass</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>a7a2f346b4438e78d7096d08bcfd8ce51a843e99bce81a983533499a2813684995</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_setup_active</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>a7a2f346b4438e78d7096d08bcfd8ce51ae85331edf6e6d15edde3a8336eb52509</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_setup_passive</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>a7a2f346b4438e78d7096d08bcfd8ce51ad7fdba2fdb1911557ad82dc4be40e57e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>TNET_DTLS_SETUP_MAX</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>a7a2f346b4438e78d7096d08bcfd8ce51ae8e3e4805b16d3212c4c53daa8336cb2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>tnet_dtls_hash_type_e</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>a9a098624f10ecf3c9bdd16867d22ef79</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_hash_type_none</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>a9a098624f10ecf3c9bdd16867d22ef79a3b5f26eb71f64f135c4588d82d3ff798</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_hash_type_md5</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>a9a098624f10ecf3c9bdd16867d22ef79abdd2c218483e6a22a00003f808691a63</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_hash_type_sha1</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>a9a098624f10ecf3c9bdd16867d22ef79a70d72aada5320cab9d31e007039bd5e6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_hash_type_sha256</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>a9a098624f10ecf3c9bdd16867d22ef79a2408f43f4ebc54c26808dad5166bd4db</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tnet_dtls_hash_type_sha512</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>a9a098624f10ecf3c9bdd16867d22ef79a00de2ff7b734266d98a2cd5501620619</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>TNET_DTLS_HASH_TYPE_MAX</name>
+      <anchorfile>tnet__types_8h.html</anchorfile>
+      <anchor>a9a098624f10ecf3c9bdd16867d22ef79ae4fa7baa3b729d8600fb6d62868a9887</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tnet_utils.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__utils_8c</filename>
     <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">tnet_utils.h</includes>
     <includes id="tnet__socket_8h" name="tnet_socket.h" local="yes" imported="no">tnet_socket.h</includes>
     <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">tnet_endianness.h</includes>
     <includes id="tnet__dns__resolvconf_8h" name="tnet_dns_resolvconf.h" local="yes" imported="no">dns/tnet_dns_resolvconf.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>AF_LINK</name>
+      <anchorfile>tnet__utils_8c.html</anchorfile>
+      <anchor>a7a40a39aa9dfaf771780ebe061ffa940</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="function">
       <type>tnet_interface_t *</type>
       <name>tnet_interface_create</name>
@@ -8734,8 +11231,8 @@
       <type>tnet_addresses_L_t *</type>
       <name>tnet_get_addresses</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gab6d29eedac011432c6f370a0de3c08ce</anchor>
-      <arglist>(tnet_family_t family, unsigned unicast, unsigned anycast, unsigned multicast, unsigned dnsserver, long if_index)</arglist>
+      <anchor>ga6c6add3dc5bdf1f3b9cddd4430254fc4</anchor>
+      <arglist>(tnet_family_t family, tsk_bool_t unicast, tsk_bool_t anycast, tsk_bool_t multicast, tsk_bool_t dnsserver, long if_index)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -8760,9 +11257,16 @@
     </member>
     <member kind="function">
       <type>int</type>
-      <name>tnet_get_sockaddr</name>
+      <name>tnet_getsockname</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gad10141d545cb251fbae028cb42fd0e03</anchor>
+      <anchor>gaa1646c470ce392009805d7b46e5fe085</anchor>
+      <arglist>(tnet_fd_t fd, struct sockaddr_storage *result)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_getpeername</name>
+      <anchorfile>tnet__utils_8c.html</anchorfile>
+      <anchor>a90fda61ebce05fdb19b09bcdfa9fd3f6</anchor>
       <arglist>(tnet_fd_t fd, struct sockaddr_storage *result)</arglist>
     </member>
     <member kind="function">
@@ -8783,8 +11287,8 @@
       <type>int</type>
       <name>tnet_get_sockip_n_port</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga05c917e9faa055994c0cfdf3e49b135a</anchor>
-      <arglist>(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port)</arglist>
+      <anchor>ga66eefd3c3bb0cc2c7a287374449b700e</anchor>
+      <arglist>(const struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -8797,8 +11301,8 @@
       <type>int</type>
       <name>tnet_get_ip_n_port</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga159fab1a9ef12230e9100b56c1470f17</anchor>
-      <arglist>(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)</arglist>
+      <anchor>ga7feb0af8302b35bf835036ab7a48c4e9</anchor>
+      <arglist>(tnet_fd_t fd, tsk_bool_t getlocal, tnet_ip_t *ip, tnet_port_t *port)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -8837,6 +11341,13 @@
     </member>
     <member kind="function">
       <type>int</type>
+      <name>tnet_resolve</name>
+      <anchorfile>group__tnet__utils__group.html</anchorfile>
+      <anchor>ga903b843f79e03448a90d70bdd92a4779</anchor>
+      <arglist>(const char *fqdn, tnet_port_t port, tnet_socket_type_t type, tnet_ip_t *out_ip, tnet_port_t *out_port)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
       <name>tnet_sockaddrinfo_init</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
       <anchor>gaeb05ffebc3d308fd2ebb39de546c70a5</anchor>
@@ -8862,13 +11373,6 @@
       <anchorfile>group__tnet__utils__group.html</anchorfile>
       <anchor>gab9616a14cc2c468ad99b510e276abac0</anchor>
       <arglist>(tnet_fd_t fd, int nonBlocking)</arglist>
-    </member>
-    <member kind="function">
-      <type>tnet_tls_socket_handle_t *</type>
-      <name>tnet_sockfd_set_tlsfiles</name>
-      <anchorfile>tnet__utils_8c.html</anchorfile>
-      <anchor>ab90dfecaa2b9e83a0c550f053302f89f</anchor>
-      <arglist>(tnet_fd_t fd, int isClient, const char *tlsfile_ca, const char *tlsfile_pvk, const char *tlsfile_pbk)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -8926,6 +11430,13 @@
       <anchor>gad13808723477879ca310a70c527d850a</anchor>
       <arglist>(tnet_fd_t *fd)</arglist>
     </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_sockfd_shutdown</name>
+      <anchorfile>group__tnet__utils__group.html</anchorfile>
+      <anchor>gaba68ca319965780023e3209dae7167fa</anchor>
+      <arglist>(tnet_fd_t fd)</arglist>
+    </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
       <name>tnet_interface_def_t</name>
@@ -8943,7 +11454,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_utils.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
     <filename>tnet__utils_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__socket_8h" name="tnet_socket.h" local="yes" imported="no">tnet_socket.h</includes>
@@ -9052,15 +11563,15 @@
       <type>#define</type>
       <name>tnet_get_ip</name>
       <anchorfile>tnet__utils_8h.html</anchorfile>
-      <anchor>a5032d56845cd63a0a883ca70fd5117ab</anchor>
-      <arglist>(fd, ip)</arglist>
+      <anchor>a2017b5ef78a3f74af946a5681cf0e017</anchor>
+      <arglist>(fd, getlocal, ip)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>tnet_get_port</name>
       <anchorfile>tnet__utils_8h.html</anchorfile>
-      <anchor>a6636348ce754d9ef783a26d552f027c4</anchor>
-      <arglist>(fd, port)</arglist>
+      <anchor>a4c211f3c9cf30bab873cdfb673b90c7f</anchor>
+      <arglist>(fd, getlocal, port)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -9089,6 +11600,27 @@
       <anchorfile>tnet__utils_8h.html</anchorfile>
       <anchor>aa7f35176e1af1f381db152a4e393c1bc</anchor>
       <arglist>(localFD, port)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tnet_get_sockaddr_size</name>
+      <anchorfile>tnet__utils_8h.html</anchorfile>
+      <anchor>aefb30f9ee6e1e8f5dd4e34727cd76bab</anchor>
+      <arglist>(psockaddr)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tnet_ioctlt</name>
+      <anchorfile>tnet__utils_8h.html</anchorfile>
+      <anchor>ac2410f7b3e6a9d089408da51ef40bcf8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tnet_soccket</name>
+      <anchorfile>tnet__utils_8h.html</anchorfile>
+      <anchor>af594457cda94f455aea25b5942d7cb79</anchor>
+      <arglist>(family, type, protocol)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -9124,13 +11656,6 @@
       <anchorfile>tnet__utils_8h.html</anchorfile>
       <anchor>ad84b1312befef0c09d4fa9a37e5bbe60</anchor>
       <arglist>(FMT,...)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>tnet_ioctlt</name>
-      <anchorfile>tnet__utils_8h.html</anchorfile>
-      <anchor>ac2410f7b3e6a9d089408da51ef40bcf8</anchor>
-      <arglist></arglist>
     </member>
     <member kind="typedef">
       <type>struct tnet_interface_s</type>
@@ -9171,8 +11696,8 @@
       <type>TINYNET_API tnet_addresses_L_t *</type>
       <name>tnet_get_addresses</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gab6d29eedac011432c6f370a0de3c08ce</anchor>
-      <arglist>(tnet_family_t family, unsigned unicast, unsigned anycast, unsigned multicast, unsigned dnsserver, long if_index)</arglist>
+      <anchor>ga6c6add3dc5bdf1f3b9cddd4430254fc4</anchor>
+      <arglist>(tnet_family_t family, tsk_bool_t unicast, tsk_bool_t anycast, tsk_bool_t multicast, tsk_bool_t dnsserver, long if_index)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
@@ -9197,9 +11722,16 @@
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
-      <name>tnet_get_sockaddr</name>
+      <name>tnet_getsockname</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gad10141d545cb251fbae028cb42fd0e03</anchor>
+      <anchor>gaa1646c470ce392009805d7b46e5fe085</anchor>
+      <arglist>(tnet_fd_t fd, struct sockaddr_storage *result)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_getpeername</name>
+      <anchorfile>tnet__utils_8h.html</anchorfile>
+      <anchor>af7a97c97fbe63065150329bc02dd5cbb</anchor>
       <arglist>(tnet_fd_t fd, struct sockaddr_storage *result)</arglist>
     </member>
     <member kind="function">
@@ -9220,15 +11752,15 @@
       <type>TINYNET_API int</type>
       <name>tnet_get_ip_n_port</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga159fab1a9ef12230e9100b56c1470f17</anchor>
-      <arglist>(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)</arglist>
+      <anchor>ga7feb0af8302b35bf835036ab7a48c4e9</anchor>
+      <arglist>(tnet_fd_t fd, tsk_bool_t getlocal, tnet_ip_t *ip, tnet_port_t *port)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
       <name>tnet_get_sockip_n_port</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga05c917e9faa055994c0cfdf3e49b135a</anchor>
-      <arglist>(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port)</arglist>
+      <anchor>ga66eefd3c3bb0cc2c7a287374449b700e</anchor>
+      <arglist>(const struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
@@ -9274,6 +11806,13 @@
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
+      <name>tnet_resolve</name>
+      <anchorfile>group__tnet__utils__group.html</anchorfile>
+      <anchor>ga903b843f79e03448a90d70bdd92a4779</anchor>
+      <arglist>(const char *fqdn, tnet_port_t port, tnet_socket_type_t type, tnet_ip_t *out_ip, tnet_port_t *out_port)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYNET_API int</type>
       <name>tnet_sockaddrinfo_init</name>
       <anchorfile>tnet__utils_8h.html</anchorfile>
       <anchor>ad61bbea344fdf1113ca96aa8b4d03ecb</anchor>
@@ -9299,13 +11838,6 @@
       <anchorfile>group__tnet__utils__group.html</anchorfile>
       <anchor>gab9616a14cc2c468ad99b510e276abac0</anchor>
       <arglist>(tnet_fd_t fd, int nonBlocking)</arglist>
-    </member>
-    <member kind="function">
-      <type>TINYNET_API tnet_tls_socket_handle_t *</type>
-      <name>tnet_sockfd_set_tlsfiles</name>
-      <anchorfile>tnet__utils_8h.html</anchorfile>
-      <anchor>aa40b12b2a03fd14f6d5666e6fc31508f</anchor>
-      <arglist>(tnet_fd_t fd, int isClient, const char *tlsfile_ca, const char *tlsfile_pvk, const char *tlsfile_pbk)</arglist>
     </member>
     <member kind="function">
       <type>TINYNET_API int</type>
@@ -9364,6 +11896,13 @@
       <arglist>(tnet_fd_t *fd)</arglist>
     </member>
     <member kind="function">
+      <type>TINYNET_API int</type>
+      <name>tnet_sockfd_shutdown</name>
+      <anchorfile>group__tnet__utils__group.html</anchorfile>
+      <anchor>gaba68ca319965780023e3209dae7167fa</anchor>
+      <arglist>(tnet_fd_t fd)</arglist>
+    </member>
+    <member kind="function">
       <type>tnet_interface_t *</type>
       <name>tnet_interface_create</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
@@ -9394,10 +11933,13 @@
   </compound>
   <compound kind="file">
     <name>tnet_turn.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/turn/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/turn/</path>
     <filename>tnet__turn_8c</filename>
     <includes id="tnet__turn_8h" name="tnet_turn.h" local="yes" imported="no">tnet_turn.h</includes>
     <includes id="tnet__turn__message_8h" name="tnet_turn_message.h" local="yes" imported="no">tnet_turn_message.h</includes>
+    <includes id="tnet__nat_8h" name="tnet_nat.h" local="yes" imported="no">../tnet_nat.h</includes>
+    <includes id="tnet__utils_8h" name="tnet_utils.h" local="yes" imported="no">../tnet_utils.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="typedef">
       <type>tnet_stun_request_t *(*</type>
       <name>tnet_turn_create_request_func</name>
@@ -9562,7 +12104,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_turn.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/turn/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/turn/</path>
     <filename>tnet__turn_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__turn__attribute_8h" name="tnet_turn_attribute.h" local="yes" imported="no">turn/tnet_turn_attribute.h</includes>
@@ -9743,9 +12285,11 @@
   </compound>
   <compound kind="file">
     <name>tnet_turn_attribute.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/turn/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/turn/</path>
     <filename>tnet__turn__attribute_8c</filename>
     <includes id="tnet__turn__attribute_8h" name="tnet_turn_attribute.h" local="yes" imported="no">tnet_turn_attribute.h</includes>
+    <includes id="tnet__stun_8h" name="tnet_stun.h" local="yes" imported="no">../stun/tnet_stun.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_turn_attribute_channelnum_t *</type>
       <name>tnet_turn_attribute_channelnum_create</name>
@@ -9896,7 +12440,7 @@
   </compound>
   <compound kind="file">
     <name>tnet_turn_attribute.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/turn/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/turn/</path>
     <filename>tnet__turn__attribute_8h</filename>
     <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">tinynet_config.h</includes>
     <includes id="tnet__proto_8h" name="tnet_proto.h" local="yes" imported="no">tnet_proto.h</includes>
@@ -10130,9 +12674,11 @@
   </compound>
   <compound kind="file">
     <name>tnet_turn_message.c</name>
-    <path>C:/Projects/Doubango/tinyNET/src/turn/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/turn/</path>
     <filename>tnet__turn__message_8c</filename>
     <includes id="tnet__turn__message_8h" name="tnet_turn_message.h" local="yes" imported="no">tnet_turn_message.h</includes>
+    <includes id="tnet__types_8h" name="tnet_types.h" local="yes" imported="no">../tnet_types.h</includes>
+    <includes id="tnet__endianness_8h" name="tnet_endianness.h" local="yes" imported="no">../tnet_endianness.h</includes>
     <member kind="function">
       <type>tnet_turn_channel_data_t *</type>
       <name>tnet_turn_channel_data_create</name>
@@ -10164,8 +12710,9 @@
   </compound>
   <compound kind="file">
     <name>tnet_turn_message.h</name>
-    <path>C:/Projects/Doubango/tinyNET/src/turn/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/turn/</path>
     <filename>tnet__turn__message_8h</filename>
+    <includes id="tinynet__config_8h" name="tinynet_config.h" local="yes" imported="no">../tinynet_config.h</includes>
     <class kind="struct">tnet_turn_channel_data_s</class>
     <member kind="typedef">
       <type>TNET_BEGIN_DECLS struct tnet_turn_channel_data_s</type>
@@ -10503,6 +13050,10 @@
     <class kind="struct">tnet_stun_attribute_unknowns_s</class>
     <class kind="struct">tnet_stun_attribute_software_s</class>
     <class kind="struct">tnet_stun_attribute_altserver_s</class>
+    <class kind="struct">tnet_stun_attribute_ice_priority_s</class>
+    <class kind="struct">tnet_stun_attribute_ice_use_candidate_s</class>
+    <class kind="struct">tnet_stun_attribute_ice_controlled_s</class>
+    <class kind="struct">tnet_stun_attribute_ice_controlling_s</class>
     <class kind="struct">tnet_stun_message_s</class>
     <member kind="define">
       <type>#define</type>
@@ -10555,16 +13106,16 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>TNET_STUN_RESPONSE_IS_REQUEST</name>
+      <name>TNET_STUN_MESSAGE_IS_REQUEST</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga09a28b87a49c9242203c09d5fa56a1fe</anchor>
+      <anchor>ga50742ed21d77367f7d6d0b1ece487d94</anchor>
       <arglist>(self)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>TNET_STUN_RESPONSE_IS_INDICATION</name>
+      <name>TNET_STUN_MESSAGE_IS_INDICATION</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>gac1faf702ec0e6fafd112c3d2b80e1af8</anchor>
+      <anchor>ga05a95d304163ba125defae8444a28f73</anchor>
       <arglist>(self)</arglist>
     </member>
     <member kind="define">
@@ -10583,10 +13134,10 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>TNET_IS_STUN2</name>
+      <name>TNET_IS_STUN2_MSG</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
-      <anchor>ga3b0b84dbb873d8c18c6e438bdf5053e8</anchor>
-      <arglist>(PU8)</arglist>
+      <anchor>ga3e9c76b717211f3d8c27d624a07e2353</anchor>
+      <arglist>(PU8, SIZE)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -10708,6 +13259,34 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
+      <type>struct tnet_stun_attribute_ice_priority_s</type>
+      <name>tnet_stun_attribute_ice_priority_t</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga782dcf37c6503a9287b479cef6fe0132</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tnet_stun_attribute_ice_use_candidate_s</type>
+      <name>tnet_stun_attribute_ice_use_candidate_t</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga47de3ced777b9c46f863e513b934ab23</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tnet_stun_attribute_ice_controlled_s</type>
+      <name>tnet_stun_attribute_ice_controlled_t</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>gab46c08e93d0c514a72fc8b3f73bc7a77</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tnet_stun_attribute_ice_controlling_s</type>
+      <name>tnet_stun_attribute_ice_controlling_t</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>gac4832ed589696b4a9ef6274b96333adf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
       <type>uint8_t</type>
       <name>tnet_stun_transacid_t</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
@@ -10743,6 +13322,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_stun_addr_family_e</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga3326fbcc063f264d3d359e922637e2e4</anchor>
@@ -10761,6 +13341,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_stun_attribute_type_e</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>gab696586b61219965987af1e017e6ffa6</anchor>
@@ -10940,7 +13521,32 @@
       <anchor>ggab696586b61219965987af1e017e6ffa6a88373f0f1635103b2091910a9584c58d</anchor>
       <arglist></arglist>
     </member>
+    <member kind="enumvalue">
+      <name>stun_ice_priority</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ggab696586b61219965987af1e017e6ffa6a99410d8e75f7ab0d4421fe71634604bb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>stun_ice_use_candidate</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ggab696586b61219965987af1e017e6ffa6a275c187aabe3a9d9bdc32a180c39b1d2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>stun_ice_controlled</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ggab696586b61219965987af1e017e6ffa6a4cfd4eab6287ed2b1126e6ba40ac5d4a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>stun_ice_controlling</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ggab696586b61219965987af1e017e6ffa6a21100a7a716c88ed5b5544cdb28549aa</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_stun_class_type_e</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga3faef946079e315842f5ad4d41aa0929</anchor>
@@ -10971,6 +13577,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_stun_method_type_e</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>ga4701a0e3395592a6d6a742901212801c</anchor>
@@ -11019,6 +13626,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tnet_stun_message_type_e</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>gabf2f8d8b846fe491470941a7e237559c</anchor>
@@ -11283,6 +13891,34 @@
       <arglist>(const void *payload, tsk_size_t payload_size)</arglist>
     </member>
     <member kind="function">
+      <type>tnet_stun_attribute_ice_priority_t *</type>
+      <name>tnet_stun_attribute_ice_priority_create</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga7e2992cbcf5e4d93fce285c8fdad6018</anchor>
+      <arglist>(uint32_t value)</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_stun_attribute_ice_use_candidate_t *</type>
+      <name>tnet_stun_attribute_ice_use_candidate_create</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>gafc6efba58197cb3d697502bbad7378cf</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_stun_attribute_ice_controlled_t *</type>
+      <name>tnet_stun_attribute_ice_controlled_create</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>gaf2e4854c90f7c8c3abae9915e59ad12f</anchor>
+      <arglist>(uint64_t value)</arglist>
+    </member>
+    <member kind="function">
+      <type>tnet_stun_attribute_ice_controlling_t *</type>
+      <name>tnet_stun_attribute_ice_controlling_create</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga94da0e7a21d255c8647c190387229ba3</anchor>
+      <arglist>(uint64_t value)</arglist>
+    </member>
+    <member kind="function">
       <type>tnet_stun_attribute_t *</type>
       <name>tnet_stun_attribute_deserialize</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
@@ -11332,11 +13968,25 @@
       <arglist>(const uint8_t *data, tsk_size_t size)</arglist>
     </member>
     <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_stun_message_has_attribute</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga250b97b6a26f99f9d545533e20d29acb</anchor>
+      <arglist>(const tnet_stun_message_t *self, tnet_stun_attribute_type_t type)</arglist>
+    </member>
+    <member kind="function">
       <type>int</type>
       <name>tnet_stun_message_add_attribute</name>
       <anchorfile>group__tnet__stun__group.html</anchorfile>
       <anchor>gacb982af5ead9faf9e85b4e2f69e05d47</anchor>
       <arglist>(tnet_stun_message_t *self, tnet_stun_attribute_t **attribute)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_stun_message_remove_attribute</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga8c3cf4006d4c030e0114b8c00f2dc5ec</anchor>
+      <arglist>(tnet_stun_message_t *self, tnet_stun_attribute_type_t type)</arglist>
     </member>
     <member kind="function">
       <type>const tnet_stun_attribute_t *</type>
@@ -11373,6 +14023,13 @@
       <anchor>ga12380617e5a883d3c175216c48245839</anchor>
       <arglist>(const tnet_stun_message_t *self)</arglist>
     </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tnet_stun_message_transac_id_equals</name>
+      <anchorfile>group__tnet__stun__group.html</anchorfile>
+      <anchor>ga401b2a061923a11340da833dc248fa9d</anchor>
+      <arglist>(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2)</arglist>
+    </member>
     <member kind="variable">
       <type>TNET_BEGIN_DECLS typedef uint64_t</type>
       <name>tnet_stun_binding_id_t</name>
@@ -11386,6 +14043,20 @@
     <title>NAT Traversal API (STUN, TURN and ICE).</title>
     <filename>group__tnet__nat__group.html</filename>
     <class kind="struct">tnet_nat_context_s</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_DEFAULT_RTO</name>
+      <anchorfile>group__tnet__nat__group.html</anchorfile>
+      <anchor>ga25beb3cb889e80636f91ed1e316ef083</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TNET_ICE_DEFAULT_RC</name>
+      <anchorfile>group__tnet__nat__group.html</anchorfile>
+      <anchor>gaf2d937114195afa44a46b88b898a781b</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="define">
       <type>#define</type>
       <name>TNET_NAT_DEFAULT_RTO</name>
@@ -11528,8 +14199,8 @@
       <type>tnet_socket_t *</type>
       <name>tnet_socket_create_2</name>
       <anchorfile>group__tnet__socket__group.html</anchorfile>
-      <anchor>ga8ef4f4ef1882fb31a2db42c4ff0f6b3f</anchor>
-      <arglist>(const char *host, tnet_port_t port, tnet_socket_type_t type, tsk_bool_t nonblocking, tsk_bool_t bindsocket)</arglist>
+      <anchor>gaa4d96c3d0bac908bd2d3413fbd19d30d</anchor>
+      <arglist>(const char *host, tnet_port_t port_, tnet_socket_type_t type, tsk_bool_t nonblocking, tsk_bool_t bindsocket)</arglist>
     </member>
     <member kind="function">
       <type>tnet_socket_t *</type>
@@ -11537,13 +14208,6 @@
       <anchorfile>group__tnet__socket__group.html</anchorfile>
       <anchor>ga44cfc3407bc375c5b932bfe45a9de849</anchor>
       <arglist>(const char *host, tnet_port_t port, tnet_socket_type_t type)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tnet_socket_close</name>
-      <anchorfile>group__tnet__socket__group.html</anchorfile>
-      <anchor>gad66bdc608588cb77d2f6447ef39927f1</anchor>
-      <arglist>(tnet_socket_t *sock)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -11596,8 +14260,8 @@
       <type>tnet_addresses_L_t *</type>
       <name>tnet_get_addresses</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gab6d29eedac011432c6f370a0de3c08ce</anchor>
-      <arglist>(tnet_family_t family, unsigned unicast, unsigned anycast, unsigned multicast, unsigned dnsserver, long if_index)</arglist>
+      <anchor>ga6c6add3dc5bdf1f3b9cddd4430254fc4</anchor>
+      <arglist>(tnet_family_t family, tsk_bool_t unicast, tsk_bool_t anycast, tsk_bool_t multicast, tsk_bool_t dnsserver, long if_index)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -11622,9 +14286,9 @@
     </member>
     <member kind="function">
       <type>int</type>
-      <name>tnet_get_sockaddr</name>
+      <name>tnet_getsockname</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gad10141d545cb251fbae028cb42fd0e03</anchor>
+      <anchor>gaa1646c470ce392009805d7b46e5fe085</anchor>
       <arglist>(tnet_fd_t fd, struct sockaddr_storage *result)</arglist>
     </member>
     <member kind="function">
@@ -11645,8 +14309,8 @@
       <type>int</type>
       <name>tnet_get_sockip_n_port</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga05c917e9faa055994c0cfdf3e49b135a</anchor>
-      <arglist>(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port)</arglist>
+      <anchor>ga66eefd3c3bb0cc2c7a287374449b700e</anchor>
+      <arglist>(const struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -11659,8 +14323,8 @@
       <type>int</type>
       <name>tnet_get_ip_n_port</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga159fab1a9ef12230e9100b56c1470f17</anchor>
-      <arglist>(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)</arglist>
+      <anchor>ga7feb0af8302b35bf835036ab7a48c4e9</anchor>
+      <arglist>(tnet_fd_t fd, tsk_bool_t getlocal, tnet_ip_t *ip, tnet_port_t *port)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -11696,6 +14360,13 @@
       <anchorfile>group__tnet__utils__group.html</anchorfile>
       <anchor>gaf54873a5fed045c9eff1200ebb368266</anchor>
       <arglist>(tnet_fd_t fd, const char *multiaddr, unsigned iface_index)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_resolve</name>
+      <anchorfile>group__tnet__utils__group.html</anchorfile>
+      <anchor>ga903b843f79e03448a90d70bdd92a4779</anchor>
+      <arglist>(const char *fqdn, tnet_port_t port, tnet_socket_type_t type, tnet_ip_t *out_ip, tnet_port_t *out_port)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -11780,6 +14451,13 @@
       <anchorfile>group__tnet__utils__group.html</anchorfile>
       <anchor>gad13808723477879ca310a70c527d850a</anchor>
       <arglist>(tnet_fd_t *fd)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_sockfd_shutdown</name>
+      <anchorfile>group__tnet__utils__group.html</anchorfile>
+      <anchor>gaba68ca319965780023e3209dae7167fa</anchor>
+      <arglist>(tnet_fd_t fd)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -12964,122 +15642,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>uint16_t</type>
-      <name>ID</name>
-      <anchorfile>structtnet__dns__message__s_1_1@0.html</anchorfile>
-      <anchor>a9bb81603329def43dbb55e1ae69996d9</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>unsigned</type>
-      <name>QR</name>
-      <anchorfile>structtnet__dns__message__s_1_1@0.html</anchorfile>
-      <anchor>a086f2fd20aad22a949d4f224956df2b0</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>unsigned</type>
-      <name>OPCODE</name>
-      <anchorfile>structtnet__dns__message__s_1_1@0.html</anchorfile>
-      <anchor>a1c66c4a468224548d0a57bd673067804</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>unsigned</type>
-      <name>AA</name>
-      <anchorfile>structtnet__dns__message__s_1_1@0.html</anchorfile>
-      <anchor>a66dcc3e3a86d61312fb31f2b3691b666</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>unsigned</type>
-      <name>TC</name>
-      <anchorfile>structtnet__dns__message__s_1_1@0.html</anchorfile>
-      <anchor>a06e1a0824bd69d7e69bf704151dd285d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>unsigned</type>
-      <name>RD</name>
-      <anchorfile>structtnet__dns__message__s_1_1@0.html</anchorfile>
-      <anchor>ae119f53c101ac632e338d91ab4a70e5f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>unsigned</type>
-      <name>RA</name>
-      <anchorfile>structtnet__dns__message__s_1_1@0.html</anchorfile>
-      <anchor>a11895546e4853db4e31c6b25120597a4</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>unsigned</type>
-      <name>Z</name>
-      <anchorfile>structtnet__dns__message__s_1_1@0.html</anchorfile>
-      <anchor>ac908725f95d2f115071b18f9dc888e79</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>unsigned</type>
-      <name>RCODE</name>
-      <anchorfile>structtnet__dns__message__s_1_1@0.html</anchorfile>
-      <anchor>a2b8a72c36f3ce12ad2ddfb049f0e2857</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>uint16_t</type>
-      <name>QDCOUNT</name>
-      <anchorfile>structtnet__dns__message__s_1_1@0.html</anchorfile>
-      <anchor>a0a3519cd5491ac721fc6733bdbd86848</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>uint16_t</type>
-      <name>ANCOUNT</name>
-      <anchorfile>structtnet__dns__message__s_1_1@0.html</anchorfile>
-      <anchor>af954605d8ed074c91aada60f313a9e2e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>uint16_t</type>
-      <name>NSCOUNT</name>
-      <anchorfile>structtnet__dns__message__s_1_1@0.html</anchorfile>
-      <anchor>a93362533ee4f2611436af6ff8544753f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>uint16_t</type>
-      <name>ARCOUNT</name>
-      <anchorfile>structtnet__dns__message__s_1_1@0.html</anchorfile>
-      <anchor>a5c94102d026fbe7f04075f26bf27b34b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
       <type>struct tnet_dns_message_s::@1</type>
       <name>Question</name>
       <anchorfile>structtnet__dns__message__s.html</anchorfile>
       <anchor>ab11a7098fcf552ad821a90a5ba6f4fca</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>void *</type>
-      <name>QNAME</name>
-      <anchorfile>structtnet__dns__message__s_1_1@1.html</anchorfile>
-      <anchor>a7334da930b8194cfe8e276bbd33b337b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tnet_dns_qtype_t</type>
-      <name>QTYPE</name>
-      <anchorfile>structtnet__dns__message__s_1_1@1.html</anchorfile>
-      <anchor>a77d06692a4c99273384f2185126d8706</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tnet_dns_qclass_t</type>
-      <name>QCLASS</name>
-      <anchorfile>structtnet__dns__message__s_1_1@1.html</anchorfile>
-      <anchor>acade00700b296187f7ac973346be44c9</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -13407,6 +15973,590 @@
     </member>
   </compound>
   <compound kind="struct">
+    <name>tnet_dtls_socket_s</name>
+    <filename>structtnet__dtls__socket__s.html</filename>
+    <member kind="variable">
+      <type></type>
+      <name>TSK_DECLARE_OBJECT</name>
+      <anchorfile>structtnet__dtls__socket__s.html</anchorfile>
+      <anchor>a6cb2c811d40d14ceb34bd3b2e7dc5e6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_fd_t</type>
+      <name>fd</name>
+      <anchorfile>structtnet__dtls__socket__s.html</anchorfile>
+      <anchor>a89776c821e7cb62a4acac46798a84137</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>verify_peer</name>
+      <anchorfile>structtnet__dtls__socket__s.html</anchorfile>
+      <anchor>ac3bbf4e3b1bc3ea9c47f0fc43969dac2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>use_srtp</name>
+      <anchorfile>structtnet__dtls__socket__s.html</anchorfile>
+      <anchor>a07a7a29b74a7cecdc4392e6aa547005f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>handshake_completed</name>
+      <anchorfile>structtnet__dtls__socket__s.html</anchorfile>
+      <anchor>a9d9b346395e6d39d82414e5dbbc99dac</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_dtls_setup_t</type>
+      <name>setup</name>
+      <anchorfile>structtnet__dtls__socket__s.html</anchorfile>
+      <anchor>a45067f39a61d7d389a19739fd1e59b99</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>struct tnet_dtls_socket_s::@4</type>
+      <name>cb</name>
+      <anchorfile>structtnet__dtls__socket__s.html</anchorfile>
+      <anchor>adba381cb3517a407757cb0bacf239fbb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>struct tnet_dtls_socket_s::@5</type>
+      <name>remote</name>
+      <anchorfile>structtnet__dtls__socket__s.html</anchorfile>
+      <anchor>a2d62e3cc37a43c42b2e350fc1d70381b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>struct tnet_dtls_socket_s::@6</type>
+      <name>local</name>
+      <anchorfile>structtnet__dtls__socket__s.html</anchorfile>
+      <anchor>a654feace44e7c42b656ff47695fa3209</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>TSK_DECLARE_SAFEOBJ</name>
+      <anchorfile>structtnet__dtls__socket__s.html</anchorfile>
+      <anchor>a9818e976fd73889027b42c32d628169f</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>tnet_ice_action_s</name>
+    <filename>structtnet__ice__action__s.html</filename>
+    <member kind="variable">
+      <type></type>
+      <name>TSK_DECLARE_OBJECT</name>
+      <anchorfile>structtnet__ice__action__s.html</anchorfile>
+      <anchor>a6cb2c811d40d14ceb34bd3b2e7dc5e6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_fsm_action_id</type>
+      <name>id</name>
+      <anchorfile>structtnet__ice__action__s.html</anchorfile>
+      <anchor>afa188fbd86824e693af7d82baf1831a7</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>tnet_ice_candidate_s</name>
+    <filename>structtnet__ice__candidate__s.html</filename>
+    <member kind="variable">
+      <type></type>
+      <name>TSK_DECLARE_OBJECT</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>a6cb2c811d40d14ceb34bd3b2e7dc5e6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_ice_cand_type_t</type>
+      <name>type_e</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>ab7208769aa8829731c5cfdc820849f1f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint8_t</type>
+      <name>foundation</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>a7dc7989fc6a4901626924310cebadbac</anchor>
+      <arglist>[33]</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32_t</type>
+      <name>comp_id</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>a30d7364b567d7c341a5dc3f602136363</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>transport_str</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>a16edd675ed7c739a518c7df27ca57d82</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>enum tnet_socket_type_e</type>
+      <name>transport_e</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>ae4e142d80ab962928fc48710ebc9256e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32_t</type>
+      <name>priority</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>a90249de64da5ae5d7acd34da7ea1b857</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>cand_type_str</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>abee5149305f31cc6ed5e356a5b9547f8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_ip_t</type>
+      <name>connection_addr</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>ae862117942242057beb16b59e568fcd6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_port_t</type>
+      <name>port</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>a804003d8ce1732a48fc0a8d3f44fcc1c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_params_L_t *</type>
+      <name>extension_att_list</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>a851450e616fa22e16448808be6e030a7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>is_ice_jingle</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>a2f30e8927ccd387faaf5628d115ae17c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>is_rtp</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>a910d991f863a83bc7f53ef12bc174ce5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>is_video</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>aa32a2ad18730f160578396d76bc9cbb0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint16_t</type>
+      <name>local_pref</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>ab9c182df2591c34c8185b98cb0360252</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>ufrag</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>a3b4a16bb0327f02abc59505b25e77bb8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>pwd</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>a4be832ac49cb1384b79b9423028f1d54</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>struct tnet_socket_s *</type>
+      <name>socket</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>aa6ef92be590a80571ef2297ef5a3479d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>struct tnet_ice_candidate_s::@2</type>
+      <name>stun</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>a52c3b5eb6826c5338d8b5e3c177a30fa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>tostring</name>
+      <anchorfile>structtnet__ice__candidate__s.html</anchorfile>
+      <anchor>ac53a959d1e2819b4dae0c9b5d4f8f5d8</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>tnet_ice_ctx_s</name>
+    <filename>structtnet__ice__ctx__s.html</filename>
+    <member kind="variable">
+      <type></type>
+      <name>TSK_DECLARE_RUNNABLE</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>ae8fba71ac54cd6376ba9e5ed1cc87cf3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>is_started</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>aceed659b1d0a7bdb1ddcc2480b6273f9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>is_active</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>ac8e3cacbc0f857762970f6b9be72a4e2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_ice_callback_f</type>
+      <name>callback</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a5fc2712f91a0b561cbd5232e8506c3cc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>const void *</type>
+      <name>userdata</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a2aa76a7bfd06a16154eccdd30d6f6393</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>use_ipv6</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a558e28da1766e51b8cba545747aa9eed</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>use_rtcp</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>ae3425b99ca7b44979bb44d6f46356238</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>use_rtcpmux</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a3ff7682ebd9100401e4344ddc38779e7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>is_video</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>aa32a2ad18730f160578396d76bc9cbb0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>unicast</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>ab849120f12135af90808a5a3cee69aac</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>anycast</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>aee319295484f210ff8d76bd12c1c749d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>multicast</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a0721609fcddaa98a4c47a48b64faaabe</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>is_controlling</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a505b4f2717219bc9a55dd48dc8753d8a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>is_ice_jingle</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a2f30e8927ccd387faaf5628d115ae17c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint64_t</type>
+      <name>tie_breaker</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a5581ce626352db2070cae43032c963a6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint64_t</type>
+      <name>concheck_timeout</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a35765e5bbc5be1762e99e6fd0b436793</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>const void *</type>
+      <name>rtp_callback_data</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a6d77826979298b328326b282bd787899</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_ice_rtp_callback_f</type>
+      <name>rtp_callback</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a43dfd07c697f57c396f8f04d542deeb6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>ufrag</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a3b4a16bb0327f02abc59505b25e77bb8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>pwd</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a4be832ac49cb1384b79b9423028f1d54</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_timer_manager_handle_t *</type>
+      <name>h_timer_mgr</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a5fd624501a8012544ccaf1bfbe9cfe6d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_fsm_t *</type>
+      <name>fsm</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a0cc2337becbdef2e7ea539f61019fdbd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_ice_candidates_L_t *</type>
+      <name>candidates_local</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a6a3700734a198d6c04c5a7f428f66c35</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_ice_candidates_L_t *</type>
+      <name>candidates_remote</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a87907f26f08ddd55e8d2bd65f7454ad4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_ice_pairs_L_t *</type>
+      <name>candidates_pairs</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a3f0d3e9fc285be5693fe2e5f14ae682c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>have_nominated_offer</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>ab820474c96a4e2752af92ae3c5352052</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>have_nominated_answer</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a78cff6175205e1c23e536a9d09220624</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>have_nominated_symetric</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a7bc095414b42e4af61747c3f4c037789</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint16_t</type>
+      <name>RTO</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>aebe0faf98d3286e1406eb88b460f0808</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint16_t</type>
+      <name>Rc</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a4df78cbd063bbc725d99e2f80b391cb1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>struct tnet_ice_ctx_s::@3</type>
+      <name>stun</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a9c0864c5426d106b90ee56f76cd5e92e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>TSK_DECLARE_SAFEOBJ</name>
+      <anchorfile>structtnet__ice__ctx__s.html</anchorfile>
+      <anchor>a9818e976fd73889027b42c32d628169f</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>tnet_ice_event_s</name>
+    <filename>structtnet__ice__event__s.html</filename>
+    <member kind="variable">
+      <type></type>
+      <name>TSK_DECLARE_OBJECT</name>
+      <anchorfile>structtnet__ice__event__s.html</anchorfile>
+      <anchor>a6cb2c811d40d14ceb34bd3b2e7dc5e6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_ice_event_type_t</type>
+      <name>type</name>
+      <anchorfile>structtnet__ice__event__s.html</anchorfile>
+      <anchor>ad65eebeead91a113dfd8c7a5c8f82b0f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>phrase</name>
+      <anchorfile>structtnet__ice__event__s.html</anchorfile>
+      <anchor>a601977f3c7b2d461e3723ca8ef7926f0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>struct tnet_ice_action_s *</type>
+      <name>action</name>
+      <anchorfile>structtnet__ice__event__s.html</anchorfile>
+      <anchor>a0ecb51cb1b029389ef4257b23dd9b075</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>struct tnet_ice_ctx_s *</type>
+      <name>ctx</name>
+      <anchorfile>structtnet__ice__event__s.html</anchorfile>
+      <anchor>a5c998d86fc92f46033f738f1f761ef4f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>const void *</type>
+      <name>userdata</name>
+      <anchorfile>structtnet__ice__event__s.html</anchorfile>
+      <anchor>a2aa76a7bfd06a16154eccdd30d6f6393</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>tnet_ice_pair_s</name>
+    <filename>structtnet__ice__pair__s.html</filename>
+    <member kind="variable">
+      <type></type>
+      <name>TSK_DECLARE_OBJECT</name>
+      <anchorfile>structtnet__ice__pair__s.html</anchorfile>
+      <anchor>a6cb2c811d40d14ceb34bd3b2e7dc5e6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint64_t</type>
+      <name>priority</name>
+      <anchorfile>structtnet__ice__pair__s.html</anchorfile>
+      <anchor>af43b7b00bdbaf3d0602086885a410899</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_ice_pair_state_t</type>
+      <name>state_offer</name>
+      <anchorfile>structtnet__ice__pair__s.html</anchorfile>
+      <anchor>af268a8c411b9f018e0254ed4da093825</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_ice_pair_state_t</type>
+      <name>state_answer</name>
+      <anchorfile>structtnet__ice__pair__s.html</anchorfile>
+      <anchor>a220b0b99453f807075ad530c39756343</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>is_ice_jingle</name>
+      <anchorfile>structtnet__ice__pair__s.html</anchorfile>
+      <anchor>a2f30e8927ccd387faaf5628d115ae17c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>is_controlling</name>
+      <anchorfile>structtnet__ice__pair__s.html</anchorfile>
+      <anchor>a505b4f2717219bc9a55dd48dc8753d8a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint64_t</type>
+      <name>tie_breaker</name>
+      <anchorfile>structtnet__ice__pair__s.html</anchorfile>
+      <anchor>a5581ce626352db2070cae43032c963a6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>struct tnet_ice_candidate_s *</type>
+      <name>candidate_offer</name>
+      <anchorfile>structtnet__ice__pair__s.html</anchorfile>
+      <anchor>a438bfe5089fc56f5297a5f40adc199be</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>struct tnet_ice_candidate_s *</type>
+      <name>candidate_answer</name>
+      <anchorfile>structtnet__ice__pair__s.html</anchorfile>
+      <anchor>adbb3f8f093eed2e9995a74dbe3ada407</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>struct tnet_stun_message_s *</type>
+      <name>last_request</name>
+      <anchorfile>structtnet__ice__pair__s.html</anchorfile>
+      <anchor>a9b53797dee1dd1569721b615a573aaab</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
     <name>tnet_interface_s</name>
     <filename>structtnet__interface__s.html</filename>
     <member kind="variable">
@@ -13562,31 +16712,6 @@
     </member>
   </compound>
   <compound kind="struct">
-    <name>tnet_pollfd_s</name>
-    <filename>structtnet__pollfd__s.html</filename>
-    <member kind="variable">
-      <type>tnet_fd_t</type>
-      <name>fd</name>
-      <anchorfile>structtnet__pollfd__s.html</anchorfile>
-      <anchor>a89776c821e7cb62a4acac46798a84137</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>short</type>
-      <name>events</name>
-      <anchorfile>structtnet__pollfd__s.html</anchorfile>
-      <anchor>a82463718695c17094aa41c974eb35d61</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>short</type>
-      <name>revents</name>
-      <anchorfile>structtnet__pollfd__s.html</anchorfile>
-      <anchor>ae9f68e4cc4edb4a9f8413e62e6167fde</anchor>
-      <arglist></arglist>
-    </member>
-  </compound>
-  <compound kind="struct">
     <name>tnet_socket_s</name>
     <filename>structtnet__socket__s.html</filename>
     <member kind="variable">
@@ -13629,6 +16754,13 @@
       <name>tlshandle</name>
       <anchorfile>structtnet__socket__s.html</anchorfile>
       <anchor>afb9a3122a38768304a5134beb27e1298</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_dtls_socket_handle_t *</type>
+      <name>dtlshandle</name>
+      <anchorfile>structtnet__socket__s.html</anchorfile>
+      <anchor>aa0089985f6797dd810fd77090fbdd2b2</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -13711,6 +16843,71 @@
       <name>value</name>
       <anchorfile>structtnet__stun__attribute__fingerprint__s.html</anchorfile>
       <anchor>ae7f66047e6e39ba2bb6af8b95f00d1dd</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>tnet_stun_attribute_ice_controlled_s</name>
+    <filename>structtnet__stun__attribute__ice__controlled__s.html</filename>
+    <member kind="variable">
+      <type></type>
+      <name>TNET_STUN_DECLARE_ATTRIBUTE</name>
+      <anchorfile>structtnet__stun__attribute__ice__controlled__s.html</anchorfile>
+      <anchor>a1c1589f58715cc05bb80c012d5979003</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint64_t</type>
+      <name>value</name>
+      <anchorfile>structtnet__stun__attribute__ice__controlled__s.html</anchorfile>
+      <anchor>a4e630859cc0e2a22bd6acf39a6a8e218</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>tnet_stun_attribute_ice_controlling_s</name>
+    <filename>structtnet__stun__attribute__ice__controlling__s.html</filename>
+    <member kind="variable">
+      <type></type>
+      <name>TNET_STUN_DECLARE_ATTRIBUTE</name>
+      <anchorfile>structtnet__stun__attribute__ice__controlling__s.html</anchorfile>
+      <anchor>a1c1589f58715cc05bb80c012d5979003</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint64_t</type>
+      <name>value</name>
+      <anchorfile>structtnet__stun__attribute__ice__controlling__s.html</anchorfile>
+      <anchor>a4e630859cc0e2a22bd6acf39a6a8e218</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>tnet_stun_attribute_ice_priority_s</name>
+    <filename>structtnet__stun__attribute__ice__priority__s.html</filename>
+    <member kind="variable">
+      <type></type>
+      <name>TNET_STUN_DECLARE_ATTRIBUTE</name>
+      <anchorfile>structtnet__stun__attribute__ice__priority__s.html</anchorfile>
+      <anchor>a1c1589f58715cc05bb80c012d5979003</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32_t</type>
+      <name>value</name>
+      <anchorfile>structtnet__stun__attribute__ice__priority__s.html</anchorfile>
+      <anchor>ae7f66047e6e39ba2bb6af8b95f00d1dd</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>tnet_stun_attribute_ice_use_candidate_s</name>
+    <filename>structtnet__stun__attribute__ice__use__candidate__s.html</filename>
+    <member kind="variable">
+      <type></type>
+      <name>TNET_STUN_DECLARE_ATTRIBUTE</name>
+      <anchorfile>structtnet__stun__attribute__ice__use__candidate__s.html</anchorfile>
+      <anchor>a1c1589f58715cc05bb80c012d5979003</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -14059,6 +17256,13 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
+      <type>unsigned</type>
+      <name>nointegrity</name>
+      <anchorfile>structtnet__stun__message__s.html</anchorfile>
+      <anchor>a5c9b21c563ac7ab9fda61a7e93a34250</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
       <type>char *</type>
       <name>username</name>
       <anchorfile>structtnet__stun__message__s.html</anchorfile>
@@ -14112,62 +17316,6 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>char *</type>
-      <name>tlsdir_cas</name>
-      <anchorfile>structtnet__tls__socket__s.html</anchorfile>
-      <anchor>ae62052a42cd023f8808e171b378f4b60</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>char *</type>
-      <name>tlsfile_ca</name>
-      <anchorfile>structtnet__tls__socket__s.html</anchorfile>
-      <anchor>a701226d05472d05739e211d30f70d807</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>char *</type>
-      <name>tlsfile_pvk</name>
-      <anchorfile>structtnet__tls__socket__s.html</anchorfile>
-      <anchor>af212d67dfc07942c1233ee3f63283a7f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>char *</type>
-      <name>tlsfile_pbk</name>
-      <anchorfile>structtnet__tls__socket__s.html</anchorfile>
-      <anchor>afe37b95eacff572796705a62da5c3efa</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>char *</type>
-      <name>password</name>
-      <anchorfile>structtnet__tls__socket__s.html</anchorfile>
-      <anchor>a59460a3ff2c12443d1022e5cc0fba85c</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>unsigned</type>
-      <name>initialized</name>
-      <anchorfile>structtnet__tls__socket__s.html</anchorfile>
-      <anchor>a8ac8977c8c92fcb0ed6caa2e0d04accf</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tsk_bool_t</type>
-      <name>isClient</name>
-      <anchorfile>structtnet__tls__socket__s.html</anchorfile>
-      <anchor>adb1b45db1067196c7b01b18200cb3cfd</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tsk_bool_t</type>
-      <name>mutual_auth</name>
-      <anchorfile>structtnet__tls__socket__s.html</anchorfile>
-      <anchor>a2e86b79dfe517f8511a18db552a9127d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
       <type></type>
       <name>TSK_DECLARE_SAFEOBJ</name>
       <anchorfile>structtnet__tls__socket__s.html</anchorfile>
@@ -14215,9 +17363,16 @@
     </member>
     <member kind="variable">
       <type>tnet_fd_t</type>
-      <name>fd</name>
+      <name>local_fd</name>
       <anchorfile>structtnet__transport__event__s.html</anchorfile>
-      <anchor>a89776c821e7cb62a4acac46798a84137</anchor>
+      <anchor>afa7f2e7bc012cbcc028e247c726043fc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>struct sockaddr_storage</type>
+      <name>remote_addr</name>
+      <anchorfile>structtnet__transport__event__s.html</anchorfile>
+      <anchor>ae0831b58d62cf11710b2638982259cfb</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -14243,6 +17398,27 @@
       <name>local_ip</name>
       <anchorfile>structtnet__transport__s.html</anchorfile>
       <anchor>a39812ff38e55c55387e819985e9f0d20</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>local_host</name>
+      <anchorfile>structtnet__transport__s.html</anchorfile>
+      <anchor>a5581c3fd932c186d16c55dd83499788b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_port_t</type>
+      <name>req_local_port</name>
+      <anchorfile>structtnet__transport__s.html</anchorfile>
+      <anchor>af89530ad71276773e469c5e90ae18d6c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tnet_port_t</type>
+      <name>bind_local_port</name>
+      <anchorfile>structtnet__transport__s.html</anchorfile>
+      <anchor>ae57f3ae4b492ff17c9aed39764016540</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -14302,38 +17478,17 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>struct tnet_transport_s::@2</type>
+      <type>struct tnet_transport_s::@7</type>
       <name>tls</name>
       <anchorfile>structtnet__transport__s.html</anchorfile>
-      <anchor>ac02d2ad6d228210ff5fec79944ea49c4</anchor>
+      <anchor>aa9c46ec1eddafe5714af85e8e3e57169</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>char *</type>
-      <name>ca</name>
-      <anchorfile>structtnet__transport__s_1_1@2.html</anchorfile>
-      <anchor>aed75f3bb30e712d0a8ca4e18ac0d1582</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>char *</type>
-      <name>pvk</name>
-      <anchorfile>structtnet__transport__s_1_1@2.html</anchorfile>
-      <anchor>a7b558b120c654899dda385dd65db4c57</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>char *</type>
-      <name>pbk</name>
-      <anchorfile>structtnet__transport__s_1_1@2.html</anchorfile>
-      <anchor>a2bc102c261f5f1170825a6d7bfd11783</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tsk_bool_t</type>
-      <name>have_tls</name>
-      <anchorfile>structtnet__transport__s_1_1@2.html</anchorfile>
-      <anchor>a7ca0d9a85aad8a836d212fcf9e87bb91</anchor>
+      <type>struct tnet_transport_s::@8</type>
+      <name>dtls</name>
+      <anchorfile>structtnet__transport__s.html</anchorfile>
+      <anchor>a72dd4024a92a92e594c56275f2b3d01a</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -14753,110 +17908,198 @@
       <arglist></arglist>
     </member>
   </compound>
-  <compound kind="struct">
-    <name>transport_context_s</name>
-    <filename>structtransport__context__s.html</filename>
-    <member kind="variable">
-      <type></type>
-      <name>TSK_DECLARE_OBJECT</name>
-      <anchorfile>structtransport__context__s.html</anchorfile>
-      <anchor>a6cb2c811d40d14ceb34bd3b2e7dc5e6a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tsk_size_t</type>
-      <name>count</name>
-      <anchorfile>structtransport__context__s.html</anchorfile>
-      <anchor>a8c61335783a0ae87ef83b2d6f66b8da2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>short</type>
-      <name>events</name>
-      <anchorfile>structtransport__context__s.html</anchorfile>
-      <anchor>a82463718695c17094aa41c974eb35d61</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tnet_fd_t</type>
-      <name>pipeW</name>
-      <anchorfile>structtransport__context__s.html</anchorfile>
-      <anchor>a841535bae34461ff3e32b07f1cb00b63</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tnet_fd_t</type>
-      <name>pipeR</name>
-      <anchorfile>structtransport__context__s.html</anchorfile>
-      <anchor>aaaab8b3a7b18afa190a00dceaab764f2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tnet_pollfd_t</type>
-      <name>ufds</name>
-      <anchorfile>structtransport__context__s.html</anchorfile>
-      <anchor>a6a4c56d8e36390b3d8e544d8c3eeeb75</anchor>
-      <arglist>[TNET_MAX_FDS]</arglist>
-    </member>
-    <member kind="variable">
-      <type>transport_socket_t *</type>
-      <name>sockets</name>
-      <anchorfile>structtransport__context__s.html</anchorfile>
-      <anchor>a11b0d00a213c3f69344cbaa58be4ffa8</anchor>
-      <arglist>[TNET_MAX_FDS]</arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>TSK_DECLARE_SAFEOBJ</name>
-      <anchorfile>structtransport__context__s.html</anchorfile>
-      <anchor>a9818e976fd73889027b42c32d628169f</anchor>
-      <arglist></arglist>
-    </member>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0</name>
+    <path>C:/Projects/doubango/branches/2.0/</path>
+    <filename>dir_23c6058911ec3d6519846acb77914e60.html</filename>
+    <dir>C:/Projects/doubango/branches/2.0/doubango</dir>
   </compound>
-  <compound kind="struct">
-    <name>transport_socket_s</name>
-    <filename>structtransport__socket__s.html</filename>
-    <member kind="variable">
-      <type>tnet_fd_t</type>
-      <name>fd</name>
-      <anchorfile>structtransport__socket__s.html</anchorfile>
-      <anchor>a89776c821e7cb62a4acac46798a84137</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tsk_bool_t</type>
-      <name>owner</name>
-      <anchorfile>structtransport__socket__s.html</anchorfile>
-      <anchor>a505b73b867902aa65af2b62016d88a13</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tsk_bool_t</type>
-      <name>connected</name>
-      <anchorfile>structtransport__socket__s.html</anchorfile>
-      <anchor>a3fe755c96cb04252e2da49e1c6355dc4</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tsk_bool_t</type>
-      <name>paused</name>
-      <anchorfile>structtransport__socket__s.html</anchorfile>
-      <anchor>a480d0b63a1a89d000626afe5691982e9</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tnet_socket_type_t</type>
-      <name>type</name>
-      <anchorfile>structtransport__socket__s.html</anchorfile>
-      <anchor>ae2a94a75704f25f33d3f032e34feb205</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tnet_tls_socket_handle_t *</type>
-      <name>tlshandle</name>
-      <anchorfile>structtransport__socket__s.html</anchorfile>
-      <anchor>afb9a3122a38768304a5134beb27e1298</anchor>
-      <arglist></arglist>
-    </member>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches</name>
+    <path>C:/Projects/doubango/branches/</path>
+    <filename>dir_48ccd1e4df20782306b24b8e85052973.html</filename>
+    <dir>C:/Projects/doubango/branches/2.0</dir>
+  </compound>
+  <compound kind="dir">
+    <name>C:</name>
+    <path>C:/</path>
+    <filename>dir_e6bb53534ac0e427887cf7a94c0c004e.html</filename>
+    <dir>C:/Projects</dir>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp/</path>
+    <filename>dir_9305dd5224cc9eb1b74ff189f58e640e.html</filename>
+    <file>tnet_dhcp.c</file>
+    <file>tnet_dhcp.h</file>
+    <file>tnet_dhcp_message.c</file>
+    <file>tnet_dhcp_message.h</file>
+    <file>tnet_dhcp_option.c</file>
+    <file>tnet_dhcp_option.h</file>
+    <file>tnet_dhcp_option_sip.c</file>
+    <file>tnet_dhcp_option_sip.h</file>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp6</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp6/</path>
+    <filename>dir_eda36b283219a502fc4de8db340bc374.html</filename>
+    <file>tnet_dhcp6.c</file>
+    <file>tnet_dhcp6.h</file>
+    <file>tnet_dhcp6_duid.c</file>
+    <file>tnet_dhcp6_duid.h</file>
+    <file>tnet_dhcp6_message.c</file>
+    <file>tnet_dhcp6_message.h</file>
+    <file>tnet_dhcp6_option.c</file>
+    <file>tnet_dhcp6_option.h</file>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns/</path>
+    <filename>dir_a3af63e0f7dbe4aa673b61a1a0d562c7.html</filename>
+    <file>tnet_dns.c</file>
+    <file>tnet_dns.h</file>
+    <file>tnet_dns_a.c</file>
+    <file>tnet_dns_a.h</file>
+    <file>tnet_dns_aaaa.c</file>
+    <file>tnet_dns_aaaa.h</file>
+    <file>tnet_dns_cname.c</file>
+    <file>tnet_dns_cname.h</file>
+    <file>tnet_dns_message.c</file>
+    <file>tnet_dns_message.h</file>
+    <file>tnet_dns_mx.c</file>
+    <file>tnet_dns_mx.h</file>
+    <file>tnet_dns_naptr.c</file>
+    <file>tnet_dns_naptr.h</file>
+    <file>tnet_dns_ns.c</file>
+    <file>tnet_dns_ns.h</file>
+    <file>tnet_dns_opt.c</file>
+    <file>tnet_dns_opt.h</file>
+    <file>tnet_dns_ptr.c</file>
+    <file>tnet_dns_ptr.h</file>
+    <file>tnet_dns_regexp.c</file>
+    <file>tnet_dns_regexp.h</file>
+    <file>tnet_dns_resolvconf.c</file>
+    <file>tnet_dns_resolvconf.h</file>
+    <file>tnet_dns_rr.c</file>
+    <file>tnet_dns_rr.h</file>
+    <file>tnet_dns_soa.c</file>
+    <file>tnet_dns_soa.h</file>
+    <file>tnet_dns_srv.c</file>
+    <file>tnet_dns_srv.h</file>
+    <file>tnet_dns_txt.c</file>
+    <file>tnet_dns_txt.h</file>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0/doubango</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/</path>
+    <filename>dir_794c5f3a5871fccbd9cb0144b8a918bb.html</filename>
+    <dir>C:/Projects/doubango/branches/2.0/doubango/tinyNET</dir>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango</name>
+    <path>C:/Projects/doubango/</path>
+    <filename>dir_61caa8c9c937953110cbb688168e4704.html</filename>
+    <dir>C:/Projects/doubango/branches</dir>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice/</path>
+    <filename>dir_7326b0f9d77a7a21c8e0c28502dde551.html</filename>
+    <file>tnet_ice.c</file>
+    <file>tnet_ice.h</file>
+    <file>tnet_ice_candidate.c</file>
+    <file>tnet_ice_candidate.h</file>
+    <file>tnet_ice_ctx.c</file>
+    <file>tnet_ice_ctx.h</file>
+    <file>tnet_ice_event.c</file>
+    <file>tnet_ice_event.h</file>
+    <file>tnet_ice_pair.c</file>
+    <file>tnet_ice_pair.h</file>
+    <file>tnet_ice_utils.c</file>
+    <file>tnet_ice_utils.h</file>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects</name>
+    <path>C:/Projects/</path>
+    <filename>dir_e27f7acb6c354cea3d58335de45d9d79.html</filename>
+    <dir>C:/Projects/doubango</dir>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/</path>
+    <filename>dir_dc29ffbc5ac5e8d81dc8895f583aaf87.html</filename>
+    <dir>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp</dir>
+    <dir>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dhcp6</dir>
+    <dir>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/dns</dir>
+    <dir>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/ice</dir>
+    <dir>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/stun</dir>
+    <dir>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/tls</dir>
+    <dir>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/turn</dir>
+    <file>tinynet.h</file>
+    <file>tinynet_config.h</file>
+    <file>tnet.c</file>
+    <file>tnet.h</file>
+    <file>tnet_auth.c</file>
+    <file>tnet_auth.h</file>
+    <file>tnet_endianness.c</file>
+    <file>tnet_endianness.h</file>
+    <file>tnet_hardwares.h</file>
+    <file>tnet_nat.c</file>
+    <file>tnet_nat.h</file>
+    <file>tnet_poll.c</file>
+    <file>tnet_poll.h</file>
+    <file>tnet_proto.h</file>
+    <file>tnet_socket.c</file>
+    <file>tnet_socket.h</file>
+    <file>tnet_transport.c</file>
+    <file>tnet_transport.h</file>
+    <file>tnet_transport_cfsocket.c</file>
+    <file>tnet_transport_poll.c</file>
+    <file>tnet_transport_win32.c</file>
+    <file>tnet_types.h</file>
+    <file>tnet_utils.c</file>
+    <file>tnet_utils.h</file>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/stun</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/stun/</path>
+    <filename>dir_a019e49c2167974a97bc9931fdf595ee.html</filename>
+    <file>tnet_stun.c</file>
+    <file>tnet_stun.h</file>
+    <file>tnet_stun_attribute.c</file>
+    <file>tnet_stun_attribute.h</file>
+    <file>tnet_stun_message.c</file>
+    <file>tnet_stun_message.h</file>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0/doubango/tinyNET</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/</path>
+    <filename>dir_a96db63cb14938079dd27e1b49770c9d.html</filename>
+    <dir>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src</dir>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/tls</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/tls/</path>
+    <filename>dir_6ce67df634907730bdb278977e2dcad6.html</filename>
+    <file>tnet_dtls.c</file>
+    <file>tnet_dtls.h</file>
+    <file>tnet_tls.c</file>
+    <file>tnet_tls.h</file>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/turn</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinyNET/src/turn/</path>
+    <filename>dir_a624ddd92b7822975b22b7ff89b4a0f7.html</filename>
+    <file>tnet_turn.c</file>
+    <file>tnet_turn.h</file>
+    <file>tnet_turn_attribute.c</file>
+    <file>tnet_turn_attribute.h</file>
+    <file>tnet_turn_message.c</file>
+    <file>tnet_turn_message.h</file>
+  </compound>
+  <compound kind="page">
+    <name>index</name>
+    <title>tinyNET API Overview</title>
+    <filename>index</filename>
   </compound>
 </tagfile>

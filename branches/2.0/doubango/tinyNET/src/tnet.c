@@ -45,7 +45,7 @@
 *
 * All network functions are part of tinyNET projects.<br>
 * You MUST call @ref tnet_startup() before using any network function (tnet_*). tnet_cleanup() is used to terminate use of network functions. <br>
-* The startup function will determine whether the host is a Ã¬little-endianÃ® machine or not (at runtime).
+* The startup function will determine whether the host is a little-endian machine or not (at runtime).
 *
 * ======
 *
@@ -58,17 +58,23 @@
 *
 * ======
 *
+* <table>
+* <tr> <td><b>LDFLAGS</b></td> <td>-ltinySAK</td> </tr>
+* <tr> <td><b>CFLAGS</b></td> <td>-Isrc -ItinySAK/src</td> </tr>
+* </table>
+*
 */
 static tsk_bool_t __tnet_started = tsk_false;
 tsk_bool_t tnet_isBigEndian = tsk_false;
 
 /**
  * @fn tnet_startup
- * This is probably the most important function. You MUST call this function to initialize the network stack before calling any <b>tnet_*</b> function. 
- *			You MUST call @ref tnet_cleanup to cleanup the network stack.
+ * This is probably the most important function. You MUST call this function to initialize the network stack before calling any <b>tnet_*</b> function. <br />
+ * On windows, this function will call <a target=_blank href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms742213(v=vs.85).aspx">WSAStartup</a>. <br />
+ * You MUST call @ref tnet_cleanup to cleanup the network stack if you no longer need to use networking function.
  *
  * @sa @ref tnet_cleanup.
- * @return	Zero if succeed and error code otherwise. 
+ * @return 0 if succeed and error code otherwise. 
 **/
 int tnet_startup()
 {
@@ -134,10 +140,10 @@ bail:
 
 
 /**
- * Cleanup the network stack.
- *
+ * Cleanup the network stack. <br />
+ * On windows, this function will call <a target=_blank href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms741549(v=vs.85).aspx">WSACleanup</a>. <br />
  * @sa @ref tnet_startup.
- * @retval	Zero if succeed and non-zero error code otherwise.
+ * @return 0 if succeed and non-zero error code otherwise.
 **/
 int tnet_cleanup()
 {

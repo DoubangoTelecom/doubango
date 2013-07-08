@@ -72,7 +72,7 @@ tsk_mutex_handle_t* tsk_mutex_create()
 
 /**@ingroup tsk_mutex_group
  * Creates new recursive mutex handle.
- * @param recursive whether we want a recursive mutex or not
+ * @param recursive Whether we want a recursive/reentrant mutex or not. For more inforation about reentrant mutexes: http://en.wikipedia.org/wiki/Reentrant_mutex.
  * @retval New mutex handle. It is up to you free the returned handle using  @ref tsk_mutex_destroy.
  * @sa @ref tsk_mutex_destroy.
  */
