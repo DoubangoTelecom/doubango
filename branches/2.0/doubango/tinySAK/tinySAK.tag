@@ -1,15 +1,17 @@
-<?xml version='1.0' encoding='ISO-8859-1' standalone='yes' ?>
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <tagfile>
-  <compound kind="page">
-    <name>index</name>
-    <title>tinySAK API Overview</title>
-    <filename>index</filename>
-  </compound>
   <compound kind="file">
     <name>tinysak_config.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tinysak__config_8h</filename>
     <includes id="tsk__common_8h" name="tsk_common.h" local="yes" imported="no">tsk_common.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_STDCALL</name>
+      <anchorfile>tinysak__config_8h.html</anchorfile>
+      <anchor>ab3c58fe3fc16ce52fa5c595d970d08ab</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="define">
       <type>#define</type>
       <name>TINYSAK_API</name>
@@ -55,14 +57,14 @@
   </compound>
   <compound kind="file">
     <name>tsk.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk_8c</filename>
     <includes id="tsk_8h" name="tsk.h" local="yes" imported="no">tsk.h</includes>
     <docanchor file="tsk_8c">LICENSE</docanchor>
   </compound>
   <compound kind="file">
     <name>tsk.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
@@ -71,6 +73,7 @@
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
     <includes id="tsk__url_8h" name="tsk_url.h" local="yes" imported="no">tsk_url.h</includes>
     <includes id="tsk__params_8h" name="tsk_params.h" local="yes" imported="no">tsk_params.h</includes>
+    <includes id="tsk__plugin_8h" name="tsk_plugin.h" local="yes" imported="no">tsk_plugin.h</includes>
     <includes id="tsk__options_8h" name="tsk_options.h" local="yes" imported="no">tsk_options.h</includes>
     <includes id="tsk__fsm_8h" name="tsk_fsm.h" local="yes" imported="no">tsk_fsm.h</includes>
     <includes id="tsk__time_8h" name="tsk_time.h" local="yes" imported="no">tsk_time.h</includes>
@@ -93,7 +96,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_base64.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__base64_8c</filename>
     <includes id="tsk__base64_8h" name="tsk_base64.h" local="yes" imported="no">tsk_base64.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
@@ -135,7 +138,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_base64.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__base64_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
@@ -169,13 +172,13 @@
   </compound>
   <compound kind="file">
     <name>tsk_binaryutils.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__binaryutils_8c</filename>
     <includes id="tsk__binaryutils_8h" name="tsk_binaryutils.h" local="yes" imported="no">tsk_binaryutils.h</includes>
   </compound>
   <compound kind="file">
     <name>tsk_binaryutils.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__binaryutils_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
@@ -216,7 +219,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_buffer.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__buffer_8c</filename>
     <includes id="tsk__buffer_8h" name="tsk_buffer.h" local="yes" imported="no">tsk_buffer.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
@@ -272,6 +275,13 @@
     </member>
     <member kind="function">
       <type>int</type>
+      <name>tsk_buffer_copy</name>
+      <anchorfile>tsk__buffer_8c.html</anchorfile>
+      <anchor>a16439df7484238f2d8f9277a41765720</anchor>
+      <arglist>(tsk_buffer_t *self, tsk_size_t start, const void *data, tsk_size_t size)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
       <name>tsk_buffer_cleanup</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
       <anchor>ga8a31cbf88b943d87b6858e9c6472459d</anchor>
@@ -294,7 +304,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_buffer.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__buffer_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
@@ -399,6 +409,13 @@
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
+      <name>tsk_buffer_copy</name>
+      <anchorfile>tsk__buffer_8h.html</anchorfile>
+      <anchor>a30caf3b95d70d0742c5633e6bcc362bd</anchor>
+      <arglist>(tsk_buffer_t *self, tsk_size_t start, const void *data, tsk_size_t size)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
       <name>tsk_buffer_cleanup</name>
       <anchorfile>group__tsk__buffer__group.html</anchorfile>
       <anchor>ga8a31cbf88b943d87b6858e9c6472459d</anchor>
@@ -421,7 +438,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_common.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__common_8h</filename>
     <member kind="define">
       <type>#define</type>
@@ -467,9 +484,23 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>TSK_CLAMP</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>afb252c3f63259a40bd1d9f80c0cbe170</anchor>
+      <arglist>(nMin, nVal, nMax)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>TSK_TO_UINT32</name>
       <anchorfile>tsk__common_8h.html</anchorfile>
       <anchor>a5855220a2bb70105e4d5d9c7221a8ea4</anchor>
+      <arglist>(u8_ptr)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_TO_INT32</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>a676362790205d8a5369a35870a4e8d51</anchor>
       <arglist>(u8_ptr)</arglist>
     </member>
     <member kind="define">
@@ -517,7 +548,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_condwait.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__condwait_8c</filename>
     <includes id="tsk__condwait_8h" name="tsk_condwait.h" local="yes" imported="no">tsk_condwait.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
@@ -597,7 +628,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_condwait.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__condwait_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__mutex_8h" name="tsk_mutex.h" local="yes" imported="no">tsk_mutex.h</includes>
@@ -653,7 +684,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_debug.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__debug_8c</filename>
     <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
     <member kind="function">
@@ -726,45 +757,24 @@
       <anchor>ac3a7a77f74d2f61ce021f96be8e259ec</anchor>
       <arglist>()</arglist>
     </member>
-    <member kind="variable">
-      <type>const void *</type>
-      <name>tsk_debug_arg_data</name>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_debug_get_level</name>
       <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>affba4054dd05905e5359b7ea6bb46a47</anchor>
-      <arglist></arglist>
+      <anchor>a1c3ca90086cfcab7e65f20c491ec78d4</anchor>
+      <arglist>()</arglist>
     </member>
-    <member kind="variable">
-      <type>tsk_debug_f</type>
-      <name>tsk_debug_info_cb</name>
+    <member kind="function">
+      <type>void</type>
+      <name>tsk_debug_set_level</name>
       <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>a1347f2f56083f289ad44d429a573fb73</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tsk_debug_f</type>
-      <name>tsk_debug_warn_cb</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>acaa4f0a0d028ef9f3cb47729e9c14544</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tsk_debug_f</type>
-      <name>tsk_debug_error_cb</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>a6fc91cae0fd94107336b4264d2919230</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>tsk_debug_f</type>
-      <name>tsk_debug_fatal_cb</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>abd90179616e4ff286f77e0a5511362bc</anchor>
-      <arglist></arglist>
+      <anchor>a3aed3692896c4f5354be6dbf16fd0ccf</anchor>
+      <arglist>(int level)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tsk_debug.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__debug_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
@@ -907,16 +917,30 @@
       <anchor>a93160943d9c0ec1780875a76b33c4520</anchor>
       <arglist>()</arglist>
     </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_debug_get_level</name>
+      <anchorfile>tsk__debug_8h.html</anchorfile>
+      <anchor>a5598810fe57e62bacf0dbd22985d773b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API void</type>
+      <name>tsk_debug_set_level</name>
+      <anchorfile>tsk__debug_8h.html</anchorfile>
+      <anchor>a18bfb60431fd860a6c13924885d601a0</anchor>
+      <arglist>(int)</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>tsk_errno.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__errno_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
   </compound>
   <compound kind="file">
     <name>tsk_fsm.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__fsm_8c</filename>
     <includes id="tsk__fsm_8h" name="tsk_fsm.h" local="yes" imported="no">tsk_fsm.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
@@ -971,6 +995,20 @@
       <arglist>(tsk_fsm_t *self, tsk_fsm_action_id action, const void *cond_data1, const void *cond_data2,...)</arglist>
     </member>
     <member kind="function">
+      <type>tsk_fsm_state_id</type>
+      <name>tsk_fsm_get_current_state</name>
+      <anchorfile>tsk__fsm_8c.html</anchorfile>
+      <anchor>abcfb73b547f81bf0444a432c7b49049b</anchor>
+      <arglist>(tsk_fsm_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_fsm_set_current_state</name>
+      <anchorfile>tsk__fsm_8c.html</anchorfile>
+      <anchor>a77ed82fc5102f914ee882db80222d63a</anchor>
+      <arglist>(tsk_fsm_t *self, tsk_fsm_state_id new_state)</arglist>
+    </member>
+    <member kind="function">
       <type>tsk_bool_t</type>
       <name>tsk_fsm_terminated</name>
       <anchorfile>tsk__fsm_8c.html</anchorfile>
@@ -994,7 +1032,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_fsm.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__fsm_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
@@ -1017,9 +1055,9 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>tsk_fsm_state_default</name>
-      <anchorfile>group__tsk__fsm__group.html</anchorfile>
-      <anchor>ga9cec29ff916b0b892289aa253b9a9005</anchor>
+      <name>tsk_fsm_state_current</name>
+      <anchorfile>tsk__fsm_8h.html</anchorfile>
+      <anchor>a8643af38b9dc2264f45736290be751e6</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -1184,6 +1222,20 @@
       <arglist>(tsk_fsm_t *self, tsk_fsm_action_id action, const void *cond_data1, const void *cond_data2,...)</arglist>
     </member>
     <member kind="function">
+      <type>TINYSAK_API tsk_fsm_state_id</type>
+      <name>tsk_fsm_get_current_state</name>
+      <anchorfile>tsk__fsm_8h.html</anchorfile>
+      <anchor>a2b4805bc4e95a148fb72b1aa30dd8d67</anchor>
+      <arglist>(tsk_fsm_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_fsm_set_current_state</name>
+      <anchorfile>tsk__fsm_8h.html</anchorfile>
+      <anchor>ad881c89ed8b105db2c729c9fd9201d46</anchor>
+      <arglist>(tsk_fsm_t *self, tsk_fsm_state_id new_state)</arglist>
+    </member>
+    <member kind="function">
       <type>TINYSAK_API tsk_bool_t</type>
       <name>tsk_fsm_terminated</name>
       <anchorfile>tsk__fsm_8h.html</anchorfile>
@@ -1207,7 +1259,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_hmac.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__hmac_8c</filename>
     <includes id="tsk__hmac_8h" name="tsk_hmac.h" local="yes" imported="no">tsk_hmac.h</includes>
     <includes id="tsk__string_8h" name="tsk_string.h" local="yes" imported="no">tsk_string.h</includes>
@@ -1227,6 +1279,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tsk_hash_type_e</name>
       <anchorfile>group__tsk__hmac__group.html</anchorfile>
       <anchor>gaeec7a6e6f400d343cce4e646099aeded</anchor>
@@ -1282,7 +1335,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_hmac.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__hmac_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__sha1_8h" name="tsk_sha1.h" local="yes" imported="no">tsk_sha1.h</includes>
@@ -1318,7 +1371,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_list.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__list_8c</filename>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
@@ -1366,10 +1419,10 @@
       <arglist>(tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
     </member>
     <member kind="function">
-      <type>void</type>
+      <type>tsk_bool_t</type>
       <name>tsk_list_remove_item_by_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga49ab1be4f114420c5b4b8c7f2b8374ad</anchor>
+      <anchor>ga18a64e50198a039b514efcc46567fb66</anchor>
       <arglist>(tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
     </member>
     <member kind="function">
@@ -1380,11 +1433,11 @@
       <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="function">
-      <type>void</type>
+      <type>tsk_bool_t</type>
       <name>tsk_list_remove_item_by_pred</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gacc1b42538856ec9f756de13fe9d56ddd</anchor>
-      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const tsk_object_t *data)</arglist>
+      <anchor>ga3220db1a9f9d848e3d10792fc52644c6</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -1457,6 +1510,20 @@
       <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="function">
+      <type>const tsk_object_t *</type>
+      <name>tsk_list_find_object_by_pred_at_index</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gabb9ce61a7bfa57c0e2f7da13ea19fe1a</anchor>
+      <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data, tsk_size_t index)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_list_find_index_by_pred</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gaa0e5ebcd7e7d8675364ad5ea0bfd9130</anchor>
+      <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
+    </member>
+    <member kind="function">
       <type>tsk_size_t</type>
       <name>tsk_list_count</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
@@ -1480,7 +1547,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_list.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__list_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__mutex_8h" name="tsk_mutex.h" local="yes" imported="no">tsk_mutex.h</includes>
@@ -1517,10 +1584,31 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>TSK_LIST_LAST_DATA</name>
+      <anchorfile>tsk__list_8h.html</anchorfile>
+      <anchor>ae138bed1ab969e9e97d1b611e2d94da5</anchor>
+      <arglist>(self)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>tsk_list_foreach</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
       <anchor>ga3dc00dc6de6f204db6cc311fab641552</anchor>
       <arglist>(item, list)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_list_remove_first_item</name>
+      <anchorfile>tsk__list_8h.html</anchorfile>
+      <anchor>a542aba5bbf5377257bc29ccfb0601309</anchor>
+      <arglist>(list)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_list_remove_last_item</name>
+      <anchorfile>tsk__list_8h.html</anchorfile>
+      <anchor>a286b23fd90b6bacf7bbac77ef9d044b3</anchor>
+      <arglist>(list)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -1656,25 +1744,25 @@
       <arglist>(tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSAK_API void</type>
+      <type>TINYSAK_API tsk_bool_t</type>
       <name>tsk_list_remove_item_by_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga49ab1be4f114420c5b4b8c7f2b8374ad</anchor>
+      <anchor>ga18a64e50198a039b514efcc46567fb66</anchor>
       <arglist>(tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSAK_API void</type>
+      <type>TINYSAK_API tsk_bool_t</type>
       <name>tsk_list_remove_item_by_pred</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gacc1b42538856ec9f756de13fe9d56ddd</anchor>
-      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const tsk_object_t *data)</arglist>
+      <anchor>ga3220db1a9f9d848e3d10792fc52644c6</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API tsk_list_item_t *</type>
       <name>tsk_list_pop_item_by_pred</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>adcf2ef7b8bec0a4a5733f957273d06b7</anchor>
-      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const tsk_object_t *data)</arglist>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gac19d6873b2ba28e0e94c0124de6e03ad</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
@@ -1747,6 +1835,20 @@
       <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="function">
+      <type>TINYSAK_API const tsk_object_t *</type>
+      <name>tsk_list_find_object_by_pred_at_index</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gabb9ce61a7bfa57c0e2f7da13ea19fe1a</anchor>
+      <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data, tsk_size_t index)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_list_find_index_by_pred</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gaa0e5ebcd7e7d8675364ad5ea0bfd9130</anchor>
+      <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
+    </member>
+    <member kind="function">
       <type>TINYSAK_API tsk_size_t</type>
       <name>tsk_list_count</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
@@ -1770,7 +1872,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_md5.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__md5_8c</filename>
     <includes id="tsk__md5_8h" name="tsk_md5.h" local="yes" imported="no">tsk_md5.h</includes>
     <includes id="tsk__string_8h" name="tsk_string.h" local="yes" imported="no">tsk_string.h</includes>
@@ -1854,7 +1956,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_md5.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__md5_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <class kind="struct">tsk_md5context_s</class>
@@ -1952,7 +2054,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_memory.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__memory_8c</filename>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
     <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
@@ -1987,7 +2089,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_memory.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__memory_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
@@ -2003,6 +2105,34 @@
       <anchorfile>group__tsk__memory__group.html</anchorfile>
       <anchor>ga32ce64ddec3db2fa200fd91c8dec5016</anchor>
       <arglist>(ptr)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_SAFE_FREE_ARRAY</name>
+      <anchorfile>tsk__memory_8h.html</anchorfile>
+      <anchor>acecefb0cab562faa68d2f18fbf136d44</anchor>
+      <arglist>(pptr, count)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_FREE_ARRAY</name>
+      <anchorfile>tsk__memory_8h.html</anchorfile>
+      <anchor>a1f850c582883501d07d80e61d033940a</anchor>
+      <arglist>(pptr, count)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_SAFE_FREE_TABLE</name>
+      <anchorfile>tsk__memory_8h.html</anchorfile>
+      <anchor>a9ce91437d0ce2fd1c24732ad3a233eff</anchor>
+      <arglist>(pptr)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_FREE_TABLE</name>
+      <anchorfile>tsk__memory_8h.html</anchorfile>
+      <anchor>a6e7a3174eac636003300cab43dc88739</anchor>
+      <arglist>(pptr)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void *</type>
@@ -2035,7 +2165,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_mutex.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__mutex_8c</filename>
     <includes id="tsk__mutex_8h" name="tsk_mutex.h" local="yes" imported="no">tsk_mutex.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
@@ -2054,6 +2184,13 @@
       <anchor>aebac307067fdb317f04b12ccea64c5cd</anchor>
       <arglist></arglist>
     </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_RECURSIVE_MUTEXATTR</name>
+      <anchorfile>tsk__mutex_8c.html</anchorfile>
+      <anchor>a419851aba1761318d4ccc3425c1bcc92</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="typedef">
       <type>MUTEX_S *</type>
       <name>MUTEX_T</name>
@@ -2067,6 +2204,13 @@
       <anchorfile>group__tsk__mutex__group.html</anchorfile>
       <anchor>gaaf964e56762d736c25b75d1ac99b864b</anchor>
       <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_mutex_handle_t *</type>
+      <name>tsk_mutex_create_2</name>
+      <anchorfile>group__tsk__mutex__group.html</anchorfile>
+      <anchor>gaa0b8c4e50880a5972727af84be43392d</anchor>
+      <arglist>(tsk_bool_t recursive)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2092,7 +2236,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_mutex.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__mutex_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="function">
@@ -2101,6 +2245,13 @@
       <anchorfile>group__tsk__mutex__group.html</anchorfile>
       <anchor>gaaf964e56762d736c25b75d1ac99b864b</anchor>
       <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_mutex_handle_t *</type>
+      <name>tsk_mutex_create_2</name>
+      <anchorfile>group__tsk__mutex__group.html</anchorfile>
+      <anchor>gaa0b8c4e50880a5972727af84be43392d</anchor>
+      <arglist>(tsk_bool_t recursive)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
@@ -2133,32 +2284,17 @@
   </compound>
   <compound kind="file">
     <name>tsk_object.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__object_8c</filename>
     <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
     <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
     <includes id="tsk__common_8h" name="tsk_common.h" local="yes" imported="no">tsk_common.h</includes>
-    <class kind="struct">tsk_object_header_s</class>
     <member kind="define">
       <type>#define</type>
       <name>TSK_DEBUG_OBJECTS</name>
       <anchorfile>tsk__object_8c.html</anchorfile>
       <anchor>a6cda304ddd5bb2526db60c74a98ba28c</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TSK_OBJECT_HEADER</name>
-      <anchorfile>tsk__object_8c.html</anchorfile>
-      <anchor>a58c9c81151b88e275c7de73df458e7a6</anchor>
-      <arglist>(object)</arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tsk_object_header_s</type>
-      <name>tsk_object_header_t</name>
-      <anchorfile>tsk__object_8c.html</anchorfile>
-      <anchor>a6f01617111fbf74cccfb24618b9cc2af</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
@@ -2204,6 +2340,13 @@
       <arglist>(tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
+      <type>tsk_size_t</type>
+      <name>tsk_object_get_refcount</name>
+      <anchorfile>tsk__object_8c.html</anchorfile>
+      <anchor>a5aa9abd63a8f5215561603120bc8d5d4</anchor>
+      <arglist>(tsk_object_t *self)</arglist>
+    </member>
+    <member kind="function">
       <type>void</type>
       <name>tsk_object_delete</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
@@ -2213,15 +2356,37 @@
   </compound>
   <compound kind="file">
     <name>tsk_object.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__object_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
+    <class kind="struct">tsk_object_header_s</class>
     <class kind="struct">tsk_object_def_s</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_OBJECT</name>
+      <anchorfile>tsk__object_8h.html</anchorfile>
+      <anchor>a92b17060d5b7b37bbd20aee7f17aa928</anchor>
+      <arglist>(self)</arglist>
+    </member>
     <member kind="define">
       <type>#define</type>
       <name>TSK_OBJECT_SAFE_FREE</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
       <anchor>ga56da14173987325ef8b0c75fec002664</anchor>
+      <arglist>(self)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_OBJECT_SAFE_FREE_ARRAY</name>
+      <anchorfile>tsk__object_8h.html</anchorfile>
+      <anchor>a57d80d2148d83e2b354aead58c8c815d</anchor>
+      <arglist>(self, count)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_OBJECT_SAFE_FREE_TABLE</name>
+      <anchorfile>tsk__object_8h.html</anchorfile>
+      <anchor>a474af646ddb95e42d3cacbbc85fc5ecc</anchor>
       <arglist>(self)</arglist>
     </member>
     <member kind="define">
@@ -2237,6 +2402,27 @@
       <anchorfile>group__tsk__object__group.html</anchorfile>
       <anchor>ga2e8cef948dd1000968ae4df6cc7d7e69</anchor>
       <arglist>(self)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_OBJECT_HEADER</name>
+      <anchorfile>tsk__object_8h.html</anchorfile>
+      <anchor>a58c9c81151b88e275c7de73df458e7a6</anchor>
+      <arglist>(object)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>void</type>
+      <name>tsk_object_t</name>
+      <anchorfile>group__tsk__object__group.html</anchorfile>
+      <anchor>ga96b70aef427c047a32ce5197a9aad564</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tsk_object_header_s</type>
+      <name>tsk_object_header_t</name>
+      <anchorfile>tsk__object_8h.html</anchorfile>
+      <anchor>a6f01617111fbf74cccfb24618b9cc2af</anchor>
+      <arglist></arglist>
     </member>
     <member kind="typedef">
       <type>struct tsk_object_def_s</type>
@@ -2269,8 +2455,8 @@
     <member kind="function">
       <type>TINYSAK_API int</type>
       <name>tsk_object_cmp</name>
-      <anchorfile>tsk__object_8h.html</anchorfile>
-      <anchor>a8e0d191d361623dc0312d1e1ba82e540</anchor>
+      <anchorfile>group__tsk__object__group.html</anchorfile>
+      <anchor>gacf253f86208fb586b8d86f0e9bb3c549</anchor>
       <arglist>(const void *self, const tsk_object_t *object)</arglist>
     </member>
     <member kind="function">
@@ -2288,23 +2474,23 @@
       <arglist>(tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
+      <type>TINYSAK_API tsk_size_t</type>
+      <name>tsk_object_get_refcount</name>
+      <anchorfile>tsk__object_8h.html</anchorfile>
+      <anchor>ae04a33468de946a56a38975b5bd27114</anchor>
+      <arglist>(tsk_object_t *self)</arglist>
+    </member>
+    <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_object_delete</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
       <anchor>ga4f4eb990f3cf2f579f439870e8fec35d</anchor>
       <arglist>(tsk_object_t *self)</arglist>
     </member>
-    <member kind="variable">
-      <type>TSK_BEGIN_DECLS typedef void</type>
-      <name>tsk_object_t</name>
-      <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga854eac17e0c0bdfa29862f294d22f7fb</anchor>
-      <arglist></arglist>
-    </member>
   </compound>
   <compound kind="file">
     <name>tsk_options.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__options_8c</filename>
     <includes id="tsk__options_8h" name="tsk_options.h" local="yes" imported="no">tsk_options.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
@@ -2383,7 +2569,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_options.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__options_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
@@ -2491,7 +2677,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_params.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__params_8c</filename>
     <includes id="tsk__params_8h" name="tsk_params.h" local="yes" imported="no">tsk_params.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
@@ -2546,6 +2732,13 @@
       <anchorfile>tsk__params_8c.html</anchorfile>
       <anchor>a3f82a14a8cb75bc1251d7d537875cfae</anchor>
       <arglist>(tsk_params_L_t **self, const tsk_param_t *param)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_params_add_param_3</name>
+      <anchorfile>tsk__params_8c.html</anchorfile>
+      <anchor>aee682d7ca5457fec93f6bcc68dd0f922</anchor>
+      <arglist>(tsk_params_L_t **self, const char *name, int64_t value)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2606,7 +2799,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_params.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__params_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
@@ -2685,6 +2878,13 @@
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
+      <name>tsk_params_add_param_3</name>
+      <anchorfile>tsk__params_8h.html</anchorfile>
+      <anchor>ab0b4673ec1a1a021399ba522cc3879a3</anchor>
+      <arglist>(tsk_params_L_t **self, const char *name, int64_t value)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
       <name>tsk_params_remove_param</name>
       <anchorfile>group__tsk__params__group.html</anchorfile>
       <anchor>gab0f4f4d272eec7eb8a4cd10027eea260</anchor>
@@ -2741,8 +2941,277 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>tsk_plugin.c</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
+    <filename>tsk__plugin_8c</filename>
+    <includes id="tsk__plugin_8h" name="tsk_plugin.h" local="yes" imported="no">tsk_plugin.h</includes>
+    <includes id="tsk__string_8h" name="tsk_string.h" local="yes" imported="no">tsk_string.h</includes>
+    <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
+    <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
+    <class kind="struct">tsk_plugin_s</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_PLUGIN_FUNC_NAME_DEF_COUNT</name>
+      <anchorfile>tsk__plugin_8c.html</anchorfile>
+      <anchor>a11b1df2e107fae5e9f533ac8c8d654a2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_PLUGIN_FUNC_NAME_DEF_TYPE_AT</name>
+      <anchorfile>tsk__plugin_8c.html</anchorfile>
+      <anchor>ad5fe17e9f778474ac95f3157a0a4c68d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_PLUGIN_FUNC_NAME_DEF_MEDIA_TYPE_AT</name>
+      <anchorfile>tsk__plugin_8c.html</anchorfile>
+      <anchor>a576955ae6447ff0d61b52dc4246d48c0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_PLUGIN_FUNC_NAME_DEF_AT</name>
+      <anchorfile>tsk__plugin_8c.html</anchorfile>
+      <anchor>aa9585d49925e60516aab19267da7733d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>int(*</type>
+      <name>symbol_get_def_count</name>
+      <anchorfile>tsk__plugin_8c.html</anchorfile>
+      <anchor>a96c7b7a323905627ccab09dc1e94ef4a</anchor>
+      <arglist>)(void)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>tsk_plugin_def_type_t(*</type>
+      <name>symbol_get_def_type_at</name>
+      <anchorfile>tsk__plugin_8c.html</anchorfile>
+      <anchor>abbe12750ae4fb51c19f3187b265940c4</anchor>
+      <arglist>)(int index)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>tsk_plugin_def_media_type_t(*</type>
+      <name>symbol_get_def_media_type_at</name>
+      <anchorfile>tsk__plugin_8c.html</anchorfile>
+      <anchor>a984e7a0b453ba7430c691549c0b29d2a</anchor>
+      <arglist>)(int index)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>tsk_plugin_def_ptr_const_t(*</type>
+      <name>symbol_get_def_at</name>
+      <anchorfile>tsk__plugin_8c.html</anchorfile>
+      <anchor>a3e43533b0deeb006542609ca4b738aa3</anchor>
+      <arglist>)(int index)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tsk_plugin_s</type>
+      <name>tsk_plugin_t</name>
+      <anchorfile>tsk__plugin_8c.html</anchorfile>
+      <anchor>a0d9cee25c345ca883c338bce22927667</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_plugin_t *</type>
+      <name>tsk_plugin_create</name>
+      <anchorfile>tsk__plugin_8c.html</anchorfile>
+      <anchor>a38088df553f4235081b970d3d16c2d71</anchor>
+      <arglist>(const char *path)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_plugin_def_ptr_const_t</type>
+      <name>tsk_plugin_get_def_2</name>
+      <anchorfile>tsk__plugin_8c.html</anchorfile>
+      <anchor>a78b3b1573c108082ab29bfe567f38014</anchor>
+      <arglist>(struct tsk_plugin_s *self, tsk_plugin_def_type_t type, tsk_plugin_def_media_type_t media_type, tsk_size_t index)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_plugin_def_ptr_const_t</type>
+      <name>tsk_plugin_get_def</name>
+      <anchorfile>tsk__plugin_8c.html</anchorfile>
+      <anchor>aee900549d071b402b671af0caf4ae7be</anchor>
+      <arglist>(tsk_plugin_t *self, tsk_plugin_def_type_t type, tsk_plugin_def_media_type_t media_type)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_plugin_symbol_t *</type>
+      <name>tsk_plugin_get_symbol</name>
+      <anchorfile>tsk__plugin_8c.html</anchorfile>
+      <anchor>a9a6adcace8241b5f1c3c3f9979745ed7</anchor>
+      <arglist>(tsk_plugin_t *self, const char *symbol_name)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>tsk_plugin.h</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
+    <filename>tsk__plugin_8h</filename>
+    <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
+    <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
+    <member kind="typedef">
+      <type>TSK_BEGIN_DECLS enum tsk_plugin_def_type_e</type>
+      <name>tsk_plugin_def_type_t</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>a9f0788c66ee365f6ed0908a28afdd481</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>enum tsk_plugin_def_media_type_e</type>
+      <name>tsk_plugin_def_media_type_t</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>aebaad0f2e202d29063fbfaa4ba1d25aa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>void</type>
+      <name>tsk_plugin_handle_t</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>a38270312c2a31de5a8793f3e56b127e7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>void</type>
+      <name>tsk_plugin_symbol_t</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>aff266dfe3477c929ce00074742f28427</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>const void *</type>
+      <name>tsk_plugin_def_ptr_const_t</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>a8afd582eafabb58a86c42336cb854944</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>tsk_plugin_def_type_e</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>ae168b589be31c0bbd3c21507be399e80</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_plugin_def_type_none</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>ae168b589be31c0bbd3c21507be399e80ae8c7bb90a6f561066d5e2a6da0ecd91a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_plugin_def_type_consumer</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>ae168b589be31c0bbd3c21507be399e80a103a34f8776f6311fa2cbd7fef073965</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_plugin_def_type_producer</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>ae168b589be31c0bbd3c21507be399e80a607d46960829711cf60a3740d22ca92f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_plugin_def_type_session</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>ae168b589be31c0bbd3c21507be399e80acbf83f382445cc8c10ff5df307ebf6ca</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_plugin_def_type_codec</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>ae168b589be31c0bbd3c21507be399e80a8bcaf065eb91930ab15bd7d5bee2534c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_plugin_def_type_resampler</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>ae168b589be31c0bbd3c21507be399e80a2a62ae2168064e87a4a9b57f63807871</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_plugin_def_type_jb</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>ae168b589be31c0bbd3c21507be399e80abbe8a05ed9a655b164a147a212fee52f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_plugin_def_type_denoiser</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>ae168b589be31c0bbd3c21507be399e80a020a4daad593c80ba8cc3e0ba5eab0fc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_plugin_def_type_converter</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>ae168b589be31c0bbd3c21507be399e80a5779018ade09b5863c325e375b3182f4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_plugin_def_type_all</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>ae168b589be31c0bbd3c21507be399e80aee072afbc4e2a1a6d39a0b2a31d0a1cc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>tsk_plugin_def_media_type_e</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>a4e36167c6486d95edf648abb674ff05f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_plugin_def_media_type_none</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>a4e36167c6486d95edf648abb674ff05fa8cf7213f08a9444f0c46c26599b6615f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_plugin_def_media_type_audio</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>a4e36167c6486d95edf648abb674ff05fa5ce25bc959da3f1a8c195110ebbb1789</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_plugin_def_media_type_video</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>a4e36167c6486d95edf648abb674ff05fa317cc1e3e78fc0a6251ad048a60bb046</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_plugin_def_media_type_all</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>a4e36167c6486d95edf648abb674ff05fa7e770f77600e4447969331922f690cd1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API struct tsk_plugin_s *</type>
+      <name>tsk_plugin_create</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>a7054695d1bfc1ca1939928367f9ecd78</anchor>
+      <arglist>(const char *path)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_plugin_def_ptr_const_t</type>
+      <name>tsk_plugin_get_def</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>a4669bd68dafd479bea0b14b99678cac6</anchor>
+      <arglist>(struct tsk_plugin_s *self, tsk_plugin_def_type_t type, tsk_plugin_def_media_type_t media_type)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_plugin_def_ptr_const_t</type>
+      <name>tsk_plugin_get_def_2</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>a0ea7373f1e87d6308cf928208462a661</anchor>
+      <arglist>(struct tsk_plugin_s *self, tsk_plugin_def_type_t type, tsk_plugin_def_media_type_t media_type, tsk_size_t index)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_plugin_symbol_t *</type>
+      <name>tsk_plugin_get_symbol</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>a64c5a37d5b1ec391aff84701166f3db0</anchor>
+      <arglist>(struct tsk_plugin_s *self, const char *symbol_name)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>tsk_ppfcs16.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__ppfcs16_8c</filename>
     <includes id="tsk__ppfcs16_8h" name="tsk_ppfcs16.h" local="yes" imported="no">tsk_ppfcs16.h</includes>
     <member kind="function">
@@ -2755,7 +3224,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_ppfcs16.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__ppfcs16_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
@@ -2782,7 +3251,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_ppfcs32.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__ppfcs32_8c</filename>
     <includes id="tsk__ppfcs32_8h" name="tsk_ppfcs32.h" local="yes" imported="no">tsk_ppfcs32.h</includes>
     <member kind="function">
@@ -2795,7 +3264,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_ppfcs32.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__ppfcs32_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
@@ -2822,7 +3291,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_ragel_state.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__ragel__state_8c</filename>
     <includes id="tsk__ragel__state_8h" name="tsk_ragel_state.h" local="yes" imported="no">tsk_ragel_state.h</includes>
     <member kind="function">
@@ -2835,7 +3304,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_ragel_state.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__ragel__state_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__params_8h" name="tsk_params.h" local="yes" imported="no">tsk_params.h</includes>
@@ -2948,7 +3417,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_runnable.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__runnable_8c</filename>
     <includes id="tsk__runnable_8h" name="tsk_runnable.h" local="yes" imported="no">tsk_runnable.h</includes>
     <includes id="tsk__thread_8h" name="tsk_thread.h" local="yes" imported="no">tsk_thread.h</includes>
@@ -2959,6 +3428,13 @@
       <anchorfile>group__tsk__runnable__group.html</anchorfile>
       <anchor>ga5794a5eaeb3523f697cb7c390a81bc0c</anchor>
       <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_runnable_t *</type>
+      <name>tsk_runnable_create_2</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>ga90d2694789344253fe259de45d6dd29f</anchor>
+      <arglist>(int32_t priority)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2973,6 +3449,13 @@
       <anchorfile>group__tsk__runnable__group.html</anchorfile>
       <anchor>ga90e0d8e4a0de86dc183c9124716afd57</anchor>
       <arglist>(tsk_runnable_t *self, tsk_bool_t important)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_runnable_set_priority</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>ga25d13c68e3eb735d58c8f7da2cc89d6b</anchor>
+      <arglist>(tsk_runnable_t *self, int32_t priority)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -2991,11 +3474,12 @@
   </compound>
   <compound kind="file">
     <name>tsk_runnable.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__runnable_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
     <includes id="tsk__semaphore_8h" name="tsk_semaphore.h" local="yes" imported="no">tsk_semaphore.h</includes>
+    <includes id="tsk__thread_8h" name="tsk_thread.h" local="yes" imported="no">tsk_thread.h</includes>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
     <class kind="struct">tsk_runnable_s</class>
     <member kind="define">
@@ -3004,6 +3488,13 @@
       <anchorfile>group__tsk__runnable__group.html</anchorfile>
       <anchor>gac2bef0f74acd9c86f5ab7c4b35801ee4</anchor>
       <arglist>(self)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_DECLARE_RUNNABLE</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>ga814229d43b826a259deef2eefa2e0859</anchor>
+      <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -3035,17 +3526,17 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE</name>
+      <anchorfile>tsk__runnable_8h.html</anchorfile>
+      <anchor>aa3ddec36f0d271a9b6fbf08d04bd2dca</anchor>
+      <arglist>(self, object)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>TSK_RUNNABLE_POP_FIRST</name>
       <anchorfile>group__tsk__runnable__group.html</anchorfile>
       <anchor>gab0b5f62ddca1b5ae24f37eadcf817298</anchor>
       <arglist>(self)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TSK_DECLARE_RUNNABLE</name>
-      <anchorfile>group__tsk__runnable__group.html</anchorfile>
-      <anchor>ga814229d43b826a259deef2eefa2e0859</anchor>
-      <arglist></arglist>
     </member>
     <member kind="typedef">
       <type>struct tsk_runnable_s</type>
@@ -3055,11 +3546,25 @@
       <arglist></arglist>
     </member>
     <member kind="function">
+      <type>TSK_BEGIN_DECLS typedef void *TSK_STDCALL *</type>
+      <name>tsk_runnable_func_run</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>gab771f85c12a8a24c89d3cfc8def77dda</anchor>
+      <arglist>(void *self)</arglist>
+    </member>
+    <member kind="function">
       <type>TINYSAK_API tsk_runnable_t *</type>
       <name>tsk_runnable_create</name>
       <anchorfile>group__tsk__runnable__group.html</anchorfile>
       <anchor>ga5794a5eaeb3523f697cb7c390a81bc0c</anchor>
       <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_runnable_t *</type>
+      <name>tsk_runnable_create_2</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>ga90d2694789344253fe259de45d6dd29f</anchor>
+      <arglist>(int32_t priority)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
@@ -3077,6 +3582,13 @@
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
+      <name>tsk_runnable_set_priority</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>ga25d13c68e3eb735d58c8f7da2cc89d6b</anchor>
+      <arglist>(tsk_runnable_t *self, int32_t priority)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
       <name>tsk_runnable_enqueue</name>
       <anchorfile>tsk__runnable_8h.html</anchorfile>
       <anchor>a36978d84f61d2a32772b409a36ac6e85</anchor>
@@ -3090,13 +3602,6 @@
       <arglist>(tsk_runnable_t *self)</arglist>
     </member>
     <member kind="variable">
-      <type>TSK_BEGIN_DECLS typedef void *(*</type>
-      <name>tsk_runnable_func_run</name>
-      <anchorfile>group__tsk__runnable__group.html</anchorfile>
-      <anchor>ga09f91d68dcb46db4ec35fabf4763aca9</anchor>
-      <arglist>)(void *self)</arglist>
-    </member>
-    <member kind="variable">
       <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
       <name>tsk_runnable_def_t</name>
       <anchorfile>tsk__runnable_8h.html</anchorfile>
@@ -3106,13 +3611,13 @@
   </compound>
   <compound kind="file">
     <name>tsk_safeobj.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__safeobj_8c</filename>
     <includes id="tsk__safeobj_8h" name="tsk_safeobj.h" local="yes" imported="no">tsk_safeobj.h</includes>
   </compound>
   <compound kind="file">
     <name>tsk_safeobj.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__safeobj_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__mutex_8h" name="tsk_mutex.h" local="yes" imported="no">tsk_mutex.h</includes>
@@ -3161,7 +3666,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_semaphore.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__semaphore_8c</filename>
     <includes id="tsk__semaphore_8h" name="tsk_semaphore.h" local="yes" imported="no">tsk_semaphore.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
@@ -3203,6 +3708,13 @@
       <arglist>()</arglist>
     </member>
     <member kind="function">
+      <type>tsk_semaphore_handle_t *</type>
+      <name>tsk_semaphore_create_2</name>
+      <anchorfile>tsk__semaphore_8c.html</anchorfile>
+      <anchor>aadacac3d370aa289d82eb6751bb5bf72</anchor>
+      <arglist>(int initial_val)</arglist>
+    </member>
+    <member kind="function">
       <type>int</type>
       <name>tsk_semaphore_increment</name>
       <anchorfile>group__tsk__semaphore__group.html</anchorfile>
@@ -3226,7 +3738,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_semaphore.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__semaphore_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="function">
@@ -3235,6 +3747,13 @@
       <anchorfile>group__tsk__semaphore__group.html</anchorfile>
       <anchor>gac7bb53baa18a1c05e591dcd3ce65261b</anchor>
       <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_semaphore_handle_t *</type>
+      <name>tsk_semaphore_create_2</name>
+      <anchorfile>tsk__semaphore_8h.html</anchorfile>
+      <anchor>a37bb525ce6f7261dd0a244c6b6fe9af6</anchor>
+      <arglist>(int initial_val)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
@@ -3267,7 +3786,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_sha1.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__sha1_8c</filename>
     <includes id="tsk__sha1_8h" name="tsk_sha1.h" local="yes" imported="no">tsk_sha1.h</includes>
     <includes id="tsk__string_8h" name="tsk_string.h" local="yes" imported="no">tsk_string.h</includes>
@@ -3330,7 +3849,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_sha1.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__sha1_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <class kind="struct">tsk_sha1context_s</class>
@@ -3370,17 +3889,17 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>char</type>
+      <type>uint8_t</type>
       <name>tsk_sha1string_t</name>
       <anchorfile>tsk__sha1_8h.html</anchorfile>
-      <anchor>a9e2378a9665ccad50ea1c609717ebe91</anchor>
+      <anchor>a8a250c622436de308f4ba307a8a74b9e</anchor>
       <arglist>[TSK_SHA1_STRING_SIZE+1]</arglist>
     </member>
     <member kind="typedef">
-      <type>char</type>
+      <type>uint8_t</type>
       <name>tsk_sha1digest_t</name>
       <anchorfile>tsk__sha1_8h.html</anchorfile>
-      <anchor>a5f2be1a023d36a3929da8f693319c23d</anchor>
+      <anchor>ac7e02b7ab00b3463fab05a99ce512592</anchor>
       <arglist>[TSK_SHA1_DIGEST_SIZE]</arglist>
     </member>
     <member kind="typedef">
@@ -3391,6 +3910,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tsk_sha1_errcode_e</name>
       <anchorfile>group__tsk__sha1__group.html</anchorfile>
       <anchor>gac8abdcb08ff7633e4618440c0e7d85c9</anchor>
@@ -3458,13 +3978,12 @@
   </compound>
   <compound kind="file">
     <name>tsk_string.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__string_8c</filename>
     <includes id="tsk__string_8h" name="tsk_string.h" local="yes" imported="no">tsk_string.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
     <includes id="tsk__time_8h" name="tsk_time.h" local="yes" imported="no">tsk_time.h</includes>
     <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
-    <includes id="tsk__common_8h" name="tsk_common.h" local="yes" imported="no">tsk_common.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>stricmp</name>
@@ -3485,6 +4004,20 @@
       <anchorfile>group__tsk__string__group.html</anchorfile>
       <anchor>gacb654b2c66d38d6ce2e357283de39955</anchor>
       <arglist>(const char *str)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_string_pred_icmp</name>
+      <anchorfile>tsk__string_8c.html</anchorfile>
+      <anchor>aa4b564e505a6eaec991c0e77f2420371</anchor>
+      <arglist>(const tsk_list_item_t *item, const void *str)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_string_pred_cmp</name>
+      <anchorfile>tsk__string_8c.html</anchorfile>
+      <anchor>ac1ec1f0caa59ba2e0c7449aa526fb9ce</anchor>
+      <arglist>(const tsk_list_item_t *item, const void *str)</arglist>
     </member>
     <member kind="function">
       <type>char</type>
@@ -3706,7 +4239,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_string.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__string_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
@@ -4013,6 +4546,20 @@
       <anchor>gacb654b2c66d38d6ce2e357283de39955</anchor>
       <arglist>(const char *str)</arglist>
     </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_string_pred_icmp</name>
+      <anchorfile>tsk__string_8h.html</anchorfile>
+      <anchor>a2907ef626a486653b74c234bd6e9760c</anchor>
+      <arglist>(const struct tsk_list_item_s *item, const void *str)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_string_pred_cmp</name>
+      <anchorfile>tsk__string_8h.html</anchorfile>
+      <anchor>a0cebdc8cb337d8433e0c46d4f4acfa82</anchor>
+      <arglist>(const struct tsk_list_item_s *item, const void *str)</arglist>
+    </member>
     <member kind="variable">
       <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
       <name>tsk_string_def_t</name>
@@ -4023,7 +4570,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_thread.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__thread_8c</filename>
     <includes id="tsk__thread_8h" name="tsk_thread.h" local="yes" imported="no">tsk_thread.h</includes>
     <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
@@ -4039,22 +4586,99 @@
       <type>int</type>
       <name>tsk_thread_create</name>
       <anchorfile>group__tsk__thread__group.html</anchorfile>
-      <anchor>ga27d60d0e9f4e1cd4cd75866ddb76d400</anchor>
-      <arglist>(void **tid, void *(*start)(void *), void *arg)</arglist>
+      <anchor>ga72e4092c4c76a54eac5a8592960eb86b</anchor>
+      <arglist>(tsk_thread_handle_t **handle, void *(TSK_STDCALL *start)(void *), void *arg)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_thread_set_priority</name>
+      <anchorfile>group__tsk__thread__group.html</anchorfile>
+      <anchor>gaf39ee1f69e33ff6592c961a25fd76834</anchor>
+      <arglist>(tsk_thread_handle_t *handle, int32_t priority)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_thread_set_priority_2</name>
+      <anchorfile>group__tsk__thread__group.html</anchorfile>
+      <anchor>ga2c30d9d8f918cc7c2d580af22d0dfee0</anchor>
+      <arglist>(int32_t priority)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_thread_id_t</type>
+      <name>tsk_thread_get_id</name>
+      <anchorfile>tsk__thread_8c.html</anchorfile>
+      <anchor>a35206c61a891b024cfef5cc6511ec188</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tsk_thread_id_equals</name>
+      <anchorfile>tsk__thread_8c.html</anchorfile>
+      <anchor>ace66d8e5ddf1282fadcfb41376b36458</anchor>
+      <arglist>(tsk_thread_id_t *id_1, tsk_thread_id_t *id_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_thread_join</name>
       <anchorfile>group__tsk__thread__group.html</anchorfile>
-      <anchor>gaef9e89a97f56887ffee9132c54e480bb</anchor>
-      <arglist>(void **tid)</arglist>
+      <anchor>gaf12d82e123acffcb9cd95c1b2efb9020</anchor>
+      <arglist>(tsk_thread_handle_t **handle)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_thread_destroy</name>
+      <anchorfile>tsk__thread_8c.html</anchorfile>
+      <anchor>a3a53303d94f972b76bd2911856849180</anchor>
+      <arglist>(tsk_thread_handle_t **handle)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tsk_thread.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__thread_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_THREAD_PRIORITY_LOW</name>
+      <anchorfile>tsk__thread_8h.html</anchorfile>
+      <anchor>ac0d81b18b8c89c62fe3a34a0a81ba426</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_THREAD_PRIORITY_TIME_CRITICAL</name>
+      <anchorfile>tsk__thread_8h.html</anchorfile>
+      <anchor>a165f4564d4e0ea7cc4ead9792d9f14a3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_THREAD_PRIORITY_MEDIUM</name>
+      <anchorfile>tsk__thread_8h.html</anchorfile>
+      <anchor>a1a3551ef892534623ef67f8cf33da8b7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_THREAD_PRIORITY_HIGH</name>
+      <anchorfile>tsk__thread_8h.html</anchorfile>
+      <anchor>a65de208d47e16a637f37330b8d9e90f8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>void</type>
+      <name>tsk_thread_handle_t</name>
+      <anchorfile>tsk__thread_8h.html</anchorfile>
+      <anchor>ac148baaa25d1fc230de6680a6f18e529</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>pthread_t</type>
+      <name>tsk_thread_id_t</name>
+      <anchorfile>tsk__thread_8h.html</anchorfile>
+      <anchor>a740c4ecda6164c09eb3b4891023afe82</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="function">
       <type>TSK_BEGIN_DECLS TINYSAK_API void</type>
       <name>tsk_thread_sleep</name>
@@ -4066,20 +4690,55 @@
       <type>TINYSAK_API int</type>
       <name>tsk_thread_create</name>
       <anchorfile>group__tsk__thread__group.html</anchorfile>
-      <anchor>ga27d60d0e9f4e1cd4cd75866ddb76d400</anchor>
-      <arglist>(void **tid, void *(*start)(void *), void *arg)</arglist>
+      <anchor>ga72e4092c4c76a54eac5a8592960eb86b</anchor>
+      <arglist>(tsk_thread_handle_t **handle, void *(TSK_STDCALL *start)(void *), void *arg)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_thread_set_priority</name>
+      <anchorfile>group__tsk__thread__group.html</anchorfile>
+      <anchor>gaf39ee1f69e33ff6592c961a25fd76834</anchor>
+      <arglist>(tsk_thread_handle_t *handle, int32_t priority)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_thread_set_priority_2</name>
+      <anchorfile>group__tsk__thread__group.html</anchorfile>
+      <anchor>ga2c30d9d8f918cc7c2d580af22d0dfee0</anchor>
+      <arglist>(int32_t priority)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_thread_id_t</type>
+      <name>tsk_thread_get_id</name>
+      <anchorfile>tsk__thread_8h.html</anchorfile>
+      <anchor>a65db61db09c591088a220ddabb70ada3</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_bool_t</type>
+      <name>tsk_thread_id_equals</name>
+      <anchorfile>tsk__thread_8h.html</anchorfile>
+      <anchor>adcd23e041633c8aff29197b0b2cd026b</anchor>
+      <arglist>(tsk_thread_id_t *id_1, tsk_thread_id_t *id_2)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_thread_destroy</name>
+      <anchorfile>tsk__thread_8h.html</anchorfile>
+      <anchor>a17e784015cef32433abe43aee972d074</anchor>
+      <arglist>(tsk_thread_handle_t **handle)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
       <name>tsk_thread_join</name>
       <anchorfile>group__tsk__thread__group.html</anchorfile>
-      <anchor>gaef9e89a97f56887ffee9132c54e480bb</anchor>
-      <arglist>(void **tid)</arglist>
+      <anchor>gaf12d82e123acffcb9cd95c1b2efb9020</anchor>
+      <arglist>(tsk_thread_handle_t **handle)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tsk_time.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__time_8c</filename>
     <includes id="tsk__time_8h" name="tsk_time.h" local="yes" imported="no">tsk_time.h</includes>
     <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
@@ -4092,10 +4751,17 @@
     </member>
     <member kind="function">
       <type>uint64_t</type>
+      <name>tsk_gettimeofday_ms</name>
+      <anchorfile>group__tsk__time__group.html</anchorfile>
+      <anchor>ga082a1c3f470b8a07d1051dabf366a10d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>uint64_t</type>
       <name>tsk_time_get_ms</name>
       <anchorfile>group__tsk__time__group.html</anchorfile>
-      <anchor>ga8a16acf41302b031e38e9e175bc2b671</anchor>
-      <arglist>(struct timeval *tv)</arglist>
+      <anchor>ga2d7a55115621f6d502e7a3bbb235c4ce</anchor>
+      <arglist>(const struct timeval *tv)</arglist>
     </member>
     <member kind="function">
       <type>uint64_t</type>
@@ -4104,10 +4770,31 @@
       <anchor>ga594d612836a2d6c3868d2d4da0db2f66</anchor>
       <arglist>()</arglist>
     </member>
+    <member kind="function">
+      <type>uint64_t</type>
+      <name>tsk_time_now</name>
+      <anchorfile>tsk__time_8c.html</anchorfile>
+      <anchor>a7390efa557fabb65f85b095882a80c48</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>uint64_t</type>
+      <name>tsk_time_ntp</name>
+      <anchorfile>tsk__time_8c.html</anchorfile>
+      <anchor>a89d04892708db14154d18fe45e14f429</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>uint64_t</type>
+      <name>tsk_time_get_ntp_ms</name>
+      <anchorfile>tsk__time_8c.html</anchorfile>
+      <anchor>a23f30fe71d64f036f5660db26b5ac205</anchor>
+      <arglist>(const struct timeval *tv)</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>tsk_time.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__time_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
@@ -4124,13 +4811,6 @@
       <anchor>a1388ef737c6353aa181d45eac401f9e5</anchor>
       <arglist>(MS)</arglist>
     </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>tsk_time_now</name>
-      <anchorfile>group__tsk__time__group.html</anchorfile>
-      <anchor>ga08190c30f608b1397602ccba62592b09</anchor>
-      <arglist>()</arglist>
-    </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
       <name>tsk_gettimeofday</name>
@@ -4140,10 +4820,17 @@
     </member>
     <member kind="function">
       <type>TINYSAK_API uint64_t</type>
+      <name>tsk_gettimeofday_ms</name>
+      <anchorfile>group__tsk__time__group.html</anchorfile>
+      <anchor>ga082a1c3f470b8a07d1051dabf366a10d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API uint64_t</type>
       <name>tsk_time_get_ms</name>
       <anchorfile>group__tsk__time__group.html</anchorfile>
-      <anchor>ga8a16acf41302b031e38e9e175bc2b671</anchor>
-      <arglist>(struct timeval *tv)</arglist>
+      <anchor>ga2d7a55115621f6d502e7a3bbb235c4ce</anchor>
+      <arglist>(const struct timeval *tv)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API uint64_t</type>
@@ -4152,10 +4839,31 @@
       <anchor>ga594d612836a2d6c3868d2d4da0db2f66</anchor>
       <arglist>()</arglist>
     </member>
+    <member kind="function">
+      <type>TINYSAK_API uint64_t</type>
+      <name>tsk_time_now</name>
+      <anchorfile>tsk__time_8h.html</anchorfile>
+      <anchor>a7d23c69950b721aff9aeabfe21e77cfb</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API uint64_t</type>
+      <name>tsk_time_ntp</name>
+      <anchorfile>tsk__time_8h.html</anchorfile>
+      <anchor>afe6bd488ca42816ac105c1e13e87e405</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API uint64_t</type>
+      <name>tsk_time_get_ntp_ms</name>
+      <anchorfile>tsk__time_8h.html</anchorfile>
+      <anchor>aea4162f58353b062993a7ca5c82c5d95</anchor>
+      <arglist>(const struct timeval *tv)</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>tsk_timer.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__timer_8c</filename>
     <includes id="tsk__timer_8h" name="tsk_timer.h" local="yes" imported="no">tsk_timer.h</includes>
     <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
@@ -4260,9 +4968,16 @@
     </member>
     <member kind="function">
       <type>int</type>
+      <name>tsk_timer_manager_destroy</name>
+      <anchorfile>tsk__timer_8c.html</anchorfile>
+      <anchor>a89907a9c0acefe030f19267eea0488c7</anchor>
+      <arglist>(tsk_timer_manager_handle_t **self)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_timer_manager_handle_t *</type>
       <name>tsk_timer_mgr_global_ref</name>
       <anchorfile>tsk__timer_8c.html</anchorfile>
-      <anchor>afab075683cf03324938969788b6b4a0b</anchor>
+      <anchor>a8289f22f559102bf725e9a4358ed9118</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
@@ -4288,17 +5003,10 @@
     </member>
     <member kind="function">
       <type>int</type>
-      <name>tsk_timer_mgr_global_stop</name>
-      <anchorfile>tsk__timer_8c.html</anchorfile>
-      <anchor>a915d081df2cf81bb69ec93467879367e</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
       <name>tsk_timer_mgr_global_unref</name>
       <anchorfile>tsk__timer_8c.html</anchorfile>
-      <anchor>aecb0eaa1dfe7ce572773933ab3f91839</anchor>
-      <arglist>()</arglist>
+      <anchor>abaa2a2ecccce50e582e9243b2b95aeaa</anchor>
+      <arglist>(tsk_timer_manager_handle_t **mgr_global)</arglist>
     </member>
     <member kind="variable">
       <type>const tsk_object_def_t *</type>
@@ -4317,7 +5025,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_timer.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__timer_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
@@ -4400,9 +5108,16 @@
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
+      <name>tsk_timer_manager_destroy</name>
+      <anchorfile>tsk__timer_8h.html</anchorfile>
+      <anchor>a538af7d141651c20b726a52283374cdf</anchor>
+      <arglist>(tsk_timer_manager_handle_t **self)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_timer_manager_handle_t *</type>
       <name>tsk_timer_mgr_global_ref</name>
       <anchorfile>tsk__timer_8h.html</anchorfile>
-      <anchor>a9a379fe924d040ea94dcdd7716818ca1</anchor>
+      <anchor>a497fc65dac844ef130451efa09fbcc84</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
@@ -4428,17 +5143,10 @@
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
-      <name>tsk_timer_mgr_global_stop</name>
-      <anchorfile>tsk__timer_8h.html</anchorfile>
-      <anchor>ab62c55220239856b788bd039594dee13</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>TINYSAK_API int</type>
       <name>tsk_timer_mgr_global_unref</name>
       <anchorfile>tsk__timer_8h.html</anchorfile>
-      <anchor>aa0d5d02672bf8c5bb4266686d5a91c17</anchor>
-      <arglist>()</arglist>
+      <anchor>a43766a98044b90c9cc755fa4f0e54f41</anchor>
+      <arglist>(tsk_timer_manager_handle_t **mgr_global)</arglist>
     </member>
     <member kind="variable">
       <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
@@ -4457,7 +5165,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_url.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__url_8c</filename>
     <includes id="tsk__url_8h" name="tsk_url.h" local="yes" imported="no">tsk_url.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
@@ -4479,7 +5187,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_url.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__url_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="function">
@@ -4499,7 +5207,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_uuid.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__uuid_8c</filename>
     <includes id="tsk__uuid_8h" name="tsk_uuid.h" local="yes" imported="no">tsk_uuid.h</includes>
     <includes id="tsk__sha1_8h" name="tsk_sha1.h" local="yes" imported="no">tsk_sha1.h</includes>
@@ -4515,7 +5223,7 @@
   </compound>
   <compound kind="file">
     <name>tsk_uuid.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__uuid_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <member kind="define">
@@ -4556,13 +5264,13 @@
   </compound>
   <compound kind="file">
     <name>tsk_xml.c</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__xml_8c</filename>
     <includes id="tsk__xml_8h" name="tsk_xml.h" local="yes" imported="no">tsk_xml.h</includes>
   </compound>
   <compound kind="file">
     <name>tsk_xml.h</name>
-    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
     <filename>tsk__xml_8h</filename>
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
@@ -4868,13 +5576,6 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>tsk_fsm_state_default</name>
-      <anchorfile>group__tsk__fsm__group.html</anchorfile>
-      <anchor>ga9cec29ff916b0b892289aa253b9a9005</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
       <name>tsk_fsm_state_none</name>
       <anchorfile>group__tsk__fsm__group.html</anchorfile>
       <anchor>gab6f3bc3a1849b0f87166a17d9693222d</anchor>
@@ -5005,6 +5706,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tsk_hash_type_e</name>
       <anchorfile>group__tsk__hmac__group.html</anchorfile>
       <anchor>gaeec7a6e6f400d343cce4e646099aeded</anchor>
@@ -5135,10 +5837,10 @@
       <arglist>(tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
     </member>
     <member kind="function">
-      <type>void</type>
+      <type>tsk_bool_t</type>
       <name>tsk_list_remove_item_by_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga49ab1be4f114420c5b4b8c7f2b8374ad</anchor>
+      <anchor>ga18a64e50198a039b514efcc46567fb66</anchor>
       <arglist>(tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
     </member>
     <member kind="function">
@@ -5149,11 +5851,11 @@
       <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="function">
-      <type>void</type>
+      <type>tsk_bool_t</type>
       <name>tsk_list_remove_item_by_pred</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gacc1b42538856ec9f756de13fe9d56ddd</anchor>
-      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const tsk_object_t *data)</arglist>
+      <anchor>ga3220db1a9f9d848e3d10792fc52644c6</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -5223,6 +5925,20 @@
       <name>tsk_list_find_object_by_pred</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
       <anchor>gacedbefcbe8600f1ae107560b1e97aa29</anchor>
+      <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
+    </member>
+    <member kind="function">
+      <type>const tsk_object_t *</type>
+      <name>tsk_list_find_object_by_pred_at_index</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gabb9ce61a7bfa57c0e2f7da13ea19fe1a</anchor>
+      <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data, tsk_size_t index)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_list_find_index_by_pred</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gaa0e5ebcd7e7d8675364ad5ea0bfd9130</anchor>
       <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="function">
@@ -5360,6 +6076,13 @@
       <arglist>()</arglist>
     </member>
     <member kind="function">
+      <type>tsk_mutex_handle_t *</type>
+      <name>tsk_mutex_create_2</name>
+      <anchorfile>group__tsk__mutex__group.html</anchorfile>
+      <anchor>gaa0b8c4e50880a5972727af84be43392d</anchor>
+      <arglist>(tsk_bool_t recursive)</arglist>
+    </member>
+    <member kind="function">
       <type>int</type>
       <name>tsk_mutex_lock</name>
       <anchorfile>group__tsk__mutex__group.html</anchorfile>
@@ -5413,6 +6136,13 @@
       <anchorfile>group__tsk__object__group.html</anchorfile>
       <anchor>ga2e8cef948dd1000968ae4df6cc7d7e69</anchor>
       <arglist>(self)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>void</type>
+      <name>tsk_object_t</name>
+      <anchorfile>group__tsk__object__group.html</anchorfile>
+      <anchor>ga96b70aef427c047a32ce5197a9aad564</anchor>
+      <arglist></arglist>
     </member>
     <member kind="typedef">
       <type>struct tsk_object_def_s</type>
@@ -5469,13 +6199,6 @@
       <anchorfile>group__tsk__object__group.html</anchorfile>
       <anchor>ga4f4eb990f3cf2f579f439870e8fec35d</anchor>
       <arglist>(tsk_object_t *self)</arglist>
-    </member>
-    <member kind="variable">
-      <type>TSK_BEGIN_DECLS typedef void</type>
-      <name>tsk_object_t</name>
-      <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga854eac17e0c0bdfa29862f294d22f7fb</anchor>
-      <arglist></arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -5786,6 +6509,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>TSK_DECLARE_RUNNABLE</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>ga814229d43b826a259deef2eefa2e0859</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>TSK_RUNNABLE_RUN_BEGIN</name>
       <anchorfile>group__tsk__runnable__group.html</anchorfile>
       <anchor>ga626da5c40a90003d1c72d7304bbac5d2</anchor>
@@ -5819,13 +6549,6 @@
       <anchor>gab0b5f62ddca1b5ae24f37eadcf817298</anchor>
       <arglist>(self)</arglist>
     </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TSK_DECLARE_RUNNABLE</name>
-      <anchorfile>group__tsk__runnable__group.html</anchorfile>
-      <anchor>ga814229d43b826a259deef2eefa2e0859</anchor>
-      <arglist></arglist>
-    </member>
     <member kind="typedef">
       <type>struct tsk_runnable_s</type>
       <name>tsk_runnable_t</name>
@@ -5839,6 +6562,13 @@
       <anchorfile>group__tsk__runnable__group.html</anchorfile>
       <anchor>ga5794a5eaeb3523f697cb7c390a81bc0c</anchor>
       <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_runnable_t *</type>
+      <name>tsk_runnable_create_2</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>ga90d2694789344253fe259de45d6dd29f</anchor>
+      <arglist>(int32_t priority)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -5856,17 +6586,24 @@
     </member>
     <member kind="function">
       <type>int</type>
+      <name>tsk_runnable_set_priority</name>
+      <anchorfile>group__tsk__runnable__group.html</anchorfile>
+      <anchor>ga25d13c68e3eb735d58c8f7da2cc89d6b</anchor>
+      <arglist>(tsk_runnable_t *self, int32_t priority)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
       <name>tsk_runnable_stop</name>
       <anchorfile>group__tsk__runnable__group.html</anchorfile>
       <anchor>ga5b9173b4e6b22204f55f97645acd71e6</anchor>
       <arglist>(tsk_runnable_t *self)</arglist>
     </member>
-    <member kind="variable">
-      <type>TSK_BEGIN_DECLS typedef void *(*</type>
+    <member kind="function">
+      <type>TSK_BEGIN_DECLS typedef void *TSK_STDCALL *</type>
       <name>tsk_runnable_func_run</name>
       <anchorfile>group__tsk__runnable__group.html</anchorfile>
-      <anchor>ga09f91d68dcb46db4ec35fabf4763aca9</anchor>
-      <arglist>)(void *self)</arglist>
+      <anchor>gab771f85c12a8a24c89d3cfc8def77dda</anchor>
+      <arglist>(void *self)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -5997,6 +6734,7 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <type></type>
       <name>tsk_sha1_errcode_e</name>
       <anchorfile>group__tsk__sha1__group.html</anchorfile>
       <anchor>gac8abdcb08ff7633e4618440c0e7d85c9</anchor>
@@ -6363,15 +7101,29 @@
       <type>int</type>
       <name>tsk_thread_create</name>
       <anchorfile>group__tsk__thread__group.html</anchorfile>
-      <anchor>ga27d60d0e9f4e1cd4cd75866ddb76d400</anchor>
-      <arglist>(void **tid, void *(*start)(void *), void *arg)</arglist>
+      <anchor>ga72e4092c4c76a54eac5a8592960eb86b</anchor>
+      <arglist>(tsk_thread_handle_t **handle, void *(TSK_STDCALL *start)(void *), void *arg)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_thread_set_priority</name>
+      <anchorfile>group__tsk__thread__group.html</anchorfile>
+      <anchor>gaf39ee1f69e33ff6592c961a25fd76834</anchor>
+      <arglist>(tsk_thread_handle_t *handle, int32_t priority)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_thread_set_priority_2</name>
+      <anchorfile>group__tsk__thread__group.html</anchorfile>
+      <anchor>ga2c30d9d8f918cc7c2d580af22d0dfee0</anchor>
+      <arglist>(int32_t priority)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_thread_join</name>
       <anchorfile>group__tsk__thread__group.html</anchorfile>
-      <anchor>gaef9e89a97f56887ffee9132c54e480bb</anchor>
-      <arglist>(void **tid)</arglist>
+      <anchor>gaf12d82e123acffcb9cd95c1b2efb9020</anchor>
+      <arglist>(tsk_thread_handle_t **handle)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -6385,13 +7137,6 @@
       <anchor>ga31aff3abba18fe3ec60ab7d7cc194678</anchor>
       <arglist>(S)</arglist>
     </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>tsk_time_now</name>
-      <anchorfile>group__tsk__time__group.html</anchorfile>
-      <anchor>ga08190c30f608b1397602ccba62592b09</anchor>
-      <arglist>()</arglist>
-    </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_gettimeofday</name>
@@ -6401,10 +7146,17 @@
     </member>
     <member kind="function">
       <type>uint64_t</type>
+      <name>tsk_gettimeofday_ms</name>
+      <anchorfile>group__tsk__time__group.html</anchorfile>
+      <anchor>ga082a1c3f470b8a07d1051dabf366a10d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>uint64_t</type>
       <name>tsk_time_get_ms</name>
       <anchorfile>group__tsk__time__group.html</anchorfile>
-      <anchor>ga8a16acf41302b031e38e9e175bc2b671</anchor>
-      <arglist>(struct timeval *tv)</arglist>
+      <anchor>ga2d7a55115621f6d502e7a3bbb235c4ce</anchor>
+      <arglist>(const struct timeval *tv)</arglist>
     </member>
     <member kind="function">
       <type>uint64_t</type>
@@ -6780,17 +7532,10 @@
     <name>tsk_object_header_s</name>
     <filename>structtsk__object__header__s.html</filename>
     <member kind="variable">
-      <type>const void *</type>
-      <name>base</name>
+      <type></type>
+      <name>TSK_DECLARE_OBJECT</name>
       <anchorfile>structtsk__object__header__s.html</anchorfile>
-      <anchor>a908126d45ae4ed5e87e37373a74fbef7</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>int</type>
-      <name>refCount</name>
-      <anchorfile>structtsk__object__header__s.html</anchorfile>
-      <anchor>a43ab0d8eafd71383b2233bdee65911de</anchor>
+      <anchor>a6cb2c811d40d14ceb34bd3b2e7dc5e6a</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -6859,6 +7604,38 @@
     </member>
   </compound>
   <compound kind="struct">
+    <name>tsk_plugin_s</name>
+    <filename>structtsk__plugin__s.html</filename>
+    <member kind="variable">
+      <type></type>
+      <name>TSK_DECLARE_OBJECT</name>
+      <anchorfile>structtsk__plugin__s.html</anchorfile>
+      <anchor>a6cb2c811d40d14ceb34bd3b2e7dc5e6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_plugin_handle_t *</type>
+      <name>handle</name>
+      <anchorfile>structtsk__plugin__s.html</anchorfile>
+      <anchor>aae8d13e02d6ae237d7781717c15716b7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>def_count</name>
+      <anchorfile>structtsk__plugin__s.html</anchorfile>
+      <anchor>a498754fa9519b21094bc086f20aebc6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>path</name>
+      <anchorfile>structtsk__plugin__s.html</anchorfile>
+      <anchor>a44196e6a5696d10442c29e639437196e</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
     <name>tsk_ragel_state_s</name>
     <filename>structtsk__ragel__state__s.html</filename>
     <member kind="variable">
@@ -6887,6 +7664,13 @@
       <name>eof</name>
       <anchorfile>structtsk__ragel__state__s.html</anchorfile>
       <anchor>a75fb639539041217d3e792d7d64713e9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>const char *</type>
+      <name>eoh</name>
+      <anchorfile>structtsk__ragel__state__s.html</anchorfile>
+      <anchor>a884f6d29df399dd0e2a3ec0cc6cbb0f0</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -6922,10 +7706,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>void *</type>
-      <name>tid</name>
+      <type>tsk_thread_handle_t *</type>
+      <name>h_thread</name>
       <anchorfile>structtsk__runnable__s.html</anchorfile>
-      <anchor>ae908d0f51ff36bfdcea4cbee5759a47d</anchor>
+      <anchor>af76c7460e19b818a726c31c342407610</anchor>
       <arglist>[1]</arglist>
     </member>
     <member kind="variable">
@@ -6933,6 +7717,13 @@
       <name>run</name>
       <anchorfile>structtsk__runnable__s.html</anchorfile>
       <anchor>a5eab70f61ae9b34fa82f804ccda94ce9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_thread_id_t</type>
+      <name>id_thread</name>
+      <anchorfile>structtsk__runnable__s.html</anchorfile>
+      <anchor>abba6f55607f7892a32734141d4e98cea</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -6968,6 +7759,13 @@
       <name>important</name>
       <anchorfile>structtsk__runnable__s.html</anchorfile>
       <anchor>abbf5761944a79a6439e4aa8da5770d1d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int32_t</type>
+      <name>priority</name>
+      <anchorfile>structtsk__runnable__s.html</anchorfile>
+      <anchor>a41b7c4ba47c44a632d5903b1f1338ad0</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -7140,5 +7938,120 @@
       <anchor>a867d2252cbe37e717dfa59b4a510946f</anchor>
       <arglist></arglist>
     </member>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0</name>
+    <path>C:/Projects/doubango/branches/2.0/</path>
+    <filename>dir_23c6058911ec3d6519846acb77914e60.html</filename>
+    <dir>C:/Projects/doubango/branches/2.0/doubango</dir>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches</name>
+    <path>C:/Projects/doubango/branches/</path>
+    <filename>dir_48ccd1e4df20782306b24b8e85052973.html</filename>
+    <dir>C:/Projects/doubango/branches/2.0</dir>
+  </compound>
+  <compound kind="dir">
+    <name>C:</name>
+    <path>C:/</path>
+    <filename>dir_e6bb53534ac0e427887cf7a94c0c004e.html</filename>
+    <dir>C:/Projects</dir>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0/doubango</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/</path>
+    <filename>dir_794c5f3a5871fccbd9cb0144b8a918bb.html</filename>
+    <dir>C:/Projects/doubango/branches/2.0/doubango/tinySAK</dir>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango</name>
+    <path>C:/Projects/doubango/</path>
+    <filename>dir_61caa8c9c937953110cbb688168e4704.html</filename>
+    <dir>C:/Projects/doubango/branches</dir>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects</name>
+    <path>C:/Projects/</path>
+    <filename>dir_e27f7acb6c354cea3d58335de45d9d79.html</filename>
+    <dir>C:/Projects/doubango</dir>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src/</path>
+    <filename>dir_61a1f70fd3b7f8c43221ebe878ebb8a2.html</filename>
+    <file>tinysak_config.h</file>
+    <file>tsk.c</file>
+    <file>tsk.h</file>
+    <file>tsk_base64.c</file>
+    <file>tsk_base64.h</file>
+    <file>tsk_binaryutils.c</file>
+    <file>tsk_binaryutils.h</file>
+    <file>tsk_buffer.c</file>
+    <file>tsk_buffer.h</file>
+    <file>tsk_common.h</file>
+    <file>tsk_condwait.c</file>
+    <file>tsk_condwait.h</file>
+    <file>tsk_debug.c</file>
+    <file>tsk_debug.h</file>
+    <file>tsk_errno.h</file>
+    <file>tsk_fsm.c</file>
+    <file>tsk_fsm.h</file>
+    <file>tsk_hmac.c</file>
+    <file>tsk_hmac.h</file>
+    <file>tsk_list.c</file>
+    <file>tsk_list.h</file>
+    <file>tsk_md5.c</file>
+    <file>tsk_md5.h</file>
+    <file>tsk_memory.c</file>
+    <file>tsk_memory.h</file>
+    <file>tsk_mutex.c</file>
+    <file>tsk_mutex.h</file>
+    <file>tsk_object.c</file>
+    <file>tsk_object.h</file>
+    <file>tsk_options.c</file>
+    <file>tsk_options.h</file>
+    <file>tsk_params.c</file>
+    <file>tsk_params.h</file>
+    <file>tsk_plugin.c</file>
+    <file>tsk_plugin.h</file>
+    <file>tsk_ppfcs16.c</file>
+    <file>tsk_ppfcs16.h</file>
+    <file>tsk_ppfcs32.c</file>
+    <file>tsk_ppfcs32.h</file>
+    <file>tsk_ragel_state.c</file>
+    <file>tsk_ragel_state.h</file>
+    <file>tsk_runnable.c</file>
+    <file>tsk_runnable.h</file>
+    <file>tsk_safeobj.c</file>
+    <file>tsk_safeobj.h</file>
+    <file>tsk_semaphore.c</file>
+    <file>tsk_semaphore.h</file>
+    <file>tsk_sha1.c</file>
+    <file>tsk_sha1.h</file>
+    <file>tsk_string.c</file>
+    <file>tsk_string.h</file>
+    <file>tsk_thread.c</file>
+    <file>tsk_thread.h</file>
+    <file>tsk_time.c</file>
+    <file>tsk_time.h</file>
+    <file>tsk_timer.c</file>
+    <file>tsk_timer.h</file>
+    <file>tsk_url.c</file>
+    <file>tsk_url.h</file>
+    <file>tsk_uuid.c</file>
+    <file>tsk_uuid.h</file>
+    <file>tsk_xml.c</file>
+    <file>tsk_xml.h</file>
+  </compound>
+  <compound kind="dir">
+    <name>C:/Projects/doubango/branches/2.0/doubango/tinySAK</name>
+    <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/</path>
+    <filename>dir_64a5a2540020364edec71303f2936fb2.html</filename>
+    <dir>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src</dir>
+  </compound>
+  <compound kind="page">
+    <name>index</name>
+    <title>tinySAK API Overview</title>
+    <filename>index</filename>
   </compound>
 </tagfile>

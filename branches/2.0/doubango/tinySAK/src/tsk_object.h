@@ -1,8 +1,5 @@
-/*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+/* Copyright (C) 2010-2013 Mamadou Diop.
+* Copyright (C) 2013 Doubango Telecom <http://doubango.org>
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
@@ -22,10 +19,6 @@
 
 /**@file tsk_object.h
  * @brief Base object implementation.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #ifndef TSK_OBJECT_H
 #define TSK_OBJECT_H
