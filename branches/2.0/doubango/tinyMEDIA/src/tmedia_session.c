@@ -1159,7 +1159,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	int ret = 0;
 	tsk_bool_t found;
 	tsk_bool_t stopped_to_reconf = tsk_false;
-	tsk_bool_t is_ro_offer = tsk_false;
+	tsk_bool_t is_ro_codecs_changed = tsk_false;
 	tsk_bool_t is_ro_network_info_changed = tsk_false;
 	tsk_bool_t is_ro_hold_resume_changed = tsk_false;
 	tsk_bool_t is_ro_loopback_address = tsk_false;
@@ -1178,7 +1178,6 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 
 	had_ro_sdp = (self->sdp.ro != tsk_null);
 	had_ro_provisional = (had_ro_sdp && self->ro_provisional);
-	is_ro_offer = ((ro_type & tmedia_ro_type_offer) == tmedia_ro_type_offer);
 
 	/*	RFC 3264 subcaluse 8
 		When issuing an offer that modifies the session, the "o=" line of the new SDP MUST be identical to that in the previous SDP, 
@@ -1208,9 +1207,8 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	}
 
 	/* SDP comparison
-	* No comparison is done for new offer as it always restart the session.
 	*/
-	if(!is_ro_offer && (sdp && self->sdp.ro)){
+	if((sdp && self->sdp.ro)){
 		const tsdp_header_M_t *M0, *M1;
 		const tsdp_header_C_t *C0, *C1;
 		index = 0;
@@ -1224,6 +1222,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 			
 			// hold/resume
 			is_ro_hold_resume_changed |= !tsk_striequals(tsdp_header_M_get_holdresume_att(M0), tsdp_header_M_get_holdresume_att(M1));
+
 			// media lines
 			if(!is_ro_media_lines_changed){
 				is_ro_media_lines_changed
@@ -1234,6 +1233,23 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 					 // same protos (e.g. SRTP)
 					 || !tsk_striequals(M1->proto, M0->proto);
 			}
+			
+			// codecs
+			if(!is_ro_media_lines_changed){ // make sure it's same media at same index
+				const tsk_list_item_t* codec_item0;
+				const tsdp_fmt_t* codec_fmt1;
+				tsk_size_t codec_index0 = 0;
+				tsk_list_foreach(codec_item0, M0->FMTs){
+					codec_fmt1 = (const tsdp_fmt_t*)tsk_list_find_object_by_pred_at_index(M1->FMTs, tsk_null, tsk_null, codec_index0++);
+					if(!codec_fmt1 || !tsk_striequals(codec_fmt1->value, ((const tsdp_fmt_t*)codec_item0->data)->value)){
+						is_ro_codecs_changed = tsk_true;
+						break;
+					}
+				}
+				// make sure M0 and M1 have same number of codecs
+				is_ro_codecs_changed |= (tsk_list_find_object_by_pred_at_index(M1->FMTs, tsk_null, tsk_null, codec_index0) != tsk_null);
+			}
+			
 			// network ports
 			is_ro_network_info_changed |= ((M1 ? M1->port : 0) != (M0->port));
 			
@@ -1289,18 +1305,20 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	}
 
 	TSK_DEBUG_INFO(
-		"is_ro_offer=%d,\n"
+		"is_ro_hold_resume_changed=%d,\n"
 		"is_ro_provisional_final_matching=%d,\n"
 		"is_ro_media_lines_changed=%d,\n"
 		"is_ro_network_info_changed=%d,\n"
 		"is_ro_loopback_address=%d,\n"
-		"is_media_type_changed=%d\n",
-		is_ro_offer,
+		"is_media_type_changed=%d,\n"
+		"is_ro_codecs_changed=%d\n",
+		is_ro_hold_resume_changed,
 		is_ro_provisional_final_matching,
 		is_ro_media_lines_changed,
 		is_ro_network_info_changed,
 		is_ro_loopback_address,
-		is_media_type_changed
+		is_media_type_changed,
+		is_ro_codecs_changed
 		);
 	
 	/*
@@ -1309,9 +1327,8 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	  * without stoping it and restarting it again with the right config. Same for RTP Network config (ip addresses, NAT, ports, IP version, ...)
 	  * "is_loopback_address" is used as a guard to avoid reconf for loopback address used for example by ZTE for fake forking. In all case
 	  * loopback address won't work on embedded devices such as iOS and Android.
-	  * OFFER always restart the session.
 	 */
-	if((self->started && !is_ro_loopback_address) && (is_ro_offer || is_ro_network_info_changed || is_ro_media_lines_changed || is_media_type_changed)){
+	if((self->started && !is_ro_loopback_address) && (is_ro_codecs_changed || is_ro_network_info_changed || is_ro_media_lines_changed || is_media_type_changed)){
 		TSK_DEBUG_INFO("stopped_to_reconf=true");
 		if((ret = tmedia_session_mgr_stop(self))){
 			TSK_DEBUG_ERROR("Failed to stop session manager");
@@ -1326,8 +1343,9 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 
 	/*  - if the session is running this means no session update is required unless some important changes
 	    - this check must be done after the "ro" update
+		- "is_ro_hold_resume_changed" do not restart the session but updates the SDP
 	*/
-	if(self->started && !(is_ro_hold_resume_changed || is_ro_network_info_changed || is_ro_media_lines_changed || is_ro_offer)){
+	if(self->started && !(is_ro_hold_resume_changed || is_ro_network_info_changed || is_ro_media_lines_changed || is_ro_codecs_changed)){
 		goto end_of_sessions_update;
 	}
 
@@ -1422,7 +1440,7 @@ end_of_sessions_update:
 	}
 
 	/* signal that ro has changed (will be used to update lo) unless there was no ro_sdp */
-	self->ro_changed = (had_ro_sdp && (is_ro_hold_resume_changed || is_ro_network_info_changed || is_ro_media_lines_changed || is_ro_offer));
+	self->ro_changed = (had_ro_sdp && (is_ro_hold_resume_changed || is_ro_network_info_changed || is_ro_media_lines_changed || is_ro_codecs_changed));
 
 	/* update "provisional" info */
 	self->ro_provisional = ((ro_type & tmedia_ro_type_provisional) == tmedia_ro_type_provisional);
