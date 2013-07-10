@@ -28,6 +28,7 @@ DisplayWatcher::DisplayWatcher(HWND hWnd, IMFMediaSink* pMediaSink, HRESULT &hr)
 , m_hWnd(hWnd)
 , m_pWndProc(NULL)
 , m_bStarted(FALSE)
+, m_bFullScreen(FALSE)
 {
 	IMFGetService *pService = NULL;
 
@@ -70,8 +71,11 @@ HRESULT DisplayWatcher::SetFullscreen(BOOL bEnabled)
 {
 	if(m_pDisplayControl)
 	{
-		return m_pDisplayControl->SetFullscreen(bEnabled);
+		HRESULT hr =  m_pDisplayControl->SetFullscreen(bEnabled);
+		m_bFullScreen = SUCCEEDED(hr);
+		return hr;
 	}
+	
 	return E_FAIL;
 }
 
@@ -123,6 +127,21 @@ LRESULT CALLBACK DisplayWatcher::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 				{					
 					This->UpdatePosition();
 				}
+				break;
+			}
+
+		case WM_CHAR:
+		case WM_KEYUP:
+			{
+				DisplayWatcher* This = dynamic_cast<DisplayWatcher*>((DisplayWatcher*)GetPropA(hWnd, "This"));
+				if(This)
+				{	
+					if(This->m_bFullScreen && (wParam == 0x1B || wParam == VK_ESCAPE))
+					{
+						This->SetFullscreen(FALSE);
+					}
+				}
+				
 				break;
 			}
 	}

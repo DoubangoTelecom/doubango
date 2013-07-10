@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="tinySIP"
 	ProjectGUID="{4CE20732-9978-4A88-B586-CFEFCB63E82D}"
 	RootNamespace="tinySIP"
@@ -115,8 +115,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="false"
+				Optimization="3"
+				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="..\thirdparties\win32\include;..\tinySIP\include;..\tinySAK\src;..\tinyNET\src;..\tinyHTTP\include;..\tinySIGCOMP\src;..\tinyIPSec\src;..\tinySDP\include;..\tinyMEDIA\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYSIP_EXPORTS"
 				RuntimeLibrary="2"

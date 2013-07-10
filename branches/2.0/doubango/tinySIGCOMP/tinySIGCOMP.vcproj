@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="tinySIGCOMP"
 	ProjectGUID="{76261DC8-25B3-43F4-9FB5-112C4AC0880E}"
 	RootNamespace="tinySIGCOMP"
@@ -116,8 +116,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="false"
+				Optimization="3"
+				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="..\thirdparties\win32\include;..\tinySAK\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYSIGCOMP_EXPORTS"
 				RuntimeLibrary="2"

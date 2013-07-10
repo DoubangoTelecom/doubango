@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="tinyXCAP"
 	ProjectGUID="{570CF33D-E65F-448F-8AC2-F9AE2F23152F}"
 	RootNamespace="tinyXCAP"
@@ -116,8 +116,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="false"
+				Optimization="3"
+				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="include;..\thirdparties\win32\include;..\tinyNET\src;..\tinySAK\src;..\tinyHTTP\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYXCAP_EXPORTS"
 				RuntimeLibrary="2"

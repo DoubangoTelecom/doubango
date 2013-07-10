@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="tinySDP"
 	ProjectGUID="{E45DB518-6562-4033-80E8-60030F0B169F}"
 	RootNamespace="tinySDP"
@@ -116,8 +116,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="false"
+				Optimization="3"
+				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="&quot;..\thirdparties\win32\include&quot;;&quot;..\tinySAK\src&quot;;&quot;..\tinySDP\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYSDP_EXPORTS"
 				RuntimeLibrary="2"
