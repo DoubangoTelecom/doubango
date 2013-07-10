@@ -315,12 +315,64 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 		CHECK_HR(hr = MFSetAttributeSize(pSelf->pOutType, MF_MT_FRAME_SIZE, TMEDIA_CONSUMER(pSelf)->video.in.width, TMEDIA_CONSUMER(pSelf)->video.in.height));
 		CHECK_HR(hr = MFSetAttributeRatio(pSelf->pOutType, MF_MT_FRAME_RATE, TMEDIA_CONSUMER(pSelf)->video.fps, 1));
 
+		CHECK_HR(hr = pSelf->pSession->ClearTopologies());
+
+		//
+		// FIXME: Using same EVR when the size is just swapped (e.g. [640, 480] -> [480, 640]) doesn't work while other changes does (e.g. [352, 288] -> [640, 480])
+		// /!\This look like a bug in Media Foundation
+		//
+		if(pSelf->nNegWidth == TMEDIA_CONSUMER(pSelf)->video.in.height && pSelf->nNegHeight == TMEDIA_CONSUMER(pSelf)->video.in.width)  // swapped?
+		{
+			TSK_DEBUG_INFO("/!\\ Size swapped");
+
+			IMFActivate* pSinkActivate = NULL;
+			IMFTopology* pTopologyPartial = NULL;
+			hr = MFCreateVideoRendererActivate(pSelf->hWindow, &pSinkActivate);
+			if(FAILED(hr)) goto end_of_swapping;
+			hr = MFUtils::CreateTopology(pSelf->pSource, pSelf->pDecoder, pSinkActivate, NULL/*Preview*/, MFMediaType_Video, &pTopologyPartial);
+			if(FAILED(hr)) goto end_of_swapping;
+
+			if(SUCCEEDED(hr)) {
+				SafeRelease(&pSelf->pSinkActivate);
+				SafeRelease(&pSelf->pTopologyPartial);
+				pSelf->pSinkActivate = pSinkActivate; pSinkActivate = NULL;
+				pSelf->pTopologyPartial = pTopologyPartial; pTopologyPartial = NULL;
+				
+			}
+			
+end_of_swapping:
+			SafeRelease(&pSinkActivate);
+			SafeRelease(&pTopologyPartial);
+			CHECK_HR(hr);
+		}
+
 		// Set media type again (not required but who know)
 		CHECK_HR(hr = MFUtils::SetMediaType(pSelf->pSource, pSelf->pOutType));
 
 		// Rebuild topology using the partial one
-		SafeRelease(&pSelf->pTopologyFull);
-		CHECK_HR(hr = MFUtils::ResolveTopology(pSelf->pTopologyPartial, &pSelf->pTopologyFull));
+		IMFTopology* pTopologyFull = NULL;
+		hr = MFUtils::ResolveTopology(pSelf->pTopologyPartial, &pTopologyFull);
+		if(SUCCEEDED(hr)){
+			SafeRelease(&pSelf->pTopologyFull);
+			pSelf->pTopologyFull = pTopologyFull; pTopologyFull = NULL;
+		}
+		SafeRelease(&pTopologyFull);
+		CHECK_HR(hr);
+
+		// Find Main Sink
+		IMFMediaSink* pMediaSink = NULL;
+		hr = MFUtils::FindNodeObject(pSelf->pTopologyFull, MFUtils::g_ullTopoIdSinkMain, (void**)&pMediaSink);
+		if(SUCCEEDED(hr)) {
+			if(pSelf->pDisplayWatcher){
+				delete pSelf->pDisplayWatcher, pSelf->pDisplayWatcher = NULL;
+			}
+			pSelf->pDisplayWatcher = new DisplayWatcher(pSelf->hWindow, pMediaSink, hr);
+			if(SUCCEEDED(hr) && pSelf->bStarted) {
+				hr = pSelf->pDisplayWatcher->Start();
+			}
+		}
+		SafeRelease(&pMediaSink);		
+		CHECK_HR(hr);
 
 		// Update the topology associated to the media session
 		CHECK_HR(hr = pSelf->pSession->SetTopology(MFSESSION_SETTOPOLOGY_IMMEDIATE, pSelf->pTopologyFull));
