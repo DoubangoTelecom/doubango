@@ -418,7 +418,7 @@ int tdav_session_av_prepare(tdav_session_av_t* self)
 			if(tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_pbk)){
 				// DTLS-SRTP requires certificates
 				if(self->srtp_type & tmedia_srtp_type_dtls){
-					TSK_DEBUG_WARN("DTLS-SRTP requested but no SLL certificates provided, disabling this option :(");
+					TSK_DEBUG_WARN("DTLS-SRTP requested but no SSL certificates provided, disabling this option :(");
 					if(!(self->srtp_type &= ~tmedia_srtp_type_dtls)){
 						// only DTLS-SRTP was enabled
 						self->srtp_mode = tmedia_srtp_mode_none;
