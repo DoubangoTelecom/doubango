@@ -297,7 +297,7 @@ private:
         }
     }
 
-
+	HRESULT		InitializeParams();
     HRESULT     Shutdown();
     HRESULT     CreateSample(IMFSample **pSample);
     HRESULT     DeliverSample(IMFSample *pSample);

@@ -20,6 +20,7 @@
 #include "internals/mf_utils.h"
 #include "internals/mf_sample_grabber.h"
 #include "internals/mf_devices.h"
+#include "internals/mf_display_watcher.h"
 
 #include "tinymedia/tmedia_defaults.h"
 #include "tinymedia/tmedia_producer.h"
@@ -52,6 +53,7 @@ typedef struct plugin_win_mf_producer_video_s
 	
 	bool bStarted, bPrepared;
 	tsk_thread_handle_t* ppTread[1];
+	HWND hWndPreview;
 
     DeviceListVideo* pDeviceList;
 
@@ -59,7 +61,9 @@ typedef struct plugin_win_mf_producer_video_s
     IMFMediaSession *pSession;
     IMFMediaSource *pSource;
     SampleGrabberCB *pCallback;
-    IMFActivate *pSinkActivate;
+    IMFActivate *pSinkGrabber;
+	IMFActivate *pSinkActivatePreview;
+	DisplayWatcher* pWatcherPreview;
     IMFTopology *pTopology;
 	IMFMediaType *pGrabberInputType;
 }
@@ -69,6 +73,7 @@ plugin_win_mf_producer_video_t;
 static int plugin_win_mf_producer_video_set(tmedia_producer_t *self, const tmedia_param_t* param)
 {
 	int ret = 0;
+	HRESULT hr = S_OK;
 	plugin_win_mf_producer_video_t* pSelf = (plugin_win_mf_producer_video_t*)self;
 
 	if(!pSelf || !param){
@@ -76,7 +81,44 @@ static int plugin_win_mf_producer_video_set(tmedia_producer_t *self, const tmedi
 		return -1;
 	}
 
-	return ret;
+	if(param->value_type == tmedia_pvt_int64){
+		if(tsk_striequals(param->key, "local-hwnd")){
+			HWND hWnd = reinterpret_cast<HWND>((INT64)*((int64_t*)param->value));
+			if(hWnd != pSelf->hWndPreview)
+			{
+				pSelf->hWndPreview = hWnd;
+				if(pSelf->pWatcherPreview)
+				{
+					CHECK_HR(hr = pSelf->pWatcherPreview->SetHwnd(hWnd));
+				}
+			}
+		}
+	}
+	else if(param->value_type == tmedia_pvt_int32){
+		if(tsk_striequals(param->key, "mute")){
+			//producer->mute = (TSK_TO_INT32((uint8_t*)param->value) != 0);
+			//if(producer->started){
+			//	if(producer->mute){
+			//		producer->grabber->pause();
+			//	}
+			//	else{
+			//		producer->grabber->start();
+			//	}
+			//}
+		}
+		else if(tsk_striequals(param->key, "create-on-current-thead")){
+			//producer->create_on_ui_thread = *((int32_t*)param->value) ? tsk_false : tsk_true;
+		}
+		else if(tsk_striequals(param->key, "plugin-firefox")){
+			//producer->plugin_firefox = (*((int32_t*)param->value) != 0);
+			//if(producer->grabber){
+			//	producer->grabber->setPluginFirefox((producer->plugin_firefox == tsk_true));
+			//}
+		}
+	}
+
+bail:
+	return SUCCEEDED(hr) ?  0 : -1;
 }
 
 static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const tmedia_codec_t* codec)
@@ -102,8 +144,9 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 		TMEDIA_PRODUCER(pSelf)->video.height);
 
 	HRESULT hr = S_OK;
-	IMFAttributes* pAttributes = NULL;
+	IMFAttributes* pSessionAttributes = NULL;
 	IMFTopology *pTopology = NULL;
+	IMFMediaSink* pEvr = NULL;
 
 	// create device list object
 	if(!pSelf->pDeviceList && !(pSelf->pDeviceList = new DeviceListVideo())){
@@ -172,6 +215,10 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 		}
 #endif
 
+		// Set session attributes
+		CHECK_HR(hr = MFCreateAttributes(&pSessionAttributes, 1));
+		CHECK_HR(hr = pSessionAttributes->SetUINT32(MF_LOW_LATENCY, 1)); //FIXME: CodecAPI should also use http://msdn.microsoft.com/en-us/library/dd317656(v=vs.85).aspx
+
 		// Configure the media type that the Sample Grabber will receive.
 		// Setting the major and subtype is usually enough for the topology loader
 		// to resolve the topology.
@@ -219,23 +266,34 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 		}
 		// Create the sample grabber sink.
 		CHECK_HR(hr = SampleGrabberCB::CreateInstance(TMEDIA_PRODUCER(pSelf), &pSelf->pCallback));
-		CHECK_HR(hr = MFCreateSampleGrabberSinkActivate(pSelf->pGrabberInputType, pSelf->pCallback, &pSelf->pSinkActivate));
+		CHECK_HR(hr = MFCreateSampleGrabberSinkActivate(pSelf->pGrabberInputType, pSelf->pCallback, &pSelf->pSinkGrabber));
 
 		// To run as fast as possible, set this attribute (requires Windows 7):
-		CHECK_HR(hr = pSelf->pSinkActivate->SetUINT32(MF_SAMPLEGRABBERSINK_IGNORE_CLOCK, TRUE));
+		CHECK_HR(hr = pSelf->pSinkGrabber->SetUINT32(MF_SAMPLEGRABBERSINK_IGNORE_CLOCK, TRUE));
 
 		// Create the Media Session.
-		CHECK_HR(hr = MFCreateMediaSession(NULL, &pSelf->pSession));
+		CHECK_HR(hr = MFCreateMediaSession(pSessionAttributes, &pSelf->pSession));
+
+		// Create the EVR activation object for the preview.
+		CHECK_HR(hr = MFCreateVideoRendererActivate(pSelf->hWndPreview, &pSelf->pSinkActivatePreview));
 
 		// Create the topology.
-		CHECK_HR(hr = MFUtils::CreateTopology(pSelf->pSource, pSelf->pEncoder, pSelf->pSinkActivate, MFMediaType_Video, &pTopology));
+		CHECK_HR(hr = MFUtils::CreateTopology(pSelf->pSource, pSelf->pEncoder, pSelf->pSinkGrabber, pSelf->pSinkActivatePreview, MFMediaType_Video, &pTopology));
 		// Resolve topology (adds video processors if needed).
 		CHECK_HR(hr = MFUtils::ResolveTopology(pTopology, &pSelf->pTopology));
+
+		// Find EVR for the preview.
+		CHECK_HR(hr = MFUtils::FindNodeObject(pSelf->pTopology, MFUtils::g_ullTopoIdSinkPreview, (void**)&pEvr));
+
+		// Create EVR watcher for the preview.
+		pSelf->pWatcherPreview = new DisplayWatcher(pSelf->hWndPreview, pEvr, hr);
+		CHECK_HR(hr);
 	}
 
 bail:
-	SafeRelease(&pAttributes);
+	SafeRelease(&pSessionAttributes);
 	SafeRelease(&pTopology);
+	SafeRelease(&pEvr);
 	
 	pSelf->bPrepared = SUCCEEDED(hr);
 	return pSelf->bPrepared ? 0 : -1;
@@ -261,8 +319,10 @@ static int plugin_win_mf_producer_video_start(tmedia_producer_t* self)
 
 	HRESULT hr = S_OK;
 
-	// Set Video window
-	// CHECK_HR(hr = MFUtils::SetVideoWindow(pSelf->pTopology, pSelf->pSource, MFUtils::GetConsoleHwnd()));
+	// Run preview watcher
+	if(pSelf->pWatcherPreview) {
+		CHECK_HR(hr = pSelf->pWatcherPreview->Start());
+	}
 
 	// Run the media session.
 	CHECK_HR(hr = MFUtils::RunSession(pSelf->pSession, pSelf->pTopology));
@@ -315,6 +375,10 @@ static int plugin_win_mf_producer_video_stop(tmedia_producer_t* self)
 
     HRESULT hr = S_OK;
 
+	if(pSelf->pWatcherPreview){
+		hr = pSelf->pWatcherPreview->Stop();
+	}
+
     // for the thread
     pSelf->bStarted = false;
     hr = MFUtils::ShutdownSession(pSelf->pSession, NULL); // stop session to wakeup the asynchronous thread
@@ -341,6 +405,9 @@ static int _plugin_win_mf_producer_video_unprepare(plugin_win_mf_producer_video_
 	if(pSelf->pDeviceList){
 		delete pSelf->pDeviceList, pSelf->pDeviceList = NULL;
     }
+	if(pSelf->pWatcherPreview){
+		pSelf->pWatcherPreview->Stop();
+	}
     if(pSelf->pSource){
 		pSelf->pSource->Shutdown();
 		pSelf->pSource = NULL;
@@ -353,10 +420,16 @@ static int _plugin_win_mf_producer_video_unprepare(plugin_win_mf_producer_video_
 	SafeRelease(&pSelf->pEncoder);
     SafeRelease(&pSelf->pSession);
     SafeRelease(&pSelf->pSource);
+	SafeRelease(&pSelf->pSinkActivatePreview);
     SafeRelease(&pSelf->pCallback);
-    SafeRelease(&pSelf->pSinkActivate);
+    SafeRelease(&pSelf->pSinkGrabber);
     SafeRelease(&pSelf->pTopology);
 	SafeRelease(&pSelf->pGrabberInputType);
+
+	if(pSelf->pWatcherPreview){
+		delete pSelf->pWatcherPreview;
+		pSelf->pWatcherPreview = NULL;
+	}
 
 	pSelf->bPrepared = false;
 
