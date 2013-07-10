@@ -114,7 +114,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="3"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories=".;..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyMEDIA\include;..\..\tinySDP\include;..\..\tinyDAV\include;..\..\tinyRTP\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_WIN_MFP_EXPORTS;DEBUG_LEVEL=DEBUG_LEVEL_ERROR;TINYDAV_EXPORTS"
@@ -214,6 +214,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\internals\mf_display_watcher.cxx"
+					>
+				</File>
+				<File
 					RelativePath=".\internals\mf_sample_grabber.cxx"
 					>
 				</File>
@@ -245,6 +249,10 @@
 				</File>
 				<File
 					RelativePath=".\internals\mf_devices.h"
+					>
+				</File>
+				<File
+					RelativePath=".\internals\mf_display_watcher.h"
 					>
 				</File>
 				<File

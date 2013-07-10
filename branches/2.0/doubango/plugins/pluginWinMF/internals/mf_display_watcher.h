@@ -49,6 +49,7 @@ private:
 	HWND m_hWnd;
 	WNDPROC m_pWndProc;
 	BOOL m_bStarted;
+	BOOL m_bFullScreen;
 };
 
 #endif /* PLUGIN_WIN_MF_DISPLAY_WATCHER_H */

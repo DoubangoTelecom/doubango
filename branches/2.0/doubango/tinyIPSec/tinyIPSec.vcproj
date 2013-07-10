@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="tinyIPSec"
 	ProjectGUID="{002FF064-588F-402E-A096-C8D033F49F40}"
 	RootNamespace="tinyIPSec"
@@ -119,7 +119,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				EnableIntrinsicFunctions="false"
+				Optimization="3"
+				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="&quot;..\thirdparties\win32\include&quot;;&quot;..\tinySAK\src&quot;"
 				PreprocessorDefinitions="HAVE_IPSEC=0;WIN32;_WIN32_WINNT=0x0501;NDEBUG;_WINDOWS;_USRDLL;TINYIPSEC_EXPORTS"
 				RuntimeLibrary="2"
