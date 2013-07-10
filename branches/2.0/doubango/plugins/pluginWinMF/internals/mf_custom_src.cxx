@@ -1028,7 +1028,7 @@ HRESULT CMFStreamSource::CopyVideoBuffer(UINT32 nWidth, UINT32 nHeight, const vo
 	}
 	if(nWidth != m_structVideoParams.nWidth || nHeight != m_structVideoParams.nHeigh || nBufferSize != m_nBufferSize)
 	{
-		TSK_DEBUG_ERROR("Invalid argument %u#%u or %u#%u or %u#%u", nWidth, m_structVideoParams.nWidth, nHeight, m_structVideoParams.nHeigh, nBufferSize, m_nBufferSize);
+		TSK_DEBUG_ERROR("Invalid argument %u#%u or %u#%u or %u#%u. If the call is from a video consumer then, you can safely ignore this message.", nWidth, m_structVideoParams.nWidth, nHeight, m_structVideoParams.nHeigh, nBufferSize, m_nBufferSize);
 		return E_BOUNDS;
 	}
 

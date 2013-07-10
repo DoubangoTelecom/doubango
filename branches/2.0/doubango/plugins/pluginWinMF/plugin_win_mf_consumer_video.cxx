@@ -61,12 +61,17 @@ typedef struct plugin_win_mf_consumer_video_s
 	HWND hWindow;
 	tsk_thread_handle_t* ppTread[1];
 
+	UINT32 nNegWidth;
+	UINT32 nNegHeight;
+	UINT32 nNegFps;
+
 	IMFTransform *pDecoder;
     IMFMediaSession *pSession;
     CMFSource *pSource;
     IMFActivate *pSinkActivate;
 	DisplayWatcher* pDisplayWatcher;
-    IMFTopology *pTopology;
+    IMFTopology *pTopologyFull;
+	IMFTopology *pTopologyPartial;
 	IMFMediaType *pOutType;
 }
 plugin_win_mf_consumer_video_t;
@@ -146,11 +151,15 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	if(!TMEDIA_CONSUMER(pSelf)->video.display.height){
 		TMEDIA_CONSUMER(pSelf)->video.display.height = TMEDIA_CONSUMER(pSelf)->video.in.height;
 	}
+	
+	pSelf->nNegFps = TMEDIA_CONSUMER(pSelf)->video.fps;
+	pSelf->nNegWidth = TMEDIA_CONSUMER(pSelf)->video.display.width;
+	pSelf->nNegHeight = TMEDIA_CONSUMER(pSelf)->video.display.height;
 
 	TSK_DEBUG_INFO("MF video consumer: fps=%d, width=%d, height=%d", 
-		TMEDIA_CONSUMER(pSelf)->video.fps, 
-		TMEDIA_CONSUMER(pSelf)->video.display.width, 
-		TMEDIA_CONSUMER(pSelf)->video.display.height);
+		pSelf->nNegFps, 
+		pSelf->nNegWidth, 
+		pSelf->nNegHeight);
 
 	if(kDefaultUncompressedType == MFVideoFormat_NV12) {
 		TMEDIA_CONSUMER(pSelf)->video.display.chroma = tmedia_chroma_nv12;
@@ -169,7 +178,6 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	}
 
 	
-	IMFTopology *pTopology = NULL;
 	IMFMediaSink* pEvr = NULL;
 
 	CHECK_HR(hr = MFCreateMediaType(&pSelf->pOutType));
@@ -191,14 +199,14 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 		}
 	}
 #endif
-	
+
 	if(!pSelf->pDecoder){
 		CHECK_HR(hr = pSelf->pOutType->SetGUID(MF_MT_SUBTYPE, kDefaultUncompressedType));
 	}
     CHECK_HR(hr = pSelf->pOutType->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive));
 	CHECK_HR(hr = pSelf->pOutType->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, TRUE));
-    CHECK_HR(hr = MFSetAttributeSize(pSelf->pOutType, MF_MT_FRAME_SIZE, TMEDIA_CONSUMER(pSelf)->video.display.width, TMEDIA_CONSUMER(pSelf)->video.display.height));       
-    CHECK_HR(hr = MFSetAttributeRatio(pSelf->pOutType, MF_MT_FRAME_RATE, TMEDIA_CONSUMER(pSelf)->video.fps, 1));       
+    CHECK_HR(hr = MFSetAttributeSize(pSelf->pOutType, MF_MT_FRAME_SIZE, pSelf->nNegWidth, pSelf->nNegHeight));
+    CHECK_HR(hr = MFSetAttributeRatio(pSelf->pOutType, MF_MT_FRAME_RATE, pSelf->nNegFps, 1));     
     CHECK_HR(hr = MFSetAttributeRatio(pSelf->pOutType, MF_MT_PIXEL_ASPECT_RATIO, 1, 1));
 
 	CHECK_HR(hr = CMFSource::CreateInstanceEx(IID_IMFMediaSource, (void**)&pSelf->pSource, pSelf->pOutType));
@@ -215,19 +223,18 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	CHECK_HR(hr = MFCreateVideoRendererActivate(pSelf->hWindow, &pSelf->pSinkActivate));
 
 	// Create the topology.
-	CHECK_HR(hr = MFUtils::CreateTopology(pSelf->pSource, pSelf->pDecoder, pSelf->pSinkActivate, NULL/*Preview*/, MFMediaType_Video, &pTopology));
+	CHECK_HR(hr = MFUtils::CreateTopology(pSelf->pSource, pSelf->pDecoder, pSelf->pSinkActivate, NULL/*Preview*/, MFMediaType_Video, &pSelf->pTopologyPartial));
 	// Resolve topology (adds video processors if needed).
-	CHECK_HR(hr = MFUtils::ResolveTopology(pTopology, &pSelf->pTopology));
+	CHECK_HR(hr = MFUtils::ResolveTopology(pSelf->pTopologyPartial, &pSelf->pTopologyFull));
 
 	// Find EVR
-	CHECK_HR(hr = MFUtils::FindNodeObject(pSelf->pTopology, MFUtils::g_ullTopoIdSinkMain, (void**)&pEvr));
+	CHECK_HR(hr = MFUtils::FindNodeObject(pSelf->pTopologyFull, MFUtils::g_ullTopoIdSinkMain, (void**)&pEvr));
 
 	// Create EVR watcher
 	pSelf->pDisplayWatcher = new DisplayWatcher(pSelf->hWindow, pEvr, hr);
 	CHECK_HR(hr);
 
 bail:
-	SafeRelease(&pTopology);
 	SafeRelease(&pEvr);
 	
 	pSelf->bPrepared = SUCCEEDED(hr);
@@ -260,7 +267,7 @@ static int plugin_win_mf_consumer_video_start(tmedia_consumer_t* self)
 	}
 
 	// Run the media session.
-	CHECK_HR(hr = MFUtils::RunSession(pSelf->pSession, pSelf->pTopology));
+	CHECK_HR(hr = MFUtils::RunSession(pSelf->pSession, pSelf->pTopologyFull));
 
 	// Start asynchronous watcher thread
 	pSelf->bStarted = true;
@@ -299,8 +306,32 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 		TSK_DEBUG_ERROR("No video custom source");
 		CHECK_HR(hr = E_FAIL);
 	}
+
+	if(pSelf->nNegWidth != TMEDIA_CONSUMER(pSelf)->video.in.width || pSelf->nNegHeight != TMEDIA_CONSUMER(pSelf)->video.in.height){
+		TSK_DEBUG_INFO("Negotiated and input video sizes are different:%d#%d or %d#%d",
+			pSelf->nNegWidth, TMEDIA_CONSUMER(pSelf)->video.in.width,
+			pSelf->nNegHeight, TMEDIA_CONSUMER(pSelf)->video.in.height);
+		// Update media type
+		CHECK_HR(hr = MFSetAttributeSize(pSelf->pOutType, MF_MT_FRAME_SIZE, TMEDIA_CONSUMER(pSelf)->video.in.width, TMEDIA_CONSUMER(pSelf)->video.in.height));
+		CHECK_HR(hr = MFSetAttributeRatio(pSelf->pOutType, MF_MT_FRAME_RATE, TMEDIA_CONSUMER(pSelf)->video.fps, 1));
+
+		// Set media type again (not required but who know)
+		CHECK_HR(hr = MFUtils::SetMediaType(pSelf->pSource, pSelf->pOutType));
+
+		// Rebuild topology using the partial one
+		SafeRelease(&pSelf->pTopologyFull);
+		CHECK_HR(hr = MFUtils::ResolveTopology(pSelf->pTopologyPartial, &pSelf->pTopologyFull));
+
+		// Update the topology associated to the media session
+		CHECK_HR(hr = pSelf->pSession->SetTopology(MFSESSION_SETTOPOLOGY_IMMEDIATE, pSelf->pTopologyFull));
+
+		// Update negotiated width and height
+		pSelf->nNegWidth = TMEDIA_CONSUMER(pSelf)->video.in.width;
+		pSelf->nNegHeight = TMEDIA_CONSUMER(pSelf)->video.in.height;		
+	}
 	
-	CHECK_HR(hr = pSelf->pSource->CopyVideoBuffer(TMEDIA_CONSUMER(pSelf)->video.display.width, TMEDIA_CONSUMER(pSelf)->video.display.height, buffer, size));
+	// Deliver buffer
+	CHECK_HR(hr = pSelf->pSource->CopyVideoBuffer(pSelf->nNegWidth, pSelf->nNegHeight, buffer, size));
 
 bail:
 	return SUCCEEDED(hr) ?  0 : -1;
@@ -381,7 +412,8 @@ static int _plugin_win_mf_consumer_video_unprepare(plugin_win_mf_consumer_video_
     SafeRelease(&pSelf->pSession);
     SafeRelease(&pSelf->pSource);
     SafeRelease(&pSelf->pSinkActivate);
-    SafeRelease(&pSelf->pTopology);
+    SafeRelease(&pSelf->pTopologyFull);
+	SafeRelease(&pSelf->pTopologyPartial);
 	SafeRelease(&pSelf->pOutType);
 
 	if(pSelf->pDisplayWatcher) {

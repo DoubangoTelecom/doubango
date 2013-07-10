@@ -860,16 +860,21 @@ HRESULT MFUtils::RunSession(
 	MediaEventType met;
 	HRESULT hrStatus = S_OK;
 	HRESULT hr = S_OK;
-	CHECK_HR(hr = pSession->SetTopology(0, pTopology));
+	CHECK_HR(hr = pSession->SetTopology(MFSESSION_SETTOPOLOGY_IMMEDIATE, pTopology)); // MFSESSION_SETTOPOLOGY_IMMEDIATE required to update (reload) topology when media type change
 	CHECK_HR(hr = pSession->Start(&GUID_NULL, &var));
 
 	// Check first event
 	hr = pSession->GetEvent(MF_EVENT_FLAG_NO_WAIT, &pEvent);
-	if(hr == MF_E_NO_EVENTS_AVAILABLE){
+	if(hr == MF_E_NO_EVENTS_AVAILABLE || hr == MF_E_MULTIPLE_SUBSCRIBERS){ // MF_E_MULTIPLE_SUBSCRIBERS means already listening
 		hr = S_OK;
 		goto bail;
 	}
-	CHECK_HR(hr = pEvent->GetStatus(&hrStatus));
+	if(pEvent) {
+		CHECK_HR(hr = pEvent->GetStatus(&hrStatus));
+	}
+	else {
+		hrStatus = hr;
+	}
 	if (FAILED(hrStatus))
 	{
 		CHECK_HR(hr = pEvent->GetType(&met));
