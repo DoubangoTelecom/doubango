@@ -38,7 +38,7 @@
 } 
 
 #undef CHECK_HR
-#define CHECK_HR(x) if (FAILED(x)) { TSK_DEBUG_ERROR("Operation Failed"); goto bail; }
+#define CHECK_HR(x) if (FAILED(x)) { TSK_DEBUG_ERROR("Operation Failed (%lld)", x); goto bail; }
 
 typedef struct VideoSubTypeGuidPair
 {
@@ -110,7 +110,8 @@ static HRESULT AddSourceNode(
 static HRESULT CreateTopology(
 	IMFMediaSource *pSource, // Media source
 	IMFTransform *pTransform, // Transform filter (e.g. encoder or decoder) to insert between the source and Sink. NULL is valid.
-	IMFActivate *pSinkActivate, // Activation object.
+	IMFActivate *pSinkActivateMain, // Main sink (e.g. sample grabber or EVR).
+	IMFActivate *pSinkActivatePreview, // Preview sink. Optional. Could be NULL.
 	const GUID& mediaType, // The MediaType
 	IMFTopology **ppTopo // Receives the newly created topology
 	);
@@ -118,6 +119,11 @@ static HRESULT ResolveTopology(
 	IMFTopology *pInputTopo, // A pointer to the IMFTopology interface of the partial topology to be resolved.
 	IMFTopology **ppOutputTopo, // Receives a pointer to the IMFTopology interface of the completed topology. The caller must release the interface.
 	IMFTopology *pCurrentTopo = NULL // A pointer to the IMFTopology interface of the previous full topology. The topology loader can re-use objects from this topology in the new topology. This parameter can be NULL.
+	);
+static HRESULT FindNodeObject(
+	IMFTopology *pInputTopo, // The Topology containing the node to find
+	TOPOID qwTopoNodeID, //The identifier for the node
+	void** ppObject // Receives the Object
 	);
 static HRESULT CreateMediaSinkActivate(
     IMFStreamDescriptor *pSourceSD,     // Pointer to the stream descriptor.
@@ -152,8 +158,35 @@ static INT GetSupportedSubTypeIndex(
 	);
 static HWND GetConsoleHwnd(void);
 
+static RECT CorrectAspectRatio(
+	const RECT& src, 
+	const MFRatio& srcPAR
+	);
+static RECT LetterBoxRect(
+	const RECT& rcSrc,
+	const RECT& rcDst
+	);
+
+template <class Q>
+static HRESULT GetTopoNodeObject(IMFTopologyNode *pNode, Q **ppObject)
+{
+    IUnknown *pUnk = NULL;   // zero output
+
+    HRESULT hr = pNode->GetObject(&pUnk);
+    if (SUCCEEDED(hr))
+    {
+        pUnk->QueryInterface(IID_PPV_ARGS(ppObject));
+        pUnk->Release();
+    }
+    return hr;
+}
+
 private:
 	static bool g_bStarted;
+public:
+	static const TOPOID g_ullTopoIdSinkMain;
+	static const TOPOID g_ullTopoIdSinkPreview;
+	static const TOPOID g_ullTopoIdSource;
 };
 
 #endif /* PLUGIN_WIN_MF_UTILS_H */

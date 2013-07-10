@@ -23,6 +23,9 @@
 #include <assert.h>
 
 bool MFUtils::g_bStarted = false;
+const TOPOID MFUtils::g_ullTopoIdSinkMain = 555;
+const TOPOID MFUtils::g_ullTopoIdSinkPreview = 666;
+const TOPOID MFUtils::g_ullTopoIdSource = 777;
 
 HRESULT MFUtils::Startup()
 {
@@ -520,10 +523,15 @@ bail:
 }
 
 // Create the topology
+//
+// [source] -> (Transform) -> [SinkMain]
+//         \-> (SinkPreview)
+//
 HRESULT MFUtils::CreateTopology(
 	IMFMediaSource *pSource, // Media source
 	IMFTransform *pTransform, // Transform filter (e.g. encoder or decoder) to insert between the source and Sink. NULL is valid.
-	IMFActivate *pSinkActivate, // Activation object.
+	IMFActivate *pSinkActivateMain, // Main sink (e.g. sample grabber or EVR).
+	IMFActivate *pSinkActivatePreview, // Preview sink. Optional. Could be NULL.
 	const GUID& mediaType, // The MediaType
 	IMFTopology **ppTopo // Receives the newly created topology
 	)
@@ -533,11 +541,11 @@ HRESULT MFUtils::CreateTopology(
 	IMFStreamDescriptor *pSD = NULL;
 	IMFMediaTypeHandler *pHandler = NULL;
 	IMFTopologyNode *pNodeSource = NULL;
-	IMFTopologyNode *pNodeSink = NULL;
+	IMFTopologyNode *pNodeSinkMain = NULL;
+	IMFTopologyNode *pNodeSinkPreview = NULL;
 	IMFTopologyNode *pNodeTransform = NULL;
+	IMFTopologyNode *pNodeTee = NULL;
 	IMFMediaType *pMediaType = NULL;
-	IMFTransform *pVideoProcessor = NULL;
-	IMFTopologyNode *pNodeVideoProcessor = NULL;
 
 	HRESULT hr = S_OK;
 	DWORD cStreams = 0;
@@ -559,43 +567,59 @@ HRESULT MFUtils::CreateTopology(
 		if (majorType == mediaType && fSelected)
 		{
 			CHECK_HR(hr = AddSourceNode(pTopology, pSource, pPD, pSD, &pNodeSource));
-			CHECK_HR(hr = AddOutputNode(pTopology, pSinkActivate, 0, &pNodeSink));
-			CHECK_HR(hr = MFUtils::BindOutputNode(pNodeSink)); // To avoid MF_E_TOPO_SINK_ACTIVATES_UNSUPPORTED
+			CHECK_HR(hr = pNodeSource->SetTopoNodeID(MFUtils::g_ullTopoIdSource));
+			CHECK_HR(hr = AddOutputNode(pTopology, pSinkActivateMain, 0, &pNodeSinkMain));
+			CHECK_HR(hr = pNodeSinkMain->SetTopoNodeID(MFUtils::g_ullTopoIdSinkMain));
+			CHECK_HR(hr = MFUtils::BindOutputNode(pNodeSinkMain)); // To avoid MF_E_TOPO_SINK_ACTIVATES_UNSUPPORTED
+			if(pSinkActivatePreview)
+			{
+				CHECK_HR(hr = AddOutputNode(pTopology, pSinkActivatePreview, 0, &pNodeSinkPreview));
+				CHECK_HR(hr = pNodeSinkPreview->SetTopoNodeID(MFUtils::g_ullTopoIdSinkPreview));
+				CHECK_HR(hr = MFUtils::BindOutputNode(pNodeSinkPreview));
+
+				CHECK_HR(hr = MFCreateTopologyNode(MF_TOPOLOGY_TEE_NODE, &pNodeTee));
+				CHECK_HR(hr = pTopology->AddNode(pNodeTee));
+			}
 
 			if(pTransform)
 			{
-				CHECK_HR(hr = AddTransformNode(pTopology, pTransform, 0, &pNodeTransform));
-
-				if(0 && majorType == MFMediaType_Video) // FIXME
-				{
-					GUID subType;
-					SafeRelease(&pMediaType);
-					SafeRelease(&pVideoProcessor);
-					CHECK_HR(hr = pHandler->GetCurrentMediaType(&pMediaType));
-					CHECK_HR(hr = pMediaType->GetGUID(MF_MT_SUBTYPE, &subType));
-					if(subType != MFVideoFormat_NV12) // Transforms accept NV12 only
-					{
-						CHECK_HR(hr = MFUtils::GetBestVideoProcessor(subType, MFVideoFormat_NV12, &pVideoProcessor));
-						CHECK_HR(hr = AddTransformNode(pTopology, pVideoProcessor, 0, &pNodeVideoProcessor));
-					}
-				}
-				if(pVideoProcessor && pNodeVideoProcessor)
-				{
-					// Connect(Source -> VideoProcessor -> Codec -> Sink)
-					CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeVideoProcessor, 0));
-					CHECK_HR(hr = pNodeVideoProcessor->ConnectOutput(0, pNodeTransform, 0));
-					CHECK_HR(hr = pNodeTransform->ConnectOutput(0, pNodeSink, 0));
+				CHECK_HR(hr = AddTransformNode(pTopology, pTransform, 0, &pNodeTransform));			
+				
+				if(pNodeTee)
+				{	
+					// Connect(Source -> Tee)
+					CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeTee, 0));
+					// Connect(Tee -> Transform)
+					CHECK_HR(hr = pNodeTee->ConnectOutput(0, pNodeTransform, 0));
+					// Connect(Transform -> SinkMain)
+					CHECK_HR(hr = pNodeTransform->ConnectOutput(0, pNodeSinkMain, 0));
+					// Connect(Tee -> SinkPreview)
+					CHECK_HR(hr = pNodeTee->ConnectOutput(1, pNodeSinkPreview, 0));
 				}
 				else
 				{
-					// Connect(Source -> Codec -> Sink)
+					// Connect (Source -> Transform)
 					CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeTransform, 0));
-					CHECK_HR(hr = pNodeTransform->ConnectOutput(0, pNodeSink, 0));
+					// Connect(Transform -> SinkMain)
+					CHECK_HR(hr = pNodeTransform->ConnectOutput(0, pNodeSinkMain, 0));
 				}
 			}
 			else
-			{	// Connect(Source -> Sink)
-				CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeSink, 0));
+			{	
+				if(pNodeTee)
+				{
+					// Connect(Source -> Tee)
+					CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeTee, 0));
+					// Connect(Tee -> SinkMain)
+					CHECK_HR(hr = pNodeTee->ConnectOutput(0, pNodeSinkMain, 0));
+					// Connect(Tee -> SinkPreview)
+					CHECK_HR(hr = pNodeTee->ConnectOutput(1, pNodeSinkPreview, 0));
+				}
+				else
+				{
+					// Connect(Source -> SinkMain)
+					CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeSinkMain, 0));
+				}
 			}
 			bSourceFound = TRUE;
 			break;
@@ -614,14 +638,14 @@ HRESULT MFUtils::CreateTopology(
 bail:
 	SafeRelease(&pTopology);
 	SafeRelease(&pNodeSource);
-	SafeRelease(&pNodeSink);
+	SafeRelease(&pNodeSinkMain);
+	SafeRelease(&pNodeSinkPreview);
 	SafeRelease(&pNodeTransform);
+	SafeRelease(&pNodeTee);
 	SafeRelease(&pPD);
 	SafeRelease(&pSD);
 	SafeRelease(&pHandler);
 	SafeRelease(&pMediaType);
-	SafeRelease(&pVideoProcessor);
-	SafeRelease(&pNodeVideoProcessor);
 
 	if(!bSourceFound)
 	{
@@ -651,6 +675,27 @@ HRESULT MFUtils::ResolveTopology(
 	
 bail:
 	SafeRelease(&pTopoLoader);
+	return hr;
+}
+
+HRESULT MFUtils::FindNodeObject(
+	IMFTopology *pInputTopo, // The Topology containing the node to find
+	TOPOID qwTopoNodeID, //The identifier for the node
+	void** ppObject // Receives the Object
+	)
+{
+	assert(pInputTopo && ppObject);
+
+	*ppObject = NULL;
+
+	IMFTopologyNode *pNode = NULL;
+	HRESULT hr = S_OK;
+
+	CHECK_HR(hr = pInputTopo->GetNodeByID(qwTopoNodeID, &pNode));
+	CHECK_HR(hr = pNode->GetObject((IUnknown**)ppObject));
+
+bail:
+	SafeRelease(&pNode);
 	return hr;
 }
 
@@ -963,4 +1008,101 @@ HWND MFUtils::GetConsoleHwnd(void)
    SetConsoleTitle(pszOldWindowTitle);
 
    return(hwndFound);
+}
+
+inline LONG Width(const RECT& r)
+{
+    return r.right - r.left;
+}
+
+inline LONG Height(const RECT& r)
+{
+    return r.bottom - r.top;
+}
+
+//-----------------------------------------------------------------------------
+// CorrectAspectRatio
+//
+// Converts a rectangle from the source's pixel aspect ratio (PAR) to 1:1 PAR.
+// Returns the corrected rectangle.
+//
+// For example, a 720 x 486 rect with a PAR of 9:10, when converted to 1x1 PAR,
+// is stretched to 720 x 540.
+// Copyright (C) Microsoft
+//-----------------------------------------------------------------------------
+
+RECT MFUtils::CorrectAspectRatio(const RECT& src, const MFRatio& srcPAR)
+{
+    // Start with a rectangle the same size as src, but offset to the origin (0,0).
+    RECT rc = {0, 0, src.right - src.left, src.bottom - src.top};
+
+    if ((srcPAR.Numerator != 1) || (srcPAR.Denominator != 1))
+    {
+        // Correct for the source's PAR.
+
+        if (srcPAR.Numerator > srcPAR.Denominator)
+        {
+            // The source has "wide" pixels, so stretch the width.
+            rc.right = MulDiv(rc.right, srcPAR.Numerator, srcPAR.Denominator);
+        }
+        else if (srcPAR.Numerator < srcPAR.Denominator)
+        {
+            // The source has "tall" pixels, so stretch the height.
+            rc.bottom = MulDiv(rc.bottom, srcPAR.Denominator, srcPAR.Numerator);
+        }
+        // else: PAR is 1:1, which is a no-op.
+    }
+    return rc;
+}
+
+//-------------------------------------------------------------------
+// LetterBoxDstRect
+//
+// Takes a src rectangle and constructs the largest possible
+// destination rectangle within the specifed destination rectangle
+// such thatthe video maintains its current shape.
+//
+// This function assumes that pels are the same shape within both the
+// source and destination rectangles.
+// Copyright (C) Microsoft
+//-------------------------------------------------------------------
+
+RECT MFUtils::LetterBoxRect(const RECT& rcSrc, const RECT& rcDst)
+{
+    // figure out src/dest scale ratios
+    int iSrcWidth  = Width(rcSrc);
+    int iSrcHeight = Height(rcSrc);
+
+    int iDstWidth  = Width(rcDst);
+    int iDstHeight = Height(rcDst);
+
+    int iDstLBWidth;
+    int iDstLBHeight;
+
+    if (MulDiv(iSrcWidth, iDstHeight, iSrcHeight) <= iDstWidth) {
+
+        // Column letter boxing ("pillar box")
+
+        iDstLBWidth  = MulDiv(iDstHeight, iSrcWidth, iSrcHeight);
+        iDstLBHeight = iDstHeight;
+    }
+    else {
+
+        // Row letter boxing.
+
+        iDstLBWidth  = iDstWidth;
+        iDstLBHeight = MulDiv(iDstWidth, iSrcHeight, iSrcWidth);
+    }
+
+
+    // Create a centered rectangle within the current destination rect
+
+    RECT rc;
+
+    LONG left = rcDst.left + ((iDstWidth - iDstLBWidth) / 2);
+    LONG top = rcDst.top + ((iDstHeight - iDstLBHeight) / 2);
+
+    SetRect(&rc, left, top, left + iDstLBWidth, top + iDstLBHeight);
+
+    return rc;
 }

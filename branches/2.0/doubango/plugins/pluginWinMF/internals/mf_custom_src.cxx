@@ -407,9 +407,7 @@ HRESULT CMFSource::Start(
     EnterCriticalSection(&m_critSec);
 
     // Fail if the source is shut down.
-    hr = CheckShutdown();
-
-    if (FAILED(hr)) { goto done; }
+    CHECK_HR(hr = CheckShutdown());
 
     // Check the start position.
     if (pvarStartPosition->vt == VT_I8)
@@ -441,23 +439,17 @@ HRESULT CMFSource::Start(
     {
         // We don't support this time format.
         hr =  MF_E_UNSUPPORTED_TIME_FORMAT;
-        goto done;
+        goto bail;
     }
 
     // Validate the caller's presentation descriptor.
-    hr = ValidatePresentationDescriptor(pPresentationDescriptor);
-
-    if (FAILED(hr)) { goto done; }
+    CHECK_HR(hr = ValidatePresentationDescriptor(pPresentationDescriptor));
 
     // Sends the MENewStream or MEUpdatedStream event.
-    hr = QueueNewStreamEvent(pPresentationDescriptor);
-
-    if (FAILED(hr)) { goto done; }
+    CHECK_HR(hr = QueueNewStreamEvent(pPresentationDescriptor));
 
     // Notify the stream of the new start time.
-    hr = m_pStream->SetPosition(llStartOffset);
-
-    if (FAILED(hr)) { goto done; }
+    CHECK_HR(hr = m_pStream->SetPosition(llStartOffset));
 
     // Send Started or Seeked events.
 
@@ -467,9 +459,7 @@ HRESULT CMFSource::Start(
     // Send the source event.
     if (bIsSeek)
     {
-        hr = QueueEvent(MESourceSeeked, GUID_NULL, hr, &var);
-
-        if (FAILED(hr)) { goto done; }
+        CHECK_HR(hr = QueueEvent(MESourceSeeked, GUID_NULL, hr, &var));
     }
     else
     {
@@ -479,21 +469,16 @@ HRESULT CMFSource::Start(
         // creating the event object first.
 
         // Create the event.
-        hr = MFCreateMediaEvent(MESourceStarted, GUID_NULL, hr, &var, &pEvent);
-
-        if (FAILED(hr)) { goto done; }
+        CHECK_HR(hr = MFCreateMediaEvent(MESourceStarted, GUID_NULL, hr, &var, &pEvent));
 
         // For restarts, set the actual start time as an attribute.
         if (bIsRestartFromCurrentPosition)
         {
-            hr = pEvent->SetUINT64(MF_EVENT_SOURCE_ACTUAL_START, llStartOffset);
-            if (FAILED(hr)) { goto done; }
+            CHECK_HR(hr = pEvent->SetUINT64(MF_EVENT_SOURCE_ACTUAL_START, llStartOffset));
         }
 
         // Now  queue the event.
-        hr = m_pEventQueue->QueueEvent(pEvent);
-
-        if (FAILED(hr)) { goto done; }
+        CHECK_HR(hr = m_pEventQueue->QueueEvent(pEvent));
     }
 
     bQueuedStartEvent = TRUE;
@@ -503,32 +488,31 @@ HRESULT CMFSource::Start(
     {
         if (bIsSeek)
         {
-            hr = m_pStream->QueueEvent(MEStreamSeeked, GUID_NULL, hr, &var);
+            CHECK_HR(hr = m_pStream->QueueEvent(MEStreamSeeked, GUID_NULL, hr, &var));
         }
         else
         {
-            hr = m_pStream->QueueEvent(MEStreamStarted, GUID_NULL, hr, &var);
+            CHECK_HR(hr = m_pStream->QueueEvent(MEStreamStarted, GUID_NULL, hr, &var));
         }
-
-        if (FAILED(hr)) { goto done; }
     }
 
     if (bIsSeek)
     {
         // For seek requests, flush any queued samples.
-        hr = m_pStream->Flush();
+        CHECK_HR(hr = m_pStream->Flush());
     }
     else
     {
         // Otherwise, deliver any queued samples.
-        hr = m_pStream->DeliverQueuedSamples();
+        CHECK_HR(hr = m_pStream->DeliverQueuedSamples());
     }
 
-    if (FAILED(hr)) { goto done; }
+	// Initialize Stream parameters
+	CHECK_HR(hr = m_pStream->InitializeParams());
 
     m_state = STATE_STARTED;
 
-done:
+bail:
 
     // If a failure occurred and we have not sent the
     // MESourceStarted/MESourceSeeked event yet, then it is
@@ -547,7 +531,7 @@ done:
     SafeRelease(&pEvent);
 
     LeaveCriticalSection(&m_critSec);
-
+	
     return hr;
 }
 
@@ -999,8 +983,6 @@ CMFStreamSource::CMFStreamSource(CMFSource *pSource,  IMFStreamDescriptor *pSD, 
 	m_pMediaBuffer(NULL),
 	m_nBufferSize(0)
 {
-	IMFMediaTypeHandler *pMediaTypeHandler = NULL;
-	IMFMediaType* pMediaType = NULL;
     m_pSource = pSource;
     m_pSource->AddRef();
 
@@ -1010,72 +992,12 @@ CMFStreamSource::CMFStreamSource(CMFSource *pSource,  IMFStreamDescriptor *pSD, 
     // Create the media event queue.
     CHECK_HR(hr = MFCreateEventQueue(&m_pEventQueue));
 
-	CHECK_HR(hr = m_pStreamDescriptor->GetMediaTypeHandler(&pMediaTypeHandler));
-	CHECK_HR(hr = pMediaTypeHandler->GetCurrentMediaType(&pMediaType));
-
-	GUID majorType, subType;
-	pMediaType->GetMajorType(&majorType);
-	if(majorType == MFMediaType_Video)
-	{
-		memset(&m_structVideoParams, 0, sizeof(m_structVideoParams));
-		CHECK_HR(hr = MFGetAttributeSize(pMediaType, MF_MT_FRAME_SIZE, &m_structVideoParams.nWidth, &m_structVideoParams.nHeigh));
-		CHECK_HR(hr = pMediaType->GetGUID(MF_MT_SUBTYPE, &subType));
-
-		m_guidMajorType = MFMediaType_Video;
-		m_guidSubType = subType;
-
-		// Guess video size
-		UINT32 nBufferSize;
-		if(subType == MFVideoFormat_RGB32)
-		{
-			nBufferSize = (m_structVideoParams.nWidth * m_structVideoParams.nHeigh << 2);
-		}
-		else if(subType == MFVideoFormat_RGB24)
-		{
-			nBufferSize = (m_structVideoParams.nWidth * m_structVideoParams.nHeigh << 2);
-		}
-		else if(subType == MFVideoFormat_NV12 || subType == MFVideoFormat_I420)
-		{
-			nBufferSize = (m_structVideoParams.nWidth * m_structVideoParams.nHeigh * 3) >> 1;
-		}
-		else
-		{
-			TSK_DEBUG_ERROR("Video subType not supported");
-			CHECK_HR(hr = E_NOTIMPL);
-		}
-
-		// Allocate media buffer
-		CHECK_HR(hr = MFCreateMemoryBuffer(nBufferSize, &m_pMediaBuffer));
-		m_nBufferSize = nBufferSize;
-		{
-			//FIXME: DeliverSample() stops if no data
-			BYTE* pBuffer = NULL;
-			CHECK_HR(hr = m_pMediaBuffer->Lock(&pBuffer, NULL, NULL));
-			memset(pBuffer, 0, nBufferSize);
-			CHECK_HR(hr = m_pMediaBuffer->SetCurrentLength(nBufferSize));
-			CHECK_HR(hr = m_pMediaBuffer->Unlock());
-		}
-		
-		// Retrieve video Frame rate
-		UINT32 unNumerator, unDenominator;
-		CHECK_HR(hr = MFGetAttributeRatio(pMediaType, MF_MT_FRAME_RATE, &unNumerator, &unDenominator));
-		m_structVideoParams.nFps = (unNumerator / unDenominator);
-		
-		// Retrieve sample duration based on framerate
-		m_rtCurrentPosition = 0;
-		CHECK_HR(hr = MFFrameRateToAverageTimePerFrame(m_structVideoParams.nFps, 1, &m_rtDuration));
-	}
-	else
-	{
-		TSK_DEBUG_ERROR("Only video media type is supported");
-		CHECK_HR(hr = E_NOTIMPL);
-	}
+	//CHECK_HR(hr = InitializeParams());
 	
     InitializeCriticalSection(&m_critSec);
 
 bail:
-	SafeRelease(&pMediaTypeHandler);
-	SafeRelease(&pMediaType);
+	return;
 }
 
 
@@ -1092,6 +1014,7 @@ CMFStreamSource::~CMFStreamSource()
 
     DeleteCriticalSection(&m_critSec);
 }
+
 
 // IMFCustomSource methods
 
@@ -1418,6 +1341,82 @@ HRESULT CMFStreamSource::RequestSample(IUnknown* pToken)
 
 
 ///// Private CMFStreamSource methods
+
+HRESULT CMFStreamSource::InitializeParams()
+{
+	HRESULT hr = S_OK;
+
+	IMFMediaTypeHandler *pMediaTypeHandler = NULL;
+	IMFMediaType* pMediaType = NULL;
+
+	CHECK_HR(hr = m_pStreamDescriptor->GetMediaTypeHandler(&pMediaTypeHandler));
+	CHECK_HR(hr = pMediaTypeHandler->GetCurrentMediaType(&pMediaType));
+
+	GUID majorType, subType;
+	pMediaType->GetMajorType(&majorType);
+	if(majorType == MFMediaType_Video)
+	{
+		memset(&m_structVideoParams, 0, sizeof(m_structVideoParams));
+		CHECK_HR(hr = MFGetAttributeSize(pMediaType, MF_MT_FRAME_SIZE, &m_structVideoParams.nWidth, &m_structVideoParams.nHeigh));
+		CHECK_HR(hr = pMediaType->GetGUID(MF_MT_SUBTYPE, &subType));
+
+		m_guidMajorType = MFMediaType_Video;
+		m_guidSubType = subType;
+
+		// Guess video size
+		UINT32 nBufferSize;
+		if(subType == MFVideoFormat_RGB32)
+		{
+			nBufferSize = (m_structVideoParams.nWidth * m_structVideoParams.nHeigh << 2);
+		}
+		else if(subType == MFVideoFormat_RGB24)
+		{
+			nBufferSize = (m_structVideoParams.nWidth * m_structVideoParams.nHeigh << 2);
+		}
+		else if(subType == MFVideoFormat_NV12 || subType == MFVideoFormat_I420)
+		{
+			nBufferSize = (m_structVideoParams.nWidth * m_structVideoParams.nHeigh * 3) >> 1;
+		}
+		else
+		{
+			TSK_DEBUG_ERROR("Video subType not supported");
+			CHECK_HR(hr = E_NOTIMPL);
+		}
+
+		// Allocate media buffer
+		SafeRelease(&m_pMediaBuffer);
+		CHECK_HR(hr = MFCreateMemoryBuffer(nBufferSize, &m_pMediaBuffer));
+		m_nBufferSize = nBufferSize;
+		{
+			//FIXME: DeliverSample() stops if no data
+			BYTE* pBuffer = NULL;
+			CHECK_HR(hr = m_pMediaBuffer->Lock(&pBuffer, NULL, NULL));
+			memset(pBuffer, 0, nBufferSize);
+			CHECK_HR(hr = m_pMediaBuffer->SetCurrentLength(nBufferSize));
+			CHECK_HR(hr = m_pMediaBuffer->Unlock());
+		}
+		
+		// Retrieve video Frame rate
+		UINT32 unNumerator, unDenominator;
+		CHECK_HR(hr = MFGetAttributeRatio(pMediaType, MF_MT_FRAME_RATE, &unNumerator, &unDenominator));
+		m_structVideoParams.nFps = (unNumerator / unDenominator);
+		
+		// Retrieve sample duration based on framerate
+		m_rtCurrentPosition = 0;
+		CHECK_HR(hr = MFFrameRateToAverageTimePerFrame(m_structVideoParams.nFps, 1, &m_rtDuration));
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Only video media type is supported");
+		CHECK_HR(hr = E_NOTIMPL);
+	}
+
+bail:
+	SafeRelease(&pMediaTypeHandler);
+	SafeRelease(&pMediaType);
+
+	return hr;
+}
 
 // NOTE: Some of these methods hold the stream's critical section
 // because they are called by the media source object.

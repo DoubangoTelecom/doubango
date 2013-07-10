@@ -19,6 +19,7 @@
 #include "plugin_win_mf_config.h"
 #include "internals/mf_utils.h"
 #include "internals/mf_custom_src.h"
+#include "internals/mf_display_watcher.h"
 
 #include "tinymedia/tmedia_consumer.h"
 
@@ -64,6 +65,7 @@ typedef struct plugin_win_mf_consumer_video_s
     IMFMediaSession *pSession;
     CMFSource *pSource;
     IMFActivate *pSinkActivate;
+	DisplayWatcher* pDisplayWatcher;
     IMFTopology *pTopology;
 	IMFMediaType *pOutType;
 }
@@ -75,6 +77,7 @@ plugin_win_mf_consumer_video_t;
 static int plugin_win_mf_consumer_video_set(tmedia_consumer_t *self, const tmedia_param_t* param)
 {
 	int ret = 0;
+	HRESULT hr = S_OK;
 	plugin_win_mf_consumer_video_t* pSelf = (plugin_win_mf_consumer_video_t*)self;
 
 	if(!self || !param){
@@ -84,22 +87,23 @@ static int plugin_win_mf_consumer_video_set(tmedia_consumer_t *self, const tmedi
 
 	if(param->value_type == tmedia_pvt_int64){
 		if(tsk_striequals(param->key, "remote-hwnd")){
-			pSelf->hWindow = reinterpret_cast<HWND>((INT64)*((int64_t*)param->value));
-			/*if(DSCONSUMER(self)->display){
-				if(DSCONSUMER(self)->window){
-					DSCONSUMER(self)->display->attach(DSCONSUMER(self)->window);
+			HWND hWnd = reinterpret_cast<HWND>((INT64)*((int64_t*)param->value));
+			if(hWnd != pSelf->hWindow)
+			{
+				pSelf->hWindow = hWnd;
+				if(pSelf->pDisplayWatcher)
+				{
+					CHECK_HR(hr = pSelf->pDisplayWatcher->SetHwnd(hWnd));
 				}
-				else{
-					DSCONSUMER(self)->display->detach();
-				}
-			}*/
+			}
 		}
 	}
 	else if(param->value_type == tmedia_pvt_int32){
 		if(tsk_striequals(param->key, "fullscreen")){
-			/*if(DSCONSUMER(self)->display){
-				DSCONSUMER(self)->display->setFullscreen(*((int32_t*)param->value) != 0);
-			}*/
+			if(pSelf->pDisplayWatcher)
+			{
+				CHECK_HR(hr = pSelf->pDisplayWatcher->SetFullscreen(!!*((int32_t*)param->value)));
+			}
 		}
 		else if(tsk_striequals(param->key, "create-on-current-thead")){
 			// DSCONSUMER(self)->create_on_ui_thread = *((int32_t*)param->value) ? tsk_false : tsk_true;
@@ -112,7 +116,8 @@ static int plugin_win_mf_consumer_video_set(tmedia_consumer_t *self, const tmedi
 		}
 	}
 
-	return ret;
+bail:
+	return SUCCEEDED(hr) ?  0 : -1;
 }
 
 
@@ -165,6 +170,7 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 
 	
 	IMFTopology *pTopology = NULL;
+	IMFMediaSink* pEvr = NULL;
 
 	CHECK_HR(hr = MFCreateMediaType(&pSelf->pOutType));
 	CHECK_HR(hr = pSelf->pOutType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video));
@@ -209,12 +215,20 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	CHECK_HR(hr = MFCreateVideoRendererActivate(pSelf->hWindow, &pSelf->pSinkActivate));
 
 	// Create the topology.
-	CHECK_HR(hr = MFUtils::CreateTopology(pSelf->pSource, pSelf->pDecoder, pSelf->pSinkActivate, MFMediaType_Video, &pTopology));
+	CHECK_HR(hr = MFUtils::CreateTopology(pSelf->pSource, pSelf->pDecoder, pSelf->pSinkActivate, NULL/*Preview*/, MFMediaType_Video, &pTopology));
 	// Resolve topology (adds video processors if needed).
 	CHECK_HR(hr = MFUtils::ResolveTopology(pTopology, &pSelf->pTopology));
 
+	// Find EVR
+	CHECK_HR(hr = MFUtils::FindNodeObject(pSelf->pTopology, MFUtils::g_ullTopoIdSinkMain, (void**)&pEvr));
+
+	// Create EVR watcher
+	pSelf->pDisplayWatcher = new DisplayWatcher(pSelf->hWindow, pEvr, hr);
+	CHECK_HR(hr);
+
 bail:
 	SafeRelease(&pTopology);
+	SafeRelease(&pEvr);
 	
 	pSelf->bPrepared = SUCCEEDED(hr);
 	return pSelf->bPrepared ? 0 : -1;
@@ -239,6 +253,11 @@ static int plugin_win_mf_consumer_video_start(tmedia_consumer_t* self)
 	}
 
 	HRESULT hr = S_OK;
+
+	// Run EVR watcher
+	if(pSelf->pDisplayWatcher) {
+		CHECK_HR(hr = pSelf->pDisplayWatcher->Start());
+	}
 
 	// Run the media session.
 	CHECK_HR(hr = MFUtils::RunSession(pSelf->pSession, pSelf->pTopology));
@@ -317,6 +336,11 @@ static int plugin_win_mf_consumer_video_stop(tmedia_consumer_t* self)
 
     HRESULT hr = S_OK;
 
+	// stop EVR watcher
+	if(pSelf->pDisplayWatcher) {
+		hr = pSelf->pDisplayWatcher->Stop();
+	}
+
     // for the thread
     pSelf->bStarted = false;
     hr = MFUtils::ShutdownSession(pSelf->pSession, NULL); // stop session to wakeup the asynchronous thread
@@ -340,7 +364,10 @@ static int _plugin_win_mf_consumer_video_unprepare(plugin_win_mf_consumer_video_
 		// plugin_win_mf_producer_video_stop(TMEDIA_PRODUCER(pSelf));
 		TSK_DEBUG_ERROR("Consumer must be stopped before calling unprepare");
 	}
-	
+
+	if(pSelf->pDisplayWatcher) {
+		pSelf->pDisplayWatcher->Stop();
+	}
     if(pSelf->pSource){
 		pSelf->pSource->Shutdown();
 		pSelf->pSource = NULL;
@@ -356,6 +383,11 @@ static int _plugin_win_mf_consumer_video_unprepare(plugin_win_mf_consumer_video_
     SafeRelease(&pSelf->pSinkActivate);
     SafeRelease(&pSelf->pTopology);
 	SafeRelease(&pSelf->pOutType);
+
+	if(pSelf->pDisplayWatcher) {
+		delete pSelf->pDisplayWatcher;
+		pSelf->pDisplayWatcher = NULL;
+	}
 
 	pSelf->bPrepared = false;
 

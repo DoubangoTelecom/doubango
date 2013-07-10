@@ -31,6 +31,7 @@
 #       pragma comment(lib, "mf.lib")
 #       pragma comment(lib, "mfuuid.lib")
 #       pragma comment(lib, "shlwapi.lib")
+#		pragma comment(lib, "Strmiids")
 #endif
 
 #if !defined(PLUGIN_MF_ENABLE_AUDIO)
