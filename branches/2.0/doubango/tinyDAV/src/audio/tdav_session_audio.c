@@ -420,10 +420,10 @@ static int tdav_session_audio_stop(tmedia_session_t* self)
 
 	// close the jitter buffer and denoiser to be sure it will be reopened and reinitialized if reINVITE or UPDATE
 	// this is a "must" when the initial and updated sessions use codecs with different rate
-	if(audio->jitterbuffer) {
+	if(audio->jitterbuffer && audio->jitterbuffer->opened) {
 		ret = tmedia_jitterbuffer_close(audio->jitterbuffer);
 	}
-	if(audio->denoise) {
+	if(audio->denoise && audio->denoise->opened) {
 		ret = tmedia_denoise_close(audio->denoise);
 	}
 	return ret;
