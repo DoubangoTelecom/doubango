@@ -1552,7 +1552,7 @@ int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, sho
 						ret = tsip_dialog_invite_ice_process_lo(self, sdp_lo);
 					}
 				}
-				TSK_FREE(sdp);				
+				TSK_FREE(sdp);
 			}
 
 			/* Add Allow header */

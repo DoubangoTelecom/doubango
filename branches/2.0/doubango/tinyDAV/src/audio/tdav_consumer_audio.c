@@ -179,7 +179,7 @@ tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, 
 	tsk_safeobj_unlock(self);	
 
 	// denoiser
-	if((self->denoise->echo_supp_enabled || self->denoise->noise_supp_enabled) && self->denoise && self->denoise->opened){
+	if(self->denoise && self->denoise->opened && (self->denoise->echo_supp_enabled || self->denoise->noise_supp_enabled)){
 		if(self->denoise->echo_supp_enabled){
 			// Echo process last frame 
 			if(self->denoise->last_frame && self->denoise->last_frame->size){
