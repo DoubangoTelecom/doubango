@@ -467,7 +467,7 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 		}
 	}
 	else{
-		TSK_DEBUG_WARN("Cannot use an uninitialized predicate function");
+		TSK_DEBUG_WARN("Cannot use a null predicate function");
 	}
 	return tsk_null;
 }
@@ -500,12 +500,14 @@ const tsk_object_t* tsk_list_find_object_by_pred_at_index(const tsk_list_t* list
 {
 	tsk_size_t pos = 0;
 	const tsk_list_item_t *item;
-	if((item = tsk_list_find_item_by_pred(list, predicate, data)) && pos++ >= index){
-		return item->data;
+	
+	tsk_list_foreach(item, list){
+		if((!predicate || predicate(item, data) == 0) && pos++ >= index){
+			return item->data;
+		}
 	}
-	else{
-		return tsk_null;
-	}
+	
+	return tsk_null;
 }
 
 /**@ingroup tsk_list_group */

@@ -397,7 +397,7 @@ static int tdav_session_audio_start(tmedia_session_t* self)
 			
 			// close()
 			tmedia_denoise_close(audio->denoise);
-			// open()
+			// open() with new values
 			tmedia_denoise_open(audio->denoise, 
 				record_frame_size_samples, record_sampling_rate,
 				playback_frame_size_samples, playback_sampling_rate);
@@ -411,10 +411,21 @@ static int tdav_session_audio_start(tmedia_session_t* self)
 
 static int tdav_session_audio_stop(tmedia_session_t* self)
 {
-	int ret = tdav_session_av_stop(TDAV_SESSION_AV(self));
-	TSK_OBJECT_SAFE_FREE(TDAV_SESSION_AUDIO(self)->encoder.codec);
-	TSK_OBJECT_SAFE_FREE(TDAV_SESSION_AUDIO(self)->decoder.codec);
-	TDAV_SESSION_AUDIO(self)->is_started = tsk_false;
+	tdav_session_audio_t* audio = TDAV_SESSION_AUDIO(self);
+	tdav_session_av_t* base = TDAV_SESSION_AV(self);
+	int ret = tdav_session_av_stop(base);
+	audio->is_started = tsk_false;
+	TSK_OBJECT_SAFE_FREE(audio->encoder.codec);
+	TSK_OBJECT_SAFE_FREE(audio->decoder.codec);
+
+	// close the jitter buffer and denoiser to be sure it will be reopened and reinitialized if reINVITE or UPDATE
+	// this is a "must" when the initial and updated sessions use codecs with different rate
+	if(audio->jitterbuffer) {
+		ret = tmedia_jitterbuffer_close(audio->jitterbuffer);
+	}
+	if(audio->denoise) {
+		ret = tmedia_denoise_close(audio->denoise);
+	}
 	return ret;
 }
 
