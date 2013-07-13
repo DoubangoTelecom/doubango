@@ -60,6 +60,7 @@
 #ifdef _MSC_VER
 #	define inline __inline
 #	define _CRT_SECURE_NO_WARNINGS
+#	define _ALLOW_KEYWORD_MACROS
 #endif
 
 #include <stdint.h>

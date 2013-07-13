@@ -43,6 +43,10 @@ typedef struct mf_codec_h264_s
 		tsk_bool_t force_idr;
 		int32_t quality; // [1-31]
 		int rotation;
+		int neg_width;
+		int neg_height;
+		int neg_fps;
+		int max_bitrate_bps;
 		int32_t max_bw_kpbs;
 	} encoder;
 	
@@ -166,13 +170,10 @@ static int mf_codec_h264_close(tmedia_codec_t* self)
 static tsk_size_t mf_codec_h264_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size)
 {
 	int ret = 0;
-
-#if HAVE_FFMPEG
-	int size;
 	tsk_bool_t send_idr, send_hdr;
-#endif
 
 	mf_codec_h264_t* h264 = (mf_codec_h264_t*)self;
+	tdav_codec_h264_common_t* common = (tdav_codec_h264_common_t*)self;
 
 	if(!self || !in_data || !in_size){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -180,10 +181,61 @@ static tsk_size_t mf_codec_h264_encode(tmedia_codec_t* self, const void* in_data
 	}
 
 	if(!self->opened || !h264->encoder.pInst || !h264->encoder.pInst->IsReady()){
-		TSK_DEBUG_ERROR("Codec not opened or not ready");
+		TSK_DEBUG_ERROR("Encoder not opened or not ready");
 		return 0;
 	}
 
+	HRESULT hr = S_OK;
+	IMFSample *pSampleOut = NULL;
+	IMFMediaBuffer* pBufferOut = NULL;
+
+	// send IDR for:
+	//	- the first frame
+	//  - remote peer requested an IDR
+	//	- every second within the first 4seconds
+	send_idr = (
+		h264->encoder.frame_count++ == 0
+		|| h264 ->encoder.force_idr
+		|| ( (h264->encoder.frame_count < h264->encoder.neg_fps * 4) && ((h264->encoder.frame_count % h264->encoder.neg_fps)==0) )
+	   );
+
+	if(send_idr) {
+		CHECK_HR(hr = h264->encoder.pInst->RequestKeyFrame());
+	}
+
+	// send SPS and PPS headers for:
+	//  - IDR frames (not required but it's the easiest way to deal with pkt loss)
+	//  - every 5 seconds after the first 4seconds
+	send_hdr = (
+		send_idr
+		|| ( (h264->encoder.frame_count % (h264->encoder.neg_fps * 5))==0 )
+		);
+	if(send_hdr){
+		//FIXME
+		// tdav_codec_h264_rtp_encap(TDAV_CODEC_H264_COMMON(h264), h264->encoder.context->extradata, (tsk_size_t)h264->encoder.context->extradata_size);
+	}
+
+	// Encode data
+	CHECK_HR(hr = h264->encoder.pInst->Process(in_data, in_size, &pSampleOut));
+	if(pSampleOut) {
+		CHECK_HR(hr = pSampleOut->GetBufferByIndex(0, &pBufferOut));
+
+		BYTE* pBufferPtr = NULL;
+		DWORD dwDataLength = 0;
+		CHECK_HR(hr = pBufferOut->GetCurrentLength(&dwDataLength));
+		if(dwDataLength > 0) {
+			CHECK_HR(hr = pBufferOut->Lock(&pBufferPtr, NULL, NULL));
+			tdav_codec_h264_rtp_encap(common, (const uint8_t*)pBufferPtr, (tsk_size_t)dwDataLength);
+			CHECK_HR(hr = pBufferOut->Unlock());
+		}
+	}
+
+	// reset
+	h264->encoder.force_idr = tsk_false;
+
+bail:
+	SafeRelease(&pSampleOut);
+	SafeRelease(&pBufferOut);
 	return 0;
 }
 
@@ -200,9 +252,6 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 	tsk_size_t retsize = 0, size_to_copy = 0;
 	static const tsk_size_t xmax_size = (3840 * 2160 * 3) >> 3; // >>3 instead of >>1 (not an error)
 	static tsk_size_t start_code_prefix_size = sizeof(H264_START_CODE_PREFIX);
-#if HAVE_FFMPEG
-	int got_picture_ptr = 0;
-#endif
 
 	if(!h264 || !in_data || !in_size || !out_data)
 	{
@@ -211,11 +260,13 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 	}
 
 	if(!self->opened || !h264->encoder.pInst || !h264->decoder.pInst->IsReady()){
-		TSK_DEBUG_ERROR("Codec not opened or not ready");
+		TSK_DEBUG_ERROR("Decoder not opened or not ready");
 		return 0;
 	}
 	
-	//TSK_DEBUG_INFO("SeqNo=%hu", rtp_hdr->seq_num);
+	HRESULT hr = S_OK;
+	IMFSample *pSampleOut = NULL;
+	IMFMediaBuffer* pBufferOut = NULL;
 
 	/* Packet lost? */
 	if((h264->decoder.last_seq + 1) != rtp_hdr->seq_num && h264->decoder.last_seq){
@@ -289,55 +340,59 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 		TSK_DEBUG_INFO("Receiving SPS or PPS ...to be tied to an IDR");
 	}
 	else if(rtp_hdr->marker){
-#if 0
-		AVPacket packet;
-
 		/* decode the picture */
-		av_init_packet(&packet);
-		packet.dts = packet.pts = AV_NOPTS_VALUE;
-		packet.size = h264->decoder.accumulator_pos;
-		packet.data = h264->decoder.accumulator;
-		ret = avcodec_decode_video2(h264->decoder.context, h264->decoder.picture, &got_picture_ptr, &packet);
+		CHECK_HR(hr = h264->decoder.pInst->Process(h264->decoder.accumulator, h264->decoder.accumulator_pos, &pSampleOut));
+		if(pSampleOut) {
+			CHECK_HR(hr = pSampleOut->GetBufferByIndex(0, &pBufferOut));
 
-		if(ret <0){
-			TSK_DEBUG_INFO("Failed to decode the buffer with error code =%d, size=%u, append=%s", ret, h264->decoder.accumulator_pos, append_scp ? "yes" : "no");
-			if(TMEDIA_CODEC_VIDEO(self)->in.callback){
-				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
-				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
-				TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
+			BYTE* pBufferPtr = NULL;
+			DWORD dwDataLength = 0;
+			CHECK_HR(hr = pBufferOut->GetCurrentLength(&dwDataLength));
+			if(dwDataLength > 0){
+				CHECK_HR(hr = pBufferOut->Lock(&pBufferPtr, NULL, NULL));
+				{					
+					/* IDR ? */
+					if(((pay_ptr[0] & 0x1F) == 0x05) && TMEDIA_CODEC_VIDEO(self)->in.callback){
+						TSK_DEBUG_INFO("Decoded H.264 IDR");
+						TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_idr;
+						TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
+						TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
+					}
+					/* fill out */
+					if(*out_max_size < dwDataLength){
+						if((*out_data = tsk_realloc(*out_data, dwDataLength))){
+							*out_max_size = dwDataLength;
+						}
+						else{
+							*out_max_size = 0;
+							return 0;
+						}
+					}
+					retsize = (tsk_size_t)dwDataLength;
+					//FIXME:
+					//TMEDIA_CODEC_VIDEO(h264)->in.width = h264->decoder.context->width;
+					//TMEDIA_CODEC_VIDEO(h264)->in.height = h264->decoder.context->height;
+					memcpy(*out_data, pBufferPtr, retsize);
+				}
+				CHECK_HR(hr = pBufferOut->Unlock());
 			}
 		}
-		else if(got_picture_ptr){
-			tsk_size_t xsize;
-			
-			/* IDR ? */
-			if(((pay_ptr[0] & 0x1F) == 0x05) && TMEDIA_CODEC_VIDEO(self)->in.callback){
-				TSK_DEBUG_INFO("Decoded H.264 IDR");
-				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_idr;
-				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
-				TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
-			}
-			/* fill out */
-			xsize = avpicture_get_size(h264->decoder.context->pix_fmt, h264->decoder.context->width, h264->decoder.context->height);
-			if(*out_max_size<xsize){
-				if((*out_data = tsk_realloc(*out_data, (xsize + FF_INPUT_BUFFER_PADDING_SIZE)))){
-					*out_max_size = xsize;
-				}
-				else{
-					*out_max_size = 0;
-					return 0;
-				}
-			}
-			retsize = xsize;
-			TMEDIA_CODEC_VIDEO(h264)->in.width = h264->decoder.context->width;
-			TMEDIA_CODEC_VIDEO(h264)->in.height = h264->decoder.context->height;
-			avpicture_layout((AVPicture *)h264->decoder.picture, h264->decoder.context->pix_fmt, h264->decoder.context->width, h264->decoder.context->height,
-					*out_data, retsize);
-		}
-#endif
-		h264->decoder.accumulator_pos = 0;
 	}
 
+bail:
+	if(rtp_hdr->marker) {
+		h264->decoder.accumulator_pos = 0;
+	}
+	if(FAILED(hr)){
+		TSK_DEBUG_INFO("Failed to decode the buffer with error code =%d, size=%u, append=%s", ret, h264->decoder.accumulator_pos, append_scp ? "yes" : "no");
+		if(TMEDIA_CODEC_VIDEO(self)->in.callback){
+			TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
+			TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
+			TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
+		}
+	}
+	SafeRelease(&pSampleOut);
+	SafeRelease(&pBufferOut);
 	return retsize;
 }
 
@@ -530,146 +585,54 @@ const tmedia_codec_plugin_def_t *mf_codec_h264_main_plugin_def_t = &mf_codec_h26
 
 int mf_codec_h264_open_encoder(mf_codec_h264_t* self)
 {
-#if HAVE_FFMPEG
-	int ret;
-	tsk_size_t size;
+	HRESULT hr = S_OK;
 	int32_t max_bw_kpbs;
+	tdav_codec_h264_common_t* common = (tdav_codec_h264_common_t*)self;
 
-	if(self->encoder.context){
-		TSK_DEBUG_ERROR("Encoder already opened");
-		return -1;
-	}
-    
-#if (LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51, 35, 0))
-    if((self->encoder.context = avcodec_alloc_context3(self->encoder.codec))){
-        avcodec_get_context_defaults3(self->encoder.context, self->encoder.codec);
-    }
+	if(self->encoder.pInst) {
+		TSK_DEBUG_ERROR("Encoder already initialized");
+#if defined(E_ILLEGAL_METHOD_CALL)
+		CHECK_HR(hr = E_ILLEGAL_METHOD_CALL);
 #else
-    if((self->encoder.context = avcodec_alloc_context())){
-        avcodec_get_context_defaults(self->encoder.context);
-    }
-#endif
-    
-    if(!self->encoder.context){
-        TSK_DEBUG_ERROR("Failed to allocate context");
-    }
+		CHECK_HR(hr = 0x8000000EL);
+#endif	
+	}
 
-#if TDAV_UNDER_X86 && LIBAVCODEC_VERSION_MAJOR <= 53
-	self->encoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
-#endif
+	// create encoder
+	if(!(self->encoder.pInst = (common->profile == profile_idc_baseline) ? MFCodecVideoH264::CreateCodecH264Base(MFCodecType_Encoder) : MFCodecVideoH264::CreateCodecH264Main(MFCodecType_Encoder))){
+		TSK_DEBUG_ERROR("Failed to find H.264 encoder");
+		CHECK_HR(hr = E_OUTOFMEMORY);
+	}
 
-	self->encoder.context->pix_fmt		= PIX_FMT_YUV420P;
-	self->encoder.context->time_base.num  = 1;
-	self->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(self)->out.fps;
-	self->encoder.context->width = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.height : TMEDIA_CODEC_VIDEO(self)->out.width;
-	self->encoder.context->height = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
+	//self->encoder.context->pix_fmt		= PIX_FMT_YUV420P;
+	//self->encoder.context->time_base.num  = 1;
+	//self->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(self)->out.fps;
+	self->encoder.neg_width = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.height : TMEDIA_CODEC_VIDEO(self)->out.width;
+	self->encoder.neg_height = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
+	self->encoder.neg_fps = TMEDIA_CODEC_VIDEO(self)->out.fps;
 	max_bw_kpbs = TSK_CLAMP(
 		0,
-		tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(self)->out.width, TMEDIA_CODEC_VIDEO(self)->out.height, TMEDIA_CODEC_VIDEO(self)->out.fps), 
+		tmedia_get_video_bandwidth_kbps_2(self->encoder.neg_width, self->encoder.neg_height, self->encoder.neg_fps), 
 		self->encoder.max_bw_kpbs
 	);
-	self->encoder.context->bit_rate = (max_bw_kpbs * 1024);// bps
+	self->encoder.max_bitrate_bps = (max_bw_kpbs * 1024);
 
-	self->encoder.context->rc_min_rate = (self->encoder.context->bit_rate >> 3);
-	self->encoder.context->rc_max_rate = self->encoder.context->bit_rate;
+	TSK_DEBUG_INFO("[H.264 MF Encoder] neg_width=%d, neg_height=%d, neg_fps=%d, max_bitrate_bps=%d",
+		self->encoder.neg_width,
+		self->encoder.neg_height,
+		self->encoder.neg_fps,
+		self->encoder.max_bitrate_bps
+		);
 
-#if LIBAVCODEC_VERSION_MAJOR <= 53
-	self->encoder.context->rc_lookahead = 0;
-#endif
-	self->encoder.context->global_quality = FF_QP2LAMBDA * self->encoder.quality;
-	
-	self->encoder.context->scenechange_threshold = 0;
-    self->encoder.context->me_subpel_quality = 0;
-#if LIBAVCODEC_VERSION_MAJOR <= 53
-    self->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
-#endif
-    self->encoder.context->me_method = ME_EPZS;
-    self->encoder.context->trellis = 0;
+	CHECK_HR(hr = self->encoder.pInst->Initialize(
+			self->encoder.neg_fps,
+			self->encoder.neg_width,
+			self->encoder.neg_height,
+			self->encoder.max_bitrate_bps));
 
-	self->encoder.context->me_range = 16;
-	self->encoder.context->qmin = 10;
-	self->encoder.context->qmax = 51;
-#if LIBAVCODEC_VERSION_MAJOR <= 53
-    self->encoder.context->mb_qmin = self->encoder.context->qmin;
-	self->encoder.context->mb_qmax = self->encoder.context->qmax;
-#endif
-	self->encoder.context->qcompress = 0.6f;
-	self->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
-#if LIBAVCODEC_VERSION_MAJOR <= 53
-	self->encoder.context->flags2 |= CODEC_FLAG2_FASTPSKIP;
-#else 
-    self->encoder.context->flags2 |= CODEC_FLAG2_FAST;
-#endif
-	self->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
-	self->encoder.context->flags |= CODEC_FLAG_GLOBAL_HEADER;
-    self->encoder.context->flags |= CODEC_FLAG_LOW_DELAY;
-	self->encoder.context->max_b_frames = 0;
-	self->encoder.context->b_frame_strategy = 1;
-	self->encoder.context->chromaoffset = 0;
-
-	switch(TDAV_CODEC_H264_COMMON(self)->profile){
-		case profile_idc_baseline:
-		default:
-			self->encoder.context->profile = FF_PROFILE_H264_BASELINE;
-			self->encoder.context->level = TDAV_CODEC_H264_COMMON(self)->level;
-			break;
-		case profile_idc_main:
-			self->encoder.context->profile = FF_PROFILE_H264_MAIN;
-			self->encoder.context->level = TDAV_CODEC_H264_COMMON(self)->level;
-			break;
-	}
-	
-	self->encoder.context->rtp_payload_size = H264_RTP_PAYLOAD_SIZE;
-	self->encoder.context->opaque = tsk_null;
-	self->encoder.context->gop_size = (TMEDIA_CODEC_VIDEO(self)->out.fps * TDAV_H264_GOP_SIZE_IN_SECONDS);
-	
-#if (LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51, 35, 0))
-    if((ret = av_opt_set_int(self->encoder.context->priv_data, "slice-max-size", H264_RTP_PAYLOAD_SIZE, 0))){
-	    TSK_DEBUG_ERROR("Failed to set x264 slice-max-size to %d", H264_RTP_PAYLOAD_SIZE);
-	}
-    if((ret = av_opt_set(self->encoder.context->priv_data, "profile", (self->encoder.context->profile == FF_PROFILE_H264_BASELINE ? "baseline" : "main"), 0))){
-	    TSK_DEBUG_ERROR("Failed to set x264 profile");
-	}
-    if((ret = av_opt_set(self->encoder.context->priv_data, "preset", "veryfast", 0))){
-	    TSK_DEBUG_ERROR("Failed to set x264 preset to veryfast");
-	}
-    if((ret = av_opt_set_int(self->encoder.context->priv_data, "rc-lookahead", 0, 0)) && (ret = av_opt_set_int(self->encoder.context->priv_data, "rc_lookahead", 0, 0))){
-        TSK_DEBUG_ERROR("Failed to set x264 rc_lookahead=0");
-    }
-	if((ret = av_opt_set(self->encoder.context->priv_data, "tune", "animation+zerolatency", 0))){
-	    TSK_DEBUG_ERROR("Failed to set x264 tune to zerolatency");
-	}
-#endif
-
-	// Picture (YUV 420)
-	if(!(self->encoder.picture = avcodec_alloc_frame())){
-		TSK_DEBUG_ERROR("Failed to create encoder picture");
-		return -2;
-	}
-	avcodec_get_frame_defaults(self->encoder.picture);
-	
-
-	size = avpicture_get_size(PIX_FMT_YUV420P, self->encoder.context->width, self->encoder.context->height);
-	if(!(self->encoder.buffer = tsk_calloc(size, sizeof(uint8_t)))){
-		TSK_DEBUG_ERROR("Failed to allocate encoder buffer");
-		return -2;
-	}
-
-	// Open encoder
-	if((ret = avcodec_open(self->encoder.context, self->encoder.codec)) < 0){
-		TSK_DEBUG_ERROR("Failed to open [%s] codec", TMEDIA_CODEC(self)->plugin->desc);
-		return ret;
-	}
-
-	TSK_DEBUG_INFO("[H.264] bitrate=%d bps", self->encoder.context->bit_rate);
-
-	return ret;
-#elif HAVE_H264_PASSTHROUGH
-	return 0;
-#endif
-
-	TSK_DEBUG_ERROR("Not expected code called");
-	return -1;
+	CHECK_HR(hr = self->encoder.pInst->SetGOPSize(self->encoder.neg_fps * TDAV_H264_GOP_SIZE_IN_SECONDS));
+bail:
+	return SUCCEEDED(hr) ? 0 : -1;
 }
 
 int mf_codec_h264_close_encoder(mf_codec_h264_t* self)
@@ -690,48 +653,37 @@ int mf_codec_h264_close_encoder(mf_codec_h264_t* self)
 
 int mf_codec_h264_open_decoder(mf_codec_h264_t* self)
 {
-#if HAVE_FFMPEG
-	int ret;
+	HRESULT hr = S_OK;
+	tdav_codec_h264_common_t* common = (tdav_codec_h264_common_t*)self;
 
-	if(self->decoder.context){
-		TSK_DEBUG_ERROR("Decoder already opened");
-		return -1;
-	}
-
-	self->decoder.context = avcodec_alloc_context();
-	avcodec_get_context_defaults(self->decoder.context);
-	
-	self->decoder.context->pix_fmt = PIX_FMT_YUV420P;
-	self->decoder.context->flags2 |= CODEC_FLAG2_FAST;
-	self->decoder.context->width = TMEDIA_CODEC_VIDEO(self)->in.width;
-	self->decoder.context->height = TMEDIA_CODEC_VIDEO(self)->in.height;
-	
-#if TDAV_UNDER_WINDOWS
-//	self->decoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
+	if(self->decoder.pInst) {
+		TSK_DEBUG_ERROR("Decoder already initialized");
+#if defined(E_ILLEGAL_METHOD_CALL)
+		CHECK_HR(hr = E_ILLEGAL_METHOD_CALL);
+#else
+		CHECK_HR(hr = 0x8000000EL);
 #endif
-
-	// Picture (YUV 420)
-	if(!(self->decoder.picture = avcodec_alloc_frame())){
-		TSK_DEBUG_ERROR("Failed to create decoder picture");
-		return -2;
-	}
-	avcodec_get_frame_defaults(self->decoder.picture);
-
-	// Open decoder
-	if((ret = avcodec_open(self->decoder.context, self->decoder.codec)) < 0){
-		TSK_DEBUG_ERROR("Failed to open [%s] codec", TMEDIA_CODEC(self)->plugin->desc);
-		return ret;
 	}
 
-	return ret;
+	// create decoder
+	if(!(self->decoder.pInst = (common->profile == profile_idc_baseline) ? MFCodecVideoH264::CreateCodecH264Base(MFCodecType_Decoder) : MFCodecVideoH264::CreateCodecH264Main(MFCodecType_Decoder))){
+		TSK_DEBUG_ERROR("Failed to find H.264 encoder");
+		CHECK_HR(hr = E_OUTOFMEMORY);
+	}
 
-#elif HAVE_H264_PASSTHROUGH
-	return 0;
-#endif
+	TSK_DEBUG_INFO("[H.264 MF Decoder] neg_width=%d, neg_height=%d, neg_fps=%d",
+		TMEDIA_CODEC_VIDEO(self)->in.width,
+		TMEDIA_CODEC_VIDEO(self)->in.height,
+		TMEDIA_CODEC_VIDEO(self)->in.fps
+		);
 
-	TSK_DEBUG_ERROR("Unexpected code called");
-	return -1;
-	
+	CHECK_HR(hr = self->decoder.pInst->Initialize(
+			TMEDIA_CODEC_VIDEO(self)->in.fps,
+			TMEDIA_CODEC_VIDEO(self)->in.width,
+			TMEDIA_CODEC_VIDEO(self)->in.height));
+
+bail:
+	return SUCCEEDED(hr) ? 0 : -1;
 }
 
 int mf_codec_h264_close_decoder(mf_codec_h264_t* self)
@@ -752,13 +704,14 @@ int mf_codec_h264_init(mf_codec_h264_t* self, profile_idc_t profile)
 {
 	int ret = 0;
 	level_idc_t level;
+	tdav_codec_h264_common_t* common = (tdav_codec_h264_common_t*)self;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if((ret = tdav_codec_h264_common_init(TDAV_CODEC_H264_COMMON(self)))){
+	if((ret = tdav_codec_h264_common_init(common))){
 		TSK_DEBUG_ERROR("mf_codec_h264_common_init() faile with error code=%d", ret);
 		return ret;
 	}
@@ -769,29 +722,14 @@ int mf_codec_h264_init(mf_codec_h264_t* self, profile_idc_t profile)
 	}
 
 	(self)->encoder.max_bw_kpbs = tmedia_defaults_get_bandwidth_video_upload_max();
-	TDAV_CODEC_H264_COMMON(self)->pack_mode = H264_PACKETIZATION_MODE;
-	TDAV_CODEC_H264_COMMON(self)->profile = profile;
-	TDAV_CODEC_H264_COMMON(self)->level = level;
+	common->pack_mode = H264_PACKETIZATION_MODE;
+	common->profile = profile;
+	common->level = level;
 	TMEDIA_CODEC_VIDEO(self)->in.max_mbps = TMEDIA_CODEC_VIDEO(self)->out.max_mbps = H264_MAX_MBPS*1000;
 	TMEDIA_CODEC_VIDEO(self)->in.max_br = TMEDIA_CODEC_VIDEO(self)->out.max_br = H264_MAX_BR*1000;
 
-#if HAVE_FFMPEG
-	if(!(self->encoder.codec = avcodec_find_encoder(CODEC_ID_H264))){
-		TSK_DEBUG_ERROR("Failed to find H.264 encoder");
-		ret = -2;
-	}
-
-	if(!(self->decoder.codec = avcodec_find_decoder(CODEC_ID_H264))){
-		TSK_DEBUG_ERROR("Failed to find H.264 decoder");
-		ret = -3;
-	}
-#elif HAVE_H264_PASSTHROUGH
-	TMEDIA_CODEC(self)->passthrough = tsk_true;
-#endif
-
 	self->encoder.quality = 1;
-
-	/* allocations MUST be done by open() */
+	
 	return ret;
 }
 

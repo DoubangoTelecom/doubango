@@ -29,6 +29,7 @@
 #include "tsk_thread.h"
 #include "tsk_debug.h"
 
+#include <KS.h>
 #include <Codecapi.h>
 #include <assert.h>
 #include <stdlib.h>     /* mbstowcs, wchar_t(C) */
@@ -217,7 +218,9 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 
 		// Set session attributes
 		CHECK_HR(hr = MFCreateAttributes(&pSessionAttributes, 1));
-		CHECK_HR(hr = pSessionAttributes->SetUINT32(MF_LOW_LATENCY, 1)); //FIXME: CodecAPI should also use http://msdn.microsoft.com/en-us/library/dd317656(v=vs.85).aspx
+#if defined(MF_LOW_LATENCY)
+		CHECK_HR(hr = pSessionAttributes->SetUINT32(MF_LOW_LATENCY, 1));
+#endif
 
 		// Configure the media type that the Sample Grabber will receive.
 		// Setting the major and subtype is usually enough for the topology loader

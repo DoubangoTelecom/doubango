@@ -95,7 +95,7 @@ static const tsk_plugin_def_media_type_t __plugin_def_media_types[] =
 };
 static const tsk_size_t __plugin_def_media_types_count = sizeof(__plugin_def_media_types)/sizeof(__plugin_def_media_types[0]);
 
-static tsk_size_t tmedia_plugin_register_or_unregister(struct tsk_plugin_s* plugin, enum tsk_plugin_def_type_e type, enum tsk_plugin_def_media_type_e media, tsk_bool_t _register)
+static tsk_size_t _tmedia_plugin_register_or_unregister(struct tsk_plugin_s* plugin, enum tsk_plugin_def_type_e type, enum tsk_plugin_def_media_type_e media, tsk_bool_t _register)
 {
 	tsk_size_t ret = 0, i, j, index;
 	tsk_plugin_def_ptr_const_t plugin_def_ptr_const;
@@ -121,12 +121,12 @@ static tsk_size_t tmedia_plugin_register_or_unregister(struct tsk_plugin_s* plug
 
 tsk_size_t tmedia_plugin_register(struct tsk_plugin_s* plugin, enum tsk_plugin_def_type_e type, enum tsk_plugin_def_media_type_e media)
 {
-	return tmedia_plugin_register_or_unregister(plugin, type, media, tsk_true);
+	return _tmedia_plugin_register_or_unregister(plugin, type, media, tsk_true);
 }
 
 tsk_size_t tmedia_plugin_unregister(struct tsk_plugin_s* plugin, enum tsk_plugin_def_type_e type, enum tsk_plugin_def_media_type_e media)
 {
-	return tmedia_plugin_register_or_unregister(plugin, type, media, tsk_false);
+	return _tmedia_plugin_register_or_unregister(plugin, type, media, tsk_false);
 }
 
 tmedia_type_t tmedia_type_from_sdp(const tsdp_message_t* sdp)
