@@ -26,6 +26,7 @@
 #include <KS.h>
 #include <Codecapi.h>
 #include <assert.h>
+#include <initguid.h>
 
 // NV12 is the only format supported by all HW encoders and decoders
 #if !defined(kMFCodecUncompressedFormat)
@@ -36,10 +37,6 @@
 #if !defined(CODECAPI_AVLowLatencyMode)                   
 DEFINE_GUID(CODECAPI_AVLowLatencyMode,
 	0x9c27891a, 0xed7a, 0x40e1, 0x88, 0xe8, 0xb2, 0x27, 0x27, 0xa0, 0x24, 0xee);
-#endif
-#if !defined(MF_SA_MINIMUM_OUTPUT_SAMPLE_COUNT)                   
-DEFINE_GUID(MF_SA_MINIMUM_OUTPUT_SAMPLE_COUNT,
-	0x851745d5, 0xc3d6, 0x476d, 0x95, 0x27, 0x49, 0x8e, 0xf2, 0xd1, 0xd, 0x18);
 #endif
 
 //
@@ -375,8 +372,6 @@ HRESULT MFCodecVideo::Initialize(
 			hr = m_pMFT->GetAttributes(&pAttributes);
 			if(SUCCEEDED(hr))
 			{
-				// Specifies the maximum number of output samples.
-				hr = pAttributes->SetUINT32(MF_SA_MINIMUM_OUTPUT_SAMPLE_COUNT, 1);
 				// FIXME: Very strange that "CODECAPI_AVLowLatencyMode" only works with "IMFAttributes->" and not "ICodecAPI->SetValue()"
 				hr = pAttributes->SetUINT32(CODECAPI_AVLowLatencyMode, TRUE);
 			}
