@@ -25,6 +25,7 @@
  * Env: gpucomputingsdk_4.0.17_win_32, cudatoolkit_4.0.17_win_32 and 280.26-notebook-win7-winvista-32bit-international-whql.
  * http://developer.download.nvidia.com/compute/DevZone/docs/html/C/doc/CUDA_VideoDecoder_Library.pdf
  * http://developer.download.nvidia.com/compute/DevZone/docs/html/C/doc/CUDA_VideoEncoder_Library.pdf
+ * 2.0: https://developer.nvidia.com/sites/default/files/akamai/cuda/files/CUDADownloads/NVENC_VideoEncoder_API_ProgGuide.pdf
  * 
  * RTP payloader/depayloader follows RFC 3984.
  *

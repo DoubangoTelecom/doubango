@@ -252,7 +252,7 @@ static tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_da
 	   );
 
 	// send SPS and PPS headers for:
-	//  - IDR frames (not required but it's the easiest way to deal with pakt loss)
+	//  - IDR frames (not required but it's the easiest way to deal with pkt loss)
 	//  - every 5 seconds after the first 4seconds
 	send_hdr = (
 		send_idr
@@ -519,7 +519,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_h264_base_plugin_def_s =
 	tmedia_video,
 	tmedia_codec_id_h264_bp,
 	"H264",
-	"H264 Base Profile",
+	"H264 Base Profile (FFmpeg)",
 	TMEDIA_CODEC_FORMAT_H264_BP,
 	tsk_true,
 	90000, // rate
@@ -585,7 +585,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_h264_main_plugin_def_s =
 	tmedia_video,
 	tmedia_codec_id_h264_mp,
 	"H264",
-	"H264 Main Profile",
+	"H264 Main Profile (FFmpeg)",
 	TMEDIA_CODEC_FORMAT_H264_MP,
 	tsk_true,
 	90000, // rate

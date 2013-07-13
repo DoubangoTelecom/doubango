@@ -27,6 +27,7 @@
 #include "tsk_thread.h"
 #include "tsk_debug.h"
 
+#include <KS.h>
 #include <Codecapi.h>
 #include <assert.h>
 
@@ -178,7 +179,14 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	}
 
 	
-	IMFMediaSink* pEvr = NULL;
+	IMFMediaSink* pMediaSink = NULL;
+	IMFAttributes* pSessionAttributes = NULL;
+
+	// Set session attributes
+	CHECK_HR(hr = MFCreateAttributes(&pSessionAttributes, 1));
+#if defined(MF_LOW_LATENCY)
+	CHECK_HR(hr = pSessionAttributes->SetUINT32(MF_LOW_LATENCY, 1));
+#endif
 
 	CHECK_HR(hr = MFCreateMediaType(&pSelf->pOutType));
 	CHECK_HR(hr = pSelf->pOutType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video));
@@ -217,7 +225,7 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	}
 
 	// Create the Media Session.
-	CHECK_HR(hr = MFCreateMediaSession(NULL, &pSelf->pSession));
+	CHECK_HR(hr = MFCreateMediaSession(pSessionAttributes, &pSelf->pSession));
 
 	// Create the EVR activation object.
 	CHECK_HR(hr = MFCreateVideoRendererActivate(pSelf->hWindow, &pSelf->pSinkActivate));
@@ -228,14 +236,15 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	CHECK_HR(hr = MFUtils::ResolveTopology(pSelf->pTopologyPartial, &pSelf->pTopologyFull));
 
 	// Find EVR
-	CHECK_HR(hr = MFUtils::FindNodeObject(pSelf->pTopologyFull, MFUtils::g_ullTopoIdSinkMain, (void**)&pEvr));
+	CHECK_HR(hr = MFUtils::FindNodeObject(pSelf->pTopologyFull, MFUtils::g_ullTopoIdSinkMain, (void**)&pMediaSink));
 
 	// Create EVR watcher
-	pSelf->pDisplayWatcher = new DisplayWatcher(pSelf->hWindow, pEvr, hr);
+	pSelf->pDisplayWatcher = new DisplayWatcher(pSelf->hWindow, pMediaSink, hr);
 	CHECK_HR(hr);
 
 bail:
-	SafeRelease(&pEvr);
+	SafeRelease(&pMediaSink);
+	SafeRelease(&pSessionAttributes);
 	
 	pSelf->bPrepared = SUCCEEDED(hr);
 	return pSelf->bPrepared ? 0 : -1;

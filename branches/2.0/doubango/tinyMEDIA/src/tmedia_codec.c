@@ -251,6 +251,7 @@ int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin)
 	for(i = 0; i<TMED_CODEC_MAX_PLUGINS; i++){
 		if(!__tmedia_codec_plugins[i] || (__tmedia_codec_plugins[i] == plugin)){
 			__tmedia_codec_plugins[i] = plugin;
+			TSK_DEBUG_INFO("Register codec: %s, %s", plugin->name, plugin->desc);
 			return 0;
 		}
 	}
@@ -284,13 +285,15 @@ int tmedia_codec_plugin_register_2(const tmedia_codec_plugin_def_t* plugin, int 
 
 	// unregister and compact
 	if(already_registered){
-		tmedia_codec_plugin_unregister(plugin);
-		--count;
+		if(tmedia_codec_plugin_unregister(plugin) == 0){
+			--count;
+		}
 	}	
 	
-	 tmp = __tmedia_codec_plugins[prio];
-	__tmedia_codec_plugins[prio] = plugin;
+	// put current plugin at prio and old (which was at prio) at the end
+	tmp = __tmedia_codec_plugins[prio];
 	__tmedia_codec_plugins[count] = tmp;// put old codec add prio to the end of the list
+	__tmedia_codec_plugins[prio] = plugin;
 	
 	return 0;
 }
@@ -299,13 +302,13 @@ int tmedia_codec_plugin_register_2(const tmedia_codec_plugin_def_t* plugin, int 
  * Checks whether a codec plugin is registered or not.
  * @param plugin the definition of the plugin to check for availability.
  * @retval 1 (tsk_true) if registered and 0 (tsk_false) otherwise.
- * @sa @ref tmedia_codec_plugin_register() and @ref tmedia_codec_plugin_unregister()
+ * @sa @ref tmedia_codec_plugin_is_registered_2() @ref tmedia_codec_plugin_register() and @ref tmedia_codec_plugin_unregister()
  */
 tsk_bool_t tmedia_codec_plugin_is_registered(const tmedia_codec_plugin_def_t* plugin)
 {
 	if(plugin){
 		tsk_size_t i;
-		for(i = 0; i<TMED_CODEC_MAX_PLUGINS && __tmedia_codec_plugins[i]; i++){
+		for(i = 0; i < TMED_CODEC_MAX_PLUGINS && __tmedia_codec_plugins[i]; i++){
 			if(__tmedia_codec_plugins[i] == plugin){
 				return tsk_true;
 			}
@@ -315,9 +318,43 @@ tsk_bool_t tmedia_codec_plugin_is_registered(const tmedia_codec_plugin_def_t* pl
 }
 
 /**@ingroup tmedia_codec_group
+ * Checks whether a codec is registered or not.
+ * @param codec_id The code id to check.
+ * @return 1 @ref tsk_true if registered and tsk_false otherwise.
+ * @sa @ref tmedia_codec_plugin_is_registered() @ref tmedia_codec_plugin_register() and @ref tmedia_codec_plugin_unregister()
+ */
+tsk_bool_t tmedia_codec_plugin_is_registered_2(tmedia_codec_id_t codec_id)
+{
+	tsk_size_t i;
+	for(i = 0; i < TMED_CODEC_MAX_PLUGINS && __tmedia_codec_plugins[i]; i++){
+		if(__tmedia_codec_plugins[i]->codec_id == codec_id){
+			return tsk_true;
+		}
+	}
+	return tsk_false;
+}
+
+/**@ingroup tmedia_codec_group
+ * Gets the list of all registered plugins.
+ * @param plugins List of the registered plugins.
+ * @param count Number of plugins in the list.
+ * @return 0 if succeed and non-zero error code otherwise.
+ */
+int tmedia_codec_plugin_registered_get_all(const struct tmedia_codec_plugin_def_s*** plugins, tsk_size_t* count)
+{
+	if(!plugins || !count) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	*plugins = (const struct tmedia_codec_plugin_def_s**)&__tmedia_codec_plugins;
+	*count = sizeof(__tmedia_codec_plugins)/sizeof(__tmedia_codec_plugins[0]);
+	return 0;
+}
+
+/**@ingroup tmedia_codec_group
 * UnRegisters a codec plugin.
 * @param plugin the definition of the plugin.
-* @retval Zero if succeed and non-zero error code otherwise.
+* @retval 0 if succeed and non-zero error code otherwise.
 */
 int tmedia_codec_plugin_unregister(const tmedia_codec_plugin_def_t* plugin)
 {
@@ -331,6 +368,7 @@ int tmedia_codec_plugin_unregister(const tmedia_codec_plugin_def_t* plugin)
 	/* find the plugin to unregister */
 	for(i = 0; i<TMED_CODEC_MAX_PLUGINS && __tmedia_codec_plugins[i]; i++){
 		if(__tmedia_codec_plugins[i] == plugin){
+			TSK_DEBUG_INFO("UnRegister codec: %s, %s", plugin->name, plugin->desc);
 			__tmedia_codec_plugins[i] = tsk_null;
 			found = tsk_true;
 			break;
@@ -350,6 +388,16 @@ int tmedia_codec_plugin_unregister(const tmedia_codec_plugin_def_t* plugin)
 		__tmedia_codec_plugins[i] = tsk_null;
 	}
 	return (found ? 0 : -2);
+}
+
+/**@ingroup tmedia_codec_group
+* Unregister all codecs
+* @retval 0 if succeed and non-zero error code otherwise.
+*/
+int tmedia_codec_plugin_unregister_all()
+{
+	memset((void*)__tmedia_codec_plugins, 0, sizeof(__tmedia_codec_plugins));
+	return 0;
 }
 
 /**@ingroup tmedia_codec_group

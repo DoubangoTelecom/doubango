@@ -26,6 +26,7 @@
 #include <mfidl.h>
 #include <Mferror.h>
 #include <shlwapi.h>
+#include <strmif.h>
 
 typedef enum MFCodecId_e
 {
@@ -54,10 +55,13 @@ class MFCodec
 protected:
 	MFCodec(MFCodecId_t eId, MFCodecType_t eType);
 	virtual ~MFCodec();
+	HRESULT ProcessInput(IMFSample* pSample);
+	HRESULT ProcessOutput(IMFSample **ppSample);
 
 public:
 	virtual bool IsValid();
 	virtual bool IsReady();
+	virtual HRESULT Process(const void* pcInputPtr, UINT32 nInputSize, IMFSample **ppSampleOut);
 	static enum tmedia_chroma_e GetUncompressedChroma();
 
 protected:
@@ -69,8 +73,15 @@ protected:
 
 	GUID				m_guidCompressedFormat;	// Compressed Media format (e.g. MFVideoFormat_H264)
     IMFTransform		*m_pMFT;         // Pointer to the encoder MFT.
+	ICodecAPI			*m_pCodecAPI;	// Pointer to CodecAPI.
     IMFMediaType		*m_pOutputType;  // Output media type of the codec.
 	IMFMediaType		*m_pInputType;  // Input media type of the codec.
+
+	LONGLONG m_rtStart;
+    UINT64 m_rtDuration;
+
+	IMFSample *m_pSampleIn;
+	IMFSample *m_pSampleOut;
 };
 
 
@@ -85,8 +96,11 @@ public:
 			UINT32 nFrameRate,
 			UINT32 nWidth,
 			UINT32 nHeight,
-			UINT32 nOutputBitRate = 0 // Only for encoders
+			UINT32 nOutputBitRateInBps = 0 // Only for encoders
 		);
+	virtual HRESULT SetGOPSize(UINT32 nSize);
+	virtual HRESULT SetBitRate(UINT32 nBitRateInBps);
+	virtual HRESULT RequestKeyFrame();
 
 protected:
 
