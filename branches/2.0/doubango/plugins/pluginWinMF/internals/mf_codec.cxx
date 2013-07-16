@@ -44,7 +44,8 @@ DEFINE_GUID(CODECAPI_AVLowLatencyMode,
 //
 
 MFCodec::MFCodec(MFCodecId_t eId, MFCodecType_t eType)
-: m_eId(eId)
+: m_nRefCount(1)
+, m_eId(eId)
 , m_eType(eType)
 , m_pMFT(NULL)
 , m_pCodecAPI(NULL)
@@ -85,14 +86,26 @@ MFCodec::MFCodec(MFCodecId_t eId, MFCodecType_t eType)
 	CHECK_HR(hr = MFCreateMediaType(&m_pOutputType));
 	CHECK_HR(hr = MFCreateMediaType(&m_pInputType));
 	CHECK_HR(hr = MFUtils::GetBestCodec(
-		(m_eType == MFCodecType_Encoder), // Encoder ?
+		(m_eType == MFCodecType_Encoder) ? TRUE : FALSE, // Encoder ?
 		(m_eMediaType == MFCodecMediaType_Video) ? MFMediaType_Video : MFMediaType_Audio, // Media Type
 		(m_eType == MFCodecType_Encoder) ? kMFCodecUncompressedFormat : m_guidCompressedFormat/*GUID_NULL*/, // Input
 		(m_eType == MFCodecType_Encoder) ? m_guidCompressedFormat : kMFCodecUncompressedFormat, // Output
 		&m_pMFT));
 	CHECK_HR(hr = m_pMFT->QueryInterface(IID_PPV_ARGS(&m_pCodecAPI)));	// FIXME: ICodecAPI not supported on Win7
 
+	BOOL bIsAsyncMFT = FALSE;
+	CHECK_HR(hr = MFUtils::IsAsyncMFT(m_pMFT, &bIsAsyncMFT));
+	if(bIsAsyncMFT)
+	{
+		CHECK_HR(hr = MFUtils::UnlockAsyncMFT(m_pMFT));
+	}
+
 bail:
+	if(FAILED(hr))
+	{
+		SafeRelease(&m_pMFT);
+		SafeRelease(&m_pCodecAPI);
+	}
 	if(!IsValid())
 	{
 		TSK_DEBUG_ERROR("Failed to create codec with id = %d", m_eId);
@@ -101,11 +114,39 @@ bail:
 
 MFCodec::~MFCodec()
 {
+	assert(m_nRefCount == 0);
+
 	SafeRelease(&m_pMFT);
+	SafeRelease(&m_pCodecAPI);
     SafeRelease(&m_pOutputType);
 	SafeRelease(&m_pInputType);
 	SafeRelease(&m_pSampleIn);
 	SafeRelease(&m_pSampleOut);
+}
+
+ULONG MFCodec::AddRef()
+{
+    return InterlockedIncrement(&m_nRefCount);
+}
+
+ULONG  MFCodec::Release()
+{
+    ULONG uCount = InterlockedDecrement(&m_nRefCount);
+    if (uCount == 0)
+    {
+        delete this;
+    }
+    // For thread safety, return a temporary variable.
+    return uCount;
+}
+
+HRESULT MFCodec::QueryInterface(REFIID iid, void** ppv)
+{
+	if(!IsValid())
+	{
+		return E_FAIL;
+	}
+	return m_pMFT->QueryInterface(iid, ppv);
 }
 
 HRESULT MFCodec::ProcessInput(IMFSample* pSample)
@@ -255,10 +296,10 @@ HRESULT MFCodec::Process(const void* pcInputPtr, UINT32 nInputSize, IMFSample **
 		{
 			SafeRelease(ppSampleOut);
 			*ppSampleOut = pSample, pSample = NULL;
-		}
-		
-		hr = m_pSampleIn->SetUINT32(MFSampleExtension_Discontinuity, TRUE);
-		hr = ProcessInput(m_pSampleIn);
+
+			hr = m_pSampleIn->SetUINT32(MFSampleExtension_Discontinuity, TRUE);
+			hr = ProcessInput(m_pSampleIn);
+		}		
 	}
 	if(!*ppSampleOut)
 	{
@@ -332,6 +373,12 @@ HRESULT MFCodecVideo::Initialize(
 
 	CHECK_HR(hr = m_pOutputType->SetGUID(MF_MT_SUBTYPE, (m_eType == MFCodecType_Encoder) ? m_guidCompressedFormat : kMFCodecUncompressedFormat));
 	CHECK_HR(hr = m_pInputType->SetGUID(MF_MT_SUBTYPE, (m_eType == MFCodecType_Encoder) ? kMFCodecUncompressedFormat : m_guidCompressedFormat));
+
+	CHECK_HR(hr = m_pOutputType->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, (m_eType == MFCodecType_Encoder) ? FALSE : TRUE));
+	CHECK_HR(hr = m_pInputType->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, (m_eType == MFCodecType_Encoder) ? TRUE : FALSE));
+
+	CHECK_HR(hr = m_pOutputType->SetUINT32(MF_MT_FIXED_SIZE_SAMPLES, (m_eType == MFCodecType_Encoder) ? FALSE : TRUE));
+	CHECK_HR(hr = m_pInputType->SetUINT32(MF_MT_FIXED_SIZE_SAMPLES, (m_eType == MFCodecType_Encoder) ? TRUE : FALSE));
 	
 	// Set bitrate
 	// Set (MF_MT_AVG_BITRATE) for MediaType
@@ -405,7 +452,7 @@ bail:
 	return hr;
 }
 
-HRESULT MFCodecVideo::SetGOPSize(UINT32 nSize)
+HRESULT MFCodecVideo::SetGOPSize(UINT32 nFramesCount)
 {
 	assert(IsValid());
 
@@ -415,7 +462,7 @@ HRESULT MFCodecVideo::SetGOPSize(UINT32 nSize)
 	{
 		VARIANT var = {0};
 		var.vt = VT_UI4;
-		var.ullVal = nSize;
+		var.ullVal = nFramesCount;
 		CHECK_HR(hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncMPVGOPSize, &var));
 	}	
 

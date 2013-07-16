@@ -85,7 +85,7 @@ tdav_codec_id_t;
 
 TINYDAV_API int tdav_init();
 TINYDAV_API int tdav_codec_set_priority(tdav_codec_id_t codec_id, int priority);
-TINYDAV_API void tdav_set_codecs(tdav_codec_id_t codecs);
+TINYDAV_API int tdav_set_codecs(tdav_codec_id_t codecs);
 TINYDAV_API tsk_bool_t tdav_codec_is_supported(tdav_codec_id_t codec);
 TINYDAV_API tsk_bool_t tdav_codec_is_enabled(tdav_codec_id_t codec);
 TINYDAV_API int tdav_deinit();

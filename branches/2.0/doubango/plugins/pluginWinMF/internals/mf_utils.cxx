@@ -20,19 +20,52 @@
 
 #include "tsk_debug.h"
 
+#include <initguid.h>
 #include <assert.h>
 
-bool MFUtils::g_bStarted = false;
-const TOPOID MFUtils::g_ullTopoIdSinkMain = 555;
-const TOPOID MFUtils::g_ullTopoIdSinkPreview = 666;
-const TOPOID MFUtils::g_ullTopoIdSource = 777;
+#if !defined(PLUGIN_MF_DISABLE_CODECS)
+#	define PLUGIN_MF_DISABLE_CODECS 0 // Must be "0". Testing: When set to "1", libx264 and FFmpeg will be used.
+#endif
+
+BOOL MFUtils::g_bStarted = FALSE;
+
+DWORD MFUtils::g_dwMajorVersion = -1;
+DWORD MFUtils::g_dwMinorVersion = -1;
+
+BOOL MFUtils::g_bLowLatencyH264Checked = FALSE;
+BOOL MFUtils::g_bLowLatencyH264Supported = FALSE;
+
+const TOPOID MFUtils::g_ullTopoIdSinkMain = 111;
+const TOPOID MFUtils::g_ullTopoIdSinkPreview = 222;
+const TOPOID MFUtils::g_ullTopoIdSource = 333;
+const TOPOID MFUtils::g_ullTopoIdVideoProcessor = 444;
+
+// {4BE8D3C0-0515-4A37-AD55-E4BAE19AF471}
+DEFINE_GUID(CLSID_MF_INTEL_H264EncFilter, // Intel Quick Sync
+0x4be8d3c0, 0x0515, 0x4a37, 0xad, 0x55, 0xe4, 0xba, 0xe1, 0x9a, 0xf4, 0x71);
+
+#define IsWin7_OrLater(dwMajorVersion, dwMinorVersion) ( (dwMajorVersion > 6) || ( (dwMajorVersion == 6) && (dwMinorVersion >= 1) ) )
+#define IsWin8_OrLater(dwMajorVersion, dwMinorVersion) ( (dwMajorVersion > 6) || ( (dwMajorVersion == 6) && (dwMinorVersion >= 2) ) )
+
 
 HRESULT MFUtils::Startup()
 {
 	if(!g_bStarted)
 	{
-		HRESULT hr = MFStartup(MF_VERSION);
+		HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+		if(SUCCEEDED(hr))
+		{
+			hr = MFStartup(MF_VERSION);
+		}
 		assert((g_bStarted = SUCCEEDED(hr)));
+
+		OSVERSIONINFO osvi;
+		ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+		GetVersionEx(&osvi);
+		g_dwMajorVersion = osvi.dwMajorVersion;
+		g_dwMinorVersion = osvi.dwMinorVersion;
+
 		return hr;
 	}
 	return S_OK;
@@ -48,6 +81,111 @@ HRESULT MFUtils::Shutdown()
 	return S_OK;
 }
 
+BOOL MFUtils::IsLowLatencyH264Supported()
+{
+	if(MFUtils::g_bLowLatencyH264Checked)
+	{
+		return MFUtils::g_bLowLatencyH264Supported;
+	}
+
+#if PLUGIN_MF_DISABLE_CODECS
+	MFUtils::g_bLowLatencyH264Checked = TRUE;
+	MFUtils::g_bLowLatencyH264Supported = FALSE;
+#else
+	Startup();
+
+	HRESULT hr = S_OK;
+	IMFTransform *pEncoder = NULL;
+	IMFTransform *pDecoder = NULL;
+
+
+	// Microsoft H.264 MFT encoder doesn't support low latency on Win7
+	// CODECAPI_AVLowLatencyMode: http://msdn.microsoft.com/en-us/library/hh447590(v=vs.85).aspx
+	if(IsWin8_OrLater(MFUtils::g_dwMajorVersion, MFUtils::g_dwMinorVersion))
+	{
+		CHECK_HR(hr = MFUtils::GetBestCodec(true/*ENCODER*/, MFMediaType_Video, MFVideoFormat_NV12, MFVideoFormat_H264, &pEncoder));
+	}
+	else
+	{
+		// On Win7 Only intel Quick Sync could save your soul :)
+		hr = CoCreateInstance(CLSID_MF_INTEL_H264EncFilter, NULL, 
+				CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pEncoder));
+		CHECK_HR(hr);
+	}
+
+	// Any decoder is fine
+	CHECK_HR(hr = MFUtils::GetBestCodec(false/*DECODER*/, MFMediaType_Video, MFVideoFormat_H264, MFVideoFormat_NV12, &pDecoder));
+
+bail:
+	MFUtils::g_bLowLatencyH264Checked = TRUE;
+	MFUtils::g_bLowLatencyH264Supported = (SUCCEEDED(hr) && pEncoder && pDecoder) ? TRUE : FALSE;
+	SafeRelease(&pEncoder);
+	SafeRelease(&pDecoder);
+#endif /* PLUGIN_MF_DISABLE_CODECS */
+
+	return MFUtils::g_bLowLatencyH264Supported;
+}
+
+HRESULT MFUtils::IsAsyncMFT(
+	IMFTransform *pMFT, // The MFT to check
+	BOOL* pbIsAsync // Whether the MFT is Async
+	)
+{
+	if(!pbIsAsync || !pMFT)
+	{
+		return E_POINTER;
+	}
+
+	IMFAttributes *pAttributes = NULL;
+	UINT32 nIsAsync = 0;
+	HRESULT hr = S_OK;
+
+    hr = pMFT->GetAttributes(&pAttributes);
+	if(SUCCEEDED(hr))
+	{
+		hr = pAttributes->GetUINT32(MF_TRANSFORM_ASYNC, &nIsAsync);
+	}
+	
+	// Never fails: just say not Async
+	CHECK_HR(hr = S_OK);
+
+	*pbIsAsync = !!nIsAsync;
+
+bail:
+	return hr;
+}
+
+HRESULT MFUtils::UnlockAsyncMFT(
+	IMFTransform *pMFT // The MFT to unlock
+	)
+{
+	IMFAttributes *pAttributes = NULL;
+	UINT32 nValue = 0;
+	HRESULT hr = S_OK;
+
+    hr = pMFT->GetAttributes(&pAttributes);
+	if(FAILED(hr))
+	{
+		hr = S_OK;
+		goto bail;
+	}
+
+	hr = pAttributes->GetUINT32(MF_TRANSFORM_ASYNC, &nValue);
+	if(FAILED(hr))
+	{
+		hr = S_OK;
+		goto bail;
+	}
+
+	if(nValue == TRUE)
+	{
+		CHECK_HR(hr = pAttributes->SetUINT32(MF_TRANSFORM_ASYNC_UNLOCK, TRUE));
+	}
+    
+bail:
+   SafeRelease(&pAttributes);
+   return hr;
+}
 //-------------------------------------------------------------------
 // CreatePCMAudioType
 //
@@ -220,6 +358,81 @@ bail:
     return hr;
 }
 
+HRESULT MFUtils::ConvertVideoTypeToUncompressedType(
+    IMFMediaType *pType,    // Pointer to an encoded video type.
+    const GUID& subtype,    // Uncompressed subtype (eg, RGB-32, AYUV)
+    IMFMediaType **ppType   // Receives a matching uncompressed video type.
+    )
+{
+	IMFMediaType *pTypeUncomp = NULL;
+
+    HRESULT hr = S_OK;
+    GUID majortype = { 0 };
+    MFRatio par = { 0 };
+
+    hr = pType->GetMajorType(&majortype);
+
+    if (majortype != MFMediaType_Video)
+    {
+        return MF_E_INVALIDMEDIATYPE;
+    }
+
+    // Create a new media type and copy over all of the items.
+    // This ensures that extended color information is retained.
+
+    if (SUCCEEDED(hr))
+    {
+        hr = MFCreateMediaType(&pTypeUncomp);
+    }
+
+    if (SUCCEEDED(hr))
+    {
+        hr = pType->CopyAllItems(pTypeUncomp);
+    }
+
+    // Set the subtype.
+    if (SUCCEEDED(hr))
+    {
+        hr = pTypeUncomp->SetGUID(MF_MT_SUBTYPE, subtype);
+    }
+
+    // Uncompressed means all samples are independent.
+    if (SUCCEEDED(hr))
+    {
+        hr = pTypeUncomp->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, TRUE);
+    }
+
+    // Fix up PAR if not set on the original type.
+    if (SUCCEEDED(hr))
+    {
+        hr = MFGetAttributeRatio(
+            pTypeUncomp, 
+            MF_MT_PIXEL_ASPECT_RATIO, 
+            (UINT32*)&par.Numerator, 
+            (UINT32*)&par.Denominator
+            );
+
+        // Default to square pixels.
+        if (FAILED(hr))
+        {
+            hr = MFSetAttributeRatio(
+                pTypeUncomp, 
+                MF_MT_PIXEL_ASPECT_RATIO, 
+                1, 1
+                );
+        }
+    }
+
+    if (SUCCEEDED(hr))
+    {
+        *ppType = pTypeUncomp;
+        (*ppType)->AddRef();
+    }
+
+    SafeRelease(&pTypeUncomp);
+    return hr;
+}
+
 HRESULT MFUtils::CreateMediaSample(
 	DWORD cbData, // Maximum buffer size
 	IMFSample **ppSample // Receives the sample
@@ -247,7 +460,7 @@ bail:
 
 // Gets the best encoder and decoder. Up to the caller to release the returned pointer
 HRESULT MFUtils::GetBestCodec(
-	bool bEncoder, // Whether we request an encoder or not (TRUE=encoder, FALSE=decoder)
+	BOOL bEncoder, // Whether we request an encoder or not (TRUE=encoder, FALSE=decoder)
 	const GUID& mediaType, // The MediaType
 	const GUID& inputFormat, // The input MediaFormat (e.g. MFVideoFormat_NV12)
 	const GUID& outputFormat, // The output MediaFormat (e.g. MFVideoFormat_H264)
@@ -259,21 +472,23 @@ HRESULT MFUtils::GetBestCodec(
 
 	*ppMFT = NULL;
 
-#if 0
-	if(outputFormat == MFVideoFormat_H264)
+	HRESULT hr = S_OK;
+
+	if(bEncoder && outputFormat == MFVideoFormat_H264)
 	{
-		// Force using IntelQuickSync for testing
-		hr = CoCreateInstance(bEncoder ? CLSID_MF_H264EncFilter : CLSID_MF_H264DecFilter, NULL, 
+		// Force using Intel Quick Sync
+		hr = CoCreateInstance(CLSID_MF_INTEL_H264EncFilter, NULL, 
 				CLSCTX_INPROC_SERVER, IID_PPV_ARGS(ppMFT));
-		if(SUCCEED(hr) && *ppMFT)
+		if(SUCCEEDED(hr) && *ppMFT)
 		{
+			TSK_DEBUG_INFO("Using Intel Quick Sync encoder :)");
 			return hr;
 		}
+		TSK_DEBUG_INFO("Not using Intel Quick Sync encoder :(");
 	}
-#endif
-
-	HRESULT hr = S_OK;
+	
 	UINT32 count = 0;
+	BOOL bAsync = FALSE;
 
 	IMFActivate **ppActivate = NULL;	
 
@@ -282,6 +497,7 @@ HRESULT MFUtils::GetBestCodec(
 
 	UINT32 unFlags = MFT_ENUM_FLAG_HARDWARE |
                  MFT_ENUM_FLAG_SYNCMFT  | 
+				 MFT_ENUM_FLAG_ASYNCMFT |
                  MFT_ENUM_FLAG_LOCALMFT | 
                  MFT_ENUM_FLAG_SORTANDFILTER;
 
@@ -299,8 +515,17 @@ HRESULT MFUtils::GetBestCodec(
 		hr = ppActivate[i]->ActivateObject(IID_PPV_ARGS(ppMFT));
 		if(SUCCEEDED(hr) && *ppMFT) // For now we just get the first one. FIXME: Give HW encoders/decoders higher priority.
 		{
+			if(!bEncoder)
+			{
+				hr = IsAsyncMFT(*ppMFT, &bAsync);
+				if(bAsync)
+				{
+					goto next; // Async decoders not supported yet
+				}
+			}
 			break;
 		}
+		next:
 		SafeRelease(ppMFT);
 	}
 
@@ -546,6 +771,9 @@ HRESULT MFUtils::CreateTopology(
 	IMFTopologyNode *pNodeTransform = NULL;
 	IMFTopologyNode *pNodeTee = NULL;
 	IMFMediaType *pMediaType = NULL;
+    IMFTransform *pVideoProcessor = NULL;
+    IMFTopologyNode *pNodeVideoProcessor = NULL;
+	IMFMediaType *pTransformInputType = NULL;
 
 	HRESULT hr = S_OK;
 	DWORD cStreams = 0;
@@ -583,14 +811,49 @@ HRESULT MFUtils::CreateTopology(
 
 			if(pTransform)
 			{
-				CHECK_HR(hr = AddTransformNode(pTopology, pTransform, 0, &pNodeTransform));			
+				CHECK_HR(hr = AddTransformNode(pTopology, pTransform, 0, &pNodeTransform));
+				if(majorType == MFMediaType_Video)
+				{
+						GUID subType = GUID_NULL;
+						SafeRelease(&pMediaType);
+						SafeRelease(&pVideoProcessor);
+						SafeRelease(&pTransformInputType);
+						CHECK_HR(hr = pHandler->GetCurrentMediaType(&pMediaType));
+						CHECK_HR(hr = pMediaType->GetGUID(MF_MT_SUBTYPE, &subType));
+						// Transforms accept NV12 only
+						// For now the video processor is always added because used to resize the video on the fly (e.g. on the consumer)
+						/*if(subType != MFVideoFormat_NV12)*/
+						{
+							// FIXME:
+							// "subType" could be something not support as input for any Color covertor (http://msdn.microsoft.com/en-us/library/windows/desktop/ff819079(v=vs.85).aspx)
+							// To be support we'll have at least one processor we request (NV12 -> NV12) and let negitiation be done when topology is resolved
+							subType = MFVideoFormat_NV12;
+
+							CHECK_HR(hr = MFUtils::GetBestVideoProcessor(subType, MFVideoFormat_NV12, &pVideoProcessor));
+							// CHECK_HR(hr = pVideoProcessor->SetInputType(0, pMediaType, 0)); // negotiate
+							CHECK_HR(hr = pTransform->GetInputCurrentType(0, &pTransformInputType));
+							CHECK_HR(hr = pVideoProcessor->SetOutputType(0, pTransformInputType, 0));
+							CHECK_HR(hr = AddTransformNode(pTopology, pVideoProcessor, 0, &pNodeVideoProcessor));
+							CHECK_HR(hr = pNodeVideoProcessor->SetTopoNodeID(MFUtils::g_ullTopoIdVideoProcessor));
+						}
+				}
 				
 				if(pNodeTee)
 				{	
 					// Connect(Source -> Tee)
 					CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeTee, 0));
-					// Connect(Tee -> Transform)
-					CHECK_HR(hr = pNodeTee->ConnectOutput(0, pNodeTransform, 0));
+					if(pNodeVideoProcessor)
+					{
+						// Connect(Tee -> Processor)
+						CHECK_HR(hr = pNodeTee->ConnectOutput(0, pNodeVideoProcessor, 0));
+						// Connect(Processor -> Transform)
+						CHECK_HR(hr = pNodeVideoProcessor->ConnectOutput(0, pNodeTransform, 0));
+					}
+					else
+					{
+						// Connect(Tee -> Transform)
+						CHECK_HR(hr = pNodeTee->ConnectOutput(0, pNodeTransform, 0));
+					}
 					// Connect(Transform -> SinkMain)
 					CHECK_HR(hr = pNodeTransform->ConnectOutput(0, pNodeSinkMain, 0));
 					// Connect(Tee -> SinkPreview)
@@ -598,8 +861,18 @@ HRESULT MFUtils::CreateTopology(
 				}
 				else
 				{
-					// Connect (Source -> Transform)
-					CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeTransform, 0));
+					if(pNodeVideoProcessor)
+					{
+						// Connect (Source -> Processor)
+						CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeVideoProcessor, 0));
+						// Connect (Processor -> Transform)
+						CHECK_HR(hr = pNodeVideoProcessor->ConnectOutput(0, pNodeTransform, 0));
+					}
+					else
+					{
+						// Connect (Source -> Transform)
+						CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeTransform, 0));
+					}
 					// Connect(Transform -> SinkMain)
 					CHECK_HR(hr = pNodeTransform->ConnectOutput(0, pNodeSinkMain, 0));
 				}
@@ -646,6 +919,7 @@ bail:
 	SafeRelease(&pSD);
 	SafeRelease(&pHandler);
 	SafeRelease(&pMediaType);
+	SafeRelease(&pTransformInputType);
 
 	if(!bSourceFound)
 	{

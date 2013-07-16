@@ -50,7 +50,7 @@ typedef enum MFCodecMediaType_e
 }
 MFCodecMediaType_t;
 
-class MFCodec
+class MFCodec : IUnknown
 {
 protected:
 	MFCodec(MFCodecId_t eId, MFCodecType_t eType);
@@ -63,6 +63,17 @@ public:
 	virtual bool IsReady();
 	virtual HRESULT Process(const void* pcInputPtr, UINT32 nInputSize, IMFSample **ppSampleOut);
 	static enum tmedia_chroma_e GetUncompressedChroma();
+	inline IMFTransform* GetMFT(){ return m_pMFT; }
+	inline MFCodecId_t GetId() { return m_eId; }
+	inline MFCodecType_t GetType() { return m_eType; }
+
+	// IUnknown
+    STDMETHODIMP QueryInterface(REFIID iid, void** ppv);
+    STDMETHODIMP_(ULONG) AddRef();
+    STDMETHODIMP_(ULONG) Release();
+
+private:
+	long				m_nRefCount;
 
 protected:
 	MFCodecId_t			m_eId;			// Codec Id
@@ -98,7 +109,7 @@ public:
 			UINT32 nHeight,
 			UINT32 nOutputBitRateInBps = 0 // Only for encoders
 		);
-	virtual HRESULT SetGOPSize(UINT32 nSize);
+	virtual HRESULT SetGOPSize(UINT32 nFramesCount);
 	virtual HRESULT SetBitRate(UINT32 nBitRateInBps);
 	virtual HRESULT RequestKeyFrame();
 

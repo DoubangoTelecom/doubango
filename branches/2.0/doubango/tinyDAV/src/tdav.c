@@ -376,7 +376,7 @@ int tdav_codec_set_priority(tdav_codec_id_t codec_id, int priority)
 			__codec_plugins_all[priority] = codec_decl_2;
 
 			// change priority if already registered and supported
-			if(_tdav_codec_is_supported(codec_decl_2->codec_id, codec_decl_2) && tmedia_codec_plugin_is_registered(codec_decl_2)){
+			if(_tdav_codec_is_supported((tdav_codec_id_t)codec_decl_2->codec_id, codec_decl_2) && tmedia_codec_plugin_is_registered(codec_decl_2)){
 				return tmedia_codec_plugin_register_2(codec_decl_2, priority);
 			}
 			return 0;
@@ -387,7 +387,7 @@ int tdav_codec_set_priority(tdav_codec_id_t codec_id, int priority)
 	return -2;
 }
 
-void tdav_set_codecs(tdav_codec_id_t codecs)
+int tdav_set_codecs(tdav_codec_id_t codecs)
 {
 	tsk_size_t i, prio;
 
@@ -396,11 +396,12 @@ void tdav_set_codecs(tdav_codec_id_t codecs)
 	// register selected codecs
 	for(i=0,prio=0; i<__codec_plugins_all_count && __codec_plugins_all[i]; ++i){
 		if((codecs & __codec_plugins_all[i]->codec_id)){
-			if(_tdav_codec_is_supported(__codec_plugins_all[i]->codec_id, __codec_plugins_all[i])){
+			if(_tdav_codec_is_supported((tdav_codec_id_t)__codec_plugins_all[i]->codec_id, __codec_plugins_all[i])){
 				tmedia_codec_plugin_register_2(__codec_plugins_all[i], prio++);
 			}
 		}
 	}
+	return 0;
 }
 
 static inline int _tdav_codec_plugins_collect()

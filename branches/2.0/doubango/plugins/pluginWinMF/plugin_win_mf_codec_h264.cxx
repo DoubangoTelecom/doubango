@@ -48,6 +48,7 @@ typedef struct mf_codec_h264_s
 		int neg_fps;
 		int max_bitrate_bps;
 		int32_t max_bw_kpbs;
+		tsk_bool_t passthrough; // whether to bypass encoding
 	} encoder;
 	
 	// decoder
@@ -57,6 +58,7 @@ typedef struct mf_codec_h264_s
 		tsk_size_t accumulator_pos;
 		tsk_size_t accumulator_size;
 		uint16_t last_seq;
+		tsk_bool_t passthrough; // whether to bypass decoding
 	} decoder;
 }
 mf_codec_h264_t;
@@ -99,6 +101,16 @@ static int mf_codec_h264_set(tmedia_codec_t* self, const tmedia_param_t* param)
 						break;
 					}
 			}
+			return 0;
+		}
+		else if(tsk_striequals(param->key, "bypass-encoding")){
+			h264->encoder.passthrough = *((int32_t*)param->value) ? tsk_true : tsk_false;
+			TSK_DEBUG_INFO("[H.264] bypass-encoding = %d", h264->encoder.passthrough);
+			return 0;
+		}
+		else if(tsk_striequals(param->key, "bypass-decoding")){
+			h264->decoder.passthrough = *((int32_t*)param->value) ? tsk_true : tsk_false;
+			TSK_DEBUG_INFO("[H.264] bypass-decoding = %d", h264->decoder.passthrough);
 			return 0;
 		}
 		else if(tsk_striequals(param->key, "rotation")){
@@ -182,6 +194,11 @@ static tsk_size_t mf_codec_h264_encode(tmedia_codec_t* self, const void* in_data
 
 	if(!self->opened || !h264->encoder.pInst || !h264->encoder.pInst->IsReady()){
 		TSK_DEBUG_ERROR("Encoder not opened or not ready");
+		return 0;
+	}
+
+	if(h264->encoder.passthrough) {
+		tdav_codec_h264_rtp_encap(TDAV_CODEC_H264_COMMON(h264), (const uint8_t*)in_data, in_size);
 		return 0;
 	}
 
@@ -340,44 +357,59 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 		TSK_DEBUG_INFO("Receiving SPS or PPS ...to be tied to an IDR");
 	}
 	else if(rtp_hdr->marker){
-		/* decode the picture */
-		CHECK_HR(hr = h264->decoder.pInst->Process(h264->decoder.accumulator, h264->decoder.accumulator_pos, &pSampleOut));
-		if(pSampleOut) {
-			CHECK_HR(hr = pSampleOut->GetBufferByIndex(0, &pBufferOut));
-
-			BYTE* pBufferPtr = NULL;
-			DWORD dwDataLength = 0;
-			CHECK_HR(hr = pBufferOut->GetCurrentLength(&dwDataLength));
-			if(dwDataLength > 0){
-				CHECK_HR(hr = pBufferOut->Lock(&pBufferPtr, NULL, NULL));
-				{					
-					/* IDR ? */
-					if(((pay_ptr[0] & 0x1F) == 0x05) && TMEDIA_CODEC_VIDEO(self)->in.callback){
-						TSK_DEBUG_INFO("Decoded H.264 IDR");
-						TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_idr;
-						TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
-						TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
-					}
-					/* fill out */
-					if(*out_max_size < dwDataLength){
-						if((*out_data = tsk_realloc(*out_data, dwDataLength))){
-							*out_max_size = dwDataLength;
-						}
-						else{
-							*out_max_size = 0;
-							return 0;
-						}
-					}
-					retsize = (tsk_size_t)dwDataLength;
-					//FIXME:
-					//TMEDIA_CODEC_VIDEO(h264)->in.width = h264->decoder.context->width;
-					//TMEDIA_CODEC_VIDEO(h264)->in.height = h264->decoder.context->height;
-					memcpy(*out_data, pBufferPtr, retsize);
+		if(h264->decoder.passthrough){
+			if(*out_max_size < h264->decoder.accumulator_pos){
+				if((*out_data = tsk_realloc(*out_data, h264->decoder.accumulator_pos))){
+					*out_max_size = h264->decoder.accumulator_pos;
 				}
-				CHECK_HR(hr = pBufferOut->Unlock());
+				else{
+					*out_max_size = 0;
+					return 0;
+				}
 			}
+			memcpy(*out_data, h264->decoder.accumulator, h264->decoder.accumulator_pos);
+			retsize = h264->decoder.accumulator_pos;
 		}
-	}
+		else { // !h264->decoder.passthrough
+			/* decode the picture */
+			CHECK_HR(hr = h264->decoder.pInst->Process(h264->decoder.accumulator, h264->decoder.accumulator_pos, &pSampleOut));
+			if(pSampleOut) {
+				CHECK_HR(hr = pSampleOut->GetBufferByIndex(0, &pBufferOut));
+
+				BYTE* pBufferPtr = NULL;
+				DWORD dwDataLength = 0;
+				CHECK_HR(hr = pBufferOut->GetCurrentLength(&dwDataLength));
+				if(dwDataLength > 0){
+					CHECK_HR(hr = pBufferOut->Lock(&pBufferPtr, NULL, NULL));
+					{					
+						/* IDR ? */
+						if(((pay_ptr[0] & 0x1F) == 0x05) && TMEDIA_CODEC_VIDEO(self)->in.callback){
+							TSK_DEBUG_INFO("Decoded H.264 IDR");
+							TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_idr;
+							TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
+							TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
+						}
+						/* fill out */
+						if(*out_max_size < dwDataLength){
+							if((*out_data = tsk_realloc(*out_data, dwDataLength))){
+								*out_max_size = dwDataLength;
+							}
+							else{
+								*out_max_size = 0;
+								return 0;
+							}
+						}
+						retsize = (tsk_size_t)dwDataLength;
+						//FIXME:
+						//TMEDIA_CODEC_VIDEO(h264)->in.width = h264->decoder.context->width;
+						//TMEDIA_CODEC_VIDEO(h264)->in.height = h264->decoder.context->height;
+						memcpy(*out_data, pBufferPtr, retsize);
+					}
+					CHECK_HR(hr = pBufferOut->Unlock());
+				}
+			}
+		}// else(!h264->decoder.passthrough)
+	} // else if(rtp_hdr->marker)
 
 bail:
 	if(rtp_hdr->marker) {
@@ -638,10 +670,7 @@ bail:
 int mf_codec_h264_close_encoder(mf_codec_h264_t* self)
 {
 	if(self){
-		if(self->encoder.pInst){
-			delete self->encoder.pInst;
-			self->encoder.pInst = NULL;
-		}
+		SafeRelease(&self->encoder.pInst);
 		if(self->encoder.buffer){
 			TSK_FREE(self->encoder.buffer);
 		}
@@ -689,10 +718,7 @@ bail:
 int mf_codec_h264_close_decoder(mf_codec_h264_t* self)
 {
 	if(self){
-		if(self->decoder.pInst){
-			delete self->decoder.pInst;
-			self->decoder.pInst = NULL;
-		}
+		SafeRelease(&self->decoder.pInst);
 		TSK_FREE(self->decoder.accumulator);
 		self->decoder.accumulator_pos = 0;
 	}
@@ -727,6 +753,9 @@ int mf_codec_h264_init(mf_codec_h264_t* self, profile_idc_t profile)
 	common->level = level;
 	TMEDIA_CODEC_VIDEO(self)->in.max_mbps = TMEDIA_CODEC_VIDEO(self)->out.max_mbps = H264_MAX_MBPS*1000;
 	TMEDIA_CODEC_VIDEO(self)->in.max_br = TMEDIA_CODEC_VIDEO(self)->out.max_br = H264_MAX_BR*1000;
+
+	TMEDIA_CODEC_VIDEO(self)->in.chroma = tmedia_chroma_nv12;
+	TMEDIA_CODEC_VIDEO(self)->out.chroma = tmedia_chroma_nv12;
 
 	self->encoder.quality = 1;
 	
