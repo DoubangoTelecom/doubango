@@ -99,7 +99,7 @@ static int plugin_win_mf_producer_video_set(tmedia_producer_t *self, const tmedi
 				{
 					if(pSelf->pEncoder)
 					{
-						hr = pSelf->pEncoder->RequestKeyFrame();
+						CHECK_HR(hr = pSelf->pEncoder->RequestKeyFrame());
 					}
 					break;
 				}
@@ -109,7 +109,7 @@ static int plugin_win_mf_producer_video_set(tmedia_producer_t *self, const tmedi
 					TSK_DEBUG_INFO("New target bitrate = %d kbps", pSelf->bitrate_bps);
 					if(pSelf->pEncoder)
 					{
-						hr = pSelf->pEncoder->SetBitRate(pSelf->bitrate_bps);
+						CHECK_HR(hr = pSelf->pEncoder->SetBitRate(pSelf->bitrate_bps));
 					}
 					break;
 				}
@@ -119,12 +119,11 @@ static int plugin_win_mf_producer_video_set(tmedia_producer_t *self, const tmedi
 					TSK_DEBUG_INFO("New target bitrate = %d kbps", pSelf->bitrate_bps);
 					if(pSelf->pEncoder)
 					{
-						hr = pSelf->pEncoder->SetBitRate(pSelf->bitrate_bps);
+						CHECK_HR(hr = pSelf->pEncoder->SetBitRate(pSelf->bitrate_bps));
 					}
 					break;
 				}
 		}
-		return SUCCEEDED(hr) ? 0 : -2;
 	}
 	else if(param->value_type == tmedia_pvt_int64){
 		if(tsk_striequals(param->key, "local-hwnd")){
@@ -247,7 +246,7 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 		// If H.264 is negotiated for this session then, try to find hardware encoder
 		// If no HW encoder is found will fallback to SW implementation from x264
 #if PLUGIN_MF_PV_BUNDLE_CODEC
-		if((codec->id == tmedia_codec_id_h264_bp || codec->id == tmedia_codec_id_h264_mp)) {
+		if((codec->id == tmedia_codec_id_h264_bp || codec->id == tmedia_codec_id_h264_mp) && MFUtils::IsLowLatencyH264Supported()) {
 			// both Microsoft and Intel encoders support NV12 only as input
 			// static const BOOL kIsEncoder = TRUE;
 			// hr = MFUtils::GetBestCodec(kIsEncoder, MFMediaType_Video, MFVideoFormat_NV12, MFVideoFormat_H264, &pSelf->pEncoder);

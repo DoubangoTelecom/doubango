@@ -193,7 +193,7 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	CHECK_HR(hr = pSelf->pOutType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video));
 
 #if PLUGIN_MF_CV_BUNDLE_CODEC
-	if((codec->id == tmedia_codec_id_h264_bp || codec->id == tmedia_codec_id_h264_mp)) {
+	if((codec->id == tmedia_codec_id_h264_bp || codec->id == tmedia_codec_id_h264_mp) && MFUtils::IsLowLatencyH264Supported()) {
 		// both Microsoft and Intel encoders support NV12 only as input
 		// static const BOOL kIsEncoder = FALSE;
 		// hr = MFUtils::GetBestCodec(kIsEncoder, MFMediaType_Video, MFVideoFormat_H264, MFVideoFormat_NV12, &pSelf->pDecoder);

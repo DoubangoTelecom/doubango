@@ -24,7 +24,7 @@
 #include <assert.h>
 
 #if !defined(PLUGIN_MF_DISABLE_CODECS)
-#	define PLUGIN_MF_DISABLE_CODECS 0 // Must be "0". Testing: When set to "1", libx264 and FFmpeg will be used.
+#	define PLUGIN_MF_DISABLE_CODECS 1 // Must be "0" to use "Microsoft"/"Intel Quick Sync" MFT codecs. Testing: When set to "1", libx264 and FFmpeg will be used.
 #endif
 
 BOOL MFUtils::g_bStarted = FALSE;
