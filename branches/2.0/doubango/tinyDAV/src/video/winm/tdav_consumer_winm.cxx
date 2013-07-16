@@ -63,8 +63,13 @@ int tdav_consumer_winm_prepare(tmedia_consumer_t* self, const tmedia_codec_t* co
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	
-	TMEDIA_CONSUMER(consumer)->decoder.codec_id = (tmedia_codec_id_t)(tmedia_codec_id_h264_bp | tmedia_codec_id_h264_mp);
+
+	if(codec->id == tmedia_codec_id_h264_bp || codec->id == tmedia_codec_id_h264_mp) {
+		TMEDIA_CONSUMER(consumer)->decoder.codec_id = codec->id;
+	}
+	else {
+		TMEDIA_CONSUMER(consumer)->decoder.codec_id = tmedia_codec_id_none;
+	}
 
 	TMEDIA_CONSUMER(consumer)->video.fps = TMEDIA_CODEC_VIDEO(codec)->in.fps;
 	TMEDIA_CONSUMER(consumer)->video.in.width = TMEDIA_CODEC_VIDEO(codec)->in.width;
