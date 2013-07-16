@@ -296,7 +296,9 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 		CHECK_HR(hr = pSelf->pGrabberInputType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video));
 		CHECK_HR(hr = pSelf->pGrabberInputType->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive));
 		CHECK_HR(hr = MFSetAttributeSize(pSelf->pGrabberInputType, MF_MT_FRAME_SIZE, TMEDIA_PRODUCER(pSelf)->video.width, TMEDIA_PRODUCER(pSelf)->video.height));
-		CHECK_HR(hr = MFSetAttributeRatio(pSelf->pGrabberInputType, MF_MT_FRAME_RATE, TMEDIA_PRODUCER(pSelf)->video.fps, 1));
+		if(pSelf->pEncoder) { // FIXME: Fails on Boghe and not on Gotham when no encoder.
+			CHECK_HR(hr = MFSetAttributeRatio(pSelf->pGrabberInputType, MF_MT_FRAME_RATE, TMEDIA_PRODUCER(pSelf)->video.fps, 1));
+		}
 		CHECK_HR(hr = MFSetAttributeRatio(pSelf->pGrabberInputType, MF_MT_PIXEL_ASPECT_RATIO, 1, 1));
 		CHECK_HR(hr = pSelf->pGrabberInputType->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, pSelf->pEncoder ? FALSE : TRUE));
 		CHECK_HR(hr = pSelf->pGrabberInputType->SetUINT32(MF_MT_FIXED_SIZE_SAMPLES, pSelf->pEncoder ? FALSE : TRUE));
