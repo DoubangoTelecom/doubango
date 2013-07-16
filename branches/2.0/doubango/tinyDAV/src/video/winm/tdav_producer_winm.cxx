@@ -177,7 +177,12 @@ static int tdav_producer_winm_prepare(tmedia_producer_t* self, const tmedia_code
 		return -1;
 	}
 	
-	TMEDIA_PRODUCER(producer)->encoder.codec_id = (tmedia_codec_id_t)(tmedia_codec_id_h264_bp | tmedia_codec_id_h264_mp);
+	if(codec->id == tmedia_codec_id_h264_bp || codec->id == tmedia_codec_id_h264_mp) {
+		TMEDIA_PRODUCER(producer)->encoder.codec_id = codec->id;
+	}
+	else {
+		TMEDIA_PRODUCER(producer)->encoder.codec_id = tmedia_codec_id_none;
+	}
 	TMEDIA_PRODUCER(producer)->video.fps = TMEDIA_CODEC_VIDEO(codec)->out.fps;
 	TMEDIA_PRODUCER(producer)->video.width = TMEDIA_CODEC_VIDEO(codec)->out.width;
 	TMEDIA_PRODUCER(producer)->video.height = TMEDIA_CODEC_VIDEO(codec)->out.height;
