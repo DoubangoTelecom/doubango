@@ -42,6 +42,7 @@ TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h264_base_plugin_def
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h264_main_plugin_def_t;
 
 tsk_bool_t tdav_codec_ffmpeg_h264_is_supported();
+tsk_bool_t tdav_codec_passthrough_h264_is_supported();
 
 static inline tsk_bool_t tdav_codec_h264_is_ffmpeg_plugin(const tmedia_codec_plugin_def_t *plugin)
 {

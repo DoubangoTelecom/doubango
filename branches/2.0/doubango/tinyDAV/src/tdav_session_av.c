@@ -499,6 +499,9 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 
 	if(self->rtp_manager){
 		int ret;
+		tmedia_param_t* media_param = tsk_null;
+		static const int32_t __ByPassIsYes = 1;
+		static const int32_t __ByPassIsNo = 0;
 		/* RTP/RTCP manager: use latest information. */
 
 		// set callbacks
@@ -538,8 +541,40 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 
 		// because of AudioUnit under iOS => prepare both consumer and producer then start() at the same time
 		/* prepare consumer and producer */
-		if(self->producer) ret = tmedia_producer_prepare(self->producer, best_codec);
-		if(self->consumer) ret = tmedia_consumer_prepare(self->consumer, best_codec);
+		// Producer could output encoded frames:
+		//	- On WP8 with built-in H.264 encoder
+		//	- When Intel Quick Sync is used for encoding and added on the same Topology as the producer (camera MFMediaSource)
+		if(self->producer) {
+			if((ret = tmedia_producer_prepare(self->producer, best_codec)) == 0) {
+				media_param = tmedia_param_create(tmedia_pat_set,
+											best_codec->type,
+											tmedia_ppt_codec,
+											tmedia_pvt_int32,
+											"bypass-encoding",
+											(void*)(self->producer->encoder.codec_id == best_codec->id ? &__ByPassIsYes : &__ByPassIsNo));
+				if(media_param) {
+					tmedia_codec_set(TMEDIA_CODEC(best_codec), media_param);
+					TSK_OBJECT_SAFE_FREE(media_param);
+				}
+			}
+		}
+		// Consumer could accept encoded frames as input:
+		//	- On WP8 with built-in H.264 decoder
+		//	- When IMFTransform decoder is used for decoding and added on the same Topology as the consumer (EVR)
+		if(self->consumer) {
+			if((ret = tmedia_consumer_prepare(self->consumer, best_codec)== 0)) {
+				media_param = tmedia_param_create(tmedia_pat_set,
+											best_codec->type,
+											tmedia_ppt_codec,
+											tmedia_pvt_int32,
+											"bypass-decoding",
+											(void*)(self->consumer->decoder.codec_id == best_codec->id ? &__ByPassIsYes : &__ByPassIsNo));
+				if(media_param) {
+					tmedia_codec_set(TMEDIA_CODEC(best_codec), media_param);
+					TSK_OBJECT_SAFE_FREE(media_param);
+				}
+			}
+		}
 		
 #if HAVE_SRTP
 		self->use_srtp = trtp_manager_is_srtp_activated(self->rtp_manager);

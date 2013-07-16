@@ -68,6 +68,7 @@ typedef struct tdav_codec_h264_s
 		int32_t quality; // [1-31]
 		int rotation;
 		int32_t max_bw_kpbs;
+		tsk_bool_t passthrough; // whether to bypass encoding
 	} encoder;
 	
 	// decoder
@@ -81,6 +82,7 @@ typedef struct tdav_codec_h264_s
 		tsk_size_t accumulator_pos;
 		tsk_size_t accumulator_size;
 		uint16_t last_seq;
+		tsk_bool_t passthrough; // whether to bypass decoding
 	} decoder;
 }
 tdav_codec_h264_t;
@@ -131,8 +133,18 @@ static int tdav_codec_h264_set(tmedia_codec_t* self, const tmedia_param_t* param
 			}
 			return 0;
 		}
+		else if(tsk_striequals(param->key, "bypass-encoding")){
+			h264->encoder.passthrough = *((int32_t*)param->value) ? tsk_true : tsk_false;
+			TSK_DEBUG_INFO("[H.264] bypass-encoding = %d", h264->encoder.passthrough);
+			return 0;
+		}
+		else if(tsk_striequals(param->key, "bypass-decoding")){
+			h264->decoder.passthrough = *((int32_t*)param->value) ? tsk_true : tsk_false;
+			TSK_DEBUG_INFO("[H.264] bypass-decoding = %d", h264->decoder.passthrough);
+			return 0;
+		}
 		else if(tsk_striequals(param->key, "rotation")){
-			int rotation = *((int32_t*)param->value);
+			int32_t rotation = *((int32_t*)param->value);
 			if(h264->encoder.rotation != rotation){
 				if(self->opened){
 					int ret;
@@ -231,57 +243,55 @@ static tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_da
 		return 0;
 	}
 
-#if HAVE_FFMPEG
+	if(h264->encoder.passthrough) {
+		tdav_codec_h264_rtp_encap(TDAV_CODEC_H264_COMMON(h264), (const uint8_t*)in_data, in_size);
+	}
+	else { // !h264->encoder.passthrough
+#if HAVE_FFMPEG		// wrap yuv420 buffer
+		size = avpicture_fill((AVPicture *)h264->encoder.picture, (uint8_t*)in_data, PIX_FMT_YUV420P, h264->encoder.context->width, h264->encoder.context->height);
+		if(size != in_size){
+			/* guard */
+			TSK_DEBUG_ERROR("Invalid size");
+			return 0;
+		}
+
+		// send IDR for:
+		//	- the first frame
+		//  - remote peer requested an IDR
+		//	- every second within the first 4seconds
+		send_idr = (
+			h264->encoder.frame_count++ == 0
+			|| h264 ->encoder.force_idr
+			|| ( (h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->out.fps * 4) && ((h264->encoder.frame_count % TMEDIA_CODEC_VIDEO(h264)->out.fps)==0) )
+		   );
+
+		// send SPS and PPS headers for:
+		//  - IDR frames (not required but it's the easiest way to deal with pkt loss)
+		//  - every 5 seconds after the first 4seconds
+		send_hdr = (
+			send_idr
+			|| ( (h264->encoder.frame_count % (TMEDIA_CODEC_VIDEO(h264)->out.fps * 5))==0 )
+			);
+		if(send_hdr){
+			tdav_codec_h264_rtp_encap(TDAV_CODEC_H264_COMMON(h264), h264->encoder.context->extradata, (tsk_size_t)h264->encoder.context->extradata_size);
+		}
 	
-	// wrap yuv420 buffer
-	size = avpicture_fill((AVPicture *)h264->encoder.picture, (uint8_t*)in_data, PIX_FMT_YUV420P, h264->encoder.context->width, h264->encoder.context->height);
-	if(size != in_size){
-		/* guard */
-		TSK_DEBUG_ERROR("Invalid size");
-		return 0;
-	}
-
-	// send IDR for:
-	//	- the first frame
-	//  - remote peer requested an IDR
-	//	- every second within the first 4seconds
-	send_idr = (
-		h264->encoder.frame_count++ == 0
-		|| h264 ->encoder.force_idr
-		|| ( (h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->out.fps * 4) && ((h264->encoder.frame_count % TMEDIA_CODEC_VIDEO(h264)->out.fps)==0) )
-	   );
-
-	// send SPS and PPS headers for:
-	//  - IDR frames (not required but it's the easiest way to deal with pkt loss)
-	//  - every 5 seconds after the first 4seconds
-	send_hdr = (
-		send_idr
-		|| ( (h264->encoder.frame_count % (TMEDIA_CODEC_VIDEO(h264)->out.fps * 5))==0 )
-		);
-	if(send_hdr){
-		tdav_codec_h264_rtp_encap(TDAV_CODEC_H264_COMMON(h264), h264->encoder.context->extradata, (tsk_size_t)h264->encoder.context->extradata_size);
-	}
-	
-	// Encode data
-#if LIBAVCODEC_VERSION_MAJOR <= 53
-	h264->encoder.picture->pict_type = send_idr ? FF_I_TYPE : 0;
-#else
-    h264->encoder.picture->pict_type = send_idr ? AV_PICTURE_TYPE_I : AV_PICTURE_TYPE_NONE;
+		// Encode data
+	#if LIBAVCODEC_VERSION_MAJOR <= 53
+		h264->encoder.picture->pict_type = send_idr ? FF_I_TYPE : 0;
+	#else
+		h264->encoder.picture->pict_type = send_idr ? AV_PICTURE_TYPE_I : AV_PICTURE_TYPE_NONE;
+	#endif
+		h264->encoder.picture->pts = AV_NOPTS_VALUE;
+		h264->encoder.picture->quality = h264->encoder.context->global_quality;
+		// h264->encoder.picture->pts = h264->encoder.frame_count; MUST NOT
+		ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);	
+		if(ret > 0){
+			tdav_codec_h264_rtp_encap(TDAV_CODEC_H264_COMMON(h264), h264->encoder.buffer, (tsk_size_t)ret);
+		}
+		h264 ->encoder.force_idr = tsk_false;
 #endif
-	h264->encoder.picture->pts = AV_NOPTS_VALUE;
-	h264->encoder.picture->quality = h264->encoder.context->global_quality;
-	// h264->encoder.picture->pts = h264->encoder.frame_count; MUST NOT
-	ret = avcodec_encode_video(h264->encoder.context, h264->encoder.buffer, size, h264->encoder.picture);	
-	if(ret > 0){
-		tdav_codec_h264_rtp_encap(TDAV_CODEC_H264_COMMON(h264), h264->encoder.buffer, (tsk_size_t)ret);
-	}
-	h264 ->encoder.force_idr = tsk_false;
-
-#elif HAVE_H264_PASSTHROUGH
-
-	tdav_codec_h264_rtp_encap(TDAV_CODEC_H264_COMMON(h264), (const uint8_t*)in_data, in_size);
-
-#endif
+	}// else(!h264->encoder.passthrough)
 
 	return 0;
 }
@@ -387,66 +397,70 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 		TSK_DEBUG_INFO("Receiving SPS or PPS ...to be tied to an IDR");
 	}
 	else if(rtp_hdr->marker){
-#if HAVE_FFMPEG
-		AVPacket packet;
-
-		/* decode the picture */
-		av_init_packet(&packet);
-		packet.dts = packet.pts = AV_NOPTS_VALUE;
-		packet.size = h264->decoder.accumulator_pos;
-		packet.data = h264->decoder.accumulator;
-		ret = avcodec_decode_video2(h264->decoder.context, h264->decoder.picture, &got_picture_ptr, &packet);
-
-		if(ret <0){
-			TSK_DEBUG_INFO("Failed to decode the buffer with error code =%d, size=%u, append=%s", ret, h264->decoder.accumulator_pos, append_scp ? "yes" : "no");
-			if(TMEDIA_CODEC_VIDEO(self)->in.callback){
-				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
-				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
-				TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
-			}
-		}
-		else if(got_picture_ptr){
-			tsk_size_t xsize;
-			
-			/* IDR ? */
-			if(((pay_ptr[0] & 0x1F) == 0x05) && TMEDIA_CODEC_VIDEO(self)->in.callback){
-				TSK_DEBUG_INFO("Decoded H.264 IDR");
-				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_idr;
-				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
-				TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
-			}
-			/* fill out */
-			xsize = avpicture_get_size(h264->decoder.context->pix_fmt, h264->decoder.context->width, h264->decoder.context->height);
-			if(*out_max_size<xsize){
-				if((*out_data = tsk_realloc(*out_data, (xsize + FF_INPUT_BUFFER_PADDING_SIZE)))){
-					*out_max_size = xsize;
+		if(h264->decoder.passthrough){
+			if(*out_max_size < h264->decoder.accumulator_pos){
+				if((*out_data = tsk_realloc(*out_data, h264->decoder.accumulator_pos))){
+					*out_max_size = h264->decoder.accumulator_pos;
 				}
 				else{
 					*out_max_size = 0;
 					return 0;
 				}
 			}
-			retsize = xsize;
-			TMEDIA_CODEC_VIDEO(h264)->in.width = h264->decoder.context->width;
-			TMEDIA_CODEC_VIDEO(h264)->in.height = h264->decoder.context->height;
-			avpicture_layout((AVPicture *)h264->decoder.picture, h264->decoder.context->pix_fmt, h264->decoder.context->width, h264->decoder.context->height,
-					*out_data, retsize);
+			memcpy(*out_data, h264->decoder.accumulator, h264->decoder.accumulator_pos);
+			retsize = h264->decoder.accumulator_pos;
 		}
-#elif HAVE_H264_PASSTHROUGH
-		if(*out_max_size < h264->decoder.accumulator_pos){
-			if((*out_data = tsk_realloc(*out_data, h264->decoder.accumulator_pos))){
-				*out_max_size = h264->decoder.accumulator_pos;
+		else { // !h264->decoder.passthrough
+#if HAVE_FFMPEG
+			AVPacket packet;
+
+			/* decode the picture */
+			av_init_packet(&packet);
+			packet.dts = packet.pts = AV_NOPTS_VALUE;
+			packet.size = h264->decoder.accumulator_pos;
+			packet.data = h264->decoder.accumulator;
+			ret = avcodec_decode_video2(h264->decoder.context, h264->decoder.picture, &got_picture_ptr, &packet);
+
+			if(ret <0){
+				TSK_DEBUG_INFO("Failed to decode the buffer with error code =%d, size=%u, append=%s", ret, h264->decoder.accumulator_pos, append_scp ? "yes" : "no");
+				if(TMEDIA_CODEC_VIDEO(self)->in.callback){
+					TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
+					TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
+					TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
+				}
 			}
-			else{
-				*out_max_size = 0;
-				return 0;
+			else if(got_picture_ptr){
+				tsk_size_t xsize;
+			
+				/* IDR ? */
+				if(((pay_ptr[0] & 0x1F) == 0x05) && TMEDIA_CODEC_VIDEO(self)->in.callback){
+					TSK_DEBUG_INFO("Decoded H.264 IDR");
+					TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_idr;
+					TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
+					TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
+				}
+				/* fill out */
+				xsize = avpicture_get_size(h264->decoder.context->pix_fmt, h264->decoder.context->width, h264->decoder.context->height);
+				if(*out_max_size<xsize){
+					if((*out_data = tsk_realloc(*out_data, (xsize + FF_INPUT_BUFFER_PADDING_SIZE)))){
+						*out_max_size = xsize;
+					}
+					else{
+						*out_max_size = 0;
+						return 0;
+					}
+				}
+				retsize = xsize;
+				TMEDIA_CODEC_VIDEO(h264)->in.width = h264->decoder.context->width;
+				TMEDIA_CODEC_VIDEO(h264)->in.height = h264->decoder.context->height;
+				avpicture_layout((AVPicture *)h264->decoder.picture, h264->decoder.context->pix_fmt, h264->decoder.context->width, h264->decoder.context->height,
+						*out_data, retsize);
 			}
-		}
-		memcpy(*out_data, h264->decoder.accumulator, h264->decoder.accumulator_pos);
-		retsize = h264->decoder.accumulator_pos;
-#endif
+#endif /* HAVE_FFMPEG */
+		} // else(h264->decoder.passthrough)
+
 		h264->decoder.accumulator_pos = 0;
-	}
+	} // else if(rtp_hdr->marker)
 
 	return retsize;
 }
@@ -495,7 +509,7 @@ static tsk_object_t* tdav_codec_h264_base_dtor(tsk_object_t * self)
 	tdav_codec_h264_t *h264 = (tdav_codec_h264_t*)self;
 	if(h264){
 		/* deinit base */
-		tdav_codec_h264_common_deinit(self);
+		tdav_codec_h264_common_deinit((tdav_codec_h264_common_t*)self);
 		/* deinit self */
 		tdav_codec_h264_deinit(h264);
 		
@@ -545,7 +559,7 @@ const tmedia_codec_plugin_def_t *tdav_codec_h264_base_plugin_def_t = &tdav_codec
 /* constructor */
 static tsk_object_t* tdav_codec_h264_main_ctor(tsk_object_t * self, va_list * app)
 {
-	tdav_codec_h264_t *h264 = self;
+	tdav_codec_h264_t *h264 = (tdav_codec_h264_t*)self;
 	if(h264){
 		/* init base: called by tmedia_codec_create() */
 		/* init self */
@@ -561,7 +575,7 @@ static tsk_object_t* tdav_codec_h264_main_dtor(tsk_object_t * self)
 	tdav_codec_h264_t *h264 = (tdav_codec_h264_t*)self;
 	if(h264){
 		/* deinit base */
-		tdav_codec_h264_common_deinit(self);
+		tdav_codec_h264_common_deinit((tdav_codec_h264_common_t*)self);
 		/* deinit self */
 		tdav_codec_h264_deinit(h264);
 		
@@ -826,10 +840,6 @@ int tdav_codec_h264_open_decoder(tdav_codec_h264_t* self)
 	self->decoder.context->flags2 |= CODEC_FLAG2_FAST;
 	self->decoder.context->width = TMEDIA_CODEC_VIDEO(self)->in.width;
 	self->decoder.context->height = TMEDIA_CODEC_VIDEO(self)->in.height;
-	
-#if TDAV_UNDER_WINDOWS
-//	self->decoder.context->dsp_mask = (FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE);
-#endif
 
 	// Picture (YUV 420)
 	if(!(self->decoder.picture = avcodec_alloc_frame())){
@@ -911,8 +921,11 @@ int tdav_codec_h264_init(tdav_codec_h264_t* self, profile_idc_t profile)
 		TSK_DEBUG_ERROR("Failed to find H.264 decoder");
 		ret = -3;
 	}
-#elif HAVE_H264_PASSTHROUGH
+#endif
+#if HAVE_H264_PASSTHROUGH
 	TMEDIA_CODEC(self)->passthrough = tsk_true;
+	self->decoder.passthrough = tsk_true;
+	self->encoder.passthrough = tsk_true;
 #endif
 
 	self->encoder.quality = 1;
@@ -942,6 +955,15 @@ tsk_bool_t tdav_codec_ffmpeg_h264_is_supported()
 {
 #if HAVE_FFMPEG
 	return (avcodec_find_encoder(CODEC_ID_H264) && avcodec_find_decoder(CODEC_ID_H264));
+#else
+	return tsk_false;
+#endif
+}
+
+tsk_bool_t tdav_codec_passthrough_h264_is_supported()
+{
+#if HAVE_H264_PASSTHROUGH
+	return tsk_true;
 #else
 	return tsk_false;
 #endif

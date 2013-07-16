@@ -160,7 +160,7 @@ int tdav_codec_h264_parse_profile(const char* profile_level_id, profile_idc_t *p
 
 int tdav_codec_h264_get_pay(const void* in_data, tsk_size_t in_size, const void** out_data, tsk_size_t *out_size, tsk_bool_t* append_scp)
 {
-	const uint8_t* pdata = in_data;
+	const uint8_t* pdata = (const uint8_t*)in_data;
 	uint8_t nal_type;
 	if(!in_data || !in_size || !out_data || !out_size){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -365,7 +365,7 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_common_s *self, const v
 			tsk_size_t packet_size = TSK_MIN(H264_RTP_PAYLOAD_SIZE, size);
 
 			if(self->rtp.size < (packet_size + H264_FUA_HEADER_SIZE)){
-				if(!(self->rtp.ptr = tsk_realloc(self->rtp.ptr, (packet_size + H264_FUA_HEADER_SIZE)))){
+				if(!(self->rtp.ptr = (uint8_t*)tsk_realloc(self->rtp.ptr, (packet_size + H264_FUA_HEADER_SIZE)))){
 					TSK_DEBUG_ERROR("Failed to allocate new buffer");
 					return;
 				}

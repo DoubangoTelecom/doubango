@@ -20,6 +20,7 @@
 #include "internals/mf_utils.h"
 #include "internals/mf_custom_src.h"
 #include "internals/mf_display_watcher.h"
+#include "internals/mf_codec.h"
 
 #include "tinymedia/tmedia_consumer.h"
 
@@ -66,7 +67,7 @@ typedef struct plugin_win_mf_consumer_video_s
 	UINT32 nNegHeight;
 	UINT32 nNegFps;
 
-	IMFTransform *pDecoder;
+	MFCodecVideo *pDecoder;
     IMFMediaSession *pSession;
     CMFSource *pSource;
     IMFActivate *pSinkActivate;
@@ -177,7 +178,7 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	else {
 		CHECK_HR(hr = E_NOTIMPL);
 	}
-
+	TMEDIA_CONSUMER(pSelf)->decoder.codec_id = tmedia_codec_id_none; // means accept RAW fames
 	
 	IMFMediaSink* pMediaSink = NULL;
 	IMFAttributes* pSessionAttributes = NULL;
@@ -194,16 +195,29 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 #if PLUGIN_MF_CV_BUNDLE_CODEC
 	if((codec->id == tmedia_codec_id_h264_bp || codec->id == tmedia_codec_id_h264_mp)) {
 		// both Microsoft and Intel encoders support NV12 only as input
-		static const bool kIsEncoder = false;
-		hr = MFUtils::GetBestCodec(kIsEncoder, MFMediaType_Video, MFVideoFormat_NV12, MFVideoFormat_H264, &pSelf->pDecoder);
+		// static const BOOL kIsEncoder = FALSE;
+		// hr = MFUtils::GetBestCodec(kIsEncoder, MFMediaType_Video, MFVideoFormat_H264, MFVideoFormat_NV12, &pSelf->pDecoder);
+		pSelf->pDecoder = (codec->id == tmedia_codec_id_h264_bp) ? MFCodecVideoH264::CreateCodecH264Base(MFCodecType_Decoder) : MFCodecVideoH264::CreateCodecH264Main(MFCodecType_Decoder);
+		if(pSelf->pDecoder)
+		{
+			hr = pSelf->pDecoder->Initialize(
+				pSelf->nNegFps,
+				pSelf->nNegWidth,
+				pSelf->nNegHeight);
+			
+			if(FAILED(hr))
+			{
+				SafeRelease(&pSelf->pDecoder);
+				hr = S_OK;
+			}
+		}
 		if(SUCCEEDED(hr) && pSelf->pDecoder) {
-			TMEDIA_CONSUMER(pSelf)->decoder.codec_id = codec->id;
+			TMEDIA_CONSUMER(pSelf)->decoder.codec_id = codec->id; // means accept ENCODED fames
 			CHECK_HR(hr = pSelf->pOutType->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_H264));
 		}
 		else {
 			SafeRelease(&pSelf->pDecoder);
 			TSK_DEBUG_WARN("Failed to find H.264 HW encoder...fallback to SW implementation");
-			TMEDIA_PRODUCER(pSelf)->decoder.codec_id = tmedia_codec_id_none; // means RAW
 		}
 	}
 #endif
@@ -220,9 +234,9 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	CHECK_HR(hr = CMFSource::CreateInstanceEx(IID_IMFMediaSource, (void**)&pSelf->pSource, pSelf->pOutType));
 
 	// Apply Encoder output type (must be called before SetInputType)
-	if(pSelf->pDecoder) {
-		CHECK_HR(hr = pSelf->pDecoder->SetOutputType(0, pSelf->pOutType, 0/*MFT_SET_TYPE_TEST_ONLY*/));
-	}
+	//if(pSelf->pDecoder) {
+	//	CHECK_HR(hr = pSelf->pDecoder->SetOutputType(0, pSelf->pOutType, 0/*MFT_SET_TYPE_TEST_ONLY*/));
+	//}
 
 	// Create the Media Session.
 	CHECK_HR(hr = MFCreateMediaSession(pSessionAttributes, &pSelf->pSession));
@@ -231,7 +245,13 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	CHECK_HR(hr = MFCreateVideoRendererActivate(pSelf->hWindow, &pSelf->pSinkActivate));
 
 	// Create the topology.
-	CHECK_HR(hr = MFUtils::CreateTopology(pSelf->pSource, pSelf->pDecoder, pSelf->pSinkActivate, NULL/*Preview*/, MFMediaType_Video, &pSelf->pTopologyPartial));
+	CHECK_HR(hr = MFUtils::CreateTopology(
+		pSelf->pSource, 
+		pSelf->pDecoder ? pSelf->pDecoder->GetMFT() : NULL, 
+		pSelf->pSinkActivate, 
+		NULL/*Preview*/, 
+		MFMediaType_Video, 
+		&pSelf->pTopologyPartial));
 	// Resolve topology (adds video processors if needed).
 	CHECK_HR(hr = MFUtils::ResolveTopology(pSelf->pTopologyPartial, &pSelf->pTopologyFull));
 
@@ -338,7 +358,13 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 			IMFTopology* pTopologyPartial = NULL;
 			hr = MFCreateVideoRendererActivate(pSelf->hWindow, &pSinkActivate);
 			if(FAILED(hr)) goto end_of_swapping;
-			hr = MFUtils::CreateTopology(pSelf->pSource, pSelf->pDecoder, pSinkActivate, NULL/*Preview*/, MFMediaType_Video, &pTopologyPartial);
+			hr = MFUtils::CreateTopology(
+				pSelf->pSource, 
+				pSelf->pDecoder ? pSelf->pDecoder->GetMFT() : NULL, 
+				pSinkActivate, 
+				NULL/*Preview*/, 
+				MFMediaType_Video, 
+				&pTopologyPartial);
 			if(FAILED(hr)) goto end_of_swapping;
 
 			if(SUCCEEDED(hr)) {
@@ -501,6 +527,7 @@ static tsk_object_t* plugin_win_mf_consumer_video_ctor(tsk_object_t * self, va_l
 		/* init base */
 		tmedia_consumer_init(TMEDIA_CONSUMER(pSelf));
 		TMEDIA_CONSUMER(pSelf)->video.display.chroma = tmedia_chroma_yuv420p;
+		TMEDIA_CONSUMER(pSelf)->decoder.codec_id = tmedia_codec_id_none; // means accept RAW fames
 
 		/* init self */
 		// consumer->create_on_ui_thread = tsk_true;

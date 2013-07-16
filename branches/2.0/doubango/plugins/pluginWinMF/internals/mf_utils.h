@@ -38,7 +38,8 @@
 } 
 
 #undef CHECK_HR
-#define CHECK_HR(x) if (FAILED(x)) { TSK_DEBUG_ERROR("Operation Failed (%lld)", x); goto bail; }
+// In CHECK_HR(x) When (x) is a function it will be executed twice when used in "TSK_DEBUG_ERROR(x)" and "If(x)"
+#define CHECK_HR(x) { HRESULT __hr__ = (x); if (FAILED(__hr__)) { TSK_DEBUG_ERROR("Operation Failed (%lld)", __hr__); goto bail; } }
 
 typedef struct VideoSubTypeGuidPair
 {
@@ -54,6 +55,16 @@ public:
 static HRESULT Startup();
 static HRESULT Shutdown();
 
+static BOOL IsLowLatencyH264Supported();
+
+static HRESULT IsAsyncMFT(
+	IMFTransform *pMFT, // The MFT to check
+	BOOL* pbIsAsync // Whether the MFT is Async
+	);
+static HRESULT UnlockAsyncMFT(
+	IMFTransform *pMFT // The MFT to unlock
+	);
+
 static HRESULT CreatePCMAudioType(
     UINT32 sampleRate,        // Samples per second
     UINT32 bitsPerSample,     // Bits per sample
@@ -66,6 +77,11 @@ static HRESULT CreateVideoType(
 		UINT32 unWidth = 0, // Video width (0 to ignore)
 		UINT32 unHeight = 0 // Video height (0 to ignore)
 	);
+static HRESULT ConvertVideoTypeToUncompressedType(
+    IMFMediaType *pType,    // Pointer to an encoded video type.
+    const GUID& subtype,    // Uncompressed subtype (eg, RGB-32, AYUV)
+    IMFMediaType **ppType   // Receives a matching uncompressed video type.
+    );
 static HRESULT CreateMediaSample(
 	DWORD cbData, // Maximum buffer size
 	IMFSample **ppSample // Receives the sample
@@ -79,7 +95,7 @@ static HRESULT GetBestVideoProcessor(
 	IMFTransform **ppProcessor // Receives the video processor
 	);
 static HRESULT GetBestCodec(
-	bool bEncoder, // Whether we request an encoder or not (TRUE=encoder, FALSE=decoder)
+	BOOL bEncoder, // Whether we request an encoder or not (TRUE=encoder, FALSE=decoder)
 	const GUID& mediaType, // The MediaType
 	const GUID& inputFormat, // The input MediaFormat (e.g. MFVideoFormat_NV12)
 	const GUID& outputFormat, // The output MediaFormat (e.g. MFVideoFormat_H264)
@@ -182,11 +198,19 @@ static HRESULT GetTopoNodeObject(IMFTopologyNode *pNode, Q **ppObject)
 }
 
 private:
-	static bool g_bStarted;
+	static BOOL g_bStarted;
+
+	static DWORD g_dwMajorVersion;
+	static DWORD g_dwMinorVersion;
+
+	static BOOL g_bLowLatencyH264Checked;
+	static BOOL g_bLowLatencyH264Supported;
+
 public:
 	static const TOPOID g_ullTopoIdSinkMain;
 	static const TOPOID g_ullTopoIdSinkPreview;
 	static const TOPOID g_ullTopoIdSource;
+	static const TOPOID g_ullTopoIdVideoProcessor;
 };
 
 #endif /* PLUGIN_WIN_MF_UTILS_H */

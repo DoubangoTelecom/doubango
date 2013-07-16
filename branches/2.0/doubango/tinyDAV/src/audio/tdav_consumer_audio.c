@@ -216,7 +216,7 @@ void tdav_consumer_audio_set_denoise(tdav_consumer_audio_t* self, struct tmedia_
 {
 	tsk_safeobj_lock(self);
 	TSK_OBJECT_SAFE_FREE(self->denoise);
-	self->denoise = tsk_object_ref(denoise);
+	self->denoise = (struct tmedia_denoise_s*)tsk_object_ref(denoise);
 	tsk_safeobj_unlock(self);
 }
 
@@ -224,7 +224,7 @@ void tdav_consumer_audio_set_jitterbuffer(tdav_consumer_audio_t* self, struct tm
 {
 	tsk_safeobj_lock(self);
 	TSK_OBJECT_SAFE_FREE(self->jitterbuffer);
-	self->jitterbuffer = tsk_object_ref(jitterbuffer);
+	self->jitterbuffer = (struct tmedia_jitterbuffer_s*)tsk_object_ref(jitterbuffer);
 	tsk_safeobj_unlock(self);
 }
 
