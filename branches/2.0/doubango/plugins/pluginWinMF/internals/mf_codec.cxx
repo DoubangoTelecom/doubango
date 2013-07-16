@@ -373,7 +373,7 @@ HRESULT MFCodecVideo::Initialize(
 
 	CHECK_HR(hr = m_pOutputType->SetGUID(MF_MT_SUBTYPE, (m_eType == MFCodecType_Encoder) ? m_guidCompressedFormat : kMFCodecUncompressedFormat));
 	CHECK_HR(hr = m_pInputType->SetGUID(MF_MT_SUBTYPE, (m_eType == MFCodecType_Encoder) ? kMFCodecUncompressedFormat : m_guidCompressedFormat));
-
+	
 	CHECK_HR(hr = m_pOutputType->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, (m_eType == MFCodecType_Encoder) ? FALSE : TRUE));
 	CHECK_HR(hr = m_pInputType->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, (m_eType == MFCodecType_Encoder) ? TRUE : FALSE));
 

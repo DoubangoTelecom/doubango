@@ -53,7 +53,7 @@ HRESULT MFUtils::Startup()
 	if(!g_bStarted)
 	{
 		HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
-		if(SUCCEEDED(hr))
+		if(SUCCEEDED(hr) || hr == 0x80010106) // 0x80010106 when called from managed code (e.g. Boghe) - More info: http://support.microsoft.com/kb/824480
 		{
 			hr = MFStartup(MF_VERSION);
 		}

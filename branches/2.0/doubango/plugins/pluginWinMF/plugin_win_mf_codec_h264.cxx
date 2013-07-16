@@ -415,7 +415,7 @@ bail:
 	if(rtp_hdr->marker) {
 		h264->decoder.accumulator_pos = 0;
 	}
-	if(FAILED(hr)){
+	if(FAILED(hr) /*|| (!pSampleOut && rtp_hdr->marker)*/){
 		TSK_DEBUG_INFO("Failed to decode the buffer with error code =%d, size=%u, append=%s", ret, h264->decoder.accumulator_pos, append_scp ? "yes" : "no");
 		if(TMEDIA_CODEC_VIDEO(self)->in.callback){
 			TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
