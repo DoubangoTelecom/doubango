@@ -36,6 +36,7 @@
 #include <Codecapi.h>
 #include <assert.h>
 #include <stdlib.h>     /* mbstowcs, wchar_t(C) */
+#include <initguid.h>
 
 // 0: {{[Source] -> (VideoProcessor) -> SampleGrabber}} , {{[Encoder]}} -> RTP
 // 1: {{[Source] -> (VideoProcessor) -> [Encoder] -> SampleGrabber}} -> RTP
@@ -48,6 +49,9 @@
 #if !defined(PLUGIN_MF_GOP_SIZE_IN_SECONDS)
 #define PLUGIN_MF_GOP_SIZE_IN_SECONDS		60
 #endif /* PLUGIN_MF_GOP_SIZE_IN_SECONDS */
+
+DEFINE_GUID(PLUGIN_MF_LOW_LATENCY,
+0x9c27891a, 0xed7a, 0x40e1, 0x88, 0xe8, 0xb2, 0x27, 0x27, 0xa0, 0x24, 0xee);
 
 static void* TSK_STDCALL RunSessionThread(void *pArg);
 static int _plugin_win_mf_producer_video_unprepare(struct plugin_win_mf_producer_video_s* pSelf);
@@ -178,6 +182,10 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 		return -1;
 	}
 
+	// FIXME: DirectShow requires flipping but not MF
+	// The Core library always tries to flip when OSType==Win32. Must be changed
+	TMEDIA_CODEC_VIDEO(codec)->out.flip = tsk_false;
+
 	TMEDIA_PRODUCER(pSelf)->video.fps = TMEDIA_CODEC_VIDEO(codec)->out.fps;
 	TMEDIA_PRODUCER(pSelf)->video.width = TMEDIA_CODEC_VIDEO(codec)->out.width;
 	TMEDIA_PRODUCER(pSelf)->video.height = TMEDIA_CODEC_VIDEO(codec)->out.height;
@@ -284,9 +292,7 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 
 		// Set session attributes
 		CHECK_HR(hr = MFCreateAttributes(&pSessionAttributes, 1));
-#if defined(MF_LOW_LATENCY)
-		CHECK_HR(hr = pSessionAttributes->SetUINT32(MF_LOW_LATENCY, 1));
-#endif
+		CHECK_HR(hr = pSessionAttributes->SetUINT32(PLUGIN_MF_LOW_LATENCY, 1));
 
 		// Configure the media type that the Sample Grabber will receive.
 		// Setting the major and subtype is usually enough for the topology loader
@@ -322,8 +328,8 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 		}
 		else {
 			// Video Processors will be inserted in the topology if the source cannot produce I420 frames
-			CHECK_HR(hr = pSelf->pGrabberInputType->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_I420));
-			TMEDIA_PRODUCER(pSelf)->video.chroma = tmedia_chroma_yuv420p;
+			CHECK_HR(hr = pSelf->pGrabberInputType->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_NV12));
+			TMEDIA_PRODUCER(pSelf)->video.chroma = tmedia_chroma_nv12;
 			TSK_DEBUG_INFO("MF video producer chroma = %d", TMEDIA_PRODUCER(pSelf)->video.chroma);
 		}
 		

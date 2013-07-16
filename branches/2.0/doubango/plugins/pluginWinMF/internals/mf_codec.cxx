@@ -38,6 +38,11 @@
 DEFINE_GUID(CODECAPI_AVLowLatencyMode,
 	0x9c27891a, 0xed7a, 0x40e1, 0x88, 0xe8, 0xb2, 0x27, 0x27, 0xa0, 0x24, 0xee);
 #endif
+#undef CODECAPI_AVDecVideoH264ErrorConcealment
+#if !defined(CODECAPI_AVDecVideoH264ErrorConcealment)
+DEFINE_GUID(CODECAPI_AVDecVideoH264ErrorConcealment,
+0xececace8, 0x3436, 0x462c, 0x92, 0x94, 0xcd, 0x7b, 0xac, 0xd7, 0x58, 0xa9);
+#endif
 
 //
 //	MFCodec
@@ -91,7 +96,7 @@ MFCodec::MFCodec(MFCodecId_t eId, MFCodecType_t eType)
 		(m_eType == MFCodecType_Encoder) ? kMFCodecUncompressedFormat : m_guidCompressedFormat/*GUID_NULL*/, // Input
 		(m_eType == MFCodecType_Encoder) ? m_guidCompressedFormat : kMFCodecUncompressedFormat, // Output
 		&m_pMFT));
-	CHECK_HR(hr = m_pMFT->QueryInterface(IID_PPV_ARGS(&m_pCodecAPI)));	// FIXME: ICodecAPI not supported on Win7
+	CHECK_HR(hr = m_pMFT->QueryInterface(IID_PPV_ARGS(&m_pCodecAPI)));
 
 	BOOL bIsAsyncMFT = FALSE;
 	CHECK_HR(hr = MFUtils::IsAsyncMFT(m_pMFT, &bIsAsyncMFT));
@@ -421,6 +426,10 @@ HRESULT MFCodecVideo::Initialize(
 			{
 				// FIXME: Very strange that "CODECAPI_AVLowLatencyMode" only works with "IMFAttributes->" and not "ICodecAPI->SetValue()"
 				hr = pAttributes->SetUINT32(CODECAPI_AVLowLatencyMode, TRUE);
+				
+				//var.vt = VT_BOOL;
+				//var.boolVal = VARIANT_TRUE;
+				//hr = m_pCodecAPI->SetValue(&CODECAPI_AVDecVideoH264ErrorConcealment,&var);
 			}
 			SafeRelease(&pAttributes);
 		}

@@ -31,6 +31,7 @@
 #include <KS.h>
 #include <Codecapi.h>
 #include <assert.h>
+#include <initguid.h>
 
 // 0: {{[Source] -> (VideoProcessor) -> SampleGrabber}} , {{[Decoder]}} -> RTP
 // 1: {{[Source] -> (VideoProcessor) -> [Decoder] -> SampleGrabber}} -> RTP
@@ -51,6 +52,9 @@ const GUID kDefaultUncompressedType
 #else
 = MFVideoFormat_I420;
 #endif
+
+DEFINE_GUID(PLUGIN_MF_LOW_LATENCY,
+0x9c27891a, 0xed7a, 0x40e1, 0x88, 0xe8, 0xb2, 0x27, 0x27, 0xa0, 0x24, 0xee);
 
 static void* TSK_STDCALL RunSessionThread(void *pArg);
 static int _plugin_win_mf_consumer_video_unprepare(struct plugin_win_mf_consumer_video_s* pSelf);
@@ -141,6 +145,10 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 		return -1;
 	}
 
+	// FIXME: DirectShow requires flipping but not MF
+	// The Core library always tries to flip when OSType==Win32. Must be changed
+	TMEDIA_CODEC_VIDEO(codec)->in.flip = tsk_false;
+
 	HRESULT hr = S_OK;
 	
 	TMEDIA_CONSUMER(pSelf)->video.fps = TMEDIA_CODEC_VIDEO(codec)->in.fps;
@@ -185,9 +193,7 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 
 	// Set session attributes
 	CHECK_HR(hr = MFCreateAttributes(&pSessionAttributes, 1));
-#if defined(MF_LOW_LATENCY)
-	CHECK_HR(hr = pSessionAttributes->SetUINT32(MF_LOW_LATENCY, 1));
-#endif
+	CHECK_HR(hr = pSessionAttributes->SetUINT32(PLUGIN_MF_LOW_LATENCY, 1));
 
 	CHECK_HR(hr = MFCreateMediaType(&pSelf->pOutType));
 	CHECK_HR(hr = pSelf->pOutType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video));
@@ -224,6 +230,7 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 
 	if(!pSelf->pDecoder){
 		CHECK_HR(hr = pSelf->pOutType->SetGUID(MF_MT_SUBTYPE, kDefaultUncompressedType));
+		TMEDIA_CONSUMER(pSelf)->video.display.chroma = kDefaultUncompressedType == MFVideoFormat_NV12 ? tmedia_chroma_nv12 : tmedia_chroma_yuv420p;
 	}
     CHECK_HR(hr = pSelf->pOutType->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive));
 	CHECK_HR(hr = pSelf->pOutType->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, TRUE));
