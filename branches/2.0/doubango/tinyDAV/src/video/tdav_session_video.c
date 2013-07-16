@@ -71,7 +71,7 @@ static const tmedia_codec_action_t __action_encode_idr = tmedia_codec_action_enc
 static const tmedia_codec_action_t __action_encode_bw_up = tmedia_codec_action_bw_up;
 static const tmedia_codec_action_t __action_encode_bw_down = tmedia_codec_action_bw_down;
 
-// FIXME: lock
+// FIXME: lock ?
 #define _tdav_session_video_codec_set(__self, key, value) \
 	{ \
 		static tmedia_param_t* __param = tsk_null; \
@@ -85,7 +85,12 @@ static const tmedia_codec_action_t __action_encode_bw_down = tmedia_codec_action
 		} \
 		if((__self)->encoder.codec && __param){ \
 			/*tsk_mutex_lock((__self)->encoder.h_mutex);*/ \
-			tmedia_codec_set((tmedia_codec_t*)(__self)->encoder.codec, __param); \
+			if(TDAV_SESSION_AV(__self)->producer && TDAV_SESSION_AV(__self)->producer->encoder.codec_id == (__self)->encoder.codec->id) { /* Whether the producer ourput encoded frames */ \
+				tmedia_producer_set(TDAV_SESSION_AV(__self)->producer, __param); \
+			} \
+			else { \
+				tmedia_codec_set((tmedia_codec_t*)(__self)->encoder.codec, __param); \
+			} \
 			/*tsk_mutex_unlock((__self)->encoder.h_mutex);*/ \
 		} \
 		/* TSK_OBJECT_SAFE_FREE(param); */ \

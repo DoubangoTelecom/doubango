@@ -41,14 +41,10 @@
 #if !defined(PLUGIN_MF_ENABLE_VIDEO)
 #	define PLUGIN_MF_ENABLE_VIDEO 1
 #endif
-#if !defined(PLUGIN_MF_ENABLE_CODECS)
-#	define PLUGIN_MF_ENABLE_CODECS 0
-#endif
 
-#if PLUGIN_MF_ENABLE_CODECS
 extern const tmedia_codec_plugin_def_t *mf_codec_h264_main_plugin_def_t;
 extern const tmedia_codec_plugin_def_t *mf_codec_h264_base_plugin_def_t;
-#endif
+
 #if PLUGIN_MF_ENABLE_VIDEO
 extern const tmedia_producer_plugin_def_t *plugin_win_mf_producer_video_plugin_def_t;
 extern const tmedia_consumer_plugin_def_t *plugin_win_mf_consumer_video_plugin_def_t;
@@ -95,10 +91,8 @@ typedef enum PLUGIN_INDEX_E
 	PLUGIN_INDEX_AUDIO_CONSUMER,
 	PLUGIN_INDEX_AUDIO_PRODUCER,
 #endif
-#if PLUGIN_MF_ENABLE_CODECS // Must be last because depends on "MFUtils::IsLowLatencyH264Supported()"
 	PLUGIN_INDEX_CODEC_H264_MAIN,
 	PLUGIN_INDEX_CODEC_H264_BASE,
-#endif
 	
 	PLUGIN_INDEX_COUNT
 }
@@ -108,12 +102,10 @@ PLUGIN_INDEX_T;
 int __plugin_get_def_count()
 {
 	int count = PLUGIN_INDEX_COUNT;
-#if PLUGIN_MF_ENABLE_CODECS
 	if(!MFUtils::IsLowLatencyH264Supported())
 	{
 		count -= 2;
 	}
-#endif
 	return count;
 }
 
@@ -134,13 +126,11 @@ tsk_plugin_def_type_t __plugin_get_def_type_at(int index)
 				return (index == PLUGIN_INDEX_VIDEO_CONSUMER) ? tsk_plugin_def_type_consumer : tsk_plugin_def_type_producer;
 			}
 #endif
-#if PLUGIN_MF_ENABLE_CODECS
-	case PLUGIN_INDEX_CODEC_H264_MAIN:
-	case PLUGIN_INDEX_CODEC_H264_BASE:
-		{
-			return MFUtils::IsLowLatencyH264Supported() ? tsk_plugin_def_type_codec : tsk_plugin_def_type_none;
-		}
-#endif
+		case PLUGIN_INDEX_CODEC_H264_MAIN:
+		case PLUGIN_INDEX_CODEC_H264_BASE:
+			{
+				return MFUtils::IsLowLatencyH264Supported() ? tsk_plugin_def_type_codec : tsk_plugin_def_type_none;
+			}
 		default:
 			{
 				TSK_DEBUG_ERROR("No plugin at index %d", index);
@@ -166,13 +156,11 @@ tsk_plugin_def_media_type_t	__plugin_get_def_media_type_at(int index)
 				return tsk_plugin_def_media_type_video;
 			}
 #endif
-#if PLUGIN_MF_ENABLE_CODECS
 		case PLUGIN_INDEX_CODEC_H264_MAIN:
 		case PLUGIN_INDEX_CODEC_H264_BASE:
 			{
 				return MFUtils::IsLowLatencyH264Supported() ? tsk_plugin_def_media_type_video : tsk_plugin_def_media_type_none;
 			}
-#endif
 		default:
 			{
 				TSK_DEBUG_ERROR("No plugin at index %d", index);
@@ -204,7 +192,6 @@ tsk_plugin_def_ptr_const_t __plugin_get_def_at(int index)
 				return plugin_win_mf_consumer_audio_plugin_def_t;
 			}
 #endif
-#if PLUGIN_MF_ENABLE_CODECS
 		case PLUGIN_INDEX_CODEC_H264_MAIN: 
 			{
 				return MFUtils::IsLowLatencyH264Supported() ? mf_codec_h264_main_plugin_def_t : tsk_null;
@@ -213,7 +200,6 @@ tsk_plugin_def_ptr_const_t __plugin_get_def_at(int index)
 			{
 				return MFUtils::IsLowLatencyH264Supported() ? mf_codec_h264_base_plugin_def_t : tsk_null;
 			}
-#endif
 		default:
 			{
 				TSK_DEBUG_ERROR("No plugin at index %d", index);
