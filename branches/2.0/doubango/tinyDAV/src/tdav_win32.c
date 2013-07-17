@@ -35,6 +35,9 @@
 #include "tsk_debug.h"
 
 #include <windows.h>
+#if !TDAV_UNDER_WINDOWS_RT
+#include <Shlwapi.h> /* PathRemoveFileSpec */
+#endif
 
 /*
 Version Number    Description
@@ -46,6 +49,15 @@ Version Number    Description
 */
 static DWORD dwMajorVersion = -1;
 static DWORD dwMinorVersion = -1;
+
+#if !TDAV_UNDER_WINDOWS_RT
+const HMODULE GetCurrentModule()
+{
+	HMODULE hm = {0};
+    GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)GetCurrentModule, &hm);   
+    return hm;
+}
+#endif /* !TDAV_UNDER_WINDOWS_RT */
 
 int tdav_win32_init()
 {
@@ -100,6 +112,30 @@ tsk_bool_t tdav_win32_is_winxp_or_later()
 		return tsk_false;
 	}
 	return ( (dwMajorVersion > 5) || ( (dwMajorVersion == 5) && (dwMinorVersion >= 1) ) );
+}
+
+const char* tdav_get_current_directory_const()
+{
+#if TDAV_UNDER_WINDOWS_RT
+	TSK_DEBUG_ERROR("Not supported");
+	return tsk_null;
+#else
+	static char CURRENT_DIR_PATH[MAX_PATH] = { 0 };
+	static DWORD CURRENT_DIR_PATH_LEN = 0;
+	if(CURRENT_DIR_PATH_LEN == 0) {
+		// NULL HMODULE will get the path to the executable not the DLL. When runing the code in Internet Explorer this is a BIG issue as the path is where IE.exe is installed.
+		if((CURRENT_DIR_PATH_LEN = GetModuleFileNameA(GetCurrentModule(), CURRENT_DIR_PATH, MAX_PATH))) {
+			if(!PathRemoveFileSpecA(CURRENT_DIR_PATH)) {
+				TSK_DEBUG_ERROR("PathRemoveFileSpecA(%s) failed: %x", CURRENT_DIR_PATH, GetLastError());
+				memset(CURRENT_DIR_PATH, 0, MAX_PATH);
+			}
+		}
+		else {
+			TSK_DEBUG_ERROR("GetModuleFileNameA() failed: %x", GetLastError());
+		}
+	}
+	return CURRENT_DIR_PATH;
+#endif
 }
 
 TINYDAV_API void tdav_win32_print_error(const char* func, HRESULT hr)

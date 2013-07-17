@@ -166,16 +166,20 @@ int tdav_init()
 #if TDAV_HAVE_PLUGIN_EXT_WIN32
 	{
 		tsk_size_t plugins_count = 0;
+		char* full_path = tsk_null; // Loading plugins from ActiveX fails when using relative path.
 		if(tdav_win32_is_win7_or_later()){
-			if((__dll_plugin_mf = tsk_plugin_create("pluginWinMF.dll"))){
+			tsk_sprintf(&full_path, "%s/pluginWinMF.dll", tdav_get_current_directory_const());
+			if((__dll_plugin_mf = tsk_plugin_create(full_path))){
 				plugins_count += tmedia_plugin_register(__dll_plugin_mf, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 			}
 		}
 		if(tdav_win32_is_winxp_or_later()){
-			if((__dll_plugin_dshow = tsk_plugin_create("pluginDirectShow.dll"))){
+			tsk_sprintf(&full_path, "%s/pluginDirectShow.dll", tdav_get_current_directory_const());
+			if((__dll_plugin_dshow = tsk_plugin_create(full_path))){
 				plugins_count += tmedia_plugin_register(__dll_plugin_dshow, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 			}
 		}
+		TSK_FREE(full_path);
 		TSK_DEBUG_INFO("Windows stand-alone plugins loaded = %u", plugins_count);
 	}
 #endif

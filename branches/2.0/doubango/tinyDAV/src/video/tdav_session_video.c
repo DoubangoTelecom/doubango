@@ -888,8 +888,8 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 		++self->decoder.codec_decoded_frames_count;
 		ret = tmedia_consumer_consume(base->consumer, _buffer, _size, __rtp_header);
 	}
-	else if(!base->consumer->is_started){
-		TSK_DEBUG_INFO("Consumer not started");
+	else if(!base->consumer || !base->consumer->is_started){
+		TSK_DEBUG_INFO("Consumer not started (is_null=%d)", !base->consumer);
 	}
 
 bail:
