@@ -226,7 +226,7 @@ int tdav_consumer_waveapi_prepare(tmedia_consumer_t* self, const tmedia_codec_t*
 	consumer->bytes_per_notif = ((consumer->wfx.nAvgBytesPerSec * TMEDIA_CONSUMER(consumer)->audio.ptime)/1000);
 
 	/* create buffers */
-	for(i = 0; i< sizeof(consumer->hWaveHeaders)/sizeof(LPWAVEHDR); i++){
+	for(i = 0; i< sizeof(consumer->hWaveHeaders)/sizeof(consumer->hWaveHeaders[0]); i++){
 		create_wavehdr(consumer, i);
 	}
 
@@ -265,7 +265,7 @@ int tdav_consumer_waveapi_start(tmedia_consumer_t* self)
 	 }
 
 	 /* write */
-	 for(i = 0; i< sizeof(consumer->hWaveHeaders)/sizeof(LPWAVEHDR); i++){
+	 for(i = 0; i< sizeof(consumer->hWaveHeaders)/sizeof(consumer->hWaveHeaders[0]); i++){
 		write_wavehdr(consumer, i);
 	}
 
