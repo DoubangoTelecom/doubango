@@ -285,9 +285,13 @@ int tdav_init()
 	
 	/* === Register converters === */
 #if HAVE_LIBYUV
-	tmedia_converter_video_plugin_register(tdav_converter_video_libyuv_plugin_def_t);
+	if(tmedia_converter_video_plugin_registry_count() == 0) {
+		tmedia_converter_video_plugin_register(tdav_converter_video_libyuv_plugin_def_t);
+	}
 #elif HAVE_FFMPEG || HAVE_SWSSCALE
-	tmedia_converter_video_plugin_register(tdav_converter_video_ffmpeg_plugin_def_t);
+	if(tmedia_converter_video_plugin_registry_count() == 0) {
+		tmedia_converter_video_plugin_register(tdav_converter_video_ffmpeg_plugin_def_t);
+	}
 #endif
 
 	/* === Register consumers === */
