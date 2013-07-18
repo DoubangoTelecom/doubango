@@ -1083,6 +1083,9 @@ static int tdav_session_video_stop(tmedia_session_t* self)
 	tsk_mutex_unlock(video->encoder.h_mutex);
 	TSK_OBJECT_SAFE_FREE(video->decoder.codec);
 
+	// reset rotation info (MUST for reINVITE when mobile device in portrait[90 degrees])
+	video->encoder.rotation = 0;
+
 	return ret;
 }
 
