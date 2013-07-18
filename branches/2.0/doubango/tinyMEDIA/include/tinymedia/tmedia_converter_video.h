@@ -100,6 +100,7 @@ tmedia_converter_video_plugin_def_t;
 TINYMEDIA_API tmedia_converter_video_t* tmedia_converter_video_create(tsk_size_t srcWidth, tsk_size_t srcHeight, tmedia_chroma_t srcChroma, tsk_size_t dstWidth, tsk_size_t dstHeight, tmedia_chroma_t dstChroma);
 
 TINYMEDIA_API int tmedia_converter_video_plugin_register(const tmedia_converter_video_plugin_def_t* plugin);
+TINYMEDIA_API tsk_size_t tmedia_converter_video_plugin_registry_count();
 TINYMEDIA_API int tmedia_converter_video_plugin_unregister(const tmedia_converter_video_plugin_def_t* plugin);
 
 TMEDIA_END_DECLS

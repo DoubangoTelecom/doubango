@@ -83,6 +83,15 @@ int tmedia_converter_video_plugin_register(const tmedia_converter_video_plugin_d
 	return -2;
 }
 
+tsk_size_t tmedia_converter_video_plugin_registry_count()
+{
+	tsk_size_t count;
+	for(count = 0; 
+		count < TMED_CONVERTER_VIDEO_MAX_PLUGINS && __tmedia_converter_video_plugins[count]; 
+		++count) ;
+	return count;
+}
+
 int tmedia_converter_video_plugin_unregister(const tmedia_converter_video_plugin_def_t* plugin)
 {
 	tsk_size_t i;
