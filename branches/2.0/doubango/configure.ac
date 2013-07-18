@@ -125,14 +125,16 @@ AC_CHECK_TYPES([struct sockaddr_dl], [], [],
 
 have_resolv=no
 AH_TEMPLATE([HAVE_DNS_H], [Define if <dns.h> header exist])
-AC_CHECK_HEADER([dns.h], AC_DEFINE(HAVE_DNS_H, 1), AC_DEFINE(HAVE_DNS_H, 0), [])
 AM_CONDITIONAL(USE_RESOLV, false)
-AC_CHECK_LIB([resolv], [dns_search], 
+AC_CHECK_LIB([resolv], [dns_search],
     AC_SUBST(LIBRESOLV_LIBADD, "-lresolv")
     AM_CONDITIONAL(USE_RESOLV, true)
     [have_resolv=yes], 
     AC_SUBST(LIBRESOLV_LIBADD, "")
     )
+# check for <dns.h> only if libresolv exist
+test $have_resolv = yes &&  
+	AC_CHECK_HEADER([dns.h], AC_DEFINE(HAVE_DNS_H, 1), AC_DEFINE(HAVE_DNS_H, 0), [])
 
 AM_CONDITIONAL(USE_RT, false)
 have_rt=no
