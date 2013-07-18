@@ -233,7 +233,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 			goto ipv6;
 		}
 		from = (struct sockaddr *) &result;
-		fromlen = from->sa_len;
+		fromlen = tnet_get_sockaddr_size(from);
         
 		if ((ret = dns_search(ctx->resolv_handle, qname, qclass, qtype, buf, TNET_DNS_DGRAM_SIZE_DEFAULT, from, &fromlen)) > 0) {
 			response = tnet_dns_message_deserialize((uint8_t *) buf, ret);
@@ -251,7 +251,7 @@ ipv6:
 			goto done;
 		}
         from = (struct sockaddr *) &result;
-        fromlen = from->sa_len;
+        fromlen = tnet_get_sockaddr_size(from);
         
 		if((ret = dns_search(ctx->resolv_handle, qname, qclass, qtype, buf, TNET_DNS_DGRAM_SIZE_DEFAULT, from, &fromlen)) > 0){
 			 response = tnet_dns_message_deserialize((uint8_t *) buf, ret);
