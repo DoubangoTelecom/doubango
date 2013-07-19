@@ -48,6 +48,7 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				WarnAsError="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -122,6 +123,7 @@
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				WarnAsError="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -188,6 +190,10 @@
 			</File>
 			<File
 				RelativePath=".\plugin_win_mf_consumer_video.cxx"
+				>
+			</File>
+			<File
+				RelativePath=".\plugin_win_mf_converter_video.cxx"
 				>
 			</File>
 			<File

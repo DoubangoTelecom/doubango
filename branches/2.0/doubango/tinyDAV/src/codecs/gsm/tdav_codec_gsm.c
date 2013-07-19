@@ -182,7 +182,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_gsm_plugin_def_s =
 	tmedia_audio,
 	tmedia_codec_id_gsm,
 	"GSM",
-	"GSM Full Rate",
+	"GSM Full Rate (libgsm)",
 	TMEDIA_CODEC_FORMAT_GSM,
 	tsk_false,
 	8000, // rate

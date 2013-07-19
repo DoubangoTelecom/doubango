@@ -124,7 +124,7 @@ static inline enum FourCC _tdav_converter_video_libyuv_get_pixfmt(tmedia_chroma_
 
 static int tdav_converter_video_libyuv_init(tmedia_converter_video_t* self, tsk_size_t srcWidth, tsk_size_t srcHeight, tmedia_chroma_t srcChroma, tsk_size_t dstWidth, tsk_size_t dstHeight, tmedia_chroma_t dstChroma)
 {
-	TSK_DEBUG_INFO("Initializing new LibYUV Video Converter src=(%dx%d) dst=(%dx%d)", srcWidth, srcHeight, dstWidth, dstHeight);
+	TSK_DEBUG_INFO("Initializing new LibYUV Video Converter src=(%dx%d@%d) dst=(%dx%d@%d)", srcWidth, srcHeight, srcChroma, dstWidth, dstHeight, dstChroma);
 
 	if((TDAV_CONVERTER_VIDEO_LIBYUV(self)->srcFormat = _tdav_converter_video_libyuv_get_pixfmt(srcChroma)) == FOURCC_ANY){
 		TSK_DEBUG_ERROR("Invalid source chroma");
@@ -535,7 +535,7 @@ static inline enum PixelFormat _tdav_converter_video_ffmpeg_get_pixfmt(tmedia_ch
 
 static int tdav_converter_video_ffmpeg_init(tmedia_converter_video_t* self, tsk_size_t srcWidth, tsk_size_t srcHeight, tmedia_chroma_t srcChroma, tsk_size_t dstWidth, tsk_size_t dstHeight, tmedia_chroma_t dstChroma)
 {
-	TSK_DEBUG_INFO("Initializing new FFmpeg Video Converter src=(%dx%d) dst=(%dx%d)", srcWidth, srcHeight, dstWidth, dstHeight);
+	TSK_DEBUG_INFO("Initializing new FFmpeg Video Converter src=(%dx%d@%d) dst=(%dx%d@%d)", srcWidth, srcHeight, srcChroma, dstWidth, dstHeight, dstChroma);
 
 	if((TDAV_CONVERTER_VIDEO_FFMPEG(self)->srcFormat = _tdav_converter_video_ffmpeg_get_pixfmt(srcChroma)) == PIX_FMT_NONE){
 		TSK_DEBUG_ERROR("Invalid source chroma");

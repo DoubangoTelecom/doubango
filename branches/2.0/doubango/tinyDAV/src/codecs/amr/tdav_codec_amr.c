@@ -231,7 +231,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_amrnb_oa_plugin_def_s =
 	tmedia_audio,
 	tmedia_codec_id_amr_nb_oa,
 	"AMR",
-	"AMR Narrow Band - Octet Aligned",
+	"AMR Narrow Band - Octet Aligned (libopencore-amr)",
 	TMEDIA_CODEC_FORMAT_AMR_NB_OA,
 	tsk_true,
 	8000, // rate
@@ -298,7 +298,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_amrnb_be_plugin_def_s =
 	tmedia_audio,
 	tmedia_codec_id_amr_nb_be,
 	"AMR",
-	"AMR Narrow Band - Bandwidth-Efficient",
+	"AMR Narrow Band - Bandwidth-Efficient (libopencore-amr)",
 	TMEDIA_CODEC_FORMAT_AMR_NB_BE,
 	tsk_true,
 	8000, // rate

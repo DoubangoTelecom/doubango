@@ -21,6 +21,7 @@
 
 #include "tinymedia/tmedia_producer.h"
 #include "tinymedia/tmedia_consumer.h"
+#include "tinymedia/tmedia_converter_video.h"
 
 #include "tsk_plugin.h"
 #include "tsk_debug.h"
@@ -35,21 +36,27 @@
 #		pragma comment(lib, "Strmiids")
 #endif
 
-#if !defined(PLUGIN_MF_ENABLE_AUDIO)
-#	define PLUGIN_MF_ENABLE_AUDIO 0 /* audio not good as DirectSound */
+#if !defined(PLUGIN_MF_ENABLE_AUDIO_IO)
+#	define PLUGIN_MF_ENABLE_AUDIO_IO 0 /* audio not good as DirectSound */
 #endif
-#if !defined(PLUGIN_MF_ENABLE_VIDEO)
-#	define PLUGIN_MF_ENABLE_VIDEO 1
+#if !defined(PLUGIN_MF_ENABLE_VIDEO_CONVERTER)
+#	define PLUGIN_MF_ENABLE_VIDEO_CONVERTER 1
+#endif
+#if !defined(PLUGIN_MF_ENABLE_VIDEO_IO)
+#	define PLUGIN_MF_ENABLE_VIDEO_IO 1
 #endif
 
 extern const tmedia_codec_plugin_def_t *mf_codec_h264_main_plugin_def_t;
 extern const tmedia_codec_plugin_def_t *mf_codec_h264_base_plugin_def_t;
 
-#if PLUGIN_MF_ENABLE_VIDEO
+#if PLUGIN_MF_ENABLE_VIDEO_CONVERTER
+extern const tmedia_converter_video_plugin_def_t *plugin_win_mf_converter_video_ms_plugin_def_t;
+#endif
+#if PLUGIN_MF_ENABLE_VIDEO_IO
 extern const tmedia_producer_plugin_def_t *plugin_win_mf_producer_video_plugin_def_t;
 extern const tmedia_consumer_plugin_def_t *plugin_win_mf_consumer_video_plugin_def_t;
 #endif
-#if PLUGIN_MF_ENABLE_AUDIO
+#if PLUGIN_MF_ENABLE_AUDIO_IO
 extern const tmedia_producer_plugin_def_t *plugin_win_mf_producer_audio_plugin_def_t;
 extern const tmedia_consumer_plugin_def_t *plugin_win_mf_consumer_audio_plugin_def_t;
 #endif
@@ -83,14 +90,18 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 
 typedef enum PLUGIN_INDEX_E
 {
-#if PLUGIN_MF_ENABLE_VIDEO
-	PLUGIN_INDEX_VIDEO_PRODUCER,
-	PLUGIN_INDEX_VIDEO_CONSUMER,
-#endif
-#if PLUGIN_MF_ENABLE_AUDIO
+#if PLUGIN_MF_ENABLE_AUDIO_IO
 	PLUGIN_INDEX_AUDIO_CONSUMER,
 	PLUGIN_INDEX_AUDIO_PRODUCER,
 #endif
+#if PLUGIN_MF_ENABLE_VIDEO_IO
+	PLUGIN_INDEX_VIDEO_PRODUCER,
+	PLUGIN_INDEX_VIDEO_CONSUMER,
+#endif
+#if PLUGIN_MF_ENABLE_VIDEO_CONVERTER
+	PLUGIN_INDEX_VIDEO_CONVERTER,
+#endif
+
 	PLUGIN_INDEX_CODEC_H264_MAIN,
 	PLUGIN_INDEX_CODEC_H264_BASE,
 	
@@ -112,18 +123,24 @@ int __plugin_get_def_count()
 tsk_plugin_def_type_t __plugin_get_def_type_at(int index)
 {
 	switch(index){
-#if PLUGIN_MF_ENABLE_AUDIO
+#if PLUGIN_MF_ENABLE_AUDIO_IO
 		case PLUGIN_INDEX_AUDIO_CONSUMER: 
 		case PLUGIN_INDEX_AUDIO_PRODUCER:
 			{
 				return (index == PLUGIN_INDEX_AUDIO_CONSUMER) ? tsk_plugin_def_type_consumer : tsk_plugin_def_type_producer;
 			}
 #endif
-#if PLUGIN_MF_ENABLE_VIDEO
+#if PLUGIN_MF_ENABLE_VIDEO_IO
 		case PLUGIN_INDEX_VIDEO_CONSUMER: 
 		case PLUGIN_INDEX_VIDEO_PRODUCER:
 			{
 				return (index == PLUGIN_INDEX_VIDEO_CONSUMER) ? tsk_plugin_def_type_consumer : tsk_plugin_def_type_producer;
+			}
+#endif
+#if PLUGIN_MF_ENABLE_VIDEO_CONVERTER
+		case PLUGIN_INDEX_VIDEO_CONVERTER:
+			{
+				return tsk_plugin_def_type_converter;
 			}
 #endif
 		case PLUGIN_INDEX_CODEC_H264_MAIN:
@@ -142,16 +159,22 @@ tsk_plugin_def_type_t __plugin_get_def_type_at(int index)
 tsk_plugin_def_media_type_t	__plugin_get_def_media_type_at(int index)
 {
 	switch(index){
-#if PLUGIN_MF_ENABLE_AUDIO
+#if PLUGIN_MF_ENABLE_AUDIO_IO
 		case PLUGIN_INDEX_AUDIO_CONSUMER: 
 		case PLUGIN_INDEX_AUDIO_PRODUCER:
 			{
 				return tsk_plugin_def_media_type_audio;
 			}
 #endif
-#if PLUGIN_MF_ENABLE_VIDEO
+#if PLUGIN_MF_ENABLE_VIDEO_IO
 		case PLUGIN_INDEX_VIDEO_CONSUMER: 
 		case PLUGIN_INDEX_VIDEO_PRODUCER:
+			{
+				return tsk_plugin_def_media_type_video;
+			}
+#endif
+#if PLUGIN_MF_ENABLE_VIDEO_CONVERTER
+		case PLUGIN_INDEX_VIDEO_CONVERTER:
 			{
 				return tsk_plugin_def_media_type_video;
 			}
@@ -172,7 +195,7 @@ tsk_plugin_def_media_type_t	__plugin_get_def_media_type_at(int index)
 tsk_plugin_def_ptr_const_t __plugin_get_def_at(int index)
 {
 	switch(index){
-#if PLUGIN_MF_ENABLE_VIDEO
+#if PLUGIN_MF_ENABLE_VIDEO_IO
 		case PLUGIN_INDEX_VIDEO_PRODUCER: 
 			{
 				return plugin_win_mf_producer_video_plugin_def_t;
@@ -182,7 +205,7 @@ tsk_plugin_def_ptr_const_t __plugin_get_def_at(int index)
 				return plugin_win_mf_consumer_video_plugin_def_t;
 			}
 #endif
-#if PLUGIN_MF_ENABLE_AUDIO
+#if PLUGIN_MF_ENABLE_AUDIO_IO
 		case PLUGIN_INDEX_AUDIO_PRODUCER:
 			{
 				return plugin_win_mf_producer_audio_plugin_def_t;
@@ -190,6 +213,12 @@ tsk_plugin_def_ptr_const_t __plugin_get_def_at(int index)
 		case PLUGIN_INDEX_AUDIO_CONSUMER:
 			{
 				return plugin_win_mf_consumer_audio_plugin_def_t;
+			}
+#endif
+#if PLUGIN_MF_ENABLE_VIDEO_CONVERTER
+		case PLUGIN_INDEX_VIDEO_CONVERTER:
+			{
+				return plugin_win_mf_converter_video_ms_plugin_def_t;
 			}
 #endif
 		case PLUGIN_INDEX_CODEC_H264_MAIN: 

@@ -533,7 +533,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_h264_base_plugin_def_s =
 	tmedia_video,
 	tmedia_codec_id_h264_bp,
 	"H264",
-	"H264 Base Profile (FFmpeg)",
+	"H264 Base Profile (FFmpeg, x264)",
 	TMEDIA_CODEC_FORMAT_H264_BP,
 	tsk_true,
 	90000, // rate
@@ -599,7 +599,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_h264_main_plugin_def_s =
 	tmedia_video,
 	tmedia_codec_id_h264_mp,
 	"H264",
-	"H264 Main Profile (FFmpeg)",
+	"H264 Main Profile (FFmpeg, x264)",
 	TMEDIA_CODEC_FORMAT_H264_MP,
 	tsk_true,
 	90000, // rate

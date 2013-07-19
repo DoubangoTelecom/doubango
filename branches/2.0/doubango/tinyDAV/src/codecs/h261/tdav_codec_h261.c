@@ -408,7 +408,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_h261_plugin_def_s =
 	tmedia_video,
 	tmedia_codec_id_h261,
 	"H261",
-	"H261 codec",
+	"H261 codec (FFmpeg)",
 	TMEDIA_CODEC_FORMAT_H261,
 	tsk_false,
 	90000, // rate

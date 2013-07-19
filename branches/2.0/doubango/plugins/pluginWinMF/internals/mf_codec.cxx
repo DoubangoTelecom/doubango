@@ -38,7 +38,6 @@
 DEFINE_GUID(CODECAPI_AVLowLatencyMode,
 	0x9c27891a, 0xed7a, 0x40e1, 0x88, 0xe8, 0xb2, 0x27, 0x27, 0xa0, 0x24, 0xee);
 #endif
-#undef CODECAPI_AVDecVideoH264ErrorConcealment
 #if !defined(CODECAPI_AVDecVideoH264ErrorConcealment)
 DEFINE_GUID(CODECAPI_AVDecVideoH264ErrorConcealment,
 0xececace8, 0x3436, 0x462c, 0x92, 0x94, 0xcd, 0x7b, 0xac, 0xd7, 0x58, 0xa9);
@@ -48,7 +47,7 @@ DEFINE_GUID(CODECAPI_AVDecVideoH264ErrorConcealment,
 //	MFCodec
 //
 
-MFCodec::MFCodec(MFCodecId_t eId, MFCodecType_t eType)
+MFCodec::MFCodec(MFCodecId_t eId, MFCodecType_t eType, IMFTransform *pMFT /*= NULL*/)
 : m_nRefCount(1)
 , m_eId(eId)
 , m_eType(eType)
@@ -90,12 +89,20 @@ MFCodec::MFCodec(MFCodecId_t eId, MFCodecType_t eType)
 	}
 	CHECK_HR(hr = MFCreateMediaType(&m_pOutputType));
 	CHECK_HR(hr = MFCreateMediaType(&m_pInputType));
-	CHECK_HR(hr = MFUtils::GetBestCodec(
-		(m_eType == MFCodecType_Encoder) ? TRUE : FALSE, // Encoder ?
-		(m_eMediaType == MFCodecMediaType_Video) ? MFMediaType_Video : MFMediaType_Audio, // Media Type
-		(m_eType == MFCodecType_Encoder) ? kMFCodecUncompressedFormat : m_guidCompressedFormat/*GUID_NULL*/, // Input
-		(m_eType == MFCodecType_Encoder) ? m_guidCompressedFormat : kMFCodecUncompressedFormat, // Output
-		&m_pMFT));
+	if(pMFT) // up to the caller to make sure all parameters are corrrect
+	{
+		m_pMFT = pMFT;
+		m_pMFT->AddRef();
+	}
+	else
+	{
+		CHECK_HR(hr = MFUtils::GetBestCodec(
+			(m_eType == MFCodecType_Encoder) ? TRUE : FALSE, // Encoder ?
+			(m_eMediaType == MFCodecMediaType_Video) ? MFMediaType_Video : MFMediaType_Audio, // Media Type
+			(m_eType == MFCodecType_Encoder) ? kMFCodecUncompressedFormat : m_guidCompressedFormat/*GUID_NULL*/, // Input
+			(m_eType == MFCodecType_Encoder) ? m_guidCompressedFormat : kMFCodecUncompressedFormat, // Output
+			&m_pMFT));
+	}
 	CHECK_HR(hr = m_pMFT->QueryInterface(IID_PPV_ARGS(&m_pCodecAPI)));
 
 	BOOL bIsAsyncMFT = FALSE;
@@ -332,8 +339,8 @@ enum tmedia_chroma_e MFCodec::GetUncompressedChroma()
 //	MFCodecVideo
 //
 
-MFCodecVideo::MFCodecVideo(MFCodecId_t eId, MFCodecType_t eType)
-: MFCodec(eId, eType)
+MFCodecVideo::MFCodecVideo(MFCodecId_t eId, MFCodecType_t eType, IMFTransform *pMFT /*= NULL*/)
+: MFCodec(eId, eType, pMFT)
 {
 	assert(m_eMediaType == MFCodecMediaType_Video);
 }
@@ -527,8 +534,8 @@ bail:
 //
 //	MFCodecVideo
 //
-MFCodecVideoH264::MFCodecVideoH264(MFCodecId_t eId, MFCodecType_t eType)
-: MFCodecVideo(eId, eType)
+MFCodecVideoH264::MFCodecVideoH264(MFCodecId_t eId, MFCodecType_t eType, IMFTransform *pMFT /*= NULL*/)
+: MFCodecVideo(eId, eType, pMFT)
 {
 	assert(eId == MFCodecId_H264Base || eId == MFCodecId_H264Main);
 	
@@ -548,9 +555,9 @@ MFCodecVideoH264::~MFCodecVideoH264()
 	
 }
 
-MFCodecVideoH264* MFCodecVideoH264::CreateCodecH264Base(MFCodecType_t eType)
+MFCodecVideoH264* MFCodecVideoH264::CreateCodecH264Base(MFCodecType_t eType, IMFTransform *pMFT /*= NULL*/)
 {
-	MFCodecVideoH264* pCodec = new MFCodecVideoH264(MFCodecId_H264Base, eType);
+	MFCodecVideoH264* pCodec = new MFCodecVideoH264(MFCodecId_H264Base, eType, pMFT);
 	if(pCodec && !pCodec->IsValid())
 	{
 		delete pCodec, pCodec = NULL;
@@ -558,9 +565,9 @@ MFCodecVideoH264* MFCodecVideoH264::CreateCodecH264Base(MFCodecType_t eType)
 	return pCodec;
 }
 
-MFCodecVideoH264* MFCodecVideoH264::CreateCodecH264Main(MFCodecType_t eType)
+MFCodecVideoH264* MFCodecVideoH264::CreateCodecH264Main(MFCodecType_t eType, IMFTransform *pMFT /*= NULL*/)
 {
-	MFCodecVideoH264* pCodec = new MFCodecVideoH264(MFCodecId_H264Main, eType);
+	MFCodecVideoH264* pCodec = new MFCodecVideoH264(MFCodecId_H264Main, eType, pMFT);
 	if(pCodec && !pCodec->IsValid())
 	{
 		delete pCodec, pCodec = NULL;
