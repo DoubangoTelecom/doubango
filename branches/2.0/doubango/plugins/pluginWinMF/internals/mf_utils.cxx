@@ -17,6 +17,9 @@
 * along with DOUBANGO.
 */
 #include "mf_utils.h"
+#include "mf_codec.h"
+
+#include "tinymedia/tmedia_common.h"
 
 #include "tsk_debug.h"
 
@@ -95,32 +98,66 @@ BOOL MFUtils::IsLowLatencyH264Supported()
 	Startup();
 
 	HRESULT hr = S_OK;
-	IMFTransform *pEncoder = NULL;
-	IMFTransform *pDecoder = NULL;
+	IMFTransform *pEncoderMFT = NULL;
+	IMFTransform *pDecoderMFT = NULL;
+	MFCodecVideoH264* pEncoderCodec = NULL;
+	MFCodecVideoH264* pDecoderCodec = NULL;
 
+	static const BOOL IsEncoderYes = TRUE;
 
 	// Microsoft H.264 MFT encoder doesn't support low latency on Win7
 	// CODECAPI_AVLowLatencyMode: http://msdn.microsoft.com/en-us/library/hh447590(v=vs.85).aspx
 	if(IsWin8_OrLater(MFUtils::g_dwMajorVersion, MFUtils::g_dwMinorVersion))
 	{
-		CHECK_HR(hr = MFUtils::GetBestCodec(true/*ENCODER*/, MFMediaType_Video, MFVideoFormat_NV12, MFVideoFormat_H264, &pEncoder));
+		CHECK_HR(hr = MFUtils::GetBestCodec(IsEncoderYes, MFMediaType_Video, MFVideoFormat_NV12, MFVideoFormat_H264, &pEncoderMFT));
 	}
 	else
 	{
 		// On Win7 Only intel Quick Sync could save your soul :)
 		hr = CoCreateInstance(CLSID_MF_INTEL_H264EncFilter, NULL, 
-				CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pEncoder));
+				CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pEncoderMFT));
 		CHECK_HR(hr);
 	}
 
 	// Any decoder is fine
-	CHECK_HR(hr = MFUtils::GetBestCodec(false/*DECODER*/, MFMediaType_Video, MFVideoFormat_H264, MFVideoFormat_NV12, &pDecoder));
+	CHECK_HR(hr = MFUtils::GetBestCodec(!IsEncoderYes, MFMediaType_Video, MFVideoFormat_H264, MFVideoFormat_NV12, &pDecoderMFT));
+
+	// Make sure both encoder and decoder are working well. Check encoding/decoding 1080p@30 would work.
+/*
+	TSK_DEBUG_INFO("Probing H.264 MFT encoder...");
+	pEncoderCodec = MFCodecVideoH264::CreateCodecH264Main(MFCodecType_Encoder, pEncoderMFT);
+	if(!pEncoderCodec)
+	{
+		CHECK_HR(hr = E_FAIL);
+	}
+	CHECK_HR(hr = pEncoderCodec->Initialize(
+			30, // FPS
+			1920, // WIDTH
+			1080, // HEIGHT
+			tmedia_get_video_bandwidth_kbps_2(1920, 1080, 30) * 1024) // BITRATE
+		);
+
+
+
+	TSK_DEBUG_INFO("Probing H.264 MFT decoder...");
+	pDecoderCodec = MFCodecVideoH264::CreateCodecH264Main(MFCodecType_Decoder, pDecoderMFT);
+	if(!pDecoderCodec)
+	{
+		CHECK_HR(hr = E_FAIL);
+	}
+	CHECK_HR(hr = pDecoderCodec->Initialize(
+		30, // FPS
+		1920, // WIDTH
+		1080 // HEIGHT
+		));*/
 
 bail:
 	MFUtils::g_bLowLatencyH264Checked = TRUE;
-	MFUtils::g_bLowLatencyH264Supported = (SUCCEEDED(hr) && pEncoder && pDecoder) ? TRUE : FALSE;
-	SafeRelease(&pEncoder);
-	SafeRelease(&pDecoder);
+	MFUtils::g_bLowLatencyH264Supported = SUCCEEDED(hr) ? TRUE : FALSE;
+	SafeRelease(&pEncoderMFT);
+	SafeRelease(&pEncoderCodec);
+	SafeRelease(&pDecoderMFT);
+	SafeRelease(&pDecoderCodec);
 #endif /* PLUGIN_MF_DISABLE_CODECS */
 
 	return MFUtils::g_bLowLatencyH264Supported;
@@ -288,6 +325,8 @@ HRESULT MFUtils::CreateVideoType(
     CHECK_HR(hr = pType->SetGUID(MF_MT_SUBTYPE, *subType));
 
 	CHECK_HR(hr = pType->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, TRUE)); // UnCompressed
+
+	CHECK_HR(hr = pType->SetUINT32(MF_MT_FIXED_SIZE_SAMPLES, TRUE)); // UnCompressed
 
 	CHECK_HR(hr = pType->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive));
 
@@ -1287,101 +1326,4 @@ HWND MFUtils::GetConsoleHwnd(void)
    SetConsoleTitle(pszOldWindowTitle);
 
    return(hwndFound);
-}
-
-inline LONG Width(const RECT& r)
-{
-    return r.right - r.left;
-}
-
-inline LONG Height(const RECT& r)
-{
-    return r.bottom - r.top;
-}
-
-//-----------------------------------------------------------------------------
-// CorrectAspectRatio
-//
-// Converts a rectangle from the source's pixel aspect ratio (PAR) to 1:1 PAR.
-// Returns the corrected rectangle.
-//
-// For example, a 720 x 486 rect with a PAR of 9:10, when converted to 1x1 PAR,
-// is stretched to 720 x 540.
-// Copyright (C) Microsoft
-//-----------------------------------------------------------------------------
-
-RECT MFUtils::CorrectAspectRatio(const RECT& src, const MFRatio& srcPAR)
-{
-    // Start with a rectangle the same size as src, but offset to the origin (0,0).
-    RECT rc = {0, 0, src.right - src.left, src.bottom - src.top};
-
-    if ((srcPAR.Numerator != 1) || (srcPAR.Denominator != 1))
-    {
-        // Correct for the source's PAR.
-
-        if (srcPAR.Numerator > srcPAR.Denominator)
-        {
-            // The source has "wide" pixels, so stretch the width.
-            rc.right = MulDiv(rc.right, srcPAR.Numerator, srcPAR.Denominator);
-        }
-        else if (srcPAR.Numerator < srcPAR.Denominator)
-        {
-            // The source has "tall" pixels, so stretch the height.
-            rc.bottom = MulDiv(rc.bottom, srcPAR.Denominator, srcPAR.Numerator);
-        }
-        // else: PAR is 1:1, which is a no-op.
-    }
-    return rc;
-}
-
-//-------------------------------------------------------------------
-// LetterBoxDstRect
-//
-// Takes a src rectangle and constructs the largest possible
-// destination rectangle within the specifed destination rectangle
-// such thatthe video maintains its current shape.
-//
-// This function assumes that pels are the same shape within both the
-// source and destination rectangles.
-// Copyright (C) Microsoft
-//-------------------------------------------------------------------
-
-RECT MFUtils::LetterBoxRect(const RECT& rcSrc, const RECT& rcDst)
-{
-    // figure out src/dest scale ratios
-    int iSrcWidth  = Width(rcSrc);
-    int iSrcHeight = Height(rcSrc);
-
-    int iDstWidth  = Width(rcDst);
-    int iDstHeight = Height(rcDst);
-
-    int iDstLBWidth;
-    int iDstLBHeight;
-
-    if (MulDiv(iSrcWidth, iDstHeight, iSrcHeight) <= iDstWidth) {
-
-        // Column letter boxing ("pillar box")
-
-        iDstLBWidth  = MulDiv(iDstHeight, iSrcWidth, iSrcHeight);
-        iDstLBHeight = iDstHeight;
-    }
-    else {
-
-        // Row letter boxing.
-
-        iDstLBWidth  = iDstWidth;
-        iDstLBHeight = MulDiv(iDstWidth, iSrcHeight, iSrcWidth);
-    }
-
-
-    // Create a centered rectangle within the current destination rect
-
-    RECT rc;
-
-    LONG left = rcDst.left + ((iDstWidth - iDstLBWidth) / 2);
-    LONG top = rcDst.top + ((iDstHeight - iDstLBHeight) / 2);
-
-    SetRect(&rc, left, top, left + iDstLBWidth, top + iDstLBHeight);
-
-    return rc;
 }

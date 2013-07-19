@@ -639,7 +639,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_vp8_plugin_def_s =
 	tmedia_video,
 	tmedia_codec_id_vp8,
 	"VP8",
-	"VP8 codec",
+	"VP8 codec (libvpx)",
 	TMEDIA_CODEC_FORMAT_VP8,
 	tsk_true,
 	90000, // rate

@@ -578,7 +578,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_h263_plugin_def_s =
 	tmedia_video,
 	tmedia_codec_id_h263,
 	"H263",
-	"H263-1996 codec",
+	"H263-1996 codec (FFmpeg)",
 	TMEDIA_CODEC_FORMAT_H263,
 	tsk_false,
 	90000, // rate
@@ -803,7 +803,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_h263p_plugin_def_s =
 	tmedia_video,
 	tmedia_codec_id_h263p,
 	"H263-1998",
-	"H263-1998 codec",
+	"H263-1998 codec (FFmpeg)",
 	TMEDIA_CODEC_FORMAT_H263_1998,
 	tsk_true,
 	90000, // rate
@@ -883,7 +883,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_h263pp_plugin_def_s =
 	tmedia_video,
 	tmedia_codec_id_h263pp,
 	"H263-2000",
-	"H263-2000 codec",
+	"H263-2000 codec (FFmpeg)",
 	TMEDIA_CODEC_FORMAT_H263_2000,
 	tsk_true,
 	90000, // rate

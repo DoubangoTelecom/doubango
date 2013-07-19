@@ -238,7 +238,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_ilbc_plugin_def_s =
 	tmedia_audio,
 	tmedia_codec_id_ilbc,
 	"iLBC",
-	"iLBC codec",
+	"iLBC codec (libILBc)",
 	TMEDIA_CODEC_FORMAT_ILBC,
 	tsk_true,
 	8000, // rate

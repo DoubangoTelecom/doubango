@@ -53,7 +53,7 @@ MFCodecMediaType_t;
 class MFCodec : IUnknown
 {
 protected:
-	MFCodec(MFCodecId_t eId, MFCodecType_t eType);
+	MFCodec(MFCodecId_t eId, MFCodecType_t eType, IMFTransform *pMFT = NULL);
 	virtual ~MFCodec();
 	HRESULT ProcessInput(IMFSample* pSample);
 	HRESULT ProcessOutput(IMFSample **ppSample);
@@ -99,7 +99,7 @@ protected:
 class MFCodecVideo : public MFCodec
 {
 protected:
-	MFCodecVideo(MFCodecId_t eId, MFCodecType_t eType);
+	MFCodecVideo(MFCodecId_t eId, MFCodecType_t eType, IMFTransform *pMFT = NULL);
 	virtual ~MFCodecVideo();
 
 public:
@@ -120,12 +120,12 @@ protected:
 class MFCodecVideoH264 : public MFCodecVideo
 {
 protected:
-	MFCodecVideoH264(MFCodecId_t eId, MFCodecType_t eType);
+	MFCodecVideoH264(MFCodecId_t eId, MFCodecType_t eType, IMFTransform *pMFT = NULL);
 
 public:
 	virtual ~MFCodecVideoH264();
-	static MFCodecVideoH264* CreateCodecH264Base(MFCodecType_t eType);
-	static MFCodecVideoH264* CreateCodecH264Main(MFCodecType_t eType);
+	static MFCodecVideoH264* CreateCodecH264Base(MFCodecType_t eType, IMFTransform *pMFT = NULL);
+	static MFCodecVideoH264* CreateCodecH264Main(MFCodecType_t eType, IMFTransform *pMFT = NULL);
 
 protected:
 

@@ -437,7 +437,7 @@ static const tmedia_codec_plugin_def_t tdav_codec_g729ab_plugin_def_s =
 	tmedia_audio,
 	tmedia_codec_id_g729ab,
 	"g729",
-	"g729ab Codec",
+	"g729ab Codec (libg729)",
 	TMEDIA_CODEC_FORMAT_G729,
 	tsk_false,
 	8000, // rate
