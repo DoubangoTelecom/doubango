@@ -123,7 +123,7 @@ BOOL MFUtils::IsLowLatencyH264Supported()
 	CHECK_HR(hr = MFUtils::GetBestCodec(!IsEncoderYes, MFMediaType_Video, MFVideoFormat_H264, MFVideoFormat_NV12, &pDecoderMFT));
 
 	// Make sure both encoder and decoder are working well. Check encoding/decoding 1080p@30 would work.
-/*
+
 	TSK_DEBUG_INFO("Probing H.264 MFT encoder...");
 	pEncoderCodec = MFCodecVideoH264::CreateCodecH264Main(MFCodecType_Encoder, pEncoderMFT);
 	if(!pEncoderCodec)
@@ -149,7 +149,7 @@ BOOL MFUtils::IsLowLatencyH264Supported()
 		30, // FPS
 		1920, // WIDTH
 		1080 // HEIGHT
-		));*/
+		));
 
 bail:
 	MFUtils::g_bLowLatencyH264Checked = TRUE;
