@@ -137,6 +137,11 @@ static int tdav_converter_video_libyuv_init(tmedia_converter_video_t* self, tsk_
 
 	TDAV_CONVERTER_VIDEO_LIBYUV(self)->toI420 = (TDAV_CONVERTER_VIDEO_LIBYUV(self)->dstFormat == FOURCC_I420);
 	TDAV_CONVERTER_VIDEO_LIBYUV(self)->fromI420 = (TDAV_CONVERTER_VIDEO_LIBYUV(self)->srcFormat == FOURCC_I420);
+	if(!TDAV_CONVERTER_VIDEO_LIBYUV(self)->toI420 && !TDAV_CONVERTER_VIDEO_LIBYUV(self)->fromI420)
+	{
+		TSK_DEBUG_ERROR("LIBYUV only support from/to I420");
+		return -1;
+	}
 	return 0;
 }
 
@@ -441,8 +446,9 @@ static const tmedia_converter_video_plugin_def_t tdav_converter_video_libyuv_plu
 };
 const tmedia_converter_video_plugin_def_t *tdav_converter_video_libyuv_plugin_def_t = &tdav_converter_video_libyuv_plugin_def_s;
 
+#endif /* HAVE_LIBYUV */
 
-#elif HAVE_FFMPEG || HAVE_SWSSCALE /* !HAVE_LIBYUV */
+#if HAVE_FFMPEG || HAVE_SWSSCALE
 
 #ifndef INT64_C
 #	define INT64_C(c) (c ## LL)

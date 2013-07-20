@@ -38,6 +38,13 @@ Video Processor MFT (http://msdn.microsoft.com/en-us/library/windows/desktop/hh1
 #include "tsk_debug.h"
 
 #include <assert.h>
+#include <dmo.h>
+#include <wmcodecdsp.h>
+
+#ifdef _MSC_VER
+#pragma comment(lib, "strmiids.lib")
+#pragma comment(lib, "wmcodecdspuuid.lib")
+#endif
 
 DEFINE_GUID(CLSID_VideoProcessorMFT, 
 			0x88753b26, 0x5b24, 0x49bd, 0xb2, 0xe7, 0xc, 0x44, 0x5c, 0x78, 0xc9, 0x82);
@@ -75,10 +82,11 @@ typedef struct plugin_win_mf_converter_video_ms_s
 	LONGLONG rtStart;
     UINT64 rtDuration;
 
-	IMFTransform* pMFT;
+	IMFTransform* pMFT; // "CLSID_VideoProcessorMFT" or "CLSID_CColorConvertDMO"
 #if HAVE_IMFVideoProcessorControl
 	IMFVideoProcessorControl* pVPC;
 #endif
+	BOOL isVideoProcessor;
 }
 plugin_win_mf_converter_video_ms_t;
 
@@ -132,11 +140,31 @@ static int plugin_win_mf_converter_video_ms_init(tmedia_converter_video_t* self,
 	IMFMediaType* pTypeSrc = NULL;
 	IMFMediaType* pTypeDst = NULL;
 
-	// Do not use MFTEnumEx(MFT_CATEGORY_VIDEO_PROCESSOR) because we really want MS video processor
-	CHECK_HR(hr = CoCreateInstance(CLSID_VideoProcessorMFT, NULL, 
+	// Get video processor or Color convertor
+	hr = CoCreateInstance(CLSID_VideoProcessorMFT, NULL, 
+				CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pSelf->pMFT));
+	pSelf->isVideoProcessor = SUCCEEDED(hr);
+	if(FAILED(hr))
+	{
+		TSK_DEBUG_INFO("CoCreateInstance(CLSID_VideoProcessorMFT) failed");
+		if(pSelf->widthSrc == pSelf->widthDst && pSelf->heightSrc == pSelf->heightDst)
+		{
+			TSK_DEBUG_INFO("No video scaling is required...perform CoCreateInstance(CLSID_CColorConvertDMO)");
+			CHECK_HR(hr = CoCreateInstance(CLSID_CColorConvertDMO, NULL, 
 				CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pSelf->pMFT)));
+		}
+		else
+		{
+			CHECK_HR(hr);
+		}
+	}
+
+
 #if HAVE_IMFVideoProcessorControl
-	CHECK_HR(hr = pSelf->pMFT->QueryInterface(IID_PPV_ARGS(&pSelf->pVPC)));
+	if(pSelf->isVideoProcessor)
+	{
+		CHECK_HR(hr = pSelf->pMFT->QueryInterface(IID_PPV_ARGS(&pSelf->pVPC)));
+	}
 #endif
 
 	CHECK_HR(hr = MFUtils::CreateVideoType(&pSelf->fmtSrc, &pTypeSrc, pSelf->widthSrc, pSelf->heightSrc));
@@ -181,7 +209,7 @@ static tsk_size_t plugin_win_mf_converter_video_ms_process(tmedia_converter_vide
 		CHECK_HR(hr = E_FAIL);
 	}
 #if HAVE_IMFVideoProcessorControl
-	if(!pSelf->pVPC)
+	if(!pSelf->pVPC && pSelf->isVideoProcessor)
 	{
 		TSK_DEBUG_ERROR("Not initialized");
 		CHECK_HR(hr = E_FAIL);
@@ -199,12 +227,12 @@ static tsk_size_t plugin_win_mf_converter_video_ms_process(tmedia_converter_vide
 		*output_max_size = pSelf->xOutputSize;
 	}
 #if HAVE_IMFVideoProcessorControl
-	if(!!_self->flip != !!pSelf->flip)
+	if(pSelf->pVPC && !!_self->flip != !!pSelf->flip)
 	{
 		pSelf->flip = !!_self->flip;
 		CHECK_HR(hr = pSelf->pVPC->SetMirror(pSelf->flip ? MIRROR_NONE : MIRROR_VERTICAL));
 	}
-	if(_self->rotation != pSelf->rotation)
+	if(pSelf->pVPC && _self->rotation != pSelf->rotation)
 	{
 		_self->rotation = pSelf->rotation;
 		CHECK_HR(hr = pSelf->pVPC->SetRotation(pSelf->rotation == 0 ? ROTATION_NONE : ROTATION_NORMAL));
@@ -237,22 +265,28 @@ static tsk_size_t plugin_win_mf_converter_video_ms_process(tmedia_converter_vide
 				// Don't waste your time guessing which parameter to use: The consumer will always request RGB32. If not used for consumer then, just memcpy()
 				case tmedia_chroma_rgb32:
 					{
-#if 0
-						hr = MFCopyImage(
-							 (BYTE*)*output, 
-							 (pSelf->widthDst << 2), 
-							 (BYTE*)pBufferPtr, 
-							 (pSelf->widthDst << 2), 
-							 (pSelf->widthDst << 2), 
-							 pSelf->heightDst
-						 );
-#endif
-						hr = _plugin_win_mf_converter_video_ms_copy_rgb32_down_top(
-							(BYTE*)*output, 
-							(const BYTE*)pBufferPtr, 
-							 pSelf->widthDst, 
-							 pSelf->heightDst
+						if(pSelf->isVideoProcessor)
+						{
+							hr = _plugin_win_mf_converter_video_ms_copy_rgb32_down_top(
+								(BYTE*)*output, 
+								(const BYTE*)pBufferPtr, 
+								 pSelf->widthDst, 
+								pSelf->heightDst
 							 );
+						}
+						else
+						{
+							hr = MFCopyImage(
+								 (BYTE*)*output, 
+								 (pSelf->widthDst << 2), 
+								 (BYTE*)pBufferPtr, 
+								 (pSelf->widthDst << 2), 
+								 (pSelf->widthDst << 2), 
+								 pSelf->heightDst
+							 );
+						}
+
+						
 						if(FAILED(hr))
 						{
 							// unlock() before leaving
@@ -379,13 +413,13 @@ static inline HRESULT _plugin_win_mf_converter_video_ms_copy_rgb32_down_top(
     INT       dwHeightInPixels
     )
 {
-	RGBQUAD *pSrcPixel = &((RGBQUAD*)pSrc)[dwWidthInPixels * dwHeightInPixels];
+	RGBQUAD *pSrcPixel = &((RGBQUAD*)pSrc)[(dwWidthInPixels * dwHeightInPixels) - dwWidthInPixels];
     RGBQUAD *pDestPixel = &((RGBQUAD*)pDst)[0];
 
 	register INT x;
 	register INT y;
 
-    for (y = dwHeightInPixels - 1; y >= 0 ; --y)
+    for (y = dwHeightInPixels; y > 0 ; --y)
     {
         for (x = 0; x < dwWidthInPixels; ++x)
         {

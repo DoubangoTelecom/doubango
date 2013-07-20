@@ -284,14 +284,12 @@ int tdav_init()
 
 	
 	/* === Register converters === */
+	// register several convertors and try them all (e.g. LIBYUV only support to/from I420)
 #if HAVE_LIBYUV
-	if(tmedia_converter_video_plugin_registry_count() == 0) {
-		tmedia_converter_video_plugin_register(tdav_converter_video_libyuv_plugin_def_t);
-	}
-#elif HAVE_FFMPEG || HAVE_SWSSCALE
-	if(tmedia_converter_video_plugin_registry_count() == 0) {
-		tmedia_converter_video_plugin_register(tdav_converter_video_ffmpeg_plugin_def_t);
-	}
+	tmedia_converter_video_plugin_register(tdav_converter_video_libyuv_plugin_def_t);
+#endif
+#if HAVE_FFMPEG || HAVE_SWSSCALE
+	tmedia_converter_video_plugin_register(tdav_converter_video_ffmpeg_plugin_def_t);
 #endif
 
 	/* === Register consumers === */
@@ -575,7 +573,8 @@ int tdav_deinit()
 	/* === unRegister converters === */
 #if HAVE_LIBYUV
 	tmedia_converter_video_plugin_unregister(tdav_converter_video_libyuv_plugin_def_t);
-#elif HAVE_FFMPEG || HAVE_SWSSCALE
+#endif
+#if HAVE_FFMPEG || HAVE_SWSSCALE
 	tmedia_converter_video_plugin_unregister(tdav_converter_video_ffmpeg_plugin_def_t);
 #endif
 
