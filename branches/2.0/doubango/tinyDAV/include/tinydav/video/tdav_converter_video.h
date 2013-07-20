@@ -37,9 +37,10 @@ TDAV_BEGIN_DECLS
 
 #if HAVE_LIBYUV
 extern const tmedia_converter_video_plugin_def_t *tdav_converter_video_libyuv_plugin_def_t;
-#elif HAVE_FFMPEG || HAVE_SWSSCALE
+#endif /* HAVE_LIBYUV */
+#if HAVE_FFMPEG || HAVE_SWSSCALE
 extern const tmedia_converter_video_plugin_def_t *tdav_converter_video_ffmpeg_plugin_def_t;
-#endif
+#endif /* if HAVE_FFMPEG || HAVE_SWSSCALE */
 
 TDAV_END_DECLS
 
