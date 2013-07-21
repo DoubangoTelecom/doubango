@@ -1022,7 +1022,7 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 		pSelf->pDecoder ? pSelf->pDecoder->GetMFT() : NULL, 
 		pSelf->pSinkActivate, 
 		NULL/*Preview*/, 
-		MFMediaType_Video, 
+		pSelf->pOutType, 
 		&pSelf->pTopologyPartial));
 	// Resolve topology (adds video processors if needed).
 	CHECK_HR(hr = MFUtils::ResolveTopology(pSelf->pTopologyPartial, &pSelf->pTopologyFull));
@@ -1135,7 +1135,7 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 				pSelf->pDecoder ? pSelf->pDecoder->GetMFT() : NULL, 
 				pSinkActivate, 
 				NULL/*Preview*/, 
-				MFMediaType_Video, 
+				pSelf->pOutType, 
 				&pTopologyPartial);
 			if(FAILED(hr)) goto end_of_swapping;
 

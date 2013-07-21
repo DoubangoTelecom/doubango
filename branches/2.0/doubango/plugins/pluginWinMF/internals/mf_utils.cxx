@@ -24,11 +24,21 @@
 #include "tsk_debug.h"
 
 #include <initguid.h>
+#include <wmcodecdsp.h>
 #include <assert.h>
+
+
+#ifdef _MSC_VER
+#pragma comment(lib, "strmiids.lib")
+#pragma comment(lib, "wmcodecdspuuid.lib")
+#endif
 
 #if !defined(PLUGIN_MF_DISABLE_CODECS)
 #	define PLUGIN_MF_DISABLE_CODECS 1 // Must be "0" to use "Microsoft"/"Intel Quick Sync" MFT codecs. Testing: When set to "1", libx264 and FFmpeg will be used.
 #endif
+
+DEFINE_GUID(CLSID_VideoProcessorMFT, 
+			0x88753b26, 0x5b24, 0x49bd, 0xb2, 0xe7, 0xc, 0x44, 0x5c, 0x78, 0xc9, 0x82);
 
 BOOL MFUtils::g_bStarted = FALSE;
 
@@ -577,6 +587,29 @@ HRESULT MFUtils::GetBestCodec(
 	return *ppMFT ? S_OK : MF_E_NOT_FOUND;
 }
 
+HRESULT MFUtils::IsVideoProcessorSupported(BOOL *pbSupported)
+{
+	HRESULT hr = S_OK;
+	IMFTransform *pTransform = NULL;
+
+	if(!pbSupported)
+	{
+		CHECK_HR(hr = E_POINTER);
+	}	
+
+	hr = CoCreateInstance(CLSID_VideoProcessorMFT, NULL, 
+				CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pTransform));
+	*pbSupported = SUCCEEDED(hr);
+	if(FAILED(hr))
+	{
+		hr = S_OK; // not an error
+	}
+
+bail:
+	SafeRelease(&pTransform);
+	return hr;
+}
+
 HRESULT MFUtils::GetBestVideoProcessor(
 	const GUID& inputFormat, // The input MediaFormat (e.g. MFVideoFormat_I420)
 	const GUID& outputFormat, // The output MediaFormat (e.g. MFVideoFormat_NV12)
@@ -796,7 +829,7 @@ HRESULT MFUtils::CreateTopology(
 	IMFTransform *pTransform, // Transform filter (e.g. encoder or decoder) to insert between the source and Sink. NULL is valid.
 	IMFActivate *pSinkActivateMain, // Main sink (e.g. sample grabber or EVR).
 	IMFActivate *pSinkActivatePreview, // Preview sink. Optional. Could be NULL.
-	const GUID& mediaType, // The MediaType
+	IMFMediaType *pIputTypeMain, // Main sink input MediaType
 	IMFTopology **ppTopo // Receives the newly created topology
 	)
 {
@@ -812,32 +845,53 @@ HRESULT MFUtils::CreateTopology(
 	IMFMediaType *pMediaType = NULL;
     IMFTransform *pVideoProcessor = NULL;
     IMFTopologyNode *pNodeVideoProcessor = NULL;
+	IMFTransform *pConvFrameRate = NULL;
+	IMFTransform *pConvSize = NULL;
+	IMFTransform *pConvColor = NULL;
+	IMFTopologyNode *pNodeConvFrameRate = NULL;
+	IMFTopologyNode *pNodeConvSize = NULL;
+	IMFTopologyNode *pNodeConvColor = NULL;
 	IMFMediaType *pTransformInputType = NULL;
+	IMFMediaType *pSinkMainInputType = NULL;
+	const IMFTopologyNode *pcNodeBeforeSinkMain = NULL;
 
 	HRESULT hr = S_OK;
 	DWORD cStreams = 0;
 	BOOL bSourceFound = FALSE;
+	BOOL bSupportedSize = FALSE;
+	BOOL bSupportedFps = FALSE;
+	BOOL bSupportedFormat = FALSE;
+	BOOL bVideoProcessorSupported = FALSE;
+	GUID inputMajorType, inputSubType;
+
+	CHECK_HR(hr = IsVideoProcessorSupported(&bVideoProcessorSupported));
+	CHECK_HR(hr = pIputTypeMain->GetMajorType(&inputMajorType));
 
 	CHECK_HR(hr = MFCreateTopology(&pTopology));
 	CHECK_HR(hr = pSource->CreatePresentationDescriptor(&pPD));
-	CHECK_HR(hr = pPD->GetStreamDescriptorCount(&cStreams));
+	CHECK_HR(hr = pPD->GetStreamDescriptorCount(&cStreams));	
 
 	for (DWORD i = 0; i < cStreams; i++)
 	{
 		BOOL fSelected = FALSE;
-		GUID majorType;
+		GUID majorType;		
 
 		CHECK_HR(hr = pPD->GetStreamDescriptorByIndex(i, &fSelected, &pSD));
 		CHECK_HR(hr = pSD->GetMediaTypeHandler(&pHandler));
 		CHECK_HR(hr = pHandler->GetMajorType(&majorType));
 
-		if (majorType == mediaType && fSelected)
+		if (majorType == inputMajorType && fSelected)
 		{
 			CHECK_HR(hr = AddSourceNode(pTopology, pSource, pPD, pSD, &pNodeSource));
 			CHECK_HR(hr = pNodeSource->SetTopoNodeID(MFUtils::g_ullTopoIdSource));
 			CHECK_HR(hr = AddOutputNode(pTopology, pSinkActivateMain, 0, &pNodeSinkMain));
 			CHECK_HR(hr = pNodeSinkMain->SetTopoNodeID(MFUtils::g_ullTopoIdSinkMain));
 			CHECK_HR(hr = MFUtils::BindOutputNode(pNodeSinkMain)); // To avoid MF_E_TOPO_SINK_ACTIVATES_UNSUPPORTED
+
+			//
+			// Create preview
+			//
+
 			if(pSinkActivatePreview)
 			{
 				CHECK_HR(hr = AddOutputNode(pTopology, pSinkActivatePreview, 0, &pNodeSinkPreview));
@@ -848,91 +902,217 @@ HRESULT MFUtils::CreateTopology(
 				CHECK_HR(hr = pTopology->AddNode(pNodeTee));
 			}
 
+			//
+			// Create converters
+			//
+
+			if(majorType == MFMediaType_Video)
+			{
+				// Even when size matches the topology could add a resizer which doesn't keep ratio when resizing while video processor does.
+				if(!bVideoProcessorSupported)
+				{
+					hr = IsSupported(
+						pPD,
+						i,
+						pIputTypeMain,
+						&bSupportedSize,
+						&bSupportedFps,
+						&bSupportedFormat);
+				}
+				
+				CHECK_HR(hr = pIputTypeMain->GetGUID(MF_MT_SUBTYPE, &inputSubType));
+
+				if(!bSupportedSize || !bSupportedFps || !bSupportedFormat)
+				{
+					// Use video processor single MFT or 3 different MFTs
+					if(!pVideoProcessor)
+					{
+						hr = CoCreateInstance(CLSID_VideoProcessorMFT, NULL, 
+							CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pVideoProcessor));
+					}
+					if(!pVideoProcessor)
+					{
+						// Video Resizer DSP(http://msdn.microsoft.com/en-us/library/windows/desktop/ff819491(v=vs.85).aspx) supports I420 only
+						if(!bSupportedSize && !pConvSize && inputSubType == MFVideoFormat_I420)
+						{
+							hr = CoCreateInstance(CLSID_CResizerDMO, NULL, 
+								CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pConvSize));
+						}
+						// Frame Rate Converter DSP(http://msdn.microsoft.com/en-us/library/windows/desktop/ff819100(v=vs.85).aspx) supports neither NV12 nor I420
+						/*if(!bSupportedFps && !pConvFrameRate)
+						{
+							hr = CoCreateInstance(CLSID_CFrameRateConvertDmo, NULL, 
+								CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pConvFrameRate));
+						}*/
+						// Color Converter DSP (http://msdn.microsoft.com/en-us/library/windows/desktop/ff819079(v=vs.85).aspx) supports both NV12 and I420
+						if(!bSupportedFormat && !pConvColor)
+						{
+							hr = CoCreateInstance(CLSID_CColorConvertDMO, NULL, 
+								CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pConvColor));
+						}
+					}
+				}
+
+				if(pVideoProcessor && !pNodeVideoProcessor)
+				{
+					CHECK_HR(hr = AddTransformNode(pTopology, pVideoProcessor, 0, &pNodeVideoProcessor));
+					CHECK_HR(hr = pNodeVideoProcessor->SetTopoNodeID(MFUtils::g_ullTopoIdVideoProcessor));
+				}
+				if(pConvColor && !pNodeConvColor)
+				{
+					CHECK_HR(hr = AddTransformNode(pTopology, pConvColor, 0, &pNodeConvColor));
+				}
+				if(pConvFrameRate && !pNodeConvFrameRate)
+				{
+					CHECK_HR(hr = AddTransformNode(pTopology, pConvFrameRate, 0, &pNodeConvFrameRate));
+				}
+				if(pConvSize && !pNodeConvSize)
+				{
+					CHECK_HR(hr = AddTransformNode(pTopology, pConvSize, 0, &pNodeConvSize));
+				}
+			} // if(majorType == MFMediaType_Video)
+
+
+			//
+			// Set media type
+			//
+
 			if(pTransform)
 			{
 				CHECK_HR(hr = AddTransformNode(pTopology, pTransform, 0, &pNodeTransform));
-				if(majorType == MFMediaType_Video)
+				hr = pTransform->GetInputCurrentType(0, &pTransformInputType);
+				if(FAILED(hr))
 				{
-						GUID subType = GUID_NULL;
-						SafeRelease(&pMediaType);
-						SafeRelease(&pVideoProcessor);
-						SafeRelease(&pTransformInputType);
-						CHECK_HR(hr = pHandler->GetCurrentMediaType(&pMediaType));
-						CHECK_HR(hr = pMediaType->GetGUID(MF_MT_SUBTYPE, &subType));
-						// Transforms accept NV12 only
-						// For now the video processor is always added because used to resize the video on the fly (e.g. on the consumer)
-						/*if(subType != MFVideoFormat_NV12)*/
-						{
-							// FIXME:
-							// "subType" could be something not support as input for any Color covertor (http://msdn.microsoft.com/en-us/library/windows/desktop/ff819079(v=vs.85).aspx)
-							// To be support we'll have at least one processor we request (NV12 -> NV12) and let negitiation be done when topology is resolved
-							subType = MFVideoFormat_NV12;
-
-							CHECK_HR(hr = MFUtils::GetBestVideoProcessor(subType, MFVideoFormat_NV12, &pVideoProcessor));
-							// CHECK_HR(hr = pVideoProcessor->SetInputType(0, pMediaType, 0)); // negotiate
-							CHECK_HR(hr = pTransform->GetInputCurrentType(0, &pTransformInputType));
-							CHECK_HR(hr = pVideoProcessor->SetOutputType(0, pTransformInputType, 0));
-							CHECK_HR(hr = AddTransformNode(pTopology, pVideoProcessor, 0, &pNodeVideoProcessor));
-							CHECK_HR(hr = pNodeVideoProcessor->SetTopoNodeID(MFUtils::g_ullTopoIdVideoProcessor));
-						}
+					pTransformInputType = pIputTypeMain;
+					pTransformInputType->AddRef();
+					hr = S_OK;
 				}
-				
-				if(pNodeTee)
-				{	
-					// Connect(Source -> Tee)
-					CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeTee, 0));
-					if(pNodeVideoProcessor)
-					{
-						// Connect(Tee -> Processor)
-						CHECK_HR(hr = pNodeTee->ConnectOutput(0, pNodeVideoProcessor, 0));
-						// Connect(Processor -> Transform)
-						CHECK_HR(hr = pNodeVideoProcessor->ConnectOutput(0, pNodeTransform, 0));
-					}
-					else
-					{
-						// Connect(Tee -> Transform)
-						CHECK_HR(hr = pNodeTee->ConnectOutput(0, pNodeTransform, 0));
-					}
-					// Connect(Transform -> SinkMain)
-					CHECK_HR(hr = pNodeTransform->ConnectOutput(0, pNodeSinkMain, 0));
-					// Connect(Tee -> SinkPreview)
-					CHECK_HR(hr = pNodeTee->ConnectOutput(1, pNodeSinkPreview, 0));
+				if(pVideoProcessor)
+				{
+					CHECK_HR(hr = pVideoProcessor->SetOutputType(0, pTransformInputType, 0));
 				}
 				else
 				{
-					if(pNodeVideoProcessor)
+					if(pConvColor)
 					{
-						// Connect (Source -> Processor)
-						CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeVideoProcessor, 0));
-						// Connect (Processor -> Transform)
-						CHECK_HR(hr = pNodeVideoProcessor->ConnectOutput(0, pNodeTransform, 0));
+						/*CHECK_HR*/(hr = pConvColor->SetOutputType(0, pTransformInputType, 0));
 					}
-					else
+					if(pConvFrameRate)
 					{
-						// Connect (Source -> Transform)
-						CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeTransform, 0));
+						/*CHECK_HR*/(hr = pConvFrameRate->SetOutputType(0, pTransformInputType, 0));
 					}
-					// Connect(Transform -> SinkMain)
-					CHECK_HR(hr = pNodeTransform->ConnectOutput(0, pNodeSinkMain, 0));
+					if(pConvSize)
+					{
+						// Transform requires NV12
+						//Video Resizer DSP(http://msdn.microsoft.com/en-us/library/windows/desktop/ff819491(v=vs.85).aspx) doesn't support NV12
+						//*CHECK_HR*/(hr = pConvSize->SetOutputType(0, pTransformInputType, 0));
+					}
 				}
 			}
 			else
-			{	
-				if(pNodeTee)
+			{
+				hr = pNodeSinkMain->GetInputPrefType(0, &pSinkMainInputType);
+				if(FAILED(hr))
 				{
-					// Connect(Source -> Tee)
-					CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeTee, 0));
-					// Connect(Tee -> SinkMain)
-					CHECK_HR(hr = pNodeTee->ConnectOutput(0, pNodeSinkMain, 0));
-					// Connect(Tee -> SinkPreview)
-					CHECK_HR(hr = pNodeTee->ConnectOutput(1, pNodeSinkPreview, 0));
+					pSinkMainInputType = pIputTypeMain;
+					pSinkMainInputType->AddRef();
+					hr = S_OK;
+				}
+				if(SUCCEEDED(hr))
+				{
+					if(pVideoProcessor)
+					{
+						CHECK_HR(hr = pVideoProcessor->SetOutputType(0, pSinkMainInputType, 0));
+					}
+					else
+					{
+						//!\ MUST NOT SET OUTPUT TYPE
+						if(pConvColor)
+						{
+							//*CHECK_HR*/(hr = pConvColor->SetOutputType(0, pSinkMainInputType, 0));
+						}
+						if(pConvFrameRate)
+						{
+							//*CHECK_HR*/(hr = pConvFrameRate->SetOutputType(0, pSinkMainInputType, 0));
+						}
+						if(pConvSize)
+						{
+							//*CHECK_HR*/(hr = pConvSize->SetOutputType(0, pSinkMainInputType, 0));
+						}
+					}
+				}
+			}
+
+			//
+			// Connect
+			//
+
+			if(pNodeTee)
+			{
+				// Connect(Source -> Tee)
+				CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeTee, 0));
+
+				// Connect(Tee -> SinkPreview)
+				CHECK_HR(hr = pNodeTee->ConnectOutput(1, pNodeSinkPreview, 0));
+
+				// Connect(Tee ->(Processors)
+				if(pVideoProcessor)
+				{
+					CHECK_HR(hr = pNodeTee->ConnectOutput(0, pNodeVideoProcessor, 0));
+					pcNodeBeforeSinkMain = pNodeVideoProcessor;
+				}
+				else if(pNodeConvFrameRate || pNodeConvSize || pNodeConvColor)
+				{
+					CHECK_HR(hr = ConnectConverters(
+						pNodeTee,
+						0,
+						pNodeConvFrameRate,
+						pNodeConvColor,
+						pNodeConvSize
+						));
+					pcNodeBeforeSinkMain = pNodeConvSize ? pNodeConvSize : (pNodeConvColor ? pNodeConvColor : pNodeConvFrameRate);
 				}
 				else
 				{
-					// Connect(Source -> SinkMain)
-					CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeSinkMain, 0));
+					pcNodeBeforeSinkMain = pNodeTee;
 				}
 			}
+			else
+			{
+				// Connect(Source -> (Processors))
+				if(pVideoProcessor)
+				{
+					CHECK_HR(hr = pNodeSource->ConnectOutput(0, pNodeVideoProcessor, 0));
+					pcNodeBeforeSinkMain = pNodeVideoProcessor;
+				}
+				else if(pNodeConvFrameRate || pNodeConvFrameRate || pNodeConvColor)
+				{
+					CHECK_HR(hr = ConnectConverters(
+						pNodeSource,
+						0,
+						pNodeConvFrameRate,
+						pNodeConvSize,
+						pNodeConvColor
+						));
+					pcNodeBeforeSinkMain = pNodeConvSize ? pNodeConvSize : (pNodeConvColor ? pNodeConvColor : pNodeConvFrameRate);
+				}
+				else
+				{
+					pcNodeBeforeSinkMain = pNodeSource;
+				}
+			}
+
+
+			if(pNodeTransform)
+			{
+				// Connect(X->Transform)
+				CHECK_HR(hr = ((IMFTopologyNode *)pcNodeBeforeSinkMain)->ConnectOutput(0, pNodeTransform, 0));
+				pcNodeBeforeSinkMain = pNodeTransform;
+			}
+
+			// Connect(X -> SinkMain)
+			CHECK_HR(hr = ((IMFTopologyNode *)pcNodeBeforeSinkMain)->ConnectOutput(0, pNodeSinkMain, 0));
+			
 			bSourceFound = TRUE;
 			break;
 		}
@@ -959,6 +1139,16 @@ bail:
 	SafeRelease(&pHandler);
 	SafeRelease(&pMediaType);
 	SafeRelease(&pTransformInputType);
+	SafeRelease(&pSinkMainInputType);
+
+	SafeRelease(&pVideoProcessor);
+    SafeRelease(&pNodeVideoProcessor);
+	SafeRelease(&pConvFrameRate);
+	SafeRelease(&pConvSize);
+	SafeRelease(&pConvColor);
+	SafeRelease(&pNodeConvFrameRate);
+	SafeRelease(&pNodeConvSize);
+	SafeRelease(&pNodeConvColor);
 
 	if(!bSourceFound)
 	{
@@ -1294,6 +1484,257 @@ bail:
 	SafeRelease(&pHandler);
 
 	return nIndex;
+}
+
+HRESULT MFUtils::IsSupported(
+	IMFPresentationDescriptor *pPD, 
+	DWORD cStreamIndex, 
+	UINT32 nWidth, 
+	UINT32 nHeight,
+	UINT32 nFps,
+	const GUID& guidFormat,
+	BOOL* pbSupportedSize,
+	BOOL* pbSupportedFps,
+	BOOL* pbSupportedFormat
+	)
+{
+	HRESULT hr = S_OK;
+
+	BOOL fSelected = FALSE;
+	IMFStreamDescriptor *pSD = NULL;
+	IMFMediaTypeHandler *pHandler = NULL;
+	IMFMediaType *pMediaType = NULL;
+	UINT32 _nWidth = 0, _nHeight = 0, numeratorFps = 0, denominatorFps = 0;
+	GUID subType;
+	DWORD cMediaTypesCount;
+	
+	if(!pPD || !pbSupportedSize || !pbSupportedFps || !pbSupportedFormat)
+	{
+		CHECK_HR(hr = E_POINTER);
+	}
+	
+	*pbSupportedSize = FALSE;
+	*pbSupportedFps = FALSE;
+	*pbSupportedFormat = FALSE;
+	
+	CHECK_HR(hr = pPD->GetStreamDescriptorByIndex(cStreamIndex, &fSelected, &pSD));
+	if(fSelected)
+	{
+		CHECK_HR(hr = pSD->GetMediaTypeHandler(&pHandler));
+		CHECK_HR(hr = pHandler->GetMediaTypeCount(&cMediaTypesCount));
+		for(DWORD cMediaTypesIndex = 0; cMediaTypesIndex < cMediaTypesCount; ++cMediaTypesIndex)
+		{
+			CHECK_HR(hr = pHandler->GetMediaTypeByIndex(cMediaTypesIndex, &pMediaType));
+			CHECK_HR(hr = MFGetAttributeSize(pMediaType, MF_MT_FRAME_SIZE, &_nWidth, &_nHeight));
+			CHECK_HR(hr = pMediaType->GetGUID(MF_MT_SUBTYPE, &subType));
+			if(FAILED(hr = MFGetAttributeRatio(pMediaType, MF_MT_FRAME_RATE, &numeratorFps, &denominatorFps)))
+			{
+				numeratorFps = 30;
+				denominatorFps = 1;
+			}
+			
+			// all must match for the same stream
+			if(_nWidth == nWidth && _nHeight == nHeight && subType == guidFormat && (numeratorFps/denominatorFps) == nFps)
+			{
+				*pbSupportedSize = TRUE;
+				*pbSupportedFormat = TRUE;
+				*pbSupportedFps = TRUE;
+				break;
+			}
+			
+			SafeRelease(&pMediaType);
+		}
+		SafeRelease(&pHandler);
+	}
+	
+bail:
+	SafeRelease(&pSD);
+	SafeRelease(&pHandler);
+	SafeRelease(&pMediaType);
+	
+	return hr;
+}
+
+HRESULT MFUtils::IsSupported(
+	IMFPresentationDescriptor *pPD, 
+	DWORD cStreamIndex, 
+	IMFMediaType* pMediaType,
+	BOOL* pbSupportedSize,
+	BOOL* pbSupportedFps,
+	BOOL* pbSupportedFormat
+	)
+{
+	HRESULT hr = S_OK;
+
+	UINT32 nWidth = 0, nHeight = 0, nFps = 0, numeratorFps = 30, denominatorFps = 1;
+	GUID subType;
+
+	if(!pPD || !pMediaType || !pbSupportedSize || !pbSupportedFps || !pbSupportedFormat)
+	{
+		CHECK_HR(hr = E_POINTER);
+	}
+
+	CHECK_HR(hr = MFGetAttributeSize(pMediaType, MF_MT_FRAME_SIZE, &nWidth, &nHeight));
+	CHECK_HR(hr = pMediaType->GetGUID(MF_MT_SUBTYPE, &subType));
+	if(FAILED(hr = MFGetAttributeRatio(pMediaType, MF_MT_FRAME_RATE, &numeratorFps, &denominatorFps)))
+			{
+				numeratorFps = 30;
+				denominatorFps = 1;
+			}
+
+	CHECK_HR(hr = IsSupported(
+		pPD, 
+		cStreamIndex, 
+		nWidth, 
+		nHeight,
+		(numeratorFps / denominatorFps),
+		subType,
+		pbSupportedSize,
+		pbSupportedFps,
+		pbSupportedFormat
+		));
+bail:
+	return hr;
+}
+
+HRESULT MFUtils::IsSupportedByInput(
+	IMFPresentationDescriptor *pPD, 
+	DWORD cStreamIndex, 
+	IMFTopologyNode *pNode,
+	BOOL* pbSupportedSize,
+	BOOL* pbSupportedFps,
+	BOOL* pbSupportedFormat
+	)
+{
+	HRESULT hr = S_OK;
+
+	IMFMediaType *pMediaType = NULL;
+	IUnknown* pObject = NULL;
+	IMFActivate *pActivate = NULL;
+	IMFMediaSink *pMediaSink = NULL;
+	IMFTransform *pTransform = NULL;
+	IMFStreamSink *pStreamSink = NULL;
+	IMFMediaTypeHandler *pHandler = NULL;
+
+	if(!pPD || !pNode || !pbSupportedSize || !pbSupportedFps || !pbSupportedFormat)
+	{
+		CHECK_HR(hr = E_POINTER);
+	}
+
+	CHECK_HR(hr = pNode->GetObject(&pObject));
+	hr = pObject->QueryInterface(IID_PPV_ARGS(&pActivate));
+	if(SUCCEEDED(hr))
+	{
+		SafeRelease(&pObject);
+		hr = pActivate->ActivateObject(IID_IMFMediaSink, (void**)&pObject);
+		if(FAILED(hr))
+		{
+			hr = pActivate->ActivateObject(IID_IMFTransform, (void**)&pObject);
+		}
+	}
+
+	if(!pObject)
+	{
+		CHECK_HR(hr = E_NOINTERFACE);
+	}
+	
+	hr = pObject->QueryInterface(IID_PPV_ARGS(&pMediaSink));
+	if(FAILED(hr))
+	{
+		hr = pObject->QueryInterface(IID_PPV_ARGS(&pTransform));
+	}
+	
+	
+
+	if(pMediaSink)
+	{
+		CHECK_HR(hr = pMediaSink->GetStreamSinkByIndex(0, &pStreamSink));
+		CHECK_HR(hr = pStreamSink->GetMediaTypeHandler(&pHandler));
+		CHECK_HR(hr = pHandler->GetCurrentMediaType(&pMediaType));
+		
+	}
+	else if(pTransform)
+	{
+		CHECK_HR(hr = pTransform->GetInputCurrentType(0, &pMediaType));
+	}
+	else
+	{
+		CHECK_HR(hr = pNode->GetInputPrefType(0, &pMediaType));
+	}
+
+	CHECK_HR(hr = IsSupported(
+		pPD, 
+		cStreamIndex, 
+		pMediaType,
+		pbSupportedSize,
+		pbSupportedFps,
+		pbSupportedFormat
+		));
+
+bail:
+	SafeRelease(&pObject);
+	SafeRelease(&pActivate);
+	SafeRelease(&pMediaType);
+	SafeRelease(&pStreamSink);
+	SafeRelease(&pHandler);
+	return hr;
+}
+
+HRESULT MFUtils::ConnectConverters(
+	IMFTopologyNode *pNode,
+	DWORD dwOutputIndex,
+	IMFTopologyNode *pNodeConvFrameRate,
+	IMFTopologyNode *pNodeConvColor,
+	IMFTopologyNode *pNodeConvSize
+	)
+{
+	HRESULT hr = S_OK;
+
+	if(!pNode)
+	{
+		CHECK_HR(hr = E_POINTER);
+	}
+
+	if(pNodeConvFrameRate)
+	{
+		CHECK_HR(hr = pNode->ConnectOutput(dwOutputIndex, pNodeConvFrameRate, 0));
+		if(pNodeConvSize)
+		{
+			CHECK_HR(hr = pNodeConvFrameRate->ConnectOutput(0, pNodeConvSize, 0));
+			if(pNodeConvColor)
+			{
+				CHECK_HR(hr = pNodeConvSize->ConnectOutput(0, pNodeConvColor, 0));
+			}
+		}
+		else
+		{
+			if(pNodeConvColor)
+			{
+				CHECK_HR(hr = pNodeConvFrameRate->ConnectOutput(0, pNodeConvColor, 0));
+			}
+		}
+	}
+	else
+	{
+		if(pNodeConvSize)
+		{
+			CHECK_HR(hr = pNode->ConnectOutput(dwOutputIndex, pNodeConvSize, 0));
+			if(pNodeConvColor)
+			{
+				CHECK_HR(hr = pNodeConvSize->ConnectOutput(0, pNodeConvColor, 0));
+			}
+		}
+		else
+		{
+			if(pNodeConvColor)
+			{
+				CHECK_HR(hr = pNode->ConnectOutput(dwOutputIndex, pNodeConvColor, 0));
+			}
+		}
+	}
+
+bail:
+	return hr;
 }
 
 HWND MFUtils::GetConsoleHwnd(void)

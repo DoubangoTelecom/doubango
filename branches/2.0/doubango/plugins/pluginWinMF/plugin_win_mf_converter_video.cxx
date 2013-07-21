@@ -46,8 +46,7 @@ Video Processor MFT (http://msdn.microsoft.com/en-us/library/windows/desktop/hh1
 #pragma comment(lib, "wmcodecdspuuid.lib")
 #endif
 
-DEFINE_GUID(CLSID_VideoProcessorMFT, 
-			0x88753b26, 0x5b24, 0x49bd, 0xb2, 0xe7, 0xc, 0x44, 0x5c, 0x78, 0xc9, 0x82);
+EXTERN_C const GUID CLSID_VideoProcessorMFT; // defined in mf_utils.cxx
 
 #if !defined(HAVE_IMFVideoProcessorControl)
 #	define HAVE_IMFVideoProcessorControl 0 // Win8 only
