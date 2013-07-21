@@ -75,6 +75,7 @@ typedef struct plugin_win_mf_consumer_video_s
 	TMEDIA_DECLARE_CONSUMER;
 	
 	bool bStarted, bPrepared, bPaused;
+	bool bPluginFireFox, bPluginWebRTC4All;
 	HWND hWindow;
 	RECT rcWindow;
 	RECT rcDest;
@@ -121,10 +122,10 @@ static int plugin_win_mf_consumer_video_set(tmedia_consumer_t *self, const tmedi
 			// DSCONSUMER(self)->create_on_ui_thread = *((int32_t*)param->value) ? tsk_false : tsk_true;
 		}
 		else if(tsk_striequals(param->key, "plugin-firefox")){
-			/*DSCONSUMER(self)->plugin_firefox = (*((int32_t*)param->value) != 0);
-			if(DSCONSUMER(self)->display){
-				DSCONSUMER(self)->display->setPluginFirefox((DSCONSUMER(self)->plugin_firefox == tsk_true));
-			}*/
+			pSelf->bPluginFireFox = (*((int32_t*)param->value) != 0);
+		}
+		else if(tsk_striequals(param->key, "plugin-webrtc4all")){
+			pSelf->bPluginWebRTC4All = (*((int32_t*)param->value) != 0);
 		}
 	}
 
@@ -177,14 +178,22 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	TMEDIA_CONSUMER(pSelf)->video.display.chroma = tmedia_chroma_rgb32;
 	TMEDIA_CONSUMER(pSelf)->decoder.codec_id = tmedia_codec_id_none; // means accept RAW fames
 	
-	if(pSelf->hWindow)
+	// The window handle is not created until the call is connect (incoming only) - At least on Internet Explorer 10
+	if(pSelf->hWindow && !pSelf->bPluginWebRTC4All)
 	{
 		CHECK_HR(hr = CreateDeviceD3D9(pSelf->hWindow, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
 		CHECK_HR(hr = CreateSwapChain(pSelf->hWindow, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
 	}
 	else
 	{
-		TSK_DEBUG_WARN("Delaying D3D9 device creation because HWND is not defined yet");
+		if(pSelf->hWindow && pSelf->bPluginWebRTC4All)
+		{
+			TSK_DEBUG_INFO("[MF consumer] HWND is defined but we detected webrtc4all...delaying D3D9 device creating until session get connected");
+		}
+		else
+		{
+			TSK_DEBUG_WARN("Delaying D3D9 device creation because HWND is not defined yet");
+		}
 	}
 	
 
@@ -510,7 +519,7 @@ static HRESULT CreateDeviceD3D9(
         ));
 
     pp.BackBufferFormat = D3DFMT_X8R8G8B8;
-    pp.SwapEffect = D3DSWAPEFFECT_FLIP;
+    pp.SwapEffect = D3DSWAPEFFECT_COPY;
     pp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
     pp.Windowed = TRUE;
     pp.hDeviceWindow = hWnd;
