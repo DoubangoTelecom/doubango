@@ -389,8 +389,8 @@ int tdav_codec_set_priority(tdav_codec_id_t codec_id, int priority)
 		}
 	}
 	
-	TSK_DEBUG_ERROR("cannot find codec with id=%d", codec_id);
-	return -2;
+	TSK_DEBUG_INFO("Cannot find codec with id=%d for priority setting", codec_id);
+	return 0;
 }
 
 int tdav_set_codecs(tdav_codec_id_t codecs)
