@@ -141,7 +141,7 @@ static int plugin_win_mf_producer_audio_prepare(tmedia_producer_t* self, const t
 		CHECK_HR(hr = MFCreateMediaSession(NULL, &pSelf->pSession));
 		
 		// Create the topology.
-		CHECK_HR(hr = MFUtils::CreateTopology(pSelf->pSource, NULL/*NO ENCODER*/, pSelf->pSinkActivate, NULL/*Preview*/, MFMediaType_Audio, &pSelf->pTopology));
+		CHECK_HR(hr = MFUtils::CreateTopology(pSelf->pSource, NULL/*NO ENCODER*/, pSelf->pSinkActivate, NULL/*Preview*/, pSelf->pType, &pSelf->pTopology));
 	}
 
 bail:

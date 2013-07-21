@@ -201,6 +201,9 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 	IMFTopology *pTopology = NULL;
 	IMFMediaSink* pEvr = NULL;
 	IMFMediaType* pEncoderInputType = NULL;
+	IMFTopologyNode *pNodeGrabber = NULL;
+	IMFMediaType* pGrabberNegotiatedInputMedia = NULL;
+	BOOL bVideoProcessorIsSupported = FALSE;
 
 	// create device list object
 	if(!pSelf->pDeviceList && !(pSelf->pDeviceList = new DeviceListVideo())){
@@ -250,6 +253,9 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 			TSK_DEBUG_ERROR("ActivateObject(MF video source) failed");
 			goto bail;
 		}
+
+		// Check whether video processor (http://msdn.microsoft.com/en-us/library/windows/desktop/hh162913(v=vs.85).aspx) is supported
+		CHECK_HR(hr = MFUtils::IsVideoProcessorSupported(&bVideoProcessorIsSupported));
 
 		// If H.264 is negotiated for this session then, try to find hardware encoder
 		// If no HW encoder is found will fallback to SW implementation from x264
@@ -302,9 +308,15 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 		CHECK_HR(hr = pSelf->pGrabberInputType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video));
 		CHECK_HR(hr = pSelf->pGrabberInputType->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive));
 		CHECK_HR(hr = MFSetAttributeSize(pSelf->pGrabberInputType, MF_MT_FRAME_SIZE, TMEDIA_PRODUCER(pSelf)->video.width, TMEDIA_PRODUCER(pSelf)->video.height));
-		if(pSelf->pEncoder) { // FIXME: Fails on Boghe and not on Gotham when no encoder.
+		// Must not be set because not supported by Frame Rate Converter DSP (http://msdn.microsoft.com/en-us/library/windows/desktop/ff819100(v=vs.85).aspx).aspx) because of color (neither I420 nor NV12)
+		// Video Processor (http://msdn.microsoft.com/en-us/library/windows/desktop/hh162913(v=vs.85).aspx) supports both NV12 and I420
+		if(bVideoProcessorIsSupported) {
 			CHECK_HR(hr = MFSetAttributeRatio(pSelf->pGrabberInputType, MF_MT_FRAME_RATE, TMEDIA_PRODUCER(pSelf)->video.fps, 1));
 		}
+		else {
+			TSK_DEBUG_INFO("Video processor not supported...using source fps");
+		}
+		
 		CHECK_HR(hr = MFSetAttributeRatio(pSelf->pGrabberInputType, MF_MT_PIXEL_ASPECT_RATIO, 1, 1));
 		CHECK_HR(hr = pSelf->pGrabberInputType->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, pSelf->pEncoder ? FALSE : TRUE));
 		CHECK_HR(hr = pSelf->pGrabberInputType->SetUINT32(MF_MT_FIXED_SIZE_SAMPLES, pSelf->pEncoder ? FALSE : TRUE));
@@ -328,8 +340,9 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 		}
 		else {
 			// Video Processors will be inserted in the topology if the source cannot produce I420 frames
-			CHECK_HR(hr = pSelf->pGrabberInputType->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_NV12));
-			TMEDIA_PRODUCER(pSelf)->video.chroma = tmedia_chroma_nv12;
+			// IMPORTANT: Must not be NV12 because not supported by Video Resizer DSP (http://msdn.microsoft.com/en-us/library/windows/desktop/ff819491(v=vs.85).aspx)
+			CHECK_HR(hr = pSelf->pGrabberInputType->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_I420));
+			TMEDIA_PRODUCER(pSelf)->video.chroma = tmedia_chroma_yuv420p;
 			TSK_DEBUG_INFO("MF video producer chroma = %d", TMEDIA_PRODUCER(pSelf)->video.chroma);
 		}
 		
@@ -367,13 +380,36 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 			pSelf->pEncoder ? pSelf->pEncoder->GetMFT() : NULL, 
 			pSelf->pSinkGrabber, 
 			pSelf->pSinkActivatePreview,
-			MFMediaType_Video, 
+			pSelf->pGrabberInputType, 
 			&pTopology));
 		// Resolve topology (adds video processors if needed).
 		CHECK_HR(hr = MFUtils::ResolveTopology(pTopology, &pSelf->pTopology));
 
 		// Find EVR for the preview.
 		CHECK_HR(hr = MFUtils::FindNodeObject(pSelf->pTopology, MFUtils::g_ullTopoIdSinkPreview, (void**)&pEvr));
+
+		// Find negotiated media and update producer
+		UINT32 nNegWidth = TMEDIA_PRODUCER(pSelf)->video.width, nNegHeight = TMEDIA_PRODUCER(pSelf)->video.height, nNegNumeratorFps = TMEDIA_PRODUCER(pSelf)->video.fps, nNegDenominatorFps = 1;
+		CHECK_HR(hr = pSelf->pTopology->GetNodeByID(MFUtils::g_ullTopoIdSinkMain, &pNodeGrabber));
+		CHECK_HR(hr = pNodeGrabber->GetInputPrefType(0, &pGrabberNegotiatedInputMedia));
+		hr = MFGetAttributeSize(pGrabberNegotiatedInputMedia, MF_MT_FRAME_SIZE, &nNegWidth, &nNegHeight);
+		if(SUCCEEDED(hr))
+		{
+			TSK_DEBUG_INFO("MF video producer topology vs sdp parameters: width(%u/%u), height(%u/%u)",
+					TMEDIA_PRODUCER(pSelf)->video.width, nNegWidth,
+					TMEDIA_PRODUCER(pSelf)->video.height, nNegHeight
+				);
+			TMEDIA_PRODUCER(pSelf)->video.width = nNegWidth;
+			TMEDIA_PRODUCER(pSelf)->video.height = nNegHeight;
+		}
+		hr = MFGetAttributeRatio(pGrabberNegotiatedInputMedia, MF_MT_FRAME_RATE, &nNegNumeratorFps, &nNegDenominatorFps);
+		if(SUCCEEDED(hr))
+		{
+			TSK_DEBUG_INFO("MF video producer topology vs sdp parameters: fps(%u/%u)",
+					TMEDIA_PRODUCER(pSelf)->video.fps, (nNegNumeratorFps / nNegDenominatorFps)
+				);
+			TMEDIA_PRODUCER(pSelf)->video.fps = (nNegNumeratorFps / nNegDenominatorFps);
+		}
 
 		// Create EVR watcher for the preview.
 		pSelf->pWatcherPreview = new DisplayWatcher(pSelf->hWndPreview, pEvr, hr);
@@ -385,6 +421,8 @@ bail:
 	SafeRelease(&pTopology);
 	SafeRelease(&pEvr);
 	SafeRelease(&pEncoderInputType);
+	SafeRelease(&pNodeGrabber);
+	SafeRelease(&pGrabberNegotiatedInputMedia);
 	
 	pSelf->bPrepared = SUCCEEDED(hr);
 	return pSelf->bPrepared ? 0 : -1;

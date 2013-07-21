@@ -89,6 +89,7 @@ static HRESULT CreateMediaSample(
 static HRESULT ValidateVideoFormat(
 	IMFMediaType *pmt
 	);
+static HRESULT IsVideoProcessorSupported(BOOL *pbSupported);
 static HRESULT GetBestVideoProcessor(
 	const GUID& inputFormat, // The input MediaFormat (e.g. MFVideoFormat_I420)
 	const GUID& outputFormat, // The output MediaFormat (e.g. MFVideoFormat_NV12)
@@ -128,7 +129,7 @@ static HRESULT CreateTopology(
 	IMFTransform *pTransform, // Transform filter (e.g. encoder or decoder) to insert between the source and Sink. NULL is valid.
 	IMFActivate *pSinkActivateMain, // Main sink (e.g. sample grabber or EVR).
 	IMFActivate *pSinkActivatePreview, // Preview sink. Optional. Could be NULL.
-	const GUID& mediaType, // The MediaType
+	IMFMediaType *pIputTypeMain, // Main sink input MediaType
 	IMFTopology **ppTopo // Receives the newly created topology
 	);
 static HRESULT ResolveTopology(
@@ -172,6 +173,42 @@ static INT GetSupportedSubTypeIndex(
 	const GUID& mediaType, // The MediaType
 	const VideoSubTypeGuidPair* subTypes, UINT subTypesCount // List of preferred subtypes (in ascending order)
 	);
+static HRESULT IsSupported(
+	IMFPresentationDescriptor *pPD, 
+	DWORD cStreamIndex, 
+	UINT32 nWidth, 
+	UINT32 nHeight,
+	UINT32 nFps,
+	const GUID& guidFormat,
+	BOOL* pbSupportedSize,
+	BOOL* pbSupportedFps,
+	BOOL* pbSupportedFormat
+	);
+static HRESULT IsSupported(
+	IMFPresentationDescriptor *pPD, 
+	DWORD cStreamIndex, 
+	IMFMediaType* pMediaType,
+	BOOL* pbSupportedSize,
+	BOOL* pbSupportedFps,
+	BOOL* pbSupportedFormat
+	);
+static HRESULT IsSupportedByInput(
+	IMFPresentationDescriptor *pPD, 
+	DWORD cStreamIndex, 
+	IMFTopologyNode *pNode,
+	BOOL* pbSupportedSize,
+	BOOL* pbSupportedFps,
+	BOOL* pbSupportedFormat
+	);
+static HRESULT ConnectConverters(
+	IMFTopologyNode *pNode,
+	DWORD dwOutputIndex,
+	IMFTopologyNode *pNodeConvFrameRate,
+	IMFTopologyNode *pNodeConvColor,
+	IMFTopologyNode *pNodeConvSize
+	);
+
+
 static HWND GetConsoleHwnd(void);
 
 template <class Q>
