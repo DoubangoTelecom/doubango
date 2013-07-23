@@ -45,6 +45,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #		define TDAV_HAVE_PLUGIN_EXT_WIN32	1
 		static struct tsk_plugin_s* __dll_plugin_dshow = tsk_null; /* DirectShow: Windows [XP - 8] */
 		static struct tsk_plugin_s* __dll_plugin_mf = tsk_null; /* Media Foundation and WASAPI : Windows [7 - 8] */
+		static struct tsk_plugin_s* __dll_plugin_cuda = tsk_null; /* Media Foundation and WASAPI : Windows [XP - 8] */
 #	endif /* TDAV_UNDER_WINDOWS */
 #endif
 
@@ -166,7 +167,11 @@ int tdav_init()
 #if TDAV_HAVE_PLUGIN_EXT_WIN32
 	{
 		tsk_size_t plugins_count = 0;
-		char* full_path = tsk_null; // Loading plugins from ActiveX fails when using relative path.
+		char* full_path = tsk_null; // Loading plugins from ActiveX fails when using relative path.			
+		tsk_sprintf(&full_path, "%s/pluginCUDA.dll", tdav_get_current_directory_const()); // CUDA works on all Windows versions
+		if((__dll_plugin_cuda = tsk_plugin_create(full_path))){
+			plugins_count += tmedia_plugin_register(__dll_plugin_cuda, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
+		}
 		if(tdav_win32_is_win7_or_later()){
 			tsk_sprintf(&full_path, "%s/pluginWinMF.dll", tdav_get_current_directory_const());
 			if((__dll_plugin_mf = tsk_plugin_create(full_path))){
@@ -558,6 +563,10 @@ int tdav_deinit()
 		/* === stand-alone plugins === */
 #if TDAV_HAVE_PLUGIN_EXT_WIN32
 	{
+		if(__dll_plugin_cuda){
+			tmedia_plugin_unregister(__dll_plugin_cuda, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
+			TSK_OBJECT_SAFE_FREE(__dll_plugin_cuda);
+		}
 		if(__dll_plugin_mf){
 			tmedia_plugin_unregister(__dll_plugin_mf, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 			TSK_OBJECT_SAFE_FREE(__dll_plugin_mf);
