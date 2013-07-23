@@ -41,12 +41,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGINCUDA_EXPORTS"
+				AdditionalIncludeDirectories=".;..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyMEDIA\include;..\..\tinySDP\include;..\..\tinyDAV\include;..\..\tinyRTP\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_CUDA_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				WarnAsError="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -60,7 +62,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyMEDIA.lib"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(DXSDK_DIR)/lib/x86;$(CUDA_PATH)/lib/$(PlatformName);"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -114,11 +118,13 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGINCUDA_EXPORTS"
+				AdditionalIncludeDirectories=".;..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyMEDIA\include;..\..\tinySDP\include;..\..\tinyDAV\include;..\..\tinyRTP\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_CUDA_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				WarnAsError="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -132,7 +138,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyMEDIA.lib"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(DXSDK_DIR)/lib/x86;$(CUDA_PATH)/lib/$(PlatformName);"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -170,12 +178,36 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath=".\dllmain_cuda.cxx"
+				>
+			</File>
+			<File
+				RelativePath=".\plugin_cuda_codec_h264.cxx"
+				>
+			</File>
+			<File
+				RelativePath=".\plugin_cuda_tdav.cxx"
+				>
+			</File>
+			<File
+				RelativePath=".\plugin_cuda_utils.cxx"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\plugin_cuda_config.h"
+				>
+			</File>
+			<File
+				RelativePath=".\plugin_cuda_utils.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
