@@ -167,11 +167,13 @@ int tdav_init()
 #if TDAV_HAVE_PLUGIN_EXT_WIN32
 	{
 		tsk_size_t plugins_count = 0;
-		char* full_path = tsk_null; // Loading plugins from ActiveX fails when using relative path.			
+		char* full_path = tsk_null; // Loading plugins from ActiveX fails when using relative path.		
+#if 0 // disable CUDA by default
 		tsk_sprintf(&full_path, "%s/pluginCUDA.dll", tdav_get_current_directory_const()); // CUDA works on all Windows versions
 		if((__dll_plugin_cuda = tsk_plugin_create(full_path))){
 			plugins_count += tmedia_plugin_register(__dll_plugin_cuda, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 		}
+#endif
 		if(tdav_win32_is_win7_or_later()){
 			tsk_sprintf(&full_path, "%s/pluginWinMF.dll", tdav_get_current_directory_const());
 			if((__dll_plugin_mf = tsk_plugin_create(full_path))){
