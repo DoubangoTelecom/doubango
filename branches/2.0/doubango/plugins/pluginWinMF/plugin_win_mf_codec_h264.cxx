@@ -63,7 +63,9 @@ typedef struct mf_codec_h264_s
 }
 mf_codec_h264_t;
 
-#define TDAV_H264_GOP_SIZE_IN_SECONDS		25
+#if !defined(PLUGIN_MF_H264_GOP_SIZE_IN_SECONDS)
+#	define PLUGIN_MF_H264_GOP_SIZE_IN_SECONDS		25
+#endif
 
 static int mf_codec_h264_init(mf_codec_h264_t* self, profile_idc_t profile);
 static int mf_codec_h264_deinit(mf_codec_h264_t* self);
@@ -662,7 +664,7 @@ int mf_codec_h264_open_encoder(mf_codec_h264_t* self)
 			self->encoder.neg_height,
 			self->encoder.max_bitrate_bps));
 
-	CHECK_HR(hr = self->encoder.pInst->SetGOPSize(self->encoder.neg_fps * TDAV_H264_GOP_SIZE_IN_SECONDS));
+	CHECK_HR(hr = self->encoder.pInst->SetGOPSize(self->encoder.neg_fps * PLUGIN_MF_H264_GOP_SIZE_IN_SECONDS));
 bail:
 	return SUCCEEDED(hr) ? 0 : -1;
 }
