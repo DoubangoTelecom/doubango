@@ -170,7 +170,7 @@ int tdav_init()
 		tsk_size_t plugins_count = 0;
 		char* full_path = tsk_null; // Loading plugins from ActiveX fails when using relative path.
 		/* WASAPI (Audio consumer, Audio producer) */
-#if 0 // disable WASAPI by default
+#if 0 // disable WASAPI by default (AEC issue because of code#consumer rate mismatch)
 		if(tdav_win32_is_winvista_or_later()){
 			tsk_sprintf(&full_path, "%s/pluginWASAPI.dll", tdav_get_current_directory_const());
 			if((__dll_plugin_wasapi = tsk_plugin_create(full_path))){
