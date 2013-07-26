@@ -26,7 +26,6 @@
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
-
  */
 #include "tinydav/codecs/g729/tdav_codec_g729.h"
 

@@ -43,7 +43,6 @@
 static const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
 static const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
 static const IID IID_IAudioClient = __uuidof(IAudioClient);
-static const IID IID_IAudioClient2 = __uuidof(IAudioClient2);
 static const IID IID_IAudioCaptureClient = __uuidof(IAudioCaptureClient);
 
 #if !defined(PLUGIN_WASAPI_PRODUCER_NOTIF_POS_COUNT)
@@ -71,7 +70,11 @@ private:
 
 private:
 	tsk_mutex_handle_t* m_hMutex;
+#if PLUGIN_WASAPI_UNDER_WINDOWS_PHONE
 	IAudioClient2* m_pDevice;
+#else
+	IAudioClient* m_pDevice;
+#endif
 	IAudioCaptureClient* m_pClient;
 	HANDLE m_hCaptureEvent;
 	HANDLE m_hShutdownEvent;
@@ -296,7 +299,7 @@ int AudioCapture::Prepare(plugin_wasapi_producer_audio_t* wasapi, const tmedia_c
                         eCapture, eCommunications, &pDevice));
 
     CHECK_HR(hr = pDevice->Activate(
-                    IID_IAudioClient2, CLSCTX_ALL,
+                    IID_IAudioClient, CLSCTX_ALL,
                     NULL, (void**)&m_pDevice));
 #endif
 	

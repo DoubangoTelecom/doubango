@@ -68,7 +68,11 @@ private:
 private:
 	tsk_mutex_handle_t* m_hMutex;
 	const struct plugin_wasapi_consumer_audio_s* m_pWrappedConsumer; // Must not take ref() otherwise dtor() will be never called (circular reference)
+#if PLUGIN_WASAPI_UNDER_WINDOWS_PHONE
 	IAudioClient2* m_pDevice;
+#else
+	IAudioClient* m_pDevice;
+#endif
 	IAudioRenderClient* m_pClient;
 	tsk_condwait_handle_t* m_hCondWait;
 	tsk_thread_handle_t* m_ppTread[1];
@@ -285,7 +289,7 @@ int AudioRender::Prepare(plugin_wasapi_consumer_audio_t* wasapi, const tmedia_co
                         eRender, eCommunications, &pDevice));
 
     CHECK_HR(hr = pDevice->Activate(
-                    IID_IAudioClient2, CLSCTX_ALL,
+                    IID_IAudioClient, CLSCTX_ALL,
                     NULL, (void**)&m_pDevice));
 #endif
 	
