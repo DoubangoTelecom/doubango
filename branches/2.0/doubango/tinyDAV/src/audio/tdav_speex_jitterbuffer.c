@@ -178,9 +178,9 @@ static tsk_size_t tdav_speex_jitterbuffer_get(tmedia_jitterbuffer_t* self, void*
 
 	if ((ret = jitter_buffer_get(jb->state, &jb_packet, jb->frame_duration/*(out_size * 500)/jb->rate*/, tsk_null)) != JITTER_BUFFER_OK) {
         switch(ret){
-            case JITTER_BUFFER_MISSING: TSK_DEBUG_INFO("JITTER_BUFFER_MISSING - %d", ret); break;
-            case JITTER_BUFFER_INSERTION: TSK_DEBUG_INFO("JITTER_BUFFER_INSERTION - %d", ret); break;
-            default: TSK_DEBUG_INFO("jitter_buffer_get() failed - %d", ret);
+            case JITTER_BUFFER_MISSING: /*TSK_DEBUG_INFO("JITTER_BUFFER_MISSING - %d", ret);*/ break;
+            case JITTER_BUFFER_INSERTION: /*TSK_DEBUG_INFO("JITTER_BUFFER_INSERTION - %d", ret);*/ break;
+            default: TSK_DEBUG_INFO("jitter_buffer_get() failed - %d", ret); break;
         }
         jitter_buffer_update_delay(jb->state, &jb_packet, NULL);
         return 0;

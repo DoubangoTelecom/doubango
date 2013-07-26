@@ -56,7 +56,7 @@ static int tdav_speakup_jitterbuffer_set(tmedia_jitterbuffer_t *self, const tmed
 	return -2;
 }
 
-static int tdav_speakup_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate)
+static int tdav_speakup_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate, uint32_t channels)
 {
 	tdav_speakup_jitterbuffer_t *jitterbuffer = (tdav_speakup_jitterbuffer_t *)self;
 	if(!jitterbuffer->jbuffer){
@@ -69,6 +69,7 @@ static int tdav_speakup_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t 
 	jitterbuffer->ref_timestamp = 0;
 	jitterbuffer->frame_duration = frame_duration;
 	jitterbuffer->rate = rate;
+	jitterbuffer->channels = channels;
 	jitterbuffer->_10ms_size_bytes = 160 * (rate/8000);
 
 	return 0;
