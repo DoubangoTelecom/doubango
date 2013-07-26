@@ -581,40 +581,6 @@ const tmedia_codec_plugin_def_t *mf_codec_h264_main_plugin_def_t = &mf_codec_h26
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ============ Common To all H264 codecs ================= */
 
 int mf_codec_h264_open_encoder(mf_codec_h264_t* self)

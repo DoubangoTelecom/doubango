@@ -44,7 +44,7 @@ static int tdav_speex_jitterbuffer_set(tmedia_jitterbuffer_t *self, const tmedia
 	return -2;
 }
 
-static int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate)
+static int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t frame_duration, uint32_t rate, uint32_t channels)
 {
 	tdav_speex_jitterbuffer_t *jitterbuffer = (tdav_speex_jitterbuffer_t *)self;
 	spx_int32_t tmp;
@@ -57,7 +57,8 @@ static int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t fr
 	}
 	jitterbuffer->rate = rate;
 	jitterbuffer->frame_duration = frame_duration;
-	jitterbuffer->x_data_size = (frame_duration * jitterbuffer->rate) / 500;
+	jitterbuffer->channels = channels;
+	jitterbuffer->x_data_size = ((frame_duration * jitterbuffer->rate) / 500) << (channels == 2 ? 1 : 0);
 
 	jitter_buffer_ctl(jitterbuffer->state, JITTER_BUFFER_GET_MARGIN, &tmp);
 	TSK_DEBUG_INFO("Default Jitter buffer margin=%d", tmp);
@@ -177,8 +178,8 @@ static tsk_size_t tdav_speex_jitterbuffer_get(tmedia_jitterbuffer_t* self, void*
 
 	if ((ret = jitter_buffer_get(jb->state, &jb_packet, jb->frame_duration/*(out_size * 500)/jb->rate*/, tsk_null)) != JITTER_BUFFER_OK) {
         switch(ret){
-            case JITTER_BUFFER_MISSING: /*TSK_DEBUG_INFO("JITTER_BUFFER_MISSING - %d", ret);*/ break;
-            case JITTER_BUFFER_INSERTION: /*TSK_DEBUG_INFO("JITTER_BUFFER_INSERTION - %d", ret);*/ break;
+            case JITTER_BUFFER_MISSING: TSK_DEBUG_INFO("JITTER_BUFFER_MISSING - %d", ret); break;
+            case JITTER_BUFFER_INSERTION: TSK_DEBUG_INFO("JITTER_BUFFER_INSERTION - %d", ret); break;
             default: TSK_DEBUG_INFO("jitter_buffer_get() failed - %d", ret);
         }
         jitter_buffer_update_delay(jb->state, &jb_packet, NULL);

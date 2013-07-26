@@ -110,13 +110,24 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 			tsk_size_t size = out_size;
 
 			// resample if needed
-			if(audio->decoder.codec->in.rate != base->consumer->audio.out.rate && base->consumer->audio.out.rate){
+			if((base->consumer->audio.out.rate && base->consumer->audio.out.rate != audio->decoder.codec->in.rate) || (base->consumer->audio.out.channels && base->consumer->audio.out.channels != TMEDIA_CODEC_AUDIO(audio->decoder.codec)->in.channels)){
 				tsk_size_t resampler_result_size = 0;
 				int bytesPerSample = (base->consumer->audio.bits_per_sample >> 3);
 
 				if(!audio->decoder.resampler.instance){
-					TSK_DEBUG_INFO("Create audio resampler(%s): consumer->audio.out.rate=%d, codec->in.rate=%d", audio->decoder.codec->plugin->desc, base->consumer->audio.out.rate, audio->decoder.codec->in.rate);
-					audio->decoder.resampler.instance = _tdav_session_audio_resampler_create(bytesPerSample, audio->decoder.codec->in.rate, base->consumer->audio.out.rate, base->consumer->audio.ptime, base->consumer->audio.in.channels, base->consumer->audio.out.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, &audio->decoder.resampler.buffer, &audio->decoder.resampler.buffer_size);
+					TSK_DEBUG_INFO("Create audio resampler(%s) for consumer: rate=%d->%d, channels=%d->%d, bytesPerSample=%d", 
+						audio->decoder.codec->plugin->desc, 
+						audio->decoder.codec->in.rate, base->consumer->audio.out.rate,
+						TMEDIA_CODEC_AUDIO(audio->decoder.codec)->in.channels, base->consumer->audio.out.channels,
+						bytesPerSample);
+					audio->decoder.resampler.instance = _tdav_session_audio_resampler_create(
+							bytesPerSample, 
+							audio->decoder.codec->in.rate, base->consumer->audio.out.rate, 
+							base->consumer->audio.ptime, 
+							TMEDIA_CODEC_AUDIO(audio->decoder.codec)->in.channels, base->consumer->audio.out.channels, 
+							TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, 
+							&audio->decoder.resampler.buffer, &audio->decoder.resampler.buffer_size
+						);
 				}
 				if(!audio->decoder.resampler.instance){
 					TSK_DEBUG_ERROR("No resampler to handle data");
@@ -203,13 +214,24 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		}
 		
 		// resample if needed
-		if(base->producer->audio.rate != audio->encoder.codec->out.rate){
+		if(base->producer->audio.rate != audio->encoder.codec->out.rate || base->producer->audio.channels != TMEDIA_CODEC_AUDIO(audio->encoder.codec)->out.channels){
 			tsk_size_t resampler_result_size = 0;
 			int bytesPerSample = (base->producer->audio.bits_per_sample >> 3);
 			
 			if(!audio->encoder.resampler.instance){
-				TSK_DEBUG_INFO("Create audio resampler(%s): producer->audio.rate=%d, encoder.codec->plugin->rate=%d, bytesPerSample=%d", audio->encoder.codec->plugin->desc, base->producer->audio.rate, audio->encoder.codec->out.rate, bytesPerSample);
-				audio->encoder.resampler.instance = _tdav_session_audio_resampler_create(bytesPerSample, base->producer->audio.rate, audio->encoder.codec->out.rate, base->producer->audio.ptime, base->producer->audio.channels, base->producer->audio.channels, TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, &audio->encoder.resampler.buffer, &audio->encoder.resampler.buffer_size);
+				TSK_DEBUG_INFO("Create audio resampler(%s) for producer: rate=%d->%d, channels=%d->%d, bytesPerSample=%d", 
+					audio->encoder.codec->plugin->desc, 
+					base->producer->audio.rate, audio->encoder.codec->out.rate,
+					base->producer->audio.channels, TMEDIA_CODEC_AUDIO(audio->encoder.codec)->out.channels,
+					bytesPerSample);
+				audio->encoder.resampler.instance = _tdav_session_audio_resampler_create(
+						bytesPerSample, 
+						base->producer->audio.rate, audio->encoder.codec->out.rate, 
+						base->producer->audio.ptime, 
+						base->producer->audio.channels, TMEDIA_CODEC_AUDIO(audio->encoder.codec)->out.channels, 
+						TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, 
+						&audio->encoder.resampler.buffer, &audio->encoder.resampler.buffer_size
+					);
 			}
 			if(!audio->encoder.resampler.instance){
 				TSK_DEBUG_ERROR("No resampler to handle data");
@@ -710,9 +732,16 @@ static int _tdav_session_audio_dtmfe_timercb(const void* arg, tsk_timer_id_t tim
 
 static tmedia_resampler_t* _tdav_session_audio_resampler_create(int32_t bytes_per_sample, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t in_channels, uint32_t out_channels, uint32_t quality, void** resampler_buffer, tsk_size_t *resampler_buffer_size)
 {
-	uint32_t resampler_buff_size = (((out_freq * frame_duration)/1000) * bytes_per_sample) * (out_channels / in_channels);
+	uint32_t resampler_buff_size;
 	tmedia_resampler_t* resampler;
 	int ret;
+
+	if(out_channels > 2 || in_channels > 2) {
+		TSK_DEBUG_ERROR("Invalid parameter: out_channels=%u, in_channels=%u", out_channels, in_channels);
+		return tsk_null;
+	}
+
+	resampler_buff_size = (((out_freq * frame_duration)/1000) * bytes_per_sample) << (out_channels == 2 ? 1 : 0);
 
 	if(!(resampler = tmedia_resampler_create())){
 		TSK_DEBUG_ERROR("Failed to create audio resampler");
