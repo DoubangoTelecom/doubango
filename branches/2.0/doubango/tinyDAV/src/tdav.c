@@ -43,6 +43,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #include "tsk_plugin.h"
 #	if TDAV_UNDER_WINDOWS
 #		define TDAV_HAVE_PLUGIN_EXT_WIN32	1
+		static struct tsk_plugin_s* __dll_plugin_wasapi = tsk_null; /* Windows Audio Session API (WASAPI): Windows [Vista - 8] */
 		static struct tsk_plugin_s* __dll_plugin_dshow = tsk_null; /* DirectShow: Windows [XP - 8] */
 		static struct tsk_plugin_s* __dll_plugin_mf = tsk_null; /* Media Foundation and WASAPI : Windows [7 - 8] */
 		static struct tsk_plugin_s* __dll_plugin_cuda = tsk_null; /* Media Foundation and WASAPI : Windows [XP - 8] */
@@ -167,19 +168,31 @@ int tdav_init()
 #if TDAV_HAVE_PLUGIN_EXT_WIN32
 	{
 		tsk_size_t plugins_count = 0;
-		char* full_path = tsk_null; // Loading plugins from ActiveX fails when using relative path.		
+		char* full_path = tsk_null; // Loading plugins from ActiveX fails when using relative path.
+		/* WASAPI (Audio consumer, Audio producer) */
+#if 0 // disable WASAPI by default
+		if(tdav_win32_is_winvista_or_later()){
+			tsk_sprintf(&full_path, "%s/pluginWASAPI.dll", tdav_get_current_directory_const());
+			if((__dll_plugin_wasapi = tsk_plugin_create(full_path))){
+				plugins_count += tmedia_plugin_register(__dll_plugin_wasapi, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
+			}
+		}
+#endif
+		/* CUDA (H.264 codec) */
 #if 0 // disable CUDA by default
 		tsk_sprintf(&full_path, "%s/pluginCUDA.dll", tdav_get_current_directory_const()); // CUDA works on all Windows versions
 		if((__dll_plugin_cuda = tsk_plugin_create(full_path))){
 			plugins_count += tmedia_plugin_register(__dll_plugin_cuda, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 		}
 #endif
+		/* Media Foundation (Video converter, Video consumer, Video producer, Microsoft H.264 codec, Intel Quick Sync H.264 codec) */
 		if(tdav_win32_is_win7_or_later()){
 			tsk_sprintf(&full_path, "%s/pluginWinMF.dll", tdav_get_current_directory_const());
 			if((__dll_plugin_mf = tsk_plugin_create(full_path))){
 				plugins_count += tmedia_plugin_register(__dll_plugin_mf, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 			}
 		}
+		/* DirectShow (Video consumer, Video producer) */
 		if(tdav_win32_is_winxp_or_later()){
 			tsk_sprintf(&full_path, "%s/pluginDirectShow.dll", tdav_get_current_directory_const());
 			if((__dll_plugin_dshow = tsk_plugin_create(full_path))){
@@ -505,80 +518,7 @@ int tdav_deinit()
 	tmedia_session_plugin_unregister(tdav_session_t140_plugin_def_t);
 
 	/* === UnRegister codecs === */
-	tmedia_codec_plugin_unregister(tdav_codec_dtmf_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_ulpfec_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_red_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_t140_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_msrp_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_g711a_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_g711u_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_g722_plugin_def_t);
-#if HAVE_OPENCORE_AMR
-	tmedia_codec_plugin_unregister(tdav_codec_amrnb_oa_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_amrnb_be_plugin_def_t);
-#endif
-#if HAVE_BV16
-	tmedia_codec_plugin_unregister(tdav_codec_bv16_plugin_def_t);
-#endif
-#if HAVE_LIBGSM
-	tmedia_codec_plugin_unregister(tdav_codec_gsm_plugin_def_t);
-#endif
-#if HAVE_ILBC
-	tmedia_codec_plugin_unregister(tdav_codec_ilbc_plugin_def_t);
-#endif
-#if HAVE_LIB_SPEEX
-	tmedia_codec_plugin_unregister(tdav_codec_speex_nb_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_speex_wb_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_speex_uwb_plugin_def_t);
-#endif
-#if HAVE_LIBOPUS
-	tmedia_codec_plugin_unregister(tdav_codec_opus_plugin_def_t);
-#endif
-#if HAVE_G729
-	tmedia_codec_plugin_unregister(tdav_codec_g729ab_plugin_def_t);
-#endif
-
-#if HAVE_LIBVPX
-	tmedia_codec_plugin_unregister(tdav_codec_vp8_plugin_def_t);
-#endif
-#if HAVE_CUDA
-	if(tdav_codec_h264_cuda_is_supported()){
-		tmedia_codec_plugin_unregister(tdav_codec_h264_cuda_bp10_plugin_def_t);
-		tmedia_codec_plugin_unregister(tdav_codec_h264_cuda_bp20_plugin_def_t);
-		tmedia_codec_plugin_unregister(tdav_codec_h264_cuda_bp30_plugin_def_t);
-	}
-#endif
-#if HAVE_FFMPEG
-	tmedia_codec_plugin_unregister(tdav_codec_mp4ves_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_h261_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_h263_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_h263p_plugin_def_t);	
-	tmedia_codec_plugin_unregister(tdav_codec_h263pp_plugin_def_t);	
-	tmedia_codec_plugin_unregister(tdav_codec_h264_base_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_h264_main_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_theora_plugin_def_t);
-#elif HAVE_H264_PASSTHROUGH
-	tmedia_codec_plugin_unregister(tdav_codec_h264_base_plugin_def_t);
-	tmedia_codec_plugin_unregister(tdav_codec_h264_main_plugin_def_t);
-#endif
-
-		/* === stand-alone plugins === */
-#if TDAV_HAVE_PLUGIN_EXT_WIN32
-	{
-		if(__dll_plugin_cuda){
-			tmedia_plugin_unregister(__dll_plugin_cuda, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
-			TSK_OBJECT_SAFE_FREE(__dll_plugin_cuda);
-		}
-		if(__dll_plugin_mf){
-			tmedia_plugin_unregister(__dll_plugin_mf, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
-			TSK_OBJECT_SAFE_FREE(__dll_plugin_mf);
-		}
-		if(__dll_plugin_dshow){
-			tmedia_plugin_unregister(__dll_plugin_dshow, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
-			TSK_OBJECT_SAFE_FREE(__dll_plugin_dshow);
-		}
-	}
-#endif
+	tmedia_codec_plugin_unregister_all();
 
 
 	/* === unRegister converters === */
@@ -653,6 +593,16 @@ int tdav_deinit()
 	tmedia_jitterbuffer_plugin_unregister(tdav_speex_jitterbuffer_plugin_def_t);
 #else
 	tmedia_jitterbuffer_plugin_unregister(tdav_speakup_jitterbuffer_plugin_def_t);
+#endif
+
+	/* === stand-alone plugins === */
+#if TDAV_HAVE_PLUGIN_EXT_WIN32
+	{
+		TSK_OBJECT_SAFE_FREE(__dll_plugin_cuda);
+		TSK_OBJECT_SAFE_FREE(__dll_plugin_wasapi);
+		TSK_OBJECT_SAFE_FREE(__dll_plugin_mf);
+		TSK_OBJECT_SAFE_FREE(__dll_plugin_dshow);
+	}
 #endif
 
 	// disperse all collected codecs

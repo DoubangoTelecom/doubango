@@ -1399,6 +1399,7 @@ HRESULT MFUtils::ShutdownSession(
 {
 	// MUST be source then session
 	if(pSource){
+		pSource->Stop();
 		pSource->Shutdown();
 	}
 	if(pSession){

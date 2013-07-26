@@ -54,8 +54,8 @@ static int tdav_speex_resampler_open(tmedia_resampler_t* self, uint32_t in_freq,
 		return -2;
 	}
 
-	resampler->in_size  = (in_freq * frame_duration)/1000;
-	resampler->out_size = ((out_freq * frame_duration) / 1000) * (out_channels / in_channels);
+	resampler->in_size  = ((in_freq * frame_duration) / 1000) << (in_channels == 2 ? 1 : 0);
+	resampler->out_size = ((out_freq * frame_duration) / 1000) << (out_channels == 2 ? 1 : 0);
 	resampler->in_channels = in_channels;
 	resampler->out_channels = out_channels;
 
@@ -93,7 +93,7 @@ static tsk_size_t tdav_speex_resampler_process(tmedia_resampler_t* self, const u
 	if(resampler->out_channels != resampler->in_channels){
 		spx_uint32_t i, j;
 		spx_int16_t* pout_data = (spx_int16_t*)(out_data);
-		out_len = resampler->tmp_buffer.size_in_samples;
+		out_len = out_size;
 		err = speex_resampler_process_int(resampler->state, 0, (const spx_int16_t *)in_data, (spx_uint32_t *)&in_size, resampler->tmp_buffer.ptr, &out_len);
 
 		if(err == RESAMPLER_ERR_SUCCESS){

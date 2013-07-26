@@ -139,7 +139,8 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, const void* data, tsk_s
 
 	if(!TMEDIA_JITTER_BUFFER(self->jitterbuffer)->opened){
 		uint32_t rate = TMEDIA_CONSUMER(self)->audio.out.rate ? TMEDIA_CONSUMER(self)->audio.out.rate : TMEDIA_CONSUMER(self)->audio.in.rate;
-		if((ret = tmedia_jitterbuffer_open(self->jitterbuffer, TMEDIA_CONSUMER(self)->audio.ptime, rate))){
+		uint32_t channels = TMEDIA_CONSUMER(self)->audio.out.channels ? TMEDIA_CONSUMER(self)->audio.out.channels : tmedia_defaults_get_audio_channels_playback();
+		if((ret = tmedia_jitterbuffer_open(self->jitterbuffer, TMEDIA_CONSUMER(self)->audio.ptime, rate, channels))){
 			TSK_DEBUG_ERROR("Failed to open jitterbuffer (%d)", ret);
 			tsk_safeobj_unlock(self);
 			return ret;
@@ -168,7 +169,8 @@ tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, 
 		int ret;
 		uint32_t frame_duration = TMEDIA_CONSUMER(self)->audio.ptime;
 		uint32_t rate = TMEDIA_CONSUMER(self)->audio.out.rate ? TMEDIA_CONSUMER(self)->audio.out.rate : TMEDIA_CONSUMER(self)->audio.in.rate;
-		if((ret = tmedia_jitterbuffer_open(TMEDIA_JITTER_BUFFER(self->jitterbuffer), frame_duration, rate))){
+		uint32_t channels = TMEDIA_CONSUMER(self)->audio.out.channels ? TMEDIA_CONSUMER(self)->audio.out.channels : tmedia_defaults_get_audio_channels_playback();
+		if((ret = tmedia_jitterbuffer_open(TMEDIA_JITTER_BUFFER(self->jitterbuffer), frame_duration, rate, channels))){
 			TSK_DEBUG_ERROR("Failed to open jitterbuffer (%d)", ret);
 			tsk_safeobj_unlock(self);
 			return 0;

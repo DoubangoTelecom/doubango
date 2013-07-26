@@ -642,38 +642,6 @@ const tmedia_codec_plugin_def_t *cuda_codec_h264_main_plugin_def_t = &cuda_codec
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ============ Common To all H264 codecs ================= */
 
 int cuda_codec_h264_open_encoder(cuda_codec_h264_t* self)

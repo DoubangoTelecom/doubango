@@ -118,6 +118,13 @@ static int record_wavehdr(tdav_producer_waveapi_t* producer, LPWAVEHDR lpHdr)
 	// Alert the session that there is new data to send over the network
 	//
 	if(TMEDIA_PRODUCER(producer)->enc_cb.callback){
+#if 0
+		{
+			static FILE* f = NULL;
+			if(!f) f = fopen("./waveapi_producer.raw", "w+");
+			fwrite(lpHdr->lpData, 1, lpHdr->dwBytesRecorded, f);
+		}
+#endif
 		TMEDIA_PRODUCER(producer)->enc_cb.callback(TMEDIA_PRODUCER(producer)->enc_cb.callback_data, lpHdr->lpData, lpHdr->dwBytesRecorded);
 	}
 

@@ -217,6 +217,7 @@ Doubango::VoIP::AudioCapture::AudioCapture()
 	, m_bPaused(false)
 {
 	m_callback.fn = nullptr, m_callback.pcData = nullptr;
+	memset(&m_ring, 0, sizeof(m_ring));
 
 	if(!(m_hMutex = tsk_mutex_create())){
 		throw ref new Platform::FailureException(L"Failed to create mutex");

@@ -682,6 +682,7 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
     
     if(!self->encoder.context){
         TSK_DEBUG_ERROR("Failed to allocate context");
+		return -1;
     }
 
 #if TDAV_UNDER_X86 && LIBAVCODEC_VERSION_MAJOR <= 53

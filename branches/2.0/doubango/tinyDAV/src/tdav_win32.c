@@ -78,7 +78,7 @@ int tdav_win32_init()
 		GetVersionEx(&osvi);
 		dwMajorVersion = osvi.dwMajorVersion;
 		dwMinorVersion = osvi.dwMinorVersion;
-		fprintf(stdout, "Windows dwMajorVersion=%ld, dwMinorVersion=%ld", dwMajorVersion, dwMinorVersion);
+		fprintf(stdout, "Windows dwMajorVersion=%ld, dwMinorVersion=%ld\n", dwMajorVersion, dwMinorVersion);
 	}
 #endif
 
@@ -103,6 +103,15 @@ tsk_bool_t tdav_win32_is_win7_or_later()
 		return tsk_false;
 	}
 	return ( (dwMajorVersion > 6) || ( (dwMajorVersion == 6) && (dwMinorVersion >= 1) ) );
+}
+
+tsk_bool_t tdav_win32_is_winvista_or_later()
+{
+	if(dwMajorVersion == -1 || dwMinorVersion == -1){
+		TSK_DEBUG_ERROR("Version numbers are invalid");
+		return tsk_false;
+	}
+	return (dwMajorVersion >= 6);
 }
 
 tsk_bool_t tdav_win32_is_winxp_or_later()

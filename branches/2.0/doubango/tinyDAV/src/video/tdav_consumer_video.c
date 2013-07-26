@@ -107,8 +107,9 @@ int tdav_consumer_video_put(tdav_consumer_video_t* self, const void* data, tsk_s
 
 	if(!TMEDIA_JITTER_BUFFER(self->jitterbuffer)->opened){
 		uint32_t frame_duration = (1000 / TMEDIA_CONSUMER(self)->video.fps);
-		uint32_t rate = 90000;//FIXME
-		if((ret = tmedia_jitterbuffer_open(TMEDIA_JITTER_BUFFER(self->jitterbuffer), frame_duration, rate))){
+		static uint32_t rate = 90000;
+		static uint32_t channels = 1;
+		if((ret = tmedia_jitterbuffer_open(TMEDIA_JITTER_BUFFER(self->jitterbuffer), frame_duration, rate, channels))){
 			TSK_DEBUG_ERROR("Failed to open jitterbuffer (%d)", ret);
 			tsk_safeobj_unlock(self);
 			return ret;
@@ -135,8 +136,9 @@ tsk_size_t tdav_consumer_video_get(tdav_consumer_video_t* self, void* out_data, 
 	if(!TMEDIA_JITTER_BUFFER(self->jitterbuffer)->opened){
 		int ret;
 		uint32_t frame_duration = (1000 / TMEDIA_CONSUMER(self)->video.fps);
-		uint32_t rate = 90000;//FIXME
-		if((ret = tmedia_jitterbuffer_open(TMEDIA_JITTER_BUFFER(self->jitterbuffer), frame_duration, rate))){
+		static uint32_t rate = 90000;
+		static uint32_t channles = 1;
+		if((ret = tmedia_jitterbuffer_open(TMEDIA_JITTER_BUFFER(self->jitterbuffer), frame_duration, rate, channles))){
 			TSK_DEBUG_ERROR("Failed to open jitterbuffer (%d)", ret);
 			tsk_safeobj_unlock(self);
 			return 0;
