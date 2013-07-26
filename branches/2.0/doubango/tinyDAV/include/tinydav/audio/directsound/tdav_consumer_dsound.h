@@ -36,29 +36,9 @@
 
 #include "tinydav/audio/tdav_consumer_audio.h"
 
-#include <dsound.h>
-
 TDAV_BEGIN_DECLS
 
-#define TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT		20
-
-typedef struct tdav_consumer_dsound_s
-{
-	TDAV_DECLARE_CONSUMER_AUDIO;
-
-	tsk_bool_t started;
-	tsk_size_t bytes_per_notif;
-	void* tid[1];
-
-	LPDIRECTSOUND device;
-	LPDIRECTSOUNDBUFFER primaryBuffer;
-	LPDIRECTSOUNDBUFFER secondaryBuffer;
-	HANDLE notifEvents[TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT];
-}
-tdav_consumer_dsound_t;
-
 TINYDAV_GEXTERN const tmedia_consumer_plugin_def_t *tdav_consumer_dsound_plugin_def_t;
-
 
 TDAV_END_DECLS
 

@@ -60,7 +60,7 @@ static int tdav_speex_resampler_open(tmedia_resampler_t* self, uint32_t in_freq,
 	resampler->out_channels = out_channels;
 
 	if(in_channels != out_channels){
-		resampler->tmp_buffer.size_in_samples = TSK_MAX(resampler->out_size, resampler->in_size);
+		resampler->tmp_buffer.size_in_samples = ((TSK_MAX(in_freq, out_freq) * frame_duration) / 1000) << (TSK_MAX(in_channels, out_channels) == 2 ? 1 : 0);
 		if(!(resampler->tmp_buffer.ptr = (spx_int16_t*)tsk_realloc(resampler->tmp_buffer.ptr, resampler->tmp_buffer.size_in_samples * sizeof(spx_int16_t)))){
 			resampler->tmp_buffer.size_in_samples = 0;
 			return -2;
@@ -74,7 +74,7 @@ static tsk_size_t tdav_speex_resampler_process(tmedia_resampler_t* self, const u
 {
 	tdav_speex_resampler_t *resampler = (tdav_speex_resampler_t *)self;
 	spx_uint32_t out_len = (spx_uint32_t)out_size;
-	int err;
+	int err = RESAMPLER_ERR_SUCCESS;
 	if(!resampler->state || !out_data){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
@@ -90,32 +90,41 @@ static tsk_size_t tdav_speex_resampler_process(tmedia_resampler_t* self, const u
 		return 0;
 	}
 
-	if(resampler->out_channels != resampler->in_channels){
-		spx_uint32_t i, j;
-		spx_int16_t* pout_data = (spx_int16_t*)(out_data);
-		out_len = out_size;
-		err = speex_resampler_process_int(resampler->state, 0, (const spx_int16_t *)in_data, (spx_uint32_t *)&in_size, resampler->tmp_buffer.ptr, &out_len);
-
-		if(err == RESAMPLER_ERR_SUCCESS){
-			if(resampler->in_channels == 1){
-				// in_channels = 1, out_channels = 2
-				for(i = 0, j = 0; i < out_len; ++i, j+=2){
-					pout_data[j] = pout_data[j + 1] = resampler->tmp_buffer.ptr[i];
+	if(resampler->in_channels == resampler->out_channels) {
+		err = speex_resampler_process_int(resampler->state, 0,
+					    (const spx_int16_t *)in_data, (spx_uint32_t *)&in_size,
+					    (spx_int16_t *)out_data, &out_len);
+	}
+	else {
+		if(resampler->in_channels == 1){
+			// in_channels = 1, out_channels = 2
+			spx_int16_t* pout_data = (spx_int16_t*)(out_data);
+			speex_resampler_set_output_stride(resampler->state, 2);
+			err = speex_resampler_process_int(resampler->state, 0, 
+				(const spx_int16_t *)in_data, (spx_uint32_t *)&in_size, 
+				pout_data, &out_len);
+			if(err == RESAMPLER_ERR_SUCCESS) {
+				spx_uint32_t i;
+				// duplicate
+				for(i = 0; i < out_len; i += 2){
+					pout_data[i + 1] = pout_data[i];
 				}
 			}
-			else{
-				// in_channels = 2, out_channels = 1
-				for(i = 0, j = 0; i < out_len; ++i, j+=2){
+		}
+		else {
+			// in_channels = 2, out_channels = 1
+			spx_uint32_t out_len_chan2 = (out_len << 1);
+			err = speex_resampler_process_int(resampler->state, 0,
+					    (const spx_int16_t *)in_data, (spx_uint32_t *)&in_size,
+					    (spx_int16_t *)resampler->tmp_buffer.ptr, &out_len_chan2);
+			if(err == RESAMPLER_ERR_SUCCESS) {
+				spx_uint32_t i, j;
+				spx_int16_t* pout_data = (spx_int16_t*)(out_data);
+				for(i = 0, j = 0; j < out_len_chan2; ++i, j+=2){
 					pout_data[i] = resampler->tmp_buffer.ptr[j];
 				}
 			}
 		}
-	}
-	else{
-		err = speex_resampler_process_interleaved_int(resampler->state,
-					    (const spx_int16_t *)in_data, (spx_uint32_t *)&in_size,
-					    (spx_int16_t *)out_data, &out_len);
-		// err = speex_resampler_process_int(resampler->state, 0, (const spx_int16_t *)in_data, (spx_uint32_t *)&in_size, (spx_int16_t *)out_data, &out_len);
 	}
 	
 	if(err != RESAMPLER_ERR_SUCCESS){
