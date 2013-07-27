@@ -1102,15 +1102,27 @@ static inline tsk_size_t _cuda_codec_h264_pict_layout(cuda_codec_h264_t* self, v
 			}
 		}
 		
+
 		register unsigned int y;
         const unsigned char *p = (const unsigned char *)self->decoder.cuBuffer.pcuPtr, *q = p + (h * pitch);
-        register unsigned char *iyuv = (unsigned char *)*output, *i = iyuv, *j = i + (h * w);
-		
+        register unsigned char *i = (unsigned char *)*output, *j = i + (h * w);
+
         for (y = 0; y < h; y++)
 		{
-            memcpy(i + (y * w), p + (y * pitch), w); // luma
-			memcpy(j + (y * w_div_2), q + (y * pitch_div_2), w_div_2); // chroma
+			 // luma
+            memcpy(i, p, w);
+			i += w;
+			p += pitch;
+
+			 // chroma
+			memcpy(j, &q[(y&1) ? w_div_2 : 0], w_div_2);
+			j += w_div_2;
+			if(y&1)
+			{
+				q += pitch;
+			}
         }
+		
 		return xsize;
 	}
 	return 0;

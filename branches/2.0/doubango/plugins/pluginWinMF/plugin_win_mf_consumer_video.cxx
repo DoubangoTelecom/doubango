@@ -21,6 +21,7 @@
 
 #include "tinymedia/tmedia_consumer.h"
 
+#include "tsk_safeobj.h"
 #include "tsk_string.h"
 #include "tsk_thread.h"
 #include "tsk_debug.h"
@@ -49,7 +50,9 @@
 const DWORD NUM_BACK_BUFFERS = 2;
 
 static HRESULT CreateDeviceD3D9(
-	HWND hWnd, IDirect3DDevice9** ppDevice, 
+	BOOL bFullScreen,
+	HWND hWnd,
+	IDirect3DDevice9** ppDevice, 
 	IDirect3D9 **ppD3D,
 	D3DPRESENT_PARAMETERS &d3dpp
 	);
@@ -57,11 +60,14 @@ static HRESULT TestCooperativeLevel(
 	struct plugin_win_mf_consumer_video_s *pSelf
 	);
 static HRESULT CreateSwapChain(
+	BOOL bFullScreen,
 	HWND hWnd, 
 	UINT32 nFrameWidth, 
 	UINT32 nFrameHeight, 
 	IDirect3DDevice9* pDevice, 
 	IDirect3DSwapChain9 **ppSwapChain);
+
+static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 static inline LONG Width(const RECT& r);
 static inline LONG Height(const RECT& r);
@@ -69,13 +75,16 @@ static inline RECT CorrectAspectRatio(const RECT& src, const MFRatio& srcPAR);
 static inline RECT LetterBoxRect(const RECT& rcSrc, const RECT& rcDst);
 static inline HRESULT UpdateDestinationRect(struct plugin_win_mf_consumer_video_s *pSelf, BOOL bForce = FALSE);
 static HRESULT ResetDevice(struct plugin_win_mf_consumer_video_s *pSelf, BOOL bUpdateDestinationRect = FALSE);
+static HRESULT HookWindow(struct plugin_win_mf_consumer_video_s *pSelf);
+static HRESULT UnHookWindow(struct plugin_win_mf_consumer_video_s *pSelf);
+static HRESULT SetFullscreen(struct plugin_win_mf_consumer_video_s *pSelf, BOOL bFullScreen);
 
 typedef struct plugin_win_mf_consumer_video_s
 {
 	TMEDIA_DECLARE_CONSUMER;
 	
-	bool bStarted, bPrepared, bPaused;
-	bool bPluginFireFox, bPluginWebRTC4All;
+	BOOL bStarted, bPrepared, bPaused, bFullScreen;
+	BOOL bPluginFireFox, bPluginWebRTC4All;
 	HWND hWindow;
 	RECT rcWindow;
 	RECT rcDest;
@@ -90,6 +99,8 @@ typedef struct plugin_win_mf_consumer_video_s
 	IDirect3D9 *pD3D;
 	IDirect3DSwapChain9 *pSwapChain;
 	D3DPRESENT_PARAMETERS d3dpp;
+
+	TSK_DECLARE_SAFEOBJ;
 }
 plugin_win_mf_consumer_video_t;
 
@@ -102,29 +113,46 @@ static int plugin_win_mf_consumer_video_set(tmedia_consumer_t *self, const tmedi
 	HRESULT hr = S_OK;
 	plugin_win_mf_consumer_video_t* pSelf = (plugin_win_mf_consumer_video_t*)self;
 
-	if(!self || !param){
+	if(!self || !param)
+	{
 		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
+		CHECK_HR(hr = E_POINTER);
 	}
 
-	if(param->value_type == tmedia_pvt_int64){
-		if(tsk_striequals(param->key, "remote-hwnd")){
-			pSelf->hWindow = reinterpret_cast<HWND>((INT64)*((int64_t*)param->value));
+	if(param->value_type == tmedia_pvt_int64)
+	{
+		if(tsk_striequals(param->key, "remote-hwnd"))
+		{
+			HWND hWnd = reinterpret_cast<HWND>((INT64)*((int64_t*)param->value));
+			if(hWnd != pSelf->hWindow)
+			{
+				tsk_safeobj_lock(pSelf); // block consumer thread
+				pSelf->hWindow = hWnd;
+				hr = ResetDevice(pSelf);
+				tsk_safeobj_unlock(pSelf); // unblock consumer thread
+			}
+
+			
 		}
 	}
-	else if(param->value_type == tmedia_pvt_int32){
-		if(tsk_striequals(param->key, "fullscreen")){
-			// FIXME
-			TSK_DEBUG_ERROR("Not implemented");
-			// CHECK_HR(hr = pSelf->pDisplayWatcher->SetFullscreen(!!*((int32_t*)param->value)));
+	else if(param->value_type == tmedia_pvt_int32)
+	{
+		if(tsk_striequals(param->key, "fullscreen"))
+		{
+			BOOL bFullScreen = !!*((int32_t*)param->value);
+			TSK_DEBUG_INFO("[MF video consumer] Full Screen = %d", bFullScreen);
+			CHECK_HR(hr = SetFullscreen(pSelf, bFullScreen));
 		}
-		else if(tsk_striequals(param->key, "create-on-current-thead")){
+		else if(tsk_striequals(param->key, "create-on-current-thead"))
+		{
 			// DSCONSUMER(self)->create_on_ui_thread = *((int32_t*)param->value) ? tsk_false : tsk_true;
 		}
-		else if(tsk_striequals(param->key, "plugin-firefox")){
+		else if(tsk_striequals(param->key, "plugin-firefox"))
+		{
 			pSelf->bPluginFireFox = (*((int32_t*)param->value) != 0);
 		}
-		else if(tsk_striequals(param->key, "plugin-webrtc4all")){
+		else if(tsk_striequals(param->key, "plugin-webrtc4all"))
+		{
 			pSelf->bPluginWebRTC4All = (*((int32_t*)param->value) != 0);
 		}
 	}
@@ -181,8 +209,8 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	// The window handle is not created until the call is connect (incoming only) - At least on Internet Explorer 10
 	if(pSelf->hWindow && !pSelf->bPluginWebRTC4All)
 	{
-		CHECK_HR(hr = CreateDeviceD3D9(pSelf->hWindow, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
-		CHECK_HR(hr = CreateSwapChain(pSelf->hWindow, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
+		CHECK_HR(hr = CreateDeviceD3D9(pSelf->bFullScreen, pSelf->hWindow, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
+		CHECK_HR(hr = CreateSwapChain(pSelf->bFullScreen, pSelf->hWindow, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
 	}
 	else
 	{
@@ -257,6 +285,8 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 		goto bail; // not an error as the application can decide to set the HWND at any time
 	}
 
+	tsk_safeobj_lock(pSelf);
+
 	if(!pSelf->pDevice || !pSelf->pD3D || !pSelf->pSwapChain)
 	{
 		if(pSelf->pDevice || pSelf->pD3D || pSelf->pSwapChain)
@@ -270,8 +300,8 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 			pSelf->nNegWidth = TMEDIA_CONSUMER(pSelf)->video.in.width;
 			pSelf->nNegHeight = TMEDIA_CONSUMER(pSelf)->video.in.height;
 
-			CHECK_HR(hr = CreateDeviceD3D9(pSelf->hWindow, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
-			CHECK_HR(hr = CreateSwapChain(pSelf->hWindow, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
+			CHECK_HR(hr = CreateDeviceD3D9(pSelf->bFullScreen, pSelf->hWindow, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
+			CHECK_HR(hr = CreateSwapChain(pSelf->bFullScreen, pSelf->hWindow, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
 		}
 	}
 
@@ -282,7 +312,7 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 		// Update media type
 		
 		SafeRelease(&pSelf->pSwapChain);
-		CHECK_HR(hr = CreateSwapChain(pSelf->hWindow, TMEDIA_CONSUMER(pSelf)->video.in.width, TMEDIA_CONSUMER(pSelf)->video.in.height, pSelf->pDevice, &pSelf->pSwapChain));
+		CHECK_HR(hr = CreateSwapChain(pSelf->bFullScreen, pSelf->hWindow, TMEDIA_CONSUMER(pSelf)->video.in.width, TMEDIA_CONSUMER(pSelf)->video.in.height, pSelf->pDevice, &pSelf->pSwapChain));
 
 		pSelf->nNegWidth = TMEDIA_CONSUMER(pSelf)->video.in.width;
 		pSelf->nNegHeight = TMEDIA_CONSUMER(pSelf)->video.in.height;
@@ -342,6 +372,8 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 bail:
 	SafeRelease(&pSurf);
 	SafeRelease(&pBB);
+
+	tsk_safeobj_unlock(pSelf);
 
 	return SUCCEEDED(hr) ?  0 : -1;
 }
@@ -429,7 +461,7 @@ static tsk_object_t* plugin_win_mf_consumer_video_ctor(tsk_object_t * self, va_l
 		TMEDIA_CONSUMER(pSelf)->decoder.codec_id = tmedia_codec_id_none; // means accept RAW fames
 
 		/* init self */
-		// consumer->create_on_ui_thread = tsk_true;
+		tsk_safeobj_init(pSelf);
 		TMEDIA_CONSUMER(pSelf)->video.fps = 15;
 		TMEDIA_CONSUMER(pSelf)->video.display.width = 0; // use codec value
 		TMEDIA_CONSUMER(pSelf)->video.display.height = 0; // use codec value
@@ -445,7 +477,8 @@ static tsk_object_t* plugin_win_mf_consumer_video_dtor(tsk_object_t * self)
 	plugin_win_mf_consumer_video_t *pSelf = (plugin_win_mf_consumer_video_t *)self;
 	if(pSelf){
 		/* stop */
-		if(pSelf->bStarted){
+		if(pSelf->bStarted)
+		{
 			plugin_win_mf_consumer_video_stop(TMEDIA_CONSUMER(pSelf));
 		}
 
@@ -453,6 +486,7 @@ static tsk_object_t* plugin_win_mf_consumer_video_dtor(tsk_object_t * self)
 		tmedia_consumer_deinit(TMEDIA_CONSUMER(pSelf));
 		/* deinit self */
 		_plugin_win_mf_consumer_video_unprepare(pSelf);
+		tsk_safeobj_deinit(pSelf);
 	}
 
 	return self;
@@ -485,7 +519,9 @@ const tmedia_consumer_plugin_def_t *plugin_win_mf_consumer_video_plugin_def_t = 
 // Helper functions
 
 static HRESULT CreateDeviceD3D9(
-	HWND hWnd, IDirect3DDevice9** ppDevice, 
+	BOOL bFullScreen,
+	HWND hWnd, 
+	IDirect3DDevice9** ppDevice, 
 	IDirect3D9 **ppD3D,
 	D3DPRESENT_PARAMETERS &d3dpp
 	)
@@ -521,7 +557,7 @@ static HRESULT CreateDeviceD3D9(
     pp.BackBufferFormat = D3DFMT_X8R8G8B8;
     pp.SwapEffect = D3DSWAPEFFECT_COPY;
     pp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-    pp.Windowed = TRUE;
+	pp.Windowed = !bFullScreen;
     pp.hDeviceWindow = hWnd;
 
     CHECK_HR(hr = (*ppD3D)->CreateDevice(
@@ -587,6 +623,7 @@ bail:
 }
 
 static HRESULT CreateSwapChain(
+	BOOL bFullScreen,
 	HWND hWnd, 
 	UINT32 nFrameWidth, 
 	UINT32 nFrameHeight, 
@@ -605,7 +642,7 @@ static HRESULT CreateSwapChain(
 
     pp.BackBufferWidth  = nFrameWidth;
     pp.BackBufferHeight = nFrameHeight;
-    pp.Windowed = TRUE;
+    pp.Windowed = !bFullScreen;
     pp.SwapEffect = D3DSWAPEFFECT_FLIP;
     pp.hDeviceWindow = hWnd;
     pp.BackBufferFormat = D3DFMT_X8R8G8B8;
@@ -768,6 +805,8 @@ static HRESULT ResetDevice(plugin_win_mf_consumer_video_t *pSelf, BOOL bUpdateDe
 {
     HRESULT hr = S_OK;
 
+	tsk_safeobj_lock(pSelf);
+
     if (pSelf->pDevice)
     {
         D3DPRESENT_PARAMETERS d3dpp = pSelf->d3dpp;
@@ -784,8 +823,8 @@ static HRESULT ResetDevice(plugin_win_mf_consumer_video_t *pSelf, BOOL bUpdateDe
 
     if (pSelf->pDevice == NULL && pSelf->hWindow)
     {
-        CHECK_HR(hr = CreateDeviceD3D9(pSelf->hWindow, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
-		CHECK_HR(hr = CreateSwapChain(pSelf->hWindow, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
+        CHECK_HR(hr = CreateDeviceD3D9(pSelf->bFullScreen, pSelf->hWindow, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
+		CHECK_HR(hr = CreateSwapChain(pSelf->bFullScreen, pSelf->hWindow, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
     }    
 
 	if(bUpdateDestinationRect) // endless loop guard
@@ -794,7 +833,92 @@ static HRESULT ResetDevice(plugin_win_mf_consumer_video_t *pSelf, BOOL bUpdateDe
 	}
 
 bail:
+	tsk_safeobj_unlock(pSelf);
+
    return hr;
+}
+
+static HRESULT HookWindow(struct plugin_win_mf_consumer_video_s *pSelf)
+{
+	HRESULT hr = S_OK;
+	if(!pSelf)
+	{
+		CHECK_HR(hr = E_POINTER);
+	}
+
+bail:
+	return hr;
+}
+
+static HRESULT UnHookWindow(struct plugin_win_mf_consumer_video_s *pSelf)
+{
+	HRESULT hr = S_OK;
+	if(!pSelf)
+	{
+		CHECK_HR(hr = E_POINTER);
+	}
+
+	CHECK_HR(hr = SetFullscreen(pSelf, FALSE));
+
+bail:
+	return hr;
+}
+
+static HRESULT SetFullscreen(struct plugin_win_mf_consumer_video_s *pSelf, BOOL bFullScreen)
+{
+	HRESULT hr = S_OK;
+	if(!pSelf)
+	{
+		CHECK_HR(hr = E_POINTER);
+	}
+
+	if(pSelf->bFullScreen != bFullScreen)
+	{
+		tsk_safeobj_lock(pSelf);
+		pSelf->bFullScreen = bFullScreen;
+		hr = ResetDevice(pSelf);
+		tsk_safeobj_unlock(pSelf);
+
+		CHECK_HR(hr);
+	}
+
+bail:
+	return hr;
+}
+
+static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch(uMsg)
+	{
+		case WM_CREATE:
+		case WM_SIZE:
+		case WM_MOVE:
+			{
+				struct plugin_win_mf_consumer_video_s* pSelf = dynamic_cast<struct plugin_win_mf_consumer_video_s*>((struct plugin_win_mf_consumer_video_s*)GetPropA(hWnd, "Self"));
+				if(pSelf)
+				{					
+					
+				}
+				break;
+			}
+
+		case WM_CHAR:
+		case WM_KEYUP:
+			{
+				struct plugin_win_mf_consumer_video_s* pSelf = dynamic_cast<struct plugin_win_mf_consumer_video_s*>((struct plugin_win_mf_consumer_video_s*)GetPropA(hWnd, "Self"));
+				if(pSelf)
+				{	
+					/*if(This->m_bFullScreen && (wParam == 0x1B || wParam == VK_ESCAPE))
+					{
+						This->SetFullscreen(FALSE);
+					}*/
+				}
+				
+				break;
+			}
+	}
+
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 

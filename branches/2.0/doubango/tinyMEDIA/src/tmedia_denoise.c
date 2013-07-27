@@ -215,12 +215,16 @@ int tmedia_denoise_plugin_register(const tmedia_denoise_plugin_def_t* plugin)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	__tmedia_denoise_plugin = plugin;
+	if(!__tmedia_denoise_plugin) {
+		TSK_DEBUG_INFO("Register denoiser: %d", plugin->desc);
+		__tmedia_denoise_plugin = plugin;
+	}
 	return 0;
 }
 
-int tmedia_denoise_plugin_unregister()
+int tmedia_denoise_plugin_unregister(const tmedia_denoise_plugin_def_t* plugin)
 {
+	(void)(plugin);
 	__tmedia_denoise_plugin = tsk_null;
 	return 0;
 }

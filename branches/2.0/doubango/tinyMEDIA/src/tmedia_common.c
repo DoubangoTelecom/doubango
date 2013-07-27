@@ -33,6 +33,8 @@
 #include "tinymedia/tmedia_producer.h"
 #include "tinymedia/tmedia_session.h"
 #include "tinymedia/tmedia_converter_video.h"
+#include "tinymedia/tmedia_resampler.h"
+#include "tinymedia/tmedia_denoise.h"
 #include "tinymedia/tmedia_imageattr.h"
 #include "tinymedia/tmedia_defaults.h"
 
@@ -84,10 +86,8 @@ static const struct plugin_decl_s __plugin_def_types[] =
 	{tsk_plugin_def_type_session, tmedia_session_plugin_register, tmedia_session_plugin_unregister },
 	{tsk_plugin_def_type_codec, tmedia_codec_plugin_register, tmedia_codec_plugin_unregister },
 	{tsk_plugin_def_type_converter, tmedia_converter_video_plugin_register, tmedia_converter_video_plugin_unregister },
-	// tsk_plugin_def_type_resampler
-	// tsk_plugin_def_type_jb
-	// tsk_plugin_def_type_denoiser
-	// 
+	{tsk_plugin_def_type_resampler, tmedia_resampler_plugin_register, tmedia_resampler_plugin_unregister },
+	{tsk_plugin_def_type_denoiser, tmedia_denoise_plugin_register, tmedia_denoise_plugin_unregister },
 };
 static const tsk_size_t __plugin_def_types_count = sizeof(__plugin_def_types)/sizeof(__plugin_def_types[0]);
 static const tsk_plugin_def_media_type_t __plugin_def_media_types[] = 

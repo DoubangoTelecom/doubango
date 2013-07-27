@@ -36,25 +36,7 @@
 
 #include "tinymedia/tmedia_denoise.h"
 
-#include <speex/speex_preprocess.h>
-#include <speex/speex_echo.h>
-
 TDAV_BEGIN_DECLS
-
-/** Speex denoiser*/
-typedef struct tdav_speex_denoise_s
-{
-	TMEDIA_DECLARE_DENOISE;
-
-	SpeexPreprocessState *preprocess_state_record; 
-	SpeexPreprocessState *preprocess_state_playback;
-	SpeexEchoState *echo_state;
-
-	spx_int16_t* echo_output_frame;
-	uint32_t record_frame_size_samples, record_frame_size_bytes;
-	uint32_t playback_frame_size_samples, playback_frame_size_bytes;
-}
-tdav_speex_denoise_t;
 
 const tmedia_denoise_plugin_def_t *tdav_speex_denoise_plugin_def_t;
 

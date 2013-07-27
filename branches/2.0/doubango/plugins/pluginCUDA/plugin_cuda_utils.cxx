@@ -24,8 +24,6 @@
 #include <cuda.h>
 #include <cuda_runtime_api.h>
 
-#include <Windows.h>
-
 bool CudaUtils::g_bStarted = false;
 bool CudaUtils::g_bH264Checked = false;
 bool CudaUtils::g_bH264Supported = false;

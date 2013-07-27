@@ -1,7 +1,5 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,10 +20,6 @@
 
 /**@file tdav_speex_denoise.c
 * @brief Speex Denoiser (Noise suppression, AGC, AEC) Plugin
-*
-* @author Mamadou Diop <diopmamadou(at)doubango.org>
-*
-
 */
 #include "tinydav/audio/tdav_speex_denoise.h"
 
@@ -38,6 +32,24 @@
 #include "tinymedia/tmedia_defaults.h"
 
 #include <string.h>
+
+#include <speex/speex_preprocess.h>
+#include <speex/speex_echo.h>
+
+/** Speex denoiser*/
+typedef struct tdav_speex_denoise_s
+{
+	TMEDIA_DECLARE_DENOISE;
+
+	SpeexPreprocessState *preprocess_state_record; 
+	SpeexPreprocessState *preprocess_state_playback;
+	SpeexEchoState *echo_state;
+
+	spx_int16_t* echo_output_frame;
+	uint32_t record_frame_size_samples, record_frame_size_bytes;
+	uint32_t playback_frame_size_samples, playback_frame_size_bytes;
+}
+tdav_speex_denoise_t;
 
 static int tdav_speex_denoise_set(tmedia_denoise_t* _self, const tmedia_param_t* param)
 {
