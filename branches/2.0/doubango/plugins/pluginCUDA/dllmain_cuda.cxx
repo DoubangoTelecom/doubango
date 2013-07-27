@@ -27,13 +27,13 @@
 #include <windows.h>
 
 #if defined(_MSC_VER)
-#       pragma comment(lib, "nvcuvenc.lib")
-#       pragma comment(lib, "nvcuvid.lib")
-#       pragma comment(lib, "cuda.lib")
-#       pragma comment(lib, "cudart.lib")
+#       pragma comment(lib, "nvcuvenc")
+#       pragma comment(lib, "nvcuvid")
+#       pragma comment(lib, "cuda")
+#       pragma comment(lib, "cudart")
 
-#       pragma comment(lib, "d3d9.lib")
-#       pragma comment(lib, "d3dx9.lib")
+#       pragma comment(lib, "d3d9")
+#       pragma comment(lib, "d3dx9")
 #endif
 
 

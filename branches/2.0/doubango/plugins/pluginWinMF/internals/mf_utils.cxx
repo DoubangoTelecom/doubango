@@ -70,7 +70,7 @@ HRESULT MFUtils::Startup()
 		{
 			hr = MFStartup(MF_VERSION);
 		}
-		assert((g_bStarted = SUCCEEDED(hr)));
+		g_bStarted = SUCCEEDED(hr);
 
 		OSVERSIONINFO osvi;
 		ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
@@ -548,6 +548,7 @@ HRESULT MFUtils::GetBestCodec(
                  MFT_ENUM_FLAG_SYNCMFT  | 
 				 MFT_ENUM_FLAG_ASYNCMFT |
                  MFT_ENUM_FLAG_LOCALMFT | 
+				 MFT_ENUM_FLAG_TRANSCODE_ONLY | // Otherwise Intel Quick Sync will not be listed
                  MFT_ENUM_FLAG_SORTANDFILTER;
 
 	hr = MFTEnumEx(
@@ -569,6 +570,7 @@ HRESULT MFUtils::GetBestCodec(
 				hr = IsAsyncMFT(*ppMFT, &bAsync);
 				if(bAsync)
 				{
+					TSK_DEBUG_INFO("Skipping async decoder because not supported yet");
 					goto next; // Async decoders not supported yet
 				}
 			}

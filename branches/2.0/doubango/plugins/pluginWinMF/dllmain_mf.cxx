@@ -29,10 +29,10 @@
 #include <windows.h>
 
 #if defined(_MSC_VER)
-#       pragma comment(lib, "mfplat.lib")
-#       pragma comment(lib, "mf.lib")
-#       pragma comment(lib, "mfuuid.lib")
-#       pragma comment(lib, "shlwapi.lib")
+#       pragma comment(lib, "mfplat")
+#       pragma comment(lib, "mf")
+#       pragma comment(lib, "mfuuid")
+#       pragma comment(lib, "shlwapi")
 #		pragma comment(lib, "Strmiids")
 #endif
 

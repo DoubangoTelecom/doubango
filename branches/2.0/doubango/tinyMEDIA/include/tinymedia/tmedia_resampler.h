@@ -77,7 +77,7 @@ TINYMEDIA_API int tmedia_resampler_close(tmedia_resampler_t* self);
 TINYMEDIA_API int tmedia_resampler_deinit(tmedia_resampler_t* self);
 
 TINYMEDIA_API int tmedia_resampler_plugin_register(const tmedia_resampler_plugin_def_t* plugin);
-TINYMEDIA_API int tmedia_resampler_plugin_unregister();
+TINYMEDIA_API int tmedia_resampler_plugin_unregister(const tmedia_resampler_plugin_def_t* plugin);
 TINYMEDIA_API tmedia_resampler_t* tmedia_resampler_create();
 
 TMEDIA_END_DECLS

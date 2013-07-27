@@ -47,6 +47,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 		static struct tsk_plugin_s* __dll_plugin_dshow = tsk_null; /* DirectShow: Windows [XP - 8] */
 		static struct tsk_plugin_s* __dll_plugin_mf = tsk_null; /* Media Foundation and WASAPI : Windows [7 - 8] */
 		static struct tsk_plugin_s* __dll_plugin_cuda = tsk_null; /* Media Foundation and WASAPI : Windows [XP - 8] */
+		static struct tsk_plugin_s* __dll_plugin_audio_dsp = tsk_null; /* Audio DSP, Resampler, AEC, NS, AGC...: Windows [Vista - 8] */
 #	endif /* TDAV_UNDER_WINDOWS */
 #endif
 
@@ -179,7 +180,7 @@ int tdav_init()
 		}
 #endif
 		/* CUDA (H.264 codec) */
-#if 0 // disable CUDA by default
+#if 1 // Enable CUDA by default
 		tsk_sprintf(&full_path, "%s/pluginCUDA.dll", tdav_get_current_directory_const()); // CUDA works on all Windows versions
 		if((__dll_plugin_cuda = tsk_plugin_create(full_path))){
 			plugins_count += tmedia_plugin_register(__dll_plugin_cuda, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
@@ -197,6 +198,13 @@ int tdav_init()
 			tsk_sprintf(&full_path, "%s/pluginDirectShow.dll", tdav_get_current_directory_const());
 			if((__dll_plugin_dshow = tsk_plugin_create(full_path))){
 				plugins_count += tmedia_plugin_register(__dll_plugin_dshow, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
+			}
+		}
+		/* Audio DSP (Resampler, AEC, NS, AGC...) */
+		if(tdav_win32_is_winvista_or_later()){
+			tsk_sprintf(&full_path, "%s/pluginWinAudioDSP.dll", tdav_get_current_directory_const());
+			if((__dll_plugin_audio_dsp = tsk_plugin_create(full_path))){
+				plugins_count += tmedia_plugin_register(__dll_plugin_audio_dsp, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 			}
 		}
 		TSK_FREE(full_path);
@@ -356,11 +364,11 @@ int tdav_init()
 #endif
 
 	/* === Register Audio Denoise (AGC, VAD, Noise Suppression and AEC) === */
-#if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_DENOISE) || HAVE_SPEEX_DENOISE)
-	tmedia_denoise_plugin_register(tdav_speex_denoise_plugin_def_t);
-#endif
 #if HAVE_WEBRTC && (!defined(HAVE_WEBRTC_DENOISE) || HAVE_WEBRTC_DENOISE)
 	tmedia_denoise_plugin_register(tdav_webrtc_denoise_plugin_def_t);
+#endif
+#if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_DENOISE) || HAVE_SPEEX_DENOISE)
+	tmedia_denoise_plugin_register(tdav_speex_denoise_plugin_def_t);
 #endif
 
 	/* === Register Audio Resampler === */
@@ -602,6 +610,7 @@ int tdav_deinit()
 		TSK_OBJECT_SAFE_FREE(__dll_plugin_wasapi);
 		TSK_OBJECT_SAFE_FREE(__dll_plugin_mf);
 		TSK_OBJECT_SAFE_FREE(__dll_plugin_dshow);
+		TSK_OBJECT_SAFE_FREE(__dll_plugin_audio_dsp);
 	}
 #endif
 

@@ -127,12 +127,16 @@ int tmedia_resampler_plugin_register(const tmedia_resampler_plugin_def_t* plugin
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	__tmedia_resampler_plugin = plugin;
+	if(!__tmedia_resampler_plugin) {
+		TSK_DEBUG_INFO("Register resampler: %d", plugin->desc);
+		__tmedia_resampler_plugin = plugin;
+	}
 	return 0;
 }
 
-int tmedia_resampler_plugin_unregister()
+int tmedia_resampler_plugin_unregister(const tmedia_resampler_plugin_def_t* plugin)
 {
+	(void)(plugin);
 	__tmedia_resampler_plugin = tsk_null;
 	return 0;
 }

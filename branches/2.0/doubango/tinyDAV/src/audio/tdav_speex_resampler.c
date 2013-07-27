@@ -30,10 +30,31 @@
 
 #if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_RESAMPLER) || HAVE_SPEEX_RESAMPLER)
 
+#include <speex/speex_resampler.h>
+
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
 #define TDAV_SPEEX_RESAMPLER_MAX_QUALITY 10
+
+/** Speex resampler*/
+typedef struct tdav_speex_resampler_s
+{
+	TMEDIA_DECLARE_RESAMPLER;
+
+	tsk_size_t in_size;
+	tsk_size_t out_size;
+	uint32_t in_channels;
+	uint32_t out_channels;
+
+	struct{
+		spx_int16_t* ptr;
+		tsk_size_t size_in_samples;
+	} tmp_buffer;
+
+	SpeexResamplerState *state;
+}
+tdav_speex_resampler_t;
 
 static int tdav_speex_resampler_open(tmedia_resampler_t* self, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t in_channels, uint32_t out_channels, uint32_t quality)
 {

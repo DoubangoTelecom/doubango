@@ -91,7 +91,7 @@ TINYMEDIA_API int tmedia_denoise_close(tmedia_denoise_t* self);
 TINYMEDIA_API int tmedia_denoise_deinit(tmedia_denoise_t* self);
 
 TINYMEDIA_API int tmedia_denoise_plugin_register(const tmedia_denoise_plugin_def_t* plugin);
-TINYMEDIA_API int tmedia_denoise_plugin_unregister();
+TINYMEDIA_API int tmedia_denoise_plugin_unregister(const tmedia_denoise_plugin_def_t* plugin);
 TINYMEDIA_API tmedia_denoise_t* tmedia_denoise_create();
 
 TMEDIA_END_DECLS
