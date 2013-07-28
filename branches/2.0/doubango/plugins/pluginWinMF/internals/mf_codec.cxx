@@ -43,10 +43,6 @@ DEFINE_GUID(CODECAPI_AVDecVideoH264ErrorConcealment,
 0xececace8, 0x3436, 0x462c, 0x92, 0x94, 0xcd, 0x7b, 0xac, 0xd7, 0x58, 0xa9);
 #endif
 
-#if !defined(PLUGIN_MF_CODEC_CBR_SUPPORTED)
-#	define PLUGIN_MF_CODEC_CBR_SUPPORTED 0 /* MS H.264 encoder doesn't support CBR -> produce artifacts. */
-#endif
-
 //
 //	MFCodec
 //
@@ -502,11 +498,7 @@ HRESULT MFCodecVideo::Initialize(
 			
 			// Constant bitrate (updated using RTCP)
 			var.vt = VT_UI4;
-#if PLUGIN_MF_CODEC_CBR_SUPPORTED
 			var.ulVal = eAVEncCommonRateControlMode_CBR;
-#else
-			var.ulVal = eAVEncCommonRateControlMode_PeakConstrainedVBR /* eAVEncCommonRateControlMode_LowDelayVBR: Win8 only */;
-#endif
 			hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncCommonRateControlMode, &var);
 		}
 
@@ -546,7 +538,7 @@ bail:
 HRESULT MFCodecVideo::SetBitRate(UINT32 nBitRateInBps)
 {
 	assert(IsValid());
-#if PLUGIN_MF_CODEC_CBR_SUPPORTED
+
 	HRESULT hr = S_OK;
 
 	if(nBitRateInBps > 0 && m_eType == MFCodecType_Encoder)
@@ -566,10 +558,6 @@ HRESULT MFCodecVideo::SetBitRate(UINT32 nBitRateInBps)
 
 bail:
 	return hr;
-#else
-	TSK_DEBUG_INFO("Ignoring bitrate...because CBR not supported");
-	return S_OK;
-#endif
 }
 
 HRESULT MFCodecVideo::RequestKeyFrame()

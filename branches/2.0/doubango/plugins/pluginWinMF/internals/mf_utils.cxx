@@ -36,6 +36,9 @@
 #if !defined(PLUGIN_MF_DISABLE_CODECS)
 #	define PLUGIN_MF_DISABLE_CODECS 0 // Must be "0" to use "Microsoft"/"Intel Quick Sync" MFT codecs. Testing: When set to "1", libx264 and FFmpeg will be used.
 #endif
+#if !defined(PLUGIN_MF_DISABLE_MS_H264_ENCODER)
+#	define PLUGIN_MF_DISABLE_MS_H264_ENCODER 1 // MS H.264 encoder produces artifacts when bundled with the producer. Disable until we found way this happens.
+#endif
 
 DEFINE_GUID(CLSID_VideoProcessorMFT, 
 			0x88753b26, 0x5b24, 0x49bd, 0xb2, 0xe7, 0xc, 0x44, 0x5c, 0x78, 0xc9, 0x82);
@@ -54,8 +57,12 @@ const TOPOID MFUtils::g_ullTopoIdSource = 333;
 const TOPOID MFUtils::g_ullTopoIdVideoProcessor = 444;
 
 // {4BE8D3C0-0515-4A37-AD55-E4BAE19AF471}
-DEFINE_GUID(CLSID_MF_INTEL_H264EncFilter, // Intel Quick Sync
+DEFINE_GUID(CLSID_MF_INTEL_H264EncFilter, // Intel Quick Sync Encoder
 0x4be8d3c0, 0x0515, 0x4a37, 0xad, 0x55, 0xe4, 0xba, 0xe1, 0x9a, 0xf4, 0x71);
+
+// {45E5CE07-5AC7-4509-94E9-62DB27CF8F96}
+DEFINE_GUID(CLSID_MF_INTEL_H264DecFilter, // Intel Quick Sync Decoder
+0x45e5ce07, 0x5ac7, 0x4509, 0x94, 0xe9, 0x62, 0xdb, 0x27, 0xcf, 0x8f, 0x96);
 
 #define IsWin7_OrLater(dwMajorVersion, dwMinorVersion) ( (dwMajorVersion > 6) || ( (dwMajorVersion == 6) && (dwMinorVersion >= 1) ) )
 #define IsWin8_OrLater(dwMajorVersion, dwMinorVersion) ( (dwMajorVersion > 6) || ( (dwMajorVersion == 6) && (dwMinorVersion >= 2) ) )
@@ -115,22 +122,21 @@ BOOL MFUtils::IsLowLatencyH264Supported()
 
 	static const BOOL IsEncoderYes = TRUE;
 
-	// Microsoft H.264 MFT encoder doesn't support low latency on Win7
-	// CODECAPI_AVLowLatencyMode: http://msdn.microsoft.com/en-us/library/hh447590(v=vs.85).aspx
-	if(IsWin8_OrLater(MFUtils::g_dwMajorVersion, MFUtils::g_dwMinorVersion))
+	// Encoder
+	hr = MFUtils::GetBestCodec(IsEncoderYes, MFMediaType_Video, MFVideoFormat_NV12, MFVideoFormat_H264, &pEncoderMFT);
+	if(FAILED(hr))
 	{
-		CHECK_HR(hr = MFUtils::GetBestCodec(IsEncoderYes, MFMediaType_Video, MFVideoFormat_NV12, MFVideoFormat_H264, &pEncoderMFT));
-	}
-	else
-	{
-		// On Win7 Only intel Quick Sync could save your soul :)
-		hr = CoCreateInstance(CLSID_MF_INTEL_H264EncFilter, NULL, 
-				CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pEncoderMFT));
-		CHECK_HR(hr);
+		TSK_DEBUG_INFO("No low latency H.264 encoder");
+		goto bail;
 	}
 
-	// Any decoder is fine
-	CHECK_HR(hr = MFUtils::GetBestCodec(!IsEncoderYes, MFMediaType_Video, MFVideoFormat_H264, MFVideoFormat_NV12, &pDecoderMFT));
+	// Decoder
+	hr = MFUtils::GetBestCodec(!IsEncoderYes, MFMediaType_Video, MFVideoFormat_H264, MFVideoFormat_NV12, &pDecoderMFT);
+	if(FAILED(hr))
+	{
+		TSK_DEBUG_INFO("No low latency H.264 decoder");
+		goto bail;
+	}
 
 	// Make sure both encoder and decoder are working well. Check encoding/decoding 1080p@30 would work.
 
@@ -523,21 +529,37 @@ HRESULT MFUtils::GetBestCodec(
 
 	HRESULT hr = S_OK;
 
-	if(bEncoder && outputFormat == MFVideoFormat_H264)
+	if(outputFormat == MFVideoFormat_H264 || inputFormat == MFVideoFormat_H264)
 	{
-		// Force using Intel Quick Sync
-		hr = CoCreateInstance(CLSID_MF_INTEL_H264EncFilter, NULL, 
-				CLSCTX_INPROC_SERVER, IID_PPV_ARGS(ppMFT));
-		if(SUCCEEDED(hr) && *ppMFT)
+		if(bEncoder)
 		{
-			TSK_DEBUG_INFO("Using Intel Quick Sync encoder :)");
-			return hr;
+			// Force using Intel Quick Sync Encoder
+			hr = CoCreateInstance(CLSID_MF_INTEL_H264EncFilter, NULL, 
+					CLSCTX_INPROC_SERVER, IID_PPV_ARGS(ppMFT));
+			if(SUCCEEDED(hr) && *ppMFT)
+			{
+				TSK_DEBUG_INFO("Using Intel Quick Sync encoder :)");
+				return hr;
+			}
+			TSK_DEBUG_INFO("Not using Intel Quick Sync encoder :(");
 		}
-		TSK_DEBUG_INFO("Not using Intel Quick Sync encoder :(");
+		else
+		{
+			// Force using Intel Quick Sync Decoder
+			hr = CoCreateInstance(CLSID_MF_INTEL_H264DecFilter, NULL, 
+					CLSCTX_INPROC_SERVER, IID_PPV_ARGS(ppMFT));
+			if(SUCCEEDED(hr) && *ppMFT)
+			{
+				TSK_DEBUG_INFO("Using Intel Quick Sync decoder :)");
+				return hr;
+			}
+			TSK_DEBUG_INFO("Not using Intel Quick Sync decoder :(");
+		}		
 	}
 	
 	UINT32 count = 0;
 	BOOL bAsync = FALSE;
+	GUID guidActivateCLSID = GUID_NULL;
 
 	IMFActivate **ppActivate = NULL;	
 
@@ -562,11 +584,56 @@ HRESULT MFUtils::GetBestCodec(
 
 	for(UINT32 i = 0; i < count; ++i)
 	{
+		hr = ppActivate[i]->GetGUID(MFT_TRANSFORM_CLSID_Attribute, &guidActivateCLSID);
+		if(FAILED(hr))
+		{
+			continue;
+		}
+
+		if(bEncoder)
+		{
+			// Encoder
+			if(guidActivateCLSID == CLSID_CMSH264EncoderMFT) // MS H.264 encoder ?
+			{
+				if(PLUGIN_MF_DISABLE_MS_H264_ENCODER)
+				{
+					// Microsoft H.264 encoder is disabled
+					TSK_DEBUG_INFO("MS H.264 encoder is disabled...skipping");
+					continue;
+				}
+				if(!IsWin8_OrLater(g_dwMajorVersion, g_dwMinorVersion))
+				{
+					// Microsoft H.264 encoder doesn't support low latency on Win7.
+					TSK_DEBUG_INFO("MS H.264 encoder doesn't support low delay on (%ld, %ld)...skipping", g_dwMajorVersion, g_dwMinorVersion);
+					continue;
+				}
+			}
+		}
+		else
+		{
+			// Decoder
+			if(guidActivateCLSID == CLSID_CMSH264DecoderMFT) // MS H.264 decoder ?
+			{
+				if(!IsWin8_OrLater(g_dwMajorVersion, g_dwMinorVersion))
+				{
+					// Microsoft H.264 decoder doesn't support low latency on Win7.
+					TSK_DEBUG_INFO("MS H.264 decoder doesn't support low delay on (%ld, %ld)...skipping", g_dwMajorVersion, g_dwMinorVersion);
+					continue;
+				}
+			}
+		}
+		
 		hr = ppActivate[i]->ActivateObject(IID_PPV_ARGS(ppMFT));
 		if(SUCCEEDED(hr) && *ppMFT) // For now we just get the first one. FIXME: Give HW encoders/decoders higher priority.
 		{
-			if(!bEncoder)
+			if(bEncoder)
 			{
+				// Encoder
+				
+			}
+			else
+			{
+				// Decoder
 				hr = IsAsyncMFT(*ppMFT, &bAsync);
 				if(bAsync)
 				{
