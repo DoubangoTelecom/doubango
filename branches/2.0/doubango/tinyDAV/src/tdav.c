@@ -180,7 +180,7 @@ int tdav_init()
 		}
 #endif
 		/* CUDA (H.264 codec) */
-#if 1 // Enable CUDA by default
+#if 0 // Enable CUDA by default
 		tsk_sprintf(&full_path, "%s/pluginCUDA.dll", tdav_get_current_directory_const()); // CUDA works on all Windows versions
 		if((__dll_plugin_cuda = tsk_plugin_create(full_path))){
 			plugins_count += tmedia_plugin_register(__dll_plugin_cuda, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);

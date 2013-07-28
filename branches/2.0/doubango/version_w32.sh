@@ -19,7 +19,6 @@ UpdateVersion()
 }
 
 UpdateVersion tinyDAV/version.rc
-UpdateVersion tinyDSHOW/version.rc
 UpdateVersion tinyHTTP/version.rc
 UpdateVersion tinyIPSec/version.rc
 UpdateVersion tinyMEDIA/version.rc
@@ -33,3 +32,9 @@ UpdateVersion tinySIP/version.rc
 UpdateVersion tinySMS/version.rc
 UpdateVersion tinyXCAP/version.rc
 UpdateVersion bindings/version.rc
+
+UpdateVersion plugins/pluginCUDA/version.rc
+UpdateVersion plugins/pluginDirectShow/version.rc
+UpdateVersion plugins/pluginWASAPI/version.rc
+UpdateVersion plugins/pluginWinAudioDSP/version.rc
+UpdateVersion plugins/pluginWinMF/version.rc
