@@ -43,6 +43,10 @@ DEFINE_GUID(CODECAPI_AVDecVideoH264ErrorConcealment,
 0xececace8, 0x3436, 0x462c, 0x92, 0x94, 0xcd, 0x7b, 0xac, 0xd7, 0x58, 0xa9);
 #endif
 
+#if !defined(PLUGIN_MF_CODEC_CBR_SUPPORTED)
+#	define PLUGIN_MF_CODEC_CBR_SUPPORTED 0 /* MS H.264 encoder doesn't support CBR -> produce artifacts. */
+#endif
+
 //
 //	MFCodec
 //
@@ -223,8 +227,6 @@ HRESULT MFCodec::ProcessOutput(IMFSample **ppSample)
         goto bail;
     }
 
-    // TODO: Handle MF_E_TRANSFORM_STREAM_CHANGE
-
     if (FAILED(hr))
     {
         goto bail;
@@ -262,6 +264,7 @@ HRESULT MFCodec::Process(const void* pcInputPtr, UINT32 nInputSize, IMFSample **
 	
 	IMFMediaBuffer* pBufferIn = NULL;
 	BYTE* pBufferPtr = NULL;
+	BOOL bMediaChangeHandled = FALSE; // Endless loop guard
 
 	if(!m_pSampleIn)
 	{
@@ -297,7 +300,7 @@ HRESULT MFCodec::Process(const void* pcInputPtr, UINT32 nInputSize, IMFSample **
 		CHECK_HR(hr = m_pSampleIn->SetSampleDuration(m_rtDuration));
 		CHECK_HR(hr = m_pSampleIn->SetSampleTime(m_rtStart)); // FIXME: use clock(), Same for custom source
 	}
-
+Label_ProcessInput:
 	hr = ProcessInput(m_pSampleIn);
 	while(hr == MF_E_NOTACCEPTING)
 	{
@@ -315,7 +318,46 @@ HRESULT MFCodec::Process(const void* pcInputPtr, UINT32 nInputSize, IMFSample **
 	}
 	if(!*ppSampleOut)
 	{
-		CHECK_HR(hr = ProcessOutput(ppSampleOut));
+		hr = ProcessOutput(ppSampleOut);
+		if(hr == MF_E_TRANSFORM_STREAM_CHANGE) /* Handling Stream Changes: http://msdn.microsoft.com/en-us/library/windows/desktop/ee663587(v=vs.85).aspx */
+		{
+			TSK_DEBUG_INFO("[MF Codec] Stream changed");
+			if(m_eType == MFCodecType_Decoder)
+			{
+				IMFMediaType *pTypeOut = NULL;
+				hr = m_pMFT->GetOutputAvailableType(m_dwOutputID, 0, &pTypeOut);
+				if(SUCCEEDED(hr))
+				{
+					UINT32 uWidth = 0, uHeight = 0;
+					hr = MFGetAttributeSize(pTypeOut, MF_MT_FRAME_SIZE, &uWidth, &uHeight);
+					if(SUCCEEDED(hr))
+					{
+						TSK_DEBUG_INFO("[MF Decoder] New size: width=%u, height=%u", uWidth, uHeight);
+						hr = m_pMFT->SetOutputType(m_dwOutputID, pTypeOut, 0);
+						if(SUCCEEDED(hr))
+						{
+							SafeRelease(&m_pOutputType);
+							pTypeOut->AddRef();
+							m_pOutputType = pTypeOut;
+							if(m_eMediaType == MFCodecMediaType_Video)
+							{
+								dynamic_cast<MFCodecVideo*>(this)->m_nWidth = uWidth;
+								dynamic_cast<MFCodecVideo*>(this)->m_nHeight = uHeight;
+							}
+						}
+					}
+				}
+				SafeRelease(&pTypeOut);
+				if(SUCCEEDED(hr))
+				{
+					if(!bMediaChangeHandled)
+					{
+						bMediaChangeHandled = TRUE;
+						goto Label_ProcessInput;
+					}
+				}
+			}
+		}
 	}
 
 	m_rtStart += m_rtDuration;
@@ -341,6 +383,9 @@ enum tmedia_chroma_e MFCodec::GetUncompressedChroma()
 
 MFCodecVideo::MFCodecVideo(MFCodecId_t eId, MFCodecType_t eType, IMFTransform *pMFT /*= NULL*/)
 : MFCodec(eId, eType, pMFT)
+, m_nFrameRate(0)
+, m_nWidth(0)
+, m_nHeight(0)
 {
 	assert(m_eMediaType == MFCodecMediaType_Video);
 }
@@ -457,14 +502,26 @@ HRESULT MFCodecVideo::Initialize(
 			
 			// Constant bitrate (updated using RTCP)
 			var.vt = VT_UI4;
+#if PLUGIN_MF_CODEC_CBR_SUPPORTED
 			var.ulVal = eAVEncCommonRateControlMode_CBR;
+#else
+			var.ulVal = eAVEncCommonRateControlMode_PeakConstrainedVBR /* eAVEncCommonRateControlMode_LowDelayVBR: Win8 only */;
+#endif
 			hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncCommonRateControlMode, &var);
-		}		
+		}
 
 		hr = S_OK; // Not mandatory features
 	}
 
 bail:
+
+	if(SUCCEEDED(hr))
+	{
+		m_nFrameRate = nFrameRate;
+		m_nWidth = nWidth;
+		m_nHeight = nHeight;
+	}
+
 	return hr;
 }
 
@@ -480,7 +537,7 @@ HRESULT MFCodecVideo::SetGOPSize(UINT32 nFramesCount)
 		var.vt = VT_UI4;
 		var.ullVal = nFramesCount;
 		CHECK_HR(hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncMPVGOPSize, &var));
-	}	
+	}
 
 bail:
 	return hr;
@@ -489,7 +546,7 @@ bail:
 HRESULT MFCodecVideo::SetBitRate(UINT32 nBitRateInBps)
 {
 	assert(IsValid());
-		
+#if PLUGIN_MF_CODEC_CBR_SUPPORTED
 	HRESULT hr = S_OK;
 
 	if(nBitRateInBps > 0 && m_eType == MFCodecType_Encoder)
@@ -503,12 +560,16 @@ HRESULT MFCodecVideo::SetBitRate(UINT32 nBitRateInBps)
 			// Set BitRate
 			var.vt = VT_UI4;
 			var.ullVal = nBitRateInBps;
-			hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncCommonMeanBitRate, &var);
+			CHECK_HR(hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncCommonMeanBitRate, &var));
 		}
-	}	
+	}
 
 bail:
 	return hr;
+#else
+	TSK_DEBUG_INFO("Ignoring bitrate...because CBR not supported");
+	return S_OK;
+#endif
 }
 
 HRESULT MFCodecVideo::RequestKeyFrame()

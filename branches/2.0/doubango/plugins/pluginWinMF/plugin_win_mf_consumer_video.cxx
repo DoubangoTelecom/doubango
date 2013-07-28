@@ -50,7 +50,6 @@
 const DWORD NUM_BACK_BUFFERS = 2;
 
 static HRESULT CreateDeviceD3D9(
-	BOOL bFullScreen,
 	HWND hWnd,
 	IDirect3DDevice9** ppDevice, 
 	IDirect3D9 **ppD3D,
@@ -60,7 +59,6 @@ static HRESULT TestCooperativeLevel(
 	struct plugin_win_mf_consumer_video_s *pSelf
 	);
 static HRESULT CreateSwapChain(
-	BOOL bFullScreen,
 	HWND hWnd, 
 	UINT32 nFrameWidth, 
 	UINT32 nFrameHeight, 
@@ -69,15 +67,16 @@ static HRESULT CreateSwapChain(
 
 static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+static inline HWND Window(struct plugin_win_mf_consumer_video_s *pSelf);
 static inline LONG Width(const RECT& r);
 static inline LONG Height(const RECT& r);
 static inline RECT CorrectAspectRatio(const RECT& src, const MFRatio& srcPAR);
 static inline RECT LetterBoxRect(const RECT& rcSrc, const RECT& rcDst);
 static inline HRESULT UpdateDestinationRect(struct plugin_win_mf_consumer_video_s *pSelf, BOOL bForce = FALSE);
 static HRESULT ResetDevice(struct plugin_win_mf_consumer_video_s *pSelf, BOOL bUpdateDestinationRect = FALSE);
-static HRESULT HookWindow(struct plugin_win_mf_consumer_video_s *pSelf);
-static HRESULT UnHookWindow(struct plugin_win_mf_consumer_video_s *pSelf);
 static HRESULT SetFullscreen(struct plugin_win_mf_consumer_video_s *pSelf, BOOL bFullScreen);
+static HWND CreateFullScreenWindow(struct plugin_win_mf_consumer_video_s *pSelf);
+
 
 typedef struct plugin_win_mf_consumer_video_s
 {
@@ -86,6 +85,7 @@ typedef struct plugin_win_mf_consumer_video_s
 	BOOL bStarted, bPrepared, bPaused, bFullScreen;
 	BOOL bPluginFireFox, bPluginWebRTC4All;
 	HWND hWindow;
+	HWND hWindowFullScreen;
 	RECT rcWindow;
 	RECT rcDest;
 	MFRatio pixelAR;
@@ -128,7 +128,10 @@ static int plugin_win_mf_consumer_video_set(tmedia_consumer_t *self, const tmedi
 			{
 				tsk_safeobj_lock(pSelf); // block consumer thread
 				pSelf->hWindow = hWnd;
-				hr = ResetDevice(pSelf);
+				if(pSelf->bPrepared)
+				{
+					hr = ResetDevice(pSelf);
+				}
 				tsk_safeobj_unlock(pSelf); // unblock consumer thread
 			}
 
@@ -182,6 +185,7 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	TMEDIA_CODEC_VIDEO(codec)->in.flip = tsk_false;
 
 	HRESULT hr = S_OK;
+	HWND hWnd = Window(pSelf);
 	
 	TMEDIA_CONSUMER(pSelf)->video.fps = TMEDIA_CODEC_VIDEO(codec)->in.fps;
 	TMEDIA_CONSUMER(pSelf)->video.in.width = TMEDIA_CODEC_VIDEO(codec)->in.width;
@@ -207,14 +211,14 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	TMEDIA_CONSUMER(pSelf)->decoder.codec_id = tmedia_codec_id_none; // means accept RAW fames
 	
 	// The window handle is not created until the call is connect (incoming only) - At least on Internet Explorer 10
-	if(pSelf->hWindow && !pSelf->bPluginWebRTC4All)
+	if(hWnd && !pSelf->bPluginWebRTC4All)
 	{
-		CHECK_HR(hr = CreateDeviceD3D9(pSelf->bFullScreen, pSelf->hWindow, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
-		CHECK_HR(hr = CreateSwapChain(pSelf->bFullScreen, pSelf->hWindow, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
+		CHECK_HR(hr = CreateDeviceD3D9(hWnd, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
+		CHECK_HR(hr = CreateSwapChain(hWnd, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
 	}
 	else
 	{
-		if(pSelf->hWindow && pSelf->bPluginWebRTC4All)
+		if(hWnd && pSelf->bPluginWebRTC4All)
 		{
 			TSK_DEBUG_INFO("[MF consumer] HWND is defined but we detected webrtc4all...delaying D3D9 device creating until session get connected");
 		}
@@ -265,27 +269,36 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 	plugin_win_mf_consumer_video_t* pSelf = (plugin_win_mf_consumer_video_t*)self;
 
 	HRESULT hr = S_OK;
+	HWND hWnd = Window(pSelf);
 
 	IDirect3DSurface9 *pSurf = NULL;
     IDirect3DSurface9 *pBB = NULL;
 
-	if(!pSelf || !buffer || !size) {
+	if(!pSelf)
+	{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1; // because of the mutex lock do it here
+	}
+
+	tsk_safeobj_lock(pSelf);
+
+	if(!buffer || !size)
+	{
 		TSK_DEBUG_ERROR("Invalid parameter");
 		CHECK_HR(hr = E_INVALIDARG);
 	}
 
-	if(!pSelf->bStarted) {
+	if(!pSelf->bStarted)
+	{
 		TSK_DEBUG_INFO("D3D9 video consumer not started");
 		CHECK_HR(hr = E_FAIL);
 	}
 	
-	if(!pSelf->hWindow)
+	if(!hWnd)
 	{
 		TSK_DEBUG_INFO("Do not draw frame because HWND not set");
 		goto bail; // not an error as the application can decide to set the HWND at any time
 	}
-
-	tsk_safeobj_lock(pSelf);
 
 	if(!pSelf->pDevice || !pSelf->pD3D || !pSelf->pSwapChain)
 	{
@@ -294,14 +307,14 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 			CHECK_HR(hr = E_POINTER); // They must be "all null" or "all valid"
 		}
 
-		if(pSelf->hWindow)
+		if(hWnd)
 		{
 			// means HWND was not set but defined now
 			pSelf->nNegWidth = TMEDIA_CONSUMER(pSelf)->video.in.width;
 			pSelf->nNegHeight = TMEDIA_CONSUMER(pSelf)->video.in.height;
 
-			CHECK_HR(hr = CreateDeviceD3D9(pSelf->bFullScreen, pSelf->hWindow, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
-			CHECK_HR(hr = CreateSwapChain(pSelf->bFullScreen, pSelf->hWindow, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
+			CHECK_HR(hr = CreateDeviceD3D9(hWnd, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
+			CHECK_HR(hr = CreateSwapChain(hWnd, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
 		}
 	}
 
@@ -312,7 +325,7 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 		// Update media type
 		
 		SafeRelease(&pSelf->pSwapChain);
-		CHECK_HR(hr = CreateSwapChain(pSelf->bFullScreen, pSelf->hWindow, TMEDIA_CONSUMER(pSelf)->video.in.width, TMEDIA_CONSUMER(pSelf)->video.in.height, pSelf->pDevice, &pSelf->pSwapChain));
+		CHECK_HR(hr = CreateSwapChain(hWnd, TMEDIA_CONSUMER(pSelf)->video.in.width, TMEDIA_CONSUMER(pSelf)->video.in.height, pSelf->pDevice, &pSelf->pSwapChain));
 
 		pSelf->nNegWidth = TMEDIA_CONSUMER(pSelf)->video.in.width;
 		pSelf->nNegHeight = TMEDIA_CONSUMER(pSelf)->video.in.height;
@@ -413,10 +426,15 @@ static int plugin_win_mf_consumer_video_stop(tmedia_consumer_t* self)
     pSelf->bStarted = false;
 	pSelf->bPaused = false;
 
+	// Clear last video frame
 	if(pSelf->hWindow)
 	{
-		// Clear last video frame
-		InvalidateRect(pSelf->hWindow, NULL, FALSE);
+		::InvalidateRect(pSelf->hWindow, NULL, FALSE);
+	}
+	if(pSelf->hWindowFullScreen)
+	{
+		::InvalidateRect(pSelf->hWindowFullScreen, NULL, FALSE);
+		::ShowWindow(pSelf->hWindowFullScreen, SW_HIDE);
 	}
 
 	// next start() will be called after prepare()
@@ -519,7 +537,6 @@ const tmedia_consumer_plugin_def_t *plugin_win_mf_consumer_video_plugin_def_t = 
 // Helper functions
 
 static HRESULT CreateDeviceD3D9(
-	BOOL bFullScreen,
 	HWND hWnd, 
 	IDirect3DDevice9** ppDevice, 
 	IDirect3D9 **ppD3D,
@@ -553,18 +570,16 @@ static HRESULT CreateDeviceD3D9(
         D3DFMT_X8R8G8B8,
         TRUE    // windowed
         ));
-
     pp.BackBufferFormat = D3DFMT_X8R8G8B8;
-    pp.SwapEffect = D3DSWAPEFFECT_COPY;
+    pp.SwapEffect = D3DSWAPEFFECT_DISCARD;
     pp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-	pp.Windowed = !bFullScreen;
+	pp.Windowed = TRUE;
     pp.hDeviceWindow = hWnd;
-
     CHECK_HR(hr = (*ppD3D)->CreateDevice(
         D3DADAPTER_DEFAULT,
         D3DDEVTYPE_HAL,
         hWnd,
-        D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
+        D3DCREATE_HARDWARE_VERTEXPROCESSING,
         &pp,
         ppDevice
         ));
@@ -623,7 +638,6 @@ bail:
 }
 
 static HRESULT CreateSwapChain(
-	BOOL bFullScreen,
 	HWND hWnd, 
 	UINT32 nFrameWidth, 
 	UINT32 nFrameHeight, 
@@ -639,10 +653,10 @@ static HRESULT CreateSwapChain(
 	{
 		CHECK_HR(hr = E_POINTER);
 	}
-
-    pp.BackBufferWidth  = nFrameWidth;
+	
+	pp.BackBufferWidth  = nFrameWidth;
     pp.BackBufferHeight = nFrameHeight;
-    pp.Windowed = !bFullScreen;
+    pp.Windowed = TRUE;
     pp.SwapEffect = D3DSWAPEFFECT_FLIP;
     pp.hDeviceWindow = hWnd;
     pp.BackBufferFormat = D3DFMT_X8R8G8B8;
@@ -652,10 +666,15 @@ static HRESULT CreateSwapChain(
     pp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
     pp.BackBufferCount = NUM_BACK_BUFFERS;
 
-    CHECK_HR(hr = pDevice->CreateAdditionalSwapChain(&pp, ppSwapChain));
+     CHECK_HR(hr = pDevice->CreateAdditionalSwapChain(&pp, ppSwapChain));
 
 bail:
     return hr;
+}
+
+static inline HWND Window(struct plugin_win_mf_consumer_video_s *pSelf)
+{
+	return pSelf ? (pSelf->bFullScreen ? pSelf->hWindowFullScreen : pSelf->hWindow) : NULL;
 }
 
 static inline LONG Width(const RECT& r)
@@ -758,17 +777,19 @@ static inline RECT LetterBoxRect(const RECT& rcSrc, const RECT& rcDst)
 static inline HRESULT UpdateDestinationRect(plugin_win_mf_consumer_video_t *pSelf, BOOL bForce /*= FALSE*/)
 {
 	HRESULT hr = S_OK;
+	HWND hwnd = Window(pSelf);
 
 	if(!pSelf)
 	{
 		CHECK_HR(hr = E_POINTER);
 	}
-	if(!pSelf->hWindow)
+
+	if(!hwnd)
 	{
 		CHECK_HR(hr = E_HANDLE);
 	}
     RECT rcClient;
-	GetClientRect(pSelf->hWindow, &rcClient);
+	GetClientRect(hwnd, &rcClient);
 
 	// only update destination if window size changed
 	if(bForce || (rcClient.bottom != pSelf->rcWindow.bottom || rcClient.left != pSelf->rcWindow.left || rcClient.right != pSelf->rcWindow.right || rcClient.top != pSelf->rcWindow.top))
@@ -794,7 +815,7 @@ static inline HRESULT UpdateDestinationRect(plugin_win_mf_consumer_video_t *pSel
 		pSelf->rcDest.top = ((h - pSelf->rcDest.bottom) >> 1);
 #endif
 
-		InvalidateRect(pSelf->hWindow, NULL, FALSE);
+		//::InvalidateRect(hwnd, NULL, FALSE);
 	}	
 
 bail:
@@ -806,6 +827,8 @@ static HRESULT ResetDevice(plugin_win_mf_consumer_video_t *pSelf, BOOL bUpdateDe
     HRESULT hr = S_OK;
 
 	tsk_safeobj_lock(pSelf);
+
+	HWND hWnd = Window(pSelf);
 
     if (pSelf->pDevice)
     {
@@ -821,10 +844,10 @@ static HRESULT ResetDevice(plugin_win_mf_consumer_video_t *pSelf, BOOL bUpdateDe
         }
     }
 
-    if (pSelf->pDevice == NULL && pSelf->hWindow)
+    if (pSelf->pDevice == NULL && hWnd)
     {
-        CHECK_HR(hr = CreateDeviceD3D9(pSelf->bFullScreen, pSelf->hWindow, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
-		CHECK_HR(hr = CreateSwapChain(pSelf->bFullScreen, pSelf->hWindow, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
+        CHECK_HR(hr = CreateDeviceD3D9(hWnd, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
+		CHECK_HR(hr = CreateSwapChain(hWnd, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
     }    
 
 	if(bUpdateDestinationRect) // endless loop guard
@@ -838,32 +861,6 @@ bail:
    return hr;
 }
 
-static HRESULT HookWindow(struct plugin_win_mf_consumer_video_s *pSelf)
-{
-	HRESULT hr = S_OK;
-	if(!pSelf)
-	{
-		CHECK_HR(hr = E_POINTER);
-	}
-
-bail:
-	return hr;
-}
-
-static HRESULT UnHookWindow(struct plugin_win_mf_consumer_video_s *pSelf)
-{
-	HRESULT hr = S_OK;
-	if(!pSelf)
-	{
-		CHECK_HR(hr = E_POINTER);
-	}
-
-	CHECK_HR(hr = SetFullscreen(pSelf, FALSE));
-
-bail:
-	return hr;
-}
-
 static HRESULT SetFullscreen(struct plugin_win_mf_consumer_video_s *pSelf, BOOL bFullScreen)
 {
 	HRESULT hr = S_OK;
@@ -875,8 +872,24 @@ static HRESULT SetFullscreen(struct plugin_win_mf_consumer_video_s *pSelf, BOOL 
 	if(pSelf->bFullScreen != bFullScreen)
 	{
 		tsk_safeobj_lock(pSelf);
+		if(bFullScreen)
+		{
+			HWND hWnd = CreateFullScreenWindow(pSelf);
+			if(hWnd)
+			{
+				::ShowWindow(hWnd, SW_SHOWDEFAULT);
+				::UpdateWindow(hWnd);
+			}
+		}
+		else if(pSelf->hWindowFullScreen)
+		{
+			::ShowWindow(pSelf->hWindowFullScreen, SW_HIDE);
+		}
 		pSelf->bFullScreen = bFullScreen;
-		hr = ResetDevice(pSelf);
+		if(pSelf->bPrepared)
+		{
+			hr = ResetDevice(pSelf);
+		}
 		tsk_safeobj_unlock(pSelf);
 
 		CHECK_HR(hr);
@@ -908,10 +921,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 				struct plugin_win_mf_consumer_video_s* pSelf = dynamic_cast<struct plugin_win_mf_consumer_video_s*>((struct plugin_win_mf_consumer_video_s*)GetPropA(hWnd, "Self"));
 				if(pSelf)
 				{	
-					/*if(This->m_bFullScreen && (wParam == 0x1B || wParam == VK_ESCAPE))
-					{
-						This->SetFullscreen(FALSE);
-					}*/
+					SetFullscreen(pSelf, FALSE);
 				}
 				
 				break;
@@ -919,6 +929,41 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	}
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+static HWND CreateFullScreenWindow(struct plugin_win_mf_consumer_video_s *pSelf)
+{
+	HRESULT hr = S_OK;
+	
+	if(!pSelf)
+	{
+		return NULL;
+	}
+
+	if(!pSelf->hWindowFullScreen)
+	{
+		WNDCLASS wc = {0};
+
+		wc.lpfnWndProc   = WndProc;
+		wc.hInstance     = GetModuleHandle(NULL);
+		wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
+		wc.lpszClassName =  L"WindowClass";
+		RegisterClass(&wc);
+		pSelf->hWindowFullScreen = ::CreateWindowEx(
+				NULL,
+				wc.lpszClassName, 
+				L"Doubango's Video Consumer Fullscreen",
+				WS_EX_TOPMOST | WS_POPUP,
+				0, 0,
+				GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN),
+				NULL,
+				NULL,
+				GetModuleHandle(NULL),
+				NULL);
+
+		SetPropA(pSelf->hWindowFullScreen, "Self", pSelf);
+	}
+	return pSelf->hWindowFullScreen;
 }
 
 
