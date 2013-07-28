@@ -254,6 +254,10 @@ int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin)
 			TSK_DEBUG_INFO("Register codec: %s, %s", plugin->name, plugin->desc);
 			return 0;
 		}
+		if(__tmedia_codec_plugins[i]->codec_id == plugin->codec_id){
+			TSK_DEBUG_INFO("Codec Registration: '%s' ignored because '%s' already registered", plugin->desc, __tmedia_codec_plugins[i]->desc);
+			return -3;
+		}
 	}
 	
 	TSK_DEBUG_ERROR("There are already %d plugins.", TMED_CODEC_MAX_PLUGINS);
@@ -325,13 +329,7 @@ tsk_bool_t tmedia_codec_plugin_is_registered(const tmedia_codec_plugin_def_t* pl
  */
 tsk_bool_t tmedia_codec_plugin_is_registered_2(tmedia_codec_id_t codec_id)
 {
-	tsk_size_t i;
-	for(i = 0; i < TMED_CODEC_MAX_PLUGINS && __tmedia_codec_plugins[i]; i++){
-		if(__tmedia_codec_plugins[i]->codec_id == codec_id){
-			return tsk_true;
-		}
-	}
-	return tsk_false;
+	return (tmedia_codec_plugin_registered_get_const(codec_id) != tsk_null);
 }
 
 /**@ingroup tmedia_codec_group
@@ -349,6 +347,19 @@ int tmedia_codec_plugin_registered_get_all(const struct tmedia_codec_plugin_def_
 	*plugins = (const struct tmedia_codec_plugin_def_s**)&__tmedia_codec_plugins;
 	*count = sizeof(__tmedia_codec_plugins)/sizeof(__tmedia_codec_plugins[0]);
 	return 0;
+}
+
+/**@ingroup tmedia_codec_group
+*/
+const struct tmedia_codec_plugin_def_s* tmedia_codec_plugin_registered_get_const(tmedia_codec_id_t codec_id)
+{
+	tsk_size_t i;
+	for(i = 0; i < TMED_CODEC_MAX_PLUGINS && __tmedia_codec_plugins[i]; i++){
+		if(__tmedia_codec_plugins[i]->codec_id == codec_id){
+			return __tmedia_codec_plugins[i];
+		}
+	}
+	return tsk_null;
 }
 
 /**@ingroup tmedia_codec_group

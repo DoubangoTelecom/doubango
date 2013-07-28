@@ -57,6 +57,7 @@ TINYSAK_API struct tsk_plugin_s* tsk_plugin_create(const char* path);
 TINYSAK_API tsk_plugin_def_ptr_const_t tsk_plugin_get_def(struct tsk_plugin_s* self, tsk_plugin_def_type_t type, tsk_plugin_def_media_type_t media_type);
 TINYSAK_API tsk_plugin_def_ptr_const_t tsk_plugin_get_def_2(struct tsk_plugin_s* self, tsk_plugin_def_type_t type, tsk_plugin_def_media_type_t media_type, tsk_size_t index);
 TINYSAK_API tsk_plugin_symbol_t* tsk_plugin_get_symbol(struct tsk_plugin_s* self, const char* symbol_name);
+TINYSAK_API tsk_bool_t tsk_plugin_file_exist(const char* path);
 
 TSK_END_DECLS
 

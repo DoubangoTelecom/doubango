@@ -53,6 +53,9 @@
 DEFINE_GUID(PLUGIN_MF_LOW_LATENCY,
 0x9c27891a, 0xed7a, 0x40e1, 0x88, 0xe8, 0xb2, 0x27, 0x27, 0xa0, 0x24, 0xee);
 
+extern const tmedia_codec_plugin_def_t *mf_codec_h264_main_plugin_def_t;
+extern const tmedia_codec_plugin_def_t *mf_codec_h264_base_plugin_def_t;
+
 static void* TSK_STDCALL RunSessionThread(void *pArg);
 static int _plugin_win_mf_producer_video_unprepare(struct plugin_win_mf_producer_video_s* pSelf);
 
@@ -260,38 +263,53 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 		// If H.264 is negotiated for this session then, try to find hardware encoder
 		// If no HW encoder is found will fallback to SW implementation from x264
 #if PLUGIN_MF_PV_BUNDLE_CODEC
+		// Before embedding a H.264 encoder we have to be sure that:
+		// - Low latency is supported
+		// - The user decided to use MF encoder (Microsoft, Intel Quick Sync or any other)
 		if((codec->id == tmedia_codec_id_h264_bp || codec->id == tmedia_codec_id_h264_mp) && MFUtils::IsLowLatencyH264Supported()) {
-			// both Microsoft and Intel encoders support NV12 only as input
-			// static const BOOL kIsEncoder = TRUE;
-			// hr = MFUtils::GetBestCodec(kIsEncoder, MFMediaType_Video, MFVideoFormat_NV12, MFVideoFormat_H264, &pSelf->pEncoder);
-			pSelf->pEncoder = (codec->id == tmedia_codec_id_h264_bp) ? MFCodecVideoH264::CreateCodecH264Base(MFCodecType_Encoder) : MFCodecVideoH264::CreateCodecH264Main(MFCodecType_Encoder);
-			if(pSelf->pEncoder)
+			BOOL bMFEncoderIsRegistered = 
+			(codec->id == tmedia_codec_id_h264_mp && codec->plugin == mf_codec_h264_main_plugin_def_t)
+			|| (codec->id == tmedia_codec_id_h264_bp && codec->plugin  == mf_codec_h264_base_plugin_def_t);
+			if(bMFEncoderIsRegistered)
 			{
-				int32_t avg_bitrate_kbps = tmedia_get_video_bandwidth_kbps_2(TMEDIA_PRODUCER(pSelf)->video.width, TMEDIA_PRODUCER(pSelf)->video.height, TMEDIA_PRODUCER(pSelf)->video.fps);
-				TSK_DEBUG_INFO("MF_MT_AVG_BITRATE defined with value = %d kbps", avg_bitrate_kbps);
-				pSelf->bitrate_bps = (avg_bitrate_kbps * 1024);
-
-				hr = pSelf->pEncoder->Initialize(
-					TMEDIA_PRODUCER(pSelf)->video.fps,
-					TMEDIA_PRODUCER(pSelf)->video.width,
-					TMEDIA_PRODUCER(pSelf)->video.height,
-					pSelf->bitrate_bps);
-				if(SUCCEEDED(hr))
+				// both Microsoft and Intel encoders support NV12 only as input
+				// static const BOOL kIsEncoder = TRUE;
+				// hr = MFUtils::GetBestCodec(kIsEncoder, MFMediaType_Video, MFVideoFormat_NV12, MFVideoFormat_H264, &pSelf->pEncoder);
+				pSelf->pEncoder = (codec->id == tmedia_codec_id_h264_bp) ? MFCodecVideoH264::CreateCodecH264Base(MFCodecType_Encoder) : MFCodecVideoH264::CreateCodecH264Main(MFCodecType_Encoder);
+				if(pSelf->pEncoder)
 				{
-					/*hr =*/ pSelf->pEncoder->SetGOPSize((PLUGIN_MF_GOP_SIZE_IN_SECONDS * TMEDIA_PRODUCER(pSelf)->video.fps));
+					int32_t avg_bitrate_kbps = tmedia_get_video_bandwidth_kbps_2(TMEDIA_PRODUCER(pSelf)->video.width, TMEDIA_PRODUCER(pSelf)->video.height, TMEDIA_PRODUCER(pSelf)->video.fps);
+					TSK_DEBUG_INFO("MF_MT_AVG_BITRATE defined with value = %d kbps", avg_bitrate_kbps);
+					pSelf->bitrate_bps = (avg_bitrate_kbps * 1024);
+
+					hr = pSelf->pEncoder->Initialize(
+						TMEDIA_PRODUCER(pSelf)->video.fps,
+						TMEDIA_PRODUCER(pSelf)->video.width,
+						TMEDIA_PRODUCER(pSelf)->video.height,
+						pSelf->bitrate_bps);
+					if(SUCCEEDED(hr))
+					{
+						/*hr =*/ pSelf->pEncoder->SetGOPSize((PLUGIN_MF_GOP_SIZE_IN_SECONDS * TMEDIA_PRODUCER(pSelf)->video.fps));
+					}
+					if(FAILED(hr))
+					{
+						SafeRelease(&pSelf->pEncoder);
+						hr = S_OK;
+					}
 				}
-				if(FAILED(hr))
+				if(SUCCEEDED(hr) && pSelf->pEncoder)
+				{
+					TMEDIA_PRODUCER(pSelf)->encoder.codec_id = codec->id; // means encoded frames as input
+				}
+				else
 				{
 					SafeRelease(&pSelf->pEncoder);
-					hr = S_OK;
+					TSK_DEBUG_WARN("Failed to find H.264 HW encoder...fallback to SW implementation");
 				}
 			}
-			if(SUCCEEDED(hr) && pSelf->pEncoder) {
-				TMEDIA_PRODUCER(pSelf)->encoder.codec_id = codec->id; // means encoded frames as input
-			}
-			else {
-				SafeRelease(&pSelf->pEncoder);
-				TSK_DEBUG_WARN("Failed to find H.264 HW encoder...fallback to SW implementation");
+			else /* if(!bMFEncoderIsRegistered) */
+			{
+				TSK_DEBUG_INFO("Not bundling MF H.264 encoder even if low latency is supported because another implementation is registered: %s", codec->plugin->desc);
 			}
 		}
 #endif

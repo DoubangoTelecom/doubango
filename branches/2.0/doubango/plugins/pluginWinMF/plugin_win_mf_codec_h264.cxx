@@ -200,9 +200,10 @@ static tsk_size_t mf_codec_h264_encode(tmedia_codec_t* self, const void* in_data
 	}
 
 	if(h264->encoder.passthrough) {
-		tdav_codec_h264_rtp_encap(TDAV_CODEC_H264_COMMON(h264), (const uint8_t*)in_data, in_size);
+		tdav_codec_h264_rtp_encap(common, (const uint8_t*)in_data, in_size);
 		return 0;
 	}
+	
 
 	HRESULT hr = S_OK;
 	IMFSample *pSampleOut = NULL;
@@ -230,7 +231,7 @@ static tsk_size_t mf_codec_h264_encode(tmedia_codec_t* self, const void* in_data
 		|| ( (h264->encoder.frame_count % (h264->encoder.neg_fps * 5))==0 )
 		);
 	if(send_hdr){
-		//FIXME
+		//FIXME: MF_MT_MPEG_SEQUENCE_HEADER 
 		// tdav_codec_h264_rtp_encap(TDAV_CODEC_H264_COMMON(h264), h264->encoder.context->extradata, (tsk_size_t)h264->encoder.context->extradata_size);
 	}
 
@@ -438,7 +439,6 @@ static char* mf_codec_h264_sdp_att_get(const tmedia_codec_t* self, const char* a
 {
 	char* att = tdav_codec_h264_common_sdp_att_get((const tdav_codec_h264_common_t*)self, att_name);
 	if(att && tsk_striequals(att_name, "fmtp")) {
-		// FIXME: use IMFTransform friendly name
 		tsk_strcat(&att, "; impl=MF");
 	}
 	return att;
