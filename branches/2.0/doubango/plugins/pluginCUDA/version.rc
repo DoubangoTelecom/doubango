@@ -69,13 +69,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", "Doubango telecom"
-            VALUE "FileDescription", "Doubango IMS Framework"
+            VALUE "CompanyName", "Doubango Telecom"
+            VALUE "FileDescription", "Doubango IMS Framework NVIDIA CUDA Plugin"
             VALUE "FileVersion", "2.0.0.962"
-            VALUE "InternalName", "tinysms.dll"
+            VALUE "InternalName", "pluginCUDA.dll"
             VALUE "LegalCopyright", "(c) 2010-2013 Doubango Telecom.  All rights reserved."
-            VALUE "OriginalFilename", "tinysms.dll"
-            VALUE "ProductName", "Doubango IMS Framework"
+            VALUE "OriginalFilename", "pluginCUDA.dll"
+            VALUE "ProductName", "Doubango IMS Framework NVIDIA CUDA Plugin"
             VALUE "ProductVersion", "2.0.0.962"
         END
     END

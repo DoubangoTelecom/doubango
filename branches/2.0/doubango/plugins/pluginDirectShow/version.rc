@@ -69,13 +69,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", "Doubango telecom"
-            VALUE "FileDescription", "Doubango IMS Framework"
+            VALUE "CompanyName", "Doubango Telecom"
+            VALUE "FileDescription", "Doubango IMS Framework DirectShow Plugin"
             VALUE "FileVersion", "2.0.0.962"
-            VALUE "InternalName", "tinysms.dll"
+            VALUE "InternalName", "pluginDirectShow.dll"
             VALUE "LegalCopyright", "(c) 2010-2013 Doubango Telecom.  All rights reserved."
-            VALUE "OriginalFilename", "tinysms.dll"
-            VALUE "ProductName", "Doubango IMS Framework"
+            VALUE "OriginalFilename", "pluginDirectShow.dll"
+            VALUE "ProductName", "Doubango IMS Framework DirectShow Plugin"
             VALUE "ProductVersion", "2.0.0.962"
         END
     END

@@ -347,7 +347,8 @@ static tsk_size_t cuda_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 		return 0;
 	}
 
-	if(!self->opened || !h264->encoder.pInst /*|| !h264->decoder.pInst->IsReady()*/){
+	if(!self->opened || !h264->encoder.pInst)
+	{
 		TSK_DEBUG_ERROR("Decoder not opened or not ready");
 		return 0;
 	}
@@ -355,7 +356,8 @@ static tsk_size_t cuda_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 	HRESULT hr = S_OK;
 
 	/* Packet lost? */
-	if((h264->decoder.last_seq + 1) != rtp_hdr->seq_num && h264->decoder.last_seq){
+	if((h264->decoder.last_seq + 1) != rtp_hdr->seq_num && h264->decoder.last_seq)
+	{
 		TSK_DEBUG_INFO("[H.264] Packet loss, seq_num=%d", (h264->decoder.last_seq + 1));
 	}
 	h264->decoder.last_seq = rtp_hdr->seq_num;
@@ -368,7 +370,8 @@ static tsk_size_t cuda_codec_h264_decode(tmedia_codec_t* self, const void* in_da
       |F|NRI|  Type   |
       +---------------+
 	*/
-	if(*((uint8_t*)in_data) & 0x80){
+	if(*((uint8_t*)in_data) & 0x80)
+	{
 		TSK_DEBUG_WARN("F=1");
 		/* reset accumulator */
 		h264->decoder.accumulator = 0;
@@ -376,7 +379,8 @@ static tsk_size_t cuda_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 	}
 
 	/* get payload */
-	if((ret = tdav_codec_h264_get_pay(in_data, in_size, (const void**)&pay_ptr, &pay_size, &append_scp)) || !pay_ptr || !pay_size){
+	if((ret = tdav_codec_h264_get_pay(in_data, in_size, (const void**)&pay_ptr, &pay_size, &append_scp)) || !pay_ptr || !pay_size)
+	{
 		TSK_DEBUG_ERROR("Depayloader failed to get H.264 content");
 		return 0;
 	}
@@ -386,24 +390,30 @@ static tsk_size_t cuda_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 	sps_or_pps = append_scp && pay_ptr && ((pay_ptr[0] & 0x1F) == 7 || (pay_ptr[0] & 0x1F) == 8);
 	
 	// start-accumulator
-	if(!h264->decoder.accumulator){
-		if(size_to_copy > xmax_size){
+	if(!h264->decoder.accumulator)
+	{
+		if(size_to_copy > xmax_size)
+		{
 			TSK_DEBUG_ERROR("%u too big to contain valid encoded data. xmax_size=%u", size_to_copy, xmax_size);
 			return 0;
 		}
-		if(!(h264->decoder.accumulator = tsk_calloc(size_to_copy, sizeof(uint8_t)))){
+		if(!(h264->decoder.accumulator = tsk_calloc(size_to_copy, sizeof(uint8_t))))
+		{
 			TSK_DEBUG_ERROR("Failed to allocated new buffer");
 			return 0;
 		}
 		h264->decoder.accumulator_size = size_to_copy;
 	}
-	if((h264->decoder.accumulator_pos + size_to_copy) >= xmax_size){
+	if((h264->decoder.accumulator_pos + size_to_copy) >= xmax_size)
+	{
 		TSK_DEBUG_ERROR("BufferOverflow");
 		h264->decoder.accumulator_pos = 0;
 		return 0;
 	}
-	if((h264->decoder.accumulator_pos + size_to_copy) > h264->decoder.accumulator_size){
-		if(!(h264->decoder.accumulator = tsk_realloc(h264->decoder.accumulator, (h264->decoder.accumulator_pos + size_to_copy)))){
+	if((h264->decoder.accumulator_pos + size_to_copy) > h264->decoder.accumulator_size)
+	{
+		if(!(h264->decoder.accumulator = tsk_realloc(h264->decoder.accumulator, (h264->decoder.accumulator_pos + size_to_copy))))
+		{
 			TSK_DEBUG_ERROR("Failed to reallocated new buffer");
 			h264->decoder.accumulator_pos = 0;
 			h264->decoder.accumulator_size = 0;
@@ -412,13 +422,15 @@ static tsk_size_t cuda_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 		h264->decoder.accumulator_size = (h264->decoder.accumulator_pos + size_to_copy);
 	}
 
-	if(append_scp){
+	if(append_scp)
+	{
 		memcpy(&((uint8_t*)h264->decoder.accumulator)[h264->decoder.accumulator_pos], H264_START_CODE_PREFIX, start_code_prefix_size);
 		h264->decoder.accumulator_pos += start_code_prefix_size;
 	}
 	memcpy(&((uint8_t*)h264->decoder.accumulator)[h264->decoder.accumulator_pos], pay_ptr, pay_size);
 	h264->decoder.accumulator_pos += pay_size;
 	// end-accumulator
+
 
 	if(sps_or_pps)
 	{
@@ -723,7 +735,7 @@ int cuda_codec_h264_open_encoder(cuda_codec_h264_t* self)
 	self->encoder.ctxParams.iPictureType   = (int)FRAME_PICTURE;
 	self->encoder.ctxParams.Fieldmode = MODE_FRAME;
 	self->encoder.ctxParams.Presets = (NVVE_PRESETS_TARGET)-1;//Should be iPod, Zune ...
-	self->encoder.ctxParams.iP_Interval = 1;
+	// self->encoder.ctxParams.iP_Interval = 1;
 	self->encoder.ctxParams.iAspectRatio[0] = 1;
 	self->encoder.ctxParams.iAspectRatio[1] = 1;
 	self->encoder.ctxParams.iAspectRatio[2] = 0;
