@@ -45,9 +45,6 @@
 #	define PLUGIN_MF_DISABLE_MS_H264_ENCODER 1
 #endif
 
-DEFINE_GUID(CLSID_VideoProcessorMFT, 
-			0x88753b26, 0x5b24, 0x49bd, 0xb2, 0xe7, 0xc, 0x44, 0x5c, 0x78, 0xc9, 0x82);
-
 BOOL MFUtils::g_bStarted = FALSE;
 
 DWORD MFUtils::g_dwMajorVersion = -1;
@@ -61,6 +58,10 @@ const TOPOID MFUtils::g_ullTopoIdSinkPreview = 222;
 const TOPOID MFUtils::g_ullTopoIdSource = 333;
 const TOPOID MFUtils::g_ullTopoIdVideoProcessor = 444;
 
+// Video Processor
+DEFINE_GUID(CLSID_VideoProcessorMFT, 
+			0x88753b26, 0x5b24, 0x49bd, 0xb2, 0xe7, 0xc, 0x44, 0x5c, 0x78, 0xc9, 0x82);
+
 // {4BE8D3C0-0515-4A37-AD55-E4BAE19AF471}
 DEFINE_GUID(CLSID_MF_INTEL_H264EncFilter, // Intel Quick Sync Encoder
 0x4be8d3c0, 0x0515, 0x4a37, 0xad, 0x55, 0xe4, 0xba, 0xe1, 0x9a, 0xf4, 0x71);
@@ -68,6 +69,12 @@ DEFINE_GUID(CLSID_MF_INTEL_H264EncFilter, // Intel Quick Sync Encoder
 // {45E5CE07-5AC7-4509-94E9-62DB27CF8F96}
 DEFINE_GUID(CLSID_MF_INTEL_H264DecFilter, // Intel Quick Sync Decoder
 0x45e5ce07, 0x5ac7, 0x4509, 0x94, 0xe9, 0x62, 0xdb, 0x27, 0xcf, 0x8f, 0x96);
+
+#if WINVER < 0x0602/* From "sdkddkver.h" and defines the SDK version not the host */
+// 6ca50344-051a-4ded-9779-a43305165e35
+DEFINE_GUID(CMSH264EncoderMFT, // MS H.264 encoder
+0x6ca50344, 0x051a, 0x4ded, 0x97, 0x79, 0xa4, 0x33, 0x05, 0x16, 0x5e, 0x35);
+#endif /* WINVER */
 
 #define IsWin7_OrLater(dwMajorVersion, dwMinorVersion) ( (dwMajorVersion > 6) || ( (dwMajorVersion == 6) && (dwMinorVersion >= 1) ) )
 #define IsWin8_OrLater(dwMajorVersion, dwMinorVersion) ( (dwMajorVersion > 6) || ( (dwMajorVersion == 6) && (dwMinorVersion >= 2) ) )
