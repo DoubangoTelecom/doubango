@@ -72,7 +72,7 @@ DEFINE_GUID(CLSID_MF_INTEL_H264DecFilter, // Intel Quick Sync Decoder
 
 #if WINVER < 0x0602/* From "sdkddkver.h" and defines the SDK version not the host */
 // 6ca50344-051a-4ded-9779-a43305165e35
-DEFINE_GUID(CMSH264EncoderMFT, // MS H.264 encoder
+DEFINE_GUID(CLSID_CMSH264EncoderMFT, // MS H.264 encoder
 0x6ca50344, 0x051a, 0x4ded, 0x97, 0x79, 0xa4, 0x33, 0x05, 0x16, 0x5e, 0x35);
 #endif /* WINVER */
 
