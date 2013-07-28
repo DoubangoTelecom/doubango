@@ -28,8 +28,8 @@
 #define DSCONSUMER(self)			((plugin_video_dshow_consumer_t*)(self))
 
 // Whether to use Direct3D device for direct rendering or DirectShow graph and custom source
-// Using DirectShow (DS) introduce delay when the input fps is diffrent than the one in the custom src.
-// It's very hard to have someting accurate when using DS because th input FPS change depending on the congestion control. D3D is the best choice as frames are displayed as they arrive
+// Using DirectShow (DS) introduce delay when the input fps is different than the one in the custom src.
+// It's very hard to have someting accurate when using DS because the input FPS change depending on the congestion control. D3D is the best choice as frames are displayed as they arrive
 #if !defined(PLUGIN_DS_CV_USE_D3D9)
 #	define PLUGIN_DS_CV_USE_D3D9	 1
 #endif

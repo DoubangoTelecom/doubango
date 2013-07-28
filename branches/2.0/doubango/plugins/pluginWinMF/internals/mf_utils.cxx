@@ -37,7 +37,7 @@
 #	define PLUGIN_MF_DISABLE_CODECS 0 // Must be "0" to use "Microsoft"/"Intel Quick Sync" MFT codecs. Testing: When set to "1", libx264 and FFmpeg will be used.
 #endif
 #if !defined(PLUGIN_MF_DISABLE_MS_H264_ENCODER)
-#	define PLUGIN_MF_DISABLE_MS_H264_ENCODER 1 // MS H.264 encoder produces artifacts when bundled with the producer. Disable until we found way this happens.
+#	define PLUGIN_MF_DISABLE_MS_H264_ENCODER 1 // MS H.264 encoder produces artifacts when bundled with the producer. Disable until we found why this happens.
 #endif
 
 DEFINE_GUID(CLSID_VideoProcessorMFT, 

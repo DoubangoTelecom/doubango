@@ -30,8 +30,8 @@
 #include <assert.h>
 
 // Whether to use Direct3D device for direct rendering or Media Foundation topology and custom source
-// Using Media Foundation (MF) introduce delay when the input fps is diffrent than the one in the custom src.
-// It's very hard to have someting accurate when using MF because th input FPS change depending on the congestion control. D3D is the best choice as frames are displayed as they arrive
+// Using Media Foundation (MF) introduce delay when the input fps is different than the one in the custom src.
+// It's very hard to have someting accurate when using MF because the input FPS change depending on the congestion control. D3D is the best choice as frames are displayed as they arrive
 #if !defined(PLUGIN_MF_CV_USE_D3D9)
 #	define PLUGIN_MF_CV_USE_D3D9	 1
 #endif
