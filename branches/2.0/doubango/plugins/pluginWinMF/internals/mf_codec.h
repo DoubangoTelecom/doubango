@@ -98,6 +98,7 @@ protected:
 
 class MFCodecVideo : public MFCodec
 {
+	friend class MFCodec;
 protected:
 	MFCodecVideo(MFCodecId_t eId, MFCodecType_t eType, IMFTransform *pMFT = NULL);
 	virtual ~MFCodecVideo();
@@ -113,8 +114,14 @@ public:
 	virtual HRESULT SetBitRate(UINT32 nBitRateInBps);
 	virtual HRESULT RequestKeyFrame();
 
-protected:
+	virtual inline UINT32 GetFrameRate() { return m_nFrameRate; }
+	virtual inline UINT32 GetWidth() { return m_nWidth; }
+	virtual inline UINT32 GetHeight() { return m_nHeight; }
 
+protected:
+	UINT32 m_nFrameRate;
+	UINT32 m_nWidth;
+	UINT32 m_nHeight;
 };
 
 class MFCodecVideoH264 : public MFCodecVideo

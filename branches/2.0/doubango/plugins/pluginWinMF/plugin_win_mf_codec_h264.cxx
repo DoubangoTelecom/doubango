@@ -353,12 +353,12 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 	h264->decoder.accumulator_pos += pay_size;
 	// end-accumulator
 
-	if(sps_or_pps){
+	/*if(sps_or_pps){
 		// http://libav-users.943685.n4.nabble.com/Decode-H264-streams-how-to-fill-AVCodecContext-from-SPS-PPS-td2484472.html
 		// SPS and PPS should be bundled with IDR
 		TSK_DEBUG_INFO("Receiving SPS or PPS ...to be tied to an IDR");
 	}
-	else if(rtp_hdr->marker){
+	else */if(rtp_hdr->marker){
 		if(h264->decoder.passthrough){
 			if(*out_max_size < h264->decoder.accumulator_pos){
 				if((*out_data = tsk_realloc(*out_data, h264->decoder.accumulator_pos))){
@@ -402,9 +402,8 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 							}
 						}
 						retsize = (tsk_size_t)dwDataLength;
-						//FIXME:
-						//TMEDIA_CODEC_VIDEO(h264)->in.width = h264->decoder.context->width;
-						//TMEDIA_CODEC_VIDEO(h264)->in.height = h264->decoder.context->height;
+						TMEDIA_CODEC_VIDEO(h264)->in.width = h264->decoder.pInst->GetWidth();
+						TMEDIA_CODEC_VIDEO(h264)->in.height = h264->decoder.pInst->GetHeight();
 						memcpy(*out_data, pBufferPtr, retsize);
 					}
 					CHECK_HR(hr = pBufferOut->Unlock());
