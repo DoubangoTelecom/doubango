@@ -34,10 +34,15 @@
 #endif
 
 #if !defined(PLUGIN_MF_DISABLE_CODECS)
-#	define PLUGIN_MF_DISABLE_CODECS 0 // Must be "0" to use "Microsoft"/"Intel Quick Sync" MFT codecs. Testing: When set to "1", libx264 and FFmpeg will be used.
+// Must be "0" to use "Microsoft"/"Intel Quick Sync" MFT codecs. Testing: When set to "1", libx264 and FFmpeg will be used.
+#	define PLUGIN_MF_DISABLE_CODECS 0
 #endif
 #if !defined(PLUGIN_MF_DISABLE_MS_H264_ENCODER)
-#	define PLUGIN_MF_DISABLE_MS_H264_ENCODER 1 // MS H.264 encoder produces artifacts when bundled with the producer. Disable until we found why this happens.
+// MS H.264 encoder produces artifacts when bundled with the producer. Disable until we found why this happens.
+// What is strange is that NVIDIA CUDA H.264 decoder doesn't produce artifacts when decoding MS frames while FFmpeg and MS decoder do.
+// To encode with MS and decode with CUDA:
+// - Force "bMFEncoderIsRegistered" value to "FALSE" in plugin_win_mf_producer_video.cxx
+#	define PLUGIN_MF_DISABLE_MS_H264_ENCODER 1
 #endif
 
 DEFINE_GUID(CLSID_VideoProcessorMFT, 

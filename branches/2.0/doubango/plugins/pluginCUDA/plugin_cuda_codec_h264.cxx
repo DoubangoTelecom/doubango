@@ -239,6 +239,11 @@ static tsk_size_t cuda_codec_h264_encode(tmedia_codec_t* self, const void* in_da
 		return 0;
 	}
 
+	if(h264->encoder.passthrough) {
+		tdav_codec_h264_rtp_encap(common, (const uint8_t*)in_data, in_size);
+		return 0;
+	}
+
 	if((h264->encoder.ctxParams.iOutputSize[1] * h264->encoder.ctxParams.iOutputSize[0] * 3) >> 1 != in_size)
 	{
 		/* guard */

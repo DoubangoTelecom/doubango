@@ -37,6 +37,8 @@ typedef tsk_plugin_def_ptr_const_t (*symbol_get_def_at)(int index);
 #	include <dlfcn.h>
 #endif
 
+#include <sys/stat.h> /* stat() */
+
 static int _tsk_plugin_handle_destroy(tsk_plugin_handle_t** self);
 static tsk_plugin_symbol_t* _tsk_plugin_handle_get_symbol(tsk_plugin_handle_t* handle, const char* symbol_name);
 
@@ -173,6 +175,15 @@ tsk_plugin_symbol_t* tsk_plugin_get_symbol(tsk_plugin_t* self, const char* symbo
 		return tsk_null;
 	}
 	return _tsk_plugin_handle_get_symbol(self->handle, symbol_name);
+}
+
+tsk_bool_t tsk_plugin_file_exist(const char* path)
+{
+	if(path){
+		struct stat _stat;
+		return (stat(path, &_stat) == 0 && _stat.st_size > 0);
+	}
+	return tsk_false;
 }
 
 static tsk_plugin_symbol_t* _tsk_plugin_handle_get_symbol(tsk_plugin_handle_t* handle, const char* symbol_name)

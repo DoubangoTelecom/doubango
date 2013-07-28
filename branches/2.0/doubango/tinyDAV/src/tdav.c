@@ -174,36 +174,36 @@ int tdav_init()
 #if 0 // disable WASAPI by default (AEC issue because of code#consumer rate mismatch)
 		if(tdav_win32_is_winvista_or_later()){
 			tsk_sprintf(&full_path, "%s/pluginWASAPI.dll", tdav_get_current_directory_const());
-			if((__dll_plugin_wasapi = tsk_plugin_create(full_path))){
+			if(tsk_plugin_file_exist(full_path) && (__dll_plugin_wasapi = tsk_plugin_create(full_path))){
 				plugins_count += tmedia_plugin_register(__dll_plugin_wasapi, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 			}
 		}
 #endif
 		/* CUDA (H.264 codec) */
-#if 0 // Enable CUDA by default
+#if 1 // Enable CUDA by default
 		tsk_sprintf(&full_path, "%s/pluginCUDA.dll", tdav_get_current_directory_const()); // CUDA works on all Windows versions
-		if((__dll_plugin_cuda = tsk_plugin_create(full_path))){
+		if(tsk_plugin_file_exist(full_path) && (__dll_plugin_cuda = tsk_plugin_create(full_path))){
 			plugins_count += tmedia_plugin_register(__dll_plugin_cuda, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 		}
 #endif
 		/* Media Foundation (Video converter, Video consumer, Video producer, Microsoft H.264 codec, Intel Quick Sync H.264 codec) */
 		if(tdav_win32_is_win7_or_later()){
 			tsk_sprintf(&full_path, "%s/pluginWinMF.dll", tdav_get_current_directory_const());
-			if((__dll_plugin_mf = tsk_plugin_create(full_path))){
+			if(tsk_plugin_file_exist(full_path) && (__dll_plugin_mf = tsk_plugin_create(full_path))){
 				plugins_count += tmedia_plugin_register(__dll_plugin_mf, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 			}
 		}
 		/* DirectShow (Video consumer, Video producer) */
 		if(tdav_win32_is_winxp_or_later()){
 			tsk_sprintf(&full_path, "%s/pluginDirectShow.dll", tdav_get_current_directory_const());
-			if((__dll_plugin_dshow = tsk_plugin_create(full_path))){
+			if(tsk_plugin_file_exist(full_path) && (__dll_plugin_dshow = tsk_plugin_create(full_path))){
 				plugins_count += tmedia_plugin_register(__dll_plugin_dshow, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 			}
 		}
 		/* Audio DSP (Resampler, AEC, NS, AGC...) */
 		if(tdav_win32_is_winvista_or_later()){
 			tsk_sprintf(&full_path, "%s/pluginWinAudioDSP.dll", tdav_get_current_directory_const());
-			if((__dll_plugin_audio_dsp = tsk_plugin_create(full_path))){
+			if(tsk_plugin_file_exist(full_path) && (__dll_plugin_audio_dsp = tsk_plugin_create(full_path))){
 				plugins_count += tmedia_plugin_register(__dll_plugin_audio_dsp, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 			}
 		}
