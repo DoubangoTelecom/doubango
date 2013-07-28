@@ -443,14 +443,17 @@ static int plugin_win_mf_consumer_video_stop(tmedia_consumer_t* self)
 
 static int _plugin_win_mf_consumer_video_unprepare(plugin_win_mf_consumer_video_t* pSelf)
 {
-	if(!pSelf){
+	if(!pSelf)
+	{
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if(pSelf->bStarted) {
+	if(pSelf->bStarted)
+	{
 		// plugin_win_mf_producer_video_stop(TMEDIA_PRODUCER(pSelf));
 		TSK_DEBUG_ERROR("Consumer must be stopped before calling unprepare");
+		return -1;
 	}
 
 	SafeRelease(&pSelf->pDevice);
