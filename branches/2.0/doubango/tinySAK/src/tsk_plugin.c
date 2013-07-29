@@ -91,8 +91,11 @@ tsk_plugin_t* tsk_plugin_create(const char* path)
 	swprintf(szPath, tsk_strlen(path) * sizeof(wchar_t), szFormat, path);
 	handle = LoadPackagedLibrary(szPath, 0x00000000);
 	TSK_FREE(szPath);
-#	else
+#	else /* Windows desktop */
+	UINT currErrMode = SetErrorMode(SEM_FAILCRITICALERRORS); // save current ErrorMode. GetErrorMode() not supported on XP.
+	SetErrorMode(currErrMode | SEM_FAILCRITICALERRORS);
 	handle = LoadLibraryA(path);
+	SetErrorMode(currErrMode); // restore ErrorMode
 #	endif
 #else
 	handle = dlopen(path, RTLD_NOW);
