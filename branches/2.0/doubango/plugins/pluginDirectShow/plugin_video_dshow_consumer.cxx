@@ -348,6 +348,12 @@ static int plugin_video_dshow_consumer_consume(tmedia_consumer_t* self, const vo
 		// Force updating the destination rect if negotiated size change
 		CHECK_HR(hr = UpdateDestinationRect(pSelf, TRUE/* Force */));
 	}
+
+	if(((pSelf->nNegWidth * pSelf->nNegHeight) << 2) != size)
+	{
+		TSK_DEBUG_ERROR("%u not valid as input size", size);
+		CHECK_HR(hr = E_FAIL);
+	}
 	
 	CHECK_HR(hr = TestCooperativeLevel(pSelf));
 
@@ -357,15 +363,34 @@ static int plugin_video_dshow_consumer_consume(tmedia_consumer_t* self, const vo
 	CHECK_HR(hr = pSurf->LockRect(&pSelf->rcLock, NULL, D3DLOCK_NOSYSLOCK ));
 
 	// Fast copy() using MMX, SSE, or SSE2
+	// Only available on Vista or later: Use LoadLibrary() to get a pointer to the function
 	 /*hr = MFCopyImage(
 		 (BYTE*)pSelf->rcLock.pBits, 
 		 pSelf->rcLock.Pitch, 
 		 (BYTE*)buffer, 
-		 pSelf->rcLock.Pitch, 
+		 (pSelf->nNegWidth << 2), 
 		 (pSelf->nNegWidth << 2), 
 		 pSelf->nNegHeight
 	 );*/
-	memcpy(pSelf->rcLock.pBits, buffer, size); // FIXME: Pitch is ignored
+
+	if(pSelf->rcLock.Pitch == (pSelf->nNegWidth << 2))
+	{
+		memcpy(pSelf->rcLock.pBits, buffer, size);
+	}
+	else
+	{
+		const BYTE* pSrcPtr = (const BYTE*)buffer;
+		BYTE* pDstPtr = (BYTE*)pSelf->rcLock.pBits;
+		UINT32 nDstPitch = pSelf->rcLock.Pitch;
+		UINT32 nSrcPitch = (pSelf->nNegWidth << 2);
+		for(UINT32 i = 0; i < pSelf->nNegHeight; ++i)
+		{
+			memcpy(pDstPtr, pSrcPtr, nSrcPitch);
+			pDstPtr += nDstPitch;
+			pSrcPtr += nSrcPitch;
+		}
+	}
+		
 	 if(FAILED(hr))
 	 {
 		 // unlock() before leaving
