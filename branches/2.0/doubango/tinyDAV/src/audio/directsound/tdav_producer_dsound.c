@@ -51,7 +51,7 @@
 extern void tdav_win32_print_error(const char* func, HRESULT hr);
 
 #if !defined(TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT)
-#	define TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT		20
+#	define TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT		10
 #endif /* TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT */
 
 typedef struct tdav_producer_dsound_s
