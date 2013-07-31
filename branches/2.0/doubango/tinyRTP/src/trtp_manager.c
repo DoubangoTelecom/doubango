@@ -1530,9 +1530,10 @@ int trtp_manager_stop(trtp_manager_t* self)
 
 	tsk_safeobj_lock(self);
 
-	if(self->ice_ctx){
-		ret = tnet_ice_ctx_stop(self->ice_ctx);
-	}
+	// We haven't started the ICE context which means we must not stop it
+	//if(self->ice_ctx){
+	//	ret = tnet_ice_ctx_stop(self->ice_ctx);
+	//}
 
 	// Stop the RTCP session first (will send BYE)
 	if(self->rtcp.session){

@@ -75,6 +75,7 @@ TINYNET_API const char* tnet_ice_ctx_get_ufrag(const struct tnet_ice_ctx_s* self
 TINYNET_API const char* tnet_ice_ctx_get_pwd(const struct tnet_ice_ctx_s* self);
 
 TINYNET_API int tnet_ice_ctx_cancel(struct tnet_ice_ctx_s* self);
+TINYNET_API int tnet_ice_ctx_cancel_silent(struct tnet_ice_ctx_s* self);
 TINYNET_API int tnet_ice_ctx_stop(struct tnet_ice_ctx_s* self);
 
 
