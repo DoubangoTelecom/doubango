@@ -1703,6 +1703,7 @@ static tsk_object_t* tsip_dialog_invite_ctor(tsk_object_t * self, va_list * app)
 #else
 		dialog->ice.is_jingle = tsk_false;
 #endif
+		dialog->ice.last_sdp_ro_ver = -1;
 		dialog->use_rtcp = (((tsip_ssession_t*)ss)->media.profile == tmedia_profile_rtcweb) ? tsk_true : ((tsip_ssession_t*)ss)->media.enable_rtcp;
 		dialog->use_rtcpmux = (((tsip_ssession_t*)ss)->media.profile == tmedia_profile_rtcweb) ? tsk_true : ((tsip_ssession_t*)ss)->media.enable_rtcpmux;
 

@@ -613,7 +613,7 @@ int trtp_rtcp_session_process_rtp_in(trtp_rtcp_session_t* self, const trtp_rtp_p
 	}
 
 	if(!self->started){
-		TSK_DEBUG_ERROR("Not started");
+		TSK_DEBUG_INFO("RTCP session not started");
 		return -2;
 	}
 

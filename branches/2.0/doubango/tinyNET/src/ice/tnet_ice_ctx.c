@@ -645,7 +645,7 @@ int tnet_ice_ctx_recv_stun_message(tnet_ice_ctx_t* self, const void* data, tsk_s
 {
 	tnet_stun_message_t* message;
 	int ret = 0;
-	const tnet_ice_pair_t* pair;
+	const tnet_ice_pair_t* pair = tsk_null;
 	if(!self || !role_conflict || !data || !size || local_fd < 0 || !remote_addr){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
@@ -662,14 +662,17 @@ int tnet_ice_ctx_recv_stun_message(tnet_ice_ctx_t* self, const void* data, tsk_s
 	}
 
 	if(!self->is_active){
-		TSK_DEBUG_INFO("ICE context not active");
+		TSK_DEBUG_INFO("ICE context not active yet");
 		return 0;
 	}
 
 	if((message = tnet_stun_message_deserialize(data, size))){
 		if(message->type == stun_binding_request){
-			pair = tnet_ice_pairs_find_by_fd_and_addr(self->candidates_pairs, local_fd, remote_addr);
-			if(!pair && !self->have_nominated_symetric){ // pair not found and we're still negotiating
+			tsk_bool_t is_local_conncheck_started = !TSK_LIST_IS_EMPTY(self->candidates_pairs); // if empty means local conncheck haven't started
+			if(is_local_conncheck_started) {
+				pair = tnet_ice_pairs_find_by_fd_and_addr(self->candidates_pairs, local_fd, remote_addr);
+			}
+			if(!pair && !self->have_nominated_symetric && is_local_conncheck_started){ // pair not found and we're still negotiating
 				// rfc 5245 - 7.1.3.2.1.  Discovering Peer Reflexive Candidates
 				tnet_ice_pair_t* pair_peer = tnet_ice_pair_prflx_create(self->candidates_pairs, local_fd, remote_addr);
 				if(pair_peer){
@@ -724,8 +727,13 @@ int tnet_ice_ctx_recv_stun_message(tnet_ice_ctx_t* self, const void* data, tsk_s
 				}
 				TSK_FREE(resp_phrase);
 			}
-			else{
-				TSK_DEBUG_ERROR("Cannot find ICE pair with local fd = %d", local_fd);
+			else { // if(pair == null)
+				if(!is_local_conncheck_started) {
+					TSK_DEBUG_INFO("ICE local conncheck haven't started yet");
+				}
+				else {
+					TSK_DEBUG_ERROR("Cannot find ICE pair with local fd = %d", local_fd);
+				}
 			}
 		}
 		else if(TNET_STUN_MESSAGE_IS_RESPONSE(message)){
