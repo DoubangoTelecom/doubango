@@ -1226,7 +1226,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 			}
 			
 			// hold/resume
-			is_ro_hold_resume_changed |= !tsk_striequals(tsdp_header_M_get_holdresume_att(M0), tsdp_header_M_get_holdresume_att(M1));
+			is_ro_hold_resume_changed |= (M1 && !tsk_striequals(tsdp_header_M_get_holdresume_att(M0), tsdp_header_M_get_holdresume_att(M1)));
 
 			// media lines
 			if(!is_ro_media_lines_changed){

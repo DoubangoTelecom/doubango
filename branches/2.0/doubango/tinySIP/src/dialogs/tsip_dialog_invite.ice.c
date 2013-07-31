@@ -26,6 +26,7 @@
 #include "tinysdp/parsers/tsdp_parser_message.h"
 #include "tinysdp/tsdp_message.h"
 #include "tinysdp/headers/tsdp_header_S.h"
+#include "tinysdp/headers/tsdp_header_O.h"
 
 #include "ice/tnet_ice_ctx.h"
 
@@ -313,6 +314,7 @@ int tsip_dialog_invite_ice_process_ro(tsip_dialog_invite_t * self, const tsdp_me
 	const tsdp_header_M_t* M;
 	tsk_size_t index;
 	const tsdp_header_A_t *A;
+	const tsdp_header_O_t *O;
 	const char* sess_ufrag = tsk_null;
 	const char* sess_pwd = tsk_null;
 	int ret = 0, i;
@@ -325,6 +327,15 @@ int tsip_dialog_invite_ice_process_ro(tsip_dialog_invite_t * self, const tsdp_me
 	if(!self->ice.ctx_audio && !self->ice.ctx_video){
 		return 0;
 	}
+
+	// make sure this is different SDP
+	if((O = (const tsdp_header_O_t*)tsdp_message_get_header(sdp_ro, tsdp_htype_O))){
+		if(self->ice.last_sdp_ro_ver == (int32_t)O->sess_version){
+			TSK_DEBUG_INFO("ICE: ignore processing SDP RO because version haven't changed");
+			return 0;
+		}
+		self->ice.last_sdp_ro_ver = (int32_t)O->sess_version;
+	}	
 
 	// session level attributes
 	
@@ -395,6 +406,10 @@ static int x0500_Current_2_Current_X_oINVITE(va_list *app)
 	media_type = (action && action->media.type != tmedia_none) ? action->media.type : TSIP_DIALOG_GET_SS(self)->media.type;
 	self->is_client = tsk_true;
 	tsip_dialog_invite_ice_save_action(self, _fsm_action_oINVITE, action, message);
+
+	// Cancel ICE silently (without callback)
+	// If callback is raised then, this functin will be called again (because it's the last/saved action)
+	ret = tsip_dialog_invite_ice_cancel_ctx(self, tsk_true);
 
 	// create ICE context
 	if((ret = tsip_dialog_invite_ice_create_ctx(self, media_type))){
