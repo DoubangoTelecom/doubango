@@ -112,10 +112,10 @@ int tsip_dialog_invite_ice_init(tsip_dialog_invite_t *self)
 
 int tsip_dialog_invite_ice_timers_set(tsip_dialog_invite_t *self, int64_t timeout)
 {
-	if(tnet_ice_ctx_is_active(self->ice.ctx_audio)){
+	if(/*tnet_ice_ctx_is_active*/(self->ice.ctx_audio)){
 		tnet_ice_ctx_set_concheck_timeout(self->ice.ctx_audio, timeout);
 	}
-	if(tnet_ice_ctx_is_active(self->ice.ctx_video)){
+	if(/*tnet_ice_ctx_is_active*/(self->ice.ctx_video)){
 		tnet_ice_ctx_set_concheck_timeout(self->ice.ctx_video, timeout);
 	}
 	return 0;
