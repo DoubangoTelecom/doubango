@@ -70,10 +70,9 @@
 
 static const char* foundation_default = tsk_null;
 
-static int _tnet_ice_ctx_fsm_act_async(struct tnet_ice_ctx_s* self, tsk_fsm_action_id action_id);
-static int _tnet_ice_ctx_fsm_act_sync(struct tnet_ice_ctx_s* self, tsk_fsm_action_id action_id);
+static int _tnet_ice_ctx_fsm_act(struct tnet_ice_ctx_s* self, tsk_fsm_action_id action_id);
 static int _tnet_ice_ctx_signal_async(struct tnet_ice_ctx_s* self, tnet_ice_event_type_t type, const char* phrase);
-static int _tnet_ice_ctx_cancel(struct tnet_ice_ctx_s* self, tsk_bool_t silent, tsk_bool_t async);
+static int _tnet_ice_ctx_cancel(struct tnet_ice_ctx_s* self, tsk_bool_t silent);
 static int _tnet_ice_ctx_restart(struct tnet_ice_ctx_s* self);
 static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, tnet_ice_candidates_L_t* remote_candidates, tnet_ice_pairs_L_t* result_pairs, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle);
 static void* TSK_STDCALL _tnet_ice_ctx_run(void* self);
@@ -100,6 +99,8 @@ typedef struct tnet_ice_ctx_s
 
 	tsk_bool_t is_started;
 	tsk_bool_t is_active;
+	tsk_bool_t is_sync_mode;
+	tsk_bool_t is_silent_mode;
 	tnet_ice_callback_f callback;
 	const void* userdata;
 	tsk_bool_t use_ipv6;
@@ -109,8 +110,6 @@ typedef struct tnet_ice_ctx_s
 	tsk_bool_t unicast;
 	tsk_bool_t anycast;
 	tsk_bool_t multicast;
-
-	tsk_bool_t is_next_cancel_silent;
 
 	tsk_bool_t is_controlling;
 	tsk_bool_t is_ice_jingle;
@@ -388,6 +387,26 @@ int tnet_ice_ctx_set_stun(
 	return 0;
 }
 
+int tnet_ice_ctx_set_sync_mode(tnet_ice_ctx_t* self, tsk_bool_t sync_mode)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->is_sync_mode = sync_mode;
+	return 0;
+}
+
+int tnet_ice_ctx_set_silent_mode(struct tnet_ice_ctx_s* self, tsk_bool_t silent_mode)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->is_silent_mode = silent_mode;
+	return 0;
+}
+
 int tnet_ice_ctx_start(tnet_ice_ctx_t* self)
 {
 	int ret;
@@ -430,7 +449,7 @@ int tnet_ice_ctx_start(tnet_ice_ctx_t* self)
 	}
 	runnable_started = tsk_true;
 
-	if((ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_GatherHostCandidates))){
+	if((ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatherHostCandidates))){
 		err = "FSM execution failed";
 		TSK_DEBUG_ERROR("%s", err);
 		goto bail;
@@ -452,22 +471,6 @@ bail:
 		}
 	}
 	return ret;
-}
-
-// force_restart = cancel() then start()
-int tnet_ice_ctx_start_2(tnet_ice_ctx_t* self, tsk_bool_t force_restart)
-{
-	int ret = 0;
-	if(!self){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	if(force_restart) {
-		static tsk_bool_t const __silent_is_yes = tsk_true; // no callback to signal cancelled event (avoid deadlocks and speedup the process).
-		static tsk_bool_t const __async_is_no = tsk_false; // we really want to cancel ICE right now
-		ret = _tnet_ice_ctx_cancel(self, __silent_is_yes, __async_is_no);
-	}
-	return tnet_ice_ctx_start(self);
 }
 
 // register callback to call when we receive early RTP packets while negotaiating ICE pairs
@@ -552,7 +555,7 @@ int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candida
 	TSK_FREE(copy);
 
 	if(!tnet_ice_ctx_is_connected(self) && tnet_ice_ctx_got_local_candidates(self) && !TSK_LIST_IS_EMPTY(self->candidates_remote)){
-		ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_ConnCheck);
+		ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_ConnCheck);
 	}
 	return ret;
 }
@@ -786,16 +789,29 @@ const char* tnet_ice_ctx_get_pwd(const struct tnet_ice_ctx_s* self)
 // cancels the ICE processing without stopping the process
 int tnet_ice_ctx_cancel(tnet_ice_ctx_t* self)
 {
-	static const tsk_bool_t __silent_is_no = tsk_false;
-	static const tsk_bool_t __async_is_yes = tsk_true;
-	return _tnet_ice_ctx_cancel(self, __silent_is_no, __async_is_yes);
-}
+	int ret;
 
-int tnet_ice_ctx_cancel_silent(struct tnet_ice_ctx_s* self)
-{
-	static const tsk_bool_t __silent_is_yes = tsk_true;
-	static const tsk_bool_t __async_is_yes = tsk_true;
-	return _tnet_ice_ctx_cancel(self, __silent_is_yes, __async_is_yes);
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	tsk_safeobj_lock(self);
+	if(tsk_fsm_get_current_state(self->fsm) == _fsm_state_Started){
+		// Do nothing if already in the "started" state
+		ret = 0;
+		goto bail;
+	}
+	
+	self->is_active = tsk_false;
+	self->have_nominated_symetric = tsk_false;
+	self->have_nominated_answer = tsk_false;
+	self->have_nominated_offer = tsk_false;
+	ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_Cancel);
+
+bail:
+	tsk_safeobj_unlock(self);
+	return ret;
 }
 
 int tnet_ice_ctx_stop(tnet_ice_ctx_t* self)
@@ -924,10 +940,10 @@ static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandi
 bail:
 	if(self->is_started){
 		if(ret == 0 && !TSK_LIST_IS_EMPTY(self->candidates_local)){
-			ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_Success);
+			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_Success);
 		}
 		else{
-			ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_Failure);
+			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_Failure);
 		}
 	}
 
@@ -947,11 +963,11 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidates_2_GatheringHostCandidatesDo
 	if(ret == 0){
 		if(!tsk_strnullORempty(self->stun.server_addr) && self->stun.server_port > 0){
 			TSK_DEBUG_INFO("ICE using STUN server: %s:%u", self->stun.server_addr, self->stun.server_port);
-			ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_GatherReflexiveCandidates);
+			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatherReflexiveCandidates);
 		}
 		else{
 			TSK_DEBUG_INFO("Do not gather reflexive candidates because ICE-STUN is disabled");
-			ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_GatheringComplet);
+			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatheringComplet);
 		}
 	}
 	
@@ -1175,10 +1191,10 @@ bail:
 	if((srflx_addr_count_added + srflx_addr_count_skipped) > 0) ret = 0; // Hack the returned value if we have at least one success (happens when timeouts)
 	if(self->is_started){
 		if(ret == 0){
-			ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_Success);
+			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_Success);
 		}
 		else{
-			ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_Failure);
+			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_Failure);
 		}
 	}
 
@@ -1201,7 +1217,7 @@ static int _tnet_ice_ctx_fsm_GatheringReflexiveCandidates_2_GatheringReflexiveCa
 
 	if(self->is_started){
 		// For now do not gather relayed candidates
-		ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_GatheringComplet);
+		ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatheringComplet);
 	}
 	else{
 		return -1;
@@ -1243,10 +1259,7 @@ static int _tnet_ice_ctx_fsm_Any_2_Started_X_Cancel(va_list *app)
 	// self->is_active = tsk_false;
 	
 	// alert user
-	if(!self->is_next_cancel_silent){
-		_tnet_ice_ctx_signal_async(self, tnet_ice_event_type_cancelled, "Cancelled");
-	}
-	self->is_next_cancel_silent = tsk_false; // reset
+	_tnet_ice_ctx_signal_async(self, tnet_ice_event_type_cancelled, "Cancelled");
 
 	return 0;
 
@@ -1270,7 +1283,7 @@ static int _tnet_ice_ctx_fsm_Any_2_GatheringCompleted_X_GatheringComplet(va_list
 		tsk_list_unlock(self->candidates_remote);
 
 		if(has_remote_candidates){
-			ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_ConnCheck);
+			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_ConnCheck);
 		}
 	}
 	else{
@@ -1458,13 +1471,13 @@ bail:
 	// move to the next state depending on the conncheck result
 	if(self->is_started){
 		if(ret == 0 && self->have_nominated_symetric){
-			_tnet_ice_ctx_fsm_act_async(self, _fsm_action_Success);
+			_tnet_ice_ctx_fsm_act(self, _fsm_action_Success);
 		}
 		else{
 			if(time_curr >= time_end){
 				TSK_DEBUG_ERROR("ConnCheck timedout, have_nominated_answer=%s, have_nominated_offer=%s", self->have_nominated_answer?"yes":"false", self->have_nominated_offer?"yes":"false");
 			}
-			_tnet_ice_ctx_fsm_act_async(self, _fsm_action_Failure);
+			_tnet_ice_ctx_fsm_act(self, _fsm_action_Failure);
 		}
 	}
 
@@ -1526,37 +1539,9 @@ static int _tnet_ice_ctx_restart(tnet_ice_ctx_t* self)
 	}
 
 	ret = tsk_fsm_set_current_state(self->fsm, _fsm_state_Started);
-	ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_GatherHostCandidates);	
+	ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatherHostCandidates);	
 
 	self->is_active = (ret == 0);
-	return ret;
-}
-
-static int _tnet_ice_ctx_cancel(tnet_ice_ctx_t* self, tsk_bool_t silent, tsk_bool_t async)
-{
-	int ret;
-
-	if(!self){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	
-	tsk_safeobj_lock(self);
-	if(tsk_fsm_get_current_state(self->fsm) == _fsm_state_Started){
-		// Do nothing if already in the "started" state
-		ret = 0;
-		goto bail;
-	}
-	
-	self->is_active = tsk_false;
-	self->have_nominated_symetric = tsk_false;
-	self->have_nominated_answer = tsk_false;
-	self->have_nominated_offer = tsk_false;
-	self->is_next_cancel_silent = silent;
-	ret = async ? _tnet_ice_ctx_fsm_act_async(self, _fsm_action_Cancel) : _tnet_ice_ctx_fsm_act_sync(self, _fsm_action_Cancel);
-
-bail:
-	tsk_safeobj_unlock(self);
 	return ret;
 }
 
@@ -1615,7 +1600,7 @@ int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, tnet_ic
 }
 
 
-static int _tnet_ice_ctx_fsm_act_async(tnet_ice_ctx_t* self, tsk_fsm_action_id action_id)
+static int _tnet_ice_ctx_fsm_act(tnet_ice_ctx_t* self, tsk_fsm_action_id action_id)
 {
 	tnet_ice_action_t *action = tsk_null;
 	tnet_ice_event_t* e = tsk_null;
@@ -1631,38 +1616,24 @@ static int _tnet_ice_ctx_fsm_act_async(tnet_ice_ctx_t* self, tsk_fsm_action_id a
 		return -2;
 	}
 
-	if((e = tnet_ice_event_create(self, tnet_ice_event_type_action, phrase, self->userdata))){
-		tnet_ice_event_set_action(e, action);
-		TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(self), e);
-		goto bail;
+	if(self->is_sync_mode) {
+		ret = tsk_fsm_act(self->fsm, action->id, self, action, self, action);
 	}
-	else{
-		TSK_DEBUG_ERROR("Failed to create ICE event");
-		ret = -2;
-		goto bail;
+	else {
+		if((e = tnet_ice_event_create(self, tnet_ice_event_type_action, phrase, self->userdata))){
+			tnet_ice_event_set_action(e, action);
+			TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(self), e);
+			goto bail;
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to create ICE event");
+			ret = -2;
+			goto bail;
+		}
 	}
 
 bail:
 	TSK_OBJECT_SAFE_FREE(e);
-	TSK_OBJECT_SAFE_FREE(action);
-	return ret;
-}
-
-static int _tnet_ice_ctx_fsm_act_sync(tnet_ice_ctx_t* self, tsk_fsm_action_id action_id)
-{
-	tnet_ice_action_t *action = tsk_null;
-	int ret = 0;
-
-	if(!self || !self->fsm){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	if(!(action = tnet_ice_action_create(action_id))){
-		TSK_DEBUG_ERROR("Failed to create action");
-		return -2;
-	}
-
-	ret = tsk_fsm_act(self->fsm, action->id, self, action, self, action);
 	TSK_OBJECT_SAFE_FREE(action);
 	return ret;
 }
@@ -1673,6 +1644,11 @@ static int _tnet_ice_ctx_signal_async(tnet_ice_ctx_t* self, tnet_ice_event_type_
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
+	}
+
+	if(self->is_silent_mode && type != tnet_ice_event_type_action) { // silent mode ON and not action to move the FSM
+		TSK_DEBUG_INFO("ICE silent mode ON...to not notify '%d:%s'", type, phrase);
+		return 0;
 	}
 
 	if((e = tnet_ice_event_create(self, type, phrase, self->userdata))){

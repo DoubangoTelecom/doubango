@@ -41,6 +41,13 @@ int tsip_dialog_invite_ice_set_media_type(tsip_dialog_invite_t * self, tmedia_ty
 tsk_bool_t tsip_dialog_invite_ice_got_local_candidates(const tsip_dialog_invite_t * self);
 int tsip_dialog_invite_ice_process_ro(tsip_dialog_invite_t * self, const tsdp_message_t* sdp_ro, tsk_bool_t is_remote_offer);
 
+#define tsip_dialog_invite_ice_cancel_silent_and_sync_ctx(_self) \
+	tsip_dialog_invite_ice_set_sync_mode_ctx((_self), tsk_true); \
+	tsip_dialog_invite_ice_set_silent_mode_ctx((_self), tsk_true); \
+	tsip_dialog_invite_ice_cancel_ctx((_self));  /* "cancelled" event will not be sent and we're sure that cancel operation will be done when the function exit */ \
+	tsip_dialog_invite_ice_set_sync_mode_ctx((_self), tsk_false); \
+	tsip_dialog_invite_ice_set_silent_mode_ctx((_self), tsk_false); \
+
 /* ======================== transitions ======================== */
 // Use "Current" instead of "Any" to avoid priority reordering
 static int x0500_Current_2_Current_X_oINVITE(va_list *app);
@@ -192,47 +199,17 @@ int tsip_dialog_invite_ice_set_media_type(tsip_dialog_invite_t * self, tmedia_ty
 	return 0;
 }
 
-static int tsip_dialog_invite_ice_start_ctx_2(tsip_dialog_invite_t * self, tsk_bool_t force_restart)
-{
-	int ret = 0;
-	if(self){
-		if((self->ice.media_type & tmedia_audio)){
-			if(self->ice.ctx_audio && (ret = tnet_ice_ctx_start_2(self->ice.ctx_audio, force_restart)) != 0){
-				return ret;
-			}
-		}
-		if((self->ice.media_type & tmedia_video)){
-			if(self->ice.ctx_video && (ret = tnet_ice_ctx_start_2(self->ice.ctx_video, force_restart)) != 0){
-				return ret;
-			}
-		}
-	}
-	return 0;
-}
-
 static int tsip_dialog_invite_ice_start_ctx(tsip_dialog_invite_t * self)
 {
-	static const tsk_bool_t __force_restart = tsk_false;
-	return tsip_dialog_invite_ice_start_ctx_2(self, __force_restart);
-}
-
-static int tsip_dialog_invite_ice_restart_ctx(tsip_dialog_invite_t * self)
-{
-	static const tsk_bool_t __force_restart = tsk_true;
-	return tsip_dialog_invite_ice_start_ctx_2(self, __force_restart);
-}
-
-static int tsip_dialog_invite_ice_cancel_ctx(tsip_dialog_invite_t * self, tsk_bool_t silent)
-{
 	int ret = 0;
 	if(self){
 		if((self->ice.media_type & tmedia_audio)){
-			if(self->ice.ctx_audio && (ret = silent ? tnet_ice_ctx_cancel_silent(self->ice.ctx_audio) : tnet_ice_ctx_cancel(self->ice.ctx_audio)) != 0){
+			if(self->ice.ctx_audio && (ret = tnet_ice_ctx_start(self->ice.ctx_audio)) != 0){
 				return ret;
 			}
 		}
 		if((self->ice.media_type & tmedia_video)){
-			if(self->ice.ctx_video && (ret = silent ? tnet_ice_ctx_cancel_silent(self->ice.ctx_video) : tnet_ice_ctx_cancel(self->ice.ctx_video)) != 0){
+			if(self->ice.ctx_video && (ret = tnet_ice_ctx_start(self->ice.ctx_video)) != 0){
 				return ret;
 			}
 		}
@@ -240,9 +217,58 @@ static int tsip_dialog_invite_ice_cancel_ctx(tsip_dialog_invite_t * self, tsk_bo
 	return 0;
 }
 
-static int tsip_dialog_invite_ice_cancel_silent_ctx(tsip_dialog_invite_t * self)
+static int tsip_dialog_invite_ice_cancel_ctx(tsip_dialog_invite_t * self)
 {
-	return tsip_dialog_invite_ice_cancel_ctx(self, tsk_true);
+	int ret = 0;
+	if(self){
+		if((self->ice.media_type & tmedia_audio)){
+			if(self->ice.ctx_audio && (ret = tnet_ice_ctx_cancel(self->ice.ctx_audio)) != 0){
+				return ret;
+			}
+		}
+		if((self->ice.media_type & tmedia_video)){
+			if(self->ice.ctx_video && (ret = tnet_ice_ctx_cancel(self->ice.ctx_video)) != 0){
+				return ret;
+			}
+		}
+	}
+	return 0;
+}
+
+static int tsip_dialog_invite_ice_set_sync_mode_ctx(tsip_dialog_invite_t * self, tsk_bool_t sync_mode)
+{
+	int ret = 0;
+	if(self){
+		if((self->ice.media_type & tmedia_audio)){
+			if(self->ice.ctx_audio && (ret = tnet_ice_ctx_set_sync_mode(self->ice.ctx_audio, sync_mode)) != 0){
+				return ret;
+			}
+		}
+		if((self->ice.media_type & tmedia_video)){
+			if(self->ice.ctx_video && (ret = tnet_ice_ctx_set_sync_mode(self->ice.ctx_video, sync_mode)) != 0){
+				return ret;
+			}
+		}
+	}
+	return 0;
+}
+
+static int tsip_dialog_invite_ice_set_silent_mode_ctx(tsip_dialog_invite_t * self, tsk_bool_t silent_mode)
+{
+	int ret = 0;
+	if(self){
+		if((self->ice.media_type & tmedia_audio)){
+			if(self->ice.ctx_audio && (ret = tnet_ice_ctx_set_silent_mode(self->ice.ctx_audio, silent_mode)) != 0){
+				return ret;
+			}
+		}
+		if((self->ice.media_type & tmedia_video)){
+			if(self->ice.ctx_video && (ret = tnet_ice_ctx_set_silent_mode(self->ice.ctx_video, silent_mode)) != 0){
+				return ret;
+			}
+		}
+	}
+	return 0;
 }
 
 tsk_bool_t tsip_dialog_invite_ice_is_enabled(const tsip_dialog_invite_t * self)
@@ -424,8 +450,8 @@ static int x0500_Current_2_Current_X_oINVITE(va_list *app)
 	self->is_client = tsk_true;
 	tsip_dialog_invite_ice_save_action(self, _fsm_action_oINVITE, action, message);
 
-	// Cancel: should be silent to avoid calling this function again (because of 'cancelled' event)
-	ret = tsip_dialog_invite_ice_cancel_silent_ctx(self);
+	// Cancel without notifying ("silent mode") and perform the operation right now ("sync mode")
+	tsip_dialog_invite_ice_cancel_silent_and_sync_ctx(self);
 
 	// create ICE context
 	if((ret = tsip_dialog_invite_ice_create_ctx(self, media_type))){
@@ -436,9 +462,8 @@ static int x0500_Current_2_Current_X_oINVITE(va_list *app)
 	// For now disable ICE timers until we receive the 2xx
 	ret = tsip_dialog_invite_ice_timers_set(self, -1);
 
-	// reStart ICE
-	// reStart will make sure the cancel action which is asynchronous will be completed before start the ICE ctx again
-	ret = tsip_dialog_invite_ice_restart_ctx(self);
+	// Start ICE
+	ret = tsip_dialog_invite_ice_start_ctx(self);
 
 	// alert the user only if we are in initial state which means that it's not media update
 	if(TSIP_DIALOG(self)->state == tsip_initial){
@@ -463,8 +488,8 @@ static int x0500_Current_2_Current_X_iINVITE(va_list *app)
 	self->is_client = tsk_false;
 	ret = tsip_dialog_invite_ice_save_action(self, _fsm_action_iINVITE, action, message);
 	
-	// Cancel: should be silent to avoid calling this function again (because of 'cancelled' event)
-	ret = tsip_dialog_invite_ice_cancel_silent_ctx(self);
+	// Cancel without notifying ("silent mode") and perform the operation right now ("sync mode")
+	tsip_dialog_invite_ice_cancel_silent_and_sync_ctx(self);
 
 	// set remote candidates
 	if(TSIP_MESSAGE_HAS_CONTENT(message)){
@@ -491,9 +516,8 @@ static int x0500_Current_2_Current_X_iINVITE(va_list *app)
 	// For now disable ICE timers until we send the 2xx and receive the ACK
 	ret = tsip_dialog_invite_ice_timers_set(self, -1);
 
-	// reStart ICE
-	// reStart will make sure the cancel action which is asynchronous will be completed before start the ICE ctx again
-	ret = tsip_dialog_invite_ice_restart_ctx(self);
+	// Start ICE
+	ret = tsip_dialog_invite_ice_start_ctx(self);
 
 	return ret;
 }
