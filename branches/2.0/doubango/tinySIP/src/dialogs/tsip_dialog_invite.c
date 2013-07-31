@@ -651,11 +651,6 @@ int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app)
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_request, 
 			tsip_event_code_dialog_request_incoming, "Incoming Request.", rINVITEorUPDATE);
 
-	// stops ICE timers until both parties receive the "candidates"
-	if(tsip_dialog_invite_ice_is_enabled(self)){
-		tsip_dialog_invite_ice_timers_set(self, -1);
-	}
-
 	return ret;
 }
 

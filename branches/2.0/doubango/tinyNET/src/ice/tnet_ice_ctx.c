@@ -72,6 +72,7 @@ static const char* foundation_default = tsk_null;
 
 static int _tnet_ice_ctx_fsm_act_async(struct tnet_ice_ctx_s* self, tsk_fsm_action_id action_id);
 static int _tnet_ice_ctx_signal_async(struct tnet_ice_ctx_s* self, tnet_ice_event_type_t type, const char* phrase);
+static int _tnet_ice_ctx_cancel(struct tnet_ice_ctx_s* self, tsk_bool_t silent);
 static int _tnet_ice_ctx_restart(struct tnet_ice_ctx_s* self);
 static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, tnet_ice_candidates_L_t* remote_candidates, tnet_ice_pairs_L_t* result_pairs, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle);
 static void* TSK_STDCALL _tnet_ice_ctx_run(void* self);
@@ -107,6 +108,8 @@ typedef struct tnet_ice_ctx_s
 	tsk_bool_t unicast;
 	tsk_bool_t anycast;
 	tsk_bool_t multicast;
+
+	tsk_bool_t is_next_cancel_silent;
 
 	tsk_bool_t is_controlling;
 	tsk_bool_t is_ice_jingle;
@@ -757,29 +760,12 @@ const char* tnet_ice_ctx_get_pwd(const struct tnet_ice_ctx_s* self)
 // cancels the ICE processing without stopping the process
 int tnet_ice_ctx_cancel(tnet_ice_ctx_t* self)
 {
-	int ret;
+	return _tnet_ice_ctx_cancel(self, tsk_false);
+}
 
-	if(!self){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	
-	tsk_safeobj_lock(self);
-	if(tsk_fsm_get_current_state(self->fsm) == _fsm_state_Started){
-		// Do nothing if already in the "started" state
-		ret = 0;
-		goto bail;
-	}
-	
-	self->is_active = tsk_false;
-	self->have_nominated_symetric = tsk_false;
-	self->have_nominated_answer = tsk_false;
-	self->have_nominated_offer = tsk_false;
-	ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_Cancel);
-
-bail:
-	tsk_safeobj_unlock(self);
-	return ret;
+int tnet_ice_ctx_cancel_silent(tnet_ice_ctx_t* self)
+{
+	return _tnet_ice_ctx_cancel(self, tsk_true);
 }
 
 int tnet_ice_ctx_stop(tnet_ice_ctx_t* self)
@@ -1227,7 +1213,10 @@ static int _tnet_ice_ctx_fsm_Any_2_Started_X_Cancel(va_list *app)
 	// self->is_active = tsk_false;
 	
 	// alert user
-	_tnet_ice_ctx_signal_async(self, tnet_ice_event_type_cancelled, "Cancelled");
+	if(!self->is_next_cancel_silent){
+		_tnet_ice_ctx_signal_async(self, tnet_ice_event_type_cancelled, "Cancelled");
+	}
+	self->is_next_cancel_silent = tsk_false; // reset
 
 	return 0;
 
@@ -1506,14 +1495,38 @@ static int _tnet_ice_ctx_restart(tnet_ice_ctx_t* self)
 		return -1;
 	}
 
-	tsk_list_lock(self->candidates_local);
-	tsk_list_clear_items(self->candidates_local);
-	tsk_list_unlock(self->candidates_local);
-
 	ret = tsk_fsm_set_current_state(self->fsm, _fsm_state_Started);
 	ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_GatherHostCandidates);	
 
 	self->is_active = (ret == 0);
+	return ret;
+}
+
+static int _tnet_ice_ctx_cancel(tnet_ice_ctx_t* self, tsk_bool_t silent)
+{
+	int ret;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	tsk_safeobj_lock(self);
+	if(tsk_fsm_get_current_state(self->fsm) == _fsm_state_Started){
+		// Do nothing if already in the "started" state
+		ret = 0;
+		goto bail;
+	}
+	
+	self->is_active = tsk_false;
+	self->have_nominated_symetric = tsk_false;
+	self->have_nominated_answer = tsk_false;
+	self->have_nominated_offer = tsk_false;
+	self->is_next_cancel_silent = silent;
+	ret = _tnet_ice_ctx_fsm_act_async(self, _fsm_action_Cancel);
+
+bail:
+	tsk_safeobj_unlock(self);
 	return ret;
 }
 

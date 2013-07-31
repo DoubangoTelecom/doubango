@@ -67,7 +67,7 @@ static tsk_bool_t _fsm_cond_get_local_candidates(tsip_dialog_invite_t* self, tsi
 			index = 0;
 			while((M = (const tsdp_header_M_t*)tsdp_message_get_headerAt(sdp_ro, tsdp_htype_M, index++))){
 				if(!tsdp_header_M_findA(M, "candidate")){
-					use_ice = tsk_false; // do not use ICE is at least on media is ICE-less (e.g. MSRP)
+					use_ice = tsk_false; // do not use ICE if at least on media is ICE-less (e.g. MSRP)
 					break;
 				}
 				use_ice = tsk_true; // only use ICE if there is a least one media line
@@ -156,10 +156,6 @@ static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia
 	// set media type
 	tsip_dialog_invite_ice_set_media_type(self, media_type);
 
-	// For now disable timers until both parties get candidates
-	// (RECV ACK) or RECV (200 OK)
-	tsip_dialog_invite_ice_timers_set(self, -1);
-
 	// update session manager with the right ICE contexts
 	if(self->msession_mgr){
 		tmedia_session_mgr_set_ice_ctx(self->msession_mgr, self->ice.ctx_audio, self->ice.ctx_video);
@@ -212,6 +208,25 @@ static int tsip_dialog_invite_ice_start_ctx(tsip_dialog_invite_t * self)
 	}
 	return 0;
 }
+
+static int tsip_dialog_invite_ice_cancel_ctx(tsip_dialog_invite_t * self, tsk_bool_t silent)
+{
+	int ret = 0;
+	if(self){
+		if((self->ice.media_type & tmedia_audio)){
+			if(self->ice.ctx_audio && (ret = silent ? tnet_ice_ctx_cancel_silent(self->ice.ctx_audio) : tnet_ice_ctx_cancel(self->ice.ctx_audio)) != 0){
+				return ret;
+			}
+		}
+		if((self->ice.media_type & tmedia_video)){
+			if(self->ice.ctx_video && (ret = silent ? tnet_ice_ctx_cancel_silent(self->ice.ctx_video) : tnet_ice_ctx_cancel(self->ice.ctx_video)) != 0){
+				return ret;
+			}
+		}
+	}
+	return 0;
+}
+
 
 tsk_bool_t tsip_dialog_invite_ice_is_enabled(const tsip_dialog_invite_t * self)
 {
@@ -364,7 +379,7 @@ int tsip_dialog_invite_ice_process_ro(tsip_dialog_invite_t * self, const tsdp_me
 //--------------------------------------------------------
 
 
-// Started -> (oINVITE) -> Started
+// Current -> (oINVITE) -> Current
 static int x0500_Current_2_Current_X_oINVITE(va_list *app)
 {
 	int ret;
@@ -387,6 +402,9 @@ static int x0500_Current_2_Current_X_oINVITE(va_list *app)
 		return ret;
 	}
 
+	// For now disable ICE timers until we receive the 2xx
+	ret = tsip_dialog_invite_ice_timers_set(self, -1);
+
 	// Start ICE
 	ret = tsip_dialog_invite_ice_start_ctx(self);
 
@@ -398,7 +416,7 @@ static int x0500_Current_2_Current_X_oINVITE(va_list *app)
 	return ret;
 }
 
-// Started -> (iINVITE) -> Started
+// Current -> (iINVITE) -> Current
 static int x0500_Current_2_Current_X_iINVITE(va_list *app)
 {
 	int ret;
@@ -412,6 +430,10 @@ static int x0500_Current_2_Current_X_iINVITE(va_list *app)
 
 	self->is_client = tsk_false;
 	ret = tsip_dialog_invite_ice_save_action(self, _fsm_action_iINVITE, action, message);
+
+	// Cancel ICE silently (without callback)
+	// If callback is raised then, this functin will be called again (because it's the last/saved action)
+	ret = tsip_dialog_invite_ice_cancel_ctx(self, tsk_true);
 	
 	// set remote candidates
 	if(TSIP_MESSAGE_HAS_CONTENT(message)){
@@ -434,6 +456,9 @@ static int x0500_Current_2_Current_X_iINVITE(va_list *app)
 			return -3;
 		}
 	}
+
+	// For now disable ICE timers until we send the 2xx and receive the ACK
+	ret = tsip_dialog_invite_ice_timers_set(self, -1);
 
 	// Start ICE
 	ret = tsip_dialog_invite_ice_start_ctx(self);

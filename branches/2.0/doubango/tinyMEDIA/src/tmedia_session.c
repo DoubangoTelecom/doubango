@@ -34,6 +34,8 @@
 
 #include "tinysdp/headers/tsdp_header_O.h"
 
+#include "ice/tnet_ice_ctx.h"
+
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -1165,6 +1167,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	tsk_bool_t is_ro_loopback_address = tsk_false;
 	tsk_bool_t is_media_type_changed = tsk_false;
 	tsk_bool_t is_ro_media_lines_changed = tsk_false;
+	tsk_bool_t is_ice_active = tsk_false;
 	tsk_bool_t had_ro_sdp, had_ro_provisional, is_ro_provisional_final_matching = tsk_false;
 	tmedia_qos_stype_t qos_type = tmedia_qos_stype_none;
 	tmedia_type_t new_mediatype = tmedia_none;
@@ -1178,6 +1181,8 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 
 	had_ro_sdp = (self->sdp.ro != tsk_null);
 	had_ro_provisional = (had_ro_sdp && self->ro_provisional);
+	is_ice_active = (self->ice.ctx_audio && (self->type & tmedia_audio) && tnet_ice_ctx_is_active(self->ice.ctx_audio))
+					|| (self->ice.ctx_video && (self->type & tmedia_video) && tnet_ice_ctx_is_active(self->ice.ctx_video));
 
 	/*	RFC 3264 subcaluse 8
 		When issuing an offer that modifies the session, the "o=" line of the new SDP MUST be identical to that in the previous SDP, 
@@ -1305,6 +1310,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	}
 
 	TSK_DEBUG_INFO(
+		"is_ice_active=%d,\n"
 		"is_ro_hold_resume_changed=%d,\n"
 		"is_ro_provisional_final_matching=%d,\n"
 		"is_ro_media_lines_changed=%d,\n"
@@ -1312,6 +1318,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		"is_ro_loopback_address=%d,\n"
 		"is_media_type_changed=%d,\n"
 		"is_ro_codecs_changed=%d\n",
+		is_ice_active,
 		is_ro_hold_resume_changed,
 		is_ro_provisional_final_matching,
 		is_ro_media_lines_changed,
@@ -1325,11 +1332,13 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	  * It's almost impossible to update the codecs, the connection information etc etc while the sessions are running
 	  * For example, if the video producer is already started then, you probably cannot update its configuration
 	  * without stoping it and restarting it again with the right config. Same for RTP Network config (ip addresses, NAT, ports, IP version, ...)
+	  *
 	  * "is_loopback_address" is used as a guard to avoid reconf for loopback address used for example by ZTE for fake forking. In all case
 	  * loopback address won't work on embedded devices such as iOS and Android.
+	  *
 	 */
 	if((self->started && !is_ro_loopback_address) && (is_ro_codecs_changed || is_ro_network_info_changed || is_ro_media_lines_changed || is_media_type_changed)){
-		TSK_DEBUG_INFO("stopped_to_reconf=true");
+		TSK_DEBUG_INFO("stopped_to_reconf=true,is_ice_active=%s", is_ice_active?"true":"false");
 		if((ret = tmedia_session_mgr_stop(self))){
 			TSK_DEBUG_ERROR("Failed to stop session manager");
 			goto bail;
@@ -1450,8 +1459,10 @@ end_of_sessions_update:
 		 have been added or removed */
 		(tmedia_session_mgr_get_lo(self));
 	}
-	/* manager was started and we stopped it in order to reconfigure it (codecs, network, ....) */
-	if(stopped_to_reconf){
+	/* manager was started and we stopped it in order to reconfigure it (codecs, network, ....) 
+	* When ICE is active ("is_ice_active" = yes), the media session will be explicitly restarted when conncheck succeed or fail.
+	*/
+	if(stopped_to_reconf && !is_ice_active){
 		if((ret = tmedia_session_mgr_start(self))){
 			TSK_DEBUG_ERROR("Failed to re-start session manager");
 			goto bail;
