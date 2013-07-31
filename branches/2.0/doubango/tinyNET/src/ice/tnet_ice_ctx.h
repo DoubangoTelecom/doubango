@@ -50,8 +50,9 @@ TINYNET_API int tnet_ice_ctx_set_stun(
 	const char* software, 
 	const char* username, 
 	const char* password);
+TINYNET_API int tnet_ice_ctx_set_sync_mode(struct tnet_ice_ctx_s* self, tsk_bool_t sync_mode);
+TINYNET_API int tnet_ice_ctx_set_silent_mode(struct tnet_ice_ctx_s* self, tsk_bool_t silent_mode);
 TINYNET_API int tnet_ice_ctx_start(struct tnet_ice_ctx_s* self);
-TINYNET_API int tnet_ice_ctx_start_2(struct tnet_ice_ctx_s* self, tsk_bool_t force_restart);
 TINYNET_API int tnet_ice_ctx_rtp_callback(struct tnet_ice_ctx_s* self, tnet_ice_rtp_callback_f rtp_callback, const void* rtp_callback_data);
 TINYNET_API int tnet_ice_ctx_set_concheck_timeout(struct tnet_ice_ctx_s* self, int64_t timeout);
 TINYNET_API int tnet_ice_ctx_set_remote_candidates(struct tnet_ice_ctx_s* self, const char* candidates, const char* ufrag, const char* pwd, tsk_bool_t is_controlling, tsk_bool_t is_ice_jingle);
@@ -76,7 +77,6 @@ TINYNET_API const char* tnet_ice_ctx_get_ufrag(const struct tnet_ice_ctx_s* self
 TINYNET_API const char* tnet_ice_ctx_get_pwd(const struct tnet_ice_ctx_s* self);
 
 TINYNET_API int tnet_ice_ctx_cancel(struct tnet_ice_ctx_s* self);
-TINYNET_API int tnet_ice_ctx_cancel_silent(struct tnet_ice_ctx_s* self);
 TINYNET_API int tnet_ice_ctx_stop(struct tnet_ice_ctx_s* self);
 
 
