@@ -277,6 +277,15 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 			tsk_params_add_param(&msg->Contact->uri->params, "sigcomp-id", msg->sigcomp_id);
 		}
 	}
+	/* === WebRTC2SIP === */
+	if(TSIP_MESSAGE_IS_REQUEST(msg)) {
+		if(self->stack->network.mode == tsip_stack_mode_webrtc2sip) {
+			// Request Uri (Fix: https://code.google.com/p/webrtc2sip/issues/detail?id=56)
+			if(tsk_params_have_param(msg->line.request.uri->params, "transport")){
+				tsk_params_add_param(&msg->line.request.uri->params, "transport", self->protocol);
+			}
+		}
+	}
 	
 
 	msg->update = tsk_false; /* To avoid to update retrans. */

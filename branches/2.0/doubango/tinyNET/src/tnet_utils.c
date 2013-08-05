@@ -1659,7 +1659,7 @@ int tnet_sockfd_close(tnet_fd_t *fd)
 #else
 		ret = close(*fd);
 #endif
-
+		TSK_DEBUG_INFO("CloseSocket(%d)", *fd);
 		*fd = TNET_INVALID_FD;
 		return ret;
 	}

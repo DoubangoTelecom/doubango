@@ -374,7 +374,6 @@ int removeSocket(int index, transport_context_t *context)
 				tnet_sockfd_shutdown(context->sockets[index]->fd);
 				goto done;
 			}
-			TSK_DEBUG_INFO("CloseSocket(fd=%d)", context->sockets[index]->fd);
 			tnet_sockfd_close(&(context->sockets[index]->fd));
 		}
 		

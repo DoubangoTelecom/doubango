@@ -254,7 +254,7 @@ int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin)
 			TSK_DEBUG_INFO("Register codec: %s, %s", plugin->name, plugin->desc);
 			return 0;
 		}
-		if(__tmedia_codec_plugins[i]->codec_id == plugin->codec_id){
+		if(__tmedia_codec_plugins[i]->codec_id == plugin->codec_id && plugin->codec_id != tmedia_codec_id_none){ // 'tmedia_codec_id_none' is used for fake codecs
 			TSK_DEBUG_INFO("Codec Registration: '%s' ignored because '%s' already registered", plugin->desc, __tmedia_codec_plugins[i]->desc);
 			return -3;
 		}

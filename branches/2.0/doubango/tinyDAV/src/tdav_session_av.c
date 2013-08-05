@@ -30,6 +30,7 @@
 #include "tinydav/codecs/fec/tdav_codec_ulpfec.h"
 
 #include "tinysdp/headers/tsdp_header_S.h"
+#include "tinysdp/headers/tsdp_header_B.h"
 
 #include "tinyrtp/trtp_manager.h"
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
@@ -562,7 +563,7 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 		//	- On WP8 with built-in H.264 decoder
 		//	- When IMFTransform decoder is used for decoding and added on the same Topology as the consumer (EVR)
 		if(self->consumer) {
-			if((ret = tmedia_consumer_prepare(self->consumer, best_codec)== 0)) {
+			if((ret = tmedia_consumer_prepare(self->consumer, best_codec)) == 0) {
 				media_param = tmedia_param_create(tmedia_pat_set,
 											best_codec->type,
 											tmedia_ppt_codec,
@@ -1304,6 +1305,22 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 	self->use_rtcpmux &= (tsdp_header_M_findA(m, "rtcp-mux") != tsk_null);
 	if(self->ice_ctx){
 		tnet_ice_ctx_set_rtcpmux(self->ice_ctx, self->use_rtcpmux);
+	}
+
+	// BANDWIDTH: http://tools.ietf.org/html/rfc3556
+	if(!TSK_LIST_IS_EMPTY(m->Bandwidths)){
+		const tsk_list_item_t* itemB;
+		const tsdp_header_B_t* B;
+		tsk_list_foreach(itemB, m->Bandwidths) {
+			if(!(B = (const tsdp_header_B_t*)itemB->data)) {
+				continue;
+			}
+			TSK_DEBUG_INFO("Remote party requested bandwidth limitation at %u using 'b=%s' SDP attribute", B->bandwidth, B->bwtype);
+			if(tsk_striequals(B->bwtype, "AS")) {
+				TSK_DEBUG_INFO("Setting bandwidth_max_upload_kbps=%u according to remote party request", B->bandwidth);
+				self->bandwidth_max_upload_kbps = B->bandwidth;
+			}
+		}
 	}
 
 	/* Remote SSRC */
