@@ -875,14 +875,14 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 							fp_sha1 = trtp_manager_get_dtls_local_fingerprint(self->rtp_manager, tnet_dtls_hash_type_sha1);
 							fp_sha256 = trtp_manager_get_dtls_local_fingerprint(self->rtp_manager, tnet_dtls_hash_type_sha256);
 						}
-						_first_media_strcat(&tcap, negotiate_avpf ? " UDP/TLS/RTP/SAVPF UDP/TLS/RTP/SAVP" : "UDP/TLS/RTP/SAVP");
+						_first_media_strcat(&tcap, negotiate_avpf ? " UDP/TLS/RTP/SAVPF UDP/TLS/RTP/SAVP" : " UDP/TLS/RTP/SAVP");
 						if(negotiate_avpf){
 							profiles[profiles_index++] = RTP_PROFILE_UDP_TLS_RTP_SAVPF;
 						}
 						profiles[profiles_index++] = RTP_PROFILE_UDP_TLS_RTP_SAVP;
 					}
 					if(is_srtp_sdes_enabled){
-						_first_media_strcat(&tcap, negotiate_avpf ? " RTP/SAVPF RTP/SAVP" : "RTP/SAVP");
+						_first_media_strcat(&tcap, negotiate_avpf ? " RTP/SAVPF RTP/SAVP" : " RTP/SAVP");
 						if(negotiate_avpf){
 							profiles[profiles_index++] = RTP_PROFILE_SAVPF;
 						}
