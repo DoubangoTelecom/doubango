@@ -150,6 +150,22 @@ tnet_socket_t* tnet_socket_create_2(const char* host, tnet_port_t port_, tnet_so
 			if(ptr->ai_family != AF_INET6 && ptr->ai_family != AF_INET){
 				continue;
 			}
+			/* To avoid "Address already in use" error */
+			{
+				#if defined(SOLARIS)
+							static const char yes = '1';
+				#else
+							static const int yes = 1;
+				#endif
+							if(setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(int)) == -1){
+								TNET_PRINT_LAST_ERROR("setsockopt(SO_REUSEADDR) have failed");
+							}
+				#if defined(SO_REUSEPORT)
+							if(setsockopt(sock->fd, SOL_SOCKET, SO_REUSEPORT, (char*)&yes, sizeof(int)) == -1){
+								TNET_PRINT_LAST_ERROR("setsockopt(SO_REUSEPORT) have failed");
+							}
+				#endif
+			}
 			
 			if(bindsocket){
 				/* Bind the socket */
@@ -183,23 +199,6 @@ tnet_socket_t* tnet_socket_create_2(const char* host, tnet_port_t port_, tnet_so
 		if(!TNET_SOCKET_IS_VALID(sock)) {
 			TNET_PRINT_LAST_ERROR("Invalid socket.");
 			goto bail;
-		}		
-
-		/* To avoid "Address already in use" error */
-		{
-#if defined(SOLARIS)
-			static const char yes = '1';
-#else
-			static const int yes = 1;
-#endif
-			if(setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(int)) == -1){
-				TNET_PRINT_LAST_ERROR("setsockopt(SO_REUSEADDR) have failed");
-			}
-#if defined(SO_REUSEPORT)
-			if(setsockopt(sock->fd, SOL_SOCKET, SO_REUSEPORT, (char*)&yes, sizeof(int)) == -1){
-				TNET_PRINT_LAST_ERROR("setsockopt(SO_REUSEPORT) have failed");
-			}
-#endif
 		}
 
 #if TNET_UNDER_IPHONE || TNET_UNDER_IPHONE_SIMULATOR
