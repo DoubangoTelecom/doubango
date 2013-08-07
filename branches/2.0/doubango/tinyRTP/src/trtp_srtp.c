@@ -218,7 +218,8 @@ int trtp_srtp_set_crypto(struct trtp_manager_s* rtp_mgr, const char* crypto_line
 				crypto_policy_set_aes_cm_128_hmac_sha1_80(&srtp_ctx->rtp.policy.rtcp);
 				if(idx == TRTP_SRTP_LINE_IDX_REMOTE){
 					trtp_srtp_ctx_deinit(&rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_32]);
-					rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_80].rtp.tag = srtp_ctx->rtp.tag;
+					rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_80].rtp.tag = 
+					rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_80].rtcp.tag = srtp_ctx->rtp.tag;
 				}
 				break;
 			}
@@ -228,7 +229,8 @@ int trtp_srtp_set_crypto(struct trtp_manager_s* rtp_mgr, const char* crypto_line
 				crypto_policy_set_aes_cm_128_hmac_sha1_80(&srtp_ctx->rtp.policy.rtcp); // RTCP always 80
 				if(idx == TRTP_SRTP_LINE_IDX_REMOTE){
 					trtp_srtp_ctx_deinit(&rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_80]);
-					rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_32].rtp.tag = srtp_ctx->rtp.tag;
+					rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_32].rtp.tag = 
+					rtp_mgr->srtp_contexts[TRTP_SRTP_LINE_IDX_LOCAL][HMAC_SHA1_32].rtcp.tag = srtp_ctx->rtp.tag;
 				}
 				break;
 			}

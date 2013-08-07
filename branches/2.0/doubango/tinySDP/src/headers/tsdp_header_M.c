@@ -603,8 +603,15 @@ removeAttributes:
 						continue;
 					}
 					if(tsk_strindexOf(A->value, fmt_plus_space_len, fmt_plus_space) == 0){
-						tsk_list_remove_item(self->Attributes, (tsk_list_item_t*)itemA);
-						goto removeAttributes;
+						// Guard to be sure we know what to remove. For example:
+						// tsdp_header_M_remove_fmt(self, 0) would remove both
+						// a=rtpmap:0 PCMU/8000/1
+						// a=crypto:0 AES_CM_128_HMAC_SHA1_32 inline:Gi8s25tDKDnd/xORJ/ZtRWWC1drVbax5Ve4ftCWd
+						// and cause issue 115: https://code.google.com/p/webrtc2sip/issues/detail?id=115
+						if(!tsk_striequals(A->field, "crypto")){
+							tsk_list_remove_item(self->Attributes, (tsk_list_item_t*)itemA);
+							goto removeAttributes;
+						}
 					}
 				}
 				tsk_list_remove_item(self->FMTs, (tsk_list_item_t*)itemM);

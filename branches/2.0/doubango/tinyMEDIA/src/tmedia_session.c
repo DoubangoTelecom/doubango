@@ -1143,6 +1143,7 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 
 bail:
 	tsk_safeobj_unlock(self);
+
 	return ret;
 }
 

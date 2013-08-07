@@ -113,7 +113,6 @@ TINYMEDIA_API int tmedia_defaults_set_bypass_encoding(tsk_bool_t enabled);
 TINYMEDIA_API tsk_bool_t tmedia_defaults_get_bypass_encoding();
 TINYMEDIA_API int tmedia_defaults_set_bypass_decoding(tsk_bool_t enabled);
 TINYMEDIA_API tsk_bool_t tmedia_defaults_get_bypass_decoding();
-
 TINYMEDIA_API int tmedia_defaults_set_videojb_enabled(tsk_bool_t enabled);
 TINYMEDIA_API tsk_bool_t tmedia_defaults_get_videojb_enabled();
 TINYMEDIA_API int tmedia_defaults_set_video_zeroartifacts_enabled(tsk_bool_t enabled);
@@ -127,6 +126,8 @@ TINYMEDIA_API int tmedia_defaults_set_opus_maxcapturerate(uint32_t opus_maxcaptu
 TINYMEDIA_API uint32_t tmedia_defaults_get_opus_maxcapturerate();
 TINYMEDIA_API int tmedia_defaults_set_opus_maxplaybackrate(uint32_t opus_maxplaybackrate);
 TINYMEDIA_API uint32_t tmedia_defaults_get_opus_maxplaybackrate();
+TINYMEDIA_API int tmedia_defaults_set_ssl_certs(const char* priv_path, const char* pub_path, const char* ca_path, tsk_bool_t verify);
+TINYMEDIA_API int tmedia_defaults_get_ssl_certs(const char** priv_path, const char** pub_path, const char** ca_path, tsk_bool_t *verify);
 
 TMEDIA_END_DECLS
 
