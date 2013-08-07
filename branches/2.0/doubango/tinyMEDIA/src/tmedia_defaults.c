@@ -82,6 +82,10 @@ static tsk_size_t __avpf_tail_min = 20; // Min size for tail used to honor RTCP-
 static tsk_size_t __avpf_tail_max = 160; // Max size for tail used to honor RTCP-NACK requests
 static uint32_t __opus_maxcapturerate = 16000; // supported: 8k,12k,16k,24k,48k. IMPORTANT: only 8k and 16k will work with WebRTC AEC
 static uint32_t __opus_maxplaybackrate = 48000; // supported: 8k,12k,16k,24k,48k
+static char* __ssl_certs_priv_path = tsk_null;
+static char* __ssl_certs_pub_path = tsk_null;
+static char* __ssl_certs_ca_path = tsk_null;
+static tsk_bool_t __ssl_certs_verify = tsk_false;
 
 int tmedia_defaults_set_profile(tmedia_profile_t profile){
 	__profile = profile;
@@ -529,4 +533,19 @@ int tmedia_defaults_set_opus_maxplaybackrate(uint32_t opus_maxplaybackrate){
 }
 uint32_t tmedia_defaults_get_opus_maxplaybackrate(){
 	return __opus_maxplaybackrate;
+}
+
+int tmedia_defaults_set_ssl_certs(const char* priv_path, const char* pub_path, const char* ca_path, tsk_bool_t verify){
+	tsk_strupdate(&__ssl_certs_priv_path, priv_path);
+	tsk_strupdate(&__ssl_certs_pub_path, pub_path);
+	tsk_strupdate(&__ssl_certs_ca_path, ca_path);
+	__ssl_certs_verify = verify;
+	return 0;
+}
+int tmedia_defaults_get_ssl_certs(const char** priv_path, const char** pub_path, const char** ca_path, tsk_bool_t *verify){
+	if(priv_path) *priv_path = __ssl_certs_priv_path;
+	if(pub_path) *pub_path = __ssl_certs_pub_path;
+	if(ca_path) *ca_path = __ssl_certs_ca_path;
+	if(verify) *verify = __ssl_certs_verify;
+	return 0;
 }
