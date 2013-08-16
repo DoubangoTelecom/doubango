@@ -52,7 +52,10 @@ static const tsip_transport_idx_xt _tsip_transport_idxs_xs[TSIP_TRANSPORT_IDX_MA
 const tsip_transport_idx_xt* tsip_transport_get_by_name(const char* name)
 {
 	int i;
-	for(i = 0; i < TSIP_TRANSPORT_IDX_MAX; ++i){
+	if(!name) {
+		return tsk_null;
+	}
+	for(i = 0; i < TSIP_TRANSPORT_IDX_MAX; ++i) {
 		if(tsk_striequals(_tsip_transport_idxs_xs[i].name, name)){
 			return &_tsip_transport_idxs_xs[i];
 		}

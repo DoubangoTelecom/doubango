@@ -634,6 +634,9 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, tsip_
 					message, 
 					dst
 				);
+				if(message->local_fd > 0 && TNET_SOCKET_TYPE_IS_STREAM(message->src_net_type)) {
+					tsip_dialog_set_connected_fd(newdialog, message->local_fd);
+				}
 				tsk_list_push_back_data(self->dialogs, (void**)&newdialog); /* add new dialog to the layer */
 				TSK_OBJECT_SAFE_FREE(dst);
 			}
