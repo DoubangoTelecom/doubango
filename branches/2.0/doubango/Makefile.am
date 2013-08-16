@@ -17,3 +17,11 @@ SUBDIRS = tinySAK \
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = doubango.pc
+
+install-data-hook:
+	$(MKDIR_P) $(DESTDIR)/etc/ld.so.conf.d
+	echo "$(libdir)" > $(DESTDIR)/etc/ld.so.conf.d/doubango.conf
+	ldconfig
+
+uninstall-hook:
+	rm -f $(DESTDIR)/etc/ld.so.conf.d/doubango.conf
