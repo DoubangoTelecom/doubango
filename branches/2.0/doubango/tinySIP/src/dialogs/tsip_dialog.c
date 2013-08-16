@@ -435,7 +435,9 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	/* Remote Address: Used if "Server mode" otherwise Proxy-CSCF will be used  */
 	request->remote_addr = self->remote_addr;
 	/* Connected FD */
-	request->local_fd = self->connected_fd;
+	if(request->local_fd <= 0) {
+		request->local_fd = self->connected_fd;
+	}
 
 	TSK_OBJECT_SAFE_FREE(request_uri);
 	TSK_OBJECT_SAFE_FREE(from_uri);
@@ -547,7 +549,9 @@ tsip_response_t *tsip_dialog_response_new(tsip_dialog_t *self, short status, con
 			response->sigcomp_id = tsk_strdup(self->ss->sigcomp_id);
 		}
 		/* Connected FD */
-		response->local_fd = self->connected_fd;
+		if(response->local_fd <= 0) {
+			response->local_fd = self->connected_fd;
+		}
 		/* Remote Addr: used to send requests if "Server Mode" otherwise Proxy-CSCF address will be used */
 		self->remote_addr = request->remote_addr;
 	}
