@@ -26,6 +26,10 @@
 #include "tsk_debug.h"
 #include "tsk_common.h"
 
+#if TSK_UNDER_WINDOWS
+#	include <windows.h>
+#endif /* TSK_UNDER_WINDOWS */
+
 /**@defgroup tsk_object_group Base object implementation.
 * @brief Provides utility functions to ease Object Oriented Programming in C.
 */
@@ -35,6 +39,17 @@
 static int tsk_objects_count = 0;
 #else
 #	define TSK_DEBUG_OBJECTS	0
+#endif
+
+#ifdef __GNUC__
+#	define tsk_atomic_inc(_ptr_) __sync_fetch_and_add((_ptr_), 1)
+#	define tsk_atomic_dec(_ptr_) __sync_fetch_and_sub((_ptr_), 1)
+#elif defined(_MSC_VER)
+#	define tsk_atomic_inc(_ptr_) InterlockedIncrement((_ptr_))
+#	define tsk_atomic_dec(_ptr_) InterlockedDecrement((_ptr_))
+#else
+#	define tsk_atomic_inc(_ptr_) ++(*(_ptr_))
+#	define tsk_atomic_dec(_ptr_) --(*(_ptr_))
 #endif
 
 /**@ingroup tsk_object_group
@@ -159,7 +174,7 @@ tsk_object_t* tsk_object_ref(tsk_object_t *self)
 {
 	tsk_object_header_t* objhdr = TSK_OBJECT_HEADER(self);
 	if(objhdr && objhdr->refCount){
-		objhdr->refCount++;
+		tsk_atomic_inc(&objhdr->refCount);
 		return self;
 	}
 	return tsk_null;
@@ -179,7 +194,8 @@ tsk_object_t* tsk_object_unref(tsk_object_t *self)
 	if(self){
 		tsk_object_header_t* objhdr = TSK_OBJECT_HEADER(self);
 		if(objhdr->refCount){ // If refCount is == 0 then, nothing should happen.
-			if(!--objhdr->refCount){
+			tsk_atomic_dec(&objhdr->refCount);
+			if(!objhdr->refCount){
 				tsk_object_delete(self);
 				return tsk_null;
 			}
