@@ -785,6 +785,7 @@ clean_routes:
 						tsk_strupdate(destIP, dialog->uri_remote_target->host);
 						*destPort = dialog->uri_remote_target->port ? dialog->uri_remote_target->port : 5060;
 						if(TNET_SOCKET_TYPE_IS_VALID(_destNetType)) {
+							// _destNetType is UDP, TCP, WSSS...and not UDP-IPv4, TCP-IPv6, WSS-IPv4-IPsec...This is why closest match is used.
 							destNetType = _destNetType;
 						}
 					}
@@ -793,14 +794,26 @@ clean_routes:
 			}
 		}
 
-		/* Find the right transport */
-		tsk_list_foreach(item, self->transports){
-			curr = item->data;
-			if(curr->type == destNetType){
-				transport = curr;
-				break;
+		/* Find the right transport using exact match */
+		{
+			const tsip_transport_t* transport_closest = tsk_null;
+			tsk_list_foreach(item, self->transports){
+				curr = item->data;
+				if(curr->type == destNetType){
+					transport = curr;
+					break;
+				}
+				if((curr->type & destNetType) == destNetType){
+					transport_closest = curr;
+				}
+			}
+			if(!transport && transport_closest) {
+				// For example, UDP will match with UDP-IPv4-IPSec or UDP-IPv6
+				TSK_DEBUG_INFO("Setting transport with closest match(%d->%d)", destNetType, transport_closest->type);
+				transport = transport_closest;
 			}
 		}
+		
 
 		/* DNS NAPTR + SRV if the Proxy-CSCF is not defined and route set is empty */
 		if(transport && !(*destIP) && !self->stack->network.proxy_cscf[self->stack->network.transport_idx_default]){
