@@ -781,12 +781,15 @@ clean_routes:
 				if(!b_using_route){
 					// Client mode requires the port to be defined (dialog connected) while server mode doesn't.
 					if(dialog->uri_remote_target && dialog->uri_remote_target->host && (dialog->uri_remote_target->port || TSIP_STACK_MODE_IS_SERVER(self->stack))){
-						enum tnet_socket_type_e _destNetType = tsip_transport_get_type_by_name(tsk_params_get_param_value(dialog->uri_remote_target->params, "transport"));
+						const char* transport_name = tsk_params_get_param_value(dialog->uri_remote_target->params, "transport");
 						tsk_strupdate(destIP, dialog->uri_remote_target->host);
 						*destPort = dialog->uri_remote_target->port ? dialog->uri_remote_target->port : 5060;
-						if(TNET_SOCKET_TYPE_IS_VALID(_destNetType)) {
-							// _destNetType is UDP, TCP, WSSS...and not UDP-IPv4, TCP-IPv6, WSS-IPv4-IPsec...This is why closest match is used.
-							destNetType = _destNetType;
+						if(!tsk_strnullORempty(transport_name)) {
+							enum tnet_socket_type_e _destNetType = tsip_transport_get_type_by_name(transport_name);
+							if(TNET_SOCKET_TYPE_IS_VALID(_destNetType)) {
+								// _destNetType is UDP, TCP, WSSS...and not UDP-IPv4, TCP-IPv6, WSS-IPv4-IPsec...This is why closest match is used.
+								destNetType = _destNetType;
+							}
 						}
 					}
 				}
@@ -794,9 +797,10 @@ clean_routes:
 			}
 		}
 
-		/* Find the right transport using exact match */
+		/* Find the right transport using exact/closest match */
 		{
-			const tsip_transport_t* transport_closest = tsk_null;
+			const tsip_transport_t* transport_closest1 = tsk_null;
+			const tsip_transport_t* transport_closest2 = tsk_null;
 			tsk_list_foreach(item, self->transports){
 				curr = item->data;
 				if(curr->type == destNetType){
@@ -804,10 +808,14 @@ clean_routes:
 					break;
 				}
 				if((curr->type & destNetType) == destNetType){
-					transport_closest = curr;
+					transport_closest1 = curr;
+				}
+				if(self->stack->network.transport_idx_default>= 0 && curr->type == self->stack->network.transport_types[self->stack->network.transport_idx_default]) {
+					transport_closest2 = curr;
 				}
 			}
-			if(!transport && transport_closest) {
+			if(!transport && (transport_closest1 || transport_closest2)) {
+				const tsip_transport_t* transport_closest = transport_closest1 ? transport_closest1 : transport_closest2;
 				// For example, UDP will match with UDP-IPv4-IPSec or UDP-IPv6
 				TSK_DEBUG_INFO("Setting transport with closest match(%d->%d)", destNetType, transport_closest->type);
 				transport = transport_closest;
@@ -1236,13 +1244,18 @@ int tsip_transport_layer_start(tsip_transport_layer_t* self)
 
 				if(TNET_SOCKET_TYPE_IS_STREAM(transport->type)){
 					if(!TSIP_STACK_MODE_IS_SERVER(transport->stack)){
+						// Between "tsip_transport_connectto_2()" and "tsip_transport_add_stream_peer_2()" the net callback could be called and
+						// off cource peer will not be found in the list. This is why the list is locked.
+						tsk_list_lock(transport->stream_peers);
 						if((fd = tsip_transport_connectto_2(transport, self->stack->network.proxy_cscf[transport_idx], self->stack->network.proxy_cscf_port[transport_idx])) == TNET_INVALID_FD){
 							TSK_DEBUG_ERROR("Failed to connect the SIP transport");
+							tsk_list_unlock(transport->stream_peers);
 							return -3;
 						}
                         TSK_DEBUG_INFO("SIP transport fd=%d", fd);
 						// store peer
 						tsip_transport_add_stream_peer_2(transport, fd, transport->type, tsk_false, self->stack->network.proxy_cscf[transport_idx], self->stack->network.proxy_cscf_port[transport_idx]);
+						tsk_list_unlock(transport->stream_peers);
 						// give the socket chance to connect
 						if((ret = tnet_sockfd_waitUntilWritable(fd, TSIP_CONNECT_TIMEOUT)) || (ret = tnet_sockfd_waitUntilReadable(fd, TSIP_CONNECT_TIMEOUT))){
 							TSK_DEBUG_INFO("%d milliseconds elapsed and the socket is still not connected.", TSIP_CONNECT_TIMEOUT);
