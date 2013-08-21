@@ -779,16 +779,14 @@ clean_routes:
 					}
 				}
 				if(!b_using_route){
-					if(dialog->uri_remote_target && dialog->uri_remote_target->host){
+					// Client mode requires the port to be defined (dialog connected) while server mode doesn't.
+					if(dialog->uri_remote_target && dialog->uri_remote_target->host && (dialog->uri_remote_target->port || TSIP_STACK_MODE_IS_SERVER(self->stack))){
 						enum tnet_socket_type_e _destNetType = tsip_transport_get_type_by_name(tsk_params_get_param_value(dialog->uri_remote_target->params, "transport"));
 						tsk_strupdate(destIP, dialog->uri_remote_target->host);
 						*destPort = dialog->uri_remote_target->port ? dialog->uri_remote_target->port : 5060;
 						if(TNET_SOCKET_TYPE_IS_VALID(_destNetType)) {
 							destNetType = _destNetType;
 						}
-						//if(msg->local_fd < 0) {
-						//	msg->local_fd = dialog->connected_fd;
-						//}
 					}
 				}
 				TSK_OBJECT_SAFE_FREE(dialog);
