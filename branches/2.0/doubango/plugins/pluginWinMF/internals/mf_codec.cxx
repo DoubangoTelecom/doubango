@@ -18,6 +18,7 @@
 */
 #include "mf_codec.h"
 #include "mf_utils.h"
+#include "mf_sample_queue.h"
 
 #include "tinymedia/tmedia_common.h"
 
@@ -31,6 +32,11 @@
 // NV12 is the only format supported by all HW encoders and decoders
 #if !defined(kMFCodecUncompressedFormat)
 #	define kMFCodecUncompressedFormat MFVideoFormat_NV12
+#endif
+
+// Max frames allowed in the queue
+#if !defined(kMFCodecQueuedFramesMax)
+#	define kMFCodecQueuedFramesMax (30 << 1)
 #endif
 
 // Make sure usable on Win7 SDK targeting Win8 OS
@@ -61,6 +67,13 @@ MFCodec::MFCodec(MFCodecId_t eId, MFCodecType_t eType, IMFTransform *pMFT /*= NU
 , m_rtDuration(0)
 , m_pSampleIn(NULL)
 , m_pSampleOut(NULL)
+, m_pEventGenerator(NULL)
+, m_bIsAsync(FALSE)
+, m_bIsFirstFrame(TRUE)
+, m_bIsBundled(FALSE)
+, m_nMETransformNeedInputCount(0)
+, m_nMETransformHaveOutputCount(0)
+, m_pSampleQueueAsyncInput(NULL)
 {
 	MFUtils::Startup();
 
@@ -103,13 +116,23 @@ MFCodec::MFCodec(MFCodecId_t eId, MFCodecType_t eType, IMFTransform *pMFT /*= NU
 			(m_eType == MFCodecType_Encoder) ? m_guidCompressedFormat : kMFCodecUncompressedFormat, // Output
 			&m_pMFT));
 	}
-	CHECK_HR(hr = m_pMFT->QueryInterface(IID_PPV_ARGS(&m_pCodecAPI)));
-
-	BOOL bIsAsyncMFT = FALSE;
-	CHECK_HR(hr = MFUtils::IsAsyncMFT(m_pMFT, &bIsAsyncMFT));
-	if(bIsAsyncMFT)
+	hr = m_pMFT->QueryInterface(IID_PPV_ARGS(&m_pCodecAPI));
+	if(FAILED(hr) && m_eType == MFCodecType_Encoder) // Required only for Encoders
 	{
+		CHECK_HR(hr);
+	}
+
+	
+	CHECK_HR(hr = MFUtils::IsAsyncMFT(m_pMFT, &m_bIsAsync));
+	if(m_bIsAsync)
+	{
+		m_pSampleQueueAsyncInput = new MFSampleQueue();
+		if(!m_pSampleQueueAsyncInput)
+		{
+			CHECK_HR(hr = E_OUTOFMEMORY);
+		}
 		CHECK_HR(hr = MFUtils::UnlockAsyncMFT(m_pMFT));
+		CHECK_HR(hr = m_pMFT->QueryInterface(IID_PPV_ARGS(&m_pEventGenerator)));
 	}
 
 bail:
@@ -128,12 +151,19 @@ MFCodec::~MFCodec()
 {
 	assert(m_nRefCount == 0);
 
+	if(m_bIsAsync && m_pMFT)
+	{
+		m_pMFT->ProcessMessage(MFT_MESSAGE_NOTIFY_END_OF_STREAM, NULL);
+	}
+
 	SafeRelease(&m_pMFT);
 	SafeRelease(&m_pCodecAPI);
     SafeRelease(&m_pOutputType);
 	SafeRelease(&m_pInputType);
 	SafeRelease(&m_pSampleIn);
 	SafeRelease(&m_pSampleOut);
+	SafeRelease(&m_pEventGenerator);
+	SafeRelease(&m_pSampleQueueAsyncInput);
 }
 
 ULONG MFCodec::AddRef()
@@ -161,15 +191,187 @@ HRESULT MFCodec::QueryInterface(REFIID iid, void** ppv)
 	return m_pMFT->QueryInterface(iid, ppv);
 }
 
+// IMFAsyncCallback
+STDMETHODIMP MFCodec::GetParameters(DWORD *pdwFlags, DWORD *pdwQueue)
+{
+	return E_NOTIMPL;
+}
+
+STDMETHODIMP MFCodec::Invoke(IMFAsyncResult *pAsyncResult)
+{
+	HRESULT hr = S_OK, hrStatus = S_OK;
+    IMFMediaEvent* pEvent = NULL;
+    MediaEventType meType = MEUnknown;
+	
+    CHECK_HR(hr = m_pEventGenerator->EndGetEvent(pAsyncResult, &pEvent));
+	CHECK_HR(hr = pEvent->GetType(&meType));
+    CHECK_HR(hr = pEvent->GetStatus(&hrStatus));
+
+    if (SUCCEEDED(hrStatus))
+    {
+        switch(meType)
+		{
+			case METransformNeedInput:
+				{
+					InterlockedIncrement(&m_nMETransformNeedInputCount);
+					break;
+				}
+
+			case METransformHaveOutput:
+				{
+					InterlockedIncrement(&m_nMETransformHaveOutputCount);
+					break;
+				}
+		}
+    }
+    
+    CHECK_HR(hr = m_pEventGenerator->BeginGetEvent(this, NULL));
+
+bail:
+	SafeRelease(&pEvent);
+    return hr;
+}
+
 HRESULT MFCodec::ProcessInput(IMFSample* pSample)
 {
 	assert(IsReady());
-	return m_pMFT->ProcessInput(m_dwInputID, pSample, 0);
+
+	HRESULT hr = S_OK;
+
+	if(m_bIsFirstFrame)
+	{
+		if(m_bIsAsync && !m_bIsBundled)
+		{
+			CHECK_HR(hr = m_pMFT->ProcessMessage(MFT_MESSAGE_NOTIFY_START_OF_STREAM, NULL));
+			CHECK_HR(hr = m_pEventGenerator->BeginGetEvent(this, NULL));
+		}
+		m_bIsFirstFrame = FALSE;
+	}
+
+	if(m_bIsAsync)
+	{
+		if(m_nMETransformNeedInputCount == 1 && m_pSampleQueueAsyncInput->IsEmpty())
+		{
+			InterlockedDecrement(&m_nMETransformNeedInputCount);
+			return m_pMFT->ProcessInput(m_dwInputID, pSample, 0);
+		}
+
+		if(m_pSampleQueueAsyncInput->Count() > kMFCodecQueuedFramesMax)
+		{
+			m_pSampleQueueAsyncInput->Clear();
+			CHECK_HR(hr = E_UNEXPECTED);
+		}
+
+		// Input sample holds shared memory (also used by other samples)
+		IMFSample *pSampleCopy = NULL;
+		IMFMediaBuffer *pMediaBuffer = NULL, *pMediaBufferCopy = NULL;
+		BYTE *pBufferPtr = NULL, *pBufferPtrCopy = NULL;
+		DWORD dwDataLength = 0;
+		BOOL bMediaBufferLocked = FALSE, bMediaBufferLockedCopy = FALSE;
+
+		CHECK_HR(hr = pSample->GetBufferByIndex(0, &pMediaBuffer));
+		hr = pMediaBuffer->GetCurrentLength(&dwDataLength);
+		if(FAILED(hr))
+		{
+			goto endofcopy;
+		}
+		hr = pMediaBuffer->Lock(&pBufferPtr, NULL, NULL);
+		if(FAILED(hr))
+		{
+			goto endofcopy;
+		}
+		bMediaBufferLocked = TRUE;
+		
+		hr = MFUtils::CreateMediaSample(dwDataLength, &pSampleCopy);
+		if(FAILED(hr))
+		{
+			goto endofcopy;
+		}
+		hr = pSampleCopy->GetBufferByIndex(0, &pMediaBufferCopy);
+		if(FAILED(hr))
+		{
+			goto endofcopy;
+		}
+		hr = pMediaBufferCopy->Lock(&pBufferPtrCopy, NULL, NULL);
+		if(FAILED(hr))
+		{
+			goto endofcopy;
+		}
+		bMediaBufferLockedCopy = TRUE;
+
+		memcpy(pBufferPtrCopy, pBufferPtr, dwDataLength);
+		hr = pMediaBufferCopy->SetCurrentLength(dwDataLength);
+		if(FAILED(hr))
+		{
+			goto endofcopy;
+		}
+
+		LONGLONG hnsSampleTime = 0;
+		LONGLONG hnsSampleDuration = 0;
+		hr = pSample->GetSampleTime(&hnsSampleTime);
+		if(SUCCEEDED(hr))
+		{
+			hr = pSampleCopy->SetSampleTime(hnsSampleTime);
+		}
+		hr = pSample->GetSampleDuration(&hnsSampleDuration);
+		if(SUCCEEDED(hr))
+		{
+			hr = pSampleCopy->SetSampleDuration(hnsSampleDuration);
+		}
+
+		// EnQueue
+		hr = m_pSampleQueueAsyncInput->Queue(pSampleCopy);
+endofcopy:
+		if(pMediaBuffer && bMediaBufferLocked)
+		{
+			pMediaBuffer->Unlock();
+		}
+		if(pMediaBufferCopy && bMediaBufferLockedCopy)
+		{
+			pMediaBufferCopy->Unlock();
+		}
+		SafeRelease(&pSampleCopy);
+		SafeRelease(&pMediaBuffer);
+		CHECK_HR(hr);
+
+		while(m_nMETransformNeedInputCount > 0)
+		{
+			if(m_pSampleQueueAsyncInput->IsEmpty())
+			{
+				break;
+			}
+			IMFSample *_pSample = NULL;
+			hr = m_pSampleQueueAsyncInput->Dequeue(&_pSample);
+			if(SUCCEEDED(hr))
+			{
+				InterlockedDecrement(&m_nMETransformNeedInputCount);
+				hr = m_pMFT->ProcessInput(m_dwInputID, _pSample, 0);
+			}
+			SafeRelease(&_pSample);
+			CHECK_HR(hr);
+		}
+	}
+	else
+	{
+		CHECK_HR(hr = m_pMFT->ProcessInput(m_dwInputID, pSample, 0));
+	}
+
+bail:
+	return hr;
 }
 
 HRESULT MFCodec::ProcessOutput(IMFSample **ppSample)
 {
 	assert(IsReady());
+
+	if(m_bIsAsync)
+	{
+		if(m_nMETransformHaveOutputCount == 0)
+		{
+			return S_OK;
+		}
+		InterlockedDecrement(&m_nMETransformHaveOutputCount);
+	}
 
 	*ppSample = NULL;
 
@@ -184,34 +386,42 @@ HRESULT MFCodec::ProcessOutput(IMFSample **ppSample)
 
 	CHECK_HR(hr = m_pMFT->GetOutputStreamInfo(m_dwOutputID, &mftStreamInfo));
 
-	if(!m_pSampleOut)
+	BOOL bOutputStreamProvidesSamples = (mftStreamInfo.dwFlags & MFT_OUTPUT_STREAM_PROVIDES_SAMPLES) == MFT_OUTPUT_STREAM_PROVIDES_SAMPLES;
+
+	if(!bOutputStreamProvidesSamples)
 	{
-		CHECK_HR(hr = MFUtils::CreateMediaSample(mftStreamInfo.cbSize, &m_pSampleOut));
-		hr = m_pSampleOut->GetBufferByIndex(0, &pBufferOut);
-		if(FAILED(hr))
+		if(!m_pSampleOut)
 		{
-			SafeRelease(&m_pSampleOut);
-			CHECK_HR(hr);
+			CHECK_HR(hr = MFUtils::CreateMediaSample(mftStreamInfo.cbSize, &m_pSampleOut));
+			hr = m_pSampleOut->GetBufferByIndex(0, &pBufferOut);
+			if(FAILED(hr))
+			{
+				SafeRelease(&m_pSampleOut);
+				CHECK_HR(hr);
+			}
 		}
-	}
-	else
-	{
-		DWORD dwMaxLength = 0;
-		CHECK_HR(hr = m_pSampleOut->GetBufferByIndex(0, &pBufferOut));
-		CHECK_HR(hr = pBufferOut->GetMaxLength(&dwMaxLength));
-		if(dwMaxLength < mftStreamInfo.cbSize)
+		else
 		{
-			CHECK_HR(hr = m_pSampleOut->RemoveAllBuffers());
-			SafeRelease(&pBufferOut);
-			CHECK_HR(hr = MFCreateMemoryBuffer(mftStreamInfo.cbSize, &pBufferOut));    
-			CHECK_HR(hr = m_pSampleOut->AddBuffer(pBufferOut));
+			DWORD dwMaxLength = 0;
+			CHECK_HR(hr = m_pSampleOut->GetBufferByIndex(0, &pBufferOut));
+			CHECK_HR(hr = pBufferOut->GetMaxLength(&dwMaxLength));
+			if(dwMaxLength < mftStreamInfo.cbSize)
+			{
+				CHECK_HR(hr = m_pSampleOut->RemoveAllBuffers());
+				SafeRelease(&pBufferOut);
+				CHECK_HR(hr = MFCreateMemoryBuffer(mftStreamInfo.cbSize, &pBufferOut));    
+				CHECK_HR(hr = m_pSampleOut->AddBuffer(pBufferOut));
+			}
 		}
 	}
 
-	CHECK_HR(hr = pBufferOut->SetCurrentLength(0));
+	if(pBufferOut)
+	{
+		CHECK_HR(hr = pBufferOut->SetCurrentLength(0));
+	}
  
     //Set the output sample
-    mftOutputData.pSample = m_pSampleOut;
+    mftOutputData.pSample = bOutputStreamProvidesSamples ? NULL : m_pSampleOut;
     //Set the output id
     mftOutputData.dwStreamID = m_dwOutputID;
 
@@ -228,17 +438,24 @@ HRESULT MFCodec::ProcessOutput(IMFSample **ppSample)
         goto bail;
     }
 
-    *ppSample = m_pSampleOut;
-    (*ppSample)->AddRef();
+    *ppSample = mftOutputData.pSample;
+	if(*ppSample)
+	{
+		(*ppSample)->AddRef();
+	}
 
 bail:
+	if(bOutputStreamProvidesSamples)
+	{
+		SafeRelease(&mftOutputData.pSample);
+	}
     SafeRelease(&pBufferOut);
     return hr;
 }
 
 bool MFCodec::IsValid()
 {
-	return (m_pMFT && m_pCodecAPI);
+	return (m_pMFT && (m_eType == MFCodecType_Decoder || m_pCodecAPI));
 }
 
 bool MFCodec::IsReady()
@@ -474,10 +691,6 @@ HRESULT MFCodecVideo::Initialize(
 			{
 				// FIXME: Very strange that "CODECAPI_AVLowLatencyMode" only works with "IMFAttributes->" and not "ICodecAPI->SetValue()"
 				hr = pAttributes->SetUINT32(CODECAPI_AVLowLatencyMode, TRUE);
-				
-				//var.vt = VT_BOOL;
-				//var.boolVal = VARIANT_TRUE;
-				//hr = m_pCodecAPI->SetValue(&CODECAPI_AVDecVideoH264ErrorConcealment,&var);
 			}
 			SafeRelease(&pAttributes);
 		}
@@ -609,7 +822,7 @@ MFCodecVideoH264* MFCodecVideoH264::CreateCodecH264Base(MFCodecType_t eType, IMF
 	MFCodecVideoH264* pCodec = new MFCodecVideoH264(MFCodecId_H264Base, eType, pMFT);
 	if(pCodec && !pCodec->IsValid())
 	{
-		delete pCodec, pCodec = NULL;
+		SafeRelease(&pCodec);
 	}
 	return pCodec;
 }
@@ -619,7 +832,7 @@ MFCodecVideoH264* MFCodecVideoH264::CreateCodecH264Main(MFCodecType_t eType, IMF
 	MFCodecVideoH264* pCodec = new MFCodecVideoH264(MFCodecId_H264Main, eType, pMFT);
 	if(pCodec && !pCodec->IsValid())
 	{
-		delete pCodec, pCodec = NULL;
+		SafeRelease(&pCodec);
 	}
 	return pCodec;
 }

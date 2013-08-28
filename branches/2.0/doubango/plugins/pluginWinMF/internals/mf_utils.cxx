@@ -45,6 +45,11 @@
 #	define PLUGIN_MF_DISABLE_MS_H264_ENCODER 1
 #endif
 
+#if !defined(PLUGIN_MF_DISABLE_ASYNC_DECODERS)
+// Not fully tested
+#	define PLUGIN_MF_DISABLE_ASYNC_DECODERS 1
+#endif
+
 BOOL MFUtils::g_bStarted = FALSE;
 
 DWORD MFUtils::g_dwMajorVersion = -1;
@@ -66,9 +71,9 @@ DEFINE_GUID(CLSID_VideoProcessorMFT,
 DEFINE_GUID(CLSID_MF_INTEL_H264EncFilter, // Intel Quick Sync Encoder
 0x4be8d3c0, 0x0515, 0x4a37, 0xad, 0x55, 0xe4, 0xba, 0xe1, 0x9a, 0xf4, 0x71);
 
-// {45E5CE07-5AC7-4509-94E9-62DB27CF8F96}
+// {0855C9AC-BC6F-4371-8954-671CCD4EC16F}
 DEFINE_GUID(CLSID_MF_INTEL_H264DecFilter, // Intel Quick Sync Decoder
-0x45e5ce07, 0x5ac7, 0x4509, 0x94, 0xe9, 0x62, 0xdb, 0x27, 0xcf, 0x8f, 0x96);
+0x0855c9ac, 0xbc6f, 0x4371, 0x89, 0x54, 0x67, 0x1c, 0xcd, 0x4e, 0xc1, 0x6f);
 
 #if WINVER < 0x0602/* From "sdkddkver.h" and defines the SDK version not the host */
 // 6ca50344-051a-4ded-9779-a43305165e35
@@ -557,16 +562,18 @@ HRESULT MFUtils::GetBestCodec(
 		}
 		else
 		{
+#if !PLUGIN_MF_DISABLE_ASYNC_DECODERS // Intel Quick Sync decoder is asynchronous
 			// Force using Intel Quick Sync Decoder
 			hr = CoCreateInstance(CLSID_MF_INTEL_H264DecFilter, NULL, 
 					CLSCTX_INPROC_SERVER, IID_PPV_ARGS(ppMFT));
+#endif
 			if(SUCCEEDED(hr) && *ppMFT)
 			{
 				TSK_DEBUG_INFO("Using Intel Quick Sync decoder :)");
 				return hr;
 			}
 			TSK_DEBUG_INFO("Not using Intel Quick Sync decoder :(");
-		}		
+		}
 	}
 	
 	UINT32 count = 0;
@@ -596,6 +603,7 @@ HRESULT MFUtils::GetBestCodec(
 
 	for(UINT32 i = 0; i < count; ++i)
 	{
+		SafeRelease(ppMFT);
 		hr = ppActivate[i]->GetGUID(MFT_TRANSFORM_CLSID_Attribute, &guidActivateCLSID);
 		if(FAILED(hr))
 		{
@@ -646,17 +654,17 @@ HRESULT MFUtils::GetBestCodec(
 			else
 			{
 				// Decoder
+#if PLUGIN_MF_DISABLE_ASYNC_DECODERS
 				hr = IsAsyncMFT(*ppMFT, &bAsync);
 				if(bAsync)
 				{
 					TSK_DEBUG_INFO("Skipping async decoder because not supported yet");
-					goto next; // Async decoders not supported yet
+					continue; // Async decoders not supported yet
 				}
+#endif
 			}
 			break;
 		}
-		next:
-		SafeRelease(ppMFT);
 	}
 
 	for (UINT32 i = 0; i < count; i++)

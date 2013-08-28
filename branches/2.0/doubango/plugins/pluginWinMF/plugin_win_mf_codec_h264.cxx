@@ -107,11 +107,13 @@ static int mf_codec_h264_set(tmedia_codec_t* self, const tmedia_param_t* param)
 		}
 		else if(tsk_striequals(param->key, "bypass-encoding")){
 			h264->encoder.passthrough = *((int32_t*)param->value) ? tsk_true : tsk_false;
+			h264->encoder.pInst->setBundled(h264->encoder.passthrough);
 			TSK_DEBUG_INFO("[H.264] bypass-encoding = %d", h264->encoder.passthrough);
 			return 0;
 		}
 		else if(tsk_striequals(param->key, "bypass-decoding")){
 			h264->decoder.passthrough = *((int32_t*)param->value) ? tsk_true : tsk_false;
+			h264->decoder.pInst->setBundled(h264->decoder.passthrough);
 			TSK_DEBUG_INFO("[H.264] bypass-decoding = %d", h264->decoder.passthrough);
 			return 0;
 		}

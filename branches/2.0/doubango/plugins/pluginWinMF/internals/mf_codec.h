@@ -28,6 +28,8 @@
 #include <shlwapi.h>
 #include <strmif.h>
 
+class MFSampleQueue;
+
 typedef enum MFCodecId_e
 {
 	MFCodecId_H264Base,
@@ -50,7 +52,7 @@ typedef enum MFCodecMediaType_e
 }
 MFCodecMediaType_t;
 
-class MFCodec : IUnknown
+class MFCodec : IMFAsyncCallback 
 {
 protected:
 	MFCodec(MFCodecId_t eId, MFCodecType_t eType, IMFTransform *pMFT = NULL);
@@ -66,11 +68,16 @@ public:
 	inline IMFTransform* GetMFT(){ return m_pMFT; }
 	inline MFCodecId_t GetId() { return m_eId; }
 	inline MFCodecType_t GetType() { return m_eType; }
+	inline void setBundled(BOOL bBundled) { m_bIsBundled = bBundled; }
 
 	// IUnknown
     STDMETHODIMP QueryInterface(REFIID iid, void** ppv);
     STDMETHODIMP_(ULONG) AddRef();
     STDMETHODIMP_(ULONG) Release();
+
+	// IMFAsyncCallback
+	STDMETHODIMP GetParameters(DWORD *pdwFlags, DWORD *pdwQueue);
+	STDMETHODIMP Invoke(IMFAsyncResult *pAsyncResult);
 
 private:
 	long				m_nRefCount;
@@ -93,6 +100,13 @@ protected:
 
 	IMFSample *m_pSampleIn;
 	IMFSample *m_pSampleOut;
+
+	MFSampleQueue *m_pSampleQueueAsyncInput;
+	BOOL m_bIsBundled; // Bundled with a producer or cosumer -> do not monitor events
+	BOOL m_bIsAsync;
+	IMFMediaEventGenerator  *m_pEventGenerator;
+	BOOL m_bIsFirstFrame;
+	long m_nMETransformNeedInputCount, m_nMETransformHaveOutputCount;
 };
 
 

@@ -278,6 +278,7 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 				pSelf->pEncoder = (codec->id == tmedia_codec_id_h264_bp) ? MFCodecVideoH264::CreateCodecH264Base(MFCodecType_Encoder) : MFCodecVideoH264::CreateCodecH264Main(MFCodecType_Encoder);
 				if(pSelf->pEncoder)
 				{
+					pSelf->pEncoder->setBundled(TRUE);
 					int32_t avg_bitrate_kbps = tmedia_get_video_bandwidth_kbps_2(TMEDIA_PRODUCER(pSelf)->video.width, TMEDIA_PRODUCER(pSelf)->video.height, TMEDIA_PRODUCER(pSelf)->video.fps);
 					TSK_DEBUG_INFO("MF_MT_AVG_BITRATE defined with value = %d kbps", avg_bitrate_kbps);
 					pSelf->bitrate_bps = (avg_bitrate_kbps * 1024);
