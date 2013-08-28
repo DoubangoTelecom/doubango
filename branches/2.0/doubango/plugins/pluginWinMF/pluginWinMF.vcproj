@@ -228,6 +228,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\internals\mf_sample_queue.cxx"
+					>
+				</File>
+				<File
 					RelativePath=".\internals\mf_utils.cxx"
 					>
 				</File>
@@ -263,6 +267,10 @@
 				</File>
 				<File
 					RelativePath=".\internals\mf_sample_grabber.h"
+					>
+				</File>
+				<File
+					RelativePath=".\internals\mf_sample_queue.h"
 					>
 				</File>
 				<File
