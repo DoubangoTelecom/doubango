@@ -86,7 +86,6 @@ namespace Doubango
 				tsk_ssize_t leftBytes;
 				SpeexBuffer* buffer;
 				tsk_size_t size;
-				tsk_mutex_handle_t* mutex;
 			} m_ring;
 
 			bool m_bStarted;
@@ -391,10 +390,6 @@ int Doubango::VoIP::AudioRender::Prepare(tdav_consumer_wasapi_t* wasapi, const t
 		TSK_DEBUG_ERROR("Failed to create a new ring buffer with size = %d", m_ring.size);
 		WASAPI_SET_ERROR(-17);
 	}
-	if(!m_ring.mutex && !(m_ring.mutex = tsk_mutex_create_2(tsk_false))){
-		TSK_DEBUG_ERROR("Failed to create mutex");
-		WASAPI_SET_ERROR(-18);
-	}
 
 bail:
 	if (pwstrRenderId){
@@ -436,9 +431,6 @@ int Doubango::VoIP::AudioRender::UnPrepare()
 	if(m_ring.buffer){
 		speex_buffer_destroy(m_ring.buffer);
 		m_ring.buffer = nullptr;
-	}
-	if(m_ring.mutex){
-		tsk_mutex_destroy(&m_ring.mutex);
 	}
 
 	m_pWrappedConsumer = nullptr;
@@ -526,10 +518,7 @@ int Doubango::VoIP::AudioRender::Pause()
 
 int Doubango::VoIP::AudioRender::Consume(const void* buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
 {
-	tsk_mutex_lock(m_ring.mutex);
-	speex_buffer_write(m_ring.buffer, (void*)buffer, size);
-	tsk_mutex_unlock(m_ring.mutex);
-	return 0;
+	return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(m_pWrappedConsumer), buffer, size, proto_hdr);
 }
 
 tsk_size_t Doubango::VoIP::AudioRender::Read(void* data, tsk_size_t size)
