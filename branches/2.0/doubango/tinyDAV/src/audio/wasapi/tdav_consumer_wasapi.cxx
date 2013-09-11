@@ -370,7 +370,7 @@ int Doubango::VoIP::AudioRender::Prepare(tdav_consumer_wasapi_t* wasapi, const t
 	}
 
 	int packetperbuffer = (1000 / TMEDIA_CONSUMER(wasapi)->audio.ptime);
-	m_ring.chunck.size = wfx.nSamplesPerSec * (wfx.wBitsPerSample >> 3) / packetperbuffer;
+	m_ring.chunck.size = (TMEDIA_CONSUMER(wasapi)->audio.out.rate * (TMEDIA_CONSUMER(wasapi)->audio.bits_per_sample >> 3) / packetperbuffer) * TMEDIA_CONSUMER(wasapi)->audio.out.channels;
 	m_ring.size = TDAV_WASAPI_CONSUMER_NOTIF_POS_COUNT * m_ring.chunck.size;
 	if(!(m_ring.chunck.buffer = tsk_realloc(m_ring.chunck.buffer, m_ring.chunck.size))){
 		m_ring.size = 0;
