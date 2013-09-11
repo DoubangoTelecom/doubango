@@ -407,8 +407,8 @@ static int tdav_session_audio_start(tmedia_session_t* self)
 			uint32_t record_frame_size_samples = TMEDIA_CODEC_PCM_FRAME_SIZE_AUDIO_ENCODING(audio->encoder.codec);
 			uint32_t record_sampling_rate = TMEDIA_CODEC_RATE_ENCODING(audio->encoder.codec);
 
-			uint32_t playback_frame_size_samples = (base->consumer && base->consumer->audio.ptime && base->consumer->audio.out.rate)
-				? ((base->consumer->audio.ptime * base->consumer->audio.out.rate) / 1000)
+			uint32_t playback_frame_size_samples = (base->consumer && base->consumer->audio.ptime && base->consumer->audio.out.rate && base->consumer->audio.out.channels)
+				? ((base->consumer->audio.ptime * base->consumer->audio.out.rate) / 1000) * base->consumer->audio.out.channels
 				: TMEDIA_CODEC_PCM_FRAME_SIZE_AUDIO_DECODING(audio->encoder.codec);
 			uint32_t playback_sampling_rate = (base->consumer && base->consumer->audio.out.rate)
 				? base->consumer->audio.out.rate
