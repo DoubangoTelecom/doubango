@@ -63,7 +63,7 @@ int twrap_consumer_proxy_audio_set(tmedia_consumer_t* _self, const tmedia_param_
 int twrap_consumer_proxy_audio_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
 	twrap_consumer_proxy_audio_t* audio = TWRAP_CONSUMER_PROXY_AUDIO(self);
-	ProxyPluginMgr* manager;
+	ProxyPluginMgr* manager = NULL;
 	int ret = -1;
 	if(codec && (manager = ProxyPluginMgr::getInstance())){
 		if((audio->pcConsumer = manager->findAudioConsumer(audio->id)) && audio->pcConsumer->getCallback()){
