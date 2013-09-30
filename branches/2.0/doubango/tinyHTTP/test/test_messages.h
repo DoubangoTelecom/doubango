@@ -74,17 +74,17 @@
 #define TEST_MSG TEST_MSG_OPTIONS
 
 
-void test_messages()
+static void test_messages()
 {
 	thttp_message_t *message = tsk_null;
 	tsk_ragel_state_t state;
-	int ret, idx;
+	int ret/*, idx*/;
 	
 	const char* msg_start = TEST_MSG_WS;
 	const char* msg_end = msg_start + tsk_strlen(msg_start);
-	const thttp_header_Sec_WebSocket_Key_t* ws_hdr_key;
-	const thttp_header_Sec_WebSocket_Version_t* ws_hdr_version;
-	const thttp_header_Sec_WebSocket_Accept_t* ws_hdr_accept;
+	//const thttp_header_Sec_WebSocket_Key_t* ws_hdr_key;
+	//const thttp_header_Sec_WebSocket_Version_t* ws_hdr_version;
+	//const thttp_header_Sec_WebSocket_Accept_t* ws_hdr_accept;
 	message = thttp_message_create();
 
 	/*while(msg_start < msg_end){

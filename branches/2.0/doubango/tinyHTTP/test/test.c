@@ -33,18 +33,20 @@
 //#include "tinyHTTP/thttp_message.h"
 //#include "tinyHTTP/auth/thttp_auth.h"
 
-#define LOOP						1
+#define LOOP						0
 
 #define RUN_TEST_ALL				0
 #define RUN_TEST_AUTH				0
 #define RUN_TEST_STACK				0
 #define RUN_TEST_URL				0
-#define RUN_TEST_MSGS				1
+#define RUN_TEST_MSGS				0
+#define RUN_TEST_TRANSPORT			1
 
 #include "test_auth.h"
 #include "test_stack.h"
 #include "test_url.h"
 #include "test_messages.h"
+#include "test_transport.h"
 
 
 #ifdef _WIN32_WCE
@@ -57,7 +59,7 @@ int main()
 
 	do{
 		/* Print copyright information */
-		printf("Doubango Project\nCopyright (C) 2009-2010 Mamadou Diop \n\n");
+		printf("Doubango Project\nCopyright (C) 2009-2013 Mamadou Diop \n\n");
 
 #if RUN_TEST_AUTH || RUN_TEST_ALL
 		test_ws_auth();
@@ -75,6 +77,10 @@ int main()
 
 #if RUN_TEST_MSGS || RUN_TEST_ALL
 		test_messages();
+#endif
+
+#if RUN_TEST_TRANSPORT || RUN_TEST_ALL
+		test_transport();
 #endif
 
 	}
