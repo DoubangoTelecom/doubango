@@ -75,6 +75,7 @@ typedef struct tsip_transport_stream_peer_s
 	tnet_fd_t local_fd;  // not owner: do not close
 	enum tnet_socket_type_e type;
 	tsk_bool_t connected;
+	uint64_t time_latest_activity; // in milliseconds
 	
 	tsk_buffer_t *rcv_buff_stream;
 	tsk_buffer_t *snd_buff_stream;
@@ -88,6 +89,7 @@ typedef struct tsip_transport_stream_peer_s
 		uint64_t rcv_buffer_size;
 		void* snd_buffer;
 		uint64_t snd_buffer_size;
+		tsk_bool_t handshaking_done;
 	} ws;
 
 	tnet_ip_t remote_ip;
@@ -118,6 +120,7 @@ typedef struct tsip_transport_s
 	const char *service; /**< NAPTR service name */
 
 	tsip_transport_stream_peers_L_t* stream_peers;
+	int32_t stream_peers_count;
 }
 tsip_transport_t;
 
@@ -145,6 +148,7 @@ int tsip_transport_remove_callid_from_stream_peers(tsip_transport_t *self, const
 tsk_bool_t tsip_transport_stream_peer_have_callid(const tsip_transport_stream_peer_t* self, const char* callid);
 int tsip_transport_stream_peer_add_callid(tsip_transport_stream_peer_t* self, const char* callid);
 int tsip_transport_stream_peer_remove_callid(tsip_transport_stream_peer_t* self, const char* callid, tsk_bool_t *removed);
+int tsip_transport_stream_peers_cleanup(tsip_transport_t *self);
 
 #define tsip_transport_tls_set_certs(transport, ca, pbk, pvk, verify)					(transport ? tnet_transport_tls_set_certs(transport->net_transport, ca, pbk, pvk, verify) : -1)
 #define tsip_transport_start(transport)													(transport ? tnet_transport_start(transport->net_transport) : -1)

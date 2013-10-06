@@ -202,6 +202,9 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 		return -1;
 	}
 
+	/* Update latest time activity */
+	peer->time_latest_activity = tsk_time_now();
+
 	/* RFC 3261 - 7.5 Framing SIP Messages
 		
 	   Unlike HTTP, SIP implementations can use UDP or other unreliable
@@ -366,24 +369,34 @@ static int tsip_transport_layer_ws_cb(const tnet_transport_event_t* e)
 
 	if(!(peer = tsip_transport_find_stream_peer_by_local_fd(transport, e->local_fd))){
 		TSK_DEBUG_ERROR("Failed to find peer with local fd equal to %d", e->local_fd);
+		tsip_transport_remove_socket(transport, (tnet_fd_t *)&e->local_fd);
 		return -1;
 	}
 
+	/* Update latest time activity */
+	peer->time_latest_activity = tsk_time_now();
+
 	/* Check if buffer is too big to be valid (have we missed some chuncks?) */
-	if(TSK_BUFFER_SIZE(peer->rcv_buff_stream) >= TSIP_MAX_STREAM_CHUNCK_SIZE){
+	if((TSK_BUFFER_SIZE(peer->rcv_buff_stream) + e->size) >= TSIP_MAX_STREAM_CHUNCK_SIZE){
 		TSK_DEBUG_ERROR("TCP Buffer is too big to be valid");
 		tsk_buffer_cleanup(peer->rcv_buff_stream);
+		tsip_transport_remove_socket(transport, (tnet_fd_t *)&e->local_fd);
+		goto bail;
 	}
 
 	// Append new content
 	tsk_buffer_append(peer->rcv_buff_stream, e->data, e->size);
-
-	/* check if WebSocket data */
+	
+	/* Check if WebSocket data */
 	if(peer->rcv_buff_stream->size > 4){
 		const uint8_t* pdata = (const uint8_t*)peer->rcv_buff_stream->data;
-		if(pdata[0] != 'G' || pdata[1] != 'E' || pdata[2] != 'T'){
-			check_end_of_hdrs = tsk_false;
+		tsk_bool_t is_GET = (pdata[0] == 'G' && pdata[1] == 'E' && pdata[2] == 'T');
+		if (!peer->ws.handshaking_done && !is_GET) {
+			TSK_DEBUG_ERROR("WS handshaking not done yet");
+			tsip_transport_remove_socket(transport, (tnet_fd_t *)&e->local_fd);
+			goto bail;
 		}
+		check_end_of_hdrs = is_GET;
 	}
 
 	/* Check if we have all HTTP/SIP/WS headers. */
@@ -419,6 +432,8 @@ parse_buffer:
 					tsk_ragel_state_init(&state, msg_start, idx);
 					if((ret = thttp_header_parse(&state, http_req))){
 						TSK_DEBUG_ERROR("Failed to parse header: %s", msg_start);
+						tsip_transport_remove_socket(transport, (tnet_fd_t *)&e->local_fd);
+						goto bail;
 					}
 					msg_start += idx;
 				}
@@ -427,6 +442,8 @@ parse_buffer:
 			// get key header
 			if(!(http_hdr_key = (const thttp_header_Sec_WebSocket_Key_t*)thttp_message_get_header(http_req, thttp_htype_Sec_WebSocket_Key))){
 				TSK_DEBUG_ERROR("No 'Sec-WebSocket-Key' header");
+				tsip_transport_remove_socket(transport, (tnet_fd_t *)&e->local_fd);
+				goto bail;
 			}
 			
 
@@ -453,16 +470,28 @@ parse_buffer:
 							// send response
 							if((tnet_transport_send(transport->net_transport, e->local_fd, http_buff->data, http_buff->size)) != http_buff->size){
 								TSK_DEBUG_ERROR("Failed to send reponse");
+								tsip_transport_remove_socket(transport, (tnet_fd_t *)&e->local_fd);
+								goto bail;
 							}
 						}
+						else {
+							TSK_DEBUG_ERROR("Failed to create buffer");
+							tsip_transport_remove_socket(transport, (tnet_fd_t *)&e->local_fd);
+							goto bail;
+						}
+						peer->ws.handshaking_done = tsk_true; // WS handshaking done
 					}
 				}
 				else{
-					TSK_DEBUG_ERROR("No SIP protocol");
+					TSK_DEBUG_ERROR("Not SIP protocol");
+					tsip_transport_remove_socket(transport, (tnet_fd_t *)&e->local_fd);
+					goto bail;
 				}
 			}
 			else{
 				TSK_DEBUG_ERROR("No 'Sec-WebSocket-Protocol' header");
+				tsip_transport_remove_socket(transport, (tnet_fd_t *)&e->local_fd);
+				goto bail;
 			}
 			
 			tsk_buffer_remove(peer->rcv_buff_stream, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove HTTP headers and CRLF */
@@ -557,10 +586,10 @@ parse_buffer:
 	//	==> Parse the SIP message without the content.
 	TSK_DEBUG_INFO("Receiving SIP o/ WebSocket message: %.*s", pay_len, (const char*)peer->ws.rcv_buffer);
 	tsk_ragel_state_init(&state, peer->ws.rcv_buffer, (tsk_size_t)pay_len);
-	if(tsip_message_parse(&state, &message, tsk_false/* do not extract the content */) == tsk_true){
+	if (tsip_message_parse(&state, &message, tsk_false/* do not extract the content */) == tsk_true) {
 		const uint8_t* body_start = (const uint8_t*)state.eoh;
 		int64_t clen = (pay_len - (int64_t)(body_start - ((const uint8_t*)peer->ws.rcv_buffer)));
-		if(clen > 0){
+		if (clen > 0) {
 			// Add the content to the message. */
 			tsip_message_add_content(message, tsk_null, body_start, (tsk_size_t)clen);
 		}
@@ -582,7 +611,9 @@ parse_buffer:
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to parse SIP message");
+		tsip_transport_remove_socket(transport, (tnet_fd_t *)&e->local_fd);
 		ret = -15;
+		goto bail;
 	}
 
 bail:
