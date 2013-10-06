@@ -37,6 +37,19 @@
 #include "tsk_buffer.h"
 #include "tsk_debug.h"
 
+// Number of active peers before we start cleanup up (check for timeouts)
+#if !defined(TSIP_TRANSPORT_STREAM_PEERS_COUNT_BEFORE_CHECKING_TIMEOUT)
+#	define TSIP_TRANSPORT_STREAM_PEERS_COUNT_BEFORE_CHECKING_TIMEOUT	100
+#endif
+// Number of milliseconds of inactivity before we declare the peer as "timedout".
+#if !defined(TSIP_TRANSPORT_STREAM_PEER_TIMEOUT)
+#	define TSIP_TRANSPORT_STREAM_PEER_TIMEOUT							600000 /* 10 minutes */
+#endif /* TSIP_TRANSPORT_STREAM_PEER_TIMEOUT */
+// Maximum number of milliseconds allowed to complete the WebSocket handshaking process.
+#if !defined(TSIP_TRANSPORT_STREAM_PEER_WS_HANDSHAKING_TIMEOUT)
+#	define TSIP_TRANSPORT_STREAM_PEER_WS_HANDSHAKING_TIMEOUT			10000 /* 10 seconds */
+#endif /* TSIP_TRANSPORT_STREAM_PEER_TIMEOUT */
+
 static const char* __null_callid = tsk_null;
 
 static const tsip_transport_idx_xt _tsip_transport_idxs_xs[TSIP_TRANSPORT_IDX_MAX] =
@@ -600,7 +613,7 @@ int tsip_transport_add_stream_peer_2(tsip_transport_t *self, tnet_fd_t local_fd,
 {
 	tsip_transport_stream_peer_t* peer = tsk_null;
 	tnet_ip_t remote_ip;
-	int ret;
+	int ret = 0;
 
 	if(!self || local_fd < 0){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -638,16 +651,24 @@ int tsip_transport_add_stream_peer_2(tsip_transport_t *self, tnet_fd_t local_fd,
 	peer->type = type;
 	peer->connected = connected;
 	peer->remote_port = remote_port;
+	peer->time_latest_activity = tsk_time_now();
 	memcpy(peer->remote_ip, remote_ip, sizeof(remote_ip));
 	
 	tsk_list_lock(self->stream_peers);
 	tsk_list_push_back_data(self->stream_peers, (void**)&peer);
+	++self->stream_peers_count;
+	TSK_DEBUG_INFO("#%d peers in the '%s' transport", self->stream_peers_count, tsip_transport_get_description(self));
 	tsk_list_unlock(self->stream_peers);
+
+	// Cleanup streams
+	if (self->stream_peers_count > TSIP_TRANSPORT_STREAM_PEERS_COUNT_BEFORE_CHECKING_TIMEOUT && self->stack->network.mode == tsip_stack_mode_webrtc2sip) {
+		ret = tsip_transport_stream_peers_cleanup(self);
+	}
 
 bail:
 	TSK_OBJECT_SAFE_FREE(peer);
 	tsk_list_unlock(self->stream_peers);
-	return 0;
+	return ret;
 }
 
 // up to the caller to release the returned object
@@ -683,6 +704,8 @@ tsip_transport_stream_peer_t* tsip_transport_pop_stream_peer_by_local_fd(tsip_tr
 		if((item = tsk_list_pop_item_by_pred(self->stream_peers, _pred_find_stream_peer_by_local_fd, &local_fd))){
 			peer = tsk_object_ref(item->data);
 			TSK_OBJECT_SAFE_FREE(item);
+			--self->stream_peers_count;
+			TSK_DEBUG_INFO("#%d peers in the '%s' transport", self->stream_peers_count, tsip_transport_get_description(self));
 		}
 		tsk_list_unlock(self->stream_peers);
 		return peer;
@@ -739,7 +762,10 @@ int tsip_transport_remove_stream_peer_by_local_fd(tsip_transport_t *self, tnet_f
 		return -1;
 	}
 	tsk_list_lock(self->stream_peers);
-	tsk_list_remove_item_by_pred(self->stream_peers, _pred_find_stream_peer_by_local_fd, &local_fd);
+	if (tsk_list_remove_item_by_pred(self->stream_peers, _pred_find_stream_peer_by_local_fd, &local_fd)) {
+		--self->stream_peers_count;
+		TSK_DEBUG_INFO("#%d peers in the '%s' transport", self->stream_peers_count, tsip_transport_get_description(self));
+	}
 	tsk_list_unlock(self->stream_peers);
 
 	return 0;
@@ -817,6 +843,40 @@ int tsip_transport_stream_peer_remove_callid(tsip_transport_stream_peer_t* self,
 	}
 	TSK_DEBUG_ERROR("Invalid parameter");
 	return -1;
+}
+
+int tsip_transport_stream_peers_cleanup(tsip_transport_t *self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	if (TNET_SOCKET_TYPE_IS_STREAM(self->type)) {
+		tsk_list_item_t *item;
+		tsip_transport_stream_peer_t *peer;
+		tnet_fd_t fd;
+		tsk_bool_t close;
+		uint64_t now = tsk_time_now();
+		tsk_list_lock(self->stream_peers);
+		tsk_list_foreach(item, self->stream_peers) {
+			if ((peer = (item->data))) {
+				close = ((now - TSIP_TRANSPORT_STREAM_PEER_TIMEOUT) > peer->time_latest_activity);
+				if (!close) {
+					if (TNET_SOCKET_TYPE_IS_WS(peer->type) || TNET_SOCKET_TYPE_IS_WSS(peer->type) && !peer->ws.handshaking_done) {
+						close = ((now - TSIP_TRANSPORT_STREAM_PEER_WS_HANDSHAKING_TIMEOUT) > peer->time_latest_activity);
+					}
+				}
+				if (close) {
+					fd = peer->local_fd;
+					TSK_DEBUG_INFO("Peer with fd=%d, type=%d, time_latest_activity=%llu, now=%llu in '%s' transport timedout", fd, peer->type, peer->time_latest_activity, now, tsip_transport_get_description(self));
+					tsip_transport_remove_socket(self, (tnet_fd_t *)&fd);
+				}
+			}
+		}
+		tsk_list_unlock(self->stream_peers);
+	}
+	
+	return 0;
 }
 
 int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const struct tsip_stack_s *stack, const char *host, tnet_port_t port, const char* description)
