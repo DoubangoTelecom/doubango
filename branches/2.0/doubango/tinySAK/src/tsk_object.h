@@ -45,7 +45,7 @@ typedef void tsk_object_t;
  * <b>Very Important</b>: Mutexes, Semaphores and CondVars are not well-defined objects. You should never use this macro to destroy them.
  * @param	self	The object to free or unref. 
 **/
-#define TSK_OBJECT_SAFE_FREE(self)		if(self) tsk_object_unref(self), self = tsk_null
+#define TSK_OBJECT_SAFE_FREE(self)		if((self)) tsk_object_unref((self)), (self) = tsk_null
 
 #define TSK_OBJECT_SAFE_FREE_ARRAY(self, count) { \
 	int __i; \

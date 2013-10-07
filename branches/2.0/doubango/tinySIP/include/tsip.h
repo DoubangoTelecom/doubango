@@ -94,6 +94,7 @@ typedef enum tsip_stack_param_type_e
 	tsip_pname_discovery_dhcp,
 	tsip_pname_proxy_cscf,
 	tsip_pname_dnsserver,
+	tsip_pname_max_fds,
 	tsip_pname_mode,
 
 	
@@ -357,6 +358,7 @@ int ret = tsip_stack_set(stack,
 #define TSIP_STACK_SET_DISCOVERY_DHCP(ENABLED_BOOL)												tsip_pname_discovery_dhcp, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR, PORT_UINT, TRANSPORT_STR, IP_VERSION_STR)			tsip_pname_proxy_cscf, (const char*)FQDN_STR, (unsigned)PORT_UINT, (const char*)TRANSPORT_STR, (const char*)IP_VERSION_STR
 #define TSIP_STACK_SET_DNS_SERVER(IP_STR)														tsip_pname_dnsserver, (const char*)IP_STR
+#define TSIP_STACK_SET_MAX_FDS(MAX_FDS_UINT)													tsip_pname_max_fds, (unsigned)MAX_FDS_UINT
 #define TSIP_STACK_SET_MODE(MODE_ENUM)															tsip_pname_mode, (tsip_stack_mode_t)MODE_ENUM
 
 /* === Security === */
@@ -593,6 +595,8 @@ typedef struct tsip_stack_s
 		
 		tsk_bool_t discovery_naptr;
 		tsk_bool_t discovery_dhcp;
+
+		tsk_size_t max_fds;
 	} network;
 
 	/* === Security === */

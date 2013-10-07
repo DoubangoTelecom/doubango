@@ -543,3 +543,7 @@ bool MediaSessionMgr::defaultsSetOpusMaxCaptureRate(uint32_t opus_maxcapturerate
 bool MediaSessionMgr::defaultsSetOpusMaxPlaybackRate(uint32_t opus_maxplaybackrate){
 	return (tmedia_defaults_set_opus_maxplaybackrate(opus_maxplaybackrate) == 0);
 }
+
+bool MediaSessionMgr::defaultsSetMaxFds(int32_t max_fds) {
+	return (tmedia_defaults_set_max_fds(max_fds) == 0);
+}

@@ -314,18 +314,32 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	}
 	
 	/* Gets the associated dialog */
-	if((session = thttp_session_get_by_fd(stack->sessions, e->local_fd))){
-		if(!(dialog = thttp_dialog_get_oldest(session->dialogs))){
-			TSK_DEBUG_ERROR("Failed to found associated dialog.");
-			ret = -5;
+	if(!(session = thttp_session_get_by_fd(stack->sessions, e->local_fd))){
+		if ((stack->mode & thttp_stack_mode_server)) {
+			// server mode -> add new session
+			session = thttp_session_create(stack,
+				THTTP_SESSION_SET_HEADER("User-Agent", "doubango 2.0"),
+				THTTP_SESSION_SET_NULL());
+			if (!session) {
+				TSK_DEBUG_ERROR("Failed to create new session.");
+				ret = -5;
+				goto bail;
+			}
+		}
+		else {
+			// client mode -> session *must* exist
+			TSK_DEBUG_ERROR("Failed to found associated session.");
+			ret = -4;
 			goto bail;
 		}
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to found associated session.");
-		ret = -4;
-		goto bail;
 	}	
+
+	// Get dialog associated to this session
+	if(!(dialog = thttp_dialog_get_oldest(session->dialogs))){
+		TSK_DEBUG_ERROR("Failed to found associated dialog.");
+		ret = -5;
+		goto bail;
+	}
 
 	/* Check if buffer is too big to be valid (have we missed some chuncks?) */
 	//if(TSK_BUFFER_SIZE(buf) >= THTTP_MAX_CONTENT_SIZE){
@@ -446,6 +460,21 @@ int __thttp_stack_set(thttp_stack_t *self, va_list* app)
 				self->local_port = va_arg(*app, int);
 				break;
 			}
+
+
+			//
+			//	Modes
+			//
+		case thttp_pname_mode_client:
+			{	/* VOID */
+				self->mode = thttp_stack_mode_client;
+				break;
+			}
+		case thttp_pname_mode_server:
+			{	/* VOID */
+				self->mode = thttp_stack_mode_server;
+				break;
+			}
 		
 			//
 			// TLS
@@ -519,6 +548,7 @@ thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback_f callback, ...)
 	}
 	stack->local_ip = TNET_SOCKET_HOST_ANY;
 	stack->local_port = TNET_SOCKET_PORT_ANY;
+	stack->mode = thttp_stack_mode_client; // default mode
 
 	stack->callback = callback;
 	va_start(ap, callback);

@@ -80,6 +80,8 @@ public: /* API functions */
 	char* dnsNaptrSrv(const char* domain, const char* service, unsigned short *OUTPUT);
 	char* dnsSrv(const char* service, unsigned short* OUTPUT);
 
+	bool setMaxFDs(unsigned max_fds);
+
 	char* getLocalIPnPort(const char* protocol, unsigned short* OUTPUT);
 
 	char* getPreferredIdentity();

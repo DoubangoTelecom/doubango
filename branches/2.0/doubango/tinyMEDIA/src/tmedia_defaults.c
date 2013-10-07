@@ -86,6 +86,7 @@ static char* __ssl_certs_priv_path = tsk_null;
 static char* __ssl_certs_pub_path = tsk_null;
 static char* __ssl_certs_ca_path = tsk_null;
 static tsk_bool_t __ssl_certs_verify = tsk_false;
+static tsk_size_t __max_fds = 0; // Maximum number of FDs this process is allowed to open. Zero to disable.
 
 int tmedia_defaults_set_profile(tmedia_profile_t profile){
 	__profile = profile;
@@ -548,4 +549,15 @@ int tmedia_defaults_get_ssl_certs(const char** priv_path, const char** pub_path,
 	if(ca_path) *ca_path = __ssl_certs_ca_path;
 	if(verify) *verify = __ssl_certs_verify;
 	return 0;
+}
+
+int tmedia_defaults_set_max_fds(int32_t max_fds) {
+	if (max_fds > 0 && max_fds < 0xFFFF) {
+		__max_fds = (tsk_size_t)max_fds;
+		return 0;
+	}
+	return -1;
+}
+tsk_size_t tmedia_defaults_get_max_fds() {
+	return __max_fds;
 }
