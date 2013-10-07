@@ -39,7 +39,9 @@
 #   include <sys/param.h> /* http://www.freebsd.org/doc/en/books/porters-handbook/porting-versions.html */
 #endif
 
-#define TNET_MAX_FDS		0xFFFF
+#if !defined(TNET_MAX_FDS)
+#	define TNET_MAX_FDS		0xFFFF /* Default "FD_SIZE". WIll be updated using the OS limit when the transport starts. */
+#endif
 
 /*== Socket description ==*/
 typedef struct transport_socket_xs
