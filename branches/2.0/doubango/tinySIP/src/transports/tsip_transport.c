@@ -47,7 +47,7 @@
 #endif /* TSIP_TRANSPORT_STREAM_PEER_TIMEOUT */
 // Maximum number of milliseconds allowed to complete the WebSocket handshaking process.
 #if !defined(TSIP_TRANSPORT_STREAM_PEER_WS_HANDSHAKING_TIMEOUT)
-#	define TSIP_TRANSPORT_STREAM_PEER_WS_HANDSHAKING_TIMEOUT			10000 /* 10 seconds */
+#	define TSIP_TRANSPORT_STREAM_PEER_WS_HANDSHAKING_TIMEOUT			5000 /* 5 seconds */
 #endif /* TSIP_TRANSPORT_STREAM_PEER_TIMEOUT */
 
 static const char* __null_callid = tsk_null;
@@ -862,7 +862,7 @@ int tsip_transport_stream_peers_cleanup(tsip_transport_t *self)
 			if ((peer = (item->data))) {
 				close = ((now - TSIP_TRANSPORT_STREAM_PEER_TIMEOUT) > peer->time_latest_activity);
 				if (!close) {
-					if (TNET_SOCKET_TYPE_IS_WS(peer->type) || TNET_SOCKET_TYPE_IS_WSS(peer->type) && !peer->ws.handshaking_done) {
+					if ((TNET_SOCKET_TYPE_IS_WS(peer->type) || TNET_SOCKET_TYPE_IS_WSS(peer->type)) && !peer->ws.handshaking_done) {
 						close = ((now - TSIP_TRANSPORT_STREAM_PEER_WS_HANDSHAKING_TIMEOUT) > peer->time_latest_activity);
 					}
 				}
