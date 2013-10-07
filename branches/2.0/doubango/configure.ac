@@ -91,9 +91,9 @@ AC_TRY_COMPILE([#include <pthread.h>],
 
 
 AC_DEFINE(USE_POLL, 1, [Setting USE_POLL to 1 for backward compatibility])
-AC_CHECK_FUNCS([poll])
+AC_CHECK_FUNCS([poll getdtablesize opendir closedir getpid])
 
-AC_CHECK_HEADERS([net/if_types.h net/if_dl.h poll.h sys/param.h])
+AC_CHECK_HEADERS([net/if_types.h net/if_dl.h poll.h unistd.h dirent.h fcntl.h sys/param.h sys/resource.h])
 
 AC_CHECK_FUNC(getifaddrs, AC_DEFINE(HAVE_GETIFADDRS, 1 ,[Define to 1 if you have the 'getifaddrs' function]))
 AH_TEMPLATE([HAVE_IFADDRS_H], [Define if <ifaddrs.h> header exist])
@@ -120,6 +120,18 @@ AC_CHECK_TYPES([struct sockaddr_dl], [], [],
 [
 #if HAVE_NET_IF_DL_H
 # include <net/if_dl.h>
+#endif
+])
+AC_CHECK_TYPES([struct rlimit], [AC_CHECK_FUNCS([getrlimit setrlimit])], [],
+[
+#if HAVE_SYS_RESOURCE_H
+# include <sys/resource.h>
+#endif
+])
+AC_CHECK_TYPES([struct dirent], [], [],
+[
+#if HAVE_DIRENT_H
+# include <dirent.h>
 #endif
 ])
 

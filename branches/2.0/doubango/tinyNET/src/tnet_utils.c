@@ -64,9 +64,25 @@ extern Platform::String^  rt_tsk_str_to_managed(char const* str);
 # 	include <net/if_dl.h>
 #endif /* HAVE_NET_IF_DL_H */
 
+#if HAVE_SYS_RESOURCE_H
+#	include <sys/resource.h>
+#endif /* HAVE_SYS_RESOURCE_H */
+
 #if HAVE_NETPACKET_PACKET_H
 # 	include <netpacket/packet.h>
 #endif /* HAVE_NETPACKET_PACKET_H */
+
+#if HAVE_UNISTD_H
+#	include <unistd.h>
+#endif /* HAVE_UNISTD_H */
+
+#if HAVE_DIRENT_H
+#	include <dirent.h>
+#endif /* HAVE_DIRENT_H */
+
+#if HAVE_FCNTL_H
+#	include <fcntl.h>
+#endif /* HAVE_FCNTL_H */
 
 #ifndef AF_LINK
 #	define AF_LINK AF_PACKET
@@ -1136,6 +1152,79 @@ int tnet_get_ip_n_port(tnet_fd_t fd, tsk_bool_t getlocal, tnet_ip_t *ip, tnet_po
 
 	TSK_DEBUG_ERROR("Could not use an invalid socket description.");
 	return -1;
+}
+
+/**@ingroup tnet_utils_group
+* Gets the maximum number of file descriptors (FDs) this process is allowed to open.
+*/
+int tnet_get_fd_max_allowed(tsk_size_t* fd_size)
+{
+#if HAVE_GETRLIMIT
+	struct rlimit rl; 
+  	int ret;
+	if (!fd_size) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	ret = getrlimit(RLIMIT_NOFILE, &rl); 
+	if (ret) {
+		TSK_DEBUG_ERROR("getrlimit(RLIMIT_NOFILE) failed with error code = %d", tnet_geterrno());
+		return ret;
+	}
+	*fd_size = rl.rlim_cur;
+	return 0;
+#elif HAVE_GETDTABLESIZE
+	return getdtablesize();
+#else
+	return -1;
+#endif
+}
+
+/**@ingroup tnet_utils_group
+* Sets the maximum number of file descriptors (FDs) this process is allowed to open.
+*/
+int tnet_set_fd_max_allowed(tsk_size_t fd_size)
+{
+#if HAVE_SETRLIMIT && HAVE_GETRLIMIT
+	struct rlimit rl; 
+  	int ret;
+	ret = getrlimit (RLIMIT_NOFILE, &rl);
+	if (!ret) {
+		rl.rlim_cur = fd_size;
+		ret = setrlimit(RLIMIT_NOFILE, &rl);
+	}
+	return ret;
+#else
+	return -1;
+#endif
+}
+
+/**@ingroup tnet_utils_group
+* Gets the number of FDs opened by this process.
+*/
+int tnet_get_fd_opened_count(tsk_size_t* count)
+{
+#if HAVE_OPENDIR && HAVE_CLOSEDIR && HAVE_GETPID && HAVE_STRUCT_DIRENT
+     	int fd_count;
+     	char buf[1024];
+     	struct dirent *dp;
+	DIR *dir;
+	
+	if (!count) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	*count = 0;
+     	snprintf(buf, 1024, "/proc/%i/fd/", getpid());
+     	dir = opendir(buf);
+     	while ((dp = readdir(dir))) {
+          	(*count)++;
+     	}
+     	closedir(dir);
+     	return 0;
+#else
+	return -1;
+#endif
 }
 
 /**@ingroup tnet_utils_group
