@@ -94,6 +94,12 @@ typedef enum thttp_stack_param_type_e
 #define THTTP_STACK_SET_LOCAL_IP(IP_STR)														thttp_pname_local_ip, (const char*)IP_STR
 #define THTTP_STACK_SET_LOCAL_PORT(PORT_INT)													thttp_pname_local_port, (int)PORT_INT
 
+	/* Modes */
+	thttp_pname_mode_client,
+	thttp_pname_mode_server,
+#define THTTP_STACK_SET_MODE_CLIENT()												thttp_pname_mode_client
+#define THTTP_STACK_SET_MODE_SERVER()												thttp_pname_mode_server
+
 	/* TLS */
 	thttp_pname_tls_enabled,
 #define THTTP_STACK_SET_TLS_ENABLED(ENABLED_BOOL)									thttp_pname_tls_enabled, (tsk_bool_t)ENABLED_BOOL
@@ -109,6 +115,15 @@ typedef enum thttp_stack_param_type_e
 }
 thttp_stack_param_type_t;
 
+typedef enum thttp_stack_mode_e
+{
+	thttp_stack_mode_none,
+	thttp_stack_mode_client = (0x01 << 0),
+	thttp_stack_mode_server = (0x01 << 1),
+	thttp_stack_mode_hybrid = (thttp_stack_mode_client | thttp_stack_mode_server)
+}
+thttp_stack_mode_t;
+
 /** HTTP/HTTPS Stack.
 */
 typedef struct thttp_stack_s
@@ -116,6 +131,7 @@ typedef struct thttp_stack_s
 	TSK_DECLARE_OBJECT;
 
 	tsk_bool_t started;
+	enum thttp_stack_mode_e mode;
 	thttp_stack_callback_f callback;
 
 	/* Network */

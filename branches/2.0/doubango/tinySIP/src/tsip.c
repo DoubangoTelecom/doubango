@@ -304,6 +304,11 @@ static int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 					}
 					break;
 				}
+			case tsip_pname_max_fds:
+				{	/* (unsigned)MAX_FDS_UINT */
+					self->network.max_fds = va_arg(*app, unsigned);
+					break;
+				}
 			case tsip_pname_mode:
 				{	/* (tsip_stack_mode_t)MODE_ENUM */
 					self->network.mode = va_arg(*app, tsip_stack_mode_t);
@@ -523,11 +528,12 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const cha
 		goto bail;
 	}
 	
-	/* === Default values === */
+	/* === Default values (Network) === */
 	stack->network.mode = tsip_stack_mode_ua;
 	for(i = 0; i < sizeof(stack->network.local_port)/sizeof(stack->network.local_port[0]); ++i) { stack->network.local_port[i] = TNET_SOCKET_PORT_ANY; }
 	for(i = 0; i < sizeof(stack->network.proxy_cscf_port)/sizeof(stack->network.proxy_cscf_port[0]); ++i) { stack->network.proxy_cscf_port[i] = 5060; }
 	for(i = 0; i < sizeof(stack->network.proxy_cscf_type)/sizeof(stack->network.proxy_cscf_type[0]); ++i) { stack->network.proxy_cscf_type[i] = tnet_socket_type_invalid; }
+	stack->network.max_fds = tmedia_defaults_get_max_fds();
 	
 	// all events should be delivered to the user before the stack stop
 	tsk_runnable_set_important(TSK_RUNNABLE(stack), tsk_true);
@@ -650,6 +656,17 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 	if(!stack->identity.preferred && stack->identity.impu){
 		stack->identity.preferred = tsk_object_ref((void*)stack->identity.impu);
 	}
+
+	/* === Set Max FDs === */
+	if (stack->network.max_fds > 0 && stack->network.max_fds < 0xFFFF) {
+		TSK_DEBUG_INFO("Setting max FDs to %u", stack->network.max_fds);
+		ret = tnet_set_fd_max_allowed(stack->network.max_fds);
+		if (ret) {
+			TSK_DEBUG_ERROR("Failed to set max FDs to %u", stack->network.max_fds);
+			/* goto bail; */ // Not fatal error
+		}
+	}
+
 	/* === Transport type === */
 	if(!tsk_strnullORempty(stack->security.secagree_mech)){
 		if(tsk_striequals(stack->security.secagree_mech, "ipsec-3gpp") && stack->security.enable_secagree_ipsec){

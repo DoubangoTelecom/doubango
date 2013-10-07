@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="tinyWRAP"
 	ProjectGUID="{6B60DF14-D5D7-4654-B8F9-1CBC8892CFC8}"
 	RootNamespace="tinyWRAP"

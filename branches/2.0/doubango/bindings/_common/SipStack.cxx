@@ -360,6 +360,13 @@ char* SipStack::dnsSrv(const char* service, unsigned short* OUTPUT)
 	}
 }
 
+bool SipStack::setMaxFDs(unsigned max_fds)
+{
+	return (tsip_stack_set(m_pHandle,
+		TSIP_STACK_SET_MAX_FDS(max_fds),
+		TSIP_STACK_SET_NULL()) == 0);
+}
+
 char* SipStack::getLocalIPnPort(const char* protocol, unsigned short* OUTPUT)
 {
 	tnet_ip_t ip;

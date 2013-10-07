@@ -128,6 +128,8 @@ TINYMEDIA_API int tmedia_defaults_set_opus_maxplaybackrate(uint32_t opus_maxplay
 TINYMEDIA_API uint32_t tmedia_defaults_get_opus_maxplaybackrate();
 TINYMEDIA_API int tmedia_defaults_set_ssl_certs(const char* priv_path, const char* pub_path, const char* ca_path, tsk_bool_t verify);
 TINYMEDIA_API int tmedia_defaults_get_ssl_certs(const char** priv_path, const char** pub_path, const char** ca_path, tsk_bool_t *verify);
+TINYMEDIA_API int tmedia_defaults_set_max_fds(int32_t max_fds);
+TINYMEDIA_API tsk_size_t tmedia_defaults_get_max_fds();
 
 TMEDIA_END_DECLS
 

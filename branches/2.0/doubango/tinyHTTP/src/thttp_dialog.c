@@ -452,8 +452,6 @@ static tsk_object_t* thttp_dialog_ctor(tsk_object_t * self, va_list * app)
 	if(dialog){
 		dialog->id = ++unique_id;
 		dialog->session = tsk_object_ref(va_arg(*app, thttp_session_t*));
-		
-		dialog->buf = tsk_buffer_create_null();
 
 		/* create and init FSM */
 		dialog->fsm = tsk_fsm_create(_fsm_state_Started, _fsm_state_Terminated);
