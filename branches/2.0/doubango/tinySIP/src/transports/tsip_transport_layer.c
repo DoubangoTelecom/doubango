@@ -753,6 +753,9 @@ static const tsip_transport_t* tsip_transport_layer_find(const tsip_transport_la
 		tsk_list_item_t *item;
 		tsip_transport_t *curr;
 		tnet_socket_type_t destNetType = self->stack->network.transport_types[self->stack->network.transport_idx_default];
+		/*  RFC 3261 - 18.1.1 Sending Requests
+			If the port is absent, the default value depends on the transport.  It is 5060 for UDP, TCP and SCTP, 5061 for TLS. */
+		// int32_t destDefaultPort = TNET_SOCKET_TYPE_IS_TLS(destNetType) ? 5061 : 5060;
 		
 		/* If message received over WebSocket transport and stack is running in w2s mode then forward to the first route if available */
 		if((self->stack->network.mode == tsip_stack_mode_webrtc2sip)){
@@ -808,7 +811,7 @@ clean_routes:
 					}
 					if(route->uri && route->uri->host){
 						tsk_strupdate(destIP, route->uri->host);
-						*destPort = route->uri->port > 0 ? route->uri->port : 5060;
+						*destPort = route->uri->port > 0 ? route->uri->port : (TNET_SOCKET_TYPE_IS_TLS(destNetType) ? 5061 : 5060);
 						b_using_route = tsk_true;
 						break;
 					}
@@ -818,7 +821,7 @@ clean_routes:
 					if(dialog->uri_remote_target && dialog->uri_remote_target->host && (dialog->uri_remote_target->port || TSIP_STACK_MODE_IS_SERVER(self->stack))){
 						const char* transport_name = tsk_params_get_param_value(dialog->uri_remote_target->params, "transport");
 						tsk_strupdate(destIP, dialog->uri_remote_target->host);
-						*destPort = dialog->uri_remote_target->port ? dialog->uri_remote_target->port : 5060;
+						*destPort = dialog->uri_remote_target->port ? dialog->uri_remote_target->port : (tsk_striequals(transport_name, "TLS") ? 5061 : 5060);
 						if(!tsk_strnullORempty(transport_name)) {
 							enum tnet_socket_type_e _destNetType = tsip_transport_get_type_by_name(transport_name);
 							if(TNET_SOCKET_TYPE_IS_VALID(_destNetType)) {
