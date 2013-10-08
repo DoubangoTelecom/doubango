@@ -51,7 +51,7 @@
 #endif /* TSIP_TRANSPORT_STREAM_PEER_TIMEOUT */
 // Maximum number of milliseconds allowed between the connection and the first valid SIP message.
 #if !defined(TSIP_TRANSPORT_STREAM_PEER_FIRST_MSG_TIMEOUT)
-#	define TSIP_TRANSPORT_STREAM_PEER_FIRST_MSG_TIMEOUT					20000 /* 20 seconds */ // High because of WebRTC clients (Time between camera access request and end-of-ice process)
+#	define TSIP_TRANSPORT_STREAM_PEER_FIRST_MSG_TIMEOUT					30000 /* 30 seconds */ // High because of WebRTC clients (Time between camera access request and end-of-ice process)
 #endif /* TSIP_TRANSPORT_STREAM_PEER_FIRST_MSG_TIMEOUT */
 
 static const char* __null_callid = tsk_null;
