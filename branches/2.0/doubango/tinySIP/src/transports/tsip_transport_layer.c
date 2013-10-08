@@ -302,6 +302,8 @@ parse_buffer:
 	}
 
 	if(message && message->firstVia && message->Call_ID && message->CSeq && message->From && message->To){
+		/* Signal we got at least one valid SIP message */
+		peer->got_valid_sip_msg = tsk_true;
 		/* Set fd */
 		message->local_fd = e->local_fd;
 		message->src_net_type = transport->type;
@@ -597,6 +599,8 @@ parse_buffer:
 	}
 
 	if(message && message->firstVia && message->Call_ID && message->CSeq && message->From && message->To){
+		/* Signal we got at least one valid SIP message */
+		peer->got_valid_sip_msg = tsk_true;
 		/* Set fd */
 		message->local_fd = e->local_fd;
 		message->src_net_type = transport->type;

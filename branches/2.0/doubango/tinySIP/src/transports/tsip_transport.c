@@ -49,6 +49,10 @@
 #if !defined(TSIP_TRANSPORT_STREAM_PEER_WS_HANDSHAKING_TIMEOUT)
 #	define TSIP_TRANSPORT_STREAM_PEER_WS_HANDSHAKING_TIMEOUT			5000 /* 5 seconds */
 #endif /* TSIP_TRANSPORT_STREAM_PEER_TIMEOUT */
+// Maximum number of milliseconds allowed between the connection and the first valid SIP message.
+#if !defined(TSIP_TRANSPORT_STREAM_PEER_FIRST_MSG_TIMEOUT)
+#	define TSIP_TRANSPORT_STREAM_PEER_FIRST_MSG_TIMEOUT					20000 /* 20 seconds */ // High because of WebRTC clients (Time between camera access request and end-of-ice process)
+#endif /* TSIP_TRANSPORT_STREAM_PEER_FIRST_MSG_TIMEOUT */
 
 static const char* __null_callid = tsk_null;
 
@@ -651,10 +655,11 @@ int tsip_transport_add_stream_peer_2(tsip_transport_t *self, tnet_fd_t local_fd,
 	peer->type = type;
 	peer->connected = connected;
 	peer->remote_port = remote_port;
-	peer->time_latest_activity = tsk_time_now();
 	memcpy(peer->remote_ip, remote_ip, sizeof(remote_ip));
 	
 	tsk_list_lock(self->stream_peers);
+	peer->time_latest_activity = tsk_time_now();
+	peer->time_added = peer->time_latest_activity;
 	tsk_list_push_back_data(self->stream_peers, (void**)&peer);
 	++self->stream_peers_count;
 	TSK_DEBUG_INFO("#%d peers in the '%s' transport", self->stream_peers_count, tsip_transport_get_description(self));
@@ -862,13 +867,17 @@ int tsip_transport_stream_peers_cleanup(tsip_transport_t *self)
 			if ((peer = (item->data))) {
 				close = ((now - TSIP_TRANSPORT_STREAM_PEER_TIMEOUT) > peer->time_latest_activity);
 				if (!close) {
+					close = !peer->got_valid_sip_msg && ((now - TSIP_TRANSPORT_STREAM_PEER_FIRST_MSG_TIMEOUT) > peer->time_added);
+				}
+				if (!close) {
 					if ((TNET_SOCKET_TYPE_IS_WS(peer->type) || TNET_SOCKET_TYPE_IS_WSS(peer->type)) && !peer->ws.handshaking_done) {
-						close = ((now - TSIP_TRANSPORT_STREAM_PEER_WS_HANDSHAKING_TIMEOUT) > peer->time_latest_activity);
+						close = ((now - TSIP_TRANSPORT_STREAM_PEER_WS_HANDSHAKING_TIMEOUT) > peer->time_added);
 					}
 				}
 				if (close) {
 					fd = peer->local_fd;
-					TSK_DEBUG_INFO("Peer with fd=%d, type=%d, time_latest_activity=%llu, now=%llu in '%s' transport timedout", fd, peer->type, peer->time_latest_activity, now, tsip_transport_get_description(self));
+					TSK_DEBUG_INFO("Peer with fd=%d, type=%d, got_valid_sip_msg=%d, time_added=%llu, time_latest_activity=%llu, now=%llu in '%s' transport timedout", 
+						fd, peer->type, peer->got_valid_sip_msg,  peer->time_added, peer->time_latest_activity, now, tsip_transport_get_description(self));
 					tsip_transport_remove_socket(self, (tnet_fd_t *)&fd);
 				}
 			}

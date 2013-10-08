@@ -76,6 +76,8 @@ typedef struct tsip_transport_stream_peer_s
 	enum tnet_socket_type_e type;
 	tsk_bool_t connected;
 	uint64_t time_latest_activity; // in milliseconds
+	uint64_t time_added; // in milliseconds
+	tsk_bool_t got_valid_sip_msg; // whether we got at least one valid SIP message on this peer
 	
 	tsk_buffer_t *rcv_buff_stream;
 	tsk_buffer_t *snd_buff_stream;
