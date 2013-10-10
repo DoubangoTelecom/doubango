@@ -6,7 +6,7 @@
 #
 
 AC_PREREQ([2.0])
-AC_INIT(libdoubango, 2.0.989, doubango(at)googlegroups(dot)com)
+AC_INIT(libdoubango, 2.0.1007, doubango(at)googlegroups(dot)com)
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])
