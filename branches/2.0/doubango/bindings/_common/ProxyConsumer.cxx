@@ -74,8 +74,9 @@ int twrap_consumer_proxy_audio_prepare(tmedia_consumer_t* self, const tmedia_cod
 			ret = audio->pcConsumer->getCallback()->prepare((int)self->audio.ptime, self->audio.in.rate, self->audio.in.channels);
 			if(ret == 0){
 				// say consumer can output these params
-				if(!self->audio.out.rate) self->audio.out.rate = self->audio.in.rate;
-				if(!self->audio.out.channels) self->audio.out.channels = self->audio.in.channels;
+				// Out "rate" and "channels" must be defined regardless previous values (already the case in other back-ends) to avoid issues on reINVITE with rate change (e.g. Opus -> PCMA).
+				/*if(!self->audio.out.rate)*/ self->audio.out.rate = self->audio.in.rate;
+				/*if(!self->audio.out.channels)*/ self->audio.out.channels = self->audio.in.channels;
 			}
 		}
 	}
