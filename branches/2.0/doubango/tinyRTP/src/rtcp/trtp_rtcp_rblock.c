@@ -84,7 +84,7 @@ trtp_rtcp_rblock_t* trtp_rtcp_rblock_deserialize(const void* data, tsk_size_t si
 		rblock->last_seq = tnet_ntohl_2(&pdata[8]);
 		rblock->jitter = tnet_ntohl_2(&pdata[12]);
 		rblock->lsr = tnet_ntohl_2(&pdata[16]);
-		rblock->dlsr = tnet_ntohl_2(&pdata[18]);
+		rblock->dlsr = tnet_ntohl_2(&pdata[20]);
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create report block object");
