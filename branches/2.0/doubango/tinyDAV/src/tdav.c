@@ -427,9 +427,9 @@ int tdav_set_codecs(tdav_codec_id_t codecs)
 
 	// unregister all codecs
 	tmedia_codec_plugin_unregister_all();
-	// register selected codecs
+	// register "selected" and "fake" codecs. "fake" codecs have "none" as id (e.g. MSRP or DTMF)
 	for(i=0,prio=0; i<__codec_plugins_all_count && __codec_plugins_all[i]; ++i){
-		if((codecs & __codec_plugins_all[i]->codec_id)){
+		if((codecs & __codec_plugins_all[i]->codec_id) || __codec_plugins_all[i]->codec_id == tmedia_codec_id_none){
 			if(_tdav_codec_is_supported((tdav_codec_id_t)__codec_plugins_all[i]->codec_id, __codec_plugins_all[i])){
 				tmedia_codec_plugin_register_2(__codec_plugins_all[i], prio++);
 			}
