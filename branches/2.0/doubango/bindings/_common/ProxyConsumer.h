@@ -51,6 +51,8 @@ public:
 #if !defined(SWIG)
 	// whether the audio buffer have to be stored in the JB then pulled using "ProxyAudioConsumer::pull()" or not
 	virtual bool putInJitterBuffer(){ return true; }
+	// whether we are using the "telepresence" system (PIVOT audio settings must not be changed)
+	virtual bool isPivotSettings() { return false; }
 	// only called if "putInJitterBuffer()" return "true"
 	virtual int consume(const void* buffer_ptr, tsk_size_t buffer_size, const tsk_object_t* proto_hdr){ return -1; }
 #endif
