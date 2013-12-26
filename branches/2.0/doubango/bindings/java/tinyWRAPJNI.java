@@ -121,6 +121,7 @@ public class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_defaultsSetAvpfTail(long jarg1, long jarg2);
   public final static native boolean MediaSessionMgr_defaultsSetOpusMaxCaptureRate(long jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetOpusMaxPlaybackRate(long jarg1);
+  public final static native boolean MediaSessionMgr_defaultsSetMaxFds(int jarg1);
   public final static native void delete_MediaContent(long jarg1);
   public final static native String MediaContent_getType(long jarg1, MediaContent jarg1_);
   public final static native long MediaContent_getDataLength(long jarg1, MediaContent jarg1_);
@@ -527,6 +528,7 @@ public class tinyWRAPJNI {
   public final static native String SipStack_dnsENUM(long jarg1, SipStack jarg1_, String jarg2, String jarg3, String jarg4);
   public final static native String SipStack_dnsNaptrSrv(long jarg1, SipStack jarg1_, String jarg2, String jarg3, int[] jarg4);
   public final static native String SipStack_dnsSrv(long jarg1, SipStack jarg1_, String jarg2, int[] jarg3);
+  public final static native boolean SipStack_setMaxFDs(long jarg1, SipStack jarg1_, long jarg2);
   public final static native String SipStack_getLocalIPnPort(long jarg1, SipStack jarg1_, String jarg2, int[] jarg3);
   public final static native String SipStack_getPreferredIdentity(long jarg1, SipStack jarg1_);
   public final static native boolean SipStack_isValid(long jarg1, SipStack jarg1_);
@@ -538,6 +540,7 @@ public class tinyWRAPJNI {
   public final static native boolean SipStack_setCodecPriority(int jarg1, int jarg2);
   public final static native boolean SipStack_setCodecPriority_2(int jarg1, int jarg2);
   public final static native boolean SipStack_isCodecSupported(int jarg1);
+  public final static native boolean SipStack_isIPSecSupported();
   public final static native long new_XcapSelector(long jarg1, XcapStack jarg1_);
   public final static native void delete_XcapSelector(long jarg1);
   public final static native long XcapSelector_setAUID(long jarg1, XcapSelector jarg1_, String jarg2);

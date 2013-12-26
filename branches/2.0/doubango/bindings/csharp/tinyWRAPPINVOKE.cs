@@ -522,6 +522,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetOpusMaxPlaybackRate")]
   public static extern bool MediaSessionMgr_defaultsSetOpusMaxPlaybackRate(uint jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetMaxFds")]
+  public static extern bool MediaSessionMgr_defaultsSetMaxFds(int jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_MediaContent")]
   public static extern void delete_MediaContent(HandleRef jarg1);
 
@@ -1719,6 +1722,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_dnsSrv")]
   public static extern string SipStack_dnsSrv(HandleRef jarg1, string jarg2, out ushort jarg3);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setMaxFDs")]
+  public static extern bool SipStack_setMaxFDs(HandleRef jarg1, uint jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_getLocalIPnPort")]
   public static extern string SipStack_getLocalIPnPort(HandleRef jarg1, string jarg2, out ushort jarg3);
 
@@ -1751,6 +1757,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_isCodecSupported")]
   public static extern bool SipStack_isCodecSupported(int jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_isIPSecSupported")]
+  public static extern bool SipStack_isIPSecSupported();
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_transport_error_get")]
   public static extern int tsip_event_code_dialog_transport_error_get();

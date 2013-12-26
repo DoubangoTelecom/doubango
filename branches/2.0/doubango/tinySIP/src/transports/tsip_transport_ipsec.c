@@ -60,31 +60,30 @@ int tsip_transport_ipsec_createTempSAs(tsip_transport_ipsec_t* self)
 	int ret = -1;
 
 	/* Check */
-	if(!self){
+	if (!self) {
+		TSK_DEBUG_ERROR("Invalid parameter");
 		goto bail;
 	}
 	
 	/* Already have temporary SAs ? */
-	if(self->asso_temporary){
+	if (self->asso_temporary) {
 		TSK_DEBUG_ERROR("IPSec transport layer already have temporary SAs");
 		ret = -2;
 		goto bail;
 	}
 
-	/* Create temporary association.
-	*/
-	
-	if((self->asso_temporary = tsip_ipsec_association_create(TSIP_TRANSPORT(self)))){
-		if(self->asso_temporary->ctx && self->asso_temporary->ctx->state == state_inbound){
+	/* Create temporary association */
+	if ((self->asso_temporary = tsip_ipsec_association_create(TSIP_TRANSPORT(self)))) {
+		if (self->asso_temporary->ctx && self->asso_temporary->ctx->state == tipsec_state_inbound) {
 			ret = 0;
 		}
-		else{
+		else {
 			TSK_DEBUG_INFO("Failed to create new temporary SAs.");
 			ret = -3;
 			goto bail;
 		}
 	}
-	else{
+	else {
 		TSK_DEBUG_INFO("Failed to create new temporary SAs.");
 
 		ret = -4;
@@ -93,7 +92,7 @@ int tsip_transport_ipsec_createTempSAs(tsip_transport_ipsec_t* self)
 
 bail:
 
-	if(ret && ret != -1){
+	if (ret && ret != -1) {
 		TSK_OBJECT_SAFE_FREE(self->asso_temporary);
 	}
 	return ret;
@@ -134,15 +133,14 @@ int tsip_transport_ipsec_ensureTempSAs(tsip_transport_ipsec_t* self, const tsip_
 		When the client receives a response with a Security-Server header field, it MUST choose the security mechanism in the server's list
 		with the highest "q" value among all the mechanisms that are known to the client.
 	*/
-	for(index = 0; (ssHdr = (const tsip_header_Security_Server_t *)tsip_message_get_headerAt(r401_407, tsip_htype_Security_Server, index)); index++)
-	{
+	for (index = 0; (ssHdr = (const tsip_header_Security_Server_t *)tsip_message_get_headerAt(r401_407, tsip_htype_Security_Server, index)); index++) {
 		tsip_header_Security_Verify_t* svHdr;
 
-		if(maxQ > ssHdr->q || !tsk_striequals(ssHdr->mech, "ipsec-3gpp")){
+		if (maxQ > ssHdr->q || !tsk_striequals(ssHdr->mech, "ipsec-3gpp")){
 			goto copy;
 		}
 		
-		if((TIPSEC_ALG_FROM_STR(ssHdr->alg) == self->asso_temporary->ctx->alg) &&
+		if ((TIPSEC_ALG_FROM_STR(ssHdr->alg) == self->asso_temporary->ctx->alg) &&
 			(TIPSEC_EALG_FROM_STR(ssHdr->ealg) == self->asso_temporary->ctx->ealg) &&
 			(TIPSEC_PROTOCOL_FROM_STR(ssHdr->prot) == self->asso_temporary->ctx->protocol) &&
 			(TIPSEC_MODE_FROM_STR(ssHdr->mod) == self->asso_temporary->ctx->mode)){
@@ -182,13 +180,13 @@ copy:
 	}
 
 	/* Set remote parameters received from 401/407 response. */
-	if((ret = tipsec_set_remote(self->asso_temporary->ctx, spi_pc, spi_ps, port_pc, port_ps, lifetime))){
+	if((ret = tipsec_ctx_set_remote(self->asso_temporary->ctx, spi_pc, spi_ps, port_pc, port_ps, lifetime))){
 		TSK_DEBUG_ERROR("Failed to set remote IPSec parameters [%d]", ret);
 		goto bail;
 	}
 
 	/* Connect Sockets: port_uc to port_ps*/
-	if((ret = tnet_sockaddr_init((const char*)self->asso_temporary->ctx->addr_remote, self->asso_temporary->ctx->port_ps, TSIP_TRANSPORT(self)->type, &to))){
+	if((ret = tnet_sockaddr_init(self->asso_temporary->ip_remote, self->asso_temporary->ctx->port_ps, TSIP_TRANSPORT(self)->type, &to))){
 		TSK_DEBUG_ERROR("Invalid HOST/PORT [%s/%u].", (const char*)self->asso_temporary->ctx->addr_remote, self->asso_temporary->ctx->port_ps);
 		goto bail;
 	}
@@ -205,11 +203,12 @@ int tsip_transport_ipsec_startSAs(tsip_transport_ipsec_t* self, const tipsec_key
 {
 	int ret = -1;
 
-	if(!self){
+	if (!self) {
+		TSK_DEBUG_ERROR("Invalid parameter");
 		goto bail;
 	}
 	
-	if(!self->asso_temporary){
+	if (!self->asso_temporary) {
 		TSK_DEBUG_ERROR("Failed to find temporary SAs");
 		ret = -2;
 		goto bail;
@@ -220,8 +219,8 @@ int tsip_transport_ipsec_startSAs(tsip_transport_ipsec_t* self, const tipsec_key
 	self->asso_active = tsk_object_ref((void*)self->asso_temporary); /* promote */
 	TSK_OBJECT_SAFE_FREE(self->asso_temporary); /* delete old temp SAs */
 
-	if(!(ret = tipsec_set_keys(self->asso_active->ctx, ik, ck))){
-		ret = tipsec_start(self->asso_active->ctx);
+	if ((ret = tipsec_ctx_set_keys(self->asso_active->ctx, ik, ck)) == 0){
+		ret = tipsec_ctx_start(self->asso_active->ctx);
 	}
 
 bail:
@@ -248,24 +247,24 @@ int tsip_transport_ipsec_updateMSG(tsip_transport_ipsec_t* self, tsip_message_t 
 	int ret = -1;
 	const tsip_ipsec_association_t* asso;
 
-	if(!self){
+	if (!self) {
+		TSK_DEBUG_ERROR("Invalid parameter");
 		goto bail;
 	}
 
 	asso = (self->asso_temporary && TSIP_REQUEST_IS_REGISTER(msg)) ? self->asso_temporary : self->asso_active;
-	if(!asso || !asso->ctx){
+	if (!asso || !asso->ctx) {
 		TSK_DEBUG_ERROR("No IPSec association found.");
 		ret = -2;
 		goto bail;
 	}
 
-	if(TSIP_MESSAGE_IS_RESPONSE(msg)){
+	if (TSIP_MESSAGE_IS_RESPONSE(msg)) {
 		return 0;
 	}
 
 	/* Security-Client, Require, Proxy-Require and Security Verify */
-	switch(msg->line.request.request_type)
-	{
+	switch(msg->line.request.request_type) {
 		case tsip_BYE:
 		case tsip_INVITE:
 		case tsip_OPTIONS:
@@ -318,20 +317,22 @@ bail:
 
 tnet_fd_t tsip_transport_ipsec_getFD(tsip_transport_ipsec_t* self, int isRequest)
 {
-	if(!self){
+	if (!self) {
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return TNET_INVALID_FD;
 	}
 
 	/* If no active SAs ca be found then use default connection. */
-	if(!self->asso_active){
-		return TSIP_TRANSPORT(self)->connectedFD;
+	if (!self->asso_active) {
+		return TNET_INVALID_FD;
+		// return TSIP_TRANSPORT(self)->connectedFD;
 	}
 
 	/*	IPSec ports management
 		For more information: http://betelco.blogspot.com/2008/09/ipsec-using-security-agreement-in-3gpp.html
 	*/
 
-	if(TNET_SOCKET_TYPE_IS_DGRAM(TSIP_TRANSPORT(self)->type)){
+	if (TNET_SOCKET_TYPE_IS_DGRAM(TSIP_TRANSPORT(self)->type)) {
 		/*
 			=== UDP ===
 			port_uc -> REGISTER -> port_ps
@@ -339,7 +340,7 @@ tnet_fd_t tsip_transport_ipsec_getFD(tsip_transport_ipsec_t* self, int isRequest
 		*/
 			return self->asso_active->socket_uc->fd;
 	}
-	else{
+	else {
 		/*
 			=== TCP ===
 			port_uc -> REGISTER -> port_ps
@@ -348,10 +349,10 @@ tnet_fd_t tsip_transport_ipsec_getFD(tsip_transport_ipsec_t* self, int isRequest
 			port_us <- NOTIFY <- port_pc
 			port_us -> 200 OK -> port_pc
 		*/
-		if(isRequest){
+		if (isRequest) {
 			return self->asso_active->socket_uc->fd;
 		}
-		else{
+		else {
 			return self->asso_active->socket_us->fd;
 		}
 	}
@@ -446,43 +447,57 @@ static tsk_object_t* tsip_ipsec_association_ctor(tsk_object_t * self, va_list * 
 
 		const tsip_transport_t* transport = va_arg(*app, const tsip_transport_t *);
 
-		tnet_ip_t ip_local;
-		tnet_ip_t ip_remote;
-		tnet_port_t port;
-
 		/* Set transport */
 		association->transport = transport;
 
 		/* Get local IP and port. */
-		tsip_transport_get_ip_n_port(transport, &ip_local, &port);
+		tsip_transport_get_ip_n_port(transport, &association->ip_local, &association->port_local);
 		
 		/* Create IPSec context */
-		association->ctx = tipsec_context_create(
+		if (tipsec_ctx_create(
 			TIPSEC_IPPROTO_FROM_STR(transport->protocol),
 			TNET_SOCKET_TYPE_IS_IPV6(transport->type),
 			TIPSEC_MODE_FROM_STR(transport->stack->security.ipsec.mode),
 			TIPSEC_EALG_FROM_STR(transport->stack->security.ipsec.ealg),
 			TIPSEC_ALG_FROM_STR(transport->stack->security.ipsec.alg),
-			TIPSEC_PROTOCOL_FROM_STR(transport->stack->security.ipsec.protocol));
+			TIPSEC_PROTOCOL_FROM_STR(transport->stack->security.ipsec.protocol), &association->ctx))
+		{
+			TSK_DEBUG_ERROR("Failed to create IPSec context");
+			return tsk_null;
+		}
 		
 		/* Create Both client and Server legs */
-		association->socket_us = tnet_socket_create(ip_local, TNET_SOCKET_PORT_ANY, transport->type);
-		association->socket_uc = tnet_socket_create(ip_local, TNET_SOCKET_PORT_ANY, transport->type);
+		association->socket_us = tnet_socket_create(association->ip_local, TNET_SOCKET_PORT_ANY, transport->type);
+		association->socket_uc = tnet_socket_create(association->ip_local, TNET_SOCKET_PORT_ANY, transport->type);
 
 		/* Add Both sockets to the network transport */
 		tsip_transport_add_socket(transport, association->socket_us->fd, transport->type, 0, 0);
 		tsip_transport_add_socket(transport, association->socket_uc->fd, transport->type, 0, 1);
 		
 		/* Set local */
-		if(!tnet_get_peerip(transport->connectedFD, &ip_remote)){ /* Get remote IP string */
-			tipsec_set_local(association->ctx, ip_local, ip_remote, association->socket_uc->port, association->socket_us->port);
+		if (tnet_get_peerip(transport->connectedFD, &association->ip_remote) == 0) { /* Get remote IP string */
+			if (tipsec_ctx_set_local(association->ctx, association->ip_local, association->ip_remote, association->socket_uc->port, association->socket_us->port)) {
+				TSK_DEBUG_ERROR("Failed to set IPSec local info:%s,%s,%u,%u", association->ip_local, association->ip_remote, association->socket_uc->port, association->socket_us->port);
+				return tsk_null;
+			}
 		}
-		else{
-			tipsec_set_local(association->ctx, 
-				ip_local, 
-				transport->stack->network.proxy_cscf[transport->stack->network.transport_idx_default], 
+		else {
+			// Resolve the HostName because "tipsec_ctx_set_local()" requires IP address instead of FQDN.
+			if (tnet_resolve(transport->stack->network.proxy_cscf[transport->stack->network.transport_idx_default], 
+				transport->stack->network.proxy_cscf_port[transport->stack->network.transport_idx_default], 
+				transport->stack->network.proxy_cscf_type[transport->stack->network.transport_idx_default], 
+				&association->ip_remote, tsk_null))
+			{
+				return tsk_null;
+			}
+			if (tipsec_ctx_set_local(association->ctx, 
+				association->ip_local, 
+				association->ip_remote, 
 				association->socket_uc->port, 
-				association->socket_us->port);
+				association->socket_us->port))
+			{
+				return tsk_null;
+			}
 		}
 	}	 	
 	return self;

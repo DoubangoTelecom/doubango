@@ -8399,6 +8399,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetMaxFds(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int32_t arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetMaxFds",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetMaxFds" "', argument " "1"" of type '" "int32_t""'");
+  } 
+  arg1 = static_cast< int32_t >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetMaxFds(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *MediaSessionMgr_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -22576,6 +22598,37 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SipStack_setMaxFDs(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  unsigned int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipStack_setMaxFDs",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setMaxFDs" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  ecode2 = SWIG_AsVal_unsigned_SS_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SipStack_setMaxFDs" "', argument " "2"" of type '" "unsigned int""'");
+  } 
+  arg2 = static_cast< unsigned int >(val2);
+  result = (bool)(arg1)->setMaxFDs(arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_SipStack_getLocalIPnPort(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -22833,6 +22886,19 @@ SWIGINTERN PyObject *_wrap_SipStack_isCodecSupported(PyObject *SWIGUNUSEDPARM(se
   } 
   arg1 = static_cast< tdav_codec_id_t >(val1);
   result = (bool)SipStack::isCodecSupported(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_isIPSecSupported(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":SipStack_isIPSecSupported")) SWIG_fail;
+  result = (bool)SipStack::isIPSecSupported();
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -25998,6 +26064,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_defaultsSetAvpfTail", _wrap_MediaSessionMgr_defaultsSetAvpfTail, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetOpusMaxCaptureRate", _wrap_MediaSessionMgr_defaultsSetOpusMaxCaptureRate, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetOpusMaxPlaybackRate", _wrap_MediaSessionMgr_defaultsSetOpusMaxPlaybackRate, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetMaxFds", _wrap_MediaSessionMgr_defaultsSetMaxFds, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_swigregister", MediaSessionMgr_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_MediaContent", _wrap_delete_MediaContent, METH_VARARGS, NULL},
 	 { (char *)"MediaContent_getType", _wrap_MediaContent_getType, METH_VARARGS, NULL},
@@ -26347,6 +26414,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipStack_dnsENUM", _wrap_SipStack_dnsENUM, METH_VARARGS, NULL},
 	 { (char *)"SipStack_dnsNaptrSrv", _wrap_SipStack_dnsNaptrSrv, METH_VARARGS, NULL},
 	 { (char *)"SipStack_dnsSrv", _wrap_SipStack_dnsSrv, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setMaxFDs", _wrap_SipStack_setMaxFDs, METH_VARARGS, NULL},
 	 { (char *)"SipStack_getLocalIPnPort", _wrap_SipStack_getLocalIPnPort, METH_VARARGS, NULL},
 	 { (char *)"SipStack_getPreferredIdentity", _wrap_SipStack_getPreferredIdentity, METH_VARARGS, NULL},
 	 { (char *)"SipStack_isValid", _wrap_SipStack_isValid, METH_VARARGS, NULL},
@@ -26358,6 +26426,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipStack_setCodecPriority", _wrap_SipStack_setCodecPriority, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setCodecPriority_2", _wrap_SipStack_setCodecPriority_2, METH_VARARGS, NULL},
 	 { (char *)"SipStack_isCodecSupported", _wrap_SipStack_isCodecSupported, METH_VARARGS, NULL},
+	 { (char *)"SipStack_isIPSecSupported", _wrap_SipStack_isIPSecSupported, METH_VARARGS, NULL},
 	 { (char *)"SipStack_swigregister", SipStack_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_XcapSelector", _wrap_new_XcapSelector, METH_VARARGS, NULL},
 	 { (char *)"delete_XcapSelector", _wrap_delete_XcapSelector, METH_VARARGS, NULL},

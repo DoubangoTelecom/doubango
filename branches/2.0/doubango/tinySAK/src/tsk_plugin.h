@@ -36,6 +36,7 @@ typedef enum tsk_plugin_def_type_e
 	tsk_plugin_def_type_jb = (1 << 5),
 	tsk_plugin_def_type_denoiser = (1 << 6),
 	tsk_plugin_def_type_converter = (1 << 7),
+	tsk_plugin_def_type_ipsec = (1 << 8),
 	tsk_plugin_def_type_all = (~0)
 }
 tsk_plugin_def_type_t;

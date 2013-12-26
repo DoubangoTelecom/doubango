@@ -319,6 +319,8 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetOpusMaxCaptureRate = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxCaptureRate)
     __swig_getmethods__["defaultsSetOpusMaxPlaybackRate"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxPlaybackRate
     if _newclass:defaultsSetOpusMaxPlaybackRate = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxPlaybackRate)
+    __swig_getmethods__["defaultsSetMaxFds"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetMaxFds
+    if _newclass:defaultsSetMaxFds = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetMaxFds)
 MediaSessionMgr_swigregister = _tinyWRAP.MediaSessionMgr_swigregister
 MediaSessionMgr_swigregister(MediaSessionMgr)
 
@@ -581,6 +583,10 @@ MediaSessionMgr_defaultsSetOpusMaxCaptureRate = _tinyWRAP.MediaSessionMgr_defaul
 def MediaSessionMgr_defaultsSetOpusMaxPlaybackRate(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxPlaybackRate(*args)
 MediaSessionMgr_defaultsSetOpusMaxPlaybackRate = _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxPlaybackRate
+
+def MediaSessionMgr_defaultsSetMaxFds(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetMaxFds(*args)
+MediaSessionMgr_defaultsSetMaxFds = _tinyWRAP.MediaSessionMgr_defaultsSetMaxFds
 
 class MediaContent(_object):
     __swig_setmethods__ = {}
@@ -1543,6 +1549,7 @@ class SipStack(SafeObject):
     def dnsENUM(self, *args): return _tinyWRAP.SipStack_dnsENUM(self, *args)
     def dnsNaptrSrv(self, *args): return _tinyWRAP.SipStack_dnsNaptrSrv(self, *args)
     def dnsSrv(self, *args): return _tinyWRAP.SipStack_dnsSrv(self, *args)
+    def setMaxFDs(self, *args): return _tinyWRAP.SipStack_setMaxFDs(self, *args)
     def getLocalIPnPort(self, *args): return _tinyWRAP.SipStack_getLocalIPnPort(self, *args)
     def getPreferredIdentity(self): return _tinyWRAP.SipStack_getPreferredIdentity(self)
     def isValid(self): return _tinyWRAP.SipStack_isValid(self)
@@ -1561,6 +1568,8 @@ class SipStack(SafeObject):
     if _newclass:setCodecPriority_2 = staticmethod(_tinyWRAP.SipStack_setCodecPriority_2)
     __swig_getmethods__["isCodecSupported"] = lambda x: _tinyWRAP.SipStack_isCodecSupported
     if _newclass:isCodecSupported = staticmethod(_tinyWRAP.SipStack_isCodecSupported)
+    __swig_getmethods__["isIPSecSupported"] = lambda x: _tinyWRAP.SipStack_isIPSecSupported
+    if _newclass:isIPSecSupported = staticmethod(_tinyWRAP.SipStack_isIPSecSupported)
 SipStack_swigregister = _tinyWRAP.SipStack_swigregister
 SipStack_swigregister(SipStack)
 
@@ -1591,6 +1600,10 @@ SipStack_setCodecPriority_2 = _tinyWRAP.SipStack_setCodecPriority_2
 def SipStack_isCodecSupported(*args):
   return _tinyWRAP.SipStack_isCodecSupported(*args)
 SipStack_isCodecSupported = _tinyWRAP.SipStack_isCodecSupported
+
+def SipStack_isIPSecSupported():
+  return _tinyWRAP.SipStack_isIPSecSupported()
+SipStack_isIPSecSupported = _tinyWRAP.SipStack_isIPSecSupported
 
 tsip_stack_mode_ua = _tinyWRAP.tsip_stack_mode_ua
 tsip_stack_mode_p2p = _tinyWRAP.tsip_stack_mode_p2p

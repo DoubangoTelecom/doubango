@@ -187,6 +187,10 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_dnsSrv(swigCPtr, this, service, OUTPUT);
   }
 
+  public boolean setMaxFDs(long max_fds) {
+    return tinyWRAPJNI.SipStack_setMaxFDs(swigCPtr, this, max_fds);
+  }
+
   public String getLocalIPnPort(String protocol, int[] OUTPUT) {
     return tinyWRAPJNI.SipStack_getLocalIPnPort(swigCPtr, this, protocol, OUTPUT);
   }
@@ -229,6 +233,10 @@ public class SipStack extends SafeObject {
 
   public static boolean isCodecSupported(tdav_codec_id_t codec_id) {
     return tinyWRAPJNI.SipStack_isCodecSupported(codec_id.swigValue());
+  }
+
+  public static boolean isIPSecSupported() {
+    return tinyWRAPJNI.SipStack_isIPSecSupported();
   }
 
 }
