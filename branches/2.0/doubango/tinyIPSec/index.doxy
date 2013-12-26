@@ -300,12 +300,23 @@ If you have any issue please check the @ref _Page_Main_FAQ "FAQ".
 
 
 /**@page _Page_Main_FAQ (FAQ)
+ - @ref _Anchor_TIPSec_FAQ_Client "Is there any IMS-Client implementing the new API?"
+ - @ref _Anchor_TIPSec_FAQ_Samples "Is there any sample code showing how to use the new API?"
  - @ref _Anchor_TIPSec_FAQ_Stable "Is IPSec implementation in Doubango stable?"
  - @ref _Anchor_TIPSec_FAQ_Systems "Which operating systems are supported?"
  - @ref _Anchor_TIPSec_FAQ_Logs "Where are Boghe logs?"
  - @ref _Anchor_TIPSec_FAQ_ReportIssues "I'm using Boghe IMS Client to test IPSec but it's not working. How to report issues?"
  - @ref _Anchor_TIPSec_FAQ_CheckSAs "How to check SAs are up?"
  - @ref _Anchor_TIPSec_FAQ_Error5 "I see \"Error code 5\" when I try to setup a SA. How can I fix this?"
+ 
+<h2>@anchor _Anchor_TIPSec_FAQ_Client Is there any IMS-Client implementing the new API?</h2>
+Yes. <br />
+Try Boghe IMS Client: <a href="https://code.google.com/p/boghe/">https://code.google.com/p/boghe/</a>.
+
+<h2>@anchor _Anchor_TIPSec_FAQ_Samples Is there any sample code showing how to use the new API?</h2>
+Yes. <br />
+<b>ANSI-C:</b> $DOUBANGO_HOME/branches/2.0/doubango/tinyIPSec/tinyIPSec.sln <br />
+<b>C#:</b> $DOUBANGO_HOME/branches/2.0/doubango/Samples/C#/IPSec/ipsec.sln <br />
 
 <h2>@anchor _Anchor_TIPSec_FAQ_Stable Is IPSec implementation in Doubango stable?</h2>
 Our IPSec implementation is <b>3 years old</b> and have been tested against OpenIMSCore and many other IMS Cores. <br />

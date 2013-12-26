@@ -76,7 +76,7 @@ namespace ipsec
 
             Console.ReadLine();
 
-            ipsecCtx.Dispose(); // Not required. GC will collect it when no refCount reach zero.
+            ipsecCtx.Dispose(); // Not required. GC will collect it when refCount reach zero.
 
             Console.ReadLine();
         }

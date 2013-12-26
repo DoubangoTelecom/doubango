@@ -10,8 +10,8 @@
     </tab>
     
     <tab type="usergroup" url="[none]" title="Samples code">
-      <tab type="user" url="@ref _Page_Main_Low_Level_Core_API_Overview" title="ANSI-C" />
-      <tab type="user" url="@ref _Page_Main_Low_Level_Core_API_Overview" title="C#" />
+      <tab type="user" url="@ref _Anchor_TIPSec_FAQ_Samples" title="ANSI-C" />
+      <tab type="user" url="@ref _Anchor_TIPSec_FAQ_Samples" title="C#" />
     </tab>
 
     <tab type="usergroup" url="https://code.google.com/p/boghe/downloads/list" title="Download Boghe IMS Client">
@@ -19,8 +19,7 @@
 
     <tab type="usergroup" url="@ref _Page_Main_FAQ" title="FAQ">
     </tab>
-    <tab type="usergroup" url="[none]" title="References">
-    </tab>
+    
     <tab type="usergroup" url="https://groups.google.com/forum/#!forum/doubango" title="Getting help">
     </tab>
 

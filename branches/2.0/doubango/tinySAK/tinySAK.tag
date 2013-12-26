@@ -690,85 +690,85 @@
     <member kind="function">
       <type>void</type>
       <name>tsk_debug_set_arg_data</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>ae72cfdebdb56e2a7b8083fca53907982</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gae72cfdebdb56e2a7b8083fca53907982</anchor>
       <arglist>(const void *arg_data)</arglist>
     </member>
     <member kind="function">
       <type>const void *</type>
       <name>tsk_debug_get_arg_data</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>af830dfa1bc42ca0bae29974fb21ec9d7</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gaf830dfa1bc42ca0bae29974fb21ec9d7</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_debug_set_info_cb</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>a3bc2c8eb37a87eacc2aea0478b20fa06</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga3bc2c8eb37a87eacc2aea0478b20fa06</anchor>
       <arglist>(tsk_debug_f cb)</arglist>
     </member>
     <member kind="function">
       <type>tsk_debug_f</type>
       <name>tsk_debug_get_info_cb</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>afcb21dd599ca81b30e2a1d18d43740d0</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gafcb21dd599ca81b30e2a1d18d43740d0</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_debug_set_warn_cb</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>ab59085cfc5ce170d1fc82f3e4a7f5d94</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gab59085cfc5ce170d1fc82f3e4a7f5d94</anchor>
       <arglist>(tsk_debug_f cb)</arglist>
     </member>
     <member kind="function">
       <type>tsk_debug_f</type>
       <name>tsk_debug_get_warn_cb</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>a30cce1816fc6af384da5557648d8e281</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga30cce1816fc6af384da5557648d8e281</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_debug_set_error_cb</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>a8f785bbd68b21b2f99b1a811b7f6eb96</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga8f785bbd68b21b2f99b1a811b7f6eb96</anchor>
       <arglist>(tsk_debug_f cb)</arglist>
     </member>
     <member kind="function">
       <type>tsk_debug_f</type>
       <name>tsk_debug_get_error_cb</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>a9773a07d4ad8979a4a875c3274d4b1bd</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga9773a07d4ad8979a4a875c3274d4b1bd</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_debug_set_fatal_cb</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>aec0e2e62f4376943a788a4aee8e454e9</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gaec0e2e62f4376943a788a4aee8e454e9</anchor>
       <arglist>(tsk_debug_f cb)</arglist>
     </member>
     <member kind="function">
       <type>tsk_debug_f</type>
       <name>tsk_debug_get_fatal_cb</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>ac3a7a77f74d2f61ce021f96be8e259ec</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gac3a7a77f74d2f61ce021f96be8e259ec</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_debug_get_level</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>a1c3ca90086cfcab7e65f20c491ec78d4</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga1c3ca90086cfcab7e65f20c491ec78d4</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_debug_set_level</name>
-      <anchorfile>tsk__debug_8c.html</anchorfile>
-      <anchor>a3aed3692896c4f5354be6dbf16fd0ccf</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga3aed3692896c4f5354be6dbf16fd0ccf</anchor>
       <arglist>(int level)</arglist>
     </member>
   </compound>
@@ -780,8 +780,8 @@
     <member kind="define">
       <type>#define</type>
       <name>DEBUG_LEVEL</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>ac2d33ccaf63f5d5b66552b95426c0137</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gac2d33ccaf63f5d5b66552b95426c0137</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -815,29 +815,29 @@
     <member kind="define">
       <type>#define</type>
       <name>TSK_DEBUG_INFO</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>a05159e17332ba3f49e442c469c3276bd</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga05159e17332ba3f49e442c469c3276bd</anchor>
       <arglist>(FMT,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TSK_DEBUG_WARN</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>a3b6eda91adc45bd9a684f9bf9f3c22a4</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga3b6eda91adc45bd9a684f9bf9f3c22a4</anchor>
       <arglist>(FMT,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TSK_DEBUG_ERROR</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>a792ec700b78b6143520a2a582f1c99f4</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga792ec700b78b6143520a2a582f1c99f4</anchor>
       <arglist>(FMT,...)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TSK_DEBUG_FATAL</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>a5a5352523fd58911b823bdf2b87e789d</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga5a5352523fd58911b823bdf2b87e789d</anchor>
       <arglist>(FMT,...)</arglist>
     </member>
     <member kind="typedef">
@@ -850,85 +850,85 @@
     <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_debug_set_arg_data</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>aff671f9d0c6bf7c9836a305fbf3a711b</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gae72cfdebdb56e2a7b8083fca53907982</anchor>
       <arglist>(const void *)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API const void *</type>
       <name>tsk_debug_get_arg_data</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>aaa7532cfe3446913873be0de4dac2938</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gaf830dfa1bc42ca0bae29974fb21ec9d7</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_debug_set_info_cb</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>a2bbbddaf14461aacca6c7aa3b72ff656</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga3bc2c8eb37a87eacc2aea0478b20fa06</anchor>
       <arglist>(tsk_debug_f)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API tsk_debug_f</type>
       <name>tsk_debug_get_info_cb</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>a4662fe8c04eee4dc59bd9ab04c1d340d</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gafcb21dd599ca81b30e2a1d18d43740d0</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_debug_set_warn_cb</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>ada9e57310804de59f529e1c0b5268eb7</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gab59085cfc5ce170d1fc82f3e4a7f5d94</anchor>
       <arglist>(tsk_debug_f)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API tsk_debug_f</type>
       <name>tsk_debug_get_warn_cb</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>a632383662ba814c39d1ba937d09dba15</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga30cce1816fc6af384da5557648d8e281</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_debug_set_error_cb</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>ae124cbf313fe01ba77eb6765a2bef99c</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga8f785bbd68b21b2f99b1a811b7f6eb96</anchor>
       <arglist>(tsk_debug_f)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API tsk_debug_f</type>
       <name>tsk_debug_get_error_cb</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>a344550bf3c10dc73168ee713f3336da3</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga9773a07d4ad8979a4a875c3274d4b1bd</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_debug_set_fatal_cb</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>aa41544c4019c3b06daa8b6be5d1ce1df</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gaec0e2e62f4376943a788a4aee8e454e9</anchor>
       <arglist>(tsk_debug_f)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API tsk_debug_f</type>
       <name>tsk_debug_get_fatal_cb</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>a93160943d9c0ec1780875a76b33c4520</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gac3a7a77f74d2f61ce021f96be8e259ec</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
       <name>tsk_debug_get_level</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>a5598810fe57e62bacf0dbd22985d773b</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga1c3ca90086cfcab7e65f20c491ec78d4</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_debug_set_level</name>
-      <anchorfile>tsk__debug_8h.html</anchorfile>
-      <anchor>a18bfb60431fd860a6c13924885d601a0</anchor>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga3aed3692896c4f5354be6dbf16fd0ccf</anchor>
       <arglist>(int)</arglist>
     </member>
   </compound>
@@ -1405,10 +1405,10 @@
       <arglist>(tsk_list_t *list)</arglist>
     </member>
     <member kind="function">
-      <type>void</type>
+      <type>tsk_bool_t</type>
       <name>tsk_list_remove_item</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga2af261ca7e590e04356ec6b2c25dd8aa</anchor>
+      <anchor>ga44500e0068cc22497cc2da1b18887baa</anchor>
       <arglist>(tsk_list_t *list, tsk_list_item_t *item)</arglist>
     </member>
     <member kind="function">
@@ -1478,15 +1478,15 @@
       <type>int</type>
       <name>tsk_list_push_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gad38aa4e81cdba612c803c546cdae7b0a</anchor>
-      <arglist>(tsk_list_t *list, void **data, tsk_bool_t back)</arglist>
+      <anchor>gae7e9a0c30273ca8ee8e2cb254028d38b</anchor>
+      <arglist>(tsk_list_t *list, tsk_object_t **tskobj, tsk_bool_t back)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_list_push_filtered_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga5c8466f48649b102f981d44edb1c717e</anchor>
-      <arglist>(tsk_list_t *list, void **data, tsk_bool_t ascending)</arglist>
+      <anchor>ga5a4bb534cf6c75b57c7f7492d7dd0023</anchor>
+      <arglist>(tsk_list_t *list, tsk_object_t **tskobj, tsk_bool_t ascending)</arglist>
     </member>
     <member kind="function">
       <type>const tsk_list_item_t *</type>
@@ -1508,6 +1508,13 @@
       <anchorfile>group__tsk__list__group.html</anchorfile>
       <anchor>gacedbefcbe8600f1ae107560b1e97aa29</anchor>
       <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
+    </member>
+    <member kind="function">
+      <type>const tsk_object_t *</type>
+      <name>tsk_list_find_object_by_data</name>
+      <anchorfile>tsk__list_8c.html</anchorfile>
+      <anchor>aefdcdcd453553996920221f47a8ffc61</anchor>
+      <arglist>(const tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
     </member>
     <member kind="function">
       <type>const tsk_object_t *</type>
@@ -1558,36 +1565,36 @@
       <type>#define</type>
       <name>TSK_LIST_IS_EMPTY</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga3b505dbb26ce90b203d54c83afac4f22</anchor>
-      <arglist>(self)</arglist>
+      <anchor>ga07a22a65253a69fea8883c225709a424</anchor>
+      <arglist>(list)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TSK_LIST_IS_FIRST</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>a118c7f663f34373010999aa31ac3d77f</anchor>
-      <arglist>(self, item)</arglist>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gaf64bb60eda0b18f54c3018eabcab09f7</anchor>
+      <arglist>(list, item)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TSK_LIST_IS_LAST</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>a857dafa2338b17558205c41b683b3123</anchor>
-      <arglist>(self, item)</arglist>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gad40aeb145d5a4af93c13f7ba71fcf19b</anchor>
+      <arglist>(list, item)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TSK_LIST_FIRST_DATA</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>a1385601514ae885521f7a5d790b9c4e0</anchor>
-      <arglist>(self)</arglist>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga8d68515819b00575fb8bd3c35fbb7ed7</anchor>
+      <arglist>(list)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TSK_LIST_LAST_DATA</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>ae138bed1ab969e9e97d1b611e2d94da5</anchor>
-      <arglist>(self)</arglist>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gadcecd32526f83b78400d92feda4b24a3</anchor>
+      <arglist>(list)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -1599,86 +1606,86 @@
     <member kind="define">
       <type>#define</type>
       <name>tsk_list_remove_first_item</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>a542aba5bbf5377257bc29ccfb0601309</anchor>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga542aba5bbf5377257bc29ccfb0601309</anchor>
       <arglist>(list)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>tsk_list_remove_last_item</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>a286b23fd90b6bacf7bbac77ef9d044b3</anchor>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga286b23fd90b6bacf7bbac77ef9d044b3</anchor>
       <arglist>(list)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>tsk_list_push_back_item</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>a7e9af70f535944be00c283d51e197c49</anchor>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga7e9af70f535944be00c283d51e197c49</anchor>
       <arglist>(list, item)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>tsk_list_push_front_item</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>adef4a064d5e88a24b5b6a48d1680e2af</anchor>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gadef4a064d5e88a24b5b6a48d1680e2af</anchor>
       <arglist>(list, item)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>tsk_list_push_ascending_item</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>a9239fd1b3ca181b7fee9c5489e0b095d</anchor>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga9239fd1b3ca181b7fee9c5489e0b095d</anchor>
       <arglist>(list, item)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>tsk_list_push_descending_item</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>ac44b14cd88a2eda24500a8750402b34a</anchor>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gac44b14cd88a2eda24500a8750402b34a</anchor>
       <arglist>(list, item)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>tsk_list_pushback_list</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>a6e73ea373bb74e3b1a3f963c69ab4db1</anchor>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga6e73ea373bb74e3b1a3f963c69ab4db1</anchor>
       <arglist>(destination, source)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>tsk_list_pushfront_list</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>aa94132edee7964ba4f5d4a937d877602</anchor>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gaa94132edee7964ba4f5d4a937d877602</anchor>
       <arglist>(destination, source)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>tsk_list_push_back_data</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>ad1042b711878ab31c53b6690c55a433d</anchor>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gad1042b711878ab31c53b6690c55a433d</anchor>
       <arglist>(list, data)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>tsk_list_push_front_data</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>ad9158bd82e61cf316f7fe3005da6e5da</anchor>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gad9158bd82e61cf316f7fe3005da6e5da</anchor>
       <arglist>(list, data)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>tsk_list_push_ascending_data</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>ad24156b46b9d085e73024254198f4565</anchor>
-      <arglist>(list, data)</arglist>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gad6555e1039b659f0dd76f05ffc89d000</anchor>
+      <arglist>(list, tskobj)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>tsk_list_push_descending_data</name>
-      <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>a3ced61760ab8ebe75b13bbb6f4e99c74</anchor>
-      <arglist>(list, data)</arglist>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga41f19af5a48eccb1d07e49df049b3015</anchor>
+      <arglist>(list, tskobj)</arglist>
     </member>
     <member kind="typedef">
       <type>struct tsk_list_item_s</type>
@@ -1730,10 +1737,10 @@
       <arglist>(tsk_list_t *list)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSAK_API void</type>
+      <type>TINYSAK_API tsk_bool_t</type>
       <name>tsk_list_remove_item</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga2af261ca7e590e04356ec6b2c25dd8aa</anchor>
+      <anchor>ga44500e0068cc22497cc2da1b18887baa</anchor>
       <arglist>(tsk_list_t *list, tsk_list_item_t *item)</arglist>
     </member>
     <member kind="function">
@@ -1803,15 +1810,15 @@
       <type>TINYSAK_API int</type>
       <name>tsk_list_push_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gad38aa4e81cdba612c803c546cdae7b0a</anchor>
-      <arglist>(tsk_list_t *list, void **data, tsk_bool_t back)</arglist>
+      <anchor>gae7e9a0c30273ca8ee8e2cb254028d38b</anchor>
+      <arglist>(tsk_list_t *list, tsk_object_t **tskobj, tsk_bool_t back)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
       <name>tsk_list_push_filtered_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga5c8466f48649b102f981d44edb1c717e</anchor>
-      <arglist>(tsk_list_t *list, void **data, tsk_bool_t ascending)</arglist>
+      <anchor>ga5a4bb534cf6c75b57c7f7492d7dd0023</anchor>
+      <arglist>(tsk_list_t *list, tsk_object_t **tskobj, tsk_bool_t ascending)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API const tsk_list_item_t *</type>
@@ -1826,6 +1833,13 @@
       <anchorfile>group__tsk__list__group.html</anchorfile>
       <anchor>ga830c02dde8ebc3f009365358e42c90f0</anchor>
       <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API const tsk_object_t *</type>
+      <name>tsk_list_find_object_by_data</name>
+      <anchorfile>tsk__list_8h.html</anchorfile>
+      <anchor>acabe3d40feed0fd91b4b19491d5eb006</anchor>
+      <arglist>(const tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API const tsk_object_t *</type>
@@ -2297,6 +2311,20 @@
       <anchor>a6cda304ddd5bb2526db60c74a98ba28c</anchor>
       <arglist></arglist>
     </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_atomic_inc</name>
+      <anchorfile>tsk__object_8c.html</anchorfile>
+      <anchor>af9bd7d247bb341603d25753bce4545dd</anchor>
+      <arglist>(_ptr_)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_atomic_dec</name>
+      <anchorfile>tsk__object_8c.html</anchorfile>
+      <anchor>afc7e78d6f5976b48011db7e05af37d18</anchor>
+      <arglist>(_ptr_)</arglist>
+    </member>
     <member kind="function">
       <type>tsk_object_t *</type>
       <name>tsk_object_new</name>
@@ -2342,8 +2370,8 @@
     <member kind="function">
       <type>tsk_size_t</type>
       <name>tsk_object_get_refcount</name>
-      <anchorfile>tsk__object_8c.html</anchorfile>
-      <anchor>a5aa9abd63a8f5215561603120bc8d5d4</anchor>
+      <anchorfile>group__tsk__object__group.html</anchorfile>
+      <anchor>ga5aa9abd63a8f5215561603120bc8d5d4</anchor>
       <arglist>(tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
@@ -2476,8 +2504,8 @@
     <member kind="function">
       <type>TINYSAK_API tsk_size_t</type>
       <name>tsk_object_get_refcount</name>
-      <anchorfile>tsk__object_8h.html</anchorfile>
-      <anchor>ae04a33468de946a56a38975b5bd27114</anchor>
+      <anchorfile>group__tsk__object__group.html</anchorfile>
+      <anchor>ga5aa9abd63a8f5215561603120bc8d5d4</anchor>
       <arglist>(tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
@@ -3040,6 +3068,13 @@
       <anchor>a9a6adcace8241b5f1c3c3f9979745ed7</anchor>
       <arglist>(tsk_plugin_t *self, const char *symbol_name)</arglist>
     </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tsk_plugin_file_exist</name>
+      <anchorfile>tsk__plugin_8c.html</anchorfile>
+      <anchor>aeebb694faf5eb896debe1ad8c5ebfbff</anchor>
+      <arglist>(const char *path)</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>tsk_plugin.h</name>
@@ -3144,6 +3179,12 @@
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
+      <name>tsk_plugin_def_type_ipsec</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>ae168b589be31c0bbd3c21507be399e80a470c58c7a9bd835b29053e4cbecd0286</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
       <name>tsk_plugin_def_type_all</name>
       <anchorfile>tsk__plugin_8h.html</anchorfile>
       <anchor>ae168b589be31c0bbd3c21507be399e80aee072afbc4e2a1a6d39a0b2a31d0a1cc</anchor>
@@ -3207,6 +3248,13 @@
       <anchorfile>tsk__plugin_8h.html</anchorfile>
       <anchor>a64c5a37d5b1ec391aff84701166f3db0</anchor>
       <arglist>(struct tsk_plugin_s *self, const char *symbol_name)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_bool_t</type>
+      <name>tsk_plugin_file_exist</name>
+      <anchorfile>tsk__plugin_8h.html</anchorfile>
+      <anchor>a8b2e5b88ed98c9b81201b21fe5ac8c35</anchor>
+      <arglist>(const char *path)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -5275,6 +5323,50 @@
     <includes id="tinysak__config_8h" name="tinysak_config.h" local="yes" imported="no">tinysak_config.h</includes>
     <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
   </compound>
+  <compound kind="page">
+    <name>_Page_TinySAK_Overview</name>
+    <title>Swiss Army Knife</title>
+    <filename>__page__tiny_s_a_k__overview</filename>
+  </compound>
+  <compound kind="page">
+    <name>_Page_TinySAK_AnsiC_Debugging</name>
+    <title>Debugging</title>
+    <filename>__page__tiny_s_a_k__ansi_c__debugging</filename>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__debugging">_Anchor_TinySAK_Debugging_Output</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__debugging">_Anchor_TinySAK_Debugging_StdErr</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__debugging">_Anchor_TinySAK_Debugging_Callback_Functions</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__debugging">_Anchor_TinySAK_Debugging_Custom_Debug_Header</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__debugging">_Anchor_TinySAK_Debugging_Public_Fuctions</docanchor>
+  </compound>
+  <compound kind="page">
+    <name>_Page_TinySAK_AnsiC_Linked_List</name>
+    <title>Linked list</title>
+    <filename>__page__tiny_s_a_k__ansi_c__linked__list</filename>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__linked__list">_Anchor_TinySAK_Linked_List_Well_Defined_Object</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__linked__list">_Anchor_TinySAK_Linked_List_Predicates</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__linked__list">_Anchor_TinySAK_Linked_List_Create_Destroy</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__linked__list">_Anchor_TinySAK_Linked_List_Thread_Safety</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__linked__list">_Anchor_TinySAK_Linked_List_Add_Remove</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__linked__list">_Anchor_TinySAK_Linked_List_Dump_Items</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__linked__list">_Anchor_TinySAK_Linked_List_Sort_Items</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__linked__list">_Anchor_TinySAK_Linked_List_Find_Items</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__linked__list">_Anchor_TinySAK_Linked_List_Public_Functions</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__linked__list">_Anchor_TinySAK_Linked_List_Helper_Macros</docanchor>
+  </compound>
+  <compound kind="page">
+    <name>_Page_TinySAK_AnsiC_Object_Programming</name>
+    <title>ANSI-C Object Programming</title>
+    <filename>__page__tiny_s_a_k__ansi_c__object__programming</filename>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__object__programming">_Anchor_TinySAK_Object_Definition</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__object__programming">_Anchor_TinySAK_Object_Constructor</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__object__programming">_Anchor_TinySAK_Object_Destructor</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__object__programming">_Anchor_TinySAK_Object_Comparator</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__object__programming">_Anchor_TinySAK_Object_Reference_Counting</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__object__programming">_Anchor_TinySAK_Object_Inheritence</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__object__programming">_Anchor_TinySAK_Object_Basic_Usage</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__object__programming">_Anchor_TinySAK_Object_Complete_Source_Code</docanchor>
+    <docanchor file="__page__tiny_s_a_k__ansi_c__object__programming">_Anchor_TinySAK_Object_Public_Fuctions</docanchor>
+  </compound>
   <compound kind="group">
     <name>tsk_base64_group</name>
     <title>Base64 encoder/decoder as per RFC 4648.</title>
@@ -5534,6 +5626,13 @@
     <filename>group__tsk__debug__group.html</filename>
     <member kind="define">
       <type>#define</type>
+      <name>DEBUG_LEVEL</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gac2d33ccaf63f5d5b66552b95426c0137</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>DEBUG_LEVEL_INFO</name>
       <anchorfile>group__tsk__debug__group.html</anchorfile>
       <anchor>ga5f068e0ead7c7e158d2ff28e7b2f2794</anchor>
@@ -5559,6 +5658,118 @@
       <anchorfile>group__tsk__debug__group.html</anchorfile>
       <anchor>gade8136c97f2dd21c2449282fe0ce0f97</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_DEBUG_INFO</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga05159e17332ba3f49e442c469c3276bd</anchor>
+      <arglist>(FMT,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_DEBUG_WARN</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga3b6eda91adc45bd9a684f9bf9f3c22a4</anchor>
+      <arglist>(FMT,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_DEBUG_ERROR</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga792ec700b78b6143520a2a582f1c99f4</anchor>
+      <arglist>(FMT,...)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_DEBUG_FATAL</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga5a5352523fd58911b823bdf2b87e789d</anchor>
+      <arglist>(FMT,...)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tsk_debug_set_arg_data</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gae72cfdebdb56e2a7b8083fca53907982</anchor>
+      <arglist>(const void *arg_data)</arglist>
+    </member>
+    <member kind="function">
+      <type>const void *</type>
+      <name>tsk_debug_get_arg_data</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gaf830dfa1bc42ca0bae29974fb21ec9d7</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tsk_debug_set_info_cb</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga3bc2c8eb37a87eacc2aea0478b20fa06</anchor>
+      <arglist>(tsk_debug_f cb)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_debug_f</type>
+      <name>tsk_debug_get_info_cb</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gafcb21dd599ca81b30e2a1d18d43740d0</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tsk_debug_set_warn_cb</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gab59085cfc5ce170d1fc82f3e4a7f5d94</anchor>
+      <arglist>(tsk_debug_f cb)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_debug_f</type>
+      <name>tsk_debug_get_warn_cb</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga30cce1816fc6af384da5557648d8e281</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tsk_debug_set_error_cb</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga8f785bbd68b21b2f99b1a811b7f6eb96</anchor>
+      <arglist>(tsk_debug_f cb)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_debug_f</type>
+      <name>tsk_debug_get_error_cb</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga9773a07d4ad8979a4a875c3274d4b1bd</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tsk_debug_set_fatal_cb</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gaec0e2e62f4376943a788a4aee8e454e9</anchor>
+      <arglist>(tsk_debug_f cb)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_debug_f</type>
+      <name>tsk_debug_get_fatal_cb</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>gac3a7a77f74d2f61ce021f96be8e259ec</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_debug_get_level</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga1c3ca90086cfcab7e65f20c491ec78d4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tsk_debug_set_level</name>
+      <anchorfile>group__tsk__debug__group.html</anchorfile>
+      <anchor>ga3aed3692896c4f5354be6dbf16fd0ccf</anchor>
+      <arglist>(int level)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -5763,8 +5974,36 @@
       <type>#define</type>
       <name>TSK_LIST_IS_EMPTY</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga3b505dbb26ce90b203d54c83afac4f22</anchor>
-      <arglist>(self)</arglist>
+      <anchor>ga07a22a65253a69fea8883c225709a424</anchor>
+      <arglist>(list)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_LIST_IS_FIRST</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gaf64bb60eda0b18f54c3018eabcab09f7</anchor>
+      <arglist>(list, item)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_LIST_IS_LAST</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gad40aeb145d5a4af93c13f7ba71fcf19b</anchor>
+      <arglist>(list, item)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_LIST_FIRST_DATA</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga8d68515819b00575fb8bd3c35fbb7ed7</anchor>
+      <arglist>(list)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_LIST_LAST_DATA</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gadcecd32526f83b78400d92feda4b24a3</anchor>
+      <arglist>(list)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -5772,6 +6011,90 @@
       <anchorfile>group__tsk__list__group.html</anchorfile>
       <anchor>ga3dc00dc6de6f204db6cc311fab641552</anchor>
       <arglist>(item, list)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_list_remove_first_item</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga542aba5bbf5377257bc29ccfb0601309</anchor>
+      <arglist>(list)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_list_remove_last_item</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga286b23fd90b6bacf7bbac77ef9d044b3</anchor>
+      <arglist>(list)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_list_push_back_item</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga7e9af70f535944be00c283d51e197c49</anchor>
+      <arglist>(list, item)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_list_push_front_item</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gadef4a064d5e88a24b5b6a48d1680e2af</anchor>
+      <arglist>(list, item)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_list_push_ascending_item</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga9239fd1b3ca181b7fee9c5489e0b095d</anchor>
+      <arglist>(list, item)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_list_push_descending_item</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gac44b14cd88a2eda24500a8750402b34a</anchor>
+      <arglist>(list, item)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_list_pushback_list</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga6e73ea373bb74e3b1a3f963c69ab4db1</anchor>
+      <arglist>(destination, source)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_list_pushfront_list</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gaa94132edee7964ba4f5d4a937d877602</anchor>
+      <arglist>(destination, source)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_list_push_back_data</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gad1042b711878ab31c53b6690c55a433d</anchor>
+      <arglist>(list, data)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_list_push_front_data</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gad9158bd82e61cf316f7fe3005da6e5da</anchor>
+      <arglist>(list, data)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_list_push_ascending_data</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gad6555e1039b659f0dd76f05ffc89d000</anchor>
+      <arglist>(list, tskobj)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_list_push_descending_data</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>ga41f19af5a48eccb1d07e49df049b3015</anchor>
+      <arglist>(list, tskobj)</arglist>
     </member>
     <member kind="typedef">
       <type>struct tsk_list_item_s</type>
@@ -5823,10 +6146,10 @@
       <arglist>(tsk_list_t *list)</arglist>
     </member>
     <member kind="function">
-      <type>void</type>
+      <type>tsk_bool_t</type>
       <name>tsk_list_remove_item</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga2af261ca7e590e04356ec6b2c25dd8aa</anchor>
+      <anchor>ga44500e0068cc22497cc2da1b18887baa</anchor>
       <arglist>(tsk_list_t *list, tsk_list_item_t *item)</arglist>
     </member>
     <member kind="function">
@@ -5896,15 +6219,15 @@
       <type>int</type>
       <name>tsk_list_push_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gad38aa4e81cdba612c803c546cdae7b0a</anchor>
-      <arglist>(tsk_list_t *list, void **data, tsk_bool_t back)</arglist>
+      <anchor>gae7e9a0c30273ca8ee8e2cb254028d38b</anchor>
+      <arglist>(tsk_list_t *list, tsk_object_t **tskobj, tsk_bool_t back)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_list_push_filtered_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga5c8466f48649b102f981d44edb1c717e</anchor>
-      <arglist>(tsk_list_t *list, void **data, tsk_bool_t ascending)</arglist>
+      <anchor>ga5a4bb534cf6c75b57c7f7492d7dd0023</anchor>
+      <arglist>(tsk_list_t *list, tsk_object_t **tskobj, tsk_bool_t ascending)</arglist>
     </member>
     <member kind="function">
       <type>const tsk_list_item_t *</type>
@@ -6191,6 +6514,13 @@
       <name>tsk_object_unref</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
       <anchor>ga32ef69f32a1dd6bc0d0be0e164ea2843</anchor>
+      <arglist>(tsk_object_t *self)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_size_t</type>
+      <name>tsk_object_get_refcount</name>
+      <anchorfile>group__tsk__object__group.html</anchorfile>
+      <anchor>ga5aa9abd63a8f5215561603120bc8d5d4</anchor>
       <arglist>(tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
@@ -8048,10 +8378,5 @@
     <path>C:/Projects/doubango/branches/2.0/doubango/tinySAK/</path>
     <filename>dir_64a5a2540020364edec71303f2936fb2.html</filename>
     <dir>C:/Projects/doubango/branches/2.0/doubango/tinySAK/src</dir>
-  </compound>
-  <compound kind="page">
-    <name>index</name>
-    <title>tinySAK API Overview</title>
-    <filename>index</filename>
   </compound>
 </tagfile>

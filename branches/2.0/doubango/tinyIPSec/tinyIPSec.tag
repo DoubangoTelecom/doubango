@@ -589,6 +589,8 @@
     <name>_Page_Main_FAQ</name>
     <title>(FAQ)</title>
     <filename>__page__main__f_a_q</filename>
+    <docanchor file="__page__main__f_a_q">_Anchor_TIPSec_FAQ_Client</docanchor>
+    <docanchor file="__page__main__f_a_q">_Anchor_TIPSec_FAQ_Samples</docanchor>
     <docanchor file="__page__main__f_a_q">_Anchor_TIPSec_FAQ_Stable</docanchor>
     <docanchor file="__page__main__f_a_q">_Anchor_TIPSec_FAQ_Systems</docanchor>
     <docanchor file="__page__main__f_a_q">_Anchor_TIPSec_FAQ_Logs</docanchor>
