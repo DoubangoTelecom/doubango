@@ -228,6 +228,11 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public bool setMaxFDs(uint max_fds) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setMaxFDs(swigCPtr, max_fds);
+    return ret;
+  }
+
   public string getLocalIPnPort(string protocol, out ushort OUTPUT) {
     string ret = tinyWRAPPINVOKE.SipStack_getLocalIPnPort(swigCPtr, protocol, out OUTPUT);
     return ret;
@@ -278,6 +283,11 @@ public class SipStack : SafeObject {
 
   public static bool isCodecSupported(tdav_codec_id_t codec_id) {
     bool ret = tinyWRAPPINVOKE.SipStack_isCodecSupported((int)codec_id);
+    return ret;
+  }
+
+  public static bool isIPSecSupported() {
+    bool ret = tinyWRAPPINVOKE.SipStack_isIPSecSupported();
     return ret;
   }
 

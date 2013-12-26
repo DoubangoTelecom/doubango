@@ -5795,6 +5795,34 @@ XS(_wrap_MediaSessionMgr_defaultsSetOpusMaxPlaybackRate) {
 }
 
 
+XS(_wrap_MediaSessionMgr_defaultsSetMaxFds) {
+  {
+    int32_t arg1 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetMaxFds(max_fds);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetMaxFds" "', argument " "1"" of type '" "int32_t""'");
+    } 
+    arg1 = static_cast< int32_t >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetMaxFds(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_delete_MediaContent) {
   {
     MediaContent *arg1 = (MediaContent *) 0 ;
@@ -23227,6 +23255,44 @@ XS(_wrap_SipStack_dnsSrv) {
 }
 
 
+XS(_wrap_SipStack_setMaxFDs) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    unsigned int arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    unsigned int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: SipStack_setMaxFDs(self,max_fds);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setMaxFDs" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    ecode2 = SWIG_AsVal_unsigned_SS_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SipStack_setMaxFDs" "', argument " "2"" of type '" "unsigned int""'");
+    } 
+    arg2 = static_cast< unsigned int >(val2);
+    result = (bool)(arg1)->setMaxFDs(arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_SipStack_getLocalIPnPort) {
   {
     SipStack *arg1 = (SipStack *) 0 ;
@@ -23553,6 +23619,24 @@ XS(_wrap_SipStack_isCodecSupported) {
     XSRETURN(argvi);
   fail:
     
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipStack_isIPSecSupported) {
+  {
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: SipStack_isIPSecSupported();");
+    }
+    result = (bool)SipStack::isIPSecSupported();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
     SWIG_croak_null();
   }
 }
@@ -27594,6 +27678,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsSetAvpfTail", _wrap_MediaSessionMgr_defaultsSetAvpfTail},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetOpusMaxCaptureRate", _wrap_MediaSessionMgr_defaultsSetOpusMaxCaptureRate},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetOpusMaxPlaybackRate", _wrap_MediaSessionMgr_defaultsSetOpusMaxPlaybackRate},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetMaxFds", _wrap_MediaSessionMgr_defaultsSetMaxFds},
 {"tinyWRAPc::delete_MediaContent", _wrap_delete_MediaContent},
 {"tinyWRAPc::MediaContent_getType", _wrap_MediaContent_getType},
 {"tinyWRAPc::MediaContent_getDataLength", _wrap_MediaContent_getDataLength},
@@ -27894,6 +27979,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SipStack_dnsENUM", _wrap_SipStack_dnsENUM},
 {"tinyWRAPc::SipStack_dnsNaptrSrv", _wrap_SipStack_dnsNaptrSrv},
 {"tinyWRAPc::SipStack_dnsSrv", _wrap_SipStack_dnsSrv},
+{"tinyWRAPc::SipStack_setMaxFDs", _wrap_SipStack_setMaxFDs},
 {"tinyWRAPc::SipStack_getLocalIPnPort", _wrap_SipStack_getLocalIPnPort},
 {"tinyWRAPc::SipStack_getPreferredIdentity", _wrap_SipStack_getPreferredIdentity},
 {"tinyWRAPc::SipStack_isValid", _wrap_SipStack_isValid},
@@ -27905,6 +27991,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SipStack_setCodecPriority", _wrap_SipStack_setCodecPriority},
 {"tinyWRAPc::SipStack_setCodecPriority_2", _wrap_SipStack_setCodecPriority_2},
 {"tinyWRAPc::SipStack_isCodecSupported", _wrap_SipStack_isCodecSupported},
+{"tinyWRAPc::SipStack_isIPSecSupported", _wrap_SipStack_isIPSecSupported},
 {"tinyWRAPc::new_XcapSelector", _wrap_new_XcapSelector},
 {"tinyWRAPc::delete_XcapSelector", _wrap_delete_XcapSelector},
 {"tinyWRAPc::XcapSelector_setAUID", _wrap_XcapSelector_setAUID},

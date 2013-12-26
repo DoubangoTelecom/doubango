@@ -96,6 +96,7 @@ public: /* API functions */
 	static bool setCodecPriority(tdav_codec_id_t codec_id, int priority);
 	static bool setCodecPriority_2(int codec, int priority);// For stupid languages
 	static bool isCodecSupported(tdav_codec_id_t codec_id);
+	static bool isIPSecSupported();
 
 public: /* Public helper function */
 #if !defined(SWIG)

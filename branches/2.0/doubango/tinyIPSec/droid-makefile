@@ -6,11 +6,7 @@ LDFLAGS := -ltinySAK_$(MARCH) $(LDFLAGS_LIB)
 all: $(APP)
 
 OBJS = \
-	src/tipsec.o\
-	src/tipsec_common.o\
-	src/tipsec_racoon.o\
-	src/tipsec_vista.o\
-	src/tipsec_xp.o
+	src/tipsec.o
 	
 
 $(APP): $(OBJS)

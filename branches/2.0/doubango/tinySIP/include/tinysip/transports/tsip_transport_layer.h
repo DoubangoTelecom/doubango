@@ -36,8 +36,6 @@
 #include "tinysip/tsip_message.h"
 #include "tsip.h"
 
-#include "tipsec.h"
-
 TSIP_BEGIN_DECLS
 
 typedef struct tsip_transport_layer_s

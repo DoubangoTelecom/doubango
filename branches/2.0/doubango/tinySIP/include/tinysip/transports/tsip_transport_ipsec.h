@@ -48,10 +48,14 @@ typedef struct tsip_ipsec_association_s
 
 	const tsip_transport_t* transport;
 
-	tipsec_context_t* ctx;
+	tipsec_ctx_t* ctx;
 	
 	tnet_socket_t *socket_uc;
 	tnet_socket_t *socket_us;
+
+	tnet_ip_t ip_remote;
+	tnet_ip_t ip_local;
+	tnet_port_t port_local;
 }
 tsip_ipsec_association_t;
 

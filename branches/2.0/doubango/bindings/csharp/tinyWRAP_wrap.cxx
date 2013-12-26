@@ -2538,6 +2538,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetOpusMaxPla
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetMaxFds(int jarg1) {
+  unsigned int jresult ;
+  int32_t arg1 ;
+  bool result;
+  
+  arg1 = (int32_t)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetMaxFds(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_MediaContent(void * jarg1) {
   MediaContent *arg1 = (MediaContent *) 0 ;
   
@@ -7729,6 +7741,20 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_dnsSrv(void * jarg1, char * jarg2,
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setMaxFDs(void * jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  unsigned int arg2 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (unsigned int)jarg2; 
+  result = (bool)(arg1)->setMaxFDs(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT char * SWIGSTDCALL CSharp_SipStack_getLocalIPnPort(void * jarg1, char * jarg2, unsigned short * jarg3) {
   char * jresult ;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -7854,6 +7880,16 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_isCodecSupported(int jarg1) 
   
   arg1 = (tdav_codec_id_t)jarg1; 
   result = (bool)SipStack::isCodecSupported(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_isIPSecSupported() {
+  unsigned int jresult ;
+  bool result;
+  
+  result = (bool)SipStack::isIPSecSupported();
   jresult = result; 
   return jresult;
 }

@@ -1,3 +1,6 @@
+###
+# Copyright (C) 2013 Mamadou DIOP
+###
 VERSION_MAJOR=2
 VERSION_MINOR=0
 VERSION_MICRO=0
@@ -38,3 +41,4 @@ UpdateVersion plugins/pluginDirectShow/version.rc
 UpdateVersion plugins/pluginWASAPI/version.rc
 UpdateVersion plugins/pluginWinAudioDSP/version.rc
 UpdateVersion plugins/pluginWinMF/version.rc
+UpdateVersion plugins/pluginWinIPSecVista/version.rc

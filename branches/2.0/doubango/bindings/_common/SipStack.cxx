@@ -463,6 +463,11 @@ bool SipStack::isCodecSupported(tdav_codec_id_t codec_id)
 	return tdav_codec_is_supported(codec_id) ? true : false;
 }
 
+bool SipStack::isIPSecSupported()
+{
+	return tdav_ipsec_is_supported() ? true : false;
+}
+
 static int stack_callback(const tsip_event_t *sipevent)
 {
 	int ret = 0;

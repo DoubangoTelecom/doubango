@@ -346,4 +346,8 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetOpusMaxPlaybackRate(opus_maxplaybackrate);
   }
 
+  public static boolean defaultsSetMaxFds(int max_fds) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetMaxFds(max_fds);
+  }
+
 }

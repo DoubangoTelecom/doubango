@@ -5,10 +5,12 @@ libtinyDAV_la_LIBADD = \
 	../tinySDP/libtinySDP.la\
 	../tinyRTP/libtinyRTP.la\
 	../tinyMEDIA/libtinyMEDIA.la\
-	../tinyMSRP/libtinyMSRP.la
+	../tinyMSRP/libtinyMSRP.la\
+	../tinyIPSec/libtinyIPSec.la
 
 libtinyDAV_la_CPPFLAGS = -I../tinySAK/src\
 	-I../tinyNET/src\
+	-I../tinyIPSec/src\
 	-I../tinySDP/include\
 	-I../tinyRTP/include\
 	-I../tinyMEDIA/include\

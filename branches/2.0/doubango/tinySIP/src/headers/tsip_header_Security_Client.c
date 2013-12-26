@@ -65,9 +65,9 @@ int tsip_header_Security_Client_serialize(const tsip_header_t* header, tsk_buffe
 		const tsip_header_Security_Client_t *Security_Client = (const tsip_header_Security_Client_t *)header;
 		int ret = 0;
 		
-		// ipsec-3gpp; alg=hmac-md5-96; ealg=des-ede3-cbc; spi-c=1111; spi-s=2222; port-c=5062; port-s=5064
+		// ipsec-3gpp; alg=hmac-md5-96; ealg=des-ede3-cbc; mod=trans; spi-c=1111; spi-s=2222; port-c=5062; port-s=5064
 		if(tsk_striequals(Security_Client->mech, "ipsec-3gpp")){
-			ret = tsk_buffer_append_2(output, "%s%s%s%s%s%s%s;spi-c=%u;spi-s=%u;port-c=%u;port-s=%u", 
+			ret = tsk_buffer_append_2(output, "%s%s%s%s%s%s%s%s%s;spi-c=%u;spi-s=%u;port-c=%u;port-s=%u", 
 				Security_Client->mech,
 				
 				Security_Client->alg ? ";alg=" : "",
@@ -78,6 +78,9 @@ int tsip_header_Security_Client_serialize(const tsip_header_t* header, tsk_buffe
 
 				Security_Client->prot ? ";prot=" : "",
 				Security_Client->prot ? Security_Client->prot : "",
+
+				Security_Client->prot ? ";mod=" : "",
+				Security_Client->prot ? Security_Client->mod : "",
 				
 				Security_Client->spi_c,
 				Security_Client->spi_s,

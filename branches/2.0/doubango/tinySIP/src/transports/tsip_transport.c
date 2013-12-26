@@ -560,13 +560,10 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 			}
 			else if(TNET_SOCKET_TYPE_IS_IPSEC(self->type)){
 				tnet_fd_t fd = tsip_transport_ipsec_getFD(TSIP_TRANSPORT_IPSEC(self), TSIP_MESSAGE_IS_REQUEST(msg));
-				if(fd != TNET_INVALID_FD){
-					//struct sockaddr_storage to;
-					//tnet_sockaddr_init("2001:5c0:1502:1800::225", 4060, self->type, &to);
-
-					//tnet_sockfd_sendto(fd, (const struct sockaddr *)&to, buffer->data, buffer->size);
-					ret = tnet_sockfd_send(fd, buffer->data, buffer->size, 0);
-				}
+				// "fd == TNET_INVALID_FD" means IPSec SAs not up yet
+				ret = (fd != TNET_INVALID_FD)
+					? tnet_sockfd_send(fd, buffer->data, buffer->size, 0)
+					: tsip_transport_send_raw(self, destIP, destPort, buffer->data, buffer->size, callid);
 			}
 			else{
 				ret = tsip_transport_send_raw(self, destIP, destPort, buffer->data, buffer->size, callid);

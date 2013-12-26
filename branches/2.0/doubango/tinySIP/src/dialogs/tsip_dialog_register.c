@@ -31,6 +31,8 @@
 
 #include "tinysip/transactions/tsip_transac_layer.h"
 
+#include "tipsec.h"
+
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 #include "tsk_time.h"

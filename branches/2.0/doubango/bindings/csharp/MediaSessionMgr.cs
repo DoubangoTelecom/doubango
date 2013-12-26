@@ -429,6 +429,11 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetMaxFds(int max_fds) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetMaxFds(max_fds);
+    return ret;
+  }
+
 }
 
 }

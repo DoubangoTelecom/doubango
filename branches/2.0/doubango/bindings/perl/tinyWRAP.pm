@@ -306,6 +306,7 @@ sub DESTROY {
 *defaultsSetAvpfTail = *tinyWRAPc::MediaSessionMgr_defaultsSetAvpfTail;
 *defaultsSetOpusMaxCaptureRate = *tinyWRAPc::MediaSessionMgr_defaultsSetOpusMaxCaptureRate;
 *defaultsSetOpusMaxPlaybackRate = *tinyWRAPc::MediaSessionMgr_defaultsSetOpusMaxPlaybackRate;
+*defaultsSetMaxFds = *tinyWRAPc::MediaSessionMgr_defaultsSetMaxFds;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -1976,6 +1977,7 @@ sub DESTROY {
 *dnsENUM = *tinyWRAPc::SipStack_dnsENUM;
 *dnsNaptrSrv = *tinyWRAPc::SipStack_dnsNaptrSrv;
 *dnsSrv = *tinyWRAPc::SipStack_dnsSrv;
+*setMaxFDs = *tinyWRAPc::SipStack_setMaxFDs;
 *getLocalIPnPort = *tinyWRAPc::SipStack_getLocalIPnPort;
 *getPreferredIdentity = *tinyWRAPc::SipStack_getPreferredIdentity;
 *isValid = *tinyWRAPc::SipStack_isValid;
@@ -1987,6 +1989,7 @@ sub DESTROY {
 *setCodecPriority = *tinyWRAPc::SipStack_setCodecPriority;
 *setCodecPriority_2 = *tinyWRAPc::SipStack_setCodecPriority_2;
 *isCodecSupported = *tinyWRAPc::SipStack_isCodecSupported;
+*isIPSecSupported = *tinyWRAPc::SipStack_isIPSecSupported;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
