@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="tinyMEDIA"
 	ProjectGUID="{52814B0D-7DCA-45B8-9A16-8B147040D619}"
 	RootNamespace="tinyMEDIA"
