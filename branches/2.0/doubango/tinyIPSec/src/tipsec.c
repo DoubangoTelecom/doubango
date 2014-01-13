@@ -58,7 +58,7 @@ tipsec_error_t tipsec_ctx_create(
 {
     tipsec_error_t err = tipsec_error_success;
     tsk_size_t i = 0;
-    const tipsec_plugin_def_t* pc_plugin;
+    const tipsec_plugin_def_t* pc_plugin = tsk_null;
     tipsec_ctx_t* p_ctx = tsk_null;
 
     if (!pp_ctx || *pp_ctx) {
@@ -84,6 +84,11 @@ tipsec_error_t tipsec_ctx_create(
             }
         }
     }
+
+	if (!pc_plugin || !p_ctx) {
+		TSK_DEBUG_ERROR("Failed to find/create a plugin instance");
+        return tipsec_error_notfound;
+	}
 
     // Initialize the newly created context
     err = pc_plugin->init(p_ctx);
