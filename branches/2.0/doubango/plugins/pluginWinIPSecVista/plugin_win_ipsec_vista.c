@@ -26,9 +26,11 @@
 
 #include <ws2tcpip.h>
 #include <Fwpmu.h>
+#include <Rpc.h>
 
 #if defined(_MSC_VER)
 #	pragma comment(lib, "Fwpuclnt.lib")
+#	pragma comment(lib, "Rpcrt4.lib")
 #endif
 
 typedef FWP_BYTE_BLOB* PFWP_BYTE_BLOB;
@@ -42,7 +44,7 @@ static const IPSEC_CIPHER_TRANSFORM_ID0 IPSEC_CIPHER_TRANSFORM_ID_NULL_NULL= {
 #define TINYIPSEC_FILTER_NAME					TEXT("Doubango Telecom tinyIPSec (Windows Vista)")
 #define TINYIPSEC_PROVIDER_KEY					NULL
 
-#define TINYIPSEC_SA_NUM_ENTRIES_TO_REQUEST		20
+#define TINYIPSEC_SA_NUM_ENTRIES_TO_REQUEST		INT_MAX
 #define TINYIPSEC_SA_MAX_LIFETIME				172799
 
 #define TINYIPSEC_VISTA_GET_ALGO(algo) (algo ==  tipsec_alg_hmac_md5_96) ? IPSEC_AUTH_TRANSFORM_ID_HMAC_MD5_96 : IPSEC_AUTH_TRANSFORM_ID_HMAC_SHA_1_96
@@ -58,6 +60,7 @@ typedef struct plugin_win_ipsec_vista_ctx_s {
     tipsec_ctx_t* pc_base;
     UINT64 saId_us;
     UINT64 saId_uc;
+	WCHAR filter_name[256];
 
     HANDLE engine;
 }
@@ -77,11 +80,33 @@ static tipsec_error_t _plugin_win_ipsec_vista_ctx_init(tipsec_ctx_t* _p_ctx)
 {
     plugin_win_ipsec_vista_ctx_t* p_ctx = (plugin_win_ipsec_vista_ctx_t*)_p_ctx;
     DWORD code;
+	UUID uuid;
+	RPC_STATUS status;
+	static uint64_t __guard = 0;
 
     if (p_ctx->pc_base->initialized) {
         TSK_DEBUG_ERROR("Already initialized");
         return tipsec_error_invalid_state;
     }
+
+	/* Create filter name */
+    status = UuidCreate(&uuid);
+    if (status == RPC_S_OK) {
+		WCHAR* wszUuid = NULL;
+        UuidToStringW(&uuid, (RPC_WSTR*)&wszUuid);
+		if (!wszUuid) {
+			TSK_DEBUG_ERROR("Failed to convert the UUID");
+			return tipsec_error_sys;
+		}
+		swprintf(p_ctx->filter_name, sizeof(p_ctx->filter_name)/sizeof(p_ctx->filter_name[0]), L"%s//%s//%llu", TINYIPSEC_FILTER_NAME, wszUuid, __guard++);
+		RpcStringFree((RPC_WSTR*)&wszUuid);
+	}
+	else {
+		TSK_DEBUG_ERROR("Failed to create new UUID");
+		return tipsec_error_sys;
+	}
+
+	
 
     /* Open engine */
     if ((code = FwpmEngineOpen0(NULL, RPC_C_AUTHN_WINNT, NULL, NULL, &p_ctx->engine))) {
@@ -318,7 +343,7 @@ static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, 
     memset(&filter, 0, sizeof(filter));
     // For MUI compatibility, object names should be indirect strings. See
     // SHLoadIndirectString for details.
-    filter.displayData.name = (PWSTR)TINYIPSEC_FILTER_NAME;
+	filter.displayData.name = (PWCHAR)p_ctx->filter_name;
     // Link all objects to our provider. When multiple providers are installed
     // on a computer, this makes it easy to determine who added what.
     filter.providerKey = (GUID*)TINYIPSEC_PROVIDER_KEY;
@@ -517,7 +542,7 @@ static int _vista_flushAll(const plugin_win_ipsec_vista_ctx_t* p_ctx)
 
         for (i = 0; i<numEntriesReturned; i++) {
             IPSEC_SA_DETAILS0* entry = (entries)[i];
-            if ( !wcscmp(entry->transportFilter->displayData.name, TINYIPSEC_FILTER_NAME)) {
+            if ( !wcscmp(entry->transportFilter->displayData.name, p_ctx->filter_name)) {
                 if ((result = FwpmFilterDeleteById0(p_ctx->engine, entry->transportFilter->filterId)) != ERROR_SUCCESS) {
                     TSK_DEBUG_ERROR("FwpmFilterDeleteById0 failed with error code [%x].", result);
                     goto CLEANUP;
