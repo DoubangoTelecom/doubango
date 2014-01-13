@@ -46,7 +46,7 @@ namespace ipsec
         static UInt64 __lifetime = 1800; /* always set it to the maximum value. (Not possible to update the value after REGISTER 200OK. ) */
 
         static String __key_ik = "1234567890123456";
-        static String __key_ck = "1234567890121234";
+        static String __key_ck = "1234567890121234"; 
  
         static void Main(string[] args)
         {

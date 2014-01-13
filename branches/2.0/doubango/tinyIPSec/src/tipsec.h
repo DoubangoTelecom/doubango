@@ -150,7 +150,7 @@ typedef enum tipsec_proto_e {
     //! AH protocol ("ah").
     tipsec_proto_ah = (0x01 << 0),
     //! ESP protocol ("esp").
-    tipsec_proto_esp = (0x01 << 0),
+    tipsec_proto_esp = (0x01 << 1),
     //! Both AH and ESP protocols ("ah/esp").
     tipsec_proto_both = (tipsec_proto_ah | tipsec_proto_esp)
 }

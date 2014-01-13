@@ -10,7 +10,7 @@ namespace org.doubango.ipsecWRAP {
 
 public enum tipsec_proto_t {
   tipsec_proto_ah = (0x01 << 0),
-  tipsec_proto_esp = (0x01 << 0),
+  tipsec_proto_esp = (0x01 << 1),
   tipsec_proto_both = (tipsec_proto_ah|tipsec_proto_esp)
 }
 
