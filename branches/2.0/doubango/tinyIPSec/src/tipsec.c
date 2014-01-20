@@ -80,6 +80,7 @@ tipsec_error_t tipsec_ctx_create(
                 p_ctx->ealg = ealg;
                 p_ctx->alg = alg;
                 p_ctx->protocol = protocol;
+				p_ctx->ipproto = ipproto;
                 break;
             }
         }
