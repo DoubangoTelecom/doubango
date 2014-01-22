@@ -493,6 +493,9 @@ struct ssl_session_st
 	char *psk_identity_hint;
 	char *psk_identity;
 #endif
+	/* Used to indicate that session resumption is not allowed.
+	 * Applications can also set this bit for a new session via
+	 * not_resumable_session_cb to disable session caching and tickets. */
 	int not_resumable;
 
 	/* The cert is the certificate used to establish this connection */
@@ -535,7 +538,7 @@ struct ssl_session_st
 #endif /* OPENSSL_NO_EC */
 	/* RFC4507 info */
 	unsigned char *tlsext_tick;	/* Session ticket */
-	size_t	tlsext_ticklen;		/* Session ticket length */	
+	size_t tlsext_ticklen;		/* Session ticket length */
 	long tlsext_tick_lifetime_hint;	/* Session lifetime hint in seconds */
 #endif
 #ifndef OPENSSL_NO_SRP
@@ -556,7 +559,6 @@ struct ssl_session_st
 #define SSL_OP_SSLEAY_080_CLIENT_DH_BUG			0x00000080L
 #define SSL_OP_TLS_D5_BUG				0x00000100L
 #define SSL_OP_TLS_BLOCK_PADDING_BUG			0x00000200L
-#define SSL_OP_NO_TLSv1_1				0x00000400L
 
 /* Disable SSL 3.0/TLS 1.0 CBC vulnerability workaround that was added
  * in OpenSSL 0.9.6d.  Usually (depending on the application protocol)
@@ -604,6 +606,7 @@ struct ssl_session_st
 #define SSL_OP_NO_SSLv3					0x02000000L
 #define SSL_OP_NO_TLSv1					0x04000000L
 #define SSL_OP_NO_TLSv1_2				0x08000000L
+#define SSL_OP_NO_TLSv1_1				0x10000000L
 
 /* These next two were never actually used for anything since SSLeay
  * zap so we have some more flags.
@@ -928,28 +931,9 @@ struct ssl_ctx_st
 	int (*tlsext_status_cb)(SSL *ssl, void *arg);
 	void *tlsext_status_arg;
 
-# ifndef OPENSSL_NO_NEXTPROTONEG
-	/* Next protocol negotiation information */
-	/* (for experimental NPN extension). */
-
-	/* For a server, this contains a callback function by which the set of
-	 * advertised protocols can be provided. */
-	int (*next_protos_advertised_cb)(SSL *s, const unsigned char **buf,
-			                 unsigned int *len, void *arg);
-	void *next_protos_advertised_cb_arg;
-	/* For a client, this contains a callback function that selects the
-	 * next protocol from the list provided by the server. */
-	int (*next_proto_select_cb)(SSL *s, unsigned char **out,
-				    unsigned char *outlen,
-				    const unsigned char *in,
-				    unsigned int inlen,
-				    void *arg);
-	void *next_proto_select_cb_arg;
-
 	/* draft-rescorla-tls-opaque-prf-input-00.txt information */
 	int (*tlsext_opaque_prf_input_callback)(SSL *, void *peerinput, size_t len, void *arg);
 	void *tlsext_opaque_prf_input_callback_arg;
-# endif
 #endif
 
 #ifndef OPENSSL_NO_PSK
@@ -972,6 +956,25 @@ struct ssl_ctx_st
 #endif
 
 #ifndef OPENSSL_NO_TLSEXT
+
+# ifndef OPENSSL_NO_NEXTPROTONEG
+	/* Next protocol negotiation information */
+	/* (for experimental NPN extension). */
+
+	/* For a server, this contains a callback function by which the set of
+	 * advertised protocols can be provided. */
+	int (*next_protos_advertised_cb)(SSL *s, const unsigned char **buf,
+			                 unsigned int *len, void *arg);
+	void *next_protos_advertised_cb_arg;
+	/* For a client, this contains a callback function that selects the
+	 * next protocol from the list provided by the server. */
+	int (*next_proto_select_cb)(SSL *s, unsigned char **out,
+				    unsigned char *outlen,
+				    const unsigned char *in,
+				    unsigned int inlen,
+				    void *arg);
+	void *next_proto_select_cb_arg;
+# endif
         /* SRTP profiles we are willing to do from RFC 5764 */
         STACK_OF(SRTP_PROTECTION_PROFILE) *srtp_profiles;  
 #endif
@@ -1147,10 +1150,6 @@ struct ssl_st
 	                 * NB: For servers, the 'new' session may actually be a previously
 	                 * cached session or even the previous session unless
 	                 * SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION is set */
-	int renegotiate;/* 1 if we are renegotiating.
-	                 * 2 if we are a server and are inside a handshake
-	                 * (i.e. not just sending a HelloRequest) */
-
 	int quiet_shutdown;/* don't send shutdown packets */
 	int shutdown;	/* we have shut things down, 0x01 sent, 0x02
 			 * for received */
@@ -1246,10 +1245,6 @@ struct ssl_st
 		unsigned int max_psk_len);
 	unsigned int (*psk_server_callback)(SSL *ssl, const char *identity,
 		unsigned char *psk, unsigned int max_psk_len);
-#endif
-
-#ifndef OPENSSL_NO_SRP
-	SRP_CTX srp_ctx; /* ctx for SRP authentication */
 #endif
 
 	SSL_CTX *ctx;
@@ -1349,6 +1344,14 @@ struct ssl_st
 #else
 #define session_ctx ctx
 #endif /* OPENSSL_NO_TLSEXT */
+
+	int renegotiate;/* 1 if we are renegotiating.
+	                 * 2 if we are a server and are inside a handshake
+	                 * (i.e. not just sending a HelloRequest) */
+
+#ifndef OPENSSL_NO_SRP
+	SRP_CTX srp_ctx; /* ctx for SRP authentication */
+#endif
 	};
 
 #endif
@@ -2040,7 +2043,7 @@ int SSL_set_session_secret_cb(SSL *s, tls_session_secret_cb_fn tls_session_secre
 
 void SSL_set_debug(SSL *s, int debug);
 int SSL_cache_hit(SSL *s);
-	
+
 /* BEGIN ERROR CODES */
 /* The following lines are auto generated by the script mkerr.pl. Any changes
  * made after this point may be overwritten when the script is next run.
@@ -2060,6 +2063,7 @@ void ERR_load_SSL_strings(void);
 #define SSL_F_DTLS1_ACCEPT				 246
 #define SSL_F_DTLS1_ADD_CERT_TO_BUF			 295
 #define SSL_F_DTLS1_BUFFER_RECORD			 247
+#define SSL_F_DTLS1_CHECK_TIMEOUT_NUM			 316
 #define SSL_F_DTLS1_CLIENT_HELLO			 248
 #define SSL_F_DTLS1_CONNECT				 249
 #define SSL_F_DTLS1_ENC					 250
@@ -2068,7 +2072,7 @@ void ERR_load_SSL_strings(void);
 #define SSL_F_DTLS1_GET_MESSAGE_FRAGMENT		 253
 #define SSL_F_DTLS1_GET_RECORD				 254
 #define SSL_F_DTLS1_HANDLE_TIMEOUT			 297
-#define SSL_F_DTLS1_HEARTBEAT				 314
+#define SSL_F_DTLS1_HEARTBEAT				 305
 #define SSL_F_DTLS1_OUTPUT_CERT_CHAIN			 255
 #define SSL_F_DTLS1_PREPROCESS_FRAGMENT			 288
 #define SSL_F_DTLS1_PROCESS_OUT_OF_SEQ_MESSAGE		 256
@@ -2118,7 +2122,7 @@ void ERR_load_SSL_strings(void);
 #define SSL_F_SSL3_CALLBACK_CTRL			 233
 #define SSL_F_SSL3_CHANGE_CIPHER_STATE			 129
 #define SSL_F_SSL3_CHECK_CERT_AND_ALGORITHM		 130
-#define SSL_F_SSL3_CHECK_CLIENT_HELLO			 315
+#define SSL_F_SSL3_CHECK_CLIENT_HELLO			 304
 #define SSL_F_SSL3_CLIENT_HELLO				 131
 #define SSL_F_SSL3_CONNECT				 132
 #define SSL_F_SSL3_CTRL					 213
@@ -2137,7 +2141,7 @@ void ERR_load_SSL_strings(void);
 #define SSL_F_SSL3_GET_KEY_EXCHANGE			 141
 #define SSL_F_SSL3_GET_MESSAGE				 142
 #define SSL_F_SSL3_GET_NEW_SESSION_TICKET		 283
-#define SSL_F_SSL3_GET_NEXT_PROTO			 305
+#define SSL_F_SSL3_GET_NEXT_PROTO			 306
 #define SSL_F_SSL3_GET_RECORD				 143
 #define SSL_F_SSL3_GET_SERVER_CERTIFICATE		 144
 #define SSL_F_SSL3_GET_SERVER_DONE			 145
@@ -2207,6 +2211,7 @@ void ERR_load_SSL_strings(void);
 #define SSL_F_SSL_GET_NEW_SESSION			 181
 #define SSL_F_SSL_GET_PREV_SESSION			 217
 #define SSL_F_SSL_GET_SERVER_SEND_CERT			 182
+#define SSL_F_SSL_GET_SERVER_SEND_PKEY			 317
 #define SSL_F_SSL_GET_SIGN_PKEY				 183
 #define SSL_F_SSL_INIT_WBIO_BUFFER			 184
 #define SSL_F_SSL_LOAD_CLIENT_CA_FILE			 185
@@ -2225,7 +2230,7 @@ void ERR_load_SSL_strings(void);
 #define SSL_F_SSL_RSA_PUBLIC_ENCRYPT			 188
 #define SSL_F_SSL_SESSION_NEW				 189
 #define SSL_F_SSL_SESSION_PRINT_FP			 190
-#define SSL_F_SSL_SESSION_SET1_ID_CONTEXT		 306
+#define SSL_F_SSL_SESSION_SET1_ID_CONTEXT		 312
 #define SSL_F_SSL_SESS_CERT_NEW				 225
 #define SSL_F_SSL_SET_CERT				 191
 #define SSL_F_SSL_SET_CIPHER_LIST			 271
@@ -2239,7 +2244,7 @@ void ERR_load_SSL_strings(void);
 #define SSL_F_SSL_SET_TRUST				 228
 #define SSL_F_SSL_SET_WFD				 196
 #define SSL_F_SSL_SHUTDOWN				 224
-#define SSL_F_SSL_SRP_CTX_INIT				 304
+#define SSL_F_SSL_SRP_CTX_INIT				 313
 #define SSL_F_SSL_UNDEFINED_CONST_FUNCTION		 243
 #define SSL_F_SSL_UNDEFINED_FUNCTION			 197
 #define SSL_F_SSL_UNDEFINED_VOID_FUNCTION		 244
@@ -2259,8 +2264,8 @@ void ERR_load_SSL_strings(void);
 #define SSL_F_TLS1_CHANGE_CIPHER_STATE			 209
 #define SSL_F_TLS1_CHECK_SERVERHELLO_TLSEXT		 274
 #define SSL_F_TLS1_ENC					 210
-#define SSL_F_TLS1_EXPORT_KEYING_MATERIAL		 312
-#define SSL_F_TLS1_HEARTBEAT				 313
+#define SSL_F_TLS1_EXPORT_KEYING_MATERIAL		 314
+#define SSL_F_TLS1_HEARTBEAT				 315
 #define SSL_F_TLS1_PREPARE_CLIENTHELLO_TLSEXT		 275
 #define SSL_F_TLS1_PREPARE_SERVERHELLO_TLSEXT		 276
 #define SSL_F_TLS1_PRF					 284
@@ -2300,12 +2305,13 @@ void ERR_load_SSL_strings(void);
 #define SSL_R_BAD_RSA_MODULUS_LENGTH			 121
 #define SSL_R_BAD_RSA_SIGNATURE				 122
 #define SSL_R_BAD_SIGNATURE				 123
-#define SSL_R_BAD_SRP_A_LENGTH				 346
-#define SSL_R_BAD_SRP_B_LENGTH				 347
-#define SSL_R_BAD_SRP_G_LENGTH				 348
-#define SSL_R_BAD_SRP_N_LENGTH				 349
-#define SSL_R_BAD_SRP_S_LENGTH				 350
-#define SSL_R_BAD_SRTP_PROTECTION_PROFILE_LIST		 360
+#define SSL_R_BAD_SRP_A_LENGTH				 347
+#define SSL_R_BAD_SRP_B_LENGTH				 348
+#define SSL_R_BAD_SRP_G_LENGTH				 349
+#define SSL_R_BAD_SRP_N_LENGTH				 350
+#define SSL_R_BAD_SRP_S_LENGTH				 351
+#define SSL_R_BAD_SRTP_MKI_VALUE			 352
+#define SSL_R_BAD_SRTP_PROTECTION_PROFILE_LIST		 353
 #define SSL_R_BAD_SSL_FILETYPE				 124
 #define SSL_R_BAD_SSL_SESSION_ID_LENGTH			 125
 #define SSL_R_BAD_STATE					 126
@@ -2344,7 +2350,7 @@ void ERR_load_SSL_strings(void);
 #define SSL_R_ECC_CERT_SHOULD_HAVE_RSA_SIGNATURE	 322
 #define SSL_R_ECC_CERT_SHOULD_HAVE_SHA1_SIGNATURE	 323
 #define SSL_R_ECGROUP_TOO_LARGE_FOR_CIPHER		 310
-#define SSL_R_EMPTY_SRTP_PROTECTION_PROFILE_LIST	 361
+#define SSL_R_EMPTY_SRTP_PROTECTION_PROFILE_LIST	 354
 #define SSL_R_ENCRYPTED_LENGTH_TOO_LONG			 150
 #define SSL_R_ERROR_GENERATING_TMP_RSA_KEY		 282
 #define SSL_R_ERROR_IN_RECEIVED_CIPHER_LIST		 151
@@ -2361,7 +2367,7 @@ void ERR_load_SSL_strings(void);
 #define SSL_R_INVALID_COMMAND				 280
 #define SSL_R_INVALID_COMPRESSION_ALGORITHM		 341
 #define SSL_R_INVALID_PURPOSE				 278
-#define SSL_R_INVALID_SRP_USERNAME			 351
+#define SSL_R_INVALID_SRP_USERNAME			 357
 #define SSL_R_INVALID_STATUS_RESPONSE			 328
 #define SSL_R_INVALID_TICKET_KEYS_LENGTH		 325
 #define SSL_R_INVALID_TRUST				 279
@@ -2391,14 +2397,13 @@ void ERR_load_SSL_strings(void);
 #define SSL_R_MISSING_RSA_CERTIFICATE			 168
 #define SSL_R_MISSING_RSA_ENCRYPTING_CERT		 169
 #define SSL_R_MISSING_RSA_SIGNING_CERT			 170
-#define SSL_R_MISSING_SRP_PARAM				 352
-#define SSL_R_MISSING_SRP_USERNAME			 353
+#define SSL_R_MISSING_SRP_PARAM				 358
 #define SSL_R_MISSING_TMP_DH_KEY			 171
 #define SSL_R_MISSING_TMP_ECDH_KEY			 311
 #define SSL_R_MISSING_TMP_RSA_KEY			 172
 #define SSL_R_MISSING_TMP_RSA_PKEY			 173
 #define SSL_R_MISSING_VERIFY_MESSAGE			 174
-#define SSL_R_MULTIPLE_SGC_RESTARTS			 370
+#define SSL_R_MULTIPLE_SGC_RESTARTS			 346
 #define SSL_R_NON_SSLV2_INITIAL_PACKET			 175
 #define SSL_R_NO_CERTIFICATES_RETURNED			 176
 #define SSL_R_NO_CERTIFICATE_ASSIGNED			 177
@@ -2422,7 +2427,7 @@ void ERR_load_SSL_strings(void);
 #define SSL_R_NO_RENEGOTIATION				 339
 #define SSL_R_NO_REQUIRED_DIGEST			 324
 #define SSL_R_NO_SHARED_CIPHER				 193
-#define SSL_R_NO_SRTP_PROFILES				 362
+#define SSL_R_NO_SRTP_PROFILES				 359
 #define SSL_R_NO_VERIFY_CALLBACK			 194
 #define SSL_R_NULL_SSL_CTX				 195
 #define SSL_R_NULL_SSL_METHOD_PASSED			 196
@@ -2466,12 +2471,12 @@ void ERR_load_SSL_strings(void);
 #define SSL_R_SERVERHELLO_TLSEXT			 275
 #define SSL_R_SESSION_ID_CONTEXT_UNINITIALIZED		 277
 #define SSL_R_SHORT_READ				 219
-#define SSL_R_SIGNATURE_ALGORITHMS_ERROR		 359
+#define SSL_R_SIGNATURE_ALGORITHMS_ERROR		 360
 #define SSL_R_SIGNATURE_FOR_NON_SIGNING_CERTIFICATE	 220
-#define SSL_R_SRP_A_CALC				 354
-#define SSL_R_SRTP_COULD_NOT_ALLOCATE_PROFILES		 363
-#define SSL_R_SRTP_PROTECTION_PROFILE_LIST_TOO_LONG	 364
-#define SSL_R_SRTP_UNKNOWN_PROTECTION_PROFILE		 365
+#define SSL_R_SRP_A_CALC				 361
+#define SSL_R_SRTP_COULD_NOT_ALLOCATE_PROFILES		 362
+#define SSL_R_SRTP_PROTECTION_PROFILE_LIST_TOO_LONG	 363
+#define SSL_R_SRTP_UNKNOWN_PROTECTION_PROFILE		 364
 #define SSL_R_SSL23_DOING_SESSION_ID_REUSE		 221
 #define SSL_R_SSL2_CONNECTION_ID_TOO_LONG		 299
 #define SSL_R_SSL3_EXT_INVALID_ECPOINTFORMAT		 321
@@ -2516,8 +2521,8 @@ void ERR_load_SSL_strings(void);
 #define SSL_R_TLSV1_UNRECOGNIZED_NAME			 1112
 #define SSL_R_TLSV1_UNSUPPORTED_EXTENSION		 1110
 #define SSL_R_TLS_CLIENT_CERT_REQ_WITH_ANON_CIPHER	 232
-#define SSL_R_TLS_HEARTBEAT_PEER_DOESNT_ACCEPT		 368
-#define SSL_R_TLS_HEARTBEAT_PENDING			 369
+#define SSL_R_TLS_HEARTBEAT_PEER_DOESNT_ACCEPT		 365
+#define SSL_R_TLS_HEARTBEAT_PENDING			 366
 #define SSL_R_TLS_ILLEGAL_EXPORTER_LABEL		 367
 #define SSL_R_TLS_INVALID_ECPOINTFORMAT_LIST		 157
 #define SSL_R_TLS_PEER_DID_NOT_RESPOND_WITH_CERTIFICATE_LIST 233
@@ -2540,7 +2545,7 @@ void ERR_load_SSL_strings(void);
 #define SSL_R_UNKNOWN_CERTIFICATE_TYPE			 247
 #define SSL_R_UNKNOWN_CIPHER_RETURNED			 248
 #define SSL_R_UNKNOWN_CIPHER_TYPE			 249
-#define SSL_R_UNKNOWN_DIGEST				 357
+#define SSL_R_UNKNOWN_DIGEST				 368
 #define SSL_R_UNKNOWN_KEY_EXCHANGE_TYPE			 250
 #define SSL_R_UNKNOWN_PKEY_TYPE				 251
 #define SSL_R_UNKNOWN_PROTOCOL				 252
@@ -2555,14 +2560,14 @@ void ERR_load_SSL_strings(void);
 #define SSL_R_UNSUPPORTED_PROTOCOL			 258
 #define SSL_R_UNSUPPORTED_SSL_VERSION			 259
 #define SSL_R_UNSUPPORTED_STATUS_TYPE			 329
-#define SSL_R_USE_SRTP_NOT_NEGOTIATED			 366
+#define SSL_R_USE_SRTP_NOT_NEGOTIATED			 369
 #define SSL_R_WRITE_BIO_NOT_SET				 260
 #define SSL_R_WRONG_CIPHER_RETURNED			 261
 #define SSL_R_WRONG_MESSAGE_TYPE			 262
 #define SSL_R_WRONG_NUMBER_OF_KEY_BITS			 263
 #define SSL_R_WRONG_SIGNATURE_LENGTH			 264
 #define SSL_R_WRONG_SIGNATURE_SIZE			 265
-#define SSL_R_WRONG_SIGNATURE_TYPE			 358
+#define SSL_R_WRONG_SIGNATURE_TYPE			 370
 #define SSL_R_WRONG_SSL_VERSION				 266
 #define SSL_R_WRONG_VERSION_NUMBER			 267
 #define SSL_R_X509_LIB					 268
