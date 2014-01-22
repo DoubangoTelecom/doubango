@@ -83,8 +83,8 @@
 
 #if !(defined(VMS) || defined(__VMS)) /* VMS uses logical names instead */
 #if defined(HEADER_CRYPTLIB_H) && !defined(OPENSSLDIR)
-#define ENGINESDIR "/Users/diopmamadou/Documents/tmp/openssl-1.0.1-beta2/ios/armv6/lib/engines"
-#define OPENSSLDIR "/Users/diopmamadou/Documents/tmp/openssl-1.0.1-beta2"
+#define ENGINESDIR "/tmp/openssl-1.0.1e-armv7/lib/engines"
+#define OPENSSLDIR "/tmp/openssl-1.0.1e-armv7"
 #endif
 #endif
 
