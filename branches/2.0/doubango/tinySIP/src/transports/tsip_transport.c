@@ -135,7 +135,11 @@ int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip
 	}
 
 	/* we always use same port to send() and recv() msg which means Via and Contact headers are identical */
-	if(self->stack->network.aor.ip[transport_idx] && self->stack->network.aor.port[transport_idx]){
+	if(TNET_SOCKET_TYPE_IS_IPSEC(self->type) && ((tsip_transport_ipsec_t*)self)->asso_active){
+		memcpy(ip, ((tsip_transport_ipsec_t*)self)->asso_active->socket_us->ip,  sizeof(tnet_ip_t));
+		port = ((tsip_transport_ipsec_t*)self)->asso_active->socket_us->port;
+	}
+	else if(self->stack->network.aor.ip[transport_idx] && self->stack->network.aor.port[transport_idx]){
 		memcpy(ip, self->stack->network.aor.ip[transport_idx], TSK_MIN(tsk_strlen(self->stack->network.aor.ip[transport_idx]), sizeof(ip)));
 		port = self->stack->network.aor.port[transport_idx];
 	}
@@ -246,11 +250,18 @@ int tsip_transport_msg_update_aor(tsip_transport_t* self, tsip_message_t *msg)
 	/* === Host and port === */
 	if(msg->Contact && msg->Contact->uri){
 		tsk_strupdate(&(msg->Contact->uri->scheme), self->scheme);
-		tsk_strupdate(&(msg->Contact->uri->host), self->stack->network.aor.ip[transport_idx]);
-		msg->Contact->uri->port = self->stack->network.aor.port[transport_idx];
-		
 		msg->Contact->uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(self->type) ? host_ipv6 : host_ipv4; /* for serializer ...who know? */
 		tsk_params_add_param(&msg->Contact->uri->params, "transport", self->protocol);
+
+		// IPSec
+		if(TNET_SOCKET_TYPE_IS_IPSEC(self->type) && ((tsip_transport_ipsec_t*)self)->asso_active){
+			tsk_strupdate(&(msg->Contact->uri->host), ((tsip_transport_ipsec_t*)self)->asso_active->socket_us->ip);
+			msg->Contact->uri->port = ((tsip_transport_ipsec_t*)self)->asso_active->socket_us->port;
+		}
+		else {
+			tsk_strupdate(&(msg->Contact->uri->host), self->stack->network.aor.ip[transport_idx]);
+			msg->Contact->uri->port = self->stack->network.aor.port[transport_idx];
+		}
 
 		/* Add extra params for message received over WebSocket transport */
 		if((TNET_SOCKET_TYPE_IS_WS(msg->src_net_type) || TNET_SOCKET_TYPE_IS_WSS(msg->src_net_type)) && msg->local_fd > 0){
