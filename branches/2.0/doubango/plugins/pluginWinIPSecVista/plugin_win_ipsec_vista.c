@@ -337,7 +337,7 @@ static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, 
     conds[3].fieldKey = FWPM_CONDITION_IP_PROTOCOL;
     conds[3].matchType = FWP_MATCH_EQUAL;
     conds[3].conditionValue.type = FWP_UINT8;
-    conds[3].conditionValue.uint16 = TINYIPSEC_VISTA_GET_IPPROTO(p_ctx->pc_base->ipproto);
+	conds[3].conditionValue.uint8 = TINYIPSEC_VISTA_GET_IPPROTO(p_ctx->pc_base->ipproto);
 
     // Fill in the common fields shared by both filters.
     memset(&filter, 0, sizeof(filter));
