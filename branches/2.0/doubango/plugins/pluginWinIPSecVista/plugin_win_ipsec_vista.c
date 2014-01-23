@@ -60,13 +60,17 @@ typedef struct plugin_win_ipsec_vista_ctx_s {
     tipsec_ctx_t* pc_base;
     UINT64 saId_us;
     UINT64 saId_uc;
+	UINT64 filterId_in_us;
+	UINT64 filterId_out_us;
+	UINT64 filterId_in_uc;
+	UINT64 filterId_out_uc;
 	WCHAR filter_name[256];
 
     HANDLE engine;
 }
 plugin_win_ipsec_vista_ctx_t;
 
-static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, __in tipsec_port_t local_port, __out tipsec_spi_t *spi, UINT64 *saId);
+static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, __in tipsec_port_t local_port, __out tipsec_spi_t *spi, __out UINT64 *saId, __out UINT64 *filterId_in, __out UINT64 *filterId_out);
 static int _vista_boundSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, __in UINT64 local_saId, __in tipsec_spi_t remote_spi, __in BOOLEAN toInbound);
 
 static int _vista_flushAll(const plugin_win_ipsec_vista_ctx_t* p_ctx);
@@ -168,12 +172,12 @@ static tipsec_error_t _plugin_win_ipsec_vista_ctx_set_local(tipsec_ctx_t* _p_ctx
     _p_ctx->port_us = port_us;
 
     // Create SA1: (UC -> PS)
-    if ((ret = _vista_createLocalSA(p_ctx, _p_ctx->port_uc, &_p_ctx->spi_uc, &p_ctx->saId_uc))) {
+	if ((ret = _vista_createLocalSA(p_ctx, _p_ctx->port_uc, &_p_ctx->spi_uc, &p_ctx->saId_uc, &p_ctx->filterId_in_uc, &p_ctx->filterId_out_uc))) {
         return tipsec_error_sys;
     }
 
     // Create SA2: (US <-PC)
-    if ((ret = _vista_createLocalSA(p_ctx, _p_ctx->port_us, &_p_ctx->spi_us, &p_ctx->saId_us))) {
+    if ((ret = _vista_createLocalSA(p_ctx, _p_ctx->port_us, &_p_ctx->spi_us, &p_ctx->saId_us, &p_ctx->filterId_in_us, &p_ctx->filterId_out_uc))) {
         return tipsec_error_sys;
     }
 
@@ -299,7 +303,7 @@ static tipsec_error_t _plugin_win_ipsec_vista_ctx_stop(tipsec_ctx_t* _p_ctx)
 //
 //	Private functions
 //
-static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, __in tipsec_port_t local_port, __out tipsec_spi_t *spi, UINT64 *saId)
+static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, __in tipsec_port_t local_port, __out tipsec_spi_t *spi, __out UINT64 *saId, __out UINT64 *filterId_in, __out UINT64 *filterId_out)
 {
     DWORD result = NO_ERROR;
     UINT64 tmpInFilterId = 0, tmpOutFilterId = 0, tmpSaId = 0;
@@ -311,6 +315,8 @@ static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, 
 
     *spi = 0;
     *saId = 0;
+	*filterId_in = 0;
+	*filterId_out = 0;
 
     conds[0].fieldKey = FWPM_CONDITION_IP_LOCAL_ADDRESS;
     conds[0].matchType = FWP_MATCH_EQUAL;
@@ -417,8 +423,8 @@ static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, 
     }
 
     //// Return the various LUIDs to the caller, so he can clean up.
-    //*inFilterId = tmpInFilterId;
-    //*outFilterId = tmpOutFilterId;
+	*filterId_in = tmpInFilterId;
+	*filterId_out = tmpOutFilterId;
     *saId = tmpSaId;
 
 CLEANUP:
@@ -521,6 +527,31 @@ CLEANUP:
 
 static int _vista_flushAll(const plugin_win_ipsec_vista_ctx_t* p_ctx)
 {
+#if 1
+	int ret = -1;
+	if (p_ctx && p_ctx->engine) {
+		DWORD result;
+		result = FwpmFilterDeleteById0(p_ctx->engine, p_ctx->filterId_in_uc);
+		if (result != ERROR_SUCCESS && result != FWP_E_FILTER_NOT_FOUND) {
+			TSK_DEBUG_ERROR("FwpmFilterDeleteById0 failed with error code [%x]", result);
+		}
+		result = FwpmFilterDeleteById0(p_ctx->engine, p_ctx->filterId_in_us);
+		if (result != ERROR_SUCCESS && result != FWP_E_FILTER_NOT_FOUND) {
+			TSK_DEBUG_ERROR("FwpmFilterDeleteById0 failed with error code [%x]", result);
+		}
+		result = FwpmFilterDeleteById0(p_ctx->engine, p_ctx->filterId_out_uc);
+		if (result != ERROR_SUCCESS && result != FWP_E_FILTER_NOT_FOUND) {
+			TSK_DEBUG_ERROR("FwpmFilterDeleteById0 failed with error code [%x]", result);
+		}
+		result = FwpmFilterDeleteById0(p_ctx->engine, p_ctx->filterId_out_us);
+		if (result != ERROR_SUCCESS && result != FWP_E_FILTER_NOT_FOUND) {
+			TSK_DEBUG_ERROR("FwpmFilterDeleteById0 failed with error code [%x]", result);
+		}
+		return 0;
+	}
+	// 
+	return ret;
+#else
     UINT32 i;
     int ret = -1;
 
@@ -550,21 +581,22 @@ static int _vista_flushAll(const plugin_win_ipsec_vista_ctx_t* p_ctx)
             }
         }
 
-        if ((result = IPsecSaDestroyEnumHandle0(p_ctx->engine, enumHandle)) != ERROR_SUCCESS) {
-            TSK_DEBUG_ERROR("IPsecSaDestroyEnumHandle0 failed with error code [%x].", result);
-            goto CLEANUP;
-        }
-
-        TSK_DEBUG_INFO("All SAs have been flushed.");
+		TSK_DEBUG_INFO("All SAs have been flushed.");
         ret = 0;
 
 CLEANUP:
 		if (entries) {
 			FwpmFreeMemory0((void**)entries);
 		}
+		if (enumHandle) {
+			if ((result = IPsecSaDestroyEnumHandle0(p_ctx->engine, enumHandle)) != ERROR_SUCCESS) {
+				TSK_DEBUG_ERROR("IPsecSaDestroyEnumHandle0 failed with error code [%x].", result);
+			}
+		}		
     }
 
     return ret;
+#endif
 }
 
 static void _vista_deleteSaContextAndFilters(__in HANDLE engine, __in UINT64 inFilterId, __in UINT64 outFilterId, __in UINT64 saId)
