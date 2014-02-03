@@ -434,8 +434,6 @@ tsk_bool_t tnet_dtls_socket_is_remote_cert_fp_match(tnet_dtls_socket_handle_t* h
 #endif
 }
 
-
-
 int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struct sockaddr_storage* remote_addr)
 {
 #if !HAVE_OPENSSL || !HAVE_OPENSSL_DTLS
@@ -475,6 +473,22 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 		}
 	}
 
+#if 0
+	len = BIO_ctrl_pending(socket->wbio);
+	if (len > 0) {
+		tnet_port_t port;
+		tnet_ip_t ip;
+		out_data = malloc(len);
+		len = BIO_read(socket->wbio, out_data, len);
+
+		tnet_get_sockip_n_port((const struct sockaddr *)&socket->remote.addr, &ip, &port);
+		TSK_DEBUG_INFO("DTLS data handshake to send with len = %d, ip = %.*s and port = %d", len, sizeof(ip), ip, port);
+		len = tnet_sockfd_sendto(socket->fd, (const struct sockaddr *)&socket->remote.addr, out_data, len);
+		TSK_DEBUG_INFO("DTLS data handshake sent len = %d", len);
+		free(out_data);
+	}
+#else
+
 	if((len = BIO_get_mem_data(socket->wbio, &out_data)) && out_data){
 		tnet_port_t port;
 		tnet_ip_t ip;
@@ -482,7 +496,9 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 		TSK_DEBUG_INFO("DTLS data handshake to send with len = %d, ip = %.*s and port = %d", len, sizeof(ip), ip, port);
 		len = tnet_sockfd_sendto(socket->fd, (const struct sockaddr *)&socket->remote.addr, out_data, len);
 		TSK_DEBUG_INFO("DTLS data handshake sent len = %d", len);
+		
 	}
+#endif
 
 	BIO_reset(socket->rbio);
 	BIO_reset(socket->wbio);
@@ -562,6 +578,9 @@ int tnet_dtls_socket_handle_incoming_data(tnet_dtls_socket_handle_t* handle, con
 
 	TSK_DEBUG_INFO("Receive DTLS data: %u", size);
 
+	// BIO_reset(socket->rbio);
+	// BIO_reset(socket->wbio);
+
 	ret = _tnet_dtls_socket_do_handshake(socket);
 	
 	if((ret = BIO_write(socket->rbio, data, size)) != size){
@@ -569,7 +588,7 @@ int tnet_dtls_socket_handle_incoming_data(tnet_dtls_socket_handle_t* handle, con
 		TSK_DEBUG_ERROR("BIO_write(rbio, %u) failed [%s]", size, ERR_error_string(ERR_get_error(), tsk_null));
 		return -1;
 	}
-	
+		
 	/*if((ret = SSL_read(socket->ssl, (void*)data, size)) <= 0){
 		switch((ret = SSL_get_error(socket->ssl, ret))){
 			case SSL_ERROR_WANT_READ:
