@@ -64,7 +64,7 @@
 #	define TRTP_DTLS_HANDSHAKING_TIMEOUT 1000
 #endif
 #if !defined(TRTP_DTLS_HANDSHAKING_TIMEOUT_MAX)
-#	define TRTP_DTLS_HANDSHAKING_TIMEOUT_MAX (TRTP_DTLS_HANDSHAKING_TIMEOUT << 4)
+#	define TRTP_DTLS_HANDSHAKING_TIMEOUT_MAX (TRTP_DTLS_HANDSHAKING_TIMEOUT << 20)
 #endif
 
 static const tmedia_srtp_type_t __srtp_types[] = { tmedia_srtp_type_sdes, tmedia_srtp_type_dtls };
@@ -258,7 +258,7 @@ static int _trtp_transport_dtls_handshaking_timer_cb(const void* arg, tsk_timer_
 		TSK_DEBUG_INFO("_trtp_transport_dtls_handshaking_timer_cb(timeout=%llu)", manager->dtls.timer_hanshaking.timeout);
 		tnet_transport_dtls_do_handshake(manager->transport, sockets, 2, remote_addrs, 2);
 		// increase timeout
-		manager->dtls.timer_hanshaking.timeout <<= 1;
+		manager->dtls.timer_hanshaking.timeout += (TRTP_DTLS_HANDSHAKING_TIMEOUT >> 1);
 		if(manager->dtls.timer_hanshaking.timeout < TRTP_DTLS_HANDSHAKING_TIMEOUT_MAX){
 			manager->dtls.timer_hanshaking.id = tsk_timer_manager_schedule(manager->timer_mgr_global, manager->dtls.timer_hanshaking.timeout, _trtp_transport_dtls_handshaking_timer_cb, manager);
 		}

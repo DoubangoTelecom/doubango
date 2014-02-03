@@ -44,7 +44,7 @@
 #include <string.h> /* memcpy, ...(<#void * #>, <#const void * #>, <#tsk_size_t #>) */
 
 #ifndef TNET_CIPHER_LIST
-#	define TNET_CIPHER_LIST "ALL"
+#	define TNET_CIPHER_LIST  "DEFAULT:!LOW:!EXP:!MD5"
 #endif
 
 extern int tnet_transport_prepare(tnet_transport_t *transport);
@@ -99,6 +99,8 @@ static int _tnet_transport_ssl_init(tnet_transport_t* transport)
 				TSK_OBJECT_SAFE_FREE(transport);
 				return -5;
 			}
+			SSL_CTX_set_read_ahead(transport->dtls.ctx, 1);
+			SSL_CTX_set_options(transport->dtls.ctx, SSL_OP_ALL);
 			SSL_CTX_set_mode(transport->dtls.ctx, SSL_MODE_AUTO_RETRY);
 			SSL_CTX_set_verify(transport->dtls.ctx, SSL_VERIFY_NONE, tsk_null); // to be updated by tnet_transport_tls_set_certs()
 			if(SSL_CTX_set_cipher_list(transport->dtls.ctx, TNET_CIPHER_LIST) <= 0){

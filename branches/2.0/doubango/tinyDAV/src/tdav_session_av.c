@@ -74,7 +74,7 @@ static int _tdav_session_av_raise_error_async(struct tdav_session_av_s* self, ts
 static int _tdav_session_av_srtp_dtls_cb(const void* usrdata, enum trtp_srtp_dtls_event_type_e type, const char* reason);
 #endif /* HAVE_SRTP */
 static int _tdav_session_av_red_cb(const void* usrdata, const struct trtp_rtp_packet_s* packet);
-static int _tdav_session_av_dtls_set_remote_setup(struct tdav_session_av_s* self, tnet_dtls_setup_t setup, tsk_bool_t connection_new);
+static int _tdav_session_av_dtls_set_remote_setup(struct tdav_session_av_s* self, tnet_dtls_setup_t setup, tsk_bool_t connection_new, tsk_bool_t is_ro_null);
 
 #define SDP_CAPS_COUNT_MAX		0x1F
 #define SDP_DECLARE_TAG int32_t tag // [1 - *]
@@ -833,7 +833,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 				//if(self->dtls.local.setup == tnet_dtls_setup_none || self->dtls.local.setup == tnet_dtls_setup_actpass){
 					self->dtls.remote.setup = (!base->M.ro) ? tnet_dtls_setup_active : tnet_dtls_setup_passive;
 				//}
-				_tdav_session_av_dtls_set_remote_setup(self, self->dtls.remote.setup, self->dtls.remote.connection_new);
+				_tdav_session_av_dtls_set_remote_setup(self, self->dtls.remote.setup, self->dtls.remote.connection_new, (!base->M.ro));
 				if(self->rtp_manager){
 					trtp_manager_set_dtls_local_setup(self->rtp_manager, self->dtls.local.setup, self->dtls.local.connection_new);
 				}
@@ -1520,7 +1520,8 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 				// update local setup according to remote setup
 				ret = _tdav_session_av_dtls_set_remote_setup(self, 
 					tnet_dtls_get_setup_from_string(setup),
-					!tsk_striequals(connection, "existing")
+					!tsk_striequals(connection, "existing"),
+					(!base->M.ro)
 					);
 				if(ret == 0){
 					// pass new local values to the RTP manager
@@ -1688,7 +1689,7 @@ static int _tdav_session_av_red_cb(const void* usrdata, const struct trtp_rtp_pa
 	return 0;
 }
 
-int _tdav_session_av_dtls_set_remote_setup(struct tdav_session_av_s* self, tnet_dtls_setup_t setup, tsk_bool_t connection_new)
+int _tdav_session_av_dtls_set_remote_setup(struct tdav_session_av_s* self, tnet_dtls_setup_t setup, tsk_bool_t connection_new, tsk_bool_t is_ro_null)
 {
 	if(self){
 		TSK_DEBUG_INFO("dtls.remote.setup=%s", TNET_DTLS_SETUP_NAMES[(int)setup]);
@@ -1701,11 +1702,11 @@ int _tdav_session_av_dtls_set_remote_setup(struct tdav_session_av_s* self, tnet_
 				self->dtls.local.connection_new = tsk_true; // RTP transport always unprepared for reINVITE/UPDATE -> new connection
 				break;
 			case tnet_dtls_setup_active:
-				self->dtls.local.setup = tnet_dtls_setup_passive;
+				self->dtls.local.setup = is_ro_null ? tnet_dtls_setup_actpass : tnet_dtls_setup_passive;
 				self->dtls.local.connection_new = tsk_true;
 				break;
 			case tnet_dtls_setup_passive:
-				self->dtls.local.setup = tnet_dtls_setup_active;
+				self->dtls.local.setup = is_ro_null ? tnet_dtls_setup_actpass : tnet_dtls_setup_active;
 				self->dtls.local.connection_new = tsk_true;
 				break;
 			case tnet_dtls_setup_actpass:
