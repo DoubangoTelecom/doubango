@@ -52,7 +52,7 @@ static const IPSEC_CIPHER_TRANSFORM_ID0 IPSEC_CIPHER_TRANSFORM_ID_NULL_NULL= {
 #define TINYIPSEC_VISTA_GET_MODE(mode)	 (mode == tipsec_mode_tun) ? IPSEC_TRAFFIC_TYPE_TUNNEL : IPSEC_TRAFFIC_TYPE_TRANSPORT
 #define TINYIPSEC_VISTA_GET_IPPROTO(ipproto)	 (ipproto == tipsec_ipproto_tcp) ? IPPROTO_TCP : IPPROTO_UDP
 #define TINYIPSEC_VISTA_GET_IPVER(ipv6)	 (ipv6) ? FWP_IP_VERSION_V6 : FWP_IP_VERSION_V4
-#define TINYIPSEC_VISTA_GET_PROTO(proto)	 (proto == tipsec_proto_ah) ? IPSEC_TRANSFORM_AH : ( (proto == tipsec_proto_esp) ? IPSEC_TRANSFORM_ESP_AUTH : IPSEC_TRANSFORM_ESP_AUTH_AND_CIPHER );
+#define TINYIPSEC_VISTA_GET_PROTO(proto, ealg)	 (proto == tipsec_proto_ah) ? IPSEC_TRANSFORM_AH : ( (proto == tipsec_proto_esp) ? (ealg == tipsec_ealg_null ? IPSEC_TRANSFORM_ESP_AUTH : IPSEC_TRANSFORM_ESP_AUTH_AND_CIPHER) : IPSEC_TRANSFORM_ESP_AUTH_AND_CIPHER );
 
 typedef struct plugin_win_ipsec_vista_ctx_s {
     TIPSEC_DECLARE_CTX;
@@ -450,8 +450,7 @@ static int _vista_boundSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, __in U
 
     memset(&sa, 0, sizeof(sa));
     sa.spi = remote_spi;
-    sa.saTransformType = TINYIPSEC_VISTA_GET_PROTO(p_ctx->pc_base->protocol);
-
+    sa.saTransformType = TINYIPSEC_VISTA_GET_PROTO(p_ctx->pc_base->protocol, p_ctx->pc_base->ealg);
 
     //
     //	Keys padding
@@ -485,6 +484,15 @@ static int _vista_boundSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, __in U
     }
     else if ( sa.saTransformType == IPSEC_TRANSFORM_ESP_AUTH ) {
         sa.espAuthInformation = &authInfo;
+    }
+	else if ( sa.saTransformType == IPSEC_TRANSFORM_ESP_CIPHER ) {
+        IPSEC_SA_CIPHER_INFORMATION0 cipherInfo;
+
+        memset(&cipherInfo, 0, sizeof(cipherInfo));
+        cipherInfo.cipherTransform.cipherTransformId = TINYIPSEC_VISTA_GET_EALGO(p_ctx->pc_base->ealg);
+        cipherInfo.cipherKey = *ck;
+
+        sa.espCipherInformation = &cipherInfo;
     }
     else if ( sa.saTransformType == IPSEC_TRANSFORM_ESP_AUTH_AND_CIPHER ) {
         IPSEC_SA_CIPHER_INFORMATION0 cipherInfo;
