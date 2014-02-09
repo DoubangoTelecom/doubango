@@ -33,7 +33,7 @@ namespace ipsec
         static tipsec_mode_t __mode = tipsec_mode_t.tipsec_mode_trans;
         static tipsec_ealg_t __ealg = tipsec_ealg_t.tipsec_ealg_des_ede3_cbc;
         static tipsec_alg_t __alg = tipsec_alg_t.tipsec_alg_hmac_md5_96;
-        static tipsec_proto_t __proto = tipsec_proto_t.tipsec_proto_ah;
+        static tipsec_proto_t __proto = tipsec_proto_t.tipsec_proto_esp;
 
         static String __addr_local = "0.0.0.0";
         static String __addr_remote = "192.168.0.34";
