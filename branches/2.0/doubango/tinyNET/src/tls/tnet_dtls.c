@@ -40,6 +40,7 @@ typedef struct tnet_dtls_socket_s
 	tsk_bool_t verify_peer;
 	tsk_bool_t use_srtp;
 	tsk_bool_t handshake_completed;
+	tsk_bool_t handshake_started;
 	tnet_dtls_setup_t setup;
 
 	struct{
@@ -460,17 +461,20 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 		return 0;
 	}
 
-	if((ret = SSL_do_handshake(socket->ssl)) != 1){
-		switch((ret = SSL_get_error(socket->ssl, ret))){
-			case SSL_ERROR_WANT_READ:
-			case SSL_ERROR_WANT_WRITE:
-			case SSL_ERROR_NONE:
-				break;
-			default:
-				TSK_DEBUG_ERROR("DTLS handshake failed [%s]", ERR_error_string(ERR_get_error(), tsk_null));
-				_tnet_dtls_socket_raise_event_dataless(socket, tnet_dtls_socket_event_type_handshake_failed);
-				return -2;
+	if (!socket->handshake_started) {
+		if((ret = SSL_do_handshake(socket->ssl)) != 1){
+			switch((ret = SSL_get_error(socket->ssl, ret))){
+				case SSL_ERROR_WANT_READ:
+				case SSL_ERROR_WANT_WRITE:
+				case SSL_ERROR_NONE:
+					break;
+				default:
+					TSK_DEBUG_ERROR("DTLS handshake failed [%s]", ERR_error_string(ERR_get_error(), tsk_null));
+					_tnet_dtls_socket_raise_event_dataless(socket, tnet_dtls_socket_event_type_handshake_failed);
+					return -2;
+			}
 		}
+		socket->handshake_started = (ret == SSL_ERROR_NONE); // TODO: reset for renegotiation
 	}
 
 #if 0

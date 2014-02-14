@@ -2514,6 +2514,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetAvpfTail(u
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetUseAvpfEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetUseAvpfEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetOpusMaxCaptureRate(unsigned int jarg1) {
   unsigned int jresult ;
   uint32_t arg1 ;

@@ -202,8 +202,7 @@ static int _sdp_pcfgs_cat(const sdp_pcfg_xt (*pcfgs_src)[SDP_CAPS_COUNT_MAX], sd
 int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 {
 	uint64_t session_id;
-	tmedia_profile_t profile = tmedia_defaults_get_profile(); // default profile, will be updated by the SIP session
-
+	
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
@@ -212,16 +211,17 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 	/* base::init(): called by tmedia_session_create() */
 
 	self->media_type = media_type;
+	self->media_profile = tmedia_defaults_get_profile();
 	self->use_rtcp = tmedia_defaults_get_rtcp_enabled();
 	self->use_rtcpmux = tmedia_defaults_get_rtcpmux_enabled();
-	self->use_avpf = (profile == tmedia_profile_rtcweb); // negotiate if not RTCWeb profile or RFC5939 is in action
+	self->use_avpf = (self->media_profile == tmedia_profile_rtcweb) || tmedia_defaults_get_avpf_enabled(); // negotiate if not RTCWeb profile or RFC5939 is in action
 	self->bandwidth_max_upload_kbps = (media_type == tmedia_video ? tmedia_defaults_get_bandwidth_video_upload_max() : INT_MAX); // INT_MAX or <=0 means undefined
 	self->bandwidth_max_download_kbps = (media_type == tmedia_video ? tmedia_defaults_get_bandwidth_video_download_max() : INT_MAX); // INT_MAX or <=0 means undefined
 	self->congestion_ctrl_enabled = tmedia_defaults_get_congestion_ctrl_enabled(); // whether to enable draft-alvestrand-rtcweb-congestion-03 and draft-alvestrand-rmcat-remb-01
 #if HAVE_SRTP
 		// this is the default value and can be updated by the user using "session_set('srtp-mode', mode_e)"
-		self->srtp_type = (profile == tmedia_profile_rtcweb) ? tmedia_srtp_type_sdes : tmedia_defaults_get_srtp_type();
-		self->srtp_mode = (profile == tmedia_profile_rtcweb) ? tmedia_srtp_mode_mandatory : tmedia_defaults_get_srtp_mode();
+		self->srtp_type = (self->media_profile == tmedia_profile_rtcweb) ? (tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_pbk) ? tmedia_srtp_type_sdes : tmedia_srtp_type_dtls) : tmedia_defaults_get_srtp_type();
+		self->srtp_mode = (self->media_profile == tmedia_profile_rtcweb) ? tmedia_srtp_mode_mandatory : tmedia_defaults_get_srtp_mode();
 		self->use_srtp = (self->srtp_mode == tmedia_srtp_mode_mandatory); // if optional -> negotiate
 		// remove DTLS-SRTP option if not supported
 		if((self->srtp_type & tmedia_srtp_type_dtls) && !tnet_dtls_is_srtp_supported()){
@@ -407,6 +407,14 @@ int tdav_session_av_prepare(tdav_session_av_t* self)
 		return -1;
 	}	
 
+	/* SRTPType */
+#if HAVE_SRTP
+	// Now that SSL certs are defined update SRTPType before creating the RTP manager
+	if (self->media_profile == tmedia_profile_rtcweb) {
+		self->srtp_type = tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_pbk) ? tmedia_srtp_type_sdes : tmedia_srtp_type_dtls;
+	}
+#endif
+
 	/* set local port */
 	if(!self->rtp_manager){
 		self->rtp_manager = self->ice_ctx ? trtp_manager_create_2(self->ice_ctx, self->srtp_type, self->srtp_mode)
@@ -429,6 +437,7 @@ int tdav_session_av_prepare(tdav_session_av_t* self)
 					}
 				}
 			}
+
 			if((self->srtp_type & tmedia_srtp_type_dtls) && (self->srtp_mode == tmedia_srtp_mode_optional || self->srtp_mode == tmedia_srtp_mode_mandatory)){
 				if((ret = trtp_manager_set_dtls_certs(self->rtp_manager, TMEDIA_SESSION(self)->dtls.file_ca, TMEDIA_SESSION(self)->dtls.file_pbk, TMEDIA_SESSION(self)->dtls.file_pvk, TMEDIA_SESSION(self)->dtls.verify))){
 					return ret;
@@ -931,14 +940,15 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 					const char* fp_str = trtp_manager_get_dtls_local_fingerprint(self->rtp_manager, TDAV_DFAULT_FP_HASH);
 					if(fp_str){
 						tsk_sprintf(&str, "%s %s", TNET_DTLS_HASH_NAMES[TDAV_DFAULT_FP_HASH], fp_str);
+						//!\ From RFC 5763 (DTLS-SRTP Framework) §5: The endpoint MUST NOT use the connection attribute defined in [RFC4145].
 #if TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT
 						tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("fingerprint", str), tsk_null);
-						tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("setup", "active"), tsk_null);
-						tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("connection", "new"), tsk_null);
+						tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("setup", TNET_DTLS_SETUP_NAMES[self->dtls.local.setup]), tsk_null);
+						// tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("connection", self->dtls.local.connection_new ? "new" : "existing"), tsk_null);
 #else
 						_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("fingerprint", str), tsk_null);
 						_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("setup", TNET_DTLS_SETUP_NAMES[self->dtls.local.setup]), tsk_null);
-						_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("connection", self->dtls.local.connection_new ? "new" : "existing"), tsk_null);
+						// _first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("connection", self->dtls.local.connection_new ? "new" : "existing"), tsk_null);
 #endif
 					}
 				}

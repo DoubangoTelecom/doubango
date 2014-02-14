@@ -49,6 +49,7 @@ typedef struct tdav_session_av_s
 	tsk_bool_t use_rtcp;
 	tsk_bool_t use_rtcpmux;
 	tmedia_type_t media_type;
+	tmedia_profile_t media_profile;
 	tsk_bool_t use_avpf;
 	tsk_bool_t use_srtp;
 	tsk_bool_t is_webrtc2sip_mode_enabled;

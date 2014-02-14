@@ -516,6 +516,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetAvpfTail")]
   public static extern bool MediaSessionMgr_defaultsSetAvpfTail(uint jarg1, uint jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetUseAvpfEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetUseAvpfEnabled(bool jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetOpusMaxCaptureRate")]
   public static extern bool MediaSessionMgr_defaultsSetOpusMaxCaptureRate(uint jarg1);
 

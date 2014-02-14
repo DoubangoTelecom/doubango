@@ -315,6 +315,8 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsGetRtpBuffSize = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetRtpBuffSize)
     __swig_getmethods__["defaultsSetAvpfTail"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail
     if _newclass:defaultsSetAvpfTail = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail)
+    __swig_getmethods__["defaultsSetUseAvpfEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetUseAvpfEnabled
+    if _newclass:defaultsSetUseAvpfEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetUseAvpfEnabled)
     __swig_getmethods__["defaultsSetOpusMaxCaptureRate"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxCaptureRate
     if _newclass:defaultsSetOpusMaxCaptureRate = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxCaptureRate)
     __swig_getmethods__["defaultsSetOpusMaxPlaybackRate"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxPlaybackRate
@@ -575,6 +577,10 @@ MediaSessionMgr_defaultsGetRtpBuffSize = _tinyWRAP.MediaSessionMgr_defaultsGetRt
 def MediaSessionMgr_defaultsSetAvpfTail(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail(*args)
 MediaSessionMgr_defaultsSetAvpfTail = _tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail
+
+def MediaSessionMgr_defaultsSetUseAvpfEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetUseAvpfEnabled(*args)
+MediaSessionMgr_defaultsSetUseAvpfEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetUseAvpfEnabled
 
 def MediaSessionMgr_defaultsSetOpusMaxCaptureRate(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxCaptureRate(*args)

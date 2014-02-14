@@ -304,6 +304,7 @@ sub DESTROY {
 *defaultsSetRtpBuffSize = *tinyWRAPc::MediaSessionMgr_defaultsSetRtpBuffSize;
 *defaultsGetRtpBuffSize = *tinyWRAPc::MediaSessionMgr_defaultsGetRtpBuffSize;
 *defaultsSetAvpfTail = *tinyWRAPc::MediaSessionMgr_defaultsSetAvpfTail;
+*defaultsSetUseAvpfEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetUseAvpfEnabled;
 *defaultsSetOpusMaxCaptureRate = *tinyWRAPc::MediaSessionMgr_defaultsSetOpusMaxCaptureRate;
 *defaultsSetOpusMaxPlaybackRate = *tinyWRAPc::MediaSessionMgr_defaultsSetOpusMaxPlaybackRate;
 *defaultsSetMaxFds = *tinyWRAPc::MediaSessionMgr_defaultsSetMaxFds;

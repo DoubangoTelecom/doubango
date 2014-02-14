@@ -419,6 +419,11 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetUseAvpfEnabled(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetUseAvpfEnabled(enabled);
+    return ret;
+  }
+
   public static bool defaultsSetOpusMaxCaptureRate(uint opus_maxcapturerate) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetOpusMaxCaptureRate(opus_maxcapturerate);
     return ret;

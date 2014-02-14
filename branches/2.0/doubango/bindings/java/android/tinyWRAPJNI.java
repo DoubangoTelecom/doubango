@@ -119,6 +119,7 @@ public class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_defaultsSetRtpBuffSize(long jarg1);
   public final static native long MediaSessionMgr_defaultsGetRtpBuffSize();
   public final static native boolean MediaSessionMgr_defaultsSetAvpfTail(long jarg1, long jarg2);
+  public final static native boolean MediaSessionMgr_defaultsSetUseAvpfEnabled(boolean jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetOpusMaxCaptureRate(long jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetOpusMaxPlaybackRate(long jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetMaxFds(int jarg1);

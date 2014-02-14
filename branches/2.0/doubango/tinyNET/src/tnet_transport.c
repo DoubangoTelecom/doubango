@@ -44,7 +44,7 @@
 #include <string.h> /* memcpy, ...(<#void * #>, <#const void * #>, <#tsk_size_t #>) */
 
 #ifndef TNET_CIPHER_LIST
-#	define TNET_CIPHER_LIST  "DEFAULT:!LOW:!EXP:!MD5"
+#	define TNET_CIPHER_LIST  "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH"
 #endif
 
 extern int tnet_transport_prepare(tnet_transport_t *transport);
@@ -100,9 +100,9 @@ static int _tnet_transport_ssl_init(tnet_transport_t* transport)
 				return -5;
 			}
 			SSL_CTX_set_read_ahead(transport->dtls.ctx, 1);
-			SSL_CTX_set_options(transport->dtls.ctx, SSL_OP_ALL);
-			SSL_CTX_set_mode(transport->dtls.ctx, SSL_MODE_AUTO_RETRY);
-			SSL_CTX_set_verify(transport->dtls.ctx, SSL_VERIFY_NONE, tsk_null); // to be updated by tnet_transport_tls_set_certs()
+			// SSL_CTX_set_options(transport->dtls.ctx, SSL_OP_ALL);
+			// SSL_CTX_set_mode(transport->dtls.ctx, SSL_MODE_AUTO_RETRY);
+			SSL_CTX_set_verify(transport->dtls.ctx, SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT, tsk_null); // to be updated by tnet_transport_tls_set_certs()
 			if(SSL_CTX_set_cipher_list(transport->dtls.ctx, TNET_CIPHER_LIST) <= 0){
 				TSK_DEBUG_ERROR("SSL_CTX_set_cipher_list failed [%s]", ERR_error_string(ERR_get_error(), tsk_null));
 				return -6;
