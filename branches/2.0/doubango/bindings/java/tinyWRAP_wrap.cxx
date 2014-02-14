@@ -3704,6 +3704,20 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionM
 }
 
 
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetUseAvpfEnabled(JNIEnv *jenv, jclass jcls, jboolean jarg1) {
+  jboolean jresult = 0 ;
+  bool arg1 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetUseAvpfEnabled(arg1);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetOpusMaxCaptureRate(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   jboolean jresult = 0 ;
   uint32_t arg1 ;

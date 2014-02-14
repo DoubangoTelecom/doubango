@@ -24,16 +24,16 @@
 static tipsec_ipproto_t __ipproto = tipsec_ipproto_udp;
 static tsk_bool_t __use_ipv6 = tsk_false;
 static tipsec_mode_t __mode = tipsec_mode_trans;
-static tipsec_ealg_t __ealg = tipsec_ealg_des_ede3_cbc;
+static tipsec_ealg_t __ealg = tipsec_ealg_null;
 static tipsec_alg_t __alg = tipsec_alg_hmac_md5_96;
-static tipsec_proto_t __proto = tipsec_proto_ah;
+static tipsec_proto_t __proto = tipsec_proto_esp;
 
-static const char* __addr_local = "0.0.0.0";
-static const char* __addr_remote = "192.168.0.34";
-static tipsec_port_t __port_local_out = 5062; // PORT_UC
+static const char* __addr_local = "192.168.0.37"; // overrided using command line args
+static const char* __addr_remote = "192.168.0.31"; // overrided using command line args
 static tipsec_port_t __port_local_in = 5064; // PORT_US
-static tipsec_port_t __port_remote_out = 5066; // PORT_PC
+static tipsec_port_t __port_local_out = 5062; // PORT_UC
 static tipsec_port_t __port_remote_in = 5068; // PORT_PS
+static tipsec_port_t __port_remote_out = 5066; // PORT_PC
 static tipsec_spi_t __spi_remote_out = 3333; // SPI_PC
 static tipsec_spi_t __spi_remote_in = 4444; // SPI_PS
 static tipsec_lifetime_t __lifetime = 1800; /* always set it to the maximum value. (Not possible to update the value after REGISTER 200OK. ) */
@@ -75,10 +75,10 @@ static tsk_bool_t test_ipsec_is_winvista_or_later()
 }
 #endif
 
-#ifdef _WIN32_WCE
-int _tmain(int argc, _TCHAR* argv[])
+#if defined(_WIN32_WCE)
+int _tmain()
 #else
-int main()
+int main(int argc, const char* argv[])
 #endif
 {
 	int err = 0;
@@ -92,6 +92,26 @@ int main()
 		"pluginLinIPsecTools.so"
 	};
 	static const tsk_size_t __plugins_count = sizeof(__plugins_path)/sizeof(__plugins_path[0]);
+
+	#define BUF_SIZE 1024
+	char buffer[BUF_SIZE];
+
+	/* Set debug level to INFO */
+	tsk_debug_set_level(DEBUG_LEVEL_INFO);
+
+	// Command line "local_ip" "local_port_in" "local_port_out" "remote_ip"  "remote_port_in" "remote_port_out"
+	if (argc == (6 + 1)) {
+		__addr_local = argv[1];
+		__port_local_in = atoi(argv[2]);
+		__port_local_out = atoi(argv[3]);
+		__addr_remote = argv[4];
+		__port_remote_in = atoi(argv[5]);
+		__port_remote_out = atoi(argv[6]);
+	}
+
+	TSK_DEBUG_INFO("Local node=%s:%d/%d, remote node=%s:%d/%d", 
+		__addr_local, __port_local_in, __port_local_out,
+		__addr_remote, __port_remote_in, __port_remote_out);
 
 	/* Create the plugin */
 	for (i = 0; i < __plugins_count; ++i) {
@@ -120,6 +140,24 @@ int main()
 	}
 	// Dump SPIs created by the OS after calling set_local()
 	TSK_DEBUG_INFO("SPI-UC=%u, SPI-US=%u", p_ctx->spi_uc, p_ctx->spi_us);
+
+	// Enter Remote SPI in
+	TSK_DEBUG_INFO("Enter remote SPI in:");
+	if (fgets(buffer, BUF_SIZE, stdin)) {
+		if (buffer[0] != 10 && buffer[1] != 0) {
+			__spi_remote_in = strtoul (buffer, NULL, 0);
+		}
+	}
+
+	// Enter Remote SPI out
+	TSK_DEBUG_INFO("Enter remote SPI out:");
+	if (fgets(buffer, BUF_SIZE, stdin)) {
+		if (buffer[0] != 10 && buffer[1] != 0) {
+			__spi_remote_out = strtoul (buffer, NULL, 0);
+		}
+	}
+
+	TSK_DEBUG_INFO("SPI remote %u/%u", __spi_remote_in, __spi_remote_out);
 
 	/* Set remote */
 	err = tipsec_ctx_set_remote(p_ctx, __spi_remote_out, __spi_remote_in, __port_remote_out, __port_remote_in, __lifetime);

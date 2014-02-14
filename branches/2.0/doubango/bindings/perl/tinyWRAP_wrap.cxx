@@ -5739,6 +5739,34 @@ XS(_wrap_MediaSessionMgr_defaultsSetAvpfTail) {
 }
 
 
+XS(_wrap_MediaSessionMgr_defaultsSetUseAvpfEnabled) {
+  {
+    bool arg1 ;
+    bool val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetUseAvpfEnabled(enabled);");
+    }
+    ecode1 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetUseAvpfEnabled" "', argument " "1"" of type '" "bool""'");
+    } 
+    arg1 = static_cast< bool >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetUseAvpfEnabled(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_MediaSessionMgr_defaultsSetOpusMaxCaptureRate) {
   {
     uint32_t arg1 ;
@@ -27676,6 +27704,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsSetRtpBuffSize", _wrap_MediaSessionMgr_defaultsSetRtpBuffSize},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetRtpBuffSize", _wrap_MediaSessionMgr_defaultsGetRtpBuffSize},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetAvpfTail", _wrap_MediaSessionMgr_defaultsSetAvpfTail},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetUseAvpfEnabled", _wrap_MediaSessionMgr_defaultsSetUseAvpfEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetOpusMaxCaptureRate", _wrap_MediaSessionMgr_defaultsSetOpusMaxCaptureRate},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetOpusMaxPlaybackRate", _wrap_MediaSessionMgr_defaultsSetOpusMaxPlaybackRate},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetMaxFds", _wrap_MediaSessionMgr_defaultsSetMaxFds},

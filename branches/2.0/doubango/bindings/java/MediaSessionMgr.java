@@ -338,6 +338,10 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetAvpfTail(tail_min, tail_max);
   }
 
+  public static boolean defaultsSetUseAvpfEnabled(boolean enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetUseAvpfEnabled(enabled);
+  }
+
   public static boolean defaultsSetOpusMaxCaptureRate(long opus_maxcapturerate) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetOpusMaxCaptureRate(opus_maxcapturerate);
   }

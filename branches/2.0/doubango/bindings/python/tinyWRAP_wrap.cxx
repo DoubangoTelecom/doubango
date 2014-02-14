@@ -8355,6 +8355,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetUseAvpfEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool arg1 ;
+  bool val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetUseAvpfEnabled",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_bool(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetUseAvpfEnabled" "', argument " "1"" of type '" "bool""'");
+  } 
+  arg1 = static_cast< bool >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetUseAvpfEnabled(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetOpusMaxCaptureRate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   uint32_t arg1 ;
@@ -26062,6 +26084,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_defaultsSetRtpBuffSize", _wrap_MediaSessionMgr_defaultsSetRtpBuffSize, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetRtpBuffSize", _wrap_MediaSessionMgr_defaultsGetRtpBuffSize, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetAvpfTail", _wrap_MediaSessionMgr_defaultsSetAvpfTail, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetUseAvpfEnabled", _wrap_MediaSessionMgr_defaultsSetUseAvpfEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetOpusMaxCaptureRate", _wrap_MediaSessionMgr_defaultsSetOpusMaxCaptureRate, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetOpusMaxPlaybackRate", _wrap_MediaSessionMgr_defaultsSetOpusMaxPlaybackRate, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetMaxFds", _wrap_MediaSessionMgr_defaultsSetMaxFds, METH_VARARGS, NULL},
