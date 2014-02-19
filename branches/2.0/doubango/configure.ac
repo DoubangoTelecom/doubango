@@ -273,7 +273,6 @@ AC_ARG_WITH(ffmpeg,
 )
 # only if --without-opus not used
 if test $want_ffmpeg != no; then
-	have_ffmpeg=yes
 	have_avutil=check
 	AC_CHECK_HEADERS(libavutil/avutil.h, 
 		AC_CHECK_LIB(avutil, av_gettime, [have_avutil=yes] LIBFFMPEG_LIBADD="${LIBFFMPEG_LIBADD} -lavutil", [have_avutil=no] [have_ffmpeg=no])
