@@ -24,6 +24,7 @@ then
 	echo ERROR: NDK env variable is not set 
 	exit 1;
 fi
+export ANDROID_NDK_ROOT=$NDK
 
 if [ x$1 = "xcommercial" ]
 then
