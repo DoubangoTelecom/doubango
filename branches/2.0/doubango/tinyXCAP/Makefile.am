@@ -12,6 +12,9 @@ libtinyXCAP_la_SOURCES = \
 
 
 libtinyXCAP_la_LDFLAGS = $LDFLAGS -no-undefined
+if TARGET_OS_IS_ANDROID
+libtinyXCAP_la_LDFLAGS += -static
+endif
 
 _includedir = $(includedir)/tinyxcap
 _include_HEADERS = include/*.h

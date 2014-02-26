@@ -7,10 +7,91 @@
 
 AC_PREREQ([2.0])
 AC_INIT(libdoubango, 2.0.1007, doubango(at)googlegroups(dot)com)
+AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([tinySAK/src/tsk.c])
+
+### HOST FOR CROSS-COMPILING
+target_os=`uname -s`
+android_cpu=unknown
+
+case "$host" in
+  arm-*-linux-androideabi)
+    target_os=android
+    android_cpu=armv5te
+    ;;
+   i686-*-linux-android)
+    target_os=android
+    android_cpu=x86
+    ;;
+  *)
+    AC_MSG_NOTICE(["Using host as target os: $host"])
+    ;;
+esac
+
+### ANDROID-CPU
+AC_ARG_WITH(android-cpu, 
+[  --with-android-cpu[=cpu] set android CPU type [[default=armv5te]]
+                       armv5te: ARMv5TE
+                       armv7-a: ARMv7-a *without* NEON
+                       armv7-a-neon: ARMv7-a *with* NEON
+                       x86: X86],
+[ android_cpu=$withval ])
+
+### ANDROID-TOOLCHAIN (http://www.kandroid.org/ndk/docs/STANDALONE-TOOLCHAIN.html)
+if test "$target_os" = "android"; then
+	case "$android_cpu" in
+		x86)
+			export SYSROOT=$NDK/platforms/android-9/arch-x86
+    			export ANDROID_PREFIX=i686-linux-android
+			export ANDROID_TOOLCHAIN=$(pwd)/my-android-toolchain-android-x86
+    			$NDK/build/tools/make-standalone-toolchain.sh --platform=android-9 --arch=x86 --install-dir=$ANDROID_TOOLCHAIN
+			AC_SUBST(TARGET_ARCH, "x86")
+		;;
+		armv7-a)
+			export ANDROID_PREFIX=arm-linux-androideabi
+			export SYSROOT=$NDK/platforms/android-3/arch-arm
+			export ANDROID_TOOLCHAIN=$(pwd)/my-android-toolchain-android-armv7-a
+    			$NDK/build/tools/make-standalone-toolchain.sh --platform=android-3 --install-dir=$ANDROID_TOOLCHAIN
+    			export CFLAGS='-march=armv7-a -mfloat-abi=softfp'
+    			export LDFLAGS='-Wl,--fix-cortex-a8'
+			AC_SUBST(TARGET_ARCH, "arm")
+		;;
+		armv7-a-neon)
+			export ANDROID_PREFIX=arm-linux-androideabi
+			export SYSROOT=$NDK/platforms/android-3/arch-arm
+    			export ANDROID_TOOLCHAIN=$(pwd)/my-android-toolchain-android-armv7-a-neon
+    			$NDK/build/tools/make-standalone-toolchain.sh --platform=android-3 --install-dir=$ANDROID_TOOLCHAIN
+    			export CFLAGS='-march=armv7-a -mfloat-abi=softfp -mfpu=neon'
+    			export LDFLAGS='-Wl,--fix-cortex-a8'
+			AC_SUBST(TARGET_ARCH, "arm")
+		;;
+		*)
+			export ANDROID_PREFIX=arm-linux-androideabi
+			export SYSROOT=$NDK/platforms/android-3/arch-arm
+			export ANDROID_TOOLCHAIN=$(pwd)/my-android-toolchain-armv5te
+    			$NDK/build/tools/make-standalone-toolchain.sh --platform=android-3 --install-dir=$ANDROID_TOOLCHAIN
+			AC_SUBST(TARGET_ARCH, "arm")
+		;;
+	esac
+
+	AC_SUBST(NDK, $NDK)
+	
+	export CFLAGS="${CFLAGS} -DANDROID=1 -fPIC"
+	export CPPFLAGS=$CFLAGS
+	export LDFLAGS="${LDFLAGS} -lc -lm -lgcc"
+
+	export PATH=$ANDROID_TOOLCHAIN/bin:$PATH
+
+	export CC=$ANDROID_TOOLCHAIN/bin/$ANDROID_PREFIX-gcc
+	export AR=$ANDROID_TOOLCHAIN/bin/$ANDROID_PREFIX-ar
+	export CXX=$ANDROID_TOOLCHAIN/bin/$ANDROID_PREFIX-g++
+	export AS=$ANDROID_TOOLCHAIN/bin/$ANDROID_PREFIX-as
+	export RANLIB=$ANDROID_TOOLCHAIN/bin/$ANDROID_PREFIX-ranlib
+	export STRIP=$ANDROID_TOOLCHAIN/bin/$ANDROID_PREFIX-strip
+fi
 
 dnl find suitable C and C++ compilers
 AC_PROG_CC
@@ -27,18 +108,21 @@ AC_PROG_MAKE_SET
 
 PKG_PROG_PKG_CONFIG
 
-## Are we using Windows?
-#dnl detecting WIN32
-#case "$host" in
-#	*cygwin* | *mingw*)
-#		AC_DEFINE([WIN32], [], "Using Windows as target os.")
-#		;;
-#	*)
-#		AC_MSG_RESULT(${host} is not Windows... I will do my best.)
-#		;;
-#esac
+### Set Target OS
+AM_CONDITIONAL([TARGET_OS_IS_ANDROID], [test "x$target_os" = xandroid])
 
-#echo Setting up build environment for ${target_cpu}${target_os}
+### CROSS COMPILATION?
+AM_CONDITIONAL([CROSS_COMPILING], [test "x$cross_compiling" = xyes])
+
+### ENABLE GPL CODE
+AC_ARG_ENABLE(gpl, 
+[  AS_HELP_STRING([--disable-gpl], [Disable GPL code]) ], [ ],[])
+test "x$enable_gpl" = "x" && enable_gpl=yes
+
+### ENABLE NONFREE CODE
+AC_ARG_ENABLE(nonfree, 
+[  AS_HELP_STRING([--disable-nonfree], [Disable NONFREE code]) ], [ ],[])
+test "x$enable_nonfree" = "x" && enable_nonfree=yes
 
 ### ENABLE-DEBUG
 AC_MSG_CHECKING(whether to enable debugging)
@@ -47,14 +131,30 @@ AC_ARG_ENABLE(debug,
 [  --enable-debug[=no/yes] turn on/off debugging 
                        [[default=$debug_default]]],
 [ if test "x$enableval" = "xyes" ; then
-	CFLAGS="$CFLAGS -O0 -g3 -DDEBUG"
-	AC_MSG_RESULT(yes)
+	AC_DEFINE(DEBUG_LEVEL, DEBUG_LEVEL_INFO, [])
   else
-	CFLAGS="$CFLAGS -O3 -NDEBUG"
-	AC_MSG_RESULT(no)
+	AC_DEFINE(DEBUG_LEVEL, DEBUG_LEVEL_ERROR, [])
   fi
 ],
 [])
+test "x$enable_debug" = "x" && enable_debug=no
+
+AM_CONDITIONAL(USE_DEBUG, test x"$enable_debug" = x"yes")
+if test "$enable_debug" = "yes"; then
+	CFLAGS="${CFLAGS} -O0 -g3 -DDEBUG"
+	CPPFLAGS=$CFLAGS
+	CXXFLAGS=$CFLAGS
+else
+	if test "$target_os" = "android"; then
+		CFLAGS="${CFLAGS} -Os -s"
+		
+	else
+		CFLAGS="${CFLAGS} -O3 -DNDEBUG"
+	fi
+	CPPFLAGS=$CFLAGS
+	CXXFLAGS=$CFLAGS
+fi
+
 
 ### DEBUG-LEVEL
 AC_ARG_WITH(debug-level, 
@@ -77,6 +177,22 @@ AC_ARG_WITH(debug-level,
 	AC_MSG_RESULT(fatal)
   fi
 ])
+
+
+### CFLAGS && LDFLAGS
+if test "$target_os" = "android"; then
+	home_dir=`pwd`
+	CFLAGS="${CFLAGS} -I${home_dir}/thirdparties/andy/${android_cpu}/include -I${home_dir}/thirdparties/andy/common/include -I${home_dir}/thirdparties/common/include/libyuv"
+	CPPFLAGS=$CFLAGS
+	LDFLAGS="${LDFLAGS} -L${home_dir}/thirdparties/andy/${android_cpu}/lib/dist"
+	if test "$enable_gpl" = yes; then
+		LDFLAGS="${LDFLAGS} -L${home_dir}/thirdparties/andy/${android_cpu}/lib/dist/gpl"
+	else
+		LDFLAGS="${LDFLAGS} -L${home_dir}/thirdparties/andy/${android_cpu}/lib/dist/lgpl"
+	fi
+	AC_SUBST(CFLAGS)
+	AC_SUBST(LDFLAGS)
+fi
 
 AC_CHECK_FUNCS([stricmp strnicmp])
 
@@ -171,7 +287,7 @@ AC_CHECK_MEMBER([struct sockaddr.sa_len], AC_DEFINE(TNET_HAVE_SA_LEN, 1), AC_DEF
 AH_TEMPLATE([HAVE_APPEND_SALT_TO_KEY], [Checks if the installed libsrtp version support append_salt_to_key() function])
 AH_TEMPLATE([HAVE_SRTP_PROFILE_GET_MASTER_KEY_LENGTH], [Checks if the installed libsrtp version support srtp_profile_get_master_key_length() function])
 AH_TEMPLATE([HAVE_SRTP_PROFILE_GET_MASTER_SALT_LENGTH], [Checks if the installed libsrtp version support srtp_profile_get_master_salt_length() function])
-have_srtp=check
+have_srtp=no
 want_srtp=check
 path_srtp=undef
 AC_SUBST(LIBSRTP_LIBADD, "")
@@ -213,9 +329,9 @@ AM_CONDITIONAL([USE_SRTP], [test $have_srtp = yes])
 # SSL
 # --with-ssl / --without-ssl as argument to configure
 ########################################################
-have_ssl=check
-have_dtls_srtp=check
-have_dtls=check
+have_ssl=no
+have_dtls_srtp=no
+have_dtls=no
 want_ssl=check
 path_ssl=undef
 AC_SUBST(LIBSSL_LIBADD, "")
@@ -237,12 +353,14 @@ if test $want_ssl != no; then
 	# check for lib and headers
 	AC_CHECK_HEADERS(openssl/ssl.h,
        	AC_CHECK_LIB(ssl, SSL_library_init, AC_DEFINE_UNQUOTED(HAVE_OPENSSL, 1, HAVE_OPENSSL) [have_ssl=yes] LIBSSL_LIBADD="${LIBSSL_LIBADD} -lssl", 
-		AC_DEFINE_UNQUOTED(HAVE_OPENSSL, 0, HAVE_OPENSSL) [have_ssl=no]
+		AC_DEFINE_UNQUOTED(HAVE_OPENSSL, 0, HAVE_OPENSSL) [have_ssl=no], [-lcrypto]
 	))
-	AC_CHECK_LIB(crypto, BN_init, LIBSSL_LIBADD="${LIBSSL_LIBADD} -lcrypto")
-	AC_CHECK_LIB(ssl, SSL_CTX_set_tlsext_use_srtp, AC_DEFINE_UNQUOTED(HAVE_OPENSSL_DTLS_SRTP, 1, HAVE_OPENSSL_DTLS_SRTP) [have_dtls_srtp=yes])
- 	AC_CHECK_LIB(ssl, DTLSv1_method, AC_DEFINE_UNQUOTED(HAVE_OPENSSL_DTLS, 1, HAVE_OPENSSL_DTLS) [have_dtls=yes])
-	# if opus not found and requested then, die.
+	AC_CHECK_LIB(crypto, BN_init, 
+		LIBSSL_LIBADD="${LIBSSL_LIBADD} -lcrypto"
+		AC_CHECK_LIB(ssl, SSL_CTX_set_tlsext_use_srtp, AC_DEFINE_UNQUOTED(HAVE_OPENSSL_DTLS_SRTP, 1, HAVE_OPENSSL_DTLS_SRTP) [have_dtls_srtp=yes],[],[-lcrypto])
+		AC_CHECK_LIB(ssl, DTLSv1_method, AC_DEFINE_UNQUOTED(HAVE_OPENSSL_DTLS, 1, HAVE_OPENSSL_DTLS) [have_dtls=yes],[],[-lcrypto])
+	) 	
+	# if ssl not found and requested then, die.
   	test $have_ssl:$want_ssl = no:yes &&  
 		AC_MSG_ERROR([You requested SSL (requires OpenSSL) but not found...die])
 fi
@@ -254,7 +372,7 @@ AM_CONDITIONAL([USE_SSL], [test $have_ssl = yes])
 # FFmpeg
 # --with-ffmpeg / --without-ffmpeg as argument to configure
 ########################################################
-have_ffmpeg=check
+have_ffmpeg=no
 want_ffmpeg=check
 path_ffmpeg=undef
 AC_SUBST(LIBFFMPEG_LIBADD, "")
@@ -275,19 +393,18 @@ AC_ARG_WITH(ffmpeg,
 if test $want_ffmpeg != no; then
 	have_avutil=check
 	AC_CHECK_HEADERS(libavutil/avutil.h, 
-		AC_CHECK_LIB(avutil, av_gettime, [have_avutil=yes] LIBFFMPEG_LIBADD="${LIBFFMPEG_LIBADD} -lavutil", [have_avutil=no] [have_ffmpeg=no])
+		AC_CHECK_LIB(avutil, av_gettime, [have_avutil=yes] LIBFFMPEG_LIBADD="-lavutil ${LIBFFMPEG_LIBADD}", [have_avutil=no])
 	)
 	have_swscale=check
 	AC_CHECK_HEADERS(libswscale/swscale.h, 
-		AC_CHECK_LIB(swscale, sws_scale, [have_swscale=yes] LIBFFMPEG_LIBADD="${LIBFFMPEG_LIBADD} -lswscale", [have_swscale=no] [have_ffmpeg=no])
+		AC_CHECK_LIB(swscale, sws_scale, [have_swscale=yes] LIBFFMPEG_LIBADD="-lswscale ${LIBFFMPEG_LIBADD}", [have_swscale=no], [-lavutil])
 	)
 	have_avcodec=check
-	AC_CHECK_HEADERS(libavcodec/avcodec.h, 
-		AC_CHECK_LIB(avcodec, avcodec_find_encoder, [have_avcodec=yes] LIBFFMPEG_LIBADD="${LIBFFMPEG_LIBADD} -lavcodec", [have_avcodec=no] [have_ffmpeg=no])
+	AC_CHECK_HEADERS(libavcodec/avcodec.h,
+			AC_CHECK_LIB(avcodec, avcodec_alloc_frame, [have_avcodec=yes] LIBFFMPEG_LIBADD="-lavcodec ${LIBFFMPEG_LIBADD}", [have_avcodec=no], [-lavutil])
 	)
-	
-	test $have_ffmpeg = yes &&
-		AC_DEFINE_UNQUOTED(HAVE_FFMPEG, 1, HAVE_FFMPEG)
+	test $have_avutil:$have_swscale:$have_avcodec = yes:yes:yes &&
+		have_ffmpeg=yes && AC_DEFINE_UNQUOTED(HAVE_FFMPEG, 1, HAVE_FFMPEG)
 	
 	# if ffmpeg not found and requested then, die.
   	test $have_ffmpeg:$want_ffmpeg = no:yes &&  
@@ -295,16 +412,16 @@ if test $want_ffmpeg != no; then
 fi
 AM_CONDITIONAL([USE_FFMPEG], [test $have_ffmpeg = yes])
 
-
-AM_CONDITIONAL(USE_H264, false)
-AC_SUBST(LIBH264_LIBADD, "")
+AM_CONDITIONAL(USE_H264, [test $target_os:$enable_gpl = android:yes]) # H.264 is always there for Android and statically linked
+AC_SUBST(LIBH264_LIBADD, "-lx264")
 AC_ARG_WITH(h264, [  --with-h264 IMPORTANT: deprecated to be removed ],[], [])
+
 
 ########################################################
 # VPX (VP8, VP9)
 # --with-vpx / --without-vpx as argument to configure
 ########################################################
-have_vpx=check
+have_vpx=no
 want_vpx=check
 path_vpx=undef
 AC_SUBST(LIBVPX_LIBADD, "")
@@ -340,7 +457,7 @@ AM_CONDITIONAL([USE_VPX], [test $have_vpx = yes])
 # YUV 
 # --with-yuv / --without-yuv as argument to configure
 ########################################################
-have_yuv=check
+have_yuv=no
 want_yuv=check
 path_yuv=undef
 AC_SUBST(LIBYUV_INCLUDE, "")
@@ -360,22 +477,27 @@ AC_ARG_WITH(yuv,
 )
 # only if --without-yuv not used
 if test $want_yuv != no; then
+	AC_LANG_PUSH([C++])	
 	# check for lib and headers
 	AC_CHECK_HEADERS(libyuv/libyuv.h,
        	AC_CHECK_LIB(yuv, I420Scale, AC_DEFINE_UNQUOTED(HAVE_LIBYUV, 1, HAVE_LIBYUV) [have_yuv=yes] 
 		if test "x$path_yuv" = xundef; then
-  			LIBYUV_INCLUDE="-I/usr/local/include"
-  			LIBYUV_LIB="-L/usr/local/lib -lyuv"
+			if test "$target_os" != "android"; then
+  				LIBYUV_INCLUDE="-I/usr/local/include -I/usr/local/include/libyuv"
+  				LIBYUV_LIB="-L/usr/local/lib"
+			fi
 		else
-  			LIBYUV_INCLUDE="-I${path_yuv}/include"
-  			LIBYUV_LIB="-L${path_yuv}/lib -lyuv"
+  			LIBYUV_INCLUDE="-I${path_yuv}/include ${path_yuv}/include/libyuv"
+  			LIBYUV_LIB="-L${path_yuv}/lib"
 		fi
 		, 
 		AC_DEFINE_UNQUOTED(HAVE_LIBYUV, 0, HAVE_LIBYUV) [have_yuv=no]
 	))	  
+	test $have_yuv = yes && LIBYUV_LIB="${LIBYUV_LIB} -lyuv"
 	# if opus not found and requested then, die.
   	test $have_yuv:$want_yuv = no:yes &&  
 		AC_MSG_ERROR([You requested LIBYUV but not found...die])
+	AC_LANG_POP([C++])
 fi
 AM_CONDITIONAL([USE_YUV], [test $have_yuv = yes])
 
@@ -384,7 +506,7 @@ AM_CONDITIONAL([USE_YUV], [test $have_yuv = yes])
 # AMR 
 # --with-amr / --without-amr as argument to configure
 ########################################################
-have_amr=check
+have_amr=no
 want_amr=check
 path_amr=undef
 AC_SUBST(LIBAMR_LIBADD, "")
@@ -412,14 +534,14 @@ if test $want_amr != no; then
   	test $have_amr:$want_amr = no:yes &&  
 		AC_MSG_ERROR([You requested AMR audio codec but not found...die])
 fi
-AM_CONDITIONAL([USE_AMR], [test $have_amr = yes])
+AM_CONDITIONAL([USE_AMR], [test $have_amr:$enable_nonfree = yes:yes])
 
 
 ########################################################
 # OPUS 
 # --with-opus / --without-opus as argument to configure
 ########################################################
-have_opus=check
+have_opus=no
 want_opus=check
 path_opus=undef
 AC_SUBST(LIBOPUS_LIBADD, "")
@@ -454,7 +576,7 @@ AM_CONDITIONAL([USE_OPUS], [test $have_opus = yes])
 # SPEEX
 # --with-speex / --without-speex as argument to configure
 ########################################################
-have_speex=check
+have_speex=no
 want_speex=check
 path_speex=undef
 AC_SUBST(LIBSPEEX_LIBADD, "")
@@ -489,7 +611,7 @@ AM_CONDITIONAL([USE_SPEEX], [test $have_speex = yes])
 # SPEEXDSP
 # --with-speexdsp / --without-speexdsp as argument to configure
 ########################################################
-have_speexdsp=check
+have_speexdsp=no
 want_speexdsp=check
 path_speexdsp=undef
 AC_SUBST(LIBSPEEXDSP_LIBADD, "")
@@ -543,7 +665,7 @@ AC_ARG_ENABLE(speexjb, [ --enable-speexjb IMPORTANT: deprecated to be removed], 
 # GSM
 # --with-gsm / --without-gsm as argument to configure
 ########################################################
-have_gsm=check
+have_gsm=no
 want_gsm=check
 path_gsm=undef
 AC_SUBST(LIBGSM_LIBADD, "")
@@ -578,7 +700,7 @@ AM_CONDITIONAL([USE_GSM], [test $have_gsm = yes])
 # G729
 # --with-g729 / --without-g729 as argument to configure
 ########################################################
-have_g729=check
+have_g729=no
 want_g729=check
 path_g729=undef
 AC_SUBST(LIBG729_LIBADD, "")
@@ -610,14 +732,14 @@ if test $want_g729 != no; then
   	test $have_g729:$want_g729 = no:yes &&  
 		AC_MSG_ERROR([You requested G729 audio codec but not found...die])
 fi
-AM_CONDITIONAL([USE_G729], [test $have_g729 = yes])
+AM_CONDITIONAL([USE_G729], [test $have_g729:$enable_nonfree = yes:yes])
 
 
 ########################################################
 # ILBC
 # --with-ilbc / --without-ilbc as argument to configure
 ########################################################
-have_ilbc=check
+have_ilbc=no
 want_ilbc=check
 path_ilbc=undef
 AC_SUBST(LIBILBC_LIBADD, "")
@@ -646,6 +768,65 @@ if test $want_ilbc != no; then
 		AC_MSG_ERROR([You requested ILBC audio codec but not found...die])
 fi
 AM_CONDITIONAL([USE_ILBC], [test $have_ilbc = yes])
+
+
+########################################################
+# WEBRTC
+# --with-webrtc / --without-webrtc as argument to configure
+########################################################
+have_webrtc=no
+want_webrtc=check
+path_webrtc=undef
+AC_SUBST(LIBWEBRTC_LIBADD, "")
+AC_ARG_WITH(webrtc,
+[  --with-webrtc=PATH             Build with WebRTC audio processing features (AEC, VAD, Noise supp...). PATH is optional.],
+    if test "x$withval" = "xyes"; then
+      want_webrtc=yes
+      path_webrtc=undef
+    elif test "x$withval" = "xno"; then
+      want_webrtc=no
+      path_webrtc=undef
+    elif test "$withval"; then
+      want_webrtc=yes
+      path_webrtc=$withval
+    fi,
+)
+# only if --without-webrtc not used
+if test $want_webrtc != no; then
+	# WebRTC AEC
+	have_webrtc_aec=no
+	if test "$target_os" = "android"; then
+		AC_CHECK_HEADERS(webrtc/echo_control_mobile.h,
+       		AC_CHECK_LIB(webrtc_aecm, WebRtcAecm_Create, [have_webrtc_aec=yes], [], [-lwebrtc_apm_utility -lwebrtc_system_wrappers -lwebrtc_spl])
+		)
+	else
+		AC_CHECK_HEADERS(webrtc/echo_cancellation.h,
+       		AC_CHECK_LIB(webrtc_aec, WebRtcAec_Create, [have_webrtc_aec=yes], [], [-lwebrtc_apm_utility -lwebrtc_system_wrappers -lwebrtc_spl])
+		)
+	fi
+	# WebRTC NS
+	have_webrtc_ns=no
+	if test "$target_os" = "android"; then
+		AC_CHECK_HEADERS(webrtc/noise_suppression_x.h,
+       		AC_CHECK_LIB(webrtc_nsx, WebRtcNsx_Process, [have_webrtc_ns=yes] [LIBWEBRTC_LIBADD="-lwebrtc_nsx ${LIBWEBRTC_LIBADD}"], [], [-lwebrtc_apm_utility -lwebrtc_system_wrappers -lwebrtc_spl])
+		)
+	else
+		AC_CHECK_HEADERS(webrtc/noise_suppression.h,
+       		AC_CHECK_LIB(webrtc_ns, WebRtcNs_Process, [have_webrtc_ns=yes] [LIBWEBRTC_LIBADD="-lwebrtc_ns ${LIBWEBRTC_LIBADD}"], [], [-lwebrtc_apm_utility -lwebrtc_system_wrappers -lwebrtc_spl])
+		)
+	fi
+
+	if test $have_webrtc_aec:$have_webrtc_ns = yes:yes; then
+		have_webrtc=yes
+		AC_DEFINE_UNQUOTED(HAVE_WEBRTC, 1, HAVE_WEBRTC)
+		AC_DEFINE_UNQUOTED(HAVE_WEBRTC_DENOISE, 1, HAVE_WEBRTC_DENOISE)
+		LIBWEBRTC_LIBADD="${LIBWEBRTC_LIBADD} -lwebrtc_apm_utility -lwebrtc_system_wrappers -lwebrtc_spl"
+	fi
+	
+  	test $have_webrtc:$want_webrtc = no:yes &&  
+		AC_MSG_ERROR([You requested WebRTC (audio processing features) but not found...die])
+fi
+AM_CONDITIONAL([USE_WEBRTC], [test $have_webrtc = yes])
 
 
 AC_CONFIG_FILES(
@@ -690,28 +871,37 @@ tinyDAV/tinyDAV.pc
 
 tinySIP/Makefile
 tinySIP/tinySIP.pc
+
+bindings/Makefile
+bindings/tinyWRAP.pc
+
+plugins/audio_opensles/Makefile
+plugins/audio_opensles/plugin_audio_opensles.pc
 )
+
 AC_OUTPUT
-
-
-
 
 AC_MSG_NOTICE([
  
 **************************************************************************
 * 				CONGRATULATIONS
 **************************************************************************
+Cross Compilation:   ${cross_compiling}
+Target OS:           ${target_os}
 Host setup:          ${host}
 Install prefix:      ${prefix}
 Compiler:            ${CC}
+
+Enable GPL:          $enable_gpl
+Enable Non Free:     $enable_nonfree
 
 FFmpeg:              $have_ffmpeg
 VP8 video codec:     $have_vpx
 OPUS audio codec:    $have_opus
 ILBC audio codec:    $have_ilbc
-G.729 audio codec:   $have_g729
+G.729 audio codec:   $have_g729 -> $enable_nonfree
 GSM audio codec:     $have_gsm
-AMR audio codec:     $have_amr
+AMR audio codec:     $have_amr -> $enable_nonfree
 SPEEX audio codec:   $have_speex
 G.722 audio codec:   yes
 G.711 audio codec:   yes
@@ -725,11 +915,23 @@ DTLS:                $have_dtls
 
 SRTP:                $have_srtp
 
+WebRTC:              Enabled($have_webrtc): AEC($have_webrtc_aec), NS($have_webrtc_ns)
+
 Monotonic timers:    $have_rt
 RESOLV:              $have_resolv
 
-DEBUG:               $debug_default
+DEBUG:               $enable_debug
 
 Report any issue at https://groups.google.com/group/doubango
 
 ])
+
+if test "$target_os" = "android"; then
+AC_MSG_NOTICE([
+
+--------------------------------------------------------------------------
+- 				    ANDRDOID
+--------------------------------------------------------------------------
+CPU:                 ${android_cpu}
+])
+fi

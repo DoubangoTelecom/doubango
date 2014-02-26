@@ -28,6 +28,10 @@ libtinySDP_la_SOURCES += src/parsers/tsdp_parser_message.c
 
 
 libtinySDP_la_LDFLAGS = $LDFLAGS -no-undefined
+if TARGET_OS_IS_ANDROID
+libtinySDP_la_LDFLAGS += -static
+endif
+
 
 _includedir = $(includedir)/tinysdp
 _include_HEADERS = include/*.h

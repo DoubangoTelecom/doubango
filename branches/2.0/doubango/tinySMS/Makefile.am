@@ -17,6 +17,9 @@ libtinySMS_la_SOURCES += src/tpdu/tsms_tpdu_command.c\
 	src/tpdu/tsms_tpdu_submit.c
 
 libtinySMS_la_LDFLAGS = $LDFLAGS -no-undefined
+if TARGET_OS_IS_ANDROID
+libtinySMS_la_LDFLAGS += -static
+endif
 
 _includedir = $(includedir)/tinysms
 _include_HEADERS = include/*.h

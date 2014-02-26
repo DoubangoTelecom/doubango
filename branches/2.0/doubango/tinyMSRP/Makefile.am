@@ -35,6 +35,9 @@ libtinyMSRP_la_SOURCES += src/session/tmsrp_config.c\
 	src/session/tmsrp_sender.c
 
 libtinyMSRP_la_LDFLAGS = $LDFLAGS -no-undefined
+if TARGET_OS_IS_ANDROID
+libtinyMSRP_la_LDFLAGS += -static
+endif
 
 _includedir = $(includedir)/tinymsrp
 _include_HEADERS = include/*.h

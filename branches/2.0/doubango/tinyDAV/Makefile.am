@@ -31,7 +31,7 @@ endif
 
 if USE_YUV
 libtinyDAV_la_LIBADD += ${LIBYUV_LIB}
-libtinyDAV_la_CPPFLAGS += ${LIBYUV_INCLUDE} ${LIBYUV_INCLUDE}/libyuv
+libtinyDAV_la_CPPFLAGS += ${LIBYUV_INCLUDE}
 endif
 
 if USE_OPUS
@@ -60,6 +60,10 @@ endif
 
 if USE_ILBC
 libtinyDAV_la_LIBADD += ${LIBILBC_LIBADD}
+endif
+
+if USE_WEBRTC
+libtinyDAV_la_LIBADD += ${LIBWEBRTC_LIBADD}
 endif
 
 libtinyDAV_la_SOURCES = \
@@ -137,6 +141,9 @@ libtinyDAV_la_SOURCES += src/codecs/t140/tdav_codec_t140.c
 
 
 libtinyDAV_la_LDFLAGS = $LDFLAGS -no-undefined
+if TARGET_OS_IS_ANDROID
+libtinyDAV_la_LDFLAGS += -static
+endif
 
 _includedir = $(includedir)/tinydav
 _include_HEADERS = include/*.h

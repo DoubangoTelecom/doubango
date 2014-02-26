@@ -177,7 +177,9 @@ libtinySIP_la_SOURCES += src/transports/tsip_transport.c\
 
 
 libtinySIP_la_LDFLAGS = $LDFLAGS -no-undefined
-
+if TARGET_OS_IS_ANDROID
+libtinySIP_la_LDFLAGS += -static
+endif
 
 _includedir = $(includedir)/tinysip
 _include_HEADERS = include/*.h

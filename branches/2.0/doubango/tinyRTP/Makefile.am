@@ -32,6 +32,9 @@ libtinyRTP_la_SOURCES += src/rtp/trtp_rtp_header.c \
 
 
 libtinyRTP_la_LDFLAGS = $LDFLAGS -no-undefined
+if TARGET_OS_IS_ANDROID
+libtinyRTP_la_LDFLAGS += -static
+endif
 
 _includedir = $(includedir)/tinyrtp
 _include_HEADERS = include/*.h

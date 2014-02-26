@@ -1,0 +1,15 @@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+libdir = @libdir@
+includedir = @includedir@
+
+Name : libtinyWRAP
+Description : Doubango Telecom tinyWRAP (Wrapper) library
+Version : @PACKAGE_VERSION@
+Requires: 
+Requires.private: tinySAK = @PACKAGE_VERSION@ tinyNET = @PACKAGE_VERSION@ tinySDP = @PACKAGE_VERSION@ tinyRTP = @PACKAGE_VERSION@ tinyMEDIA = @PACKAGE_VERSION@ tinyMSRP = @PACKAGE_VERSION@ tinyDAV = @PACKAGE_VERSION@
+Conflicts:
+Cflags : -I${includedir}/tinywrap
+Libs : -L${libdir} -ltinyWRAP
+Libs.private: @LIBFFMPEG_LIBADD@ @LIBH264_LIBADD@ @LIBVPX_LIBADD@ @LIBOPUS_LIBADD@ @LIBAMR_LIBADD@ @LIBSPEEX_LIBADD@ @LIBSPEEXDSP_LIBADD@ @LIBGSM_LIBADD@ @LIBG729_LIBADD@ @LIBILBC_LIBADD@
+

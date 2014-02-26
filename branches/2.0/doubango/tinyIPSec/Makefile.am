@@ -7,6 +7,9 @@ libtinyIPSec_la_SOURCES = \
 
 # LDFLAGS
 libtinyIPSec_la_LDFLAGS = $LDFLAGS -no-undefined
+if TARGET_OS_IS_ANDROID
+libtinyIPSec_la_LDFLAGS += -static
+endif
 
 # Headers file to install
 libtinyIPSec_la_HEADERS = src/*.h

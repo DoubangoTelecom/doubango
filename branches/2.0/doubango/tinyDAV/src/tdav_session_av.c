@@ -34,6 +34,9 @@
 
 #include "tinyrtp/trtp_manager.h"
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
+#if HAVE_SRTP
+#	include "tinyrtp/trtp_srtp.h"
+#endif
 
 #include "ice/tnet_ice_ctx.h"
 #include "ice/tnet_ice_candidate.h"
