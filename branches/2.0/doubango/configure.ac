@@ -182,13 +182,13 @@ AC_ARG_WITH(debug-level,
 ### CFLAGS && LDFLAGS
 if test "$target_os" = "android"; then
 	home_dir=`pwd`
-	CFLAGS="${CFLAGS} -I${home_dir}/thirdparties/andy/${android_cpu}/include -I${home_dir}/thirdparties/andy/common/include -I${home_dir}/thirdparties/common/include/libyuv"
+	CFLAGS="${CFLAGS} -I${home_dir}/thirdparties/android/${android_cpu}/include -I${home_dir}/thirdparties/android/common/include -I${home_dir}/thirdparties/common/include/libyuv"
 	CPPFLAGS=$CFLAGS
-	LDFLAGS="${LDFLAGS} -L${home_dir}/thirdparties/andy/${android_cpu}/lib/dist"
+	LDFLAGS="${LDFLAGS} -L${home_dir}/thirdparties/android/${android_cpu}/lib/dist"
 	if test "$enable_gpl" = yes; then
-		LDFLAGS="${LDFLAGS} -L${home_dir}/thirdparties/andy/${android_cpu}/lib/dist/gpl"
+		LDFLAGS="${LDFLAGS} -L${home_dir}/thirdparties/android/${android_cpu}/lib/dist/gpl"
 	else
-		LDFLAGS="${LDFLAGS} -L${home_dir}/thirdparties/andy/${android_cpu}/lib/dist/lgpl"
+		LDFLAGS="${LDFLAGS} -L${home_dir}/thirdparties/android/${android_cpu}/lib/dist/lgpl"
 	fi
 	AC_SUBST(CFLAGS)
 	AC_SUBST(LDFLAGS)
