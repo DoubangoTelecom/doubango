@@ -68,6 +68,9 @@ libtinyNET_la_SOURCES +=	src/turn/tnet_turn.c\
 	
 
 libtinyNET_la_LDFLAGS = $LDFLAGS -no-undefined
+if TARGET_OS_IS_ANDROID
+libtinyNET_la_LDFLAGS += -static
+endif
 
 src_includedir = $(includedir)/tinynet
 src_include_HEADERS = src/*.h

@@ -28,6 +28,9 @@ libtinyMEDIA_la_SOURCES += \
 	src/content/tmedia_content_sip_frag.c
 
 libtinyMEDIA_la_LDFLAGS = $LDFLAGS -no-undefined
+if TARGET_OS_IS_ANDROID
+libtinyMEDIA_la_LDFLAGS += -static
+endif
 
 _includedir = $(includedir)/tinymedia
 _include_HEADERS = include/*.h

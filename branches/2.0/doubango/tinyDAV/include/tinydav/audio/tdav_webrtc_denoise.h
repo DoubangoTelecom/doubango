@@ -43,7 +43,7 @@
 #	define PREFER_SPEEX_DENOISER	1
 #endif
 
-#if TDAV_UNDER_MOBILE && !defined(ANDROID) // AECM not working on Android
+#if TDAV_UNDER_MOBILE
 #	include <webrtc/echo_control_mobile.h>
 #	define	TDAV_WebRtcAec_Create(aecInst)	WebRtcAecm_Create(aecInst)
 #	define	TDAV_WebRtcAec_Free(aecInst)	WebRtcAecm_Free(aecInst)
@@ -98,7 +98,7 @@ typedef struct tdav_webrtc_denoise_s
 	uint32_t record_frame_size_samples, record_sampling_rate;
 	uint32_t playback_frame_size_samples, playback_sampling_rate;
 
-	WebRtc_Word16 *temp_rec_out;
+	int16_t *temp_rec_out;
 
 	TSK_DECLARE_SAFEOBJ;
 }

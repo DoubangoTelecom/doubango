@@ -38,8 +38,13 @@ libtinySAK_la_SOURCES  = \
 	src/tsk_xml.c
 	
 libtinySAK_la_LDFLAGS = $LDFLAGS -no-undefined
-libtinySAK_la_HEADERS = src/*.h
+if TARGET_OS_IS_ANDROID
+libtinySAK_la_LDFLAGS += -static
+endif
 libtinySAK_ladir = $(includedir)/tinysak
+
+src_includedir = $(includedir)/tinysak
+src_include_HEADERS = src/*.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = tinySAK.pc

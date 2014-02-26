@@ -29,9 +29,6 @@
 #include "tinydav_config.h"
 
 #include "tinymedia/tmedia_session.h"
-#if HAVE_SRTP
-#	include "tinyrtp/trtp_srtp.h"
-#endif
 
 #include "tnet_nat.h"
 

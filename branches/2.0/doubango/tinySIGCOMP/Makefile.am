@@ -36,6 +36,9 @@ libtinySIGCOMP_la_SOURCES = \
 	src/zutil.c
 
 libtinySIGCOMP_la_LDFLAGS = $LDFLAGS -no-undefined
+if TARGET_OS_IS_ANDROID
+libtinySIGCOMP_la_LDFLAGS += -static
+endif
 libtinySIGCOMP_la_HEADERS = src/*.h
 libtinySIGCOMP_ladir = $(includedir)/tinysigcomp
 

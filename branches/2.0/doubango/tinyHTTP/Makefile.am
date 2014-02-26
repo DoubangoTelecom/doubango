@@ -32,6 +32,9 @@ libtinyHTTP_la_SOURCES +=	src/parsers/thttp_parser_header.c\
 	src/parsers/thttp_parser_url.c
 
 libtinyHTTP_la_LDFLAGS = $LDFLAGS -no-undefined
+if TARGET_OS_IS_ANDROID
+libtinyHTTP_la_LDFLAGS += -static
+endif
 
 _includedir = $(includedir)/tinyhttp
 _include_HEADERS = include/*.h

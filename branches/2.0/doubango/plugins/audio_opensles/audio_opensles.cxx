@@ -29,14 +29,6 @@
 #include "tsk_safeobj.h"
 #include "tsk_debug.h"
 
-#if AUDIO_OPENSLES_UNDER_ANDROID
-// https://groups.google.com/group/android-ndk/browse_thread/thread/a1667f28162cf69b/8ef3a171df7f8dfe
-extern "C" 
-{ 
-	void *__dso_handle = NULL; 
-} 
-#endif
-
 typedef enum PLUGIN_INDEX_E
 {
 	PLUGIN_INDEX_AUDIO_CONSUMER,

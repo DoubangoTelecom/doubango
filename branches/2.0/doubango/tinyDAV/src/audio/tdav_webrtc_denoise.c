@@ -47,7 +47,7 @@
 #endif
 #if !defined(WEBRTC_MIN_ECHO_TAIL)
 #	define WEBRTC_MIN_ECHO_TAIL		20 // 0 will cause random crashes
-static const WebRtc_Word32 kSizeOfWord16 = sizeof(WebRtc_Word16);
+static const int32_t kSizeOfWord16 = sizeof(int16_t);
 #endif
 
 static int tdav_webrtc_denoise_set(tmedia_denoise_t* _self, const tmedia_param_t* param)
@@ -163,7 +163,7 @@ static int tdav_webrtc_denoise_echo_playback(tmedia_denoise_t* self, const void*
 	tdav_webrtc_denoise_t *denoiser = (tdav_webrtc_denoise_t *)self;
 	if(denoiser->AEC_inst){
 		int ret;
-		const WebRtc_Word16 *pEchoFrame = (const WebRtc_Word16 *)echo_frame;
+		const int16_t *pEchoFrame = (const int16_t *)echo_frame;
 		switch(denoiser->record_sampling_rate){
 			case 8000:
 				{
@@ -208,7 +208,7 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 	tsk_safeobj_lock(denoiser);
 
 	if(denoiser->AEC_inst){
-		WebRtc_Word16 *pAudioFrame = audio_frame;
+		int16_t *pAudioFrame = audio_frame;
 		
 		// Noise suppression
 #if HAVE_SPEEX_DSP && PREFER_SPEEX_DENOISER
