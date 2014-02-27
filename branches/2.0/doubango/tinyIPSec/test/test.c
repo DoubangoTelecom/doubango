@@ -24,7 +24,7 @@
 static tipsec_ipproto_t __ipproto = tipsec_ipproto_udp;
 static tsk_bool_t __use_ipv6 = tsk_false;
 static tipsec_mode_t __mode = tipsec_mode_trans;
-static tipsec_ealg_t __ealg = tipsec_ealg_null;
+static tipsec_ealg_t __ealg = tipsec_ealg_aes;
 static tipsec_alg_t __alg = tipsec_alg_hmac_md5_96;
 static tipsec_proto_t __proto = tipsec_proto_esp;
 
