@@ -641,6 +641,8 @@ void __CFReadStreamClientCallBack(CFReadStreamRef stream, CFStreamEventType even
         case kCFStreamEventEndEncountered:
         {
             TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> kCFStreamEventEndEncountered(fd=%d)", fd);
+            TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, fd);
+            removeSocket(sock, context);
             break;
         }
         case kCFStreamEventHasBytesAvailable:
@@ -713,6 +715,8 @@ void __CFWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventType ev
         case kCFStreamEventEndEncountered:
         {
             TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> kCFStreamEventEndEncountered(fd=%d)", fd);
+            TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, fd);
+            removeSocket(sock, context);
             break;
         }
         case kCFStreamEventErrorOccurred:
