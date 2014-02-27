@@ -162,7 +162,7 @@ int tnet_ice_utils_set_ufrag(char** ufrag)
 int tnet_ice_utils_set_pwd(char** pwd)
 {
 	if(pwd){
-		char tmp[22]; int i;
+		char tmp[23]; int i;
 		for(i = 0; i < (sizeof(tmp)/sizeof(tmp[0])) - 1; ++i){
 			tmp[i] = ice_chars[(rand() ^ rand()) % ice_chars_count];
 		}
