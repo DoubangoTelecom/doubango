@@ -125,6 +125,7 @@
 				WarningLevel="3"
 				WarnAsError="true"
 				DebugInformationFormat="3"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -139,7 +140,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyIPSec.lib Ws2_32.lib"
 				LinkIncremental="1"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

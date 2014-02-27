@@ -303,6 +303,7 @@ static char* tdav_codec_h264_common_sdp_att_get(const tdav_codec_h264_common_t* 
 		char* fmtp = tsk_null;
 #if 1
 		tsk_sprintf(&fmtp, "profile-level-id=%x; packetization-mode=%d", ((h264->profile << 16) | h264->level), h264->pack_mode);
+		// fmtp = tsk_strdup("profile-level-id=42800d;max-mbps=40500;max-fs=1344;max-smbps=40500");
 #else
 		tsk_strcat_2(&fmtp, "profile-level-id=%s; packetization-mode=%d; max-br=%d; max-mbps=%d",
 			profile_level, h264->pack_mode, TMEDIA_CODEC_VIDEO(h264)->in.max_br/1000, TMEDIA_CODEC_VIDEO(h264)->in.max_mbps/1000);

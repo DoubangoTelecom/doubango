@@ -223,14 +223,14 @@ static tipsec_error_t _plugin_win_ipsec_vista_ctx_set_keys(tipsec_ctx_t* _p_ctx,
     }
     _ck = (PFWP_BYTE_BLOB)_p_ctx->ck;
 
-    _ik->data = tsk_calloc(1, TIPSEC_IK_LEN);
+    _ik->data = tsk_calloc(TIPSEC_IK_LEN, 1);
     if (!_ik->data) {
         return tipsec_error_outofmemory;
     }
     memcpy(_ik->data, ik, TIPSEC_KEY_LEN);
     _ik->size = TIPSEC_KEY_LEN;
 
-    _ck->data = tsk_calloc(1, TIPSEC_CK_LEN);
+    _ck->data = tsk_calloc(TIPSEC_CK_LEN, 1);
     if (!_ck->data) {
         return tipsec_error_outofmemory;
     }
@@ -357,8 +357,8 @@ static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, 
     filter.filterCondition = conds;
     filter.action.type = FWP_ACTION_CALLOUT_TERMINATING;
     filter.flags = FWPM_FILTER_FLAG_NONE;
-    //filter.weight.type = FWP_EMPTY;
-
+    filter.weight.type = FWP_EMPTY;
+	
     // Add the inbound filter.
     filter.layerKey = (p_ctx->pc_base->use_ipv6) ? FWPM_LAYER_INBOUND_TRANSPORT_V6 : FWPM_LAYER_INBOUND_TRANSPORT_V4;
     if (p_ctx->pc_base->mode == tipsec_mode_tun) {
@@ -444,7 +444,8 @@ static int _vista_boundSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, __in U
     DWORD result = NO_ERROR;
     IPSEC_SA0 sa;
     IPSEC_SA_BUNDLE0 bundle;
-    IPSEC_SA_AUTH_INFORMATION0 authInfo;
+    IPSEC_SA_AUTH_INFORMATION0 authInfo; // must be global because use as reference (X = &authInfo)
+	IPSEC_SA_AUTH_AND_CIPHER_INFORMATION0 cipherAuthInfo; // must be global because use as reference (X = &cipherAuthInfo)
     PFWP_BYTE_BLOB ik = (PFWP_BYTE_BLOB)p_ctx->pc_base->ik;
     PFWP_BYTE_BLOB ck = (PFWP_BYTE_BLOB)p_ctx->pc_base->ck;
 
@@ -496,7 +497,6 @@ static int _vista_boundSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, __in U
     }
     else if ( sa.saTransformType == IPSEC_TRANSFORM_ESP_AUTH_AND_CIPHER ) {
         IPSEC_SA_CIPHER_INFORMATION0 cipherInfo;
-        IPSEC_SA_AUTH_AND_CIPHER_INFORMATION0 cipherAuthInfo;
 
         memset(&cipherInfo, 0, sizeof(cipherInfo));
         cipherInfo.cipherTransform.cipherTransformId = TINYIPSEC_VISTA_GET_EALGO(p_ctx->pc_base->ealg);
@@ -668,9 +668,15 @@ static tsk_object_t* _plugin_win_ipsec_vista_ctx_dtor(tsk_object_t * self)
 
         TSK_FREE(p_ctx->pc_base->addr_local);
         TSK_FREE(p_ctx->pc_base->addr_remote);
-
-        TSK_FREE(p_ctx->pc_base->ik);
-        TSK_FREE(p_ctx->pc_base->ck);
+		
+		if (p_ctx->pc_base->ik) {
+			TSK_FREE(((PFWP_BYTE_BLOB)p_ctx->pc_base->ik)->data);
+			TSK_FREE(p_ctx->pc_base->ik);
+		}
+        if (p_ctx->pc_base->ck) {
+			TSK_FREE(((PFWP_BYTE_BLOB)p_ctx->pc_base->ck)->data);
+			TSK_FREE(p_ctx->pc_base->ck);
+		}
 
         TSK_DEBUG_INFO("*** Windows Vista IPSec plugin (Windows Filtering Platform) context destroyed ***");
     }
