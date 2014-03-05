@@ -411,14 +411,14 @@ SWIGEXPORT int SWIGSTDCALL CSharp_IPSecCtx_setLocal(void * jarg1, char * jarg2, 
 SWIGEXPORT int SWIGSTDCALL CSharp_IPSecCtx_setKeys(void * jarg1, void * jarg2, void * jarg3) {
   int jresult ;
   IPSecCtx *arg1 = (IPSecCtx *) 0 ;
-  void *arg2 = (void *) 0 ;
+  tipsec_key_t *arg2 = (tipsec_key_t *) 0 ;
   tipsec_key_t *arg3 = (tipsec_key_t *) 0 ;
   tipsec_error_t result;
   
   arg1 = (IPSecCtx *)jarg1; 
   arg2 = jarg2; 
   arg3 = jarg3; 
-  result = (tipsec_error_t)(arg1)->setKeys((void const *)arg2,(tipsec_key_t const *)arg3);
+  result = (tipsec_error_t)(arg1)->setKeys((tipsec_key_t const *)arg2,(tipsec_key_t const *)arg3);
   jresult = result; 
   return jresult;
 }

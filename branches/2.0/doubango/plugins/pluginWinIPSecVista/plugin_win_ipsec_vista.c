@@ -50,7 +50,7 @@ static const IPSEC_CIPHER_TRANSFORM_ID0 IPSEC_CIPHER_TRANSFORM_ID_NULL_NULL= {
 #define TINYIPSEC_VISTA_GET_ALGO(algo) (algo ==  tipsec_alg_hmac_md5_96) ? IPSEC_AUTH_TRANSFORM_ID_HMAC_MD5_96 : IPSEC_AUTH_TRANSFORM_ID_HMAC_SHA_1_96
 #define TINYIPSEC_VISTA_GET_EALGO(ealg)	 (ealg == tipsec_ealg_des_ede3_cbc) ? IPSEC_CIPHER_TRANSFORM_ID_CBC_3DES : ( (ealg == tipsec_ealg_aes) ? IPSEC_CIPHER_TRANSFORM_ID_AES_128 : IPSEC_CIPHER_TRANSFORM_ID_NULL_NULL )
 #define TINYIPSEC_VISTA_GET_MODE(mode)	 (mode == tipsec_mode_tun) ? IPSEC_TRAFFIC_TYPE_TUNNEL : IPSEC_TRAFFIC_TYPE_TRANSPORT
-#define TINYIPSEC_VISTA_GET_IPPROTO(ipproto)	 (ipproto == tipsec_ipproto_tcp) ? IPPROTO_TCP : IPPROTO_UDP
+#define TINYIPSEC_VISTA_GET_IPPROTO(ipproto)	 (ipproto == tipsec_ipproto_tcp) ? IPPROTO_TCP : ((ipproto == tipsec_ipproto_icmp) ? IPPROTO_ICMP : IPPROTO_UDP)
 #define TINYIPSEC_VISTA_GET_IPVER(ipv6)	 (ipv6) ? FWP_IP_VERSION_V6 : FWP_IP_VERSION_V4
 #define TINYIPSEC_VISTA_GET_PROTO(proto, ealg)	 (proto == tipsec_proto_ah) ? IPSEC_TRANSFORM_AH : ( (proto == tipsec_proto_esp) ? (ealg == tipsec_ealg_null ? IPSEC_TRANSFORM_ESP_AUTH : IPSEC_TRANSFORM_ESP_AUTH_AND_CIPHER) : IPSEC_TRANSFORM_ESP_AUTH_AND_CIPHER );
 
@@ -311,7 +311,8 @@ static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, 
     IPSEC_TRAFFIC0 outTraffic;
     IPSEC_GETSPI0 getSpi;
     int ret = -1;
-    FWPM_FILTER_CONDITION0 conds[4];
+    FWPM_FILTER_CONDITION0 conds[6];
+	UINT32 numFilterConditions = 3;
 
     *spi = 0;
     *saId = 0;
@@ -340,10 +341,13 @@ static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, 
     conds[2].conditionValue.type = FWP_UINT16;
     conds[2].conditionValue.uint16 = local_port;
 
-    conds[3].fieldKey = FWPM_CONDITION_IP_PROTOCOL;
-    conds[3].matchType = FWP_MATCH_EQUAL;
-    conds[3].conditionValue.type = FWP_UINT8;
-	conds[3].conditionValue.uint8 = TINYIPSEC_VISTA_GET_IPPROTO(p_ctx->pc_base->ipproto);
+	if (p_ctx->pc_base->ipproto != tipsec_ipproto_all) {
+		conds[numFilterConditions].fieldKey = FWPM_CONDITION_IP_PROTOCOL;
+		conds[numFilterConditions].matchType = FWP_MATCH_EQUAL;
+		conds[numFilterConditions].conditionValue.type = FWP_UINT8;
+		conds[numFilterConditions].conditionValue.uint8 = TINYIPSEC_VISTA_GET_IPPROTO(p_ctx->pc_base->ipproto);
+		++numFilterConditions;
+	}
 
     // Fill in the common fields shared by both filters.
     memset(&filter, 0, sizeof(filter));
@@ -353,7 +357,7 @@ static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, 
     // Link all objects to our provider. When multiple providers are installed
     // on a computer, this makes it easy to determine who added what.
     filter.providerKey = (GUID*)TINYIPSEC_PROVIDER_KEY;
-    filter.numFilterConditions = 4;
+    filter.numFilterConditions = numFilterConditions;
     filter.filterCondition = conds;
     filter.action.type = FWP_ACTION_CALLOUT_TERMINATING;
     filter.flags = FWPM_FILTER_FLAG_NONE;
