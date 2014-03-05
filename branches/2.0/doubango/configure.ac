@@ -527,12 +527,14 @@ AC_ARG_WITH(amr,
 if test $want_amr != no; then
 	# check for lib and headers
 	AC_CHECK_HEADERS(opencore-amrnb/interf_dec.h opencore-amrnb/interf_enc.h,
-       	AC_CHECK_LIB(opencore-amrnb, Encoder_Interface_init, AC_DEFINE_UNQUOTED(HAVE_OPENCORE_AMR, 1, HAVE_OPENCORE_AMR) [have_amr=yes] LIBAMR_LIBADD="-lopencore-amrnb", 
-		AC_DEFINE_UNQUOTED(HAVE_OPENCORE_AMR, 0, HAVE_OPENCORE_AMR) [have_amr=no]
-	))	  
+       	AC_CHECK_LIB(opencore-amrnb, Encoder_Interface_init, [have_amr=yes] LIBAMR_LIBADD="-lopencore-amrnb", [have_amr=no]
+	))
 	# if amr not found and requested then, die.
   	test $have_amr:$want_amr = no:yes &&  
 		AC_MSG_ERROR([You requested AMR audio codec but not found...die])
+	# define HAVE_OPENCORE_AMR 1
+	test $have_amr:$enable_nonfree = yes:yes &&
+		AC_DEFINE_UNQUOTED(HAVE_OPENCORE_AMR, 1, HAVE_OPENCORE_AMR)
 fi
 AM_CONDITIONAL([USE_AMR], [test $have_amr:$enable_nonfree = yes:yes])
 
@@ -721,16 +723,18 @@ AC_ARG_WITH(g729,
 if test $want_g729 != no; then
 	# check lib and headers
 	AC_CHECK_HEADERS(g729b/typedef.h g729b/ld8a.h,
-       	AC_CHECK_LIB(g729b, Init_Decod_ld8a, AC_DEFINE_UNQUOTED(HAVE_G729, 1, HAVE_G729) [have_g729=yes] LIBG729_LIBADD="-lg729b", 
-		AC_DEFINE_UNQUOTED(HAVE_G729, 0, HAVE_G729) [have_g729=no]), [],
+       	AC_CHECK_LIB(g729b, Init_Decod_ld8a, [have_g729=yes] LIBG729_LIBADD="-lg729b", 
+		[have_g729=no]), [],
 		[[#ifdef HAVE_G729B_TYPEDEF_H
      		# include <g729b/typedef.h>
      		#endif
      		]])
-	
 	# if g729 not found and requested then, die.
   	test $have_g729:$want_g729 = no:yes &&  
 		AC_MSG_ERROR([You requested G729 audio codec but not found...die])
+	#define HAVE_G729 1
+	test $have_g729:$enable_nonfree = yes:yes &&
+		AC_DEFINE_UNQUOTED(HAVE_G729, 1, HAVE_G729)
 fi
 AM_CONDITIONAL([USE_G729], [test $have_g729:$enable_nonfree = yes:yes])
 
