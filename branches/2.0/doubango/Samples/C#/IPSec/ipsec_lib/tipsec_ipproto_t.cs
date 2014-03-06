@@ -11,7 +11,8 @@ namespace org.doubango.ipsecWRAP {
 public enum tipsec_ipproto_t {
   tipsec_ipproto_udp,
   tipsec_ipproto_tcp,
-  tipsec_ipproto_icmp
+  tipsec_ipproto_icmp,
+  tipsec_ipproto_all
 }
 
 }

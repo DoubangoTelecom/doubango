@@ -76,7 +76,9 @@ typedef enum tipsec_ipproto_e {
     //! TCP.
     tipsec_ipproto_tcp,
     //! ICMP.
-    tipsec_ipproto_icmp
+    tipsec_ipproto_icmp,
+    //! ALL.
+    tipsec_ipproto_all
 }
 tipsec_ipproto_t;
 
