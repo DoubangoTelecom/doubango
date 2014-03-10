@@ -801,11 +801,11 @@ if test $want_webrtc != no; then
 	have_webrtc_aec=no
 	if test "$target_os" = "android"; then
 		AC_CHECK_HEADERS(webrtc/echo_control_mobile.h,
-       		AC_CHECK_LIB(webrtc_aecm, WebRtcAecm_Create, [have_webrtc_aec=yes], [], [-lwebrtc_apm_utility -lwebrtc_system_wrappers -lwebrtc_spl])
+       		AC_CHECK_LIB(webrtc_aecm, WebRtcAecm_Create, [have_webrtc_aec=yes], [LIBWEBRTC_LIBADD="-lwebrtc_aecm ${LIBWEBRTC_LIBADD}"], [-lwebrtc_apm_utility -lwebrtc_system_wrappers -lwebrtc_spl])
 		)
 	else
 		AC_CHECK_HEADERS(webrtc/echo_cancellation.h,
-       		AC_CHECK_LIB(webrtc_aec, WebRtcAec_Create, [have_webrtc_aec=yes], [], [-lwebrtc_apm_utility -lwebrtc_system_wrappers -lwebrtc_spl])
+       		AC_CHECK_LIB(webrtc_aec, WebRtcAec_Create, [have_webrtc_aec=yes], [LIBWEBRTC_LIBADD="-lwebrtc_aec ${LIBWEBRTC_LIBADD}"], [-lwebrtc_apm_utility -lwebrtc_system_wrappers -lwebrtc_spl])
 		)
 	fi
 	# WebRTC NS
