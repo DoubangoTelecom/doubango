@@ -35,6 +35,7 @@
 
 #if !defined(PLUGIN_MF_DISABLE_CODECS)
 // Must be "0" to use "Microsoft"/"Intel Quick Sync" MFT codecs. Testing: When set to "1", libx264 and FFmpeg will be used.
+// Metropolis code (G2J.COM TelePresence client) has "PLUGIN_MF_DISABLE_CODECS=1" because of interop issues against Tandberg and Intel QuickSync H.264 implementations.
 #	define PLUGIN_MF_DISABLE_CODECS 0
 #endif
 #if !defined(PLUGIN_MF_DISABLE_MS_H264_ENCODER)
@@ -42,6 +43,7 @@
 // What is strange is that NVIDIA CUDA H.264 decoder doesn't produce artifacts when decoding MS frames while FFmpeg and MS decoder do.
 // To encode with MS and decode with CUDA:
 // - Force "bMFEncoderIsRegistered" value to "FALSE" in plugin_win_mf_producer_video.cxx
+// Metropolis code (G2J.COM TelePresence) has "PLUGIN_MF_DISABLE_MS_H264_ENCODER=1" beacause Microsoft H.264 not fully tested against Tandberg, Polycom, Hartallo...
 #	define PLUGIN_MF_DISABLE_MS_H264_ENCODER 1
 #endif
 
