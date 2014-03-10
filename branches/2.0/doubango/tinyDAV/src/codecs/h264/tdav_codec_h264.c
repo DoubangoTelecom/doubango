@@ -750,6 +750,12 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 			break;
 	}
 	
+	/* Comment from libavcodec/libx264.c:
+     * Allow x264 to be instructed through AVCodecContext about the maximum
+     * size of the RTP payload. For example, this enables the production of
+     * payload suitable for the H.264 RTP packetization-mode 0 i.e. single
+     * NAL unit per RTP packet.
+     */
 	self->encoder.context->rtp_payload_size = H264_RTP_PAYLOAD_SIZE;
 	self->encoder.context->opaque = tsk_null;
 	self->encoder.context->gop_size = (TMEDIA_CODEC_VIDEO(self)->out.fps * TDAV_H264_GOP_SIZE_IN_SECONDS);

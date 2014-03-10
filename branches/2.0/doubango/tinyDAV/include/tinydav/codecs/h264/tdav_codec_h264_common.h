@@ -46,8 +46,44 @@ TDAV_BEGIN_DECLS
 #endif
 
 #if !defined(H264_PACKETIZATION_MODE)
-#	define H264_PACKETIZATION_MODE	Non_Interleaved_Mode
+#	define H264_PACKETIZATION_MODE	Single_NAL_Unit_Mode
 #endif
+
+#if !defined(H264_FS_MAX_COUNT)
+#	define H264_FS_MAX_COUNT						16 // max number of DPBFS in the list
+#endif
+#if !defined(H264_LEVEL_MAX_COUNT)
+#	define H264_LEVEL_MAX_COUNT					16 // Table A-1 – Level limits: "1", "1b"... "5.1"
+#endif
+
+// Table A-1 – Level limits
+static const int32_t MaxMBPS[H264_LEVEL_MAX_COUNT] = { 1485, 1485, 3000, 6000, 11880, 11880, 19800, 20250, 40500, 108000, 216000, 245760, 245760, 522240, 589824, 983040 };
+static const int32_t MaxFS[H264_LEVEL_MAX_COUNT] =  { 99, 99, 396, 396, 396, 396, 792, 1620, 1620, 3600, 5120, 8192, 8192, 8704, 22080, 36864 };
+static const int32_t MaxDpbMbs[H264_LEVEL_MAX_COUNT] = { 396, 396, 900, 2376, 2376, 2376, 4752, 8100, 8100, 18000, 20480, 32768, 32768, 34816, 110400, 184320 };
+static const int32_t MaxBR[H264_LEVEL_MAX_COUNT] = { 64, 128, 192, 384, 768, 2000, 4000, 4000, 10000, 14000, 20000, 20000, 50000, 50000, 135000, 240000 };
+static const int32_t MaxCPB[H264_LEVEL_MAX_COUNT] = { 175, 350, 500, 1000, 2000, 2000, 4000, 4000, 10000, 14000, 20000, 25000, 62500, 62500, 135000, 240000 };
+
+// From "enum level_idc_e" to zero-based index
+// level_idc = (level.prefix * 10) + level.suffix. For example: 3.1 = 31. Exception for 1b = 9.
+// usage: int32_t maxDpbMbs = MaxDpbMbs[HL_CODEC_264_LEVEL_TO_ZERO_BASED_INDEX[level_idc]];
+static const int32_t H264_LEVEL_TO_ZERO_BASED_INDEX[255] = {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 3, 4, 4, 4, 4, 4,
+    4, 4, 5, 6, 7, 7, 7, 7, 7, 7, 7, 7, 8, 9, 10, 10, 10, 10, 10,
+    10, 10, 10, 11, 12, 13, 13, 13, 13, 13, 13, 13, 13, 14, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+    16, 16, 16, 16, 16, 16, 16, 16, 16
+};
 
 // Because of FD, declare it here
 typedef enum packetization_mode_e{
@@ -79,29 +115,30 @@ typedef struct tdav_codec_h264_common_level_size_xs
 {
 	level_idc_t level;
 	unsigned width;
-	unsigned height;
+    unsigned height;
+	unsigned maxFS; // From "Table A-1 – Level limits"
 }
 tdav_codec_h264_common_level_size_xt;
 
 static const tdav_codec_h264_common_level_size_xt tdav_codec_h264_common_level_sizes [] =
 {
-	{level_idc_1_0, 128, 96},
-	{level_idc_1_b, 128, 96},
-	{level_idc_1_1, 176, 144},
-	{level_idc_1_2, 320, 240},
-	{level_idc_1_3, 352, 288},
-	{level_idc_2_0, 352, 288},
-	{level_idc_2_1, 352, 480},
-	{level_idc_2_2, 352, 480},
-	{level_idc_3_0, 720, 480},
-	{level_idc_3_1, 1280, 720},
-	{level_idc_3_2, 1280, 720},
-	{level_idc_4_0, 2048, 1024},
-	{level_idc_4_1, 2048, 1024},
-	{level_idc_4_2, 2048, 1080},
-	{level_idc_5_0, 2560, 1920},
-	{level_idc_5_1, 3840, 2160},
-	{level_idc_5_2, 4096, 2048}
+	{level_idc_1_0, 128, 96, 99},
+    {level_idc_1_b, 128, 96, 99},
+    {level_idc_1_1, 176, 144, 396},
+    {level_idc_1_2, 320, 240, 396},
+    {level_idc_1_3, 352, 288, 396},
+    {level_idc_2_0, 352, 288, 396},
+    {level_idc_2_1, 352, 480, 792},
+    {level_idc_2_2, 352, 480, 1620},
+    {level_idc_3_0, 720, 480, 1620},
+    {level_idc_3_1, 1280, 720, 3600},
+    {level_idc_3_2, 1280, 720, 5120},
+    {level_idc_4_0, 2048, 1024, 8192},
+    {level_idc_4_1, 2048, 1024, 8192},
+    {level_idc_4_2, 2048, 1080, 8704},
+    {level_idc_5_0, 2560, 1920, 22080},
+    {level_idc_5_1, 3840, 2160, 32400},
+    {level_idc_5_2, 4096, 2048, 32768}
 };
 
 static int tdav_codec_h264_common_size_from_level(level_idc_t level, unsigned *width, unsigned *height)
@@ -120,8 +157,9 @@ static int tdav_codec_h264_common_size_from_level(level_idc_t level, unsigned *w
 static int tdav_codec_h264_common_level_from_size(unsigned width, unsigned height, level_idc_t *level)
 {
 	tsk_size_t i;
-	for(i = 0; i < sizeof(tdav_codec_h264_common_level_sizes)/sizeof(tdav_codec_h264_common_level_sizes[0]); ++i){
-		if(tdav_codec_h264_common_level_sizes[i].width >= width && tdav_codec_h264_common_level_sizes[i].height >= height){
+	unsigned maxFS = (((width + 15) >> 4) * ((height + 15) >> 4));
+	for (i = 0; i < sizeof(tdav_codec_h264_common_level_sizes)/sizeof(tdav_codec_h264_common_level_sizes[0]); ++i){
+		if (tdav_codec_h264_common_level_sizes[i].maxFS >= maxFS){
 			*level = tdav_codec_h264_common_level_sizes[i].level;
 			return 0;
 		}
@@ -233,8 +271,15 @@ static tsk_bool_t tdav_codec_h264_common_sdp_att_match(tdav_codec_h264_common_t*
 				if(tdav_codec_h264_common_size_from_level(h264->level, &width, &height) != 0){
 					return tsk_false;
 				}
-				TMEDIA_CODEC_VIDEO(h264)->in.width = TMEDIA_CODEC_VIDEO(h264)->out.width = width;
-				TMEDIA_CODEC_VIDEO(h264)->in.height = TMEDIA_CODEC_VIDEO(h264)->out.height = height;
+				// Set "out" size. We must not send more than "MaxFS".
+				// Default "out" is equal to the preferred sized and initialized in init().
+				// "TANDBERG/4120 (X7.2.2)" will terminate the call if frame size > maxFS
+				TMEDIA_CODEC_VIDEO(h264)->out.width = TSK_MIN(TMEDIA_CODEC_VIDEO(h264)->out.width, width);
+				TMEDIA_CODEC_VIDEO(h264)->out.height = TSK_MIN(TMEDIA_CODEC_VIDEO(h264)->out.height, height);
+				
+				// Set default "in". Will be updated after receiving the first frame.
+				TMEDIA_CODEC_VIDEO(h264)->in.width = width;
+				TMEDIA_CODEC_VIDEO(h264)->in.height = height;
 			}
 		}
 
@@ -302,11 +347,18 @@ static char* tdav_codec_h264_common_sdp_att_get(const tdav_codec_h264_common_t* 
 	if(tsk_striequals(att_name, "fmtp")){
 		char* fmtp = tsk_null;
 #if 1
-		tsk_sprintf(&fmtp, "profile-level-id=%x; packetization-mode=%d", ((h264->profile << 16) | h264->level), h264->pack_mode);
-		// fmtp = tsk_strdup("profile-level-id=42800d;max-mbps=40500;max-fs=1344;max-smbps=40500");
+		// Required by "TANDBERG/4120 (X7.2.2)" and CISCO TelePresence
+		int32_t maxFS = (((TMEDIA_CODEC_VIDEO(h264)->out.width + 15) >> 4) * ((TMEDIA_CODEC_VIDEO(h264)->out.height + 15) >> 4));
+		maxFS = TSK_MAX(maxFS, MaxFS[H264_LEVEL_TO_ZERO_BASED_INDEX[h264->level]]);
+		
+		tsk_sprintf(&fmtp, "profile-level-id=%x;max-mbps=%d;max-fs=%d;packetization-mode=%d", 
+				((h264->profile << 16) | h264->level), 
+				MaxMBPS[H264_LEVEL_TO_ZERO_BASED_INDEX[h264->level]],
+				maxFS,
+				h264->pack_mode
+			);
 #else
-		tsk_strcat_2(&fmtp, "profile-level-id=%s; packetization-mode=%d; max-br=%d; max-mbps=%d",
-			profile_level, h264->pack_mode, TMEDIA_CODEC_VIDEO(h264)->in.max_br/1000, TMEDIA_CODEC_VIDEO(h264)->in.max_mbps/1000);
+		tsk_sprintf(&fmtp, "profile-level-id=%x; packetization-mode=%d", ((h264->profile << 16) | h264->level), h264->pack_mode);
 #endif
 		return fmtp;
 	}
