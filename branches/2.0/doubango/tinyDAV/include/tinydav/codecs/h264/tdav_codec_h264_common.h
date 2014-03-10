@@ -46,7 +46,7 @@ TDAV_BEGIN_DECLS
 #endif
 
 #if !defined(H264_PACKETIZATION_MODE)
-#	define H264_PACKETIZATION_MODE	Single_NAL_Unit_Mode
+#	define H264_PACKETIZATION_MODE	Non_Interleaved_Mode
 #endif
 
 #if !defined(H264_FS_MAX_COUNT)
