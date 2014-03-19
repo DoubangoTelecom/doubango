@@ -453,7 +453,7 @@ int removeSocketAtIndex(int index, transport_context_t *context)
         
         // Close and free write stream
         if (sock->cf_write_stream) {
-            if (CFWriteStreamGetStatus(sock->cf_write_stream) == kCFStreamStatusOpen) {
+            if (CFWriteStreamGetStatus(sock->cf_write_stream) != kCFStreamStatusClosed) {
                 CFWriteStreamClose(sock->cf_write_stream);
             }
             CFRelease(sock->cf_write_stream);
@@ -462,7 +462,7 @@ int removeSocketAtIndex(int index, transport_context_t *context)
         
 		// Close and free read stream
         if (sock->cf_read_stream) {
-            if (CFReadStreamGetStatus(sock->cf_read_stream) == kCFStreamStatusOpen) {
+            if (CFReadStreamGetStatus(sock->cf_read_stream) != kCFStreamStatusClosed) {
                 CFReadStreamClose(sock->cf_read_stream);
             }
             CFRelease(sock->cf_read_stream);
