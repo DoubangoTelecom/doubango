@@ -111,6 +111,7 @@ typedef enum tsip_msession_param_type_e
 
 	mstype_set_profile,
 	mstype_set_srtp_mode,
+	mstype_set_avpf_mode,
 
 	mstype_set_100rel,
 	mstype_set_rtcp,
@@ -134,7 +135,8 @@ typedef enum tsip_msession_param_type_e
 }
 tsip_msession_param_type_t;
 
-#define TSIP_MSESSION_SET_SRTP_MODE(SRTP_MODE_ENUM)											mstype_set_profile, (tmedia_srtp_mode_t)SRTP_MODE_ENUM
+#define TSIP_MSESSION_SET_SRTP_MODE(SRTP_MODE_ENUM)											mstype_set_srtp_mode, (tmedia_srtp_mode_t)SRTP_MODE_ENUM
+#define TSIP_MSESSION_SET_AVPF_MODE(MEDIA_MODE_ENUM)										mstype_set_avpf_mode, (tmedia_mode_t)MEDIA_MODE_ENUM
 #define TSIP_MSESSION_SET_PROFILE(PROFILE_ENUM)												mstype_set_srtp_mode, (tmedia_profile_t)PROFILE_ENUM
 #define TSIP_MSESSION_SET_100rel(ENABLED_BOOL)												mstype_set_100rel, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_MSESSION_SET_RTCP(ENABLED_BOOL)												mstype_set_rtcp, (tsk_bool_t)ENABLED_BOOL
@@ -201,6 +203,7 @@ typedef struct tsip_ssession_s
 		tmedia_type_t type;
 		tmedia_profile_t profile;
 		tmedia_srtp_mode_t srtp_mode;
+		tmedia_mode_t avpf_mode;
 		tmedia_codec_id_t codecs;
 		tsk_bool_t bypass_encoding;
 		tsk_bool_t bypass_decoding;

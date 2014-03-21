@@ -191,6 +191,8 @@ public: /* Public functions */
 	bool set100rel(bool enabled);
 	bool setRtcp(bool enabled);
 	bool setRtcpMux(bool enabled);
+	bool setSRtpMode(enum tmedia_srtp_mode_e mode);
+	bool setAvpfMode(enum tmedia_mode_e mode);
 	bool setICE(bool enabled);
 	bool setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength);
 	bool hold(ActionConfig* config=tsk_null);

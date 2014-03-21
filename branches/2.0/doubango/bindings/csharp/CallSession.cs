@@ -143,6 +143,16 @@ public class CallSession : InviteSession {
     return ret;
   }
 
+  public bool setSRtpMode(tmedia_srtp_mode_t mode) {
+    bool ret = tinyWRAPPINVOKE.CallSession_setSRtpMode(swigCPtr, (int)mode);
+    return ret;
+  }
+
+  public bool setAvpfMode(tmedia_mode_t mode) {
+    bool ret = tinyWRAPPINVOKE.CallSession_setAvpfMode(swigCPtr, (int)mode);
+    return ret;
+  }
+
   public bool setICE(bool enabled) {
     bool ret = tinyWRAPPINVOKE.CallSession_setICE(swigCPtr, enabled);
     return ret;

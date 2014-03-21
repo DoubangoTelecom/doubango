@@ -217,7 +217,7 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 	self->media_profile = tmedia_defaults_get_profile();
 	self->use_rtcp = tmedia_defaults_get_rtcp_enabled();
 	self->use_rtcpmux = tmedia_defaults_get_rtcpmux_enabled();
-	self->use_avpf = (self->media_profile == tmedia_profile_rtcweb) || tmedia_defaults_get_avpf_enabled(); // negotiate if not RTCWeb profile or RFC5939 is in action
+	self->avpf_mode_set = self->avpf_mode_neg = tmedia_defaults_get_avpf_mode();
 	self->bandwidth_max_upload_kbps = (media_type == tmedia_video ? tmedia_defaults_get_bandwidth_video_upload_max() : INT_MAX); // INT_MAX or <=0 means undefined
 	self->bandwidth_max_download_kbps = (media_type == tmedia_video ? tmedia_defaults_get_bandwidth_video_download_max() : INT_MAX); // INT_MAX or <=0 means undefined
 	self->congestion_ctrl_enabled = tmedia_defaults_get_congestion_ctrl_enabled(); // whether to enable draft-alvestrand-rtcweb-congestion-03 and draft-alvestrand-rmcat-remb-01
@@ -330,8 +330,8 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 				self->use_rtcpmux = (TSK_TO_INT32((uint8_t*)param->value) != 0);
 				return tsk_true;
 			}
-			else if(tsk_striequals(param->key, "avpf-enabled")){
-				self->use_avpf = (TSK_TO_INT32((uint8_t*)param->value) != 0);
+			else if(tsk_striequals(param->key, "avpf-mode")){
+				self->avpf_mode_set = (tmedia_mode_t)TSK_TO_INT32((uint8_t*)param->value);
 				return tsk_true;
 			}
 			else if(tsk_striequals(param->key, "webrtc2sip-mode-enabled")){
@@ -858,8 +858,8 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 				tsk_size_t acap_tag_fp_sha1 = 0, acap_tag_fp_sha256 = 0, acap_tag_setup = 0, acap_tag_connection = 0, acap_tag_crypro_start = 0;
 				char* str = tsk_null;
 				tsdp_header_A_t* cryptoA = tsk_null;
-				tsk_bool_t negotiate_srtp = (self->srtp_mode == tmedia_srtp_mode_optional && !base->M.ro);
-				tsk_bool_t negotiate_avpf = !self->use_avpf;
+				tsk_bool_t negotiate_srtp = (self->srtp_mode == tmedia_srtp_mode_optional);
+				tsk_bool_t negotiate_avpf = (self->avpf_mode_set == tmedia_mode_optional);
 				tsk_bool_t is_srtp_remote_mandatory = (base->M.ro && _sdp_str_contains(base->M.ro->proto, "SAVP"));
 				tsk_size_t profiles_index = 0;
 				RTP_PROFILE_T profiles[RTP_PROFILES_COUNT] = { RTP_PROFILE_NONE };
@@ -1047,7 +1047,9 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 				tsk_bool_t is_srtp_sdes_activated = tsk_false, is_srtp_dtls_activated = tsk_false;
 
 				// intersect remote and local SRTP options
-				self->use_avpf |= ((profile_remote & RTP_PROFILE_AVPF) == RTP_PROFILE_AVPF);
+				if (self->avpf_mode_neg == tmedia_mode_optional && ((profile_remote & RTP_PROFILE_AVPF) == RTP_PROFILE_AVPF)) {
+					self->avpf_mode_neg = tmedia_mode_mandatory;
+				}
 				is_srtp_sdes_enabled &= ((profile_remote & RTP_PROFILE_SECURE_SDES) == RTP_PROFILE_SECURE_SDES);
 				is_srtp_dtls_enabled &= ((profile_remote & RTP_PROFILE_SECURE_DTLS) == RTP_PROFILE_SECURE_DTLS);
 				
@@ -1120,8 +1122,8 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 		/* Update Proto*/
 		tsk_strupdate(&base->M.lo->proto, 
 			self->use_srtp 
-			? (self->use_avpf ? (is_srtp_dtls_enabled ? "UDP/TLS/RTP/SAVPF" : "RTP/SAVPF") : (is_srtp_dtls_enabled ? "UDP/TLS/RTP/SAVP" : "RTP/SAVP")) 
-			: (self->use_avpf ? "RTP/AVPF" : "RTP/AVP")
+			? ((self->avpf_mode_neg == tmedia_mode_mandatory) ? (is_srtp_dtls_enabled ? "UDP/TLS/RTP/SAVPF" : "RTP/SAVPF") : (is_srtp_dtls_enabled ? "UDP/TLS/RTP/SAVP" : "RTP/SAVP")) 
+			: ((self->avpf_mode_neg == tmedia_mode_mandatory) ? "RTP/AVPF" : "RTP/AVP")
 		);
 
 		// RFC 5761: RTCP/RTP muxing
@@ -1280,10 +1282,11 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 				TSK_OBJECT_SAFE_FREE(ro_tline);
 			}
 		}
-		/* AVPF */
-		if(_sdp_str_contains(base->M.lo->proto, "AVPF")){
-			self->use_avpf = tsk_true;
-		}
+	}
+
+	/* AVPF */
+	if(self->avpf_mode_set == tmedia_mode_optional){
+		self->avpf_mode_neg = _sdp_str_contains(base->M.ro->proto, "AVPF") ? tmedia_mode_mandatory : tmedia_mode_none;
 	}
 
 	/* RFC 5939 - Session Description Protocol (SDP) Capability Negotiation */

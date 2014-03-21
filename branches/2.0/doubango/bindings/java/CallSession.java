@@ -119,6 +119,14 @@ public class CallSession extends InviteSession {
     return tinyWRAPJNI.CallSession_setRtcpMux(swigCPtr, this, enabled);
   }
 
+  public boolean setSRtpMode(tmedia_srtp_mode_t mode) {
+    return tinyWRAPJNI.CallSession_setSRtpMode(swigCPtr, this, mode.swigValue());
+  }
+
+  public boolean setAvpfMode(tmedia_mode_t mode) {
+    return tinyWRAPJNI.CallSession_setAvpfMode(swigCPtr, this, mode.swigValue());
+  }
+
   public boolean setICE(boolean enabled) {
     return tinyWRAPJNI.CallSession_setICE(swigCPtr, this, enabled);
   }

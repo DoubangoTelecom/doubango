@@ -2514,13 +2514,13 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetAvpfTail(u
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetUseAvpfEnabled(unsigned int jarg1) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetAvpfMode(int jarg1) {
   unsigned int jresult ;
-  bool arg1 ;
+  enum tmedia_mode_e arg1 ;
   bool result;
   
-  arg1 = jarg1 ? true : false; 
-  result = (bool)MediaSessionMgr::defaultsSetUseAvpfEnabled(arg1);
+  arg1 = (enum tmedia_mode_e)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetAvpfMode(arg1);
   jresult = result; 
   return jresult;
 }
@@ -4317,6 +4317,34 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setRtcpMux(void * jarg1, 
   arg1 = (CallSession *)jarg1; 
   arg2 = jarg2 ? true : false; 
   result = (bool)(arg1)->setRtcpMux(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setSRtpMode(void * jarg1, int jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  enum tmedia_srtp_mode_e arg2 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (enum tmedia_srtp_mode_e)jarg2; 
+  result = (bool)(arg1)->setSRtpMode(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setAvpfMode(void * jarg1, int jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  enum tmedia_mode_e arg2 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (enum tmedia_mode_e)jarg2; 
+  result = (bool)(arg1)->setAvpfMode(arg2);
   jresult = result; 
   return jresult;
 }

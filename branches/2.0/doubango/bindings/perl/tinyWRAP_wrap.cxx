@@ -1582,36 +1582,37 @@ SWIG_Perl_SetModule(swig_module_info *module) {
 #define SWIGTYPE_p_tmedia_bandwidth_level_e swig_types[65]
 #define SWIGTYPE_p_tmedia_chroma_e swig_types[66]
 #define SWIGTYPE_p_tmedia_codec_id_e swig_types[67]
-#define SWIGTYPE_p_tmedia_pref_video_size_s swig_types[68]
-#define SWIGTYPE_p_tmedia_profile_e swig_types[69]
-#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[70]
-#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[71]
-#define SWIGTYPE_p_tmedia_srtp_mode_e swig_types[72]
-#define SWIGTYPE_p_tmedia_srtp_type_e swig_types[73]
-#define SWIGTYPE_p_tmedia_t140_data_type_e swig_types[74]
-#define SWIGTYPE_p_tmsrp_event_type_e swig_types[75]
-#define SWIGTYPE_p_tmsrp_request_type_e swig_types[76]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[77]
-#define SWIGTYPE_p_tsip_info_event_type_e swig_types[78]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[79]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[80]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[81]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[82]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[83]
-#define SWIGTYPE_p_tsip_request_type_e swig_types[84]
-#define SWIGTYPE_p_tsip_stack_mode_e swig_types[85]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[86]
-#define SWIGTYPE_p_tsk_list_t swig_types[87]
-#define SWIGTYPE_p_twrap_media_type_e swig_types[88]
-#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[89]
-#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[90]
-#define SWIGTYPE_p_twrap_sms_type_e swig_types[91]
-#define SWIGTYPE_p_unsigned_char swig_types[92]
-#define SWIGTYPE_p_unsigned_int swig_types[93]
-#define SWIGTYPE_p_unsigned_long_long swig_types[94]
-#define SWIGTYPE_p_unsigned_short swig_types[95]
-static swig_type_info *swig_types[97];
-static swig_module_info swig_module = {swig_types, 96, 0, 0, 0, 0};
+#define SWIGTYPE_p_tmedia_mode_e swig_types[68]
+#define SWIGTYPE_p_tmedia_pref_video_size_s swig_types[69]
+#define SWIGTYPE_p_tmedia_profile_e swig_types[70]
+#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[71]
+#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[72]
+#define SWIGTYPE_p_tmedia_srtp_mode_e swig_types[73]
+#define SWIGTYPE_p_tmedia_srtp_type_e swig_types[74]
+#define SWIGTYPE_p_tmedia_t140_data_type_e swig_types[75]
+#define SWIGTYPE_p_tmsrp_event_type_e swig_types[76]
+#define SWIGTYPE_p_tmsrp_request_type_e swig_types[77]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[78]
+#define SWIGTYPE_p_tsip_info_event_type_e swig_types[79]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[80]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[81]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[82]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[83]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[84]
+#define SWIGTYPE_p_tsip_request_type_e swig_types[85]
+#define SWIGTYPE_p_tsip_stack_mode_e swig_types[86]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[87]
+#define SWIGTYPE_p_tsk_list_t swig_types[88]
+#define SWIGTYPE_p_twrap_media_type_e swig_types[89]
+#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[90]
+#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[91]
+#define SWIGTYPE_p_twrap_sms_type_e swig_types[92]
+#define SWIGTYPE_p_unsigned_char swig_types[93]
+#define SWIGTYPE_p_unsigned_int swig_types[94]
+#define SWIGTYPE_p_unsigned_long_long swig_types[95]
+#define SWIGTYPE_p_unsigned_short swig_types[96]
+static swig_type_info *swig_types[98];
+static swig_module_info swig_module = {swig_types, 97, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -5739,24 +5740,24 @@ XS(_wrap_MediaSessionMgr_defaultsSetAvpfTail) {
 }
 
 
-XS(_wrap_MediaSessionMgr_defaultsSetUseAvpfEnabled) {
+XS(_wrap_MediaSessionMgr_defaultsSetAvpfMode) {
   {
-    bool arg1 ;
-    bool val1 ;
+    enum tmedia_mode_e arg1 ;
+    int val1 ;
     int ecode1 = 0 ;
     int argvi = 0;
     bool result;
     dXSARGS;
     
     if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: MediaSessionMgr_defaultsSetUseAvpfEnabled(enabled);");
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetAvpfMode(mode);");
     }
-    ecode1 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
     if (!SWIG_IsOK(ecode1)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetUseAvpfEnabled" "', argument " "1"" of type '" "bool""'");
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetAvpfMode" "', argument " "1"" of type '" "enum tmedia_mode_e""'");
     } 
-    arg1 = static_cast< bool >(val1);
-    result = (bool)MediaSessionMgr::defaultsSetUseAvpfEnabled(arg1);
+    arg1 = static_cast< enum tmedia_mode_e >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetAvpfMode(arg1);
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     
     XSRETURN(argvi);
@@ -12295,6 +12296,82 @@ XS(_wrap_CallSession_setRtcpMux) {
     } 
     arg2 = static_cast< bool >(val2);
     result = (bool)(arg1)->setRtcpMux(arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_CallSession_setSRtpMode) {
+  {
+    CallSession *arg1 = (CallSession *) 0 ;
+    enum tmedia_srtp_mode_e arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: CallSession_setSRtpMode(self,mode);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_setSRtpMode" "', argument " "1"" of type '" "CallSession *""'"); 
+    }
+    arg1 = reinterpret_cast< CallSession * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CallSession_setSRtpMode" "', argument " "2"" of type '" "enum tmedia_srtp_mode_e""'");
+    } 
+    arg2 = static_cast< enum tmedia_srtp_mode_e >(val2);
+    result = (bool)(arg1)->setSRtpMode(arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_CallSession_setAvpfMode) {
+  {
+    CallSession *arg1 = (CallSession *) 0 ;
+    enum tmedia_mode_e arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: CallSession_setAvpfMode(self,mode);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_setAvpfMode" "', argument " "1"" of type '" "CallSession *""'"); 
+    }
+    arg1 = reinterpret_cast< CallSession * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CallSession_setAvpfMode" "', argument " "2"" of type '" "enum tmedia_mode_e""'");
+    } 
+    arg2 = static_cast< enum tmedia_mode_e >(val2);
+    result = (bool)(arg1)->setAvpfMode(arg2);
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     
     
@@ -27265,6 +27342,7 @@ static swig_type_info _swigt__p_thttp_event_type_e = {"_p_thttp_event_type_e", "
 static swig_type_info _swigt__p_tmedia_bandwidth_level_e = {"_p_tmedia_bandwidth_level_e", "enum tmedia_bandwidth_level_e *|tmedia_bandwidth_level_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_chroma_e = {"_p_tmedia_chroma_e", "tmedia_chroma_t *|enum tmedia_chroma_e *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_codec_id_e = {"_p_tmedia_codec_id_e", "enum tmedia_codec_id_e *|tmedia_codec_id_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_tmedia_mode_e = {"_p_tmedia_mode_e", "enum tmedia_mode_e *|tmedia_mode_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_pref_video_size_s = {"_p_tmedia_pref_video_size_s", "tmedia_pref_video_size_t *|enum tmedia_pref_video_size_s *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_profile_e = {"_p_tmedia_profile_e", "tmedia_profile_t *|enum tmedia_profile_e *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tmedia_qos_strength_e = {"_p_tmedia_qos_strength_e", "tmedia_qos_strength_t *|enum tmedia_qos_strength_e *", 0, 0, (void*)0, 0};
@@ -27363,6 +27441,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_tmedia_bandwidth_level_e,
   &_swigt__p_tmedia_chroma_e,
   &_swigt__p_tmedia_codec_id_e,
+  &_swigt__p_tmedia_mode_e,
   &_swigt__p_tmedia_pref_video_size_s,
   &_swigt__p_tmedia_profile_e,
   &_swigt__p_tmedia_qos_strength_e,
@@ -27461,6 +27540,7 @@ static swig_cast_info _swigc__p_thttp_event_type_e[] = {  {&_swigt__p_thttp_even
 static swig_cast_info _swigc__p_tmedia_bandwidth_level_e[] = {  {&_swigt__p_tmedia_bandwidth_level_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_chroma_e[] = {  {&_swigt__p_tmedia_chroma_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_codec_id_e[] = {  {&_swigt__p_tmedia_codec_id_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_tmedia_mode_e[] = {  {&_swigt__p_tmedia_mode_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_pref_video_size_s[] = {  {&_swigt__p_tmedia_pref_video_size_s, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_profile_e[] = {  {&_swigt__p_tmedia_profile_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tmedia_qos_strength_e[] = {  {&_swigt__p_tmedia_qos_strength_e, 0, 0, 0},{0, 0, 0, 0}};
@@ -27559,6 +27639,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_tmedia_bandwidth_level_e,
   _swigc__p_tmedia_chroma_e,
   _swigc__p_tmedia_codec_id_e,
+  _swigc__p_tmedia_mode_e,
   _swigc__p_tmedia_pref_video_size_s,
   _swigc__p_tmedia_profile_e,
   _swigc__p_tmedia_qos_strength_e,
@@ -27704,7 +27785,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsSetRtpBuffSize", _wrap_MediaSessionMgr_defaultsSetRtpBuffSize},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetRtpBuffSize", _wrap_MediaSessionMgr_defaultsGetRtpBuffSize},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetAvpfTail", _wrap_MediaSessionMgr_defaultsSetAvpfTail},
-{"tinyWRAPc::MediaSessionMgr_defaultsSetUseAvpfEnabled", _wrap_MediaSessionMgr_defaultsSetUseAvpfEnabled},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetAvpfMode", _wrap_MediaSessionMgr_defaultsSetAvpfMode},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetOpusMaxCaptureRate", _wrap_MediaSessionMgr_defaultsSetOpusMaxCaptureRate},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetOpusMaxPlaybackRate", _wrap_MediaSessionMgr_defaultsSetOpusMaxPlaybackRate},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetMaxFds", _wrap_MediaSessionMgr_defaultsSetMaxFds},
@@ -27820,6 +27901,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::CallSession_set100rel", _wrap_CallSession_set100rel},
 {"tinyWRAPc::CallSession_setRtcp", _wrap_CallSession_setRtcp},
 {"tinyWRAPc::CallSession_setRtcpMux", _wrap_CallSession_setRtcpMux},
+{"tinyWRAPc::CallSession_setSRtpMode", _wrap_CallSession_setSRtpMode},
+{"tinyWRAPc::CallSession_setAvpfMode", _wrap_CallSession_setAvpfMode},
 {"tinyWRAPc::CallSession_setICE", _wrap_CallSession_setICE},
 {"tinyWRAPc::CallSession_setQoS", _wrap_CallSession_setQoS},
 {"tinyWRAPc::CallSession_hold", _wrap_CallSession_hold},
@@ -29053,6 +29136,21 @@ XS(SWIG_init) {
   /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tmedia_chroma_yuv420p", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_chroma_yuv420p)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_mode_none", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_mode_none)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_mode_optional", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_mode_optional)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_mode_mandatory", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_mode_mandatory)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {

@@ -537,8 +537,8 @@ bool MediaSessionMgr::defaultsSetAvpfTail(unsigned tail_min, unsigned tail_max){
 	return (tmedia_defaults_set_avpf_tail(tail_min, tail_max) == 0);
 }
 
-bool MediaSessionMgr::defaultsSetUseAvpfEnabled(bool enabled){
-	return (tmedia_defaults_set_avpf_enabled(enabled ? tsk_true : tsk_false) == 0);
+bool MediaSessionMgr::defaultsSetAvpfMode(enum tmedia_mode_e mode){
+	return (tmedia_defaults_set_avpf_mode(mode) == 0);
 }
 
 bool MediaSessionMgr::defaultsSetOpusMaxCaptureRate(uint32_t opus_maxcapturerate){

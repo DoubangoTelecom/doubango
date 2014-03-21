@@ -3704,15 +3704,15 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionM
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetUseAvpfEnabled(JNIEnv *jenv, jclass jcls, jboolean jarg1) {
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MediaSessionMgr_1defaultsSetAvpfMode(JNIEnv *jenv, jclass jcls, jint jarg1) {
   jboolean jresult = 0 ;
-  bool arg1 ;
+  enum tmedia_mode_e arg1 ;
   bool result;
   
   (void)jenv;
   (void)jcls;
-  arg1 = jarg1 ? true : false; 
-  result = (bool)MediaSessionMgr::defaultsSetUseAvpfEnabled(arg1);
+  arg1 = (enum tmedia_mode_e)jarg1; 
+  result = (bool)MediaSessionMgr::defaultsSetAvpfMode(arg1);
   jresult = (jboolean)result; 
   return jresult;
 }
@@ -6139,6 +6139,40 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1
   arg1 = *(CallSession **)&jarg1; 
   arg2 = jarg2 ? true : false; 
   result = (bool)(arg1)->setRtcpMux(arg2);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1setSRtpMode(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jboolean jresult = 0 ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  enum tmedia_srtp_mode_e arg2 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(CallSession **)&jarg1; 
+  arg2 = (enum tmedia_srtp_mode_e)jarg2; 
+  result = (bool)(arg1)->setSRtpMode(arg2);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_CallSession_1setAvpfMode(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jboolean jresult = 0 ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  enum tmedia_mode_e arg2 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(CallSession **)&jarg1; 
+  arg2 = (enum tmedia_mode_e)jarg2; 
+  result = (bool)(arg1)->setAvpfMode(arg2);
   jresult = (jboolean)result; 
   return jresult;
 }

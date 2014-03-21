@@ -315,8 +315,8 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsGetRtpBuffSize = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetRtpBuffSize)
     __swig_getmethods__["defaultsSetAvpfTail"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail
     if _newclass:defaultsSetAvpfTail = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail)
-    __swig_getmethods__["defaultsSetUseAvpfEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetUseAvpfEnabled
-    if _newclass:defaultsSetUseAvpfEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetUseAvpfEnabled)
+    __swig_getmethods__["defaultsSetAvpfMode"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetAvpfMode
+    if _newclass:defaultsSetAvpfMode = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetAvpfMode)
     __swig_getmethods__["defaultsSetOpusMaxCaptureRate"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxCaptureRate
     if _newclass:defaultsSetOpusMaxCaptureRate = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxCaptureRate)
     __swig_getmethods__["defaultsSetOpusMaxPlaybackRate"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxPlaybackRate
@@ -578,9 +578,9 @@ def MediaSessionMgr_defaultsSetAvpfTail(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail(*args)
 MediaSessionMgr_defaultsSetAvpfTail = _tinyWRAP.MediaSessionMgr_defaultsSetAvpfTail
 
-def MediaSessionMgr_defaultsSetUseAvpfEnabled(*args):
-  return _tinyWRAP.MediaSessionMgr_defaultsSetUseAvpfEnabled(*args)
-MediaSessionMgr_defaultsSetUseAvpfEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetUseAvpfEnabled
+def MediaSessionMgr_defaultsSetAvpfMode(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetAvpfMode(*args)
+MediaSessionMgr_defaultsSetAvpfMode = _tinyWRAP.MediaSessionMgr_defaultsSetAvpfMode
 
 def MediaSessionMgr_defaultsSetOpusMaxCaptureRate(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetOpusMaxCaptureRate(*args)
@@ -974,6 +974,8 @@ class CallSession(InviteSession):
     def set100rel(self, *args): return _tinyWRAP.CallSession_set100rel(self, *args)
     def setRtcp(self, *args): return _tinyWRAP.CallSession_setRtcp(self, *args)
     def setRtcpMux(self, *args): return _tinyWRAP.CallSession_setRtcpMux(self, *args)
+    def setSRtpMode(self, *args): return _tinyWRAP.CallSession_setSRtpMode(self, *args)
+    def setAvpfMode(self, *args): return _tinyWRAP.CallSession_setAvpfMode(self, *args)
     def setICE(self, *args): return _tinyWRAP.CallSession_setICE(self, *args)
     def setQoS(self, *args): return _tinyWRAP.CallSession_setQoS(self, *args)
     def hold(self, *args): return _tinyWRAP.CallSession_hold(self, *args)
@@ -1718,6 +1720,9 @@ tmedia_chroma_nv21 = _tinyWRAP.tmedia_chroma_nv21
 tmedia_chroma_yuv422p = _tinyWRAP.tmedia_chroma_yuv422p
 tmedia_chroma_uyvy422 = _tinyWRAP.tmedia_chroma_uyvy422
 tmedia_chroma_yuv420p = _tinyWRAP.tmedia_chroma_yuv420p
+tmedia_mode_none = _tinyWRAP.tmedia_mode_none
+tmedia_mode_optional = _tinyWRAP.tmedia_mode_optional
+tmedia_mode_mandatory = _tinyWRAP.tmedia_mode_mandatory
 tmedia_srtp_mode_none = _tinyWRAP.tmedia_srtp_mode_none
 tmedia_srtp_mode_optional = _tinyWRAP.tmedia_srtp_mode_optional
 tmedia_srtp_mode_mandatory = _tinyWRAP.tmedia_srtp_mode_mandatory
