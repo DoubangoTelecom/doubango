@@ -265,6 +265,15 @@ typedef enum tmedia_chroma_e
 tmedia_chroma_t;
 
 /* ====== From "tinymedia/tmedia_common.h"  ====== */
+typedef enum tmedia_mode_e
+{
+	tmedia_mode_none,
+	tmedia_mode_optional,
+	tmedia_mode_mandatory
+}
+tmedia_mode_t;
+
+/* ====== From "tinymedia/tmedia_common.h"  ====== */
 typedef enum tmedia_srtp_mode_e
 {
 	tmedia_srtp_mode_none,

@@ -431,7 +431,26 @@ bool CallSession::setRtcpMux(bool enabled)
 			TSIP_MSESSION_SET_NULL()
 		),
 		TSIP_SSESSION_SET_NULL()) == 0);
-	
+}
+
+bool CallSession::setSRtpMode(enum tmedia_srtp_mode_e mode)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_MEDIA(
+		TSIP_MSESSION_SET_SRTP_MODE(mode),
+			TSIP_MSESSION_SET_NULL()
+		),
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
+bool CallSession::setAvpfMode(enum tmedia_mode_e mode)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_MEDIA(
+		TSIP_MSESSION_SET_AVPF_MODE(mode),
+			TSIP_MSESSION_SET_NULL()
+		),
+		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
 bool CallSession::setICE(bool enabled)

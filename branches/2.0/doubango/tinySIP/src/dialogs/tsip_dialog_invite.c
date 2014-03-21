@@ -53,6 +53,13 @@
 
 #include "tsk_debug.h"
 
+#if HAVE_LIBXML2
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+#include <libxml/xpath.h>
+#include <libxml/xpathInternals.h>
+#endif
+
 // http://cdnet.stpi.org.tw/techroom/market/_pdf/2009/eetelecomm_09_009_OneVoiceProfile.pdf
 // 3GPP TS 26.114 (MMTel): Media handling and interaction
 // 3GPP TS 24.173 (MMTel): Supplementary Services
@@ -91,8 +98,10 @@ extern int tsip_dialog_add_session_headers(const tsip_dialog_t *self, tsip_reque
 /*static*/ int send_BYE(tsip_dialog_invite_t *self);
 /*static*/ int send_CANCEL(tsip_dialog_invite_t *self);
 /*static*/ int tsip_dialog_invite_notify_parent(tsip_dialog_invite_t *self, const tsip_response_t* response);
+/*static*/ int send_INFO(tsip_dialog_invite_t *self, const char* content_type, const void* content_ptr, tsk_size_t content_size);
 static int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self);
 static int tsip_dialog_invite_msession_onerror_cb(const void* usrdata, const struct tmedia_session_s* session, const char* reason, tsk_bool_t is_fatal);
+static int tsip_dialog_invite_msession_rfc5168_cb(const void* usrdata, const struct tmedia_session_s* session, const char* reason, enum tmedia_session_rfc5168_cmd_e command);
 
 /* ======================== external functions ======================== */
 extern int tsip_dialog_invite_ice_process_ro(tsip_dialog_invite_t * self, const tsdp_message_t* sdp_ro, tsk_bool_t is_remote_offer);
@@ -479,9 +488,11 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 		}
 		ret = tmedia_session_mgr_set_ice_ctx(self->msession_mgr, self->ice.ctx_audio, self->ice.ctx_video);
 	}
-	ret = tsip_dialog_invite_msession_configure(self);
 	
 	if(sdp_ro){
+		if (tmedia_session_mgr_is_new_ro(self->msession_mgr, sdp_ro)) {
+			ret = tsip_dialog_invite_msession_configure(self);
+		}
 		if((ret = tmedia_session_mgr_set_ro(self->msession_mgr, sdp_ro, ro_type))){
 			TSK_DEBUG_ERROR("Failed to set remote offer");
 			goto bail;
@@ -937,14 +948,74 @@ int x0000_Any_2_Any_X_iINFO(va_list *app)
 {
 	tsip_dialog_invite_t * self = va_arg(*app, tsip_dialog_invite_t *);
 	tsip_request_t* rINFO = (tsip_request_t*)va_arg(*app, const tsip_message_t *);
+	int ret = -1;
 
-	if(rINFO){
-		send_RESPONSE(self, rINFO, 200, "Ok", tsk_false);
+	if (rINFO){
+		ret = send_RESPONSE(self, rINFO, 200, "Ok", tsk_false);
+		{
+			// int tmedia_session_mgr_recv_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t media_type, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media);
+			if (self->msession_mgr && TSIP_MESSAGE_HAS_CONTENT(rINFO)){
+				if (tsk_striequals("application/media_control+xml", TSIP_MESSAGE_CONTENT_TYPE(rINFO))){ /* rfc5168: XML Schema for Media Control */
+					static uint32_t __ssrc_media_fake = 0;
+					static tmedia_type_t __tmedia_type_video = tmedia_video;
+					const char* content_ptr = (const char*)TSIP_MESSAGE_CONTENT_DATA(rINFO);
+					tsk_size_t content_size = (tsk_size_t)TSIP_MESSAGE_CONTENT_DATA_LENGTH(rINFO);
+					tsk_bool_t is_fir = tsk_false;
+#if HAVE_LIBXML2
+
+					{
+						xmlDoc *pDoc;
+						xmlNode *pRootElement;
+						xmlXPathContext *pPathCtx;
+						xmlXPathObject *pPathObj;
+						static const xmlChar* __xpath_expr = "/media_control/vc_primitive/to_encoder/picture_fast_update";
+						
+						if (!(pDoc = xmlParseDoc(content_ptr))) {
+							TSK_DEBUG_ERROR("Failed to parse XML content [%s]", content_ptr);
+							return 0;
+						}
+						if (!(pRootElement = xmlDocGetRootElement(pDoc))) {
+							TSK_DEBUG_ERROR("Failed to get root element from XML content [%s]", content_ptr);
+							xmlFreeDoc(pDoc);
+							return 0;
+						}
+						;
+						if (!(pPathCtx = xmlXPathNewContext(pDoc))) {
+							TSK_DEBUG_ERROR("Failed to create path context from XML content [%s]", content_ptr);
+							xmlFreeDoc(pDoc);
+							return 0;
+						}
+						if (!(pPathObj = xmlXPathEvalExpression(__xpath_expr, pPathCtx))) {
+							TSK_DEBUG_ERROR("Error: unable to evaluate xpath expression: %s", __xpath_expr);
+							xmlXPathFreeContext(pPathCtx); 
+							xmlFreeDoc(pDoc);
+							return 0;
+						}
+						
+						is_fir = (pPathObj->type == XPATH_NODESET && pPathObj->nodesetval->nodeNr > 0);
+
+						xmlXPathFreeObject(pPathObj);
+						xmlXPathFreeContext(pPathCtx); 
+						xmlFreeDoc(pDoc);
+					}
+#else
+					is_fir = (tsk_strcontains(content_ptr, content_size, "to_encoder") && tsk_strcontains(content_ptr, content_size, "picture_fast_update"));
+#endif
+					if (is_fir) {
+						TSK_DEBUG_INFO("Incoming SIP INFO(picture_fast_update)");
+						ret = tmedia_session_mgr_recv_rtcp_event(self->msession_mgr, __tmedia_type_video, tmedia_rtcp_event_type_fir, __ssrc_media_fake);
+					}
+					else {
+						TSK_DEBUG_INFO("Incoming SIP INFO(unknown)");
+					}
+				}
+			}
+		}
 		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_request, 
 				tsip_event_code_dialog_request_incoming, "Incoming Request", rINFO);
 	}
 
-	return 0;
+	return ret;
 }
 
 int x9998_Any_2_Terminated_X_transportError(va_list *app)
@@ -970,6 +1041,7 @@ int x9999_Any_2_Any_X_Error(va_list *app)
 int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self)
 {
 	tmedia_srtp_mode_t srtp_mode;
+	tmedia_mode_t avpf_mode;
 	tsk_bool_t is_rtcweb_enabled;
 	tsk_bool_t is_webrtc2sip_mode_enabled;
 	
@@ -981,15 +1053,16 @@ int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self)
 	is_webrtc2sip_mode_enabled = (TSIP_DIALOG_GET_STACK(self)->network.mode == tsip_stack_mode_webrtc2sip);
 	is_rtcweb_enabled = (((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.profile == tmedia_profile_rtcweb);
 	srtp_mode = is_rtcweb_enabled ? tmedia_srtp_mode_mandatory : ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.srtp_mode;
-	
+	avpf_mode = is_rtcweb_enabled ? tmedia_mode_mandatory : ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.avpf_mode;
 
 	// set callback functions
 	tmedia_session_mgr_set_onerror_cbfn(self->msession_mgr, self, tsip_dialog_invite_msession_onerror_cb);
+	tmedia_session_mgr_set_rfc5168_cbfn(self->msession_mgr, self, tsip_dialog_invite_msession_rfc5168_cb);
 
 	// set params
 	return tmedia_session_mgr_set(self->msession_mgr,
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "srtp-mode", srtp_mode),
-			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "avpf-enabled", is_rtcweb_enabled), // Otherwise will be negociated using SDPCapNeg (RFC 5939)
+			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "avpf-mode", avpf_mode),
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "webrtc2sip-mode-enabled", is_webrtc2sip_mode_enabled), // hack the media stack
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "rtcp-enabled", self->use_rtcp),
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "rtcpmux-enabled", self->use_rtcpmux),
@@ -1385,6 +1458,40 @@ bail:
 	return ret;
 }
 
+// Send INFO
+int send_INFO(tsip_dialog_invite_t *self, const char* content_type, const void* content_ptr, tsk_size_t content_size)
+{
+	int ret = -1;
+	tsip_request_t *info = tsk_null;
+
+	if (!self) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		goto bail;
+	}
+	if ((info = tsip_dialog_request_new(TSIP_DIALOG(self), "INFO"))) {
+		if (TSIP_DIALOG(self)->curr_action) {
+			ret = tsip_dialog_apply_action(info, TSIP_DIALOG(self)->curr_action);
+			if (ret) {
+				goto bail;
+			}
+		}
+		if (content_type && content_ptr && content_size) {
+			ret = tsip_message_add_content(info, content_type, content_ptr, content_size);
+			if (ret) {
+				goto bail;
+			}
+		}
+		ret = tsip_dialog_request_send(TSIP_DIALOG(self), info);
+		if (ret) {
+			goto bail;
+		}
+	}
+
+bail:
+	TSK_OBJECT_SAFE_FREE(info);
+	return ret;
+}
+
 // Send ACK
 int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE)
 {
@@ -1656,7 +1763,30 @@ static int tsip_dialog_invite_msession_onerror_cb(const void* usrdata, const str
 	return 0;
 }
 
+// callback function called when media session events (related to rfc5168) occures asynchronously
+static int tsip_dialog_invite_msession_rfc5168_cb(const void* usrdata, const struct tmedia_session_s* session, const char* reason, enum tmedia_session_rfc5168_cmd_e command)
+{
+	tsip_dialog_invite_t *self = (tsip_dialog_invite_t*)usrdata;
 
+	if (self) {
+		if (command == tmedia_session_rfc5168_cmd_picture_fast_update) {
+			static const char* __content_type = "application/media_control+xml";
+			static const void* __content_ptr = 
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n"
+				" <media_control>\r\n"
+				"   <vc_primitive>\r\n"
+				"     <to_encoder>\r\n"
+				"       <picture_fast_update>\r\n"
+				"       </picture_fast_update>\r\n"
+				"     </to_encoder>\r\n"
+				"   </vc_primitive>\r\n"
+				" </media_control>\r\n";
+			TSK_DEBUG_INFO("Media session is asking the sigaling layer to send SIP INFO('picture_fast_update')");
+			return send_INFO(self, __content_type, __content_ptr, tsk_strlen(__content_ptr));
+		}
+	}
+	return 0;
+}
 
 
 

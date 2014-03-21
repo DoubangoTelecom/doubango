@@ -80,7 +80,7 @@ static tsk_bool_t __video_zeroartifacts_enabled = tsk_false; // Requires from re
 static tsk_size_t __rtpbuff_size = 0x1FFFE; // Network buffer size use for RTP (SO_RCVBUF, SO_SNDBUF)
 static tsk_size_t __avpf_tail_min = 20; // Min size for tail used to honor RTCP-NACK requests
 static tsk_size_t __avpf_tail_max = 160; // Max size for tail used to honor RTCP-NACK requests
-static tsk_bool_t __avpf_enabled = tsk_false; // Whether to use AVPF instead of AVP
+static tmedia_mode_t __avpf_mode = tmedia_mode_optional; // Whether to use AVPF instead of AVP or negotiate. FIXME
 static uint32_t __opus_maxcapturerate = 16000; // supported: 8k,12k,16k,24k,48k. IMPORTANT: only 8k and 16k will work with WebRTC AEC
 static uint32_t __opus_maxplaybackrate = 48000; // supported: 8k,12k,16k,24k,48k
 static char* __ssl_certs_priv_path = tsk_null;
@@ -516,12 +516,12 @@ tsk_size_t tmedia_defaults_get_avpf_tail_max(){
 	return __avpf_tail_max;
 }
 
-int tmedia_defaults_set_avpf_enabled(tsk_bool_t enabled){
-	__avpf_enabled = enabled;
+int tmedia_defaults_set_avpf_mode(enum tmedia_mode_e mode) {
+	__avpf_mode = mode;
 	return 0;
 }
-tsk_bool_t tmedia_defaults_get_avpf_enabled(){
-	return __avpf_enabled;
+enum tmedia_mode_e tmedia_defaults_get_avpf_mode() {
+	return __avpf_mode;
 }
 
 int tmedia_defaults_set_opus_maxcapturerate(uint32_t opus_maxcapturerate){

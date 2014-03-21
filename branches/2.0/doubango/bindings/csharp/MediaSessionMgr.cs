@@ -419,8 +419,8 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
-  public static bool defaultsSetUseAvpfEnabled(bool enabled) {
-    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetUseAvpfEnabled(enabled);
+  public static bool defaultsSetAvpfMode(tmedia_mode_t mode) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetAvpfMode((int)mode);
     return ret;
   }
 

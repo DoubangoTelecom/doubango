@@ -562,6 +562,15 @@ int tmedia_session_send_rtcp_event(tmedia_session_t* self, tmedia_rtcp_event_typ
 	return -1;
 }
 
+int tmedia_session_recv_rtcp_event(tmedia_session_t* self, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media)
+{
+	if(self && self->plugin && self->plugin->rtcp.recv_event){
+		return self->plugin->rtcp.recv_event(self, event_type, ssrc_media);
+	}
+	TSK_DEBUG_INFO("Not receiving RTCP event with SSRC = %u because no callback function found", ssrc_media);
+	return -1;
+}
+
 int tmedia_session_set_onerror_cbfn(tmedia_session_t* self, const void* usrdata, tmedia_session_onerror_cb_f fun)
 {
 	if(!self){
@@ -570,6 +579,17 @@ int tmedia_session_set_onerror_cbfn(tmedia_session_t* self, const void* usrdata,
 	}
 	self->onerror_cb.fun = fun;
 	self->onerror_cb.usrdata = usrdata;
+	return 0;
+}
+
+int tmedia_session_set_rfc5168_cbfn(tmedia_session_t* self, const void* usrdata, tmedia_session_rfc5168_cb_f fun)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->rfc5168_cb.fun = fun;
+	self->rfc5168_cb.usrdata = usrdata;
 	return 0;
 }
 
@@ -1487,6 +1507,29 @@ const tsdp_message_t* tmedia_session_mgr_get_ro(tmedia_session_mgr_t* self)
 	return self->sdp.ro;
 }
 
+tsk_bool_t tmedia_session_mgr_is_new_ro(tmedia_session_mgr_t* self, const tsdp_message_t* sdp)
+{
+	tsk_bool_t is_new = tsk_true;
+	const tsdp_header_O_t* O;
+
+	if(!self || !sdp){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tsk_safeobj_lock(self);
+
+	if ((O = (const tsdp_header_O_t*)tsdp_message_get_header(sdp, tsdp_htype_O))) {
+		is_new = (self->sdp.ro_ver != (int32_t)O->sess_version);
+	}
+	else {
+		TSK_DEBUG_ERROR("o= line is missing");
+	}
+	
+	tsk_safeobj_unlock(self);
+	return is_new;
+}
+
 /**@ingroup tmedia_session_group
 * Holds the session as per 3GPP TS 34.610
 * @param self the session manager managing the session to hold.
@@ -1818,6 +1861,28 @@ int tmedia_session_mgr_send_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t
 	return 0;
 }
 
+int tmedia_session_mgr_recv_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t media_type, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media)
+{
+	tmedia_session_t* session;
+	tsk_list_item_t *item;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invlid parameter");
+		return -1;
+	}
+
+	tsk_list_lock(self->sessions);
+	tsk_list_foreach(item, self->sessions){
+		if(!(session = item->data) || !(session->type & media_type)){
+			continue;
+		}
+		tmedia_session_recv_rtcp_event(session, event_type, ssrc_media);
+	}
+	tsk_list_unlock(self->sessions);
+
+	return 0;
+}
+
 int tmedia_session_mgr_send_file(tmedia_session_mgr_t* self, const char* path, ...)
 {
 	tmedia_session_msrp_t* session;
@@ -1908,6 +1973,30 @@ int tmedia_session_mgr_set_onerror_cbfn(tmedia_session_mgr_t* self, const void* 
 			continue;
 		}
 		tmedia_session_set_onerror_cbfn(session, usrdata, fun);
+	}
+	tsk_list_unlock(self->sessions);
+
+	return 0;
+}
+
+int tmedia_session_mgr_set_rfc5168_cbfn(tmedia_session_mgr_t* self, const void* usrdata, tmedia_session_rfc5168_cb_f fun)
+{
+	tmedia_session_t* session;
+	tsk_list_item_t *item;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->rfc5168_cb.fun = fun;
+	self->rfc5168_cb.usrdata = usrdata;
+
+	tsk_list_lock(self->sessions);
+	tsk_list_foreach(item, self->sessions){
+		if(!(session = item->data)){
+			continue;
+		}
+		tmedia_session_set_rfc5168_cbfn(session, usrdata, fun);
 	}
 	tsk_list_unlock(self->sessions);
 

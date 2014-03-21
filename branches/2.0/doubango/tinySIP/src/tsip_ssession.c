@@ -281,6 +281,10 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 								// (tmedia_srtp_mode_t)SRTP_MODE_ENUM
 								self->media.srtp_mode = va_arg(*app, tmedia_srtp_mode_t);
 								break;
+							case mstype_set_avpf_mode:
+								// (tmedia_mode_t)MEDIA_MODE_ENUM
+								self->media.avpf_mode = va_arg(*app, tmedia_mode_t);
+								break;
 							case mstype_set_100rel: self->media.enable_100rel = va_arg(*app, tsk_bool_t); break;
 							case mstype_set_ice: self->media.enable_ice = va_arg(*app, tsk_bool_t); break;
 							case mstype_set_rtcp: self->media.enable_rtcp = va_arg(*app, tsk_bool_t); break;
@@ -645,6 +649,7 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		// default media values
 		ss->media.profile = tmedia_defaults_get_profile();
 		ss->media.srtp_mode = tmedia_defaults_get_srtp_mode();
+		ss->media.avpf_mode = tmedia_defaults_get_avpf_mode();
 		ss->media.enable_100rel = tmedia_defaults_get_100rel_enabled();
 		ss->media.enable_ice = tmedia_defaults_get_ice_enabled();
 		ss->media.enable_rtcp = tmedia_defaults_get_rtcp_enabled();

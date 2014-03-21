@@ -516,8 +516,8 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetAvpfTail")]
   public static extern bool MediaSessionMgr_defaultsSetAvpfTail(uint jarg1, uint jarg2);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetUseAvpfEnabled")]
-  public static extern bool MediaSessionMgr_defaultsSetUseAvpfEnabled(bool jarg1);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetAvpfMode")]
+  public static extern bool MediaSessionMgr_defaultsSetAvpfMode(int jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetOpusMaxCaptureRate")]
   public static extern bool MediaSessionMgr_defaultsSetOpusMaxCaptureRate(uint jarg1);
@@ -944,6 +944,12 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setRtcpMux")]
   public static extern bool CallSession_setRtcpMux(HandleRef jarg1, bool jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setSRtpMode")]
+  public static extern bool CallSession_setSRtpMode(HandleRef jarg1, int jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setAvpfMode")]
+  public static extern bool CallSession_setAvpfMode(HandleRef jarg1, int jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setICE")]
   public static extern bool CallSession_setICE(HandleRef jarg1, bool jarg2);

@@ -57,9 +57,18 @@ struct tmedia_session_s;
 typedef int (*tmedia_session_t140_ondata_cb_f)(const void* usrdata, tmedia_t140_data_type_t data_type, const void* data_ptr, unsigned data_size);
 typedef int (*tmedia_session_rtcp_onevent_cb_f)(const void* usrdata, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media);
 typedef int (*tmedia_session_onerror_cb_f)(const void* usrdata, const struct tmedia_session_s* session, const char* reason, tsk_bool_t is_fatal);
+typedef int (*tmedia_session_rfc5168_cb_f)(const void* usrdata, const struct tmedia_session_s* session, const char* reason, enum tmedia_session_rfc5168_cmd_e command);
+
 
 /**Max number of plugins (session types) we can create */
 #define TMED_SESSION_MAX_PLUGINS			0x0F
+
+// rfc5168 (XML Schema for Media Control) commands
+typedef enum tmedia_session_rfc5168_cmd_e
+{
+	tmedia_session_rfc5168_cmd_picture_fast_update,
+}
+tmedia_session_rfc5168_cmd_t;
 
 /** Base objct used for all media sessions */
 typedef struct tmedia_session_s
@@ -95,6 +104,11 @@ typedef struct tmedia_session_s
 		tmedia_session_onerror_cb_f fun;
 		const void* usrdata;
 	} onerror_cb; 
+	//! rfc5168 (XML Schema for Media Control) callback function: not part of the plugin (likes .t140 or .rtcp) because it's not part of the API.
+	struct {
+		tmedia_session_rfc5168_cb_f fun;
+		const void* usrdata;
+	} rfc5168_cb;
 	
 	tsk_bool_t bypass_encoding;
 	tsk_bool_t bypass_decoding;
@@ -150,6 +164,7 @@ typedef struct tmedia_session_plugin_def_s
 	struct{ /* Handles both SIP INFO and RTCP-FB: should be called by end-user only when transcoding is disabled */
 		int (* set_onevent_cbfn) (tmedia_session_t*, const void* usrdata, tmedia_session_rtcp_onevent_cb_f func);
 		int (* send_event) (tmedia_session_t*, enum tmedia_rtcp_event_type_e event_type, uint32_t ssrc_media);
+		int (* recv_event) (tmedia_session_t*, enum tmedia_rtcp_event_type_e event_type, uint32_t ssrc_media);
 	} rtcp;
 }
 tmedia_session_plugin_def_t;
@@ -167,7 +182,9 @@ TINYMEDIA_API tmedia_session_t* tmedia_session_create(tmedia_type_t type);
 TINYMEDIA_API tmedia_codecs_L_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M);
 TINYMEDIA_API int tmedia_session_set_onrtcp_cbfn(tmedia_session_t* self, const void* usrdata, tmedia_session_rtcp_onevent_cb_f fun);
 TINYMEDIA_API int tmedia_session_send_rtcp_event(tmedia_session_t* self, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media);
+TINYMEDIA_API int tmedia_session_recv_rtcp_event(tmedia_session_t* self, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media);
 TINYMEDIA_API int tmedia_session_set_onerror_cbfn(tmedia_session_t* self, const void* usrdata, tmedia_session_onerror_cb_f fun);
+TINYMEDIA_API int tmedia_session_set_rfc5168_cbfn(tmedia_session_t* self, const void* usrdata, tmedia_session_rfc5168_cb_f fun);
 TINYMEDIA_API int tmedia_session_deinit(tmedia_session_t* self);
 typedef tsk_list_t tmedia_sessions_L_t; /**< List of @ref tmedia_session_t objects */
 #define TMEDIA_DECLARE_SESSION tmedia_session_t __session__
@@ -273,6 +290,12 @@ typedef struct tmedia_session_mgr_s
 		tmedia_session_onerror_cb_f fun;
 		const void* usrdata;
 	} onerror_cb; 
+
+	/* rfc5168 callback */
+	struct {
+		tmedia_session_rfc5168_cb_f fun;
+		const void* usrdata;
+	} rfc5168_cb;
 
 	//! List of all sessions
 	tmedia_sessions_L_t* sessions;
@@ -443,6 +466,7 @@ TINYMEDIA_API int tmedia_session_mgr_stop(tmedia_session_mgr_t* self);
 TINYMEDIA_API const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self);
 TINYMEDIA_API int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* sdp, tmedia_ro_type_t ro_type);
 TINYMEDIA_API const tsdp_message_t* tmedia_session_mgr_get_ro(tmedia_session_mgr_t* self);
+TINYMEDIA_API tsk_bool_t tmedia_session_mgr_is_new_ro(tmedia_session_mgr_t* self, const tsdp_message_t* sdp);
 TINYMEDIA_API int tmedia_session_mgr_hold(tmedia_session_mgr_t* self, tmedia_type_t type);
 TINYMEDIA_API tsk_bool_t tmedia_session_mgr_is_held(tmedia_session_mgr_t* self, tmedia_type_t type, tsk_bool_t local);
 TINYMEDIA_API int tmedia_session_mgr_resume(tmedia_session_mgr_t* self, tmedia_type_t type, tsk_bool_t local);
@@ -456,10 +480,12 @@ TINYMEDIA_API int tmedia_session_mgr_set_t140_ondata_cbfn(tmedia_session_mgr_t* 
 TINYMEDIA_API int tmedia_session_mgr_send_t140_data(tmedia_session_mgr_t* self, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);
 TINYMEDIA_API int tmedia_session_mgr_set_onrtcp_cbfn(tmedia_session_mgr_t* self, tmedia_type_t media_type, const void* context, tmedia_session_rtcp_onevent_cb_f fun);
 TINYMEDIA_API int tmedia_session_mgr_send_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t media_type, enum tmedia_rtcp_event_type_e event_type, uint32_t ssrc_media);
+TINYMEDIA_API int tmedia_session_mgr_recv_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t media_type, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media);
 TINYMEDIA_API int tmedia_session_mgr_send_file(tmedia_session_mgr_t* self, const char* path, ...);
 TINYMEDIA_API int tmedia_session_mgr_send_message(tmedia_session_mgr_t* self, const void* data, tsk_size_t size, const tmedia_params_L_t *params);
 TINYMEDIA_API int tmedia_session_mgr_set_msrp_cb(tmedia_session_mgr_t* self, const void* usrdata, tmedia_session_msrp_cb_f func);
 TINYMEDIA_API int tmedia_session_mgr_set_onerror_cbfn(tmedia_session_mgr_t* self, const void* usrdata, tmedia_session_onerror_cb_f fun);
+TINYMEDIA_API int tmedia_session_mgr_set_rfc5168_cbfn(tmedia_session_mgr_t* self, const void* usrdata, tmedia_session_rfc5168_cb_f fun);
 
 
 TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_session_mgr_def_t;

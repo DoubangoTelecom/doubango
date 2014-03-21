@@ -119,7 +119,7 @@ public class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_defaultsSetRtpBuffSize(long jarg1);
   public final static native long MediaSessionMgr_defaultsGetRtpBuffSize();
   public final static native boolean MediaSessionMgr_defaultsSetAvpfTail(long jarg1, long jarg2);
-  public final static native boolean MediaSessionMgr_defaultsSetUseAvpfEnabled(boolean jarg1);
+  public final static native boolean MediaSessionMgr_defaultsSetAvpfMode(int jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetOpusMaxCaptureRate(long jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetOpusMaxPlaybackRate(long jarg1);
   public final static native boolean MediaSessionMgr_defaultsSetMaxFds(int jarg1);
@@ -263,6 +263,8 @@ public class tinyWRAPJNI {
   public final static native boolean CallSession_set100rel(long jarg1, CallSession jarg1_, boolean jarg2);
   public final static native boolean CallSession_setRtcp(long jarg1, CallSession jarg1_, boolean jarg2);
   public final static native boolean CallSession_setRtcpMux(long jarg1, CallSession jarg1_, boolean jarg2);
+  public final static native boolean CallSession_setSRtpMode(long jarg1, CallSession jarg1_, int jarg2);
+  public final static native boolean CallSession_setAvpfMode(long jarg1, CallSession jarg1_, int jarg2);
   public final static native boolean CallSession_setICE(long jarg1, CallSession jarg1_, boolean jarg2);
   public final static native boolean CallSession_setQoS(long jarg1, CallSession jarg1_, int jarg2, int jarg3);
   public final static native boolean CallSession_hold__SWIG_0(long jarg1, CallSession jarg1_, long jarg2, ActionConfig jarg2_);

@@ -119,6 +119,7 @@ static int _tdav_session_video_jb_cb(const tdav_video_jb_cb_data_xt* data);
 static int _tdav_session_video_open_decoder(tdav_session_video_t* self, uint8_t payload_type);
 static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp_packet_t* packet);
 static int _tdav_session_video_set_callbacks(tmedia_session_t* self);
+static int _tdav_session_video_signal_frame_corrupted(tdav_session_video_t* self, uint32_t ssrc_media);
 
 // Codec callback (From codec to the network)
 // or Producer callback to sendRaw() data "as is"
@@ -211,8 +212,7 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 			}
 			rtp_hdr_size = TRTP_RTP_HEADER_MIN_SIZE + (packet->header->csrc_count << 2);
 			// Save packet
-			// FIXME: only if AVPF is enabled
-			if(1){
+			if(base->avpf_mode_neg){
 				trtp_rtp_packet_t* packet_avpf = tsk_object_ref(packet);
 				// when SRTP is used, "serial_buffer" will contains the encoded buffer with both RTP header and payload
 				// Hack the RTP packet payload to point to the the SRTP data instead of unencrypted ptr
@@ -316,7 +316,7 @@ static int tdav_session_video_decode_cb(const tmedia_video_decode_result_xt* res
 		case tmedia_video_decode_result_type_error:
 			{
 				TSK_DEBUG_INFO("Decoding failed -> send Full Intra Refresh (FIR)");
-				trtp_manager_signal_frame_corrupted(base->rtp_manager, ((const trtp_rtp_header_t*)result->proto_hdr)->ssrc);
+				_tdav_session_video_signal_frame_corrupted(video, ((const trtp_rtp_header_t*)result->proto_hdr)->ssrc);
 				break;
 			}
         default: break;
@@ -652,6 +652,7 @@ static int _tdav_session_video_jb_cb(const tdav_video_jb_cb_data_xt* data)
 {
 	tdav_session_video_t* video = (tdav_session_video_t*)data->usr_data;
 	tdav_session_av_t* base = (tdav_session_av_t*)data->usr_data;
+	tmedia_session_t* session = (tmedia_session_t*)data->usr_data;
 
 	switch(data->type){
         default: break;
@@ -661,25 +662,36 @@ static int _tdav_session_video_jb_cb(const tdav_video_jb_cb_data_xt* data)
 			}
 		case tdav_video_jb_cb_data_type_tmfr:
 			{
-				return trtp_manager_signal_jb_error(base->rtp_manager, data->ssrc);
+				if (base->avpf_mode_neg) { // AVPF?
+					return trtp_manager_signal_jb_error(base->rtp_manager, data->ssrc);
+				}
+				else if (session->rfc5168_cb.fun){
+					static const char* __rfc5168_reason = "TMFR";
+					return session->rfc5168_cb.fun(session->rfc5168_cb.usrdata, session, __rfc5168_reason, tmedia_session_rfc5168_cmd_picture_fast_update);
+				}
 			}
 		case tdav_video_jb_cb_data_type_fl:
 			{
 				if(data->fl.count > TDAV_SESSION_VIDEO_PKT_LOSS_MAX_COUNT_TO_REQUEST_FIR){
+					// Send RTCP-FIR
 					TSK_DEBUG_INFO("Packet loss too high (%u) -> Requesting FIR", data->fl.count);
-					trtp_manager_signal_frame_corrupted(base->rtp_manager, data->ssrc);
+					_tdav_session_video_signal_frame_corrupted(video, data->ssrc);
 				}
-				else{
-					tsk_size_t i, j, k;
-					uint16_t seq_nums[16];
-					for(i = 0; i < data->fl.count; i+=16){
-						for(j = 0, k = i; j < 16 && k < data->fl.count; ++j, ++k){
-							seq_nums[j] = (data->fl.seq_num + i + j);
-							TSK_DEBUG_INFO("Request re-send(%u)", seq_nums[j]);
+				else {
+					if (base->avpf_mode_neg) { // AVPF?
+						// Send RTCP-NACK
+						tsk_size_t i, j, k;
+						uint16_t seq_nums[16];
+						for(i = 0; i < data->fl.count; i+=16){
+							for(j = 0, k = i; j < 16 && k < data->fl.count; ++j, ++k){
+								seq_nums[j] = (data->fl.seq_num + i + j);
+								TSK_DEBUG_INFO("Request re-send(%u)", seq_nums[j]);
+							}
+							trtp_manager_signal_pkt_loss(base->rtp_manager, data->ssrc, seq_nums, j);
 						}
-						trtp_manager_signal_pkt_loss(base->rtp_manager, data->ssrc, seq_nums, j);
 					}
 				}
+				
 				break;
 			}
 		case tdav_video_jb_cb_data_type_fps_changed:
@@ -730,6 +742,7 @@ bail:
 static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp_packet_t* packet)
 {
 	tdav_session_av_t* base = (tdav_session_av_t*)self;
+	tmedia_session_t* session = (tmedia_session_t*)self;
 	static const trtp_rtp_header_t* __rtp_header = tsk_null;
 	static const tmedia_codec_id_t __codecs_supporting_zero_artifacts = (tmedia_codec_id_vp8 | tmedia_codec_id_h264_bp | tmedia_codec_id_h264_mp | tmedia_codec_id_h263);
 	int ret = 0;
@@ -775,7 +788,7 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 					// request IDR now and every time after 'TDAV_SESSION_VIDEO_AVPF_FIR_REQUEST_INTERVAL_MIN' ellapsed
 					// 'zero-artifacts' not enabled then, we'll request IDR when decoding fails
 					TSK_DEBUG_INFO("Sending FIR to request IDR...");
-					trtp_manager_signal_frame_corrupted(base->rtp_manager, packet->header->ssrc);
+					_tdav_session_video_signal_frame_corrupted(video, packet->header->ssrc);
 				}
 				// value will be updated when we decode an IDR frame
 				video->decoder.stream_corrupted = tsk_true;
@@ -803,7 +816,7 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 			TSK_DEBUG_INFO("Do not render video frame because stream is corrupted and 'zero-artifacts' is enabled. Last seqnum=%u", video->decoder.last_seqnum);
 			if(video->decoder.stream_corrupted && (tsk_time_now() - video->decoder.stream_corrupted_since) > TDAV_SESSION_VIDEO_AVPF_FIR_REQUEST_INTERVAL_MIN){
 				TSK_DEBUG_INFO("Sending FIR to request IDR because frame corrupted since %llu...", video->decoder.stream_corrupted_since);
-				trtp_manager_signal_frame_corrupted(base->rtp_manager, packet->header->ssrc);
+				_tdav_session_video_signal_frame_corrupted(video, packet->header->ssrc);
 			}
 			goto bail;
 		}
@@ -896,6 +909,20 @@ bail:
 	tsk_safeobj_unlock(base);
 
 	return ret;
+}
+
+static int _tdav_session_video_signal_frame_corrupted(tdav_session_video_t* self, uint32_t ssrc_media)
+{
+	tdav_session_av_t* base = (tdav_session_av_t*)self;
+	tmedia_session_t* session = (tmedia_session_t*)self;
+	if (base->avpf_mode_neg) {
+		return trtp_manager_signal_frame_corrupted(base->rtp_manager, ssrc_media);
+	}
+	else if (session->rfc5168_cb.fun){
+		static const char* __rfc5168_reason = "TINYDAV";
+		return session->rfc5168_cb.fun(session->rfc5168_cb.usrdata, session, __rfc5168_reason, tmedia_session_rfc5168_cmd_picture_fast_update);
+	}
+	return 0;
 }
 
 
@@ -1178,8 +1205,37 @@ static int tdav_session_video_rtcp_send_event(tmedia_session_t* self, tmedia_rtc
 						ssrc_media = base->rtp_manager->rtp.ssrc.remote;
 					}
 					TSK_DEBUG_INFO("Send FIR(%u)", ssrc_media);
-					ret = trtp_manager_signal_frame_corrupted(base->rtp_manager, ssrc_media);
+					_tdav_session_video_signal_frame_corrupted(video, ssrc_media);
 				}
+				break;
+			}
+	}
+	tsk_safeobj_unlock(base);
+
+	return ret;
+}
+
+// Plugin interface: called by the end-user to recv rtcp event
+static int tdav_session_video_rtcp_recv_event(tmedia_session_t* self, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media)
+{
+	tdav_session_video_t* video;
+	tdav_session_av_t* base;
+	int ret = -1;
+
+	if (!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	video = (tdav_session_video_t*)self;
+	base = (tdav_session_av_t*)self;
+
+	tsk_safeobj_lock(base);
+	switch(event_type){
+		case tmedia_rtcp_event_type_fir:
+			{
+				_tdav_session_video_remote_requested_idr(video, ssrc_media);
+				ret = 0;
 				break;
 			}
 	}
@@ -1325,7 +1381,8 @@ static const tmedia_session_plugin_def_t tdav_session_video_plugin_def_s =
 	/* Rtcp */
 	{
 		tdav_session_video_rtcp_set_onevent_cbfn,
-		tdav_session_video_rtcp_send_event
+		tdav_session_video_rtcp_send_event,
+		tdav_session_video_rtcp_recv_event
 	}
 };
 const tmedia_session_plugin_def_t *tdav_session_video_plugin_def_t = &tdav_session_video_plugin_def_s;

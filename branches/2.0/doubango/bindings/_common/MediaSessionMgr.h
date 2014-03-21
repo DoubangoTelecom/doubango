@@ -155,7 +155,7 @@ public:
 	static bool defaultsSetRtpBuffSize(unsigned buffSize);
 	static unsigned defaultsGetRtpBuffSize();
 	static bool defaultsSetAvpfTail(unsigned tail_min, unsigned tail_max);
-	static bool defaultsSetUseAvpfEnabled(bool enabled);
+	static bool defaultsSetAvpfMode(enum tmedia_mode_e mode);
 	static bool defaultsSetOpusMaxCaptureRate(uint32_t opus_maxcapturerate);
 	static bool defaultsSetOpusMaxPlaybackRate(uint32_t opus_maxplaybackrate);
 	static bool defaultsSetMaxFds(int32_t max_fds);

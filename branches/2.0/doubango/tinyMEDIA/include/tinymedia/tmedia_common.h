@@ -61,6 +61,15 @@ typedef enum tmedia_type_e
 tmedia_type_t;
 
 // @tinyWRAP
+typedef enum tmedia_mode_e
+{
+	tmedia_mode_none,
+	tmedia_mode_optional,
+	tmedia_mode_mandatory
+}
+tmedia_mode_t;
+
+// @tinyWRAP
 typedef enum tmedia_srtp_mode_e
 {
 	tmedia_srtp_mode_none,

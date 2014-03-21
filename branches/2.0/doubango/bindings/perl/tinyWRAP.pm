@@ -304,7 +304,7 @@ sub DESTROY {
 *defaultsSetRtpBuffSize = *tinyWRAPc::MediaSessionMgr_defaultsSetRtpBuffSize;
 *defaultsGetRtpBuffSize = *tinyWRAPc::MediaSessionMgr_defaultsGetRtpBuffSize;
 *defaultsSetAvpfTail = *tinyWRAPc::MediaSessionMgr_defaultsSetAvpfTail;
-*defaultsSetUseAvpfEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetUseAvpfEnabled;
+*defaultsSetAvpfMode = *tinyWRAPc::MediaSessionMgr_defaultsSetAvpfMode;
 *defaultsSetOpusMaxCaptureRate = *tinyWRAPc::MediaSessionMgr_defaultsSetOpusMaxCaptureRate;
 *defaultsSetOpusMaxPlaybackRate = *tinyWRAPc::MediaSessionMgr_defaultsSetOpusMaxPlaybackRate;
 *defaultsSetMaxFds = *tinyWRAPc::MediaSessionMgr_defaultsSetMaxFds;
@@ -1055,6 +1055,8 @@ sub DESTROY {
 *set100rel = *tinyWRAPc::CallSession_set100rel;
 *setRtcp = *tinyWRAPc::CallSession_setRtcp;
 *setRtcpMux = *tinyWRAPc::CallSession_setRtcpMux;
+*setSRtpMode = *tinyWRAPc::CallSession_setSRtpMode;
+*setAvpfMode = *tinyWRAPc::CallSession_setAvpfMode;
 *setICE = *tinyWRAPc::CallSession_setICE;
 *setQoS = *tinyWRAPc::CallSession_setQoS;
 *hold = *tinyWRAPc::CallSession_hold;
@@ -2584,6 +2586,9 @@ package tinyWRAP;
 *tmedia_chroma_yuv422p = *tinyWRAPc::tmedia_chroma_yuv422p;
 *tmedia_chroma_uyvy422 = *tinyWRAPc::tmedia_chroma_uyvy422;
 *tmedia_chroma_yuv420p = *tinyWRAPc::tmedia_chroma_yuv420p;
+*tmedia_mode_none = *tinyWRAPc::tmedia_mode_none;
+*tmedia_mode_optional = *tinyWRAPc::tmedia_mode_optional;
+*tmedia_mode_mandatory = *tinyWRAPc::tmedia_mode_mandatory;
 *tmedia_srtp_mode_none = *tinyWRAPc::tmedia_srtp_mode_none;
 *tmedia_srtp_mode_optional = *tinyWRAPc::tmedia_srtp_mode_optional;
 *tmedia_srtp_mode_mandatory = *tinyWRAPc::tmedia_srtp_mode_mandatory;
