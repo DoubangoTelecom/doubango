@@ -49,6 +49,13 @@ TMEDIA_BEGIN_DECLS
 
 struct tmedia_session_s;
 
+// rfc5168 (XML Schema for Media Control) commands
+typedef enum tmedia_session_rfc5168_cmd_e
+{
+	tmedia_session_rfc5168_cmd_picture_fast_update,
+}
+tmedia_session_rfc5168_cmd_t;
+
 #define TMEDIA_SESSION(self)		((tmedia_session_t*)(self))
 #define TMEDIA_SESSION_AUDIO(self)	((tmedia_session_audio_t*)(self))
 #define TMEDIA_SESSION_VIDEO(self)	((tmedia_session_video_t*)(self))
@@ -62,13 +69,6 @@ typedef int (*tmedia_session_rfc5168_cb_f)(const void* usrdata, const struct tme
 
 /**Max number of plugins (session types) we can create */
 #define TMED_SESSION_MAX_PLUGINS			0x0F
-
-// rfc5168 (XML Schema for Media Control) commands
-typedef enum tmedia_session_rfc5168_cmd_e
-{
-	tmedia_session_rfc5168_cmd_picture_fast_update,
-}
-tmedia_session_rfc5168_cmd_t;
 
 /** Base objct used for all media sessions */
 typedef struct tmedia_session_s
