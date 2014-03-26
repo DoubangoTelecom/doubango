@@ -968,7 +968,7 @@ int x0000_Any_2_Any_X_iINFO(va_list *app)
 						xmlNode *pRootElement;
 						xmlXPathContext *pPathCtx;
 						xmlXPathObject *pPathObj;
-						static const xmlChar* __xpath_expr = "/media_control/vc_primitive/to_encoder/picture_fast_update";
+						static const xmlChar* __xpath_expr = (const xmlChar*)"/media_control/vc_primitive/to_encoder/picture_fast_update";
 						
 						if (!(pDoc = xmlParseDoc(content_ptr))) {
 							TSK_DEBUG_ERROR("Failed to parse XML content [%s]", content_ptr);
