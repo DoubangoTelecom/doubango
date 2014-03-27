@@ -158,13 +158,16 @@ static int tdav_codec_h264_common_level_from_size(unsigned width, unsigned heigh
 {
 	tsk_size_t i;
 	unsigned maxFS = (((width + 15) >> 4) * ((height + 15) >> 4));
-	for (i = 0; i < sizeof(tdav_codec_h264_common_level_sizes)/sizeof(tdav_codec_h264_common_level_sizes[0]); ++i){
-		if (tdav_codec_h264_common_level_sizes[i].maxFS >= maxFS){
+	static const tsk_size_t __tdav_codec_h264_common_level_sizes_count = sizeof(tdav_codec_h264_common_level_sizes)/sizeof(tdav_codec_h264_common_level_sizes[0]);
+	for (i = 0; i < __tdav_codec_h264_common_level_sizes_count; ++i){
+		if (/*tdav_codec_h264_common_level_sizes[i].maxFS*/ ((tdav_codec_h264_common_level_sizes[i].width * tdav_codec_h264_common_level_sizes[i].height) >> 8) >= maxFS){
 			*level = tdav_codec_h264_common_level_sizes[i].level;
 			return 0;
 		}
 	}
-	return -1;
+	TSK_DEBUG_WARN("Failed to find default level for size=(%ux%u)", width, height);
+	*level = tdav_codec_h264_common_level_sizes[__tdav_codec_h264_common_level_sizes_count - 1].level;
+	return 0;
 }
 
 
