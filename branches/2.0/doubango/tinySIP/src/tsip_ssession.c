@@ -117,7 +117,7 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 {
 	tsip_ssession_param_type_t sscurr;
 	tsip_msession_param_type_t mscurr;
-	tmedia_session_mgr_t* mgr;
+	tmedia_session_mgr_t* mgr = tsk_null;
 
 	int ret = 0;
 
@@ -125,8 +125,6 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-
-	mgr = tsip_session_get_mediamgr(self); 
 
 	while((sscurr = va_arg(*app, tsip_ssession_param_type_t)) != sstype_null){
 		switch(sscurr){
@@ -271,6 +269,9 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 					//=========
 					//	Media
 					//=========
+                    if (!mgr) {
+                        mgr = tsip_session_get_mediamgr(self);
+                    }
 					while((mscurr = va_arg(*app, tsip_msession_param_type_t)) != mstype_null){
 						switch(mscurr){
 							case mstype_set_profile:

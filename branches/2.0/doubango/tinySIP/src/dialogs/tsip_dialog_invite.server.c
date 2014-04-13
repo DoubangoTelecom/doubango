@@ -204,7 +204,7 @@ static tsk_bool_t _fsm_cond_prack_match(tsip_dialog_invite_t* self, tsip_message
 static tsk_bool_t _fsm_cond_negociates_preconditions(tsip_dialog_invite_t* self, tsip_message_t* rPRACK)
 {
 	//tsip_message_supported(self->last_iInvite, "precondition") || tsip_message_required(self->last_iInvite, "precondition")
-	if(tsip_message_required(self->last_iInvite, "precondition") || (self->msession_mgr && self->msession_mgr->qos.type == tmedia_qos_strength_mandatory)){
+	if(tsip_message_required(self->last_iInvite, "precondition") || (self->msession_mgr && self->msession_mgr->qos.strength == tmedia_qos_strength_mandatory)){
 		return tsk_true;
 	}
 	return tsk_false;
@@ -218,6 +218,13 @@ static tsk_bool_t _fsm_cond_cannotresume(tsip_dialog_invite_t* self, tsip_messag
 		return tsk_false;
 	}
 }
+
+static tsk_bool_t _fsm_cond_initial_iack_pending(tsip_dialog_invite_t* self, tsip_message_t* rACK)
+{
+    return self->is_initial_iack_pending;
+}
+
+
 
 /* Init FSM */
 int tsip_dialog_invite_server_init(tsip_dialog_invite_t *self)
@@ -265,6 +272,12 @@ int tsip_dialog_invite_server_init(tsip_dialog_invite_t *self)
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Ringing, _fsm_action_reject, _fsm_state_Terminated, s0000_Ringing_2_Terminated_X_Reject, "s0000_Ringing_2_Terminated_X_Reject"),
 		// Ringing ->(iCANCEL) -> Terminated
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Ringing, _fsm_action_iCANCEL, _fsm_state_Terminated, s0000_Ringing_2_Terminated_X_iCANCEL, "s0000_Ringing_2_Terminated_X_iCANCEL"),
+                    
+        /*=======================
+        * === FRESH CONNECTED ===
+        */
+        // Fresh Connected [ACK is pending] ->(iCANCEL) -> Terminated
+        TSK_FSM_ADD(_fsm_state_Connected, _fsm_action_iCANCEL, _fsm_cond_initial_iack_pending, _fsm_state_Terminated, s0000_Ringing_2_Terminated_X_iCANCEL, "s0000_FreshConnected_2_Terminated_X_iCANCEL"),
 
 		/*=======================
 		* === ANY === 
@@ -617,6 +630,9 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 
 	/* send 2xx OK */
 	ret = send_RESPONSE(self, self->last_iInvite, 200, "OK", tsk_true);
+    
+    /* say we're waiting for the incoming ACK */
+    self->is_initial_iack_pending = tsk_true;
 
 	/* do not start the session until we get the ACK message
 	* http://code.google.com/p/doubango/issues/detail?id=157

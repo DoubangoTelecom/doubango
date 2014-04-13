@@ -118,14 +118,14 @@ tsip_dialog_t* tsip_dialog_layer_find_by_callid(tsip_dialog_layer_t *self, const
 	else{
 		tsip_dialog_t *dialog = tsk_null;
 		tsk_list_item_t *item;
-		tsk_safeobj_lock(self);
+		//--tsk_safeobj_lock(self);
 		tsk_list_foreach(item, self->dialogs){
 			if(tsk_striequals(TSIP_DIALOG(item->data)->callid, callid)){
 				dialog = tsk_object_ref(item->data);
 				break;
 			}
 		}
-		tsk_safeobj_unlock(self);
+		//--tsk_safeobj_unlock(self);
 		return dialog;
 	}
 }
@@ -302,32 +302,38 @@ done:
 	return -1;
 }
 
+static void* TSK_STDCALL _tsip_dialog_signal_transport_error_async(void* dialog)
+{
+    tsip_dialog_signal_transport_error(TSIP_DIALOG(dialog));
+    return tsk_null;
+}
+
 int tsip_dialog_layer_signal_stack_disconnected(tsip_dialog_layer_t *self)
 {
 	tsk_list_item_t *item;
-	int dialogs_count;
+    // use copy  for lock-free code and faster code. also fix issue 172 (https://code.google.com/p/idoubs/issues/detail?id=172)
+    tsip_dialogs_L_t *dialogs_copy;
+    tsip_dialog_t *dialog;
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+    
+    if (!(dialogs_copy = tsk_list_create())) {
+        TSK_DEBUG_ERROR("Failed to create list");
+		return -1;
+    }
 
 	tsk_safeobj_lock(self);
-	dialogs_count = tsk_list_count(self->dialogs, tsk_null, tsk_null);
-again:
-	tsk_list_foreach(item, self->dialogs){
-		if(item->data){
-			// if "tsip_dialog_signal_transport_error()" removes the dialog, then
-			// "self->dialogs" will became unsafe while looping
-			tsip_dialog_signal_transport_error(TSIP_DIALOG(item->data));
-			if(--dialogs_count <= 0){ // guard against endless loops
-				break;
-			}
-			goto again;
-		}
-	}
-
-	tsk_safeobj_unlock(self);
-
+    tsk_list_pushback_list(dialogs_copy, self->dialogs);
+    tsk_safeobj_unlock(self);
+    
+    tsk_list_foreach(item, dialogs_copy){
+        if((dialog = TSIP_DIALOG(item->data))){
+            tsip_dialog_signal_transport_error(dialog);
+        }
+    }
+    TSK_OBJECT_SAFE_FREE(dialogs_copy);
 	return 0;
 }
 
@@ -340,8 +346,10 @@ int tsip_dialog_layer_signal_peer_disconnected(tsip_dialog_layer_t *self, const 
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+    
+    //!\ must not lock the entire layer
 
-	tsk_safeobj_lock(self);
+	// tsk_safeobj_lock(self);
 
 	tsk_list_lock(peer->dialogs_cids);
 	tsk_list_foreach(item, peer->dialogs_cids){
@@ -354,10 +362,9 @@ int tsip_dialog_layer_signal_peer_disconnected(tsip_dialog_layer_t *self, const 
 			TSK_DEBUG_WARN("Stream peer holds call-id='%s' but the dialog layer doesn't know it", TSK_STRING_STR(item->data));
 		}
 	}
-
 	tsk_list_unlock(peer->dialogs_cids);
 
-	tsk_safeobj_unlock(self);
+	// tsk_safeobj_unlock(self);
 
 	return 0;
 }

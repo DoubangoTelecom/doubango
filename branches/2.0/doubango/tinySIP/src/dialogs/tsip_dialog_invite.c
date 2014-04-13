@@ -443,6 +443,11 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+    
+    if (self->is_cancelling) {
+        TSK_DEBUG_INFO("Cancelling the INVITE...ignore the incoming SDP");
+        return 0;
+    }
 
 	/* Parse SDP content */
 	if(TSIP_MESSAGE_HAS_CONTENT(message)){
@@ -582,6 +587,9 @@ int x0000_Connected_2_Connected_X_iACK(va_list *app)
 	int ret;
 
 	// Nothing to do (in future will be used to ensure the session)
+    
+    /* No longer waiting for the initial ACK */
+    self->is_initial_iack_pending = tsk_false;
 	
 	/* Process remote offer */
 	if((ret = tsip_dialog_invite_process_ro(self, rACK))){

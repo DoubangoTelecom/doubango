@@ -148,8 +148,17 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			{
 				tsip_transport_stream_peer_t* peer;
 				TSK_DEBUG_INFO("Stream Peer closed - %d", e->local_fd);
-				if(transport->connectedFD == e->local_fd){
-					TSK_DEBUG_INFO("SIP socket closed");
+                // signal "peer disconnected" before "stack disconnected"
+                if((peer = tsip_transport_pop_stream_peer_by_local_fd(transport, e->local_fd))){
+					tsip_dialog_layer_signal_peer_disconnected(TSIP_STACK(transport->stack)->layer_dialog, peer);
+					TSK_OBJECT_SAFE_FREE(peer);
+				}
+                else {
+                    TSK_DEBUG_INFO("Closed peer with fd=%d not registered yet", e->local_fd);
+                }
+                // connectedFD== master's fd for servers
+				if(transport->connectedFD == e->local_fd || transport->connectedFD == TNET_INVALID_FD){
+					TSK_DEBUG_INFO("SIP 'connectedFD' (%d) closed", transport->connectedFD);
 					if(transport->stack){
 						tsip_event_t* e;
 						// signal to all dialogs that transport error raised
@@ -159,10 +168,7 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 							TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(transport->stack), e);
 						}
 					}
-				}
-				if((peer = tsip_transport_pop_stream_peer_by_local_fd(transport, e->local_fd))){
-					tsip_dialog_layer_signal_peer_disconnected(TSIP_STACK(transport->stack)->layer_dialog, peer);
-					TSK_OBJECT_SAFE_FREE(peer);
+                    transport->connectedFD = TNET_INVALID_FD;
 				}
 				return 0;
 			}
@@ -1261,7 +1267,6 @@ int tsip_transport_layer_start(tsip_transport_layer_t* self)
 			
 			/* connect() */
 			tsk_list_foreach(item, self->transports){
-				tnet_fd_t fd = TNET_INVALID_FD;
 				transport = item->data;
 				
 				// set callback
@@ -1284,25 +1289,25 @@ int tsip_transport_layer_start(tsip_transport_layer_t* self)
 					if(!TSIP_STACK_MODE_IS_SERVER(transport->stack)){
 						// Between "tsip_transport_connectto_2()" and "tsip_transport_add_stream_peer_2()" the net callback could be called and
 						// off cource peer will not be found in the list. This is why the list is locked.
-						tsk_list_lock(transport->stream_peers);
-						if((fd = tsip_transport_connectto_2(transport, self->stack->network.proxy_cscf[transport_idx], self->stack->network.proxy_cscf_port[transport_idx])) == TNET_INVALID_FD){
+                        tsip_transport_stream_peers_lock(transport);
+						if((transport->connectedFD = tsip_transport_connectto_2(transport, self->stack->network.proxy_cscf[transport_idx], self->stack->network.proxy_cscf_port[transport_idx])) == TNET_INVALID_FD){
 							TSK_DEBUG_ERROR("Failed to connect the SIP transport");
-							tsk_list_unlock(transport->stream_peers);
+							tsip_transport_stream_peers_unlock(transport);
 							return -3;
 						}
-                        TSK_DEBUG_INFO("SIP transport fd=%d", fd);
+                        TSK_DEBUG_INFO("SIP transport fd=%d", transport->connectedFD);
 						// store peer
-						tsip_transport_add_stream_peer_2(transport, fd, transport->type, tsk_false, self->stack->network.proxy_cscf[transport_idx], self->stack->network.proxy_cscf_port[transport_idx]);
-						tsk_list_unlock(transport->stream_peers);
+						tsip_transport_add_stream_peer_2(transport, transport->connectedFD, transport->type, tsk_false, self->stack->network.proxy_cscf[transport_idx], self->stack->network.proxy_cscf_port[transport_idx]);
+						tsip_transport_stream_peers_unlock(transport);
 						// give the socket chance to connect
-						if((ret = tnet_sockfd_waitUntilWritable(fd, TSIP_CONNECT_TIMEOUT)) || (ret = tnet_sockfd_waitUntilReadable(fd, TSIP_CONNECT_TIMEOUT))){
+						if((ret = tnet_sockfd_waitUntilWritable(transport->connectedFD, TSIP_CONNECT_TIMEOUT)) || (ret = tnet_sockfd_waitUntilReadable(transport->connectedFD, TSIP_CONNECT_TIMEOUT))){
 							TSK_DEBUG_INFO("%d milliseconds elapsed and the socket is still not connected.", TSIP_CONNECT_TIMEOUT);
 							// dot not exit, store the outgoing data until connection succeed
 						}
 					}
-					transport->connectedFD = fd;
 				}
 				
+                // set connectedFD=master for servers
 				if(transport->connectedFD == TNET_INVALID_FD){
 					transport->connectedFD = tnet_transport_get_master_fd(transport->net_transport);
 				}
