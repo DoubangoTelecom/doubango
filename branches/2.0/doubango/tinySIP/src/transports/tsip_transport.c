@@ -120,7 +120,7 @@ tsip_transport_t* tsip_transport_create(tsip_stack_t* stack, const char* host, t
 	return transport;
 }
 
-/* add Via header using the transport config 
+/* add Via header using the transport config
 must be called after update_aor()
 */
 int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip_message_t *msg)
@@ -366,14 +366,26 @@ tsk_size_t tsip_transport_send_raw(const tsip_transport_t* self, const char* dst
 			tnet_fd_t fd;
 			TSK_DEBUG_INFO("Cannot find peer with remote IP/Port=%s/%d, connecting to the destination...", dst_ip, dst_port);
 			// connect to the destination
-			if((fd = tsip_transport_connectto_2(TSIP_TRANSPORT(self), dst_ip, dst_port)) == TNET_INVALID_FD){
+            // stream with the new "fd" will be added later, make sure that no other thread (e.g. network callback) will manipulate the peers
+            tsip_transport_stream_peers_lock(TSIP_TRANSPORT(self));
+			if((fd = tnet_transport_connectto_2(TSIP_TRANSPORT(self)->net_transport, dst_ip, dst_port)) == TNET_INVALID_FD){
 				TSK_DEBUG_ERROR("Failed to connect to %s/%d", dst_ip, dst_port);
+                tsip_transport_stream_peers_unlock(TSIP_TRANSPORT(self));
 				return 0;
 			}
+            // only clients will have connected fd == EVAL. For servers, it will be equal to master's fd
+            // connected fd value will be set to EVAL when "disconnected" event is received
+            if (TSIP_TRANSPORT(self)->connectedFD == TNET_INVALID_FD) {
+                TSIP_TRANSPORT(self)->connectedFD = fd;
+            }
+            
 			if(tsip_transport_add_stream_peer_2(TSIP_TRANSPORT(self), fd, self->type, tsk_false, dst_ip, dst_port) != 0){
 				TSK_DEBUG_ERROR("Failed to add stream peer local fd = %d, remote IP/Port=%s/%d", fd, dst_ip, dst_port);
+                tsip_transport_stream_peers_unlock(TSIP_TRANSPORT(self));
 				return 0;
 			}
+            tsip_transport_stream_peers_unlock(TSIP_TRANSPORT(self));
+            
 			// retrieve the peer
 			if(!(peer = tsip_transport_find_stream_peer_by_local_fd(TSIP_TRANSPORT(self), fd))){
 				TSK_DEBUG_INFO("Cannot find peer with remote IP/Port=%s/%d. Cancel data sending", dst_ip, dst_port);
@@ -632,7 +644,7 @@ int tsip_transport_add_stream_peer_2(tsip_transport_t *self, tnet_fd_t local_fd,
 		return -1;
 	}
 
-	tsk_list_lock(self->stream_peers);
+	tsip_transport_stream_peers_lock(self);
 
 	if(tsip_transport_have_stream_peer_with_local_fd(self, local_fd)){
 		// could happen if the closed socket haven't raise "close event" yet and new own added : Windows only
@@ -665,13 +677,13 @@ int tsip_transport_add_stream_peer_2(tsip_transport_t *self, tnet_fd_t local_fd,
 	peer->remote_port = remote_port;
 	memcpy(peer->remote_ip, remote_ip, sizeof(remote_ip));
 	
-	tsk_list_lock(self->stream_peers);
+	tsip_transport_stream_peers_lock(self);
 	peer->time_latest_activity = tsk_time_now();
 	peer->time_added = peer->time_latest_activity;
 	tsk_list_push_back_data(self->stream_peers, (void**)&peer);
 	++self->stream_peers_count;
 	TSK_DEBUG_INFO("#%d peers in the '%s' transport", self->stream_peers_count, tsip_transport_get_description(self));
-	tsk_list_unlock(self->stream_peers);
+	tsip_transport_stream_peers_unlock(self);
 
 	// Cleanup streams
 	if (self->stream_peers_count > TSIP_TRANSPORT_STREAM_PEERS_COUNT_BEFORE_CHECKING_TIMEOUT && self->stack->network.mode == tsip_stack_mode_webrtc2sip) {
@@ -680,7 +692,7 @@ int tsip_transport_add_stream_peer_2(tsip_transport_t *self, tnet_fd_t local_fd,
 
 bail:
 	TSK_OBJECT_SAFE_FREE(peer);
-	tsk_list_unlock(self->stream_peers);
+	tsip_transport_stream_peers_unlock(self);
 	return ret;
 }
 
@@ -695,14 +707,14 @@ tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_local_fd(tsip_t
 		return tsk_null;
 	}
 
-	tsk_list_lock(self->stream_peers);
+	tsip_transport_stream_peers_lock(self);
 	tsk_list_foreach(item, self->stream_peers){
 		if(((tsip_transport_stream_peer_t*)item->data)->local_fd == local_fd){
 			peer = tsk_object_ref(item->data);
 			break;
 		}
 	}
-	tsk_list_unlock(self->stream_peers);
+	tsip_transport_stream_peers_unlock(self);
 	return peer;
 }
 
@@ -713,14 +725,14 @@ tsip_transport_stream_peer_t* tsip_transport_pop_stream_peer_by_local_fd(tsip_tr
 	if(self){
 		tsip_transport_stream_peer_t* peer = tsk_null;
 		tsk_list_item_t *item;
-		tsk_list_lock(self->stream_peers);
+		tsip_transport_stream_peers_lock(self);
 		if((item = tsk_list_pop_item_by_pred(self->stream_peers, _pred_find_stream_peer_by_local_fd, &local_fd))){
 			peer = tsk_object_ref(item->data);
 			TSK_OBJECT_SAFE_FREE(item);
 			--self->stream_peers_count;
 			TSK_DEBUG_INFO("#%d peers in the '%s' transport", self->stream_peers_count, tsip_transport_get_description(self));
 		}
-		tsk_list_unlock(self->stream_peers);
+		tsip_transport_stream_peers_unlock(self);
 		return peer;
 	}
 	return tsk_null;
@@ -737,14 +749,14 @@ tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_remote_ip(tsip_
 		return tsk_null;
 	}
 
-	tsk_list_lock(self->stream_peers);
+	tsip_transport_stream_peers_lock(self);
 	tsk_list_foreach(item, self->stream_peers){
 		if(((tsip_transport_stream_peer_t*)item->data)->type == type && ((tsip_transport_stream_peer_t*)item->data)->remote_port == remote_port && tsk_striequals(((tsip_transport_stream_peer_t*)item->data)->remote_ip, remote_ip)){
 			peer = tsk_object_ref(item->data);
 			break;
 		}
 	}
-	tsk_list_unlock(self->stream_peers);
+	tsip_transport_stream_peers_unlock(self);
 	return peer;
 }
 
@@ -774,12 +786,12 @@ int tsip_transport_remove_stream_peer_by_local_fd(tsip_transport_t *self, tnet_f
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	tsk_list_lock(self->stream_peers);
+	tsip_transport_stream_peers_lock(self);
 	if (tsk_list_remove_item_by_pred(self->stream_peers, _pred_find_stream_peer_by_local_fd, &local_fd)) {
 		--self->stream_peers_count;
 		TSK_DEBUG_INFO("#%d peers in the '%s' transport", self->stream_peers_count, tsip_transport_get_description(self));
 	}
-	tsk_list_unlock(self->stream_peers);
+	tsip_transport_stream_peers_unlock(self);
 
 	return 0;
 }
@@ -793,14 +805,14 @@ int tsip_transport_remove_callid_from_stream_peers(tsip_transport_t *self, const
 	*removed = tsk_false;
 	if(TNET_SOCKET_TYPE_IS_STREAM(self->type)){
 		tsk_list_item_t *item;
-		tsk_list_lock(self->stream_peers);
+		tsip_transport_stream_peers_lock(self);
 		tsk_list_foreach(item, self->stream_peers){
 			if(tsip_transport_stream_peer_remove_callid((tsip_transport_stream_peer_t*)item->data, callid, removed) == 0 && *removed){
 				TSK_DEBUG_INFO("[Transport] Removed call-id = '%s' from transport with type = %d", callid, self->type);
 				break;
 			}
 		}
-		tsk_list_unlock(self->stream_peers);
+		tsip_transport_stream_peers_unlock(self);
 	}
 	
 	return 0;
@@ -832,7 +844,7 @@ int tsip_transport_stream_peer_add_callid(tsip_transport_stream_peer_t* self, co
 			tsk_string_t* cid = tsk_string_create(callid);
 			if(cid){
 				TSK_DEBUG_INFO("Add call-id = '%s' to peer with local fd = %d", callid, self->local_fd);
-				tsk_list_push_back_data(self->dialogs_cids, &cid);
+				tsk_list_push_back_data(self->dialogs_cids, (void**)&cid);
 				TSK_OBJECT_SAFE_FREE(cid);
 			}
 		}
@@ -870,7 +882,7 @@ int tsip_transport_stream_peers_cleanup(tsip_transport_t *self)
 		tnet_fd_t fd;
 		tsk_bool_t close;
 		uint64_t now = tsk_time_now();
-		tsk_list_lock(self->stream_peers);
+		tsip_transport_stream_peers_lock(self);
 		tsk_list_foreach(item, self->stream_peers) {
 			if ((peer = (item->data))) {
 				close = ((now - TSIP_TRANSPORT_STREAM_PEER_TIMEOUT) > peer->time_latest_activity);
@@ -890,7 +902,7 @@ int tsip_transport_stream_peers_cleanup(tsip_transport_t *self)
 				}
 			}
 		}
-		tsk_list_unlock(self->stream_peers);
+		tsip_transport_stream_peers_unlock(self);
 	}
 	
 	return 0;
@@ -934,6 +946,9 @@ int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const s
 
 		/* Stream buffer */
 		self->stream_peers = tsk_list_create();
+        if (!self->stream_peers) {
+            return -1;
+        }
 	}
 	else{
 		if(TNET_SOCKET_TYPE_IS_DTLS(type)){
@@ -962,7 +977,7 @@ int tsip_transport_deinit(tsip_transport_t* self)
 
 	TSK_OBJECT_SAFE_FREE(self->net_transport);
 	TSK_OBJECT_SAFE_FREE(self->stream_peers);
-
+    
 	self->initialized = 0;
 	return 0;
 }
@@ -1035,13 +1050,18 @@ static tsk_object_t* tsip_transport_stream_peer_ctor(tsk_object_t * self, va_lis
 {
 	tsip_transport_stream_peer_t *peer = self;
 	if(peer){
-		peer->rcv_buff_stream = tsk_buffer_create_null();
-		peer->snd_buff_stream = tsk_buffer_create_null();
-		peer->dialogs_cids = tsk_list_create();
+		if (!(peer->rcv_buff_stream = tsk_buffer_create_null())) {
+            return tsk_null;
+        }
+		if (!(peer->snd_buff_stream = tsk_buffer_create_null())) {
+            return tsk_null;
+        }
+		if (!(peer->dialogs_cids = tsk_list_create())){
+            return tsk_null;
+        }
 	}
 	return self;
 }
-
 static tsk_object_t* tsip_transport_stream_peer_dtor(tsk_object_t * self)
 { 
 	tsip_transport_stream_peer_t *peer = self;
@@ -1059,7 +1079,6 @@ static tsk_object_t* tsip_transport_stream_peer_dtor(tsk_object_t * self)
 	}
 	return self;
 }
-
 static int tsip_transport_stream_peer_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	const tsip_transport_stream_peer_t *peer1 = obj1;
@@ -1069,7 +1088,6 @@ static int tsip_transport_stream_peer_cmp(const tsk_object_t *obj1, const tsk_ob
 	}
 	return -1;
 }
-
 static const tsk_object_def_t tsip_transport_stream_peer_def_s = 
 {
 	sizeof(tsip_transport_stream_peer_t),

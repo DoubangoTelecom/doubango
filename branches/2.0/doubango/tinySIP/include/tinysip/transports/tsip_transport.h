@@ -140,6 +140,8 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
 
 int tsip_transport_add_stream_peer_2(tsip_transport_t *self, tnet_fd_t local_fd, enum tnet_socket_type_e type, tsk_bool_t connected, const char* remote_host, tnet_port_t remote_port);
 #define tsip_transport_add_stream_peer(self, local_fd, type, connected) tsip_transport_add_stream_peer_2((self), (local_fd), (type), (connected), tsk_null, 0)
+#define tsip_transport_stream_peers_lock(self) tsk_list_lock((self)->stream_peers)
+#define tsip_transport_stream_peers_unlock(self) tsk_list_unlock((self)->stream_peers)
 tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_local_fd(tsip_transport_t *self, tnet_fd_t local_fd);
 tsip_transport_stream_peer_t* tsip_transport_pop_stream_peer_by_local_fd(tsip_transport_t *self, tnet_fd_t local_fd);
 tsip_transport_stream_peer_t* tsip_transport_find_stream_peer_by_remote_ip(tsip_transport_t *self, const char* remote_ip, tnet_port_t remote_port, enum tnet_socket_type_e type);

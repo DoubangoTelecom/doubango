@@ -50,6 +50,8 @@ typedef struct tsip_dialog_invite
 	tsk_bool_t refersub;
 	tsk_bool_t use_rtcp;
 	tsk_bool_t use_rtcpmux;
+    tsk_bool_t is_initial_iack_pending; // we're waiting for the initial incoming ACK (for the 200 OK) to ensure the session
+    tsk_bool_t is_cancelling; // whether we're cancelling the outgoing INVITE
 	uint32_t rseq;
 	
 	tsip_timer_t timershutdown;

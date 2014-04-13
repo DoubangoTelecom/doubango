@@ -309,6 +309,8 @@ int c0000_Outgoing_2_Cancelling_X_oCANCEL(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 
+    self->is_cancelling = tsk_true;
+    
 	/* Alert the user */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminating, "Terminating dialog");
 
