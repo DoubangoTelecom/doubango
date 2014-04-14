@@ -207,7 +207,16 @@ static HRESULT ConnectConverters(
 	IMFTopologyNode *pNodeConvColor,
 	IMFTopologyNode *pNodeConvSize
 	);
-
+static HRESULT GetBestFormat(
+	IMFMediaSource *pSource,
+	const GUID *pSubType,
+	UINT32 nWidth,
+	UINT32 nHeight,
+	UINT32 nFps,
+	UINT32 *pnWidth,
+	UINT32 *pnHeight,
+	UINT32 *pnFps
+	);
 
 static HWND GetConsoleHwnd(void);
 

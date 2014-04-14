@@ -260,6 +260,29 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 		// Check whether video processor (http://msdn.microsoft.com/en-us/library/windows/desktop/hh162913(v=vs.85).aspx) is supported
 		CHECK_HR(hr = MFUtils::IsVideoProcessorSupported(&bVideoProcessorIsSupported));
 
+		// Must not be set because not supported by Frame Rate Converter DSP (http://msdn.microsoft.com/en-us/library/windows/desktop/ff819100(v=vs.85).aspx).aspx) because of color (neither I420 nor NV12)
+		// Video Processor (http://msdn.microsoft.com/en-us/library/windows/desktop/hh162913(v=vs.85).aspx) supports both NV12 and I420
+		if(!bVideoProcessorIsSupported) {
+			UINT32 nWidth, nHeight, nFps;
+			hr = MFUtils::GetBestFormat(
+				pSelf->pSource,
+				&MFVideoFormat_I420,
+				TMEDIA_PRODUCER(pSelf)->video.width,
+				TMEDIA_PRODUCER(pSelf)->video.height,
+				TMEDIA_PRODUCER(pSelf)->video.fps,
+				&nWidth,
+				&nHeight,
+				&nFps
+			);
+			if (SUCCEEDED(hr))
+			{
+				TSK_DEBUG_INFO("Video processor not supported...using source fps=%u, width=%u, height=%u", nFps, nWidth, nHeight);
+				TMEDIA_PRODUCER(pSelf)->video.width = nWidth;
+				TMEDIA_PRODUCER(pSelf)->video.height = nHeight;
+				TMEDIA_PRODUCER(pSelf)->video.fps = nFps;
+			}
+		}
+
 		// If H.264 is negotiated for this session then, try to find hardware encoder
 		// If no HW encoder is found will fallback to SW implementation from x264
 #if PLUGIN_MF_PV_BUNDLE_CODEC
@@ -326,15 +349,9 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 		CHECK_HR(hr = MFCreateMediaType(&pSelf->pGrabberInputType));
 		CHECK_HR(hr = pSelf->pGrabberInputType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video));
 		CHECK_HR(hr = pSelf->pGrabberInputType->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive));
+
 		CHECK_HR(hr = MFSetAttributeSize(pSelf->pGrabberInputType, MF_MT_FRAME_SIZE, TMEDIA_PRODUCER(pSelf)->video.width, TMEDIA_PRODUCER(pSelf)->video.height));
-		// Must not be set because not supported by Frame Rate Converter DSP (http://msdn.microsoft.com/en-us/library/windows/desktop/ff819100(v=vs.85).aspx).aspx) because of color (neither I420 nor NV12)
-		// Video Processor (http://msdn.microsoft.com/en-us/library/windows/desktop/hh162913(v=vs.85).aspx) supports both NV12 and I420
-		if(bVideoProcessorIsSupported) {
-			CHECK_HR(hr = MFSetAttributeRatio(pSelf->pGrabberInputType, MF_MT_FRAME_RATE, TMEDIA_PRODUCER(pSelf)->video.fps, 1));
-		}
-		else {
-			TSK_DEBUG_INFO("Video processor not supported...using source fps");
-		}
+		CHECK_HR(hr = MFSetAttributeRatio(pSelf->pGrabberInputType, MF_MT_FRAME_RATE, TMEDIA_PRODUCER(pSelf)->video.fps, 1));
 		
 		CHECK_HR(hr = MFSetAttributeRatio(pSelf->pGrabberInputType, MF_MT_PIXEL_ASPECT_RATIO, 1, 1));
 		CHECK_HR(hr = pSelf->pGrabberInputType->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, pSelf->pEncoder ? FALSE : TRUE));
