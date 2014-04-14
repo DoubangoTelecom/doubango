@@ -150,8 +150,11 @@ tnet_socket_t* tnet_socket_create_2(const char* host, tnet_port_t port_, tnet_so
 			if(ptr->ai_family != AF_INET6 && ptr->ai_family != AF_INET){
 				continue;
 			}
-			/* To avoid "Address already in use" error */
-			{
+			/* To avoid "Address already in use" error
+			* Check issue 368 (https://code.google.com/p/doubango/issues/detail?id=368) to understand why it's not used for UDP/DTLS.
+			*/
+			//
+			if (TNET_SOCKET_TYPE_IS_STREAM(sock->type)) {
 				#if defined(SOLARIS)
 							static const char yes = '1';
 				#else
