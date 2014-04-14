@@ -1043,6 +1043,11 @@ HRESULT MFUtils::CreateTopology(
 						}
 					}
 				}
+				else
+				{
+					// MediaType supported
+					CHECK_HR(hr = pHandler->SetCurrentMediaType(pIputTypeMain));
+				}
 
 				if(pVideoProcessor && !pNodeVideoProcessor)
 				{
@@ -1827,6 +1832,110 @@ HRESULT MFUtils::ConnectConverters(
 
 bail:
 	return hr;
+}
+
+// This function should be called only if VideoProcessor is not supported
+HRESULT MFUtils::GetBestFormat(
+	IMFMediaSource *pSource,
+	const GUID *pSubType,
+	UINT32 nWidth,
+	UINT32 nHeight,
+	UINT32 nFps,
+	UINT32 *pnWidth,
+	UINT32 *pnHeight,
+	UINT32 *pnFps
+	)
+{
+#if 0
+	*pnWidth = 640;
+	*pnHeight = 480;
+	*pnFps = 30;
+	return S_OK;
+#else 
+	 HRESULT hr = S_OK;
+	 IMFPresentationDescriptor *pPD = NULL;
+	 IMFStreamDescriptor *pSD = NULL;
+     IMFMediaTypeHandler *pHandler = NULL;
+	 IMFMediaType *pMediaType = NULL;
+     DWORD cStreams = 0, cMediaTypesCount;
+	 GUID majorType, subType;
+	 BOOL bFound = FALSE, fSelected;
+	 UINT32 _nWidth, _nHeight, numeratorFps, denominatorFps, _nFps, _nScore, _nBestScore;
+	 static const UINT32 kSubTypeMismatchPad = _UI32_MAX >> 4;
+	 static const UINT32 kFpsMismatchPad = _UI32_MAX >> 2;
+ 
+	 _nBestScore = _UI32_MAX;
+	 CHECK_HR(hr = pSource->CreatePresentationDescriptor(&pPD));
+     CHECK_HR(hr = pPD->GetStreamDescriptorCount(&cStreams));  
+
+	 for (DWORD i = 0; i < cStreams; i++)
+     {
+            fSelected = FALSE;
+ 
+            CHECK_HR(hr = pPD->GetStreamDescriptorByIndex(i, &fSelected, &pSD));
+ 
+			if (fSelected)
+			{
+				CHECK_HR(hr = pSD->GetMediaTypeHandler(&pHandler));
+ 
+				CHECK_HR(hr = pHandler->GetMajorType(&majorType));
+
+				if(majorType == MFMediaType_Video)
+				{
+					CHECK_HR(hr = pHandler->GetMediaTypeCount(&cMediaTypesCount));
+ 
+					for(DWORD cMediaTypesIndex = 0; cMediaTypesIndex < cMediaTypesCount; ++cMediaTypesIndex)
+					{
+						CHECK_HR(hr = pHandler->GetMediaTypeByIndex(cMediaTypesIndex, &pMediaType));
+ 
+						CHECK_HR(hr = pMediaType->GetGUID(MF_MT_SUBTYPE, &subType));
+						 // if(subType == *pSubType)
+						 {
+							CHECK_HR(hr = MFGetAttributeSize(pMediaType, MF_MT_FRAME_SIZE, &_nWidth, &_nHeight));
+							CHECK_HR(hr = MFGetAttributeRatio(pMediaType, MF_MT_FRAME_RATE, &numeratorFps, &denominatorFps));
+							_nFps = (numeratorFps / denominatorFps);
+							
+							_nScore = (subType == *pSubType) ? 0 : kSubTypeMismatchPad; // Not a must but important: If(!VideoProcess) then CLSID_CColorConvertDMO
+							_nScore += abs((int)(_nWidth - nWidth)); // Not a must: If(!VideoProcess) then CLSID_CResizerDMO
+							_nScore += abs((int)(_nHeight - nHeight)); // Not a must: If(!VideoProcess) then CLSID_CResizerDMO
+							_nScore +=  (_nFps == nFps) ? 0 : kFpsMismatchPad; // Fps is a must because without video processor no alternative exist (CLSID_CFrameRateConvertDmo doesn't support I420)
+
+							if (_nScore <= _nBestScore || !bFound)
+							{
+								*pnWidth = _nWidth;
+								*pnHeight = _nHeight;
+								*pnFps = _nFps;
+								bFound = TRUE;
+								_nBestScore = _nScore;
+							}
+						 }                       
+ 
+						SafeRelease(&pMediaType);
+					}
+				}
+			}
+ 
+			SafeRelease(&pHandler);
+			SafeRelease(&pSD);
+	 }
+
+bail:
+	 SafeRelease(&pPD);
+	 SafeRelease(&pSD);
+	 SafeRelease(&pHandler);
+	 SafeRelease(&pMediaType);
+
+	 if (_nBestScore > kSubTypeMismatchPad) {
+		 // FIXME: Use other supported subtypes (NV12, I420, RGB24, RGB32, ...)
+		*pnWidth = 640;
+		*pnHeight = 480;
+		*pnFps = 30;
+		TSK_DEBUG_WARN("Failed to math subtype...using VGA@30fps");
+	 }
+
+	 return SUCCEEDED(hr) ? (bFound ? S_OK : E_NOT_SET): hr;
+#endif
+
 }
 
 HWND MFUtils::GetConsoleHwnd(void)
