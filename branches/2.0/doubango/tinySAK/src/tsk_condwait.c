@@ -212,7 +212,7 @@ int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
 		tsk_mutex_lock(condwait->mutex);
 		if((ret = pthread_cond_timedwait(condwait->pcond, (pthread_mutex_t*)condwait->mutex, &ts))){
 			if(ret == TIMED_OUT){
-				TSK_DEBUG_INFO("pthread_cond_timedwait function timedout: %d", ret);
+				/* TSK_DEBUG_INFO("pthread_cond_timedwait function timedout: %d", ret); */
 			}
 			else{
 				TSK_DEBUG_ERROR("pthread_cond_timedwait function failed: %d", ret);
