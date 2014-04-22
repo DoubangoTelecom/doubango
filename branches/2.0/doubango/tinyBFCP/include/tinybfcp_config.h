@@ -73,4 +73,8 @@
 #include <config.h>
 #endif
 
+#if !defined(TBFCP_VERSION)
+#	define TBFCP_VERSION 1
+#endif /* TBFCP_VERSION */
+
 #endif // TINYBFCP_CONFIG_H

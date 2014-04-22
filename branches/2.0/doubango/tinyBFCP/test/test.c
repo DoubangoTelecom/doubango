@@ -21,29 +21,29 @@
 #include <stdlib.h>
 #include <assert.h>
 
-//#include "tsk.h"
-//#include "tnet.h"
+#include "tinynet.h"
+#include "tsk.h"
 
-#include "tinyhttp.h"
+#define kConfId				1927375685
+#define kTransacId			32871
+#define kUserId				18177
+#define kFloorId			10665
+#define kFloorReqId			2
+#define kReqStatus			3 // Granted
+#define kQueuePosition		0
+#define kUserDisplayName	"Mamadou DIOP"
+#define kUserUri			"Mamadou DIOP@TEST.COM"
 
-//#include "thttp.h"
-//#include "tinyHTTP/thttp_message.h"
-//#include "tinyHTTP/auth/thttp_auth.h"
+#define kNullOctetStringPtr 0
+
+#define BAIL_IF_ERR(expr) { int _ret_; if ((_ret_) = (expr)) { TSK_DEBUG_ERROR("Error %d", (_ret_)); goto bail; } }
 
 #define LOOP						0
 
 #define RUN_TEST_ALL				0
-#define RUN_TEST_AUTH				0
-#define RUN_TEST_STACK				0
-#define RUN_TEST_URL				0
-#define RUN_TEST_MSGS				0
-#define RUN_TEST_TRANSPORT			1
+#define RUN_TEST_PARSER				1
 
-#include "test_auth.h"
-#include "test_stack.h"
-#include "test_url.h"
-#include "test_messages.h"
-#include "test_transport.h"
+#include "test_parser.h"
 
 
 #ifdef _WIN32_WCE
@@ -56,34 +56,17 @@ int main()
 
     do {
         /* Print copyright information */
-        printf("Doubango Project\nCopyright (C) 2009-2013 Mamadou Diop \n\n");
+        printf("Doubango Project\nCopyright (C) 2014 Mamadou Diop \n\n");
 
-#if RUN_TEST_AUTH || RUN_TEST_ALL
-        test_ws_auth();
-        test_basic_auth();
-        test_digest_auth();
+#if RUN_TEST_PARSER || RUN_TEST_ALL
+        test_parser();
 #endif
-
-#if RUN_TEST_STACK || RUN_TEST_ALL
-        test_stack();
-#endif
-
-#if RUN_TEST_URL || RUN_TEST_ALL
-        test_url();
-#endif
-
-#if RUN_TEST_MSGS || RUN_TEST_ALL
-        test_messages();
-#endif
-
-#if RUN_TEST_TRANSPORT || RUN_TEST_ALL
-        test_transport();
-#endif
-
     }
     while(LOOP);
 
     tnet_cleanup();
+
+    getchar();
 
     return 0;
 }
