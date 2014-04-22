@@ -23,6 +23,13 @@
 
 TBFCP_BEGIN_DECLS
 
+#if !defined(kBfcpFieldMYes)
+#	define kBfcpFieldMYes 1
+#endif /* kBfcpFieldMYes */
+#if !defined(kBfcpFieldMNo)
+#	define kBfcpFieldMNo 0
+#endif /* kBfcpFieldMNo */
+
 // RFC4582 - 5.1.  COMMON-HEADER Format
 typedef enum tbfcp_primitive_e {
     tbfcp_primitive_FloorRequest		= 1,  // | P -> S           |
@@ -38,6 +45,7 @@ typedef enum tbfcp_primitive_e {
     tbfcp_primitive_Hello				= 11, // | P -> S ; Ch -> S |
     tbfcp_primitive_HelloAck			= 12, // | P <- S ; Ch <- S |
     tbfcp_primitive_Error				= 13, // | P <- S ; Ch <- S
+    //!\ Update tbfcp_pkt_create_HelloAck_2() if an entry is added or remove
 } tbfcp_primitive_t;
 
 // RFC4582 - 5.2.  Attribute Format
@@ -60,6 +68,7 @@ typedef enum tbfcp_attribute_type_e {
     tbfcp_attribute_type_REQUESTED_BY_INFORMATION  = 16,		// | Grouped       |
     tbfcp_attribute_type_FLOOR_REQUEST_STATUS = 17,			// | Grouped       |
     tbfcp_attribute_type_OVERALL_REQUEST_STATUS = 18,			// | Grouped
+    //!\ Update tbfcp_pkt_create_HelloAck_2() if an entry is added or remove
 } tbfcp_attribute_type_t;
 
 // RFC4582 - 5.2.  Attribute Format
@@ -71,19 +80,38 @@ typedef enum tbfcp_attribute_format_e {
     tbfcp_attribute_format_Grouped,
 } tbfcp_attribute_format_t;
 
+// RFC4582 - 5.2.4.  PRIORITY
+typedef enum tbfcp_prio_e {
+    tbfcp_prio_Lowest	= 0,
+    tbfcp_prio_Low		= 1,
+    tbfcp_prio_Normal	= 2,
+    tbfcp_prio_High		= 3,
+    tbfcp_prio_Highest	= 4
+} tbfcp_prio_t;
+
+// RFC4582 - 5.2.5.  REQUEST-STATUS
+typedef enum tbfcp_reqstatus_e {
+    tbfcp_reqstatus_Pending		= 1,
+    tbfcp_reqstatus_Accepte		= 2,
+    tbfcp_reqstatus_Granted		= 3,
+    tbfcp_reqstatus_Denied		= 4,
+    tbfcp_reqstatus_Cancelled	= 5,
+    tbfcp_reqstatus_Released	= 6,
+    tbfcp_reqstatus_Revoked		= 7
+} tbfcp_reqstatus_t;
+
 // RFC4582 - 5.2.6.  ERROR-CODE
 typedef enum tbfcp_err_code_e {
-	tbfcp_err_code_Conference_does_not_Exist = 1,
-	tbfcp_err_code_User_does_not_Exist = 2,
-	tbfcp_err_code_Unknown_Primitive = 3,
-	tbfcp_err_code_Unknown_Mandatory_Attribute = 4,
-	tbfcp_err_code_Unauthorized_Operation = 5,
-	tbfcp_err_code_Invalid_Floor_ID = 6,
-	tbfcp_err_code_Floor_Request_ID_Does_Not_Exist = 7,
-	tbfcp_err_code_You_have_Already_Reached_the_Maximum_Number_of_OngoingFloor_Requests_for_this_Floor = 9,
-	tbfcp_err_code_Use_TLS = 10,
+    tbfcp_err_code_Conference_does_not_Exist = 1,
+    tbfcp_err_code_User_does_not_Exist = 2,
+    tbfcp_err_code_Unknown_Primitive = 3,
+    tbfcp_err_code_Unknown_Mandatory_Attribute = 4,
+    tbfcp_err_code_Unauthorized_Operation = 5,
+    tbfcp_err_code_Invalid_Floor_ID = 6,
+    tbfcp_err_code_Floor_Request_ID_Does_Not_Exist = 7,
+    tbfcp_err_code_You_have_Already_Reached_the_Maximum_Number_of_OngoingFloor_Requests_for_this_Floor = 9,
+    tbfcp_err_code_Use_TLS = 10,
 } tbfcp_err_code_t;
-
 
 TBFCP_END_DECLS
 
