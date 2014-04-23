@@ -30,6 +30,54 @@ TBFCP_BEGIN_DECLS
 #	define kBfcpFieldMNo 0
 #endif /* kBfcpFieldMNo */
 
+// draft-ietf-bfcpbis-rfc4582bis-11 - 8.3.3.  Timer Values
+#if !defined(kBfcpTimerT1)
+#	define kBfcpTimerT1 500
+#endif /* kBfcpTimerT1 */
+#if !defined(kBfcpTimerT2)
+#	define kBfcpTimerT2 10000
+#endif /* kBfcpTimerT1 */
+#if !defined(kBfcpTimerT1MaxTries)
+#	define kBfcpTimerT1MaxTries 4 // draft says #3 but we use #4
+#endif /* kBfcpTimerT1MaxTries */
+
+#if !defined(kBfcpTcpTimerReconnect)
+#	define kBfcpTcpTimerReconnect	5000 // Try to reconnect the TCP/TLS socket every 5seconds if unexpectedly disconnected
+#endif /* kBfcpTcpTimerReconnect */
+
+#if !defined(kBfcpTimerKeepAlive)
+#	define kBfcpTimerKeepAlive	30000 // Send Hello message every 30 seconds
+#endif /* kBfcpTimerKeepAlive */
+
+
+// RFC4582 - 11.1.  Registration of the 'TCP/BFCP' and 'TCP/TLS/BFCP' SDP 'proto' Values
+#if !defined (kBfcpProfileTLS)
+#	define kBfcpProfileTLS	"TCP/TLS/BFCP"
+#endif /* kBfcpProfileTLS */
+#if !defined (kBfcpProfileTCP)
+#	define kBfcpProfileTCP	"TCP/BFCP"
+#endif /* kBfcpProfileTCP */
+// draft-ietf-bfcpbis-rfc4582bis-11 - 5.4.  Registration of SDP 'proto' Values (11.1)
+#if !defined (kBfcpProfileUDP)
+#	define kBfcpProfileUDP	"UDP/BFCP"
+#endif /* kBfcpProfileUDP */
+#if !defined (kBfcpProfileDTLS)
+#	define kBfcpProfileDTLS	"UDP/TLS/BFCP"
+#endif /* kBfcpProfileDTLS */
+
+#if !defined(kBfcpTransportDefault)
+#	define kBfcpTransportDefault tnet_socket_type_tcp_ipv4
+#endif /* kBfcpTransportDefault */
+
+#if !defined(kBfcpTransportFriendlyName)
+#	define kBfcpTransportFriendlyName "BFCP Session"
+#endif /* kBfcpTransportFriendlyName */
+
+#if !defined(kBfcpBuffMinPad)
+#	define kBfcpBuffMinPad	40 // to make the buffer kasher
+#endif /* kBfcpBuffMinPad */
+
+
 // RFC4582 - 5.1.  COMMON-HEADER Format
 typedef enum tbfcp_primitive_e {
     tbfcp_primitive_FloorRequest		= 1,  // | P -> S           |

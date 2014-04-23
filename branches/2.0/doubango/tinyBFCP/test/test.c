@@ -33,6 +33,10 @@
 #define kQueuePosition		0
 #define kUserDisplayName	"Mamadou DIOP"
 #define kUserUri			"Mamadou DIOP@TEST.COM"
+#define kRemoteIP			"192.168.0.28"
+#define kRemotePort			5060
+#define kLocalIP			"192.168.0.37"
+#define kLocalPort			5060
 
 #define kNullOctetStringPtr 0
 
@@ -41,9 +45,11 @@
 #define LOOP						0
 
 #define RUN_TEST_ALL				0
-#define RUN_TEST_PARSER				1
+#define RUN_TEST_PARSER				0
+#define RUN_TEST_SESSION			1
 
 #include "test_parser.h"
+#include "test_session.h"
 
 
 #ifdef _WIN32_WCE
@@ -60,6 +66,9 @@ int main()
 
 #if RUN_TEST_PARSER || RUN_TEST_ALL
         test_parser();
+#endif
+#if RUN_TEST_SESSION || RUN_TEST_ALL
+        test_session();
 #endif
     }
     while(LOOP);
