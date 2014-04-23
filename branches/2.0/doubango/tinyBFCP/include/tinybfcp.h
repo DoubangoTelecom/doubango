@@ -21,5 +21,6 @@
 
 #include "tinybfcp/tbfcp_pkt.h"
 #include "tinybfcp/tbfcp_attr.h"
+#include "tinybfcp/tbfcp_session.h"
 
 #endif /* TBFCP_TINYBFCP_H */

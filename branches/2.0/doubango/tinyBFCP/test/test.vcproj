@@ -204,6 +204,10 @@
 				RelativePath=".\test_parser.h"
 				>
 			</File>
+			<File
+				RelativePath=".\test_session.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

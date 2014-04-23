@@ -24,8 +24,8 @@
 #define SEND_BUFF(buff_ptr, buff_size) \
 	{ \
         struct sockaddr_storage addr_to; \
-        tnet_socket_t* socket = tnet_socket_create("192.168.0.37", 2020, tnet_socket_type_udp_ipv4); \
-        tnet_sockaddr_init("192.168.0.28", 2020, tnet_socket_type_udp_ipv4, &addr_to); \
+        tnet_socket_t* socket = tnet_socket_create(kLocalIP, kLocalPort, tnet_socket_type_udp_ipv4); \
+        tnet_sockaddr_init(kRemoteIP, kRemotePort, tnet_socket_type_udp_ipv4, &addr_to); \
         tnet_sockfd_sendto(socket->fd, (const struct sockaddr *)&addr_to, (buff_ptr), (buff_size)); \
         TSK_OBJECT_SAFE_FREE(socket); \
     } \

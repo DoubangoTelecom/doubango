@@ -186,6 +186,10 @@
 				RelativePath=".\src\tbfcp_pkt.c"
 				>
 			</File>
+			<File
+				RelativePath=".\src\tbfcp_session.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="include(*.h)"
@@ -198,6 +202,10 @@
 			</File>
 			<File
 				RelativePath=".\include\tinybfcp\tbfcp_pkt.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinybfcp\tbfcp_session.h"
 				>
 			</File>
 			<File
