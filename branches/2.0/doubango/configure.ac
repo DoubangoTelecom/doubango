@@ -194,7 +194,7 @@ if test "$target_os" = "android"; then
 	AC_SUBST(LDFLAGS)
 fi
 
-AC_CHECK_FUNCS([stricmp strnicmp])
+AC_CHECK_FUNCS([stricmp strnicmp strtok_r strtok_s])
 
 AC_TRY_COMPILE([#include <pthread.h>],
     [static int k = PTHREAD_MUTEX_RECURSIVE;],
