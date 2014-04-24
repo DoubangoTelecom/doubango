@@ -1285,7 +1285,7 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 	}
 
 	/* AVPF */
-	if(self->avpf_mode_set == tmedia_mode_optional){
+	if(self->avpf_mode_set == tmedia_mode_optional && self->avpf_mode_neg != tmedia_mode_mandatory){
 		self->avpf_mode_neg = _sdp_str_contains(base->M.ro->proto, "AVPF") ? tmedia_mode_mandatory : tmedia_mode_none;
 	}
 
@@ -1563,7 +1563,7 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 		int32_t i;
 		for(i = 0; (i < SDP_CAPS_COUNT_MAX && self->sdp_caps->remote[i].tag > 0); ++i){
 			if(self->sdp_caps->remote[i].tcap.tag > 0){
-				if(self->sdp_caps->remote[i].tcap.profile == RTP_PROFILE_AVPF){
+				if((self->sdp_caps->remote[i].tcap.profile & RTP_PROFILE_AVPF) == RTP_PROFILE_AVPF){
 					 acfg_idx = i;
 					 break;
 				}
@@ -1572,6 +1572,9 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 	}
 	if(acfg_idx != -1){
 		self->sdp_caps->acfg = self->sdp_caps->remote[acfg_idx];
+        if (self->avpf_mode_set == tmedia_mode_optional && self->avpf_mode_neg != tmedia_mode_mandatory) {
+            self->avpf_mode_neg = ((self->sdp_caps->acfg.tcap.profile & RTP_PROFILE_AVPF) == RTP_PROFILE_AVPF) ? tmedia_mode_mandatory : tmedia_mode_none;
+        }
 	}
 	
 	if(!srtp_sdes_neg_ok && !srtp_dtls_neg_ok && (is_srtp_remote_mandatory || is_srtp_local_mandatory)){
