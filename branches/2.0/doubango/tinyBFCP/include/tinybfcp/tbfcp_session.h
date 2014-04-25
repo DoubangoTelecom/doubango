@@ -25,15 +25,24 @@
 
 TBFCP_BEGIN_DECLS
 
+struct tbfcp_session_s;
+
 TINYBFCP_API int tbfcp_session_create(enum tnet_socket_type_e e_socket_type, const char* pc_local_ip, struct tbfcp_session_s** pp_self);
 TINYBFCP_API int tbfcp_session_create_2(struct tnet_ice_ctx_s* p_ice_ctx, struct tbfcp_session_s** pp_self);
 TINYBFCP_API int tbfcp_session_set_ice_ctx(struct tbfcp_session_s* p_self, struct tnet_ice_ctx_s* p_ice_ctx);
 TINYBFCP_API int tbfcp_session_prepare(struct tbfcp_session_s* p_self);
 TINYBFCP_API int tbfcp_session_start(struct tbfcp_session_s* p_self);
+TINYBFCP_API int tbfcp_session_pause(struct tbfcp_session_s* p_self);
 TINYBFCP_API int tbfcp_session_stop(struct tbfcp_session_s* p_self);
-TINYBFCP_API int tbfcp_session_set_remote(struct tbfcp_session_s* p_self, const char* pc_ip, tnet_port_t u_port);
+TINYBFCP_API int tbfcp_session_set_natt_ctx(struct tbfcp_session_s* p_self, struct tnet_nat_context_s* p_natt_ctx);
+TINYBFCP_API int tbfcp_session_set_remote_address(struct tbfcp_session_s* p_self, const char* pc_ip, tnet_port_t u_port);
+TINYBFCP_API int tbfcp_session_set_remote_role(struct tbfcp_session_s* p_self, enum tbfcp_role_e e_role_remote);
+TINYBFCP_API int tbfcp_session_set_remote_setup(struct tbfcp_session_s* p_self, enum tbfcp_setup_e e_setup_remote);
+TINYBFCP_API int tbfcp_session_set_conf_ids(struct tbfcp_session_s* p_self, uint32_t u_conf_id, uint16_t u_user_id, uint16_t u_floor_id);
 TINYBFCP_API int tbfcp_session_get_profile(const struct tbfcp_session_s* pc_self, const char** ppc_profile);
-TINYBFCP_API int tbfcp_session_get_profile_2(enum tnet_socket_type_e e_socket_type, const char** ppc_profile);
+TINYBFCP_API int tbfcp_session_get_local_role(const struct tbfcp_session_s* pc_self, enum tbfcp_role_e *pe_role_local);
+TINYBFCP_API int tbfcp_session_get_local_setup(const struct tbfcp_session_s* pc_self, enum tbfcp_setup_e *pe_setup_local);
+TINYBFCP_API int tbfcp_session_get_local_address(const struct tbfcp_session_s* pc_self, const char** ppc_ip, tnet_port_t *pu_port);
 TINYBFCP_API int tbfcp_session_send_pkt(struct tbfcp_session_s* p_self, const struct tbfcp_pkt_s* pc_pkt);
 
 TBFCP_END_DECLS
