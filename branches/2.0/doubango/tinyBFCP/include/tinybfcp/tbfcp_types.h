@@ -66,7 +66,7 @@ TBFCP_BEGIN_DECLS
 #endif /* kBfcpProfileDTLS */
 
 #if !defined(kBfcpTransportDefault)
-#	define kBfcpTransportDefault tnet_socket_type_tcp_ipv4
+#	define kBfcpTransportDefault tnet_socket_type_udp_ipv4
 #endif /* kBfcpTransportDefault */
 
 #if !defined(kBfcpTransportFriendlyName)
@@ -77,6 +77,43 @@ TBFCP_BEGIN_DECLS
 #	define kBfcpBuffMinPad	40 // to make the buffer kasher
 #endif /* kBfcpBuffMinPad */
 
+
+// rfc4583 - 4.  Floor Control Server Determination
+#if !defined(kBfcpRoleC)
+#	define kBfcpRoleC "c-only"
+#endif /* kBfcpRoleC */
+#if !defined(kBfcpRoleS)
+#	define kBfcpRoleS "s-only"
+#endif /* kBfcpRoleS */
+#if !defined(kBfcpRoleCS)
+#	define kBfcpRoleCS "c-s"
+#endif /* kBfcpRoleCS */
+#if !defined(kBfcpRoleDefault)
+#	define kBfcpRoleDefault tbfcp_role_c_only // For know the stack works in client mode only
+#endif /* kBfcpRoleDefault */
+typedef enum tbfcp_role_e {
+    tbfcp_role_c_only = (1 << 0),
+    tbfcp_role_s_only = (1 << 1),
+    tbfcp_role_c_s = (tbfcp_role_c_only | tbfcp_role_s_only)
+} tbfcp_role_t;
+
+typedef enum tbfcp_setup_e {
+	tbfcp_setup_active = (1 << 0),
+	tbfcp_setup_passive = (1 << 1),
+	tbfcp_setup_actpass = (tbfcp_setup_active | tbfcp_setup_passive),
+} tbfcp_setup_t;
+#if !defined(kBfcpSetupDefault)
+#	define kBfcpSetupDefault tbfcp_setup_actpass
+#endif /* kBfcpSetupDefault */
+#if !defined(kBfcpSetupActPass)
+#	define kBfcpSetupActPass "actpass"
+#endif /* kBfcpSetupActPass */
+#if !defined(kBfcpSetupActive)
+#	define kBfcpSetupActive "active"
+#endif /* kBfcpSetupActive */
+#if !defined(kBfcpSetupPassive)
+#	define kBfcpSetupPassive "passive"
+#endif /* kBfcpSetupPassive */
 
 // RFC4582 - 5.1.  COMMON-HEADER Format
 typedef enum tbfcp_primitive_e {
