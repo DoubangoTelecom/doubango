@@ -26,6 +26,9 @@
 TBFCP_BEGIN_DECLS
 
 struct tbfcp_session_s;
+enum tbfcp_role_e;
+enum tbfcp_setup_e;
+struct tbfcp_pkt_s;
 
 TINYBFCP_API int tbfcp_session_create(enum tnet_socket_type_e e_socket_type, const char* pc_local_ip, struct tbfcp_session_s** pp_self);
 TINYBFCP_API int tbfcp_session_create_2(struct tnet_ice_ctx_s* p_ice_ctx, struct tbfcp_session_s** pp_self);

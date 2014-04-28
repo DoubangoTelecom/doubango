@@ -1261,6 +1261,52 @@ static int _tdav_session_video_set_callbacks(tmedia_session_t* self)
 	return 0;
 }
 
+static int _tdav_session_video_init(tdav_session_video_t *p_self, tmedia_type_t e_media_type)
+{
+	int ret;
+	tdav_session_av_t *p_base = TDAV_SESSION_AV(p_self);
+	if (!p_self) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	/* init() base */
+	if ((ret = tdav_session_av_init(p_base, e_media_type)) != 0) {
+		TSK_DEBUG_ERROR("tdav_session_av_init(video) failed");
+		return ret;
+	}
+	
+	/* init() self */
+	p_self->jb_enabled = tmedia_defaults_get_videojb_enabled();
+	p_self->zero_artifacts = tmedia_defaults_get_video_zeroartifacts_enabled();
+	TSK_DEBUG_INFO("Video 'zero-artifacts' option = %s", p_self->zero_artifacts  ? "yes" : "no");
+	if (!(p_self->encoder.h_mutex = tsk_mutex_create())) {
+		TSK_DEBUG_ERROR("Failed to create encode mutex");
+		return -4;
+	}
+	if (!(p_self->avpf.packets = tsk_list_create())) {
+		TSK_DEBUG_ERROR("Failed to create list");
+		return -2;
+	}
+	if (p_self->jb_enabled) {
+		if(!(p_self->jb = tdav_video_jb_create())) {
+			TSK_DEBUG_ERROR("Failed to create jitter buffer");
+			return -3;
+		}
+		tdav_video_jb_set_callback(p_self->jb, _tdav_session_video_jb_cb, p_self);
+	}
+
+	if (p_base->producer) {
+		tmedia_producer_set_enc_callback(p_base->producer, tdav_session_video_producer_enc_cb, p_self);
+		tmedia_producer_set_raw_callback(p_base->producer, tdav_session_video_raw_cb, p_self);
+	}
+	p_self->avpf.max = tmedia_defaults_get_avpf_tail_min();
+	p_self->encoder.pkt_loss_level = tdav_session_video_pkt_loss_level_low;
+	p_self->encoder.pkt_loss_prob_bad = 0; // honor first report
+	p_self->encoder.pkt_loss_prob_good = TDAV_SESSION_VIDEO_PKT_LOSS_PROB_GOOD;
+
+	return 0;
+}
 
 
 //=================================================================================================
@@ -1271,43 +1317,9 @@ static tsk_object_t* tdav_session_video_ctor(tsk_object_t * self, va_list * app)
 {
 	tdav_session_video_t *video = self;
 	if(video){
-		int ret;
-		tdav_session_av_t *base = TDAV_SESSION_AV(self);
-
-		/* init() base */
-		if((ret = tdav_session_av_init(base, tmedia_video)) != 0){
-			TSK_DEBUG_ERROR("tdav_session_av_init(video) failed");
+		if (_tdav_session_video_init(video, tmedia_video)) {
 			return tsk_null;
 		}
-		
-		/* init() self */
-		video->jb_enabled = tmedia_defaults_get_videojb_enabled();
-		video->zero_artifacts = tmedia_defaults_get_video_zeroartifacts_enabled();
-		TSK_DEBUG_INFO("Video 'zero-artifacts' option = %s", video->zero_artifacts  ? "yes" : "no");
-		if(!(video->encoder.h_mutex = tsk_mutex_create())){
-			TSK_DEBUG_ERROR("Failed to create encode mutex");
-			return tsk_null;
-		}
-		if(!(video->avpf.packets = tsk_list_create())){
-			TSK_DEBUG_ERROR("Failed to create list");
-			return tsk_null;
-		}
-		if(video->jb_enabled){
-			if(!(video->jb = tdav_video_jb_create())){
-				TSK_DEBUG_ERROR("Failed to create jitter buffer");
-				return tsk_null;
-			}
-			tdav_video_jb_set_callback(video->jb, _tdav_session_video_jb_cb, video);
-		}
-
-		if(base->producer){
-			tmedia_producer_set_enc_callback(base->producer, tdav_session_video_producer_enc_cb, self);
-			tmedia_producer_set_raw_callback(base->producer, tdav_session_video_raw_cb, self);
-		}
-		video->avpf.max = tmedia_defaults_get_avpf_tail_min();
-		video->encoder.pkt_loss_level = tdav_session_video_pkt_loss_level_low;
-		video->encoder.pkt_loss_prob_bad = 0; // honor first report
-		video->encoder.pkt_loss_prob_good = TDAV_SESSION_VIDEO_PKT_LOSS_PROB_GOOD;
 	}
 	return self;
 }
@@ -1386,3 +1398,57 @@ static const tmedia_session_plugin_def_t tdav_session_video_plugin_def_s =
 	}
 };
 const tmedia_session_plugin_def_t *tdav_session_video_plugin_def_t = &tdav_session_video_plugin_def_s;
+
+//=================================================================================================
+//	Session BfcpVideo Plugin object definition
+//
+/* constructor */
+static tsk_object_t* tdav_session_bfcpvideo_ctor(tsk_object_t * self, va_list * app)
+{
+	tdav_session_video_t *video = self;
+	if(video){
+		if (_tdav_session_video_init(video, tmedia_bfcp_video)) {
+			return tsk_null;
+		}
+	}
+	return self;
+}
+/* object definition */
+static const tsk_object_def_t tdav_session_bfcpvideo_def_s = 
+{
+	sizeof(tdav_session_video_t),
+	tdav_session_bfcpvideo_ctor, 
+	tdav_session_video_dtor,
+	tmedia_session_cmp, 
+};
+static const tmedia_session_plugin_def_t tdav_session_bfcpvideo_plugin_def_s = 
+{
+	&tdav_session_bfcpvideo_def_s,
+	
+	tmedia_bfcp_video,
+	"video",
+	
+	tdav_session_video_set,
+	tdav_session_video_get,
+	tdav_session_video_prepare,
+	tdav_session_video_start,
+	tdav_session_video_pause,
+	tdav_session_video_stop,
+	
+	/* Audio part */
+	{ tsk_null },
+
+	tdav_session_video_get_lo,
+	tdav_session_video_set_ro,
+
+	/* T.140 */
+	{ tsk_null },
+
+	/* Rtcp */
+	{
+		tdav_session_video_rtcp_set_onevent_cbfn,
+		tdav_session_video_rtcp_send_event,
+		tdav_session_video_rtcp_recv_event
+	}
+};
+const tmedia_session_plugin_def_t *tdav_session_bfcpvideo_plugin_def_t = &tdav_session_bfcpvideo_plugin_def_s;

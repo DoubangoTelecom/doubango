@@ -82,4 +82,14 @@
 	#include <config.h>
 #endif
 
+#if !defined(TDSHOW_DEFINE_GUID) && !defined(_WIN32_WCE)
+#define TDSHOW_DEFINE_GUID(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
+        EXTERN_C const GUID DECLSPEC_SELECTANY name \
+                = { l, w1, w2, { b1, b2,  b3,  b4,  b5,  b6,  b7,  b8 } }
+#elif !defined(TDSHOW_DEFINE_GUID) && defined(_WIN32_WCE)
+#define TDSHOW_DEFINE_GUID(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
+        EXTERN_C const GUID __declspec(selectany) name \
+                = { l, w1, w2, { b1, b2,  b3,  b4,  b5,  b6,  b7,  b8 } }
+#endif
+
 #endif // PLUGIN_DSHOW_CONFIG_H

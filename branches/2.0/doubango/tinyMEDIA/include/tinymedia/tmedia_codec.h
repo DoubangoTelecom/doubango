@@ -114,6 +114,7 @@ Must starts at 96 to be conform to RFC 5761 (rtcp-mux)
 
 
 #define TMEDIA_CODEC_FORMAT_MSRP						"*"
+#define TMEDIA_CODEC_FORMAT_BFCP						"*"
 
 
 
@@ -450,6 +451,18 @@ tmedia_codec_msrp_t;
 #define TMEDIA_CODEC_MSRP(self)		((tmedia_codec_msrp_t*)(self))
 #define tmedia_codec_msrp_init(self, name, desc) tmedia_codec_init(TMEDIA_CODEC(self), tmedia_msrp, name, desc, "*")
 #define tmedia_codec_msrp_deinit(self) tmedia_codec_deinit(TMEDIA_CODEC(self))
+
+
+/** BFCP codec */
+typedef struct tmedia_codec_bfcp_s
+{
+	TMEDIA_DECLARE_CODEC;
+}
+tmedia_codec_bfcp_t;
+#define TMEDIA_DECLARE_CODEC_BFCP tmedia_codec_bfcp_t __bfcp__
+#define TMEDIA_CODEC_BFCP(self)		((tmedia_codec_bfcp_t*)(self))
+#define tmedia_codec_bfcp_init(self, name, desc) tmedia_codec_init(TMEDIA_CODEC(self), tmedia_bfcp, name, desc, "*")
+#define tmedia_codec_bfcp_deinit(self) tmedia_codec_deinit(TMEDIA_CODEC(self))
 
 TMEDIA_END_DECLS
 

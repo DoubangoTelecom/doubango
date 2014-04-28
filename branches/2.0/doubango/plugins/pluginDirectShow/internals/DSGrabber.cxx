@@ -21,23 +21,26 @@
 #include "internals/DSCaptureUtils.h"
 #include "internals/Resizer.h"
 #include "internals/DSUtils.h"
+#include "internals/DSCaptureGraph.h"
+#include "internals/DSScreenCastGraph.h"
 
 #include "tsk_debug.h"
 
 using namespace std;
 
-DSGrabber::DSGrabber(HRESULT *hr)
+DSGrabber::DSGrabber(HRESULT *hr, BOOL _screenCast)
 : mutex_buffer(NULL), preview(NULL)
+, screenCast(_screenCast)
 {
 #ifdef _WIN32_WCE
 	this->graph = new DSCaptureGraph(this, hr);
 #else
-	this->graph = new DSCaptureGraph(this, hr);
-	if(!FAILED(*hr)){
+	this->graph = screenCast ? dynamic_cast<DSBaseCaptureGraph*>(new DSScreenCastGraph(this, hr)) : dynamic_cast<DSBaseCaptureGraph*>(new DSCaptureGraph(this, hr));
+	if (SUCCEEDED(*hr)) {
 		this->preview = new DSDisplay(hr);
 	}
 #endif
-	if (FAILED(*hr)){
+	if (FAILED(*hr)) {
 		TSK_DEBUG_ERROR("Failed to create Grabber");
 		return;
 	}
@@ -182,6 +185,14 @@ bool DSGrabber::setCaptureParameters(int format, int f)
 int DSGrabber::getFramerate()
 {
 	return this->fps;
+}
+
+HRESULT DSGrabber::getConnectedMediaType(AM_MEDIA_TYPE *mediaType)
+{
+	if (!this->graph || !mediaType) {
+		return E_INVALIDARG;
+	}
+	return this->graph->getConnectedMediaType(mediaType);
 }
 
 HRESULT DSGrabber::SampleCB(double SampleTime, IMediaSample *pSample)

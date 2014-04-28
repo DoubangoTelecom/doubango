@@ -46,6 +46,7 @@
 
 
 #define FILTER_WEBCAM					_T("WEBCAM")
+#define FILTER_SCREENCAST				_T("SCREENCAST")
 #define FILTER_FRAMERATE				_T("TDSHOW_FRAMERATE")
 #define FILTER_OUTPUT					_T("TDSHOW_OUTPUT")
 #define	FITLER_SAMPLE_GRABBER			_T("SAMPLE_GRABBER")
@@ -73,8 +74,8 @@ bool DisconnectAllFilters(IGraphBuilder *graphBuilder);
 
 bool RemoveAllFilters(IGraphBuilder *graphBuilder);
 
-int createOnCurrentThead(HWND hWnd, void** ppRet, bool display);
+int createOnCurrentThead(HWND hWnd, void** ppRet, BOOL display, BOOL screnCast);
 
-int createOnUIThead(HWND hWnd, void** ppRet, bool display);
+int createOnUIThead(HWND hWnd, void** ppRet, BOOL display, BOOL screnCast);
 
 #endif /* PLUGIN_DSHOW_DUTILS_H */

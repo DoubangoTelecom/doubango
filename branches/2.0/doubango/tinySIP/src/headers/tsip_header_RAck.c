@@ -256,13 +256,13 @@ _match:
 	case 1:
 /* #line 53 "./ragel/tsip_parser_header_RAck.rl" */
 	{
-		TSK_PARSER_SET_INTEGER(hdr_rack->seq);
+		TSK_PARSER_SET_UINT(hdr_rack->seq);
 	}
 	break;
 	case 2:
 /* #line 57 "./ragel/tsip_parser_header_RAck.rl" */
 	{
-		TSK_PARSER_SET_INTEGER(hdr_rack->cseq);
+		TSK_PARSER_SET_UINT(hdr_rack->cseq);
 	}
 	break;
 	case 3:

@@ -89,6 +89,7 @@ tdav_session_audio_t;
 #define TDAV_SESSION_AUDIO(self) ((tdav_session_audio_t*)(self))
 
 TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_audio_plugin_def_t;
+TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_bfcpaudio_plugin_def_t;
 
 TDAV_END_DECLS
 

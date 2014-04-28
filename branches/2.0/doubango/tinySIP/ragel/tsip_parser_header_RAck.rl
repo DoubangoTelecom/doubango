@@ -51,11 +51,11 @@
 	}
 	
 	action parse_seq{
-		TSK_PARSER_SET_INTEGER(hdr_rack->seq);
+		TSK_PARSER_SET_UINT(hdr_rack->seq);
 	}
 
 	action parse_cseq{
-		TSK_PARSER_SET_INTEGER(hdr_rack->cseq);
+		TSK_PARSER_SET_UINT(hdr_rack->cseq);
 	}
 
 	action parse_method{

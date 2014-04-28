@@ -93,7 +93,8 @@ static const tsk_size_t __plugin_def_types_count = sizeof(__plugin_def_types)/si
 static const tsk_plugin_def_media_type_t __plugin_def_media_types[] = 
 {
 	tsk_plugin_def_media_type_audio,
-	tsk_plugin_def_media_type_video
+	tsk_plugin_def_media_type_video,
+	tsk_plugin_def_media_type_screencast
 };
 static const tsk_size_t __plugin_def_media_types_count = sizeof(__plugin_def_media_types)/sizeof(__plugin_def_media_types[0]);
 
@@ -135,16 +136,25 @@ tmedia_type_t tmedia_type_from_sdp(const tsdp_message_t* sdp)
 {
 	tmedia_type_t type = tmedia_none;
 	const tsdp_header_M_t* M;
+	const tsdp_header_A_t* A;
 	tsk_size_t index = 0;
 	const tmedia_session_plugin_def_t* plugin;
 
-	if(!sdp){
+	if (!sdp) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tmedia_none;
 	}
 
-	while((M = (const tsdp_header_M_t*)tsdp_message_get_headerAt(sdp, tsdp_htype_M, index++))){
-		if(M->port && (plugin = tmedia_session_plugin_find_by_media(M->media))){
+	while ((M = (const tsdp_header_M_t*)tsdp_message_get_headerAt(sdp, tsdp_htype_M, index++))) {
+		if (M->port && (plugin = tmedia_session_plugin_find_by_media(M->media))) {
+			if (plugin->type == tmedia_audio || plugin->type == tmedia_video) {
+				// check if it's BFCP audio/video session
+				// content attribute described in http://tools.ietf.org/html/rfc4796
+				if ((A = tsdp_header_M_findA(M, "content")) && (!tsk_striequals(A->value, "main"))) {
+					type |= plugin->type == tmedia_audio ? tmedia_bfcp_audio : tmedia_bfcp_video;
+					continue;
+				}
+			}
 			type |= plugin->type;
 		}
 	}

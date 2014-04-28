@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2011 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +21,6 @@
 /**@file tmedia_session.h
  * @brief Base session object.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinymedia/tmedia_session.h"
 
@@ -53,7 +48,9 @@ extern const tmedia_codec_plugin_def_t* __tmedia_codec_plugins[TMED_CODEC_MAX_PL
 const tmedia_session_plugin_def_t* __tmedia_session_plugins[TMED_SESSION_MAX_PLUGINS] = {0};
 
 /* === local functions === */
+static int _tmedia_session_mgr_recv_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t media_type, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media, uint64_t session_id);
 static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self);
+static const tmedia_session_t* _tmedia_session_mgr_find_session_at_index(tmedia_session_mgr_t* self, tsk_size_t index);
 static int _tmedia_session_mgr_clear_sessions(tmedia_session_mgr_t* self);
 static int _tmedia_session_mgr_apply_params(tmedia_session_mgr_t* self);
 static int _tmedia_session_prepare(tmedia_session_t* self);
@@ -662,6 +659,7 @@ int _tmedia_session_load_codecs(tmedia_session_t* self)
 	tmedia_codec_t* codec;
 	const tmedia_codec_plugin_def_t* plugin;
 	const tsk_list_item_t* item;
+	tmedia_type_t type;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -678,10 +676,22 @@ int _tmedia_session_load_codecs(tmedia_session_t* self)
 	/* remove old codecs */
 	tsk_list_clear_items(self->codecs);
 
+	type = self->type;
+	if ((type & tmedia_bfcp_video) == tmedia_bfcp_video) {
+		type |= tmedia_video;
+	}
+	if ((type & tmedia_bfcp_audio) == tmedia_bfcp_audio) {
+		type |= tmedia_audio;
+	}
+	
 	/* for each registered plugin create a session instance */
 	while((i < TMED_CODEC_MAX_PLUGINS) && (plugin = __tmedia_codec_plugins[i++])){
-		/* 'tmedia_codec_id_none' is used for fake codecs (e.g. dtmf or msrp) and should not be filtered beacuse of backward compatibility*/
-		if((plugin->type & self->type) && (plugin->codec_id == tmedia_codec_id_none || (plugin->codec_id & self->codecs_allowed))){
+		/* 'tmedia_codec_id_none' is used for fake codecs (e.g. dtmf, bfcp or msrp) and should not be filtered beacuse of backward compatibility*/
+		if((plugin->type & type) && (plugin->codec_id == tmedia_codec_id_none || (plugin->codec_id & self->codecs_allowed))){
+			// do not load bfcp codec for "audiobfcp" and "videobfcp" session
+			if ((plugin->type == tmedia_bfcp) && (type != tmedia_bfcp)) {
+				continue;
+			}
 			if((codec = tmedia_codec_create(plugin->format))){
 				if(!self->codecs){
 					self->codecs = tsk_list_create();
@@ -1111,7 +1121,7 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 	else if((self->sdp.lo = tsdp_message_create_empty(self->public_addr ? self->public_addr : self->addr, self->ipv6, self->sdp.lo_ver++))){	
 		/* Set connection "c=" */
 		tsdp_message_add_headers(self->sdp.lo,
-			TSDP_HEADER_C_VA_ARGS("IN", self->ipv6 ? "IP6" : "IP4", self->public_addr ? self->public_addr : self->addr),//FIXME
+			TSDP_HEADER_C_VA_ARGS("IN", self->ipv6 ? "IP6" : "IP4", self->public_addr ? self->public_addr : self->addr),
 			tsk_null);
 	}else{
 		self->sdp.lo_ver--;
@@ -1158,6 +1168,41 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 			TSK_DEBUG_ERROR("Failed to get m= line for [%s] media", ms->plugin->media);
 		}
 	}
+
+	// FIXME
+#if 0
+	{
+		tsdp_header_M_t* M;
+		M = tsdp_header_M_create("application", 49318, "RTP/AVP");
+		tsdp_header_M_add_headers(M,
+					TSDP_FMT_VA_ARGS("100"),
+					TSDP_HEADER_A_VA_ARGS("rtpmap", "100 H224/4800"),
+					TSDP_HEADER_A_VA_ARGS("sendrecv", tsk_null),
+					tsk_null);
+		tsdp_message_add_header(self->sdp.lo, TSDP_HEADER(M));
+		TSK_OBJECT_SAFE_FREE(M);
+		M = tsdp_header_M_create("application", 35313, "UDP/BFCP");
+		tsdp_header_M_add_headers(M,
+					TSDP_FMT_VA_ARGS("*"),
+					TSDP_HEADER_A_VA_ARGS("floorctrl", "c-s"),
+					TSDP_HEADER_A_VA_ARGS("setup", "actpass"),
+					TSDP_HEADER_A_VA_ARGS("connection", "new"),
+					tsk_null);
+		tsdp_message_add_header(self->sdp.lo, TSDP_HEADER(M));
+		TSK_OBJECT_SAFE_FREE(M);
+		M = tsdp_header_M_create("video", 49316, "RTP/AVP");
+		tsdp_header_M_add_headers(M,
+					TSDP_FMT_VA_ARGS("109"),
+					TSDP_HEADER_A_VA_ARGS("rtpmap", "109 H264/90000"),
+					TSDP_HEADER_A_VA_ARGS("fmtp", "109 profile-level-id=42801f; max-mbps=112640; max-fs=5120; sar=13"),
+					TSDP_HEADER_A_VA_ARGS("label", "1983"),
+					TSDP_HEADER_A_VA_ARGS("content", "slides"),
+					TSDP_HEADER_A_VA_ARGS("sendrecv", tsk_null),
+					tsk_null);
+		tsdp_message_add_header(self->sdp.lo, TSDP_HEADER(M));
+		TSK_OBJECT_SAFE_FREE(M);
+	}
+#endif
 	
 	ret = self->sdp.lo;
 
@@ -1407,8 +1452,8 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	index = 0;
 	while((M = (const tsdp_header_M_t*)tsdp_message_get_headerAt(sdp, tsdp_htype_M, index++))){
 		found = tsk_false;
-		/* Find session by media */
-		if((ms = tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_media, M->media))){
+		/* Find session by index (must). */
+		if((ms = _tmedia_session_mgr_find_session_at_index(self, (index - 1))) && (tsk_striequals(tmedia_session_get_media(ms), M->media))) {
 			/* prepare the media session */
 			if(!self->started){
 				if(!ms->prepared && (_tmedia_session_prepare(TMEDIA_SESSION(ms)))){
@@ -1436,7 +1481,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 			}
 		}
 		
-		if(!found && (self->sdp.lo == tsk_null)){
+		if(!found /*&& (self->sdp.lo == tsk_null)*/){
 			/* Session not supported and we are not the initial offerer ==> add ghost session */
 			/*
 				An offered stream MAY be rejected in the answer, for any reason.  If
@@ -1863,24 +1908,15 @@ int tmedia_session_mgr_send_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t
 
 int tmedia_session_mgr_recv_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t media_type, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media)
 {
-	tmedia_session_t* session;
-	tsk_list_item_t *item;
+	static const uint64_t __fake_session_id = 0;
+	return _tmedia_session_mgr_recv_rtcp_event(self, media_type, event_type, ssrc_media, __fake_session_id);
+}
 
-	if(!self){
-		TSK_DEBUG_ERROR("Invlid parameter");
-		return -1;
-	}
-
-	tsk_list_lock(self->sessions);
-	tsk_list_foreach(item, self->sessions){
-		if(!(session = item->data) || !(session->type & media_type)){
-			continue;
-		}
-		tmedia_session_recv_rtcp_event(session, event_type, ssrc_media);
-	}
-	tsk_list_unlock(self->sessions);
-
-	return 0;
+int tmedia_session_mgr_recv_rtcp_event_2(tmedia_session_mgr_t* self, tmedia_rtcp_event_type_t event_type, uint64_t session_id)
+{
+	static const uint32_t __fake_ssrc_media = 0;
+	static const tmedia_type_t __fake_media_type = tmedia_none;
+	return _tmedia_session_mgr_recv_rtcp_event(self, __fake_media_type, event_type, __fake_ssrc_media, session_id);
 }
 
 int tmedia_session_mgr_send_file(tmedia_session_mgr_t* self, const char* path, ...)
@@ -2003,12 +2039,36 @@ int tmedia_session_mgr_set_rfc5168_cbfn(tmedia_session_mgr_t* self, const void* 
 	return 0;
 }
 
+static int _tmedia_session_mgr_recv_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t media_type, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media, uint64_t session_id)
+{
+	tmedia_session_t* session;
+	tsk_list_item_t *item;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invlid parameter");
+		return -1;
+	}
+
+	tsk_list_lock(self->sessions);
+	tsk_list_foreach(item, self->sessions) {
+		if (!(session = item->data) || !((session->type & media_type) || (session->id == session_id))) {
+			continue;
+		}
+		tmedia_session_recv_rtcp_event(session, event_type, ssrc_media);
+	}
+	tsk_list_unlock(self->sessions);
+
+	return 0;
+}
+
 /** internal function used to load sessions */
 static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 {
 	tsk_size_t i = 0;
 	tmedia_session_t* session;
 	const tmedia_session_plugin_def_t* plugin;
+
+	tsk_list_lock(self->sessions);
 	
 #define has_media(media_type) (tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_type, &(media_type)))
 	
@@ -2043,7 +2103,25 @@ static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 				TMEDIA_SESSION_SET_NULL());
 	}
 #undef has_media
+
+	tsk_list_unlock(self->sessions);
 	return 0;
+}
+
+static const tmedia_session_t* _tmedia_session_mgr_find_session_at_index(tmedia_session_mgr_t* self, tsk_size_t index)
+{
+	const tmedia_session_t* ms = tsk_null;
+	const tsk_list_item_t *item;
+	tsk_size_t u = 0;
+	tsk_list_lock(self->sessions);
+	tsk_list_foreach(item, self->sessions) {
+		if (u++ == index) {
+			ms = (const tmedia_session_t*)item->data;
+			break;
+		}
+	}
+	tsk_list_unlock(self->sessions);
+	return ms;
 }
 
 /* internal function */

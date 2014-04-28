@@ -888,6 +888,29 @@ static const tmedia_session_plugin_def_t tdav_session_audio_plugin_def_s =
 	tdav_session_audio_set_ro
 };
 const tmedia_session_plugin_def_t *tdav_session_audio_plugin_def_t = &tdav_session_audio_plugin_def_s;
+static const tmedia_session_plugin_def_t tdav_session_bfcpaudio_plugin_def_s = 
+{
+	&tdav_session_audio_def_s,
+
+	tmedia_bfcp_audio,
+	"audio",
+
+	tdav_session_audio_set,
+	tdav_session_audio_get,
+	tdav_session_audio_prepare,
+	tdav_session_audio_start,
+	tdav_session_audio_pause,
+	tdav_session_audio_stop,
+
+	/* Audio part */
+	{
+		tdav_session_audio_send_dtmf
+	},
+
+	tdav_session_audio_get_lo,
+	tdav_session_audio_set_ro
+};
+const tmedia_session_plugin_def_t *tdav_session_bfcpaudio_plugin_def_t = &tdav_session_bfcpaudio_plugin_def_s;
 
 
 

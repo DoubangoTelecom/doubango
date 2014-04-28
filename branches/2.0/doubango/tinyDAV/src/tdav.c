@@ -70,6 +70,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #include "tinydav/audio/tdav_session_audio.h"
 #include "tinydav/video/tdav_session_video.h"
 #include "tinydav/msrp/tdav_session_msrp.h"
+#include "tinydav/bfcp/tdav_session_bfcp.h"
 #include "tinydav/t140/tdav_session_t140.h"
 
 // Codecs
@@ -78,6 +79,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #include "tinydav/codecs/fec/tdav_codec_ulpfec.h"
 #include "tinydav/codecs/fec/tdav_codec_red.h"
 #include "tinydav/codecs/msrp/tdav_codec_msrp.h"
+#include "tinydav/codecs/bfcp/tdav_codec_bfcp.h"
 #include "tinydav/codecs/amr/tdav_codec_amr.h"
 #include "tinydav/codecs/bv/tdav_codec_bv16.h"
 #include "tinydav/codecs/g711/tdav_codec_g711.h"
@@ -108,6 +110,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 // Producers
 #include "tinydav/audio/waveapi/tdav_producer_waveapi.h"
 #include "tinydav/audio/directsound/tdav_producer_dsound.h"
+#include "tinydav/video/gdi/tdav_producer_screencast_gdi.h"
 #include "tinydav/audio/coreaudio/tdav_producer_audioqueue.h"
 #include "tinydav/audio/coreaudio/tdav_producer_audiounit.h"
 #include "tinydav/audio/wasapi/tdav_producer_wasapi.h"
@@ -248,6 +251,9 @@ int tdav_init()
 	tmedia_session_plugin_register(tdav_session_video_plugin_def_t);
 	tmedia_session_plugin_register(tdav_session_msrp_plugin_def_t);
 	tmedia_session_plugin_register(tdav_session_t140_plugin_def_t);
+	tmedia_session_plugin_register(tdav_session_bfcp_plugin_def_t);
+	tmedia_session_plugin_register(tdav_session_bfcpaudio_plugin_def_t);
+	tmedia_session_plugin_register(tdav_session_bfcpvideo_plugin_def_t);
 
 	/* === Register codecs === */
 #if HAVE_FFMPEG
@@ -256,6 +262,7 @@ int tdav_init()
 	
 	tmedia_codec_plugin_register(tdav_codec_msrp_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_t140_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_bfcp_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_red_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
@@ -366,7 +373,9 @@ int tdav_init()
 #elif HAVE_WASAPI // WASAPI
 	tmedia_producer_plugin_register(tdav_producer_wasapi_plugin_def_t);
 #endif
-
+#if TDAV_UNDER_WINDOWS && !TDAV_UNDER_WINDOWS_RT // Windows GDI
+	tmedia_producer_plugin_register(tdav_producer_screencast_gdi_plugin_def_t);
+#endif
 #if HAVE_WINM // Windows Media (WP8)
 	tmedia_producer_plugin_register(tdav_producer_winm_plugin_def_t);
 #endif
@@ -547,6 +556,9 @@ int tdav_deinit()
 	tmedia_session_plugin_unregister(tdav_session_video_plugin_def_t);
 	tmedia_session_plugin_unregister(tdav_session_msrp_plugin_def_t);
 	tmedia_session_plugin_unregister(tdav_session_t140_plugin_def_t);
+	tmedia_session_plugin_unregister(tdav_session_bfcp_plugin_def_t);
+	tmedia_session_plugin_unregister(tdav_session_bfcpaudio_plugin_def_t);
+	tmedia_session_plugin_unregister(tdav_session_bfcpvideo_plugin_def_t);
 
 	/* === UnRegister codecs === */
 	tmedia_codec_plugin_unregister_all();
@@ -591,6 +603,9 @@ int tdav_deinit()
 #endif
 #if HAVE_WASAPI // WASAPI
 	tmedia_producer_plugin_unregister(tdav_producer_wasapi_plugin_def_t);
+#endif
+#if TDAV_UNDER_WINDOWS && !TDAV_UNDER_WINDOWS_RT // Windows GDI
+	tmedia_producer_plugin_unregister(tdav_producer_screencast_gdi_plugin_def_t);
 #endif
 #if HAVE_WINM // Windows Media (WP8)
 	tmedia_producer_plugin_unregister(tdav_producer_winm_plugin_def_t);

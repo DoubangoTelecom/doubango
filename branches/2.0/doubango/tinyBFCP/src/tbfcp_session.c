@@ -193,7 +193,7 @@ int tbfcp_session_prepare(tbfcp_session_t* p_self)
     }
     else {
         // create transport
-        if (!(p_self->p_transport = tnet_transport_create(p_self->p_local_ip, p_self->u_local_port, p_self->e_socket_type, kBfcpTransportFriendlyName))) {
+        if (!p_self->p_transport && !(p_self->p_transport = tnet_transport_create(p_self->p_local_ip, p_self->u_local_port, p_self->e_socket_type, kBfcpTransportFriendlyName))) {
             TSK_DEBUG_ERROR("Failed to create %s Transport", kBfcpTransportFriendlyName);
             return -3;
         }
@@ -318,6 +318,8 @@ int tbfcp_session_stop(tbfcp_session_t* p_self)
         return -1;
     }
 
+	// FIXME: send FloorRelease if a FloorRequest is pending
+
     // lock()
     tsk_safeobj_lock(p_self);
 
@@ -350,6 +352,7 @@ int tbfcp_session_stop(tbfcp_session_t* p_self)
 
     p_self->b_started = tsk_false;
     p_self->b_stopping = tsk_false;
+	p_self->b_prepared = tsk_false;
 
 bail:
     // unlock()

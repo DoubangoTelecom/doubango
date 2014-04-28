@@ -21,7 +21,7 @@
 #include "plugin_dshow_config.h"
 #include <vector>
 #include <control.h>
-#include "internals/DSCaptureFormat.h"
+#include "internals/DSBaseCaptureGraph.h"
 #include "internals/DSFrameRateFilter.h"
 
 #ifdef _WIN32_WCE
@@ -33,7 +33,7 @@
 #endif
 
 
-class DSCaptureGraph
+class DSCaptureGraph : public DSBaseCaptureGraph
 {
 public:
 #ifdef _WIN32_WCE

@@ -511,8 +511,6 @@ static int _plugin_video_dshow_consumer_unprepare(plugin_video_dshow_consumer_t*
 /* constructor */
 static tsk_object_t* plugin_video_dshow_consumer_ctor(tsk_object_t * self, va_list * app)
 {
-	CoInitialize(NULL);
-
 	plugin_video_dshow_consumer_t *pSelf = (plugin_video_dshow_consumer_t *)self;
 	if(pSelf)
 	{
@@ -1199,7 +1197,7 @@ static int plugin_video_dshow_consumer_stop(tmedia_consumer_t* self)
 /* constructor */
 static tsk_object_t* plugin_video_dshow_consumer_ctor(tsk_object_t * self, va_list * app)
 {
-	CoInitialize(NULL);
+	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
 	plugin_video_dshow_consumer_t *consumer = (plugin_video_dshow_consumer_t *)self;
 	if(consumer){

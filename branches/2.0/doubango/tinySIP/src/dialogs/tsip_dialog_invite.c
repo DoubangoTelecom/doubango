@@ -965,18 +965,19 @@ int x0000_Any_2_Any_X_iINFO(va_list *app)
 			if (self->msession_mgr && TSIP_MESSAGE_HAS_CONTENT(rINFO)){
 				if (tsk_striequals("application/media_control+xml", TSIP_MESSAGE_CONTENT_TYPE(rINFO))){ /* rfc5168: XML Schema for Media Control */
 					static uint32_t __ssrc_media_fake = 0;
-					static tmedia_type_t __tmedia_type_video = tmedia_video;
+					static tmedia_type_t __tmedia_type_video = tmedia_video; // TODO: add bfcpvideo?
 					const char* content_ptr = (const char*)TSIP_MESSAGE_CONTENT_DATA(rINFO);
 					tsk_size_t content_size = (tsk_size_t)TSIP_MESSAGE_CONTENT_DATA_LENGTH(rINFO);
 					tsk_bool_t is_fir = tsk_false;
+					uint64_t sessionId = 0;
 #if HAVE_LIBXML2
-
 					{
 						xmlDoc *pDoc;
 						xmlNode *pRootElement;
 						xmlXPathContext *pPathCtx;
 						xmlXPathObject *pPathObj;
-						static const xmlChar* __xpath_expr = (const xmlChar*)"/media_control/vc_primitive/to_encoder/picture_fast_update";
+						static const xmlChar* __xpath_expr_picture_fast_update = (const xmlChar*)"/media_control/vc_primitive/to_encoder/picture_fast_update";
+						static const xmlChar* __xpath_expr_stream_id = (const xmlChar*)"/media_control/vc_primitive/stream_id";
 						
 						if (!(pDoc = xmlParseDoc(content_ptr))) {
 							TSK_DEBUG_ERROR("Failed to parse XML content [%s]", content_ptr);
@@ -987,22 +988,31 @@ int x0000_Any_2_Any_X_iINFO(va_list *app)
 							xmlFreeDoc(pDoc);
 							return 0;
 						}
-						;
 						if (!(pPathCtx = xmlXPathNewContext(pDoc))) {
 							TSK_DEBUG_ERROR("Failed to create path context from XML content [%s]", content_ptr);
 							xmlFreeDoc(pDoc);
 							return 0;
 						}
-						if (!(pPathObj = xmlXPathEvalExpression(__xpath_expr, pPathCtx))) {
-							TSK_DEBUG_ERROR("Error: unable to evaluate xpath expression: %s", __xpath_expr);
-							xmlXPathFreeContext(pPathCtx); 
+						// picture_fast_update
+						if (!(pPathObj = xmlXPathEvalExpression(__xpath_expr_picture_fast_update, pPathCtx))) {
+							TSK_DEBUG_ERROR("Error: unable to evaluate xpath expression: %s", __xpath_expr_picture_fast_update);
+							xmlXPathFreeContext(pPathCtx);
 							xmlFreeDoc(pDoc);
 							return 0;
 						}
-						
 						is_fir = (pPathObj->type == XPATH_NODESET && pPathObj->nodesetval->nodeNr > 0);
-
 						xmlXPathFreeObject(pPathObj);
+						// stream_id
+						if (!(pPathObj = xmlXPathEvalExpression(__xpath_expr_stream_id, pPathCtx))) {
+							TSK_DEBUG_ERROR("Error: unable to evaluate xpath expression: %s", __xpath_expr_stream_id);
+							xmlXPathFreeContext(pPathCtx);
+							xmlFreeDoc(pDoc);
+						}
+						else if (pPathObj->type == XPATH_NODESET && pPathObj->nodesetval->nodeNr > 0 && pPathObj->nodesetval->nodeTab[0]->children && pPathObj->nodesetval->nodeTab[0]->children->content) {
+							sessionId = tsk_atoi64((const char*)pPathObj->nodesetval->nodeTab[0]->children->content);
+						}
+						xmlXPathFreeObject(pPathObj);
+						
 						xmlXPathFreeContext(pPathCtx); 
 						xmlFreeDoc(pDoc);
 					}
@@ -1011,7 +1021,9 @@ int x0000_Any_2_Any_X_iINFO(va_list *app)
 #endif
 					if (is_fir) {
 						TSK_DEBUG_INFO("Incoming SIP INFO(picture_fast_update)");
-						ret = tmedia_session_mgr_recv_rtcp_event(self->msession_mgr, __tmedia_type_video, tmedia_rtcp_event_type_fir, __ssrc_media_fake);
+						ret = sessionId 
+							? tmedia_session_mgr_recv_rtcp_event_2(self->msession_mgr, tmedia_rtcp_event_type_fir, sessionId)
+							: tmedia_session_mgr_recv_rtcp_event(self->msession_mgr, __tmedia_type_video, tmedia_rtcp_event_type_fir, __ssrc_media_fake);
 					}
 					else {
 						TSK_DEBUG_INFO("Incoming SIP INFO(unknown)");
@@ -1778,8 +1790,9 @@ static int tsip_dialog_invite_msession_rfc5168_cb(const void* usrdata, const str
 
 	if (self) {
 		if (command == tmedia_session_rfc5168_cmd_picture_fast_update) {
+			char* content_ptr = tsk_null;
 			static const char* __content_type = "application/media_control+xml";
-			static const void* __content_ptr = 
+			static const void* __content_format = 
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n"
 				" <media_control>\r\n"
 				"   <vc_primitive>\r\n"
@@ -1787,10 +1800,12 @@ static int tsip_dialog_invite_msession_rfc5168_cb(const void* usrdata, const str
 				"       <picture_fast_update>\r\n"
 				"       </picture_fast_update>\r\n"
 				"     </to_encoder>\r\n"
+				"     <stream_id>%llu</stream_id>\r\n"
 				"   </vc_primitive>\r\n"
 				" </media_control>\r\n";
 			TSK_DEBUG_INFO("Media session is asking the sigaling layer to send SIP INFO('picture_fast_update')");
-			return send_INFO(self, __content_type, __content_ptr, tsk_strlen(__content_ptr));
+			tsk_sprintf(&content_ptr, __content_format, session->id);
+			return send_INFO(self, __content_type, content_ptr, tsk_strlen(content_ptr));
 		}
 	}
 	return 0;

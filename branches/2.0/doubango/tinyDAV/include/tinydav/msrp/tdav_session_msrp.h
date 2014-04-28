@@ -1,7 +1,5 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,10 +21,6 @@
 /**@file tdav_session_msrp.h
  * @brief The Message Session Relay Protocol (MSRP) session.
  * Used for both Message (RFC 4975) and file transfer (RFC 5547).
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 
 #ifndef TINYDAV_SESSION_MSRP_H

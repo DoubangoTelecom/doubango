@@ -282,6 +282,7 @@ static tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_da
 	#else
 		h264->encoder.picture->pict_type = send_idr ? AV_PICTURE_TYPE_I : AV_PICTURE_TYPE_NONE;
 	#endif
+		h264->encoder.picture->key_frame = send_idr ? 1 : 0;
 		h264->encoder.picture->pts = AV_NOPTS_VALUE;
 		h264->encoder.picture->quality = h264->encoder.context->global_quality;
 		// h264->encoder.picture->pts = h264->encoder.frame_count; MUST NOT

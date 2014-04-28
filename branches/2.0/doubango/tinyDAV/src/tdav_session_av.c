@@ -62,7 +62,7 @@ static const tsk_bool_t __have_libsrtp = tsk_false;
 #define TDAV_IS_DTMF_CODEC(codec) (codec && TMEDIA_CODEC((codec))->plugin == tdav_codec_dtmf_plugin_def_t)
 #define TDAV_IS_ULPFEC_CODEC(codec) (codec && TMEDIA_CODEC((codec))->plugin == tdav_codec_ulpfec_plugin_def_t)
 #define TDAV_IS_RED_CODEC(codec) (codec && TMEDIA_CODEC((codec))->plugin == tdav_codec_red_plugin_def_t)
-#define TDAV_IS_VIDEO_CODEC(codec) (codec && TMEDIA_CODEC((codec))->plugin->type == tmedia_video)
+#define TDAV_IS_VIDEO_CODEC(codec) (codec && TMEDIA_CODEC((codec))->plugin->type & tmedia_video)
 
 #if !defined(TDAV_DFAULT_FP_HASH)
 #define TDAV_DFAULT_FP_HASH		tnet_dtls_hash_type_sha256
@@ -218,8 +218,8 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 	self->use_rtcp = tmedia_defaults_get_rtcp_enabled();
 	self->use_rtcpmux = tmedia_defaults_get_rtcpmux_enabled();
 	self->avpf_mode_set = self->avpf_mode_neg = tmedia_defaults_get_avpf_mode();
-	self->bandwidth_max_upload_kbps = (media_type == tmedia_video ? tmedia_defaults_get_bandwidth_video_upload_max() : INT_MAX); // INT_MAX or <=0 means undefined
-	self->bandwidth_max_download_kbps = (media_type == tmedia_video ? tmedia_defaults_get_bandwidth_video_download_max() : INT_MAX); // INT_MAX or <=0 means undefined
+	self->bandwidth_max_upload_kbps = ((media_type & tmedia_video || (media_type & tmedia_bfcp_video) == tmedia_bfcp_video) ? tmedia_defaults_get_bandwidth_video_upload_max() : INT_MAX); // INT_MAX or <=0 means undefined
+	self->bandwidth_max_download_kbps = ((media_type & tmedia_video || (media_type & tmedia_bfcp_video) == tmedia_bfcp_video) ? tmedia_defaults_get_bandwidth_video_download_max() : INT_MAX); // INT_MAX or <=0 means undefined
 	self->congestion_ctrl_enabled = tmedia_defaults_get_congestion_ctrl_enabled(); // whether to enable draft-alvestrand-rtcweb-congestion-03 and draft-alvestrand-rmcat-remb-01
 #if HAVE_SRTP
 		// this is the default value and can be updated by the user using "session_set('srtp-mode', mode_e)"
@@ -246,7 +246,7 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 	}
 	// consumer
 	TSK_OBJECT_SAFE_FREE(self->consumer);
-	if(!(self->consumer = tmedia_consumer_create(self->media_type, session_id))){
+	if(!(self->consumer = tmedia_consumer_create((self->media_type & tmedia_video || (self->media_type & tmedia_bfcp_video) == tmedia_bfcp_video) ? tmedia_video : tmedia_audio, session_id))){ // get an audio (or video) consumer and ignore "bfcp" part
 		TSK_DEBUG_ERROR("Failed to create consumer for media type = %d", self->media_type);
 	}
 	// producer
@@ -529,7 +529,7 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 		{	
 			int32_t bandwidth_max_upload_kbps = self->bandwidth_max_upload_kbps;
 			int32_t bandwidth_max_download_kbps = self->bandwidth_max_download_kbps;
-			if(self->media_type == tmedia_video){
+			if((self->media_type & tmedia_video || (self->media_type & tmedia_bfcp_video) == tmedia_bfcp_video)){
 				if(self->congestion_ctrl_enabled){
 					const tmedia_codec_t* best_codec = tdav_session_av_get_best_neg_codec(self); // use for encoding for sure and probably for decoding
 					if(TDAV_IS_VIDEO_CODEC(best_codec)){
@@ -541,7 +541,7 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 							tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(best_codec)->out.width, TMEDIA_CODEC_VIDEO(best_codec)->out.height, TMEDIA_CODEC_VIDEO(best_codec)->out.fps),
 							bandwidth_max_upload_kbps);
 					}
-					else if(self->media_type == tmedia_video){
+					else if((self->media_type & tmedia_video || (self->media_type & tmedia_bfcp_video) == tmedia_bfcp_video)){
 						bandwidth_max_download_kbps = TSK_MIN(tmedia_get_video_bandwidth_kbps_3(), bandwidth_max_download_kbps);
 						bandwidth_max_upload_kbps = TSK_MIN(tmedia_get_video_bandwidth_kbps_3(), bandwidth_max_upload_kbps);
 					}
@@ -769,7 +769,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			The UE shall include the MIME subtype "telephone-event" in the "m=" media descriptor in the SDP for audio media
 			flows that support both audio codec and DTMF payloads in RTP packets as described in RFC 4733 [23].
 			*/
-			if(self->media_type == tmedia_audio){
+			if(self->media_type & tmedia_audio){
 				tsk_istr_t ptime;
 				tsk_itoa(tmedia_defaults_get_audio_ptime(), &ptime);
 				tsdp_header_M_add_headers(base->M.lo,
@@ -781,7 +781,8 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 					tsk_null);
 				// the "telephone-event" fmt/rtpmap is added below
 			}
-			else if(self->media_type == tmedia_video){
+			else if((self->media_type & tmedia_video || (self->media_type & tmedia_bfcp_video) == tmedia_bfcp_video)){
+				tsk_istr_t session_id;
 				// https://code.google.com/p/webrtc2sip/issues/detail?id=81
 				// goog-remb: https://groups.google.com/group/discuss-webrtc/browse_thread/thread/c61ad3487e2acd52
 				// rfc5104 - 7.1.  Extension of the rtcp-fb Attribute
@@ -790,13 +791,20 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 					TSDP_HEADER_A_VA_ARGS("rtcp-fb", "* nack"),
 					TSDP_HEADER_A_VA_ARGS("rtcp-fb", "* goog-remb"),
 					tsk_null);
+				// https://tools.ietf.org/html/rfc4574
+				// http://tools.ietf.org/html/rfc4796
+				tsk_itoa(base->id, &session_id);
+				tsdp_header_M_add_headers(base->M.lo,
+					TSDP_HEADER_A_VA_ARGS("label", session_id),
+					TSDP_HEADER_A_VA_ARGS("content", (self->media_type & tmedia_bfcp) ? "slides" : "main"),
+					tsk_null);
 				// http://tools.ietf.org/html/rfc3556
 				if(self->bandwidth_max_download_kbps > 0 && self->bandwidth_max_download_kbps != INT_MAX){ // INT_MAX or <=0 means undefined
 					tsdp_header_M_add_headers(base->M.lo,
 						TSDP_HEADER_B_VA_ARGS("AS", self->bandwidth_max_download_kbps),
 						tsk_null);
 				}
-			}
+			}			
 		}
 		else{
 			TSK_DEBUG_ERROR("Failed to create lo");
@@ -1132,13 +1140,13 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 		}
 
 		// draft-lennox-mmusic-sdp-source-attributes-01
-		if(self->media_type == tmedia_audio || self->media_type == tmedia_video){
+		if((self->media_type & tmedia_audio) || (self->media_type & tmedia_video)  || ((self->media_type & tmedia_bfcp_video) == tmedia_bfcp_video)){
 			char* str = tsk_null;			
 			tsk_sprintf(&str, "%u cname:%s", self->rtp_manager->rtp.ssrc.local, self->rtp_manager->rtcp.cname); // also defined in RTCP session
 			tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("ssrc", str), tsk_null);
 			tsk_sprintf(&str, "%u mslabel:%s", self->rtp_manager->rtp.ssrc.local, "6994f7d1-6ce9-4fbd-acfd-84e5131ca2e2");
 			tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("ssrc", str), tsk_null);
-			tsk_sprintf(&str, "%u label:%s", self->rtp_manager->rtp.ssrc.local, (self->media_type == tmedia_audio) ? "doubango@audio" : "doubango@video"); /* https://groups.google.com/group/discuss-webrtc/browse_thread/thread/6c44106c8ce7d6dc */
+			tsk_sprintf(&str, "%u label:%s", self->rtp_manager->rtp.ssrc.local, (self->media_type & tmedia_audio) ? ((base->type & tmedia_bfcp) ? "doubango@bfcpaudio" : "doubango@audio") : ((base->type & tmedia_bfcp) ? "doubango@bfcpvideo" : "doubango@video")); /* https://groups.google.com/group/discuss-webrtc/browse_thread/thread/6c44106c8ce7d6dc */
 			tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("ssrc", str), tsk_null);
 			TSK_FREE(str);
 		}
@@ -1166,7 +1174,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 				// RTCWeb
 				// "mid:" must not added without BUNDLE
 				// tsdp_header_M_add_headers(base->M.lo,
-				//	TSDP_HEADER_A_VA_ARGS("mid", self->media_type == tmedia_audio ? "audio" : "video"),
+				//	TSDP_HEADER_A_VA_ARGS("mid", self->media_type & tmedia_audio ? "audio" : "video"),
 				//		tsk_null);
 				
 				while((candidate = tnet_ice_ctx_get_local_candidate_at(self->ice_ctx, index++))){
@@ -1187,7 +1195,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			base->M.lo->port = self->rtp_manager->rtp.public_port;
 		}
 
-		if(self->media_type == tmedia_audio){
+		if(self->media_type & tmedia_audio){
 			///* 3GPP TS 24.229 - 6.1.1 General
 			//	The UE shall include the MIME subtype "telephone-event" in the "m=" media descriptor in the SDP for audio media
 			//	flows that support both audio codec and DTMF payloads in RTP packets as described in RFC 4733 [23].
@@ -2116,12 +2124,12 @@ static int _sdp_pcfgs_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_acap_xt (*
 			}
 			else{
 				if(_sdp_str_starts_with(&A->value[index], "a=") && sscanf(pcfg, "a=%255s", a) != EOF){
-					char a_copy[sizeof(a)], *pch;
+					char a_copy[sizeof(a)], *pch, *saveptr;
 					tsk_size_t pcfg_acfgs_count = 0;
 					sdp_acap_xt* acap;
 					memcpy(a_copy, a, sizeof(a));
 
-					pch = strtok (a, ",[]|");
+					pch = tsk_strtok_r (a, ",[]|", &saveptr);
 					while(pch){
 						a_tag = atoi(pch);
 						if(a_tag <= 0 || a_tag + 1 >= SDP_CAPS_COUNT_MAX){
@@ -2137,7 +2145,7 @@ static int _sdp_pcfgs_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_acap_xt (*
 						acap->optional = (pch != a && a_copy[pch - a - 1] == '[') ? 1 : 0;
 						acap->or = (pch != a && a_copy[pch - a - 1] == '|') ? 1 : 0;
 next_a:
-						pch = strtok (NULL, ",[]|");
+						pch = tsk_strtok_r(tsk_null, ",[]|", &saveptr);
 					}
 				}
 				tcap_curr = tsk_null;

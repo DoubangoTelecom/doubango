@@ -32,8 +32,6 @@
 
 #include "tsk_memory.h" /* TSK_FREE */
 
-#include <string.h> /* strtok() */
-
 #define TDAV_MSRP_CONNECT_TIMEOUT	2000
 
 static void send_pending_file(tdav_session_msrp_t *session);
@@ -214,18 +212,19 @@ static int init_neg_types(tdav_session_msrp_t* msrp, const tsdp_header_M_t* m)
 	const tsdp_header_A_t* A;
 
 	if((A = tsdp_header_M_findA(m, "accept-types"))){
-		char* atype = strtok((char*)A->value, " ");
+		char *saveptr;
+		char* atype = tsk_strtok_r((char*)A->value, " ", &saveptr);
 		const char* default_atype = atype;
 		while(atype){
 			if(tsk_striequals(atype, "message/CPIM")){
 				tsk_strupdate(&msrp->neg_accept_type, atype);
 				if((A = tsdp_header_M_findA(m, "accept-wrapped-types"))){
-					char* awtype = strtok((char*)A->value, " ");
+					char* awtype = tsk_strtok_r((char*)A->value, " ", &saveptr);
 					tsk_strupdate(&msrp->neg_accept_w_type, awtype); // first
 				}
 				break;
 			}
-			atype = strtok(tsk_null, " ");
+			atype = tsk_strtok_r(tsk_null, " ", &saveptr);
 		}
 		
 		if(!msrp->neg_accept_type){

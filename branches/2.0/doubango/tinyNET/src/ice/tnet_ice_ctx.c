@@ -503,7 +503,7 @@ int tnet_ice_ctx_set_concheck_timeout(tnet_ice_ctx_t* self, int64_t timeout)
 int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candidates, const char* ufrag, const char* pwd, tsk_bool_t is_controlling, tsk_bool_t is_ice_jingle)
 {
 	int ret = 0;
-	char *v, *copy;
+	char *v, *copy, *saveptr;
 	tsk_size_t size, idx = 0;
 	tnet_ice_candidate_t* candidate;
 	if(!self){
@@ -539,7 +539,7 @@ int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candida
 	copy = tsk_strdup(candidates);
 	size = tsk_strlen(copy);
 	do{
-		v = strtok(&copy[idx], "\r\n");
+		v = tsk_strtok_r(&copy[idx], "\r\n", &saveptr);
 		idx += tsk_strlen(v) + 2;
 		if(v && (candidate = tnet_ice_candidate_parse(v))){
 			if(ufrag && pwd){

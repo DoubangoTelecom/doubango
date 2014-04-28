@@ -20,7 +20,7 @@
 
 #include "plugin_dshow_config.h"
 
-#include "internals/DSCaptureGraph.h"
+#include "internals/DSBaseCaptureGraph.h"
 #include "internals/VideoFrame.h"
 
 #include "tinymedia/tmedia_producer.h"
@@ -42,7 +42,7 @@ class DSGrabber : public
 #endif
 {
 public:
-	DSGrabber(HRESULT *hr);
+	DSGrabber(HRESULT *hr, BOOL screenCast);
 	virtual ~DSGrabber();
 
 	void setCallback(tmedia_producer_enc_cb_f callback, const void* callback_data);
@@ -58,6 +58,7 @@ public:
 	virtual void setPluginFirefox(bool value);
 
 	virtual int getFramerate();
+	virtual HRESULT getConnectedMediaType(AM_MEDIA_TYPE *mediaType);
 
 	virtual HRESULT STDMETHODCALLTYPE SampleCB(double SampleTime, IMediaSample *pSample);
     virtual HRESULT STDMETHODCALLTYPE BufferCB(double SampleTime, BYTE *pBuffer, long BufferLen);
@@ -73,7 +74,7 @@ private:
 	int					height;
 	int					fps;
 
-	DSCaptureGraph		*graph;
+	DSBaseCaptureGraph		*graph;
 
 	//VideoFrame			*currentFrame;
 	BITMAPINFOHEADER	bitmapInfo;
@@ -82,6 +83,7 @@ private:
 	tsk_mutex_handle_t	*mutex_buffer;
 
 	bool				first_buffer;
+	bool				screenCast;
 
 	const void* plugin_cb_data;
 	tmedia_producer_enc_cb_f plugin_cb;

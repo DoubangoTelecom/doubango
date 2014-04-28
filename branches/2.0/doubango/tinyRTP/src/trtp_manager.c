@@ -1265,6 +1265,7 @@ int trtp_manager_start(trtp_manager_t* self)
 	}
 	if((ret = tnet_sockaddr_init(self->rtp.remote_ip, self->rtp.remote_port, self->transport->master->type, &self->rtp.remote_addr))){
 		tnet_transport_shutdown(self->transport);
+		TSK_OBJECT_SAFE_FREE(self->transport);
 		TSK_DEBUG_ERROR("Invalid RTP host:port [%s:%u]", self->rtp.remote_ip, self->rtp.remote_port);
 		goto bail;
 	}

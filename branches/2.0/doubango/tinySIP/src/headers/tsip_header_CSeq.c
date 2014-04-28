@@ -249,7 +249,7 @@ _match:
 	case 2:
 /* #line 56 "./ragel/tsip_parser_header_CSeq.rl" */
 	{
-		TSK_PARSER_SET_INTEGER(hdr_cseq->seq);
+		TSK_PARSER_SET_UINT(hdr_cseq->seq);
 	}
 	break;
 	case 3:

@@ -198,7 +198,7 @@ tmedia_session_audio_t;
 #define tmedia_session_audio_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmedia_audio)
 TINYMEDIA_API int tmedia_session_audio_send_dtmf(tmedia_session_audio_t* self, uint8_t event);
 #define tmedia_session_audio_deinit(self) tmedia_session_deinit(TMEDIA_SESSION(self))
-#define tmedia_session_audio_create() tmedia_session_create(tmed_sess_type_audio)
+#define tmedia_session_audio_create() tmedia_session_create(tmedia_audio)
 #define TMEDIA_DECLARE_SESSION_AUDIO tmedia_session_audio_t __session_audio__
 
 /** Video Session */
@@ -209,10 +209,10 @@ typedef struct tmedia_session_video_s
 tmedia_session_video_t;
 #define tmedia_session_video_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmedia_video)
 #define tmedia_session_video_deinit(self) tmedia_session_deinit(TMEDIA_SESSION(self))
-#define tmedia_session_video_create() tmedia_session_create(tmed_sess_type_video)
+#define tmedia_session_video_create() tmedia_session_create(tmedia_video)
 #define TMEDIA_DECLARE_SESSION_VIDEO tmedia_session_video_t __session_video__
 
-/** Msrp Session */
+/** MSRP Session */
 struct tmedia_session_msrp_s;
 struct tmsrp_event_s;
 // use "struct tmsrp_event_s" instead of "tmsrp_event_t" to avoid linking aginst tinyMSRP
@@ -232,8 +232,31 @@ typedef struct tmedia_session_msrp_s
 tmedia_session_msrp_t;
 #define tmedia_session_msrp_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmedia_msrp)
 #define tmedia_session_msrp_deinit(self) tmedia_session_deinit(TMEDIA_SESSION(self))
-#define tmedia_session_msrp_create() tmedia_session_create(tmed_sess_type_msrp)
+#define tmedia_session_msrp_create() tmedia_session_create(tmedia_msrp)
 #define TMEDIA_DECLARE_SESSION_MSRP tmedia_session_msrp_t __session_msrp__
+
+/** BFCP Session */
+struct tmedia_session_bfcp_s;
+struct tbfcp_event_s;
+// use "struct tbfcp_event_s" instead of "tbfcp_event_t" to avoid linking aginst tinyBFCP
+typedef int (*tmedia_session_bfcp_cb_f)(const struct tbfcp_event_s* event);
+typedef struct tmedia_session_bfcp_s
+{
+	TMEDIA_DECLARE_SESSION;
+
+	struct {
+		tmedia_session_bfcp_cb_f func;
+		const void* data;
+	} callback;
+	
+	// int (* share_file) (struct tmedia_session_bfcp_s*, const char* path, va_list *app);
+	// int (* share_screen) (struct tmedia_session_bfcp_s*, const tmedia_params_L_t *params);
+}
+tmedia_session_bfcp_t;
+#define tmedia_session_bfcp_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmedia_bfcp)
+#define tmedia_session_bfcp_deinit(self) tmedia_session_deinit(TMEDIA_SESSION(self))
+#define tmedia_session_bfcp_create() tmedia_session_create(tmedia_bfcp)
+#define TMEDIA_DECLARE_SESSION_BFCP tmedia_session_bfcp_t __session_bfcp__
 
 /** T.140 session */
 int tmedia_session_t140_set_ondata_cbfn(tmedia_session_t* self, const void* context, tmedia_session_t140_ondata_cb_f func);
@@ -331,7 +354,7 @@ tmedia_session_param_type_t;
 //#define TMEDIA_SESSION_MANAGER_GET_PVOID(KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_GET_PARAM(tmedia_none, tmedia_ppt_manager, tmedia_pvt_pobject, KEY_STR, VALUE_PPTR)
 //#define TMEDIA_SESSION_MANAGER_GET_STR(KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_GET_PARAM(tmedia_none, tmedia_ppt_manager, tmedia_pvt_pchar, KEY_STR, VALUE_PSTR)
 //#define TMEDIA_SESSION_MANAGER_GET_INT64(KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_GET_PARAM(tmedia_none, tmedia_ppt_manager, tmedia_pvt_int64, KEY_STR, VALUE_PINT64)
-/* Any Session */
+/* ANY Session */
 #define TMEDIA_SESSION_SET_INT32(MEDIA_TYPE_ENUM, KEY_STR, VALUE_INT32)	TMEDIA_SESSION_SET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_session, tmedia_pvt_int32, KEY_STR, VALUE_INT32)
 #define TMEDIA_SESSION_SET_POBJECT(MEDIA_TYPE_ENUM, KEY_STR, VALUE_PTR)	TMEDIA_SESSION_SET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_session, tmedia_pvt_pobject, KEY_STR, VALUE_PTR)
 #define TMEDIA_SESSION_SET_STR(MEDIA_TYPE_ENUM, KEY_STR, VALUE_STR)	TMEDIA_SESSION_SET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_session, tmedia_pvt_pchar, KEY_STR, VALUE_STR)
@@ -340,7 +363,7 @@ tmedia_session_param_type_t;
 //#define TMEDIA_SESSION_GET_PVOID(MEDIA_TYPE_ENUM, KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_GET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_session, tmedia_pvt_pobject, KEY_STR, VALUE_PPTR)
 //#define TMEDIA_SESSION_GET_STR(MEDIA_TYPE_ENUM, KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_GET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_session, tmedia_pvt_pchar, KEY_STR, VALUE_PSTR)
 //#define TMEDIA_SESSION_GET_INT64(MEDIA_TYPE_ENUM, KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_GET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_session, tmedia_pvt_int64, KEY_STR, VALUE_PINT64)
-/* Audio Session */
+/* AUDIO Session */
 #define TMEDIA_SESSION_AUDIO_SET_INT32(KEY_STR, VALUE_INT32)	TMEDIA_SESSION_SET_INT32(tmedia_audio, KEY_STR, VALUE_INT32)
 #define TMEDIA_SESSION_AUDIO_SET_POBJECT(KEY_STR, VALUE_PTR)	TMEDIA_SESSION_SET_POBJECT(tmedia_audio, KEY_STR, VALUE_PTR)
 #define TMEDIA_SESSION_AUDIO_SET_STR(KEY_STR, VALUE_STR)	TMEDIA_SESSION_SET_STR(tmedia_audio, KEY_STR, VALUE_STR)
@@ -349,7 +372,7 @@ tmedia_session_param_type_t;
 //#define TMEDIA_SESSION_AUDIO_GET_PVOID(KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_GET_PVOID(tmedia_audio, KEY_STR, VALUE_PPTR)
 //#define TMEDIA_SESSION_AUDIO_GET_STR(KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_GET_STR(tmedia_audio, KEY_STR, VALUE_PSTR)
 //#define TMEDIA_SESSION_AUDIO_GET_INT64(KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_GET_INT64(tmedia_audio, KEY_STR, VALUE_PINT64)
-/* Video Session */
+/* VIDEO Session */
 #define TMEDIA_SESSION_VIDEO_SET_INT32(KEY_STR, VALUE_INT32)	TMEDIA_SESSION_SET_INT32(tmedia_video, KEY_STR, VALUE_INT32)
 #define TMEDIA_SESSION_VIDEO_SET_POBJECT(KEY_STR, VALUE_PTR)	TMEDIA_SESSION_SET_POBJECT(tmedia_video, KEY_STR, VALUE_PTR)
 #define TMEDIA_SESSION_VIDEO_SET_STR(KEY_STR, VALUE_STR)	TMEDIA_SESSION_SET_STR(tmedia_video, KEY_STR, VALUE_STR)
@@ -358,7 +381,7 @@ tmedia_session_param_type_t;
 //#define TMEDIA_SESSION_VIDEO_GET_PVOID(KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_GET_PVOID(tmedia_video, KEY_STR, VALUE_PPTR)
 //#define TMEDIA_SESSION_VIDEO_GET_STR(KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_GET_STR(tmedia_video, KEY_STR, VALUE_PSTR)
 //#define TMEDIA_SESSION_VIDEO_GET_INT64(KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_GET_INT64(tmedia_video, KEY_STR, VALUE_PINT64)
-/* Msrp Session */
+/* MSRP Session */
 #define TMEDIA_SESSION_MSRP_SET_INT32(KEY_STR, VALUE_INT32)	TMEDIA_SESSION_SET_INT32(tmedia_msrp, KEY_STR, VALUE_INT32)
 #define TMEDIA_SESSION_MSRP_SET_POBJECT(KEY_STR, VALUE_PTR)	TMEDIA_SESSION_SET_POBJECT(tmedia_msrp, KEY_STR, VALUE_PTR)
 #define TMEDIA_SESSION_MSRP_SET_STR(KEY_STR, VALUE_STR)	TMEDIA_SESSION_SET_STR(tmedia_msrp, KEY_STR, VALUE_STR)
@@ -367,7 +390,16 @@ tmedia_session_param_type_t;
 //#define TMEDIA_SESSION_MSRP_GET_PVOID(KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_GET_PVOID(tmedia_msrp, KEY_STR, VALUE_PPTR)
 //#define TMEDIA_SESSION_MSRP_GET_STR(KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_GET_STR(tmedia_msrp, KEY_STR, VALUE_PSTR)
 //#define TMEDIA_SESSION_MSRP_GET_INT64(KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_GET_INT64(tmedia_msrp, KEY_STR, VALUE_PINT64)
-/* Any Consumer */
+/* BFCP Session */
+#define TMEDIA_SESSION_BFCP_SET_INT32(KEY_STR, VALUE_INT32)	TMEDIA_SESSION_SET_INT32(tmedia_bfcp, KEY_STR, VALUE_INT32)
+#define TMEDIA_SESSION_BFCP_SET_POBJECT(KEY_STR, VALUE_PTR)	TMEDIA_SESSION_SET_POBJECT(tmedia_bfcp, KEY_STR, VALUE_PTR)
+#define TMEDIA_SESSION_BFCP_SET_STR(KEY_STR, VALUE_STR)	TMEDIA_SESSION_SET_STR(tmedia_bfcp, KEY_STR, VALUE_STR)
+#define TMEDIA_SESSION_BFCP_SET_INT64(KEY_STR, VALUE_INT64)	TMEDIA_SESSION_SET_INT64(tmedia_bfcp, KEY_STR, VALUE_INT64)
+#define TMEDIA_SESSION_BFCP_GET_INT32(KEY_STR, VALUE_PINT32)	TMEDIA_SESSION_GET_INT32(tmedia_bfcp, KEY_STR, VALUE_PINT32)
+//#define TMEDIA_SESSION_BFCP_GET_PVOID(KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_GET_PVOID(tmedia_bfcp, KEY_STR, VALUE_PPTR)
+//#define TMEDIA_SESSION_BFCP_GET_STR(KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_GET_STR(tmedia_bfcp, KEY_STR, VALUE_PSTR)
+//#define TMEDIA_SESSION_BFCP_GET_INT64(KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_GET_INT64(tmedia_bfcp, KEY_STR, VALUE_PINT64)
+/* ANY Consumer */
 #define TMEDIA_SESSION_CONSUMER_SET_INT32(MEDIA_TYPE_ENUM, KEY_STR, VALUE_INT32)	TMEDIA_SESSION_SET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_consumer, tmedia_pvt_int32, KEY_STR, VALUE_INT32)
 #define TMEDIA_SESSION_CONSUMER_SET_POBJECT(MEDIA_TYPE_ENUM, KEY_STR, VALUE_PTR)	TMEDIA_SESSION_SET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_consumer, tmedia_pvt_pobject, KEY_STR, VALUE_PTR)
 #define TMEDIA_SESSION_CONSUMER_SET_STR(MEDIA_TYPE_ENUM, KEY_STR, VALUE_STR)	TMEDIA_SESSION_SET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_consumer, tmedia_pvt_pchar, KEY_STR, VALUE_STR)
@@ -376,7 +408,7 @@ tmedia_session_param_type_t;
 //#define TMEDIA_SESSION_CONSUMER_GET_PVOID(MEDIA_TYPE_ENUM, KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_GET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_consumer, tmedia_pvt_pobject, KEY_STR, VALUE_PPTR)
 //#define TMEDIA_SESSION_CONSUMER_GET_STR(MEDIA_TYPE_ENUM, KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_GET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_consumer, tmedia_pvt_pchar, KEY_STR, VALUE_PSTR)
 //#define TMEDIA_SESSION_CONSUMER_GET_INT64(MEDIA_TYPE_ENUM, KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_GET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_consumer, tmedia_pvt_int64, KEY_STR, VALUE_PINT64)
-/* Audio Consumer */
+/* AUDIO Consumer */
 #define TMEDIA_SESSION_AUDIO_CONSUMER_SET_INT32(KEY_STR, VALUE_INT32)	TMEDIA_SESSION_CONSUMER_SET_INT32(tmedia_audio, KEY_STR, VALUE_INT32)
 #define TMEDIA_SESSION_AUDIO_CONSUMER_SET_POBJECT(KEY_STR, VALUE_PTR)	TMEDIA_SESSION_CONSUMER_SET_POBJECT(tmedia_audio, KEY_STR, VALUE_PTR)
 #define TMEDIA_SESSION_AUDIO_CONSUMER_SET_STR(KEY_STR, VALUE_STR)	TMEDIA_SESSION_CONSUMER_SET_STR(tmedia_audio, KEY_STR, VALUE_STR)
@@ -385,7 +417,7 @@ tmedia_session_param_type_t;
 //#define TMEDIA_SESSION_AUDIO_CONSUMER_GET_PVOID(KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_CONSUMER_GET_PVOID(tmedia_audio, KEY_STR, VALUE_PPTR)
 //#define TMEDIA_SESSION_AUDIO_CONSUMER_GET_STR(KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_CONSUMER_GET_STR(tmedia_audio, KEY_STR, VALUE_PSTR)
 //#define TMEDIA_SESSION_AUDIO_CONSUMER_GET_INT64(KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_CONSUMER_GET_INT64(tmedia_audio, KEY_STR, VALUE_PINT64)
-/* Video Consumer */
+/* VIDEO Consumer */
 #define TMEDIA_SESSION_VIDEO_CONSUMER_SET_INT32(KEY_STR, VALUE_INT32)	TMEDIA_SESSION_CONSUMER_SET_INT32(tmedia_video, KEY_STR, VALUE_INT32)
 #define TMEDIA_SESSION_VIDEO_CONSUMER_SET_POBJECT(KEY_STR, VALUE_PTR)	TMEDIA_SESSION_CONSUMER_SET_POBJECT(tmedia_video, KEY_STR, VALUE_PTR)
 #define TMEDIA_SESSION_VIDEO_CONSUMER_SET_STR(KEY_STR, VALUE_STR)	TMEDIA_SESSION_CONSUMER_SET_STR(tmedia_video, KEY_STR, VALUE_STR)
@@ -394,7 +426,7 @@ tmedia_session_param_type_t;
 //#define TMEDIA_SESSION_VIDEO_CONSUMER_GET_PVOID(KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_CONSUMER_GET_PVOID(tmedia_video, KEY_STR, VALUE_PPTR)
 //#define TMEDIA_SESSION_VIDEO_CONSUMER_GET_STR(KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_CONSUMER_GET_STR(tmedia_video, KEY_STR, VALUE_PSTR)
 //#define TMEDIA_SESSION_VIDEO_CONSUMER_GET_INT64(KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_CONSUMER_GET_INT64(tmedia_video, KEY_STR, VALUE_PINT64)
-/* Msrp Consumer */
+/* MSRP Consumer */
 #define TMEDIA_SESSION_MSRP_CONSUMER_SET_INT32(KEY_STR, VALUE_INT32)	TMEDIA_SESSION_CONSUMER_SET_INT32(tmedia_msrp, KEY_STR, VALUE_INT32)
 #define TMEDIA_SESSION_MSRP_CONSUMER_SET_POBJECT(KEY_STR, VALUE_PTR)	TMEDIA_SESSION_CONSUMER_SET_POBJECT(tmedia_msrp, KEY_STR, VALUE_PTR)
 #define TMEDIA_SESSION_MSRP_CONSUMER_SET_STR(KEY_STR, VALUE_STR)	TMEDIA_SESSION_CONSUMER_SET_STR(tmedia_msrp, KEY_STR, VALUE_STR)
@@ -403,7 +435,17 @@ tmedia_session_param_type_t;
 //#define TMEDIA_SESSION_MSRP_CONSUMER_GET_PVOID(KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_CONSUMER_GET_PVOID(tmedia_msrp, KEY_STR, VALUE_PPTR)
 //#define TMEDIA_SESSION_MSRP_CONSUMER_GET_STR(KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_CONSUMER_GET_STR(tmedia_msrp, KEY_STR, VALUE_PSTR)
 //#define TMEDIA_SESSION_MSRP_CONSUMER_GET_INT64(KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_CONSUMER_GET_INT64(tmedia_msrp, KEY_STR, VALUE_PINT64)
-/* Any Producer */
+/* BFCP Consumer */
+#define TMEDIA_SESSION_BFCP_CONSUMER_SET_INT32(KEY_STR, VALUE_INT32)	TMEDIA_SESSION_CONSUMER_SET_INT32(tmedia_bfcp, KEY_STR, VALUE_INT32)
+#define TMEDIA_SESSION_BFCP_CONSUMER_SET_POBJECT(KEY_STR, VALUE_PTR)	TMEDIA_SESSION_CONSUMER_SET_POBJECT(tmedia_bfcp, KEY_STR, VALUE_PTR)
+#define TMEDIA_SESSION_BFCP_CONSUMER_SET_STR(KEY_STR, VALUE_STR)	TMEDIA_SESSION_CONSUMER_SET_STR(tmedia_bfcp, KEY_STR, VALUE_STR)
+#define TMEDIA_SESSION_BFCP_CONSUMER_SET_INT64(KEY_STR, VALUE_INT64)	TMEDIA_SESSION_CONSUMER_SET_INT64(tmedia_bfcp, KEY_STR, VALUE_INT64)
+#define TMEDIA_SESSION_BFCP_CONSUMER_GET_INT32(KEY_STR, VALUE_PINT32)	TMEDIA_SESSION_CONSUMER_GET_INT32(tmedia_bfcp, KEY_STR, VALUE_PINT32)
+//#define TMEDIA_SESSION_BFCP_CONSUMER_GET_PVOID(KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_CONSUMER_GET_PVOID(tmedia_bfcp, KEY_STR, VALUE_PPTR)
+//#define TMEDIA_SESSION_BFCP_CONSUMER_GET_STR(KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_CONSUMER_GET_STR(tmedia_bfcp, KEY_STR, VALUE_PSTR)
+//#define TMEDIA_SESSION_BFCP_CONSUMER_GET_INT64(KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_CONSUMER_GET_INT64(tmedia_bfcp, KEY_STR, VALUE_PINT64)
+
+/* ANY Producer */
 #define TMEDIA_SESSION_PRODUCER_SET_INT32(MEDIA_TYPE_ENUM, KEY_STR, VALUE_INT32)	TMEDIA_SESSION_SET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_producer, tmedia_pvt_int32, KEY_STR, VALUE_INT32)
 #define TMEDIA_SESSION_PRODUCER_SET_POBJECT(MEDIA_TYPE_ENUM, KEY_STR, VALUE_PTR)	TMEDIA_SESSION_SET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_producer, tmedia_pvt_pobject, KEY_STR, VALUE_PTR)
 #define TMEDIA_SESSION_PRODUCER_SET_STR(MEDIA_TYPE_ENUM, KEY_STR, VALUE_STR)	TMEDIA_SESSION_SET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_producer, tmedia_pvt_pchar, KEY_STR, VALUE_STR)
@@ -413,7 +455,7 @@ tmedia_session_param_type_t;
 //#define TMEDIA_SESSION_PRODUCER_GET_PVOID(MEDIA_TYPE_ENUM, KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_GET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_producer, tmedia_pvt_pobject, KEY_STR, VALUE_PPTR)
 //#define TMEDIA_SESSION_PRODUCER_GET_STR(MEDIA_TYPE_ENUM, KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_GET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_producer, tmedia_pvt_pchar, KEY_STR, VALUE_PSTR)
 //#define TMEDIA_SESSION_PRODUCER_GET_INT64(MEDIA_TYPE_ENUM, KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_GET_PARAM(MEDIA_TYPE_ENUM, tmedia_ppt_producer, tmedia_pvt_int64, KEY_STR, VALUE_PINT64)
-/* Audio Producer */
+/* AUDIO Producer */
 #define TMEDIA_SESSION_AUDIO_PRODUCER_SET_INT32(KEY_STR, VALUE_INT32)	TMEDIA_SESSION_PRODUCER_SET_INT32(tmedia_audio, KEY_STR, VALUE_INT32)
 #define TMEDIA_SESSION_AUDIO_PRODUCER_SET_POBJECT(KEY_STR, VALUE_PTR)	TMEDIA_SESSION_PRODUCER_SET_POBJECT(tmedia_audio, KEY_STR, VALUE_PTR)
 #define TMEDIA_SESSION_AUDIO_PRODUCER_SET_STR(KEY_STR, VALUE_STR)	TMEDIA_SESSION_AUDIO_PRODUCER_SET_STR(tmedia_audio, KEY_STR, VALUE_STR)
@@ -431,7 +473,7 @@ tmedia_session_param_type_t;
 //#define TMEDIA_SESSION_VIDEO_PRODUCER_GET_PVOID(KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_PRODUCER_GET_PVOID(tmedia_video, KEY_STR, VALUE_PPTR)
 //#define TMEDIA_SESSION_VIDEO_PRODUCER_GET_STR(KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_AUDIO_PRODUCER_GET_STR(tmedia_video, KEY_STR, VALUE_PSTR)
 //#define TMEDIA_SESSION_VIDEO_PRODUCER_GET_INT64(KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_PRODUCER_GET_INT64(tmedia_video, KEY_STR, VALUE_PINT64)
-/* Msrp Producer */
+/* MSRP Producer */
 #define TMEDIA_SESSION_MSRP_PRODUCER_SET_INT32(KEY_STR, VALUE_INT32)	TMEDIA_SESSION_PRODUCER_SET_INT32(tmedia_msrp, KEY_STR, VALUE_INT32)
 #define TMEDIA_SESSION_MSRP_PRODUCER_SET_POBJECT(KEY_STR, VALUE_PTR)	TMEDIA_SESSION_PRODUCER_SET_POBJECT(tmedia_msrp, KEY_STR, VALUE_PTR)
 #define TMEDIA_SESSION_MSRP_PRODUCER_SET_STR(KEY_STR, VALUE_STR)	TMEDIA_SESSION_AUDIO_PRODUCER_SET_STR(tmedia_msrp, KEY_STR, VALUE_STR)
@@ -440,6 +482,15 @@ tmedia_session_param_type_t;
 //#define TMEDIA_SESSION_MSRP_PRODUCER_GET_PVOID(KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_PRODUCER_GET_PVOID(tmedia_msrp, KEY_STR, VALUE_PPTR)
 //#define TMEDIA_SESSION_MSRP_PRODUCER_GET_STR(KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_AUDIO_PRODUCER_GET_STR(tmedia_msrp, KEY_STR, VALUE_PSTR)
 //#define TMEDIA_SESSION_MSRP_PRODUCER_GET_INT64(KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_PRODUCER_GET_INT64(tmedia_msrp, KEY_STR, VALUE_PINT64)
+/* BFCP Producer */
+#define TMEDIA_SESSION_BFCP_PRODUCER_SET_INT32(KEY_STR, VALUE_INT32)	TMEDIA_SESSION_PRODUCER_SET_INT32(tmedia_bfcp, KEY_STR, VALUE_INT32)
+#define TMEDIA_SESSION_BFCP_PRODUCER_SET_POBJECT(KEY_STR, VALUE_PTR)	TMEDIA_SESSION_PRODUCER_SET_POBJECT(tmedia_bfcp, KEY_STR, VALUE_PTR)
+#define TMEDIA_SESSION_BFCP_PRODUCER_SET_STR(KEY_STR, VALUE_STR)	TMEDIA_SESSION_AUDIO_PRODUCER_SET_STR(tmedia_bfcp, KEY_STR, VALUE_STR)
+#define TMEDIA_SESSION_BFCP_PRODUCER_SET_INT64(KEY_STR, VALUE_INT64)	TMEDIA_SESSION_PRODUCER_SET_INT64(tmedia_bfcp, KEY_STR, VALUE_INT64)
+#define TMEDIA_SESSION_BFCP_PRODUCER_GET_INT32(KEY_STR, VALUE_PINT32)	TMEDIA_SESSION_PRODUCER_GET_INT32(tmedia_bfcp, KEY_STR, VALUE_PINT32)
+//#define TMEDIA_SESSION_MSRP_PRODUCER_GET_PVOID(KEY_STR, VALUE_PPTR)	TMEDIA_SESSION_PRODUCER_GET_PVOID(tmedia_bfcp, KEY_STR, VALUE_PPTR)
+//#define TMEDIA_SESSION_MSRP_PRODUCER_GET_STR(KEY_STR, VALUE_PSTR)	TMEDIA_SESSION_AUDIO_PRODUCER_GET_STR(tmedia_bfcp, KEY_STR, VALUE_PSTR)
+//#define TMEDIA_SESSION_MSRP_PRODUCER_GET_INT64(KEY_STR, VALUE_PINT64)	TMEDIA_SESSION_PRODUCER_GET_INT64(tmedia_bfcp, KEY_STR, VALUE_PINT64)
 
 
 #define TMEDIA_SESSION_SET_NULL()							tmedia_sptype_null
@@ -481,6 +532,7 @@ TINYMEDIA_API int tmedia_session_mgr_send_t140_data(tmedia_session_mgr_t* self, 
 TINYMEDIA_API int tmedia_session_mgr_set_onrtcp_cbfn(tmedia_session_mgr_t* self, tmedia_type_t media_type, const void* context, tmedia_session_rtcp_onevent_cb_f fun);
 TINYMEDIA_API int tmedia_session_mgr_send_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t media_type, enum tmedia_rtcp_event_type_e event_type, uint32_t ssrc_media);
 TINYMEDIA_API int tmedia_session_mgr_recv_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t media_type, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media);
+TINYMEDIA_API int tmedia_session_mgr_recv_rtcp_event_2(tmedia_session_mgr_t* self, tmedia_rtcp_event_type_t event_type, uint64_t session_id);
 TINYMEDIA_API int tmedia_session_mgr_send_file(tmedia_session_mgr_t* self, const char* path, ...);
 TINYMEDIA_API int tmedia_session_mgr_send_message(tmedia_session_mgr_t* self, const void* data, tsk_size_t size, const tmedia_params_L_t *params);
 TINYMEDIA_API int tmedia_session_mgr_set_msrp_cb(tmedia_session_mgr_t* self, const void* usrdata, tmedia_session_msrp_cb_f func);

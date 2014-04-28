@@ -48,7 +48,7 @@ bool ActionConfig::addPayload(const void* payload, unsigned len)
 
 bool ActionConfig::setActiveMedia(twrap_media_type_t type)
 {
-	tmedia_type_t media_type = twrap_get_media_type(type);
+	tmedia_type_t media_type = twrap_get_native_media_type(type);
 	return (tsip_action_set(m_pHandle, 
 		TSIP_ACTION_SET_MEDIA_TYPE(media_type),
 		TSIP_ACTION_SET_NULL()) == 0);
@@ -65,7 +65,7 @@ ActionConfig* ActionConfig::setResponseLine(short code, const char* phrase)
 
 ActionConfig* ActionConfig::setMediaString(twrap_media_type_t type, const char* key, const char* value)
 {
-	tmedia_type_t media_type = twrap_get_media_type(type);
+	tmedia_type_t media_type = twrap_get_native_media_type(type);
 	tsip_action_set(m_pHandle,
 			TSIP_ACTION_SET_MEDIA(
 				TMEDIA_SESSION_SET_STR(media_type, key, value),
@@ -77,7 +77,7 @@ ActionConfig* ActionConfig::setMediaString(twrap_media_type_t type, const char* 
 
 ActionConfig* ActionConfig::setMediaInt(twrap_media_type_t type, const char* key, int value)
 {
-	tmedia_type_t media_type = twrap_get_media_type(type);
+	tmedia_type_t media_type = twrap_get_native_media_type(type);
 	tsip_action_set(m_pHandle,
 			TSIP_ACTION_SET_MEDIA(
 				TMEDIA_SESSION_SET_INT32(media_type, key, value),

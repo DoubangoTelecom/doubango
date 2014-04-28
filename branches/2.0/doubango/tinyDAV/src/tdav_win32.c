@@ -63,6 +63,8 @@ int tdav_win32_init()
 {
 #if !TDAV_UNDER_WINDOWS_RT
 	MMRESULT result;
+	
+	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
 	// Timers accuracy
 	result = timeBeginPeriod(1);

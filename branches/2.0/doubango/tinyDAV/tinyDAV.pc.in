@@ -7,7 +7,7 @@ Name : libtinyDAV
 Description : Doubango Telecom tinyDAV (Audio/Video) library
 Version : @PACKAGE_VERSION@
 Requires: 
-Requires.private: tinySAK = @PACKAGE_VERSION@ tinyNET = @PACKAGE_VERSION@ tinySDP = @PACKAGE_VERSION@ tinyRTP = @PACKAGE_VERSION@ tinyMEDIA = @PACKAGE_VERSION@ tinyMSRP = @PACKAGE_VERSION@
+Requires.private: tinySAK = @PACKAGE_VERSION@ tinyNET = @PACKAGE_VERSION@ tinySDP = @PACKAGE_VERSION@ tinyBFCP = @PACKAGE_VERSION@ tinyRTP = @PACKAGE_VERSION@ tinyMEDIA = @PACKAGE_VERSION@ tinyMSRP = @PACKAGE_VERSION@
 Conflicts:
 Cflags : -I${includedir}/tinydav
 Libs : -L${libdir} -ltinyDAV

@@ -29,6 +29,7 @@ using namespace std;
 DSCaptureGraph::DSCaptureGraph(InxbISampleGrabberCB* callback, HRESULT *hr)
 #else
 DSCaptureGraph::DSCaptureGraph(ISampleGrabberCB* callback, HRESULT *hr)
+: DSBaseCaptureGraph(callback, hr)
 #endif
 {
 	this->grabberCallback = callback;
@@ -286,6 +287,7 @@ HRESULT DSCaptureGraph::start()
 		//assert(1==15);
 #endif
 		TSK_DEBUG_ERROR("DSCaptureGraph::mediaController->Run() has failed with %ld", hr);
+		return hr;
 	}
 	this->running = true;
 	return hr;
