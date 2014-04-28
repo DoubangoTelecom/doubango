@@ -82,8 +82,8 @@ private:
 
 	tsk_mutex_handle_t	*mutex_buffer;
 
-	bool				first_buffer;
-	bool				screenCast;
+	BOOL				first_buffer;
+	BOOL				screenCast;
 
 	const void* plugin_cb_data;
 	tmedia_producer_enc_cb_f plugin_cb;
