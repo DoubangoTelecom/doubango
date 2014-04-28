@@ -174,9 +174,12 @@ git checkout n1.2
 --disable-network --enable-pthreads \
 --disable-ffmpeg --disable-ffplay --disable-ffserver --disable-ffprobe \
 \
---enable-gpl \
+--enable-gpl --enable-nonfree \
 \
 --disable-debug
+
+# to force enabling h264, append to the configure command: --enable-libx264 --enable-encoder=libx264 --enable-decoder=h264
+# to force enabling h263 and h263+, append to the configure command: --enable-encoder=h263 --enable-encoder=h263p --enable-decoder=h263
 
 # build and install
 make && make install
