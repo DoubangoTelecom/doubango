@@ -41,7 +41,7 @@ static int tsk_objects_count = 0;
 #	define TSK_DEBUG_OBJECTS	0
 #endif
 
-#ifdef __GNUC__
+#if defined(__GNUC__)
 #	define tsk_atomic_inc(_ptr_) __sync_fetch_and_add((_ptr_), 1)
 #	define tsk_atomic_dec(_ptr_) __sync_fetch_and_sub((_ptr_), 1)
 #elif defined(_MSC_VER)

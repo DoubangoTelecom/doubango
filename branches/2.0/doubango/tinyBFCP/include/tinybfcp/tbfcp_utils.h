@@ -24,6 +24,10 @@
 
 #include "tsk_common.h"
 
+enum tnet_socket_type_e;
+enum tbfcp_role_e e_role;
+enum tbfcp_setup_e;
+
 TBFCP_BEGIN_DECLS
 
 TINYBFCP_API int tbfcp_utils_get_profile(enum tnet_socket_type_e e_socket_type, const char** ppc_profile);

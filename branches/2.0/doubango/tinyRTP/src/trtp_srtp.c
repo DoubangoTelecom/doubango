@@ -120,7 +120,8 @@ int trtp_srtp_ctx_deinit(trtp_srtp_ctx_xt* ctx)
 
 int trtp_srtp_match_line(const char* crypto_line, int32_t* tag, int32_t* crypto_type, char* key, tsk_size_t key_size)
 {
-	char* v = strtok((char*)crypto_line, " :|;");
+	char* saveptr;
+	char* v = tsk_strtok_r((char*)crypto_line, " :|;", &saveptr);
 	int32_t k = 0;
 	while(v){
 		switch(k){
@@ -165,7 +166,7 @@ int trtp_srtp_match_line(const char* crypto_line, int32_t* tag, int32_t* crypto_
 				}
 		}
 		++k;
-		v = strtok(tsk_null, " :|;");
+		v = tsk_strtok_r(tsk_null, " :|;", &saveptr);
 	}
 
 	return -0xF0;

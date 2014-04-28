@@ -203,7 +203,9 @@ int tsip_dialog_layer_shutdownAll(tsip_dialog_layer_t *self)
 
 		if(!self->shutdown.inprogress){
 			self->shutdown.inprogress = tsk_true;
-			self->shutdown.condwait = tsk_condwait_create();
+			if (!self->shutdown.condwait) {
+				self->shutdown.condwait = tsk_condwait_create();
+			}
 		}
 		
 		tsk_safeobj_lock(self);

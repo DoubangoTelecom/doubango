@@ -366,17 +366,13 @@ int tnet_transport_get_ip_n_port_2(const tnet_transport_handle_t *handle, tnet_i
 
 int tnet_transport_set_natt_ctx(tnet_transport_handle_t *handle, tnet_nat_context_handle_t* natt_ctx)
 {
-	tnet_transport_t *transport = handle;
-
-	if(transport && natt_ctx){
-		TSK_OBJECT_SAFE_FREE(transport->natt_ctx); // delete old
-		transport->natt_ctx = tsk_object_ref(natt_ctx);
-		return 0;
-	}
-	else{
+	if (!handle) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+	TSK_OBJECT_SAFE_FREE(((tnet_transport_t *)handle)->natt_ctx);
+	((tnet_transport_t *)handle)->natt_ctx = tsk_object_ref(natt_ctx);
+	return 0;
 }
 
 int tnet_transport_get_public_ip_n_port(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)

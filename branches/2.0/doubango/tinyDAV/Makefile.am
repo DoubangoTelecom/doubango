@@ -3,6 +3,7 @@ libtinyDAV_la_LIBADD = \
 	../tinySAK/libtinySAK.la\
 	../tinyNET/libtinyNET.la\
 	../tinySDP/libtinySDP.la\
+	../tinyBFCP/libtinyBFCP.la\
 	../tinyRTP/libtinyRTP.la\
 	../tinyMEDIA/libtinyMEDIA.la\
 	../tinyMSRP/libtinyMSRP.la\
@@ -12,6 +13,7 @@ libtinyDAV_la_CPPFLAGS = -I../tinySAK/src\
 	-I../tinyNET/src\
 	-I../tinyIPSec/src\
 	-I../tinySDP/include\
+	-I../tinyBFCP/include\
 	-I../tinyRTP/include\
 	-I../tinyMEDIA/include\
 	-I../tinyMSRP/include\
@@ -86,6 +88,8 @@ libtinyDAV_la_SOURCES += src/video/tdav_consumer_video.c \
 	src/video/tdav_session_video.c \
 	src/video/jb/tdav_video_frame.c \
 	src/video/jb/tdav_video_jb.c
+
+libtinyDAV_la_SOURCES += src/bfcp/tdav_session_bfcp.c
 	
 libtinyDAV_la_SOURCES += src/t140/tdav_consumer_t140.c \
 	src/t140/tdav_producer_t140.c \
@@ -96,6 +100,8 @@ libtinyDAV_la_SOURCES += src/msrp/tdav_consumer_msrp.c \
 	src/msrp/tdav_session_msrp.c
 
 libtinyDAV_la_SOURCES += src/codecs/amr/tdav_codec_amr.c
+
+libtinyDAV_la_SOURCES += src/codecs/bfcp/tdav_codec_bfcp.c
 
 libtinyDAV_la_SOURCES += src/codecs/opus/tdav_codec_opus.c
 

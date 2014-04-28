@@ -21,6 +21,7 @@ UpdateVersion()
     #sed -i "s/[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\(.*)?/$VERSION_MAJOR\.$VERSION_MINOR\.$VERSION_MICRO\.$SVN_VERSION/g" $1
 }
 
+UpdateVersion tinyBFCP/version.rc
 UpdateVersion tinyDAV/version.rc
 UpdateVersion tinyHTTP/version.rc
 UpdateVersion tinyIPSec/version.rc

@@ -361,7 +361,7 @@ bool CallSession::call(const SipUri* remoteUri, twrap_media_type_t media, Action
 		TSIP_SSESSION_SET_NULL());
 
 	const tsip_action_handle_t* action_cfg = config ? config->getHandle() : tsk_null;
-	return (tsip_api_invite_send_invite(m_pHandle, twrap_get_media_type(media),
+	return (tsip_api_invite_send_invite(m_pHandle, twrap_get_native_media_type(media),
 		TSIP_ACTION_SET_CONFIG(action_cfg),
 		TSIP_ACTION_SET_NULL()) == 0);
 }
@@ -386,7 +386,7 @@ bool CallSession::setMediaSSRC(twrap_media_type_t media, uint32_t ssrc)
 {
 	return (tsip_ssession_set(m_pHandle,
 			TSIP_SSESSION_SET_MEDIA(
-				TSIP_MSESSION_SET_RTP_SSRC(twrap_get_media_type(media), ssrc),
+				TSIP_MSESSION_SET_RTP_SSRC(twrap_get_native_media_type(media), ssrc),
 				TSIP_MSESSION_SET_NULL()
 			),
 			TSIP_SSESSION_SET_NULL()) == 0);
@@ -561,7 +561,7 @@ bool CallSession::sendRtcpEvent(enum tmedia_rtcp_event_type_e event_type, twrap_
 	const tmedia_session_mgr_t* pWrappedMgr;
 	const MediaSessionMgr* pMgr;
 	if((pMgr = getMediaMgr()) && (pWrappedMgr = pMgr->getWrappedMgr())){
-		return (tmedia_session_mgr_send_rtcp_event((tmedia_session_mgr_t*)pWrappedMgr, twrap_get_media_type(media_type), event_type, ssrc_media) == 0);		
+		return (tmedia_session_mgr_send_rtcp_event((tmedia_session_mgr_t*)pWrappedMgr, twrap_get_native_media_type(media_type), event_type, ssrc_media) == 0);		
 	}
 	TSK_DEBUG_ERROR("No media manager");
 	return false;
@@ -573,10 +573,10 @@ bool CallSession::setRtcpCallback(const RtcpCallback* pRtcpCallback, twrap_media
 	const MediaSessionMgr* pMgr;
 	if((pMgr = getMediaMgr()) && (pWrappedMgr = pMgr->getWrappedMgr())){
 		if((m_pRtcpCallback = pRtcpCallback)){
-			return (tmedia_session_mgr_set_onrtcp_cbfn((tmedia_session_mgr_t*)pWrappedMgr, twrap_get_media_type(media_type), this, &CallSession::rtcpOnCallback) == 0);
+			return (tmedia_session_mgr_set_onrtcp_cbfn((tmedia_session_mgr_t*)pWrappedMgr, twrap_get_native_media_type(media_type), this, &CallSession::rtcpOnCallback) == 0);
 		}
 		else{
-			return (tmedia_session_mgr_set_onrtcp_cbfn((tmedia_session_mgr_t*)pWrappedMgr, twrap_get_media_type(media_type), this, tsk_null) == 0);
+			return (tmedia_session_mgr_set_onrtcp_cbfn((tmedia_session_mgr_t*)pWrappedMgr, twrap_get_native_media_type(media_type), this, tsk_null) == 0);
 		}
 	}
 	return false;

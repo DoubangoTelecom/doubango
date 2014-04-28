@@ -7,7 +7,7 @@ Name : libdoubango
 Description : Doubango Telecom VoIP framework
 Version : @PACKAGE_VERSION@
 Requires: 
-Requires.private: tinySAK = @PACKAGE_VERSION@ tinyNET = @PACKAGE_VERSION@ tinyDAV = @PACKAGE_VERSION@ tinyHTTP = @PACKAGE_VERSION@ tinyIPSec = @PACKAGE_VERSION@ tinyMEDIA = @PACKAGE_VERSION@ tinyMSRP = @PACKAGE_VERSION@ tinyRTP = @PACKAGE_VERSION@ tinySDP = @PACKAGE_VERSION@ tinySIGCOMP = @PACKAGE_VERSION@ tinySIP = @PACKAGE_VERSION@ tinySMS = @PACKAGE_VERSION@ tinyXCAP = @PACKAGE_VERSION@
+Requires.private: tinySAK = @PACKAGE_VERSION@ tinyNET = @PACKAGE_VERSION@ tinyDAV = @PACKAGE_VERSION@ tinyHTTP = @PACKAGE_VERSION@ tinyIPSec = @PACKAGE_VERSION@ tinyMEDIA = @PACKAGE_VERSION@ tinyMSRP = @PACKAGE_VERSION@ tinyRTP = @PACKAGE_VERSION@ tinySDP = @PACKAGE_VERSION@ tinyBFCP = @PACKAGE_VERSION@ tinySIGCOMP = @PACKAGE_VERSION@ tinySIP = @PACKAGE_VERSION@ tinySMS = @PACKAGE_VERSION@ tinyXCAP = @PACKAGE_VERSION@
 Conflicts:
 Cflags : -I${includedir} -I${includedir}/tinydav
 Libs : -L${libdir} -ltinySAK

@@ -9,6 +9,7 @@ SUBDIRS = tinySAK \
 	tinySMS \
 	tinySIGCOMP \
 	tinySDP \
+	tinyBFCP \
 	tinyMSRP \
 	tinyMEDIA \
 	tinyRTP \

@@ -689,7 +689,7 @@ tmedia_codec_t* tmedia_codec_find_by_format(tmedia_codecs_L_t* codecs, const cha
 */
 int tmedia_codec_parse_fmtp(const char* fmtp, unsigned* maxbr, unsigned* fps, unsigned *width, unsigned *height)
 {
-	char *copy, *pch;
+	char *copy, *pch, *saveptr;
 	tsk_bool_t found = tsk_false;
 	
 	if(tsk_strnullORempty(fmtp)){
@@ -698,7 +698,7 @@ int tmedia_codec_parse_fmtp(const char* fmtp, unsigned* maxbr, unsigned* fps, un
 	}
 
 	copy = tsk_strdup(fmtp);
-	pch = strtok(copy, "; /");
+	pch = tsk_strtok_r(copy, "; /", &saveptr);
 
 	while(pch){
 		unsigned div = 0;
@@ -731,13 +731,13 @@ int tmedia_codec_parse_fmtp(const char* fmtp, unsigned* maxbr, unsigned* fps, un
 
 		if(found){
 			//found = tsk_false;
-			pch = strtok(tsk_null, "; ");
+			pch = tsk_strtok_r(tsk_null, "; ", &saveptr);
 			while(pch){
 				if(sscanf(pch, "MaxBR=%u", maxbr) == 1){
 					//found = tsk_true;
 					break;
 				}
-				pch = strtok(tsk_null, "; /");
+				pch = tsk_strtok_r(tsk_null, "; /", &saveptr);
 			}
 		}
 		
@@ -745,7 +745,7 @@ int tmedia_codec_parse_fmtp(const char* fmtp, unsigned* maxbr, unsigned* fps, un
 			break;
 		}
 
-		pch = strtok(tsk_null, "; /");
+		pch = tsk_strtok_r(tsk_null, "; /", &saveptr);
 	}
 
 	TSK_FREE(copy);

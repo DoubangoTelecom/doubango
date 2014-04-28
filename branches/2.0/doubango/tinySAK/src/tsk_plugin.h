@@ -46,6 +46,7 @@ typedef enum tsk_plugin_def_media_type_e
 	tsk_plugin_def_media_type_none = 0,
 	tsk_plugin_def_media_type_audio = (1 << 0),
 	tsk_plugin_def_media_type_video = (1 << 1),
+	tsk_plugin_def_media_type_screencast = (1 << 2),
 	tsk_plugin_def_media_type_all = (~0)
 }
 tsk_plugin_def_media_type_t;

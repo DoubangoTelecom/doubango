@@ -174,6 +174,7 @@ bool RemoveAllFilters(IGraphBuilder *graphBuilder)
 static LRESULT CALLBACK __create__WndProcWindow(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HANDLE* event = reinterpret_cast<HANDLE*>(wParam);
+	BOOL* isScreenCast = reinterpret_cast<BOOL*>(GetPropA(hWnd, "screnCast"));
 
 	if(event && lParam){
 		switch(uMsg){
@@ -189,7 +190,7 @@ static LRESULT CALLBACK __create__WndProcWindow(HWND hWnd, UINT uMsg, WPARAM wPa
 				{
 					HRESULT hr;
 					DSGrabber** ppGrabber = reinterpret_cast<DSGrabber**>(lParam);
-					*ppGrabber = new DSGrabber(&hr);
+					*ppGrabber = new DSGrabber(&hr, *isScreenCast);
 					SetEvent(event);
 					break;
 				}
@@ -198,11 +199,11 @@ static LRESULT CALLBACK __create__WndProcWindow(HWND hWnd, UINT uMsg, WPARAM wPa
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
-int createOnCurrentThead(HWND hWnd, void** ppRet, bool display)
+int createOnCurrentThead(HWND hWnd, void** ppRet, BOOL display, BOOL screnCast)
 {
 	HRESULT hr;
 	if(display) *ppRet = new DSDisplay(&hr);
-	else *ppRet = new DSGrabber(&hr);
+	else *ppRet = new DSGrabber(&hr, screnCast);
 	if(FAILED(hr)){
 		TSK_DEBUG_ERROR("Failed to created DirectShow %s", display ? "Display" : "Grabber");
 		SAFE_DELETE_PTR(*ppRet);
@@ -211,15 +212,17 @@ int createOnCurrentThead(HWND hWnd, void** ppRet, bool display)
 	return 0;
 }
 
-int createOnUIThead(HWND hWnd, void** ppRet, bool display)
+int createOnUIThead(HWND hWnd, void** ppRet, BOOL display, BOOL screnCast)
 {
+	static BOOL __isScreenCastFalse = FALSE;
+	static BOOL __isScreenCastTrue = TRUE;
 	if(!ppRet){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if(IsMainThread()){
-		return createOnCurrentThead(hWnd, ppRet, display);
+	if (IsMainThread()) {
+		return createOnCurrentThead(hWnd, ppRet, display, screnCast);
 	}
 	else{
 		TSK_DEBUG_INFO("Create DirectShow element on worker thread");
@@ -237,32 +240,32 @@ int createOnUIThead(HWND hWnd, void** ppRet, bool display)
 		}
 
 		WNDPROC wndProc = (WNDPROC) SetWindowLongPtr(hWnd, GWL_WNDPROC, (LONG) __create__WndProcWindow);
-		if(!wndProc){
+		if (!wndProc) {
 			TSK_DEBUG_ERROR("SetWindowLongPtr() failed with errcode=%d", GetLastError());
-			return createOnCurrentThead(hWnd, ppRet, display);
+			return createOnCurrentThead(hWnd, ppRet, display, screnCast);
 		}
 
-		if(!(event = CreateEvent(NULL, TRUE, FALSE, NULL))){
+		if (!(event = CreateEvent(NULL, TRUE, FALSE, NULL))) {
 			TSK_DEBUG_ERROR("Failed to create new event");
 			ret = -4; goto bail;
 		}
-
-		if(!PostMessageA(hWnd, display ? WM_CREATE_DISPLAY_ON_UI_THREAD : WM_CREATE_GRABBER_ON_UI_THREAD, reinterpret_cast<WPARAM>(event), reinterpret_cast<LPARAM>(ppRet))){
+		SetPropA(hWnd, "screnCast", screnCast ? &__isScreenCastTrue : &__isScreenCastFalse);
+		if (!PostMessageA(hWnd, display ? WM_CREATE_DISPLAY_ON_UI_THREAD : WM_CREATE_GRABBER_ON_UI_THREAD, reinterpret_cast<WPARAM>(event), reinterpret_cast<LPARAM>(ppRet))) {
 			TSK_DEBUG_ERROR("PostMessageA() failed");
 			ret = -5; goto bail;
 		}
 		
-		do{
+		do {
 			retWait = WaitForSingleObject(event, WM_CREATE_ON_UI_THREAD_TIMEOUT);
 		}
-		while(retryCount-- > 0 && (retWait == WAIT_TIMEOUT));
+		while (retryCount-- > 0 && (retWait == WAIT_TIMEOUT));
 
 	bail:
 		// restore
-		if(hWnd && wndProc){
+		if (hWnd && wndProc) {
 			SetWindowLongPtr(hWnd, GWL_WNDPROC, (LONG)wndProc);
 		}
-		if(event){
+		if (event) {
 			CloseHandle(event);
 		}
 

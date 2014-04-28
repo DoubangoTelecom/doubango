@@ -230,7 +230,7 @@ _match:
 	case 1:
 /* #line 53 "./ragel/tsip_parser_header_RSeq.rl" */
 	{
-		TSK_PARSER_SET_INTEGER(hdr_rseq->seq);
+		TSK_PARSER_SET_UINT(hdr_rseq->seq);
 	}
 	break;
 	case 2:

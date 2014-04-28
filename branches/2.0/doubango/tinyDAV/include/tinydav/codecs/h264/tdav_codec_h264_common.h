@@ -99,6 +99,7 @@ typedef struct tdav_codec_h264_common_s
 
 	profile_idc_t profile;
 	level_idc_t level;
+	unsigned maxFS;
 
 	packetization_mode_t pack_mode;
 
@@ -128,9 +129,9 @@ static const tdav_codec_h264_common_level_size_xt tdav_codec_h264_common_level_s
     {level_idc_1_2, 320, 240, 396},
     {level_idc_1_3, 352, 288, 396},
     {level_idc_2_0, 352, 288, 396},
-    {level_idc_2_1, 352, 480, 792},
-    {level_idc_2_2, 352, 480, 1620},
-    {level_idc_3_0, 720, 480, 1620},
+    {level_idc_2_1, 480, 352, 792}, // Swap(352x480)
+    {level_idc_2_2, 720, 480, 1620},
+    {level_idc_3_0, 720, 576, 1620},
     {level_idc_3_1, 1280, 720, 3600},
     {level_idc_3_2, 1280, 720, 5120},
     {level_idc_4_0, 2048, 1024, 8192},
@@ -154,6 +155,23 @@ static int tdav_codec_h264_common_size_from_level(level_idc_t level, unsigned *w
 	return -1;
 }
 
+static int tdav_codec_h264_common_size_from_fs(unsigned maxFS, unsigned *width, unsigned *height)
+{
+	tsk_size_t i;
+	int ret = -1;
+	for (i = 0; i < sizeof(tdav_codec_h264_common_level_sizes)/sizeof(tdav_codec_h264_common_level_sizes[0]); ++i){
+		if (tdav_codec_h264_common_level_sizes[i].maxFS <= maxFS){
+			*width = tdav_codec_h264_common_level_sizes[i].width;
+			*height = tdav_codec_h264_common_level_sizes[i].height;
+			ret = 0;
+		}
+		else {
+			break;
+		}
+	}
+	return ret;
+}
+
 static int tdav_codec_h264_common_level_from_size(unsigned width, unsigned height, level_idc_t *level)
 {
 	tsk_size_t i;
@@ -173,15 +191,21 @@ static int tdav_codec_h264_common_level_from_size(unsigned width, unsigned heigh
 
 static int tdav_codec_h264_common_init(tdav_codec_h264_common_t * h264)
 {
-	if(h264){
+	if (h264) {
+		level_idc_t level;
 		// because at this step 'tmedia_codec_init()' is not called yet and we need default size to compute the H.264 level
-		if(TMEDIA_CODEC_VIDEO(h264)->out.width == 0 || TMEDIA_CODEC_VIDEO(h264)->in.width == 0){
+		if (TMEDIA_CODEC_VIDEO(h264)->out.width == 0 || TMEDIA_CODEC_VIDEO(h264)->in.width == 0) {
 			unsigned width, height;
 			tmedia_pref_video_size_t pref_size = tmedia_defaults_get_pref_video_size();
-			if(tmedia_video_get_size(pref_size, &width, &height) == 0){
+			if (tmedia_video_get_size(pref_size, &width, &height) == 0) {
 				TMEDIA_CODEC_VIDEO(h264)->out.width = TMEDIA_CODEC_VIDEO(h264)->in.width = width;
 				TMEDIA_CODEC_VIDEO(h264)->out.height = TMEDIA_CODEC_VIDEO(h264)->in.height = height;
 			}
+		}
+		h264->maxFS = (((TMEDIA_CODEC_VIDEO(h264)->out.width + 15) >> 4) * ((TMEDIA_CODEC_VIDEO(h264)->out.height + 15) >> 4));
+		if ((tdav_codec_h264_common_level_from_size(TMEDIA_CODEC_VIDEO(h264)->out.width, TMEDIA_CODEC_VIDEO(h264)->out.height, &level)) == 0){
+			h264->maxFS = TSK_MIN((int32_t)h264->maxFS, MaxFS[H264_LEVEL_TO_ZERO_BASED_INDEX[level]]);
+			h264->level = level;
 		}
 	}
 	return 0;
@@ -260,18 +284,18 @@ static tsk_bool_t tdav_codec_h264_common_sdp_att_match(tdav_codec_h264_common_t*
 		tsk_params_L_t* params;
 
 		/* Check whether the profile match (If the profile is missing, then we consider that it's ok) */
-		if(tdav_codec_h264_common_get_profile_and_level(att_value, &profile, &level) != 0){
+		if (tdav_codec_h264_common_get_profile_and_level(att_value, &profile, &level) != 0) {
 			TSK_DEBUG_ERROR("Not valid profile-level: %s", att_value);
 			return tsk_false;
 		}
-		if(h264->profile != profile){
+		if (h264->profile != profile) {
 			return tsk_false;
 		}
 		else{
-			if(h264->level != level){
+			if (h264->level != level) {
 				unsigned width, height;
 				h264->level = TSK_MIN(h264->level, level);
-				if(tdav_codec_h264_common_size_from_level(h264->level, &width, &height) != 0){
+				if (tdav_codec_h264_common_size_from_level(h264->level, &width, &height) != 0) {
 					return tsk_false;
 				}
 				// Set "out" size. We must not send more than "MaxFS".
@@ -290,23 +314,33 @@ static tsk_bool_t tdav_codec_h264_common_sdp_att_match(tdav_codec_h264_common_t*
 		if((params = tsk_params_fromstring(att_value, ";", tsk_true))){
 			
 			/* === max-br ===*/
-			if((val_int = tsk_params_get_param_value_as_int(params, "max-br")) != -1){
+			if ((val_int = tsk_params_get_param_value_as_int(params, "max-br")) != -1) {
 				// should compare "max-br"?
 				TMEDIA_CODEC_VIDEO(h264)->out.max_br = val_int*1000;
 			}
 
+			/* === max-fs ===*/
+			if ((val_int = tsk_params_get_param_value_as_int(params, "max-fs")) != -1) {
+				unsigned width_max, height_max, maxFS;
+				maxFS = TSK_MIN(h264->maxFS/*preferred*/, (unsigned)val_int/*proposed*/); // make sure we'll never send more than we advertised
+				if (tdav_codec_h264_common_size_from_fs(maxFS, &width_max, &height_max) == 0) {
+					TMEDIA_CODEC_VIDEO(h264)->out.width = TMEDIA_CODEC_VIDEO(h264)->in.width = width_max;
+					TMEDIA_CODEC_VIDEO(h264)->out.height = TMEDIA_CODEC_VIDEO(h264)->in.height = height_max;
+				}
+			}
+
 			/* === max-mbps ===*/
-			if((val_int = tsk_params_get_param_value_as_int(params, "max-mbps")) != -1){
+			if ((val_int = tsk_params_get_param_value_as_int(params, "max-mbps")) != -1) {
 				// should compare "max-mbps"?
 				TMEDIA_CODEC_VIDEO(h264)->out.max_mbps = val_int*1000;
 			}
 
 			/* === packetization-mode ===*/
-			if((val_int = tsk_params_get_param_value_as_int(params, "packetization-mode")) != -1){
+			if ((val_int = tsk_params_get_param_value_as_int(params, "packetization-mode")) != -1) {
 				if((packetization_mode_t)val_int == Single_NAL_Unit_Mode || (packetization_mode_t)val_int == Non_Interleaved_Mode){
 					TDAV_CODEC_H264_COMMON(h264)->pack_mode = (packetization_mode_t)val_int;
 				}
-				else{
+				else {
 					TSK_DEBUG_INFO("packetization-mode not matching");
 					ret = tsk_false;
 					goto bail;
@@ -350,14 +384,11 @@ static char* tdav_codec_h264_common_sdp_att_get(const tdav_codec_h264_common_t* 
 	if(tsk_striequals(att_name, "fmtp")){
 		char* fmtp = tsk_null;
 #if 1
-		// Required by "TANDBERG/4120 (X7.2.2)" and CISCO TelePresence
-		int32_t maxFS = (((TMEDIA_CODEC_VIDEO(h264)->out.width + 15) >> 4) * ((TMEDIA_CODEC_VIDEO(h264)->out.height + 15) >> 4));
-		maxFS = TSK_MAX(maxFS, MaxFS[H264_LEVEL_TO_ZERO_BASED_INDEX[h264->level]]);
-		
+		// Required by "TANDBERG/4120 (X7.2.2)" and CISCO TelePresence		
 		tsk_sprintf(&fmtp, "profile-level-id=%x;max-mbps=%d;max-fs=%d;packetization-mode=%d", 
 				((h264->profile << 16) | h264->level), 
 				MaxMBPS[H264_LEVEL_TO_ZERO_BASED_INDEX[h264->level]],
-				maxFS,
+				h264->maxFS,
 				h264->pack_mode
 			);
 #else

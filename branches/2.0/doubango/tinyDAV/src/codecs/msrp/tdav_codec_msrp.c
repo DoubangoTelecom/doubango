@@ -1,7 +1,6 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,9 +23,6 @@
  * @brief The Message Session Relay Protocol (MSRP) fake codec.
  * Used for both Message (RFC 4975) and file transfer (RFC 5547).
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinydav/codecs/msrp/tdav_codec_msrp.h"
 

@@ -103,6 +103,19 @@ TINYSAK_API void tsk_str_to_hex(const char *str, tsk_size_t size, uint8_t* hex);
 #define tsk_strequals(s1, s2) (tsk_strcmp((const char*)(s1), (const char*)(s2)) ? tsk_false : tsk_true)
 #define tsk_strnequals(s1, s2, n) (tsk_strncmp((const char*)(s1), (const char*)(s2), n) ? tsk_false : tsk_true)
 #define tsk_strlen(s) ((s) ? strlen((s)) : 0)
+#if defined(_MSC_VER) || HAVE_STRTOK_S
+#	define tsk_strtok_r(str, delim, saveptr) strtok_s((str), (delim), (saveptr))
+#elif HAVE_STRTOK_R
+#	define tsk_strtok_r strtok_r
+#else
+#	define tsk_strtok_r(str, delim, saveptr) strtok(str, delim)
+#endif
+#if defined(_MSC_VER)
+#	define tsk_atoi64	_atoi64
+#else
+#	define tsk_atoi64	atoll
+#endif
+
 
 /**@ingroup tsk_string_group
 * String object.

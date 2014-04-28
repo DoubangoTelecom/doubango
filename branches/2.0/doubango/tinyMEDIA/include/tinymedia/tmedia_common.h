@@ -52,6 +52,9 @@ typedef enum tmedia_type_e
 	tmedia_file = (0x01 << 4),
 	tmedia_t38 = (0x01 << 5),
 	tmedia_t140 = (0x01 << 6),
+	tmedia_bfcp = (0x01 << 7),
+	tmedia_bfcp_audio = (0x01 << 8)/*must*/ | tmedia_bfcp, /* do not add "| audio". Otherwise it will be impossible to start an "video+bfcp-audio" session. */
+	tmedia_bfcp_video = (0x01 << 9)/*must*/ | tmedia_bfcp, /* do not add "| video". Otherwise it will be impossible to start an "audio+bfcp-video" session. */
 
 	tmedia_msrp = (tmedia_chat | tmedia_file),
 	tmedia_audiovideo = (tmedia_audio | tmedia_video),

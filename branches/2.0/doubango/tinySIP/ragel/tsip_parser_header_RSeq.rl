@@ -51,7 +51,7 @@
 	}
 	
 	action parse_seq{
-		TSK_PARSER_SET_INTEGER(hdr_rseq->seq);
+		TSK_PARSER_SET_UINT(hdr_rseq->seq);
 	}
 
 	action eob{

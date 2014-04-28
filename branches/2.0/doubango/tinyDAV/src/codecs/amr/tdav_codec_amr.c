@@ -417,13 +417,13 @@ int tdav_codec_amr_parse_fmtp(tdav_codec_amr_t* self, const char* fmtp)
 		/* === mode-set ===*/
 		if((val_str = tsk_params_get_param_value(params, "mode-set"))){
 			char* modes = tsk_strdup(val_str);
-			char* pch;
+			char *pch, *saveptr;
 			int mode_int;
-			pch = strtok(modes, ", ");
+			pch = tsk_strtok_r(modes, ", ", &saveptr);
 			while(pch){
 				mode_int = atoi(pch);
 				self->modes |= 0x0001 << mode_int;
-				pch = strtok(tsk_null, ", ");
+				pch = tsk_strtok_r(tsk_null, ", ", &saveptr);
 			}
 			
 			TSK_FREE(modes);

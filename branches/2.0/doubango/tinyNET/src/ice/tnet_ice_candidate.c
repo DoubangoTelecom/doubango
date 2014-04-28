@@ -137,7 +137,7 @@ tnet_ice_candidate_t* tnet_ice_candidate_create(tnet_ice_cand_type_t type_e, tne
 // @param str e.g. "1 1 udp 1 192.168.196.1 57806 typ host name video_rtcp network_name {0C0137CC-DB78-46B6-9B6C-7E097FFA79FE} username StFEVThMK2DHThkv password qkhKUDr4WqKRwZTo generation 0"
 tnet_ice_candidate_t* tnet_ice_candidate_parse(const char* str)
 {
-	char *v, *copy;
+	char *v, *copy, *saveptr;
 	int32_t k;
 	tnet_ice_candidate_t* candidate;
 
@@ -153,7 +153,7 @@ tnet_ice_candidate_t* tnet_ice_candidate_parse(const char* str)
 
 	k = 0;
 	copy = tsk_strdup(str);
-	v = strtok(copy, " ");
+	v = tsk_strtok_r(copy, " ", &saveptr);
 
 	while(v){
 		switch(k){
@@ -192,7 +192,7 @@ tnet_ice_candidate_t* tnet_ice_candidate_parse(const char* str)
 				}
 			case 6:
 				{
-					v = strtok(tsk_null, " ");
+					v = tsk_strtok_r(tsk_null, " ", &saveptr);
 					tsk_strupdate(&candidate->cand_type_str, v);
 					candidate->type_e = _tnet_ice_candtype_get_transport_type(v);
 					break;
@@ -200,7 +200,7 @@ tnet_ice_candidate_t* tnet_ice_candidate_parse(const char* str)
 			default:
 				{
 					const char* name = v;
-					const char* value = (v = strtok(tsk_null, " "));
+					const char* value = (v = tsk_strtok_r(tsk_null, " ", &saveptr));
 					tsk_param_t* param = tsk_param_create(name, value);
 					if(param){
 						tsk_list_push_back_data(candidate->extension_att_list, (void**)&param);
@@ -210,7 +210,7 @@ tnet_ice_candidate_t* tnet_ice_candidate_parse(const char* str)
 		}
 
 		++k;
-		v = strtok(tsk_null, " ");
+		v = tsk_strtok_r(tsk_null, " ", &saveptr);
 	}
 
 	if(k < 6){

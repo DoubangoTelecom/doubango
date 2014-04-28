@@ -123,15 +123,17 @@ static int plugin_video_dshow_producer_start(tmedia_producer_t* self)
 		return -1;
 	}
 
-	if(producer->started){
+	if (producer->started) {
 		return 0;
 	}
 
 	// create grabber on UI thread
-	if(!producer->grabber){
-		if(producer->create_on_ui_thread) createOnUIThead(reinterpret_cast<HWND>((void*)DSPRODUCER(producer)->previewHwnd), (void**)&producer->grabber, false);
-		else createOnCurrentThead(reinterpret_cast<HWND>((void*)DSPRODUCER(producer)->previewHwnd), (void**)&producer->grabber, false);
-		if(!producer->grabber){
+	if (!producer->grabber) {
+		static BOOL __isDisplayFalse = FALSE;
+		static BOOL __isScreenCastFalse = FALSE;
+		if(producer->create_on_ui_thread) createOnUIThead(reinterpret_cast<HWND>((void*)DSPRODUCER(producer)->previewHwnd), (void**)&producer->grabber, __isDisplayFalse, __isScreenCastFalse);
+		else createOnCurrentThead(reinterpret_cast<HWND>((void*)DSPRODUCER(producer)->previewHwnd), (void**)&producer->grabber, __isDisplayFalse, __isScreenCastFalse);
+		if (!producer->grabber) {
 			TSK_DEBUG_ERROR("Failed to create grabber");
 			return -2;
 		}
@@ -213,11 +215,8 @@ static int plugin_video_dshow_producer_stop(tmedia_producer_t* self)
 //
 /* constructor */
 static tsk_object_t* plugin_video_dshow_producer_ctor(tsk_object_t * self, va_list * app)
-{
-	CoInitialize(NULL);
-
-	plugin_video_dshow_producer_t *producer = (plugin_video_dshow_producer_t *)self;
-	if(producer){
+{	plugin_video_dshow_producer_t *producer = (plugin_video_dshow_producer_t *)self;
+	if (producer) {
 		/* init base */
 		tmedia_producer_init(TMEDIA_PRODUCER(producer));
 		TMEDIA_PRODUCER(producer)->video.chroma = tmedia_chroma_bgr24; // RGB24 on x86 (little endians) stored as BGR24

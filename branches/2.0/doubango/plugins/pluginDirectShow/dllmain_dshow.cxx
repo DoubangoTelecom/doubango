@@ -23,7 +23,11 @@
 #include "tsk_plugin.h"
 #include "tsk_debug.h"
 
-#include <windows.h>
+#include <streams.h>
+
+#if !defined(ENABLE_SCREENCAST)
+#	define ENABLE_SCREENCAST 0
+#endif /* ENABLE_SCREENCAST */
 
 PLUGIN_DSHOW_BEGIN_DECLS /* BEGIN */
 PLUGIN_DSHOW_API int __plugin_get_def_count();
@@ -34,6 +38,17 @@ PLUGIN_DSHOW_END_DECLS /* END */
 
 extern const tmedia_consumer_plugin_def_t *plugin_video_dshow_consumer_plugin_def_t;
 extern const tmedia_producer_plugin_def_t *plugin_video_dshow_producer_plugin_def_t;
+extern const tmedia_producer_plugin_def_t *plugin_screencast_dshow_producer_plugin_def_t;
+
+CFactoryTemplate g_Templates[]=
+{ { L""
+, NULL
+, NULL
+, NULL
+, NULL
+}
+};
+int g_cTemplates = sizeof(g_Templates)/sizeof(g_Templates[0]);
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -55,6 +70,9 @@ typedef enum PLUGIN_INDEX_E
 {
 	PLUGIN_INDEX_VIDEO_CONSUMER,
 	PLUGIN_INDEX_VIDEO_PRODUCER,
+#if 0
+	PLUGIN_INDEX_SCREENCAST_PRODUCER,
+#endif
 	PLUGIN_INDEX_COUNT
 }
 PLUGIN_INDEX_T;
@@ -68,8 +86,13 @@ int __plugin_get_def_count()
 tsk_plugin_def_type_t __plugin_get_def_type_at(int index)
 {
 	switch(index){
-		case PLUGIN_INDEX_VIDEO_CONSUMER: return tsk_plugin_def_type_consumer;
-		case PLUGIN_INDEX_VIDEO_PRODUCER: return tsk_plugin_def_type_producer;
+		case PLUGIN_INDEX_VIDEO_CONSUMER: 
+			return tsk_plugin_def_type_consumer;
+		case PLUGIN_INDEX_VIDEO_PRODUCER: 
+#if ENABLE_SCREENCAST
+		case PLUGIN_INDEX_SCREENCAST_PRODUCER:
+#endif
+			return tsk_plugin_def_type_producer;
 		default:
 			{
 				TSK_DEBUG_ERROR("No plugin at index %d", index);
@@ -86,6 +109,12 @@ tsk_plugin_def_media_type_t	__plugin_get_def_media_type_at(int index)
 			{
 				return tsk_plugin_def_media_type_video;
 			}
+#if ENABLE_SCREENCAST
+		case PLUGIN_INDEX_SCREENCAST_PRODUCER:
+			{
+				return tsk_plugin_def_media_type_screencast;
+			}
+#endif
 		default:
 			{
 				TSK_DEBUG_ERROR("No plugin at index %d", index);
@@ -105,6 +134,12 @@ tsk_plugin_def_ptr_const_t __plugin_get_def_at(int index)
 			{
 				return plugin_video_dshow_producer_plugin_def_t;
 			}
+#if ENABLE_SCREENCAST
+		case PLUGIN_INDEX_SCREENCAST_PRODUCER:
+			{
+				return plugin_screencast_dshow_producer_plugin_def_t;
+			}
+#endif
 		default:
 			{
 				TSK_DEBUG_ERROR("No plugin at index %d", index);

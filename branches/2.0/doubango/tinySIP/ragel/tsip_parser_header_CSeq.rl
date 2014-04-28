@@ -54,7 +54,7 @@ extern tsip_request_type_t tsip_request_get_type(const char* method);
 	}
 
 	action parse_seq{
-		TSK_PARSER_SET_INTEGER(hdr_cseq->seq);
+		TSK_PARSER_SET_UINT(hdr_cseq->seq);
 	}
 
 	action eob{

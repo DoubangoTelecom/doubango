@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="pluginDirectShow"
 	ProjectGUID="{6A69773C-0C70-4BD4-8362-C274CAFD58F2}"
 	RootNamespace="pluginDirectShow"
@@ -179,6 +179,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\plugin_screencast_dshow_producer.cxx"
+				>
+			</File>
+			<File
 				RelativePath=".\plugin_video_dshow_consumer.cxx"
 				>
 			</File>
@@ -199,6 +203,10 @@
 				</File>
 				<File
 					RelativePath=".\internals\DSCaptureUtils.cxx"
+					>
+				</File>
+				<File
+					RelativePath=".\internals\DSDibHelper.cxx"
 					>
 				</File>
 				<File
@@ -238,6 +246,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\internals\DSPushSourceDesktop.cxx"
+					>
+				</File>
+				<File
+					RelativePath=".\internals\DSScreenCastGraph.cxx"
+					>
+				</File>
+				<File
 					RelativePath=".\internals\DSUtils.cxx"
 					>
 				</File>
@@ -268,6 +284,10 @@
 				Name="internals"
 				>
 				<File
+					RelativePath=".\internals\DSBaseCaptureGraph.h"
+					>
+				</File>
+				<File
 					RelativePath=".\internals\DSBufferWriter.h"
 					>
 				</File>
@@ -281,6 +301,10 @@
 				</File>
 				<File
 					RelativePath=".\internals\DSCaptureUtils.h"
+					>
+				</File>
+				<File
+					RelativePath=".\internals\DSDibHelper.h"
 					>
 				</File>
 				<File
@@ -309,6 +333,14 @@
 				</File>
 				<File
 					RelativePath=".\internals\DSOutputStream.h"
+					>
+				</File>
+				<File
+					RelativePath=".\internals\DSPushSource.h"
+					>
+				</File>
+				<File
+					RelativePath=".\internals\DSScreenCastGraph.h"
 					>
 				</File>
 				<File
