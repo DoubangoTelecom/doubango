@@ -17,14 +17,8 @@ public enum twrap_media_type_t {
   twrap_media_bfcp(0x10),
   twrap_media_bfcp_audio(0x30),
   twrap_media_bfcp_video(0x50),
-  twrap_media_audio_t140(0x09),
-  twrap_media_video_t140(0x0a),
   twrap_media_audiovideo(0x03),
-  twrap_media_audio_video(twrap_media_audiovideo),
-  twrap_media_audio_video_t140(0x0b),
-  twrap_media_audio_video_bfcpvideo(0x53),
-  twrap_media_audio_bfcpvideo(0x51),
-  twrap_media_video_bfcpvideo(0x52);
+  twrap_media_audio_video(twrap_media_audiovideo);
 
   public final int swigValue() {
     return swigValue;
