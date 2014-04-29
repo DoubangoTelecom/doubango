@@ -50,7 +50,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
-				DebugInformationFormat="1"
+				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
 			<Tool
@@ -316,10 +316,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\resource.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\tinysak_config.h"
 				>
 			</File>
@@ -357,10 +353,6 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_fsm.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_heap.h"
 				>
 			</File>
 			<File

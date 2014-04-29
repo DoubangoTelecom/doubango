@@ -128,7 +128,7 @@ static const tsk_object_def_t tmedia_session_ghost_def_s =
 	sizeof(tmedia_session_ghost_t),
 	tmedia_session_ghost_ctor, 
 	tmedia_session_ghost_dtor,
-	tmedia_codec_cmp, 
+	tmedia_session_cmp, 
 };
 /* plugin definition*/
 static const tmedia_session_plugin_def_t tmedia_session_ghost_plugin_def_s = 
