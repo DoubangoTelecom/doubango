@@ -631,6 +631,7 @@ static int _tbfcp_session_process_incoming_pkt(tbfcp_session_t* p_self, const tb
 			}
 			break;
 		case tbfcp_primitive_HelloAck:
+        default:
 			break;
 	}
 
