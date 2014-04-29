@@ -142,7 +142,7 @@ char* txcap_selector_get_node_2(const char* auid_id, va_list* app)
 
 	/* append the namespace */
 	if(namespace){
-		tsk_buffer_append(buffer, namespace, strlen(namespace));
+		tsk_buffer_append(buffer, namespace, tsk_strlen(namespace));
 		TSK_FREE(namespace);
 	}
 

@@ -185,7 +185,7 @@ int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t*
 
 	*name = tsk_null;
 	*rate = *channels = 0;
-	len = tsk_strlen(rtpmap);
+	len = (int)tsk_strlen(rtpmap);
 
 	/* name */
 	if((index = tsk_strindexOf(rtpmap, len, "/")) != -1){
@@ -351,7 +351,7 @@ int tmedia_parse_video_imageattr(const char* imageattr, tmedia_pref_video_size_t
 	}
 	*out_width = *in_width, *out_height = *in_height;
 
-	if((ret = tmedia_imageattr_parse(&attr, imageattr, tsk_strlen(imageattr)))){
+	if((ret = tmedia_imageattr_parse(&attr, imageattr, (tsk_size_t)tsk_strlen(imageattr)))){
 		TSK_DEBUG_ERROR("Failed to parse");
 		return 0; // use default values
 	}
