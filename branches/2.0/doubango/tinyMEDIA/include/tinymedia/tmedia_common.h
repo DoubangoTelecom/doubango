@@ -38,6 +38,7 @@
 TMEDIA_BEGIN_DECLS
 
 struct tsdp_message_s;
+struct tsdp_header_M_s
 
 /** List of all supported media types */
 // @tinyWRAP
