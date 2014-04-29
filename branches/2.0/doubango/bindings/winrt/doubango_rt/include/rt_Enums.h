@@ -62,12 +62,12 @@ namespace doubango_rt
 			twrap_media_video = twrap_media_video,
 			twrap_media_msrp = twrap_media_msrp,
 			twrap_media_t140 = twrap_media_t140,
+			twrap_media_bfcp = twrap_media_bfcp,
+			twrap_media_bfcp_audio = twrap_media_bfcp_audio,
+			twrap_media_bfcp_video = twrap_media_bfcp_video,
 
-			twrap_media_audio_t140 = twrap_media_audio_t140,
-			twrap_media_video_t140 = twrap_media_video_t140,
 			twrap_media_audiovideo = twrap_media_audiovideo, /* @deprecated */
 			twrap_media_audio_video = twrap_media_audio_video,
-			twrap_media_audio_video_t140 = twrap_media_audio_video_t140
 		};
 
 		public enum class rt_tmedia_bandwidth_level_t
