@@ -128,7 +128,7 @@ int tmedia_resampler_plugin_register(const tmedia_resampler_plugin_def_t* plugin
 		return -1;
 	}
 	if(!__tmedia_resampler_plugin) {
-		TSK_DEBUG_INFO("Register resampler: %d", plugin->desc);
+		TSK_DEBUG_INFO("Register resampler: %s", plugin->desc);
 		__tmedia_resampler_plugin = plugin;
 	}
 	return 0;

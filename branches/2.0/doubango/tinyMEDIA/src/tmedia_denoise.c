@@ -216,7 +216,7 @@ int tmedia_denoise_plugin_register(const tmedia_denoise_plugin_def_t* plugin)
 		return -1;
 	}
 	if(!__tmedia_denoise_plugin) {
-		TSK_DEBUG_INFO("Register denoiser: %d", plugin->desc);
+		TSK_DEBUG_INFO("Register denoiser: %s", plugin->desc);
 		__tmedia_denoise_plugin = plugin;
 	}
 	return 0;
