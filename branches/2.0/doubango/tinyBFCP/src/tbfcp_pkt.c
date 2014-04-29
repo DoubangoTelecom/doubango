@@ -157,7 +157,7 @@ int tbfcp_pkt_get_size_in_octetunits_without_padding(const tbfcp_pkt_t* pc_self,
     }
     *p_size = TBFCP_PKT_HDR_SIZE_IN_OCTETS;
     tsk_list_foreach(pc_item, pc_self->p_list_attrs) {
-        if (pc_attr = (const tbfcp_attr_t*)pc_item->data) {
+        if ((pc_attr = (const tbfcp_attr_t*)pc_item->data)) {
             if ((ret = tbfcp_attr_get_size_in_octetunits_without_padding(pc_attr, &n_size))) {
                 return ret;
             }
@@ -179,7 +179,7 @@ int tbfcp_pkt_get_size_in_octetunits_with_padding(const tbfcp_pkt_t* pc_self, ts
     }
     *p_size = TBFCP_PKT_HDR_SIZE_IN_OCTETS;
     tsk_list_foreach(pc_item, pc_self->p_list_attrs) {
-        if (pc_attr = (const tbfcp_attr_t*)pc_item->data) {
+        if ((pc_attr = (const tbfcp_attr_t*)pc_item->data)) {
             if ((ret = tbfcp_attr_get_size_in_octetunits_with_padding(pc_attr, &n_size))) {
                 return ret;
             }
@@ -195,7 +195,6 @@ int tbfcp_pkt_write_with_padding(const tbfcp_pkt_t* pc_self, uint8_t* p_buff_ptr
     const tbfcp_attr_t* pc_attr;
     tsk_size_t n_size;
     int ret;
-    const uint8_t* _p_buff_ptr = (const uint8_t*)p_buff_ptr;
     if (!pc_self || !p_buff_ptr || !n_buff_size || !p_written) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
@@ -219,7 +218,7 @@ int tbfcp_pkt_write_with_padding(const tbfcp_pkt_t* pc_self, uint8_t* p_buff_ptr
     n_buff_size -= TBFCP_PKT_HDR_SIZE_IN_OCTETS;
 
     tsk_list_foreach(pc_item, pc_self->p_list_attrs) {
-        if (pc_attr = (const tbfcp_attr_t*)pc_item->data) {
+        if ((pc_attr = (const tbfcp_attr_t*)pc_item->data)) {
             if ((ret = tbfcp_attr_write_with_padding(pc_attr, p_buff_ptr, n_buff_size, &n_size))) {
                 return ret;
             }
@@ -415,8 +414,8 @@ int tbfcp_pkt_create_HelloAck_2(uint32_t conf_id, uint16_t transac_id, uint16_t 
         tbfcp_primitive_HelloAck,
         tbfcp_primitive_Error,
     };
-    static const __supp_prims_count = sizeof(__supp_prims)/sizeof(__supp_prims[0]);
-    static const tbfcp_primitive_t __supp_attrs[] = {
+    static const tsk_size_t __supp_prims_count = sizeof(__supp_prims)/sizeof(__supp_prims[0]);
+    static const tbfcp_attribute_type_t __supp_attrs[] = {
         tbfcp_attribute_type_BENEFICIARY_ID,
         tbfcp_attribute_type_FLOOR_ID,
         tbfcp_attribute_type_FLOOR_REQUEST_ID,

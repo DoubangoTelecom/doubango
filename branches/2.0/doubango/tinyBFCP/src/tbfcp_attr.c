@@ -94,7 +94,7 @@ static int _tbfcp_attr_get_size_in_octetunits(const tbfcp_attr_t* pc_self, tsk_b
         const tbfcp_attr_t* pc_attr;
         *p_size = TBFCP_ATTR_HDR_SIZE_IN_OCTETS + _pc_self->extra_hdr_size_in_octets;
         tsk_list_foreach(pc_item, _pc_self->p_list_attrs) {
-            if (pc_attr = (const tbfcp_attr_t*)pc_item->data) {
+            if ((pc_attr = (const tbfcp_attr_t*)pc_item->data)) {
                 if ((ret = tbfcp_attr_get_size_in_octetunits_without_padding(pc_attr, &n_size))) {
                     return ret;
                 }
@@ -197,7 +197,7 @@ static int _tbfcp_attr_write(const tbfcp_attr_t* pc_self, uint8_t* p_buff_ptr, t
             n_buff_size -= _pc_self->extra_hdr_size_in_octets;
         }
         tsk_list_foreach(pc_item, _pc_self->p_list_attrs) {
-            if (pc_attr = (const tbfcp_attr_t*)pc_item->data) {
+            if ((pc_attr = (const tbfcp_attr_t*)pc_item->data)) {
                 if ((ret = _tbfcp_attr_write(pc_attr, p_buff_ptr, n_buff_size, kWithoutPadding, &n_written))) {
                     return ret;
                 }
