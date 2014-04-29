@@ -308,6 +308,7 @@ HRESULT DSCaptureGraph::pause()
 HRESULT DSCaptureGraph::stop()
 {
 	HRESULT hr;
+#if 0 // Must not
 	hr = this->mediaController->Pause();
 	if (hr == S_FALSE)
 	{
@@ -315,6 +316,7 @@ HRESULT DSCaptureGraph::stop()
 		FILTER_STATE pfs;
 		hr = this->mediaController->GetState(2500, (OAFilterState*) &pfs);
 	}
+#endif
 	hr = this->mediaController->Stop();
 	if (!SUCCEEDED(hr))
 	{

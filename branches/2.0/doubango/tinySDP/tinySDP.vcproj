@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="tinySDP"
 	ProjectGUID="{E45DB518-6562-4033-80E8-60030F0B169F}"
 	RootNamespace="tinySDP"
@@ -49,7 +49,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
-				DebugInformationFormat="1"
+				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
 			<Tool

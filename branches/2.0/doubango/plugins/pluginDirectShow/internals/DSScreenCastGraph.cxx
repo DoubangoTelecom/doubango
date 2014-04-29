@@ -157,7 +157,6 @@ HRESULT DSScreenCastGraph::stop()
 	}
 
 	HRESULT hr;
-	// hr = this->sourceFilter->Stop();
 	hr = this->mediaController->Stop();
 	if (FAILED(hr))
 	{

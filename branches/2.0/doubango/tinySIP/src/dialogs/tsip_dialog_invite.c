@@ -505,7 +505,8 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 	}
 	
 	// is media update?
-	if(!media_session_was_null && (old_media_type != new_media_type) && (self->msession_mgr->sdp.lo && self->msession_mgr->sdp.ro)){
+	// (old_media_type == new_media_type) means the new session are rejected. This is way we match the CSeq
+	if(!media_session_was_null && (old_media_type != new_media_type || (TSIP_MESSAGE_IS_RESPONSE(message) && self->cseq_out_media_update == message->CSeq->seq)) && (self->msession_mgr->sdp.lo && self->msession_mgr->sdp.ro)){
 		// at this point the media session manager has been succeffuly started and all is ok
 		TSIP_DIALOG_GET_SS(self)->media.type = new_media_type;
 		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_m_updated, 
@@ -687,8 +688,11 @@ static int x0000_Connected_2_Connected_X_oINVITE(va_list *app)
 	
 	/* Get Media type from the action */
 	mediaType_changed = (TSIP_DIALOG_GET_SS(self)->media.type != action->media.type && action->media.type != tmedia_none);
-	if(self->msession_mgr && mediaType_changed){
-		ret = tmedia_session_mgr_set_media_type(self->msession_mgr, action->media.type);
+	if (mediaType_changed){
+		if (self->msession_mgr) {
+			ret = tmedia_session_mgr_set_media_type(self->msession_mgr, action->media.type);
+		}
+		self->cseq_out_media_update = TSIP_DIALOG(self)->cseq_value + 1;
 	}
 	
 	/* Appy media params received from the user */

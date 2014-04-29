@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="tinyMSRP"
 	ProjectGUID="{AA46AF16-9678-4054-8E48-98DC21ECEC82}"
 	RootNamespace="tinyMSRP"
@@ -49,7 +49,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
-				DebugInformationFormat="1"
+				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
 			<Tool

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="tinyXCAP"
 	ProjectGUID="{570CF33D-E65F-448F-8AC2-F9AE2F23152F}"
 	RootNamespace="tinyXCAP"
@@ -49,7 +49,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
-				DebugInformationFormat="1"
+				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
 			<Tool

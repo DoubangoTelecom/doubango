@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="tinyRTP"
 	ProjectGUID="{99B7D02F-8C70-4B45-AF3C-92313C3CEE15}"
 	RootNamespace="tinyRTP"
@@ -49,7 +49,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
-				DebugInformationFormat="1"
+				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
 			<Tool

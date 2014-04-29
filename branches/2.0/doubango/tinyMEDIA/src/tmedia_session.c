@@ -42,6 +42,9 @@
 #	define va_copy(D, S)       ((D) = (S))
 #endif
 
+#define kSkipSessionLoadTrue	tsk_true
+#define kSkipSessionLoadFalse	tsk_false
+
 extern const tmedia_codec_plugin_def_t* __tmedia_codec_plugins[TMED_CODEC_MAX_PLUGINS];
 
 /* pointer to all registered sessions */
@@ -50,13 +53,14 @@ const tmedia_session_plugin_def_t* __tmedia_session_plugins[TMED_SESSION_MAX_PLU
 /* === local functions === */
 static int _tmedia_session_mgr_recv_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t media_type, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media, uint64_t session_id);
 static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self);
-static const tmedia_session_t* _tmedia_session_mgr_find_session_at_index(tmedia_session_mgr_t* self, tsk_size_t index);
+static const tmedia_session_t* _tmedia_session_mgr_find_session_at_index(const tmedia_sessions_L_t* list, tsk_size_t index);
 static int _tmedia_session_mgr_clear_sessions(tmedia_session_mgr_t* self);
 static int _tmedia_session_mgr_apply_params(tmedia_session_mgr_t* self);
+const tsdp_message_t* _tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self, tsk_bool_t skip_session_load);
+
 static int _tmedia_session_prepare(tmedia_session_t* self);
 static int _tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m);
 static int _tmedia_session_load_codecs(tmedia_session_t* self);
-
 const char* tmedia_session_get_media(const tmedia_session_t* self);
 const tsdp_header_M_t* tmedia_session_get_lo(tmedia_session_t* self);
 int tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m);
@@ -1080,136 +1084,7 @@ bail:
 */
 const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 {
-	const tsk_list_item_t* item;
-	const tmedia_session_t* ms;
-	const tsdp_header_M_t* m;
-	const tsdp_message_t* ret = tsk_null;
-	
-	if(!self){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return tsk_null;
-	}
-
-	tsk_safeobj_lock(self);
-	
-	/* prepare the session manager if not already done (create all sessions) */
-	if(TSK_LIST_IS_EMPTY(self->sessions)){
-		if(_tmedia_session_mgr_load_sessions(self)){
-			TSK_DEBUG_ERROR("Failed to prepare the session manager");
-			goto bail;
-		}
-	}
-	
-	/* creates local sdp if not already done or update it's value (because of set_ro())*/
-	if((self->ro_changed || self->state_changed || self->mediaType_changed) && self->sdp.lo){
-		// delete current lo 
-		TSK_OBJECT_SAFE_FREE(self->sdp.lo);
-		if(self->mediaType_changed){
-			// reload session with new medias and keep the old one
-			_tmedia_session_mgr_load_sessions(self);
-		}
-		self->ro_changed = tsk_false;
-		self->ro_provisional = tsk_false;
-		self->state_changed = tsk_false;
-		self->mediaType_changed = tsk_false;
-	}
-
-	if(self->sdp.lo){
-		ret = self->sdp.lo;
-		goto bail;
-	}
-	else if((self->sdp.lo = tsdp_message_create_empty(self->public_addr ? self->public_addr : self->addr, self->ipv6, self->sdp.lo_ver++))){	
-		/* Set connection "c=" */
-		tsdp_message_add_headers(self->sdp.lo,
-			TSDP_HEADER_C_VA_ARGS("IN", self->ipv6 ? "IP6" : "IP4", self->public_addr ? self->public_addr : self->addr),
-			tsk_null);
-	}else{
-		self->sdp.lo_ver--;
-		TSK_DEBUG_ERROR("Failed to create empty SDP message");
-		goto bail;
-	}
-
-	/*	pass complete local sdp to the sessions to allow them to use session-level attributes */
-	tmedia_session_mgr_set(self,
-			TMEDIA_SESSION_SET_POBJECT(self->type, "local-sdp-message", self->sdp.lo),
-			TMEDIA_SESSION_SET_NULL());
-
-	/* gets each "m=" line from the sessions and add them to the local sdp */
-	tsk_list_foreach(item, self->sessions){
-		if(!(ms = item->data) || !ms->plugin){
-			TSK_DEBUG_ERROR("Invalid session");
-			continue;
-		}
-		/* prepare the media session */
-		if(!ms->prepared && (_tmedia_session_prepare(TMEDIA_SESSION(ms)))){
-			TSK_DEBUG_ERROR("Failed to prepare session"); /* should never happen */
-			continue;
-		}
-		
-		/* Add QoS lines to our local media */
-		if((self->qos.type != tmedia_qos_stype_none) && !TMEDIA_SESSION(ms)->qos){
-			TMEDIA_SESSION(ms)->qos = tmedia_qos_tline_create(self->qos.type, self->qos.strength);
-		}
-		
-		/* add "m=" line from the session to the local sdp */
-		if((m = tmedia_session_get_lo(TMEDIA_SESSION(ms)))){
-			tsdp_message_add_header(self->sdp.lo, TSDP_HEADER(m));
-			// media session with port equal to zero (codec mismatch) is a zombie (zombie<>ghost)
-			if(ms->M.lo && ms->M.lo->port == 0){
-				const tmedia_session_plugin_def_t* plugin;
-				TSK_DEBUG_INFO("Media session with media type = '%s' is a zombie", ms->M.lo->media);
-				if((plugin = tmedia_session_plugin_find_by_media(ms->M.lo->media))){
-					self->type = (self->type & ~plugin->type);
-					// do not set 'mediaType_changed' as this is not an update
-				}
-			}
-		}
-		else{
-			TSK_DEBUG_ERROR("Failed to get m= line for [%s] media", ms->plugin->media);
-		}
-	}
-
-	// FIXME
-#if 0
-	{
-		tsdp_header_M_t* M;
-		M = tsdp_header_M_create("application", 49318, "RTP/AVP");
-		tsdp_header_M_add_headers(M,
-					TSDP_FMT_VA_ARGS("100"),
-					TSDP_HEADER_A_VA_ARGS("rtpmap", "100 H224/4800"),
-					TSDP_HEADER_A_VA_ARGS("sendrecv", tsk_null),
-					tsk_null);
-		tsdp_message_add_header(self->sdp.lo, TSDP_HEADER(M));
-		TSK_OBJECT_SAFE_FREE(M);
-		M = tsdp_header_M_create("application", 35313, "UDP/BFCP");
-		tsdp_header_M_add_headers(M,
-					TSDP_FMT_VA_ARGS("*"),
-					TSDP_HEADER_A_VA_ARGS("floorctrl", "c-s"),
-					TSDP_HEADER_A_VA_ARGS("setup", "actpass"),
-					TSDP_HEADER_A_VA_ARGS("connection", "new"),
-					tsk_null);
-		tsdp_message_add_header(self->sdp.lo, TSDP_HEADER(M));
-		TSK_OBJECT_SAFE_FREE(M);
-		M = tsdp_header_M_create("video", 49316, "RTP/AVP");
-		tsdp_header_M_add_headers(M,
-					TSDP_FMT_VA_ARGS("109"),
-					TSDP_HEADER_A_VA_ARGS("rtpmap", "109 H264/90000"),
-					TSDP_HEADER_A_VA_ARGS("fmtp", "109 profile-level-id=42801f; max-mbps=112640; max-fs=5120; sar=13"),
-					TSDP_HEADER_A_VA_ARGS("label", "1983"),
-					TSDP_HEADER_A_VA_ARGS("content", "slides"),
-					TSDP_HEADER_A_VA_ARGS("sendrecv", tsk_null),
-					tsk_null);
-		tsdp_message_add_header(self->sdp.lo, TSDP_HEADER(M));
-		TSK_OBJECT_SAFE_FREE(M);
-	}
-#endif
-	
-	ret = self->sdp.lo;
-
-bail:
-	tsk_safeobj_unlock(self);
-
-	return ret;
+	return _tmedia_session_mgr_get_lo(self, kSkipSessionLoadFalse);
 }
 
 
@@ -1237,13 +1112,19 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	tsk_bool_t had_ro_sdp, had_ro_provisional, is_ro_provisional_final_matching = tsk_false;
 	tmedia_qos_stype_t qos_type = tmedia_qos_stype_none;
 	tmedia_type_t new_mediatype = tmedia_none;
+	tmedia_sessions_L_t *list_tmp_sessions;
 
-	if(!self || !sdp){
+	if (!self || !sdp) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+	if (!(list_tmp_sessions = tsk_list_create())) {
+		TSK_DEBUG_ERROR("Failed to create tmp list");
+		return -2;
+	}
 
 	tsk_safeobj_lock(self);
+	tsk_list_lock(self->sessions);
 
 	had_ro_sdp = (self->sdp.ro != tsk_null);
 	had_ro_provisional = (had_ro_sdp && self->ro_provisional);
@@ -1450,31 +1331,43 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 
 	/* foreach "m=" line in the remote offer create/prepare a session (requires the session to be stopped)*/
 	index = 0;
-	while((M = (const tsdp_header_M_t*)tsdp_message_get_headerAt(sdp, tsdp_htype_M, index++))){
+	tsk_list_pushback_list(list_tmp_sessions, self->sessions);
+	tsk_list_clear_items(self->sessions);
+	while ((M = (const tsdp_header_M_t*)tsdp_message_get_headerAt(sdp, tsdp_htype_M, index++))) {
 		found = tsk_false;
-		/* Find session by index (must). */
-		if((ms = _tmedia_session_mgr_find_session_at_index(self, (index - 1))) && (tsk_striequals(tmedia_session_get_media(ms), M->media))) {
+		if (ro_type & tmedia_ro_type_answer) {
+			// Answer -> match by index
+			ms = _tmedia_session_mgr_find_session_at_index(list_tmp_sessions, (index - 1 - active_sessions_count));
+		}
+		else {
+			// Request -> match by type
+			tmedia_type_t M_media_type = tmedia_type_from_sdp_headerM(M);
+			ms = tsk_list_find_object_by_pred(list_tmp_sessions, __pred_find_session_by_type, &M_media_type);
+		}
+		if (ms && (tsk_striequals(tmedia_session_get_media(ms), M->media))) {
 			/* prepare the media session */
-			if(!self->started){
+			if (!self->started) {
 				if(!ms->prepared && (_tmedia_session_prepare(TMEDIA_SESSION(ms)))){
 					TSK_DEBUG_ERROR("Failed to prepare session"); /* should never happen */
 					goto bail;
 				}
 			}
 			/* set remote ro at session-level */
-			if((ret = _tmedia_session_set_ro(TMEDIA_SESSION(ms), M)) == 0){
+			if ((ret = _tmedia_session_set_ro(TMEDIA_SESSION(ms), M)) == 0) {
+				tmedia_session_t* _ms = tsk_object_ref(TSK_OBJECT(ms));
 				found = tsk_true;
 				++active_sessions_count;
+				tsk_list_push_back_data(self->sessions, (void**)&_ms); // add at the same index
+				tsk_list_remove_item_by_data(list_tmp_sessions, ms); // make sure not to use the session more than once
 			}
-			else{
-				// will send 488 Not Acceptable
+			else {
 				TSK_DEBUG_WARN("_tmedia_session_set_ro() failed");
-				goto bail;
+				ret = 0; // add ghost for this session. Do not goto bail because se_ro() is allowed to fail (e.g. codec mismatch).
 			}
 			/* set QoS type (only if we are not the offerer) */
-			if(/*!self->offerer ==> we suppose that the remote party respected our demand &&*/ qos_type == tmedia_qos_stype_none){
+			if (/*!self->offerer ==> we suppose that the remote party respected our demand &&*/ qos_type == tmedia_qos_stype_none) {
 				tmedia_qos_tline_t* tline = tmedia_qos_tline_from_sdp(M);
-				if(tline){
+				if (tline) {
 					qos_type = tline->type;
 					TSK_OBJECT_SAFE_FREE(tline);
 				}
@@ -1520,16 +1413,16 @@ end_of_sessions_update:
 	/* update "provisional" info */
 	self->ro_provisional = ((ro_type & tmedia_ro_type_provisional) == tmedia_ro_type_provisional);
 	
-	if(self->ro_changed){
+	if (self->ro_changed) {
 		/* update local offer before restarting the session manager otherwise neg_codecs won't match if new codecs
-		 have been added or removed */
-		(tmedia_session_mgr_get_lo(self));
+		 have been added or removed. No need to load sessions again. */
+		(_tmedia_session_mgr_get_lo(self, kSkipSessionLoadTrue));
 	}
 	/* manager was started and we stopped it in order to reconfigure it (codecs, network, ....) 
 	* When ICE is active ("is_ice_active" = yes), the media session will be explicitly restarted when conncheck succeed or fail.
 	*/
-	if(stopped_to_reconf && !is_ice_active){
-		if((ret = tmedia_session_mgr_start(self))){
+	if(stopped_to_reconf && !is_ice_active) {
+		if ((ret = tmedia_session_mgr_start(self))) {
 			TSK_DEBUG_ERROR("Failed to re-start session manager");
 			goto bail;
 		}
@@ -1539,7 +1432,10 @@ end_of_sessions_update:
 	ret = (self->ro_changed && active_sessions_count <= 0) ? -0xFF : 0;
 
 bail:
+	TSK_OBJECT_SAFE_FREE(list_tmp_sessions);
+
 	tsk_safeobj_unlock(self);
+	tsk_list_unlock(self->sessions);
 	return ret;
 }
 
@@ -2071,12 +1967,17 @@ static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 	tsk_list_lock(self->sessions);
 	
 #define has_media(media_type) (tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_type, &(media_type)))
-	
-	if(TSK_LIST_IS_EMPTY(self->sessions) || self->mediaType_changed){
+
+	if (TSK_LIST_IS_EMPTY(self->sessions) || self->mediaType_changed) {
+		static tmedia_type_t __ghost_media_type = tmedia_ghost;
+		static tmedia_type_t __none_media_type = tmedia_none;
+		// Remove ghost sessions. Up to the
+		while (tsk_list_remove_item_by_pred(self->sessions, __pred_find_session_by_type, &__ghost_media_type)) ;
+		while (tsk_list_remove_item_by_pred(self->sessions, __pred_find_session_by_type, &__none_media_type)) ;
 		/* for each registered plugin create a session instance */
-		while((i < TMED_SESSION_MAX_PLUGINS) && (plugin = __tmedia_session_plugins[i++])){
-			if((plugin->type & self->type) == plugin->type && !has_media(plugin->type)){// we don't have a session with this media type yet
-				if((session = tmedia_session_create(plugin->type))){
+		while ((i < TMED_SESSION_MAX_PLUGINS) && (plugin = __tmedia_session_plugins[i++])) {
+			if ((plugin->type & self->type) == plugin->type && !has_media(plugin->type)) {// we don't have a session with this media type yet
+				if ((session = tmedia_session_create(plugin->type))) {
 					/* do not call "tmedia_session_mgr_set()" here to avoid applying parms before the creation of all session */
 
 					/* set other default values */
@@ -2088,7 +1989,7 @@ static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 					tsk_list_push_back_data(self->sessions, (void**)(&session));
 				}
 			}
-			else if(!(plugin->type & self->type) && has_media(plugin->type)){// we have media session from previous call (before update)
+			else if (!(plugin->type & self->type) && has_media(plugin->type)) { // we have media session from previous call (before update)
 				tsk_list_remove_item_by_pred(self->sessions, __pred_find_session_by_type, &(plugin->type));
 			}
 		}
@@ -2108,21 +2009,19 @@ static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 	return 0;
 }
 
-static const tmedia_session_t* _tmedia_session_mgr_find_session_at_index(tmedia_session_mgr_t* self, tsk_size_t index)
+//!\ not thread-safe
+static const tmedia_session_t* _tmedia_session_mgr_find_session_at_index(const tmedia_sessions_L_t* list, tsk_size_t index)
 {
-	const tmedia_session_t* ms = tsk_null;
 	const tsk_list_item_t *item;
 	tsk_size_t u = 0;
-	tsk_list_lock(self->sessions);
-	tsk_list_foreach(item, self->sessions) {
+	tsk_list_foreach(item, list) {
 		if (u++ == index) {
-			ms = (const tmedia_session_t*)item->data;
-			break;
+			return (const tmedia_session_t*)item->data;
 		}
 	}
-	tsk_list_unlock(self->sessions);
-	return ms;
+	return tsk_null;
 }
+
 
 /* internal function */
 static int _tmedia_session_mgr_clear_sessions(tmedia_session_mgr_t* self)
@@ -2131,6 +2030,106 @@ static int _tmedia_session_mgr_clear_sessions(tmedia_session_mgr_t* self)
 		tsk_list_clear_items(self->sessions);
 	}
 	return 0;
+}
+
+/* internal function */
+const tsdp_message_t* _tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self, tsk_bool_t skip_session_load)
+{
+	const tsk_list_item_t* item;
+	const tmedia_session_t* ms;
+	const tsdp_header_M_t* m;
+	const tsdp_message_t* ret = tsk_null;
+	
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	tsk_safeobj_lock(self);
+	
+	/* prepare the session manager if not already done (create all sessions) */
+	if(TSK_LIST_IS_EMPTY(self->sessions)){
+		if(_tmedia_session_mgr_load_sessions(self)){
+			TSK_DEBUG_ERROR("Failed to prepare the session manager");
+			goto bail;
+		}
+	}
+	
+	/* creates local sdp if not already done or update it's value (because of set_ro())*/
+	if ((self->ro_changed || self->state_changed || self->mediaType_changed) && self->sdp.lo) {
+		// delete current lo 
+		TSK_OBJECT_SAFE_FREE(self->sdp.lo);
+		if (self->mediaType_changed && !skip_session_load) {
+			// reload session with new medias and keep the old one
+			_tmedia_session_mgr_load_sessions(self);
+		}
+		self->ro_changed = tsk_false;
+		self->ro_provisional = tsk_false;
+		self->state_changed = tsk_false;
+		self->mediaType_changed = tsk_false;
+	}
+
+	if(self->sdp.lo){
+		ret = self->sdp.lo;
+		goto bail;
+	}
+	else if((self->sdp.lo = tsdp_message_create_empty(self->public_addr ? self->public_addr : self->addr, self->ipv6, self->sdp.lo_ver++))){	
+		/* Set connection "c=" */
+		tsdp_message_add_headers(self->sdp.lo,
+			TSDP_HEADER_C_VA_ARGS("IN", self->ipv6 ? "IP6" : "IP4", self->public_addr ? self->public_addr : self->addr),
+			tsk_null);
+	}else{
+		self->sdp.lo_ver--;
+		TSK_DEBUG_ERROR("Failed to create empty SDP message");
+		goto bail;
+	}
+
+	/*	pass complete local sdp to the sessions to allow them to use session-level attributes */
+	tmedia_session_mgr_set(self,
+			TMEDIA_SESSION_SET_POBJECT(self->type, "local-sdp-message", self->sdp.lo),
+			TMEDIA_SESSION_SET_NULL());
+
+	/* gets each "m=" line from the sessions and add them to the local sdp */
+	tsk_list_foreach(item, self->sessions){
+		if(!(ms = item->data) || !ms->plugin){
+			TSK_DEBUG_ERROR("Invalid session");
+			continue;
+		}
+		/* prepare the media session */
+		if(!ms->prepared && (_tmedia_session_prepare(TMEDIA_SESSION(ms)))){
+			TSK_DEBUG_ERROR("Failed to prepare session"); /* should never happen */
+			continue;
+		}
+		
+		/* Add QoS lines to our local media */
+		if((self->qos.type != tmedia_qos_stype_none) && !TMEDIA_SESSION(ms)->qos){
+			TMEDIA_SESSION(ms)->qos = tmedia_qos_tline_create(self->qos.type, self->qos.strength);
+		}
+		
+		/* add "m=" line from the session to the local sdp */
+		if((m = tmedia_session_get_lo(TMEDIA_SESSION(ms)))){
+			tsdp_message_add_header(self->sdp.lo, TSDP_HEADER(m));
+			// media session with port equal to zero (codec mismatch) is a zombie (zombie<>ghost)
+			if(ms->M.lo && ms->M.lo->port == 0){
+				const tmedia_session_plugin_def_t* plugin;
+				TSK_DEBUG_INFO("Media session with media type = '%s' is a zombie", ms->M.lo->media);
+				if((plugin = tmedia_session_plugin_find_by_media(ms->M.lo->media))){
+					self->type = (self->type & ~plugin->type);
+					// do not set 'mediaType_changed' as this is not an update
+				}
+			}
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to get m= line for [%s] media", ms->plugin->media);
+		}
+	}
+	
+	ret = self->sdp.lo;
+
+bail:
+	tsk_safeobj_unlock(self);
+
+	return ret;
 }
 
 /* internal function */
