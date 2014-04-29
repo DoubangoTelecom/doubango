@@ -128,14 +128,8 @@ twrap_media_t140 = _tinyWRAP.twrap_media_t140
 twrap_media_bfcp = _tinyWRAP.twrap_media_bfcp
 twrap_media_bfcp_audio = _tinyWRAP.twrap_media_bfcp_audio
 twrap_media_bfcp_video = _tinyWRAP.twrap_media_bfcp_video
-twrap_media_audio_t140 = _tinyWRAP.twrap_media_audio_t140
-twrap_media_video_t140 = _tinyWRAP.twrap_media_video_t140
 twrap_media_audiovideo = _tinyWRAP.twrap_media_audiovideo
 twrap_media_audio_video = _tinyWRAP.twrap_media_audio_video
-twrap_media_audio_video_t140 = _tinyWRAP.twrap_media_audio_video_t140
-twrap_media_audio_video_bfcpvideo = _tinyWRAP.twrap_media_audio_video_bfcpvideo
-twrap_media_audio_bfcpvideo = _tinyWRAP.twrap_media_audio_bfcpvideo
-twrap_media_video_bfcpvideo = _tinyWRAP.twrap_media_video_bfcpvideo
 class ActionConfig(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, ActionConfig, name, value)

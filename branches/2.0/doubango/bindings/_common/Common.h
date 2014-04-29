@@ -45,14 +45,8 @@ typedef enum twrap_media_type_e
 	twrap_media_bfcp_audio = 0x30, // (0x01 << 5) | twrap_media_bfcp;
 	twrap_media_bfcp_video = 0x50, // (0x01 << 6) | twrap_media_bfcp;
 
-	twrap_media_audio_t140 = 0x09,
-	twrap_media_video_t140 = 0x0a,
 	twrap_media_audiovideo = 0x03, /* @deprecated */
 	twrap_media_audio_video = twrap_media_audiovideo,
-	twrap_media_audio_video_t140 = 0x0b,
-	twrap_media_audio_video_bfcpvideo = 0x53, // twrap_media_audio | twrap_media_video | twrap_media_bfcp_video
-	twrap_media_audio_bfcpvideo = 0x51, // twrap_media_audio | twrap_media_bfcp_video
-	twrap_media_video_bfcpvideo = 0x52, // twrap_media_video | twrap_media_bfcp_video
 }
 twrap_media_type_t;
 
@@ -74,33 +68,29 @@ static const struct media_type_bind_s __media_type_binds[] =
 	{ twrap_media_bfcp, tmedia_bfcp },
 	{ twrap_media_bfcp_audio, tmedia_bfcp_audio },
 	{ twrap_media_bfcp_video, tmedia_bfcp_video },
-	{ twrap_media_audio_video_bfcpvideo, (tmedia_type_t)(tmedia_audio | tmedia_video | tmedia_bfcp_video) },
-	{ twrap_media_audio_bfcpvideo, (tmedia_type_t)(tmedia_audio | tmedia_bfcp_video) },
-	{ twrap_media_video_bfcpvideo, (tmedia_type_t)(tmedia_video | tmedia_bfcp_video) },
-	{ twrap_media_audio_t140, (tmedia_type_t)(tmedia_audio | tmedia_t140) },
-	{ twrap_media_video_t140, (tmedia_type_t)(tmedia_video | tmedia_t140) },
-	{ twrap_media_audio_video_t140, (tmedia_type_t)(tmedia_audio | tmedia_video | tmedia_t140) }
 };
 static const tsk_size_t __media_type_binds_count = sizeof(__media_type_binds)/sizeof(__media_type_binds[0]);
 static tmedia_type_t twrap_get_native_media_type(twrap_media_type_t type)
 {
 	tsk_size_t u;
+	tmedia_type_t t = tmedia_none;
 	for (u = 0; u < __media_type_binds_count; ++u) {
-		if (__media_type_binds[u].twrap == type) {
-			return __media_type_binds[u].tnative;
+		if ((__media_type_binds[u].twrap & type) == __media_type_binds[u].twrap) {
+			t = (tmedia_type_t)(t | __media_type_binds[u].tnative);
 		}
 	}
-	return tmedia_none;
+	return t;
 }
 static twrap_media_type_t twrap_get_wrapped_media_type(tmedia_type_t type)
 {
+	twrap_media_type_t t = twrap_media_none;
 	tsk_size_t u;
 	for (u = 0; u < __media_type_binds_count; ++u) {
-		if (__media_type_binds[u].tnative == type) {
-			return __media_type_binds[u].twrap;
+		if ((__media_type_binds[u].tnative & type) == __media_type_binds[u].tnative) {
+			t = (twrap_media_type_t)(t | __media_type_binds[u].twrap);
 		}
 	}
-	return twrap_media_none;
+	return t;
 }
 #endif
 

@@ -27784,14 +27784,8 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "twrap_media_bfcp",SWIG_From_int(static_cast< int >(twrap_media_bfcp)));
   SWIG_Python_SetConstant(d, "twrap_media_bfcp_audio",SWIG_From_int(static_cast< int >(twrap_media_bfcp_audio)));
   SWIG_Python_SetConstant(d, "twrap_media_bfcp_video",SWIG_From_int(static_cast< int >(twrap_media_bfcp_video)));
-  SWIG_Python_SetConstant(d, "twrap_media_audio_t140",SWIG_From_int(static_cast< int >(twrap_media_audio_t140)));
-  SWIG_Python_SetConstant(d, "twrap_media_video_t140",SWIG_From_int(static_cast< int >(twrap_media_video_t140)));
   SWIG_Python_SetConstant(d, "twrap_media_audiovideo",SWIG_From_int(static_cast< int >(twrap_media_audiovideo)));
   SWIG_Python_SetConstant(d, "twrap_media_audio_video",SWIG_From_int(static_cast< int >(twrap_media_audio_video)));
-  SWIG_Python_SetConstant(d, "twrap_media_audio_video_t140",SWIG_From_int(static_cast< int >(twrap_media_audio_video_t140)));
-  SWIG_Python_SetConstant(d, "twrap_media_audio_video_bfcpvideo",SWIG_From_int(static_cast< int >(twrap_media_audio_video_bfcpvideo)));
-  SWIG_Python_SetConstant(d, "twrap_media_audio_bfcpvideo",SWIG_From_int(static_cast< int >(twrap_media_audio_bfcpvideo)));
-  SWIG_Python_SetConstant(d, "twrap_media_video_bfcpvideo",SWIG_From_int(static_cast< int >(twrap_media_video_bfcpvideo)));
   SWIG_Python_SetConstant(d, "twrap_proxy_plugin_audio_producer",SWIG_From_int(static_cast< int >(twrap_proxy_plugin_audio_producer)));
   SWIG_Python_SetConstant(d, "twrap_proxy_plugin_video_producer",SWIG_From_int(static_cast< int >(twrap_proxy_plugin_video_producer)));
   SWIG_Python_SetConstant(d, "twrap_proxy_plugin_audio_consumer",SWIG_From_int(static_cast< int >(twrap_proxy_plugin_audio_consumer)));
