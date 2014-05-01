@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -44,12 +44,12 @@
 
 static int __pred_find_attribute_by_type(const tsk_list_item_t *item, const void *att_type)
 {
-	if(item && item->data){
-		tnet_stun_attribute_t *att = item->data;
-		tnet_stun_attribute_type_t type = *((tnet_stun_attribute_type_t*)att_type);
-		return (att->type - type);
-	}
-	return -1;
+    if(item && item->data) {
+        tnet_stun_attribute_t *att = item->data;
+        tnet_stun_attribute_type_t type = *((tnet_stun_attribute_type_t*)att_type);
+        return (att->type - type);
+    }
+    return -1;
 }
 
 /**@ingroup tnet_stun_group
@@ -60,7 +60,7 @@ static int __pred_find_attribute_by_type(const tsk_list_item_t *item, const void
 
 tnet_stun_message_t* tnet_stun_message_create(const char* username, const char* password)
 {
-	return tsk_object_new(tnet_stun_message_def_t, username, password);
+    return tsk_object_new(tnet_stun_message_def_t, username, password);
 }
 
 /**@ingroup tnet_stun_group
@@ -70,7 +70,7 @@ tnet_stun_message_t* tnet_stun_message_create(const char* username, const char* 
 */
 tnet_stun_message_t* tnet_stun_message_create_null()
 {
-	return tnet_stun_message_create(tsk_null, tsk_null);
+    return tnet_stun_message_create(tsk_null, tsk_null);
 }
 
 #define SERIALIZE_N_ADD_ATTRIBUTE(att_name, payload, payload_size) \
@@ -86,18 +86,18 @@ tnet_stun_message_t* tnet_stun_message_create_null()
 **/
 tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 {
-	tsk_buffer_t *output = 0;
-	tnet_stun_attribute_t *attribute;
-	unsigned compute_integrity = self->integrity;
-	
-	if(!self){
-		goto bail;
-	}
-		
-	output = tsk_buffer_create_null();
+    tsk_buffer_t *output = 0;
+    tnet_stun_attribute_t *attribute;
+    unsigned compute_integrity = self->integrity;
 
-	/*	RFC 5389 - 6.  STUN Message Structure
-	   0                   1                   2                   3
+    if(!self) {
+        goto bail;
+    }
+
+    output = tsk_buffer_create_null();
+
+    /*	RFC 5389 - 6.  STUN Message Structure
+       0                   1                   2                   3
        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
       |0 0|     STUN Message Type     |         Message Length        |
@@ -108,134 +108,135 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
       |                     Transaction ID (96 bits)                  |
       |                                                               |
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	*/
+    */
 
-	/* STUN Message Type 
-	*/
-	{
-		uint16_t type = tnet_htons(self->type);
-		tsk_buffer_append(output, &(type), 2);
-	}
-	
-	/* Message Length ==> Will be updated after attributes have been added. */
-	{
-		static const uint16_t length = 0;
-		tsk_buffer_append(output, &(length), 2);
-	}
+    /* STUN Message Type
+    */
+    {
+        uint16_t type = tnet_htons(self->type);
+        tsk_buffer_append(output, &(type), 2);
+    }
 
-	/* Magic Cookie
-	*/
-	{
-		uint32_t cookie = tnet_htonl(self->cookie);
-		tsk_buffer_append(output, &(cookie), 4);
-	}
+    /* Message Length ==> Will be updated after attributes have been added. */
+    {
+        static const uint16_t length = 0;
+        tsk_buffer_append(output, &(length), 2);
+    }
+
+    /* Magic Cookie
+    */
+    {
+        uint32_t cookie = tnet_htonl(self->cookie);
+        tsk_buffer_append(output, &(cookie), 4);
+    }
 
 
-	/* Transaction ID (96 bits==>16bytes)
-	*/
-	tsk_buffer_append(output, self->transaction_id, TNET_STUN_TRANSACID_SIZE);
+    /* Transaction ID (96 bits==>16bytes)
+    */
+    tsk_buffer_append(output, self->transaction_id, TNET_STUN_TRANSACID_SIZE);
 
-	/* DONT-FRAGMENT
-	*/
-	if(self->dontfrag){
-		attribute = (tnet_stun_attribute_t *)tnet_turn_attribute_dontfrag_create();
-		tnet_stun_attribute_serialize(attribute, output);
-		TSK_OBJECT_SAFE_FREE(attribute);
-	}
+    /* DONT-FRAGMENT
+    */
+    if(self->dontfrag) {
+        attribute = (tnet_stun_attribute_t *)tnet_turn_attribute_dontfrag_create();
+        tnet_stun_attribute_serialize(attribute, output);
+        TSK_OBJECT_SAFE_FREE(attribute);
+    }
 
-	/* AUTHENTICATION */
-	if(self->realm && self->nonce){ // long term
-		SERIALIZE_N_ADD_ATTRIBUTE(realm, self->realm, tsk_strlen(self->realm));
-		SERIALIZE_N_ADD_ATTRIBUTE(nonce, self->nonce, tsk_strlen(self->nonce));
-		
-		compute_integrity = !self->nointegrity;
-	}
-	else if(self->password){ // short term
-		compute_integrity = !self->nointegrity;
-	}
+    /* AUTHENTICATION */
+    if(self->realm && self->nonce) { // long term
+        SERIALIZE_N_ADD_ATTRIBUTE(realm, self->realm, tsk_strlen(self->realm));
+        SERIALIZE_N_ADD_ATTRIBUTE(nonce, self->nonce, tsk_strlen(self->nonce));
 
-	if(compute_integrity && self->username){
-		SERIALIZE_N_ADD_ATTRIBUTE(username, self->username, tsk_strlen(self->username));
-	}
+        compute_integrity = !self->nointegrity;
+    }
+    else if(self->password) { // short term
+        compute_integrity = !self->nointegrity;
+    }
 
-	/*=== Attributes === */
-	{
-		tsk_list_item_t *item;
-		tsk_list_foreach(item, self->attributes)
-		{
-			attribute = item->data;
-			tnet_stun_attribute_serialize(attribute, output);
-			tnet_stun_attribute_pad(attribute, output);
-		}
-	}
+    if(compute_integrity && self->username) {
+        SERIALIZE_N_ADD_ATTRIBUTE(username, self->username, tsk_strlen(self->username));
+    }
 
-	/* Message Length: The message length MUST contain the size, in bytes, of the message
-						not including the 20-byte STUN header.
-	*/
-	{
-		// compute length for 'MESSAGE-INTEGRITY'
-		// will be computed again to store the correct value
-		uint16_t length = (output->size) - TNET_STUN_HEADER_SIZE;
+    /*=== Attributes === */
+    {
+        tsk_list_item_t *item;
+        tsk_list_foreach(item, self->attributes) {
+            attribute = item->data;
+            tnet_stun_attribute_serialize(attribute, output);
+            tnet_stun_attribute_pad(attribute, output);
+        }
+    }
+
+    /* Message Length: The message length MUST contain the size, in bytes, of the message
+    					not including the 20-byte STUN header.
+    */
+    {
+        // compute length for 'MESSAGE-INTEGRITY'
+        // will be computed again to store the correct value
+        uint16_t length = (output->size) - TNET_STUN_HEADER_SIZE;
 #if 0
-		if(self->fingerprint)
-			length += (2/* Type */ + 2 /* Length */+ 4 /* FINGERPRINT VALUE*/);
+        if(self->fingerprint) {
+            length += (2/* Type */ + 2 /* Length */+ 4 /* FINGERPRINT VALUE*/);
+        }
 #endif
 
-		if(compute_integrity)
-			length += (2/* Type */ + 2 /* Length */+ TSK_SHA1_DIGEST_SIZE /* INTEGRITY VALUE*/);
-		
-		*(((uint16_t*)output->data)+1)  = tnet_htons(length);
-	}
+        if(compute_integrity) {
+            length += (2/* Type */ + 2 /* Length */+ TSK_SHA1_DIGEST_SIZE /* INTEGRITY VALUE*/);
+        }
 
-	/* MESSAGE-INTEGRITY */
-	if(compute_integrity){
-		/* RFC 5389 - 15.4.  MESSAGE-INTEGRITY
-		   The MESSAGE-INTEGRITY attribute contains an HMAC-SHA1 [RFC2104] of the STUN message.
+        *(((uint16_t*)output->data)+1)  = tnet_htons(length);
+    }
 
-		   For long-term credentials ==> key = MD5(username ":" realm ":" SASLprep(password))
-		   For short-term credentials ==> key = SASLprep(password)
-		*/
-		
-		tsk_sha1digest_t hmac;
-				
-		if(self->username && self->realm && self->password){ // long term
-			char* keystr = tsk_null;
-			tsk_md5digest_t md5;
-			tsk_sprintf(&keystr, "%s:%s:%s", self->username, self->realm, self->password);
-			TSK_MD5_DIGEST_CALC(keystr, tsk_strlen(keystr), md5);
-			hmac_sha1digest_compute(output->data, output->size, (const char*)md5, TSK_MD5_DIGEST_SIZE, hmac);
-			
-			TSK_FREE(keystr);
-		}
-		else{ // short term
-			hmac_sha1digest_compute(output->data, output->size, self->password, tsk_strlen(self->password), hmac);
-		}
+    /* MESSAGE-INTEGRITY */
+    if(compute_integrity) {
+        /* RFC 5389 - 15.4.  MESSAGE-INTEGRITY
+           The MESSAGE-INTEGRITY attribute contains an HMAC-SHA1 [RFC2104] of the STUN message.
 
-		SERIALIZE_N_ADD_ATTRIBUTE(integrity, hmac, TSK_SHA1_DIGEST_SIZE);
-	}
+           For long-term credentials ==> key = MD5(username ":" realm ":" SASLprep(password))
+           For short-term credentials ==> key = SASLprep(password)
+        */
 
-	// LENGTH
-	*(((uint16_t*)output->data) + 1)  = tnet_htons((output->size - TNET_STUN_HEADER_SIZE + (self->fingerprint ? 8 : 0)));
+        tsk_sha1digest_t hmac;
 
-	/* FINGERPRINT */
-	if(self->fingerprint){//JINGLE_ICE
-		/*	RFC 5389 - 15.5.  FINGERPRINT
-			The FINGERPRINT attribute MAY be present in all STUN messages.  The
-			value of the attribute is computed as the CRC-32 of the STUN message
-			up to (but excluding) the FINGERPRINT attribute itself, XOR'ed with
-			the 32-bit value 0x5354554e
-		*/
-		uint32_t fingerprint = tsk_pppfcs32(TSK_PPPINITFCS32, output->data, output->size);
-		fingerprint ^= 0x5354554e;
-		fingerprint = tnet_htonl(fingerprint);
-		
-		attribute = (tnet_stun_attribute_t *)tnet_stun_attribute_fingerprint_create(fingerprint);
-		tnet_stun_attribute_serialize(attribute, output);
-		TSK_OBJECT_SAFE_FREE(attribute);
-	}
+        if(self->username && self->realm && self->password) { // long term
+            char* keystr = tsk_null;
+            tsk_md5digest_t md5;
+            tsk_sprintf(&keystr, "%s:%s:%s", self->username, self->realm, self->password);
+            TSK_MD5_DIGEST_CALC(keystr, tsk_strlen(keystr), md5);
+            hmac_sha1digest_compute(output->data, output->size, (const char*)md5, TSK_MD5_DIGEST_SIZE, hmac);
+
+            TSK_FREE(keystr);
+        }
+        else { // short term
+            hmac_sha1digest_compute(output->data, output->size, self->password, tsk_strlen(self->password), hmac);
+        }
+
+        SERIALIZE_N_ADD_ATTRIBUTE(integrity, hmac, TSK_SHA1_DIGEST_SIZE);
+    }
+
+    // LENGTH
+    *(((uint16_t*)output->data) + 1)  = tnet_htons((output->size - TNET_STUN_HEADER_SIZE + (self->fingerprint ? 8 : 0)));
+
+    /* FINGERPRINT */
+    if(self->fingerprint) { //JINGLE_ICE
+        /*	RFC 5389 - 15.5.  FINGERPRINT
+        	The FINGERPRINT attribute MAY be present in all STUN messages.  The
+        	value of the attribute is computed as the CRC-32 of the STUN message
+        	up to (but excluding) the FINGERPRINT attribute itself, XOR'ed with
+        	the 32-bit value 0x5354554e
+        */
+        uint32_t fingerprint = tsk_pppfcs32(TSK_PPPINITFCS32, output->data, output->size);
+        fingerprint ^= 0x5354554e;
+        fingerprint = tnet_htonl(fingerprint);
+
+        attribute = (tnet_stun_attribute_t *)tnet_stun_attribute_fingerprint_create(fingerprint);
+        tnet_stun_attribute_serialize(attribute, output);
+        TSK_OBJECT_SAFE_FREE(attribute);
+    }
 
 bail:
-	return output;
+    return output;
 }
 
 
@@ -243,81 +244,80 @@ bail:
  *
  * Deserializes a STUN message from binary data.
  *
- * @param [in,out]	data	A pointer to the binary data. 
- * @param	size			The size of the binary data. 
+ * @param [in,out]	data	A pointer to the binary data.
+ * @param	size			The size of the binary data.
  *
  * @retval	A STUN message if deserialization succeed or NULL otherwise.
 **/
 tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, tsk_size_t size)
 {
-	tnet_stun_message_t *message = 0;
-	uint8_t* dataPtr, *dataEnd;
+    tnet_stun_message_t *message = 0;
+    uint8_t* dataPtr, *dataEnd;
 
-	
-	if(!data || (size  < TNET_STUN_HEADER_SIZE) || !TNET_IS_STUN2_MSG(data, size)){
-		goto bail;
-	}
 
-	dataPtr = (uint8_t*)data;
-	dataEnd = (dataPtr + size);
+    if(!data || (size  < TNET_STUN_HEADER_SIZE) || !TNET_IS_STUN2_MSG(data, size)) {
+        goto bail;
+    }
 
-	message = tnet_stun_message_create_null();
+    dataPtr = (uint8_t*)data;
+    dataEnd = (dataPtr + size);
 
-	/* Message Type 
-	*/
-	message->type = (tnet_stun_message_type_t)tnet_ntohs_2(dataPtr);
-	dataPtr += 2;
+    message = tnet_stun_message_create_null();
 
-	/* Message Length 
-	*/
-	message->length = tnet_ntohs_2(dataPtr);
-	dataPtr += 2;
+    /* Message Type
+    */
+    message->type = (tnet_stun_message_type_t)tnet_ntohs_2(dataPtr);
+    dataPtr += 2;
 
-	/* Check message validity
-	*/
-	if((message->length + TNET_STUN_HEADER_SIZE) != size)
-	{
-		TSK_OBJECT_SAFE_FREE(message);
-		goto bail;
-	}
+    /* Message Length
+    */
+    message->length = tnet_ntohs_2(dataPtr);
+    dataPtr += 2;
 
-	/* Magic Cookie 
-		==> already set by the constructor and checked by @ref TNET_IS_STUN2 
-	*/
-	dataPtr += 4;
+    /* Check message validity
+    */
+    if((message->length + TNET_STUN_HEADER_SIZE) != size) {
+        TSK_OBJECT_SAFE_FREE(message);
+        goto bail;
+    }
 
-	/* Transaction ID
-	*/
-	memcpy(message->transaction_id, dataPtr, TNET_STUN_TRANSACID_SIZE);
-	dataPtr += TNET_STUN_TRANSACID_SIZE;
+    /* Magic Cookie
+    	==> already set by the constructor and checked by @ref TNET_IS_STUN2
+    */
+    dataPtr += 4;
 
-	/*	== Parse attributes
-	*/
-	while(dataPtr < dataEnd){
-		tnet_stun_attribute_t *attribute = tnet_stun_attribute_deserialize(dataPtr, (dataEnd - dataPtr));
-		if(attribute){
-			tsk_size_t att_size = (attribute->length + 2 /* Type*/ + 2/* Length */);
-			att_size += (att_size & 0x03) ? 4-(att_size & 0x03) : 0; // Skip zero bytes used to pad the attribute.
+    /* Transaction ID
+    */
+    memcpy(message->transaction_id, dataPtr, TNET_STUN_TRANSACID_SIZE);
+    dataPtr += TNET_STUN_TRANSACID_SIZE;
 
-			dataPtr += att_size;
-			tsk_list_push_back_data(message->attributes, (void**)&attribute);
-			
-			continue;
-		}
-		else{
-			continue;
-		}	
-	}
+    /*	== Parse attributes
+    */
+    while(dataPtr < dataEnd) {
+        tnet_stun_attribute_t *attribute = tnet_stun_attribute_deserialize(dataPtr, (dataEnd - dataPtr));
+        if(attribute) {
+            tsk_size_t att_size = (attribute->length + 2 /* Type*/ + 2/* Length */);
+            att_size += (att_size & 0x03) ? 4-(att_size & 0x03) : 0; // Skip zero bytes used to pad the attribute.
+
+            dataPtr += att_size;
+            tsk_list_push_back_data(message->attributes, (void**)&attribute);
+
+            continue;
+        }
+        else {
+            continue;
+        }
+    }
 
 bail:
-	return message;
+    return message;
 }
 
 /**@ingroup tnet_stun_group
 */
 tsk_bool_t tnet_stun_message_has_attribute(const tnet_stun_message_t *self, tnet_stun_attribute_type_t type)
 {
-	return (tnet_stun_message_get_attribute(self, type) != tsk_null);
+    return (tnet_stun_message_get_attribute(self, type) != tsk_null);
 }
 
 /**@ingroup tnet_stun_group
@@ -328,21 +328,21 @@ tsk_bool_t tnet_stun_message_has_attribute(const tnet_stun_message_t *self, tnet
 */
 int tnet_stun_message_add_attribute(tnet_stun_message_t *self, tnet_stun_attribute_t** attribute)
 {
-	if(self && attribute && *attribute){
-		tsk_list_push_back_data(self->attributes, (void**)attribute);
-		return 0;
-	}
-	return -1;
+    if(self && attribute && *attribute) {
+        tsk_list_push_back_data(self->attributes, (void**)attribute);
+        return 0;
+    }
+    return -1;
 }
 
 /**@ingroup tnet_stun_group
 */
 int tnet_stun_message_remove_attribute(tnet_stun_message_t *self, tnet_stun_attribute_type_t type)
 {
-	if(self && self->attributes){
-		tsk_list_remove_item_by_pred(self->attributes, __pred_find_attribute_by_type, &type);
-	}
-	return 0;
+    if(self && self->attributes) {
+        tsk_list_remove_item_by_pred(self->attributes, __pred_find_attribute_by_type, &type);
+    }
+    return 0;
 }
 
 
@@ -354,17 +354,17 @@ int tnet_stun_message_remove_attribute(tnet_stun_message_t *self, tnet_stun_attr
 */
 const tnet_stun_attribute_t* tnet_stun_message_get_attribute(const tnet_stun_message_t *self, tnet_stun_attribute_type_t type)
 {
-	tnet_stun_attribute_t* attribute;
+    tnet_stun_attribute_t* attribute;
 
-	if(self && !TSK_LIST_IS_EMPTY(self->attributes)){
-		tsk_list_item_t *item;
-		tsk_list_foreach(item, self->attributes){
-			if((attribute = item->data) && attribute->type == type){
-				return attribute;
-			}
-		}
-	}
-	return 0;
+    if(self && !TSK_LIST_IS_EMPTY(self->attributes)) {
+        tsk_list_item_t *item;
+        tsk_list_foreach(item, self->attributes) {
+            if((attribute = item->data) && attribute->type == type) {
+                return attribute;
+            }
+        }
+    }
+    return 0;
 }
 
 /**@ingroup tnet_stun_group
@@ -374,11 +374,11 @@ const tnet_stun_attribute_t* tnet_stun_message_get_attribute(const tnet_stun_mes
 */
 short tnet_stun_message_get_errorcode(const tnet_stun_message_t *self)
 {
-	const tnet_stun_attribute_errorcode_t* error = (const tnet_stun_attribute_errorcode_t*)tnet_stun_message_get_attribute(self, stun_error_code);
-	if(error){
-		return  ((error->_class*100) + error->number);
-	}
-	return -1;
+    const tnet_stun_attribute_errorcode_t* error = (const tnet_stun_attribute_errorcode_t*)tnet_stun_message_get_attribute(self, stun_error_code);
+    if(error) {
+        return  ((error->_class*100) + error->number);
+    }
+    return -1;
 }
 
 /**@ingroup tnet_stun_group
@@ -388,11 +388,11 @@ short tnet_stun_message_get_errorcode(const tnet_stun_message_t *self)
 */
 const char* tnet_stun_message_get_realm(const tnet_stun_message_t *self)
 {
-	const tnet_stun_attribute_realm_t* realm = (const tnet_stun_attribute_realm_t*)tnet_stun_message_get_attribute(self, stun_realm);
-	if(realm){
-		return realm->value;
-	}
-	return 0;
+    const tnet_stun_attribute_realm_t* realm = (const tnet_stun_attribute_realm_t*)tnet_stun_message_get_attribute(self, stun_realm);
+    if(realm) {
+        return realm->value;
+    }
+    return 0;
 }
 
 /**@ingroup tnet_stun_group
@@ -402,11 +402,11 @@ const char* tnet_stun_message_get_realm(const tnet_stun_message_t *self)
 */
 const char* tnet_stun_message_get_nonce(const tnet_stun_message_t *self)
 {
-	const tnet_stun_attribute_nonce_t* nonce = (const tnet_stun_attribute_nonce_t*)tnet_stun_message_get_attribute(self, stun_nonce);
-	if(nonce){
-		return nonce->value;
-	}
-	return 0;
+    const tnet_stun_attribute_nonce_t* nonce = (const tnet_stun_attribute_nonce_t*)tnet_stun_message_get_attribute(self, stun_nonce);
+    if(nonce) {
+        return nonce->value;
+    }
+    return 0;
 }
 
 /**@ingroup tnet_stun_group
@@ -416,25 +416,25 @@ const char* tnet_stun_message_get_nonce(const tnet_stun_message_t *self)
 */
 int32_t tnet_stun_message_get_lifetime(const tnet_stun_message_t *self)
 {
-	const tnet_turn_attribute_lifetime_t* lifetime = (const tnet_turn_attribute_lifetime_t*)tnet_stun_message_get_attribute(self, stun_lifetime);
-	if(lifetime){
-		return lifetime->value;
-	}
-	return -1;
+    const tnet_turn_attribute_lifetime_t* lifetime = (const tnet_turn_attribute_lifetime_t*)tnet_stun_message_get_attribute(self, stun_lifetime);
+    if(lifetime) {
+        return lifetime->value;
+    }
+    return -1;
 }
 
 /**@ingroup tnet_stun_group
 */
 tsk_bool_t tnet_stun_message_transac_id_equals(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2)
 {
-	tsk_size_t i;
-	static const tsk_size_t size = sizeof(tnet_stun_transacid_t);
-	for(i = 0; i < size; i++){
-		if(id1[i] != id2[i]){
-			return tsk_false;
-		}
-	}
-	return tsk_true;
+    tsk_size_t i;
+    static const tsk_size_t size = sizeof(tnet_stun_transacid_t);
+    for(i = 0; i < size; i++) {
+        if(id1[i] != id2[i]) {
+            return tsk_false;
+        }
+    }
+    return tsk_true;
 }
 
 
@@ -447,48 +447,48 @@ tsk_bool_t tnet_stun_message_transac_id_equals(const tnet_stun_transacid_t id1, 
 //
 static tsk_object_t* tnet_stun_message_ctor(tsk_object_t * self, va_list * app)
 {
-	tnet_stun_message_t *message = self;
-	if(message){
-		message->username = tsk_strdup(va_arg(*app, const char*));
-		message->password = tsk_strdup(va_arg(*app, const char*));
+    tnet_stun_message_t *message = self;
+    if(message) {
+        message->username = tsk_strdup(va_arg(*app, const char*));
+        message->password = tsk_strdup(va_arg(*app, const char*));
 
-		message->cookie = TNET_STUN_MAGIC_COOKIE;
-		message->attributes = tsk_list_create();
+        message->cookie = TNET_STUN_MAGIC_COOKIE;
+        message->attributes = tsk_list_create();
 
-		message->fingerprint = 1;
-		message->integrity = 0;
-		
-		{	// Create random transaction id
-			int i;
-			for(i = 0; i < sizeof(message->transaction_id)/sizeof(message->transaction_id[0]); ++i){
-				message->transaction_id[i] = rand();
-			}
-		}
-	}
-	return self;
+        message->fingerprint = 1;
+        message->integrity = 0;
+
+        {
+            // Create random transaction id
+            int i;
+            for(i = 0; i < sizeof(message->transaction_id)/sizeof(message->transaction_id[0]); ++i) {
+                message->transaction_id[i] = rand();
+            }
+        }
+    }
+    return self;
 }
 
 static tsk_object_t* tnet_stun_message_dtor(tsk_object_t * self)
-{ 
-	tnet_stun_message_t *message = self;
-	if(message){
-		TSK_FREE(message->username);
-		TSK_FREE(message->password);
-		TSK_FREE(message->realm);
-		TSK_FREE(message->nonce);
+{
+    tnet_stun_message_t *message = self;
+    if(message) {
+        TSK_FREE(message->username);
+        TSK_FREE(message->password);
+        TSK_FREE(message->realm);
+        TSK_FREE(message->nonce);
 
-		TSK_OBJECT_SAFE_FREE(message->attributes);
-	}
-	
-	return self;
+        TSK_OBJECT_SAFE_FREE(message->attributes);
+    }
+
+    return self;
 }
 
-static const tsk_object_def_t tnet_stun_message_def_s = 
-{
-	sizeof(tnet_stun_message_t),
-	tnet_stun_message_ctor, 
-	tnet_stun_message_dtor,
-	tsk_null, 
+static const tsk_object_def_t tnet_stun_message_def_s = {
+    sizeof(tnet_stun_message_t),
+    tnet_stun_message_ctor,
+    tnet_stun_message_dtor,
+    tsk_null,
 };
 const tsk_object_def_t *tnet_stun_message_def_t = &tnet_stun_message_def_s;
 
