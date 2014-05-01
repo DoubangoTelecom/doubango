@@ -209,7 +209,7 @@ AC_TRY_COMPILE([#include <pthread.h>],
 AC_DEFINE(USE_POLL, 1, [Setting USE_POLL to 1 for backward compatibility])
 AC_CHECK_FUNCS([inet_pton poll getdtablesize opendir closedir getpid])
 
-AC_CHECK_HEADERS([net/if_types.h net/if_dl.h poll.h unistd.h dirent.h fcntl.h sys/param.h sys/resource.h])
+AC_CHECK_HEADERS([arpa/inet.h net/if_types.h net/if_dl.h poll.h unistd.h dirent.h fcntl.h sys/param.h sys/resource.h])
 
 AC_CHECK_FUNC(getifaddrs, AC_DEFINE(HAVE_GETIFADDRS, 1 ,[Define to 1 if you have the 'getifaddrs' function]))
 AH_TEMPLATE([HAVE_IFADDRS_H], [Define if <ifaddrs.h> header exist])
