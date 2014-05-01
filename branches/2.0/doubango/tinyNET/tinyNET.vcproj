@@ -229,11 +229,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\stun\tnet_stun_attr.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\stun\tnet_stun_attribute.c"
 					>
 				</File>
 				<File
 					RelativePath=".\src\stun\tnet_stun_message.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\stun\tnet_stun_pkt.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\stun\tnet_stun_utils.c"
 					>
 				</File>
 			</Filter>
@@ -461,11 +473,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\stun\tnet_stun_attr.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\stun\tnet_stun_attribute.h"
 					>
 				</File>
 				<File
 					RelativePath=".\src\stun\tnet_stun_message.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\stun\tnet_stun_pkt.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\stun\tnet_stun_types.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\stun\tnet_stun_utils.h"
 					>
 				</File>
 			</Filter>

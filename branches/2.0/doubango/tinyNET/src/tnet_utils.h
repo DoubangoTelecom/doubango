@@ -130,6 +130,9 @@ TINYNET_API int tnet_get_fd_opened_count(tsk_size_t* count);
 TINYNET_API int tnet_getnameinfo(const struct sockaddr *sa, socklen_t salen, char* node, socklen_t nodelen, char* service, socklen_t servicelen, int flags);
 TINYNET_API int tnet_gethostname(tnet_host_t* result);
 
+TINYNET_API int tnet_inet_pton(int af, const char* src, void* dst);
+TINYNET_API const char *tnet_inet_ntop(int af, const void *src, char * dst, int size);
+
 TINYNET_API int tnet_sockfd_waitUntil(tnet_fd_t fd, long timeout, tsk_bool_t writable);
 #define tnet_sockfd_waitUntilWritable(fd, timeout) tnet_sockfd_waitUntil(fd, timeout, tsk_true)
 #define tnet_sockfd_waitUntilReadable(fd, timeout) tnet_sockfd_waitUntil(fd, timeout, tsk_false)

@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -77,34 +77,33 @@ typedef uint64_t tnet_stun_binding_id_t;
 /**@ingroup tnet_stun_group
  * STUN2 binding context.
 **/
-typedef struct tnet_stun_binding_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tnet_stun_binding_s {
+    TSK_DECLARE_OBJECT;
 
-	//! A unique id to identify this binding. 
-	tnet_stun_binding_id_t id;
+    //! A unique id to identify this binding.
+    tnet_stun_binding_id_t id;
 
-	//! The username to authenticate to the STUN server. 
-	char* username;
-	//! The password to authenticate to the STUN server. 
-	char* password;
-	//! The realm.
-	char* realm;
-	//! The nonce.
-	char* nonce;
-	//! The client name.
-	char* software;
-	//! Local file descriptor for which to get server reflexive address.
-	tnet_fd_t localFD;
-	//! The type of the bound socket.
-	tnet_socket_type_t socket_type;
-	//! The address of the STUN server.
-	struct sockaddr_storage server;
-	//! Server reflexive address of the local socket(STUN1 as per RFC 3489).
-	tnet_stun_attribute_mapped_addr_t *maddr;
-	//! XORed server reflexive address (STUN2 as per RFC 5389).
-	tnet_stun_attribute_xmapped_addr_t *xmaddr;
-}tnet_stun_binding_t;
+    //! The username to authenticate to the STUN server.
+    char* username;
+    //! The password to authenticate to the STUN server.
+    char* password;
+    //! The realm.
+    char* realm;
+    //! The nonce.
+    char* nonce;
+    //! The client name.
+    char* software;
+    //! Local file descriptor for which to get server reflexive address.
+    tnet_fd_t localFD;
+    //! The type of the bound socket.
+    tnet_socket_type_t socket_type;
+    //! The address of the STUN server.
+    struct sockaddr_storage server;
+    //! Server reflexive address of the local socket(STUN1 as per RFC 3489).
+    tnet_stun_attribute_mapped_addr_t *maddr;
+    //! XORed server reflexive address (STUN2 as per RFC 5389).
+    tnet_stun_attribute_xmapped_addr_t *xmaddr;
+} tnet_stun_binding_t;
 
 TINYNET_GEXTERN const tsk_object_def_t *tnet_stun_binding_def_t;
 /**@ingroup tnet_stun_group

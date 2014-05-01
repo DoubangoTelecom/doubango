@@ -84,6 +84,10 @@ extern Platform::String^  rt_tsk_str_to_managed(char const* str);
 #	include <fcntl.h>
 #endif /* HAVE_FCNTL_H */
 
+#if HAVE_ARPA_INET_H
+#	include <arpa/inet.h>
+#endif /* HAVE_ARPA_INET_H */
+
 #ifndef AF_LINK
 #	define AF_LINK AF_PACKET
 #endif /* AF_LINK */
@@ -1251,6 +1255,133 @@ int tnet_getnameinfo(const struct sockaddr *sa, socklen_t salen, char* node, soc
 int tnet_gethostname(tnet_host_t* result)
 {
 	return gethostname(*result, sizeof(*result));
+}
+
+/**@ingroup tnet_utils_group
+* see http://man7.org/linux/man-pages/man3/inet_pton.3.html
+* @retval 1 if succeed.
+*/
+int tnet_inet_pton(int af, const char* src, void* dst)
+{
+	if (!src || !dst) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+#if HAVE_INET_PTON
+	return inet_pton(af, src, dst);
+#elif TNET_UNDER_WINDOWS
+#	if (_WIN32_WINNT <= 0x0501)
+	{
+		struct sockaddr_storage addr = { 0 };
+		int addr_len = sizeof(addr);
+		if (WSAStringToAddressA((LPSTR)src, af, NULL, (struct sockaddr *)&addr, &addr_len) == 0) {
+			if (af == AF_INET6) {
+				*((struct in6_addr *)dst) = ((struct sockaddr_in6 *)&addr)->sin6_addr;
+			}
+			else {
+				*((struct in_addr *)dst) = ((struct sockaddr_in *)&addr)->sin_addr;
+			}
+			return 1;
+		}
+		TNET_PRINT_LAST_ERROR("WSAStringToAddressA failed");
+		return -2;
+	}
+#	else
+	return InetPton(af, src, dst);
+#	endif // TNET_UNDER_WINDOWS
+#else
+	{
+		struct sockaddr_storage addr = { 0 };
+		int ret;
+		if ((ret = tnet_sockaddr_init(src, 0, (af == AF_INET6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4), &addr))) {
+			return -2;
+		}
+		if (af == AF_INET6) {
+			*((struct in6_addr *)dst) = ((struct sockaddr_in6 *)&addr)->sin6_addr;
+		}
+		else {
+			*((struct in_addr *)dst) = ((struct sockaddr_in *)&addr)->sin_addr;
+		}
+		return 1;
+	}
+#endif
+}
+
+/**@ingroup tnet_utils_group
+* see http://pubs.opengroup.org/onlinepubs/009695399/functions/inet_ntop.html
+*/
+const char *tnet_inet_ntop(int af, const void *src, char *dst, int size)
+{
+	if (!src || !dst || size <= 0) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+	memset(dst, 0, size);
+#if HAVE_INET_NTOP
+	return inet_ntop(af, src, dst, size);
+#elif TNET_UNDER_WINDOWS
+#	if (_WIN32_WINNT <= 0x0501)
+	{
+		struct sockaddr_storage addr = { 0 };
+		int addr_len = sizeof(addr);
+		if (af == AF_INET6) {
+			if (size < INET6_ADDRSTRLEN) {
+				TSK_DEBUG_ERROR("Destination size too short(%d)", size);
+				return tsk_null;
+			}
+			addr.ss_family = AF_INET6;
+			((struct sockaddr_in6 *)&addr)->sin6_addr = *((struct in6_addr *)src);
+		}
+		else {
+			if (size < INET_ADDRSTRLEN) {
+				TSK_DEBUG_ERROR("Destination size too short(%d)", size);
+				return tsk_null;
+			}
+			addr.ss_family = AF_INET;
+			((struct sockaddr_in *)&addr)->sin_addr = *((struct in_addr *)src);
+		}
+		if (WSAAddressToStringA((struct sockaddr*)&addr, addr_len, NULL, dst, &size) == 0) {
+			return dst;
+		}
+		TNET_PRINT_LAST_ERROR("WSAAddressToStringA failed");
+		return tsk_null;
+	}
+#	else
+	return InetNtop(af, src, dst, size);
+#	endif // TNET_UNDER_WINDOWS
+#else
+	{
+		struct sockaddr_storage addr = { 0 };
+		tnet_ip_t ip;
+		if (af == AF_INET6) {
+			if (size < INET6_ADDRSTRLEN) {
+				TSK_DEBUG_ERROR("Destination size too short(%d)", size);
+				return tsk_null;
+			}
+			addr.ss_family = AF_INET6;
+			((struct sockaddr_in6 *)&addr)->sin6_addr = *((struct in6_addr *)src);
+			
+			if (tnet_get_sockip((const struct sockaddr *)&addr, &ip)) {
+				return tsk_null;
+			}
+			memcpy(dst, ip, INET6_ADDRSTRLEN);
+			return dst;
+		}
+		else {
+			if (size < INET_ADDRSTRLEN) {
+				TSK_DEBUG_ERROR("Destination size too short(%d)", size);
+				return tsk_null;
+			}
+			addr.ss_family = AF_INET;
+			((struct sockaddr_in *)&addr)->sin_addr = *((struct in_addr *)src);
+			if (tnet_get_sockip((const struct sockaddr *)&addr, &ip)) {
+				return tsk_null;
+			}
+			memcpy(dst, ip, INET_ADDRSTRLEN);
+			return dst;
+		}
+	}
+#endif
 }
 
 /**@ingroup tnet_utils_group
