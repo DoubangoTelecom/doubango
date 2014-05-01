@@ -207,7 +207,7 @@ AC_TRY_COMPILE([#include <pthread.h>],
 
 
 AC_DEFINE(USE_POLL, 1, [Setting USE_POLL to 1 for backward compatibility])
-AC_CHECK_FUNCS([inet_pton poll getdtablesize opendir closedir getpid])
+AC_CHECK_FUNCS([inet_pton inet_ntop poll getdtablesize opendir closedir getpid])
 
 AC_CHECK_HEADERS([arpa/inet.h net/if_types.h net/if_dl.h poll.h unistd.h dirent.h fcntl.h sys/param.h sys/resource.h])
 
