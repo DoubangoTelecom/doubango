@@ -21,7 +21,10 @@
 
 #include "stun/tnet_stun_pkt.h"
 #include "stun/tnet_stun_utils.h"
+#include "turn/tnet_turn_session.h"
 
+#define kStunUsrName			"bossiel@yahoo.fr"
+#define kStunUsrName			"bossiel@yahoo.fr"
 #define kStunServerIP			"numb.viagenie.ca"
 #define kStunServerPort			kStunPortDefaultTcpUdp
 #define kStunServerProto		tnet_socket_type_udp_ipv4
@@ -89,41 +92,46 @@ static void test_sun_parser()
 	static const uint16_t __u_nonce = sizeof(__pc_nonce);
 	static const char __pc_software[] = "tinyNET 2.0";
 	static const uint16_t __u_software = sizeof(__pc_software);
+	static const uint32_t __u_life_time = 600;
+	static const uint32_t __u_req_transport = 17; // UDP
 
     (n_read_bytes);
 
 	BAIL_IF_ERR(tnet_stun_pkt_create_empty(tnet_stun_pkt_type_binding_request, &p_pkt));
 	BAIL_IF_ERR(tnet_stun_utils_inet_pton_v4(__pc_mapped_addr_ipv4, &addr_ipv4));
 	BAIL_IF_ERR(tnet_stun_utils_inet_pton_v6(__pc_mapped_addr_ipv6, &addr_ipv6));
-	BAIL_IF_ERR(tnet_stun_pkt_add_attrs(p_pkt,
-		TNET_STUN_PKT_ADD_ATTR_MAPPED_ADDRESS_V4(__u_mapped_addr_port, &addr_ipv4),
-		TNET_STUN_PKT_ADD_ATTR_MAPPED_ADDRESS_V6(__u_mapped_addr_port, &addr_ipv6),
-		TNET_STUN_PKT_ADD_ATTR_XOR_MAPPED_ADDRESS_V4(__u_mapped_addr_port, &addr_ipv4),
-		TNET_STUN_PKT_ADD_ATTR_XOR_MAPPED_ADDRESS_V6(__u_mapped_addr_port, &addr_ipv6),
-		TNET_STUN_PKT_ADD_ATTR_USERNAME_ZT(__pc_username),
-		TNET_STUN_PKT_ADD_ATTR_MESSAGE_INTEGRITY(__pc_integrity, __u_integrity),
-		TNET_STUN_PKT_ADD_ATTR_ERROR_CODE(__u_error_class, __u_error_number, __pc_error_reason),
-		TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_TRY_ALTERNATE(),
-		TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_BAD_REQUEST(),
-		TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_UNAUTHORIZED(),
-		TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_UNKNOWN_ATTRIBUTE(),
-		TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_STALE_NONCE(),
-		TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_SERVER_ERROR(),
-		TNET_STUN_PKT_ADD_ATTR_REALM_ZT(__pc_realm),
-		TNET_STUN_PKT_ADD_ATTR_NONCE(__pc_nonce, __u_nonce),
+	BAIL_IF_ERR(tnet_stun_pkt_attrs_add(p_pkt,
+		TNET_STUN_PKT_ATTR_ADD_MAPPED_ADDRESS_V4(__u_mapped_addr_port, &addr_ipv4),
+		TNET_STUN_PKT_ATTR_ADD_MAPPED_ADDRESS_V6(__u_mapped_addr_port, &addr_ipv6),
+		TNET_STUN_PKT_ATTR_ADD_XOR_MAPPED_ADDRESS_V4(__u_mapped_addr_port, &addr_ipv4),
+		TNET_STUN_PKT_ATTR_ADD_XOR_MAPPED_ADDRESS_V6(__u_mapped_addr_port, &addr_ipv6),
+		TNET_STUN_PKT_ATTR_ADD_USERNAME_ZT(__pc_username),
+		TNET_STUN_PKT_ATTR_ADD_MESSAGE_INTEGRITY(__pc_integrity, __u_integrity),
+		TNET_STUN_PKT_ATTR_ADD_ERROR_CODE(__u_error_class, __u_error_number, __pc_error_reason),
+		TNET_STUN_PKT_ATTR_ADD_ERROR_CODE_TRY_ALTERNATE(),
+		TNET_STUN_PKT_ATTR_ADD_ERROR_CODE_BAD_REQUEST(),
+		TNET_STUN_PKT_ATTR_ADD_ERROR_CODE_UNAUTHORIZED(),
+		TNET_STUN_PKT_ATTR_ADD_ERROR_CODE_UNKNOWN_ATTRIBUTE(),
+		TNET_STUN_PKT_ATTR_ADD_ERROR_CODE_STALE_NONCE(),
+		TNET_STUN_PKT_ATTR_ADD_ERROR_CODE_SERVER_ERROR(),
+		TNET_STUN_PKT_ATTR_ADD_REALM_ZT(__pc_realm),
+		TNET_STUN_PKT_ATTR_ADD_NONCE(__pc_nonce, __u_nonce),
 
-		TNET_STUN_PKT_ADD_ATTR_UNKNOWN_ATTRS(
-			TNET_STUN_PKT_ADD_ATTR_UNKNOWN_ATTRS_VAL(0x0001), // MAPPED-ADDRESS
-			TNET_STUN_PKT_ADD_ATTR_UNKNOWN_ATTRS_VAL(0x0006), // USERNAME
-			TNET_STUN_PKT_ADD_ATTR_UNKNOWN_ATTRS_VAL(0x0007), // PASSWORD
-			TNET_STUN_PKT_ADD_ATTR_NULL()),
+		TNET_STUN_PKT_ATTR_ADD_UNKNOWN_ATTRS(
+			TNET_STUN_PKT_ATTR_ADD_UNKNOWN_ATTRS_VAL(0x0001), // MAPPED-ADDRESS
+			TNET_STUN_PKT_ATTR_ADD_UNKNOWN_ATTRS_VAL(0x0006), // USERNAME
+			TNET_STUN_PKT_ATTR_ADD_UNKNOWN_ATTRS_VAL(0x0007), // PASSWORD
+			TNET_STUN_PKT_ATTR_ADD_NULL()),
 		
-		TNET_STUN_PKT_ADD_ATTR_SOFTWARE_ZT(__pc_software),
-		TNET_STUN_PKT_ADD_ATTR_ALTERNATE_SERVER_V4(__u_mapped_addr_port, &addr_ipv4),
-		TNET_STUN_PKT_ADD_ATTR_ALTERNATE_SERVER_V6(__u_mapped_addr_port, &addr_ipv6),
+		TNET_STUN_PKT_ATTR_ADD_SOFTWARE_ZT(__pc_software),
+		TNET_STUN_PKT_ATTR_ADD_ALTERNATE_SERVER_V4(__u_mapped_addr_port, &addr_ipv4),
+		TNET_STUN_PKT_ATTR_ADD_ALTERNATE_SERVER_V6(__u_mapped_addr_port, &addr_ipv6),
+		TNET_STUN_PKT_ATTR_ADD_LIFETIME(__u_life_time),
+		TNET_STUN_PKT_ATTR_ADD_REQUESTED_TRANSPORT(__u_req_transport),
+		TNET_STUN_PKT_ATTR_ADD_DONT_FRAGMENT(),
 
-		TNET_STUN_PKT_ADD_ATTR_FINGERPRINT(__u_fingerprint),
-		TNET_STUN_PKT_ADD_ATTR_NULL()));
+		TNET_STUN_PKT_ATTR_ADD_FINGERPRINT(__u_fingerprint),
+		TNET_STUN_PKT_ATTR_ADD_NULL()));
 	BAIL_IF_ERR(tnet_stun_pkt_write_with_padding(p_pkt, __parse_buff_write_ptr, __parse_buff_write_size, &n_written_bytes));
 	TNET_TEST_STUN_SEND_BUFF(__parse_buff_write_ptr, n_written_bytes);
 
@@ -188,9 +196,22 @@ bail:
 #endif
 }
 
+static void test_turn_session()
+{
+	struct tnet_turn_session_s* p_ss = tsk_null;
+
+	BAIL_IF_ERR(tnet_turn_session_create_udp_ipv4(kStunServerIP, kStunServerPort, &p_ss));
+	BAIL_IF_ERR(tnet_turn_session_prepare(p_ss));
+
+bail:
+	TSK_OBJECT_SAFE_FREE(p_ss);
+}
+
+
 static void test_stun()
 {
-	test_sun_parser();
+	//test_sun_parser();
+	test_turn_session();
 }
 
 #endif /* TNET_TEST_STUN_H */

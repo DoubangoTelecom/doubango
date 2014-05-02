@@ -38,8 +38,10 @@
 
 #define IS_ADDRESS_XOR(e_type) \
 	(e_type == tnet_stun_attr_type_xor_mapped_address || e_type == tnet_stun_attr_type_xor_peer_address || e_type == tnet_stun_attr_type_xor_relayed_address)
+#define IS_VDATA_UINT8(e_type) \
+	(e_type == tnet_stun_attr_type_requested_transport)
 #define IS_VDATA_UINT32(e_type) \
-	(e_type == tnet_stun_attr_type_fingerprint || e_type == tnet_stun_attr_type_ice_priority)
+	(e_type == tnet_stun_attr_type_fingerprint || e_type == tnet_stun_attr_type_lifetime || e_type == tnet_stun_attr_type_ice_priority)
 #define IS_VDATA_UINT64(e_type) \
 	(e_type == tnet_stun_attr_type_ice_controlled || e_type == tnet_stun_attr_type_ice_controlling)
 
@@ -76,6 +78,7 @@ static int _tnet_stun_attr_get_size_in_octetunits(const tnet_stun_attr_t* pc_sel
         return 0;
     }
     case tnet_stun_attr_type_unknown_attrs:
+    case tnet_stun_attr_type_dont_fragment:
     case tnet_stun_attr_type_software:
     case tnet_stun_attr_type_nonce:
     case tnet_stun_attr_type_realm:
@@ -83,6 +86,8 @@ static int _tnet_stun_attr_get_size_in_octetunits(const tnet_stun_attr_t* pc_sel
     case tnet_stun_attr_type_password:
     case tnet_stun_attr_type_message_integrity:
     case tnet_stun_attr_type_fingerprint:
+    case tnet_stun_attr_type_lifetime:
+    case tnet_stun_attr_type_requested_transport:
     case tnet_stun_attr_type_ice_use_candidate:
     case tnet_stun_attr_type_ice_priority:
     case tnet_stun_attr_type_ice_controlled:
@@ -182,6 +187,7 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
     }
 
     case tnet_stun_attr_type_unknown_attrs:
+    case tnet_stun_attr_type_dont_fragment:
     case tnet_stun_attr_type_software:
     case tnet_stun_attr_type_nonce:
     case tnet_stun_attr_type_realm:
@@ -189,6 +195,8 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
     case tnet_stun_attr_type_password:
     case tnet_stun_attr_type_message_integrity:
     case tnet_stun_attr_type_fingerprint:
+    case tnet_stun_attr_type_lifetime:
+    case tnet_stun_attr_type_requested_transport:
     case tnet_stun_attr_type_ice_use_candidate:
     case tnet_stun_attr_type_ice_priority:
     case tnet_stun_attr_type_ice_controlled:
@@ -353,6 +361,7 @@ int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8
     }
 
     case tnet_stun_attr_type_unknown_attrs:
+    case tnet_stun_attr_type_dont_fragment:
     case tnet_stun_attr_type_software:
     case tnet_stun_attr_type_nonce:
     case tnet_stun_attr_type_realm:
@@ -360,6 +369,8 @@ int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8
     case tnet_stun_attr_type_password:
     case tnet_stun_attr_type_message_integrity:
     case tnet_stun_attr_type_fingerprint:
+    case tnet_stun_attr_type_lifetime:
+    case tnet_stun_attr_type_requested_transport:
     case tnet_stun_attr_type_ice_use_candidate:
     case tnet_stun_attr_type_ice_priority:
     case tnet_stun_attr_type_ice_controlled:

@@ -42,6 +42,14 @@ typedef uint8_t tnet_stun_addr_t[16]; // IPv4(32bits) or IPv6(128bits)
 		( PU8[4] == 0x21 && PU8[5] == 0x12 && PU8[6] == 0xA4 && PU8[7] == 0x42 ) \
 	)
 
+#if !defined(kStunBuffMinPad)
+#	define kStunBuffMinPad	40 // to make the buffer kasher
+#endif /* kStunBuffMinPad */
+
+#if !defined(kStunSoftware)
+#	define kStunSoftware "tinyNET 2.0"
+#endif /* kStunSoftware */
+
 #if !defined(kStunPortDefaultTcpUdp)
 #	define kStunPortDefaultTcpUdp 3478
 #endif /* kStunPortDefaultTcpUdp */
@@ -127,24 +135,44 @@ typedef enum tnet_stun_address_family_e {
 } tnet_stun_address_family_t;
 
 // RFC 5389  - 15.6.  ERROR-CODE
-#define kStunErrorClassTryAlternate			3
-#define kStunErrorNumberTryAlternate		0
-#define kStunErrorPhraseTryAlternate		"Try Alternate"
-#define kStunErrorClassBadRequest			4
-#define kStunErrorNumberBadRequest			0
-#define kStunErrorPhraseBadRequest			"Bad Request"
-#define kStunErrorClassUnauthorized			4
-#define kStunErrorNumberUnauthorized		1
-#define kStunErrorPhraseUnauthorized		"Unauthorized"
-#define kStunErrorClassUnknownAttribute		4
-#define kStunErrorNumberUnknownAttribute	20
-#define kStunErrorPhraseUnknownAttribute	"Unknown Attribute"
-#define kStunErrorClassStaleNonce			4
-#define kStunErrorNumberStaleNonce			38
-#define kStunErrorPhraseStaleNonce			"Stale Nonce"
-#define kStunErrorClassServerError			5
-#define kStunErrorNumberServerError			0
-#define kStunErrorPhraseServerError			"Server Error"
+#define kStunErrorClassTryAlternate						3
+#define kStunErrorNumberTryAlternate					0
+#define kStunErrorPhraseTryAlternate					"Try Alternate"
+#define kStunErrorClassBadRequest						4
+#define kStunErrorNumberBadRequest						0
+#define kStunErrorPhraseBadRequest						"Bad Request"
+#define kStunErrorClassUnauthorized						4
+#define kStunErrorNumberUnauthorized					1
+#define kStunErrorPhraseUnauthorized					"Unauthorized"
+#define kStunErrorClassUnknownAttribute					4
+#define kStunErrorNumberUnknownAttribute				20
+#define kStunErrorPhraseUnknownAttribute				"Unknown Attribute"
+#define kStunErrorClassStaleNonce						4
+#define kStunErrorNumberStaleNonce						38
+#define kStunErrorPhraseStaleNonce						"Stale Nonce"
+#define kStunErrorClassServerError						5
+#define kStunErrorNumberServerError						0
+#define kStunErrorPhraseServerError						"Server Error"
+// rfc5766 - 15.  New STUN Error Response Codes
+#define kStunErrorClassForbidden						4
+#define kStunErrorNumberForbidden						3
+#define kStunErrorPhraseForbidden						"Forbidden"
+#define kStunErrorClassAllocationMismatch				4
+#define kStunErrorNumberAllocationMismatch				37
+#define kStunErrorPhraseAllocationMismatch				"Allocation Mismatch"
+#define kStunErrorClassWrongCredentials					4
+#define kStunErrorNumberWrongCredentials				42
+#define kStunErrorPhraseWrongCredentials				"Wrong Credentials"
+#define kStunErrorClassUnsupportedTransportProtocol		4
+#define kStunErrorNumberUnsupportedTransportProtocol	42
+#define kStunErrorPhraseUnsupportedTransportProtocol	"Unsupported Transport Protocol"
+#define kStunErrorClassAllocationQuotaReached			4
+#define kStunErrorNumberAllocationQuotaReached			86
+#define kStunErrorPhraseAllocationQuotaReached			"Allocation Quota Reached"
+#define kStunErrorClassInsufficientCapacity				5
+#define kStunErrorNumberInsufficientCapacity			8
+#define kStunErrorPhraseInsufficientCapacity			"Insufficient Capacity"
+
 
 /**@ingroup tnet_stun_group
  * STUN attr types as per RFC 5389 subclause 18.2.
@@ -248,6 +276,22 @@ typedef enum tnet_stun_pkt_type_e {
     tnet_stun_pkt_type_channelbind_error_response = (tnet_stun_method_channelbind | tnet_stun_mask_error),
 }
 tnet_stun_pkt_type_t;
+
+// rfc5766 - 2.2.  Allocations
+#if !defined(kTurnAllocationTimeOutInSec)
+#	define kTurnAllocationTimeOutInSec 600 /* 10min */
+#endif /* kTurnAllocationTimeOutInSec */
+
+// rfc5766 - 2.3.  Permissions
+#if !defined(kTurnPermissionTimeOutInSec)
+#	define kTurnPermissionTimeOutInSec 300 /* 5min */
+#endif /* kTurnPermissionTimeOutInSec */
+
+// rfc5766 - 2.5.  Channels
+#if !defined(kTurnChannelBindingTimeOutInSec)
+#	define kTurnChannelBindingTimeOutInSec 600 /* 10min */
+#endif /* kTurnChannelBindingTimeOutInSec */
+
 
 TNET_END_DECLS
 

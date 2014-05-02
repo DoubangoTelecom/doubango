@@ -257,11 +257,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\turn\tnet_turn_attr.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\turn\tnet_turn_attribute.c"
 					>
 				</File>
 				<File
 					RelativePath=".\src\turn\tnet_turn_message.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\turn\tnet_turn_session.c"
 					>
 				</File>
 			</Filter>
@@ -505,11 +513,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\turn\tnet_turn_attr.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\turn\tnet_turn_attribute.h"
 					>
 				</File>
 				<File
 					RelativePath=".\src\turn\tnet_turn_message.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\turn\tnet_turn_session.h"
 					>
 				</File>
 			</Filter>
