@@ -21,6 +21,7 @@
 
 #include "tnet_endianness.h"
 
+#include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -35,8 +36,12 @@
 		(size_in_octes) += c; \
 	}
 
-#define IS_XOR(e_type) \
+#define IS_ADDRESS_XOR(e_type) \
 	(e_type == tnet_stun_attr_type_xor_mapped_address || e_type == tnet_stun_attr_type_xor_peer_address || e_type == tnet_stun_attr_type_xor_relayed_address)
+#define IS_VDATA_UINT32(e_type) \
+	(e_type == tnet_stun_attr_type_fingerprint || e_type == tnet_stun_attr_type_ice_priority)
+#define IS_VDATA_UINT64(e_type) \
+	(e_type == tnet_stun_attr_type_ice_controlled || e_type == tnet_stun_attr_type_ice_controlling)
 
 static int _tnet_stun_attr_cmp(const tsk_object_t *_att1, const tsk_object_t *_att2)
 {
@@ -54,6 +59,7 @@ static int _tnet_stun_attr_get_size_in_octetunits(const tnet_stun_attr_t* pc_sel
     }
     switch (pc_self->hdr.e_type) {
     case tnet_stun_attr_type_mapped_address:
+    case tnet_stun_attr_type_alternate_server:
     case tnet_stun_attr_type_xor_mapped_address:
     case tnet_stun_attr_type_xor_peer_address:
     case tnet_stun_attr_type_xor_relayed_address: {
@@ -69,8 +75,18 @@ static int _tnet_stun_attr_get_size_in_octetunits(const tnet_stun_attr_t* pc_sel
         }
         return 0;
     }
+    case tnet_stun_attr_type_unknown_attrs:
+    case tnet_stun_attr_type_software:
+    case tnet_stun_attr_type_nonce:
+    case tnet_stun_attr_type_realm:
     case tnet_stun_attr_type_username:
-    case tnet_stun_attr_type_password: {
+    case tnet_stun_attr_type_password:
+    case tnet_stun_attr_type_message_integrity:
+    case tnet_stun_attr_type_fingerprint:
+    case tnet_stun_attr_type_ice_use_candidate:
+    case tnet_stun_attr_type_ice_priority:
+    case tnet_stun_attr_type_ice_controlled:
+    case tnet_stun_attr_type_ice_controlling: {
         extern const tsk_object_def_t *tnet_stun_attr_vdata_def_t;
         const tnet_stun_attr_vdata_t* _pc_self = (const tnet_stun_attr_vdata_t*)pc_self;
         if (pc_self->__def__ != tnet_stun_attr_vdata_def_t) {
@@ -78,6 +94,14 @@ static int _tnet_stun_attr_get_size_in_octetunits(const tnet_stun_attr_t* pc_sel
             return -2;
         }
         *p_size = (kStunAttrHdrSizeInOctets + _pc_self->u_data_size);
+        if (with_padding) {
+            ALIGN_ON_32BITS(*p_size);
+        }
+        return 0;
+    }
+    case tnet_stun_attr_type_error_code: {
+        const tnet_stun_attr_error_code_t* _pc_self = (const tnet_stun_attr_error_code_t*)pc_self;
+        *p_size = (kStunAttrHdrSizeInOctets + 4 + tsk_strlen(_pc_self->p_reason_phrase));
         if (with_padding) {
             ALIGN_ON_32BITS(*p_size);
         }
@@ -116,13 +140,14 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
 
     switch (pc_self->hdr.e_type) {
     case tnet_stun_attr_type_mapped_address:
+    case tnet_stun_attr_type_alternate_server:
     case tnet_stun_attr_type_xor_mapped_address:
     case tnet_stun_attr_type_xor_peer_address:
     case tnet_stun_attr_type_xor_relayed_address: {
         tsk_size_t u_addr_size;
         extern const tsk_object_def_t *tnet_stun_attr_address_def_t;
         const tnet_stun_attr_address_t* _pc_self = (const tnet_stun_attr_address_t*)pc_self;
-        tsk_bool_t b_xor = IS_XOR(pc_self->hdr.e_type);
+        tsk_bool_t b_xor = IS_ADDRESS_XOR(pc_self->hdr.e_type);
         if (pc_self->__def__ != tnet_stun_attr_address_def_t) {
             TSK_DEBUG_ERROR("Invalid base type");
             return -2;
@@ -155,8 +180,19 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
         }
         return 0;
     }
+
+    case tnet_stun_attr_type_unknown_attrs:
+    case tnet_stun_attr_type_software:
+    case tnet_stun_attr_type_nonce:
+    case tnet_stun_attr_type_realm:
     case tnet_stun_attr_type_username:
-    case tnet_stun_attr_type_password: {
+    case tnet_stun_attr_type_password:
+    case tnet_stun_attr_type_message_integrity:
+    case tnet_stun_attr_type_fingerprint:
+    case tnet_stun_attr_type_ice_use_candidate:
+    case tnet_stun_attr_type_ice_priority:
+    case tnet_stun_attr_type_ice_controlled:
+    case tnet_stun_attr_type_ice_controlling: {
         extern const tsk_object_def_t *tnet_stun_attr_vdata_def_t;
         const tnet_stun_attr_vdata_t* _pc_self = (const tnet_stun_attr_vdata_t*)pc_self;
         if (pc_self->__def__ != tnet_stun_attr_vdata_def_t) {
@@ -164,9 +200,37 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
             return -2;
         }
         if (_pc_self->p_data_ptr && _pc_self->u_data_size) {
-            memcpy(&p_buff_ptr[*p_written], _pc_self->p_data_ptr, _pc_self->u_data_size);
+            if (IS_VDATA_UINT32(pc_self->hdr.e_type) && _pc_self->u_data_size == 4) {
+                *((uint32_t*)&p_buff_ptr[*p_written]) = tnet_htonl_2(&_pc_self->p_data_ptr[0]);
+            }
+            else if (IS_VDATA_UINT64(pc_self->hdr.e_type) && _pc_self->u_data_size == 8) {
+                *((uint32_t*)&p_buff_ptr[*p_written]) = tnet_htonl_2(&_pc_self->p_data_ptr[0]);
+                *((uint32_t*)&p_buff_ptr[*p_written + 4]) = tnet_htonl_2(&_pc_self->p_data_ptr[4]);
+            }
+            else if (pc_self->hdr.e_type == tnet_stun_attr_type_unknown_attrs && _pc_self->u_data_size && !(_pc_self->u_data_size & 1)) {
+                uint16_t u;
+                for (u = 0; u < _pc_self->u_data_size; u+=2) {
+                    *((uint16_t*)&p_buff_ptr[*p_written + u]) = tnet_htons_2(&_pc_self->p_data_ptr[u]);
+                }
+            }
+            else {
+                memcpy(&p_buff_ptr[*p_written], _pc_self->p_data_ptr, _pc_self->u_data_size);
+            }
             *p_written += _pc_self->u_data_size;
         }
+        *((uint16_t*)&p_buff_ptr[2]) = tnet_htons((unsigned short)*p_written - kStunAttrHdrSizeInOctets);
+        if (with_padding) {
+            ALIGN_ON_32BITS_AND_SET_PADDING_ZEROS(&p_buff_ptr[*p_written], *p_written);
+        }
+        return 0;
+    }
+    case tnet_stun_attr_type_error_code: {
+        const tnet_stun_attr_error_code_t* _pc_self = (const tnet_stun_attr_error_code_t*)pc_self;
+        *((uint32_t*)&p_buff_ptr[*p_written]) = tnet_htonl(((_pc_self->u_class & 0x07) << 8) | _pc_self->u_number);
+        if (_pc_self->p_reason_phrase) {
+            memcpy(&p_buff_ptr[*p_written + 4], _pc_self->p_reason_phrase, tsk_strlen(_pc_self->p_reason_phrase));
+        }
+        *p_written += 4 + tsk_strlen(_pc_self->p_reason_phrase);
         *((uint16_t*)&p_buff_ptr[2]) = tnet_htons((unsigned short)*p_written - kStunAttrHdrSizeInOctets);
         if (with_padding) {
             ALIGN_ON_32BITS_AND_SET_PADDING_ZEROS(&p_buff_ptr[*p_written], *p_written);
@@ -241,6 +305,7 @@ int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8
 
     switch (Type) {
     case tnet_stun_attr_type_mapped_address:
+    case tnet_stun_attr_type_alternate_server:
     case tnet_stun_attr_type_xor_mapped_address:
     case tnet_stun_attr_type_xor_peer_address:
     case tnet_stun_attr_type_xor_relayed_address: {
@@ -248,7 +313,7 @@ int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8
         tnet_stun_address_family_t e_family = pc_buff_ptr[5];
         uint16_t u_port = tnet_ntohs_2(&pc_buff_ptr[6]);
         tnet_stun_attr_address_t* p_attr;
-        tsk_bool_t b_xor = IS_XOR(Type);
+        tsk_bool_t b_xor = IS_ADDRESS_XOR(Type);
         uint16_t u, u_addr_size = (e_family == tnet_stun_address_family_ipv6) ? 16 : 4;
 
         if (b_xor) {
@@ -271,17 +336,70 @@ int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8
         else {
             memcpy(p_attr->address, &pc_buff_ptr[8], u_addr_size);
         }
-
         *pp_attr = TNET_STUN_ATTR(p_attr);
         break;
     }
 
+    case tnet_stun_attr_type_error_code: {
+        // First 21bits must be ignored
+        uint8_t Class = pc_buff_ptr[6] & 0x07;
+        uint8_t Number = pc_buff_ptr[7] & 0xff;
+        tnet_stun_attr_error_code_t* p_attr;
+        if ((ret = tnet_stun_attr_error_code_create(Class, Number, &pc_buff_ptr[8], (Length - 4), &p_attr))) {
+            return ret;
+        }
+        *pp_attr = TNET_STUN_ATTR(p_attr);
+        break;
+    }
+
+    case tnet_stun_attr_type_unknown_attrs:
+    case tnet_stun_attr_type_software:
+    case tnet_stun_attr_type_nonce:
+    case tnet_stun_attr_type_realm:
     case tnet_stun_attr_type_username:
     case tnet_stun_attr_type_password:
+    case tnet_stun_attr_type_message_integrity:
+    case tnet_stun_attr_type_fingerprint:
+    case tnet_stun_attr_type_ice_use_candidate:
+    case tnet_stun_attr_type_ice_priority:
+    case tnet_stun_attr_type_ice_controlled:
+    case tnet_stun_attr_type_ice_controlling:
     default: {
         tnet_stun_attr_vdata_t* p_attr;
-        if ((ret = tnet_stun_attr_vdata_create(Type, &pc_buff_ptr[4], Length, &p_attr))) {
-            return ret;
+        if (IS_VDATA_UINT32(Type) && Length == 4) {
+            uint32_t u32 = tnet_ntohl_2(&pc_buff_ptr[4]);
+            if ((ret = tnet_stun_attr_vdata_create(Type, (uint8_t*)&u32, 4, &p_attr))) {
+                return ret;
+            }
+        }
+        else if (IS_VDATA_UINT64(Type) && Length == 8) {
+            uint64_t u64 = ((uint64_t)tnet_ntohl_2(&pc_buff_ptr[4])) << 32;
+            u64 |= tnet_ntohl_2(&pc_buff_ptr[8]);
+            if ((ret = tnet_stun_attr_vdata_create(Type, (uint8_t*)&u64, 8, &p_attr))) {
+                return ret;
+            }
+        }
+        else if (Type == tnet_stun_attr_type_unknown_attrs && Length && !(Length & 1)) {
+            uint16_t u;
+            uint8_t *_p_data_ptr = tsk_malloc(Length);
+            if (!_p_data_ptr) {
+                TSK_DEBUG_ERROR("Failed to allocate buffer with size = %u", Length);
+                return -4;
+            }
+            memcpy(_p_data_ptr, &pc_buff_ptr[4], Length);
+            for (u = 0; u < Length; u+=2) {
+                *((uint16_t*)&_p_data_ptr[u]) = tnet_htons_2(&_p_data_ptr[u]);
+            }
+            if ((ret = tnet_stun_attr_vdata_create(Type, _p_data_ptr, Length, &p_attr))) {
+                TSK_FREE(_p_data_ptr);
+                return ret;
+            }
+            TSK_FREE(_p_data_ptr);
+        }
+        else {
+            if ((ret = tnet_stun_attr_vdata_create(Type, &pc_buff_ptr[4], Length, &p_attr))) {
+                return ret;
+            }
         }
         *pp_attr = TNET_STUN_ATTR(p_attr);
         break;
@@ -317,6 +435,7 @@ int tnet_stun_attr_vdata_create(tnet_stun_attr_type_t e_type, const uint8_t* pc_
         memcpy(p_attr->p_data_ptr, pc_data_ptr, u_length);
         p_attr->u_data_size = u_length;
     }
+    *pp_attr = p_attr;
 
 bail:
     if (ret) {
@@ -404,3 +523,64 @@ static const tsk_object_def_t tnet_stun_attr_address_def_s = {
     _tnet_stun_attr_cmp,
 };
 const tsk_object_def_t *tnet_stun_attr_address_def_t = &tnet_stun_attr_address_def_s;
+
+
+
+// ================ 15.6.  ERROR-CODE ========== //
+int tnet_stun_attr_error_code_create(uint8_t u_class, uint8_t u_number, const void* pc_reason_phrase, uint16_t u_reason_phrase, struct tnet_stun_attr_error_code_s** pp_attr)
+{
+    int ret = - 1;
+    extern const tsk_object_def_t *tnet_stun_attr_error_code_def_t;
+    tnet_stun_attr_error_code_t* p_attr = tsk_null;
+    uint16_t u_length = 4 + tsk_strlen(pc_reason_phrase);
+    if (!pp_attr) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    if (!(p_attr = tsk_object_new(tnet_stun_attr_error_code_def_t))) {
+        ret = -2;
+        goto bail;
+    }
+    if ((ret = tnet_stun_attr_init(TNET_STUN_ATTR(p_attr), tnet_stun_attr_type_error_code, u_length))) {
+        goto bail;
+    }
+    p_attr->u_class = u_class;
+    p_attr->u_number = u_number;
+    if (pc_reason_phrase && u_reason_phrase) {
+        if (!(p_attr->p_reason_phrase = tsk_strndup(pc_reason_phrase, u_reason_phrase))) {
+            ret = -3;
+            goto bail;
+        }
+    }
+    *pp_attr = p_attr;
+
+bail:
+    if (ret) {
+        TSK_OBJECT_SAFE_FREE(p_attr);
+    }
+    return ret;
+}
+
+static tsk_object_t* tnet_stun_attr_error_code_ctor(tsk_object_t * self, va_list * app)
+{
+    tnet_stun_attr_error_code_t *p_ec = (tnet_stun_attr_error_code_t *)self;
+    if (p_ec) {
+    }
+    return self;
+}
+static tsk_object_t* tnet_stun_attr_error_code_dtor(tsk_object_t * self)
+{
+    tnet_stun_attr_error_code_t *p_ec = (tnet_stun_attr_error_code_t *)self;
+    if (p_ec) {
+        TSK_DEBUG_INFO("*** STUN Attribute(ERROR-CODE) destroyed ***");
+        TSK_FREE(p_ec->p_reason_phrase);
+    }
+    return self;
+}
+static const tsk_object_def_t tnet_stun_attr_error_code_def_s = {
+    sizeof(tnet_stun_attr_error_code_t),
+    tnet_stun_attr_error_code_ctor,
+    tnet_stun_attr_error_code_dtor,
+    _tnet_stun_attr_cmp,
+};
+const tsk_object_def_t *tnet_stun_attr_error_code_def_t = &tnet_stun_attr_error_code_def_s;

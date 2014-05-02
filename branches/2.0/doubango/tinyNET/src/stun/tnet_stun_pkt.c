@@ -21,6 +21,8 @@
 
 #include "tnet_endianness.h"
 
+#include "tsk_buffer.h"
+#include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -98,6 +100,52 @@ int tnet_stun_pkt_add_attrs(tnet_stun_pkt_t* p_self, ...)
             if ((ret = tnet_stun_attr_address_create(E_TYPE, E_FAMILY, U_PORT, PC_ADDR_PTR, &p_attr))) {
                 goto bail;
             }
+            if ((ret = tnet_stun_pkt_add_attr(p_self, (tnet_stun_attr_t**)&p_attr))) {
+                TSK_OBJECT_SAFE_FREE(p_attr);
+                goto bail;
+            }
+            break;
+        }
+        case tnet_stun_pkt_add_attr_error_code: {
+            // (uint8_t)(U8_CLASS), (uint8_t)(U8_NUMBER), (const char*)(PC_REASON_STR)
+            uint8_t U8_CLASS = va_arg(ap, uint8_t);
+            uint8_t U8_NUMBER = va_arg(ap, uint8_t);
+            const char* PC_REASON_STR = va_arg(ap, const char*);
+            tnet_stun_attr_error_code_t *p_attr;
+            if ((ret = tnet_stun_attr_error_code_create(U8_CLASS, U8_NUMBER, PC_REASON_STR, tsk_strlen(PC_REASON_STR), &p_attr))) {
+                goto bail;
+            }
+            if ((ret = tnet_stun_pkt_add_attr(p_self, (tnet_stun_attr_t**)&p_attr))) {
+                TSK_OBJECT_SAFE_FREE(p_attr);
+                goto bail;
+            }
+            break;
+        }
+        case tnet_stun_pkt_add_attr_unknown_attrs: {
+            // (...)
+            tsk_buffer_t* p_buffer = tsk_buffer_create_null();
+            tnet_stun_attr_vdata_t *p_attr;
+            uint16_t u_16;
+            if (!p_buffer) {
+                TSK_DEBUG_ERROR("Failed to create buffer");
+                ret = -4;
+                goto bail;
+            }
+            while ((e_add_attr = va_arg(ap, tnet_stun_pkt_add_attr_t)) != tnet_stun_pkt_add_attr_null) {
+                if (e_add_attr != tnet_stun_pkt_add_attr_unknown_attrs_val) {
+                    TSK_OBJECT_SAFE_FREE(p_buffer);
+                    TSK_DEBUG_ERROR("Arguments corrupted or invalid.");
+                    ret = -3;
+                    goto bail;
+                }
+                u_16 = va_arg(ap, uint16_t);
+                tsk_buffer_append(p_buffer, &u_16, 2);
+            }
+            if ((ret = tnet_stun_attr_vdata_create(tnet_stun_attr_type_unknown_attrs, p_buffer->data, p_buffer->size, &p_attr))) {
+                TSK_OBJECT_SAFE_FREE(p_buffer);
+                goto bail;
+            }
+            TSK_OBJECT_SAFE_FREE(p_buffer);
             if ((ret = tnet_stun_pkt_add_attr(p_self, (tnet_stun_attr_t**)&p_attr))) {
                 TSK_OBJECT_SAFE_FREE(p_attr);
                 goto bail;

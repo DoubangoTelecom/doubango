@@ -48,14 +48,13 @@ TINYNET_API int tnet_stun_attr_write_without_padding(const tnet_stun_transac_id_
 TINYNET_API int tnet_stun_attr_write_with_padding(const tnet_stun_transac_id_t* pc_transac_id, const struct tnet_stun_attr_s* pc_self, uint8_t* p_buff_ptr, tsk_size_t n_buff_size, tsk_size_t *p_written);
 TINYNET_API int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size, tsk_size_t *p_consumed_octets, struct tnet_stun_attr_s** pp_attr);
 
-// ============== VDATA (USERNAME, MESSAGE-INTEGRITY, ...) ================ //
+// ============== VDATA (USERNAME, MESSAGE-INTEGRITY, REALM, NONCE, ...) ================ //
 typedef struct tnet_stun_attr_vdata_s {
     TNET_STUN_DECLARE_ATTR;
     uint8_t *p_data_ptr;
     uint16_t u_data_size;
 } tnet_stun_attr_vdata_t;
 int tnet_stun_attr_vdata_create(enum tnet_stun_attr_type_e e_type, const uint8_t* pc_data_ptr, uint16_t u_data_size, struct tnet_stun_attr_vdata_s** pp_attr);
-
 
 // ============== ADDRESS ================ //
 typedef struct tnet_stun_attr_address_s {
@@ -66,6 +65,15 @@ typedef struct tnet_stun_attr_address_s {
 } tnet_stun_attr_address_t;
 
 int tnet_stun_attr_address_create(enum tnet_stun_attr_type_e e_type, enum tnet_stun_address_family e_family, uint16_t u_port, const tnet_stun_addr_t* pc_addr, struct tnet_stun_attr_address_s** pp_attr);
+
+// ================ 15.6.  ERROR-CODE ========== //
+typedef struct tnet_stun_attr_error_code_s {
+    TNET_STUN_DECLARE_ATTR;
+    uint8_t u_class; // 3bits
+    uint8_t u_number; // 8bits
+    char* p_reason_phrase;
+} tnet_stun_attr_error_code_t;
+int tnet_stun_attr_error_code_create(uint8_t u_class, uint8_t u_number, const void* pc_reason_phrase, uint16_t u_reason_phrase, struct tnet_stun_attr_error_code_s** pp_attr);
 
 TNET_END_DECLS
 

@@ -74,7 +74,21 @@ static void test_sun_parser()
 	static const char* __pc_mapped_addr_ipv4 = "192.168.0.37";
 	static const char* __pc_mapped_addr_ipv6 = "fdf8:f53b:82e4::53";
 	static const uint16_t __u_mapped_addr_port = 5060;
+	static const char __pc_username[] = "Mamadou DIOP";
+	static const uint16_t __u_username = sizeof(__pc_username);
+	static const char __pc_integrity[TSK_SHA1_DIGEST_SIZE] = { 0 };
+	static const uint16_t __u_integrity = sizeof(__pc_integrity);
+	static const uint32_t __u_fingerprint = 19831983;
+	static const uint8_t __u_error_class = 4; // (4 * 100) = 404
+	static const uint8_t __u_error_number = 4; // + 4 = 404
+	static const char* __pc_error_reason = "Not Found";
 	tnet_stun_addr_t addr_ipv4, addr_ipv6;
+	static const char __pc_realm[] = "doubango.org";
+	static const uint16_t __u_realm = sizeof(__pc_realm);
+	static const char __pc_nonce[128] = { 0 };
+	static const uint16_t __u_nonce = sizeof(__pc_nonce);
+	static const char __pc_software[] = "tinyNET 2.0";
+	static const uint16_t __u_software = sizeof(__pc_software);
 
     (n_read_bytes);
 
@@ -86,14 +100,37 @@ static void test_sun_parser()
 		TNET_STUN_PKT_ADD_ATTR_MAPPED_ADDRESS_V6(__u_mapped_addr_port, &addr_ipv6),
 		TNET_STUN_PKT_ADD_ATTR_XOR_MAPPED_ADDRESS_V4(__u_mapped_addr_port, &addr_ipv4),
 		TNET_STUN_PKT_ADD_ATTR_XOR_MAPPED_ADDRESS_V6(__u_mapped_addr_port, &addr_ipv6),
+		TNET_STUN_PKT_ADD_ATTR_USERNAME_ZT(__pc_username),
+		TNET_STUN_PKT_ADD_ATTR_MESSAGE_INTEGRITY(__pc_integrity, __u_integrity),
+		TNET_STUN_PKT_ADD_ATTR_ERROR_CODE(__u_error_class, __u_error_number, __pc_error_reason),
+		TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_TRY_ALTERNATE(),
+		TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_BAD_REQUEST(),
+		TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_UNAUTHORIZED(),
+		TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_UNKNOWN_ATTRIBUTE(),
+		TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_STALE_NONCE(),
+		TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_SERVER_ERROR(),
+		TNET_STUN_PKT_ADD_ATTR_REALM_ZT(__pc_realm),
+		TNET_STUN_PKT_ADD_ATTR_NONCE(__pc_nonce, __u_nonce),
+
+		TNET_STUN_PKT_ADD_ATTR_UNKNOWN_ATTRS(
+			TNET_STUN_PKT_ADD_ATTR_UNKNOWN_ATTRS_VAL(0x0001), // MAPPED-ADDRESS
+			TNET_STUN_PKT_ADD_ATTR_UNKNOWN_ATTRS_VAL(0x0006), // USERNAME
+			TNET_STUN_PKT_ADD_ATTR_UNKNOWN_ATTRS_VAL(0x0007), // PASSWORD
+			TNET_STUN_PKT_ADD_ATTR_NULL()),
+		
+		TNET_STUN_PKT_ADD_ATTR_SOFTWARE_ZT(__pc_software),
+		TNET_STUN_PKT_ADD_ATTR_ALTERNATE_SERVER_V4(__u_mapped_addr_port, &addr_ipv4),
+		TNET_STUN_PKT_ADD_ATTR_ALTERNATE_SERVER_V6(__u_mapped_addr_port, &addr_ipv6),
+
+		TNET_STUN_PKT_ADD_ATTR_FINGERPRINT(__u_fingerprint),
 		TNET_STUN_PKT_ADD_ATTR_NULL()));
 	BAIL_IF_ERR(tnet_stun_pkt_write_with_padding(p_pkt, __parse_buff_write_ptr, __parse_buff_write_size, &n_written_bytes));
-	// TNET_TEST_STUN_SEND_BUFF(__parse_buff_write_ptr, n_written_bytes);
+	TNET_TEST_STUN_SEND_BUFF(__parse_buff_write_ptr, n_written_bytes);
 
 	TSK_OBJECT_SAFE_FREE(p_pkt);
 	BAIL_IF_ERR(tnet_stun_pkt_read(__parse_buff_write_ptr, n_written_bytes, &p_pkt));
 	BAIL_IF_ERR(tnet_stun_pkt_write_with_padding(p_pkt, __parse_buff_read_ptr, __parse_buff_read_size, &n_read_bytes));
-	TNET_TEST_STUN_SEND_BUFF(__parse_buff_read_ptr, n_read_bytes);
+	//TNET_TEST_STUN_SEND_BUFF(__parse_buff_read_ptr, n_read_bytes);
 
 	BAIL_IF_ERR(test_stun_buff_cmp(__parse_buff_write_ptr, n_written_bytes, __parse_buff_read_ptr, n_read_bytes));
     TSK_DEBUG_INFO("test_sun_parser...OK");
