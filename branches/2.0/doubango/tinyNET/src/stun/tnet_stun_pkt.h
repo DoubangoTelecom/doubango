@@ -54,12 +54,18 @@ typedef enum tnet_stun_pkt_add_attr_e {
     tnet_stun_pkt_add_attr_null = 0,
     tnet_stun_pkt_add_attr_none = tnet_stun_pkt_add_attr_null,
     tnet_stun_pkt_add_attr_vdata,
-    tnet_stun_pkt_add_attr_address
+    tnet_stun_pkt_add_attr_address,
+    tnet_stun_pkt_add_attr_error_code,
+    tnet_stun_pkt_add_attr_unknown_attrs,
+    tnet_stun_pkt_add_attr_unknown_attrs_val,
 }
 tnet_stun_pkt_add_attr_t;
 
 #define TNET_STUN_PKT_ADD_ATTR_NULL()												tnet_stun_pkt_add_attr_null
 #define TNET_STUN_PKT_ADD_ATTR_VDATA(E_TYPE, P_DATA_PTR, U_DATA_SIZE)				tnet_stun_pkt_add_attr_vdata, (enum tnet_stun_attr_type_e)(E_TYPE), (const uint8_t*)(P_DATA_PTR), (uint16_t)(U_DATA_SIZE)
+#define TNET_STUN_PKT_ADD_ATTR_UINT32(E_TYPE, U32)									TNET_STUN_PKT_ADD_ATTR_VDATA(E_TYPE, &U32, 4)
+#define TNET_STUN_PKT_ADD_ATTR_UINT64(E_TYPE, U64)									TNET_STUN_PKT_ADD_ATTR_VDATA(E_TYPE, &U64, 8)
+#define TNET_STUN_PKT_ADD_ATTR_STR(E_TYPE, PC_STR)									TNET_STUN_PKT_ADD_ATTR_VDATA(E_TYPE, PC_STR, tsk_strlen(PC_STR))
 #define TNET_STUN_PKT_ADD_ATTR_ADDRESS(E_TYPE, E_FAMILY, U_PORT, PC_ADDR_PTR)		tnet_stun_pkt_add_attr_address, (enum tnet_stun_attr_type_e)(E_TYPE), (enum tnet_stun_address_family_e)(E_FAMILY), (uint16_t)(U_PORT), (const tnet_stun_addr_t*)PC_ADDR_PTR
 #define TNET_STUN_PKT_ADD_ATTR_ADDRESS_V4(E_TYPE, U_PORT, PC_ADDR_PTR)				TNET_STUN_PKT_ADD_ATTR_ADDRESS((E_TYPE), tnet_stun_address_family_ipv4, (U_PORT), (PC_ADDR_PTR))
 #define TNET_STUN_PKT_ADD_ATTR_ADDRESS_V6(E_TYPE, U_PORT, PC_ADDR_PTR)				TNET_STUN_PKT_ADD_ATTR_ADDRESS((E_TYPE), tnet_stun_address_family_ipv6, (U_PORT), (PC_ADDR_PTR))
@@ -71,6 +77,38 @@ tnet_stun_pkt_add_attr_t;
 #define TNET_STUN_PKT_ADD_ATTR_XOR_MAPPED_ADDRESS(E_FAMILY, U_PORT, PC_ADDR_PTR)	TNET_STUN_PKT_ADD_ATTR_ADDRESS(tnet_stun_attr_type_xor_mapped_address, (E_FAMILY), (U_PORT), (PC_ADDR_PTR))
 #define TNET_STUN_PKT_ADD_ATTR_XOR_MAPPED_ADDRESS_V4(U_PORT, PC_ADDR_PTR)			TNET_STUN_PKT_ADD_ATTR_XOR_MAPPED_ADDRESS(tnet_stun_address_family_ipv4, (U_PORT), (PC_ADDR_PTR))
 #define TNET_STUN_PKT_ADD_ATTR_XOR_MAPPED_ADDRESS_V6(U_PORT, PC_ADDR_PTR)			TNET_STUN_PKT_ADD_ATTR_XOR_MAPPED_ADDRESS(tnet_stun_address_family_ipv6, (U_PORT), (PC_ADDR_PTR))
+// rfc5389 - 15.3.  USERNAME
+#define TNET_STUN_PKT_ADD_ATTR_USERNAME(PC_USERNAME_STR, U_USERNAME_STR)			TNET_STUN_PKT_ADD_ATTR_VDATA(tnet_stun_attr_type_username, (PC_USERNAME_STR), (U_USERNAME_STR))
+#define TNET_STUN_PKT_ADD_ATTR_USERNAME_ZT(PC_USERNAME_STR)							TNET_STUN_PKT_ADD_ATTR_USERNAME(PC_USERNAME_STR, tsk_strlen(PC_USERNAME_STR))
+// rfc5389 - 15.4.  MESSAGE-INTEGRITY
+#define TNET_STUN_PKT_ADD_ATTR_MESSAGE_INTEGRITY(PC_SHA1_STR, U_SHA1_STR)			TNET_STUN_PKT_ADD_ATTR_VDATA(tnet_stun_attr_type_message_integrity, (PC_SHA1_STR), (U_SHA1_STR))
+#define TNET_STUN_PKT_ADD_ATTR_MESSAGE_INTEGRITY_ZT(PC_SHA1_STR)					TNET_STUN_PKT_ADD_ATTR_MESSAGE_INTEGRITY(PC_SHA1_STR, tsk_strlen(PC_SHA1_STR))
+// rfc5389 - 15.5.  FINGERPRINT
+#define TNET_STUN_PKT_ADD_ATTR_FINGERPRINT(U32_CRC32)								TNET_STUN_PKT_ADD_ATTR_UINT32(tnet_stun_attr_type_fingerprint, U32_CRC32)
+// rfc5389 - 15.6.  ERROR-CODE
+#define TNET_STUN_PKT_ADD_ATTR_ERROR_CODE(U8_CLASS, U8_NUMBER, PC_REASON_STR)		tnet_stun_pkt_add_attr_error_code, (uint8_t)(U8_CLASS), (uint8_t)(U8_NUMBER), (const char*)(PC_REASON_STR)
+#define TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_TRY_ALTERNATE()							TNET_STUN_PKT_ADD_ATTR_ERROR_CODE(kStunErrorClassTryAlternate, kStunErrorNumberTryAlternate, kStunErrorPhraseTryAlternate)
+#define TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_BAD_REQUEST()								TNET_STUN_PKT_ADD_ATTR_ERROR_CODE(kStunErrorClassBadRequest, kStunErrorNumberBadRequest, kStunErrorPhraseBadRequest)
+#define TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_UNAUTHORIZED()							TNET_STUN_PKT_ADD_ATTR_ERROR_CODE(kStunErrorClassUnauthorized, kStunErrorNumberUnauthorized, kStunErrorPhraseUnauthorized)
+#define TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_UNKNOWN_ATTRIBUTE()						TNET_STUN_PKT_ADD_ATTR_ERROR_CODE(kStunErrorClassUnknownAttribute, kStunErrorNumberUnknownAttribute, kStunErrorPhraseUnknownAttribute)
+#define TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_STALE_NONCE()								TNET_STUN_PKT_ADD_ATTR_ERROR_CODE(kStunErrorClassStaleNonce, kStunErrorNumberStaleNonce, kStunErrorPhraseStaleNonce)
+#define TNET_STUN_PKT_ADD_ATTR_ERROR_CODE_SERVER_ERROR()							TNET_STUN_PKT_ADD_ATTR_ERROR_CODE(kStunErrorClassServerError, kStunErrorNumberServerError, kStunErrorPhraseServerError)
+// rfc5389 - 15.7.  REALM
+#define TNET_STUN_PKT_ADD_ATTR_REALM(PC_REALM_STR, U_REALM_STR)						TNET_STUN_PKT_ADD_ATTR_VDATA(tnet_stun_attr_type_realm, (PC_REALM_STR), (U_REALM_STR))
+#define TNET_STUN_PKT_ADD_ATTR_REALM_ZT(PC_REALM_STR)								TNET_STUN_PKT_ADD_ATTR_REALM(PC_REALM_STR, tsk_strlen(PC_REALM_STR))
+// rfc5389 - 15.8.  NONCE
+#define TNET_STUN_PKT_ADD_ATTR_NONCE(PC_NONCE_STR, U_NONCE_STR)						TNET_STUN_PKT_ADD_ATTR_VDATA(tnet_stun_attr_type_nonce, (PC_NONCE_STR), (U_NONCE_STR))
+#define TNET_STUN_PKT_ADD_ATTR_NONCE_ZT(PC_NONCE_STR)								TNET_STUN_PKT_ADD_ATTR_NONCE(PC_NONCE_STR, tsk_strlen(PC_NONCE_STR))
+// rfc5389 - 15.9.  UNKNOWN-ATTRIBUTES
+#define TNET_STUN_PKT_ADD_ATTR_UNKNOWN_ATTRS(...)									tnet_stun_pkt_add_attr_unknown_attrs, ##__VA_ARGS__
+#define TNET_STUN_PKT_ADD_ATTR_UNKNOWN_ATTRS_VAL(U16_VAL)							tnet_stun_pkt_add_attr_unknown_attrs_val, (uint16_t)U16_VAL
+// rfc5389 - 15.10.  SOFTWARE
+#define TNET_STUN_PKT_ADD_ATTR_SOFTWARE(PC_SOFTWARE_STR, U_SOFTWARE_STR)			TNET_STUN_PKT_ADD_ATTR_VDATA(tnet_stun_attr_type_software, (PC_SOFTWARE_STR), (U_SOFTWARE_STR))
+#define TNET_STUN_PKT_ADD_ATTR_SOFTWARE_ZT(PC_SOFTWARE_STR)							TNET_STUN_PKT_ADD_ATTR_SOFTWARE(PC_SOFTWARE_STR, tsk_strlen(PC_SOFTWARE_STR))
+// rfc5389 - 15.11.  ALTERNATE-SERVER
+#define TNET_STUN_PKT_ADD_ATTR_ALTERNATE_SERVER(E_FAMILY, U_PORT, PC_ADDR_PTR)		TNET_STUN_PKT_ADD_ATTR_ADDRESS(tnet_stun_attr_type_alternate_server, (E_FAMILY), (U_PORT), (PC_ADDR_PTR))
+#define TNET_STUN_PKT_ADD_ATTR_ALTERNATE_SERVER_V4(U_PORT, PC_ADDR_PTR)				TNET_STUN_PKT_ADD_ATTR_ALTERNATE_SERVER(tnet_stun_address_family_ipv4, (U_PORT), (PC_ADDR_PTR))
+#define TNET_STUN_PKT_ADD_ATTR_ALTERNATE_SERVER_V6(U_PORT, PC_ADDR_PTR)				TNET_STUN_PKT_ADD_ATTR_ALTERNATE_SERVER(tnet_stun_address_family_ipv6, (U_PORT), (PC_ADDR_PTR))
 
 typedef struct tnet_stun_pkt_s {
     TSK_DECLARE_OBJECT;

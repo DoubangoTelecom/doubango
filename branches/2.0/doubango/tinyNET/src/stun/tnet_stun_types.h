@@ -126,6 +126,26 @@ typedef enum tnet_stun_address_family_e {
     tnet_stun_address_family_ipv6 = 0x02
 } tnet_stun_address_family_t;
 
+// RFC 5389  - 15.6.  ERROR-CODE
+#define kStunErrorClassTryAlternate			3
+#define kStunErrorNumberTryAlternate		0
+#define kStunErrorPhraseTryAlternate		"Try Alternate"
+#define kStunErrorClassBadRequest			4
+#define kStunErrorNumberBadRequest			0
+#define kStunErrorPhraseBadRequest			"Bad Request"
+#define kStunErrorClassUnauthorized			4
+#define kStunErrorNumberUnauthorized		1
+#define kStunErrorPhraseUnauthorized		"Unauthorized"
+#define kStunErrorClassUnknownAttribute		4
+#define kStunErrorNumberUnknownAttribute	20
+#define kStunErrorPhraseUnknownAttribute	"Unknown Attribute"
+#define kStunErrorClassStaleNonce			4
+#define kStunErrorNumberStaleNonce			38
+#define kStunErrorPhraseStaleNonce			"Stale Nonce"
+#define kStunErrorClassServerError			5
+#define kStunErrorNumberServerError			0
+#define kStunErrorPhraseServerError			"Server Error"
+
 /**@ingroup tnet_stun_group
  * STUN attr types as per RFC 5389 subclause 18.2.
 **/
