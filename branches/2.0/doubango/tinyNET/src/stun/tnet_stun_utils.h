@@ -33,6 +33,9 @@ TINYNET_API int tnet_stun_utils_inet_ntop(tsk_bool_t b_v6, const tnet_stun_addr_
 #define tnet_stun_utils_inet_ntop_v4(pc_src, p_dst) tnet_stun_utils_inet_ntop(tsk_false, (pc_src), (p_dst))
 #define tnet_stun_utils_inet_ntop_v6(pc_src, p_dst) tnet_stun_utils_inet_ntop(tsk_true, (pc_src), (p_dst))
 TINYNET_API int tnet_stun_utils_transac_id_rand(tnet_stun_transac_id_t* p_transac_id);
+TINYNET_API int tnet_stun_utils_buff_cmp(const uint8_t* pc_buf1_ptr, tsk_size_t n_buff1_size, const uint8_t* pc_buf2_ptr, tsk_size_t n_buff2_size);
+#define tnet_stun_utils_transac_id_cmp(pc_tid1, pc_tid2) tnet_stun_utils_buff_cmp((pc_tid1), sizeof(tnet_stun_transac_id_t), (pc_tid2), sizeof(tnet_stun_transac_id_t))
+
 
 TNET_END_DECLS
 

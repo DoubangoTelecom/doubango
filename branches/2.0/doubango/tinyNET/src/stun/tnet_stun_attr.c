@@ -226,10 +226,10 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
             }
             *p_written += _pc_self->u_data_size;
         }
-        *((uint16_t*)&p_buff_ptr[2]) = tnet_htons((unsigned short)*p_written - kStunAttrHdrSizeInOctets);
         if (with_padding) {
             ALIGN_ON_32BITS_AND_SET_PADDING_ZEROS(&p_buff_ptr[*p_written], *p_written);
         }
+        *((uint16_t*)&p_buff_ptr[2]) = tnet_htons((unsigned short)*p_written - kStunAttrHdrSizeInOctets);
         return 0;
     }
     case tnet_stun_attr_type_error_code: {
@@ -239,10 +239,10 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
             memcpy(&p_buff_ptr[*p_written + 4], _pc_self->p_reason_phrase, tsk_strlen(_pc_self->p_reason_phrase));
         }
         *p_written += 4 + tsk_strlen(_pc_self->p_reason_phrase);
-        *((uint16_t*)&p_buff_ptr[2]) = tnet_htons((unsigned short)*p_written - kStunAttrHdrSizeInOctets);
         if (with_padding) {
             ALIGN_ON_32BITS_AND_SET_PADDING_ZEROS(&p_buff_ptr[*p_written], *p_written);
         }
+        *((uint16_t*)&p_buff_ptr[2]) = tnet_htons((unsigned short)*p_written - kStunAttrHdrSizeInOctets);
         return 0;
     }
     default: {
@@ -439,12 +439,13 @@ int tnet_stun_attr_vdata_create(tnet_stun_attr_type_t e_type, const uint8_t* pc_
         goto bail;
     }
     if (u_length) {
-        if (!(p_attr->p_data_ptr = tsk_malloc(u_length))) {
+        if (!(p_attr->p_data_ptr = tsk_malloc(u_length + 1))) {
             ret = -3;
             goto bail;
         }
         memcpy(p_attr->p_data_ptr, pc_data_ptr, u_length);
         p_attr->u_data_size = u_length;
+        p_attr->p_data_ptr[u_length] = '\0';
     }
     *pp_attr = p_attr;
 
@@ -453,6 +454,30 @@ bail:
         TSK_OBJECT_SAFE_FREE(p_attr);
     }
     return ret;
+}
+
+int tnet_stun_attr_vdata_update(tnet_stun_attr_vdata_t* p_self, const uint8_t* pc_data_ptr, uint16_t u_data_size)
+{
+    uint16_t _u_data_size = (pc_data_ptr && u_data_size) ? u_data_size : 0;
+    if (!p_self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    if (_u_data_size) {
+        if (!(p_self->p_data_ptr = tsk_realloc(p_self->p_data_ptr, _u_data_size + 1))) {
+            p_self->u_data_size = 0;
+            ((tnet_stun_attr_t*)p_self)->hdr.u_length = 0;
+            return -3;
+        }
+        memcpy(p_self->p_data_ptr, pc_data_ptr, _u_data_size);
+        p_self->p_data_ptr[_u_data_size] = '\0';
+    }
+    else {
+        TSK_FREE(p_self->p_data_ptr);
+    }
+    p_self->u_data_size = _u_data_size;
+    ((tnet_stun_attr_t*)p_self)->hdr.u_length = p_self->u_data_size;
+    return 0;
 }
 
 static tsk_object_t* tnet_stun_attr_vdata_ctor(tsk_object_t * self, va_list * app)

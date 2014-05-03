@@ -114,6 +114,10 @@ tnet_stun_pkt_attr_add_t;
 
 // rfc5766(TURN) - 14.2.  LIFETIME
 #define TNET_STUN_PKT_ATTR_ADD_LIFETIME(U32_LIFETIME)								TNET_STUN_PKT_ATTR_ADD_UINT32(tnet_stun_attr_type_lifetime, U32_LIFETIME)
+// rfc5766(TURN) - 14.3.  XOR-PEER-ADDRESS
+#define TNET_STUN_PKT_ATTR_ADD_XOR_PEER_ADDRESS(E_FAMILY, U_PORT, PC_ADDR_PTR)		TNET_STUN_PKT_ATTR_ADD_ADDRESS(tnet_stun_attr_type_xor_peer_address, (E_FAMILY), (U_PORT), (PC_ADDR_PTR))
+#define TNET_STUN_PKT_ATTR_ADD_XOR_PEER_ADDRESS_V4(U_PORT, PC_ADDR_PTR)				TNET_STUN_PKT_ATTR_ADD_XOR_PEER_ADDRESS(tnet_stun_address_family_ipv4, (U_PORT), (PC_ADDR_PTR))
+#define TNET_STUN_PKT_ATTR_ADD_XOR_PEER_ADDRESS_V6(U_PORT, PC_ADDR_PTR)				TNET_STUN_PKT_ATTR_ADD_XOR_PEER_ADDRESS(tnet_stun_address_family_ipv6, (U_PORT), (PC_ADDR_PTR))
 // rfc5766(TURN) - 14.7.  REQUESTED-TRANSPORT
 #define TNET_STUN_PKT_ATTR_ADD_REQUESTED_TRANSPORT(U8_PROTOCOL)						TNET_STUN_PKT_ATTR_ADD_UINT8(tnet_stun_attr_type_requested_transport, U8_PROTOCOL)
 // rfc5766(TURN) - 14.8.  DONT-FRAGMENT
@@ -127,20 +131,15 @@ typedef struct tnet_stun_pkt_s {
     tnet_stun_attrs_L_t* p_list_attrs;
     struct {
         unsigned fingerprint:1;
-        unsigned integrity:1;
         unsigned dontfrag:1;
-        unsigned nointegrity:1;
     } opt;
-    struct {
-        char* p_username;
-        char* p_password;
-        char* p_realm;
-        char* p_nonce;
-    } auth;
+    char *p_pwd;
 } tnet_stun_pkt_t;
 #define TNET_STUN_DECLARE_PKT struct tnet_stun_pkt_s __base__
 #define TNET_STUN_PKT(p_self) ((struct tnet_stun_pkt_s*)(p_self))
 typedef tsk_list_t tnet_stun_pkts_L_t;
+typedef tnet_stun_pkt_t tnet_stun_pkt_req_t;
+typedef tnet_stun_pkt_t tnet_stun_pkt_resp_t;
 
 TINYNET_API int tnet_stun_pkt_create(enum tnet_stun_pkt_type_e e_type, uint16_t u_length, const tnet_stun_transac_id_t* pc_transac_id, struct tnet_stun_pkt_s** pp_attr);
 #define tnet_stun_pkt_create_empty(e_type, pp_attr) tnet_stun_pkt_create((e_type), 0, tsk_null, (pp_attr))
@@ -154,6 +153,9 @@ TINYNET_API int tnet_stun_pkt_get_size_in_octetunits_with_padding(const struct t
 TINYNET_API int tnet_stun_pkt_write_with_padding(const struct tnet_stun_pkt_s* pc_self, uint8_t* p_buff_ptr, tsk_size_t n_buff_size, tsk_size_t *p_written);
 TINYNET_API int tnet_stun_pkt_is_complete(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size, tsk_bool_t *pb_is_complete);
 TINYNET_API int tnet_stun_pkt_read(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size, struct tnet_stun_pkt_s** pp_pkt);
+TINYNET_API int tnet_stun_pkt_auth_prepare(struct tnet_stun_pkt_s* p_self, const char* pc_usr_name, const char* pc_pwd, const char* pc_realm, const char* pc_nonce);
+TINYNET_API int tnet_stun_pkt_auth_prepare_2(struct tnet_stun_pkt_s* p_self, const char* pc_usr_name, const char* pc_pwd, const struct tnet_stun_pkt_s* pc_resp);
+TINYNET_API int tnet_stun_pkt_get_errorcode(const struct tnet_stun_pkt_s* pc_self, uint16_t* pu_code);
 
 TNET_END_DECLS
 

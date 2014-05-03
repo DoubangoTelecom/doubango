@@ -125,6 +125,7 @@ int tnet_ice_utils_create_sockets(tnet_socket_type_t socket_type, const char* lo
 	return -1;
 }
 
+// FIXME: use tnet_stun_utils_inet_ntop()
 int tnet_ice_utils_stun_address_tostring(const uint8_t in_ip[16], enum tnet_stun_addr_family_e family, char** out_ip)
 {
 	if(family == stun_ipv6){

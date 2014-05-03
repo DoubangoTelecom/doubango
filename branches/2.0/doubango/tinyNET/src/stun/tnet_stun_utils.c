@@ -61,3 +61,18 @@ int tnet_stun_utils_transac_id_rand(tnet_stun_transac_id_t* p_transac_id)
     }
     return 0;
 }
+
+int tnet_stun_utils_buff_cmp(const uint8_t* pc_buf1_ptr, tsk_size_t n_buff1_size, const uint8_t* pc_buf2_ptr, tsk_size_t n_buff2_size)
+{
+    int ret;
+    tsk_size_t u;
+    if (!pc_buf1_ptr || !pc_buf2_ptr || (n_buff1_size != n_buff2_size)) {
+        return -1;
+    }
+    for (u = 0; u < n_buff1_size; ++u) {
+        if ((ret = (pc_buf1_ptr[u] - pc_buf2_ptr[u]))) {
+            return ret;
+        }
+    }
+    return 0;
+}
