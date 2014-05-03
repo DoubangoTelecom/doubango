@@ -24,10 +24,12 @@
 #include "turn/tnet_turn_session.h"
 
 #define kStunUsrName			"bossiel@yahoo.fr"
-#define kStunUsrName			"bossiel@yahoo.fr"
-#define kStunServerIP			"numb.viagenie.ca"
+#define kStunPwd				"tinynet"
+#define kStunServerIP			"ns313841.ovh.net" /*"numb.viagenie.ca"*/
 #define kStunServerPort			kStunPortDefaultTcpUdp
 #define kStunServerProto		tnet_socket_type_udp_ipv4
+#define kTurnPeerIP				"192.168.0.37"
+#define kTurnPeerPort			2020
 
 #define TNET_TEST_STUN_SEND_BUFF(buff_ptr, buff_size) \
 	{ \
@@ -70,7 +72,7 @@ static void test_stun_dump_transacid(tnet_stun_transacid_t transcid)
 	TSK_DEBUG_INFO("STUN transac id:%s", transac_idstriing);
 }
 
-static void test_sun_parser()
+static void test_stun_parser()
 {
 	tnet_stun_pkt_t* p_pkt = tsk_null;
 	tsk_size_t n_written_bytes, n_read_bytes;
@@ -141,59 +143,34 @@ static void test_sun_parser()
 	//TNET_TEST_STUN_SEND_BUFF(__parse_buff_read_ptr, n_read_bytes);
 
 	BAIL_IF_ERR(test_stun_buff_cmp(__parse_buff_write_ptr, n_written_bytes, __parse_buff_read_ptr, n_read_bytes));
-    TSK_DEBUG_INFO("test_sun_parser...OK");
+    TSK_DEBUG_INFO("test_stun_parser...OK");
 
 bail:
 	TSK_OBJECT_SAFE_FREE(p_pkt);
+}
 
-#if 0
-	tnet_stun_message_t *message = tsk_null;
-	tsk_buffer_t *buffer = tsk_null;
-	tnet_socket_t *socket = tsk_null;
-	struct sockaddr_storage to;
-	tnet_stun_attribute_t* stun_att;
-
-	// iWHr7ZwbQ1F4wmtk6scSEz0n (INVITE)
-	// HAfDCVGhskSe63eww0F3Y (200: audio)
-	// TN1KUcINJorcx8PISekSL (200: video)
-
-	message = tnet_stun_message_create("mI5gMSVZWlt6oZ7:wqQxm4bcpPM6cUTd", "HAfDCVGhskSe63eww0F3Y");
-	message->type = stun_binding_request;
-	// ICE-CONTROLLING
-	if((stun_att = (tnet_stun_attribute_t*)tnet_stun_attribute_ice_controlling_create(11131939471334912422))){
-		tnet_stun_message_add_attribute(message, &stun_att);
+static int _test_turn_session_callback(const struct tnet_turn_session_event_xs *e)
+{
+	const struct tnet_turn_session_s* pc_ss = (const struct tnet_turn_session_s*)e->pc_usr_data;
+	int ret = 0;
+	switch (e->e_type) {
+		case tnet_turn_session_event_type_alloc_ok:
+			{
+				char* p_ip = tsk_null;
+				uint16_t u_port;
+				tsk_bool_t b_ipv6;
+				BAIL_IF_ERR(tnet_turn_session_get_relayed_addr(pc_ss, &p_ip, &u_port, &b_ipv6));
+				TSK_DEBUG_INFO("R_ADDR=[%s]:%u,IPv6=%d", p_ip, u_port, b_ipv6); // Address to be sent as part of ICE candidate
+				TSK_FREE(p_ip);
+				break;
+			}
+		default:
+			{
+				break;
+			}
 	}
-	// USE-CANDIDATE
-	if((stun_att = (tnet_stun_attribute_t*)tnet_stun_attribute_ice_use_candidate_create())){
-		tnet_stun_message_add_attribute(message, &stun_att);
-	}
-	// PRIORITY
-	if((stun_att = (tnet_stun_attribute_t*)tnet_stun_attribute_ice_priority_create(1845501695))){
-		tnet_stun_message_add_attribute(message, &stun_att);
-	}
-
-	if(!(buffer = tnet_stun_message_serialize(message))){
-		goto bail;
-	}
-
-	// Create blocking socket and bind it 
-	socket = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, kStunServerProto);
-	if(!TNET_SOCKET_IS_VALID(socket)){
-		goto bail;
-	}
-
-	// Create stun server's sockaddr structure 
-	if(tnet_sockaddr_init(kStunServerIP, kStunServerPort, kStunServerProto, &to)){
-		goto bail;
-	}
-	
-	tnet_sockfd_sendto(socket->fd, (struct sockaddr*)&to, buffer->data, buffer->size);
-
 bail:
-	TSK_OBJECT_SAFE_FREE(message);
-	TSK_OBJECT_SAFE_FREE(socket);
-	TSK_OBJECT_SAFE_FREE(buffer);
-#endif
+	return ret;
 }
 
 static void test_turn_session()
@@ -201,7 +178,15 @@ static void test_turn_session()
 	struct tnet_turn_session_s* p_ss = tsk_null;
 
 	BAIL_IF_ERR(tnet_turn_session_create_udp_ipv4(kStunServerIP, kStunServerPort, &p_ss));
+	BAIL_IF_ERR(tnet_turn_session_set_callback(p_ss, _test_turn_session_callback, p_ss));
+	BAIL_IF_ERR(tnet_turn_session_set_cred(p_ss, kStunUsrName, kStunPwd));
 	BAIL_IF_ERR(tnet_turn_session_prepare(p_ss));
+	BAIL_IF_ERR(tnet_turn_session_start(p_ss));
+	BAIL_IF_ERR(tnet_turn_session_allocate(p_ss));
+	BAIL_IF_ERR(tnet_turn_session_createpermission(p_ss, kTurnPeerIP, kTurnPeerPort)); // Input = ADDR(remote.candidate.relay)
+
+	TSK_DEBUG_INFO("*** Press ENTER to continue ***");
+	getchar();
 
 bail:
 	TSK_OBJECT_SAFE_FREE(p_ss);
@@ -210,7 +195,7 @@ bail:
 
 static void test_stun()
 {
-	//test_sun_parser();
+	//test_stun_parser();
 	test_turn_session();
 }
 

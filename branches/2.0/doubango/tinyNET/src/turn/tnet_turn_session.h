@@ -22,11 +22,29 @@
 #include "tinynet_config.h"
 #include "stun/tnet_stun_types.h"
 
+#include "tsk_common.h" /* tsk_bool_t  */
+
 TNET_BEGIN_DECLS
 
 struct tnet_turn_session_s;
 struct tnet_socket_s;
 enum tnet_socket_type_e;
+
+typedef enum tnet_turn_session_event_type_e
+{
+	tnet_turn_session_event_type_alloc_ok,
+	tnet_turn_session_event_type_alloc_nok,
+	tnet_turn_session_event_type_perm_ok,
+	tnet_turn_session_event_type_perm_nok,
+}
+tnet_turn_session_event_type_t;
+
+typedef struct tnet_turn_session_event_xs {
+	enum tnet_turn_session_event_type_e e_type;
+	const void* pc_usr_data;
+} tnet_turn_session_event_xt;
+
+typedef int (*tnet_turn_session_callback_f)(const struct tnet_turn_session_event_xs *e);
 
 TINYNET_API int tnet_turn_session_create(struct tnet_socket_s* p_lcl_sock, const char* pc_srv_ip, uint16_t u_srv_port, struct tnet_turn_session_s** pp_self);
 TINYNET_API int tnet_turn_session_create_2(const char* pc_lcl_ip, uint16_t u_lcl_port, enum tnet_socket_type_e e_lcl_type, const char* pc_srv_ip, uint16_t u_srv_port, struct tnet_turn_session_s** pp_self);
@@ -35,8 +53,12 @@ TINYNET_API int tnet_turn_session_create_2(const char* pc_lcl_ip, uint16_t u_lcl
 #define tnet_turn_session_create_udp_ipv6(pc_srv_ip, u_srv_port, pp_self) tnet_turn_session_create_3(tnet_socket_type_udp_ipv6, pc_srv_ip, u_srv_port, pp_self)
 #define tnet_turn_session_create_udp_ipv46(pc_srv_ip, u_srv_port, pp_self) tnet_turn_session_create_3(tnet_socket_type_udp_ipv46, pc_srv_ip, u_srv_port, pp_self)
 TINYNET_API int tnet_turn_session_set_cred(struct tnet_turn_session_s* p_self, const char* pc_usr_name, const char* pc_pwd);
+TINYNET_API int tnet_turn_session_set_callback(struct tnet_turn_session_s* p_self, tnet_turn_session_callback_f f_fun, const void* pc_usr_data);
 TINYNET_API int tnet_turn_session_prepare(struct tnet_turn_session_s* p_self);
 TINYNET_API int tnet_turn_session_start(struct tnet_turn_session_s* p_self);
+TINYNET_API int tnet_turn_session_allocate(struct tnet_turn_session_s* p_self);
+TINYNET_API int tnet_turn_session_get_relayed_addr(const struct tnet_turn_session_s* p_self, char** pp_ip, uint16_t *pu_port, tsk_bool_t *pb_ipv6);
+TINYNET_API int tnet_turn_session_createpermission(struct tnet_turn_session_s* p_self, const char* pc_peer_addr, uint16_t u_peer_port);
 TINYNET_API int tnet_turn_session_stop(struct tnet_turn_session_s* p_self);
 
 TNET_END_DECLS

@@ -55,11 +55,12 @@ typedef struct tnet_stun_attr_vdata_s {
     uint16_t u_data_size;
 } tnet_stun_attr_vdata_t;
 int tnet_stun_attr_vdata_create(enum tnet_stun_attr_type_e e_type, const uint8_t* pc_data_ptr, uint16_t u_data_size, struct tnet_stun_attr_vdata_s** pp_attr);
+int tnet_stun_attr_vdata_update(struct tnet_stun_attr_vdata_s* p_self, const uint8_t* pc_data_ptr, uint16_t u_data_size);
 
 // ============== ADDRESS ================ //
 typedef struct tnet_stun_attr_address_s {
     TNET_STUN_DECLARE_ATTR;
-    enum tnet_stun_address_family e_family; // 8bits
+    enum tnet_stun_address_family_e e_family; // 8bits
     uint16_t u_port; // 16bits
     tnet_stun_addr_t address; // always in network byte order. Use tnet_stun_utils_inet_pton()
 } tnet_stun_attr_address_t;

@@ -22,8 +22,8 @@
 //stun.ekiga.net
 //#define STUN_SERVER_IP			"numb.viagenie.ca"
 #define STUN_SERVER_IP			"numb.viagenie.ca"
-#define STUN_USERNAME			"xxxxx"
-#define STUN_PASSWORD			"xxxxx"
+#define STUN_USERNAME			"bossiel@yahoo.fr"
+#define STUN_PASSWORD			"tinynet"
 #define STUN_SERVER_PORT		TNET_STUN_TCP_UDP_DEFAULT_PORT
 #define STUN_SERVER_PROTO		tnet_socket_type_udp_ipv4
 
@@ -107,6 +107,10 @@ void test_nat_turn()
 	}
 
 	context = tnet_nat_context_create(STUN_SERVER_PROTO, STUN_USERNAME, STUN_PASSWORD);
+	((tnet_nat_context_t*)context)->enable_evenport = 0;
+	((tnet_nat_context_t*)context)->enable_fingerprint = 0;
+	((tnet_nat_context_t*)context)->enable_dontfrag = 0;
+	((tnet_nat_context_t*)context)->enable_integrity = 0;
 
 	if(tnet_nat_set_server_address(context, STUN_SERVER_IP))
 	{
@@ -206,8 +210,8 @@ bail:
 
 void test_nat()
 {
-	test_nat_stun();
-	//test_nat_turn();
+	//test_nat_stun();
+	test_nat_turn();
 	//tsk_thread_sleep(1000);
 }
 

@@ -42,12 +42,22 @@ typedef uint8_t tnet_stun_addr_t[16]; // IPv4(32bits) or IPv6(128bits)
 		( PU8[4] == 0x21 && PU8[5] == 0x12 && PU8[6] == 0xA4 && PU8[7] == 0x42 ) \
 	)
 
+
+#define kStunOptFingerPrint			1
+#define kStunOptDontFragment		1
+
+#define kStunErrCodeUnauthorized		401
+#define kStunErrCodeUnknownAttributes	420
+#define kStunErrCodeStaleNonce			438
+#define kStunErrCodeIceConflict			487
+
+
 #if !defined(kStunBuffMinPad)
 #	define kStunBuffMinPad	40 // to make the buffer kasher
 #endif /* kStunBuffMinPad */
 
 #if !defined(kStunSoftware)
-#	define kStunSoftware "tinyNET 2.0"
+#	define kStunSoftware TNET_SOFTWARE
 #endif /* kStunSoftware */
 
 #if !defined(kStunPortDefaultTcpUdp)

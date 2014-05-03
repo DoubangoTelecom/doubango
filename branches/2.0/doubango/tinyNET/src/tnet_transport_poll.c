@@ -497,7 +497,7 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	
 	/* Add the master socket to the context. */
 	TSK_DEBUG_INFO("master fd=%d", transport->master->fd);
-	// don't take ownership: will be closed by the dctor()
+	// don't take ownership: will be closed by the dctor() when refCount==0
 	// otherwise will be closed twice: dctor() and removeSocket()
 	if((ret = addSocket(transport->master->fd, transport->master->type, transport, tsk_false, tsk_false, tsk_null))){
 		TSK_DEBUG_ERROR("Failed to add master socket");

@@ -91,6 +91,7 @@ tnet_stun_request_t* tnet_turn_create_request(const tnet_nat_context_t* context,
 
 		request->fingerprint = context->enable_fingerprint;
 		request->integrity = context->enable_integrity;
+		request->nointegrity = !request->integrity;
 		request->dontfrag = context->enable_dontfrag;
 		request->realm = tsk_strdup(allocation->realm);
 		request->nonce = tsk_strdup(allocation->nonce);
@@ -135,7 +136,7 @@ tnet_stun_request_t* tnet_turn_create_request_allocate(const tnet_nat_context_t*
 		}
 
 		/* Add Event Port */
-		if((attribute = (tnet_stun_attribute_t*)tnet_turn_attribute_even_port_create(context->enable_evenport))){
+		if(context->enable_evenport && (attribute = (tnet_stun_attribute_t*)tnet_turn_attribute_even_port_create(context->enable_evenport))){
 			tnet_stun_message_add_attribute(request, &attribute);
 		}
 	}
