@@ -65,7 +65,7 @@ typedef struct tnet_stun_attr_address_s {
     tnet_stun_addr_t address; // always in network byte order. Use tnet_stun_utils_inet_pton()
 } tnet_stun_attr_address_t;
 
-int tnet_stun_attr_address_create(enum tnet_stun_attr_type_e e_type, enum tnet_stun_address_family e_family, uint16_t u_port, const tnet_stun_addr_t* pc_addr, struct tnet_stun_attr_address_s** pp_attr);
+int tnet_stun_attr_address_create(enum tnet_stun_attr_type_e e_type, enum tnet_stun_address_family_e e_family, uint16_t u_port, const tnet_stun_addr_t* pc_addr, struct tnet_stun_attr_address_s** pp_attr);
 
 // ================ 15.6.  ERROR-CODE ========== //
 typedef struct tnet_stun_attr_error_code_s {

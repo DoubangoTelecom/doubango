@@ -336,7 +336,7 @@ int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8
         if (b_xor) {
             u_port ^= kStunMagicCookieShort;
         }
-        if ((ret = tnet_stun_attr_address_create(Type, e_family, u_port, kNullBuffPtr, &p_attr))) {
+        if ((ret = tnet_stun_attr_address_create(Type, e_family, u_port, (const tnet_stun_addr_t*)kNullBuffPtr, &p_attr))) {
             return ret;
         }
         if (b_xor) {

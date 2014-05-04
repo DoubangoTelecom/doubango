@@ -56,6 +56,10 @@ libtinyNET_la_SOURCES +=	src/ice/tnet_ice_candidate.c\
 	src/ice/tnet_ice_utils.c
 	
 libtinyNET_la_SOURCES +=	src/stun/tnet_stun.c\
+	src/stun/tnet_stun_attr.c\
+	src/stun/tnet_stun_pkt.c\
+	src/stun/tnet_stun_utils.c\
+	\
 	src/stun/tnet_stun_attribute.c\
 	src/stun/tnet_stun_message.c
 	
@@ -63,6 +67,8 @@ libtinyNET_la_SOURCES +=	src/tls/tnet_tls.c\
 	src/tls/tnet_dtls.c
 	
 libtinyNET_la_SOURCES +=	src/turn/tnet_turn.c\
+	src/turn/tnet_turn_session.c\
+	\
 	src/turn/tnet_turn_attribute.c\
 	src/turn/tnet_turn_message.c
 	
