@@ -96,16 +96,16 @@ static int _tbfcp_pkt_init_2(tbfcp_pkt_t *p_self, tbfcp_primitive_t primitive)
     return 0;
 }
 
-int tbfcp_pkt_add_attr(tbfcp_pkt_t* p_self, tbfcp_attr_t** p_attr)
+int tbfcp_pkt_add_attr(tbfcp_pkt_t* p_self, tbfcp_attr_t** pp_attr)
 {
-    if (!p_self || !p_attr || !*p_attr) {
+    if (!p_self || !pp_attr || !*pp_attr) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
     if (p_self->f_add_attr) {
-        return p_self->f_add_attr(p_self, p_attr);
+        return p_self->f_add_attr(p_self, pp_attr);
     }
-    return _tbfcp_pkt_add_attr(p_self, p_attr);
+    return _tbfcp_pkt_add_attr(p_self, pp_attr);
 }
 
 

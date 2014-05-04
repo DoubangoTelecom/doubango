@@ -52,7 +52,7 @@ typedef struct tbfcp_pkt_s {
 tbfcp_pkt_t;
 #define TBFCP_DECLARE_PKT struct tbfcp_pkt_s __base__
 #define TBFCP_PKT(p_self) ((struct tbfcp_pkt_s*)(p_self))
-TINYBFCP_API int tbfcp_pkt_add_attr(struct tbfcp_pkt_s* p_self, struct tbfcp_attr_s** p_attr);
+TINYBFCP_API int tbfcp_pkt_add_attr(struct tbfcp_pkt_s* p_self, struct tbfcp_attr_s** pp_attr);
 TINYBFCP_API int tbfcp_pkt_create_empty(enum tbfcp_primitive_e primitive, struct tbfcp_pkt_s** pp_self);
 TINYBFCP_API int tbfcp_pkt_create(enum tbfcp_primitive_e primitive, uint32_t conf_id, uint16_t transac_id, uint16_t user_id, struct tbfcp_pkt_s** pp_self);
 TINYBFCP_API int tbfcp_pkt_get_size_in_octetunits_without_padding(const struct tbfcp_pkt_s* pc_self, tsk_size_t* p_size);

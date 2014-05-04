@@ -317,12 +317,7 @@ static tsk_object_t* tnet_turn_attribute_channelnum_ctor(tsk_object_t * self, va
 {
 	tnet_turn_attribute_channelnum_t *attribute = self;
 	if(attribute){
-#if defined (__GNUC__)
-		attribute->number = (uint16_t)(va_arg(*app, unsigned));
-#else
-		attribute->number = (va_arg(*app, uint16_t));
-#endif
-
+		attribute->number = tsk_va_arg_u16(*app);
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_channel_number;
 		TNET_STUN_ATTRIBUTE(attribute)->length = 2;
 	}

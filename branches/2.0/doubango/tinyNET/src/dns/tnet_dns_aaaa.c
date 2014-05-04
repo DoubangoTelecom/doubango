@@ -54,11 +54,7 @@ static tsk_object_t* tnet_dns_aaaa_ctor(tsk_object_t * self, va_list * app)
 		const char* name = va_arg(*app, const char*);
 		tnet_dns_qclass_t qclass = va_arg(*app, tnet_dns_qclass_t);
 		uint32_t ttl = va_arg(*app, uint32_t);
-#if defined(__GNUC__)
-		uint16_t rdlength = (uint16_t)va_arg(*app, unsigned);
-#else
-		uint16_t rdlength = va_arg(*app, uint16_t);
-#endif
+		uint16_t rdlength = tsk_va_arg_u16(*app);
 		const void* data = va_arg(*app, const void*);
 		tsk_size_t offset = va_arg(*app, tsk_size_t);
 

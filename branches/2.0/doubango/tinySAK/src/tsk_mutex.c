@@ -55,8 +55,6 @@
 #	include <errno.h>
 #endif
 
-// FIXME: Momory leaks in mutex
-
 /**@defgroup tsk_mutex_group Pthread/Windows Mutex utility functions.
 */
 

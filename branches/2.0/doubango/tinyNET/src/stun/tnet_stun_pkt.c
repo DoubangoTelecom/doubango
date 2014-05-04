@@ -83,7 +83,7 @@ int tnet_stun_pkt_attrs_add(tnet_stun_pkt_t* p_self, ...)
             // (enum tnet_stun_attr_type_e)(E_TYPE), (const uint8_t*)(P_DATA_PTR), (uint16_t)(U_DATA_SIZE)
             enum tnet_stun_attr_type_e E_TYPE = va_arg(ap, enum tnet_stun_attr_type_e);
             const uint8_t* P_DATA_PTR = va_arg(ap, const uint8_t*);
-            uint16_t U_DATA_SIZE = va_arg(ap, uint16_t);
+            uint16_t U_DATA_SIZE = tsk_va_arg_u16(ap);
             tnet_stun_attr_vdata_t *p_attr;
             if ((ret = tnet_stun_attr_vdata_create(E_TYPE, P_DATA_PTR, U_DATA_SIZE, &p_attr))) {
                 goto bail;
@@ -98,7 +98,7 @@ int tnet_stun_pkt_attrs_add(tnet_stun_pkt_t* p_self, ...)
             // (enum tnet_stun_attr_type_e)(E_TYPE), (enum tnet_stun_address_family_e)(E_FAMILY), (uint16_t)(U_PORT), (const tnet_stun_addr_t*)PC_ADDR_PTR
             enum tnet_stun_attr_type_e E_TYPE = va_arg(ap, enum tnet_stun_attr_type_e);
             enum tnet_stun_address_family_e E_FAMILY = va_arg(ap, enum tnet_stun_address_family_e);
-            uint16_t U_PORT = va_arg(ap, uint16_t);
+            uint16_t U_PORT = tsk_va_arg_u16(ap);
             const tnet_stun_addr_t* PC_ADDR_PTR = va_arg(ap, const tnet_stun_addr_t*);
             tnet_stun_attr_address_t *p_attr;
             if ((ret = tnet_stun_attr_address_create(E_TYPE, E_FAMILY, U_PORT, PC_ADDR_PTR, &p_attr))) {
@@ -112,8 +112,8 @@ int tnet_stun_pkt_attrs_add(tnet_stun_pkt_t* p_self, ...)
         }
         case tnet_stun_pkt_attr_add_error_code: {
             // (uint8_t)(U8_CLASS), (uint8_t)(U8_NUMBER), (const char*)(PC_REASON_STR)
-            uint8_t U8_CLASS = va_arg(ap, uint8_t);
-            uint8_t U8_NUMBER = va_arg(ap, uint8_t);
+            uint8_t U8_CLASS = tsk_va_arg_u8(ap);
+            uint8_t U8_NUMBER = tsk_va_arg_u8(ap);
             const char* PC_REASON_STR = va_arg(ap, const char*);
             tnet_stun_attr_error_code_t *p_attr;
             if ((ret = tnet_stun_attr_error_code_create(U8_CLASS, U8_NUMBER, PC_REASON_STR, tsk_strlen(PC_REASON_STR), &p_attr))) {
@@ -142,7 +142,7 @@ int tnet_stun_pkt_attrs_add(tnet_stun_pkt_t* p_self, ...)
                     ret = -3;
                     goto bail;
                 }
-                u_16 = va_arg(ap, uint16_t);
+                u_16 = tsk_va_arg_u16(ap);
                 tsk_buffer_append(p_buffer, &u_16, 2);
             }
             if ((ret = tnet_stun_attr_vdata_create(tnet_stun_attr_type_unknown_attrs, p_buffer->data, p_buffer->size, &p_attr))) {
@@ -579,6 +579,28 @@ int tnet_stun_pkt_auth_prepare_2(struct tnet_stun_pkt_s* p_self, const char* pc_
 
 bail:
     return ret;
+}
+
+int tnet_stun_pkt_auth_copy(tnet_stun_pkt_t* p_self, const char* pc_usr_name, const char* pc_pwd, const tnet_stun_pkt_t* pc_pkt)
+{
+	const tnet_stun_attr_vdata_t *pc_attr_realm, *pc_attr_nonce;
+	int ret;
+	tsk_bool_t b_ok;
+	if (!p_self || !pc_pwd || !pc_usr_name || !pc_pkt) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+
+	b_ok = 
+		(ret = tnet_stun_pkt_attr_find_first(pc_pkt, tnet_stun_attr_type_realm, (const tnet_stun_attr_t**)&pc_attr_realm)) == 0 && pc_attr_realm
+		&& (ret = tnet_stun_pkt_attr_find_first(pc_pkt, tnet_stun_attr_type_nonce, (const tnet_stun_attr_t**)&pc_attr_nonce)) == 0 && pc_attr_nonce;
+	
+	if (b_ok && (ret = tnet_stun_pkt_auth_prepare(p_self, pc_usr_name, pc_pwd, pc_attr_realm->p_data_ptr, pc_attr_nonce->p_data_ptr))) {
+		goto bail;
+	}
+
+bail:
+	return ret;
 }
 
 int tnet_stun_pkt_get_errorcode(const struct tnet_stun_pkt_s* pc_self, uint16_t* pu_code)

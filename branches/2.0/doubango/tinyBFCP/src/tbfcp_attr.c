@@ -83,7 +83,9 @@ static int _tbfcp_attr_get_size_in_octetunits(const tbfcp_attr_t* pc_self, tsk_b
     }
     case tbfcp_attribute_format_OctetString: {
         *p_size = (TBFCP_ATTR_HDR_SIZE_IN_OCTETS + ((const tbfcp_attr_octetstring_t*)pc_self)->OctetStringLength);
-        ALIGN_ON_32BITS(*p_size);
+		if (with_padding) {
+			ALIGN_ON_32BITS(*p_size);
+		}
         return 0;
     }
     case tbfcp_attribute_format_Grouped: {

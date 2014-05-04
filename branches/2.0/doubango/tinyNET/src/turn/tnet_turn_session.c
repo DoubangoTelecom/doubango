@@ -31,6 +31,14 @@
 
 #define kTurnTransportFriendlyName "TURN transport"
 
+#define TNET_TURN_SESSION_TIMOUT_GET_BEST_SEC(u_timeout_in_sec) ((u_timeout_in_sec)*990) // small delay for code execution
+#define TNET_TURN_SESSION_TIMOUT_GET_BEST_MILLIS(u_timeout_in_millis) (((u_timeout_in_millis)*990)/1000) // small delay for code execution
+
+#define TNET_TURN_SESSION_TIMER_SCHEDULE_SEC(_p_self, u_id, u_timeout_in_sec) \
+	(u_id) = tsk_timer_manager_schedule((_p_self)->timer.p_mgr, TNET_TURN_SESSION_TIMOUT_GET_BEST_SEC((u_timeout_in_sec)), _tnet_turn_session_timer_callback, (_p_self))
+#define TNET_TURN_SESSION_TIMER_SCHEDULE_MILLIS(_p_self, u_id, u_timeout_in_millis) \
+	(u_id) = tsk_timer_manager_schedule((_p_self)->timer.p_mgr, TNET_TURN_SESSION_TIMOUT_GET_BEST_MILLIS((u_timeout_in_millis)), _tnet_turn_session_timer_callback, (_p_self))
+
 typedef tnet_stun_pkt_t tnet_turn_pkt_t;
 
 typedef struct tnet_turn_session_s
@@ -78,7 +86,6 @@ typedef struct tnet_turn_session_s
 	struct {
 		char* p_usr_name;
 		char* p_pwd;
-		char* p_realm;
 	} cred;
 
 	struct {
@@ -356,7 +363,7 @@ int tnet_turn_session_allocate(tnet_turn_session_t* p_self)
 	}
 	if (p_self->u_req_transport == IPPROTO_UDP) {
 		p_self->timer.rtt.alloc.u_timeout = kStunUdpRetransmitTimoutMinInMs;
-		p_self->timer.rtt.alloc.id = tsk_timer_manager_schedule(p_self->timer.p_mgr, p_self->timer.rtt.alloc.u_timeout, _tnet_turn_session_timer_callback, p_self);
+		TNET_TURN_SESSION_TIMER_SCHEDULE_MILLIS(p_self, p_self->timer.rtt.alloc.id, p_self->timer.rtt.alloc.u_timeout);
 	}
 
 bail:
@@ -464,6 +471,8 @@ int tnet_turn_session_createpermission(tnet_turn_session_t* p_self, const char* 
 		TSK_DEBUG_ERROR("Failed to create TURN CreatePermission request");
 		goto bail;
 	}
+	// add authinfo
+	tnet_stun_pkt_auth_copy(p_self->p_pkt_createperm, p_self->cred.p_usr_name, p_self->cred.p_pwd, p_self->p_pkt_alloc);
 	// add attributes
 	p_self->p_pkt_createperm->opt.dontfrag = 0;
 	ret = tnet_stun_pkt_attrs_add(p_self->p_pkt_createperm,
@@ -485,7 +494,7 @@ int tnet_turn_session_createpermission(tnet_turn_session_t* p_self, const char* 
 	}
 	if (p_self->u_req_transport == IPPROTO_UDP) {
 		p_self->timer.rtt.createperm.u_timeout = kStunUdpRetransmitTimoutMinInMs;
-		p_self->timer.rtt.createperm.id = tsk_timer_manager_schedule(p_self->timer.p_mgr, p_self->timer.rtt.createperm.u_timeout, _tnet_turn_session_timer_callback, p_self);
+		TNET_TURN_SESSION_TIMER_SCHEDULE_MILLIS(p_self, p_self->timer.rtt.createperm.id, p_self->timer.rtt.createperm.u_timeout);
 	}
 
 bail:
@@ -524,6 +533,8 @@ int tnet_turn_session_chanbind(tnet_turn_session_t* p_self)
 			TSK_DEBUG_ERROR("Failed to create TURN ChannelBind request");
 			goto bail;
 		}
+		// add authentication info
+		tnet_stun_pkt_auth_copy(p_self->p_pkt_chanbind, p_self->cred.p_usr_name, p_self->cred.p_pwd, p_self->p_pkt_alloc);
 		// add attributes
 		p_self->p_pkt_chanbind->opt.dontfrag = 0;
 		ret = tnet_stun_pkt_attrs_add(p_self->p_pkt_chanbind,
@@ -534,6 +545,7 @@ int tnet_turn_session_chanbind(tnet_turn_session_t* p_self)
 		if (ret) {
 			goto bail;
 		}
+		
 	}
 	else {
 		if ((ret = tnet_stun_utils_transac_id_rand(&p_self->p_pkt_chanbind->transac_id))) {
@@ -546,7 +558,7 @@ int tnet_turn_session_chanbind(tnet_turn_session_t* p_self)
 	}
 	if (p_self->u_req_transport == IPPROTO_UDP) {
 		p_self->timer.rtt.chanbind.u_timeout = kStunUdpRetransmitTimoutMinInMs;
-		p_self->timer.rtt.chanbind.id = tsk_timer_manager_schedule(p_self->timer.p_mgr, p_self->timer.rtt.chanbind.u_timeout, _tnet_turn_session_timer_callback, p_self);
+		TNET_TURN_SESSION_TIMER_SCHEDULE_MILLIS(p_self, p_self->timer.rtt.chanbind.id, p_self->timer.rtt.chanbind.u_timeout);
 	}
 
 bail:
@@ -593,6 +605,9 @@ int tnet_turn_session_send_data(tnet_turn_session_t* p_self, const void* pc_data
 			TSK_DEBUG_ERROR("Failed to create TURN SendIndication request");
 			goto bail;
 		}
+		// add authinfo
+		tnet_stun_pkt_auth_copy(p_self->p_pkt_sendind, p_self->cred.p_usr_name, p_self->cred.p_pwd, p_self->p_pkt_alloc);
+		// add attributes
 		ret = tnet_stun_pkt_attrs_add(p_self->p_pkt_sendind,
 			TNET_STUN_PKT_ATTR_ADD_XOR_PEER_ADDRESS(p_self->b_peer_ipv6 ? tnet_stun_address_family_ipv6 : tnet_stun_address_family_ipv4, p_self->u_addr_peer_port, p_self->addr_peer_ip),
 			TNET_STUN_PKT_ATTR_ADD_DATA(pc_data_ptr, u_data_size),
@@ -759,7 +774,9 @@ static int _tnet_turn_session_send_refresh(tnet_turn_session_t* p_self)
 	if ((ret = tnet_stun_pkt_create_empty(tnet_stun_pkt_type_refresh_indication, &p_self->p_pkt_refresh))) {
 		TSK_DEBUG_ERROR("Failed to create TURN RefreshIndication request");
 		goto bail;
-	}	
+	}
+	// add authentication info
+	tnet_stun_pkt_auth_copy(p_self->p_pkt_refresh, p_self->cred.p_usr_name, p_self->cred.p_pwd, p_self->p_pkt_alloc);
 	// add attributes
 	ret = tnet_stun_pkt_attrs_add(p_self->p_pkt_refresh,
 		TNET_STUN_PKT_ATTR_ADD_LIFETIME(p_self->u_lifetime_alloc_in_sec),
@@ -768,14 +785,14 @@ static int _tnet_turn_session_send_refresh(tnet_turn_session_t* p_self)
 	if (ret) {
 		goto bail;
 	}
-	p_self->p_pkt_refresh->opt.dontfrag = 0; // FIXME
-	p_self->p_pkt_refresh->opt.fingerprint = 0; // FIXME
+	p_self->p_pkt_refresh->opt.dontfrag = 0;
+	p_self->p_pkt_refresh->opt.fingerprint = 0;
 	if ((ret = _tnet_turn_session_send_pkt(p_self, p_self->p_pkt_refresh))) {
 		goto bail;
 	}
 	if (p_self->u_req_transport == IPPROTO_UDP) {
 		p_self->timer.rtt.refresh.u_timeout = kStunUdpRetransmitTimoutMinInMs;
-		p_self->timer.rtt.refresh.id = tsk_timer_manager_schedule(p_self->timer.p_mgr, p_self->timer.rtt.refresh.u_timeout, _tnet_turn_session_timer_callback, p_self);
+		TNET_TURN_SESSION_TIMER_SCHEDULE_MILLIS(p_self, p_self->timer.rtt.refresh.id, p_self->timer.rtt.refresh.u_timeout);
 	}
 
 bail:
@@ -1007,8 +1024,8 @@ static int _tnet_turn_session_process_incoming_pkt(struct tnet_turn_session_s* p
 							tnet_sockfd_sendto(p_self->p_lcl_sock->fd, (const struct sockaddr*)&to, "pinhole", 7); // open pinhole to allow incoming data
 						}
 #endif
-						// Schedule refresh ((9/10) * timeout)
-						p_self->timer.u_timer_id_refresh = tsk_timer_manager_schedule(p_self->timer.p_mgr, p_self->u_lifetime_alloc_in_sec * 1000, _tnet_turn_session_timer_callback, p_self);
+						// Schedule refresh
+						TNET_TURN_SESSION_TIMER_SCHEDULE_SEC(p_self, p_self->timer.u_timer_id_refresh, p_self->u_lifetime_alloc_in_sec);
 
 						p_self->b_alloc_ok = tsk_true;
 						p_self->b_rel_ipv6 = (pc_attr_addr->e_family == tnet_stun_address_family_ipv6);
@@ -1020,13 +1037,13 @@ static int _tnet_turn_session_process_incoming_pkt(struct tnet_turn_session_s* p
 					// --- CREATE-PERMISSION --- //
 					else if (pc_pkt_req == p_self->p_pkt_createperm) {
 						p_self->b_peer_perm_ok = tsk_true;
-						p_self->timer.u_timer_id_createperm = tsk_timer_manager_schedule(p_self->timer.p_mgr, (p_self->u_lifetime_createperm_in_sec * 1000), _tnet_turn_session_timer_callback, p_self);
+						TNET_TURN_SESSION_TIMER_SCHEDULE_SEC(p_self, p_self->timer.u_timer_id_createperm, p_self->u_lifetime_createperm_in_sec);
 						_tnet_turn_session_raise_event_createperm_ok(p_self);
 					}
 					// --- CHANNEL-BIND --- //
 					else if (pc_pkt_req == p_self->p_pkt_chanbind) {
 						p_self->b_chanbind_ok = tsk_true;
-						p_self->timer.u_timer_id_chanbind = tsk_timer_manager_schedule(p_self->timer.p_mgr, (p_self->u_lifetime_chanbind_in_sec * 1000), _tnet_turn_session_timer_callback, p_self);
+						TNET_TURN_SESSION_TIMER_SCHEDULE_SEC(p_self, p_self->timer.u_timer_id_chanbind, p_self->u_lifetime_chanbind_in_sec);
 						_tnet_turn_session_raise_event_chanbind_ok(p_self);
 					}
 					// --- REFRESH --- //
@@ -1035,7 +1052,7 @@ static int _tnet_turn_session_process_incoming_pkt(struct tnet_turn_session_s* p
 						if ((ret = tnet_stun_pkt_attr_find_first(pc_pkt, tnet_stun_attr_type_lifetime, (const tnet_stun_attr_t**)&pc_attr_lifetime)) == 0 && pc_attr_lifetime && pc_attr_lifetime->u_data_size == 4) {
 							p_self->u_lifetime_alloc_in_sec = TSK_TO_UINT32(pc_attr_lifetime->p_data_ptr);
 						}
-						p_self->timer.u_timer_id_refresh = tsk_timer_manager_schedule(p_self->timer.p_mgr, p_self->u_lifetime_alloc_in_sec * 1000, _tnet_turn_session_timer_callback, p_self);
+						TNET_TURN_SESSION_TIMER_SCHEDULE_SEC(p_self, p_self->timer.u_timer_id_refresh, p_self->u_lifetime_alloc_in_sec);
 						_tnet_turn_session_raise_event_refresh_ok(p_self);
 					}
 				}
@@ -1236,7 +1253,6 @@ static tsk_object_t* tnet_turn_session_dtor(tsk_object_t * self)
 		// cred.free()
 		TSK_FREE(p_ss->cred.p_usr_name);
 		TSK_FREE(p_ss->cred.p_pwd);
-		TSK_FREE(p_ss->cred.p_realm);
 		// others.free()
 		TSK_OBJECT_SAFE_FREE(p_ss->p_pkt_alloc);
 		TSK_OBJECT_SAFE_FREE(p_ss->p_pkt_createperm);

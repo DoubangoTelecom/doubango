@@ -162,6 +162,7 @@ TINYNET_API int tnet_stun_pkt_is_complete(const uint8_t* pc_buff_ptr, tsk_size_t
 TINYNET_API int tnet_stun_pkt_read(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size, struct tnet_stun_pkt_s** pp_pkt);
 TINYNET_API int tnet_stun_pkt_auth_prepare(struct tnet_stun_pkt_s* p_self, const char* pc_usr_name, const char* pc_pwd, const char* pc_realm, const char* pc_nonce);
 TINYNET_API int tnet_stun_pkt_auth_prepare_2(struct tnet_stun_pkt_s* p_self, const char* pc_usr_name, const char* pc_pwd, const struct tnet_stun_pkt_s* pc_resp);
+TINYNET_API int tnet_stun_pkt_auth_copy(struct tnet_stun_pkt_s* p_self, const char* pc_usr_name, const char* pc_pwd, const struct tnet_stun_pkt_s* pc_pkt);
 TINYNET_API int tnet_stun_pkt_get_errorcode(const struct tnet_stun_pkt_s* pc_self, uint16_t* pu_code);
 
 TNET_END_DECLS
