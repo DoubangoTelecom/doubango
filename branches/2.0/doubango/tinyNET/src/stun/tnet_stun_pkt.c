@@ -398,7 +398,7 @@ int tnet_stun_pkt_is_complete(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size
 int tnet_stun_pkt_read(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size,  tnet_stun_pkt_t** pp_pkt)
 {
     tsk_bool_t b_is_complete;
-    tsk_size_t PayloadLengthInOctets;
+    uint16_t PayloadLengthInOctets;
     tnet_stun_pkt_type_t Type;
     tnet_stun_transac_id_t transac_id;
     uint32_t MagicCookie;
@@ -430,7 +430,7 @@ int tnet_stun_pkt_read(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size,  tnet
     }
     memcpy(transac_id, &pc_buff_ptr[8], sizeof(tnet_stun_transac_id_t));
     // create the pkt
-    if((ret = tnet_stun_pkt_create(Type, PayloadLengthInOctets, &transac_id, pp_pkt))) {
+    if((ret = tnet_stun_pkt_create(Type, PayloadLengthInOctets, (const tnet_stun_transac_id_t*)&transac_id, pp_pkt))) {
         return ret;
     }
 
@@ -439,7 +439,7 @@ int tnet_stun_pkt_read(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size,  tnet
         tsk_size_t n_consumed_octets;
         pc_buff_ptr += kStunPktHdrSizeInOctets;
         do {
-            if ((ret = tnet_stun_attr_read(&(*pp_pkt)->transac_id, pc_buff_ptr, PayloadLengthInOctets, &n_consumed_octets, &p_attr))) {
+            if ((ret = tnet_stun_attr_read((const tnet_stun_transac_id_t*)&(*pp_pkt)->transac_id, pc_buff_ptr, PayloadLengthInOctets, &n_consumed_octets, &p_attr))) {
                 return ret;
             }
             if ((ret = tnet_stun_pkt_attr_add((*pp_pkt), &p_attr))) {

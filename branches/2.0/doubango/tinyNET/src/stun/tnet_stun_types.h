@@ -98,7 +98,7 @@ typedef uint8_t tnet_stun_addr_t[16]; // IPv4(32bits) or IPv6(128bits)
 
 #if !defined (kStunFingerprintXorConst)
 #	define kStunFingerprintXorConst 0x5354554e
-#endif kStunFingerprintXorConst /* kStunFingerprintXorConst */
+#endif /* kStunFingerprintXorConst */
 
 // STUN trasactionn ID size (96bits = 12bytes)
 #if !defined(kStunTransacIdSize)

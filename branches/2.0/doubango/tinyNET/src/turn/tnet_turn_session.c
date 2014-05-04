@@ -947,9 +947,9 @@ static int _tnet_turn_session_process_incoming_pkt(struct tnet_turn_session_s* p
 				tnet_turn_pkt_t *pc_pkt_req = tsk_null;
 				
 #define CANCEL_TIMER(which) \
-	if (TSK_TIMER_ID_IS_VALID(p_self->timer.rtt.##which.id)) { \
-		tsk_timer_manager_cancel(p_self->timer.p_mgr, p_self->timer.rtt.##which.id); \
-		p_self->timer.rtt.##which.id = TSK_INVALID_TIMER_ID; \
+	if (TSK_TIMER_ID_IS_VALID(p_self->timer.rtt.which.id)) { \
+		tsk_timer_manager_cancel(p_self->timer.p_mgr, p_self->timer.rtt.which.id); \
+		p_self->timer.rtt.which.id = TSK_INVALID_TIMER_ID; \
 	}
 
 				// Find request
@@ -1187,13 +1187,13 @@ static int _tnet_turn_session_transport_layer_stream_cb(const tnet_transport_eve
 static int _tnet_turn_session_timer_callback(const void* pc_arg, tsk_timer_id_t timer_id)
 {
 #define RETRANSMIT(which) \
-	p_ss->timer.rtt.##which.u_timeout <<= 1; \
-	if (p_ss->timer.rtt.##which.u_timeout <= kStunUdpRetransmitTimoutMaxInMs) { \
+	p_ss->timer.rtt.which.u_timeout <<= 1; \
+	if (p_ss->timer.rtt.which.u_timeout <= kStunUdpRetransmitTimoutMaxInMs) { \
 		if ((ret = _tnet_turn_session_send_pkt(p_ss, p_ss->p_pkt_##which))) { \
 			_tnet_turn_session_raise_event_##which##_nok(p_ss); \
 			goto bail; \
 		} \
-		p_ss->timer.rtt.##which.id = tsk_timer_manager_schedule(p_ss->timer.p_mgr, p_ss->timer.rtt.##which.u_timeout, _tnet_turn_session_timer_callback, p_ss); \
+		p_ss->timer.rtt.which.id = tsk_timer_manager_schedule(p_ss->timer.p_mgr, p_ss->timer.rtt.which.u_timeout, _tnet_turn_session_timer_callback, p_ss); \
 	} else { \
 		_tnet_turn_session_raise_event_##which##_nok(p_ss); \
 	}
