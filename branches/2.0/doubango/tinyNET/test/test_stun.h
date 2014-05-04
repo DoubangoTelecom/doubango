@@ -31,14 +31,15 @@
 #define kTurnPeerIP				"192.168.0.37"
 #define kTurnPeerPort			2020
 
-#define TNET_TEST_STUN_SEND_BUFF(buff_ptr, buff_size) \
+#define TNET_TEST_STUN_SEND_BUFF_TO(buff_ptr, buff_size, IP, PORT) \
 	{ \
         struct sockaddr_storage addr_to; \
         tnet_socket_t* socket = tnet_socket_create(0, 0, kStunServerProto); \
-        tnet_sockaddr_init(kStunServerIP, kStunServerPort, kStunServerProto, &addr_to); \
+        tnet_sockaddr_init((IP), (PORT), kStunServerProto, &addr_to); \
         tnet_sockfd_sendto(socket->fd, (const struct sockaddr *)&addr_to, (buff_ptr), (buff_size)); \
         TSK_OBJECT_SAFE_FREE(socket); \
-    } \
+    }
+#define TNET_TEST_STUN_SEND_BUFF(buff_ptr, buff_size) TNET_TEST_STUN_SEND_BUFF_TO((buff_ptr), (buff_size), kStunServerIP, kStunServerPort)
 
 uint8_t __parse_buff_write_ptr[1200];
 static const tsk_size_t __parse_buff_write_size = sizeof(__parse_buff_write_ptr)/sizeof(__parse_buff_write_ptr[0]);
@@ -149,6 +150,15 @@ bail:
 	TSK_OBJECT_SAFE_FREE(p_pkt);
 }
 
+static struct tnet_turn_session_s* __pc_ss1 = tsk_null;
+static struct tnet_turn_session_s* __pc_ss2 = tsk_null;
+static char* __p_rel_ip_ss1 = tsk_null;
+static uint16_t __u_rel_port_ss1 = 0;
+static tsk_bool_t __b_rel_ipv6_ss1 = 0;
+static char* __p_rel_ip_ss2 = tsk_null;
+static uint16_t __u_rel_port_ss2 = 0;
+static tsk_bool_t __b_rel_ipv6_ss2 = 0;
+
 static int _test_turn_session_callback(const struct tnet_turn_session_event_xs *e)
 {
 	const struct tnet_turn_session_s* pc_ss = (const struct tnet_turn_session_s*)e->pc_usr_data;
@@ -156,12 +166,54 @@ static int _test_turn_session_callback(const struct tnet_turn_session_event_xs *
 	switch (e->e_type) {
 		case tnet_turn_session_event_type_alloc_ok:
 			{
-				char* p_ip = tsk_null;
-				uint16_t u_port;
-				tsk_bool_t b_ipv6;
-				BAIL_IF_ERR(tnet_turn_session_get_relayed_addr(pc_ss, &p_ip, &u_port, &b_ipv6));
-				TSK_DEBUG_INFO("R_ADDR=[%s]:%u,IPv6=%d", p_ip, u_port, b_ipv6); // Address to be sent as part of ICE candidate
-				TSK_FREE(p_ip);
+				uint16_t *pu_port = (pc_ss == __pc_ss2) ? &__u_rel_port_ss1 : &__u_rel_port_ss2;
+				char** pp_ip = (pc_ss == __pc_ss2) ? &__p_rel_ip_ss1 : &__p_rel_ip_ss2;
+				tsk_bool_t *pb_ipv6 = (pc_ss == __pc_ss2) ? &__b_rel_ipv6_ss1 : &__b_rel_ipv6_ss2;
+
+				BAIL_IF_ERR(tnet_turn_session_get_relayed_addr(pc_ss, pp_ip, pu_port, pb_ipv6));
+				// BAIL_IF_ERR(tnet_turn_session_get_srflx_addr(pc_ss, pu_port, &u_port, &b_ipv6)); // get my own server reflexive address (in order to send data to myself)
+				BAIL_IF_ERR(tnet_turn_session_createpermission((struct tnet_turn_session_s*)pc_ss, *pp_ip, *pu_port)); // Input = ADDR(remote.candidate.relay)
+				break;
+			}
+		case tnet_turn_session_event_type_alloc_nok:
+			{
+				TSK_DEBUG_INFO("*** TURN ALLOC NOK ***");
+				break;
+			}
+		case tnet_turn_session_event_type_perm_ok:
+			{
+				static const char __pc_data[] = { "TURN Sample Data (Send Indication)" };
+				int i;
+				// Bind a channel (not required). If succeed, will be used to save data.
+				tnet_turn_session_chanbind((struct tnet_turn_session_s*)pc_ss);
+				// Send data (will use channel if one is active. Otherwise (no channel), SendIndications will be used)
+				for (i = 0; i < 10; ++i) {
+					BAIL_IF_ERR(tnet_turn_session_send_data((struct tnet_turn_session_s*)pc_ss, __pc_data, sizeof(__pc_data)));
+				}
+				break;
+			}
+		case tnet_turn_session_event_type_perm_nok:
+			{
+				TSK_DEBUG_INFO("*** TURN PERM NOK ***");
+				break;
+			}
+		case tnet_turn_session_event_type_chanbind_ok:
+			{
+				static const char __pc_data[] = { "TURN Sample Data (ChannelData)" };
+				int i;
+				for (i = 0; i < 10; ++i) {
+					BAIL_IF_ERR(tnet_turn_session_send_data((struct tnet_turn_session_s*)pc_ss, __pc_data, sizeof(__pc_data)));
+				}
+				break;
+			}
+		case tnet_turn_session_event_type_chanbind_nok:
+			{
+				TSK_DEBUG_INFO("*** TURN CHANBIND NOK ***");
+				break;
+			}
+		case tnet_turn_session_event_type_recv_data:
+			{
+				TSK_DEBUG_INFO("RECV DATA:%.*s", e->data.u_data_size, (const char*)e->data.pc_data_ptr);
 				break;
 			}
 		default:
@@ -175,21 +227,27 @@ bail:
 
 static void test_turn_session()
 {
-	struct tnet_turn_session_s* p_ss = tsk_null;
+	BAIL_IF_ERR(tnet_turn_session_create_udp_ipv4(kStunServerIP, kStunServerPort, &__pc_ss1));
+	BAIL_IF_ERR(tnet_turn_session_set_callback(__pc_ss1, _test_turn_session_callback, __pc_ss1));
+	BAIL_IF_ERR(tnet_turn_session_set_cred(__pc_ss1, kStunUsrName, kStunPwd));
+	BAIL_IF_ERR(tnet_turn_session_prepare(__pc_ss1));
+	BAIL_IF_ERR(tnet_turn_session_start(__pc_ss1));
 
-	BAIL_IF_ERR(tnet_turn_session_create_udp_ipv4(kStunServerIP, kStunServerPort, &p_ss));
-	BAIL_IF_ERR(tnet_turn_session_set_callback(p_ss, _test_turn_session_callback, p_ss));
-	BAIL_IF_ERR(tnet_turn_session_set_cred(p_ss, kStunUsrName, kStunPwd));
-	BAIL_IF_ERR(tnet_turn_session_prepare(p_ss));
-	BAIL_IF_ERR(tnet_turn_session_start(p_ss));
-	BAIL_IF_ERR(tnet_turn_session_allocate(p_ss));
-	BAIL_IF_ERR(tnet_turn_session_createpermission(p_ss, kTurnPeerIP, kTurnPeerPort)); // Input = ADDR(remote.candidate.relay)
+	BAIL_IF_ERR(tnet_turn_session_create_udp_ipv4(kStunServerIP, kStunServerPort, &__pc_ss2));
+	BAIL_IF_ERR(tnet_turn_session_set_callback(__pc_ss2, _test_turn_session_callback, __pc_ss2));
+	BAIL_IF_ERR(tnet_turn_session_set_cred(__pc_ss2, kStunUsrName, kStunPwd));
+	BAIL_IF_ERR(tnet_turn_session_prepare(__pc_ss2));
+	BAIL_IF_ERR(tnet_turn_session_start(__pc_ss2));
+
+	BAIL_IF_ERR(tnet_turn_session_allocate(__pc_ss1));
+	BAIL_IF_ERR(tnet_turn_session_allocate(__pc_ss2));
 
 	TSK_DEBUG_INFO("*** Press ENTER to continue ***");
 	getchar();
 
 bail:
-	TSK_OBJECT_SAFE_FREE(p_ss);
+	TSK_OBJECT_SAFE_FREE(__pc_ss1);
+	TSK_OBJECT_SAFE_FREE(__pc_ss2);
 }
 
 

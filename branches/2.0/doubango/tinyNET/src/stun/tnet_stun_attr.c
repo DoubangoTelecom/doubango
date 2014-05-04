@@ -40,6 +40,8 @@
 	(e_type == tnet_stun_attr_type_xor_mapped_address || e_type == tnet_stun_attr_type_xor_peer_address || e_type == tnet_stun_attr_type_xor_relayed_address)
 #define IS_VDATA_UINT8(e_type) \
 	(e_type == tnet_stun_attr_type_requested_transport)
+#define IS_VDATA_UINT16(e_type) \
+	(e_type == tnet_stun_attr_type_channel_number)
 #define IS_VDATA_UINT32(e_type) \
 	(e_type == tnet_stun_attr_type_fingerprint || e_type == tnet_stun_attr_type_lifetime || e_type == tnet_stun_attr_type_ice_priority)
 #define IS_VDATA_UINT64(e_type) \
@@ -77,6 +79,7 @@ static int _tnet_stun_attr_get_size_in_octetunits(const tnet_stun_attr_t* pc_sel
         }
         return 0;
     }
+    case tnet_stun_attr_type_data:
     case tnet_stun_attr_type_unknown_attrs:
     case tnet_stun_attr_type_dont_fragment:
     case tnet_stun_attr_type_software:
@@ -84,6 +87,7 @@ static int _tnet_stun_attr_get_size_in_octetunits(const tnet_stun_attr_t* pc_sel
     case tnet_stun_attr_type_realm:
     case tnet_stun_attr_type_username:
     case tnet_stun_attr_type_password:
+    case tnet_stun_attr_type_channel_number:
     case tnet_stun_attr_type_message_integrity:
     case tnet_stun_attr_type_fingerprint:
     case tnet_stun_attr_type_lifetime:
@@ -186,6 +190,7 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
         return 0;
     }
 
+    case tnet_stun_attr_type_data:
     case tnet_stun_attr_type_unknown_attrs:
     case tnet_stun_attr_type_dont_fragment:
     case tnet_stun_attr_type_software:
@@ -193,6 +198,7 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
     case tnet_stun_attr_type_realm:
     case tnet_stun_attr_type_username:
     case tnet_stun_attr_type_password:
+    case tnet_stun_attr_type_channel_number:
     case tnet_stun_attr_type_message_integrity:
     case tnet_stun_attr_type_fingerprint:
     case tnet_stun_attr_type_lifetime:
@@ -208,7 +214,10 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
             return -2;
         }
         if (_pc_self->p_data_ptr && _pc_self->u_data_size) {
-            if (IS_VDATA_UINT32(pc_self->hdr.e_type) && _pc_self->u_data_size == 4) {
+            if (IS_VDATA_UINT16(pc_self->hdr.e_type) && _pc_self->u_data_size == 2) {
+                *((uint16_t*)&p_buff_ptr[*p_written]) = tnet_htons_2(&_pc_self->p_data_ptr[0]);
+            }
+            else if (IS_VDATA_UINT32(pc_self->hdr.e_type) && _pc_self->u_data_size == 4) {
                 *((uint32_t*)&p_buff_ptr[*p_written]) = tnet_htonl_2(&_pc_self->p_data_ptr[0]);
             }
             else if (IS_VDATA_UINT64(pc_self->hdr.e_type) && _pc_self->u_data_size == 8) {
@@ -360,6 +369,7 @@ int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8
         break;
     }
 
+    case tnet_stun_attr_type_data:
     case tnet_stun_attr_type_unknown_attrs:
     case tnet_stun_attr_type_dont_fragment:
     case tnet_stun_attr_type_software:
@@ -367,6 +377,7 @@ int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8
     case tnet_stun_attr_type_realm:
     case tnet_stun_attr_type_username:
     case tnet_stun_attr_type_password:
+    case tnet_stun_attr_type_channel_number:
     case tnet_stun_attr_type_message_integrity:
     case tnet_stun_attr_type_fingerprint:
     case tnet_stun_attr_type_lifetime:
@@ -377,7 +388,13 @@ int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8
     case tnet_stun_attr_type_ice_controlling:
     default: {
         tnet_stun_attr_vdata_t* p_attr;
-        if (IS_VDATA_UINT32(Type) && Length == 4) {
+        if (IS_VDATA_UINT16(Type) && Length == 2) {
+            uint16_t u16 = tnet_ntohs_2(&pc_buff_ptr[4]);
+            if ((ret = tnet_stun_attr_vdata_create(Type, (uint8_t*)&u16, 2, &p_attr))) {
+                return ret;
+            }
+        }
+        else if (IS_VDATA_UINT32(Type) && Length == 4) {
             uint32_t u32 = tnet_ntohl_2(&pc_buff_ptr[4]);
             if ((ret = tnet_stun_attr_vdata_create(Type, (uint8_t*)&u32, 4, &p_attr))) {
                 return ret;

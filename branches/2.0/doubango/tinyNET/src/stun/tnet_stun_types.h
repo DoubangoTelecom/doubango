@@ -42,6 +42,13 @@ typedef uint8_t tnet_stun_addr_t[16]; // IPv4(32bits) or IPv6(128bits)
 		( PU8[4] == 0x21 && PU8[5] == 0x12 && PU8[6] == 0xA4 && PU8[7] == 0x42 ) \
 	)
 
+// rfc5766 - 11.  Channels
+#define TNET_STUN_PKT_IS_CHANNEL_DATA(PU8, SIZE)	\
+	( \
+		((PU8)) && \
+		((SIZE) >= kStunChannelDataHdrSizeInOctets) && \
+		(((PU8)[0] & 0xc0) == 0x40)  \
+	)
 
 #define kStunOptFingerPrint			1
 #define kStunOptDontFragment		1
@@ -287,9 +294,19 @@ typedef enum tnet_stun_pkt_type_e {
 }
 tnet_stun_pkt_type_t;
 
+/*	RFC 5389 - 7.2.1.  Sending over UDP
+		A client SHOULD retransmit a STUN request message starting with an
+		interval of RTO ("Retransmission TimeOut"), doubling after each
+		retransmission.
+
+		e.g. 0 ms, 500 ms, 1500 ms, 3500 ms, 7500ms, 15500 ms, and 31500 ms
+	*/
+#define kStunUdpRetransmitTimoutMinInMs 500
+#define kStunUdpRetransmitTimoutMaxInMs 31500
+
 // rfc5766 - 2.2.  Allocations
 #if !defined(kTurnAllocationTimeOutInSec)
-#	define kTurnAllocationTimeOutInSec 600 /* 10min */
+#	define kTurnAllocationTimeOutInSec 600 /* 10min */ // FIXME
 #endif /* kTurnAllocationTimeOutInSec */
 
 // rfc5766 - 2.3.  Permissions
@@ -302,6 +319,10 @@ tnet_stun_pkt_type_t;
 #	define kTurnChannelBindingTimeOutInSec 600 /* 10min */
 #endif /* kTurnChannelBindingTimeOutInSec */
 
+// rfc5766 - 11.4.  The ChannelData Message
+#if !defined(kStunChannelDataHdrSizeInOctets)
+#	define kStunChannelDataHdrSizeInOctets 4
+#endif /* kStunChannelDataHdrSizeInOctets */
 
 TNET_END_DECLS
 
