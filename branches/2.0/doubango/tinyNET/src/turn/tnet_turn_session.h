@@ -34,14 +34,23 @@ typedef enum tnet_turn_session_event_type_e
 {
 	tnet_turn_session_event_type_alloc_ok,
 	tnet_turn_session_event_type_alloc_nok,
+	tnet_turn_session_event_type_refresh_ok,
+	tnet_turn_session_event_type_refresh_nok,
 	tnet_turn_session_event_type_perm_ok,
 	tnet_turn_session_event_type_perm_nok,
+	tnet_turn_session_event_type_recv_data,
+	tnet_turn_session_event_type_chanbind_ok,
+	tnet_turn_session_event_type_chanbind_nok,
 }
 tnet_turn_session_event_type_t;
 
 typedef struct tnet_turn_session_event_xs {
 	enum tnet_turn_session_event_type_e e_type;
 	const void* pc_usr_data;
+	struct {
+		const void* pc_data_ptr;
+		tsk_size_t u_data_size;
+	} data;
 } tnet_turn_session_event_xt;
 
 typedef int (*tnet_turn_session_callback_f)(const struct tnet_turn_session_event_xs *e);
@@ -58,7 +67,10 @@ TINYNET_API int tnet_turn_session_prepare(struct tnet_turn_session_s* p_self);
 TINYNET_API int tnet_turn_session_start(struct tnet_turn_session_s* p_self);
 TINYNET_API int tnet_turn_session_allocate(struct tnet_turn_session_s* p_self);
 TINYNET_API int tnet_turn_session_get_relayed_addr(const struct tnet_turn_session_s* p_self, char** pp_ip, uint16_t *pu_port, tsk_bool_t *pb_ipv6);
+TINYNET_API int tnet_turn_session_get_srflx_addr(const struct tnet_turn_session_s* p_self, char** pp_ip, uint16_t *pu_port, tsk_bool_t *pb_ipv6);
 TINYNET_API int tnet_turn_session_createpermission(struct tnet_turn_session_s* p_self, const char* pc_peer_addr, uint16_t u_peer_port);
+TINYNET_API int tnet_turn_session_chanbind(struct tnet_turn_session_s* p_self);
+TINYNET_API int tnet_turn_session_send_data(struct tnet_turn_session_s* p_self, const void* pc_data_ptr, uint16_t u_data_size);
 TINYNET_API int tnet_turn_session_stop(struct tnet_turn_session_s* p_self);
 
 TNET_END_DECLS
