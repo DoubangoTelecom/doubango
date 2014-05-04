@@ -73,4 +73,15 @@ typedef unsigned int tsk_size_t; /**< Unsigned size */
 #define tsk_null    0  /**< Null pointer */
 #endif
 
+#if defined(__GNUC__) || (HAVE___SYNC_FETCH_AND_ADD && HAVE___SYNC_FETCH_AND_SUB)
+#	define tsk_atomic_inc(_ptr_) __sync_fetch_and_add((_ptr_), 1)
+#	define tsk_atomic_dec(_ptr_) __sync_fetch_and_sub((_ptr_), 1)
+#elif defined(_MSC_VER)
+#	define tsk_atomic_inc(_ptr_) InterlockedIncrement((_ptr_))
+#	define tsk_atomic_dec(_ptr_) InterlockedDecrement((_ptr_))
+#else
+#	define tsk_atomic_inc(_ptr_) ++(*(_ptr_))
+#	define tsk_atomic_dec(_ptr_) --(*(_ptr_))
+#endif
+
 #endif /* _TINYSAK_COMMON_H_ */

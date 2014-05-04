@@ -41,17 +41,6 @@ static int tsk_objects_count = 0;
 #	define TSK_DEBUG_OBJECTS	0
 #endif
 
-#if defined(__GNUC__)
-#	define tsk_atomic_inc(_ptr_) __sync_fetch_and_add((_ptr_), 1)
-#	define tsk_atomic_dec(_ptr_) __sync_fetch_and_sub((_ptr_), 1)
-#elif defined(_MSC_VER)
-#	define tsk_atomic_inc(_ptr_) InterlockedIncrement((_ptr_))
-#	define tsk_atomic_dec(_ptr_) InterlockedDecrement((_ptr_))
-#else
-#	define tsk_atomic_inc(_ptr_) ++(*(_ptr_))
-#	define tsk_atomic_dec(_ptr_) --(*(_ptr_))
-#endif
-
 /**@ingroup tsk_object_group
 * Creates new object. The object MUST be declared using @ref TSK_DECLARE_OBJECT macro.
 * @param objdef The object meta-data (definition). For more infomation see @ref tsk_object_def_t.
