@@ -78,7 +78,7 @@ typedef void tsk_object_t;
 */
 #define TSK_DECLARE_OBJECT \
 	const void* __def__;  /**< Opaque data holding a pointer to the actual meta-data(size, constructor, destructor and comparator) */ \
-	long	refCount /**< Reference counter. */
+	volatile long	refCount /**< Reference counter. */
 
 /**@ingroup tsk_object_group
 * Internal macro to get the definition of the object.

@@ -205,6 +205,15 @@ AC_TRY_COMPILE([#include <pthread.h>],
         [AC_DEFINE(TSK_RECURSIVE_MUTEXATTR, PTHREAD_MUTEX_RECURSIVE_NP,
             [Check whether PTHREAD_MUTEX_RECURSIVE_NP is defined])])])
 
+AC_TRY_COMPILE([#include <stdlib.h>],
+    [static int a = 0; __sync_fetch_and_add(&a, 1);],
+        [AC_DEFINE(HAVE___SYNC_FETCH_AND_ADD, 1,
+            [Check whether __sync_fetch_and_add is defined])],[])
+AC_TRY_COMPILE([#include <stdlib.h>],
+    [static int a = 0; __sync_fetch_and_sub(&a, 1);],
+        [AC_DEFINE(HAVE___SYNC_FETCH_AND_SUB, 1,
+            [Check whether __sync_fetch_and_sub is defined])],[])
+
 
 AC_DEFINE(USE_POLL, 1, [Setting USE_POLL to 1 for backward compatibility])
 AC_CHECK_FUNCS([inet_pton inet_ntop poll getdtablesize opendir closedir getpid])
