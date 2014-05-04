@@ -131,16 +131,9 @@ static tsk_object_t* tnet_turn_channel_data_ctor(tsk_object_t * self, va_list * 
 	tnet_turn_channel_data_t *message = self;
 	if(message){
 		const void* data;
-
-#if defined(__GNUC__)
-		message->chanel_number = (uint16_t)va_arg(*app, unsigned);
-		message->length = (uint16_t)va_arg(*app, unsigned);
-#else
-		message->chanel_number = va_arg(*app, uint16_t);
-		message->length = va_arg(*app, uint16_t);
-#endif
+		message->chanel_number = tsk_va_arg_u16(*app);
+		message->length = tsk_va_arg_u16(*app);
 		data = va_arg(*app, const void*);
-
 		if(data && message->length){
 			if((message->data = tsk_calloc(message->length, sizeof(uint8_t)))){
 				memcpy(message->data, data, message->length);

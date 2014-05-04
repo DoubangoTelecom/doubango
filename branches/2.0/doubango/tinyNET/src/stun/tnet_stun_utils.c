@@ -65,7 +65,7 @@ int tnet_stun_utils_transac_id_rand(tnet_stun_transac_id_t* p_transac_id)
 		*(((uint8_t*)p_transac_id) + u) = (__l_chan_num >> (u << 3)) & 0xFF;
 	}
     for (u = sizeof(long); u < __u_size; ++u) {
-        *(((uint8_t*)p_transac_id) + u) = rand();
+        *(((uint8_t*)p_transac_id) + u) = rand() % 0xFF;
     }
     return 0;
 }

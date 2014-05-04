@@ -193,7 +193,6 @@ tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint
 	tsk_timer_id_t timer_id = TSK_INVALID_TIMER_ID;
 	tsk_timer_manager_t *manager = (tsk_timer_manager_t*)self;
 
-	//FIXME
 	if(manager && (TSK_RUNNABLE(manager)->running || TSK_RUNNABLE(manager)->started)){
 		tsk_timer_t *timer;
 

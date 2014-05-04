@@ -495,6 +495,9 @@ static int _tbfcp_session_send_buff(tbfcp_session_t* p_self, const void* pc_buff
         u_sent_bytes = tnet_transport_sendto(p_self->p_transport, p_self->p_transport->master->fd, (const struct sockaddr *)&p_self->remote_addr, pc_buff_ptr, u_buff_size);
     }
     else {
+		TSK_DEBUG_ERROR("Not implemented yet");
+		ret = -3;
+		goto bail;
     }
 
     if (u_sent_bytes != u_buff_size) {
@@ -754,8 +757,8 @@ bail:
 static int _tbfcp_session_transport_layer_stream_cb(const tnet_transport_event_t* e)
 {
 	tbfcp_session_t* p_session = (tbfcp_session_t*)e->callback_data;
-
-    return 0;
+	TSK_DEBUG_ERROR("Not implemented yet");
+	return -1;
 }
 
 static tsk_object_t* tbfcp_session_ctor(tsk_object_t * self, va_list * app)

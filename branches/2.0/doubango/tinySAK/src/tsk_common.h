@@ -66,6 +66,16 @@ typedef unsigned int tsk_size_t; /**< Unsigned size */
 #	define tsk_va_copy(D, S)       ((D) = (S))
 #endif
 
+// Type promotion
+#if defined(__GNUC__)
+#	define tsk_va_arg_u8(ap)	(uint8_t)va_arg((ap), int)
+#	define tsk_va_arg_u16(ap)	(uint16_t)va_arg((ap), int)
+#	define tsk_va_arg_float(ap)	(float)va_arg((ap), double)
+#else
+#	define tsk_va_arg_u8(ap)	va_arg((ap), uint8_t)
+#	define tsk_va_arg_u16(ap)	va_arg((ap), uint16_t)
+#	define tsk_va_arg_float(ap)	va_arg((ap), float)
+#endif
 
 #ifdef NULL
 #define tsk_null    NULL /**< Null pointer */
