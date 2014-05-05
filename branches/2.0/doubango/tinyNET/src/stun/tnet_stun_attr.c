@@ -298,7 +298,6 @@ int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8
     uint16_t Length, PadLength;
     int ret = -1;
     static const void* kNullBuffPtr = tsk_null;
-    static const tsk_size_t kNullBuffSize = 0;
     if (!pc_buff_ptr || !n_buff_size || !pp_attr || !p_consumed_octets) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;

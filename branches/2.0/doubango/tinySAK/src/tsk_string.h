@@ -105,7 +105,7 @@ TINYSAK_API void tsk_str_to_hex(const char *str, tsk_size_t size, uint8_t* hex);
 #define tsk_strlen(s) ((s) ? strlen((s)) : 0)
 #if defined(_MSC_VER) || HAVE_STRTOK_S
 #	define tsk_strtok_r(str, delim, saveptr) strtok_s((str), (delim), (saveptr))
-#elif HAVE_STRTOK_R
+#elif HAVE_STRTOK_R || TSK_UNDER_APPLE
 #	define tsk_strtok_r strtok_r
 #else
 #	define tsk_strtok_r(str, delim, saveptr) strtok(str, delim)

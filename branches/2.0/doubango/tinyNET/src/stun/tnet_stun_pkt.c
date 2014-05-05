@@ -281,7 +281,7 @@ int tnet_stun_pkt_write_with_padding(const tnet_stun_pkt_t* pc_self, uint8_t* p_
 
     // write attributes
     tsk_list_foreach(pc_item, pc_self->p_list_attrs) {
-        if (pc_attr = (const tnet_stun_attr_t*)pc_item->data) {
+        if ((pc_attr = (const tnet_stun_attr_t*)pc_item->data)) {
             if ((pc_attr->hdr.e_type == tnet_stun_attr_type_message_integrity)) {
                 continue; // because 'MESSAGE-INTEGRITY' must be the latest attribute
             }
@@ -425,7 +425,7 @@ int tnet_stun_pkt_read(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size,  tnet
     PayloadLengthInOctets = tnet_ntohs_2(&pc_buff_ptr[2]);
     MagicCookie = tnet_ntohl_2(&pc_buff_ptr[4]);
     if (MagicCookie != kStunMagicCookieLong) {
-        TSK_DEBUG_ERROR("%x not a valid STUN2 magic cookie");
+        TSK_DEBUG_ERROR("%x not a valid STUN2 magic cookie", MagicCookie);
         return -4;
     }
     memcpy(transac_id, &pc_buff_ptr[8], sizeof(tnet_stun_transac_id_t));
@@ -470,7 +470,7 @@ int tnet_stun_pkt_auth_prepare(tnet_stun_pkt_t* p_self, const char* pc_usr_name,
         goto bail;
     }
     if (pc_attr) {
-        if ((ret = tnet_stun_attr_vdata_update((tnet_stun_attr_vdata_t*)pc_attr, pc_usr_name, tsk_strlen(pc_usr_name)))) {
+        if ((ret = tnet_stun_attr_vdata_update((tnet_stun_attr_vdata_t*)pc_attr, (const uint8_t*)pc_usr_name, tsk_strlen(pc_usr_name)))) {
             goto bail;
         }
     }
@@ -487,7 +487,7 @@ int tnet_stun_pkt_auth_prepare(tnet_stun_pkt_t* p_self, const char* pc_usr_name,
         goto bail;
     }
     if (pc_attr) {
-        if ((ret = tnet_stun_attr_vdata_update((tnet_stun_attr_vdata_t*)pc_attr, pc_realm, tsk_strlen(pc_realm)))) {
+        if ((ret = tnet_stun_attr_vdata_update((tnet_stun_attr_vdata_t*)pc_attr, (const uint8_t*)pc_realm, tsk_strlen(pc_realm)))) {
             goto bail;
         }
     }
@@ -504,7 +504,7 @@ int tnet_stun_pkt_auth_prepare(tnet_stun_pkt_t* p_self, const char* pc_usr_name,
         goto bail;
     }
     if (pc_attr) {
-        if ((ret = tnet_stun_attr_vdata_update((tnet_stun_attr_vdata_t*)pc_attr, pc_nonce, tsk_strlen(pc_nonce)))) {
+        if ((ret = tnet_stun_attr_vdata_update((tnet_stun_attr_vdata_t*)pc_attr, (const uint8_t*)pc_nonce, tsk_strlen(pc_nonce)))) {
             goto bail;
         }
     }
@@ -556,7 +556,7 @@ int tnet_stun_pkt_auth_prepare_2(struct tnet_stun_pkt_s* p_self, const char* pc_
         ret = -3;
         goto bail;
     }
-    pc_nonce = pc_attr->p_data_ptr;
+    pc_nonce = (const char*)pc_attr->p_data_ptr;
     // REALM
     if ((ret = tnet_stun_pkt_attr_find_first(pc_resp, tnet_stun_attr_type_realm, (const tnet_stun_attr_t**)&pc_attr))) {
         goto bail;
@@ -566,7 +566,7 @@ int tnet_stun_pkt_auth_prepare_2(struct tnet_stun_pkt_s* p_self, const char* pc_
         ret = -3;
         goto bail;
     }
-    pc_realm = pc_attr->p_data_ptr;
+    pc_realm = (const char*)pc_attr->p_data_ptr;
 
     if ((ret = tnet_stun_pkt_auth_prepare(p_self, pc_usr_name, pc_pwd, pc_realm, pc_nonce))) {
         goto bail;
@@ -595,7 +595,7 @@ int tnet_stun_pkt_auth_copy(tnet_stun_pkt_t* p_self, const char* pc_usr_name, co
         (ret = tnet_stun_pkt_attr_find_first(pc_pkt, tnet_stun_attr_type_realm, (const tnet_stun_attr_t**)&pc_attr_realm)) == 0 && pc_attr_realm
         && (ret = tnet_stun_pkt_attr_find_first(pc_pkt, tnet_stun_attr_type_nonce, (const tnet_stun_attr_t**)&pc_attr_nonce)) == 0 && pc_attr_nonce;
 
-    if (b_ok && (ret = tnet_stun_pkt_auth_prepare(p_self, pc_usr_name, pc_pwd, pc_attr_realm->p_data_ptr, pc_attr_nonce->p_data_ptr))) {
+    if (b_ok && (ret = tnet_stun_pkt_auth_prepare(p_self, pc_usr_name, pc_pwd, (const char*)pc_attr_realm->p_data_ptr, (const char*)pc_attr_nonce->p_data_ptr))) {
         goto bail;
     }
 

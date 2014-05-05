@@ -67,7 +67,7 @@ typedef unsigned int tsk_size_t; /**< Unsigned size */
 #endif
 
 // Type promotion
-#if defined(__GNUC__)
+#if defined(__GNUC__) || TSK_UNDER_APPLE
 #	define tsk_va_arg_u8(ap)	(uint8_t)va_arg((ap), int)
 #	define tsk_va_arg_u16(ap)	(uint16_t)va_arg((ap), int)
 #	define tsk_va_arg_float(ap)	(float)va_arg((ap), double)
