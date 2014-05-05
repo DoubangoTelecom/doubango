@@ -31,8 +31,8 @@
 
 #define kTurnTransportFriendlyName "TURN transport"
 
-#define TNET_TURN_SESSION_TIMOUT_GET_BEST_SEC(u_timeout_in_sec) ((u_timeout_in_sec)*990) // small delay for code execution
-#define TNET_TURN_SESSION_TIMOUT_GET_BEST_MILLIS(u_timeout_in_millis) (((u_timeout_in_millis)*990)/1000) // small delay for code execution
+#define TNET_TURN_SESSION_TIMOUT_GET_BEST_SEC(u_timeout_in_sec) ((u_timeout_in_sec)*950) // add small delay for code execution
+#define TNET_TURN_SESSION_TIMOUT_GET_BEST_MILLIS(u_timeout_in_millis) (((u_timeout_in_millis)*950)/1000) // add small delay for code execution
 
 #define TNET_TURN_SESSION_TIMER_SCHEDULE_SEC(_p_self, u_id, u_timeout_in_sec) \
 	(u_id) = tsk_timer_manager_schedule((_p_self)->timer.p_mgr, TNET_TURN_SESSION_TIMOUT_GET_BEST_SEC((u_timeout_in_sec)), _tnet_turn_session_timer_callback, (_p_self))
@@ -241,6 +241,9 @@ int tnet_turn_session_prepare(tnet_turn_session_t* p_self)
 	if (p_self->b_prepared) {
 		goto bail;
 	}
+
+	p_self->b_alloc_ok = tsk_false;
+	p_self->b_chanbind_ok = tsk_false;
 
 	p_self->timer.rtt.alloc.id = TSK_INVALID_TIMER_ID;
 	p_self->timer.rtt.chanbind.id = TSK_INVALID_TIMER_ID;
@@ -658,6 +661,12 @@ int tnet_turn_session_stop(tnet_turn_session_t* p_self)
 
 	tsk_safeobj_lock(p_self);
 
+	if (p_self->b_alloc_ok) {
+		// UnAlloc
+		p_self->u_lifetime_alloc_in_sec = 0;
+		_tnet_turn_session_send_refresh(p_self);
+	}
+
 	if (p_self->timer.p_mgr) {
 		ret = tsk_timer_manager_stop(p_self->timer.p_mgr);
 	}
@@ -771,7 +780,7 @@ static int _tnet_turn_session_send_refresh(tnet_turn_session_t* p_self)
 	// create RefreshIndication Request
 	p_self->timer.rtt.refresh.id = TSK_INVALID_TIMER_ID;
 	TSK_OBJECT_SAFE_FREE(p_self->p_pkt_refresh);
-	if ((ret = tnet_stun_pkt_create_empty(tnet_stun_pkt_type_refresh_indication, &p_self->p_pkt_refresh))) {
+	if ((ret = tnet_stun_pkt_create_empty(tnet_stun_pkt_type_refresh_request, &p_self->p_pkt_refresh))) {
 		TSK_DEBUG_ERROR("Failed to create TURN RefreshIndication request");
 		goto bail;
 	}
@@ -1058,6 +1067,7 @@ static int _tnet_turn_session_process_incoming_pkt(struct tnet_turn_session_s* p
 				}
 				/*** ERROR ***/
 				else {
+					tsk_bool_t b_nok = tsk_false;
 					if ((ret = tnet_stun_pkt_get_errorcode(pc_pkt, &u_code))) {
 						goto bail;
 					}
@@ -1067,35 +1077,39 @@ static int _tnet_turn_session_process_incoming_pkt(struct tnet_turn_session_s* p
 							// Do not send another req to avoid endless messages
 							if ((tnet_stun_pkt_attr_exists(pc_pkt_req, tnet_stun_attr_type_message_integrity))) { // already has a MESSAGE-INTEGRITY?
 								TSK_DEBUG_ERROR("TURN authentication failed");
-								if (pc_pkt_req == p_self->p_pkt_alloc) { 
-									_tnet_turn_session_raise_event_alloc_nok(p_self);
-								}
-								else if (pc_pkt_req == p_self->p_pkt_chanbind) {
-									_tnet_turn_session_raise_event_chanbind_nok(p_self);
-								}
-								else if (pc_pkt_req == p_self->p_pkt_createperm) {
-									_tnet_turn_session_raise_event_createperm_nok(p_self);
-								}
-								else if (pc_pkt_req == p_self->p_pkt_refresh) {
-									_tnet_turn_session_raise_event_refresh_nok(p_self);
-								}
+								b_nok = tsk_true; goto check_nok;
 								// INDICATION messages cannot receive 401 responses
-								goto bail;
 							}
 						}
 						if ((ret = tnet_stun_pkt_auth_prepare_2(pc_pkt_req, p_self->cred.p_usr_name, p_self->cred.p_pwd, pc_pkt))) {
-							goto bail;
+							b_nok = tsk_true; goto check_nok;
 						}
 						if ((ret = _tnet_turn_session_send_pkt(p_self, pc_pkt_req))) {
-							goto bail;
+							b_nok = tsk_true; goto check_nok;
 						}
 					}
 					else if (u_code == kStunErrCodeUnknownAttributes) {
 						if((ret = _tnet_turn_session_process_err420_pkt(pc_pkt_req, pc_pkt))) {
-							goto bail;
+							b_nok = tsk_true; goto check_nok;
 						}
 						if ((ret = _tnet_turn_session_send_pkt(p_self, pc_pkt_req))) {
-							goto bail;
+							b_nok = tsk_true; goto check_nok;
+						}
+					}
+
+check_nok:
+					if (b_nok) {
+						if (pc_pkt_req == p_self->p_pkt_alloc) { 
+							_tnet_turn_session_raise_event_alloc_nok(p_self);
+						}
+						else if (pc_pkt_req == p_self->p_pkt_chanbind) {
+							_tnet_turn_session_raise_event_chanbind_nok(p_self);
+						}
+						else if (pc_pkt_req == p_self->p_pkt_createperm) {
+							_tnet_turn_session_raise_event_createperm_nok(p_self);
+						}
+						else if (pc_pkt_req == p_self->p_pkt_refresh) {
+							_tnet_turn_session_raise_event_refresh_nok(p_self);
 						}
 					}
 				}
