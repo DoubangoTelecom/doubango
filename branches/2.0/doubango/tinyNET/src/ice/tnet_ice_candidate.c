@@ -312,6 +312,10 @@ const char* tnet_ice_candidate_tostring(tnet_ice_candidate_t* self)
 				}
 				break;
 			}
+        default:
+            {
+                break;
+            }
 	}
 
 	// WebRTC (Chrome) specific

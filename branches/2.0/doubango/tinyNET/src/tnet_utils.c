@@ -1267,7 +1267,7 @@ int tnet_inet_pton(int af, const char* src, void* dst)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-#if HAVE_INET_PTON
+#if HAVE_INET_PTON || TNET_UNDER_APPLE
 	return inet_pton(af, src, dst);
 #elif TNET_UNDER_WINDOWS
 #	if (_WIN32_WINNT <= 0x0501)
@@ -1317,7 +1317,7 @@ const char *tnet_inet_ntop(int af, const void *src, char *dst, int size)
 		return tsk_null;
 	}
 	memset(dst, 0, size);
-#if HAVE_INET_NTOP
+#if HAVE_INET_NTOP || TNET_UNDER_APPLE
 	return inet_ntop(af, src, dst, size);
 #elif TNET_UNDER_WINDOWS
 #	if (_WIN32_WINNT <= 0x0501)
