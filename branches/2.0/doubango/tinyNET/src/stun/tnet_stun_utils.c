@@ -52,18 +52,18 @@ int tnet_stun_utils_inet_ntop(tsk_bool_t b_v6, const tnet_stun_addr_t* pc_src, t
 int tnet_stun_utils_transac_id_rand(tnet_stun_transac_id_t* p_transac_id)
 {
     tsk_size_t u;
-	static tsk_size_t __u_size = sizeof(tnet_stun_transac_id_t);
-	static long __l_chan_num = 0;
+    static tsk_size_t __u_size = sizeof(tnet_stun_transac_id_t);
+    static long __l_chan_num = 0;
 
-	tsk_atomic_inc(&__l_chan_num);
+    tsk_atomic_inc(&__l_chan_num);
 
     if (!p_transac_id) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-	for (u = 0; (u < __u_size) && (u < sizeof(long)); ++u) {
-		*(((uint8_t*)p_transac_id) + u) = (__l_chan_num >> (u << 3)) & 0xFF;
-	}
+    for (u = 0; (u < __u_size) && (u < sizeof(long)); ++u) {
+        *(((uint8_t*)p_transac_id) + u) = (__l_chan_num >> (u << 3)) & 0xFF;
+    }
     for (u = sizeof(long); u < __u_size; ++u) {
         *(((uint8_t*)p_transac_id) + u) = rand() % 0xFF;
     }

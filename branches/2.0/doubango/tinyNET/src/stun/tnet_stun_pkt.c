@@ -583,24 +583,24 @@ bail:
 
 int tnet_stun_pkt_auth_copy(tnet_stun_pkt_t* p_self, const char* pc_usr_name, const char* pc_pwd, const tnet_stun_pkt_t* pc_pkt)
 {
-	const tnet_stun_attr_vdata_t *pc_attr_realm, *pc_attr_nonce;
-	int ret;
-	tsk_bool_t b_ok;
-	if (!p_self || !pc_pwd || !pc_usr_name || !pc_pkt) {
+    const tnet_stun_attr_vdata_t *pc_attr_realm, *pc_attr_nonce;
+    int ret;
+    tsk_bool_t b_ok;
+    if (!p_self || !pc_pwd || !pc_usr_name || !pc_pkt) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
 
-	b_ok = 
-		(ret = tnet_stun_pkt_attr_find_first(pc_pkt, tnet_stun_attr_type_realm, (const tnet_stun_attr_t**)&pc_attr_realm)) == 0 && pc_attr_realm
-		&& (ret = tnet_stun_pkt_attr_find_first(pc_pkt, tnet_stun_attr_type_nonce, (const tnet_stun_attr_t**)&pc_attr_nonce)) == 0 && pc_attr_nonce;
-	
-	if (b_ok && (ret = tnet_stun_pkt_auth_prepare(p_self, pc_usr_name, pc_pwd, pc_attr_realm->p_data_ptr, pc_attr_nonce->p_data_ptr))) {
-		goto bail;
-	}
+    b_ok =
+        (ret = tnet_stun_pkt_attr_find_first(pc_pkt, tnet_stun_attr_type_realm, (const tnet_stun_attr_t**)&pc_attr_realm)) == 0 && pc_attr_realm
+        && (ret = tnet_stun_pkt_attr_find_first(pc_pkt, tnet_stun_attr_type_nonce, (const tnet_stun_attr_t**)&pc_attr_nonce)) == 0 && pc_attr_nonce;
+
+    if (b_ok && (ret = tnet_stun_pkt_auth_prepare(p_self, pc_usr_name, pc_pwd, pc_attr_realm->p_data_ptr, pc_attr_nonce->p_data_ptr))) {
+        goto bail;
+    }
 
 bail:
-	return ret;
+    return ret;
 }
 
 int tnet_stun_pkt_get_errorcode(const struct tnet_stun_pkt_s* pc_self, uint16_t* pu_code)
