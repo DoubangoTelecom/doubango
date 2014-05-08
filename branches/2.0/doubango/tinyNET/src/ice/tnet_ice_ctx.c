@@ -74,7 +74,7 @@ static int _tnet_ice_ctx_fsm_act(struct tnet_ice_ctx_s* self, tsk_fsm_action_id 
 static int _tnet_ice_ctx_signal_async(struct tnet_ice_ctx_s* self, tnet_ice_event_type_t type, const char* phrase);
 static int _tnet_ice_ctx_cancel(struct tnet_ice_ctx_s* self, tsk_bool_t silent);
 static int _tnet_ice_ctx_restart(struct tnet_ice_ctx_s* self);
-static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, tnet_ice_candidates_L_t* remote_candidates, tnet_ice_pairs_L_t* result_pairs, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle);
+static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, tnet_ice_candidates_L_t* remote_candidates, tnet_ice_pairs_L_t* result_pairs, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle, tsk_bool_t is_rtcpmuxed);
 static void* TSK_STDCALL _tnet_ice_ctx_run(void* self);
 
 static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandidates(va_list *app);
@@ -1325,7 +1325,7 @@ start_conneck:
 	tsk_list_clear_items(self->candidates_pairs);
 	tsk_list_unlock(self->candidates_pairs);
 
-	if((ret = _tnet_ice_ctx_build_pairs(self->candidates_local, self->candidates_remote, self->candidates_pairs, self->is_controlling, self->tie_breaker, self->is_ice_jingle))){
+	if((ret = _tnet_ice_ctx_build_pairs(self->candidates_local, self->candidates_remote, self->candidates_pairs, self->is_controlling, self->tie_breaker, self->is_ice_jingle, self->use_rtcpmux))){
 		TSK_DEBUG_ERROR("_tnet_ice_ctx_build_pairs() failed");
 		return ret;
 	}	
@@ -1546,7 +1546,7 @@ static int _tnet_ice_ctx_restart(tnet_ice_ctx_t* self)
 }
 
 // build pairs as per RFC 5245 section "5.7.1. Forming Candidate Pairs"
-int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, tnet_ice_candidates_L_t* remote_candidates, tnet_ice_pairs_L_t* result_pairs, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle)
+static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, tnet_ice_candidates_L_t* remote_candidates, tnet_ice_pairs_L_t* result_pairs, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle, tsk_bool_t is_rtcpmuxed)
 {
 	const tsk_list_item_t *item_local, *item_remote;
 	const tnet_ice_candidate_t *cand_local, *cand_remote;
@@ -1567,11 +1567,11 @@ int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, tnet_ic
 			continue;
 		}
 		tsk_list_foreach(item_remote, remote_candidates){
-			if(!(cand_remote = item_remote->data)){
+			if (!(cand_remote = item_remote->data)) {
 				continue;
 			}
 
-			if((cand_remote->comp_id != cand_local->comp_id) || (cand_remote->transport_e != cand_local->transport_e)){
+			if ((is_rtcpmuxed && cand_remote->comp_id == TNET_ICE_CANDIDATE_COMPID_RTCP) || (cand_remote->comp_id != cand_local->comp_id) || (cand_remote->transport_e != cand_local->transport_e)){
 				continue;
 			}
 
