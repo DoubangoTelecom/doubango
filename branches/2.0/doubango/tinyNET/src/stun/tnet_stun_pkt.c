@@ -640,7 +640,7 @@ bail:
 
 int tnet_stun_pkt_auth_copy(tnet_stun_pkt_t* p_self, const char* pc_usr_name, const char* pc_pwd, const tnet_stun_pkt_t* pc_pkt)
 {
-    const tnet_stun_attr_vdata_t *pc_attr_realm, *pc_attr_nonce;
+    const tnet_stun_attr_vdata_t *pc_attr_realm = tsk_null, *pc_attr_nonce = tsk_null;
     int ret;
     tsk_bool_t b_ok;
     if (!p_self || !pc_pwd || !pc_usr_name || !pc_pkt) {
