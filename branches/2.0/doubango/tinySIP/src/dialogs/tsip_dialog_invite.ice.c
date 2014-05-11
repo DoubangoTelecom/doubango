@@ -145,7 +145,7 @@ static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia
 			TSK_DEBUG_ERROR("Failed to create ICE audio context");
 			return -2;
 		}
-		ret = tnet_ice_ctx_set_stun(self->ice.ctx_audio, TSIP_DIALOG_GET_SS(self)->media.stun.hostname, TSIP_DIALOG_GET_SS(self)->media.stun.port, kStunSoftware, TSIP_DIALOG_GET_STACK(self)->natt.stun.login, TSIP_DIALOG_GET_SS(self)->media.stun.password);
+		ret = tnet_ice_ctx_set_stun(self->ice.ctx_audio, TSIP_DIALOG_GET_SS(self)->media.stun.hostname, TSIP_DIALOG_GET_SS(self)->media.stun.port, kStunSoftware, TSIP_DIALOG_GET_SS(self)->media.stun.username, TSIP_DIALOG_GET_SS(self)->media.stun.password);
 		ret = tnet_ice_ctx_set_stun_enabled(self->ice.ctx_audio, TSIP_DIALOG_GET_SS(self)->media.enable_icestun);
 		ret = tnet_ice_ctx_set_turn_enabled(self->ice.ctx_audio, TSIP_DIALOG_GET_SS(self)->media.enable_iceturn);
 		ret = tnet_ice_ctx_set_rtcpmux(self->ice.ctx_audio, self->use_rtcpmux);
@@ -157,7 +157,7 @@ static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia
 			TSK_DEBUG_ERROR("Failed to create ICE video context");
 			return -2;
 		}
-		ret = tnet_ice_ctx_set_stun(self->ice.ctx_video, TSIP_DIALOG_GET_SS(self)->media.stun.hostname, TSIP_DIALOG_GET_SS(self)->media.stun.port, kStunSoftware, TSIP_DIALOG_GET_STACK(self)->natt.stun.login, TSIP_DIALOG_GET_SS(self)->media.stun.password);
+		ret = tnet_ice_ctx_set_stun(self->ice.ctx_video, TSIP_DIALOG_GET_SS(self)->media.stun.hostname, TSIP_DIALOG_GET_SS(self)->media.stun.port, kStunSoftware, TSIP_DIALOG_GET_SS(self)->media.stun.username, TSIP_DIALOG_GET_SS(self)->media.stun.password);
 		ret = tnet_ice_ctx_set_stun_enabled(self->ice.ctx_video, TSIP_DIALOG_GET_SS(self)->media.enable_icestun);
 		ret = tnet_ice_ctx_set_turn_enabled(self->ice.ctx_video, TSIP_DIALOG_GET_SS(self)->media.enable_iceturn);
 		ret = tnet_ice_ctx_set_rtcpmux(self->ice.ctx_video, self->use_rtcpmux);
