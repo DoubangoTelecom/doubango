@@ -73,6 +73,7 @@ static char* __stun_usr_name = tsk_null; // STUN/TURN credentials
 static char* __stun_usr_pwd = tsk_null; // STUN/TURN credentials
 static tsk_bool_t __stun_enabled = tsk_false; // Whether STUN for SIP headers is enabled
 static tsk_bool_t __icestun_enabled = tsk_true; // Whether STUN for ICE (reflexive candidates) is enabled
+static tsk_bool_t __iceturn_enabled = tsk_false; // Whether TURN for ICE (relay candidates) is enabled
 static tsk_bool_t __bypass_encoding_enabled = tsk_false;
 static tsk_bool_t __bypass_decoding_enabled = tsk_false;
 static tsk_bool_t __videojb_enabled = tsk_true;
@@ -424,17 +425,24 @@ int tmedia_defaults_set_rtcpmux_enabled(tsk_bool_t rtcpmux_enabled){
 	return 0;
 }
 
-int tmedia_defaults_set_stun_server(const char* server_ip, uint16_t server_port, const char* usr_name, const char* usr_pwd){
+int tmedia_defaults_set_stun_server(const char* server_ip, uint16_t server_port){
 	tsk_strupdate(&__stun_server_ip, server_ip);
 	__stun_server_port = server_port;
+	return 0;
+}
+int tmedia_defaults_get_stun_server(const char** server_ip, uint16_t*const server_port){
+	static const char* __stun_server_ip_default = "numb.viagenie.ca"; // default server for backward compatibility
+	if(server_ip) *server_ip = tsk_strnullORempty(__stun_server_ip) ? __stun_server_ip_default : __stun_server_ip;
+	if(server_port) *server_port = __stun_server_port;
+	return 0;
+}
+
+int tmedia_defaults_set_stun_cred(const char* usr_name, const char* usr_pwd) {
 	tsk_strupdate(&__stun_usr_name, usr_name);
 	tsk_strupdate(&__stun_usr_pwd, usr_pwd);
 	return 0;
 }
-int tmedia_defaults_get_stun_server(const char** server_ip, uint16_t*const server_port, const char** usr_name, const char** usr_pwd){
-	static const char* __stun_server_ip_default = "numb.viagenie.ca"; // default server for backward compatibility
-	if(server_ip) *server_ip = tsk_strnullORempty(__stun_server_ip) ? __stun_server_ip_default : __stun_server_ip;
-	if(server_port) *server_port = __stun_server_port;
+int tmedia_defaults_get_stun_cred(const char** usr_name, const char** usr_pwd){
 	if(usr_name) *usr_name = __stun_usr_name;
 	if(usr_pwd) *usr_pwd = __stun_usr_pwd;
 	return 0;
@@ -454,6 +462,14 @@ int tmedia_defaults_set_icestun_enabled(tsk_bool_t icestun_enabled){
 }
 tsk_bool_t tmedia_defaults_get_icestun_enabled(){
 	return __icestun_enabled;
+}
+
+int tmedia_defaults_set_iceturn_enabled(tsk_bool_t iceturn_enabled){
+	__iceturn_enabled = iceturn_enabled;
+	return 0;
+}
+tsk_bool_t tmedia_defaults_get_iceturn_enabled(){
+	return __iceturn_enabled;
 }
 
 int tmedia_defaults_set_ice_enabled(tsk_bool_t ice_enabled){

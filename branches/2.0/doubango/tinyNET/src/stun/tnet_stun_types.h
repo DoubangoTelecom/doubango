@@ -24,6 +24,8 @@
 TNET_BEGIN_DECLS
 
 typedef uint8_t tnet_stun_addr_t[16]; // IPv4(32bits) or IPv6(128bits)
+typedef uint64_t tnet_stun_binding_id_t;
+typedef long tnet_turn_peer_id_t;
 
 /**@ingroup tnet_stun_group
  * Checks if the pointer to the buffer hold a STUN header by checking that it starts with 0b00 and contain the magic cookie.
@@ -34,7 +36,7 @@ typedef uint8_t tnet_stun_addr_t[16]; // IPv4(32bits) or IPv6(128bits)
  *
  * @param	PU8	The pointer to the buffer holding the STUN raw data.
 **/
-#define TNET_STUN_PKT_IS_STUN2(PU8, SIZE)	\
+#define TNET_STUN_BUFF_IS_STUN2(PU8, SIZE)	\
 	( \
 		((PU8)) && \
 		((SIZE) >= kStunPktHdrSizeInOctets) && \
@@ -43,7 +45,7 @@ typedef uint8_t tnet_stun_addr_t[16]; // IPv4(32bits) or IPv6(128bits)
 	)
 
 // rfc5766 - 11.  Channels
-#define TNET_STUN_PKT_IS_CHANNEL_DATA(PU8, SIZE)	\
+#define TNET_STUN_BUFF_IS_CHANNEL_DATA(PU8, SIZE)	\
 	( \
 		((PU8)) && \
 		((SIZE) >= kStunChannelDataHdrSizeInOctets) && \
@@ -58,6 +60,15 @@ typedef uint8_t tnet_stun_addr_t[16]; // IPv4(32bits) or IPv6(128bits)
 #define kStunErrCodeStaleNonce			438
 #define kStunErrCodeIceConflict			487
 
+// Estimate of the round-trip time (RTT) in millisecond.
+#define kStunRTO			500
+
+// Number of retransmission for UDP retransmission in millisecond.
+//	7.2.1.  Sending over UDP
+//	Rc SHOULD be configurable and SHOULD have a default of 7.
+#define kStunRC				/*7*/4/* 7 is too hight */
+
+#define kStunBindingInvalidId				0
 
 #if !defined(kStunBuffMinPad)
 #	define kStunBuffMinPad	40 // to make the buffer kasher
@@ -323,6 +334,14 @@ tnet_stun_pkt_type_t;
 #if !defined(kStunChannelDataHdrSizeInOctets)
 #	define kStunChannelDataHdrSizeInOctets 4
 #endif /* kStunChannelDataHdrSizeInOctets */
+
+// Not part of the standard
+typedef enum tnet_stun_state_e {
+    tnet_stun_state_none,
+    tnet_stun_state_trying,
+    tnet_stun_state_ok,
+    tnet_stun_state_nok
+} tnet_stun_state_t;
 
 TNET_END_DECLS
 

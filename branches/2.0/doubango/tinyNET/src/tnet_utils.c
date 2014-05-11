@@ -1273,13 +1273,13 @@ int tnet_inet_pton(int af, const char* src, void* dst)
 #	if (_WIN32_WINNT <= 0x0501)
 	{
 		struct sockaddr_storage addr = { 0 };
-		int addr_len = sizeof(addr);
+		int addr_len = (af == AF_INET6) ? sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in);
 		if (WSAStringToAddressA((LPSTR)src, af, NULL, (struct sockaddr *)&addr, &addr_len) == 0) {
 			if (af == AF_INET6) {
-				*((struct in6_addr *)dst) = ((struct sockaddr_in6 *)&addr)->sin6_addr;
+				memcpy(dst, &((struct sockaddr_in6 *)&addr)->sin6_addr, 16);
 			}
 			else {
-				*((struct in_addr *)dst) = ((struct sockaddr_in *)&addr)->sin_addr;
+				memcpy(dst, &((struct sockaddr_in *)&addr)->sin_addr, 4);
 			}
 			return 1;
 		}
@@ -1287,7 +1287,7 @@ int tnet_inet_pton(int af, const char* src, void* dst)
 		return -2;
 	}
 #	else
-	return InetPton(af, src, dst);
+	return InetPtonA(af, src, dst);
 #	endif // TNET_UNDER_WINDOWS
 #else
 	{
@@ -1329,16 +1329,16 @@ const char *tnet_inet_ntop(int af, const void *src, char *dst, int size)
 				TSK_DEBUG_ERROR("Destination size too short(%d)", size);
 				return tsk_null;
 			}
-			addr.ss_family = AF_INET6;
-			((struct sockaddr_in6 *)&addr)->sin6_addr = *((struct in6_addr *)src);
+			((struct sockaddr_in6 *)&addr)->sin6_family = AF_INET6;
+			memcpy(&((struct sockaddr_in6 *)&addr)->sin6_addr, src, 16);
 		}
 		else {
 			if (size < INET_ADDRSTRLEN) {
 				TSK_DEBUG_ERROR("Destination size too short(%d)", size);
 				return tsk_null;
 			}
-			addr.ss_family = AF_INET;
-			((struct sockaddr_in *)&addr)->sin_addr = *((struct in_addr *)src);
+			((struct sockaddr_in *)&addr)->sin_family = AF_INET;
+			memcpy(&((struct sockaddr_in *)&addr)->sin_addr, src, 4);
 		}
 		if (WSAAddressToStringA((struct sockaddr*)&addr, addr_len, NULL, dst, &size) == 0) {
 			return dst;
@@ -1347,7 +1347,7 @@ const char *tnet_inet_ntop(int af, const void *src, char *dst, int size)
 		return tsk_null;
 	}
 #	else
-	return InetNtop(af, src, dst, size);
+	return InetNtopA(af, (PVOID)src, dst, size);
 #	endif // TNET_UNDER_WINDOWS
 #else
 	{
@@ -1635,6 +1635,34 @@ int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking)
 	
 	}
 	return 0;
+}
+
+/**@ingroup tnet_utils_group
+*/
+int tnet_sockfd_reuseaddr(tnet_fd_t fd, int reuseAddr)
+{
+	if (fd != TNET_INVALID_FD) {
+		int ret;
+		#if defined(SOLARIS)
+			static const char yes = '1';
+			static const char no = '0';
+		#else
+			static const int yes = 1;
+			static const int no = 0;
+		#endif
+			if ((ret = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (const char*)(reuseAddr ? &yes : &no), sizeof(int)))) {
+				TNET_PRINT_LAST_ERROR("setsockopt(SO_REUSEADDR, fd=%d) have failed", fd);
+				return ret;
+			}
+		#if defined(SO_REUSEPORT)
+			if ((ret = setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, (char*)(reuseAddr ? &yes : &no), sizeof(int)))) {
+				TNET_PRINT_LAST_ERROR("setsockopt(SO_REUSEPORT, fd=%d) have failed", fd);
+				return ret;
+			}
+		#endif
+		return 0;
+	}
+	return -1;
 }
 
 /**@ingroup tnet_utils_group

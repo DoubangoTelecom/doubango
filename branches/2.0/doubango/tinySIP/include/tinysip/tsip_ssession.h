@@ -117,6 +117,10 @@ typedef enum tsip_msession_param_type_e
 	mstype_set_rtcp,
 	mstype_set_rtcpmux,
 	mstype_set_ice,
+	mstype_set_ice_stun,
+	mstype_set_ice_turn,
+	mstype_set_stun_server,
+	mstype_set_stun_cred,
 
 	mstype_set_qos,
 	mstype_unset_qos,
@@ -142,6 +146,10 @@ tsip_msession_param_type_t;
 #define TSIP_MSESSION_SET_RTCP(ENABLED_BOOL)												mstype_set_rtcp, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_MSESSION_SET_RTCPMUX(ENABLED_BOOL)												mstype_set_rtcpmux, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_MSESSION_SET_ICE(ENABLED_BOOL)													mstype_set_ice, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_MSESSION_SET_ICE_STUN(ENABLED_BOOL)											mstype_set_ice_stun, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_MSESSION_SET_ICE_TURN(ENABLED_BOOL)											mstype_set_ice_turn, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_MSESSION_SET_STUN_SERVER(HOSTNAME, PORT)										mstype_set_stun_server, (const char*)HOSTNAME, (uint16_t)PORT
+#define TSIP_MSESSION_SET_STUN_CRED(USERNAME, PASSWORD)										mstype_set_stun_cred, (const char*)USERNAME, (const char*)PASSWORD
 #define TSIP_MSESSION_SET_QOS(TYPE_ENUM, STRENGTH_ENUM)										mstype_set_qos, (tmedia_qos_stype_t)TYPE_ENUM, (tmedia_qos_strength_t)STRENGTH_ENUM
 #define TSIP_MSESSION_UNSET_QOS()															mstype_unset_qos
 #define TSIP_MSESSION_SET_TIMERS(TIMEOUT_UINT, REFRESHER_STR)								mstype_set_timers, (unsigned)TIMEOUT_UINT, (const char*)REFRESHER_STR
@@ -230,10 +238,19 @@ typedef struct tsip_ssession_s
 		struct{
 			tmedia_session_msrp_cb_f callback;
 		} msrp;
+		/* STUN */
+		struct{
+			char* username;
+			char* password;
+			char* hostname;
+			uint16_t port;
+		} stun;
 
 		/* Features */
 		unsigned enable_100rel:1;
 		unsigned enable_ice:1;
+		unsigned enable_icestun:1;
+		unsigned enable_iceturn:1;
 		unsigned enable_rtcp:1;
 		unsigned enable_rtcpmux:1;
 	} media;

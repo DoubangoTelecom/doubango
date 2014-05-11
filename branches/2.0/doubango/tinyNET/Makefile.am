@@ -57,6 +57,7 @@ libtinyNET_la_SOURCES +=	src/ice/tnet_ice_candidate.c\
 	
 libtinyNET_la_SOURCES +=	src/stun/tnet_stun.c\
 	src/stun/tnet_stun_attr.c\
+	src/stun/tnet_stun_binding.c\
 	src/stun/tnet_stun_pkt.c\
 	src/stun/tnet_stun_utils.c\
 	\

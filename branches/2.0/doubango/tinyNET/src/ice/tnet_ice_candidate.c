@@ -44,8 +44,8 @@ static int _tnet_ice_candidate_tostring(
 	const tsk_params_L_t *extension_att_list,
 	char** output);
 static const char* _tnet_ice_candidate_get_foundation(tnet_ice_cand_type_t type);
-static tnet_stun_message_t * _tnet_ice_candidate_stun_create_bind_request(tnet_ice_candidate_t* self, const char* username, const char* password);
-static tsk_bool_t _tnet_ice_candidate_stun_transac_id_equals(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2);
+static tnet_stun_pkt_t * _tnet_ice_candidate_stun_create_bind_request(tnet_ice_candidate_t* self, const char* username, const char* password);
+static tsk_bool_t _tnet_ice_candidate_stun_transac_id_equals(const tnet_stun_transac_id_t id1, const tnet_stun_transac_id_t id2);
 static const char* _tnet_ice_candidate_get_transport_str(tnet_socket_type_t transport_e);
 static tnet_socket_type_t _tnet_ice_candidate_get_transport_type(tsk_bool_t ipv6, const char* transport_str);
 static const char* _tnet_ice_candidate_get_candtype_str(tnet_ice_cand_type_t candtype_e);
@@ -68,10 +68,14 @@ static tsk_object_t* tnet_ice_candidate_dtor(tsk_object_t * self)
 		TSK_SAFE_FREE(candidate->cand_type_str);
 		TSK_OBJECT_SAFE_FREE(candidate->extension_att_list);
 		TSK_OBJECT_SAFE_FREE(candidate->socket);
+		
 
 		TSK_SAFE_FREE(candidate->stun.nonce);
 		TSK_SAFE_FREE(candidate->stun.realm);
 		TSK_SAFE_FREE(candidate->stun.srflx_addr);
+
+		TSK_SAFE_FREE(candidate->turn.relay_addr);
+		TSK_OBJECT_SAFE_FREE(candidate->turn.ss);
 
 		TSK_SAFE_FREE(candidate->ufrag);
 		TSK_SAFE_FREE(candidate->pwd);
@@ -312,10 +316,10 @@ const char* tnet_ice_candidate_tostring(tnet_ice_candidate_t* self)
 				}
 				break;
 			}
-        default:
-            {
-                break;
-            }
+		default:
+			{
+				break;
+			}
 	}
 
 	// WebRTC (Chrome) specific
@@ -342,7 +346,7 @@ const char* tnet_ice_candidate_tostring(tnet_ice_candidate_t* self)
 
 int tnet_ice_candidate_send_stun_bind_request(tnet_ice_candidate_t* self, struct sockaddr_storage* server_addr, const char* username, const char* password)
 {
-	tnet_stun_message_t *request = tsk_null; 
+	tnet_stun_pkt_t *request = tsk_null; 
 	tsk_buffer_t *buffer = tsk_null;
 	int ret, sendBytes;
 
@@ -358,15 +362,14 @@ int tnet_ice_candidate_send_stun_bind_request(tnet_ice_candidate_t* self, struct
 		goto bail;
 	}
 
-	if(!(buffer = tnet_stun_message_serialize(request))){
+	if((ret = tnet_stun_pkt_write_with_padding_2(request, &buffer))){
 		TSK_DEBUG_ERROR("Failed to serialize STUN request");
-		ret = -3;
 		goto bail;
 	}
 
 	sendBytes = tnet_sockfd_sendto(self->socket->fd, (const struct sockaddr*)server_addr, buffer->data, buffer->size);// return number of sent bytes
 	if(sendBytes == buffer->size){
-		memcpy(self->stun.transac_id, request->transaction_id, sizeof(tnet_stun_transacid_t));
+		memcpy(self->stun.transac_id, request->transac_id, sizeof(tnet_stun_transac_id_t));
 		ret = 0;
 	}
 	else{
@@ -382,7 +385,7 @@ bail:
 	return 0;
 }
 
-int tnet_ice_candidate_process_stun_response(tnet_ice_candidate_t* self,  const tnet_stun_response_t* response, tnet_fd_t fd)
+int tnet_ice_candidate_process_stun_response(tnet_ice_candidate_t* self,  const tnet_stun_pkt_resp_t* response, tnet_fd_t fd)
 {
 	int ret = 0;
 
@@ -391,45 +394,49 @@ int tnet_ice_candidate_process_stun_response(tnet_ice_candidate_t* self,  const 
 		return -1;
 	}
 	
-	//if(!(_tnet_ice_candidate_stun_transac_id_equals(response->transaction_id, self->stun.transac_id))){
+	//if(!(_tnet_ice_candidate_stun_transac_id_equals(response->transac_id, self->stun.transac_id))){
 	//	TSK_DEBUG_ERROR("Transaction id mismatch");
 	//	return -2;
 	//}
 
-	if(TNET_STUN_RESPONSE_IS_ERROR(response)){
-		short code = tnet_stun_message_get_errorcode(response);
-		const char* realm = tnet_stun_message_get_realm(response);
-		const char* nonce = tnet_stun_message_get_nonce(response);
-
-		if(code == 401 && realm && nonce){
-			if(!self->stun.nonce){
-				/* First time we get a nonce */
-				tsk_strupdate(&self->stun.nonce, nonce);
-				tsk_strupdate(&self->stun.realm, realm);
-				return 0;
-			}
-			else{
-				TSK_DEBUG_ERROR("Authentication failed");
-				return -3;
-			}
+	if (TNET_STUN_PKT_RESP_IS_ERROR(response)) {
+		uint16_t u_code;
+		if ((ret = tnet_stun_pkt_get_errorcode(response, &u_code))) {
+			return ret;
 		}
-		else{
-			TSK_DEBUG_ERROR("STUN error: %hi", code);
+		if (u_code == kStunErrCodeUnauthorized || u_code == kStunErrCodeStaleNonce) {
+			const tnet_stun_attr_vdata_t* pc_attr;
+			if (u_code == kStunErrCodeUnauthorized) {
+				// Make sure this is not an authentication failure (#2 401)
+				// Do not send another req to avoid endless messages
+				if ((tnet_stun_pkt_attr_exists(response, tnet_stun_attr_type_message_integrity))) { // already has a MESSAGE-INTEGRITY?
+					TSK_DEBUG_ERROR("TURN authentication failed");
+					return -3;
+				}
+			}
+			if ((ret = tnet_stun_pkt_attr_find_first(response, tnet_stun_attr_type_nonce, (const tnet_stun_attr_t**)&pc_attr)) == 0 && pc_attr) {
+				tsk_strupdate(&self->stun.nonce, pc_attr->p_data_ptr);
+			}
+			if ((ret = tnet_stun_pkt_attr_find_first(response, tnet_stun_attr_type_realm, (const tnet_stun_attr_t**)&pc_attr)) == 0 && pc_attr) {
+				tsk_strupdate(&self->stun.realm, pc_attr->p_data_ptr);
+			}
+			return 0;
+		}
+		else {
+			TSK_DEBUG_ERROR("STUN error: %hu", u_code);
 			return -4;
 		}
 	}
-	else if(TNET_STUN_RESPONSE_IS_SUCCESS(response)){
-		const tnet_stun_attribute_t *attribute;
-
-		if((attribute = tnet_stun_message_get_attribute(response, stun_xor_mapped_address))){
-			const tnet_stun_attribute_xmapped_addr_t *xmaddr = (const tnet_stun_attribute_xmapped_addr_t *)attribute;
-			tnet_ice_utils_stun_address_tostring(xmaddr->xaddress, xmaddr->family, &self->stun.srflx_addr);
-			self->stun.srflx_port = xmaddr->xport;
-		}
-		else if((attribute = tnet_stun_message_get_attribute(response, stun_mapped_address))){
-			const tnet_stun_attribute_mapped_addr_t *maddr = (const tnet_stun_attribute_mapped_addr_t *)attribute;
-			ret = tnet_ice_utils_stun_address_tostring(maddr->address, maddr->family, &self->stun.srflx_addr);
-			self->stun.srflx_port = maddr->port;
+	else if(TNET_STUN_PKT_RESP_IS_SUCCESS(response)) {
+		const tnet_stun_attr_address_t* pc_attr_addr;
+		if (((ret = tnet_stun_pkt_attr_find_first(response, tnet_stun_attr_type_xor_mapped_address, (const tnet_stun_attr_t**)&pc_attr_addr)) == 0 && pc_attr_addr) 		
+			|| ((ret = tnet_stun_pkt_attr_find_first(response, tnet_stun_attr_type_mapped_address, (const tnet_stun_attr_t**)&pc_attr_addr)) == 0 && pc_attr_addr)) {
+				tnet_ip_t ip;
+				if ((ret = tnet_stun_utils_inet_ntop((pc_attr_addr->e_family == tnet_stun_address_family_ipv6), &pc_attr_addr->address, &ip))) {
+					return ret;
+				}
+				tsk_strupdate(&self->stun.srflx_addr, ip);
+				self->stun.srflx_port = pc_attr_addr->u_port;
 		}
 	}
 
@@ -517,10 +524,10 @@ static const char* _tnet_ice_candidate_get_foundation(tnet_ice_cand_type_t type)
 }
 
 
-static tsk_bool_t _tnet_ice_candidate_stun_transac_id_equals(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2)
+static tsk_bool_t _tnet_ice_candidate_stun_transac_id_equals(const tnet_stun_transac_id_t id1, const tnet_stun_transac_id_t id2)
 {
 	tsk_size_t i;
-	static const tsk_size_t size = sizeof(tnet_stun_transacid_t);
+	static const tsk_size_t size = sizeof(tnet_stun_transac_id_t);
 	for(i = 0; i < size; i++){
 		if(id1[i] != id2[i]){
 			return tsk_false;
@@ -529,31 +536,38 @@ static tsk_bool_t _tnet_ice_candidate_stun_transac_id_equals(const tnet_stun_tra
 	return tsk_true;
 }
 
-static tnet_stun_message_t * _tnet_ice_candidate_stun_create_bind_request(tnet_ice_candidate_t* self, const char* username, const char* password)
+static tnet_stun_pkt_t * _tnet_ice_candidate_stun_create_bind_request(tnet_ice_candidate_t* self, const char* username, const char* password)
 {
-	tnet_stun_message_t *request = tsk_null;
+	tnet_stun_pkt_t *request = tsk_null;
+	int ret;
 
-	if(!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
 
-	request = tnet_stun_message_create(username, password);
-
-	if(request){
-		tnet_stun_attribute_t* attribute;
-		request->realm = tsk_strdup(self->stun.realm);
-		request->nonce = tsk_strdup(self->stun.nonce);
-
-		/* Set the request type (RFC 5389 defines only one type) */
-		request->type = stun_binding_request;
-
-		/* Add software attribute */
-		if((attribute = (tnet_stun_attribute_t*)tnet_stun_attribute_software_create(TNET_SOFTWARE, tsk_strlen(TNET_SOFTWARE)))){
-			tnet_stun_message_add_attribute(request, &attribute);
+	if ((ret = tnet_stun_pkt_create_empty(tnet_stun_pkt_type_binding_request, &request))) {
+		TSK_DEBUG_ERROR("Failed to create STUN Bind request");
+		goto bail;
+	}
+	// add attributes
+	request->opt.dontfrag = 0;
+	ret = tnet_stun_pkt_attrs_add(request,
+		TNET_STUN_PKT_ATTR_ADD_SOFTWARE_ZT(kStunSoftware),
+		TNET_STUN_PKT_ATTR_ADD_NULL());
+	if (ret) {
+		goto bail;
+	}
+	if (username && self->stun.realm && self->stun.nonce) {
+		if ((ret = tnet_stun_pkt_auth_prepare(request, username, password, self->stun.realm, self->stun.nonce))) {
+			goto bail;
 		}
 	}
 	
+bail:
+	if (ret) {
+		TSK_OBJECT_SAFE_FREE(request);
+	}
 	return request;
 }
 
@@ -597,10 +611,10 @@ static const char* _tnet_ice_candidate_get_candtype_str(tnet_ice_cand_type_t can
 	switch(candtype_e){
 		case tnet_ice_cand_type_unknown:
 		default: return "unknown";
-		case tnet_ice_cand_type_host: return "host";
-		case tnet_ice_cand_type_srflx: return "srflx";
-		case tnet_ice_cand_type_prflx: return "prflx";
-		case tnet_ice_cand_type_relay: return "relay";
+		case tnet_ice_cand_type_host: return TNET_ICE_CANDIDATE_TYPE_HOST;
+		case tnet_ice_cand_type_srflx: return TNET_ICE_CANDIDATE_TYPE_SRFLX;
+		case tnet_ice_cand_type_prflx: return TNET_ICE_CANDIDATE_TYPE_PRFLX;
+		case tnet_ice_cand_type_relay: return TNET_ICE_CANDIDATE_TYPE_RELAY;
 	}
 }
 

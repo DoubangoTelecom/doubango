@@ -36,6 +36,9 @@
 #include "tinyrtp/rtcp/trtp_rtcp_report_fb.h"
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
 
+#include "ice/tnet_ice_ctx.h"
+#include "turn/tnet_turn_session.h"
+
 #include "tnet_utils.h"
 
 #include "tsk_string.h"
@@ -263,9 +266,11 @@ typedef struct trtp_rtcp_session_s
 {
 	TSK_DECLARE_OBJECT;
 	
-	tsk_bool_t started;
+	tsk_bool_t is_started;
 	tnet_fd_t local_fd;
 	const struct sockaddr * remote_addr;
+	struct tnet_ice_ctx_s* ice_ctx;
+	tsk_bool_t is_ice_turn_active;
 
 	const void* callback_data;
 	trtp_rtcp_cb_f callback;
@@ -350,6 +355,7 @@ static tsk_object_t* trtp_rtcp_session_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(session->sources);
 		TSK_OBJECT_SAFE_FREE(session->source_local);
 		TSK_OBJECT_SAFE_FREE(session->sdes);
+		TSK_OBJECT_SAFE_FREE(session->ice_ctx);
 		TSK_FREE(session->cname);
 		// release the handle for the global timer manager
 		tsk_timer_mgr_global_unref(&session->timer.handle_global);
@@ -375,6 +381,7 @@ static int _trtp_rtcp_session_add_source(trtp_rtcp_session_t* self, trtp_rtcp_so
 static int _trtp_rtcp_session_add_source_2(trtp_rtcp_session_t* self, uint32_t ssrc, uint16_t seq, uint32_t ts, tsk_bool_t *added);
 static int _trtp_rtcp_session_remove_source(trtp_rtcp_session_t* self, uint32_t ssrc, tsk_bool_t *removed);
 static tsk_size_t _trtp_rtcp_session_send_pkt(trtp_rtcp_session_t* self, trtp_rtcp_packet_t* pkt);
+static tsk_size_t _trtp_rtcp_session_send_raw(trtp_rtcp_session_t* self, const void* data, tsk_size_t size);
 static int _trtp_rtcp_session_timer_callback(const void* arg, tsk_timer_id_t timer_id);
 
 static void Schedule(trtp_rtcp_session_t* session, double tn, event_ e);
@@ -406,6 +413,17 @@ trtp_rtcp_session_t* trtp_rtcp_session_create(uint32_t ssrc, const char* cname)
 	session->cname = tsk_strdup(cname);
 	
 bail:
+	return session;
+}
+
+struct trtp_rtcp_session_s* trtp_rtcp_session_create_2(struct tnet_ice_ctx_s* ice_ctx, uint32_t ssrc, const char* cname)
+{
+	struct trtp_rtcp_session_s* session = trtp_rtcp_session_create(ssrc, cname);
+	if (session) {
+		if ((session->ice_ctx = tsk_object_ref(ice_ctx))) {
+			session->is_ice_turn_active = tnet_ice_ctx_is_turn_rtcp_active(session->ice_ctx);
+		}
+	}
 	return session;
 }
 
@@ -451,7 +469,7 @@ int trtp_rtcp_session_set_app_bandwidth_max(trtp_rtcp_session_t* self, int32_t b
 	self->app_bw_max_upload = bw_upload_kbps;
 	self->app_bw_max_download = bw_download_kbps;
 
-	if(self->started && self->source_local && self->app_bw_max_download > 0 && self->app_bw_max_download != INT_MAX){ // INT_MAX or <=0 means undefined
+	if(self->is_started && self->source_local && self->app_bw_max_download > 0 && self->app_bw_max_download != INT_MAX){ // INT_MAX or <=0 means undefined
 		tsk_list_item_t* item;
 		uint32_t media_ssrc_list[256] = {0};
 		uint32_t media_ssrc_list_count = 0;
@@ -492,7 +510,7 @@ int trtp_rtcp_session_start(trtp_rtcp_session_t* self, tnet_fd_t local_fd, const
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if(self->started){
+	if(self->is_started){
 		TSK_DEBUG_WARN("Already started");
 		return 0;
 	}
@@ -512,7 +530,7 @@ int trtp_rtcp_session_start(trtp_rtcp_session_t* self, tnet_fd_t local_fd, const
 	// set start time
 	self->time_start = tsk_time_now();
 
-	self->started = tsk_true;
+	self->is_started = tsk_true;
 
 	return ret;
 }
@@ -526,7 +544,7 @@ int trtp_rtcp_session_stop(trtp_rtcp_session_t* self)
 		return -1;
 	}
 
-	if(self->started){
+	if(self->is_started){
 		// send BYE synchronous way
 		SendBYEPacket(self, EVENT_REPORT);
 		
@@ -542,7 +560,7 @@ int trtp_rtcp_session_stop(trtp_rtcp_session_t* self)
 			self->timer.id_report = TSK_INVALID_TIMER_ID;
 		}
 		tsk_safeobj_unlock(self);
-		self->started = tsk_false;
+		self->is_started = tsk_false;
 	}
 
 	return ret;
@@ -557,7 +575,7 @@ int trtp_rtcp_session_process_rtp_out(trtp_rtcp_session_t* self, const trtp_rtp_
 		return -1;
 	}
 
-	if(!self->started){
+	if(!self->is_started){
 		TSK_DEBUG_ERROR("Not started");
 		return -2;
 	}
@@ -612,7 +630,7 @@ int trtp_rtcp_session_process_rtp_in(trtp_rtcp_session_t* self, const trtp_rtp_p
 		return -1;
 	}
 
-	if(!self->started){
+	if(!self->is_started){
 		TSK_DEBUG_INFO("RTCP session not started");
 		return -2;
 	}
@@ -648,7 +666,7 @@ int trtp_rtcp_session_process_rtcp_in(trtp_rtcp_session_t* self, const void* buf
 		return -1;
 	}
 
-	if(!self->started){
+	if(!self->is_started){
 		TSK_DEBUG_ERROR("Not started");
 		return -2;
 	}
@@ -690,7 +708,7 @@ int trtp_rtcp_session_signal_pkt_loss(trtp_rtcp_session_t* self, uint32_t ssrc_m
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if(!self->started){
+	if(!self->is_started){
 		TSK_DEBUG_ERROR("Not started");
 		return -1;
 	}
@@ -720,7 +738,7 @@ int trtp_rtcp_session_signal_frame_corrupted(trtp_rtcp_session_t* self, uint32_t
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if(!self->started){
+	if(!self->is_started){
 		TSK_DEBUG_ERROR("Not started");
 		return -1;
 	}
@@ -889,12 +907,28 @@ static tsk_size_t _trtp_rtcp_session_send_pkt(trtp_rtcp_session_t* self, trtp_rt
 			}
 		}
 #endif
-		if(tnet_sockfd_sendto(self->local_fd, self->remote_addr, data, size) > 0){
-			ret = size;
-		}
+		ret = _trtp_rtcp_session_send_raw(self, data, size);
 		TSK_OBJECT_SAFE_FREE(buffer);
 	}
 
+	return ret;
+}
+
+static tsk_size_t _trtp_rtcp_session_send_raw(trtp_rtcp_session_t* self, const void* data, tsk_size_t size)
+{
+	tsk_size_t ret = 0;
+	if (!self || !data || !size) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+	if (self->is_ice_turn_active) {
+		ret = (tnet_ice_ctx_send_turn_rtcp(self->ice_ctx, data, size) == 0) ? size : 0; // returns #0 if ok
+	}
+	else {
+		if (tnet_sockfd_sendto(self->local_fd, self->remote_addr, data, size) == size){ // returns number of sent bytes
+			ret = size;
+		}
+	}
 	return ret;
 }
 
@@ -1150,7 +1184,7 @@ static void SendBYEPacket(trtp_rtcp_session_t* session, event_ e)
 				}
 			}
 #endif
-			tnet_sockfd_sendto(session->local_fd, session->remote_addr, data, size);
+			_trtp_rtcp_session_send_raw(session, data, size);
 			TSK_OBJECT_SAFE_FREE(buffer);
 		}
 		TSK_OBJECT_SAFE_FREE(bye);

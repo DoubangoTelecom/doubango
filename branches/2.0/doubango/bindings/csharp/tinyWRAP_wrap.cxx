@@ -2330,41 +2330,19 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetIceStunEna
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetStunServer__SWIG_0(char * jarg1, unsigned short jarg2, char * jarg3, char * jarg4) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetIceTurnEnabled(unsigned int jarg1) {
   unsigned int jresult ;
-  char *arg1 = (char *) 0 ;
-  uint16_t arg2 ;
-  char *arg3 = (char *) 0 ;
-  char *arg4 = (char *) 0 ;
+  bool arg1 ;
   bool result;
   
-  arg1 = (char *)jarg1; 
-  arg2 = (uint16_t)jarg2; 
-  arg3 = (char *)jarg3; 
-  arg4 = (char *)jarg4; 
-  result = (bool)MediaSessionMgr::defaultsSetStunServer((char const *)arg1,arg2,(char const *)arg3,(char const *)arg4);
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetIceTurnEnabled(arg1);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetStunServer__SWIG_1(char * jarg1, unsigned short jarg2, char * jarg3) {
-  unsigned int jresult ;
-  char *arg1 = (char *) 0 ;
-  uint16_t arg2 ;
-  char *arg3 = (char *) 0 ;
-  bool result;
-  
-  arg1 = (char *)jarg1; 
-  arg2 = (uint16_t)jarg2; 
-  arg3 = (char *)jarg3; 
-  result = (bool)MediaSessionMgr::defaultsSetStunServer((char const *)arg1,arg2,(char const *)arg3);
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetStunServer__SWIG_2(char * jarg1, unsigned short jarg2) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetStunServer(char * jarg1, unsigned short jarg2) {
   unsigned int jresult ;
   char *arg1 = (char *) 0 ;
   uint16_t arg2 ;
@@ -2373,6 +2351,20 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetStunServer
   arg1 = (char *)jarg1; 
   arg2 = (uint16_t)jarg2; 
   result = (bool)MediaSessionMgr::defaultsSetStunServer((char const *)arg1,arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetStunCred(char * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (char *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)MediaSessionMgr::defaultsSetStunCred((char const *)arg1,(char const *)arg2);
   jresult = result; 
   return jresult;
 }
@@ -4359,6 +4351,66 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setICE(void * jarg1, unsi
   arg1 = (CallSession *)jarg1; 
   arg2 = jarg2 ? true : false; 
   result = (bool)(arg1)->setICE(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setICEStun(void * jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  bool arg2 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  result = (bool)(arg1)->setICEStun(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setICETurn(void * jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  bool arg2 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  result = (bool)(arg1)->setICETurn(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setSTUNServer(void * jarg1, char * jarg2, unsigned short jarg3) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  char *arg2 = (char *) 0 ;
+  uint16_t arg3 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (uint16_t)jarg3; 
+  result = (bool)(arg1)->setSTUNServer((char const *)arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setSTUNCred(void * jarg1, char * jarg2, char * jarg3) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (bool)(arg1)->setSTUNCred((char const *)arg2,(char const *)arg3);
   jresult = result; 
   return jresult;
 }

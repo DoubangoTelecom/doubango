@@ -29,6 +29,7 @@ TNET_BEGIN_DECLS
 struct tnet_turn_session_s;
 struct tnet_socket_s;
 enum tnet_socket_type_e;
+#define kTurnPeerIdInvalid -1
 
 typedef enum tnet_turn_session_event_type_e
 {
@@ -46,7 +47,10 @@ tnet_turn_session_event_type_t;
 
 typedef struct tnet_turn_session_event_xs {
 	enum tnet_turn_session_event_type_e e_type;
+	tnet_turn_peer_id_t u_peer_id;
 	const void* pc_usr_data;
+	const struct tnet_transport_event_s* pc_enet;
+	struct tnet_turn_session_s* pc_session;
 	struct {
 		const void* pc_data_ptr;
 		tsk_size_t u_data_size;
@@ -68,9 +72,13 @@ TINYNET_API int tnet_turn_session_start(struct tnet_turn_session_s* p_self);
 TINYNET_API int tnet_turn_session_allocate(struct tnet_turn_session_s* p_self);
 TINYNET_API int tnet_turn_session_get_relayed_addr(const struct tnet_turn_session_s* p_self, char** pp_ip, uint16_t *pu_port, tsk_bool_t *pb_ipv6);
 TINYNET_API int tnet_turn_session_get_srflx_addr(const struct tnet_turn_session_s* p_self, char** pp_ip, uint16_t *pu_port, tsk_bool_t *pb_ipv6);
-TINYNET_API int tnet_turn_session_createpermission(struct tnet_turn_session_s* p_self, const char* pc_peer_addr, uint16_t u_peer_port);
-TINYNET_API int tnet_turn_session_chanbind(struct tnet_turn_session_s* p_self);
-TINYNET_API int tnet_turn_session_send_data(struct tnet_turn_session_s* p_self, const void* pc_data_ptr, uint16_t u_data_size);
+TINYNET_API int tnet_turn_session_get_state_alloc(const struct tnet_turn_session_s* pc_self, enum tnet_stun_state_e *pe_state);
+TINYNET_API int tnet_turn_session_get_state_createperm(const struct tnet_turn_session_s* pc_self, tnet_turn_peer_id_t u_peer_id, enum tnet_stun_state_e *pe_state);
+TINYNET_API int tnet_turn_session_createpermission(struct tnet_turn_session_s* p_self, const char* pc_peer_addr, uint16_t u_peer_port, tnet_turn_peer_id_t* pu_peer_id);
+TINYNET_API int tnet_turn_session_deletepermission(struct tnet_turn_session_s* p_self, tnet_turn_peer_id_t u_peer_id);
+TINYNET_API int tnet_turn_session_chanbind(struct tnet_turn_session_s* p_self, tnet_turn_peer_id_t u_peer_id);
+TINYNET_API int tnet_turn_session_send_data(struct tnet_turn_session_s* p_self, tnet_turn_peer_id_t u_peer_id, const void* pc_data_ptr, uint16_t u_data_size);
+TINYNET_API int tnet_turn_session_is_active(const struct tnet_turn_session_s* pc_self, tnet_turn_peer_id_t u_peer_id, tsk_bool_t *pb_active);
 TINYNET_API int tnet_turn_session_stop(struct tnet_turn_session_s* p_self);
 
 TNET_END_DECLS

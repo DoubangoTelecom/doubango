@@ -288,6 +288,8 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 								break;
 							case mstype_set_100rel: self->media.enable_100rel = va_arg(*app, tsk_bool_t); break;
 							case mstype_set_ice: self->media.enable_ice = va_arg(*app, tsk_bool_t); break;
+							case mstype_set_ice_stun: self->media.enable_icestun = va_arg(*app, tsk_bool_t); break;
+							case mstype_set_ice_turn: self->media.enable_iceturn = va_arg(*app, tsk_bool_t); break;
 							case mstype_set_rtcp: self->media.enable_rtcp = va_arg(*app, tsk_bool_t); break;
 							case mstype_set_rtcpmux: self->media.enable_rtcpmux = va_arg(*app, tsk_bool_t); break;
 							case mstype_set_qos:
@@ -348,6 +350,22 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 							case mstype_set_msrp_cb:
 								{	/* (tmedia_session_msrp_cb_f)TMEDIA_SESSION_MSRP_CB_F */
 									self->media.msrp.callback = va_arg(*app, tmedia_session_msrp_cb_f);
+									break;
+								}
+							case mstype_set_stun_server:
+								{	/* (const char*)HOSTNAME, (uint16_t)PORT */
+									const char* HOSTNAME = va_arg(*app, const char*);
+									uint16_t PORT = tsk_va_arg_u16(*app);
+									tsk_strupdate(&self->media.stun.hostname, HOSTNAME);
+									self->media.stun.port = PORT;
+									break;
+								}
+							case mstype_set_stun_cred:
+								{	/* (const char*)USERNAME, (const char*)PASSWORD */
+									const char* USERNAME = va_arg(*app, const char*);
+									const char* PASSWORD = va_arg(*app, const char*);
+									tsk_strupdate(&self->media.stun.username, USERNAME);
+									tsk_strupdate(&self->media.stun.password, PASSWORD);
 									break;
 								}
 							default:{
@@ -644,7 +662,7 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		// default parentid: not parent -> no pending transfer
 		ss->id_parent = TSIP_SSESSION_INVALID_ID;
 		// default SigComp compId (will be updated by session_set())
-		if(ss->stack->sigcomp.handle){
+		if (ss->stack->sigcomp.handle) {
 			ss->sigcomp_id = tsk_strdup(tsip_sigcomp_handler_fixme_getcompid(ss->stack->sigcomp.handle));
 		}
 		// default media values
@@ -653,6 +671,8 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		ss->media.avpf_mode = tmedia_defaults_get_avpf_mode();
 		ss->media.enable_100rel = tmedia_defaults_get_100rel_enabled();
 		ss->media.enable_ice = tmedia_defaults_get_ice_enabled();
+		ss->media.enable_icestun = tmedia_defaults_get_icestun_enabled();
+		ss->media.enable_iceturn = tmedia_defaults_get_iceturn_enabled();
 		ss->media.enable_rtcp = tmedia_defaults_get_rtcp_enabled();
 		ss->media.enable_rtcpmux = tmedia_defaults_get_rtcpmux_enabled();
 		ss->media.type = tmedia_none;
@@ -663,6 +683,18 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		ss->media.codecs = tmedia_codec_id_all;
 		ss->media.bypass_encoding = tmedia_defaults_get_bypass_encoding();
 		ss->media.bypass_decoding = tmedia_defaults_get_bypass_decoding();
+		{
+			const char *stun_hostname, *stun_username, *stun_password;
+			uint16_t stun_port;
+			if(tmedia_defaults_get_stun_server(&stun_hostname, &stun_port) == 0){
+				ss->media.stun.hostname = tsk_strdup(stun_hostname);
+				ss->media.stun.port = stun_port;
+			}
+			if(tmedia_defaults_get_stun_cred(&stun_username, &stun_password) == 0){
+				ss->media.stun.username = tsk_strdup(stun_username);
+				ss->media.stun.password = tsk_strdup(stun_password);
+			}
+		}
 
 		/* add the session to the stack */
 		if(ss->stack){
@@ -699,6 +731,9 @@ static tsk_object_t* tsip_ssession_dtor(tsk_object_t * self)
 		// Media
 		//=======
 		TSK_FREE(ss->media.timers.refresher);
+		TSK_FREE(ss->media.stun.username);
+		TSK_FREE(ss->media.stun.password);
+		TSK_FREE(ss->media.stun.hostname);
 
 		//=======
 		// WebSocket

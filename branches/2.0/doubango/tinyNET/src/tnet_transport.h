@@ -85,7 +85,7 @@ TINYNET_API int tnet_transport_issecure(const tnet_transport_handle_t *handle);
 TINYNET_API const char* tnet_transport_get_description(const tnet_transport_handle_t *handle);
 TINYNET_API int tnet_transport_get_ip_n_port(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port);
 TINYNET_API int tnet_transport_get_ip_n_port_2(const tnet_transport_handle_t *handle, tnet_ip_t *ip, tnet_port_t *port);
-TINYNET_API int tnet_transport_set_natt_ctx(tnet_transport_handle_t *handle, tnet_nat_context_handle_t* natt_ctx);
+TINYNET_API int tnet_transport_set_natt_ctx(tnet_transport_handle_t *handle, struct tnet_nat_ctx_s* natt_ctx);
 TINYNET_API int tnet_transport_get_public_ip_n_port(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port);
 
 TINYNET_API int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t fd);
@@ -109,7 +109,9 @@ TINYNET_API int tnet_transport_dtls_set_remote_fingerprint(tnet_transport_handle
 TINYNET_API tsk_bool_t tnet_transport_dtls_is_enabled(const tnet_transport_handle_t *handle);
 TINYNET_API int tnet_transport_dtls_set_enabled(tnet_transport_handle_t *handle, tsk_bool_t enabled, struct tnet_socket_s** sockets, tsk_size_t sockets_count);
 TINYNET_API int tnet_transport_dtls_set_setup(tnet_transport_handle_t* handle, tnet_dtls_setup_t setup, struct tnet_socket_s** sockets, tsk_size_t sockets_count);
+TINYNET_API int tnet_transport_dtls_set_store_handshakingdata(tnet_transport_handle_t* handle, tsk_bool_t handshake_storedata, struct tnet_socket_s** sockets, tsk_size_t sockets_count);
 TINYNET_API int tnet_transport_dtls_do_handshake(tnet_transport_handle_t *handle, struct tnet_socket_s** sockets, tsk_size_t sockets_count, const struct sockaddr_storage** remote_addrs, tsk_size_t remote_addrs_count);
+TINYNET_API int tnet_transport_dtls_get_handshakingdata(tnet_transport_handle_t* handle, const struct tnet_socket_s** sockets, tsk_size_t sockets_count, const void* data[], tsk_size_t size[]);
 
 TINYNET_API tnet_socket_type_t tnet_transport_get_type(const tnet_transport_handle_t *handle);
 TINYNET_API tnet_fd_t tnet_transport_get_master_fd(const tnet_transport_handle_t *handle);
@@ -124,7 +126,7 @@ typedef struct tnet_transport_s
 	char* local_host;
 	tnet_port_t req_local_port; // user requested local port
 	tnet_port_t bind_local_port; // local port on which we are listening (same as master socket)
-	tnet_nat_context_handle_t* natt_ctx;
+	struct tnet_nat_ctx_s* natt_ctx;
 	tnet_socket_t *master;
 
 	tsk_object_t *context;
@@ -152,6 +154,7 @@ typedef struct tnet_transport_s
 	/* DTLS */
 	struct{
 		tsk_bool_t enabled;
+		tsk_bool_t activated;
 		tsk_bool_t use_srtp;
 		struct ssl_ctx_st *ctx;
 		tnet_fingerprint_t fingerprints[TNET_DTLS_HASH_TYPE_MAX];

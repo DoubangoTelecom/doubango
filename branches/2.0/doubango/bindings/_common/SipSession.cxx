@@ -463,6 +463,46 @@ bool CallSession::setICE(bool enabled)
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
+bool CallSession::setICEStun(bool enabled)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_MEDIA(
+		TSIP_MSESSION_SET_ICE_STUN(enabled ? tsk_true : tsk_false),
+			TSIP_MSESSION_SET_NULL()
+		),
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
+bool CallSession::setICETurn(bool enabled)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_MEDIA(
+		TSIP_MSESSION_SET_ICE_TURN(enabled ? tsk_true : tsk_false),
+			TSIP_MSESSION_SET_NULL()
+		),
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
+bool CallSession::setSTUNServer(const char* hostname, uint16_t port)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_MEDIA(
+		TSIP_MSESSION_SET_STUN_SERVER(hostname, port),
+			TSIP_MSESSION_SET_NULL()
+		),
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
+bool CallSession::setSTUNCred(const char* username, const char* password)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_MEDIA(
+		TSIP_MSESSION_SET_STUN_CRED(username, password),
+			TSIP_MSESSION_SET_NULL()
+		),
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
 bool CallSession::setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength)
 {
 	return (tsip_ssession_set(m_pHandle,

@@ -135,8 +135,8 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_setSTUNEnabledForICE(swigCPtr, this, enabled);
   }
 
-  public boolean setSTUNServer(String ip, int port) {
-    return tinyWRAPJNI.SipStack_setSTUNServer(swigCPtr, this, ip, port);
+  public boolean setSTUNServer(String hostname, int port) {
+    return tinyWRAPJNI.SipStack_setSTUNServer(swigCPtr, this, hostname, port);
   }
 
   public boolean setSTUNCred(String login, String password) {

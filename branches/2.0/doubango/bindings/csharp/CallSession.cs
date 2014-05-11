@@ -158,6 +158,26 @@ public class CallSession : InviteSession {
     return ret;
   }
 
+  public bool setICEStun(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.CallSession_setICEStun(swigCPtr, enabled);
+    return ret;
+  }
+
+  public bool setICETurn(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.CallSession_setICETurn(swigCPtr, enabled);
+    return ret;
+  }
+
+  public bool setSTUNServer(string hostname, ushort port) {
+    bool ret = tinyWRAPPINVOKE.CallSession_setSTUNServer(swigCPtr, hostname, port);
+    return ret;
+  }
+
+  public bool setSTUNCred(string username, string password) {
+    bool ret = tinyWRAPPINVOKE.CallSession_setSTUNCred(swigCPtr, username, password);
+    return ret;
+  }
+
   public bool setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength) {
     bool ret = tinyWRAPPINVOKE.CallSession_setQoS(swigCPtr, (int)type, (int)strength);
     return ret;

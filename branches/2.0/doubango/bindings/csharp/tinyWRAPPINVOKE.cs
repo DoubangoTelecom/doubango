@@ -471,14 +471,14 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetIceStunEnabled")]
   public static extern bool MediaSessionMgr_defaultsSetIceStunEnabled(bool jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetStunServer__SWIG_0")]
-  public static extern bool MediaSessionMgr_defaultsSetStunServer__SWIG_0(string jarg1, ushort jarg2, string jarg3, string jarg4);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetIceTurnEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetIceTurnEnabled(bool jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetStunServer__SWIG_1")]
-  public static extern bool MediaSessionMgr_defaultsSetStunServer__SWIG_1(string jarg1, ushort jarg2, string jarg3);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetStunServer")]
+  public static extern bool MediaSessionMgr_defaultsSetStunServer(string jarg1, ushort jarg2);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetStunServer__SWIG_2")]
-  public static extern bool MediaSessionMgr_defaultsSetStunServer__SWIG_2(string jarg1, ushort jarg2);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetStunCred")]
+  public static extern bool MediaSessionMgr_defaultsSetStunCred(string jarg1, string jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetIceEnabled")]
   public static extern bool MediaSessionMgr_defaultsSetIceEnabled(bool jarg1);
@@ -953,6 +953,18 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setICE")]
   public static extern bool CallSession_setICE(HandleRef jarg1, bool jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setICEStun")]
+  public static extern bool CallSession_setICEStun(HandleRef jarg1, bool jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setICETurn")]
+  public static extern bool CallSession_setICETurn(HandleRef jarg1, bool jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setSTUNServer")]
+  public static extern bool CallSession_setSTUNServer(HandleRef jarg1, string jarg2, ushort jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setSTUNCred")]
+  public static extern bool CallSession_setSTUNCred(HandleRef jarg1, string jarg2, string jarg3);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setQoS")]
   public static extern bool CallSession_setQoS(HandleRef jarg1, int jarg2, int jarg3);

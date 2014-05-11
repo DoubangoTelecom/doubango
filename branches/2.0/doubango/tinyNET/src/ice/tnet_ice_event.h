@@ -40,10 +40,13 @@ typedef enum tnet_ice_event_type_e
 	tnet_ice_event_type_gathering_host_candidates_succeed,
 	tnet_ice_event_type_gathering_reflexive_candidates_failed,
 	tnet_ice_event_type_gathering_reflexive_candidates_succeed,
+	tnet_ice_event_type_gathering_relay_candidates_failed,
+	tnet_ice_event_type_gathering_relay_candidates_succeed,
 	tnet_ice_event_type_gathering_completed,
 	tnet_ice_event_type_conncheck_succeed,
 	tnet_ice_event_type_conncheck_failed,
 	tnet_ice_event_type_cancelled,
+	tnet_ice_event_type_turn_connection_broken,
 
 	// Private events
 	tnet_ice_event_type_action

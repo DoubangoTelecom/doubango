@@ -291,7 +291,9 @@ sub DESTROY {
 *defaultsGetRtcpMuxEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGetRtcpMuxEnabled;
 *defaultsSetStunEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetStunEnabled;
 *defaultsSetIceStunEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetIceStunEnabled;
+*defaultsSetIceTurnEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetIceTurnEnabled;
 *defaultsSetStunServer = *tinyWRAPc::MediaSessionMgr_defaultsSetStunServer;
+*defaultsSetStunCred = *tinyWRAPc::MediaSessionMgr_defaultsSetStunCred;
 *defaultsSetIceEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetIceEnabled;
 *defaultsSetByPassEncoding = *tinyWRAPc::MediaSessionMgr_defaultsSetByPassEncoding;
 *defaultsGetByPassEncoding = *tinyWRAPc::MediaSessionMgr_defaultsGetByPassEncoding;
@@ -1058,6 +1060,10 @@ sub DESTROY {
 *setSRtpMode = *tinyWRAPc::CallSession_setSRtpMode;
 *setAvpfMode = *tinyWRAPc::CallSession_setAvpfMode;
 *setICE = *tinyWRAPc::CallSession_setICE;
+*setICEStun = *tinyWRAPc::CallSession_setICEStun;
+*setICETurn = *tinyWRAPc::CallSession_setICETurn;
+*setSTUNServer = *tinyWRAPc::CallSession_setSTUNServer;
+*setSTUNCred = *tinyWRAPc::CallSession_setSTUNCred;
 *setQoS = *tinyWRAPc::CallSession_setQoS;
 *hold = *tinyWRAPc::CallSession_hold;
 *resume = *tinyWRAPc::CallSession_resume;

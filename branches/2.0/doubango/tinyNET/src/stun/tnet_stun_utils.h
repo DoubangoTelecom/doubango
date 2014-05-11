@@ -24,6 +24,8 @@
 
 #include "tnet_types.h"
 
+struct tnet_stun_pkt_s;
+
 TNET_BEGIN_DECLS
 
 TINYNET_API int tnet_stun_utils_inet_pton(tsk_bool_t b_v6, const char* p_src, tnet_stun_addr_t* p_dst);
@@ -35,7 +37,8 @@ TINYNET_API int tnet_stun_utils_inet_ntop(tsk_bool_t b_v6, const tnet_stun_addr_
 TINYNET_API int tnet_stun_utils_transac_id_rand(tnet_stun_transac_id_t* p_transac_id);
 TINYNET_API int tnet_stun_utils_buff_cmp(const uint8_t* pc_buf1_ptr, tsk_size_t n_buff1_size, const uint8_t* pc_buf2_ptr, tsk_size_t n_buff2_size);
 #define tnet_stun_utils_transac_id_cmp(pc_tid1, pc_tid2) tnet_stun_utils_buff_cmp((pc_tid1), sizeof(tnet_stun_transac_id_t), (pc_tid2), sizeof(tnet_stun_transac_id_t))
-
+#define tnet_stun_utils_transac_id_equals(pc_tid1, pc_tid2) (tnet_stun_utils_transac_id_cmp((pc_tid1), (pc_tid2)) == 0)
+int tnet_stun_utils_send_unreliably(tnet_fd_t localFD, uint16_t RTO, uint16_t Rc, const struct tnet_stun_pkt_s* pc_stun_req, struct sockaddr* p_addr_server, struct tnet_stun_pkt_s** pp_stun_resp);
 
 TNET_END_DECLS
 

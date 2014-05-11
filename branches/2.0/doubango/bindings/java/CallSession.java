@@ -131,6 +131,22 @@ public class CallSession extends InviteSession {
     return tinyWRAPJNI.CallSession_setICE(swigCPtr, this, enabled);
   }
 
+  public boolean setICEStun(boolean enabled) {
+    return tinyWRAPJNI.CallSession_setICEStun(swigCPtr, this, enabled);
+  }
+
+  public boolean setICETurn(boolean enabled) {
+    return tinyWRAPJNI.CallSession_setICETurn(swigCPtr, this, enabled);
+  }
+
+  public boolean setSTUNServer(String hostname, int port) {
+    return tinyWRAPJNI.CallSession_setSTUNServer(swigCPtr, this, hostname, port);
+  }
+
+  public boolean setSTUNCred(String username, String password) {
+    return tinyWRAPJNI.CallSession_setSTUNCred(swigCPtr, this, username, password);
+  }
+
   public boolean setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength) {
     return tinyWRAPJNI.CallSession_setQoS(swigCPtr, this, type.swigValue(), strength.swigValue());
   }

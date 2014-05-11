@@ -439,12 +439,6 @@ static int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 					self->natt.stun.enabled = va_arg(*app, tsk_bool_t);
 					break;
 				}
-			case tsip_pname_icestun_enabled:
-				{ /* (tsk_bool_t)ENABLED_BOOL */
-					self->natt.ice.stun_enabled = va_arg(*app, tsk_bool_t);
-					break;
-				}
-
 			/* === User Data === */
 			case tsip_pname_userdata:
 				{	/* (const void*)DATA_PTR */
@@ -558,12 +552,13 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const cha
 		const char *server_ip, *usr_name, *usr_pwd;
 		uint16_t server_port;
 		stack->natt.stun.enabled = tmedia_defaults_get_stun_enabled();
-		stack->natt.ice.stun_enabled = tmedia_defaults_get_icestun_enabled();
-		if(tmedia_defaults_get_stun_server(&server_ip, &server_port, &usr_name, &usr_pwd) == 0){
+		if(tmedia_defaults_get_stun_server(&server_ip, &server_port) == 0){
 			tsk_strupdate(&stack->natt.stun.ip, server_ip);
+			stack->natt.stun.port = server_port;
+		}
+		if(tmedia_defaults_get_stun_cred(&usr_name, &usr_pwd) == 0){
 			tsk_strupdate(&stack->natt.stun.login, usr_name);
 			tsk_strupdate(&stack->natt.stun.pwd, usr_pwd);
-			stack->natt.stun.port = server_port;
 		}
 	}
 
@@ -754,7 +749,7 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 	if(stack->natt.stun.enabled && !tsk_strnullORempty(stack->natt.stun.ip)){
 		if(stack->natt.stun.port == 0){
 			/* FIXME: for now only UDP(IPv4/IPv6) is supported */
-			stack->natt.stun.port = TNET_STUN_TCP_UDP_DEFAULT_PORT;
+			stack->natt.stun.port = kStunPortDefaultTcpUdp;
 		}
 		TSK_DEBUG_INFO("STUN server = %s:%u", stack->natt.stun.ip, stack->natt.stun.port);
 		stack->natt.ctx = tnet_nat_context_create(TNET_SOCKET_TYPE_IS_IPV6(tx_values[stack->network.transport_idx_default])? tnet_socket_type_udp_ipv6: tnet_socket_type_udp_ipv4, 

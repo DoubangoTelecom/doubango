@@ -35,7 +35,6 @@ struct tnet_socket_s;
 uint32_t tnet_ice_utils_get_priority(enum tnet_ice_cand_type_e type, uint16_t local_pref, tsk_bool_t is_rtp);
 int tnet_ice_utils_compute_foundation(char* foundation, tsk_size_t size);
 int tnet_ice_utils_create_sockets(enum tnet_socket_type_e socket_type, const char* local_ip, struct tnet_socket_s** socket_rtp, struct tnet_socket_s** socket_rtcp);
-int tnet_ice_utils_stun_address_tostring(const uint8_t in_ip[16], enum tnet_stun_addr_family_e family, char** out_ip);
 int tnet_ice_utils_set_ufrag(char** ufrag);
 int tnet_ice_utils_set_pwd(char** pwd);
 
