@@ -595,7 +595,7 @@ int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candida
 	tsk_list_clear_items(self->candidates_remote);
 
 	copy = tsk_strdup(candidates);
-	size = tsk_strlen(copy);
+	size = (tsk_size_t)tsk_strlen(copy);
 	do{
 		v = tsk_strtok_r(&copy[idx], "\r\n", &saveptr);
 		idx += tsk_strlen(v) + 2;
@@ -1941,7 +1941,7 @@ static int _tnet_ice_ctx_send_turn_raw(struct tnet_ice_ctx_s* self, struct tnet_
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	(self);
+	// (self);
 	return tnet_turn_session_send_data(turn_ss, turn_peer_id, data, size);
 }
 

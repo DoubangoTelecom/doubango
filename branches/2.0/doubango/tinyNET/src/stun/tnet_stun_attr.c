@@ -114,7 +114,7 @@ static int _tnet_stun_attr_get_size_in_octetunits(const tnet_stun_attr_t* pc_sel
     }
     case tnet_stun_attr_type_error_code: {
         const tnet_stun_attr_error_code_t* _pc_self = (const tnet_stun_attr_error_code_t*)pc_self;
-        *p_size = (kStunAttrHdrSizeInOctets + 4 + tsk_strlen(_pc_self->p_reason_phrase));
+        *p_size = (kStunAttrHdrSizeInOctets + 4 + (tsk_size_t)tsk_strlen(_pc_self->p_reason_phrase));
         if (with_padding) {
             ALIGN_ON_32BITS(*p_size);
         }
@@ -171,13 +171,13 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
         if (b_xor) {
             tsk_size_t u;
             *((uint16_t*)&p_buff_ptr[*p_written + 2]) = tnet_htons(_pc_self->u_port ^ kStunMagicCookieShort);
-            *((uint32_t*)&p_buff_ptr[*p_written + 4]) = tnet_htonl(tnet_ntohl(*((uint32_t*)&_pc_self->address[0])) ^ kStunMagicCookieLong);
+            *((uint32_t*)&p_buff_ptr[*p_written + 4]) = (uint32_t)tnet_htonl(tnet_ntohl(*((uint32_t*)&_pc_self->address[0])) ^ kStunMagicCookieLong);
             for (u = 4; u < u_addr_size; u+=4) {
                 if (pc_transac_id) {
-                    *((uint32_t*)&p_buff_ptr[*p_written + 4 + u]) = tnet_htonl(tnet_ntohl(*((uint32_t*)&_pc_self->address[u])) ^ tnet_ntohl(*((uint32_t*)(*pc_transac_id + u - 4))));
+                    *((uint32_t*)&p_buff_ptr[*p_written + 4 + u]) = (uint32_t)tnet_htonl(tnet_ntohl(*((uint32_t*)&_pc_self->address[u])) ^ tnet_ntohl(*((uint32_t*)(*pc_transac_id + u - 4))));
                 }
                 else {
-                    *((uint32_t*)&p_buff_ptr[*p_written + 4 + u]) = tnet_htonl(tnet_ntohl(*((uint32_t*)&_pc_self->address[u])) ^ 0);
+                    *((uint32_t*)&p_buff_ptr[*p_written + 4 + u]) = (uint32_t)tnet_htonl(tnet_ntohl(*((uint32_t*)&_pc_self->address[u])) ^ 0);
                 }
             }
         }
@@ -222,11 +222,11 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
                 *((uint16_t*)&p_buff_ptr[*p_written]) = tnet_htons_2(&_pc_self->p_data_ptr[0]);
             }
             else if (IS_VDATA_UINT32(pc_self->hdr.e_type) && _pc_self->u_data_size == 4) {
-                *((uint32_t*)&p_buff_ptr[*p_written]) = tnet_htonl_2(&_pc_self->p_data_ptr[0]);
+                *((uint32_t*)&p_buff_ptr[*p_written]) = (uint32_t)tnet_htonl_2(&_pc_self->p_data_ptr[0]);
             }
             else if (IS_VDATA_UINT64(pc_self->hdr.e_type) && _pc_self->u_data_size == 8) {
-                *((uint32_t*)&p_buff_ptr[*p_written]) = tnet_htonl_2(&_pc_self->p_data_ptr[0]);
-                *((uint32_t*)&p_buff_ptr[*p_written + 4]) = tnet_htonl_2(&_pc_self->p_data_ptr[4]);
+                *((uint32_t*)&p_buff_ptr[*p_written]) = (uint32_t)tnet_htonl_2(&_pc_self->p_data_ptr[0]);
+                *((uint32_t*)&p_buff_ptr[*p_written + 4]) = (uint32_t)tnet_htonl_2(&_pc_self->p_data_ptr[4]);
             }
             else if (pc_self->hdr.e_type == tnet_stun_attr_type_unknown_attrs && _pc_self->u_data_size && !(_pc_self->u_data_size & 1)) {
                 uint16_t u;
@@ -247,7 +247,7 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
     }
     case tnet_stun_attr_type_error_code: {
         const tnet_stun_attr_error_code_t* _pc_self = (const tnet_stun_attr_error_code_t*)pc_self;
-        *((uint32_t*)&p_buff_ptr[*p_written]) = tnet_htonl(((_pc_self->u_class & 0x07) << 8) | _pc_self->u_number);
+        *((uint32_t*)&p_buff_ptr[*p_written]) = (uint32_t)tnet_htonl(((_pc_self->u_class & 0x07) << 8) | _pc_self->u_number);
         if (_pc_self->p_reason_phrase) {
             memcpy(&p_buff_ptr[*p_written + 4], _pc_self->p_reason_phrase, tsk_strlen(_pc_self->p_reason_phrase));
         }
@@ -343,13 +343,13 @@ int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8
             return ret;
         }
         if (b_xor) {
-            *((uint32_t*)&p_attr->address[0]) = tnet_htonl(tnet_ntohl_2(&pc_buff_ptr[8]) ^ kStunMagicCookieLong);
+            *((uint32_t*)&p_attr->address[0]) = (uint32_t)tnet_htonl(tnet_ntohl_2(&pc_buff_ptr[8]) ^ kStunMagicCookieLong);
             for (u = 4; u < u_addr_size; u+=4) {
                 if (pc_transac_id) {
-                    *((uint32_t*)&p_attr->address[u]) = tnet_htonl(tnet_ntohl_2(&pc_buff_ptr[8 + u]) ^ tnet_ntohl_2(((uint32_t*)(*pc_transac_id + u - 4))));
+                    *((uint32_t*)&p_attr->address[u]) = (uint32_t)tnet_htonl(tnet_ntohl_2(&pc_buff_ptr[8 + u]) ^ tnet_ntohl_2(((uint32_t*)(*pc_transac_id + u - 4))));
                 }
                 else {
-                    *((uint32_t*)&p_attr->address[u]) = tnet_htonl(tnet_ntohl_2(&pc_buff_ptr[8 + u]) ^ 0);
+                    *((uint32_t*)&p_attr->address[u]) = (uint32_t)tnet_htonl(tnet_ntohl_2(&pc_buff_ptr[8 + u]) ^ 0);
                 }
             }
         }
@@ -398,7 +398,7 @@ int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8
             }
         }
         else if (IS_VDATA_UINT32(Type) && Length == 4) {
-            uint32_t u32 = tnet_ntohl_2(&pc_buff_ptr[4]);
+            uint32_t u32 = (uint32_t)tnet_ntohl_2(&pc_buff_ptr[4]);
             if ((ret = tnet_stun_attr_vdata_create(Type, (uint8_t*)&u32, 4, &p_attr))) {
                 return ret;
             }
