@@ -28,6 +28,7 @@
 #include "tinyrtp/rtcp/trtp_rtcp_packet.h"
 #include "tinyrtp/rtcp/trtp_rtcp_session.h"
 
+#include "turn/tnet_turn_session.h"
 #include "ice/tnet_ice_candidate.h"
 
 #include "tsk_string.h"
@@ -92,28 +93,18 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 			/* DTLS - SRTP events */
 		case event_dtls_handshake_succeed:
 			{
-				const tnet_socket_t* socket = manager->transport->master && (manager->transport->master->fd == e->local_fd)
+				const tnet_socket_t* socket = manager->transport && manager->transport->master && (manager->transport->master->fd == e->local_fd)
 					? manager->transport->master
 					: ((manager->rtcp.local_socket && manager->rtcp.local_socket->fd == e->local_fd) ? manager->rtcp.local_socket : tsk_null);
 				if(!socket){
 					TSK_DEBUG_ERROR("DTLS data from unknown socket");
 					break;
 				}
-				// cancel handshaking timer when both SRTP and SRTCP are connected
-				tsk_safeobj_lock(manager);
-				if(manager->dtls.srtp_connected && manager->dtls.srtcp_connected){
-					if(manager->dtls.timer_hanshaking.id != TSK_INVALID_TIMER_ID){
-						tsk_timer_manager_cancel(manager->timer_mgr_global, manager->dtls.timer_hanshaking.id);
-						manager->dtls.timer_hanshaking.id = TSK_INVALID_TIMER_ID; // invalidate timer id (not required but should be done by good citizen)
-						manager->dtls.timer_hanshaking.timeout = TRTP_DTLS_HANDSHAKING_TIMEOUT; // reset timeout
-					}
-				}
-				tsk_safeobj_unlock(manager);
 				
-				if(!manager->dtls.srtp_handshake_succeed){
+				if (!manager->dtls.srtp_handshake_succeed) {
 					manager->dtls.srtp_handshake_succeed = (socket == manager->transport->master);
 				}
-				if(!manager->dtls.srtcp_handshake_succeed){
+				if (!manager->dtls.srtcp_handshake_succeed) {
 					manager->dtls.srtcp_handshake_succeed = (socket == manager->rtcp.local_socket) || _trtp_manager_is_rtcpmux_active(manager);
 				}
 
@@ -249,26 +240,43 @@ static int _trtp_transport_dtls_handshaking_timer_cb(const void* arg, tsk_timer_
 {
 #if HAVE_SRTP
 	trtp_manager_t* manager = (trtp_manager_t*)arg;
+	int ret = 0;
 
 	tsk_safeobj_lock(manager);
-	if(manager->is_started && manager->dtls.timer_hanshaking.id == timer_id && manager->srtp_state == trtp_srtp_state_activated && manager->srtp_type == tmedia_srtp_type_dtls){
+	if (manager->is_started && manager->dtls.timer_hanshaking.id == timer_id && manager->srtp_state == trtp_srtp_state_activated && manager->srtp_type == tmedia_srtp_type_dtls) {
 		// retry DTLS-SRTP handshaking if srtp-type is DTLS-SRTP and the engine is activated
-		struct tnet_socket_s* sockets[] = { manager->transport->master , manager->rtcp.local_socket };
+		struct tnet_socket_s* sockets[] = { manager->dtls.srtp_connected ? tsk_null : manager->transport->master , manager->dtls.srtcp_connected ? tsk_null : manager->rtcp.local_socket };
 		const struct sockaddr_storage* remote_addrs[] = { &manager->rtp.remote_addr, &manager->rtcp.remote_addr };
 		TSK_DEBUG_INFO("_trtp_transport_dtls_handshaking_timer_cb(timeout=%llu)", manager->dtls.timer_hanshaking.timeout);
 		tnet_transport_dtls_do_handshake(manager->transport, sockets, 2, remote_addrs, 2);
+		if (manager->is_ice_turn_active) {
+			// means TURN is active and handshaking data must be sent using the channel
+			const void* data[] = { tsk_null, tsk_null };
+			tsk_size_t size[] = { 0, 0 };
+			if ((ret = tnet_transport_dtls_get_handshakingdata(manager->transport, sockets, 2, data, size))) {
+				return ret;
+			}
+			if (data[0] && size[0]) {
+				ret = tnet_ice_ctx_send_turn_rtp(manager->ice_ctx, data[0], size[0]);
+			}
+			if (data[1] && size[1]) {
+				ret = tnet_ice_ctx_send_turn_rtcp(manager->ice_ctx, data[1], size[1]);
+			}
+		}
 		// increase timeout
 		manager->dtls.timer_hanshaking.timeout += (TRTP_DTLS_HANDSHAKING_TIMEOUT >> 1);
-		if(manager->dtls.timer_hanshaking.timeout < TRTP_DTLS_HANDSHAKING_TIMEOUT_MAX){
+		if ((manager->dtls.timer_hanshaking.timeout < TRTP_DTLS_HANDSHAKING_TIMEOUT_MAX) && !(manager->dtls.srtp_connected && manager->dtls.srtcp_connected)) {
 			manager->dtls.timer_hanshaking.id = tsk_timer_manager_schedule(manager->timer_mgr_global, manager->dtls.timer_hanshaking.timeout, _trtp_transport_dtls_handshaking_timer_cb, manager);
 		}
-		else{
-			manager->dtls.timer_hanshaking.id = TSK_INVALID_TIMER_ID; // not required but we're good citizen
+		else {
+			manager->dtls.timer_hanshaking.id = TSK_INVALID_TIMER_ID; // invalidate timer id (not required but should be done by good citizen)
+			manager->dtls.timer_hanshaking.timeout = TRTP_DTLS_HANDSHAKING_TIMEOUT; // reset timeout
 		}
 	}
 	tsk_safeobj_unlock(manager);
 #endif
-	return 0;
+	
+	return ret;
 }
 
 #if 0
@@ -333,6 +341,11 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 {
 	tsk_bool_t is_rtp_rtcp, is_rtcp = tsk_false, is_rtp = tsk_false, is_stun, is_dtls;
 
+	if (!self->is_started) {
+		TSK_DEBUG_INFO("RTP manager not started yet");
+		return 0;
+	}
+
 	// defined when RTCP-MUX is disabled and RTCP port is equal to "RTP Port + 1"
 
 	// rfc5764 - 5.1.2.  Reception
@@ -356,16 +369,30 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 	}
 	else{
 		is_dtls = !is_rtp_rtcp && (19 < *data_ptr && *data_ptr < 64);
-		is_stun = !is_dtls && TNET_IS_STUN2_MSG(data_ptr, data_size); /* MUST NOT USE: "(*data_ptr < 2)" beacause of "Old VAT" which starts with "0x00" */;
+		is_stun = !is_dtls && TNET_STUN_BUFF_IS_STUN2(data_ptr, data_size); /* MUST NOT USE: "(*data_ptr < 2)" beacause of "Old VAT" which starts with "0x00" */;
 	}
 
 	if(is_dtls){
-		tnet_socket_t* socket = (self->transport->master && self->transport->master->fd == local_fd)
+		tnet_socket_t* socket = (self->transport && self->transport->master && self->transport->master->fd == local_fd)
 			? self->transport->master
 			: ((self->rtcp.local_socket && self->rtcp.local_socket->fd == local_fd) ? self->rtcp.local_socket : tsk_null);
-		if(socket){
+		if (socket && socket->dtlshandle) {
 			TSK_DEBUG_INFO("Receive %s-DTLS data on ip=%s and port=%d", (socket == self->transport->master) ? "RTP" : "RTCP", socket->ip, socket->port);
-			return tnet_dtls_socket_handle_incoming_data(socket->dtlshandle, data_ptr, data_size);
+			// Handle incoming data then do handshaking
+			tnet_dtls_socket_handle_incoming_data(socket->dtlshandle, data_ptr, data_size);
+			if (self->is_ice_turn_active) {
+				// means TURN is active and handshaking data must be sent using the channel
+				const void* data =  tsk_null;
+				tsk_size_t size = 0;
+				if (tnet_transport_dtls_get_handshakingdata(self->transport, &socket, 1, &data, &size) == 0) {
+					if (self->rtcp.local_socket == socket) {
+						/*ret = */tnet_ice_ctx_send_turn_rtcp(self->ice_ctx, data, size);
+					}
+					else {
+						/*ret = */tnet_ice_ctx_send_turn_rtp(self->ice_ctx, data, size);
+					}
+				}
+			}
 		}
 		return 0;
 	}
@@ -543,6 +570,7 @@ static int _trtp_manager_srtp_activate(trtp_manager_t* self, tmedia_srtp_type_t 
 			*/
 			struct tnet_socket_s* sockets[] = { self->transport->master , self->rtcp.local_socket };
 			const struct sockaddr_storage* remote_addrs[] = { &self->rtp.remote_addr, &self->rtcp.remote_addr };
+			tsk_bool_t store_handshakingdata[] = { self->is_ice_turn_active, self->is_ice_turn_active };
 
 			// check if DTLS-SRTP enabling was postponed because the net transport was not ready (could happen if ICE is ON)
 			if(self->dtls.enable_postponed){
@@ -575,9 +603,27 @@ static int _trtp_manager_srtp_activate(trtp_manager_t* self, tmedia_srtp_type_t 
 			if((ret = tnet_transport_dtls_set_setup(self->transport, self->dtls.local.setup, sockets, 2))){
 				return ret;
 			}
-			// start handshaking process (will do nothing if already completed)
-			if((ret = tnet_transport_dtls_do_handshake(self->transport, sockets, 2, remote_addrs, 2))){
+			// whether to send DTLS handshaking data using the provided sockets or TURN session
+			if ((ret = tnet_transport_dtls_set_store_handshakingdata(self->transport, store_handshakingdata[0], sockets, 2))) {
 				return ret;
+			}
+			// start handshaking process (will do nothing if already completed)
+			if ((ret = tnet_transport_dtls_do_handshake(self->transport, sockets, 2, remote_addrs, 2))) {
+				return ret;
+			}
+			if (store_handshakingdata[0]) {
+				// means TURN is active and handshaking data must be sent using the channel
+				const void* data[] = { tsk_null, tsk_null };
+				tsk_size_t size[] = { 0, 0 };
+				if ((ret = tnet_transport_dtls_get_handshakingdata(self->transport, sockets, 2, data, size))) {
+					return ret;
+				}
+				if (data[0] && size[0]) {
+					ret = tnet_ice_ctx_send_turn_rtp(self->ice_ctx, data[0], size[0]);
+				}
+				if (data[1] && size[1]) {
+					ret = tnet_ice_ctx_send_turn_rtcp(self->ice_ctx, data[1], size[1]);
+				}
 			}
 
 			self->dtls.state = trtp_srtp_state_activated;
@@ -586,7 +632,7 @@ static int _trtp_manager_srtp_activate(trtp_manager_t* self, tmedia_srtp_type_t 
 		self->srtp_state = trtp_srtp_state_activated;
 
 		// SDES-SRTP could be started right now while DTLS requires the handshaking to terminate
-		if(srtp_type & tmedia_srtp_type_sdes){
+		if (srtp_type & tmedia_srtp_type_sdes) {
 			return _trtp_manager_srtp_start(self, self->srtp_type);
 		}
 	}
@@ -656,21 +702,22 @@ static int _trtp_manager_ice_init(trtp_manager_t* self)
 	int ret;
 	const tnet_ice_candidate_t *candidate_offer, *candidate_answer_src, *candidate_answer_dest;
 
-	if(!self || !self->ice_ctx){
+	if (!self || !self->ice_ctx) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if(!self->transport){
+	if (!self->transport) {
 		// get rtp nominated symetric candidates
 		ret = tnet_ice_ctx_get_nominated_symetric_candidates(self->ice_ctx, TNET_ICE_CANDIDATE_COMPID_RTP,
 			&candidate_offer, &candidate_answer_src, &candidate_answer_dest);
 		self->is_ice_neg_ok = (ret == 0 && candidate_offer && candidate_answer_src && candidate_answer_dest);
-		if(!self->is_ice_neg_ok){
+		self->is_ice_turn_active = self->is_ice_neg_ok && tnet_ice_ctx_is_turn_rtp_active(self->ice_ctx);
+		if (!self->is_ice_neg_ok) {
 			// If this code is called this means that ICE negotiation has failed
 			// This is not really an error because it could happen if the remote peer is not an ICE agent or is an ICE-lite
 			// in this case, use the first offered candidate which is the best one and already used in the "c=" line
-			if(!(candidate_offer = tnet_ice_ctx_get_local_candidate_at(self->ice_ctx, 0))){
+			if (!(candidate_offer = tnet_ice_ctx_get_local_candidate_first(self->ice_ctx))) {
 				// Must never happen as we always have at least one local "host" candidate
 				TSK_DEBUG_ERROR("ICE context not ready");
 				return -3;
@@ -678,12 +725,12 @@ static int _trtp_manager_ice_init(trtp_manager_t* self)
 		}
 
 		// create transport
-		if(!(self->transport = tnet_transport_create_2(candidate_offer->socket, TRTP_TRANSPORT_NAME))){
+		if (!(self->transport = tnet_transport_create_2(candidate_offer->socket, TRTP_TRANSPORT_NAME))) {
 			TSK_DEBUG_ERROR("Failed to create transport(%s:%u)", candidate_offer->socket->ip, candidate_offer->socket->port);
 			return -4;
 		}
 		// set rtp local and remote IPs and ports
-		if(candidate_answer_dest){ // could be "null" if remote peer is ICE-lite
+		if (candidate_answer_dest) { // could be "null" if remote peer is ICE-lite
 			tsk_strupdate(&self->rtp.remote_ip, candidate_answer_dest->connection_addr);
 			self->rtp.remote_port = candidate_answer_dest->port;
 			tsk_strupdate(&self->rtp.public_ip, candidate_offer->connection_addr);
@@ -691,10 +738,10 @@ static int _trtp_manager_ice_init(trtp_manager_t* self)
 		}
 
 		// get rtp nominated symetric candidates
-		if(self->use_rtcp){
+		if (self->use_rtcp) {
 			ret = tnet_ice_ctx_get_nominated_symetric_candidates(self->ice_ctx, TNET_ICE_CANDIDATE_COMPID_RTCP,
 				&candidate_offer, &candidate_answer_src, &candidate_answer_dest);
-			if(ret == 0 && candidate_offer && candidate_answer_src && candidate_answer_dest){
+			if (ret == 0 && candidate_offer && candidate_answer_src && candidate_answer_dest) {
 				// set rtp local and remote IPs and ports
 				tsk_strupdate(&self->rtcp.remote_ip, candidate_answer_dest->connection_addr);
 				self->rtcp.remote_port = candidate_answer_dest->port;
@@ -1046,7 +1093,7 @@ tsk_bool_t trtp_manager_is_ready(trtp_manager_t* self)
 }
 
 /** Sets NAT Traversal context */
-int trtp_manager_set_natt_ctx(trtp_manager_t* self, tnet_nat_context_handle_t* natt_ctx)
+int trtp_manager_set_natt_ctx(trtp_manager_t* self, struct tnet_nat_ctx_s* natt_ctx)
 {
 	int ret;
 
@@ -1196,12 +1243,12 @@ int trtp_manager_start(trtp_manager_t* self)
 
 	tsk_safeobj_lock(self);
 
-	if(self->is_started){
+	if (self->is_started) {
 		goto bail;
 	}
 
 	// Initialize transport with ICE context
-	if(self->ice_ctx && (ret = _trtp_manager_ice_init(self)) != 0){
+	if (self->ice_ctx && (ret = _trtp_manager_ice_init(self)) != 0) {
 		TSK_DEBUG_ERROR("_trtp_manager_ice_init() failed");
 		goto bail;
 	}
@@ -1300,7 +1347,7 @@ int trtp_manager_start(trtp_manager_t* self)
 		}
 		/* create and start RTCP session */
 		if(!self->rtcp.session && ret == 0){
-			self->rtcp.session = trtp_rtcp_session_create(self->rtp.ssrc.local, self->rtcp.cname);
+			self->rtcp.session = trtp_rtcp_session_create_2(self->ice_ctx, self->rtp.ssrc.local, self->rtcp.cname);
 		}
 		if(self->rtcp.session){
 			ret = trtp_rtcp_session_set_callback(self->rtcp.session, self->rtcp.cb.fun, self->rtcp.cb.usrdata);
@@ -1322,7 +1369,7 @@ int trtp_manager_start(trtp_manager_t* self)
 		}
 
 		/* DTLS handshaking Timer */
-		if(self->timer_mgr_global && self->srtp_state == trtp_srtp_state_activated && (self->srtp_type & tmedia_srtp_type_dtls) == tmedia_srtp_type_dtls){
+		if (self->timer_mgr_global && self->srtp_state == trtp_srtp_state_activated && (self->srtp_type & tmedia_srtp_type_dtls) == tmedia_srtp_type_dtls) {
 			ret = tsk_timer_manager_start(self->timer_mgr_global);
 			self->dtls.timer_hanshaking.timeout = TRTP_DTLS_HANDSHAKING_TIMEOUT;
 			// start handshaking timer
@@ -1333,8 +1380,8 @@ int trtp_manager_start(trtp_manager_t* self)
 #endif /* HAVE_SRTP */
 
 
-	/* start the transport */
-	if((ret = tnet_transport_start(self->transport))){
+	/* start the transport if TURN is not active (otherwise TURN data will be received directly on RTP manager with channel headers) */
+	if (!self->is_ice_turn_active && (ret = tnet_transport_start(self->transport))) {
 		TSK_DEBUG_ERROR("Failed to start the RTP/RTCP transport");
 		goto bail;
 	}
@@ -1452,9 +1499,9 @@ tsk_size_t trtp_manager_send_rtp_packet(trtp_manager_t* self, const struct trtp_
 			}
 		}
 #endif
-		if(/* number of bytes sent */(ret = tnet_sockfd_sendto(self->transport->master->fd, (const struct sockaddr *)&self->rtp.remote_addr, data_ptr, data_size)) > 0){
+		if (/* number of bytes sent */(ret = trtp_manager_send_rtp_raw(self, data_ptr, data_size)) > 0) {
 			// forward packet to the RTCP session
-			if(self->rtcp.session){
+			if (self->rtcp.session) {
 				trtp_rtcp_session_process_rtp_out(self->rtcp.session, packet, data_size);
 			}
 		}
@@ -1479,9 +1526,14 @@ tsk_size_t trtp_manager_send_rtp_raw(trtp_manager_t* self, const void* data, tsk
 		return 0;
 	}
 	tsk_safeobj_lock(self);
-	ret = tnet_sockfd_sendto(self->transport->master->fd, (const struct sockaddr *)&self->rtp.remote_addr, data, size);
+	if (self->is_ice_turn_active) {
+		ret = (tnet_ice_ctx_send_turn_rtp(self->ice_ctx, data, size) == 0) ? size : 0; // returns #0 if ok
+	}
+	else {
+		ret = tnet_sockfd_sendto(self->transport->master->fd, (const struct sockaddr *)&self->rtp.remote_addr, data, size); // returns number of sent bytes
+	}
 	tsk_safeobj_unlock(self);
-	return 0;
+	return ret;
 }
 
 int trtp_manager_set_app_bandwidth_max(trtp_manager_t* self, int32_t bw_upload_kbps, int32_t bw_download_kbps)
@@ -1536,6 +1588,14 @@ int trtp_manager_stop(trtp_manager_t* self)
 	//	ret = tnet_ice_ctx_stop(self->ice_ctx);
 	//}
 
+	// callbacks
+	if (self->transport) {
+		ret = tnet_transport_set_callback(self->transport, tsk_null, tsk_null);
+	}
+	if (self->ice_ctx) {
+		ret = tnet_ice_ctx_rtp_callback(self->ice_ctx, tsk_null, tsk_null);
+	}
+
 	// Stop the RTCP session first (will send BYE)
 	if(self->rtcp.session){
 		ret = trtp_rtcp_session_stop(self->rtcp.session);
@@ -1562,6 +1622,7 @@ int trtp_manager_stop(trtp_manager_t* self)
 	// reset default values
 	self->is_symetric_rtp_checked = self->is_symetric_rtcp_checked = tsk_false;
 	self->is_ice_neg_ok = tsk_false;
+	self->is_ice_turn_active = tsk_false;
 	self->is_socket_disabled = tsk_false;
 
 	self->is_started = tsk_false;
@@ -1622,8 +1683,16 @@ static tsk_object_t* trtp_manager_dtor(tsk_object_t * self)
 { 
 	trtp_manager_t *manager = self;
 	if(manager){
+		/* callbacks */
+		if (manager->ice_ctx) {
+			tnet_ice_ctx_rtp_callback(manager->ice_ctx, tsk_null, tsk_null);
+		}
+		if (manager->transport) {
+
+		}
+
 		/* stop */
-		if(manager->is_started){
+		if (manager->is_started) {
 			trtp_manager_stop(manager);
 		}
 
@@ -1673,8 +1742,7 @@ static tsk_object_t* trtp_manager_dtor(tsk_object_t * self)
 		}
 
 		/* ICE */
-		if(manager->ice_ctx){
-			tnet_ice_ctx_rtp_callback(manager->ice_ctx, tsk_null, tsk_null);
+		if (manager->ice_ctx) {
 			TSK_OBJECT_SAFE_FREE(manager->ice_ctx);
 		}
 

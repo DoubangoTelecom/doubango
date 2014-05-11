@@ -28,6 +28,10 @@
 #define kWithoutPadding		tsk_false
 #define kWithPadding		tsk_true
 
+#if !defined(PRINT_DESTROYED_MSG)
+#	define PRINT_DESTROYED_MSG	0
+#endif
+
 #define ALIGN_ON_32BITS(size_in_octes) if (((size_in_octes) & 3)) (size_in_octes) += (4 - ((size_in_octes) & 3));
 #define ALIGN_ON_32BITS_AND_SET_PADDING_ZEROS(p_buffer, size_in_octes) \
 	if (((size_in_octes) & 3)) { \
@@ -507,7 +511,9 @@ static tsk_object_t* tnet_stun_attr_vdata_dtor(tsk_object_t * self)
 {
     tnet_stun_attr_vdata_t *p_vdata = (tnet_stun_attr_vdata_t *)self;
     if (p_vdata) {
+#if PRINT_DESTROYED_MSG
         TSK_DEBUG_INFO("*** STUN Attribute(VDATA) destroyed ***");
+#endif
         TSK_FREE(p_vdata->p_data_ptr);
     }
     return self;
@@ -564,7 +570,9 @@ static tsk_object_t* tnet_stun_attr_address_dtor(tsk_object_t * self)
 {
     tnet_stun_attr_address_t *p_addr = (tnet_stun_attr_address_t *)self;
     if (p_addr) {
+#if PRINT_DESTROYED_MSG
         TSK_DEBUG_INFO("*** STUN Attribute(ADDRESS) destroyed ***");
+#endif
     }
     return self;
 }
@@ -624,7 +632,9 @@ static tsk_object_t* tnet_stun_attr_error_code_dtor(tsk_object_t * self)
 {
     tnet_stun_attr_error_code_t *p_ec = (tnet_stun_attr_error_code_t *)self;
     if (p_ec) {
+#if PRINT_DESTROYED_MSG
         TSK_DEBUG_INFO("*** STUN Attribute(ERROR-CODE) destroyed ***");
+#endif
         TSK_FREE(p_ec->p_reason_phrase);
     }
     return self;

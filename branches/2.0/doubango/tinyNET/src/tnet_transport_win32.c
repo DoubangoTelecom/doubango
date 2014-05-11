@@ -714,15 +714,16 @@ void* TSK_STDCALL tnet_transport_mainthread(void *param)
 
 			if(ret){
 				ret = WSAGetLastError();
-				if(ret == WSAEWOULDBLOCK){
+				if (ret == WSAEWOULDBLOCK) {
+					// Doesn't (always) mean congestion but... another thread is also poll()ing the FD. For example, when TURN session has a reference to the fd.
 					TSK_DEBUG_WARN("WSAEWOULDBLOCK error for READ SSESSION");
 				}
-				else if(ret == WSAECONNRESET && TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type)){
+				else if (ret == WSAECONNRESET && TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type)) {
 					/* For DGRAM ==> The sent packet gernerated "ICMP Destination/Port unreachable" result. */
 					TSK_FREE(wsaBuffer.buf);
 					goto done; // ignore and retry.
 				}
-				else{
+				else {
 					TSK_FREE(wsaBuffer.buf);
 
 					removeSocket(index, context);

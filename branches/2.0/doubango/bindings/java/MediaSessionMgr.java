@@ -278,16 +278,16 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetIceStunEnabled(icestun_enabled);
   }
 
-  public static boolean defaultsSetStunServer(String server_ip, int server_port, String usr_name, String usr_pwd) {
-    return tinyWRAPJNI.MediaSessionMgr_defaultsSetStunServer__SWIG_0(server_ip, server_port, usr_name, usr_pwd);
-  }
-
-  public static boolean defaultsSetStunServer(String server_ip, int server_port, String usr_name) {
-    return tinyWRAPJNI.MediaSessionMgr_defaultsSetStunServer__SWIG_1(server_ip, server_port, usr_name);
+  public static boolean defaultsSetIceTurnEnabled(boolean iceturn_enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetIceTurnEnabled(iceturn_enabled);
   }
 
   public static boolean defaultsSetStunServer(String server_ip, int server_port) {
-    return tinyWRAPJNI.MediaSessionMgr_defaultsSetStunServer__SWIG_2(server_ip, server_port);
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetStunServer(server_ip, server_port);
+  }
+
+  public static boolean defaultsSetStunCred(String username, String password) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetStunCred(username, password);
   }
 
   public static boolean defaultsSetIceEnabled(boolean ice_enabled) {

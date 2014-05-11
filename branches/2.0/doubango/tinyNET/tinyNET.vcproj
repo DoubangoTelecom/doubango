@@ -119,7 +119,7 @@
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="src;&quot;..\thirdparties\win32\include&quot;;&quot;..\tinySAK\src&quot;"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_ERROR;HAVE_OPENSSL=1;WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYNET_EXPORTS"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_ERROR;HAVE_OPENSSL=1;WIN32;_WIN32_WINNT=0x0501;NDEBUG;_WINDOWS;_USRDLL;TINYNET_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="false"
 				UsePrecompiledHeader="0"
@@ -234,6 +234,10 @@
 				</File>
 				<File
 					RelativePath=".\src\stun\tnet_stun_attribute.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\stun\tnet_stun_binding.c"
 					>
 				</File>
 				<File
@@ -486,6 +490,10 @@
 				</File>
 				<File
 					RelativePath=".\src\stun\tnet_stun_attribute.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\stun\tnet_stun_binding.h"
 					>
 				</File>
 				<File

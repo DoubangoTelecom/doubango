@@ -234,27 +234,48 @@ bool SipStack::removeSigCompCompartment(const char* compId)
 		TSIP_STACK_SET_NULL()) == 0);
 }
 
+ // @deprecated
 bool SipStack::setSTUNEnabledForICE(bool enabled)
 {
+#if 0
 	tsk_bool_t _enabled = enabled ? tsk_true : tsk_false;
 	return (tsip_stack_set(m_pHandle,
 		TSIP_STACK_SET_ICE_STUN_ENABLED(_enabled),
 		TSIP_STACK_SET_NULL()) == 0);
+#else
+	// set global value
+	return (tmedia_defaults_set_icestun_enabled(enabled ? tsk_true : tsk_false) == 0);
+	// to set the value per session, use "CallSession::setICEStun()"
+#endif
 }
 
-bool SipStack::setSTUNServer(const char* ip, unsigned short port)
+ // @deprecated
+bool SipStack::setSTUNServer(const char* hostname, unsigned short port)
 {
+#if 0
 	unsigned _port = port;//promote
 	return (tsip_stack_set(m_pHandle,
-		TSIP_STACK_SET_STUN_SERVER(ip, _port),
+		TSIP_STACK_SET_STUN_SERVER(hostname, _port),
 		TSIP_STACK_SET_NULL()) == 0);
+#else
+	// set global value
+	return (tmedia_defaults_set_stun_server(hostname, port) == 0);
+	// to set the value per session, use "CallSession::setSTUNServer()"
+#endif
 }
 
+ // @deprecated
 bool SipStack::setSTUNCred(const char* login, const char* password)
 {
+#if 0
 	return (tsip_stack_set(m_pHandle,
 		TSIP_STACK_SET_STUN_CRED(login, password),
 		TSIP_STACK_SET_NULL()) == 0);
+#else
+	// set global value
+	return (tmedia_defaults_set_stun_cred(login, password) == 0);
+	// to set the value per session, use "CallSession::setSTUNCred()"
+#endif
 }
 
 bool SipStack::setSTUNEnabled(bool enabled)

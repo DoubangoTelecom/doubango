@@ -155,19 +155,9 @@ tnet_socket_t* tnet_socket_create_2(const char* host, tnet_port_t port_, tnet_so
 			*/
 			//
 			if (TNET_SOCKET_TYPE_IS_STREAM(sock->type)) {
-				#if defined(SOLARIS)
-							static const char yes = '1';
-				#else
-							static const int yes = 1;
-				#endif
-							if(setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(int)) == -1){
-								TNET_PRINT_LAST_ERROR("setsockopt(SO_REUSEADDR) have failed");
-							}
-				#if defined(SO_REUSEPORT)
-							if(setsockopt(sock->fd, SOL_SOCKET, SO_REUSEPORT, (char*)&yes, sizeof(int)) == -1){
-								TNET_PRINT_LAST_ERROR("setsockopt(SO_REUSEPORT) have failed");
-							}
-				#endif
+				if ((status = tnet_sockfd_reuseaddr(sock->fd, 1))) {
+					// do not break...continue
+				}
 			}
 			
 			if(bindsocket){

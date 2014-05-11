@@ -30,6 +30,10 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#if !defined(PRINT_DESTROYED_MSG)
+#	define PRINT_DESTROYED_MSG	0
+#endif
+
 int tnet_stun_pkt_create(tnet_stun_pkt_type_t e_type, uint16_t u_length, const tnet_stun_transac_id_t* pc_transac_id, tnet_stun_pkt_t** pp_attr)
 {
     extern const tsk_object_def_t *tnet_stun_pkt_def_t;
@@ -167,6 +171,27 @@ int tnet_stun_pkt_attrs_add(tnet_stun_pkt_t* p_self, ...)
 bail:
     va_end(ap);
     return ret;
+}
+
+int tnet_stun_pkt_attr_remove(struct tnet_stun_pkt_s* p_self, enum tnet_stun_attr_type_e e_type)
+{
+    tsk_list_item_t* pc_item;
+    tnet_stun_attr_t* pc_attr;
+    if (!p_self || !p_self->p_list_attrs) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+
+again:
+    tsk_list_foreach(pc_item, p_self->p_list_attrs) {
+        if ((pc_attr = (tnet_stun_attr_t*)pc_item->data)) {
+            if (pc_attr->hdr.e_type == e_type) {
+                tsk_list_remove_item(p_self->p_list_attrs, pc_item);
+                goto again;
+            }
+        }
+    }
+    return 0;
 }
 
 int tnet_stun_pkt_attr_find(const tnet_stun_pkt_t* pc_self, tnet_stun_attr_type_t e_type, tsk_size_t u_index, const tnet_stun_attr_t** ppc_attr)
@@ -381,6 +406,32 @@ int tnet_stun_pkt_write_with_padding(const tnet_stun_pkt_t* pc_self, uint8_t* p_
     return 0;
 }
 
+int tnet_stun_pkt_write_with_padding_2(const struct tnet_stun_pkt_s* pc_self, struct tsk_buffer_s** pp_buff)
+{
+    tsk_size_t u_buff_size;
+    int ret;
+    if (!pc_self || !pp_buff) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    *pp_buff = tsk_null;
+    if ((ret = tnet_stun_pkt_get_size_in_octetunits_with_padding(pc_self, &u_buff_size))) {
+        goto bail;
+    }
+    u_buff_size += kStunBuffMinPad;
+    if (!(*pp_buff = tsk_buffer_create(tsk_null, u_buff_size))) {
+        goto bail;
+    }
+    if ((ret = tnet_stun_pkt_write_with_padding(pc_self, (*pp_buff)->data, (*pp_buff)->size, &(*pp_buff)->size))) {
+        goto bail;
+    }
+bail:
+    if (ret) {
+        TSK_OBJECT_SAFE_FREE(*pp_buff);
+    }
+    return ret;
+}
+
 int tnet_stun_pkt_is_complete(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size, tsk_bool_t *pb_is_complete)
 {
     if (!pb_is_complete) {
@@ -408,7 +459,7 @@ int tnet_stun_pkt_read(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size,  tnet
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-    if (!TNET_STUN_PKT_IS_STUN2(pc_buff_ptr, n_buff_size)) {
+    if (!TNET_STUN_BUFF_IS_STUN2(pc_buff_ptr, n_buff_size)) {
         TSK_DEBUG_ERROR("Buffer doesn't contain a valid STUN2 pkt");
         return -2;
     }
@@ -461,59 +512,65 @@ int tnet_stun_pkt_auth_prepare(tnet_stun_pkt_t* p_self, const char* pc_usr_name,
     int ret;
     static const tsk_sha1digest_t __pc_sha1digestEmpty = { 0 };
     static const uint16_t __u_sha1digestEmpty = sizeof(__pc_sha1digestEmpty);
-    if (!p_self || !pc_usr_name || !pc_realm || !pc_nonce) {
+    if (!p_self /*|| !pc_usr_name*/  || !pc_pwd /*|| !pc_realm || !pc_nonce*/) { // "username", "realm" and "nonce" are null for short-term authentication
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
     // USERNAME
-    if ((ret = tnet_stun_pkt_attr_find_first(p_self, tnet_stun_attr_type_username, &pc_attr))) {
-        goto bail;
-    }
-    if (pc_attr) {
-        if ((ret = tnet_stun_attr_vdata_update((tnet_stun_attr_vdata_t*)pc_attr, (const uint8_t*)pc_usr_name, tsk_strlen(pc_usr_name)))) {
-            goto bail;
-        }
-    }
-    else {
-        ret = tnet_stun_pkt_attrs_add(p_self,
-                                      TNET_STUN_PKT_ATTR_ADD_USERNAME_ZT(pc_usr_name),
-                                      TNET_STUN_PKT_ATTR_ADD_NULL());
-        if (ret) {
-            goto bail;
-        }
-    }
+	if (pc_usr_name) { // LONG-TERM, optional for SHORT-TERM
+		if ((ret = tnet_stun_pkt_attr_find_first(p_self, tnet_stun_attr_type_username, &pc_attr))) {
+			goto bail;
+		}
+		if (pc_attr) {
+			if ((ret = tnet_stun_attr_vdata_update((tnet_stun_attr_vdata_t*)pc_attr, (const uint8_t*)pc_usr_name, tsk_strlen(pc_usr_name)))) {
+				goto bail;
+			}
+		}
+		else {
+			ret = tnet_stun_pkt_attrs_add(p_self,
+										  TNET_STUN_PKT_ATTR_ADD_USERNAME_ZT(pc_usr_name),
+										  TNET_STUN_PKT_ATTR_ADD_NULL());
+			if (ret) {
+				goto bail;
+			}
+		}
+	}
     // REALM
-    if ((ret = tnet_stun_pkt_attr_find_first(p_self, tnet_stun_attr_type_realm, &pc_attr))) {
-        goto bail;
-    }
-    if (pc_attr) {
-        if ((ret = tnet_stun_attr_vdata_update((tnet_stun_attr_vdata_t*)pc_attr, (const uint8_t*)pc_realm, tsk_strlen(pc_realm)))) {
+    if (pc_realm) { // LONG-TERM
+        if ((ret = tnet_stun_pkt_attr_find_first(p_self, tnet_stun_attr_type_realm, &pc_attr))) {
             goto bail;
         }
-    }
-    else {
-        ret = tnet_stun_pkt_attrs_add(p_self,
-                                      TNET_STUN_PKT_ATTR_ADD_REALM_ZT(pc_realm),
-                                      TNET_STUN_PKT_ATTR_ADD_NULL());
-        if (ret) {
-            goto bail;
+        if (pc_attr) {
+            if ((ret = tnet_stun_attr_vdata_update((tnet_stun_attr_vdata_t*)pc_attr, (const uint8_t*)pc_realm, tsk_strlen(pc_realm)))) {
+                goto bail;
+            }
+        }
+        else {
+            ret = tnet_stun_pkt_attrs_add(p_self,
+                                          TNET_STUN_PKT_ATTR_ADD_REALM_ZT(pc_realm),
+                                          TNET_STUN_PKT_ATTR_ADD_NULL());
+            if (ret) {
+                goto bail;
+            }
         }
     }
     // NONCE
-    if ((ret = tnet_stun_pkt_attr_find_first(p_self, tnet_stun_attr_type_nonce, &pc_attr))) {
-        goto bail;
-    }
-    if (pc_attr) {
-        if ((ret = tnet_stun_attr_vdata_update((tnet_stun_attr_vdata_t*)pc_attr, (const uint8_t*)pc_nonce, tsk_strlen(pc_nonce)))) {
+    if (pc_nonce) { // LONG-TERM
+        if ((ret = tnet_stun_pkt_attr_find_first(p_self, tnet_stun_attr_type_nonce, &pc_attr))) {
             goto bail;
         }
-    }
-    else {
-        ret = tnet_stun_pkt_attrs_add(p_self,
-                                      TNET_STUN_PKT_ATTR_ADD_NONCE_ZT(pc_nonce),
-                                      TNET_STUN_PKT_ATTR_ADD_NULL());
-        if (ret) {
-            goto bail;
+        if (pc_attr) {
+            if ((ret = tnet_stun_attr_vdata_update((tnet_stun_attr_vdata_t*)pc_attr, (const uint8_t*)pc_nonce, tsk_strlen(pc_nonce)))) {
+                goto bail;
+            }
+        }
+        else {
+            ret = tnet_stun_pkt_attrs_add(p_self,
+                                          TNET_STUN_PKT_ATTR_ADD_NONCE_ZT(pc_nonce),
+                                          TNET_STUN_PKT_ATTR_ADD_NULL());
+            if (ret) {
+                goto bail;
+            }
         }
     }
     // MESSAGE-INTEGRITY
@@ -621,6 +678,50 @@ int tnet_stun_pkt_get_errorcode(const struct tnet_stun_pkt_s* pc_self, uint16_t*
     return 0;
 }
 
+int tnet_stun_pkt_process_err420(struct tnet_stun_pkt_s *p_self, const struct tnet_stun_pkt_s *pc_pkt_resp420)
+{
+    const tnet_stun_attr_vdata_t* pc_attr;
+    uint16_t u16;
+    int ret;
+    tsk_bool_t b_done = tsk_false;
+    if (!p_self || !pc_pkt_resp420) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    if ((ret = tnet_stun_pkt_attr_find_first(pc_pkt_resp420, tnet_stun_attr_type_unknown_attrs, (const tnet_stun_attr_t**)&pc_attr))) {
+        goto bail;
+    }
+    if (!pc_attr || !pc_attr->p_data_ptr || (pc_attr->u_data_size & 1)) {
+        TSK_DEBUG_ERROR("UNKNOWN-ATTRIBUTES missing in 420");
+        ret = -3;
+        goto bail;
+    }
+    for (u16 = 0; u16 < pc_attr->u_data_size; u16+=2) {
+        switch (*((uint16_t*)&pc_attr->p_data_ptr[u16])) {
+        case tnet_stun_attr_type_dont_fragment: {
+            p_self->opt.dontfrag = 0;
+            b_done = tsk_true;
+            break;
+        }
+        case tnet_stun_attr_type_fingerprint: {
+            p_self->opt.fingerprint = 0;
+            b_done = tsk_true;
+            break;
+        }
+        }
+    }
+
+    if (b_done) {
+        // TRANSACTION-ID
+        if ((ret = tnet_stun_utils_transac_id_rand(&p_self->transac_id))) {
+            goto bail;
+        }
+    }
+
+bail:
+    return ret;
+}
+
 static tsk_object_t* tnet_stun_pkt_ctor(tsk_object_t * self, va_list * app)
 {
     tnet_stun_pkt_t *p_pkt = (tnet_stun_pkt_t *)self;
@@ -634,7 +735,9 @@ static tsk_object_t* tnet_stun_pkt_dtor(tsk_object_t * self)
 {
     tnet_stun_pkt_t *p_pkt = (tnet_stun_pkt_t *)self;
     if (p_pkt) {
+#if PRINT_DESTROYED_MSG
         TSK_DEBUG_INFO("*** STUN pkt destroyed ***");
+#endif
         TSK_OBJECT_SAFE_FREE(p_pkt->p_list_attrs);
         TSK_FREE(p_pkt->p_pwd);
     }

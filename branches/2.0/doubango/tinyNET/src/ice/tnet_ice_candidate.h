@@ -24,7 +24,9 @@
 
 #include "tinynet_config.h"
 
-#include "stun/tnet_stun_message.h"
+#include "stun/tnet_stun_pkt.h"
+#include "stun/tnet_stun_attr.h"
+#include "stun/tnet_stun_utils.h"
 #include "tnet_socket.h"
 
 #include "tsk_params.h"
@@ -56,7 +58,7 @@ TNET_BEGIN_DECLS
 #define TNET_ICE_CANDIDATE_COMPID_RTP	1
 #define TNET_ICE_CANDIDATE_COMPID_RTCP	2
 
-#define TNET_ICE_CANDIDATE_FOUND_SIZE_PREF	9
+#define TNET_ICE_CANDIDATE_FOUND_SIZE_PREF	15
 
 typedef enum tnet_ice_cand_type_e
 {
@@ -96,9 +98,14 @@ typedef struct tnet_ice_candidate_s
 		char* nonce;
 		char* realm;
 		char* srflx_addr;
-		tnet_stun_transacid_t transac_id;
+		tnet_stun_transac_id_t transac_id;
 		tnet_port_t srflx_port;
 	} stun;
+	struct {
+		struct tnet_turn_session_s* ss;
+		char* relay_addr;
+		tnet_port_t relay_port;
+	} turn;
 
 	char *tostring;
 }
@@ -114,7 +121,7 @@ TINYNET_API const char* tnet_ice_candidate_get_att_value(const tnet_ice_candidat
 int tnet_ice_candidate_set_local_pref(tnet_ice_candidate_t* self, uint16_t local_pref);
 TINYNET_API const char* tnet_ice_candidate_tostring(tnet_ice_candidate_t* self);
 int tnet_ice_candidate_send_stun_bind_request(tnet_ice_candidate_t* self, struct sockaddr_storage* server_addr, const char* username, const char* password);
-int tnet_ice_candidate_process_stun_response(tnet_ice_candidate_t* self, const tnet_stun_response_t* response, tnet_fd_t fd);
+int tnet_ice_candidate_process_stun_response(tnet_ice_candidate_t* self, const tnet_stun_pkt_resp_t* response, tnet_fd_t fd);
 const tnet_ice_candidate_t* tnet_ice_candidate_find_by_fd(tnet_ice_candidates_L_t* candidates, tnet_fd_t fd);
 const char* tnet_ice_candidate_get_ufrag(const tnet_ice_candidate_t* self);
 const char* tnet_ice_candidate_get_pwd(const tnet_ice_candidate_t* self);

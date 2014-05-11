@@ -146,6 +146,7 @@ TINYNET_API int tnet_sockaddr_init(const char *host, tnet_port_t port, tnet_sock
 TINYNET_API int tnet_sockfd_init(const char *host, tnet_port_t port, tnet_socket_type_t type, tnet_fd_t *fd);
 
 TINYNET_API int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking);
+TINYNET_API int tnet_sockfd_reuseaddr(tnet_fd_t fd, int reuseAddr);
 #define tnet_sockfd_set_nonblocking(fd)	tnet_sockfd_set_mode(fd, 1)
 #define tnet_sockfd_set_blocking(fd)	tnet_sockfd_set_mode(fd, 0)
 

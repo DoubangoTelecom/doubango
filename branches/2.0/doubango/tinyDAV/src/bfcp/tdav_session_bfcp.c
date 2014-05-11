@@ -49,7 +49,7 @@ typedef struct tdav_session_bfcp_s
 	//uint16_t local_port;
 
 	/* NAT Traversal context */
-	struct tnet_nat_context_s* p_natt_ctx;
+	struct tnet_nat_ctx_s* p_natt_ctx;
 
 	char* p_remote_ip;
 	uint16_t u_remote_port;

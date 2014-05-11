@@ -65,9 +65,9 @@ public: /* API functions */
 	bool addSigCompCompartment(const char* compId);
 	bool removeSigCompCompartment(const char* compId);
 	
-	bool setSTUNEnabledForICE(bool enabled);
-	bool setSTUNServer(const char* ip, unsigned short port);
-	bool setSTUNCred(const char* login, const char* password);
+	bool setSTUNEnabledForICE(bool enabled);  // @deprecated
+	bool setSTUNServer(const char* hostname, unsigned short port);  // @deprecated
+	bool setSTUNCred(const char* login, const char* password);  // @deprecated
 	bool setSTUNEnabled(bool enabled);
 
 	bool setTLSSecAgree(bool enabled);

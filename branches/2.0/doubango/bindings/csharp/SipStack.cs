@@ -163,8 +163,8 @@ public class SipStack : SafeObject {
     return ret;
   }
 
-  public bool setSTUNServer(string ip, ushort port) {
-    bool ret = tinyWRAPPINVOKE.SipStack_setSTUNServer(swigCPtr, ip, port);
+  public bool setSTUNServer(string hostname, ushort port) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setSTUNServer(swigCPtr, hostname, port);
     return ret;
   }
 

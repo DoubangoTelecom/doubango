@@ -59,7 +59,7 @@ typedef struct tbfcp_session_s {
     tnet_port_t u_remote_port;
     struct sockaddr_storage remote_addr;
 
-	struct tnet_nat_context_s* p_natt_ctx;
+	struct tnet_nat_ctx_s* p_natt_ctx;
     struct tnet_ice_ctx_s* p_ice_ctx;
     struct tnet_transport_s* p_transport;
 
@@ -360,7 +360,7 @@ bail:
     return ret;
 }
 
-int tbfcp_session_set_natt_ctx(tbfcp_session_t* p_self, struct tnet_nat_context_s* p_natt_ctx)
+int tbfcp_session_set_natt_ctx(tbfcp_session_t* p_self, struct tnet_nat_ctx_s* p_natt_ctx)
 {
 	if (!p_self) {
 		TSK_DEBUG_ERROR("Invalid parameter");

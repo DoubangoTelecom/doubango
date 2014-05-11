@@ -829,7 +829,7 @@ tmedia_session_t* tmedia_session_mgr_find(tmedia_session_mgr_t* self, tmedia_typ
 
 /**@ingroup tmedia_session_group
 */
-int tmedia_session_mgr_set_natt_ctx(tmedia_session_mgr_t* self, tnet_nat_context_handle_t* natt_ctx, const char* public_addr)
+int tmedia_session_mgr_set_natt_ctx(tmedia_session_mgr_t* self, struct tnet_nat_ctx_s* natt_ctx, const char* public_addr)
 {
 	if(!self || !natt_ctx){
 		TSK_DEBUG_ERROR("Invalid parameter");

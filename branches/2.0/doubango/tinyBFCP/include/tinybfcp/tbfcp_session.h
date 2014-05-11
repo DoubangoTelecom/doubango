@@ -37,7 +37,7 @@ TINYBFCP_API int tbfcp_session_prepare(struct tbfcp_session_s* p_self);
 TINYBFCP_API int tbfcp_session_start(struct tbfcp_session_s* p_self);
 TINYBFCP_API int tbfcp_session_pause(struct tbfcp_session_s* p_self);
 TINYBFCP_API int tbfcp_session_stop(struct tbfcp_session_s* p_self);
-TINYBFCP_API int tbfcp_session_set_natt_ctx(struct tbfcp_session_s* p_self, struct tnet_nat_context_s* p_natt_ctx);
+TINYBFCP_API int tbfcp_session_set_natt_ctx(struct tbfcp_session_s* p_self, struct tnet_nat_ctx_s* p_natt_ctx);
 TINYBFCP_API int tbfcp_session_set_remote_address(struct tbfcp_session_s* p_self, const char* pc_ip, tnet_port_t u_port);
 TINYBFCP_API int tbfcp_session_set_remote_role(struct tbfcp_session_s* p_self, enum tbfcp_role_e e_role_remote);
 TINYBFCP_API int tbfcp_session_set_remote_setup(struct tbfcp_session_s* p_self, enum tbfcp_setup_e e_setup_remote);

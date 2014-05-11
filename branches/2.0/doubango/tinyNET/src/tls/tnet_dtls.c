@@ -41,7 +41,14 @@ typedef struct tnet_dtls_socket_s
 	tsk_bool_t use_srtp;
 	tsk_bool_t handshake_completed;
 	tsk_bool_t handshake_started;
+	tsk_bool_t handshake_storedata; // whether to store handshaking data or to send it to the remote party
 	tnet_dtls_setup_t setup;
+
+	struct {
+		void* ptr;
+		tsk_size_t size;
+		tsk_size_t count;
+	} handshake_data;
 
 	struct{
 		const void* usrdata;
@@ -108,10 +115,13 @@ static int _tnet_dtls_verify_cert(int preverify_ok, X509_STORE_CTX *ctx)
 		TSK_DEBUG_ERROR("Not expected");
 		return 0;
 	}
-	if(_tnet_dtls_is_fingerprint_matching(ctx->cert, &socket->remote.fp, socket->remote.hash) == tsk_false){
+	tsk_safeobj_lock(socket);
+	if (_tnet_dtls_is_fingerprint_matching(ctx->cert, &socket->remote.fp, socket->remote.hash) == tsk_false) {
 		TSK_DEBUG_ERROR("Failed to match fingerprint");
+		tsk_safeobj_unlock(socket);
 		return 0;
 	}
+	tsk_safeobj_unlock(socket);
 	return 1;
 }
 
@@ -323,6 +333,10 @@ tnet_dtls_socket_handle_t* tnet_dtls_socket_create(tnet_fd_t fd, struct ssl_ctx_
 			socket->verify_peer = tsk_true;
 			SSL_set_verify(socket->ssl, (SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT), _tnet_dtls_verify_cert);
 		}
+		else {
+			// FIXME:
+			TSK_DEBUG_ERROR("????");
+		}
 
 		SSL_set_app_data(socket->ssl, socket);
 	}
@@ -425,6 +439,27 @@ int tnet_dtls_socket_set_setup(tnet_dtls_socket_handle_t* handle, tnet_dtls_setu
 #endif
 }
 
+int tnet_dtls_socket_set_store_handshakingdata(tnet_dtls_socket_handle_t* handle, tsk_bool_t handshake_storedata)
+{
+	if (!handle) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	((tnet_dtls_socket_t*)handle)->handshake_storedata = handshake_storedata;
+	return 0;
+}
+
+int tnet_dtls_socket_get_handshakingdata(tnet_dtls_socket_handle_t* handle, const void** data, tsk_size_t *size)
+{
+	if (!handle || !data || !size) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	*data = ((tnet_dtls_socket_t*)handle)->handshake_data.ptr;
+	*size = ((tnet_dtls_socket_t*)handle)->handshake_data.count;
+	return 0;
+}
+
 tsk_bool_t tnet_dtls_socket_is_remote_cert_fp_match(tnet_dtls_socket_handle_t* handle)
 {
 #if !HAVE_OPENSSL || !HAVE_OPENSSL_DTLS
@@ -443,27 +478,30 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 	
 #else
 	tnet_dtls_socket_t *socket = handle;
-	int ret, len;
+	int ret = 0, len;
 	void* out_data;
 
-	if(!socket){
+	if (!socket) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
+	tsk_safeobj_lock(socket);
+
 	// update remote address even if handshaking is completed
-	if(remote_addr){
+	if (remote_addr) {
 		socket->remote.addr = *remote_addr;
 	}
 
-	if(socket->handshake_completed){
+	if (socket->handshake_completed) {
 		TSK_DEBUG_INFO("Handshake completed");
-		return 0;
+		ret = 0;
+		goto bail;
 	}
 
 	if (!socket->handshake_started) {
-		if((ret = SSL_do_handshake(socket->ssl)) != 1){
-			switch((ret = SSL_get_error(socket->ssl, ret))){
+		if ((ret = SSL_do_handshake(socket->ssl)) != 1) {
+			switch ((ret = SSL_get_error(socket->ssl, ret))) {
 				case SSL_ERROR_WANT_READ:
 				case SSL_ERROR_WANT_WRITE:
 				case SSL_ERROR_NONE:
@@ -471,43 +509,41 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 				default:
 					TSK_DEBUG_ERROR("DTLS handshake failed [%s]", ERR_error_string(ERR_get_error(), tsk_null));
 					_tnet_dtls_socket_raise_event_dataless(socket, tnet_dtls_socket_event_type_handshake_failed);
-					return -2;
+					ret = -2;
+					goto bail;
 			}
 		}
 		socket->handshake_started = (ret == SSL_ERROR_NONE); // TODO: reset for renegotiation
 	}
 
-#if 0
-	len = BIO_ctrl_pending(socket->wbio);
-	if (len > 0) {
-		tnet_port_t port;
-		tnet_ip_t ip;
-		out_data = malloc(len);
-		len = BIO_read(socket->wbio, out_data, len);
-
-		tnet_get_sockip_n_port((const struct sockaddr *)&socket->remote.addr, &ip, &port);
-		TSK_DEBUG_INFO("DTLS data handshake to send with len = %d, ip = %.*s and port = %d", len, sizeof(ip), ip, port);
-		len = tnet_sockfd_sendto(socket->fd, (const struct sockaddr *)&socket->remote.addr, out_data, len);
-		TSK_DEBUG_INFO("DTLS data handshake sent len = %d", len);
-		free(out_data);
+	if ((len = BIO_get_mem_data(socket->wbio, &out_data)) > 0 && out_data) {
+		if (socket->handshake_storedata) {
+			if ((int)socket->handshake_data.size < len) {
+				if (!(socket->handshake_data.ptr = tsk_realloc(socket->handshake_data.ptr, len))) {
+					socket->handshake_data.size = 0;
+					socket->handshake_data.count = 0;
+					ret = -5;
+					goto bail;
+				}
+				socket->handshake_data.size = len;
+			}
+			socket->handshake_data.count = len;
+			memcpy(socket->handshake_data.ptr, out_data, len);
+		}
+		else {
+			tnet_port_t port;
+			tnet_ip_t ip;
+			tnet_get_sockip_n_port((const struct sockaddr *)&socket->remote.addr, &ip, &port);
+			TSK_DEBUG_INFO("DTLS data handshake to send with len = %d, ip = %.*s and port = %d", len, sizeof(ip), ip, port);
+			len = tnet_sockfd_sendto(socket->fd, (const struct sockaddr *)&socket->remote.addr, out_data, len);
+			TSK_DEBUG_INFO("DTLS data handshake sent len = %d", len);
+		}
 	}
-#else
-
-	if((len = BIO_get_mem_data(socket->wbio, &out_data)) && out_data){
-		tnet_port_t port;
-		tnet_ip_t ip;
-		tnet_get_sockip_n_port((const struct sockaddr *)&socket->remote.addr, &ip, &port);
-		TSK_DEBUG_INFO("DTLS data handshake to send with len = %d, ip = %.*s and port = %d", len, sizeof(ip), ip, port);
-		len = tnet_sockfd_sendto(socket->fd, (const struct sockaddr *)&socket->remote.addr, out_data, len);
-		TSK_DEBUG_INFO("DTLS data handshake sent len = %d", len);
-		
-	}
-#endif
 
 	BIO_reset(socket->rbio);
 	BIO_reset(socket->wbio);
 
-	if((socket->handshake_completed = SSL_is_init_finished(socket->ssl))){
+	if ((socket->handshake_completed = SSL_is_init_finished(socket->ssl))) {
 		TSK_DEBUG_INFO("DTLS handshake completed");
 		
 #if HAVE_OPENSSL_DTLS_SRTP
@@ -525,9 +561,10 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 			static const tsk_size_t keying_material_size = sizeof(keying_material);
 			/*if(socket->use_srtp)*/{
 				SRTP_PROTECTION_PROFILE *p = SSL_get_selected_srtp_profile(socket->ssl);
-				if(!p){
+				if (!p) {
 					TSK_DEBUG_ERROR("SSL_get_selected_srtp_profile() returned null [%s]", ERR_error_string(ERR_get_error(), tsk_null));
-					return -2;
+					ret = -2;
+					goto bail;
 				}
 				// alert user
 				_tnet_dtls_socket_raise_event(socket, tnet_dtls_socket_event_type_dtls_srtp_profile_selected, p->name, tsk_strlen(p->name));
@@ -536,11 +573,12 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 				
 				// rfc5764 - 4.2.  Key Derivation
 				ret = SSL_export_keying_material(socket->ssl, keying_material, sizeof(keying_material), EXTRACTOR_dtls_srtp_text, EXTRACTOR_dtls_srtp_text_len, tsk_null, 0, 0);
-				if(ret != 1){
+				if (ret != 1) {
 					// alert listener
 					_tnet_dtls_socket_raise_event_dataless(socket, tnet_dtls_socket_event_type_error);
 					TSK_DEBUG_ERROR("SSL_export_keying_material() failed [%s]", ERR_error_string(ERR_get_error(), tsk_null));
-					return -2;
+					ret = -2;
+					goto bail;
 				}
 			}
 			// alert listener
@@ -549,8 +587,10 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 #endif /* HAVE_OPENSSL_DTLS_SRTP */
 		_tnet_dtls_socket_raise_event_dataless(socket, tnet_dtls_socket_event_type_handshake_succeed);
 	}
-
-	return 0;
+	ret = 0; // clear "ret", error will directly jump to "bail:"
+bail:
+	tsk_safeobj_unlock(socket);
+	return ret;
 #endif
 }
 
@@ -573,24 +613,35 @@ int tnet_dtls_socket_handle_incoming_data(tnet_dtls_socket_handle_t* handle, con
 	return -200;
 #else
 	tnet_dtls_socket_t *socket = handle;
-	int ret;
+	int ret = 0;
 
-	if(!socket || !data || !size){
+	if (!socket || !data || !size) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+
+	tsk_safeobj_lock(socket);
 
 	TSK_DEBUG_INFO("Receive DTLS data: %u", size);
 
 	// BIO_reset(socket->rbio);
 	// BIO_reset(socket->wbio);
 
-	ret = _tnet_dtls_socket_do_handshake(socket);
+	if (!socket->rbio || !socket->wbio) {
+		TSK_DEBUG_ERROR("BIO not initialized yet");
+		ret = -2;
+		goto bail;
+	}
+
+	if ((ret = _tnet_dtls_socket_do_handshake(socket))) {
+		goto bail;
+	}
 	
-	if((ret = BIO_write(socket->rbio, data, size)) != size){
+	if ((ret = BIO_write(socket->rbio, data, size)) != size) {
 		ret = SSL_get_error(socket->ssl, ret);
 		TSK_DEBUG_ERROR("BIO_write(rbio, %u) failed [%s]", size, ERR_error_string(ERR_get_error(), tsk_null));
-		return -1;
+		ret = -1;
+		goto bail;
 	}
 		
 	/*if((ret = SSL_read(socket->ssl, (void*)data, size)) <= 0){
@@ -626,7 +677,11 @@ int tnet_dtls_socket_handle_incoming_data(tnet_dtls_socket_handle_t* handle, con
 		}
 	}*/
 
-	return _tnet_dtls_socket_do_handshake(socket);
+	ret = _tnet_dtls_socket_do_handshake(socket);
+
+bail:
+	tsk_safeobj_unlock(socket);
+	return ret;
 #endif
 }
 
@@ -648,19 +703,22 @@ static tsk_object_t* tnet_dtls_socket_dtor(tsk_object_t * self)
 	tnet_dtls_socket_t *socket = self;
 	if(socket){
 #if HAVE_OPENSSL
-		if(socket->rbio){
+		if (socket->rbio) {
 			//BIO_free(socket->rbio);
-			//socket->rbio = tsk_null;
+			socket->rbio = tsk_null;
 		}
-		if(socket->wbio){
+		if (socket->wbio) {
 			//BIO_free(socket->wbio);
-			//socket->wbio = tsk_null;
+			socket->wbio = tsk_null;
 		}
-		if(socket->ssl){
+		if (socket->ssl) {
 			SSL_shutdown(socket->ssl);
+			// https://www.openssl.org/docs/crypto/BIO_s_bio.html
+			// implicitly frees internal_bio
 			SSL_free(socket->ssl);
 		}
 #endif
+		TSK_FREE(socket->handshake_data.ptr);
 		tsk_safeobj_deinit(socket);
 	}
 	return self;

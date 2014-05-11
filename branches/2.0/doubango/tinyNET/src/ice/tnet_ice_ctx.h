@@ -52,6 +52,8 @@ TINYNET_API int tnet_ice_ctx_set_stun(
 	const char* password);
 TINYNET_API int tnet_ice_ctx_set_sync_mode(struct tnet_ice_ctx_s* self, tsk_bool_t sync_mode);
 TINYNET_API int tnet_ice_ctx_set_silent_mode(struct tnet_ice_ctx_s* self, tsk_bool_t silent_mode);
+TINYNET_API int tnet_ice_ctx_set_stun_enabled(struct tnet_ice_ctx_s* self, tsk_bool_t stun_enabled);
+TINYNET_API int tnet_ice_ctx_set_turn_enabled(struct tnet_ice_ctx_s* self, tsk_bool_t turn_enabled);
 TINYNET_API int tnet_ice_ctx_start(struct tnet_ice_ctx_s* self);
 TINYNET_API int tnet_ice_ctx_rtp_callback(struct tnet_ice_ctx_s* self, tnet_ice_rtp_callback_f rtp_callback, const void* rtp_callback_data);
 TINYNET_API int tnet_ice_ctx_set_concheck_timeout(struct tnet_ice_ctx_s* self, int64_t timeout);
@@ -60,8 +62,11 @@ TINYNET_API int tnet_ice_ctx_set_rtcpmux(struct tnet_ice_ctx_s* self, tsk_bool_t
 TINYNET_API tsk_size_t tnet_ice_ctx_count_local_candidates(const struct tnet_ice_ctx_s* self);
 TINYNET_API tsk_bool_t tnet_ice_ctx_got_local_candidates(const struct tnet_ice_ctx_s* self);
 TINYNET_API const struct tnet_ice_candidate_s* tnet_ice_ctx_get_local_candidate_at(const struct tnet_ice_ctx_s* self, tsk_size_t index);
+#define tnet_ice_ctx_get_local_candidate_first(self) tnet_ice_ctx_get_local_candidate_at((self), 0)
 TINYNET_API tsk_bool_t tnet_ice_ctx_is_started(const struct tnet_ice_ctx_s* self);
 TINYNET_API tsk_bool_t tnet_ice_ctx_is_active(const struct tnet_ice_ctx_s* self);
+TINYNET_API tsk_bool_t tnet_ice_ctx_is_turn_rtp_active(const struct tnet_ice_ctx_s* self);
+TINYNET_API tsk_bool_t tnet_ice_ctx_is_turn_rtcp_active(const struct tnet_ice_ctx_s* self);
 TINYNET_API tsk_bool_t tnet_ice_ctx_is_connected(const struct tnet_ice_ctx_s* self);
 TINYNET_API tsk_bool_t tnet_ice_ctx_is_can_send(const struct tnet_ice_ctx_s* self);
 TINYNET_API tsk_bool_t tnet_ice_ctx_is_can_recv(const struct tnet_ice_ctx_s* self);
@@ -72,6 +77,8 @@ TINYNET_API int tnet_ice_ctx_get_nominated_symetric_candidates(const struct tnet
 										  const struct tnet_ice_candidate_s** candidate_answer_src,
 										  const struct tnet_ice_candidate_s** candidate_answer_dest);
 TINYNET_API int tnet_ice_ctx_recv_stun_message(struct tnet_ice_ctx_s* self, const void* data, tsk_size_t size, tnet_fd_t local_fd, const struct sockaddr_storage* remote_addr, tsk_bool_t *role_conflict);
+TINYNET_API int tnet_ice_ctx_send_turn_rtp(struct tnet_ice_ctx_s* self, const void* data, tsk_size_t size);
+TINYNET_API int tnet_ice_ctx_send_turn_rtcp(struct tnet_ice_ctx_s* self, const void* data, tsk_size_t size);
 
 TINYNET_API const char* tnet_ice_ctx_get_ufrag(const struct tnet_ice_ctx_s* self);
 TINYNET_API const char* tnet_ice_ctx_get_pwd(const struct tnet_ice_ctx_s* self);

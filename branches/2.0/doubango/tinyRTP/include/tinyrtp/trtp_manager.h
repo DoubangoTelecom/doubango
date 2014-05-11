@@ -50,6 +50,7 @@ typedef struct trtp_manager_s
 	tsk_bool_t use_rtcpmux;
 	tsk_bool_t is_socket_disabled;
 	tsk_bool_t is_ice_neg_ok;
+	tsk_bool_t is_ice_turn_active;
 	tsk_bool_t is_force_symetric_rtp;
 	tsk_bool_t is_symetric_rtp_checked;
 	tsk_bool_t is_symetric_rtcp_checked;
@@ -189,7 +190,7 @@ TINYRTP_API int trtp_manager_set_srtp_type_remote(trtp_manager_t* self, enum tme
 TINYRTP_API int trtp_manager_set_srtp_type_local(trtp_manager_t* self, enum tmedia_srtp_type_e srtp_type, enum tmedia_srtp_mode_e srtp_mode);
 #endif /* HAVE_SRTP */
 TINYRTP_API tsk_bool_t trtp_manager_is_ready(trtp_manager_t* self);
-TINYRTP_API int trtp_manager_set_natt_ctx(trtp_manager_t* self, tnet_nat_context_handle_t* natt_ctx);
+TINYRTP_API int trtp_manager_set_natt_ctx(trtp_manager_t* self, struct tnet_nat_ctx_s* natt_ctx);
 TINYRTP_API int trtp_manager_set_rtp_callback(trtp_manager_t* self, trtp_rtp_cb_f fun, const void* usrdata);
 TINYRTP_API int trtp_manager_set_rtcp_callback(trtp_manager_t* self, trtp_rtcp_cb_f fun, const void* usrdata);
 TINYRTP_API int trtp_manager_set_rtp_dscp(trtp_manager_t* self, int32_t dscp);

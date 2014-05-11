@@ -1,8 +1,5 @@
-/*
-* Copyright (C) 2010-2011 Mamadou Diop.
+/* Copyright (C) 2010-2014 Mamadou DIOP.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
@@ -19,101 +16,27 @@
 * along with DOUBANGO.
 *
 */
-
-/**@file tnet_nat.h
- * @brief NAT Traversal helper functions using STUN, TURN and ICE.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
- */
 #ifndef TNET_NAT_H
 #define TNET_NAT_H
 
 #include "tinynet_config.h"
+#include "tnet_socket.h"
 
-#include "stun/tnet_stun.h"
-#include "turn/tnet_turn.h"
-
-#include "tnet_proto.h"
-#include "tnet_types.h"
-
-#include "tsk_object.h"
-
+#include "stun/tnet_stun_types.h"
 
 TNET_BEGIN_DECLS
 
-/**@ingroup tnet_nat_group
-* Estimate of the round-trip time (RTT) in millisecond.
-*/
-#define TNET_NAT_DEFAULT_RTO			500
-/**@ingroup tnet_nat_group
-* Number of retransmission for UDP retransmission in millisecond.
-*	7.2.1.  Sending over UDP
-	Rc SHOULD be configurable and SHOULD have a default of 7.
-*/
-#define TNET_NAT_DEFAULT_RC				/*7*/3/* 7 is too hight */
-/**@ingroup tnet_nat_group
-*/
-#define TNET_NAT_TCP_UDP_DEFAULT_PORT	3478
+struct tnet_nat_ctx_s;
+struct tnet_stun_binding_s;
+enum tnet_socket_type_e;
 
-/**@ingroup tnet_nat_group
- *	NAT context.
-**/
-typedef struct tnet_nat_context_s
-{
-	TSK_DECLARE_OBJECT;
-
-	//tnet_fd_t localFD; /**< Local file descriptor. */
-	tnet_socket_type_t socket_type;
-
-	char* username; /**< The username to use to authenticate against the TURN/STUN server. */
-	char* password;	/**< The password to use to authenticate against the TURN/STUN server. */
-	char* software;	/**< The turn/stun client name. */
-
-	char* server_address; /**< TURN/STUN server address (could be FQDN or IP) */
-	tnet_port_t server_port; /**< TURN/STUN server port. */
-
-	uint16_t RTO; /**< Estimate of the round-trip time (RTT) in millisecond. */
-	uint16_t Rc; /**< Number of retransmissions for UDP in millisecond. */
-
-	unsigned enable_dontfrag:1;
-	unsigned enable_integrity:1;
-	unsigned enable_evenport:1;
-	unsigned enable_fingerprint:1; /**< Indicates whether to add the 'fingerprint' attribute in all outgoing stun/turn requests. */
-	unsigned use_dnsquery:1; /**< Indicates whether to use DNS SRV query to find the stun/turn ip address. */
-
-	tnet_turn_allocations_L_t *allocations; /**< List of all allocations associated to this context. */
-	tnet_stun_bindings_L_t *stun_bindings; /**< List of all STUN2 bindings associated to this context. */
-}
-tnet_nat_context_t;
-
-/**@ingroup tnet_nat_group
- * Handle to the NAT context(@ref tnet_nat_context_t).
-**/
-typedef void tnet_nat_context_handle_t;
-
-TINYNET_API int tnet_nat_set_server_address(tnet_nat_context_handle_t* self, const char* server_address);
-TINYNET_API int tnet_nat_set_server(tnet_nat_context_handle_t* self, const char* server_address,  tnet_port_t server_port);
-
-TINYNET_API tnet_stun_binding_id_t tnet_nat_stun_bind(const tnet_nat_context_handle_t* self, const tnet_fd_t localFD);
-TINYNET_API int tnet_nat_stun_get_reflexive_address(const tnet_nat_context_handle_t* self, tnet_stun_binding_id_t id, char** ipaddress, tnet_port_t *port);
-TINYNET_API int tnet_nat_stun_unbind(const tnet_nat_context_handle_t* self, tnet_stun_binding_id_t id);
-
-TINYNET_API tnet_turn_allocation_id_t tnet_nat_turn_allocate(const tnet_nat_context_handle_t* self, const tnet_fd_t localFD);
-TINYNET_API int tnet_nat_turn_get_reflexive_address(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id, char** ipaddress, tnet_port_t *port);
-TINYNET_API int tnet_nat_turn_allocation_refresh(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id);
-TINYNET_API int tnet_nat_turn_unallocate(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id);
-TINYNET_API tnet_turn_channel_binding_id_t tnet_nat_turn_channel_bind(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id, struct sockaddr_storage *peer);
-TINYNET_API int tnet_nat_turn_channel_refresh(const tnet_nat_context_handle_t* self, tnet_turn_channel_binding_id_t id);
-TINYNET_API int tnet_nat_turn_channel_send(const tnet_nat_context_handle_t* self, tnet_turn_channel_binding_id_t id, const void* data, tsk_size_t size, int indication);
-#define tnet_nat_turn_channel_sendindication(context, channel_id, data, size)	tnet_nat_turn_channel_send(context, channel_id, data, size, 1)
-#define tnet_nat_turn_channel_senddata(context, channel_id, data, size)			tnet_nat_turn_channel_send(context, channel_id, data, size, 0)
-TINYNET_API int tnet_nat_turn_add_permission(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id, const char* ipaddress, uint32_t timeout);
-
-TINYNET_API tnet_nat_context_handle_t* tnet_nat_context_create(tnet_socket_type_t socket_type, const char* username, const char* password);
-
-TINYNET_GEXTERN const tsk_object_def_t *tnet_nat_context_def_t;
+TINYNET_API int tnet_nat_set_server_address(struct tnet_nat_ctx_s* p_self, const char* pc_srv_addr);
+TINYNET_API int tnet_nat_set_server(struct tnet_nat_ctx_s* p_self, const char* pc_srv_addr,  tnet_port_t u_srv_port);
+TINYNET_API tnet_stun_binding_id_t tnet_nat_stun_bind(const struct tnet_nat_ctx_s* p_self, const tnet_fd_t localFD);
+TINYNET_API int tnet_nat_stun_send_bind(const struct tnet_nat_ctx_s* pc_self, struct tnet_stun_binding_s *p_binding);
+TINYNET_API int tnet_nat_stun_get_reflexive_address(const struct tnet_nat_ctx_s* p_self, tnet_stun_binding_id_t id, char** pp_ip, tnet_port_t *pu_port);
+TINYNET_API int tnet_nat_stun_unbind(const struct tnet_nat_ctx_s* p_self, tnet_stun_binding_id_t id);
+TINYNET_API struct tnet_nat_ctx_s* tnet_nat_context_create(enum tnet_socket_type_e socket_type, const char* pc_username, const char* pc_password);
 
 TNET_END_DECLS
 

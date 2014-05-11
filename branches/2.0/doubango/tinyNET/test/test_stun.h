@@ -63,16 +63,6 @@ static int test_stun_buff_cmp(const uint8_t* pc_buf1_ptr, tsk_size_t n_buff1_siz
     return 0;
 }
 
-static void test_stun_dump_transacid(tnet_stun_transacid_t transcid)
-{
-	char transac_idstriing[TNET_STUN_TRANSACID_SIZE*2+1];
-	tsk_str_from_hex(transcid, TNET_STUN_TRANSACID_SIZE, transac_idstriing);
-
-	transac_idstriing[sizeof(transac_idstriing)-1] = '\0'; 
-
-	TSK_DEBUG_INFO("STUN transac id:%s", transac_idstriing);
-}
-
 static void test_stun_parser()
 {
 	tnet_stun_pkt_t* p_pkt = tsk_null;
@@ -155,9 +145,11 @@ static struct tnet_turn_session_s* __pc_ss2 = tsk_null;
 static char* __p_rel_ip_ss1 = tsk_null;
 static uint16_t __u_rel_port_ss1 = 0;
 static tsk_bool_t __b_rel_ipv6_ss1 = 0;
+static tnet_turn_peer_id_t __u_peer_id1 = kTurnPeerIdInvalid;
 static char* __p_rel_ip_ss2 = tsk_null;
 static uint16_t __u_rel_port_ss2 = 0;
 static tsk_bool_t __b_rel_ipv6_ss2 = 0;
+static tnet_turn_peer_id_t __u_peer_id2 = kTurnPeerIdInvalid;
 
 static int _test_turn_session_callback(const struct tnet_turn_session_event_xs *e)
 {
@@ -169,10 +161,11 @@ static int _test_turn_session_callback(const struct tnet_turn_session_event_xs *
 				uint16_t *pu_port = (pc_ss == __pc_ss2) ? &__u_rel_port_ss1 : &__u_rel_port_ss2;
 				char** pp_ip = (pc_ss == __pc_ss2) ? &__p_rel_ip_ss1 : &__p_rel_ip_ss2;
 				tsk_bool_t *pb_ipv6 = (pc_ss == __pc_ss2) ? &__b_rel_ipv6_ss1 : &__b_rel_ipv6_ss2;
+				tnet_turn_peer_id_t *pu_peer_id = (pc_ss == __pc_ss2) ? &__u_peer_id2 : &__u_peer_id1;
 
 				BAIL_IF_ERR(tnet_turn_session_get_relayed_addr(pc_ss, pp_ip, pu_port, pb_ipv6));
 				// BAIL_IF_ERR(tnet_turn_session_get_srflx_addr(pc_ss, pu_port, &u_port, &b_ipv6)); // get my own server reflexive address (in order to send data to myself)
-				BAIL_IF_ERR(tnet_turn_session_createpermission((struct tnet_turn_session_s*)pc_ss, *pp_ip, *pu_port)); // Input = ADDR(remote.candidate.relay)
+				BAIL_IF_ERR(tnet_turn_session_createpermission((struct tnet_turn_session_s*)pc_ss, *pp_ip, *pu_port, pu_peer_id)); // Input = ADDR(remote.candidate.relay)
 				break;
 			}
 		case tnet_turn_session_event_type_alloc_nok:
@@ -184,11 +177,12 @@ static int _test_turn_session_callback(const struct tnet_turn_session_event_xs *
 			{
 				static const char __pc_data[] = { "TURN Sample Data (Send Indication)" };
 				int i;
+				tnet_turn_peer_id_t u_peer_id = (pc_ss == __pc_ss2) ? __u_peer_id2 : __u_peer_id1;
 				// Bind a channel (not required). If succeed, will be used to save data.
-				tnet_turn_session_chanbind((struct tnet_turn_session_s*)pc_ss);
+				tnet_turn_session_chanbind((struct tnet_turn_session_s*)pc_ss, u_peer_id);
 				// Send data (will use channel if one is active. Otherwise (no channel), SendIndications will be used)
 				for (i = 0; i < 10; ++i) {
-					BAIL_IF_ERR(tnet_turn_session_send_data((struct tnet_turn_session_s*)pc_ss, __pc_data, sizeof(__pc_data)));
+					BAIL_IF_ERR(tnet_turn_session_send_data((struct tnet_turn_session_s*)pc_ss, u_peer_id, __pc_data, sizeof(__pc_data)));
 				}
 				break;
 			}
@@ -201,8 +195,9 @@ static int _test_turn_session_callback(const struct tnet_turn_session_event_xs *
 			{
 				static const char __pc_data[] = { "TURN Sample Data (ChannelData)" };
 				int i;
+				tnet_turn_peer_id_t u_peer_id = (pc_ss == __pc_ss2) ? __u_peer_id2 : __u_peer_id1;
 				for (i = 0; i < 10; ++i) {
-					BAIL_IF_ERR(tnet_turn_session_send_data((struct tnet_turn_session_s*)pc_ss, __pc_data, sizeof(__pc_data)));
+					BAIL_IF_ERR(tnet_turn_session_send_data((struct tnet_turn_session_s*)pc_ss, u_peer_id, __pc_data, sizeof(__pc_data)));
 				}
 				break;
 			}

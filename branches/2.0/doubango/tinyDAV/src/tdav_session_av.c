@@ -1160,7 +1160,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			// FIXME: for RTCP, use "RFC 3605"in addition to "rtcp-mux"
 			
 			// "a=ice-mismatch" if "C=" line is not included in the candidates
-			if((candidate = tnet_ice_ctx_get_local_candidate_at(self->ice_ctx, 0))){ // at least one candidate
+			if ((candidate = tnet_ice_ctx_get_local_candidate_first(self->ice_ctx))) { // at least one candidate
 				base->M.lo->port = candidate->socket->port;
 
 				tsdp_header_M_remove(base->M.lo, tsdp_htype_C);
@@ -1177,10 +1177,15 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 				//	TSDP_HEADER_A_VA_ARGS("mid", self->media_type & tmedia_audio ? "audio" : "video"),
 				//		tsk_null);
 				
-				while((candidate = tnet_ice_ctx_get_local_candidate_at(self->ice_ctx, index++))){
-					if(self->use_rtcpmux && remote_use_rtcpmux && candidate->comp_id == TNET_ICE_CANDIDATE_COMPID_RTCP){
+				while ((candidate = tnet_ice_ctx_get_local_candidate_at(self->ice_ctx, index++))) {
+					if (self->use_rtcpmux && remote_use_rtcpmux && candidate->comp_id == TNET_ICE_CANDIDATE_COMPID_RTCP) {
 						continue; // do not add RTCP candidates if RTCP-MUX is activated (local + remote)
 					}
+#if 0 //TURN:FORCE
+					if (candidate->type_e != tnet_ice_cand_type_relay) {
+						continue;
+					}
+#endif
 					tsdp_header_M_add_headers(base->M.lo,
 							TSDP_HEADER_A_VA_ARGS("candidate", tnet_ice_candidate_tostring((tnet_ice_candidate_t*)candidate)),
 							tsk_null);
@@ -1652,15 +1657,15 @@ static int _tdav_session_av_raise_error_async(struct tdav_session_av_s* self, ts
 
 	tsk_safeobj_lock(self);
 
-	tsk_object_ref(self); // see _tdav_session_av_error_async_thread()
+	tsk_object_ref(self); // do not unref(), see _tdav_session_av_error_async_thread()
 
-	if(self->last_error.tid[0]){
+	if (self->last_error.tid[0]) {
 		tsk_thread_join(self->last_error.tid);
 	}
 
 	self->last_error.is_fatal = is_fatal;
 	tsk_strupdate(&self->last_error.reason, reason);
-	if((ret = tsk_thread_create(self->last_error.tid, _tdav_session_av_error_async_thread, self)) != 0){
+	if ((ret = tsk_thread_create(self->last_error.tid, _tdav_session_av_error_async_thread, self)) != 0) {
 		tsk_object_unref(self);
 		goto bail;
 	}
@@ -1674,7 +1679,7 @@ bail:
 #if HAVE_SRTP
 static int _tdav_session_av_srtp_dtls_cb(const void* usrdata, enum trtp_srtp_dtls_event_type_e type, const char* reason)
 {
-	tdav_session_av_t* self = (tdav_session_av_t*)usrdata;
+	tdav_session_av_t* self = tsk_object_ref((tdav_session_av_t*)usrdata);
 
 	tsk_safeobj_lock(self);
 	switch(type){
@@ -1702,6 +1707,7 @@ static int _tdav_session_av_srtp_dtls_cb(const void* usrdata, enum trtp_srtp_dtl
 			}
 	}
 	tsk_safeobj_unlock(self);
+	tsk_object_unref(self);
 
 	return 0;
 }

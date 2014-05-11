@@ -73,7 +73,7 @@ typedef struct tdav_session_msrp_s
 	//uint16_t local_port;
 
 	/* NAT Traversal context */
-	tnet_nat_context_handle_t* natt_ctx;
+	struct tnet_nat_ctx_s* natt_ctx;
 
 	char* remote_ip;
 	uint16_t remote_port;

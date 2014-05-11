@@ -24,6 +24,7 @@
 
 #include "tsk_object.h"
 #include "tsk_list.h"
+#include "tsk_buffer.h"
 
 TNET_BEGIN_DECLS
 
@@ -45,7 +46,7 @@ TNET_BEGIN_DECLS
 * Checks whether the STUN message is an error response or not.
 */
 #define TNET_STUN_PKT_IS_REQ(p_self)					((p_self) && (((p_self)->e_type & 0x0110) == tnet_stun_mask_request))
-#define TNET_STUN_PKT_IS_RESP(p_self)					(TNET_STUN_PKT_RESP_IS_SUCCESS((p_self)) || TNET_STUN_PKT_RESP_IS_ERROR((self)))
+#define TNET_STUN_PKT_IS_RESP(p_self)					(TNET_STUN_PKT_RESP_IS_SUCCESS((p_self)) || TNET_STUN_PKT_RESP_IS_ERROR((p_self)))
 #define TNET_STUN_PKT_IS_INDICATION(p_self)				((p_self) && (((p_self)->e_type & 0x0110) == tnet_stun_mask_indication))
 #define TNET_STUN_PKT_RESP_IS_SUCCESS(p_self)			((p_self) && (((p_self)->e_type & 0x0110) == tnet_stun_mask_success))
 #define TNET_STUN_PKT_RESP_IS_ERROR(p_self)				((p_self) && (((p_self)->e_type & 0x0110) == tnet_stun_mask_error))
@@ -63,7 +64,7 @@ tnet_stun_pkt_attr_add_t;
 
 #define TNET_STUN_PKT_ATTR_ADD_NULL()												tnet_stun_pkt_attr_add_null
 #define TNET_STUN_PKT_ATTR_ADD_VDATA(E_TYPE, P_DATA_PTR, U_DATA_SIZE)				tnet_stun_pkt_attr_add_vdata, (enum tnet_stun_attr_type_e)(E_TYPE), (const uint8_t*)(P_DATA_PTR), (uint16_t)(U_DATA_SIZE)
-#define TNET_STUN_PKT_ATTR_ADD_UINT0(E_TYPE)										TNET_STUN_PKT_ATTR_ADD_VDATA(E_TYPE, 0, 0)
+#define TNET_STUN_PKT_ATTR_ADD_UINT0(E_TYPE)										TNET_STUN_PKT_ATTR_ADD_VDATA(E_TYPE, tsk_null, 0)
 #define TNET_STUN_PKT_ATTR_ADD_UINT8(E_TYPE, U8)									TNET_STUN_PKT_ATTR_ADD_VDATA(E_TYPE, &U8, 1)
 #define TNET_STUN_PKT_ATTR_ADD_UINT16(E_TYPE, U16)									TNET_STUN_PKT_ATTR_ADD_VDATA(E_TYPE, &U16, 2)
 #define TNET_STUN_PKT_ATTR_ADD_UINT32(E_TYPE, U32)									TNET_STUN_PKT_ATTR_ADD_VDATA(E_TYPE, &U32, 4)
@@ -128,7 +129,14 @@ tnet_stun_pkt_attr_add_t;
 // rfc5766(TURN) - 14.8.  DONT-FRAGMENT
 #define TNET_STUN_PKT_ATTR_ADD_DONT_FRAGMENT()										TNET_STUN_PKT_ATTR_ADD_UINT0(tnet_stun_attr_type_dont_fragment)
 
-
+// rfc5245(ICE) - 19.1.  New Attributes (PRIORITY)
+#define TNET_STUN_PKT_ATTR_ADD_ICE_PRIORITY(U32_PRIORITY)							TNET_STUN_PKT_ATTR_ADD_UINT32(tnet_stun_attr_type_ice_priority, U32_PRIORITY)
+// rfc5245(ICE) - 19.1.  New Attributes (USE-CANDIDATE)
+#define TNET_STUN_PKT_ATTR_ADD_ICE_USE_CANDIDATE()									TNET_STUN_PKT_ATTR_ADD_UINT0(tnet_stun_attr_type_ice_use_candidate)
+// rfc5245(ICE) - 19.1.  New Attributes (ICE-CONTROLLED)
+#define TNET_STUN_PKT_ATTR_ADD_ICE_CONTROLLED(U64_CONTROLLED)						TNET_STUN_PKT_ATTR_ADD_UINT64(tnet_stun_attr_type_ice_controlled, U64_CONTROLLED)
+// rfc5245(ICE) - 19.1.  New Attributes (ICE-CONTROLLED)
+#define TNET_STUN_PKT_ATTR_ADD_ICE_CONTROLLING(U64_CONTROLLING)						TNET_STUN_PKT_ATTR_ADD_UINT64(tnet_stun_attr_type_ice_controlling, U64_CONTROLLING)
 
 typedef struct tnet_stun_pkt_s {
     TSK_DECLARE_OBJECT;
@@ -152,18 +160,24 @@ TINYNET_API int tnet_stun_pkt_create(enum tnet_stun_pkt_type_e e_type, uint16_t 
 #define tnet_stun_pkt_create_empty(e_type, pp_attr) tnet_stun_pkt_create((e_type), 0, tsk_null, (pp_attr))
 TINYNET_API int tnet_stun_pkt_attr_add(struct tnet_stun_pkt_s* p_self, struct tnet_stun_attr_s** pp_attr);
 TINYNET_API int tnet_stun_pkt_attrs_add(struct tnet_stun_pkt_s* p_self, ...);
+TINYNET_API int tnet_stun_pkt_attr_remove(struct tnet_stun_pkt_s* p_self, enum tnet_stun_attr_type_e e_type);
 TINYNET_API int tnet_stun_pkt_attr_find(const struct tnet_stun_pkt_s* pc_self, enum tnet_stun_attr_type_e e_type, tsk_size_t u_index, const struct tnet_stun_attr_s** ppc_attr);
 #define tnet_stun_pkt_attr_find_first(pc_self, e_type, ppc_attr) tnet_stun_pkt_attr_find((pc_self), (e_type), 0, (ppc_attr))
 TINYNET_API tsk_bool_t tnet_stun_pkt_attr_exists(const struct tnet_stun_pkt_s* pc_self, enum tnet_stun_attr_type_e e_type);
 TINYNET_API int tnet_stun_pkt_get_size_in_octetunits_without_padding(const struct tnet_stun_pkt_s* pc_self, tsk_size_t* p_size);
 TINYNET_API int tnet_stun_pkt_get_size_in_octetunits_with_padding(const struct tnet_stun_pkt_s* pc_self, tsk_size_t* p_size);
 TINYNET_API int tnet_stun_pkt_write_with_padding(const struct tnet_stun_pkt_s* pc_self, uint8_t* p_buff_ptr, tsk_size_t n_buff_size, tsk_size_t *p_written);
+TINYNET_API int tnet_stun_pkt_write_with_padding_2(const struct tnet_stun_pkt_s* pc_self, struct tsk_buffer_s** pp_buff);
 TINYNET_API int tnet_stun_pkt_is_complete(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size, tsk_bool_t *pb_is_complete);
 TINYNET_API int tnet_stun_pkt_read(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size, struct tnet_stun_pkt_s** pp_pkt);
 TINYNET_API int tnet_stun_pkt_auth_prepare(struct tnet_stun_pkt_s* p_self, const char* pc_usr_name, const char* pc_pwd, const char* pc_realm, const char* pc_nonce);
+#define tnet_stun_pkt_auth_prepare_longterm(p_self, pc_usr_name, pc_pwd, pc_realm, pc_nonce) tnet_stun_pkt_auth_prepare((p_self), (pc_usr_name), (pc_pwd), (pc_realm), (pc_nonce))
+#define tnet_stun_pkt_auth_prepare_shortterm(p_self, pc_usr_name, pc_pwd) tnet_stun_pkt_auth_prepare((p_self), (pc_usr_name), (pc_pwd), tsk_null, tsk_null)
+#define tnet_stun_pkt_auth_prepare_shortterm_2(p_self, pc_pwd) tnet_stun_pkt_auth_prepare_shortterm((p_self), tsk_null, (pc_pwd))
 TINYNET_API int tnet_stun_pkt_auth_prepare_2(struct tnet_stun_pkt_s* p_self, const char* pc_usr_name, const char* pc_pwd, const struct tnet_stun_pkt_s* pc_resp);
 TINYNET_API int tnet_stun_pkt_auth_copy(struct tnet_stun_pkt_s* p_self, const char* pc_usr_name, const char* pc_pwd, const struct tnet_stun_pkt_s* pc_pkt);
 TINYNET_API int tnet_stun_pkt_get_errorcode(const struct tnet_stun_pkt_s* pc_self, uint16_t* pu_code);
+TINYNET_API int tnet_stun_pkt_process_err420(struct tnet_stun_pkt_s *p_self, const struct tnet_stun_pkt_s *pc_pkt_resp420);
 
 TNET_END_DECLS
 

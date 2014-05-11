@@ -64,7 +64,7 @@ typedef struct tdav_session_av_s
 	struct tdav_sdp_caps_s* sdp_caps;
 
 	/* NAT Traversal context */
-	tnet_nat_context_handle_t* natt_ctx;
+	struct tnet_nat_ctx_s* natt_ctx;
 	struct tnet_ice_ctx_s* ice_ctx;
 	
 	char* local_ip;

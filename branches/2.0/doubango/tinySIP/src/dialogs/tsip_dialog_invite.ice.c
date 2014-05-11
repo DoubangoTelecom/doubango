@@ -28,6 +28,7 @@
 #include "tinysdp/headers/tsdp_header_S.h"
 #include "tinysdp/headers/tsdp_header_O.h"
 
+#include "stun/tnet_stun_types.h"
 #include "ice/tnet_ice_ctx.h"
 
 #include "tsk_debug.h"
@@ -131,45 +132,46 @@ int tsip_dialog_invite_ice_timers_set(tsip_dialog_invite_t *self, int64_t timeou
 static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia_type_t media_type)
 {
 	int32_t transport_idx;
+	int ret = 0;
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	transport_idx = TSIP_DIALOG_GET_STACK(self)->network.transport_idx_default;
-	if(!self->ice.ctx_audio && (media_type & tmedia_audio)){
+	if (!self->ice.ctx_audio && (media_type & tmedia_audio)) {
 		self->ice.ctx_audio = tnet_ice_ctx_create(self->ice.is_jingle, TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type[transport_idx]), 
 					self->use_rtcp, tsk_false, tsip_dialog_invite_ice_audio_callback, self);
-		if(!self->ice.ctx_audio){
+		if (!self->ice.ctx_audio) {
 			TSK_DEBUG_ERROR("Failed to create ICE audio context");
 			return -2;
 		}
-		if(TSIP_DIALOG_GET_STACK(self)->natt.ice.stun_enabled){
-			tnet_ice_ctx_set_stun(self->ice.ctx_audio, TSIP_DIALOG_GET_STACK(self)->natt.stun.ip, TSIP_DIALOG_GET_STACK(self)->natt.stun.port, "Doubango", TSIP_DIALOG_GET_STACK(self)->natt.stun.login, TSIP_DIALOG_GET_STACK(self)->natt.stun.pwd);
-		}
-		tnet_ice_ctx_set_rtcpmux(self->ice.ctx_audio, self->use_rtcpmux);
+		ret = tnet_ice_ctx_set_stun(self->ice.ctx_audio, TSIP_DIALOG_GET_SS(self)->media.stun.hostname, TSIP_DIALOG_GET_SS(self)->media.stun.port, kStunSoftware, TSIP_DIALOG_GET_STACK(self)->natt.stun.login, TSIP_DIALOG_GET_SS(self)->media.stun.password);
+		ret = tnet_ice_ctx_set_stun_enabled(self->ice.ctx_audio, TSIP_DIALOG_GET_SS(self)->media.enable_icestun);
+		ret = tnet_ice_ctx_set_turn_enabled(self->ice.ctx_audio, TSIP_DIALOG_GET_SS(self)->media.enable_iceturn);
+		ret = tnet_ice_ctx_set_rtcpmux(self->ice.ctx_audio, self->use_rtcpmux);
 	}
-	if(!self->ice.ctx_video && (media_type & tmedia_video)){
+	if (!self->ice.ctx_video && (media_type & tmedia_video)) {
 		self->ice.ctx_video = tnet_ice_ctx_create(self->ice.is_jingle, TNET_SOCKET_TYPE_IS_IPV6(TSIP_DIALOG_GET_STACK(self)->network.proxy_cscf_type[transport_idx]), 
 					self->use_rtcp, tsk_true, tsip_dialog_invite_ice_video_callback, self);
-		if(!self->ice.ctx_video){
+		if (!self->ice.ctx_video) {
 			TSK_DEBUG_ERROR("Failed to create ICE video context");
 			return -2;
 		}
-		if(TSIP_DIALOG_GET_STACK(self)->natt.ice.stun_enabled){
-			tnet_ice_ctx_set_stun(self->ice.ctx_video, TSIP_DIALOG_GET_STACK(self)->natt.stun.ip, TSIP_DIALOG_GET_STACK(self)->natt.stun.port, "Doubango", TSIP_DIALOG_GET_STACK(self)->natt.stun.login, TSIP_DIALOG_GET_STACK(self)->natt.stun.pwd);
-		}
-		tnet_ice_ctx_set_rtcpmux(self->ice.ctx_video, self->use_rtcpmux);
+		ret = tnet_ice_ctx_set_stun(self->ice.ctx_video, TSIP_DIALOG_GET_SS(self)->media.stun.hostname, TSIP_DIALOG_GET_SS(self)->media.stun.port, kStunSoftware, TSIP_DIALOG_GET_STACK(self)->natt.stun.login, TSIP_DIALOG_GET_SS(self)->media.stun.password);
+		ret = tnet_ice_ctx_set_stun_enabled(self->ice.ctx_video, TSIP_DIALOG_GET_SS(self)->media.enable_icestun);
+		ret = tnet_ice_ctx_set_turn_enabled(self->ice.ctx_video, TSIP_DIALOG_GET_SS(self)->media.enable_iceturn);
+		ret = tnet_ice_ctx_set_rtcpmux(self->ice.ctx_video, self->use_rtcpmux);
 	}
 
 	// set media type
-	tsip_dialog_invite_ice_set_media_type(self, media_type);
+	ret = tsip_dialog_invite_ice_set_media_type(self, media_type);
 
 	// update session manager with the right ICE contexts
-	if(self->msession_mgr){
-		tmedia_session_mgr_set_ice_ctx(self->msession_mgr, self->ice.ctx_audio, self->ice.ctx_video);
+	if (self->msession_mgr) {
+		ret = tmedia_session_mgr_set_ice_ctx(self->msession_mgr, self->ice.ctx_audio, self->ice.ctx_video);
 	}
 
-	return 0;
+	return ret;
 }
 
 int tsip_dialog_invite_ice_set_media_type(tsip_dialog_invite_t * self, tmedia_type_t _media_type)
@@ -548,7 +550,7 @@ static int tsip_dialog_invite_ice_callback(const tnet_ice_event_t *e)
 			{
 				if(dialog->ice.last_action_id != tsk_fsm_state_none){
 					if(tsip_dialog_invite_ice_got_local_candidates(dialog)){
-						tsip_dialog_fsm_act(TSIP_DIALOG(dialog), dialog->ice.last_action_id, dialog->ice.last_message, dialog->ice.last_action);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(dialog), dialog->ice.last_action_id, dialog->ice.last_message, dialog->ice.last_action);
 						dialog->ice.last_action_id = tsk_fsm_state_none;
 					}
 				}
@@ -560,11 +562,18 @@ static int tsip_dialog_invite_ice_callback(const tnet_ice_event_t *e)
 		// fatal errors which discard ICE process
 		case tnet_ice_event_type_gathering_host_candidates_failed:
 		case tnet_ice_event_type_gathering_reflexive_candidates_failed:
+		case tnet_ice_event_type_gathering_relay_candidates_failed:
 			{
-				if(dialog->ice.last_action_id != tsk_fsm_state_none){
-					tsip_dialog_fsm_act(TSIP_DIALOG(dialog), dialog->ice.last_action_id, dialog->ice.last_message, dialog->ice.last_action);
+				if (dialog->ice.last_action_id != tsk_fsm_state_none) {
+					ret = tsip_dialog_fsm_act(TSIP_DIALOG(dialog), dialog->ice.last_action_id, dialog->ice.last_message, dialog->ice.last_action);
 					dialog->ice.last_action_id = tsk_fsm_state_none;
 				}
+				break;
+			}
+		// TURN session disconnected while we're in call
+		case tnet_ice_event_type_turn_connection_broken:
+			{
+				ret = tsip_dialog_fsm_act_2(TSIP_DIALOG(dialog), _fsm_action_oBYE);
 				break;
 			}
         default: break;

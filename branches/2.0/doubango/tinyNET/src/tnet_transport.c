@@ -35,6 +35,8 @@
 #include "tls/tnet_tls.h"
 #include "tls/tnet_dtls.h"
 
+#include "stun/tnet_stun_types.h"
+
 #include "tsk_memory.h"
 #include "tsk_string.h"
 #include "tsk_debug.h"
@@ -107,6 +109,7 @@ static int _tnet_transport_ssl_init(tnet_transport_t* transport)
 				TSK_DEBUG_ERROR("SSL_CTX_set_cipher_list failed [%s]", ERR_error_string(ERR_get_error(), tsk_null));
 				return -6;
 			}
+			transport->dtls.activated = tsk_true;
 		}
 #endif /* HAVE_OPENSSL_DTLS */
 	}
@@ -364,7 +367,7 @@ int tnet_transport_get_ip_n_port_2(const tnet_transport_handle_t *handle, tnet_i
 	}
 }
 
-int tnet_transport_set_natt_ctx(tnet_transport_handle_t *handle, tnet_nat_context_handle_t* natt_ctx)
+int tnet_transport_set_natt_ctx(tnet_transport_handle_t *handle, struct tnet_nat_ctx_s* natt_ctx)
 {
 	if (!handle) {
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -378,15 +381,15 @@ int tnet_transport_set_natt_ctx(tnet_transport_handle_t *handle, tnet_nat_contex
 int tnet_transport_get_public_ip_n_port(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 {
 	tsk_bool_t stun_ok = tsk_false;
-	tnet_nat_context_handle_t* natt_ctx;
+	struct tnet_nat_ctx_s* natt_ctx;
 	const tnet_transport_t *transport = handle;
 	if(!transport){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if(TNET_SOCKET_TYPE_IS_DGRAM(transport->type) && (natt_ctx = tsk_object_ref(transport->natt_ctx))){
-		tnet_stun_binding_id_t bind_id = TNET_STUN_INVALID_BINDING_ID;
+	if (TNET_SOCKET_TYPE_IS_DGRAM(transport->type) && (natt_ctx = tsk_object_ref(transport->natt_ctx))) {
+		tnet_stun_binding_id_t bind_id = kStunBindingInvalidId;
 		// if the socket is already monitored by the transport we should pause because both the transport and
 		// NAT binder will try to read from it
 		
@@ -397,7 +400,7 @@ int tnet_transport_get_public_ip_n_port(const tnet_transport_handle_t *handle, t
 		// Resume the socket
 		tnet_transport_pause_socket(transport, fd, tsk_false);
 		
-		if(TNET_STUN_IS_VALID_BINDING_ID(bind_id)){
+		if (bind_id != kStunBindingInvalidId) {
 			char* public_ip = tsk_null;
 			if(tnet_nat_stun_get_reflexive_address(transport->natt_ctx, bind_id, &public_ip, port) == 0){
 				if(ip && public_ip){
@@ -600,22 +603,47 @@ int tnet_transport_dtls_set_setup(tnet_transport_handle_t* handle, tnet_dtls_set
 {
 	tnet_transport_t *transport = handle;
 
-	if(!transport){
+	if (!transport) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if(!transport->dtls.enabled){
+	if (!transport->dtls.enabled) {
 		TSK_DEBUG_ERROR("DTLS not enabled on this transport");
 		return -2;
 	}
-	if(sockets && sockets_count){
+	if (sockets && sockets_count) {
 		tsk_size_t i;
-		for(i = 0; i < sockets_count; ++i){
-			if(!sockets[i] || !sockets[i]->dtlshandle){
+		for (i = 0; i < sockets_count; ++i) {
+			if (!sockets[i] || !sockets[i]->dtlshandle) {
 				continue;
 			}
 			tnet_dtls_socket_set_setup(sockets[i]->dtlshandle, setup);
+		}
+	}
+	return 0;
+}
+
+int tnet_transport_dtls_set_store_handshakingdata(tnet_transport_handle_t* handle, tsk_bool_t handshake_storedata, struct tnet_socket_s** sockets, tsk_size_t sockets_count)
+{
+	tnet_transport_t *transport = handle;
+
+	if (!transport) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if (!transport->dtls.enabled) {
+		TSK_DEBUG_ERROR("DTLS not enabled on this transport");
+		return -2;
+	}
+	if (sockets && sockets_count) {
+		tsk_size_t i;
+		for (i = 0; i < sockets_count; ++i) {
+			if (!sockets[i] || !sockets[i]->dtlshandle) {
+				continue;
+			}
+			tnet_dtls_socket_set_store_handshakingdata(sockets[i]->dtlshandle, handshake_storedata);
 		}
 	}
 	return 0;
@@ -626,24 +654,57 @@ int tnet_transport_dtls_do_handshake(tnet_transport_handle_t *handle, struct tne
 	tnet_transport_t *transport = handle;
 	tsk_size_t i;
 
-	if(!transport || !sockets){
+	if (!transport || !sockets) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if(!transport->dtls.enabled){
+	if (!transport->dtls.enabled) {
 		TSK_DEBUG_ERROR("DTLS not enabled on this transport");
 		return -2;
 	}
 
-	if(sockets){
+	if (sockets) {
 		int ret;
-		for(i = 0; i < sockets_count; ++i){
-			if(sockets[i] && sockets[i]->dtlshandle){
-				if((ret = tnet_dtls_socket_do_handshake(sockets[i]->dtlshandle, 
+		for (i = 0; i < sockets_count; ++i) {
+			if (sockets[i] && sockets[i]->dtlshandle) {
+				if ((ret = tnet_dtls_socket_do_handshake(sockets[i]->dtlshandle, 
 					(remote_addrs && i < remote_addrs_count) ? remote_addrs[i] : tsk_null)) != 0){
 						return ret;
 				}
+			}
+		}
+	}
+
+	return 0;
+}
+
+int tnet_transport_dtls_get_handshakingdata(tnet_transport_handle_t* handle, const struct tnet_socket_s** sockets, tsk_size_t sockets_count, const void* data[], tsk_size_t size[])
+{
+	tnet_transport_t *transport = handle;
+	tsk_size_t i;
+
+	if (!transport || !sockets) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if (!transport->dtls.enabled) {
+		TSK_DEBUG_ERROR("DTLS not enabled on this transport");
+		return -2;
+	}
+
+	if (sockets) {
+		int ret;
+		for (i = 0; i < sockets_count; ++i) {
+			if (sockets[i] && sockets[i]->dtlshandle) {
+				if ((ret = tnet_dtls_socket_get_handshakingdata(sockets[i]->dtlshandle, &data[i], &size[i])) != 0){
+					return ret;
+				}
+			}
+			else {
+				data[i] = tsk_null;
+				size[i] = 0;
 			}
 		}
 	}
@@ -795,13 +856,13 @@ int tnet_transport_shutdown(tnet_transport_handle_t* handle)
 static int _tnet_transport_dtls_cb(const void* usrdata, tnet_dtls_socket_event_type_t dtls_e, const tnet_dtls_socket_handle_t* handle, const void* data, tsk_size_t size)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)usrdata;
-	if(transport){
+	if (transport) {
 		tnet_transport_event_type_t t_e;
 		const struct sockaddr_storage* remote_addr;
 		tnet_fd_t fd;
 		tnet_transport_event_t* e;
 
-		switch(dtls_e){
+		switch (dtls_e) {
 			case tnet_dtls_socket_event_type_handshake_started: t_e = event_dtls_handshake_started; break;
 			case tnet_dtls_socket_event_type_handshake_succeed: t_e = event_dtls_handshake_succeed; break;
 			case tnet_dtls_socket_event_type_handshake_failed: t_e = event_dtls_handshake_failed; break;
@@ -813,15 +874,25 @@ static int _tnet_transport_dtls_cb(const void* usrdata, tnet_dtls_socket_event_t
 		}	
 		remote_addr = tnet_dtls_socket_get_remote_addr(handle);
 		fd = tnet_dtls_socket_get_fd(handle);
-		if((e = tnet_transport_event_create(t_e, transport->callback_data, fd))){
-			if(data && size && (e ->data = tsk_malloc(size))){
+		if ((e = tnet_transport_event_create(t_e, transport->callback_data, fd))) {
+			if (data && size && (e ->data = tsk_malloc(size))) {
 				memcpy(e ->data, data, size);
 				e->size = size;
 			}
-			if(remote_addr){
+			if (remote_addr) {
 				e->remote_addr = *remote_addr;
 			}
-			TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(transport), e);
+			if (TSK_RUNNABLE(transport)->initialized && TSK_RUNNABLE(transport)->running && TSK_RUNNABLE(transport)->started) {
+				TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(transport), e);
+			}
+			else {
+				TSK_DEBUG_INFO("Delivering network event synchronously.");
+				// network transport not started (happens when TURN is using the sockets instead of the RTP manager)
+				if (transport->callback) {
+					transport->callback(e);
+				}
+				TSK_OBJECT_SAFE_FREE(e);
+			}
 			return 0;
 		}
 	}
@@ -858,7 +929,7 @@ static void* TSK_STDCALL run(void* self)
 	if((curr = TSK_RUNNABLE_POP_FIRST_SAFE(TSK_RUNNABLE(transport)))){
 		const tnet_transport_event_t *e = (const tnet_transport_event_t*)curr->data;
 		
-		if(transport->callback){
+		if (transport->callback) {
 			transport->callback(e);
 		}
 		tsk_object_unref(curr);
