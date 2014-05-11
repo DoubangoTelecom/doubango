@@ -238,9 +238,9 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 
 static int _trtp_transport_dtls_handshaking_timer_cb(const void* arg, tsk_timer_id_t timer_id)
 {
+	int ret = 0;
 #if HAVE_SRTP
 	trtp_manager_t* manager = (trtp_manager_t*)arg;
-	int ret = 0;
 
 	tsk_safeobj_lock(manager);
 	if (manager->is_started && manager->dtls.timer_hanshaking.id == timer_id && manager->srtp_state == trtp_srtp_state_activated && manager->srtp_type == tmedia_srtp_type_dtls) {

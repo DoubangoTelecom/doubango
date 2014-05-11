@@ -1360,10 +1360,9 @@ static int _tnet_ice_ctx_fsm_GatheringReflexiveCandidatesDone_2_GatheringRelayCa
 			char* foundation = tsk_null;
 			char* relay_addr = tsk_null;
 			tnet_port_t relay_port;
-			tnet_ice_candidate_t* new_cand;
+			tnet_ice_candidate_t* new_cand = tsk_null;
 
 			if ((ret = tnet_turn_session_get_relayed_addr(candidate->turn.ss, &relay_addr, &relay_port, &__b_ipv6))) {
-				TSK_OBJECT_SAFE_FREE(new_cand);
 				goto bail;
 			}
 			if (tsk_striequals(candidate->connection_addr, relay_addr) && candidate->port == relay_port) {

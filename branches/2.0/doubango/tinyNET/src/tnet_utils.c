@@ -1269,7 +1269,7 @@ int tnet_inet_pton(int af, const char* src, void* dst)
 	}
 #if HAVE_INET_PTON || TNET_UNDER_APPLE
 	return inet_pton(af, src, dst);
-#elif TNET_UNDER_WINDOWS
+#elif TNET_UNDER_WINDOWS && !TNET_UNDER_WINDOWS_RT
 #	if (_WIN32_WINNT <= 0x0501)
 	{
 		struct sockaddr_storage addr = { 0 };
@@ -1319,7 +1319,7 @@ const char *tnet_inet_ntop(int af, const void *src, char *dst, int size)
 	memset(dst, 0, size);
 #if HAVE_INET_NTOP || TNET_UNDER_APPLE
 	return inet_ntop(af, src, dst, size);
-#elif TNET_UNDER_WINDOWS
+#elif TNET_UNDER_WINDOWS && !TNET_UNDER_WINDOWS_RT
 #	if (_WIN32_WINNT <= 0x0501)
 	{
 		struct sockaddr_storage addr = { 0 };
