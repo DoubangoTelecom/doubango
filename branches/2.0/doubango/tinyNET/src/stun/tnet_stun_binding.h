@@ -20,7 +20,7 @@
 #define TNET_STUN_BINDING_H
 
 #include "tinynet_config.h"
-#include "tnet_types.h"
+#include "tnet_socket.h"
 #include "stun/tnet_stun_types.h"
 #include "stun/tnet_stun_attr.h"
 
@@ -29,7 +29,7 @@
 
 TNET_BEGIN_DECLS
 
-enum tnet_socket_type_e;
+struct tnet_stun_pkt_s;
 
 typedef struct tnet_stun_binding_s {
     TSK_DECLARE_OBJECT;

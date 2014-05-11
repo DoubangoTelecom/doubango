@@ -298,7 +298,7 @@ int tnet_stun_pkt_write_with_padding(const tnet_stun_pkt_t* pc_self, uint8_t* p_
 
     // write header
     *((uint16_t*)&p_buff_ptr[0]) = tnet_htons((unsigned short)pc_self->e_type);
-    *((uint32_t*)&p_buff_ptr[4]) = tnet_htonl(kStunMagicCookie);
+    *((uint32_t*)&p_buff_ptr[4]) = (uint32_t)tnet_htonl(kStunMagicCookie);
     memcpy(&p_buff_ptr[8], pc_self->transac_id, sizeof(pc_self->transac_id));
 
     p_buff_ptr += kStunPktHdrSizeInOctets;
@@ -367,13 +367,13 @@ int tnet_stun_pkt_write_with_padding(const tnet_stun_pkt_t* pc_self, uint8_t* p_
             char* p_keystr = tsk_null;
             tsk_md5digest_t md5;
             tsk_sprintf(&p_keystr, "%s:%s:%s", pc_attr_username->p_data_ptr, pc_attr_realm->p_data_ptr, pc_self->p_pwd);
-            TSK_MD5_DIGEST_CALC(p_keystr, tsk_strlen(p_keystr), md5);
-            hmac_sha1digest_compute(_p_buff_ptr, (_p_msg_int_start - _p_buff_ptr), (const char*)md5, TSK_MD5_DIGEST_SIZE, hmac);
+            TSK_MD5_DIGEST_CALC(p_keystr, (tsk_size_t)tsk_strlen(p_keystr), md5);
+            hmac_sha1digest_compute(_p_buff_ptr, (tsk_size_t)(_p_msg_int_start - _p_buff_ptr), (const char*)md5, TSK_MD5_DIGEST_SIZE, hmac);
             TSK_FREE(p_keystr);
         }
         else {
             // SHORT-TERM
-            hmac_sha1digest_compute(_p_buff_ptr, (_p_msg_int_start - _p_buff_ptr), pc_self->p_pwd, tsk_strlen(pc_self->p_pwd), hmac);
+            hmac_sha1digest_compute(_p_buff_ptr, (tsk_size_t)(_p_msg_int_start - _p_buff_ptr), pc_self->p_pwd, (tsk_size_t)tsk_strlen(pc_self->p_pwd), hmac);
         }
 
         // update MESSAGE-INTEGRITY attribute value
@@ -395,14 +395,14 @@ int tnet_stun_pkt_write_with_padding(const tnet_stun_pkt_t* pc_self, uint8_t* p_
         	up to (but excluding) the FINGERPRINT attribute itself, XOR'ed with
         	the 32-bit value 0x5354554e
         */
-        uint32_t u_fingerprint = tsk_pppfcs32(TSK_PPPINITFCS32, _p_buff_ptr, (p_buff_ptr - _p_buff_ptr)) ^ kStunFingerprintXorConst;
+        uint32_t u_fingerprint = tsk_pppfcs32(TSK_PPPINITFCS32, _p_buff_ptr, (int32_t)(p_buff_ptr - _p_buff_ptr)) ^ kStunFingerprintXorConst;
         *((uint16_t*)&p_buff_ptr[0]) = tnet_htons(tnet_stun_attr_type_fingerprint); // Type
         *((uint16_t*)&p_buff_ptr[2]) = tnet_htons(4); // Length
-        *((uint32_t*)&p_buff_ptr[4]) = tnet_htonl(u_fingerprint);
+        *((uint32_t*)&p_buff_ptr[4]) = (uint32_t)tnet_htonl(u_fingerprint);
         p_buff_ptr += 8;
     }
 
-    *p_written = (p_buff_ptr - _p_buff_ptr);
+    *p_written = (tsk_size_t)(p_buff_ptr - _p_buff_ptr);
     return 0;
 }
 
@@ -474,7 +474,7 @@ int tnet_stun_pkt_read(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size,  tnet
     // read the header
     Type = tnet_ntohs_2(&pc_buff_ptr[0]);
     PayloadLengthInOctets = tnet_ntohs_2(&pc_buff_ptr[2]);
-    MagicCookie = tnet_ntohl_2(&pc_buff_ptr[4]);
+    MagicCookie = (uint32_t)tnet_ntohl_2(&pc_buff_ptr[4]);
     if (MagicCookie != kStunMagicCookieLong) {
         TSK_DEBUG_ERROR("%x not a valid STUN2 magic cookie", MagicCookie);
         return -4;
