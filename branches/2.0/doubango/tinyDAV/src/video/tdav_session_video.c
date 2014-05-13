@@ -51,10 +51,18 @@
 
 // Minimum time between two incoming FIR. If smaller, the request from the remote party will be ignored
 // Tell the encoder to send IDR frame if condition is met
-#define TDAV_SESSION_VIDEO_AVPF_FIR_HONOR_INTERVAL_MIN	1500 // millis
+#if METROPOLIS
+#	define TDAV_SESSION_VIDEO_AVPF_FIR_HONOR_INTERVAL_MIN		0 // millis
+#else
+#	define TDAV_SESSION_VIDEO_AVPF_FIR_HONOR_INTERVAL_MIN		750 // millis
+#endif
 // Minimum time between two outgoing FIR. If smaller, the request from the remote party will be ignored
 // Tell the RTCP session to request IDR if condition is met
-#define TDAV_SESSION_VIDEO_AVPF_FIR_REQUEST_INTERVAL_MIN	3000 // millis
+#if METROPOLIS
+#	define TDAV_SESSION_VIDEO_AVPF_FIR_REQUEST_INTERVAL_MIN		0 // millis
+#else
+#	define TDAV_SESSION_VIDEO_AVPF_FIR_REQUEST_INTERVAL_MIN		1500 // millis
+#endif
 
 #define TDAV_SESSION_VIDEO_PKT_LOSS_PROB_BAD	2
 #define TDAV_SESSION_VIDEO_PKT_LOSS_PROB_GOOD	6
@@ -100,7 +108,7 @@ static const tmedia_codec_action_t __action_encode_bw_down = tmedia_codec_action
 	uint64_t __now = tsk_time_now(); \
 	if((__now - (__self)->avpf.last_fir_time) > TDAV_SESSION_VIDEO_AVPF_FIR_HONOR_INTERVAL_MIN){ /* guard to avoid sending too many FIR */ \
 		_tdav_session_video_codec_set((__self), "action", __action_encode_idr); \
-	} \
+	}else { TSK_DEBUG_INFO("***IDR request tooo close...ignoring****"); } \
 	if((__self)->cb_rtcpevent.func){ \
 		(__self)->cb_rtcpevent.func((__self)->cb_rtcpevent.context, tmedia_rtcp_event_type_fir, (__ssrc_media)); \
 	} \
