@@ -710,14 +710,10 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 #endif
 	self->encoder.context->global_quality = FF_QP2LAMBDA * self->encoder.quality;
 	
-	self->encoder.context->scenechange_threshold = 0;
-    self->encoder.context->me_subpel_quality = 0;
 #if LIBAVCODEC_VERSION_MAJOR <= 53
     self->encoder.context->partitions = X264_PART_I4X4 | X264_PART_I8X8 | X264_PART_P8X8 | X264_PART_B8X8;
 #endif
-    self->encoder.context->me_method = ME_EPZS;
-    self->encoder.context->trellis = 0;
-
+    self->encoder.context->me_method = ME_UMH;
 	self->encoder.context->me_range = 16;
 	self->encoder.context->qmin = 10;
 	self->encoder.context->qmax = 51;
@@ -725,19 +721,14 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
     self->encoder.context->mb_qmin = self->encoder.context->qmin;
 	self->encoder.context->mb_qmax = self->encoder.context->qmax;
 #endif
-	self->encoder.context->qcompress = 0.6f;
-	self->encoder.context->mb_decision = FF_MB_DECISION_SIMPLE;
-#if LIBAVCODEC_VERSION_MAJOR <= 53
-	self->encoder.context->flags2 |= CODEC_FLAG2_FASTPSKIP;
-#else 
-    self->encoder.context->flags2 |= CODEC_FLAG2_FAST;
-#endif
-	self->encoder.context->flags |= CODEC_FLAG_LOOP_FILTER;
+	/* METROPOLIS = G2J.COM TelePresence client. Check Issue 378: No video when calling "TANDBERG/4129 (X8.1.1)" */
+#if !METROPOLIS
 	self->encoder.context->flags |= CODEC_FLAG_GLOBAL_HEADER;
+#endif
     self->encoder.context->flags |= CODEC_FLAG_LOW_DELAY;
-	self->encoder.context->max_b_frames = 0;
-	self->encoder.context->b_frame_strategy = 1;
-	self->encoder.context->chromaoffset = 0;
+	if (self->encoder.context->profile == FF_PROFILE_H264_BASELINE) {
+		self->encoder.context->max_b_frames = 0;
+	}
 
 	switch(TDAV_CODEC_H264_COMMON(self)->profile){
 		case profile_idc_baseline:
@@ -749,7 +740,7 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 			self->encoder.context->profile = FF_PROFILE_H264_MAIN;
 			self->encoder.context->level = TDAV_CODEC_H264_COMMON(self)->level;
 			break;
-	}
+	} 
 	
 	/* Comment from libavcodec/libx264.c:
      * Allow x264 to be instructed through AVCodecContext about the maximum
