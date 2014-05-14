@@ -46,7 +46,11 @@ TDAV_BEGIN_DECLS
 #endif
 
 #if !defined(H264_PACKETIZATION_MODE)
-#	define H264_PACKETIZATION_MODE	Non_Interleaved_Mode
+#	if METROPOLIS
+#		define H264_PACKETIZATION_MODE	Single_NAL_Unit_Mode
+#	else
+#		define H264_PACKETIZATION_MODE	Non_Interleaved_Mode
+#endif
 #endif
 
 #if !defined(H264_FS_MAX_COUNT)
@@ -98,6 +102,7 @@ typedef struct tdav_codec_h264_common_s
 	TMEDIA_DECLARE_CODEC_VIDEO;
 
 	profile_idc_t profile;
+	uint8_t profile_op;
 	level_idc_t level;
 	unsigned maxFS;
 
@@ -207,6 +212,7 @@ static int tdav_codec_h264_common_init(tdav_codec_h264_common_t * h264)
 			h264->maxFS = TSK_MIN((int32_t)h264->maxFS, MaxFS[H264_LEVEL_TO_ZERO_BASED_INDEX[level]]);
 			h264->level = level;
 		}
+		h264->profile_op = 0x80;
 	}
 	return 0;
 }
@@ -392,7 +398,7 @@ static char* tdav_codec_h264_common_sdp_att_get(const tdav_codec_h264_common_t* 
 				h264->pack_mode
 			);
 #else
-		tsk_sprintf(&fmtp, "profile-level-id=%x; packetization-mode=%d", ((h264->profile << 16) | h264->level), h264->pack_mode);
+		tsk_sprintf(&fmtp, "profile-level-id=%x; packetization-mode=%d", ((h264->profile << 16) | (h264->profile_op << 8) | (h264->level & 0xff)), h264->pack_mode);
 #endif
 		return fmtp;
 	}
