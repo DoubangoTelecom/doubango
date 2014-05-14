@@ -101,11 +101,7 @@ static int tdav_codec_h264_close_decoder(tdav_codec_h264_t* self);
 static int tdav_codec_h264_set(tmedia_codec_t* self, const tmedia_param_t* param)
 {
 	tdav_codec_h264_t* h264 = (tdav_codec_h264_t*)self;
-	if(!self->opened){
-		TSK_DEBUG_ERROR("Codec not opened");
-		return -1;
-	}
-	if(param->value_type == tmedia_pvt_int32){
+	if (param->value_type == tmedia_pvt_int32) {
 		if(tsk_striequals(param->key, "action")){
 			tmedia_codec_action_t action = (tmedia_codec_action_t)TSK_TO_INT32((uint8_t*)param->value);
 			switch(action){
@@ -118,7 +114,9 @@ static int tdav_codec_h264_set(tmedia_codec_t* self, const tmedia_param_t* param
 					{
 						h264->encoder.quality = TSK_CLAMP(1, (h264->encoder.quality + 1), 31);
 #if HAVE_FFMPEG
-						h264->encoder.context->global_quality = FF_QP2LAMBDA * h264->encoder.quality;
+						if (h264->encoder.context) {
+							h264->encoder.context->global_quality = FF_QP2LAMBDA * h264->encoder.quality;
+						}
 #endif
 						break;
 					}
@@ -126,11 +124,17 @@ static int tdav_codec_h264_set(tmedia_codec_t* self, const tmedia_param_t* param
 					{
 						h264->encoder.quality = TSK_CLAMP(1, (h264->encoder.quality - 1), 31);
 #if HAVE_FFMPEG
-						h264->encoder.context->global_quality = FF_QP2LAMBDA * h264->encoder.quality;
+						if (h264->encoder.context) {
+							h264->encoder.context->global_quality = FF_QP2LAMBDA * h264->encoder.quality;
+						}
 #endif
 						break;
 					}
 			}
+			return 0;
+		}
+		else if(tsk_striequals(param->key, "bw_kbps")){
+			h264->encoder.max_bw_kpbs = *((int32_t*)param->value);
 			return 0;
 		}
 		else if(tsk_striequals(param->key, "bypass-encoding")){

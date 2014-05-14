@@ -547,7 +547,9 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 					}
 				}
 			}
+			
 			TSK_DEBUG_INFO("max_bw_up=%d kpbs, max_bw_down=%d kpbs, congestion_ctrl_enabled=%d, media_type=%d", bandwidth_max_upload_kbps, bandwidth_max_download_kbps, self->congestion_ctrl_enabled, self->media_type);
+			// forward up/down bandwidth info to rctp session (used in RTCP-REMB)
 			ret = trtp_manager_set_app_bandwidth_max(self->rtp_manager, bandwidth_max_upload_kbps, bandwidth_max_download_kbps);
 		}
 		ret = trtp_manager_start(self->rtp_manager);
@@ -799,9 +801,11 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 					TSDP_HEADER_A_VA_ARGS("content", (self->media_type & tmedia_bfcp) ? "slides" : "main"),
 					tsk_null);
 				// http://tools.ietf.org/html/rfc3556
+				// https://tools.ietf.org/html/rfc3890
 				if(self->bandwidth_max_download_kbps > 0 && self->bandwidth_max_download_kbps != INT_MAX){ // INT_MAX or <=0 means undefined
 					tsdp_header_M_add_headers(base->M.lo,
 						TSDP_HEADER_B_VA_ARGS("AS", self->bandwidth_max_download_kbps),
+						TSDP_HEADER_B_VA_ARGS("TIAS", (self->bandwidth_max_download_kbps << 10)),
 						tsk_null);
 				}
 			}			
@@ -1336,18 +1340,25 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 		tnet_ice_ctx_set_rtcpmux(self->ice_ctx, self->use_rtcpmux);
 	}
 
-	// BANDWIDTH: http://tools.ietf.org/html/rfc3556
-	if(!TSK_LIST_IS_EMPTY(m->Bandwidths)){
-		const tsk_list_item_t* itemB;
-		const tsdp_header_B_t* B;
-		tsk_list_foreach(itemB, m->Bandwidths) {
-			if(!(B = (const tsdp_header_B_t*)itemB->data)) {
-				continue;
-			}
-			TSK_DEBUG_INFO("Remote party requested bandwidth limitation at %u using 'b=%s' SDP attribute", B->bandwidth, B->bwtype);
-			if(tsk_striequals(B->bwtype, "AS")) {
-				TSK_DEBUG_INFO("Setting bandwidth_max_upload_kbps=%u according to remote party request", B->bandwidth);
-				self->bandwidth_max_upload_kbps = B->bandwidth;
+	// BANDWIDTH:
+	// http://tools.ietf.org/html/rfc3556
+	// https://tools.ietf.org/html/rfc3890
+	{
+		if (!TSK_LIST_IS_EMPTY(m->Bandwidths)) {
+			const tsk_list_item_t* itemB;
+			const tsdp_header_B_t* B;
+			int32_t unit_div;
+			tsk_list_foreach(itemB, m->Bandwidths) {
+				if(!(B = (const tsdp_header_B_t*)itemB->data)) {
+					continue;
+				}
+				TSK_DEBUG_INFO("Remote party requested bandwidth limitation at %u using 'b=%s' SDP attribute", B->bandwidth, B->bwtype);
+				unit_div = tsk_striequals(B->bwtype, "AS") ? 1 : (tsk_striequals(B->bwtype, "TIAS") ? 1024 : 0);
+				if (unit_div) {
+					TSK_DEBUG_INFO("Setting bandwidth_max_upload_kbps=%u according to remote party request", B->bandwidth);
+					self->bandwidth_max_upload_kbps = (B->bandwidth/unit_div);
+					break;
+				}
 			}
 		}
 	}

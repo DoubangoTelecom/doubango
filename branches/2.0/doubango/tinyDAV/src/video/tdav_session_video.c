@@ -1051,6 +1051,7 @@ static int tdav_session_video_start(tmedia_session_t* self)
 	tdav_session_video_t* video;
 	const tmedia_codec_t* codec;
 	tdav_session_av_t* base;
+	tmedia_param_t* media_param;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -1068,7 +1069,12 @@ static int tdav_session_video_start(tmedia_session_t* self)
 	tsk_mutex_lock(video->encoder.h_mutex);
 	TSK_OBJECT_SAFE_FREE(video->encoder.codec);
 	video->encoder.codec = tsk_object_ref((tsk_object_t*)codec);
-	if(!TMEDIA_CODEC(video->encoder.codec)->opened){
+	// forward up bandwidth info to the codec
+	if ((media_param = tmedia_param_create(tmedia_pat_set, tmedia_video, tmedia_ppt_codec, tmedia_pvt_int32, "bw_kbps", (void*)&base->bandwidth_max_upload_kbps))) {
+		tmedia_codec_set(TMEDIA_CODEC(video->encoder.codec), media_param);
+		TSK_OBJECT_SAFE_FREE(media_param);
+	}
+	if (!TMEDIA_CODEC(video->encoder.codec)->opened) {
 		if((ret = tmedia_codec_open(video->encoder.codec))){
 			tsk_mutex_unlock(video->encoder.h_mutex);
 			TSK_DEBUG_ERROR("Failed to open [%s] codec", video->encoder.codec->plugin->desc);
