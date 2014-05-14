@@ -347,8 +347,8 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 		 (BYTE*)pSelf->rcLock.pBits, 
 		 pSelf->rcLock.Pitch, 
 		 (BYTE*)buffer, 
-		 pSelf->rcLock.Pitch, 
-		 (pSelf->nNegWidth << 2), 
+		 (pSelf->nNegWidth << 2),
+		 (pSelf->nNegWidth << 2),
 		 pSelf->nNegHeight
 	 );
 	 if(FAILED(hr))
