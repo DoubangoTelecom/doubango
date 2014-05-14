@@ -392,7 +392,7 @@ static char* tdav_codec_h264_common_sdp_att_get(const tdav_codec_h264_common_t* 
 #if 1
 		// Required by "TANDBERG/4120 (X7.2.2)" and CISCO TelePresence		
 		tsk_sprintf(&fmtp, "profile-level-id=%x;max-mbps=%d;max-fs=%d;packetization-mode=%d", 
-				((h264->profile << 16) | h264->level), 
+				((h264->profile << 16) | (h264->profile_op << 8) | (h264->level & 0xff)), 
 				MaxMBPS[H264_LEVEL_TO_ZERO_BASED_INDEX[h264->level]],
 				h264->maxFS,
 				h264->pack_mode
