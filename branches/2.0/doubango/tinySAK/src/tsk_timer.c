@@ -318,9 +318,9 @@ peek_first:
 		curr = TSK_TIMER_GET_FIRST();
 		tsk_mutex_unlock(manager->mutex);
 
-		if(curr && !curr->canceled) {
+		if (curr && !curr->canceled) {
 			now = tsk_time_now();
-			if(now >= curr->timeout){
+			if (now >= curr->timeout) {
 				tsk_timer_t *timer = (tsk_timer_t*)tsk_object_ref(curr);
 				//TSK_DEBUG_INFO("Timer raise %llu", timer->id);
 
@@ -328,6 +328,7 @@ peek_first:
 				tsk_mutex_lock(manager->mutex);
 				tsk_list_remove_item_by_data(manager->timers, curr);
 				tsk_mutex_unlock(manager->mutex);
+				TSK_OBJECT_SAFE_FREE(timer);
 			}
 			else{
 				if((ret = tsk_condwait_timedwait(manager->condwait, (curr->timeout - now)))){
@@ -339,7 +340,7 @@ peek_first:
 				}
 			}
 		}
-		else if(curr){
+		else if(curr) {
 			tsk_mutex_lock(manager->mutex);
 			/* TSK_DEBUG_INFO("Timer canceled %llu", curr->id); */
 			tsk_list_remove_item_by_data(manager->timers, curr);
@@ -451,7 +452,7 @@ static tsk_object_t* tsk_timer_manager_dtor(tsk_object_t * self)
 		tsk_semaphore_destroy(&manager->sem);
 		tsk_condwait_destroy(&manager->condwait);
 		tsk_mutex_destroy(&manager->mutex);
-		tsk_object_unref(manager->timers);
+		TSK_OBJECT_SAFE_FREE(manager->timers);
 	}
 
 	return self;

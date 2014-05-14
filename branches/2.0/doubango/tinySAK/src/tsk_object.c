@@ -94,21 +94,21 @@ tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...)
 tsk_object_t* tsk_object_new_2(const tsk_object_def_t *objdef, va_list* ap)
 {
 	tsk_object_t *newobj = tsk_calloc(1, objdef->size);
-	if(newobj){
+	if (newobj) {
 		(*(const tsk_object_def_t **) newobj) = objdef;
 		TSK_OBJECT_HEADER(newobj)->refCount = 1;
-		if(objdef->constructor){ 
+		if (objdef->constructor) { 
 			newobj = objdef->constructor(newobj, ap);
 
 #if TSK_DEBUG_OBJECTS
 		TSK_DEBUG_INFO("N∞ objects:%d", ++tsk_objects_count);
 #endif
 		}
-		else{
+		else {
 			TSK_DEBUG_WARN("No constructor found.");
 		}
 	}
-	else{
+	else {
 		TSK_DEBUG_ERROR("Failed to create new tsk_object.");
 	}
 
@@ -124,10 +124,10 @@ tsk_object_t* tsk_object_new_2(const tsk_object_def_t *objdef, va_list* ap)
 tsk_size_t tsk_object_sizeof(const tsk_object_t *self)
 {
 	const tsk_object_def_t **objdef = (const tsk_object_def_t **)self;
-	if(objdef && *objdef){
+	if (objdef && *objdef) {
 		return (*objdef)->size;
 	}
-	else{
+	else {
 		TSK_DEBUG_ERROR("NULL object definition.");
 		return 0;
 	}
@@ -145,7 +145,7 @@ int tsk_object_cmp(const tsk_object_t *object1, const tsk_object_t *object2)
 {
 	const tsk_object_def_t **objdef = (const tsk_object_def_t **)object1;
 
-	if(objdef && *objdef && (*objdef)->comparator){
+	if (objdef && *objdef && (*objdef)->comparator) {
 		return (*objdef)->comparator(object1, object2);
 	}
 	return ((int*)object1 - (int*)object2);
@@ -162,7 +162,7 @@ int tsk_object_cmp(const tsk_object_t *object1, const tsk_object_t *object2)
 tsk_object_t* tsk_object_ref(tsk_object_t *self)
 {
 	tsk_object_header_t* objhdr = TSK_OBJECT_HEADER(self);
-	if(objhdr && objhdr->refCount){
+	if (objhdr && objhdr->refCount > 0) {
 		tsk_atomic_inc(&objhdr->refCount);
 		return self;
 	}
@@ -180,16 +180,16 @@ tsk_object_t* tsk_object_ref(tsk_object_t *self)
 */
 tsk_object_t* tsk_object_unref(tsk_object_t *self)
 {
-	if(self){
+	if (self) {
 		tsk_object_header_t* objhdr = TSK_OBJECT_HEADER(self);
-		if(objhdr->refCount){ // If refCount is == 0 then, nothing should happen.
+		if (objhdr->refCount > 0) { // If refCount is == 0 then, nothing should happen.
 			tsk_atomic_dec(&objhdr->refCount);
-			if(!objhdr->refCount){
+			if (objhdr->refCount == 0) {
 				tsk_object_delete(self);
 				return tsk_null;
 			}
 		}
-		else{
+		else {
 			return tsk_null;
 		}
 	}
@@ -216,16 +216,18 @@ void tsk_object_delete(tsk_object_t *self)
 {
 	const tsk_object_def_t ** objdef = (const tsk_object_def_t **)self;
 	if(self && *objdef){
-		if((*objdef)->destructor){
+		if ((*objdef)->destructor) {
 			self = (*objdef)->destructor(self);
 #if TSK_DEBUG_OBJECTS
 		TSK_DEBUG_INFO("N∞ objects:%d", --tsk_objects_count);
 #endif
 		}
-		else{
+		else {
 			TSK_DEBUG_WARN("No destructor found.");
 		}
-		free(self);
+		if (self) {
+			free(self);
+		}
 	}
 }
 
