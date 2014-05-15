@@ -1305,12 +1305,12 @@ static void Schedule(trtp_rtcp_session_t* session, double tn, event_ e)
 	switch(e){
 		case EVENT_BYE: 
 			if(!TSK_TIMER_ID_IS_VALID(session->timer.id_bye)){
-				session->timer.id_bye = tsk_timer_mgr_global_schedule((uint64_t)tn, _trtp_rtcp_session_timer_callback, session);
+				session->timer.id_bye = tsk_timer_manager_schedule(session->timer.handle_global, (uint64_t)tn, _trtp_rtcp_session_timer_callback, session);
 			}
 			break;
 		case EVENT_REPORT:
 			if(!TSK_TIMER_ID_IS_VALID(session->timer.id_report)){
-				session->timer.id_report = tsk_timer_mgr_global_schedule((uint64_t)tn, _trtp_rtcp_session_timer_callback, session);
+				session->timer.id_report = tsk_timer_manager_schedule(session->timer.handle_global, (uint64_t)tn, _trtp_rtcp_session_timer_callback, session);
 			}
 			break;
 		default: TSK_DEBUG_ERROR("Unexpected code called"); break;

@@ -36,7 +36,7 @@
 
 TDAV_BEGIN_DECLS
 
-const tmedia_resampler_plugin_def_t *tdav_speex_resampler_plugin_def_t;
+extern const tmedia_resampler_plugin_def_t *tdav_speex_resampler_plugin_def_t;
 
 TDAV_END_DECLS
 

@@ -61,7 +61,7 @@ TSK_BEGIN_DECLS
 * @def tsk_timer_callback
 */
 typedef void tsk_timer_manager_handle_t;
-typedef uint64_t tsk_timer_id_t;
+typedef long tsk_timer_id_t;
 typedef int (*tsk_timer_callback_f)(const void* arg, tsk_timer_id_t timer_id);
 
 TINYSAK_API tsk_timer_manager_handle_t* tsk_timer_manager_create();

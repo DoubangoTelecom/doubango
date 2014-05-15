@@ -36,6 +36,10 @@
 #include "tsk_semaphore.h"
 #include "tsk_time.h"
 
+#if TSK_UNDER_WINDOWS
+#	include <windows.h>
+#endif /* TSK_UNDER_WINDOWS */
+
 
 /**@defgroup tsk_timer_group Timers Management
 */
@@ -324,8 +328,8 @@ peek_first:
 				tsk_timer_t *timer = (tsk_timer_t*)tsk_object_ref(curr);
 				//TSK_DEBUG_INFO("Timer raise %llu", timer->id);
 
+				tsk_mutex_lock(manager->mutex); // must lock() before enqueue()
 				TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(manager), timer);
-				tsk_mutex_lock(manager->mutex);
 				tsk_list_remove_item_by_data(manager->timers, curr);
 				tsk_mutex_unlock(manager->mutex);
 				TSK_OBJECT_SAFE_FREE(timer);
@@ -477,10 +481,11 @@ const tsk_object_def_t * tsk_timer_manager_def_t = &tsk_timer_manager_def_s;
 //
 static tsk_object_t* tsk_timer_ctor(tsk_object_t * self, va_list * app)
 {
-	static tsk_timer_id_t tsk_unique_timer_id = 1;
+	static volatile tsk_timer_id_t __tsk_unique_timer_id = 0;
 	tsk_timer_t *timer = (tsk_timer_t*)self;
 	if(timer){
-		timer->id = tsk_unique_timer_id++;
+		tsk_atomic_inc(&__tsk_unique_timer_id);
+		timer->id = __tsk_unique_timer_id;
 		timer->timeout = va_arg(*app, uint64_t);
 		timer->callback = va_arg(*app, tsk_timer_callback_f);
 		timer->arg = va_arg(*app, const void *);
