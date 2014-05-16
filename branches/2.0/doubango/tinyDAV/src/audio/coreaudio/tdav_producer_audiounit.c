@@ -82,10 +82,14 @@ int tdav_producer_audiounit_set(tmedia_producer_t* self, const tmedia_param_t* p
     tdav_producer_audiounit_t* producer = (tdav_producer_audiounit_t*)self;
 	if(param->plugin_type == tmedia_ppt_producer){
 		if(param->value_type == tmedia_pvt_int32){
-			if(tsk_striequals(param->key, "mute")){
+			if (tsk_striequals(param->key, "mute")) {
 				producer->muted = TSK_TO_INT32((uint8_t*)param->value);
 				return tdav_audiounit_handle_mute(((tdav_producer_audiounit_t*)self)->audioUnitHandle, producer->muted);
 			}
+            else if (tsk_striequals(param->key, "interrupt")) {
+				int32_t interrupt = *((uint8_t*)param->value) ? 1 : 0;
+                return tdav_audiounit_handle_interrupt(producer->audioUnitHandle, interrupt);
+            }
 		}
 	}
 	return tdav_producer_audio_set(TDAV_PRODUCER_AUDIO(self), param);
@@ -384,6 +388,8 @@ static tsk_object_t* tdav_producer_audiounit_dtor(tsk_object_t * self)
 		}
 		/* deinit base */
 		tdav_producer_audio_deinit(TDAV_PRODUCER_AUDIO(producer));
+        
+        TSK_DEBUG_INFO("*** AudioUnit Producer destroyed ***");
 	}
 	
 	return self;

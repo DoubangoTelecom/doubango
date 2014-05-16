@@ -31,6 +31,7 @@
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"
+#include "tsk_string.h"
 
 #define kNoDataError		-1
 #define kRingPacketCount	+10
@@ -100,6 +101,15 @@ static tsk_size_t tdav_consumer_audiounit_get(tdav_consumer_audiounit_t* self, v
 /* ============ Media Consumer Interface ================= */
 int tdav_consumer_audiounit_set(tmedia_consumer_t* self, const tmedia_param_t* param)
 {
+    tdav_consumer_audiounit_t* consumer = (tdav_consumer_audiounit_t*)self;
+	if (param->plugin_type == tmedia_ppt_consumer) {
+		if (param->value_type == tmedia_pvt_int32) {
+			if (tsk_striequals(param->key, "interrupt")) {
+				int32_t interrupt = *((uint8_t*)param->value) ? 1 : 0;
+                return tdav_audiounit_handle_interrupt(consumer->audioUnitHandle, interrupt);
+            }
+		}
+	}
 	return tdav_consumer_audio_set(TDAV_CONSUMER_AUDIO(self), param);
 }
 
@@ -401,6 +411,7 @@ static tsk_object_t* tdav_consumer_audiounit_dtor(tsk_object_t * self)
         
 		/* deinit base */
 		tdav_consumer_audio_deinit(TDAV_CONSUMER_AUDIO(consumer));
+        TSK_DEBUG_INFO("*** AudioUnit Consumer destroyed ***");
 	}
 	
 	return self;

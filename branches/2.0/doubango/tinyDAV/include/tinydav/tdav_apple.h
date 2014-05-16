@@ -29,12 +29,36 @@
 
 #include "tsk_debug.h"
 
+#if TARGET_OS_IPHONE
+// deprecated in iOS7+
+static void _AudioSessionInterruptionListener(void * inClientData, UInt32 inInterruptionState)
+{
+    switch(inInterruptionState) {
+        case kAudioSessionBeginInterruption:
+            {
+                TSK_DEBUG_INFO("_AudioSessionInterruptionListener:kAudioSessionBeginInterruption");
+                break;
+            }
+        case kAudioSessionEndInterruption:
+            {
+                TSK_DEBUG_INFO("_AudioSessionInterruptionListener:kAudioSessionEndInterruption");
+                break;
+            }
+        default:
+            {
+                TSK_DEBUG_INFO("_AudioSessionInterruptionListener:%u", (unsigned int)inInterruptionState);
+                break;
+            }
+    }
+}
+#endif
+
 static int tdav_apple_init()
 {
 	// initialize audio session
 #if TARGET_OS_IPHONE
 	OSStatus status;
-	status = AudioSessionInitialize(NULL, NULL, NULL, NULL);
+	status = AudioSessionInitialize(NULL, NULL, _AudioSessionInterruptionListener, NULL);
 	if(status){
 		TSK_DEBUG_ERROR("AudioSessionInitialize() failed with status code=%d", (int32_t)status);
 		return -1;
