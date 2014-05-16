@@ -317,11 +317,13 @@ int tdav_audiounit_handle_interrupt(tdav_audiounit_handle_t* self, tsk_bool_t in
             }
         }
         else {
+#if TARGET_OS_IPHONE
             status = AudioSessionSetActive(true);
             if (status != noErr) {
                 TSK_DEBUG_ERROR("AudioSessionSetActive failed with status=%ld", (signed long)status);
                 goto bail;
             }
+#endif
             status = AudioOutputUnitStart(inst->audioUnit);
             if (status != noErr) {
                 TSK_DEBUG_ERROR("AudioOutputUnitStart failed with status=%ld", (signed long)status);
