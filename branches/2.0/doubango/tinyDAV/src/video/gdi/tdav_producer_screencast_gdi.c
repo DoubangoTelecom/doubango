@@ -31,7 +31,7 @@
 #include "tsk_debug.h"
 
 #if !defined(kMaxFrameRate)
-#	define kMaxFrameRate 2 // FIXME
+#	define kMaxFrameRate 4 // FIXME
 #endif /* kMaxFrameRate */
 
 typedef struct tdav_producer_screencast_gdi_s
@@ -48,9 +48,9 @@ typedef struct tdav_producer_screencast_gdi_s
 	BITMAPINFO bitmapInfoSrc;
 	BITMAPINFO bitmapInfoNeg;
 
-	void* p_buff_src;
+	void* p_buff_src; // must use VirtualAlloc()
 	tsk_size_t n_buff_src;
-	void* p_buff_neg;
+	void* p_buff_neg; // must use VirtualAlloc()
 	tsk_size_t n_buff_neg;
 	
 	tsk_bool_t b_started;
@@ -99,7 +99,6 @@ static int _tdav_producer_screencast_gdi_prepare(tmedia_producer_t* p_self, cons
 {
 	tdav_producer_screencast_gdi_t* p_gdi = (tdav_producer_screencast_gdi_t*)p_self;
 	int ret = 0;
-	tsk_size_t n_buff_neg;
 
 	if (!p_gdi || !pc_codec) {
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -124,15 +123,16 @@ static int _tdav_producer_screencast_gdi_prepare(tmedia_producer_t* p_self, cons
 	p_gdi->bitmapInfoNeg.bmiHeader.biPlanes = p_gdi->bitmapInfoSrc.bmiHeader.biPlanes = 1;
 	p_gdi->bitmapInfoNeg.bmiHeader.biBitCount = p_gdi->bitmapInfoSrc.bmiHeader.biBitCount = 24; 
 	p_gdi->bitmapInfoNeg.bmiHeader.biCompression = p_gdi->bitmapInfoSrc.bmiHeader.biCompression = BI_RGB;
-
-	n_buff_neg = (p_gdi->bitmapInfoNeg.bmiHeader.biWidth * p_gdi->bitmapInfoNeg.bmiHeader.biHeight * (p_gdi->bitmapInfoNeg.bmiHeader.biBitCount >> 3));
-	if (p_gdi->n_buff_neg < n_buff_neg) {
-		if(!(p_gdi->p_buff_neg = tsk_realloc(p_gdi->p_buff_neg, n_buff_neg))) {
+	p_gdi->bitmapInfoNeg.bmiHeader.biSizeImage = (p_gdi->bitmapInfoNeg.bmiHeader.biWidth * p_gdi->bitmapInfoNeg.bmiHeader.biHeight * (p_gdi->bitmapInfoNeg.bmiHeader.biBitCount >> 3));
+	
+	if (p_gdi->n_buff_neg < p_gdi->bitmapInfoNeg.bmiHeader.biSizeImage) {
+		if (p_gdi->p_buff_neg) VirtualFree(p_gdi->p_buff_neg, 0, MEM_RELEASE);
+		if (!(p_gdi->p_buff_neg = VirtualAlloc(NULL, p_gdi->bitmapInfoNeg.bmiHeader.biSizeImage, MEM_RESERVE|MEM_COMMIT, PAGE_READWRITE))) {
 			p_gdi->n_buff_neg = 0;
 			ret = -3;
 			goto bail;
 		}
-		p_gdi->n_buff_neg = n_buff_neg;
+		p_gdi->n_buff_neg = p_gdi->bitmapInfoNeg.bmiHeader.biSizeImage;
 	}
 
 	/* Get screen size */ {
@@ -253,7 +253,6 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self
 	HDC hSrcDC = NULL, hMemDC = NULL;
 	HBITMAP     hBitmap, hOldBitmap;
     int         nWidth, nHeight; 
-	tsk_size_t	n_buff_src, n_buff_neg;
 	RECT		rcSrc;
 
 	if (!p_self) {
@@ -308,15 +307,16 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self
 
 	p_self->bitmapInfoSrc.bmiHeader.biWidth = nWidth;
 	p_self->bitmapInfoSrc.bmiHeader.biHeight = nHeight;
+	p_self->bitmapInfoSrc.bmiHeader.biSizeImage = nWidth * nHeight * (p_self->bitmapInfoSrc.bmiHeader.biBitCount >> 3);
 
-	n_buff_src = nWidth * nHeight * (p_self->bitmapInfoSrc.bmiHeader.biBitCount >> 3);
-	if (p_self->n_buff_src < n_buff_src) {
-		if (!(p_self->p_buff_src = tsk_realloc(p_self->p_buff_src, n_buff_src))) {
+	if (p_self->n_buff_src < p_self->bitmapInfoSrc.bmiHeader.biSizeImage) {
+		if (p_self->p_buff_src) VirtualFree(p_self->p_buff_src, 0, MEM_RELEASE);
+		if (!(p_self->p_buff_src = VirtualAlloc(NULL, p_self->bitmapInfoSrc.bmiHeader.biSizeImage, MEM_RESERVE|MEM_COMMIT, PAGE_READWRITE))) {
 			p_self->n_buff_src = 0;
 			ret = -3;
 			goto bail;
 		}
-		p_self->n_buff_src = n_buff_src;
+		p_self->n_buff_src = p_self->bitmapInfoSrc.bmiHeader.biSizeImage;
 	}
 
     // select new bitmap into memory DC
@@ -333,7 +333,6 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self
     GetDIBits(hSrcDC, hBitmap, 0, nHeight, p_self->p_buff_src, &p_self->bitmapInfoSrc, DIB_RGB_COLORS);
 	
 	// resize
-	n_buff_neg = (p_self->bitmapInfoNeg.bmiHeader.biWidth * p_self->bitmapInfoNeg.bmiHeader.biHeight * (p_self->bitmapInfoNeg.bmiHeader.biBitCount >> 3));
 	ResizeRGB(&p_self->bitmapInfoSrc.bmiHeader,
 			(const unsigned char *) p_self->p_buff_src,
 			&p_self->bitmapInfoNeg.bmiHeader,
@@ -376,7 +375,7 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self
 	}
 
 	// encode and send
-	TMEDIA_PRODUCER(p_self)->enc_cb.callback(TMEDIA_PRODUCER(p_self)->enc_cb.callback_data, p_self->p_buff_neg, n_buff_neg);
+	TMEDIA_PRODUCER(p_self)->enc_cb.callback(TMEDIA_PRODUCER(p_self)->enc_cb.callback_data, p_self->p_buff_neg, p_self->bitmapInfoNeg.bmiHeader.biSizeImage);
 
 bail:
 	tsk_safeobj_unlock(p_self);
@@ -457,9 +456,14 @@ static tsk_object_t* _tdav_producer_screencast_gdi_dtor(tsk_object_t * self)
 		tmedia_producer_deinit(TMEDIA_PRODUCER(p_gdi));
 		/* deinit self */
 		TSK_OBJECT_SAFE_FREE(p_gdi->p_timer_mgr);
-		TSK_FREE(p_gdi->p_buff_neg);
-		TSK_FREE(p_gdi->p_buff_src);
-
+		if (p_gdi->p_buff_neg) {
+			VirtualFree(p_gdi->p_buff_neg, 0, MEM_RELEASE);
+			p_gdi->p_buff_neg = NULL;
+		}
+		if (p_gdi->p_buff_src) {
+			VirtualFree(p_gdi->p_buff_src, 0, MEM_RELEASE);
+			p_gdi->p_buff_src = NULL;
+		}
 		tsk_safeobj_deinit(p_gdi);
 
 		TSK_DEBUG_INFO("*** GDI Screencast producer destroyed ***");
