@@ -61,6 +61,7 @@ typedef struct tdav_audiounit_instance_s
 		unsigned producer:1;
 	} prepared;
 	unsigned started:1;
+    unsigned interrupted:1;
 	
 	TSK_DECLARE_SAFEOBJ;
 	
@@ -202,10 +203,11 @@ int tdav_audiounit_handle_start(tdav_audiounit_handle_t* self)
 	}
 	
 	tsk_safeobj_lock(inst);
-	if(!inst->started && (status = AudioOutputUnitStart(inst->audioUnit))){
+	if((!inst->started || inst->interrupted) && (status = AudioOutputUnitStart(inst->audioUnit))){
 		TSK_DEBUG_ERROR("AudioOutputUnitStart failed with status=%ld", (signed long)status);
 	}
     inst->started = (status == noErr) ? tsk_true : tsk_false;
+    if (inst->started) inst->interrupted = 0;
 	tsk_safeobj_unlock(inst);
 	return status ? -2 : 0;
 }
@@ -234,7 +236,7 @@ int tdav_audiounit_handle_configure(tdav_audiounit_handle_t* self, tsk_bool_t co
 	UInt32 size = sizeof(preferredBufferSize);
 	status = AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration, sizeof(preferredBufferSize), &preferredBufferSize);
 	if(status != noErr){
-		TSK_DEBUG_ERROR("AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration) failed with status=%ld", status);
+		TSK_DEBUG_ERROR("AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration) failed with status=%d", (int)status);
 		TSK_OBJECT_SAFE_FREE(inst);
 		goto done;
 	}
@@ -251,7 +253,7 @@ int tdav_audiounit_handle_configure(tdav_audiounit_handle_t* self, tsk_bool_t co
 	UInt32 audioCategory = kAudioSessionCategory_PlayAndRecord;
 	status = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(audioCategory), &audioCategory);
 	if(status != noErr){
-		TSK_DEBUG_ERROR("AudioSessionSetProperty(kAudioSessionProperty_AudioCategory) failed with status code=%ld", status);
+		TSK_DEBUG_ERROR("AudioSessionSetProperty(kAudioSessionProperty_AudioCategory) failed with status code=%d", (int)status);
 		goto done;
 	}
 	
@@ -298,6 +300,40 @@ int tdav_audiounit_handle_mute(tdav_audiounit_handle_t* self, tsk_bool_t mute)
 #endif
 }
 
+int tdav_audiounit_handle_interrupt(tdav_audiounit_handle_t* self, tsk_bool_t interrupt)
+{
+    tdav_audiounit_instance_t* inst = (tdav_audiounit_instance_t*)self;
+    if (!inst){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+    OSStatus status = noErr;
+    if (inst->interrupted != interrupt && inst->started) {
+        if (interrupt) {
+            status = AudioOutputUnitStop(inst->audioUnit);
+            if (status != noErr) {
+                TSK_DEBUG_ERROR("AudioOutputUnitStop failed with status=%ld", (signed long)status);
+                goto bail;
+            }
+        }
+        else {
+            status = AudioSessionSetActive(true);
+            if (status != noErr) {
+                TSK_DEBUG_ERROR("AudioSessionSetActive failed with status=%ld", (signed long)status);
+                goto bail;
+            }
+            status = AudioOutputUnitStart(inst->audioUnit);
+            if (status != noErr) {
+                TSK_DEBUG_ERROR("AudioOutputUnitStart failed with status=%ld", (signed long)status);
+                goto bail;
+            }
+        }
+    }
+    inst->interrupted = interrupt ? 1: 0;
+bail:
+    return (status != noErr) ? -2 : 0;
+}
+
 int tdav_audiounit_handle_stop(tdav_audiounit_handle_t* self)
 {
 	tdav_audiounit_instance_t* inst = (tdav_audiounit_instance_t*)self;
@@ -313,7 +349,7 @@ int tdav_audiounit_handle_stop(tdav_audiounit_handle_t* self)
 	}
     inst->started = (status == noErr ? tsk_false : tsk_true);
 	tsk_safeobj_unlock(inst);
-	return status ? -2 : 0;
+	return (status != noErr) ? -2 : 0;
 }
 
 int tdav_audiounit_handle_destroy(tdav_audiounit_handle_t** self){
@@ -357,6 +393,7 @@ static tsk_object_t* tdav_audiounit_instance_dtor(tsk_object_t * self)
         tsk_safeobj_unlock(inst);
         
 		tsk_safeobj_deinit(inst);
+        TSK_DEBUG_INFO("*** AudioUnit Instance destroyed ***");
 	}
 	return self;
 }
