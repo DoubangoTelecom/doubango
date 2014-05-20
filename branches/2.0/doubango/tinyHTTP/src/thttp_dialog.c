@@ -369,13 +369,19 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 	
 	/* connect to the server not already done */
 	if(self->session->fd == TNET_INVALID_FD){
-		if((self->session->fd = tnet_transport_connectto(self->session->stack->transport, request->line.request.url->host, request->line.request.url->port, type)) == TNET_INVALID_FD){
-			TSK_DEBUG_ERROR("Failed to connect to %s:%d.", request->line.request.url->host, request->line.request.url->port);
+		const char* host = request->line.request.url->host;
+		uint16_t port = request->line.request.url->port;
+		if (!tsk_strnullORempty(self->session->stack->proxy_ip) && self->session->stack->proxy_port) {
+			host = self->session->stack->proxy_ip;
+			port = self->session->stack->proxy_port;
+		}
+		if ((self->session->fd = tnet_transport_connectto(self->session->stack->transport, host, port, type)) == TNET_INVALID_FD) {
+			TSK_DEBUG_ERROR("Failed to connect to %s:%d.", host, port);
 			ret = -3;
 			goto bail;
 		}
 		
-		if((ret = tnet_sockfd_waitUntilWritable(self->session->fd, timeout))){
+		if ((ret = tnet_sockfd_waitUntilWritable(self->session->fd, timeout))) {
 			TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", timeout);
 			if(tnet_transport_remove_socket(self->session->stack->transport, &self->session->fd)){
 				tnet_sockfd_close(&self->session->fd);
@@ -384,12 +390,12 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 		}
 	}
 	
-	if(tnet_transport_send(self->session->stack->transport, self->session->fd, output->data, output->size)){
+	if (tnet_transport_send(self->session->stack->transport, self->session->fd, output->data, output->size)) {
 		TSK_DEBUG_INFO("HTTP/HTTPS message successfully sent.");
 		thttp_dialog_update_timestamp(self);
 		ret = 0;
 	}
-	else{
+	else {
 		TSK_DEBUG_INFO("Failed to sent HTTP/HTTPS message.");
 		ret = THTTP_DIALOG_TRANSPORT_ERROR_CODE;
 	}
@@ -451,6 +457,9 @@ static tsk_object_t* thttp_dialog_ctor(tsk_object_t * self, va_list * app)
 	static thttp_dialog_id_t unique_id = 0;
 	if(dialog){
 		dialog->id = ++unique_id;
+		if (!(dialog->buf = tsk_buffer_create_null())) {
+			return tsk_null;
+		}
 		dialog->session = tsk_object_ref(va_arg(*app, thttp_session_t*));
 
 		/* create and init FSM */

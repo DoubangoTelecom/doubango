@@ -77,10 +77,11 @@ void test_stack()
 	int ret;
 
 	thttp_stack_handle_t* stack = thttp_stack_create(test_stack_callback,
-		//THTTP_STACK_SET_TLS_ENABLED(tsk_false),
+		THTTP_STACK_SET_TLS_ENABLED(tsk_true),
 		//THTTP_STACK_SET_TLS_CERTS_VERIFY(tsk_false),
 		//THTTP_STACK_SET_LOCAL_IP("0.0.0.0"),
 		//THTTP_STACK_SET_LOCAL_PORT(8080),
+		THTTP_STACK_SET_PROXY("msp.f-secure.com", 443),
 
 		THTTP_STACK_SET_NULL());
 

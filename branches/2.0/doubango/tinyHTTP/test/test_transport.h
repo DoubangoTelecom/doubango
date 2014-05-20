@@ -350,7 +350,7 @@ static void test_transport()
 	
 	getchar();
 
-	// Send data to goole.com
+	// Send data to google.com
 	peer = test_http_transport_connect_to(p_transport, TEST_HTTP_REMOTE_IP, TEST_HTTP_REMOTE_PORT);
 	ret = tnet_sockfd_waitUntilWritable(peer->fd, 1000); // you should use the callback function instead of blocking the process
 	if (ret) {
