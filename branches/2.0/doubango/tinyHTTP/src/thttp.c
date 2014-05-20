@@ -460,6 +460,12 @@ int __thttp_stack_set(thttp_stack_t *self, va_list* app)
 				self->local_port = va_arg(*app, int);
 				break;
 			}
+		case thttp_pname_proxy:
+			{	/* (const char*)IP_STR, (int)PORT_INT */
+				tsk_strupdate(&self->proxy_ip, va_arg(*app, const char*));
+				self->proxy_port = va_arg(*app, int);
+				break;
+			}
 
 
 			//
@@ -765,6 +771,7 @@ static tsk_object_t* thttp_stack_dtor(tsk_object_t * self)
 
 		/* Network */
 		TSK_FREE(stack->local_ip);
+		TSK_FREE(stack->proxy_ip);
 		TSK_OBJECT_SAFE_FREE(stack->transport);
 
 		tsk_safeobj_deinit(stack);

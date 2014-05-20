@@ -91,8 +91,10 @@ typedef enum thttp_stack_param_type_e
 	/* Network */
 	thttp_pname_local_ip,
 	thttp_pname_local_port,
+	thttp_pname_proxy,
 #define THTTP_STACK_SET_LOCAL_IP(IP_STR)														thttp_pname_local_ip, (const char*)IP_STR
 #define THTTP_STACK_SET_LOCAL_PORT(PORT_INT)													thttp_pname_local_port, (int)PORT_INT
+#define THTTP_STACK_SET_PROXY(IP_STR, PORT_INT)													thttp_pname_proxy, (const char*)IP_STR, (int)PORT_INT
 
 	/* Modes */
 	thttp_pname_mode_client,
@@ -137,6 +139,8 @@ typedef struct thttp_stack_s
 	/* Network */
 	char* local_ip;
 	int local_port;
+	char* proxy_ip;
+	int proxy_port;
 	tnet_transport_t *transport;
 
 	/* TLS */
