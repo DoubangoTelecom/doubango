@@ -347,7 +347,13 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 
 	// do nothing if session is held
 	// when the session is held the end user will get feedback he also has possibilities to put the consumer and producer on pause
-	if(TMEDIA_SESSION(base)->lo_held){
+	if (TMEDIA_SESSION(base)->lo_held) {
+		return 0;
+	}
+
+	// do nothing if not started yet
+	if (!video->started) {
+		TSK_DEBUG_INFO("Video session not started yet");
 		return 0;
 	}
 
@@ -1053,7 +1059,7 @@ static int tdav_session_video_start(tmedia_session_t* self)
 	tdav_session_av_t* base;
 	tmedia_param_t* media_param;
 
-	if(!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -1062,7 +1068,7 @@ static int tdav_session_video_start(tmedia_session_t* self)
 	base = (tdav_session_av_t*)self;
 
 	// ENCODER codec
-	if(!(codec = tdav_session_av_get_best_neg_codec(base))){
+	if (!(codec = tdav_session_av_get_best_neg_codec(base))) {
 		TSK_DEBUG_ERROR("No codec matched");
 		return -2;
 	}
@@ -1083,18 +1089,18 @@ static int tdav_session_video_start(tmedia_session_t* self)
 	}
 	tsk_mutex_unlock(video->encoder.h_mutex);
 
-	if(video->jb){
-		if((ret = tdav_video_jb_start(video->jb))){
+	if (video->jb) {
+		if ((ret = tdav_video_jb_start(video->jb))) {
 			TSK_DEBUG_ERROR("Failed to start jitter buffer");
 			return ret;
 		}
 	}
 
-	if((ret = tdav_session_av_start(base, video->encoder.codec))){
+	if ((ret = tdav_session_av_start(base, video->encoder.codec))) {
 		TSK_DEBUG_ERROR("tdav_session_av_start(video) failed");
 		return ret;
 	}	
-
+	video->started = tsk_true;
 	return ret;
 }
 
@@ -1108,8 +1114,11 @@ static int tdav_session_video_stop(tmedia_session_t* self)
 
 	video = (tdav_session_video_t*)self;
 	base = (tdav_session_av_t*)self;
+
+	// must be here to make sure not other thread will lock the encoder once we have done it
+	video->started = tsk_false;
 	
-	if(video->jb){
+	if (video->jb) {
 		ret = tdav_video_jb_stop(video->jb);
 	}
 	// clear AVPF packets and wait for the dtor() before destroying the list

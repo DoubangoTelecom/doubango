@@ -575,11 +575,9 @@ static int _plugin_win_mf_producer_video_unprepare(plugin_win_mf_producer_video_
 	}
     if(pSelf->pSource){
 		pSelf->pSource->Shutdown();
-		pSelf->pSource = NULL;
     }
     if(pSelf->pSession){
         pSelf->pSession->Shutdown();
-		pSelf->pSession = NULL;
     }
 
 	SafeRelease(&pSelf->pEncoder);
