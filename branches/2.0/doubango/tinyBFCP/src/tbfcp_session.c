@@ -187,11 +187,11 @@ int tbfcp_session_prepare(tbfcp_session_t* p_self)
     bfcp_local_ip = TNET_SOCKET_HOST_ANY;
     bfcp_local_port = TNET_SOCKET_PORT_ANY;
 
-    if (p_self->p_ice_ctx) {
+    /*if (p_self->p_ice_ctx) {
         // Get Sockets when the transport is started
         bfcp_local_ip = tnet_ice_ctx_use_ipv6(p_self->p_ice_ctx) ? "::1" : "127.0.0.1";
     }
-    else {
+    else*/ {
         // create transport
         if (!p_self->p_transport && !(p_self->p_transport = tnet_transport_create(p_self->p_local_ip, p_self->u_local_port, p_self->e_socket_type, kBfcpTransportFriendlyName))) {
             TSK_DEBUG_ERROR("Failed to create %s Transport", kBfcpTransportFriendlyName);
