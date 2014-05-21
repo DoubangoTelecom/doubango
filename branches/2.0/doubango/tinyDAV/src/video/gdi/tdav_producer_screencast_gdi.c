@@ -274,13 +274,13 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self
 	 
 	hSrcDC = GetDC(p_self->hwnd_src);
 	if (!hSrcDC) {
-		TSK_DEBUG_ERROR("GetDC(%llu) failed", *((uint64_t*)p_self->hwnd_src));
+		TSK_DEBUG_ERROR("GetDC(%x) failed", p_self->hwnd_src);
 		ret = -5;
 		goto bail;
 	}
     hMemDC = CreateCompatibleDC(hSrcDC);
 	if (!hMemDC) {
-		TSK_DEBUG_ERROR("CreateCompatibleDC(%llu) failed", *((uint64_t*)hSrcDC));
+		TSK_DEBUG_ERROR("CreateCompatibleDC(%x) failed", hSrcDC);
 		ret = -6;
 		goto bail;
 	}
@@ -374,7 +374,7 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self
 		}
 	}
 
-	// encode and send
+	// encode and send data
 	TMEDIA_PRODUCER(p_self)->enc_cb.callback(TMEDIA_PRODUCER(p_self)->enc_cb.callback_data, p_self->p_buff_neg, p_self->bitmapInfoNeg.bmiHeader.biSizeImage);
 
 bail:

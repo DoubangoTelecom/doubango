@@ -51,6 +51,7 @@ typedef struct tdav_session_video_s
 	tsk_bool_t jb_enabled;
 	tsk_bool_t zero_artifacts;
 	tsk_bool_t fps_changed;
+	tsk_bool_t started;
 
 	struct{
 		const void* context;

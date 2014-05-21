@@ -53,7 +53,9 @@ const tmedia_session_plugin_def_t* __tmedia_session_plugins[TMED_SESSION_MAX_PLU
 /* === local functions === */
 static int _tmedia_session_mgr_recv_rtcp_event(tmedia_session_mgr_t* self, tmedia_type_t media_type, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media, uint64_t session_id);
 static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self);
-static int _tmedia_session_mgr_disable_session_with_type(tmedia_session_mgr_t* self, tmedia_type_t media_type);
+static int _tmedia_session_mgr_disable_or_enable_session_with_type(tmedia_session_mgr_t* self, tmedia_type_t media_type, tsk_bool_t enable);
+#define _tmedia_session_mgr_disable_session_with_type(self, media_type) _tmedia_session_mgr_disable_or_enable_session_with_type((self), (media_type), tsk_false)
+#define _tmedia_session_mgr_enable_session_with_type(self, media_type) _tmedia_session_mgr_disable_or_enable_session_with_type((self), (media_type), tsk_true)
 static const tmedia_session_t* _tmedia_session_mgr_find_session_at_index(const tmedia_sessions_L_t* list, tsk_size_t index);
 static int _tmedia_session_mgr_clear_sessions(tmedia_session_mgr_t* self);
 static int _tmedia_session_mgr_apply_params(tmedia_session_mgr_t* self);
@@ -1988,23 +1990,32 @@ static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 		//while (tsk_list_remove_item_by_pred(self->sessions, __pred_find_session_by_type, &__none_media_type)) ;
 		/* for each registered plugin create a session instance */
 		while ((i < TMED_SESSION_MAX_PLUGINS) && (plugin = __tmedia_session_plugins[i++])) {
-			if ((plugin->type & self->type) == plugin->type && !has_media(plugin->type)) {// we don't have a session with this media type yet
-				if ((session = tmedia_session_create(plugin->type))) {
-					/* do not call "tmedia_session_mgr_set()" here to avoid applying parms before the creation of all session */
+			if ((plugin->type & self->type) == plugin->type) { /* media_type *IS* enabled */
+				if (has_media(plugin->type)) {
+					// we already have a matching media session -> enable it if not already done
+					_tmedia_session_mgr_enable_session_with_type(self, plugin->type);
+				}
+				else {
+					// we don't have a matching media session yet
+					if ((session = tmedia_session_create(plugin->type))) {
+						/* do not call "tmedia_session_mgr_set()" here to avoid applying parms before the creation of all session */
 
-					/* set other default values */
+						/* set other default values */
 
-					// set callback functions
-					tmedia_session_set_onerror_cbfn(session, self->onerror_cb.usrdata, self->onerror_cb.fun);
-					
-					/* push session */
-					tsk_list_push_back_data(self->sessions, (void**)(&session));
+						// set callback functions
+						tmedia_session_set_onerror_cbfn(session, self->onerror_cb.usrdata, self->onerror_cb.fun);
+						
+						/* push session */
+						tsk_list_push_back_data(self->sessions, (void**)(&session));
+					}
 				}
 			}
-			else if (!(plugin->type & self->type) && has_media(plugin->type)) { // we have media session from previous call (before update)
-				// do not remove to make sure media indexes match -> see rfc 3264 section 8
-				// tsk_list_remove_item_by_pred(self->sessions, __pred_find_session_by_type, &(plugin->type));
-				_tmedia_session_mgr_disable_session_with_type(self, plugin->type);
+			else { /* media_type *IS NOT* enabled */
+				if (has_media(plugin->type)) {
+					// do not remove to make sure media indexes match -> see rfc 3264 section 8
+					// tsk_list_remove_item_by_pred(self->sessions, __pred_find_session_by_type, &(plugin->type));
+					_tmedia_session_mgr_disable_session_with_type(self, plugin->type);
+				}
 			}
 		}
 		/* set default values and apply params*/
@@ -2037,7 +2048,7 @@ static const tmedia_session_t* _tmedia_session_mgr_find_session_at_index(const t
 }
 
 /* internal function */
-static int _tmedia_session_mgr_disable_session_with_type(tmedia_session_mgr_t* self, tmedia_type_t media_type)
+static int _tmedia_session_mgr_disable_or_enable_session_with_type(tmedia_session_mgr_t* self, tmedia_type_t media_type, tsk_bool_t enable)
 {
 	tsk_list_item_t *item;
 	tmedia_session_t *session;
@@ -2045,13 +2056,22 @@ static int _tmedia_session_mgr_disable_session_with_type(tmedia_session_mgr_t* s
 
 	tsk_list_foreach(item, self->sessions) {
 		if ((session = (tmedia_session_t*)item->data) && session->plugin && session->plugin->type == media_type) {
-			if (session->plugin->stop) {
-				session->plugin->stop(session);
+			if (enable) {
+				if (session->M.lo && !session->M.lo->port) {
+					TSK_OBJECT_SAFE_FREE(session->M.ro);
+					TSK_OBJECT_SAFE_FREE(session->M.lo);
+					session->prepared = tsk_false;
+				}
 			}
-			if (session->M.lo) {
-				session->M.lo->port = 0;
+			else {
+				if (session->plugin->stop) {
+					session->plugin->stop(session);
+				}
+				if (session->M.lo) {
+					session->M.lo->port = 0;
+				}
+				session->prepared = tsk_false;
 			}
-			session->prepared = tsk_false;
 		}
 	}
 
