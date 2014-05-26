@@ -92,6 +92,12 @@ typedef union {
   uint64_t v64[2];
 } v128_t;
 
+typedef union {
+    uint8_t v8[32];
+    uint16_t v16[16];
+    uint32_t v32[8];
+    uint64_t v64[4];
+} v256_t;
 
 
 /* some useful and simple math functions */
@@ -393,7 +399,7 @@ octet_string_set_to_zero(uint8_t *s, int len);
 # define be64_to_cpu(x)	bswap_64((x))
 #else
 
-#if defined(__GNUC__) && defined(HAVE_X86) && !__APPLE__
+#if defined(__GNUC__) && defined(HAVE_X86)
 /* Fall back. */
 static inline uint32_t be32_to_cpu(uint32_t v) {
    /* optimized for x86. */

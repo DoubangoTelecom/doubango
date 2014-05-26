@@ -1,15 +1,15 @@
 /*
- * hmac.h
+ * aes_gcm_ossl.h
  *
- * interface to hmac auth_type_t
+ * Header for AES Galois Counter Mode.
  *
- * David A. McGrew
+ * John A. Foley
  * Cisco Systems, Inc.
  *
  */
 /*
  *	
- * Copyright (c) 2001-2006,2013, Cisco Systems, Inc.
+ * Copyright (c) 2013, Cisco Systems, Inc.
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -43,40 +43,21 @@
  *
  */
 
-#ifndef HMAC_H
-#define HMAC_H
+#ifndef AES_GCM_OSSL_H
+#define AES_GCM_OSSL_H
 
-#include "auth.h"
-#include "sha1.h"
+#include "cipher.h"
+#include "srtp.h"
+#include <openssl/evp.h>
+#include <openssl/aes.h>
 
 typedef struct {
-  uint8_t    opad[64];
-  sha1_ctx_t ctx;
-  sha1_ctx_t init_ctx;
-#ifdef OPENSSL
-  int ctx_initialized;
-  int init_ctx_initialized;
-#endif
-} hmac_ctx_t;
+  v256_t   key;
+  int      key_size;
+  int      tag_len;
+  EVP_CIPHER_CTX ctx;
+  cipher_direction_t dir;
+} aes_gcm_ctx_t;
 
-err_status_t
-hmac_alloc(auth_t **a, int key_len, int out_len);
+#endif /* AES_GCM_OSSL_H */
 
-err_status_t
-hmac_dealloc(auth_t *a);
-
-err_status_t
-hmac_init(hmac_ctx_t *state, const uint8_t *key, int key_len);
-
-err_status_t
-hmac_start(hmac_ctx_t *state);
-
-err_status_t
-hmac_update(hmac_ctx_t *state, const uint8_t *message, int msg_octets);
-
-err_status_t
-hmac_compute(hmac_ctx_t *state, const void *message,
-	     int msg_octets, int tag_len, uint8_t *result);
-
-
-#endif /* HMAC_H */
