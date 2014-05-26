@@ -286,7 +286,7 @@ static const tsdp_header_M_t* _tdav_session_bfcp_get_lo(tmedia_session_t* p_self
 		TSK_DEBUG_ERROR("Failed to get local setup from BFCP session");
 		return tsk_null;
 	}
-	if ((ret = tbfcp_utils_get_setup(e_local_setup, &pc_local_setup))) {
+	if ((ret = tbfcp_utils_get_setup(e_local_role, &pc_local_setup))) {
 		return tsk_null;
 	}
 
