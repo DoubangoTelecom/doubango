@@ -1,33 +1,33 @@
 /*
- * hmac.h
+ * aes_icm.h
  *
- * interface to hmac auth_type_t
+ * Header for AES Integer Counter Mode.
  *
  * David A. McGrew
  * Cisco Systems, Inc.
  *
  */
 /*
- *	
- * Copyright (c) 2001-2006,2013, Cisco Systems, Inc.
+ *
+ * Copyright (c) 2001-2005,2012, Cisco Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   Redistributions in binary form must reproduce the above
  *   copyright notice, this list of conditions and the following
  *   disclaimer in the documentation and/or other materials provided
  *   with the distribution.
- * 
+ *
  *   Neither the name of the Cisco Systems, Inc. nor the names of its
  *   contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -43,40 +43,31 @@
  *
  */
 
-#ifndef HMAC_H
-#define HMAC_H
+#ifndef AES_ICM_H
+#define AES_ICM_H
 
-#include "auth.h"
-#include "sha1.h"
+#include "cipher.h"
+#include <openssl/evp.h>
+#include <openssl/aes.h>
+
+#define     SALT_SIZE               14
+#define     AES_128_KEYSIZE         AES_BLOCK_SIZE
+#define     AES_192_KEYSIZE         AES_BLOCK_SIZE + AES_BLOCK_SIZE / 2
+#define     AES_256_KEYSIZE         AES_BLOCK_SIZE * 2
+#define     AES_128_KEYSIZE_WSALT   AES_128_KEYSIZE + SALT_SIZE
+#define     AES_192_KEYSIZE_WSALT   AES_192_KEYSIZE + SALT_SIZE
+#define     AES_256_KEYSIZE_WSALT   AES_256_KEYSIZE + SALT_SIZE
 
 typedef struct {
-  uint8_t    opad[64];
-  sha1_ctx_t ctx;
-  sha1_ctx_t init_ctx;
-#ifdef OPENSSL
-  int ctx_initialized;
-  int init_ctx_initialized;
-#endif
-} hmac_ctx_t;
+    v128_t counter;                /* holds the counter value          */
+    v128_t offset;                 /* initial offset value             */
+    v256_t key;
+    int key_size;
+    EVP_CIPHER_CTX ctx;
+} aes_icm_ctx_t;
 
-err_status_t
-hmac_alloc(auth_t **a, int key_len, int out_len);
-
-err_status_t
-hmac_dealloc(auth_t *a);
-
-err_status_t
-hmac_init(hmac_ctx_t *state, const uint8_t *key, int key_len);
-
-err_status_t
-hmac_start(hmac_ctx_t *state);
-
-err_status_t
-hmac_update(hmac_ctx_t *state, const uint8_t *message, int msg_octets);
-
-err_status_t
-hmac_compute(hmac_ctx_t *state, const void *message,
-	     int msg_octets, int tag_len, uint8_t *result);
+err_status_t aes_icm_openssl_set_iv(aes_icm_ctx_t *c, void *iv, int dir);
 
 
-#endif /* HMAC_H */
+#endif /* AES_ICM_H */
+
