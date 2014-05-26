@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011 The WebRTC project authors. All Rights Reserved.
+ *  Copyright (c) 2012 The WebRTC project authors. All Rights Reserved.
  *
  *  Use of this source code is governed by a BSD-style license
  *  that can be found in the LICENSE file in the root of the source
@@ -8,10 +8,10 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-#ifndef WEBRTC_MODULES_AUDIO_PROCESSING_NS_MAIN_INTERFACE_NOISE_SUPPRESSION_H_
-#define WEBRTC_MODULES_AUDIO_PROCESSING_NS_MAIN_INTERFACE_NOISE_SUPPRESSION_H_
+#ifndef WEBRTC_MODULES_AUDIO_PROCESSING_NS_INCLUDE_NOISE_SUPPRESSION_H_
+#define WEBRTC_MODULES_AUDIO_PROCESSING_NS_INCLUDE_NOISE_SUPPRESSION_H_
 
-#include "typedefs.h"
+#include "webrtc/typedefs.h"
 
 typedef struct NsHandleT NsHandle;
 
@@ -20,37 +20,23 @@ extern "C" {
 #endif
 
 /*
- * This function returns the version number of the code.
+ * This function creates an instance to the noise suppression structure
  *
  * Input:
- *      - version       : Pointer to a character array where the version
- *                        info is stored.
- *      - length        : Length of version.
- *
- * Return value         :  0 - Ok
- *                        -1 - Error (probably length is not sufficient)
- */
-int WebRtcNs_get_version(char *version, short length);
-
-
-/*
- * This function creates an instance to the noise reduction structure
- *
- * Input:
- *      - NS_inst       : Pointer to noise reduction instance that should be
+ *      - NS_inst       : Pointer to noise suppression instance that should be
  *                        created
  *
  * Output:
- *      - NS_inst       : Pointer to created noise reduction instance
+ *      - NS_inst       : Pointer to created noise suppression instance
  *
  * Return value         :  0 - Ok
  *                        -1 - Error
  */
-int WebRtcNs_Create(NsHandle **NS_inst);
+int WebRtcNs_Create(NsHandle** NS_inst);
 
 
 /*
- * This function frees the dynamic memory of a specified Noise Reduction
+ * This function frees the dynamic memory of a specified noise suppression
  * instance.
  *
  * Input:
@@ -59,11 +45,12 @@ int WebRtcNs_Create(NsHandle **NS_inst);
  * Return value         :  0 - Ok
  *                        -1 - Error
  */
-int WebRtcNs_Free(NsHandle *NS_inst);
+int WebRtcNs_Free(NsHandle* NS_inst);
 
 
 /*
- * This function initializes a NS instance
+ * This function initializes a NS instance and has to be called before any other
+ * processing is made.
  *
  * Input:
  *      - NS_inst       : Instance that should be initialized
@@ -75,22 +62,22 @@ int WebRtcNs_Free(NsHandle *NS_inst);
  * Return value         :  0 - Ok
  *                        -1 - Error
  */
-int WebRtcNs_Init(NsHandle *NS_inst, WebRtc_UWord32 fs);
+int WebRtcNs_Init(NsHandle* NS_inst, uint32_t fs);
 
 /*
  * This changes the aggressiveness of the noise suppression method.
  *
  * Input:
- *      - NS_inst       : Instance that should be initialized
+ *      - NS_inst       : Noise suppression instance.
  *      - mode          : 0: Mild, 1: Medium , 2: Aggressive
  *
  * Output:
- *      - NS_inst       : Initialized instance
+ *      - NS_inst       : Updated instance.
  *
  * Return value         :  0 - Ok
  *                        -1 - Error
  */
-int WebRtcNs_set_policy(NsHandle *NS_inst, int mode);
+int WebRtcNs_set_policy(NsHandle* NS_inst, int mode);
 
 
 /*
@@ -98,7 +85,7 @@ int WebRtcNs_set_policy(NsHandle *NS_inst, int mode);
  * input and output signals should always be 10ms (80 or 160 samples).
  *
  * Input
- *      - NS_inst       : NS Instance. Needs to be initiated before call.
+ *      - NS_inst       : Noise suppression instance.
  *      - spframe       : Pointer to speech frame buffer for L band
  *      - spframe_H     : Pointer to speech frame buffer for H band
  *      - fs            : sampling frequency
@@ -111,14 +98,26 @@ int WebRtcNs_set_policy(NsHandle *NS_inst, int mode);
  * Return value         :  0 - OK
  *                        -1 - Error
  */
-int WebRtcNs_Process(NsHandle *NS_inst,
-                     short *spframe,
-                     short *spframe_H,
-                     short *outframe,
-                     short *outframe_H);
+int WebRtcNs_Process(NsHandle* NS_inst,
+                     short* spframe,
+                     short* spframe_H,
+                     short* outframe,
+                     short* outframe_H);
+
+/* Returns the internally used prior speech probability of the current frame.
+ * There is a frequency bin based one as well, with which this should not be
+ * confused.
+ *
+ * Input
+ *      - handle        : Noise suppression instance.
+ *
+ * Return value         : Prior speech probability in interval [0.0, 1.0].
+ *                        -1 - NULL pointer or uninitialized instance.
+ */
+float WebRtcNs_prior_speech_probability(NsHandle* handle);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // WEBRTC_MODULES_AUDIO_PROCESSING_NS_MAIN_INTERFACE_NOISE_SUPPRESSION_H_
+#endif  // WEBRTC_MODULES_AUDIO_PROCESSING_NS_INCLUDE_NOISE_SUPPRESSION_H_
