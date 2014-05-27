@@ -490,7 +490,7 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	context->pipeW = pipes[1];
 	
 	/* add R side */
-	TSK_DEBUG_INFO("pipeR fd=%d", context->pipeR);
+	TSK_DEBUG_INFO("pipeR fd=%d, pipeW=%d", context->pipeR, context->pipeW);
 	if((ret = addSocket(context->pipeR, transport->master->type, transport, tsk_true, tsk_false, tsk_null))){
 		goto bail;
 	}
@@ -534,8 +534,13 @@ int tnet_transport_unprepare(tnet_transport_t *transport)
 	}
 
 	/* reset both R and W sides */
-	context->pipeR = 0;
-	context->pipeW = 0;
+    if (context->pipeW != -1) {
+        if (close(context->pipeW)) {
+            TSK_DEBUG_ERROR("Failed to close pipeW:%d", context->pipeW);
+        }
+        context->pipeW = -1;
+    }
+    context->pipeR = -1;
 
 	// destroy master as it has been closed by removeSocket()
 	TSK_OBJECT_SAFE_FREE(transport->master);
@@ -847,6 +852,7 @@ static tsk_object_t* transport_context_ctor(tsk_object_t * self, va_list * app)
 {
 	transport_context_t *context = self;
 	if(context){
+        context->pipeR = context->pipeW = -1;
 		tsk_safeobj_init(context);
 	}
 	return self;
