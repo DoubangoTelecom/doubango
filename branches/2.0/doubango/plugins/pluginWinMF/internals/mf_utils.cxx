@@ -65,6 +65,19 @@ const TOPOID MFUtils::g_ullTopoIdSinkPreview = 222;
 const TOPOID MFUtils::g_ullTopoIdSource = 333;
 const TOPOID MFUtils::g_ullTopoIdVideoProcessor = 444;
 
+// Preferred VideoSubTypes
+static const VideoSubTypeGuidPair PreferredVideoSubTypeGuidPairs[] = 
+{
+	{ tmedia_chroma_yuv420p, MFVideoFormat_I420 },
+	{ tmedia_chroma_nv12, MFVideoFormat_NV12 },
+	{ tmedia_chroma_uyvy422, MFVideoFormat_YUY2 },
+	/* TODO: Add more YUV formats */
+	{ tmedia_chroma_rgb565le, MFVideoFormat_RGB565 },
+	{ tmedia_chroma_bgr24, MFVideoFormat_RGB24 },
+	{ tmedia_chroma_rgb32, MFVideoFormat_RGB32 },
+};
+static const tsk_size_t PreferredVideoSubTypeGuidPairsCount = sizeof(PreferredVideoSubTypeGuidPairs)/sizeof(PreferredVideoSubTypeGuidPairs[0]);
+
 // Video Processor
 DEFINE_GUID(CLSID_VideoProcessorMFT, 
 			0x88753b26, 0x5b24, 0x49bd, 0xb2, 0xe7, 0xc, 0x44, 0x5c, 0x78, 0xc9, 0x82);
@@ -1843,9 +1856,19 @@ HRESULT MFUtils::GetBestFormat(
 	UINT32 nFps,
 	UINT32 *pnWidth,
 	UINT32 *pnHeight,
-	UINT32 *pnFps
+	UINT32 *pnFps,
+	const VideoSubTypeGuidPair **ppSubTypeGuidPair
 	)
 {
+
+#define _FindPairByGuid(_guid, _index) { \
+	int _i; _index = -1; \
+	for (_i = 0; _i < PreferredVideoSubTypeGuidPairsCount; ++_i) { \
+		if (PreferredVideoSubTypeGuidPairs[_i].fourcc == _guid) { \
+			_index = _i; break; \
+		} \
+	} \
+}
 #if 0
 	*pnWidth = 640;
 	*pnHeight = 480;
@@ -1858,15 +1881,26 @@ HRESULT MFUtils::GetBestFormat(
      IMFMediaTypeHandler *pHandler = NULL;
 	 IMFMediaType *pMediaType = NULL;
      DWORD cStreams = 0, cMediaTypesCount;
-	 GUID majorType, subType;
+	 GUID majorType, subType, _BestSubType;
 	 BOOL bFound = FALSE, fSelected;
 	 UINT32 _nWidth, _nHeight, numeratorFps, denominatorFps, _nFps, _nScore, _nBestScore;
+	 int PreferredVideoSubTypeGuidPairIndex;
 	 static const UINT32 kSubTypeMismatchPad = _UI32_MAX >> 4;
 	 static const UINT32 kFpsMismatchPad = _UI32_MAX >> 2;
+
+	 if (!ppSubTypeGuidPair || !pSubType) {
+		 CHECK_HR(hr = E_INVALIDARG);
+	 }
+	 _FindPairByGuid(*pSubType, PreferredVideoSubTypeGuidPairIndex);
+	 if (PreferredVideoSubTypeGuidPairIndex == -1) {
+		 CHECK_HR(hr = E_INVALIDARG);
+	 }
+	 *ppSubTypeGuidPair = &PreferredVideoSubTypeGuidPairs[PreferredVideoSubTypeGuidPairIndex];
  
 	 _nBestScore = _UI32_MAX;
 	 CHECK_HR(hr = pSource->CreatePresentationDescriptor(&pPD));
-     CHECK_HR(hr = pPD->GetStreamDescriptorCount(&cStreams));  
+     CHECK_HR(hr = pPD->GetStreamDescriptorCount(&cStreams));
+
 
 	 for (DWORD i = 0; i < cStreams; i++)
      {
@@ -1895,7 +1929,18 @@ HRESULT MFUtils::GetBestFormat(
 							CHECK_HR(hr = MFGetAttributeRatio(pMediaType, MF_MT_FRAME_RATE, &numeratorFps, &denominatorFps));
 							_nFps = (numeratorFps / denominatorFps);
 							
-							_nScore = (subType == *pSubType) ? 0 : kSubTypeMismatchPad; // Not a must but important: If(!VideoProcess) then CLSID_CColorConvertDMO
+							if (subType == *pSubType) {
+								_nScore = 0;
+							}
+							else {
+								_FindPairByGuid(subType, PreferredVideoSubTypeGuidPairIndex);
+								 if (PreferredVideoSubTypeGuidPairIndex == -1) {
+									 _nScore = kSubTypeMismatchPad; // Not a must but important: If(!VideoProcess) then CLSID_CColorConvertDMO
+								 } 
+								 else {
+									_nScore = kSubTypeMismatchPad >> (PreferredVideoSubTypeGuidPairsCount - PreferredVideoSubTypeGuidPairIndex);
+								 }
+							}
 							_nScore += abs((int)(_nWidth - nWidth)); // Not a must: If(!VideoProcess) then CLSID_CResizerDMO
 							_nScore += abs((int)(_nHeight - nHeight)); // Not a must: If(!VideoProcess) then CLSID_CResizerDMO
 							_nScore +=  (_nFps == nFps) ? 0 : kFpsMismatchPad; // Fps is a must because without video processor no alternative exist (CLSID_CFrameRateConvertDmo doesn't support I420)
@@ -1906,6 +1951,7 @@ HRESULT MFUtils::GetBestFormat(
 								*pnHeight = _nHeight;
 								*pnFps = _nFps;
 								bFound = TRUE;
+								_BestSubType = subType;
 								_nBestScore = _nScore;
 							}
 						 }                       
@@ -1925,8 +1971,11 @@ bail:
 	 SafeRelease(&pHandler);
 	 SafeRelease(&pMediaType);
 
-	 if (_nBestScore > kSubTypeMismatchPad) {
-		 // FIXME: Use other supported subtypes (NV12, I420, RGB24, RGB32, ...)
+	 _FindPairByGuid(_BestSubType, PreferredVideoSubTypeGuidPairIndex);
+	 if (PreferredVideoSubTypeGuidPairIndex != -1) {
+		 *ppSubTypeGuidPair = &PreferredVideoSubTypeGuidPairs[PreferredVideoSubTypeGuidPairIndex];
+	 }
+	 else /*if (_nBestScore > kSubTypeMismatchPad)*/ {
 		*pnWidth = 640;
 		*pnHeight = 480;
 		*pnFps = 30;

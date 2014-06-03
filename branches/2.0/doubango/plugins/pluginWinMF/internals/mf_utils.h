@@ -215,7 +215,8 @@ static HRESULT GetBestFormat(
 	UINT32 nFps,
 	UINT32 *pnWidth,
 	UINT32 *pnHeight,
-	UINT32 *pnFps
+	UINT32 *pnFps,
+	const VideoSubTypeGuidPair **pSubTypeGuidPair
 	);
 
 static HWND GetConsoleHwnd(void);
